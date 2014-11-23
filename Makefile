@@ -12,7 +12,6 @@ all:
 	@make -C public
 	@make -C namespaces
 	@make -C test
-	@make -C benchmark
 	
 clean:
 	@make clean -C db
@@ -23,7 +22,6 @@ clean:
 	@make clean -C namespaces
 	@make clean -C public
 	@make clean -C test
-	@make clean -C benchmark
 	
 gcov:
 	@make gcov -C db
@@ -34,7 +32,6 @@ gcov:
 	@make gcov -C namespaces
 	@make gcov -C public
 	@make gcov -C test
-	@make gcov -C benchmark
 	
 splint:
 	@make splint -C db
@@ -45,6 +42,5 @@ splint:
 	@make splint -C namespaces
 	@make splint -C namespaces
 	@make splint -C test
-	@make splint -C benchmark
 	
 

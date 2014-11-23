@@ -1,3 +1,5 @@
 *.o
 bin/*
 benchmark/bin/*
+generator/bin/*
+test/bin/*
