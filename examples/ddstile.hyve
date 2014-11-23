@@ -1,0 +1,12 @@
+#!/home/sander/projects/hyve/bin/hyve
+void System;
+
+// Monitor OpenSplice, manage topology database in scope of 'System'
+Ospl::Health::Monitor monitor: root:System;
+
+Qt::Application app::
+	Qt::MainWindow wnd : title:"DDS Monitor" width:750 height:600 :::
+		Ospl::Gui::Tile rootTile : scope:"System";
+        Qt::GridLayout grid : rows:{{0,0}} columns:{{0,0}} widgets:{{rootTile,0,0,1,1}};
+
+app.exec();

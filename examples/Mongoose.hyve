@@ -1,0 +1,18 @@
+#!/home/sander/projects/hyve/bin/hyve
+
+Mongoose::Context ctx:;
+
+Qt::Application app::
+	Qt::MainWindow wnd: title:"Mongoose server" width:400 height:350 x:800 y:50:::
+		Qt::ObjectView view: object:ctx expr:".conn";
+		Qt::GridLayout layout: 
+			rows:{{0,0}} 
+			columns:{{0,0}} 
+			widgets:{{view,0,0,1,1}}
+		;
+
+		on update ctx:
+			ctx.conn.write("URI: ${ctx.conn.uri}<br/><br/> <a href=\"Hello\">Hello</a><br/><a href=\"World\">World</a><br/>");
+			io::println("request: ${ctx.conn.uri}");
+		
+app.exec();

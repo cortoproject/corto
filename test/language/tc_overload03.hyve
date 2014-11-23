@@ -1,0 +1,50 @@
+// Test overloading with null arguments
+bool result: true;
+void fail(string msg):
+	"tc_overload03: FAIL: $msg";
+	result = false;
+
+class Point:: x, y: uint32;
+
+uint32 called : 0;
+
+// Test with a string parameter
+string foo(string a): 
+	foo = a;
+	called++;
+
+uint32 foo(uint32 a) = a;
+
+// Sanity check
+if foo("test") != "test": fail("foo(\"test\") == \"test\"");
+if foo(10) != 10: fail("foo(10) != 10");
+
+// Test null
+if called != 1: fail("called != 1 ($called)");
+if foo(null) != null: fail("foo(null) != null");
+if called != 2: fail("called != 2 ($called)");
+if foo(null).typeof != string: fail("foo(null).typeof != string");
+if called != 3: fail("called != 3 ($called)");
+
+
+// Test with a reference type parameter
+called = 0;
+Point bar(Point a):
+	bar = a;
+	called++;
+	
+uint32 bar(uint32 a) = a;
+
+// Sanity check
+Point p: 10, 20;
+if bar(p) != p: fail("bar(p) != p");
+if bar(10) != 10: fail("bar(10) != 10");
+
+// Test null
+if called != 1: fail("called != 1 ($called) #2");
+if bar(null) != null: fail("bar(null) != null");
+if called != 2: fail("called != 2 ($called) #2");
+if bar(null).typeof != Point: fail("bar(null).typeof != Point");
+if called != 3: fail("called != 3 ($called) #2");
+
+if result: "tc_overload03: OK";

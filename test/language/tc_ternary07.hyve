@@ -1,0 +1,30 @@
+// Test ternary expression as returnvalue of primitive types
+bool result: true;
+
+void fail(string msg):
+	"tc_ternary07: FAIL: $msg";
+	result = false;
+
+enum Color:: RED,GREEN,BLUE;
+bool returnBool(bool cond) = cond ? false : true;
+int32 returnInt32(bool cond) = cond ? 500 : 1000;
+float64 returnFloat64(bool cond) = cond ? 10.5 : 20.5;
+Color returnEnum(bool cond) = cond ? RED : BLUE;
+string returnString(bool cond) = cond ? "true" : "false";
+
+if returnBool(true): fail("returnBool(true) ${returnBool(true)}");
+if !returnBool(false): fail("returnBool(false) ${returnBool(false)}");
+
+if returnInt32(true) != 500: fail("returnInt32(true) != 500 ${returnInt32(true)}");
+if returnInt32(false) != 1000: fail("returnInt32(false) != 1000 ${returnInt32(true)}");
+
+if returnFloat64(true) != 10.5: fail("returnFloat64(true) != 10.5 ${returnFloat64(true)}");
+if returnFloat64(false) != 20.5: fail("returnFloat64(false) != 20.5 ${returnFloat64(true)}");
+
+if returnEnum(true) != RED: fail("returnEnum(true) != RED ${returnEnum(true)}");
+if returnEnum(false) != BLUE: fail("returnEnum(false) != BLUE ${returnEnum(false)}");
+
+if returnString(true) != "true": fail("returnString(true) != \"true\" ${returnString(true)}");
+if returnString(false) != "false": fail("returnString(false) != \"false\" ${returnString(false)}");
+
+if result: "tc_ternary07: OK";

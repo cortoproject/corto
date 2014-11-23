@@ -1,0 +1,124 @@
+void tc_dbgen::
+
+	// Primitive types (hides types from hyve::lang)
+	boolean bool{};
+	int int32{WIDTH_32};
+	uint uint32{WIDTH_32};
+	float float32{WIDTH_32};
+	float float64{WIDTH_64};
+	text string{WIDTH_32};
+	
+	// Collection types
+	array intArray{int32,32};
+	sequence intSeq{int32};
+	list intList{int32};
+	map intMap{int32};
+	
+	array stringArray{string,32};
+	sequence stringSeq{string};
+	list stringList{string};
+	map stringMap{string};
+	
+	array objectArray{object,32};
+	sequence objectSeq{object};
+	list objectList{object};
+	map objectMap{object};
+	
+	array anyArray{any,32};
+	sequence anySeq{any};
+	list anyList{any};
+	map anyMap{any};	
+	
+	// Functions & overloading
+	void print(string text);
+	int32 add(int32 v1, int32 v2);
+	uint32 add(uint32 v1, uint32 v2);
+	float32 add(float32 v1, float32 v2);
+	float64 add(float64 v1, float64 v2);
+	
+	// Functions with only any's as function parameters
+	any sub(any v1, any v2);
+	any sub(any v1, any v2, any v3);
+	
+	// Functions in scope of primitive types
+	bool::
+		bool and(bool v1, bool v2);
+		bool or(bool v1, bool v2);
+	string::
+		string concat(string v1, string v2);
+		
+	// Functions in scope of collection types
+	stringSeq::
+		void add(stringSeq seq, string element);
+		
+	// Structs with methods
+	struct Point::
+		member x{int32};
+		member y{int32};
+		void add(Point p);
+		void sub(Point p);
+		void add(int32 x, int32 y);
+		void sub(int32 x, int32 y);
+		virtual void dot();
+	
+	// Struct with inheritance and callback	
+	struct Point3D : Point::
+		type::init -> int16 init(Point3D object);
+		member z{int32};
+		void add(Point3D p);
+		void sub(Point3D p);
+		void add(int32 x, int32 y, int32 z);
+		void sub(int32 x, int32 y, int32 z);
+		void dot();
+		
+	// Struct with template parameter
+	struct Line<T>::
+		member start{T};
+		member stop{T};
+		member length();
+		
+	// Struct with sequence and template parameter
+	struct Route<T>::
+		member points{sequence{T}};
+		bool compare(Route route);
+		bool compare(sequence{T} route); // Anonymous type (with template parameter) as function parameter type
+		
+	// Interface
+	interface Vehicle::
+		float32 getSpeed();
+		void move(Point p);
+		void move(Route<Point> route);
+		member speed{Point};
+		
+	// Interface with inheritance
+	interface AirVehicle : Vehicle::
+		float32 getAirSpeed();
+		void move(Point3D p);
+		void move(Route<Point3D> route);
+		member airSpeed{float32};
+		
+	// Classes implementing interfaces and callbacks
+	class Car{implements={Vehicle}}::
+		class::construct -> int16 construct(Car object);
+		class::destruct -> void destruct(Car object);
+		float32 getSpeed();
+		void move(Point p);
+		void move(Route<Point> route);
+		
+	class Airplane{implements={AirVehicle}}::
+		class::construct -> int16 construct(Airplane object);
+		class::destruct -> void destruct(Airplane object);
+		float32 getSpeed();
+		float32 getAirSpeed();
+		void move(Point p); 
+		void move(Point3D p);
+		void move(Route<Point3D> route); // Todo : template parameters must be part of functionname
+		
+	// Class that inherits from a class which implements part of the AirVehicle interface
+	class Delorean{implements={AirVehicle}} : Car::
+		class::construct -> int16 construct(Delorean object);
+		class::destruct -> void destruct(Delorean object);
+		float32 getAirSpeed();
+		void move(Point3D p);
+		
+		

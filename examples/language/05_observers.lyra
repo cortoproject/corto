@@ -1,0 +1,21 @@
+// Observers
+//
+// The following example shows how to observe and update objects.
+
+// Create object hierarchy of simple objects
+void A::
+	void B::
+		void C;
+	void D;
+
+// Update each object
+update A;
+update A::B;
+update A::B::C;
+update A::D;
+
+on A: "A updated";
+	
+on childs A: "Child of A updated";
+	
+on self|childs A::B: "B or child of B updated";

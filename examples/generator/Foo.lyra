@@ -1,0 +1,11 @@
+void Foo::
+	// Class with some methods to demonstrate generation
+	class Point::
+		member x,y : uint32;
+		int16 construct(Point object);
+		void set(uint32 x, uint32 y);
+		void printX();
+		void printY();
+		uint32 getX();
+		uint32 getY();
+		void add(Point p);

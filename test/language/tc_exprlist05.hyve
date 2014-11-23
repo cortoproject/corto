@@ -1,0 +1,57 @@
+// Members and expression lists
+bool result: true;
+void fail(string msg):
+	"tc_exprlist05: FAIL: $msg";
+	result = false;
+	
+struct Point::
+	x, y: uint32;
+	
+Point p,q:;
+
+// Multiple lvalues
+(p,q).x = 1;
+(p,q).y = 2;
+
+// Validate using different expression-list techniques
+if (p.x == 1) && (p.y == 2) && (q.x == 1) && (q.y == 2): 0;
+else: fail("(p.x == 1) && (p.y == 2) && (q.x == 1) && (q.y == 2) (p=$p, q=$q)");
+if (p.x == 1) && (p.y != 2) && (q.x == 1) && (q.y == 2): 
+	fail("(p.x == 1) && (p.y != 2) && (q.x == 1) && (q.y == 2) (p=$p, q=$q)");
+else: 0;
+
+if ((p,q).x == 1) && ((p,q).y == 2): 0;
+else: fail("((p,q).x == 1) && ((p,q).y == 2) (p=$p q=$q)");
+if ((p,q).x != 1) && ((p,q).y == 2): fail("((p,q).x != 1) && ((p,q).y == 2) (p=$p q=$q)");
+else: 0;
+
+// Multiple rvalues
+p[x,y] = 10, 20;
+q[x,y] = 30, 40;
+
+if (p.x == 10) && (p.y == 20) && (q.x == 30) && (q.y == 40): 0;
+else: fail("(p.x == 10) && (p.y == 20) && (q.x == 30) && (q.y == 40) (p=$p, q=$q)");
+if (p.x == 10) && (p.y != 20) && (q.x == 30) && (q.y == 40): 
+	fail("(p.x == 10) && (p.y != 20) && (q.x == 30) && (q.y == 40) (p=$p, q=$q)");
+else: 0;
+
+if (p[x,y] == (10,20)) && (q[x,y] == (30,40)): 0;
+else: fail("(p[x,y] == (10,20)) && (q[x,y] == (30,40)) (p=$p, q=$q)");
+if (p[x,y] == (10,20)) && (q[x,y] != (30,40)): 
+	fail("(p[x,y] == (10,20)) && (q[x,y] != (30,40)) (p=$p, q=$q)");
+else: 0;
+
+if (p,q)[x,y] == (10,20,30,40): 0;
+else: fail("(p,q)[x,y] == (10,20,30,40) (p=$p, q=$q)");
+if (p,q)[x,y] == (11,20,30,40): fail("(p,q)[x,y] == (11,20,30,40) (p=$p, q=$q)");
+else: 0;
+
+// Multiple lvalues & multiple rvalues
+(p,q)[x,y] = 11, 22, 33, 44;
+
+if (p,q)[x,y] == (11,22,33,44): 0;
+else: fail("(p,q)[x,y] == (11,22,33,44) (p=$p, q=$q)");
+if (p,q)[x,y] == (10,22,33,44): fail("(p,q)[x,y] == (10,22,33,44) (p=$p, q=$q)");
+else: 0;
+
+if result: "tc_exprlist05: OK";

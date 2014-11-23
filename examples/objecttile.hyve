@@ -1,0 +1,8 @@
+#!/home/sander/projects/hyve/bin/hyve
+
+Qt::Application app::
+	Qt::MainWindow wnd : title:"Tile demo" width:750 height:600 :::
+		Qt::ObjectTile rootTile : @scope:"::";
+        Qt::GridLayout grid : rows:{{0,0}} columns:{{0,0}} widgets:{{rootTile,0,0,1,1}};
+
+app.exec();

@@ -1,0 +1,18 @@
+// Functions as left-hand side of member-comma expression
+bool result: true;
+void fail(string msg):
+	"tc_exprlist11: FAIL: $msg";
+	result = false;
+
+uint32 called: 0;
+
+struct Point:: x, y: uint32;
+
+Point returnPoint():
+	called++;
+	returnPoint = {10,20};
+
+if returnPoint()[x,y] != (10, 20): fail("returnPoint[x,y] != (10,20)");
+if called != 1: fail("called != 1 ($called)");
+
+if result: "tc_exprlist11: OK";

@@ -1,0 +1,50 @@
+// Test calling functions on members
+bool result : true;
+void fail(string msg):
+	"tc_method04: FAIL: $msg";
+	result = false;
+
+struct Point::
+	member x,y : int32;	
+	int32 getX() = x;
+	int32 getY() = y;
+	void add(Point p):
+		x += p.x;
+		y += p.y;
+	
+struct Point3D : Point::
+	member z : int32;
+	int32 getZ() = z;
+	void add(Point3D p):
+		super.add(p);
+		z += p.z;
+		
+	int32 sum() = getX() + getY() + getZ();
+	
+struct Line ::
+	start, stop: Point3D;
+
+// Call methods on objects of a non-reference type
+Line l1 : {10,20,30}, {40,50,60};
+Line l2 : {1,2,3}, {4,5,6};
+l1.start.add(l2.start);
+if l1.start.sum() != 66: fail("call method on object failed: l1.start.sum");
+if l2.start.sum() != 6:  fail("call method on object failed: l2.start.sum");
+
+l1.stop.add(l2.stop);
+if l1.stop.sum() != 165: fail("call method on object failed: l1.stop.sum");
+if l2.stop.sum() != 15:  fail("call method on object failed: l2.stop.sum");
+
+// Call methods on vars of a non-reference type
+var Line l1_l = {{10,20,30}, {40,50,60}};
+var Line l2_l = {{1,2,3}, {4,5,6}};
+l1_l.start.add(l2_l.start);
+if l1_l.start.sum() != 66: fail("call method on var failed: l1_l.start.sum");
+if l2_l.start.sum() != 6: fail("call method on var failed: l2_l.start.sum");
+
+l1_l.stop.add(l2_l.stop);
+if l1_l.stop.sum() != 165: fail("call method on var failed: l1_l.stop.sum");
+if l2_l.stop.sum() != 15: fail("call method on var failed: l2_l.stop.sum");
+
+
+if result: "tc_method04: OK";

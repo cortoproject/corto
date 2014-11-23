@@ -1,0 +1,28 @@
+// Methods, members and expression lists
+bool result: true;
+void fail(string msg):
+	"tc_exprlist08: FAIL: $msg";
+	result = false;
+	
+struct Int::
+	v: uint32;
+	uint32 inc() = v++;
+	
+struct Ints::
+	a,b,c,d : Int;
+	
+Ints o:;
+
+o[a,b,c,d].inc;
+if o[a,b,c,d].v != 1: fail("o[a,b,c,d].v != 1 ($o)");
+
+uint32 i:;
+o.a.v++;
+o.b.v += 2;
+o.c.v += 3;
+o.d.v += 4;
+
+i,i,i,i += o[a,b,c,d].inc;
+if i != 18: fail("i != 18 ($i)");
+
+if result: "tc_exprlist08: OK";

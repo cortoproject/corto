@@ -1,0 +1,57 @@
+bool result : true;
+
+class Point::
+	member x, y : int32;
+
+string testname : "tc_addressing03";
+void fail(string msg): 
+	"$testname: FAIL: $msg";
+	result = false;
+
+void test(Point value, int32 x, int32 y, string msg):
+	if value.x != x: fail("$msg (x = ${value.x})");
+	if value.y != y: fail("$msg (y = ${value.y})");
+		
+void testref(Point &value, int32 x, int32 y, string msg):
+	if value.x != x: fail("$msg (x = ${value.x})");
+	if value.y != y: fail("$msg (y = ${value.y})");
+	test(value, x, y, "$msg (passthrough)");
+
+Point p1, p2:;
+
+p1.x = 10;
+p1.y = 20;
+
+if p1.x != 10: fail("Value non-ref member (x)");
+if p1.y != 20: fail("Value non-ref member (y)");
+test(p1, 10, 20, "Push ref object as value");
+testref(p1, 10, 20, "Push ref object as ref");
+
+var Point p3 = p1;
+if p3.x != 10: fail("Value non-ref var member (x)");
+if p3.y != 20: fail("Value non-ref var member (y)");
+test(p3, 10, 20, "Push ref var as value");
+
+p3 = null;
+if p3: fail("Reassignment of refvar failed (null)");
+
+p2.x = 30;
+p2.y = 40;
+p3 = p2;
+
+if p3 != p2: fail("Reassignment of refvar failed (p2)");
+
+if p3.x != 30: fail("Value reassigned refvar with non-ref type (x)");
+if p3.y != 40: fail("Value reassigned refvar with non-ref type (y)");
+test(p3, 30, 40, "Push reassigned refvar with non-ref type as value");
+testref(p3, 30, 40, "Push reassigned refvar with non-ref type as ref");
+
+// Test assignment of value through reference var
+p3.x *= 2;
+if p2.x != 60: fail("Assignment of object through reference var failed");
+
+// Validate that p1 hasn't been overwritten
+if p1.x != 10: fail("Reassignment of refvar failed (x)");
+if p1.y != 20: fail("Reassignment of refvar failed (y)");
+
+if result: "$testname: OK";

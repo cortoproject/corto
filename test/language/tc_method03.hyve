@@ -1,0 +1,49 @@
+// Test split declarations and implementations
+bool result : true;
+void fail(string msg):
+	"tc_method03: FAIL: $msg";
+	result = false;
+
+class Point::
+	member x,y : int32;	
+	int32 getX();
+	int32 getY();
+	void add(Point p);
+	
+class Point3D : Point::
+	member z : int32;	
+	int32 getZ();	
+	void add(Point3D p);		
+	int32 sum();
+
+int32 Point::getX() = x;
+int32 Point::getY() = y;
+void Point::add(Point p):
+	x += p.x;
+	y += p.y;
+	
+int32 Point3D::getZ() = z;
+void Point3D::add(Point3D p):
+	if 1: // Validate that 'z' is still accessible from a nested scope 
+		super.add(p);
+		z += p.z;
+int32 Point3D::sum() = getX() + getY() + getZ();
+
+// Call methods on objects of a reference type
+Point3D p1 : 10,20,30;
+Point3D p2 : 1,2,3;
+p1.add(p2);
+if p1.sum() != 66: fail("call method on object failed: p1.sum");
+if p2.sum() != 6:  fail("call method on object failed: p2.sum");
+
+// Reset value of p1
+p1 = {10,20,30};
+
+// Call methods on vars of a reference type
+var Point3D p1_l = p1;
+var Point3D p2_l = p2;
+p1_l.add(p2_l);
+if p1_l.sum() != 66: fail("call method on var failed: p1_l.sum");
+if p2_l.sum() != 6:  fail("call method on var failed: p2_l.sum");
+	
+if result: "tc_method03: OK";

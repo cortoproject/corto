@@ -1,0 +1,12 @@
+struct Point::
+	x: uint32;
+	y: uint32;
+
+Point p1: 10, 20;
+
+// This results in a double-cyclic reference in parser structures 
+// that is hard to detect. The parser will either crash or leak
+// when not properly detected.
+if !p1[x]: "${p1}"; 
+
+"tc_segfault01: OK";

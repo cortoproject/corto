@@ -1,0 +1,39 @@
+#!/home/sander/projects/hyve/bin/hyve
+
+// Qt explorer application object definitions
+Qt::Application app::
+	Qt::MainWindow explorer: title:"Hyve explorer" width:800 height:600:::
+		Qt::ObjectTree tree:;
+		Qt::ObjectBrowse browse:;
+		Qt::TabWidget tabs: closable:true;
+		Qt::PushButton updateButton: text:"Update";
+		Qt::Splitter splitTree_Browse: orientation:Vertical widgets:{{tree,200,200},{browse,200,0}};
+		Qt::Splitter splitTabs_Button: orientation:Vertical widgets:{{tabs,200,100},{updateButton,30,0}};
+		Qt::Splitter split: orientation:Horizontal widgets:{{splitTree_Browse,300,0},{splitTabs_Button,500,100}};
+		Qt::GridLayout layout: rows:{{0,0}} columns:{{0,0}} widgets:{{split,0,0,1,1}};
+
+		// Add ObjectView widget for object selected by the ObjectTree
+		on tree: tabs.addTab(tree.object.nameof(), Qt::ObjectView{object: tree.object});
+			
+		// On selection of a different tab, update the ObjectBrowse window as well
+		on tabs:
+			update browse:
+				if tabs.currentWidget:
+					if ((Qt::ObjectView)tabs.currentWidget).object != browse.object:
+						browse.object = ((Qt::ObjectView)tabs.currentWidget).object;
+						browse.expr = "";
+				else:
+					browse.object = null; // There are no more tabs
+
+		// Update the expression of the current ObjectView widget
+		on browse:
+			if tabs.currentWidget:
+				update tabs.currentWidget:
+					((Qt::ObjectView)tabs.currentWidget).expr = browse.expr;
+			
+		// Send update of currently showed object		
+		on updateButton:
+			if tabs.currentWidget:
+				((Qt::ObjectView)tabs.currentWidget).updateObject();
+			
+app.exec(); // Run Qt event loop

@@ -1,0 +1,38 @@
+#!/home/sander/projects/hyve/bin/hyve
+
+Qt::Application app:::
+	Qt::MainWindow wnd : title:"Lyra Launcher" width:350 height:340 :::
+		Qt::Tile launcher : title:"Applications":::
+			Qt::Tile tools : title:"Tools":::
+				Qt::Tile viewer : title:"Explorer";
+				Qt::Tile dbsh : title:"Database shell";
+				Qt::Tile tuner : title:"OpenSplice tuner";
+				Qt::Tile tester : title:"OpenSplice tester";
+			Qt::Tile demos : title:"Demos":::
+				Qt::Tile tileDemo : title:"Tile demo";
+				Qt::Tile objectTileDemo : title:"ObjectTile demo";
+				Qt::Tile widgetsDemo : title:"Widgets demo";
+				Qt::Tile ping : title:"DDS Ping";
+				Qt::Tile pong : title:"DDS Pong";
+				Qt::Tile ddsWidgets : title:"DDS Widgets demo";
+				Qt::Tile ddsTiles : title:"DDS Tiles";				
+				Qt::Tile webserverDemo : title:"Webserver demo";
+				Qt::Tile ddsMonitor : title:"DDS Monitor";
+			
+			app @ on tools::viewer: os::system("explorer.hyve &");
+			app @ on tools::tuner: os::system("ospltun &");
+			app @ on tools::tester : os::system("ospltest &");
+			app @ on tools::dbsh: os::system("gnome-terminal --geometry=95x32 -x sh -c \"dbsh xml\" &");
+			app @ on demos::ddsMonitor: os::system("gnome-terminal --geometry=115x30 -x sh -c ./examples/health.hyve &");
+			app @ on demos::tileDemo: os::system("./examples/tile.hyve &");
+			app @ on demos::objectTileDemo: os::system("./examples/objecttile.hyve &");
+			app @ on demos::widgetsDemo: os::system("./examples/widgets.hyve &");
+			app @ on demos::ping: os::system("gnome-terminal --geometry=10x5 -x sh -c ./examples/ping.hyve &");	
+			app @ on demos::pong: os::system("gnome-terminal --geometry=10x5 -x sh -c ./examples/pong.hyve &");
+			app @ on demos::ddsWidgets: os::system("./examples/ddswidgets.hyve &");
+			app @ on demos::ddsTiles: os::system("./examples/ddstile.hyve &");									
+			app @ on demos::webserverDemo: os::system("./examples/Mongoose.hyve &");
+						
+        Qt::GridLayout grid : rows:{{0,0}} columns:{{0,0}} widgets:{{launcher,0,0,1,1}};
+		
+app.exec();

@@ -1,0 +1,41 @@
+bool result : true;
+void fail(string msg):
+	"tc_update03: FAIL: $msg";
+	result = false;
+	
+struct Point::
+	x, y : int32;
+	
+class Foo::
+	a : Point;
+	count : uint32;
+	
+	on update this:
+		count++;
+		// Make sure a.x and a.y are updated atomically in all cases
+		if a.x != a.y: fail("invalid update of this.a ($this)");
+	
+Foo o: {0,0};
+
+update o:
+	o.a.x = 1;
+	o.a.y = 1;
+
+update o.a = {2, 2};
+if o.count != 2: fail("expected 2 updates for o, got ${o.count}");
+
+class Bar::
+	a : Foo;
+	count : uint32;
+	on update this:
+		if a: fail("invalid update of this.a ($this)");
+
+Bar p: o;
+
+update p.a;
+update p.a = null;
+
+if o.count != 4: fail("expected 3 updates of o, got ${o.count}");
+if p.count != 1: fail("expected 1 update of p, got ${p.count}");
+
+if result: "tc_update03: OK";

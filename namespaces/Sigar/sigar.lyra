@@ -1,0 +1,158 @@
+object Sigar::
+	typedef Pid : uint64;
+
+	// CPU information
+	struct CpuData::
+		member user : uint64;
+		member sys : uint64;
+		member nice : uint64;
+		member idle : uint64;
+		member _wait : uint64;
+		member irq : uint64;
+		member soft_irq : uint64;
+		member stolen : uint64;
+		member total : uint64;
+		
+	// Cpu info
+	struct CpuInfo::
+		member vendor : string;
+		member model : string;
+		member mhz : uint32;
+		member cache_size : uint64;
+		member total_sockets : uint32;
+		member total_cores : uint32;
+		member cores_per_socket : uint32;		
+		
+	// Memory information
+	struct MemoryData::
+		member ram : uint64;
+		member total : uint64;
+		member used : uint64;
+		member free : uint64;
+		member actual_used : uint64;
+		member actual_free : uint64;
+		member used_percent : float64;
+		member free_percent : float64;
+		
+	// Swap information
+	struct SwapData::
+		member total : uint64;
+		member used : uint64;
+		member free : uint64;
+		member page_in : uint64;
+		member page_out : uint64;
+		
+	// Uptime
+	struct Uptime::
+		member uptime : float64;
+		
+	// Load
+	struct LoadAvg::
+		member loadavg : array{float64,3};
+
+	// Overall process statistics
+	struct ProcStat::
+		member total : uint64;
+		member sleeping : uint64;
+		member running : uint64;
+		member zombie : uint64;
+		member stopped : uint64;
+		member idle : uint64;
+		member threads : uint64;
+		
+	// Process memory statistics
+	struct ProcMem::
+		member size : uint64;
+		member resident : uint64;
+		member share : uint64;
+		member minor_faults : uint64;
+		member major_faults : uint64;
+		member page_faults : uint64;
+		
+	// Process time statistics
+	struct ProcTime::
+		member start_time : uint64;
+		member user : uint64;
+		member sys : uint64;
+		member total : uint64;
+		
+	// Process cpu statistics
+	struct ProcCpu::
+		member start_time : uint64;
+		member user : uint64;
+		member sys : uint64;
+		member total : uint64;
+		member last_time : uint64;
+		member percent : float64;
+	
+	struct ProcExe::
+		member name : string;
+		member cwd : string;
+		member root : string;
+	
+	// Process statistics
+	class Process::
+		member pid : Sigar::Pid;
+		member mem : ProcMem,LOCAL;
+		member time : ProcTime,LOCAL;
+		member cpu : ProcCpu,LOCAL;
+		member exe : ProcExe,LOCAL;
+		
+	// Filesystem statistics
+	enum FileSystemType::
+		constant UNKNOWN;
+		constant NONE;
+		constant LOCAL_DISK;
+		constant NETWORK;
+		constant RAM_DISK;
+		constant CDROM;
+		constant SWAP;
+		constant MAX;
+		
+	struct FileSystem::
+		member dir_name : string;
+		member dev_name : string;
+		member type_name : string;
+		member sys_type_name : string;
+		member options : string;
+		member type : FileSystemType;
+		member flags : int32;
+		
+	// Statistics that can be enabled on a host
+	bitmask Stats::
+		constant CPU;
+		constant CPU_LIST;
+		constant CPU_INFO;
+		constant MEM;
+		constant SWAP;
+		constant UPTIME;
+		constant LOADAVG;
+		constant PROC_LIST;
+		constant PROC_STAT;
+		constant PROC_MEM; // Requires PROC_LIST
+		constant PROC_TIME; // Requires PROC_LIST
+		constant PROC_CPU; // Requires PROC_LIST
+		constant PROC_EXE; // Requires PROC_LIST
+		constant FILE_SYSTEM_LIST;
+	
+	// Host class
+	class Host::
+		member name : string;
+		member stats : Sigar::Stats;
+		member cpu : CpuData,LOCAL|READONLY;
+		member cpu_list : list{CpuData},LOCAL|READONLY;
+		member cpu_info : list{CpuInfo},LOCAL|READONLY;
+		member memory : MemoryData,LOCAL|READONLY;
+		member swap : SwapData,LOCAL|READONLY;
+		member uptime : Sigar::Uptime,LOCAL|READONLY;
+		member loadavg : Sigar::LoadAvg,LOCAL|READONLY;
+		member proc_list : list{Process},LOCAL|READONLY;
+		member proc_stat : ProcStat,LOCAL|READONLY;
+		member file_system_list : list{FileSystem},LOCAL|READONLY;
+		member handle : word,LOCAL|PRIVATE;
+		int16 construct(Host object);
+		void destruct(Host object);
+		void refresh();
+
+		
+	

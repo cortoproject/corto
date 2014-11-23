@@ -1,0 +1,10 @@
+
+void call::
+	struct Point::
+		member x : uint32;
+		member y : uint32;
+	void noargCall();
+	lang::word wordCall(lang::word w1, lang::word w2, lang::word w3, lang::word w4);
+	lang::float64 floatCall(lang::word w1, lang::word w2, lang::word w3, lang::word w4);
+	Point complexCall(lang::word w1, lang::word w2, lang::word w3, lang::word w4);
+	

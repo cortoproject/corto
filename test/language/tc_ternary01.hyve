@@ -1,0 +1,48 @@
+bool result: true;
+uint32 T, F;
+
+void fail(string msg):
+	"tc_ternary01: FAIL: $msg";
+	result = false;
+
+void validate(uint32 T, uint32 F, uint32 tT, uint32 tF, string msg):
+	if (T != tT) || (F != tF):
+		"tc_ternary01: FAIL: $msg (tT=$tT T=$T tF$tF F=$F)";
+		result = false;
+
+// Literal comparison, no result
+true  ? T++ : F++; validate(T, F, 1, 0, "true?:");
+false ? T++ : F++; validate(T, F, 1, 1, "false?:");
+
+// Object comparison, no result
+bool o: true;
+o  ? T++ : F++; validate(T, F, 2, 1, "o?:");
+!o ? T++ : F++; validate(T, F, 2, 2, "!o?:");
+
+// Local comparison, no result
+var bool v = true;
+v  ? T++ : F++; validate(T, F, 3, 2, "v?:");
+!v ? T++ : F++; validate(T, F, 3, 3, "!v?:");
+
+// Ternary assignmemts
+var uint32 i = 0;
+
+// Literal comparison, store result
+i = true ? 10 : 20;
+if i != 10: fail("i = true?: ($i)");
+i = false ? 10 : 20;
+if i != 20: fail("i = false?: ($i)");
+
+// Object comparison, store result
+i = o ? 11 : 21;
+if i != 11: fail("i = o?: ($i)");
+i = !o ? 11 : 21;
+if i != 21: fail("i = !o?: ($i)");
+
+// Local comparison, store result
+i = v ? 12 : 22;
+if i != 12: fail("i = v?: ($i)");
+i = !v ? 12 : 22;
+if i != 22: fail("i = v?: ($i)"); 
+
+if result: "tc_ternary01: OK";

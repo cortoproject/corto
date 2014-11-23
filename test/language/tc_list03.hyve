@@ -1,0 +1,49 @@
+// Setting, getting and comparing composite list objects
+bool result: true;
+
+void fail(string msg):
+	"tc_list03: FAIL: $msg";
+	result = false;
+
+struct Point::
+	x, y: uint32;
+
+var list{Point} a = {{10,20}, {30,40}, {50,60}};
+
+if a[0].x != 10: fail("a[0].x != 10 (${a[0].x})");
+if a[0].y != 20: fail("a[0].y != 20 (${a[0].y})");
+if a[1].x != 30: fail("a[0].x != 30 (${a[1].x})");
+if a[1].y != 40: fail("a[0].y != 40 (${a[1].y})");
+if a[2].x != 50: fail("a[0].x != 50 (${a[2].x})");
+if a[2].y != 60: fail("a[0].y != 60 (${a[2].y})");
+
+a[0], a[1], a[2] = {11,22}, {33,44}, {55,66};
+if a[0].x != 11: fail("a[0].x != 11 (${a[0].x})");
+if a[0].y != 22: fail("a[0].y != 22 (${a[0].y})");
+if a[1].x != 33: fail("a[1].x != 33 (${a[1].x})");
+if a[1].y != 44: fail("a[1].y != 44 (${a[1].y})");
+if a[2].x != 55: fail("a[2].x != 55 (${a[2].x})");
+if a[2].y != 66: fail("a[2].y != 66 (${a[2].y})");
+
+a[0], a[1], a[2] = {77,88};
+if a[0].x != 77: fail("a[0].x != 77 (${a[0].x})");
+if a[0].y != 88: fail("a[0].y != 88 (${a[0].y})");
+if a[1].x != 77: fail("a[1].x != 77 (${a[1].x})");
+if a[1].y != 88: fail("a[1].y != 88 (${a[1].y})");
+if a[2].x != 77: fail("a[2].x != 77 (${a[2].x})");
+if a[2].y != 88: fail("a[2].y != 88 (${a[2].y})");
+
+a[0].x = 99;
+a[0].y = 111;
+a[1].x += 45;
+a[1].y *= 2; a[1].y -= 43;
+a[2].x = a[2].x * 2 - 10;
+a[2].y = a[2].y + 67;
+if a[0].x != 99: fail("a[0].x != 99 (${a[0].x})");
+if a[0].y != 111: fail("a[0].y != 111 (${a[0].y})");
+if a[1].x != 122: fail("a[1].x != 122 (${a[1].x})");
+if a[1].y != 133: fail("a[1].y != 133 (${a[1].y})");
+if a[2].x != 144: fail("a[2].x != 144 (${a[2].x})");
+if a[2].y != 155: fail("a[2].y != 155 (${a[2].y})");
+
+if result: "tc_list03: OK";

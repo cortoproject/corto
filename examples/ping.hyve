@@ -1,0 +1,10 @@
+#!/home/sander/projects/hyve/bin/hyve
+
+void pingpong::
+	void ping, pong, exit:;
+
+	update ping; // initial ping
+	wait exit; // keep running until exit
+	on update pong: update ping; // pong observer
+
+	Ospl::Bridge toDds:; // Bridge hyve and DDS

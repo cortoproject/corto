@@ -1,0 +1,68 @@
+// Explicit primitive literal casts
+bool result: true;
+void fail(string msg):
+	"tc_cast03: FAIL: $msg";
+	result = false;
+	
+// Cast literals to boolean
+bool a;
+
+a = bool(10);
+if a != true: fail("a = (bool)10 ($a)");
+
+a = bool(0);
+if a != false: fail("a = (bool)0 ($a)");
+
+a = bool(-1);
+if a != true: fail("a = (bool)-1 ($a)");
+
+a = bool("true");
+if a != true: fail("a = (bool)\"true\" ($a)");
+
+// Verify whether true is always represented as the same number
+bool a_1, a_2;
+a_1 = 10;
+a_2 = -5;
+if a_1 != a_2: fail("a_1 != a_2");
+
+
+// Cast literals to characters
+char b;
+
+b = char(65);
+if b != 'A': fail("b = (char)65 ($b)");
+
+b = char("A");
+if b != 'A': fail("b = (char)\"A\" ($b)");
+
+
+// Cast literals to integers
+int32 c;
+
+c = int32(true);
+if c != 1: fail("c = (int32)true ($c)");
+
+c = int32('A');
+if c != 65: fail("c = (int32)'A' ($c)");
+
+c = int32("-1");
+if c != -1: fail("c = (int32)\"-1\" ($c)");
+
+
+// Cast literals to strings
+string d;
+
+d = string(true);
+if d != "true": fail("d = (string)true ($d)");
+
+d = string('A');
+if d != "A": fail("d = (string)'A' ($d)");
+
+d = string(-1);
+if d != "-1": fail("d = (string)-1 ($d)");
+
+
+// Test whether literal cast assumes new type
+if bool(10).typeof != bool: fail("bool(10).typeof != bool");
+
+if result: "tc_cast03: OK";

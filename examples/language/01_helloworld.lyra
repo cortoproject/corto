@@ -1,0 +1,6 @@
+// Hello world
+//
+// Hello world in Lyra. Note that the io module is implicitly loaded as it is encountered
+// by the parser.
+
+io::println("Hello world");

@@ -1,0 +1,55 @@
+bool result: true;
+void fail(string msg):
+	"tc_scope01: FAIL: $msg";
+	result = false;
+
+void parent;
+
+parent::
+	void child01;
+	void child02::
+		void child01;
+		void child02;
+		void child03;
+		parent::
+			void child03;
+			if &child01 != parent::child01: fail("child01 != parent::child01");
+			if &child02 != parent::child02: fail("child02 != parent::child02");
+			if &child03 != parent::child03: fail("child03 != parent::child03");
+		if &child01 != child02::child01: fail("child01 != child2::child01");
+		if &child02 != child02::child02: fail("child02 != child2::child02");
+		if &child03 != child02::child03: fail("child03 != child2::child03");
+		if &child03 == parent::child03: fail("child03 == parent::child03");
+
+// Validate objects are created by resolving them
+parent;
+parent::child01;
+parent::child02;
+parent::child02::child01;
+parent::child02::child02;
+parent::child02::child03;
+parent::child03;
+
+// Open scopes, validate if objects can be resolved using relative names
+parent::
+	if &child01 != parent::child01: fail("parent: child01 != parent::child01");
+	if &child02 != parent::child02: fail("parent: child02 != parent::child02");
+	if &child03 != parent::child03: fail("parent: child03 != parent::child03");
+	
+parent::child01::
+	if &child01 != parent::child01: fail("parent::child01: child01 != parent::child01");
+	if &child02 != parent::child02: fail("parent::child01: child02 != parent::child02");
+	if &child03 != parent::child03: fail("parent::child01: child03 != parent::child03");	
+
+parent::child02::
+	if &child01 != child02::child01: fail("parent::child02: child01 != parent::child01");
+	if &child02 != child02::child02: fail("parent::child02: child02 != parent::child02");
+	if &child03 != child02::child03: fail("parent::child02: child03 != parent::child03");
+
+parent::child02::child01::
+	if &child01 != child02::child01: fail("parent::child02: child01 != parent::child01");
+	if &child02 != child02::child02: fail("parent::child02: child02 != parent::child02");
+	if &child03 != child02::child03: fail("parent::child02: child03 != parent::child03");
+
+if result: "tc_scope01: OK";
+

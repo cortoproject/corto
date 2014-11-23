@@ -1,0 +1,71 @@
+// Test various ways of initializing composite reference values
+bool result : true;
+
+class Point::
+	member x,y : int32;
+	uint32 constructed:0;
+	int16 construct(Point object):
+		constructed++;
+	
+class Point3D : Point::
+	member z : int32;
+	uint32 constructed:0;
+	int16 construct(Point3D object):
+		constructed++;
+	
+class Line::
+	member start,end : Point;
+	
+void fail(string msg):
+	"tc_initializers02: FAIL: $msg";
+	result = false;
+	
+void test(Point p, int32 x, int32 y, string msg):
+	if p.x != x: fail("$msg.x (${p.x})");
+	if p.y != y: fail("$msg.y (${p.y})");
+		
+void test(Point3D p, int32 x, int32 y, int32 z, string msg):
+	test(p, x, y, msg);
+	if p.z != z: fail("$msg.z (${p.z})");
+		
+void test(Line l, int32 x1, int32 y1, int32 x2, int32 y2, string msg):
+	test(l.start, x1, y1, "$msg.start");
+	test(l.end, x2, y2, "$msg.end");
+	
+Point p1: 10,20;
+Point p2: 30,40;
+Point3D p3: 50,60,70;
+Point3D p4: 80,90,100;
+
+Line l1: start:p1 end:p2;
+Line l2: start:Point{10,20} end:Point{30,40};
+Line l3: start:p3 end:p4;
+Line l4: start:Point3D{10,20,30} end:Point3D{40,50,60};
+
+var Point var1 = p1;
+var Point var2 = Point{10,20};
+var Point var3 = p3;
+var Point var4 = Point3D{10,20,30};
+
+// Test points
+test(p1, 10, 20, "p1");
+test(p2, 30, 40, "p2");
+test(p3, 50, 60, 70, "p3");
+test(p4, 80, 90, 100, "p4");
+
+// Test lines
+test(l1, 10, 20, 30, 40, "l1");
+test(l2, 10, 20, 30, 40, "l2");
+test(l3, 50, 60, 80, 90, "l3");
+test(l4, 10, 20, 40, 50, "l4");
+
+// Test vars
+test(var1, 10, 20, "var1");
+test(var2, 10, 20, "var2");
+test(var3, 50, 60, "var3");
+test(var4, 10, 20, "var4");
+
+if Point::constructed != 5: fail("Point::constructed != 5 (${Point::constructed})");
+if Point3D::constructed != 5: fail("Point3D::constructed != 5 (${Point3D::constructed})");
+
+if result: "tc_initializers02: OK";

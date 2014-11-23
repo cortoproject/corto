@@ -1,0 +1,40 @@
+// Test calling methods on reference objects
+bool result : true;
+void fail(string msg):
+	"tc_method01: FAIL: $msg";
+	result = false;
+
+class Point::
+	member x,y : int32;
+	int32 getX() = x;
+	int32 getY() = y;		
+	void add(Point p):
+		x += p.x;
+		y += p.y;
+	
+class Point3D : Point::
+	member z : int32;
+	int32 getZ() = z;
+	void add(Point3D p):
+		super.add(p);
+		z += p.z;
+		
+	int32 sum() = getX() + getY() + getZ();
+
+// Call methods on objects of a reference type
+Point3D p1 : 10,20,30;
+Point3D p2 : 1,2,3;
+p1.add(p2);
+if p1.sum() != 66: fail("call method on object failed: p1.sum");
+if p2.sum() != 6:  fail("call method on object failed: p2.sum");
+
+// Call methods on vars of a reference type
+var Point3D p1_l = p1;
+var Point3D p2_l = p2;
+p1_l.add(p2_l);
+if p1_l.sum() != 72: fail("call method on var failed: p1_l.sum");
+if p2_l.sum() != 6:  fail("call method on var failed: p2_l.sum");
+if p1.sum() != 72: fail("call method on var failed: p1.sum");
+if p2.sum() != 6:  fail("call method on var failed: p2.sum");
+	
+if result: "tc_method01: OK";
