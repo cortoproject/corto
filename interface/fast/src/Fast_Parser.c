@@ -550,6 +550,7 @@ error:
 Fast_Expression Fast_Parser_explodeCommaExpr(Fast_Parser _this, Fast_Expression lvalues, Fast_Expression rvalues, Fast_ExpandAction action, void *userData) {
     db_ll lvalueList, rvalueList;
     Fast_Expression result = NULL;
+    Fast_Expression var = NULL;
     db_uint32 lvalueCount, rvalueCount;
     
     lvalueList = Fast_Expression_toList(lvalues);
@@ -557,12 +558,12 @@ Fast_Expression Fast_Parser_explodeCommaExpr(Fast_Parser _this, Fast_Expression 
     lvalueCount = db_llSize(lvalueList);
     rvalueCount = db_llSize(rvalueList);
 
-    if ((lvalueCount > 1) && (rvalueCount == 1)) {
+    if ((rvalueCount > 1) && (lvalueCount == 1)) {
         /* Only temporarily store rvalue if it has side effects */
-        if (Fast_Expression_hasSideEffects(Fast_Expression(db_llGet(rvalueList,0)))) {
+        if (Fast_Expression_hasSideEffects(Fast_Expression(db_llGet(lvalueList,0)))) {
             if (Fast_Node(rvalues)->kind != FAST_Initializer) {
-                Fast_Expression var = Fast_Parser_getAnonymousLocal(_this, rvalues->type, FALSE);
-                Fast_Expression assign = Fast_Parser_binaryExpr(_this, var, rvalues, DB_ASSIGN);
+                var = Fast_Parser_getAnonymousLocal(_this, lvalues->type, FALSE);
+                Fast_Expression assign = Fast_Parser_binaryExpr(_this, var, lvalues, DB_ASSIGN);
                 Fast_Parser_addStatement(_this, Fast_Node(assign));
                 rvalues = var;
             }
@@ -571,7 +572,7 @@ Fast_Expression Fast_Parser_explodeCommaExpr(Fast_Parser _this, Fast_Expression 
     
     Fast_Expression_list__foreach(lvalueList, l)
         Fast_Expression_list__foreach(rvalueList, r)
-            Fast_Expression e = action(_this, l, r, userData);
+            Fast_Expression e = action(_this, var ? var : l, r, userData);
             if (!e) {
                 goto error;
             }
