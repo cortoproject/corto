@@ -17,6 +17,9 @@ if (10 > 20).typeof != bool: fail("(10 > 20).typeof != bool (${(10 > 20).typeof.
 
 // Test folding of literal expressions and conditional statements (conditional statements are evaluated at compile time). 
 if (10 + 20) != 30: fail("10 + 20 != r(30) (${10 + 20})");
-if (10 > 20) != false: fail("(10 > 20) != boolResult (${10 > 20})");
+if (10 > 20) != false: fail("(10 > 20) != false (${10 > 20})");
+if (10 < 20) != true: fail("(10 < 20) != true (${10 < 20})");
+if (10 > 20) == true: fail("(10 > 20) == true (${10 < 20})");
+if (10 < 20) == false: fail("(10 < 20) == false (${10 < 20})");
 
 if result: "tc_fold01: OK";
