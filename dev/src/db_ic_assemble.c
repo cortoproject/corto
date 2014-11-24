@@ -691,7 +691,7 @@ db_ic_vmOperand db_ic_getVmOperand(db_ic_vmProgram *program, db_icDerefMode dere
                         result = DB_IC_VMOPERAND_R;
                     }
         		} else {
-                    if (base && isRefType) {
+                    if (isRefType) {
                         if (isStatic) {
                             result = DB_IC_VMOPERAND_R;
                         } else {
