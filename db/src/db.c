@@ -187,6 +187,7 @@ db_threadKey DB_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, observer_silence);\
     SSO_OP_OBJ(op, observer_setDispatcher);\
     /* metaprocedure */\
+    SSO_OP_OBJ(op, metaprocedure_referenceOnly);\
 	SSO_OP_OBJ(op, metaprocedure_bind);\
     /* dispatcher */\
     SSO_OP_OBJ(op, dispatcher_post);\

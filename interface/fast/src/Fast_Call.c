@@ -145,6 +145,14 @@ db_int16 Fast_Call_resolveActual(Fast_Call _this, db_function function) {
 			/* If method is virtual, it needs to be resolved at runtime */
 			_this->actualFunction = overloaded;
 			db_keep_ext(_this, overloaded, "Keep actualFunction for call-expression (metaprocedure)");
+
+			/* Validate whether metaprocedure only accepts references, and whether lvalue is a reference */
+			if(db_metaprocedure(overloaded)->referenceOnly && !Fast_MemberExpr(_this->function)->lvalue->isReference) {
+				db_id id;
+				Fast_Parser_error(yparser(), "metaprocedure '%s' accepts only reference values",
+					db_fullname(overloaded, id));
+				goto error;
+			}
 		} else {
 			db_id id;
 			Fast_Parser_error(yparser(), "no method in interface '%s' that matches signature '%s'",
@@ -256,7 +264,8 @@ db_int16 Fast_Call_construct(Fast_Call object) {
 
 	db_set(&Fast_Expression(object)->type, Fast_Variable(Fast_Object__create(object->actualFunction->returnType)));
     Fast_Parser_collect(yparser(), Fast_Expression(object)->type);
-	Fast_Expression(object)->isReference = object->actualFunction->returnsReference;
+	Fast_Expression(object)->isReference = 
+		object->actualFunction->returnsReference || object->actualFunction->returnType->real->reference;
 
     return 0;
 error:

@@ -108,6 +108,7 @@ DB_ANY(db_any);
 #define db_callback(t) ((db_callback)t)
 #define db_observer(t) ((db_observer)t)
 #define db_delegate(t) ((db_delegate)t)
+#define db_metaprocedure(t) ((db_metaprocedure)t)
 
 /* Void object */
 typedef void db_void;
@@ -290,6 +291,7 @@ DB_PROCEDURE_DEF(db_callback) {
 
 DB_PROCEDURE_DEF(db_metaprocedure) {
 	DB_EXTEND(db_function);
+    db_bool referenceOnly;
 };
 
 /* observer */

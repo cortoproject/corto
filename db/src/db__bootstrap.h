@@ -366,9 +366,9 @@ DB_STATIC_SCOPED_OBJECT(constant);
 #define DB_CALLBACK_O(parent, name, args, delegate, returnType, impl) sso_callback parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, callback), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)impl, 0, NULL, 0, {0,NULL},0}, (db_delegate)&delegate##__o.v}, VTABLE_V}
 
 /* metaprocedure object */
-#define DB_METAPROCEDURE_O(parent, name, args, returnType, impl) sso_metaprocedure parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, metaprocedure), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)impl, 0, NULL, 0, {0,NULL},0}}, VTABLE_V}
+#define DB_METAPROCEDURE_O(parent, name, args, returnType, referenceOnly, impl) sso_metaprocedure parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, metaprocedure), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)impl, 0, NULL, 0, {0,NULL},0}, referenceOnly}, VTABLE_V}
 
-#define DB_METAPROCEDURE_NAME_O(parent, name, actualName, args, returnType, impl) sso_metaprocedure parent##_##name##__o = {DB_SSO_PO_V(parent, #actualName args, metaprocedure), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)impl, 0, NULL, 0, {0,NULL},0}}, VTABLE_V}
+#define DB_METAPROCEDURE_NAME_O(parent, name, actualName, args, returnType, referenceOnly, impl) sso_metaprocedure parent##_##name##__o = {DB_SSO_PO_V(parent, #actualName args, metaprocedure), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)impl, 0, NULL, 0, {0,NULL},0}, referenceOnly}, VTABLE_V}
     
 /* member object */
 #define DB_MEMBER_O(parent, name, type, access) sso_member parent##_##name##__o = {DB_SSO_PO_V(parent, #name, member), DB_MEMBER_V(type, access, DB_DECLARED | DB_DEFINED, FALSE), VTABLE_V}
@@ -672,14 +672,14 @@ DB_CLASS_O(type, typedef, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface)
     DB_CALLBACK_O(type, _init, "(lang::type object)", type_init, int16, db_type__init);
     DB_CALLBACK_O(type, construct, "(lang::type object)", class_construct, int16, db_type_construct);
     DB_CALLBACK_O(type, destruct, "(lang::type object)", class_destruct, void, db_type_destruct);
-    DB_METAPROCEDURE_O(type, parentof, "()", object, db_type_parentof);
-    DB_METAPROCEDURE_O(type, nameof, "()", string, db_type_nameof);
-    DB_METAPROCEDURE_O(type, fullname, "()", string, db_type_fullname);
-    DB_METAPROCEDURE_O(type, relname, "(lang::object from)", string, db_type_relname);
-    DB_METAPROCEDURE_O(type, typeof, "()", type, db_type_typeof);
-    DB_METAPROCEDURE_O(type, compare, "(lang::any value)", equalityKind, db_type_compare);
-    DB_METAPROCEDURE_O(type, copy, "(lang::any value)", int16, db_type_copy);
-    DB_METAPROCEDURE_O(type, toString, "()", string, db_type_toString);
+    DB_METAPROCEDURE_O(type, parentof, "()", object, TRUE, db_type_parentof);
+    DB_METAPROCEDURE_O(type, nameof, "()", string, TRUE, db_type_nameof);
+    DB_METAPROCEDURE_O(type, fullname, "()", string, TRUE, db_type_fullname);
+    DB_METAPROCEDURE_O(type, relname, "(lang::object from)", string, TRUE, db_type_relname);
+    DB_METAPROCEDURE_O(type, typeof, "()", type, FALSE, db_type_typeof);
+    DB_METAPROCEDURE_O(type, compare, "(lang::any value)", equalityKind, FALSE, db_type_compare);
+    DB_METAPROCEDURE_O(type, copy, "(lang::any value)", int16, FALSE, db_type_copy);
+    DB_METAPROCEDURE_O(type, toString, "()", string, FALSE, db_type_toString);
 
 /* ::hyve::lang::primitive */
 DB_CLASS_O(primitive, type, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
@@ -715,7 +715,7 @@ DB_CLASS_O(collection, type, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interfa
 	DB_MEMBER_O(collection, max, uint32, DB_GLOBAL);
     DB_METHOD_O(collection, castable, "(lang::type type)", bool, TRUE, db_collection_castable);
     DB_CALLBACK_O(collection, init, "(lang::collection object)", type_init, int16, db_collection_init);
-    DB_METAPROCEDURE_O(collection, size, "()", uint32, db_collection_size);
+    DB_METAPROCEDURE_O(collection, size, "()", uint32, FALSE, db_collection_size);
 
 /* ::hyve::lang::binary */
 DB_CLASS_O(binary, primitive, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
@@ -818,18 +818,18 @@ DB_CLASS_O(array, collection, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, D
 DB_CLASS_O(sequence, collection, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_CALLBACK_O(sequence, init, "(lang::sequence object)", type_init, int16, db_sequence_init);
     DB_CALLBACK_O(sequence, construct, "(lang::sequence object)", class_construct, int16, db_sequence_construct);
-    DB_METAPROCEDURE_O(sequence, size, "(lang::uint32 size)", void, db_sequence_size);
+    DB_METAPROCEDURE_O(sequence, size, "(lang::uint32 size)", void, FALSE, db_sequence_size);
 
 /* ::hyve::lang::list */
 DB_CLASS_O(list, collection, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_CALLBACK_O(list, init, "(lang::list object)", type_init, int16, db_list_init);
     DB_CALLBACK_O(list, construct, "(lang::list object)", class_construct, int16, db_list_construct);
-    DB_METAPROCEDURE_O(list, insert, "(lang::any element)", void, db_list_insert);
-    DB_METAPROCEDURE_O(list, append, "(lang::any element)", void, db_list_append);
-    DB_METAPROCEDURE_NAME_O(list, insert_, insert, "()", any, db_list_insert_);
-    DB_METAPROCEDURE_NAME_O(list, append_, append, "()", any, db_list_append_);
-    DB_METAPROCEDURE_O(list, reverse, "()", void, db_list_reverse);
-    DB_METAPROCEDURE_O(list, clear, "()", void, db_list_clear);
+    DB_METAPROCEDURE_O(list, insert, "(lang::any element)", void, FALSE, db_list_insert);
+    DB_METAPROCEDURE_O(list, append, "(lang::any element)", void, FALSE, db_list_append);
+    DB_METAPROCEDURE_NAME_O(list, insert_, insert, "()", any, FALSE, db_list_insert_);
+    DB_METAPROCEDURE_NAME_O(list, append_, append, "()", any, FALSE, db_list_append_);
+    DB_METAPROCEDURE_O(list, reverse, "()", void, FALSE, db_list_reverse);
+    DB_METAPROCEDURE_O(list, clear, "()", void, FALSE, db_list_clear);
 
 /* ::hyve::lang::map */
 DB_CLASS_O(map, collection, DB_LOCAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
@@ -915,6 +915,7 @@ DB_PROCEDURE_O(observer, DB_OBSERVER, function, DB_LOCAL | DB_READONLY, NULL, DB
 /* ::hyve::lang::metaprocedure */
 DB_PROCEDURE_O(metaprocedure, DB_METAPROCEDURE, function, DB_GLOBAL, NULL, DB_DECLARED);
     DB_CALLBACK_O(metaprocedure, bind, "(lang::metaprocedure object)", procedure_bind, int16, db_metaprocedure_bind);
+    DB_MEMBER_O(metaprocedure, referenceOnly, bool, DB_GLOBAL);
 
 /* ::hyve::lang::member */
 DB_CLASS_NOBASE_O(member, DB_SEQUENCE_EMPTY_V(interface), DB_SSO_TYPE_ID(interface), DB_DECLARED);

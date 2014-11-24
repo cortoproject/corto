@@ -61,6 +61,7 @@ db_int16 Fast_ElementExpr_construct(Fast_MemberExpr object) {
     
     if (Fast_Expression_getType(Fast_Expression(object))->reference) {
     	Fast_Expression(object)->forceReference = TRUE;
+        Fast_Expression(object)->isReference = TRUE;
     }
 
     return 0;
