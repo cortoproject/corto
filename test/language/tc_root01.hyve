@@ -1,0 +1,19 @@
+// Test root
+bool result: true;
+void fail(string msg):
+	"tc_root01: FAIL: $msg";
+	result = false;
+
+if @:: != hyve.parentof: fail("@:: != hyve.parentof");
+
+if @::.typeof != object: fail("@::.typeof != object");
+
+if @::.typeof.nameof != "object": fail("@::.typeof.nameof != \"object\"");
+
+if @::.fullname != "::": fail("@::.fullname != \"::\"");
+
+if @::.nameof != null: fail("@::.nameof != null");
+
+if @::.parentof != null: fail("@::.parentof != null");
+
+if result: "tc_root01: OK";

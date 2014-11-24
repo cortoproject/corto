@@ -356,7 +356,10 @@ db_string db_type_nameof(db_any object) {
 	db_string result = NULL;
 
 	if (object.value) {
-		result = db_strdup(db_nameof(object.value));
+		result = db_nameof(object.value);
+        if(result) {
+            result = db_strdup(result);
+        }
 	} else {
 		result = db_strdup("null");
 	}
