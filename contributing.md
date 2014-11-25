@@ -4,7 +4,7 @@ Follow these steps to contribute to Hyve.
 
 ## Requirements
 
-As of now, Hyve can only be built in 32-bit Linux. We recommend using an Ubuntu virtual machine. The examples hereby provided for apt-get.
+As of now, Hyve can only be built in 32-bit Linux. It is recommended to use an Ubuntu virtual machine. The examples hereby provided for apt-get.
 
 Install the GNU C++ compiler.
 
@@ -12,7 +12,7 @@ Install the GNU C++ compiler.
 apt-get install g++
 ```
 
-If you want to build Hyve, install libxml2-dev; if you will only run it, libxml2 will do (which comes with every Linux distribution).
+If you want to build Hyve, install libxml2-dev; if you will only run it, libxml2 will do (this should be included in the Linux distribution).
 
 ```
 apt-get install libxml2-dev
@@ -40,26 +40,22 @@ git clone https://github.com/SanderMertens/Hyve.git
 
 ## Building
 
-From the Hyve root directory, run the command:
-
-```
-make
-```
-
-Now add the `hyve` command to your environment:
-
+Setup the environment for building and running Hyve:
 ```
 source release.com
 ```
 
-Now you can use the command `hyve` to run file
+From the Hyve root directory, run the command:
+```
+make
+```
 
+Now you can use the `hyve` interpreter to run a hyve script:
 ```
 hyve filename.hyve
 ```
 
-You can run test cases using:
-
+You can run the language test cases with the following command:
 ```
 test/language/run.sh
 ```
@@ -70,7 +66,7 @@ You should get `OK` or `FAIL: not implemented` for all test cases.
 
 Modify any files. Then build again (`make` from the root directory). Run test cases.
 
-If your changes include the core, you may want to run `make clean all` instead of `make`.
+If your changes include the core types you must run `make clean all` instead of just `make`.
 
 When committing your changes:
 - Make sure that all tests pass.
