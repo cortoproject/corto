@@ -20,11 +20,14 @@ if !cl.checkAttr(attr::ATTR_SCOPED): fail("!cl.checkAttr(state::SCOPED)");
 if cl.define(): fail("failed to define class Point");
 if !cl.checkState(state::DEFINED): fail("!cl.checkState(state::DEFINED)");
 if !cl.instanceof(class): fail("!cl.instanceof(class)");
+if cl.nameof != "Point": fail("cl.nameof != \"Point\"");
 
-// Create an instance with the class=
+// Create an instance with the class
 var object o = @::.declare("q", class(cl));
 if !o: fail("declaration of instance o failed");
 if o.define(): fail("failed to define instance o");
+if o.nameof != "q": fail("o.nameof != \"q\"");
+if !o.instanceof(class(cl)): fail("!o.instanceof(cl)");
 
 // Test resolving objects
 var object r = @::.resolve("Point");

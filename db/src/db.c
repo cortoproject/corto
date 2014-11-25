@@ -131,7 +131,7 @@ db_threadKey DB_KEY_WAIT_ADMIN;
     SSO_OP_PRIM(op, parameter);\
     SSO_OP_VOID(op, dispatcher);\
     SSO_OP_PROCEDURETYPE(op);\
-	SSO_OP_CLASSTYPE(op);\
+	SSO_OP_CLASSTYPE(op);
 
 #define SSO_OBJECT(obj) DB_OFFSET(&obj##__o, sizeof(db_SSO))
 #define SSO_OP_OBJ(op, obj) op(SSO_OBJECT(obj))
@@ -336,8 +336,10 @@ db_threadKey DB_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, type_compatible);\
     SSO_OP_OBJ(op, type_resolveProcedure);\
     SSO_OP_OBJ(op, type_castable);\
+    /* The extra '_' disambiguates between the type::init delegate and this callback */\
     SSO_OP_OBJ(op, type__init);\
     SSO_OP_OBJ(op, type_construct);\
+    /* The extra '_' disambiguates between the type::destruct metaprocedure and this callback */\
     SSO_OP_OBJ(op, type__destruct);\
     SSO_OP_OBJ(op, type_parentof);\
     SSO_OP_OBJ(op, type_nameof);\

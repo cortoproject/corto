@@ -30,8 +30,10 @@ db_bool db_type_compatible_v(db_type _this, db_type type);
 db_int16 db_type_init(db_type _this, db_object object);
 
 /* Callbacks */
+/* The extra '_' disambiguates between the type::init delegate and this callback */
 db_int16 db_type__init(db_type object);
 db_int16 db_type_construct(db_type object);
+/* The extra '_' disambiguates between the type::destruct metaprocedure and this callback */
 void db_type__destruct(db_type object);
 
 /* Metaprocedures */
