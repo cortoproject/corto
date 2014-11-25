@@ -35,6 +35,7 @@ db_int16 Fast_CastExpr_construct(Fast_CastExpr object) {
 					if (db_type_castable(rvalueType, db_type(lvalue))) {
                         /* TODO: db_assert(!db_type_compatible(rvalueType, db_type(lvalue)), "%d: redundant cast inserted", yparser()->line); */
 						Fast_Expression(object)->type = (Fast_Variable)object->lvalue;
+                        Fast_Expression(object)->isReference = db_type(lvalue)->reference;
 					} else {
                         db_id id1, id2;
                         Fast_Parser_error(yparser(), "cannot cast from type '%s' to '%s'",

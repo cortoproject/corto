@@ -779,8 +779,8 @@ db_object db_new_ext(db_object src, db_typedef type, db_uint8 attrs, db_string c
 		/* Initially, an object is valid and declared */
 		o->attrs.state = DB_VALID | DB_DECLARED;
 
-		/* void objects are instantly defined because they have no value. */
-		if ((type->real->kind == DB_VOID) && !type->real->reference) {
+		/* void objects, primitives and references are instantly defined because they have no value. */
+		if ((type->real->kind == DB_VOID) || (type->real->kind == DB_PRIMITIVE)) {
 			o->attrs.state |= DB_DEFINED;
 		}
 
@@ -3466,5 +3466,13 @@ db_int16 db_valueCopy(db_value *dst, db_value *src) {
     data.value = *dst;
     result = db_serializeValue(&s, src, &data);
     return result;
+}
+
+db_object db_hyve_new(db_typedef type) {
+    return db_new(type);
+}
+
+db_object db_hyve__new(db_typedef type, db_attr attributes) {
+    return db_new_ext(NULL, type, attributes, NULL);
 }
 

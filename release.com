@@ -1,6 +1,6 @@
-export LYRA_HOME=`pwd`
-export LD_LIBRARY_PATH=$LYRA_HOME/bin:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=$LYRA_HOME/generator/bin:$LD_LIBRARY_PATH
-export PATH=$LYRA_HOME/bin:$PATH
-export PATH=$LYRA_HOME/scripts:$PATH
+export HYVE_HOME=`pwd`
+export LD_LIBRARY_PATH=$HYVE_HOME/bin:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$HYVE_HOME/generator/bin:$LD_LIBRARY_PATH
+export PATH=$HYVE_HOME/bin:$PATH
+export PATH=$HYVE_HOME/scripts:$PATH
 

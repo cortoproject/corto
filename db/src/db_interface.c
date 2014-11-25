@@ -262,7 +262,7 @@ void db_interface_destruct(db_interface object) {
 		object->methods.buffer = NULL;
     }
 
-	db_type_destruct(db_type(object));
+	db_type__destruct(db_type(object));
 }
 
 db_int16 db__interface_bindMember(db_interface _this, db_member o) {

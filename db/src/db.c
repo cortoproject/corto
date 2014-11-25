@@ -131,13 +131,15 @@ db_threadKey DB_KEY_WAIT_ADMIN;
     SSO_OP_PRIM(op, parameter);\
     SSO_OP_VOID(op, dispatcher);\
     SSO_OP_PROCEDURETYPE(op);\
-	SSO_OP_CLASSTYPE(op);
+	SSO_OP_CLASSTYPE(op);\
 
 #define SSO_OBJECT(obj) DB_OFFSET(&obj##__o, sizeof(db_SSO))
 #define SSO_OP_OBJ(op, obj) op(SSO_OBJECT(obj))
 
 /* 1st degree objects (members, methods and constants) */
 #define SSO_OP_OBJECT(op)\
+    SSO_OP_OBJ(op, hyve_new);\
+    SSO_OP_OBJ(op, hyve__new);\
 	SSO_OP_OBJ(op, type_init);\
     SSO_OP_OBJ(op, class_construct);\
     SSO_OP_OBJ(op, class_destruct);\
@@ -336,9 +338,16 @@ db_threadKey DB_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, type_castable);\
     SSO_OP_OBJ(op, type__init);\
     SSO_OP_OBJ(op, type_construct);\
-    SSO_OP_OBJ(op, type_destruct);\
+    SSO_OP_OBJ(op, type__destruct);\
     SSO_OP_OBJ(op, type_parentof);\
     SSO_OP_OBJ(op, type_nameof);\
+    SSO_OP_OBJ(op, type_declare);\
+    SSO_OP_OBJ(op, type_destruct);\
+    SSO_OP_OBJ(op, type_define);\
+    SSO_OP_OBJ(op, type_resolve);\
+    SSO_OP_OBJ(op, type_lookup);\
+    SSO_OP_OBJ(op, type_checkAttr);\
+    SSO_OP_OBJ(op, type_checkState);\
     SSO_OP_OBJ(op, type_typeof);\
     SSO_OP_OBJ(op, type_fullname);\
     SSO_OP_OBJ(op, type_relname);\
@@ -682,6 +691,8 @@ int db_start(void){
     db_type(db_int32_o)->size = sizeof(db_int32);
     db_type(db_uint32_o)->size = sizeof(db_uint32);
     db_type(db_any_o)->size = sizeof(db_any);
+    db_type(db_state_o)->size = sizeof(db_state);
+    db_type(db_attr_o)->size = sizeof(db_attr);
 
     /* We need to bind the methods required for initialization now because the next
      * bootstrap step will use them. */
@@ -726,7 +737,7 @@ int db_start(void){
         id = db_callRegisterBinding(db_call_vm, NULL, NULL, (db_callDestructHandler)db_callDestruct_vm);
         db_assert(id == 2, "Vm-binding did not receive binding-id 2.");
     }
-    
+   
     /* Always randomize seed */
     srand (time(NULL));
 

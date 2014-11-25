@@ -1,1 +1,1 @@
-for f in *.hyve; do hyve $f; done
+for f in $HYVE_HOME/test/language/*.hyve; do hyve $f; done

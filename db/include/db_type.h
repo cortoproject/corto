@@ -19,8 +19,6 @@ db_uint32 db_type_sizeof(db_type _this);
 db_uint16 db_type_alignmentof(db_type _this);
 db_bool db_type_compatible(db_type _this, db_type type);
 db_bool db_type_castable(db_type _this, db_type type);
-db_equalityKind db_type_compare(db_any _this, db_any value);
-db_int16 db_type_copy(db_any _this, db_any value);
 db_function db_type_resolveProcedure(db_type _this, db_string name);
 db_int16 db_type_bindMetaprocedure(db_type _this, db_metaprocedure procedure);
 
@@ -34,14 +32,23 @@ db_int16 db_type_init(db_type _this, db_object object);
 /* Callbacks */
 db_int16 db_type__init(db_type object);
 db_int16 db_type_construct(db_type object);
-void db_type_destruct(db_type object);
+void db_type__destruct(db_type object);
 
 /* Metaprocedures */
 db_string db_type_nameof(db_any object);
-db_type db_type_typeof(db_any object);
+db_object db_type_parentof(db_any object);
 db_string db_type_fullname(db_any object);
 db_string db_type_relname(db_any object, db_object from);
-db_object db_type_parentof(db_any object);
+db_object db_type_declare(db_any object, db_string name, db_typedef type);
+db_int16 db_type_define(db_any object);
+void db_type_destruct(db_any object);
+db_object db_type_resolve(db_any object, db_string name);
+db_object db_type_lookup(db_any object, db_string name);
+db_bool db_type_checkAttr(db_any object, db_attr attributes);
+db_bool db_type_checkState(db_any object, db_state state);
+db_type db_type_typeof(db_any object);
+db_equalityKind db_type_compare(db_any _this, db_any value);
+db_int16 db_type_copy(db_any _this, db_any value);
 db_string db_type_toString(db_any object);
 
 db_int16 db_template_construct(db_template object);

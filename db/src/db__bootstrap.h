@@ -140,6 +140,8 @@ extern db_bool db_type_compatible_v(db_type _this, db_type type);
 extern db_bool db_type_castable_v(db_type _this, db_type type);
 extern db_member db_interface_resolveMember_v(db_interface _this, db_string name);
 extern db_member db_interface_bindMethod_v(db_interface _this, db_string name);
+extern db_object db_hyve_new(db_typedef type);
+extern db_object db_hyve__new(db_typedef type, db_attr attributes);
 
 #ifdef __cplusplus
 extern "C" {
@@ -480,6 +482,9 @@ DB_OBJECT_O_SCOPE(hyve, lang);
 DB_OBJECT_O_SCOPE(hyve, serialization);
 
 db_object hyve_o = DB_OFFSET(&hyve__o.o.o, sizeof(db__object));
+    DB_FUNCTION_OO_O(hyve, new, "(lang::typedef type)", object, db_hyve_new);
+    DB_FUNCTION_OVERLOAD_OO_O(hyve, _new, "new(lang::typedef type,lang::attr attributes)", object, db_hyve__new);
+
 db_object hyve_lang_o = DB_OFFSET(&hyve_lang__o.o.o, sizeof(db__object));
 
 /* Primitives */
@@ -671,11 +676,18 @@ DB_CLASS_O(type, typedef, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface)
     DB_DELEGATE_O(type, init, "(lang::object object)", int16);
     DB_CALLBACK_O(type, _init, "(lang::type object)", type_init, int16, db_type__init);
     DB_CALLBACK_O(type, construct, "(lang::type object)", class_construct, int16, db_type_construct);
-    DB_CALLBACK_O(type, destruct, "(lang::type object)", class_destruct, void, db_type_destruct);
+    DB_CALLBACK_O(type, _destruct, "(lang::type object)", class_destruct, void, db_type__destruct);
     DB_METAPROCEDURE_O(type, parentof, "()", object, TRUE, db_type_parentof);
     DB_METAPROCEDURE_O(type, nameof, "()", string, TRUE, db_type_nameof);
     DB_METAPROCEDURE_O(type, fullname, "()", string, TRUE, db_type_fullname);
     DB_METAPROCEDURE_O(type, relname, "(lang::object from)", string, TRUE, db_type_relname);
+    DB_METAPROCEDURE_O(type, declare, "(lang::string name,lang::typedef type)", object, TRUE, db_type_declare);
+    DB_METAPROCEDURE_O(type, define, "()", int16, TRUE, db_type_define);
+    DB_METAPROCEDURE_O(type, destruct, "()", void, TRUE, db_type_destruct);
+    DB_METAPROCEDURE_O(type, resolve, "(lang::string name)", object, TRUE, db_type_resolve);
+    DB_METAPROCEDURE_O(type, lookup, "(lang::string name)", object, TRUE, db_type_lookup);
+    DB_METAPROCEDURE_O(type, checkAttr, "(lang::attr attributes)", bool, TRUE, db_type_checkAttr);
+    DB_METAPROCEDURE_O(type, checkState, "(lang::state state)", bool, TRUE, db_type_checkState);
     DB_METAPROCEDURE_O(type, typeof, "()", type, FALSE, db_type_typeof);
     DB_METAPROCEDURE_O(type, compare, "(lang::any value)", equalityKind, FALSE, db_type_compare);
     DB_METAPROCEDURE_O(type, copy, "(lang::any value)", int16, FALSE, db_type_copy);

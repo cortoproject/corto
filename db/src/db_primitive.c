@@ -104,7 +104,7 @@ db_int16 db_primitive_construct(db_primitive object) {
 }
 
 void db_primitive_destruct(db_primitive object) {
-	db_type_destruct(db_type(object));
+	db_type__destruct(db_type(object));
 }
 
 /* virtual primitive::castable */

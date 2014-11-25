@@ -116,7 +116,7 @@ void db_array_destruct(db_array object) {
     object->elementType = NULL;
     db_free_ext(object, db_collection(object)->elementType, "super.elementType");
     db_collection(object)->elementType = NULL;
-    db_type_destruct(db_type(object));
+    db_type__destruct(db_type(object));
 }
 
 /* class::construct -> sequence::construct */

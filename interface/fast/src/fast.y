@@ -160,7 +160,7 @@ Fast_Expression Fast_declarationSeqDo(Fast_Variable type, Fast_ParserDeclaration
 /* Syntax tree nodes */
 %type <Fast>
 	statement statements
-	expr literal_expr primary_expr postfix_expr cast_expr unary_expr multiplicative_expr additive_expr shift_expr
+	expr literal_expr primary_expr postfix_expr unary_expr multiplicative_expr additive_expr shift_expr
 	boolean_expr equality_expr and_expr xor_expr or_expr logical_and_expr logical_or_expr assignment_expr
 	comma_expr bracket_expr conditional_expr wait_expr declaration declaration_expr declaration_ref
     function_declaration
@@ -615,6 +615,8 @@ any_id
     | '@' LOR {$$ = "or";}
     | '@' LNOT {$$ = "not";}
     | '@' SCOPE {$$ = "::";}
+    | KW_DECLARE {$$ = "declare";}
+    | KW_DEFINE {$$ = "define";}
     ;
 
 /* ======================================================================== */
@@ -681,7 +683,6 @@ observer_statement
 
 observer_declaration
     : observer_dispatch event_mask assignment_expr          {$$=NULL; Fast_Parser_observerDeclaration(yparser(), NULL, $3, $2, $1); fast_op;}
-    | observer_dispatch assignment_expr                     {$$=NULL; Fast_Parser_observerDeclaration(yparser(), NULL, $2, DB_ON_UPDATE, $1); fast_op;}
     ;
 
 observer_dispatch

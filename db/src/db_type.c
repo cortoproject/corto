@@ -332,7 +332,7 @@ db_int16 db_type_construct(db_type object) {
 }
 
 /* class::destruct -> type::destruct */
-void db_type_destruct(db_type object) {
+void db_type__destruct(db_type object) {
     db_uint32 i;
 
     object->_parent.type = NULL;
@@ -440,7 +440,35 @@ db_string db_type_toString(db_any object) {
     return result;
 }
 
+db_object db_type_declare(db_any object, db_string name, db_typedef type) {
+    db_object result = db_declare(object.value, name, type);
+    db_keep(result);
+    return result;
+}
 
+void db_type_destruct(db_any object) {
+    db_destruct(object.value);
+}
+
+db_int16 db_type_define(db_any object) {
+    return db_define(object.value);
+}
+
+db_object db_type_resolve(db_any object, db_string name) {
+    return db_resolve(object.value, name);
+}
+
+db_object db_type_lookup(db_any object, db_string name) {
+    return db_lookup(object.value, name);
+}
+
+db_bool db_type_checkAttr(db_any object, db_attr attributes) {
+    return db_checkAttr(object.value, attributes);
+}
+
+db_bool db_type_checkState(db_any object, db_state state) {
+    return db_checkState(object.value, state);
+}
 
 
 
