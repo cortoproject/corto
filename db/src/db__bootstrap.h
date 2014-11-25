@@ -683,12 +683,14 @@ DB_CLASS_O(type, typedef, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface)
     DB_METAPROCEDURE_O(type, relname, "(lang::object from)", string, TRUE, db_type_relname);
     DB_METAPROCEDURE_O(type, declare, "(lang::string name,lang::typedef type)", object, TRUE, db_type_declare);
     DB_METAPROCEDURE_O(type, define, "()", int16, TRUE, db_type_define);
+    DB_METAPROCEDURE_O(type, invalidate, "()", void, TRUE, db_type_invalidate);
     DB_METAPROCEDURE_O(type, destruct, "()", void, TRUE, db_type_destruct);
     DB_METAPROCEDURE_O(type, resolve, "(lang::string name)", object, TRUE, db_type_resolve);
     DB_METAPROCEDURE_O(type, lookup, "(lang::string name)", object, TRUE, db_type_lookup);
     DB_METAPROCEDURE_O(type, checkAttr, "(lang::attr attributes)", bool, TRUE, db_type_checkAttr);
     DB_METAPROCEDURE_O(type, checkState, "(lang::state state)", bool, TRUE, db_type_checkState);
     DB_METAPROCEDURE_O(type, typeof, "()", type, FALSE, db_type_typeof);
+    DB_METAPROCEDURE_O(type, instanceof, "(lang::typedef type)", bool, TRUE, db_type_instanceof);
     DB_METAPROCEDURE_O(type, compare, "(lang::any value)", equalityKind, FALSE, db_type_compare);
     DB_METAPROCEDURE_O(type, copy, "(lang::any value)", int16, FALSE, db_type_copy);
     DB_METAPROCEDURE_O(type, toString, "()", string, FALSE, db_type_toString);

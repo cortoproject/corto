@@ -344,11 +344,13 @@ db_threadKey DB_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, type_declare);\
     SSO_OP_OBJ(op, type_destruct);\
     SSO_OP_OBJ(op, type_define);\
+    SSO_OP_OBJ(op, type_invalidate);\
     SSO_OP_OBJ(op, type_resolve);\
     SSO_OP_OBJ(op, type_lookup);\
     SSO_OP_OBJ(op, type_checkAttr);\
     SSO_OP_OBJ(op, type_checkState);\
     SSO_OP_OBJ(op, type_typeof);\
+    SSO_OP_OBJ(op, type_instanceof);\
     SSO_OP_OBJ(op, type_fullname);\
     SSO_OP_OBJ(op, type_relname);\
 	SSO_OP_OBJ(op, type_compare);\

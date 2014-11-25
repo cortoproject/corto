@@ -405,6 +405,10 @@ db_type db_type_typeof(db_any object) {
     return result;
 }
 
+db_bool db_type_instanceof(db_any object, db_typedef type) {
+    return db_instanceof(type, object.value);
+}
+
 db_object db_type_parentof(db_any object) {
     db_string result = NULL;
 
@@ -452,6 +456,10 @@ void db_type_destruct(db_any object) {
 
 db_int16 db_type_define(db_any object) {
     return db_define(object.value);
+}
+
+void db_type_invalidate(db_any object) {
+    db_invalidate(object.value);
 }
 
 db_object db_type_resolve(db_any object, db_string name) {

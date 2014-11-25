@@ -19,6 +19,7 @@ if !cl.checkAttr(attr::ATTR_SCOPED): fail("!cl.checkAttr(state::SCOPED)");
 // Define class and check defined state
 if cl.define(): fail("failed to define class Point");
 if !cl.checkState(state::DEFINED): fail("!cl.checkState(state::DEFINED)");
+if !cl.instanceof(class): fail("!cl.instanceof(class)");
 
 // Create an instance with the class=
 var object o = @::.declare("q", class(cl));
@@ -41,5 +42,9 @@ if r != o: fail("r != q #2");
 var object n = new(uint32);
 if !n: fail("!n");
 if !n.checkState(state::DEFINED): fail("!n.checkState(state::DEFINED)"); // primitives are instantly defined
+if !n.instanceof(uint32): fail("!n.instanceof(uint32)");
+if !n.checkState(state::VALID): fail("!n.checkState(state::VALID");
+n.invalidate();
+if n.checkState(state::VALID): fail("n.checkState(state::VALID");
 
 if result: "tc_metaprocedure01: OK";
