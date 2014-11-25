@@ -8,10 +8,9 @@ SOURCES =	tc_event__api.c \
 
 INCLUDE = 	include \
 			$(BUILDHOME)/db/include \
-			$(BUILDHOME)/public/c/include \
-			$(BUILDHOME)/infra/include
+			$(BUILDHOME)/public/c/include
 
-LIBS	= lang infra 
+LIBS	= lang 
 LIBPATH	=	
 
 include $(BUILD)/executable.makefile

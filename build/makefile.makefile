@@ -16,12 +16,15 @@ LINKPATH = $(LIBPATH:%=-L%)
 LINK = -L$(BIN) $(LINKPATH) $(LIBS:%=-l%)
 
 obj/%.o: src/%.c
+	@mkdir -p obj
 	$(CC) $(CFLAGS) $(INCLUDES) $< -c -o $@
 
 asm/%.o: src/%.s
+	@mkdir -p asm
 	$(CC) $(CFLAGS) $(INCLUDES) $< -c -o $@
 
 %.c.gcov: src/%.c
+	@mkdir -p gcov
 	gcov --object-directory obj $<
 	
 gcov/%.c.gcov: %.c.gcov

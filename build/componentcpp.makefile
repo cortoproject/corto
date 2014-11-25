@@ -6,6 +6,6 @@ $(TARGET_OBJECT): $(OBJECTS)
 	$(CC) $(COVFLAGS) $(OBJECTS) $(LINK) -shared -o $@
 	
 clean: 
-	@rm -f obj/$(PPREFIX)/*
-	@rm -f gcov/*
-	@rm -f $(BIN)/$(TARGET) >/dev/null
+	@rm -rf obj/$(PPREFIX)/*
+	@rm -rf gcov/*
+	@rm -rf $(BIN)/$(TARGET) >/dev/null
