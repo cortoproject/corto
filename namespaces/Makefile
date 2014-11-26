@@ -3,13 +3,11 @@ all:
 	@make -C io
 	@make -C os
 	@make -C math
-	# @make -C Sigar
 	
 clean:
 	@make clean -C io
 	@make clean -C os
 	@make clean -C math
-	# @make clean -C Sigar
 	
 gcov:
 	@make gcov -C io
@@ -21,4 +19,3 @@ splint:
 	@make splint -C io
 	@make splint -C os
 	@make splint -C math
-	# @make splint -C Sigar
