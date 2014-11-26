@@ -3,7 +3,7 @@ TARGET =	io
 
 SOURCES	=	io.c \
 			io__meta.c \
-			io_File.c
+			io_file.c
 
 INCLUDE = 	include \
 			$(BUILDHOME)/db/include \
