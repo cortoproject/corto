@@ -4,27 +4,27 @@ Follow these steps to contribute to Hyve.
 
 ## Requirements
 
-As of now, Hyve can only be built in 32-bit Linux. It is recommended to use an Ubuntu virtual machine. The examples hereby provided for apt-get.
+As of now, Hyve can only be built in 32-bit Linux. It is recommended to use an Ubuntu virtual machine. The examples hereby are provided for apt-get.
 
-Install the GNU C++ compiler.
+Install the GNU C++ compiler (required to build the C++ language binding).
 
 ```
 apt-get install g++
 ```
 
-If you want to build Hyve, install libxml2-dev; if you will only run it, libxml2 will do (this should be included in the Linux distribution).
+Install the libxml2 development headers (required for building the XML front end).
 
 ```
 apt-get install libxml2-dev
 ```
 
-Install Flex, the lexer.
+Install Flex (the lexer used by the language interpreter).
 
 ```
 apt-get install flex
 ```
 
-Install Bison, the parser.
+Install Bison (the parser used by the language interpreter).
 
 ```
 apt-get install bison
@@ -50,16 +50,20 @@ From the Hyve root directory, run the command:
 make
 ```
 
-Now you can use the `hyve` interpreter to run a hyve script:
+Now you can use the hyve interpreter to run a hyve script:
 ```
 hyve filename.hyve
 ```
 
-You can run the language test cases with the following command:
+You can also start the hyve shell which allows exploring the object store:
+```
+dbsh
+```
+
+To validate that your build is sound run the testsuite with the following command:
 ```
 test/language/run.sh
 ```
-
 You should get `OK` or `FAIL: not implemented` for all test cases.
 
 ## Making changes
