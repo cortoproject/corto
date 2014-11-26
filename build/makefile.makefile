@@ -1,5 +1,4 @@
 # default makefile
-CC = clang
 IFLAGS	= -O3 -march=native -xT -unroll -fp-model fast=2 -rcd -no-prec-div
 OFLAGS	= -O0
 # COVFLAGS = -fprofile-arcs -ftest-coverage

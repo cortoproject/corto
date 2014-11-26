@@ -9,7 +9,7 @@ all:
 	@make -C tools
 	@make -C generator
 	@make -C interface
-	@make -C public
+#	@make -C public
 	@make -C namespaces
 	@make -C test
 	
@@ -20,7 +20,7 @@ clean:
 	@make clean -C generator
 	@make clean -C interface
 	@make clean -C namespaces
-	@make clean -C public
+#	@make clean -C public
 	@make clean -C test
 	
 gcov:
@@ -30,7 +30,7 @@ gcov:
 	@make gcov -C generator
 	@make gcov -C interface
 	@make gcov -C namespaces
-	@make gcov -C public
+#	@make gcov -C public
 	@make gcov -C test
 	
 splint:
