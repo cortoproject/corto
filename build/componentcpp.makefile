@@ -3,6 +3,7 @@ TARGET_OBJECT = $(BIN)/$(dir $(TARGET))lib$(notdir $(TARGET)).so
 include $(BUILD)/makefilecpp.makefile
 
 $(TARGET_OBJECT): $(OBJECTS)
+	mkdir -p $(dir $(TARGET_OBJECT))
 	$(CC) $(COVFLAGS) $(OBJECTS) $(LINK) -shared -o $@
 	
 clean: 
