@@ -201,7 +201,7 @@ int db_libraryLoader(db_string _file, void* udata) {
 	    db_string err;
         db_string Path = getenv("LYRA_PATH");
 	    err = db_strdup(db_dlError());
-	    length = (int)filename - (int)file;
+	    length = (db_word)filename - (db_word)file;
         memcpy(path, file, length);
         path[length]='\0';
         if (length) {

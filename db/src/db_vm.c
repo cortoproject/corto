@@ -56,7 +56,7 @@ typedef struct db_stringConcatCache {
 }db_stringConcatCache;
 
 /* Translation */
-#define toJump(in) (((int32_t)&&in))
+#define toJump(in) (((intptr_t)&&in))
 
 /* Program control */
 #define go() goto *(void*)(c.pc->op);

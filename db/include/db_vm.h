@@ -320,12 +320,12 @@ typedef union db_vmParameter16 {
         uint16_t _2;
     } b;
     uint16_t s;
-    uint32_t w;
+    intptr_t w;
 }db_vmParameter16;
 
 typedef union db_vmParameter {
     db_vmParameter16 s;
-    uint32_t w;
+    intptr_t w;
 }db_vmParameter;
 
 typedef struct db_vmOpAddr {
@@ -334,7 +334,7 @@ typedef struct db_vmOpAddr {
 }db_vmOpAddr;
 
 typedef struct db_vmOp {
-    uint32_t op; /* direct jump to address of next operation */
+    intptr_t op; /* direct jump to address of next operation */
     db_vmParameter16 ic;
     db_vmParameter lo;
     db_vmParameter hi;

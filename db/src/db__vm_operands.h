@@ -10,7 +10,7 @@
 
 typedef uint8_t     B_t;
 typedef uint16_t    S_t;
-typedef uint32_t    L_t;
+typedef uintptr_t   L_t;
 typedef uint64_t    D_t;
 
 /* Signed numbers */
