@@ -1,7 +1,6 @@
 /* Fast_Template.c
  *
- *  Generated on Nov 18 2014
- *    This file contains the implementation for the generated interface.
+ * This file contains the implementation for the generated interface.
  *
  *    Don't mess with the begin and end tags, since these will ensure that modified
  *    code in interface functions isn't replaced when code is re-generated.

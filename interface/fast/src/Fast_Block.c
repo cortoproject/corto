@@ -1,7 +1,6 @@
 /* Fast_Block.c
  *
- *  Generated on Nov 18 2014
- *    This file contains the implementation for the generated interface.
+ * This file contains the implementation for the generated interface.
  *
  *    Don't mess with the begin and end tags, since these will ensure that modified
  *    code in interface functions isn't replaced when code is re-generated.
@@ -209,37 +208,6 @@ void Fast_Block_setFunction(Fast_Block _this, db_function function) {
 /* $end */
 }
 
-/* virtual ::hyve::Fast::Block::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_Block_toIc(Fast_Block _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-    static db_uint32 _methodId;
-    db_method _method;
-    db_ic _result;
-    db_interface _abstract;
-
-    _abstract = db_interface(db_typeof(_this));
-
-    /* Determine methodId once, then cache it for subsequent calls. */
-    if (!_methodId) {
-        _methodId = db_interface_resolveMethodId(_abstract, "toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)");
-    }
-    db_assert(_methodId, "virtual method 'toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)' not found in abstract '%s'", db_nameof(_abstract));
-
-    /* Lookup method-object. */
-    _method = db_interface_resolveMethodById(_abstract, _methodId);
-    db_assert(_method != NULL, "unresolved method '%s::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)@%d'", db_nameof(_this), _methodId);
-
-    /* Call method directly if it's a C-function. */
-    if (_method->_parent.kind == DB_PROCEDURE_CDECL) {
-        db_assert(_method->_parent.impl, "missing implementation for '%s::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.", db_nameof(_this));
-        _result = ((db_ic(*)(Fast_Block, db_icProgram , db_icStorage , db_bool ))_method->_parent.impl)(_this, program, storage, stored);
-    } else {
-        /* Function is implemented in another language. */
-        db_call(db_function(_method), &_result, _this, program, storage, stored);
-    }
-    
-    return _result;
-}
-
 /* ::hyve::Fast::Block::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Block_toIc_v(Fast_Block _this, db_icProgram program, db_icStorage storage, db_bool stored) {
 /* $begin(::hyve::Fast::Block::toIc) */
@@ -259,37 +227,6 @@ db_ic Fast_Block_toIc_v(Fast_Block _this, db_icProgram program, db_icStorage sto
 
 	return (db_ic)scope;
 /* $end */
-}
-
-/* virtual ::hyve::Fast::Block::toIcBody(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_Block_toIcBody(Fast_Block _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-    static db_uint32 _methodId;
-    db_method _method;
-    db_ic _result;
-    db_interface _abstract;
-
-    _abstract = db_interface(db_typeof(_this));
-
-    /* Determine methodId once, then cache it for subsequent calls. */
-    if (!_methodId) {
-        _methodId = db_interface_resolveMethodId(_abstract, "toIcBody(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)");
-    }
-    db_assert(_methodId, "virtual method 'toIcBody(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)' not found in abstract '%s'", db_nameof(_abstract));
-
-    /* Lookup method-object. */
-    _method = db_interface_resolveMethodById(_abstract, _methodId);
-    db_assert(_method != NULL, "unresolved method '%s::toIcBody(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)@%d'", db_nameof(_this), _methodId);
-
-    /* Call method directly if it's a C-function. */
-    if (_method->_parent.kind == DB_PROCEDURE_CDECL) {
-        db_assert(_method->_parent.impl, "missing implementation for '%s::toIcBody(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.", db_nameof(_this));
-        _result = ((db_ic(*)(Fast_Block, db_icProgram , db_icStorage , db_bool ))_method->_parent.impl)(_this, program, storage, stored);
-    } else {
-        /* Function is implemented in another language. */
-        db_call(db_function(_method), &_result, _this, program, storage, stored);
-    }
-    
-    return _result;
 }
 
 /* ::hyve::Fast::Block::toIcBody(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */

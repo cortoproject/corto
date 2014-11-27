@@ -1,7 +1,6 @@
 /* Fast_Initializer.c
  *
- *  Generated on Nov 18 2014
- *    This file contains the implementation for the generated interface.
+ * This file contains the implementation for the generated interface.
  *
  *    Don't mess with the begin and end tags, since these will ensure that modified
  *    code in interface functions isn't replaced when code is re-generated.
@@ -211,37 +210,6 @@ db_type Fast_Initializer_currentType(Fast_Initializer _this) {
 /* $end */
 }
 
-/* virtual ::hyve::Fast::Initializer::define() */
-db_int16 Fast_Initializer_define(Fast_Initializer _this) {
-    static db_uint32 _methodId;
-    db_method _method;
-    db_int16 _result;
-    db_interface _abstract;
-
-    _abstract = db_interface(db_typeof(_this));
-
-    /* Determine methodId once, then cache it for subsequent calls. */
-    if (!_methodId) {
-        _methodId = db_interface_resolveMethodId(_abstract, "define()");
-    }
-    db_assert(_methodId, "virtual method 'define()' not found in abstract '%s'", db_nameof(_abstract));
-
-    /* Lookup method-object. */
-    _method = db_interface_resolveMethodById(_abstract, _methodId);
-    db_assert(_method != NULL, "unresolved method '%s::define()@%d'", db_nameof(_this), _methodId);
-
-    /* Call method directly if it's a C-function. */
-    if (_method->_parent.kind == DB_PROCEDURE_CDECL) {
-        db_assert(_method->_parent.impl, "missing implementation for '%s::define()'.", db_nameof(_this));
-        _result = ((db_int16(*)(Fast_Initializer))_method->_parent.impl)(_this);
-    } else {
-        /* Function is implemented in another language. */
-        db_call(db_function(_method), &_result, _this);
-    }
-    
-    return _result;
-}
-
 /* ::hyve::Fast::Initializer::define() */
 db_int16 Fast_Initializer_define_v(Fast_Initializer _this) {
 /* $begin(::hyve::Fast::Initializer::define) */
@@ -298,37 +266,6 @@ db_uint16 Fast_Initializer_initFrame(Fast_Initializer _this) {
 /* $end */
 }
 
-/* virtual ::hyve::Fast::Initializer::member(lang::string name) */
-db_int32 Fast_Initializer_member(Fast_Initializer _this, db_string name) {
-    static db_uint32 _methodId;
-    db_method _method;
-    db_int32 _result;
-    db_interface _abstract;
-
-    _abstract = db_interface(db_typeof(_this));
-
-    /* Determine methodId once, then cache it for subsequent calls. */
-    if (!_methodId) {
-        _methodId = db_interface_resolveMethodId(_abstract, "member(lang::string name)");
-    }
-    db_assert(_methodId, "virtual method 'member(lang::string name)' not found in abstract '%s'", db_nameof(_abstract));
-
-    /* Lookup method-object. */
-    _method = db_interface_resolveMethodById(_abstract, _methodId);
-    db_assert(_method != NULL, "unresolved method '%s::member(lang::string name)@%d'", db_nameof(_this), _methodId);
-
-    /* Call method directly if it's a C-function. */
-    if (_method->_parent.kind == DB_PROCEDURE_CDECL) {
-        db_assert(_method->_parent.impl, "missing implementation for '%s::member(lang::string name)'.", db_nameof(_this));
-        _result = ((db_int32(*)(Fast_Initializer, db_string ))_method->_parent.impl)(_this, name);
-    } else {
-        /* Function is implemented in another language. */
-        db_call(db_function(_method), &_result, _this, name);
-    }
-    
-    return _result;
-}
-
 /* ::hyve::Fast::Initializer::member(lang::string name) */
 db_int32 Fast_Initializer_member_v(Fast_Initializer _this, db_string name) {
 /* $begin(::hyve::Fast::Initializer::member) */
@@ -366,37 +303,6 @@ error:
 /* $end */
 }
 
-/* virtual ::hyve::Fast::Initializer::next() */
-db_int16 Fast_Initializer_next(Fast_Initializer _this) {
-    static db_uint32 _methodId;
-    db_method _method;
-    db_int16 _result;
-    db_interface _abstract;
-
-    _abstract = db_interface(db_typeof(_this));
-
-    /* Determine methodId once, then cache it for subsequent calls. */
-    if (!_methodId) {
-        _methodId = db_interface_resolveMethodId(_abstract, "next()");
-    }
-    db_assert(_methodId, "virtual method 'next()' not found in abstract '%s'", db_nameof(_abstract));
-
-    /* Lookup method-object. */
-    _method = db_interface_resolveMethodById(_abstract, _methodId);
-    db_assert(_method != NULL, "unresolved method '%s::next()@%d'", db_nameof(_this), _methodId);
-
-    /* Call method directly if it's a C-function. */
-    if (_method->_parent.kind == DB_PROCEDURE_CDECL) {
-        db_assert(_method->_parent.impl, "missing implementation for '%s::next()'.", db_nameof(_this));
-        _result = ((db_int16(*)(Fast_Initializer))_method->_parent.impl)(_this);
-    } else {
-        /* Function is implemented in another language. */
-        db_call(db_function(_method), &_result, _this);
-    }
-    
-    return _result;
-}
-
 /* ::hyve::Fast::Initializer::next() */
 db_int16 Fast_Initializer_next_v(Fast_Initializer _this) {
 /* $begin(::hyve::Fast::Initializer::next) */
@@ -417,37 +323,6 @@ db_int16 Fast_Initializer_next_v(Fast_Initializer _this) {
     
 	return 0;
 /* $end */
-}
-
-/* virtual ::hyve::Fast::Initializer::pop() */
-db_int8 Fast_Initializer_pop(Fast_Initializer _this) {
-    static db_uint32 _methodId;
-    db_method _method;
-    db_int8 _result;
-    db_interface _abstract;
-
-    _abstract = db_interface(db_typeof(_this));
-
-    /* Determine methodId once, then cache it for subsequent calls. */
-    if (!_methodId) {
-        _methodId = db_interface_resolveMethodId(_abstract, "pop()");
-    }
-    db_assert(_methodId, "virtual method 'pop()' not found in abstract '%s'", db_nameof(_abstract));
-
-    /* Lookup method-object. */
-    _method = db_interface_resolveMethodById(_abstract, _methodId);
-    db_assert(_method != NULL, "unresolved method '%s::pop()@%d'", db_nameof(_this), _methodId);
-
-    /* Call method directly if it's a C-function. */
-    if (_method->_parent.kind == DB_PROCEDURE_CDECL) {
-        db_assert(_method->_parent.impl, "missing implementation for '%s::pop()'.", db_nameof(_this));
-        _result = ((db_int8(*)(Fast_Initializer))_method->_parent.impl)(_this);
-    } else {
-        /* Function is implemented in another language. */
-        db_call(db_function(_method), &_result, _this);
-    }
-    
-    return _result;
 }
 
 /* ::hyve::Fast::Initializer::pop() */
@@ -471,73 +346,11 @@ db_int8 Fast_Initializer_pop_v(Fast_Initializer _this) {
 /* $end */
 }
 
-/* virtual ::hyve::Fast::Initializer::popKey() */
-db_int16 Fast_Initializer_popKey(Fast_Initializer _this) {
-    static db_uint32 _methodId;
-    db_method _method;
-    db_int16 _result;
-    db_interface _abstract;
-
-    _abstract = db_interface(db_typeof(_this));
-
-    /* Determine methodId once, then cache it for subsequent calls. */
-    if (!_methodId) {
-        _methodId = db_interface_resolveMethodId(_abstract, "popKey()");
-    }
-    db_assert(_methodId, "virtual method 'popKey()' not found in abstract '%s'", db_nameof(_abstract));
-
-    /* Lookup method-object. */
-    _method = db_interface_resolveMethodById(_abstract, _methodId);
-    db_assert(_method != NULL, "unresolved method '%s::popKey()@%d'", db_nameof(_this), _methodId);
-
-    /* Call method directly if it's a C-function. */
-    if (_method->_parent.kind == DB_PROCEDURE_CDECL) {
-        db_assert(_method->_parent.impl, "missing implementation for '%s::popKey()'.", db_nameof(_this));
-        _result = ((db_int16(*)(Fast_Initializer))_method->_parent.impl)(_this);
-    } else {
-        /* Function is implemented in another language. */
-        db_call(db_function(_method), &_result, _this);
-    }
-    
-    return _result;
-}
-
 /* ::hyve::Fast::Initializer::popKey() */
 db_int16 Fast_Initializer_popKey_v(Fast_Initializer _this) {
 /* $begin(::hyve::Fast::Initializer::popKey) */
     return Fast_Initializer_pop(_this);
 /* $end */
-}
-
-/* virtual ::hyve::Fast::Initializer::push() */
-db_int16 Fast_Initializer_push(Fast_Initializer _this) {
-    static db_uint32 _methodId;
-    db_method _method;
-    db_int16 _result;
-    db_interface _abstract;
-
-    _abstract = db_interface(db_typeof(_this));
-
-    /* Determine methodId once, then cache it for subsequent calls. */
-    if (!_methodId) {
-        _methodId = db_interface_resolveMethodId(_abstract, "push()");
-    }
-    db_assert(_methodId, "virtual method 'push()' not found in abstract '%s'", db_nameof(_abstract));
-
-    /* Lookup method-object. */
-    _method = db_interface_resolveMethodById(_abstract, _methodId);
-    db_assert(_method != NULL, "unresolved method '%s::push()@%d'", db_nameof(_this), _methodId);
-
-    /* Call method directly if it's a C-function. */
-    if (_method->_parent.kind == DB_PROCEDURE_CDECL) {
-        db_assert(_method->_parent.impl, "missing implementation for '%s::push()'.", db_nameof(_this));
-        _result = ((db_int16(*)(Fast_Initializer))_method->_parent.impl)(_this);
-    } else {
-        /* Function is implemented in another language. */
-        db_call(db_function(_method), &_result, _this);
-    }
-    
-    return _result;
 }
 
 /* ::hyve::Fast::Initializer::push() */
@@ -573,37 +386,6 @@ error:
 /* $end */
 }
 
-/* virtual ::hyve::Fast::Initializer::pushKey() */
-db_int16 Fast_Initializer_pushKey(Fast_Initializer _this) {
-    static db_uint32 _methodId;
-    db_method _method;
-    db_int16 _result;
-    db_interface _abstract;
-
-    _abstract = db_interface(db_typeof(_this));
-
-    /* Determine methodId once, then cache it for subsequent calls. */
-    if (!_methodId) {
-        _methodId = db_interface_resolveMethodId(_abstract, "pushKey()");
-    }
-    db_assert(_methodId, "virtual method 'pushKey()' not found in abstract '%s'", db_nameof(_abstract));
-
-    /* Lookup method-object. */
-    _method = db_interface_resolveMethodById(_abstract, _methodId);
-    db_assert(_method != NULL, "unresolved method '%s::pushKey()@%d'", db_nameof(_this), _methodId);
-
-    /* Call method directly if it's a C-function. */
-    if (_method->_parent.kind == DB_PROCEDURE_CDECL) {
-        db_assert(_method->_parent.impl, "missing implementation for '%s::pushKey()'.", db_nameof(_this));
-        _result = ((db_int16(*)(Fast_Initializer))_method->_parent.impl)(_this);
-    } else {
-        /* Function is implemented in another language. */
-        db_call(db_function(_method), &_result, _this);
-    }
-    
-    return _result;
-}
-
 /* ::hyve::Fast::Initializer::pushKey() */
 db_int16 Fast_Initializer_pushKey_v(Fast_Initializer _this) {
 /* $begin(::hyve::Fast::Initializer::pushKey) */
@@ -619,74 +401,12 @@ db_type Fast_Initializer_type(Fast_Initializer _this) {
 /* $end */
 }
 
-/* virtual ::hyve::Fast::Initializer::value(Expression v) */
-db_int16 Fast_Initializer_value(Fast_Initializer _this, Fast_Expression v) {
-    static db_uint32 _methodId;
-    db_method _method;
-    db_int16 _result;
-    db_interface _abstract;
-
-    _abstract = db_interface(db_typeof(_this));
-
-    /* Determine methodId once, then cache it for subsequent calls. */
-    if (!_methodId) {
-        _methodId = db_interface_resolveMethodId(_abstract, "value(Expression v)");
-    }
-    db_assert(_methodId, "virtual method 'value(Expression v)' not found in abstract '%s'", db_nameof(_abstract));
-
-    /* Lookup method-object. */
-    _method = db_interface_resolveMethodById(_abstract, _methodId);
-    db_assert(_method != NULL, "unresolved method '%s::value(Expression v)@%d'", db_nameof(_this), _methodId);
-
-    /* Call method directly if it's a C-function. */
-    if (_method->_parent.kind == DB_PROCEDURE_CDECL) {
-        db_assert(_method->_parent.impl, "missing implementation for '%s::value(Expression v)'.", db_nameof(_this));
-        _result = ((db_int16(*)(Fast_Initializer, Fast_Expression ))_method->_parent.impl)(_this, v);
-    } else {
-        /* Function is implemented in another language. */
-        db_call(db_function(_method), &_result, _this, v);
-    }
-    
-    return _result;
-}
-
 /* ::hyve::Fast::Initializer::value(Expression v) */
 db_int16 Fast_Initializer_value_v(Fast_Initializer _this, Fast_Expression v) {
 /* $begin(::hyve::Fast::Initializer::value) */
     DB_UNUSED(v);
     return Fast_Initializer_next(_this);
 /* $end */
-}
-
-/* virtual ::hyve::Fast::Initializer::valueKey(Expression key) */
-db_int16 Fast_Initializer_valueKey(Fast_Initializer _this, Fast_Expression key) {
-    static db_uint32 _methodId;
-    db_method _method;
-    db_int16 _result;
-    db_interface _abstract;
-
-    _abstract = db_interface(db_typeof(_this));
-
-    /* Determine methodId once, then cache it for subsequent calls. */
-    if (!_methodId) {
-        _methodId = db_interface_resolveMethodId(_abstract, "valueKey(Expression key)");
-    }
-    db_assert(_methodId, "virtual method 'valueKey(Expression key)' not found in abstract '%s'", db_nameof(_abstract));
-
-    /* Lookup method-object. */
-    _method = db_interface_resolveMethodById(_abstract, _methodId);
-    db_assert(_method != NULL, "unresolved method '%s::valueKey(Expression key)@%d'", db_nameof(_this), _methodId);
-
-    /* Call method directly if it's a C-function. */
-    if (_method->_parent.kind == DB_PROCEDURE_CDECL) {
-        db_assert(_method->_parent.impl, "missing implementation for '%s::valueKey(Expression key)'.", db_nameof(_this));
-        _result = ((db_int16(*)(Fast_Initializer, Fast_Expression ))_method->_parent.impl)(_this, key);
-    } else {
-        /* Function is implemented in another language. */
-        db_call(db_function(_method), &_result, _this, key);
-    }
-    
-    return _result;
 }
 
 /* ::hyve::Fast::Initializer::valueKey(Expression key) */

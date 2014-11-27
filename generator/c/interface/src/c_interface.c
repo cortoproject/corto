@@ -18,95 +18,13 @@ typedef struct c_typeWalk_t {
     db_generator g;
     g_file header;
     g_file source;
+    g_file wrapper;
+    g_file mainHeader;
     db_uint16 firstComma;
     db_bool generateHeader;
     db_bool generateSource;
+    db_id sizeExpr;
 } c_typeWalk_t;
-
-/* Open generator headerfile */
-static g_file c_interfaceHeaderFileOpen(db_generator g, db_class o) {
-    g_file result;
-    db_id headerFileName, name;
-
-    /* Create file */
-    sprintf(headerFileName, "%s.h", g_fullOid(g, o, name));
-    result = g_fileOpen(g, headerFileName);
-
-    if (!result) {
-    	goto error;
-    }
-
-    /* Print standard comments and includes */
-    g_fileWrite(result, "/* %s\n", headerFileName);
-    g_fileWrite(result, " *\n");
-    g_fileWrite(result, " *  Generated on %s\n", __DATE__);
-    g_fileWrite(result, " *    This file contains generated code. Do not modify!\n");
-    g_fileWrite(result, " */\n\n");
-    g_fileWrite(result, "#ifndef %s_H\n", name);
-    g_fileWrite(result, "#define %s_H\n\n", name);
-    g_fileWrite(result, "#include \"hyve.h\"\n");
-
-    /* If the class extends from another class, include header of baseclass */
-    if (db_class_instanceof(db_class_o, o) && db_interface(o)->base) {
-        db_id baseId;
-        g_fileWrite(result, "#include \"%s.h\"\n", g_fullOid(g, db_interface(o)->base, baseId));
-    }
-
-    g_fileWrite(result, "#include \"%s__type.h\"\n\n", g_getName(g));
-    g_fileWrite(result, "#ifdef __cplusplus\n");
-    g_fileWrite(result, "extern \"C\" {\n");
-    g_fileWrite(result, "#endif\n");
-
-    return result;
-error:
-	return NULL;
-}
-
-/* Close headerfile */
-static void c_interfaceHeaderFileClose(g_file file) {
-
-    /* Print standard comments and includes */
-    g_fileWrite(file, "\n");
-    g_fileWrite(file, "#ifdef __cplusplus\n");
-    g_fileWrite(file, "}\n");
-    g_fileWrite(file, "#endif\n");
-    g_fileWrite(file, "#endif\n\n");
-}
-
-/* Generate name for sourcefile */
-static db_string c_interfaceSourceFileName(db_string name, db_char* buffer) {
-    /* Create file */
-    sprintf(buffer, "%s.c", name);
-
-    return buffer;
-}
-
-/* Open generator sourcefile */
-static g_file c_interfaceSourceFileOpen(db_generator g, db_string name) {
-    g_file result;
-    db_char fileName[512];
-
-    result = g_fileOpen(g, c_interfaceSourceFileName(name, fileName));
-    if (!result) {
-    	goto error;
-    }
-
-    /* Print standard comments and includes */
-    g_fileWrite(result, "/* %s\n", fileName);
-    g_fileWrite(result, " *\n");
-    g_fileWrite(result, " *  Generated on %s\n", __DATE__);
-    g_fileWrite(result, " *    This file contains the implementation for the generated interface.\n");
-    g_fileWrite(result, " *\n");
-    g_fileWrite(result, " *    Don't mess with the begin and end tags, since these will ensure that modified\n");
-    g_fileWrite(result, " *    code in interface functions isn't replaced when code is re-generated.\n");
-    g_fileWrite(result, " */\n\n");
-    g_fileWrite(result, "#include \"%s.h\"\n", name);
-    g_fileWrite(result, "#include \"%s__meta.h\"\n\n", g_getName(g));
-
-    return result;
-error:
-	return NULL;
-}
 
 /* Generate parameters for method */
 static int c_interfaceMethodParameter(db_parameter* o, void* userData) {
@@ -238,6 +156,11 @@ static int c_interfaceGenerateVirtual(db_method o, c_typeWalk_t* data) {
 	db_id id, returnTypeId, classId, returnPostfix;
 	db_bool returnsValue;
 	db_id nameString;
+    g_file originalSource = data->source;
+
+    /* Replace the source with the wrapper so that all nested functions use the correct outputfile.
+     * This file will be restored at the end of the function */
+    data->source = data->wrapper;
 
 	if (((db_function)o)->returnType && (db_function(o)->returnType->real->kind != DB_VOID)) {
 		returnsValue = TRUE;
@@ -250,9 +173,9 @@ static int c_interfaceGenerateVirtual(db_method o, c_typeWalk_t* data) {
 	g_fullOid(data->g, db_parentof(o), classId);
 
 	/* Write to sourcefile */
-	g_fileWrite(data->source, "\n");
-	g_fileWrite(data->source, "/* virtual %s */\n", db_fullname(o, id));
-	g_fileWrite(data->source, "%s %s(",
+	g_fileWrite(data->wrapper, "\n");
+	g_fileWrite(data->wrapper, "/* virtual %s */\n", db_fullname(o, id));
+	g_fileWrite(data->wrapper, "%s %s(",
 			returnTypeId,
 			g_fullOid(data->g, o, id));
 
@@ -278,39 +201,39 @@ static int c_interfaceGenerateVirtual(db_method o, c_typeWalk_t* data) {
 	c_escapeString(db_nameof(o), nameString);
 
 	/* Begin of function */
-	g_fileWrite(data->source, ") {\n");
-	g_fileIndent(data->source);
-	g_fileWrite(data->source, "static db_uint32 _methodId;\n");
-	g_fileWrite(data->source, "db_method _method;\n");
+	g_fileWrite(data->wrapper, ") {\n");
+	g_fileIndent(data->wrapper);
+	g_fileWrite(data->wrapper, "static db_uint32 _methodId;\n");
+	g_fileWrite(data->wrapper, "db_method _method;\n");
 	if (returnsValue) {
-		g_fileWrite(data->source, "%s _result;\n", returnTypeId);
+		g_fileWrite(data->wrapper, "%s _result;\n", returnTypeId);
 	}
-	g_fileWrite(data->source, "db_interface _abstract;\n\n");
-	g_fileWrite(data->source, "_abstract = db_interface(db_typeof(_this));\n\n");
-	g_fileWrite(data->source, "/* Determine methodId once, then cache it for subsequent calls. */\n");
-	g_fileWrite(data->source, "if (!_methodId) {\n");
-	g_fileIndent(data->source);
-	g_fileWrite(data->source, "_methodId = db_interface_resolveMethodId(_abstract, \"%s\");\n", nameString);
-	g_fileDedent(data->source);
-	g_fileWrite(data->source, "}\n");
-	g_fileWrite(data->source, "db_assert(_methodId, \"virtual method '%s' not found in abstract '%%s'\", db_nameof(_abstract));\n\n", nameString);
-	g_fileWrite(data->source, "/* Lookup method-object. */\n");
-	g_fileWrite(data->source, "_method = db_interface_resolveMethodById(_abstract, _methodId);\n");
-	g_fileWrite(data->source, "db_assert(_method != NULL, \"unresolved method '%%s::%s@%%d'\", db_nameof(_this), _methodId);\n\n", nameString);
-	g_fileWrite(data->source, "/* Call method directly if it's a C-function. */\n");
-	g_fileWrite(data->source, "if (_method->_parent.kind == DB_PROCEDURE_CDECL) {\n");
-	g_fileIndent(data->source);
-	g_fileWrite(data->source, "db_assert(_method->_parent.impl, \"missing implementation for '%%s::%s'.\", db_nameof(_this));\n", nameString);
+	g_fileWrite(data->wrapper, "db_interface _abstract;\n\n");
+	g_fileWrite(data->wrapper, "_abstract = db_interface(db_typeof(_this));\n\n");
+	g_fileWrite(data->wrapper, "/* Determine methodId once, then cache it for subsequent calls. */\n");
+	g_fileWrite(data->wrapper, "if (!_methodId) {\n");
+	g_fileIndent(data->wrapper);
+	g_fileWrite(data->wrapper, "_methodId = db_interface_resolveMethodId(_abstract, \"%s\");\n", nameString);
+	g_fileDedent(data->wrapper);
+	g_fileWrite(data->wrapper, "}\n");
+	g_fileWrite(data->wrapper, "db_assert(_methodId, \"virtual method '%s' not found in abstract '%%s'\", db_nameof(_abstract));\n\n", nameString);
+	g_fileWrite(data->wrapper, "/* Lookup method-object. */\n");
+	g_fileWrite(data->wrapper, "_method = db_interface_resolveMethodById(_abstract, _methodId);\n");
+	g_fileWrite(data->wrapper, "db_assert(_method != NULL, \"unresolved method '%%s::%s@%%d'\", db_nameof(_this), _methodId);\n\n", nameString);
+	g_fileWrite(data->wrapper, "/* Call method directly if it's a C-function. */\n");
+	g_fileWrite(data->wrapper, "if (_method->_parent.kind == DB_PROCEDURE_CDECL) {\n");
+	g_fileIndent(data->wrapper);
+	g_fileWrite(data->wrapper, "db_assert(_method->_parent.impl, \"missing implementation for '%%s::%s'.\", db_nameof(_this));\n", nameString);
 
 	/* If the returnType is a reference object, use 'db_object' as returntype for the function-prototype. This prevents substituting <type>(*) by
 	 * the corresponding casting macro's which are generated for all reference types, except db_object. */
 	if (returnsValue) {
-		g_fileWrite(data->source, "_result = ");
+		g_fileWrite(data->wrapper, "_result = ");
 	}
 	if (db_function(o)->returnType && db_function(o)->returnType->real->reference) {
-		g_fileWrite(data->source, "(%s)((db_object(*)(%s", returnTypeId, classId);\
+		g_fileWrite(data->wrapper, "(%s)((db_object(*)(%s", returnTypeId, classId);\
 	} else {
-		g_fileWrite(data->source, "((%s(*)(%s", returnTypeId, classId);\
+		g_fileWrite(data->wrapper, "((%s(*)(%s", returnTypeId, classId);\
 	}
 
 	/* Walk parameters for function prototype */
@@ -319,7 +242,7 @@ static int c_interfaceGenerateVirtual(db_method o, c_typeWalk_t* data) {
 		goto error;
 	}
 
-	g_fileWrite(data->source, "))_method->_parent.impl)(_this");
+	g_fileWrite(data->wrapper, "))_method->_parent.impl)(_this");
 
 	/* Walk parameters for argument list */
 	data->firstComma = 1;
@@ -327,30 +250,32 @@ static int c_interfaceGenerateVirtual(db_method o, c_typeWalk_t* data) {
 		goto error;
 	}
 
-	g_fileWrite(data->source, ");\n");
+	g_fileWrite(data->wrapper, ");\n");
 
-	g_fileDedent(data->source);
-	g_fileWrite(data->source, "} else {\n");
-	g_fileIndent(data->source);
-	g_fileWrite(data->source, "/* Function is implemented in another language. */\n");
+	g_fileDedent(data->wrapper);
+	g_fileWrite(data->wrapper, "} else {\n");
+	g_fileIndent(data->wrapper);
+	g_fileWrite(data->wrapper, "/* Function is implemented in another language. */\n");
 	if (returnsValue) {
-		g_fileWrite(data->source, "db_call(db_function(_method), &_result, _this");
+		g_fileWrite(data->wrapper, "db_call(db_function(_method), &_result, _this");
 	} else {
-		g_fileWrite(data->source, "db_call(db_function(_method), NULL, _this");
+		g_fileWrite(data->wrapper, "db_call(db_function(_method), NULL, _this");
 	}
     data->firstComma = 3;
     if (!c_interfaceParamWalk(o, c_interfaceMethodParameterName, data)) {
         goto error;
     }
-    g_fileWrite(data->source, ");\n");
-	g_fileDedent(data->source);
-	g_fileWrite(data->source, "}\n");
+    g_fileWrite(data->wrapper, ");\n");
+	g_fileDedent(data->wrapper);
+	g_fileWrite(data->wrapper, "}\n");
 	if (returnsValue) {
-		g_fileWrite(data->source, "\n");
-		g_fileWrite(data->source, "return _result;\n");
+		g_fileWrite(data->wrapper, "\n");
+		g_fileWrite(data->wrapper, "return _result;\n");
 	}
-	g_fileDedent(data->source);
-	g_fileWrite(data->source, "}\n");
+	g_fileDedent(data->wrapper);
+	g_fileWrite(data->wrapper, "}\n");
+
+    data->source = originalSource;
 
 	return 0;
 error:
@@ -361,6 +286,12 @@ error:
 static int c__interfaceGenerateDelegate(db_delegate o, c_typeWalk_t* data) {
     db_id id, returnTypeId, classId;
     db_bool returnsValue;
+
+    g_file originalSource = data->source;
+
+    /* Replace the source with the wrapper so that all nested functions use the correct outputfile.
+     * This file will be restored at the end of the function */
+    data->source = data->wrapper;
 
     if (((db_function)o)->returnType && (db_function(o)->returnType->real->kind != DB_VOID)) {
         g_fullOid(data->g, ((db_function)o)->returnType, returnTypeId);
@@ -373,9 +304,9 @@ static int c__interfaceGenerateDelegate(db_delegate o, c_typeWalk_t* data) {
     g_fullOid(data->g, db_parentof(o), classId);
 
     /* Write to sourcefile */
-    g_fileWrite(data->source, "\n");
-    g_fileWrite(data->source, "/* delegate %s */\n", db_fullname(o, id));
-    g_fileWrite(data->source, "%s %s(",
+    g_fileWrite(data->wrapper, "\n");
+    g_fileWrite(data->wrapper, "/* delegate %s */\n", db_fullname(o, id));
+    g_fileWrite(data->wrapper, "%s %s(",
             returnTypeId,
             g_fullOid(data->g, o, id));
 
@@ -391,38 +322,38 @@ static int c__interfaceGenerateDelegate(db_delegate o, c_typeWalk_t* data) {
     }
 
     /* Begin of function */
-    g_fileWrite(data->source, ") {\n");
-    g_fileIndent(data->source);
-    g_fileWrite(data->source, "static db_delegate _delegate;\n");
-    g_fileWrite(data->source, "db_callback _callback;\n");
+    g_fileWrite(data->wrapper, ") {\n");
+    g_fileIndent(data->wrapper);
+    g_fileWrite(data->wrapper, "static db_delegate _delegate;\n");
+    g_fileWrite(data->wrapper, "db_callback _callback;\n");
     if (returnsValue) {
-    	g_fileWrite(data->source, "%s _result;\n", returnTypeId);
+    	g_fileWrite(data->wrapper, "%s _result;\n", returnTypeId);
     }
-    g_fileWrite(data->source, "db_type _type;\n\n");
-    g_fileWrite(data->source, "_type = db_typeof(_this)->real;\n\n");
-    g_fileWrite(data->source, "/* Determine delegate once, then cache it for subsequent calls. */\n");
-    g_fileWrite(data->source, "if (!_delegate) {\n");
-    g_fileIndent(data->source);
-    g_fileWrite(data->source, "_delegate = db_class_resolveDelegate(db_class(db_typeof(_this)), \"%s\");\n", db_nameof(o));
-    g_fileDedent(data->source);
-    g_fileWrite(data->source, "}\n");
-    g_fileWrite(data->source, "db_assert(_delegate != NULL, \"delegate function '%s' not found in class '%s'\");\n\n", db_nameof(o), classId);
-    g_fileWrite(data->source, "/* Lookup callback-object. */\n");
-    g_fileWrite(data->source, "_callback = db_class_resolveCallback(db_class(db_typeof(_this)), _delegate, _this);\n\n");
-    g_fileWrite(data->source, "/* Call method directly if it's a C-function. */\n");
-    g_fileWrite(data->source, "if (db_function(_callback)->kind == DB_PROCEDURE_CDECL) {\n");
-    g_fileIndent(data->source);
-    g_fileWrite(data->source, "db_assert(db_function(_callback)->impl, \"missing implementation for '%%s::%s'.\", db_nameof(_this));\n", db_nameof(o));
+    g_fileWrite(data->wrapper, "db_type _type;\n\n");
+    g_fileWrite(data->wrapper, "_type = db_typeof(_this)->real;\n\n");
+    g_fileWrite(data->wrapper, "/* Determine delegate once, then cache it for subsequent calls. */\n");
+    g_fileWrite(data->wrapper, "if (!_delegate) {\n");
+    g_fileIndent(data->wrapper);
+    g_fileWrite(data->wrapper, "_delegate = db_class_resolveDelegate(db_class(db_typeof(_this)), \"%s\");\n", db_nameof(o));
+    g_fileDedent(data->wrapper);
+    g_fileWrite(data->wrapper, "}\n");
+    g_fileWrite(data->wrapper, "db_assert(_delegate != NULL, \"delegate function '%s' not found in class '%s'\");\n\n", db_nameof(o), classId);
+    g_fileWrite(data->wrapper, "/* Lookup callback-object. */\n");
+    g_fileWrite(data->wrapper, "_callback = db_class_resolveCallback(db_class(db_typeof(_this)), _delegate, _this);\n\n");
+    g_fileWrite(data->wrapper, "/* Call method directly if it's a C-function. */\n");
+    g_fileWrite(data->wrapper, "if (db_function(_callback)->kind == DB_PROCEDURE_CDECL) {\n");
+    g_fileIndent(data->wrapper);
+    g_fileWrite(data->wrapper, "db_assert(db_function(_callback)->impl, \"missing implementation for '%%s::%s'.\", db_nameof(_this));\n", db_nameof(o));
 
     /* If the returnType is a reference object, use 'db_object' as returntype for the function-prototype. This prevents substituting <type>(*) by
      * the corresponding casting macro's which are generated for all reference types, except db_object. */
     if (returnsValue) {
-    	g_fileWrite(data->source, "_result = ");
+    	g_fileWrite(data->wrapper, "_result = ");
     }
     if (db_function(o)->returnType->real->reference) {
-        g_fileWrite(data->source, "(%s)((db_object(*)(%s", returnTypeId, classId);\
+        g_fileWrite(data->wrapper, "(%s)((db_object(*)(%s", returnTypeId, classId);\
     } else {
-        g_fileWrite(data->source, "((%s(*)(%s", returnTypeId, classId);\
+        g_fileWrite(data->wrapper, "((%s(*)(%s", returnTypeId, classId);\
     }
 
     /* Walk parameters for function prototype */
@@ -431,7 +362,7 @@ static int c__interfaceGenerateDelegate(db_delegate o, c_typeWalk_t* data) {
         goto error;
     }
 
-    g_fileWrite(data->source, "))_callback->_parent.impl)(_this");
+    g_fileWrite(data->wrapper, "))_callback->_parent.impl)(_this");
 
     /* Walk parameters for argument list */
     data->firstComma = 1;
@@ -439,30 +370,32 @@ static int c__interfaceGenerateDelegate(db_delegate o, c_typeWalk_t* data) {
         goto error;
     }
 
-    g_fileWrite(data->source, ");\n");
+    g_fileWrite(data->wrapper, ");\n");
 
-    g_fileDedent(data->source);
-    g_fileWrite(data->source, "} else {\n");
-    g_fileIndent(data->source);
-    g_fileWrite(data->source, "/* Callback is implemented in another language. */\n");
+    g_fileDedent(data->wrapper);
+    g_fileWrite(data->wrapper, "} else {\n");
+    g_fileIndent(data->wrapper);
+    g_fileWrite(data->wrapper, "/* Callback is implemented in another language. */\n");
 	if (returnsValue) {
-		g_fileWrite(data->source, "db_call(db_function(_callback), &_result, _this");
+		g_fileWrite(data->wrapper, "db_call(db_function(_callback), &_result, _this");
 	} else {
-		g_fileWrite(data->source, "db_call(db_function(_callback), NULL, _this");
+		g_fileWrite(data->wrapper, "db_call(db_function(_callback), NULL, _this");
 	}
     data->firstComma = 3;
     if (!c_interfaceParamWalk(o, c_interfaceMethodParameterName, data)) {
         goto error;
     }
-    g_fileWrite(data->source, ");\n");
-    g_fileDedent(data->source);
-    g_fileWrite(data->source, "}\n");
+    g_fileWrite(data->wrapper, ");\n");
+    g_fileDedent(data->wrapper);
+    g_fileWrite(data->wrapper, "}\n");
     if (returnsValue) {
-    	g_fileWrite(data->source, "\n");
-    	g_fileWrite(data->source, "return _result;\n");
+    	g_fileWrite(data->wrapper, "\n");
+    	g_fileWrite(data->wrapper, "return _result;\n");
     }
-    g_fileDedent(data->source);
-    g_fileWrite(data->source, "}\n");
+    g_fileDedent(data->wrapper);
+    g_fileWrite(data->wrapper, "}\n");
+
+    data->source = originalSource;
 
     return 0;
 error:
@@ -472,13 +405,18 @@ error:
 /* Generate implementation for obtaining the callback for delegate methods */
 static int c__interfaceGenerateDelegate_callback(db_delegate o, c_typeWalk_t* data) {
     db_id id, classId;
+    g_file originalSource = data->source;
+
+    /* Replace the source with the wrapper so that all nested functions use the correct outputfile.
+     * This file will be restored at the end of the function */
+    data->source = data->wrapper;
 
     g_fullOid(data->g, db_parentof(o), classId);
 
     /* Write to sourcefile */
-    g_fileWrite(data->source, "\n");
-    g_fileWrite(data->source, "/* delegate %s, obtain callback */\n", db_fullname(o, id));
-    g_fileWrite(data->source, "db_callback %s_callback(%s _this) {\n",
+    g_fileWrite(data->wrapper, "\n");
+    g_fileWrite(data->wrapper, "/* delegate %s, obtain callback */\n", db_fullname(o, id));
+    g_fileWrite(data->wrapper, "db_callback %s_callback(%s _this) {\n",
             g_fullOid(data->g, o, id),
             classId);
 
@@ -489,17 +427,19 @@ static int c__interfaceGenerateDelegate_callback(db_delegate o, c_typeWalk_t* da
             g_fullOid(data->g, o, id),
             classId);
 
-    g_fileIndent(data->source);
-    g_fileWrite(data->source, "db_delegate _delegate;\n");
-    g_fileWrite(data->source, "db_type _type;\n\n");
-    g_fileWrite(data->source, "_type = db_typeof(_this)->real;\n\n");
-    g_fileWrite(data->source, "/* Determine delegate */\n");
-    g_fileWrite(data->source, "_delegate = db_class_resolveDelegate(db_class(db_typeof(_this)), \"%s\");\n", db_nameof(o));
-    g_fileWrite(data->source, "db_assert(_delegate != NULL, \"delegate function '%s' not found in class '%s'\");\n\n", db_nameof(o), classId);
-    g_fileWrite(data->source, "/* Lookup callback-object. */\n");
-    g_fileWrite(data->source, "return db_class_resolveCallback(db_class(db_typeof(_this)), _delegate, _this);\n");
-    g_fileDedent(data->source);
-    g_fileWrite(data->source, "}\n");
+    g_fileIndent(data->wrapper);
+    g_fileWrite(data->wrapper, "db_delegate _delegate;\n");
+    g_fileWrite(data->wrapper, "db_type _type;\n\n");
+    g_fileWrite(data->wrapper, "_type = db_typeof(_this)->real;\n\n");
+    g_fileWrite(data->wrapper, "/* Determine delegate */\n");
+    g_fileWrite(data->wrapper, "_delegate = db_class_resolveDelegate(db_class(db_typeof(_this)), \"%s\");\n", db_nameof(o));
+    g_fileWrite(data->wrapper, "db_assert(_delegate != NULL, \"delegate function '%s' not found in class '%s'\");\n\n", db_nameof(o), classId);
+    g_fileWrite(data->wrapper, "/* Lookup callback-object. */\n");
+    g_fileWrite(data->wrapper, "return db_class_resolveCallback(db_class(db_typeof(_this)), _delegate, _this);\n");
+    g_fileDedent(data->wrapper);
+    g_fileWrite(data->wrapper, "}\n");
+
+    data->source = originalSource;
 
     return 0;
 }
@@ -507,6 +447,12 @@ static int c__interfaceGenerateDelegate_callback(db_delegate o, c_typeWalk_t* da
 /* Generate implementation for delegate methods with provided callback parameter */
 static int c__interfaceGenerateDelegate_w_callback(db_delegate o, c_typeWalk_t* data) {
     db_id id, returnTypeId, classId;
+
+    g_file originalSource = data->source;
+
+    /* Replace the source with the wrapper so that all nested functions use the correct outputfile.
+     * This file will be restored at the end of the function */
+    data->source = data->wrapper;
 
     if (((db_function)o)->returnType) {
         g_fullOid(data->g, ((db_function)o)->returnType, returnTypeId);
@@ -517,9 +463,9 @@ static int c__interfaceGenerateDelegate_w_callback(db_delegate o, c_typeWalk_t* 
     g_fullOid(data->g, db_parentof(o), classId);
 
     /* Write to sourcefile */
-    g_fileWrite(data->source, "\n");
-    g_fileWrite(data->source, "/* delegate %s, supply callback */\n", db_fullname(o, id));
-    g_fileWrite(data->source, "%s %s_w_callback(db_callback __callback, %s _this",
+    g_fileWrite(data->wrapper, "\n");
+    g_fileWrite(data->wrapper, "/* delegate %s, supply callback */\n", db_fullname(o, id));
+    g_fileWrite(data->wrapper, "%s %s_w_callback(db_callback __callback, %s _this",
             returnTypeId,
             g_fullOid(data->g, o, id),
             classId);
@@ -546,20 +492,20 @@ static int c__interfaceGenerateDelegate_w_callback(db_delegate o, c_typeWalk_t* 
     g_fileWrite(data->header, ");\n");
 
     /* Begin of function */
-    g_fileWrite(data->source, ") {\n");
-    g_fileIndent(data->source);
-    g_fileWrite(data->source, "%s _result;\n\n", returnTypeId);
-    g_fileWrite(data->source, "/* Call method directly if it's a C-function. */\n");
-    g_fileWrite(data->source, "if (db_function(__callback)->kind == DB_PROCEDURE_CDECL) {\n");
-    g_fileIndent(data->source);
-    g_fileWrite(data->source, "db_assert(db_function(__callback)->impl, \"missing implementation for '%%s::%s'.\", db_nameof(_this));\n", db_nameof(o));
+    g_fileWrite(data->wrapper, ") {\n");
+    g_fileIndent(data->wrapper);
+    g_fileWrite(data->wrapper, "%s _result;\n\n", returnTypeId);
+    g_fileWrite(data->wrapper, "/* Call method directly if it's a C-function. */\n");
+    g_fileWrite(data->wrapper, "if (db_function(__callback)->kind == DB_PROCEDURE_CDECL) {\n");
+    g_fileIndent(data->wrapper);
+    g_fileWrite(data->wrapper, "db_assert(db_function(__callback)->impl, \"missing implementation for '%%s::%s'.\", db_nameof(_this));\n", db_nameof(o));
 
     /* If the returnType is a reference object, use 'db_object' as returntype for the function-prototype. This prevents substituting <type>(*) by
      * the corresponding casting macro's which are generated for all reference types, except db_object. */
     if (db_function(o)->returnType->real->reference) {
-        g_fileWrite(data->source, "_result = (%s)((db_object(*)(", returnTypeId);\
+        g_fileWrite(data->wrapper, "_result = (%s)((db_object(*)(", returnTypeId);\
     } else {
-        g_fileWrite(data->source, "_result = ((%s(*)(", returnTypeId);\
+        g_fileWrite(data->wrapper, "_result = ((%s(*)(", returnTypeId);\
     }
 
     /* Walk parameters for function prototype */
@@ -568,7 +514,7 @@ static int c__interfaceGenerateDelegate_w_callback(db_delegate o, c_typeWalk_t* 
         goto error;
     }
 
-    g_fileWrite(data->source, "))__callback->_parent.impl)(");
+    g_fileWrite(data->wrapper, "))__callback->_parent.impl)(");
 
     /* Walk parameters for argument list */
     data->firstComma = 0;
@@ -576,23 +522,25 @@ static int c__interfaceGenerateDelegate_w_callback(db_delegate o, c_typeWalk_t* 
         goto error;
     }
 
-    g_fileWrite(data->source, ");\n");
+    g_fileWrite(data->wrapper, ");\n");
 
-    g_fileDedent(data->source);
-    g_fileWrite(data->source, "} else {\n");
-    g_fileIndent(data->source);
-    g_fileWrite(data->source, "/* Callback is implemented in another language. */\n");
-    g_fileWrite(data->source, "db_call(db_function(__callback), &_result");
+    g_fileDedent(data->wrapper);
+    g_fileWrite(data->wrapper, "} else {\n");
+    g_fileIndent(data->wrapper);
+    g_fileWrite(data->wrapper, "/* Callback is implemented in another language. */\n");
+    g_fileWrite(data->wrapper, "db_call(db_function(__callback), &_result");
     data->firstComma = 2;
     if (!c_interfaceParamWalk(o, c_interfaceMethodParameterName, data)) {
         goto error;
     }
-    g_fileWrite(data->source, ");\n");
-    g_fileDedent(data->source);
-    g_fileWrite(data->source, "}\n\n");
-    g_fileWrite(data->source, "return _result;\n");
-    g_fileDedent(data->source);
-    g_fileWrite(data->source, "}\n");
+    g_fileWrite(data->wrapper, ");\n");
+    g_fileDedent(data->wrapper);
+    g_fileWrite(data->wrapper, "}\n\n");
+    g_fileWrite(data->wrapper, "return _result;\n");
+    g_fileDedent(data->wrapper);
+    g_fileWrite(data->wrapper, "}\n");
+
+    data->source = originalSource;
 
     return 0;
 error:
@@ -618,6 +566,99 @@ error:
     return -1;
 }
 
+static char* c_functionName(db_function o, db_id id, c_typeWalk_t *data) {
+    g_fullOid(data->g, o, id);
+    if(db_instanceof(db_typedef(db_method_o), o)) {
+        if(db_method(o)->virtual) {
+            strcat(id, "_v");
+        }
+    }
+    return id;
+}
+
+/* Add a type to the expression that determines the location of a parameter in a buffer */
+void c_procedureAddToSizeExpr(db_type t, db_bool isReference, c_typeWalk_t *data) {
+    db_id id, postfix;
+
+    c_specifierId(data->g, db_typedef(t), id, NULL, postfix);
+    if (isReference || ((t->kind == DB_COMPOSITE) && !t->reference)) {
+        strcpy(id, "void*");
+    }
+
+    if(data->firstComma) {
+        g_fileWrite(data->wrapper, "*(%s*)((intptr_t)args + %s)", id, data->sizeExpr);
+        strcat(data->sizeExpr, " + ");
+    } else {
+        g_fileWrite(data->wrapper, "*(%s*)args", id);
+    }
+
+    strcat(data->sizeExpr, "sizeof(");
+    strcat(data->sizeExpr, id);
+    strcat(data->sizeExpr, ")");
+
+    data->firstComma = TRUE;
+}
+
+int c_procedureWrapperParam(db_parameter* o, void* userData) {
+    c_typeWalk_t* data;
+    data = userData;
+
+    /* Write comma */
+    if (data->firstComma) {
+        g_fileWrite(data->wrapper, ",\n");
+    }
+
+    /* Add type to size expression and add argument*/
+    c_procedureAddToSizeExpr(o->type->real, o->passByReference, data);
+
+    return 1;
+}
+
+/* Generate a wrapper for a procedure */
+static int c_interfaceClassProcedureWrapper(db_function o, c_typeWalk_t *data) {
+    db_id id, actualFunction;
+    db_typedef returnType;
+    db_id returnSpec, returnPostfix;
+
+    *(data->sizeExpr) = '\0';
+    data->firstComma = 0;
+
+    /* Write wrapper signature */
+    g_fileWrite(data->wrapper, "\n");
+    g_fileWrite(data->wrapper, "void __%s(void *args, void *result) {\n", c_functionName(o, id, data));
+    g_fileIndent(data->wrapper);
+
+    /* Obtain returntype string */
+    returnType = ((db_function)o)->returnType;
+    if (returnType && db_type_sizeof(returnType->real)) {
+        c_specifierId(data->g, returnType, returnSpec, NULL, returnPostfix);
+        g_fileWrite(data->wrapper, "*(%s%s*)result = ", returnSpec, returnPostfix);
+    }else {
+        g_fileWrite(data->wrapper, "DB_UNUSED(result);\n");
+    }
+
+    /* Call function and assign result */
+    g_fileWrite(data->wrapper, "%s(\n", c_functionName(o, actualFunction, data));
+    g_fileIndent(data->wrapper);
+
+    /* Add this */
+    if (c_procedureHasThis(o)) {
+        db_type parentType = db_parentof(o);
+        c_procedureAddToSizeExpr(parentType, FALSE, data);
+        data->firstComma = TRUE;
+    }
+
+    /* Add parameters */
+    c_interfaceParamWalk(o, c_procedureWrapperParam, data);
+
+    g_fileWrite(data->wrapper, ");\n");
+    g_fileDedent(data->wrapper);
+
+    g_fileDedent(data->wrapper);
+    g_fileWrite(data->wrapper, "}\n");
+    return 0;
+}
+
 /* Generate methods for class */
 static int c_interfaceClassProcedure(db_object o, void* userData) {
     c_typeWalk_t* data;
@@ -629,11 +670,10 @@ static int c_interfaceClassProcedure(db_object o, void* userData) {
     if (db_class_instanceof(db_procedure_o, db_typeof(o))) {
 		db_id id, classId, returnSpec, returnPostfix;
 		db_string snippet, header;
-		db_bool virtual, delegate, callback;
+		db_bool delegate, callback;
 		db_procedureKind kind;
 		db_typedef returnType;
 
-        virtual = FALSE;
         delegate = FALSE;
         callback = FALSE;
         kind = db_procedure(db_typeof(o))->kind;
@@ -648,7 +688,6 @@ static int c_interfaceClassProcedure(db_object o, void* userData) {
             break;
         case DB_METHOD:
             if (db_method(o)->virtual) {
-                virtual = TRUE;
                 c_interfaceGenerateVirtual(o, data);
             }
             break;
@@ -660,6 +699,13 @@ static int c_interfaceClassProcedure(db_object o, void* userData) {
                 goto ok;
             }
             break;
+        }
+
+        /* Generate a wrapper for the function */
+        if(!defined) {
+            if(c_interfaceClassProcedureWrapper(db_function(o), data)) {
+                goto error;
+            }
         }
 
 		/* Generate function-return type string */
@@ -684,7 +730,7 @@ static int c_interfaceClassProcedure(db_object o, void* userData) {
 		g_fileWrite(data->header, "%s%s %s",
 				returnSpec,
 				returnPostfix,
-				g_fullOid(data->g, o, id));
+				c_functionName(o, id, data));
 
 		/* Write to sourcefile */
 		if (!delegate) {
@@ -715,16 +761,10 @@ static int c_interfaceClassProcedure(db_object o, void* userData) {
             g_fileWrite(data->source, "%s%s %s",
                     returnSpec,
                     returnPostfix,
-                    g_fullOid(data->g, o, id));
+                    c_functionName(o, id, data));
 
-            /* Add '_v' for implementation of virtual functions. */
-            if (virtual) {
-                g_fileWrite(data->source, "_v(");
-                g_fileWrite(data->header, "_v(");
-            } else {
-                g_fileWrite(data->source, "(");
-                g_fileWrite(data->header, "(");
-            }
+            g_fileWrite(data->source, "(");
+            g_fileWrite(data->header, "(");        
 		} else {
 		    g_fileWrite(data->header, "(");
 		}
@@ -855,6 +895,131 @@ static int c_interfaceCheckProcedures(void* o, void* udata) {
     return 1;
 }
 
+/* Open generator headerfile */
+static g_file c_interfaceHeaderFileOpen(db_generator g, db_object o, c_typeWalk_t *data) {
+    g_file result;
+    db_id headerFileName, name;
+    db_object topLevelObject = g_getCurrent(g);
+
+    /* Create file */
+    sprintf(headerFileName, "%s.h", g_fullOid(g, o, name));
+    result = g_fileOpen(g, headerFileName);
+
+    if (!result) {
+        goto error;
+    }
+
+    if (!data->mainHeader) {
+        db_id mainHeader, topLevelName;
+        if (o == topLevelObject) {
+            data->mainHeader = result;
+        }else {
+            sprintf(mainHeader, "%s.h", g_fullOid(g, o, topLevelName));
+            data->mainHeader = g_fileOpen(g, mainHeader);
+            if(!result) {
+                goto error;
+            }
+        }
+    }
+
+    if(o != topLevelObject) {
+        g_fileWrite(data->mainHeader, "#include \"%s\"\n", headerFileName);
+    }
+
+    /* Print standard comments and includes */
+    g_fileWrite(result, "/* %s\n", headerFileName);
+    g_fileWrite(result, " *\n");
+    g_fileWrite(result, " * This file contains generated code. Do not modify!\n");
+    g_fileWrite(result, " */\n\n");
+    g_fileWrite(result, "#ifndef %s_H\n", name);
+    g_fileWrite(result, "#define %s_H\n\n", name);
+    g_fileWrite(result, "#include \"hyve.h\"\n");
+
+    /* If the class extends from another class, include header of baseclass */
+    if (db_class_instanceof(db_class_o, o) && db_interface(o)->base) {
+        db_id baseId;
+        g_fileWrite(result, "#include \"%s.h\"\n", g_fullOid(g, db_interface(o)->base, baseId));
+    }
+
+    g_fileWrite(result, "#include \"%s__type.h\"\n\n", g_getName(g));
+    g_fileWrite(result, "#ifdef __cplusplus\n");
+    g_fileWrite(result, "extern \"C\" {\n");
+    g_fileWrite(result, "#endif\n");
+
+    return result;
+error:
+    return NULL;
+}
+
+/* Close headerfile */
+static void c_interfaceHeaderFileClose(g_file file) {
+
+    /* Print standard comments and includes */
+    g_fileWrite(file, "\n");
+    g_fileWrite(file, "#ifdef __cplusplus\n");
+    g_fileWrite(file, "}\n");
+    g_fileWrite(file, "#endif\n");
+    g_fileWrite(file, "#endif\n\n");
+}
+
+static g_file c_interfaceWrapperFileOpen(db_generator g) {
+    g_file result;
+    db_char fileName[512];
+    db_id id, name;
+
+    db_object o = g_getCurrent(g);
+    sprintf(fileName, "%s__wrapper.c", g_fullOid(g, o, name));
+    result = g_fileOpen(g, fileName);
+    if(!result) {
+        goto error;
+    }
+
+    /* Print standard comments and includes */
+    g_fileWrite(result, "/* %s\n", fileName);
+    g_fileWrite(result, " *\n");
+    g_fileWrite(result, " * This file contains wrapper functions for %s.\n", db_fullname(o, id));
+    g_fileWrite(result, " */\n\n");
+    g_fileWrite(result, "#include \"%s.h\"\n", name);
+
+    return result;
+error:
+    return NULL;
+}
+
+/* Generate name for sourcefile */
+static db_string c_interfaceSourceFileName(db_string name, db_char* buffer) {
+    /* Create file */
+    sprintf(buffer, "%s.c", name);
+
+    return buffer;
+}
+
+/* Open generator sourcefile */
+static g_file c_interfaceSourceFileOpen(db_generator g, db_string name) {
+    g_file result;
+    db_char fileName[512];
+
+    result = g_fileOpen(g, c_interfaceSourceFileName(name, fileName));
+    if (!result) {
+        goto error;
+    }
+
+    /* Print standard comments and includes */
+    g_fileWrite(result, "/* %s\n", fileName);
+    g_fileWrite(result, " *\n");
+    g_fileWrite(result, " * This file contains the implementation for the generated interface.\n");
+    g_fileWrite(result, " *\n");
+    g_fileWrite(result, " *    Don't mess with the begin and end tags, since these will ensure that modified\n");
+    g_fileWrite(result, " *    code in interface functions isn't replaced when code is re-generated.\n");
+    g_fileWrite(result, " */\n\n");
+    g_fileWrite(result, "#include \"%s.h\"\n", name);
+    g_fileWrite(result, "#include \"%s__meta.h\"\n\n", g_getName(g));
+
+    return result;
+error:
+    return NULL;
+}
+
 /* Generate interface for class */
 static db_int16 c_interfaceObject(db_object o, c_typeWalk_t* data) {
     db_id id;
@@ -867,7 +1032,7 @@ static db_int16 c_interfaceObject(db_object o, c_typeWalk_t* data) {
 
     /* Always generate header for interfaces */
     if (hasProcedures || isInterface) {
-        data->header = c_interfaceHeaderFileOpen(data->g, o);
+        data->header = c_interfaceHeaderFileOpen(data->g, o, data);
         if (!data->header) {
             goto error;
         }
@@ -878,6 +1043,14 @@ static db_int16 c_interfaceObject(db_object o, c_typeWalk_t* data) {
      * but does have procedures (typical example is callbacks or static functions)
      * these are appended to the header of the first scope in the hierarchy. */
     if (hasProcedures) {
+
+        /* Create a wrapper file if it was not already created */
+        if(!data->wrapper) {
+            data->wrapper = c_interfaceWrapperFileOpen(data->g);
+            if(!data->wrapper) {
+                goto error;
+            }
+        }
         
         /* If a header exists, write it */
         if ((snippet = g_fileLookupHeader(data->header, ""))) {
@@ -953,6 +1126,8 @@ int hyve_genMain(db_generator g) {
     walkData.g = g;
     walkData.header = NULL;
     walkData.source = NULL;
+    walkData.wrapper = NULL;
+    walkData.mainHeader = NULL;
 
     /* Walk objects, generate procedures and class members */
     if (!g_walkNoScope(g, c_interfaceWalk, &walkData)) {
