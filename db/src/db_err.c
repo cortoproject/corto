@@ -10,12 +10,12 @@
 #include "db_async.h"
 #include "db_mem.h"
 
-#include "stdio.h"
-#include "time.h"
-#include "stdarg.h"
-#include "stdlib.h"
-#include "execinfo.h"
-#include "string.h"
+#include <stdio.h>
+#include <time.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <execinfo.h>
+#include <string.h>
 
 static char* db_logKind[] = {"ok:     ", "debug:   ", "trace:   ", "warning: ", "error:   ", "critical:", "assert: "};
 static db_threadKey db_errKey = 0;

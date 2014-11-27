@@ -1464,7 +1464,7 @@ db_uint16 db__destruct(db_object o) {
 					db_id id;\
 				    db_trace("    source: %s", db_fullname(src, id));\
                 }\
-                /*db_backtrace(stdout);\\
+                /*db_backtrace(stdout);*/\
 			}\
 		}\
 	}

@@ -303,7 +303,6 @@ error:
 /* All conversion functions for numeric types */
 #define DB_CONVERT_NUM_ALL(fromType, fmt)\
     DB_CONVERT_NUM(fromType,char8)\
-    DB_CONVERT_NUM(fromType,char16)\
     DB_CONVERT_NUM(fromType,int8)\
     DB_CONVERT_NUM(fromType,int16)\
     DB_CONVERT_NUM(fromType,int32)\
@@ -333,28 +332,26 @@ error:
 
 DB_CONVERT_NUM_INT(bool, "d")
 DB_CONVERT_NUM_INT(char8, "c")
-DB_CONVERT_NUM_INT(char16, "d")
 DB_CONVERT_NUM_INT(int8, PRId8)
 DB_CONVERT_NUM_INT(int16, PRId16)
 DB_CONVERT_NUM_INT(int32, PRId32)
 DB_CONVERT_NUM_INT(int64, PRId64)
-DB_CONVERT_NUM_INT(intptr, "d")
+DB_CONVERT_NUM_INT(intptr, PRIdPTR)
 DB_CONVERT_NUM_INT(uint8, PRIu8)
 DB_CONVERT_NUM_INT(uint16, PRIu16)
 DB_CONVERT_NUM_INT(uint32, PRIu32)
 DB_CONVERT_NUM_INT(uint64, PRIu64)
-DB_CONVERT_NUM_INT(uintptr, "u")
+DB_CONVERT_NUM_INT(uintptr, PRIuPTR)
 DB_CONVERT_NUM_ALL(float32, "f")
 DB_CONVERT_NUM_ALL(float64, "f")
-DB_CONVERT_TO_STR(bin8, "hhx")
-DB_CONVERT_TO_STR(bin16, "hx")
-DB_CONVERT_TO_STR(bin32, "x")
-DB_CONVERT_TO_STR(bin64, "016llx")
-DB_CONVERT_NUM_ALL(word, "x")
+DB_CONVERT_TO_STR(bin8, PRIx8)
+DB_CONVERT_TO_STR(bin16, PRIx16)
+DB_CONVERT_TO_STR(bin32, PRIx32)
+DB_CONVERT_TO_STR(bin64, PRIx64)
+DB_CONVERT_NUM_ALL(word, PRIxPTR)
 
 /* All string to character conversions */
 DB_CONVERT_FROM_STR_CHAR(char8)
-DB_CONVERT_FROM_STR_CHAR(char16)
 
 /* All string to integer conversions */
 DB_CONVERT_FROM_STR_INT(int8)
@@ -383,7 +380,6 @@ DB_CONVERT_FROM_STR_FLOAT(float64)
     DB_CONVERT_INIT_NUM(kind, width, DB_BINARY, DB_WIDTH_64, type, uint64);\
     DB_CONVERT_INIT_NUM(kind, width, DB_BINARY, DB_WIDTH_WORD, type, uintptr);\
     DB_CONVERT_INIT_NUM(kind, width, DB_CHARACTER, DB_WIDTH_8, type, char8);\
-    DB_CONVERT_INIT_NUM(kind, width, DB_CHARACTER, DB_WIDTH_16, type, char16);\
     DB_CONVERT_INIT_NUM(kind, width, DB_INTEGER, DB_WIDTH_8, type, int8);\
     DB_CONVERT_INIT_NUM(kind, width, DB_INTEGER, DB_WIDTH_16, type, int16);\
     DB_CONVERT_INIT_NUM(kind, width, DB_INTEGER, DB_WIDTH_32, type, int32);\
@@ -407,7 +403,6 @@ DB_CONVERT_FROM_STR_FLOAT(float64)
     DB_CONVERT_INIT_NUM(kind, width, DB_BINARY, DB_WIDTH_64, type, uint64);\
     DB_CONVERT_INIT_NUM(kind, width, DB_BINARY, DB_WIDTH_WORD, type, uintptr);\
     DB_CONVERT_INIT_NUM(kind, width, DB_CHARACTER, DB_WIDTH_8, type, uint8);\
-    DB_CONVERT_INIT_NUM(kind, width, DB_CHARACTER, DB_WIDTH_16, type, uint16);\
     DB_CONVERT_INIT_NUM(kind, width, DB_INTEGER, DB_WIDTH_8, type, uint8);\
     DB_CONVERT_INIT_NUM(kind, width, DB_INTEGER, DB_WIDTH_16, type, uint16);\
     DB_CONVERT_INIT_NUM(kind, width, DB_INTEGER, DB_WIDTH_32, type, uint32);\
@@ -431,7 +426,6 @@ void db_convertInit(void) {
 	DB_CONVERT_INIT_NUM_INT(DB_BINARY, DB_WIDTH_64, uint64);
 	DB_CONVERT_INIT_NUM_ALL(DB_BINARY, DB_WIDTH_WORD, word);
 	DB_CONVERT_INIT_NUM_INT(DB_CHARACTER, DB_WIDTH_8, char8);
-	DB_CONVERT_INIT_NUM_INT(DB_CHARACTER, DB_WIDTH_16, char16);
 	DB_CONVERT_INIT_NUM_INT(DB_INTEGER, DB_WIDTH_8, int8);
 	DB_CONVERT_INIT_NUM_INT(DB_INTEGER, DB_WIDTH_16, int16);
     DB_CONVERT_INIT_NUM_INT(DB_INTEGER, DB_WIDTH_32, int32);
@@ -477,7 +471,6 @@ void db_convertInit(void) {
 
     /* string to character */
     DB_CONVERT_INIT_NUM(DB_TEXT, DB_WIDTH_WORD, DB_CHARACTER, DB_WIDTH_8, string, char8);
-    DB_CONVERT_INIT_NUM(DB_TEXT, DB_WIDTH_WORD, DB_CHARACTER, DB_WIDTH_16, string, char16);
 
     /* string to numeric */
     DB_CONVERT_INIT_NUM(DB_TEXT, DB_WIDTH_WORD, DB_INTEGER, DB_WIDTH_8, string, int8);

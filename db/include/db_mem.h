@@ -8,8 +8,8 @@
 #ifndef DB_MEM_H_
 #define DB_MEM_H_
 
-#include "stdlib.h"
-#include "string.h"
+#include <stdlib.h>
+#include <string.h>
 #include "db_err.h"
 
 #ifdef __cplusplus
