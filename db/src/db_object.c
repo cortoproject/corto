@@ -3319,8 +3319,8 @@ db_string db_toString(db_object object, db_uint32 maxLength) {
 	serData.buffer = NULL;
 	serData.length = 0;
 	serData.maxlength = maxLength;
-	serData.compactNotation=TRUE;
-	serData.prefixType = TRUE;
+	serData.compactNotation = TRUE;
+	serData.prefixType = FALSE;
 
 	s = db_string_ser(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
 	db_serialize(&s, object, &serData);
@@ -3335,8 +3335,8 @@ db_string db_valueToString(db_value* v, db_uint32 maxLength) {
 	serData.buffer = NULL;
 	serData.length = 0;
 	serData.maxlength = maxLength;
-	serData.compactNotation=TRUE;
-	serData.prefixType = TRUE;
+	serData.compactNotation = TRUE;
+	serData.prefixType = FALSE;
 
 	s = db_string_ser(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
 	db_serializeValue(&s, v, &serData);
