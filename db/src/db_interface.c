@@ -15,6 +15,7 @@
 #include "db_util.h"
 #include "db_mem.h"
 #include "db_serializer.h"
+#include "db_call.h"
 
 static db_uint32 db_interface_resolveMember_id = 0;
 
@@ -411,13 +412,7 @@ db_member db_interface_resolveMember(db_interface _this, db_string name) {
     resolveMember = db_interface_resolveMethodById(db_interface(db_typeof(_this)), db_interface_resolveMember_id);
     db_assert(resolveMember != NULL, "unresolved method '%s::resolveMember@%d'", db_nameof(_this), db_interface_resolveMember_id);
 
-    /* Call function directly if it is a C-function */
-    if (resolveMember->_parent.kind == DB_PROCEDURE_CDECL) {
-        db_assert(resolveMember->_parent.impl, "missing implementationData for interface::resolveMember");
-        result = (db_member)((db_object(*)(db_interface,db_string))resolveMember->_parent.impl)(_this, name);
-    } else {
-        /* db_callMethod */
-    }
+    db_call(db_function(resolveMember), &result, _this, name);
 
     return result;
 }
@@ -509,13 +504,7 @@ db_int16 db_interface_bindMethod(db_interface _this, db_method method) {
     _method = db_interface_resolveMethodById(db_interface(db_typeof(_this)), methodId);
     db_assert(_method != NULL, "unresolved method '%s::bindMethod@%d'", db_nameof(_this), methodId);
 
-    /* Call function directly if it is a C-function */
-    if (_method->_parent.kind == DB_PROCEDURE_CDECL) {
-        db_assert(_method->_parent.impl, "missing implementationData for interface::bindMethod");
-        result = ((db_uint32(*)(db_object,db_method))_method->_parent.impl)(_this, method);
-    } else {
-        /* db_callMethod */
-    }
+    db_call(db_function(_method), &result, _this, method);
 
     return result;
 }

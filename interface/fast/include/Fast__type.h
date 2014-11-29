@@ -1,6 +1,6 @@
 /* Fast__type.h
  *
- *  Generated on Nov 27 2014
+ *  Generated on Nov 28 2014
  *    Type-definitions for C-language.
  *    This file contains generated code. Do not modify!
  */

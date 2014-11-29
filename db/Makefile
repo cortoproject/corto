@@ -4,7 +4,6 @@ TARGET =	lang
 SOURCES =	db.c \
 			db_async.c \
 			db_call.c \
-			db_cdecl.c \
 			db_class.c \
 			db_collection.c \
             db_compare_ser.c \
@@ -37,8 +36,6 @@ SOURCES =	db.c \
 			db_type.c \
 			db_value.c \
 			db_vm.c
-			
-ASMSOURCES = db_cdecl_x86.s
 
 INCLUDE = 	include
 

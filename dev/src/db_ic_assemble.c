@@ -336,7 +336,8 @@ void db_ic_vmProgram_finalize(db_ic_vmProgram *vmProgram) {
     /* If program is a function, set the function-implementation to the program */
     if (vmProgram->function) {
         db_function function = vmProgram->function->function;
-        function->impl = (db_word)vmProgram->program;
+        function->impl = (db_word)db_call_vm;
+        function->implData = (db_word)vmProgram->program;
         db_define(function);
 
 #ifdef DB_IC_TRACING

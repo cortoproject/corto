@@ -2398,7 +2398,7 @@ static void db_notifyObserverThisCdecl(db__observer* data, db_object _this, db_o
     DB_UNUSED(mask);
     if (!_this || (_this != source)) {
         db_function f = db_function(data->observer);
-        ((void(*)(db_object,db_object,db_object))f->impl)(_this, observable, source);
+        ((void(*)(db_object,db_object,db_object))f->implData)(_this, observable, source);
     }
 }
 
@@ -2626,6 +2626,15 @@ static void db_waitObserver(db_object me, db_object observable, db_object source
     db_adec(&waitAdmin->triggerCount);
 }
 
+static void __db_waitObserver(db_function f, void* result, void* args) {
+    DB_UNUSED(f);
+    DB_UNUSED(result);
+    db_waitObserver(
+        *(db_object*)args,
+        *(db_object*)((intptr_t)args + sizeof(db_object)),
+        *(db_object*)((intptr_t)args + sizeof(db_object) * 2));
+}
+
 db_int32 db_waitfor(db_object observable) {
     db_waitForObject *waitAdmin;
 
@@ -2641,7 +2650,8 @@ db_int32 db_waitfor(db_object observable) {
 
         /* Create observer */
         observer = db_new(db_typedef(db_observer_o));
-        db_function(observer)->impl = (db_word)db_waitObserver;
+        db_function(observer)->impl = (db_word)__db_waitObserver;
+        db_function(observer)->implData = (db_word)db_waitObserver;
         db_function(observer)->kind = DB_PROCEDURE_CDECL;
         observer->mask = DB_ON_UPDATE;
 

@@ -153,7 +153,7 @@ db_threadKey DB_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, function_overloaded);\
     SSO_OP_OBJ(op, function_kind);\
     SSO_OP_OBJ(op, function_impl);\
-    SSO_OP_OBJ(op, function_impludata);\
+    SSO_OP_OBJ(op, function_implData);\
     SSO_OP_OBJ(op, function_resource);\
     SSO_OP_OBJ(op, function_size);\
     SSO_OP_OBJ(op, function_parameters);\
@@ -735,7 +735,7 @@ int db_start(void){
     /* Register C-binding and vm-binding */
     {
         db_uint32 id;
-        id = db_callRegisterBinding(db_call_cdecl, NULL, NULL, NULL);
+        id = db_callRegisterBinding(NULL, NULL, NULL, NULL);
         db_assert(id == 1, "C-binding did not receive binding-id 1.");
 
         id = db_callRegisterBinding(db_call_vm, NULL, NULL, (db_callDestructHandler)db_callDestruct_vm);

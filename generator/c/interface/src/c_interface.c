@@ -65,39 +65,6 @@ error:
 }
 
 /* Generate parameters for method */
-static int c_interfaceMethodParameterType(db_parameter* o, void* userData) {
-    c_typeWalk_t* data;
-    db_id specifier, postfix;
-
-    data = userData;
-
-    /* Write comma */
-    if (data->firstComma) {
-    	g_fileWrite(data->source, ", ");
-    }
-
-    if (c_specifierId(data->g, o->type, specifier, NULL, postfix)) {
-    	goto error;
-    }
-
-    g_fileWrite(data->source, "%s ", specifier);
-
-    if (o->passByReference || ((o->type->real->kind == DB_COMPOSITE) && !o->type->real->reference)) {
-    	g_fileWrite(data->source, "*");
-    }
-
-	/* Write to source */
-	g_fileWrite(data->source, "%s",
-			postfix);
-
-	data->firstComma++;
-
-	return 1;
-error:
-	return 0;
-}
-
-/* Generate parameters for method */
 static int c_interfaceMethodParameterName(db_parameter* o, void* userData) {
     c_typeWalk_t* data;
 
@@ -220,42 +187,7 @@ static int c_interfaceGenerateVirtual(db_method o, c_typeWalk_t* data) {
 	g_fileWrite(data->wrapper, "/* Lookup method-object. */\n");
 	g_fileWrite(data->wrapper, "_method = db_interface_resolveMethodById(_abstract, _methodId);\n");
 	g_fileWrite(data->wrapper, "db_assert(_method != NULL, \"unresolved method '%%s::%s@%%d'\", db_nameof(_this), _methodId);\n\n", nameString);
-	g_fileWrite(data->wrapper, "/* Call method directly if it's a C-function. */\n");
-	g_fileWrite(data->wrapper, "if (_method->_parent.kind == DB_PROCEDURE_CDECL) {\n");
-	g_fileIndent(data->wrapper);
-	g_fileWrite(data->wrapper, "db_assert(_method->_parent.impl, \"missing implementation for '%%s::%s'.\", db_nameof(_this));\n", nameString);
 
-	/* If the returnType is a reference object, use 'db_object' as returntype for the function-prototype. This prevents substituting <type>(*) by
-	 * the corresponding casting macro's which are generated for all reference types, except db_object. */
-	if (returnsValue) {
-		g_fileWrite(data->wrapper, "_result = ");
-	}
-	if (db_function(o)->returnType && db_function(o)->returnType->real->reference) {
-		g_fileWrite(data->wrapper, "(%s)((db_object(*)(%s", returnTypeId, classId);\
-	} else {
-		g_fileWrite(data->wrapper, "((%s(*)(%s", returnTypeId, classId);\
-	}
-
-	/* Walk parameters for function prototype */
-	data->firstComma = 1;
-	if (!c_interfaceParamWalk(o, c_interfaceMethodParameterType, data)) {
-		goto error;
-	}
-
-	g_fileWrite(data->wrapper, "))_method->_parent.impl)(_this");
-
-	/* Walk parameters for argument list */
-	data->firstComma = 1;
-	if (!c_interfaceParamWalk(o, c_interfaceMethodParameterName, data)) {
-		goto error;
-	}
-
-	g_fileWrite(data->wrapper, ");\n");
-
-	g_fileDedent(data->wrapper);
-	g_fileWrite(data->wrapper, "} else {\n");
-	g_fileIndent(data->wrapper);
-	g_fileWrite(data->wrapper, "/* Function is implemented in another language. */\n");
 	if (returnsValue) {
 		g_fileWrite(data->wrapper, "db_call(db_function(_method), &_result, _this");
 	} else {
@@ -266,8 +198,7 @@ static int c_interfaceGenerateVirtual(db_method o, c_typeWalk_t* data) {
         goto error;
     }
     g_fileWrite(data->wrapper, ");\n");
-	g_fileDedent(data->wrapper);
-	g_fileWrite(data->wrapper, "}\n");
+
 	if (returnsValue) {
 		g_fileWrite(data->wrapper, "\n");
 		g_fileWrite(data->wrapper, "return _result;\n");
@@ -340,42 +271,7 @@ static int c__interfaceGenerateDelegate(db_delegate o, c_typeWalk_t* data) {
     g_fileWrite(data->wrapper, "db_assert(_delegate != NULL, \"delegate function '%s' not found in class '%s'\");\n\n", db_nameof(o), classId);
     g_fileWrite(data->wrapper, "/* Lookup callback-object. */\n");
     g_fileWrite(data->wrapper, "_callback = db_class_resolveCallback(db_class(db_typeof(_this)), _delegate, _this);\n\n");
-    g_fileWrite(data->wrapper, "/* Call method directly if it's a C-function. */\n");
-    g_fileWrite(data->wrapper, "if (db_function(_callback)->kind == DB_PROCEDURE_CDECL) {\n");
-    g_fileIndent(data->wrapper);
-    g_fileWrite(data->wrapper, "db_assert(db_function(_callback)->impl, \"missing implementation for '%%s::%s'.\", db_nameof(_this));\n", db_nameof(o));
 
-    /* If the returnType is a reference object, use 'db_object' as returntype for the function-prototype. This prevents substituting <type>(*) by
-     * the corresponding casting macro's which are generated for all reference types, except db_object. */
-    if (returnsValue) {
-    	g_fileWrite(data->wrapper, "_result = ");
-    }
-    if (db_function(o)->returnType->real->reference) {
-        g_fileWrite(data->wrapper, "(%s)((db_object(*)(%s", returnTypeId, classId);\
-    } else {
-        g_fileWrite(data->wrapper, "((%s(*)(%s", returnTypeId, classId);\
-    }
-
-    /* Walk parameters for function prototype */
-    data->firstComma = 1;
-    if (!c_interfaceParamWalk(o, c_interfaceMethodParameterType, data)) {
-        goto error;
-    }
-
-    g_fileWrite(data->wrapper, "))_callback->_parent.impl)(_this");
-
-    /* Walk parameters for argument list */
-    data->firstComma = 1;
-    if (!c_interfaceParamWalk(o, c_interfaceMethodParameterName, data)) {
-        goto error;
-    }
-
-    g_fileWrite(data->wrapper, ");\n");
-
-    g_fileDedent(data->wrapper);
-    g_fileWrite(data->wrapper, "} else {\n");
-    g_fileIndent(data->wrapper);
-    g_fileWrite(data->wrapper, "/* Callback is implemented in another language. */\n");
 	if (returnsValue) {
 		g_fileWrite(data->wrapper, "db_call(db_function(_callback), &_result, _this");
 	} else {
@@ -495,39 +391,7 @@ static int c__interfaceGenerateDelegate_w_callback(db_delegate o, c_typeWalk_t* 
     g_fileWrite(data->wrapper, ") {\n");
     g_fileIndent(data->wrapper);
     g_fileWrite(data->wrapper, "%s _result;\n\n", returnTypeId);
-    g_fileWrite(data->wrapper, "/* Call method directly if it's a C-function. */\n");
-    g_fileWrite(data->wrapper, "if (db_function(__callback)->kind == DB_PROCEDURE_CDECL) {\n");
-    g_fileIndent(data->wrapper);
-    g_fileWrite(data->wrapper, "db_assert(db_function(__callback)->impl, \"missing implementation for '%%s::%s'.\", db_nameof(_this));\n", db_nameof(o));
 
-    /* If the returnType is a reference object, use 'db_object' as returntype for the function-prototype. This prevents substituting <type>(*) by
-     * the corresponding casting macro's which are generated for all reference types, except db_object. */
-    if (db_function(o)->returnType->real->reference) {
-        g_fileWrite(data->wrapper, "_result = (%s)((db_object(*)(", returnTypeId);\
-    } else {
-        g_fileWrite(data->wrapper, "_result = ((%s(*)(", returnTypeId);\
-    }
-
-    /* Walk parameters for function prototype */
-    data->firstComma = 0;
-    if (!c_interfaceParamWalk(o, c_interfaceMethodParameterType, data)) {
-        goto error;
-    }
-
-    g_fileWrite(data->wrapper, "))__callback->_parent.impl)(");
-
-    /* Walk parameters for argument list */
-    data->firstComma = 0;
-    if (!c_interfaceParamWalk(o, c_interfaceMethodParameterName, data)) {
-        goto error;
-    }
-
-    g_fileWrite(data->wrapper, ");\n");
-
-    g_fileDedent(data->wrapper);
-    g_fileWrite(data->wrapper, "} else {\n");
-    g_fileIndent(data->wrapper);
-    g_fileWrite(data->wrapper, "/* Callback is implemented in another language. */\n");
     g_fileWrite(data->wrapper, "db_call(db_function(__callback), &_result");
     data->firstComma = 2;
     if (!c_interfaceParamWalk(o, c_interfaceMethodParameterName, data)) {
@@ -625,10 +489,11 @@ static int c_interfaceClassProcedureWrapper(db_function o, c_typeWalk_t *data) {
 
     /* Write wrapper signature */
     g_fileWrite(data->wrapper, "\n");
-    g_fileWrite(data->wrapper, "void __%s(void *args, void *result) {\n", c_functionName(o, id, data));
+    g_fileWrite(data->wrapper, "void __%s(db_function f, void *result, void *args) {\n", c_functionName(o, id, data));
     g_fileIndent(data->wrapper);
 
     /* Obtain returntype string */
+    g_fileWrite(data->wrapper, "DB_UNUSED(f);\n");
     returnType = ((db_function)o)->returnType;
     if (returnType && db_type_sizeof(returnType->real)) {
         c_specifierId(data->g, returnType, returnSpec, NULL, returnPostfix);

@@ -70,14 +70,8 @@ db_uint32 db_type_allocSize(db_type _this) {
     allocSize = db_interface_resolveMethodById(db_interface(db_typeof(_this)), db_type_allocSize_id);
     db_assert(allocSize != NULL, "unresolved method '%s::allocSize@%d'", db_nameof(_this), db_type_allocSize_id);
 
-    /* Call function directly if it is a C-function */
-    if (allocSize->_parent.kind == DB_PROCEDURE_CDECL) {
-    	db_assert(allocSize->_parent.impl, "missing implementationData for type::allocSize");
-        result = ((db_uint32(*)(db_object))allocSize->_parent.impl)(_this);
-    } else {
-        /* db_callMethod */
-    }
-
+    db_call(db_function(allocSize), &result, _this);
+    
     return result;
 }
 
@@ -100,14 +94,8 @@ db_bool db_type_compatible(db_type _this, db_type type) {
     compatible = db_interface_resolveMethodById(db_interface(db_typeof(_this)), db_type_compatible_id);
     db_assert(compatible != NULL, "unresolved method '%s::compatible@%d'", db_nameof(_this), db_type_compatible_id);
 
-    /* Call function directly if it is a C-function */
-    if (compatible->_parent.kind == DB_PROCEDURE_CDECL) {
-        db_assert(compatible->_parent.impl, "missing implementationData for type::compatible");
-        result = ((db_bool(*)(db_type,db_type))compatible->_parent.impl)(_this, type);
-    } else {
-        /* db_callMethod */
-    }
-
+    db_call(db_function(compatible), &result, _this, type);
+    
     return result;
 }
 
@@ -211,12 +199,8 @@ db_bool db_type_castable(db_type _this, db_type type) {
     castable = db_interface_resolveMethodById(db_interface(db_typeof(_this)), db_type_castable_id);
     db_assert(castable != NULL, "unresolved method '%s::castable@%d'", db_nameof(_this), db_type_castable_id);
 
-    /* Call function directly if it is a C-function */
-    if (castable->_parent.kind == DB_PROCEDURE_CDECL) {
-        db_assert(castable->_parent.impl, "missing implementationData for type::castable");
-        result = ((db_bool(*)(db_type,db_type))castable->_parent.impl)(_this, type);
-    } else {
-        /* db_callMethod */
+    if(castable) {
+        db_call(db_function(castable), &result, type);
     }
 
     return result;
@@ -256,16 +240,7 @@ db_int16 db_type_init(db_type _this, db_object object) {
     /* Lookup delegate in target object */
     init = db_class_resolveCallback(db_type_o, db_type_init_d, _this);
     if (init) {
-        /* Call function directly if it is a C-function */
-        if (init->_parent.kind == DB_PROCEDURE_CDECL) {
-            if (!init->_parent.impl) {
-                db_id id;
-                db_critical("type::init: callback function '%s' has no implementation.", db_fullname(init, id));
-            }
-            result = ((db_int16(*)(db_object))init->_parent.impl)(object);
-        } else {
-            db_call(db_function(init), &result, object);
-        }
+        db_call(db_function(init), &result, object);
     }
 
 	return result;

@@ -33,14 +33,7 @@ void db_dispatcher_post(db_dispatcher _this, db_event event) {
 		db_critical("class '%s' does not implement method dispatcher::post.", db_fullname(db_typeof(_this), id));
 	}
 
-    /* Call function directly if it is a C-function */
-    if (m->_parent.kind == DB_PROCEDURE_CDECL) {
-    	db_id id;
-        db_assert(m->_parent.impl, "missing implementationData for %s::post", db_fullname(db_typeof(_this), id));
-        ((db_void(*)(db_dispatcher,db_event))m->_parent.impl)(_this, event);
-    } else {
-        db_call(db_function(m), NULL, _this, event);
-    }
+    db_call(db_function(m), NULL, _this, event);
 }
 
 db_event db_dispatcher_getEvent(db_dispatcher _this, db_observer observer, db_object me, db_object observable, db_object source) {
@@ -61,14 +54,8 @@ db_event db_dispatcher_getEvent(db_dispatcher _this, db_observer observer, db_ob
         db_critical("class '%s' does not implement method dispatcher::getEvent.", db_fullname(db_typeof(_this), id));
     }
 
-    /* Call function directly if it is a C-function */
-    if (m->_parent.kind == DB_PROCEDURE_CDECL) {
-        db_id id;
-        db_assert(m->_parent.impl, "missing implementationData for %s::getEvent", db_fullname(db_typeof(_this), id));
-        result = ((db_object(*)(db_dispatcher,db_observer,db_object,db_object,db_object))m->_parent.impl)(_this, observer, me, observable, source);
-    } else {
-        db_call(db_function(m), &result, _this, observer, me, observable, source);
-    }
+    db_call(db_function(m), &result, _this, observer, me, observable, source);
+
     return result;
 }
 

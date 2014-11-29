@@ -54,16 +54,7 @@ db_int16 db_procedure_bind(db_procedure _this, db_object object) {
 
     bind = db_class_resolveCallback(db_class_o, db_procedure_bind_d, db_typeof(object)->real);
     if (bind) {
-        /* Call function directly if it is a C-function */
-        if (bind->_parent.kind == DB_PROCEDURE_CDECL) {
-            if (!bind->_parent.impl) {
-                db_id id;
-                db_critical("procedure::bind: callback function '%s' has no implementation.", db_fullname(bind, id));
-            }
-            result = ((db_int16(*)(db_object))bind->_parent.impl)(object);
-        } else {
-            /* db_callMethod */
-        }
+        db_call(db_function(bind), &result, _this, object);
     }
 
     return result;

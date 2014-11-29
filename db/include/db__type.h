@@ -258,8 +258,8 @@ DB_PROCEDURE_DEF(db_function) {
     db_bool returnsReference;
     db_bool overloaded;
     db_uint32 kind;
-    db_word impl;
-    db_word impludata;
+    db_word impl;       /* The language-binding specific call that is executed upon calling this function. */
+    db_word implData;   /* Userdata for the language binding (usually a pointer to the function implemntation) */
     db_object resource;
     db_uint16 size;
     db_parameterSeq parameters;

@@ -224,16 +224,7 @@ db_int16 db_class_construct(db_class _this, db_object object) {
 
     construct = db_class_resolveCallback(db_class_o, db_class_construct_d, _this);
     if (construct) {
-        /* Call function directly if it is a C-function */
-        if (construct->_parent.kind == DB_PROCEDURE_CDECL) {
-            if (!construct->_parent.impl) {
-                db_id id;
-                db_critical("class::construct: callback function '%s' has no implementation.", db_fullname(construct, id));
-            }
-            result = ((db_int16(*)(db_object))construct->_parent.impl)(object);
-        } else {
-            db_call(db_function(construct), &result, object);
-        }
+        db_call(db_function(construct), &result, object);
     }
 
     return result;
@@ -253,16 +244,7 @@ void db_class_destruct(db_class _this, db_object object) {
 
     destruct = db_class_resolveCallback(db_class_o, db_class_destruct_d, _this);
     if (destruct) {
-        /* Call function directly if it is a C-function */
-        if (destruct->_parent.kind == DB_PROCEDURE_CDECL) {
-            if (!destruct->_parent.impl) {
-                db_id id;
-                db_critical("class::destruct: callback function '%s' has no implementation.", db_fullname(destruct, id));
-            }
-            ((void(*)(db_object))destruct->_parent.impl)(object);
-        } else {
-            db_call(db_function(destruct), NULL, object);
-        }
+        db_call(db_function(destruct), NULL, object);
     }
 }
 

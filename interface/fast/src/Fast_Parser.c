@@ -29,6 +29,7 @@
 #include "Fast_TernaryExpr.h"
 #include "db__api.h"
 #include "db_string_ser.h"
+#include "db_vm.h"
 int fast_yparse(Fast_Parser parser, db_uint32 line, db_uint32 column);
 
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ... ) {

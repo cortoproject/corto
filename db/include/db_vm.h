@@ -360,6 +360,7 @@ typedef struct db_vmProgram_s {
 	uint8_t translated;
 }db_vmProgram_s;
 
+void db_call_vm(db_function f, db_void* result, void* args);
 int32_t db_vm_run(db_vmProgram program, void *result);
 char *db_vmProgram_toString(db_vmProgram program, db_vmOp *addr);
 db_vmProgram db_vmProgram_new(char *filename, db_object function);
