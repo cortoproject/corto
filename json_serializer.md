@@ -69,26 +69,32 @@ object tc_jsonser::
 
 ```
 
-**Warning**: the serializer doesn't insert any whitespace.
+**Warning**: the serializer doesn't insert any whitespace; spaces and line jumps are added here for readability.
 
-**Warning**: you can indeed receive an empty top-level object if requested.
+**Warning**: you could indeed receive an empty top-level object if requested.
 
 ## Serialization of the value
 
-### Primitive types
+### Primitive kinds
 
-Serialization of primitive types is very simple. The value is printed directly.
-- Integer and float types (e.g. `int16`, `uint32`, `float32`, `float64`) will be a JSON number.
-- `string` are JSON strings.
-- `bool` is a JSON `true` or `false` literal.
-- `null` values are a JSON `null` literal.
+Serialization of primitive types is simple. The following table defines the relationship between Hyve primitive values and their corresponding JSON serialization.
+
+| Hyve value | JSON value
+-------------|-----------
+| Integer and float values (e.g. `int16`, `uint32`, `float32`, `float64`) | JSON numbers
+| `string` | JSON strings
+| `bool` | `true` or `false`
+| `null` |  `null`
+| `binary` | string of uppercase Hex numbers separated by a space e.g. `A87C 4948 E9F7`
+| `bitmask` | string of or'd values e.g. `gluten_free|peanut_free|lactose_free`
+| `character` e.g. `'c'` | string with the corresponding character e.g. `"c"`
 
 **TODO. What are there indications regarding Unicode characters? What is going to be of Unicode with Hyve? JSON does support Unicode, only needing to escape certain sequences. How does Hyve handle them?**
 
 For example, the following Hyve object
 
 ```Hyve
-uint32 numberOfStars: 42; // the rest is an illusion
+uint64 numberOfStars: 42; // the rest is an illusion
 ```
 
 will be serialized into this JSON (only value)
@@ -99,9 +105,9 @@ will be serialized into this JSON (only value)
 }
 ```
 
-### Composite types
+### Composite kinds
 
-The value pair is serialized as a JSON object. The following example is a simplified version of an example above.
+The members are serialized as a JSON object where the key is the name of the member and the value depends on its `kind`. The following example is a simplified version of an example above.
 
 ```Hyve
 // tc_jsonser.hyve
@@ -119,7 +125,8 @@ object tc_jsonser::
 }
 ```
 
-**TODO** how do we address a case like:
+
+**TODO** how do we address a case with a anonymous object like:
 
 ```
 object tc_jsonser::
@@ -131,7 +138,7 @@ object tc_jsonser::
         xy: Point;
         z: int32;
 
-    PointPoint pp: 1, 2, Point{5, 6};
+    Point3D pp: 1, 2, Point{5, 6};
 ```
 
 The following is the view in dbshell
@@ -147,6 +154,11 @@ attributes:   S|W |O
 parent:       ::tc_jsonser
 value:        {x=1,y=2,other=<1>::tc_jsonser::Point{x=5,y=6}}
 ```
+
+
+### Collection types
+
+
 
 ## Serialization of the scope
 
