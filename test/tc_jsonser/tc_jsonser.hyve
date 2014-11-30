@@ -1,0 +1,16 @@
+object tc_jsonser::
+
+    class Point::
+        x, y: uint32;
+
+    Point p: 10, 20::
+        Point a: 34, 55;
+        Point b: 6, 7;
+        Point c: 8, 9;
+        Point d: 1, 2;
+
+    class PointPoint::
+        x, y: uint32;
+        other: Point;
+
+    PointPoint pp: 1, 2, Point{5, 6};
