@@ -54,7 +54,7 @@ db_int16 db_procedure_bind(db_procedure _this, db_object object) {
 
     bind = db_class_resolveCallback(db_class_o, db_procedure_bind_d, db_typeof(object)->real);
     if (bind) {
-        db_call(db_function(bind), &result, _this, object);
+        db_call(db_function(bind), &result, object);
     }
 
     return result;

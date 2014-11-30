@@ -17,14 +17,14 @@ static char* lang = NULL;
 static db_ll generators = NULL;
 static db_ll scopes = NULL;
 static db_ll includes = NULL;
-static db_ll dirs = NULL;
+static db_ll attributes = NULL;
 
-int db_arg_outputDir(char* arg, int argc, char* argv[]) {
+int db_arg_attributes(char* arg, int argc, char* argv[]) {
 	if (argc) {
-	    if (!dirs) {
-	        dirs = db_llNew();
+	    if (!attributes) {
+	        attributes = db_llNew();
 	    }
-	    db_llInsert(dirs, argv[1]);
+	    db_llInsert(attributes, argv[1]);
 	} else {
 		db_error("missing argument for '%s'.", arg);
 	}
@@ -91,15 +91,15 @@ int db_arg_language(char* arg, int argc, char* argv[]) {
             generators = db_llNew();
         }
         if (!strcmp(argv[1], "c")) {
-            if (!dirs) {
-                dirs = db_llNew();
+            if (!attributes) {
+                attributes = db_llNew();
             }
             db_llAppend(generators, "c_type");
             db_llAppend(generators, "c_interface");
             db_llAppend(generators, "c_load");
             db_llAppend(generators, "c_api");
-            db_llAppend(dirs, "c=src");
-            db_llAppend(dirs, "h=include");
+            db_llAppend(attributes, "c=src");
+            db_llAppend(attributes, "h=include");
 
             lang = "c";
         } else if (!strcmp(argv[1], "cpp")) {
@@ -120,7 +120,7 @@ error:
 /* Parse arguments */
 static int db_parseArguments(int argc, char* argv[]) {
 	/* Specifiy arguments and callbacks */
-	db_argSet("o", db_arg_outputDir, 0, -1);
+	db_argSet("attr", db_arg_attributes, 0, -1);
 	db_argSet("name", db_arg_name, 0, 1);
 	db_argSet("prefix", db_arg_prefix, 0, 1);
 	db_argSet("g", db_arg_generator, 0, -1);
@@ -158,7 +158,7 @@ int main(int argc, char* argv[]) {
 	db_generator g;
 	db_string lib, include;
 	db_iter iter;
-	db_string scope, dir;
+	db_string scope, attr;
 	db_object o;
 
 	if (db_parseArguments(argc, argv)) {
@@ -227,20 +227,20 @@ int main(int argc, char* argv[]) {
 		}
 
 		/* Add output directories */
-		if (dirs) {
-            iter = db_llIter(dirs);
+		if (attributes) {
+            iter = db_llIter(attributes);
             while(db_iterHasNext(&iter)) {
                 db_string ptr;
 
-                dir = db_strdup(db_iterNext(&iter));
+                attr = db_strdup(db_iterNext(&iter));
 
-                ptr = strchr(dir, '=');
+                ptr = strchr(attr, '=');
                 if (ptr) {
                     *ptr = '\0';
-                    gen_output(g, dir, ptr+1);
+                    gen_setAttribute(g, attr, ptr+1);
                 }
                 *ptr = '=';
-                db_dealloc(dir);
+                db_dealloc(attr);
             }
 		}
 
@@ -271,8 +271,8 @@ int main(int argc, char* argv[]) {
 		db_llFree(scopes);
 	}
 
-	if (dirs) {
-	    db_llFree(dirs);
+	if (attributes) {
+	    db_llFree(attributes);
 	}
 
 	/* Stop database */

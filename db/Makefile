@@ -2,6 +2,7 @@
 TARGET =	lang
 
 SOURCES =	db.c \
+			db__wrapper.c \
 			db_async.c \
 			db_call.c \
 			db_class.c \

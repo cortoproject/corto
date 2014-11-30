@@ -353,24 +353,44 @@ DB_STATIC_SCOPED_OBJECT(constant);
 		{DB_SSO_V(hyve_lang, #name, procedure), {DB_STRUCT_NOBASE_V(name, DB_PROCEDURE, TRUE, scopeType, scopeStateKind), kind}, VTABLE_V}
 
 /* function object */
-#define DB_FUNCTION_O(parent, name, args, returnType, impl) sso_function parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, function), {(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0, {0,NULL},0}, VTABLE_V}
+#define DB_FUNCTION_O(parent, name, args, returnType, impl) \
+        void __##impl(void *f, void *r, void *a); \
+        sso_function parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, function), {(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0, {0,NULL},0}, VTABLE_V}
 
-#define DB_FUNCTION_OO_O(parent, name, args, returnType, impl) sso_function parent##_##name##__o = {DB_SSO_V(parent, #name args, function), {(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0, {0,NULL},0}, VTABLE_V}
-#define DB_FUNCTION_OVERLOAD_OO_O(parent, name, args, returnType, impl) sso_function parent##_##name##__o = {DB_SSO_V(parent, args, function), {(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0, {0,NULL},0}, VTABLE_V}
+#define DB_FUNCTION_OO_O(parent, name, args, returnType, impl) \
+        void __##impl(void *f, void *r, void *a); \
+        sso_function parent##_##name##__o = {DB_SSO_V(parent, #name args, function), {(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0, {0,NULL},0}, VTABLE_V}
+
+#define DB_FUNCTION_OVERLOAD_OO_O(parent, name, args, returnType, impl) \
+        void __##impl(void *f, void *r, void *a); \
+        sso_function parent##_##name##__o = {DB_SSO_V(parent, args, function), {(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0, {0,NULL},0}, VTABLE_V}
 
 /* method object */
-#define DB_METHOD_O(parent, name, args, returnType, virtual, impl) sso_method parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, method), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0,{0,NULL},0}, virtual}, VTABLE_V}
+#define DB_METHOD_O(parent, name, args, returnType, virtual, impl) \
+        void __##impl(void *f, void *r, void *a); \
+        sso_method parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, method), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0,{0,NULL},0}, virtual}, VTABLE_V}
+
+/* interface method object */
+#define DB_IMETHOD_O(parent, name, args, returnType, virtual) \
+        sso_method parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, method), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, 0, 0, NULL, 0,{0,NULL},0}, virtual}, VTABLE_V}
 
 /* delegate object */
-#define DB_DELEGATE_O(parent, name, args, returnType) sso_delegate parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, delegate), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0, {0,NULL},0}, 0}, VTABLE_V}
+#define DB_DELEGATE_O(parent, name, args, returnType) \
+        sso_delegate parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, delegate), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, 0, 0, NULL, 0, {0,NULL},0}, 0}, VTABLE_V}
 
 /* callback object */
-#define DB_CALLBACK_O(parent, name, args, delegate, returnType, impl) sso_callback parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, callback), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0, {0,NULL},0}, (db_delegate)&delegate##__o.v}, VTABLE_V}
+#define DB_CALLBACK_O(parent, name, args, delegate, returnType, impl) \
+        void __##impl(void *f, void *r, void *a); \
+        sso_callback parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, callback), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0, {0,NULL},0}, (db_delegate)&delegate##__o.v}, VTABLE_V}
 
 /* metaprocedure object */
-#define DB_METAPROCEDURE_O(parent, name, args, returnType, referenceOnly, impl) sso_metaprocedure parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, metaprocedure), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0, {0,NULL},0}, referenceOnly}, VTABLE_V}
+#define DB_METAPROCEDURE_O(parent, name, args, returnType, referenceOnly, impl) \
+        void __##impl(void *f, void *r, void *a); \
+        sso_metaprocedure parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, metaprocedure), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0, {0,NULL},0}, referenceOnly}, VTABLE_V}
 
-#define DB_METAPROCEDURE_NAME_O(parent, name, actualName, args, returnType, referenceOnly, impl) sso_metaprocedure parent##_##name##__o = {DB_SSO_PO_V(parent, #actualName args, metaprocedure), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0, {0,NULL},0}, referenceOnly}, VTABLE_V}
+#define DB_METAPROCEDURE_NAME_O(parent, name, actualName, args, returnType, referenceOnly, impl) \
+        void __##impl(void *f, void *r, void *a); \
+        sso_metaprocedure parent##_##name##__o = {DB_SSO_PO_V(parent, #actualName args, metaprocedure), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0, {0,NULL},0}, referenceOnly}, VTABLE_V}
     
 /* member object */
 #define DB_MEMBER_O(parent, name, type, access) sso_member parent##_##name##__o = {DB_SSO_PO_V(parent, #name, member), DB_MEMBER_V(type, access, DB_DECLARED | DB_DEFINED, FALSE), VTABLE_V}
@@ -872,8 +892,8 @@ DB_PROCEDURE_NOBASE_O(function, DB_FUNCTION, NULL, DB_DECLARED | DB_DEFINED);
 
 /* ::hyve::lang::dispatcher */
 DB_INTERFACE_O(dispatcher);
-	DB_METHOD_O(dispatcher, post, "(lang::event event)", void, FALSE, NULL);
-	DB_METHOD_O(dispatcher, getEvent, "(lang::observer observer,lang::object me,lang::object observable,lang::object src)", observableEvent, FALSE, NULL);
+	DB_IMETHOD_O(dispatcher, post, "(lang::event event)", void, FALSE);
+	DB_IMETHOD_O(dispatcher, getEvent, "(lang::observer observer,lang::object me,lang::object observable,lang::object src)", observableEvent, FALSE);
 
 /* ::hyve::lang::event */
 DB_CLASS_NOBASE_O(event, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);

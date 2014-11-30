@@ -31,10 +31,10 @@ DB_STRUCT_DEF(g_object) {
     db_string prefix;
 };
 
-DB_STRUCT(g_extension);
-DB_STRUCT_DEF(g_extension) {
-    db_string extension;
-    db_string location;
+DB_STRUCT(g_attribute);
+DB_STRUCT_DEF(g_attribute) {
+    db_string key;
+    db_string value;
 };
 
 typedef enum g_idKind {
@@ -51,8 +51,8 @@ DB_CLASS_DEF(db_generator) {
     db_string name;
     db_string language;
     g_idKind idKind;
-    db_ll extensions; /* list<generatorExtension> */
-
+    db_ll attributes; /* list<generatorAttribute> */
+ 
     g_startAction start_action;
     g_idAction id_action;
 
@@ -96,8 +96,11 @@ db_string g_getLanguage(db_generator g);
 /* Instruct the generator to generate for an object. */
 void gen_parse(db_generator generator, db_object object, db_bool parseSelf, db_bool parseScope, db_string prefix);
 
-/* Route file-extensions to specific directories. */
-void gen_output(db_generator g, db_string extension, db_string location);
+/* Set attribute of generator */
+void gen_setAttribute(db_generator g, db_string key, db_string value);
+
+/* Get attribute from generator */
+db_string gen_getAttribute(db_generator g, db_string key);
 
 /* Load a generator library. */
 db_int16 gen_load(db_generator generator, db_string library);
