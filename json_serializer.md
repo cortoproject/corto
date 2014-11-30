@@ -132,8 +132,10 @@ object tc_jsonser::
         z: int32;
 
     PointPoint pp: 1, 2, Point{5, 6};
+```
 
 The following is the view in dbshell
+
 ```
 $ pp
 name:         ::tc_jsonser::pp
