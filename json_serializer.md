@@ -78,20 +78,16 @@ void example::
 
 Serialization of primitive types is simple. The following table defines the relationship between Hyve primitive values and their corresponding JSON serialization. Some have embedded annotation for their types.
 
-| Hyve value  | JSON value
---------------|-----------
+| Hyve value | JSON value
+-------------|-----------
+| `binary` | string of uppercase Hex numbers separated by a space e.g. `A87C 4948 E9F7`
+| `bitmask` | string of or'd values e.g. `gluten_free|peanut_free|lactose_free`
+| `bool` | `true` or `false`
+| `character` e.g. `'c'` | string with the corresponding character e.g. `"c"`
+| `enum` e.g. `Color c = green;` | string of the name of the enum singleton e.g. `"green"`
 | Integer and float values (e.g. `int16`, `uint32`, `float32`, `float64`) | JSON numbers
-| `binary`    | string of uppercase Hex numbers separated by a space e.g. `"@BI A87C 4948 E9F7"`
-| `bitmask`   | string of or'd values e.g. `@BM "GLUTEN_FREE|LACTOSE_FREE"`
-| `bool`      | `true` or `false`
-| `null`      |  `null`
-| `enum`      | string of the name of the singleton object, e.g. `@EN GREEN`
-| `character` | string with the corresponding character e.g. `"c"`
+| `null` |  `null`
 | `string` | JSON strings
-
-**Warning.** You would not be able to disambiguate between `character` values and `string` values.
-
-**TODO. What are there indications regarding Unicode characters? What is going to be of Unicode with Hyve? JSON does support Unicode, only needing to escape certain sequences. How does Hyve handle them?**
 
 For example, the following Hyve object
 
