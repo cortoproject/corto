@@ -342,9 +342,6 @@ finished:
 
 static db_int16 db_ser_object(db_serializer s, db_value* v, void* userData) {
     db_string_ser_t* data;
-
-    DB_UNUSED(s);
-
     data = userData;
 
     db_serializeValue(s, v, userData);
@@ -410,9 +407,9 @@ db_int16 db_ser_destruct(db_serializer s, void* userData) {
 }
 
 struct db_serializer_s db_string_ser(db_modifier access, db_operatorKind accessKind, db_serializerTraceKind trace) {
-	struct db_serializer_s s;
+    struct db_serializer_s s;
 
-	db_serializerInit(&s);
+    db_serializerInit(&s);
 
     s.access = access;
     s.accessKind = accessKind;

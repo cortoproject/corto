@@ -80,7 +80,6 @@ static db_int16 db_ser_primitive(db_serializer s, db_value *info, void *userData
     if(!db_ser_appendstr(data, valueString)) {
         goto finished;
     }
-
     db_dealloc(valueString);
 
     return 0;
@@ -200,6 +199,7 @@ static db_int16 db_ser_object(db_serializer s, db_value* v, void* userData) {
         if (db_serializeValue(s, v, userData)) {
             goto error;
         }
+
         c += 1;
     }
 
