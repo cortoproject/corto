@@ -29,7 +29,7 @@ typedef struct db_json_ser_t {
 Example usage:
 
 ```C
-/* test json serializer.c */
+/* test_json_serializer.c */
 struct db_serializer_s serializer = 
         db_json_ser(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
 db_json_ser_t userData = {NULL, NULL, 0, 0, 0, TRUE, TRUE, TRUE};
@@ -43,8 +43,7 @@ Depending on what the serializer is told to serialize, a top-level JSON object w
 E.g. if the value and meta are requested but not the scope:
 
 ```Hyve
-// tc_jsonser.hyve
-object tc_jsonser::
+void example::
 
     class Point::
         x, y: uint32;
@@ -61,8 +60,8 @@ object tc_jsonser::
     "value": {"x": 10,"y": 20},
     "meta": {
         "name":   "p",
-        "type":    "::tc_jsonser::Point",
-        "parent": "::tc_jsonser",
+        "type":    "::example::Point",
+        "parent": "::example",
         "childCount": 4
     }
 }
@@ -94,19 +93,19 @@ In summary, the following annotations exist for primitive types (followed by one
 
 | Annotation | Kind
 |------------|------
-| `@BI`      | `binary`
-| `@BM`      | `bitmask`
-| `@EN`      | `enum`
+| `@B`      | `binary`
+| `@M`      | `bitmask`
+| `@E`      | `enum`
 
-Hyve strings that start with "@" will have 
+Hyve strings that start with one of the above annotations will be escaped with an extra "@".
 
 Example:
 
 | Hyve string | JSON string
 |-------------|------------
 | "hello"     | "hello"
-| "@BI"       | "@@BI"
-| "@@BI"      | "@@@BI"
+| "@B"       | "@@B"
+| "@@B"      | "@@@B"
 | "@hey"      | "@hey"
 
 **Warning.** You would not be able to disambiguate between `character` values and `string` values.
@@ -131,9 +130,10 @@ will be serialized into this JSON (only value)
 
 The members are serialized as a JSON object where the key is the name of the member and the value depends on its `kind`. The following example is a simplified version of an example above.
 
+Members of primitive types are serialized just as specified [above](#primitive-kinds). For example, in the following source Hyve script, the object `void::example::p`:
+
 ```Hyve
-// tc_jsonser.hyve
-object tc_jsonser::
+void example::
 
     class Point::
         x, y: uint32;
@@ -141,12 +141,35 @@ object tc_jsonser::
     Point p: 10, 20;
 ```
 
+is serialized (only value) into this JSON:
+
 ```json
 {
     "value": {"x": 10, "y": 20},
 }
 ```
 
+Members of reference types are annotated with `@R` with the fully scoped name of the object. For `example::mylist` in the following Hyve script:
+ 
+```Hyve
+void example::
+    class NaiveLinkedList::
+        v: int32;
+        next: NaiveLinkedList;
+    NaiveLinkedList tail: 4, null;
+    NaiveLinkedList mylist: 5, tail;
+```
+
+is serialized as:
+
+```json
+{
+    "value": {
+        "v": 5,
+        "next": "@R example::tail"
+    }
+}
+```
 
 **TODO** how do we address a case with a anonymous object like:
 
@@ -163,7 +186,7 @@ object tc_jsonser::
     Point3D pp: 1, 2, Point{5, 6};
 ```
 
-The following is the view in dbshell
+The following is the view in `dbsh`
 
 ```
 $ pp
@@ -176,7 +199,7 @@ attributes:   S|W |O
 parent:       ::tc_jsonser
 value:        {x=1,y=2,other=<1>::tc_jsonser::Point{x=5,y=6}}
 ```
-
+**END TODO**
 
 ### Collection types
 
