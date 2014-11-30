@@ -81,13 +81,14 @@ Serialization of primitive types is simple. The following table defines the rela
 
 | Hyve value | JSON value
 -------------|-----------
-| Integer and float values (e.g. `int16`, `uint32`, `float32`, `float64`) | JSON numbers
-| `string` | JSON strings
-| `bool` | `true` or `false`
-| `null` |  `null`
 | `binary` | string of uppercase Hex numbers separated by a space e.g. `A87C 4948 E9F7`
 | `bitmask` | string of or'd values e.g. `gluten_free|peanut_free|lactose_free`
+| `bool` | `true` or `false`
 | `character` e.g. `'c'` | string with the corresponding character e.g. `"c"`
+| `enum` e.g. `Color c = green;` | string of the name of the enum singleton e.g. `"green"`
+| Integer and float values (e.g. `int16`, `uint32`, `float32`, `float64`) | JSON numbers
+| `null` |  `null`
+| `string` | JSON strings
 
 **TODO. What are there indications regarding Unicode characters? What is going to be of Unicode with Hyve? JSON does support Unicode, only needing to escape certain sequences. How does Hyve handle them?**
 
