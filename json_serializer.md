@@ -119,7 +119,7 @@ object tc_jsonser::
 }
 ```
 
-** TODO** how do we address a case like:
+**TODO** how do we address a case like:
 
 ```
 object tc_jsonser::
