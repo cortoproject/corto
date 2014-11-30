@@ -162,36 +162,6 @@ is serialized as:
 }
 ```
 
-**TODO** how do we address a case with a anonymous object like:
-
-```
-object tc_jsonser::
-
-    class Point2D::
-        x, y: int32;
-
-    class Point3D::
-        xy: Point;
-        z: int32;
-
-    Point3D pp: 1, 2, Point{5, 6};
-```
-
-The following is the view in `dbsh`
-
-```
-$ pp
-name:         ::tc_jsonser::pp
-type:         ::tc_jsonser::PointPoint
-address:      <0x90fe0d4>
-refcount:     1
-state:        V|DCL|DEF
-attributes:   S|W |O 
-parent:       ::tc_jsonser
-value:        {x=1,y=2,other=<1>::tc_jsonser::Point{x=5,y=6}}
-```
-**END TODO**
-
 ### Disambiguation of strings
 
 In summary, these annotations can appear:
@@ -254,26 +224,84 @@ the object `::example::hakkaNumbers` is serialized as:
 
 **END TODO**
 
+### Additional notes
+
+Objects of type `void` cannot generate a `"value"` key. The serializer will fail silently.
+
 ## Serialization of the scope
 
-**TODO add scope serialization options to `db_json_ser_t`: (1) serializeScopeMeta (2) serializeValue **
+The scope of an object is serialized as a JSON array of JSON objects describing the metadata of each.
 
-The scope is serialized as a JSON object where the key is the name of the object in the scope. The value will depend on the scope serialization options.
-
+For ``::example`` in the this Hyve script:
 
 ```Hyve
 void example::
     int16 a: 9;
-    int32 b: 9;
+    string b: "10";
 ```
 
-```JSON
+the following JSON is generated (meta and scope, value cannot be generated for `void`):
+
+```json
 {
-    "scope": {
-        "a": {},
-        "b": {}
-    }
+    "meta": {
+        "name":         "::example",
+        "type":         "::hyve::lang::void",
+        "state":        "V|DCL|DEF",
+        "attributes":   "S|O",
+        "parent":       "::",
+        "childCount":   "2"
+    },
+    "scope": [
+        {
+            "name":         "::example::a",
+            "type":         "::hyve::lang::int16",
+            "state":        "V|DCL|DEF",
+            "attributes":   "S|W |O ",
+            "parent":       "::example"
+        },
+        {
+            "name":         "::example::b",
+            "type":         "::hyve::lang::string",
+            "state":        "V|DCL|DEF",
+            "attributes":   "S|W |O ",
+            "parent":       "::example"
+        }
+    ]
 }
 ```
 
-The `serializeScopeMeta` and `serializeScopeValue` will work similarly as specified for the top-level object to be serialized. Scope of the scope cannot be serialized in a single serialization but must be manually requested.
+## Pending issues
+
+### Describing anonymous objects
+
+```
+object tc_jsonser::
+
+    class Point2D::
+        x, y: int32;
+
+    class Point3D::
+        xy: Point;
+        z: int32;
+
+    Point3D pp: 1, 2, Point{5, 6};
+```
+
+The following is the view in `dbsh`
+
+```
+$ pp
+name:         ::tc_jsonser::pp
+type:         ::tc_jsonser::PointPoint
+address:      <0x90fe0d4>
+refcount:     1
+state:        V|DCL|DEF
+attributes:   S|W |O 
+parent:       ::tc_jsonser
+value:        {x=1,y=2,other=<1>::tc_jsonser::Point{x=5,y=6}}
+```
+
+### Specification of maps
+
+Described above.
