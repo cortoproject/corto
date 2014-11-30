@@ -89,14 +89,6 @@ Serialization of primitive types is simple. The following table defines the rela
 | `character` | string with the corresponding character e.g. `"c"`
 | `string` | JSON strings
 
-In summary, the following annotations exist for primitive types (followed by one whitespace):
-
-| Annotation | Kind
-|------------|------
-| `@B`      | `binary`
-| `@M`      | `bitmask`
-| `@E`      | `enum`
-
 **Warning.** You would not be able to disambiguate between `character` values and `string` values.
 
 **TODO. What are there indications regarding Unicode characters? What is going to be of Unicode with Hyve? JSON does support Unicode, only needing to escape certain sequences. How does Hyve handle them?**
@@ -138,15 +130,26 @@ is serialized (only value) into this JSON:
 }
 ```
 
-Members of reference types are annotated with `@R` with the fully scoped name of the object. For `example::mylist` in the following Hyve script:
+Members of reference types (e.g. instances of a class) are annotated with "@R" followed by the fully scoped name of the object.
+
+| Hyve value | JSON value
+|------------|-----------
+| reference e.g. `::example::myobject` | `"@R ::example::myobject"`
+
+For `example::mydog` in the following Hyve script:
  
 ```Hyve
 void example::
-    class NaiveLinkedList::
-        v: int32;
-        next: NaiveLinkedList;
-    NaiveLinkedList tail: 4, null;
-    NaiveLinkedList mylist: 5, tail;
+    
+    class DogFood:
+        uint32 calories;
+    
+    class Dog:
+        favoriteFood: DogFood;
+    
+    DogFood dietDogFood: 0;
+    
+    Dog mydog: dietDogFood;
 ```
 
 is serialized as:
@@ -154,8 +157,7 @@ is serialized as:
 ```json
 {
     "value": {
-        "v": 5,
-        "next": "@R example::tail"
+        "favoriteFood": "@R ::example::dietDogFood"
     }
 }
 ```
@@ -192,6 +194,15 @@ value:        {x=1,y=2,other=<1>::tc_jsonser::Point{x=5,y=6}}
 
 ### Disambiguation of strings
 
+In summary, these annotations can appear:
+
+| Annotation | Kind
+|------------|------
+| @B         | `binary`
+| @M         | `bitmask`
+| @E         | `enum`
+| @R         | reference
+
 Hyve strings that start with one of the annotations for primitives ("@B", "@M", "@E") or references ("@R") will be escaped with an extra "@".
 
 Example:
@@ -199,8 +210,8 @@ Example:
 | Hyve string | JSON string
 |-------------|------------
 | "hello"     | "hello"
-| "@B"       | "@@B"
-| "@@B"      | "@@@B"
+| "@B"        | "@@B"
+| "@@B"       | "@@@B"
 | "@hey"      | "@hey"
 
 ### Collection kinds
@@ -245,7 +256,7 @@ the object `::example::hakkaNumbers` is serialized as:
 
 ## Serialization of the scope
 
-** TODO add scope serialization options to `db_json_ser_t`: (1) serializeScopeMeta (2) serializeValue **
+**TODO add scope serialization options to `db_json_ser_t`: (1) serializeScopeMeta (2) serializeValue **
 
 The scope is serialized as a JSON object where the key is the name of the object in the scope. The value will depend on the scope serialization options.
 
