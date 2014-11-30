@@ -97,17 +97,6 @@ In summary, the following annotations exist for primitive types (followed by one
 | `@M`      | `bitmask`
 | `@E`      | `enum`
 
-Hyve strings that start with one of the above annotations will be escaped with an extra "@".
-
-Example:
-
-| Hyve string | JSON string
-|-------------|------------
-| "hello"     | "hello"
-| "@B"       | "@@B"
-| "@@B"      | "@@@B"
-| "@hey"      | "@hey"
-
 **Warning.** You would not be able to disambiguate between `character` values and `string` values.
 
 **TODO. What are there indications regarding Unicode characters? What is going to be of Unicode with Hyve? JSON does support Unicode, only needing to escape certain sequences. How does Hyve handle them?**
@@ -126,7 +115,7 @@ will be serialized into this JSON (only value)
 }
 ```
 
-### Composite kinds
+### Composite kinds and reference members
 
 The members are serialized as a JSON object where the key is the name of the member and the value depends on its `kind`. The following example is a simplified version of an example above.
 
@@ -201,9 +190,58 @@ value:        {x=1,y=2,other=<1>::tc_jsonser::Point{x=5,y=6}}
 ```
 **END TODO**
 
-### Collection types
+### Disambiguation of strings
 
+Hyve strings that start with one of the annotations for primitives ("@B", "@M", "@E") or references ("@R") will be escaped with an extra "@".
 
+Example:
+
+| Hyve string | JSON string
+|-------------|------------
+| "hello"     | "hello"
+| "@B"       | "@@B"
+| "@@B"      | "@@@B"
+| "@hey"      | "@hey"
+
+### Collection kinds
+
+`array`, `sequence`, and `list` types are serialized as JSON arrays. The items within the lists are serialized according to the rules for [primitives](#primitive-kinds) or [references](#composite-kinds-and-reference-members).
+
+For example, in the following Hyve script:
+
+```hyve
+void example::
+    list{string} greetings: "hello", "hallo", "hola", "konnichiwa";
+```
+
+the object `::example::greetings` will be serialized as:
+
+```json
+{
+    "value": ["hello", "hallo", "hola", "konnichiwa"]
+}
+```
+
+**TODO the following specificatino is not JSON-compliant**
+
+`map` kinds are serialized similar to composite types, that is, a JSON object, but they key and values of the JSON object follow appropriate serialization rules for the kinds of the keys and values of the Hyve map.
+
+For example, in the following Hyve script:
+
+```Hyve
+void example::
+    map{int16, string} hakkaNumbers: 1: "yit", 2: "gni", 3:"sam";
+```
+
+the object `::example::hakkaNumbers` is serialized as:
+
+```json
+{
+    "value": {1:"yit", 2:"gni", 3:"sam"}
+}
+```
+
+**END TODO**
 
 ## Serialization of the scope
 
@@ -213,7 +251,7 @@ The scope is serialized as a JSON object where the key is the name of the object
 
 
 ```Hyve
-void MyNamespace::
+void example::
     int16 a: 9;
     int32 b: 9;
 ```
