@@ -6,7 +6,9 @@ Author: Johnny Lee (jleeothon@outlook.com)
 
 # Usage
 
-Provide a `db_json_ser_t` that follows the signature in json.h. `buffer` and `ptr` are for internal use. If left uninitialized and `maxlength` and `length` are both `0`, the serializer will handle the length as needed.
+Provide a `db_json_ser_t` that follows the signature in json.h. Users can provide a `buffer` to which the JSON string should be serialized. When setting the buffer, `length` should be set to the length of the buffer (including `\0`). When `buffer` is left to NULL, the serializer will dynamically allocate enough memory to accomodate for the full JSON string. With `maxlength` a user can restrict the maximum length/memory allocated of the result string.
+
+`ptr` is for internal use and points to the location where the serializer should append the next string.
 
 `serializeMeta`, `serializeValue`, and `serializeScope` determine whether or not each of those will be serialized into the resulting JSON object.
 
