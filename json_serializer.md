@@ -77,17 +77,39 @@ object tc_jsonser::
 
 ### Primitive kinds
 
-Serialization of primitive types is simple. The following table defines the relationship between Hyve primitive values and their corresponding JSON serialization.
+Serialization of primitive types is simple. The following table defines the relationship between Hyve primitive values and their corresponding JSON serialization. Some have embedded annotation for their types.
 
-| Hyve value | JSON value
--------------|-----------
+| Hyve value  | JSON value
+--------------|-----------
 | Integer and float values (e.g. `int16`, `uint32`, `float32`, `float64`) | JSON numbers
+| `binary`    | string of uppercase Hex numbers separated by a space e.g. `"@BI A87C 4948 E9F7"`
+| `bitmask`   | string of or'd values e.g. `@BM "GLUTEN_FREE|LACTOSE_FREE"`
+| `bool`      | `true` or `false`
+| `null`      |  `null`
+| `enum`      | string of the name of the singleton object, e.g. `@EN GREEN`
+| `character` | string with the corresponding character e.g. `"c"`
 | `string` | JSON strings
-| `bool` | `true` or `false`
-| `null` |  `null`
-| `binary` | string of uppercase Hex numbers separated by a space e.g. `A87C 4948 E9F7`
-| `bitmask` | string of or'd values e.g. `gluten_free|peanut_free|lactose_free`
-| `character` e.g. `'c'` | string with the corresponding character e.g. `"c"`
+
+In summary, the following annotations exist for primitive types (followed by one whitespace):
+
+| Annotation | Kind
+|------------|------
+| `@BI`      | `binary`
+| `@BM`      | `bitmask`
+| `@EN`      | `enum`
+
+Hyve strings that start with "@" will have 
+
+Example:
+
+| Hyve string | JSON string
+|-------------|------------
+| "hello"     | "hello"
+| "@BI"       | "@@BI"
+| "@@BI"      | "@@@BI"
+| "@hey"      | "@hey"
+
+**Warning.** You would not be able to disambiguate between `character` values and `string` values.
 
 **TODO. What are there indications regarding Unicode characters? What is going to be of Unicode with Hyve? JSON does support Unicode, only needing to escape certain sequences. How does Hyve handle them?**
 
