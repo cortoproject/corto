@@ -9,6 +9,7 @@
 #include "db_err.h"
 #include "db__meta.h"
 #include "db__primitive.h"
+#include "db.h"
 
 typedef void (*db__unaryOperator)(void* operand, void* result);
 typedef void (*db__binaryOperator)(void* operand1, void* operand2, void* result);

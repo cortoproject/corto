@@ -3486,3 +3486,15 @@ db_object db_hyve__new(db_typedef type, db_attr attributes) {
     return db_new_ext(NULL, type, attributes, NULL);
 }
 
+void __db_hyve_new(db_function f, void *result, void *args) {
+    DB_UNUSED(f);
+    *(db_object*)result = db_hyve_new(*(db_typedef*)args);
+}
+
+void __db_hyve__new(db_function f, void *result, void *args) {
+    DB_UNUSED(f);
+    *(db_object*)result = db_hyve__new(
+        *(db_typedef*)args,
+        *(db_attr*)((intptr_t)args + sizeof(db_typedef)));
+}
+

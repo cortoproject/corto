@@ -50,8 +50,7 @@ SOURCES	=	fastmain.c \
 INCLUDE = 	$(BUILDHOME)/db/include \
 			$(BUILDHOME)/public/c/include \
 			include \
-			$(BUILDHOME)/dev/include \
-			$(BUILDHOME)/interface/api/include
+			$(BUILDHOME)/dev/include
 
 LIBS	=	lang api hyvedev fl
 

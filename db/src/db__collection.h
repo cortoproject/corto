@@ -16,6 +16,9 @@
 extern "C" {
 #endif
     
+int db_walk(db_collection _this, db_void* collection, db_walkAction action, db_void* userData);
+void db_clear(db_collection _this, db_void* collection);
+
 #ifdef __cplusplus
 }
 #endif

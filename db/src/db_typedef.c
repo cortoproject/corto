@@ -1,33 +1,17 @@
-/*
- * db_typedef.c
+/* db_typedef.c
  *
- *  Created on: Aug 5, 2012
- *      Author: sander
+ * This file contains the implementation for the generated interface.
+ *
+ *    Don't mess with the begin and end tags, since these will ensure that modified
+ *    code in interface functions isn't replaced when code is re-generated.
  */
 
-#include "db_object.h"
-#include "db_typedef.h"
-#include "db_util.h"
-#include "db_err.h"
+#include "db.h"
 #include "db__meta.h"
 
-/* ::type::init -> ::typedef::init */
-db_int16 db_typedef_init(db_typedef object) {
-    DB_UNUSED(object);
-
-    if (object->type) {
-        db_typedef_construct(object);
-        if (db_checkAttr(object, DB_ATTR_SCOPED) && (db_parentof(object) == hyve_lang_o)) {
-            db_keep_ext(object, object->real, "Keep self for real member");
-        }
-
-    }
-
-    return 0;
-}
-
-/* ::class::construct -> ::typedef::construct */
+/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::lang::typedef::construct(lang::typedef object) */
 db_int16 db_typedef_construct(db_typedef object) {
+/* $begin(::hyve::lang::typedef::construct) */
     db_typedef real;
 
     real = db_typedef(object)->type;
@@ -61,15 +45,37 @@ db_int16 db_typedef_construct(db_typedef object) {
 	return 0;
 error:
     return -1;
+/* $end */
 }
 
-/* Destruct typedef */
-void db_typedef_destruct(db_typedef object) {
+/* callback ::hyve::lang::class::destruct(lang::object object) -> ::hyve::lang::typedef::destruct(lang::typedef object) */
+db_void db_typedef_destruct(db_typedef object) {
+/* $begin(::hyve::lang::typedef::destruct) */
 	db_free_ext(object, object->real, "Free real member");
 	object->real = NULL;
+/* $end */
 }
 
-/* ::typedef::realType() */
+/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::typedef::init(lang::typedef object) */
+db_int16 db_typedef_init(db_typedef object) {
+/* $begin(::hyve::lang::typedef::init) */
+    DB_UNUSED(object);
+
+    if (object->type) {
+        db_typedef_construct(object);
+        if (db_checkAttr(object, DB_ATTR_SCOPED) && (db_parentof(object) == hyve_lang_o)) {
+            db_keep_ext(object, object->real, "Keep self for real member");
+        }
+
+    }
+
+    return 0;
+/* $end */
+}
+
+/* ::hyve::lang::typedef::realType() */
 db_type db_typedef_realType(db_typedef _this) {
+/* $begin(::hyve::lang::typedef::realType) */
 	return _this->real;
+/* $end */
 }

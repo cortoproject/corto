@@ -1,6 +1,6 @@
 /* db__api.h
  *
- *  Generated on Nov 18 2014
+ *  Generated on Nov 30 2014
  *    API convenience functions for C-language.
  *    This file contains generated code. Do not modify!
  */
@@ -137,8 +137,8 @@ db_member db_member__create(db_typedef type, db_modifier modifiers, db_state sta
 /* ::hyve::lang::metaprocedure */
 db_metaprocedure db_metaprocedure__new(void);
 db_metaprocedure db_metaprocedure__declare(db_object _parent, db_string _name);
-int db_metaprocedure__define(db_metaprocedure _this, db_typedef returnType, db_bool returnsReference);
-db_metaprocedure db_metaprocedure__create(db_typedef returnType, db_bool returnsReference);
+int db_metaprocedure__define(db_metaprocedure _this, db_typedef returnType, db_bool returnsReference, db_bool referenceOnly);
+db_metaprocedure db_metaprocedure__create(db_typedef returnType, db_bool returnsReference, db_bool referenceOnly);
 
 /* ::hyve::lang::method */
 db_method db_method__new(void);

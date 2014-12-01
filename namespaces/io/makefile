@@ -8,8 +8,7 @@ SOURCES	=	io.c \
 INCLUDE = 	include \
 			$(BUILDHOME)/db/include \
 			$(BUILDHOME)/public/c/include \
-			$(BUILDHOME)/infra/include \
-			$(BUILDHOME)/interface/api/include
+			$(BUILDHOME)/infra/include
 
 LIBS	=	lang fl api
 

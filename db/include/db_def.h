@@ -28,6 +28,9 @@ extern "C" {
 
 #define DB_NULL_STRING ("null")
 
+typedef int (*db_compareAction)(void* o1, void* o2);
+typedef int (*db_walkAction)(void* o, void* userData);
+
 /* Builtin collection-implementation definitions */
 typedef struct db_rbtree_s* db_rbtree;
 typedef struct db_ll_s* db_ll;

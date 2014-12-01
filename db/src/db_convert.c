@@ -14,6 +14,7 @@
 #include "stddef.h"
 #include "stdint.h"
 #include "inttypes.h"
+#include "db.h"
 
 typedef db_int16 (*db_conversion)(db_primitive fromType, void* from, db_primitive toType, void* to);
 

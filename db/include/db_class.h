@@ -1,53 +1,78 @@
-/*
- * db_class.h
+/* db_class.h
  *
- *  Created on: Aug 5, 2012
- *      Author: sander
+ * This file contains generated code. Do not modify!
  */
 
-#ifndef DB_CLASS_H_
-#define DB_CLASS_H_
+#ifndef db_class_H
+#define db_class_H
 
+#include "hyve.h"
+#include "db_struct.h"
 #include "db__type.h"
-#include "db_interface.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/* Callbacks */
-db_int16 db_class_init(db_class object);
+/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::lang::class::_construct(lang::class object) */
 db_int16 db_class__construct(db_class object);
-void db_class__destruct(db_class object);
 
-/* Delegates */
-db_int16 db_class_construct(db_class _this, db_object object);
-void db_class_destruct(db_class _this, db_object object);
+/* callback ::hyve::lang::class::destruct(lang::object object) -> ::hyve::lang::class::_destruct(lang::class object) */
+db_void db_class__destruct(db_class object);
 
-/* Virtual methods */
-db_uint16 db_class_allocSize(db_class _this);
+/* virtual ::hyve::lang::class::allocSize() */
+db_uint32 db_class_allocSize(db_class _this);
+
+/* ::hyve::lang::class::allocSize() */
+db_uint32 db_class_allocSize_v(db_class _this);
+
+/* ::hyve::lang::class::bindCallback(lang::delegate delegate,lang::object object,lang::callback method) */
+db_int16 db_class_bindCallback(db_class _this, db_delegate delegate, db_object object, db_callback method);
+
+/* ::hyve::lang::class::bindDelegate(lang::delegate delegate) */
+db_int16 db_class_bindDelegate(db_class _this, db_delegate delegate);
+
+/* ::hyve::lang::class::bindMethod(lang::method method) */
 db_int16 db_class_bindMethod(db_class _this, db_method method);
-db_int16 db_class_bindDelegate(db_class _this, db_delegate method);
 
-/* Methods */
-db_bool db_class_instanceof(db_class _this, db_object o);
-db_delegate db_class_resolveDelegate(db_class _this, db_string delegate);
+/* delegate ::hyve::lang::class::construct(lang::object object), obtain callback */
+db_callback db_class_construct_callback(db_class _this);
+
+/* delegate ::hyve::lang::class::construct(lang::object object), supply callback */
+db_int16 db_class_construct_w_callback(db_callback __callback, db_class _this, db_object object);
+
+/* ::hyve::lang::class::construct(lang::object object) */
+db_int16 db_class_construct(db_class _this, db_object object);
+
+/* delegate ::hyve::lang::class::destruct(lang::object object), obtain callback */
+db_callback db_class_destruct_callback(db_class _this);
+
+/* delegate ::hyve::lang::class::destruct(lang::object object), supply callback */
+void db_class_destruct_w_callback(db_callback __callback, db_class _this, db_object object);
+
+/* ::hyve::lang::class::destruct(lang::object object) */
+db_void db_class_destruct(db_class _this, db_object object);
+
+/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::class::init(lang::class object) */
+db_int16 db_class_init(db_class object);
+
+/* ::hyve::lang::class::instanceof(lang::object object) */
+db_bool db_class_instanceof(db_class _this, db_object object);
+
+/* ::hyve::lang::class::privateObserver(lang::object object,lang::observer observer) */
+db_observer db_class_privateObserver(db_class _this, db_object object, db_observer observer);
+
+/* ::hyve::lang::class::resolveCallback(lang::delegate delegate,lang::object target) */
 db_callback db_class_resolveCallback(db_class _this, db_delegate delegate, db_object target);
-db_method db_class_resolveInterfaceMethod(db_class _this, db_interface abstract, db_uint32 methodId);
-db_int16 db_class_bindCallback(db_class _this, db_delegate delegate, db_object o, db_callback method);
-db_observer db_class_privateObserver(db_class _this, db_object object, db_observer template);
 
-/* Private methods */
-db_vtable* db_class_getCallbackVtable(db_object o);
-db_vtable* db_class_getObserverVtable(db_object o);
-void db_class_bindObserver(db_class _this, db_observer observer);
-db_observer db_class_findObserver(db_class _this, db_object observable, db_string expr);
-void db_class_attachObservers(db_class _this, db_object object);
-void db_class_listenObservers(db_class _this, db_object object);
-void db_class_detachObservers(db_class _this, db_object object);
+/* ::hyve::lang::class::resolveDelegate(lang::string name) */
+db_delegate db_class_resolveDelegate(db_class _this, db_string name);
+
+/* ::hyve::lang::class::resolveInterfaceMethod(lang::interface interface,lang::uint32 method) */
+db_method db_class_resolveInterfaceMethod(db_class _this, db_interface interface, db_uint32 method);
 
 #ifdef __cplusplus
 }
 #endif
+#endif
 
-#endif /* DB_CLASS_H_ */

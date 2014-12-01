@@ -260,8 +260,6 @@ static int c__interfaceGenerateDelegate(db_delegate o, c_typeWalk_t* data) {
     if (returnsValue) {
     	g_fileWrite(data->wrapper, "%s _result;\n", returnTypeId);
     }
-    g_fileWrite(data->wrapper, "db_type _type;\n\n");
-    g_fileWrite(data->wrapper, "_type = db_typeof(_this)->real;\n\n");
     g_fileWrite(data->wrapper, "/* Determine delegate once, then cache it for subsequent calls. */\n");
     g_fileWrite(data->wrapper, "if (!_delegate) {\n");
     g_fileIndent(data->wrapper);
@@ -272,18 +270,22 @@ static int c__interfaceGenerateDelegate(db_delegate o, c_typeWalk_t* data) {
     g_fileWrite(data->wrapper, "/* Lookup callback-object. */\n");
     g_fileWrite(data->wrapper, "_callback = db_class_resolveCallback(db_class(db_typeof(_this)), _delegate, _this);\n\n");
 
+    g_fileWrite(data->wrapper, "if (_callback) {\n");
+    g_fileIndent(data->wrapper);
 	if (returnsValue) {
-		g_fileWrite(data->wrapper, "db_call(db_function(_callback), &_result, _this");
+		g_fileWrite(data->wrapper, "db_call(db_function(_callback), &_result");
 	} else {
-		g_fileWrite(data->wrapper, "db_call(db_function(_callback), NULL, _this");
+		g_fileWrite(data->wrapper, "db_call(db_function(_callback), NULL");
 	}
-    data->firstComma = 3;
+    data->firstComma = 2;
     if (!c_interfaceParamWalk(o, c_interfaceMethodParameterName, data)) {
         goto error;
     }
     g_fileWrite(data->wrapper, ");\n");
+
     g_fileDedent(data->wrapper);
     g_fileWrite(data->wrapper, "}\n");
+
     if (returnsValue) {
     	g_fileWrite(data->wrapper, "\n");
     	g_fileWrite(data->wrapper, "return _result;\n");
@@ -325,8 +327,6 @@ static int c__interfaceGenerateDelegate_callback(db_delegate o, c_typeWalk_t* da
 
     g_fileIndent(data->wrapper);
     g_fileWrite(data->wrapper, "db_delegate _delegate;\n");
-    g_fileWrite(data->wrapper, "db_type _type;\n\n");
-    g_fileWrite(data->wrapper, "_type = db_typeof(_this)->real;\n\n");
     g_fileWrite(data->wrapper, "/* Determine delegate */\n");
     g_fileWrite(data->wrapper, "_delegate = db_class_resolveDelegate(db_class(db_typeof(_this)), \"%s\");\n", db_nameof(o));
     g_fileWrite(data->wrapper, "db_assert(_delegate != NULL, \"delegate function '%s' not found in class '%s'\");\n\n", db_nameof(o), classId);
@@ -343,6 +343,7 @@ static int c__interfaceGenerateDelegate_callback(db_delegate o, c_typeWalk_t* da
 /* Generate implementation for delegate methods with provided callback parameter */
 static int c__interfaceGenerateDelegate_w_callback(db_delegate o, c_typeWalk_t* data) {
     db_id id, returnTypeId, classId;
+    db_bool returnsValue;
 
     g_file originalSource = data->source;
 
@@ -350,10 +351,12 @@ static int c__interfaceGenerateDelegate_w_callback(db_delegate o, c_typeWalk_t* 
      * This file will be restored at the end of the function */
     data->source = data->wrapper;
 
-    if (((db_function)o)->returnType) {
+    if (((db_function)o)->returnType && (db_function(o)->returnType->real->kind != DB_VOID)) {
         g_fullOid(data->g, ((db_function)o)->returnType, returnTypeId);
+        returnsValue = TRUE;
     } else {
         strcpy(returnTypeId, "void");
+        returnsValue = FALSE;
     }
 
     g_fullOid(data->g, db_parentof(o), classId);
@@ -390,17 +393,27 @@ static int c__interfaceGenerateDelegate_w_callback(db_delegate o, c_typeWalk_t* 
     /* Begin of function */
     g_fileWrite(data->wrapper, ") {\n");
     g_fileIndent(data->wrapper);
-    g_fileWrite(data->wrapper, "%s _result;\n\n", returnTypeId);
+    g_fileWrite(data->wrapper, "DB_UNUSED(_this);\n");
+    if(!db_function(o)->parameters.length) {
+        g_fileWrite(data->wrapper, "DB_UNUSED(args);\n");
+    }
+    if(returnsValue) {
+        g_fileWrite(data->wrapper, "%s _result;\n\n", returnTypeId);
+    }
 
-    g_fileWrite(data->wrapper, "db_call(db_function(__callback), &_result");
+    if (returnsValue) {
+        g_fileWrite(data->wrapper, "db_call(db_function(__callback), &_result");
+    } else {
+        g_fileWrite(data->wrapper, "db_call(db_function(__callback), NULL");
+    }
     data->firstComma = 2;
     if (!c_interfaceParamWalk(o, c_interfaceMethodParameterName, data)) {
         goto error;
     }
     g_fileWrite(data->wrapper, ");\n");
-    g_fileDedent(data->wrapper);
-    g_fileWrite(data->wrapper, "}\n\n");
-    g_fileWrite(data->wrapper, "return _result;\n");
+    if(returnsValue) {
+        g_fileWrite(data->wrapper, "\nreturn _result;\n");
+    }
     g_fileDedent(data->wrapper);
     g_fileWrite(data->wrapper, "}\n");
 
@@ -508,7 +521,12 @@ static int c_interfaceClassProcedureWrapper(db_function o, c_typeWalk_t *data) {
 
     /* Add this */
     if (c_procedureHasThis(o)) {
-        db_type parentType = db_parentof(o);
+        db_type parentType;
+        if(db_procedure(db_typeof(o))->kind != DB_METAPROCEDURE) {
+            parentType = db_parentof(o);
+        }else {
+            parentType = db_type(db_any_o);
+        }
         c_procedureAddToSizeExpr(parentType, FALSE, data);
         data->firstComma = TRUE;
     }
@@ -527,7 +545,7 @@ static int c_interfaceClassProcedureWrapper(db_function o, c_typeWalk_t *data) {
 /* Generate methods for class */
 static int c_interfaceClassProcedure(db_object o, void* userData) {
     c_typeWalk_t* data;
-    db_bool defined;
+    db_bool defined = FALSE;
 
     data = userData;
 
@@ -538,11 +556,21 @@ static int c_interfaceClassProcedure(db_object o, void* userData) {
 		db_bool delegate, callback;
 		db_procedureKind kind;
 		db_typedef returnType;
+        db_string doStubs = gen_getAttribute(data->g, "stubs");
 
         delegate = FALSE;
         callback = FALSE;
         kind = db_procedure(db_typeof(o))->kind;
         defined = db_checkState(o, DB_DEFINED) && (db_function(o)->kind != DB_PROCEDURE_STUB);
+
+        /* Check whether generation of stubs must be forced */
+        if (doStubs) {
+            if (!strcmp(doStubs, "true")) {
+                defined = TRUE;
+            } else if(!strcmp(doStubs, "false")) {
+                defined = FALSE;
+            }
+        }
 
 		/* If procedure is a delegate, generate delegate forwarding-function. Nothing
 		 * further needs to be generated in the sourcefile for a delegate. */
@@ -616,12 +644,12 @@ static int c_interfaceClassProcedure(db_object o, void* userData) {
 			}
 
             /* Lookup header for function */
-			header = g_fileLookupHeader(data->source, id);
-			if (header) {
-				g_fileWrite(data->source, "/* $header(%s)", id);
-				g_fileWrite(data->source, "%s", header);
-				g_fileWrite(data->source, "$end */\n");
-			}
+            header = g_fileLookupHeader(data->source, id);
+            if (header) {
+                g_fileWrite(data->source, "/* $header(%s)", id);
+                g_fileWrite(data->source, "%s", header);
+                g_fileWrite(data->source, "$end */\n");
+            }
 
             g_fileWrite(data->source, "%s%s %s",
                     returnSpec,
@@ -636,9 +664,14 @@ static int c_interfaceClassProcedure(db_object o, void* userData) {
 
 		/* Add 'this' parameter to methods */
 		if (c_procedureHasThis(o)) {
-		    g_fullOid(data->g, db_parentof(o), classId);
-			c_interfaceParamThis(db_type(db_parentof(o)), data, FALSE, TRUE);
-			if (!delegate) c_interfaceParamThis(db_type(db_parentof(o)), data, TRUE, FALSE);
+            db_type thisType;
+            if(db_procedure(db_typeof(o))->kind != DB_METAPROCEDURE) {
+    		    thisType = db_parentof(o);
+            }else {
+                thisType = db_any_o;
+            }
+			c_interfaceParamThis(thisType, data, FALSE, TRUE);
+			if (!delegate) c_interfaceParamThis(thisType, data, TRUE, FALSE);
 			data->firstComma = 1;
 		} else {
 			data->firstComma = 0;
@@ -779,7 +812,7 @@ static g_file c_interfaceHeaderFileOpen(db_generator g, db_object o, c_typeWalk_
         if (o == topLevelObject) {
             data->mainHeader = result;
         }else {
-            sprintf(mainHeader, "%s.h", g_fullOid(g, o, topLevelName));
+            sprintf(mainHeader, "%s.h", g_fullOid(g, topLevelObject, topLevelName));
             data->mainHeader = g_fileOpen(g, mainHeader);
             if(!result) {
                 goto error;
@@ -863,6 +896,7 @@ static db_string c_interfaceSourceFileName(db_string name, db_char* buffer) {
 static g_file c_interfaceSourceFileOpen(db_generator g, db_string name) {
     g_file result;
     db_char fileName[512];
+    db_id topLevelName;
 
     result = g_fileOpen(g, c_interfaceSourceFileName(name, fileName));
     if (!result) {
@@ -877,8 +911,8 @@ static g_file c_interfaceSourceFileOpen(db_generator g, db_string name) {
     g_fileWrite(result, " *    Don't mess with the begin and end tags, since these will ensure that modified\n");
     g_fileWrite(result, " *    code in interface functions isn't replaced when code is re-generated.\n");
     g_fileWrite(result, " */\n\n");
-    g_fileWrite(result, "#include \"%s.h\"\n", name);
-    g_fileWrite(result, "#include \"%s__meta.h\"\n\n", g_getName(g));
+    g_fileWrite(result, "#include \"%s.h\"\n", g_fullOid(g, g_getCurrent(g), topLevelName));
+    g_fileWrite(result, "#include \"%s__meta.h\"\n", g_getName(g));
 
     return result;
 error:

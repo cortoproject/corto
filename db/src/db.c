@@ -185,6 +185,7 @@ db_threadKey DB_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, observer_delayedBinder);\
     SSO_OP_OBJ(op, observer_init);\
     SSO_OP_OBJ(op, observer_bind);\
+    SSO_OP_OBJ(op, observer_unbind);\
     SSO_OP_OBJ(op, observer_listen);\
     SSO_OP_OBJ(op, observer_silence);\
     SSO_OP_OBJ(op, observer_setDispatcher);\
@@ -386,6 +387,7 @@ db_threadKey DB_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, collection_elementType);\
     SSO_OP_OBJ(op, collection_max);\
     SSO_OP_OBJ(op, collection_castable);\
+    SSO_OP_OBJ(op, collection_elementRequiresAlloc);\
     SSO_OP_OBJ(op, collection_init);\
     SSO_OP_OBJ(op, collection_size);\
     /* list */\
@@ -453,6 +455,11 @@ db_threadKey DB_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, class_init);\
     SSO_OP_OBJ(op, class_instanceof);\
     SSO_OP_OBJ(op, class_privateObserver);\
+    SSO_OP_OBJ(op, class_resolveDelegate);\
+    SSO_OP_OBJ(op, class_resolveInterfaceMethod);\
+    SSO_OP_OBJ(op, class_resolveCallback);\
+    SSO_OP_OBJ(op, class_bindCallback);\
+    SSO_OP_OBJ(op, class_bindDelegate);\
     /* array */\
     SSO_OP_OBJ(op, array_elementType);\
     SSO_OP_OBJ(op, array_init);\
@@ -660,14 +667,12 @@ void db_bindMethods(void) {
     ((db_delegate)SSO_OBJECT(class_construct))->id = 2;
     ((db_delegate)SSO_OBJECT(class_destruct))->id = 3;
     ((db_delegate)SSO_OBJECT(procedure_bind))->id = 2;
-    ((db_delegate)SSO_OBJECT(procedure_unbind))->id = 3;
 
     /* ::function */
     db_class_bindCallback(db_procedure_o, SSO_OBJECT(procedure_bind), db_type(db_function_o), SSO_OBJECT(function_bind));
-    db_class_bindCallback(db_procedure_o, SSO_OBJECT(procedure_unbind), db_type(db_function_o), SSO_OBJECT(function_unbind));
 }
 
-int db_start(void){
+int db_start(void) {
 
 	/* Initialize threadkeys */
 	db_threadTlsKey(&DB_KEY_OBSERVER_ADMIN, NULL);
@@ -716,8 +721,7 @@ int db_start(void){
     db_assert(((db_delegate)SSO_OBJECT(class_construct))->id == 2, "class::construct did not receive expected delegateId.");
     db_assert(((db_delegate)SSO_OBJECT(class_destruct))->id == 3, "class::destruct did not receive expected delegateId.");
     db_assert(((db_delegate)SSO_OBJECT(procedure_bind))->id == 2, "procedure::bind did not receive expected delegateId.");
-    db_assert(((db_delegate)SSO_OBJECT(procedure_unbind))->id == 3, "procedure::unbind did not receive expected delegateId.");
-
+ 
     /* Construct objects */
     SSO_OP_OBJECT_2ND(db_defineObject);
     SSO_OP_OBJECT(db_defineObject);
