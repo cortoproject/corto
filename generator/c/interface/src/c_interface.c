@@ -507,6 +507,9 @@ static int c_interfaceClassProcedureWrapper(db_function o, c_typeWalk_t *data) {
 
     /* Obtain returntype string */
     g_fileWrite(data->wrapper, "DB_UNUSED(f);\n");
+    if(!o->parameters.length) {
+        g_fileWrite(data->wrapper, "DB_UNUSED(args);\n");
+    }
     returnType = ((db_function)o)->returnType;
     if (returnType && db_type_sizeof(returnType->real)) {
         c_specifierId(data->g, returnType, returnSpec, NULL, returnPostfix);

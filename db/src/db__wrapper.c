@@ -105,6 +105,7 @@ db_uint32 db_class_allocSize(db_class _this) {
 
 void __db_class_allocSize_v(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_uint32*)result = db_class_allocSize_v(
         *(db_class*)args);
 }
@@ -301,6 +302,7 @@ void __db_collection_castable_v(db_function f, void *result, void *args) {
 
 void __db_collection_elementRequiresAlloc(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_bool*)result = db_collection_elementRequiresAlloc(
         *(db_collection*)args);
 }
@@ -313,6 +315,7 @@ void __db_collection_init(db_function f, void *result, void *args) {
 
 void __db_collection_size(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_uint32*)result = db_collection_size(
         *(db_any*)args);
 }
@@ -420,6 +423,7 @@ void __db_enum_init(db_function f, void *result, void *args) {
 
 void __db_event_processed(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     DB_UNUSED(result);
     db_event_processed(
         *(db_event*)args);
@@ -427,6 +431,7 @@ void __db_event_processed(db_function f, void *result, void *args) {
 
 void __db_event_uniqueKind(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_int16*)result = db_event_uniqueKind(
         );
 }
@@ -597,6 +602,7 @@ void __db_interface_resolveMethodId(db_function f, void *result, void *args) {
 
 void __db_list_append_(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_any*)result = db_list_append_(
         *(db_any*)args);
 }
@@ -611,6 +617,7 @@ void __db_list_append_lang_any(db_function f, void *result, void *args) {
 
 void __db_list_clear(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     DB_UNUSED(result);
     db_list_clear(
         *(db_any*)args);
@@ -630,6 +637,7 @@ void __db_list_init(db_function f, void *result, void *args) {
 
 void __db_list_insert_(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_any*)result = db_list_insert_(
         *(db_any*)args);
 }
@@ -644,6 +652,7 @@ void __db_list_insert_lang_any(db_function f, void *result, void *args) {
 
 void __db_list_reverse(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     DB_UNUSED(result);
     db_list_reverse(
         *(db_any*)args);
@@ -1016,6 +1025,7 @@ void __db_type__init(db_function f, void *result, void *args) {
 
 void __db_type_alignmentof(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_uint16*)result = db_type_alignmentof(
         *(db_type*)args);
 }
@@ -1046,6 +1056,7 @@ db_uint32 db_type_allocSize(db_type _this) {
 
 void __db_type_allocSize_v(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_uint32*)result = db_type_allocSize_v(
         *(db_type*)args);
 }
@@ -1156,12 +1167,14 @@ void __db_type_declare(db_function f, void *result, void *args) {
 
 void __db_type_define(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_int16*)result = db_type_define(
         *(db_any*)args);
 }
 
 void __db_type_destruct(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     DB_UNUSED(result);
     db_type_destruct(
         *(db_any*)args);
@@ -1169,6 +1182,7 @@ void __db_type_destruct(db_function f, void *result, void *args) {
 
 void __db_type_fullname(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_string*)result = db_type_fullname(
         *(db_any*)args);
 }
@@ -1231,6 +1245,7 @@ void __db_type_instanceof(db_function f, void *result, void *args) {
 
 void __db_type_invalidate(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     DB_UNUSED(result);
     db_type_invalidate(
         *(db_any*)args);
@@ -1245,12 +1260,14 @@ void __db_type_lookup(db_function f, void *result, void *args) {
 
 void __db_type_nameof(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_string*)result = db_type_nameof(
         *(db_any*)args);
 }
 
 void __db_type_parentof(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_object*)result = db_type_parentof(
         *(db_any*)args);
 }
@@ -1278,18 +1295,21 @@ void __db_type_resolveProcedure(db_function f, void *result, void *args) {
 
 void __db_type_sizeof(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_uint32*)result = db_type_sizeof(
         *(db_type*)args);
 }
 
 void __db_type_toString(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_string*)result = db_type_toString(
         *(db_any*)args);
 }
 
 void __db_type_typeof(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_type*)result = db_type_typeof(
         *(db_any*)args);
 }
@@ -1315,6 +1335,7 @@ void __db_typedef_init(db_function f, void *result, void *args) {
 
 void __db_typedef_realType(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_type*)result = db_typedef_realType(
         *(db_typedef*)args);
 }
