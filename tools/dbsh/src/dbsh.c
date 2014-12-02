@@ -108,15 +108,15 @@ static char* dbsh_attrStr(db_object o, char* buff) {
 	}
 	if (db_checkAttr(o, DB_ATTR_WRITABLE)) {
 		if (!first) {
-			strcat(buff, "|W ");
+			strcat(buff, "|W");
 		} else {
-			strcat(buff, "W ");
+			strcat(buff, "W");
 			first = FALSE;
 		}
 	}
 	if (db_checkAttr(o, DB_ATTR_OBSERVABLE)) {
 		if (!first) {
-			strcat(buff, "|O ");
+			strcat(buff, "|O");
 		} else {
 			strcat(buff, "O");
 		}
@@ -330,7 +330,7 @@ static int dbsh_show(char* object) {
 			if (db_checkAttr(o, DB_ATTR_SCOPED)) {
 				printf("%sparent:       %s%s%s\n", INTERFACE_COLOR, OBJECT_COLOR, db_fullname(db_parentof(o), id), NORMAL);
 				if (db_scopeof(o)) {
-					printf("%schilds:%s       %d\n", INTERFACE_COLOR, NORMAL, db_rbtreeSize(db_scopeof(o)));
+					printf("%schildcount:%s   %d\n", INTERFACE_COLOR, NORMAL, db_rbtreeSize(db_scopeof(o)));
 				}
 			}
         }
