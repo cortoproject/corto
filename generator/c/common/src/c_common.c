@@ -341,7 +341,9 @@ db_char* c_escapeString(db_string str, db_id id) {
 db_bool c_procedureHasThis(db_function o) {
     db_bool result;
     if (db_typeof(o) != db_typedef(db_observer_o)) {
-        result = (db_instanceof(db_typedef(db_method_o), o) || db_instanceof(db_typedef(db_delegate_o), o));
+        result = (db_instanceof(db_typedef(db_method_o), o) || 
+                  db_instanceof(db_typedef(db_delegate_o), o) ||
+                  db_instanceof(db_typedef(db_metaprocedure_o), o));
     } else {
         result = db_class_instanceof(db_class_o, db_parentof(o));
     }

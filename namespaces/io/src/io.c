@@ -1,7 +1,6 @@
 /* io.c
  *
- *  Generated on Sep  5 2014
- *    This file contains the implementation for the generated interface.
+ * This file contains the implementation for the generated interface.
  *
  *    Don't mess with the begin and end tags, since these will ensure that modified
  *    code in interface functions isn't replaced when code is re-generated.
@@ -9,7 +8,6 @@
 
 #include "io.h"
 #include "io__meta.h"
-
 
 /* $header() */
 #include "io__meta.h"

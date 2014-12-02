@@ -1,43 +1,58 @@
-/*
- * db_struct.c
+/* db_struct.c
  *
- *  Created on: Oct 10, 2012
- *      Author: sander
+ * This file contains the implementation for the generated interface.
+ *
+ *    Don't mess with the begin and end tags, since these will ensure that modified
+ *    code in interface functions isn't replaced when code is re-generated.
  */
 
-#include "db_type.h"
-#include "db__interface.h"
-#include "db_err.h"
-#include "db_util.h"
-#include "db_mem.h"
-#include "db_object.h"
+#include "db.h"
 #include "db__meta.h"
 
-#include "stdlib.h"
+/* $header() */
+#include "db__interface.h"
+#include "db__class.h"
+/* $end */
 
-db_bool db_type_compatible_v(db_type _this, db_type type);
-
-db_int16 db_struct_init(db_struct object) {
-
-    /* If not bootstrapping, set baseAccess to GLOBAL | PUBLIC */
-    if (db_checkState(db_type_o, DB_DEFINED)) {
-        object->baseAccess = DB_GLOBAL;
-    }
-
-    if (db_interface_init(db_interface(object))) {
-    	goto error;
-    }
-
-    db_interface(object)->kind = DB_STRUCT;
-    db_type(object)->reference = FALSE;
-
-    return 0;
-error:
-    return -1;
+/* ::hyve::lang::struct::castable(lang::type type) */
+db_bool db_struct_castable_v(db_struct _this, db_type type) {
+/* $begin(::hyve::lang::struct::castable) */
+    return db_struct_compatible(_this, type);
+/* $end */
 }
 
-/* class::construct -> struct::construct */
+/* ::hyve::lang::struct::compatible(lang::type type) */
+db_bool db_struct_compatible_v(db_struct _this, db_type type) {
+/* $begin(::hyve::lang::struct::compatible) */
+    db_bool result;
+
+    db_assert(db_class_instanceof(db_struct_o, _this), "struct::compatible called on non-struct object.");
+    result = FALSE;
+
+    /* Call overloaded type::compatible function first to check for generic compatibility. */
+    if (!db_type_compatible_v(db_type(_this), type)) {
+        /* Type must be at least struct for it to be compatible. */
+        if (db_class_instanceof(db_struct_o, type)) {
+            db_interface e;
+
+            /* Check if '_this' is superclass of 'type' */
+            e = db_interface(type);
+            do {
+                e = db_interface(e)->base;
+            }while(e && (e != db_interface(_this)));
+            result = (e == (db_interface)_this);
+        }
+    } else {
+        result = TRUE;
+    }
+
+    return result;
+/* $end */
+}
+
+/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::lang::struct::construct(lang::struct object) */
 db_int16 db_struct_construct(db_struct object) {
+/* $begin(::hyve::lang::struct::construct) */
     db_struct base;
     db_uint16 alignment;
     db_uint32 size;
@@ -97,50 +112,42 @@ db_int16 db_struct_construct(db_struct object) {
     return db_interface_construct(db_interface(object));
 error:
     return -1;
+/* $end */
 }
 
-/* virtual struct::compatible */
-db_bool db_struct_compatible(db_struct _this, db_type type) {
-    db_bool result;
-
-    db_assert(db_class_instanceof(db_struct_o, _this), "struct::compatible called on non-struct object.");
-    result = FALSE;
-
-    /* Call overloaded type::compatible function first to check for generic compatibility. */
-    if (!db_type_compatible_v(db_type(_this), type)) {
-        /* Type must be at least struct for it to be compatible. */
-        if (db_class_instanceof(db_struct_o, type)) {
-            db_interface e;
-
-            /* Check if '_this' is superclass of 'type' */
-            e = db_interface(type);
-            do {
-                e = db_interface(e)->base;
-            }while(e && (e != db_interface(_this)));
-            result = (e == (db_interface)_this);
-        }
-    } else {
-        result = TRUE;
+/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::struct::init(lang::struct object) */
+db_int16 db_struct_init(db_struct object) {
+/* $begin(::hyve::lang::struct::init) */
+    /* If not bootstrapping, set baseAccess to GLOBAL | PUBLIC */
+    if (db_checkState(db_type_o, DB_DEFINED)) {
+        object->baseAccess = DB_GLOBAL;
     }
 
-    return result;
+    if (db_interface_init(db_interface(object))) {
+    	goto error;
+    }
+
+    db_interface(object)->kind = DB_STRUCT;
+    db_type(object)->reference = FALSE;
+
+    return 0;
+error:
+    return -1;
+/* $end */
 }
 
-/* virtual struct::castable */
-db_bool db_struct_castable(db_struct _this, db_type type) {
-    return db_struct_compatible(_this, type);
-}
-
-/* virtual struct::resolveMember */
-db_member db_struct_resolveMember(db_struct _this, db_string member) {
+/* ::hyve::lang::struct::resolveMember(lang::string name) */
+db_member db_struct_resolveMember_v(db_struct _this, db_string name) {
+/* $begin(::hyve::lang::struct::resolveMember) */
     db_interface base;
     db_member m;
 
     m = NULL;
     base = db_interface(_this);
     do {
-        m = db_interface_resolveMember_v(db_interface(base), member);
+        m = db_interface_resolveMember_v(db_interface(base), name);
     }while(!m && (base=db_interface(base)->base));
 
     return m;
+/* $end */
 }

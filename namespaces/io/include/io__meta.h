@@ -1,8 +1,7 @@
 /* io__meta.h
  *
- *  Generated on Sep  5 2014
- *    Loads objects in database.
- *    This file contains generated code. Do not modify!
+ * Loads objects in database.
+ * This file contains generated code. Do not modify!
  */
 
 #ifndef io_META_H

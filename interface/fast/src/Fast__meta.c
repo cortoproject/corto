@@ -1,8 +1,7 @@
 /* Fast__meta.c
  *
- *  Generated on Nov 18 2014
- *    Loads objects in database.
- *    This file contains generated code. Do not modify!
+ * Loads objects in database.
+ * This file contains generated code. Do not modify!
  */
 
 #include "Fast__type.h"
@@ -918,8 +917,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Expression_cleanList_o with C-function */
         db_function(Fast_Expression_cleanList_o)->kind = DB_PROCEDURE_CDECL;
-        void Fast_Expression_cleanList(Fast_Expression_list list);
-        db_function(Fast_Expression_cleanList_o)->impl = (db_word)Fast_Expression_cleanList;
+        void __Fast_Expression_cleanList(void *args, void *result);
+        db_function(Fast_Expression_cleanList_o)->impl = (db_word)__Fast_Expression_cleanList;
         if (db_define(Fast_Expression_cleanList_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Expression::cleanList(list{Expression} list)'.");
             goto error;
@@ -2275,8 +2274,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_blockPop_o with C-function */
         db_function(Fast_Parser_blockPop_o)->kind = DB_PROCEDURE_CDECL;
-        void Fast_Parser_blockPop(Fast_Parser _this);
-        db_function(Fast_Parser_blockPop_o)->impl = (db_word)Fast_Parser_blockPop;
+        void __Fast_Parser_blockPop(void *args, void *result);
+        db_function(Fast_Parser_blockPop_o)->impl = (db_word)__Fast_Parser_blockPop;
         if (db_define(Fast_Parser_blockPop_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::blockPop()'.");
             goto error;
@@ -2323,8 +2322,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_collect_o with C-function */
         db_function(Fast_Parser_collect_o)->kind = DB_PROCEDURE_CDECL;
-        db_void Fast_Parser_collect(Fast_Parser _this, db_object o);
-        db_function(Fast_Parser_collect_o)->impl = (db_word)Fast_Parser_collect;
+        void __Fast_Parser_collect(void *args, void *result);
+        db_function(Fast_Parser_collect_o)->impl = (db_word)__Fast_Parser_collect;
         if (db_define(Fast_Parser_collect_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::collect(lang::object o)'.");
             goto error;
@@ -2364,8 +2363,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_collectHeap_o with C-function */
         db_function(Fast_Parser_collectHeap_o)->kind = DB_PROCEDURE_CDECL;
-        db_void Fast_Parser_collectHeap(Fast_Parser _this, db_word addr);
-        db_function(Fast_Parser_collectHeap_o)->impl = (db_word)Fast_Parser_collectHeap;
+        void __Fast_Parser_collectHeap(void *args, void *result);
+        db_function(Fast_Parser_collectHeap_o)->impl = (db_word)__Fast_Parser_collectHeap;
         if (db_define(Fast_Parser_collectHeap_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::collectHeap(word addr)'.");
             goto error;
@@ -2431,8 +2430,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_define_o with C-function */
         db_function(Fast_Parser_define_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Parser_define(Fast_Parser _this);
-        db_function(Fast_Parser_define_o)->impl = (db_word)Fast_Parser_define;
+        void __Fast_Parser_define(void *args, void *result);
+        db_function(Fast_Parser_define_o)->impl = (db_word)__Fast_Parser_define;
         if (db_define(Fast_Parser_define_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::define()'.");
             goto error;
@@ -2453,8 +2452,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_defineScope_o with C-function */
         db_function(Fast_Parser_defineScope_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Parser_defineScope(Fast_Parser _this);
-        db_function(Fast_Parser_defineScope_o)->impl = (db_word)Fast_Parser_defineScope;
+        void __Fast_Parser_defineScope(void *args, void *result);
+        db_function(Fast_Parser_defineScope_o)->impl = (db_word)__Fast_Parser_defineScope;
         if (db_define(Fast_Parser_defineScope_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::defineScope()'.");
             goto error;
@@ -2551,8 +2550,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_getComplexType_o with C-function */
         db_function(Fast_Parser_getComplexType_o)->kind = DB_PROCEDURE_CDECL;
-        db_type Fast_Parser_getComplexType(Fast_Parser _this);
-        db_function(Fast_Parser_getComplexType_o)->impl = (db_word)Fast_Parser_getComplexType;
+        void __Fast_Parser_getComplexType(void *args, void *result);
+        db_function(Fast_Parser_getComplexType_o)->impl = (db_word)__Fast_Parser_getComplexType;
         if (db_define(Fast_Parser_getComplexType_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::getComplexType()'.");
             goto error;
@@ -2580,8 +2579,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_getLvalueType_o with C-function */
         db_function(Fast_Parser_getLvalueType_o)->kind = DB_PROCEDURE_CDECL;
-        db_type Fast_Parser_getLvalueType(Fast_Parser _this, db_bool assignment);
-        db_function(Fast_Parser_getLvalueType_o)->impl = (db_word)Fast_Parser_getLvalueType;
+        void __Fast_Parser_getLvalueType(void *args, void *result);
+        db_function(Fast_Parser_getLvalueType_o)->impl = (db_word)__Fast_Parser_getLvalueType;
         if (db_define(Fast_Parser_getLvalueType_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::getLvalueType(lang::bool assignment)'.");
             goto error;
@@ -2673,8 +2672,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_initKeyValuePop_o with C-function */
         db_function(Fast_Parser_initKeyValuePop_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Parser_initKeyValuePop(Fast_Parser _this);
-        db_function(Fast_Parser_initKeyValuePop_o)->impl = (db_word)Fast_Parser_initKeyValuePop;
+        void __Fast_Parser_initKeyValuePop(void *args, void *result);
+        db_function(Fast_Parser_initKeyValuePop_o)->impl = (db_word)__Fast_Parser_initKeyValuePop;
         if (db_define(Fast_Parser_initKeyValuePop_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::initKeyValuePop()'.");
             goto error;
@@ -2695,8 +2694,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_initKeyValuePush_o with C-function */
         db_function(Fast_Parser_initKeyValuePush_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Parser_initKeyValuePush(Fast_Parser _this);
-        db_function(Fast_Parser_initKeyValuePush_o)->impl = (db_word)Fast_Parser_initKeyValuePush;
+        void __Fast_Parser_initKeyValuePush(void *args, void *result);
+        db_function(Fast_Parser_initKeyValuePush_o)->impl = (db_word)__Fast_Parser_initKeyValuePush;
         if (db_define(Fast_Parser_initKeyValuePush_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::initKeyValuePush()'.");
             goto error;
@@ -2717,8 +2716,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_initMember_o with C-function */
         db_function(Fast_Parser_initMember_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Parser_initMember(Fast_Parser _this, db_string member);
-        db_function(Fast_Parser_initMember_o)->impl = (db_word)Fast_Parser_initMember;
+        void __Fast_Parser_initMember(void *args, void *result);
+        db_function(Fast_Parser_initMember_o)->impl = (db_word)__Fast_Parser_initMember;
         if (db_define(Fast_Parser_initMember_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::initMember(lang::string member)'.");
             goto error;
@@ -2739,8 +2738,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_initPop_o with C-function */
         db_function(Fast_Parser_initPop_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Parser_initPop(Fast_Parser _this);
-        db_function(Fast_Parser_initPop_o)->impl = (db_word)Fast_Parser_initPop;
+        void __Fast_Parser_initPop(void *args, void *result);
+        db_function(Fast_Parser_initPop_o)->impl = (db_word)__Fast_Parser_initPop;
         if (db_define(Fast_Parser_initPop_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::initPop()'.");
             goto error;
@@ -2761,8 +2760,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_initPush_o with C-function */
         db_function(Fast_Parser_initPush_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Parser_initPush(Fast_Parser _this);
-        db_function(Fast_Parser_initPush_o)->impl = (db_word)Fast_Parser_initPush;
+        void __Fast_Parser_initPush(void *args, void *result);
+        db_function(Fast_Parser_initPush_o)->impl = (db_word)__Fast_Parser_initPush;
         if (db_define(Fast_Parser_initPush_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::initPush()'.");
             goto error;
@@ -2790,8 +2789,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_initPushStatic_o with C-function */
         db_function(Fast_Parser_initPushStatic_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Parser_initPushStatic(Fast_Parser _this);
-        db_function(Fast_Parser_initPushStatic_o)->impl = (db_word)Fast_Parser_initPushStatic;
+        void __Fast_Parser_initPushStatic(void *args, void *result);
+        db_function(Fast_Parser_initPushStatic_o)->impl = (db_word)__Fast_Parser_initPushStatic;
         if (db_define(Fast_Parser_initPushStatic_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::initPushStatic()'.");
             goto error;
@@ -2812,8 +2811,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_initStage_o with C-function */
         db_function(Fast_Parser_initStage_o)->kind = DB_PROCEDURE_CDECL;
-        void Fast_Parser_initStage(Fast_Parser _this, db_string id, db_bool found);
-        db_function(Fast_Parser_initStage_o)->impl = (db_word)Fast_Parser_initStage;
+        void __Fast_Parser_initStage(void *args, void *result);
+        db_function(Fast_Parser_initStage_o)->impl = (db_word)__Fast_Parser_initStage;
         if (db_define(Fast_Parser_initStage_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::initStage(lang::string id,bool found)'.");
             goto error;
@@ -2834,8 +2833,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_isAbortSet_o with C-function */
         db_function(Fast_Parser_isAbortSet_o)->kind = DB_PROCEDURE_CDECL;
-        db_bool Fast_Parser_isAbortSet(Fast_Parser _this);
-        db_function(Fast_Parser_isAbortSet_o)->impl = (db_word)Fast_Parser_isAbortSet;
+        void __Fast_Parser_isAbortSet(void *args, void *result);
+        db_function(Fast_Parser_isAbortSet_o)->impl = (db_word)__Fast_Parser_isAbortSet;
         if (db_define(Fast_Parser_isAbortSet_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::isAbortSet()'.");
             goto error;
@@ -2856,8 +2855,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_isErrSet_o with C-function */
         db_function(Fast_Parser_isErrSet_o)->kind = DB_PROCEDURE_CDECL;
-        db_bool Fast_Parser_isErrSet(Fast_Parser _this);
-        db_function(Fast_Parser_isErrSet_o)->impl = (db_word)Fast_Parser_isErrSet;
+        void __Fast_Parser_isErrSet(void *args, void *result);
+        db_function(Fast_Parser_isErrSet_o)->impl = (db_word)__Fast_Parser_isErrSet;
         if (db_define(Fast_Parser_isErrSet_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::isErrSet()'.");
             goto error;
@@ -2968,8 +2967,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_observerPop_o with C-function */
         db_function(Fast_Parser_observerPop_o)->kind = DB_PROCEDURE_CDECL;
-        void Fast_Parser_observerPop(Fast_Parser _this);
-        db_function(Fast_Parser_observerPop_o)->impl = (db_word)Fast_Parser_observerPop;
+        void __Fast_Parser_observerPop(void *args, void *result);
+        db_function(Fast_Parser_observerPop_o)->impl = (db_word)__Fast_Parser_observerPop;
         if (db_define(Fast_Parser_observerPop_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::observerPop()'.");
             goto error;
@@ -2990,8 +2989,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_observerPush_o with C-function */
         db_function(Fast_Parser_observerPush_o)->kind = DB_PROCEDURE_CDECL;
-        void Fast_Parser_observerPush(Fast_Parser _this);
-        db_function(Fast_Parser_observerPush_o)->impl = (db_word)Fast_Parser_observerPush;
+        void __Fast_Parser_observerPush(void *args, void *result);
+        db_function(Fast_Parser_observerPush_o)->impl = (db_word)__Fast_Parser_observerPush;
         if (db_define(Fast_Parser_observerPush_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::observerPush()'.");
             goto error;
@@ -3012,8 +3011,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_parse_o with C-function */
         db_function(Fast_Parser_parse_o)->kind = DB_PROCEDURE_CDECL;
-        db_uint32 Fast_Parser_parse(Fast_Parser _this);
-        db_function(Fast_Parser_parse_o)->impl = (db_word)Fast_Parser_parse;
+        void __Fast_Parser_parse(void *args, void *result);
+        db_function(Fast_Parser_parse_o)->impl = (db_word)__Fast_Parser_parse;
         if (db_define(Fast_Parser_parse_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::parse()'.");
             goto error;
@@ -3072,8 +3071,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_popComplexType_o with C-function */
         db_function(Fast_Parser_popComplexType_o)->kind = DB_PROCEDURE_CDECL;
-        void Fast_Parser_popComplexType(Fast_Parser _this);
-        db_function(Fast_Parser_popComplexType_o)->impl = (db_word)Fast_Parser_popComplexType;
+        void __Fast_Parser_popComplexType(void *args, void *result);
+        db_function(Fast_Parser_popComplexType_o)->impl = (db_word)__Fast_Parser_popComplexType;
         if (db_define(Fast_Parser_popComplexType_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::popComplexType()'.");
             goto error;
@@ -3094,8 +3093,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_popLvalue_o with C-function */
         db_function(Fast_Parser_popLvalue_o)->kind = DB_PROCEDURE_CDECL;
-        void Fast_Parser_popLvalue(Fast_Parser _this);
-        db_function(Fast_Parser_popLvalue_o)->impl = (db_word)Fast_Parser_popLvalue;
+        void __Fast_Parser_popLvalue(void *args, void *result);
+        db_function(Fast_Parser_popLvalue_o)->impl = (db_word)__Fast_Parser_popLvalue;
         if (db_define(Fast_Parser_popLvalue_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::popLvalue()'.");
             goto error;
@@ -3135,8 +3134,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_pushReturnAsLvalue_o with C-function */
         db_function(Fast_Parser_pushReturnAsLvalue_o)->kind = DB_PROCEDURE_CDECL;
-        void Fast_Parser_pushReturnAsLvalue(Fast_Parser _this, db_function function);
-        db_function(Fast_Parser_pushReturnAsLvalue_o)->impl = (db_word)Fast_Parser_pushReturnAsLvalue;
+        void __Fast_Parser_pushReturnAsLvalue(void *args, void *result);
+        db_function(Fast_Parser_pushReturnAsLvalue_o)->impl = (db_word)__Fast_Parser_pushReturnAsLvalue;
         if (db_define(Fast_Parser_pushReturnAsLvalue_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::pushReturnAsLvalue(lang::function function)'.");
             goto error;
@@ -3164,8 +3163,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_reset_o with C-function */
         db_function(Fast_Parser_reset_o)->kind = DB_PROCEDURE_CDECL;
-        void Fast_Parser_reset(Fast_Parser _this);
-        db_function(Fast_Parser_reset_o)->impl = (db_word)Fast_Parser_reset;
+        void __Fast_Parser_reset(void *args, void *result);
+        db_function(Fast_Parser_reset_o)->impl = (db_word)__Fast_Parser_reset;
         if (db_define(Fast_Parser_reset_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::reset()'.");
             goto error;
@@ -4017,8 +4016,8 @@ int Fast_load(void) {
         
         /* Bind Fast_valueKindFromType_o with C-function */
         db_function(Fast_valueKindFromType_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_valueKind Fast_valueKindFromType(db_type type);
-        db_function(Fast_valueKindFromType_o)->impl = (db_word)Fast_valueKindFromType;
+        void __Fast_valueKindFromType(void *args, void *result);
+        db_function(Fast_valueKindFromType_o)->impl = (db_word)__Fast_valueKindFromType;
         if (db_define(Fast_valueKindFromType_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::valueKindFromType(lang::type type)'.");
             goto error;
@@ -4197,8 +4196,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Node_toIc_o with C-function */
         db_function(Fast_Node_toIc_o)->kind = DB_PROCEDURE_CDECL;
-        db_ic Fast_Node_toIc_v(Fast_Node _this, db_icProgram program, db_icStorage storage, db_bool stored);
-        db_function(Fast_Node_toIc_o)->impl = (db_word)Fast_Node_toIc_v;
+        void __Fast_Node_toIc_v(void *args, void *result);
+        db_function(Fast_Node_toIc_o)->impl = (db_word)__Fast_Node_toIc_v;
         if (db_define(Fast_Node_toIc_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Node::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.");
             goto error;
@@ -4327,8 +4326,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_construct_o with C-function */
         db_function(Fast_Parser_construct_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Parser_construct(Fast_Parser object);
-        db_function(Fast_Parser_construct_o)->impl = (db_word)Fast_Parser_construct;
+        void __Fast_Parser_construct(void *args, void *result);
+        db_function(Fast_Parser_construct_o)->impl = (db_word)__Fast_Parser_construct;
         if (db_define(Fast_Parser_construct_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::construct(Parser object)'.");
             goto error;
@@ -4349,8 +4348,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_destruct_o with C-function */
         db_function(Fast_Parser_destruct_o)->kind = DB_PROCEDURE_CDECL;
-        void Fast_Parser_destruct(Fast_Parser object);
-        db_function(Fast_Parser_destruct_o)->impl = (db_word)Fast_Parser_destruct;
+        void __Fast_Parser_destruct(void *args, void *result);
+        db_function(Fast_Parser_destruct_o)->impl = (db_word)__Fast_Parser_destruct;
         if (db_define(Fast_Parser_destruct_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::destruct(Parser object)'.");
             goto error;
@@ -4383,8 +4382,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Node_init_o with C-function */
         db_function(Fast_Node_init_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Node_init(Fast_Node object);
-        db_function(Fast_Node_init_o)->impl = (db_word)Fast_Node_init;
+        void __Fast_Node_init(void *args, void *result);
+        db_function(Fast_Node_init_o)->impl = (db_word)__Fast_Node_init;
         if (db_define(Fast_Node_init_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Node::init(Node object)'.");
             goto error;
@@ -4419,8 +4418,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Block_addStatement_o with C-function */
         db_function(Fast_Block_addStatement_o)->kind = DB_PROCEDURE_CDECL;
-        void Fast_Block_addStatement(Fast_Block _this, Fast_Node statement);
-        db_function(Fast_Block_addStatement_o)->impl = (db_word)Fast_Block_addStatement;
+        void __Fast_Block_addStatement(void *args, void *result);
+        db_function(Fast_Block_addStatement_o)->impl = (db_word)__Fast_Block_addStatement;
         if (db_define(Fast_Block_addStatement_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Block::addStatement(Fast::Node statement)'.");
             goto error;
@@ -4469,8 +4468,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Block_setFunction_o with C-function */
         db_function(Fast_Block_setFunction_o)->kind = DB_PROCEDURE_CDECL;
-        void Fast_Block_setFunction(Fast_Block _this, db_function function);
-        db_function(Fast_Block_setFunction_o)->impl = (db_word)Fast_Block_setFunction;
+        void __Fast_Block_setFunction(void *args, void *result);
+        db_function(Fast_Block_setFunction_o)->impl = (db_word)__Fast_Block_setFunction;
         if (db_define(Fast_Block_setFunction_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Block::setFunction(lang::function function'.");
             goto error;
@@ -4491,8 +4490,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Block_toIc_o with C-function */
         db_function(Fast_Block_toIc_o)->kind = DB_PROCEDURE_CDECL;
-        db_ic Fast_Block_toIc_v(Fast_Block _this, db_icProgram program, db_icStorage storage, db_bool stored);
-        db_function(Fast_Block_toIc_o)->impl = (db_word)Fast_Block_toIc_v;
+        void __Fast_Block_toIc_v(void *args, void *result);
+        db_function(Fast_Block_toIc_o)->impl = (db_word)__Fast_Block_toIc_v;
         if (db_define(Fast_Block_toIc_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Block::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.");
             goto error;
@@ -4513,8 +4512,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Block_toIcBody_o with C-function */
         db_function(Fast_Block_toIcBody_o)->kind = DB_PROCEDURE_CDECL;
-        db_ic Fast_Block_toIcBody_v(Fast_Block _this, db_icProgram program, db_icStorage storage, db_bool stored);
-        db_function(Fast_Block_toIcBody_o)->impl = (db_word)Fast_Block_toIcBody_v;
+        void __Fast_Block_toIcBody_v(void *args, void *result);
+        db_function(Fast_Block_toIcBody_o)->impl = (db_word)__Fast_Block_toIcBody_v;
         if (db_define(Fast_Block_toIcBody_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Block::toIcBody(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.");
             goto error;
@@ -4535,8 +4534,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Define_construct_o with C-function */
         db_function(Fast_Define_construct_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Define_construct(Fast_Define object);
-        db_function(Fast_Define_construct_o)->impl = (db_word)Fast_Define_construct;
+        void __Fast_Define_construct(void *args, void *result);
+        db_function(Fast_Define_construct_o)->impl = (db_word)__Fast_Define_construct;
         if (db_define(Fast_Define_construct_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Define::construct(Fast::Define object)'.");
             goto error;
@@ -4557,8 +4556,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Define_toIc_o with C-function */
         db_function(Fast_Define_toIc_o)->kind = DB_PROCEDURE_CDECL;
-        db_ic Fast_Define_toIc_v(Fast_Define _this, db_icProgram program, db_icStorage storage, db_bool stored);
-        db_function(Fast_Define_toIc_o)->impl = (db_word)Fast_Define_toIc_v;
+        void __Fast_Define_toIc_v(void *args, void *result);
+        db_function(Fast_Define_toIc_o)->impl = (db_word)__Fast_Define_toIc_v;
         if (db_define(Fast_Define_toIc_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Define::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.");
             goto error;
@@ -4579,8 +4578,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Expression_cast_o with C-function */
         db_function(Fast_Expression_cast_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Expression Fast_Expression_cast(Fast_Expression _this, db_type type);
-        db_function(Fast_Expression_cast_o)->impl = (db_word)Fast_Expression_cast;
+        void __Fast_Expression_cast(void *args, void *result);
+        db_function(Fast_Expression_cast_o)->impl = (db_word)__Fast_Expression_cast;
         if (db_define(Fast_Expression_cast_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Expression::cast(lang::type type)'.");
             goto error;
@@ -4601,8 +4600,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Expression_fold_o with C-function */
         db_function(Fast_Expression_fold_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Expression Fast_Expression_fold_v(Fast_Expression _this);
-        db_function(Fast_Expression_fold_o)->impl = (db_word)Fast_Expression_fold_v;
+        void __Fast_Expression_fold_v(void *args, void *result);
+        db_function(Fast_Expression_fold_o)->impl = (db_word)__Fast_Expression_fold_v;
         if (db_define(Fast_Expression_fold_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Expression::fold()'.");
             goto error;
@@ -4623,8 +4622,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Expression_getType_o with C-function */
         db_function(Fast_Expression_getType_o)->kind = DB_PROCEDURE_CDECL;
-        db_type Fast_Expression_getType(Fast_Expression _this);
-        db_function(Fast_Expression_getType_o)->impl = (db_word)Fast_Expression_getType;
+        void __Fast_Expression_getType(void *args, void *result);
+        db_function(Fast_Expression_getType_o)->impl = (db_word)__Fast_Expression_getType;
         if (db_define(Fast_Expression_getType_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Expression::getType()'.");
             goto error;
@@ -4645,8 +4644,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Expression_getType_expr_o with C-function */
         db_function(Fast_Expression_getType_expr_o)->kind = DB_PROCEDURE_CDECL;
-        db_type Fast_Expression_getType_expr(Fast_Expression _this, Fast_Expression target);
-        db_function(Fast_Expression_getType_expr_o)->impl = (db_word)Fast_Expression_getType_expr;
+        void __Fast_Expression_getType_expr(void *args, void *result);
+        db_function(Fast_Expression_getType_expr_o)->impl = (db_word)__Fast_Expression_getType_expr;
         if (db_define(Fast_Expression_getType_expr_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Expression::getType_expr(Expression target)'.");
             goto error;
@@ -4667,8 +4666,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Expression_getType_type_o with C-function */
         db_function(Fast_Expression_getType_type_o)->kind = DB_PROCEDURE_CDECL;
-        db_type Fast_Expression_getType_type(Fast_Expression _this, db_type target);
-        db_function(Fast_Expression_getType_type_o)->impl = (db_word)Fast_Expression_getType_type;
+        void __Fast_Expression_getType_type(void *args, void *result);
+        db_function(Fast_Expression_getType_type_o)->impl = (db_word)__Fast_Expression_getType_type;
         if (db_define(Fast_Expression_getType_type_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Expression::getType_type(lang::type target)'.");
             goto error;
@@ -4689,8 +4688,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Expression_getValue_o with C-function */
         db_function(Fast_Expression_getValue_o)->kind = DB_PROCEDURE_CDECL;
-        db_word Fast_Expression_getValue_v(Fast_Expression _this);
-        db_function(Fast_Expression_getValue_o)->impl = (db_word)Fast_Expression_getValue_v;
+        void __Fast_Expression_getValue_v(void *args, void *result);
+        db_function(Fast_Expression_getValue_o)->impl = (db_word)__Fast_Expression_getValue_v;
         if (db_define(Fast_Expression_getValue_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Expression::getValue()'.");
             goto error;
@@ -4711,8 +4710,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Expression_hasSideEffects_o with C-function */
         db_function(Fast_Expression_hasSideEffects_o)->kind = DB_PROCEDURE_CDECL;
-        db_bool Fast_Expression_hasSideEffects_v(Fast_Expression _this);
-        db_function(Fast_Expression_hasSideEffects_o)->impl = (db_word)Fast_Expression_hasSideEffects_v;
+        void __Fast_Expression_hasSideEffects_v(void *args, void *result);
+        db_function(Fast_Expression_hasSideEffects_o)->impl = (db_word)__Fast_Expression_hasSideEffects_v;
         if (db_define(Fast_Expression_hasSideEffects_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Expression::hasSideEffects()'.");
             goto error;
@@ -4733,8 +4732,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Expression_init_o with C-function */
         db_function(Fast_Expression_init_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Expression_init(Fast_Expression object);
-        db_function(Fast_Expression_init_o)->impl = (db_word)Fast_Expression_init;
+        void __Fast_Expression_init(void *args, void *result);
+        db_function(Fast_Expression_init_o)->impl = (db_word)__Fast_Expression_init;
         if (db_define(Fast_Expression_init_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Expression::init(Expression object)'.");
             goto error;
@@ -4755,8 +4754,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Expression_serialize_o with C-function */
         db_function(Fast_Expression_serialize_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Expression_serialize_v(Fast_Expression _this, db_type dstType, db_word dst);
-        db_function(Fast_Expression_serialize_o)->impl = (db_word)Fast_Expression_serialize_v;
+        void __Fast_Expression_serialize_v(void *args, void *result);
+        db_function(Fast_Expression_serialize_o)->impl = (db_word)__Fast_Expression_serialize_v;
         if (db_define(Fast_Expression_serialize_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Expression::serialize(lang::type dstType,lang::word dst)'.");
             goto error;
@@ -4777,8 +4776,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Expression_toList_o with C-function */
         db_function(Fast_Expression_toList_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Expression_list Fast_Expression_toList_v(Fast_Expression _this);
-        db_function(Fast_Expression_toList_o)->impl = (db_word)Fast_Expression_toList_v;
+        void __Fast_Expression_toList_v(void *args, void *result);
+        db_function(Fast_Expression_toList_o)->impl = (db_word)__Fast_Expression_toList_v;
         if (db_define(Fast_Expression_toList_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Expression::toList()'.");
             goto error;
@@ -4813,8 +4812,8 @@ int Fast_load(void) {
         
         /* Bind Fast_BinaryExpr_construct_o with C-function */
         db_function(Fast_BinaryExpr_construct_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_BinaryExpr_construct(Fast_BinaryExpr object);
-        db_function(Fast_BinaryExpr_construct_o)->impl = (db_word)Fast_BinaryExpr_construct;
+        void __Fast_BinaryExpr_construct(void *args, void *result);
+        db_function(Fast_BinaryExpr_construct_o)->impl = (db_word)__Fast_BinaryExpr_construct;
         if (db_define(Fast_BinaryExpr_construct_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::BinaryExpr::construct(Fast::BinaryExpr object)'.");
             goto error;
@@ -4835,8 +4834,8 @@ int Fast_load(void) {
         
         /* Bind Fast_BinaryExpr_fold_o with C-function */
         db_function(Fast_BinaryExpr_fold_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Expression Fast_BinaryExpr_fold(Fast_BinaryExpr _this);
-        db_function(Fast_BinaryExpr_fold_o)->impl = (db_word)Fast_BinaryExpr_fold;
+        void __Fast_BinaryExpr_fold(void *args, void *result);
+        db_function(Fast_BinaryExpr_fold_o)->impl = (db_word)__Fast_BinaryExpr_fold;
         if (db_define(Fast_BinaryExpr_fold_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::BinaryExpr::fold()'.");
             goto error;
@@ -4857,8 +4856,8 @@ int Fast_load(void) {
         
         /* Bind Fast_BinaryExpr_hasSideEffects_o with C-function */
         db_function(Fast_BinaryExpr_hasSideEffects_o)->kind = DB_PROCEDURE_CDECL;
-        db_bool Fast_BinaryExpr_hasSideEffects_v(Fast_BinaryExpr _this);
-        db_function(Fast_BinaryExpr_hasSideEffects_o)->impl = (db_word)Fast_BinaryExpr_hasSideEffects_v;
+        void __Fast_BinaryExpr_hasSideEffects_v(void *args, void *result);
+        db_function(Fast_BinaryExpr_hasSideEffects_o)->impl = (db_word)__Fast_BinaryExpr_hasSideEffects_v;
         if (db_define(Fast_BinaryExpr_hasSideEffects_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::BinaryExpr::hasSideEffects()'.");
             goto error;
@@ -4903,8 +4902,8 @@ int Fast_load(void) {
         
         /* Bind Fast_BinaryExpr_setOperator_o with C-function */
         db_function(Fast_BinaryExpr_setOperator_o)->kind = DB_PROCEDURE_CDECL;
-        db_void Fast_BinaryExpr_setOperator(Fast_BinaryExpr _this, db_operatorKind kind);
-        db_function(Fast_BinaryExpr_setOperator_o)->impl = (db_word)Fast_BinaryExpr_setOperator;
+        void __Fast_BinaryExpr_setOperator(void *args, void *result);
+        db_function(Fast_BinaryExpr_setOperator_o)->impl = (db_word)__Fast_BinaryExpr_setOperator;
         if (db_define(Fast_BinaryExpr_setOperator_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::BinaryExpr::setOperator(lang::operatorKind kind)'.");
             goto error;
@@ -4925,8 +4924,8 @@ int Fast_load(void) {
         
         /* Bind Fast_BinaryExpr_toIc_o with C-function */
         db_function(Fast_BinaryExpr_toIc_o)->kind = DB_PROCEDURE_CDECL;
-        db_ic Fast_BinaryExpr_toIc_v(Fast_BinaryExpr _this, db_icProgram program, db_icStorage storage, db_bool stored);
-        db_function(Fast_BinaryExpr_toIc_o)->impl = (db_word)Fast_BinaryExpr_toIc_v;
+        void __Fast_BinaryExpr_toIc_v(void *args, void *result);
+        db_function(Fast_BinaryExpr_toIc_o)->impl = (db_word)__Fast_BinaryExpr_toIc_v;
         if (db_define(Fast_BinaryExpr_toIc_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::BinaryExpr::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.");
             goto error;
@@ -4954,8 +4953,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Block_lookup_o with C-function */
         db_function(Fast_Block_lookup_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Expression Fast_Block_lookup(Fast_Block _this, db_string id);
-        db_function(Fast_Block_lookup_o)->impl = (db_word)Fast_Block_lookup;
+        void __Fast_Block_lookup(void *args, void *result);
+        db_function(Fast_Block_lookup_o)->impl = (db_word)__Fast_Block_lookup;
         if (db_define(Fast_Block_lookup_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Block::lookup(lang::string id)'.");
             goto error;
@@ -4969,8 +4968,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Block_lookupLocal_o with C-function */
         db_function(Fast_Block_lookupLocal_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Expression Fast_Block_lookupLocal(Fast_Block _this, db_string id);
-        db_function(Fast_Block_lookupLocal_o)->impl = (db_word)Fast_Block_lookupLocal;
+        void __Fast_Block_lookupLocal(void *args, void *result);
+        db_function(Fast_Block_lookupLocal_o)->impl = (db_word)__Fast_Block_lookupLocal;
         if (db_define(Fast_Block_lookupLocal_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Block::lookupLocal(lang::string id)'.");
             goto error;
@@ -4984,8 +4983,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Block_resolve_o with C-function */
         db_function(Fast_Block_resolve_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Expression Fast_Block_resolve(Fast_Block _this, db_string id);
-        db_function(Fast_Block_resolve_o)->impl = (db_word)Fast_Block_resolve;
+        void __Fast_Block_resolve(void *args, void *result);
+        db_function(Fast_Block_resolve_o)->impl = (db_word)__Fast_Block_resolve;
         if (db_define(Fast_Block_resolve_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Block::resolve(lang::string id)'.");
             goto error;
@@ -5018,8 +5017,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Call_construct_o with C-function */
         db_function(Fast_Call_construct_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Call_construct(Fast_Call object);
-        db_function(Fast_Call_construct_o)->impl = (db_word)Fast_Call_construct;
+        void __Fast_Call_construct(void *args, void *result);
+        db_function(Fast_Call_construct_o)->impl = (db_word)__Fast_Call_construct;
         if (db_define(Fast_Call_construct_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Call::construct(Fast::Call object)'.");
             goto error;
@@ -5052,8 +5051,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Call_hasSideEffects_o with C-function */
         db_function(Fast_Call_hasSideEffects_o)->kind = DB_PROCEDURE_CDECL;
-        db_bool Fast_Call_hasSideEffects_v(Fast_Call _this);
-        db_function(Fast_Call_hasSideEffects_o)->impl = (db_word)Fast_Call_hasSideEffects_v;
+        void __Fast_Call_hasSideEffects_v(void *args, void *result);
+        db_function(Fast_Call_hasSideEffects_o)->impl = (db_word)__Fast_Call_hasSideEffects_v;
         if (db_define(Fast_Call_hasSideEffects_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Call::hasSideEffects()'.");
             goto error;
@@ -5074,8 +5073,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Call_toIc_o with C-function */
         db_function(Fast_Call_toIc_o)->kind = DB_PROCEDURE_CDECL;
-        db_ic Fast_Call_toIc_v(Fast_Call _this, db_icProgram program, db_icStorage storage, db_bool stored);
-        db_function(Fast_Call_toIc_o)->impl = (db_word)Fast_Call_toIc_v;
+        void __Fast_Call_toIc_v(void *args, void *result);
+        db_function(Fast_Call_toIc_o)->impl = (db_word)__Fast_Call_toIc_v;
         if (db_define(Fast_Call_toIc_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Call::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.");
             goto error;
@@ -5110,8 +5109,8 @@ int Fast_load(void) {
         
         /* Bind Fast_CastExpr_construct_o with C-function */
         db_function(Fast_CastExpr_construct_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_CastExpr_construct(Fast_CastExpr object);
-        db_function(Fast_CastExpr_construct_o)->impl = (db_word)Fast_CastExpr_construct;
+        void __Fast_CastExpr_construct(void *args, void *result);
+        db_function(Fast_CastExpr_construct_o)->impl = (db_word)__Fast_CastExpr_construct;
         if (db_define(Fast_CastExpr_construct_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::CastExpr::construct(Fast::CastExpr object)'.");
             goto error;
@@ -5156,8 +5155,8 @@ int Fast_load(void) {
         
         /* Bind Fast_CastExpr_toIc_o with C-function */
         db_function(Fast_CastExpr_toIc_o)->kind = DB_PROCEDURE_CDECL;
-        db_ic Fast_CastExpr_toIc_v(Fast_CastExpr _this, db_icProgram program, db_icStorage storage, db_bool stored);
-        db_function(Fast_CastExpr_toIc_o)->impl = (db_word)Fast_CastExpr_toIc_v;
+        void __Fast_CastExpr_toIc_v(void *args, void *result);
+        db_function(Fast_CastExpr_toIc_o)->impl = (db_word)__Fast_CastExpr_toIc_v;
         if (db_define(Fast_CastExpr_toIc_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::CastExpr::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.");
             goto error;
@@ -5192,8 +5191,8 @@ int Fast_load(void) {
         
         /* Bind Fast_CommaExpr_addExpression_o with C-function */
         db_function(Fast_CommaExpr_addExpression_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_CommaExpr_addExpression(Fast_CommaExpr _this, Fast_Expression expr);
-        db_function(Fast_CommaExpr_addExpression_o)->impl = (db_word)Fast_CommaExpr_addExpression;
+        void __Fast_CommaExpr_addExpression(void *args, void *result);
+        db_function(Fast_CommaExpr_addExpression_o)->impl = (db_word)__Fast_CommaExpr_addExpression;
         if (db_define(Fast_CommaExpr_addExpression_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::CommaExpr::addExpression(Expression expr)'.");
             goto error;
@@ -5213,8 +5212,8 @@ int Fast_load(void) {
         
         /* Bind Fast_CommaExpr_addOrCreate_o with C-function */
         db_function(Fast_CommaExpr_addOrCreate_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Expression Fast_CommaExpr_addOrCreate(Fast_Expression list, Fast_Expression expr);
-        db_function(Fast_CommaExpr_addOrCreate_o)->impl = (db_word)Fast_CommaExpr_addOrCreate;
+        void __Fast_CommaExpr_addOrCreate(void *args, void *result);
+        db_function(Fast_CommaExpr_addOrCreate_o)->impl = (db_word)__Fast_CommaExpr_addOrCreate;
         if (db_define(Fast_CommaExpr_addOrCreate_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::CommaExpr::addOrCreate(Expression list,Expression expr)'.");
             goto error;
@@ -5235,8 +5234,8 @@ int Fast_load(void) {
         
         /* Bind Fast_CommaExpr_construct_o with C-function */
         db_function(Fast_CommaExpr_construct_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_CommaExpr_construct(Fast_CommaExpr object);
-        db_function(Fast_CommaExpr_construct_o)->impl = (db_word)Fast_CommaExpr_construct;
+        void __Fast_CommaExpr_construct(void *args, void *result);
+        db_function(Fast_CommaExpr_construct_o)->impl = (db_word)__Fast_CommaExpr_construct;
         if (db_define(Fast_CommaExpr_construct_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::CommaExpr::construct(CommaExpr object)'.");
             goto error;
@@ -5257,8 +5256,8 @@ int Fast_load(void) {
         
         /* Bind Fast_CommaExpr_hasSideEffects_o with C-function */
         db_function(Fast_CommaExpr_hasSideEffects_o)->kind = DB_PROCEDURE_CDECL;
-        db_bool Fast_CommaExpr_hasSideEffects_v(Fast_CommaExpr _this);
-        db_function(Fast_CommaExpr_hasSideEffects_o)->impl = (db_word)Fast_CommaExpr_hasSideEffects_v;
+        void __Fast_CommaExpr_hasSideEffects_v(void *args, void *result);
+        db_function(Fast_CommaExpr_hasSideEffects_o)->impl = (db_word)__Fast_CommaExpr_hasSideEffects_v;
         if (db_define(Fast_CommaExpr_hasSideEffects_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::CommaExpr::hasSideEffects()'.");
             goto error;
@@ -5279,8 +5278,8 @@ int Fast_load(void) {
         
         /* Bind Fast_CommaExpr_init_o with C-function */
         db_function(Fast_CommaExpr_init_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_CommaExpr_init(Fast_CommaExpr object);
-        db_function(Fast_CommaExpr_init_o)->impl = (db_word)Fast_CommaExpr_init;
+        void __Fast_CommaExpr_init(void *args, void *result);
+        db_function(Fast_CommaExpr_init_o)->impl = (db_word)__Fast_CommaExpr_init;
         if (db_define(Fast_CommaExpr_init_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::CommaExpr::init(CommaExpr object)'.");
             goto error;
@@ -5301,8 +5300,8 @@ int Fast_load(void) {
         
         /* Bind Fast_CommaExpr_toIc_o with C-function */
         db_function(Fast_CommaExpr_toIc_o)->kind = DB_PROCEDURE_CDECL;
-        db_ic Fast_CommaExpr_toIc_v(Fast_CommaExpr _this, db_icProgram program, db_icStorage storage, db_bool stored);
-        db_function(Fast_CommaExpr_toIc_o)->impl = (db_word)Fast_CommaExpr_toIc_v;
+        void __Fast_CommaExpr_toIc_v(void *args, void *result);
+        db_function(Fast_CommaExpr_toIc_o)->impl = (db_word)__Fast_CommaExpr_toIc_v;
         if (db_define(Fast_CommaExpr_toIc_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::CommaExpr::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.");
             goto error;
@@ -5323,8 +5322,8 @@ int Fast_load(void) {
         
         /* Bind Fast_CommaExpr_toList_o with C-function */
         db_function(Fast_CommaExpr_toList_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Node_list Fast_CommaExpr_toList(Fast_CommaExpr _this);
-        db_function(Fast_CommaExpr_toList_o)->impl = (db_word)Fast_CommaExpr_toList;
+        void __Fast_CommaExpr_toList(void *args, void *result);
+        db_function(Fast_CommaExpr_toList_o)->impl = (db_word)__Fast_CommaExpr_toList;
         if (db_define(Fast_CommaExpr_toList_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::CommaExpr::toList()'.");
             goto error;
@@ -5409,8 +5408,8 @@ int Fast_load(void) {
         
         /* Bind Fast_ElementExpr_toIc_o with C-function */
         db_function(Fast_ElementExpr_toIc_o)->kind = DB_PROCEDURE_CDECL;
-        db_ic Fast_ElementExpr_toIc_v(Fast_ElementExpr _this, db_icProgram program, db_icStorage storage, db_bool stored);
-        db_function(Fast_ElementExpr_toIc_o)->impl = (db_word)Fast_ElementExpr_toIc_v;
+        void __Fast_ElementExpr_toIc_v(void *args, void *result);
+        db_function(Fast_ElementExpr_toIc_o)->impl = (db_word)__Fast_ElementExpr_toIc_v;
         if (db_define(Fast_ElementExpr_toIc_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::ElementExpr::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.");
             goto error;
@@ -5423,8 +5422,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Expression_fromList_o with C-function */
         db_function(Fast_Expression_fromList_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Expression Fast_Expression_fromList(Fast_Expression_list list);
-        db_function(Fast_Expression_fromList_o)->impl = (db_word)Fast_Expression_fromList;
+        void __Fast_Expression_fromList(void *args, void *result);
+        db_function(Fast_Expression_fromList_o)->impl = (db_word)__Fast_Expression_fromList;
         if (db_define(Fast_Expression_fromList_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Expression::fromList(list{Expression} list)'.");
             goto error;
@@ -5457,8 +5456,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Initializer_construct_o with C-function */
         db_function(Fast_Initializer_construct_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Initializer_construct(Fast_Initializer object);
-        db_function(Fast_Initializer_construct_o)->impl = (db_word)Fast_Initializer_construct;
+        void __Fast_Initializer_construct(void *args, void *result);
+        db_function(Fast_Initializer_construct_o)->impl = (db_word)__Fast_Initializer_construct;
         if (db_define(Fast_Initializer_construct_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Initializer::construct(Initializer object)'.");
             goto error;
@@ -5479,8 +5478,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Initializer_currentType_o with C-function */
         db_function(Fast_Initializer_currentType_o)->kind = DB_PROCEDURE_CDECL;
-        db_type Fast_Initializer_currentType(Fast_Initializer _this);
-        db_function(Fast_Initializer_currentType_o)->impl = (db_word)Fast_Initializer_currentType;
+        void __Fast_Initializer_currentType(void *args, void *result);
+        db_function(Fast_Initializer_currentType_o)->impl = (db_word)__Fast_Initializer_currentType;
         if (db_define(Fast_Initializer_currentType_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Initializer::currentType()'.");
             goto error;
@@ -5501,8 +5500,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Initializer_define_o with C-function */
         db_function(Fast_Initializer_define_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Initializer_define_v(Fast_Initializer _this);
-        db_function(Fast_Initializer_define_o)->impl = (db_word)Fast_Initializer_define_v;
+        void __Fast_Initializer_define_v(void *args, void *result);
+        db_function(Fast_Initializer_define_o)->impl = (db_word)__Fast_Initializer_define_v;
         if (db_define(Fast_Initializer_define_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Initializer::define()'.");
             goto error;
@@ -5523,8 +5522,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Initializer_initFrame_o with C-function */
         db_function(Fast_Initializer_initFrame_o)->kind = DB_PROCEDURE_CDECL;
-        db_uint16 Fast_Initializer_initFrame(Fast_Initializer _this);
-        db_function(Fast_Initializer_initFrame_o)->impl = (db_word)Fast_Initializer_initFrame;
+        void __Fast_Initializer_initFrame(void *args, void *result);
+        db_function(Fast_Initializer_initFrame_o)->impl = (db_word)__Fast_Initializer_initFrame;
         if (db_define(Fast_Initializer_initFrame_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Initializer::initFrame()'.");
             goto error;
@@ -5545,8 +5544,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Initializer_member_o with C-function */
         db_function(Fast_Initializer_member_o)->kind = DB_PROCEDURE_CDECL;
-        db_int32 Fast_Initializer_member_v(Fast_Initializer _this, db_string name);
-        db_function(Fast_Initializer_member_o)->impl = (db_word)Fast_Initializer_member_v;
+        void __Fast_Initializer_member_v(void *args, void *result);
+        db_function(Fast_Initializer_member_o)->impl = (db_word)__Fast_Initializer_member_v;
         if (db_define(Fast_Initializer_member_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Initializer::member(lang::string name)'.");
             goto error;
@@ -5567,8 +5566,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Initializer_next_o with C-function */
         db_function(Fast_Initializer_next_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Initializer_next_v(Fast_Initializer _this);
-        db_function(Fast_Initializer_next_o)->impl = (db_word)Fast_Initializer_next_v;
+        void __Fast_Initializer_next_v(void *args, void *result);
+        db_function(Fast_Initializer_next_o)->impl = (db_word)__Fast_Initializer_next_v;
         if (db_define(Fast_Initializer_next_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Initializer::next()'.");
             goto error;
@@ -5589,8 +5588,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Initializer_pop_o with C-function */
         db_function(Fast_Initializer_pop_o)->kind = DB_PROCEDURE_CDECL;
-        db_int8 Fast_Initializer_pop_v(Fast_Initializer _this);
-        db_function(Fast_Initializer_pop_o)->impl = (db_word)Fast_Initializer_pop_v;
+        void __Fast_Initializer_pop_v(void *args, void *result);
+        db_function(Fast_Initializer_pop_o)->impl = (db_word)__Fast_Initializer_pop_v;
         if (db_define(Fast_Initializer_pop_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Initializer::pop()'.");
             goto error;
@@ -5611,8 +5610,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Initializer_popKey_o with C-function */
         db_function(Fast_Initializer_popKey_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Initializer_popKey_v(Fast_Initializer _this);
-        db_function(Fast_Initializer_popKey_o)->impl = (db_word)Fast_Initializer_popKey_v;
+        void __Fast_Initializer_popKey_v(void *args, void *result);
+        db_function(Fast_Initializer_popKey_o)->impl = (db_word)__Fast_Initializer_popKey_v;
         if (db_define(Fast_Initializer_popKey_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Initializer::popKey()'.");
             goto error;
@@ -5633,8 +5632,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Initializer_push_o with C-function */
         db_function(Fast_Initializer_push_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Initializer_push_v(Fast_Initializer _this);
-        db_function(Fast_Initializer_push_o)->impl = (db_word)Fast_Initializer_push_v;
+        void __Fast_Initializer_push_v(void *args, void *result);
+        db_function(Fast_Initializer_push_o)->impl = (db_word)__Fast_Initializer_push_v;
         if (db_define(Fast_Initializer_push_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Initializer::push()'.");
             goto error;
@@ -5655,8 +5654,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Initializer_pushKey_o with C-function */
         db_function(Fast_Initializer_pushKey_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Initializer_pushKey_v(Fast_Initializer _this);
-        db_function(Fast_Initializer_pushKey_o)->impl = (db_word)Fast_Initializer_pushKey_v;
+        void __Fast_Initializer_pushKey_v(void *args, void *result);
+        db_function(Fast_Initializer_pushKey_o)->impl = (db_word)__Fast_Initializer_pushKey_v;
         if (db_define(Fast_Initializer_pushKey_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Initializer::pushKey()'.");
             goto error;
@@ -5677,8 +5676,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Initializer_type_o with C-function */
         db_function(Fast_Initializer_type_o)->kind = DB_PROCEDURE_CDECL;
-        db_type Fast_Initializer_type(Fast_Initializer _this);
-        db_function(Fast_Initializer_type_o)->impl = (db_word)Fast_Initializer_type;
+        void __Fast_Initializer_type(void *args, void *result);
+        db_function(Fast_Initializer_type_o)->impl = (db_word)__Fast_Initializer_type;
         if (db_define(Fast_Initializer_type_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Initializer::type()'.");
             goto error;
@@ -5699,8 +5698,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Initializer_value_o with C-function */
         db_function(Fast_Initializer_value_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Initializer_value_v(Fast_Initializer _this, Fast_Expression v);
-        db_function(Fast_Initializer_value_o)->impl = (db_word)Fast_Initializer_value_v;
+        void __Fast_Initializer_value_v(void *args, void *result);
+        db_function(Fast_Initializer_value_o)->impl = (db_word)__Fast_Initializer_value_v;
         if (db_define(Fast_Initializer_value_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Initializer::value(Expression v)'.");
             goto error;
@@ -5721,8 +5720,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Initializer_valueKey_o with C-function */
         db_function(Fast_Initializer_valueKey_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Initializer_valueKey_v(Fast_Initializer _this, Fast_Expression key);
-        db_function(Fast_Initializer_valueKey_o)->impl = (db_word)Fast_Initializer_valueKey_v;
+        void __Fast_Initializer_valueKey_v(void *args, void *result);
+        db_function(Fast_Initializer_valueKey_o)->impl = (db_word)__Fast_Initializer_valueKey_v;
         if (db_define(Fast_Initializer_valueKey_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Initializer::valueKey(Expression key)'.");
             goto error;
@@ -5793,8 +5792,8 @@ int Fast_load(void) {
         
         /* Bind Fast_DynamicInitializer_construct_o with C-function */
         db_function(Fast_DynamicInitializer_construct_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_DynamicInitializer_construct(Fast_DynamicInitializer object);
-        db_function(Fast_DynamicInitializer_construct_o)->impl = (db_word)Fast_DynamicInitializer_construct;
+        void __Fast_DynamicInitializer_construct(void *args, void *result);
+        db_function(Fast_DynamicInitializer_construct_o)->impl = (db_word)__Fast_DynamicInitializer_construct;
         if (db_define(Fast_DynamicInitializer_construct_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::DynamicInitializer::construct(DynamicInitializer object)'.");
             goto error;
@@ -5815,8 +5814,8 @@ int Fast_load(void) {
         
         /* Bind Fast_DynamicInitializer_define_o with C-function */
         db_function(Fast_DynamicInitializer_define_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_DynamicInitializer_define(Fast_DynamicInitializer _this);
-        db_function(Fast_DynamicInitializer_define_o)->impl = (db_word)Fast_DynamicInitializer_define;
+        void __Fast_DynamicInitializer_define(void *args, void *result);
+        db_function(Fast_DynamicInitializer_define_o)->impl = (db_word)__Fast_DynamicInitializer_define;
         if (db_define(Fast_DynamicInitializer_define_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::DynamicInitializer::define()'.");
             goto error;
@@ -5837,8 +5836,8 @@ int Fast_load(void) {
         
         /* Bind Fast_DynamicInitializer_pop_o with C-function */
         db_function(Fast_DynamicInitializer_pop_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_DynamicInitializer_pop(Fast_DynamicInitializer _this);
-        db_function(Fast_DynamicInitializer_pop_o)->impl = (db_word)Fast_DynamicInitializer_pop;
+        void __Fast_DynamicInitializer_pop(void *args, void *result);
+        db_function(Fast_DynamicInitializer_pop_o)->impl = (db_word)__Fast_DynamicInitializer_pop;
         if (db_define(Fast_DynamicInitializer_pop_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::DynamicInitializer::pop()'.");
             goto error;
@@ -5859,8 +5858,8 @@ int Fast_load(void) {
         
         /* Bind Fast_DynamicInitializer_push_o with C-function */
         db_function(Fast_DynamicInitializer_push_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_DynamicInitializer_push(Fast_DynamicInitializer _this);
-        db_function(Fast_DynamicInitializer_push_o)->impl = (db_word)Fast_DynamicInitializer_push;
+        void __Fast_DynamicInitializer_push(void *args, void *result);
+        db_function(Fast_DynamicInitializer_push_o)->impl = (db_word)__Fast_DynamicInitializer_push;
         if (db_define(Fast_DynamicInitializer_push_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::DynamicInitializer::push()'.");
             goto error;
@@ -5881,8 +5880,8 @@ int Fast_load(void) {
         
         /* Bind Fast_DynamicInitializer_value_o with C-function */
         db_function(Fast_DynamicInitializer_value_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_DynamicInitializer_value(Fast_DynamicInitializer _this, Fast_Expression v);
-        db_function(Fast_DynamicInitializer_value_o)->impl = (db_word)Fast_DynamicInitializer_value;
+        void __Fast_DynamicInitializer_value(void *args, void *result);
+        db_function(Fast_DynamicInitializer_value_o)->impl = (db_word)__Fast_DynamicInitializer_value;
         if (db_define(Fast_DynamicInitializer_value_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::DynamicInitializer::value(Expression v)'.");
             goto error;
@@ -5903,8 +5902,8 @@ int Fast_load(void) {
         
         /* Bind Fast_InitializerExpr_construct_o with C-function */
         db_function(Fast_InitializerExpr_construct_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_InitializerExpr_construct(Fast_InitializerExpr object);
-        db_function(Fast_InitializerExpr_construct_o)->impl = (db_word)Fast_InitializerExpr_construct;
+        void __Fast_InitializerExpr_construct(void *args, void *result);
+        db_function(Fast_InitializerExpr_construct_o)->impl = (db_word)__Fast_InitializerExpr_construct;
         if (db_define(Fast_InitializerExpr_construct_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::InitializerExpr::construct(InitializerExpr object)'.");
             goto error;
@@ -5925,8 +5924,8 @@ int Fast_load(void) {
         
         /* Bind Fast_InitializerExpr_define_o with C-function */
         db_function(Fast_InitializerExpr_define_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_InitializerExpr_define(Fast_InitializerExpr _this);
-        db_function(Fast_InitializerExpr_define_o)->impl = (db_word)Fast_InitializerExpr_define;
+        void __Fast_InitializerExpr_define(void *args, void *result);
+        db_function(Fast_InitializerExpr_define_o)->impl = (db_word)__Fast_InitializerExpr_define;
         if (db_define(Fast_InitializerExpr_define_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::InitializerExpr::define()'.");
             goto error;
@@ -5947,8 +5946,8 @@ int Fast_load(void) {
         
         /* Bind Fast_InitializerExpr_insert_o with C-function */
         db_function(Fast_InitializerExpr_insert_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_InitializerExpr_insert(Fast_InitializerExpr _this, Fast_Expression variable);
-        db_function(Fast_InitializerExpr_insert_o)->impl = (db_word)Fast_InitializerExpr_insert;
+        void __Fast_InitializerExpr_insert(void *args, void *result);
+        db_function(Fast_InitializerExpr_insert_o)->impl = (db_word)__Fast_InitializerExpr_insert;
         if (db_define(Fast_InitializerExpr_insert_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::InitializerExpr::insert(Expression variable)'.");
             goto error;
@@ -5969,8 +5968,8 @@ int Fast_load(void) {
         
         /* Bind Fast_InitializerExpr_member_o with C-function */
         db_function(Fast_InitializerExpr_member_o)->kind = DB_PROCEDURE_CDECL;
-        db_int32 Fast_InitializerExpr_member(Fast_InitializerExpr _this, db_string name);
-        db_function(Fast_InitializerExpr_member_o)->impl = (db_word)Fast_InitializerExpr_member;
+        void __Fast_InitializerExpr_member(void *args, void *result);
+        db_function(Fast_InitializerExpr_member_o)->impl = (db_word)__Fast_InitializerExpr_member;
         if (db_define(Fast_InitializerExpr_member_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::InitializerExpr::member(lang::string name)'.");
             goto error;
@@ -5991,8 +5990,8 @@ int Fast_load(void) {
         
         /* Bind Fast_InitializerExpr_pop_o with C-function */
         db_function(Fast_InitializerExpr_pop_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_InitializerExpr_pop(Fast_InitializerExpr _this);
-        db_function(Fast_InitializerExpr_pop_o)->impl = (db_word)Fast_InitializerExpr_pop;
+        void __Fast_InitializerExpr_pop(void *args, void *result);
+        db_function(Fast_InitializerExpr_pop_o)->impl = (db_word)__Fast_InitializerExpr_pop;
         if (db_define(Fast_InitializerExpr_pop_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::InitializerExpr::pop()'.");
             goto error;
@@ -6013,8 +6012,8 @@ int Fast_load(void) {
         
         /* Bind Fast_InitializerExpr_push_o with C-function */
         db_function(Fast_InitializerExpr_push_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_InitializerExpr_push(Fast_InitializerExpr _this);
-        db_function(Fast_InitializerExpr_push_o)->impl = (db_word)Fast_InitializerExpr_push;
+        void __Fast_InitializerExpr_push(void *args, void *result);
+        db_function(Fast_InitializerExpr_push_o)->impl = (db_word)__Fast_InitializerExpr_push;
         if (db_define(Fast_InitializerExpr_push_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::InitializerExpr::push()'.");
             goto error;
@@ -6035,8 +6034,8 @@ int Fast_load(void) {
         
         /* Bind Fast_InitializerExpr_value_o with C-function */
         db_function(Fast_InitializerExpr_value_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_InitializerExpr_value(Fast_InitializerExpr _this, Fast_Expression v);
-        db_function(Fast_InitializerExpr_value_o)->impl = (db_word)Fast_InitializerExpr_value;
+        void __Fast_InitializerExpr_value(void *args, void *result);
+        db_function(Fast_InitializerExpr_value_o)->impl = (db_word)__Fast_InitializerExpr_value;
         if (db_define(Fast_InitializerExpr_value_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::InitializerExpr::value(Expression v)'.");
             goto error;
@@ -6071,8 +6070,8 @@ int Fast_load(void) {
         
         /* Bind Fast_StaticInitializer_construct_o with C-function */
         db_function(Fast_StaticInitializer_construct_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_StaticInitializer_construct(Fast_StaticInitializer object);
-        db_function(Fast_StaticInitializer_construct_o)->impl = (db_word)Fast_StaticInitializer_construct;
+        void __Fast_StaticInitializer_construct(void *args, void *result);
+        db_function(Fast_StaticInitializer_construct_o)->impl = (db_word)__Fast_StaticInitializer_construct;
         if (db_define(Fast_StaticInitializer_construct_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::StaticInitializer::construct(StaticInitializer object)'.");
             goto error;
@@ -6093,8 +6092,8 @@ int Fast_load(void) {
         
         /* Bind Fast_StaticInitializer_define_o with C-function */
         db_function(Fast_StaticInitializer_define_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_StaticInitializer_define(Fast_StaticInitializer _this);
-        db_function(Fast_StaticInitializer_define_o)->impl = (db_word)Fast_StaticInitializer_define;
+        void __Fast_StaticInitializer_define(void *args, void *result);
+        db_function(Fast_StaticInitializer_define_o)->impl = (db_word)__Fast_StaticInitializer_define;
         if (db_define(Fast_StaticInitializer_define_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::StaticInitializer::define()'.");
             goto error;
@@ -6115,8 +6114,8 @@ int Fast_load(void) {
         
         /* Bind Fast_StaticInitializer_push_o with C-function */
         db_function(Fast_StaticInitializer_push_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_StaticInitializer_push(Fast_StaticInitializer _this);
-        db_function(Fast_StaticInitializer_push_o)->impl = (db_word)Fast_StaticInitializer_push;
+        void __Fast_StaticInitializer_push(void *args, void *result);
+        db_function(Fast_StaticInitializer_push_o)->impl = (db_word)__Fast_StaticInitializer_push;
         if (db_define(Fast_StaticInitializer_push_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::StaticInitializer::push()'.");
             goto error;
@@ -6137,8 +6136,8 @@ int Fast_load(void) {
         
         /* Bind Fast_StaticInitializer_value_o with C-function */
         db_function(Fast_StaticInitializer_value_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_StaticInitializer_value(Fast_StaticInitializer _this, Fast_Expression v);
-        db_function(Fast_StaticInitializer_value_o)->impl = (db_word)Fast_StaticInitializer_value;
+        void __Fast_StaticInitializer_value(void *args, void *result);
+        db_function(Fast_StaticInitializer_value_o)->impl = (db_word)__Fast_StaticInitializer_value;
         if (db_define(Fast_StaticInitializer_value_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::StaticInitializer::value(Expression v)'.");
             goto error;
@@ -6209,8 +6208,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Literal_getValue_o with C-function */
         db_function(Fast_Literal_getValue_o)->kind = DB_PROCEDURE_CDECL;
-        db_word Fast_Literal_getValue_v(Fast_Literal _this);
-        db_function(Fast_Literal_getValue_o)->impl = (db_word)Fast_Literal_getValue_v;
+        void __Fast_Literal_getValue_v(void *args, void *result);
+        db_function(Fast_Literal_getValue_o)->impl = (db_word)__Fast_Literal_getValue_v;
         if (db_define(Fast_Literal_getValue_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Literal::getValue()'.");
             goto error;
@@ -6231,8 +6230,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Literal_init_o with C-function */
         db_function(Fast_Literal_init_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Literal_init(Fast_Literal object);
-        db_function(Fast_Literal_init_o)->impl = (db_word)Fast_Literal_init;
+        void __Fast_Literal_init(void *args, void *result);
+        db_function(Fast_Literal_init_o)->impl = (db_word)__Fast_Literal_init;
         if (db_define(Fast_Literal_init_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Literal::init(Literal object)'.");
             goto error;
@@ -6267,8 +6266,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Boolean_init_o with C-function */
         db_function(Fast_Boolean_init_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Boolean_init(Fast_Boolean object);
-        db_function(Fast_Boolean_init_o)->impl = (db_word)Fast_Boolean_init;
+        void __Fast_Boolean_init(void *args, void *result);
+        db_function(Fast_Boolean_init_o)->impl = (db_word)__Fast_Boolean_init;
         if (db_define(Fast_Boolean_init_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Boolean::init(Boolean object)'.");
             goto error;
@@ -6289,8 +6288,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Boolean_serialize_o with C-function */
         db_function(Fast_Boolean_serialize_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Boolean_serialize(Fast_Boolean _this, db_type dstType, db_word dst);
-        db_function(Fast_Boolean_serialize_o)->impl = (db_word)Fast_Boolean_serialize;
+        void __Fast_Boolean_serialize(void *args, void *result);
+        db_function(Fast_Boolean_serialize_o)->impl = (db_word)__Fast_Boolean_serialize;
         if (db_define(Fast_Boolean_serialize_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Boolean::serialize(lang::type dstType,lang::word dst)'.");
             goto error;
@@ -6311,8 +6310,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Boolean_toIc_o with C-function */
         db_function(Fast_Boolean_toIc_o)->kind = DB_PROCEDURE_CDECL;
-        db_ic Fast_Boolean_toIc_v(Fast_Boolean _this, db_icProgram program, db_icStorage storage, db_bool stored);
-        db_function(Fast_Boolean_toIc_o)->impl = (db_word)Fast_Boolean_toIc_v;
+        void __Fast_Boolean_toIc_v(void *args, void *result);
+        db_function(Fast_Boolean_toIc_o)->impl = (db_word)__Fast_Boolean_toIc_v;
         if (db_define(Fast_Boolean_toIc_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Boolean::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.");
             goto error;
@@ -6347,8 +6346,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Character_init_o with C-function */
         db_function(Fast_Character_init_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Character_init(Fast_Character object);
-        db_function(Fast_Character_init_o)->impl = (db_word)Fast_Character_init;
+        void __Fast_Character_init(void *args, void *result);
+        db_function(Fast_Character_init_o)->impl = (db_word)__Fast_Character_init;
         if (db_define(Fast_Character_init_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Character::init(Character object)'.");
             goto error;
@@ -6369,8 +6368,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Character_serialize_o with C-function */
         db_function(Fast_Character_serialize_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Character_serialize(Fast_Character _this, db_type dstType, db_word dst);
-        db_function(Fast_Character_serialize_o)->impl = (db_word)Fast_Character_serialize;
+        void __Fast_Character_serialize(void *args, void *result);
+        db_function(Fast_Character_serialize_o)->impl = (db_word)__Fast_Character_serialize;
         if (db_define(Fast_Character_serialize_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Character::serialize(lang::type dstType,lang::word dst)'.");
             goto error;
@@ -6391,8 +6390,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Character_toIc_o with C-function */
         db_function(Fast_Character_toIc_o)->kind = DB_PROCEDURE_CDECL;
-        db_ic Fast_Character_toIc_v(Fast_Character _this, db_icProgram program, db_icStorage storage, db_bool stored);
-        db_function(Fast_Character_toIc_o)->impl = (db_word)Fast_Character_toIc_v;
+        void __Fast_Character_toIc_v(void *args, void *result);
+        db_function(Fast_Character_toIc_o)->impl = (db_word)__Fast_Character_toIc_v;
         if (db_define(Fast_Character_toIc_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Character::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.");
             goto error;
@@ -6427,8 +6426,8 @@ int Fast_load(void) {
         
         /* Bind Fast_FloatingPoint_init_o with C-function */
         db_function(Fast_FloatingPoint_init_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_FloatingPoint_init(Fast_FloatingPoint object);
-        db_function(Fast_FloatingPoint_init_o)->impl = (db_word)Fast_FloatingPoint_init;
+        void __Fast_FloatingPoint_init(void *args, void *result);
+        db_function(Fast_FloatingPoint_init_o)->impl = (db_word)__Fast_FloatingPoint_init;
         if (db_define(Fast_FloatingPoint_init_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::FloatingPoint::init(FloatingPoint object)'.");
             goto error;
@@ -6449,8 +6448,8 @@ int Fast_load(void) {
         
         /* Bind Fast_FloatingPoint_serialize_o with C-function */
         db_function(Fast_FloatingPoint_serialize_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_FloatingPoint_serialize(Fast_FloatingPoint _this, db_type dstType, db_word dst);
-        db_function(Fast_FloatingPoint_serialize_o)->impl = (db_word)Fast_FloatingPoint_serialize;
+        void __Fast_FloatingPoint_serialize(void *args, void *result);
+        db_function(Fast_FloatingPoint_serialize_o)->impl = (db_word)__Fast_FloatingPoint_serialize;
         if (db_define(Fast_FloatingPoint_serialize_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::FloatingPoint::serialize(lang::type dstType,lang::word dst)'.");
             goto error;
@@ -6471,8 +6470,8 @@ int Fast_load(void) {
         
         /* Bind Fast_FloatingPoint_toIc_o with C-function */
         db_function(Fast_FloatingPoint_toIc_o)->kind = DB_PROCEDURE_CDECL;
-        db_ic Fast_FloatingPoint_toIc_v(Fast_FloatingPoint _this, db_icProgram program, db_icStorage storage, db_bool stored);
-        db_function(Fast_FloatingPoint_toIc_o)->impl = (db_word)Fast_FloatingPoint_toIc_v;
+        void __Fast_FloatingPoint_toIc_v(void *args, void *result);
+        db_function(Fast_FloatingPoint_toIc_o)->impl = (db_word)__Fast_FloatingPoint_toIc_v;
         if (db_define(Fast_FloatingPoint_toIc_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::FloatingPoint::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.");
             goto error;
@@ -6507,8 +6506,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Integer_init_o with C-function */
         db_function(Fast_Integer_init_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Integer_init(Fast_Integer object);
-        db_function(Fast_Integer_init_o)->impl = (db_word)Fast_Integer_init;
+        void __Fast_Integer_init(void *args, void *result);
+        db_function(Fast_Integer_init_o)->impl = (db_word)__Fast_Integer_init;
         if (db_define(Fast_Integer_init_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Integer::init(Integer object)'.");
             goto error;
@@ -6529,8 +6528,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Integer_serialize_o with C-function */
         db_function(Fast_Integer_serialize_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Integer_serialize(Fast_Integer _this, db_type dstType, db_word dst);
-        db_function(Fast_Integer_serialize_o)->impl = (db_word)Fast_Integer_serialize;
+        void __Fast_Integer_serialize(void *args, void *result);
+        db_function(Fast_Integer_serialize_o)->impl = (db_word)__Fast_Integer_serialize;
         if (db_define(Fast_Integer_serialize_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Integer::serialize(lang::type dstType,lang::word dst)'.");
             goto error;
@@ -6551,8 +6550,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Integer_toIc_o with C-function */
         db_function(Fast_Integer_toIc_o)->kind = DB_PROCEDURE_CDECL;
-        db_ic Fast_Integer_toIc_v(Fast_Integer _this, db_icProgram program, db_icStorage storage, db_bool stored);
-        db_function(Fast_Integer_toIc_o)->impl = (db_word)Fast_Integer_toIc_v;
+        void __Fast_Integer_toIc_v(void *args, void *result);
+        db_function(Fast_Integer_toIc_o)->impl = (db_word)__Fast_Integer_toIc_v;
         if (db_define(Fast_Integer_toIc_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Integer::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.");
             goto error;
@@ -6599,8 +6598,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Null_init_o with C-function */
         db_function(Fast_Null_init_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Null_init(Fast_Null object);
-        db_function(Fast_Null_init_o)->impl = (db_word)Fast_Null_init;
+        void __Fast_Null_init(void *args, void *result);
+        db_function(Fast_Null_init_o)->impl = (db_word)__Fast_Null_init;
         if (db_define(Fast_Null_init_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Null::init(Null object)'.");
             goto error;
@@ -6621,8 +6620,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Null_serialize_o with C-function */
         db_function(Fast_Null_serialize_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Null_serialize(Fast_Null _this, db_type dstType, db_word dst);
-        db_function(Fast_Null_serialize_o)->impl = (db_word)Fast_Null_serialize;
+        void __Fast_Null_serialize(void *args, void *result);
+        db_function(Fast_Null_serialize_o)->impl = (db_word)__Fast_Null_serialize;
         if (db_define(Fast_Null_serialize_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Null::serialize(lang::type dstType,lang::word dst)'.");
             goto error;
@@ -6643,8 +6642,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Null_toIc_o with C-function */
         db_function(Fast_Null_toIc_o)->kind = DB_PROCEDURE_CDECL;
-        db_ic Fast_Null_toIc_v(Fast_Null _this, db_icProgram program, db_icStorage storage, db_bool stored);
-        db_function(Fast_Null_toIc_o)->impl = (db_word)Fast_Null_toIc_v;
+        void __Fast_Null_toIc_v(void *args, void *result);
+        db_function(Fast_Null_toIc_o)->impl = (db_word)__Fast_Null_toIc_v;
         if (db_define(Fast_Null_toIc_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Null::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.");
             goto error;
@@ -6679,8 +6678,8 @@ int Fast_load(void) {
         
         /* Bind Fast_SignedInteger_init_o with C-function */
         db_function(Fast_SignedInteger_init_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_SignedInteger_init(Fast_SignedInteger object);
-        db_function(Fast_SignedInteger_init_o)->impl = (db_word)Fast_SignedInteger_init;
+        void __Fast_SignedInteger_init(void *args, void *result);
+        db_function(Fast_SignedInteger_init_o)->impl = (db_word)__Fast_SignedInteger_init;
         if (db_define(Fast_SignedInteger_init_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::SignedInteger::init(SignedInteger object)'.");
             goto error;
@@ -6701,8 +6700,8 @@ int Fast_load(void) {
         
         /* Bind Fast_SignedInteger_serialize_o with C-function */
         db_function(Fast_SignedInteger_serialize_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_SignedInteger_serialize(Fast_SignedInteger _this, db_type dstType, db_word dst);
-        db_function(Fast_SignedInteger_serialize_o)->impl = (db_word)Fast_SignedInteger_serialize;
+        void __Fast_SignedInteger_serialize(void *args, void *result);
+        db_function(Fast_SignedInteger_serialize_o)->impl = (db_word)__Fast_SignedInteger_serialize;
         if (db_define(Fast_SignedInteger_serialize_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::SignedInteger::serialize(lang::type dstType,lang::word dst)'.");
             goto error;
@@ -6723,8 +6722,8 @@ int Fast_load(void) {
         
         /* Bind Fast_SignedInteger_toIc_o with C-function */
         db_function(Fast_SignedInteger_toIc_o)->kind = DB_PROCEDURE_CDECL;
-        db_ic Fast_SignedInteger_toIc_v(Fast_SignedInteger _this, db_icProgram program, db_icStorage storage, db_bool stored);
-        db_function(Fast_SignedInteger_toIc_o)->impl = (db_word)Fast_SignedInteger_toIc_v;
+        void __Fast_SignedInteger_toIc_v(void *args, void *result);
+        db_function(Fast_SignedInteger_toIc_o)->impl = (db_word)__Fast_SignedInteger_toIc_v;
         if (db_define(Fast_SignedInteger_toIc_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::SignedInteger::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.");
             goto error;
@@ -6759,8 +6758,8 @@ int Fast_load(void) {
         
         /* Bind Fast_String_construct_o with C-function */
         db_function(Fast_String_construct_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_String_construct(Fast_String object);
-        db_function(Fast_String_construct_o)->impl = (db_word)Fast_String_construct;
+        void __Fast_String_construct(void *args, void *result);
+        db_function(Fast_String_construct_o)->impl = (db_word)__Fast_String_construct;
         if (db_define(Fast_String_construct_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::String::construct(String object)'.");
             goto error;
@@ -6781,8 +6780,8 @@ int Fast_load(void) {
         
         /* Bind Fast_String_getValue_o with C-function */
         db_function(Fast_String_getValue_o)->kind = DB_PROCEDURE_CDECL;
-        db_word Fast_String_getValue(Fast_String _this);
-        db_function(Fast_String_getValue_o)->impl = (db_word)Fast_String_getValue;
+        void __Fast_String_getValue(void *args, void *result);
+        db_function(Fast_String_getValue_o)->impl = (db_word)__Fast_String_getValue;
         if (db_define(Fast_String_getValue_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::String::getValue()'.");
             goto error;
@@ -6803,8 +6802,8 @@ int Fast_load(void) {
         
         /* Bind Fast_String_init_o with C-function */
         db_function(Fast_String_init_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_String_init(Fast_String object);
-        db_function(Fast_String_init_o)->impl = (db_word)Fast_String_init;
+        void __Fast_String_init(void *args, void *result);
+        db_function(Fast_String_init_o)->impl = (db_word)__Fast_String_init;
         if (db_define(Fast_String_init_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::String::init(String object)'.");
             goto error;
@@ -6825,8 +6824,8 @@ int Fast_load(void) {
         
         /* Bind Fast_String_serialize_o with C-function */
         db_function(Fast_String_serialize_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_String_serialize(Fast_String _this, db_type dstType, db_word dst);
-        db_function(Fast_String_serialize_o)->impl = (db_word)Fast_String_serialize;
+        void __Fast_String_serialize(void *args, void *result);
+        db_function(Fast_String_serialize_o)->impl = (db_word)__Fast_String_serialize;
         if (db_define(Fast_String_serialize_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::String::serialize(lang::type dstType,lang::word dst)'.");
             goto error;
@@ -6847,8 +6846,8 @@ int Fast_load(void) {
         
         /* Bind Fast_String_toIc_o with C-function */
         db_function(Fast_String_toIc_o)->kind = DB_PROCEDURE_CDECL;
-        db_ic Fast_String_toIc_v(Fast_String _this, db_icProgram program, db_icStorage storage, db_bool stored);
-        db_function(Fast_String_toIc_o)->impl = (db_word)Fast_String_toIc_v;
+        void __Fast_String_toIc_v(void *args, void *result);
+        db_function(Fast_String_toIc_o)->impl = (db_word)__Fast_String_toIc_v;
         if (db_define(Fast_String_toIc_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::String::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.");
             goto error;
@@ -6905,8 +6904,8 @@ int Fast_load(void) {
         
         /* Bind Fast_MemberExpr_construct_o with C-function */
         db_function(Fast_MemberExpr_construct_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_MemberExpr_construct(Fast_MemberExpr object);
-        db_function(Fast_MemberExpr_construct_o)->impl = (db_word)Fast_MemberExpr_construct;
+        void __Fast_MemberExpr_construct(void *args, void *result);
+        db_function(Fast_MemberExpr_construct_o)->impl = (db_word)__Fast_MemberExpr_construct;
         if (db_define(Fast_MemberExpr_construct_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::MemberExpr::construct(Fast::MemberExpr object)'.");
             goto error;
@@ -6927,8 +6926,8 @@ int Fast_load(void) {
         
         /* Bind Fast_MemberExpr_hasSideEffects_o with C-function */
         db_function(Fast_MemberExpr_hasSideEffects_o)->kind = DB_PROCEDURE_CDECL;
-        db_bool Fast_MemberExpr_hasSideEffects_v(Fast_MemberExpr _this);
-        db_function(Fast_MemberExpr_hasSideEffects_o)->impl = (db_word)Fast_MemberExpr_hasSideEffects_v;
+        void __Fast_MemberExpr_hasSideEffects_v(void *args, void *result);
+        db_function(Fast_MemberExpr_hasSideEffects_o)->impl = (db_word)__Fast_MemberExpr_hasSideEffects_v;
         if (db_define(Fast_MemberExpr_hasSideEffects_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::MemberExpr::hasSideEffects()'.");
             goto error;
@@ -6973,8 +6972,8 @@ int Fast_load(void) {
         
         /* Bind Fast_MemberExpr_toIc_o with C-function */
         db_function(Fast_MemberExpr_toIc_o)->kind = DB_PROCEDURE_CDECL;
-        db_ic Fast_MemberExpr_toIc_v(Fast_MemberExpr _this, db_icProgram program, db_icStorage storage, db_bool stored);
-        db_function(Fast_MemberExpr_toIc_o)->impl = (db_word)Fast_MemberExpr_toIc_v;
+        void __Fast_MemberExpr_toIc_v(void *args, void *result);
+        db_function(Fast_MemberExpr_toIc_o)->impl = (db_word)__Fast_MemberExpr_toIc_v;
         if (db_define(Fast_MemberExpr_toIc_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::MemberExpr::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.");
             goto error;
@@ -7009,8 +7008,8 @@ int Fast_load(void) {
         
         /* Bind Fast_ElementExpr_construct_o with C-function */
         db_function(Fast_ElementExpr_construct_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_ElementExpr_construct(Fast_MemberExpr object);
-        db_function(Fast_ElementExpr_construct_o)->impl = (db_word)Fast_ElementExpr_construct;
+        void __Fast_ElementExpr_construct(void *args, void *result);
+        db_function(Fast_ElementExpr_construct_o)->impl = (db_word)__Fast_ElementExpr_construct;
         if (db_define(Fast_ElementExpr_construct_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::ElementExpr::construct(Fast::MemberExpr object)'.");
             goto error;
@@ -7057,8 +7056,8 @@ int Fast_load(void) {
         
         /* Bind Fast_NewExpr_construct_o with C-function */
         db_function(Fast_NewExpr_construct_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_NewExpr_construct(Fast_NewExpr object);
-        db_function(Fast_NewExpr_construct_o)->impl = (db_word)Fast_NewExpr_construct;
+        void __Fast_NewExpr_construct(void *args, void *result);
+        db_function(Fast_NewExpr_construct_o)->impl = (db_word)__Fast_NewExpr_construct;
         if (db_define(Fast_NewExpr_construct_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::NewExpr::construct(Fast::NewExpr object)'.");
             goto error;
@@ -7079,8 +7078,8 @@ int Fast_load(void) {
         
         /* Bind Fast_NewExpr_hasSideEffects_o with C-function */
         db_function(Fast_NewExpr_hasSideEffects_o)->kind = DB_PROCEDURE_CDECL;
-        db_bool Fast_NewExpr_hasSideEffects_v(Fast_NewExpr _this);
-        db_function(Fast_NewExpr_hasSideEffects_o)->impl = (db_word)Fast_NewExpr_hasSideEffects_v;
+        void __Fast_NewExpr_hasSideEffects_v(void *args, void *result);
+        db_function(Fast_NewExpr_hasSideEffects_o)->impl = (db_word)__Fast_NewExpr_hasSideEffects_v;
         if (db_define(Fast_NewExpr_hasSideEffects_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::NewExpr::hasSideEffects()'.");
             goto error;
@@ -7101,8 +7100,8 @@ int Fast_load(void) {
         
         /* Bind Fast_NewExpr_toIc_o with C-function */
         db_function(Fast_NewExpr_toIc_o)->kind = DB_PROCEDURE_CDECL;
-        db_ic Fast_NewExpr_toIc_v(Fast_NewExpr _this, db_icProgram program, db_icStorage storage, db_bool stored);
-        db_function(Fast_NewExpr_toIc_o)->impl = (db_word)Fast_NewExpr_toIc_v;
+        void __Fast_NewExpr_toIc_v(void *args, void *result);
+        db_function(Fast_NewExpr_toIc_o)->impl = (db_word)__Fast_NewExpr_toIc_v;
         if (db_define(Fast_NewExpr_toIc_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::NewExpr::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.");
             goto error;
@@ -7149,8 +7148,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_binaryExpr_o with C-function */
         db_function(Fast_Parser_binaryExpr_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Expression Fast_Parser_binaryExpr(Fast_Parser _this, Fast_Expression lvalues, Fast_Expression rvalues, db_operatorKind operator);
-        db_function(Fast_Parser_binaryExpr_o)->impl = (db_word)Fast_Parser_binaryExpr;
+        void __Fast_Parser_binaryExpr(void *args, void *result);
+        db_function(Fast_Parser_binaryExpr_o)->impl = (db_word)__Fast_Parser_binaryExpr;
         if (db_define(Fast_Parser_binaryExpr_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::binaryExpr(Fast::Expression lvalues,Fast::Expression rvalues,lang::operatorKind operator)'.");
             goto error;
@@ -7171,8 +7170,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_callExpr_o with C-function */
         db_function(Fast_Parser_callExpr_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Expression Fast_Parser_callExpr(Fast_Parser _this, Fast_Expression function, Fast_Expression arguments);
-        db_function(Fast_Parser_callExpr_o)->impl = (db_word)Fast_Parser_callExpr;
+        void __Fast_Parser_callExpr(void *args, void *result);
+        db_function(Fast_Parser_callExpr_o)->impl = (db_word)__Fast_Parser_callExpr;
         if (db_define(Fast_Parser_callExpr_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::callExpr(Fast::Expression function,Fast::Expression arguments)'.");
             goto error;
@@ -7193,8 +7192,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_castExpr_o with C-function */
         db_function(Fast_Parser_castExpr_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Expression Fast_Parser_castExpr(Fast_Parser _this, Fast_Expression lvalue, Fast_Expression rvalue);
-        db_function(Fast_Parser_castExpr_o)->impl = (db_word)Fast_Parser_castExpr;
+        void __Fast_Parser_castExpr(void *args, void *result);
+        db_function(Fast_Parser_castExpr_o)->impl = (db_word)__Fast_Parser_castExpr;
         if (db_define(Fast_Parser_castExpr_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::castExpr(Fast::Expression lvalue,Fast::Expression rvalue)'.");
             goto error;
@@ -7215,8 +7214,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_elementExpr_o with C-function */
         db_function(Fast_Parser_elementExpr_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Expression Fast_Parser_elementExpr(Fast_Parser _this, Fast_Expression lvalue, Fast_Expression rvalue);
-        db_function(Fast_Parser_elementExpr_o)->impl = (db_word)Fast_Parser_elementExpr;
+        void __Fast_Parser_elementExpr(void *args, void *result);
+        db_function(Fast_Parser_elementExpr_o)->impl = (db_word)__Fast_Parser_elementExpr;
         if (db_define(Fast_Parser_elementExpr_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::elementExpr(Fast::Expression lvalue,Fast::Expression rvalue)'.");
             goto error;
@@ -7237,8 +7236,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_foreach_o with C-function */
         db_function(Fast_Parser_foreach_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Parser_foreach(Fast_Parser _this, db_string loopId, Fast_Expression collection);
-        db_function(Fast_Parser_foreach_o)->impl = (db_word)Fast_Parser_foreach;
+        void __Fast_Parser_foreach(void *args, void *result);
+        db_function(Fast_Parser_foreach_o)->impl = (db_word)__Fast_Parser_foreach;
         if (db_define(Fast_Parser_foreach_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::foreach(lang::string loopId,Fast::Expression collection)'.");
             goto error;
@@ -7252,8 +7251,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_getLvalue_o with C-function */
         db_function(Fast_Parser_getLvalue_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Expression Fast_Parser_getLvalue(Fast_Parser _this, db_bool assignment);
-        db_function(Fast_Parser_getLvalue_o)->impl = (db_word)Fast_Parser_getLvalue;
+        void __Fast_Parser_getLvalue(void *args, void *result);
+        db_function(Fast_Parser_getLvalue_o)->impl = (db_word)__Fast_Parser_getLvalue;
         if (db_define(Fast_Parser_getLvalue_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::getLvalue(lang::bool assignment)'.");
             goto error;
@@ -7274,8 +7273,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_initDeclareStaged_o with C-function */
         db_function(Fast_Parser_initDeclareStaged_o)->kind = DB_PROCEDURE_CDECL;
-        void Fast_Parser_initDeclareStaged(Fast_Parser _this, Fast_Expression expr);
-        db_function(Fast_Parser_initDeclareStaged_o)->impl = (db_word)Fast_Parser_initDeclareStaged;
+        void __Fast_Parser_initDeclareStaged(void *args, void *result);
+        db_function(Fast_Parser_initDeclareStaged_o)->impl = (db_word)__Fast_Parser_initDeclareStaged;
         if (db_define(Fast_Parser_initDeclareStaged_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::initDeclareStaged(Fast::Expression expr)'.");
             goto error;
@@ -7296,8 +7295,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_initKeyValueSet_o with C-function */
         db_function(Fast_Parser_initKeyValueSet_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Parser_initKeyValueSet(Fast_Parser _this, Fast_Expression expr);
-        db_function(Fast_Parser_initKeyValueSet_o)->impl = (db_word)Fast_Parser_initKeyValueSet;
+        void __Fast_Parser_initKeyValueSet(void *args, void *result);
+        db_function(Fast_Parser_initKeyValueSet_o)->impl = (db_word)__Fast_Parser_initKeyValueSet;
         if (db_define(Fast_Parser_initKeyValueSet_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::initKeyValueSet(Fast::Expression expr)'.");
             goto error;
@@ -7311,8 +7310,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_initPushExpression_o with C-function */
         db_function(Fast_Parser_initPushExpression_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Expression Fast_Parser_initPushExpression(Fast_Parser _this);
-        db_function(Fast_Parser_initPushExpression_o)->impl = (db_word)Fast_Parser_initPushExpression;
+        void __Fast_Parser_initPushExpression(void *args, void *result);
+        db_function(Fast_Parser_initPushExpression_o)->impl = (db_word)__Fast_Parser_initPushExpression;
         if (db_define(Fast_Parser_initPushExpression_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::initPushExpression()'.");
             goto error;
@@ -7333,8 +7332,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_initPushIdentifier_o with C-function */
         db_function(Fast_Parser_initPushIdentifier_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Expression Fast_Parser_initPushIdentifier(Fast_Parser _this, Fast_Expression type);
-        db_function(Fast_Parser_initPushIdentifier_o)->impl = (db_word)Fast_Parser_initPushIdentifier;
+        void __Fast_Parser_initPushIdentifier(void *args, void *result);
+        db_function(Fast_Parser_initPushIdentifier_o)->impl = (db_word)__Fast_Parser_initPushIdentifier;
         if (db_define(Fast_Parser_initPushIdentifier_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::initPushIdentifier(Expression type)'.");
             goto error;
@@ -7355,8 +7354,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_initValue_o with C-function */
         db_function(Fast_Parser_initValue_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Parser_initValue(Fast_Parser _this, Fast_Expression expr);
-        db_function(Fast_Parser_initValue_o)->impl = (db_word)Fast_Parser_initValue;
+        void __Fast_Parser_initValue(void *args, void *result);
+        db_function(Fast_Parser_initValue_o)->impl = (db_word)__Fast_Parser_initValue;
         if (db_define(Fast_Parser_initValue_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::initValue(Expression expr)'.");
             goto error;
@@ -7370,8 +7369,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_lookup_o with C-function */
         db_function(Fast_Parser_lookup_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Expression Fast_Parser_lookup(Fast_Parser _this, db_string id, db_object source);
-        db_function(Fast_Parser_lookup_o)->impl = (db_word)Fast_Parser_lookup;
+        void __Fast_Parser_lookup(void *args, void *result);
+        db_function(Fast_Parser_lookup_o)->impl = (db_word)__Fast_Parser_lookup;
         if (db_define(Fast_Parser_lookup_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::lookup(lang::string id,lang::object source)'.");
             goto error;
@@ -7392,8 +7391,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_memberExpr_o with C-function */
         db_function(Fast_Parser_memberExpr_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Expression Fast_Parser_memberExpr(Fast_Parser _this, Fast_Expression lvalue, Fast_Expression rvalue);
-        db_function(Fast_Parser_memberExpr_o)->impl = (db_word)Fast_Parser_memberExpr;
+        void __Fast_Parser_memberExpr(void *args, void *result);
+        db_function(Fast_Parser_memberExpr_o)->impl = (db_word)__Fast_Parser_memberExpr;
         if (db_define(Fast_Parser_memberExpr_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::memberExpr(Fast::Expression lvalue,Fast::Expression rvalue)'.");
             goto error;
@@ -7414,8 +7413,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_postfixExpr_o with C-function */
         db_function(Fast_Parser_postfixExpr_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Expression Fast_Parser_postfixExpr(Fast_Parser _this, Fast_Expression lvalue, db_operatorKind operator);
-        db_function(Fast_Parser_postfixExpr_o)->impl = (db_word)Fast_Parser_postfixExpr;
+        void __Fast_Parser_postfixExpr(void *args, void *result);
+        db_function(Fast_Parser_postfixExpr_o)->impl = (db_word)__Fast_Parser_postfixExpr;
         if (db_define(Fast_Parser_postfixExpr_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::postfixExpr(Fast::Expression lvalue,lang::operatorKind operator)'.");
             goto error;
@@ -7436,8 +7435,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_pushComplexType_o with C-function */
         db_function(Fast_Parser_pushComplexType_o)->kind = DB_PROCEDURE_CDECL;
-        void Fast_Parser_pushComplexType(Fast_Parser _this, Fast_Expression lvalue);
-        db_function(Fast_Parser_pushComplexType_o)->impl = (db_word)Fast_Parser_pushComplexType;
+        void __Fast_Parser_pushComplexType(void *args, void *result);
+        db_function(Fast_Parser_pushComplexType_o)->impl = (db_word)__Fast_Parser_pushComplexType;
         if (db_define(Fast_Parser_pushComplexType_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::pushComplexType(Fast::Expression lvalue)'.");
             goto error;
@@ -7458,8 +7457,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_pushLvalue_o with C-function */
         db_function(Fast_Parser_pushLvalue_o)->kind = DB_PROCEDURE_CDECL;
-        void Fast_Parser_pushLvalue(Fast_Parser _this, Fast_Expression lvalue, db_bool isAssignment);
-        db_function(Fast_Parser_pushLvalue_o)->impl = (db_word)Fast_Parser_pushLvalue;
+        void __Fast_Parser_pushLvalue(void *args, void *result);
+        db_function(Fast_Parser_pushLvalue_o)->impl = (db_word)__Fast_Parser_pushLvalue;
         if (db_define(Fast_Parser_pushLvalue_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::pushLvalue(Fast::Expression lvalue,lang::bool isAssignment)'.");
             goto error;
@@ -7492,8 +7491,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_ternaryExpr_o with C-function */
         db_function(Fast_Parser_ternaryExpr_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Expression Fast_Parser_ternaryExpr(Fast_Parser _this, Fast_Expression cond, Fast_Expression iftrue, Fast_Expression iffalse);
-        db_function(Fast_Parser_ternaryExpr_o)->impl = (db_word)Fast_Parser_ternaryExpr;
+        void __Fast_Parser_ternaryExpr(void *args, void *result);
+        db_function(Fast_Parser_ternaryExpr_o)->impl = (db_word)__Fast_Parser_ternaryExpr;
         if (db_define(Fast_Parser_ternaryExpr_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::ternaryExpr(Fast::Expression cond,Fast::Expression iftrue,Fast::Expression iffalse)'.");
             goto error;
@@ -7514,8 +7513,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_unaryExpr_o with C-function */
         db_function(Fast_Parser_unaryExpr_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Expression Fast_Parser_unaryExpr(Fast_Parser _this, Fast_Expression lvalue, db_operatorKind operator);
-        db_function(Fast_Parser_unaryExpr_o)->impl = (db_word)Fast_Parser_unaryExpr;
+        void __Fast_Parser_unaryExpr(void *args, void *result);
+        db_function(Fast_Parser_unaryExpr_o)->impl = (db_word)__Fast_Parser_unaryExpr;
         if (db_define(Fast_Parser_unaryExpr_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::unaryExpr(Fast::Expression lvalue,lang::operatorKind operator)'.");
             goto error;
@@ -7536,8 +7535,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_waitExpr_o with C-function */
         db_function(Fast_Parser_waitExpr_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Expression Fast_Parser_waitExpr(Fast_Parser _this, Fast_Expression_list exprList, Fast_Expression timeout);
-        db_function(Fast_Parser_waitExpr_o)->impl = (db_word)Fast_Parser_waitExpr;
+        void __Fast_Parser_waitExpr(void *args, void *result);
+        db_function(Fast_Parser_waitExpr_o)->impl = (db_word)__Fast_Parser_waitExpr;
         if (db_define(Fast_Parser_waitExpr_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::waitExpr(list{Fast::Expression} exprList,Fast::Expression timeout)'.");
             goto error;
@@ -7606,8 +7605,8 @@ int Fast_load(void) {
         
         /* Bind Fast_PostfixExpr_construct_o with C-function */
         db_function(Fast_PostfixExpr_construct_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_PostfixExpr_construct(Fast_PostfixExpr object);
-        db_function(Fast_PostfixExpr_construct_o)->impl = (db_word)Fast_PostfixExpr_construct;
+        void __Fast_PostfixExpr_construct(void *args, void *result);
+        db_function(Fast_PostfixExpr_construct_o)->impl = (db_word)__Fast_PostfixExpr_construct;
         if (db_define(Fast_PostfixExpr_construct_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::PostfixExpr::construct(Fast::PostfixExpr object)'.");
             goto error;
@@ -7640,8 +7639,8 @@ int Fast_load(void) {
         
         /* Bind Fast_PostfixExpr_toIc_o with C-function */
         db_function(Fast_PostfixExpr_toIc_o)->kind = DB_PROCEDURE_CDECL;
-        db_ic Fast_PostfixExpr_toIc_v(Fast_PostfixExpr _this, db_icProgram program, db_icStorage storage, db_bool stored);
-        db_function(Fast_PostfixExpr_toIc_o)->impl = (db_word)Fast_PostfixExpr_toIc_v;
+        void __Fast_PostfixExpr_toIc_v(void *args, void *result);
+        db_function(Fast_PostfixExpr_toIc_o)->impl = (db_word)__Fast_PostfixExpr_toIc_v;
         if (db_define(Fast_PostfixExpr_toIc_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::PostfixExpr::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.");
             goto error;
@@ -7688,8 +7687,8 @@ int Fast_load(void) {
         
         /* Bind Fast_TernaryExpr_construct_o with C-function */
         db_function(Fast_TernaryExpr_construct_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_TernaryExpr_construct(Fast_TernaryExpr object);
-        db_function(Fast_TernaryExpr_construct_o)->impl = (db_word)Fast_TernaryExpr_construct;
+        void __Fast_TernaryExpr_construct(void *args, void *result);
+        db_function(Fast_TernaryExpr_construct_o)->impl = (db_word)__Fast_TernaryExpr_construct;
         if (db_define(Fast_TernaryExpr_construct_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::TernaryExpr::construct(Fast::TernaryExpr object)'.");
             goto error;
@@ -7710,8 +7709,8 @@ int Fast_load(void) {
         
         /* Bind Fast_TernaryExpr_hasSideEffects_o with C-function */
         db_function(Fast_TernaryExpr_hasSideEffects_o)->kind = DB_PROCEDURE_CDECL;
-        db_bool Fast_TernaryExpr_hasSideEffects_v(Fast_TernaryExpr _this);
-        db_function(Fast_TernaryExpr_hasSideEffects_o)->impl = (db_word)Fast_TernaryExpr_hasSideEffects_v;
+        void __Fast_TernaryExpr_hasSideEffects_v(void *args, void *result);
+        db_function(Fast_TernaryExpr_hasSideEffects_o)->impl = (db_word)__Fast_TernaryExpr_hasSideEffects_v;
         if (db_define(Fast_TernaryExpr_hasSideEffects_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::TernaryExpr::hasSideEffects()'.");
             goto error;
@@ -7792,8 +7791,8 @@ int Fast_load(void) {
         
         /* Bind Fast_TernaryExpr_setOperator_o with C-function */
         db_function(Fast_TernaryExpr_setOperator_o)->kind = DB_PROCEDURE_CDECL;
-        db_void Fast_TernaryExpr_setOperator(Fast_TernaryExpr _this, db_operatorKind kind);
-        db_function(Fast_TernaryExpr_setOperator_o)->impl = (db_word)Fast_TernaryExpr_setOperator;
+        void __Fast_TernaryExpr_setOperator(void *args, void *result);
+        db_function(Fast_TernaryExpr_setOperator_o)->impl = (db_word)__Fast_TernaryExpr_setOperator;
         if (db_define(Fast_TernaryExpr_setOperator_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::TernaryExpr::setOperator(lang::operatorKind kind)'.");
             goto error;
@@ -7814,8 +7813,8 @@ int Fast_load(void) {
         
         /* Bind Fast_TernaryExpr_toIc_o with C-function */
         db_function(Fast_TernaryExpr_toIc_o)->kind = DB_PROCEDURE_CDECL;
-        db_ic Fast_TernaryExpr_toIc_v(Fast_TernaryExpr _this, db_icProgram program, db_icStorage storage, db_bool stored);
-        db_function(Fast_TernaryExpr_toIc_o)->impl = (db_word)Fast_TernaryExpr_toIc_v;
+        void __Fast_TernaryExpr_toIc_v(void *args, void *result);
+        db_function(Fast_TernaryExpr_toIc_o)->impl = (db_word)__Fast_TernaryExpr_toIc_v;
         if (db_define(Fast_TernaryExpr_toIc_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::TernaryExpr::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.");
             goto error;
@@ -7836,8 +7835,8 @@ int Fast_load(void) {
         
         /* Bind Fast_UnaryExpr_construct_o with C-function */
         db_function(Fast_UnaryExpr_construct_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_UnaryExpr_construct(Fast_UnaryExpr object);
-        db_function(Fast_UnaryExpr_construct_o)->impl = (db_word)Fast_UnaryExpr_construct;
+        void __Fast_UnaryExpr_construct(void *args, void *result);
+        db_function(Fast_UnaryExpr_construct_o)->impl = (db_word)__Fast_UnaryExpr_construct;
         if (db_define(Fast_UnaryExpr_construct_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::UnaryExpr::construct(Fast::UnaryExpr object)'.");
             goto error;
@@ -7858,8 +7857,8 @@ int Fast_load(void) {
         
         /* Bind Fast_UnaryExpr_hasSideEffects_o with C-function */
         db_function(Fast_UnaryExpr_hasSideEffects_o)->kind = DB_PROCEDURE_CDECL;
-        db_bool Fast_UnaryExpr_hasSideEffects_v(Fast_UnaryExpr _this);
-        db_function(Fast_UnaryExpr_hasSideEffects_o)->impl = (db_word)Fast_UnaryExpr_hasSideEffects_v;
+        void __Fast_UnaryExpr_hasSideEffects_v(void *args, void *result);
+        db_function(Fast_UnaryExpr_hasSideEffects_o)->impl = (db_word)__Fast_UnaryExpr_hasSideEffects_v;
         if (db_define(Fast_UnaryExpr_hasSideEffects_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::UnaryExpr::hasSideEffects()'.");
             goto error;
@@ -7892,8 +7891,8 @@ int Fast_load(void) {
         
         /* Bind Fast_UnaryExpr_toIc_o with C-function */
         db_function(Fast_UnaryExpr_toIc_o)->kind = DB_PROCEDURE_CDECL;
-        db_ic Fast_UnaryExpr_toIc_v(Fast_UnaryExpr _this, db_icProgram program, db_icStorage storage, db_bool stored);
-        db_function(Fast_UnaryExpr_toIc_o)->impl = (db_word)Fast_UnaryExpr_toIc_v;
+        void __Fast_UnaryExpr_toIc_v(void *args, void *result);
+        db_function(Fast_UnaryExpr_toIc_o)->impl = (db_word)__Fast_UnaryExpr_toIc_v;
         if (db_define(Fast_UnaryExpr_toIc_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::UnaryExpr::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.");
             goto error;
@@ -7940,8 +7939,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Variable_construct_o with C-function */
         db_function(Fast_Variable_construct_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Variable_construct(Fast_Variable object);
-        db_function(Fast_Variable_construct_o)->impl = (db_word)Fast_Variable_construct;
+        void __Fast_Variable_construct(void *args, void *result);
+        db_function(Fast_Variable_construct_o)->impl = (db_word)__Fast_Variable_construct;
         if (db_define(Fast_Variable_construct_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Variable::construct(Variable object)'.");
             goto error;
@@ -7990,8 +7989,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Local_construct_o with C-function */
         db_function(Fast_Local_construct_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Local_construct(Fast_Local object);
-        db_function(Fast_Local_construct_o)->impl = (db_word)Fast_Local_construct;
+        void __Fast_Local_construct(void *args, void *result);
+        db_function(Fast_Local_construct_o)->impl = (db_word)__Fast_Local_construct;
         if (db_define(Fast_Local_construct_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Local::construct(Local object)'.");
             goto error;
@@ -8012,8 +8011,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Local_toIc_o with C-function */
         db_function(Fast_Local_toIc_o)->kind = DB_PROCEDURE_CDECL;
-        db_ic Fast_Local_toIc_v(Fast_Local _this, db_icProgram program, db_icStorage storage, db_bool stored);
-        db_function(Fast_Local_toIc_o)->impl = (db_word)Fast_Local_toIc_v;
+        void __Fast_Local_toIc_v(void *args, void *result);
+        db_function(Fast_Local_toIc_o)->impl = (db_word)__Fast_Local_toIc_v;
         if (db_define(Fast_Local_toIc_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Local::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.");
             goto error;
@@ -8053,8 +8052,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Block_declare_o with C-function */
         db_function(Fast_Block_declare_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Local Fast_Block_declare(Fast_Block _this, db_string id, Fast_Variable type, db_bool isParameter, db_bool isReference);
-        db_function(Fast_Block_declare_o)->impl = (db_word)Fast_Block_declare;
+        void __Fast_Block_declare(void *args, void *result);
+        db_function(Fast_Block_declare_o)->impl = (db_word)__Fast_Block_declare;
         if (db_define(Fast_Block_declare_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Block::declare(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference)'.");
             goto error;
@@ -8068,8 +8067,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Block_declareReturnVariable_o with C-function */
         db_function(Fast_Block_declareReturnVariable_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Local Fast_Block_declareReturnVariable(Fast_Block _this, db_function function);
-        db_function(Fast_Block_declareReturnVariable_o)->impl = (db_word)Fast_Block_declareReturnVariable;
+        void __Fast_Block_declareReturnVariable(void *args, void *result);
+        db_function(Fast_Block_declareReturnVariable_o)->impl = (db_word)__Fast_Block_declareReturnVariable;
         if (db_define(Fast_Block_declareReturnVariable_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Block::declareReturnVariable(lang::function function)'.");
             goto error;
@@ -8090,8 +8089,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Template_construct_o with C-function */
         db_function(Fast_Template_construct_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Template_construct(Fast_Template object);
-        db_function(Fast_Template_construct_o)->impl = (db_word)Fast_Template_construct;
+        void __Fast_Template_construct(void *args, void *result);
+        db_function(Fast_Template_construct_o)->impl = (db_word)__Fast_Template_construct;
         if (db_define(Fast_Template_construct_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Template::construct(Template object)'.");
             goto error;
@@ -8119,8 +8118,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Block_declareTemplate_o with C-function */
         db_function(Fast_Block_declareTemplate_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Template Fast_Block_declareTemplate(Fast_Block _this, db_string id, Fast_Variable type, db_bool isParameter, db_bool isReference);
-        db_function(Fast_Block_declareTemplate_o)->impl = (db_word)Fast_Block_declareTemplate;
+        void __Fast_Block_declareTemplate(void *args, void *result);
+        db_function(Fast_Block_declareTemplate_o)->impl = (db_word)__Fast_Block_declareTemplate;
         if (db_define(Fast_Block_declareTemplate_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Block::declareTemplate(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference)'.");
             goto error;
@@ -8191,8 +8190,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_bind_o with C-function */
         db_function(Fast_Parser_bind_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Parser_bind(Fast_Parser _this, Fast_Variable function, Fast_Block block);
-        db_function(Fast_Parser_bind_o)->impl = (db_word)Fast_Parser_bind;
+        void __Fast_Parser_bind(void *args, void *result);
+        db_function(Fast_Parser_bind_o)->impl = (db_word)__Fast_Parser_bind;
         if (db_define(Fast_Parser_bind_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::bind(Fast::Variable function,Fast::Block block)'.");
             goto error;
@@ -8213,8 +8212,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_bindOneliner_o with C-function */
         db_function(Fast_Parser_bindOneliner_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Parser_bindOneliner(Fast_Parser _this, Fast_Variable function, Fast_Block block, Fast_Expression expr);
-        db_function(Fast_Parser_bindOneliner_o)->impl = (db_word)Fast_Parser_bindOneliner;
+        void __Fast_Parser_bindOneliner(void *args, void *result);
+        db_function(Fast_Parser_bindOneliner_o)->impl = (db_word)__Fast_Parser_bindOneliner;
         if (db_define(Fast_Parser_bindOneliner_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::bindOneliner(Fast::Variable function,Fast::Block block,Fast::Expression expr)'.");
             goto error;
@@ -8240,8 +8239,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_blockPush_o with C-function */
         db_function(Fast_Parser_blockPush_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Block Fast_Parser_blockPush(Fast_Parser _this, db_bool presetBlock);
-        db_function(Fast_Parser_blockPush_o)->impl = (db_word)Fast_Parser_blockPush;
+        void __Fast_Parser_blockPush(void *args, void *result);
+        db_function(Fast_Parser_blockPush_o)->impl = (db_word)__Fast_Parser_blockPush;
         if (db_define(Fast_Parser_blockPush_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::blockPush(lang::bool presetBlock)'.");
             goto error;
@@ -8262,8 +8261,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_declareFunctionParams_o with C-function */
         db_function(Fast_Parser_declareFunctionParams_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Block Fast_Parser_declareFunctionParams(Fast_Parser _this, Fast_Variable function);
-        db_function(Fast_Parser_declareFunctionParams_o)->impl = (db_word)Fast_Parser_declareFunctionParams;
+        void __Fast_Parser_declareFunctionParams(void *args, void *result);
+        db_function(Fast_Parser_declareFunctionParams_o)->impl = (db_word)__Fast_Parser_declareFunctionParams;
         if (db_define(Fast_Parser_declareFunctionParams_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::declareFunctionParams(Variable function)'.");
             goto error;
@@ -8284,8 +8283,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_parseExpression_o with C-function */
         db_function(Fast_Parser_parseExpression_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Expression Fast_Parser_parseExpression(Fast_Parser _this, db_string expr, Fast_Block block, Fast_Variable scope, db_uint32 line, db_uint32 column);
-        db_function(Fast_Parser_parseExpression_o)->impl = (db_word)Fast_Parser_parseExpression;
+        void __Fast_Parser_parseExpression(void *args, void *result);
+        db_function(Fast_Parser_parseExpression_o)->impl = (db_word)__Fast_Parser_parseExpression;
         if (db_define(Fast_Parser_parseExpression_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::parseExpression(lang::string expr,Fast::Block block,Fast::Variable scope,uint32 line,uint32 column)'.");
             goto error;
@@ -8306,8 +8305,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_updateStatement_o with C-function */
         db_function(Fast_Parser_updateStatement_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Node Fast_Parser_updateStatement(Fast_Parser _this, Fast_Expression expr, Fast_Block block);
-        db_function(Fast_Parser_updateStatement_o)->impl = (db_word)Fast_Parser_updateStatement;
+        void __Fast_Parser_updateStatement(void *args, void *result);
+        db_function(Fast_Parser_updateStatement_o)->impl = (db_word)__Fast_Parser_updateStatement;
         if (db_define(Fast_Parser_updateStatement_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::updateStatement(Fast::Expression expr,Fast::Block block)'.");
             goto error;
@@ -8328,8 +8327,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_whileStatement_o with C-function */
         db_function(Fast_Parser_whileStatement_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Node Fast_Parser_whileStatement(Fast_Parser _this, Fast_Expression condition, Fast_Block trueBranch, db_bool isUntil);
-        db_function(Fast_Parser_whileStatement_o)->impl = (db_word)Fast_Parser_whileStatement;
+        void __Fast_Parser_whileStatement(void *args, void *result);
+        db_function(Fast_Parser_whileStatement_o)->impl = (db_word)__Fast_Parser_whileStatement;
         if (db_define(Fast_Parser_whileStatement_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::whileStatement(Fast::Expression condition,Fast::Block trueBranch,lang::bool isUntil)'.");
             goto error;
@@ -8386,8 +8385,8 @@ int Fast_load(void) {
         
         /* Bind Fast_ObjectBase_construct_o with C-function */
         db_function(Fast_ObjectBase_construct_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_ObjectBase_construct(Fast_ObjectBase object);
-        db_function(Fast_ObjectBase_construct_o)->impl = (db_word)Fast_ObjectBase_construct;
+        void __Fast_ObjectBase_construct(void *args, void *result);
+        db_function(Fast_ObjectBase_construct_o)->impl = (db_word)__Fast_ObjectBase_construct;
         if (db_define(Fast_ObjectBase_construct_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::ObjectBase::construct(ObjectBase object)'.");
             goto error;
@@ -8422,8 +8421,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Object_construct_o with C-function */
         db_function(Fast_Object_construct_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Object_construct(Fast_Object object);
-        db_function(Fast_Object_construct_o)->impl = (db_word)Fast_Object_construct;
+        void __Fast_Object_construct(void *args, void *result);
+        db_function(Fast_Object_construct_o)->impl = (db_word)__Fast_Object_construct;
         if (db_define(Fast_Object_construct_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Object::construct(Object object)'.");
             goto error;
@@ -8444,8 +8443,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Object_getValue_o with C-function */
         db_function(Fast_Object_getValue_o)->kind = DB_PROCEDURE_CDECL;
-        db_word Fast_Object_getValue(Fast_Object _this);
-        db_function(Fast_Object_getValue_o)->impl = (db_word)Fast_Object_getValue;
+        void __Fast_Object_getValue(void *args, void *result);
+        db_function(Fast_Object_getValue_o)->impl = (db_word)__Fast_Object_getValue;
         if (db_define(Fast_Object_getValue_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Object::getValue()'.");
             goto error;
@@ -8466,8 +8465,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Object_serialize_o with C-function */
         db_function(Fast_Object_serialize_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Object_serialize(Fast_Object _this, db_type dstType, db_word dst);
-        db_function(Fast_Object_serialize_o)->impl = (db_word)Fast_Object_serialize;
+        void __Fast_Object_serialize(void *args, void *result);
+        db_function(Fast_Object_serialize_o)->impl = (db_word)__Fast_Object_serialize;
         if (db_define(Fast_Object_serialize_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Object::serialize(lang::type dstType,lang::word dst)'.");
             goto error;
@@ -8488,8 +8487,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Object_toIc_o with C-function */
         db_function(Fast_Object_toIc_o)->kind = DB_PROCEDURE_CDECL;
-        db_ic Fast_Object_toIc_v(Fast_Object _this, db_icProgram program, db_icStorage storage, db_bool stored);
-        db_function(Fast_Object_toIc_o)->impl = (db_word)Fast_Object_toIc_v;
+        void __Fast_Object_toIc_v(void *args, void *result);
+        db_function(Fast_Object_toIc_o)->impl = (db_word)__Fast_Object_toIc_v;
         if (db_define(Fast_Object_toIc_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Object::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.");
             goto error;
@@ -8524,8 +8523,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_observerDeclaration_o with C-function */
         db_function(Fast_Parser_observerDeclaration_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Variable Fast_Parser_observerDeclaration(Fast_Parser _this, db_string id, Fast_Expression object, db_eventMask mask, Fast_Object dispatcher);
-        db_function(Fast_Parser_observerDeclaration_o)->impl = (db_word)Fast_Parser_observerDeclaration;
+        void __Fast_Parser_observerDeclaration(void *args, void *result);
+        db_function(Fast_Parser_observerDeclaration_o)->impl = (db_word)__Fast_Parser_observerDeclaration;
         if (db_define(Fast_Parser_observerDeclaration_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::observerDeclaration(lang::string id,Fast::Expression object,lang::eventMask mask,Fast::Object dispatcher)'.");
             goto error;
@@ -8546,8 +8545,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_argumentToString_o with C-function */
         db_function(Fast_Parser_argumentToString_o)->kind = DB_PROCEDURE_CDECL;
-        db_string Fast_Parser_argumentToString(Fast_Parser _this, Fast_Variable type, db_string id, db_bool reference);
-        db_function(Fast_Parser_argumentToString_o)->impl = (db_word)Fast_Parser_argumentToString;
+        void __Fast_Parser_argumentToString(void *args, void *result);
+        db_function(Fast_Parser_argumentToString_o)->impl = (db_word)__Fast_Parser_argumentToString;
         if (db_define(Fast_Parser_argumentToString_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::argumentToString(Fast::Variable type,lang::string id,lang::bool reference)'.");
             goto error;
@@ -8568,8 +8567,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_declaration_o with C-function */
         db_function(Fast_Parser_declaration_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Variable Fast_Parser_declaration(Fast_Parser _this, Fast_Variable type, db_string id, db_bool isReference);
-        db_function(Fast_Parser_declaration_o)->impl = (db_word)Fast_Parser_declaration;
+        void __Fast_Parser_declaration(void *args, void *result);
+        db_function(Fast_Parser_declaration_o)->impl = (db_word)__Fast_Parser_declaration;
         if (db_define(Fast_Parser_declaration_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::declaration(Variable type,lang::string id,lang::bool isReference)'.");
             goto error;
@@ -8590,8 +8589,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_declareFunction_o with C-function */
         db_function(Fast_Parser_declareFunction_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Variable Fast_Parser_declareFunction(Fast_Parser _this, Fast_Variable returnType, db_string id, db_procedure kind, db_bool returnsReference);
-        db_function(Fast_Parser_declareFunction_o)->impl = (db_word)Fast_Parser_declareFunction;
+        void __Fast_Parser_declareFunction(void *args, void *result);
+        db_function(Fast_Parser_declareFunction_o)->impl = (db_word)__Fast_Parser_declareFunction;
         if (db_define(Fast_Parser_declareFunction_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::procedure kind,bool returnsReference)'.");
             goto error;
@@ -8612,8 +8611,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_defineVariable_o with C-function */
         db_function(Fast_Parser_defineVariable_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Parser_defineVariable(Fast_Parser _this, Fast_Variable object);
-        db_function(Fast_Parser_defineVariable_o)->impl = (db_word)Fast_Parser_defineVariable;
+        void __Fast_Parser_defineVariable(void *args, void *result);
+        db_function(Fast_Parser_defineVariable_o)->impl = (db_word)__Fast_Parser_defineVariable;
         if (db_define(Fast_Parser_defineVariable_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::defineVariable(Variable object)'.");
             goto error;
@@ -8634,8 +8633,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_popScope_o with C-function */
         db_function(Fast_Parser_popScope_o)->kind = DB_PROCEDURE_CDECL;
-        void Fast_Parser_popScope(Fast_Parser _this, Fast_Variable previous);
-        db_function(Fast_Parser_popScope_o)->impl = (db_word)Fast_Parser_popScope;
+        void __Fast_Parser_popScope(void *args, void *result);
+        db_function(Fast_Parser_popScope_o)->impl = (db_word)__Fast_Parser_popScope;
         if (db_define(Fast_Parser_popScope_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::popScope(Fast::Variable previous)'.");
             goto error;
@@ -8649,8 +8648,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_pushScope_o with C-function */
         db_function(Fast_Parser_pushScope_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Variable Fast_Parser_pushScope(Fast_Parser _this);
-        db_function(Fast_Parser_pushScope_o)->impl = (db_word)Fast_Parser_pushScope;
+        void __Fast_Parser_pushScope(void *args, void *result);
+        db_function(Fast_Parser_pushScope_o)->impl = (db_word)__Fast_Parser_pushScope;
         if (db_define(Fast_Parser_pushScope_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::pushScope()'.");
             goto error;
@@ -8745,8 +8744,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Wait_construct_o with C-function */
         db_function(Fast_Wait_construct_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Wait_construct(Fast_Wait object);
-        db_function(Fast_Wait_construct_o)->impl = (db_word)Fast_Wait_construct;
+        void __Fast_Wait_construct(void *args, void *result);
+        db_function(Fast_Wait_construct_o)->impl = (db_word)__Fast_Wait_construct;
         if (db_define(Fast_Wait_construct_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Wait::construct(Wait object)'.");
             goto error;
@@ -8779,8 +8778,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Wait_toIc_o with C-function */
         db_function(Fast_Wait_toIc_o)->kind = DB_PROCEDURE_CDECL;
-        db_ic Fast_Wait_toIc_v(Fast_Wait _this, db_icProgram program, db_icStorage storage, db_bool stored);
-        db_function(Fast_Wait_toIc_o)->impl = (db_word)Fast_Wait_toIc_v;
+        void __Fast_Wait_toIc_v(void *args, void *result);
+        db_function(Fast_Wait_toIc_o)->impl = (db_word)__Fast_Wait_toIc_v;
         if (db_define(Fast_Wait_toIc_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Wait::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.");
             goto error;
@@ -8889,8 +8888,8 @@ int Fast_load(void) {
         
         /* Bind Fast_If_construct_o with C-function */
         db_function(Fast_If_construct_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_If_construct(Fast_If object);
-        db_function(Fast_If_construct_o)->impl = (db_word)Fast_If_construct;
+        void __Fast_If_construct(void *args, void *result);
+        db_function(Fast_If_construct_o)->impl = (db_word)__Fast_If_construct;
         if (db_define(Fast_If_construct_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::If::construct(If object)'.");
             goto error;
@@ -8911,8 +8910,8 @@ int Fast_load(void) {
         
         /* Bind Fast_If_noWarnUnreachable_o with C-function */
         db_function(Fast_If_noWarnUnreachable_o)->kind = DB_PROCEDURE_CDECL;
-        void Fast_If_noWarnUnreachable(Fast_If _this);
-        db_function(Fast_If_noWarnUnreachable_o)->impl = (db_word)Fast_If_noWarnUnreachable;
+        void __Fast_If_noWarnUnreachable(void *args, void *result);
+        db_function(Fast_If_noWarnUnreachable_o)->impl = (db_word)__Fast_If_noWarnUnreachable;
         if (db_define(Fast_If_noWarnUnreachable_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::If::noWarnUnreachable()'.");
             goto error;
@@ -8933,8 +8932,8 @@ int Fast_load(void) {
         
         /* Bind Fast_If_toIc_o with C-function */
         db_function(Fast_If_toIc_o)->kind = DB_PROCEDURE_CDECL;
-        db_ic Fast_If_toIc_v(Fast_If _this, db_icProgram program, db_icStorage storage, db_bool stored);
-        db_function(Fast_If_toIc_o)->impl = (db_word)Fast_If_toIc_v;
+        void __Fast_If_toIc_v(void *args, void *result);
+        db_function(Fast_If_toIc_o)->impl = (db_word)__Fast_If_toIc_v;
         if (db_define(Fast_If_toIc_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::If::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.");
             goto error;
@@ -8969,8 +8968,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_ifStatement_o with C-function */
         db_function(Fast_Parser_ifStatement_o)->kind = DB_PROCEDURE_CDECL;
-        Fast_Node Fast_Parser_ifStatement(Fast_Parser _this, Fast_Expression condition, Fast_Block trueBranch, Fast_If falseBranch);
-        db_function(Fast_Parser_ifStatement_o)->impl = (db_word)Fast_Parser_ifStatement;
+        void __Fast_Parser_ifStatement(void *args, void *result);
+        db_function(Fast_Parser_ifStatement_o)->impl = (db_word)__Fast_Parser_ifStatement;
         if (db_define(Fast_Parser_ifStatement_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::ifStatement(Fast::Expression condition,Fast::Block trueBranch,Fast::If falseBranch)'.");
             goto error;
@@ -9017,8 +9016,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Parser_addStatement_o with C-function */
         db_function(Fast_Parser_addStatement_o)->kind = DB_PROCEDURE_CDECL;
-        void Fast_Parser_addStatement(Fast_Parser _this, Fast_Node statement);
-        db_function(Fast_Parser_addStatement_o)->impl = (db_word)Fast_Parser_addStatement;
+        void __Fast_Parser_addStatement(void *args, void *result);
+        db_function(Fast_Parser_addStatement_o)->impl = (db_word)__Fast_Parser_addStatement;
         if (db_define(Fast_Parser_addStatement_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::addStatement(Fast::Node statement)'.");
             goto error;
@@ -9053,8 +9052,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Update_construct_o with C-function */
         db_function(Fast_Update_construct_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_Update_construct(Fast_Update object);
-        db_function(Fast_Update_construct_o)->impl = (db_word)Fast_Update_construct;
+        void __Fast_Update_construct(void *args, void *result);
+        db_function(Fast_Update_construct_o)->impl = (db_word)__Fast_Update_construct;
         if (db_define(Fast_Update_construct_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Update::construct(Update object)'.");
             goto error;
@@ -9075,8 +9074,8 @@ int Fast_load(void) {
         
         /* Bind Fast_Update_toIc_o with C-function */
         db_function(Fast_Update_toIc_o)->kind = DB_PROCEDURE_CDECL;
-        db_ic Fast_Update_toIc_v(Fast_Update _this, db_icProgram program, db_icStorage storage, db_bool stored);
-        db_function(Fast_Update_toIc_o)->impl = (db_word)Fast_Update_toIc_v;
+        void __Fast_Update_toIc_v(void *args, void *result);
+        db_function(Fast_Update_toIc_o)->impl = (db_word)__Fast_Update_toIc_v;
         if (db_define(Fast_Update_toIc_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Update::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.");
             goto error;
@@ -9111,8 +9110,8 @@ int Fast_load(void) {
         
         /* Bind Fast_While_construct_o with C-function */
         db_function(Fast_While_construct_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 Fast_While_construct(Fast_While object);
-        db_function(Fast_While_construct_o)->impl = (db_word)Fast_While_construct;
+        void __Fast_While_construct(void *args, void *result);
+        db_function(Fast_While_construct_o)->impl = (db_word)__Fast_While_construct;
         if (db_define(Fast_While_construct_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::While::construct(While object)'.");
             goto error;
@@ -9133,8 +9132,8 @@ int Fast_load(void) {
         
         /* Bind Fast_While_toIc_o with C-function */
         db_function(Fast_While_toIc_o)->kind = DB_PROCEDURE_CDECL;
-        db_ic Fast_While_toIc_v(Fast_While _this, db_icProgram program, db_icStorage storage, db_bool stored);
-        db_function(Fast_While_toIc_o)->impl = (db_word)Fast_While_toIc_v;
+        void __Fast_While_toIc_v(void *args, void *result);
+        db_function(Fast_While_toIc_o)->impl = (db_word)__Fast_While_toIc_v;
         if (db_define(Fast_While_toIc_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::While::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.");
             goto error;

@@ -1,6 +1,6 @@
 /* io__api.h
  *
- *  Generated on Sep 13 2014
+ *  Generated on Dec  1 2014
  *    API convenience functions for C-language.
  *    This file contains generated code. Do not modify!
  */
@@ -21,7 +21,7 @@ int io_file__define(io_file _this, db_string name, io_fileMode mode, db_bool bin
 io_file io_file__create(db_string name, io_fileMode mode, db_bool binary);
 
 
-/* <0x9b81758> */
+/* <0x8c961d8> */
 #define db_octet_seq__foreach(seq, elem) \
     db_uint32 elem##_iter;\
     db_octet *elem;\

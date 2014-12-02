@@ -5,7 +5,7 @@
  *      Author: sander
  */
 
-#include "hyve.h"
+#include "db.h"
 #include "db_generatorDepWalk.h"
 
 #define CYCLE_DEPTH (1024)

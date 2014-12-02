@@ -99,6 +99,11 @@ DB_META_OBJECT(procedure, callback);
 DB_META_OBJECT(procedure, observer);
 DB_META_OBJECT(procedure, metaprocedure);
 
+DB_META_OBJECT(delegate, type_init);
+DB_META_OBJECT(delegate, class_construct);
+DB_META_OBJECT(delegate, class_destruct);
+DB_META_OBJECT(delegate, procedure_bind);
+
 #ifdef __cplusplus
 }
 #endif

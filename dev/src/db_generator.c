@@ -16,7 +16,7 @@ db_generator gen_new(db_string name, db_string language) {
     result = db_malloc(sizeof(struct db_generator_s));
 
     /* List of output directories is initially empty */
-    result->extensions = NULL;
+    result->attributes = NULL;
 
     /* List of files is initially empty */
     result->files = NULL;
@@ -140,19 +140,51 @@ void gen_parse(db_generator g, db_object object, db_bool parseSelf, db_bool pars
     }
 }
 
-/* Route specific file-extensions to a location */
-void gen_output(db_generator g, db_string extension, db_string location) {
-    g_extension* ext;
+static int g_genAttributeFind(void *value, void *userData) {
+	g_attribute *attr = value;
+	if(!strcmp(attr->key, *(db_string*)userData)) {
+		*(void**)userData = attr;
+		return 0;
+	}
+	return 1;
+}
 
-    if (!g->extensions) {
-        g->extensions = db_llNew();
+/* Set attribute */
+void gen_setAttribute(db_generator g, db_string key, db_string value) {
+    g_attribute* attr = NULL;
+
+    if (!g->attributes) {
+        g->attributes = db_llNew();
+    }else {
+    	void* userData = key;
+		if(!db_llWalk(g->attributes, g_genAttributeFind, &userData)) {
+			attr = userData;
+		}
     }
 
-    ext = db_malloc(sizeof(g_extension));
-    ext->extension = db_strdup(extension);
-    ext->location = db_strdup(location);
+    if(!attr) {
+	    attr = db_malloc(sizeof(g_attribute));
+	    attr->key = db_strdup(key);
+	}else {
+		db_dealloc(attr->value);
+	}
+    attr->value = db_strdup(value);
 
-    db_llAppend(g->extensions, ext);
+    db_llAppend(g->attributes, attr);
+}
+
+/* Get attribute */
+db_string gen_getAttribute(db_generator g, db_string key) {
+	db_string result = NULL;
+
+	if(g->attributes) {
+		void *userData = key;
+		if(!db_llWalk(g->attributes, g_genAttributeFind, &userData)) {
+			result = ((g_attribute*)userData)->value;
+		}
+	}
+
+	return result;
 }
 
 /* Load generator actions from library */
@@ -246,17 +278,17 @@ static int g_closeFile(void* o, void* udata) {
     return 1;
 }
 
-static int g_freeExtension(void* _o, void* udata) {
-    g_extension* o;
+static int g_freeAttribute(void* _o, void* udata) {
+    g_attribute* o;
 
     DB_UNUSED(udata);
 
     o = _o;
-    if (o->extension) {
-        db_dealloc(o->extension);
+    if (o->key) {
+        db_dealloc(o->key);
     }
-    if (o->location) {
-        db_dealloc(o->location);
+    if (o->value) {
+        db_dealloc(o->value);
     }
 
     db_dealloc(o);
@@ -283,10 +315,10 @@ void gen_free(db_generator g) {
         g->files = NULL;
     }
 
-    if (g->extensions) {
-        db_llWalk(g->extensions, g_freeExtension, NULL);
-        db_llFree(g->extensions);
-        g->extensions = NULL;
+    if (g->attributes) {
+        db_llWalk(g->attributes, g_freeAttribute, NULL);
+        db_llFree(g->attributes);
+        g->attributes = NULL;
     }
 
     if (g->imports) {
@@ -714,13 +746,12 @@ db_string g_oid(db_generator g, db_object o, db_id id) {
 
 /* Convert a filename to a filepath, depending on it's extension. */
 static db_string g_filePath(db_generator g, db_string filename, db_char* buffer) {
-    db_iter iter;
     db_string result;
 
     result = filename;
 
-    if (g->extensions) {
-        g_extension* ext;
+    if (g->attributes) {
+        db_string ext = NULL;
         db_string fext, ptr;
 
         /* Get file-extension */
@@ -731,29 +762,14 @@ static db_string g_filePath(db_generator g, db_string filename, db_char* buffer)
             fext = ptr;
         }
 
-        /* Find extension */
-        iter = db_llIter(g->extensions);
-        while(db_iterHasNext(&iter)) {
-            ext = db_iterNext(&iter);
-            if (ext->extension) {
-                if (fext) {
-                    /* Compare extension with file-extension. */
-                    if (!strcmp(fext, ext->extension)) {
-                        break;
-                    } else {
-                        ext = NULL;
-                    }
-                } else {
-                    ext = NULL;
-                }
-            } else {
-                break;
-            }
-        }
+        /* Check whether there is an attribute with the file extension - determines where to put the file */
+        if(fext) {
+	        ext = gen_getAttribute(g, fext);
+	    }
 
         /* Append filename to location. */
         if (ext) {
-            sprintf(buffer, "%s/%s", ext->location, filename);
+            sprintf(buffer, "%s/%s", ext, filename);
             result = buffer;
         }
     }

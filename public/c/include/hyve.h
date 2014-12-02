@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef FRACTAL_H_
-#define FRACTAL_H_
+#ifndef HYVE_H_
+#define HYVE_H_
 
 #include "db__type.h"
 #include "db__meta.h"
@@ -43,4 +43,4 @@ void db_onexit(void(*handler)(void*), void* userData);
 }
 #endif
 
-#endif /* FRACTAL_H_ */
+#endif /* HYVE_H_ */

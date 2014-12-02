@@ -7,6 +7,7 @@ YACC	= 	fast.y
 SOURCES	=	fastmain.c \
 			Fast__api.c \
 			Fast__meta.c \
+			Fast__wrapper.c \
 			Fast.c \
 			Fast_BinaryExpr.c \
 			Fast_Block.c \
@@ -49,8 +50,7 @@ SOURCES	=	fastmain.c \
 INCLUDE = 	$(BUILDHOME)/db/include \
 			$(BUILDHOME)/public/c/include \
 			include \
-			$(BUILDHOME)/dev/include \
-			$(BUILDHOME)/interface/api/include
+			$(BUILDHOME)/dev/include
 
 LIBS	=	lang api hyvedev fl
 

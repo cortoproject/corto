@@ -1,8 +1,7 @@
 /* io__meta.c
  *
- *  Generated on Sep  5 2014
- *    Loads objects in database.
- *    This file contains generated code. Do not modify!
+ * Loads objects in database.
+ * This file contains generated code. Do not modify!
  */
 
 #include "io__type.h"
@@ -99,12 +98,13 @@ int io_load(void) {
     /* Define ::hyve::io::file::flush() */
     if (!db_checkState(io_file_flush_o, DB_DEFINED)) {
         db_function(io_file_flush_o)->returnType = db_resolve_ext(io_file_flush_o, NULL, "::hyve::lang::void", FALSE, "element ::hyve::io::file::flush().returnType");
+        db_function(io_file_flush_o)->returnsReference = FALSE;
         io_file_flush_o->virtual = FALSE;
         
         /* Bind io_file_flush_o with C-function */
         db_function(io_file_flush_o)->kind = DB_PROCEDURE_CDECL;
-        db_void io_file_flush(io_file _this);
-        db_function(io_file_flush_o)->impl = (db_word)io_file_flush;
+        void __io_file_flush(void *args, void *result);
+        db_function(io_file_flush_o)->impl = (db_word)__io_file_flush;
         if (db_define(io_file_flush_o)) {
             db_error("io_load: failed to define object '::hyve::io::file::flush()'.");
             goto error;
@@ -179,12 +179,13 @@ int io_load(void) {
     /* Define ::hyve::io::file::readLn() */
     if (!db_checkState(io_file_readLn_o, DB_DEFINED)) {
         db_function(io_file_readLn_o)->returnType = db_resolve_ext(io_file_readLn_o, NULL, "::hyve::lang::string", FALSE, "element ::hyve::io::file::readLn().returnType");
+        db_function(io_file_readLn_o)->returnsReference = FALSE;
         io_file_readLn_o->virtual = FALSE;
         
         /* Bind io_file_readLn_o with C-function */
         db_function(io_file_readLn_o)->kind = DB_PROCEDURE_CDECL;
-        db_string io_file_readLn(io_file _this);
-        db_function(io_file_readLn_o)->impl = (db_word)io_file_readLn;
+        void __io_file_readLn(void *args, void *result);
+        db_function(io_file_readLn_o)->impl = (db_word)__io_file_readLn;
         if (db_define(io_file_readLn_o)) {
             db_error("io_load: failed to define object '::hyve::io::file::readLn()'.");
             goto error;
@@ -200,12 +201,13 @@ int io_load(void) {
     /* Define ::hyve::io::file::readText() */
     if (!db_checkState(io_file_readText_o, DB_DEFINED)) {
         db_function(io_file_readText_o)->returnType = db_resolve_ext(io_file_readText_o, NULL, "::hyve::lang::string", FALSE, "element ::hyve::io::file::readText().returnType");
+        db_function(io_file_readText_o)->returnsReference = FALSE;
         io_file_readText_o->virtual = FALSE;
         
         /* Bind io_file_readText_o with C-function */
         db_function(io_file_readText_o)->kind = DB_PROCEDURE_CDECL;
-        db_string io_file_readText(io_file _this);
-        db_function(io_file_readText_o)->impl = (db_word)io_file_readText;
+        void __io_file_readText(void *args, void *result);
+        db_function(io_file_readText_o)->impl = (db_word)__io_file_readText;
         if (db_define(io_file_readText_o)) {
             db_error("io_load: failed to define object '::hyve::io::file::readText()'.");
             goto error;
@@ -221,12 +223,13 @@ int io_load(void) {
     /* Define ::hyve::io::file::writeText(::hyve::lang::string txt) */
     if (!db_checkState(io_file_writeText_o, DB_DEFINED)) {
         db_function(io_file_writeText_o)->returnType = db_resolve_ext(io_file_writeText_o, NULL, "::hyve::lang::uint32", FALSE, "element ::hyve::io::file::writeText(::hyve::lang::string txt).returnType");
+        db_function(io_file_writeText_o)->returnsReference = FALSE;
         io_file_writeText_o->virtual = FALSE;
         
         /* Bind io_file_writeText_o with C-function */
         db_function(io_file_writeText_o)->kind = DB_PROCEDURE_CDECL;
-        db_uint32 io_file_writeText(io_file _this, db_string txt);
-        db_function(io_file_writeText_o)->impl = (db_word)io_file_writeText;
+        void __io_file_writeText(void *args, void *result);
+        db_function(io_file_writeText_o)->impl = (db_word)__io_file_writeText;
         if (db_define(io_file_writeText_o)) {
             db_error("io_load: failed to define object '::hyve::io::file::writeText(::hyve::lang::string txt)'.");
             goto error;
@@ -343,11 +346,12 @@ int io_load(void) {
     /* Define ::hyve::io::print(::hyve::lang::string str) */
     if (!db_checkState(io_print_o, DB_DEFINED)) {
         io_print_o->returnType = db_resolve_ext(io_print_o, NULL, "::hyve::lang::void", FALSE, "element ::hyve::io::print(::hyve::lang::string str).returnType");
+        io_print_o->returnsReference = FALSE;
         
         /* Bind io_print_o with C-function */
         db_function(io_print_o)->kind = DB_PROCEDURE_CDECL;
-        db_void io_print(db_string str);
-        db_function(io_print_o)->impl = (db_word)io_print;
+        void __io_print(void *args, void *result);
+        db_function(io_print_o)->impl = (db_word)__io_print;
         if (db_define(io_print_o)) {
             db_error("io_load: failed to define object '::hyve::io::print(::hyve::lang::string str)'.");
             goto error;
@@ -363,11 +367,12 @@ int io_load(void) {
     /* Define ::hyve::io::println(::hyve::lang::string str) */
     if (!db_checkState(io_println_o, DB_DEFINED)) {
         io_println_o->returnType = db_resolve_ext(io_println_o, NULL, "::hyve::lang::void", FALSE, "element ::hyve::io::println(::hyve::lang::string str).returnType");
+        io_println_o->returnsReference = FALSE;
         
         /* Bind io_println_o with C-function */
         db_function(io_println_o)->kind = DB_PROCEDURE_CDECL;
-        db_void io_println(db_string str);
-        db_function(io_println_o)->impl = (db_word)io_println;
+        void __io_println(void *args, void *result);
+        db_function(io_println_o)->impl = (db_word)__io_println;
         if (db_define(io_println_o)) {
             db_error("io_load: failed to define object '::hyve::io::println(::hyve::lang::string str)'.");
             goto error;
@@ -383,11 +388,12 @@ int io_load(void) {
     /* Define ::hyve::io::readln() */
     if (!db_checkState(io_readln_o, DB_DEFINED)) {
         io_readln_o->returnType = db_resolve_ext(io_readln_o, NULL, "::hyve::lang::string", FALSE, "element ::hyve::io::readln().returnType");
+        io_readln_o->returnsReference = FALSE;
         
         /* Bind io_readln_o with C-function */
         db_function(io_readln_o)->kind = DB_PROCEDURE_CDECL;
-        db_string io_readln(void);
-        db_function(io_readln_o)->impl = (db_word)io_readln;
+        void __io_readln(void *args, void *result);
+        db_function(io_readln_o)->impl = (db_word)__io_readln;
         if (db_define(io_readln_o)) {
             db_error("io_load: failed to define object '::hyve::io::readln()'.");
             goto error;
@@ -396,12 +402,13 @@ int io_load(void) {
     /* Define ::hyve::io::file::read(::hyve::lang::uint32 bytes) */
     if (!db_checkState(io_file_read_o, DB_DEFINED)) {
         db_function(io_file_read_o)->returnType = db_resolve_ext(io_file_read_o, NULL, "::hyve::lang::sequence{::hyve::lang::octet,0}", FALSE, "element ::hyve::io::file::read(::hyve::lang::uint32 bytes).returnType");
+        db_function(io_file_read_o)->returnsReference = FALSE;
         io_file_read_o->virtual = FALSE;
         
         /* Bind io_file_read_o with C-function */
         db_function(io_file_read_o)->kind = DB_PROCEDURE_CDECL;
-        db_octet_seq io_file_read(io_file _this, db_uint32 bytes);
-        db_function(io_file_read_o)->impl = (db_word)io_file_read;
+        void __io_file_read(void *args, void *result);
+        db_function(io_file_read_o)->impl = (db_word)__io_file_read;
         if (db_define(io_file_read_o)) {
             db_error("io_load: failed to define object '::hyve::io::file::read(::hyve::lang::uint32 bytes)'.");
             goto error;
@@ -410,12 +417,13 @@ int io_load(void) {
     /* Define ::hyve::io::file::readAll() */
     if (!db_checkState(io_file_readAll_o, DB_DEFINED)) {
         db_function(io_file_readAll_o)->returnType = db_resolve_ext(io_file_readAll_o, NULL, "::hyve::lang::sequence{::hyve::lang::octet,0}", FALSE, "element ::hyve::io::file::readAll().returnType");
+        db_function(io_file_readAll_o)->returnsReference = FALSE;
         io_file_readAll_o->virtual = FALSE;
         
         /* Bind io_file_readAll_o with C-function */
         db_function(io_file_readAll_o)->kind = DB_PROCEDURE_CDECL;
-        db_octet_seq io_file_readAll(io_file _this);
-        db_function(io_file_readAll_o)->impl = (db_word)io_file_readAll;
+        void __io_file_readAll(void *args, void *result);
+        db_function(io_file_readAll_o)->impl = (db_word)__io_file_readAll;
         if (db_define(io_file_readAll_o)) {
             db_error("io_load: failed to define object '::hyve::io::file::readAll()'.");
             goto error;
@@ -431,12 +439,13 @@ int io_load(void) {
     /* Define ::hyve::io::file::write(::hyve::lang::sequence{::hyve::lang::octet,0} data) */
     if (!db_checkState(io_file_write_o, DB_DEFINED)) {
         db_function(io_file_write_o)->returnType = db_resolve_ext(io_file_write_o, NULL, "::hyve::lang::uint32", FALSE, "element ::hyve::io::file::write(::hyve::lang::sequence{::hyve::lang::octet,0} data).returnType");
+        db_function(io_file_write_o)->returnsReference = FALSE;
         io_file_write_o->virtual = FALSE;
         
         /* Bind io_file_write_o with C-function */
         db_function(io_file_write_o)->kind = DB_PROCEDURE_CDECL;
-        db_uint32 io_file_write(io_file _this, db_octet_seq data);
-        db_function(io_file_write_o)->impl = (db_word)io_file_write;
+        void __io_file_write(void *args, void *result);
+        db_function(io_file_write_o)->impl = (db_word)__io_file_write;
         if (db_define(io_file_write_o)) {
             db_error("io_load: failed to define object '::hyve::io::file::write(::hyve::lang::sequence{::hyve::lang::octet,0} data)'.");
             goto error;
@@ -452,12 +461,13 @@ int io_load(void) {
     /* Define ::hyve::io::file::construct(::hyve::io::file object) */
     if (!db_checkState(io_file_construct_o, DB_DEFINED)) {
         db_function(io_file_construct_o)->returnType = db_resolve_ext(io_file_construct_o, NULL, "::hyve::lang::int16", FALSE, "element ::hyve::io::file::construct(::hyve::io::file object).returnType");
+        db_function(io_file_construct_o)->returnsReference = FALSE;
         io_file_construct_o->delegate = db_resolve_ext(io_file_construct_o, NULL, "::hyve::lang::class::construct(lang::object object)", FALSE, "element ::hyve::io::file::construct(::hyve::io::file object).delegate");
         
         /* Bind io_file_construct_o with C-function */
         db_function(io_file_construct_o)->kind = DB_PROCEDURE_CDECL;
-        db_int16 io_file_construct(io_file object);
-        db_function(io_file_construct_o)->impl = (db_word)io_file_construct;
+        void __io_file_construct(void *args, void *result);
+        db_function(io_file_construct_o)->impl = (db_word)__io_file_construct;
         if (db_define(io_file_construct_o)) {
             db_error("io_load: failed to define object '::hyve::io::file::construct(::hyve::io::file object)'.");
             goto error;
@@ -473,12 +483,13 @@ int io_load(void) {
     /* Define ::hyve::io::file::destruct(::hyve::io::file object) */
     if (!db_checkState(io_file_destruct_o, DB_DEFINED)) {
         db_function(io_file_destruct_o)->returnType = db_resolve_ext(io_file_destruct_o, NULL, "::hyve::lang::void", FALSE, "element ::hyve::io::file::destruct(::hyve::io::file object).returnType");
+        db_function(io_file_destruct_o)->returnsReference = FALSE;
         io_file_destruct_o->delegate = db_resolve_ext(io_file_destruct_o, NULL, "::hyve::lang::class::destruct(lang::object object)", FALSE, "element ::hyve::io::file::destruct(::hyve::io::file object).delegate");
         
         /* Bind io_file_destruct_o with C-function */
         db_function(io_file_destruct_o)->kind = DB_PROCEDURE_CDECL;
-        db_void io_file_destruct(io_file object);
-        db_function(io_file_destruct_o)->impl = (db_word)io_file_destruct;
+        void __io_file_destruct(void *args, void *result);
+        db_function(io_file_destruct_o)->impl = (db_word)__io_file_destruct;
         if (db_define(io_file_destruct_o)) {
             db_error("io_load: failed to define object '::hyve::io::file::destruct(::hyve::io::file object)'.");
             goto error;

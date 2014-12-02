@@ -1,15 +1,13 @@
 /* Fast_Variable.c
  *
- *  Generated on Nov 18 2014
- *    This file contains the implementation for the generated interface.
+ * This file contains the implementation for the generated interface.
  *
  *    Don't mess with the begin and end tags, since these will ensure that modified
  *    code in interface functions isn't replaced when code is re-generated.
  */
 
-#include "Fast_Variable.h"
+#include "Fast.h"
 #include "Fast__meta.h"
-
 
 /* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::Variable::construct(Variable object) */
 db_int16 Fast_Variable_construct(Fast_Variable object) {

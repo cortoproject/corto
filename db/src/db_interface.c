@@ -1,22 +1,17 @@
-/*
- * db_interface.c
+/* db_interface.c
  *
- *  Created on: Aug 9, 2012
- *      Author: sander
+ * This file contains the implementation for the generated interface.
+ *
+ *    Don't mess with the begin and end tags, since these will ensure that modified
+ *    code in interface functions isn't replaced when code is re-generated.
  */
 
-#include "db_class.h"
-#include "db_object.h"
-#include "db_type.h"
-#include "db__interface.h"
+#include "db.h"
 #include "db__meta.h"
-#include "db_collection.h"
-#include "db_err.h"
-#include "db_util.h"
-#include "db_mem.h"
-#include "db_serializer.h"
 
-static db_uint32 db_interface_resolveMember_id = 0;
+/* $header() */
+#include "db__interface.h"
+#include "db__sequence.h"
 
 static db_vtable *db_interface_vtableFromBase(db_interface _this) {
     db_interface base;
@@ -74,18 +69,18 @@ db_function* db_vtableLookup(db_vtable* vtable, db_string member, db_int32* i_ou
      * vtable has multiple matches, the most specific function is selected. */
     for(i=vtable->length-1; i>=0 && d; i--) {
         if (buffer[i]) {
-        	if (db_overload(buffer[i], member, &d_t, FALSE)) {
-        		goto error;
-        	}
+            if (db_overload(buffer[i], member, &d_t, FALSE)) {
+                goto error;
+            }
 
             if (d_t != -1) {
-            	if (d_t < d) {
-            		result = &buffer[i];
-            		d = d_t;
-            	}
-            	if (!d) {
-            		break;
-            	}
+                if (d_t < d) {
+                    result = &buffer[i];
+                    d = d_t;
+                }
+                if (!d) {
+                    break;
+                }
             }
         }
     }
@@ -100,10 +95,10 @@ db_function* db_vtableLookup(db_vtable* vtable, db_string member, db_int32* i_ou
 
     return result;
 error:
-	if (i_out) {
-		*i_out = -1;
-	}
-	return NULL;
+    if (i_out) {
+        *i_out = -1;
+    }
+    return NULL;
 }
 
 /* Insert method in vtable at first free spot (normal behavior). */
@@ -141,29 +136,20 @@ found:
 
 /* Bind methods in scope */
 int db_interface_walkScope(db_object o, void* userData) {
-	db_interface _this;
-	_this = userData;
+    db_interface _this;
+    _this = userData;
 
-	if (db_class_instanceof(db_procedure_o, db_typeof(o)) && ((db_procedure(db_typeof(o))->kind == DB_METHOD) || (db_procedure(db_typeof(o))->kind == DB_DELEGATE))) {
-		if (!db_checkState(o, DB_DEFINED)) {
-			if (db_interface_bindMethod_v(_this, o)) {
-			    goto error;
-			}
-		}
-	}
+    if (db_class_instanceof(db_procedure_o, db_typeof(o)) && ((db_procedure(db_typeof(o))->kind == DB_METHOD) || (db_procedure(db_typeof(o))->kind == DB_DELEGATE))) {
+        if (!db_checkState(o, DB_DEFINED)) {
+            if (db_interface_bindMethod_v(_this, o)) {
+                goto error;
+            }
+        }
+    }
 
-	return 1;
+    return 1;
 error:
     return 0;
-}
-
-/* type::init -> interface::init */
-db_int16 db_interface_init(db_interface object) {
-    db_type(object)->reference = TRUE;
-    db_type(object)->kind = DB_COMPOSITE;
-    db_set(&db_type(object)->defaultType, db_member_o);
-    object->kind = DB_INTERFACE;
-    return db_type__init(db_type(object));
 }
 
 /* private class::bindDelegate
@@ -198,73 +184,6 @@ error:
     return -1;
 }
 
-/* class::construct -> interface::construct */
-db_int16 db_interface_construct(db_interface object) {
-    db_vtable *superTable, ownTable;
-    db_uint32 i;
-
-    superTable = NULL;
-
-    /* If a vtable exists on a super-class, merge it with my own. */
-    superTable = db_interface_vtableFromBase(object);
-    if (superTable) {
-        ownTable = object->methods;
-        object->methods = *superTable;
-
-        /* re-bind methods and delegates */
-        if (ownTable.length) {
-            for(i=0; i<ownTable.length; i++) {
-                if (db_instanceof(db_typedef(db_method_o), ownTable.buffer[i])) {
-                    db_interface_bindMethod_v(object, db_method(ownTable.buffer[i]));
-                } else {
-                    db_assert(db_instanceof(db_typedef(db_delegate_o), ownTable.buffer[i]),
-                            "only methods and delegates are allowed in a class-vtable (found '%s' of type %s).", db_nameof(ownTable.buffer[i]), db_nameof(db_typeof(ownTable.buffer[i])));
-                    db__interface_bindDelegate_noId(object, db_delegate(ownTable.buffer[i]));
-                }
-                db_free_ext(object, ownTable.buffer[i], "Free method from temporary vtable.");
-            }
-
-            db_dealloc(ownTable.buffer);
-        }
-        db_dealloc(superTable);
-    }
-
-	if (!db_scopeWalk(object, db_interface_walkScope, object)) {
-	    goto error;
-	}
-
-	return db_type_construct(db_type(object));
-error:
-    return -1;
-}
-
-/* class::destruct -> interface::destruct */
-void db_interface_destruct(db_interface object) {
-	db_uint32 i;
-
-	/* Free members */
-	for(i=0; i<object->members.length; i++) {
-	    db_free_ext(object, object->members.buffer[i], "Free member for interface");
-	}
-
-    if (object->members.buffer) {
-        db_dealloc(object->members.buffer);
-        object->members.buffer = NULL;
-    }
-
-    /* Free methods */
-    for(i=0; i<object->methods.length; i++) {
-    	db_free_ext(object, object->methods.buffer[i], "Remove method from vtable.");
-    }
-
-    if (object->methods.buffer) {
-		db_dealloc(object->methods.buffer);
-		object->methods.buffer = NULL;
-    }
-
-	db_type__destruct(db_type(object));
-}
-
 db_int16 db__interface_bindMember(db_interface _this, db_member o) {
     o->id = _this->nextMemberId;
     _this->nextMemberId++;
@@ -280,70 +199,70 @@ db_uint16 db__interface_calculateAlignment(db_interface _this) {
     alignment = 0;
 
     for(i=0; i<_this->members.length; i++) {
-    	db_uint16 memberAlignment;
+        db_uint16 memberAlignment;
         member = _this->members.buffer[i];
         memberAlignment = db_type_alignmentof(member->type->real);
         if (memberAlignment) {
-			if (memberAlignment > alignment) {
-				alignment = memberAlignment;
-			}
+            if (memberAlignment > alignment) {
+                alignment = memberAlignment;
+            }
         } else {
-        	db_id id, id2;
-        	db_error("member '%s' has type '%s' with zero-alignment.", db_fullname(member, id), db_fullname(member->type->real, id2));
-        	goto error;
+            db_id id, id2;
+            db_error("member '%s' has type '%s' with zero-alignment.", db_fullname(member, id), db_fullname(member->type->real, id2));
+            goto error;
         }
     }
 
     return alignment;
 error:
-	return 0;
+    return 0;
 }
 
 /* private interface::calculateSize */
 db_uint32 db__interface_calculateSize(db_interface _this, db_uint32 base) {
-	db_uint32 i, memberSize, size, alignment;
-	db_member m;
-	db_type memberType;
+    db_uint32 i, memberSize, size, alignment;
+    db_member m;
+    db_type memberType;
 
-	alignment = db_type(_this)->alignment;
+    alignment = db_type(_this)->alignment;
 
-	/* Calculate size from members */
-	size = base;
-	for(i=0; i<_this->members.length; i++) {
-		m = _this->members.buffer[i];
-		memberType = m->type->real;
+    /* Calculate size from members */
+    size = base;
+    for(i=0; i<_this->members.length; i++) {
+        m = _this->members.buffer[i];
+        memberType = m->type->real;
 
-		memberSize = db_type_sizeof(memberType);
-		if (!memberSize) {
-			db_id id1, id2;
-			db_warning("type '%s' has a member of type '%s' which has size 0.", db_fullname(_this, id1), db_fullname(memberType, id2));
-		}
+        memberSize = db_type_sizeof(memberType);
+        if (!memberSize) {
+            db_id id1, id2;
+            db_warning("type '%s' has a member of type '%s' which has size 0.", db_fullname(_this, id1), db_fullname(memberType, id2));
+        }
 
-		/* Align size */
-		if (DB_ALIGN(size + memberSize, alignment) != DB_ALIGN(size, alignment)) {
-			size = DB_ALIGN(size, alignment);
-		}
+        /* Align size */
+        if (DB_ALIGN(size + memberSize, alignment) != DB_ALIGN(size, alignment)) {
+            size = DB_ALIGN(size, alignment);
+        }
 
-		if (m->type->real->hasResources || m->type->real->reference) {
-			db_type(_this)->hasResources = TRUE;
-		}
+        if (m->type->real->hasResources || m->type->real->reference) {
+            db_type(_this)->hasResources = TRUE;
+        }
 
-		m->offset = size;
-		size += memberSize;
-	}
+        m->offset = size;
+        size += memberSize;
+    }
 
-	return alignment ? DB_ALIGN(size, alignment) : 0;
+    return alignment ? DB_ALIGN(size, alignment) : 0;
 }
 
 static int db_interface_insertMemberAction(void* o, void* userData) {
     /* If object is a member, add it to members sequence */
     if (db_class_instanceof(db_member_o, o)) {
-    	db_member m = o;
-    	if (!m->type) {
-    		db_id id;
-    		db_error("member '%s' has no type", db_fullname(m, id));
-    		goto error;
-    	}
+        db_member m = o;
+        if (!m->type) {
+            db_id id;
+            db_error("member '%s' has no type", db_fullname(m, id));
+            goto error;
+        }
         db_keep_ext((db_object)userData, o, "Keep member.");
         db_interface(userData)->members.buffer[db_member(o)->id] = o;
         db_interface(userData)->members.length++;
@@ -351,14 +270,14 @@ static int db_interface_insertMemberAction(void* o, void* userData) {
 
     return 1;
 error:
-	return 0;
+    return 0;
 }
 
 /* private interface::insertMembers */
 db_int16 db__interface_insertMembers(db_interface _this) {
     /* Create sequence with size nextMemberId */
     if (_this->nextMemberId) {
-        if (db_sequenceAlloc(db_collection(db_memberSeq_o), &_this->members, _this->nextMemberId)) {
+        if (db_sequence_alloc(db_collection(db_memberSeq_o), &_this->members, _this->nextMemberId)) {
             goto error;
         }
 
@@ -373,151 +292,6 @@ db_int16 db__interface_insertMembers(db_interface _this) {
     return 0;
 error:
     return -1;
-}
-
-
-
-/* virtual interface::resolveMember */
-db_member db_interface_resolveMember_v(db_interface _this, db_string name) {
-    db_uint32 i;
-    db_member result;
-
-    result = NULL;
-
-    for(i=0; i<_this->members.length; i++) {
-        if (!strcmp(db_nameof(_this->members.buffer[i]), name)) {
-            result = _this->members.buffer[i];
-            break;
-        }
-    }
-
-    return result;
-}
-
-/* interface::resolveMember */
-db_member db_interface_resolveMember(db_interface _this, db_string name) {
-    db_method resolveMember;
-    db_member result;
-
-    result = NULL;
-
-    /* Lookup method Id */
-    if (!db_interface_resolveMember_id) {
-        db_interface_resolveMember_id = db_interface_resolveMethodId(db_interface(db_typeof(_this)->real), "resolveMember");
-    }
-    db_assert(db_interface_resolveMember_id, "type '%s' has no resolveMember function.", db_nameof(db_typeof(_this)));
-
-    /* Lookup method */
-    resolveMember = db_interface_resolveMethodById(db_interface(db_typeof(_this)), db_interface_resolveMember_id);
-    db_assert(resolveMember != NULL, "unresolved method '%s::resolveMember@%d'", db_nameof(_this), db_interface_resolveMember_id);
-
-    /* Call function directly if it is a C-function */
-    if (resolveMember->_parent.kind == DB_PROCEDURE_CDECL) {
-        db_assert(resolveMember->_parent.impl, "missing implementationData for interface::resolveMember");
-        result = (db_member)((db_object(*)(db_interface,db_string))resolveMember->_parent.impl)(_this, name);
-    } else {
-        /* db_callMethod */
-    }
-
-    return result;
-}
-
-
-
-/* interface::resolveMethod */
-db_method db_interface_resolveMethod(db_interface _this, db_string method) {
-    db_method result;
-    db_method* found;
-
-    result = NULL;
-
-    /* Lookup method */
-    if ((found = (db_method*)db_vtableLookup(&_this->methods, method, NULL, NULL))) {
-        result = *found;
-    }
-
-    return result;
-}
-
-/* interface::resolveMethodId */
-db_uint32 db_interface_resolveMethodId(db_interface _this, db_string method) {
-    db_int32 result;
-
-    result = 0;
-
-    if (!db_checkState(_this, DB_DEFINED)) {
-        db_id id;
-        db_error("cannot resolve methodId for method '%s' from undefined interface '%s'", method, db_fullname(_this, id));
-        goto error;
-    }
-
-    /* Lookup method */
-    if (db_vtableLookup(&_this->methods, method, &result, NULL)) {
-    	if (result == -1) {
-    		goto error;
-    	}
-        result++; /* Id's start at 1 */
-    }
-
-    return (db_uint32)result;
-error:
-    return 0;
-}
-
-/* interface::resolveMethodId */
-db_method db_interface_resolveMethodById(db_interface _this, db_uint32 id) {
-    db_method result;
-    db_vtable* vtable;
-
-    db_assert(id != 0, "interface::resolveMethodById: invalid methodId provided to db_interface_resolveMethodById");
-    result = NULL;
-
-    /* Lookup method */
-    vtable = &_this->methods;
-    if (id <= vtable->length) {
-        result = db_method(vtable->buffer[id-1]);
-    } else {
-        db_id _id;
-        db_uint32 i;
-        db_error("interface::resolveMethodById: invalid vtable-index %d for interface %s", id, db_fullname(_this, _id));
-        printf("%s.vtable:\n", db_fullname(_this, _id));
-        for(i=0; i<vtable->length; i++) {
-            printf("   (%d) %s\n", i+1, db_fullname(vtable->buffer[i], _id));
-        }
-    }
-
-    return result;
-}
-
-/* ::interface::bindMethod */
-db_int16 db_interface_bindMethod(db_interface _this, db_method method) {
-    db_method _method;
-    db_int16 result;
-    static db_uint32 methodId;
-
-    DB_UNUSED(_this);
-
-    result = 0;
-
-    /* Lookup method Id */
-    if (!methodId) {
-        methodId = db_interface_resolveMethodId(db_interface(db_typeof(_this)->real), "bindMethod");
-    }
-    db_assert(methodId, "type '%s' has no bindMethod function.", db_nameof(db_typeof(_this)));
-
-    /* Lookup method */
-    _method = db_interface_resolveMethodById(db_interface(db_typeof(_this)), methodId);
-    db_assert(_method != NULL, "unresolved method '%s::bindMethod@%d'", db_nameof(_this), methodId);
-
-    /* Call function directly if it is a C-function */
-    if (_method->_parent.kind == DB_PROCEDURE_CDECL) {
-        db_assert(_method->_parent.impl, "missing implementationData for interface::bindMethod");
-        result = ((db_uint32(*)(db_object,db_method))_method->_parent.impl)(_this, method);
-    } else {
-        /* db_callMethod */
-    }
-
-    return result;
 }
 
 /* Check if parameters of procedures match */
@@ -574,10 +348,15 @@ static db_bool db_interface_checkProcedureParameters(db_function o1, db_function
 
             /* Check if both parameters have equal reference semantics */
             if (o1->parameters.buffer[i].passByReference != o2->parameters.buffer[i].passByReference) {
-                db_error("parameter '%s' of function '%s' and '%s' has conflicting pass-by-reference semantics.",
-                        o1->parameters.buffer[i].name,
-                        db_fullname(o1, id1),
-                        db_fullname(o2, id2));
+                if ((((p1->kind == DB_VOID) && (p1->reference)) && o2->parameters.buffer[i].passByReference) ||
+                    (((p2->kind == DB_VOID) && (p2->reference)) && o1->parameters.buffer[i].passByReference)) {
+
+                } else {
+                    db_error("parameter '%s' of function '%s' and '%s' has conflicting pass-by-reference semantics.",
+                            o1->parameters.buffer[i].name,
+                            db_fullname(o1, id1),
+                            db_fullname(o2, id2));
+                }
             }
         }
     }
@@ -635,8 +414,30 @@ db_bool db_interface_checkProcedureCompatibility(db_function o1, db_function o2)
     return result;
 }
 
-/* Bind method with interface class */
+
+/* $end */
+
+/* ::hyve::lang::interface::baseof(lang::interface type) */
+db_int16 db_interface_baseof(db_interface _this, db_interface type) {
+/* $begin(::hyve::lang::interface::baseof) */
+    db_interface ptr = _this->base;
+    db_bool result = FALSE;
+    
+    while(ptr && !result) {
+        if (ptr == type) {
+            result = TRUE;
+        } else {
+            ptr = ptr->base;
+        }
+    }
+    
+    return result;
+/* $end */
+}
+
+/* ::hyve::lang::interface::bindMethod(lang::method method) */
 db_int16 db_interface_bindMethod_v(db_interface _this, db_method method) {
+/* $begin(::hyve::lang::interface::bindMethod) */
     db_method* virtual;
     db_int32 i;
     db_int32 d;
@@ -694,10 +495,12 @@ db_int16 db_interface_bindMethod_v(db_interface _this, db_method method) {
     return 0;
 error:
     return -1;
+/* $end */
 }
 
-/* In addition to inheritance, introduce implement-relations */
-db_bool db_interface_compatible(db_interface _this, db_type type) {
+/* ::hyve::lang::interface::compatible(lang::type type) */
+db_bool db_interface_compatible_v(db_interface _this, db_type type) {
+/* $begin(::hyve::lang::interface::compatible) */
     db_bool result;
 
     /* First test if types are compatible using the rules that are
@@ -716,21 +519,178 @@ db_bool db_interface_compatible(db_interface _this, db_type type) {
     }
 
     return result;
+/* $end */
 }
 
-/* Is type a base of interface */
-db_bool db_interface_baseof(db_interface _this, db_interface type) {
-    db_interface ptr = _this->base;
-    db_bool result = FALSE;
-    
-    while(ptr && !result) {
-        if (ptr == type) {
-            result = TRUE;
-        } else {
-            ptr = ptr->base;
+/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::lang::interface::construct(lang::interface object) */
+db_int16 db_interface_construct(db_interface object) {
+/* $begin(::hyve::lang::interface::construct) */
+    db_vtable *superTable, ownTable;
+    db_uint32 i;
+
+    superTable = NULL;
+
+    /* If a vtable exists on a super-class, merge it with my own. */
+    superTable = db_interface_vtableFromBase(object);
+    if (superTable) {
+        ownTable = object->methods;
+        object->methods = *superTable;
+
+        /* re-bind methods and delegates */
+        if (ownTable.length) {
+            for(i=0; i<ownTable.length; i++) {
+                if (db_instanceof(db_typedef(db_method_o), ownTable.buffer[i])) {
+                    db_interface_bindMethod_v(object, db_method(ownTable.buffer[i]));
+                } else {
+                    db_assert(db_instanceof(db_typedef(db_delegate_o), ownTable.buffer[i]),
+                            "only methods and delegates are allowed in a class-vtable (found '%s' of type %s).", db_nameof(ownTable.buffer[i]), db_nameof(db_typeof(ownTable.buffer[i])));
+                    db__interface_bindDelegate_noId(object, db_delegate(ownTable.buffer[i]));
+                }
+                db_free_ext(object, ownTable.buffer[i], "Free method from temporary vtable.");
+            }
+
+            db_dealloc(ownTable.buffer);
+        }
+        db_dealloc(superTable);
+    }
+
+	if (!db_scopeWalk(object, db_interface_walkScope, object)) {
+	    goto error;
+	}
+
+	return db_type_construct(db_type(object));
+error:
+    return -1;
+/* $end */
+}
+
+/* callback ::hyve::lang::class::destruct(lang::object object) -> ::hyve::lang::interface::destruct(lang::interface object) */
+db_void db_interface_destruct(db_interface object) {
+/* $begin(::hyve::lang::interface::destruct) */
+	db_uint32 i;
+
+	/* Free members */
+	for(i=0; i<object->members.length; i++) {
+	    db_free_ext(object, object->members.buffer[i], "Free member for interface");
+	}
+
+    if (object->members.buffer) {
+        db_dealloc(object->members.buffer);
+        object->members.buffer = NULL;
+    }
+
+    /* Free methods */
+    for(i=0; i<object->methods.length; i++) {
+    	db_free_ext(object, object->methods.buffer[i], "Remove method from vtable.");
+    }
+
+    if (object->methods.buffer) {
+		db_dealloc(object->methods.buffer);
+		object->methods.buffer = NULL;
+    }
+
+	db_type__destruct(db_type(object));
+/* $end */
+}
+
+/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::interface::init(lang::interface object) */
+db_int16 db_interface_init(db_interface object) {
+/* $begin(::hyve::lang::interface::init) */
+    db_type(object)->reference = TRUE;
+    db_type(object)->kind = DB_COMPOSITE;
+    db_set(&db_type(object)->defaultType, db_member_o);
+    object->kind = DB_INTERFACE;
+    return db_type__init(db_type(object));
+/* $end */
+}
+
+/* ::hyve::lang::interface::resolveMember(lang::string name) */
+db_member db_interface_resolveMember_v(db_interface _this, db_string name) {
+/* $begin(::hyve::lang::interface::resolveMember) */
+    db_uint32 i;
+    db_member result;
+
+    result = NULL;
+
+    for(i=0; i<_this->members.length; i++) {
+        if (!strcmp(db_nameof(_this->members.buffer[i]), name)) {
+            result = _this->members.buffer[i];
+            break;
         }
     }
-    
+
     return result;
+/* $end */
 }
 
+/* ::hyve::lang::interface::resolveMethod(lang::string name) */
+db_method db_interface_resolveMethod(db_interface _this, db_string name) {
+/* $begin(::hyve::lang::interface::resolveMethod) */
+    db_method result;
+    db_method* found;
+
+    result = NULL;
+
+    /* Lookup method */
+    if ((found = (db_method*)db_vtableLookup(&_this->methods, name, NULL, NULL))) {
+        result = *found;
+    }
+
+    return result;
+/* $end */
+}
+
+/* ::hyve::lang::interface::resolveMethodById(lang::uint32 id) */
+db_method db_interface_resolveMethodById(db_interface _this, db_uint32 id) {
+/* $begin(::hyve::lang::interface::resolveMethodById) */
+    db_method result;
+    db_vtable* vtable;
+
+    db_assert(id != 0, "interface::resolveMethodById: invalid methodId provided to db_interface_resolveMethodById");
+    result = NULL;
+
+    /* Lookup method */
+    vtable = &_this->methods;
+    if (id <= vtable->length) {
+        result = db_method(vtable->buffer[id-1]);
+    } else {
+        db_id _id;
+        db_uint32 i;
+        db_error("interface::resolveMethodById: invalid vtable-index %d for interface %s", id, db_fullname(_this, _id));
+        printf("%s.vtable:\n", db_fullname(_this, _id));
+        for(i=0; i<vtable->length; i++) {
+            printf("   (%d) %s\n", i+1, db_fullname(vtable->buffer[i], _id));
+        }
+    }
+
+    return result;
+/* $end */
+}
+
+/* ::hyve::lang::interface::resolveMethodId(lang::string name) */
+db_uint32 db_interface_resolveMethodId(db_interface _this, db_string name) {
+/* $begin(::hyve::lang::interface::resolveMethodId) */
+    db_int32 result;
+
+    result = 0;
+
+    if (!db_checkState(_this, DB_DEFINED)) {
+        db_id id;
+        db_error("cannot resolve methodId for method '%s' from undefined interface '%s'", name, db_fullname(_this, id));
+        abort();
+        goto error;
+    }
+
+    /* Lookup method */
+    if (db_vtableLookup(&_this->methods, name, &result, NULL)) {
+    	if (result == -1) {
+    		goto error;
+    	}
+        result++; /* Id's start at 1 */
+    }
+
+    return (db_uint32)result;
+error:
+    return 0;
+/* $end */
+}

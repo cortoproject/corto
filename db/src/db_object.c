@@ -466,7 +466,9 @@ int db__destructor(db_object o) {
             db_class_detachObservers(db_class(t), o);
 
             /* Call destructor */
-            db_class_destruct(db_class(db_typeof(o)), o);
+            if(db_class_destruct_hasCallback(db_class(db_typeof(o)))) {
+                db_class_destruct(db_class(db_typeof(o)), o);
+            }
         } else if (db_class_instanceof(db_procedure_o, t)) {
             /* Call unbind */
             db_procedure_unbind(db_procedure(db_typeof(o)), o);
@@ -798,7 +800,8 @@ db_object db_new_ext(db_object src, db_typedef type, db_uint8 attrs, db_string c
             db_init(DB_OFFSET(o, sizeof(db__object)));
             
             /* Call initializer */
-            if (db_type_init(type->real, DB_OFFSET(o, sizeof(db__object)))) {
+            if (db_type_init_hasCallback(type->real) &&  
+                db_type_init(type->real, DB_OFFSET(o, sizeof(db__object)))) {
                 goto error;
             }
             /* Add object to anonymous cache */
@@ -884,7 +887,7 @@ db_object db_declare(db_object parent, db_string name, db_typedef type) {
                 db_init(o);
 
                 /* Init object value */
-                if (db_type_init(db_typeof(o)->real, o)) {
+                if (db_type_init_hasCallback(db_typeof(o)->real) && db_type_init(db_typeof(o)->real, o)) {
                     db_invalidate(o);
                     goto error;
                 }
@@ -921,7 +924,9 @@ db_int16 db_define(db_object o) {
         	/* Attach observers to object */
         	db_class_attachObservers(db_class(t), o);
             /* Call constructor */
-            result = db_class_construct(db_class(t), o);
+            if(db_class_construct_hasCallback(db_class(t))) {
+                result = db_class_construct(db_class(t), o);
+            }
             /* Start listening with attached observers */
             db_class_listenObservers(db_class(t), o);
         } else if (db_class_instanceof(db_procedure_o, t)) {
@@ -2383,7 +2388,7 @@ static void db_notifyObserverCdecl(db__observer* data, db_object _this, db_objec
     db_function f = db_function(data->observer);
     DB_UNUSED(_this);
     DB_UNUSED(mask);
-    ((void(*)(db_object,db_object))f->impl)(observable, source);
+    ((void(*)(db_object,db_object))f->implData)(observable, source);
 }
 
 static void db_notifyObserverThis(db__observer* data, db_object _this, db_object observable, db_object source, db_uint32 mask) {
@@ -2398,7 +2403,7 @@ static void db_notifyObserverThisCdecl(db__observer* data, db_object _this, db_o
     DB_UNUSED(mask);
     if (!_this || (_this != source)) {
         db_function f = db_function(data->observer);
-        ((void(*)(db_object,db_object,db_object))f->impl)(_this, observable, source);
+        ((void(*)(db_object,db_object,db_object))f->implData)(_this, observable, source);
     }
 }
 
@@ -2626,6 +2631,15 @@ static void db_waitObserver(db_object me, db_object observable, db_object source
     db_adec(&waitAdmin->triggerCount);
 }
 
+static void __db_waitObserver(db_function f, void* result, void* args) {
+    DB_UNUSED(f);
+    DB_UNUSED(result);
+    db_waitObserver(
+        *(db_object*)args,
+        *(db_object*)((intptr_t)args + sizeof(db_object)),
+        *(db_object*)((intptr_t)args + sizeof(db_object) * 2));
+}
+
 db_int32 db_waitfor(db_object observable) {
     db_waitForObject *waitAdmin;
 
@@ -2641,7 +2655,8 @@ db_int32 db_waitfor(db_object observable) {
 
         /* Create observer */
         observer = db_new(db_typedef(db_observer_o));
-        db_function(observer)->impl = (db_word)db_waitObserver;
+        db_function(observer)->impl = (db_word)__db_waitObserver;
+        db_function(observer)->implData = (db_word)db_waitObserver;
         db_function(observer)->kind = DB_PROCEDURE_CDECL;
         observer->mask = DB_ON_UPDATE;
 
@@ -3474,5 +3489,17 @@ db_object db_hyve_new(db_typedef type) {
 
 db_object db_hyve__new(db_typedef type, db_attr attributes) {
     return db_new_ext(NULL, type, attributes, NULL);
+}
+
+void __db_hyve_new(db_function f, void *result, void *args) {
+    DB_UNUSED(f);
+    *(db_object*)result = db_hyve_new(*(db_typedef*)args);
+}
+
+void __db_hyve__new(db_function f, void *result, void *args) {
+    DB_UNUSED(f);
+    *(db_object*)result = db_hyve__new(
+        *(db_typedef*)args,
+        *(db_attr*)((intptr_t)args + sizeof(db_typedef)));
 }
 

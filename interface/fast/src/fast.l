@@ -117,7 +117,6 @@ gid ("::"*{id})+
 "catch"							TOKEN; return KW_CATCH;
 "import"						TOKEN; return KW_IMPORT;
 "var"							TOKEN; return KW_LOCAL;
-"virtual"						TOKEN; return KW_VIRTUAL;
 "and"                           TOKEN; return LAND;
 "or"                            TOKEN; return LOR;
 "not"                           TOKEN; return LNOT;

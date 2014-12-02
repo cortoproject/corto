@@ -153,7 +153,7 @@ db_threadKey DB_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, function_overloaded);\
     SSO_OP_OBJ(op, function_kind);\
     SSO_OP_OBJ(op, function_impl);\
-    SSO_OP_OBJ(op, function_impludata);\
+    SSO_OP_OBJ(op, function_implData);\
     SSO_OP_OBJ(op, function_resource);\
     SSO_OP_OBJ(op, function_size);\
     SSO_OP_OBJ(op, function_parameters);\
@@ -185,6 +185,7 @@ db_threadKey DB_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, observer_delayedBinder);\
     SSO_OP_OBJ(op, observer_init);\
     SSO_OP_OBJ(op, observer_bind);\
+    SSO_OP_OBJ(op, observer_unbind);\
     SSO_OP_OBJ(op, observer_listen);\
     SSO_OP_OBJ(op, observer_silence);\
     SSO_OP_OBJ(op, observer_setDispatcher);\
@@ -381,11 +382,13 @@ db_threadKey DB_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, interface_resolveMethodId);\
     SSO_OP_OBJ(op, interface_resolveMethodById);\
     SSO_OP_OBJ(op, interface_bindMethod);\
+    SSO_OP_OBJ(op, interface_baseof);\
     /* collection */\
     SSO_OP_OBJ(op, collection_kind);\
     SSO_OP_OBJ(op, collection_elementType);\
     SSO_OP_OBJ(op, collection_max);\
     SSO_OP_OBJ(op, collection_castable);\
+    SSO_OP_OBJ(op, collection_elementRequiresAlloc);\
     SSO_OP_OBJ(op, collection_init);\
     SSO_OP_OBJ(op, collection_size);\
     /* list */\
@@ -453,6 +456,13 @@ db_threadKey DB_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, class_init);\
     SSO_OP_OBJ(op, class_instanceof);\
     SSO_OP_OBJ(op, class_privateObserver);\
+    SSO_OP_OBJ(op, class_resolveDelegate);\
+    SSO_OP_OBJ(op, class_resolveInterfaceMethod);\
+    SSO_OP_OBJ(op, class_resolveCallback);\
+    SSO_OP_OBJ(op, class_bindCallback);\
+    SSO_OP_OBJ(op, class_bindDelegate);\
+    SSO_OP_OBJ(op, class_bindObserver);\
+    SSO_OP_OBJ(op, class_findObserver);\
     /* array */\
     SSO_OP_OBJ(op, array_elementType);\
     SSO_OP_OBJ(op, array_init);\
@@ -504,7 +514,9 @@ static void db_freeType(db_object o, db_uint32 size) {
 /* Initialization of objects */
 static void db_initObject(db_object o) {
 	db_newObject(o);
-    db_type_init(db_typeof(o)->real, o);
+    if(db_type_init_hasCallback(db_typeof(o)->real)) {
+        db_type_init(db_typeof(o)->real, o);
+    }
     if (db_typeof(o)->real->kind == DB_VOID) {
         db__setState(o, DB_DEFINED);
     }
@@ -660,14 +672,12 @@ void db_bindMethods(void) {
     ((db_delegate)SSO_OBJECT(class_construct))->id = 2;
     ((db_delegate)SSO_OBJECT(class_destruct))->id = 3;
     ((db_delegate)SSO_OBJECT(procedure_bind))->id = 2;
-    ((db_delegate)SSO_OBJECT(procedure_unbind))->id = 3;
 
     /* ::function */
     db_class_bindCallback(db_procedure_o, SSO_OBJECT(procedure_bind), db_type(db_function_o), SSO_OBJECT(function_bind));
-    db_class_bindCallback(db_procedure_o, SSO_OBJECT(procedure_unbind), db_type(db_function_o), SSO_OBJECT(function_unbind));
 }
 
-int db_start(void){
+int db_start(void) {
 
 	/* Initialize threadkeys */
 	db_threadTlsKey(&DB_KEY_OBSERVER_ADMIN, NULL);
@@ -716,8 +726,7 @@ int db_start(void){
     db_assert(((db_delegate)SSO_OBJECT(class_construct))->id == 2, "class::construct did not receive expected delegateId.");
     db_assert(((db_delegate)SSO_OBJECT(class_destruct))->id == 3, "class::destruct did not receive expected delegateId.");
     db_assert(((db_delegate)SSO_OBJECT(procedure_bind))->id == 2, "procedure::bind did not receive expected delegateId.");
-    db_assert(((db_delegate)SSO_OBJECT(procedure_unbind))->id == 3, "procedure::unbind did not receive expected delegateId.");
-
+ 
     /* Construct objects */
     SSO_OP_OBJECT_2ND(db_defineObject);
     SSO_OP_OBJECT(db_defineObject);
@@ -735,7 +744,7 @@ int db_start(void){
     /* Register C-binding and vm-binding */
     {
         db_uint32 id;
-        id = db_callRegisterBinding(db_call_cdecl, NULL, NULL, NULL);
+        id = db_callRegisterBinding(NULL, NULL, NULL, NULL);
         db_assert(id == 1, "C-binding did not receive binding-id 1.");
 
         id = db_callRegisterBinding(db_call_vm, NULL, NULL, (db_callDestructHandler)db_callDestruct_vm);

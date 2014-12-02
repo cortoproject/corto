@@ -5,7 +5,7 @@
  *      Author: sander
  */
 
-#include "hyve.h"
+#include "db.h"
 #include "db_generatorDepWalk.h"
 #include "c_common.h"
 #include "db_string_ser.h"
@@ -298,9 +298,8 @@ static g_file c_loadHeaderFileOpen(db_generator g) {
     /* Print standard comments and includes */
     g_fileWrite(result, "/* %s\n", headerFileName);
     g_fileWrite(result, " *\n");
-    g_fileWrite(result, " *  Generated on %s\n", __DATE__);
-    g_fileWrite(result, " *    Loads objects in database.\n");
-    g_fileWrite(result, " *    This file contains generated code. Do not modify!\n");
+    g_fileWrite(result, " * Loads objects in database.\n");
+    g_fileWrite(result, " * This file contains generated code. Do not modify!\n");
     g_fileWrite(result, " */\n\n");
     g_fileWrite(result, "#ifndef %s_META_H\n", g_getName(g));
     g_fileWrite(result, "#define %s_META_H\n\n", g_getName(g));
@@ -338,9 +337,8 @@ static g_file c_loadSourceFileOpen(db_generator g) {
     /* Print standard comments and includes */
     g_fileWrite(result, "/* %s\n", headerFileName);
     g_fileWrite(result, " *\n");
-    g_fileWrite(result, " *  Generated on %s\n", __DATE__);
-    g_fileWrite(result, " *    Loads objects in database.\n");
-    g_fileWrite(result, " *    This file contains generated code. Do not modify!\n");
+    g_fileWrite(result, " * Loads objects in database.\n");
+    g_fileWrite(result, " * This file contains generated code. Do not modify!\n");
     g_fileWrite(result, " */\n\n");
     g_fileWrite(result, "#include \"%s__type.h\"\n\n", g_getName(g));
 
@@ -589,6 +587,7 @@ static db_int16 c_initCollection(db_serializer s, db_value* v, void* userData) {
     db_id memberId;
     int result;
     void* ptr;
+    db_uint32 size = 0;
 
     ptr = db_valueValue(v);
 
@@ -597,12 +596,14 @@ static db_int16 c_initCollection(db_serializer s, db_value* v, void* userData) {
 
     switch(t->kind) {
     case DB_ARRAY:
+        size = t->max;
         break;
     case DB_SEQUENCE: {
         db_uint32 length;
     	db_id specifier, postfix;
 
         length = *(db_uint32*)ptr;
+        size = length;
 
         /* Set length of sequence */
         g_fileWrite(data->source, "%slength = %d;\n",
@@ -636,6 +637,7 @@ static db_int16 c_initCollection(db_serializer s, db_value* v, void* userData) {
     	} else {
     		g_fileWrite(data->source, "%s = NULL;\n", c_loadMemberId(data, v, memberId, FALSE));
     	}
+        size = db_llSize(*(db_ll*)ptr);
         break;
     case DB_MAP: {
     	db_id keyId;
@@ -646,12 +648,13 @@ static db_int16 c_initCollection(db_serializer s, db_value* v, void* userData) {
     	} else {
     		g_fileWrite(data->source, "%s = NULL;\n", c_loadMemberId(data, v, memberId, FALSE));
     	}
+        size = db_rbtreeSize(*(db_rbtree*)ptr);
         break;
     }
     }
 
 	/* For the non-array types, allocate a member variable, if size of collection is not zero. */
-    if (db_size(t, ptr)) {
+    if (size) {
 		switch(t->kind) {
 		case DB_LIST:
 		case DB_MAP: {
@@ -669,7 +672,7 @@ static db_int16 c_initCollection(db_serializer s, db_value* v, void* userData) {
     /* Serialize elements */
     result = db_serializeElements(s, v, userData);
 
-    if (db_size(t, ptr)) {
+    if (size) {
 		switch(t->kind) {
 		case DB_LIST:
 		case DB_MAP: {
@@ -685,86 +688,17 @@ static db_int16 c_initCollection(db_serializer s, db_value* v, void* userData) {
     return result;
 }
 
-/* Generate parameters for method */
-static int c_loadMethodParameter(db_parameter* o, void* userData) {
-    c_typeWalk_t* data;
-    db_id specifier, postfix;
-
-    data = userData;
-
-    /* Write comma */
-    if (data->firstComma) {
-        g_fileWrite(data->source, ", ");
-    }
-
-    if (c_specifierId(data->g, o->type, specifier, NULL, postfix)) {
-        goto error;
-    }
-
-    g_fileWrite(data->source, "%s ", specifier);
-
-    if (o->passByReference) {
-        g_fileWrite(data->source, "*");
-    }
-
-    /* Write to source */
-    g_fileWrite(data->source, "%s%s",
-            o->name,
-            postfix);
-
-    data->firstComma++;
-
-    return 1;
-error:
-    return 0;
-}
-
 /* Write forward-declaration to interface function, return name. */
 static int c_loadCFunction(db_function o, c_typeWalk_t* data, db_id name) {
-    db_uint32 i;
-    db_bool hasThis;
-
-    /* Print returnType */
-    if (o->returnType) {
-        db_id specifierId, postfixId;
-        c_specifierId(data->g, o->returnType, specifierId, NULL, postfixId);
-        g_fileWrite(data->source, "%s ", specifierId);
-    } else {
-        g_fileWrite(data->source, "void ");
-    }
-
-    hasThis = c_procedureHasThis(o);
 
     /* Print name */
-    g_fileWrite(data->source, "%s", g_fullOid(data->g, o, name));
-    if (hasThis) {
-        db_id parentId;
+    g_fullOid(data->g, o, name);
+    if (c_procedureHasThis(o)) {
         if (db_instanceof(db_typedef(db_method_o), o) && db_method(o)->virtual) {
-            g_fileWrite(data->source, "_v");
             strcat(name, "_v");
         }
-
-        if ((db_typeof(o) != db_typedef(db_callback_o))) {
-            g_fileWrite(data->source, "(%s _this", g_fullOid(data->g, db_parentof(o), parentId));
-        } else {
-            g_fileWrite(data->source, "(%s _this", g_fullOid(data->g, (db_typeof(db_parentof(o))), parentId));
-        }
-        data->firstComma = 1;
-    } else {
-        g_fileWrite(data->source, "(");
-        data->firstComma = 0;
     }
 
-    /* Print paramters */
-    for(i=0; i<o->parameters.length; i++) {
-        c_loadMethodParameter(&(o->parameters.buffer[i]), data);
-    }
-
-    if (!data->firstComma) {
-        g_fileWrite(data->source, "void");
-    }
-
-    g_fileWrite(data->source, ");\n");
     return 0;
 }
 
@@ -792,7 +726,8 @@ static db_int16 c_initObject(db_serializer s, db_value* v, void* userData) {
             g_fileWrite(data->source, "/* Bind %s with C-function */\n", id);
             g_fileWrite(data->source, "db_function(%s)->kind = DB_PROCEDURE_CDECL;\n", c_loadVarId(data->g, o, id));
             c_loadCFunction(o, data, name);
-            g_fileWrite(data->source, "db_function(%s)->impl = (db_word)%s;\n", id, name);
+            g_fileWrite(data->source, "void __%s(void *args, void *result);\n", name);
+            g_fileWrite(data->source, "db_function(%s)->impl = (db_word)__%s;\n", id, name);
         }
     }
 

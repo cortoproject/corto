@@ -1,8 +1,7 @@
 /* Fast__meta.h
  *
- *  Generated on Nov 18 2014
- *    Loads objects in database.
- *    This file contains generated code. Do not modify!
+ * Loads objects in database.
+ * This file contains generated code. Do not modify!
  */
 
 #ifndef Fast_META_H

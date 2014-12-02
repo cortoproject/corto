@@ -1,24 +1,26 @@
-/*
- * db_member.h
+/* db_member.h
  *
- *  Created on: Aug 9, 2012
- *      Author: sander
+ * This file contains generated code. Do not modify!
  */
 
-#ifndef DB_MEMBER_H_
-#define DB_MEMBER_H_
+#ifndef db_member_H
+#define db_member_H
 
+#include "hyve.h"
 #include "db__type.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-db_int16 db_member_init(db_member object);
+/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::lang::member::construct(lang::member object) */
 db_int16 db_member_construct(db_member object);
+
+/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::member::init(lang::member object) */
+db_int16 db_member_init(db_member object);
 
 #ifdef __cplusplus
 }
 #endif
+#endif
 
-#endif /* DB_MEMBER_H_ */

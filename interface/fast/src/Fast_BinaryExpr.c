@@ -1,15 +1,13 @@
 /* Fast_BinaryExpr.c
  *
- *  Generated on Nov 18 2014
- *    This file contains the implementation for the generated interface.
+ * This file contains the implementation for the generated interface.
  *
  *    Don't mess with the begin and end tags, since these will ensure that modified
  *    code in interface functions isn't replaced when code is re-generated.
  */
 
-#include "Fast_BinaryExpr.h"
+#include "Fast.h"
 #include "Fast__meta.h"
-
 
 /* $header() */
 #include "Fast__api.h"
@@ -308,12 +306,10 @@ db_int16 Fast_BinaryExpr_construct(Fast_BinaryExpr object) {
 /* $begin(::hyve::Fast::BinaryExpr::construct) */
 	db_type lvalueType, rvalueType;
 	db_int32 checkReferences=0;
-    db_type exprType = NULL;
 
     Fast_Node(object)->kind = FAST_Binary;
     lvalueType = Fast_Expression_getType_expr(object->lvalue, object->rvalue);
     rvalueType = Fast_Expression_getType_expr(object->rvalue, object->lvalue);
-    exprType = lvalueType;
 
     if (lvalueType && rvalueType) {
 		if (!db_type_castable(lvalueType, rvalueType)) {
@@ -420,37 +416,6 @@ error:
 /* $end */
 }
 
-/* virtual ::hyve::Fast::BinaryExpr::hasSideEffects() */
-db_bool Fast_BinaryExpr_hasSideEffects(Fast_BinaryExpr _this) {
-    static db_uint32 _methodId;
-    db_method _method;
-    db_bool _result;
-    db_interface _abstract;
-
-    _abstract = db_interface(db_typeof(_this));
-
-    /* Determine methodId once, then cache it for subsequent calls. */
-    if (!_methodId) {
-        _methodId = db_interface_resolveMethodId(_abstract, "hasSideEffects()");
-    }
-    db_assert(_methodId, "virtual method 'hasSideEffects()' not found in abstract '%s'", db_nameof(_abstract));
-
-    /* Lookup method-object. */
-    _method = db_interface_resolveMethodById(_abstract, _methodId);
-    db_assert(_method != NULL, "unresolved method '%s::hasSideEffects()@%d'", db_nameof(_this), _methodId);
-
-    /* Call method directly if it's a C-function. */
-    if (_method->_parent.kind == DB_PROCEDURE_CDECL) {
-        db_assert(_method->_parent.impl, "missing implementation for '%s::hasSideEffects()'.", db_nameof(_this));
-        _result = ((db_bool(*)(Fast_BinaryExpr))_method->_parent.impl)(_this);
-    } else {
-        /* Function is implemented in another language. */
-        db_call(db_function(_method), &_result, _this);
-    }
-    
-    return _result;
-}
-
 /* ::hyve::Fast::BinaryExpr::hasSideEffects() */
 db_bool Fast_BinaryExpr_hasSideEffects_v(Fast_BinaryExpr _this) {
 /* $begin(::hyve::Fast::BinaryExpr::hasSideEffects) */
@@ -534,37 +499,6 @@ db_void Fast_BinaryExpr_setOperator(Fast_BinaryExpr _this, db_operatorKind kind)
 error:
 	return;
 /* $end */
-}
-
-/* virtual ::hyve::Fast::BinaryExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_BinaryExpr_toIc(Fast_BinaryExpr _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-    static db_uint32 _methodId;
-    db_method _method;
-    db_ic _result;
-    db_interface _abstract;
-
-    _abstract = db_interface(db_typeof(_this));
-
-    /* Determine methodId once, then cache it for subsequent calls. */
-    if (!_methodId) {
-        _methodId = db_interface_resolveMethodId(_abstract, "toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)");
-    }
-    db_assert(_methodId, "virtual method 'toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)' not found in abstract '%s'", db_nameof(_abstract));
-
-    /* Lookup method-object. */
-    _method = db_interface_resolveMethodById(_abstract, _methodId);
-    db_assert(_method != NULL, "unresolved method '%s::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)@%d'", db_nameof(_this), _methodId);
-
-    /* Call method directly if it's a C-function. */
-    if (_method->_parent.kind == DB_PROCEDURE_CDECL) {
-        db_assert(_method->_parent.impl, "missing implementation for '%s::toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)'.", db_nameof(_this));
-        _result = ((db_ic(*)(Fast_BinaryExpr, db_icProgram , db_icStorage , db_bool ))_method->_parent.impl)(_this, program, storage, stored);
-    } else {
-        /* Function is implemented in another language. */
-        db_call(db_function(_method), &_result, _this, program, storage, stored);
-    }
-    
-    return _result;
 }
 
 /* ::hyve::Fast::BinaryExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
