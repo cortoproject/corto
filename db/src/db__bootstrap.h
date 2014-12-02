@@ -472,9 +472,10 @@ DB_FWDECL(class, serializer);
 DB_FWDECL(enum, serializerTraceKind);
 
 /* Forward declare static delegate objects */
-DB_FWDECL_SSO(delegate, type_init);
-DB_FWDECL_SSO(delegate, class_construct);
-DB_FWDECL_SSO(delegate, class_destruct);
+DB_FWDECL(delegate, type_init);
+DB_FWDECL(delegate, class_construct);
+DB_FWDECL(delegate, class_destruct);
+DB_FWDECL(delegate, procedure_bind);
 
 /* database root */
 db_SSOO_object root__o = {DB_ROOT_V()};
@@ -724,6 +725,7 @@ DB_CLASS_O(interface, type, DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, D
     DB_METHOD_O(interface, resolveMethodId, "(lang::string name)", uint32, FALSE, db_interface_resolveMethodId);
     DB_METHOD_O(interface, resolveMethodById, "(lang::uint32 id)", method, FALSE, db_interface_resolveMethodById);
     DB_METHOD_O(interface, bindMethod, "(lang::method method)", int16, TRUE, db_interface_bindMethod_v);
+    DB_METHOD_O(interface, baseof, "(lang::interface type)", int16, FALSE, db_interface_baseof);
 
 /* ::hyve::lang::collection */
 DB_CLASS_O(collection, type, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
@@ -822,6 +824,8 @@ DB_CLASS_O(class, struct, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DE
     DB_METHOD_O(class, resolveCallback, "(lang::delegate delegate,lang::object target)", callback, FALSE, db_class_resolveCallback);
     DB_METHOD_O(class, bindCallback, "(lang::delegate delegate,lang::object object,lang::callback method)", int16, FALSE, db_class_bindCallback);
     DB_METHOD_O(class, bindDelegate, "(lang::delegate delegate)", int16, FALSE, db_class_bindDelegate);
+    DB_METHOD_O(class, bindObserver, "(lang::observer observer)", void, FALSE, db_class_bindDelegate);
+    DB_METHOD_O(class, findObserver, "(lang::object observable,string expr)", observer, FALSE, db_class_findObserver);
 
 /* ::hyve::lang::procedure */
 DB_CLASS_O(procedure, struct, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);

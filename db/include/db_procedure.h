@@ -15,10 +15,7 @@ extern "C" {
 #endif
 
 /* delegate ::hyve::lang::procedure::bind(lang::object object), obtain callback */
-db_callback db_procedure_bind_callback(db_procedure _this);
-
-/* delegate ::hyve::lang::procedure::bind(lang::object object), supply callback */
-db_int16 db_procedure_bind_w_callback(db_callback __callback, db_procedure _this, db_object object);
+db_bool db_procedure_bind_hasCallback(db_procedure _this);
 
 /* ::hyve::lang::procedure::bind(lang::object object) */
 db_int16 db_procedure_bind(db_procedure _this, db_object object);

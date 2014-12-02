@@ -4,6 +4,7 @@
  */
 
 #include "Fast.h"
+#include "Fast__meta.h"
 
 void __Fast_valueKindFromType(db_function f, void *result, void *args) {
     DB_UNUSED(f);
@@ -19,6 +20,7 @@ void __Fast_BinaryExpr_construct(db_function f, void *result, void *args) {
 
 void __Fast_BinaryExpr_fold(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(Fast_Expression*)result = Fast_BinaryExpr_fold(
         *(Fast_BinaryExpr*)args);
 }
@@ -49,6 +51,7 @@ db_bool Fast_BinaryExpr_hasSideEffects(Fast_BinaryExpr _this) {
 
 void __Fast_BinaryExpr_hasSideEffects_v(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_bool*)result = Fast_BinaryExpr_hasSideEffects_v(
         *(Fast_BinaryExpr*)args);
 }
@@ -303,6 +306,7 @@ db_bool Fast_Call_hasSideEffects(Fast_Call _this) {
 
 void __Fast_Call_hasSideEffects_v(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_bool*)result = Fast_Call_hasSideEffects_v(
         *(Fast_Call*)args);
 }
@@ -472,6 +476,7 @@ db_bool Fast_CommaExpr_hasSideEffects(Fast_CommaExpr _this) {
 
 void __Fast_CommaExpr_hasSideEffects_v(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_bool*)result = Fast_CommaExpr_hasSideEffects_v(
         *(Fast_CommaExpr*)args);
 }
@@ -517,6 +522,7 @@ void __Fast_CommaExpr_toIc_v(db_function f, void *result, void *args) {
 
 void __Fast_CommaExpr_toList(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(Fast_Node_list*)result = Fast_CommaExpr_toList(
         *(Fast_CommaExpr*)args);
 }
@@ -568,18 +574,21 @@ void __Fast_DynamicInitializer_construct(db_function f, void *result, void *args
 
 void __Fast_DynamicInitializer_define(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_int16*)result = Fast_DynamicInitializer_define(
         *(Fast_DynamicInitializer*)args);
 }
 
 void __Fast_DynamicInitializer_pop(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_int16*)result = Fast_DynamicInitializer_pop(
         *(Fast_DynamicInitializer*)args);
 }
 
 void __Fast_DynamicInitializer_push(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_int16*)result = Fast_DynamicInitializer_push(
         *(Fast_DynamicInitializer*)args);
 }
@@ -670,6 +679,7 @@ Fast_Expression Fast_Expression_fold(Fast_Expression _this) {
 
 void __Fast_Expression_fold_v(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(Fast_Expression*)result = Fast_Expression_fold_v(
         *(Fast_Expression*)args);
 }
@@ -682,6 +692,7 @@ void __Fast_Expression_fromList(db_function f, void *result, void *args) {
 
 void __Fast_Expression_getType(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_type*)result = Fast_Expression_getType(
         *(Fast_Expression*)args);
 }
@@ -726,6 +737,7 @@ db_word Fast_Expression_getValue(Fast_Expression _this) {
 
 void __Fast_Expression_getValue_v(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_word*)result = Fast_Expression_getValue_v(
         *(Fast_Expression*)args);
 }
@@ -756,6 +768,7 @@ db_bool Fast_Expression_hasSideEffects(Fast_Expression _this) {
 
 void __Fast_Expression_hasSideEffects_v(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_bool*)result = Fast_Expression_hasSideEffects_v(
         *(Fast_Expression*)args);
 }
@@ -824,6 +837,7 @@ Fast_Expression_list Fast_Expression_toList(Fast_Expression _this) {
 
 void __Fast_Expression_toList_v(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(Fast_Expression_list*)result = Fast_Expression_toList_v(
         *(Fast_Expression*)args);
 }
@@ -883,6 +897,7 @@ void __Fast_If_construct(db_function f, void *result, void *args) {
 
 void __Fast_If_noWarnUnreachable(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     DB_UNUSED(result);
     Fast_If_noWarnUnreachable(
         *(Fast_If*)args);
@@ -929,6 +944,7 @@ void __Fast_Initializer_construct(db_function f, void *result, void *args) {
 
 void __Fast_Initializer_currentType(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_type*)result = Fast_Initializer_currentType(
         *(Fast_Initializer*)args);
 }
@@ -959,12 +975,14 @@ db_int16 Fast_Initializer_define(Fast_Initializer _this) {
 
 void __Fast_Initializer_define_v(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_int16*)result = Fast_Initializer_define_v(
         *(Fast_Initializer*)args);
 }
 
 void __Fast_Initializer_initFrame(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_uint16*)result = Fast_Initializer_initFrame(
         *(Fast_Initializer*)args);
 }
@@ -1026,6 +1044,7 @@ db_int16 Fast_Initializer_next(Fast_Initializer _this) {
 
 void __Fast_Initializer_next_v(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_int16*)result = Fast_Initializer_next_v(
         *(Fast_Initializer*)args);
 }
@@ -1056,6 +1075,7 @@ db_int8 Fast_Initializer_pop(Fast_Initializer _this) {
 
 void __Fast_Initializer_pop_v(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_int8*)result = Fast_Initializer_pop_v(
         *(Fast_Initializer*)args);
 }
@@ -1086,6 +1106,7 @@ db_int16 Fast_Initializer_popKey(Fast_Initializer _this) {
 
 void __Fast_Initializer_popKey_v(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_int16*)result = Fast_Initializer_popKey_v(
         *(Fast_Initializer*)args);
 }
@@ -1116,6 +1137,7 @@ db_int16 Fast_Initializer_push(Fast_Initializer _this) {
 
 void __Fast_Initializer_push_v(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_int16*)result = Fast_Initializer_push_v(
         *(Fast_Initializer*)args);
 }
@@ -1146,12 +1168,14 @@ db_int16 Fast_Initializer_pushKey(Fast_Initializer _this) {
 
 void __Fast_Initializer_pushKey_v(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_int16*)result = Fast_Initializer_pushKey_v(
         *(Fast_Initializer*)args);
 }
 
 void __Fast_Initializer_type(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_type*)result = Fast_Initializer_type(
         *(Fast_Initializer*)args);
 }
@@ -1226,6 +1250,7 @@ void __Fast_InitializerExpr_construct(db_function f, void *result, void *args) {
 
 void __Fast_InitializerExpr_define(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_int16*)result = Fast_InitializerExpr_define(
         *(Fast_InitializerExpr*)args);
 }
@@ -1246,12 +1271,14 @@ void __Fast_InitializerExpr_member(db_function f, void *result, void *args) {
 
 void __Fast_InitializerExpr_pop(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_int16*)result = Fast_InitializerExpr_pop(
         *(Fast_InitializerExpr*)args);
 }
 
 void __Fast_InitializerExpr_push(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_int16*)result = Fast_InitializerExpr_push(
         *(Fast_InitializerExpr*)args);
 }
@@ -1336,6 +1363,7 @@ db_word Fast_Literal_getValue(Fast_Literal _this) {
 
 void __Fast_Literal_getValue_v(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_word*)result = Fast_Literal_getValue_v(
         *(Fast_Literal*)args);
 }
@@ -1417,6 +1445,7 @@ db_bool Fast_MemberExpr_hasSideEffects(Fast_MemberExpr _this) {
 
 void __Fast_MemberExpr_hasSideEffects_v(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_bool*)result = Fast_MemberExpr_hasSideEffects_v(
         *(Fast_MemberExpr*)args);
 }
@@ -1486,6 +1515,7 @@ db_bool Fast_NewExpr_hasSideEffects(Fast_NewExpr _this) {
 
 void __Fast_NewExpr_hasSideEffects_v(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_bool*)result = Fast_NewExpr_hasSideEffects_v(
         *(Fast_NewExpr*)args);
 }
@@ -1617,6 +1647,7 @@ void __Fast_Object_construct(db_function f, void *result, void *args) {
 
 void __Fast_Object_getValue(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_word*)result = Fast_Object_getValue(
         *(Fast_Object*)args);
 }
@@ -1713,6 +1744,7 @@ void __Fast_Parser_bindOneliner(db_function f, void *result, void *args) {
 
 void __Fast_Parser_blockPop(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     DB_UNUSED(result);
     Fast_Parser_blockPop(
         *(Fast_Parser*)args);
@@ -1791,12 +1823,14 @@ void __Fast_Parser_declareFunctionParams(db_function f, void *result, void *args
 
 void __Fast_Parser_define(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_int16*)result = Fast_Parser_define(
         *(Fast_Parser*)args);
 }
 
 void __Fast_Parser_defineScope(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_int16*)result = Fast_Parser_defineScope(
         *(Fast_Parser*)args);
 }
@@ -1833,6 +1867,7 @@ void __Fast_Parser_foreach(db_function f, void *result, void *args) {
 
 void __Fast_Parser_getComplexType(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_type*)result = Fast_Parser_getComplexType(
         *(Fast_Parser*)args);
 }
@@ -1870,12 +1905,14 @@ void __Fast_Parser_initDeclareStaged(db_function f, void *result, void *args) {
 
 void __Fast_Parser_initKeyValuePop(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_int16*)result = Fast_Parser_initKeyValuePop(
         *(Fast_Parser*)args);
 }
 
 void __Fast_Parser_initKeyValuePush(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_int16*)result = Fast_Parser_initKeyValuePush(
         *(Fast_Parser*)args);
 }
@@ -1896,18 +1933,21 @@ void __Fast_Parser_initMember(db_function f, void *result, void *args) {
 
 void __Fast_Parser_initPop(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_int16*)result = Fast_Parser_initPop(
         *(Fast_Parser*)args);
 }
 
 void __Fast_Parser_initPush(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_int16*)result = Fast_Parser_initPush(
         *(Fast_Parser*)args);
 }
 
 void __Fast_Parser_initPushExpression(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(Fast_Expression*)result = Fast_Parser_initPushExpression(
         *(Fast_Parser*)args);
 }
@@ -1921,6 +1961,7 @@ void __Fast_Parser_initPushIdentifier(db_function f, void *result, void *args) {
 
 void __Fast_Parser_initPushStatic(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_int16*)result = Fast_Parser_initPushStatic(
         *(Fast_Parser*)args);
 }
@@ -1943,12 +1984,14 @@ void __Fast_Parser_initValue(db_function f, void *result, void *args) {
 
 void __Fast_Parser_isAbortSet(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_bool*)result = Fast_Parser_isAbortSet(
         *(Fast_Parser*)args);
 }
 
 void __Fast_Parser_isErrSet(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_bool*)result = Fast_Parser_isErrSet(
         *(Fast_Parser*)args);
 }
@@ -1981,6 +2024,7 @@ void __Fast_Parser_observerDeclaration(db_function f, void *result, void *args) 
 
 void __Fast_Parser_observerPop(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     DB_UNUSED(result);
     Fast_Parser_observerPop(
         *(Fast_Parser*)args);
@@ -1988,6 +2032,7 @@ void __Fast_Parser_observerPop(db_function f, void *result, void *args) {
 
 void __Fast_Parser_observerPush(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     DB_UNUSED(result);
     Fast_Parser_observerPush(
         *(Fast_Parser*)args);
@@ -1995,6 +2040,7 @@ void __Fast_Parser_observerPush(db_function f, void *result, void *args) {
 
 void __Fast_Parser_parse(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_uint32*)result = Fast_Parser_parse(
         *(Fast_Parser*)args);
 }
@@ -2012,6 +2058,7 @@ void __Fast_Parser_parseExpression(db_function f, void *result, void *args) {
 
 void __Fast_Parser_popComplexType(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     DB_UNUSED(result);
     Fast_Parser_popComplexType(
         *(Fast_Parser*)args);
@@ -2019,6 +2066,7 @@ void __Fast_Parser_popComplexType(db_function f, void *result, void *args) {
 
 void __Fast_Parser_popLvalue(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     DB_UNUSED(result);
     Fast_Parser_popLvalue(
         *(Fast_Parser*)args);
@@ -2067,12 +2115,14 @@ void __Fast_Parser_pushReturnAsLvalue(db_function f, void *result, void *args) {
 
 void __Fast_Parser_pushScope(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(Fast_Variable*)result = Fast_Parser_pushScope(
         *(Fast_Parser*)args);
 }
 
 void __Fast_Parser_reset(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     DB_UNUSED(result);
     Fast_Parser_reset(
         *(Fast_Parser*)args);
@@ -2214,12 +2264,14 @@ void __Fast_StaticInitializer_construct(db_function f, void *result, void *args)
 
 void __Fast_StaticInitializer_define(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_int16*)result = Fast_StaticInitializer_define(
         *(Fast_StaticInitializer*)args);
 }
 
 void __Fast_StaticInitializer_push(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_int16*)result = Fast_StaticInitializer_push(
         *(Fast_StaticInitializer*)args);
 }
@@ -2239,6 +2291,7 @@ void __Fast_String_construct(db_function f, void *result, void *args) {
 
 void __Fast_String_getValue(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_word*)result = Fast_String_getValue(
         *(Fast_String*)args);
 }
@@ -2328,6 +2381,7 @@ db_bool Fast_TernaryExpr_hasSideEffects(Fast_TernaryExpr _this) {
 
 void __Fast_TernaryExpr_hasSideEffects_v(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_bool*)result = Fast_TernaryExpr_hasSideEffects_v(
         *(Fast_TernaryExpr*)args);
 }
@@ -2405,6 +2459,7 @@ db_bool Fast_UnaryExpr_hasSideEffects(Fast_UnaryExpr _this) {
 
 void __Fast_UnaryExpr_hasSideEffects_v(db_function f, void *result, void *args) {
     DB_UNUSED(f);
+    DB_UNUSED(args);
     *(db_bool*)result = Fast_UnaryExpr_hasSideEffects_v(
         *(Fast_UnaryExpr*)args);
 }

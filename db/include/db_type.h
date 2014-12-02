@@ -69,10 +69,7 @@ db_void db_type_destruct(db_any _this);
 db_string db_type_fullname(db_any _this);
 
 /* delegate ::hyve::lang::type::init(lang::object object), obtain callback */
-db_callback db_type_init_callback(db_type _this);
-
-/* delegate ::hyve::lang::type::init(lang::object object), supply callback */
-db_int16 db_type_init_w_callback(db_callback __callback, db_type _this, db_object object);
+db_bool db_type_init_hasCallback(db_type _this);
 
 /* ::hyve::lang::type::init(lang::object object) */
 db_int16 db_type_init(db_type _this, db_object object);

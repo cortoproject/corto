@@ -2,6 +2,7 @@
 TARGET =	io
 
 SOURCES	=	io.c \
+			io__wrapper.c \
 			io__meta.c \
 			io_file.c
 

@@ -382,6 +382,7 @@ db_threadKey DB_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, interface_resolveMethodId);\
     SSO_OP_OBJ(op, interface_resolveMethodById);\
     SSO_OP_OBJ(op, interface_bindMethod);\
+    SSO_OP_OBJ(op, interface_baseof);\
     /* collection */\
     SSO_OP_OBJ(op, collection_kind);\
     SSO_OP_OBJ(op, collection_elementType);\
@@ -460,6 +461,8 @@ db_threadKey DB_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, class_resolveCallback);\
     SSO_OP_OBJ(op, class_bindCallback);\
     SSO_OP_OBJ(op, class_bindDelegate);\
+    SSO_OP_OBJ(op, class_bindObserver);\
+    SSO_OP_OBJ(op, class_findObserver);\
     /* array */\
     SSO_OP_OBJ(op, array_elementType);\
     SSO_OP_OBJ(op, array_init);\
@@ -511,7 +514,9 @@ static void db_freeType(db_object o, db_uint32 size) {
 /* Initialization of objects */
 static void db_initObject(db_object o) {
 	db_newObject(o);
-    db_type_init(db_typeof(o)->real, o);
+    if(db_type_init_hasCallback(db_typeof(o)->real)) {
+        db_type_init(db_typeof(o)->real, o);
+    }
     if (db_typeof(o)->real->kind == DB_VOID) {
         db__setState(o, DB_DEFINED);
     }

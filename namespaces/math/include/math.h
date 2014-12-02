@@ -1,69 +1,60 @@
-/* math__meta.h
+/* math.h
  *
- * Loads objects in database.
  * This file contains generated code. Do not modify!
  */
 
-#ifndef math_META_H
-#define math_META_H
+#ifndef math_H
+#define math_H
 
 #include "hyve.h"
-
 #include "math__type.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/* ::hyve */
-extern db_object _o;
-
-/* ::hyve::math */
-extern db_object math_o;
-
 /* ::hyve::math::abs(::hyve::lang::uint64 x) */
-extern db_function math_abs_o;
+db_uint64 math_abs(db_uint64 x);
 
 /* ::hyve::math::acos(::hyve::lang::float64 x) */
-extern db_function math_acos_o;
+db_float64 math_acos(db_float64 x);
 
 /* ::hyve::math::asin(::hyve::lang::float64 x) */
-extern db_function math_asin_o;
+db_float64 math_asin(db_float64 x);
 
 /* ::hyve::math::atan(::hyve::lang::float64 x) */
-extern db_function math_atan_o;
+db_float64 math_atan(db_float64 x);
 
 /* ::hyve::math::cos(::hyve::lang::float64 x) */
-extern db_function math_cos_o;
+db_float64 math_cos(db_float64 x);
 
 /* ::hyve::math::exp(::hyve::lang::float64 x) */
-extern db_function math_exp_o;
+db_float64 math_exp(db_float64 x);
 
 /* ::hyve::math::log(::hyve::lang::float64 x) */
-extern db_function math_log_o;
+db_float64 math_log(db_float64 x);
 
 /* ::hyve::math::log10(::hyve::lang::float64 x) */
-extern db_function math_log10_o;
+db_float64 math_log10(db_float64 x);
 
 /* ::hyve::math::pow(::hyve::lang::float64 x,::hyve::lang::float64 p) */
-extern db_function math_pow_o;
+db_float64 math_pow(db_float64 x, db_float64 p);
 
 /* ::hyve::math::rand() */
-extern db_function math_rand_o;
+db_float64 math_rand(void);
 
 /* ::hyve::math::seed(::hyve::lang::uint32 seed) */
-extern db_function math_seed_o;
+db_void math_seed(db_uint32 seed);
 
 /* ::hyve::math::sin(::hyve::lang::float64 x) */
-extern db_function math_sin_o;
+db_float64 math_sin(db_float64 x);
 
 /* ::hyve::math::sqrt(::hyve::lang::float64 x) */
-extern db_function math_sqrt_o;
+db_float64 math_sqrt(db_float64 x);
 
 /* ::hyve::math::tan(::hyve::lang::float64 x) */
-extern db_function math_tan_o;
+db_float64 math_tan(db_float64 x);
 
-int math_load(void);
 #ifdef __cplusplus
 }
 #endif

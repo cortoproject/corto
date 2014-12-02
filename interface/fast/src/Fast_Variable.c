@@ -6,9 +6,8 @@
  *    code in interface functions isn't replaced when code is re-generated.
  */
 
-#include "Fast_Variable.h"
+#include "Fast.h"
 #include "Fast__meta.h"
-
 
 /* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::Variable::construct(Variable object) */
 db_int16 Fast_Variable_construct(Fast_Variable object) {

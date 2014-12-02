@@ -183,14 +183,6 @@ db_vtable* db_class_getObserverVtable(db_object o) {
     return result;
 }
 
-void db_class_bindObserver(db_class _this, db_observer observer) {
-    _this->observers.buffer = db_realloc(_this->observers.buffer, (_this->observers.length + 1) * sizeof(db_observer));
-    _this->observers.buffer[_this->observers.length] = observer;
-    _this->observers.length++;
-    observer->template = _this->observers.length;
-    db_keep_ext(_this, observer, "Bind observer to class");
-}
-
 db_object db_class_getObservable(db_class _this, db_observer observer, db_object me) {
     db_vtable* observers;
     db_object result = NULL;
@@ -448,6 +440,41 @@ error:
 db_int16 db_class_bindMethod(db_class _this, db_method method) {
 /* $begin(::hyve::lang::class::bindMethod) */
 	return db_interface_bindMethod_v(db_interface(_this), method);
+/* $end */
+}
+
+/* ::hyve::lang::class::bindObserver(lang::observer observer) */
+db_void db_class_bindObserver(db_class _this, db_observer observer) {
+/* $begin(::hyve::lang::class::bindObserver) */
+    _this->observers.buffer = db_realloc(_this->observers.buffer, (_this->observers.length + 1) * sizeof(db_observer));
+    _this->observers.buffer[_this->observers.length] = observer;
+    _this->observers.length++;
+    observer->template = _this->observers.length;
+    db_keep_ext(_this, observer, "Bind observer to class");
+/* $end */
+}
+
+/* ::hyve::lang::class::findObserver(lang::object observable,string expr) */
+db_observer db_class_findObserver(db_class _this, db_object observable, db_string expr) {
+/* $begin(::hyve::lang::class::findObserver) */
+    db_uint32 i;
+    db_observer result = NULL;
+
+    for(i=0; i<_this->observers.length; i++) {
+        if (_this->observers.buffer[i]->observable == observable) {
+            if (_this->observers.buffer[i]->expression && expr) {
+                if (!strcmp(_this->observers.buffer[i]->expression, expr)) {
+                    result = _this->observers.buffer[i];
+                    break;
+                }
+            } else {
+                result = _this->observers.buffer[i];
+                break;
+            }
+        }
+    }
+
+    return result;
 /* $end */
 }
 

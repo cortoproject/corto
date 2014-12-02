@@ -1,7 +1,6 @@
 /* io.h
  *
- *  Generated on Sep  5 2014
- *    This file contains generated code. Do not modify!
+ * This file contains generated code. Do not modify!
  */
 
 #ifndef io_H
@@ -28,3 +27,4 @@ db_string io_readln(void);
 #endif
 #endif
 
+#include "io_file.h"

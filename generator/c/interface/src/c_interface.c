@@ -255,23 +255,15 @@ static int c__interfaceGenerateDelegate(db_delegate o, c_typeWalk_t* data) {
     /* Begin of function */
     g_fileWrite(data->wrapper, ") {\n");
     g_fileIndent(data->wrapper);
-    g_fileWrite(data->wrapper, "static db_delegate _delegate;\n");
     g_fileWrite(data->wrapper, "db_callback _callback;\n");
     if (returnsValue) {
     	g_fileWrite(data->wrapper, "%s _result;\n", returnTypeId);
     }
-    g_fileWrite(data->wrapper, "/* Determine delegate once, then cache it for subsequent calls. */\n");
-    g_fileWrite(data->wrapper, "if (!_delegate) {\n");
-    g_fileIndent(data->wrapper);
-    g_fileWrite(data->wrapper, "_delegate = db_class_resolveDelegate(db_class(db_typeof(_this)), \"%s\");\n", db_nameof(o));
-    g_fileDedent(data->wrapper);
-    g_fileWrite(data->wrapper, "}\n");
-    g_fileWrite(data->wrapper, "db_assert(_delegate != NULL, \"delegate function '%s' not found in class '%s'\");\n\n", db_nameof(o), classId);
     g_fileWrite(data->wrapper, "/* Lookup callback-object. */\n");
-    g_fileWrite(data->wrapper, "_callback = db_class_resolveCallback(db_class(db_typeof(_this)), _delegate, _this);\n\n");
-
-    g_fileWrite(data->wrapper, "if (_callback) {\n");
-    g_fileIndent(data->wrapper);
+    g_fileWrite(data->wrapper, "_callback = db_class_resolveCallback(db_class(db_typeof(_this)), %s_o, _this);\n\n",
+        g_fullOid(data->g, o, id));
+    g_fileWrite(data->wrapper, "db_assert(_callback != NULL, \"no callback '%s' for object of type '%s' (call '%s_checkCallback' first)\");\n\n", 
+        db_nameof(o), classId, g_fullOid(data->g, o, id));
 	if (returnsValue) {
 		g_fileWrite(data->wrapper, "db_call(db_function(_callback), &_result");
 	} else {
@@ -282,9 +274,6 @@ static int c__interfaceGenerateDelegate(db_delegate o, c_typeWalk_t* data) {
         goto error;
     }
     g_fileWrite(data->wrapper, ");\n");
-
-    g_fileDedent(data->wrapper);
-    g_fileWrite(data->wrapper, "}\n");
 
     if (returnsValue) {
     	g_fileWrite(data->wrapper, "\n");
@@ -301,7 +290,7 @@ error:
 }
 
 /* Generate implementation for obtaining the callback for delegate methods */
-static int c__interfaceGenerateDelegate_callback(db_delegate o, c_typeWalk_t* data) {
+static int c__interfaceGenerateDelegate_hasCallback(db_delegate o, c_typeWalk_t* data) {
     db_id id, classId;
     g_file originalSource = data->source;
 
@@ -314,24 +303,21 @@ static int c__interfaceGenerateDelegate_callback(db_delegate o, c_typeWalk_t* da
     /* Write to sourcefile */
     g_fileWrite(data->wrapper, "\n");
     g_fileWrite(data->wrapper, "/* delegate %s, obtain callback */\n", db_fullname(o, id));
-    g_fileWrite(data->wrapper, "db_callback %s_callback(%s _this) {\n",
+    g_fileWrite(data->wrapper, "db_bool %s_hasCallback(%s _this) {\n",
             g_fullOid(data->g, o, id),
             classId);
 
     /* Write to headerfile */
     g_fileWrite(data->header, "\n");
     g_fileWrite(data->header, "/* delegate %s, obtain callback */\n", db_fullname(o, id));
-    g_fileWrite(data->header, "db_callback %s_callback(%s _this);\n",
+    g_fileWrite(data->header, "db_bool %s_hasCallback(%s _this);\n",
             g_fullOid(data->g, o, id),
             classId);
 
     g_fileIndent(data->wrapper);
-    g_fileWrite(data->wrapper, "db_delegate _delegate;\n");
-    g_fileWrite(data->wrapper, "/* Determine delegate */\n");
-    g_fileWrite(data->wrapper, "_delegate = db_class_resolveDelegate(db_class(db_typeof(_this)), \"%s\");\n", db_nameof(o));
-    g_fileWrite(data->wrapper, "db_assert(_delegate != NULL, \"delegate function '%s' not found in class '%s'\");\n\n", db_nameof(o), classId);
     g_fileWrite(data->wrapper, "/* Lookup callback-object. */\n");
-    g_fileWrite(data->wrapper, "return db_class_resolveCallback(db_class(db_typeof(_this)), _delegate, _this);\n");
+    g_fileWrite(data->wrapper, "return db_class_resolveCallback(db_class(db_typeof(_this)), %s_o, _this) != NULL;\n",
+        g_fullOid(data->g, o, id));
     g_fileDedent(data->wrapper);
     g_fileWrite(data->wrapper, "}\n");
 
@@ -340,89 +326,6 @@ static int c__interfaceGenerateDelegate_callback(db_delegate o, c_typeWalk_t* da
     return 0;
 }
 
-/* Generate implementation for delegate methods with provided callback parameter */
-static int c__interfaceGenerateDelegate_w_callback(db_delegate o, c_typeWalk_t* data) {
-    db_id id, returnTypeId, classId;
-    db_bool returnsValue;
-
-    g_file originalSource = data->source;
-
-    /* Replace the source with the wrapper so that all nested functions use the correct outputfile.
-     * This file will be restored at the end of the function */
-    data->source = data->wrapper;
-
-    if (((db_function)o)->returnType && (db_function(o)->returnType->real->kind != DB_VOID)) {
-        g_fullOid(data->g, ((db_function)o)->returnType, returnTypeId);
-        returnsValue = TRUE;
-    } else {
-        strcpy(returnTypeId, "void");
-        returnsValue = FALSE;
-    }
-
-    g_fullOid(data->g, db_parentof(o), classId);
-
-    /* Write to sourcefile */
-    g_fileWrite(data->wrapper, "\n");
-    g_fileWrite(data->wrapper, "/* delegate %s, supply callback */\n", db_fullname(o, id));
-    g_fileWrite(data->wrapper, "%s %s_w_callback(db_callback __callback, %s _this",
-            returnTypeId,
-            g_fullOid(data->g, o, id),
-            classId);
-
-    /* Write to headerfile */
-    g_fileWrite(data->header, "\n");
-    g_fileWrite(data->header, "/* delegate %s, supply callback */\n", db_fullname(o, id));
-    g_fileWrite(data->header, "%s %s_w_callback(db_callback __callback, %s _this",
-            returnTypeId,
-            g_fullOid(data->g, o, id),
-            classId);
-
-    /* Add 'this' parameter */
-    data->firstComma = 1;
-    data->generateHeader = TRUE;
-    data->generateSource = TRUE;
-
-    /* Walk parameters */
-    if (!c_interfaceParamWalk(o, c_interfaceMethodParameter, data)) {
-        goto error;
-    }
-
-    /* End function in header */
-    g_fileWrite(data->header, ");\n");
-
-    /* Begin of function */
-    g_fileWrite(data->wrapper, ") {\n");
-    g_fileIndent(data->wrapper);
-    g_fileWrite(data->wrapper, "DB_UNUSED(_this);\n");
-    if(!db_function(o)->parameters.length) {
-        g_fileWrite(data->wrapper, "DB_UNUSED(args);\n");
-    }
-    if(returnsValue) {
-        g_fileWrite(data->wrapper, "%s _result;\n\n", returnTypeId);
-    }
-
-    if (returnsValue) {
-        g_fileWrite(data->wrapper, "db_call(db_function(__callback), &_result");
-    } else {
-        g_fileWrite(data->wrapper, "db_call(db_function(__callback), NULL");
-    }
-    data->firstComma = 2;
-    if (!c_interfaceParamWalk(o, c_interfaceMethodParameterName, data)) {
-        goto error;
-    }
-    g_fileWrite(data->wrapper, ");\n");
-    if(returnsValue) {
-        g_fileWrite(data->wrapper, "\nreturn _result;\n");
-    }
-    g_fileDedent(data->wrapper);
-    g_fileWrite(data->wrapper, "}\n");
-
-    data->source = originalSource;
-
-    return 0;
-error:
-    return -1;
-}
 
 /* Generate implementation for delegate methods */
 static int c_interfaceGenerateDelegate(db_delegate o, c_typeWalk_t* data) {
@@ -430,11 +333,7 @@ static int c_interfaceGenerateDelegate(db_delegate o, c_typeWalk_t* data) {
         goto error;
     }
 
-    if (c__interfaceGenerateDelegate_callback(o, data)) {
-        goto error;
-    }
-
-    if (c__interfaceGenerateDelegate_w_callback(o, data)) {
+    if (c__interfaceGenerateDelegate_hasCallback(o, data)) {
         goto error;
     }
 
@@ -881,6 +780,7 @@ static g_file c_interfaceWrapperFileOpen(db_generator g) {
     g_fileWrite(result, " * This file contains wrapper functions for %s.\n", db_fullname(o, id));
     g_fileWrite(result, " */\n\n");
     g_fileWrite(result, "#include \"%s.h\"\n", name);
+    g_fileWrite(result, "#include \"%s__meta.h\"\n", name);
 
     return result;
 error:

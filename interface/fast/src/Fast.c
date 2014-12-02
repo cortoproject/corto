@@ -9,7 +9,6 @@
 #include "Fast.h"
 #include "Fast__meta.h"
 
-
 /* $header() */
 #include "Fast_Parser.h"
 #include "Fast_Call.h"

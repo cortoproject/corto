@@ -6,9 +6,8 @@
  *    code in interface functions isn't replaced when code is re-generated.
  */
 
-#include "Fast_ElementExpr.h"
+#include "Fast.h"
 #include "Fast__meta.h"
-
 
 /* $header() */
 #include "db_type.h"

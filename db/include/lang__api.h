@@ -1,14 +1,14 @@
-/* db__api.h
+/* lang__api.h
  *
- *  Generated on Dec  1 2014
+ *  Generated on Nov 30 2014
  *    API convenience functions for C-language.
  *    This file contains generated code. Do not modify!
  */
 
-#ifndef db__API_H
-#define db__API_H
+#ifndef lang__API_H
+#define lang__API_H
 
-#include "db__type.h"
+#include "lang__type.h"
 #include "hyve.h"
 
 #ifdef __cplusplus

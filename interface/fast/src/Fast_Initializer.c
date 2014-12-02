@@ -6,9 +6,8 @@
  *    code in interface functions isn't replaced when code is re-generated.
  */
 
-#include "Fast_Initializer.h"
+#include "Fast.h"
 #include "Fast__meta.h"
-
 
 /* $header() */
 #include "Fast_Expression.h"

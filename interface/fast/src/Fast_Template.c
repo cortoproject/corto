@@ -6,9 +6,8 @@
  *    code in interface functions isn't replaced when code is re-generated.
  */
 
-#include "Fast_Template.h"
+#include "Fast.h"
 #include "Fast__meta.h"
-
 
 /* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::Template::construct(Template object) */
 db_int16 Fast_Template_construct(Fast_Template object) {

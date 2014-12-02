@@ -4,6 +4,7 @@
  */
 
 #include "db.h"
+#include "db__meta.h"
 
 void __db_alias_init(db_function f, void *result, void *args) {
     DB_UNUSED(f);
@@ -133,46 +134,32 @@ void __db_class_bindMethod(db_function f, void *result, void *args) {
         *(db_method*)((intptr_t)args + sizeof(db_class)));
 }
 
+void __db_class_bindObserver(db_function f, void *result, void *args) {
+    DB_UNUSED(f);
+    DB_UNUSED(result);
+    db_class_bindObserver(
+        *(db_class*)args,
+        *(db_observer*)((intptr_t)args + sizeof(db_class)));
+}
+
 /* delegate ::hyve::lang::class::construct(lang::object object) */
 db_int16 db_class_construct(db_class _this, db_object object) {
-    static db_delegate _delegate;
     db_callback _callback;
     db_int16 _result;
-    /* Determine delegate once, then cache it for subsequent calls. */
-    if (!_delegate) {
-        _delegate = db_class_resolveDelegate(db_class(db_typeof(_this)), "construct(lang::object object)");
-    }
-    db_assert(_delegate != NULL, "delegate function 'construct(lang::object object)' not found in class 'db_class'");
-
     /* Lookup callback-object. */
-    _callback = db_class_resolveCallback(db_class(db_typeof(_this)), _delegate, _this);
+    _callback = db_class_resolveCallback(db_class(db_typeof(_this)), db_class_construct_o, _this);
 
-    if (_callback) {
-        db_call(db_function(_callback), &_result, object);
-    }
+    db_assert(_callback != NULL, "no callback 'construct(lang::object object)' for object of type 'db_class' (call 'db_class_construct_checkCallback' first)");
+
+    db_call(db_function(_callback), &_result, object);
     
     return _result;
 }
 
 /* delegate ::hyve::lang::class::construct(lang::object object), obtain callback */
-db_callback db_class_construct_callback(db_class _this) {
-    db_delegate _delegate;
-    /* Determine delegate */
-    _delegate = db_class_resolveDelegate(db_class(db_typeof(_this)), "construct(lang::object object)");
-    db_assert(_delegate != NULL, "delegate function 'construct(lang::object object)' not found in class 'db_class'");
-
+db_bool db_class_construct_hasCallback(db_class _this) {
     /* Lookup callback-object. */
-    return db_class_resolveCallback(db_class(db_typeof(_this)), _delegate, _this);
-}
-
-/* delegate ::hyve::lang::class::construct(lang::object object), supply callback */
-db_int16 db_class_construct_w_callback(db_callback __callback, db_class _this, db_object object) {
-    DB_UNUSED(_this);
-    db_int16 _result;
-
-    db_call(db_function(__callback), &_result, object);
-    
-return _result;
+    return db_class_resolveCallback(db_class(db_typeof(_this)), db_class_construct_o, _this) != NULL;
 }
 
 void __db_class_construct(db_function f, void *result, void *args) {
@@ -184,37 +171,19 @@ void __db_class_construct(db_function f, void *result, void *args) {
 
 /* delegate ::hyve::lang::class::destruct(lang::object object) */
 void db_class_destruct(db_class _this, db_object object) {
-    static db_delegate _delegate;
     db_callback _callback;
-    /* Determine delegate once, then cache it for subsequent calls. */
-    if (!_delegate) {
-        _delegate = db_class_resolveDelegate(db_class(db_typeof(_this)), "destruct(lang::object object)");
-    }
-    db_assert(_delegate != NULL, "delegate function 'destruct(lang::object object)' not found in class 'db_class'");
-
     /* Lookup callback-object. */
-    _callback = db_class_resolveCallback(db_class(db_typeof(_this)), _delegate, _this);
+    _callback = db_class_resolveCallback(db_class(db_typeof(_this)), db_class_destruct_o, _this);
 
-    if (_callback) {
-        db_call(db_function(_callback), NULL, object);
-    }
+    db_assert(_callback != NULL, "no callback 'destruct(lang::object object)' for object of type 'db_class' (call 'db_class_destruct_checkCallback' first)");
+
+    db_call(db_function(_callback), NULL, object);
 }
 
 /* delegate ::hyve::lang::class::destruct(lang::object object), obtain callback */
-db_callback db_class_destruct_callback(db_class _this) {
-    db_delegate _delegate;
-    /* Determine delegate */
-    _delegate = db_class_resolveDelegate(db_class(db_typeof(_this)), "destruct(lang::object object)");
-    db_assert(_delegate != NULL, "delegate function 'destruct(lang::object object)' not found in class 'db_class'");
-
+db_bool db_class_destruct_hasCallback(db_class _this) {
     /* Lookup callback-object. */
-    return db_class_resolveCallback(db_class(db_typeof(_this)), _delegate, _this);
-}
-
-/* delegate ::hyve::lang::class::destruct(lang::object object), supply callback */
-void db_class_destruct_w_callback(db_callback __callback, db_class _this, db_object object) {
-    DB_UNUSED(_this);
-    db_call(db_function(__callback), NULL, object);
+    return db_class_resolveCallback(db_class(db_typeof(_this)), db_class_destruct_o, _this) != NULL;
 }
 
 void __db_class_destruct(db_function f, void *result, void *args) {
@@ -223,6 +192,14 @@ void __db_class_destruct(db_function f, void *result, void *args) {
     db_class_destruct(
         *(db_class*)args,
         *(db_object*)((intptr_t)args + sizeof(db_class)));
+}
+
+void __db_class_findObserver(db_function f, void *result, void *args) {
+    DB_UNUSED(f);
+    *(db_observer*)result = db_class_findObserver(
+        *(db_class*)args,
+        *(db_object*)((intptr_t)args + sizeof(db_class)),
+        *(db_string*)((intptr_t)args + sizeof(db_class) + sizeof(db_object)));
 }
 
 void __db_class_init(db_function f, void *result, void *args) {
@@ -465,6 +442,13 @@ void __db_int_init(db_function f, void *result, void *args) {
     DB_UNUSED(f);
     *(db_int16*)result = db_int_init(
         *(db_int*)args);
+}
+
+void __db_interface_baseof(db_function f, void *result, void *args) {
+    DB_UNUSED(f);
+    *(db_int16*)result = db_interface_baseof(
+        *(db_interface*)args,
+        *(db_interface*)((intptr_t)args + sizeof(db_interface)));
 }
 
 /* virtual ::hyve::lang::interface::bindMethod(lang::method method) */
@@ -818,44 +802,22 @@ void __db_primitive_init(db_function f, void *result, void *args) {
 
 /* delegate ::hyve::lang::procedure::bind(lang::object object) */
 db_int16 db_procedure_bind(db_procedure _this, db_object object) {
-    static db_delegate _delegate;
     db_callback _callback;
     db_int16 _result;
-    /* Determine delegate once, then cache it for subsequent calls. */
-    if (!_delegate) {
-        _delegate = db_class_resolveDelegate(db_class(db_typeof(_this)), "bind(lang::object object)");
-    }
-    db_assert(_delegate != NULL, "delegate function 'bind(lang::object object)' not found in class 'db_procedure'");
-
     /* Lookup callback-object. */
-    _callback = db_class_resolveCallback(db_class(db_typeof(_this)), _delegate, _this);
+    _callback = db_class_resolveCallback(db_class(db_typeof(_this)), db_procedure_bind_o, _this);
 
-    if (_callback) {
-        db_call(db_function(_callback), &_result, object);
-    }
+    db_assert(_callback != NULL, "no callback 'bind(lang::object object)' for object of type 'db_procedure' (call 'db_procedure_bind_checkCallback' first)");
+
+    db_call(db_function(_callback), &_result, object);
     
     return _result;
 }
 
 /* delegate ::hyve::lang::procedure::bind(lang::object object), obtain callback */
-db_callback db_procedure_bind_callback(db_procedure _this) {
-    db_delegate _delegate;
-    /* Determine delegate */
-    _delegate = db_class_resolveDelegate(db_class(db_typeof(_this)), "bind(lang::object object)");
-    db_assert(_delegate != NULL, "delegate function 'bind(lang::object object)' not found in class 'db_procedure'");
-
+db_bool db_procedure_bind_hasCallback(db_procedure _this) {
     /* Lookup callback-object. */
-    return db_class_resolveCallback(db_class(db_typeof(_this)), _delegate, _this);
-}
-
-/* delegate ::hyve::lang::procedure::bind(lang::object object), supply callback */
-db_int16 db_procedure_bind_w_callback(db_callback __callback, db_procedure _this, db_object object) {
-    DB_UNUSED(_this);
-    db_int16 _result;
-
-    db_call(db_function(__callback), &_result, object);
-    
-return _result;
+    return db_class_resolveCallback(db_class(db_typeof(_this)), db_procedure_bind_o, _this) != NULL;
 }
 
 void __db_procedure_bind(db_function f, void *result, void *args) {
@@ -1189,44 +1151,22 @@ void __db_type_fullname(db_function f, void *result, void *args) {
 
 /* delegate ::hyve::lang::type::init(lang::object object) */
 db_int16 db_type_init(db_type _this, db_object object) {
-    static db_delegate _delegate;
     db_callback _callback;
     db_int16 _result;
-    /* Determine delegate once, then cache it for subsequent calls. */
-    if (!_delegate) {
-        _delegate = db_class_resolveDelegate(db_class(db_typeof(_this)), "init(lang::object object)");
-    }
-    db_assert(_delegate != NULL, "delegate function 'init(lang::object object)' not found in class 'db_type'");
-
     /* Lookup callback-object. */
-    _callback = db_class_resolveCallback(db_class(db_typeof(_this)), _delegate, _this);
+    _callback = db_class_resolveCallback(db_class(db_typeof(_this)), db_type_init_o, _this);
 
-    if (_callback) {
-        db_call(db_function(_callback), &_result, object);
-    }
+    db_assert(_callback != NULL, "no callback 'init(lang::object object)' for object of type 'db_type' (call 'db_type_init_checkCallback' first)");
+
+    db_call(db_function(_callback), &_result, object);
     
     return _result;
 }
 
 /* delegate ::hyve::lang::type::init(lang::object object), obtain callback */
-db_callback db_type_init_callback(db_type _this) {
-    db_delegate _delegate;
-    /* Determine delegate */
-    _delegate = db_class_resolveDelegate(db_class(db_typeof(_this)), "init(lang::object object)");
-    db_assert(_delegate != NULL, "delegate function 'init(lang::object object)' not found in class 'db_type'");
-
+db_bool db_type_init_hasCallback(db_type _this) {
     /* Lookup callback-object. */
-    return db_class_resolveCallback(db_class(db_typeof(_this)), _delegate, _this);
-}
-
-/* delegate ::hyve::lang::type::init(lang::object object), supply callback */
-db_int16 db_type_init_w_callback(db_callback __callback, db_type _this, db_object object) {
-    DB_UNUSED(_this);
-    db_int16 _result;
-
-    db_call(db_function(__callback), &_result, object);
-    
-return _result;
+    return db_class_resolveCallback(db_class(db_typeof(_this)), db_type_init_o, _this) != NULL;
 }
 
 void __db_type_init(db_function f, void *result, void *args) {

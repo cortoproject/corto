@@ -6,15 +6,15 @@
  *    code in interface functions isn't replaced when code is re-generated.
  */
 
-#include "Fast_Parser.h"
+#include "Fast.h"
 #include "Fast__meta.h"
-
 
 /* $header() */
 #define FAST_CHECK_ERRSET(parser) db_assert(!parser->errSet, "%s:%d:%d: parser did not check error-status set on line %d", _this->filename, _this->line, _this->column, _this->errLine)
 /*#define FAST_PARSER_DEBUG*/
 #define fast_err _this->errSet = TRUE; _this->errLine = __LINE__;
 
+#include "db.h"
 #include "stdio.h"
 #include "Fast__api.h"
 #include "Fast__meta.h"

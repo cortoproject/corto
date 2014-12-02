@@ -466,7 +466,9 @@ int db__destructor(db_object o) {
             db_class_detachObservers(db_class(t), o);
 
             /* Call destructor */
-            db_class_destruct(db_class(db_typeof(o)), o);
+            if(db_class_destruct_hasCallback(db_class(db_typeof(o)))) {
+                db_class_destruct(db_class(db_typeof(o)), o);
+            }
         } else if (db_class_instanceof(db_procedure_o, t)) {
             /* Call unbind */
             db_procedure_unbind(db_procedure(db_typeof(o)), o);
@@ -798,7 +800,8 @@ db_object db_new_ext(db_object src, db_typedef type, db_uint8 attrs, db_string c
             db_init(DB_OFFSET(o, sizeof(db__object)));
             
             /* Call initializer */
-            if (db_type_init(type->real, DB_OFFSET(o, sizeof(db__object)))) {
+            if (db_type_init_hasCallback(type->real) &&  
+                db_type_init(type->real, DB_OFFSET(o, sizeof(db__object)))) {
                 goto error;
             }
             /* Add object to anonymous cache */
@@ -884,7 +887,7 @@ db_object db_declare(db_object parent, db_string name, db_typedef type) {
                 db_init(o);
 
                 /* Init object value */
-                if (db_type_init(db_typeof(o)->real, o)) {
+                if (db_type_init_hasCallback(db_typeof(o)->real) && db_type_init(db_typeof(o)->real, o)) {
                     db_invalidate(o);
                     goto error;
                 }
@@ -921,7 +924,9 @@ db_int16 db_define(db_object o) {
         	/* Attach observers to object */
         	db_class_attachObservers(db_class(t), o);
             /* Call constructor */
-            result = db_class_construct(db_class(t), o);
+            if(db_class_construct_hasCallback(db_class(t))) {
+                result = db_class_construct(db_class(t), o);
+            }
             /* Start listening with attached observers */
             db_class_listenObservers(db_class(t), o);
         } else if (db_class_instanceof(db_procedure_o, t)) {

@@ -8,7 +8,7 @@
 #ifndef DB_GEN_H_
 #define DB_GEN_H_
 
-#include "hyve.h"
+#include "db.h"
 #include "db_file.h"
 #include "db_dl.h"
 

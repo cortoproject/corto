@@ -35,23 +35,23 @@ db_int16 db_class_bindDelegate(db_class _this, db_delegate delegate);
 /* ::hyve::lang::class::bindMethod(lang::method method) */
 db_int16 db_class_bindMethod(db_class _this, db_method method);
 
-/* delegate ::hyve::lang::class::construct(lang::object object), obtain callback */
-db_callback db_class_construct_callback(db_class _this);
+/* ::hyve::lang::class::bindObserver(lang::observer observer) */
+db_void db_class_bindObserver(db_class _this, db_observer observer);
 
-/* delegate ::hyve::lang::class::construct(lang::object object), supply callback */
-db_int16 db_class_construct_w_callback(db_callback __callback, db_class _this, db_object object);
+/* delegate ::hyve::lang::class::construct(lang::object object), obtain callback */
+db_bool db_class_construct_hasCallback(db_class _this);
 
 /* ::hyve::lang::class::construct(lang::object object) */
 db_int16 db_class_construct(db_class _this, db_object object);
 
 /* delegate ::hyve::lang::class::destruct(lang::object object), obtain callback */
-db_callback db_class_destruct_callback(db_class _this);
-
-/* delegate ::hyve::lang::class::destruct(lang::object object), supply callback */
-void db_class_destruct_w_callback(db_callback __callback, db_class _this, db_object object);
+db_bool db_class_destruct_hasCallback(db_class _this);
 
 /* ::hyve::lang::class::destruct(lang::object object) */
 db_void db_class_destruct(db_class _this, db_object object);
+
+/* ::hyve::lang::class::findObserver(lang::object observable,string expr) */
+db_observer db_class_findObserver(db_class _this, db_object observable, db_string expr);
 
 /* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::class::init(lang::class object) */
 db_int16 db_class_init(db_class object);

@@ -6,11 +6,11 @@
  *    code in interface functions isn't replaced when code is re-generated.
  */
 
-#include "Fast_Call.h"
+#include "Fast.h"
 #include "Fast__meta.h"
 
-
 /* $header() */
+#include "db.h"
 #include "Fast__api.h"
 #include "Fast_Parser.h"
 Fast_Parser yparser(void);

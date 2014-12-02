@@ -417,6 +417,24 @@ db_bool db_interface_checkProcedureCompatibility(db_function o1, db_function o2)
 
 /* $end */
 
+/* ::hyve::lang::interface::baseof(lang::interface type) */
+db_int16 db_interface_baseof(db_interface _this, db_interface type) {
+/* $begin(::hyve::lang::interface::baseof) */
+    db_interface ptr = _this->base;
+    db_bool result = FALSE;
+    
+    while(ptr && !result) {
+        if (ptr == type) {
+            result = TRUE;
+        } else {
+            ptr = ptr->base;
+        }
+    }
+    
+    return result;
+/* $end */
+}
+
 /* ::hyve::lang::interface::bindMethod(lang::method method) */
 db_int16 db_interface_bindMethod_v(db_interface _this, db_method method) {
 /* $begin(::hyve::lang::interface::bindMethod) */

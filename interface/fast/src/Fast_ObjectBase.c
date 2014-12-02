@@ -6,9 +6,8 @@
  *    code in interface functions isn't replaced when code is re-generated.
  */
 
-#include "Fast_ObjectBase.h"
+#include "Fast.h"
 #include "Fast__meta.h"
-
 
 /* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::ObjectBase::construct(ObjectBase object) */
 db_int16 Fast_ObjectBase_construct(Fast_ObjectBase object) {

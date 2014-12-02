@@ -14,6 +14,9 @@
 extern "C" {
 #endif
 
+/* ::hyve::lang::interface::baseof(lang::interface type) */
+db_int16 db_interface_baseof(db_interface _this, db_interface type);
+
 /* virtual ::hyve::lang::interface::bindMethod(lang::method method) */
 db_int16 db_interface_bindMethod(db_interface _this, db_method method);
 

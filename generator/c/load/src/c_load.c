@@ -5,7 +5,7 @@
  *      Author: sander
  */
 
-#include "hyve.h"
+#include "db.h"
 #include "db_generatorDepWalk.h"
 #include "c_common.h"
 #include "db_string_ser.h"
@@ -587,6 +587,7 @@ static db_int16 c_initCollection(db_serializer s, db_value* v, void* userData) {
     db_id memberId;
     int result;
     void* ptr;
+    db_uint32 size = 0;
 
     ptr = db_valueValue(v);
 
@@ -595,12 +596,14 @@ static db_int16 c_initCollection(db_serializer s, db_value* v, void* userData) {
 
     switch(t->kind) {
     case DB_ARRAY:
+        size = t->max;
         break;
     case DB_SEQUENCE: {
         db_uint32 length;
     	db_id specifier, postfix;
 
         length = *(db_uint32*)ptr;
+        size = length;
 
         /* Set length of sequence */
         g_fileWrite(data->source, "%slength = %d;\n",
@@ -634,6 +637,7 @@ static db_int16 c_initCollection(db_serializer s, db_value* v, void* userData) {
     	} else {
     		g_fileWrite(data->source, "%s = NULL;\n", c_loadMemberId(data, v, memberId, FALSE));
     	}
+        size = db_llSize(*(db_ll*)ptr);
         break;
     case DB_MAP: {
     	db_id keyId;
@@ -644,12 +648,13 @@ static db_int16 c_initCollection(db_serializer s, db_value* v, void* userData) {
     	} else {
     		g_fileWrite(data->source, "%s = NULL;\n", c_loadMemberId(data, v, memberId, FALSE));
     	}
+        size = db_rbtreeSize(*(db_rbtree*)ptr);
         break;
     }
     }
 
 	/* For the non-array types, allocate a member variable, if size of collection is not zero. */
-    if (db_size(t, ptr)) {
+    if (size) {
 		switch(t->kind) {
 		case DB_LIST:
 		case DB_MAP: {
@@ -667,7 +672,7 @@ static db_int16 c_initCollection(db_serializer s, db_value* v, void* userData) {
     /* Serialize elements */
     result = db_serializeElements(s, v, userData);
 
-    if (db_size(t, ptr)) {
+    if (size) {
 		switch(t->kind) {
 		case DB_LIST:
 		case DB_MAP: {
