@@ -1,0 +1,13 @@
+bool result: true;
+void fail(string msg):
+	"tc_bitmask01: FAIL: $msg";
+	result = false;
+
+bitmask options:: SeatHeating, AutomaticWindows, SpareWheel;
+
+var options v = SeatHeating | SpareWheel;
+if !(v & SeatHeating): fail("!(v & SeatHeating)");
+if !(v & SpareWheel): fail("!(v & SpareWheel)");
+if v & AutomaticWindows: fail("v & AutmaticWindows");
+
+if result: "tc_bitmask01: OK";

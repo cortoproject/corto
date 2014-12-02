@@ -1,21 +1,20 @@
 /* Fast_Parser.c
  *
- *  Generated on Nov 18 2014
- *    This file contains the implementation for the generated interface.
+ * This file contains the implementation for the generated interface.
  *
  *    Don't mess with the begin and end tags, since these will ensure that modified
  *    code in interface functions isn't replaced when code is re-generated.
  */
 
-#include "Fast_Parser.h"
+#include "Fast.h"
 #include "Fast__meta.h"
-
 
 /* $header() */
 #define FAST_CHECK_ERRSET(parser) db_assert(!parser->errSet, "%s:%d:%d: parser did not check error-status set on line %d", _this->filename, _this->line, _this->column, _this->errLine)
 /*#define FAST_PARSER_DEBUG*/
 #define fast_err _this->errSet = TRUE; _this->errLine = __LINE__;
 
+#include "db.h"
 #include "stdio.h"
 #include "Fast__api.h"
 #include "Fast__meta.h"
@@ -30,6 +29,7 @@
 #include "Fast_TernaryExpr.h"
 #include "db__api.h"
 #include "db_string_ser.h"
+#include "db_vm.h"
 int fast_yparse(Fast_Parser parser, db_uint32 line, db_uint32 column);
 
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ... ) {

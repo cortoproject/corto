@@ -10,6 +10,7 @@
 
 #include "db__type.h"
 #include "db_collection.h"
+#include "db_def.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -10,19 +10,9 @@
 
 #include "db__object.h"
 #include "db__equals.h"
-#include "db_typedef.h"
 #include "db_util.h"
 
-#include "db_type.h"
-#include "db_primitive.h"
-#include "db_interface.h"
-#include "db_collection.h"
-#include "db_struct.h"
-#include "db_procedure.h"
-#include "db_class.h"
-#include "db_member.h"
-#include "db_dispatcher.h"
-#include "db_serializer.h"
+#include "db.h"
 
 /* Notes about the typesystem
  *
@@ -134,12 +124,6 @@
  */
 
 /* Implementations of virtual functions */
-extern db_equalityKind db_type_compare_v(db_type _this, db_any o1, db_any o2);
-extern db_uint32 db_type_allocSize_v(db_type _this);
-extern db_bool db_type_compatible_v(db_type _this, db_type type);
-extern db_bool db_type_castable_v(db_type _this, db_type type);
-extern db_member db_interface_resolveMember_v(db_interface _this, db_string name);
-extern db_member db_interface_bindMethod_v(db_interface _this, db_string name);
 extern db_object db_hyve_new(db_typedef type);
 extern db_object db_hyve__new(db_typedef type, db_attr attributes);
 
@@ -353,24 +337,44 @@ DB_STATIC_SCOPED_OBJECT(constant);
 		{DB_SSO_V(hyve_lang, #name, procedure), {DB_STRUCT_NOBASE_V(name, DB_PROCEDURE, TRUE, scopeType, scopeStateKind), kind}, VTABLE_V}
 
 /* function object */
-#define DB_FUNCTION_O(parent, name, args, returnType, impl) sso_function parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, function), {(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)impl, 0, NULL, 0, {0,NULL},0}, VTABLE_V}
+#define DB_FUNCTION_O(parent, name, args, returnType, impl) \
+        void __##impl(void *f, void *r, void *a); \
+        sso_function parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, function), {(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0, {0,NULL},0}, VTABLE_V}
 
-#define DB_FUNCTION_OO_O(parent, name, args, returnType, impl) sso_function parent##_##name##__o = {DB_SSO_V(parent, #name args, function), {(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)impl, 0, NULL, 0, {0,NULL},0}, VTABLE_V}
-#define DB_FUNCTION_OVERLOAD_OO_O(parent, name, args, returnType, impl) sso_function parent##_##name##__o = {DB_SSO_V(parent, args, function), {(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)impl, 0, NULL, 0, {0,NULL},0}, VTABLE_V}
+#define DB_FUNCTION_OO_O(parent, name, args, returnType, impl) \
+        void __##impl(void *f, void *r, void *a); \
+        sso_function parent##_##name##__o = {DB_SSO_V(parent, #name args, function), {(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0, {0,NULL},0}, VTABLE_V}
+
+#define DB_FUNCTION_OVERLOAD_OO_O(parent, name, args, returnType, impl) \
+        void __##impl(void *f, void *r, void *a); \
+        sso_function parent##_##name##__o = {DB_SSO_V(parent, args, function), {(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0, {0,NULL},0}, VTABLE_V}
 
 /* method object */
-#define DB_METHOD_O(parent, name, args, returnType, virtual, impl) sso_method parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, method), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)impl, 0, NULL, 0,{0,NULL},0}, virtual}, VTABLE_V}
+#define DB_METHOD_O(parent, name, args, returnType, virtual, impl) \
+        void __##impl(void *f, void *r, void *a); \
+        sso_method parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, method), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0,{0,NULL},0}, virtual}, VTABLE_V}
+
+/* interface method object */
+#define DB_IMETHOD_O(parent, name, args, returnType, virtual) \
+        sso_method parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, method), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, 0, 0, NULL, 0,{0,NULL},0}, virtual}, VTABLE_V}
 
 /* delegate object */
-#define DB_DELEGATE_O(parent, name, args, returnType) sso_delegate parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, delegate), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)0, 0, NULL, 0, {0,NULL},0}, 0}, VTABLE_V}
+#define DB_DELEGATE_O(parent, name, args, returnType) \
+        sso_delegate parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, delegate), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, 0, 0, NULL, 0, {0,NULL},0}, 0}, VTABLE_V}
 
 /* callback object */
-#define DB_CALLBACK_O(parent, name, args, delegate, returnType, impl) sso_callback parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, callback), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)impl, 0, NULL, 0, {0,NULL},0}, (db_delegate)&delegate##__o.v}, VTABLE_V}
+#define DB_CALLBACK_O(parent, name, args, delegate, returnType, impl) \
+        void __##impl(void *f, void *r, void *a); \
+        sso_callback parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, callback), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0, {0,NULL},0}, (db_delegate)&delegate##__o.v}, VTABLE_V}
 
 /* metaprocedure object */
-#define DB_METAPROCEDURE_O(parent, name, args, returnType, referenceOnly, impl) sso_metaprocedure parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, metaprocedure), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)impl, 0, NULL, 0, {0,NULL},0}, referenceOnly}, VTABLE_V}
+#define DB_METAPROCEDURE_O(parent, name, args, returnType, referenceOnly, impl) \
+        void __##impl(void *f, void *r, void *a); \
+        sso_metaprocedure parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, metaprocedure), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0, {0,NULL},0}, referenceOnly}, VTABLE_V}
 
-#define DB_METAPROCEDURE_NAME_O(parent, name, actualName, args, returnType, referenceOnly, impl) sso_metaprocedure parent##_##name##__o = {DB_SSO_PO_V(parent, #actualName args, metaprocedure), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)impl, 0, NULL, 0, {0,NULL},0}, referenceOnly}, VTABLE_V}
+#define DB_METAPROCEDURE_NAME_O(parent, name, actualName, args, returnType, referenceOnly, impl) \
+        void __##impl(void *f, void *r, void *a); \
+        sso_metaprocedure parent##_##name##__o = {DB_SSO_PO_V(parent, #actualName args, metaprocedure), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0, {0,NULL},0}, referenceOnly}, VTABLE_V}
     
 /* member object */
 #define DB_MEMBER_O(parent, name, type, access) sso_member parent##_##name##__o = {DB_SSO_PO_V(parent, #name, member), DB_MEMBER_V(type, access, DB_DECLARED | DB_DEFINED, FALSE), VTABLE_V}
@@ -468,9 +472,10 @@ DB_FWDECL(class, serializer);
 DB_FWDECL(enum, serializerTraceKind);
 
 /* Forward declare static delegate objects */
-DB_FWDECL_SSO(delegate, type_init);
-DB_FWDECL_SSO(delegate, class_construct);
-DB_FWDECL_SSO(delegate, class_destruct);
+DB_FWDECL(delegate, type_init);
+DB_FWDECL(delegate, class_construct);
+DB_FWDECL(delegate, class_destruct);
+DB_FWDECL(delegate, procedure_bind);
 
 /* database root */
 db_SSOO_object root__o = {DB_ROOT_V()};
@@ -504,7 +509,7 @@ DB_FLOAT_O(float64, DB_WIDTH_64, 0, 0);
 DB_TEXT_O(string, DB_WIDTH_8, 0);
 DB_BINARY_O(word, DB_WIDTH_WORD);
 DB_INT_O(constant, DB_WIDTH_32, 0, MAX_INT32, DB_SSO_TYPE_ID(enum), DB_DECLARED);
-	DB_CALLBACK_O(constant, init, "(constant object)", type_init, int16, db_constant_init);
+	DB_CALLBACK_O(constant, init, "(constant& object)", type_init, int16, db_constant_init);
 
 /* Any type */
 DB_TYPE_O(any, DB_ANY, FALSE);
@@ -672,7 +677,6 @@ DB_CLASS_O(type, typedef, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface)
     DB_METHOD_O(type, castable, "(lang::type type)", bool, TRUE, db_type_castable_v);
     DB_METHOD_O(type, compatible, "(lang::type type)", bool, TRUE, db_type_compatible_v);
     DB_METHOD_O(type, resolveProcedure, "(lang::string name)", function, FALSE, db_type_resolveProcedure);
-    DB_METHOD_O(type, bindMetaprocedure, "(lang::metaprocedure)", int16, FALSE, db_type_bindMetaprocedure);
     DB_DELEGATE_O(type, init, "(lang::object object)", int16);
     DB_CALLBACK_O(type, _init, "(lang::type object)", type_init, int16, db_type__init);
     DB_CALLBACK_O(type, construct, "(lang::type object)", class_construct, int16, db_type_construct);
@@ -700,8 +704,8 @@ DB_CLASS_O(primitive, type, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interfac
     DB_MEMBER_O(primitive, kind, primitiveKind, DB_LOCAL|DB_READONLY);
     DB_MEMBER_O(primitive, width, width, DB_GLOBAL);
     DB_MEMBER_O(primitive, convertId, uint8, DB_LOCAL | DB_PRIVATE);
-    DB_METHOD_O(primitive, castable, "(lang::type type)", bool, TRUE, db_primitive_castable);
-    DB_METHOD_O(primitive, compatible, "(lang::type type)", bool, TRUE, db_primitive_compatible);
+    DB_METHOD_O(primitive, castable, "(lang::type type)", bool, TRUE, db_primitive_castable_v);
+    DB_METHOD_O(primitive, compatible, "(lang::type type)", bool, TRUE, db_primitive_compatible_v);
     DB_CALLBACK_O(primitive, init, "(lang::primitive object)", type_init, int16, db_primitive_init);
     DB_CALLBACK_O(primitive, construct, "(lang::primitive object)", class_construct, int16, db_primitive_construct);
 
@@ -716,18 +720,20 @@ DB_CLASS_O(interface, type, DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, D
     DB_CALLBACK_O(interface, construct, "(lang::interface object)", class_construct, int16, db_interface_construct);
     DB_CALLBACK_O(interface, destruct, "(lang::interface object)", class_destruct, void, db_interface_destruct);
     DB_METHOD_O(interface, resolveMember, "(lang::string name)", member, TRUE, db_interface_resolveMember_v);
-    DB_METHOD_O(interface, compatible, "(lang::type type)", bool, TRUE, db_interface_compatible);
+    DB_METHOD_O(interface, compatible, "(lang::type type)", bool, TRUE, db_interface_compatible_v);
     DB_METHOD_O(interface, resolveMethod, "(lang::string name)", method, FALSE, db_interface_resolveMethod);
     DB_METHOD_O(interface, resolveMethodId, "(lang::string name)", uint32, FALSE, db_interface_resolveMethodId);
     DB_METHOD_O(interface, resolveMethodById, "(lang::uint32 id)", method, FALSE, db_interface_resolveMethodById);
     DB_METHOD_O(interface, bindMethod, "(lang::method method)", int16, TRUE, db_interface_bindMethod_v);
+    DB_METHOD_O(interface, baseof, "(lang::interface type)", int16, FALSE, db_interface_baseof);
 
 /* ::hyve::lang::collection */
 DB_CLASS_O(collection, type, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_MEMBER_O(collection, kind, collectionKind, DB_LOCAL|DB_READONLY);
     DB_REFERENCE_O(collection, elementType, typedef, DB_GLOBAL, DB_DECLARED, FALSE);
 	DB_MEMBER_O(collection, max, uint32, DB_GLOBAL);
-    DB_METHOD_O(collection, castable, "(lang::type type)", bool, TRUE, db_collection_castable);
+    DB_METHOD_O(collection, castable, "(lang::type type)", bool, TRUE, db_collection_castable_v);
+    DB_METHOD_O(collection, elementRequiresAlloc, "()", bool, FALSE, db_collection_elementRequiresAlloc);
     DB_CALLBACK_O(collection, init, "(lang::collection object)", type_init, int16, db_collection_init);
     DB_METAPROCEDURE_O(collection, size, "()", uint32, FALSE, db_collection_size);
 
@@ -788,9 +794,9 @@ DB_CLASS_O(alias, primitive, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interfa
 DB_CLASS_O(struct, interface, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
 	DB_MEMBER_O(struct, baseAccess, modifier, DB_GLOBAL);
     DB_MEMBER_O(struct, delegateCount, uint16, DB_LOCAL|DB_PRIVATE);
-	DB_METHOD_O(struct, compatible, "(lang::type type)", bool, TRUE, db_struct_compatible);
-	DB_METHOD_O(struct, castable, "(lang::type type)", bool, TRUE, db_struct_castable);
-	DB_METHOD_O(struct, resolveMember, "(lang::string name)", member, TRUE, db_struct_resolveMember);
+	DB_METHOD_O(struct, compatible, "(lang::type type)", bool, TRUE, db_struct_compatible_v);
+	DB_METHOD_O(struct, castable, "(lang::type type)", bool, TRUE, db_struct_castable_v);
+	DB_METHOD_O(struct, resolveMember, "(lang::string name)", member, TRUE, db_struct_resolveMember_v);
 	DB_CALLBACK_O(struct, init, "(lang::struct object)", type_init, int16, db_struct_init);
 	DB_CALLBACK_O(struct, construct, "(lang::struct object)", class_construct, int16, db_struct_construct);
 
@@ -809,17 +815,24 @@ DB_CLASS_O(class, struct, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DE
     DB_CALLBACK_O(class, init, "(lang::class object)", type_init, int16, db_class_init);
     DB_CALLBACK_O(class, _construct, "(lang::class object)", class_construct, int16, db_class__construct);
     DB_CALLBACK_O(class, _destruct, "(lang::class object)", class_destruct, void, db_class__destruct);
-    DB_METHOD_O(class, bindMethod, "(lang::method method)", int16, TRUE, db_class_bindMethod);
-    DB_METHOD_O(class, allocSize, "()", uint32, TRUE, db_class_allocSize);
+    DB_METHOD_O(class, bindMethod, "(lang::method method)", int16, FALSE, db_class_bindMethod);
+    DB_METHOD_O(class, allocSize, "()", uint32, TRUE, db_class_allocSize_v);
     DB_METHOD_O(class, instanceof, "(lang::object object)", bool, FALSE, db_class_instanceof);
     DB_METHOD_O(class, privateObserver, "(lang::object object,lang::observer observer)", observer, FALSE, db_class_privateObserver);
+    DB_METHOD_O(class, resolveDelegate, "(lang::string name)", delegate, FALSE, db_class_resolveDelegate);
+    DB_METHOD_O(class, resolveInterfaceMethod, "(lang::interface interface,lang::uint32 method)", method, FALSE, db_class_resolveInterfaceMethod);
+    DB_METHOD_O(class, resolveCallback, "(lang::delegate delegate,lang::object target)", callback, FALSE, db_class_resolveCallback);
+    DB_METHOD_O(class, bindCallback, "(lang::delegate delegate,lang::object object,lang::callback method)", int16, FALSE, db_class_bindCallback);
+    DB_METHOD_O(class, bindDelegate, "(lang::delegate delegate)", int16, FALSE, db_class_bindDelegate);
+    DB_METHOD_O(class, bindObserver, "(lang::observer observer)", void, FALSE, db_class_bindDelegate);
+    DB_METHOD_O(class, findObserver, "(lang::object observable,string expr)", observer, FALSE, db_class_findObserver);
 
 /* ::hyve::lang::procedure */
 DB_CLASS_O(procedure, struct, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
 	DB_MEMBER_O(procedure, kind, procedureKind, DB_GLOBAL);
 	DB_CALLBACK_O(procedure, init, "(lang::procedure object)", type_init, int16, db_procedure_init);
 	DB_DELEGATE_O(procedure, bind, "(lang::object object)", int16);
-	DB_DELEGATE_O(procedure, unbind, "(lang::object object)", void);
+	DB_METHOD_O(procedure, unbind, "(lang::object object)", void, FALSE, db_procedure_unbind);
 
 /* ::hyve::lang::array */
 DB_CLASS_O(array, collection, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
@@ -838,8 +851,8 @@ DB_CLASS_O(sequence, collection, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL
 DB_CLASS_O(list, collection, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_CALLBACK_O(list, init, "(lang::list object)", type_init, int16, db_list_init);
     DB_CALLBACK_O(list, construct, "(lang::list object)", class_construct, int16, db_list_construct);
-    DB_METAPROCEDURE_O(list, insert, "(lang::any element)", void, FALSE, db_list_insert);
-    DB_METAPROCEDURE_O(list, append, "(lang::any element)", void, FALSE, db_list_append);
+    DB_METAPROCEDURE_O(list, insert, "(lang::any element)", void, FALSE, db_list_insert_lang_any);
+    DB_METAPROCEDURE_O(list, append, "(lang::any element)", void, FALSE, db_list_append_lang_any);
     DB_METAPROCEDURE_NAME_O(list, insert_, insert, "()", any, FALSE, db_list_insert_);
     DB_METAPROCEDURE_NAME_O(list, append_, append, "()", any, FALSE, db_list_append_);
     DB_METAPROCEDURE_O(list, reverse, "()", void, FALSE, db_list_reverse);
@@ -861,19 +874,19 @@ DB_PROCEDURE_NOBASE_O(function, DB_FUNCTION, NULL, DB_DECLARED | DB_DEFINED);
     DB_MEMBER_O(function, overloaded, bool, DB_LOCAL | DB_READONLY);
     DB_MEMBER_O(function, kind, uint32, DB_LOCAL | DB_PRIVATE);
     DB_MEMBER_O(function, impl, word, DB_LOCAL|DB_PRIVATE);
-    DB_MEMBER_O(function, impludata, word, DB_LOCAL|DB_PRIVATE);
+    DB_MEMBER_O(function, implData, word, DB_LOCAL|DB_PRIVATE);
     DB_REFERENCE_O(function, resource, object, DB_LOCAL|DB_PRIVATE, DB_DEFINED | DB_DECLARED, FALSE);
     DB_MEMBER_O(function, size, int16, DB_LOCAL|DB_PRIVATE);
     DB_MEMBER_O(function, parameters, parameterSeq, DB_LOCAL | DB_READONLY);
     DB_MEMBER_O(function, nextParameterId, uint32, DB_LOCAL | DB_PRIVATE);
     DB_CALLBACK_O(function, init, "(lang::function object)", type_init, int16, db_function_init);
     DB_CALLBACK_O(function, bind, "(lang::function object)", procedure_bind, int16, db_function_bind);
-    DB_CALLBACK_O(function, unbind, "(lang::function object)", procedure_unbind, void, db_function_unbind);
+    DB_FUNCTION_O(function, unbind, "(lang::function object)", void, db_function_unbind);
 
 /* ::hyve::lang::dispatcher */
 DB_INTERFACE_O(dispatcher);
-	DB_METHOD_O(dispatcher, post, "(lang::event event)", void, FALSE, NULL);
-	DB_METHOD_O(dispatcher, getEvent, "(lang::observer observer,lang::object me,lang::object observable,lang::object src)", observableEvent, FALSE, NULL);
+	DB_IMETHOD_O(dispatcher, post, "(lang::event event)", void, FALSE);
+	DB_IMETHOD_O(dispatcher, getEvent, "(lang::observer observer,lang::object me,lang::object observable,lang::object src)", observableEvent, FALSE);
 
 /* ::hyve::lang::event */
 DB_CLASS_NOBASE_O(event, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
@@ -921,10 +934,10 @@ DB_PROCEDURE_O(observer, DB_OBSERVER, function, DB_LOCAL | DB_READONLY, NULL, DB
 	DB_REFERENCE_O(observer, delayedBinder, observer, DB_LOCAL | DB_PRIVATE, DB_DEFINED | DB_DECLARED, FALSE);
 	DB_CALLBACK_O(observer, init, "(lang::observer object)", type_init, int16, db_observer_init);
 	DB_CALLBACK_O(observer, bind, "(lang::observer object)", procedure_bind, int16, db_observer_bind);
-	DB_CALLBACK_O(observer, unbind, "(lang::observer object)", procedure_unbind, void, db_observer_unbind);
 	DB_METHOD_O(observer, listen, "(lang::object observable,lang::object me)", int16, FALSE, db_observer_listen);
 	DB_METHOD_O(observer, silence, "(lang::object me)", int16, FALSE, db_observer_silence);
 	DB_METHOD_O(observer, setDispatcher, "(lang::dispatcher dispatcher)", void, FALSE, db_observer_setDispatcher);
+    DB_FUNCTION_O(observer, unbind, "(lang::observer object)", void, db_observer_unbind);
 
 /* ::hyve::lang::metaprocedure */
 DB_PROCEDURE_O(metaprocedure, DB_METAPROCEDURE, function, DB_GLOBAL, NULL, DB_DECLARED);

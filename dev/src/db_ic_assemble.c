@@ -336,7 +336,8 @@ void db_ic_vmProgram_finalize(db_ic_vmProgram *vmProgram) {
     /* If program is a function, set the function-implementation to the program */
     if (vmProgram->function) {
         db_function function = vmProgram->function->function;
-        function->impl = (db_word)vmProgram->program;
+        function->impl = (db_word)db_call_vm;
+        function->implData = (db_word)vmProgram->program;
         db_define(function);
 
 #ifdef DB_IC_TRACING
@@ -2455,7 +2456,7 @@ static db_int16 db_icOp_toVm(db_icOp op, db_ic_vmProgram *program) {
 	    f = ((db_icObject)op->s2)->ptr;
         if (f->kind == DB_PROCEDURE_VM) {
             if (db_checkState(f, DB_DEFINED)) {
-                db_vmProgram inlineProgram = (db_vmProgram)f->impl;
+                db_vmProgram inlineProgram = (db_vmProgram)f->implData;
                 if (inlineProgram->storage > program->maxStackSize) {
                     program->maxStackSize = inlineProgram->storage;
                 }
@@ -2687,7 +2688,7 @@ db_vmProgram db_icProgram_toVm(db_icProgram program) {
             while(db_iterHasNext(&inlineFunctionIter)) {
                 db_vmProgram program;
                 inlineFunction = db_iterNext(&inlineFunctionIter);
-                program = (db_vmProgram)inlineFunction->function->impl;
+                program = (db_vmProgram)inlineFunction->function->implData;
                 if (program->storage > inlineFunction->program->stack) {
                     inlineFunction->program->stack = program->storage;
                 }

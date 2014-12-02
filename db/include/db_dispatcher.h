@@ -1,26 +1,32 @@
-/*
- * db_dispatcher.h
+/* db_dispatcher.h
  *
- *  Created on: Feb 9, 2013
- *      Author: sander
+ * This file contains generated code. Do not modify!
  */
 
-#ifndef DB_DISPATCHER_H_
-#define DB_DISPATCHER_H_
+#ifndef db_dispatcher_H
+#define db_dispatcher_H
 
+#include "hyve.h"
 #include "db__type.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+/* virtual ::hyve::lang::dispatcher::getEvent(lang::observer observer,lang::object me,lang::object observable,lang::object src) */
+db_observableEvent db_dispatcher_getEvent(db_dispatcher _this, db_observer observer, db_object me, db_object observable, db_object src);
+
+/* ::hyve::lang::dispatcher::getEvent(lang::observer observer,lang::object me,lang::object observable,lang::object src) */
+db_observableEvent db_dispatcher_getEvent_v(db_dispatcher _this, db_observer observer, db_object me, db_object observable, db_object src);
+
+/* virtual ::hyve::lang::dispatcher::post(lang::event event) */
 void db_dispatcher_post(db_dispatcher _this, db_event event);
-db_event db_dispatcher_getEvent(db_dispatcher _this, db_observer observer, db_object me, db_object observable, db_object source);
-db_int16 db_event_uniqueKind(void);
-void db_event_processed(db_event event);
+
+/* ::hyve::lang::dispatcher::post(lang::event event) */
+db_void db_dispatcher_post_v(db_dispatcher _this, db_event event);
 
 #ifdef __cplusplus
 }
 #endif
+#endif
 
-#endif /* DB_DISPATCHER_H_ */

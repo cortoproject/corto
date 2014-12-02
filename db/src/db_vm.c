@@ -417,7 +417,7 @@ typedef union Di2f_t {
     CALLVM_##code:\
         fetchOp1(CALLVM,code);\
         fetchHi();\
-        db_vm_run_w_storage((db_vmProgram)((db_function)c.hi.w)->impl, c.stack, &op_##code);\
+        db_vm_run_w_storage((db_vmProgram)((db_function)c.hi.w)->implData, c.stack, &op_##code);\
         c.sp = c.stack; /* Reset stack pointer */\
         next();\
 
@@ -431,7 +431,7 @@ typedef union Di2f_t {
 #define CALLVMVOID()\
     CALLVMVOID:\
         fetchHi();\
-        db_vm_run_w_storage((db_vmProgram)((db_function)c.hi.w)->impl, c.stack, NULL);\
+        db_vm_run_w_storage((db_vmProgram)((db_function)c.hi.w)->implData, c.stack, NULL);\
         c.sp = c.stack; /* Reset stack pointer */\
         next();\
 
@@ -1701,7 +1701,7 @@ void db_call_vm(db_function f, db_void* result, void* args) {
     db_vmProgram program;
     void *storage = NULL;
 
-    program = (db_vmProgram)f->impl;
+    program = (db_vmProgram)f->implData;
 
     storage = alloca(program->storage);
     memcpy(storage, args, f->size);
@@ -1712,6 +1712,6 @@ void db_call_vm(db_function f, db_void* result, void* args) {
 }
 
 void db_callDestruct_vm(db_function f) {
-    db_vmProgram_free((db_vmProgram)f->impl);
+    db_vmProgram_free((db_vmProgram)f->implData);
 }
 

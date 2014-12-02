@@ -118,7 +118,7 @@ Fast_Expression Fast_declarationSeqDo(Fast_Variable type, Fast_ParserDeclaration
 %token KW_IF KW_ELSE KW_WHILE KW_SWITCH KW_CASE KW_DEFAULT KW_BREAK KW_FOR KW_WAIT
 %token KW_TRY KW_CATCH
 %token KW_IMPORT
-%token KW_LOCAL KW_VIRTUAL
+%token KW_LOCAL
 
 
 /* ======================================================================== */
@@ -203,7 +203,7 @@ code
 statements
     : statement { Fast_Parser_reset(yparser()); fast_op;}
     | statements statement { Fast_Parser_reset(yparser()); fast_op;}
-    | error {$$=NULL; /*printf("parser exit: Fast_Parser.c:%d\n", yparser()->errLine); */ exit(1);}
+    | error {$$=NULL; /* printf("parser exit: Fast_Parser.c:%d\n", yparser()->errLine); */ exit(1);}
 	;
 
 statement
@@ -610,7 +610,6 @@ any_id
     | '@' KW_CATCH {$$ = "catch";}
     | '@' KW_IMPORT {$$ = "import";}
     | '@' KW_LOCAL {$$ = "local";}
-    | '@' KW_VIRTUAL {$$ = "virtual";}
     | '@' LAND {$$ = "and";}
     | '@' LOR {$$ = "or";}
     | '@' LNOT {$$ = "not";}

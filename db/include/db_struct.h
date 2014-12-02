@@ -1,37 +1,45 @@
-/*
- * db_struct.h
+/* db_struct.h
  *
- *  Created on: Oct 10, 2012
- *      Author: sander
+ * This file contains generated code. Do not modify!
  */
 
-#ifndef DB_EXTENDABLE_H_
-#define DB_EXTENDABLE_H_
+#ifndef db_struct_H
+#define db_struct_H
 
-#include "db__type.h"
+#include "hyve.h"
 #include "db_interface.h"
+#include "db__type.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/* Callbacks */
+/* virtual ::hyve::lang::struct::castable(lang::type type) */
+db_bool db_struct_castable(db_struct _this, db_type type);
+
+/* ::hyve::lang::struct::castable(lang::type type) */
+db_bool db_struct_castable_v(db_struct _this, db_type type);
+
+/* virtual ::hyve::lang::struct::compatible(lang::type type) */
+db_bool db_struct_compatible(db_struct _this, db_type type);
+
+/* ::hyve::lang::struct::compatible(lang::type type) */
+db_bool db_struct_compatible_v(db_struct _this, db_type type);
+
+/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::lang::struct::construct(lang::struct object) */
 db_int16 db_struct_construct(db_struct object);
+
+/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::struct::init(lang::struct object) */
 db_int16 db_struct_init(db_struct object);
 
-/* Virtual methods */
-db_member db_struct_resolveMember(db_struct _this, db_string member);
+/* virtual ::hyve::lang::struct::resolveMember(lang::string name) */
+db_member db_struct_resolveMember(db_struct _this, db_string name);
 
-/* Methods */
-db_bool db_struct_compatible(db_struct _this, db_type type);
-db_bool db_struct_castable(db_struct _this, db_type type);
-db_int16 db_struct_declareTemplateParameter(db_struct _this, db_string name);
-db_member db_struct_resolveTemplateMember(db_struct _this, db_uint32 id);
-db_type db_struct_resolveTemplateType(db_struct _this, db_type T, db_object o);
+/* ::hyve::lang::struct::resolveMember(lang::string name) */
+db_member db_struct_resolveMember_v(db_struct _this, db_string name);
 
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* DB_EXTENDABLE_H_ */
+#endif
 

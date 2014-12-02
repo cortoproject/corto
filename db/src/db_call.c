@@ -88,9 +88,7 @@ void db_callDestroy(db_function f) {
 
 /* Call with buffer (on most platforms this will be the same as db_callv) */
 static void db_call_intern(db_function f, db_void* result, void* args) {
-    bindingHandler* h;
-    h = &bindings[f->kind];
-    if (h->function) h->function(f, result, args);
+    ((void(*)(db_function, void*, void*))f->impl)(f, result, args);
 }
 
 /* Call with variable arguments */

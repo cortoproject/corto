@@ -11,8 +11,8 @@
 #include "db_object.h"
 #include "db__object.h"
 #include "db__meta.h"
-#include "db_class.h"
-#include "db_primitive.h"
+#include "db__collection.h"
+#include "db.h"
 
 #include "alloca.h"
 #include "string.h"

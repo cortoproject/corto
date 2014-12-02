@@ -1,7 +1,6 @@
 /* io_file.h
  *
- *  Generated on Sep  5 2014
- *    This file contains generated code. Do not modify!
+ * This file contains generated code. Do not modify!
  */
 
 #ifndef io_file_H

@@ -1,15 +1,13 @@
 /* Fast_Expression.c
  *
- *  Generated on Nov 18 2014
- *    This file contains the implementation for the generated interface.
+ * This file contains the implementation for the generated interface.
  *
  *    Don't mess with the begin and end tags, since these will ensure that modified
  *    code in interface functions isn't replaced when code is re-generated.
  */
 
-#include "Fast_Expression.h"
+#include "Fast.h"
 #include "Fast__meta.h"
-
 
 /* $header() */
 #include "Fast__api.h"
@@ -316,37 +314,6 @@ void Fast_Expression_cleanList(Fast_Expression_list list) {
 /* $end */
 }
 
-/* virtual ::hyve::Fast::Expression::fold() */
-Fast_Expression Fast_Expression_fold(Fast_Expression _this) {
-    static db_uint32 _methodId;
-    db_method _method;
-    Fast_Expression _result;
-    db_interface _abstract;
-
-    _abstract = db_interface(db_typeof(_this));
-
-    /* Determine methodId once, then cache it for subsequent calls. */
-    if (!_methodId) {
-        _methodId = db_interface_resolveMethodId(_abstract, "fold()");
-    }
-    db_assert(_methodId, "virtual method 'fold()' not found in abstract '%s'", db_nameof(_abstract));
-
-    /* Lookup method-object. */
-    _method = db_interface_resolveMethodById(_abstract, _methodId);
-    db_assert(_method != NULL, "unresolved method '%s::fold()@%d'", db_nameof(_this), _methodId);
-
-    /* Call method directly if it's a C-function. */
-    if (_method->_parent.kind == DB_PROCEDURE_CDECL) {
-        db_assert(_method->_parent.impl, "missing implementation for '%s::fold()'.", db_nameof(_this));
-        _result = (Fast_Expression)((db_object(*)(Fast_Expression))_method->_parent.impl)(_this);
-    } else {
-        /* Function is implemented in another language. */
-        db_call(db_function(_method), &_result, _this);
-    }
-    
-    return _result;
-}
-
 /* ::hyve::Fast::Expression::fold() */
 Fast_Expression Fast_Expression_fold_v(Fast_Expression _this) {
 /* $begin(::hyve::Fast::Expression::fold) */
@@ -451,74 +418,12 @@ db_type Fast_Expression_getType_type(Fast_Expression _this, db_type target) {
 /* $end */
 }
 
-/* virtual ::hyve::Fast::Expression::getValue() */
-db_word Fast_Expression_getValue(Fast_Expression _this) {
-    static db_uint32 _methodId;
-    db_method _method;
-    db_word _result;
-    db_interface _abstract;
-
-    _abstract = db_interface(db_typeof(_this));
-
-    /* Determine methodId once, then cache it for subsequent calls. */
-    if (!_methodId) {
-        _methodId = db_interface_resolveMethodId(_abstract, "getValue()");
-    }
-    db_assert(_methodId, "virtual method 'getValue()' not found in abstract '%s'", db_nameof(_abstract));
-
-    /* Lookup method-object. */
-    _method = db_interface_resolveMethodById(_abstract, _methodId);
-    db_assert(_method != NULL, "unresolved method '%s::getValue()@%d'", db_nameof(_this), _methodId);
-
-    /* Call method directly if it's a C-function. */
-    if (_method->_parent.kind == DB_PROCEDURE_CDECL) {
-        db_assert(_method->_parent.impl, "missing implementation for '%s::getValue()'.", db_nameof(_this));
-        _result = ((db_word(*)(Fast_Expression))_method->_parent.impl)(_this);
-    } else {
-        /* Function is implemented in another language. */
-        db_call(db_function(_method), &_result, _this);
-    }
-    
-    return _result;
-}
-
 /* ::hyve::Fast::Expression::getValue() */
 db_word Fast_Expression_getValue_v(Fast_Expression _this) {
 /* $begin(::hyve::Fast::Expression::getValue) */
 	DB_UNUSED(_this);
     return 0;
 /* $end */
-}
-
-/* virtual ::hyve::Fast::Expression::hasSideEffects() */
-db_bool Fast_Expression_hasSideEffects(Fast_Expression _this) {
-    static db_uint32 _methodId;
-    db_method _method;
-    db_bool _result;
-    db_interface _abstract;
-
-    _abstract = db_interface(db_typeof(_this));
-
-    /* Determine methodId once, then cache it for subsequent calls. */
-    if (!_methodId) {
-        _methodId = db_interface_resolveMethodId(_abstract, "hasSideEffects()");
-    }
-    db_assert(_methodId, "virtual method 'hasSideEffects()' not found in abstract '%s'", db_nameof(_abstract));
-
-    /* Lookup method-object. */
-    _method = db_interface_resolveMethodById(_abstract, _methodId);
-    db_assert(_method != NULL, "unresolved method '%s::hasSideEffects()@%d'", db_nameof(_this), _methodId);
-
-    /* Call method directly if it's a C-function. */
-    if (_method->_parent.kind == DB_PROCEDURE_CDECL) {
-        db_assert(_method->_parent.impl, "missing implementation for '%s::hasSideEffects()'.", db_nameof(_this));
-        _result = ((db_bool(*)(Fast_Expression))_method->_parent.impl)(_this);
-    } else {
-        /* Function is implemented in another language. */
-        db_call(db_function(_method), &_result, _this);
-    }
-    
-    return _result;
 }
 
 /* ::hyve::Fast::Expression::hasSideEffects() */
@@ -536,37 +441,6 @@ db_int16 Fast_Expression_init(Fast_Expression object) {
 /* $end */
 }
 
-/* virtual ::hyve::Fast::Expression::serialize(lang::type dstType,lang::word dst) */
-db_int16 Fast_Expression_serialize(Fast_Expression _this, db_type dstType, db_word dst) {
-    static db_uint32 _methodId;
-    db_method _method;
-    db_int16 _result;
-    db_interface _abstract;
-
-    _abstract = db_interface(db_typeof(_this));
-
-    /* Determine methodId once, then cache it for subsequent calls. */
-    if (!_methodId) {
-        _methodId = db_interface_resolveMethodId(_abstract, "serialize(lang::type dstType,lang::word dst)");
-    }
-    db_assert(_methodId, "virtual method 'serialize(lang::type dstType,lang::word dst)' not found in abstract '%s'", db_nameof(_abstract));
-
-    /* Lookup method-object. */
-    _method = db_interface_resolveMethodById(_abstract, _methodId);
-    db_assert(_method != NULL, "unresolved method '%s::serialize(lang::type dstType,lang::word dst)@%d'", db_nameof(_this), _methodId);
-
-    /* Call method directly if it's a C-function. */
-    if (_method->_parent.kind == DB_PROCEDURE_CDECL) {
-        db_assert(_method->_parent.impl, "missing implementation for '%s::serialize(lang::type dstType,lang::word dst)'.", db_nameof(_this));
-        _result = ((db_int16(*)(Fast_Expression, db_type , db_word ))_method->_parent.impl)(_this, dstType, dst);
-    } else {
-        /* Function is implemented in another language. */
-        db_call(db_function(_method), &_result, _this, dstType, dst);
-    }
-    
-    return _result;
-}
-
 /* ::hyve::Fast::Expression::serialize(lang::type dstType,lang::word dst) */
 db_int16 Fast_Expression_serialize_v(Fast_Expression _this, db_type dstType, db_word dst) {
 /* $begin(::hyve::Fast::Expression::serialize) */
@@ -576,37 +450,6 @@ db_int16 Fast_Expression_serialize_v(Fast_Expression _this, db_type dstType, db_
 	db_assert(0, "call to pure virtual function Fast::Expression::serialize");
 	return 0;
 /* $end */
-}
-
-/* virtual ::hyve::Fast::Expression::toList() */
-Fast_Expression_list Fast_Expression_toList(Fast_Expression _this) {
-    static db_uint32 _methodId;
-    db_method _method;
-    Fast_Expression_list _result;
-    db_interface _abstract;
-
-    _abstract = db_interface(db_typeof(_this));
-
-    /* Determine methodId once, then cache it for subsequent calls. */
-    if (!_methodId) {
-        _methodId = db_interface_resolveMethodId(_abstract, "toList()");
-    }
-    db_assert(_methodId, "virtual method 'toList()' not found in abstract '%s'", db_nameof(_abstract));
-
-    /* Lookup method-object. */
-    _method = db_interface_resolveMethodById(_abstract, _methodId);
-    db_assert(_method != NULL, "unresolved method '%s::toList()@%d'", db_nameof(_this), _methodId);
-
-    /* Call method directly if it's a C-function. */
-    if (_method->_parent.kind == DB_PROCEDURE_CDECL) {
-        db_assert(_method->_parent.impl, "missing implementation for '%s::toList()'.", db_nameof(_this));
-        _result = ((Fast_Expression_list(*)(Fast_Expression))_method->_parent.impl)(_this);
-    } else {
-        /* Function is implemented in another language. */
-        db_call(db_function(_method), &_result, _this);
-    }
-    
-    return _result;
 }
 
 /* ::hyve::Fast::Expression::toList() */
