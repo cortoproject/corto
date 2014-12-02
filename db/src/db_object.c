@@ -2388,7 +2388,7 @@ static void db_notifyObserverCdecl(db__observer* data, db_object _this, db_objec
     db_function f = db_function(data->observer);
     DB_UNUSED(_this);
     DB_UNUSED(mask);
-    ((void(*)(db_object,db_object))f->impl)(observable, source);
+    ((void(*)(db_object,db_object))f->implData)(observable, source);
 }
 
 static void db_notifyObserverThis(db__observer* data, db_object _this, db_object observable, db_object source, db_uint32 mask) {
