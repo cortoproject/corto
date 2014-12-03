@@ -4,6 +4,7 @@
 
 #include "db_generator.h"
 #include "db_serializer.h"
+// #include "db_shell.h"
 #include "hyve.h"
 #include "json.h"
 
@@ -137,6 +138,54 @@ finished:
     return 1;
 }
 
+
+
+/* TODO this is copy-past from dbsh.c */
+static char* dbsh_stateStr(db_object o, char* buff) {
+    buff[0] = '\0';
+
+    /* Get state */
+    if (db_checkState(o, DB_VALID)) {
+       strcpy(buff, "V");
+    }
+    if (db_checkState(o, DB_DECLARED)) {
+       strcat(buff, "|DCL");
+    }
+    if (db_checkState(o, DB_DEFINED)) {
+       strcat(buff, "|DEF");
+    }
+
+    return buff;
+}
+
+/* TODO this is copy-paste from dbsh.c */
+static char* dbsh_attrStr(db_object o, char* buff) {
+    db_bool first;
+    *buff = '\0';
+
+    first = TRUE;
+    if (db_checkAttr(o, DB_ATTR_SCOPED)) {
+        strcat(buff, "S");
+        first = FALSE;
+    }
+    if (db_checkAttr(o, DB_ATTR_WRITABLE)) {
+        if (!first) {
+            strcat(buff, "|W");
+        } else {
+            strcat(buff, "W");
+            first = FALSE;
+        }
+    }
+    if (db_checkAttr(o, DB_ATTR_OBSERVABLE)) {
+        if (!first) {
+            strcat(buff, "|O");
+        } else {
+            strcat(buff, "O");
+        }
+    }
+    return buff;
+}
+
 static db_int16 db_ser_meta(db_serializer s, db_value* v, void* userData) {
     db_json_ser_t *data = userData;
     db_object object = db_valueValue(v);
@@ -160,6 +209,17 @@ static db_int16 db_ser_meta(db_serializer s, db_value* v, void* userData) {
         goto finished;
     }
 
+    char states[10]; // TODO define length better
+    dbsh_stateStr(object, states);
+    if (!db_ser_appendstr(data, "\"states\":\"%s\",", states)) {
+        goto finished;
+    }
+
+    char attributes[10]; // TODO define length better
+    dbsh_attrStr(object, attributes);
+    if (!db_ser_appendstr(data, "\"attributes\":\"%s\",", attributes)) {
+        goto finished;
+    }
 
     db_id parent_fullname;
     db_fullname(db_parentof(object), parent_fullname);
@@ -183,6 +243,57 @@ error:
 finished:
     return 1;
 }
+
+/* How to handle "finished" and "error" here? */
+static int db_walkScopeAction_ser_meta(db_object o, void* userData) {
+    if (!db_ser_appendstr(userData, "{")) {
+        goto finished;
+    }
+
+    db_string name = db_nameof(o);
+    if (!db_ser_appendstr(userData, "\"name\":\"%s\",", name)) {
+        goto finished;
+    }
+
+    db_id type_fullname;
+    db_fullname(db_typeof(o), type_fullname);
+    if (!db_ser_appendstr(userData, "\"type\":\"%s\",", type_fullname)) {
+        goto finished;
+    }
+
+    char states[10]; // TODO define length better
+    dbsh_stateStr(o, states);
+    if (!db_ser_appendstr(userData, "\"states\":\"%s\",", states)) {
+        goto finished;
+    }
+
+    char attributes[10]; // TODO define length better
+    dbsh_attrStr(o, attributes);
+    if (!db_ser_appendstr(userData, "\"attributes\":\"%s\",", attributes)) {
+        goto finished;
+    }
+
+    db_uint32 scopeSize = db_scopeSize(o);
+    if (!db_ser_appendstr(userData, "\"childCount\":%"PRId32"", scopeSize)) {
+        goto finished;
+    }
+
+    if (!db_ser_appendstr(userData, "}")) {
+        goto finished;
+    }
+
+    return 0;
+}
+
+static db_int16 db_ser_scope_meta(db_serializer s, db_value* v, void* userData) {
+    DB_UNUSED(s); /* should we receive s for scalability or should we dismiss it? */
+    db_object object = db_valueValue(v);
+    db_scopeWalk(object, db_walkScopeAction_ser_meta, userData);
+    /* what to do with the result of db_scopeWalk ? */
+    return 0;
+}
+
+
 
 static db_int16 db_ser_object(db_serializer s, db_value* v, void* userData) {
     db_json_ser_t *data = userData;
@@ -210,7 +321,8 @@ static db_int16 db_ser_object(db_serializer s, db_value* v, void* userData) {
         if (!db_ser_appendstr(data, "\"meta\":")) {
             goto finished;
         }
-        if (db_ser_meta(s, v, userData)) {
+        db_int16 metaoptions = META_NAME|META_TYPE|META_STATE|META_ATTRIBUTES;
+        if (db_META(s, v, userData, metaoptions)) {
             goto error;
         }
         c += 1;
@@ -223,7 +335,12 @@ static db_int16 db_ser_object(db_serializer s, db_value* v, void* userData) {
         if (!db_ser_appendstr(data, "\"scope\":")) {
             goto finished;
         }
-        /* tODO magic */
+
+        /* TODO should this be not'ted? what is the expecsted result? */
+        if (db_ser_scope_meta(s, v, data)) {
+            goto error;
+        }
+        
     }
 
     if (!db_ser_appendstr(data, "}")) {
@@ -254,4 +371,3 @@ struct db_serializer_s db_json_ser(db_modifier access, db_operatorKind accessKin
     s.metaprogram[DB_OBJECT] = db_ser_object;
     return s;
 }
-

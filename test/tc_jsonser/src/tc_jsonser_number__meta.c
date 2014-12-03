@@ -1,6 +1,6 @@
 /* tc_jsonser_number__meta.c
  *
- *  Generated on Nov 30 2014
+ *  Generated on Dec  1 2014
  *    Loads objects in database.
  *    This file contains generated code. Do not modify!
  */
@@ -24,6 +24,13 @@ db_int32 (*tc_jsonser_number_i32z_o);
 db_int64 (*tc_jsonser_number_i64n_o);
 db_int64 (*tc_jsonser_number_i64p_o);
 db_int64 (*tc_jsonser_number_i64z_o);
+tc_jsonser_number_point2D (*tc_jsonser_number_p_o);
+db_struct tc_jsonser_number_point2D_o;
+db_member tc_jsonser_number_point2D_x_o;
+db_member tc_jsonser_number_point2D_y_o;
+db_string (*tc_jsonser_number_s1_o);
+db_string (*tc_jsonser_number_s2_o);
+db_string (*tc_jsonser_number_sn_o);
 db_uint16 (*tc_jsonser_number_u16p_o);
 db_uint16 (*tc_jsonser_number_u16z_o);
 db_uint32 (*tc_jsonser_number_u32p_o);
@@ -272,6 +279,124 @@ int tc_jsonser_number_load(void) {
         (*tc_jsonser_number_i64z_o) = 0;
         if (db_define(tc_jsonser_number_i64z_o)) {
             db_error("tc_jsonser_number_load: failed to define object '::tc_jsonser_number::i64z'.");
+            goto error;
+        }
+    }
+    /* Declare ::tc_jsonser_number::point2D */
+    tc_jsonser_number_point2D_o = db_declare(tc_jsonser_number_o, "point2D", db_typedef(db_struct_o));
+    if (!tc_jsonser_number_point2D_o) {
+        db_error("tc_jsonser_number_load: failed to declare object '::tc_jsonser_number::point2D'.");
+        goto error;
+    }
+
+    /* Declare ::tc_jsonser_number::point2D::x */
+    tc_jsonser_number_point2D_x_o = db_declare(tc_jsonser_number_point2D_o, "x", db_typedef(db_member_o));
+    if (!tc_jsonser_number_point2D_x_o) {
+        db_error("tc_jsonser_number_load: failed to declare object '::tc_jsonser_number::point2D::x'.");
+        goto error;
+    }
+
+    /* Define ::tc_jsonser_number::point2D::x */
+    if (!db_checkState(tc_jsonser_number_point2D_x_o, DB_DEFINED)) {
+        tc_jsonser_number_point2D_x_o->type = db_resolve_ext(tc_jsonser_number_point2D_x_o, NULL, "::hyve::lang::int32", FALSE, "element ::tc_jsonser_number::point2D::x.type");
+        tc_jsonser_number_point2D_x_o->modifiers = 0x0;
+        tc_jsonser_number_point2D_x_o->state = 0x6;
+        tc_jsonser_number_point2D_x_o->weak = FALSE;
+        tc_jsonser_number_point2D_x_o->id = 0;
+        if (db_define(tc_jsonser_number_point2D_x_o)) {
+            db_error("tc_jsonser_number_load: failed to define object '::tc_jsonser_number::point2D::x'.");
+            goto error;
+        }
+    }
+    /* Declare ::tc_jsonser_number::point2D::y */
+    tc_jsonser_number_point2D_y_o = db_declare(tc_jsonser_number_point2D_o, "y", db_typedef(db_member_o));
+    if (!tc_jsonser_number_point2D_y_o) {
+        db_error("tc_jsonser_number_load: failed to declare object '::tc_jsonser_number::point2D::y'.");
+        goto error;
+    }
+
+    /* Define ::tc_jsonser_number::point2D::y */
+    if (!db_checkState(tc_jsonser_number_point2D_y_o, DB_DEFINED)) {
+        tc_jsonser_number_point2D_y_o->type = db_resolve_ext(tc_jsonser_number_point2D_y_o, NULL, "::hyve::lang::int32", FALSE, "element ::tc_jsonser_number::point2D::y.type");
+        tc_jsonser_number_point2D_y_o->modifiers = 0x0;
+        tc_jsonser_number_point2D_y_o->state = 0x6;
+        tc_jsonser_number_point2D_y_o->weak = FALSE;
+        tc_jsonser_number_point2D_y_o->id = 1;
+        if (db_define(tc_jsonser_number_point2D_y_o)) {
+            db_error("tc_jsonser_number_load: failed to define object '::tc_jsonser_number::point2D::y'.");
+            goto error;
+        }
+    }
+    /* Define ::tc_jsonser_number::point2D */
+    if (!db_checkState(tc_jsonser_number_point2D_o, DB_DEFINED)) {
+        db_type(tc_jsonser_number_point2D_o)->defaultType = db_resolve_ext(tc_jsonser_number_point2D_o, NULL, "::hyve::lang::member", FALSE, "element ::tc_jsonser_number::point2D.defaultType");
+        db_type(tc_jsonser_number_point2D_o)->parentType = NULL;
+        db_type(tc_jsonser_number_point2D_o)->parentState = 0x0;
+        db_interface(tc_jsonser_number_point2D_o)->base = NULL;
+        tc_jsonser_number_point2D_o->baseAccess = 0x0;
+        if (db_define(tc_jsonser_number_point2D_o)) {
+            db_error("tc_jsonser_number_load: failed to define object '::tc_jsonser_number::point2D'.");
+            goto error;
+        }
+    }
+    /* Declare ::tc_jsonser_number::p */
+    tc_jsonser_number_p_o = db_declare(tc_jsonser_number_o, "p", db_typedef(tc_jsonser_number_point2D_o));
+    if (!tc_jsonser_number_p_o) {
+        db_error("tc_jsonser_number_load: failed to declare object '::tc_jsonser_number::p'.");
+        goto error;
+    }
+
+    /* Define ::tc_jsonser_number::p */
+    if (!db_checkState(tc_jsonser_number_p_o, DB_DEFINED)) {
+        tc_jsonser_number_p_o->x = 3;
+        tc_jsonser_number_p_o->y = 4;
+        if (db_define(tc_jsonser_number_p_o)) {
+            db_error("tc_jsonser_number_load: failed to define object '::tc_jsonser_number::p'.");
+            goto error;
+        }
+    }
+    /* Declare ::tc_jsonser_number::s1 */
+    tc_jsonser_number_s1_o = db_declare(tc_jsonser_number_o, "s1", db_typedef(db_string_o));
+    if (!tc_jsonser_number_s1_o) {
+        db_error("tc_jsonser_number_load: failed to declare object '::tc_jsonser_number::s1'.");
+        goto error;
+    }
+
+    /* Define ::tc_jsonser_number::s1 */
+    if (!db_checkState(tc_jsonser_number_s1_o, DB_DEFINED)) {
+        (*tc_jsonser_number_s1_o) = db_strdup("hello word");
+        if (db_define(tc_jsonser_number_s1_o)) {
+            db_error("tc_jsonser_number_load: failed to define object '::tc_jsonser_number::s1'.");
+            goto error;
+        }
+    }
+    /* Declare ::tc_jsonser_number::s2 */
+    tc_jsonser_number_s2_o = db_declare(tc_jsonser_number_o, "s2", db_typedef(db_string_o));
+    if (!tc_jsonser_number_s2_o) {
+        db_error("tc_jsonser_number_load: failed to declare object '::tc_jsonser_number::s2'.");
+        goto error;
+    }
+
+    /* Define ::tc_jsonser_number::s2 */
+    if (!db_checkState(tc_jsonser_number_s2_o, DB_DEFINED)) {
+        (*tc_jsonser_number_s2_o) = db_strdup("hello, world!");
+        if (db_define(tc_jsonser_number_s2_o)) {
+            db_error("tc_jsonser_number_load: failed to define object '::tc_jsonser_number::s2'.");
+            goto error;
+        }
+    }
+    /* Declare ::tc_jsonser_number::sn */
+    tc_jsonser_number_sn_o = db_declare(tc_jsonser_number_o, "sn", db_typedef(db_string_o));
+    if (!tc_jsonser_number_sn_o) {
+        db_error("tc_jsonser_number_load: failed to declare object '::tc_jsonser_number::sn'.");
+        goto error;
+    }
+
+    /* Define ::tc_jsonser_number::sn */
+    if (!db_checkState(tc_jsonser_number_sn_o, DB_DEFINED)) {
+        (*tc_jsonser_number_sn_o) = NULL;
+        if (db_define(tc_jsonser_number_sn_o)) {
+            db_error("tc_jsonser_number_load: failed to define object '::tc_jsonser_number::sn'.");
             goto error;
         }
     }

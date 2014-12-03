@@ -28,3 +28,12 @@ object tc_jsonser_number::
     float32 f64n: -2.45;
     float32 f64z: 0;
     float32 f64p: 45.2;
+
+    string sn: null;
+    string s1: "hello word";
+    string s2: "hello, world!";
+
+    struct point2D::
+        x, y: int32;
+
+    point2d p: 3, 4;

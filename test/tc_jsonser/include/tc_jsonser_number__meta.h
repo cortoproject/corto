@@ -1,6 +1,6 @@
 /* tc_jsonser_number__meta.h
  *
- *  Generated on Nov 30 2014
+ *  Generated on Dec  1 2014
  *    Loads objects in database.
  *    This file contains generated code. Do not modify!
  */
@@ -63,6 +63,27 @@ extern db_int64 (*tc_jsonser_number_i64p_o);
 
 /* ::tc_jsonser_number::i64z */
 extern db_int64 (*tc_jsonser_number_i64z_o);
+
+/* ::tc_jsonser_number::p */
+extern tc_jsonser_number_point2D (*tc_jsonser_number_p_o);
+
+/* ::tc_jsonser_number::point2D */
+extern db_struct tc_jsonser_number_point2D_o;
+
+/* ::tc_jsonser_number::point2D::x */
+extern db_member tc_jsonser_number_point2D_x_o;
+
+/* ::tc_jsonser_number::point2D::y */
+extern db_member tc_jsonser_number_point2D_y_o;
+
+/* ::tc_jsonser_number::s1 */
+extern db_string (*tc_jsonser_number_s1_o);
+
+/* ::tc_jsonser_number::s2 */
+extern db_string (*tc_jsonser_number_s2_o);
+
+/* ::tc_jsonser_number::sn */
+extern db_string (*tc_jsonser_number_sn_o);
 
 /* ::tc_jsonser_number::u16p */
 extern db_uint16 (*tc_jsonser_number_u16p_o);

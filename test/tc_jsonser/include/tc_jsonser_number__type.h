@@ -1,6 +1,6 @@
 /* tc_jsonser_number__type.h
  *
- *  Generated on Nov 30 2014
+ *  Generated on Dec  1 2014
  *    Type-definitions for C-language.
  *    This file contains generated code. Do not modify!
  */
@@ -17,6 +17,13 @@ extern "C" {
 
 /* Type definitions */
 
+
+/*  ::tc_jsonser_number::point2D */
+typedef struct tc_jsonser_number_point2D tc_jsonser_number_point2D;
+struct tc_jsonser_number_point2D {
+    db_int32 x;
+    db_int32 y;
+};
 
 #ifdef __cplusplus
 }
