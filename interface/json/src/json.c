@@ -187,6 +187,7 @@ static char* dbsh_attrStr(db_object o, char* buff) {
 }
 
 static db_int16 db_ser_meta(db_serializer s, db_value* v, void* userData) {
+    DB_UNUSED(s);
     db_json_ser_t *data = userData;
     db_object object = db_valueValue(v);
     
@@ -283,6 +284,10 @@ static int db_walkScopeAction_ser_meta(db_object o, void* userData) {
     }
 
     return 0;
+error:
+    return -1;
+finished:
+    return 1;
 }
 
 static db_int16 db_ser_scope_meta(db_serializer s, db_value* v, void* userData) {
@@ -321,8 +326,7 @@ static db_int16 db_ser_object(db_serializer s, db_value* v, void* userData) {
         if (!db_ser_appendstr(data, "\"meta\":")) {
             goto finished;
         }
-        db_int16 metaoptions = META_NAME|META_TYPE|META_STATE|META_ATTRIBUTES;
-        if (db_META(s, v, userData, metaoptions)) {
+        if (db_ser_meta(s, v, userData)) {
             goto error;
         }
         c += 1;

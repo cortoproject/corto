@@ -14,7 +14,7 @@
 
 #define test_object(object, expected) \
  {\
-     db_json_ser_t userData = {NULL, NULL, 0, 0, 0, TRUE, TRUE, FALSE};\
+     db_json_ser_t userData = {NULL, NULL, 0, 0, 0, FALSE, TRUE, FALSE};\
      db_serialize(&serializer, tc_jsonser_number_##object##_o, &userData);\
      if (strcmp(userData.buffer, "{\"value\":"expected"}")) {\
         result = FALSE;\
@@ -67,7 +67,7 @@ int main(int argc, char* argv[]) {
     test_object(s1, "\"hello, world!\"");
 
     /* Test a struct */
-    test_object(p, "{\"x\":3, \"y\":4}");
+    test_object(p, "{\"x\":3,\"y\":4}");
  
     /* Stop database */
     db_stop();
