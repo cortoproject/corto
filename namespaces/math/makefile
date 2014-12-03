@@ -10,7 +10,7 @@ INCLUDE = 	include \
 			$(BUILDHOME)/public/c/include \
 			$(BUILDHOME)/infra/include
 
-LIBS	=	lang fl api m
+LIBS	=	lang fl m
 
 include $(BUILD)/component.makefile
 

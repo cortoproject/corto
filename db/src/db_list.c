@@ -10,6 +10,7 @@
 #include "db__meta.h"
 
 /* $header() */
+#include "db_value.h"
 typedef void (*db_list_action)(db_ll list, void *value, void *userData);
 static void db_list_do(db_any object, db_any element, db_bool insert, db_list_action action, void *userData);
 

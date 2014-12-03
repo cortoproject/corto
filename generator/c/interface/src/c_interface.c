@@ -768,7 +768,7 @@ static g_file c_interfaceWrapperFileOpen(db_generator g) {
     db_id id, name;
 
     db_object o = g_getCurrent(g);
-    sprintf(fileName, "%s__wrapper.c", g_fullOid(g, o, name));
+    sprintf(fileName, "%s__wrapper.c", g_getName(g));
     result = g_fileOpen(g, fileName);
     if(!result) {
         goto error;
@@ -779,8 +779,8 @@ static g_file c_interfaceWrapperFileOpen(db_generator g) {
     g_fileWrite(result, " *\n");
     g_fileWrite(result, " * This file contains wrapper functions for %s.\n", db_fullname(o, id));
     g_fileWrite(result, " */\n\n");
-    g_fileWrite(result, "#include \"%s.h\"\n", name);
-    g_fileWrite(result, "#include \"%s__meta.h\"\n", name);
+    g_fileWrite(result, "#include \"%s.h\"\n", g_fullOid(g, o, name));
+    g_fileWrite(result, "#include \"%s__meta.h\"\n", g_getName(g));
 
     return result;
 error:
