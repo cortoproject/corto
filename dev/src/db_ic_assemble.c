@@ -687,7 +687,11 @@ db_ic_vmOperand db_ic_getVmOperand(db_ic_vmProgram *program, db_icDerefMode dere
         	} else {
         		if (isReference) {
                     if (base) {
-                         result = DB_IC_VMOPERAND_Q;
+                        if (!isRefType) {
+                            result = DB_IC_VMOPERAND_R;
+                        } else {
+                            result = DB_IC_VMOPERAND_Q;
+                        }
                     } else {
                         result = DB_IC_VMOPERAND_R;
                     }

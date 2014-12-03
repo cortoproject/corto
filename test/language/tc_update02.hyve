@@ -3,7 +3,7 @@ void fail(string msg):
 	"tc_update02: FAIL: $msg";
 	result = false;
 	
-	
+
 class Foo::
 	x : Foo;
 	y : list{Foo};
