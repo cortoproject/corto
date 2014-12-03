@@ -376,49 +376,6 @@ static void c_sourceWriteLoadEnd(g_file file) {
     g_fileWrite(file, "}\n");
 }
 
-/* Declare object */
-static int c_loadDeclare(db_object o, void* userData) {
-    c_typeWalk_t* data;
-    db_id id, parentId, typeId, escapedName;
-
-    data = userData;
-
-    /* Only declare scoped objects */
-    if (db_checkAttr(o, DB_ATTR_SCOPED)) {
-    	c_escapeString(db_nameof(o), escapedName);
-
-        /* Declaration */
-        g_fileWrite(data->source, "/* Declare %s */\n", db_fullname(o, id));
-
-        if (!db_checkAttr(db_typeof(o), DB_ATTR_SCOPED)) {
-			g_fileWrite(data->source, "%s = db_declare(%s, \"%s\", (_a_ ? db_free(_a_) : 0, _a_ = db_typedef(%s)));\n",
-					c_loadVarId(data->g, o, id),
-					c_loadVarId(data->g, db_parentof(o), parentId),
-					escapedName,
-					c_loadVarId(data->g, db_typeof(o), typeId));
-        } else {
-			g_fileWrite(data->source, "%s = db_declare(%s, \"%s\", db_typedef(%s));\n",
-					c_loadVarId(data->g, o, id),
-					c_loadVarId(data->g, db_parentof(o), parentId),
-					escapedName,
-					c_loadVarId(data->g, db_typeof(o), typeId));
-        }
-
-        /* Error checking */
-        g_fileWrite(data->source, "if (!%s) {\n", c_loadVarId(data->g, o, id));
-        g_fileIndent(data->source);
-        c_escapeString(db_fullname(o, id), escapedName);
-        g_fileWrite(data->source, "db_error(\"%s_load: failed to declare object '%s'.\");\n",
-                g_getName(data->g),
-                escapedName);
-        g_fileWrite(data->source, "goto error;\n");
-        g_fileDedent(data->source);
-        g_fileWrite(data->source, "}\n\n");
-    }
-
-    return 1;
-}
-
 /* Print variable start */
 static void c_varPrintStart(db_value* v, c_typeWalk_t* data) {
     db_id memberId;
@@ -702,50 +659,6 @@ static int c_loadCFunction(db_function o, c_typeWalk_t* data, db_id name) {
     return 0;
 }
 
-/* c_initObject */
-static db_int16 c_initObject(db_serializer s, db_value* v, void* userData) {
-    c_typeWalk_t* data;
-    db_id id, escapedId;
-    db_object o;
-
-    data = userData;
-    o = db_valueObject(v);
-
-    g_fileWrite(data->source, "/* Define %s */\n", db_fullname(o, id));
-    g_fileWrite(data->source, "if (!db_checkState(%s, DB_DEFINED)) {\n", c_loadVarId(data->g, o, id));
-    g_fileIndent(data->source);
-
-    /* Serialize object value */
-    db_serializeValue(s, v, userData);
-
-    /* If object is a procedure, set function implementation */
-    if (db_class_instanceof(db_procedure_o, db_typeof(o))) {
-        db_id name;
-        g_fileWrite(data->source, "\n");
-        if (!db_function(o)->impl) {
-            g_fileWrite(data->source, "/* Bind %s with C-function */\n", id);
-            g_fileWrite(data->source, "db_function(%s)->kind = DB_PROCEDURE_CDECL;\n", c_loadVarId(data->g, o, id));
-            c_loadCFunction(o, data, name);
-            g_fileWrite(data->source, "void __%s(void *args, void *result);\n", name);
-            g_fileWrite(data->source, "db_function(%s)->impl = (db_word)__%s;\n", id, name);
-        }
-    }
-
-    /* Define object */
-    g_fileWrite(data->source, "if (db_define(%s)) {\n", c_loadVarId(data->g, o, id));
-    g_fileIndent(data->source);
-    g_fileWrite(data->source, "db_error(\"%s_load: failed to define object '%s'.\");\n",
-            g_getName(data->g),
-            c_escapeString(db_fullname(o, id), escapedId));
-    g_fileWrite(data->source, "goto error;\n");
-    g_fileDedent(data->source);
-    g_fileWrite(data->source, "}\n");
-    g_fileDedent(data->source);
-    g_fileWrite(data->source, "}\n");
-
-    return 0;
-}
-
 /* Create serializer that initializes object values */
 static struct db_serializer_s c_initSerializer(void) {
     struct db_serializer_s s;
@@ -757,11 +670,63 @@ static struct db_serializer_s c_initSerializer(void) {
     s.traceKind = DB_SERIALIZER_TRACE_ON_FAIL;
     s.program[DB_PRIMITIVE] = c_initPrimitive;
     s.program[DB_COLLECTION] = c_initCollection;
-    s.metaprogram[DB_OBJECT] = c_initObject;
     s.metaprogram[DB_ELEMENT] = c_initElement;
     s.reference = c_initReference;
 
     return s;
+}
+
+/* Declare object */
+static int c_loadDeclare(db_object o, void* userData) {
+    c_typeWalk_t* data;
+    db_id id, parentId, typeId, escapedName;
+    struct db_serializer_s s;
+
+    data = userData;
+
+    /* Only declare scoped objects */
+    if (db_checkAttr(o, DB_ATTR_SCOPED)) {
+        c_escapeString(db_nameof(o), escapedName);
+
+        /* Declaration */
+        g_fileWrite(data->source, "/* Declare %s */\n", db_fullname(o, id));
+
+        if (!db_checkAttr(db_typeof(o), DB_ATTR_SCOPED)) {
+            g_fileWrite(data->source, "%s = db_declare(%s, \"%s\", (_a_ ? db_free(_a_) : 0, _a_ = db_typedef(%s)));\n",
+                    c_loadVarId(data->g, o, id),
+                    c_loadVarId(data->g, db_parentof(o), parentId),
+                    escapedName,
+                    c_loadVarId(data->g, db_typeof(o), typeId));
+        } else {
+            g_fileWrite(data->source, "%s = db_declare(%s, \"%s\", db_typedef(%s));\n",
+                    c_loadVarId(data->g, o, id),
+                    c_loadVarId(data->g, db_parentof(o), parentId),
+                    escapedName,
+                    c_loadVarId(data->g, db_typeof(o), typeId));
+        }
+
+        /* Error checking */
+        g_fileWrite(data->source, "if (!%s) {\n", c_loadVarId(data->g, o, id));
+        g_fileIndent(data->source);
+        c_escapeString(db_fullname(o, id), escapedName);
+        g_fileWrite(data->source, "db_error(\"%s_load: failed to declare object '%s'.\");\n",
+                g_getName(data->g),
+                escapedName);
+        g_fileWrite(data->source, "goto error;\n");
+        g_fileDedent(data->source);
+
+        /* Serialize object if object is a primitive */
+        if(db_typeof(o)->real->kind == DB_PRIMITIVE) {
+            g_fileWrite(data->source, "} else {\n");
+            g_fileIndent(data->source);
+            s = c_initSerializer();
+            db_serialize(&s, o, userData);        
+            g_fileDedent(data->source);
+        }
+        g_fileWrite(data->source, "}\n\n");
+    }
+
+    return 1;
 }
 
 /* Define object */
@@ -769,11 +734,45 @@ static int c_loadDefine(db_object o, void* userData) {
     struct db_serializer_s s;
 
     if (db_checkAttr(o, DB_ATTR_SCOPED)) {
-        /* Obtain serializer to initialize object values */
-        s = c_initSerializer();
+        c_typeWalk_t* data;
+        db_id id, escapedId;
 
-        /* Serialize object */
-        db_serialize(&s, o, userData);
+        data = userData;
+
+        g_fileWrite(data->source, "/* Define %s */\n", db_fullname(o, id));
+        g_fileWrite(data->source, "if (!db_checkState(%s, DB_DEFINED)) {\n", c_loadVarId(data->g, o, id));
+        g_fileIndent(data->source);
+
+        /* Serialize object if object is not a primitive */
+        if(db_typeof(o)->real->kind != DB_PRIMITIVE) {
+            s = c_initSerializer();
+            db_serialize(&s, o, userData);
+        }
+
+        /* If object is a procedure, set function implementation */
+        if (db_class_instanceof(db_procedure_o, db_typeof(o))) {
+            db_id name;
+            g_fileWrite(data->source, "\n");
+            if (!db_function(o)->impl) {
+                g_fileWrite(data->source, "/* Bind %s with C-function */\n", id);
+                g_fileWrite(data->source, "db_function(%s)->kind = DB_PROCEDURE_CDECL;\n", c_loadVarId(data->g, o, id));
+                c_loadCFunction(o, data, name);
+                g_fileWrite(data->source, "void __%s(void *args, void *result);\n", name);
+                g_fileWrite(data->source, "db_function(%s)->impl = (db_word)__%s;\n", id, name);
+            }
+        }
+
+        /* Define object */
+        g_fileWrite(data->source, "if (db_define(%s)) {\n", c_loadVarId(data->g, o, id));
+        g_fileIndent(data->source);
+        g_fileWrite(data->source, "db_error(\"%s_load: failed to define object '%s'.\");\n",
+                g_getName(data->g),
+                c_escapeString(db_fullname(o, id), escapedId));
+        g_fileWrite(data->source, "goto error;\n");
+        g_fileDedent(data->source);
+        g_fileWrite(data->source, "}\n");
+        g_fileDedent(data->source);
+        g_fileWrite(data->source, "}\n");
     }
 
     return 1;
