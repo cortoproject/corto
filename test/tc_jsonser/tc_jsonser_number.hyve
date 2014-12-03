@@ -1,0 +1,39 @@
+object tc_jsonser_number::
+
+    int16 i16n: -2;
+    int16 i16z: 0;
+    int16 i16p: 45;
+
+    int32 i32n: -2;
+    int32 i32z: 0;
+    int32 i32p: 45;
+
+    int64 i64n: -2;
+    int64 i64z: 0;
+    int64 i64p: 45;
+
+    uint16 u16z: 0;
+    uint16 u16p: 45;
+
+    uint32 u32z: 0;
+    uint32 u32p: 45;
+
+    uint64 u64z: 0;
+    uint64 u64p: 45;
+
+    float32 f32n: -2.45;
+    float32 f32z: 0;
+    float32 f32p: 45.2;
+
+    float32 f64n: -2.45;
+    float32 f64z: 0;
+    float32 f64p: 45.2;
+
+    string sn: null;
+    string s1: "hello word";
+    string s2: "hello, world!";
+
+    struct point2D::
+        x, y: int32;
+
+    point2d p: 3, 4;

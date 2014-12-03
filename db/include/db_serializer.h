@@ -28,8 +28,8 @@ typedef enum db_serializerTraceKind {
 }db_serializerTraceKind;
 
 DB_CLASS_DEF(db_serializer) {
-	db_bool initialized;
-	db_bool constructed;
+    db_bool initialized;
+    db_bool constructed;
     db_modifier access;
     db_operatorKind accessKind; /* OR, XOR, NOT */
     db_serializerTraceKind traceKind;

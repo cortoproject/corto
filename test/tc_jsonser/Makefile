@@ -1,9 +1,9 @@
 
-TARGET =	../test/bin/tc_jsonser
+TARGET =	../test/bin/tc_jsonser_number
 
-SOURCES =	tc_jsonser__api.c \
-			tc_jsonser__meta.c \
-			tc_jsonser.c
+SOURCES =	tc_jsonser_number__api.c \
+			tc_jsonser_number__meta.c \
+			tc_jsonser_number.c
 
 INCLUDE = 	include \
 			$(BUILDHOME)/db/include \
