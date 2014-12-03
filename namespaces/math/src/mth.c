@@ -1,7 +1,6 @@
 /* mth.c
  *
- *  Generated on Sep  5 2014
- *    This file contains the implementation for the generated interface.
+ * This file contains the implementation for the generated interface.
  *
  *    Don't mess with the begin and end tags, since these will ensure that modified
  *    code in interface functions isn't replaced when code is re-generated.
@@ -10,10 +9,8 @@
 #include "mth.h"
 #include "math__meta.h"
 
-
 /* $header() */
 #include "math.h"
-#include "math__meta.h"
 
 int hyvemain(int argc, char* argv[]) {
     DB_UNUSED(argc);

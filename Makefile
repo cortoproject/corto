@@ -22,6 +22,7 @@ clean:
 	@make clean -C namespaces
 #	@make clean -C public
 	@make clean -C test
+	@rm ./bin/*
 	
 gcov:
 	@make gcov -C db

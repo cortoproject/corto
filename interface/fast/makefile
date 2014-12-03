@@ -52,7 +52,7 @@ INCLUDE = 	$(BUILDHOME)/db/include \
 			include \
 			$(BUILDHOME)/dev/include
 
-LIBS	=	lang api hyvedev fl
+LIBS	=	lang hyvedev fl
 
 include $(BUILD)/lexyacc.makefile
 
