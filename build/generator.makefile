@@ -4,7 +4,7 @@ LIBPATH += $(BUILDHOME)/generator/bin
 include $(BUILD)/makefile.makefile
 
 $(TARGET_OBJECT): $(OBJECTS)
-	@mkdir -p $(HYVE_HOME)/generator/bin
+	@mkdir -p $(dir $(TARGET_OBJECT))
 	$(CC) $(COVFLAGS) $(OBJECTS) $(LINK) -shared -o $@
 	
 clean: 
