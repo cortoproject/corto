@@ -1,8 +1,7 @@
 /* tc_jsonser_number__meta.h
  *
- *  Generated on Dec  1 2014
- *    Loads objects in database.
- *    This file contains generated code. Do not modify!
+ * Loads objects in database.
+ * This file contains generated code. Do not modify!
  */
 
 #ifndef tc_jsonser_number_META_H
@@ -18,6 +17,12 @@ extern "C" {
 
 /* ::tc_jsonser_number */
 extern db_object tc_jsonser_number_o;
+
+/* ::tc_jsonser_number::bf */
+extern db_bool (*tc_jsonser_number_bf_o);
+
+/* ::tc_jsonser_number::bt */
+extern db_bool (*tc_jsonser_number_bt_o);
 
 /* ::tc_jsonser_number::f32n */
 extern db_float32 (*tc_jsonser_number_f32n_o);
@@ -63,6 +68,15 @@ extern db_int64 (*tc_jsonser_number_i64p_o);
 
 /* ::tc_jsonser_number::i64z */
 extern db_int64 (*tc_jsonser_number_i64z_o);
+
+/* ::tc_jsonser_number::namesp */
+extern db_string (*tc_jsonser_number_namesp_o);
+
+/* ::tc_jsonser_number::namesp::a */
+extern db_int16 (*tc_jsonser_number_namesp_a_o);
+
+/* ::tc_jsonser_number::namesp::b */
+extern db_string (*tc_jsonser_number_namesp_b_o);
 
 /* ::tc_jsonser_number::p */
 extern tc_jsonser_number_point2D (*tc_jsonser_number_p_o);

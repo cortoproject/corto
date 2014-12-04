@@ -1,7 +1,6 @@
 /* tc_jsonser_number_point2D.h
  *
- *  Generated on Dec  1 2014
- *    This file contains generated code. Do not modify!
+ * This file contains generated code. Do not modify!
  */
 
 #ifndef tc_jsonser_number_point2D_H
