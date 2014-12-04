@@ -1,6 +1,7 @@
 
-#include <stdio.h>
 #include <inttypes.h>
+#include <stdio.h>
+#include <string.h>
 
 #include "db_generator.h"
 #include "db_serializer.h"
@@ -93,19 +94,15 @@ static db_int16 db_ser_member(db_serializer s, db_value *info, void *userData) {
     db_member member = info->is.member.t;
     db_string name = db_nameof(member);
 
-
     if (data->itemCount && !db_ser_appendstr(data, ",")) {
         goto finished;
     }
-
     if (!db_ser_appendstr(data, "\"%s\":", name)) {
         goto finished;
     }
-
     if (db_serializeValue(s, info, userData)) {
         goto error;
     }
-
 
     data->itemCount += 1;
 
@@ -121,16 +118,12 @@ static db_int16 db_ser_composite(db_serializer s, db_value* v, void* userData) {
     if (!db_ser_appendstr(data, "{")) {
         goto finished;
     }
-
     if (db_serializeMembers(s, v, userData)) {
         goto error;
     }
-
-
     if (!db_ser_appendstr(data, "}")) {
         goto finished;
     }
-
     return 0;
 error:
     return -1;
@@ -245,7 +238,6 @@ finished:
     return 1;
 }
 
-/* How to handle "finished" and "error" here? */
 static int db_walkScopeAction_ser_meta(db_object o, void* userData) {
     if (!db_ser_appendstr(userData, "{")) {
         goto finished;
@@ -279,50 +271,41 @@ static int db_walkScopeAction_ser_meta(db_object o, void* userData) {
         goto finished;
     }
 
-    if (!db_ser_appendstr(userData, "}")) {
+    if (!db_ser_appendstr(userData, "},")) {
         goto finished;
     }
 
-    return 0;
-error:
-    return -1;
-finished:
     return 1;
+finished:
+    return 0;
 }
 
 static db_int16 db_ser_scope_meta(db_serializer s, db_value* v, void* userData) {
     DB_UNUSED(s); /* should we receive s for scalability or should we dismiss it? */
+    int last;
+    size_t sizeBefore, sizeAfter;
+    db_json_ser_t *data = userData;
+    sizeBefore = strlen(data->buffer);
     db_object object = db_valueValue(v);
-    db_scopeWalk(object, db_walkScopeAction_ser_meta, userData);
-    /* what to do with the result of db_scopeWalk ? */
-    return 0;
+    last = db_scopeWalk(object, db_walkScopeAction_ser_meta, userData);
+    sizeAfter = strlen(data->buffer);
+    if (sizeAfter && sizeBefore < sizeAfter) {
+        data->buffer[sizeAfter - 1] = '\0';
+    }
+    return last;
 }
 
 
 
 static db_int16 db_ser_object(db_serializer s, db_value* v, void* userData) {
     db_json_ser_t *data = userData;
-    unsigned int c = 0;
+    db_uint8 c = 0;
 
     if (!db_ser_appendstr(data, "{")) {
         goto finished;
     }
 
-    if (data->serializeValue) {
-        if (!db_ser_appendstr(data, "\"value\":")) {
-            goto finished;
-        }
-        if (db_serializeValue(s, v, userData)) {
-            goto error;
-        }
-
-        c += 1;
-    }
-
     if (data->serializeMeta) {
-        if (c && !db_ser_appendstr(data, ",")) {
-            goto finished;
-        }
         if (!db_ser_appendstr(data, "\"meta\":")) {
             goto finished;
         }
@@ -332,19 +315,32 @@ static db_int16 db_ser_object(db_serializer s, db_value* v, void* userData) {
         c += 1;
     }
 
+    if (data->serializeValue) {
+        if (c && !db_ser_appendstr(data, ",")) {
+            goto finished;
+        }
+        if (!db_ser_appendstr(data, "\"value\":")) {
+            goto finished;
+        }
+        if (db_serializeValue(s, v, userData)) {
+            goto error;
+        }
+        c += 1;
+    }
+
     if (data->serializeScope) {
         if (c && !db_ser_appendstr(data, ",")) {
             goto finished;
         }
-        if (!db_ser_appendstr(data, "\"scope\":")) {
+        if (!db_ser_appendstr(data, "\"scope\":[")) {
             goto finished;
         }
-
-        /* TODO should this be not'ted? what is the expecsted result? */
-        if (db_ser_scope_meta(s, v, data)) {
+        if (!db_ser_scope_meta(s, v, data)) {
             goto error;
         }
-        
+        if (!db_ser_appendstr(data, "]")) {
+            goto finished;
+        }
     }
 
     if (!db_ser_appendstr(data, "}")) {
