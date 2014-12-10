@@ -10,7 +10,8 @@
 
 typedef uint8_t     B_t;
 typedef uint16_t    S_t;
-typedef uintptr_t   L_t;
+typedef uint32_t    L_t;
+typedef intptr_t	W_t;
 typedef uint64_t    D_t;
 
 /* Signed numbers */
@@ -26,6 +27,8 @@ typedef int64_t    Ds_t;
 #define stage2_S	c.stage1.s.b._2
 #define stage1_L	c.stage1.w
 #define stage2_L	c.stage2.w
+#define stage1_W	(sizeof(uintptr_t) == 4 ? (uintptr_t)stage1_L : (uintptr_t)stage1_D)
+#define stage2_W	(sizeof(uintptr_t) == 4 ? (uintptr_t)stage2_L : (uintptr_t)stage2_D)
 #define stage1_D	c.dbl
 #define stage2_D	c.dbl2
 
@@ -323,12 +326,112 @@ typedef int64_t    Ds_t;
 #define op1_LQQ     *(L_t*)*(void**)DB_OFFSET(reg,c.ic.b._1)
 #define op2_LQQ     *(L_t*)*(void**)DB_OFFSET(reg,c.ic.b._2)
 
+
+/* Word */
+#define fetch_WVV
+#define fetch1_WVV	fetchLo()
+#define fetch2_WVV	fetchHi()
+#define op1_WVV		c.lo.w
+#define op2_WVV		c.hi.w
+
+#define fetch_WVR
+#define fetch1_WVR	fetchLo()
+#define fetch2_WVR	fetchIc()
+#define op1_WVR		c.lo.w
+#define op2_WVR		*(W_t*)DB_OFFSET(reg,c.ic.b._1)
+
+#define fetch_WVP
+#define fetch1_WVP	fetchLo()
+#define fetch2_WVP	fetchHi()
+#define op1_WVP		c.lo.w
+#define op2_WVP		*(W_t*)c.hi.w
+
+#define fetch_WVQ
+#define fetch1_WVQ	fetchLo()
+#define fetch2_WVQ	fetchIc()
+#define op1_WVQ		c.lo.w
+#define op2_WVQ		*(W_t*)*(void**)DB_OFFSET(reg,c.ic.b._1)
+
+#define fetch_WRV
+#define fetch1_WRV  fetchIc()
+#define fetch2_WRV  fetchLo()
+#define op1_WRV     *(W_t*)DB_OFFSET(reg,c.ic.b._1)
+#define op2_WRV     c.lo.w
+
+#define fetch_WRR	fetchIc()
+#define fetch1_WRR
+#define fetch2_WRR
+#define op1_WRR     *(W_t*)DB_OFFSET(reg,c.ic.b._1)
+#define op2_WRR     *(W_t*)DB_OFFSET(reg,c.ic.b._2)
+
+#define fetch_WRP
+#define fetch1_WRP  fetchIc()
+#define fetch2_WRP  fetchLo()
+#define op1_WRP     *(W_t*)DB_OFFSET(reg,c.ic.b._1)
+#define op2_WRP     *(W_t*)c.lo.w
+
+#define fetch_WRQ	fetchIc()
+#define fetch1_WRQ
+#define fetch2_WRQ
+#define op1_WRQ     *(W_t*)DB_OFFSET(reg,c.ic.b._1)
+#define op2_WRQ     *(W_t*)*(void**)DB_OFFSET(reg,c.ic.b._2)
+
+#define fetch_WPV
+#define fetch1_WPV  fetchLo()
+#define fetch2_WPV  fetchHi()
+#define op1_WPV     *(W_t*)c.lo.w
+#define op2_WPV     c.hi.w
+
+#define fetch_WPR
+#define fetch1_WPR  fetchLo()
+#define fetch2_WPR  fetchIc()
+#define op1_WPR     *(W_t*)c.lo.w
+#define op2_WPR     *(W_t*)DB_OFFSET(reg,c.ic.b._1)
+
+#define fetch_WPP
+#define fetch1_WPP  fetchLo()
+#define fetch2_WPP  fetchHi()
+#define op1_WPP     *(W_t*)c.lo.w
+#define op2_WPP     *(W_t*)c.hi.w
+
+#define fetch_WPQ
+#define fetch1_WPQ  fetchLo()
+#define fetch2_WPQ  fetchIc()
+#define op1_WPQ     *(W_t*)c.lo.w
+#define op2_WPQ     *(W_t*)*(void**)DB_OFFSET(reg,c.ic.b._1)
+
+#define fetch_WQV
+#define fetch1_WQV  fetchIc()
+#define fetch2_WQV  fetchLo()
+#define op1_WQV     *(W_t*)*(void**)DB_OFFSET(reg,c.ic.b._1)
+#define op2_WQV     (W_t)c.lo.w
+
+#define fetch_WQR	fetchIc()
+#define fetch1_WQR
+#define fetch2_WQR
+#define op1_WQR     *(W_t*)*(void**)DB_OFFSET(reg,c.ic.b._1)
+#define op2_WQR     *(W_t*)DB_OFFSET(reg,c.ic.b._2)
+
+#define fetch_WQP
+#define fetch1_WQP  fetchIc()
+#define fetch2_WQP  fetchLo()
+#define op1_WQP     *(W_t*)*(void**)DB_OFFSET(reg,c.ic.b._1)
+#define op2_WQP     *(W_t*)c.lo.w
+
+#define fetch_WQQ	fetchIc()
+#define fetch1_WQQ
+#define fetch2_WQQ
+#define op1_WQQ     *(W_t*)*(void**)DB_OFFSET(reg,c.ic.b._1)
+#define op2_WQQ     *(W_t*)*(void**)DB_OFFSET(reg,c.ic.b._2)
+
+
+
 /* Double */
-#define fetch_DVV	/* This instruction cannot be encoded and has to be split up */
-#define fetch1_DVV
-#define fetch2_DVV
+#define fetch_DVV	
+#define fetch1_DVV	fetchLo()
+#define fetch2_DVV	fetchHi()
 #define op1_DVV     c.lo.w	/* Placeholder */
-#define op2_DVV     c.lo.w	/* Placeholder */
+#define op2_DVV     c.hi.w	/* Placeholder */
 
 #define fetch_DVR
 #define fetch1_DVR	fetchDbl()
@@ -494,6 +597,30 @@ typedef int64_t    Ds_t;
 #define op1_LQL		*(L_t*)*(void**)DB_OFFSET(reg,c.ic.b._1)
 #define op2_LQL		(db_vmOp*)c.lo.w
 
+#define fetch_WVL
+#define fetch1_WVL  fetchLo()
+#define fetch2_WVL  fetchHi()
+#define op1_WVL		c.lo.w
+#define op2_WVL		(db_vmOp*)c.hi.w
+
+#define fetch_WRL
+#define fetch1_WRL  fetchIc()
+#define fetch2_WRL  fetchLo()
+#define op1_WRL		*(W_t*)DB_OFFSET(reg,c.ic.b._1)
+#define op2_WRL		(db_vmOp*)c.lo.w
+
+#define fetch_WPL
+#define fetch1_WPL  fetchLo()
+#define fetch2_WPL  fetchHi()
+#define op1_WPL		*(W_t*)c.lo.w
+#define op2_WPL		(db_vmOp*)c.hi.w
+
+#define fetch_WQL
+#define fetch1_WQL  fetchIc()
+#define fetch2_WQL  fetchLo()
+#define op1_WQL		*(W_t*)*(void**)DB_OFFSET(reg,c.ic.b._1)
+#define op2_WQL		(db_vmOp*)c.lo.w
+
 #define fetch_DVL	/* This instruction cannot be encoded and has to be split up */
 #define fetch1_DVL
 #define fetch2_DVL
@@ -521,103 +648,103 @@ typedef int64_t    Ds_t;
 /* 3-op operand templates */
 
 /* LR*V */
-#define fetch_LRVV
-#define fetch1_LRVV fetchIc()
-#define fetch2_LRVV fetchLo()
-#define fetch3_LRVV fetchHi()
-#define op1_LRVV	*(L_t*)DB_OFFSET(reg,c.ic.b._1)
-#define op2_LRVV	c.lo.w
-#define op3_LRVV	c.hi.w
+#define fetch_WRVV
+#define fetch1_WRVV fetchIc()
+#define fetch2_WRVV fetchLo()
+#define fetch3_WRVV fetchHi()
+#define op1_WRVV	*(W_t*)DB_OFFSET(reg,c.ic.b._1)
+#define op2_WRVV	c.lo.w
+#define op3_WRVV	c.hi.w
 
-#define fetch_LRRV	fetchIc();
-#define fetch1_LRRV
-#define fetch2_LRRV
-#define fetch3_LRRV	fetchLo()
-#define op1_LRRV	*(L_t*)DB_OFFSET(reg,c.ic.b._1)
-#define op2_LRRV	*(L_t*)DB_OFFSET(reg,c.ic.b._2)
-#define op3_LRRV	c.lo.w
+#define fetch_WRRV	fetchIc();
+#define fetch1_WRRV
+#define fetch2_WRRV
+#define fetch3_WRRV	fetchLo()
+#define op1_WRRV	*(W_t*)DB_OFFSET(reg,c.ic.b._1)
+#define op2_WRRV	*(W_t*)DB_OFFSET(reg,c.ic.b._2)
+#define op3_WRRV	c.lo.w
 
-#define fetch_LRPV
-#define fetch1_LRPV	fetchIc()
-#define fetch2_LRPV	fetchLo()
-#define fetch3_LRPV fetchHi()
-#define op1_LRPV	*(L_t*)DB_OFFSET(reg,c.ic.b._1)
-#define op2_LRPV	*(L_t*)c.lo.w
-#define op3_LRPV	c.hi.w
+#define fetch_WRPV
+#define fetch1_WRPV	fetchIc()
+#define fetch2_WRPV	fetchLo()
+#define fetch3_WRPV fetchHi()
+#define op1_WRPV	*(W_t*)DB_OFFSET(reg,c.ic.b._1)
+#define op2_WRPV	*(W_t*)c.lo.w
+#define op3_WRPV	c.hi.w
 
-#define fetch_LRQV	fetchIc();
-#define fetch1_LRQV
-#define fetch2_LRQV
-#define fetch3_LRQV	fetchLo()
-#define op1_LRQV	*(L_t*)DB_OFFSET(reg,c.ic.b._1)
-#define op2_LRQV	*(L_t*)*(void**)DB_OFFSET(reg,c.ic.b._2)
-#define op3_LRQV	c.lo.w
+#define fetch_WRQV	fetchIc();
+#define fetch1_WRQV
+#define fetch2_WRQV
+#define fetch3_WRQV	fetchLo()
+#define op1_WRQV	*(W_t*)DB_OFFSET(reg,c.ic.b._1)
+#define op2_WRQV	*(W_t*)*(void**)DB_OFFSET(reg,c.ic.b._2)
+#define op3_WRQV	c.lo.w
 
 /* LP*V */
-#define fetch_LPVV
-#define fetch1_LPVV fetchIc()
-#define fetch2_LPVV fetchLo()
-#define fetch3_LPVV fetchHi()
-#define op1_LPVV	*(L_t*)c.ic.w
-#define op2_LPVV	c.lo.w
-#define op3_LPVV	c.hi.w
+#define fetch_WPVV
+#define fetch1_WPVV fetchIc()
+#define fetch2_WPVV fetchLo()
+#define fetch3_WPVV fetchHi()
+#define op1_WPVV	*(W_t*)c.ic.w
+#define op2_WPVV	c.lo.w
+#define op3_WPVV	c.hi.w
 
-#define fetch_LPRV
-#define fetch1_LPRV fetchLo()
-#define fetch2_LPRV fetchIc()
-#define fetch3_LPRV	fetchHi()
-#define op1_LPRV	*(L_t*)c.ic.w
-#define op2_LPRV	*(L_t*)DB_OFFSET(reg,c.ic.b._1)
-#define op3_LPRV	c.hi.w
+#define fetch_WPRV
+#define fetch1_WPRV fetchLo()
+#define fetch2_WPRV fetchIc()
+#define fetch3_WPRV	fetchHi()
+#define op1_WPRV	*(W_t*)c.ic.w
+#define op2_WPRV	*(W_t*)DB_OFFSET(reg,c.ic.b._1)
+#define op3_WPRV	c.hi.w
 
-#define fetch_LPPV
-#define fetch1_LPPV	fetchIc()
-#define fetch2_LPPV	fetchLo()
-#define fetch3_LPPV fetchHi()
-#define op1_LPPV	*(L_t*)c.ic.w
-#define op2_LPPV	*(L_t*)c.lo.w
-#define op3_LPPV	c.hi.w
+#define fetch_WPPV
+#define fetch1_WPPV	fetchIc()
+#define fetch2_WPPV	fetchLo()
+#define fetch3_WPPV fetchHi()
+#define op1_WPPV	*(W_t*)c.ic.w
+#define op2_WPPV	*(W_t*)c.lo.w
+#define op3_WPPV	c.hi.w
 
-#define fetch_LPQV
-#define fetch1_LPQV	fetchLo()
-#define fetch2_LPQV	fetchIc()
-#define fetch3_LPQV	fetchHi()
-#define op1_LPQV	*(L_t*)c.lo.w
-#define op2_LPQV	*(L_t*)*(void**)DB_OFFSET(reg,c.ic.b._1)
-#define op3_LPQV	c.hi.w
+#define fetch_WPQV
+#define fetch1_WPQV	fetchLo()
+#define fetch2_WPQV	fetchIc()
+#define fetch3_WPQV	fetchHi()
+#define op1_WPQV	*(W_t*)c.lo.w
+#define op2_WPQV	*(W_t*)*(void**)DB_OFFSET(reg,c.ic.b._1)
+#define op3_WPQV	c.hi.w
 
 /* LQ*V */
-#define fetch_LQVV
-#define fetch1_LQVV fetchIc()
-#define fetch2_LQVV fetchLo()
-#define fetch3_LQVV fetchHi()
-#define op1_LQVV	*(L_t*)*(void**)DB_OFFSET(reg,c.ic.b._1)
-#define op2_LQVV	c.lo.w
-#define op3_LQVV	c.hi.w
+#define fetch_WQVV
+#define fetch1_WQVV fetchIc()
+#define fetch2_WQVV fetchLo()
+#define fetch3_WQVV fetchHi()
+#define op1_WQVV	*(W_t*)*(void**)DB_OFFSET(reg,c.ic.b._1)
+#define op2_WQVV	c.lo.w
+#define op3_WQVV	c.hi.w
 
-#define fetch_LQRV	fetchIc();
-#define fetch1_LQRV
-#define fetch2_LQRV
-#define fetch3_LQRV	fetchLo()
-#define op1_LQRV	*(L_t*)*(void**)DB_OFFSET(reg,c.ic.b._1)
-#define op2_LQRV	*(L_t*)DB_OFFSET(reg,c.ic.b._2)
-#define op3_LQRV	c.lo.w
+#define fetch_WQRV	fetchIc();
+#define fetch1_WQRV
+#define fetch2_WQRV
+#define fetch3_WQRV	fetchLo()
+#define op1_WQRV	*(W_t*)*(void**)DB_OFFSET(reg,c.ic.b._1)
+#define op2_WQRV	*(W_t*)DB_OFFSET(reg,c.ic.b._2)
+#define op3_WQRV	c.lo.w
 
-#define fetch_LQPV
-#define fetch1_LQPV	fetchIc()
-#define fetch2_LQPV	fetchLo()
-#define fetch3_LQPV fetchHi()
-#define op1_LQPV	*(L_t*)*(void**)DB_OFFSET(reg,c.ic.b._1)
-#define op2_LQPV	*(L_t*)c.lo.w
-#define op3_LQPV	c.hi.w
+#define fetch_WQPV
+#define fetch1_WQPV	fetchIc()
+#define fetch2_WQPV	fetchLo()
+#define fetch3_WQPV fetchHi()
+#define op1_WQPV	*(W_t*)*(void**)DB_OFFSET(reg,c.ic.b._1)
+#define op2_WQPV	*(W_t*)c.lo.w
+#define op3_WQPV	c.hi.w
 
-#define fetch_LQQV	fetchIc();
-#define fetch1_LQQV
-#define fetch2_LQQV
-#define fetch3_LQQV	fetchLo()
-#define op1_LQQV	*(L_t*)*(void**)DB_OFFSET(reg,c.ic.b._1)
-#define op2_LQQV	*(L_t*)*(void**)DB_OFFSET(reg,c.ic.b._2)
-#define op3_LQQV	c.lo.w
+#define fetch_WQQV	fetchIc();
+#define fetch1_WQQV
+#define fetch2_WQQV
+#define fetch3_WQQV	fetchLo()
+#define op1_WQQV	*(W_t*)*(void**)DB_OFFSET(reg,c.ic.b._1)
+#define op2_WQQV	*(W_t*)*(void**)DB_OFFSET(reg,c.ic.b._2)
+#define op3_WQQV	c.lo.w
 
 /* Single operand templates */
 #define fetch_BV	fetchIc();
@@ -658,6 +785,19 @@ typedef int64_t    Ds_t;
 
 #define fetch_LQ	fetchIc();
 #define op_LQ       *(L_t*)*(void**)DB_OFFSET(reg,c.ic.b._1)
+
+#define fetch_WV    fetchLo()
+#define opx_WV      lo.w
+#define op_WV       c.opx_WV
+
+#define fetch_WR	fetchIc();
+#define op_WR       *(W_t*)DB_OFFSET(reg,c.ic.b._1)
+
+#define fetch_WP    fetchLo()
+#define op_WP       *(W_t*)c.lo.w
+
+#define fetch_WQ	fetchIc();
+#define op_WQ       *(W_t*)*(void**)DB_OFFSET(reg,c.ic.b._1)
 
 #define fetch_DV    fetchDbl()
 #define opx_DV      lo.w

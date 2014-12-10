@@ -365,7 +365,7 @@ DB_STATIC_SCOPED_OBJECT(constant);
 /* callback object */
 #define DB_CALLBACK_O(parent, name, args, delegate, returnType, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_callback parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, callback), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0, {0,NULL},0}, (db_delegate)&delegate##__o.v}, VTABLE_V}
+        sso_callback parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, callback), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, sizeof(db_word), {0,NULL},0}, (db_delegate)&delegate##__o.v}, VTABLE_V}
 
 /* metaprocedure object */
 #define DB_METAPROCEDURE_O(parent, name, args, returnType, referenceOnly, impl) \

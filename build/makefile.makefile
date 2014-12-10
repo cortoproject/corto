@@ -2,7 +2,7 @@
 IFLAGS	= -O3 -march=native -xT -unroll -fp-model fast=2 -rcd -no-prec-div
 OFLAGS	= -O0
 # COVFLAGS = -fprofile-arcs -ftest-coverage
-CFLAGS	= $(OFLAGS) $(COVFLAGS) -g -Wall -Wextra -Wno-gnu-label-as-value -Wno-unknown-pragmas -Wstrict-prototypes -pedantic -std=c99 -D_GNU_SOURCE -D_XOPEN_SOURCE=500 -D_POSIX_C_SOURCE=199506
+CFLAGS	= $(OFLAGS) $(COVFLAGS) -g -Wall -Wextra -Wno-gnu-label-as-value -Wno-unknown-pragmas -Wstrict-prototypes -pedantic -std=c99 -fPIC -D_GNU_SOURCE -D_XOPEN_SOURCE=500 -D_POSIX_C_SOURCE=199506
 
 PSOURCES = $(SOURCES:%.c=$(PPREFIX)%.c)
 

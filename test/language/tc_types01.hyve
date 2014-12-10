@@ -8,7 +8,6 @@ void fail(string msg):
 enum Color:: RED, YELLOW, GREEN, BLUE;
 
 var octet a = 255;
-var word b = 4294967295;
 var uint8 c = 255;
 var uint16 d = 65535;
 var uint32 e = 4294967295;
@@ -22,7 +21,6 @@ var bool l = true;
 var char m = 'x';
 
 a++; if a: fail("octet range error ($a)");
-b++; if b: fail("word range error ($b)");
 c++; if c: fail("uint8 range error ($c)");
 d++; if d: fail("uint16 range error ($d)");
 e++; if e: fail("uint32 range error ($e)");

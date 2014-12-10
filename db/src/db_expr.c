@@ -27,6 +27,7 @@
 #include "db_type.h"
 #include "db_call.h"
 #include "alloca.h"
+#include "inttypes.h"
 
 #include "string.h"
 #include "stdlib.h"
@@ -204,7 +205,7 @@ static void db_exprerr(db_exprContext *context, db_char *ptr, db_string fmt, ...
     db_char msg[1024];
     va_list arglist;
 
-    sprintf(head, "'%s':%d: ", context->expr, ptr - context->expr);
+    sprintf(head, "'%s':%" PRIuPTR ": ", context->expr, ptr - context->expr);
 
     va_start(arglist, fmt);
     vsprintf(msg, fmt, arglist);

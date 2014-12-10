@@ -735,12 +735,16 @@ static int c_loadDefine(db_object o, void* userData) {
 
     if (db_checkAttr(o, DB_ATTR_SCOPED)) {
         c_typeWalk_t* data;
-        db_id id, escapedId;
+        db_id escapedId, fullname, varId, typeId;
 
         data = userData;
 
-        g_fileWrite(data->source, "/* Define %s */\n", db_fullname(o, id));
-        g_fileWrite(data->source, "if (!db_checkState(%s, DB_DEFINED)) {\n", c_loadVarId(data->g, o, id));
+        db_fullname(o, fullname);
+        c_loadVarId(data->g, o, varId);
+        g_fullOid(data->g, o, typeId);
+
+        g_fileWrite(data->source, "/* Define %s */\n", fullname);
+        g_fileWrite(data->source, "if (!db_checkState(%s, DB_DEFINED)) {\n", varId);
         g_fileIndent(data->source);
 
         /* Serialize object if object is not a primitive */
@@ -754,25 +758,54 @@ static int c_loadDefine(db_object o, void* userData) {
             db_id name;
             g_fileWrite(data->source, "\n");
             if (!db_function(o)->impl) {
-                g_fileWrite(data->source, "/* Bind %s with C-function */\n", id);
-                g_fileWrite(data->source, "db_function(%s)->kind = DB_PROCEDURE_CDECL;\n", c_loadVarId(data->g, o, id));
+                g_fileWrite(data->source, "/* Bind %s with C-function */\n", fullname);
+                g_fileWrite(data->source, "db_function(%s)->kind = DB_PROCEDURE_CDECL;\n", varId);
                 c_loadCFunction(o, data, name);
                 g_fileWrite(data->source, "void __%s(void *args, void *result);\n", name);
-                g_fileWrite(data->source, "db_function(%s)->impl = (db_word)__%s;\n", id, name);
+                g_fileWrite(data->source, "db_function(%s)->impl = (db_word)__%s;\n", varId, name);
             }
         }
 
         /* Define object */
-        g_fileWrite(data->source, "if (db_define(%s)) {\n", c_loadVarId(data->g, o, id));
+        g_fileWrite(data->source, "if (db_define(%s)) {\n", varId);
         g_fileIndent(data->source);
         g_fileWrite(data->source, "db_error(\"%s_load: failed to define object '%s'.\");\n",
                 g_getName(data->g),
-                c_escapeString(db_fullname(o, id), escapedId));
+                c_escapeString(fullname, escapedId));
         g_fileWrite(data->source, "goto error;\n");
         g_fileDedent(data->source);
         g_fileWrite(data->source, "}\n");
         g_fileDedent(data->source);
         g_fileWrite(data->source, "}\n");
+
+        /* Do size validation - this makes porting to other platforms easier */
+        if (db_instanceof(db_typedef(db_type_o), o)) {
+            if (db_type(o)->reference) {
+                g_fileWrite(data->source, "if (db_type(%s)->size != sizeof(struct %s_s)) {\n", 
+                    varId,
+                    typeId);
+                g_fileIndent(data->source);
+                g_fileWrite(data->source, 
+                    "db_error(\"%s_load: calculated size '%%d' of type '%s' doesn't match C-type size '%%d'\", db_type(%s)->size, sizeof(struct %s_s));\n", 
+                    g_getName(data->g),
+                    fullname,
+                    varId,
+                    typeId);
+            } else {
+                g_fileWrite(data->source, "if (db_type(%s)->size != sizeof(%s)) {\n", 
+                    varId,
+                    typeId);
+                g_fileIndent(data->source);
+                g_fileWrite(data->source, 
+                    "db_error(\"%s_load: calculated size '%%d' of type '%s' doesn't match C-type size '%%d'\", db_type(%s)->size, sizeof(%s));\n", 
+                    g_getName(data->g),
+                    fullname,
+                    varId,
+                    typeId);
+            }
+            g_fileDedent(data->source);
+            g_fileWrite(data->source, "}\n");
+        }
     }
 
     return 1;

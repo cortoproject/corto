@@ -138,7 +138,7 @@ db_equalityKind db_type_compare(db_any _this, db_any value) {
     db_valueValueInit(&data.value, NULL, db_typedef(value.type), value.value);
     
     s = db_compare_ser(DB_PRIVATE, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
-    
+
     db_serializeValue(&s, &v1, &data);
 
     return data.result;

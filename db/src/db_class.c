@@ -362,9 +362,10 @@ db_void db_class__destruct(db_class object) {
 db_uint32 db_class_allocSize_v(db_class _this) {
 /* $begin(::hyve::lang::class::allocSize) */
     db_uint32 delegateCount, observerCount;
-    db_uint16 size;
+    db_uint32 size;
 
     size = db_type(_this)->size;
+
     if ((delegateCount = db__class_delegateCount(_this))) {
         size += sizeof(db_vtable) + delegateCount * sizeof(db_callback);
     }
@@ -373,7 +374,8 @@ db_uint32 db_class_allocSize_v(db_class _this) {
     	size += sizeof(db_vtable) + observerCount * sizeof(db_observer);
     }
 
-    return size;/* $end */
+    return size;
+/* $end */
 }
 
 /* ::hyve::lang::class::bindCallback(lang::delegate delegate,lang::object object,lang::callback method) */

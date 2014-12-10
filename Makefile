@@ -9,7 +9,6 @@ all:
 	@make -C tools
 	@make -C generator
 	@make -C interface
-#	@make -C public
 	@make -C namespaces
 	@make -C test
 	
@@ -22,7 +21,7 @@ clean:
 	@make clean -C namespaces
 #	@make clean -C public
 	@make clean -C test
-	@rm ./bin/*
+	@rm -f ./bin/*
 	
 gcov:
 	@make gcov -C db

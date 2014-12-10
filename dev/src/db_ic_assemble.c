@@ -71,6 +71,7 @@ typedef enum db_ic_vmType {
 	DB_IC_VMTYPE_B,
 	DB_IC_VMTYPE_S,
 	DB_IC_VMTYPE_L,
+    DB_IC_VMTYPE_W,
 	DB_IC_VMTYPE_D
 }db_ic_vmType;
 
@@ -556,7 +557,7 @@ db_void *db_ic_valueValue_width(db_ic_vmProgram *program, db_icValue s, void* tr
 	        }
 	        break;
 	    case DB_LITERAL_NULL:
-	    	*(db_uint32*)truncated = 0;
+	    	*(db_word*)truncated = 0;
 	    	result = truncated;
 	    	break;
 	    default:
@@ -619,9 +620,9 @@ db_ic_vmType db_ic_getVmType(db_icValue s, db_icDerefMode deref) {
 
 	/* Determine VM type based on width of a type. If the value is
 	 * a storage and derefMode is value, the value is considered a
-	 * pointer and thus the type is L */
-	if ((((db_ic)s)->kind == DB_IC_STORAGE) && (((db_icStorage)s)->kind == DB_STORAGE_OBJECT) && (deref == DB_IC_DEREF_ADDRESS)) {
-	    result = DB_IC_VMTYPE_L;
+	 * pointer and thus the type is W */
+	if ((((db_ic)s)->kind == DB_IC_STORAGE) && (deref == DB_IC_DEREF_ADDRESS)) {
+	    result = DB_IC_VMTYPE_W;
 	} else {
         if (t->kind == DB_PRIMITIVE) {
             switch(db_primitive(t)->width) {
@@ -638,12 +639,21 @@ db_ic_vmType db_ic_getVmType(db_icValue s, db_icDerefMode deref) {
                 result = DB_IC_VMTYPE_D;
                 break;
             case DB_WIDTH_WORD:
-                result = DB_IC_VMTYPE_L;
+                /* Reserve usage of W for pointer/string types */
+                if (db_primitive(t)->kind == DB_TEXT) {
+                    result = DB_IC_VMTYPE_W;
+                } else {
+                    if (sizeof(intptr_t) == 4) {
+                        result = DB_IC_VMTYPE_L;
+                    }else {
+                        result = DB_IC_VMTYPE_D;
+                    }
+                }
                 break;
             }
         /* If type is not primitive instruction will take the address of the operand */
         } else {
-            result = DB_IC_VMTYPE_L;
+            result = DB_IC_VMTYPE_W;
         }
 	}
 
@@ -788,18 +798,22 @@ db_void *db_ic_valueValue(db_ic_vmProgram *program, db_icValue s) {
 	case DB_IC_VMOPERAND_##caseval:\
 		reg = qreg;\
 		result = (void*) (& op##_##type##code);\
-		reg = NULL;\
-		switch((db_word)result) {\
-		case 0x1000000:\
-			result = (void*)1;\
-			break;\
-		case 0x10000:\
-			result = (void*)2;\
-			break;\
-        default:\
-            db_assert(0, "Q-operand kind (%u - %x) invalid for " #op "_" #type #code "\n", (db_word)result, (db_word)result);\
-            break;\
-		}\
+        {\
+            db_uint32 v = (db_uint32)(db_word)result;\
+    		reg = NULL;\
+    		switch((db_word)v) {\
+    		case 0x1000000:\
+    			result = (void*)1;\
+    			break;\
+    		case 0x10000:\
+    			result = (void*)2;\
+    			break;\
+            default:\
+                db_assert(0, "Q-operand kind (%u - %x) invalid for " #op "_" #type #code " (expected %x or %x)\n",\
+                    (db_word)result, (db_word)result, 0x1000000, 0x10000);\
+                break;\
+    		}\
+        }\
 		break;\
 
 /* Expand for one operand */
@@ -906,10 +920,11 @@ db_void *db_ic_valueValue(db_ic_vmProgram *program, db_icValue s) {
 		macro(B)\
 		macro(S)\
 		macro(L)\
+        macro(W)\
 		macro(D)\
 
-#define DB_IC_SWITCH_TYPE_L(macro)\
-		macro(L)
+#define DB_IC_SWITCH_TYPE_W(macro)\
+		macro(W)
 
 #define DB_IC_ASSIGN_OPERAND(typeSwitch,macro,vId)\
 		switch(typeKind) {\
@@ -922,15 +937,15 @@ db_void *db_ic_valueValue(db_ic_vmProgram *program, db_icValue s) {
 		switch((db_word)result) {\
 		case 1: vmOpAddr = &op->ic.b._1; size = sizeof(db_int16); break;\
 		case 2: vmOpAddr = &op->ic.b._2; size = sizeof(db_int16); break;\
-		case 4: vmOpAddr = &op->ic.s;  size = sizeof(db_int32);break;\
+		case 4: vmOpAddr = &op->ic.s;  size = sizeof(db_word);break;\
 		case 7: vmOpAddr = &op->lo.s.b._1; size = sizeof(db_int8); break;\
 		case 8: vmOpAddr = &op->lo.s.b._2; size = sizeof(db_int8); break;\
 		case 11: vmOpAddr = &op->hi.s.b._1; size = sizeof(db_int8); break;\
 		case 12: vmOpAddr = &op->hi.s.b._2; size = sizeof(db_int8); break;\
 		case 13: vmOpAddr = &op->lo; size = sizeof(db_uint64); break;\
-        case 3: vmOpAddr = &op->ic; size = sizeof(db_int32);break;\
-		case 5: vmOpAddr = &op->lo.w;  size = sizeof(db_int32);break;\
-		case 9: vmOpAddr = &op->hi.w;  size = sizeof(db_int32);break;\
+        case 3: vmOpAddr = &op->ic; size = sizeof(db_word);break;\
+		case 5: vmOpAddr = &op->lo.w;  size = sizeof(db_word);break;\
+		case 9: vmOpAddr = &op->hi.w;  size = sizeof(db_word);break;\
 		default:\
 			db_assert(0, "operand-macro " #macro " returned invalid value (%u) for operand " #vId " and type %d", (db_word)result, typeKind);\
 			break;\
@@ -1007,22 +1022,22 @@ typedef struct _vmParameter16 {
         uint16_t _2;
     } b;
     uint16_t s;
-    uint32_t w;
+    uintptr_t w;
 }_vmParameter16;
 
 typedef struct _vmParameter {
     _vmParameter16 s;
-    uint32_t w;
+    uintptr_t w;
 }_vmParameter;
 
 static void db_ic_vmSetOp1Addr(db_ic_vmProgram *program, db_vmOp *op, db_ic_vmType typeKind, db_ic_vmOperand op1Kind, db_icValue v1) {
-	db_word qreg[] = {0,1};
+	db_uint32 qreg[] = {0,1};
     struct {
         _vmParameter16 ic;
         _vmParameter lo;
         db_uint64 dbl;
     } c;
-    db_word *reg = NULL;
+    db_uint32 *reg = NULL;
 	void *result = NULL;
 	void *vmOpAddr = NULL;
 	db_uint32 size = 0;
@@ -1050,13 +1065,13 @@ static void db_ic_vmSetOp1Addr(db_ic_vmProgram *program, db_vmOp *op, db_ic_vmTy
 }
 
 static void db_ic_vmSetOp2Addr(db_ic_vmProgram *program, db_vmOp *op, db_ic_vmType typeKind, db_ic_vmOperand op1Kind, db_ic_vmOperand op2Kind, db_icValue v1, db_icValue v2) {
-	db_word qreg[] = {0,1};
+	db_uint32 qreg[] = {0,1};
     struct {
         _vmParameter16 ic;
         _vmParameter lo, hi;
         db_uint64 dbl;
     } c;
-    db_word *reg = NULL;
+    db_uint32 *reg = NULL;
 	void *result = NULL;
 	void *vmOpAddr = NULL;
 	db_uint32 size = 0;
@@ -1108,9 +1123,9 @@ static void db_ic_vmSetOp3Addr(db_ic_vmProgram *program, db_vmOp *op, db_ic_vmTy
 	c.hi.s.b._1 = 11;
 	c.hi.s.b._2 = 12;
 
-	DB_IC_ASSIGN_OPERAND(DB_IC_SWITCH_TYPE_L,DB_IC_OP3ADDR1,1)
-	DB_IC_ASSIGN_OPERAND(DB_IC_SWITCH_TYPE_L,DB_IC_OP3ADDR2,2)
-	DB_IC_ASSIGN_OPERAND(DB_IC_SWITCH_TYPE_L,DB_IC_OP3ADDR3,3)
+	DB_IC_ASSIGN_OPERAND(DB_IC_SWITCH_TYPE_W,DB_IC_OP3ADDR1,1)
+	DB_IC_ASSIGN_OPERAND(DB_IC_SWITCH_TYPE_W,DB_IC_OP3ADDR2,2)
+	DB_IC_ASSIGN_OPERAND(DB_IC_SWITCH_TYPE_W,DB_IC_OP3ADDR3,3)
 }
 
 static db_ic_vmInlineFunction *db_ic_vmInlineFunctionNew(db_vmProgram program, db_function function) {
@@ -1273,6 +1288,9 @@ static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1) {\
 		DB_IC_OP1_##postfix(op,S)\
 		DB_IC_OP1_##postfix(op,L)\
 		DB_IC_OP1_##postfix(op,D)\
+    default:\
+        db_assert(0, "Type (%d) not applicable for " #op, type);\
+        break;\
 	}\
 	\
 	return result;\
@@ -1286,6 +1304,20 @@ static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1) {\
         DB_IC_OP1_##postfix(op,L)\
         default:\
             db_assert(0, "Type other than L not valid for " #op);\
+            break;\
+    }\
+    \
+    return result;\
+}\
+
+#define DB_IC_GETOP1_W(op,postfix)\
+static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1) {\
+    db_vmOpKind result = DB_VM_STOP;\
+    \
+    switch(type) {\
+        DB_IC_OP1_##postfix(op,W)\
+        default:\
+            db_assert(0, "Type other than W not valid for " #op);\
             break;\
     }\
     \
@@ -1328,6 +1360,9 @@ static db_vmOpKind db_ic_getVm##op(db_type t, db_ic_vmType op1Type, db_ic_vmOper
 	case DB_IC_VMTYPE_D:\
 		result = db_ic_getVm##op##D(DB_IC_VMTYPE_B, op1);\
 		break;\
+    default:\
+        db_assert(0, "Type (%d) not applicable for " #op, op1Type);\
+        break;\
 	}\
 	return result;\
 }\
@@ -1392,6 +1427,9 @@ static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1, db_ic
 		DB_IC_OP2_##lpostfix(op,S,rpostfix)\
 		DB_IC_OP2_##lpostfix(op,L,rpostfix)\
 		DB_IC_OP2_##lpostfix(op,D,rpostfix)\
+        default:\
+            db_assert(0, "Type (%d) not valid for " #op, type);\
+            break;\
 	}\
 	\
 	return result;\
@@ -1406,47 +1444,40 @@ static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1, db_ic
 		DB_IC_OP2V_##lpostfix(op,S,rpostfix)\
 		DB_IC_OP2V_##lpostfix(op,L,rpostfix)\
 		DB_IC_OP2V_##lpostfix(op,D,rpostfix)\
-	}\
-	\
-	return result;\
-}\
-
-#define DB_IC_GETOP2_L(op,lpostfix,rpostfix)\
-static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1, db_ic_vmOperand op2) {\
-	db_vmOpKind result = DB_VM_STOP;\
-	\
-	switch(type) {\
-		DB_IC_OP2_##lpostfix(op,L,rpostfix)\
-		default:\
-            db_assert(0, "Type other than L (%d) not valid for " #op, type);\
+        default:\
+            db_assert(0, "Type (%d) not valid for " #op, type);\
             break;\
 	}\
 	\
 	return result;\
 }\
 
-#define DB_IC_GETOP2_D(op,lpostfix,rpostfix)\
-static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1, db_ic_vmOperand op2) {\
-	db_vmOpKind result = DB_VM_STOP;\
-	\
-	switch(type) {\
-		DB_IC_OP2_##lpostfix(op,D,rpostfix)\
-		default:\
-            db_assert(0, "Type other than L (%d) not valid for " #op, type);\
-            break;\
-	}\
-	\
-	return result;\
-}\
+#define DB_IC_GETOP2_TYPE(op, lpostfix, rpostfix, type)\
+    static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1, db_ic_vmOperand op2) {\
+        db_vmOpKind result = DB_VM_STOP;\
+        \
+        switch(type) {\
+            DB_IC_OP2_##lpostfix(op,type,rpostfix)\
+            default:\
+                db_assert(0, "Type other than " #type " (%d) not valid for " #op, type);\
+                break;\
+        }\
+        \
+        return result;\
+    }\
 
-#define DB_IC_GETOP2V_L(op,lpostfix,rpostfix)\
+#define DB_IC_GETOP2_L(op,lpostfix,rpostfix) DB_IC_GETOP2_TYPE(op, lpostfix, rpostfix, L)
+#define DB_IC_GETOP2_W(op,lpostfix,rpostfix) DB_IC_GETOP2_TYPE(op, lpostfix, rpostfix, W)
+#define DB_IC_GETOP2_D(op,lpostfix,rpostfix) DB_IC_GETOP2_TYPE(op, lpostfix, rpostfix, D)
+
+#define DB_IC_GETOP2V_W(op,lpostfix,rpostfix)\
 static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1, db_ic_vmOperand op2) {\
 	db_vmOpKind result = DB_VM_STOP;\
 	\
 	switch(type) {\
-		DB_IC_OP2V_##lpostfix(op,L,rpostfix)\
+		DB_IC_OP2V_##lpostfix(op,W,rpostfix)\
 		default:\
-            db_assert(0, "Type other than L (%d) not valid for " #op, type);\
+            db_assert(0, "Type other than W (%d) not valid for " #op, type);\
             break;\
 	}\
 	\
@@ -1599,8 +1630,8 @@ static db_vmOpKind db_ic_getVmSTAGE12(db_ic_vmType typeKind, db_ic_vmOperand op1
 }
 
 DB_IC_GETOP2(SET,,PQRV)
-DB_IC_GETOP2_L(SETREF,,PQRV)
-DB_IC_GETOP2_L(SETSTRDUP,,PQRV)
+DB_IC_GETOP2_W(SETREF,,PQRV)
+DB_IC_GETOP2_W(SETSTRDUP,,PQRV)
 
 DB_IC_GETOP2_ARITH(ADD,,PQRV)
 DB_IC_GETOP2_ARITH(SUB,,PQRV)
@@ -1638,44 +1669,44 @@ DB_IC_GETOP1_COND_SIGN(CLTEQ,PQR)
 DB_IC_GETOP1(JEQ,PQR)
 DB_IC_GETOP1(JNEQ,PQR)
 
-DB_IC_GETOP2_L(ELEMA,R,PQRV)
-DB_IC_GETOP2_L(ELEMS,R,PQRV)
-DB_IC_GETOP2_L(ELEML,R,PQRV)
-DB_IC_GETOP2_L(ELEMLX,R,PQRV)
-DB_IC_GETOP2_L(ELEMM,R,PQRV)
-DB_IC_GETOP2_L(ELEMMX,R,PQRV)
+DB_IC_GETOP2_W(ELEMA,R,PQRV)
+DB_IC_GETOP2_W(ELEMS,R,PQRV)
+DB_IC_GETOP2_W(ELEML,R,PQRV)
+DB_IC_GETOP2_W(ELEMLX,R,PQRV)
+DB_IC_GETOP2_W(ELEMM,R,PQRV)
+DB_IC_GETOP2_W(ELEMMX,R,PQRV)
 
 DB_IC_GETOP1(PUSH,PQRV)
 DB_IC_GETOP1(PUSHX,PQR)
-DB_IC_GETOP1_L(PUSHANY,PQRV)
+DB_IC_GETOP1_W(PUSHANY,PQRV)
 DB_IC_GETOP1_ANY(PUSHANYX)
 DB_IC_GETOP1_L(CALL,PQR)
 DB_IC_GETOP1_L(CALLVM,PQR)
 DB_IC_GETOP1(RET,PQR)
 DB_IC_GETOP1_L(RETCPY,PQR)
 
-DB_IC_GETOP2_L(CAST,,PQRV)
+DB_IC_GETOP2_W(CAST,,PQRV)
 DB_IC_GETOP2(PCAST,,PQR)
 
-DB_IC_GETOP2V_L(STRCAT,,PQRV)
-DB_IC_GETOP2_L(STRCPY,,PQRV)
+DB_IC_GETOP2V_W(STRCAT,,PQRV)
+DB_IC_GETOP2_W(STRCPY,,PQRV)
 
-DB_IC_GETOP2_L(NEW,,PQRV)
-DB_IC_GETOP1_L(DEALLOC,PQR)
-DB_IC_GETOP1_L(KEEP,PQR)
-DB_IC_GETOP1_L(FREE,PQR)
+DB_IC_GETOP2_W(NEW,,PQRV)
+DB_IC_GETOP1_W(DEALLOC,PQR)
+DB_IC_GETOP1_W(KEEP,PQR)
+DB_IC_GETOP1_W(FREE,PQR)
 
-DB_IC_GETOP1_L(DEFINE,PQRV)
+DB_IC_GETOP1_W(DEFINE,PQRV)
 
-DB_IC_GETOP1_L(UPDATE,PQRV)
-DB_IC_GETOP1_L(UPDATEBEGIN,PQRV)
-DB_IC_GETOP1_L(UPDATEEND,PQRV)
-DB_IC_GETOP2_L(UPDATEFROM,,PQR)
-DB_IC_GETOP2_L(UPDATEENDFROM,,PQR)
-DB_IC_GETOP1_L(UPDATECANCEL,PQRV)
+DB_IC_GETOP1_W(UPDATE,PQRV)
+DB_IC_GETOP1_W(UPDATEBEGIN,PQRV)
+DB_IC_GETOP1_W(UPDATEEND,PQRV)
+DB_IC_GETOP2_W(UPDATEFROM,,PQR)
+DB_IC_GETOP2_W(UPDATEENDFROM,,PQR)
+DB_IC_GETOP1_W(UPDATECANCEL,PQRV)
 
-DB_IC_GETOP1_L(WAITFOR,PQRV)
-DB_IC_GETOP2_L(WAIT,,PQRV)
+DB_IC_GETOP1_W(WAITFOR,PQRV)
+DB_IC_GETOP2_W(WAIT,,PQRV)
 
 static db_vmOp *db_ic_vmStorageAssembleElement(db_icStorage storage, db_ic_vmProgram *program, db_vmOp *vmOp, db_icStorage topLevelStorage) {
 	db_ic_vmOperand indexKind;
@@ -1694,28 +1725,28 @@ static db_vmOp *db_ic_vmStorageAssembleElement(db_icStorage storage, db_ic_vmPro
 
 	switch(type->kind) {
 	case DB_ARRAY:
-		vmOp->op = db_ic_getVmELEMA(DB_IC_VMTYPE_L, DB_IC_VMOPERAND_R, indexKind);
-		db_ic_vmSetOp3Addr(program, vmOp, DB_IC_VMTYPE_L, DB_IC_VMOPERAND_R, indexKind, DB_IC_VMOPERAND_V, (db_icValue)topLevelStorage, ((db_icElement)storage)->index, icElementSize);
+		vmOp->op = db_ic_getVmELEMA(DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind);
+		db_ic_vmSetOp3Addr(program, vmOp, DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind, DB_IC_VMOPERAND_V, (db_icValue)topLevelStorage, ((db_icElement)storage)->index, icElementSize);
 		break;
 	case DB_SEQUENCE:
-		vmOp->op = db_ic_getVmELEMS(DB_IC_VMTYPE_L, DB_IC_VMOPERAND_R, indexKind);
-		db_ic_vmSetOp3Addr(program, vmOp, DB_IC_VMTYPE_L, DB_IC_VMOPERAND_R, indexKind, DB_IC_VMOPERAND_V, (db_icValue)topLevelStorage, ((db_icElement)storage)->index, icElementSize);
+		vmOp->op = db_ic_getVmELEMS(DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind);
+		db_ic_vmSetOp3Addr(program, vmOp, DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind, DB_IC_VMOPERAND_V, (db_icValue)topLevelStorage, ((db_icElement)storage)->index, icElementSize);
 		break;
 	case DB_LIST:
 		if (db_collection_elementRequiresAlloc(type)) {
-			vmOp->op = db_ic_getVmELEML(DB_IC_VMTYPE_L, DB_IC_VMOPERAND_R, indexKind);
+			vmOp->op = db_ic_getVmELEML(DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind);
 		} else {
-			vmOp->op = db_ic_getVmELEMLX(DB_IC_VMTYPE_L, DB_IC_VMOPERAND_R, indexKind);
+			vmOp->op = db_ic_getVmELEMLX(DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind);
 		}
-		db_ic_vmSetOp2Addr(program, vmOp, DB_IC_VMTYPE_L, DB_IC_VMOPERAND_R, indexKind, (db_icValue)topLevelStorage, ((db_icElement)storage)->index);
+		db_ic_vmSetOp2Addr(program, vmOp, DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind, (db_icValue)topLevelStorage, ((db_icElement)storage)->index);
 		break;
 	case DB_MAP:
         if (db_collection_elementRequiresAlloc(type)) {
-            vmOp->op = db_ic_getVmELEMM(DB_IC_VMTYPE_L, DB_IC_VMOPERAND_R, indexKind);
+            vmOp->op = db_ic_getVmELEMM(DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind);
         } else {
-            vmOp->op = db_ic_getVmELEMMX(DB_IC_VMTYPE_L, DB_IC_VMOPERAND_R, indexKind);
+            vmOp->op = db_ic_getVmELEMMX(DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind);
         }
-		db_ic_vmSetOp2Addr(program, vmOp, DB_IC_VMTYPE_L, DB_IC_VMOPERAND_R, indexKind, (db_icValue)topLevelStorage, ((db_icElement)storage)->index);
+		db_ic_vmSetOp2Addr(program, vmOp, DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind, (db_icValue)topLevelStorage, ((db_icElement)storage)->index);
 		break;
 	}
 
@@ -1782,7 +1813,7 @@ static db_vmOp *db_ic_vmStorageAssembleNested(db_icStorage icStorage, db_ic_vmPr
 			if (storage->dynamic || db_ic_isReference(storage->base->accumulator)) {
 				/* If the base is an object store the address in the accumulator */
 				if (base->kind == DB_STORAGE_OBJECT) {
-                    vmOp->op = DB_VM_SET_LRV;
+                    vmOp->op = sizeof(intptr_t) == 4 ? DB_VM_SET_LRV : DB_VM_SET_DRV;
                     db_ic_vmStorageAddReferee(program, topLevelStorage, &vmOp->ic.b._1);
                     vmOp->lo.w = (intptr_t)((db_icObject)base)->ptr;
 				    if (storage->offset) {
@@ -1793,7 +1824,7 @@ static db_vmOp *db_ic_vmStorageAssembleNested(db_icStorage icStorage, db_ic_vmPr
 				/* If the base is a local store the address of the local in the accumulator */
 				} else if (base->kind == DB_STORAGE_LOCAL) {
 					if (!db_ic_isReference(storage->base->accumulator)) {
-						vmOp->op = DB_VM_SET_LRX;
+						vmOp->op = DB_VM_SET_WRX;
 						db_ic_vmStorageAddReferee(program, topLevelStorage, &vmOp->ic.b._1);
 						vmOp->ic.b._2 = storage->base->addr;
 						if (storage->offset) {
@@ -1801,7 +1832,7 @@ static db_vmOp *db_ic_vmStorageAssembleNested(db_icStorage icStorage, db_ic_vmPr
 						}
 						vmOp = db_vmProgram_addOp(program->program, ((db_ic)icStorage)->line);
 					} else {
-						vmOp->op = DB_VM_SET_LRR;
+						vmOp->op = sizeof(intptr_t) == 4 ? DB_VM_SET_LRR : DB_VM_SET_DRR;
 						db_ic_vmStorageAddReferee(program, topLevelStorage, &vmOp->ic.b._1);
 						vmOp->ic.b._2 = storage->base->addr;
 						vmOp = db_vmProgram_addOp(program->program, ((db_ic)icStorage)->line);
@@ -1821,6 +1852,80 @@ static db_vmOp *db_ic_vmStorageAssemble(db_icStorage icStorage, db_ic_vmProgram 
     return db_ic_vmStorageAssembleNested(icStorage, program, vmOp, icStorage);
 }
 
+/* Returns which operations have support for the W-operand type */
+static db_bool db_ic_supportsVmWordType(db_icOpKind kind) {
+    db_bool result = FALSE;
+    switch(kind) {
+    case DB_IC_SET:  /* SETREF supports W, but this is handled elsewhere in the code */
+    case DB_IC_CAST:
+    case DB_IC_ADD:
+    case DB_IC_SUB:
+    case DB_IC_MUL:
+    case DB_IC_DIV:
+    case DB_IC_MOD:
+    case DB_IC_INC:
+    case DB_IC_DEC:
+    case DB_IC_XOR:
+    case DB_IC_OR: 
+    case DB_IC_AND:
+    case DB_IC_NOT:
+    case DB_IC_SHIFT_LEFT: 
+    case DB_IC_SHIFT_RIGHT:
+    case DB_IC_STAGE1: 
+    case DB_IC_STAGE2: 
+    case DB_IC_COND_OR:
+    case DB_IC_COND_AND:
+    case DB_IC_COND_NOT: 
+    case DB_IC_COND_EQ:
+    case DB_IC_COND_NEQ:
+    case DB_IC_COND_GT:
+    case DB_IC_COND_LT:
+    case DB_IC_COND_GTEQ:
+    case DB_IC_COND_LTEQ:
+    case DB_IC_JUMP:
+    case DB_IC_JEQ:
+    case DB_IC_JNEQ:
+    case DB_IC_STOP:
+    case DB_IC_PUSH:
+    case DB_IC_CALL:
+    case DB_IC_RET:
+        result = FALSE;
+        break;
+
+    case DB_IC_STRCAT:
+    case DB_IC_STRCPY:
+    case DB_IC_NEW: 
+    case DB_IC_FREE:
+    case DB_IC_KEEP:
+    case DB_IC_DEFINE:
+    case DB_IC_UPDATE:
+    case DB_IC_UPDATEEND:
+    case DB_IC_UPDATEBEGIN: 
+    case DB_IC_UPDATECANCEL:
+    case DB_IC_WAITFOR:
+    case DB_IC_WAIT:
+        result = TRUE;
+        break;
+    default:
+        db_assert(0, "invalid intermediate op-code");
+        break;
+    }
+    return result;
+}
+
+static db_ic_vmType db_vmTranslateVmType(db_icOpKind kind, db_ic_vmType type) {
+    if (!db_ic_supportsVmWordType(kind) && (type == DB_IC_VMTYPE_W)) {
+        if (sizeof(intptr_t) == 4) {
+            type = DB_IC_VMTYPE_L;
+        } else if (sizeof(intptr_t) == 8) {
+            type = DB_IC_VMTYPE_D;
+        }else {
+            db_assert(0, "Architecture not supported");
+        }
+    }
+    return type;
+}
+
 static db_vmOpKind db_ic_getVmCast(db_ic_vmProgram *program, db_icOp op, db_type t, db_ic_vmType typeKind, db_ic_vmOperand storage, db_ic_vmOperand op1) {
     db_type srcType, dstType;
     db_vmOpKind result = DB_VM_STOP;
@@ -1836,13 +1941,13 @@ static db_vmOpKind db_ic_getVmCast(db_ic_vmProgram *program, db_icOp op, db_type
             result = db_ic_getVmPCAST(typeKind, storage, op1);
         } else {
             if (srcType->reference) {
-                result = db_ic_getVmCAST(typeKind, storage, DB_IC_VMOPERAND_P);
+                result = db_ic_getVmCAST(DB_IC_VMTYPE_W, storage, DB_IC_VMOPERAND_P);
             } else {
                 /* No cast for non-reference types */
             }
         }
     } else if ((srcType->kind == DB_VOID) && srcType->reference) {
-        result = db_ic_getVmCAST(typeKind, storage, DB_IC_VMOPERAND_P);
+        result = db_ic_getVmCAST(DB_IC_VMTYPE_W, storage, DB_IC_VMOPERAND_P);
     }
 
     db_assert(result != DB_VM_STOP, "no cast-instruction found from type '%s' to '%s'", db_nameof(srcType), db_nameof(dstType));
@@ -1853,11 +1958,12 @@ static db_vmOpKind db_ic_getVmCast(db_ic_vmProgram *program, db_icOp op, db_type
 static db_vmOpKind db_ic_getVmFree(db_icOp op, db_type t, db_ic_vmType typeKind, db_ic_vmOperand op1) {
     db_vmOpKind result = DB_VM_STOP;
     DB_UNUSED(t);
+    DB_UNUSED(typeKind);
 
     if (((db_icStorage)op->s1)->isReference) {
-        result = db_ic_getVmFREE(typeKind, op1);
+        result = db_ic_getVmFREE(DB_IC_VMTYPE_W, op1);
     } else {
-        result = db_ic_getVmDEALLOC(typeKind, op1);
+        result = db_ic_getVmDEALLOC(DB_IC_VMTYPE_W, op1);
     }
 
     return result;
@@ -1870,15 +1976,17 @@ static db_vmOpKind db_ic_getVmSet(db_type type, db_icStorage op1, db_ic_vmType t
 
 	/* Accummulators are only meant as temporary storage and therefore don't do resource management */
 	if (op1->kind == DB_STORAGE_ACCUMULATOR) {
+        /* Translate type - it can be W */
+        typeKind = db_vmTranslateVmType(DB_IC_SET, typeKind);
 	    result = db_ic_getVmSET(typeKind, opKind1, opKind2);
 	} else {
         /* printf("op1->isReference=%d, deref==value=%d, typeKind=%d, opKind1=%d, opKind2=%d\n",
                op1->isReference, deref==DB_IC_DEREF_VALUE, typeKind, opKind1, opKind2); */
         if (op1->type->reference || (deref1 == DB_IC_DEREF_ADDRESS)) {
-            result = db_ic_getVmSETREF(typeKind, opKind1, opKind2);
+            result = db_ic_getVmSETREF(DB_IC_VMTYPE_W, opKind1, opKind2);
         } else {
             if ((type->kind == DB_PRIMITIVE) && (db_primitive(type)->kind == DB_TEXT)) {
-                result = db_ic_getVmSETSTRDUP(typeKind, opKind1, opKind2);
+                result = db_ic_getVmSETSTRDUP(DB_IC_VMTYPE_W, opKind1, opKind2);
             } else {
                 result = db_ic_getVmSET(typeKind, opKind1, opKind2);
             }
@@ -1890,6 +1998,9 @@ static db_vmOpKind db_ic_getVmSet(db_type type, db_icStorage op1, db_ic_vmType t
 
 static db_vmOpKind db_ic_getVmOpKind(db_ic_vmProgram *program, db_icOp op, db_icValue storage, db_type t, db_ic_vmType typeKind, db_ic_vmOperand op1, db_ic_vmOperand op2, db_icDerefMode deref1, db_icDerefMode deref2) {
 	db_vmOpKind result = DB_VM_STOP;
+
+    /* When there is no dedicated W-operation, switch to L or D based on architecture */
+    typeKind = db_vmTranslateVmType(op->kind, typeKind);
 
 	switch(op->kind) {
 	/* Set (assign) */
@@ -1958,7 +2069,7 @@ static db_vmOpKind db_ic_getVmOpKind(db_ic_vmProgram *program, db_icOp op, db_ic
 	case DB_IC_PUSH: {
 		if (op->s1Any) {
 			if ((op1 != DB_IC_VMOPERAND_X) && (op->s1->_parent.kind != DB_IC_LITERAL) ) {
-				result = db_ic_getVmPUSHANY(typeKind, op1);
+				result = db_ic_getVmPUSHANY(DB_IC_VMTYPE_W, op1);
 			} else {
 				result = db_ic_getVmPUSHANYX(t, typeKind, op1 == DB_IC_VMOPERAND_X ? DB_IC_VMOPERAND_R : op1);
 			}
@@ -2042,7 +2153,26 @@ static db_vmOpKind db_ic_getVmOpKind(db_ic_vmProgram *program, db_icOp op, db_ic
 
 /* Get type and storage kind for operands and assemble operand when necessary (in case an
  * offset-instruction has to be inserted for a dynamically allocated object). */
-static db_vmOp* db_vmGetTypeAndAssemble(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, db_bool threeOperands, db_icValue storage, db_icValue op1, db_icValue op2, db_icDerefMode storageDeref, db_icDerefMode opDeref1, db_icDerefMode opDeref2, db_type *t, db_ic_vmType *type, db_ic_vmOperand *storageKind, db_ic_vmOperand *opKind1, db_ic_vmOperand *opKind2) {
+static db_vmOp* db_vmGetTypeAndAssemble(
+
+    /* In parameters */
+    db_ic_vmProgram *program, 
+    db_vmOp *vmOp, 
+    db_icOp op, 
+    db_bool threeOperands, 
+    db_icValue storage, 
+    db_icValue op1, 
+    db_icValue op2, 
+    db_icDerefMode storageDeref, 
+    db_icDerefMode opDeref1, 
+    db_icDerefMode opDeref2,
+
+    /* Out parameters */
+    db_type *t, 
+    db_ic_vmType *type, 
+    db_ic_vmOperand *storageKind, 
+    db_ic_vmOperand *opKind1, 
+    db_ic_vmOperand *opKind2) {
     
     if (op1) {
         *opKind1 = db_ic_getVmOperand(program, opDeref1, op1);
@@ -2052,12 +2182,12 @@ static db_vmOp* db_vmGetTypeAndAssemble(db_ic_vmProgram *program, db_vmOp *vmOp,
             *type = db_ic_getVmType(op1, opDeref1);
         } else if (op->s1Any) {
             if (((op->s1->_parent.kind != DB_IC_LITERAL) || (((*t)->kind != DB_PRIMITIVE) || (db_primitive(*t)->width != DB_WIDTH_64)))) {
-                *type = DB_IC_VMTYPE_L;
+                *type = DB_IC_VMTYPE_W;
             } else {
                *type = db_ic_getVmType(op1, opDeref1);
             }
         } else {
-            *type = DB_IC_VMTYPE_L;
+            *type = DB_IC_VMTYPE_W;
         }
         if (((db_ic)op1)->kind == DB_IC_STORAGE) {
             vmOp = db_ic_vmStorageAssemble((db_icStorage)op1, program, vmOp);
@@ -2126,6 +2256,7 @@ static void db_vmOp1(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, db_icV
         vmOp->hi.w = db_type_sizeof(t);
     }
 
+    type = db_vmTranslateVmType(op->kind, type);
     db_ic_vmSetOp1Addr(program, vmOp, type, opKind1, op1);
 }
 
@@ -2142,6 +2273,7 @@ static void db_vmOp1Staged(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, 
     db_ic_vmOperand opKind1, storageKind;
 
     vmOp = db_vmGetTypeAndAssemble(program, vmOp, op, FALSE, storage, op1, NULL, storageDeref, opDeref1, 0,  &t, &type, &storageKind, &opKind1, NULL);
+    type = db_vmTranslateVmType(op->kind, type);
     vmOp->op = db_ic_getVmSTAGE1(type, opKind1);
     db_ic_vmSetOp1Addr(program, vmOp, type, opKind1, op1);
     
@@ -2153,13 +2285,14 @@ static void db_vmOp1Staged(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, 
 /* Instruction with two operands */
 static void db_vmOp2(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, db_icValue op1, db_icValue op2, db_icDerefMode opDeref1, db_icDerefMode opDeref2) {
     db_type t;
-    db_ic_vmType type;
+    db_ic_vmType type, actualType;
     db_ic_vmOperand opKind1, opKind2;
     
-    vmOp = db_vmGetTypeAndAssemble(program, vmOp, op, FALSE, NULL, op1, op2, 0, opDeref1, opDeref2,  &t, &type, NULL, &opKind1, &opKind2);
-    
+    vmOp = db_vmGetTypeAndAssemble(program, vmOp, op, FALSE, NULL, op1, op2, 0, opDeref1, opDeref2,  &t, &actualType, NULL, &opKind1, &opKind2);
+    type = db_vmTranslateVmType(op->kind, actualType);
+
     /* If instruction is DPV, stage first operand. DPV cannot be addressed in one instruction */
-    if (db_vmIsDPV(type, opKind1, opKind2)) {
+    if ((actualType != DB_IC_VMTYPE_W) && db_vmIsDPV(type, opKind1, opKind2)) {
         /* Stage double argument */
         vmOp->op = db_ic_getVmSTAGE1(type, opKind2);
         db_ic_vmSetOp1Addr(program, vmOp, type, opKind2, op2);
@@ -2170,8 +2303,8 @@ static void db_vmOp2(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, db_icV
         vmOp->op = db_ic_getVmOpKind(program, op, op1, t, type, opKind1, opKind2, opDeref1, opDeref2);
         db_ic_vmSetOp1Addr(program, vmOp, type, opKind1, op1);
     } else {
-        vmOp->op = db_ic_getVmOpKind(program, op, op1, t, type, opKind1, opKind2, opDeref1, opDeref2);
-        db_ic_vmSetOp2Addr(program, vmOp, type, opKind1, opKind2, op1, op2);
+        vmOp->op = db_ic_getVmOpKind(program, op, op1, t, actualType, opKind1, opKind2, opDeref1, opDeref2);
+        db_ic_vmSetOp2Addr(program, vmOp, actualType, opKind1, opKind2, op1, op2);
     }
 }
 
@@ -2189,6 +2322,7 @@ static void db_vmOp2Storage(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op,
     db_ic_vmOperand opKind1, opKind2, storageKind;
     
     vmOp = db_vmGetTypeAndAssemble(program, vmOp, op, FALSE, storage, op1, op2, storageDeref, opDeref1, opDeref2,  &t, &type, &storageKind, &opKind1, &opKind2);
+    type = db_vmTranslateVmType(op->kind, type);
     vmOp->op = db_ic_getVmSet(t, (db_icStorage)storage, type, storageKind, opKind1, storageDeref, opDeref1);
     db_ic_vmSetOp2Addr(program, vmOp, type, storageKind, opKind1, storage, op1);
     
@@ -2207,12 +2341,13 @@ static void db_vmOp2Storage(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op,
 static void db_vmOp2Set(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, db_icValue storage, db_icValue op1, db_icValue op2, db_icDerefMode storageDeref, db_icDerefMode opDeref1, db_icDerefMode opDeref2) {
     db_vmOp *vmStoredOp;
     db_type t;
-    db_ic_vmType type;
+    db_ic_vmType actualType, type;
     db_ic_vmOperand opKind1, opKind2, storageKind;
     
-    vmOp = db_vmGetTypeAndAssemble(program, vmOp, op, FALSE, storage, op1, op2, storageDeref, opDeref1, opDeref2,  &t, &type, &storageKind, &opKind1, &opKind2);
-    
-    if (db_vmIsDPV(type, opKind1, opKind2)) {
+    vmOp = db_vmGetTypeAndAssemble(program, vmOp, op, FALSE, storage, op1, op2, storageDeref, opDeref1, opDeref2,  &t, &actualType, &storageKind, &opKind1, &opKind2);
+    type = db_vmTranslateVmType(op->kind, actualType);
+
+    if ((actualType != DB_IC_VMTYPE_W) && db_vmIsDPV(type, opKind1, opKind2)) {
         /* Stage double argument */
         vmOp->op = db_ic_getVmSTAGE1(type, opKind2);
         db_ic_vmSetOp1Addr(program, vmOp, type, opKind2, op2);
@@ -2228,8 +2363,8 @@ static void db_vmOp2Set(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, db_
     }
 
     vmStoredOp = db_vmProgram_addOp(program->program, ((db_ic)op)->line);
-    vmStoredOp->op = db_ic_getVmSet(t, (db_icStorage)storage, type, storageKind, opKind1, storageDeref, opDeref1);
-    db_ic_vmSetOp2Addr(program, vmStoredOp, type, storageKind, opKind1, storage, op1);
+    vmStoredOp->op = db_ic_getVmSet(t, (db_icStorage)storage, actualType, storageKind, opKind1, storageDeref, opDeref1);
+    db_ic_vmSetOp2Addr(program, vmStoredOp, actualType, storageKind, opKind1, storage, op1);
 }
 
 /* Instruction with two operands and two staged
@@ -2241,10 +2376,11 @@ static void db_vmOp2Set(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, db_
 static void db_vmOp2Staged(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, db_icValue storage, db_icValue op1, db_icValue op2, db_icDerefMode storageDeref, db_icDerefMode opDeref1, db_icDerefMode opDeref2) {
     db_vmOp *vmStoredOp;
     db_type t;
-    db_ic_vmType type;
+    db_ic_vmType actualType, type;
     db_ic_vmOperand opKind1, opKind2, storageKind;
     
-    vmOp = db_vmGetTypeAndAssemble(program, vmOp, op, FALSE, storage, op1, op2, storageDeref, opDeref1, opDeref2,  &t, &type, &storageKind, &opKind1, &opKind2);
+    vmOp = db_vmGetTypeAndAssemble(program, vmOp, op, FALSE, storage, op1, op2, storageDeref, opDeref1, opDeref2,  &t, &actualType, &storageKind, &opKind1, &opKind2);
+    type = db_vmTranslateVmType(op->kind, actualType);
 
     if (db_vmIsDPV(type, opKind1, opKind2)) {
         /* Stage argument #1 */
@@ -2280,8 +2416,13 @@ static void db_vmOp2Cast(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, db
     /* If destinationType is not a reference, stage types and insert primitive cast */
     } else {
         vmOp = db_vmGetTypeAndAssemble(program, vmOp, op, FALSE, storage, op1, op2, storageDeref, opDeref1, opDeref2,  &sourceType, &type, &storageKind, &opKind1, &opKind2);
+        type = db_vmTranslateVmType(op->kind, type);
 
-        vmOp->op = DB_VM_STAGE2_LVV;
+        if (sizeof(intptr_t) == 4) {
+            vmOp->op = DB_VM_STAGE2_LVV;
+        } else if (sizeof(intptr_t) == 8) {
+            vmOp->op = DB_VM_STAGE2_DPP;
+        }
         vmOp->lo.w = (db_word)sourceType;
         vmOp->hi.w = (db_word)destinationType;
         
@@ -2518,7 +2659,7 @@ static void db_icZeroLocal(db_ic_vmProgram *program, db_uint16 initStart, db_uin
 		vmOp->ic.b._1 = initStart;
 		vmOp->ic.b._2 = 0;
 		break;
-	case sizeof(db_word):
+	case sizeof(db_uint32):
 		vmOp->op = DB_VM_SET_LRV;
 		vmOp->ic.b._1 = initStart;
 		vmOp->lo.w = 0;

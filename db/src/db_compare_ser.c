@@ -280,7 +280,7 @@ static db_int16 db_ser_collection(db_serializer s, db_value *info, void* userDat
         result = size1 > size2 ? DB_GT : DB_LT;
     }
     
-    data->result = result;
+    data->result = result < 0 ? -1 : result > 0 ? 1 : 0;
     
     return data->result != DB_EQ;
 }
@@ -349,6 +349,7 @@ struct db_serializer_s db_compare_ser(db_modifier access, db_operatorKind access
     s.program[DB_PRIMITIVE] = db_ser_primitive;
     s.program[DB_COLLECTION] = db_ser_collection;
     s.reference = db_ser_reference;
+
     return s;
 }
 
