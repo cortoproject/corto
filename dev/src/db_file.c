@@ -73,7 +73,7 @@ int db_fileTest(const char* file) {
 	exists = 0;
 
 	if (file) {
-		exists = db_fileOpen(file);
+		exists = (db_file)fopen(file, "r");
 		db_fileClose(exists);
 	}
 

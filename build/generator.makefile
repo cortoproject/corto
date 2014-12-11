@@ -1,5 +1,5 @@
-TARGET_OBJECT = $(HYVE_HOME)/bin/generator/bin/$(TARGET)
-LIBPATH += $(HYVE_HOME)/bin/generator/bin
+TARGET_OBJECT = $(HYVE_HOME)/generator/bin/$(TARGET)
+LIBPATH += $(HYVE_HOME)/generator/bin
 
 include $(HYVE_HOME)/build/makefile.makefile
 
@@ -10,4 +10,4 @@ $(TARGET_OBJECT): $(OBJECTS)
 clean: 
 	@rm -f obj/$(PPREFIX)/*
 	@rm -f gcov/*
-	@rm -f $(HYVE_HOME)/bin/$(TARGET) >/dev/null
+	@rm -f $(HYVE_HOME)/$(TARGET) >/dev/null

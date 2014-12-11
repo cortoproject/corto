@@ -2,12 +2,13 @@
 #include "db.h"
 #include "db_generator.h"
 #include "db_files.h"
+#include "db_file.h"
 
 /* Generate file containing component loader */
 static db_int16 c_projectGenerateMainFile(db_generator g) {
 	db_id filename;
 	g_file file;
-	sprintf(filename, "%s__main.c", g_getName(g));
+	sprintf(filename, "%s__load.c", g_getName(g));
 
 	file = g_fileOpen(g, filename);
 	if(!file) {
@@ -37,15 +38,19 @@ error:
 /* Generate makefile for project */
 static db_int16 c_projectGenerateMakefile(db_generator g) {
 	g_file file;
-	file = g_fileOpen(g, "makefile");
-	if(!file) {
-		goto error;
-	}
 
-    g_fileWrite(file, "\n");
-    g_fileWrite(file, "TARGET = %s\n\n", g_getName(g));
-    g_fileWrite(file, "LIBS = lang\n\n");
-    g_fileWrite(file, "include $(HYVE_HOME)/build/component.makefile\n\n");
+    /* Only generate makefile when no makefile is present */
+    if(!db_fileTest("makefile")) {
+    	file = g_fileOpen(g, "makefile");
+    	if(!file) {
+    		goto error;
+    	}
+
+        g_fileWrite(file, "\n");
+        g_fileWrite(file, "TARGET = %s\n\n", g_getName(g));
+        g_fileWrite(file, "LIBS = lang\n\n");
+        g_fileWrite(file, "include $(HYVE_HOME)/build/component.makefile\n\n");
+    }
 
 	return 0;
 error:
