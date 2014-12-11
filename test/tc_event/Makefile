@@ -1,12 +1,7 @@
 
 TARGET =	../test/bin/tc_event
 
-INCLUDE = 	include \
-			$(BUILDHOME)/db/include \
-			$(BUILDHOME)/public/c/include
+LIBS	= lang
 
-LIBS	= lang 
-LIBPATH	=	
-
-include $(BUILD)/executable.makefile
+include $(HYVE_HOME)/build/executable.makefile
 

@@ -1,10 +1,6 @@
 
-TARGET =	dbsh
+TARGET = dbsh
 
-INCLUDE = 	include -I $(BUILDHOME)/db/include -I $(BUILDHOME)/public/c/include
+LIBS = lang
 
-LIBS	= lang
-LIBPATH	=	
-
-include $(BUILD)/executable.makefile
-
+include $(HYVE_HOME)/build/executable.makefile

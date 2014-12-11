@@ -1,6 +1,6 @@
-TARGET_OBJECT = $(BIN)/$(dir $(TARGET))lib$(notdir $(TARGET)).so
+TARGET_OBJECT = $(HYVE_HOME)/bin/$(dir $(TARGET))lib$(notdir $(TARGET)).so
 
-include $(BUILD)/makefilecpp.makefile
+include $(HYVE_HOME)/build/makefilecpp.makefile
 
 $(TARGET_OBJECT): $(OBJECTS)
 	mkdir -p $(dir $(TARGET_OBJECT))
@@ -9,4 +9,4 @@ $(TARGET_OBJECT): $(OBJECTS)
 clean: 
 	@rm -rf obj/$(PPREFIX)/*
 	@rm -rf gcov/*
-	@rm -rf $(BIN)/$(TARGET) >/dev/null
+	@rm -rf $(HYVE_HOME)/bin/$(TARGET) >/dev/null

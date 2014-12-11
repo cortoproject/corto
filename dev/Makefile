@@ -1,10 +1,9 @@
 
 TARGET =	hyvedev
 
-INCLUDE = 	include $(BUILDHOME)/db/include $(BUILDHOME)/db/src $(BUILDHOME)/public/c/include
+INCLUDE = 	$(HYVE_HOME)/db/src 
 
 LIBS	= lang dl
-LIBPATH	=	
 
-include $(BUILD)/component.makefile
+include $(HYVE_HOME)/build/component.makefile
 

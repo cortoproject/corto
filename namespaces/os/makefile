@@ -1,12 +1,7 @@
 
 TARGET =	os
 
-INCLUDE = 	include \
-			$(BUILDHOME)/db/include \
-			$(BUILDHOME)/public/c/include \
-			$(BUILDHOME)/infra/include
-
 LIBS	=	lang fl
 
-include $(BUILD)/component.makefile
+include $(HYVE_HOME)/build/component.makefile
 

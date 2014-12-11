@@ -4,12 +4,9 @@ TARGET =	fast
 LEX		=	fast.l
 YACC	= 	fast.y
 
-INCLUDE = 	$(BUILDHOME)/db/include \
-			$(BUILDHOME)/public/c/include \
-			include \
-			$(BUILDHOME)/dev/include
+INCLUDE = 	$(HYVE_HOME)/dev/include
 
 LIBS	=	lang hyvedev fl
 
-include $(BUILD)/lexyacc.makefile
+include $(HYVE_HOME)/build/lexyacc.makefile
 

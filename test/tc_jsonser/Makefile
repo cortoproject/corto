@@ -1,13 +1,8 @@
 
 TARGET =	../test/bin/tc_jsonser_number
 
-INCLUDE = 	include \
-			$(BUILDHOME)/db/include \
-			$(BUILDHOME)/interface/json/include \
-			$(BUILDHOME)/public/c/include
-
+INCLUDE = $(HYVE_HOME)/interface/json/include
 LIBS	= lang json
-LIBPATH	=	
 
-include $(BUILD)/executable.makefile
+include $(HYVE_HOME)/build/executable.makefile
 

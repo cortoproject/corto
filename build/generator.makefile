@@ -1,7 +1,7 @@
-TARGET_OBJECT = $(BUILDHOME)/generator/bin/$(TARGET)
-LIBPATH += $(BUILDHOME)/generator/bin
+TARGET_OBJECT = $(HYVE_HOME)/bin/generator/bin/$(TARGET)
+LIBPATH += $(HYVE_HOME)/bin/generator/bin
 
-include $(BUILD)/makefile.makefile
+include $(HYVE_HOME)/build/makefile.makefile
 
 $(TARGET_OBJECT): $(OBJECTS)
 	@mkdir -p $(dir $(TARGET_OBJECT))
@@ -10,4 +10,4 @@ $(TARGET_OBJECT): $(OBJECTS)
 clean: 
 	@rm -f obj/$(PPREFIX)/*
 	@rm -f gcov/*
-	@rm -f $(BIN)/$(TARGET) >/dev/null
+	@rm -f $(HYVE_HOME)/bin/$(TARGET) >/dev/null
