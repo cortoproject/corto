@@ -1,8 +1,6 @@
 
 TARGET =	cpp_load
 
-SOURCES =	cpp_load.c
-
 INCLUDE = 	include \
 			$(BUILDHOME)/db/include \
 			$(BUILDHOME)/dev/include \

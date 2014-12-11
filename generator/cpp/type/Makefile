@@ -1,8 +1,6 @@
 
 TARGET =	cpp_type
 
-SOURCES =	cpp_type.c
-
 INCLUDE = 	include \
 			$(BUILDHOME)/db/include \
 			$(BUILDHOME)/dev/include \

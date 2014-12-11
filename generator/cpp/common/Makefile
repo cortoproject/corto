@@ -1,8 +1,6 @@
 
 TARGET =	cpp_common
 
-SOURCES =	cpp_common.c
-
 INCLUDE = 	include \
 			$(BUILDHOME)/db/include \
 			$(BUILDHOME)/dev/include \

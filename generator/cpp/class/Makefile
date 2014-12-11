@@ -1,9 +1,6 @@
 
 TARGET =	cpp_class
 
-SOURCES =	cpp_class.c \
-			cpp_impl.c
-
 INCLUDE = 	include \
 			$(BUILDHOME)/db/include \
 			$(BUILDHOME)/dev/include \

@@ -1,8 +1,6 @@
 
 TARGET =	c_api
 
-SOURCES =	c_api.c
-
 INCLUDE = 	include \
 			$(BUILDHOME)/db/include \
 			$(BUILDHOME)/dev/include \

@@ -1,8 +1,6 @@
 
 TARGET =    json
 
-SOURCES =   json.c
-
 INCLUDE =   include \
             $(BUILDHOME)/db/include \
             $(BUILDHOME)/dev/include \

@@ -1,8 +1,6 @@
 
 TARGET =	c_common
 
-SOURCES =	c_common.c
-
 INCLUDE = 	include \
 			$(BUILDHOME)/db/include \
 			$(BUILDHOME)/dev/include \

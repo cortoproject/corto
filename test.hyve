@@ -1,0 +1,5 @@
+string m : "foo";
+
+var lang::type t;
+	
+t = (m=1).typeof;

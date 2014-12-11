@@ -1,8 +1,6 @@
 
 TARGET =	c_interface
 
-SOURCES =	c_interface.c
-
 INCLUDE = 	include \
 			$(BUILDHOME)/db/include \
 			$(BUILDHOME)/dev/include \

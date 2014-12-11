@@ -1,8 +1,6 @@
 
 TARGET =	c_type
 
-SOURCES =	c_type.c
-
 INCLUDE = 	include \
 			$(BUILDHOME)/db/include \
 			$(BUILDHOME)/dev/include \

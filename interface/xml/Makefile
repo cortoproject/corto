@@ -1,10 +1,6 @@
 
 TARGET =	xml
 
-SOURCES =	db_xml_deser.c \
-			db_xmlreader.c \
-			db_xmlloader.c
-
 INCLUDE = 	include \
 			$(BUILDHOME)/db/include \
 			$(BUILDHOME)/dev/include \

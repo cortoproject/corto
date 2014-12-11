@@ -4,22 +4,17 @@ OFLAGS	= -O0
 # COVFLAGS = -fprofile-arcs -ftest-coverage
 CFLAGS	= $(OFLAGS) $(COVFLAGS) -g -Wall -Wextra -Wno-gnu-label-as-value -Wno-unknown-pragmas -Wstrict-prototypes -pedantic -std=c99 -fPIC -D_GNU_SOURCE -D_XOPEN_SOURCE=500 -D_POSIX_C_SOURCE=199506
 
-PSOURCES = $(SOURCES:%.c=$(PPREFIX)%.c)
-
 INCLUDES = $(INCLUDE:%=-I"%")
-OBJECTS += $(PSOURCES:%.c=obj/%.o)
-OBJECTS += $(ASMSOURCES:%.s=asm/%.o)
-GCOV = $(PSOURCES:%.c=gcov/%.c.gcov)
-SPLINT = $(PSOURCES:%.c=src/%.c)
+SOURCES = $(wildcard src/*.c)
+SOURCES_NODIR = $(notdir $(SOURCES))
+OBJECTS += $(SOURCES_NODIR:%.c=obj/%.o)
+GCOV = $(SOURCES:%.c=gcov/%.c.gcov)
+SPLINT = $(SOURCES:%.c=src/%.c)
 LINKPATH = $(LIBPATH:%=-L%)
 LINK = -L$(BIN) $(LINKPATH) $(LIBS:%=-l%)
 
 obj/%.o: src/%.c
 	@mkdir -p obj
-	$(CC) $(CFLAGS) $(INCLUDES) $< -c -o $@
-
-asm/%.o: src/%.s
-	@mkdir -p asm
 	$(CC) $(CFLAGS) $(INCLUDES) $< -c -o $@
 
 %.c.gcov: src/%.c
