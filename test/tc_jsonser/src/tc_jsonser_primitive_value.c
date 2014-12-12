@@ -27,12 +27,9 @@ db_int16 test_primitive_value(void) {
     struct db_serializer_s serializer = 
         db_json_ser(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
 
-    _test_primitive_value(f32z, "0");
-    _test_primitive_value(f32n, "-2.45");
-    _test_primitive_value(f32p, "45.2");
-    _test_primitive_value(f64z, "0");
-    _test_primitive_value(f64n, "-2.45");
-    _test_primitive_value(f64p, "45.2");
+    _test_primitive_value(i8n, "-2");
+    _test_primitive_value(i8p, "45");
+    _test_primitive_value(i8z, "0");
     _test_primitive_value(i16n, "-2");
     _test_primitive_value(i16p, "45");
     _test_primitive_value(i16z, "0");
@@ -42,21 +39,36 @@ db_int16 test_primitive_value(void) {
     _test_primitive_value(i64n, "-2");
     _test_primitive_value(i64p, "45");
     _test_primitive_value(i64z, "0");
+    
+    _test_primitive_value(u8p, "45");
+    _test_primitive_value(u8z, "0");
     _test_primitive_value(u16p, "45");
     _test_primitive_value(u16z, "0");
     _test_primitive_value(u32p, "45");
     _test_primitive_value(u32z, "0");
     _test_primitive_value(u64p, "45");
     _test_primitive_value(u64z, "0");
+    
+    _test_primitive_value(f32z, "0.000000");
+    _test_primitive_value(f32n, "-2.450000");
+    _test_primitive_value(f32p, "45.200001");
+    _test_primitive_value(f64z, "0.000000");
+    _test_primitive_value(f64n, "-2.450000");
+    _test_primitive_value(f64p, "45.200001");
 
     _test_primitive_value(bt, "true");
     _test_primitive_value(bf, "false");
 
     _test_primitive_value(sn, "null");
     _test_primitive_value(s1, "\"hello world\"");
-    _test_primitive_value(s1, "\"hello, world!\"");
+    _test_primitive_value(s2, "\"hello, world!\"");
 
     _test_primitive_value(p, "{\"x\":3,\"y\":4}");
+
+    // _test_primitive_value(Flint, "F");
+    // _test_primitive_value(Forge, "F");
+    // _test_primitive_value(Gust, "F");
+    // _test_primitive_value(Sleet, "F");
 
     return result;
 }

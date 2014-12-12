@@ -1,5 +1,9 @@
 object tc_jsonser::
 
+    int8 i8n: -2;
+    int8 i8z: 0;
+    int8 i8p: 45;
+
     int16 i16n: -2;
     int16 i16z: 0;
     int16 i16p: 45;
@@ -11,6 +15,9 @@ object tc_jsonser::
     int64 i64n: -2;
     int64 i64z: 0;
     int64 i64p: 45;
+
+    uint8 u8z: 0;
+    uint8 u8p: 45;
 
     uint16 u16z: 0;
     uint16 u16p: 45;
@@ -33,7 +40,7 @@ object tc_jsonser::
     bool bf: false;
 
     string sn: null;
-    string s1: "hello word";
+    string s1: "hello world";
     string s2: "hello, world!";
 
     struct point2D::
@@ -41,6 +48,13 @@ object tc_jsonser::
 
     point2d p: 3, 4;
 
-    string namesp: "hey"::
-        int16 a: 1;
-        string b: "2";
+    enum Djinn:: Mercury, Venus, Mars, Jupiter;
+
+    Djinn Flint: Venus;
+    Djinn Forge: Mars;
+    Djinn Gust: Jupiter;
+    Djinn Sleet: Mercury;
+
+    void namesp::
+        int16 a: 9;
+        string b: "b";

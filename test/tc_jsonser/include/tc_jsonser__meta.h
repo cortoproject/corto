@@ -24,6 +24,21 @@ extern db_bool (*tc_jsonser_bf_o);
 /* ::tc_jsonser::bt */
 extern db_bool (*tc_jsonser_bt_o);
 
+/* ::tc_jsonser::Djinn */
+extern db_enum tc_jsonser_Djinn_o;
+
+/* ::tc_jsonser::Djinn::Jupiter */
+extern db_constant (*tc_jsonser_Djinn_Jupiter_o);
+
+/* ::tc_jsonser::Djinn::Mars */
+extern db_constant (*tc_jsonser_Djinn_Mars_o);
+
+/* ::tc_jsonser::Djinn::Mercury */
+extern db_constant (*tc_jsonser_Djinn_Mercury_o);
+
+/* ::tc_jsonser::Djinn::Venus */
+extern db_constant (*tc_jsonser_Djinn_Venus_o);
+
 /* ::tc_jsonser::f32n */
 extern db_float32 (*tc_jsonser_f32n_o);
 
@@ -41,6 +56,15 @@ extern db_float32 (*tc_jsonser_f64p_o);
 
 /* ::tc_jsonser::f64z */
 extern db_float32 (*tc_jsonser_f64z_o);
+
+/* ::tc_jsonser::Flint */
+extern tc_jsonser_Djinn (*tc_jsonser_Flint_o);
+
+/* ::tc_jsonser::Forge */
+extern tc_jsonser_Djinn (*tc_jsonser_Forge_o);
+
+/* ::tc_jsonser::Gust */
+extern tc_jsonser_Djinn (*tc_jsonser_Gust_o);
 
 /* ::tc_jsonser::i16n */
 extern db_int16 (*tc_jsonser_i16n_o);
@@ -69,8 +93,17 @@ extern db_int64 (*tc_jsonser_i64p_o);
 /* ::tc_jsonser::i64z */
 extern db_int64 (*tc_jsonser_i64z_o);
 
+/* ::tc_jsonser::i8n */
+extern db_int8 (*tc_jsonser_i8n_o);
+
+/* ::tc_jsonser::i8p */
+extern db_int8 (*tc_jsonser_i8p_o);
+
+/* ::tc_jsonser::i8z */
+extern db_int8 (*tc_jsonser_i8z_o);
+
 /* ::tc_jsonser::namesp */
-extern db_string (*tc_jsonser_namesp_o);
+extern db_void (*tc_jsonser_namesp_o);
 
 /* ::tc_jsonser::namesp::a */
 extern db_int16 (*tc_jsonser_namesp_a_o);
@@ -96,6 +129,9 @@ extern db_string (*tc_jsonser_s1_o);
 /* ::tc_jsonser::s2 */
 extern db_string (*tc_jsonser_s2_o);
 
+/* ::tc_jsonser::Sleet */
+extern tc_jsonser_Djinn (*tc_jsonser_Sleet_o);
+
 /* ::tc_jsonser::sn */
 extern db_string (*tc_jsonser_sn_o);
 
@@ -116,6 +152,12 @@ extern db_uint64 (*tc_jsonser_u64p_o);
 
 /* ::tc_jsonser::u64z */
 extern db_uint64 (*tc_jsonser_u64z_o);
+
+/* ::tc_jsonser::u8p */
+extern db_uint8 (*tc_jsonser_u8p_o);
+
+/* ::tc_jsonser::u8z */
+extern db_uint8 (*tc_jsonser_u8z_o);
 
 int tc_jsonser_load(void);
 #ifdef __cplusplus

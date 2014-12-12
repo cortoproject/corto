@@ -17,6 +17,13 @@ extern "C" {
 
 /* Type definitions */
 
+/* ::tc_jsonser::Djinn */
+typedef enum tc_jsonser_Djinn {
+    TC_JSONSER_Mercury = 0,
+    TC_JSONSER_Venus = 1,
+    TC_JSONSER_Mars = 2,
+    TC_JSONSER_Jupiter = 3
+} tc_jsonser_Djinn;
 
 /*  ::tc_jsonser::point2D */
 typedef struct tc_jsonser_point2D tc_jsonser_point2D;

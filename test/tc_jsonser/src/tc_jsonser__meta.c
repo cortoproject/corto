@@ -10,12 +10,20 @@
 db_object tc_jsonser_o;
 db_bool (*tc_jsonser_bf_o);
 db_bool (*tc_jsonser_bt_o);
+db_enum tc_jsonser_Djinn_o;
+db_constant (*tc_jsonser_Djinn_Jupiter_o);
+db_constant (*tc_jsonser_Djinn_Mars_o);
+db_constant (*tc_jsonser_Djinn_Mercury_o);
+db_constant (*tc_jsonser_Djinn_Venus_o);
 db_float32 (*tc_jsonser_f32n_o);
 db_float32 (*tc_jsonser_f32p_o);
 db_float32 (*tc_jsonser_f32z_o);
 db_float32 (*tc_jsonser_f64n_o);
 db_float32 (*tc_jsonser_f64p_o);
 db_float32 (*tc_jsonser_f64z_o);
+tc_jsonser_Djinn (*tc_jsonser_Flint_o);
+tc_jsonser_Djinn (*tc_jsonser_Forge_o);
+tc_jsonser_Djinn (*tc_jsonser_Gust_o);
 db_int16 (*tc_jsonser_i16n_o);
 db_int16 (*tc_jsonser_i16p_o);
 db_int16 (*tc_jsonser_i16z_o);
@@ -25,7 +33,10 @@ db_int32 (*tc_jsonser_i32z_o);
 db_int64 (*tc_jsonser_i64n_o);
 db_int64 (*tc_jsonser_i64p_o);
 db_int64 (*tc_jsonser_i64z_o);
-db_string (*tc_jsonser_namesp_o);
+db_int8 (*tc_jsonser_i8n_o);
+db_int8 (*tc_jsonser_i8p_o);
+db_int8 (*tc_jsonser_i8z_o);
+db_void (*tc_jsonser_namesp_o);
 db_int16 (*tc_jsonser_namesp_a_o);
 db_string (*tc_jsonser_namesp_b_o);
 tc_jsonser_point2D (*tc_jsonser_p_o);
@@ -34,6 +45,7 @@ db_member tc_jsonser_point2D_x_o;
 db_member tc_jsonser_point2D_y_o;
 db_string (*tc_jsonser_s1_o);
 db_string (*tc_jsonser_s2_o);
+tc_jsonser_Djinn (*tc_jsonser_Sleet_o);
 db_string (*tc_jsonser_sn_o);
 db_uint16 (*tc_jsonser_u16p_o);
 db_uint16 (*tc_jsonser_u16z_o);
@@ -41,6 +53,8 @@ db_uint32 (*tc_jsonser_u32p_o);
 db_uint32 (*tc_jsonser_u32z_o);
 db_uint64 (*tc_jsonser_u64p_o);
 db_uint64 (*tc_jsonser_u64z_o);
+db_uint8 (*tc_jsonser_u8p_o);
+db_uint8 (*tc_jsonser_u8z_o);
 
 /* Load objects in database */
 int tc_jsonser_load(void) {
@@ -90,6 +104,151 @@ int tc_jsonser_load(void) {
     if (!db_checkState(tc_jsonser_bt_o, DB_DEFINED)) {
         if (db_define(tc_jsonser_bt_o)) {
             db_error("tc_jsonser_load: failed to define object '::tc_jsonser::bt'.");
+            goto error;
+        }
+    }
+    /* Declare ::tc_jsonser::Djinn */
+    tc_jsonser_Djinn_o = db_declare(tc_jsonser_o, "Djinn", db_typedef(db_enum_o));
+    if (!tc_jsonser_Djinn_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::Djinn'.");
+        goto error;
+    }
+
+    /* Declare ::tc_jsonser::Djinn::Jupiter */
+    tc_jsonser_Djinn_Jupiter_o = db_declare(tc_jsonser_Djinn_o, "Jupiter", db_typedef(db_constant_o));
+    if (!tc_jsonser_Djinn_Jupiter_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::Djinn::Jupiter'.");
+        goto error;
+    } else {
+        (*tc_jsonser_Djinn_Jupiter_o) = 3;
+    }
+
+    /* Define ::tc_jsonser::Djinn::Jupiter */
+    if (!db_checkState(tc_jsonser_Djinn_Jupiter_o, DB_DEFINED)) {
+        if (db_define(tc_jsonser_Djinn_Jupiter_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::Djinn::Jupiter'.");
+            goto error;
+        }
+    }
+    /* Declare ::tc_jsonser::Djinn::Mars */
+    tc_jsonser_Djinn_Mars_o = db_declare(tc_jsonser_Djinn_o, "Mars", db_typedef(db_constant_o));
+    if (!tc_jsonser_Djinn_Mars_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::Djinn::Mars'.");
+        goto error;
+    } else {
+        (*tc_jsonser_Djinn_Mars_o) = 2;
+    }
+
+    /* Define ::tc_jsonser::Djinn::Mars */
+    if (!db_checkState(tc_jsonser_Djinn_Mars_o, DB_DEFINED)) {
+        if (db_define(tc_jsonser_Djinn_Mars_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::Djinn::Mars'.");
+            goto error;
+        }
+    }
+    /* Declare ::tc_jsonser::Djinn::Mercury */
+    tc_jsonser_Djinn_Mercury_o = db_declare(tc_jsonser_Djinn_o, "Mercury", db_typedef(db_constant_o));
+    if (!tc_jsonser_Djinn_Mercury_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::Djinn::Mercury'.");
+        goto error;
+    } else {
+        (*tc_jsonser_Djinn_Mercury_o) = 0;
+    }
+
+    /* Define ::tc_jsonser::Djinn::Mercury */
+    if (!db_checkState(tc_jsonser_Djinn_Mercury_o, DB_DEFINED)) {
+        if (db_define(tc_jsonser_Djinn_Mercury_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::Djinn::Mercury'.");
+            goto error;
+        }
+    }
+    /* Declare ::tc_jsonser::Djinn::Venus */
+    tc_jsonser_Djinn_Venus_o = db_declare(tc_jsonser_Djinn_o, "Venus", db_typedef(db_constant_o));
+    if (!tc_jsonser_Djinn_Venus_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::Djinn::Venus'.");
+        goto error;
+    } else {
+        (*tc_jsonser_Djinn_Venus_o) = 1;
+    }
+
+    /* Define ::tc_jsonser::Djinn::Venus */
+    if (!db_checkState(tc_jsonser_Djinn_Venus_o, DB_DEFINED)) {
+        if (db_define(tc_jsonser_Djinn_Venus_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::Djinn::Venus'.");
+            goto error;
+        }
+    }
+    /* Define ::tc_jsonser::Djinn */
+    if (!db_checkState(tc_jsonser_Djinn_o, DB_DEFINED)) {
+        if (db_define(tc_jsonser_Djinn_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::Djinn'.");
+            goto error;
+        }
+    }
+    if (db_type(tc_jsonser_Djinn_o)->size != sizeof(tc_jsonser_Djinn)) {
+        db_error("tc_jsonser_load: calculated size '%d' of type '::tc_jsonser::Djinn' doesn't match C-type size '%d'", db_type(tc_jsonser_Djinn_o)->size, sizeof(tc_jsonser_Djinn));
+    }
+    /* Declare ::tc_jsonser::Flint */
+    tc_jsonser_Flint_o = db_declare(tc_jsonser_o, "Flint", db_typedef(tc_jsonser_Djinn_o));
+    if (!tc_jsonser_Flint_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::Flint'.");
+        goto error;
+    } else {
+        (*tc_jsonser_Flint_o) = TC_JSONSER_Venus;
+    }
+
+    /* Define ::tc_jsonser::Flint */
+    if (!db_checkState(tc_jsonser_Flint_o, DB_DEFINED)) {
+        if (db_define(tc_jsonser_Flint_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::Flint'.");
+            goto error;
+        }
+    }
+    /* Declare ::tc_jsonser::Forge */
+    tc_jsonser_Forge_o = db_declare(tc_jsonser_o, "Forge", db_typedef(tc_jsonser_Djinn_o));
+    if (!tc_jsonser_Forge_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::Forge'.");
+        goto error;
+    } else {
+        (*tc_jsonser_Forge_o) = TC_JSONSER_Mars;
+    }
+
+    /* Define ::tc_jsonser::Forge */
+    if (!db_checkState(tc_jsonser_Forge_o, DB_DEFINED)) {
+        if (db_define(tc_jsonser_Forge_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::Forge'.");
+            goto error;
+        }
+    }
+    /* Declare ::tc_jsonser::Gust */
+    tc_jsonser_Gust_o = db_declare(tc_jsonser_o, "Gust", db_typedef(tc_jsonser_Djinn_o));
+    if (!tc_jsonser_Gust_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::Gust'.");
+        goto error;
+    } else {
+        (*tc_jsonser_Gust_o) = TC_JSONSER_Jupiter;
+    }
+
+    /* Define ::tc_jsonser::Gust */
+    if (!db_checkState(tc_jsonser_Gust_o, DB_DEFINED)) {
+        if (db_define(tc_jsonser_Gust_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::Gust'.");
+            goto error;
+        }
+    }
+    /* Declare ::tc_jsonser::Sleet */
+    tc_jsonser_Sleet_o = db_declare(tc_jsonser_o, "Sleet", db_typedef(tc_jsonser_Djinn_o));
+    if (!tc_jsonser_Sleet_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::Sleet'.");
+        goto error;
+    } else {
+        (*tc_jsonser_Sleet_o) = TC_JSONSER_Mercury;
+    }
+
+    /* Define ::tc_jsonser::Sleet */
+    if (!db_checkState(tc_jsonser_Sleet_o, DB_DEFINED)) {
+        if (db_define(tc_jsonser_Sleet_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::Sleet'.");
             goto error;
         }
     }
@@ -333,29 +492,68 @@ int tc_jsonser_load(void) {
             goto error;
         }
     }
-    /* Declare ::tc_jsonser::namesp */
-    tc_jsonser_namesp_o = db_declare(tc_jsonser_o, "namesp", db_typedef(db_string_o));
-    if (!tc_jsonser_namesp_o) {
-        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::namesp'.");
+    /* Declare ::tc_jsonser::i8n */
+    tc_jsonser_i8n_o = db_declare(tc_jsonser_o, "i8n", db_typedef(db_int8_o));
+    if (!tc_jsonser_i8n_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::i8n'.");
         goto error;
     } else {
-        (*tc_jsonser_namesp_o) = db_strdup("hey");
+        (*tc_jsonser_i8n_o) = -2;
     }
 
-    /* Define ::tc_jsonser::namesp */
-    if (!db_checkState(tc_jsonser_namesp_o, DB_DEFINED)) {
-        if (db_define(tc_jsonser_namesp_o)) {
-            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::namesp'.");
+    /* Define ::tc_jsonser::i8n */
+    if (!db_checkState(tc_jsonser_i8n_o, DB_DEFINED)) {
+        if (db_define(tc_jsonser_i8n_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::i8n'.");
             goto error;
         }
     }
+    /* Declare ::tc_jsonser::i8p */
+    tc_jsonser_i8p_o = db_declare(tc_jsonser_o, "i8p", db_typedef(db_int8_o));
+    if (!tc_jsonser_i8p_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::i8p'.");
+        goto error;
+    } else {
+        (*tc_jsonser_i8p_o) = 45;
+    }
+
+    /* Define ::tc_jsonser::i8p */
+    if (!db_checkState(tc_jsonser_i8p_o, DB_DEFINED)) {
+        if (db_define(tc_jsonser_i8p_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::i8p'.");
+            goto error;
+        }
+    }
+    /* Declare ::tc_jsonser::i8z */
+    tc_jsonser_i8z_o = db_declare(tc_jsonser_o, "i8z", db_typedef(db_int8_o));
+    if (!tc_jsonser_i8z_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::i8z'.");
+        goto error;
+    } else {
+        (*tc_jsonser_i8z_o) = 0;
+    }
+
+    /* Define ::tc_jsonser::i8z */
+    if (!db_checkState(tc_jsonser_i8z_o, DB_DEFINED)) {
+        if (db_define(tc_jsonser_i8z_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::i8z'.");
+            goto error;
+        }
+    }
+    /* Declare ::tc_jsonser::namesp */
+    tc_jsonser_namesp_o = db_declare(tc_jsonser_o, "namesp", db_typedef(db_void_o));
+    if (!tc_jsonser_namesp_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::namesp'.");
+        goto error;
+    }
+
     /* Declare ::tc_jsonser::namesp::a */
     tc_jsonser_namesp_a_o = db_declare(tc_jsonser_namesp_o, "a", db_typedef(db_int16_o));
     if (!tc_jsonser_namesp_a_o) {
         db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::namesp::a'.");
         goto error;
     } else {
-        (*tc_jsonser_namesp_a_o) = 1;
+        (*tc_jsonser_namesp_a_o) = 9;
     }
 
     /* Define ::tc_jsonser::namesp::a */
@@ -371,7 +569,7 @@ int tc_jsonser_load(void) {
         db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::namesp::b'.");
         goto error;
     } else {
-        (*tc_jsonser_namesp_b_o) = db_strdup("2");
+        (*tc_jsonser_namesp_b_o) = db_strdup("b");
     }
 
     /* Define ::tc_jsonser::namesp::b */
@@ -463,7 +661,7 @@ int tc_jsonser_load(void) {
         db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::s1'.");
         goto error;
     } else {
-        (*tc_jsonser_s1_o) = db_strdup("hello word");
+        (*tc_jsonser_s1_o) = db_strdup("hello world");
     }
 
     /* Define ::tc_jsonser::s1 */
@@ -598,6 +796,38 @@ int tc_jsonser_load(void) {
     if (!db_checkState(tc_jsonser_u64z_o, DB_DEFINED)) {
         if (db_define(tc_jsonser_u64z_o)) {
             db_error("tc_jsonser_load: failed to define object '::tc_jsonser::u64z'.");
+            goto error;
+        }
+    }
+    /* Declare ::tc_jsonser::u8p */
+    tc_jsonser_u8p_o = db_declare(tc_jsonser_o, "u8p", db_typedef(db_uint8_o));
+    if (!tc_jsonser_u8p_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::u8p'.");
+        goto error;
+    } else {
+        (*tc_jsonser_u8p_o) = 45;
+    }
+
+    /* Define ::tc_jsonser::u8p */
+    if (!db_checkState(tc_jsonser_u8p_o, DB_DEFINED)) {
+        if (db_define(tc_jsonser_u8p_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::u8p'.");
+            goto error;
+        }
+    }
+    /* Declare ::tc_jsonser::u8z */
+    tc_jsonser_u8z_o = db_declare(tc_jsonser_o, "u8z", db_typedef(db_uint8_o));
+    if (!tc_jsonser_u8z_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::u8z'.");
+        goto error;
+    } else {
+        (*tc_jsonser_u8z_o) = 0;
+    }
+
+    /* Define ::tc_jsonser::u8z */
+    if (!db_checkState(tc_jsonser_u8z_o, DB_DEFINED)) {
+        if (db_define(tc_jsonser_u8z_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::u8z'.");
             goto error;
         }
     }
