@@ -1616,19 +1616,6 @@ static db_vmOpKind db_ic_getVm##op(db_type t, db_ic_vmType typeKind, db_ic_vmOpe
 	return result;\
 }\
 
-static db_vmOpKind db_ic_getVmSTAGE12(db_ic_vmType typeKind, db_ic_vmOperand op1) {
-    if (typeKind == DB_IC_VMTYPE_D) {
-        switch(op1) {
-            case DB_IC_VMOPERAND_P: return DB_VM_STAGE12_DP;
-            case DB_IC_VMOPERAND_V: return DB_VM_STAGE12_DV;
-            default: db_assert(0, "invalid operand-kind for STAGE12");
-        }
-    } else {
-        db_assert(0, "invalid type-kind for STAGE12");
-    }
-    return DB_VM_STOP;
-}
-
 DB_IC_GETOP2(SET,,PQRV)
 DB_IC_GETOP2_W(SETREF,,PQRV)
 DB_IC_GETOP2_W(SETSTRDUP,,PQRV)
@@ -2222,18 +2209,6 @@ static db_vmOp* db_vmGetTypeAndAssemble(
     return vmOp;
 }
 
-/* DPV operands can't be encoded in the addressspace for one instruction. Therefore they must be split up into staged
- * instructions */
-static db_bool db_vmIsDPV(db_ic_vmType type, db_ic_vmOperand opKind1, db_ic_vmOperand opKind2) {
-    db_bool result = FALSE;
-    if (type == DB_IC_VMTYPE_D) {
-        if (((opKind1 == DB_IC_VMOPERAND_P) && (opKind2 == DB_IC_VMOPERAND_V)) || ((opKind1 == DB_IC_VMOPERAND_V) && (opKind2 == DB_IC_VMOPERAND_P))) {
-            result = TRUE;
-        }
-    }
-    return result;
-}
-
 /* Instruction without operands */
 static void db_vmOp0(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, db_icValue op1, db_icDerefMode opDeref1) {
     db_type t;
@@ -2285,27 +2260,13 @@ static void db_vmOp1Staged(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, 
 /* Instruction with two operands */
 static void db_vmOp2(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, db_icValue op1, db_icValue op2, db_icDerefMode opDeref1, db_icDerefMode opDeref2) {
     db_type t;
-    db_ic_vmType type, actualType;
+    db_ic_vmType type;
     db_ic_vmOperand opKind1, opKind2;
     
-    vmOp = db_vmGetTypeAndAssemble(program, vmOp, op, FALSE, NULL, op1, op2, 0, opDeref1, opDeref2,  &t, &actualType, NULL, &opKind1, &opKind2);
-    type = db_vmTranslateVmType(op->kind, actualType);
+    vmOp = db_vmGetTypeAndAssemble(program, vmOp, op, FALSE, NULL, op1, op2, 0, opDeref1, opDeref2,  &t, &type, NULL, &opKind1, &opKind2);
 
-    /* If instruction is DPV, stage first operand. DPV cannot be addressed in one instruction */
-    if ((actualType != DB_IC_VMTYPE_W) && db_vmIsDPV(type, opKind1, opKind2)) {
-        /* Stage double argument */
-        vmOp->op = db_ic_getVmSTAGE1(type, opKind2);
-        db_ic_vmSetOp1Addr(program, vmOp, type, opKind2, op2);
-        vmOp = db_vmProgram_addOp(program->program, ((db_ic)op)->line);
-        
-        /* Perform a small trick: the actual instruction is still called DPV even though it only has one operand encoded. This
-         * reduces overall complexity in the assembler and VM */
-        vmOp->op = db_ic_getVmOpKind(program, op, op1, t, type, opKind1, opKind2, opDeref1, opDeref2);
-        db_ic_vmSetOp1Addr(program, vmOp, type, opKind1, op1);
-    } else {
-        vmOp->op = db_ic_getVmOpKind(program, op, op1, t, actualType, opKind1, opKind2, opDeref1, opDeref2);
-        db_ic_vmSetOp2Addr(program, vmOp, actualType, opKind1, opKind2, op1, op2);
-    }
+    vmOp->op = db_ic_getVmOpKind(program, op, op1, t, type, opKind1, opKind2, opDeref1, opDeref2);
+    db_ic_vmSetOp2Addr(program, vmOp, type, opKind1, opKind2, op1, op2);
 }
 
 /* Instruction with two operands and a storage
@@ -2322,7 +2283,6 @@ static void db_vmOp2Storage(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op,
     db_ic_vmOperand opKind1, opKind2, storageKind;
     
     vmOp = db_vmGetTypeAndAssemble(program, vmOp, op, FALSE, storage, op1, op2, storageDeref, opDeref1, opDeref2,  &t, &type, &storageKind, &opKind1, &opKind2);
-    type = db_vmTranslateVmType(op->kind, type);
     vmOp->op = db_ic_getVmSet(t, (db_icStorage)storage, type, storageKind, opKind1, storageDeref, opDeref1);
     db_ic_vmSetOp2Addr(program, vmOp, type, storageKind, opKind1, storage, op1);
     
@@ -2341,30 +2301,16 @@ static void db_vmOp2Storage(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op,
 static void db_vmOp2Set(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, db_icValue storage, db_icValue op1, db_icValue op2, db_icDerefMode storageDeref, db_icDerefMode opDeref1, db_icDerefMode opDeref2) {
     db_vmOp *vmStoredOp;
     db_type t;
-    db_ic_vmType actualType, type;
+    db_ic_vmType type;
     db_ic_vmOperand opKind1, opKind2, storageKind;
     
-    vmOp = db_vmGetTypeAndAssemble(program, vmOp, op, FALSE, storage, op1, op2, storageDeref, opDeref1, opDeref2,  &t, &actualType, &storageKind, &opKind1, &opKind2);
-    type = db_vmTranslateVmType(op->kind, actualType);
-
-    if ((actualType != DB_IC_VMTYPE_W) && db_vmIsDPV(type, opKind1, opKind2)) {
-        /* Stage double argument */
-        vmOp->op = db_ic_getVmSTAGE1(type, opKind2);
-        db_ic_vmSetOp1Addr(program, vmOp, type, opKind2, op2);
-        vmOp = db_vmProgram_addOp(program->program, ((db_ic)op)->line);
-        
-        /* Perform a small trick: the actual instruction is still called DPV even though it only has one operand encoded. This
-         * reduces overall complexity in the assembler and VM */
-        vmOp->op = db_ic_getVmOpKind(program, op, op1, t, type, opKind1, opKind2, opDeref1, opDeref2);
-        db_ic_vmSetOp1Addr(program, vmOp, type, opKind1, op1);
-    } else {
-        vmOp->op = db_ic_getVmSet(t, (db_icStorage)op1, type, opKind1, opKind2, opDeref1, opDeref2);
-        db_ic_vmSetOp2Addr(program, vmOp, type, opKind1, opKind2, op1, op2);
-    }
+    vmOp = db_vmGetTypeAndAssemble(program, vmOp, op, FALSE, storage, op1, op2, storageDeref, opDeref1, opDeref2,  &t, &type, &storageKind, &opKind1, &opKind2);
+    vmOp->op = db_ic_getVmSet(t, (db_icStorage)op1, type, opKind1, opKind2, opDeref1, opDeref2);
+    db_ic_vmSetOp2Addr(program, vmOp, type, opKind1, opKind2, op1, op2);
 
     vmStoredOp = db_vmProgram_addOp(program->program, ((db_ic)op)->line);
-    vmStoredOp->op = db_ic_getVmSet(t, (db_icStorage)storage, actualType, storageKind, opKind1, storageDeref, opDeref1);
-    db_ic_vmSetOp2Addr(program, vmStoredOp, actualType, storageKind, opKind1, storage, op1);
+    vmStoredOp->op = db_ic_getVmSet(t, (db_icStorage)storage, type, storageKind, opKind1, storageDeref, opDeref1);
+    db_ic_vmSetOp2Addr(program, vmStoredOp, type, storageKind, opKind1, storage, op1);
 }
 
 /* Instruction with two operands and two staged
@@ -2376,25 +2322,14 @@ static void db_vmOp2Set(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, db_
 static void db_vmOp2Staged(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, db_icValue storage, db_icValue op1, db_icValue op2, db_icDerefMode storageDeref, db_icDerefMode opDeref1, db_icDerefMode opDeref2) {
     db_vmOp *vmStoredOp;
     db_type t;
-    db_ic_vmType actualType, type;
+    db_ic_vmType type;
     db_ic_vmOperand opKind1, opKind2, storageKind;
     
-    vmOp = db_vmGetTypeAndAssemble(program, vmOp, op, FALSE, storage, op1, op2, storageDeref, opDeref1, opDeref2,  &t, &actualType, &storageKind, &opKind1, &opKind2);
-    type = db_vmTranslateVmType(op->kind, actualType);
+    vmOp = db_vmGetTypeAndAssemble(program, vmOp, op, FALSE, storage, op1, op2, storageDeref, opDeref1, opDeref2,  &t, &type, &storageKind, &opKind1, &opKind2);
+    type = db_vmTranslateVmType(op->kind, type);
 
-    if (db_vmIsDPV(type, opKind1, opKind2)) {
-        /* Stage argument #1 */
-        vmOp->op = db_ic_getVmSTAGE1(type, opKind1);
-        db_ic_vmSetOp1Addr(program, vmOp, type, opKind1, op1);
-        
-        /* Stage argument #2 */
-        vmStoredOp = db_vmProgram_addOp(program->program, ((db_ic)op)->line);
-        vmStoredOp->op = db_ic_getVmSTAGE12(type, opKind2);
-        db_ic_vmSetOp1Addr(program, vmStoredOp, type, opKind2, op2);
-    } else {
-        vmOp->op = db_ic_getVmSTAGE2(type, opKind1, opKind2);
-        db_ic_vmSetOp2Addr(program, vmOp, type, opKind1, opKind2, op1, op2);
-    }
+    vmOp->op = db_ic_getVmSTAGE2(type, opKind1, opKind2);
+    db_ic_vmSetOp2Addr(program, vmOp, type, opKind1, opKind2, op1, op2);
     
     vmStoredOp = db_vmProgram_addOp(program->program, ((db_ic)op)->line);
     vmStoredOp->op = db_ic_getVmOpKind(program, op, storage, t, type, storageKind, opKind1, storageDeref, opDeref1);

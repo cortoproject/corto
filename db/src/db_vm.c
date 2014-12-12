@@ -714,9 +714,7 @@ typedef union Di2f_t {
 	OPERAND_##postfix(op,type,V)
 
 #define OP_LVALUE_FLOAT(op,type,postfix)\
-    op(type,type##PR)\
-    op(type,type##PP)\
-    op(type,type##PQ)\
+    OPERAND_##postfix(op,type,P)\
     OPERAND_##postfix(op,type,R)\
     OPERAND_##postfix(op,type,Q)
 
@@ -825,9 +823,7 @@ typedef union Di2f_t {
     TOJMP_OPERAND_##postfix(op,type,V)\
 
 #define TOJMP_LVALUE_FLOAT(_op,type,postfix)\
-    TOJMP_OPERAND(_op,type,P,R)\
-	TOJMP_OPERAND(_op,type,P,P)\
-	TOJMP_OPERAND(_op,type,P,Q)\
+    TOJMP_OPERAND_##postfix(_op,type,P);\
 	TOJMP_OPERAND_##postfix(_op,type,R);\
 	TOJMP_OPERAND_##postfix(_op,type,Q);\
 
@@ -1373,28 +1369,6 @@ static int32_t db_vm_run_w_storage(db_vmProgram program, void* reg, void *result
 
     OPERAND_PQR(CEQSTR,B,);
     OPERAND_PQR(CNEQSTR,B,);
-    
-    /* DPV instructions */
-    SET_DPV:
-        fetchOp1(SET,DP);
-        op_DP = stage1_D;
-        next();
-    OR_DPV:
-        next();
-    XOR_DPV:
-        next();
-    AND_DPV:
-        next();
-    MODI_DPV:
-        next();
-    DIVI_DPV:
-        next();
-    MULI_DPV:
-        next();
-    SUBI_DPV:
-        next();
-    ADDI_DPV:
-        next();
     
     OP1(JEQ);
     OP1(JNEQ);
