@@ -935,17 +935,17 @@ db_void *db_ic_valueValue(db_ic_vmProgram *program, db_icValue s) {
 		}\
 \
 		switch((db_word)result) {\
-		case 1: vmOpAddr = &op->ic.b._1; size = sizeof(db_int16); break;\
-		case 2: vmOpAddr = &op->ic.b._2; size = sizeof(db_int16); break;\
-		case 4: vmOpAddr = &op->ic.s;  size = sizeof(db_word);break;\
-		case 7: vmOpAddr = &op->lo.s.b._1; size = sizeof(db_int8); break;\
-		case 8: vmOpAddr = &op->lo.s.b._2; size = sizeof(db_int8); break;\
-		case 11: vmOpAddr = &op->hi.s.b._1; size = sizeof(db_int8); break;\
-		case 12: vmOpAddr = &op->hi.s.b._2; size = sizeof(db_int8); break;\
-		case 13: vmOpAddr = &op->lo; size = sizeof(db_uint64); break;\
-        case 3: vmOpAddr = &op->ic; size = sizeof(db_word);break;\
-		case 5: vmOpAddr = &op->lo.w;  size = sizeof(db_word);break;\
-		case 9: vmOpAddr = &op->hi.w;  size = sizeof(db_word);break;\
+		case 1: vmOpAddr = &op->ic.b._1; break;\
+		case 2: vmOpAddr = &op->ic.b._2; break;\
+		case 4: vmOpAddr = &op->ic.s; break;\
+		case 7: vmOpAddr = &op->lo.s.b._1; break;\
+		case 8: vmOpAddr = &op->lo.s.b._2; break;\
+		case 11: vmOpAddr = &op->hi.s.b._1; break;\
+		case 12: vmOpAddr = &op->hi.s.b._2; break;\
+		case 13: vmOpAddr = &op->lo; break;\
+        case 3: vmOpAddr = &op->ic; break;\
+		case 5: vmOpAddr = &op->lo.w; break;\
+		case 9: vmOpAddr = &op->hi.w; break;\
 		default:\
 			db_assert(0, "operand-macro " #macro " returned invalid value (%u) for operand " #vId " and type %d", (db_word)result, typeKind);\
 			break;\
@@ -1030,6 +1030,27 @@ typedef struct _vmParameter {
     uintptr_t w;
 }_vmParameter;
 
+db_uint32 db_ic_vmTypeKindSize(db_ic_vmType typeKind, db_ic_vmOperand operand) {
+    db_uint32 result = 0;
+    switch(typeKind) {
+    case DB_IC_VMTYPE_B: result = 1; break;
+    case DB_IC_VMTYPE_S: result = 2; break;
+    case DB_IC_VMTYPE_L: result = 4; break;
+    case DB_IC_VMTYPE_W: result = sizeof(db_word); break;
+    case DB_IC_VMTYPE_D: result = 8; break;
+    }
+
+    switch(operand) {
+    case DB_IC_VMOPERAND_P: result = sizeof(db_word); break;
+    case DB_IC_VMOPERAND_R: result = sizeof(db_uint16); break;
+    case DB_IC_VMOPERAND_Q: result = sizeof(db_uint16); break;
+    default:
+        break; 
+    }
+
+    return result;
+}
+
 static void db_ic_vmSetOp1Addr(db_ic_vmProgram *program, db_vmOp *op, db_ic_vmType typeKind, db_ic_vmOperand op1Kind, db_icValue v1) {
 	db_uint32 qreg[] = {0,1};
     struct {
@@ -1040,7 +1061,7 @@ static void db_ic_vmSetOp1Addr(db_ic_vmProgram *program, db_vmOp *op, db_ic_vmTy
     db_uint32 *reg = NULL;
 	void *result = NULL;
 	void *vmOpAddr = NULL;
-	db_uint32 size = 0;
+	db_uint32 size = db_ic_vmTypeKindSize(typeKind, op1Kind);
 
 	DB_UNUSED(op);
 	DB_UNUSED(typeKind);
@@ -1074,7 +1095,7 @@ static void db_ic_vmSetOp2Addr(db_ic_vmProgram *program, db_vmOp *op, db_ic_vmTy
     db_uint32 *reg = NULL;
 	void *result = NULL;
 	void *vmOpAddr = NULL;
-	db_uint32 size = 0;
+	db_uint32 size = db_ic_vmTypeKindSize(typeKind, op1Kind);
 
 	/* Setup dummy environment for operand macros, give the operands unique masks so they can be identified
 	 * after executing the corresponding macro. */
@@ -1093,6 +1114,8 @@ static void db_ic_vmSetOp2Addr(db_ic_vmProgram *program, db_vmOp *op, db_ic_vmTy
 	c.dbl = 13;
 
 	DB_IC_ASSIGN_OPERAND(DB_IC_SWITCH_TYPE_ALL,DB_IC_OP2ADDR1,1)
+
+    size = db_ic_vmTypeKindSize(typeKind, op2Kind);
 	DB_IC_ASSIGN_OPERAND(DB_IC_SWITCH_TYPE_ALL,DB_IC_OP2ADDR2,2)
 }
 
@@ -1106,7 +1129,7 @@ static void db_ic_vmSetOp3Addr(db_ic_vmProgram *program, db_vmOp *op, db_ic_vmTy
     db_word *reg = NULL;
 	void *result = NULL;
 	void *vmOpAddr = NULL;
-	db_uint32 size = 0;
+	db_uint32 size = db_ic_vmTypeKindSize(typeKind, op1Kind);
 
 	/* Setup dummy environment for operand macros, give the operands unique masks so they can be identified
 	 * after executing the corresponding macro. */
@@ -1124,7 +1147,11 @@ static void db_ic_vmSetOp3Addr(db_ic_vmProgram *program, db_vmOp *op, db_ic_vmTy
 	c.hi.s.b._2 = 12;
 
 	DB_IC_ASSIGN_OPERAND(DB_IC_SWITCH_TYPE_W,DB_IC_OP3ADDR1,1)
+
+    size = db_ic_vmTypeKindSize(typeKind, op2Kind);
 	DB_IC_ASSIGN_OPERAND(DB_IC_SWITCH_TYPE_W,DB_IC_OP3ADDR2,2)
+
+    size = db_ic_vmTypeKindSize(typeKind, op3Kind);
 	DB_IC_ASSIGN_OPERAND(DB_IC_SWITCH_TYPE_W,DB_IC_OP3ADDR3,3)
 }
 
@@ -2514,8 +2541,12 @@ static db_int16 db_icOp_toVm(db_icOp op, db_ic_vmProgram *program) {
 
 	/* If operation is push, increase stack-size */
 	if (op->kind == DB_IC_PUSH) {
-	    db_type t = db_ic_valueType(op->s1);
-	    program->stackSize += db_type_sizeof(t);
+        if(op->s1Any) {
+            program->stackSize += sizeof(db_any);
+        }else {
+    	    db_type t = db_ic_valueType(op->s1);
+    	    program->stackSize += db_type_sizeof(t);
+        }
 	    if (program->stackSize > program->maxStackSize) {
 	        program->maxStackSize = program->stackSize;
 	    }

@@ -1,0 +1,10 @@
+
+
+// Use a function to achieve a side-effect
+bool test(bool @not) = !@not;
+
+uint32 a, b: 0;
+
+// Use operations in which the left-hand side of the binary epxression is not a storage
+a = 10; // Start clean
+b = a + (test(true) ? 10 : 20);

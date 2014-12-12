@@ -28,7 +28,7 @@ f++; if f: fail("uint64 range error ($f)");
 g++; if g != -128: fail("int8 range error ($g)");
 h++; if h != -32768: fail("int16 range error ($h)");
 i++; if i != -2147483648: fail("int32 range error ($i)");
-j++; if j != -9223372036854775807: fail("int64 range error ($j)");
+j++; if j != -9223372036854775808: fail("int64 range error ($j)");
 
 if k != YELLOW: fail("enum error ($k)");
 if !l: fail("bool error ($l)");

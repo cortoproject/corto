@@ -198,7 +198,7 @@ db_int16 db_type_copy(db_any _this, db_any value) {
     s = db_copy_ser(DB_PRIVATE, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
     
     result = db_serializeValue(&s, &v1, &data);
-    
+
     if (result) {
         db_id id, id2;
         db_error("type::copy: failed to copy value of type '%s' to value of type '%s'",

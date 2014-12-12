@@ -266,11 +266,13 @@ typedef union Di2f_t {
     }\
 
 #define STAGE2(type,code)\
-	STAGE2_##code:\
+	STAGE2_##code: {\
 		fetchOp2(STAGE2,code);\
-		stage1_##type = op1_##code;\
+        type##_t tmp1 = op1_##code;\
 		stage2_##type = op2_##code;\
+        stage1_##type = tmp1;\
 		next();\
+    }\
 
 
 /* Expand compare operators for all stagetypes */
@@ -331,7 +333,7 @@ typedef union Di2f_t {
 	CEQSTR_##code:\
 		fetchOp1(CEQSTR,code);\
 		if (stage1_W && stage2_W) {\
-		op_##code = !strcmp((db_string)stage1_W, (db_string)stage2_W);\
+    		op_##code = !strcmp((db_string)stage1_W, (db_string)stage2_W);\
 		} else {\
 			op_##code = stage1_W == stage2_W;\
 		}\
