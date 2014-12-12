@@ -79,14 +79,44 @@ static db_int16 db_ser_primitive(db_serializer s, db_value *info, void *userData
     value = db_valueValue(info);
 
     db_convert(db_primitive(type), value, db_primitive(db_string_o), &valueString);
-    if(!db_ser_appendstr(data, valueString)) {
-        goto finished;
+    if (!valueString) {
+        goto error;
     }
-    db_dealloc(valueString);
 
+    switch (db_primitive(type->real)->kind) {
+        case DB_BINARY:
+            break;
+        case DB_BITMASK:
+            break;
+        case DB_ENUM:
+            break;
+        case DB_CHARACTER:
+        case DB_TEXT:
+            if (!*((db_string *)value)) {
+                if (!db_ser_appendstr(data, "null")) {
+                    goto finished;
+                }
+            } else {
+                if (!db_ser_appendstr(data, "\"%s\"", valueString)) {
+                    goto finished;
+                }
+            }
+            break;
+        default:
+            if (!db_ser_appendstr(data, valueString)) {
+                goto finished;
+            }
+            break;
+    }
+
+    db_dealloc(valueString);
     return 0;
 finished:
+    db_dealloc(valueString);
     return 1;
+error:
+    fprintf(stderr, "ERROR when serializing %s\n", db_nameof(value));
+    return -1;
 }
 
 static db_int16 db_ser_member(db_serializer s, db_value *info, void *userData) {
