@@ -3,6 +3,10 @@ void fail(string msg):
 	"tc_string01: FAIL: $msg";
 	result = false;
 
+// Compare string literals
+if "aaa" != "aaa": fail("\"aaa\" != \"aaa\"");
+if "aab" == "aaa": fail("\"aab\" != \"aaa\"");
+
 enum Color:: RED, YELLOW, GREEN, BLUE;
 
 var octet a = 255;
