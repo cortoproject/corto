@@ -17,6 +17,7 @@
 #include "db_async.h"
 #include "db_def.h"
 #include "db__meta.h"
+#include "inttypes.h"
 
 #include "alloca.h"
 
@@ -70,7 +71,7 @@ typedef struct db_stringConcatCache {
 /** Instruction postfixes
  * B	byte   (8 byte)
  * S	short  (16 bit)
- * L	long   (32 bit)
+ * L	long   (word)
  * D	double (64 bit)
  *
  * V	value
@@ -105,7 +106,7 @@ typedef struct db_stringConcatCache {
 #define SETREF(type,code)\
     SETREF_##code:{\
         fetchOp2(SETREF,code);\
-        db_set((void**)&op1_##code, (db_object)op2_##code);\
+        db_set((db_object*)&op1_##code, (db_object)op2_##code);\
     }\
     next();\
 
@@ -121,7 +122,7 @@ typedef struct db_stringConcatCache {
     	fetchOp2(SETSTRDUP,code);\
     	if (op1_##code) db_dealloc((db_string)op1_##code);\
     	if (op2_##code) {\
-    		op1_##code = (L_t)db_strdup((db_string)op2_##code);\
+    		op1_##code = (W_t)db_strdup((db_string)op2_##code);\
     	} else {\
     		op1_##code = 0;\
     	}\
@@ -265,11 +266,13 @@ typedef union Di2f_t {
     }\
 
 #define STAGE2(type,code)\
-	STAGE2_##code:\
+	STAGE2_##code: {\
 		fetchOp2(STAGE2,code);\
-		stage1_##type = op1_##code;\
+        type##_t tmp1 = op1_##code;\
 		stage2_##type = op2_##code;\
+        stage1_##type = tmp1;\
 		next();\
+    }\
 
 
 /* Expand compare operators for all stagetypes */
@@ -329,20 +332,20 @@ typedef union Di2f_t {
 #define CEQSTR(type,code)\
 	CEQSTR_##code:\
 		fetchOp1(CEQSTR,code);\
-		if (stage1_L && stage2_L) {\
-		op_##code = !strcmp((db_string)stage1_L, (db_string)stage2_L);\
+		if (stage1_W && stage2_W) {\
+    		op_##code = !strcmp((db_string)stage1_W, (db_string)stage2_W);\
 		} else {\
-			op_##code = stage1_L == stage2_L;\
+			op_##code = stage1_W == stage2_W;\
 		}\
 		next();
 
 #define CNEQSTR(type,code)\
 	CNEQSTR_##code:\
 		fetchOp1(CNEQSTR,code);\
-		if (stage1_L && stage2_L) {\
-			op_##code = strcmp((db_string)stage1_L, (db_string)stage2_L);\
+		if (stage1_W && stage2_W) {\
+			op_##code = strcmp((db_string)stage1_W, (db_string)stage2_W);\
 		} else {\
-			op_##code = stage1_L != stage2_L;\
+			op_##code = stage1_W != stage2_W;\
 		}\
 		next();
 
@@ -468,7 +471,7 @@ typedef union Di2f_t {
 #define PCAST(type,code)\
     PCAST_##code:\
         fetchOp2(PCAST,code)\
-        db_convert(db_primitive(stage1_L), &op2_##code, db_primitive(stage2_L), &op1_##code);\
+        db_convert(db_primitive(stage1_W), &op2_##code, db_primitive(stage2_W), &op1_##code);\
         next();
 
 #define STRCAT(type,code)\
@@ -511,7 +514,7 @@ typedef union Di2f_t {
 		*ptr = '\0';\
 		c.strcache->count = 0;\
 		c.strcache->length = 0;\
-		op1_##code = (L_t)result;\
+		op1_##code = (W_t)result;\
 		next();\
 	}\
 
@@ -635,13 +638,13 @@ typedef union Di2f_t {
 #define WAIT(type,code)\
     WAIT_##code:\
         fetchOp2(WAIT,code);\
-        op1_##code = (L_t)db_wait(0,0);\
+        op1_##code = (W_t)db_wait(0,0);\
         next();\
 
 #ifdef DB_VM_BOUNDSCHECK
 #define CHECK_BOUNDS(size, index)\
     if ((int)size <= (int)index) {\
-        printf("Exception: element [%d] is out of bounds (collection size is %d)\n", index, size);\
+        printf("Exception: element [%" PRIdPTR "] is out of bounds (collection size is %" PRId32 ")\n", index, size);\
         abort();\
         goto STOP;\
     }
@@ -661,7 +664,7 @@ typedef union Di2f_t {
 		{\
 			db_objectSeq* seq = (db_objectSeq*)op1_##code##V;\
             CHECK_BOUNDS(seq->length, op2_##code##V);\
-			op1_##code##V = (L_t)DB_OFFSET(seq->buffer,op2_##code##V * op3_##code##V);\
+			op1_##code##V = (W_t)DB_OFFSET(seq->buffer,op2_##code##V * op3_##code##V);\
 		}\
 		next();\
 
@@ -669,26 +672,26 @@ typedef union Di2f_t {
 	ELEML_##code:\
 		fetchOp2(ELEML, code);\
         CHECK_BOUNDS(db_llSize(*(db_ll*)op1_##code), op2_##code)\
-		op1_##code = (L_t)db_llGet(*(db_ll*)op1_##code, op2_##code);\
+		op1_##code = (W_t)db_llGet(*(db_ll*)op1_##code, op2_##code);\
 		next();
 
 #define ELEMLX(type,code)\
 	ELEMLX_##code:\
 		fetchOp2(ELEMLX, code);\
         CHECK_BOUNDS(db_llSize(*(db_ll*)op1_##code), op2_##code)\
-		op1_##code = (L_t)db_llGetPtr(*(db_ll*)op1_##code, op2_##code);\
+		op1_##code = (W_t)db_llGetPtr(*(db_ll*)op1_##code, op2_##code);\
 		next();\
 
 #define ELEMM(type,code)\
 	ELEMM_##code:\
 		fetchOp2(ELEMM, code);\
-		op1_##code = (L_t)db_rbtreeGet(*(db_rbtree*)op1_##code, (void*)&op2_##code);\
+		op1_##code = (W_t)db_rbtreeGet(*(db_rbtree*)op1_##code, (void*)&op2_##code);\
 		next();\
 
 #define ELEMMX(type,code)\
     ELEMMX_##code:\
     fetchOp2(ELEMMX, code);\
-    op1_##code = (L_t)db_rbtreeGetPtr(*(db_rbtree*)op1_##code, (void*)&op2_##code);\
+    op1_##code = (W_t)db_rbtreeGetPtr(*(db_rbtree*)op1_##code, (void*)&op2_##code);\
     next();\
 
 /* Instruction implementation expansions */
@@ -713,9 +716,7 @@ typedef union Di2f_t {
 	OPERAND_##postfix(op,type,V)
 
 #define OP_LVALUE_FLOAT(op,type,postfix)\
-    op(type,type##PR)\
-    op(type,type##PP)\
-    op(type,type##PQ)\
+    OPERAND_##postfix(op,type,P)\
     OPERAND_##postfix(op,type,R)\
     OPERAND_##postfix(op,type,Q)
 
@@ -778,23 +779,26 @@ typedef union Di2f_t {
     OP_LVALUE_FLOAT(op,D, postfix)\
 
 #define OP2_BSL(op, postfix)\
-    OP_LVALUE(op,B, postfix)\
-    OP_LVALUE(op,S, postfix)\
-    OP_LVALUE(op,L, postfix)\
+    OP_LVALUE(op, B, postfix)\
+    OP_LVALUE(op, S, postfix)\
+    OP_LVALUE(op, L, postfix)\
 
 #define OP2_LD(op, postfix)\
-    OP_LVALUE(op,L, postfix)\
-    OP_LVALUE_FLOAT(op,D, postfix)
+    OP_LVALUE(op, L, postfix)\
+    OP_LVALUE_FLOAT(op, D, postfix)
 
 #define OP2_L(op, postfix)\
-    OP_LVALUE(op,L, postfix)
+    OP_LVALUE(op, L, postfix)
+
+#define OP2_W(op, postfix)\
+    OP_LVALUE(op, W, postfix)
 
 #define OP2_D(op, postfix)\
-    OP_LVALUE(op,D, postfix)
+    OP_LVALUE(op, D, postfix)
 
-#define OP2V_L(op, postfix)\
-	OPERAND_##postfix(op, L, V)\
-	OP_LVALUE(op, L, postfix)\
+#define OP2V_W(op, postfix)\
+	OPERAND_##postfix(op, W, V)\
+	OP_LVALUE(op, W, postfix)\
 
 /* Translation from opcode-id to address */
 #define TOJMP_OPERAND(_op,type,lvalue,rvalue)\
@@ -821,9 +825,7 @@ typedef union Di2f_t {
     TOJMP_OPERAND_##postfix(op,type,V)\
 
 #define TOJMP_LVALUE_FLOAT(_op,type,postfix)\
-    TOJMP_OPERAND(_op,type,P,R)\
-	TOJMP_OPERAND(_op,type,P,P)\
-	TOJMP_OPERAND(_op,type,P,Q)\
+    TOJMP_OPERAND_##postfix(_op,type,P);\
 	TOJMP_OPERAND_##postfix(_op,type,R);\
 	TOJMP_OPERAND_##postfix(_op,type,Q);\
 
@@ -902,12 +904,15 @@ typedef union Di2f_t {
 #define TOJMP_OP2_L(op,postfix)\
     TOJMP_LVALUE(op,L,postfix)
 
+#define TOJMP_OP2_W(op,postfix)\
+    TOJMP_LVALUE(op,W,postfix)
+
 #define TOJMP_OP2_D(op,postfix)\
     TOJMP_LVALUE(op,D,postfix)
 
-#define TOJMP_OP2V_L(op,postfix)\
-	TOJMP_OPERAND_##postfix(op,L,V)\
-    TOJMP_LVALUE(op,L,postfix)
+#define TOJMP_OP2V_W(op,postfix)\
+    TOJMP_OPERAND_##postfix(op,W,V)\
+    TOJMP_LVALUE(op,W,postfix)
 
 /* Translation from opcode-id to string */
 #define TOSTR_OPERAND(_op,type,lvalue,rvalue)\
@@ -1022,12 +1027,15 @@ typedef union Di2f_t {
 #define TOSTR_OP2_L(op,postfix)\
     TOSTR_LVALUE(op,L,postfix)\
 
+#define TOSTR_OP2_W(op,postfix)\
+    TOSTR_LVALUE(op,W,postfix)\
+
 #define TOSTR_OP2_D(op,postfix)\
     TOSTR_LVALUE(op,D,postfix)\
 
-#define TOSTR_OP2V_L(op,postfix)\
-    TOSTR_LVALUE(op,L,postfix)\
-    TOSTR_OPERAND_##postfix(op,L,V)
+#define TOSTR_OP2V_W(op,postfix)\
+    TOSTR_LVALUE(op,W,postfix)\
+    TOSTR_OPERAND_##postfix(op,W,V)
 
 struct db_vm_context {
     db_vmOp *pc; /* Instruction counter */
@@ -1070,9 +1078,11 @@ static void db_vm_sig(int sig) {
         
         /* Print program with location of crash */
 #ifdef DB_IC_TRACING
-        db_string str = db_vmProgram_toString(program, programData->c[sp]->pc);
-        printf("\n%s\n", str);
-        db_dealloc(str);
+        if(sp == (db_int32)programData->sp-1) {
+            db_string str = db_vmProgram_toString(program, programData->c[sp]->pc);
+            printf("\n%s\n", str);
+            db_dealloc(str);
+        }
 #endif
     }
     printf("\n");
@@ -1155,10 +1165,10 @@ static int32_t db_vm_run_w_storage(db_vmProgram program, void* reg, void *result
             switch(p[i].op) {
 				case DB_VM_NOOP: p[i].op = toJump(NOOP); break;
                 TOJMP_OP2(SET,PQRV);
-				case DB_VM_SET_LRX: p[i].op = toJump(SET_LRX); break;
-				TOJMP_OP2_L(SETREF,PQRV);
-				TOJMP_OP2_L(SETSTR,PQRV);
-				TOJMP_OP2_L(SETSTRDUP,PQRV);
+				case DB_VM_SET_WRX: p[i].op = toJump(SET_WRX); break;
+				TOJMP_OP2_W(SETREF,PQRV);
+				TOJMP_OP2_W(SETSTR,PQRV);
+				TOJMP_OP2_W(SETSTRDUP,PQRV);
 				case DB_VM_ZERO: p[i].op = toJump(ZERO); break;
                 case DB_VM_INIT: p[i].op = toJump(INIT); break;
 
@@ -1185,6 +1195,7 @@ static int32_t db_vm_run_w_storage(db_vmProgram program, void* reg, void *result
                 case DB_VM_STAGE12_DP: p[i].op = toJump(STAGE12_DP); break;
                 case DB_VM_STAGE12_DV: p[i].op = toJump(STAGE12_DV); break;
                 TOJMP_OP2_V(STAGE2,PQRV);
+                case DB_VM_STAGE2_DVV: p[i].op = toJump(STAGE2_DVV); break;
 
                 TOJMP_OP1_COND(CAND);
                 TOJMP_OP1_COND(COR);
@@ -1216,16 +1227,16 @@ static int32_t db_vm_run_w_storage(db_vmProgram program, void* reg, void *result
 
 				case DB_VM_MEMBER: p[i].op = toJump(MEMBER); break;
 
-				TOJMP_OPERAND_PQRV(ELEMA,L,R);
-				TOJMP_OPERAND_PQRV(ELEMS,L,R);
-				TOJMP_OPERAND_PQRV(ELEML,L,R);
-				TOJMP_OPERAND_PQRV(ELEMLX,L,R);
-				TOJMP_OPERAND_PQRV(ELEMM,L,R);
-                TOJMP_OPERAND_PQRV(ELEMMX,L,R);
+				TOJMP_OPERAND_PQRV(ELEMA,W,R);
+				TOJMP_OPERAND_PQRV(ELEMS,W,R);
+				TOJMP_OPERAND_PQRV(ELEML,W,R);
+				TOJMP_OPERAND_PQRV(ELEMLX,W,R);
+				TOJMP_OPERAND_PQRV(ELEMM,W,R);
+                TOJMP_OPERAND_PQRV(ELEMMX,W,R);
 
 				TOJMP_OP1_PQRV(PUSH);
                 TOJMP_OP1(PUSHX);
-                TOJMP_OPERAND_PQRV(PUSHANY,L,);
+                TOJMP_OPERAND_PQRV(PUSHANY,W,);
                 TOJMP_OP1_ANY(PUSHANYX);
 
                 TOJMP_OPERAND_PQR(CALL,L,);
@@ -1235,28 +1246,28 @@ static int32_t db_vm_run_w_storage(db_vmProgram program, void* reg, void *result
                 TOJMP_OP1(RET);
                 TOJMP_OPERAND_PQR(RETCPY,L,);
 
-                TOJMP_OP2_L(CAST,PQRV);
+                TOJMP_OP2_W(CAST,PQRV);
                 TOJMP_OP2(PCAST,PQR);
 
-                TOJMP_OP2V_L(STRCAT,PQRV);
-                TOJMP_OP2_L(STRCPY,PQRV);
+                TOJMP_OP2V_W(STRCAT,PQRV);
+                TOJMP_OP2_W(STRCPY,PQRV);
 
-                TOJMP_LVALUE(NEW,L,PQRV);
-                TOJMP_OPERAND_PQRV(DEALLOC,L,);
-                TOJMP_OPERAND_PQRV(KEEP,L,);
-                TOJMP_OPERAND_PQRV(FREE,L,);
+                TOJMP_LVALUE(NEW,W,PQRV);
+                TOJMP_OPERAND_PQRV(DEALLOC,W,);
+                TOJMP_OPERAND_PQRV(KEEP,W,);
+                TOJMP_OPERAND_PQRV(FREE,W,);
 
-                TOJMP_OPERAND_PQRV(DEFINE,L,);
+                TOJMP_OPERAND_PQRV(DEFINE,W,);
 
-                TOJMP_OPERAND_PQRV(UPDATE,L,);
-                TOJMP_OPERAND_PQRV(UPDATEBEGIN,L,);
-                TOJMP_OPERAND_PQRV(UPDATEEND,L,);
-                TOJMP_OP2_L(UPDATEFROM,PQR);
-                TOJMP_OP2_L(UPDATEENDFROM,PQR);
-                TOJMP_OPERAND_PQRV(UPDATECANCEL,L,);
+                TOJMP_OPERAND_PQRV(UPDATE,W,);
+                TOJMP_OPERAND_PQRV(UPDATEBEGIN,W,);
+                TOJMP_OPERAND_PQRV(UPDATEEND,W,);
+                TOJMP_OP2_W(UPDATEFROM,PQR);
+                TOJMP_OP2_W(UPDATEENDFROM,PQR);
+                TOJMP_OPERAND_PQRV(UPDATECANCEL,W,);
 
-                TOJMP_OPERAND_PQRV(WAITFOR,L,);
-                TOJMP_OP2_L(WAIT,PQRV);
+                TOJMP_OPERAND_PQRV(WAITFOR,W,);
+                TOJMP_OP2_W(WAIT,PQRV);
 
                 case DB_VM_STOP: p[i].op = toJump(STOP); break;
                 default:
@@ -1284,30 +1295,30 @@ static int32_t db_vm_run_w_storage(db_vmProgram program, void* reg, void *result
 	
     OP2(SET,PQRV);
     
-    OP2_L(SETREF,PQRV);
-    OP2_L(SETSTR,PQRV);
-    OP2_L(SETSTRDUP,PQRV);
+    OP2_W(SETREF,PQRV);
+    OP2_W(SETSTR,PQRV);
+    OP2_W(SETSTRDUP,PQRV);
 
-    SET_LRX:
-    	fetch_LRR;
-    	fetch1_LRR;
-    	fetch2_LRR;
-    	op1_LRR = (L_t)&op2_LRR;
+    SET_WRX:
+    	fetch_WRR;
+    	fetch1_WRR;
+    	fetch2_WRR;
+    	op1_WRR = (W_t)&op2_WRR;
     	next();
 
     ZERO:
-    	fetch_LRV;
-    	fetch1_LRV;
-    	fetch2_LRV;
-    	memset(&op1_LRV,0,op2_LRV);
+    	fetch_WRV;
+    	fetch1_WRV;
+    	fetch2_WRV;
+    	memset(&op1_WRV,0,op2_WRV);
     	next();
     
     INIT: {
-        fetch_LRV;
-        fetch1_LRV;
-        fetch2_LRV;
+        fetch_WRV;
+        fetch1_WRV;
+        fetch2_WRV;
         db_value v;
-        db_valueValueInit(&v, NULL, (db_typedef)op2_LRV, &op1_LRV);
+        db_valueValueInit(&v, NULL, (db_typedef)op2_WRV, &op1_WRV);
         db_initValue(&v);
         next();
     }
@@ -1335,6 +1346,7 @@ static int32_t db_vm_run_w_storage(db_vmProgram program, void* reg, void *result
     STAGE12(D,DP);
     STAGE12(D,DV);
     OP2_V(STAGE2,PQRV)
+    STAGE2(D, DVV);
 
     OP1_COND(CAND);
     OP1_COND(COR);
@@ -1360,28 +1372,6 @@ static int32_t db_vm_run_w_storage(db_vmProgram program, void* reg, void *result
     OPERAND_PQR(CEQSTR,B,);
     OPERAND_PQR(CNEQSTR,B,);
     
-    /* DPV instructions */
-    SET_DPV:
-        fetchOp1(SET,DP);
-        op_DP = stage1_D;
-        next();
-    OR_DPV:
-        next();
-    XOR_DPV:
-        next();
-    AND_DPV:
-        next();
-    MODI_DPV:
-        next();
-    DIVI_DPV:
-        next();
-    MULI_DPV:
-        next();
-    SUBI_DPV:
-        next();
-    ADDI_DPV:
-        next();
-    
     OP1(JEQ);
     OP1(JNEQ);
 
@@ -1398,19 +1388,19 @@ static int32_t db_vm_run_w_storage(db_vmProgram program, void* reg, void *result
     		printf("Error: dereferencing null\n");
     		goto STOP;
     	}
-    	op1_LRR = op2_LRR + c.lo.w;
+    	op1_WRR = op2_WRR + c.lo.w;
     	next();
 
-	OPERAND_PQRV(ELEMA,L,R);
-	OPERAND_PQRV(ELEMS,L,R);
-	OPERAND_PQRV(ELEML,L,R);
-	OPERAND_PQRV(ELEMLX,L,R);
-	OPERAND_PQRV(ELEMM,L,R);
-    OPERAND_PQRV(ELEMMX,L,R);
+	OPERAND_PQRV(ELEMA,W,R);
+	OPERAND_PQRV(ELEMS,W,R);
+	OPERAND_PQRV(ELEML,W,R);
+	OPERAND_PQRV(ELEMLX,W,R);
+	OPERAND_PQRV(ELEMM,W,R);
+    OPERAND_PQRV(ELEMMX,W,R);
 
     OP1_PQRV(PUSH);
     OP1(PUSHX);
-    OPERAND_PQRV(PUSHANY,L,);
+    OPERAND_PQRV(PUSHANY,W,);
     OP1_ANY(PUSHANYX);
     OP1_ANYV(PUSHANYX);
 
@@ -1421,27 +1411,27 @@ static int32_t db_vm_run_w_storage(db_vmProgram program, void* reg, void *result
     OP1(RET);
     OPERAND_PQR(RETCPY,L,);
 
-    OP2_L(CAST,PQRV);
+    OP2_W(CAST,PQRV);
     OP2(PCAST,PQR);
-    OP2V_L(STRCAT,PQRV);
-    OP2_L(STRCPY,PQRV);
+    OP2V_W(STRCAT,PQRV);
+    OP2_W(STRCPY,PQRV);
 
-    OP_LVALUE(NEW,L,PQRV);
-    OPERAND_PQRV(DEALLOC,L,);
-    OPERAND_PQRV(KEEP,L,);
-    OPERAND_PQRV(FREE,L,);
+    OP_LVALUE(NEW,W,PQRV);
+    OPERAND_PQRV(DEALLOC,W,);
+    OPERAND_PQRV(KEEP,W,);
+    OPERAND_PQRV(FREE,W,);
 
-    OPERAND_PQRV(DEFINE,L,);
+    OPERAND_PQRV(DEFINE,W,);
 
-    OPERAND_PQRV(UPDATE,L,);
-    OPERAND_PQRV(UPDATEBEGIN,L,);
-    OPERAND_PQRV(UPDATEEND,L,);
-    OP2_L(UPDATEFROM,PQR);
-    OP2_L(UPDATEENDFROM,PQR);
-    OPERAND_PQRV(UPDATECANCEL,L,);
+    OPERAND_PQRV(UPDATE,W,);
+    OPERAND_PQRV(UPDATEBEGIN,W,);
+    OPERAND_PQRV(UPDATEEND,W,);
+    OP2_W(UPDATEFROM,PQR);
+    OP2_W(UPDATEENDFROM,PQR);
+    OPERAND_PQRV(UPDATECANCEL,W,);
 
-    OPERAND_PQRV(WAITFOR,L,);
-    OP2_L(WAIT,PQRV);
+    OPERAND_PQRV(WAITFOR,W,);
+    OP2_W(WAIT,PQRV);
 
 STOP:
     db_vm_popSignalHandler();
@@ -1534,10 +1524,10 @@ char * db_vmProgram_toString(db_vmProgram program, db_vmOp *addr) {
             switch(kind) {
                 case DB_VM_NOOP: result = strappend(result, "NOOP\n"); break;
                 TOSTR_OP2(SET,PQRV);
-                TOSTR_OP2_L(SETREF,PQRV);
-                TOSTR_OP2_L(SETSTR,PQRV);
-                TOSTR_OP2_L(SETSTRDUP,PQRV);
-                case DB_VM_SET_LRX: result = strappend(result, "SET_LRX %u %u\n", p[i].ic.b._1, p[i].ic.b._2); break;
+                TOSTR_OP2_W(SETREF,PQRV);
+                TOSTR_OP2_W(SETSTR,PQRV);
+                TOSTR_OP2_W(SETSTRDUP,PQRV);
+                case DB_VM_SET_WRX: result = strappend(result, "SET_WRX %u %u\n", p[i].ic.b._1, p[i].ic.b._2); break;
                 case DB_VM_ZERO: result = strappend(result, "ZERO %u %u\n", p[i].ic.b._1, p[i].lo.w); break;
                 case DB_VM_INIT: result = strappend(result, "INIT %u %u\n", p[i].ic.b._1, p[i].lo.w); break;
 
@@ -1564,6 +1554,7 @@ char * db_vmProgram_toString(db_vmProgram program, db_vmOp *addr) {
                 case DB_VM_STAGE12_DP: result = strappend(result, "STAGE12_DP %u\n", p[i].lo.w); break;
                 case DB_VM_STAGE12_DV: result = strappend(result, "STAGE12_DV %u\n", *(D_t*)&p[i].lo.w); break;
                 TOSTR_OP2_V(STAGE2,PQRV);
+                case DB_VM_STAGE2_DVV: result = strappend(result, "STAGE2_DVV %u %u\n", p[i].lo.w, p[i].hi.w); break;
 
                 TOSTR_OP1_COND(CAND);
                 TOSTR_OP1_COND(COR);
@@ -1594,16 +1585,16 @@ char * db_vmProgram_toString(db_vmProgram program, db_vmOp *addr) {
                 case DB_VM_JUMP: result = strappend(result, "JUMP %u\n", p[i].lo.w); break;
 
                 case DB_VM_MEMBER: result = strappend(result, "MEMBER %u %u %u\n", p[i].ic.b._1, p[i].ic.b._2, p[i].lo.w); break;
-                TOSTR_OPERAND_PQRV(ELEMA,L,R);
-                TOSTR_OPERAND_PQRV(ELEMS,L,R);
-                TOSTR_OPERAND_PQRV(ELEML,L,R);
-                TOSTR_OPERAND_PQRV(ELEMLX,L,R);
-                TOSTR_OPERAND_PQRV(ELEMM,L,R);
-                TOSTR_OPERAND_PQRV(ELEMMX,L,R);
+                TOSTR_OPERAND_PQRV(ELEMA,W,R);
+                TOSTR_OPERAND_PQRV(ELEMS,W,R);
+                TOSTR_OPERAND_PQRV(ELEML,W,R);
+                TOSTR_OPERAND_PQRV(ELEMLX,W,R);
+                TOSTR_OPERAND_PQRV(ELEMM,W,R);
+                TOSTR_OPERAND_PQRV(ELEMMX,W,R);
                     
                 TOSTR_OP1_PQRV(PUSH);
                 TOSTR_OP1(PUSHX);
-                TOSTR_OPERAND_PQRV(PUSHANY,L,);
+                TOSTR_OPERAND_PQRV(PUSHANY,W,);
                 TOSTR_OP1_ANY(PUSHANYX);
 
                 TOSTR_OPERAND_PQR(CALL,L,);
@@ -1613,27 +1604,27 @@ char * db_vmProgram_toString(db_vmProgram program, db_vmOp *addr) {
                 TOSTR_OP1(RET);
                 TOSTR_OPERAND_PQR(RETCPY,L,);
 
-                TOSTR_OP2_L(CAST,PQRV);
+                TOSTR_OP2_W(CAST,PQRV);
                 TOSTR_OP2(PCAST,PQR);
-                TOSTR_OP2V_L(STRCAT,PQRV);
-                TOSTR_OP2_L(STRCPY,PQRV);
+                TOSTR_OP2V_W(STRCAT,PQRV);
+                TOSTR_OP2_W(STRCPY,PQRV);
 
-                TOSTR_LVALUE(NEW,L,PQRV);
-                TOSTR_OPERAND_PQR(DEALLOC,L,);
-                TOSTR_OPERAND_PQR(KEEP,L,);
-                TOSTR_OPERAND_PQR(FREE,L,);
+                TOSTR_LVALUE(NEW,W,PQRV);
+                TOSTR_OPERAND_PQR(DEALLOC,W,);
+                TOSTR_OPERAND_PQR(KEEP,W,);
+                TOSTR_OPERAND_PQR(FREE,W,);
 
-                TOSTR_OPERAND_PQRV(DEFINE,L,);
+                TOSTR_OPERAND_PQRV(DEFINE,W,);
 
-                TOSTR_OPERAND_PQRV(UPDATE,L,);
-                TOSTR_OPERAND_PQRV(UPDATEBEGIN,L,);
-                TOSTR_OPERAND_PQRV(UPDATEEND,L,);
-                TOSTR_OP2_L(UPDATEFROM,PQR);
-                TOSTR_OP2_L(UPDATEENDFROM,PQR);
-                TOSTR_OPERAND_PQRV(UPDATECANCEL,L,);
+                TOSTR_OPERAND_PQRV(UPDATE,W,);
+                TOSTR_OPERAND_PQRV(UPDATEBEGIN,W,);
+                TOSTR_OPERAND_PQRV(UPDATEEND,W,);
+                TOSTR_OP2_W(UPDATEFROM,PQR);
+                TOSTR_OP2_W(UPDATEENDFROM,PQR);
+                TOSTR_OPERAND_PQRV(UPDATECANCEL,W,);
 
-                TOSTR_OPERAND_PQRV(WAITFOR,L,);
-                TOSTR_OP2_L(WAIT,PQRV);
+                TOSTR_OPERAND_PQRV(WAITFOR,W,);
+                TOSTR_OP2_W(WAIT,PQRV);
 
                 case DB_VM_STOP: result = strappend(result, "STOP\n"); break;
                 default:

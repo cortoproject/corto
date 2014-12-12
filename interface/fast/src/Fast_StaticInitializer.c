@@ -116,7 +116,7 @@ db_int16 Fast_StaticInitializer_construct(Fast_StaticInitializer object) {
     
     /* Copy offsets of variables into frames */
 	for(variable=0; variable<Fast_Initializer(object)->variableCount; variable++) {
-		object->frames[0].ptr[variable] =
+ 		object->frames[0].ptr[variable] =
 				(db_word)Fast_ObjectBase(Fast_Initializer(object)->variables[variable].object)->value;
 		if (!object->frames[0].ptr[variable]) {
 			Fast_Parser_error(yparser(), "non-static variable in static initializer");

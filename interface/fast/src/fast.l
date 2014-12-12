@@ -125,8 +125,8 @@ true							TOKEN; yylval.Boolean =  TRUE; return BOOLEAN;
 false							TOKEN; yylval.Boolean = FALSE; return BOOLEAN;
 
 L?'(\\.|[^\\'])+'				TOKEN; yylval.Character = *(yytext+1); return CHARACTER;
-0x[0-9a-fA-F]+					TOKEN; sscanf(yytext, "%llx", &yylval.Integer); return INTEGER; 
-[0-9]+							TOKEN; sscanf(yytext, "%llu", &yylval.Integer); DB_UNUSED(yyunput); return INTEGER;
+0x[0-9a-fA-F]+					TOKEN; sscanf(yytext, "%" PRIu64, &yylval.Integer); return INTEGER; 
+[0-9]+							TOKEN; sscanf(yytext, "%" PRIu64, &yylval.Integer); DB_UNUSED(yyunput); return INTEGER;
 [0-9]+"."[0-9]+					TOKEN; yylval.FloatingPoint = atof(yytext); return FLOATINGPOINT;
 "null"							TOKEN; yylval.Null = NULL; return NUL;
 L?\"(\\.|[^\\"])*\"				TOKEN; yylval.String = malloc(strlen(yytext) + 1); lex_collect(yylval.String); return fast_escape(yytext+1,yylval.String) ? ERROR : STRING;

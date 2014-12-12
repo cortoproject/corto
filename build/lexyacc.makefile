@@ -1,7 +1,7 @@
 SOURCES += 	y.tab.c \
 			lex.yy.c			
 
-include $(BUILD)/component.makefile
+include $(HYVE_HOME)/build/component.makefile
 
 src/lex.yy.c: src/$(LEX) src/y.tab.c
 	flex -o$@ src/$(LEX)

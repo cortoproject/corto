@@ -143,13 +143,15 @@ extern "C" {
 #define VM_2OP_L(op,postfix)\
     VM_LVALUE(op,L,postfix)
 
+#define VM_2OP_W(op,postfix)\
+    VM_LVALUE(op,W,postfix)
+
 #define VM_2OP_D(op,postfix)\
     VM_LVALUE(op,D,postfix)
 
-
-#define VM_2OPV_L(op,postfix)\
-	VM_OPERAND_##postfix(op,L,V),\
-    VM_LVALUE(op,L,postfix)
+#define VM_2OPV_W(op,postfix)\
+	VM_OPERAND_##postfix(op,W,V),\
+    VM_LVALUE(op,W,postfix)
 
 typedef enum db_vmOpKind {
 	DB_VM_NOOP,
@@ -159,14 +161,14 @@ typedef enum db_vmOpKind {
 
 	/* Special set instruction that takes the address of a register so calculations can be performed on it.
 	 * This is useful when calculating dynamic offsets, for example when using arrays i.c.w. a variable index. */
-	DB_VM_SET_LRX,
+	DB_VM_SET_WRX,
 
 	/* Specialized SET for references */
-	VM_2OP_L(SETREF,PQRV),
+	VM_2OP_W(SETREF,PQRV),
 
 	/* Specialized SET for strings */
-	VM_2OP_L(SETSTR,PQRV),
-	VM_2OP_L(SETSTRDUP,PQRV),
+	VM_2OP_W(SETSTR,PQRV),
+	VM_2OP_W(SETSTRDUP,PQRV),
 
 	/* Initialize register-memory to zero */
 	DB_VM_ZERO,
@@ -249,17 +251,17 @@ typedef enum db_vmOpKind {
 	DB_VM_MEMBER, /* Takes destination register, base register and offset */
 
 	/* Collections */
-	VM_OPERAND_PQRV(ELEMA,L,R), /* Takes register(1), elementsize(3) and index variable(2) */
-	VM_OPERAND_PQRV(ELEMS,L,R), /* Takes register(1), elementsize(3) and index variable(2) */
-	VM_OPERAND_PQRV(ELEML,L,R), /* Takes register(1) and index variable(2) */
-	VM_OPERAND_PQRV(ELEMLX,L,R),/* Takes register(1) and index variable(2) - obtains pointer to listnode */
-	VM_OPERAND_PQRV(ELEMM,L,R), /* Takes register(1) and index variable(2) */
-    VM_OPERAND_PQRV(ELEMMX,L,R), /* Takes register(1) and index variable(2) - obtains pointer to mapnode*/
+	VM_OPERAND_PQRV(ELEMA,W,R), /* Takes register(1), elementsize(3) and index variable(2) */
+	VM_OPERAND_PQRV(ELEMS,W,R), /* Takes register(1), elementsize(3) and index variable(2) */
+	VM_OPERAND_PQRV(ELEML,W,R), /* Takes register(1) and index variable(2) */
+	VM_OPERAND_PQRV(ELEMLX,W,R),/* Takes register(1) and index variable(2) - obtains pointer to listnode */
+	VM_OPERAND_PQRV(ELEMM,W,R), /* Takes register(1) and index variable(2) */
+    VM_OPERAND_PQRV(ELEMMX,W,R), /* Takes register(1) and index variable(2) - obtains pointer to mapnode*/
     
 	/* Calls */
 	VM_1OP_PQRV(PUSH),
 	VM_1OP(PUSHX), 			        /* Push address of value */
-	VM_OPERAND_PQRV(PUSHANY,L,),	/* Push value as any */
+	VM_OPERAND_PQRV(PUSHANY,W,),	/* Push value as any */
 	VM_1OP_ANY(PUSHANYX),	        /* Push address of value as any */
 
 	VM_OPERAND_PQR(CALL,L,),		/* Call function with returnvalue */
@@ -284,32 +286,32 @@ typedef enum db_vmOpKind {
     VM_2OP(PCAST,PQR),
 
 	/* Reference casting */
-	VM_2OP_L(CAST,PQRV),
+	VM_2OP_W(CAST,PQRV),
 
 	/* String manipulations */
-	VM_2OPV_L(STRCAT,PQRV),
-	VM_2OP_L(STRCPY,PQRV),
+	VM_2OPV_W(STRCAT,PQRV),
+	VM_2OP_W(STRCPY,PQRV),
 
     /* Memory management */
-	VM_LVALUE(NEW,L,PQRV),
-	VM_OPERAND_PQRV(DEALLOC,L,),
-	VM_OPERAND_PQRV(KEEP,L,),
-	VM_OPERAND_PQRV(FREE,L,),
+	VM_LVALUE(NEW,W,PQRV),
+	VM_OPERAND_PQRV(DEALLOC,W,),
+	VM_OPERAND_PQRV(KEEP,W,),
+	VM_OPERAND_PQRV(FREE,W,),
 
 	/* Object state */
-	VM_OPERAND_PQRV(DEFINE,L,),
+	VM_OPERAND_PQRV(DEFINE,W,),
 
 	/* Notifications */
-	VM_OPERAND_PQRV(UPDATE,L,),
-	VM_OPERAND_PQRV(UPDATEBEGIN,L,),
-	VM_OPERAND_PQRV(UPDATEEND,L,),
-	VM_2OP_L(UPDATEFROM,PQR),
-	VM_2OP_L(UPDATEENDFROM,PQR),
-	VM_OPERAND_PQRV(UPDATECANCEL,L,),
+	VM_OPERAND_PQRV(UPDATE,W,),
+	VM_OPERAND_PQRV(UPDATEBEGIN,W,),
+	VM_OPERAND_PQRV(UPDATEEND,W,),
+	VM_2OP_W(UPDATEFROM,PQR),
+	VM_2OP_W(UPDATEENDFROM,PQR),
+	VM_OPERAND_PQRV(UPDATECANCEL,W,),
 
 	/* Waiting */
-	VM_OPERAND_PQRV(WAITFOR,L,), /* Add objects to wait-queue */
-	VM_2OP_L(WAIT,PQRV), /* Do the actual wait */
+	VM_OPERAND_PQRV(WAITFOR,W,), /* Add objects to wait-queue */
+	VM_2OP_W(WAIT,PQRV), /* Do the actual wait */
 
 	DB_VM_STOP /* Stop the current program (or function) */
 } db_vmOpKind;

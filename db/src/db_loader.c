@@ -164,6 +164,7 @@ int db_libraryLoader(db_string _file, void* udata) {
 
 	DB_UNUSED(udata);
 
+	/* Convert scoped name to filename */
 	if (strchr(_file, ':')) {
 	    db_char ch, *ptr, *bptr;
 	    ptr = _file;
@@ -192,20 +193,20 @@ int db_libraryLoader(db_string _file, void* udata) {
 	    filename = file;
 	}
 
-	/* Load shared object */
+	/* Load shared object from HYVE_HOME */
 	dl = db_dlOpen(file);
 	if (!dl) {
 	    int length;
 	    db_char path[256];
 	    db_char str[256];
 	    db_string err;
-        db_string Path = getenv("LYRA_PATH");
+        db_string hyveHome = getenv("HYVE_HOME");
 	    err = db_strdup(db_dlError());
 	    length = (db_word)filename - (db_word)file;
         memcpy(path, file, length);
         path[length]='\0';
         if (length) {
-            sprintf(str, "%s/%slib%s.so", Path, path, filename);
+            sprintf(str, "%s/bin/%slib%s.so", hyveHome, path, filename);
         } else {
             sprintf(str, "lib%s.so", filename);
         }

@@ -1,10 +1,9 @@
-
-TARGET =	cpp_type
+TARGET =	c_project
 
 INCLUDE = 	$(HYVE_HOME)/dev/include \
 			../common/include
 
-OBJECTS = ../common/obj/cpp_common.o
-LIBS	= lang hyvedev
+LIBS	= lang hyvedev :c_common 
 
 include $(HYVE_HOME)/build/generator.makefile
+

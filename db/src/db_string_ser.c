@@ -60,9 +60,10 @@ static db_bool db_ser_appendstr(db_string_ser_t* data, db_string fmt, ...) {
         memRequired = vsnprintf(buff, 1024, fmt, args);
         if (memRequired >= 1024) {
             buff = db_malloc(memRequired + 1);
+            vsprintf(buff, fmt, args);
         }
-        vsprintf(buff, fmt, args);
         va_end(args);
+
         result = db_ser_appendstrbuff(data, buff);
         if (buff != alloc) {
             db_dealloc(buff);

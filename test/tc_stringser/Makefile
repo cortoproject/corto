@@ -1,16 +1,6 @@
 
 TARGET =	../test/bin/tc_stringser
 
-SOURCES =	tc_stringser__api.c \
-			tc_stringser__meta.c \
-			tc_stringser.c
+LIBS	= lang
 
-INCLUDE = 	include \
-			$(BUILDHOME)/db/include \
-			$(BUILDHOME)/public/c/include
-
-LIBS	= lang 
-LIBPATH	=	
-
-include $(BUILD)/executable.makefile
-
+include $(HYVE_HOME)/build/executable.makefile

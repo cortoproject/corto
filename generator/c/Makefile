@@ -5,6 +5,7 @@ all:
 	@make -C load
 	@make -C interface
 	@make -C api
+	@make -C project
 	
 clean:
 	@make clean -C common
@@ -12,6 +13,7 @@ clean:
 	@make clean -C load
 	@make clean -C interface
 	@make clean -C api
+	@make clean -C project
 	
 gcov:
 	@make gcov -C common
@@ -19,6 +21,7 @@ gcov:
 	@make gcov -C load
 	@make gcov -C interface
 	@make gcov -C api
+	@make gcov -C project
 	
 splint:
 	@make splint -C common
@@ -26,5 +29,6 @@ splint:
 	@make splint -C load
 	@make splint -C interface
 	@make splint -C api
+	@make splint -C project
 	
 

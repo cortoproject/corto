@@ -12,7 +12,7 @@ OBJECTS += $(PSOURCES:%.cpp=obj/%.o)
 GCOV = $(PSOURCES:%.cpp=gcov/%.cpp.gcov)
 SPLINT = $(PSOURCES:%.cpp=src/%.cpp)
 LINKPATH = $(LIBPATH:%=-L%)
-LINK = -L$(BIN) $(LINKPATH) $(LIBS:%=-l%)
+LINK = -L$(HYVE_HOME)/bin $(LINKPATH) $(LIBS:%=-l%)
 
 obj/%.o: src/%.cpp
 	$(CC) $(CFLAGS) $(INCLUDES) $< -c -o $@

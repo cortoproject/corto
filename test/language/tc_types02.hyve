@@ -8,7 +8,6 @@ enum Color:: RED, YELLOW, GREEN, BLUE;
 
 class Types::
 	a : octet;
-	b : word;
 	c : uint8;
 	d : uint16;
 	e : uint32;
@@ -23,7 +22,6 @@ class Types::
 	
 	int16 construct(Types object):
 		object.a = 255;
-		object.b = 4294967295;
 		object.c = 255;
 		object.d = 65535;
 		object.e = 4294967295;
@@ -40,7 +38,6 @@ class Types::
 	// Refer arguments from 'this' 
 	void validate():
 		a++; if a: fail("octet range error (this.a = $a)");
-		b++; if b: fail("word range error (this.b = $b)");
 		c++; if c: fail("uint8 range error (this.c = $c)");
 		d++; if d: fail("uint16 range error (this.d = $d)");
 		e++; if e: fail("uint32 range error (this.e = $e)");
@@ -56,7 +53,6 @@ class Types::
 	// Refer arguments from 'this' and parameter
 	void validate(Types t):
 		if a!=t.a: fail("octet member error (this.a = $a)");
-		if b!=t.b: fail("word member error (this.b = $b)");
 		if c!=t.c: fail("uint8 member error (this.c = $c)");
 		if d!=t.d: fail("uint16 member error (this.d = $d)");
 		if e!=t.e: fail("uint32 member error (this.e = $e)");
@@ -74,7 +70,6 @@ n.validate();
 
 // Refer arguments as members
 o.a++; if o.a: fail("octet range error (o.a = ${o.a})");
-o.b++; if o.b: fail("word range error (o.b = ${o.b})");
 o.c++; if o.c: fail("uint8 range error (o.c = ${o.c})");
 o.d++; if o.d: fail("uint16 range error (o.d = ${o.d})");
 o.e++; if o.e: fail("uint32 range error (o.e = ${o.e})");

@@ -915,7 +915,7 @@ int Fast_load(void) {
         Fast_Expression_cleanList_o->returnType = NULL;
         Fast_Expression_cleanList_o->returnsReference = FALSE;
         
-        /* Bind Fast_Expression_cleanList_o with C-function */
+        /* Bind ::hyve::Fast::Expression::cleanList(list{Expression} list) with C-function */
         db_function(Fast_Expression_cleanList_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Expression_cleanList(void *args, void *result);
         db_function(Fast_Expression_cleanList_o)->impl = (db_word)__Fast_Expression_cleanList;
@@ -1191,6 +1191,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_InitializerFrame_o)->size != sizeof(Fast_InitializerFrame)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::InitializerFrame' doesn't match C-type size '%d'", db_type(Fast_InitializerFrame_o)->size, sizeof(Fast_InitializerFrame));
+        goto error;
+    }
     /* Define ::hyve::Fast::Initializer::frames */
     if (!db_checkState(Fast_Initializer_frames_o, DB_DEFINED)) {
         Fast_Initializer_frames_o->type = db_resolve_ext(Fast_Initializer_frames_o, NULL, "::hyve::lang::array{::hyve::Fast::InitializerFrame,64,::hyve::Fast::InitializerFrame}", FALSE, "element ::hyve::Fast::Initializer::frames.type");
@@ -1215,11 +1219,12 @@ int Fast_load(void) {
     if (!Fast_InitializerKind_InitDynamic_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::InitializerKind::InitDynamic'.");
         goto error;
+    } else {
+        (*Fast_InitializerKind_InitDynamic_o) = 1;
     }
 
     /* Define ::hyve::Fast::InitializerKind::InitDynamic */
     if (!db_checkState(Fast_InitializerKind_InitDynamic_o, DB_DEFINED)) {
-        (*Fast_InitializerKind_InitDynamic_o) = 1;
         if (db_define(Fast_InitializerKind_InitDynamic_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::InitializerKind::InitDynamic'.");
             goto error;
@@ -1230,11 +1235,12 @@ int Fast_load(void) {
     if (!Fast_InitializerKind_InitExpression_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::InitializerKind::InitExpression'.");
         goto error;
+    } else {
+        (*Fast_InitializerKind_InitExpression_o) = 2;
     }
 
     /* Define ::hyve::Fast::InitializerKind::InitExpression */
     if (!db_checkState(Fast_InitializerKind_InitExpression_o, DB_DEFINED)) {
-        (*Fast_InitializerKind_InitExpression_o) = 2;
         if (db_define(Fast_InitializerKind_InitExpression_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::InitializerKind::InitExpression'.");
             goto error;
@@ -1245,11 +1251,12 @@ int Fast_load(void) {
     if (!Fast_InitializerKind_InitStatic_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::InitializerKind::InitStatic'.");
         goto error;
+    } else {
+        (*Fast_InitializerKind_InitStatic_o) = 0;
     }
 
     /* Define ::hyve::Fast::InitializerKind::InitStatic */
     if (!db_checkState(Fast_InitializerKind_InitStatic_o, DB_DEFINED)) {
-        (*Fast_InitializerKind_InitStatic_o) = 0;
         if (db_define(Fast_InitializerKind_InitStatic_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::InitializerKind::InitStatic'.");
             goto error;
@@ -1261,6 +1268,10 @@ int Fast_load(void) {
             db_error("Fast_load: failed to define object '::hyve::Fast::InitializerKind'.");
             goto error;
         }
+    }
+    if (db_type(Fast_InitializerKind_o)->size != sizeof(Fast_InitializerKind)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::InitializerKind' doesn't match C-type size '%d'", db_type(Fast_InitializerKind_o)->size, sizeof(Fast_InitializerKind));
+        goto error;
     }
     /* Declare ::hyve::Fast::InitializerVariable */
     Fast_InitializerVariable_o = db_declare(Fast_o, "InitializerVariable", db_typedef(db_struct_o));
@@ -1378,11 +1389,12 @@ int Fast_load(void) {
     if (!Fast_InitOperKind_InitDefine_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::InitOperKind::InitDefine'.");
         goto error;
+    } else {
+        (*Fast_InitOperKind_InitDefine_o) = 2;
     }
 
     /* Define ::hyve::Fast::InitOperKind::InitDefine */
     if (!db_checkState(Fast_InitOperKind_InitDefine_o, DB_DEFINED)) {
-        (*Fast_InitOperKind_InitDefine_o) = 2;
         if (db_define(Fast_InitOperKind_InitDefine_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::InitOperKind::InitDefine'.");
             goto error;
@@ -1393,11 +1405,12 @@ int Fast_load(void) {
     if (!Fast_InitOperKind_InitMember_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::InitOperKind::InitMember'.");
         goto error;
+    } else {
+        (*Fast_InitOperKind_InitMember_o) = 4;
     }
 
     /* Define ::hyve::Fast::InitOperKind::InitMember */
     if (!db_checkState(Fast_InitOperKind_InitMember_o, DB_DEFINED)) {
-        (*Fast_InitOperKind_InitMember_o) = 4;
         if (db_define(Fast_InitOperKind_InitMember_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::InitOperKind::InitMember'.");
             goto error;
@@ -1408,11 +1421,12 @@ int Fast_load(void) {
     if (!Fast_InitOperKind_InitPop_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::InitOperKind::InitPop'.");
         goto error;
+    } else {
+        (*Fast_InitOperKind_InitPop_o) = 1;
     }
 
     /* Define ::hyve::Fast::InitOperKind::InitPop */
     if (!db_checkState(Fast_InitOperKind_InitPop_o, DB_DEFINED)) {
-        (*Fast_InitOperKind_InitPop_o) = 1;
         if (db_define(Fast_InitOperKind_InitPop_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::InitOperKind::InitPop'.");
             goto error;
@@ -1423,11 +1437,12 @@ int Fast_load(void) {
     if (!Fast_InitOperKind_InitPush_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::InitOperKind::InitPush'.");
         goto error;
+    } else {
+        (*Fast_InitOperKind_InitPush_o) = 0;
     }
 
     /* Define ::hyve::Fast::InitOperKind::InitPush */
     if (!db_checkState(Fast_InitOperKind_InitPush_o, DB_DEFINED)) {
-        (*Fast_InitOperKind_InitPush_o) = 0;
         if (db_define(Fast_InitOperKind_InitPush_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::InitOperKind::InitPush'.");
             goto error;
@@ -1438,11 +1453,12 @@ int Fast_load(void) {
     if (!Fast_InitOperKind_InitValue_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::InitOperKind::InitValue'.");
         goto error;
+    } else {
+        (*Fast_InitOperKind_InitValue_o) = 3;
     }
 
     /* Define ::hyve::Fast::InitOperKind::InitValue */
     if (!db_checkState(Fast_InitOperKind_InitValue_o, DB_DEFINED)) {
-        (*Fast_InitOperKind_InitValue_o) = 3;
         if (db_define(Fast_InitOperKind_InitValue_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::InitOperKind::InitValue'.");
             goto error;
@@ -1454,6 +1470,10 @@ int Fast_load(void) {
             db_error("Fast_load: failed to define object '::hyve::Fast::InitOperKind'.");
             goto error;
         }
+    }
+    if (db_type(Fast_InitOperKind_o)->size != sizeof(Fast_InitOperKind)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::InitOperKind' doesn't match C-type size '%d'", db_type(Fast_InitOperKind_o)->size, sizeof(Fast_InitOperKind));
+        goto error;
     }
     /* Define ::hyve::Fast::InitOper::kind */
     if (!db_checkState(Fast_InitOper_kind_o, DB_DEFINED)) {
@@ -1590,11 +1610,12 @@ int Fast_load(void) {
     if (!Fast_LocalKind_LocalDefault_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::LocalKind::LocalDefault'.");
         goto error;
+    } else {
+        (*Fast_LocalKind_LocalDefault_o) = 0;
     }
 
     /* Define ::hyve::Fast::LocalKind::LocalDefault */
     if (!db_checkState(Fast_LocalKind_LocalDefault_o, DB_DEFINED)) {
-        (*Fast_LocalKind_LocalDefault_o) = 0;
         if (db_define(Fast_LocalKind_LocalDefault_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::LocalKind::LocalDefault'.");
             goto error;
@@ -1605,11 +1626,12 @@ int Fast_load(void) {
     if (!Fast_LocalKind_LocalParameter_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::LocalKind::LocalParameter'.");
         goto error;
+    } else {
+        (*Fast_LocalKind_LocalParameter_o) = 1;
     }
 
     /* Define ::hyve::Fast::LocalKind::LocalParameter */
     if (!db_checkState(Fast_LocalKind_LocalParameter_o, DB_DEFINED)) {
-        (*Fast_LocalKind_LocalParameter_o) = 1;
         if (db_define(Fast_LocalKind_LocalParameter_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::LocalKind::LocalParameter'.");
             goto error;
@@ -1620,11 +1642,12 @@ int Fast_load(void) {
     if (!Fast_LocalKind_LocalReturn_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::LocalKind::LocalReturn'.");
         goto error;
+    } else {
+        (*Fast_LocalKind_LocalReturn_o) = 2;
     }
 
     /* Define ::hyve::Fast::LocalKind::LocalReturn */
     if (!db_checkState(Fast_LocalKind_LocalReturn_o, DB_DEFINED)) {
-        (*Fast_LocalKind_LocalReturn_o) = 2;
         if (db_define(Fast_LocalKind_LocalReturn_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::LocalKind::LocalReturn'.");
             goto error;
@@ -1636,6 +1659,10 @@ int Fast_load(void) {
             db_error("Fast_load: failed to define object '::hyve::Fast::LocalKind'.");
             goto error;
         }
+    }
+    if (db_type(Fast_LocalKind_o)->size != sizeof(Fast_LocalKind)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::LocalKind' doesn't match C-type size '%d'", db_type(Fast_LocalKind_o)->size, sizeof(Fast_LocalKind));
+        goto error;
     }
     /* Define ::hyve::Fast::Local::kind */
     if (!db_checkState(Fast_Local_kind_o, DB_DEFINED)) {
@@ -1838,11 +1865,12 @@ int Fast_load(void) {
     if (!Fast_nodeKind_Binary_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::nodeKind::Binary'.");
         goto error;
+    } else {
+        (*Fast_nodeKind_Binary_o) = 0;
     }
 
     /* Define ::hyve::Fast::nodeKind::Binary */
     if (!db_checkState(Fast_nodeKind_Binary_o, DB_DEFINED)) {
-        (*Fast_nodeKind_Binary_o) = 0;
         if (db_define(Fast_nodeKind_Binary_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Binary'.");
             goto error;
@@ -1853,11 +1881,12 @@ int Fast_load(void) {
     if (!Fast_nodeKind_Call_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::nodeKind::Call'.");
         goto error;
+    } else {
+        (*Fast_nodeKind_Call_o) = 1;
     }
 
     /* Define ::hyve::Fast::nodeKind::Call */
     if (!db_checkState(Fast_nodeKind_Call_o, DB_DEFINED)) {
-        (*Fast_nodeKind_Call_o) = 1;
         if (db_define(Fast_nodeKind_Call_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Call'.");
             goto error;
@@ -1868,11 +1897,12 @@ int Fast_load(void) {
     if (!Fast_nodeKind_Cast_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::nodeKind::Cast'.");
         goto error;
+    } else {
+        (*Fast_nodeKind_Cast_o) = 2;
     }
 
     /* Define ::hyve::Fast::nodeKind::Cast */
     if (!db_checkState(Fast_nodeKind_Cast_o, DB_DEFINED)) {
-        (*Fast_nodeKind_Cast_o) = 2;
         if (db_define(Fast_nodeKind_Cast_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Cast'.");
             goto error;
@@ -1883,11 +1913,12 @@ int Fast_load(void) {
     if (!Fast_nodeKind_CommaExpr_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::nodeKind::CommaExpr'.");
         goto error;
+    } else {
+        (*Fast_nodeKind_CommaExpr_o) = 3;
     }
 
     /* Define ::hyve::Fast::nodeKind::CommaExpr */
     if (!db_checkState(Fast_nodeKind_CommaExpr_o, DB_DEFINED)) {
-        (*Fast_nodeKind_CommaExpr_o) = 3;
         if (db_define(Fast_nodeKind_CommaExpr_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::CommaExpr'.");
             goto error;
@@ -1898,11 +1929,12 @@ int Fast_load(void) {
     if (!Fast_nodeKind_Declaration_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::nodeKind::Declaration'.");
         goto error;
+    } else {
+        (*Fast_nodeKind_Declaration_o) = 4;
     }
 
     /* Define ::hyve::Fast::nodeKind::Declaration */
     if (!db_checkState(Fast_nodeKind_Declaration_o, DB_DEFINED)) {
-        (*Fast_nodeKind_Declaration_o) = 4;
         if (db_define(Fast_nodeKind_Declaration_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Declaration'.");
             goto error;
@@ -1913,11 +1945,12 @@ int Fast_load(void) {
     if (!Fast_nodeKind_Declare_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::nodeKind::Declare'.");
         goto error;
+    } else {
+        (*Fast_nodeKind_Declare_o) = 5;
     }
 
     /* Define ::hyve::Fast::nodeKind::Declare */
     if (!db_checkState(Fast_nodeKind_Declare_o, DB_DEFINED)) {
-        (*Fast_nodeKind_Declare_o) = 5;
         if (db_define(Fast_nodeKind_Declare_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Declare'.");
             goto error;
@@ -1928,11 +1961,12 @@ int Fast_load(void) {
     if (!Fast_nodeKind_Define_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::nodeKind::Define'.");
         goto error;
+    } else {
+        (*Fast_nodeKind_Define_o) = 6;
     }
 
     /* Define ::hyve::Fast::nodeKind::Define */
     if (!db_checkState(Fast_nodeKind_Define_o, DB_DEFINED)) {
-        (*Fast_nodeKind_Define_o) = 6;
         if (db_define(Fast_nodeKind_Define_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Define'.");
             goto error;
@@ -1943,11 +1977,12 @@ int Fast_load(void) {
     if (!Fast_nodeKind_Element_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::nodeKind::Element'.");
         goto error;
+    } else {
+        (*Fast_nodeKind_Element_o) = 7;
     }
 
     /* Define ::hyve::Fast::nodeKind::Element */
     if (!db_checkState(Fast_nodeKind_Element_o, DB_DEFINED)) {
-        (*Fast_nodeKind_Element_o) = 7;
         if (db_define(Fast_nodeKind_Element_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Element'.");
             goto error;
@@ -1958,11 +1993,12 @@ int Fast_load(void) {
     if (!Fast_nodeKind_If_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::nodeKind::If'.");
         goto error;
+    } else {
+        (*Fast_nodeKind_If_o) = 8;
     }
 
     /* Define ::hyve::Fast::nodeKind::If */
     if (!db_checkState(Fast_nodeKind_If_o, DB_DEFINED)) {
-        (*Fast_nodeKind_If_o) = 8;
         if (db_define(Fast_nodeKind_If_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::If'.");
             goto error;
@@ -1973,11 +2009,12 @@ int Fast_load(void) {
     if (!Fast_nodeKind_Initializer_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::nodeKind::Initializer'.");
         goto error;
+    } else {
+        (*Fast_nodeKind_Initializer_o) = 9;
     }
 
     /* Define ::hyve::Fast::nodeKind::Initializer */
     if (!db_checkState(Fast_nodeKind_Initializer_o, DB_DEFINED)) {
-        (*Fast_nodeKind_Initializer_o) = 9;
         if (db_define(Fast_nodeKind_Initializer_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Initializer'.");
             goto error;
@@ -1988,11 +2025,12 @@ int Fast_load(void) {
     if (!Fast_nodeKind_Literal_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::nodeKind::Literal'.");
         goto error;
+    } else {
+        (*Fast_nodeKind_Literal_o) = 10;
     }
 
     /* Define ::hyve::Fast::nodeKind::Literal */
     if (!db_checkState(Fast_nodeKind_Literal_o, DB_DEFINED)) {
-        (*Fast_nodeKind_Literal_o) = 10;
         if (db_define(Fast_nodeKind_Literal_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Literal'.");
             goto error;
@@ -2003,11 +2041,12 @@ int Fast_load(void) {
     if (!Fast_nodeKind_Member_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::nodeKind::Member'.");
         goto error;
+    } else {
+        (*Fast_nodeKind_Member_o) = 11;
     }
 
     /* Define ::hyve::Fast::nodeKind::Member */
     if (!db_checkState(Fast_nodeKind_Member_o, DB_DEFINED)) {
-        (*Fast_nodeKind_Member_o) = 11;
         if (db_define(Fast_nodeKind_Member_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Member'.");
             goto error;
@@ -2018,11 +2057,12 @@ int Fast_load(void) {
     if (!Fast_nodeKind_Method_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::nodeKind::Method'.");
         goto error;
+    } else {
+        (*Fast_nodeKind_Method_o) = 12;
     }
 
     /* Define ::hyve::Fast::nodeKind::Method */
     if (!db_checkState(Fast_nodeKind_Method_o, DB_DEFINED)) {
-        (*Fast_nodeKind_Method_o) = 12;
         if (db_define(Fast_nodeKind_Method_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Method'.");
             goto error;
@@ -2033,11 +2073,12 @@ int Fast_load(void) {
     if (!Fast_nodeKind_New_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::nodeKind::New'.");
         goto error;
+    } else {
+        (*Fast_nodeKind_New_o) = 13;
     }
 
     /* Define ::hyve::Fast::nodeKind::New */
     if (!db_checkState(Fast_nodeKind_New_o, DB_DEFINED)) {
-        (*Fast_nodeKind_New_o) = 13;
         if (db_define(Fast_nodeKind_New_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::New'.");
             goto error;
@@ -2048,11 +2089,12 @@ int Fast_load(void) {
     if (!Fast_nodeKind_Postfix_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::nodeKind::Postfix'.");
         goto error;
+    } else {
+        (*Fast_nodeKind_Postfix_o) = 14;
     }
 
     /* Define ::hyve::Fast::nodeKind::Postfix */
     if (!db_checkState(Fast_nodeKind_Postfix_o, DB_DEFINED)) {
-        (*Fast_nodeKind_Postfix_o) = 14;
         if (db_define(Fast_nodeKind_Postfix_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Postfix'.");
             goto error;
@@ -2063,11 +2105,12 @@ int Fast_load(void) {
     if (!Fast_nodeKind_Ternary_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::nodeKind::Ternary'.");
         goto error;
+    } else {
+        (*Fast_nodeKind_Ternary_o) = 15;
     }
 
     /* Define ::hyve::Fast::nodeKind::Ternary */
     if (!db_checkState(Fast_nodeKind_Ternary_o, DB_DEFINED)) {
-        (*Fast_nodeKind_Ternary_o) = 15;
         if (db_define(Fast_nodeKind_Ternary_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Ternary'.");
             goto error;
@@ -2078,11 +2121,12 @@ int Fast_load(void) {
     if (!Fast_nodeKind_Unary_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::nodeKind::Unary'.");
         goto error;
+    } else {
+        (*Fast_nodeKind_Unary_o) = 16;
     }
 
     /* Define ::hyve::Fast::nodeKind::Unary */
     if (!db_checkState(Fast_nodeKind_Unary_o, DB_DEFINED)) {
-        (*Fast_nodeKind_Unary_o) = 16;
         if (db_define(Fast_nodeKind_Unary_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Unary'.");
             goto error;
@@ -2093,11 +2137,12 @@ int Fast_load(void) {
     if (!Fast_nodeKind_Update_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::nodeKind::Update'.");
         goto error;
+    } else {
+        (*Fast_nodeKind_Update_o) = 17;
     }
 
     /* Define ::hyve::Fast::nodeKind::Update */
     if (!db_checkState(Fast_nodeKind_Update_o, DB_DEFINED)) {
-        (*Fast_nodeKind_Update_o) = 17;
         if (db_define(Fast_nodeKind_Update_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Update'.");
             goto error;
@@ -2108,11 +2153,12 @@ int Fast_load(void) {
     if (!Fast_nodeKind_Variable_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::nodeKind::Variable'.");
         goto error;
+    } else {
+        (*Fast_nodeKind_Variable_o) = 18;
     }
 
     /* Define ::hyve::Fast::nodeKind::Variable */
     if (!db_checkState(Fast_nodeKind_Variable_o, DB_DEFINED)) {
-        (*Fast_nodeKind_Variable_o) = 18;
         if (db_define(Fast_nodeKind_Variable_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Variable'.");
             goto error;
@@ -2123,11 +2169,12 @@ int Fast_load(void) {
     if (!Fast_nodeKind_Wait_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::nodeKind::Wait'.");
         goto error;
+    } else {
+        (*Fast_nodeKind_Wait_o) = 19;
     }
 
     /* Define ::hyve::Fast::nodeKind::Wait */
     if (!db_checkState(Fast_nodeKind_Wait_o, DB_DEFINED)) {
-        (*Fast_nodeKind_Wait_o) = 19;
         if (db_define(Fast_nodeKind_Wait_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Wait'.");
             goto error;
@@ -2138,11 +2185,12 @@ int Fast_load(void) {
     if (!Fast_nodeKind_While_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::nodeKind::While'.");
         goto error;
+    } else {
+        (*Fast_nodeKind_While_o) = 20;
     }
 
     /* Define ::hyve::Fast::nodeKind::While */
     if (!db_checkState(Fast_nodeKind_While_o, DB_DEFINED)) {
-        (*Fast_nodeKind_While_o) = 20;
         if (db_define(Fast_nodeKind_While_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::While'.");
             goto error;
@@ -2154,6 +2202,10 @@ int Fast_load(void) {
             db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind'.");
             goto error;
         }
+    }
+    if (db_type(Fast_nodeKind_o)->size != sizeof(Fast_nodeKind)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::nodeKind' doesn't match C-type size '%d'", db_type(Fast_nodeKind_o)->size, sizeof(Fast_nodeKind));
+        goto error;
     }
     /* Define ::hyve::Fast::Node::kind */
     if (!db_checkState(Fast_Node_kind_o, DB_DEFINED)) {
@@ -2272,7 +2324,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_blockPop_o)->returnsReference = FALSE;
         Fast_Parser_blockPop_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_blockPop_o with C-function */
+        /* Bind ::hyve::Fast::Parser::blockPop() with C-function */
         db_function(Fast_Parser_blockPop_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_blockPop(void *args, void *result);
         db_function(Fast_Parser_blockPop_o)->impl = (db_word)__Fast_Parser_blockPop;
@@ -2320,7 +2372,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_collect_o)->returnsReference = FALSE;
         Fast_Parser_collect_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_collect_o with C-function */
+        /* Bind ::hyve::Fast::Parser::collect(lang::object o) with C-function */
         db_function(Fast_Parser_collect_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_collect(void *args, void *result);
         db_function(Fast_Parser_collect_o)->impl = (db_word)__Fast_Parser_collect;
@@ -2361,7 +2413,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_collectHeap_o)->returnsReference = FALSE;
         Fast_Parser_collectHeap_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_collectHeap_o with C-function */
+        /* Bind ::hyve::Fast::Parser::collectHeap(word addr) with C-function */
         db_function(Fast_Parser_collectHeap_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_collectHeap(void *args, void *result);
         db_function(Fast_Parser_collectHeap_o)->impl = (db_word)__Fast_Parser_collectHeap;
@@ -2428,7 +2480,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_define_o)->returnsReference = FALSE;
         Fast_Parser_define_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_define_o with C-function */
+        /* Bind ::hyve::Fast::Parser::define() with C-function */
         db_function(Fast_Parser_define_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_define(void *args, void *result);
         db_function(Fast_Parser_define_o)->impl = (db_word)__Fast_Parser_define;
@@ -2450,7 +2502,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_defineScope_o)->returnsReference = FALSE;
         Fast_Parser_defineScope_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_defineScope_o with C-function */
+        /* Bind ::hyve::Fast::Parser::defineScope() with C-function */
         db_function(Fast_Parser_defineScope_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_defineScope(void *args, void *result);
         db_function(Fast_Parser_defineScope_o)->impl = (db_word)__Fast_Parser_defineScope;
@@ -2548,7 +2600,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_getComplexType_o)->returnsReference = FALSE;
         Fast_Parser_getComplexType_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_getComplexType_o with C-function */
+        /* Bind ::hyve::Fast::Parser::getComplexType() with C-function */
         db_function(Fast_Parser_getComplexType_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_getComplexType(void *args, void *result);
         db_function(Fast_Parser_getComplexType_o)->impl = (db_word)__Fast_Parser_getComplexType;
@@ -2577,7 +2629,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_getLvalueType_o)->returnsReference = FALSE;
         Fast_Parser_getLvalueType_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_getLvalueType_o with C-function */
+        /* Bind ::hyve::Fast::Parser::getLvalueType(lang::bool assignment) with C-function */
         db_function(Fast_Parser_getLvalueType_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_getLvalueType(void *args, void *result);
         db_function(Fast_Parser_getLvalueType_o)->impl = (db_word)__Fast_Parser_getLvalueType;
@@ -2670,7 +2722,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_initKeyValuePop_o)->returnsReference = FALSE;
         Fast_Parser_initKeyValuePop_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_initKeyValuePop_o with C-function */
+        /* Bind ::hyve::Fast::Parser::initKeyValuePop() with C-function */
         db_function(Fast_Parser_initKeyValuePop_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_initKeyValuePop(void *args, void *result);
         db_function(Fast_Parser_initKeyValuePop_o)->impl = (db_word)__Fast_Parser_initKeyValuePop;
@@ -2692,7 +2744,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_initKeyValuePush_o)->returnsReference = FALSE;
         Fast_Parser_initKeyValuePush_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_initKeyValuePush_o with C-function */
+        /* Bind ::hyve::Fast::Parser::initKeyValuePush() with C-function */
         db_function(Fast_Parser_initKeyValuePush_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_initKeyValuePush(void *args, void *result);
         db_function(Fast_Parser_initKeyValuePush_o)->impl = (db_word)__Fast_Parser_initKeyValuePush;
@@ -2714,7 +2766,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_initMember_o)->returnsReference = FALSE;
         Fast_Parser_initMember_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_initMember_o with C-function */
+        /* Bind ::hyve::Fast::Parser::initMember(lang::string member) with C-function */
         db_function(Fast_Parser_initMember_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_initMember(void *args, void *result);
         db_function(Fast_Parser_initMember_o)->impl = (db_word)__Fast_Parser_initMember;
@@ -2736,7 +2788,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_initPop_o)->returnsReference = FALSE;
         Fast_Parser_initPop_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_initPop_o with C-function */
+        /* Bind ::hyve::Fast::Parser::initPop() with C-function */
         db_function(Fast_Parser_initPop_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_initPop(void *args, void *result);
         db_function(Fast_Parser_initPop_o)->impl = (db_word)__Fast_Parser_initPop;
@@ -2758,7 +2810,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_initPush_o)->returnsReference = FALSE;
         Fast_Parser_initPush_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_initPush_o with C-function */
+        /* Bind ::hyve::Fast::Parser::initPush() with C-function */
         db_function(Fast_Parser_initPush_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_initPush(void *args, void *result);
         db_function(Fast_Parser_initPush_o)->impl = (db_word)__Fast_Parser_initPush;
@@ -2787,7 +2839,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_initPushStatic_o)->returnsReference = FALSE;
         Fast_Parser_initPushStatic_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_initPushStatic_o with C-function */
+        /* Bind ::hyve::Fast::Parser::initPushStatic() with C-function */
         db_function(Fast_Parser_initPushStatic_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_initPushStatic(void *args, void *result);
         db_function(Fast_Parser_initPushStatic_o)->impl = (db_word)__Fast_Parser_initPushStatic;
@@ -2809,7 +2861,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_initStage_o)->returnsReference = FALSE;
         Fast_Parser_initStage_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_initStage_o with C-function */
+        /* Bind ::hyve::Fast::Parser::initStage(lang::string id,bool found) with C-function */
         db_function(Fast_Parser_initStage_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_initStage(void *args, void *result);
         db_function(Fast_Parser_initStage_o)->impl = (db_word)__Fast_Parser_initStage;
@@ -2831,7 +2883,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_isAbortSet_o)->returnsReference = FALSE;
         Fast_Parser_isAbortSet_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_isAbortSet_o with C-function */
+        /* Bind ::hyve::Fast::Parser::isAbortSet() with C-function */
         db_function(Fast_Parser_isAbortSet_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_isAbortSet(void *args, void *result);
         db_function(Fast_Parser_isAbortSet_o)->impl = (db_word)__Fast_Parser_isAbortSet;
@@ -2853,7 +2905,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_isErrSet_o)->returnsReference = FALSE;
         Fast_Parser_isErrSet_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_isErrSet_o with C-function */
+        /* Bind ::hyve::Fast::Parser::isErrSet() with C-function */
         db_function(Fast_Parser_isErrSet_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_isErrSet(void *args, void *result);
         db_function(Fast_Parser_isErrSet_o)->impl = (db_word)__Fast_Parser_isErrSet;
@@ -2965,7 +3017,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_observerPop_o)->returnsReference = FALSE;
         Fast_Parser_observerPop_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_observerPop_o with C-function */
+        /* Bind ::hyve::Fast::Parser::observerPop() with C-function */
         db_function(Fast_Parser_observerPop_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_observerPop(void *args, void *result);
         db_function(Fast_Parser_observerPop_o)->impl = (db_word)__Fast_Parser_observerPop;
@@ -2987,7 +3039,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_observerPush_o)->returnsReference = FALSE;
         Fast_Parser_observerPush_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_observerPush_o with C-function */
+        /* Bind ::hyve::Fast::Parser::observerPush() with C-function */
         db_function(Fast_Parser_observerPush_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_observerPush(void *args, void *result);
         db_function(Fast_Parser_observerPush_o)->impl = (db_word)__Fast_Parser_observerPush;
@@ -3009,7 +3061,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_parse_o)->returnsReference = FALSE;
         Fast_Parser_parse_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_parse_o with C-function */
+        /* Bind ::hyve::Fast::Parser::parse() with C-function */
         db_function(Fast_Parser_parse_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_parse(void *args, void *result);
         db_function(Fast_Parser_parse_o)->impl = (db_word)__Fast_Parser_parse;
@@ -3069,7 +3121,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_popComplexType_o)->returnsReference = FALSE;
         Fast_Parser_popComplexType_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_popComplexType_o with C-function */
+        /* Bind ::hyve::Fast::Parser::popComplexType() with C-function */
         db_function(Fast_Parser_popComplexType_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_popComplexType(void *args, void *result);
         db_function(Fast_Parser_popComplexType_o)->impl = (db_word)__Fast_Parser_popComplexType;
@@ -3091,7 +3143,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_popLvalue_o)->returnsReference = FALSE;
         Fast_Parser_popLvalue_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_popLvalue_o with C-function */
+        /* Bind ::hyve::Fast::Parser::popLvalue() with C-function */
         db_function(Fast_Parser_popLvalue_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_popLvalue(void *args, void *result);
         db_function(Fast_Parser_popLvalue_o)->impl = (db_word)__Fast_Parser_popLvalue;
@@ -3132,7 +3184,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_pushReturnAsLvalue_o)->returnsReference = FALSE;
         Fast_Parser_pushReturnAsLvalue_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_pushReturnAsLvalue_o with C-function */
+        /* Bind ::hyve::Fast::Parser::pushReturnAsLvalue(lang::function function) with C-function */
         db_function(Fast_Parser_pushReturnAsLvalue_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_pushReturnAsLvalue(void *args, void *result);
         db_function(Fast_Parser_pushReturnAsLvalue_o)->impl = (db_word)__Fast_Parser_pushReturnAsLvalue;
@@ -3161,7 +3213,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_reset_o)->returnsReference = FALSE;
         Fast_Parser_reset_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_reset_o with C-function */
+        /* Bind ::hyve::Fast::Parser::reset() with C-function */
         db_function(Fast_Parser_reset_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_reset(void *args, void *result);
         db_function(Fast_Parser_reset_o)->impl = (db_word)__Fast_Parser_reset;
@@ -3323,6 +3375,10 @@ int Fast_load(void) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Parser::stagedId'.");
             goto error;
         }
+    }
+    if (db_type(Fast_Parser_stagedId_o)->size != sizeof(Fast_Parser_stagedId)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Parser::stagedId' doesn't match C-type size '%d'", db_type(Fast_Parser_stagedId_o)->size, sizeof(Fast_Parser_stagedId));
+        goto error;
     }
     /* Define ::hyve::Fast::Parser::staged */
     if (!db_checkState(Fast_Parser_staged_o, DB_DEFINED)) {
@@ -3853,11 +3909,12 @@ int Fast_load(void) {
     if (!Fast_valueKind_Boolean_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::valueKind::Boolean'.");
         goto error;
+    } else {
+        (*Fast_valueKind_Boolean_o) = 0;
     }
 
     /* Define ::hyve::Fast::valueKind::Boolean */
     if (!db_checkState(Fast_valueKind_Boolean_o, DB_DEFINED)) {
-        (*Fast_valueKind_Boolean_o) = 0;
         if (db_define(Fast_valueKind_Boolean_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::valueKind::Boolean'.");
             goto error;
@@ -3868,11 +3925,12 @@ int Fast_load(void) {
     if (!Fast_valueKind_Character_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::valueKind::Character'.");
         goto error;
+    } else {
+        (*Fast_valueKind_Character_o) = 1;
     }
 
     /* Define ::hyve::Fast::valueKind::Character */
     if (!db_checkState(Fast_valueKind_Character_o, DB_DEFINED)) {
-        (*Fast_valueKind_Character_o) = 1;
         if (db_define(Fast_valueKind_Character_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::valueKind::Character'.");
             goto error;
@@ -3883,11 +3941,12 @@ int Fast_load(void) {
     if (!Fast_valueKind_Enumerated_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::valueKind::Enumerated'.");
         goto error;
+    } else {
+        (*Fast_valueKind_Enumerated_o) = 6;
     }
 
     /* Define ::hyve::Fast::valueKind::Enumerated */
     if (!db_checkState(Fast_valueKind_Enumerated_o, DB_DEFINED)) {
-        (*Fast_valueKind_Enumerated_o) = 6;
         if (db_define(Fast_valueKind_Enumerated_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::valueKind::Enumerated'.");
             goto error;
@@ -3898,11 +3957,12 @@ int Fast_load(void) {
     if (!Fast_valueKind_FloatingPoint_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::valueKind::FloatingPoint'.");
         goto error;
+    } else {
+        (*Fast_valueKind_FloatingPoint_o) = 4;
     }
 
     /* Define ::hyve::Fast::valueKind::FloatingPoint */
     if (!db_checkState(Fast_valueKind_FloatingPoint_o, DB_DEFINED)) {
-        (*Fast_valueKind_FloatingPoint_o) = 4;
         if (db_define(Fast_valueKind_FloatingPoint_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::valueKind::FloatingPoint'.");
             goto error;
@@ -3913,11 +3973,12 @@ int Fast_load(void) {
     if (!Fast_valueKind_Integer_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::valueKind::Integer'.");
         goto error;
+    } else {
+        (*Fast_valueKind_Integer_o) = 2;
     }
 
     /* Define ::hyve::Fast::valueKind::Integer */
     if (!db_checkState(Fast_valueKind_Integer_o, DB_DEFINED)) {
-        (*Fast_valueKind_Integer_o) = 2;
         if (db_define(Fast_valueKind_Integer_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::valueKind::Integer'.");
             goto error;
@@ -3928,11 +3989,12 @@ int Fast_load(void) {
     if (!Fast_valueKind_Null_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::valueKind::Null'.");
         goto error;
+    } else {
+        (*Fast_valueKind_Null_o) = 8;
     }
 
     /* Define ::hyve::Fast::valueKind::Null */
     if (!db_checkState(Fast_valueKind_Null_o, DB_DEFINED)) {
-        (*Fast_valueKind_Null_o) = 8;
         if (db_define(Fast_valueKind_Null_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::valueKind::Null'.");
             goto error;
@@ -3943,11 +4005,12 @@ int Fast_load(void) {
     if (!Fast_valueKind_Reference_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::valueKind::Reference'.");
         goto error;
+    } else {
+        (*Fast_valueKind_Reference_o) = 7;
     }
 
     /* Define ::hyve::Fast::valueKind::Reference */
     if (!db_checkState(Fast_valueKind_Reference_o, DB_DEFINED)) {
-        (*Fast_valueKind_Reference_o) = 7;
         if (db_define(Fast_valueKind_Reference_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::valueKind::Reference'.");
             goto error;
@@ -3958,11 +4021,12 @@ int Fast_load(void) {
     if (!Fast_valueKind_SignedInteger_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::valueKind::SignedInteger'.");
         goto error;
+    } else {
+        (*Fast_valueKind_SignedInteger_o) = 3;
     }
 
     /* Define ::hyve::Fast::valueKind::SignedInteger */
     if (!db_checkState(Fast_valueKind_SignedInteger_o, DB_DEFINED)) {
-        (*Fast_valueKind_SignedInteger_o) = 3;
         if (db_define(Fast_valueKind_SignedInteger_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::valueKind::SignedInteger'.");
             goto error;
@@ -3973,11 +4037,12 @@ int Fast_load(void) {
     if (!Fast_valueKind_String_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::valueKind::String'.");
         goto error;
+    } else {
+        (*Fast_valueKind_String_o) = 5;
     }
 
     /* Define ::hyve::Fast::valueKind::String */
     if (!db_checkState(Fast_valueKind_String_o, DB_DEFINED)) {
-        (*Fast_valueKind_String_o) = 5;
         if (db_define(Fast_valueKind_String_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::valueKind::String'.");
             goto error;
@@ -3989,6 +4054,10 @@ int Fast_load(void) {
             db_error("Fast_load: failed to define object '::hyve::Fast::valueKind'.");
             goto error;
         }
+    }
+    if (db_type(Fast_valueKind_o)->size != sizeof(Fast_valueKind)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::valueKind' doesn't match C-type size '%d'", db_type(Fast_valueKind_o)->size, sizeof(Fast_valueKind));
+        goto error;
     }
     /* Define ::hyve::Fast::Literal::kind */
     if (!db_checkState(Fast_Literal_kind_o, DB_DEFINED)) {
@@ -4014,7 +4083,7 @@ int Fast_load(void) {
         Fast_valueKindFromType_o->returnType = db_resolve_ext(Fast_valueKindFromType_o, NULL, "::hyve::Fast::valueKind", FALSE, "element ::hyve::Fast::valueKindFromType(lang::type type).returnType");
         Fast_valueKindFromType_o->returnsReference = FALSE;
         
-        /* Bind Fast_valueKindFromType_o with C-function */
+        /* Bind ::hyve::Fast::valueKindFromType(lang::type type) with C-function */
         db_function(Fast_valueKindFromType_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_valueKindFromType(void *args, void *result);
         db_function(Fast_valueKindFromType_o)->impl = (db_word)__Fast_valueKindFromType;
@@ -4049,11 +4118,12 @@ int Fast_load(void) {
     if (!Fast_variableKind_Local_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::variableKind::Local'.");
         goto error;
+    } else {
+        (*Fast_variableKind_Local_o) = 0;
     }
 
     /* Define ::hyve::Fast::variableKind::Local */
     if (!db_checkState(Fast_variableKind_Local_o, DB_DEFINED)) {
-        (*Fast_variableKind_Local_o) = 0;
         if (db_define(Fast_variableKind_Local_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::variableKind::Local'.");
             goto error;
@@ -4064,11 +4134,12 @@ int Fast_load(void) {
     if (!Fast_variableKind_Object_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::variableKind::Object'.");
         goto error;
+    } else {
+        (*Fast_variableKind_Object_o) = 2;
     }
 
     /* Define ::hyve::Fast::variableKind::Object */
     if (!db_checkState(Fast_variableKind_Object_o, DB_DEFINED)) {
-        (*Fast_variableKind_Object_o) = 2;
         if (db_define(Fast_variableKind_Object_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::variableKind::Object'.");
             goto error;
@@ -4079,11 +4150,12 @@ int Fast_load(void) {
     if (!Fast_variableKind_Template_o) {
         db_error("Fast_load: failed to declare object '::hyve::Fast::variableKind::Template'.");
         goto error;
+    } else {
+        (*Fast_variableKind_Template_o) = 1;
     }
 
     /* Define ::hyve::Fast::variableKind::Template */
     if (!db_checkState(Fast_variableKind_Template_o, DB_DEFINED)) {
-        (*Fast_variableKind_Template_o) = 1;
         if (db_define(Fast_variableKind_Template_o)) {
             db_error("Fast_load: failed to define object '::hyve::Fast::variableKind::Template'.");
             goto error;
@@ -4095,6 +4167,10 @@ int Fast_load(void) {
             db_error("Fast_load: failed to define object '::hyve::Fast::variableKind'.");
             goto error;
         }
+    }
+    if (db_type(Fast_variableKind_o)->size != sizeof(Fast_variableKind)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::variableKind' doesn't match C-type size '%d'", db_type(Fast_variableKind_o)->size, sizeof(Fast_variableKind));
+        goto error;
     }
     /* Define ::hyve::Fast::Variable::kind */
     if (!db_checkState(Fast_Variable_kind_o, DB_DEFINED)) {
@@ -4194,7 +4270,7 @@ int Fast_load(void) {
         db_function(Fast_Node_toIc_o)->returnsReference = FALSE;
         db_method(Fast_Node_toIc_o)->virtual = TRUE;
         
-        /* Bind Fast_Node_toIc_o with C-function */
+        /* Bind ::hyve::Fast::Node::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) with C-function */
         db_function(Fast_Node_toIc_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Node_toIc_v(void *args, void *result);
         db_function(Fast_Node_toIc_o)->impl = (db_word)__Fast_Node_toIc_v;
@@ -4263,6 +4339,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_StaticInitializerFrame_o)->size != sizeof(Fast_StaticInitializerFrame)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::StaticInitializerFrame' doesn't match C-type size '%d'", db_type(Fast_StaticInitializerFrame_o)->size, sizeof(Fast_StaticInitializerFrame));
+        goto error;
+    }
     /* Define ::hyve::Fast::StaticInitializer::frames */
     if (!db_checkState(Fast_StaticInitializer_frames_o, DB_DEFINED)) {
         Fast_StaticInitializer_frames_o->type = db_resolve_ext(Fast_StaticInitializer_frames_o, NULL, "::hyve::lang::array{::hyve::Fast::StaticInitializerFrame,64,::hyve::Fast::StaticInitializerFrame}", FALSE, "element ::hyve::Fast::StaticInitializer::frames.type");
@@ -4324,7 +4404,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_construct_o)->returnsReference = FALSE;
         Fast_Parser_construct_o->delegate = db_resolve_ext(Fast_Parser_construct_o, NULL, "::hyve::lang::class::construct(lang::object object)", FALSE, "element ::hyve::Fast::Parser::construct(Parser object).delegate");
         
-        /* Bind Fast_Parser_construct_o with C-function */
+        /* Bind ::hyve::Fast::Parser::construct(Parser object) with C-function */
         db_function(Fast_Parser_construct_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_construct(void *args, void *result);
         db_function(Fast_Parser_construct_o)->impl = (db_word)__Fast_Parser_construct;
@@ -4346,7 +4426,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_destruct_o)->returnsReference = FALSE;
         Fast_Parser_destruct_o->delegate = db_resolve_ext(Fast_Parser_destruct_o, NULL, "::hyve::lang::class::destruct(lang::object object)", FALSE, "element ::hyve::Fast::Parser::destruct(Parser object).delegate");
         
-        /* Bind Fast_Parser_destruct_o with C-function */
+        /* Bind ::hyve::Fast::Parser::destruct(Parser object) with C-function */
         db_function(Fast_Parser_destruct_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_destruct(void *args, void *result);
         db_function(Fast_Parser_destruct_o)->impl = (db_word)__Fast_Parser_destruct;
@@ -4380,7 +4460,7 @@ int Fast_load(void) {
         db_function(Fast_Node_init_o)->returnsReference = FALSE;
         Fast_Node_init_o->delegate = db_resolve_ext(Fast_Node_init_o, NULL, "::hyve::lang::type::init(lang::object object)", FALSE, "element ::hyve::Fast::Node::init(Node object).delegate");
         
-        /* Bind Fast_Node_init_o with C-function */
+        /* Bind ::hyve::Fast::Node::init(Node object) with C-function */
         db_function(Fast_Node_init_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Node_init(void *args, void *result);
         db_function(Fast_Node_init_o)->impl = (db_word)__Fast_Node_init;
@@ -4403,6 +4483,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_Node_o)->size != sizeof(struct Fast_Node_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Node' doesn't match C-type size '%d'", db_type(Fast_Node_o)->size, sizeof(struct Fast_Node_s));
+        goto error;
+    }
     /* Declare ::hyve::Fast::Block::addStatement(Fast::Node statement) */
     Fast_Block_addStatement_o = db_declare(Fast_Block_o, "addStatement(Fast::Node statement)", db_typedef(db_method_o));
     if (!Fast_Block_addStatement_o) {
@@ -4416,7 +4500,7 @@ int Fast_load(void) {
         db_function(Fast_Block_addStatement_o)->returnsReference = FALSE;
         Fast_Block_addStatement_o->virtual = FALSE;
         
-        /* Bind Fast_Block_addStatement_o with C-function */
+        /* Bind ::hyve::Fast::Block::addStatement(Fast::Node statement) with C-function */
         db_function(Fast_Block_addStatement_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Block_addStatement(void *args, void *result);
         db_function(Fast_Block_addStatement_o)->impl = (db_word)__Fast_Block_addStatement;
@@ -4466,7 +4550,7 @@ int Fast_load(void) {
         db_function(Fast_Block_setFunction_o)->returnsReference = FALSE;
         Fast_Block_setFunction_o->virtual = FALSE;
         
-        /* Bind Fast_Block_setFunction_o with C-function */
+        /* Bind ::hyve::Fast::Block::setFunction(lang::function function with C-function */
         db_function(Fast_Block_setFunction_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Block_setFunction(void *args, void *result);
         db_function(Fast_Block_setFunction_o)->impl = (db_word)__Fast_Block_setFunction;
@@ -4488,7 +4572,7 @@ int Fast_load(void) {
         db_function(Fast_Block_toIc_o)->returnsReference = FALSE;
         db_method(Fast_Block_toIc_o)->virtual = TRUE;
         
-        /* Bind Fast_Block_toIc_o with C-function */
+        /* Bind ::hyve::Fast::Block::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) with C-function */
         db_function(Fast_Block_toIc_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Block_toIc_v(void *args, void *result);
         db_function(Fast_Block_toIc_o)->impl = (db_word)__Fast_Block_toIc_v;
@@ -4510,7 +4594,7 @@ int Fast_load(void) {
         db_function(Fast_Block_toIcBody_o)->returnsReference = FALSE;
         db_method(Fast_Block_toIcBody_o)->virtual = TRUE;
         
-        /* Bind Fast_Block_toIcBody_o with C-function */
+        /* Bind ::hyve::Fast::Block::toIcBody(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) with C-function */
         db_function(Fast_Block_toIcBody_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Block_toIcBody_v(void *args, void *result);
         db_function(Fast_Block_toIcBody_o)->impl = (db_word)__Fast_Block_toIcBody_v;
@@ -4532,7 +4616,7 @@ int Fast_load(void) {
         db_function(Fast_Define_construct_o)->returnsReference = FALSE;
         Fast_Define_construct_o->delegate = db_resolve_ext(Fast_Define_construct_o, NULL, "::hyve::lang::class::construct(lang::object object)", FALSE, "element ::hyve::Fast::Define::construct(Fast::Define object).delegate");
         
-        /* Bind Fast_Define_construct_o with C-function */
+        /* Bind ::hyve::Fast::Define::construct(Fast::Define object) with C-function */
         db_function(Fast_Define_construct_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Define_construct(void *args, void *result);
         db_function(Fast_Define_construct_o)->impl = (db_word)__Fast_Define_construct;
@@ -4554,7 +4638,7 @@ int Fast_load(void) {
         db_function(Fast_Define_toIc_o)->returnsReference = FALSE;
         db_method(Fast_Define_toIc_o)->virtual = TRUE;
         
-        /* Bind Fast_Define_toIc_o with C-function */
+        /* Bind ::hyve::Fast::Define::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) with C-function */
         db_function(Fast_Define_toIc_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Define_toIc_v(void *args, void *result);
         db_function(Fast_Define_toIc_o)->impl = (db_word)__Fast_Define_toIc_v;
@@ -4576,7 +4660,7 @@ int Fast_load(void) {
         db_function(Fast_Expression_cast_o)->returnsReference = FALSE;
         Fast_Expression_cast_o->virtual = FALSE;
         
-        /* Bind Fast_Expression_cast_o with C-function */
+        /* Bind ::hyve::Fast::Expression::cast(lang::type type) with C-function */
         db_function(Fast_Expression_cast_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Expression_cast(void *args, void *result);
         db_function(Fast_Expression_cast_o)->impl = (db_word)__Fast_Expression_cast;
@@ -4598,7 +4682,7 @@ int Fast_load(void) {
         db_function(Fast_Expression_fold_o)->returnsReference = FALSE;
         db_method(Fast_Expression_fold_o)->virtual = TRUE;
         
-        /* Bind Fast_Expression_fold_o with C-function */
+        /* Bind ::hyve::Fast::Expression::fold() with C-function */
         db_function(Fast_Expression_fold_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Expression_fold_v(void *args, void *result);
         db_function(Fast_Expression_fold_o)->impl = (db_word)__Fast_Expression_fold_v;
@@ -4620,7 +4704,7 @@ int Fast_load(void) {
         db_function(Fast_Expression_getType_o)->returnsReference = FALSE;
         Fast_Expression_getType_o->virtual = FALSE;
         
-        /* Bind Fast_Expression_getType_o with C-function */
+        /* Bind ::hyve::Fast::Expression::getType() with C-function */
         db_function(Fast_Expression_getType_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Expression_getType(void *args, void *result);
         db_function(Fast_Expression_getType_o)->impl = (db_word)__Fast_Expression_getType;
@@ -4642,7 +4726,7 @@ int Fast_load(void) {
         db_function(Fast_Expression_getType_expr_o)->returnsReference = FALSE;
         Fast_Expression_getType_expr_o->virtual = FALSE;
         
-        /* Bind Fast_Expression_getType_expr_o with C-function */
+        /* Bind ::hyve::Fast::Expression::getType_expr(Expression target) with C-function */
         db_function(Fast_Expression_getType_expr_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Expression_getType_expr(void *args, void *result);
         db_function(Fast_Expression_getType_expr_o)->impl = (db_word)__Fast_Expression_getType_expr;
@@ -4664,7 +4748,7 @@ int Fast_load(void) {
         db_function(Fast_Expression_getType_type_o)->returnsReference = FALSE;
         Fast_Expression_getType_type_o->virtual = FALSE;
         
-        /* Bind Fast_Expression_getType_type_o with C-function */
+        /* Bind ::hyve::Fast::Expression::getType_type(lang::type target) with C-function */
         db_function(Fast_Expression_getType_type_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Expression_getType_type(void *args, void *result);
         db_function(Fast_Expression_getType_type_o)->impl = (db_word)__Fast_Expression_getType_type;
@@ -4686,7 +4770,7 @@ int Fast_load(void) {
         db_function(Fast_Expression_getValue_o)->returnsReference = FALSE;
         db_method(Fast_Expression_getValue_o)->virtual = TRUE;
         
-        /* Bind Fast_Expression_getValue_o with C-function */
+        /* Bind ::hyve::Fast::Expression::getValue() with C-function */
         db_function(Fast_Expression_getValue_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Expression_getValue_v(void *args, void *result);
         db_function(Fast_Expression_getValue_o)->impl = (db_word)__Fast_Expression_getValue_v;
@@ -4708,7 +4792,7 @@ int Fast_load(void) {
         db_function(Fast_Expression_hasSideEffects_o)->returnsReference = FALSE;
         db_method(Fast_Expression_hasSideEffects_o)->virtual = TRUE;
         
-        /* Bind Fast_Expression_hasSideEffects_o with C-function */
+        /* Bind ::hyve::Fast::Expression::hasSideEffects() with C-function */
         db_function(Fast_Expression_hasSideEffects_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Expression_hasSideEffects_v(void *args, void *result);
         db_function(Fast_Expression_hasSideEffects_o)->impl = (db_word)__Fast_Expression_hasSideEffects_v;
@@ -4730,7 +4814,7 @@ int Fast_load(void) {
         db_function(Fast_Expression_init_o)->returnsReference = FALSE;
         Fast_Expression_init_o->delegate = db_resolve_ext(Fast_Expression_init_o, NULL, "::hyve::lang::type::init(lang::object object)", FALSE, "element ::hyve::Fast::Expression::init(Expression object).delegate");
         
-        /* Bind Fast_Expression_init_o with C-function */
+        /* Bind ::hyve::Fast::Expression::init(Expression object) with C-function */
         db_function(Fast_Expression_init_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Expression_init(void *args, void *result);
         db_function(Fast_Expression_init_o)->impl = (db_word)__Fast_Expression_init;
@@ -4752,7 +4836,7 @@ int Fast_load(void) {
         db_function(Fast_Expression_serialize_o)->returnsReference = FALSE;
         db_method(Fast_Expression_serialize_o)->virtual = TRUE;
         
-        /* Bind Fast_Expression_serialize_o with C-function */
+        /* Bind ::hyve::Fast::Expression::serialize(lang::type dstType,lang::word dst) with C-function */
         db_function(Fast_Expression_serialize_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Expression_serialize_v(void *args, void *result);
         db_function(Fast_Expression_serialize_o)->impl = (db_word)__Fast_Expression_serialize_v;
@@ -4774,7 +4858,7 @@ int Fast_load(void) {
         db_function(Fast_Expression_toList_o)->returnsReference = FALSE;
         db_method(Fast_Expression_toList_o)->virtual = TRUE;
         
-        /* Bind Fast_Expression_toList_o with C-function */
+        /* Bind ::hyve::Fast::Expression::toList() with C-function */
         db_function(Fast_Expression_toList_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Expression_toList_v(void *args, void *result);
         db_function(Fast_Expression_toList_o)->impl = (db_word)__Fast_Expression_toList_v;
@@ -4797,6 +4881,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_Expression_o)->size != sizeof(struct Fast_Expression_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Expression' doesn't match C-type size '%d'", db_type(Fast_Expression_o)->size, sizeof(struct Fast_Expression_s));
+        goto error;
+    }
     /* Declare ::hyve::Fast::BinaryExpr::construct(Fast::BinaryExpr object) */
     Fast_BinaryExpr_construct_o = db_declare(Fast_BinaryExpr_o, "construct(Fast::BinaryExpr object)", db_typedef(db_callback_o));
     if (!Fast_BinaryExpr_construct_o) {
@@ -4810,7 +4898,7 @@ int Fast_load(void) {
         db_function(Fast_BinaryExpr_construct_o)->returnsReference = FALSE;
         Fast_BinaryExpr_construct_o->delegate = db_resolve_ext(Fast_BinaryExpr_construct_o, NULL, "::hyve::lang::class::construct(lang::object object)", FALSE, "element ::hyve::Fast::BinaryExpr::construct(Fast::BinaryExpr object).delegate");
         
-        /* Bind Fast_BinaryExpr_construct_o with C-function */
+        /* Bind ::hyve::Fast::BinaryExpr::construct(Fast::BinaryExpr object) with C-function */
         db_function(Fast_BinaryExpr_construct_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_BinaryExpr_construct(void *args, void *result);
         db_function(Fast_BinaryExpr_construct_o)->impl = (db_word)__Fast_BinaryExpr_construct;
@@ -4832,7 +4920,7 @@ int Fast_load(void) {
         db_function(Fast_BinaryExpr_fold_o)->returnsReference = FALSE;
         Fast_BinaryExpr_fold_o->virtual = FALSE;
         
-        /* Bind Fast_BinaryExpr_fold_o with C-function */
+        /* Bind ::hyve::Fast::BinaryExpr::fold() with C-function */
         db_function(Fast_BinaryExpr_fold_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_BinaryExpr_fold(void *args, void *result);
         db_function(Fast_BinaryExpr_fold_o)->impl = (db_word)__Fast_BinaryExpr_fold;
@@ -4854,7 +4942,7 @@ int Fast_load(void) {
         db_function(Fast_BinaryExpr_hasSideEffects_o)->returnsReference = FALSE;
         db_method(Fast_BinaryExpr_hasSideEffects_o)->virtual = TRUE;
         
-        /* Bind Fast_BinaryExpr_hasSideEffects_o with C-function */
+        /* Bind ::hyve::Fast::BinaryExpr::hasSideEffects() with C-function */
         db_function(Fast_BinaryExpr_hasSideEffects_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_BinaryExpr_hasSideEffects_v(void *args, void *result);
         db_function(Fast_BinaryExpr_hasSideEffects_o)->impl = (db_word)__Fast_BinaryExpr_hasSideEffects_v;
@@ -4900,7 +4988,7 @@ int Fast_load(void) {
         db_function(Fast_BinaryExpr_setOperator_o)->returnsReference = FALSE;
         Fast_BinaryExpr_setOperator_o->virtual = FALSE;
         
-        /* Bind Fast_BinaryExpr_setOperator_o with C-function */
+        /* Bind ::hyve::Fast::BinaryExpr::setOperator(lang::operatorKind kind) with C-function */
         db_function(Fast_BinaryExpr_setOperator_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_BinaryExpr_setOperator(void *args, void *result);
         db_function(Fast_BinaryExpr_setOperator_o)->impl = (db_word)__Fast_BinaryExpr_setOperator;
@@ -4922,7 +5010,7 @@ int Fast_load(void) {
         db_function(Fast_BinaryExpr_toIc_o)->returnsReference = FALSE;
         db_method(Fast_BinaryExpr_toIc_o)->virtual = TRUE;
         
-        /* Bind Fast_BinaryExpr_toIc_o with C-function */
+        /* Bind ::hyve::Fast::BinaryExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) with C-function */
         db_function(Fast_BinaryExpr_toIc_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_BinaryExpr_toIc_v(void *args, void *result);
         db_function(Fast_BinaryExpr_toIc_o)->impl = (db_word)__Fast_BinaryExpr_toIc_v;
@@ -4945,13 +5033,17 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_BinaryExpr_o)->size != sizeof(struct Fast_BinaryExpr_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::BinaryExpr' doesn't match C-type size '%d'", db_type(Fast_BinaryExpr_o)->size, sizeof(struct Fast_BinaryExpr_s));
+        goto error;
+    }
     /* Define ::hyve::Fast::Block::lookup(lang::string id) */
     if (!db_checkState(Fast_Block_lookup_o, DB_DEFINED)) {
         db_function(Fast_Block_lookup_o)->returnType = db_resolve_ext(Fast_Block_lookup_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::Block::lookup(lang::string id).returnType");
         db_function(Fast_Block_lookup_o)->returnsReference = FALSE;
         Fast_Block_lookup_o->virtual = FALSE;
         
-        /* Bind Fast_Block_lookup_o with C-function */
+        /* Bind ::hyve::Fast::Block::lookup(lang::string id) with C-function */
         db_function(Fast_Block_lookup_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Block_lookup(void *args, void *result);
         db_function(Fast_Block_lookup_o)->impl = (db_word)__Fast_Block_lookup;
@@ -4966,7 +5058,7 @@ int Fast_load(void) {
         db_function(Fast_Block_lookupLocal_o)->returnsReference = FALSE;
         Fast_Block_lookupLocal_o->virtual = FALSE;
         
-        /* Bind Fast_Block_lookupLocal_o with C-function */
+        /* Bind ::hyve::Fast::Block::lookupLocal(lang::string id) with C-function */
         db_function(Fast_Block_lookupLocal_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Block_lookupLocal(void *args, void *result);
         db_function(Fast_Block_lookupLocal_o)->impl = (db_word)__Fast_Block_lookupLocal;
@@ -4981,7 +5073,7 @@ int Fast_load(void) {
         db_function(Fast_Block_resolve_o)->returnsReference = FALSE;
         Fast_Block_resolve_o->virtual = FALSE;
         
-        /* Bind Fast_Block_resolve_o with C-function */
+        /* Bind ::hyve::Fast::Block::resolve(lang::string id) with C-function */
         db_function(Fast_Block_resolve_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Block_resolve(void *args, void *result);
         db_function(Fast_Block_resolve_o)->impl = (db_word)__Fast_Block_resolve;
@@ -5015,7 +5107,7 @@ int Fast_load(void) {
         db_function(Fast_Call_construct_o)->returnsReference = FALSE;
         Fast_Call_construct_o->delegate = db_resolve_ext(Fast_Call_construct_o, NULL, "::hyve::lang::class::construct(lang::object object)", FALSE, "element ::hyve::Fast::Call::construct(Fast::Call object).delegate");
         
-        /* Bind Fast_Call_construct_o with C-function */
+        /* Bind ::hyve::Fast::Call::construct(Fast::Call object) with C-function */
         db_function(Fast_Call_construct_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Call_construct(void *args, void *result);
         db_function(Fast_Call_construct_o)->impl = (db_word)__Fast_Call_construct;
@@ -5049,7 +5141,7 @@ int Fast_load(void) {
         db_function(Fast_Call_hasSideEffects_o)->returnsReference = FALSE;
         db_method(Fast_Call_hasSideEffects_o)->virtual = TRUE;
         
-        /* Bind Fast_Call_hasSideEffects_o with C-function */
+        /* Bind ::hyve::Fast::Call::hasSideEffects() with C-function */
         db_function(Fast_Call_hasSideEffects_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Call_hasSideEffects_v(void *args, void *result);
         db_function(Fast_Call_hasSideEffects_o)->impl = (db_word)__Fast_Call_hasSideEffects_v;
@@ -5071,7 +5163,7 @@ int Fast_load(void) {
         db_function(Fast_Call_toIc_o)->returnsReference = FALSE;
         db_method(Fast_Call_toIc_o)->virtual = TRUE;
         
-        /* Bind Fast_Call_toIc_o with C-function */
+        /* Bind ::hyve::Fast::Call::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) with C-function */
         db_function(Fast_Call_toIc_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Call_toIc_v(void *args, void *result);
         db_function(Fast_Call_toIc_o)->impl = (db_word)__Fast_Call_toIc_v;
@@ -5094,6 +5186,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_Call_o)->size != sizeof(struct Fast_Call_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Call' doesn't match C-type size '%d'", db_type(Fast_Call_o)->size, sizeof(struct Fast_Call_s));
+        goto error;
+    }
     /* Declare ::hyve::Fast::CastExpr::construct(Fast::CastExpr object) */
     Fast_CastExpr_construct_o = db_declare(Fast_CastExpr_o, "construct(Fast::CastExpr object)", db_typedef(db_callback_o));
     if (!Fast_CastExpr_construct_o) {
@@ -5107,7 +5203,7 @@ int Fast_load(void) {
         db_function(Fast_CastExpr_construct_o)->returnsReference = FALSE;
         Fast_CastExpr_construct_o->delegate = db_resolve_ext(Fast_CastExpr_construct_o, NULL, "::hyve::lang::class::construct(lang::object object)", FALSE, "element ::hyve::Fast::CastExpr::construct(Fast::CastExpr object).delegate");
         
-        /* Bind Fast_CastExpr_construct_o with C-function */
+        /* Bind ::hyve::Fast::CastExpr::construct(Fast::CastExpr object) with C-function */
         db_function(Fast_CastExpr_construct_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_CastExpr_construct(void *args, void *result);
         db_function(Fast_CastExpr_construct_o)->impl = (db_word)__Fast_CastExpr_construct;
@@ -5153,7 +5249,7 @@ int Fast_load(void) {
         db_function(Fast_CastExpr_toIc_o)->returnsReference = FALSE;
         db_method(Fast_CastExpr_toIc_o)->virtual = TRUE;
         
-        /* Bind Fast_CastExpr_toIc_o with C-function */
+        /* Bind ::hyve::Fast::CastExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) with C-function */
         db_function(Fast_CastExpr_toIc_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_CastExpr_toIc_v(void *args, void *result);
         db_function(Fast_CastExpr_toIc_o)->impl = (db_word)__Fast_CastExpr_toIc_v;
@@ -5176,6 +5272,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_CastExpr_o)->size != sizeof(struct Fast_CastExpr_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::CastExpr' doesn't match C-type size '%d'", db_type(Fast_CastExpr_o)->size, sizeof(struct Fast_CastExpr_s));
+        goto error;
+    }
     /* Declare ::hyve::Fast::CommaExpr::addExpression(Expression expr) */
     Fast_CommaExpr_addExpression_o = db_declare(Fast_CommaExpr_o, "addExpression(Expression expr)", db_typedef(db_method_o));
     if (!Fast_CommaExpr_addExpression_o) {
@@ -5189,7 +5289,7 @@ int Fast_load(void) {
         db_function(Fast_CommaExpr_addExpression_o)->returnsReference = FALSE;
         Fast_CommaExpr_addExpression_o->virtual = FALSE;
         
-        /* Bind Fast_CommaExpr_addExpression_o with C-function */
+        /* Bind ::hyve::Fast::CommaExpr::addExpression(Expression expr) with C-function */
         db_function(Fast_CommaExpr_addExpression_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_CommaExpr_addExpression(void *args, void *result);
         db_function(Fast_CommaExpr_addExpression_o)->impl = (db_word)__Fast_CommaExpr_addExpression;
@@ -5210,7 +5310,7 @@ int Fast_load(void) {
         Fast_CommaExpr_addOrCreate_o->returnType = db_resolve_ext(Fast_CommaExpr_addOrCreate_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::CommaExpr::addOrCreate(Expression list,Expression expr).returnType");
         Fast_CommaExpr_addOrCreate_o->returnsReference = FALSE;
         
-        /* Bind Fast_CommaExpr_addOrCreate_o with C-function */
+        /* Bind ::hyve::Fast::CommaExpr::addOrCreate(Expression list,Expression expr) with C-function */
         db_function(Fast_CommaExpr_addOrCreate_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_CommaExpr_addOrCreate(void *args, void *result);
         db_function(Fast_CommaExpr_addOrCreate_o)->impl = (db_word)__Fast_CommaExpr_addOrCreate;
@@ -5232,7 +5332,7 @@ int Fast_load(void) {
         db_function(Fast_CommaExpr_construct_o)->returnsReference = FALSE;
         Fast_CommaExpr_construct_o->delegate = db_resolve_ext(Fast_CommaExpr_construct_o, NULL, "::hyve::lang::class::construct(lang::object object)", FALSE, "element ::hyve::Fast::CommaExpr::construct(CommaExpr object).delegate");
         
-        /* Bind Fast_CommaExpr_construct_o with C-function */
+        /* Bind ::hyve::Fast::CommaExpr::construct(CommaExpr object) with C-function */
         db_function(Fast_CommaExpr_construct_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_CommaExpr_construct(void *args, void *result);
         db_function(Fast_CommaExpr_construct_o)->impl = (db_word)__Fast_CommaExpr_construct;
@@ -5254,7 +5354,7 @@ int Fast_load(void) {
         db_function(Fast_CommaExpr_hasSideEffects_o)->returnsReference = FALSE;
         db_method(Fast_CommaExpr_hasSideEffects_o)->virtual = TRUE;
         
-        /* Bind Fast_CommaExpr_hasSideEffects_o with C-function */
+        /* Bind ::hyve::Fast::CommaExpr::hasSideEffects() with C-function */
         db_function(Fast_CommaExpr_hasSideEffects_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_CommaExpr_hasSideEffects_v(void *args, void *result);
         db_function(Fast_CommaExpr_hasSideEffects_o)->impl = (db_word)__Fast_CommaExpr_hasSideEffects_v;
@@ -5276,7 +5376,7 @@ int Fast_load(void) {
         db_function(Fast_CommaExpr_init_o)->returnsReference = FALSE;
         Fast_CommaExpr_init_o->delegate = db_resolve_ext(Fast_CommaExpr_init_o, NULL, "::hyve::lang::type::init(lang::object object)", FALSE, "element ::hyve::Fast::CommaExpr::init(CommaExpr object).delegate");
         
-        /* Bind Fast_CommaExpr_init_o with C-function */
+        /* Bind ::hyve::Fast::CommaExpr::init(CommaExpr object) with C-function */
         db_function(Fast_CommaExpr_init_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_CommaExpr_init(void *args, void *result);
         db_function(Fast_CommaExpr_init_o)->impl = (db_word)__Fast_CommaExpr_init;
@@ -5298,7 +5398,7 @@ int Fast_load(void) {
         db_function(Fast_CommaExpr_toIc_o)->returnsReference = FALSE;
         db_method(Fast_CommaExpr_toIc_o)->virtual = TRUE;
         
-        /* Bind Fast_CommaExpr_toIc_o with C-function */
+        /* Bind ::hyve::Fast::CommaExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) with C-function */
         db_function(Fast_CommaExpr_toIc_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_CommaExpr_toIc_v(void *args, void *result);
         db_function(Fast_CommaExpr_toIc_o)->impl = (db_word)__Fast_CommaExpr_toIc_v;
@@ -5320,7 +5420,7 @@ int Fast_load(void) {
         db_function(Fast_CommaExpr_toList_o)->returnsReference = FALSE;
         Fast_CommaExpr_toList_o->virtual = FALSE;
         
-        /* Bind Fast_CommaExpr_toList_o with C-function */
+        /* Bind ::hyve::Fast::CommaExpr::toList() with C-function */
         db_function(Fast_CommaExpr_toList_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_CommaExpr_toList(void *args, void *result);
         db_function(Fast_CommaExpr_toList_o)->impl = (db_word)__Fast_CommaExpr_toList;
@@ -5342,6 +5442,10 @@ int Fast_load(void) {
             db_error("Fast_load: failed to define object '::hyve::Fast::CommaExpr'.");
             goto error;
         }
+    }
+    if (db_type(Fast_CommaExpr_o)->size != sizeof(struct Fast_CommaExpr_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::CommaExpr' doesn't match C-type size '%d'", db_type(Fast_CommaExpr_o)->size, sizeof(struct Fast_CommaExpr_s));
+        goto error;
     }
     /* Define ::hyve::Fast::Define::object */
     if (!db_checkState(Fast_Define_object_o, DB_DEFINED)) {
@@ -5368,6 +5472,10 @@ int Fast_load(void) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Define'.");
             goto error;
         }
+    }
+    if (db_type(Fast_Define_o)->size != sizeof(struct Fast_Define_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Define' doesn't match C-type size '%d'", db_type(Fast_Define_o)->size, sizeof(struct Fast_Define_s));
+        goto error;
     }
     /* Define ::hyve::Fast::ElementExpr::lvalue */
     if (!db_checkState(Fast_ElementExpr_lvalue_o, DB_DEFINED)) {
@@ -5406,7 +5514,7 @@ int Fast_load(void) {
         db_function(Fast_ElementExpr_toIc_o)->returnsReference = FALSE;
         db_method(Fast_ElementExpr_toIc_o)->virtual = TRUE;
         
-        /* Bind Fast_ElementExpr_toIc_o with C-function */
+        /* Bind ::hyve::Fast::ElementExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) with C-function */
         db_function(Fast_ElementExpr_toIc_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_ElementExpr_toIc_v(void *args, void *result);
         db_function(Fast_ElementExpr_toIc_o)->impl = (db_word)__Fast_ElementExpr_toIc_v;
@@ -5420,7 +5528,7 @@ int Fast_load(void) {
         Fast_Expression_fromList_o->returnType = db_resolve_ext(Fast_Expression_fromList_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::Expression::fromList(list{Expression} list).returnType");
         Fast_Expression_fromList_o->returnsReference = FALSE;
         
-        /* Bind Fast_Expression_fromList_o with C-function */
+        /* Bind ::hyve::Fast::Expression::fromList(list{Expression} list) with C-function */
         db_function(Fast_Expression_fromList_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Expression_fromList(void *args, void *result);
         db_function(Fast_Expression_fromList_o)->impl = (db_word)__Fast_Expression_fromList;
@@ -5454,7 +5562,7 @@ int Fast_load(void) {
         db_function(Fast_Initializer_construct_o)->returnsReference = FALSE;
         Fast_Initializer_construct_o->delegate = db_resolve_ext(Fast_Initializer_construct_o, NULL, "::hyve::lang::class::construct(lang::object object)", FALSE, "element ::hyve::Fast::Initializer::construct(Initializer object).delegate");
         
-        /* Bind Fast_Initializer_construct_o with C-function */
+        /* Bind ::hyve::Fast::Initializer::construct(Initializer object) with C-function */
         db_function(Fast_Initializer_construct_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Initializer_construct(void *args, void *result);
         db_function(Fast_Initializer_construct_o)->impl = (db_word)__Fast_Initializer_construct;
@@ -5476,7 +5584,7 @@ int Fast_load(void) {
         db_function(Fast_Initializer_currentType_o)->returnsReference = FALSE;
         Fast_Initializer_currentType_o->virtual = FALSE;
         
-        /* Bind Fast_Initializer_currentType_o with C-function */
+        /* Bind ::hyve::Fast::Initializer::currentType() with C-function */
         db_function(Fast_Initializer_currentType_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Initializer_currentType(void *args, void *result);
         db_function(Fast_Initializer_currentType_o)->impl = (db_word)__Fast_Initializer_currentType;
@@ -5498,7 +5606,7 @@ int Fast_load(void) {
         db_function(Fast_Initializer_define_o)->returnsReference = FALSE;
         db_method(Fast_Initializer_define_o)->virtual = TRUE;
         
-        /* Bind Fast_Initializer_define_o with C-function */
+        /* Bind ::hyve::Fast::Initializer::define() with C-function */
         db_function(Fast_Initializer_define_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Initializer_define_v(void *args, void *result);
         db_function(Fast_Initializer_define_o)->impl = (db_word)__Fast_Initializer_define_v;
@@ -5520,7 +5628,7 @@ int Fast_load(void) {
         db_function(Fast_Initializer_initFrame_o)->returnsReference = FALSE;
         Fast_Initializer_initFrame_o->virtual = FALSE;
         
-        /* Bind Fast_Initializer_initFrame_o with C-function */
+        /* Bind ::hyve::Fast::Initializer::initFrame() with C-function */
         db_function(Fast_Initializer_initFrame_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Initializer_initFrame(void *args, void *result);
         db_function(Fast_Initializer_initFrame_o)->impl = (db_word)__Fast_Initializer_initFrame;
@@ -5542,7 +5650,7 @@ int Fast_load(void) {
         db_function(Fast_Initializer_member_o)->returnsReference = FALSE;
         db_method(Fast_Initializer_member_o)->virtual = TRUE;
         
-        /* Bind Fast_Initializer_member_o with C-function */
+        /* Bind ::hyve::Fast::Initializer::member(lang::string name) with C-function */
         db_function(Fast_Initializer_member_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Initializer_member_v(void *args, void *result);
         db_function(Fast_Initializer_member_o)->impl = (db_word)__Fast_Initializer_member_v;
@@ -5564,7 +5672,7 @@ int Fast_load(void) {
         db_function(Fast_Initializer_next_o)->returnsReference = FALSE;
         db_method(Fast_Initializer_next_o)->virtual = TRUE;
         
-        /* Bind Fast_Initializer_next_o with C-function */
+        /* Bind ::hyve::Fast::Initializer::next() with C-function */
         db_function(Fast_Initializer_next_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Initializer_next_v(void *args, void *result);
         db_function(Fast_Initializer_next_o)->impl = (db_word)__Fast_Initializer_next_v;
@@ -5586,7 +5694,7 @@ int Fast_load(void) {
         db_function(Fast_Initializer_pop_o)->returnsReference = FALSE;
         db_method(Fast_Initializer_pop_o)->virtual = TRUE;
         
-        /* Bind Fast_Initializer_pop_o with C-function */
+        /* Bind ::hyve::Fast::Initializer::pop() with C-function */
         db_function(Fast_Initializer_pop_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Initializer_pop_v(void *args, void *result);
         db_function(Fast_Initializer_pop_o)->impl = (db_word)__Fast_Initializer_pop_v;
@@ -5608,7 +5716,7 @@ int Fast_load(void) {
         db_function(Fast_Initializer_popKey_o)->returnsReference = FALSE;
         db_method(Fast_Initializer_popKey_o)->virtual = TRUE;
         
-        /* Bind Fast_Initializer_popKey_o with C-function */
+        /* Bind ::hyve::Fast::Initializer::popKey() with C-function */
         db_function(Fast_Initializer_popKey_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Initializer_popKey_v(void *args, void *result);
         db_function(Fast_Initializer_popKey_o)->impl = (db_word)__Fast_Initializer_popKey_v;
@@ -5630,7 +5738,7 @@ int Fast_load(void) {
         db_function(Fast_Initializer_push_o)->returnsReference = FALSE;
         db_method(Fast_Initializer_push_o)->virtual = TRUE;
         
-        /* Bind Fast_Initializer_push_o with C-function */
+        /* Bind ::hyve::Fast::Initializer::push() with C-function */
         db_function(Fast_Initializer_push_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Initializer_push_v(void *args, void *result);
         db_function(Fast_Initializer_push_o)->impl = (db_word)__Fast_Initializer_push_v;
@@ -5652,7 +5760,7 @@ int Fast_load(void) {
         db_function(Fast_Initializer_pushKey_o)->returnsReference = FALSE;
         db_method(Fast_Initializer_pushKey_o)->virtual = TRUE;
         
-        /* Bind Fast_Initializer_pushKey_o with C-function */
+        /* Bind ::hyve::Fast::Initializer::pushKey() with C-function */
         db_function(Fast_Initializer_pushKey_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Initializer_pushKey_v(void *args, void *result);
         db_function(Fast_Initializer_pushKey_o)->impl = (db_word)__Fast_Initializer_pushKey_v;
@@ -5674,7 +5782,7 @@ int Fast_load(void) {
         db_function(Fast_Initializer_type_o)->returnsReference = FALSE;
         Fast_Initializer_type_o->virtual = FALSE;
         
-        /* Bind Fast_Initializer_type_o with C-function */
+        /* Bind ::hyve::Fast::Initializer::type() with C-function */
         db_function(Fast_Initializer_type_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Initializer_type(void *args, void *result);
         db_function(Fast_Initializer_type_o)->impl = (db_word)__Fast_Initializer_type;
@@ -5696,7 +5804,7 @@ int Fast_load(void) {
         db_function(Fast_Initializer_value_o)->returnsReference = FALSE;
         db_method(Fast_Initializer_value_o)->virtual = TRUE;
         
-        /* Bind Fast_Initializer_value_o with C-function */
+        /* Bind ::hyve::Fast::Initializer::value(Expression v) with C-function */
         db_function(Fast_Initializer_value_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Initializer_value_v(void *args, void *result);
         db_function(Fast_Initializer_value_o)->impl = (db_word)__Fast_Initializer_value_v;
@@ -5718,7 +5826,7 @@ int Fast_load(void) {
         db_function(Fast_Initializer_valueKey_o)->returnsReference = FALSE;
         db_method(Fast_Initializer_valueKey_o)->virtual = TRUE;
         
-        /* Bind Fast_Initializer_valueKey_o with C-function */
+        /* Bind ::hyve::Fast::Initializer::valueKey(Expression key) with C-function */
         db_function(Fast_Initializer_valueKey_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Initializer_valueKey_v(void *args, void *result);
         db_function(Fast_Initializer_valueKey_o)->impl = (db_word)__Fast_Initializer_valueKey_v;
@@ -5751,6 +5859,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_InitializerVariable_o)->size != sizeof(Fast_InitializerVariable)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::InitializerVariable' doesn't match C-type size '%d'", db_type(Fast_InitializerVariable_o)->size, sizeof(Fast_InitializerVariable));
+        goto error;
+    }
     /* Define ::hyve::Fast::Initializer::variables */
     if (!db_checkState(Fast_Initializer_variables_o, DB_DEFINED)) {
         Fast_Initializer_variables_o->type = db_resolve_ext(Fast_Initializer_variables_o, NULL, "::hyve::lang::array{::hyve::Fast::InitializerVariable,64,::hyve::Fast::InitializerVariable}", FALSE, "element ::hyve::Fast::Initializer::variables.type");
@@ -5777,6 +5889,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_Initializer_o)->size != sizeof(struct Fast_Initializer_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Initializer' doesn't match C-type size '%d'", db_type(Fast_Initializer_o)->size, sizeof(struct Fast_Initializer_s));
+        goto error;
+    }
     /* Declare ::hyve::Fast::DynamicInitializer::construct(DynamicInitializer object) */
     Fast_DynamicInitializer_construct_o = db_declare(Fast_DynamicInitializer_o, "construct(DynamicInitializer object)", db_typedef(db_callback_o));
     if (!Fast_DynamicInitializer_construct_o) {
@@ -5790,7 +5906,7 @@ int Fast_load(void) {
         db_function(Fast_DynamicInitializer_construct_o)->returnsReference = FALSE;
         Fast_DynamicInitializer_construct_o->delegate = db_resolve_ext(Fast_DynamicInitializer_construct_o, NULL, "::hyve::lang::class::construct(lang::object object)", FALSE, "element ::hyve::Fast::DynamicInitializer::construct(DynamicInitializer object).delegate");
         
-        /* Bind Fast_DynamicInitializer_construct_o with C-function */
+        /* Bind ::hyve::Fast::DynamicInitializer::construct(DynamicInitializer object) with C-function */
         db_function(Fast_DynamicInitializer_construct_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_DynamicInitializer_construct(void *args, void *result);
         db_function(Fast_DynamicInitializer_construct_o)->impl = (db_word)__Fast_DynamicInitializer_construct;
@@ -5812,7 +5928,7 @@ int Fast_load(void) {
         db_function(Fast_DynamicInitializer_define_o)->returnsReference = FALSE;
         Fast_DynamicInitializer_define_o->virtual = FALSE;
         
-        /* Bind Fast_DynamicInitializer_define_o with C-function */
+        /* Bind ::hyve::Fast::DynamicInitializer::define() with C-function */
         db_function(Fast_DynamicInitializer_define_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_DynamicInitializer_define(void *args, void *result);
         db_function(Fast_DynamicInitializer_define_o)->impl = (db_word)__Fast_DynamicInitializer_define;
@@ -5834,7 +5950,7 @@ int Fast_load(void) {
         db_function(Fast_DynamicInitializer_pop_o)->returnsReference = FALSE;
         Fast_DynamicInitializer_pop_o->virtual = FALSE;
         
-        /* Bind Fast_DynamicInitializer_pop_o with C-function */
+        /* Bind ::hyve::Fast::DynamicInitializer::pop() with C-function */
         db_function(Fast_DynamicInitializer_pop_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_DynamicInitializer_pop(void *args, void *result);
         db_function(Fast_DynamicInitializer_pop_o)->impl = (db_word)__Fast_DynamicInitializer_pop;
@@ -5856,7 +5972,7 @@ int Fast_load(void) {
         db_function(Fast_DynamicInitializer_push_o)->returnsReference = FALSE;
         Fast_DynamicInitializer_push_o->virtual = FALSE;
         
-        /* Bind Fast_DynamicInitializer_push_o with C-function */
+        /* Bind ::hyve::Fast::DynamicInitializer::push() with C-function */
         db_function(Fast_DynamicInitializer_push_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_DynamicInitializer_push(void *args, void *result);
         db_function(Fast_DynamicInitializer_push_o)->impl = (db_word)__Fast_DynamicInitializer_push;
@@ -5878,7 +5994,7 @@ int Fast_load(void) {
         db_function(Fast_DynamicInitializer_value_o)->returnsReference = FALSE;
         Fast_DynamicInitializer_value_o->virtual = FALSE;
         
-        /* Bind Fast_DynamicInitializer_value_o with C-function */
+        /* Bind ::hyve::Fast::DynamicInitializer::value(Expression v) with C-function */
         db_function(Fast_DynamicInitializer_value_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_DynamicInitializer_value(void *args, void *result);
         db_function(Fast_DynamicInitializer_value_o)->impl = (db_word)__Fast_DynamicInitializer_value;
@@ -5900,7 +6016,7 @@ int Fast_load(void) {
         db_function(Fast_InitializerExpr_construct_o)->returnsReference = FALSE;
         Fast_InitializerExpr_construct_o->delegate = db_resolve_ext(Fast_InitializerExpr_construct_o, NULL, "::hyve::lang::class::construct(lang::object object)", FALSE, "element ::hyve::Fast::InitializerExpr::construct(InitializerExpr object).delegate");
         
-        /* Bind Fast_InitializerExpr_construct_o with C-function */
+        /* Bind ::hyve::Fast::InitializerExpr::construct(InitializerExpr object) with C-function */
         db_function(Fast_InitializerExpr_construct_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_InitializerExpr_construct(void *args, void *result);
         db_function(Fast_InitializerExpr_construct_o)->impl = (db_word)__Fast_InitializerExpr_construct;
@@ -5922,7 +6038,7 @@ int Fast_load(void) {
         db_function(Fast_InitializerExpr_define_o)->returnsReference = FALSE;
         Fast_InitializerExpr_define_o->virtual = FALSE;
         
-        /* Bind Fast_InitializerExpr_define_o with C-function */
+        /* Bind ::hyve::Fast::InitializerExpr::define() with C-function */
         db_function(Fast_InitializerExpr_define_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_InitializerExpr_define(void *args, void *result);
         db_function(Fast_InitializerExpr_define_o)->impl = (db_word)__Fast_InitializerExpr_define;
@@ -5944,7 +6060,7 @@ int Fast_load(void) {
         db_function(Fast_InitializerExpr_insert_o)->returnsReference = FALSE;
         Fast_InitializerExpr_insert_o->virtual = FALSE;
         
-        /* Bind Fast_InitializerExpr_insert_o with C-function */
+        /* Bind ::hyve::Fast::InitializerExpr::insert(Expression variable) with C-function */
         db_function(Fast_InitializerExpr_insert_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_InitializerExpr_insert(void *args, void *result);
         db_function(Fast_InitializerExpr_insert_o)->impl = (db_word)__Fast_InitializerExpr_insert;
@@ -5966,7 +6082,7 @@ int Fast_load(void) {
         db_function(Fast_InitializerExpr_member_o)->returnsReference = FALSE;
         Fast_InitializerExpr_member_o->virtual = FALSE;
         
-        /* Bind Fast_InitializerExpr_member_o with C-function */
+        /* Bind ::hyve::Fast::InitializerExpr::member(lang::string name) with C-function */
         db_function(Fast_InitializerExpr_member_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_InitializerExpr_member(void *args, void *result);
         db_function(Fast_InitializerExpr_member_o)->impl = (db_word)__Fast_InitializerExpr_member;
@@ -5988,7 +6104,7 @@ int Fast_load(void) {
         db_function(Fast_InitializerExpr_pop_o)->returnsReference = FALSE;
         Fast_InitializerExpr_pop_o->virtual = FALSE;
         
-        /* Bind Fast_InitializerExpr_pop_o with C-function */
+        /* Bind ::hyve::Fast::InitializerExpr::pop() with C-function */
         db_function(Fast_InitializerExpr_pop_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_InitializerExpr_pop(void *args, void *result);
         db_function(Fast_InitializerExpr_pop_o)->impl = (db_word)__Fast_InitializerExpr_pop;
@@ -6010,7 +6126,7 @@ int Fast_load(void) {
         db_function(Fast_InitializerExpr_push_o)->returnsReference = FALSE;
         Fast_InitializerExpr_push_o->virtual = FALSE;
         
-        /* Bind Fast_InitializerExpr_push_o with C-function */
+        /* Bind ::hyve::Fast::InitializerExpr::push() with C-function */
         db_function(Fast_InitializerExpr_push_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_InitializerExpr_push(void *args, void *result);
         db_function(Fast_InitializerExpr_push_o)->impl = (db_word)__Fast_InitializerExpr_push;
@@ -6032,7 +6148,7 @@ int Fast_load(void) {
         db_function(Fast_InitializerExpr_value_o)->returnsReference = FALSE;
         Fast_InitializerExpr_value_o->virtual = FALSE;
         
-        /* Bind Fast_InitializerExpr_value_o with C-function */
+        /* Bind ::hyve::Fast::InitializerExpr::value(Expression v) with C-function */
         db_function(Fast_InitializerExpr_value_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_InitializerExpr_value(void *args, void *result);
         db_function(Fast_InitializerExpr_value_o)->impl = (db_word)__Fast_InitializerExpr_value;
@@ -6055,6 +6171,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_InitializerExpr_o)->size != sizeof(struct Fast_InitializerExpr_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::InitializerExpr' doesn't match C-type size '%d'", db_type(Fast_InitializerExpr_o)->size, sizeof(struct Fast_InitializerExpr_s));
+        goto error;
+    }
     /* Declare ::hyve::Fast::StaticInitializer::construct(StaticInitializer object) */
     Fast_StaticInitializer_construct_o = db_declare(Fast_StaticInitializer_o, "construct(StaticInitializer object)", db_typedef(db_callback_o));
     if (!Fast_StaticInitializer_construct_o) {
@@ -6068,7 +6188,7 @@ int Fast_load(void) {
         db_function(Fast_StaticInitializer_construct_o)->returnsReference = FALSE;
         Fast_StaticInitializer_construct_o->delegate = db_resolve_ext(Fast_StaticInitializer_construct_o, NULL, "::hyve::lang::class::construct(lang::object object)", FALSE, "element ::hyve::Fast::StaticInitializer::construct(StaticInitializer object).delegate");
         
-        /* Bind Fast_StaticInitializer_construct_o with C-function */
+        /* Bind ::hyve::Fast::StaticInitializer::construct(StaticInitializer object) with C-function */
         db_function(Fast_StaticInitializer_construct_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_StaticInitializer_construct(void *args, void *result);
         db_function(Fast_StaticInitializer_construct_o)->impl = (db_word)__Fast_StaticInitializer_construct;
@@ -6090,7 +6210,7 @@ int Fast_load(void) {
         db_function(Fast_StaticInitializer_define_o)->returnsReference = FALSE;
         Fast_StaticInitializer_define_o->virtual = FALSE;
         
-        /* Bind Fast_StaticInitializer_define_o with C-function */
+        /* Bind ::hyve::Fast::StaticInitializer::define() with C-function */
         db_function(Fast_StaticInitializer_define_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_StaticInitializer_define(void *args, void *result);
         db_function(Fast_StaticInitializer_define_o)->impl = (db_word)__Fast_StaticInitializer_define;
@@ -6112,7 +6232,7 @@ int Fast_load(void) {
         db_function(Fast_StaticInitializer_push_o)->returnsReference = FALSE;
         Fast_StaticInitializer_push_o->virtual = FALSE;
         
-        /* Bind Fast_StaticInitializer_push_o with C-function */
+        /* Bind ::hyve::Fast::StaticInitializer::push() with C-function */
         db_function(Fast_StaticInitializer_push_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_StaticInitializer_push(void *args, void *result);
         db_function(Fast_StaticInitializer_push_o)->impl = (db_word)__Fast_StaticInitializer_push;
@@ -6134,7 +6254,7 @@ int Fast_load(void) {
         db_function(Fast_StaticInitializer_value_o)->returnsReference = FALSE;
         Fast_StaticInitializer_value_o->virtual = FALSE;
         
-        /* Bind Fast_StaticInitializer_value_o with C-function */
+        /* Bind ::hyve::Fast::StaticInitializer::value(Expression v) with C-function */
         db_function(Fast_StaticInitializer_value_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_StaticInitializer_value(void *args, void *result);
         db_function(Fast_StaticInitializer_value_o)->impl = (db_word)__Fast_StaticInitializer_value;
@@ -6156,6 +6276,10 @@ int Fast_load(void) {
             db_error("Fast_load: failed to define object '::hyve::Fast::StaticInitializer'.");
             goto error;
         }
+    }
+    if (db_type(Fast_StaticInitializer_o)->size != sizeof(struct Fast_StaticInitializer_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::StaticInitializer' doesn't match C-type size '%d'", db_type(Fast_StaticInitializer_o)->size, sizeof(struct Fast_StaticInitializer_s));
+        goto error;
     }
     /* Define ::hyve::Fast::Parser::initializers */
     if (!db_checkState(Fast_Parser_initializers_o, DB_DEFINED)) {
@@ -6193,6 +6317,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_InitOper_o)->size != sizeof(Fast_InitOper)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::InitOper' doesn't match C-type size '%d'", db_type(Fast_InitOper_o)->size, sizeof(Fast_InitOper));
+        goto error;
+    }
     /* Declare ::hyve::Fast::Literal::getValue() */
     Fast_Literal_getValue_o = db_declare(Fast_Literal_o, "getValue()", db_typedef(db_virtual_o));
     if (!Fast_Literal_getValue_o) {
@@ -6206,7 +6334,7 @@ int Fast_load(void) {
         db_function(Fast_Literal_getValue_o)->returnsReference = FALSE;
         db_method(Fast_Literal_getValue_o)->virtual = TRUE;
         
-        /* Bind Fast_Literal_getValue_o with C-function */
+        /* Bind ::hyve::Fast::Literal::getValue() with C-function */
         db_function(Fast_Literal_getValue_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Literal_getValue_v(void *args, void *result);
         db_function(Fast_Literal_getValue_o)->impl = (db_word)__Fast_Literal_getValue_v;
@@ -6228,7 +6356,7 @@ int Fast_load(void) {
         db_function(Fast_Literal_init_o)->returnsReference = FALSE;
         Fast_Literal_init_o->delegate = db_resolve_ext(Fast_Literal_init_o, NULL, "::hyve::lang::type::init(lang::object object)", FALSE, "element ::hyve::Fast::Literal::init(Literal object).delegate");
         
-        /* Bind Fast_Literal_init_o with C-function */
+        /* Bind ::hyve::Fast::Literal::init(Literal object) with C-function */
         db_function(Fast_Literal_init_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Literal_init(void *args, void *result);
         db_function(Fast_Literal_init_o)->impl = (db_word)__Fast_Literal_init;
@@ -6251,6 +6379,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_Literal_o)->size != sizeof(struct Fast_Literal_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Literal' doesn't match C-type size '%d'", db_type(Fast_Literal_o)->size, sizeof(struct Fast_Literal_s));
+        goto error;
+    }
     /* Declare ::hyve::Fast::Boolean::init(Boolean object) */
     Fast_Boolean_init_o = db_declare(Fast_Boolean_o, "init(Boolean object)", db_typedef(db_callback_o));
     if (!Fast_Boolean_init_o) {
@@ -6264,7 +6396,7 @@ int Fast_load(void) {
         db_function(Fast_Boolean_init_o)->returnsReference = FALSE;
         Fast_Boolean_init_o->delegate = db_resolve_ext(Fast_Boolean_init_o, NULL, "::hyve::lang::type::init(lang::object object)", FALSE, "element ::hyve::Fast::Boolean::init(Boolean object).delegate");
         
-        /* Bind Fast_Boolean_init_o with C-function */
+        /* Bind ::hyve::Fast::Boolean::init(Boolean object) with C-function */
         db_function(Fast_Boolean_init_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Boolean_init(void *args, void *result);
         db_function(Fast_Boolean_init_o)->impl = (db_word)__Fast_Boolean_init;
@@ -6286,7 +6418,7 @@ int Fast_load(void) {
         db_function(Fast_Boolean_serialize_o)->returnsReference = FALSE;
         Fast_Boolean_serialize_o->virtual = FALSE;
         
-        /* Bind Fast_Boolean_serialize_o with C-function */
+        /* Bind ::hyve::Fast::Boolean::serialize(lang::type dstType,lang::word dst) with C-function */
         db_function(Fast_Boolean_serialize_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Boolean_serialize(void *args, void *result);
         db_function(Fast_Boolean_serialize_o)->impl = (db_word)__Fast_Boolean_serialize;
@@ -6308,7 +6440,7 @@ int Fast_load(void) {
         db_function(Fast_Boolean_toIc_o)->returnsReference = FALSE;
         db_method(Fast_Boolean_toIc_o)->virtual = TRUE;
         
-        /* Bind Fast_Boolean_toIc_o with C-function */
+        /* Bind ::hyve::Fast::Boolean::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) with C-function */
         db_function(Fast_Boolean_toIc_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Boolean_toIc_v(void *args, void *result);
         db_function(Fast_Boolean_toIc_o)->impl = (db_word)__Fast_Boolean_toIc_v;
@@ -6331,6 +6463,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_Boolean_o)->size != sizeof(struct Fast_Boolean_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Boolean' doesn't match C-type size '%d'", db_type(Fast_Boolean_o)->size, sizeof(struct Fast_Boolean_s));
+        goto error;
+    }
     /* Declare ::hyve::Fast::Character::init(Character object) */
     Fast_Character_init_o = db_declare(Fast_Character_o, "init(Character object)", db_typedef(db_callback_o));
     if (!Fast_Character_init_o) {
@@ -6344,7 +6480,7 @@ int Fast_load(void) {
         db_function(Fast_Character_init_o)->returnsReference = FALSE;
         Fast_Character_init_o->delegate = db_resolve_ext(Fast_Character_init_o, NULL, "::hyve::lang::type::init(lang::object object)", FALSE, "element ::hyve::Fast::Character::init(Character object).delegate");
         
-        /* Bind Fast_Character_init_o with C-function */
+        /* Bind ::hyve::Fast::Character::init(Character object) with C-function */
         db_function(Fast_Character_init_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Character_init(void *args, void *result);
         db_function(Fast_Character_init_o)->impl = (db_word)__Fast_Character_init;
@@ -6366,7 +6502,7 @@ int Fast_load(void) {
         db_function(Fast_Character_serialize_o)->returnsReference = FALSE;
         Fast_Character_serialize_o->virtual = FALSE;
         
-        /* Bind Fast_Character_serialize_o with C-function */
+        /* Bind ::hyve::Fast::Character::serialize(lang::type dstType,lang::word dst) with C-function */
         db_function(Fast_Character_serialize_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Character_serialize(void *args, void *result);
         db_function(Fast_Character_serialize_o)->impl = (db_word)__Fast_Character_serialize;
@@ -6388,7 +6524,7 @@ int Fast_load(void) {
         db_function(Fast_Character_toIc_o)->returnsReference = FALSE;
         db_method(Fast_Character_toIc_o)->virtual = TRUE;
         
-        /* Bind Fast_Character_toIc_o with C-function */
+        /* Bind ::hyve::Fast::Character::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) with C-function */
         db_function(Fast_Character_toIc_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Character_toIc_v(void *args, void *result);
         db_function(Fast_Character_toIc_o)->impl = (db_word)__Fast_Character_toIc_v;
@@ -6411,6 +6547,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_Character_o)->size != sizeof(struct Fast_Character_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Character' doesn't match C-type size '%d'", db_type(Fast_Character_o)->size, sizeof(struct Fast_Character_s));
+        goto error;
+    }
     /* Declare ::hyve::Fast::FloatingPoint::init(FloatingPoint object) */
     Fast_FloatingPoint_init_o = db_declare(Fast_FloatingPoint_o, "init(FloatingPoint object)", db_typedef(db_callback_o));
     if (!Fast_FloatingPoint_init_o) {
@@ -6424,7 +6564,7 @@ int Fast_load(void) {
         db_function(Fast_FloatingPoint_init_o)->returnsReference = FALSE;
         Fast_FloatingPoint_init_o->delegate = db_resolve_ext(Fast_FloatingPoint_init_o, NULL, "::hyve::lang::type::init(lang::object object)", FALSE, "element ::hyve::Fast::FloatingPoint::init(FloatingPoint object).delegate");
         
-        /* Bind Fast_FloatingPoint_init_o with C-function */
+        /* Bind ::hyve::Fast::FloatingPoint::init(FloatingPoint object) with C-function */
         db_function(Fast_FloatingPoint_init_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_FloatingPoint_init(void *args, void *result);
         db_function(Fast_FloatingPoint_init_o)->impl = (db_word)__Fast_FloatingPoint_init;
@@ -6446,7 +6586,7 @@ int Fast_load(void) {
         db_function(Fast_FloatingPoint_serialize_o)->returnsReference = FALSE;
         Fast_FloatingPoint_serialize_o->virtual = FALSE;
         
-        /* Bind Fast_FloatingPoint_serialize_o with C-function */
+        /* Bind ::hyve::Fast::FloatingPoint::serialize(lang::type dstType,lang::word dst) with C-function */
         db_function(Fast_FloatingPoint_serialize_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_FloatingPoint_serialize(void *args, void *result);
         db_function(Fast_FloatingPoint_serialize_o)->impl = (db_word)__Fast_FloatingPoint_serialize;
@@ -6468,7 +6608,7 @@ int Fast_load(void) {
         db_function(Fast_FloatingPoint_toIc_o)->returnsReference = FALSE;
         db_method(Fast_FloatingPoint_toIc_o)->virtual = TRUE;
         
-        /* Bind Fast_FloatingPoint_toIc_o with C-function */
+        /* Bind ::hyve::Fast::FloatingPoint::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) with C-function */
         db_function(Fast_FloatingPoint_toIc_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_FloatingPoint_toIc_v(void *args, void *result);
         db_function(Fast_FloatingPoint_toIc_o)->impl = (db_word)__Fast_FloatingPoint_toIc_v;
@@ -6491,6 +6631,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_FloatingPoint_o)->size != sizeof(struct Fast_FloatingPoint_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::FloatingPoint' doesn't match C-type size '%d'", db_type(Fast_FloatingPoint_o)->size, sizeof(struct Fast_FloatingPoint_s));
+        goto error;
+    }
     /* Declare ::hyve::Fast::Integer::init(Integer object) */
     Fast_Integer_init_o = db_declare(Fast_Integer_o, "init(Integer object)", db_typedef(db_callback_o));
     if (!Fast_Integer_init_o) {
@@ -6504,7 +6648,7 @@ int Fast_load(void) {
         db_function(Fast_Integer_init_o)->returnsReference = FALSE;
         Fast_Integer_init_o->delegate = db_resolve_ext(Fast_Integer_init_o, NULL, "::hyve::lang::type::init(lang::object object)", FALSE, "element ::hyve::Fast::Integer::init(Integer object).delegate");
         
-        /* Bind Fast_Integer_init_o with C-function */
+        /* Bind ::hyve::Fast::Integer::init(Integer object) with C-function */
         db_function(Fast_Integer_init_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Integer_init(void *args, void *result);
         db_function(Fast_Integer_init_o)->impl = (db_word)__Fast_Integer_init;
@@ -6526,7 +6670,7 @@ int Fast_load(void) {
         db_function(Fast_Integer_serialize_o)->returnsReference = FALSE;
         Fast_Integer_serialize_o->virtual = FALSE;
         
-        /* Bind Fast_Integer_serialize_o with C-function */
+        /* Bind ::hyve::Fast::Integer::serialize(lang::type dstType,lang::word dst) with C-function */
         db_function(Fast_Integer_serialize_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Integer_serialize(void *args, void *result);
         db_function(Fast_Integer_serialize_o)->impl = (db_word)__Fast_Integer_serialize;
@@ -6548,7 +6692,7 @@ int Fast_load(void) {
         db_function(Fast_Integer_toIc_o)->returnsReference = FALSE;
         db_method(Fast_Integer_toIc_o)->virtual = TRUE;
         
-        /* Bind Fast_Integer_toIc_o with C-function */
+        /* Bind ::hyve::Fast::Integer::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) with C-function */
         db_function(Fast_Integer_toIc_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Integer_toIc_v(void *args, void *result);
         db_function(Fast_Integer_toIc_o)->impl = (db_word)__Fast_Integer_toIc_v;
@@ -6570,6 +6714,10 @@ int Fast_load(void) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Integer'.");
             goto error;
         }
+    }
+    if (db_type(Fast_Integer_o)->size != sizeof(struct Fast_Integer_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Integer' doesn't match C-type size '%d'", db_type(Fast_Integer_o)->size, sizeof(struct Fast_Integer_s));
+        goto error;
     }
     /* Define ::hyve::Fast::DynamicInitializerFrame::sequenceSize */
     if (!db_checkState(Fast_DynamicInitializerFrame_sequenceSize_o, DB_DEFINED)) {
@@ -6596,7 +6744,7 @@ int Fast_load(void) {
         db_function(Fast_Null_init_o)->returnsReference = FALSE;
         Fast_Null_init_o->delegate = db_resolve_ext(Fast_Null_init_o, NULL, "::hyve::lang::type::init(lang::object object)", FALSE, "element ::hyve::Fast::Null::init(Null object).delegate");
         
-        /* Bind Fast_Null_init_o with C-function */
+        /* Bind ::hyve::Fast::Null::init(Null object) with C-function */
         db_function(Fast_Null_init_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Null_init(void *args, void *result);
         db_function(Fast_Null_init_o)->impl = (db_word)__Fast_Null_init;
@@ -6618,7 +6766,7 @@ int Fast_load(void) {
         db_function(Fast_Null_serialize_o)->returnsReference = FALSE;
         Fast_Null_serialize_o->virtual = FALSE;
         
-        /* Bind Fast_Null_serialize_o with C-function */
+        /* Bind ::hyve::Fast::Null::serialize(lang::type dstType,lang::word dst) with C-function */
         db_function(Fast_Null_serialize_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Null_serialize(void *args, void *result);
         db_function(Fast_Null_serialize_o)->impl = (db_word)__Fast_Null_serialize;
@@ -6640,7 +6788,7 @@ int Fast_load(void) {
         db_function(Fast_Null_toIc_o)->returnsReference = FALSE;
         db_method(Fast_Null_toIc_o)->virtual = TRUE;
         
-        /* Bind Fast_Null_toIc_o with C-function */
+        /* Bind ::hyve::Fast::Null::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) with C-function */
         db_function(Fast_Null_toIc_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Null_toIc_v(void *args, void *result);
         db_function(Fast_Null_toIc_o)->impl = (db_word)__Fast_Null_toIc_v;
@@ -6663,6 +6811,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_Null_o)->size != sizeof(struct Fast_Null_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Null' doesn't match C-type size '%d'", db_type(Fast_Null_o)->size, sizeof(struct Fast_Null_s));
+        goto error;
+    }
     /* Declare ::hyve::Fast::SignedInteger::init(SignedInteger object) */
     Fast_SignedInteger_init_o = db_declare(Fast_SignedInteger_o, "init(SignedInteger object)", db_typedef(db_callback_o));
     if (!Fast_SignedInteger_init_o) {
@@ -6676,7 +6828,7 @@ int Fast_load(void) {
         db_function(Fast_SignedInteger_init_o)->returnsReference = FALSE;
         Fast_SignedInteger_init_o->delegate = db_resolve_ext(Fast_SignedInteger_init_o, NULL, "::hyve::lang::type::init(lang::object object)", FALSE, "element ::hyve::Fast::SignedInteger::init(SignedInteger object).delegate");
         
-        /* Bind Fast_SignedInteger_init_o with C-function */
+        /* Bind ::hyve::Fast::SignedInteger::init(SignedInteger object) with C-function */
         db_function(Fast_SignedInteger_init_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_SignedInteger_init(void *args, void *result);
         db_function(Fast_SignedInteger_init_o)->impl = (db_word)__Fast_SignedInteger_init;
@@ -6698,7 +6850,7 @@ int Fast_load(void) {
         db_function(Fast_SignedInteger_serialize_o)->returnsReference = FALSE;
         Fast_SignedInteger_serialize_o->virtual = FALSE;
         
-        /* Bind Fast_SignedInteger_serialize_o with C-function */
+        /* Bind ::hyve::Fast::SignedInteger::serialize(lang::type dstType,lang::word dst) with C-function */
         db_function(Fast_SignedInteger_serialize_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_SignedInteger_serialize(void *args, void *result);
         db_function(Fast_SignedInteger_serialize_o)->impl = (db_word)__Fast_SignedInteger_serialize;
@@ -6720,7 +6872,7 @@ int Fast_load(void) {
         db_function(Fast_SignedInteger_toIc_o)->returnsReference = FALSE;
         db_method(Fast_SignedInteger_toIc_o)->virtual = TRUE;
         
-        /* Bind Fast_SignedInteger_toIc_o with C-function */
+        /* Bind ::hyve::Fast::SignedInteger::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) with C-function */
         db_function(Fast_SignedInteger_toIc_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_SignedInteger_toIc_v(void *args, void *result);
         db_function(Fast_SignedInteger_toIc_o)->impl = (db_word)__Fast_SignedInteger_toIc_v;
@@ -6743,6 +6895,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_SignedInteger_o)->size != sizeof(struct Fast_SignedInteger_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::SignedInteger' doesn't match C-type size '%d'", db_type(Fast_SignedInteger_o)->size, sizeof(struct Fast_SignedInteger_s));
+        goto error;
+    }
     /* Declare ::hyve::Fast::String::construct(String object) */
     Fast_String_construct_o = db_declare(Fast_String_o, "construct(String object)", db_typedef(db_callback_o));
     if (!Fast_String_construct_o) {
@@ -6756,7 +6912,7 @@ int Fast_load(void) {
         db_function(Fast_String_construct_o)->returnsReference = FALSE;
         Fast_String_construct_o->delegate = db_resolve_ext(Fast_String_construct_o, NULL, "::hyve::lang::class::construct(lang::object object)", FALSE, "element ::hyve::Fast::String::construct(String object).delegate");
         
-        /* Bind Fast_String_construct_o with C-function */
+        /* Bind ::hyve::Fast::String::construct(String object) with C-function */
         db_function(Fast_String_construct_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_String_construct(void *args, void *result);
         db_function(Fast_String_construct_o)->impl = (db_word)__Fast_String_construct;
@@ -6778,7 +6934,7 @@ int Fast_load(void) {
         db_function(Fast_String_getValue_o)->returnsReference = FALSE;
         Fast_String_getValue_o->virtual = FALSE;
         
-        /* Bind Fast_String_getValue_o with C-function */
+        /* Bind ::hyve::Fast::String::getValue() with C-function */
         db_function(Fast_String_getValue_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_String_getValue(void *args, void *result);
         db_function(Fast_String_getValue_o)->impl = (db_word)__Fast_String_getValue;
@@ -6800,7 +6956,7 @@ int Fast_load(void) {
         db_function(Fast_String_init_o)->returnsReference = FALSE;
         Fast_String_init_o->delegate = db_resolve_ext(Fast_String_init_o, NULL, "::hyve::lang::type::init(lang::object object)", FALSE, "element ::hyve::Fast::String::init(String object).delegate");
         
-        /* Bind Fast_String_init_o with C-function */
+        /* Bind ::hyve::Fast::String::init(String object) with C-function */
         db_function(Fast_String_init_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_String_init(void *args, void *result);
         db_function(Fast_String_init_o)->impl = (db_word)__Fast_String_init;
@@ -6822,7 +6978,7 @@ int Fast_load(void) {
         db_function(Fast_String_serialize_o)->returnsReference = FALSE;
         Fast_String_serialize_o->virtual = FALSE;
         
-        /* Bind Fast_String_serialize_o with C-function */
+        /* Bind ::hyve::Fast::String::serialize(lang::type dstType,lang::word dst) with C-function */
         db_function(Fast_String_serialize_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_String_serialize(void *args, void *result);
         db_function(Fast_String_serialize_o)->impl = (db_word)__Fast_String_serialize;
@@ -6844,7 +7000,7 @@ int Fast_load(void) {
         db_function(Fast_String_toIc_o)->returnsReference = FALSE;
         db_method(Fast_String_toIc_o)->virtual = TRUE;
         
-        /* Bind Fast_String_toIc_o with C-function */
+        /* Bind ::hyve::Fast::String::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) with C-function */
         db_function(Fast_String_toIc_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_String_toIc_v(void *args, void *result);
         db_function(Fast_String_toIc_o)->impl = (db_word)__Fast_String_toIc_v;
@@ -6877,6 +7033,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_Lvalue_o)->size != sizeof(Fast_Lvalue)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Lvalue' doesn't match C-type size '%d'", db_type(Fast_Lvalue_o)->size, sizeof(Fast_Lvalue));
+        goto error;
+    }
     /* Define ::hyve::Fast::Parser::lvalue */
     if (!db_checkState(Fast_Parser_lvalue_o, DB_DEFINED)) {
         Fast_Parser_lvalue_o->type = db_resolve_ext(Fast_Parser_lvalue_o, NULL, "::hyve::lang::array{::hyve::Fast::Lvalue,64,::hyve::Fast::Lvalue}", FALSE, "element ::hyve::Fast::Parser::lvalue.type");
@@ -6902,7 +7062,7 @@ int Fast_load(void) {
         db_function(Fast_MemberExpr_construct_o)->returnsReference = FALSE;
         Fast_MemberExpr_construct_o->delegate = db_resolve_ext(Fast_MemberExpr_construct_o, NULL, "::hyve::lang::class::construct(lang::object object)", FALSE, "element ::hyve::Fast::MemberExpr::construct(Fast::MemberExpr object).delegate");
         
-        /* Bind Fast_MemberExpr_construct_o with C-function */
+        /* Bind ::hyve::Fast::MemberExpr::construct(Fast::MemberExpr object) with C-function */
         db_function(Fast_MemberExpr_construct_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_MemberExpr_construct(void *args, void *result);
         db_function(Fast_MemberExpr_construct_o)->impl = (db_word)__Fast_MemberExpr_construct;
@@ -6924,7 +7084,7 @@ int Fast_load(void) {
         db_function(Fast_MemberExpr_hasSideEffects_o)->returnsReference = FALSE;
         db_method(Fast_MemberExpr_hasSideEffects_o)->virtual = TRUE;
         
-        /* Bind Fast_MemberExpr_hasSideEffects_o with C-function */
+        /* Bind ::hyve::Fast::MemberExpr::hasSideEffects() with C-function */
         db_function(Fast_MemberExpr_hasSideEffects_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_MemberExpr_hasSideEffects_v(void *args, void *result);
         db_function(Fast_MemberExpr_hasSideEffects_o)->impl = (db_word)__Fast_MemberExpr_hasSideEffects_v;
@@ -6970,7 +7130,7 @@ int Fast_load(void) {
         db_function(Fast_MemberExpr_toIc_o)->returnsReference = FALSE;
         db_method(Fast_MemberExpr_toIc_o)->virtual = TRUE;
         
-        /* Bind Fast_MemberExpr_toIc_o with C-function */
+        /* Bind ::hyve::Fast::MemberExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) with C-function */
         db_function(Fast_MemberExpr_toIc_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_MemberExpr_toIc_v(void *args, void *result);
         db_function(Fast_MemberExpr_toIc_o)->impl = (db_word)__Fast_MemberExpr_toIc_v;
@@ -6993,6 +7153,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_MemberExpr_o)->size != sizeof(struct Fast_MemberExpr_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::MemberExpr' doesn't match C-type size '%d'", db_type(Fast_MemberExpr_o)->size, sizeof(struct Fast_MemberExpr_s));
+        goto error;
+    }
     /* Declare ::hyve::Fast::ElementExpr::construct(Fast::MemberExpr object) */
     Fast_ElementExpr_construct_o = db_declare(Fast_ElementExpr_o, "construct(Fast::MemberExpr object)", db_typedef(db_callback_o));
     if (!Fast_ElementExpr_construct_o) {
@@ -7006,7 +7170,7 @@ int Fast_load(void) {
         db_function(Fast_ElementExpr_construct_o)->returnsReference = FALSE;
         Fast_ElementExpr_construct_o->delegate = db_resolve_ext(Fast_ElementExpr_construct_o, NULL, "::hyve::lang::class::construct(lang::object object)", FALSE, "element ::hyve::Fast::ElementExpr::construct(Fast::MemberExpr object).delegate");
         
-        /* Bind Fast_ElementExpr_construct_o with C-function */
+        /* Bind ::hyve::Fast::ElementExpr::construct(Fast::MemberExpr object) with C-function */
         db_function(Fast_ElementExpr_construct_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_ElementExpr_construct(void *args, void *result);
         db_function(Fast_ElementExpr_construct_o)->impl = (db_word)__Fast_ElementExpr_construct;
@@ -7028,6 +7192,10 @@ int Fast_load(void) {
             db_error("Fast_load: failed to define object '::hyve::Fast::ElementExpr'.");
             goto error;
         }
+    }
+    if (db_type(Fast_ElementExpr_o)->size != sizeof(struct Fast_ElementExpr_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::ElementExpr' doesn't match C-type size '%d'", db_type(Fast_ElementExpr_o)->size, sizeof(struct Fast_ElementExpr_s));
+        goto error;
     }
     /* Define ::hyve::Fast::NewExpr::attributes */
     if (!db_checkState(Fast_NewExpr_attributes_o, DB_DEFINED)) {
@@ -7054,7 +7222,7 @@ int Fast_load(void) {
         db_function(Fast_NewExpr_construct_o)->returnsReference = FALSE;
         Fast_NewExpr_construct_o->delegate = db_resolve_ext(Fast_NewExpr_construct_o, NULL, "::hyve::lang::class::construct(lang::object object)", FALSE, "element ::hyve::Fast::NewExpr::construct(Fast::NewExpr object).delegate");
         
-        /* Bind Fast_NewExpr_construct_o with C-function */
+        /* Bind ::hyve::Fast::NewExpr::construct(Fast::NewExpr object) with C-function */
         db_function(Fast_NewExpr_construct_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_NewExpr_construct(void *args, void *result);
         db_function(Fast_NewExpr_construct_o)->impl = (db_word)__Fast_NewExpr_construct;
@@ -7076,7 +7244,7 @@ int Fast_load(void) {
         db_function(Fast_NewExpr_hasSideEffects_o)->returnsReference = FALSE;
         db_method(Fast_NewExpr_hasSideEffects_o)->virtual = TRUE;
         
-        /* Bind Fast_NewExpr_hasSideEffects_o with C-function */
+        /* Bind ::hyve::Fast::NewExpr::hasSideEffects() with C-function */
         db_function(Fast_NewExpr_hasSideEffects_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_NewExpr_hasSideEffects_v(void *args, void *result);
         db_function(Fast_NewExpr_hasSideEffects_o)->impl = (db_word)__Fast_NewExpr_hasSideEffects_v;
@@ -7098,7 +7266,7 @@ int Fast_load(void) {
         db_function(Fast_NewExpr_toIc_o)->returnsReference = FALSE;
         db_method(Fast_NewExpr_toIc_o)->virtual = TRUE;
         
-        /* Bind Fast_NewExpr_toIc_o with C-function */
+        /* Bind ::hyve::Fast::NewExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) with C-function */
         db_function(Fast_NewExpr_toIc_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_NewExpr_toIc_v(void *args, void *result);
         db_function(Fast_NewExpr_toIc_o)->impl = (db_word)__Fast_NewExpr_toIc_v;
@@ -7133,6 +7301,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_NewExpr_o)->size != sizeof(struct Fast_NewExpr_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::NewExpr' doesn't match C-type size '%d'", db_type(Fast_NewExpr_o)->size, sizeof(struct Fast_NewExpr_s));
+        goto error;
+    }
     /* Declare ::hyve::Fast::Parser::binaryExpr(Fast::Expression lvalues,Fast::Expression rvalues,lang::operatorKind operator) */
     Fast_Parser_binaryExpr_o = db_declare(Fast_Parser_o, "binaryExpr(Fast::Expression lvalues,Fast::Expression rvalues,lang::operatorKind operator)", db_typedef(db_method_o));
     if (!Fast_Parser_binaryExpr_o) {
@@ -7146,7 +7318,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_binaryExpr_o)->returnsReference = FALSE;
         Fast_Parser_binaryExpr_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_binaryExpr_o with C-function */
+        /* Bind ::hyve::Fast::Parser::binaryExpr(Fast::Expression lvalues,Fast::Expression rvalues,lang::operatorKind operator) with C-function */
         db_function(Fast_Parser_binaryExpr_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_binaryExpr(void *args, void *result);
         db_function(Fast_Parser_binaryExpr_o)->impl = (db_word)__Fast_Parser_binaryExpr;
@@ -7168,7 +7340,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_callExpr_o)->returnsReference = FALSE;
         Fast_Parser_callExpr_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_callExpr_o with C-function */
+        /* Bind ::hyve::Fast::Parser::callExpr(Fast::Expression function,Fast::Expression arguments) with C-function */
         db_function(Fast_Parser_callExpr_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_callExpr(void *args, void *result);
         db_function(Fast_Parser_callExpr_o)->impl = (db_word)__Fast_Parser_callExpr;
@@ -7190,7 +7362,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_castExpr_o)->returnsReference = FALSE;
         Fast_Parser_castExpr_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_castExpr_o with C-function */
+        /* Bind ::hyve::Fast::Parser::castExpr(Fast::Expression lvalue,Fast::Expression rvalue) with C-function */
         db_function(Fast_Parser_castExpr_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_castExpr(void *args, void *result);
         db_function(Fast_Parser_castExpr_o)->impl = (db_word)__Fast_Parser_castExpr;
@@ -7212,7 +7384,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_elementExpr_o)->returnsReference = FALSE;
         Fast_Parser_elementExpr_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_elementExpr_o with C-function */
+        /* Bind ::hyve::Fast::Parser::elementExpr(Fast::Expression lvalue,Fast::Expression rvalue) with C-function */
         db_function(Fast_Parser_elementExpr_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_elementExpr(void *args, void *result);
         db_function(Fast_Parser_elementExpr_o)->impl = (db_word)__Fast_Parser_elementExpr;
@@ -7234,7 +7406,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_foreach_o)->returnsReference = FALSE;
         Fast_Parser_foreach_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_foreach_o with C-function */
+        /* Bind ::hyve::Fast::Parser::foreach(lang::string loopId,Fast::Expression collection) with C-function */
         db_function(Fast_Parser_foreach_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_foreach(void *args, void *result);
         db_function(Fast_Parser_foreach_o)->impl = (db_word)__Fast_Parser_foreach;
@@ -7249,7 +7421,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_getLvalue_o)->returnsReference = FALSE;
         Fast_Parser_getLvalue_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_getLvalue_o with C-function */
+        /* Bind ::hyve::Fast::Parser::getLvalue(lang::bool assignment) with C-function */
         db_function(Fast_Parser_getLvalue_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_getLvalue(void *args, void *result);
         db_function(Fast_Parser_getLvalue_o)->impl = (db_word)__Fast_Parser_getLvalue;
@@ -7271,7 +7443,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_initDeclareStaged_o)->returnsReference = FALSE;
         Fast_Parser_initDeclareStaged_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_initDeclareStaged_o with C-function */
+        /* Bind ::hyve::Fast::Parser::initDeclareStaged(Fast::Expression expr) with C-function */
         db_function(Fast_Parser_initDeclareStaged_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_initDeclareStaged(void *args, void *result);
         db_function(Fast_Parser_initDeclareStaged_o)->impl = (db_word)__Fast_Parser_initDeclareStaged;
@@ -7293,7 +7465,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_initKeyValueSet_o)->returnsReference = FALSE;
         Fast_Parser_initKeyValueSet_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_initKeyValueSet_o with C-function */
+        /* Bind ::hyve::Fast::Parser::initKeyValueSet(Fast::Expression expr) with C-function */
         db_function(Fast_Parser_initKeyValueSet_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_initKeyValueSet(void *args, void *result);
         db_function(Fast_Parser_initKeyValueSet_o)->impl = (db_word)__Fast_Parser_initKeyValueSet;
@@ -7308,7 +7480,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_initPushExpression_o)->returnsReference = FALSE;
         Fast_Parser_initPushExpression_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_initPushExpression_o with C-function */
+        /* Bind ::hyve::Fast::Parser::initPushExpression() with C-function */
         db_function(Fast_Parser_initPushExpression_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_initPushExpression(void *args, void *result);
         db_function(Fast_Parser_initPushExpression_o)->impl = (db_word)__Fast_Parser_initPushExpression;
@@ -7330,7 +7502,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_initPushIdentifier_o)->returnsReference = FALSE;
         Fast_Parser_initPushIdentifier_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_initPushIdentifier_o with C-function */
+        /* Bind ::hyve::Fast::Parser::initPushIdentifier(Expression type) with C-function */
         db_function(Fast_Parser_initPushIdentifier_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_initPushIdentifier(void *args, void *result);
         db_function(Fast_Parser_initPushIdentifier_o)->impl = (db_word)__Fast_Parser_initPushIdentifier;
@@ -7352,7 +7524,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_initValue_o)->returnsReference = FALSE;
         Fast_Parser_initValue_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_initValue_o with C-function */
+        /* Bind ::hyve::Fast::Parser::initValue(Expression expr) with C-function */
         db_function(Fast_Parser_initValue_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_initValue(void *args, void *result);
         db_function(Fast_Parser_initValue_o)->impl = (db_word)__Fast_Parser_initValue;
@@ -7367,7 +7539,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_lookup_o)->returnsReference = FALSE;
         Fast_Parser_lookup_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_lookup_o with C-function */
+        /* Bind ::hyve::Fast::Parser::lookup(lang::string id,lang::object source) with C-function */
         db_function(Fast_Parser_lookup_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_lookup(void *args, void *result);
         db_function(Fast_Parser_lookup_o)->impl = (db_word)__Fast_Parser_lookup;
@@ -7389,7 +7561,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_memberExpr_o)->returnsReference = FALSE;
         Fast_Parser_memberExpr_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_memberExpr_o with C-function */
+        /* Bind ::hyve::Fast::Parser::memberExpr(Fast::Expression lvalue,Fast::Expression rvalue) with C-function */
         db_function(Fast_Parser_memberExpr_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_memberExpr(void *args, void *result);
         db_function(Fast_Parser_memberExpr_o)->impl = (db_word)__Fast_Parser_memberExpr;
@@ -7411,7 +7583,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_postfixExpr_o)->returnsReference = FALSE;
         Fast_Parser_postfixExpr_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_postfixExpr_o with C-function */
+        /* Bind ::hyve::Fast::Parser::postfixExpr(Fast::Expression lvalue,lang::operatorKind operator) with C-function */
         db_function(Fast_Parser_postfixExpr_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_postfixExpr(void *args, void *result);
         db_function(Fast_Parser_postfixExpr_o)->impl = (db_word)__Fast_Parser_postfixExpr;
@@ -7433,7 +7605,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_pushComplexType_o)->returnsReference = FALSE;
         Fast_Parser_pushComplexType_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_pushComplexType_o with C-function */
+        /* Bind ::hyve::Fast::Parser::pushComplexType(Fast::Expression lvalue) with C-function */
         db_function(Fast_Parser_pushComplexType_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_pushComplexType(void *args, void *result);
         db_function(Fast_Parser_pushComplexType_o)->impl = (db_word)__Fast_Parser_pushComplexType;
@@ -7455,7 +7627,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_pushLvalue_o)->returnsReference = FALSE;
         Fast_Parser_pushLvalue_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_pushLvalue_o with C-function */
+        /* Bind ::hyve::Fast::Parser::pushLvalue(Fast::Expression lvalue,lang::bool isAssignment) with C-function */
         db_function(Fast_Parser_pushLvalue_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_pushLvalue(void *args, void *result);
         db_function(Fast_Parser_pushLvalue_o)->impl = (db_word)__Fast_Parser_pushLvalue;
@@ -7489,7 +7661,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_ternaryExpr_o)->returnsReference = FALSE;
         Fast_Parser_ternaryExpr_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_ternaryExpr_o with C-function */
+        /* Bind ::hyve::Fast::Parser::ternaryExpr(Fast::Expression cond,Fast::Expression iftrue,Fast::Expression iffalse) with C-function */
         db_function(Fast_Parser_ternaryExpr_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_ternaryExpr(void *args, void *result);
         db_function(Fast_Parser_ternaryExpr_o)->impl = (db_word)__Fast_Parser_ternaryExpr;
@@ -7511,7 +7683,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_unaryExpr_o)->returnsReference = FALSE;
         Fast_Parser_unaryExpr_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_unaryExpr_o with C-function */
+        /* Bind ::hyve::Fast::Parser::unaryExpr(Fast::Expression lvalue,lang::operatorKind operator) with C-function */
         db_function(Fast_Parser_unaryExpr_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_unaryExpr(void *args, void *result);
         db_function(Fast_Parser_unaryExpr_o)->impl = (db_word)__Fast_Parser_unaryExpr;
@@ -7533,7 +7705,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_waitExpr_o)->returnsReference = FALSE;
         Fast_Parser_waitExpr_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_waitExpr_o with C-function */
+        /* Bind ::hyve::Fast::Parser::waitExpr(list{Fast::Expression} exprList,Fast::Expression timeout) with C-function */
         db_function(Fast_Parser_waitExpr_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_waitExpr(void *args, void *result);
         db_function(Fast_Parser_waitExpr_o)->impl = (db_word)__Fast_Parser_waitExpr;
@@ -7590,6 +7762,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_ParserNew_o)->size != sizeof(Fast_ParserNew)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::ParserNew' doesn't match C-type size '%d'", db_type(Fast_ParserNew_o)->size, sizeof(Fast_ParserNew));
+        goto error;
+    }
     /* Declare ::hyve::Fast::PostfixExpr::construct(Fast::PostfixExpr object) */
     Fast_PostfixExpr_construct_o = db_declare(Fast_PostfixExpr_o, "construct(Fast::PostfixExpr object)", db_typedef(db_callback_o));
     if (!Fast_PostfixExpr_construct_o) {
@@ -7603,7 +7779,7 @@ int Fast_load(void) {
         db_function(Fast_PostfixExpr_construct_o)->returnsReference = FALSE;
         Fast_PostfixExpr_construct_o->delegate = db_resolve_ext(Fast_PostfixExpr_construct_o, NULL, "::hyve::lang::class::construct(lang::object object)", FALSE, "element ::hyve::Fast::PostfixExpr::construct(Fast::PostfixExpr object).delegate");
         
-        /* Bind Fast_PostfixExpr_construct_o with C-function */
+        /* Bind ::hyve::Fast::PostfixExpr::construct(Fast::PostfixExpr object) with C-function */
         db_function(Fast_PostfixExpr_construct_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_PostfixExpr_construct(void *args, void *result);
         db_function(Fast_PostfixExpr_construct_o)->impl = (db_word)__Fast_PostfixExpr_construct;
@@ -7637,7 +7813,7 @@ int Fast_load(void) {
         db_function(Fast_PostfixExpr_toIc_o)->returnsReference = FALSE;
         db_method(Fast_PostfixExpr_toIc_o)->virtual = TRUE;
         
-        /* Bind Fast_PostfixExpr_toIc_o with C-function */
+        /* Bind ::hyve::Fast::PostfixExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) with C-function */
         db_function(Fast_PostfixExpr_toIc_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_PostfixExpr_toIc_v(void *args, void *result);
         db_function(Fast_PostfixExpr_toIc_o)->impl = (db_word)__Fast_PostfixExpr_toIc_v;
@@ -7659,6 +7835,10 @@ int Fast_load(void) {
             db_error("Fast_load: failed to define object '::hyve::Fast::PostfixExpr'.");
             goto error;
         }
+    }
+    if (db_type(Fast_PostfixExpr_o)->size != sizeof(struct Fast_PostfixExpr_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::PostfixExpr' doesn't match C-type size '%d'", db_type(Fast_PostfixExpr_o)->size, sizeof(struct Fast_PostfixExpr_s));
+        goto error;
     }
     /* Define ::hyve::Fast::TernaryExpr::condition */
     if (!db_checkState(Fast_TernaryExpr_condition_o, DB_DEFINED)) {
@@ -7685,7 +7865,7 @@ int Fast_load(void) {
         db_function(Fast_TernaryExpr_construct_o)->returnsReference = FALSE;
         Fast_TernaryExpr_construct_o->delegate = db_resolve_ext(Fast_TernaryExpr_construct_o, NULL, "::hyve::lang::class::construct(lang::object object)", FALSE, "element ::hyve::Fast::TernaryExpr::construct(Fast::TernaryExpr object).delegate");
         
-        /* Bind Fast_TernaryExpr_construct_o with C-function */
+        /* Bind ::hyve::Fast::TernaryExpr::construct(Fast::TernaryExpr object) with C-function */
         db_function(Fast_TernaryExpr_construct_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_TernaryExpr_construct(void *args, void *result);
         db_function(Fast_TernaryExpr_construct_o)->impl = (db_word)__Fast_TernaryExpr_construct;
@@ -7707,7 +7887,7 @@ int Fast_load(void) {
         db_function(Fast_TernaryExpr_hasSideEffects_o)->returnsReference = FALSE;
         db_method(Fast_TernaryExpr_hasSideEffects_o)->virtual = TRUE;
         
-        /* Bind Fast_TernaryExpr_hasSideEffects_o with C-function */
+        /* Bind ::hyve::Fast::TernaryExpr::hasSideEffects() with C-function */
         db_function(Fast_TernaryExpr_hasSideEffects_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_TernaryExpr_hasSideEffects_v(void *args, void *result);
         db_function(Fast_TernaryExpr_hasSideEffects_o)->impl = (db_word)__Fast_TernaryExpr_hasSideEffects_v;
@@ -7789,7 +7969,7 @@ int Fast_load(void) {
         db_function(Fast_TernaryExpr_setOperator_o)->returnsReference = FALSE;
         Fast_TernaryExpr_setOperator_o->virtual = FALSE;
         
-        /* Bind Fast_TernaryExpr_setOperator_o with C-function */
+        /* Bind ::hyve::Fast::TernaryExpr::setOperator(lang::operatorKind kind) with C-function */
         db_function(Fast_TernaryExpr_setOperator_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_TernaryExpr_setOperator(void *args, void *result);
         db_function(Fast_TernaryExpr_setOperator_o)->impl = (db_word)__Fast_TernaryExpr_setOperator;
@@ -7811,7 +7991,7 @@ int Fast_load(void) {
         db_function(Fast_TernaryExpr_toIc_o)->returnsReference = FALSE;
         db_method(Fast_TernaryExpr_toIc_o)->virtual = TRUE;
         
-        /* Bind Fast_TernaryExpr_toIc_o with C-function */
+        /* Bind ::hyve::Fast::TernaryExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) with C-function */
         db_function(Fast_TernaryExpr_toIc_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_TernaryExpr_toIc_v(void *args, void *result);
         db_function(Fast_TernaryExpr_toIc_o)->impl = (db_word)__Fast_TernaryExpr_toIc_v;
@@ -7833,7 +8013,7 @@ int Fast_load(void) {
         db_function(Fast_UnaryExpr_construct_o)->returnsReference = FALSE;
         Fast_UnaryExpr_construct_o->delegate = db_resolve_ext(Fast_UnaryExpr_construct_o, NULL, "::hyve::lang::class::construct(lang::object object)", FALSE, "element ::hyve::Fast::UnaryExpr::construct(Fast::UnaryExpr object).delegate");
         
-        /* Bind Fast_UnaryExpr_construct_o with C-function */
+        /* Bind ::hyve::Fast::UnaryExpr::construct(Fast::UnaryExpr object) with C-function */
         db_function(Fast_UnaryExpr_construct_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_UnaryExpr_construct(void *args, void *result);
         db_function(Fast_UnaryExpr_construct_o)->impl = (db_word)__Fast_UnaryExpr_construct;
@@ -7855,7 +8035,7 @@ int Fast_load(void) {
         db_function(Fast_UnaryExpr_hasSideEffects_o)->returnsReference = FALSE;
         db_method(Fast_UnaryExpr_hasSideEffects_o)->virtual = TRUE;
         
-        /* Bind Fast_UnaryExpr_hasSideEffects_o with C-function */
+        /* Bind ::hyve::Fast::UnaryExpr::hasSideEffects() with C-function */
         db_function(Fast_UnaryExpr_hasSideEffects_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_UnaryExpr_hasSideEffects_v(void *args, void *result);
         db_function(Fast_UnaryExpr_hasSideEffects_o)->impl = (db_word)__Fast_UnaryExpr_hasSideEffects_v;
@@ -7889,7 +8069,7 @@ int Fast_load(void) {
         db_function(Fast_UnaryExpr_toIc_o)->returnsReference = FALSE;
         db_method(Fast_UnaryExpr_toIc_o)->virtual = TRUE;
         
-        /* Bind Fast_UnaryExpr_toIc_o with C-function */
+        /* Bind ::hyve::Fast::UnaryExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) with C-function */
         db_function(Fast_UnaryExpr_toIc_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_UnaryExpr_toIc_v(void *args, void *result);
         db_function(Fast_UnaryExpr_toIc_o)->impl = (db_word)__Fast_UnaryExpr_toIc_v;
@@ -7911,6 +8091,10 @@ int Fast_load(void) {
             db_error("Fast_load: failed to define object '::hyve::Fast::UnaryExpr'.");
             goto error;
         }
+    }
+    if (db_type(Fast_UnaryExpr_o)->size != sizeof(struct Fast_UnaryExpr_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::UnaryExpr' doesn't match C-type size '%d'", db_type(Fast_UnaryExpr_o)->size, sizeof(struct Fast_UnaryExpr_s));
+        goto error;
     }
     /* Define ::hyve::Fast::Update::from */
     if (!db_checkState(Fast_Update_from_o, DB_DEFINED)) {
@@ -7937,7 +8121,7 @@ int Fast_load(void) {
         db_function(Fast_Variable_construct_o)->returnsReference = FALSE;
         Fast_Variable_construct_o->delegate = db_resolve_ext(Fast_Variable_construct_o, NULL, "::hyve::lang::class::construct(lang::object object)", FALSE, "element ::hyve::Fast::Variable::construct(Variable object).delegate");
         
-        /* Bind Fast_Variable_construct_o with C-function */
+        /* Bind ::hyve::Fast::Variable::construct(Variable object) with C-function */
         db_function(Fast_Variable_construct_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Variable_construct(void *args, void *result);
         db_function(Fast_Variable_construct_o)->impl = (db_word)__Fast_Variable_construct;
@@ -7959,6 +8143,10 @@ int Fast_load(void) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Variable'.");
             goto error;
         }
+    }
+    if (db_type(Fast_Variable_o)->size != sizeof(struct Fast_Variable_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Variable' doesn't match C-type size '%d'", db_type(Fast_Variable_o)->size, sizeof(struct Fast_Variable_s));
+        goto error;
     }
     /* Declare ::hyve::Fast::Block::declare(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference) */
     Fast_Block_declare_o = db_declare(Fast_Block_o, "declare(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference)", db_typedef(db_method_o));
@@ -7987,7 +8175,7 @@ int Fast_load(void) {
         db_function(Fast_Local_construct_o)->returnsReference = FALSE;
         Fast_Local_construct_o->delegate = db_resolve_ext(Fast_Local_construct_o, NULL, "::hyve::lang::class::construct(lang::object object)", FALSE, "element ::hyve::Fast::Local::construct(Local object).delegate");
         
-        /* Bind Fast_Local_construct_o with C-function */
+        /* Bind ::hyve::Fast::Local::construct(Local object) with C-function */
         db_function(Fast_Local_construct_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Local_construct(void *args, void *result);
         db_function(Fast_Local_construct_o)->impl = (db_word)__Fast_Local_construct;
@@ -8009,7 +8197,7 @@ int Fast_load(void) {
         db_function(Fast_Local_toIc_o)->returnsReference = FALSE;
         db_method(Fast_Local_toIc_o)->virtual = TRUE;
         
-        /* Bind Fast_Local_toIc_o with C-function */
+        /* Bind ::hyve::Fast::Local::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) with C-function */
         db_function(Fast_Local_toIc_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Local_toIc_v(void *args, void *result);
         db_function(Fast_Local_toIc_o)->impl = (db_word)__Fast_Local_toIc_v;
@@ -8044,13 +8232,17 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_Local_o)->size != sizeof(struct Fast_Local_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Local' doesn't match C-type size '%d'", db_type(Fast_Local_o)->size, sizeof(struct Fast_Local_s));
+        goto error;
+    }
     /* Define ::hyve::Fast::Block::declare(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference) */
     if (!db_checkState(Fast_Block_declare_o, DB_DEFINED)) {
         db_function(Fast_Block_declare_o)->returnType = db_resolve_ext(Fast_Block_declare_o, NULL, "::hyve::Fast::Local", FALSE, "element ::hyve::Fast::Block::declare(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference).returnType");
         db_function(Fast_Block_declare_o)->returnsReference = FALSE;
         Fast_Block_declare_o->virtual = FALSE;
         
-        /* Bind Fast_Block_declare_o with C-function */
+        /* Bind ::hyve::Fast::Block::declare(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference) with C-function */
         db_function(Fast_Block_declare_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Block_declare(void *args, void *result);
         db_function(Fast_Block_declare_o)->impl = (db_word)__Fast_Block_declare;
@@ -8065,7 +8257,7 @@ int Fast_load(void) {
         db_function(Fast_Block_declareReturnVariable_o)->returnsReference = FALSE;
         Fast_Block_declareReturnVariable_o->virtual = FALSE;
         
-        /* Bind Fast_Block_declareReturnVariable_o with C-function */
+        /* Bind ::hyve::Fast::Block::declareReturnVariable(lang::function function) with C-function */
         db_function(Fast_Block_declareReturnVariable_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Block_declareReturnVariable(void *args, void *result);
         db_function(Fast_Block_declareReturnVariable_o)->impl = (db_word)__Fast_Block_declareReturnVariable;
@@ -8087,7 +8279,7 @@ int Fast_load(void) {
         db_function(Fast_Template_construct_o)->returnsReference = FALSE;
         Fast_Template_construct_o->delegate = db_resolve_ext(Fast_Template_construct_o, NULL, "::hyve::lang::class::construct(lang::object object)", FALSE, "element ::hyve::Fast::Template::construct(Template object).delegate");
         
-        /* Bind Fast_Template_construct_o with C-function */
+        /* Bind ::hyve::Fast::Template::construct(Template object) with C-function */
         db_function(Fast_Template_construct_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Template_construct(void *args, void *result);
         db_function(Fast_Template_construct_o)->impl = (db_word)__Fast_Template_construct;
@@ -8110,13 +8302,17 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_Template_o)->size != sizeof(struct Fast_Template_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Template' doesn't match C-type size '%d'", db_type(Fast_Template_o)->size, sizeof(struct Fast_Template_s));
+        goto error;
+    }
     /* Define ::hyve::Fast::Block::declareTemplate(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference) */
     if (!db_checkState(Fast_Block_declareTemplate_o, DB_DEFINED)) {
         db_function(Fast_Block_declareTemplate_o)->returnType = db_resolve_ext(Fast_Block_declareTemplate_o, NULL, "::hyve::Fast::Template", FALSE, "element ::hyve::Fast::Block::declareTemplate(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference).returnType");
         db_function(Fast_Block_declareTemplate_o)->returnsReference = FALSE;
         Fast_Block_declareTemplate_o->virtual = FALSE;
         
-        /* Bind Fast_Block_declareTemplate_o with C-function */
+        /* Bind ::hyve::Fast::Block::declareTemplate(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference) with C-function */
         db_function(Fast_Block_declareTemplate_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Block_declareTemplate(void *args, void *result);
         db_function(Fast_Block_declareTemplate_o)->impl = (db_word)__Fast_Block_declareTemplate;
@@ -8138,6 +8334,10 @@ int Fast_load(void) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Block'.");
             goto error;
         }
+    }
+    if (db_type(Fast_Block_o)->size != sizeof(struct Fast_Block_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Block' doesn't match C-type size '%d'", db_type(Fast_Block_o)->size, sizeof(struct Fast_Block_s));
+        goto error;
     }
     /* Define ::hyve::Fast::Binding::impl */
     if (!db_checkState(Fast_Binding_impl_o, DB_DEFINED)) {
@@ -8162,6 +8362,10 @@ int Fast_load(void) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Binding'.");
             goto error;
         }
+    }
+    if (db_type(Fast_Binding_o)->size != sizeof(Fast_Binding)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Binding' doesn't match C-type size '%d'", db_type(Fast_Binding_o)->size, sizeof(Fast_Binding));
+        goto error;
     }
     /* Define ::hyve::Fast::If::trueBranch */
     if (!db_checkState(Fast_If_trueBranch_o, DB_DEFINED)) {
@@ -8188,7 +8392,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_bind_o)->returnsReference = FALSE;
         Fast_Parser_bind_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_bind_o with C-function */
+        /* Bind ::hyve::Fast::Parser::bind(Fast::Variable function,Fast::Block block) with C-function */
         db_function(Fast_Parser_bind_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_bind(void *args, void *result);
         db_function(Fast_Parser_bind_o)->impl = (db_word)__Fast_Parser_bind;
@@ -8210,7 +8414,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_bindOneliner_o)->returnsReference = FALSE;
         Fast_Parser_bindOneliner_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_bindOneliner_o with C-function */
+        /* Bind ::hyve::Fast::Parser::bindOneliner(Fast::Variable function,Fast::Block block,Fast::Expression expr) with C-function */
         db_function(Fast_Parser_bindOneliner_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_bindOneliner(void *args, void *result);
         db_function(Fast_Parser_bindOneliner_o)->impl = (db_word)__Fast_Parser_bindOneliner;
@@ -8237,7 +8441,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_blockPush_o)->returnsReference = FALSE;
         Fast_Parser_blockPush_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_blockPush_o with C-function */
+        /* Bind ::hyve::Fast::Parser::blockPush(lang::bool presetBlock) with C-function */
         db_function(Fast_Parser_blockPush_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_blockPush(void *args, void *result);
         db_function(Fast_Parser_blockPush_o)->impl = (db_word)__Fast_Parser_blockPush;
@@ -8259,7 +8463,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_declareFunctionParams_o)->returnsReference = FALSE;
         Fast_Parser_declareFunctionParams_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_declareFunctionParams_o with C-function */
+        /* Bind ::hyve::Fast::Parser::declareFunctionParams(Variable function) with C-function */
         db_function(Fast_Parser_declareFunctionParams_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_declareFunctionParams(void *args, void *result);
         db_function(Fast_Parser_declareFunctionParams_o)->impl = (db_word)__Fast_Parser_declareFunctionParams;
@@ -8281,7 +8485,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_parseExpression_o)->returnsReference = FALSE;
         Fast_Parser_parseExpression_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_parseExpression_o with C-function */
+        /* Bind ::hyve::Fast::Parser::parseExpression(lang::string expr,Fast::Block block,Fast::Variable scope,uint32 line,uint32 column) with C-function */
         db_function(Fast_Parser_parseExpression_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_parseExpression(void *args, void *result);
         db_function(Fast_Parser_parseExpression_o)->impl = (db_word)__Fast_Parser_parseExpression;
@@ -8303,7 +8507,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_updateStatement_o)->returnsReference = FALSE;
         Fast_Parser_updateStatement_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_updateStatement_o with C-function */
+        /* Bind ::hyve::Fast::Parser::updateStatement(Fast::Expression expr,Fast::Block block) with C-function */
         db_function(Fast_Parser_updateStatement_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_updateStatement(void *args, void *result);
         db_function(Fast_Parser_updateStatement_o)->impl = (db_word)__Fast_Parser_updateStatement;
@@ -8325,7 +8529,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_whileStatement_o)->returnsReference = FALSE;
         Fast_Parser_whileStatement_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_whileStatement_o with C-function */
+        /* Bind ::hyve::Fast::Parser::whileStatement(Fast::Expression condition,Fast::Block trueBranch,lang::bool isUntil) with C-function */
         db_function(Fast_Parser_whileStatement_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_whileStatement(void *args, void *result);
         db_function(Fast_Parser_whileStatement_o)->impl = (db_word)__Fast_Parser_whileStatement;
@@ -8383,7 +8587,7 @@ int Fast_load(void) {
         db_function(Fast_ObjectBase_construct_o)->returnsReference = FALSE;
         Fast_ObjectBase_construct_o->delegate = db_resolve_ext(Fast_ObjectBase_construct_o, NULL, "::hyve::lang::class::construct(lang::object object)", FALSE, "element ::hyve::Fast::ObjectBase::construct(ObjectBase object).delegate");
         
-        /* Bind Fast_ObjectBase_construct_o with C-function */
+        /* Bind ::hyve::Fast::ObjectBase::construct(ObjectBase object) with C-function */
         db_function(Fast_ObjectBase_construct_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_ObjectBase_construct(void *args, void *result);
         db_function(Fast_ObjectBase_construct_o)->impl = (db_word)__Fast_ObjectBase_construct;
@@ -8406,6 +8610,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_ObjectBase_o)->size != sizeof(struct Fast_ObjectBase_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::ObjectBase' doesn't match C-type size '%d'", db_type(Fast_ObjectBase_o)->size, sizeof(struct Fast_ObjectBase_s));
+        goto error;
+    }
     /* Declare ::hyve::Fast::Object::construct(Object object) */
     Fast_Object_construct_o = db_declare(Fast_Object_o, "construct(Object object)", db_typedef(db_callback_o));
     if (!Fast_Object_construct_o) {
@@ -8419,7 +8627,7 @@ int Fast_load(void) {
         db_function(Fast_Object_construct_o)->returnsReference = FALSE;
         Fast_Object_construct_o->delegate = db_resolve_ext(Fast_Object_construct_o, NULL, "::hyve::lang::class::construct(lang::object object)", FALSE, "element ::hyve::Fast::Object::construct(Object object).delegate");
         
-        /* Bind Fast_Object_construct_o with C-function */
+        /* Bind ::hyve::Fast::Object::construct(Object object) with C-function */
         db_function(Fast_Object_construct_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Object_construct(void *args, void *result);
         db_function(Fast_Object_construct_o)->impl = (db_word)__Fast_Object_construct;
@@ -8441,7 +8649,7 @@ int Fast_load(void) {
         db_function(Fast_Object_getValue_o)->returnsReference = FALSE;
         Fast_Object_getValue_o->virtual = FALSE;
         
-        /* Bind Fast_Object_getValue_o with C-function */
+        /* Bind ::hyve::Fast::Object::getValue() with C-function */
         db_function(Fast_Object_getValue_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Object_getValue(void *args, void *result);
         db_function(Fast_Object_getValue_o)->impl = (db_word)__Fast_Object_getValue;
@@ -8463,7 +8671,7 @@ int Fast_load(void) {
         db_function(Fast_Object_serialize_o)->returnsReference = FALSE;
         Fast_Object_serialize_o->virtual = FALSE;
         
-        /* Bind Fast_Object_serialize_o with C-function */
+        /* Bind ::hyve::Fast::Object::serialize(lang::type dstType,lang::word dst) with C-function */
         db_function(Fast_Object_serialize_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Object_serialize(void *args, void *result);
         db_function(Fast_Object_serialize_o)->impl = (db_word)__Fast_Object_serialize;
@@ -8485,7 +8693,7 @@ int Fast_load(void) {
         db_function(Fast_Object_toIc_o)->returnsReference = FALSE;
         db_method(Fast_Object_toIc_o)->virtual = TRUE;
         
-        /* Bind Fast_Object_toIc_o with C-function */
+        /* Bind ::hyve::Fast::Object::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) with C-function */
         db_function(Fast_Object_toIc_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Object_toIc_v(void *args, void *result);
         db_function(Fast_Object_toIc_o)->impl = (db_word)__Fast_Object_toIc_v;
@@ -8508,6 +8716,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_Object_o)->size != sizeof(struct Fast_Object_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Object' doesn't match C-type size '%d'", db_type(Fast_Object_o)->size, sizeof(struct Fast_Object_s));
+        goto error;
+    }
     /* Declare ::hyve::Fast::Parser::observerDeclaration(lang::string id,Fast::Expression object,lang::eventMask mask,Fast::Object dispatcher) */
     Fast_Parser_observerDeclaration_o = db_declare(Fast_Parser_o, "observerDeclaration(lang::string id,Fast::Expression object,lang::eventMask mask,Fast::Object dispatcher)", db_typedef(db_method_o));
     if (!Fast_Parser_observerDeclaration_o) {
@@ -8521,7 +8733,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_observerDeclaration_o)->returnsReference = FALSE;
         Fast_Parser_observerDeclaration_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_observerDeclaration_o with C-function */
+        /* Bind ::hyve::Fast::Parser::observerDeclaration(lang::string id,Fast::Expression object,lang::eventMask mask,Fast::Object dispatcher) with C-function */
         db_function(Fast_Parser_observerDeclaration_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_observerDeclaration(void *args, void *result);
         db_function(Fast_Parser_observerDeclaration_o)->impl = (db_word)__Fast_Parser_observerDeclaration;
@@ -8543,7 +8755,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_argumentToString_o)->returnsReference = FALSE;
         Fast_Parser_argumentToString_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_argumentToString_o with C-function */
+        /* Bind ::hyve::Fast::Parser::argumentToString(Fast::Variable type,lang::string id,lang::bool reference) with C-function */
         db_function(Fast_Parser_argumentToString_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_argumentToString(void *args, void *result);
         db_function(Fast_Parser_argumentToString_o)->impl = (db_word)__Fast_Parser_argumentToString;
@@ -8565,7 +8777,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_declaration_o)->returnsReference = FALSE;
         Fast_Parser_declaration_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_declaration_o with C-function */
+        /* Bind ::hyve::Fast::Parser::declaration(Variable type,lang::string id,lang::bool isReference) with C-function */
         db_function(Fast_Parser_declaration_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_declaration(void *args, void *result);
         db_function(Fast_Parser_declaration_o)->impl = (db_word)__Fast_Parser_declaration;
@@ -8587,7 +8799,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_declareFunction_o)->returnsReference = FALSE;
         Fast_Parser_declareFunction_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_declareFunction_o with C-function */
+        /* Bind ::hyve::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::procedure kind,bool returnsReference) with C-function */
         db_function(Fast_Parser_declareFunction_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_declareFunction(void *args, void *result);
         db_function(Fast_Parser_declareFunction_o)->impl = (db_word)__Fast_Parser_declareFunction;
@@ -8609,7 +8821,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_defineVariable_o)->returnsReference = FALSE;
         Fast_Parser_defineVariable_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_defineVariable_o with C-function */
+        /* Bind ::hyve::Fast::Parser::defineVariable(Variable object) with C-function */
         db_function(Fast_Parser_defineVariable_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_defineVariable(void *args, void *result);
         db_function(Fast_Parser_defineVariable_o)->impl = (db_word)__Fast_Parser_defineVariable;
@@ -8631,7 +8843,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_popScope_o)->returnsReference = FALSE;
         Fast_Parser_popScope_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_popScope_o with C-function */
+        /* Bind ::hyve::Fast::Parser::popScope(Fast::Variable previous) with C-function */
         db_function(Fast_Parser_popScope_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_popScope(void *args, void *result);
         db_function(Fast_Parser_popScope_o)->impl = (db_word)__Fast_Parser_popScope;
@@ -8646,7 +8858,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_pushScope_o)->returnsReference = FALSE;
         Fast_Parser_pushScope_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_pushScope_o with C-function */
+        /* Bind ::hyve::Fast::Parser::pushScope() with C-function */
         db_function(Fast_Parser_pushScope_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_pushScope(void *args, void *result);
         db_function(Fast_Parser_pushScope_o)->impl = (db_word)__Fast_Parser_pushScope;
@@ -8691,6 +8903,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_ParserDeclaration_o)->size != sizeof(Fast_ParserDeclaration)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::ParserDeclaration' doesn't match C-type size '%d'", db_type(Fast_ParserDeclaration_o)->size, sizeof(Fast_ParserDeclaration));
+        goto error;
+    }
     /* Define ::hyve::Fast::String::scope */
     if (!db_checkState(Fast_String_scope_o, DB_DEFINED)) {
         Fast_String_scope_o->type = db_resolve_ext(Fast_String_scope_o, NULL, "::hyve::Fast::Variable", FALSE, "element ::hyve::Fast::String::scope.type");
@@ -8717,6 +8933,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_String_o)->size != sizeof(struct Fast_String_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::String' doesn't match C-type size '%d'", db_type(Fast_String_o)->size, sizeof(struct Fast_String_s));
+        goto error;
+    }
     /* Define ::hyve::Fast::Parser::variables */
     if (!db_checkState(Fast_Parser_variables_o, DB_DEFINED)) {
         Fast_Parser_variables_o->type = db_resolve_ext(Fast_Parser_variables_o, NULL, "::hyve::lang::array{::hyve::Fast::Variable,64,::hyve::Fast::Variable}", FALSE, "element ::hyve::Fast::Parser::variables.type");
@@ -8742,7 +8962,7 @@ int Fast_load(void) {
         db_function(Fast_Wait_construct_o)->returnsReference = FALSE;
         Fast_Wait_construct_o->delegate = db_resolve_ext(Fast_Wait_construct_o, NULL, "::hyve::lang::class::construct(lang::object object)", FALSE, "element ::hyve::Fast::Wait::construct(Wait object).delegate");
         
-        /* Bind Fast_Wait_construct_o with C-function */
+        /* Bind ::hyve::Fast::Wait::construct(Wait object) with C-function */
         db_function(Fast_Wait_construct_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Wait_construct(void *args, void *result);
         db_function(Fast_Wait_construct_o)->impl = (db_word)__Fast_Wait_construct;
@@ -8776,7 +8996,7 @@ int Fast_load(void) {
         db_function(Fast_Wait_toIc_o)->returnsReference = FALSE;
         db_method(Fast_Wait_toIc_o)->virtual = TRUE;
         
-        /* Bind Fast_Wait_toIc_o with C-function */
+        /* Bind ::hyve::Fast::Wait::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) with C-function */
         db_function(Fast_Wait_toIc_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Wait_toIc_v(void *args, void *result);
         db_function(Fast_Wait_toIc_o)->impl = (db_word)__Fast_Wait_toIc_v;
@@ -8798,6 +9018,10 @@ int Fast_load(void) {
             db_error("Fast_load: failed to define object '::hyve::Fast::Wait'.");
             goto error;
         }
+    }
+    if (db_type(Fast_Wait_o)->size != sizeof(struct Fast_Wait_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Wait' doesn't match C-type size '%d'", db_type(Fast_Wait_o)->size, sizeof(struct Fast_Wait_s));
+        goto error;
     }
     /* Define ::hyve::Fast::While::condition */
     if (!db_checkState(Fast_While_condition_o, DB_DEFINED)) {
@@ -8847,6 +9071,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_DynamicInitializerFrame_o)->size != sizeof(Fast_DynamicInitializerFrame)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::DynamicInitializerFrame' doesn't match C-type size '%d'", db_type(Fast_DynamicInitializerFrame_o)->size, sizeof(Fast_DynamicInitializerFrame));
+        goto error;
+    }
     /* Define ::hyve::Fast::DynamicInitializer::frames */
     if (!db_checkState(Fast_DynamicInitializer_frames_o, DB_DEFINED)) {
         Fast_DynamicInitializer_frames_o->type = db_resolve_ext(Fast_DynamicInitializer_frames_o, NULL, "::hyve::lang::array{::hyve::Fast::DynamicInitializerFrame,64,::hyve::Fast::DynamicInitializerFrame}", FALSE, "element ::hyve::Fast::DynamicInitializer::frames.type");
@@ -8873,6 +9101,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_DynamicInitializer_o)->size != sizeof(struct Fast_DynamicInitializer_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::DynamicInitializer' doesn't match C-type size '%d'", db_type(Fast_DynamicInitializer_o)->size, sizeof(struct Fast_DynamicInitializer_s));
+        goto error;
+    }
     /* Declare ::hyve::Fast::If::construct(If object) */
     Fast_If_construct_o = db_declare(Fast_If_o, "construct(If object)", db_typedef(db_callback_o));
     if (!Fast_If_construct_o) {
@@ -8886,7 +9118,7 @@ int Fast_load(void) {
         db_function(Fast_If_construct_o)->returnsReference = FALSE;
         Fast_If_construct_o->delegate = db_resolve_ext(Fast_If_construct_o, NULL, "::hyve::lang::class::construct(lang::object object)", FALSE, "element ::hyve::Fast::If::construct(If object).delegate");
         
-        /* Bind Fast_If_construct_o with C-function */
+        /* Bind ::hyve::Fast::If::construct(If object) with C-function */
         db_function(Fast_If_construct_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_If_construct(void *args, void *result);
         db_function(Fast_If_construct_o)->impl = (db_word)__Fast_If_construct;
@@ -8908,7 +9140,7 @@ int Fast_load(void) {
         db_function(Fast_If_noWarnUnreachable_o)->returnsReference = FALSE;
         Fast_If_noWarnUnreachable_o->virtual = FALSE;
         
-        /* Bind Fast_If_noWarnUnreachable_o with C-function */
+        /* Bind ::hyve::Fast::If::noWarnUnreachable() with C-function */
         db_function(Fast_If_noWarnUnreachable_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_If_noWarnUnreachable(void *args, void *result);
         db_function(Fast_If_noWarnUnreachable_o)->impl = (db_word)__Fast_If_noWarnUnreachable;
@@ -8930,7 +9162,7 @@ int Fast_load(void) {
         db_function(Fast_If_toIc_o)->returnsReference = FALSE;
         db_method(Fast_If_toIc_o)->virtual = TRUE;
         
-        /* Bind Fast_If_toIc_o with C-function */
+        /* Bind ::hyve::Fast::If::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) with C-function */
         db_function(Fast_If_toIc_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_If_toIc_v(void *args, void *result);
         db_function(Fast_If_toIc_o)->impl = (db_word)__Fast_If_toIc_v;
@@ -8953,6 +9185,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_If_o)->size != sizeof(struct Fast_If_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::If' doesn't match C-type size '%d'", db_type(Fast_If_o)->size, sizeof(struct Fast_If_s));
+        goto error;
+    }
     /* Declare ::hyve::Fast::Parser::ifStatement(Fast::Expression condition,Fast::Block trueBranch,Fast::If falseBranch) */
     Fast_Parser_ifStatement_o = db_declare(Fast_Parser_o, "ifStatement(Fast::Expression condition,Fast::Block trueBranch,Fast::If falseBranch)", db_typedef(db_method_o));
     if (!Fast_Parser_ifStatement_o) {
@@ -8966,7 +9202,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_ifStatement_o)->returnsReference = FALSE;
         Fast_Parser_ifStatement_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_ifStatement_o with C-function */
+        /* Bind ::hyve::Fast::Parser::ifStatement(Fast::Expression condition,Fast::Block trueBranch,Fast::If falseBranch) with C-function */
         db_function(Fast_Parser_ifStatement_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_ifStatement(void *args, void *result);
         db_function(Fast_Parser_ifStatement_o)->impl = (db_word)__Fast_Parser_ifStatement;
@@ -9001,6 +9237,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_TernaryExpr_o)->size != sizeof(struct Fast_TernaryExpr_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::TernaryExpr' doesn't match C-type size '%d'", db_type(Fast_TernaryExpr_o)->size, sizeof(struct Fast_TernaryExpr_s));
+        goto error;
+    }
     /* Declare ::hyve::Fast::Parser::addStatement(Fast::Node statement) */
     Fast_Parser_addStatement_o = db_declare(Fast_Parser_o, "addStatement(Fast::Node statement)", db_typedef(db_method_o));
     if (!Fast_Parser_addStatement_o) {
@@ -9014,7 +9254,7 @@ int Fast_load(void) {
         db_function(Fast_Parser_addStatement_o)->returnsReference = FALSE;
         Fast_Parser_addStatement_o->virtual = FALSE;
         
-        /* Bind Fast_Parser_addStatement_o with C-function */
+        /* Bind ::hyve::Fast::Parser::addStatement(Fast::Node statement) with C-function */
         db_function(Fast_Parser_addStatement_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_addStatement(void *args, void *result);
         db_function(Fast_Parser_addStatement_o)->impl = (db_word)__Fast_Parser_addStatement;
@@ -9037,6 +9277,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_Parser_o)->size != sizeof(struct Fast_Parser_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Parser' doesn't match C-type size '%d'", db_type(Fast_Parser_o)->size, sizeof(struct Fast_Parser_s));
+        goto error;
+    }
     /* Declare ::hyve::Fast::Update::construct(Update object) */
     Fast_Update_construct_o = db_declare(Fast_Update_o, "construct(Update object)", db_typedef(db_callback_o));
     if (!Fast_Update_construct_o) {
@@ -9050,7 +9294,7 @@ int Fast_load(void) {
         db_function(Fast_Update_construct_o)->returnsReference = FALSE;
         Fast_Update_construct_o->delegate = db_resolve_ext(Fast_Update_construct_o, NULL, "::hyve::lang::class::construct(lang::object object)", FALSE, "element ::hyve::Fast::Update::construct(Update object).delegate");
         
-        /* Bind Fast_Update_construct_o with C-function */
+        /* Bind ::hyve::Fast::Update::construct(Update object) with C-function */
         db_function(Fast_Update_construct_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Update_construct(void *args, void *result);
         db_function(Fast_Update_construct_o)->impl = (db_word)__Fast_Update_construct;
@@ -9072,7 +9316,7 @@ int Fast_load(void) {
         db_function(Fast_Update_toIc_o)->returnsReference = FALSE;
         db_method(Fast_Update_toIc_o)->virtual = TRUE;
         
-        /* Bind Fast_Update_toIc_o with C-function */
+        /* Bind ::hyve::Fast::Update::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) with C-function */
         db_function(Fast_Update_toIc_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Update_toIc_v(void *args, void *result);
         db_function(Fast_Update_toIc_o)->impl = (db_word)__Fast_Update_toIc_v;
@@ -9095,6 +9339,10 @@ int Fast_load(void) {
             goto error;
         }
     }
+    if (db_type(Fast_Update_o)->size != sizeof(struct Fast_Update_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Update' doesn't match C-type size '%d'", db_type(Fast_Update_o)->size, sizeof(struct Fast_Update_s));
+        goto error;
+    }
     /* Declare ::hyve::Fast::While::construct(While object) */
     Fast_While_construct_o = db_declare(Fast_While_o, "construct(While object)", db_typedef(db_callback_o));
     if (!Fast_While_construct_o) {
@@ -9108,7 +9356,7 @@ int Fast_load(void) {
         db_function(Fast_While_construct_o)->returnsReference = FALSE;
         Fast_While_construct_o->delegate = db_resolve_ext(Fast_While_construct_o, NULL, "::hyve::lang::class::construct(lang::object object)", FALSE, "element ::hyve::Fast::While::construct(While object).delegate");
         
-        /* Bind Fast_While_construct_o with C-function */
+        /* Bind ::hyve::Fast::While::construct(While object) with C-function */
         db_function(Fast_While_construct_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_While_construct(void *args, void *result);
         db_function(Fast_While_construct_o)->impl = (db_word)__Fast_While_construct;
@@ -9130,7 +9378,7 @@ int Fast_load(void) {
         db_function(Fast_While_toIc_o)->returnsReference = FALSE;
         db_method(Fast_While_toIc_o)->virtual = TRUE;
         
-        /* Bind Fast_While_toIc_o with C-function */
+        /* Bind ::hyve::Fast::While::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) with C-function */
         db_function(Fast_While_toIc_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_While_toIc_v(void *args, void *result);
         db_function(Fast_While_toIc_o)->impl = (db_word)__Fast_While_toIc_v;
@@ -9152,6 +9400,10 @@ int Fast_load(void) {
             db_error("Fast_load: failed to define object '::hyve::Fast::While'.");
             goto error;
         }
+    }
+    if (db_type(Fast_While_o)->size != sizeof(struct Fast_While_s)) {
+        db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::While' doesn't match C-type size '%d'", db_type(Fast_While_o)->size, sizeof(struct Fast_While_s));
+        goto error;
     }
     if (_a_) {
         db_free(_a_);

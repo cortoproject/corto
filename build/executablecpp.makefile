@@ -1,4 +1,4 @@
-include $(BUILD)/makefilecpp.makefile
+include $(HYVE_HOME)/bin/makefilecpp.makefile
 
 $(TARGET_OBJECT): $(OBJECTS)
 	mkdir -p $(dir $(TARGET_OBJECT))
@@ -7,4 +7,4 @@ $(TARGET_OBJECT): $(OBJECTS)
 clean: 
 	@rm -f obj/*
 	@rm -f gcov/*
-	@rm -f $(BIN)/$(TARGET) >/dev/null
+	@rm -f $(HYVE_HOME)/bin/$(TARGET) >/dev/null

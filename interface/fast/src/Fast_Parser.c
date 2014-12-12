@@ -119,7 +119,7 @@ db_int16 Fast_Parser_toIc(Fast_Parser _this) {
 	    while(db_iterHasNext(&bindingIter)) {
 	        db_ic ret;
 	        binding = db_iterNext(&bindingIter);
-	        db_icProgram_functionPush(program, Fast_Node(_this)->line, binding->function);
+	        db_icProgram_functionPush(program, Fast_Node(binding->impl)->line, binding->function);
 	        scope = (db_icScope)Fast_Block_toIc(binding->impl, program, NULL, FALSE);
 	        if (_this->errors) {
 	        	goto error;
@@ -1452,14 +1452,13 @@ db_int16 Fast_Parser_define(Fast_Parser _this) {
 /* $begin(::hyve::Fast::Parser::define) */
     FAST_CHECK_ERRSET(_this);
 
-	if (_this->initializers[_this->initializerCount]) {
+	if ((_this->initializerCount >= 0) && _this->initializers[_this->initializerCount]) {
         if (Fast_Initializer_define(_this->initializers[_this->initializerCount])) {
             goto error;
         }
         db_set_ext(_this, &_this->initializers[_this->initializerCount], NULL, ".initializers[.initializerCount]");
+        _this->initializerCount--;
 	}
-
-	_this->initializerCount--;
 
 	return 0;
 error:
@@ -1749,7 +1748,7 @@ error:
 /* ::hyve::Fast::Parser::initKeyValuePop() */
 db_int16 Fast_Parser_initKeyValuePop(Fast_Parser _this) {
 /* $begin(::hyve::Fast::Parser::initKeyValuePop) */
-    if (_this->initializers[_this->initializerCount]) {
+    if ((_this->initializerCount >= 0) && _this->initializers[_this->initializerCount]) {
         if (Fast_Initializer_popKey(_this->initializers[_this->initializerCount])) {
             goto error;
         }
@@ -1764,7 +1763,7 @@ error:
 /* ::hyve::Fast::Parser::initKeyValuePush() */
 db_int16 Fast_Parser_initKeyValuePush(Fast_Parser _this) {
 /* $begin(::hyve::Fast::Parser::initKeyValuePush) */
-    if (_this->initializers[_this->initializerCount]) {
+    if ((_this->initializerCount >= 0) && _this->initializers[_this->initializerCount]) {
         if (Fast_Initializer_pushKey(_this->initializers[_this->initializerCount])) {
             goto error;
         }
@@ -1779,7 +1778,7 @@ error:
 /* ::hyve::Fast::Parser::initKeyValueSet(Fast::Expression expr) */
 db_int16 Fast_Parser_initKeyValueSet(Fast_Parser _this, Fast_Expression expr) {
 /* $begin(::hyve::Fast::Parser::initKeyValueSet) */
-    if (_this->initializers[_this->initializerCount]) {
+    if ((_this->initializerCount >= 0) && _this->initializers[_this->initializerCount]) {
         if (Fast_Initializer_valueKey(_this->initializers[_this->initializerCount], expr)) {
             goto error;
         }
@@ -1797,7 +1796,7 @@ db_int16 Fast_Parser_initMember(Fast_Parser _this, db_string member) {
 /* $begin(::hyve::Fast::Parser::initMember) */
     FAST_CHECK_ERRSET(_this);
 
-	if (_this->initializers[_this->initializerCount]) {
+	if ((_this->initializerCount >= 0) && _this->initializers[_this->initializerCount]) {
         if (Fast_Initializer_member(_this->initializers[_this->initializerCount], member)) {
             goto error;
         }
@@ -1816,7 +1815,7 @@ db_int16 Fast_Parser_initPop(Fast_Parser _this) {
     FAST_CHECK_ERRSET(_this);
 
     /* Primitive values are not pushed/pop'd */
-    if (_this->initializers[_this->initializerCount]) {
+    if ((_this->initializerCount >= 0) && _this->initializers[_this->initializerCount]) {
         if (Fast_Initializer_pop(_this->initializers[_this->initializerCount])) {
             goto error;
         }
@@ -2017,7 +2016,7 @@ db_int16 Fast_Parser_initValue(Fast_Parser _this, Fast_Expression expr) {
 /* $begin(::hyve::Fast::Parser::initValue) */
     FAST_CHECK_ERRSET(_this);
 
-    if (_this->initializers[_this->initializerCount]) {
+    if ((_this->initializerCount >= 0) && _this->initializers[_this->initializerCount]) {
 		if (Fast_Initializer_value(_this->initializers[_this->initializerCount], expr)) {
 			goto error;
 		}

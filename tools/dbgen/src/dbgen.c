@@ -94,6 +94,7 @@ int db_arg_language(char* arg, int argc, char* argv[]) {
             if (!attributes) {
                 attributes = db_llNew();
             }
+            db_llAppend(generators, "c_project");
             db_llAppend(generators, "c_type");
             db_llAppend(generators, "c_interface");
             db_llAppend(generators, "c_load");

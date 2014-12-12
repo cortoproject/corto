@@ -1,15 +1,9 @@
 
 TARGET =	c_common
 
-SOURCES =	c_common.c
-
-INCLUDE = 	include \
-			$(BUILDHOME)/db/include \
-			$(BUILDHOME)/dev/include \
-			$(BUILDHOME)/public/c/include
+INCLUDE = 	$(HYVE_HOME)/dev/include
 
 LIBS	= lang hyvedev
-LIBPATH	=	
 
-include $(BUILD)/generator.makefile
+include $(HYVE_HOME)/build/generator.makefile
 

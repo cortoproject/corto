@@ -1,12 +1,7 @@
 
-TARGET =	hyve
+TARGET = hyve
 
-SOURCES =	hyve.c
+LIBS = lang
 
-INCLUDE = 	include -I $(BUILDHOME)/db/include -I $(BUILDHOME)/public/c/include -I $(BUILDHOME)/infra/include
-
-LIBS	= lang
-LIBPATH	=	
-
-include $(BUILD)/executable.makefile
+include $(HYVE_HOME)/build/executable.makefile
 

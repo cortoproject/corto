@@ -1,12 +1,9 @@
 
 TARGET =	dbgen
 
-SOURCES =	dbgen.c
-
-INCLUDE = 	include -I $(BUILDHOME)/db/include -I $(BUILDHOME)/public/c/include -I $(BUILDHOME)/dev/include
+INCLUDE = 	-I $(HYVE_HOME)/dev/include
 
 LIBS	= lang hyvedev
-LIBPATH	=	
 
-include $(BUILD)/executable.makefile
+include $(HYVE_HOME)/build/executable.makefile
 

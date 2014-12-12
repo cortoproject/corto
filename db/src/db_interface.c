@@ -220,11 +220,11 @@ error:
 
 /* private interface::calculateSize */
 db_uint32 db__interface_calculateSize(db_interface _this, db_uint32 base) {
-    db_uint32 i, memberSize, size, alignment;
+    db_uint32 i, memberSize, size, alignment, interfaceAlignment;
     db_member m;
     db_type memberType;
 
-    alignment = db_type(_this)->alignment;
+    interfaceAlignment = db_type(_this)->alignment;
 
     /* Calculate size from members */
     size = base;
@@ -239,9 +239,8 @@ db_uint32 db__interface_calculateSize(db_interface _this, db_uint32 base) {
         }
 
         /* Align size */
-        if (DB_ALIGN(size + memberSize, alignment) != DB_ALIGN(size, alignment)) {
-            size = DB_ALIGN(size, alignment);
-        }
+        alignment = db_type_alignmentof(memberType);
+        size = DB_ALIGN(size, alignment);
 
         if (m->type->real->hasResources || m->type->real->reference) {
             db_type(_this)->hasResources = TRUE;
@@ -251,7 +250,7 @@ db_uint32 db__interface_calculateSize(db_interface _this, db_uint32 base) {
         size += memberSize;
     }
 
-    return alignment ? DB_ALIGN(size, alignment) : 0;
+    return interfaceAlignment ? DB_ALIGN(size, interfaceAlignment) : 0;
 }
 
 static int db_interface_insertMemberAction(void* o, void* userData) {
