@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
     tc_jsonser_load();
 
     result += test_primitive_value();
-    result += test_scope(); 
+    result += test_scope();
  
     db_stop();
 
