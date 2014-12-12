@@ -63,6 +63,6 @@ if d != "-1": fail("d = (string)-1 ($d)");
 
 
 // Test whether literal cast assumes new type
-if bool(10).typeof != bool: fail("bool(10).typeof != bool");
+if bool(10).typeof() != bool: fail("bool(10).typeof != bool");
 
 if result: "tc_cast03: OK";

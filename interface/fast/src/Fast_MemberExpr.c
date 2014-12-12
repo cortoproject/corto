@@ -119,8 +119,15 @@ db_ic Fast_MemberExpr_toIc_v(Fast_MemberExpr _this, db_icProgram program, db_icS
 
 	if (Fast_Node(_this->rvalue)->kind == FAST_Literal) {
 		if (Fast_Literal(_this->rvalue)->kind == FAST_String) {
-			db_interface baseType = db_interface(Fast_Expression_getType(_this->lvalue));
-			member = db_interface_resolveMember(baseType, Fast_String(_this->rvalue)->value);
+			db_type t = Fast_Expression_getType(_this->lvalue);
+			if (db_instanceof(db_typedef(db_interface_o), t)) {
+				db_interface baseType = db_interface(t);
+				member = db_interface_resolveMember(baseType, Fast_String(_this->rvalue)->value);
+			} else {
+				db_id id;
+				Fast_Parser_error(yparser(), "cannot resolve members on non-interface type '%s'", db_fullname(t, id));
+				goto error;
+			}
 		} else {
 			Fast_Parser_error(yparser(), "dynamic resolving of members not yet supported.");
 			goto error;
@@ -130,7 +137,9 @@ db_ic Fast_MemberExpr_toIc_v(Fast_MemberExpr _this, db_icProgram program, db_icS
 		goto error;
 	}
 
-	result = db_icMember__create(program, Fast_Node(_this)->line, (db_icStorage)lvalue, member);
+	if (member) {
+		result = db_icMember__create(program, Fast_Node(_this)->line, (db_icStorage)lvalue, member);
+	}
 
 	return (db_ic)result;
 error:

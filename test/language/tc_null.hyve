@@ -11,7 +11,7 @@ string s : null;
 var object lo = null;
 
 if null != null: fail("comparing null with null failed");
-if (null != null).typeof != bool: fail("type of null comparison is not a bool");
+if (null != null).typeof() != bool: fail("type of null comparison is not a bool");
 if o.x != null:  fail("comparing member with null failed");
 if o.x != lo:    fail("comparing null object with null var failed");
 if s != null:    fail("string with null failed");

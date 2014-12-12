@@ -490,40 +490,13 @@ error:
 /* Callback function for expansion of element expressions */
 db_object Fast_Parser_expandMemberExpr(Fast_Parser _this, Fast_Expression lvalue, Fast_Expression rvalue, void *userData) {
     DB_UNUSED(userData);
+    DB_UNUSED(_this);
     Fast_Expression result = NULL;
-    db_string memberStr = NULL;
-    db_function f;
-    db_type lvalueType = Fast_Expression_getType(lvalue);
     
     /* Create member expression */
     result = Fast_Expression(Fast_MemberExpr__create(lvalue, rvalue));
     if (!result) {
         goto error;
-    }
-    
-    /* Validate whether rvalue refers to a member or a method - methods without arguments can be
-     * called without the "( )" */
-    if ((Fast_Node(rvalue)->kind == FAST_Literal) && (Fast_Literal(rvalue)->kind == FAST_String)) {
-        memberStr = Fast_String(rvalue)->value;
-    }
-    
-    /* If procedure can be resolved, create call expression */
-    if (memberStr) {
-        db_id functionLookup;
-        sprintf(functionLookup, "%s()", memberStr);
-        if (lvalueType && (f = db_type_resolveProcedure(lvalueType, functionLookup))) {
-            /* Only do functions with no arguments */
-            if (!f->parameters.length && !f->overloaded) {
-                /* Only create call if the returnvalue of the procedure is not a function! Otherwise
-                 * ambiguity can occur - which function is/is not called?. */
-                if (!((f->returnType->real->kind == DB_COMPOSITE) && (db_interface(f->returnType->real)->kind == DB_PROCEDURE))) {
-                    Fast_CommaExpr args = Fast_CommaExpr__create();
-                    result = Fast_Expression(Fast_Call__create(result, Fast_Expression(args)));
-                    Fast_Parser_collect(_this, result);
-                    Fast_Parser_collect(_this, args);
-                }
-            }
-        }
     }
 
     return result;
@@ -1064,7 +1037,6 @@ Fast_Expression Fast_Parser_callExpr(Fast_Parser _this, Fast_Expression function
 
     if (_this->pass) {
         db_object o = NULL;
-        db_bool callAlreadyProcessed = FALSE;
         Fast_Expression_list functions = Fast_Expression_toList(function);
 
         Fast_Expression_list__foreach(functions, f)
@@ -1079,36 +1051,19 @@ Fast_Expression Fast_Parser_callExpr(Fast_Parser _this, Fast_Expression function
                 if (db_llSize(exprs) != 1) {
                     Fast_Parser_error(_this, "invalid number of parameters for cast (expected 1)");
                     Fast_Expression_cleanList(exprs);
-                    callAlreadyProcessed = TRUE;
                     goto error;
                 }
                 expr = Fast_Parser_castExpr(_this, f, db_llGet(exprs, 0));
                 Fast_Expression_cleanList(exprs);
-                callAlreadyProcessed = TRUE;
             } else {
-                if (Fast_Node(f)->kind == FAST_Call) {
-                    /* Calls that have non-procedure returnvalues and no argumentlists are already handled by memberExpr */
-                    if (Fast_Node(Fast_Call(f)->function)->kind == FAST_Member) {
-                        if (!db_llSize(Fast_CommaExpr(Fast_Call(f)->arguments)->expressions)) {
-                            db_type returnType = Fast_Expression_getType(f);
-                            if (!((returnType->kind == DB_COMPOSITE) && (db_interface(returnType)->kind == DB_PROCEDURE))) {
-                                callAlreadyProcessed = TRUE;
-                            }
-                        }
-                    }
-                }
-                if (callAlreadyProcessed) {
-                    expr = f;
-                } else {
-                    expr = Fast_Expression(Fast_Call__create(f, arguments));
-                }
+                expr = Fast_Expression(Fast_Call__create(f, arguments));
             }
             if (!expr) {
                 goto error;
             }
-            if (!callAlreadyProcessed) {
-                Fast_Parser_collect(_this, expr);
-            }
+
+            Fast_Parser_collect(_this, expr);
+
             result = Fast_CommaExpr_addOrCreate(result, expr);
         }
         Fast_Expression_cleanList(functions);

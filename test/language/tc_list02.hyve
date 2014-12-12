@@ -94,32 +94,32 @@ if b[7] != 15: fail("b[7] != 15 (${b[5]})");
 if b[8] != 18: fail("b[8] != 18 (${b[6]})");
 
 // type (reference)
-if c[0] != interface: fail("c[0] != interface (${c[0].nameof})");
-if c[1] != struct: fail("c[1] != struct (${c[1].nameof})");
-if c[2] != class: fail("c[2] != class (${c[2].nameof})");
+if c[0] != interface: fail("c[0] != interface (${c[0].nameof()})");
+if c[1] != struct: fail("c[1] != struct (${c[1].nameof()})");
+if c[2] != class: fail("c[2] != class (${c[2].nameof()})");
 
 c[0] = int;
 c[1] = uint;
 c[2] = text;
 
-if c[0] != int: fail("c[0] != int (${c[0].nameof})");
-if c[1] != uint: fail("c[1] != uint (${c[1].nameof})");
-if c[2] != text: fail("c[2] != text (${c[2].nameof})");
+if c[0] != int: fail("c[0] != int (${c[0].nameof()})");
+if c[1] != uint: fail("c[1] != uint (${c[1].nameof()})");
+if c[2] != text: fail("c[2] != text (${c[2].nameof()})");
 
 c = {array, list, map};
 
-if c[0] != array: fail("c[0] != array (${c[0].nameof})");
-if c[1] != list: fail("c[1] != list (${c[1].nameof})");
-if c[2] != map: fail("c[2] != map (${c[2].nameof})");
+if c[0] != array: fail("c[0] != array (${c[0].nameof()})");
+if c[1] != list: fail("c[1] != list (${c[1].nameof()})");
+if c[2] != map: fail("c[2] != map (${c[2].nameof()})");
 
 c += function;
-if c[3] != function: fail("c[3] != function (${c[3].nameof})");
+if c[3] != function: fail("c[3] != function (${c[3].nameof()})");
 method += c;
-if c[0] != method: fail("c[0] != method (${c[0].nameof})");
-if c[1] != array: fail("c[1] != array (${c[1].nameof})");
-if c[2] != list: fail("c[2] != list (${c[2].nameof})");
-if c[3] != map: fail("c[3] != map (${c[3].nameof})");
-if c[4] != function: fail("c[4] != function (${c[4].nameof})");
+if c[0] != method: fail("c[0] != method (${c[0].nameof()})");
+if c[1] != array: fail("c[1] != array (${c[1].nameof()})");
+if c[2] != list: fail("c[2] != list (${c[2].nameof()})");
+if c[3] != map: fail("c[3] != map (${c[3].nameof()})");
+if c[4] != function: fail("c[4] != function (${c[4].nameof()})");
 
 c += int, uint;
 if c[5] != int: fail("c[5] != int (${c[5]})");

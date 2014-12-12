@@ -896,6 +896,7 @@ static db_int16 cpp_initCollection(db_serializer s, db_value* v, void* userData)
     db_collection t;
     cpp_typeWalk_t* data;
     db_id memberId;
+    db_uint32 size = 0;
     int result;
     void* ptr;
 
@@ -906,12 +907,13 @@ static db_int16 cpp_initCollection(db_serializer s, db_value* v, void* userData)
 
     switch(t->kind) {
     case DB_ARRAY:
+        size = t->max;
         break;
     case DB_SEQUENCE: {
         db_uint32 length;
     	db_id specifier;
 
-        length = *(db_uint32*)ptr;
+        size = length = *(db_uint32*)ptr;
 
         /* Set length of sequence */
         g_fileWrite(data->source, "%slength = %d;\n",
@@ -942,6 +944,7 @@ static db_int16 cpp_initCollection(db_serializer s, db_value* v, void* userData)
     case DB_LIST:
         /* Create list object */
     	if (*(db_ll*)ptr) {
+            size = db_llSize(*(db_ll*)ptr);
 			g_fileWrite(data->source, "%s = new ::hyve::ll();\n",
 					cpp_loadMemberId(data, v, memberId, FALSE));
     	} else {
@@ -952,6 +955,7 @@ static db_int16 cpp_initCollection(db_serializer s, db_value* v, void* userData)
     	db_id keyId;
         /* Create map object */
     	if (*(db_rbtree*)ptr) {
+            size = db_rbtreeSize(*(db_rbtree*)ptr);
 			g_fileWrite(data->source, "%s = new ::hyve::rbtree();\n",
 					cpp_loadMemberId(data, v, memberId, FALSE), g_fullOid(data->g, db_rbtreeKeyType(*(db_rbtree*)ptr), keyId));
     	} else {
@@ -962,7 +966,7 @@ static db_int16 cpp_initCollection(db_serializer s, db_value* v, void* userData)
     }
 
 	/* For the non-array types, allocate a member variable, if size of collection is not zero. */
-    if (db_size(t, ptr)) {
+    if (size) {
 		switch(t->kind) {
 		case DB_LIST:
 		case DB_MAP: {
@@ -980,7 +984,7 @@ static db_int16 cpp_initCollection(db_serializer s, db_value* v, void* userData)
     /* Serialize elements */
     result = db_serializeElements(s, v, userData);
 
-    if (db_size(t, ptr)) {
+    if (size) {
 		switch(t->kind) {
 		case DB_LIST:
 		case DB_MAP: {

@@ -16,7 +16,7 @@ float32 Foo(float32 a, float32 b) = a * b;
 string Foo(string a, string b) = a + b;
 
 // Test passing objects
-string Foo(object a) = a.nameof;
+string Foo(object a) = a.nameof();
 
 if 10 != Foo(10):       fail("Foo(uint32) returned incorrect result (${Foo(10)})");
 if 10.5 != Foo(10.5):   fail("Foo(float32) returned incorrect result (${Foo(10.5)})");
