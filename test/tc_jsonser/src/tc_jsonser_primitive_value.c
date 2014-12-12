@@ -7,22 +7,25 @@
 #include "tc_jsonser__meta.h"
 #include "tc_jsonser__type.h"
 
-#define _test_primitive_value(object, expected) \
- {\
-     db_json_ser_t userData = {NULL, NULL, 0, 0, 0, FALSE, TRUE, FALSE};\
-     db_serialize(&serializer, tc_jsonser_number_##object##_o, &userData);\
-     if (strcmp(userData.buffer, "{\"value\":"expected"}")) {\
-        result = FALSE;\
-        fprintf(\
-            stderr,\
-            "tc_jsonser_number: FAIL: expected %s, serialized %s\n",\
-            "{\"value\":"expected"}", userData.buffer);\
-        result = -1;
-     }\
- }
 
-int16 test_primitive_value(void) {
-    int16 result = 0;
+#define _test_primitive_value(object, expected) \
+{\
+    db_json_ser_t userData = {NULL, NULL, 0, 0, 0, FALSE, TRUE, FALSE};\
+    db_serialize(&serializer, tc_jsonser_##object##_o, &userData);\
+    if (strcmp(userData.buffer, "{\"value\":"expected"}")) {\
+       result = -1;\
+       fprintf(\
+           stderr,\
+           "tc_jsonser_number: FAIL: expected %s, serialized %s\n",\
+           "{\"value\":"expected"}", userData.buffer);\
+    }\
+}
+
+db_int16 test_primitive_value(void) {
+    db_int16 result = 0;
+
+    struct db_serializer_s serializer = 
+        db_json_ser(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
 
     _test_primitive_value(f32z, "0");
     _test_primitive_value(f32n, "-2.45");

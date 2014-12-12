@@ -1,4 +1,5 @@
 #include <string.h>
+
 #include "hyve.h"
 #include "json.h"
 
@@ -12,19 +13,18 @@
 int main(int argc, char* argv[]) {
     DB_UNUSED(argc);
     DB_UNUSED(argv);
-    db_bool result = TRUE;
-    struct db_serializer_s serializer = 
-        db_json_ser(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
+    
+    db_int16 result = 0;
 
     db_start();
     tc_jsonser_load();
 
-    test_primitive_values();
-    test_scope();   
+    result += test_primitive_value();
+    result += test_scope(); 
  
     db_stop();
 
-    if (result) {
+    if (!result) {
         printf("tc_jsonser: OK\n");
     }
 
