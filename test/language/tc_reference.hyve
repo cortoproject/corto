@@ -5,7 +5,7 @@ void fail(string msg):
 
 void passIntByRef(uint32& a):
 	if a != 10:             fail("failed to resolve correct value of reference parameter ($a)");		
-	if a.nameof != "foo": fail("failed to use reference parameter as object");
+	if a.nameof() != "foo": fail("failed to use reference parameter as object");
 
 void passAnyObject(object a, string name): if a.nameof() != name: fail("failed to pass object of any type");
 
@@ -18,7 +18,7 @@ if refvar != 5: fail("reference var does not return correct value");
 refvar *= 2;
 if refvar != 10: fail("equality-operator on reference var failed");
 
-if refvar.nameof != "foo": fail("accessing reference var as object failed");
+if refvar.nameof() != "foo": fail("accessing reference var as object failed");
 
 // Test passing object by reference
 passIntByRef(foo);

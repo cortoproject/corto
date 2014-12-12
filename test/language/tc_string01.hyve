@@ -35,20 +35,20 @@ if "$l" != "true":       fail("bool to string failed ($l)");
 if "$m" != "x":          fail("char to string failed ($m)");
 if "$n" != "foo":        fail("string to string failed ($n)");
 
-if a.toString != "ff":         fail("octet toString failed ($a)");
-if b.toString != "ffffffff":   fail("word toString failed ($b)");
-if c.toString != "255":        fail("uint8 toString failed ($c)");
-if d.toString != "65535":      fail("uint16 toString failed ($d)");
-if e.toString != "4294967295": fail("uint32 toString failed ($e)");
-if f.toString != "9223372036854775807": fail("uint64 toString failed ($f)");
-if g.toString != "127":        fail("int8 toString failed ($g)");
-if h.toString != "32767":      fail("int16 toString failed ($h)");
-if i.toString != "2147483647": fail("int32 toString failed ($i)");
-if j.toString != "4611686018427387903": fail("int64 toString failed ($j)");
-if k.toString != "YELLOW":     fail("enum toString failed ($k)");
-if l.toString != "true":       fail("bool toString failed ($l)");
-if m.toString != "'x'":        fail("char toString failed ($m)");
-if n.toString != "\"foo\"":    fail("string toString failed ($n)");
+if a.toString() != "ff":         fail("octet toString() failed ($a)");
+if b.toString() != "ffffffff":   fail("word toString() failed ($b)");
+if c.toString() != "255":        fail("uint8 toString() failed ($c)");
+if d.toString() != "65535":      fail("uint16 toString() failed ($d)");
+if e.toString() != "4294967295": fail("uint32 toString() failed ($e)");
+if f.toString() != "9223372036854775807": fail("uint64 toString() failed ($f)");
+if g.toString() != "127":        fail("int8 toString() failed ($g)");
+if h.toString() != "32767":      fail("int16 toString() failed ($h)");
+if i.toString() != "2147483647": fail("int32 toString() failed ($i)");
+if j.toString() != "4611686018427387903": fail("int64 toString() failed ($j)");
+if k.toString() != "YELLOW":     fail("enum toString() failed ($k)");
+if l.toString() != "true":       fail("bool toString() failed ($l)");
+if m.toString() != "'x'":        fail("char toString() failed ($m)");
+if n.toString() != "\"foo\"":    fail("string toString() failed ($n)");
 
 if result: "tc_string01: OK";
 	

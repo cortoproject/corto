@@ -19,8 +19,8 @@ class Counter::
 		count++;
 	
 void test(Counter c, uint32 count, uint32 triggered):
-	if c.count != count:         fail("${c.fullname}.count != $count");
-	if c.triggered != triggered: fail("${c.fullname}.triggered != $triggered");
+	if c.count != count:         fail("${c.fullname()}.count != $count");
+	if c.triggered != triggered: fail("${c.fullname()}.triggered != $triggered");
 	
 Counter a:;
 Counter b:::

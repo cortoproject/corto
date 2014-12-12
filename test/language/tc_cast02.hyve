@@ -18,8 +18,8 @@ var Point p2 = Point(o);
 var Point p3 = p3d;
 var Point3D p4 = Point3D(p3);
 
-if p1.typeof != Point: fail("cast #1 failed");
-if p2.typeof != Point: fail("cast #2 failed");
+if p1.typeof() != Point: fail("cast #1 failed");
+if p2.typeof() != Point: fail("cast #2 failed");
 if p3.typeof() != Point: fail("cast #3 failed");
 if p4.typeof() != Point3D: fail("cast #4 failed");
 

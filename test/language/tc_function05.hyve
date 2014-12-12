@@ -11,13 +11,13 @@ uint customInt: width_word::
 	customInt get20() function = 20; // Explicit function
 
 // Validate type of get10
-if customInt::get10.typeof != function: fail("customInt::get10.typeof != function (${customInt::get10.typeof.nameof)");
+if customInt::get10.typeof() != function: fail("customInt::get10.typeof() != function (${customInt::get10.typeof().nameof())");
 
 // Call function
 if customInt::get10() != 10: fail("customInt::get10 != 10 (${customInt::get10})");
 
 // Validate type of get20
-if customInt::get20.typeof != function: fail("customInt::get20.typeof != function (${customInt::get20.typeof.nameof)");
+if customInt::get20.typeof() != function: fail("customInt::get20.typeof() != function (${customInt::get20.typeof().nameof())");
 
 // Call function
 if customInt::get20() != 20: fail("customInt::get20 != 20 (${customInt::get20})");
@@ -31,9 +31,9 @@ class Spaceship::
 	uint32 engines() function = engineCount; // Explicit function
 
 // Validate function types
-if Spaceship::move.typeof != method: fail("Spaceship::move.typeof != method (${Spaceship::move.typeof.nameof})");
-if Spaceship::turn.typeof != method: fail("Spaceship::turn.typeof != method (${Spaceship::turn.typeof.nameof})");
-if Spaceship::engines.typeof != function: fail("Spaceship::engines.typeof != method (${Spaceship::engines.typeof.nameof})");
+if Spaceship::move.typeof() != method: fail("Spaceship::move.typeof != method (${Spaceship::move.typeof().nameof()})");
+if Spaceship::turn.typeof() != method: fail("Spaceship::turn.typeof != method (${Spaceship::turn.typeof().nameof()})");
+if Spaceship::engines.typeof() != function: fail("Spaceship::engines.typeof() != method (${Spaceship::engines.typeof().nameof()})");
 
 // Call methods and function
 Spaceship MilleniumFalcon:;

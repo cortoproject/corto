@@ -13,7 +13,7 @@ void testref(int32 &value, int32 testval, string msg):
 	test(value, testval, "$msg (passthrough)");
 
 void testobject(object o, string name, string msg):
-	if o.nameof != name: fail(msg);
+	if o.nameof() != name: fail(msg);
 
 int32 x, x1:;
 

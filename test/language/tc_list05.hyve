@@ -9,15 +9,15 @@ list{uint32} b: 3,4,5;
 
 a += b;
 if a[0,1][0,1,2] != (0,1,2,3,4,5): fail("a[0,1][0,1,2] != (0,1,2,3,4,5) ($a)");
-if a.size != 2: fail("a.size != 2 (${a.size})");
+if a.size() != 2: fail("a.size != 2 (${a.size()})");
 
 a = b;
 if a[0][0,1,2] != (3,4,5): fail("a[0][0,1,2] != (3,4,5) ($a)");
-if a.size != 1: fail("a.size != 1 (${a.size})");
+if a.size() != 1: fail("a.size != 1 (${a.size()})");
 
 b = {0, 1, 2};
 b += a;
 if a[0,1][0,1,2] != (0,1,2,3,4,5): fail("a[0,1][0,1,2] != (0,1,2,3,4,5) ($a)");
-if a.size != 2: fail("a.size != 2 (${a.size})");
+if a.size() != 2: fail("a.size != 2 (${a.size()})");
 
 if result: "tc_list05: OK";

@@ -23,7 +23,7 @@ if foo(10) != 10: fail("foo(10) != 10");
 if called != 1: fail("called != 1 ($called)");
 if foo(null) != null: fail("foo(null) != null");
 if called != 2: fail("called != 2 ($called)");
-if foo(null).typeof != string: fail("foo(null).typeof != string");
+if foo(null).typeof() != string: fail("foo(null).typeof() != string");
 if called != 3: fail("called != 3 ($called)");
 
 
@@ -44,7 +44,7 @@ if bar(10) != 10: fail("bar(10) != 10");
 if called != 1: fail("called != 1 ($called) #2");
 if bar(null) != null: fail("bar(null) != null");
 if called != 2: fail("called != 2 ($called) #2");
-if bar(null).typeof != Point: fail("bar(null).typeof != Point");
+if bar(null).typeof() != Point: fail("bar(null).typeof() != Point");
 if called != 3: fail("called != 3 ($called) #2");
 
 if result: "tc_overload03: OK";

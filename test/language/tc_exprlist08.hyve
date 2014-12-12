@@ -13,7 +13,7 @@ struct Ints::
 	
 Ints o:;
 
-o[a,b,c,d].inc;
+o[a,b,c,d].inc();
 if o[a,b,c,d].v != 1: fail("o[a,b,c,d].v != 1 ($o)");
 
 uint32 i:;
@@ -22,7 +22,7 @@ o.b.v += 2;
 o.c.v += 3;
 o.d.v += 4;
 
-i,i,i,i += o[a,b,c,d].inc;
+i,i,i,i += o[a,b,c,d].inc();
 if i != 18: fail("i != 18 ($i)");
 
 if result: "tc_exprlist08: OK";
