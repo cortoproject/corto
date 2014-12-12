@@ -27,17 +27,24 @@ void DB_NAME_UNARYOP(type,name)(void* op, void* result) {\
 
 #define DB_NUMERIC_BINARY_OP(type, op, name)\
 static void DB_NAME_BINARYOP(type,name)(void* op1, void* op2, void* result) {\
-		*(db_##type*)result = *(db_##type*)op1 op *(db_##type*)op2;\
+	*(db_##type*)result = *(db_##type*)op1 op *(db_##type*)op2;\
 }
 
 #define DB_NUMERIC_COND_UNARY_OP(type, op, name)\
 static void DB_NAME_UNARYOP(type,name)(void* op, void* result) {\
-		*(db_bool*)result = op *(db_##type*)op;\
+	*(db_bool*)result = op *(db_##type*)op;\
 }
 
 #define DB_NUMERIC_COND_BINARY_OP(type, op, name)\
 static void DB_NAME_BINARYOP(type,name)(void* op1, void* op2, void* result) {\
-		*(db_bool*)result = *(db_##type*)op1 op *(db_##type*)op2;\
+	*(db_bool*)result = *(db_##type*)op1 op *(db_##type*)op2;\
+}
+
+static void DB_NAME_BINARYOP(string,cond_eq)(void* op1, void* op2, void* result) {
+	*(db_bool*)result = !strcmp((db_string)op1, (db_string)op2);
+}
+static void DB_NAME_BINARYOP(string,cond_neq)(void* op1, void* op2, void* result) {
+	*(db_bool*)result = strcmp((db_string)op1, (db_string)op2);
 }
 
 #define DB_INTEGER_UNARY_OPS(type) \
@@ -137,6 +144,9 @@ DB_FLOAT_OPS(float64)
 #define DB_BINARY_OP_INIT(typeKind, typeWidth, operatorKind, type, name)\
 	db_binaryOps[db__primitive_convertId(typeKind, typeWidth)][operatorKind] = DB_NAME_BINARYOP(type, name);
 
+#define DB_STRING_OP_INIT(operatorKind, name)\
+	db_binaryOps[db__primitive_convertId(DB_TEXT, DB_WIDTH_WORD)][operatorKind] = DB_NAME_BINARYOP(string, name);
+
 #define DB_INTEGER_UNARY_OPS_INIT(typeKind, typeWidth, type)\
 DB_UNARY_OP_INIT(typeKind, typeWidth, DB_INC, type, inc)\
 DB_UNARY_OP_INIT(typeKind, typeWidth, DB_DEC, type, dec)\
@@ -205,6 +215,9 @@ DB_INTEGER_BINARY_OPS_INIT(typeKind, typeWidth, type)
 DB_FLOAT_UNARY_OPS_INIT(typeKind, typeWidth, type)\
 DB_FLOAT_BINARY_OPS_INIT(typeKind, typeWidth, type)
 
+#define DB_STRING_OPS_INIT()\
+DB_STRING_OP_INIT(DB_COND_EQ, cond_eq)\
+DB_STRING_OP_INIT(DB_COND_NEQ, cond_neq)\
 
 void db_operatorInit(void) {
 	DB_UNARY_OP_INIT(DB_BOOLEAN, DB_WIDTH_8, DB_COND_NOT, bool, cond_not);
@@ -228,6 +241,8 @@ void db_operatorInit(void) {
 
 	DB_FLOAT_OPS_INIT(DB_FLOAT, DB_WIDTH_32, float32);
 	DB_FLOAT_OPS_INIT(DB_FLOAT, DB_WIDTH_64, float64);
+
+	DB_STRING_OPS_INIT();
 }
 
 db_int16 db_unaryOperator(db_type type, db_operatorKind operator, void* operand, void* result) {
