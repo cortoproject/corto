@@ -1,4 +1,4 @@
-object tc_jsonser_number::
+object tc_jsonser::
 
     int16 i16n: -2;
     int16 i16z: 0;
