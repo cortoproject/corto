@@ -169,16 +169,24 @@ In summary, these annotations can appear:
 | @E         | `enum`
 | @R         | reference
 
-Hyve strings that start with one of the annotations for primitives ("@B", "@M", "@E") or references ("@R") will be escaped with an extra "@".
+Hyve strings that start with the annotation character (@) will always be escaped regardless of whether or not we can run into disambiguation with the above types.
 
 Example:
 
-| Hyve string | JSON string
-|-------------|------------
-| "hello"     | "hello"
-| "@B"        | "@@B"
-| "@@B"       | "@@@B"
-| "@hey"      | "@hey"
+| Hyve string   | JSON string
+|---------------|------------
+| `"hello"`     | `"hello"`
+| `"@E"`        | `"@@E"`
+| `"@E a"`      | `"@@E a"`
+| `"@@E"`       | `"@@@E"`
+| `"@hey"`      | `"@@hey"`
+
+Some backwards inferences:
+
+| JSON string | Hyve value
+|-------------|-----------
+| `@E a`      | `enum` with the value `a`
+| `@E`        | not valid
 
 ### Collection kinds
 
