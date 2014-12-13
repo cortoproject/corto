@@ -126,8 +126,44 @@ extern db_member tc_jsonser_point2D_y_o;
 /* ::tc_jsonser::s1 */
 extern db_string (*tc_jsonser_s1_o);
 
+/* ::tc_jsonser::s10 */
+extern db_string (*tc_jsonser_s10_o);
+
+/* ::tc_jsonser::s11 */
+extern db_string (*tc_jsonser_s11_o);
+
+/* ::tc_jsonser::s12 */
+extern db_string (*tc_jsonser_s12_o);
+
+/* ::tc_jsonser::s13 */
+extern db_string (*tc_jsonser_s13_o);
+
+/* ::tc_jsonser::s14 */
+extern db_string (*tc_jsonser_s14_o);
+
 /* ::tc_jsonser::s2 */
 extern db_string (*tc_jsonser_s2_o);
+
+/* ::tc_jsonser::s3 */
+extern db_string (*tc_jsonser_s3_o);
+
+/* ::tc_jsonser::s4 */
+extern db_string (*tc_jsonser_s4_o);
+
+/* ::tc_jsonser::s5 */
+extern db_string (*tc_jsonser_s5_o);
+
+/* ::tc_jsonser::s6 */
+extern db_string (*tc_jsonser_s6_o);
+
+/* ::tc_jsonser::s7 */
+extern db_string (*tc_jsonser_s7_o);
+
+/* ::tc_jsonser::s8 */
+extern db_string (*tc_jsonser_s8_o);
+
+/* ::tc_jsonser::s9 */
+extern db_string (*tc_jsonser_s9_o);
 
 /* ::tc_jsonser::Sleet */
 extern tc_jsonser_Djinn (*tc_jsonser_Sleet_o);
