@@ -1,5 +1,5 @@
-SOURCES += 	y.tab.c \
-			lex.yy.c			
+SOURCES += 	src/y.tab.c \
+			src/lex.yy.c			
 
 include $(HYVE_HOME)/build/component.makefile
 

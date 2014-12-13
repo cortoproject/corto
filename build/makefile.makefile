@@ -8,8 +8,8 @@ CFLAGS	= $(OFLAGS) $(COVFLAGS) -g -Wall -Wextra -Wno-gnu-label-as-value -Wno-unk
 INCLUDE += include $(HYVE_HOME)/db/include
 
 INCLUDES = $(INCLUDE:%=-I"%")
-SOURCES = $(wildcard src/*.c)
-SOURCES_NODIR = $(notdir $(SOURCES))
+SOURCES += $(wildcard src/*.c)
+SOURCES_NODIR = $(notdir $(sort $(SOURCES)))
 OBJECTS += $(SOURCES_NODIR:%.c=obj/%.o)
 GCOV = $(SOURCES:%.c=gcov/%.c.gcov)
 SPLINT = $(SOURCES:%.c=src/%.c)

@@ -198,6 +198,7 @@ Fast_Expression Fast_declarationSeqDo(Fast_Variable type, Fast_ParserDeclaration
 /* ======================================================================== */
 code
 	: statements
+    |
 	;
 
 statements
