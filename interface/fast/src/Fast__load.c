@@ -1,21 +1,17 @@
-/*
- * fast.c
- *
- *  Created on: Mar 11, 2013
- *      Author: sander
+/** 
+ * This file is fully generated. Do not modify!
  */
 
-#include "hyve.h"
+#include "Fast__meta.h"
+
+/* $header() */
+#include "Fast.h"
 #include "db_util.h"
 #include "db_loader.h"
 #include "db_file.h"
-#include "Fast__meta.h"
-#include "Fast__api.h"
-#include "Fast_Parser.h"
 #include "db_mm.h"
 
 db_threadKey FAST_PARSER_KEY;
-
 
 /* Run a hyve file */
 int fast_hyveRun(db_string file, void* udata) {
@@ -36,30 +32,30 @@ int fast_hyveRun(db_string file, void* udata) {
         db_free(p);
         db_dealloc(source);
     } else {
-    	goto error;
-    }
-
-    return 0;
-error:
-	return -1;
-}
-
-int hyvemain(int argc, char* argv[]) {
-    DB_UNUSED(argc);
-    DB_UNUSED(argv);
-
-    /* Load types */
-    Fast_load();
-
-    /* Obtain thread local storage key for parser */
-    if (db_threadTlsKey(&FAST_PARSER_KEY, NULL)) {
         goto error;
     }
-
-    /* Register hyve extension */
-    db_loaderRegister("hyve", fast_hyveRun, NULL);
 
     return 0;
 error:
     return -1;
 }
+/* $end */
+
+/* This function is the entrypoint for the library and * loads definitions of the 'Fast' scope */
+int hyvemain(int argc, char* argv[]) {
+    DB_UNUSED(argc);
+    DB_UNUSED(argv);
+    
+    /* $begin(hyvemain) */
+    /* Obtain thread local storage key for parser */
+    if (db_threadTlsKey(&FAST_PARSER_KEY, NULL)) {
+        return -1;
+    }
+
+    /* Register hyve extension */
+    db_loaderRegister("hyve", fast_hyveRun, NULL);
+    /* $end */
+
+    return Fast_load();
+}
+

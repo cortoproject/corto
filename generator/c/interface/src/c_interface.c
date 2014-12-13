@@ -742,6 +742,8 @@ static g_file c_interfaceHeaderFileOpen(db_generator g, db_object o, c_typeWalk_
     }
 
     g_fileWrite(result, "#include \"%s__type.h\"\n\n", g_getName(g));
+    g_fileWrite(result, "#include \"%s__api.h\"\n\n", g_getName(g));
+    g_fileWrite(result, "#include \"%s__meta.h\"\n\n", g_getName(g));
     g_fileWrite(result, "#ifdef __cplusplus\n");
     g_fileWrite(result, "extern \"C\" {\n");
     g_fileWrite(result, "#endif\n");

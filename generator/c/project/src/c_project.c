@@ -8,6 +8,8 @@
 static db_int16 c_projectGenerateMainFile(db_generator g) {
 	db_id filename;
 	g_file file;
+    db_string snippet;
+
 	sprintf(filename, "%s__load.c", g_getName(g));
 
 	file = g_fileOpen(g, filename);
@@ -20,12 +22,26 @@ static db_int16 c_projectGenerateMainFile(db_generator g) {
 
 	g_fileWrite(file, "#include \"%s__meta.h\"\n\n", g_getName(g));
 
+    if ((snippet = g_fileLookupHeader(file, ""))) {
+        g_fileWrite(file, "/* $header()");
+        g_fileWrite(file, "%s", snippet);
+        g_fileWrite(file, "$end */\n\n");
+    }
+
     g_fileWrite(file, "/* This function is the entrypoint for the library and");
     g_fileWrite(file, " * loads definitions of the '%s' scope */\n", g_getName(g));
 	g_fileWrite(file, "int hyvemain(int argc, char* argv[]) {\n");
 	g_fileIndent(file);
 	g_fileWrite(file, "DB_UNUSED(argc);\n");
 	g_fileWrite(file, "DB_UNUSED(argv);\n");
+
+    if ((snippet = g_fileLookupSnippet(file, "hyvemain"))) {
+        g_fileWrite(file, "\n");
+        g_fileWrite(file, "/* $begin(hyvemain)");
+        g_fileWrite(file, "%s", snippet);
+        g_fileWrite(file, "$end */\n\n");
+    }
+
 	g_fileWrite(file, "return %s_load();\n", g_getName(g));
 	g_fileDedent(file);
 	g_fileWrite(file, "}\n\n");
