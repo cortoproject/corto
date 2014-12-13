@@ -1,8 +1,7 @@
 /* os__meta.h
  *
- *  Generated on Feb  5 2014
- *    Loads objects in database.
- *    This file contains generated code. Do not modify!
+ * Loads objects in database.
+ * This file contains generated code. Do not modify!
  */
 
 #ifndef os_META_H
@@ -21,6 +20,9 @@ extern db_object _o;
 
 /* ::hyve::os */
 extern db_void (*os_o);
+
+/* ::hyve::os::exit(::hyve::lang::bool success) */
+extern db_function os_exit_o;
 
 /* ::hyve::os::loadavg(::hyve::os::loadAvgKind kind) */
 extern db_function os_loadavg_o;
@@ -59,7 +61,7 @@ extern db_member os_thread_handle_o;
 extern db_method os_thread_join_o;
 
 /* ::hyve::os::thread::run() */
-extern db_method os_thread_run_o;
+extern db_virtual os_thread_run_o;
 
 /* ::hyve::os::thread::start() */
 extern db_method os_thread_start_o;
