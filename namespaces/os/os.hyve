@@ -7,6 +7,9 @@ object hyve::
 		
 		// system
 		void system(string cmd);
+
+		// exit
+		void exit(bool success);
 		
 		// loadAvgKind
 		enum loadAvgKind::
@@ -49,7 +52,7 @@ object hyve::
 			void join();
 
 			// Private handle to os-thread implementation
-			member handle :  word,local|private;
+			member handle :  word,local;
 			member stopping : bool,private;
 			
 		// class Timer

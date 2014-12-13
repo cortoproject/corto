@@ -1,7 +1,6 @@
 /* os.h
  *
- *  Generated on Feb  5 2014
- *    This file contains generated code. Do not modify!
+ * This file contains generated code. Do not modify!
  */
 
 #ifndef os_H
@@ -10,9 +9,16 @@
 #include "hyve.h"
 #include "os__type.h"
 
+#include "os__api.h"
+
+#include "os__meta.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/* ::hyve::os::exit(::hyve::lang::bool success) */
+db_void os_exit(db_bool success);
 
 /* ::hyve::os::loadavg(::hyve::os::loadAvgKind kind) */
 db_float64 os_loadavg(os_loadAvgKind kind);
@@ -28,3 +34,6 @@ db_void os_system(db_string cmd);
 #endif
 #endif
 
+#include "os_thread.h"
+#include "os_time.h"
+#include "os_timer.h"

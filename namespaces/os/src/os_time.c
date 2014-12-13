@@ -1,17 +1,15 @@
 /* os_time.c
  *
- *  Generated on Feb  5 2014
- *    This file contains the implementation for the generated interface.
+ * This file contains the implementation for the generated interface.
  *
  *    Don't mess with the begin and end tags, since these will ensure that modified
  *    code in interface functions isn't replaced when code is re-generated.
  */
 
-#include "os_time.h"
+#include "os.h"
 #include "os__meta.h"
 
-
-/* $begin($header) */
+/* $header() */
 #include "db_time.h"
 /* $end */
 

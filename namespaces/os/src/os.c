@@ -1,7 +1,6 @@
 /* os.c
  *
- *  Generated on Feb  5 2014
- *    This file contains the implementation for the generated interface.
+ * This file contains the implementation for the generated interface.
  *
  *    Don't mess with the begin and end tags, since these will ensure that modified
  *    code in interface functions isn't replaced when code is re-generated.
@@ -10,20 +9,14 @@
 #include "os.h"
 #include "os__meta.h"
 
+/* ::hyve::os::exit(::hyve::lang::bool success) */
+db_void os_exit(db_bool success) {
+/* $begin(::hyve::os::exit) */
 
-/* $begin($header) */
-#include "os__meta.h"
-#include "db_time.h"
+    exit(success ? EXIT_SUCCESS : EXIT_FAILURE);
 
-int hyvemain(int argc, char* argv[]) {
-	DB_UNUSED(argc);
-	DB_UNUSED(argv);
-
-	os_load();
-
-	return 0;
-}
 /* $end */
+}
 
 /* ::hyve::os::loadavg(::hyve::os::loadAvgKind kind) */
 db_float64 os_loadavg(os_loadAvgKind kind) {

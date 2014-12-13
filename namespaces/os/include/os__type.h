@@ -1,6 +1,5 @@
 /* os__type.h
  *
- *  Generated on Feb  5 2014
  *    Type-definitions for C-language.
  *    This file contains generated code. Do not modify!
  */
