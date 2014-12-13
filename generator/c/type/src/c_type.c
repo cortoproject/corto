@@ -475,7 +475,6 @@ static g_file c_typeHeaderFileOpen(db_generator g) {
 	/* Print standard comments and includes */
 	g_fileWrite(result, "/* %s\n", headerFileName);
 	g_fileWrite(result, " *\n");
-	g_fileWrite(result, " *  Generated on %s\n", __DATE__);
     g_fileWrite(result, " *    Type-definitions for C-language.\n");
 	g_fileWrite(result, " *    This file contains generated code. Do not modify!\n");
 	g_fileWrite(result, " */\n\n");

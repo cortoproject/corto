@@ -190,15 +190,25 @@ L?\"(\\.|[^\\"])*\"				TOKEN; yylval.String = malloc(strlen(yytext) + 1); lex_co
 
 %%
 
+int yywrap(void)        /* called at end of input */
+{
+    return 1;           /* terminate now */
+}
+
 /* Comment */
 static void comment(void)
 {
 	char c;
 	Fast_Parser p = yparser();
 
-	while ((c = input()) && (c != -1) && (c != '\n')) {
+	while ((c = input()) && (c != EOF) && (c != '\n')) {
 		/*putchar(c);*/
 		p->column = 1;
+	}
+	if(c == EOF) {
+		void Fast_Parser_error(Fast_Parser p, db_string fmt, ...);
+		Fast_Parser_error(p, "end of file encountered in comment");
+		exit(1);
 	}
 }
 

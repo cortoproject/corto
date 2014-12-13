@@ -321,16 +321,13 @@ static db_bool c_apiElementRequiresInit(db_type elementType) {
 
     return result;
 }
-
+void db_valueValueInit(db_value* val, db_object o, db_typedef t, db_void* v);
 /* Initialize or deinitialize element */
 static db_int16 c_apiElementInit(db_string elementType, db_string element, db_bool isInit, c_apiWalk_t* data) {
     g_fileWrite(data->source, "{\n");
     g_fileIndent(data->source);
     g_fileWrite(data->source, "db_value v;\n");
-    g_fileWrite(data->source, "v.kind = DB_VALUE;\n");
-    g_fileWrite(data->source, "v.is.value.o = NULL;\n");
-    g_fileWrite(data->source, "v.is.value.t = db_typedef(%s_o);\n", elementType);
-    g_fileWrite(data->source, "v.is.value.v = %s;\n", element);
+    g_fileWrite(data->source, "db_valueValueInit(&v, NULL, db_typedef(%s_o), %s);\n", elementType, element);
     if (isInit) {
         g_fileWrite(data->source, "db_initValue(&v);\n");
     } else {
@@ -875,7 +872,6 @@ static g_file c_apiSourceOpen(db_generator g) {
     /* Print standard comments and includes */
     g_fileWrite(result, "/* %s\n", headerFileName);
     g_fileWrite(result, " *\n");
-    g_fileWrite(result, " *  Generated on %s\n", __DATE__);
     g_fileWrite(result, " *    API convenience functions for C-language.\n");
     g_fileWrite(result, " *    This file contains generated code. Do not modify!\n");
     g_fileWrite(result, " */\n\n");
