@@ -188,6 +188,8 @@ Some backwards inferences:
 | `@E a`      | `enum` with the value `a`
 | `@E`        | not valid
 
+In summary, the serialization of Hyve strings do always have either none, or two or more leading at (@) characters.
+
 ### Collection kinds
 
 `array`, `sequence`, and `list` types are serialized as JSON arrays. The items within the lists are serialized according to the rules for [primitives](#primitive-kinds) or [references](#composite-kinds-and-reference-members).
