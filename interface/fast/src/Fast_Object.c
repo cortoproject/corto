@@ -20,8 +20,13 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::Object::construct(Object object) */
 db_int16 Fast_Object_construct(Fast_Object object) {
 /* $begin(::hyve::Fast::Object::construct) */
+	db_type t = db_typeof(Fast_ObjectBase(object)->value)->real;
 
-    Fast_Expression(object)->type = Fast_Variable(Fast_ObjectBase__create(db_typeof(Fast_ObjectBase(object)->value)->real));
+	if(t == db_type(db_constant_o)) {
+		t = db_parentof(Fast_ObjectBase(object)->value);
+	}
+
+    Fast_Expression(object)->type = Fast_Variable(Fast_ObjectBase__create(t));
     Fast_Expression(object)->isReference = TRUE;
 
     return Fast_ObjectBase_construct(Fast_ObjectBase(object));

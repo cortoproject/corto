@@ -26,7 +26,7 @@ if e != "bar": fail("e != \"bar\" ($e)");
 
 enum Color:: Red, Green, Blue;
 Color f: Red;
-f.copy(Color(Color::Green)); // Requires cast from lang::constant to Color
+f.copy(Color::Green);
 
 octet g: 0x10;
 g.copy(octet(0x20));

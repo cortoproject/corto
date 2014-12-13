@@ -33,6 +33,7 @@ db_int16 db_bitmask_init(db_bitmask object) {
 /* $begin(::hyve::lang::bitmask::init) */
     db_primitive(object)->kind = DB_BITMASK;
     db_primitive(object)->width = DB_WIDTH_32;
+    db_set(&db_type(object)->defaultType, db_constant_o);
     return db_primitive_init((db_primitive)object);
 /* $end */
 }
