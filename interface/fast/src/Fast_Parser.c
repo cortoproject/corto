@@ -898,7 +898,7 @@ Fast_Expression Fast_Parser_binaryExpr(Fast_Parser _this, Fast_Expression lvalue
     
     _this->stagingAllowed = FALSE;
     
-    if (lvalues && rvalues && _this->pass) {
+    if (lvalues && rvalues && (_this->pass || ((_this->initializerCount >= 0) && _this->initializers[_this->initializerCount]))) {
         Fast_ExpandAction combine = Fast_Parser_combineCommaExpr;
         switch(operator) {
         case DB_COND_EQ:

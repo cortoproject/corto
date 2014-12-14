@@ -5,9 +5,26 @@ void fail(string msg):
 
 bitmask options:: SeatHeating, AutomaticWindows, SpareWheel;
 
+// Test bitmask variable
 var options v = SeatHeating | SpareWheel;
 if !(v & SeatHeating): fail("!(v & SeatHeating)");
 if !(v & SpareWheel): fail("!(v & SpareWheel)");
 if v & AutomaticWindows: fail("v & AutmaticWindows");
+if "$v" != "SeatHeating|SpareWheel": fail("\"$v\" != \"SeathHeating|SpareWheel\" ($v)");
+
+// Test bitmask object
+options o : AutomaticWindows | SeatHeating;
+if !(o & SeatHeating): fail("!(o & SeatHeating) ($o)");
+if o & SpareWheel: fail("o & SpareWheel");
+if !(o & AutomaticWindows): fail("!(o & AutmaticWindows)");
+if "$o" != "SeatHeating|AutomaticWindows": fail("\"$o\" != \"SeathHeating|AutomaticWindows\" ($v)");
+
+// Test bitmask parameter
+bool testMask(options mask, options flag) = mask & flag;
+
+if testMask(options::SpareWheel, options::SeatHeating): fail("testMask(SpareWheel, SeatHeating)");
+if !testMask(options::SeatHeating, options::SeatHeating): fail("!testMask(SeatHeating, SeatHeating)");
+if testMask(options::AutomaticWindows|options::SpareWheel, options::SeatHeating): fail("testMask(AutomaticWindows|SpareWheel, SeatHeating)");
+if !testMask(options::AutomaticWindows|options::SpareWheel, options::SpareWheel): fail("!testMask(AutomaticWindows|SpareWheel, SpareWheel)");
 
 if result: "tc_bitmask01: OK";
