@@ -361,8 +361,8 @@ init_list_colon
     ;
 
 init_colon
-    : any_id ':' {Fast_Parser_initMember(yparser(), $1); fast_op;} init_value
-    | init_key ':' init_value
+    : any_id '=' {Fast_Parser_initMember(yparser(), $1); fast_op;} init_value
+    | init_key '=' init_value
     ;
 
 init_key

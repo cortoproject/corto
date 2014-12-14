@@ -18,28 +18,28 @@ class TriangleHolder::
 	member triangle : ::Triangle;
 
 // var of non-reference type
-var Line lineA = {start:{1,2} end:{3,4}};
+var Line lineA = {start={1,2} end={3,4}};
 lineA.start.x = 10;
 lineA.start.y = lineA.start.x * 2;
 lineA.end.x = 30;
 lineA.end.y = 40;
 
 // 2nd var of non-reference type
-var Line lineB = {start:{1,2} end:{3,4}};
+var Line lineB = {start={1,2} end={3,4}};
 lineB.start.x = lineB.end.y;
 lineB.start.y = 20;
 lineB.end.x *= 10;
 lineB.end.y = 40;
 
 // Object of non-reference type
-Line lineC : start:{1,2} end:{3,4};
+Line lineC : start={1,2} end={3,4};
 lineC.start.x = 10;
 lineC.start.y = (lineC.start.x + 10) * 2;
 lineC.end.x *= 10;
 lineC.end.y = 40;
 
 // Object of reference type
-Triangle triangleB : v1:{1,2} v2:{3,4} v3:{5,6};
+Triangle triangleB : v1={1,2} v2={3,4} v3={5,6};
 triangleB.v1.x = 10;
 triangleB.v1.y *= 20;
 triangleB.v2.x = 30;
@@ -51,7 +51,7 @@ triangleB.v3.y = 60;
 var Triangle triangleA = triangleB;
 
 // Object with reference-member
-Triangle triangleC : v1:{3,4} v2:{5,6} v3:{7,8};
+Triangle triangleC : v1={3,4} v2={5,6} v3={7,8};
 TriangleHolder holder : triangleB;
 if holder.triangle != triangleB:
 	io::println("holder.triangle");

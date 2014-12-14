@@ -36,15 +36,15 @@ void test(Line l, int32 x1, int32 y1, int32 z1, int32 x2, int32 y2, int32 z2, Co
 Color c1 : Red;
 	
 Point3D p1 : 10,20,30;
-Point3D p2 : x:40 y:50 z:60;
-Point3D p3 : x:70 y:80 z:90;
+Point3D p2 : x=40 y=50 z=60;
+Point3D p3 : x=70 y=80 z=90;
 var Point3D p4 = {10,20,30};
 var Point3D& p5 = Point3D{20,30,40};
 var Point3D& p6 = &p5;
 
-Line l1 : {10,20,30},{40,50,60},Red;
-Line l2 : start:{10,20,30} stop:{40,50,60} color:Yellow;
-Line l3 : start:{x:10 y:20 z:30} stop:{x:40 y:50 z:60} color:Blue;
+Line l1 : {10, 20, 30}, {40, 50, 60}, Red;
+Line l2 : start = {10, 20, 30} stop = {40, 50, 60} color = Yellow;
+Line l3 : start = {x=10 y=20 z=30} stop = {x=40 y=50 z=60} color = Blue;
 
 array PointArray : Point3D, 3;
 sequence PointSeq : Point3D;
@@ -63,9 +63,9 @@ PointList pl1 : {10,20,30}, {40,50,60}, {70,80,90};
 PointList pl2 : p1, p2, p3;
 PointList pl3 : Point3D{10,20,30}, Point3D{40,50,60}, Point3D{70,80,90};
 
-PointMap pm1 : "point1":{10,20,30} "point2":{40,50,60} "point3":{70,80,90};
-PointMap pm2 : "point1":p1 "point2":p2 "point3":p3;
-PointMap pm3 : "point1":Point3D{10,20,30} "point2":Point3D{40,50,60} "point3":Point3D{70,80,90};
+PointMap pm1 : "point1"={10,20,30} "point2"={40,50,60} "point3"={70,80,90};
+PointMap pm2 : "point1"=p1 "point2"=p2 "point3"=p3;
+PointMap pm3 : "point1"=Point3D{10,20,30} "point2"=Point3D{40,50,60} "point3"=Point3D{70,80,90};
 
 // Test points
 test(p1, 10, 20, 30, "p1");
