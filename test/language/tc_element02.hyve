@@ -17,7 +17,7 @@ typedef PointsMap : map{Point,string};
 PointsArray ints_aCheck : {10,20},{30,40},{50,60};
 PointsSeq ints_sCheck : {10,20},{30,40},{50,60};
 PointsList ints_lCheck : {10,20},{30,40},{50,60};
-PointsMap ints_mCheck : "a":{10,20} "b":{30,40} "c":{50,60};
+PointsMap ints_mCheck : "a"={10,20} "b"={30,40} "c"={50,60};
 
 void validate(PointsArray c, string failMsg): if c.compare(ints_aCheck): fail(failMsg);
 void validate(PointsSeq c, string failMsg):   if c.compare(ints_sCheck): fail(failMsg);
@@ -55,7 +55,7 @@ ints_l[2].y += 54;
 validate(ints_l, "tc_element02 FAIL: List object with static index");
 
 // Map object
-PointsMap ints_m : "a":{1,2} "b":{3,4} "c":{5,6};
+PointsMap ints_m : "a"={1,2} "b"={3,4} "c"={5,6};
 ints_m["a"].x = 10;
 ints_m["a"].y = 20;
 ints_m["b"].x *= 10;

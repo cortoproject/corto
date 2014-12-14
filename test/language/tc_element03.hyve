@@ -20,7 +20,7 @@ typedef FooMap : map{Foo,string};
 FooArray Foo_aCheck : a,b,c;
 FooSeq Foo_sCheck : a,b,c;
 FooList Foo_lCheck : a,b,c;
-FooMap Foo_mCheck : "a":a "b":b "c":c;
+FooMap Foo_mCheck : "a"=a "b"=b "c"=c;
 
 void validate(FooArray c, string failMsg): if c.compare(Foo_aCheck): fail(failMsg);
 void validate(FooSeq c, string failMsg):   if c.compare(Foo_sCheck): fail(failMsg);
@@ -49,7 +49,7 @@ Foo_l[2] = c;
 validate(Foo_l, "List object with static index");
 
 // Map object
-FooMap Foo_m : "a":null "b":null "c":null;
+FooMap Foo_m : "a"=null "b"=null "c"=null;
 Foo_m["a"] = a;
 Foo_m["b"] = b;
 Foo_m["c"] = c;
