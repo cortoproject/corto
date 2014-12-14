@@ -9,6 +9,10 @@
 #include "hyve.h"
 #include "Fast__type.h"
 
+#include "Fast__api.h"
+
+#include "Fast__meta.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
