@@ -70,3 +70,17 @@ object tc_jsonser::
     void namesp::
         int16 a: 9;
         string b: "b";
+
+    enum DogBreed:: GoldenRetriever, Pug, Chihuahua;
+
+    class Dog::
+        breed: DogBreed;
+        name: string;
+        age: uint8;
+        lover: Dog;
+
+    Dog dog1: DogBreed::GoldenRetriever, "Gijs", 10;
+    Dog dog2: DogBreed::Pug, "Lolly", 4;
+    Dog dog3: DogBreed::Chihuahua, "I'm annoying", 3, dog2;
+
+

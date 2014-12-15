@@ -134,6 +134,47 @@ error:
     return -1;
 }
 
+static db_int16 db_ser_reference(db_serializer s, db_value *v, void *userData) {
+    DB_UNUSED(s);
+    db_id id;
+    void *o;
+    db_object object;
+    // db_json_ser_t *data;
+    // char *str;
+
+    // data = userData;
+    o = db_valueValue(v);
+    object = *(db_object*)o;
+
+    if (object) {
+        if (db_checkAttr(object, DB_ATTR_SCOPED) || (db_valueObject(v) == object)) {
+            db_fullname(object, id);
+            if (!db_ser_appendstr(userData, "\"@R %s\"", id)) {
+                goto finished;
+            }
+        } else {
+            // TODO anonymous
+        }
+    } else {
+        if (!db_ser_appendstrbuff(userData, "null")) {
+            goto finished;
+        }
+    }
+
+
+    /* Append name to serializer-result */
+    // if (!db_ser_appendstrbuff(userData, str)) {
+    //     goto finished;
+    // }
+
+    return 0;
+// error:
+//     return -1;
+finished:
+    return 1;
+
+}
+
 static db_int16 db_ser_member(db_serializer s, db_value *info, void *userData) {
     db_json_ser_t *data = userData;
     db_member member = info->is.member.t;
@@ -409,6 +450,7 @@ struct db_serializer_s db_json_ser(db_modifier access, db_operatorKind accessKin
     s.traceKind = trace;
     s.program[DB_PRIMITIVE] = db_ser_primitive;
     s.program[DB_COMPOSITE] = db_ser_composite;
+    s.reference = db_ser_reference;
     /* s.program[DB_COLLECTION] = db_ser_scope; */
     s.metaprogram[DB_MEMBER] = db_ser_member;
     /* s.metaprogram[DB_BASE] = db_serializeMembers */;   /* Skip the scope-callback by directly calling serializeMembers. This will cause the extra

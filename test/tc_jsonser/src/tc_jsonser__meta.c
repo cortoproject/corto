@@ -15,6 +15,18 @@ db_constant (*tc_jsonser_Djinn_Jupiter_o);
 db_constant (*tc_jsonser_Djinn_Mars_o);
 db_constant (*tc_jsonser_Djinn_Mercury_o);
 db_constant (*tc_jsonser_Djinn_Venus_o);
+db_class tc_jsonser_Dog_o;
+db_member tc_jsonser_Dog_age_o;
+db_member tc_jsonser_Dog_breed_o;
+db_member tc_jsonser_Dog_lover_o;
+db_member tc_jsonser_Dog_name_o;
+tc_jsonser_Dog tc_jsonser_dog1_o;
+tc_jsonser_Dog tc_jsonser_dog2_o;
+tc_jsonser_Dog tc_jsonser_dog3_o;
+db_enum tc_jsonser_DogBreed_o;
+db_constant (*tc_jsonser_DogBreed_Chihuahua_o);
+db_constant (*tc_jsonser_DogBreed_GoldenRetriever_o);
+db_constant (*tc_jsonser_DogBreed_Pug_o);
 db_float32 (*tc_jsonser_f32n_o);
 db_float32 (*tc_jsonser_f32p_o);
 db_float32 (*tc_jsonser_f32z_o);
@@ -261,6 +273,142 @@ int tc_jsonser_load(void) {
     if (!db_checkState(tc_jsonser_Sleet_o, DB_DEFINED)) {
         if (db_define(tc_jsonser_Sleet_o)) {
             db_error("tc_jsonser_load: failed to define object '::tc_jsonser::Sleet'.");
+            goto error;
+        }
+    }
+    /* Declare ::tc_jsonser::Dog */
+    tc_jsonser_Dog_o = db_declare(tc_jsonser_o, "Dog", db_typedef(db_class_o));
+    if (!tc_jsonser_Dog_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::Dog'.");
+        goto error;
+    }
+
+    /* Declare ::tc_jsonser::Dog::age */
+    tc_jsonser_Dog_age_o = db_declare(tc_jsonser_Dog_o, "age", db_typedef(db_member_o));
+    if (!tc_jsonser_Dog_age_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::Dog::age'.");
+        goto error;
+    }
+
+    /* Define ::tc_jsonser::Dog::age */
+    if (!db_checkState(tc_jsonser_Dog_age_o, DB_DEFINED)) {
+        tc_jsonser_Dog_age_o->type = db_resolve_ext(tc_jsonser_Dog_age_o, NULL, "::hyve::lang::uint8", FALSE, "element ::tc_jsonser::Dog::age.type");
+        tc_jsonser_Dog_age_o->modifiers = 0x0;
+        tc_jsonser_Dog_age_o->state = 0x6;
+        tc_jsonser_Dog_age_o->weak = FALSE;
+        tc_jsonser_Dog_age_o->id = 2;
+        if (db_define(tc_jsonser_Dog_age_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::Dog::age'.");
+            goto error;
+        }
+    }
+    /* Declare ::tc_jsonser::Dog::breed */
+    tc_jsonser_Dog_breed_o = db_declare(tc_jsonser_Dog_o, "breed", db_typedef(db_member_o));
+    if (!tc_jsonser_Dog_breed_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::Dog::breed'.");
+        goto error;
+    }
+
+    /* Declare ::tc_jsonser::Dog::lover */
+    tc_jsonser_Dog_lover_o = db_declare(tc_jsonser_Dog_o, "lover", db_typedef(db_member_o));
+    if (!tc_jsonser_Dog_lover_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::Dog::lover'.");
+        goto error;
+    }
+
+    /* Declare ::tc_jsonser::Dog::name */
+    tc_jsonser_Dog_name_o = db_declare(tc_jsonser_Dog_o, "name", db_typedef(db_member_o));
+    if (!tc_jsonser_Dog_name_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::Dog::name'.");
+        goto error;
+    }
+
+    /* Define ::tc_jsonser::Dog::name */
+    if (!db_checkState(tc_jsonser_Dog_name_o, DB_DEFINED)) {
+        tc_jsonser_Dog_name_o->type = db_resolve_ext(tc_jsonser_Dog_name_o, NULL, "::hyve::lang::string", FALSE, "element ::tc_jsonser::Dog::name.type");
+        tc_jsonser_Dog_name_o->modifiers = 0x0;
+        tc_jsonser_Dog_name_o->state = 0x6;
+        tc_jsonser_Dog_name_o->weak = FALSE;
+        tc_jsonser_Dog_name_o->id = 1;
+        if (db_define(tc_jsonser_Dog_name_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::Dog::name'.");
+            goto error;
+        }
+    }
+    /* Declare ::tc_jsonser::DogBreed */
+    tc_jsonser_DogBreed_o = db_declare(tc_jsonser_o, "DogBreed", db_typedef(db_enum_o));
+    if (!tc_jsonser_DogBreed_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::DogBreed'.");
+        goto error;
+    }
+
+    /* Declare ::tc_jsonser::DogBreed::Chihuahua */
+    tc_jsonser_DogBreed_Chihuahua_o = db_declare(tc_jsonser_DogBreed_o, "Chihuahua", db_typedef(db_constant_o));
+    if (!tc_jsonser_DogBreed_Chihuahua_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::DogBreed::Chihuahua'.");
+        goto error;
+    } else {
+        (*tc_jsonser_DogBreed_Chihuahua_o) = 2;
+    }
+
+    /* Define ::tc_jsonser::DogBreed::Chihuahua */
+    if (!db_checkState(tc_jsonser_DogBreed_Chihuahua_o, DB_DEFINED)) {
+        if (db_define(tc_jsonser_DogBreed_Chihuahua_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::DogBreed::Chihuahua'.");
+            goto error;
+        }
+    }
+    /* Declare ::tc_jsonser::DogBreed::GoldenRetriever */
+    tc_jsonser_DogBreed_GoldenRetriever_o = db_declare(tc_jsonser_DogBreed_o, "GoldenRetriever", db_typedef(db_constant_o));
+    if (!tc_jsonser_DogBreed_GoldenRetriever_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::DogBreed::GoldenRetriever'.");
+        goto error;
+    } else {
+        (*tc_jsonser_DogBreed_GoldenRetriever_o) = 0;
+    }
+
+    /* Define ::tc_jsonser::DogBreed::GoldenRetriever */
+    if (!db_checkState(tc_jsonser_DogBreed_GoldenRetriever_o, DB_DEFINED)) {
+        if (db_define(tc_jsonser_DogBreed_GoldenRetriever_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::DogBreed::GoldenRetriever'.");
+            goto error;
+        }
+    }
+    /* Declare ::tc_jsonser::DogBreed::Pug */
+    tc_jsonser_DogBreed_Pug_o = db_declare(tc_jsonser_DogBreed_o, "Pug", db_typedef(db_constant_o));
+    if (!tc_jsonser_DogBreed_Pug_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::DogBreed::Pug'.");
+        goto error;
+    } else {
+        (*tc_jsonser_DogBreed_Pug_o) = 1;
+    }
+
+    /* Define ::tc_jsonser::DogBreed::Pug */
+    if (!db_checkState(tc_jsonser_DogBreed_Pug_o, DB_DEFINED)) {
+        if (db_define(tc_jsonser_DogBreed_Pug_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::DogBreed::Pug'.");
+            goto error;
+        }
+    }
+    /* Define ::tc_jsonser::DogBreed */
+    if (!db_checkState(tc_jsonser_DogBreed_o, DB_DEFINED)) {
+        if (db_define(tc_jsonser_DogBreed_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::DogBreed'.");
+            goto error;
+        }
+    }
+    if (db_type(tc_jsonser_DogBreed_o)->size != sizeof(tc_jsonser_DogBreed)) {
+        db_error("tc_jsonser_load: calculated size '%d' of type '::tc_jsonser::DogBreed' doesn't match C-type size '%d'", db_type(tc_jsonser_DogBreed_o)->size, sizeof(tc_jsonser_DogBreed));
+    }
+    /* Define ::tc_jsonser::Dog::breed */
+    if (!db_checkState(tc_jsonser_Dog_breed_o, DB_DEFINED)) {
+        tc_jsonser_Dog_breed_o->type = db_resolve_ext(tc_jsonser_Dog_breed_o, NULL, "::tc_jsonser::DogBreed", FALSE, "element ::tc_jsonser::Dog::breed.type");
+        tc_jsonser_Dog_breed_o->modifiers = 0x0;
+        tc_jsonser_Dog_breed_o->state = 0x6;
+        tc_jsonser_Dog_breed_o->weak = FALSE;
+        tc_jsonser_Dog_breed_o->id = 0;
+        if (db_define(tc_jsonser_Dog_breed_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::Dog::breed'.");
             goto error;
         }
     }
@@ -1032,6 +1180,89 @@ int tc_jsonser_load(void) {
     if (!db_checkState(tc_jsonser_u8z_o, DB_DEFINED)) {
         if (db_define(tc_jsonser_u8z_o)) {
             db_error("tc_jsonser_load: failed to define object '::tc_jsonser::u8z'.");
+            goto error;
+        }
+    }
+    /* Define ::tc_jsonser::Dog::lover */
+    if (!db_checkState(tc_jsonser_Dog_lover_o, DB_DEFINED)) {
+        tc_jsonser_Dog_lover_o->type = db_resolve_ext(tc_jsonser_Dog_lover_o, NULL, "::tc_jsonser::Dog", FALSE, "element ::tc_jsonser::Dog::lover.type");
+        tc_jsonser_Dog_lover_o->modifiers = 0x0;
+        tc_jsonser_Dog_lover_o->state = 0x6;
+        tc_jsonser_Dog_lover_o->weak = FALSE;
+        tc_jsonser_Dog_lover_o->id = 3;
+        if (db_define(tc_jsonser_Dog_lover_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::Dog::lover'.");
+            goto error;
+        }
+    }
+    /* Define ::tc_jsonser::Dog */
+    if (!db_checkState(tc_jsonser_Dog_o, DB_DEFINED)) {
+        db_type(tc_jsonser_Dog_o)->defaultType = db_resolve_ext(tc_jsonser_Dog_o, NULL, "::hyve::lang::member", FALSE, "element ::tc_jsonser::Dog.defaultType");
+        db_type(tc_jsonser_Dog_o)->parentType = NULL;
+        db_type(tc_jsonser_Dog_o)->parentState = 0x0;
+        db_interface(tc_jsonser_Dog_o)->base = NULL;
+        db_struct(tc_jsonser_Dog_o)->baseAccess = 0x0;
+        tc_jsonser_Dog_o->implements.length = 0;
+        tc_jsonser_Dog_o->implements.buffer = NULL;
+        if (db_define(tc_jsonser_Dog_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::Dog'.");
+            goto error;
+        }
+    }
+    if (db_type(tc_jsonser_Dog_o)->size != sizeof(struct tc_jsonser_Dog_s)) {
+        db_error("tc_jsonser_load: calculated size '%d' of type '::tc_jsonser::Dog' doesn't match C-type size '%d'", db_type(tc_jsonser_Dog_o)->size, sizeof(struct tc_jsonser_Dog_s));
+    }
+    /* Declare ::tc_jsonser::dog1 */
+    tc_jsonser_dog1_o = db_declare(tc_jsonser_o, "dog1", db_typedef(tc_jsonser_Dog_o));
+    if (!tc_jsonser_dog1_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::dog1'.");
+        goto error;
+    }
+
+    /* Define ::tc_jsonser::dog1 */
+    if (!db_checkState(tc_jsonser_dog1_o, DB_DEFINED)) {
+        tc_jsonser_dog1_o->breed = TC_JSONSER_GoldenRetriever;
+        tc_jsonser_dog1_o->name = db_strdup("Gijs");
+        tc_jsonser_dog1_o->age = 10;
+        tc_jsonser_dog1_o->lover = NULL;
+        if (db_define(tc_jsonser_dog1_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::dog1'.");
+            goto error;
+        }
+    }
+    /* Declare ::tc_jsonser::dog2 */
+    tc_jsonser_dog2_o = db_declare(tc_jsonser_o, "dog2", db_typedef(tc_jsonser_Dog_o));
+    if (!tc_jsonser_dog2_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::dog2'.");
+        goto error;
+    }
+
+    /* Define ::tc_jsonser::dog2 */
+    if (!db_checkState(tc_jsonser_dog2_o, DB_DEFINED)) {
+        tc_jsonser_dog2_o->breed = TC_JSONSER_Pug;
+        tc_jsonser_dog2_o->name = db_strdup("Lolly");
+        tc_jsonser_dog2_o->age = 4;
+        tc_jsonser_dog2_o->lover = NULL;
+        if (db_define(tc_jsonser_dog2_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::dog2'.");
+            goto error;
+        }
+    }
+    /* Declare ::tc_jsonser::dog3 */
+    tc_jsonser_dog3_o = db_declare(tc_jsonser_o, "dog3", db_typedef(tc_jsonser_Dog_o));
+    if (!tc_jsonser_dog3_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::dog3'.");
+        goto error;
+    }
+
+    /* Define ::tc_jsonser::dog3 */
+    if (!db_checkState(tc_jsonser_dog3_o, DB_DEFINED)) {
+        tc_jsonser_dog3_o->breed = TC_JSONSER_Chihuahua;
+        tc_jsonser_dog3_o->name = db_strdup("I'm annoying");
+        tc_jsonser_dog3_o->age = 3;
+        tc_jsonser_dog3_o->lover = db_resolve_ext(tc_jsonser_dog3_o, NULL, "::tc_jsonser::dog2", FALSE, "element ::tc_jsonser::dog3.lover");
+        if (db_define(tc_jsonser_dog3_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::dog3'.");
             goto error;
         }
     }
