@@ -63,12 +63,25 @@ db_int16 test_primitive_value(void) {
     _test_primitive_value(s1, "\"hello world\"");
     _test_primitive_value(s2, "\"hello, world!\"");
 
+    _test_primitive_value(s3, "\"@@\"");
+    _test_primitive_value(s4, "\"@@ hey\"");
+    _test_primitive_value(s5, "\"@@hey\"");
+    _test_primitive_value(s6, "\"@@hey you\"");
+    _test_primitive_value(s7, "\"@@@\"");
+    _test_primitive_value(s8, "\"@@@ hey\"");
+    _test_primitive_value(s9, "\"@@@hey\"");
+    _test_primitive_value(s10, "\"@@@hey you\"");
+    _test_primitive_value(s11, "\"@@@@@@\"");
+    _test_primitive_value(s12, "\"@@@@@@ hey\"");
+    _test_primitive_value(s13, "\"@@@@@@hey\"");
+    _test_primitive_value(s14, "\"@@@@@@hey you\"");
+
     _test_primitive_value(p, "{\"x\":3,\"y\":4}");
 
-    // _test_primitive_value(Flint, "F");
-    // _test_primitive_value(Forge, "F");
-    // _test_primitive_value(Gust, "F");
-    // _test_primitive_value(Sleet, "F");
+    _test_primitive_value(Flint, "\"@E Venus\"");
+    _test_primitive_value(Forge, "\"@E Mars\"");
+    _test_primitive_value(Gust, "\"@E Jupiter\"");
+    _test_primitive_value(Sleet, "\"@E Mercury\"");
 
     return result;
 }

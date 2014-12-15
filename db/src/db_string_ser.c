@@ -173,15 +173,15 @@ static db_int16 db_ser_primitive(db_serializer s, db_value* v, void* userData) {
             }
         }
     } else if (db_primitive(t)->kind == DB_CHARACTER) {
-    	if (*(db_char*)o) {
-    		if (!db_ser_appendstr(data, "'%c'", *(db_char*)o)) {
-    		    goto finished;
-    		}
-    	} else {
-    		if (!db_ser_appendstr(data, "''")) {
-    		    goto finished;
-    		}
-    	}
+        if (*(db_char*)o) {
+            if (!db_ser_appendstr(data, "'%c'", *(db_char*)o)) {
+                goto finished;
+            }
+        } else {
+            if (!db_ser_appendstr(data, "''")) {
+                goto finished;
+            }
+        }
     } else {
         /* Convert primitive value to string */
         db_convert(db_primitive(t), o, db_primitive(db_string_o), &result);
@@ -213,21 +213,21 @@ static db_int16 db_ser_reference(db_serializer s, db_value* v, void* userData) {
 
     /* Obtain fully scoped name */
     if (object) {
-    	if (db_checkAttr(object, DB_ATTR_SCOPED) || (db_valueObject(v) == object)) {
-    		str = (char*)db_fullname(object, id);
-    	} else {
-    		db_string_ser_t walkData;
-    		int index = 0;
+        if (db_checkAttr(object, DB_ATTR_SCOPED) || (db_valueObject(v) == object)) {
+            str = (char*)db_fullname(object, id);
+        } else {
+            db_string_ser_t walkData;
+            int index = 0;
 
-    		if (!data->anonymousObjects) {
-    		    data->anonymousObjects = db_llNew();
-    		}
+            if (!data->anonymousObjects) {
+                data->anonymousObjects = db_llNew();
+            }
 
-    		if ((index = db_llHasObject(data->anonymousObjects, object))) {
-    		    sprintf(id, "<%d>", index);
-    		    str = id;
-    		} else {
-    		    db_value v;
+            if ((index = db_llHasObject(data->anonymousObjects, object))) {
+                sprintf(id, "<%d>", index);
+                str = id;
+            } else {
+                db_value v;
 
                 walkData.buffer = NULL;
                 walkData.length = 0;
@@ -249,8 +249,8 @@ static db_int16 db_ser_reference(db_serializer s, db_value* v, void* userData) {
 
                 data->anonymousObjects = walkData.anonymousObjects;
                 str = walkData.buffer;
-    		}
-    	}
+            }
+        }
     } else {
         str = "null";
     }
@@ -262,7 +262,7 @@ static db_int16 db_ser_reference(db_serializer s, db_value* v, void* userData) {
 
     return 0;
 error:
-	return -1;
+    return -1;
 finished:
     return 1;
 }
@@ -348,36 +348,36 @@ static db_int16 db_ser_object(db_serializer s, db_value* v, void* userData) {
     db_serializeValue(s, v, userData);
 
     if (data->prefixType) {
-    	db_id id;
-    	db_object o;
-    	db_string result = NULL;
+        db_id id;
+        db_object o;
+        db_string result = NULL;
 
-    	o = db_valueObject(v);
-    	db_fullname(db_typeof(o), id);
+        o = db_valueObject(v);
+        db_fullname(db_typeof(o), id);
 
-    	if (db_typeof(o)->real->kind != DB_PRIMITIVE) {
-    		if (data->buffer) {
-    			result = db_malloc(strlen(data->buffer) + strlen(id) + 1);
-    			sprintf(result, "%s%s", id, data->buffer);
-    		} else {
-    			result = db_strdup(id);
-    		}
-    	} else {
-    		if (data->buffer) {
-    			result = db_malloc(strlen(data->buffer) + strlen(id) + 2 + 1);
-    			sprintf(result, "%s{%s}", id, data->buffer);
-    		} else {
-    			db_critical("failed to serialize value to string");
-    		}
-    	}
+        if (db_typeof(o)->real->kind != DB_PRIMITIVE) {
+            if (data->buffer) {
+                result = db_malloc(strlen(data->buffer) + strlen(id) + 1);
+                sprintf(result, "%s%s", id, data->buffer);
+            } else {
+                result = db_strdup(id);
+            }
+        } else {
+            if (data->buffer) {
+                result = db_malloc(strlen(data->buffer) + strlen(id) + 2 + 1);
+                sprintf(result, "%s{%s}", id, data->buffer);
+            } else {
+                db_critical("failed to serialize value to string");
+            }
+        }
 
-    	if (!data->length) {
-    		db_dealloc(data->buffer); /* Serializer manages memory of buffer */
-    		data->buffer = result;
-    	} else { /* Application  manages memory of buffer */
-    		strcpy(data->buffer, result);
-    		db_dealloc(result);
-    	}
+        if (!data->length) {
+            db_dealloc(data->buffer); /* Serializer manages memory of buffer */
+            data->buffer = result;
+        } else { /* Application  manages memory of buffer */
+            strcpy(data->buffer, result);
+            db_dealloc(result);
+        }
     }
 
     return 0;

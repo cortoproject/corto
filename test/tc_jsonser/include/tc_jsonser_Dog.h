@@ -1,10 +1,10 @@
-/* tc_jsonser_point2D.h
+/* tc_jsonser_Dog.h
  *
  * This file contains generated code. Do not modify!
  */
 
-#ifndef tc_jsonser_point2D_H
-#define tc_jsonser_point2D_H
+#ifndef tc_jsonser_Dog_H
+#define tc_jsonser_Dog_H
 
 #include "hyve.h"
 #include "tc_jsonser__type.h"

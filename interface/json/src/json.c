@@ -5,7 +5,6 @@
 
 #include "db_generator.h"
 #include "db_serializer.h"
-// #include "db_shell.h"
 #include "hyve.h"
 #include "json.h"
 
@@ -74,30 +73,47 @@ static db_int16 db_ser_primitive(db_serializer s, db_value *info, void *userData
     db_void *value;
     db_string valueString = NULL;
     db_json_ser_t *data = userData;
+    db_int16 result;
 
     type = db_valueType(info);
     value = db_valueValue(info);
 
-    db_convert(db_primitive(type), value, db_primitive(db_string_o), &valueString);
-    if (!valueString) {
+    result = db_convert(db_primitive(type), value, db_primitive(db_string_o), &valueString);
+    if (result) {
         goto error;
     }
 
     switch (db_primitive(type->real)->kind) {
         case DB_BINARY:
+            if (!db_ser_appendstr(data, "\"@B %s\"", valueString)) {
+                goto finished;
+            }
             break;
         case DB_BITMASK:
+            if (!db_ser_appendstr(data, "\"@M %s\"", valueString)) {
+                goto finished;
+            }
             break;
         case DB_ENUM:
+            if (!db_ser_appendstr(data, "\"@E %s\"", valueString)) {
+                goto finished;
+            }
             break;
         case DB_CHARACTER:
         case DB_TEXT:
-            if (!*((db_string *)value)) {
+            // TODO escape @'s and other characters
+            if (!*(db_string *)value) {
                 if (!db_ser_appendstr(data, "null")) {
                     goto finished;
                 }
             } else {
-                if (!db_ser_appendstr(data, "\"%s\"", valueString)) {
+                if (!db_ser_appendstr(data, "\"")) {
+                    goto finished;
+                }
+                if (*valueString == '@' && !db_ser_appendstr(data, "@")) {
+                    goto finished;
+                }
+                if (!db_ser_appendstr(data, "%s\"", valueString)) {
                     goto finished;
                 }
             }
@@ -115,8 +131,48 @@ finished:
     db_dealloc(valueString);
     return 1;
 error:
-    fprintf(stderr, "ERROR when serializing %s\n", db_nameof(value));
     return -1;
+}
+
+static db_int16 db_ser_reference(db_serializer s, db_value *v, void *userData) {
+    DB_UNUSED(s);
+    db_id id;
+    void *o;
+    db_object object;
+    // db_json_ser_t *data;
+    // char *str;
+
+    // data = userData;
+    o = db_valueValue(v);
+    object = *(db_object*)o;
+
+    if (object) {
+        if (db_checkAttr(object, DB_ATTR_SCOPED) || (db_valueObject(v) == object)) {
+            db_fullname(object, id);
+            if (!db_ser_appendstr(userData, "\"@R %s\"", id)) {
+                goto finished;
+            }
+        } else {
+            // TODO anonymous
+        }
+    } else {
+        if (!db_ser_appendstrbuff(userData, "null")) {
+            goto finished;
+        }
+    }
+
+
+    /* Append name to serializer-result */
+    // if (!db_ser_appendstrbuff(userData, str)) {
+    //     goto finished;
+    // }
+
+    return 0;
+// error:
+//     return -1;
+finished:
+    return 1;
+
 }
 
 static db_int16 db_ser_member(db_serializer s, db_value *info, void *userData) {
@@ -394,6 +450,7 @@ struct db_serializer_s db_json_ser(db_modifier access, db_operatorKind accessKin
     s.traceKind = trace;
     s.program[DB_PRIMITIVE] = db_ser_primitive;
     s.program[DB_COMPOSITE] = db_ser_composite;
+    s.reference = db_ser_reference;
     /* s.program[DB_COLLECTION] = db_ser_scope; */
     s.metaprogram[DB_MEMBER] = db_ser_member;
     /* s.metaprogram[DB_BASE] = db_serializeMembers */;   /* Skip the scope-callback by directly calling serializeMembers. This will cause the extra
