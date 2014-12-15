@@ -37,10 +37,10 @@ Point p2: 30,40;
 Point3D p3: 50,60,70;
 Point3D p4: 80,90,100;
 
-Line l1: start:p1 end:p2;
-Line l2: start:Point{10,20} end:Point{30,40};
-Line l3: start:p3 end:p4;
-Line l4: start:Point3D{10,20,30} end:Point3D{40,50,60};
+Line l1: start=p1 end=p2;
+Line l2: start=Point{10,20} end=Point{30,40};
+Line l3: start=p3 end=p4;
+Line l4: start=Point3D{10,20,30} end=Point3D{40,50,60};
 
 var Point var1 = p1;
 var Point var2 = Point{10,20};

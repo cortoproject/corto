@@ -1,6 +1,5 @@
 /* os__api.h
  *
- *  Generated on Feb  5 2014
  *    API convenience functions for C-language.
  *    This file contains generated code. Do not modify!
  */
@@ -14,7 +13,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 /* ::hyve::os::thread */
 os_thread os_thread__new(void);
 os_thread os_thread__declare(db_object _parent, db_string _name);

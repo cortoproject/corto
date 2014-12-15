@@ -349,6 +349,11 @@ Fast_Expression Fast_BinaryExpr_fold(Fast_BinaryExpr _this) {
 	void *lptr, *rptr, *resultPtr;
 	db_type type, rtype;
 
+	if(!_this->lvalue || !_this->rvalue) {
+		Fast_Parser_error(yparser(), "invalid binary expression");
+		goto error;
+	}
+
 	type = Fast_Expression_getType_expr(_this->lvalue, _this->rvalue);
 	rtype = Fast_Expression_getType_expr(_this->rvalue, _this->lvalue);
 
@@ -383,9 +388,9 @@ Fast_Expression Fast_BinaryExpr_fold(Fast_BinaryExpr _this) {
 				switch(db_primitive(type)->kind) {
 				case DB_BOOLEAN: result = Fast_Expression(Fast_Boolean__create(FALSE)); break;
 				case DB_CHARACTER: result = Fast_Expression(Fast_Character__create('a')); break;
+				case DB_BITMASK:
 				case DB_UINTEGER: result = Fast_Expression(Fast_Integer__create(0)); break;
 				case DB_ENUM:
-				case DB_BITMASK:
 				case DB_INTEGER: result = Fast_Expression(Fast_SignedInteger__create(0)); break;
 				case DB_FLOAT: result = Fast_Expression(Fast_FloatingPoint__create(0)); break;
 				case DB_TEXT: result = Fast_Expression(Fast_String__create(NULL)); break;

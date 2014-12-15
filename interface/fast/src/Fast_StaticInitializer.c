@@ -14,6 +14,7 @@
 #include "Fast_Parser.h"
 #include "Fast__api.h"
 #include "db_collection.h"
+#include "db.h"
 
 Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
@@ -81,7 +82,12 @@ db_word Fast_Initializer_offset(Fast_StaticInitializer _this, db_uint32 variable
                     }
                     db_rbtreeSet(*(db_rbtree*)base, (void*)_this->frames[fp].keyPtr[variable], (void*)result);
                     if (!result) {
-                        result = (db_word)db_rbtreeGetPtr(*(db_rbtree*)base, (void*)_this->frames[fp].keyPtr[variable]);
+                        if (_this->frames[fp].keyPtr[variable]) {
+                            result = (db_word)db_rbtreeGetPtr(*(db_rbtree*)base, (void*)_this->frames[fp].keyPtr[variable]);
+                        } else {
+                            Fast_Parser_error(yparser(), "cannot set element without keyvalue");
+                            goto error;
+                        }
                     }
                 } else {
                     result = (db_word)db_calloc(db_type_sizeof(keyType));

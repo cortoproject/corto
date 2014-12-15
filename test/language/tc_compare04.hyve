@@ -15,9 +15,9 @@ Point p1: 10,20;
 Point p2: 15,20;
 Point p3: 10,25;
 
-Line l1: start:{10,20} stop:{30,40};
-Line l2: start:{10,25} stop:{30,40};
-Line l3: start:{10,20} stop:{30,45};
+Line l1: start={10,20} stop={30,40};
+Line l2: start={10,25} stop={30,40};
+Line l3: start={10,20} stop={30,45};
 
 // Point
 if p1.compare(p2) != LT: fail("p1.compare(p2) (${p1.compare(p2)} != LT)");

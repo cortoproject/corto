@@ -16,16 +16,16 @@ struct Polygon::
 	points_1 : list{Point};
 	points_2 : list{Point};
 
-Line l1: points_1:{{10,20}, {30,40}} points_2:{{50,60},{70,80}};
-Line l2: points_1:{{10,20}, {30,40}} points_2:{{50,60},{70,85}};
+Line l1: points_1={{10,20}, {30,40}} points_2={{50,60},{70,80}};
+Line l2: points_1={{10,20}, {30,40}} points_2={{50,60},{70,85}};
 
 if l1.compare(l2) != LT: fail("l1.compare(l2) (${l1.compare(l2)} != LT)");
 if l2.compare(l1) != GT: fail("l2.compare(l1) (${l2.compare(l1)} != GT)");
 if l1.compare(l1) != EQ: fail("l1.compare(l1) (${l1.compare(l1)} != EQ)");
 
-Polygon p1: points_1:{{10,20}, {30,40}} points_2:{{50,60},{70,80}};
-Polygon p2: points_1:{{10,20}, {30,40}} points_2:{{50,60},{70,85}};
-Polygon p3: points_1:{{10,20}, {30,40}} points_2:{{50,60},{70,80},{90,100}};
+Polygon p1: points_1={{10,20}, {30,40}} points_2={{50,60},{70,80}};
+Polygon p2: points_1={{10,20}, {30,40}} points_2={{50,60},{70,85}};
+Polygon p3: points_1={{10,20}, {30,40}} points_2={{50,60},{70,80},{90,100}};
 
 if p1.compare(p2) != LT: fail("p1.compare(p2) (${p1.compare(p2)} != LT)");
 if p2.compare(p1) != GT: fail("p2.compare(p1) (${p2.compare(p1)} != GT)");

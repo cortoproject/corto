@@ -121,8 +121,15 @@ db_bool db_primitive_castable_v(db_primitive _this, db_type type) {
 							break;
 						}
 						break;
+                    case DB_BITMASK:
+                        switch(kind) {
+                            case DB_BOOLEAN:
+                                result = TRUE;
+                                break;
+                            default:
+                                break;
+                        }
 					case DB_ENUM:
-					case DB_BITMASK:
 						switch(kind) {
 						case DB_INTEGER:
 						case DB_UINTEGER:

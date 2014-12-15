@@ -1,7 +1,6 @@
 /* os_timer.h
  *
- *  Generated on Feb  5 2014
- *    This file contains generated code. Do not modify!
+ * This file contains generated code. Do not modify!
  */
 
 #ifndef os_timer_H
@@ -10,6 +9,10 @@
 #include "hyve.h"
 #include "os_thread.h"
 #include "os__type.h"
+
+#include "os__api.h"
+
+#include "os__meta.h"
 
 #ifdef __cplusplus
 extern "C" {

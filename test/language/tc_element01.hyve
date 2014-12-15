@@ -14,7 +14,7 @@ typedef IntsMap : map{uint32,string};
 IntsArray ints_aCheck : 10,20,30;
 IntsSeq ints_sCheck : 10,20,30;
 IntsList ints_lCheck : 10,20,30;
-IntsMap ints_mCheck : "a":10 "b":20 "c":30;
+IntsMap ints_mCheck : "a"=10 "b"=20 "c"=30;
 
 void validate(IntsArray c, string failMsg): if c.compare(ints_aCheck): fail(failMsg);
 void validate(IntsSeq c, string failMsg):   if c.compare(ints_sCheck): fail(failMsg);
@@ -43,7 +43,7 @@ ints_l[2] += 27;
 validate(ints_l, "List object with static index");
 
 // Map object
-IntsMap ints_m : "a":1 "b":2 "c":3;
+IntsMap ints_m : "a"=1 "b"=2 "c"=3;
 ints_m["a"] = 10;
 ints_m["b"] *= 10;
 ints_m["c"] += 27;
