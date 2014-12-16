@@ -75,7 +75,8 @@ db_threadKey DB_KEY_WAIT_ADMIN;
     SSO_OP_CLASS(op, list);\
     SSO_OP_CLASS(op, map);\
     SSO_OP_CLASS(op, member);\
-    SSO_OP_CLASS(op, class);
+    SSO_OP_CLASS(op, class);\
+    SSO_OP_CLASS(op, procptr);
 
 /* Procedures */
 #define SSO_OP_PROCEDURETYPE(op)\
@@ -129,6 +130,7 @@ db_threadKey DB_KEY_WAIT_ADMIN;
     SSO_OP_PRIM(op, interfaceVectorSeq);\
     SSO_OP_PRIM(op, interfaceVector);\
     SSO_OP_PRIM(op, parameter);\
+    SSO_OP_PRIM(op, procptrdata);\
     SSO_OP_VOID(op, dispatcher);\
     SSO_OP_PROCEDURETYPE(op);\
 	SSO_OP_CLASSTYPE(op);
@@ -232,6 +234,7 @@ db_threadKey DB_KEY_WAIT_ADMIN;
 	SSO_OP_OBJ(op, compositeKind_INTERFACE);\
 	SSO_OP_OBJ(op, compositeKind_STRUCT);\
     SSO_OP_OBJ(op, compositeKind_CLASS);\
+    SSO_OP_OBJ(op, compositeKind_PROCPTR);\
     SSO_OP_OBJ(op, compositeKind_PROCEDURE);\
     /* collectionKind */\
     SSO_OP_OBJ(op, collectionKind_ARRAY);\
@@ -463,6 +466,14 @@ db_threadKey DB_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, class_bindDelegate);\
     SSO_OP_OBJ(op, class_bindObserver);\
     SSO_OP_OBJ(op, class_findObserver);\
+    /* procptrdata */\
+    SSO_OP_OBJ(op, procptrdata_instance);\
+    SSO_OP_OBJ(op, procptrdata_procedure);\
+    /* procptr */\
+    SSO_OP_OBJ(op, procptr_init);\
+    SSO_OP_OBJ(op, procptr_returnType);\
+    SSO_OP_OBJ(op, procptr_returnsReference);\
+    SSO_OP_OBJ(op, procptr_parameters);\
     /* array */\
     SSO_OP_OBJ(op, array_elementType);\
     SSO_OP_OBJ(op, array_init);\

@@ -1,21 +1,21 @@
 // Multiple lvalues and rvalues
-bool result: true;
+bool result: true
 void fail(string msg):
-	"tc_exprlist03: FAIL: $msg";
-	result = false;
+	"tc_exprlist03: FAIL: $msg"
+	result = false
 	
-var uint32 a, b = 10, 20;
+var uint32 a, b = 10, 20
 
-if a != 10: fail("a != 10 ($a)");
-if b != 20: fail("b != 20 ($b)");
+if a != 10: fail("a != 10 ($a)")
+if b != 20: fail("b != 20 ($b)")
 
-a, b = 30, 40;
-if a != 30: fail("a != 30 ($a)");
-if b != 40: fail("b != 40 ($b)");
+a, b = 30, 40
+if a != 30: fail("a != 30 ($a)")
+if b != 40: fail("b != 40 ($b)")
 
-a, b *= 2, 3;
+a, b *= 2, 3
 
-if a != 60: fail("a != 60 ($a)");
-if b != 120: fail("b != 120 ($b)");
+if a != 60: fail("a != 60 ($a)")
+if b != 120: fail("b != 120 ($b)")
 
-if result: "tc_exprlist03: OK";
+if result: "tc_exprlist03: OK"

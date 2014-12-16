@@ -14,7 +14,6 @@ Fast_Parser yparser(void);
 	yparser()->column += strlen(yytext);\
 	yparser()->token = yytext;\
 
-
 void lex_collect(void *o) {
 	Fast_Parser_collectHeap(yparser(), (db_word)o);
 }
@@ -93,8 +92,8 @@ gid ("::"*{id})+
 
 %%
 
-"//"							comment(); yparser()->line+=1;
-"#"								comment(); yparser()->line+=1;
+"//"							TOKEN; comment();
+"#"								comment();
 
 "update"						TOKEN; return KW_UPDATE;
 "declare"                       TOKEN; return KW_DECLARE;
@@ -126,16 +125,19 @@ false							TOKEN; yylval.Boolean = FALSE; return BOOLEAN;
 
 L?'(\\.|[^\\'])+'				TOKEN; yylval.Character = *(yytext+1); return CHARACTER;
 0x[0-9a-fA-F]+					TOKEN; sscanf(yytext, "%" PRIu64, &yylval.Integer); return INTEGER; 
-[0-9]+							TOKEN; sscanf(yytext, "%" PRIu64, &yylval.Integer); DB_UNUSED(yyunput); return INTEGER;
+[0-9]+							TOKEN; sscanf(yytext, "%" PRIu64, &yylval.Integer); return INTEGER;
 [0-9]+"."[0-9]+					TOKEN; yylval.FloatingPoint = atof(yytext); return FLOATINGPOINT;
 "null"							TOKEN; yylval.Null = NULL; return NUL;
 L?\"(\\.|[^\\"])*\"				TOKEN; yylval.String = malloc(strlen(yytext) + 1); lex_collect(yylval.String); return fast_escape(yytext+1,yylval.String) ? ERROR : STRING;
-[\n]							TOKEN; yparser()->line++; yparser()->column = 1;
 [ ]+							TOKEN; /* Ignore whitespaces */
 [\t]+							TOKEN; yparser()->column+=3; /* Ignore tabs */
 
+"\n#ind"						TOKEN; yparser()->line++; return INDENT;
+"#ded"							TOKEN; return DEDENT;
+"#column "[0-9]+				TOKEN; sscanf(yytext, "#column %u", &yparser()->column);
 ":"								TOKEN; return ':';
 ";"								TOKEN; return ';';
+[\n]							TOKEN; yparser()->line++; yparser()->column = 1; return ENDL;
 "("								TOKEN; return '(';
 ")"								TOKEN; return ')';
 "["								TOKEN; return '[';
@@ -183,10 +185,6 @@ L?\"(\\.|[^\\"])*\"				TOKEN; yylval.String = malloc(strlen(yytext) + 1); lex_co
 
 {id}							TOKEN;yylval.Identifier = strdup(yytext); lex_collect(yylval.Identifier); return ID;						
 {gid}							TOKEN; yylval.Identifier = strdup(yytext); lex_collect(yylval.Identifier); return GID;
-								
-"#ind"							TOKEN; return INDENT;
-"#ded"							TOKEN; return DEDENT;
-"#column "[0-9]+				TOKEN; sscanf(yytext, "#column %u", &yparser()->column);
 
 %%
 
@@ -205,10 +203,12 @@ static void comment(void)
 		/*putchar(c);*/
 		p->column = 1;
 	}
-	if(c == EOF) {
+	if (c == EOF) {
 		void Fast_Parser_error(Fast_Parser p, db_string fmt, ...);
 		Fast_Parser_error(p, "end of file encountered in comment");
 		exit(1);
+	} else {
+		unput('\n');
 	}
 }
 

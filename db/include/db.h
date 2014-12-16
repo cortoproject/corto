@@ -27,6 +27,8 @@
 #include "db_parameter.h"
 #include "db_primitive.h"
 #include "db_procedure.h"
+#include "db_procptr.h"
+#include "db_procptrdata.h"
 #include "db_sequence.h"
 #include "db_struct.h"
 #include "db_text.h"

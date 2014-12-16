@@ -108,7 +108,7 @@ Fast_Expression Fast_declarationSeqDo(Fast_Variable type, Fast_ParserDeclaration
 /* Operators */
 %token MUL_ASSIGN DIV_ASSIGN ADD_ASSIGN SUB_ASSIGN OR_ASSIGN AND_ASSIGN LOR
 %token LAND LNOT LEQ GEQ EQ NEQ INC DEC SCOPE SCOPEPRE SHIFT_LEFT SHIFT_RIGHT
-%token ARROW_LEFT ARROW_RIGHT
+%token ARROW_LEFT ARROW_RIGHT ENDL
 
 /* Indentation */
 %token INDENT DEDENT
@@ -204,21 +204,28 @@ code
 statements
     : statement { Fast_Parser_reset(yparser()); fast_op;}
     | statements statement { Fast_Parser_reset(yparser()); fast_op;}
-    | error {$$=NULL; /* printf("parser exit: Fast_Parser.c:%d\n", yparser()->errLine); */ exit(1);}
+    | error {
+        $$=NULL;
+        if(!yparser()->errors) {
+            printf("unreported error:%d: Fast_Parser.c:%d\n", yparser()->line, yparser()->errLine); 
+        }
+        exit(1);
+    }
 	;
 
 statement
-    : expr ';'					{Fast_Parser_addStatement(yparser(), $1); fast_op; Fast_Parser_define(yparser()); fast_op;}
+    : expr ENDL					{Fast_Parser_addStatement(yparser(), $1); fast_op; Fast_Parser_define(yparser()); fast_op;}
     | if_statement              {Fast_Parser_addStatement(yparser(), $1); fast_op;}
     | while_statement           {Fast_Parser_addStatement(yparser(), $1); fast_op;}
     | switch_statement          {Fast_Parser_addStatement(yparser(), $1); fast_op;}
-    | declaration ';'           {$$=NULL;}
+    | declaration ENDL           {$$=NULL;}
     | scope_statement           {$<Variable>$ = Fast_Parser_pushScope(yparser()); Fast_Parser_pushLvalue(yparser(),NULL, FALSE); fast_op;} scope {Fast_Parser_popScope(yparser(),$<Variable>2); fast_op;}
-    | function_declaration ';'  {$$=NULL;}
+    | function_declaration ENDL  {$$=NULL;}
     | function_implementation   {$$=NULL;}
     | observer_statement        {$$=NULL;}
     | update_statement          {Fast_Parser_addStatement(yparser(), $1); fast_op;}
     | block                     {Fast_Parser_addStatement(yparser(), $1); fast_op;}
+    | ENDL                      {$$=NULL;}
 	;
 
 /* ======================================================================== */
@@ -246,7 +253,6 @@ block_start
 block
     : block_start statements {Fast_Parser_blockPop(yparser()); fast_op;} DEDENT 	{$$=$1;}
     | ':' {$<Fast>$=Fast_Parser_blockPush(yparser(), FALSE); fast_op;} statement {Fast_Parser_blockPop(yparser()); fast_op; $$=$<Fast>2;}
-    | ':' ';' {$$=NULL;}
     ;
 
 /* ======================================================================== */
@@ -258,7 +264,7 @@ function_implementation
         $<Fast>$ = Fast_Parser_declareFunctionParams(yparser(),$1); fast_op;
         Fast_Parser_blockPush(yparser(), FALSE); fast_op;
         Fast_Parser_pushReturnAsLvalue(yparser(), $1); fast_op; /* Set lvalue to return-variable of function */
-    } '=' expr ';' {
+    } '=' expr ENDL {
         Fast_Parser_popLvalue(yparser()); fast_op;
         Fast_Parser_bindOneliner(yparser(), $1, $<Fast>2, $4); fast_op; 
         Fast_Parser_blockPop(yparser()); fast_op;
@@ -637,7 +643,7 @@ if_start
 /* ======================================================================== */
 while_statement
     : while_until block 	{$$ = Fast_Parser_whileStatement(yparser(), $1, $2, FALSE); fast_op;}
-    | while_until ';'		{$$ = Fast_Parser_whileStatement(yparser(), $1, yparser()->block, TRUE); fast_op;}
+    | while_until ENDL		{$$ = Fast_Parser_whileStatement(yparser(), $1, yparser()->block, TRUE); fast_op;}
     ;
 
 while_until
@@ -678,7 +684,7 @@ case_label
 /* ======================================================================== */
 observer_statement
     : observer_declaration block    {Fast_Parser_observerPop(yparser()); fast_op;}
-    | observer_declaration ';'      {Fast_Parser_observerPop(yparser()); fast_op;}
+    | observer_declaration ENDL      {Fast_Parser_observerPop(yparser()); fast_op;}
     ;
 
 observer_declaration
@@ -717,7 +723,7 @@ event_childflag
 /* Update statement */
 /* ======================================================================== */
 update_statement
-    : KW_UPDATE wait_expr ';'    {$$ = Fast_Parser_updateStatement(yparser(), $2, NULL); fast_op;}
+    : KW_UPDATE wait_expr ENDL    {$$ = Fast_Parser_updateStatement(yparser(), $2, NULL); fast_op;}
     | KW_UPDATE wait_expr block  {$$ = Fast_Parser_updateStatement(yparser(), $2, $3); fast_op;}
     ;
 

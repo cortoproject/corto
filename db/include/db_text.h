@@ -10,6 +10,10 @@
 #include "db_primitive.h"
 #include "db__type.h"
 
+#include "db__api.h"
+
+#include "db__meta.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

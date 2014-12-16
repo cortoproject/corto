@@ -38,6 +38,7 @@ DB_META_OBJECT(class, enum);
 DB_META_OBJECT(class, bitmask);
 DB_META_OBJECT(class, struct);
 DB_META_OBJECT(class, class);
+DB_META_OBJECT(class, procptr);
 DB_META_OBJECT(class, procedure);
 DB_META_OBJECT(class, array);
 DB_META_OBJECT(class, sequence);
@@ -47,6 +48,7 @@ DB_META_OBJECT(class, member);
 DB_META_OBJECT(class, event);
 DB_META_OBJECT(class, observableEvent);
 DB_META_OBJECT(struct, parameter);
+DB_META_OBJECT(struct, procptrdata);
 DB_META_OBJECT(struct, interfaceVector);
 DB_META_OBJECT(interface, dispatcher);
 

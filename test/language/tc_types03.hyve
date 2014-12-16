@@ -1,31 +1,31 @@
-bool result: true;
+bool result: true
 void fail(string msg):
-	"tc_types03: FAIL: $msg";
-	result = false;
+	"tc_types03: FAIL: $msg"
+	result = false
 
 class RecursiveMember::
-	x : RecursiveMember;
-RecursiveMember o1: o1;
-var RecursiveMember v1 = RecursiveMember{o1};
-if o1.x != o1: fail("RecursiveMember");
-if v1.x != o1: fail("RecursiveMember (var)");
+	x : RecursiveMember
+RecursiveMember o1: o1
+var RecursiveMember v1 = RecursiveMember{o1}
+if o1.x != o1: fail("RecursiveMember")
+if v1.x != o1: fail("RecursiveMember (var)")
 
 class RecursiveArray::
-	x : array{RecursiveArray,1};
-RecursiveArray o2: {o2};
-RecursiveArray d2: {RecursiveArray{{o2}}};
-var RecursiveArray v2 = RecursiveArray{{o2}};
-if o2.x[0] != o2: fail("RecursiveArray");
-if d2.x[0].x[0] != o2: fail("RecursiveArray (dynamic initializer)");
-if v2.x[0] != o2: fail("RecursiveArray (var)");
+	x : array{RecursiveArray,1}
+RecursiveArray o2: {o2}
+RecursiveArray d2: {RecursiveArray{{o2}}}
+var RecursiveArray v2 = RecursiveArray{{o2}}
+if o2.x[0] != o2: fail("RecursiveArray")
+if d2.x[0].x[0] != o2: fail("RecursiveArray (dynamic initializer)")
+if v2.x[0] != o2: fail("RecursiveArray (var)")
 
 class RecursiveList::
-	x : list{RecursiveList,1};
-RecursiveList o3: {o3};
-RecursiveList d3: {RecursiveList{{o3}}};
-var RecursiveList v3 = RecursiveList{{o3}};
-if o3.x[0] != o3: fail("RecursiveList");
-if d3.x[0].x[0] != o3: fail("RecursiveList (dynamic initializer)");
-if v3.x[0] != o3: fail("RecursiveList (var)");
+	x : list{RecursiveList,1}
+RecursiveList o3: {o3}
+RecursiveList d3: {RecursiveList{{o3}}}
+var RecursiveList v3 = RecursiveList{{o3}}
+if o3.x[0] != o3: fail("RecursiveList")
+if d3.x[0].x[0] != o3: fail("RecursiveList (dynamic initializer)")
+if v3.x[0] != o3: fail("RecursiveList (var)")
 
-if result: "tc_types03: OK";
+if result: "tc_types03: OK"

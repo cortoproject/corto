@@ -1,30 +1,30 @@
-bool result: true;
+bool result: true
 
 void fail(string msg):
-	"tc_cast01: FAIL: $msg";
-	result = false;
+	"tc_cast01: FAIL: $msg"
+	result = false
 
 // Test if signedness is correctly preserved in casts between unsigned and signed numbers
-int16 minus1_16 : -1;
-uint16 max_u16 : 65535;
-int32 v_32;
-uint32 v_u32;
+int16 minus1_16 : -1
+uint16 max_u16 : 65535
+int32 v_32
+uint32 v_u32
 
-v_32 = minus1_16;
-v_u32 = minus1_16;
+v_32 = minus1_16
+v_u32 = minus1_16
 
-if v_32 != -1: fail("signedness is lost in cast from signed 16 to 32 bit ($v_32)");
-if v_u32 != 4294967295: fail("cast from signed 16 bit to unsigned 32 bit failed ($v_u32)");
+if v_32 != -1: fail("signedness is lost in cast from signed 16 to 32 bit ($v_32)")
+if v_u32 != 4294967295: fail("cast from signed 16 bit to unsigned 32 bit failed ($v_u32)")
 
-v_32 = max_u16;
-v_u32 = max_u16;
+v_32 = max_u16
+v_u32 = max_u16
 
-if v_32 != 65535: fail("cast failed from unsigned 16 bit to signed 32 bit ($v_32)");
-if v_u32 != 65535: fail("cast failed from unsigned 16 bit to unsigned 32 bit ($v_u32)");
+if v_32 != 65535: fail("cast failed from unsigned 16 bit to signed 32 bit ($v_32)")
+if v_u32 != 65535: fail("cast failed from unsigned 16 bit to unsigned 32 bit ($v_u32)")
 
 // Validate signedness without assignments
-v_32 = -1;
-if (v_32 + minus1_16) != -2: fail("signedness lost in signed 16 & 32bit calculation (${v_32-minus1_16})");
+v_32 = -1
+if (v_32 + minus1_16) != -2: fail("signedness lost in signed 16 & 32bit calculation (${v_32-minus1_16})")
 
-if result: "tc_cast01: OK";
+if result: "tc_cast01: OK"
 

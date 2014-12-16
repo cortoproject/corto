@@ -1,13 +1,12 @@
-/* db_int.h
+/* db_procptrdata.h
  *
  * This file contains generated code. Do not modify!
  */
 
-#ifndef db_int_H
-#define db_int_H
+#ifndef db_procptrdata_H
+#define db_procptrdata_H
 
 #include "hyve.h"
-#include "db_primitive.h"
 #include "db__type.h"
 
 #include "db__api.h"
@@ -17,9 +16,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::int::init(lang::int object) */
-db_int16 db_int_init(db_int object);
 
 #ifdef __cplusplus
 }

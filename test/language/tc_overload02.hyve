@@ -1,28 +1,28 @@
 // Test overloading with inheritance
-bool result: true;
+bool result: true
 void fail(string msg):
-	"tc_overload02: FAIL: $msg";
-	result = false;
+	"tc_overload02: FAIL: $msg"
+	result = false
 
-struct Point:: x, y: uint32;
-struct Point3D: Point:: z: uint32;
-struct Point4D: Point3D:: a: uint32;
+struct Point:: x, y: uint32
+struct Point3D: Point:: z: uint32
+struct Point4D: Point3D:: a: uint32
 
-Point add(Point a, Point b) = {a.x + b.x, a.y + b.y};
+Point add(Point a, Point b) = {a.x + b.x, a.y + b.y}
 
 // Intentionally use different argument names to verify whether correct arguments are declared
-Point3D add(Point3D c, Point3D d) = {c.x + d.x, c.y + d.y, c.z + d.z};
+Point3D add(Point3D c, Point3D d) = {c.x + d.x, c.y + d.y, c.z + d.z}
 
-Point p1, p2: 10, 20;
-Point3D p3, p4: 30, 40, 50;
-Point4D p5, p6: 60, 70, 80, 90;
+Point p1, p2: 10, 20
+Point3D p3, p4: 30, 40, 50
+Point4D p5, p6: 60, 70, 80, 90
 
-var Point p7 = add(p1, p2);
-var Point3D p8 = add(p3, p4);
-var Point3D p9 = add(p5, p6); // Validate that the closest overloaded function is called
+var Point p7 = add(p1, p2)
+var Point3D p8 = add(p3, p4)
+var Point3D p9 = add(p5, p6) // Validate that the closest overloaded function is called
 
-if p7[x, y] != (20, 40): fail("p7[x, y] != (20, 40) ($p7)");
-if p8[x, y, z] != (60, 80, 100): fail("p8[x, y, z] != (60, 80, 100) ($p8)");
-if p9[x, y, z] != (120, 140, 160): fail("p9[x, y, z] != (120, 140, 160) ($p9)");
+if p7[x, y] != (20, 40): fail("p7[x, y] != (20, 40) ($p7)")
+if p8[x, y, z] != (60, 80, 100): fail("p8[x, y, z] != (60, 80, 100) ($p8)")
+if p9[x, y, z] != (120, 140, 160): fail("p9[x, y, z] != (120, 140, 160) ($p9)")
 
-if result: "tc_overload02: OK";
+if result: "tc_overload02: OK"
