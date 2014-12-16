@@ -1193,7 +1193,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_InitializerFrame_o)->size != sizeof(Fast_InitializerFrame)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::InitializerFrame' doesn't match C-type size '%d'", db_type(Fast_InitializerFrame_o)->size, sizeof(Fast_InitializerFrame));
-        goto error;
     }
     /* Define ::hyve::Fast::Initializer::frames */
     if (!db_checkState(Fast_Initializer_frames_o, DB_DEFINED)) {
@@ -1271,7 +1270,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_InitializerKind_o)->size != sizeof(Fast_InitializerKind)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::InitializerKind' doesn't match C-type size '%d'", db_type(Fast_InitializerKind_o)->size, sizeof(Fast_InitializerKind));
-        goto error;
     }
     /* Declare ::hyve::Fast::InitializerVariable */
     Fast_InitializerVariable_o = db_declare(Fast_o, "InitializerVariable", db_typedef(db_struct_o));
@@ -1473,7 +1471,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_InitOperKind_o)->size != sizeof(Fast_InitOperKind)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::InitOperKind' doesn't match C-type size '%d'", db_type(Fast_InitOperKind_o)->size, sizeof(Fast_InitOperKind));
-        goto error;
     }
     /* Define ::hyve::Fast::InitOper::kind */
     if (!db_checkState(Fast_InitOper_kind_o, DB_DEFINED)) {
@@ -1662,7 +1659,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_LocalKind_o)->size != sizeof(Fast_LocalKind)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::LocalKind' doesn't match C-type size '%d'", db_type(Fast_LocalKind_o)->size, sizeof(Fast_LocalKind));
-        goto error;
     }
     /* Define ::hyve::Fast::Local::kind */
     if (!db_checkState(Fast_Local_kind_o, DB_DEFINED)) {
@@ -2205,7 +2201,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_nodeKind_o)->size != sizeof(Fast_nodeKind)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::nodeKind' doesn't match C-type size '%d'", db_type(Fast_nodeKind_o)->size, sizeof(Fast_nodeKind));
-        goto error;
     }
     /* Define ::hyve::Fast::Node::kind */
     if (!db_checkState(Fast_Node_kind_o, DB_DEFINED)) {
@@ -3378,7 +3373,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_Parser_stagedId_o)->size != sizeof(Fast_Parser_stagedId)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Parser::stagedId' doesn't match C-type size '%d'", db_type(Fast_Parser_stagedId_o)->size, sizeof(Fast_Parser_stagedId));
-        goto error;
     }
     /* Define ::hyve::Fast::Parser::staged */
     if (!db_checkState(Fast_Parser_staged_o, DB_DEFINED)) {
@@ -4057,7 +4051,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_valueKind_o)->size != sizeof(Fast_valueKind)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::valueKind' doesn't match C-type size '%d'", db_type(Fast_valueKind_o)->size, sizeof(Fast_valueKind));
-        goto error;
     }
     /* Define ::hyve::Fast::Literal::kind */
     if (!db_checkState(Fast_Literal_kind_o, DB_DEFINED)) {
@@ -4170,7 +4163,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_variableKind_o)->size != sizeof(Fast_variableKind)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::variableKind' doesn't match C-type size '%d'", db_type(Fast_variableKind_o)->size, sizeof(Fast_variableKind));
-        goto error;
     }
     /* Define ::hyve::Fast::Variable::kind */
     if (!db_checkState(Fast_Variable_kind_o, DB_DEFINED)) {
@@ -4341,7 +4333,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_StaticInitializerFrame_o)->size != sizeof(Fast_StaticInitializerFrame)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::StaticInitializerFrame' doesn't match C-type size '%d'", db_type(Fast_StaticInitializerFrame_o)->size, sizeof(Fast_StaticInitializerFrame));
-        goto error;
     }
     /* Define ::hyve::Fast::StaticInitializer::frames */
     if (!db_checkState(Fast_StaticInitializer_frames_o, DB_DEFINED)) {
@@ -4485,7 +4476,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_Node_o)->size != sizeof(struct Fast_Node_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Node' doesn't match C-type size '%d'", db_type(Fast_Node_o)->size, sizeof(struct Fast_Node_s));
-        goto error;
     }
     /* Declare ::hyve::Fast::Block::addStatement(Fast::Node statement) */
     Fast_Block_addStatement_o = db_declare(Fast_Block_o, "addStatement(Fast::Node statement)", db_typedef(db_method_o));
@@ -4883,7 +4873,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_Expression_o)->size != sizeof(struct Fast_Expression_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Expression' doesn't match C-type size '%d'", db_type(Fast_Expression_o)->size, sizeof(struct Fast_Expression_s));
-        goto error;
     }
     /* Declare ::hyve::Fast::BinaryExpr::construct(Fast::BinaryExpr object) */
     Fast_BinaryExpr_construct_o = db_declare(Fast_BinaryExpr_o, "construct(Fast::BinaryExpr object)", db_typedef(db_callback_o));
@@ -5035,7 +5024,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_BinaryExpr_o)->size != sizeof(struct Fast_BinaryExpr_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::BinaryExpr' doesn't match C-type size '%d'", db_type(Fast_BinaryExpr_o)->size, sizeof(struct Fast_BinaryExpr_s));
-        goto error;
     }
     /* Define ::hyve::Fast::Block::lookup(lang::string id) */
     if (!db_checkState(Fast_Block_lookup_o, DB_DEFINED)) {
@@ -5188,7 +5176,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_Call_o)->size != sizeof(struct Fast_Call_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Call' doesn't match C-type size '%d'", db_type(Fast_Call_o)->size, sizeof(struct Fast_Call_s));
-        goto error;
     }
     /* Declare ::hyve::Fast::CastExpr::construct(Fast::CastExpr object) */
     Fast_CastExpr_construct_o = db_declare(Fast_CastExpr_o, "construct(Fast::CastExpr object)", db_typedef(db_callback_o));
@@ -5274,7 +5261,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_CastExpr_o)->size != sizeof(struct Fast_CastExpr_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::CastExpr' doesn't match C-type size '%d'", db_type(Fast_CastExpr_o)->size, sizeof(struct Fast_CastExpr_s));
-        goto error;
     }
     /* Declare ::hyve::Fast::CommaExpr::addExpression(Expression expr) */
     Fast_CommaExpr_addExpression_o = db_declare(Fast_CommaExpr_o, "addExpression(Expression expr)", db_typedef(db_method_o));
@@ -5445,7 +5431,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_CommaExpr_o)->size != sizeof(struct Fast_CommaExpr_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::CommaExpr' doesn't match C-type size '%d'", db_type(Fast_CommaExpr_o)->size, sizeof(struct Fast_CommaExpr_s));
-        goto error;
     }
     /* Define ::hyve::Fast::Define::object */
     if (!db_checkState(Fast_Define_object_o, DB_DEFINED)) {
@@ -5475,7 +5460,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_Define_o)->size != sizeof(struct Fast_Define_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Define' doesn't match C-type size '%d'", db_type(Fast_Define_o)->size, sizeof(struct Fast_Define_s));
-        goto error;
     }
     /* Define ::hyve::Fast::ElementExpr::lvalue */
     if (!db_checkState(Fast_ElementExpr_lvalue_o, DB_DEFINED)) {
@@ -5861,7 +5845,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_InitializerVariable_o)->size != sizeof(Fast_InitializerVariable)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::InitializerVariable' doesn't match C-type size '%d'", db_type(Fast_InitializerVariable_o)->size, sizeof(Fast_InitializerVariable));
-        goto error;
     }
     /* Define ::hyve::Fast::Initializer::variables */
     if (!db_checkState(Fast_Initializer_variables_o, DB_DEFINED)) {
@@ -5891,7 +5874,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_Initializer_o)->size != sizeof(struct Fast_Initializer_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Initializer' doesn't match C-type size '%d'", db_type(Fast_Initializer_o)->size, sizeof(struct Fast_Initializer_s));
-        goto error;
     }
     /* Declare ::hyve::Fast::DynamicInitializer::construct(DynamicInitializer object) */
     Fast_DynamicInitializer_construct_o = db_declare(Fast_DynamicInitializer_o, "construct(DynamicInitializer object)", db_typedef(db_callback_o));
@@ -6173,7 +6155,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_InitializerExpr_o)->size != sizeof(struct Fast_InitializerExpr_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::InitializerExpr' doesn't match C-type size '%d'", db_type(Fast_InitializerExpr_o)->size, sizeof(struct Fast_InitializerExpr_s));
-        goto error;
     }
     /* Declare ::hyve::Fast::StaticInitializer::construct(StaticInitializer object) */
     Fast_StaticInitializer_construct_o = db_declare(Fast_StaticInitializer_o, "construct(StaticInitializer object)", db_typedef(db_callback_o));
@@ -6279,7 +6260,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_StaticInitializer_o)->size != sizeof(struct Fast_StaticInitializer_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::StaticInitializer' doesn't match C-type size '%d'", db_type(Fast_StaticInitializer_o)->size, sizeof(struct Fast_StaticInitializer_s));
-        goto error;
     }
     /* Define ::hyve::Fast::Parser::initializers */
     if (!db_checkState(Fast_Parser_initializers_o, DB_DEFINED)) {
@@ -6319,7 +6299,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_InitOper_o)->size != sizeof(Fast_InitOper)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::InitOper' doesn't match C-type size '%d'", db_type(Fast_InitOper_o)->size, sizeof(Fast_InitOper));
-        goto error;
     }
     /* Declare ::hyve::Fast::Literal::getValue() */
     Fast_Literal_getValue_o = db_declare(Fast_Literal_o, "getValue()", db_typedef(db_virtual_o));
@@ -6381,7 +6360,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_Literal_o)->size != sizeof(struct Fast_Literal_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Literal' doesn't match C-type size '%d'", db_type(Fast_Literal_o)->size, sizeof(struct Fast_Literal_s));
-        goto error;
     }
     /* Declare ::hyve::Fast::Boolean::init(Boolean object) */
     Fast_Boolean_init_o = db_declare(Fast_Boolean_o, "init(Boolean object)", db_typedef(db_callback_o));
@@ -6465,7 +6443,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_Boolean_o)->size != sizeof(struct Fast_Boolean_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Boolean' doesn't match C-type size '%d'", db_type(Fast_Boolean_o)->size, sizeof(struct Fast_Boolean_s));
-        goto error;
     }
     /* Declare ::hyve::Fast::Character::init(Character object) */
     Fast_Character_init_o = db_declare(Fast_Character_o, "init(Character object)", db_typedef(db_callback_o));
@@ -6549,7 +6526,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_Character_o)->size != sizeof(struct Fast_Character_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Character' doesn't match C-type size '%d'", db_type(Fast_Character_o)->size, sizeof(struct Fast_Character_s));
-        goto error;
     }
     /* Declare ::hyve::Fast::FloatingPoint::init(FloatingPoint object) */
     Fast_FloatingPoint_init_o = db_declare(Fast_FloatingPoint_o, "init(FloatingPoint object)", db_typedef(db_callback_o));
@@ -6633,7 +6609,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_FloatingPoint_o)->size != sizeof(struct Fast_FloatingPoint_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::FloatingPoint' doesn't match C-type size '%d'", db_type(Fast_FloatingPoint_o)->size, sizeof(struct Fast_FloatingPoint_s));
-        goto error;
     }
     /* Declare ::hyve::Fast::Integer::init(Integer object) */
     Fast_Integer_init_o = db_declare(Fast_Integer_o, "init(Integer object)", db_typedef(db_callback_o));
@@ -6717,7 +6692,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_Integer_o)->size != sizeof(struct Fast_Integer_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Integer' doesn't match C-type size '%d'", db_type(Fast_Integer_o)->size, sizeof(struct Fast_Integer_s));
-        goto error;
     }
     /* Define ::hyve::Fast::DynamicInitializerFrame::sequenceSize */
     if (!db_checkState(Fast_DynamicInitializerFrame_sequenceSize_o, DB_DEFINED)) {
@@ -6813,7 +6787,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_Null_o)->size != sizeof(struct Fast_Null_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Null' doesn't match C-type size '%d'", db_type(Fast_Null_o)->size, sizeof(struct Fast_Null_s));
-        goto error;
     }
     /* Declare ::hyve::Fast::SignedInteger::init(SignedInteger object) */
     Fast_SignedInteger_init_o = db_declare(Fast_SignedInteger_o, "init(SignedInteger object)", db_typedef(db_callback_o));
@@ -6897,7 +6870,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_SignedInteger_o)->size != sizeof(struct Fast_SignedInteger_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::SignedInteger' doesn't match C-type size '%d'", db_type(Fast_SignedInteger_o)->size, sizeof(struct Fast_SignedInteger_s));
-        goto error;
     }
     /* Declare ::hyve::Fast::String::construct(String object) */
     Fast_String_construct_o = db_declare(Fast_String_o, "construct(String object)", db_typedef(db_callback_o));
@@ -7035,7 +7007,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_Lvalue_o)->size != sizeof(Fast_Lvalue)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Lvalue' doesn't match C-type size '%d'", db_type(Fast_Lvalue_o)->size, sizeof(Fast_Lvalue));
-        goto error;
     }
     /* Define ::hyve::Fast::Parser::lvalue */
     if (!db_checkState(Fast_Parser_lvalue_o, DB_DEFINED)) {
@@ -7155,7 +7126,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_MemberExpr_o)->size != sizeof(struct Fast_MemberExpr_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::MemberExpr' doesn't match C-type size '%d'", db_type(Fast_MemberExpr_o)->size, sizeof(struct Fast_MemberExpr_s));
-        goto error;
     }
     /* Declare ::hyve::Fast::ElementExpr::construct(Fast::MemberExpr object) */
     Fast_ElementExpr_construct_o = db_declare(Fast_ElementExpr_o, "construct(Fast::MemberExpr object)", db_typedef(db_callback_o));
@@ -7195,7 +7165,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_ElementExpr_o)->size != sizeof(struct Fast_ElementExpr_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::ElementExpr' doesn't match C-type size '%d'", db_type(Fast_ElementExpr_o)->size, sizeof(struct Fast_ElementExpr_s));
-        goto error;
     }
     /* Define ::hyve::Fast::NewExpr::attributes */
     if (!db_checkState(Fast_NewExpr_attributes_o, DB_DEFINED)) {
@@ -7303,7 +7272,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_NewExpr_o)->size != sizeof(struct Fast_NewExpr_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::NewExpr' doesn't match C-type size '%d'", db_type(Fast_NewExpr_o)->size, sizeof(struct Fast_NewExpr_s));
-        goto error;
     }
     /* Declare ::hyve::Fast::Parser::binaryExpr(Fast::Expression lvalues,Fast::Expression rvalues,lang::operatorKind operator) */
     Fast_Parser_binaryExpr_o = db_declare(Fast_Parser_o, "binaryExpr(Fast::Expression lvalues,Fast::Expression rvalues,lang::operatorKind operator)", db_typedef(db_method_o));
@@ -7764,7 +7732,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_ParserNew_o)->size != sizeof(Fast_ParserNew)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::ParserNew' doesn't match C-type size '%d'", db_type(Fast_ParserNew_o)->size, sizeof(Fast_ParserNew));
-        goto error;
     }
     /* Declare ::hyve::Fast::PostfixExpr::construct(Fast::PostfixExpr object) */
     Fast_PostfixExpr_construct_o = db_declare(Fast_PostfixExpr_o, "construct(Fast::PostfixExpr object)", db_typedef(db_callback_o));
@@ -7838,7 +7805,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_PostfixExpr_o)->size != sizeof(struct Fast_PostfixExpr_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::PostfixExpr' doesn't match C-type size '%d'", db_type(Fast_PostfixExpr_o)->size, sizeof(struct Fast_PostfixExpr_s));
-        goto error;
     }
     /* Define ::hyve::Fast::TernaryExpr::condition */
     if (!db_checkState(Fast_TernaryExpr_condition_o, DB_DEFINED)) {
@@ -8094,7 +8060,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_UnaryExpr_o)->size != sizeof(struct Fast_UnaryExpr_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::UnaryExpr' doesn't match C-type size '%d'", db_type(Fast_UnaryExpr_o)->size, sizeof(struct Fast_UnaryExpr_s));
-        goto error;
     }
     /* Define ::hyve::Fast::Update::from */
     if (!db_checkState(Fast_Update_from_o, DB_DEFINED)) {
@@ -8146,7 +8111,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_Variable_o)->size != sizeof(struct Fast_Variable_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Variable' doesn't match C-type size '%d'", db_type(Fast_Variable_o)->size, sizeof(struct Fast_Variable_s));
-        goto error;
     }
     /* Declare ::hyve::Fast::Block::declare(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference) */
     Fast_Block_declare_o = db_declare(Fast_Block_o, "declare(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference)", db_typedef(db_method_o));
@@ -8234,7 +8198,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_Local_o)->size != sizeof(struct Fast_Local_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Local' doesn't match C-type size '%d'", db_type(Fast_Local_o)->size, sizeof(struct Fast_Local_s));
-        goto error;
     }
     /* Define ::hyve::Fast::Block::declare(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference) */
     if (!db_checkState(Fast_Block_declare_o, DB_DEFINED)) {
@@ -8304,7 +8267,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_Template_o)->size != sizeof(struct Fast_Template_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Template' doesn't match C-type size '%d'", db_type(Fast_Template_o)->size, sizeof(struct Fast_Template_s));
-        goto error;
     }
     /* Define ::hyve::Fast::Block::declareTemplate(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference) */
     if (!db_checkState(Fast_Block_declareTemplate_o, DB_DEFINED)) {
@@ -8337,7 +8299,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_Block_o)->size != sizeof(struct Fast_Block_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Block' doesn't match C-type size '%d'", db_type(Fast_Block_o)->size, sizeof(struct Fast_Block_s));
-        goto error;
     }
     /* Define ::hyve::Fast::Binding::impl */
     if (!db_checkState(Fast_Binding_impl_o, DB_DEFINED)) {
@@ -8365,7 +8326,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_Binding_o)->size != sizeof(Fast_Binding)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Binding' doesn't match C-type size '%d'", db_type(Fast_Binding_o)->size, sizeof(Fast_Binding));
-        goto error;
     }
     /* Define ::hyve::Fast::If::trueBranch */
     if (!db_checkState(Fast_If_trueBranch_o, DB_DEFINED)) {
@@ -8612,7 +8572,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_ObjectBase_o)->size != sizeof(struct Fast_ObjectBase_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::ObjectBase' doesn't match C-type size '%d'", db_type(Fast_ObjectBase_o)->size, sizeof(struct Fast_ObjectBase_s));
-        goto error;
     }
     /* Declare ::hyve::Fast::Object::construct(Object object) */
     Fast_Object_construct_o = db_declare(Fast_Object_o, "construct(Object object)", db_typedef(db_callback_o));
@@ -8718,7 +8677,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_Object_o)->size != sizeof(struct Fast_Object_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Object' doesn't match C-type size '%d'", db_type(Fast_Object_o)->size, sizeof(struct Fast_Object_s));
-        goto error;
     }
     /* Declare ::hyve::Fast::Parser::observerDeclaration(lang::string id,Fast::Expression object,lang::eventMask mask,Fast::Object dispatcher) */
     Fast_Parser_observerDeclaration_o = db_declare(Fast_Parser_o, "observerDeclaration(lang::string id,Fast::Expression object,lang::eventMask mask,Fast::Object dispatcher)", db_typedef(db_method_o));
@@ -8905,7 +8863,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_ParserDeclaration_o)->size != sizeof(Fast_ParserDeclaration)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::ParserDeclaration' doesn't match C-type size '%d'", db_type(Fast_ParserDeclaration_o)->size, sizeof(Fast_ParserDeclaration));
-        goto error;
     }
     /* Define ::hyve::Fast::String::scope */
     if (!db_checkState(Fast_String_scope_o, DB_DEFINED)) {
@@ -8935,7 +8892,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_String_o)->size != sizeof(struct Fast_String_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::String' doesn't match C-type size '%d'", db_type(Fast_String_o)->size, sizeof(struct Fast_String_s));
-        goto error;
     }
     /* Define ::hyve::Fast::Parser::variables */
     if (!db_checkState(Fast_Parser_variables_o, DB_DEFINED)) {
@@ -9021,7 +8977,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_Wait_o)->size != sizeof(struct Fast_Wait_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Wait' doesn't match C-type size '%d'", db_type(Fast_Wait_o)->size, sizeof(struct Fast_Wait_s));
-        goto error;
     }
     /* Define ::hyve::Fast::While::condition */
     if (!db_checkState(Fast_While_condition_o, DB_DEFINED)) {
@@ -9073,7 +9028,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_DynamicInitializerFrame_o)->size != sizeof(Fast_DynamicInitializerFrame)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::DynamicInitializerFrame' doesn't match C-type size '%d'", db_type(Fast_DynamicInitializerFrame_o)->size, sizeof(Fast_DynamicInitializerFrame));
-        goto error;
     }
     /* Define ::hyve::Fast::DynamicInitializer::frames */
     if (!db_checkState(Fast_DynamicInitializer_frames_o, DB_DEFINED)) {
@@ -9103,7 +9057,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_DynamicInitializer_o)->size != sizeof(struct Fast_DynamicInitializer_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::DynamicInitializer' doesn't match C-type size '%d'", db_type(Fast_DynamicInitializer_o)->size, sizeof(struct Fast_DynamicInitializer_s));
-        goto error;
     }
     /* Declare ::hyve::Fast::If::construct(If object) */
     Fast_If_construct_o = db_declare(Fast_If_o, "construct(If object)", db_typedef(db_callback_o));
@@ -9187,7 +9140,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_If_o)->size != sizeof(struct Fast_If_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::If' doesn't match C-type size '%d'", db_type(Fast_If_o)->size, sizeof(struct Fast_If_s));
-        goto error;
     }
     /* Declare ::hyve::Fast::Parser::ifStatement(Fast::Expression condition,Fast::Block trueBranch,Fast::If falseBranch) */
     Fast_Parser_ifStatement_o = db_declare(Fast_Parser_o, "ifStatement(Fast::Expression condition,Fast::Block trueBranch,Fast::If falseBranch)", db_typedef(db_method_o));
@@ -9239,7 +9191,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_TernaryExpr_o)->size != sizeof(struct Fast_TernaryExpr_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::TernaryExpr' doesn't match C-type size '%d'", db_type(Fast_TernaryExpr_o)->size, sizeof(struct Fast_TernaryExpr_s));
-        goto error;
     }
     /* Declare ::hyve::Fast::Parser::addStatement(Fast::Node statement) */
     Fast_Parser_addStatement_o = db_declare(Fast_Parser_o, "addStatement(Fast::Node statement)", db_typedef(db_method_o));
@@ -9279,7 +9230,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_Parser_o)->size != sizeof(struct Fast_Parser_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Parser' doesn't match C-type size '%d'", db_type(Fast_Parser_o)->size, sizeof(struct Fast_Parser_s));
-        goto error;
     }
     /* Declare ::hyve::Fast::Update::construct(Update object) */
     Fast_Update_construct_o = db_declare(Fast_Update_o, "construct(Update object)", db_typedef(db_callback_o));
@@ -9341,7 +9291,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_Update_o)->size != sizeof(struct Fast_Update_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Update' doesn't match C-type size '%d'", db_type(Fast_Update_o)->size, sizeof(struct Fast_Update_s));
-        goto error;
     }
     /* Declare ::hyve::Fast::While::construct(While object) */
     Fast_While_construct_o = db_declare(Fast_While_o, "construct(While object)", db_typedef(db_callback_o));
@@ -9403,7 +9352,6 @@ int Fast_load(void) {
     }
     if (db_type(Fast_While_o)->size != sizeof(struct Fast_While_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::While' doesn't match C-type size '%d'", db_type(Fast_While_o)->size, sizeof(struct Fast_While_s));
-        goto error;
     }
     if (_a_) {
         db_free(_a_);

@@ -99,7 +99,7 @@ static db_int16 c_typePrimitiveEnum(db_serializer s, db_value* v, void* userData
 
     g_fileDedent(data->header);
     g_fileWrite(data->header, "\n");
-    g_fileWrite(data->header, "} %s;\n", g_fullOid(data->g, t, id));
+    g_fileWrite(data->header, "} %s;\n\n", g_fullOid(data->g, t, id));
 
     return 0;
 error:
@@ -120,9 +120,12 @@ static db_int16 c_typePrimitiveBitmask(db_serializer s, db_value* v, void* userD
     g_fileWrite(data->header, "DB_BITMASK(%s);\n", g_fullOid(data->g, t, id));
 
     /* Write enumeration constants */
+    g_fileIndent(data->header);
     if (db_serializeConstants(s, v, userData)) {
         goto error;
     }
+    g_fileDedent(data->header);
+    g_fileWrite(data->header, "\n");
 
     return 0;
 error:
@@ -140,13 +143,32 @@ static db_int16 c_typeVoid(db_serializer s, db_value* v, void* userData) {
 	t = db_valueType(v)->real;
     data = userData;
 
+    g_fileWrite(data->header, "/* %s */\n", db_fullname(t, id));
 	if (t->reference) {
 		g_fileWrite(data->header, "typedef db_object %s;\n", g_fullOid(data->g, t, id));
 	} else {
 		g_fileWrite(data->header, "typedef void %s;\n", g_fullOid(data->g, t, id));
 	}
+    g_fileWrite(data->header, "\n");
 
 	return 0;
+}
+
+/* Void object */
+static db_int16 c_typeAny(db_serializer s, db_value* v, void* userData) {
+    db_type t;
+    c_typeWalk_t* data;
+    db_id id;
+
+    DB_UNUSED(s);
+
+    t = db_valueType(v)->real;
+    data = userData;
+
+    g_fileWrite(data->header, "/* %s */\n", db_fullname(t, id));
+    g_fileWrite(data->header, "typedef db_any %s;\n\n", g_fullOid(data->g, t, id));
+
+    return 0;
 }
 
 /* Primitive object */
@@ -185,7 +207,8 @@ static db_int16 c_typePrimitive(db_serializer s, db_value* v, void* userData) {
 
         /* Write typedef */
         if (db_checkAttr(t, DB_ATTR_SCOPED)) {
-        	g_fileWrite(data->header, "typedef %s %s;\n", buff, g_fullOid(data->g, t, id));
+            g_fileWrite(data->header, "/* %s */\n", db_fullname(t, id));
+        	g_fileWrite(data->header, "typedef %s %s;\n\n", buff, g_fullOid(data->g, t, id));
         }
         break;
     }
@@ -216,7 +239,7 @@ static db_int16 c_typeStruct(db_serializer s, db_value* v, void* userData) {
     g_fileDedent(data->header);
 
     /* Close struct */
-    g_fileWrite(data->header, "};\n");
+    g_fileWrite(data->header, "};\n\n");
 
 
     return 0;
@@ -259,7 +282,7 @@ static db_int16 c_typeClass(db_serializer s, db_value* v, void* userData) {
         g_fileDedent(data->header);
 
         /* Close class */
-        g_fileWrite(data->header, "};\n");
+        g_fileWrite(data->header, "};\n\n");
     }
 
     return 0;
@@ -283,6 +306,7 @@ static db_int16 c_typeComposite(db_serializer s, db_value* v, void* userData) {
     		goto error;
     	}
     	break;
+    case DB_PROCEDURE:
     case DB_CLASS:
     	if (c_typeClass(s, v, userData)) {
     		goto error;
@@ -310,7 +334,7 @@ static db_int16 c_typeArray(db_serializer s, db_value* v, void* userData) {
 	t = db_valueType(v)->real;
 	c_specifierId(data->g, db_typedef(t), id, NULL, postfix);
 	c_specifierId(data->g, db_typedef(db_collection(t)->elementType), id3, NULL, postfix2);
-	g_fileWrite(data->header, "typedef %s %s[%d];\n",
+	g_fileWrite(data->header, "typedef %s %s[%d];\n\n",
 			id3,
 			id,
 			db_collection(t)->max);
@@ -331,7 +355,7 @@ static db_int16 c_typeSequence(db_serializer s, db_value* v, void* userData) {
 	t = db_valueType(v)->real;
 	c_specifierId(data->g, db_typedef(t), id, NULL, postfix);
 	c_specifierId(data->g, db_typedef(db_collection(t)->elementType), id3, NULL, postfix2);
-	g_fileWrite(data->header, "DB_SEQUENCE(%s, %s,);\n",
+	g_fileWrite(data->header, "DB_SEQUENCE(%s, %s,);\n\n",
 			id,
 			id3);
 
@@ -350,7 +374,7 @@ static db_int16 c_typeList(db_serializer s, db_value* v, void* userData) {
 	data = userData;
 	t = db_valueType(v)->real;
 	c_specifierId(data->g, db_typedef(t), id, NULL, postfix);
-	g_fileWrite(data->header, "DB_LIST(%s);\n",
+	g_fileWrite(data->header, "DB_LIST(%s);\n\n",
 			id);
 
 	return 0;
@@ -403,6 +427,9 @@ static db_int16 c_typeObject(db_serializer s, db_value* v, void* userData) {
     case DB_VOID:
     	result = c_typeVoid(s, v, userData);
     	break;
+    case DB_ANY:
+        result = c_typeAny(s, v, userData);
+        break;
     case DB_PRIMITIVE:
         result = c_typePrimitive(s, v, userData);
         break;
@@ -480,7 +507,7 @@ static g_file c_typeHeaderFileOpen(db_generator g) {
 	g_fileWrite(result, " */\n\n");
 	g_fileWrite(result, "#ifndef %s__type_H\n", g_getName(g));
 	g_fileWrite(result, "#define %s__type_H\n\n", g_getName(g));
-	g_fileWrite(result, "#include \"hyve.h\"\n");
+	g_fileWrite(result, "#include \"hyve.h\"\n\n");
 
 	/* Include imports */
 	if (g->imports) {
@@ -511,7 +538,6 @@ error:
 static void c_typeHeaderFileClose(g_file file) {
 
 	/* Print standard comments and includes */
-    g_fileWrite(file, "\n");
 	g_fileWrite(file, "#ifdef __cplusplus\n");
 	g_fileWrite(file, "}\n");
 	g_fileWrite(file, "#endif\n");
@@ -527,22 +553,22 @@ static int c_typeDeclare(db_object o, void* userData) {
     t = o;
 
     if (db_checkAttr(o, DB_ATTR_SCOPED)) {
-        g_fileWrite(data->header, "\n");
         g_fileWrite(data->header, "/*  %s */\n", db_fullname(t, id));
 
         switch(t->kind) {
         case DB_COMPOSITE:
             switch(db_interface(t)->kind) {
             case DB_STRUCT:
-                g_fileWrite(data->header, "typedef struct %s %s;\n", g_fullOid(data->g, t, id), g_fullOid(data->g, t, id));
+                g_fileWrite(data->header, "typedef struct %s %s;\n\n", g_fullOid(data->g, t, id), g_fullOid(data->g, t, id));
                 break;
             case DB_CLASS:
-                g_fileWrite(data->header, "DB_CLASS(%s);\n", g_fullOid(data->g, t, id));
+                g_fileWrite(data->header, "DB_CLASS(%s);\n\n", g_fullOid(data->g, t, id));
                 break;
             case DB_INTERFACE:
-                g_fileWrite(data->header, "DB_INTERFACE(%s);\n", g_fullOid(data->g, t, id));
+                g_fileWrite(data->header, "DB_INTERFACE(%s);\n\n", g_fullOid(data->g, t, id));
                 break;
             case DB_PROCEDURE:
+                g_fileWrite(data->header, "DB_CLASS(%s);\n\n", g_fullOid(data->g, t, id));
                 break;
             }
             break;
@@ -622,7 +648,7 @@ db_int16 hyve_genMain(db_generator g) {
 	}
 
 	g_fileWrite(walkData.header, "\n");
-	g_fileWrite(walkData.header, "/* Type definitions */\n\n");
+	g_fileWrite(walkData.header, "/* Type definitions */\n");
 
 	/* Walk objects */
 	if (db_genTypeDepWalk(g, c_typeDeclare, c_typeDefine, &walkData)) {

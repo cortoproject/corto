@@ -1,6 +1,5 @@
 /* Fast__type.h
  *
- *  Generated on Dec  3 2014
  *    Type-definitions for C-language.
  *    This file contains generated code. Do not modify!
  */
@@ -9,6 +8,7 @@
 #define Fast__type_H
 
 #include "hyve.h"
+
 
 /* $header() */
 #include "db_ic.h"
@@ -57,7 +57,6 @@ extern "C" {
 #define Fast_While(o) ((Fast_While)o)
 
 /* Type definitions */
-
 /* ::hyve::Fast::nodeKind */
 typedef enum Fast_nodeKind {
     FAST_Binary = 0,
@@ -85,6 +84,7 @@ typedef enum Fast_nodeKind {
 
 /*  ::hyve::Fast::Node */
 DB_CLASS(Fast_Node);
+
 DB_CLASS_DEF(Fast_Node) {
     Fast_nodeKind kind;
     db_uint32 line;
@@ -96,6 +96,7 @@ DB_CLASS(Fast_Variable);
 
 /*  ::hyve::Fast::Expression */
 DB_CLASS(Fast_Expression);
+
 DB_CLASS_DEF(Fast_Expression) {
     DB_EXTEND(Fast_Node);
     Fast_Variable type;
@@ -105,6 +106,7 @@ DB_CLASS_DEF(Fast_Expression) {
 
 /*  ::hyve::Fast::BinaryExpr */
 DB_CLASS(Fast_BinaryExpr);
+
 DB_CLASS_DEF(Fast_BinaryExpr) {
     DB_EXTEND(Fast_Expression);
     Fast_Expression lvalue;
@@ -114,17 +116,21 @@ DB_CLASS_DEF(Fast_BinaryExpr) {
 
 /*  ::hyve::Fast::Block */
 DB_CLASS(Fast_Block);
+
 DB_LIST(Fast_Node_list);
+
 /* ::hyve::Fast::variableKind */
 typedef enum Fast_variableKind {
     FAST_Local = 0,
     FAST_Template = 1,
     FAST_Object = 2
 } Fast_variableKind;
+
 DB_CLASS_DEF(Fast_Variable) {
     DB_EXTEND(Fast_Expression);
     Fast_variableKind kind;
 };
+
 /* ::hyve::Fast::LocalKind */
 typedef enum Fast_LocalKind {
     FAST_LocalDefault = 0,
@@ -134,6 +140,7 @@ typedef enum Fast_LocalKind {
 
 /*  ::hyve::Fast::Local */
 DB_CLASS(Fast_Local);
+
 DB_CLASS_DEF(Fast_Local) {
     DB_EXTEND(Fast_Variable);
     db_string name;
@@ -141,16 +148,19 @@ DB_CLASS_DEF(Fast_Local) {
     Fast_LocalKind kind;
     db_bool isReference;
 };
+
 DB_LIST(Fast_Local_list);
 
 /*  ::hyve::Fast::While */
 DB_CLASS(Fast_While);
+
 DB_CLASS_DEF(Fast_While) {
     DB_EXTEND(Fast_Node);
     Fast_Expression condition;
     Fast_Block trueBranch;
     db_bool isUntil;
 };
+
 DB_CLASS_DEF(Fast_Block) {
     DB_EXTEND(Fast_Node);
     Fast_Block parent;
@@ -162,10 +172,12 @@ DB_CLASS_DEF(Fast_Block) {
 
 /*  ::hyve::Fast::Binding */
 typedef struct Fast_Binding Fast_Binding;
+
 struct Fast_Binding {
     db_function function;
     Fast_Block impl;
 };
+
 /* ::hyve::Fast::valueKind */
 typedef enum Fast_valueKind {
     FAST_Boolean = 0,
@@ -181,6 +193,7 @@ typedef enum Fast_valueKind {
 
 /*  ::hyve::Fast::Literal */
 DB_CLASS(Fast_Literal);
+
 DB_CLASS_DEF(Fast_Literal) {
     DB_EXTEND(Fast_Expression);
     Fast_valueKind kind;
@@ -188,6 +201,7 @@ DB_CLASS_DEF(Fast_Literal) {
 
 /*  ::hyve::Fast::Boolean */
 DB_CLASS(Fast_Boolean);
+
 DB_CLASS_DEF(Fast_Boolean) {
     DB_EXTEND(Fast_Literal);
     db_bool value;
@@ -195,6 +209,7 @@ DB_CLASS_DEF(Fast_Boolean) {
 
 /*  ::hyve::Fast::Call */
 DB_CLASS(Fast_Call);
+
 DB_CLASS_DEF(Fast_Call) {
     DB_EXTEND(Fast_Expression);
     Fast_Expression function;
@@ -205,6 +220,7 @@ DB_CLASS_DEF(Fast_Call) {
 
 /*  ::hyve::Fast::CastExpr */
 DB_CLASS(Fast_CastExpr);
+
 DB_CLASS_DEF(Fast_CastExpr) {
     DB_EXTEND(Fast_Expression);
     Fast_Expression lvalue;
@@ -213,14 +229,17 @@ DB_CLASS_DEF(Fast_CastExpr) {
 
 /*  ::hyve::Fast::Character */
 DB_CLASS(Fast_Character);
+
 DB_CLASS_DEF(Fast_Character) {
     DB_EXTEND(Fast_Literal);
     db_char value;
 };
+
 DB_LIST(Fast_Expression_list);
 
 /*  ::hyve::Fast::CommaExpr */
 DB_CLASS(Fast_CommaExpr);
+
 DB_CLASS_DEF(Fast_CommaExpr) {
     DB_EXTEND(Fast_Expression);
     Fast_Expression_list expressions;
@@ -228,6 +247,7 @@ DB_CLASS_DEF(Fast_CommaExpr) {
 
 /*  ::hyve::Fast::Define */
 DB_CLASS(Fast_Define);
+
 DB_CLASS_DEF(Fast_Define) {
     DB_EXTEND(Fast_Node);
     Fast_Expression object;
@@ -235,25 +255,30 @@ DB_CLASS_DEF(Fast_Define) {
 
 /*  ::hyve::Fast::InitializerVariable */
 typedef struct Fast_InitializerVariable Fast_InitializerVariable;
+
 struct Fast_InitializerVariable {
     db_word offset;
     Fast_Expression object;
     db_word key;
 };
+
 typedef Fast_InitializerVariable Fast_InitializerVariable_array64[64];
 
 /*  ::hyve::Fast::InitializerFrame */
 typedef struct Fast_InitializerFrame Fast_InitializerFrame;
+
 struct Fast_InitializerFrame {
     db_uint32 location;
     db_type type;
     db_bool isKey;
     db_member member;
 };
+
 typedef Fast_InitializerFrame Fast_InitializerFrame_array64[64];
 
 /*  ::hyve::Fast::Initializer */
 DB_CLASS(Fast_Initializer);
+
 DB_CLASS_DEF(Fast_Initializer) {
     DB_EXTEND(Fast_Expression);
     Fast_InitializerVariable_array64 variables;
@@ -261,10 +286,12 @@ DB_CLASS_DEF(Fast_Initializer) {
     Fast_InitializerFrame_array64 frames;
     db_uint8 fp;
 };
+
 typedef Fast_Expression Fast_Expression_array64[64];
 
 /*  ::hyve::Fast::Integer */
 DB_CLASS(Fast_Integer);
+
 DB_CLASS_DEF(Fast_Integer) {
     DB_EXTEND(Fast_Literal);
     db_uint64 value;
@@ -272,15 +299,18 @@ DB_CLASS_DEF(Fast_Integer) {
 
 /*  ::hyve::Fast::DynamicInitializerFrame */
 typedef struct Fast_DynamicInitializerFrame Fast_DynamicInitializerFrame;
+
 struct Fast_DynamicInitializerFrame {
     Fast_Expression_array64 expr;
     Fast_Expression_array64 keyExpr;
     Fast_Integer sequenceSize;
 };
+
 typedef Fast_DynamicInitializerFrame Fast_DynamicInitializerFrame_array64[64];
 
 /*  ::hyve::Fast::DynamicInitializer */
 DB_CLASS(Fast_DynamicInitializer);
+
 DB_CLASS_DEF(Fast_DynamicInitializer) {
     DB_EXTEND(Fast_Initializer);
     db_bool assignValue;
@@ -289,6 +319,7 @@ DB_CLASS_DEF(Fast_DynamicInitializer) {
 
 /*  ::hyve::Fast::ElementExpr */
 DB_CLASS(Fast_ElementExpr);
+
 DB_CLASS_DEF(Fast_ElementExpr) {
     DB_EXTEND(Fast_Expression);
     Fast_Expression lvalue;
@@ -297,6 +328,7 @@ DB_CLASS_DEF(Fast_ElementExpr) {
 
 /*  ::hyve::Fast::FloatingPoint */
 DB_CLASS(Fast_FloatingPoint);
+
 DB_CLASS_DEF(Fast_FloatingPoint) {
     DB_EXTEND(Fast_Literal);
     db_float64 value;
@@ -304,6 +336,7 @@ DB_CLASS_DEF(Fast_FloatingPoint) {
 
 /*  ::hyve::Fast::If */
 DB_CLASS(Fast_If);
+
 DB_CLASS_DEF(Fast_If) {
     DB_EXTEND(Fast_Node);
     Fast_Expression condition;
@@ -311,6 +344,7 @@ DB_CLASS_DEF(Fast_If) {
     Fast_If falseBranch;
     db_bool warnUnreachable;
 };
+
 /* ::hyve::Fast::InitOperKind */
 typedef enum Fast_InitOperKind {
     FAST_InitPush = 0,
@@ -322,20 +356,24 @@ typedef enum Fast_InitOperKind {
 
 /*  ::hyve::Fast::InitOper */
 typedef struct Fast_InitOper Fast_InitOper;
+
 struct Fast_InitOper {
     Fast_InitOperKind kind;
     Fast_Expression expr;
     db_string name;
 };
+
 DB_LIST(Fast_InitOper_list);
 
 /*  ::hyve::Fast::InitializerExpr */
 DB_CLASS(Fast_InitializerExpr);
+
 DB_CLASS_DEF(Fast_InitializerExpr) {
     DB_EXTEND(Fast_Initializer);
     db_bool assignValue;
     Fast_InitOper_list operations;
 };
+
 /* ::hyve::Fast::InitializerKind */
 typedef enum Fast_InitializerKind {
     FAST_InitStatic = 0,
@@ -345,6 +383,7 @@ typedef enum Fast_InitializerKind {
 
 /*  ::hyve::Fast::Lvalue */
 typedef struct Fast_Lvalue Fast_Lvalue;
+
 struct Fast_Lvalue {
     Fast_Expression expr;
     db_bool isAssignment;
@@ -352,6 +391,7 @@ struct Fast_Lvalue {
 
 /*  ::hyve::Fast::MemberExpr */
 DB_CLASS(Fast_MemberExpr);
+
 DB_CLASS_DEF(Fast_MemberExpr) {
     DB_EXTEND(Fast_Expression);
     Fast_Expression lvalue;
@@ -362,6 +402,7 @@ DB_CLASS_DEF(Fast_MemberExpr) {
 
 /*  ::hyve::Fast::NewExpr */
 DB_CLASS(Fast_NewExpr);
+
 DB_CLASS_DEF(Fast_NewExpr) {
     DB_EXTEND(Fast_Expression);
     Fast_Expression type;
@@ -370,12 +411,14 @@ DB_CLASS_DEF(Fast_NewExpr) {
 
 /*  ::hyve::Fast::Null */
 DB_CLASS(Fast_Null);
+
 DB_CLASS_DEF(Fast_Null) {
     DB_EXTEND(Fast_Literal);
 };
 
 /*  ::hyve::Fast::ObjectBase */
 DB_CLASS(Fast_ObjectBase);
+
 DB_CLASS_DEF(Fast_ObjectBase) {
     DB_EXTEND(Fast_Variable);
     db_object value;
@@ -383,29 +426,40 @@ DB_CLASS_DEF(Fast_ObjectBase) {
 
 /*  ::hyve::Fast::Object */
 DB_CLASS(Fast_Object);
+
 DB_CLASS_DEF(Fast_Object) {
     DB_EXTEND(Fast_ObjectBase);
 };
+
 DB_LIST(Fast_Binding_list);
+
 DB_LIST(db_word_list);
+
 DB_LIST(Fast_Object_list);
+
 typedef Fast_Variable Fast_Variable_array64[64];
+
 typedef Fast_Initializer Fast_Initializer_array64[64];
 
 /*  ::hyve::Fast::Parser::stagedId */
 typedef struct Fast_Parser_stagedId Fast_Parser_stagedId;
+
 struct Fast_Parser_stagedId {
     db_string name;
     db_bool found;
     db_uint32 line;
     db_uint32 column;
 };
+
 typedef Fast_Parser_stagedId Fast_Parser_stagedId_array64[64];
+
 typedef Fast_Lvalue Fast_Lvalue_array64[64];
+
 typedef db_type db_type_array64[64];
 
 /*  ::hyve::Fast::Parser */
 DB_CLASS(Fast_Parser);
+
 DB_CLASS_DEF(Fast_Parser) {
     db_string source;
     db_string preprocessed;
@@ -448,15 +502,18 @@ DB_CLASS_DEF(Fast_Parser) {
 
 /*  ::hyve::Fast::ParserDeclaration */
 typedef struct Fast_ParserDeclaration Fast_ParserDeclaration;
+
 struct Fast_ParserDeclaration {
     db_string name;
     Fast_Variable variable;
 };
-DB_SEQUENCE(Fast_ParserDeclaration_seq256, Fast_ParserDeclaration,);
-typedef Fast_ParserDeclaration_seq256 Fast_ParserDeclarationSeq;
 
+DB_SEQUENCE(Fast_ParserDeclaration_seq256, Fast_ParserDeclaration,);
+
+typedef Fast_ParserDeclaration_seq256 Fast_ParserDeclarationSeq;
 /*  ::hyve::Fast::ParserNew */
 typedef struct Fast_ParserNew Fast_ParserNew;
+
 struct Fast_ParserNew {
     Fast_nodeKind kind;
     Fast_Expression parent;
@@ -466,6 +523,7 @@ struct Fast_ParserNew {
 
 /*  ::hyve::Fast::PostfixExpr */
 DB_CLASS(Fast_PostfixExpr);
+
 DB_CLASS_DEF(Fast_PostfixExpr) {
     DB_EXTEND(Fast_Expression);
     Fast_Expression lvalue;
@@ -474,22 +532,27 @@ DB_CLASS_DEF(Fast_PostfixExpr) {
 
 /*  ::hyve::Fast::SignedInteger */
 DB_CLASS(Fast_SignedInteger);
+
 DB_CLASS_DEF(Fast_SignedInteger) {
     DB_EXTEND(Fast_Literal);
     db_int64 value;
 };
+
 typedef db_word db_word_array64[64];
 
 /*  ::hyve::Fast::StaticInitializerFrame */
 typedef struct Fast_StaticInitializerFrame Fast_StaticInitializerFrame;
+
 struct Fast_StaticInitializerFrame {
     db_word_array64 ptr;
     db_word_array64 keyPtr;
 };
+
 typedef Fast_StaticInitializerFrame Fast_StaticInitializerFrame_array64[64];
 
 /*  ::hyve::Fast::StaticInitializer */
 DB_CLASS(Fast_StaticInitializer);
+
 DB_CLASS_DEF(Fast_StaticInitializer) {
     DB_EXTEND(Fast_Initializer);
     Fast_StaticInitializerFrame_array64 frames;
@@ -497,6 +560,7 @@ DB_CLASS_DEF(Fast_StaticInitializer) {
 
 /*  ::hyve::Fast::String */
 DB_CLASS(Fast_String);
+
 DB_CLASS_DEF(Fast_String) {
     DB_EXTEND(Fast_Literal);
     db_string value;
@@ -507,12 +571,14 @@ DB_CLASS_DEF(Fast_String) {
 
 /*  ::hyve::Fast::Template */
 DB_CLASS(Fast_Template);
+
 DB_CLASS_DEF(Fast_Template) {
     DB_EXTEND(Fast_Local);
 };
 
 /*  ::hyve::Fast::TernaryExpr */
 DB_CLASS(Fast_TernaryExpr);
+
 DB_CLASS_DEF(Fast_TernaryExpr) {
     DB_EXTEND(Fast_Expression);
     Fast_Expression condition;
@@ -526,6 +592,7 @@ DB_CLASS_DEF(Fast_TernaryExpr) {
 
 /*  ::hyve::Fast::UnaryExpr */
 DB_CLASS(Fast_UnaryExpr);
+
 DB_CLASS_DEF(Fast_UnaryExpr) {
     DB_EXTEND(Fast_Expression);
     Fast_Expression lvalue;
@@ -534,6 +601,7 @@ DB_CLASS_DEF(Fast_UnaryExpr) {
 
 /*  ::hyve::Fast::Update */
 DB_CLASS(Fast_Update);
+
 DB_CLASS_DEF(Fast_Update) {
     DB_EXTEND(Fast_Node);
     Fast_Expression_list exprList;
@@ -543,6 +611,7 @@ DB_CLASS_DEF(Fast_Update) {
 
 /*  ::hyve::Fast::Wait */
 DB_CLASS(Fast_Wait);
+
 DB_CLASS_DEF(Fast_Wait) {
     DB_EXTEND(Fast_Expression);
     Fast_Expression_list exprList;
