@@ -8,6 +8,7 @@
 #include "tc_jsonser__type.h"
 
 #include "tc_jsonser_primitive_value.h"
+#include "tc_jsonser_reference_value.h"
 #include "tc_jsonser_scope.h"
 
 int main(int argc, char* argv[]) {
@@ -20,6 +21,7 @@ int main(int argc, char* argv[]) {
     tc_jsonser_load();
 
     result += test_primitive_value();
+    result += test_reference_value();
     result += test_scope();
  
     db_stop();

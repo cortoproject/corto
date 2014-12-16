@@ -1,2 +1,2 @@
 // Walk objects in a scope using foreach and '%' operator
-"tc_scope02: FAIL: not implemented";
+"tc_scope02: FAIL: not implemented"

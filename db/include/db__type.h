@@ -51,6 +51,7 @@ DB_CLASS(db_bitmask);
 DB_CLASS(db_alias);
 DB_CLASS(db_struct);
 DB_CLASS(db_class);
+DB_CLASS(db_procptr);
 DB_CLASS(db_procedure);
 DB_CLASS(db_array);
 DB_CLASS(db_sequence);
@@ -64,6 +65,7 @@ DB_CLASS(db_observableEvent);
 DB_INTERFACE(db_dispatcher);
 
 DB_STRUCT(db_parameter);
+DB_STRUCT(db_procptrdata);
 DB_STRUCT(db_interfaceVector);
 
 DB_PROCEDURE(db_function);
@@ -150,6 +152,7 @@ typedef enum db_compositeKind {
     DB_INTERFACE,
     DB_STRUCT,
     DB_CLASS,
+    DB_PROCPTR,
     DB_PROCEDURE,
 }db_compositeKind;
 
@@ -437,6 +440,20 @@ DB_CLASS_DEF(db_class) {
     db_interfaceSeq implements;
     db_interfaceVectorSeq interfaceVector;
     db_observerSeq observers;
+};
+
+/* ::hyve::lang::procptrdata */
+DB_STRUCT_DEF(db_procptrdata) {
+    db_object instance;
+    db_function procedure;
+};
+
+/* ::hyve::lang::procptr */
+DB_CLASS_DEF(db_procptr) {
+    DB_EXTEND(db_struct);
+    db_typedef returnType;
+    db_bool returnsReference;
+    db_parameterSeq parameters;
 };
 
 /* ::hyve::lang::procedure */

@@ -841,6 +841,12 @@ void __db_procedure_unbind(db_function f, void *result, void *args) {
         *(db_object*)((intptr_t)args + sizeof(db_procedure)));
 }
 
+void __db_procptr_init(db_function f, void *result, void *args) {
+    DB_UNUSED(f);
+    *(db_int16*)result = db_procptr_init(
+        *(db_procptr*)args);
+}
+
 void __db_sequence_construct(db_function f, void *result, void *args) {
     DB_UNUSED(f);
     *(db_int16*)result = db_sequence_construct(

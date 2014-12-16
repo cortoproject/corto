@@ -1,50 +1,50 @@
-bool result: true;
+bool result: true
 void fail(string msg):
-	"tc_update04: FAIL: $msg";
-	result = false;
+	"tc_update04: FAIL: $msg"
+	result = false
 	
 // Test short-hand notation for updates and observers
-int32 a, b, c;
-int32 onA, onB, onC;
+int32 a, b, c
+int32 onA, onB, onC
 
 // Setup chained observers
-c -> b -> a;
+c -> b -> a
 
 // Update a
-a <- 10;
+a <- 10
 
 // Validate values of a, b and c
-if a != 10: fail("a != 10 ($a)");
-if b != 10: fail("b != 10 ($b)");
-if c != 10: fail("c != 10 ($c)");
-if onA != 1: fail("onA != 1 ($a)");
-if onB != 1: fail("onB != 1 ($b)");
-if onC != 1: fail("onC != 1 ($c)");
+if a != 10: fail("a != 10 ($a)")
+if b != 10: fail("b != 10 ($b)")
+if c != 10: fail("c != 10 ($c)")
+if onA != 1: fail("onA != 1 ($a)")
+if onB != 1: fail("onB != 1 ($b)")
+if onC != 1: fail("onC != 1 ($c)")
 
 // Update b
-b <- 20;
+b <- 20
 
 // Validate values of a, b and c
-if a != 10: fail("a != 10 ($a) #2");
-if b != 20: fail("b != 20 ($b)");
-if c != 20: fail("c != 20 ($c)");
-if onA != 1: fail("onA != 1 ($a) #2");
-if onB != 2: fail("onB != 2 ($b)");
-if onC != 2: fail("onC != 2 ($c)");
+if a != 10: fail("a != 10 ($a) #2")
+if b != 20: fail("b != 20 ($b)")
+if c != 20: fail("c != 20 ($c)")
+if onA != 1: fail("onA != 1 ($a) #2")
+if onB != 2: fail("onB != 2 ($b)")
+if onC != 2: fail("onC != 2 ($c)")
 
 // Update c
-c <- 30;
+c <- 30
 
 // Validate values of a, b and c
-if a != 10: fail("a != 10 ($a) #3");
-if b != 20: fail("b != 20 ($b) #3");
-if c != 30: fail("c != 30 ($c)");
-if onA != 1: fail("onA != 1 ($a) #3");
-if onB != 2: fail("onB != 2 ($b) #3");
-if onC != 3: fail("onC != 3 ($c)");
+if a != 10: fail("a != 10 ($a) #3")
+if b != 20: fail("b != 20 ($b) #3")
+if c != 30: fail("c != 30 ($c)")
+if onA != 1: fail("onA != 1 ($a) #3")
+if onB != 2: fail("onB != 2 ($b) #3")
+if onC != 3: fail("onC != 3 ($c)")
 
-on a: onA++;
-on b: onB++;
-on c: onC++;
+on a: onA++
+on b: onB++
+on c: onC++
 
-if result: "tc_update04: OK";
+if result: "tc_update04: OK"

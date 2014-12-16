@@ -1,74 +1,74 @@
-bool result : true;
+bool result : true
 
 struct Point::
-	member x, y : int32;
+	member x, y : int32
 	
 struct Line::
-	member start, stop : Point;
+	member start, stop : Point
 
-string testname : "tc_addressing02";
+string testname : "tc_addressing02"
 void fail(string msg): 
-	"$testname: FAIL: $msg";
-	result = false;
+	"$testname: FAIL: $msg"
+	result = false
 
 void test(Point value, int32 x, int32 y, string msg):
-	if value.x != x: fail("$msg (x = ${value.x})");
-	if value.y != y: fail("$msg (y = ${value.y})");
+	if value.x != x: fail("$msg (x = ${value.x})")
+	if value.y != y: fail("$msg (y = ${value.y})")
 		
 void testref(Point &value, int32 x, int32 y, string msg):
-	if value.x != x: fail("$msg (x = ${value.x})");
-	if value.y != y: fail("$msg (y = ${value.y})");
-	test(value, x, y, "$msg (passthrough)");
+	if value.x != x: fail("$msg (x = ${value.x})")
+	if value.y != y: fail("$msg (y = ${value.y})")
+	test(value, x, y, "$msg (passthrough)")
 	
 void test(Line l, int32 x1, int32 y1, int32 x2, int32 y2, string msg):
-	test(l.start, x1, y1, "$msg.start");
-	test(l.stop, x2, y2, "$msg.stop");
-	test(l.start, l.start.x, l.start.y, "$msg.start (pass primitive members)");
-	test(l.stop, l.stop.x, l.stop.y, "$msg.end (pass primitive members)");
+	test(l.start, x1, y1, "$msg.start")
+	test(l.stop, x2, y2, "$msg.stop")
+	test(l.start, l.start.x, l.start.y, "$msg.start (pass primitive members)")
+	test(l.stop, l.stop.x, l.stop.y, "$msg.end (pass primitive members)")
 
-Point p1, p2:;
+Point p1, p2:
 
-p1.x = 10;
-p1.y = 20;
+p1.x = 10
+p1.y = 20
 
-if p1.x != 10: fail("Value non-ref member (x)");
-if p1.y != 20: fail("Value non-ref member (y)");
-test(p1, 10, 20, "Push non-ref object as value");
-testref(p1, 10, 20, "Push non-ref object as ref");
+if p1.x != 10: fail("Value non-ref member (x)")
+if p1.y != 20: fail("Value non-ref member (y)")
+test(p1, 10, 20, "Push non-ref object as value")
+testref(p1, 10, 20, "Push non-ref object as ref")
 
-var Point p3 = {10, 20};
-if p3.x != 10: fail("Value non-ref var (x)");
-if p3.y != 20: fail("Value non-ref var (y)");
-test(p3, 10, 20, "Push non-ref var as value");
+var Point p3 = {10, 20}
+if p3.x != 10: fail("Value non-ref var (x)")
+if p3.y != 20: fail("Value non-ref var (y)")
+test(p3, 10, 20, "Push non-ref var as value")
 
-var Point& p4 = p1;
-if &p4 != p1: fail("Assignment of refvar with non-ref type failed (p1)");
-if p4.x != 10: fail("Value refvar with non-ref type (x)");
-if p4.y != 20: fail("Value refvar with non-ref type (y)");
-test(p4, 10, 20, "Push refvar with non-ref type as value");
-testref(p4, 10, 20, "Push refvar with non-ref type as ref");
+var Point& p4 = p1
+if &p4 != p1: fail("Assignment of refvar with non-ref type failed (p1)")
+if p4.x != 10: fail("Value refvar with non-ref type (x)")
+if p4.y != 20: fail("Value refvar with non-ref type (y)")
+test(p4, 10, 20, "Push refvar with non-ref type as value")
+testref(p4, 10, 20, "Push refvar with non-ref type as ref")
 
-&p4 = null;
-if &p4 : fail("Reassignment of refvar with non-ref type failed (null)");
+&p4 = null
+if &p4 : fail("Reassignment of refvar with non-ref type failed (null)")
 
-p2.x = 30;
-p2.y = 40;
-&p4 = p2;
-if p4.x != 30: fail("Value reassigned refvar with non-ref type (x=${p4.x})");
-if p4.y != 40: fail("Value reassigned refvar with non-ref type (y=${p4.y})");
-test(p4, 30, 40, "Push reassigned refvar with non-ref type as value");
-testref(p4, 30, 40, "Push reassigned refvar with non-ref type as ref");
+p2.x = 30
+p2.y = 40
+&p4 = p2
+if p4.x != 30: fail("Value reassigned refvar with non-ref type (x=${p4.x})")
+if p4.y != 40: fail("Value reassigned refvar with non-ref type (y=${p4.y})")
+test(p4, 30, 40, "Push reassigned refvar with non-ref type as value")
+testref(p4, 30, 40, "Push reassigned refvar with non-ref type as ref")
 
 // Test assignment of value through reference var
-p4.x *= 2;
-if p2.x != 60: fail("Assignment of object through reference var failed");
+p4.x *= 2
+if p2.x != 60: fail("Assignment of object through reference var failed")
 
 // Validate that p1 hasn't been overwritten
-if p1.x != 10: fail("Reassignment of refvar failed (x)");
-if p1.y != 20: fail("Reassignment of refvar failed (y)");
+if p1.x != 10: fail("Reassignment of refvar failed (x)")
+if p1.y != 20: fail("Reassignment of refvar failed (y)")
 
 // Test passing non-ref non-primitive members
-Line l1: {10,20}, {30,40};
-test(l1, 10, 20, 30, 40, "Passing non-ref, non-primitive member failed");
+Line l1: {10,20}, {30,40}
+test(l1, 10, 20, 30, 40, "Passing non-ref, non-primitive member failed")
 
-if result: "$testname: OK";
+if result: "$testname: OK"

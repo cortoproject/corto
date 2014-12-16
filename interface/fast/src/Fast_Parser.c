@@ -2245,7 +2245,7 @@ Fast_Expression Fast_Parser_parseExpression(Fast_Parser _this, db_string expr, F
 	}
 
 	exprFinalized = db_malloc(strlen(expr) + 2);
-	sprintf(exprFinalized, "%s;", expr);
+	sprintf(exprFinalized, "%s\n", expr);
 
 	_this->source = exprFinalized;
     

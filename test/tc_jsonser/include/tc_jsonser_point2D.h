@@ -9,6 +9,10 @@
 #include "hyve.h"
 #include "tc_jsonser__type.h"
 
+#include "tc_jsonser__api.h"
+
+#include "tc_jsonser__meta.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

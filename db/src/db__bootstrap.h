@@ -402,6 +402,7 @@ DB_FWDECL(class, bitmask);
 DB_FWDECL(class, alias);
 DB_FWDECL(class, struct);
 DB_FWDECL(class, class);
+DB_FWDECL(class, procptr);
 DB_FWDECL(class, array);
 DB_FWDECL(class, sequence);
 DB_FWDECL(class, list);
@@ -412,6 +413,7 @@ DB_FWDECL(class, event);
 DB_FWDECL(class, observableEvent);
 DB_FWDECL(struct, interfaceVector);
 DB_FWDECL(struct, parameter);
+DB_FWDECL(struct, procptrdata);
 
 /* Abstract classes */
 DB_FWDECL(interface, dispatcher);
@@ -551,6 +553,7 @@ DB_ENUM_O(compositeKind);
     DB_CONSTANT_O(compositeKind, STRUCT);
     DB_CONSTANT_O(compositeKind, INTERFACE);
     DB_CONSTANT_O(compositeKind, CLASS);
+    DB_CONSTANT_O(compositeKind, PROCPTR);
     DB_CONSTANT_O(compositeKind, PROCEDURE);
 
 DB_ENUM_O(collectionKind);
@@ -826,6 +829,18 @@ DB_CLASS_O(class, struct, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DE
     DB_METHOD_O(class, bindDelegate, "(lang::delegate delegate)", int16, FALSE, db_class_bindDelegate);
     DB_METHOD_O(class, bindObserver, "(lang::observer observer)", void, FALSE, db_class_bindDelegate);
     DB_METHOD_O(class, findObserver, "(lang::object observable,string expr)", observer, FALSE, db_class_findObserver);
+
+/* ::hyve::lang::procptrdata */
+DB_STRUCT_O(procptrdata, NULL, DB_DECLARED | DB_DEFINED);
+    DB_MEMBER_O(procptrdata, instance, object, DB_GLOBAL);
+    DB_MEMBER_O(procptrdata, procedure, function, DB_GLOBAL);
+
+/* ::hyve::lang::procptr */
+DB_CLASS_O(procptr, struct, DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
+    DB_CALLBACK_O(procptr, init, "(lang::procptr object)", type_init, int16, db_procptr_init);
+    DB_REFERENCE_O(procptr, returnType, typedef, DB_GLOBAL, DB_DEFINED | DB_DECLARED, FALSE);
+    DB_MEMBER_O(procptr, returnsReference, bool, DB_GLOBAL);
+    DB_MEMBER_O(procptr, parameters, parameterSeq, DB_LOCAL | DB_READONLY);
 
 /* ::hyve::lang::procedure */
 DB_CLASS_O(procedure, struct, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);

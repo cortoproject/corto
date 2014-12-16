@@ -1,23 +1,23 @@
 // Test ternary expression as returnvalue of primitive types
-bool result: true;
+bool result: true
 
 void fail(string msg):
-	"tc_ternary08: FAIL: $msg";
-	result = false;
+	"tc_ternary08: FAIL: $msg"
+	result = false
 
-struct Point:: x, y: uint32;
-struct Point3D: Point:: z: uint32;
-array intsArray: uint32, 2;
-sequence intsSequence: uint32;
-list intsList: uint32;
+struct Point:: x, y: uint32
+struct Point3D: Point:: z: uint32
+array intsArray: uint32, 2
+sequence intsSequence: uint32
+list intsList: uint32
 
-Point returnPoint(bool cond) = cond ? {10, 20} : {30, 40};
-Point3D returnPoint3D(bool cond) = cond ? {10, 20, 30} : {30, 40, 50};
-intsArray returnIntsArray(bool cond) = cond ? {10, 20} : {30, 40};
-intsSequence returnIntsSequence(bool cond) = cond ? {10, 20} : {30, 40};
-intsList returnIntsList(bool cond) = cond ? {10, 20} : {30, 40};
+Point returnPoint(bool cond) = cond ? {10, 20} : {30, 40}
+Point3D returnPoint3D(bool cond) = cond ? {10, 20, 30} : {30, 40, 50}
+intsArray returnIntsArray(bool cond) = cond ? {10, 20} : {30, 40}
+intsSequence returnIntsSequence(bool cond) = cond ? {10, 20} : {30, 40}
+intsList returnIntsList(bool cond) = cond ? {10, 20} : {30, 40}
 
-if returnPoint(true)[x, y] != (10, 20): fail("returnPoint(true)[x, y] != (10, 20) (${returnPoint(true)})");
-if returnPoint(false)[x, y] != (30, 40): fail("returnPoint(false)[x, y] != (30, 40) (${returnPoint(false)})");
+if returnPoint(true)[x, y] != (10, 20): fail("returnPoint(true)[x, y] != (10, 20) (${returnPoint(true)})")
+if returnPoint(false)[x, y] != (30, 40): fail("returnPoint(false)[x, y] != (30, 40) (${returnPoint(false)})")
 
-if result: "tc_ternary08: OK";
+if result: "tc_ternary08: OK"

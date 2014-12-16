@@ -1,62 +1,62 @@
 // Comparisons of primitive types
 
-bool result : true;
+bool result : true
 void fail(string msg):
-	"tc_compare02: FAIL: $msg";
-	result = false;
+	"tc_compare02: FAIL: $msg"
+	result = false
 	
 // Object comparisons
-bool bTrue: true;
-bool bFalse: false;
-char cA: 'a';
-char cB: 'b';
-int32 i1: 1;
-int32 i2: 2;
-float64 f1: 1.0;
-float64 f2: 1.1;
-string aa: "aa";
-string ab: "ab";
+bool bTrue: true
+bool bFalse: false
+char cA: 'a'
+char cB: 'b'
+int32 i1: 1
+int32 i2: 2
+float64 f1: 1.0
+float64 f2: 1.1
+string aa: "aa"
+string ab: "ab"
 
-enum Color:: Red, Blue;
-Color eRed: Red;
-Color eBlue: Blue;
+enum Color:: Red, Blue
+Color eRed: Red
+Color eBlue: Blue
 
 // Booleans
-if bFalse.compare(bTrue) != LT: fail("bFalse.compare(bTrue) (${bFalse.compare(bTrue)} != LT)");
-if bTrue.compare(bFalse) != GT: fail("bTrue.compare(bFalse) (${bTrue.compare(bFalse)} != GT)");
-if bFalse.compare(bFalse) != EQ: fail("bFalse.compare(bFalse) ($bFalse.compare(bFalse)} != EQ)");
+if bFalse.compare(bTrue) != LT: fail("bFalse.compare(bTrue) (${bFalse.compare(bTrue)} != LT)")
+if bTrue.compare(bFalse) != GT: fail("bTrue.compare(bFalse) (${bTrue.compare(bFalse)} != GT)")
+if bFalse.compare(bFalse) != EQ: fail("bFalse.compare(bFalse) ($bFalse.compare(bFalse)} != EQ)")
 
 // Characters
-if cA.compare(cB) != LT: fail("cA.compare(cB) (${cA.compare(cB)} != LT)");
-if cB.compare(cA) != GT: fail("cB.compare(cA) (${cB.compare(cA)} != GT)");
-if cA.compare(cA) != EQ: fail("cA.compare(cA) (${cA.compare(cA)} != EQ)");
+if cA.compare(cB) != LT: fail("cA.compare(cB) (${cA.compare(cB)} != LT)")
+if cB.compare(cA) != GT: fail("cB.compare(cA) (${cB.compare(cA)} != GT)")
+if cA.compare(cA) != EQ: fail("cA.compare(cA) (${cA.compare(cA)} != EQ)")
 
 // Integers
-if i1.compare(i2) != LT: fail("i1.compare(i2) (${i1.compare(i2)} != LT)");
-if i2.compare(i1) != GT: fail("i2.compare(i1) (${i2.compare(i1)} != GT)");
-if i1.compare(i1) != EQ: fail("i1.compare(i1) (${i1.compare(i1)} != EQ)");
+if i1.compare(i2) != LT: fail("i1.compare(i2) (${i1.compare(i2)} != LT)")
+if i2.compare(i1) != GT: fail("i2.compare(i1) (${i2.compare(i1)} != GT)")
+if i1.compare(i1) != EQ: fail("i1.compare(i1) (${i1.compare(i1)} != EQ)")
 
 // Floating point
-if f1.compare(f2) != LT: fail("f1.compare(f2) (${f1.compare(f2)} != LT)");
-if f2.compare(f1) != GT: fail("f2.compare(f1) (${f2.compare(f1)} != GT)");
-if f2.compare(f2) != EQ: fail("f2.compare(f2) (${f2.compare(f2)} != EQ)");
+if f1.compare(f2) != LT: fail("f1.compare(f2) (${f1.compare(f2)} != LT)")
+if f2.compare(f1) != GT: fail("f2.compare(f1) (${f2.compare(f1)} != GT)")
+if f2.compare(f2) != EQ: fail("f2.compare(f2) (${f2.compare(f2)} != EQ)")
 
 // Strings
-if aa.compare(ab) != LT: fail("aa.compare(ab) (${aa.compare(ab)} != LT)");
-if ab.compare(aa) != GT: fail("ab.compare(aa) (${aa.compare(aa)} != GT)");
-if aa.compare(aa) != EQ: fail("aa.compare(ab) (${aa.compare(ab)} != EQ)");
+if aa.compare(ab) != LT: fail("aa.compare(ab) (${aa.compare(ab)} != LT)")
+if ab.compare(aa) != GT: fail("ab.compare(aa) (${aa.compare(aa)} != GT)")
+if aa.compare(aa) != EQ: fail("aa.compare(ab) (${aa.compare(ab)} != EQ)")
 
 // Enumerations
 
-if eRed.compare(eBlue) != LT: fail("eRed.compare(eBlue) ${eRed.compare(eBlue)} != LT)");
-if eBlue.compare(eRed) != GT: fail("eBlue.compare(eRed) ${eBlue.compare(eRed)} != GT)");
-if eRed.compare(eRed) != EQ: fail("eRed.compare(eRed) ${eRed.compare(eRed)} != EQ)");
+if eRed.compare(eBlue) != LT: fail("eRed.compare(eBlue) ${eRed.compare(eBlue)} != LT)")
+if eBlue.compare(eRed) != GT: fail("eBlue.compare(eRed) ${eBlue.compare(eRed)} != GT)")
+if eRed.compare(eRed) != EQ: fail("eRed.compare(eRed) ${eRed.compare(eRed)} != EQ)")
 
 // Mixed types
-if i1.compare(bTrue) != NEQ: fail("i1.compare(bTrue) (${i1.compare(bTrue)} != NEQ)");
-if i1.compare(f1) != NEQ: fail("i1.compare(f1) (${i1.compare(f1)} != NEQ)");
-if i1.compare(cA) != NEQ: fail("i1.compare(cA) (${i1.compare(cA)} != NEQ)");
-if i1.compare(aa) != NEQ: fail("i1.compare(aa) (${i1.compare(aa)} != NEQ)");
-if i1.compare(eBlue) != NEQ: fail("i1.compare(eBlue) (${i1.compare(eBlue)} != NEQ)");
+if i1.compare(bTrue) != NEQ: fail("i1.compare(bTrue) (${i1.compare(bTrue)} != NEQ)")
+if i1.compare(f1) != NEQ: fail("i1.compare(f1) (${i1.compare(f1)} != NEQ)")
+if i1.compare(cA) != NEQ: fail("i1.compare(cA) (${i1.compare(cA)} != NEQ)")
+if i1.compare(aa) != NEQ: fail("i1.compare(aa) (${i1.compare(aa)} != NEQ)")
+if i1.compare(eBlue) != NEQ: fail("i1.compare(eBlue) (${i1.compare(eBlue)} != NEQ)")
 
-if result: "tc_compare02: OK";
+if result: "tc_compare02: OK"

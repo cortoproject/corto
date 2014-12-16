@@ -42,6 +42,18 @@ object tc_jsonser::
     string sn: null;
     string s1: "hello world";
     string s2: "hello, world!";
+    string s3: "@";
+    string s4: "@ hey";
+    string s5: "@hey";
+    string s6: "@hey you";
+    string s7: "@@";
+    string s8: "@@ hey";
+    string s9: "@@hey";
+    string s10: "@@hey you";
+    string s11: "@@@@@";
+    string s12: "@@@@@ hey";
+    string s13: "@@@@@hey";
+    string s14: "@@@@@hey you";
 
     struct point2D::
         x, y: int32;
@@ -58,3 +70,17 @@ object tc_jsonser::
     void namesp::
         int16 a: 9;
         string b: "b";
+
+    enum DogBreed:: GoldenRetriever, Pug, Chihuahua;
+
+    class Dog::
+        breed: DogBreed;
+        name: string;
+        age: uint8;
+        lover: Dog;
+
+    Dog dog1: DogBreed::GoldenRetriever, "Gijs", 10;
+    Dog dog2: DogBreed::Pug, "Lolly", 4;
+    Dog dog3: DogBreed::Chihuahua, "I'm annoying", 3, dog2;
+
+

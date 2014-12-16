@@ -27,7 +27,7 @@ typedef struct db_string_ser_t {
     unsigned int itemCount;
     db_bool compactNotation;
     db_ll anonymousObjects;
-}db_string_ser_t;
+} db_string_ser_t;
 
 struct db_serializer_s db_string_ser(db_modifier access, db_operatorKind accessKind, db_serializerTraceKind trace);
 

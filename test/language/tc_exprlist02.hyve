@@ -1,22 +1,22 @@
 // Multiple lvalue-assignments with complex type
-bool result: true;
+bool result: true
 void fail(string msg):
-	"tc_exprlist02: FAIL: $msg";
-	result = false;
+	"tc_exprlist02: FAIL: $msg"
+	result = false
 	
 struct Point::
-	x, y: uint32;
+	x, y: uint32
 	
-var Point p,q = {10, 20};
-if p.x != 10: fail("p.x initialization failed ($p)");
-if p.y != 20: fail("p.y initialization failed ($p)");
-if q.x != 10: fail("q.x initialization failed ($p)");
-if q.y != 20: fail("q.y initialization failed ($p)");
+var Point p,q = {10, 20}
+if p.x != 10: fail("p.x initialization failed ($p)")
+if p.y != 20: fail("p.y initialization failed ($p)")
+if q.x != 10: fail("q.x initialization failed ($p)")
+if q.y != 20: fail("q.y initialization failed ($p)")
 
-p,q = {30,40};
-if p.x != 30: fail("p.x assignment failed ($p)");
-if p.y != 40: fail("p.y assignment failed ($p)");
-if q.x != 30: fail("q.x assignment failed ($p)");
-if q.y != 40: fail("q.y assignment failed ($p)");
+p,q = {30,40}
+if p.x != 30: fail("p.x assignment failed ($p)")
+if p.y != 40: fail("p.y assignment failed ($p)")
+if q.x != 30: fail("q.x assignment failed ($p)")
+if q.y != 40: fail("q.y assignment failed ($p)")
 
-if result: "tc_exprlist02: OK";
+if result: "tc_exprlist02: OK"

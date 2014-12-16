@@ -3,61 +3,61 @@
 object hyve::
 	void os::
 		// sleep
-		void sleep(uint32 sec, uint32 nsec);
+		void sleep(uint32 sec, uint32 nsec)
 		
 		// system
-		void system(string cmd);
+		void system(string cmd)
 
 		// exit
-		void exit(bool success);
+		void exit(bool success)
 		
 		// loadAvgKind
 		enum loadAvgKind::
-			constant MIN_1;
-			constant MIN_5;
-			constant MIN_15;
+			constant MIN_1
+			constant MIN_5
+			constant MIN_15
 		
 		// loadavg
-		float64 loadavg(loadAvgKind kind);
+		float64 loadavg(loadAvgKind kind)
 		
 		// Time
 		class time::
-			member seconds : int32;
-			member nanoseconds : uint32;
+			member seconds : int32
+			member nanoseconds : uint32
 			
 			// Get time since epoch.
-			void get();
+			void get()
 			
 			// Arithmetic operations.
-			void add(Time t);
-			void sub(Time t);
+			void add(Time t)
+			void sub(Time t)
 			
 			// Conversion to float.
-			float64 toFloat();
+			float64 toFloat()
 	
 		// Thread
 		class thread::
 			// Constructor and destructor
-			int16 construct(Thread object);
-			void destruct(Thread object);
+			int16 construct(Thread object)
+			void destruct(Thread object)
 			
 			// Start thread
-			void start();
-			void stop();
+			void start()
+			void stop()
 			
 			// Run-function
-			void run() virtual: 0;
+			void run() virtual: 0
 			
 			// Join thread with caller
-			void join();
+			void join()
 
 			// Private handle to os-thread implementation
-			member handle :  word,local;
-			member stopping : bool,private;
+			member handle :  word,local
+			member stopping : bool,private
 			
 		// class Timer
 		class timer : thread::
-			member sec : int32;
-			member nanosec : uint32;
-			void run();
-			void stop();
+			member sec : int32
+			member nanosec : uint32
+			void run()
+			void stop()

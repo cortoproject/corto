@@ -39,6 +39,42 @@ extern db_constant (*tc_jsonser_Djinn_Mercury_o);
 /* ::tc_jsonser::Djinn::Venus */
 extern db_constant (*tc_jsonser_Djinn_Venus_o);
 
+/* ::tc_jsonser::Dog */
+extern db_class tc_jsonser_Dog_o;
+
+/* ::tc_jsonser::Dog::age */
+extern db_member tc_jsonser_Dog_age_o;
+
+/* ::tc_jsonser::Dog::breed */
+extern db_member tc_jsonser_Dog_breed_o;
+
+/* ::tc_jsonser::Dog::lover */
+extern db_member tc_jsonser_Dog_lover_o;
+
+/* ::tc_jsonser::Dog::name */
+extern db_member tc_jsonser_Dog_name_o;
+
+/* ::tc_jsonser::dog1 */
+extern tc_jsonser_Dog tc_jsonser_dog1_o;
+
+/* ::tc_jsonser::dog2 */
+extern tc_jsonser_Dog tc_jsonser_dog2_o;
+
+/* ::tc_jsonser::dog3 */
+extern tc_jsonser_Dog tc_jsonser_dog3_o;
+
+/* ::tc_jsonser::DogBreed */
+extern db_enum tc_jsonser_DogBreed_o;
+
+/* ::tc_jsonser::DogBreed::Chihuahua */
+extern db_constant (*tc_jsonser_DogBreed_Chihuahua_o);
+
+/* ::tc_jsonser::DogBreed::GoldenRetriever */
+extern db_constant (*tc_jsonser_DogBreed_GoldenRetriever_o);
+
+/* ::tc_jsonser::DogBreed::Pug */
+extern db_constant (*tc_jsonser_DogBreed_Pug_o);
+
 /* ::tc_jsonser::f32n */
 extern db_float32 (*tc_jsonser_f32n_o);
 
@@ -126,8 +162,44 @@ extern db_member tc_jsonser_point2D_y_o;
 /* ::tc_jsonser::s1 */
 extern db_string (*tc_jsonser_s1_o);
 
+/* ::tc_jsonser::s10 */
+extern db_string (*tc_jsonser_s10_o);
+
+/* ::tc_jsonser::s11 */
+extern db_string (*tc_jsonser_s11_o);
+
+/* ::tc_jsonser::s12 */
+extern db_string (*tc_jsonser_s12_o);
+
+/* ::tc_jsonser::s13 */
+extern db_string (*tc_jsonser_s13_o);
+
+/* ::tc_jsonser::s14 */
+extern db_string (*tc_jsonser_s14_o);
+
 /* ::tc_jsonser::s2 */
 extern db_string (*tc_jsonser_s2_o);
+
+/* ::tc_jsonser::s3 */
+extern db_string (*tc_jsonser_s3_o);
+
+/* ::tc_jsonser::s4 */
+extern db_string (*tc_jsonser_s4_o);
+
+/* ::tc_jsonser::s5 */
+extern db_string (*tc_jsonser_s5_o);
+
+/* ::tc_jsonser::s6 */
+extern db_string (*tc_jsonser_s6_o);
+
+/* ::tc_jsonser::s7 */
+extern db_string (*tc_jsonser_s7_o);
+
+/* ::tc_jsonser::s8 */
+extern db_string (*tc_jsonser_s8_o);
+
+/* ::tc_jsonser::s9 */
+extern db_string (*tc_jsonser_s9_o);
 
 /* ::tc_jsonser::Sleet */
 extern tc_jsonser_Djinn (*tc_jsonser_Sleet_o);

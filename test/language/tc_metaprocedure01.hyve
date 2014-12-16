@@ -1,53 +1,53 @@
 // Test metaprocedures of type class and hyve scope
-bool result: true;
+bool result: true
 void fail(string msg):
-	"tc_metaprocedure01: FAIL: $msg";
-	result = false;
+	"tc_metaprocedure01: FAIL: $msg"
+	result = false
 
 // Create a class using only metaprocedures
-var object cl = @::.declare("Point", class);
-if !cl: fail("declaration of class Point failed");
+var object cl = @::.declare("Point", class)
+if !cl: fail("declaration of class Point failed")
 
 // Define members
-(member(cl.declare("x", member)) = {uint32}).define();
-(member(cl.declare("y", member)) = {uint32}).define();
+(member(cl.declare("x", member)) = {uint32}).define()
+(member(cl.declare("y", member)) = {uint32}).define()
 
 // Validate state and attributes
-if cl.checkState(state::DEFINED): fail("cl.checkState(state::DEFINED)");
-if !cl.checkAttr(attr::ATTR_SCOPED): fail("!cl.checkAttr(state::SCOPED)");
+if cl.checkState(state::DEFINED): fail("cl.checkState(state::DEFINED)")
+if !cl.checkAttr(attr::ATTR_SCOPED): fail("!cl.checkAttr(state::SCOPED)")
 
 // Define class and check defined state
-if cl.define(): fail("failed to define class Point");
-if !cl.checkState(state::DEFINED): fail("!cl.checkState(state::DEFINED)");
-if !cl.instanceof(class): fail("!cl.instanceof(class)");
-if cl.nameof() != "Point": fail("cl.nameof() != \"Point\"");
+if cl.define(): fail("failed to define class Point")
+if !cl.checkState(state::DEFINED): fail("!cl.checkState(state::DEFINED)")
+if !cl.instanceof(class): fail("!cl.instanceof(class)")
+if cl.nameof() != "Point": fail("cl.nameof() != \"Point\"")
 
 // Create an instance with the class
-var object o = @::.declare("q", class(cl));
-if !o: fail("declaration of instance o failed");
-if o.define(): fail("failed to define instance o");
-if o.nameof() != "q": fail("o.nameof() != \"q\"");
-if !o.instanceof(class(cl)): fail("!o.instanceof(cl)");
+var object o = @::.declare("q", class(cl))
+if !o: fail("declaration of instance o failed")
+if o.define(): fail("failed to define instance o")
+if o.nameof() != "q": fail("o.nameof() != \"q\"")
+if !o.instanceof(class(cl)): fail("!o.instanceof(cl)")
 
 // Test resolving objects
-var object r = @::.resolve("Point");
-if r != cl: fail("r != cl");
+var object r = @::.resolve("Point")
+if r != cl: fail("r != cl")
 
-r = @::.resolve("q");
-if r != o: fail("r != o");
+r = @::.resolve("q")
+if r != o: fail("r != o")
 
-r = @::.lookup("Point");
-if r != cl: fail("r != cl #2");
+r = @::.lookup("Point")
+if r != cl: fail("r != cl #2")
 
-r = @::.lookup("q");
-if r != o: fail("r != q #2");
+r = @::.lookup("q")
+if r != o: fail("r != q #2")
 
-var object n = new(uint32);
-if !n: fail("!n");
-if !n.checkState(state::DEFINED): fail("!n.checkState(state::DEFINED)"); // primitives are instantly defined
-if !n.instanceof(uint32): fail("!n.instanceof(uint32)");
-if !n.checkState(state::VALID): fail("!n.checkState(state::VALID");
-n.invalidate();
-if n.checkState(state::VALID): fail("n.checkState(state::VALID");
+var object n = new(uint32)
+if !n: fail("!n")
+if !n.checkState(state::DEFINED): fail("!n.checkState(state::DEFINED)") // primitives are instantly defined
+if !n.instanceof(uint32): fail("!n.instanceof(uint32)")
+if !n.checkState(state::VALID): fail("!n.checkState(state::VALID")
+n.invalidate()
+if n.checkState(state::VALID): fail("n.checkState(state::VALID")
 
-if result: "tc_metaprocedure01: OK";
+if result: "tc_metaprocedure01: OK"

@@ -1,16 +1,16 @@
-bool result : true;
+bool result : true
 void fail(string msg):
-	"tc_overlapping_arguments: FAIL: $msg";
-	result = false;
+	"tc_overlapping_arguments: FAIL: $msg"
+	result = false
 
 class Foo::
-	member x : uint32;
-	uint32 returnArg(uint32 x) = x;
-	uint32 returnMbr(uint32 x) = this.x;
+	member x : uint32
+	uint32 returnArg(uint32 x) = x
+	uint32 returnMbr(uint32 x) = this.x
 
-Foo a:10;
+Foo a:10
 
-if a.returnArg(20) != 20: fail("returning argument failed");
-if a.returnMbr(20) != 10: fail("returning member-value failed");
+if a.returnArg(20) != 20: fail("returning argument failed")
+if a.returnMbr(20) != 10: fail("returning member-value failed")
 
-if result: "tc_overlapping_arguments: OK";
+if result: "tc_overlapping_arguments: OK"
