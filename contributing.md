@@ -4,7 +4,7 @@ This document describes the steps to get started with Hyve development as well a
 
 ## Requirements
 
-As of now, Hyve can only be built in 32-bit Linux. It is recommended to use an Ubuntu virtual machine. The examples hereby are provided for apt-get.
+As of now, Hyve can only be built in 32-bit or 64-bit Linux. It is recommended to use an Ubuntu virtual machine. The examples hereby are provided for `apt-get`.
 
 Install the GNU C++ compiler (required to build the C++ language binding).
 
@@ -35,7 +35,7 @@ apt-get install bison
 You can use the GitHub desktop application, or type:
 
 ```
-git clone https://github.com/SanderMertens/Hyve.git
+git clone https://github.com/Seldomberry/Hyve.git
 ```
 
 ## Building
@@ -72,9 +72,10 @@ Modify any files. Then build again (`make` from the root directory). Run test ca
 
 The buildsystem doesn't currently resolve dependencies on header files, so changes that affect header files only won't usually trigger a rebuild. When making changes to headers only it is safest to do a `make clean all`. It is highly recommended to do a `make clean all` after making changes to the core. 
 
-## Making changes
- - Make sure there is an issue that documents the change.
- - Follow the coding style of the file you're changing. If you really want to change it, do so consistently in the whole project. And have a good reason for it (esthetics is not a good reason :-).
+Please ensure:
+
+ - There is an issue that documents the change.
+ - Follow the coding style of the file you're changing. If you really want to change it, do so consistently in the whole project. And have a good reason for it (aesthetics is not a good reason :-).
 
 ## Committing changes
 Before committing your changes:
