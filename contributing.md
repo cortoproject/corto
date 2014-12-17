@@ -42,7 +42,7 @@ git clone https://github.com/Seldomberry/Hyve.git
 
 Setup the environment for building and running Hyve:
 ```
-source release.com
+source configure
 ```
 
 From the Hyve root directory, run the command:
