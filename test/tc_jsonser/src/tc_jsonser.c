@@ -20,9 +20,9 @@ int main(int argc, char* argv[]) {
     db_start();
     tc_jsonser_load();
 
-    result += test_primitive_value();
-    result += test_reference_value();
-    result += test_scope();
+    result += test_ser_primitive_value();
+    result += test_ser_reference_value();
+    result += test_ser_scope();
  
     db_stop();
 

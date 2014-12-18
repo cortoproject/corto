@@ -136,40 +136,31 @@ error:
 
 static db_int16 db_ser_reference(db_serializer s, db_value *v, void *userData) {
     DB_UNUSED(s);
-    db_id id;
+
+    db_json_ser_t *data;
     void *o;
     db_object object;
-    // db_json_ser_t *data;
-    // char *str;
+    db_id id;
 
-    // data = userData;
+    data = userData;
     o = db_valueValue(v);
     object = *(db_object*)o;
 
     if (object) {
         if (db_checkAttr(object, DB_ATTR_SCOPED) || (db_valueObject(v) == object)) {
             db_fullname(object, id);
-            if (!db_ser_appendstr(userData, "\"@R %s\"", id)) {
+            if (!db_ser_appendstr(data, "\"@R %s\"", id)) {
                 goto finished;
             }
         } else {
             // TODO anonymous
         }
     } else {
-        if (!db_ser_appendstrbuff(userData, "null")) {
+        if (!db_ser_appendstrbuff(data, "null")) {
             goto finished;
         }
     }
-
-
-    /* Append name to serializer-result */
-    // if (!db_ser_appendstrbuff(userData, str)) {
-    //     goto finished;
-    // }
-
     return 0;
-// error:
-//     return -1;
 finished:
     return 1;
 
@@ -217,7 +208,24 @@ finished:
     return 1;
 }
 
-
+static db_int16 db_ser_base(db_serializer s, db_value* v, void* userData) {
+    db_json_ser_t *data = userData;
+    if (!db_ser_appendstr(data, "\"@base\":{")) {
+        goto finished;
+    }
+    if (db_serializeMembers(s, v, userData)) {
+        goto error;
+    }
+    if (!db_ser_appendstr(data, "}")) {
+        goto finished;
+    }
+    data->itemCount += 1;
+    return 0;
+error:
+    return -1;
+finished:
+    return 1;
+}
 
 /* TODO this is copy-past from dbsh.c */
 static char* dbsh_stateStr(db_object o, char* buff) {
@@ -453,8 +461,7 @@ struct db_serializer_s db_json_ser(db_modifier access, db_operatorKind accessKin
     s.reference = db_ser_reference;
     /* s.program[DB_COLLECTION] = db_ser_scope; */
     s.metaprogram[DB_MEMBER] = db_ser_member;
-    /* s.metaprogram[DB_BASE] = db_serializeMembers */;   /* Skip the scope-callback by directly calling serializeMembers. This will cause the extra
-                                                     * '{ }' not to appear, which is required by this string format. */
+    s.metaprogram[DB_BASE] = db_ser_base;
     s.metaprogram[DB_OBJECT] = db_ser_object;
     return s;
 }

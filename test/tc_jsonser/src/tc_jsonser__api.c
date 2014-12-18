@@ -19,7 +19,7 @@ int tc_jsonser_Dog__define(tc_jsonser_Dog _this, tc_jsonser_DogBreed breed, db_s
     _this->breed = breed;
     _this->name = (name ? db_strdup(name) : NULL);
     _this->age = age;
-    lover ? db_keep_ext(_this, lover, "element <0x976a100>.lover") : 0; _this->lover = lover;
+    lover ? db_keep_ext(_this, lover, "element <0x8ef7cd0>.lover") : 0; _this->lover = lover;
     return db_define(_this);
 }
 
@@ -29,7 +29,7 @@ tc_jsonser_Dog tc_jsonser_Dog__create(tc_jsonser_DogBreed breed, db_string name,
     _this->breed = breed;
     _this->name = (name ? db_strdup(name) : NULL);
     _this->age = age;
-    lover ? db_keep_ext(_this, lover, "element <0x976a100>.lover") : 0; _this->lover = lover;
+    lover ? db_keep_ext(_this, lover, "element <0x8ef7cd0>.lover") : 0; _this->lover = lover;
     if (db_define(_this)) {
         db_free(_this);
         _this = NULL;

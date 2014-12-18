@@ -1,86 +1,83 @@
 object tc_jsonser::
+    int8 i8n: -2
+    int8 i8z: 0
+    int8 i8p: 45
 
-    int8 i8n: -2;
-    int8 i8z: 0;
-    int8 i8p: 45;
+    int16 i16n: -2
+    int16 i16z: 0
+    int16 i16p: 45
 
-    int16 i16n: -2;
-    int16 i16z: 0;
-    int16 i16p: 45;
+    int32 i32n: -2
+    int32 i32z: 0
+    int32 i32p: 45
 
-    int32 i32n: -2;
-    int32 i32z: 0;
-    int32 i32p: 45;
+    int64 i64n: -2
+    int64 i64z: 0
+    int64 i64p: 45
 
-    int64 i64n: -2;
-    int64 i64z: 0;
-    int64 i64p: 45;
+    uint8 u8z: 0
+    uint8 u8p: 45
 
-    uint8 u8z: 0;
-    uint8 u8p: 45;
+    uint16 u16z: 0
+    uint16 u16p: 45
 
-    uint16 u16z: 0;
-    uint16 u16p: 45;
+    uint32 u32z: 0
+    uint32 u32p: 45
 
-    uint32 u32z: 0;
-    uint32 u32p: 45;
+    uint64 u64z: 0
+    uint64 u64p: 45
 
-    uint64 u64z: 0;
-    uint64 u64p: 45;
+    float32 f32n: -2.45
+    float32 f32z: 0
+    float32 f32p: 45.2
 
-    float32 f32n: -2.45;
-    float32 f32z: 0;
-    float32 f32p: 45.2;
+    float32 f64n: -2.45
+    float32 f64z: 0
+    float32 f64p: 45.2
 
-    float32 f64n: -2.45;
-    float32 f64z: 0;
-    float32 f64p: 45.2;
+    bool bt: true
+    bool bf: false
 
-    bool bt: true;
-    bool bf: false;
-
-    string sn: null;
-    string s1: "hello world";
-    string s2: "hello, world!";
-    string s3: "@";
-    string s4: "@ hey";
-    string s5: "@hey";
-    string s6: "@hey you";
-    string s7: "@@";
-    string s8: "@@ hey";
-    string s9: "@@hey";
-    string s10: "@@hey you";
-    string s11: "@@@@@";
-    string s12: "@@@@@ hey";
-    string s13: "@@@@@hey";
-    string s14: "@@@@@hey you";
+    string sn: null
+    string s1: "hello world"
+    string s2: "hello, world!"
+    string s3: "@"
+    string s4: "@ hey"
+    string s5: "@hey"
+    string s6: "@hey you"
+    string s7: "@@"
+    string s8: "@@ hey"
+    string s9: "@@hey"
+    string s10: "@@hey you"
+    string s11: "@@@@@"
+    string s12: "@@@@@ hey"
+    string s13: "@@@@@hey"
+    string s14: "@@@@@hey you"
 
     struct point2D::
-        x, y: int32;
+        x, y: int32
 
-    point2d p: 3, 4;
+    point2d p: 3, 4
 
-    enum Djinn:: Mercury, Venus, Mars, Jupiter;
+    enum Djinn:: Mercury, Venus, Mars, Jupiter
 
-    Djinn Flint: Venus;
-    Djinn Forge: Mars;
-    Djinn Gust: Jupiter;
-    Djinn Sleet: Mercury;
+    Djinn Flint: Venus
+    Djinn Forge: Mars
+    Djinn Gust: Jupiter
+    Djinn Sleet: Mercury
 
     void namesp::
-        int16 a: 9;
-        string b: "b";
+        int16 a: 9
+        string b: "b"
 
-    enum DogBreed:: GoldenRetriever, Pug, Chihuahua;
+    enum DogBreed:: GoldenRetriever, Pug, Chihuahua
 
     class Dog::
-        breed: DogBreed;
-        name: string;
-        age: uint8;
-        lover: Dog;
+        breed: DogBreed
+        name: string
+        age: uint8
+        lover: Dog
 
-    Dog dog1: DogBreed::GoldenRetriever, "Gijs", 10;
-    Dog dog2: DogBreed::Pug, "Lolly", 4;
-    Dog dog3: DogBreed::Chihuahua, "I'm annoying", 3, dog2;
-
-
+    Dog dog1: DogBreed::GoldenRetriever, "Gijs", 10
+    Dog dog2: DogBreed::Pug, "Lolly", 4
+    Dog dog3: DogBreed::Chihuahua, "I'm annoying", 3, dog2

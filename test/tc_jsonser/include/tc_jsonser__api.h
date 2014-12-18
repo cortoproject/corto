@@ -1,6 +1,5 @@
 /* tc_jsonser__api.h
  *
- *  Generated on Dec 15 2014
  *    API convenience functions for C-language.
  *    This file contains generated code. Do not modify!
  */
