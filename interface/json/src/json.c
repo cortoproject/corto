@@ -166,7 +166,7 @@ finished:
 
 }
 
-static db_int16 db_ser_member(db_serializer s, db_value *info, void *userData) {
+static db_int16 db_ser_item(db_serializer s, db_value *info, void *userData) {
     db_json_ser_t *data = userData;
     db_member member = info->is.member.t;
     db_string name = db_nameof(member);
@@ -174,8 +174,10 @@ static db_int16 db_ser_member(db_serializer s, db_value *info, void *userData) {
     if (data->itemCount && !db_ser_appendstr(data, ",")) {
         goto finished;
     }
-    if (!db_ser_appendstr(data, "\"%s\":", name)) {
-        goto finished;
+    if (info->kind == DB_MEMBER) {
+        if (!db_ser_appendstr(data, "\"%s\":", name)) {
+            goto finished;
+        }
     }
     if (db_serializeValue(s, info, userData)) {
         goto error;
@@ -190,12 +192,21 @@ finished:
     return 1;
 }
 
-static db_int16 db_ser_composite(db_serializer s, db_value* v, void* userData) {
+static db_int16 db_ser_complex(db_serializer s, db_value* v, void* userData) {
     db_json_ser_t *data = userData;
+    db_type type = db_valueType(v)->real;
     if (!db_ser_appendstr(data, "{")) {
         goto finished;
     }
-    if (db_serializeMembers(s, v, userData)) {
+    if (type->kind == DB_COMPOSITE) {
+        if (db_serializeMembers(s, v, userData)) {
+            goto error;
+        }
+    } else if (type->kind == DB_COLLECTION) {
+        if (db_serializeElements(s, v, userData)) {
+            goto error;
+        }
+    } else {
         goto error;
     }
     if (!db_ser_appendstr(data, "}")) {
@@ -457,10 +468,11 @@ struct db_serializer_s db_json_ser(db_modifier access, db_operatorKind accessKin
     s.accessKind = accessKind;
     s.traceKind = trace;
     s.program[DB_PRIMITIVE] = db_ser_primitive;
-    s.program[DB_COMPOSITE] = db_ser_composite;
     s.reference = db_ser_reference;
-    /* s.program[DB_COLLECTION] = db_ser_scope; */
-    s.metaprogram[DB_MEMBER] = db_ser_member;
+    s.program[DB_COMPOSITE] = db_ser_complex;
+    s.program[DB_COLLECTION] = db_ser_complex;
+    s.metaprogram[DB_ELEMENT] = db_ser_item;
+    s.metaprogram[DB_MEMBER] = db_ser_item;
     s.metaprogram[DB_BASE] = db_ser_base;
     s.metaprogram[DB_OBJECT] = db_ser_object;
     return s;

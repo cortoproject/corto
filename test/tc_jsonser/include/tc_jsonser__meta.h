@@ -138,6 +138,12 @@ extern db_int8 (*tc_jsonser_i8p_o);
 /* ::tc_jsonser::i8z */
 extern db_int8 (*tc_jsonser_i8z_o);
 
+/* ::tc_jsonser::ints */
+extern db_array tc_jsonser_ints_o;
+
+/* ::tc_jsonser::myarray */
+extern tc_jsonser_ints (*tc_jsonser_myarray_o);
+
 /* ::tc_jsonser::namesp */
 extern db_void (*tc_jsonser_namesp_o);
 

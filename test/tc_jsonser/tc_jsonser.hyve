@@ -81,3 +81,6 @@ object tc_jsonser::
     Dog dog1: DogBreed::GoldenRetriever, "Gijs", 10
     Dog dog2: DogBreed::Pug, "Lolly", 4
     Dog dog3: DogBreed::Chihuahua, "I'm annoying", 3, dog2
+
+    array ints: uint32, 4
+    ints myarray: 26, 47, 6, 39

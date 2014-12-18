@@ -42,6 +42,8 @@ DB_CLASS_DEF(tc_jsonser_Dog) {
     tc_jsonser_Dog lover;
 };
 
+typedef db_uint32 tc_jsonser_ints[4];
+
 /*  ::tc_jsonser::point2D */
 typedef struct tc_jsonser_point2D tc_jsonser_point2D;
 

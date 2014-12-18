@@ -48,6 +48,8 @@ db_int64 (*tc_jsonser_i64z_o);
 db_int8 (*tc_jsonser_i8n_o);
 db_int8 (*tc_jsonser_i8p_o);
 db_int8 (*tc_jsonser_i8z_o);
+db_array tc_jsonser_ints_o;
+tc_jsonser_ints (*tc_jsonser_myarray_o);
 db_void (*tc_jsonser_namesp_o);
 db_int16 (*tc_jsonser_namesp_a_o);
 db_string (*tc_jsonser_namesp_b_o);
@@ -697,6 +699,44 @@ int tc_jsonser_load(void) {
     if (!db_checkState(tc_jsonser_i8z_o, DB_DEFINED)) {
         if (db_define(tc_jsonser_i8z_o)) {
             db_error("tc_jsonser_load: failed to define object '::tc_jsonser::i8z'.");
+            goto error;
+        }
+    }
+    /* Declare ::tc_jsonser::ints */
+    tc_jsonser_ints_o = db_declare(tc_jsonser_o, "ints", db_typedef(db_array_o));
+    if (!tc_jsonser_ints_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::ints'.");
+        goto error;
+    }
+
+    /* Define ::tc_jsonser::ints */
+    if (!db_checkState(tc_jsonser_ints_o, DB_DEFINED)) {
+        db_collection(tc_jsonser_ints_o)->elementType = db_resolve_ext(tc_jsonser_ints_o, NULL, "::hyve::lang::uint32", FALSE, "element ::tc_jsonser::ints.elementType");
+        db_collection(tc_jsonser_ints_o)->max = 4;
+        tc_jsonser_ints_o->elementType = db_resolve_ext(tc_jsonser_ints_o, NULL, "::hyve::lang::uint32", FALSE, "element ::tc_jsonser::ints.elementType");
+        if (db_define(tc_jsonser_ints_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::ints'.");
+            goto error;
+        }
+    }
+    if (db_type(tc_jsonser_ints_o)->size != sizeof(tc_jsonser_ints)) {
+        db_error("tc_jsonser_load: calculated size '%d' of type '::tc_jsonser::ints' doesn't match C-type size '%d'", db_type(tc_jsonser_ints_o)->size, sizeof(tc_jsonser_ints));
+    }
+    /* Declare ::tc_jsonser::myarray */
+    tc_jsonser_myarray_o = db_declare(tc_jsonser_o, "myarray", db_typedef(tc_jsonser_ints_o));
+    if (!tc_jsonser_myarray_o) {
+        db_error("tc_jsonser_load: failed to declare object '::tc_jsonser::myarray'.");
+        goto error;
+    }
+
+    /* Define ::tc_jsonser::myarray */
+    if (!db_checkState(tc_jsonser_myarray_o, DB_DEFINED)) {
+        (*tc_jsonser_myarray_o)[0] = 26;
+        (*tc_jsonser_myarray_o)[1] = 47;
+        (*tc_jsonser_myarray_o)[2] = 6;
+        (*tc_jsonser_myarray_o)[3] = 39;
+        if (db_define(tc_jsonser_myarray_o)) {
+            db_error("tc_jsonser_load: failed to define object '::tc_jsonser::myarray'.");
             goto error;
         }
     }

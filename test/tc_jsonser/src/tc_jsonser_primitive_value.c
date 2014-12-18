@@ -16,7 +16,7 @@
         result = -1;\
         fprintf(\
             stderr,\
-            "tc_jsonser_number: FAIL:\nexpected:\n%s\nserialized:\n%s\n",\
+            "tc_jsonser_primitive_value: FAIL:\nexpected:\n%s\nserialized:\n%s\n",\
             "{\"value\":"expected"}", userData.buffer);\
     }\
 }
