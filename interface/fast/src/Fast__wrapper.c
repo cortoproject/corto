@@ -1810,8 +1810,8 @@ void __Fast_Parser_declareFunction(db_function f, void *result, void *args) {
         *(Fast_Parser*)args,
         *(Fast_Variable*)((intptr_t)args + sizeof(Fast_Parser)),
         *(db_string*)((intptr_t)args + sizeof(Fast_Parser) + sizeof(Fast_Variable)),
-        *(db_procedure*)((intptr_t)args + sizeof(Fast_Parser) + sizeof(Fast_Variable) + sizeof(db_string)),
-        *(db_bool*)((intptr_t)args + sizeof(Fast_Parser) + sizeof(Fast_Variable) + sizeof(db_string) + sizeof(db_procedure)));
+        *(db_type*)((intptr_t)args + sizeof(Fast_Parser) + sizeof(Fast_Variable) + sizeof(db_string)),
+        *(db_bool*)((intptr_t)args + sizeof(Fast_Parser) + sizeof(Fast_Variable) + sizeof(db_string) + sizeof(db_type)));
 }
 
 void __Fast_Parser_declareFunctionParams(db_function f, void *result, void *args) {

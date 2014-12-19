@@ -16,8 +16,8 @@ Fast_BinaryExpr Fast_BinaryExpr__declare(db_object _parent, db_string _name) {
 }
 
 int Fast_BinaryExpr__define(Fast_BinaryExpr _this, Fast_Expression lvalue, Fast_Expression rvalue, db_operatorKind operator) {
-    lvalue ? db_keep_ext(_this, lvalue, "element <0x9dc0508>.lvalue") : 0; _this->lvalue = lvalue;
-    rvalue ? db_keep_ext(_this, rvalue, "element <0x9dc0508>.rvalue") : 0; _this->rvalue = rvalue;
+    lvalue ? db_keep_ext(_this, lvalue, "element <0x9778458>.lvalue") : 0; _this->lvalue = lvalue;
+    rvalue ? db_keep_ext(_this, rvalue, "element <0x9778458>.rvalue") : 0; _this->rvalue = rvalue;
     _this->operator = operator;
     return db_define(_this);
 }
@@ -25,8 +25,8 @@ int Fast_BinaryExpr__define(Fast_BinaryExpr _this, Fast_Expression lvalue, Fast_
 Fast_BinaryExpr Fast_BinaryExpr__create(Fast_Expression lvalue, Fast_Expression rvalue, db_operatorKind operator) {
     Fast_BinaryExpr _this;
     _this = db_new(db_typedef(Fast_BinaryExpr_o));
-    lvalue ? db_keep_ext(_this, lvalue, "element <0x9dc0508>.lvalue") : 0; _this->lvalue = lvalue;
-    rvalue ? db_keep_ext(_this, rvalue, "element <0x9dc0508>.rvalue") : 0; _this->rvalue = rvalue;
+    lvalue ? db_keep_ext(_this, lvalue, "element <0x9778458>.lvalue") : 0; _this->lvalue = lvalue;
+    rvalue ? db_keep_ext(_this, rvalue, "element <0x9778458>.rvalue") : 0; _this->rvalue = rvalue;
     _this->operator = operator;
     if (db_define(_this)) {
         db_free(_this);
@@ -44,14 +44,14 @@ Fast_Block Fast_Block__declare(db_object _parent, db_string _name) {
 }
 
 int Fast_Block__define(Fast_Block _this, Fast_Block parent) {
-    parent ? db_keep_ext(_this, parent, "element <0x9dc0508>.parent") : 0; _this->parent = parent;
+    parent ? db_keep_ext(_this, parent, "element <0x9778458>.parent") : 0; _this->parent = parent;
     return db_define(_this);
 }
 
 Fast_Block Fast_Block__create(Fast_Block parent) {
     Fast_Block _this;
     _this = db_new(db_typedef(Fast_Block_o));
-    parent ? db_keep_ext(_this, parent, "element <0x9dc0508>.parent") : 0; _this->parent = parent;
+    parent ? db_keep_ext(_this, parent, "element <0x9778458>.parent") : 0; _this->parent = parent;
     if (db_define(_this)) {
         db_free(_this);
         _this = NULL;
@@ -92,16 +92,16 @@ Fast_Call Fast_Call__declare(db_object _parent, db_string _name) {
 }
 
 int Fast_Call__define(Fast_Call _this, Fast_Expression function, Fast_Expression arguments) {
-    function ? db_keep_ext(_this, function, "element <0x9dc0508>.function") : 0; _this->function = function;
-    arguments ? db_keep_ext(_this, arguments, "element <0x9dc0508>.arguments") : 0; _this->arguments = arguments;
+    function ? db_keep_ext(_this, function, "element <0x9778458>.function") : 0; _this->function = function;
+    arguments ? db_keep_ext(_this, arguments, "element <0x9778458>.arguments") : 0; _this->arguments = arguments;
     return db_define(_this);
 }
 
 Fast_Call Fast_Call__create(Fast_Expression function, Fast_Expression arguments) {
     Fast_Call _this;
     _this = db_new(db_typedef(Fast_Call_o));
-    function ? db_keep_ext(_this, function, "element <0x9dc0508>.function") : 0; _this->function = function;
-    arguments ? db_keep_ext(_this, arguments, "element <0x9dc0508>.arguments") : 0; _this->arguments = arguments;
+    function ? db_keep_ext(_this, function, "element <0x9778458>.function") : 0; _this->function = function;
+    arguments ? db_keep_ext(_this, arguments, "element <0x9778458>.arguments") : 0; _this->arguments = arguments;
     if (db_define(_this)) {
         db_free(_this);
         _this = NULL;
@@ -118,16 +118,16 @@ Fast_CastExpr Fast_CastExpr__declare(db_object _parent, db_string _name) {
 }
 
 int Fast_CastExpr__define(Fast_CastExpr _this, Fast_Expression lvalue, Fast_Expression rvalue) {
-    lvalue ? db_keep_ext(_this, lvalue, "element <0x9d4c328>.lvalue") : 0; _this->lvalue = lvalue;
-    rvalue ? db_keep_ext(_this, rvalue, "element <0x9d4c328>.rvalue") : 0; _this->rvalue = rvalue;
+    lvalue ? db_keep_ext(_this, lvalue, "element <0x9777f48>.lvalue") : 0; _this->lvalue = lvalue;
+    rvalue ? db_keep_ext(_this, rvalue, "element <0x9777f48>.rvalue") : 0; _this->rvalue = rvalue;
     return db_define(_this);
 }
 
 Fast_CastExpr Fast_CastExpr__create(Fast_Expression lvalue, Fast_Expression rvalue) {
     Fast_CastExpr _this;
     _this = db_new(db_typedef(Fast_CastExpr_o));
-    lvalue ? db_keep_ext(_this, lvalue, "element <0x9d4c328>.lvalue") : 0; _this->lvalue = lvalue;
-    rvalue ? db_keep_ext(_this, rvalue, "element <0x9d4c328>.rvalue") : 0; _this->rvalue = rvalue;
+    lvalue ? db_keep_ext(_this, lvalue, "element <0x9777f48>.lvalue") : 0; _this->lvalue = lvalue;
+    rvalue ? db_keep_ext(_this, rvalue, "element <0x9777f48>.rvalue") : 0; _this->rvalue = rvalue;
     if (db_define(_this)) {
         db_free(_this);
         _this = NULL;
@@ -190,14 +190,14 @@ Fast_Define Fast_Define__declare(db_object _parent, db_string _name) {
 }
 
 int Fast_Define__define(Fast_Define _this, Fast_Expression object) {
-    object ? db_keep_ext(_this, object, "element <0x9d82bd0>.object") : 0; _this->object = object;
+    object ? db_keep_ext(_this, object, "element <0x97720a8>.object") : 0; _this->object = object;
     return db_define(_this);
 }
 
 Fast_Define Fast_Define__create(Fast_Expression object) {
     Fast_Define _this;
     _this = db_new(db_typedef(Fast_Define_o));
-    object ? db_keep_ext(_this, object, "element <0x9d82bd0>.object") : 0; _this->object = object;
+    object ? db_keep_ext(_this, object, "element <0x97720a8>.object") : 0; _this->object = object;
     if (db_define(_this)) {
         db_free(_this);
         _this = NULL;
@@ -242,16 +242,16 @@ Fast_ElementExpr Fast_ElementExpr__declare(db_object _parent, db_string _name) {
 }
 
 int Fast_ElementExpr__define(Fast_ElementExpr _this, Fast_Expression lvalue, Fast_Expression rvalue) {
-    lvalue ? db_keep_ext(_this, lvalue, "element <0x9d60b68>.lvalue") : 0; _this->lvalue = lvalue;
-    rvalue ? db_keep_ext(_this, rvalue, "element <0x9d60b68>.rvalue") : 0; _this->rvalue = rvalue;
+    lvalue ? db_keep_ext(_this, lvalue, "element <0x97b7638>.lvalue") : 0; _this->lvalue = lvalue;
+    rvalue ? db_keep_ext(_this, rvalue, "element <0x97b7638>.rvalue") : 0; _this->rvalue = rvalue;
     return db_define(_this);
 }
 
 Fast_ElementExpr Fast_ElementExpr__create(Fast_Expression lvalue, Fast_Expression rvalue) {
     Fast_ElementExpr _this;
     _this = db_new(db_typedef(Fast_ElementExpr_o));
-    lvalue ? db_keep_ext(_this, lvalue, "element <0x9d60b68>.lvalue") : 0; _this->lvalue = lvalue;
-    rvalue ? db_keep_ext(_this, rvalue, "element <0x9d60b68>.rvalue") : 0; _this->rvalue = rvalue;
+    lvalue ? db_keep_ext(_this, lvalue, "element <0x97b7638>.lvalue") : 0; _this->lvalue = lvalue;
+    rvalue ? db_keep_ext(_this, rvalue, "element <0x97b7638>.rvalue") : 0; _this->rvalue = rvalue;
     if (db_define(_this)) {
         db_free(_this);
         _this = NULL;
@@ -316,18 +316,18 @@ Fast_If Fast_If__declare(db_object _parent, db_string _name) {
 }
 
 int Fast_If__define(Fast_If _this, Fast_Expression condition, Fast_Block trueBranch, Fast_If falseBranch) {
-    condition ? db_keep_ext(_this, condition, "element <0x9d60b68>.condition") : 0; _this->condition = condition;
-    trueBranch ? db_keep_ext(_this, trueBranch, "element <0x9d60b68>.trueBranch") : 0; _this->trueBranch = trueBranch;
-    falseBranch ? db_keep_ext(_this, falseBranch, "element <0x9d60b68>.falseBranch") : 0; _this->falseBranch = falseBranch;
+    condition ? db_keep_ext(_this, condition, "element <0x97b7638>.condition") : 0; _this->condition = condition;
+    trueBranch ? db_keep_ext(_this, trueBranch, "element <0x97b7638>.trueBranch") : 0; _this->trueBranch = trueBranch;
+    falseBranch ? db_keep_ext(_this, falseBranch, "element <0x97b7638>.falseBranch") : 0; _this->falseBranch = falseBranch;
     return db_define(_this);
 }
 
 Fast_If Fast_If__create(Fast_Expression condition, Fast_Block trueBranch, Fast_If falseBranch) {
     Fast_If _this;
     _this = db_new(db_typedef(Fast_If_o));
-    condition ? db_keep_ext(_this, condition, "element <0x9d60b68>.condition") : 0; _this->condition = condition;
-    trueBranch ? db_keep_ext(_this, trueBranch, "element <0x9d60b68>.trueBranch") : 0; _this->trueBranch = trueBranch;
-    falseBranch ? db_keep_ext(_this, falseBranch, "element <0x9d60b68>.falseBranch") : 0; _this->falseBranch = falseBranch;
+    condition ? db_keep_ext(_this, condition, "element <0x97b7638>.condition") : 0; _this->condition = condition;
+    trueBranch ? db_keep_ext(_this, trueBranch, "element <0x97b7638>.trueBranch") : 0; _this->trueBranch = trueBranch;
+    falseBranch ? db_keep_ext(_this, falseBranch, "element <0x97b7638>.falseBranch") : 0; _this->falseBranch = falseBranch;
     if (db_define(_this)) {
         db_free(_this);
         _this = NULL;
@@ -447,7 +447,7 @@ Fast_Local Fast_Local__declare(db_object _parent, db_string _name) {
 
 int Fast_Local__define(Fast_Local _this, db_string name, Fast_Variable type_1, Fast_LocalKind kind_2, db_bool isReference_1) {
     _this->name = (name ? db_strdup(name) : NULL);
-    type_1 ? db_keep_ext(_this, type_1, "element <0x9d77cc8>.type") : 0; _this->type = type_1;
+    type_1 ? db_keep_ext(_this, type_1, "element <0x9777e80>.type") : 0; _this->type = type_1;
     _this->kind = kind_2;
     _this->isReference = isReference_1;
     return db_define(_this);
@@ -457,7 +457,7 @@ Fast_Local Fast_Local__create(db_string name, Fast_Variable type_1, Fast_LocalKi
     Fast_Local _this;
     _this = db_new(db_typedef(Fast_Local_o));
     _this->name = (name ? db_strdup(name) : NULL);
-    type_1 ? db_keep_ext(_this, type_1, "element <0x9d77cc8>.type") : 0; _this->type = type_1;
+    type_1 ? db_keep_ext(_this, type_1, "element <0x9777e80>.type") : 0; _this->type = type_1;
     _this->kind = kind_2;
     _this->isReference = isReference_1;
     if (db_define(_this)) {
@@ -476,16 +476,16 @@ Fast_MemberExpr Fast_MemberExpr__declare(db_object _parent, db_string _name) {
 }
 
 int Fast_MemberExpr__define(Fast_MemberExpr _this, Fast_Expression lvalue, Fast_Expression rvalue) {
-    lvalue ? db_keep_ext(_this, lvalue, "element <0x9d6b760>.lvalue") : 0; _this->lvalue = lvalue;
-    rvalue ? db_keep_ext(_this, rvalue, "element <0x9d6b760>.rvalue") : 0; _this->rvalue = rvalue;
+    lvalue ? db_keep_ext(_this, lvalue, "element <0x9763988>.lvalue") : 0; _this->lvalue = lvalue;
+    rvalue ? db_keep_ext(_this, rvalue, "element <0x9763988>.rvalue") : 0; _this->rvalue = rvalue;
     return db_define(_this);
 }
 
 Fast_MemberExpr Fast_MemberExpr__create(Fast_Expression lvalue, Fast_Expression rvalue) {
     Fast_MemberExpr _this;
     _this = db_new(db_typedef(Fast_MemberExpr_o));
-    lvalue ? db_keep_ext(_this, lvalue, "element <0x9d6b760>.lvalue") : 0; _this->lvalue = lvalue;
-    rvalue ? db_keep_ext(_this, rvalue, "element <0x9d6b760>.rvalue") : 0; _this->rvalue = rvalue;
+    lvalue ? db_keep_ext(_this, lvalue, "element <0x9763988>.lvalue") : 0; _this->lvalue = lvalue;
+    rvalue ? db_keep_ext(_this, rvalue, "element <0x9763988>.rvalue") : 0; _this->rvalue = rvalue;
     if (db_define(_this)) {
         db_free(_this);
         _this = NULL;
@@ -502,16 +502,16 @@ Fast_NewExpr Fast_NewExpr__declare(db_object _parent, db_string _name) {
 }
 
 int Fast_NewExpr__define(Fast_NewExpr _this, Fast_Expression type_1, Fast_Expression attributes) {
-    type_1 ? db_keep_ext(_this, type_1, "element <0x9d86238>.type") : 0; _this->type = type_1;
-    attributes ? db_keep_ext(_this, attributes, "element <0x9d86238>.attributes") : 0; _this->attributes = attributes;
+    type_1 ? db_keep_ext(_this, type_1, "element <0x9772488>.type") : 0; _this->type = type_1;
+    attributes ? db_keep_ext(_this, attributes, "element <0x9772488>.attributes") : 0; _this->attributes = attributes;
     return db_define(_this);
 }
 
 Fast_NewExpr Fast_NewExpr__create(Fast_Expression type_1, Fast_Expression attributes) {
     Fast_NewExpr _this;
     _this = db_new(db_typedef(Fast_NewExpr_o));
-    type_1 ? db_keep_ext(_this, type_1, "element <0x9d86238>.type") : 0; _this->type = type_1;
-    attributes ? db_keep_ext(_this, attributes, "element <0x9d86238>.attributes") : 0; _this->attributes = attributes;
+    type_1 ? db_keep_ext(_this, type_1, "element <0x9772488>.type") : 0; _this->type = type_1;
+    attributes ? db_keep_ext(_this, attributes, "element <0x9772488>.attributes") : 0; _this->attributes = attributes;
     if (db_define(_this)) {
         db_free(_this);
         _this = NULL;
@@ -574,14 +574,14 @@ Fast_Object Fast_Object__declare(db_object _parent, db_string _name) {
 }
 
 int Fast_Object__define(Fast_Object _this, db_object value) {
-    value ? db_keep_ext(_this, value, "element <0x9d86238>.value") : 0; Fast_ObjectBase(_this)->value = value;
+    value ? db_keep_ext(_this, value, "element <0x9772488>.value") : 0; Fast_ObjectBase(_this)->value = value;
     return db_define(_this);
 }
 
 Fast_Object Fast_Object__create(db_object value) {
     Fast_Object _this;
     _this = db_new(db_typedef(Fast_Object_o));
-    value ? db_keep_ext(_this, value, "element <0x9d86238>.value") : 0; Fast_ObjectBase(_this)->value = value;
+    value ? db_keep_ext(_this, value, "element <0x9772488>.value") : 0; Fast_ObjectBase(_this)->value = value;
     if (db_define(_this)) {
         db_free(_this);
         _this = NULL;
@@ -598,14 +598,14 @@ Fast_ObjectBase Fast_ObjectBase__declare(db_object _parent, db_string _name) {
 }
 
 int Fast_ObjectBase__define(Fast_ObjectBase _this, db_object value) {
-    value ? db_keep_ext(_this, value, "element <0x9d86238>.value") : 0; _this->value = value;
+    value ? db_keep_ext(_this, value, "element <0x9772488>.value") : 0; _this->value = value;
     return db_define(_this);
 }
 
 Fast_ObjectBase Fast_ObjectBase__create(db_object value) {
     Fast_ObjectBase _this;
     _this = db_new(db_typedef(Fast_ObjectBase_o));
-    value ? db_keep_ext(_this, value, "element <0x9d86238>.value") : 0; _this->value = value;
+    value ? db_keep_ext(_this, value, "element <0x9772488>.value") : 0; _this->value = value;
     if (db_define(_this)) {
         db_free(_this);
         _this = NULL;
@@ -648,7 +648,7 @@ Fast_PostfixExpr Fast_PostfixExpr__declare(db_object _parent, db_string _name) {
 }
 
 int Fast_PostfixExpr__define(Fast_PostfixExpr _this, Fast_Expression lvalue, db_operatorKind operator) {
-    lvalue ? db_keep_ext(_this, lvalue, "element <0x9dc2bf8>.lvalue") : 0; _this->lvalue = lvalue;
+    lvalue ? db_keep_ext(_this, lvalue, "element <0x9792198>.lvalue") : 0; _this->lvalue = lvalue;
     _this->operator = operator;
     return db_define(_this);
 }
@@ -656,7 +656,7 @@ int Fast_PostfixExpr__define(Fast_PostfixExpr _this, Fast_Expression lvalue, db_
 Fast_PostfixExpr Fast_PostfixExpr__create(Fast_Expression lvalue, db_operatorKind operator) {
     Fast_PostfixExpr _this;
     _this = db_new(db_typedef(Fast_PostfixExpr_o));
-    lvalue ? db_keep_ext(_this, lvalue, "element <0x9dc2bf8>.lvalue") : 0; _this->lvalue = lvalue;
+    lvalue ? db_keep_ext(_this, lvalue, "element <0x9792198>.lvalue") : 0; _this->lvalue = lvalue;
     _this->operator = operator;
     if (db_define(_this)) {
         db_free(_this);
@@ -749,7 +749,7 @@ Fast_Template Fast_Template__declare(db_object _parent, db_string _name) {
 
 int Fast_Template__define(Fast_Template _this, db_string name, Fast_Variable type_1, Fast_LocalKind kind_2, db_bool isReference_1) {
     Fast_Local(_this)->name = (name ? db_strdup(name) : NULL);
-    type_1 ? db_keep_ext(_this, type_1, "element <0x9db35a0>.type") : 0; Fast_Local(_this)->type = type_1;
+    type_1 ? db_keep_ext(_this, type_1, "element <0x977add0>.type") : 0; Fast_Local(_this)->type = type_1;
     Fast_Local(_this)->kind = kind_2;
     Fast_Local(_this)->isReference = isReference_1;
     return db_define(_this);
@@ -759,7 +759,7 @@ Fast_Template Fast_Template__create(db_string name, Fast_Variable type_1, Fast_L
     Fast_Template _this;
     _this = db_new(db_typedef(Fast_Template_o));
     Fast_Local(_this)->name = (name ? db_strdup(name) : NULL);
-    type_1 ? db_keep_ext(_this, type_1, "element <0x9db35a0>.type") : 0; Fast_Local(_this)->type = type_1;
+    type_1 ? db_keep_ext(_this, type_1, "element <0x977add0>.type") : 0; Fast_Local(_this)->type = type_1;
     Fast_Local(_this)->kind = kind_2;
     Fast_Local(_this)->isReference = isReference_1;
     if (db_define(_this)) {
@@ -778,20 +778,20 @@ Fast_TernaryExpr Fast_TernaryExpr__declare(db_object _parent, db_string _name) {
 }
 
 int Fast_TernaryExpr__define(Fast_TernaryExpr _this, Fast_Expression condition, Fast_Expression ifTrue, Fast_Expression ifFalse, Fast_Expression result) {
-    condition ? db_keep_ext(_this, condition, "element <0x9d6d690>.condition") : 0; _this->condition = condition;
-    ifTrue ? db_keep_ext(_this, ifTrue, "element <0x9d6d690>.ifTrue") : 0; _this->ifTrue = ifTrue;
-    ifFalse ? db_keep_ext(_this, ifFalse, "element <0x9d6d690>.ifFalse") : 0; _this->ifFalse = ifFalse;
-    result ? db_keep_ext(_this, result, "element <0x9d6d690>.result") : 0; _this->result = result;
+    condition ? db_keep_ext(_this, condition, "element <0x97577e8>.condition") : 0; _this->condition = condition;
+    ifTrue ? db_keep_ext(_this, ifTrue, "element <0x97577e8>.ifTrue") : 0; _this->ifTrue = ifTrue;
+    ifFalse ? db_keep_ext(_this, ifFalse, "element <0x97577e8>.ifFalse") : 0; _this->ifFalse = ifFalse;
+    result ? db_keep_ext(_this, result, "element <0x97577e8>.result") : 0; _this->result = result;
     return db_define(_this);
 }
 
 Fast_TernaryExpr Fast_TernaryExpr__create(Fast_Expression condition, Fast_Expression ifTrue, Fast_Expression ifFalse, Fast_Expression result) {
     Fast_TernaryExpr _this;
     _this = db_new(db_typedef(Fast_TernaryExpr_o));
-    condition ? db_keep_ext(_this, condition, "element <0x9d7eb60>.condition") : 0; _this->condition = condition;
-    ifTrue ? db_keep_ext(_this, ifTrue, "element <0x9d7eb60>.ifTrue") : 0; _this->ifTrue = ifTrue;
-    ifFalse ? db_keep_ext(_this, ifFalse, "element <0x9d7eb60>.ifFalse") : 0; _this->ifFalse = ifFalse;
-    result ? db_keep_ext(_this, result, "element <0x9d7eb60>.result") : 0; _this->result = result;
+    condition ? db_keep_ext(_this, condition, "element <0x97be690>.condition") : 0; _this->condition = condition;
+    ifTrue ? db_keep_ext(_this, ifTrue, "element <0x97be690>.ifTrue") : 0; _this->ifTrue = ifTrue;
+    ifFalse ? db_keep_ext(_this, ifFalse, "element <0x97be690>.ifFalse") : 0; _this->ifFalse = ifFalse;
+    result ? db_keep_ext(_this, result, "element <0x97be690>.result") : 0; _this->result = result;
     if (db_define(_this)) {
         db_free(_this);
         _this = NULL;
@@ -808,7 +808,7 @@ Fast_UnaryExpr Fast_UnaryExpr__declare(db_object _parent, db_string _name) {
 }
 
 int Fast_UnaryExpr__define(Fast_UnaryExpr _this, Fast_Expression lvalue, db_operatorKind operator) {
-    lvalue ? db_keep_ext(_this, lvalue, "element <0x9d77890>.lvalue") : 0; _this->lvalue = lvalue;
+    lvalue ? db_keep_ext(_this, lvalue, "element <0x97aaf20>.lvalue") : 0; _this->lvalue = lvalue;
     _this->operator = operator;
     return db_define(_this);
 }
@@ -816,7 +816,7 @@ int Fast_UnaryExpr__define(Fast_UnaryExpr _this, Fast_Expression lvalue, db_oper
 Fast_UnaryExpr Fast_UnaryExpr__create(Fast_Expression lvalue, db_operatorKind operator) {
     Fast_UnaryExpr _this;
     _this = db_new(db_typedef(Fast_UnaryExpr_o));
-    lvalue ? db_keep_ext(_this, lvalue, "element <0x9d77890>.lvalue") : 0; _this->lvalue = lvalue;
+    lvalue ? db_keep_ext(_this, lvalue, "element <0x97aaf20>.lvalue") : 0; _this->lvalue = lvalue;
     _this->operator = operator;
     if (db_define(_this)) {
         db_free(_this);
@@ -835,8 +835,8 @@ Fast_Update Fast_Update__declare(db_object _parent, db_string _name) {
 
 int Fast_Update__define(Fast_Update _this, Fast_Expression_list exprList, Fast_Block block, Fast_Expression from) {
     _this->exprList = exprList;
-    block ? db_keep_ext(_this, block, "element <0x9d77890>.block") : 0; _this->block = block;
-    from ? db_keep_ext(_this, from, "element <0x9d77890>.from") : 0; _this->from = from;
+    block ? db_keep_ext(_this, block, "element <0x97aaf20>.block") : 0; _this->block = block;
+    from ? db_keep_ext(_this, from, "element <0x97aaf20>.from") : 0; _this->from = from;
     return db_define(_this);
 }
 
@@ -844,8 +844,8 @@ Fast_Update Fast_Update__create(Fast_Expression_list exprList, Fast_Block block,
     Fast_Update _this;
     _this = db_new(db_typedef(Fast_Update_o));
     _this->exprList = exprList;
-    block ? db_keep_ext(_this, block, "element <0x9d77890>.block") : 0; _this->block = block;
-    from ? db_keep_ext(_this, from, "element <0x9d77890>.from") : 0; _this->from = from;
+    block ? db_keep_ext(_this, block, "element <0x97aaf20>.block") : 0; _this->block = block;
+    from ? db_keep_ext(_this, from, "element <0x97aaf20>.from") : 0; _this->from = from;
     if (db_define(_this)) {
         db_free(_this);
         _this = NULL;
@@ -887,7 +887,7 @@ Fast_Wait Fast_Wait__declare(db_object _parent, db_string _name) {
 
 int Fast_Wait__define(Fast_Wait _this, Fast_Expression_list exprList, Fast_Expression timeout) {
     _this->exprList = exprList;
-    timeout ? db_keep_ext(_this, timeout, "element <0x9d77890>.timeout") : 0; _this->timeout = timeout;
+    timeout ? db_keep_ext(_this, timeout, "element <0x97aaf20>.timeout") : 0; _this->timeout = timeout;
     return db_define(_this);
 }
 
@@ -895,7 +895,7 @@ Fast_Wait Fast_Wait__create(Fast_Expression_list exprList, Fast_Expression timeo
     Fast_Wait _this;
     _this = db_new(db_typedef(Fast_Wait_o));
     _this->exprList = exprList;
-    timeout ? db_keep_ext(_this, timeout, "element <0x9d77890>.timeout") : 0; _this->timeout = timeout;
+    timeout ? db_keep_ext(_this, timeout, "element <0x97aaf20>.timeout") : 0; _this->timeout = timeout;
     if (db_define(_this)) {
         db_free(_this);
         _this = NULL;
@@ -912,8 +912,8 @@ Fast_While Fast_While__declare(db_object _parent, db_string _name) {
 }
 
 int Fast_While__define(Fast_While _this, Fast_Expression condition, Fast_Block trueBranch, db_bool isUntil) {
-    condition ? db_keep_ext(_this, condition, "element <0x9d77890>.condition") : 0; _this->condition = condition;
-    trueBranch ? db_keep_ext(_this, trueBranch, "element <0x9d77890>.trueBranch") : 0; _this->trueBranch = trueBranch;
+    condition ? db_keep_ext(_this, condition, "element <0x97aaf20>.condition") : 0; _this->condition = condition;
+    trueBranch ? db_keep_ext(_this, trueBranch, "element <0x97aaf20>.trueBranch") : 0; _this->trueBranch = trueBranch;
     _this->isUntil = isUntil;
     return db_define(_this);
 }
@@ -921,8 +921,8 @@ int Fast_While__define(Fast_While _this, Fast_Expression condition, Fast_Block t
 Fast_While Fast_While__create(Fast_Expression condition, Fast_Block trueBranch, db_bool isUntil) {
     Fast_While _this;
     _this = db_new(db_typedef(Fast_While_o));
-    condition ? db_keep_ext(_this, condition, "element <0x9d77890>.condition") : 0; _this->condition = condition;
-    trueBranch ? db_keep_ext(_this, trueBranch, "element <0x9d77890>.trueBranch") : 0; _this->trueBranch = trueBranch;
+    condition ? db_keep_ext(_this, condition, "element <0x97aaf20>.condition") : 0; _this->condition = condition;
+    trueBranch ? db_keep_ext(_this, trueBranch, "element <0x97aaf20>.trueBranch") : 0; _this->trueBranch = trueBranch;
     _this->isUntil = isUntil;
     if (db_define(_this)) {
         db_free(_this);

@@ -1,2 +1,17 @@
 
-"tc_delegate01: FAIL: not implemented"
+// The delegate type
+uint32 binaryOperation(uint32 a, uint32 b) procptr:
+
+// A function that matches the delegate signature
+uint32 add(uint32 a, uint32 b) = a + b
+
+// Assign function to delegate
+binaryOperation op:
+
+op = add
+
+// Call the delegate
+op(10, 20)
+
+//"tc_delegate01: FAIL: not implemented"
+

@@ -840,7 +840,8 @@ DB_CLASS_O(procptr, struct, DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, D
     DB_CALLBACK_O(procptr, init, "(lang::procptr object)", type_init, int16, db_procptr_init);
     DB_REFERENCE_O(procptr, returnType, typedef, DB_GLOBAL, DB_DEFINED | DB_DECLARED, FALSE);
     DB_MEMBER_O(procptr, returnsReference, bool, DB_GLOBAL);
-    DB_MEMBER_O(procptr, parameters, parameterSeq, DB_LOCAL | DB_READONLY);
+    DB_MEMBER_O(procptr, parameters, parameterSeq, DB_GLOBAL);
+    DB_METHOD_O(procptr, compatible, "(lang::type type)", bool, TRUE, db_procptr_compatible_v);
 
 /* ::hyve::lang::procedure */
 DB_CLASS_O(procedure, struct, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
@@ -897,6 +898,7 @@ DB_PROCEDURE_NOBASE_O(function, DB_FUNCTION, NULL, DB_DECLARED | DB_DEFINED);
     DB_CALLBACK_O(function, init, "(lang::function object)", type_init, int16, db_function_init);
     DB_CALLBACK_O(function, bind, "(lang::function object)", procedure_bind, int16, db_function_bind);
     DB_FUNCTION_O(function, unbind, "(lang::function object)", void, db_function_unbind);
+    DB_FUNCTION_O(function, stringToParameterSeq, "(lang::string name,lang::object scope)", parameterSeq, db_function_stringToParameterSeq);
 
 /* ::hyve::lang::dispatcher */
 DB_INTERFACE_O(dispatcher);

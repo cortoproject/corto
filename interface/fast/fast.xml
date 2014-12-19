@@ -672,7 +672,7 @@
 					
 					<!-- Declaration -->
 					<method name="declaration(Variable type,lang::string id,lang::bool isReference)" returnType="Variable"/>
-					<method name="declareFunction(Variable returnType,lang::string id,lang::procedure kind,bool returnsReference)" returnType="Variable"/>
+					<method name="declareFunction(Variable returnType,lang::string id,lang::type kind,bool returnsReference)" returnType="Variable"/>
 					<method name="declareFunctionParams(Variable function)" returnType="Fast::Block"/>
 					<method name="define()" returnType="int16"/>
 					<method name="defineScope()" returnType="int16"/>

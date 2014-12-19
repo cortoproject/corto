@@ -1,6 +1,5 @@
 /* db__api.h
  *
- *  Generated on Dec  1 2014
  *    API convenience functions for C-language.
  *    This file contains generated code. Do not modify!
  */
@@ -169,6 +168,12 @@ db_procedure db_procedure__new(void);
 db_procedure db_procedure__declare(db_object _parent, db_string _name);
 int db_procedure__define(db_procedure _this, db_procedureKind kind);
 db_procedure db_procedure__create(db_procedureKind kind);
+
+/* ::hyve::lang::procptr */
+db_procptr db_procptr__new(void);
+db_procptr db_procptr__declare(db_object _parent, db_string _name);
+int db_procptr__define(db_procptr _this, db_typedef returnType, db_bool returnsReference, db_parameterSeq parameters);
+db_procptr db_procptr__create(db_typedef returnType, db_bool returnsReference, db_parameterSeq parameters);
 
 /* ::hyve::lang::sequence */
 db_sequence db_sequence__new(void);

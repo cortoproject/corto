@@ -217,7 +217,23 @@ finished:
     return 1;
 }
 
-
+static db_int16 db_ser_base(db_serializer s, db_value* v, void* userData) {
+    db_json_ser_t *data = userData;
+    if (!db_ser_appendstr(data, "\"base\": {")) {
+        goto finished;
+    }
+    if (db_serializeMembers(s, v, userData)) {
+        goto error;
+    }
+    if (!db_ser_appendstr(data, "}")) {
+        goto finished;
+    }
+    return 0;
+error:
+    return -1;
+finished:
+    return 1;
+}
 
 /* TODO this is copy-past from dbsh.c */
 static char* dbsh_stateStr(db_object o, char* buff) {
@@ -452,6 +468,7 @@ struct db_serializer_s db_json_ser(db_modifier access, db_operatorKind accessKin
     s.program[DB_COMPOSITE] = db_ser_composite;
     s.reference = db_ser_reference;
     /* s.program[DB_COLLECTION] = db_ser_scope; */
+    s.metaprogram[DB_BASE] = db_ser_base;
     s.metaprogram[DB_MEMBER] = db_ser_member;
     /* s.metaprogram[DB_BASE] = db_serializeMembers */;   /* Skip the scope-callback by directly calling serializeMembers. This will cause the extra
                                                      * '{ }' not to appear, which is required by this string format. */

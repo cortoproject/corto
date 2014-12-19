@@ -801,7 +801,7 @@ extern db_callback Fast_Parser_construct_o;
 /* ::hyve::Fast::Parser::declaration(Variable type,lang::string id,lang::bool isReference) */
 extern db_method Fast_Parser_declaration_o;
 
-/* ::hyve::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::procedure kind,bool returnsReference) */
+/* ::hyve::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::type kind,bool returnsReference) */
 extern db_method Fast_Parser_declareFunction_o;
 
 /* ::hyve::Fast::Parser::declareFunctionParams(Variable function) */

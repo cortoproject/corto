@@ -459,7 +459,7 @@ and_expr
 xor_expr
 	: and_expr
 	| xor_expr {PUSHLVALUE($1)} '^' and_expr {POPLVALUE()} {$$ = Fast_Parser_binaryExpr(yparser(), $1, $4, DB_XOR); fast_op;}
-	;	
+	;
 
 or_expr
 	: xor_expr

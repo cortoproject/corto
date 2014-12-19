@@ -35,6 +35,13 @@ int fast_yparse(Fast_Parser parser, db_uint32 line, db_uint32 column);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ... ) {
 	va_list args;
 	char msgbuff[1024];
+    db_id token;
+
+    if (*_this->token == '\n') {
+        sprintf(token, "end of line");
+    } else {
+        sprintf(token, "'%s'", _this->token);
+    }
 
 	va_start(args, fmt);
 	vsprintf(msgbuff, fmt, args);
@@ -42,18 +49,18 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ... ) {
 
 #ifdef FAST_PARSER_DEBUG
     if (_this->initializerCount >= 0) {
-        printf("%s:%d:%d (pass=%d, initCount=%d, initializer=%p) error: %s near '%s'\n",
+        printf("%s:%d:%d (pass=%d, initCount=%d, initializer=%p) error: %s near %s\n",
                _this->filename, _this->line, _this->column,
                _this->pass, _this->initializerCount, _this->initializers[_this->initializerCount],
-               msgbuff, _this->token);
+               msgbuff, token);
     } else {
-        printf("%s:%d:%d (pass=%d, initCount=%d) error: %s near '%s'\n",
+        printf("%s:%d:%d (pass=%d, initCount=%d) error: %s near %s\n",
                _this->filename, _this->line, _this->column, _this->pass, _this->initializerCount,
-               msgbuff, _this->token);
+               msgbuff, token);
     }
 #else
     if (_this->token) {
-        printf("%s:%d:%d error: %s near '%s'\n", _this->filename, _this->line, _this->column, msgbuff, _this->token);
+        printf("%s:%d:%d error: %s near %s\n", _this->filename, _this->line, _this->column, msgbuff, token);
     } else {
         printf("%s:%d:%d error: %s\n", _this->filename, _this->line, _this->column, msgbuff);
     }
@@ -327,19 +334,12 @@ Fast_Expression Fast_Parser_binaryCollectionExpr(Fast_Parser _this, Fast_Express
             break;
         }
         case DB_DEC:
-            break;
         case DB_COND_EQ:
-            break;
         case DB_COND_NEQ:
-            break;
         case DB_COND_LT:
-            break;
         case DB_COND_GT:
-            break;
         case DB_COND_LTEQ:
-            break;
         case DB_COND_GTEQ:
-            break;
         default:
             Fast_Parser_error(_this, "invalid operator %s for collection-operand",
                               db_nameof(db_enum_constant(db_operatorKind_o, operator)));
@@ -420,6 +420,85 @@ Fast_Expression Fast_Parser_createBinaryTernaryExpr(Fast_Parser _this, Fast_Expr
     return result;
 }
 
+/* Create and validate delegate assignment */
+Fast_Expression Fast_Parser_delegateAssignment(Fast_Parser _this, Fast_Expression lvalue, Fast_Expression rvalue) {
+    Fast_InitializerExpr result;
+    db_procptr type;
+    db_function function;
+    db_uint32 i;
+    Fast_InitializerVariable_array64 variables;
+    memset(variables, 0, sizeof(variables));
+
+    /* Validate whether rvalue is an object */
+    if ((Fast_Node(rvalue)->kind == FAST_Variable) && (Fast_Variable(rvalue)->kind == FAST_Object)) {
+        function = Fast_ObjectBase(rvalue)->value;
+    } else {
+        Fast_Parser_error(_this, "dynamic delegate assignments are not yet supported");
+        goto error;
+    }
+
+    type = db_procptr(Fast_Expression_getType(lvalue));
+
+    /* Validate returntype */
+    if ((type->returnType != function->returnType) || 
+        (type->returnsReference && !function->returnsReference)) {
+        db_id id1, id2, id3, id4;
+        db_signatureName(db_nameof(function), id2);
+        Fast_Parser_error(_this, "returntype '%s%s' of procedure '%s' doesn't match '%s%s' of delegate '%s'",
+            db_fullname(function->returnType, id1),
+            function->returnsReference ? "&" : "",
+            id2,
+            db_fullname(type->returnType, id3),
+            type->returnsReference ? "&" : "",
+            db_fullname(type, id4));
+        goto error;
+    }
+
+    /* Validate number of parameters */
+    if (type->parameters.length != function->parameters.length) {
+        Fast_Parser_error(_this, "number of function parameters(%d) doesn't match delegate (%d)",
+            function->parameters.length,
+            type->parameters.length);
+        goto error;
+    }
+
+    /* Validate parameters */
+    for (i=0; i<type->parameters.length; i++) {
+        db_parameter *p1, *p2;
+        p1 = &type->parameters.buffer[i];
+        p2 = &function->parameters.buffer[i];
+        if ((p1->type != p2->type) || 
+            (p1->passByReference && !p2->passByReference)) {
+            db_id id1, id2, id3, id4;
+            db_signatureName(db_nameof(function), id2);
+            Fast_Parser_error(_this, "type '%s%s' of procedure '%s' doesn't match '%s%s' of delegate '%s'",
+                db_fullname(p2->type, id1),
+                p2->passByReference ? "&" : "",
+                id2,
+                db_fullname(p1->type, id3),
+                p1->passByReference ? "&" : "",
+                db_fullname(type, id4));
+            goto error;
+        }
+    }
+
+    { , procedure=add}
+
+    /* If procedure is compatible with delegate type, do a complex assignment */
+    db_set_ext(NULL, &variables[0].object, lvalue, "keep object for initializer variable array");
+    result = Fast_InitializerExpr__create(variables, 1, TRUE);
+    Fast_InitializerExpr_member(result, "procedure");
+    Fast_InitializerExpr_value(result, rvalue);
+    Fast_InitializerExpr_pop(result);
+    Fast_InitializerExpr_define(result);
+    Fast_Parser_collect(_this, result);
+
+    return Fast_Expression(result);
+error:
+    return NULL;
+}
+/* $end */
+
 /* Callback function for expansion of binary expressions */
 db_object Fast_Parser_expandBinaryExpr(Fast_Parser _this, Fast_Expression lvalue, Fast_Expression rvalue, void *userData) {
     Fast_Expression result = NULL;
@@ -431,6 +510,13 @@ db_object Fast_Parser_expandBinaryExpr(Fast_Parser _this, Fast_Expression lvalue
 
     forceReference = lvalue->forceReference || rvalue->forceReference;
     isReference = forceReference || (tleft && tleft->reference) || (tright && tright->reference);
+
+    if ((tleft->kind == DB_COMPOSITE) && (db_interface(tleft)->kind == DB_PROCPTR)) {
+        rvalue = Fast_Parser_delegateAssignment(_this, lvalue, rvalue);
+        if(!rvalue) {
+            goto error;
+        }
+    }
 
     /* The way in which following kinds of binary expressions are evaluated is important:
      *  - Ternary expressions takes precedence over anything since they introduce additional binary expressions
@@ -795,6 +881,33 @@ error:
 	return NULL;
 }
 
+/* Declare a delegate type */
+Fast_Variable Fast_Parser_declareDelegate(Fast_Parser _this, db_type returnType, db_string id, db_bool returnsReference) {
+    db_procptr delegate;
+    db_parameterSeq parameters;
+    db_id name;
+
+    /* Translate from name to arguments */
+    parameters = db_function_stringToParameterSeq(id, Fast_ObjectBase(_this->scope)->value);
+
+    /* Obtain name */
+    db_signatureName(id, name);
+
+    /* Declare and define delegate */
+    delegate = db_procptr__declare(Fast_ObjectBase(_this->scope)->value, name);
+    if(!delegate) {
+        goto error;
+    }
+
+    if(db_procptr__define(delegate, db_typedef(returnType), returnsReference, parameters)) {
+        goto error;
+    }
+
+    return Fast_Variable(Fast_Object__create(delegate));
+error:
+    return NULL;
+}
+
 /* $end */
 
 /* ::hyve::Fast::Parser::addStatement(Fast::Node statement) */
@@ -932,7 +1045,7 @@ db_int16 Fast_Parser_bind(Fast_Parser _this, Fast_Variable function, Fast_Block 
     Fast_Binding *binding;
     FAST_CHECK_ERRSET(_this);
 
-    if (_this->pass) {
+    if (_this->pass && function) {
         if (function->kind == FAST_Object) {
             binding = db_calloc(sizeof(Fast_Binding));
             binding->function = Fast_ObjectBase(function)->value; db_keep_ext(_this, binding->function, "Create binding for function");
@@ -1249,8 +1362,8 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::procedure kind,bool returnsReference) */
-Fast_Variable Fast_Parser_declareFunction(Fast_Parser _this, Fast_Variable returnType, db_string id, db_procedure kind, db_bool returnsReference) {
+/* ::hyve::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::type kind,bool returnsReference) */
+Fast_Variable Fast_Parser_declareFunction(Fast_Parser _this, Fast_Variable returnType, db_string id, db_type kind, db_bool returnsReference) {
 /* $begin(::hyve::Fast::Parser::declareFunction) */
 	db_function function;
     db_object o;
@@ -1290,10 +1403,9 @@ Fast_Variable Fast_Parser_declareFunction(Fast_Parser _this, Fast_Variable retur
 	    /* This could be an implementation after a forward declaration so try to resolve
 	     * function first. */
 	    if (!((function = db_lookupFunction(Fast_ObjectBase(_this->scope)->value, id, FALSE, &distance)) && !distance)) {
-            
             if (!functionType) {
-                if (db_class_instanceof(db_interface_o, Fast_ObjectBase(_this->scope)->value )) {
-                    if (db_class_instanceof(db_class_o, Fast_ObjectBase(_this->scope)->value )) {
+                if (db_class_instanceof(db_interface_o, Fast_ObjectBase(_this->scope)->value)) {
+                    if (db_class_instanceof(db_class_o, Fast_ObjectBase(_this->scope)->value)) {
                         if ((delegate = db_class_resolveDelegate(db_class_o, functionName))) {
                             functionType = db_typedef(db_callback_o);
                         }
@@ -1304,44 +1416,60 @@ Fast_Variable Fast_Parser_declareFunction(Fast_Parser _this, Fast_Variable retur
                 } else {
                     functionType = db_typedef(db_function_o);
                 }
+            } else {
+                /* Check whether declaration is a delegate */
+                if(db_interface_baseof(db_interface(kind), db_interface(db_procptr_o))) {
+                    result = Fast_Parser_declareDelegate(
+                        _this, 
+                        returnType ? Fast_ObjectBase(returnType)->value : NULL, 
+                        id, 
+                        returnsReference);
+                }
             }
-            
-            returnType_o = Fast_ObjectBase(returnType)->value;
-            if (!db_class_instanceof(db_typedef_o, returnType_o)) {
-                db_id id;
-                Fast_Parser_error(_this, "object '%s' specified as returntype is not a type.", Fast_Parser_id(returnType_o, id));
-                goto error;
-            }
-            
-            function = db_declare(Fast_ObjectBase(_this->scope)->value, id, functionType);
-            if (!function) {
-                db_id id1;
-                Fast_Parser_error(_this, "declare of %s '%s' failed",
-                                  id,
-                                  Fast_Parser_id(functionType, id1));
-                goto error;
-            }
-            function->returnType = db_typedef(returnType_o);
-            function->returnsReference = returnsReference;
-            db_keep_ext(function, returnType_o, "Keep returntype for function");
 
-            if (delegate) {
-                db_callback(function)->delegate = delegate;
-                db_keep_ext(function, delegate, "Keep delegate for callback");
+            if (!result) {
+                returnType_o = Fast_ObjectBase(returnType)->value;
+                if (!db_class_instanceof(db_typedef_o, returnType_o)) {
+                    db_id id;
+                    Fast_Parser_error(_this, "object '%s' specified as returntype is not a type.", Fast_Parser_id(returnType_o, id));
+                    goto error;
+                }
+                
+                function = db_declare(Fast_ObjectBase(_this->scope)->value, id, functionType);
+                if (!function) {
+                    db_id id1;
+                    Fast_Parser_error(_this, "declare of %s '%s' failed",
+                                      id,
+                                      Fast_Parser_id(functionType, id1));
+                    goto error;
+                }
+
+                function->returnType = db_typedef(returnType_o);
+                function->returnsReference = returnsReference;
+                db_keep_ext(function, returnType_o, "Keep returntype for function");
+
+                if (delegate) {
+                    db_callback(function)->delegate = delegate;
+                    db_keep_ext(function, delegate, "Keep delegate for callback");
+                }
             }
 	    } else {
 	        db_free(function);
 	    }
         
-        result = Fast_Variable(Fast_Object__create(function));
-        Fast_Parser_collect(_this, result);
+        if (!result) {        
+            result = Fast_Variable(Fast_Object__create(function));
+            Fast_Parser_collect(_this, result);
+        }
 	} else {
-	    db_object function = db_resolve_ext(_this, Fast_ObjectBase(_this->scope)->value, id, FALSE, "Resolve function in 2nd pass");
-	    db_assert(function != NULL, "object should still be there in 2nd pass");
-        
-	    result = Fast_Variable(Fast_Object__create(function));
-	    Fast_Parser_collect(_this, result);
-	    db_free_ext(_this, function, "Free function from resolve (2nd pass)");
+        if(!kind || (db_interface(kind)->kind == DB_PROCEDURE)) {
+    	    db_object function = db_resolve_ext(_this, Fast_ObjectBase(_this->scope)->value, id, FALSE, "Resolve function in 2nd pass");
+    	    db_assert(function != NULL, "object should still be there in 2nd pass");
+            
+    	    result = Fast_Variable(Fast_Object__create(function));
+    	    Fast_Parser_collect(_this, result);
+    	    db_free_ext(_this, function, "Free function from resolve (2nd pass)");
+        }
 	}
     
 	return result;
@@ -1361,7 +1489,7 @@ Fast_Block Fast_Parser_declareFunctionParams(Fast_Parser _this, Fast_Variable fu
 	unsigned int i;
     FAST_CHECK_ERRSET(_this);
 
-	if (_this->pass) {
+	if (_this->pass && function) {
         result = Fast_Parser_blockPush(_this, TRUE);
 
         function_o = Fast_ObjectBase(function)->value;
