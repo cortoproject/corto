@@ -783,7 +783,7 @@ db_string g_fileRead(db_generator g, db_string name) {
     return db_fileLoad(g_filePath(g, name, filepath));
 }
 
-/* Find existing pars in the code that must not be overwritten. */
+/* Find existing parts in the code that must not be overwritten. */
 db_int16 g_loadExisting(db_generator g, db_string name, db_string option, db_ll *list) {
     db_string code, ptr;
 
@@ -820,6 +820,12 @@ db_int16 g_loadExisting(db_generator g, db_string name, db_string option, db_ll 
 						if (!*list) {
 							*list = db_llNew();
 						}
+
+                        if(strstr(src, "$begin")) {
+                            db_error("%s: code-snippet '%s(%s)' contains nested $begin (did you forget an $end?)",
+                                name, option, identifier);
+                            goto error;
+                        }
 
 						existing = db_malloc(sizeof(g_fileSnippet));
 						existing->option = strdup(option);
