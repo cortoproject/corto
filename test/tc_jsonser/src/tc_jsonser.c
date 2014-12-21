@@ -3,9 +3,9 @@
 #include "hyve.h"
 #include "json.h"
 
-#include "tc_jsonser__api.h"
-#include "tc_jsonser__meta.h"
-#include "tc_jsonser__type.h"
+#include "fixture__meta.h"
+#include "fixture__api.h"
+#include "fixture__type.h"
 
 #include "tc_jsonser_collection_value.h"
 #include "tc_jsonser_primitive_value.h"
@@ -24,6 +24,7 @@ int main(int argc, char* argv[]) {
     result += test_ser_primitive_value();
     result += test_ser_reference_value();
     result += test_ser_collection_value();
+    result += test_ser_metadata();
     result += test_ser_scope();
  
     db_stop();

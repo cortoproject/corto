@@ -3,20 +3,20 @@
 
 #include "hyve.h"
 #include "json.h"
-#include "tc_jsonser__api.h"
-#include "tc_jsonser__meta.h"
-#include "tc_jsonser__type.h"
+#include "fixture__api.h"
+#include "fixture__meta.h"
+#include "fixture__type.h"
 
 
 #define _test_ser_scope(object, expected) \
 {\
     db_json_ser_t userData = {NULL, NULL, 0, 0, 0, FALSE, FALSE, TRUE};\
-    db_serialize(&serializer, tc_jsonser_##object##_o, &userData);\
+    db_serialize(&serializer, fixture_##object##_o, &userData);\
     if (strcmp(userData.buffer, "{\"scope\":"expected"}")) {\
         result = -1;\
         fprintf(\
             stderr,\
-            "tc_jsonser_number: FAIL:\nexpected:\n%s\nserialized:\n%s\n",\
+            "tc_jsonser_scope: FAIL:\nexpected:\n%s\nserialized:\n%s\n",\
             "{\"scope\":"expected"}", userData.buffer);\
     }\
 }

@@ -308,13 +308,13 @@ static db_int16 db_ser_meta(db_serializer s, db_value* v, void* userData) {
         goto finished;
     }
 
-    char states[10]; // TODO define length better
+    char states[sizeof("V|DCL|DEF")];
     dbsh_stateStr(object, states);
     if (!db_ser_appendstr(data, "\"states\":\"%s\",", states)) {
         goto finished;
     }
 
-    char attributes[10]; // TODO define length better
+    char attributes[sizeof("S|W|O")];
     dbsh_attrStr(object, attributes);
     if (!db_ser_appendstr(data, "\"attributes\":\"%s\",", attributes)) {
         goto finished;
@@ -359,13 +359,13 @@ static int db_walkScopeAction_ser_meta(db_object o, void* userData) {
         goto finished;
     }
 
-    char states[10]; // TODO define length better
+    char states[sizeof("V|DCL|DEF")];
     dbsh_stateStr(o, states);
     if (!db_ser_appendstr(userData, "\"states\":\"%s\",", states)) {
         goto finished;
     }
 
-    char attributes[10]; // TODO define length better
+    char attributes[sizeof("S|W|O")];
     dbsh_attrStr(o, attributes);
     if (!db_ser_appendstr(userData, "\"attributes\":\"%s\",", attributes)) {
         goto finished;
