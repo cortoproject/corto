@@ -27,6 +27,9 @@ db_bool Fast_Call_hasSideEffects(Fast_Call _this);
 /* ::hyve::Fast::Call::hasSideEffects() */
 db_bool Fast_Call_hasSideEffects_v(Fast_Call _this);
 
+/* ::hyve::Fast::Call::resolveActual(string signature,lang::object scope,Fast::Expression instance) */
+db_function Fast_Call_resolveActual(db_string signature, db_object scope, Fast_Expression instance);
+
 /* virtual ::hyve::Fast::Call::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Call_toIc(Fast_Call _this, db_icProgram program, db_icStorage storage, db_bool stored);
 

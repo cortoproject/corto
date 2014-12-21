@@ -138,6 +138,9 @@ extern db_member Fast_Call_function_o;
 /* ::hyve::Fast::Call::hasSideEffects() */
 extern db_virtual Fast_Call_hasSideEffects_o;
 
+/* ::hyve::Fast::Call::resolveActual(string signature,lang::object scope,Fast::Expression instance) */
+extern db_function Fast_Call_resolveActual_o;
+
 /* ::hyve::Fast::Call::signature */
 extern db_member Fast_Call_signature_o;
 

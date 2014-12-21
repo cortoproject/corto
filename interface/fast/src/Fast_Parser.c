@@ -422,16 +422,24 @@ Fast_Expression Fast_Parser_createBinaryTernaryExpr(Fast_Parser _this, Fast_Expr
 
 /* Create and validate delegate assignment */
 Fast_Expression Fast_Parser_delegateAssignment(Fast_Parser _this, Fast_Expression lvalue, Fast_Expression rvalue) {
-    Fast_InitializerExpr result;
-    db_procptr type;
-    db_function function;
     db_uint32 i;
+    Fast_Expression instance = NULL;
+    db_function function = NULL;
+    Fast_Expression functionExpr = NULL;
+    db_id functionName;
+    Fast_InitializerExpr result = NULL;
+    db_string signature = NULL;
+    db_procptr type = NULL;
     Fast_InitializerVariable_array64 variables;
+
     memset(variables, 0, sizeof(variables));
 
     /* Validate whether rvalue is an object */
     if ((Fast_Node(rvalue)->kind == FAST_Variable) && (Fast_Variable(rvalue)->kind == FAST_Object)) {
-        function = Fast_ObjectBase(rvalue)->value;
+        db_signatureName(db_nameof(Fast_ObjectBase(rvalue)->value), functionName);
+    } else if (Fast_Node(rvalue)->kind == FAST_Member) {
+        instance = Fast_MemberExpr(rvalue)->lvalue;
+        strcpy(functionName, Fast_String(Fast_MemberExpr(rvalue)->rvalue)->value);
     } else {
         Fast_Parser_error(_this, "dynamic delegate assignments are not yet supported");
         goto error;
@@ -439,65 +447,46 @@ Fast_Expression Fast_Parser_delegateAssignment(Fast_Parser _this, Fast_Expressio
 
     type = db_procptr(Fast_Expression_getType(lvalue));
 
-    /* Validate returntype */
-    if ((type->returnType != function->returnType) || 
-        (type->returnsReference && !function->returnsReference)) {
-        db_id id1, id2, id3, id4;
-        db_signatureName(db_nameof(function), id2);
-        Fast_Parser_error(_this, "returntype '%s%s' of procedure '%s' doesn't match '%s%s' of delegate '%s'",
-            db_fullname(function->returnType, id1),
-            function->returnsReference ? "&" : "",
-            id2,
-            db_fullname(type->returnType, id3),
-            type->returnsReference ? "&" : "",
-            db_fullname(type, id4));
+    /* Build request-signature */
+    signature = db_signatureOpen(functionName);
+    for (i = 0; i < type->parameters.length; i++) {
+        db_parameter *p = &type->parameters.buffer[i];
+        signature = db_signatureAdd(signature, p->type, p->passByReference);
+    }
+    signature = db_signatureClose(signature);
+
+    /* Resolve function */
+    function = Fast_Call_resolveActual(signature, Fast_ObjectBase(_this->scope)->value, instance);
+    if (!function) {
+        Fast_Parser_error(_this, "no procedure found that matches signature '%s'\n", signature);
         goto error;
     }
 
-    /* Validate number of parameters */
-    if (type->parameters.length != function->parameters.length) {
-        Fast_Parser_error(_this, "number of function parameters(%d) doesn't match delegate (%d)",
-            function->parameters.length,
-            type->parameters.length);
-        goto error;
-    }
-
-    /* Validate parameters */
-    for (i=0; i<type->parameters.length; i++) {
-        db_parameter *p1, *p2;
-        p1 = &type->parameters.buffer[i];
-        p2 = &function->parameters.buffer[i];
-        if ((p1->type != p2->type) || 
-            (p1->passByReference && !p2->passByReference)) {
-            db_id id1, id2, id3, id4;
-            db_signatureName(db_nameof(function), id2);
-            Fast_Parser_error(_this, "type '%s%s' of procedure '%s' doesn't match '%s%s' of delegate '%s'",
-                db_fullname(p2->type, id1),
-                p2->passByReference ? "&" : "",
-                id2,
-                db_fullname(p1->type, id3),
-                p1->passByReference ? "&" : "",
-                db_fullname(type, id4));
-            goto error;
-        }
-    }
-
-    { , procedure=add}
+    functionExpr = Fast_Expression(Fast_Object__create(function));
+    Fast_Parser_collect(_this, functionExpr);
 
     /* If procedure is compatible with delegate type, do a complex assignment */
     db_set_ext(NULL, &variables[0].object, lvalue, "keep object for initializer variable array");
     result = Fast_InitializerExpr__create(variables, 1, TRUE);
+    if (instance) {
+        Fast_InitializerExpr_member(result, "instance");
+        Fast_InitializerExpr_value(result, instance);
+    }
     Fast_InitializerExpr_member(result, "procedure");
-    Fast_InitializerExpr_value(result, rvalue);
+    Fast_InitializerExpr_value(result, functionExpr);
     Fast_InitializerExpr_pop(result);
     Fast_InitializerExpr_define(result);
     Fast_Parser_collect(_this, result);
 
+    db_dealloc(signature);
+
     return Fast_Expression(result);
 error:
+    if(signature) {
+        db_dealloc(signature);
+    }
     return NULL;
 }
-/* $end */
 
 /* Callback function for expansion of binary expressions */
 db_object Fast_Parser_expandBinaryExpr(Fast_Parser _this, Fast_Expression lvalue, Fast_Expression rvalue, void *userData) {
@@ -511,7 +500,7 @@ db_object Fast_Parser_expandBinaryExpr(Fast_Parser _this, Fast_Expression lvalue
     forceReference = lvalue->forceReference || rvalue->forceReference;
     isReference = forceReference || (tleft && tleft->reference) || (tright && tright->reference);
 
-    if ((tleft->kind == DB_COMPOSITE) && (db_interface(tleft)->kind == DB_PROCPTR)) {
+    if (tleft && (tleft->kind == DB_COMPOSITE) && (db_interface(tleft)->kind == DB_PROCPTR)) {
         rvalue = Fast_Parser_delegateAssignment(_this, lvalue, rvalue);
         if(!rvalue) {
             goto error;

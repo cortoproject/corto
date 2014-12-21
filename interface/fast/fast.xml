@@ -257,6 +257,10 @@
 					<member name="arguments" type="Fast::Expression"/>
 					<member name="signature" type="lang::string" modifiers="readonly"/>
 					<member name="actualFunction" type="lang::function" modifiers="readonly"/>
+					<!-- Use extended object notation to prevent resolving Call::function as type -->
+					<meta:object name="resolveActual(string signature,lang::object scope,Fast::Expression instance)" type="lang::function">
+						<value returnType="lang::function"/>
+					</meta:object>
                     <virtual name="hasSideEffects()" returnType="lang::bool"/>
 					<virtual name="toIc(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;db_ic&quot;}"/>
 				</meta:scope>

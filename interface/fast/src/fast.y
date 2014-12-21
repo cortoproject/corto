@@ -275,7 +275,7 @@ function_declaration
     : identifier any_id function_argumentList	{db_id id; sprintf(id, "%s(%s)", $2, $3); db_dealloc($3); $$ = Fast_Parser_declareFunction(yparser(), $1, id, NULL, FALSE); fast_op; }
     | identifier any_id function_argumentList any_id  {
         db_id id;
-        db_procedure kind = db_resolve(NULL, $4);
+        db_type kind = db_resolve(NULL, $4);
         sprintf(id, "%s(%s)", $2, $3); 
         db_dealloc($3); 
         $$ = Fast_Parser_declareFunction(yparser(), $1, id, kind, FALSE); fast_op; 
@@ -287,7 +287,7 @@ function_declaration
     | identifier '&' any_id function_argumentList   {db_id id; sprintf(id, "%s(%s)", $3, $4); db_dealloc($4); $$ = Fast_Parser_declareFunction(yparser(), $1, id, NULL, TRUE); fast_op; }
     | identifier '&' any_id function_argumentList any_id  {
         db_id id;
-        db_procedure kind = db_resolve(NULL, $5);
+        db_type kind = db_resolve(NULL, $5);
         sprintf(id, "%s(%s)", $3, $4); 
         db_dealloc($3); 
         $$ = Fast_Parser_declareFunction(yparser(), $1, id, kind, TRUE); fast_op; 
