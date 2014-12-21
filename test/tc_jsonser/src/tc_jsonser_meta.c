@@ -8,7 +8,7 @@
 #include "fixture__type.h"
 
 
-#define _test_ser_metadata(object, expected) \
+#define _test_ser_meta(object, expected) \
 {\
     db_json_ser_t userData = {NULL, NULL, 0, 0, 0, TRUE, FALSE, FALSE};\
     db_serialize(&serializer, fixture_##object##_o, &userData);\
@@ -21,7 +21,7 @@
     }\
 }
 
-db_int16 test_ser_metadata(void) {
+db_int16 test_ser_meta(void) {
     db_int16 result = 0;
 
     struct db_serializer_s serializer = 

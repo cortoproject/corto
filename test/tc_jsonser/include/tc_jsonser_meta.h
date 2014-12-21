@@ -1,2 +1,2 @@
 
-db_int16 test_serialize_meta(void);
+db_int16 test_ser_meta(void);
