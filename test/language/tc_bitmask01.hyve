@@ -37,7 +37,8 @@ options o : AutomaticWindows | SeatHeating
 if !(o & SeatHeating): fail("!(o & SeatHeating) ($o)")
 if o & SpareWheel: fail("o & SpareWheel")
 if !(o & AutomaticWindows): fail("!(o & AutomaticWindows)")
-if "$o" != "SeatHeating|AutomaticWindows": fail("\"$o\" != \"SeatHeating|AutomaticWindows\" ($v)")
+if "$o" != "SeatHeating|AutomaticWindows":
+    fail("\"$o\" != \"SeatHeating|AutomaticWindows\" ($v)")
 
 options o2: SpareWheel | AutomaticWindows | SeatHeating
 if !(o2 & SpareWheel): fail("!(o2 & SpareWheel)")
