@@ -442,6 +442,12 @@ static db_int16 c_initPrimitive(db_serializer s, db_value* v, void* userData) {
         } else {
             str = db_strdup("NULL");
         }
+    } else if (db_primitive(t)->kind == DB_CHARACTER) {
+        db_char v = *(db_char*)ptr;
+        char buff[3];
+        stresc(v, buff, '\'')[0] = '\0';
+        str = malloc(strlen(buff) + 1 + 2);
+        sprintf(str, "'%s'", buff);
     } else {
         /* Convert primitive value to string using built-in conversion */
         if (db_convert(db_primitive(t), ptr, db_primitive(db_string_o), &str)) {
@@ -733,7 +739,7 @@ static int c_loadDeclare(db_object o, void* userData) {
 static int c_loadDefine(db_object o, void* userData) {
     struct db_serializer_s s;
 
-    if (db_checkAttr(o, DB_ATTR_SCOPED)) {
+    if (db_checkAttr(o, DB_ATTR_SCOPED) && (db_typeof(o)->real->kind != DB_PRIMITIVE)) {
         c_typeWalk_t* data;
         db_id escapedId, fullname, varId, typeId;
 
@@ -776,7 +782,7 @@ static int c_loadDefine(db_object o, void* userData) {
         g_fileDedent(data->source);
         g_fileWrite(data->source, "}\n");
         g_fileDedent(data->source);
-        g_fileWrite(data->source, "}\n");
+        g_fileWrite(data->source, "}\n\n");
 
         /* Do size validation - this makes porting to other platforms easier */
         if (db_instanceof(db_typedef(db_type_o), o)) {
@@ -804,7 +810,7 @@ static int c_loadDefine(db_object o, void* userData) {
                     typeId);
             }
             g_fileDedent(data->source);
-            g_fileWrite(data->source, "}\n");
+            g_fileWrite(data->source, "}\n\n");
         }
     }
 
