@@ -30,9 +30,9 @@ db_constant (*fixture_DogBreed_Pug_o);
 db_float32 (*fixture_f32n_o);
 db_float32 (*fixture_f32p_o);
 db_float32 (*fixture_f32z_o);
-db_float32 (*fixture_f64n_o);
-db_float32 (*fixture_f64p_o);
-db_float32 (*fixture_f64z_o);
+db_float64 (*fixture_f64n_o);
+db_float64 (*fixture_f64p_o);
+db_float64 (*fixture_f64z_o);
 fixture_Djinn (*fixture_Flint_o);
 fixture_Djinn (*fixture_Forge_o);
 fixture_Djinn (*fixture_Gust_o);
@@ -81,6 +81,27 @@ db_uint64 (*fixture_u64p_o);
 db_uint64 (*fixture_u64z_o);
 db_uint8 (*fixture_u8p_o);
 db_uint8 (*fixture_u8z_o);
+db_void (*fixture_v0_o);
+fixture_Dog fixture_v0_dog1_o;
+db_void (*fixture_v1_o);
+db_void (*fixture_v1_v1_o);
+db_void (*fixture_v1_v1_v1_o);
+db_void (*fixture_v1_v1_v2_o);
+db_void (*fixture_v1_v1_v3_o);
+db_void (*fixture_v1_v1_v4_o);
+db_void (*fixture_v1_v2_o);
+db_void (*fixture_v1_v2_v1_o);
+db_void (*fixture_v1_v2_v2_o);
+db_void (*fixture_v1_v2_v3_o);
+db_void (*fixture_v1_v2_v4_o);
+db_void (*fixture_v1_v2_v5_o);
+db_void (*fixture_v1_v3_o);
+db_void (*fixture_v1_v3_v1_o);
+db_void (*fixture_v1_v3_v2_o);
+db_void (*fixture_v1_v3_v3_o);
+db_void (*fixture_v1_v3_v4_o);
+db_void (*fixture_v1_v3_v5_o);
+db_void (*fixture_v1_v3_v6_o);
 
 /* Load objects in database */
 int fixture_load(void) {
@@ -463,7 +484,7 @@ int fixture_load(void) {
         }
     }
     /* Declare ::fixture::f64n */
-    fixture_f64n_o = db_declare(fixture_o, "f64n", db_typedef(db_float32_o));
+    fixture_f64n_o = db_declare(fixture_o, "f64n", db_typedef(db_float64_o));
     if (!fixture_f64n_o) {
         db_error("fixture_load: failed to declare object '::fixture::f64n'.");
         goto error;
@@ -479,12 +500,12 @@ int fixture_load(void) {
         }
     }
     /* Declare ::fixture::f64p */
-    fixture_f64p_o = db_declare(fixture_o, "f64p", db_typedef(db_float32_o));
+    fixture_f64p_o = db_declare(fixture_o, "f64p", db_typedef(db_float64_o));
     if (!fixture_f64p_o) {
         db_error("fixture_load: failed to declare object '::fixture::f64p'.");
         goto error;
     } else {
-        (*fixture_f64p_o) = 45.200001;
+        (*fixture_f64p_o) = 45.200000;
     }
 
     /* Define ::fixture::f64p */
@@ -495,7 +516,7 @@ int fixture_load(void) {
         }
     }
     /* Declare ::fixture::f64z */
-    fixture_f64z_o = db_declare(fixture_o, "f64z", db_typedef(db_float32_o));
+    fixture_f64z_o = db_declare(fixture_o, "f64z", db_typedef(db_float64_o));
     if (!fixture_f64z_o) {
         db_error("fixture_load: failed to declare object '::fixture::f64z'.");
         goto error;
@@ -1223,6 +1244,146 @@ int fixture_load(void) {
             goto error;
         }
     }
+    /* Declare ::fixture::v0 */
+    fixture_v0_o = db_declare(fixture_o, "v0", db_typedef(db_void_o));
+    if (!fixture_v0_o) {
+        db_error("fixture_load: failed to declare object '::fixture::v0'.");
+        goto error;
+    }
+
+    /* Declare ::fixture::v1 */
+    fixture_v1_o = db_declare(fixture_o, "v1", db_typedef(db_void_o));
+    if (!fixture_v1_o) {
+        db_error("fixture_load: failed to declare object '::fixture::v1'.");
+        goto error;
+    }
+
+    /* Declare ::fixture::v1::v1 */
+    fixture_v1_v1_o = db_declare(fixture_v1_o, "v1", db_typedef(db_void_o));
+    if (!fixture_v1_v1_o) {
+        db_error("fixture_load: failed to declare object '::fixture::v1::v1'.");
+        goto error;
+    }
+
+    /* Declare ::fixture::v1::v1::v1 */
+    fixture_v1_v1_v1_o = db_declare(fixture_v1_v1_o, "v1", db_typedef(db_void_o));
+    if (!fixture_v1_v1_v1_o) {
+        db_error("fixture_load: failed to declare object '::fixture::v1::v1::v1'.");
+        goto error;
+    }
+
+    /* Declare ::fixture::v1::v1::v2 */
+    fixture_v1_v1_v2_o = db_declare(fixture_v1_v1_o, "v2", db_typedef(db_void_o));
+    if (!fixture_v1_v1_v2_o) {
+        db_error("fixture_load: failed to declare object '::fixture::v1::v1::v2'.");
+        goto error;
+    }
+
+    /* Declare ::fixture::v1::v1::v3 */
+    fixture_v1_v1_v3_o = db_declare(fixture_v1_v1_o, "v3", db_typedef(db_void_o));
+    if (!fixture_v1_v1_v3_o) {
+        db_error("fixture_load: failed to declare object '::fixture::v1::v1::v3'.");
+        goto error;
+    }
+
+    /* Declare ::fixture::v1::v1::v4 */
+    fixture_v1_v1_v4_o = db_declare(fixture_v1_v1_o, "v4", db_typedef(db_void_o));
+    if (!fixture_v1_v1_v4_o) {
+        db_error("fixture_load: failed to declare object '::fixture::v1::v1::v4'.");
+        goto error;
+    }
+
+    /* Declare ::fixture::v1::v2 */
+    fixture_v1_v2_o = db_declare(fixture_v1_o, "v2", db_typedef(db_void_o));
+    if (!fixture_v1_v2_o) {
+        db_error("fixture_load: failed to declare object '::fixture::v1::v2'.");
+        goto error;
+    }
+
+    /* Declare ::fixture::v1::v2::v1 */
+    fixture_v1_v2_v1_o = db_declare(fixture_v1_v2_o, "v1", db_typedef(db_void_o));
+    if (!fixture_v1_v2_v1_o) {
+        db_error("fixture_load: failed to declare object '::fixture::v1::v2::v1'.");
+        goto error;
+    }
+
+    /* Declare ::fixture::v1::v2::v2 */
+    fixture_v1_v2_v2_o = db_declare(fixture_v1_v2_o, "v2", db_typedef(db_void_o));
+    if (!fixture_v1_v2_v2_o) {
+        db_error("fixture_load: failed to declare object '::fixture::v1::v2::v2'.");
+        goto error;
+    }
+
+    /* Declare ::fixture::v1::v2::v3 */
+    fixture_v1_v2_v3_o = db_declare(fixture_v1_v2_o, "v3", db_typedef(db_void_o));
+    if (!fixture_v1_v2_v3_o) {
+        db_error("fixture_load: failed to declare object '::fixture::v1::v2::v3'.");
+        goto error;
+    }
+
+    /* Declare ::fixture::v1::v2::v4 */
+    fixture_v1_v2_v4_o = db_declare(fixture_v1_v2_o, "v4", db_typedef(db_void_o));
+    if (!fixture_v1_v2_v4_o) {
+        db_error("fixture_load: failed to declare object '::fixture::v1::v2::v4'.");
+        goto error;
+    }
+
+    /* Declare ::fixture::v1::v2::v5 */
+    fixture_v1_v2_v5_o = db_declare(fixture_v1_v2_o, "v5", db_typedef(db_void_o));
+    if (!fixture_v1_v2_v5_o) {
+        db_error("fixture_load: failed to declare object '::fixture::v1::v2::v5'.");
+        goto error;
+    }
+
+    /* Declare ::fixture::v1::v3 */
+    fixture_v1_v3_o = db_declare(fixture_v1_o, "v3", db_typedef(db_void_o));
+    if (!fixture_v1_v3_o) {
+        db_error("fixture_load: failed to declare object '::fixture::v1::v3'.");
+        goto error;
+    }
+
+    /* Declare ::fixture::v1::v3::v1 */
+    fixture_v1_v3_v1_o = db_declare(fixture_v1_v3_o, "v1", db_typedef(db_void_o));
+    if (!fixture_v1_v3_v1_o) {
+        db_error("fixture_load: failed to declare object '::fixture::v1::v3::v1'.");
+        goto error;
+    }
+
+    /* Declare ::fixture::v1::v3::v2 */
+    fixture_v1_v3_v2_o = db_declare(fixture_v1_v3_o, "v2", db_typedef(db_void_o));
+    if (!fixture_v1_v3_v2_o) {
+        db_error("fixture_load: failed to declare object '::fixture::v1::v3::v2'.");
+        goto error;
+    }
+
+    /* Declare ::fixture::v1::v3::v3 */
+    fixture_v1_v3_v3_o = db_declare(fixture_v1_v3_o, "v3", db_typedef(db_void_o));
+    if (!fixture_v1_v3_v3_o) {
+        db_error("fixture_load: failed to declare object '::fixture::v1::v3::v3'.");
+        goto error;
+    }
+
+    /* Declare ::fixture::v1::v3::v4 */
+    fixture_v1_v3_v4_o = db_declare(fixture_v1_v3_o, "v4", db_typedef(db_void_o));
+    if (!fixture_v1_v3_v4_o) {
+        db_error("fixture_load: failed to declare object '::fixture::v1::v3::v4'.");
+        goto error;
+    }
+
+    /* Declare ::fixture::v1::v3::v5 */
+    fixture_v1_v3_v5_o = db_declare(fixture_v1_v3_o, "v5", db_typedef(db_void_o));
+    if (!fixture_v1_v3_v5_o) {
+        db_error("fixture_load: failed to declare object '::fixture::v1::v3::v5'.");
+        goto error;
+    }
+
+    /* Declare ::fixture::v1::v3::v6 */
+    fixture_v1_v3_v6_o = db_declare(fixture_v1_v3_o, "v6", db_typedef(db_void_o));
+    if (!fixture_v1_v3_v6_o) {
+        db_error("fixture_load: failed to declare object '::fixture::v1::v3::v6'.");
+        goto error;
+    }
+
     /* Define ::fixture::Dog::lover */
     if (!db_checkState(fixture_Dog_lover_o, DB_DEFINED)) {
         fixture_Dog_lover_o->type = db_resolve_ext(fixture_Dog_lover_o, NULL, "::fixture::Dog", FALSE, "element ::fixture::Dog::lover.type");
@@ -1303,6 +1464,24 @@ int fixture_load(void) {
         fixture_dog3_o->lover = db_resolve_ext(fixture_dog3_o, NULL, "::fixture::dog2", FALSE, "element ::fixture::dog3.lover");
         if (db_define(fixture_dog3_o)) {
             db_error("fixture_load: failed to define object '::fixture::dog3'.");
+            goto error;
+        }
+    }
+    /* Declare ::fixture::v0::dog1 */
+    fixture_v0_dog1_o = db_declare(fixture_v0_o, "dog1", db_typedef(fixture_Dog_o));
+    if (!fixture_v0_dog1_o) {
+        db_error("fixture_load: failed to declare object '::fixture::v0::dog1'.");
+        goto error;
+    }
+
+    /* Define ::fixture::v0::dog1 */
+    if (!db_checkState(fixture_v0_dog1_o, DB_DEFINED)) {
+        fixture_v0_dog1_o->breed = FIXTURE_Pug;
+        fixture_v0_dog1_o->name = db_strdup("MyPug");
+        fixture_v0_dog1_o->age = 55;
+        fixture_v0_dog1_o->lover = NULL;
+        if (db_define(fixture_v0_dog1_o)) {
+            db_error("fixture_load: failed to define object '::fixture::v0::dog1'.");
             goto error;
         }
     }

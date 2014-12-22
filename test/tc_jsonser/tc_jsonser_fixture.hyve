@@ -31,9 +31,9 @@ object fixture::
     float32 f32z: 0
     float32 f32p: 45.2
 
-    float32 f64n: -2.45
-    float32 f64z: 0
-    float32 f64p: 45.2
+    float64 f64n: -2.45
+    float64 f64z: 0
+    float64 f64p: 45.2
 
     bool bt: true
     bool bf: false
@@ -84,3 +84,26 @@ object fixture::
 
     array ints: uint32, 4
     ints myarray: 26, 47, 6, 39
+
+    void v0::
+        Dog dog1: Pug, "MyPug", 55
+
+    void v1::
+        void v1::
+            void v1
+            void v2
+            void v3
+            void v4
+        void v2::
+            void v1
+            void v2
+            void v3
+            void v4
+            void v5
+        void v3::
+            void v1
+            void v2
+            void v3
+            void v4
+            void v5
+            void v6

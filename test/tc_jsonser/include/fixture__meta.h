@@ -85,13 +85,13 @@ extern db_float32 (*fixture_f32p_o);
 extern db_float32 (*fixture_f32z_o);
 
 /* ::fixture::f64n */
-extern db_float32 (*fixture_f64n_o);
+extern db_float64 (*fixture_f64n_o);
 
 /* ::fixture::f64p */
-extern db_float32 (*fixture_f64p_o);
+extern db_float64 (*fixture_f64p_o);
 
 /* ::fixture::f64z */
-extern db_float32 (*fixture_f64z_o);
+extern db_float64 (*fixture_f64z_o);
 
 /* ::fixture::Flint */
 extern fixture_Djinn (*fixture_Flint_o);
@@ -236,6 +236,69 @@ extern db_uint8 (*fixture_u8p_o);
 
 /* ::fixture::u8z */
 extern db_uint8 (*fixture_u8z_o);
+
+/* ::fixture::v0 */
+extern db_void (*fixture_v0_o);
+
+/* ::fixture::v0::dog1 */
+extern fixture_Dog fixture_v0_dog1_o;
+
+/* ::fixture::v1 */
+extern db_void (*fixture_v1_o);
+
+/* ::fixture::v1::v1 */
+extern db_void (*fixture_v1_v1_o);
+
+/* ::fixture::v1::v1::v1 */
+extern db_void (*fixture_v1_v1_v1_o);
+
+/* ::fixture::v1::v1::v2 */
+extern db_void (*fixture_v1_v1_v2_o);
+
+/* ::fixture::v1::v1::v3 */
+extern db_void (*fixture_v1_v1_v3_o);
+
+/* ::fixture::v1::v1::v4 */
+extern db_void (*fixture_v1_v1_v4_o);
+
+/* ::fixture::v1::v2 */
+extern db_void (*fixture_v1_v2_o);
+
+/* ::fixture::v1::v2::v1 */
+extern db_void (*fixture_v1_v2_v1_o);
+
+/* ::fixture::v1::v2::v2 */
+extern db_void (*fixture_v1_v2_v2_o);
+
+/* ::fixture::v1::v2::v3 */
+extern db_void (*fixture_v1_v2_v3_o);
+
+/* ::fixture::v1::v2::v4 */
+extern db_void (*fixture_v1_v2_v4_o);
+
+/* ::fixture::v1::v2::v5 */
+extern db_void (*fixture_v1_v2_v5_o);
+
+/* ::fixture::v1::v3 */
+extern db_void (*fixture_v1_v3_o);
+
+/* ::fixture::v1::v3::v1 */
+extern db_void (*fixture_v1_v3_v1_o);
+
+/* ::fixture::v1::v3::v2 */
+extern db_void (*fixture_v1_v3_v2_o);
+
+/* ::fixture::v1::v3::v3 */
+extern db_void (*fixture_v1_v3_v3_o);
+
+/* ::fixture::v1::v3::v4 */
+extern db_void (*fixture_v1_v3_v4_o);
+
+/* ::fixture::v1::v3::v5 */
+extern db_void (*fixture_v1_v3_v5_o);
+
+/* ::fixture::v1::v3::v6 */
+extern db_void (*fixture_v1_v3_v6_o);
 
 int fixture_load(void);
 #ifdef __cplusplus

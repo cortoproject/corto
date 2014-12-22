@@ -54,7 +54,7 @@ db_int16 test_ser_primitive_value(void) {
     _test_ser_primitive_value(f32p, "45.200001");
     _test_ser_primitive_value(f64z, "0.000000");
     _test_ser_primitive_value(f64n, "-2.450000");
-    _test_ser_primitive_value(f64p, "45.200001");
+    _test_ser_primitive_value(f64p, "45.200000");
 
     _test_ser_primitive_value(bt, "true");
     _test_ser_primitive_value(bf, "false");
