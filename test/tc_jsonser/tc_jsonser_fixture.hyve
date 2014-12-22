@@ -38,6 +38,12 @@ object fixture::
     bool bt: true
     bool bf: false
 
+    // char c1: 'a'
+    // char c2: 'A'
+    // char c3: '0'
+    // char c4: '\n'
+    // char c5: '\0'
+
     string sn: null
     string s1: "hello world"
     string s2: "hello, world!"
