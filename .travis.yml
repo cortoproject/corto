@@ -1,1 +1,11 @@
+addons:
+  coverity_scan:
+    project:
+      name: "Seldomberry/Hyve"
+      description: "Build submitted via Travis CI"
+    notification_email: sander.mertens8@gmail.com
+    build_command_prepend: "source configure; make clean"
+    build_command:   "make"
+    branch_pattern: coverity_scan
+
 script: source configure && make
