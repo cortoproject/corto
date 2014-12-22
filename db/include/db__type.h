@@ -95,6 +95,7 @@ DB_ANY(db_any);
 #define db_alias(t) ((db_alias)t)
 #define db_struct(t) ((db_struct)t)
 #define db_class(t) ((db_class)t)
+#define db_procptr(t) ((db_procptr)t)
 #define db_array(t) ((db_array)t)
 #define db_sequence(t) ((db_sequence)t)
 #define db_list(t) ((db_list)t)

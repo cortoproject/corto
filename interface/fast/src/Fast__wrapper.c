@@ -311,6 +311,14 @@ void __Fast_Call_hasSideEffects_v(db_function f, void *result, void *args) {
         *(Fast_Call*)args);
 }
 
+void __Fast_Call_resolveActual(db_function f, void *result, void *args) {
+    DB_UNUSED(f);
+    *(db_function*)result = Fast_Call_resolveActual(
+        *(db_string*)args,
+        *(db_object*)((intptr_t)args + sizeof(db_string)),
+        *(Fast_Expression*)((intptr_t)args + sizeof(db_string) + sizeof(db_object)));
+}
+
 /* virtual ::hyve::Fast::Call::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Call_toIc(Fast_Call _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
@@ -1810,8 +1818,8 @@ void __Fast_Parser_declareFunction(db_function f, void *result, void *args) {
         *(Fast_Parser*)args,
         *(Fast_Variable*)((intptr_t)args + sizeof(Fast_Parser)),
         *(db_string*)((intptr_t)args + sizeof(Fast_Parser) + sizeof(Fast_Variable)),
-        *(db_procedure*)((intptr_t)args + sizeof(Fast_Parser) + sizeof(Fast_Variable) + sizeof(db_string)),
-        *(db_bool*)((intptr_t)args + sizeof(Fast_Parser) + sizeof(Fast_Variable) + sizeof(db_string) + sizeof(db_procedure)));
+        *(db_type*)((intptr_t)args + sizeof(Fast_Parser) + sizeof(Fast_Variable) + sizeof(db_string)),
+        *(db_bool*)((intptr_t)args + sizeof(Fast_Parser) + sizeof(Fast_Variable) + sizeof(db_string) + sizeof(db_type)));
 }
 
 void __Fast_Parser_declareFunctionParams(db_function f, void *result, void *args) {

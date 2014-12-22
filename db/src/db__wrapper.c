@@ -431,6 +431,13 @@ void __db_function_init(db_function f, void *result, void *args) {
         *(db_function*)args);
 }
 
+void __db_function_stringToParameterSeq(db_function f, void *result, void *args) {
+    DB_UNUSED(f);
+    *(db_parameterSeq*)result = db_function_stringToParameterSeq(
+        *(db_string*)args,
+        *(db_object*)((intptr_t)args + sizeof(db_string)));
+}
+
 void __db_function_unbind(db_function f, void *result, void *args) {
     DB_UNUSED(f);
     DB_UNUSED(result);
@@ -839,6 +846,37 @@ void __db_procedure_unbind(db_function f, void *result, void *args) {
     db_procedure_unbind(
         *(db_procedure*)args,
         *(db_object*)((intptr_t)args + sizeof(db_procedure)));
+}
+
+/* virtual ::hyve::lang::procptr::compatible(lang::type type) */
+db_bool db_procptr_compatible(db_procptr _this, db_type type) {
+    static db_uint32 _methodId;
+    db_method _method;
+    db_bool _result;
+    db_interface _abstract;
+
+    _abstract = db_interface(db_typeof(_this));
+
+    /* Determine methodId once, then cache it for subsequent calls. */
+    if (!_methodId) {
+        _methodId = db_interface_resolveMethodId(_abstract, "compatible(lang::type type)");
+    }
+    db_assert(_methodId, "virtual method 'compatible(lang::type type)' not found in abstract '%s'", db_nameof(_abstract));
+
+    /* Lookup method-object. */
+    _method = db_interface_resolveMethodById(_abstract, _methodId);
+    db_assert(_method != NULL, "unresolved method '%s::compatible(lang::type type)@%d'", db_nameof(_this), _methodId);
+
+    db_call(db_function(_method), &_result, _this, type);
+    
+    return _result;
+}
+
+void __db_procptr_compatible_v(db_function f, void *result, void *args) {
+    DB_UNUSED(f);
+    *(db_bool*)result = db_procptr_compatible_v(
+        *(db_procptr*)args,
+        *(db_type*)((intptr_t)args + sizeof(db_procptr)));
 }
 
 void __db_procptr_init(db_function f, void *result, void *args) {

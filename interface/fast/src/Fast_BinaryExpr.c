@@ -299,6 +299,7 @@ void Fast_BinaryExpr_toIc_strOp(
 		break;
 	}
 }
+
 /* $end */
 
 /* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::BinaryExpr::construct(Fast::BinaryExpr object) */

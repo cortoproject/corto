@@ -48,6 +48,7 @@ db_member Fast_Call_arguments_o;
 db_callback Fast_Call_construct_o;
 db_member Fast_Call_function_o;
 db_virtual Fast_Call_hasSideEffects_o;
+db_function Fast_Call_resolveActual_o;
 db_member Fast_Call_signature_o;
 db_virtual Fast_Call_toIc_o;
 db_class Fast_CastExpr_o;
@@ -8744,25 +8745,25 @@ int Fast_load(void) {
             goto error;
         }
     }
-    /* Declare ::hyve::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::procedure kind,bool returnsReference) */
-    Fast_Parser_declareFunction_o = db_declare(Fast_Parser_o, "declareFunction(Variable returnType,lang::string id,lang::procedure kind,bool returnsReference)", db_typedef(db_method_o));
+    /* Declare ::hyve::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::type kind,bool returnsReference) */
+    Fast_Parser_declareFunction_o = db_declare(Fast_Parser_o, "declareFunction(Variable returnType,lang::string id,lang::type kind,bool returnsReference)", db_typedef(db_method_o));
     if (!Fast_Parser_declareFunction_o) {
-        db_error("Fast_load: failed to declare object '::hyve::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::procedure kind,bool returnsReference)'.");
+        db_error("Fast_load: failed to declare object '::hyve::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::type kind,bool returnsReference)'.");
         goto error;
     }
 
-    /* Define ::hyve::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::procedure kind,bool returnsReference) */
+    /* Define ::hyve::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::type kind,bool returnsReference) */
     if (!db_checkState(Fast_Parser_declareFunction_o, DB_DEFINED)) {
-        db_function(Fast_Parser_declareFunction_o)->returnType = db_resolve_ext(Fast_Parser_declareFunction_o, NULL, "::hyve::Fast::Variable", FALSE, "element ::hyve::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::procedure kind,bool returnsReference).returnType");
+        db_function(Fast_Parser_declareFunction_o)->returnType = db_resolve_ext(Fast_Parser_declareFunction_o, NULL, "::hyve::Fast::Variable", FALSE, "element ::hyve::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::type kind,bool returnsReference).returnType");
         db_function(Fast_Parser_declareFunction_o)->returnsReference = FALSE;
         Fast_Parser_declareFunction_o->virtual = FALSE;
         
-        /* Bind ::hyve::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::procedure kind,bool returnsReference) with C-function */
+        /* Bind ::hyve::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::type kind,bool returnsReference) with C-function */
         db_function(Fast_Parser_declareFunction_o)->kind = DB_PROCEDURE_CDECL;
         void __Fast_Parser_declareFunction(void *args, void *result);
         db_function(Fast_Parser_declareFunction_o)->impl = (db_word)__Fast_Parser_declareFunction;
         if (db_define(Fast_Parser_declareFunction_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::procedure kind,bool returnsReference)'.");
+            db_error("Fast_load: failed to define object '::hyve::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::type kind,bool returnsReference)'.");
             goto error;
         }
     }
@@ -8892,6 +8893,27 @@ int Fast_load(void) {
     }
     if (db_type(Fast_String_o)->size != sizeof(struct Fast_String_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::String' doesn't match C-type size '%d'", db_type(Fast_String_o)->size, sizeof(struct Fast_String_s));
+    }
+    /* Declare ::hyve::Fast::Call::resolveActual(string signature,lang::object scope,Fast::Expression instance) */
+    Fast_Call_resolveActual_o = db_declare(Fast_Call_o, "resolveActual(string signature,lang::object scope,Fast::Expression instance)", db_typedef(db_function_o));
+    if (!Fast_Call_resolveActual_o) {
+        db_error("Fast_load: failed to declare object '::hyve::Fast::Call::resolveActual(string signature,lang::object scope,Fast::Expression instance)'.");
+        goto error;
+    }
+
+    /* Define ::hyve::Fast::Call::resolveActual(string signature,lang::object scope,Fast::Expression instance) */
+    if (!db_checkState(Fast_Call_resolveActual_o, DB_DEFINED)) {
+        Fast_Call_resolveActual_o->returnType = db_resolve_ext(Fast_Call_resolveActual_o, NULL, "::hyve::lang::function", FALSE, "element ::hyve::Fast::Call::resolveActual(string signature,lang::object scope,Fast::Expression instance).returnType");
+        Fast_Call_resolveActual_o->returnsReference = FALSE;
+        
+        /* Bind ::hyve::Fast::Call::resolveActual(string signature,lang::object scope,Fast::Expression instance) with C-function */
+        db_function(Fast_Call_resolveActual_o)->kind = DB_PROCEDURE_CDECL;
+        void __Fast_Call_resolveActual(void *args, void *result);
+        db_function(Fast_Call_resolveActual_o)->impl = (db_word)__Fast_Call_resolveActual;
+        if (db_define(Fast_Call_resolveActual_o)) {
+            db_error("Fast_load: failed to define object '::hyve::Fast::Call::resolveActual(string signature,lang::object scope,Fast::Expression instance)'.");
+            goto error;
+        }
     }
     /* Define ::hyve::Fast::Parser::variables */
     if (!db_checkState(Fast_Parser_variables_o, DB_DEFINED)) {

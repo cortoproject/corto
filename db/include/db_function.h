@@ -23,6 +23,9 @@ db_int16 db_function_bind(db_function object);
 /* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::function::init(lang::function object) */
 db_int16 db_function_init(db_function object);
 
+/* ::hyve::lang::function::stringToParameterSeq(lang::string name,lang::object scope) */
+db_parameterSeq db_function_stringToParameterSeq(db_string name, db_object scope);
+
 /* ::hyve::lang::function::unbind(lang::function object) */
 db_void db_function_unbind(db_function object);
 
