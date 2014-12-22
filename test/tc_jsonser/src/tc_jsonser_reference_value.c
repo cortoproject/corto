@@ -36,4 +36,4 @@ db_int16 test_ser_reference_value(void) {
     return result;
 }
 
-#undef _test_ser_primitive_value
+#undef _test_ser_reference_value

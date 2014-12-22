@@ -82,8 +82,6 @@ db_int16 test_ser_primitive_value(void) {
     _test_ser_primitive_value(s13, "\"@@@@@@hey\"");
     _test_ser_primitive_value(s14, "\"@@@@@@hey you\"");
 
-    _test_ser_primitive_value(p, "{\"x\":3,\"y\":4}");
-
     _test_ser_primitive_value(Flint, "\"@E Venus\"");
     _test_ser_primitive_value(Forge, "\"@E Mars\"");
     _test_ser_primitive_value(Gust, "\"@E Jupiter\"");

@@ -9,6 +9,7 @@
 
 #include "tc_jsonser_meta.h"
 #include "tc_jsonser_collection_value.h"
+#include "tc_jsonser_composite_value.h"
 #include "tc_jsonser_primitive_value.h"
 #include "tc_jsonser_reference_value.h"
 #include "tc_jsonser_scope.h"
@@ -25,6 +26,7 @@ int main(int argc, char* argv[]) {
     result += test_ser_primitive_value();
     result += test_ser_reference_value();
     result += test_ser_collection_value();
+    result += test_ser_composite_value();
     result += test_ser_meta();
     result += test_ser_scope();
  
