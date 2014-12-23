@@ -27,6 +27,21 @@ extern fixture_color (*fixture_black_o);
 /* ::fixture::bt */
 extern db_bool (*fixture_bt_o);
 
+/* ::fixture::c1 */
+extern db_char (*fixture_c1_o);
+
+/* ::fixture::c2 */
+extern db_char (*fixture_c2_o);
+
+/* ::fixture::c3 */
+extern db_char (*fixture_c3_o);
+
+/* ::fixture::c4 */
+extern db_char (*fixture_c4_o);
+
+/* ::fixture::c5 */
+extern db_char (*fixture_c5_o);
+
 /* ::fixture::color */
 extern db_bitmask fixture_color_o;
 

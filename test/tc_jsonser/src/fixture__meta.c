@@ -11,6 +11,11 @@ db_object fixture_o;
 db_bool (*fixture_bf_o);
 fixture_color (*fixture_black_o);
 db_bool (*fixture_bt_o);
+db_char (*fixture_c1_o);
+db_char (*fixture_c2_o);
+db_char (*fixture_c3_o);
+db_char (*fixture_c4_o);
+db_char (*fixture_c5_o);
 db_bitmask fixture_color_o;
 db_constant (*fixture_color_blue_o);
 db_constant (*fixture_color_green_o);
@@ -146,6 +151,51 @@ int fixture_load(void) {
         goto error;
     } else {
         (*fixture_bt_o) = TRUE;
+    }
+
+    /* Declare ::fixture::c1 */
+    fixture_c1_o = db_declare(fixture_o, "c1", db_typedef(db_char_o));
+    if (!fixture_c1_o) {
+        db_error("fixture_load: failed to declare object '::fixture::c1'.");
+        goto error;
+    } else {
+        (*fixture_c1_o) = 'a';
+    }
+
+    /* Declare ::fixture::c2 */
+    fixture_c2_o = db_declare(fixture_o, "c2", db_typedef(db_char_o));
+    if (!fixture_c2_o) {
+        db_error("fixture_load: failed to declare object '::fixture::c2'.");
+        goto error;
+    } else {
+        (*fixture_c2_o) = 'A';
+    }
+
+    /* Declare ::fixture::c3 */
+    fixture_c3_o = db_declare(fixture_o, "c3", db_typedef(db_char_o));
+    if (!fixture_c3_o) {
+        db_error("fixture_load: failed to declare object '::fixture::c3'.");
+        goto error;
+    } else {
+        (*fixture_c3_o) = '0';
+    }
+
+    /* Declare ::fixture::c4 */
+    fixture_c4_o = db_declare(fixture_o, "c4", db_typedef(db_char_o));
+    if (!fixture_c4_o) {
+        db_error("fixture_load: failed to declare object '::fixture::c4'.");
+        goto error;
+    } else {
+        (*fixture_c4_o) = '\n';
+    }
+
+    /* Declare ::fixture::c5 */
+    fixture_c5_o = db_declare(fixture_o, "c5", db_typedef(db_char_o));
+    if (!fixture_c5_o) {
+        db_error("fixture_load: failed to declare object '::fixture::c5'.");
+        goto error;
+    } else {
+        (*fixture_c5_o) = '°';
     }
 
     /* Declare ::fixture::color */
