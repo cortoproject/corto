@@ -445,9 +445,13 @@ static db_int16 c_initPrimitive(db_serializer s, db_value* v, void* userData) {
     } else if (db_primitive(t)->kind == DB_CHARACTER) {
         db_char v = *(db_char*)ptr;
         char buff[3];
-        stresc(v, buff, '\'')[0] = '\0';
         str = malloc(strlen(buff) + 1 + 2);
-        sprintf(str, "'%s'", buff);
+        if (v) {
+            stresc(v, buff, '\'')[0] = '\0';
+            sprintf(str, "'%s'", buff);
+        } else {
+            sprintf(str, "'\\0'");
+        }
     } else {
         /* Convert primitive value to string using built-in conversion */
         if (db_convert(db_primitive(t), ptr, db_primitive(db_string_o), &str)) {

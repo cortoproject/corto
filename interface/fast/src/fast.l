@@ -48,6 +48,9 @@ static char *fast_charesc(char *in, db_char *out) {
 		case '\'':
 			*out = '\'';
 			break;
+		case '0':
+			*out = '\0';
+			break;
 		case '"':
 			*out = '"';
 			break;
@@ -79,11 +82,12 @@ static int fast_stresc(char* yptr, db_string ptr) {
 	
 	/* Do escape sequences */
 	yptr = yytext+1;
-	while((ch = *yptr)) {
+	while((ch = *yptr) && (ch != '"')) {
 		yptr = fast_charesc(yptr, ptr);
 		if(!yptr) {
 			goto error;
 		}
+		ptr++;
 	}
 	*ptr = '\0';
 	

@@ -785,7 +785,7 @@ db_string g_fileRead(db_generator g, db_string name) {
 
 /* Find existing parts in the code that must not be overwritten. */
 db_int16 g_loadExisting(db_generator g, db_string name, db_string option, db_ll *list) {
-    db_string code, ptr;
+    db_string code = NULL, ptr = NULL;
 
     code = g_fileRead(g, name);
     if (code) {
@@ -852,9 +852,11 @@ db_int16 g_loadExisting(db_generator g, db_string name, db_string option, db_ll 
 		db_dealloc(code);
     }
 
-
     return 0;
 error:
+    if (code) {
+        db_dealloc(code);
+    }
     return -1;
 }
 
