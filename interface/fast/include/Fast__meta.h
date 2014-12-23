@@ -138,6 +138,9 @@ extern db_member Fast_Call_function_o;
 /* ::hyve::Fast::Call::hasSideEffects() */
 extern db_virtual Fast_Call_hasSideEffects_o;
 
+/* ::hyve::Fast::Call::resolveActual(string signature,lang::object scope,Fast::Expression instance) */
+extern db_function Fast_Call_resolveActual_o;
+
 /* ::hyve::Fast::Call::signature */
 extern db_member Fast_Call_signature_o;
 
@@ -801,7 +804,7 @@ extern db_callback Fast_Parser_construct_o;
 /* ::hyve::Fast::Parser::declaration(Variable type,lang::string id,lang::bool isReference) */
 extern db_method Fast_Parser_declaration_o;
 
-/* ::hyve::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::procedure kind,bool returnsReference) */
+/* ::hyve::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::type kind,bool returnsReference) */
 extern db_method Fast_Parser_declareFunction_o;
 
 /* ::hyve::Fast::Parser::declareFunctionParams(Variable function) */

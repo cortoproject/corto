@@ -56,8 +56,8 @@ db_int16 Fast_Parser_construct(Fast_Parser object);
 /* ::hyve::Fast::Parser::declaration(Variable type,lang::string id,lang::bool isReference) */
 Fast_Variable Fast_Parser_declaration(Fast_Parser _this, Fast_Variable type, db_string id, db_bool isReference);
 
-/* ::hyve::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::procedure kind,bool returnsReference) */
-Fast_Variable Fast_Parser_declareFunction(Fast_Parser _this, Fast_Variable returnType, db_string id, db_procedure kind, db_bool returnsReference);
+/* ::hyve::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::type kind,bool returnsReference) */
+Fast_Variable Fast_Parser_declareFunction(Fast_Parser _this, Fast_Variable returnType, db_string id, db_type kind, db_bool returnsReference);
 
 /* ::hyve::Fast::Parser::declareFunctionParams(Variable function) */
 Fast_Block Fast_Parser_declareFunctionParams(Fast_Parser _this, Fast_Variable function);

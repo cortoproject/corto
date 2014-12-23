@@ -141,7 +141,6 @@ db_string db_signatureClose(db_string sig);
 
 /* Parse member expression */
 db_value* db_parseExpr(db_object o, db_string expr, db_valueStack stack, db_uint32 *count);
-db_value* db_expr(db_object o, db_string expr, db_valueStack stack, db_uint32 *count, db_ll participants);
 
 /* Serialize object to string */
 db_string db_toString(db_object object, db_uint32 maxLength);

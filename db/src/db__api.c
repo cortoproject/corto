@@ -1,6 +1,5 @@
 /* db__api.c
  *
- *  Generated on Dec  1 2014
  *    API convenience functions for C-language.
  *    This file contains generated code. Do not modify!
  */
@@ -41,7 +40,7 @@ db_array db_array__declare(db_object _parent, db_string _name) {
 }
 
 int db_array__define(db_array _this, db_typedef elementType, db_uint32 max) {
-    elementType ? db_keep_ext(_this, elementType, "element <0x9a01508>.elementType") : 0; db_collection(_this)->elementType = elementType;
+    elementType ? db_keep_ext(_this, elementType, "element <0x824e310>.elementType") : 0; db_collection(_this)->elementType = elementType;
     db_collection(_this)->max = max;
     return db_define(_this);
 }
@@ -49,7 +48,7 @@ int db_array__define(db_array _this, db_typedef elementType, db_uint32 max) {
 db_array db_array__create(db_typedef elementType, db_uint32 max) {
     db_array _this;
     _this = db_new(db_typedef(db_array_o));
-    elementType ? db_keep_ext(_this, elementType, "element <0x9a01508>.elementType") : 0; db_collection(_this)->elementType = elementType;
+    elementType ? db_keep_ext(_this, elementType, "element <0x824e310>.elementType") : 0; db_collection(_this)->elementType = elementType;
     db_collection(_this)->max = max;
     if (db_define(_this)) {
         db_free(_this);
@@ -135,18 +134,18 @@ db_callback db_callback__declare(db_object _parent, db_string _name) {
 }
 
 int db_callback__define(db_callback _this, db_typedef returnType, db_bool returnsReference, db_delegate delegate) {
-    returnType ? db_keep_ext(_this, returnType, "element <0x99f57a0>.returnType") : 0; db_function(_this)->returnType = returnType;
+    returnType ? db_keep_ext(_this, returnType, "element <0x823a4c8>.returnType") : 0; db_function(_this)->returnType = returnType;
     db_function(_this)->returnsReference = returnsReference;
-    delegate ? db_keep_ext(_this, delegate, "element <0x99f57a0>.delegate") : 0; _this->delegate = delegate;
+    delegate ? db_keep_ext(_this, delegate, "element <0x823a4c8>.delegate") : 0; _this->delegate = delegate;
     return db_define(_this);
 }
 
 db_callback db_callback__create(db_typedef returnType, db_bool returnsReference, db_delegate delegate) {
     db_callback _this;
     _this = db_new(db_typedef(db_callback_o));
-    returnType ? db_keep_ext(_this, returnType, "element <0x99f57a0>.returnType") : 0; db_function(_this)->returnType = returnType;
+    returnType ? db_keep_ext(_this, returnType, "element <0x823a4c8>.returnType") : 0; db_function(_this)->returnType = returnType;
     db_function(_this)->returnsReference = returnsReference;
-    delegate ? db_keep_ext(_this, delegate, "element <0x99f57a0>.delegate") : 0; _this->delegate = delegate;
+    delegate ? db_keep_ext(_this, delegate, "element <0x823a4c8>.delegate") : 0; _this->delegate = delegate;
     if (db_define(_this)) {
         db_free(_this);
         _this = NULL;
@@ -187,7 +186,7 @@ db_class db_class__declare(db_object _parent, db_string _name) {
 }
 
 int db_class__define(db_class _this, db_interface base, db_modifier baseAccess, db_interfaceSeq implements) {
-    base ? db_keep_ext(_this, base, "element <0x9a04040>.base") : 0; db_interface(_this)->base = base;
+    base ? db_keep_ext(_this, base, "element <0x824eb78>.base") : 0; db_interface(_this)->base = base;
     db_struct(_this)->baseAccess = baseAccess;
     _this->implements = implements;
     return db_define(_this);
@@ -196,7 +195,7 @@ int db_class__define(db_class _this, db_interface base, db_modifier baseAccess, 
 db_class db_class__create(db_interface base, db_modifier baseAccess, db_interfaceSeq implements) {
     db_class _this;
     _this = db_new(db_typedef(db_class_o));
-    base ? db_keep_ext(_this, base, "element <0x9a03ac0>.base") : 0; db_interface(_this)->base = base;
+    base ? db_keep_ext(_this, base, "element <0x824e5f8>.base") : 0; db_interface(_this)->base = base;
     db_struct(_this)->baseAccess = baseAccess;
     _this->implements = implements;
     if (db_define(_this)) {
@@ -215,7 +214,7 @@ db_collection db_collection__declare(db_object _parent, db_string _name) {
 }
 
 int db_collection__define(db_collection _this, db_typedef elementType, db_uint32 max) {
-    elementType ? db_keep_ext(_this, elementType, "element <0x99ea128>.elementType") : 0; _this->elementType = elementType;
+    elementType ? db_keep_ext(_this, elementType, "element <0x824e310>.elementType") : 0; _this->elementType = elementType;
     _this->max = max;
     return db_define(_this);
 }
@@ -223,7 +222,7 @@ int db_collection__define(db_collection _this, db_typedef elementType, db_uint32
 db_collection db_collection__create(db_typedef elementType, db_uint32 max) {
     db_collection _this;
     _this = db_new(db_typedef(db_collection_o));
-    elementType ? db_keep_ext(_this, elementType, "element <0x9a03860>.elementType") : 0; _this->elementType = elementType;
+    elementType ? db_keep_ext(_this, elementType, "element <0x824e310>.elementType") : 0; _this->elementType = elementType;
     _this->max = max;
     if (db_define(_this)) {
         db_free(_this);
@@ -241,7 +240,7 @@ db_delegate db_delegate__declare(db_object _parent, db_string _name) {
 }
 
 int db_delegate__define(db_delegate _this, db_typedef returnType, db_bool returnsReference) {
-    returnType ? db_keep_ext(_this, returnType, "element <0x99fda60>.returnType") : 0; db_function(_this)->returnType = returnType;
+    returnType ? db_keep_ext(_this, returnType, "element <0x823a4c8>.returnType") : 0; db_function(_this)->returnType = returnType;
     db_function(_this)->returnsReference = returnsReference;
     return db_define(_this);
 }
@@ -249,7 +248,7 @@ int db_delegate__define(db_delegate _this, db_typedef returnType, db_bool return
 db_delegate db_delegate__create(db_typedef returnType, db_bool returnsReference) {
     db_delegate _this;
     _this = db_new(db_typedef(db_delegate_o));
-    returnType ? db_keep_ext(_this, returnType, "element <0x99fda60>.returnType") : 0; db_function(_this)->returnType = returnType;
+    returnType ? db_keep_ext(_this, returnType, "element <0x823a4c8>.returnType") : 0; db_function(_this)->returnType = returnType;
     db_function(_this)->returnsReference = returnsReference;
     if (db_define(_this)) {
         db_free(_this);
@@ -363,7 +362,7 @@ db_function db_function__declare(db_object _parent, db_string _name) {
 }
 
 int db_function__define(db_function _this, db_typedef returnType, db_bool returnsReference) {
-    returnType ? db_keep_ext(_this, returnType, "element <0x99fda60>.returnType") : 0; _this->returnType = returnType;
+    returnType ? db_keep_ext(_this, returnType, "element <0x823a4c8>.returnType") : 0; _this->returnType = returnType;
     _this->returnsReference = returnsReference;
     return db_define(_this);
 }
@@ -371,7 +370,7 @@ int db_function__define(db_function _this, db_typedef returnType, db_bool return
 db_function db_function__create(db_typedef returnType, db_bool returnsReference) {
     db_function _this;
     _this = db_new(db_typedef(db_function_o));
-    returnType ? db_keep_ext(_this, returnType, "element <0x99fda60>.returnType") : 0; _this->returnType = returnType;
+    returnType ? db_keep_ext(_this, returnType, "element <0x823a4c8>.returnType") : 0; _this->returnType = returnType;
     _this->returnsReference = returnsReference;
     if (db_define(_this)) {
         db_free(_this);
@@ -417,14 +416,14 @@ db_interface db_interface__declare(db_object _parent, db_string _name) {
 }
 
 int db_interface__define(db_interface _this, db_interface base) {
-    base ? db_keep_ext(_this, base, "element <0x9a037d8>.base") : 0; _this->base = base;
+    base ? db_keep_ext(_this, base, "element <0x82343b8>.base") : 0; _this->base = base;
     return db_define(_this);
 }
 
 db_interface db_interface__create(db_interface base) {
     db_interface _this;
     _this = db_new(db_typedef(db_interface_o));
-    base ? db_keep_ext(_this, base, "element <0x99ea128>.base") : 0; _this->base = base;
+    base ? db_keep_ext(_this, base, "element <0x824e398>.base") : 0; _this->base = base;
     if (db_define(_this)) {
         db_free(_this);
         _this = NULL;
@@ -441,7 +440,7 @@ db_list db_list__declare(db_object _parent, db_string _name) {
 }
 
 int db_list__define(db_list _this, db_typedef elementType, db_uint32 max) {
-    elementType ? db_keep_ext(_this, elementType, "element <0x9a037d8>.elementType") : 0; db_collection(_this)->elementType = elementType;
+    elementType ? db_keep_ext(_this, elementType, "element <0x824e310>.elementType") : 0; db_collection(_this)->elementType = elementType;
     db_collection(_this)->max = max;
     return db_define(_this);
 }
@@ -449,7 +448,7 @@ int db_list__define(db_list _this, db_typedef elementType, db_uint32 max) {
 db_list db_list__create(db_typedef elementType, db_uint32 max) {
     db_list _this;
     _this = db_new(db_typedef(db_list_o));
-    elementType ? db_keep_ext(_this, elementType, "element <0x99ea128>.elementType") : 0; db_collection(_this)->elementType = elementType;
+    elementType ? db_keep_ext(_this, elementType, "element <0x824e310>.elementType") : 0; db_collection(_this)->elementType = elementType;
     db_collection(_this)->max = max;
     if (db_define(_this)) {
         db_free(_this);
@@ -467,8 +466,8 @@ db_map db_map__declare(db_object _parent, db_string _name) {
 }
 
 int db_map__define(db_map _this, db_typedef elementType, db_typedef keyType, db_uint32 max) {
-    elementType ? db_keep_ext(_this, elementType, "element <0x9a037d8>.elementType") : 0; _this->elementType = elementType;
-    keyType ? db_keep_ext(_this, keyType, "element <0x9a037d8>.keyType") : 0; _this->keyType = keyType;
+    elementType ? db_keep_ext(_this, elementType, "element <0x823f528>.elementType") : 0; _this->elementType = elementType;
+    keyType ? db_keep_ext(_this, keyType, "element <0x823f528>.keyType") : 0; _this->keyType = keyType;
     _this->max = max;
     return db_define(_this);
 }
@@ -476,8 +475,8 @@ int db_map__define(db_map _this, db_typedef elementType, db_typedef keyType, db_
 db_map db_map__create(db_typedef elementType, db_typedef keyType, db_uint32 max) {
     db_map _this;
     _this = db_new(db_typedef(db_map_o));
-    elementType ? db_keep_ext(_this, elementType, "element <0x99f5250>.elementType") : 0; _this->elementType = elementType;
-    keyType ? db_keep_ext(_this, keyType, "element <0x99f5250>.keyType") : 0; _this->keyType = keyType;
+    elementType ? db_keep_ext(_this, elementType, "element <0x824e398>.elementType") : 0; _this->elementType = elementType;
+    keyType ? db_keep_ext(_this, keyType, "element <0x824e398>.keyType") : 0; _this->keyType = keyType;
     _this->max = max;
     if (db_define(_this)) {
         db_free(_this);
@@ -495,7 +494,7 @@ db_member db_member__declare(db_object _parent, db_string _name) {
 }
 
 int db_member__define(db_member _this, db_typedef type, db_modifier modifiers, db_state state, db_bool weak) {
-    type ? db_keep_ext(_this, type, "element <0x99fd1d8>.type") : 0; _this->type = type;
+    type ? db_keep_ext(_this, type, "element <0x823fa78>.type") : 0; _this->type = type;
     _this->modifiers = modifiers;
     _this->state = state;
     _this->weak = weak;
@@ -505,7 +504,7 @@ int db_member__define(db_member _this, db_typedef type, db_modifier modifiers, d
 db_member db_member__create(db_typedef type, db_modifier modifiers, db_state state, db_bool weak) {
     db_member _this;
     _this = db_new(db_typedef(db_member_o));
-    type ? db_keep_ext(_this, type, "element <0x99fd1d8>.type") : 0; _this->type = type;
+    type ? db_keep_ext(_this, type, "element <0x823fa78>.type") : 0; _this->type = type;
     _this->modifiers = modifiers;
     _this->state = state;
     _this->weak = weak;
@@ -525,7 +524,7 @@ db_metaprocedure db_metaprocedure__declare(db_object _parent, db_string _name) {
 }
 
 int db_metaprocedure__define(db_metaprocedure _this, db_typedef returnType, db_bool returnsReference, db_bool referenceOnly) {
-    returnType ? db_keep_ext(_this, returnType, "element <0x99fda60>.returnType") : 0; db_function(_this)->returnType = returnType;
+    returnType ? db_keep_ext(_this, returnType, "element <0x823a4c8>.returnType") : 0; db_function(_this)->returnType = returnType;
     db_function(_this)->returnsReference = returnsReference;
     _this->referenceOnly = referenceOnly;
     return db_define(_this);
@@ -534,7 +533,7 @@ int db_metaprocedure__define(db_metaprocedure _this, db_typedef returnType, db_b
 db_metaprocedure db_metaprocedure__create(db_typedef returnType, db_bool returnsReference, db_bool referenceOnly) {
     db_metaprocedure _this;
     _this = db_new(db_typedef(db_metaprocedure_o));
-    returnType ? db_keep_ext(_this, returnType, "element <0x99fda60>.returnType") : 0; db_function(_this)->returnType = returnType;
+    returnType ? db_keep_ext(_this, returnType, "element <0x823a4c8>.returnType") : 0; db_function(_this)->returnType = returnType;
     db_function(_this)->returnsReference = returnsReference;
     _this->referenceOnly = referenceOnly;
     if (db_define(_this)) {
@@ -553,7 +552,7 @@ db_method db_method__declare(db_object _parent, db_string _name) {
 }
 
 int db_method__define(db_method _this, db_typedef returnType, db_bool returnsReference, db_bool virtual) {
-    returnType ? db_keep_ext(_this, returnType, "element <0x99fda60>.returnType") : 0; db_function(_this)->returnType = returnType;
+    returnType ? db_keep_ext(_this, returnType, "element <0x823a4c8>.returnType") : 0; db_function(_this)->returnType = returnType;
     db_function(_this)->returnsReference = returnsReference;
     _this->virtual = virtual;
     return db_define(_this);
@@ -562,7 +561,7 @@ int db_method__define(db_method _this, db_typedef returnType, db_bool returnsRef
 db_method db_method__create(db_typedef returnType, db_bool returnsReference, db_bool virtual) {
     db_method _this;
     _this = db_new(db_typedef(db_method_o));
-    returnType ? db_keep_ext(_this, returnType, "element <0x99fda60>.returnType") : 0; db_function(_this)->returnType = returnType;
+    returnType ? db_keep_ext(_this, returnType, "element <0x823a4c8>.returnType") : 0; db_function(_this)->returnType = returnType;
     db_function(_this)->returnsReference = returnsReference;
     _this->virtual = virtual;
     if (db_define(_this)) {
@@ -582,10 +581,10 @@ db_observableEvent db_observableEvent__declare(db_object _parent, db_string _nam
 
 int db_observableEvent__define(db_observableEvent _this, db_uint16 kind, db_observer observer, db_object me, db_object source, db_object observable) {
     db_event(_this)->kind = kind;
-    observer ? db_keep_ext(_this, observer, "element <0x99f02a8>.observer") : 0; _this->observer = observer;
-    me ? db_keep_ext(_this, me, "element <0x99f02a8>.me") : 0; _this->me = me;
-    source ? db_keep_ext(_this, source, "element <0x99f02a8>.source") : 0; _this->source = source;
-    observable ? db_keep_ext(_this, observable, "element <0x99f02a8>.observable") : 0; _this->observable = observable;
+    observer ? db_keep_ext(_this, observer, "element <0x823a6d0>.observer") : 0; _this->observer = observer;
+    me ? db_keep_ext(_this, me, "element <0x823a6d0>.me") : 0; _this->me = me;
+    source ? db_keep_ext(_this, source, "element <0x823a6d0>.source") : 0; _this->source = source;
+    observable ? db_keep_ext(_this, observable, "element <0x823a6d0>.observable") : 0; _this->observable = observable;
     return db_define(_this);
 }
 
@@ -593,10 +592,10 @@ db_observableEvent db_observableEvent__create(db_uint16 kind, db_observer observ
     db_observableEvent _this;
     _this = db_new(db_typedef(db_observableEvent_o));
     db_event(_this)->kind = kind;
-    observer ? db_keep_ext(_this, observer, "element <0x99f02a8>.observer") : 0; _this->observer = observer;
-    me ? db_keep_ext(_this, me, "element <0x99f02a8>.me") : 0; _this->me = me;
-    source ? db_keep_ext(_this, source, "element <0x99f02a8>.source") : 0; _this->source = source;
-    observable ? db_keep_ext(_this, observable, "element <0x99f02a8>.observable") : 0; _this->observable = observable;
+    observer ? db_keep_ext(_this, observer, "element <0x823a6d0>.observer") : 0; _this->observer = observer;
+    me ? db_keep_ext(_this, me, "element <0x823a6d0>.me") : 0; _this->me = me;
+    source ? db_keep_ext(_this, source, "element <0x823a6d0>.source") : 0; _this->source = source;
+    observable ? db_keep_ext(_this, observable, "element <0x823a6d0>.observable") : 0; _this->observable = observable;
     if (db_define(_this)) {
         db_free(_this);
         _this = NULL;
@@ -613,24 +612,24 @@ db_observer db_observer__declare(db_object _parent, db_string _name) {
 }
 
 int db_observer__define(db_observer _this, db_object observable, db_eventMask mask, db_string expression, db_uint32 template, db_dispatcher dispatcher, db_object me) {
-    observable ? db_keep_ext(_this, observable, "element <0x9a03860>.observable") : 0; _this->observable = observable;
+    observable ? db_keep_ext(_this, observable, "element <0x823f528>.observable") : 0; _this->observable = observable;
     _this->mask = mask;
     _this->expression = (expression ? db_strdup(expression) : NULL);
     _this->template = template;
-    dispatcher ? db_keep_ext(_this, dispatcher, "element <0x9a03860>.dispatcher") : 0; _this->dispatcher = dispatcher;
-    me ? db_keep_ext(_this, me, "element <0x9a03860>.me") : 0; _this->me = me;
+    dispatcher ? db_keep_ext(_this, dispatcher, "element <0x823f528>.dispatcher") : 0; _this->dispatcher = dispatcher;
+    me ? db_keep_ext(_this, me, "element <0x823f528>.me") : 0; _this->me = me;
     return db_define(_this);
 }
 
 db_observer db_observer__create(db_object observable, db_eventMask mask, db_string expression, db_uint32 template, db_dispatcher dispatcher, db_object me) {
     db_observer _this;
     _this = db_new(db_typedef(db_observer_o));
-    observable ? db_keep_ext(_this, observable, "element <0x9a037d8>.observable") : 0; _this->observable = observable;
+    observable ? db_keep_ext(_this, observable, "element <0x82343b8>.observable") : 0; _this->observable = observable;
     _this->mask = mask;
     _this->expression = (expression ? db_strdup(expression) : NULL);
     _this->template = template;
-    dispatcher ? db_keep_ext(_this, dispatcher, "element <0x9a037d8>.dispatcher") : 0; _this->dispatcher = dispatcher;
-    me ? db_keep_ext(_this, me, "element <0x9a037d8>.me") : 0; _this->me = me;
+    dispatcher ? db_keep_ext(_this, dispatcher, "element <0x82343b8>.dispatcher") : 0; _this->dispatcher = dispatcher;
+    me ? db_keep_ext(_this, me, "element <0x82343b8>.me") : 0; _this->me = me;
     if (db_define(_this)) {
         db_free(_this);
         _this = NULL;
@@ -686,6 +685,34 @@ db_procedure db_procedure__create(db_procedureKind kind) {
     return _this;
 }
 
+db_procptr db_procptr__new(void) {
+    return db_new(db_typedef(db_procptr_o));
+}
+
+db_procptr db_procptr__declare(db_object _parent, db_string _name) {
+    return db_declare(_parent, _name, db_typedef(db_procptr_o));
+}
+
+int db_procptr__define(db_procptr _this, db_typedef returnType, db_bool returnsReference, db_parameterSeq parameters) {
+    returnType ? db_keep_ext(_this, returnType, "element <0x824e398>.returnType") : 0; _this->returnType = returnType;
+    _this->returnsReference = returnsReference;
+    _this->parameters = parameters;
+    return db_define(_this);
+}
+
+db_procptr db_procptr__create(db_typedef returnType, db_bool returnsReference, db_parameterSeq parameters) {
+    db_procptr _this;
+    _this = db_new(db_typedef(db_procptr_o));
+    returnType ? db_keep_ext(_this, returnType, "element <0x82343b8>.returnType") : 0; _this->returnType = returnType;
+    _this->returnsReference = returnsReference;
+    _this->parameters = parameters;
+    if (db_define(_this)) {
+        db_free(_this);
+        _this = NULL;
+    }
+    return _this;
+}
+
 db_sequence db_sequence__new(void) {
     return db_new(db_typedef(db_sequence_o));
 }
@@ -695,7 +722,7 @@ db_sequence db_sequence__declare(db_object _parent, db_string _name) {
 }
 
 int db_sequence__define(db_sequence _this, db_typedef elementType, db_uint32 max) {
-    elementType ? db_keep_ext(_this, elementType, "element <0x99f5250>.elementType") : 0; db_collection(_this)->elementType = elementType;
+    elementType ? db_keep_ext(_this, elementType, "element <0x82343b8>.elementType") : 0; db_collection(_this)->elementType = elementType;
     db_collection(_this)->max = max;
     return db_define(_this);
 }
@@ -703,7 +730,7 @@ int db_sequence__define(db_sequence _this, db_typedef elementType, db_uint32 max
 db_sequence db_sequence__create(db_typedef elementType, db_uint32 max) {
     db_sequence _this;
     _this = db_new(db_typedef(db_sequence_o));
-    elementType ? db_keep_ext(_this, elementType, "element <0x99ea128>.elementType") : 0; db_collection(_this)->elementType = elementType;
+    elementType ? db_keep_ext(_this, elementType, "element <0x823f528>.elementType") : 0; db_collection(_this)->elementType = elementType;
     db_collection(_this)->max = max;
     if (db_define(_this)) {
         db_free(_this);
@@ -721,7 +748,7 @@ db_struct db_struct__declare(db_object _parent, db_string _name) {
 }
 
 int db_struct__define(db_struct _this, db_interface base, db_modifier baseAccess) {
-    base ? db_keep_ext(_this, base, "element <0x9a037d8>.base") : 0; db_interface(_this)->base = base;
+    base ? db_keep_ext(_this, base, "element <0x823f528>.base") : 0; db_interface(_this)->base = base;
     _this->baseAccess = baseAccess;
     return db_define(_this);
 }
@@ -729,7 +756,7 @@ int db_struct__define(db_struct _this, db_interface base, db_modifier baseAccess
 db_struct db_struct__create(db_interface base, db_modifier baseAccess) {
     db_struct _this;
     _this = db_new(db_typedef(db_struct_o));
-    base ? db_keep_ext(_this, base, "element <0x99f5250>.base") : 0; db_interface(_this)->base = base;
+    base ? db_keep_ext(_this, base, "element <0x824e398>.base") : 0; db_interface(_this)->base = base;
     _this->baseAccess = baseAccess;
     if (db_define(_this)) {
         db_free(_this);
@@ -773,8 +800,8 @@ db_type db_type__declare(db_object _parent, db_string _name) {
 }
 
 int db_type__define(db_type _this, db_typedef defaultType, db_typedef parentType, db_state parentState) {
-    defaultType ? db_keep_ext(_this, defaultType, "element <0x99f5250>.defaultType") : 0; _this->defaultType = defaultType;
-    parentType ? db_keep_ext(_this, parentType, "element <0x99f5250>.parentType") : 0; _this->parentType = parentType;
+    defaultType ? db_keep_ext(_this, defaultType, "element <0x824e398>.defaultType") : 0; _this->defaultType = defaultType;
+    parentType ? db_keep_ext(_this, parentType, "element <0x824e398>.parentType") : 0; _this->parentType = parentType;
     _this->parentState = parentState;
     return db_define(_this);
 }
@@ -782,8 +809,8 @@ int db_type__define(db_type _this, db_typedef defaultType, db_typedef parentType
 db_type db_type__create(db_typedef defaultType, db_typedef parentType, db_state parentState) {
     db_type _this;
     _this = db_new(db_typedef(db_type_o));
-    defaultType ? db_keep_ext(_this, defaultType, "element <0x9a037d8>.defaultType") : 0; _this->defaultType = defaultType;
-    parentType ? db_keep_ext(_this, parentType, "element <0x9a037d8>.parentType") : 0; _this->parentType = parentType;
+    defaultType ? db_keep_ext(_this, defaultType, "element <0x823f528>.defaultType") : 0; _this->defaultType = defaultType;
+    parentType ? db_keep_ext(_this, parentType, "element <0x823f528>.parentType") : 0; _this->parentType = parentType;
     _this->parentState = parentState;
     if (db_define(_this)) {
         db_free(_this);
@@ -801,14 +828,14 @@ db_typedef db_typedef__declare(db_object _parent, db_string _name) {
 }
 
 int db_typedef__define(db_typedef _this, db_typedef type) {
-    type ? db_keep_ext(_this, type, "element <0x99ede30>.type") : 0; _this->type = type;
+    type ? db_keep_ext(_this, type, "element <0x824e368>.type") : 0; _this->type = type;
     return db_define(_this);
 }
 
 db_typedef db_typedef__create(db_typedef type) {
     db_typedef _this;
     _this = db_new(db_typedef(db_typedef_o));
-    type ? db_keep_ext(_this, type, "element <0x99ede30>.type") : 0; _this->type = type;
+    type ? db_keep_ext(_this, type, "element <0x824e368>.type") : 0; _this->type = type;
     if (db_define(_this)) {
         db_free(_this);
         _this = NULL;
@@ -853,7 +880,7 @@ db_virtual db_virtual__declare(db_object _parent, db_string _name) {
 }
 
 int db_virtual__define(db_virtual _this, db_typedef returnType, db_bool returnsReference, db_bool virtual) {
-    returnType ? db_keep_ext(_this, returnType, "element <0x99fda60>.returnType") : 0; db_function(_this)->returnType = returnType;
+    returnType ? db_keep_ext(_this, returnType, "element <0x823a4c8>.returnType") : 0; db_function(_this)->returnType = returnType;
     db_function(_this)->returnsReference = returnsReference;
     db_method(_this)->virtual = virtual;
     return db_define(_this);
@@ -862,7 +889,7 @@ int db_virtual__define(db_virtual _this, db_typedef returnType, db_bool returnsR
 db_virtual db_virtual__create(db_typedef returnType, db_bool returnsReference, db_bool virtual) {
     db_virtual _this;
     _this = db_new(db_typedef(db_virtual_o));
-    returnType ? db_keep_ext(_this, returnType, "element <0x99fda60>.returnType") : 0; db_function(_this)->returnType = returnType;
+    returnType ? db_keep_ext(_this, returnType, "element <0x823a4c8>.returnType") : 0; db_function(_this)->returnType = returnType;
     db_function(_this)->returnsReference = returnsReference;
     db_method(_this)->virtual = virtual;
     if (db_define(_this)) {
@@ -889,10 +916,7 @@ void db_interfaceSeq__size(db_interfaceSeq *seq, db_uint32 length) {
         for(i=seq->length; i<length; i++) {
             {
                 db_value v;
-                v.kind = DB_VALUE;
-                v.is.value.o = NULL;
-                v.is.value.t = db_typedef(db_interface_o);
-                v.is.value.v = &seq->buffer[i];
+                db_valueValueInit(&v, NULL, db_typedef(db_interface_o), &seq->buffer[i]);
                 db_deinitValue(&v);
             }
         }
@@ -911,10 +935,7 @@ db_interfaceVector* db_interfaceVectorSeq__append(db_interfaceVectorSeq *seq) {
     memset(&seq->buffer[seq->length-1], 0, size);
     {
         db_value v;
-        v.kind = DB_VALUE;
-        v.is.value.o = NULL;
-        v.is.value.t = db_typedef(db_interfaceVector_o);
-        v.is.value.v = &seq->buffer[seq->length-1];
+        db_valueValueInit(&v, NULL, db_typedef(db_interfaceVector_o), &seq->buffer[seq->length-1]);
         db_initValue(&v);
     }
     return &seq->buffer[seq->length-1];
@@ -927,10 +948,7 @@ void db_interfaceVectorSeq__size(db_interfaceVectorSeq *seq, db_uint32 length) {
         for(i=length; i<seq->length; i++) {
             {
                 db_value v;
-                v.kind = DB_VALUE;
-                v.is.value.o = NULL;
-                v.is.value.t = db_typedef(db_interfaceVector_o);
-                v.is.value.v = &seq->buffer[i];
+                db_valueValueInit(&v, NULL, db_typedef(db_interfaceVector_o), &seq->buffer[i]);
                 db_deinitValue(&v);
             }
         }
@@ -942,10 +960,7 @@ void db_interfaceVectorSeq__size(db_interfaceVectorSeq *seq, db_uint32 length) {
         for(i=seq->length; i<length; i++) {
             {
                 db_value v;
-                v.kind = DB_VALUE;
-                v.is.value.o = NULL;
-                v.is.value.t = db_typedef(db_interfaceVector_o);
-                v.is.value.v = &seq->buffer[i];
+                db_valueValueInit(&v, NULL, db_typedef(db_interfaceVector_o), &seq->buffer[i]);
                 db_deinitValue(&v);
             }
         }
@@ -974,10 +989,7 @@ void db_memberSeq__size(db_memberSeq *seq, db_uint32 length) {
         for(i=seq->length; i<length; i++) {
             {
                 db_value v;
-                v.kind = DB_VALUE;
-                v.is.value.o = NULL;
-                v.is.value.t = db_typedef(db_member_o);
-                v.is.value.v = &seq->buffer[i];
+                db_valueValueInit(&v, NULL, db_typedef(db_member_o), &seq->buffer[i]);
                 db_deinitValue(&v);
             }
         }
@@ -1006,10 +1018,7 @@ void db_objectSeq__size(db_objectSeq *seq, db_uint32 length) {
         for(i=seq->length; i<length; i++) {
             {
                 db_value v;
-                v.kind = DB_VALUE;
-                v.is.value.o = NULL;
-                v.is.value.t = db_typedef(db_object_o);
-                v.is.value.v = &seq->buffer[i];
+                db_valueValueInit(&v, NULL, db_typedef(db_object_o), &seq->buffer[i]);
                 db_deinitValue(&v);
             }
         }
@@ -1038,10 +1047,7 @@ void db_observerSeq__size(db_observerSeq *seq, db_uint32 length) {
         for(i=seq->length; i<length; i++) {
             {
                 db_value v;
-                v.kind = DB_VALUE;
-                v.is.value.o = NULL;
-                v.is.value.t = db_typedef(db_observer_o);
-                v.is.value.v = &seq->buffer[i];
+                db_valueValueInit(&v, NULL, db_typedef(db_observer_o), &seq->buffer[i]);
                 db_deinitValue(&v);
             }
         }
@@ -1060,10 +1066,7 @@ db_parameter* db_parameterSeq__append(db_parameterSeq *seq) {
     memset(&seq->buffer[seq->length-1], 0, size);
     {
         db_value v;
-        v.kind = DB_VALUE;
-        v.is.value.o = NULL;
-        v.is.value.t = db_typedef(db_parameter_o);
-        v.is.value.v = &seq->buffer[seq->length-1];
+        db_valueValueInit(&v, NULL, db_typedef(db_parameter_o), &seq->buffer[seq->length-1]);
         db_initValue(&v);
     }
     return &seq->buffer[seq->length-1];
@@ -1076,10 +1079,7 @@ void db_parameterSeq__size(db_parameterSeq *seq, db_uint32 length) {
         for(i=length; i<seq->length; i++) {
             {
                 db_value v;
-                v.kind = DB_VALUE;
-                v.is.value.o = NULL;
-                v.is.value.t = db_typedef(db_parameter_o);
-                v.is.value.v = &seq->buffer[i];
+                db_valueValueInit(&v, NULL, db_typedef(db_parameter_o), &seq->buffer[i]);
                 db_deinitValue(&v);
             }
         }
@@ -1091,10 +1091,7 @@ void db_parameterSeq__size(db_parameterSeq *seq, db_uint32 length) {
         for(i=seq->length; i<length; i++) {
             {
                 db_value v;
-                v.kind = DB_VALUE;
-                v.is.value.o = NULL;
-                v.is.value.t = db_typedef(db_parameter_o);
-                v.is.value.v = &seq->buffer[i];
+                db_valueValueInit(&v, NULL, db_typedef(db_parameter_o), &seq->buffer[i]);
                 db_deinitValue(&v);
             }
         }
@@ -1123,10 +1120,7 @@ void db_vtable__size(db_vtable *seq, db_uint32 length) {
         for(i=seq->length; i<length; i++) {
             {
                 db_value v;
-                v.kind = DB_VALUE;
-                v.is.value.o = NULL;
-                v.is.value.t = db_typedef(db_function_o);
-                v.is.value.v = &seq->buffer[i];
+                db_valueValueInit(&v, NULL, db_typedef(db_function_o), &seq->buffer[i]);
                 db_deinitValue(&v);
             }
         }

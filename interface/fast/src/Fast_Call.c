@@ -67,14 +67,14 @@ error:
 	return -1;
 }
 
-/* Resolve correct function based on argumentlist */
-db_int16 Fast_Call_resolveActual(Fast_Call _this, db_function function) {
+/* Resolve correct function based on argumentlist, insert casts */
+db_int16 Fast_Call_finalize(Fast_Call _this, db_function function) {
 	db_string signature;
 	db_id functionName;
 	db_iter argumentIter;
 	Fast_Expression argument;
 	db_type argumentType;
-	db_function overloaded;
+    Fast_Expression instance = NULL;
     
 	/* Get name from function signature */
 	db_signatureName(db_nameof(function), functionName);
@@ -106,73 +106,24 @@ db_int16 Fast_Call_resolveActual(Fast_Call _this, db_function function) {
 	/* Store signature for when a method needs to be resolved at runtime */
 	signature = _this->signature = db_signatureClose(signature);
 
-	/* If function is not a method, do a resolve on the signature */
-	switch(db_procedure(db_typeof(function))->kind) {
-	case DB_FUNCTION:
-	    /* Resolve overloaded function, allow casting */
-		overloaded = db_resolve_ext(NULL, db_parentof(function), signature, TRUE, NULL);
-		if (overloaded) {
-			_this->actualFunction = overloaded;
-		} else {
-			db_id id;
-			Fast_Parser_error(yparser(), "no function in scope '%s' that matches signature '%s'",
-					db_fullname(db_parentof(function), id), _this->signature);
-			goto error;
-		}
-		break;
-	case DB_METHOD:
-		db_assert(db_class_instanceof(db_interface_o, db_parentof(function)), "method not declared in interface - impossible");
+    if (_this->function && (Fast_Node(_this->function)->kind == FAST_Member)) {
+        instance = Fast_MemberExpr(_this->function)->lvalue;
+    }
 
-		overloaded = (db_function)db_interface_resolveMethod(db_parentof(function), signature);
-		if (overloaded) {
-			/* If method is virtual, it needs to be resolved at runtime */
-			if (!db_method(overloaded)->virtual) {
-				_this->actualFunction = overloaded;
-				db_keep_ext(_this, overloaded, "Keep actualFunction for call-expression (method)");
-			}
-		} else {
-			db_id id;
-			Fast_Parser_error(yparser(), "no method in interface '%s' that matches signature '%s'",
-					db_fullname(db_parentof(function), id), _this->signature);
-			goto error;
-		}
-		break;
-	case DB_METAPROCEDURE: {
-	    db_type lvalueType = Fast_Expression_getType(Fast_MemberExpr(_this->function)->lvalue);
-		overloaded = (db_function)db_type_resolveProcedure(lvalueType, signature);
-		if (overloaded) {
-			/* If method is virtual, it needs to be resolved at runtime */
-			_this->actualFunction = overloaded;
-			db_keep_ext(_this, overloaded, "Keep actualFunction for call-expression (metaprocedure)");
+    if (!(function = Fast_Call_resolveActual(signature, db_parentof(function), instance))) {
+        goto error;
+    } else {
+        db_set(&_this->actualFunction, function);
+    }
 
-			/* Validate whether metaprocedure only accepts references, and whether lvalue is a reference */
-			if(db_metaprocedure(overloaded)->referenceOnly && !Fast_MemberExpr(_this->function)->lvalue->isReference) {
-				db_id id;
-				Fast_Parser_error(yparser(), "metaprocedure '%s' accepts only reference values",
-					db_fullname(overloaded, id));
-				goto error;
-			}
-		} else {
-			db_id id;
-			Fast_Parser_error(yparser(), "no method in interface '%s' that matches signature '%s'",
-					db_fullname(db_parentof(function), id), _this->signature);
-			goto error;
-		}
-		break;
-	}
-	default:
-		Fast_Parser_error(yparser(), "cannot call delegates, callbacks or observers directly");
-		break;
-	}
+    /* Walk arguments, insert casts if required */
+    if (Fast_Call_insertCasts(_this)) {
+        goto error;
+    }
 
-	/* Walk arguments, insert casts if required */
-	if (Fast_Call_insertCasts(_this)) {
-		goto error;
-	}
-
-	return 0;
+    return 0;
 error:
-	return -1;
+    return -1;
 }
 /* $end */
 
@@ -257,9 +208,9 @@ db_int16 Fast_Call_construct(Fast_Call object) {
 	}
 
 	/* Resolve actual method, based on arguments (overloading), taking into account inheritance (virtual methods) */
-	if (Fast_Call_resolveActual(object, function)) {
+	if (Fast_Call_finalize(object, function)) {
 		goto error;
-	}
+    }
 
 	db_set(&Fast_Expression(object)->type, Fast_Variable(Fast_Object__create(object->actualFunction->returnType)));
     Fast_Parser_collect(yparser(), Fast_Expression(object)->type);
@@ -277,6 +228,59 @@ db_bool Fast_Call_hasSideEffects_v(Fast_Call _this) {
 /* $begin(::hyve::Fast::Call::hasSideEffects) */
     DB_UNUSED(_this);
     return TRUE;
+/* $end */
+}
+
+/* ::hyve::Fast::Call::resolveActual(string signature,lang::object scope,Fast::Expression instance) */
+db_function Fast_Call_resolveActual(db_string signature, db_object scope, Fast_Expression instance) {
+/* $begin(::hyve::Fast::Call::resolveActual) */
+    db_function actualFunction = NULL;
+
+    if (!instance) {
+        /* Resolve overloaded function, allow casting */
+        actualFunction = db_resolve_ext(NULL, scope, signature, TRUE, NULL);
+        if (!actualFunction) {
+            db_id id;
+            Fast_Parser_error(yparser(), "no function in scope '%s' that matches signature '%s'",
+                    db_fullname(scope, id), signature);
+            goto error;
+        }
+    } else {
+        db_type lvalueType = Fast_Expression_getType(instance);
+        actualFunction = (db_function)db_type_resolveProcedure(lvalueType, signature);
+        if (actualFunction) {
+            switch(db_procedure(db_typeof(actualFunction))->kind) {
+            case DB_METHOD:
+                break;
+            case DB_METAPROCEDURE:
+                /* Validate whether metaprocedure only accepts references, and whether lvalue is a reference */
+                if(db_metaprocedure(actualFunction)->referenceOnly && !instance->isReference) {
+                    db_id id;
+                    Fast_Parser_error(yparser(), "metaprocedure '%s' accepts only reference values",
+                        db_fullname(actualFunction, id));
+                    goto error;
+                }
+                break;
+            default:
+                Fast_Parser_error(yparser(), "can only call metaprocedures and methods on instances");
+                goto error;
+                break;
+            }
+        } else {
+            db_id id;
+            Fast_Parser_error(yparser(), "no method in interface '%s' that matches signature '%s'",
+                    db_fullname(scope, id), signature);
+            goto error;           
+        }
+    }
+
+    if(!actualFunction) {
+        goto error;
+    }
+
+    return actualFunction;
+error:
+    return NULL;
 /* $end */
 }
 

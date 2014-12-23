@@ -18,6 +18,12 @@
 extern "C" {
 #endif
 
+/* virtual ::hyve::lang::procptr::compatible(lang::type type) */
+db_bool db_procptr_compatible(db_procptr _this, db_type type);
+
+/* ::hyve::lang::procptr::compatible(lang::type type) */
+db_bool db_procptr_compatible_v(db_procptr _this, db_type type);
+
 /* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::procptr::init(lang::procptr object) */
 db_int16 db_procptr_init(db_procptr object);
 

@@ -163,6 +163,7 @@ db_threadKey DB_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, function_init);\
     SSO_OP_OBJ(op, function_bind);\
     SSO_OP_OBJ(op, function_unbind);\
+    SSO_OP_OBJ(op, function_stringToParameterSeq);\
     /* method */\
 	SSO_OP_OBJ(op, method_virtual);\
 	SSO_OP_OBJ(op, method_init);\
@@ -471,6 +472,7 @@ db_threadKey DB_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, procptrdata_procedure);\
     /* procptr */\
     SSO_OP_OBJ(op, procptr_init);\
+    SSO_OP_OBJ(op, procptr_compatible);\
     SSO_OP_OBJ(op, procptr_returnType);\
     SSO_OP_OBJ(op, procptr_returnsReference);\
     SSO_OP_OBJ(op, procptr_parameters);\

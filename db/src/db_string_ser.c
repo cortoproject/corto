@@ -83,51 +83,7 @@ static db_bool db_ser_appendstrEscape(db_string_ser_t *data, db_string str) {
     *bptr = '"';
     bptr++;
     while((ch = *ptr)) {
-        switch(ch) {
-        case '\a':
-            *bptr = '\\';
-            *(++bptr) = 'a';
-            break;
-        case '\b':
-            *bptr = '\\';
-            *(++bptr) = 'b';
-            break;
-        case '\f':
-            *bptr = '\\';
-            *(++bptr) = 'f';
-            break;
-        case '\n':
-            *bptr = '\\';
-            *(++bptr) = 'n';
-            break;
-        case '\r':
-            *bptr = '\\';
-            *(++bptr) = 'r';
-            break;
-        case '\t':
-            *bptr = '\\';
-            *(++bptr) = 't';
-            break;
-        case '\v':
-            *bptr = '\\';
-            *(++bptr) = 'a';
-            break;
-        case '\'':
-            *bptr = '\'';
-            break;
-        case '"':
-            *bptr = '\\';
-            *(++bptr) = '"';
-            break;
-        case '\\':
-            *bptr = '\\';
-            *(++bptr) = '\\';
-            break;
-        default:
-            *bptr = ch;
-            break;
-        }
-        bptr++;
+        bptr = stresc(*ptr, bptr, '"');
         ptr++;
 
         if ((bptr - buffer) == 1023) { /* Avoid allocating temporary strings by reusing buffer.

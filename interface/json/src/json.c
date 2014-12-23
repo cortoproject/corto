@@ -221,7 +221,11 @@ finished:
 
 static db_int16 db_ser_base(db_serializer s, db_value* v, void* userData) {
     db_json_ser_t *data = userData;
+<<<<<<< HEAD
     if (!db_ser_appendstr(data, "\"@base\":{")) {
+=======
+    if (!db_ser_appendstr(data, "\"base\": {")) {
+>>>>>>> master
         goto finished;
     }
     if (db_serializeMembers(s, v, userData)) {
@@ -230,7 +234,10 @@ static db_int16 db_ser_base(db_serializer s, db_value* v, void* userData) {
     if (!db_ser_appendstr(data, "}")) {
         goto finished;
     }
+<<<<<<< HEAD
     data->itemCount += 1;
+=======
+>>>>>>> master
     return 0;
 error:
     return -1;

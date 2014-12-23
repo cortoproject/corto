@@ -94,3 +94,55 @@ char *utostr(unsigned int value, char* result, int base) {
 	}
 	return result;
 }
+
+char *stresc(char in, char* out, char delimiter) {
+	char *bptr = out;
+
+    switch(in) {
+    case '\a':
+        *bptr = '\\';
+        *(++bptr) = 'a';
+        break;
+    case '\b':
+        *bptr = '\\';
+        *(++bptr) = 'b';
+        break;
+    case '\f':
+        *bptr = '\\';
+        *(++bptr) = 'f';
+        break;
+    case '\n':
+        *bptr = '\\';
+        *(++bptr) = 'n';
+        break;
+    case '\r':
+        *bptr = '\\';
+        *(++bptr) = 'r';
+        break;
+    case '\t':
+        *bptr = '\\';
+        *(++bptr) = 't';
+        break;
+    case '\v':
+        *bptr = '\\';
+        *(++bptr) = 'a';
+        break;
+    case '\\':
+        *bptr = '\\';
+        *(++bptr) = '\\';
+        break;
+    default:
+    	if (in == delimiter) {
+    		*bptr = '\\';
+    		*(++bptr) = delimiter;
+    	} else {
+	        *bptr = in;
+	    }
+        break;
+    }
+    bptr++;
+
+    return bptr;
+}
+
+

@@ -47,66 +47,9 @@ db_int16 db_function_bind(db_function object) {
 /* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::function::init(lang::function object) */
 /* $header(::hyve::lang::function::init) */
 static db_int16 db_function_parseArguments(db_function object) {
-    db_char* ptr;
-
-    ptr = strchr(db_nameof(object), '(');
-    if (!ptr) {
-        db_error("missing argumentlist in name for function '%s'", db_nameof(object));
-        goto error;
-    }
-    ptr++;
-
-    /* Check if function has arguments */
-    if (*ptr != ')') {
-        db_uint32 count, i;
-        db_id id;
-        db_bool reference;
-
-        /* Count number of parameters for function */
-        count = db_signatureParamCount(db_nameof(object));
-        i = 0;
-        reference = FALSE;
-
-        /* Allocate size for parameters */
-        object->parameters.length = count;
-        object->parameters.buffer = db_malloc(sizeof(db_parameter) * count);
-        memset(object->parameters.buffer, 0, sizeof(db_parameter) * count);
-
-        /* Parse arguments */
-        for(i=0; i<count; i++) {
-            if (db_signatureParamType(db_nameof(object), i, id, &reference)) {
-                db_error("error occurred while parsing type of argument '%s' for function '%s'", db_nameof(object));
-                goto error;
-            }
-
-            /* Set reference */
-            object->parameters.buffer[i].passByReference = reference;
-
-            /* Assign type */
-            object->parameters.buffer[i].type = db_resolve_ext(object, db_parentof(object), id, FALSE, "Resolve parameter-type for function");
-            if (!object->parameters.buffer[i].type) {
-                db_id func;
-                db_error("type '%s' of argument %d in function %s not found", id, i, db_fullname(object, func));
-                goto error;
-            }
-
-            /* Parse name */
-            if (db_signatureParamName(db_nameof(object), i, id)) {
-                db_error("error occurred while parsing name of argument '%s' for function '%s'", db_nameof(object));
-                goto error;
-            }
-            object->parameters.buffer[i].name = db_strdup(id);
-        }
-    }
-
+    object->parameters = db_function_stringToParameterSeq(db_nameof(object), db_parentof(object));
     return 0;
-error:
-	object->parameters.length = 0;
-	db_dealloc(object->parameters.buffer);
-	object->parameters.buffer = NULL;
-    return -1;
 }
-
 
 typedef struct db_functionLookup_t {
 	db_function f;
@@ -179,6 +122,72 @@ db_int16 db_function_init(db_function object) {
     return 0;
 error:
 	return -1;
+/* $end */
+}
+
+/* ::hyve::lang::function::stringToParameterSeq(lang::string name,lang::object scope) */
+db_parameterSeq db_function_stringToParameterSeq(db_string name, db_object scope) {
+/* $begin(::hyve::lang::function::stringToParameterSeq) */
+    db_parameterSeq result = {0, NULL};
+
+    db_char* ptr;
+
+    ptr = strchr(name, '(');
+    if (!ptr) {
+        db_error("missing argumentlist in name for signature '%s'", name);
+        goto error;
+    }
+    ptr++;
+
+    /* Check if function has arguments */
+    if (*ptr != ')') {
+        db_uint32 count, i;
+        db_id id;
+        db_bool reference;
+
+        /* Count number of parameters for function */
+        count = db_signatureParamCount(name);
+        i = 0;
+        reference = FALSE;
+
+        /* Allocate size for parameters */
+        result.length = count;
+        result.buffer = db_malloc(sizeof(db_parameter) * count);
+        memset(result.buffer, 0, sizeof(db_parameter) * count);
+
+        /* Parse arguments */
+        for(i=0; i<count; i++) {
+            if (db_signatureParamType(name, i, id, &reference)) {
+                db_error("error occurred while parsing type of argument '%s' for signature '%s'", name);
+                goto error;
+            }
+
+            /* Set reference */
+            result.buffer[i].passByReference = reference;
+
+            /* Assign type */
+            result.buffer[i].type = db_resolve_ext(NULL, scope, id, FALSE, "Resolve parameter-type for function");
+            if (!result.buffer[i].type) {
+                db_error("type '%s' of argument %d in signature %s not found", id, i, name);
+                goto error;
+            }
+
+            /* Parse name */
+            if (db_signatureParamName(name, i, id)) {
+                db_error("error occurred while parsing name of argument '%s' for signature '%s'", name);
+                goto error;
+            }
+            result.buffer[i].name = db_strdup(id);
+        }
+    }
+
+    return result;
+error:
+    result.length = -1;
+    db_dealloc(result.buffer);
+    result.buffer = NULL;
+    return result;
+
 /* $end */
 }
 
