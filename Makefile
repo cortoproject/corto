@@ -5,6 +5,7 @@ all:
 	@make -C tools
 	@make -C generator
 	@make -C interface
+	@make -C generator/html
 	@make -C namespaces
 	@make -C test
 	
@@ -14,6 +15,7 @@ clean:
 	@make clean -C tools
 	@make clean -C generator
 	@make clean -C interface
+	@make clean -C generator/html
 	@make clean -C namespaces
 	@make clean -C test
 	@rm -f ./bin/*
@@ -24,6 +26,7 @@ gcov:
 	@make gcov -C tools
 	@make gcov -C generator
 	@make gcov -C interface
+	@make gcov -C generator/html
 	@make gcov -C namespaces
 	@make gcov -C test
 	
@@ -33,6 +36,7 @@ splint:
 	@make splint -C tools
 	@make splint -C generator
 	@make splint -C interface
+	@make splint -C generator/html
 	@make splint -C namespaces
 	@make splint -C namespaces
 	@make splint -C test

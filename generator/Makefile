@@ -14,5 +14,3 @@ gcov:
 splint:
 	@make splint -C c
 	@make splint -C cpp
-	
-
