@@ -66,7 +66,7 @@ typedef db_bool bool_t;
         char* str = db_malloc(128);\
         DB_UNUSED(fromType);\
         DB_UNUSED(toType);\
-        sprintf(str, "%"fmt, *(typeFrom##_t*)from);\
+        sprintf(str, fmt, *(typeFrom##_t*)from);\
         *(db_string*)to = str;\
         return 0;\
     }
@@ -331,25 +331,25 @@ error:
     DB_CONVERT_BOOL(fromType, bool)\
     DB_CONVERT_TO_STR(fromType, fmt)
 
-DB_CONVERT_NUM_INT(bool, "d")
-DB_CONVERT_NUM_INT(char8, "c")
-DB_CONVERT_NUM_INT(int8, PRId8)
-DB_CONVERT_NUM_INT(int16, PRId16)
-DB_CONVERT_NUM_INT(int32, PRId32)
-DB_CONVERT_NUM_INT(int64, PRId64)
-DB_CONVERT_NUM_INT(intptr, PRIdPTR)
-DB_CONVERT_NUM_INT(uint8, PRIu8)
-DB_CONVERT_NUM_INT(uint16, PRIu16)
-DB_CONVERT_NUM_INT(uint32, PRIu32)
-DB_CONVERT_NUM_INT(uint64, PRIu64)
-DB_CONVERT_NUM_INT(uintptr, PRIuPTR)
-DB_CONVERT_NUM_ALL(float32, "f")
-DB_CONVERT_NUM_ALL(float64, "f")
-DB_CONVERT_TO_STR(bin8, "hhx")
-DB_CONVERT_TO_STR(bin16, PRIx16)
-DB_CONVERT_TO_STR(bin32, PRIx32)
-DB_CONVERT_TO_STR(bin64, PRIx64)
-DB_CONVERT_NUM_ALL(word, PRIxPTR)
+DB_CONVERT_NUM_INT(bool, "%d")
+DB_CONVERT_NUM_INT(char8, "%c")
+DB_CONVERT_NUM_INT(int8, "%" PRId8)
+DB_CONVERT_NUM_INT(int16, "%" PRId16)
+DB_CONVERT_NUM_INT(int32, "%" PRId32)
+DB_CONVERT_NUM_INT(int64, "%" PRId64)
+DB_CONVERT_NUM_INT(intptr, "%" PRIdPTR)
+DB_CONVERT_NUM_INT(uint8, "%" PRIu8)
+DB_CONVERT_NUM_INT(uint16, "%" PRIu16)
+DB_CONVERT_NUM_INT(uint32, "%" PRIu32)
+DB_CONVERT_NUM_INT(uint64, "%" PRIu64)
+DB_CONVERT_NUM_INT(uintptr, "%" PRIuPTR)
+DB_CONVERT_NUM_ALL(float32, "%f")
+DB_CONVERT_NUM_ALL(float64, "%f")
+DB_CONVERT_TO_STR(bin8, "0x%hhx")
+DB_CONVERT_TO_STR(bin16, "0x%" PRIx16)
+DB_CONVERT_TO_STR(bin32, "0x%" PRIx32)
+DB_CONVERT_TO_STR(bin64, "0x%" PRIx64)
+DB_CONVERT_NUM_ALL(word, "0x%" PRIxPTR)
 
 /* All string to character conversions */
 DB_CONVERT_FROM_STR_CHAR(char8)

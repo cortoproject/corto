@@ -24,8 +24,8 @@ var bool l = true
 var char m = 'x'
 var string n = "foo"
 
-if "$a" != "ff":         fail("octet to string failed ($a)")
-if "$b" != "ffffffff":   fail("word to string failed ($b)")
+if "$a" != "0xff":         fail("octet to string failed ($a)")
+if "$b" != "0xffffffff":   fail("word to string failed ($b)")
 if "$c" != "255":        fail("uint8 to string failed ($c)")
 if "$d" != "65535":      fail("uint16 to string failed ($d)")
 if "$e" != "4294967295": fail("uint32 to string failed ($e)")
@@ -39,8 +39,8 @@ if "$l" != "true":       fail("bool to string failed ($l)")
 if "$m" != "x":          fail("char to string failed ($m)")
 if "$n" != "foo":        fail("string to string failed ($n)")
 
-if a.toString() != "ff":         fail("octet toString() failed ($a)")
-if b.toString() != "ffffffff":   fail("word toString() failed ($b)")
+if a.toString() != "0xff":         fail("octet toString() failed ($a)")
+if b.toString() != "0xffffffff":   fail("word toString() failed ($b)")
 if c.toString() != "255":        fail("uint8 toString() failed ($c)")
 if d.toString() != "65535":      fail("uint16 toString() failed ($d)")
 if e.toString() != "4294967295": fail("uint32 toString() failed ($e)")
