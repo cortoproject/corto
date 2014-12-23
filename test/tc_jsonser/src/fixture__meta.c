@@ -195,7 +195,7 @@ int fixture_load(void) {
         db_error("fixture_load: failed to declare object '::fixture::c5'.");
         goto error;
     } else {
-        (*fixture_c5_o) = '°';
+        (*fixture_c5_o) = '\0';
     }
 
     /* Declare ::fixture::color */
@@ -707,7 +707,7 @@ int fixture_load(void) {
         db_error("fixture_load: failed to declare object '::fixture::namesp::b'.");
         goto error;
     } else {
-        (*fixture_namesp_b_o) = db_strdup("");
+        (*fixture_namesp_b_o) = db_strdup("b");
     }
 
     /* Declare ::fixture::point2D */
@@ -797,7 +797,7 @@ int fixture_load(void) {
         db_error("fixture_load: failed to declare object '::fixture::s1'.");
         goto error;
     } else {
-        (*fixture_s1_o) = db_strdup("");
+        (*fixture_s1_o) = db_strdup("hello world");
     }
 
     /* Declare ::fixture::s10 */
@@ -806,7 +806,7 @@ int fixture_load(void) {
         db_error("fixture_load: failed to declare object '::fixture::s10'.");
         goto error;
     } else {
-        (*fixture_s10_o) = db_strdup("");
+        (*fixture_s10_o) = db_strdup("@@hey you");
     }
 
     /* Declare ::fixture::s11 */
@@ -815,7 +815,7 @@ int fixture_load(void) {
         db_error("fixture_load: failed to declare object '::fixture::s11'.");
         goto error;
     } else {
-        (*fixture_s11_o) = db_strdup("");
+        (*fixture_s11_o) = db_strdup("@@@@@");
     }
 
     /* Declare ::fixture::s12 */
@@ -824,7 +824,7 @@ int fixture_load(void) {
         db_error("fixture_load: failed to declare object '::fixture::s12'.");
         goto error;
     } else {
-        (*fixture_s12_o) = db_strdup("");
+        (*fixture_s12_o) = db_strdup("@@@@@ hey");
     }
 
     /* Declare ::fixture::s13 */
@@ -833,7 +833,7 @@ int fixture_load(void) {
         db_error("fixture_load: failed to declare object '::fixture::s13'.");
         goto error;
     } else {
-        (*fixture_s13_o) = db_strdup("");
+        (*fixture_s13_o) = db_strdup("@@@@@hey");
     }
 
     /* Declare ::fixture::s14 */
@@ -842,7 +842,7 @@ int fixture_load(void) {
         db_error("fixture_load: failed to declare object '::fixture::s14'.");
         goto error;
     } else {
-        (*fixture_s14_o) = db_strdup("");
+        (*fixture_s14_o) = db_strdup("@@@@@hey you");
     }
 
     /* Declare ::fixture::s2 */
@@ -851,7 +851,7 @@ int fixture_load(void) {
         db_error("fixture_load: failed to declare object '::fixture::s2'.");
         goto error;
     } else {
-        (*fixture_s2_o) = db_strdup("");
+        (*fixture_s2_o) = db_strdup("hello, world!");
     }
 
     /* Declare ::fixture::s3 */
@@ -860,7 +860,7 @@ int fixture_load(void) {
         db_error("fixture_load: failed to declare object '::fixture::s3'.");
         goto error;
     } else {
-        (*fixture_s3_o) = db_strdup("");
+        (*fixture_s3_o) = db_strdup("@");
     }
 
     /* Declare ::fixture::s4 */
@@ -869,7 +869,7 @@ int fixture_load(void) {
         db_error("fixture_load: failed to declare object '::fixture::s4'.");
         goto error;
     } else {
-        (*fixture_s4_o) = db_strdup("");
+        (*fixture_s4_o) = db_strdup("@ hey");
     }
 
     /* Declare ::fixture::s5 */
@@ -878,7 +878,7 @@ int fixture_load(void) {
         db_error("fixture_load: failed to declare object '::fixture::s5'.");
         goto error;
     } else {
-        (*fixture_s5_o) = db_strdup("");
+        (*fixture_s5_o) = db_strdup("@hey");
     }
 
     /* Declare ::fixture::s6 */
@@ -887,7 +887,7 @@ int fixture_load(void) {
         db_error("fixture_load: failed to declare object '::fixture::s6'.");
         goto error;
     } else {
-        (*fixture_s6_o) = db_strdup("");
+        (*fixture_s6_o) = db_strdup("@hey you");
     }
 
     /* Declare ::fixture::s7 */
@@ -896,7 +896,7 @@ int fixture_load(void) {
         db_error("fixture_load: failed to declare object '::fixture::s7'.");
         goto error;
     } else {
-        (*fixture_s7_o) = db_strdup("");
+        (*fixture_s7_o) = db_strdup("@@");
     }
 
     /* Declare ::fixture::s8 */
@@ -905,7 +905,7 @@ int fixture_load(void) {
         db_error("fixture_load: failed to declare object '::fixture::s8'.");
         goto error;
     } else {
-        (*fixture_s8_o) = db_strdup("");
+        (*fixture_s8_o) = db_strdup("@@ hey");
     }
 
     /* Declare ::fixture::s9 */
@@ -914,7 +914,7 @@ int fixture_load(void) {
         db_error("fixture_load: failed to declare object '::fixture::s9'.");
         goto error;
     } else {
-        (*fixture_s9_o) = db_strdup("");
+        (*fixture_s9_o) = db_strdup("@@hey");
     }
 
     /* Declare ::fixture::sn */
@@ -1180,7 +1180,7 @@ int fixture_load(void) {
     /* Define ::fixture::dog1 */
     if (!db_checkState(fixture_dog1_o, DB_DEFINED)) {
         fixture_dog1_o->breed = FIXTURE_GoldenRetriever;
-        fixture_dog1_o->name = db_strdup("");
+        fixture_dog1_o->name = db_strdup("Gijs");
         fixture_dog1_o->age = 10;
         fixture_dog1_o->lover = NULL;
         if (db_define(fixture_dog1_o)) {
@@ -1199,7 +1199,7 @@ int fixture_load(void) {
     /* Define ::fixture::dog2 */
     if (!db_checkState(fixture_dog2_o, DB_DEFINED)) {
         fixture_dog2_o->breed = FIXTURE_Pug;
-        fixture_dog2_o->name = db_strdup("");
+        fixture_dog2_o->name = db_strdup("Lolly");
         fixture_dog2_o->age = 4;
         fixture_dog2_o->lover = NULL;
         if (db_define(fixture_dog2_o)) {
@@ -1218,7 +1218,7 @@ int fixture_load(void) {
     /* Define ::fixture::dog3 */
     if (!db_checkState(fixture_dog3_o, DB_DEFINED)) {
         fixture_dog3_o->breed = FIXTURE_Chihuahua;
-        fixture_dog3_o->name = db_strdup("");
+        fixture_dog3_o->name = db_strdup("I'm annoying");
         fixture_dog3_o->age = 3;
         fixture_dog3_o->lover = db_resolve_ext(fixture_dog3_o, NULL, "::fixture::dog2", FALSE, "element ::fixture::dog3.lover");
         if (db_define(fixture_dog3_o)) {
@@ -1237,7 +1237,7 @@ int fixture_load(void) {
     /* Define ::fixture::v0::dog1 */
     if (!db_checkState(fixture_v0_dog1_o, DB_DEFINED)) {
         fixture_v0_dog1_o->breed = FIXTURE_Pug;
-        fixture_v0_dog1_o->name = db_strdup("");
+        fixture_v0_dog1_o->name = db_strdup("MyPug");
         fixture_v0_dog1_o->age = 55;
         fixture_v0_dog1_o->lover = NULL;
         if (db_define(fixture_v0_dog1_o)) {
