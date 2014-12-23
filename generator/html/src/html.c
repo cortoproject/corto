@@ -101,7 +101,7 @@ static int gen_json(db_object o, void *userData) {
     db_html_gen_t scopeData = *htmlData;
     scopeData.path = folderPath;
 
-    return db_scopeWalk(o, gen_folder, &scopeData);
+    return db_scopeWalk(o, gen_json, &scopeData);
 error:
     return 0;
 }
