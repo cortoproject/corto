@@ -1,7 +1,0 @@
-bool result : true
-void fail(string msg):
-	"tc_interface01: FAIL: $msg"
-	result = false
-
-
-"tc_interface: FAIL: not implemented"
