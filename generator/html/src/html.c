@@ -34,21 +34,22 @@ static int gen_folder(db_object o, void *userData) {
         goto error;
     }
 
-    if (mkdir(folderPath, S_IRWXU|S_IRWXG|S_IRWXO)) {
+    if (mkdir(folderPath, S_IRWXU)) {
         int errno2 = errno;
-        fprintf(stderr, "Error: cannot create %s\n", folderPath);
+        fprintf(stderr, "Error: cannot create %s, error code: ", folderPath);
         switch(errno2) {
-            case EACCES: fprintf(stderr, "Error: EACCES\n"); break;
-            case EEXIST: fprintf(stderr, "Error: EEXIST\n"); break;
-            case ELOOP: fprintf(stderr, "Error: ELOOP\n"); break;
-            case EMLINK: fprintf(stderr, "Error: EMLINK\n"); break;
-            case ENAMETOOLONG: fprintf(stderr, "Error: ENAMETOOLONG\n"); break;
-            case ENOENT: fprintf(stderr, "Error: ENOENT\n"); break;
-            case ENOSPC: fprintf(stderr, "Error: ENOSPC\n"); break;
-            case ENOTDIR: fprintf(stderr, "Error: ENOTDIR\n"); break;
-            case EROFS: fprintf(stderr, "Error: EROFS\n"); break;
-            default: fprintf(stderr, "Unknown error: %d\n", errno2); break;
+            case EACCES: fprintf(stderr, "EACCES"); break;
+            case EEXIST: fprintf(stderr, "EEXIST"); break;
+            case ELOOP: fprintf(stderr, "ELOOP"); break;
+            case EMLINK: fprintf(stderr, "EMLINK"); break;
+            case ENAMETOOLONG: fprintf(stderr, "ENAMETOOLONG"); break;
+            case ENOENT: fprintf(stderr, "ENOENT"); break;
+            case ENOSPC: fprintf(stderr, "ENOSPC"); break;
+            case ENOTDIR: fprintf(stderr, "ENOTDIR"); break;
+            case EROFS: fprintf(stderr, "EROFS"); break;
+            default: fprintf(stderr, "%d (unknown)", errno2); break;
         }
+        fprintf(stderr, "\n");
         goto error;
     }
 
@@ -73,11 +74,9 @@ static int gen_json(db_object o, void *userData) {
     FILE *file;
 
     if (sprintf(folderPath, "%s/%s", htmlData->path, db_nameof(o)) < 0) {
-        // printf("trying to create json in %s\n", folderPath);
         goto error;
     }
     if (sprintf(filePath, "%s/data.js", folderPath) < 0) {
-        // printf("trying to write json %s\n", filePath);
         goto error;
     }
 
@@ -88,7 +87,7 @@ static int gen_json(db_object o, void *userData) {
     if ((file = fopen(filePath, "w")) == NULL) {
         goto error;
     }
-    if (fprintf(file, "%s", jsonData.buffer) < 0) {
+    if (fprintf(file, "thisObject = %s", jsonData.buffer) < 0) {
         goto error;
     }
     if (fflush(file)) {
@@ -108,13 +107,45 @@ error:
 
 
 static int gen_html(db_object o, void* userData) {
-    db_html_gen_t *data = userData;
-    char htmlPath[PATH_MAX];
-    if (sprintf(htmlPath, "%s/%s", data->path, "index.html") < 0) {
+    db_html_gen_t *htmlData = userData;
+    char folderPath[PATH_MAX];
+    char filePath[PATH_MAX];
+    FILE *file;
+
+    if (sprintf(folderPath, "%s/%s", htmlData->path, db_nameof(o)) < 0) {
         goto error;
     }
-    db_nameof(o);
-    // todo recursive
+    if (sprintf(filePath, "%s/index.html", folderPath) < 0) {
+        goto error;
+    }
+
+    if ((file = fopen(filePath, "w")) == NULL) {
+        goto error;
+    }
+    if (fprintf(file,
+        "<html>"
+            "<head>"
+                "<script src=\"./data.js\"></script>"
+            "</head>"
+            "<body>"
+                "This is %s"
+            "</body>"
+        "</html>",
+        db_nameof(o)
+        ) < 0) {
+        goto error;
+    }
+    if (fflush(file)) {
+        goto error;
+    }
+    if (fclose(file)) {
+        goto error;
+    }
+    
+    db_html_gen_t scopeData = *htmlData;
+    scopeData.path = folderPath;
+
+    return db_scopeWalk(o, gen_html, &scopeData);
 error:
     return 0;
 }
