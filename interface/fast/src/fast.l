@@ -135,7 +135,7 @@ true							TOKEN; yylval.Boolean =  TRUE; return BOOLEAN;
 false							TOKEN; yylval.Boolean = FALSE; return BOOLEAN;
 
 L?'(\\.|[^\\'])+'				TOKEN; fast_charesc(yytext+1, &yylval.Character); return CHARACTER;
-0x[0-9a-fA-F]+					TOKEN; sscanf(yytext, "%" PRIu64, &yylval.Integer); return INTEGER; 
+0x[0-9a-fA-F]+					TOKEN; sscanf(yytext, "%" PRIx64, &yylval.Integer); return INTEGER; 
 [0-9]+							TOKEN; sscanf(yytext, "%" PRIu64, &yylval.Integer); return INTEGER;
 [0-9]+"."[0-9]+					TOKEN; yylval.FloatingPoint = atof(yytext); return FLOATINGPOINT;
 "null"							TOKEN; yylval.Null = NULL; return NUL;
