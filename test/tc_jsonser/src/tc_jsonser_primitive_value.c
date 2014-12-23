@@ -68,7 +68,6 @@ db_int16 test_ser_primitive_value(void) {
     _test_ser_primitive_value(sn, "null");
     _test_ser_primitive_value(s1, "\"hello world\"");
     _test_ser_primitive_value(s2, "\"hello, world!\"");
-
     _test_ser_primitive_value(s3, "\"@@\"");
     _test_ser_primitive_value(s4, "\"@@ hey\"");
     _test_ser_primitive_value(s5, "\"@@hey\"");
@@ -81,6 +80,13 @@ db_int16 test_ser_primitive_value(void) {
     _test_ser_primitive_value(s12, "\"@@@@@@ hey\"");
     _test_ser_primitive_value(s13, "\"@@@@@@hey\"");
     _test_ser_primitive_value(s14, "\"@@@@@@hey you\"");
+
+    _test_ser_primitive_value(yellow, "\"@M green|red\"");
+    _test_ser_primitive_value(white, "\"@M blue|green|red\"");
+    _test_ser_primitive_value(black, "\"@M 0\"");
+
+    // _test_ser_primitive_value(o1, "@B 2d");
+    // _test_ser_primitive_value(o2, "@B FF");
 
     _test_ser_primitive_value(Flint, "\"@E Venus\"");
     _test_ser_primitive_value(Forge, "\"@E Mars\"");

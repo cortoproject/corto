@@ -17,6 +17,12 @@ extern "C" {
 #define fixture_Dog(o) ((fixture_Dog)o)
 
 /* Type definitions */
+/* ::fixture::color */
+DB_BITMASK(fixture_color);
+    #define FIXTURE_red (0x1)
+    #define FIXTURE_green (0x2)
+    #define FIXTURE_blue (0x4)
+
 /* ::fixture::Djinn */
 typedef enum fixture_Djinn {
     FIXTURE_Mercury = 0,

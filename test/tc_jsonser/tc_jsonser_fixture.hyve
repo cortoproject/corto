@@ -60,10 +60,13 @@ object fixture::
     string s13: "@@@@@hey"
     string s14: "@@@@@hey you"
 
-    struct point2D::
-        x, y: int32
+    bitmask color:: red, green, blue
+    color yellow: red | green
+    color white: color::red | color::green | color::blue
+    color black
 
-    point2d p: 3, 4
+    // octet o1: 45
+    // octet o2: 255
 
     enum Djinn:: Mercury, Venus, Mars, Jupiter
 
@@ -71,6 +74,11 @@ object fixture::
     Djinn Forge: Mars
     Djinn Gust: Jupiter
     Djinn Sleet: Mercury
+
+    struct point2D::
+        x, y: int32
+
+    point2d p: 3, 4
 
     void namesp::
         int16 a: 9

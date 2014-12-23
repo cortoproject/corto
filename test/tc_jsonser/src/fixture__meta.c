@@ -9,7 +9,12 @@
 /* Variable definitions */
 db_object fixture_o;
 db_bool (*fixture_bf_o);
+fixture_color (*fixture_black_o);
 db_bool (*fixture_bt_o);
+db_bitmask fixture_color_o;
+db_constant (*fixture_color_blue_o);
+db_constant (*fixture_color_green_o);
+db_constant (*fixture_color_red_o);
 db_enum fixture_Djinn_o;
 db_constant (*fixture_Djinn_Jupiter_o);
 db_constant (*fixture_Djinn_Mars_o);
@@ -102,6 +107,8 @@ db_void (*fixture_v1_v3_v3_o);
 db_void (*fixture_v1_v3_v4_o);
 db_void (*fixture_v1_v3_v5_o);
 db_void (*fixture_v1_v3_v6_o);
+fixture_color (*fixture_white_o);
+fixture_color (*fixture_yellow_o);
 
 /* Load objects in database */
 int fixture_load(void) {
@@ -151,6 +158,119 @@ int fixture_load(void) {
     if (!db_checkState(fixture_bt_o, DB_DEFINED)) {
         if (db_define(fixture_bt_o)) {
             db_error("fixture_load: failed to define object '::fixture::bt'.");
+            goto error;
+        }
+    }
+    /* Declare ::fixture::color */
+    fixture_color_o = db_declare(fixture_o, "color", db_typedef(db_bitmask_o));
+    if (!fixture_color_o) {
+        db_error("fixture_load: failed to declare object '::fixture::color'.");
+        goto error;
+    }
+
+    /* Declare ::fixture::color::blue */
+    fixture_color_blue_o = db_declare(fixture_color_o, "blue", db_typedef(db_constant_o));
+    if (!fixture_color_blue_o) {
+        db_error("fixture_load: failed to declare object '::fixture::color::blue'.");
+        goto error;
+    } else {
+        (*fixture_color_blue_o) = 4;
+    }
+
+    /* Define ::fixture::color::blue */
+    if (!db_checkState(fixture_color_blue_o, DB_DEFINED)) {
+        if (db_define(fixture_color_blue_o)) {
+            db_error("fixture_load: failed to define object '::fixture::color::blue'.");
+            goto error;
+        }
+    }
+    /* Declare ::fixture::color::green */
+    fixture_color_green_o = db_declare(fixture_color_o, "green", db_typedef(db_constant_o));
+    if (!fixture_color_green_o) {
+        db_error("fixture_load: failed to declare object '::fixture::color::green'.");
+        goto error;
+    } else {
+        (*fixture_color_green_o) = 2;
+    }
+
+    /* Define ::fixture::color::green */
+    if (!db_checkState(fixture_color_green_o, DB_DEFINED)) {
+        if (db_define(fixture_color_green_o)) {
+            db_error("fixture_load: failed to define object '::fixture::color::green'.");
+            goto error;
+        }
+    }
+    /* Declare ::fixture::color::red */
+    fixture_color_red_o = db_declare(fixture_color_o, "red", db_typedef(db_constant_o));
+    if (!fixture_color_red_o) {
+        db_error("fixture_load: failed to declare object '::fixture::color::red'.");
+        goto error;
+    } else {
+        (*fixture_color_red_o) = 1;
+    }
+
+    /* Define ::fixture::color::red */
+    if (!db_checkState(fixture_color_red_o, DB_DEFINED)) {
+        if (db_define(fixture_color_red_o)) {
+            db_error("fixture_load: failed to define object '::fixture::color::red'.");
+            goto error;
+        }
+    }
+    /* Define ::fixture::color */
+    if (!db_checkState(fixture_color_o, DB_DEFINED)) {
+        if (db_define(fixture_color_o)) {
+            db_error("fixture_load: failed to define object '::fixture::color'.");
+            goto error;
+        }
+    }
+    if (db_type(fixture_color_o)->size != sizeof(fixture_color)) {
+        db_error("fixture_load: calculated size '%d' of type '::fixture::color' doesn't match C-type size '%d'", db_type(fixture_color_o)->size, sizeof(fixture_color));
+    }
+    /* Declare ::fixture::black */
+    fixture_black_o = db_declare(fixture_o, "black", db_typedef(fixture_color_o));
+    if (!fixture_black_o) {
+        db_error("fixture_load: failed to declare object '::fixture::black'.");
+        goto error;
+    } else {
+        (*fixture_black_o) = 0x0;
+    }
+
+    /* Define ::fixture::black */
+    if (!db_checkState(fixture_black_o, DB_DEFINED)) {
+        if (db_define(fixture_black_o)) {
+            db_error("fixture_load: failed to define object '::fixture::black'.");
+            goto error;
+        }
+    }
+    /* Declare ::fixture::white */
+    fixture_white_o = db_declare(fixture_o, "white", db_typedef(fixture_color_o));
+    if (!fixture_white_o) {
+        db_error("fixture_load: failed to declare object '::fixture::white'.");
+        goto error;
+    } else {
+        (*fixture_white_o) = 0x7;
+    }
+
+    /* Define ::fixture::white */
+    if (!db_checkState(fixture_white_o, DB_DEFINED)) {
+        if (db_define(fixture_white_o)) {
+            db_error("fixture_load: failed to define object '::fixture::white'.");
+            goto error;
+        }
+    }
+    /* Declare ::fixture::yellow */
+    fixture_yellow_o = db_declare(fixture_o, "yellow", db_typedef(fixture_color_o));
+    if (!fixture_yellow_o) {
+        db_error("fixture_load: failed to declare object '::fixture::yellow'.");
+        goto error;
+    } else {
+        (*fixture_yellow_o) = 0x3;
+    }
+
+    /* Define ::fixture::yellow */
+    if (!db_checkState(fixture_yellow_o, DB_DEFINED)) {
+        if (db_define(fixture_yellow_o)) {
+            db_error("fixture_load: failed to define object '::fixture::yellow'.");
             goto error;
         }
     }

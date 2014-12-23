@@ -19,7 +19,7 @@ int fixture_Dog__define(fixture_Dog _this, fixture_DogBreed breed, db_string nam
     _this->breed = breed;
     _this->name = (name ? db_strdup(name) : NULL);
     _this->age = age;
-    lover ? db_keep_ext(_this, lover, "element <0x9cd35b0>.lover") : 0; _this->lover = lover;
+    lover ? db_keep_ext(_this, lover, "element <0x8a13600>.lover") : 0; _this->lover = lover;
     return db_define(_this);
 }
 
@@ -29,7 +29,7 @@ fixture_Dog fixture_Dog__create(fixture_DogBreed breed, db_string name, db_uint8
     _this->breed = breed;
     _this->name = (name ? db_strdup(name) : NULL);
     _this->age = age;
-    lover ? db_keep_ext(_this, lover, "element <0x9cd35b0>.lover") : 0; _this->lover = lover;
+    lover ? db_keep_ext(_this, lover, "element <0x8a13600>.lover") : 0; _this->lover = lover;
     if (db_define(_this)) {
         db_free(_this);
         _this = NULL;

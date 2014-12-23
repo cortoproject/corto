@@ -21,8 +21,23 @@ extern db_object fixture_o;
 /* ::fixture::bf */
 extern db_bool (*fixture_bf_o);
 
+/* ::fixture::black */
+extern fixture_color (*fixture_black_o);
+
 /* ::fixture::bt */
 extern db_bool (*fixture_bt_o);
+
+/* ::fixture::color */
+extern db_bitmask fixture_color_o;
+
+/* ::fixture::color::blue */
+extern db_constant (*fixture_color_blue_o);
+
+/* ::fixture::color::green */
+extern db_constant (*fixture_color_green_o);
+
+/* ::fixture::color::red */
+extern db_constant (*fixture_color_red_o);
 
 /* ::fixture::Djinn */
 extern db_enum fixture_Djinn_o;
@@ -299,6 +314,12 @@ extern db_void (*fixture_v1_v3_v5_o);
 
 /* ::fixture::v1::v3::v6 */
 extern db_void (*fixture_v1_v3_v6_o);
+
+/* ::fixture::white */
+extern fixture_color (*fixture_white_o);
+
+/* ::fixture::yellow */
+extern fixture_color (*fixture_yellow_o);
 
 int fixture_load(void);
 #ifdef __cplusplus
