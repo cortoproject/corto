@@ -270,7 +270,7 @@ int Fast_While__define(Fast_While _this, Fast_Expression condition, Fast_Block t
 Fast_While Fast_While__create(Fast_Expression condition, Fast_Block trueBranch, db_bool isUntil);
 
 
-/* <0x8684460> */
+/* <0x9c73420> */
 #define Fast_Binding_list__foreach(list, elem) \
     db_iter elem##_iter = db_llIter(list);\
     Fast_Binding *elem;\
@@ -285,7 +285,7 @@ void Fast_Binding_list__clear(Fast_Binding_list list);
 Fast_Binding* Fast_Binding_list__get(Fast_Binding_list list, db_uint32 index);
 db_uint32 Fast_Binding_list__size(Fast_Binding_list list);
 
-/* <0x862a928> */
+/* <0x9c198e8> */
 #define Fast_Expression_list__foreach(list, elem) \
     db_iter elem##_iter = db_llIter(list);\
     Fast_Expression elem;\
@@ -300,7 +300,7 @@ void Fast_Expression_list__clear(Fast_Expression_list list);
 Fast_Expression Fast_Expression_list__get(Fast_Expression_list list, db_uint32 index);
 db_uint32 Fast_Expression_list__size(Fast_Expression_list list);
 
-/* <0x8681930> */
+/* <0x9c708f0> */
 #define Fast_InitOper_list__foreach(list, elem) \
     db_iter elem##_iter = db_llIter(list);\
     Fast_InitOper *elem;\
@@ -315,7 +315,7 @@ void Fast_InitOper_list__clear(Fast_InitOper_list list);
 Fast_InitOper* Fast_InitOper_list__get(Fast_InitOper_list list, db_uint32 index);
 db_uint32 Fast_InitOper_list__size(Fast_InitOper_list list);
 
-/* <0x8678100> */
+/* <0x9c670c0> */
 #define Fast_Local_list__foreach(list, elem) \
     db_iter elem##_iter = db_llIter(list);\
     Fast_Local elem;\
@@ -330,7 +330,7 @@ void Fast_Local_list__clear(Fast_Local_list list);
 Fast_Local Fast_Local_list__get(Fast_Local_list list, db_uint32 index);
 db_uint32 Fast_Local_list__size(Fast_Local_list list);
 
-/* <0x8677f10> */
+/* <0x9c66ed0> */
 #define Fast_Node_list__foreach(list, elem) \
     db_iter elem##_iter = db_llIter(list);\
     Fast_Node elem;\
@@ -345,7 +345,7 @@ void Fast_Node_list__clear(Fast_Node_list list);
 Fast_Node Fast_Node_list__get(Fast_Node_list list, db_uint32 index);
 db_uint32 Fast_Node_list__size(Fast_Node_list list);
 
-/* <0x8684ad0> */
+/* <0x9c73a90> */
 #define Fast_Object_list__foreach(list, elem) \
     db_iter elem##_iter = db_llIter(list);\
     Fast_Object elem;\
@@ -360,7 +360,7 @@ void Fast_Object_list__clear(Fast_Object_list list);
 Fast_Object Fast_Object_list__get(Fast_Object_list list, db_uint32 index);
 db_uint32 Fast_Object_list__size(Fast_Object_list list);
 
-/* <0x8682588> */
+/* <0x9c71548> */
 #define Fast_ParserDeclaration_seq256__foreach(seq, elem) \
     db_uint32 elem##_iter;\
     Fast_ParserDeclaration *elem;\
@@ -371,7 +371,7 @@ Fast_ParserDeclaration* Fast_ParserDeclaration_seq256__append(Fast_ParserDeclara
 void Fast_ParserDeclaration_seq256__size(Fast_ParserDeclaration_seq256 *seq, db_uint32 length);
 void Fast_ParserDeclaration_seq256__clear(Fast_ParserDeclaration_seq256 *seq);
 
-/* <0x8684930> */
+/* <0x9c738f0> */
 #define db_word_list__foreach(list, elem) \
     db_iter elem##_iter = db_llIter(list);\
     db_word *elem;\

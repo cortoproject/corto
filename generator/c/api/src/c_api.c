@@ -222,7 +222,7 @@ static db_int16 c_apiReferenceTypeDefine(db_interface o, c_apiWalk_t* data) {
 }
 
 /* Create init-function */
-static db_int16 c_apiReferenceTypeInit(db_interface o, c_apiWalk_t* data) {
+static db_int16 c_apiTypeInit(db_interface o, c_apiWalk_t* data) {
     db_id id;
     struct db_serializer_s s;
 
@@ -244,6 +244,11 @@ static db_int16 c_apiReferenceTypeInit(db_interface o, c_apiWalk_t* data) {
     g_fileWrite(data->source, ") {\n");
     g_fileIndent(data->source);
 
+    /* Initialize value */
+    g_fileWrite(data->source, "db_value v;\n");
+    g_fileWrite(data->source, "db_valueValueInit(&v, NULL, db_typedef(%s_o), _this);\n", id);
+    g_fileWrite(data->source, "db_initValue(&v);\n");
+
     /* Member assignments */
     s = c_apiAssignSerializer();
     db_metaWalk(&s, db_type(o), data);
@@ -255,7 +260,7 @@ static db_int16 c_apiReferenceTypeInit(db_interface o, c_apiWalk_t* data) {
 }
 
 /* Create deinit-function */
-static db_int16 c_apiReferenceTypeDeinit(db_interface o, c_apiWalk_t* data) {
+static db_int16 c_apiTypeDeinit(db_interface o, c_apiWalk_t* data) {
     db_id id;
 
     g_fullOid(data->g, o, id);
@@ -380,12 +385,12 @@ static db_int16 c_apiWalkType(db_interface o, c_apiWalk_t* data) {
     data->memberCache = db_genMemberCacheBuild(o);
 
     /* Generate _init function */
-    if (c_apiReferenceTypeInit(o, data)) {
+    if (c_apiTypeInit(o, data)) {
         goto error;
     }
 
     /* Generate _deinit function */
-    if (c_apiReferenceTypeDeinit(o, data)) {
+    if (c_apiTypeDeinit(o, data)) {
         goto error;
     }
 
