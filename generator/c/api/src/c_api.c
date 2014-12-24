@@ -246,6 +246,7 @@ static db_int16 c_apiTypeInit(db_interface o, c_apiWalk_t* data) {
 
     /* Initialize value */
     g_fileWrite(data->source, "db_value v;\n");
+    g_fileWrite(data->source, "memset(_this, 0, sizeof(*_this));\n");
     g_fileWrite(data->source, "db_valueValueInit(&v, NULL, db_typedef(%s_o), _this);\n", id);
     g_fileWrite(data->source, "db_initValue(&v);\n");
 
