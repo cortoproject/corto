@@ -3,7 +3,7 @@ function objectAsTable(object, tableClass, tableId) {
     var buffer = "";
     buffer += "<table>";
     for (var k in object) {
-        buffer += "<tr><th>" + k + "</th><td>" + object[k] + "<td></tr>";
+        buffer += "<tr><th>" + k + "</th><td><code>" + object[k] + "</code><td></tr>";
     }
     buffer += "</table>";
     return buffer;

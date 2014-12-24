@@ -95,7 +95,7 @@ error:
  * Returns 0 on success, -1 otherwise.
  */
 static int printHtml(db_html_gen_t *data, FILE* file) {
-    unsigned int level = data->level;
+    unsigned int level;
 
     #define _printHtml(text) if (fprintf(file, text) < 0) goto error;
     
@@ -104,13 +104,24 @@ static int printHtml(db_html_gen_t *data, FILE* file) {
     _printHtml("<html>\n");
     _printHtml("<head>");
     _printHtml("<meta charset=\"utf-8\">");
+
+    /* This object */
     _printHtml("<script src=\"./data.js\"></script>");
+
+    /* Parsing script */
     _printHtml("<script src=\"../");
-    while (--level) {
+    for (level = 1; level < data->level; level++) {
         _printHtml("../");
     }
-    _printHtml("objectparse.js\">");
-    _printHtml("</script>");
+    _printHtml("objectparse.js\"></script>");
+
+    /* CSS */
+    _printHtml("<link href=\"../");
+    for (level = 1; level < data->level; level++) {
+        _printHtml("../");
+    }
+    _printHtml("object.css\" rel=\"stylesheet\">");
+
     _printHtml("</head>");
     _printHtml("<body><main></main></body>");
     _printHtml("</html>");
@@ -175,6 +186,22 @@ error:
     return -1;
 }
 
+db_int16 copyStyleSheet(const char* path) {
+    char sourcePath[PATH_MAX];
+    char destinationPath[PATH_MAX];
+    char *hyveHome = getenv("HYVE_HOME");
+    char stylesheetFilename[] = "object.css";
+    sprintf(sourcePath, "%s/generator/html/%s", hyveHome, stylesheetFilename);
+    sprintf(destinationPath, "%s/%s", path, stylesheetFilename);
+    if (db_cp(sourcePath, destinationPath)) {
+        goto error;
+    }
+    return 0;
+error:
+    return -1;
+}
+
+
 db_int16 hyve_genMain(db_generator g) {
     char filepath[PATH_MAX] = "./doc";
 
@@ -185,15 +212,19 @@ db_int16 hyve_genMain(db_generator g) {
         db_error("Error creating folders.");
     }
 
-    if (!(success && (success = !copyJsonParser(data.path)))) {
-        db_error("Error copying JsonParser.");
+    if (success && !(success = !copyJsonParser(data.path))) {
+        db_error("Cannot copy \"objectparse.js\".");
+    }
+
+    if (success && !(success = !copyStyleSheet(data.path))) {
+        db_error("Cannot copy \"object.css\".");
     }
     
-    if (!(success && (success = g_walkNoScope(g, gen_json, &data)))) {
+    if (success && !(success = g_walkNoScope(g, gen_json, &data))) {
         db_error("Error creating js files.");
     }
     
-    if (!(success && (success = g_walkNoScope(g, gen_html, &data)))) {
+    if (success && !(success = g_walkNoScope(g, gen_html, &data))) {
         db_error("Error creating html files.");
     }
 
