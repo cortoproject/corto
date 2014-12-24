@@ -7,7 +7,10 @@ extern "C" {
 #endif
 
 /* Returns zero if OK, -1 if failed */
-int db_mkdir(char *name);
+int db_mkdir(const char *name);
+
+/* Returns zero if OK, -1 if failed */
+int db_cp(const char *source, const char *destination);
 
 #ifdef __cplusplus
 }
