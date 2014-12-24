@@ -22,7 +22,7 @@ if a != 30: fail("a != 30 (a=$a)")
 a /= test(true) ? 2 : 3
 if a != 10: fail("a != 10: (a=$a)")
 
-// Use operations in which the left-hand side of the binary epxression is not a storage
+// Use operations in which the left-hand side of the binary expression is not a storage
 a = 10 // Start clean
 b = a + (test(true) ? 10 : 20)
 if a != 10: fail("a != 10 (a=$a) #2")

@@ -1,17 +1,17 @@
-/* tc_jsonser_Dog.h
+/* fixture_point2D.h
  *
  * This file contains generated code. Do not modify!
  */
 
-#ifndef tc_jsonser_Dog_H
-#define tc_jsonser_Dog_H
+#ifndef fixture_point2D_H
+#define fixture_point2D_H
 
 #include "hyve.h"
-#include "tc_jsonser__type.h"
+#include "fixture__type.h"
 
-#include "tc_jsonser__api.h"
+#include "fixture__api.h"
 
-#include "tc_jsonser__meta.h"
+#include "fixture__meta.h"
 
 #ifdef __cplusplus
 extern "C" {

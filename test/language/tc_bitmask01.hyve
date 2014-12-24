@@ -5,21 +5,61 @@ void fail(string msg):
 
 bitmask options:: SeatHeating, AutomaticWindows, SpareWheel
 
-// Test bitmask variable
+// Test bitmask variables
+
 var options v = SeatHeating | SpareWheel
 if !(v & SeatHeating): fail("!(v & SeatHeating)")
 if !(v & SpareWheel): fail("!(v & SpareWheel)")
-if v & AutomaticWindows: fail("v & AutmaticWindows")
-if "$v" != "SeatHeating|SpareWheel": fail("\"$v\" != \"SeathHeating|SpareWheel\" ($v)")
+if v & AutomaticWindows: fail("v & AutomaticWindows")
+if "$v" != "SeatHeating|SpareWheel": fail("\"$v\" != \"SeatHeating|SpareWheel\" ($v)")
 
-// Test bitmask object
+var options v2 = SeatHeating | SpareWheel | AutomaticWindows
+if !(v2 & SeatHeating): fail("!(v2 & SeatHeating)")
+if !(v2 & SpareWheel): fail("!(v2 & SpareWheel)")
+if !(v2 & AutomaticWindows): fail("!(v2 & AutomaticWindows)")
+if !(v2 & SeatHeating and v2 & SpareWheel and v2 & AutomaticWindows):
+    fail("!(v2 & SeatHeating and v2 & SpareWheel and v2 & AutomaticWindows)")
+if "$v2" != "SeatHeating|AutomaticWindows|SpareWheel":
+    fail("\"$v2\" != \"SeatHeating|AutomaticWindows|SpareWheel\" ($v2)")
+
+var options v3
+if v3 & SeatHeating: fail("!(v3 & SeatHeating)")
+if v3 & SpareWheel: fail("!(v3 & SpareWheel)")
+if v3 & AutomaticWindows: fail("!(v3 & AutomaticWindows)")
+if v3 & SeatHeating or v3 & SpareWheel or v3 & AutomaticWindows:
+    fail("v3 & SeatHeating or v3 & SpareWheel or v3 & AutomaticWindows")
+if "$v3" != "0": fail("\"$v3\" != \"0\" ($v3)")
+
+
+// Test bitmask objects
+
 options o : AutomaticWindows | SeatHeating
 if !(o & SeatHeating): fail("!(o & SeatHeating) ($o)")
 if o & SpareWheel: fail("o & SpareWheel")
-if !(o & AutomaticWindows): fail("!(o & AutmaticWindows)")
-if "$o" != "SeatHeating|AutomaticWindows": fail("\"$o\" != \"SeathHeating|AutomaticWindows\" ($v)")
+if !(o & AutomaticWindows): fail("!(o & AutomaticWindows)")
+if "$o" != "SeatHeating|AutomaticWindows":
+    fail("\"$o\" != \"SeatHeating|AutomaticWindows\" ($v)")
+
+options o2: SpareWheel | AutomaticWindows | SeatHeating
+if !(o2 & SpareWheel): fail("!(o2 & SpareWheel)")
+if !(o2 & AutomaticWindows): fail("!(o2 & AutomaticWindows)")
+if !(o2 & SeatHeating): fail("!(o2 & SeatHeating)")
+if !(o2 & SpareWheel and o2 & AutomaticWindows and o2 & SeatHeating):
+    fail("!(o2 & SpareWheel and o2 & AutomaticWindows and o2 & SeatHeating)")
+if "$o2" != "": fail("\"$o3\" != \"0\" ($o3)"):
+    fail("\"$o2\" != \"SeatHeating|AutomaticWindows|SpareWheel\" ($o2)")
+
+options o3
+if o3 & SeatHeating: fail("!(o3 & SeatHeating)")
+if o3 & SpareWheel: fail("!(o3 & SpareWheel)")
+if o3 & AutomaticWindows: fail("!(o3 & AutomaticWindows)")
+if o3 & SeatHeating or o3 & SpareWheel or o3 & AutomaticWindows:
+    fail("o3 & SeatHeating or o3 & SpareWheel or o3 & AutomaticWindows")
+if "$o3" != "0": fail("\"$o3\" != \"0\" ($o3)")
+
 
 // Test bitmask parameter
+
 bool testMask(options mask, options flag) = mask & flag
 
 if testMask(options::SpareWheel, options::SeatHeating): fail("testMask(SpareWheel, SeatHeating)")
