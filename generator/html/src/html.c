@@ -51,7 +51,7 @@ error:
  * Prints the resulting json into a "data.json" file.
  */
 static int gen_json(db_object o, void *userData) {
-    db_json_ser_t jsonData = {NULL, NULL, 0, 0, 0, TRUE, TRUE, FALSE};
+    db_json_ser_t jsonData = {NULL, NULL, 0, 0, 0, TRUE, TRUE, TRUE};
     db_html_gen_t *htmlData = userData;
     char folderPath[PATH_MAX];
     char filepath[PATH_MAX];
@@ -72,7 +72,7 @@ static int gen_json(db_object o, void *userData) {
     if ((file = fopen(filepath, "w")) == NULL) {
         goto error;
     }
-    if (fprintf(file, "thisObject = %s", jsonData.buffer) < 0) {
+    if (fprintf(file, "var thisObject = %s", jsonData.buffer) < 0) {
         goto error;
     }
     if (fflush(file)) {
@@ -103,6 +103,7 @@ static int printHtml(db_html_gen_t *data, FILE* file) {
     _printHtml("<!DOCTYPE html>\n");
     _printHtml("<html>\n");
     _printHtml("<head>");
+    _printHtml("<meta charset=\"utf-8\">");
     _printHtml("<script src=\"./data.js\"></script>");
     _printHtml("<script src=\"../");
     while (--level) {
