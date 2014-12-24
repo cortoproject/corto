@@ -69,14 +69,14 @@ static int gen_json(db_object o, void *userData) {
     db_json_ser_t jsonData = {NULL, NULL, 0, 0, 0, TRUE, TRUE, FALSE};
     db_html_gen_t *htmlData = userData;
     char folderPath[PATH_MAX];
-    char filePath[PATH_MAX];
+    char filepath[PATH_MAX];
     struct db_serializer_s serializer;
     FILE *file;
 
     if (sprintf(folderPath, "%s/%s", htmlData->path, db_nameof(o)) < 0) {
         goto error;
     }
-    if (sprintf(filePath, "%s/data.js", folderPath) < 0) {
+    if (sprintf(filepath, "%s/data.js", folderPath) < 0) {
         goto error;
     }
 
@@ -84,7 +84,7 @@ static int gen_json(db_object o, void *userData) {
     db_serialize(&serializer, o, &jsonData);
 
 
-    if ((file = fopen(filePath, "w")) == NULL) {
+    if ((file = fopen(filepath, "w")) == NULL) {
         goto error;
     }
     if (fprintf(file, "thisObject = %s", jsonData.buffer) < 0) {
@@ -109,29 +109,29 @@ error:
 static int gen_html(db_object o, void* userData) {
     db_html_gen_t *htmlData = userData;
     char folderPath[PATH_MAX];
-    char filePath[PATH_MAX];
+    char filepath[PATH_MAX];
     FILE *file;
 
     if (sprintf(folderPath, "%s/%s", htmlData->path, db_nameof(o)) < 0) {
         goto error;
     }
-    if (sprintf(filePath, "%s/index.html", folderPath) < 0) {
+    if (sprintf(filepath, "%s/index.html", folderPath) < 0) {
         goto error;
     }
 
-    if ((file = fopen(filePath, "w")) == NULL) {
+    if ((file = fopen(filepath, "w")) == NULL) {
         goto error;
     }
     if (fprintf(file,
+        "<!DOCTYPE html>"
         "<html>"
             "<head>"
                 "<script src=\"./data.js\"></script>"
             "</head>"
             "<body>"
-                "This is %s"
+                "<main></main>"
             "</body>"
-        "</html>",
-        db_nameof(o)
+        "</html>"
         ) < 0) {
         goto error;
     }
@@ -151,9 +151,20 @@ error:
 }
 
 
+db_int16 copyJsonParser(const char* path) {
+    
+    // create db_files.h > db_copy
+
+    return 0;
+error:
+    return -1;
+}
+
 db_int16 hyve_genMain(db_generator g) {
-    char path[PATH_MAX] = ".";
-    db_html_gen_t data = {path};
+    char filepath[PATH_MAX] = "./doc";
+
+
+    db_html_gen_t data = {path, 1};
     int result;
     
     if (!(result = g_walkNoScope(g, gen_folder, &data))) {
