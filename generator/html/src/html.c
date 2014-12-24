@@ -90,8 +90,38 @@ error:
     return 0;
 }
 
+/*
+ * Assumes that the file is already opened.
+ * Returns 0 on success, -1 otherwise.
+ */
+static int printHtml(db_html_gen_t *data, FILE* file) {
+    unsigned int level = data->level;
 
-static int gen_html(db_object o, void* userData) {
+    #define _printHtml(text) if (fprintf(file, text) < 0) goto error;
+    
+    /* http://www.w3.org/TR/html5/syntax.html#writing */
+    _printHtml("<!DOCTYPE html>\n");
+    _printHtml("<html>\n");
+    _printHtml("<head>");
+    _printHtml("<script src=\"./data.js\"></script>");
+    _printHtml("<script src=\"../");
+    while (--level) {
+        _printHtml("../");
+    }
+    _printHtml("objectparse.js\">");
+    _printHtml("</script>");
+    _printHtml("</head>");
+    _printHtml("<body><main></main></body>");
+    _printHtml("</html>");
+    
+    #undef _printHtml
+    
+    return 0;
+error:
+    return -1;
+}
+
+static int gen_html(db_object o, void *userData) {
     db_html_gen_t *htmlData = userData;
     char folderPath[PATH_MAX];
     char filepath[PATH_MAX];
@@ -107,30 +137,23 @@ static int gen_html(db_object o, void* userData) {
     if ((file = fopen(filepath, "w")) == NULL) {
         goto error;
     }
-    if (fprintf(file,
-        "<!DOCTYPE html>"
-        "<html>"
-            "<head>"
-                "<script src=\"./data.js\"></script>"
-            "</head>"
-            "<body>"
-                "<main></main>"
-            "</body>"
-        "</html>"
-        ) < 0) {
-        goto error;
+    
+    if (printHtml(htmlData, file)) {
+        goto error_closeFile;
     }
-    if (fflush(file)) {
-        goto error;
-    }
-    if (fclose(file)) {
-        goto error;
+
+    if (fflush(file)) { // TODO maybe this is unncessary
+        goto error_closeFile;
     }
     
-    db_html_gen_t scopeData = *htmlData;
-    scopeData.path = folderPath;
+    fclose(file);
 
-    return db_scopeWalk(o, gen_html, &scopeData);
+    db_html_gen_t childHtmlData = {folderPath, htmlData->level + 1};
+
+    return db_scopeWalk(o, gen_html, &childHtmlData);
+
+error_closeFile:
+    fclose(file);
 error:
     return 0;
 }
