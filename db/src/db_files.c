@@ -21,20 +21,21 @@
  * The name for the error code will be appended.
  */
 static void printError(int e, const char *msg) {
-    fprintf(stderr, "Error: %s. Error number: %d (", msg, e);
+    char errorrepr[sizeof("ENAMETOOLONG")];
     switch (e) {
-        case EACCES: fprintf(stderr, "EACCES"); break;
-        case EEXIST: fprintf(stderr, "EEXIST"); break;
-        case ELOOP: fprintf(stderr, "ELOOP"); break;
-        case EMLINK: fprintf(stderr, "EMLINK"); break;
-        case ENAMETOOLONG: fprintf(stderr, "ENAMETOOLONG"); break;
-        case ENOENT: fprintf(stderr, "ENOENT"); break;
-        case ENOSPC: fprintf(stderr, "ENOSPC"); break;
-        case ENOTDIR: fprintf(stderr, "ENOTDIR"); break;
-        case EROFS: fprintf(stderr, "EROFS"); break;
-        default: fprintf(stderr, "%d (unknown)", e); break;
+        case EACCES: sprintf(errorrepr, "EACCES"); break;
+        case EEXIST: sprintf(errorrepr, "EEXIST"); break;
+        case ELOOP: sprintf(errorrepr, "ELOOP"); break;
+        case EMLINK: sprintf(errorrepr, "EMLINK"); break;
+        case ENAMETOOLONG: sprintf(errorrepr, "ENAMETOOLONG"); break;
+        case ENOENT: sprintf(errorrepr, "ENOENT"); break;
+        case ENOSPC: sprintf(errorrepr, "ENOSPC"); break;
+        case ENOTDIR: sprintf(errorrepr, "ENOTDIR"); break;
+        case EROFS: sprintf(errorrepr, "EROFS"); break;
+        default: sprintf(errorrepr, "unknown code"); break;
     }
-    fprintf(stderr, ")\n");
+    
+    db_error("(%s): %s.", errorrepr, msg);
 }
 
 int db_mkdir(const char *name) {
@@ -61,12 +62,6 @@ int db_cp(const char *sourcePath, const char *destinationPath) {
     char msg[PATH_MAX];
     FILE *destinationFile;
     FILE *sourceFile;
-
-    if (access(sourcePath, F_OK)) {
-        _errno = errno;
-        sprintf(msg, "Source file doesn't exit %s", sourcePath);
-        goto error;
-    }
 
     if (!(sourceFile = fopen(sourcePath, "rb"))) {
         _errno = errno;

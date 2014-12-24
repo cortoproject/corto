@@ -29,7 +29,7 @@ static int gen_folder(db_object o, void *userData) {
     char folderPath[PATH_MAX];
 
     if (sprintf(folderPath, "%s/%s", data->path, db_nameof(o)) < 0) {
-        fprintf(stderr, "Error: cannot create path for object \"%s\" in path:\"%s\"",
+        db_error("Cannot create path for object \"%s\" in path:\"%s\".",
             db_nameof(o), data->path);
         goto error;
     }
@@ -146,7 +146,6 @@ db_int16 copyJsonParser(const char* path) {
     if (db_cp(sourcePath, destinationPath)) {
         goto error;
     }
-
     return 0;
 error:
     return -1;
@@ -159,19 +158,19 @@ db_int16 hyve_genMain(db_generator g) {
     int success;
     
     if (!(success = g_walkNoScope(g, gen_folder, &data))) {
-        fprintf(stderr, "Error creating folders\n");
+        db_error("Error creating folders.");
     }
 
     if (!(success && (success = !copyJsonParser(data.path)))) {
-        fprintf(stderr, "Error copying JsonParser\n");
+        db_error("Error copying JsonParser.");
     }
     
     if (!(success && (success = g_walkNoScope(g, gen_json, &data)))) {
-        fprintf(stderr, "Error creating js files\n");
+        db_error("Error creating js files.");
     }
     
     if (!(success && (success = g_walkNoScope(g, gen_html, &data)))) {
-        fprintf(stderr, "Error creating html files\n");
+        db_error("Error creating html files.");
     }
 
     return 0;
