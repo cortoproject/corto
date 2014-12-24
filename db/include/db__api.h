@@ -115,6 +115,10 @@ db_interface db_interface__declare(db_object _parent, db_string _name);
 int db_interface__define(db_interface _this, db_interface base);
 db_interface db_interface__create(db_interface base);
 
+/* ::hyve::lang::interfaceVector */
+void db_interfaceVector__init(db_interfaceVector *_this, db_interface interface, db_vtable vector);
+void db_interfaceVector__deinit(db_interfaceVector *_this);
+
 /* ::hyve::lang::list */
 db_list db_list__new(void);
 db_list db_list__declare(db_object _parent, db_string _name);
@@ -157,6 +161,10 @@ db_observer db_observer__declare(db_object _parent, db_string _name);
 int db_observer__define(db_observer _this, db_object observable, db_eventMask mask, db_string expression, db_uint32 template, db_dispatcher dispatcher, db_object me);
 db_observer db_observer__create(db_object observable, db_eventMask mask, db_string expression, db_uint32 template, db_dispatcher dispatcher, db_object me);
 
+/* ::hyve::lang::parameter */
+void db_parameter__init(db_parameter *_this, db_string name, db_typedef type, db_bool passByReference);
+void db_parameter__deinit(db_parameter *_this);
+
 /* ::hyve::lang::primitive */
 db_primitive db_primitive__new(void);
 db_primitive db_primitive__declare(db_object _parent, db_string _name);
@@ -174,6 +182,10 @@ db_procptr db_procptr__new(void);
 db_procptr db_procptr__declare(db_object _parent, db_string _name);
 int db_procptr__define(db_procptr _this, db_typedef returnType, db_bool returnsReference, db_parameterSeq parameters);
 db_procptr db_procptr__create(db_typedef returnType, db_bool returnsReference, db_parameterSeq parameters);
+
+/* ::hyve::lang::procptrdata */
+void db_procptrdata__init(db_procptrdata *_this, db_object instance, db_function procedure);
+void db_procptrdata__deinit(db_procptrdata *_this);
 
 /* ::hyve::lang::sequence */
 db_sequence db_sequence__new(void);

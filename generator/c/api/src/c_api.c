@@ -221,7 +221,63 @@ static db_int16 c_apiReferenceTypeDefine(db_interface o, c_apiWalk_t* data) {
     return 0;
 }
 
-/* Create create-function */
+/* Create init-function */
+static db_int16 c_apiReferenceTypeInit(db_interface o, c_apiWalk_t* data) {
+    db_id id;
+    struct db_serializer_s s;
+
+    g_fullOid(data->g, o, id);
+
+    /* Function declaration */
+    g_fileWrite(data->header, "void %s__init(%s *_this", id, id, id);
+
+    /* Function implementation */
+    g_fileWrite(data->source, "void %s__init(%s *_this", id, id, id);
+
+    /* Write public members as arguments for source and header */
+    data->parameterCount = 1;
+    s = c_apiParamSerializer();
+    db_metaWalk(&s, db_type(o), data);
+
+    /* Write closing brackets for argumentlist in source and header */
+    g_fileWrite(data->header, ");\n");
+    g_fileWrite(data->source, ") {\n");
+    g_fileIndent(data->source);
+
+    /* Member assignments */
+    s = c_apiAssignSerializer();
+    db_metaWalk(&s, db_type(o), data);
+
+    g_fileDedent(data->source);
+    g_fileWrite(data->source, "}\n\n");
+
+    return 0;
+}
+
+/* Create deinit-function */
+static db_int16 c_apiReferenceTypeDeinit(db_interface o, c_apiWalk_t* data) {
+    db_id id;
+
+    g_fullOid(data->g, o, id);
+
+    /* Function declaration */
+    g_fileWrite(data->header, "void %s__deinit(%s *_this);\n", id, id, id);
+
+    /* Function implementation */
+    g_fileWrite(data->source, "void %s__deinit(%s *_this) {\n", id, id, id);
+    g_fileIndent(data->source);
+
+    g_fileWrite(data->source, "db_value v;\n");
+    g_fileWrite(data->source, "db_valueValueInit(&v, NULL, db_typedef(%s_o), _this);\n", id);
+    g_fileWrite(data->source, "db_deinitValue(&v);\n");
+
+    g_fileDedent(data->source);
+    g_fileWrite(data->source, "}\n\n");
+
+    return 0;
+}
+
+
 static db_int16 c_apiReferenceTypeCreate(db_interface o, c_apiWalk_t* data) {
     db_id id;
     struct db_serializer_s s;
@@ -272,7 +328,7 @@ static db_int16 c_apiReferenceTypeCreate(db_interface o, c_apiWalk_t* data) {
     return 0;
 }
 
-/* Walk class */
+/* Walk reference interface */
 static db_int16 c_apiWalkReferenceType(db_interface o, c_apiWalk_t* data) {
     db_id id;
 
@@ -300,6 +356,36 @@ static db_int16 c_apiWalkReferenceType(db_interface o, c_apiWalk_t* data) {
 
     /* Generate _create function */
     if (c_apiReferenceTypeCreate(o, data)) {
+        goto error;
+    }
+
+    db_genMemberCacheClean(data->memberCache);
+
+    g_fileWrite(data->header, "\n");
+
+    return 0;
+error:
+    return -1;
+}
+
+/* Walk non-reference interface */
+static db_int16 c_apiWalkType(db_interface o, c_apiWalk_t* data) {
+    db_id id;
+
+    g_fileWrite(data->header, "/* %s */\n", db_fullname(o, id));
+
+    data->current = o;
+
+    /* Build nameconflict cache */
+    data->memberCache = db_genMemberCacheBuild(o);
+
+    /* Generate _init function */
+    if (c_apiReferenceTypeInit(o, data)) {
+        goto error;
+    }
+
+    /* Generate _deinit function */
+    if (c_apiReferenceTypeDeinit(o, data)) {
         goto error;
     }
 
@@ -781,9 +867,15 @@ error:
 static int c_apiWalk(db_object o, void* userData) {
 
     /* Forward interfaces */
-    if (db_class_instanceof(db_interface_o, o) && db_type(o)->reference) {
-        if (c_apiWalkReferenceType(db_interface(o), userData)) {
-            goto error;
+    if (db_class_instanceof(db_interface_o, o)) {
+        if (db_type(o)->reference) {
+            if (c_apiWalkReferenceType(db_interface(o), userData)) {
+                goto error;
+            }
+        } else {
+            if (c_apiWalkType(db_interface(o), userData)) {
+                goto error;
+            }
         }
     }
 
