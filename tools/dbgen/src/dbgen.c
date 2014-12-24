@@ -107,6 +107,9 @@ int db_arg_language(char* arg, int argc, char* argv[]) {
             db_llAppend(generators, "cpp_type");
             db_llAppend(generators, "cpp_class");
             db_llAppend(generators, "cpp_load");
+        } else {
+        	db_error("unknown language '%s'.", argv[1]);
+        	goto error;
         }
     } else {
         db_error("invalid number of argument for '%s'.", arg);
@@ -138,18 +141,19 @@ static int db_parseArguments(int argc, char* argv[]) {
 
 void printUsage(void) {
 	printf("Usage:\n");
-	printf("   dbgen [file 0..n] --scope [scope] --prefix [prefix] --lang [language] -g [generator 1..n] -o [ext=path]\n");
-	printf("     file:     [optional] Can be any file that is loadable by Lyra.\n");
-	printf("     --scope:  provide the scope for which code will be generated.\n");
-	printf("     --prefix: [optional] provide a prefix for the generated code.\n");
-	printf("     --lang:   [optional] provide the language. Possible choices are c and cpp.\n");
-	printf("                 Note that --lang is a shortcut to common generators and output paths for the chosen language.\n");
-	printf("     -g:       [optional] Choose a code-generator. This can be any code generator that is in generator/bin.\n");
-	printf("     -o:       [optional] Provide a path for files with a specific extension.\n");
+	printf("   dbgen [file 0..n] --scope [scope] --prefix [prefix] --lang [language] -g [generator 1..n] -attr [key=value]\n");
+	printf("     file:     Any file that is loadable by Hyve (optional).\n");
+	printf("     --scope:  Provide the scope for which code will be generated.\n");
+	printf("     --prefix: Provide a prefix for the generated code (optional).\n");
+	printf("     --lang:   Provide the language. Possible choices are c and cpp (optional).\n");
+	printf("               Note that --lang is a shortcut to common generators and attributes for the chosen language.\n");
+	printf("     -g:       Any code generator located in generator/bin (optional).\n");
+	printf("     --attr:   Specify attributes that will be passed on to the generator (optional).\n");
+	printf("               Attributes are specified using a key=value syntax.\n");
 	printf("\n");
 	printf("Examples:\n");
 	printf("   dbgen Foo.hyve --scope Foo --lang c\n");
-	printf("   dbgen Foo.hyve --scope Foo -g c_type -g c_interface -g c_load -g c_api -o c=src -o h=include (equivalent to previous)\n");
+	printf("   dbgen Foo.hyve --scope Foo -g c_type -g c_interface -g c_load -g c_api -attr c=src -attr h=include\n");
 	printf("   dbgen Foo.hyve --scope Foo --lang cpp\n");
 	printf("   dbgen Foo.hyve --scope Foo --prefix Bar --lang cpp (replaces 'Foo' by 'Bar' in generated code)\n");
 	printf("\n");

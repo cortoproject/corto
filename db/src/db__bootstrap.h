@@ -805,7 +805,7 @@ DB_CLASS_O(struct, interface, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, D
 
 /* ::hyve::lang::interfaceVector */
 DB_STRUCT_O(interfaceVector, NULL, DB_DECLARED | DB_DEFINED);
-	DB_MEMBER_O(interfaceVector, interface, word, DB_GLOBAL);
+	DB_MEMBER_O(interfaceVector, interface, interface, DB_GLOBAL);
 	DB_MEMBER_O(interfaceVector, vector, vtable, DB_GLOBAL);
 
 /* ::hyve::lang::class */

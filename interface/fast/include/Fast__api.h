@@ -19,6 +19,10 @@ Fast_BinaryExpr Fast_BinaryExpr__declare(db_object _parent, db_string _name);
 int Fast_BinaryExpr__define(Fast_BinaryExpr _this, Fast_Expression lvalue, Fast_Expression rvalue, db_operatorKind operator);
 Fast_BinaryExpr Fast_BinaryExpr__create(Fast_Expression lvalue, Fast_Expression rvalue, db_operatorKind operator);
 
+/* ::hyve::Fast::Binding */
+void Fast_Binding__init(Fast_Binding *_this, db_function function, Fast_Block impl);
+void Fast_Binding__deinit(Fast_Binding *_this);
+
 /* ::hyve::Fast::Block */
 Fast_Block Fast_Block__new(void);
 Fast_Block Fast_Block__declare(db_object _parent, db_string _name);
@@ -67,6 +71,10 @@ Fast_DynamicInitializer Fast_DynamicInitializer__declare(db_object _parent, db_s
 int Fast_DynamicInitializer__define(Fast_DynamicInitializer _this, Fast_InitializerVariable_array64 variables, db_uint8 variableCount, db_bool assignValue);
 Fast_DynamicInitializer Fast_DynamicInitializer__create(Fast_InitializerVariable_array64 variables, db_uint8 variableCount, db_bool assignValue);
 
+/* ::hyve::Fast::DynamicInitializerFrame */
+void Fast_DynamicInitializerFrame__init(Fast_DynamicInitializerFrame *_this, Fast_Expression_array64 expr, Fast_Expression_array64 keyExpr, Fast_Integer sequenceSize);
+void Fast_DynamicInitializerFrame__deinit(Fast_DynamicInitializerFrame *_this);
+
 /* ::hyve::Fast::ElementExpr */
 Fast_ElementExpr Fast_ElementExpr__new(void);
 Fast_ElementExpr Fast_ElementExpr__declare(db_object _parent, db_string _name);
@@ -103,6 +111,18 @@ Fast_InitializerExpr Fast_InitializerExpr__declare(db_object _parent, db_string 
 int Fast_InitializerExpr__define(Fast_InitializerExpr _this, Fast_InitializerVariable_array64 variables, db_uint8 variableCount, db_bool assignValue);
 Fast_InitializerExpr Fast_InitializerExpr__create(Fast_InitializerVariable_array64 variables, db_uint8 variableCount, db_bool assignValue);
 
+/* ::hyve::Fast::InitializerFrame */
+void Fast_InitializerFrame__init(Fast_InitializerFrame *_this, db_uint32 location, db_type type, db_bool isKey, db_member member);
+void Fast_InitializerFrame__deinit(Fast_InitializerFrame *_this);
+
+/* ::hyve::Fast::InitializerVariable */
+void Fast_InitializerVariable__init(Fast_InitializerVariable *_this, db_word offset, Fast_Expression object, db_word key);
+void Fast_InitializerVariable__deinit(Fast_InitializerVariable *_this);
+
+/* ::hyve::Fast::InitOper */
+void Fast_InitOper__init(Fast_InitOper *_this, Fast_InitOperKind kind, Fast_Expression expr, db_string name);
+void Fast_InitOper__deinit(Fast_InitOper *_this);
+
 /* ::hyve::Fast::Integer */
 Fast_Integer Fast_Integer__new(void);
 Fast_Integer Fast_Integer__declare(db_object _parent, db_string _name);
@@ -120,6 +140,10 @@ Fast_Local Fast_Local__new(void);
 Fast_Local Fast_Local__declare(db_object _parent, db_string _name);
 int Fast_Local__define(Fast_Local _this, db_string name, Fast_Variable type_1, Fast_LocalKind kind_2, db_bool isReference_1);
 Fast_Local Fast_Local__create(db_string name, Fast_Variable type_1, Fast_LocalKind kind_2, db_bool isReference_1);
+
+/* ::hyve::Fast::Lvalue */
+void Fast_Lvalue__init(Fast_Lvalue *_this, Fast_Expression expr, db_bool isAssignment);
+void Fast_Lvalue__deinit(Fast_Lvalue *_this);
 
 /* ::hyve::Fast::MemberExpr */
 Fast_MemberExpr Fast_MemberExpr__new(void);
@@ -163,6 +187,18 @@ Fast_Parser Fast_Parser__declare(db_object _parent, db_string _name);
 int Fast_Parser__define(Fast_Parser _this, db_string source, db_string filename);
 Fast_Parser Fast_Parser__create(db_string source, db_string filename);
 
+/* ::hyve::Fast::Parser::stagedId */
+void Fast_Parser_stagedId__init(Fast_Parser_stagedId *_this, db_string name, db_bool found, db_uint32 line, db_uint32 column);
+void Fast_Parser_stagedId__deinit(Fast_Parser_stagedId *_this);
+
+/* ::hyve::Fast::ParserDeclaration */
+void Fast_ParserDeclaration__init(Fast_ParserDeclaration *_this, db_string name, Fast_Variable variable);
+void Fast_ParserDeclaration__deinit(Fast_ParserDeclaration *_this);
+
+/* ::hyve::Fast::ParserNew */
+void Fast_ParserNew__init(Fast_ParserNew *_this, Fast_nodeKind kind, Fast_Expression parent, Fast_Expression name, Fast_Expression attr);
+void Fast_ParserNew__deinit(Fast_ParserNew *_this);
+
 /* ::hyve::Fast::PostfixExpr */
 Fast_PostfixExpr Fast_PostfixExpr__new(void);
 Fast_PostfixExpr Fast_PostfixExpr__declare(db_object _parent, db_string _name);
@@ -180,6 +216,10 @@ Fast_StaticInitializer Fast_StaticInitializer__new(void);
 Fast_StaticInitializer Fast_StaticInitializer__declare(db_object _parent, db_string _name);
 int Fast_StaticInitializer__define(Fast_StaticInitializer _this, Fast_InitializerVariable_array64 variables, db_uint8 variableCount);
 Fast_StaticInitializer Fast_StaticInitializer__create(Fast_InitializerVariable_array64 variables, db_uint8 variableCount);
+
+/* ::hyve::Fast::StaticInitializerFrame */
+void Fast_StaticInitializerFrame__init(Fast_StaticInitializerFrame *_this, db_word_array64 ptr, db_word_array64 keyPtr);
+void Fast_StaticInitializerFrame__deinit(Fast_StaticInitializerFrame *_this);
 
 /* ::hyve::Fast::String */
 Fast_String Fast_String__new(void);
@@ -230,7 +270,7 @@ int Fast_While__define(Fast_While _this, Fast_Expression condition, Fast_Block t
 Fast_While Fast_While__create(Fast_Expression condition, Fast_Block trueBranch, db_bool isUntil);
 
 
-/* <0x9173460> */
+/* <0x9c73420> */
 #define Fast_Binding_list__foreach(list, elem) \
     db_iter elem##_iter = db_llIter(list);\
     Fast_Binding *elem;\
@@ -245,7 +285,7 @@ void Fast_Binding_list__clear(Fast_Binding_list list);
 Fast_Binding* Fast_Binding_list__get(Fast_Binding_list list, db_uint32 index);
 db_uint32 Fast_Binding_list__size(Fast_Binding_list list);
 
-/* <0x9119928> */
+/* <0x9c198e8> */
 #define Fast_Expression_list__foreach(list, elem) \
     db_iter elem##_iter = db_llIter(list);\
     Fast_Expression elem;\
@@ -260,7 +300,7 @@ void Fast_Expression_list__clear(Fast_Expression_list list);
 Fast_Expression Fast_Expression_list__get(Fast_Expression_list list, db_uint32 index);
 db_uint32 Fast_Expression_list__size(Fast_Expression_list list);
 
-/* <0x9170930> */
+/* <0x9c708f0> */
 #define Fast_InitOper_list__foreach(list, elem) \
     db_iter elem##_iter = db_llIter(list);\
     Fast_InitOper *elem;\
@@ -275,7 +315,7 @@ void Fast_InitOper_list__clear(Fast_InitOper_list list);
 Fast_InitOper* Fast_InitOper_list__get(Fast_InitOper_list list, db_uint32 index);
 db_uint32 Fast_InitOper_list__size(Fast_InitOper_list list);
 
-/* <0x9167100> */
+/* <0x9c670c0> */
 #define Fast_Local_list__foreach(list, elem) \
     db_iter elem##_iter = db_llIter(list);\
     Fast_Local elem;\
@@ -290,7 +330,7 @@ void Fast_Local_list__clear(Fast_Local_list list);
 Fast_Local Fast_Local_list__get(Fast_Local_list list, db_uint32 index);
 db_uint32 Fast_Local_list__size(Fast_Local_list list);
 
-/* <0x9166f10> */
+/* <0x9c66ed0> */
 #define Fast_Node_list__foreach(list, elem) \
     db_iter elem##_iter = db_llIter(list);\
     Fast_Node elem;\
@@ -305,7 +345,7 @@ void Fast_Node_list__clear(Fast_Node_list list);
 Fast_Node Fast_Node_list__get(Fast_Node_list list, db_uint32 index);
 db_uint32 Fast_Node_list__size(Fast_Node_list list);
 
-/* <0x9173ad0> */
+/* <0x9c73a90> */
 #define Fast_Object_list__foreach(list, elem) \
     db_iter elem##_iter = db_llIter(list);\
     Fast_Object elem;\
@@ -320,7 +360,7 @@ void Fast_Object_list__clear(Fast_Object_list list);
 Fast_Object Fast_Object_list__get(Fast_Object_list list, db_uint32 index);
 db_uint32 Fast_Object_list__size(Fast_Object_list list);
 
-/* <0x9171588> */
+/* <0x9c71548> */
 #define Fast_ParserDeclaration_seq256__foreach(seq, elem) \
     db_uint32 elem##_iter;\
     Fast_ParserDeclaration *elem;\
@@ -331,7 +371,7 @@ Fast_ParserDeclaration* Fast_ParserDeclaration_seq256__append(Fast_ParserDeclara
 void Fast_ParserDeclaration_seq256__size(Fast_ParserDeclaration_seq256 *seq, db_uint32 length);
 void Fast_ParserDeclaration_seq256__clear(Fast_ParserDeclaration_seq256 *seq);
 
-/* <0x9173930> */
+/* <0x9c738f0> */
 #define db_word_list__foreach(list, elem) \
     db_iter elem##_iter = db_llIter(list);\
     db_word *elem;\

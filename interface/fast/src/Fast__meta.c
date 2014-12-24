@@ -464,6 +464,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast */
     Fast_o = db_declare(_o, "Fast", db_typedef(db_void_o));
     if (!Fast_o) {
@@ -504,6 +505,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::BinaryExpr::rvalue */
     Fast_BinaryExpr_rvalue_o = db_declare(Fast_BinaryExpr_o, "rvalue", db_typedef(db_member_o));
     if (!Fast_BinaryExpr_rvalue_o) {
@@ -537,6 +539,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Binding::impl */
     Fast_Binding_impl_o = db_declare(Fast_Binding_o, "impl", db_typedef(db_member_o));
     if (!Fast_Binding_impl_o) {
@@ -570,6 +573,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Block::locals */
     Fast_Block_locals_o = db_declare(Fast_Block_o, "locals", db_typedef(db_member_o));
     if (!Fast_Block_locals_o) {
@@ -624,6 +628,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Call */
     Fast_Call_o = db_declare(Fast_o, "Call", db_typedef(db_class_o));
     if (!Fast_Call_o) {
@@ -650,6 +655,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Call::arguments */
     Fast_Call_arguments_o = db_declare(Fast_Call_o, "arguments", db_typedef(db_member_o));
     if (!Fast_Call_arguments_o) {
@@ -683,6 +689,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::CastExpr */
     Fast_CastExpr_o = db_declare(Fast_o, "CastExpr", db_typedef(db_class_o));
     if (!Fast_CastExpr_o) {
@@ -730,6 +737,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::CommaExpr */
     Fast_CommaExpr_o = db_declare(Fast_o, "CommaExpr", db_typedef(db_class_o));
     if (!Fast_CommaExpr_o) {
@@ -784,6 +792,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::DynamicInitializer::frames */
     Fast_DynamicInitializer_frames_o = db_declare(Fast_DynamicInitializer_o, "frames", db_typedef(db_member_o));
     if (!Fast_DynamicInitializer_frames_o) {
@@ -866,6 +875,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Expression::isReference */
     Fast_Expression_isReference_o = db_declare(Fast_Expression_o, "isReference", db_typedef(db_member_o));
     if (!Fast_Expression_isReference_o) {
@@ -885,6 +895,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Expression::type */
     Fast_Expression_type_o = db_declare(Fast_Expression_o, "type", db_typedef(db_member_o));
     if (!Fast_Expression_type_o) {
@@ -904,6 +915,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Expression::cleanList(list{Expression} list) */
     Fast_Expression_cleanList_o = db_declare(Fast_Expression_o, "cleanList(list{Expression} list)", db_typedef(db_function_o));
     if (!Fast_Expression_cleanList_o) {
@@ -925,6 +937,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Expression::fromList(list{Expression} list) */
     Fast_Expression_fromList_o = db_declare(Fast_Expression_o, "fromList(list{Expression} list)", db_typedef(db_function_o));
     if (!Fast_Expression_fromList_o) {
@@ -958,6 +971,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::If */
     Fast_If_o = db_declare(Fast_o, "If", db_typedef(db_class_o));
     if (!Fast_If_o) {
@@ -1005,6 +1019,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Initializer */
     Fast_Initializer_o = db_declare(Fast_o, "Initializer", db_typedef(db_class_o));
     if (!Fast_Initializer_o) {
@@ -1031,6 +1046,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Initializer::frames */
     Fast_Initializer_frames_o = db_declare(Fast_Initializer_o, "frames", db_typedef(db_member_o));
     if (!Fast_Initializer_frames_o) {
@@ -1057,6 +1073,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Initializer::variables */
     Fast_Initializer_variables_o = db_declare(Fast_Initializer_o, "variables", db_typedef(db_member_o));
     if (!Fast_Initializer_variables_o) {
@@ -1090,6 +1107,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::InitializerExpr::operations */
     Fast_InitializerExpr_operations_o = db_declare(Fast_InitializerExpr_o, "operations", db_typedef(db_member_o));
     if (!Fast_InitializerExpr_operations_o) {
@@ -1123,6 +1141,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::InitializerFrame::location */
     Fast_InitializerFrame_location_o = db_declare(Fast_InitializerFrame_o, "location", db_typedef(db_member_o));
     if (!Fast_InitializerFrame_location_o) {
@@ -1142,6 +1161,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::InitializerFrame::member */
     Fast_InitializerFrame_member_o = db_declare(Fast_InitializerFrame_o, "member", db_typedef(db_member_o));
     if (!Fast_InitializerFrame_member_o) {
@@ -1161,6 +1181,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::InitializerFrame::type */
     Fast_InitializerFrame_type_o = db_declare(Fast_InitializerFrame_o, "type", db_typedef(db_member_o));
     if (!Fast_InitializerFrame_type_o) {
@@ -1180,6 +1201,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::InitializerFrame */
     if (!db_checkState(Fast_InitializerFrame_o, DB_DEFINED)) {
         db_type(Fast_InitializerFrame_o)->defaultType = db_resolve_ext(Fast_InitializerFrame_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::InitializerFrame.defaultType");
@@ -1192,9 +1214,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_InitializerFrame_o)->size != sizeof(Fast_InitializerFrame)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::InitializerFrame' doesn't match C-type size '%d'", db_type(Fast_InitializerFrame_o)->size, sizeof(Fast_InitializerFrame));
     }
+
     /* Define ::hyve::Fast::Initializer::frames */
     if (!db_checkState(Fast_Initializer_frames_o, DB_DEFINED)) {
         Fast_Initializer_frames_o->type = db_resolve_ext(Fast_Initializer_frames_o, NULL, "::hyve::lang::array{::hyve::Fast::InitializerFrame,64,::hyve::Fast::InitializerFrame}", FALSE, "element ::hyve::Fast::Initializer::frames.type");
@@ -1207,6 +1231,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::InitializerKind */
     Fast_InitializerKind_o = db_declare(Fast_o, "InitializerKind", db_typedef(db_enum_o));
     if (!Fast_InitializerKind_o) {
@@ -1223,13 +1248,6 @@ int Fast_load(void) {
         (*Fast_InitializerKind_InitDynamic_o) = 1;
     }
 
-    /* Define ::hyve::Fast::InitializerKind::InitDynamic */
-    if (!db_checkState(Fast_InitializerKind_InitDynamic_o, DB_DEFINED)) {
-        if (db_define(Fast_InitializerKind_InitDynamic_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::InitializerKind::InitDynamic'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::InitializerKind::InitExpression */
     Fast_InitializerKind_InitExpression_o = db_declare(Fast_InitializerKind_o, "InitExpression", db_typedef(db_constant_o));
     if (!Fast_InitializerKind_InitExpression_o) {
@@ -1239,13 +1257,6 @@ int Fast_load(void) {
         (*Fast_InitializerKind_InitExpression_o) = 2;
     }
 
-    /* Define ::hyve::Fast::InitializerKind::InitExpression */
-    if (!db_checkState(Fast_InitializerKind_InitExpression_o, DB_DEFINED)) {
-        if (db_define(Fast_InitializerKind_InitExpression_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::InitializerKind::InitExpression'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::InitializerKind::InitStatic */
     Fast_InitializerKind_InitStatic_o = db_declare(Fast_InitializerKind_o, "InitStatic", db_typedef(db_constant_o));
     if (!Fast_InitializerKind_InitStatic_o) {
@@ -1255,13 +1266,6 @@ int Fast_load(void) {
         (*Fast_InitializerKind_InitStatic_o) = 0;
     }
 
-    /* Define ::hyve::Fast::InitializerKind::InitStatic */
-    if (!db_checkState(Fast_InitializerKind_InitStatic_o, DB_DEFINED)) {
-        if (db_define(Fast_InitializerKind_InitStatic_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::InitializerKind::InitStatic'.");
-            goto error;
-        }
-    }
     /* Define ::hyve::Fast::InitializerKind */
     if (!db_checkState(Fast_InitializerKind_o, DB_DEFINED)) {
         if (db_define(Fast_InitializerKind_o)) {
@@ -1269,9 +1273,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_InitializerKind_o)->size != sizeof(Fast_InitializerKind)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::InitializerKind' doesn't match C-type size '%d'", db_type(Fast_InitializerKind_o)->size, sizeof(Fast_InitializerKind));
     }
+
     /* Declare ::hyve::Fast::InitializerVariable */
     Fast_InitializerVariable_o = db_declare(Fast_o, "InitializerVariable", db_typedef(db_struct_o));
     if (!Fast_InitializerVariable_o) {
@@ -1298,6 +1304,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::InitializerVariable::object */
     Fast_InitializerVariable_object_o = db_declare(Fast_InitializerVariable_o, "object", db_typedef(db_member_o));
     if (!Fast_InitializerVariable_object_o) {
@@ -1324,6 +1331,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::InitOper */
     Fast_InitOper_o = db_declare(Fast_o, "InitOper", db_typedef(db_struct_o));
     if (!Fast_InitOper_o) {
@@ -1364,6 +1372,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::InitializerExpr::operations */
     if (!db_checkState(Fast_InitializerExpr_operations_o, DB_DEFINED)) {
         Fast_InitializerExpr_operations_o->type = db_resolve_ext(Fast_InitializerExpr_operations_o, NULL, "::hyve::lang::list{::hyve::Fast::InitOper,0}", FALSE, "element ::hyve::Fast::InitializerExpr::operations.type");
@@ -1376,6 +1385,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::InitOperKind */
     Fast_InitOperKind_o = db_declare(Fast_o, "InitOperKind", db_typedef(db_enum_o));
     if (!Fast_InitOperKind_o) {
@@ -1392,13 +1402,6 @@ int Fast_load(void) {
         (*Fast_InitOperKind_InitDefine_o) = 2;
     }
 
-    /* Define ::hyve::Fast::InitOperKind::InitDefine */
-    if (!db_checkState(Fast_InitOperKind_InitDefine_o, DB_DEFINED)) {
-        if (db_define(Fast_InitOperKind_InitDefine_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::InitOperKind::InitDefine'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::InitOperKind::InitMember */
     Fast_InitOperKind_InitMember_o = db_declare(Fast_InitOperKind_o, "InitMember", db_typedef(db_constant_o));
     if (!Fast_InitOperKind_InitMember_o) {
@@ -1408,13 +1411,6 @@ int Fast_load(void) {
         (*Fast_InitOperKind_InitMember_o) = 4;
     }
 
-    /* Define ::hyve::Fast::InitOperKind::InitMember */
-    if (!db_checkState(Fast_InitOperKind_InitMember_o, DB_DEFINED)) {
-        if (db_define(Fast_InitOperKind_InitMember_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::InitOperKind::InitMember'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::InitOperKind::InitPop */
     Fast_InitOperKind_InitPop_o = db_declare(Fast_InitOperKind_o, "InitPop", db_typedef(db_constant_o));
     if (!Fast_InitOperKind_InitPop_o) {
@@ -1424,13 +1420,6 @@ int Fast_load(void) {
         (*Fast_InitOperKind_InitPop_o) = 1;
     }
 
-    /* Define ::hyve::Fast::InitOperKind::InitPop */
-    if (!db_checkState(Fast_InitOperKind_InitPop_o, DB_DEFINED)) {
-        if (db_define(Fast_InitOperKind_InitPop_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::InitOperKind::InitPop'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::InitOperKind::InitPush */
     Fast_InitOperKind_InitPush_o = db_declare(Fast_InitOperKind_o, "InitPush", db_typedef(db_constant_o));
     if (!Fast_InitOperKind_InitPush_o) {
@@ -1440,13 +1429,6 @@ int Fast_load(void) {
         (*Fast_InitOperKind_InitPush_o) = 0;
     }
 
-    /* Define ::hyve::Fast::InitOperKind::InitPush */
-    if (!db_checkState(Fast_InitOperKind_InitPush_o, DB_DEFINED)) {
-        if (db_define(Fast_InitOperKind_InitPush_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::InitOperKind::InitPush'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::InitOperKind::InitValue */
     Fast_InitOperKind_InitValue_o = db_declare(Fast_InitOperKind_o, "InitValue", db_typedef(db_constant_o));
     if (!Fast_InitOperKind_InitValue_o) {
@@ -1456,13 +1438,6 @@ int Fast_load(void) {
         (*Fast_InitOperKind_InitValue_o) = 3;
     }
 
-    /* Define ::hyve::Fast::InitOperKind::InitValue */
-    if (!db_checkState(Fast_InitOperKind_InitValue_o, DB_DEFINED)) {
-        if (db_define(Fast_InitOperKind_InitValue_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::InitOperKind::InitValue'.");
-            goto error;
-        }
-    }
     /* Define ::hyve::Fast::InitOperKind */
     if (!db_checkState(Fast_InitOperKind_o, DB_DEFINED)) {
         if (db_define(Fast_InitOperKind_o)) {
@@ -1470,9 +1445,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_InitOperKind_o)->size != sizeof(Fast_InitOperKind)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::InitOperKind' doesn't match C-type size '%d'", db_type(Fast_InitOperKind_o)->size, sizeof(Fast_InitOperKind));
     }
+
     /* Define ::hyve::Fast::InitOper::kind */
     if (!db_checkState(Fast_InitOper_kind_o, DB_DEFINED)) {
         Fast_InitOper_kind_o->type = db_resolve_ext(Fast_InitOper_kind_o, NULL, "::hyve::Fast::InitOperKind", FALSE, "element ::hyve::Fast::InitOper::kind.type");
@@ -1485,6 +1462,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Integer */
     Fast_Integer_o = db_declare(Fast_o, "Integer", db_typedef(db_class_o));
     if (!Fast_Integer_o) {
@@ -1511,6 +1489,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Literal */
     Fast_Literal_o = db_declare(Fast_o, "Literal", db_typedef(db_class_o));
     if (!Fast_Literal_o) {
@@ -1551,6 +1530,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Local::kind */
     Fast_Local_kind_o = db_declare(Fast_Local_o, "kind", db_typedef(db_member_o));
     if (!Fast_Local_kind_o) {
@@ -1577,6 +1557,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Local::type */
     Fast_Local_type_o = db_declare(Fast_Local_o, "type", db_typedef(db_member_o));
     if (!Fast_Local_type_o) {
@@ -1596,6 +1577,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::LocalKind */
     Fast_LocalKind_o = db_declare(Fast_o, "LocalKind", db_typedef(db_enum_o));
     if (!Fast_LocalKind_o) {
@@ -1612,13 +1594,6 @@ int Fast_load(void) {
         (*Fast_LocalKind_LocalDefault_o) = 0;
     }
 
-    /* Define ::hyve::Fast::LocalKind::LocalDefault */
-    if (!db_checkState(Fast_LocalKind_LocalDefault_o, DB_DEFINED)) {
-        if (db_define(Fast_LocalKind_LocalDefault_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::LocalKind::LocalDefault'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::LocalKind::LocalParameter */
     Fast_LocalKind_LocalParameter_o = db_declare(Fast_LocalKind_o, "LocalParameter", db_typedef(db_constant_o));
     if (!Fast_LocalKind_LocalParameter_o) {
@@ -1628,13 +1603,6 @@ int Fast_load(void) {
         (*Fast_LocalKind_LocalParameter_o) = 1;
     }
 
-    /* Define ::hyve::Fast::LocalKind::LocalParameter */
-    if (!db_checkState(Fast_LocalKind_LocalParameter_o, DB_DEFINED)) {
-        if (db_define(Fast_LocalKind_LocalParameter_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::LocalKind::LocalParameter'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::LocalKind::LocalReturn */
     Fast_LocalKind_LocalReturn_o = db_declare(Fast_LocalKind_o, "LocalReturn", db_typedef(db_constant_o));
     if (!Fast_LocalKind_LocalReturn_o) {
@@ -1644,13 +1612,6 @@ int Fast_load(void) {
         (*Fast_LocalKind_LocalReturn_o) = 2;
     }
 
-    /* Define ::hyve::Fast::LocalKind::LocalReturn */
-    if (!db_checkState(Fast_LocalKind_LocalReturn_o, DB_DEFINED)) {
-        if (db_define(Fast_LocalKind_LocalReturn_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::LocalKind::LocalReturn'.");
-            goto error;
-        }
-    }
     /* Define ::hyve::Fast::LocalKind */
     if (!db_checkState(Fast_LocalKind_o, DB_DEFINED)) {
         if (db_define(Fast_LocalKind_o)) {
@@ -1658,9 +1619,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_LocalKind_o)->size != sizeof(Fast_LocalKind)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::LocalKind' doesn't match C-type size '%d'", db_type(Fast_LocalKind_o)->size, sizeof(Fast_LocalKind));
     }
+
     /* Define ::hyve::Fast::Local::kind */
     if (!db_checkState(Fast_Local_kind_o, DB_DEFINED)) {
         Fast_Local_kind_o->type = db_resolve_ext(Fast_Local_kind_o, NULL, "::hyve::Fast::LocalKind", FALSE, "element ::hyve::Fast::Local::kind.type");
@@ -1673,6 +1636,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Lvalue */
     Fast_Lvalue_o = db_declare(Fast_o, "Lvalue", db_typedef(db_struct_o));
     if (!Fast_Lvalue_o) {
@@ -1706,6 +1670,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::MemberExpr */
     Fast_MemberExpr_o = db_declare(Fast_o, "MemberExpr", db_typedef(db_class_o));
     if (!Fast_MemberExpr_o) {
@@ -1739,6 +1704,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::MemberExpr::rvalue */
     Fast_MemberExpr_rvalue_o = db_declare(Fast_MemberExpr_o, "rvalue", db_typedef(db_member_o));
     if (!Fast_MemberExpr_rvalue_o) {
@@ -1765,6 +1731,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::NewExpr */
     Fast_NewExpr_o = db_declare(Fast_o, "NewExpr", db_typedef(db_class_o));
     if (!Fast_NewExpr_o) {
@@ -1812,6 +1779,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Node::kind */
     Fast_Node_kind_o = db_declare(Fast_Node_o, "kind", db_typedef(db_member_o));
     if (!Fast_Node_kind_o) {
@@ -1838,6 +1806,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Block::statements */
     if (!db_checkState(Fast_Block_statements_o, DB_DEFINED)) {
         Fast_Block_statements_o->type = db_resolve_ext(Fast_Block_statements_o, NULL, "::hyve::lang::list{::hyve::Fast::Node,0}", FALSE, "element ::hyve::Fast::Block::statements.type");
@@ -1850,6 +1819,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::nodeKind */
     Fast_nodeKind_o = db_declare(Fast_o, "nodeKind", db_typedef(db_enum_o));
     if (!Fast_nodeKind_o) {
@@ -1866,13 +1836,6 @@ int Fast_load(void) {
         (*Fast_nodeKind_Binary_o) = 0;
     }
 
-    /* Define ::hyve::Fast::nodeKind::Binary */
-    if (!db_checkState(Fast_nodeKind_Binary_o, DB_DEFINED)) {
-        if (db_define(Fast_nodeKind_Binary_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Binary'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::nodeKind::Call */
     Fast_nodeKind_Call_o = db_declare(Fast_nodeKind_o, "Call", db_typedef(db_constant_o));
     if (!Fast_nodeKind_Call_o) {
@@ -1882,13 +1845,6 @@ int Fast_load(void) {
         (*Fast_nodeKind_Call_o) = 1;
     }
 
-    /* Define ::hyve::Fast::nodeKind::Call */
-    if (!db_checkState(Fast_nodeKind_Call_o, DB_DEFINED)) {
-        if (db_define(Fast_nodeKind_Call_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Call'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::nodeKind::Cast */
     Fast_nodeKind_Cast_o = db_declare(Fast_nodeKind_o, "Cast", db_typedef(db_constant_o));
     if (!Fast_nodeKind_Cast_o) {
@@ -1898,13 +1854,6 @@ int Fast_load(void) {
         (*Fast_nodeKind_Cast_o) = 2;
     }
 
-    /* Define ::hyve::Fast::nodeKind::Cast */
-    if (!db_checkState(Fast_nodeKind_Cast_o, DB_DEFINED)) {
-        if (db_define(Fast_nodeKind_Cast_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Cast'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::nodeKind::CommaExpr */
     Fast_nodeKind_CommaExpr_o = db_declare(Fast_nodeKind_o, "CommaExpr", db_typedef(db_constant_o));
     if (!Fast_nodeKind_CommaExpr_o) {
@@ -1914,13 +1863,6 @@ int Fast_load(void) {
         (*Fast_nodeKind_CommaExpr_o) = 3;
     }
 
-    /* Define ::hyve::Fast::nodeKind::CommaExpr */
-    if (!db_checkState(Fast_nodeKind_CommaExpr_o, DB_DEFINED)) {
-        if (db_define(Fast_nodeKind_CommaExpr_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::CommaExpr'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::nodeKind::Declaration */
     Fast_nodeKind_Declaration_o = db_declare(Fast_nodeKind_o, "Declaration", db_typedef(db_constant_o));
     if (!Fast_nodeKind_Declaration_o) {
@@ -1930,13 +1872,6 @@ int Fast_load(void) {
         (*Fast_nodeKind_Declaration_o) = 4;
     }
 
-    /* Define ::hyve::Fast::nodeKind::Declaration */
-    if (!db_checkState(Fast_nodeKind_Declaration_o, DB_DEFINED)) {
-        if (db_define(Fast_nodeKind_Declaration_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Declaration'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::nodeKind::Declare */
     Fast_nodeKind_Declare_o = db_declare(Fast_nodeKind_o, "Declare", db_typedef(db_constant_o));
     if (!Fast_nodeKind_Declare_o) {
@@ -1946,13 +1881,6 @@ int Fast_load(void) {
         (*Fast_nodeKind_Declare_o) = 5;
     }
 
-    /* Define ::hyve::Fast::nodeKind::Declare */
-    if (!db_checkState(Fast_nodeKind_Declare_o, DB_DEFINED)) {
-        if (db_define(Fast_nodeKind_Declare_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Declare'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::nodeKind::Define */
     Fast_nodeKind_Define_o = db_declare(Fast_nodeKind_o, "Define", db_typedef(db_constant_o));
     if (!Fast_nodeKind_Define_o) {
@@ -1962,13 +1890,6 @@ int Fast_load(void) {
         (*Fast_nodeKind_Define_o) = 6;
     }
 
-    /* Define ::hyve::Fast::nodeKind::Define */
-    if (!db_checkState(Fast_nodeKind_Define_o, DB_DEFINED)) {
-        if (db_define(Fast_nodeKind_Define_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Define'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::nodeKind::Element */
     Fast_nodeKind_Element_o = db_declare(Fast_nodeKind_o, "Element", db_typedef(db_constant_o));
     if (!Fast_nodeKind_Element_o) {
@@ -1978,13 +1899,6 @@ int Fast_load(void) {
         (*Fast_nodeKind_Element_o) = 7;
     }
 
-    /* Define ::hyve::Fast::nodeKind::Element */
-    if (!db_checkState(Fast_nodeKind_Element_o, DB_DEFINED)) {
-        if (db_define(Fast_nodeKind_Element_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Element'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::nodeKind::If */
     Fast_nodeKind_If_o = db_declare(Fast_nodeKind_o, "If", db_typedef(db_constant_o));
     if (!Fast_nodeKind_If_o) {
@@ -1994,13 +1908,6 @@ int Fast_load(void) {
         (*Fast_nodeKind_If_o) = 8;
     }
 
-    /* Define ::hyve::Fast::nodeKind::If */
-    if (!db_checkState(Fast_nodeKind_If_o, DB_DEFINED)) {
-        if (db_define(Fast_nodeKind_If_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::If'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::nodeKind::Initializer */
     Fast_nodeKind_Initializer_o = db_declare(Fast_nodeKind_o, "Initializer", db_typedef(db_constant_o));
     if (!Fast_nodeKind_Initializer_o) {
@@ -2010,13 +1917,6 @@ int Fast_load(void) {
         (*Fast_nodeKind_Initializer_o) = 9;
     }
 
-    /* Define ::hyve::Fast::nodeKind::Initializer */
-    if (!db_checkState(Fast_nodeKind_Initializer_o, DB_DEFINED)) {
-        if (db_define(Fast_nodeKind_Initializer_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Initializer'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::nodeKind::Literal */
     Fast_nodeKind_Literal_o = db_declare(Fast_nodeKind_o, "Literal", db_typedef(db_constant_o));
     if (!Fast_nodeKind_Literal_o) {
@@ -2026,13 +1926,6 @@ int Fast_load(void) {
         (*Fast_nodeKind_Literal_o) = 10;
     }
 
-    /* Define ::hyve::Fast::nodeKind::Literal */
-    if (!db_checkState(Fast_nodeKind_Literal_o, DB_DEFINED)) {
-        if (db_define(Fast_nodeKind_Literal_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Literal'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::nodeKind::Member */
     Fast_nodeKind_Member_o = db_declare(Fast_nodeKind_o, "Member", db_typedef(db_constant_o));
     if (!Fast_nodeKind_Member_o) {
@@ -2042,13 +1935,6 @@ int Fast_load(void) {
         (*Fast_nodeKind_Member_o) = 11;
     }
 
-    /* Define ::hyve::Fast::nodeKind::Member */
-    if (!db_checkState(Fast_nodeKind_Member_o, DB_DEFINED)) {
-        if (db_define(Fast_nodeKind_Member_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Member'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::nodeKind::Method */
     Fast_nodeKind_Method_o = db_declare(Fast_nodeKind_o, "Method", db_typedef(db_constant_o));
     if (!Fast_nodeKind_Method_o) {
@@ -2058,13 +1944,6 @@ int Fast_load(void) {
         (*Fast_nodeKind_Method_o) = 12;
     }
 
-    /* Define ::hyve::Fast::nodeKind::Method */
-    if (!db_checkState(Fast_nodeKind_Method_o, DB_DEFINED)) {
-        if (db_define(Fast_nodeKind_Method_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Method'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::nodeKind::New */
     Fast_nodeKind_New_o = db_declare(Fast_nodeKind_o, "New", db_typedef(db_constant_o));
     if (!Fast_nodeKind_New_o) {
@@ -2074,13 +1953,6 @@ int Fast_load(void) {
         (*Fast_nodeKind_New_o) = 13;
     }
 
-    /* Define ::hyve::Fast::nodeKind::New */
-    if (!db_checkState(Fast_nodeKind_New_o, DB_DEFINED)) {
-        if (db_define(Fast_nodeKind_New_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::New'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::nodeKind::Postfix */
     Fast_nodeKind_Postfix_o = db_declare(Fast_nodeKind_o, "Postfix", db_typedef(db_constant_o));
     if (!Fast_nodeKind_Postfix_o) {
@@ -2090,13 +1962,6 @@ int Fast_load(void) {
         (*Fast_nodeKind_Postfix_o) = 14;
     }
 
-    /* Define ::hyve::Fast::nodeKind::Postfix */
-    if (!db_checkState(Fast_nodeKind_Postfix_o, DB_DEFINED)) {
-        if (db_define(Fast_nodeKind_Postfix_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Postfix'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::nodeKind::Ternary */
     Fast_nodeKind_Ternary_o = db_declare(Fast_nodeKind_o, "Ternary", db_typedef(db_constant_o));
     if (!Fast_nodeKind_Ternary_o) {
@@ -2106,13 +1971,6 @@ int Fast_load(void) {
         (*Fast_nodeKind_Ternary_o) = 15;
     }
 
-    /* Define ::hyve::Fast::nodeKind::Ternary */
-    if (!db_checkState(Fast_nodeKind_Ternary_o, DB_DEFINED)) {
-        if (db_define(Fast_nodeKind_Ternary_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Ternary'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::nodeKind::Unary */
     Fast_nodeKind_Unary_o = db_declare(Fast_nodeKind_o, "Unary", db_typedef(db_constant_o));
     if (!Fast_nodeKind_Unary_o) {
@@ -2122,13 +1980,6 @@ int Fast_load(void) {
         (*Fast_nodeKind_Unary_o) = 16;
     }
 
-    /* Define ::hyve::Fast::nodeKind::Unary */
-    if (!db_checkState(Fast_nodeKind_Unary_o, DB_DEFINED)) {
-        if (db_define(Fast_nodeKind_Unary_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Unary'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::nodeKind::Update */
     Fast_nodeKind_Update_o = db_declare(Fast_nodeKind_o, "Update", db_typedef(db_constant_o));
     if (!Fast_nodeKind_Update_o) {
@@ -2138,13 +1989,6 @@ int Fast_load(void) {
         (*Fast_nodeKind_Update_o) = 17;
     }
 
-    /* Define ::hyve::Fast::nodeKind::Update */
-    if (!db_checkState(Fast_nodeKind_Update_o, DB_DEFINED)) {
-        if (db_define(Fast_nodeKind_Update_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Update'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::nodeKind::Variable */
     Fast_nodeKind_Variable_o = db_declare(Fast_nodeKind_o, "Variable", db_typedef(db_constant_o));
     if (!Fast_nodeKind_Variable_o) {
@@ -2154,13 +1998,6 @@ int Fast_load(void) {
         (*Fast_nodeKind_Variable_o) = 18;
     }
 
-    /* Define ::hyve::Fast::nodeKind::Variable */
-    if (!db_checkState(Fast_nodeKind_Variable_o, DB_DEFINED)) {
-        if (db_define(Fast_nodeKind_Variable_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Variable'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::nodeKind::Wait */
     Fast_nodeKind_Wait_o = db_declare(Fast_nodeKind_o, "Wait", db_typedef(db_constant_o));
     if (!Fast_nodeKind_Wait_o) {
@@ -2170,13 +2007,6 @@ int Fast_load(void) {
         (*Fast_nodeKind_Wait_o) = 19;
     }
 
-    /* Define ::hyve::Fast::nodeKind::Wait */
-    if (!db_checkState(Fast_nodeKind_Wait_o, DB_DEFINED)) {
-        if (db_define(Fast_nodeKind_Wait_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::Wait'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::nodeKind::While */
     Fast_nodeKind_While_o = db_declare(Fast_nodeKind_o, "While", db_typedef(db_constant_o));
     if (!Fast_nodeKind_While_o) {
@@ -2186,13 +2016,6 @@ int Fast_load(void) {
         (*Fast_nodeKind_While_o) = 20;
     }
 
-    /* Define ::hyve::Fast::nodeKind::While */
-    if (!db_checkState(Fast_nodeKind_While_o, DB_DEFINED)) {
-        if (db_define(Fast_nodeKind_While_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::nodeKind::While'.");
-            goto error;
-        }
-    }
     /* Define ::hyve::Fast::nodeKind */
     if (!db_checkState(Fast_nodeKind_o, DB_DEFINED)) {
         if (db_define(Fast_nodeKind_o)) {
@@ -2200,9 +2023,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_nodeKind_o)->size != sizeof(Fast_nodeKind)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::nodeKind' doesn't match C-type size '%d'", db_type(Fast_nodeKind_o)->size, sizeof(Fast_nodeKind));
     }
+
     /* Define ::hyve::Fast::Node::kind */
     if (!db_checkState(Fast_Node_kind_o, DB_DEFINED)) {
         Fast_Node_kind_o->type = db_resolve_ext(Fast_Node_kind_o, NULL, "::hyve::Fast::nodeKind", FALSE, "element ::hyve::Fast::Node::kind.type");
@@ -2215,6 +2040,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Null */
     Fast_Null_o = db_declare(Fast_o, "Null", db_typedef(db_class_o));
     if (!Fast_Null_o) {
@@ -2255,6 +2081,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser */
     Fast_Parser_o = db_declare(Fast_o, "Parser", db_typedef(db_class_o));
     if (!Fast_Parser_o) {
@@ -2281,6 +2108,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::bindings */
     Fast_Parser_bindings_o = db_declare(Fast_Parser_o, "bindings", db_typedef(db_member_o));
     if (!Fast_Parser_bindings_o) {
@@ -2300,6 +2128,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::block */
     Fast_Parser_block_o = db_declare(Fast_Parser_o, "block", db_typedef(db_member_o));
     if (!Fast_Parser_block_o) {
@@ -2329,6 +2158,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::blockPreset */
     Fast_Parser_blockPreset_o = db_declare(Fast_Parser_o, "blockPreset", db_typedef(db_member_o));
     if (!Fast_Parser_blockPreset_o) {
@@ -2348,6 +2178,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::blockPush(lang::bool presetBlock) */
     Fast_Parser_blockPush_o = db_declare(Fast_Parser_o, "blockPush(lang::bool presetBlock)", db_typedef(db_method_o));
     if (!Fast_Parser_blockPush_o) {
@@ -2377,6 +2208,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::collected */
     Fast_Parser_collected_o = db_declare(Fast_Parser_o, "collected", db_typedef(db_member_o));
     if (!Fast_Parser_collected_o) {
@@ -2396,6 +2228,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::collectHeap(word addr) */
     Fast_Parser_collectHeap_o = db_declare(Fast_Parser_o, "collectHeap(word addr)", db_typedef(db_method_o));
     if (!Fast_Parser_collectHeap_o) {
@@ -2418,6 +2251,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::column */
     Fast_Parser_column_o = db_declare(Fast_Parser_o, "column", db_typedef(db_member_o));
     if (!Fast_Parser_column_o) {
@@ -2437,6 +2271,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::complexType */
     Fast_Parser_complexType_o = db_declare(Fast_Parser_o, "complexType", db_typedef(db_member_o));
     if (!Fast_Parser_complexType_o) {
@@ -2463,6 +2298,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::define() */
     Fast_Parser_define_o = db_declare(Fast_Parser_o, "define()", db_typedef(db_method_o));
     if (!Fast_Parser_define_o) {
@@ -2485,6 +2321,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::defineScope() */
     Fast_Parser_defineScope_o = db_declare(Fast_Parser_o, "defineScope()", db_typedef(db_method_o));
     if (!Fast_Parser_defineScope_o) {
@@ -2507,6 +2344,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::errLine */
     Fast_Parser_errLine_o = db_declare(Fast_Parser_o, "errLine", db_typedef(db_member_o));
     if (!Fast_Parser_errLine_o) {
@@ -2526,6 +2364,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::errors */
     Fast_Parser_errors_o = db_declare(Fast_Parser_o, "errors", db_typedef(db_member_o));
     if (!Fast_Parser_errors_o) {
@@ -2545,6 +2384,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::errSet */
     Fast_Parser_errSet_o = db_declare(Fast_Parser_o, "errSet", db_typedef(db_member_o));
     if (!Fast_Parser_errSet_o) {
@@ -2564,6 +2404,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::filename */
     Fast_Parser_filename_o = db_declare(Fast_Parser_o, "filename", db_typedef(db_member_o));
     if (!Fast_Parser_filename_o) {
@@ -2583,6 +2424,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::getComplexType() */
     Fast_Parser_getComplexType_o = db_declare(Fast_Parser_o, "getComplexType()", db_typedef(db_method_o));
     if (!Fast_Parser_getComplexType_o) {
@@ -2605,6 +2447,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::getLvalue(lang::bool assignment) */
     Fast_Parser_getLvalue_o = db_declare(Fast_Parser_o, "getLvalue(lang::bool assignment)", db_typedef(db_method_o));
     if (!Fast_Parser_getLvalue_o) {
@@ -2634,6 +2477,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::heapCollected */
     Fast_Parser_heapCollected_o = db_declare(Fast_Parser_o, "heapCollected", db_typedef(db_member_o));
     if (!Fast_Parser_heapCollected_o) {
@@ -2660,6 +2504,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::initDynamic */
     Fast_Parser_initDynamic_o = db_declare(Fast_Parser_o, "initDynamic", db_typedef(db_member_o));
     if (!Fast_Parser_initDynamic_o) {
@@ -2679,6 +2524,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::initializerCount */
     Fast_Parser_initializerCount_o = db_declare(Fast_Parser_o, "initializerCount", db_typedef(db_member_o));
     if (!Fast_Parser_initializerCount_o) {
@@ -2698,6 +2544,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::initializers */
     Fast_Parser_initializers_o = db_declare(Fast_Parser_o, "initializers", db_typedef(db_member_o));
     if (!Fast_Parser_initializers_o) {
@@ -2727,6 +2574,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::initKeyValuePush() */
     Fast_Parser_initKeyValuePush_o = db_declare(Fast_Parser_o, "initKeyValuePush()", db_typedef(db_method_o));
     if (!Fast_Parser_initKeyValuePush_o) {
@@ -2749,6 +2597,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::initMember(lang::string member) */
     Fast_Parser_initMember_o = db_declare(Fast_Parser_o, "initMember(lang::string member)", db_typedef(db_method_o));
     if (!Fast_Parser_initMember_o) {
@@ -2771,6 +2620,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::initPop() */
     Fast_Parser_initPop_o = db_declare(Fast_Parser_o, "initPop()", db_typedef(db_method_o));
     if (!Fast_Parser_initPop_o) {
@@ -2793,6 +2643,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::initPush() */
     Fast_Parser_initPush_o = db_declare(Fast_Parser_o, "initPush()", db_typedef(db_method_o));
     if (!Fast_Parser_initPush_o) {
@@ -2815,6 +2666,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::initPushExpression() */
     Fast_Parser_initPushExpression_o = db_declare(Fast_Parser_o, "initPushExpression()", db_typedef(db_method_o));
     if (!Fast_Parser_initPushExpression_o) {
@@ -2844,6 +2696,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::initStage(lang::string id,bool found) */
     Fast_Parser_initStage_o = db_declare(Fast_Parser_o, "initStage(lang::string id,bool found)", db_typedef(db_method_o));
     if (!Fast_Parser_initStage_o) {
@@ -2866,6 +2719,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::isAbortSet() */
     Fast_Parser_isAbortSet_o = db_declare(Fast_Parser_o, "isAbortSet()", db_typedef(db_method_o));
     if (!Fast_Parser_isAbortSet_o) {
@@ -2888,6 +2742,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::isErrSet() */
     Fast_Parser_isErrSet_o = db_declare(Fast_Parser_o, "isErrSet()", db_typedef(db_method_o));
     if (!Fast_Parser_isErrSet_o) {
@@ -2910,6 +2765,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::isLocal */
     Fast_Parser_isLocal_o = db_declare(Fast_Parser_o, "isLocal", db_typedef(db_member_o));
     if (!Fast_Parser_isLocal_o) {
@@ -2929,6 +2785,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::lastFailedResolve */
     Fast_Parser_lastFailedResolve_o = db_declare(Fast_Parser_o, "lastFailedResolve", db_typedef(db_member_o));
     if (!Fast_Parser_lastFailedResolve_o) {
@@ -2948,6 +2805,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::line */
     Fast_Parser_line_o = db_declare(Fast_Parser_o, "line", db_typedef(db_member_o));
     if (!Fast_Parser_line_o) {
@@ -2967,6 +2825,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::lookup(lang::string id,lang::object source) */
     Fast_Parser_lookup_o = db_declare(Fast_Parser_o, "lookup(lang::string id,lang::object source)", db_typedef(db_method_o));
     if (!Fast_Parser_lookup_o) {
@@ -3000,6 +2859,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::observerPop() */
     Fast_Parser_observerPop_o = db_declare(Fast_Parser_o, "observerPop()", db_typedef(db_method_o));
     if (!Fast_Parser_observerPop_o) {
@@ -3022,6 +2882,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::observerPush() */
     Fast_Parser_observerPush_o = db_declare(Fast_Parser_o, "observerPush()", db_typedef(db_method_o));
     if (!Fast_Parser_observerPush_o) {
@@ -3044,6 +2905,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::parse() */
     Fast_Parser_parse_o = db_declare(Fast_Parser_o, "parse()", db_typedef(db_method_o));
     if (!Fast_Parser_parse_o) {
@@ -3066,6 +2928,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::parseSingleExpr */
     Fast_Parser_parseSingleExpr_o = db_declare(Fast_Parser_o, "parseSingleExpr", db_typedef(db_member_o));
     if (!Fast_Parser_parseSingleExpr_o) {
@@ -3085,6 +2948,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::pass */
     Fast_Parser_pass_o = db_declare(Fast_Parser_o, "pass", db_typedef(db_member_o));
     if (!Fast_Parser_pass_o) {
@@ -3104,6 +2968,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::popComplexType() */
     Fast_Parser_popComplexType_o = db_declare(Fast_Parser_o, "popComplexType()", db_typedef(db_method_o));
     if (!Fast_Parser_popComplexType_o) {
@@ -3126,6 +2991,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::popLvalue() */
     Fast_Parser_popLvalue_o = db_declare(Fast_Parser_o, "popLvalue()", db_typedef(db_method_o));
     if (!Fast_Parser_popLvalue_o) {
@@ -3148,6 +3014,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::preprocessed */
     Fast_Parser_preprocessed_o = db_declare(Fast_Parser_o, "preprocessed", db_typedef(db_member_o));
     if (!Fast_Parser_preprocessed_o) {
@@ -3167,6 +3034,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::pushReturnAsLvalue(lang::function function) */
     Fast_Parser_pushReturnAsLvalue_o = db_declare(Fast_Parser_o, "pushReturnAsLvalue(lang::function function)", db_typedef(db_method_o));
     if (!Fast_Parser_pushReturnAsLvalue_o) {
@@ -3189,6 +3057,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::pushScope() */
     Fast_Parser_pushScope_o = db_declare(Fast_Parser_o, "pushScope()", db_typedef(db_method_o));
     if (!Fast_Parser_pushScope_o) {
@@ -3218,6 +3087,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::scope */
     Fast_Parser_scope_o = db_declare(Fast_Parser_o, "scope", db_typedef(db_member_o));
     if (!Fast_Parser_scope_o) {
@@ -3251,6 +3121,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::staged */
     Fast_Parser_staged_o = db_declare(Fast_Parser_o, "staged", db_typedef(db_member_o));
     if (!Fast_Parser_staged_o) {
@@ -3277,6 +3148,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::stagedId */
     Fast_Parser_stagedId_o = db_declare(Fast_Parser_o, "stagedId", db_typedef(db_struct_o));
     if (!Fast_Parser_stagedId_o) {
@@ -3303,6 +3175,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::stagedId::found */
     Fast_Parser_stagedId_found_o = db_declare(Fast_Parser_stagedId_o, "found", db_typedef(db_member_o));
     if (!Fast_Parser_stagedId_found_o) {
@@ -3322,6 +3195,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::stagedId::line */
     Fast_Parser_stagedId_line_o = db_declare(Fast_Parser_stagedId_o, "line", db_typedef(db_member_o));
     if (!Fast_Parser_stagedId_line_o) {
@@ -3341,6 +3215,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::stagedId::name */
     Fast_Parser_stagedId_name_o = db_declare(Fast_Parser_stagedId_o, "name", db_typedef(db_member_o));
     if (!Fast_Parser_stagedId_name_o) {
@@ -3360,6 +3235,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Parser::stagedId */
     if (!db_checkState(Fast_Parser_stagedId_o, DB_DEFINED)) {
         db_type(Fast_Parser_stagedId_o)->defaultType = db_resolve_ext(Fast_Parser_stagedId_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::Parser::stagedId.defaultType");
@@ -3372,9 +3248,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_Parser_stagedId_o)->size != sizeof(Fast_Parser_stagedId)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Parser::stagedId' doesn't match C-type size '%d'", db_type(Fast_Parser_stagedId_o)->size, sizeof(Fast_Parser_stagedId));
     }
+
     /* Define ::hyve::Fast::Parser::staged */
     if (!db_checkState(Fast_Parser_staged_o, DB_DEFINED)) {
         Fast_Parser_staged_o->type = db_resolve_ext(Fast_Parser_staged_o, NULL, "::hyve::lang::array{::hyve::Fast::Parser::stagedId,64,::hyve::Fast::Parser::stagedId}", FALSE, "element ::hyve::Fast::Parser::staged.type");
@@ -3387,6 +3265,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::stagingAllowed */
     Fast_Parser_stagingAllowed_o = db_declare(Fast_Parser_o, "stagingAllowed", db_typedef(db_member_o));
     if (!Fast_Parser_stagingAllowed_o) {
@@ -3406,6 +3285,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::token */
     Fast_Parser_token_o = db_declare(Fast_Parser_o, "token", db_typedef(db_member_o));
     if (!Fast_Parser_token_o) {
@@ -3425,6 +3305,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::variableCount */
     Fast_Parser_variableCount_o = db_declare(Fast_Parser_o, "variableCount", db_typedef(db_member_o));
     if (!Fast_Parser_variableCount_o) {
@@ -3444,6 +3325,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::variablePushed */
     Fast_Parser_variablePushed_o = db_declare(Fast_Parser_o, "variablePushed", db_typedef(db_member_o));
     if (!Fast_Parser_variablePushed_o) {
@@ -3463,6 +3345,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::variables */
     Fast_Parser_variables_o = db_declare(Fast_Parser_o, "variables", db_typedef(db_member_o));
     if (!Fast_Parser_variables_o) {
@@ -3489,6 +3372,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::warnings */
     Fast_Parser_warnings_o = db_declare(Fast_Parser_o, "warnings", db_typedef(db_member_o));
     if (!Fast_Parser_warnings_o) {
@@ -3508,6 +3392,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::ParserDeclaration */
     Fast_ParserDeclaration_o = db_declare(Fast_o, "ParserDeclaration", db_typedef(db_struct_o));
     if (!Fast_ParserDeclaration_o) {
@@ -3534,6 +3419,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::ParserDeclaration::variable */
     Fast_ParserDeclaration_variable_o = db_declare(Fast_ParserDeclaration_o, "variable", db_typedef(db_member_o));
     if (!Fast_ParserDeclaration_variable_o) {
@@ -3556,6 +3442,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::ParserNew */
     Fast_ParserNew_o = db_declare(Fast_o, "ParserNew", db_typedef(db_struct_o));
     if (!Fast_ParserNew_o) {
@@ -3589,6 +3476,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::ParserNew::name */
     Fast_ParserNew_name_o = db_declare(Fast_ParserNew_o, "name", db_typedef(db_member_o));
     if (!Fast_ParserNew_name_o) {
@@ -3636,6 +3524,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::SignedInteger */
     Fast_SignedInteger_o = db_declare(Fast_o, "SignedInteger", db_typedef(db_class_o));
     if (!Fast_SignedInteger_o) {
@@ -3662,6 +3551,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::StaticInitializer */
     Fast_StaticInitializer_o = db_declare(Fast_o, "StaticInitializer", db_typedef(db_class_o));
     if (!Fast_StaticInitializer_o) {
@@ -3730,6 +3620,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::String::scope */
     Fast_String_scope_o = db_declare(Fast_String_o, "scope", db_typedef(db_member_o));
     if (!Fast_String_scope_o) {
@@ -3756,6 +3647,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Template */
     Fast_Template_o = db_declare(Fast_o, "Template", db_typedef(db_class_o));
     if (!Fast_Template_o) {
@@ -3852,6 +3744,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Update */
     Fast_Update_o = db_declare(Fast_o, "Update", db_typedef(db_class_o));
     if (!Fast_Update_o) {
@@ -3885,6 +3778,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Update::from */
     Fast_Update_from_o = db_declare(Fast_Update_o, "from", db_typedef(db_member_o));
     if (!Fast_Update_from_o) {
@@ -3908,13 +3802,6 @@ int Fast_load(void) {
         (*Fast_valueKind_Boolean_o) = 0;
     }
 
-    /* Define ::hyve::Fast::valueKind::Boolean */
-    if (!db_checkState(Fast_valueKind_Boolean_o, DB_DEFINED)) {
-        if (db_define(Fast_valueKind_Boolean_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::valueKind::Boolean'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::valueKind::Character */
     Fast_valueKind_Character_o = db_declare(Fast_valueKind_o, "Character", db_typedef(db_constant_o));
     if (!Fast_valueKind_Character_o) {
@@ -3924,13 +3811,6 @@ int Fast_load(void) {
         (*Fast_valueKind_Character_o) = 1;
     }
 
-    /* Define ::hyve::Fast::valueKind::Character */
-    if (!db_checkState(Fast_valueKind_Character_o, DB_DEFINED)) {
-        if (db_define(Fast_valueKind_Character_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::valueKind::Character'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::valueKind::Enumerated */
     Fast_valueKind_Enumerated_o = db_declare(Fast_valueKind_o, "Enumerated", db_typedef(db_constant_o));
     if (!Fast_valueKind_Enumerated_o) {
@@ -3940,13 +3820,6 @@ int Fast_load(void) {
         (*Fast_valueKind_Enumerated_o) = 6;
     }
 
-    /* Define ::hyve::Fast::valueKind::Enumerated */
-    if (!db_checkState(Fast_valueKind_Enumerated_o, DB_DEFINED)) {
-        if (db_define(Fast_valueKind_Enumerated_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::valueKind::Enumerated'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::valueKind::FloatingPoint */
     Fast_valueKind_FloatingPoint_o = db_declare(Fast_valueKind_o, "FloatingPoint", db_typedef(db_constant_o));
     if (!Fast_valueKind_FloatingPoint_o) {
@@ -3956,13 +3829,6 @@ int Fast_load(void) {
         (*Fast_valueKind_FloatingPoint_o) = 4;
     }
 
-    /* Define ::hyve::Fast::valueKind::FloatingPoint */
-    if (!db_checkState(Fast_valueKind_FloatingPoint_o, DB_DEFINED)) {
-        if (db_define(Fast_valueKind_FloatingPoint_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::valueKind::FloatingPoint'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::valueKind::Integer */
     Fast_valueKind_Integer_o = db_declare(Fast_valueKind_o, "Integer", db_typedef(db_constant_o));
     if (!Fast_valueKind_Integer_o) {
@@ -3972,13 +3838,6 @@ int Fast_load(void) {
         (*Fast_valueKind_Integer_o) = 2;
     }
 
-    /* Define ::hyve::Fast::valueKind::Integer */
-    if (!db_checkState(Fast_valueKind_Integer_o, DB_DEFINED)) {
-        if (db_define(Fast_valueKind_Integer_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::valueKind::Integer'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::valueKind::Null */
     Fast_valueKind_Null_o = db_declare(Fast_valueKind_o, "Null", db_typedef(db_constant_o));
     if (!Fast_valueKind_Null_o) {
@@ -3988,13 +3847,6 @@ int Fast_load(void) {
         (*Fast_valueKind_Null_o) = 8;
     }
 
-    /* Define ::hyve::Fast::valueKind::Null */
-    if (!db_checkState(Fast_valueKind_Null_o, DB_DEFINED)) {
-        if (db_define(Fast_valueKind_Null_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::valueKind::Null'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::valueKind::Reference */
     Fast_valueKind_Reference_o = db_declare(Fast_valueKind_o, "Reference", db_typedef(db_constant_o));
     if (!Fast_valueKind_Reference_o) {
@@ -4004,13 +3856,6 @@ int Fast_load(void) {
         (*Fast_valueKind_Reference_o) = 7;
     }
 
-    /* Define ::hyve::Fast::valueKind::Reference */
-    if (!db_checkState(Fast_valueKind_Reference_o, DB_DEFINED)) {
-        if (db_define(Fast_valueKind_Reference_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::valueKind::Reference'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::valueKind::SignedInteger */
     Fast_valueKind_SignedInteger_o = db_declare(Fast_valueKind_o, "SignedInteger", db_typedef(db_constant_o));
     if (!Fast_valueKind_SignedInteger_o) {
@@ -4020,13 +3865,6 @@ int Fast_load(void) {
         (*Fast_valueKind_SignedInteger_o) = 3;
     }
 
-    /* Define ::hyve::Fast::valueKind::SignedInteger */
-    if (!db_checkState(Fast_valueKind_SignedInteger_o, DB_DEFINED)) {
-        if (db_define(Fast_valueKind_SignedInteger_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::valueKind::SignedInteger'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::valueKind::String */
     Fast_valueKind_String_o = db_declare(Fast_valueKind_o, "String", db_typedef(db_constant_o));
     if (!Fast_valueKind_String_o) {
@@ -4036,13 +3874,6 @@ int Fast_load(void) {
         (*Fast_valueKind_String_o) = 5;
     }
 
-    /* Define ::hyve::Fast::valueKind::String */
-    if (!db_checkState(Fast_valueKind_String_o, DB_DEFINED)) {
-        if (db_define(Fast_valueKind_String_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::valueKind::String'.");
-            goto error;
-        }
-    }
     /* Define ::hyve::Fast::valueKind */
     if (!db_checkState(Fast_valueKind_o, DB_DEFINED)) {
         if (db_define(Fast_valueKind_o)) {
@@ -4050,9 +3881,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_valueKind_o)->size != sizeof(Fast_valueKind)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::valueKind' doesn't match C-type size '%d'", db_type(Fast_valueKind_o)->size, sizeof(Fast_valueKind));
     }
+
     /* Define ::hyve::Fast::Literal::kind */
     if (!db_checkState(Fast_Literal_kind_o, DB_DEFINED)) {
         Fast_Literal_kind_o->type = db_resolve_ext(Fast_Literal_kind_o, NULL, "::hyve::Fast::valueKind", FALSE, "element ::hyve::Fast::Literal::kind.type");
@@ -4065,6 +3898,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::valueKindFromType(lang::type type) */
     Fast_valueKindFromType_o = db_declare(Fast_o, "valueKindFromType(lang::type type)", db_typedef(db_function_o));
     if (!Fast_valueKindFromType_o) {
@@ -4086,6 +3920,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Variable */
     Fast_Variable_o = db_declare(Fast_o, "Variable", db_typedef(db_class_o));
     if (!Fast_Variable_o) {
@@ -4116,13 +3951,6 @@ int Fast_load(void) {
         (*Fast_variableKind_Local_o) = 0;
     }
 
-    /* Define ::hyve::Fast::variableKind::Local */
-    if (!db_checkState(Fast_variableKind_Local_o, DB_DEFINED)) {
-        if (db_define(Fast_variableKind_Local_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::variableKind::Local'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::variableKind::Object */
     Fast_variableKind_Object_o = db_declare(Fast_variableKind_o, "Object", db_typedef(db_constant_o));
     if (!Fast_variableKind_Object_o) {
@@ -4132,13 +3960,6 @@ int Fast_load(void) {
         (*Fast_variableKind_Object_o) = 2;
     }
 
-    /* Define ::hyve::Fast::variableKind::Object */
-    if (!db_checkState(Fast_variableKind_Object_o, DB_DEFINED)) {
-        if (db_define(Fast_variableKind_Object_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::variableKind::Object'.");
-            goto error;
-        }
-    }
     /* Declare ::hyve::Fast::variableKind::Template */
     Fast_variableKind_Template_o = db_declare(Fast_variableKind_o, "Template", db_typedef(db_constant_o));
     if (!Fast_variableKind_Template_o) {
@@ -4148,13 +3969,6 @@ int Fast_load(void) {
         (*Fast_variableKind_Template_o) = 1;
     }
 
-    /* Define ::hyve::Fast::variableKind::Template */
-    if (!db_checkState(Fast_variableKind_Template_o, DB_DEFINED)) {
-        if (db_define(Fast_variableKind_Template_o)) {
-            db_error("Fast_load: failed to define object '::hyve::Fast::variableKind::Template'.");
-            goto error;
-        }
-    }
     /* Define ::hyve::Fast::variableKind */
     if (!db_checkState(Fast_variableKind_o, DB_DEFINED)) {
         if (db_define(Fast_variableKind_o)) {
@@ -4162,9 +3976,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_variableKind_o)->size != sizeof(Fast_variableKind)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::variableKind' doesn't match C-type size '%d'", db_type(Fast_variableKind_o)->size, sizeof(Fast_variableKind));
     }
+
     /* Define ::hyve::Fast::Variable::kind */
     if (!db_checkState(Fast_Variable_kind_o, DB_DEFINED)) {
         Fast_Variable_kind_o->type = db_resolve_ext(Fast_Variable_kind_o, NULL, "::hyve::Fast::variableKind", FALSE, "element ::hyve::Fast::Variable::kind.type");
@@ -4177,6 +3993,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Wait */
     Fast_Wait_o = db_declare(Fast_o, "Wait", db_typedef(db_class_o));
     if (!Fast_Wait_o) {
@@ -4203,6 +4020,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Wait::timeout */
     Fast_Wait_timeout_o = db_declare(Fast_Wait_o, "timeout", db_typedef(db_member_o));
     if (!Fast_Wait_timeout_o) {
@@ -4243,6 +4061,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::While::trueBranch */
     Fast_While_trueBranch_o = db_declare(Fast_While_o, "trueBranch", db_typedef(db_member_o));
     if (!Fast_While_trueBranch_o) {
@@ -4272,6 +4091,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Parser::complexType */
     if (!db_checkState(Fast_Parser_complexType_o, DB_DEFINED)) {
         Fast_Parser_complexType_o->type = db_resolve_ext(Fast_Parser_complexType_o, NULL, "::hyve::lang::array{::hyve::lang::type,64,::hyve::lang::type}", FALSE, "element ::hyve::Fast::Parser::complexType.type");
@@ -4284,6 +4104,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Parser::heapCollected */
     if (!db_checkState(Fast_Parser_heapCollected_o, DB_DEFINED)) {
         Fast_Parser_heapCollected_o->type = db_resolve_ext(Fast_Parser_heapCollected_o, NULL, "::hyve::lang::list{::hyve::lang::word,0}", FALSE, "element ::hyve::Fast::Parser::heapCollected.type");
@@ -4296,6 +4117,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::StaticInitializerFrame::keyPtr */
     if (!db_checkState(Fast_StaticInitializerFrame_keyPtr_o, DB_DEFINED)) {
         Fast_StaticInitializerFrame_keyPtr_o->type = db_resolve_ext(Fast_StaticInitializerFrame_keyPtr_o, NULL, "::hyve::lang::array{::hyve::lang::word,64,::hyve::lang::word}", FALSE, "element ::hyve::Fast::StaticInitializerFrame::keyPtr.type");
@@ -4308,6 +4130,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::StaticInitializerFrame::ptr */
     if (!db_checkState(Fast_StaticInitializerFrame_ptr_o, DB_DEFINED)) {
         Fast_StaticInitializerFrame_ptr_o->type = db_resolve_ext(Fast_StaticInitializerFrame_ptr_o, NULL, "::hyve::lang::array{::hyve::lang::word,64,::hyve::lang::word}", FALSE, "element ::hyve::Fast::StaticInitializerFrame::ptr.type");
@@ -4320,6 +4143,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::StaticInitializerFrame */
     if (!db_checkState(Fast_StaticInitializerFrame_o, DB_DEFINED)) {
         db_type(Fast_StaticInitializerFrame_o)->defaultType = db_resolve_ext(Fast_StaticInitializerFrame_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::StaticInitializerFrame.defaultType");
@@ -4332,9 +4156,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_StaticInitializerFrame_o)->size != sizeof(Fast_StaticInitializerFrame)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::StaticInitializerFrame' doesn't match C-type size '%d'", db_type(Fast_StaticInitializerFrame_o)->size, sizeof(Fast_StaticInitializerFrame));
     }
+
     /* Define ::hyve::Fast::StaticInitializer::frames */
     if (!db_checkState(Fast_StaticInitializer_frames_o, DB_DEFINED)) {
         Fast_StaticInitializer_frames_o->type = db_resolve_ext(Fast_StaticInitializer_frames_o, NULL, "::hyve::lang::array{::hyve::Fast::StaticInitializerFrame,64,::hyve::Fast::StaticInitializerFrame}", FALSE, "element ::hyve::Fast::StaticInitializer::frames.type");
@@ -4347,6 +4173,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Block::parent */
     if (!db_checkState(Fast_Block_parent_o, DB_DEFINED)) {
         Fast_Block_parent_o->type = db_resolve_ext(Fast_Block_parent_o, NULL, "::hyve::Fast::Block", FALSE, "element ::hyve::Fast::Block::parent.type");
@@ -4359,6 +4186,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Block::while */
     if (!db_checkState(Fast_Block_while_o, DB_DEFINED)) {
         Fast_Block_while_o->type = db_resolve_ext(Fast_Block_while_o, NULL, "::hyve::Fast::While", FALSE, "element ::hyve::Fast::Block::while.type");
@@ -4371,6 +4199,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::If::falseBranch */
     if (!db_checkState(Fast_If_falseBranch_o, DB_DEFINED)) {
         Fast_If_falseBranch_o->type = db_resolve_ext(Fast_If_falseBranch_o, NULL, "::hyve::Fast::If", FALSE, "element ::hyve::Fast::If::falseBranch.type");
@@ -4383,6 +4212,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::construct(Parser object) */
     Fast_Parser_construct_o = db_declare(Fast_Parser_o, "construct(Parser object)", db_typedef(db_callback_o));
     if (!Fast_Parser_construct_o) {
@@ -4405,6 +4235,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::destruct(Parser object) */
     Fast_Parser_destruct_o = db_declare(Fast_Parser_o, "destruct(Parser object)", db_typedef(db_callback_o));
     if (!Fast_Parser_destruct_o) {
@@ -4427,6 +4258,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Expression::type */
     if (!db_checkState(Fast_Expression_type_o, DB_DEFINED)) {
         Fast_Expression_type_o->type = db_resolve_ext(Fast_Expression_type_o, NULL, "::hyve::Fast::Variable", FALSE, "element ::hyve::Fast::Expression::type.type");
@@ -4439,6 +4271,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Node::init(Node object) */
     Fast_Node_init_o = db_declare(Fast_Node_o, "init(Node object)", db_typedef(db_callback_o));
     if (!Fast_Node_init_o) {
@@ -4461,6 +4294,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Node */
     if (!db_checkState(Fast_Node_o, DB_DEFINED)) {
         db_type(Fast_Node_o)->defaultType = db_resolve_ext(Fast_Node_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::Node.defaultType");
@@ -4475,9 +4309,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_Node_o)->size != sizeof(struct Fast_Node_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Node' doesn't match C-type size '%d'", db_type(Fast_Node_o)->size, sizeof(struct Fast_Node_s));
     }
+
     /* Declare ::hyve::Fast::Block::addStatement(Fast::Node statement) */
     Fast_Block_addStatement_o = db_declare(Fast_Block_o, "addStatement(Fast::Node statement)", db_typedef(db_method_o));
     if (!Fast_Block_addStatement_o) {
@@ -4500,6 +4336,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Block::declareReturnVariable(lang::function function) */
     Fast_Block_declareReturnVariable_o = db_declare(Fast_Block_o, "declareReturnVariable(lang::function function)", db_typedef(db_method_o));
     if (!Fast_Block_declareReturnVariable_o) {
@@ -4550,6 +4387,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Block::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
     Fast_Block_toIc_o = db_declare(Fast_Block_o, "toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)", db_typedef(db_virtual_o));
     if (!Fast_Block_toIc_o) {
@@ -4572,6 +4410,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Block::toIcBody(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
     Fast_Block_toIcBody_o = db_declare(Fast_Block_o, "toIcBody(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)", db_typedef(db_virtual_o));
     if (!Fast_Block_toIcBody_o) {
@@ -4594,6 +4433,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Define::construct(Fast::Define object) */
     Fast_Define_construct_o = db_declare(Fast_Define_o, "construct(Fast::Define object)", db_typedef(db_callback_o));
     if (!Fast_Define_construct_o) {
@@ -4616,6 +4456,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Define::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
     Fast_Define_toIc_o = db_declare(Fast_Define_o, "toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)", db_typedef(db_virtual_o));
     if (!Fast_Define_toIc_o) {
@@ -4638,6 +4479,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Expression::cast(lang::type type) */
     Fast_Expression_cast_o = db_declare(Fast_Expression_o, "cast(lang::type type)", db_typedef(db_method_o));
     if (!Fast_Expression_cast_o) {
@@ -4660,6 +4502,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Expression::fold() */
     Fast_Expression_fold_o = db_declare(Fast_Expression_o, "fold()", db_typedef(db_virtual_o));
     if (!Fast_Expression_fold_o) {
@@ -4682,6 +4525,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Expression::getType() */
     Fast_Expression_getType_o = db_declare(Fast_Expression_o, "getType()", db_typedef(db_method_o));
     if (!Fast_Expression_getType_o) {
@@ -4704,6 +4548,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Expression::getType_expr(Expression target) */
     Fast_Expression_getType_expr_o = db_declare(Fast_Expression_o, "getType_expr(Expression target)", db_typedef(db_method_o));
     if (!Fast_Expression_getType_expr_o) {
@@ -4726,6 +4571,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Expression::getType_type(lang::type target) */
     Fast_Expression_getType_type_o = db_declare(Fast_Expression_o, "getType_type(lang::type target)", db_typedef(db_method_o));
     if (!Fast_Expression_getType_type_o) {
@@ -4748,6 +4594,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Expression::getValue() */
     Fast_Expression_getValue_o = db_declare(Fast_Expression_o, "getValue()", db_typedef(db_virtual_o));
     if (!Fast_Expression_getValue_o) {
@@ -4770,6 +4617,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Expression::hasSideEffects() */
     Fast_Expression_hasSideEffects_o = db_declare(Fast_Expression_o, "hasSideEffects()", db_typedef(db_virtual_o));
     if (!Fast_Expression_hasSideEffects_o) {
@@ -4792,6 +4640,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Expression::init(Expression object) */
     Fast_Expression_init_o = db_declare(Fast_Expression_o, "init(Expression object)", db_typedef(db_callback_o));
     if (!Fast_Expression_init_o) {
@@ -4814,6 +4663,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Expression::serialize(lang::type dstType,lang::word dst) */
     Fast_Expression_serialize_o = db_declare(Fast_Expression_o, "serialize(lang::type dstType,lang::word dst)", db_typedef(db_virtual_o));
     if (!Fast_Expression_serialize_o) {
@@ -4836,6 +4686,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Expression::toList() */
     Fast_Expression_toList_o = db_declare(Fast_Expression_o, "toList()", db_typedef(db_virtual_o));
     if (!Fast_Expression_toList_o) {
@@ -4858,6 +4709,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Expression */
     if (!db_checkState(Fast_Expression_o, DB_DEFINED)) {
         db_type(Fast_Expression_o)->defaultType = db_resolve_ext(Fast_Expression_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::Expression.defaultType");
@@ -4872,9 +4724,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_Expression_o)->size != sizeof(struct Fast_Expression_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Expression' doesn't match C-type size '%d'", db_type(Fast_Expression_o)->size, sizeof(struct Fast_Expression_s));
     }
+
     /* Declare ::hyve::Fast::BinaryExpr::construct(Fast::BinaryExpr object) */
     Fast_BinaryExpr_construct_o = db_declare(Fast_BinaryExpr_o, "construct(Fast::BinaryExpr object)", db_typedef(db_callback_o));
     if (!Fast_BinaryExpr_construct_o) {
@@ -4897,6 +4751,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::BinaryExpr::fold() */
     Fast_BinaryExpr_fold_o = db_declare(Fast_BinaryExpr_o, "fold()", db_typedef(db_method_o));
     if (!Fast_BinaryExpr_fold_o) {
@@ -4919,6 +4774,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::BinaryExpr::hasSideEffects() */
     Fast_BinaryExpr_hasSideEffects_o = db_declare(Fast_BinaryExpr_o, "hasSideEffects()", db_typedef(db_virtual_o));
     if (!Fast_BinaryExpr_hasSideEffects_o) {
@@ -4941,6 +4797,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::BinaryExpr::lvalue */
     if (!db_checkState(Fast_BinaryExpr_lvalue_o, DB_DEFINED)) {
         Fast_BinaryExpr_lvalue_o->type = db_resolve_ext(Fast_BinaryExpr_lvalue_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::BinaryExpr::lvalue.type");
@@ -4953,6 +4810,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::BinaryExpr::rvalue */
     if (!db_checkState(Fast_BinaryExpr_rvalue_o, DB_DEFINED)) {
         Fast_BinaryExpr_rvalue_o->type = db_resolve_ext(Fast_BinaryExpr_rvalue_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::BinaryExpr::rvalue.type");
@@ -4965,6 +4823,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::BinaryExpr::setOperator(lang::operatorKind kind) */
     Fast_BinaryExpr_setOperator_o = db_declare(Fast_BinaryExpr_o, "setOperator(lang::operatorKind kind)", db_typedef(db_method_o));
     if (!Fast_BinaryExpr_setOperator_o) {
@@ -4987,6 +4846,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::BinaryExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
     Fast_BinaryExpr_toIc_o = db_declare(Fast_BinaryExpr_o, "toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)", db_typedef(db_virtual_o));
     if (!Fast_BinaryExpr_toIc_o) {
@@ -5009,6 +4869,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::BinaryExpr */
     if (!db_checkState(Fast_BinaryExpr_o, DB_DEFINED)) {
         db_type(Fast_BinaryExpr_o)->defaultType = db_resolve_ext(Fast_BinaryExpr_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::BinaryExpr.defaultType");
@@ -5023,9 +4884,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_BinaryExpr_o)->size != sizeof(struct Fast_BinaryExpr_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::BinaryExpr' doesn't match C-type size '%d'", db_type(Fast_BinaryExpr_o)->size, sizeof(struct Fast_BinaryExpr_s));
     }
+
     /* Define ::hyve::Fast::Block::lookup(lang::string id) */
     if (!db_checkState(Fast_Block_lookup_o, DB_DEFINED)) {
         db_function(Fast_Block_lookup_o)->returnType = db_resolve_ext(Fast_Block_lookup_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::Block::lookup(lang::string id).returnType");
@@ -5041,6 +4904,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Block::lookupLocal(lang::string id) */
     if (!db_checkState(Fast_Block_lookupLocal_o, DB_DEFINED)) {
         db_function(Fast_Block_lookupLocal_o)->returnType = db_resolve_ext(Fast_Block_lookupLocal_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::Block::lookupLocal(lang::string id).returnType");
@@ -5056,6 +4920,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Block::resolve(lang::string id) */
     if (!db_checkState(Fast_Block_resolve_o, DB_DEFINED)) {
         db_function(Fast_Block_resolve_o)->returnType = db_resolve_ext(Fast_Block_resolve_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::Block::resolve(lang::string id).returnType");
@@ -5071,6 +4936,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Call::arguments */
     if (!db_checkState(Fast_Call_arguments_o, DB_DEFINED)) {
         Fast_Call_arguments_o->type = db_resolve_ext(Fast_Call_arguments_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::Call::arguments.type");
@@ -5083,6 +4949,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Call::construct(Fast::Call object) */
     Fast_Call_construct_o = db_declare(Fast_Call_o, "construct(Fast::Call object)", db_typedef(db_callback_o));
     if (!Fast_Call_construct_o) {
@@ -5105,6 +4972,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Call::function */
     if (!db_checkState(Fast_Call_function_o, DB_DEFINED)) {
         Fast_Call_function_o->type = db_resolve_ext(Fast_Call_function_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::Call::function.type");
@@ -5117,6 +4985,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Call::hasSideEffects() */
     Fast_Call_hasSideEffects_o = db_declare(Fast_Call_o, "hasSideEffects()", db_typedef(db_virtual_o));
     if (!Fast_Call_hasSideEffects_o) {
@@ -5139,6 +5008,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Call::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
     Fast_Call_toIc_o = db_declare(Fast_Call_o, "toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)", db_typedef(db_virtual_o));
     if (!Fast_Call_toIc_o) {
@@ -5161,6 +5031,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Call */
     if (!db_checkState(Fast_Call_o, DB_DEFINED)) {
         db_type(Fast_Call_o)->defaultType = db_resolve_ext(Fast_Call_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::Call.defaultType");
@@ -5175,9 +5046,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_Call_o)->size != sizeof(struct Fast_Call_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Call' doesn't match C-type size '%d'", db_type(Fast_Call_o)->size, sizeof(struct Fast_Call_s));
     }
+
     /* Declare ::hyve::Fast::CastExpr::construct(Fast::CastExpr object) */
     Fast_CastExpr_construct_o = db_declare(Fast_CastExpr_o, "construct(Fast::CastExpr object)", db_typedef(db_callback_o));
     if (!Fast_CastExpr_construct_o) {
@@ -5200,6 +5073,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::CastExpr::lvalue */
     if (!db_checkState(Fast_CastExpr_lvalue_o, DB_DEFINED)) {
         Fast_CastExpr_lvalue_o->type = db_resolve_ext(Fast_CastExpr_lvalue_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::CastExpr::lvalue.type");
@@ -5212,6 +5086,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::CastExpr::rvalue */
     if (!db_checkState(Fast_CastExpr_rvalue_o, DB_DEFINED)) {
         Fast_CastExpr_rvalue_o->type = db_resolve_ext(Fast_CastExpr_rvalue_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::CastExpr::rvalue.type");
@@ -5224,6 +5099,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::CastExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
     Fast_CastExpr_toIc_o = db_declare(Fast_CastExpr_o, "toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)", db_typedef(db_virtual_o));
     if (!Fast_CastExpr_toIc_o) {
@@ -5246,6 +5122,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::CastExpr */
     if (!db_checkState(Fast_CastExpr_o, DB_DEFINED)) {
         db_type(Fast_CastExpr_o)->defaultType = db_resolve_ext(Fast_CastExpr_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::CastExpr.defaultType");
@@ -5260,9 +5137,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_CastExpr_o)->size != sizeof(struct Fast_CastExpr_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::CastExpr' doesn't match C-type size '%d'", db_type(Fast_CastExpr_o)->size, sizeof(struct Fast_CastExpr_s));
     }
+
     /* Declare ::hyve::Fast::CommaExpr::addExpression(Expression expr) */
     Fast_CommaExpr_addExpression_o = db_declare(Fast_CommaExpr_o, "addExpression(Expression expr)", db_typedef(db_method_o));
     if (!Fast_CommaExpr_addExpression_o) {
@@ -5285,6 +5164,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::CommaExpr::addOrCreate(Expression list,Expression expr) */
     Fast_CommaExpr_addOrCreate_o = db_declare(Fast_CommaExpr_o, "addOrCreate(Expression list,Expression expr)", db_typedef(db_function_o));
     if (!Fast_CommaExpr_addOrCreate_o) {
@@ -5306,6 +5186,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::CommaExpr::construct(CommaExpr object) */
     Fast_CommaExpr_construct_o = db_declare(Fast_CommaExpr_o, "construct(CommaExpr object)", db_typedef(db_callback_o));
     if (!Fast_CommaExpr_construct_o) {
@@ -5328,6 +5209,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::CommaExpr::hasSideEffects() */
     Fast_CommaExpr_hasSideEffects_o = db_declare(Fast_CommaExpr_o, "hasSideEffects()", db_typedef(db_virtual_o));
     if (!Fast_CommaExpr_hasSideEffects_o) {
@@ -5350,6 +5232,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::CommaExpr::init(CommaExpr object) */
     Fast_CommaExpr_init_o = db_declare(Fast_CommaExpr_o, "init(CommaExpr object)", db_typedef(db_callback_o));
     if (!Fast_CommaExpr_init_o) {
@@ -5372,6 +5255,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::CommaExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
     Fast_CommaExpr_toIc_o = db_declare(Fast_CommaExpr_o, "toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)", db_typedef(db_virtual_o));
     if (!Fast_CommaExpr_toIc_o) {
@@ -5394,6 +5278,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::CommaExpr::toList() */
     Fast_CommaExpr_toList_o = db_declare(Fast_CommaExpr_o, "toList()", db_typedef(db_method_o));
     if (!Fast_CommaExpr_toList_o) {
@@ -5416,6 +5301,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::CommaExpr */
     if (!db_checkState(Fast_CommaExpr_o, DB_DEFINED)) {
         db_type(Fast_CommaExpr_o)->defaultType = db_resolve_ext(Fast_CommaExpr_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::CommaExpr.defaultType");
@@ -5430,9 +5316,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_CommaExpr_o)->size != sizeof(struct Fast_CommaExpr_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::CommaExpr' doesn't match C-type size '%d'", db_type(Fast_CommaExpr_o)->size, sizeof(struct Fast_CommaExpr_s));
     }
+
     /* Define ::hyve::Fast::Define::object */
     if (!db_checkState(Fast_Define_object_o, DB_DEFINED)) {
         Fast_Define_object_o->type = db_resolve_ext(Fast_Define_object_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::Define::object.type");
@@ -5445,6 +5333,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Define */
     if (!db_checkState(Fast_Define_o, DB_DEFINED)) {
         db_type(Fast_Define_o)->defaultType = db_resolve_ext(Fast_Define_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::Define.defaultType");
@@ -5459,9 +5348,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_Define_o)->size != sizeof(struct Fast_Define_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Define' doesn't match C-type size '%d'", db_type(Fast_Define_o)->size, sizeof(struct Fast_Define_s));
     }
+
     /* Define ::hyve::Fast::ElementExpr::lvalue */
     if (!db_checkState(Fast_ElementExpr_lvalue_o, DB_DEFINED)) {
         Fast_ElementExpr_lvalue_o->type = db_resolve_ext(Fast_ElementExpr_lvalue_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::ElementExpr::lvalue.type");
@@ -5474,6 +5365,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::ElementExpr::rvalue */
     if (!db_checkState(Fast_ElementExpr_rvalue_o, DB_DEFINED)) {
         Fast_ElementExpr_rvalue_o->type = db_resolve_ext(Fast_ElementExpr_rvalue_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::ElementExpr::rvalue.type");
@@ -5486,6 +5378,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::ElementExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
     Fast_ElementExpr_toIc_o = db_declare(Fast_ElementExpr_o, "toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)", db_typedef(db_virtual_o));
     if (!Fast_ElementExpr_toIc_o) {
@@ -5508,6 +5401,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Expression::fromList(list{Expression} list) */
     if (!db_checkState(Fast_Expression_fromList_o, DB_DEFINED)) {
         Fast_Expression_fromList_o->returnType = db_resolve_ext(Fast_Expression_fromList_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::Expression::fromList(list{Expression} list).returnType");
@@ -5522,6 +5416,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::If::condition */
     if (!db_checkState(Fast_If_condition_o, DB_DEFINED)) {
         Fast_If_condition_o->type = db_resolve_ext(Fast_If_condition_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::If::condition.type");
@@ -5534,6 +5429,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Initializer::construct(Initializer object) */
     Fast_Initializer_construct_o = db_declare(Fast_Initializer_o, "construct(Initializer object)", db_typedef(db_callback_o));
     if (!Fast_Initializer_construct_o) {
@@ -5556,6 +5452,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Initializer::currentType() */
     Fast_Initializer_currentType_o = db_declare(Fast_Initializer_o, "currentType()", db_typedef(db_method_o));
     if (!Fast_Initializer_currentType_o) {
@@ -5578,6 +5475,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Initializer::define() */
     Fast_Initializer_define_o = db_declare(Fast_Initializer_o, "define()", db_typedef(db_virtual_o));
     if (!Fast_Initializer_define_o) {
@@ -5600,6 +5498,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Initializer::initFrame() */
     Fast_Initializer_initFrame_o = db_declare(Fast_Initializer_o, "initFrame()", db_typedef(db_method_o));
     if (!Fast_Initializer_initFrame_o) {
@@ -5622,6 +5521,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Initializer::member(lang::string name) */
     Fast_Initializer_member_o = db_declare(Fast_Initializer_o, "member(lang::string name)", db_typedef(db_virtual_o));
     if (!Fast_Initializer_member_o) {
@@ -5644,6 +5544,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Initializer::next() */
     Fast_Initializer_next_o = db_declare(Fast_Initializer_o, "next()", db_typedef(db_virtual_o));
     if (!Fast_Initializer_next_o) {
@@ -5666,6 +5567,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Initializer::pop() */
     Fast_Initializer_pop_o = db_declare(Fast_Initializer_o, "pop()", db_typedef(db_virtual_o));
     if (!Fast_Initializer_pop_o) {
@@ -5688,6 +5590,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Initializer::popKey() */
     Fast_Initializer_popKey_o = db_declare(Fast_Initializer_o, "popKey()", db_typedef(db_virtual_o));
     if (!Fast_Initializer_popKey_o) {
@@ -5710,6 +5613,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Initializer::push() */
     Fast_Initializer_push_o = db_declare(Fast_Initializer_o, "push()", db_typedef(db_virtual_o));
     if (!Fast_Initializer_push_o) {
@@ -5732,6 +5636,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Initializer::pushKey() */
     Fast_Initializer_pushKey_o = db_declare(Fast_Initializer_o, "pushKey()", db_typedef(db_virtual_o));
     if (!Fast_Initializer_pushKey_o) {
@@ -5754,6 +5659,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Initializer::type() */
     Fast_Initializer_type_o = db_declare(Fast_Initializer_o, "type()", db_typedef(db_method_o));
     if (!Fast_Initializer_type_o) {
@@ -5776,6 +5682,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Initializer::value(Expression v) */
     Fast_Initializer_value_o = db_declare(Fast_Initializer_o, "value(Expression v)", db_typedef(db_virtual_o));
     if (!Fast_Initializer_value_o) {
@@ -5798,6 +5705,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Initializer::valueKey(Expression key) */
     Fast_Initializer_valueKey_o = db_declare(Fast_Initializer_o, "valueKey(Expression key)", db_typedef(db_virtual_o));
     if (!Fast_Initializer_valueKey_o) {
@@ -5820,6 +5728,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::InitializerVariable::object */
     if (!db_checkState(Fast_InitializerVariable_object_o, DB_DEFINED)) {
         Fast_InitializerVariable_object_o->type = db_resolve_ext(Fast_InitializerVariable_object_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::InitializerVariable::object.type");
@@ -5832,6 +5741,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::InitializerVariable */
     if (!db_checkState(Fast_InitializerVariable_o, DB_DEFINED)) {
         db_type(Fast_InitializerVariable_o)->defaultType = db_resolve_ext(Fast_InitializerVariable_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::InitializerVariable.defaultType");
@@ -5844,9 +5754,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_InitializerVariable_o)->size != sizeof(Fast_InitializerVariable)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::InitializerVariable' doesn't match C-type size '%d'", db_type(Fast_InitializerVariable_o)->size, sizeof(Fast_InitializerVariable));
     }
+
     /* Define ::hyve::Fast::Initializer::variables */
     if (!db_checkState(Fast_Initializer_variables_o, DB_DEFINED)) {
         Fast_Initializer_variables_o->type = db_resolve_ext(Fast_Initializer_variables_o, NULL, "::hyve::lang::array{::hyve::Fast::InitializerVariable,64,::hyve::Fast::InitializerVariable}", FALSE, "element ::hyve::Fast::Initializer::variables.type");
@@ -5859,6 +5771,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Initializer */
     if (!db_checkState(Fast_Initializer_o, DB_DEFINED)) {
         db_type(Fast_Initializer_o)->defaultType = db_resolve_ext(Fast_Initializer_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::Initializer.defaultType");
@@ -5873,9 +5786,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_Initializer_o)->size != sizeof(struct Fast_Initializer_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Initializer' doesn't match C-type size '%d'", db_type(Fast_Initializer_o)->size, sizeof(struct Fast_Initializer_s));
     }
+
     /* Declare ::hyve::Fast::DynamicInitializer::construct(DynamicInitializer object) */
     Fast_DynamicInitializer_construct_o = db_declare(Fast_DynamicInitializer_o, "construct(DynamicInitializer object)", db_typedef(db_callback_o));
     if (!Fast_DynamicInitializer_construct_o) {
@@ -5898,6 +5813,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::DynamicInitializer::define() */
     Fast_DynamicInitializer_define_o = db_declare(Fast_DynamicInitializer_o, "define()", db_typedef(db_method_o));
     if (!Fast_DynamicInitializer_define_o) {
@@ -5920,6 +5836,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::DynamicInitializer::pop() */
     Fast_DynamicInitializer_pop_o = db_declare(Fast_DynamicInitializer_o, "pop()", db_typedef(db_method_o));
     if (!Fast_DynamicInitializer_pop_o) {
@@ -5942,6 +5859,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::DynamicInitializer::push() */
     Fast_DynamicInitializer_push_o = db_declare(Fast_DynamicInitializer_o, "push()", db_typedef(db_method_o));
     if (!Fast_DynamicInitializer_push_o) {
@@ -5964,6 +5882,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::DynamicInitializer::value(Expression v) */
     Fast_DynamicInitializer_value_o = db_declare(Fast_DynamicInitializer_o, "value(Expression v)", db_typedef(db_method_o));
     if (!Fast_DynamicInitializer_value_o) {
@@ -5986,6 +5905,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::InitializerExpr::construct(InitializerExpr object) */
     Fast_InitializerExpr_construct_o = db_declare(Fast_InitializerExpr_o, "construct(InitializerExpr object)", db_typedef(db_callback_o));
     if (!Fast_InitializerExpr_construct_o) {
@@ -6008,6 +5928,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::InitializerExpr::define() */
     Fast_InitializerExpr_define_o = db_declare(Fast_InitializerExpr_o, "define()", db_typedef(db_method_o));
     if (!Fast_InitializerExpr_define_o) {
@@ -6030,6 +5951,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::InitializerExpr::insert(Expression variable) */
     Fast_InitializerExpr_insert_o = db_declare(Fast_InitializerExpr_o, "insert(Expression variable)", db_typedef(db_method_o));
     if (!Fast_InitializerExpr_insert_o) {
@@ -6052,6 +5974,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::InitializerExpr::member(lang::string name) */
     Fast_InitializerExpr_member_o = db_declare(Fast_InitializerExpr_o, "member(lang::string name)", db_typedef(db_method_o));
     if (!Fast_InitializerExpr_member_o) {
@@ -6074,6 +5997,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::InitializerExpr::pop() */
     Fast_InitializerExpr_pop_o = db_declare(Fast_InitializerExpr_o, "pop()", db_typedef(db_method_o));
     if (!Fast_InitializerExpr_pop_o) {
@@ -6096,6 +6020,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::InitializerExpr::push() */
     Fast_InitializerExpr_push_o = db_declare(Fast_InitializerExpr_o, "push()", db_typedef(db_method_o));
     if (!Fast_InitializerExpr_push_o) {
@@ -6118,6 +6043,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::InitializerExpr::value(Expression v) */
     Fast_InitializerExpr_value_o = db_declare(Fast_InitializerExpr_o, "value(Expression v)", db_typedef(db_method_o));
     if (!Fast_InitializerExpr_value_o) {
@@ -6140,6 +6066,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::InitializerExpr */
     if (!db_checkState(Fast_InitializerExpr_o, DB_DEFINED)) {
         db_type(Fast_InitializerExpr_o)->defaultType = db_resolve_ext(Fast_InitializerExpr_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::InitializerExpr.defaultType");
@@ -6154,9 +6081,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_InitializerExpr_o)->size != sizeof(struct Fast_InitializerExpr_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::InitializerExpr' doesn't match C-type size '%d'", db_type(Fast_InitializerExpr_o)->size, sizeof(struct Fast_InitializerExpr_s));
     }
+
     /* Declare ::hyve::Fast::StaticInitializer::construct(StaticInitializer object) */
     Fast_StaticInitializer_construct_o = db_declare(Fast_StaticInitializer_o, "construct(StaticInitializer object)", db_typedef(db_callback_o));
     if (!Fast_StaticInitializer_construct_o) {
@@ -6179,6 +6108,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::StaticInitializer::define() */
     Fast_StaticInitializer_define_o = db_declare(Fast_StaticInitializer_o, "define()", db_typedef(db_method_o));
     if (!Fast_StaticInitializer_define_o) {
@@ -6201,6 +6131,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::StaticInitializer::push() */
     Fast_StaticInitializer_push_o = db_declare(Fast_StaticInitializer_o, "push()", db_typedef(db_method_o));
     if (!Fast_StaticInitializer_push_o) {
@@ -6223,6 +6154,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::StaticInitializer::value(Expression v) */
     Fast_StaticInitializer_value_o = db_declare(Fast_StaticInitializer_o, "value(Expression v)", db_typedef(db_method_o));
     if (!Fast_StaticInitializer_value_o) {
@@ -6245,6 +6177,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::StaticInitializer */
     if (!db_checkState(Fast_StaticInitializer_o, DB_DEFINED)) {
         db_type(Fast_StaticInitializer_o)->defaultType = db_resolve_ext(Fast_StaticInitializer_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::StaticInitializer.defaultType");
@@ -6259,9 +6192,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_StaticInitializer_o)->size != sizeof(struct Fast_StaticInitializer_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::StaticInitializer' doesn't match C-type size '%d'", db_type(Fast_StaticInitializer_o)->size, sizeof(struct Fast_StaticInitializer_s));
     }
+
     /* Define ::hyve::Fast::Parser::initializers */
     if (!db_checkState(Fast_Parser_initializers_o, DB_DEFINED)) {
         Fast_Parser_initializers_o->type = db_resolve_ext(Fast_Parser_initializers_o, NULL, "::hyve::lang::array{::hyve::Fast::Initializer,64,::hyve::Fast::Initializer}", FALSE, "element ::hyve::Fast::Parser::initializers.type");
@@ -6274,6 +6209,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::InitOper::expr */
     if (!db_checkState(Fast_InitOper_expr_o, DB_DEFINED)) {
         Fast_InitOper_expr_o->type = db_resolve_ext(Fast_InitOper_expr_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::InitOper::expr.type");
@@ -6286,6 +6222,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::InitOper */
     if (!db_checkState(Fast_InitOper_o, DB_DEFINED)) {
         db_type(Fast_InitOper_o)->defaultType = db_resolve_ext(Fast_InitOper_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::InitOper.defaultType");
@@ -6298,9 +6235,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_InitOper_o)->size != sizeof(Fast_InitOper)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::InitOper' doesn't match C-type size '%d'", db_type(Fast_InitOper_o)->size, sizeof(Fast_InitOper));
     }
+
     /* Declare ::hyve::Fast::Literal::getValue() */
     Fast_Literal_getValue_o = db_declare(Fast_Literal_o, "getValue()", db_typedef(db_virtual_o));
     if (!Fast_Literal_getValue_o) {
@@ -6323,6 +6262,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Literal::init(Literal object) */
     Fast_Literal_init_o = db_declare(Fast_Literal_o, "init(Literal object)", db_typedef(db_callback_o));
     if (!Fast_Literal_init_o) {
@@ -6345,6 +6285,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Literal */
     if (!db_checkState(Fast_Literal_o, DB_DEFINED)) {
         db_type(Fast_Literal_o)->defaultType = db_resolve_ext(Fast_Literal_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::Literal.defaultType");
@@ -6359,9 +6300,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_Literal_o)->size != sizeof(struct Fast_Literal_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Literal' doesn't match C-type size '%d'", db_type(Fast_Literal_o)->size, sizeof(struct Fast_Literal_s));
     }
+
     /* Declare ::hyve::Fast::Boolean::init(Boolean object) */
     Fast_Boolean_init_o = db_declare(Fast_Boolean_o, "init(Boolean object)", db_typedef(db_callback_o));
     if (!Fast_Boolean_init_o) {
@@ -6384,6 +6327,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Boolean::serialize(lang::type dstType,lang::word dst) */
     Fast_Boolean_serialize_o = db_declare(Fast_Boolean_o, "serialize(lang::type dstType,lang::word dst)", db_typedef(db_method_o));
     if (!Fast_Boolean_serialize_o) {
@@ -6406,6 +6350,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Boolean::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
     Fast_Boolean_toIc_o = db_declare(Fast_Boolean_o, "toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)", db_typedef(db_virtual_o));
     if (!Fast_Boolean_toIc_o) {
@@ -6428,6 +6373,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Boolean */
     if (!db_checkState(Fast_Boolean_o, DB_DEFINED)) {
         db_type(Fast_Boolean_o)->defaultType = db_resolve_ext(Fast_Boolean_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::Boolean.defaultType");
@@ -6442,9 +6388,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_Boolean_o)->size != sizeof(struct Fast_Boolean_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Boolean' doesn't match C-type size '%d'", db_type(Fast_Boolean_o)->size, sizeof(struct Fast_Boolean_s));
     }
+
     /* Declare ::hyve::Fast::Character::init(Character object) */
     Fast_Character_init_o = db_declare(Fast_Character_o, "init(Character object)", db_typedef(db_callback_o));
     if (!Fast_Character_init_o) {
@@ -6467,6 +6415,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Character::serialize(lang::type dstType,lang::word dst) */
     Fast_Character_serialize_o = db_declare(Fast_Character_o, "serialize(lang::type dstType,lang::word dst)", db_typedef(db_method_o));
     if (!Fast_Character_serialize_o) {
@@ -6489,6 +6438,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Character::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
     Fast_Character_toIc_o = db_declare(Fast_Character_o, "toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)", db_typedef(db_virtual_o));
     if (!Fast_Character_toIc_o) {
@@ -6511,6 +6461,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Character */
     if (!db_checkState(Fast_Character_o, DB_DEFINED)) {
         db_type(Fast_Character_o)->defaultType = db_resolve_ext(Fast_Character_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::Character.defaultType");
@@ -6525,9 +6476,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_Character_o)->size != sizeof(struct Fast_Character_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Character' doesn't match C-type size '%d'", db_type(Fast_Character_o)->size, sizeof(struct Fast_Character_s));
     }
+
     /* Declare ::hyve::Fast::FloatingPoint::init(FloatingPoint object) */
     Fast_FloatingPoint_init_o = db_declare(Fast_FloatingPoint_o, "init(FloatingPoint object)", db_typedef(db_callback_o));
     if (!Fast_FloatingPoint_init_o) {
@@ -6550,6 +6503,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::FloatingPoint::serialize(lang::type dstType,lang::word dst) */
     Fast_FloatingPoint_serialize_o = db_declare(Fast_FloatingPoint_o, "serialize(lang::type dstType,lang::word dst)", db_typedef(db_method_o));
     if (!Fast_FloatingPoint_serialize_o) {
@@ -6572,6 +6526,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::FloatingPoint::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
     Fast_FloatingPoint_toIc_o = db_declare(Fast_FloatingPoint_o, "toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)", db_typedef(db_virtual_o));
     if (!Fast_FloatingPoint_toIc_o) {
@@ -6594,6 +6549,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::FloatingPoint */
     if (!db_checkState(Fast_FloatingPoint_o, DB_DEFINED)) {
         db_type(Fast_FloatingPoint_o)->defaultType = db_resolve_ext(Fast_FloatingPoint_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::FloatingPoint.defaultType");
@@ -6608,9 +6564,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_FloatingPoint_o)->size != sizeof(struct Fast_FloatingPoint_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::FloatingPoint' doesn't match C-type size '%d'", db_type(Fast_FloatingPoint_o)->size, sizeof(struct Fast_FloatingPoint_s));
     }
+
     /* Declare ::hyve::Fast::Integer::init(Integer object) */
     Fast_Integer_init_o = db_declare(Fast_Integer_o, "init(Integer object)", db_typedef(db_callback_o));
     if (!Fast_Integer_init_o) {
@@ -6633,6 +6591,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Integer::serialize(lang::type dstType,lang::word dst) */
     Fast_Integer_serialize_o = db_declare(Fast_Integer_o, "serialize(lang::type dstType,lang::word dst)", db_typedef(db_method_o));
     if (!Fast_Integer_serialize_o) {
@@ -6655,6 +6614,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Integer::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
     Fast_Integer_toIc_o = db_declare(Fast_Integer_o, "toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)", db_typedef(db_virtual_o));
     if (!Fast_Integer_toIc_o) {
@@ -6677,6 +6637,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Integer */
     if (!db_checkState(Fast_Integer_o, DB_DEFINED)) {
         db_type(Fast_Integer_o)->defaultType = db_resolve_ext(Fast_Integer_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::Integer.defaultType");
@@ -6691,9 +6652,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_Integer_o)->size != sizeof(struct Fast_Integer_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Integer' doesn't match C-type size '%d'", db_type(Fast_Integer_o)->size, sizeof(struct Fast_Integer_s));
     }
+
     /* Define ::hyve::Fast::DynamicInitializerFrame::sequenceSize */
     if (!db_checkState(Fast_DynamicInitializerFrame_sequenceSize_o, DB_DEFINED)) {
         Fast_DynamicInitializerFrame_sequenceSize_o->type = db_resolve_ext(Fast_DynamicInitializerFrame_sequenceSize_o, NULL, "::hyve::Fast::Integer", FALSE, "element ::hyve::Fast::DynamicInitializerFrame::sequenceSize.type");
@@ -6706,6 +6669,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Null::init(Null object) */
     Fast_Null_init_o = db_declare(Fast_Null_o, "init(Null object)", db_typedef(db_callback_o));
     if (!Fast_Null_init_o) {
@@ -6728,6 +6692,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Null::serialize(lang::type dstType,lang::word dst) */
     Fast_Null_serialize_o = db_declare(Fast_Null_o, "serialize(lang::type dstType,lang::word dst)", db_typedef(db_method_o));
     if (!Fast_Null_serialize_o) {
@@ -6750,6 +6715,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Null::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
     Fast_Null_toIc_o = db_declare(Fast_Null_o, "toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)", db_typedef(db_virtual_o));
     if (!Fast_Null_toIc_o) {
@@ -6772,6 +6738,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Null */
     if (!db_checkState(Fast_Null_o, DB_DEFINED)) {
         db_type(Fast_Null_o)->defaultType = db_resolve_ext(Fast_Null_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::Null.defaultType");
@@ -6786,9 +6753,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_Null_o)->size != sizeof(struct Fast_Null_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Null' doesn't match C-type size '%d'", db_type(Fast_Null_o)->size, sizeof(struct Fast_Null_s));
     }
+
     /* Declare ::hyve::Fast::SignedInteger::init(SignedInteger object) */
     Fast_SignedInteger_init_o = db_declare(Fast_SignedInteger_o, "init(SignedInteger object)", db_typedef(db_callback_o));
     if (!Fast_SignedInteger_init_o) {
@@ -6811,6 +6780,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::SignedInteger::serialize(lang::type dstType,lang::word dst) */
     Fast_SignedInteger_serialize_o = db_declare(Fast_SignedInteger_o, "serialize(lang::type dstType,lang::word dst)", db_typedef(db_method_o));
     if (!Fast_SignedInteger_serialize_o) {
@@ -6833,6 +6803,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::SignedInteger::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
     Fast_SignedInteger_toIc_o = db_declare(Fast_SignedInteger_o, "toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)", db_typedef(db_virtual_o));
     if (!Fast_SignedInteger_toIc_o) {
@@ -6855,6 +6826,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::SignedInteger */
     if (!db_checkState(Fast_SignedInteger_o, DB_DEFINED)) {
         db_type(Fast_SignedInteger_o)->defaultType = db_resolve_ext(Fast_SignedInteger_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::SignedInteger.defaultType");
@@ -6869,9 +6841,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_SignedInteger_o)->size != sizeof(struct Fast_SignedInteger_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::SignedInteger' doesn't match C-type size '%d'", db_type(Fast_SignedInteger_o)->size, sizeof(struct Fast_SignedInteger_s));
     }
+
     /* Declare ::hyve::Fast::String::construct(String object) */
     Fast_String_construct_o = db_declare(Fast_String_o, "construct(String object)", db_typedef(db_callback_o));
     if (!Fast_String_construct_o) {
@@ -6894,6 +6868,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::String::getValue() */
     Fast_String_getValue_o = db_declare(Fast_String_o, "getValue()", db_typedef(db_method_o));
     if (!Fast_String_getValue_o) {
@@ -6916,6 +6891,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::String::init(String object) */
     Fast_String_init_o = db_declare(Fast_String_o, "init(String object)", db_typedef(db_callback_o));
     if (!Fast_String_init_o) {
@@ -6938,6 +6914,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::String::serialize(lang::type dstType,lang::word dst) */
     Fast_String_serialize_o = db_declare(Fast_String_o, "serialize(lang::type dstType,lang::word dst)", db_typedef(db_method_o));
     if (!Fast_String_serialize_o) {
@@ -6960,6 +6937,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::String::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
     Fast_String_toIc_o = db_declare(Fast_String_o, "toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)", db_typedef(db_virtual_o));
     if (!Fast_String_toIc_o) {
@@ -6982,6 +6960,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Lvalue::expr */
     if (!db_checkState(Fast_Lvalue_expr_o, DB_DEFINED)) {
         Fast_Lvalue_expr_o->type = db_resolve_ext(Fast_Lvalue_expr_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::Lvalue::expr.type");
@@ -6994,6 +6973,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Lvalue */
     if (!db_checkState(Fast_Lvalue_o, DB_DEFINED)) {
         db_type(Fast_Lvalue_o)->defaultType = db_resolve_ext(Fast_Lvalue_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::Lvalue.defaultType");
@@ -7006,9 +6986,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_Lvalue_o)->size != sizeof(Fast_Lvalue)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Lvalue' doesn't match C-type size '%d'", db_type(Fast_Lvalue_o)->size, sizeof(Fast_Lvalue));
     }
+
     /* Define ::hyve::Fast::Parser::lvalue */
     if (!db_checkState(Fast_Parser_lvalue_o, DB_DEFINED)) {
         Fast_Parser_lvalue_o->type = db_resolve_ext(Fast_Parser_lvalue_o, NULL, "::hyve::lang::array{::hyve::Fast::Lvalue,64,::hyve::Fast::Lvalue}", FALSE, "element ::hyve::Fast::Parser::lvalue.type");
@@ -7021,6 +7003,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::MemberExpr::construct(Fast::MemberExpr object) */
     Fast_MemberExpr_construct_o = db_declare(Fast_MemberExpr_o, "construct(Fast::MemberExpr object)", db_typedef(db_callback_o));
     if (!Fast_MemberExpr_construct_o) {
@@ -7043,6 +7026,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::MemberExpr::hasSideEffects() */
     Fast_MemberExpr_hasSideEffects_o = db_declare(Fast_MemberExpr_o, "hasSideEffects()", db_typedef(db_virtual_o));
     if (!Fast_MemberExpr_hasSideEffects_o) {
@@ -7065,6 +7049,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::MemberExpr::lvalue */
     if (!db_checkState(Fast_MemberExpr_lvalue_o, DB_DEFINED)) {
         Fast_MemberExpr_lvalue_o->type = db_resolve_ext(Fast_MemberExpr_lvalue_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::MemberExpr::lvalue.type");
@@ -7077,6 +7062,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::MemberExpr::rvalue */
     if (!db_checkState(Fast_MemberExpr_rvalue_o, DB_DEFINED)) {
         Fast_MemberExpr_rvalue_o->type = db_resolve_ext(Fast_MemberExpr_rvalue_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::MemberExpr::rvalue.type");
@@ -7089,6 +7075,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::MemberExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
     Fast_MemberExpr_toIc_o = db_declare(Fast_MemberExpr_o, "toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)", db_typedef(db_virtual_o));
     if (!Fast_MemberExpr_toIc_o) {
@@ -7111,6 +7098,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::MemberExpr */
     if (!db_checkState(Fast_MemberExpr_o, DB_DEFINED)) {
         db_type(Fast_MemberExpr_o)->defaultType = db_resolve_ext(Fast_MemberExpr_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::MemberExpr.defaultType");
@@ -7125,9 +7113,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_MemberExpr_o)->size != sizeof(struct Fast_MemberExpr_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::MemberExpr' doesn't match C-type size '%d'", db_type(Fast_MemberExpr_o)->size, sizeof(struct Fast_MemberExpr_s));
     }
+
     /* Declare ::hyve::Fast::ElementExpr::construct(Fast::MemberExpr object) */
     Fast_ElementExpr_construct_o = db_declare(Fast_ElementExpr_o, "construct(Fast::MemberExpr object)", db_typedef(db_callback_o));
     if (!Fast_ElementExpr_construct_o) {
@@ -7150,6 +7140,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::ElementExpr */
     if (!db_checkState(Fast_ElementExpr_o, DB_DEFINED)) {
         db_type(Fast_ElementExpr_o)->defaultType = db_resolve_ext(Fast_ElementExpr_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::ElementExpr.defaultType");
@@ -7164,9 +7155,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_ElementExpr_o)->size != sizeof(struct Fast_ElementExpr_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::ElementExpr' doesn't match C-type size '%d'", db_type(Fast_ElementExpr_o)->size, sizeof(struct Fast_ElementExpr_s));
     }
+
     /* Define ::hyve::Fast::NewExpr::attributes */
     if (!db_checkState(Fast_NewExpr_attributes_o, DB_DEFINED)) {
         Fast_NewExpr_attributes_o->type = db_resolve_ext(Fast_NewExpr_attributes_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::NewExpr::attributes.type");
@@ -7179,6 +7172,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::NewExpr::construct(Fast::NewExpr object) */
     Fast_NewExpr_construct_o = db_declare(Fast_NewExpr_o, "construct(Fast::NewExpr object)", db_typedef(db_callback_o));
     if (!Fast_NewExpr_construct_o) {
@@ -7201,6 +7195,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::NewExpr::hasSideEffects() */
     Fast_NewExpr_hasSideEffects_o = db_declare(Fast_NewExpr_o, "hasSideEffects()", db_typedef(db_virtual_o));
     if (!Fast_NewExpr_hasSideEffects_o) {
@@ -7223,6 +7218,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::NewExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
     Fast_NewExpr_toIc_o = db_declare(Fast_NewExpr_o, "toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)", db_typedef(db_virtual_o));
     if (!Fast_NewExpr_toIc_o) {
@@ -7245,6 +7241,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::NewExpr::type */
     if (!db_checkState(Fast_NewExpr_type_o, DB_DEFINED)) {
         Fast_NewExpr_type_o->type = db_resolve_ext(Fast_NewExpr_type_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::NewExpr::type.type");
@@ -7257,6 +7254,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::NewExpr */
     if (!db_checkState(Fast_NewExpr_o, DB_DEFINED)) {
         db_type(Fast_NewExpr_o)->defaultType = db_resolve_ext(Fast_NewExpr_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::NewExpr.defaultType");
@@ -7271,9 +7269,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_NewExpr_o)->size != sizeof(struct Fast_NewExpr_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::NewExpr' doesn't match C-type size '%d'", db_type(Fast_NewExpr_o)->size, sizeof(struct Fast_NewExpr_s));
     }
+
     /* Declare ::hyve::Fast::Parser::binaryExpr(Fast::Expression lvalues,Fast::Expression rvalues,lang::operatorKind operator) */
     Fast_Parser_binaryExpr_o = db_declare(Fast_Parser_o, "binaryExpr(Fast::Expression lvalues,Fast::Expression rvalues,lang::operatorKind operator)", db_typedef(db_method_o));
     if (!Fast_Parser_binaryExpr_o) {
@@ -7296,6 +7296,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::callExpr(Fast::Expression function,Fast::Expression arguments) */
     Fast_Parser_callExpr_o = db_declare(Fast_Parser_o, "callExpr(Fast::Expression function,Fast::Expression arguments)", db_typedef(db_method_o));
     if (!Fast_Parser_callExpr_o) {
@@ -7318,6 +7319,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::castExpr(Fast::Expression lvalue,Fast::Expression rvalue) */
     Fast_Parser_castExpr_o = db_declare(Fast_Parser_o, "castExpr(Fast::Expression lvalue,Fast::Expression rvalue)", db_typedef(db_method_o));
     if (!Fast_Parser_castExpr_o) {
@@ -7340,6 +7342,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::elementExpr(Fast::Expression lvalue,Fast::Expression rvalue) */
     Fast_Parser_elementExpr_o = db_declare(Fast_Parser_o, "elementExpr(Fast::Expression lvalue,Fast::Expression rvalue)", db_typedef(db_method_o));
     if (!Fast_Parser_elementExpr_o) {
@@ -7362,6 +7365,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::foreach(lang::string loopId,Fast::Expression collection) */
     Fast_Parser_foreach_o = db_declare(Fast_Parser_o, "foreach(lang::string loopId,Fast::Expression collection)", db_typedef(db_method_o));
     if (!Fast_Parser_foreach_o) {
@@ -7384,6 +7388,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Parser::getLvalue(lang::bool assignment) */
     if (!db_checkState(Fast_Parser_getLvalue_o, DB_DEFINED)) {
         db_function(Fast_Parser_getLvalue_o)->returnType = db_resolve_ext(Fast_Parser_getLvalue_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::Parser::getLvalue(lang::bool assignment).returnType");
@@ -7399,6 +7404,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::initDeclareStaged(Fast::Expression expr) */
     Fast_Parser_initDeclareStaged_o = db_declare(Fast_Parser_o, "initDeclareStaged(Fast::Expression expr)", db_typedef(db_method_o));
     if (!Fast_Parser_initDeclareStaged_o) {
@@ -7421,6 +7427,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::initKeyValueSet(Fast::Expression expr) */
     Fast_Parser_initKeyValueSet_o = db_declare(Fast_Parser_o, "initKeyValueSet(Fast::Expression expr)", db_typedef(db_method_o));
     if (!Fast_Parser_initKeyValueSet_o) {
@@ -7443,6 +7450,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Parser::initPushExpression() */
     if (!db_checkState(Fast_Parser_initPushExpression_o, DB_DEFINED)) {
         db_function(Fast_Parser_initPushExpression_o)->returnType = db_resolve_ext(Fast_Parser_initPushExpression_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::Parser::initPushExpression().returnType");
@@ -7458,6 +7466,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::initPushIdentifier(Expression type) */
     Fast_Parser_initPushIdentifier_o = db_declare(Fast_Parser_o, "initPushIdentifier(Expression type)", db_typedef(db_method_o));
     if (!Fast_Parser_initPushIdentifier_o) {
@@ -7480,6 +7489,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::initValue(Expression expr) */
     Fast_Parser_initValue_o = db_declare(Fast_Parser_o, "initValue(Expression expr)", db_typedef(db_method_o));
     if (!Fast_Parser_initValue_o) {
@@ -7502,6 +7512,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Parser::lookup(lang::string id,lang::object source) */
     if (!db_checkState(Fast_Parser_lookup_o, DB_DEFINED)) {
         db_function(Fast_Parser_lookup_o)->returnType = db_resolve_ext(Fast_Parser_lookup_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::Parser::lookup(lang::string id,lang::object source).returnType");
@@ -7517,6 +7528,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::memberExpr(Fast::Expression lvalue,Fast::Expression rvalue) */
     Fast_Parser_memberExpr_o = db_declare(Fast_Parser_o, "memberExpr(Fast::Expression lvalue,Fast::Expression rvalue)", db_typedef(db_method_o));
     if (!Fast_Parser_memberExpr_o) {
@@ -7539,6 +7551,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::postfixExpr(Fast::Expression lvalue,lang::operatorKind operator) */
     Fast_Parser_postfixExpr_o = db_declare(Fast_Parser_o, "postfixExpr(Fast::Expression lvalue,lang::operatorKind operator)", db_typedef(db_method_o));
     if (!Fast_Parser_postfixExpr_o) {
@@ -7561,6 +7574,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::pushComplexType(Fast::Expression lvalue) */
     Fast_Parser_pushComplexType_o = db_declare(Fast_Parser_o, "pushComplexType(Fast::Expression lvalue)", db_typedef(db_method_o));
     if (!Fast_Parser_pushComplexType_o) {
@@ -7583,6 +7597,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::pushLvalue(Fast::Expression lvalue,lang::bool isAssignment) */
     Fast_Parser_pushLvalue_o = db_declare(Fast_Parser_o, "pushLvalue(Fast::Expression lvalue,lang::bool isAssignment)", db_typedef(db_method_o));
     if (!Fast_Parser_pushLvalue_o) {
@@ -7605,6 +7620,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Parser::singleExpr */
     if (!db_checkState(Fast_Parser_singleExpr_o, DB_DEFINED)) {
         Fast_Parser_singleExpr_o->type = db_resolve_ext(Fast_Parser_singleExpr_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::Parser::singleExpr.type");
@@ -7617,6 +7633,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::ternaryExpr(Fast::Expression cond,Fast::Expression iftrue,Fast::Expression iffalse) */
     Fast_Parser_ternaryExpr_o = db_declare(Fast_Parser_o, "ternaryExpr(Fast::Expression cond,Fast::Expression iftrue,Fast::Expression iffalse)", db_typedef(db_method_o));
     if (!Fast_Parser_ternaryExpr_o) {
@@ -7639,6 +7656,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::unaryExpr(Fast::Expression lvalue,lang::operatorKind operator) */
     Fast_Parser_unaryExpr_o = db_declare(Fast_Parser_o, "unaryExpr(Fast::Expression lvalue,lang::operatorKind operator)", db_typedef(db_method_o));
     if (!Fast_Parser_unaryExpr_o) {
@@ -7661,6 +7679,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::waitExpr(list{Fast::Expression} exprList,Fast::Expression timeout) */
     Fast_Parser_waitExpr_o = db_declare(Fast_Parser_o, "waitExpr(list{Fast::Expression} exprList,Fast::Expression timeout)", db_typedef(db_method_o));
     if (!Fast_Parser_waitExpr_o) {
@@ -7683,6 +7702,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::ParserNew::attr */
     if (!db_checkState(Fast_ParserNew_attr_o, DB_DEFINED)) {
         Fast_ParserNew_attr_o->type = db_resolve_ext(Fast_ParserNew_attr_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::ParserNew::attr.type");
@@ -7695,6 +7715,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::ParserNew::name */
     if (!db_checkState(Fast_ParserNew_name_o, DB_DEFINED)) {
         Fast_ParserNew_name_o->type = db_resolve_ext(Fast_ParserNew_name_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::ParserNew::name.type");
@@ -7707,6 +7728,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::ParserNew::parent */
     if (!db_checkState(Fast_ParserNew_parent_o, DB_DEFINED)) {
         Fast_ParserNew_parent_o->type = db_resolve_ext(Fast_ParserNew_parent_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::ParserNew::parent.type");
@@ -7719,6 +7741,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::ParserNew */
     if (!db_checkState(Fast_ParserNew_o, DB_DEFINED)) {
         db_type(Fast_ParserNew_o)->defaultType = db_resolve_ext(Fast_ParserNew_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::ParserNew.defaultType");
@@ -7731,9 +7754,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_ParserNew_o)->size != sizeof(Fast_ParserNew)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::ParserNew' doesn't match C-type size '%d'", db_type(Fast_ParserNew_o)->size, sizeof(Fast_ParserNew));
     }
+
     /* Declare ::hyve::Fast::PostfixExpr::construct(Fast::PostfixExpr object) */
     Fast_PostfixExpr_construct_o = db_declare(Fast_PostfixExpr_o, "construct(Fast::PostfixExpr object)", db_typedef(db_callback_o));
     if (!Fast_PostfixExpr_construct_o) {
@@ -7756,6 +7781,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::PostfixExpr::lvalue */
     if (!db_checkState(Fast_PostfixExpr_lvalue_o, DB_DEFINED)) {
         Fast_PostfixExpr_lvalue_o->type = db_resolve_ext(Fast_PostfixExpr_lvalue_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::PostfixExpr::lvalue.type");
@@ -7768,6 +7794,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::PostfixExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
     Fast_PostfixExpr_toIc_o = db_declare(Fast_PostfixExpr_o, "toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)", db_typedef(db_virtual_o));
     if (!Fast_PostfixExpr_toIc_o) {
@@ -7790,6 +7817,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::PostfixExpr */
     if (!db_checkState(Fast_PostfixExpr_o, DB_DEFINED)) {
         db_type(Fast_PostfixExpr_o)->defaultType = db_resolve_ext(Fast_PostfixExpr_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::PostfixExpr.defaultType");
@@ -7804,9 +7832,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_PostfixExpr_o)->size != sizeof(struct Fast_PostfixExpr_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::PostfixExpr' doesn't match C-type size '%d'", db_type(Fast_PostfixExpr_o)->size, sizeof(struct Fast_PostfixExpr_s));
     }
+
     /* Define ::hyve::Fast::TernaryExpr::condition */
     if (!db_checkState(Fast_TernaryExpr_condition_o, DB_DEFINED)) {
         Fast_TernaryExpr_condition_o->type = db_resolve_ext(Fast_TernaryExpr_condition_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::TernaryExpr::condition.type");
@@ -7819,6 +7849,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::TernaryExpr::construct(Fast::TernaryExpr object) */
     Fast_TernaryExpr_construct_o = db_declare(Fast_TernaryExpr_o, "construct(Fast::TernaryExpr object)", db_typedef(db_callback_o));
     if (!Fast_TernaryExpr_construct_o) {
@@ -7841,6 +7872,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::TernaryExpr::hasSideEffects() */
     Fast_TernaryExpr_hasSideEffects_o = db_declare(Fast_TernaryExpr_o, "hasSideEffects()", db_typedef(db_virtual_o));
     if (!Fast_TernaryExpr_hasSideEffects_o) {
@@ -7863,6 +7895,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::TernaryExpr::ifFalse */
     if (!db_checkState(Fast_TernaryExpr_ifFalse_o, DB_DEFINED)) {
         Fast_TernaryExpr_ifFalse_o->type = db_resolve_ext(Fast_TernaryExpr_ifFalse_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::TernaryExpr::ifFalse.type");
@@ -7875,6 +7908,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::TernaryExpr::ifFalseExpr */
     if (!db_checkState(Fast_TernaryExpr_ifFalseExpr_o, DB_DEFINED)) {
         Fast_TernaryExpr_ifFalseExpr_o->type = db_resolve_ext(Fast_TernaryExpr_ifFalseExpr_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::TernaryExpr::ifFalseExpr.type");
@@ -7887,6 +7921,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::TernaryExpr::ifTrue */
     if (!db_checkState(Fast_TernaryExpr_ifTrue_o, DB_DEFINED)) {
         Fast_TernaryExpr_ifTrue_o->type = db_resolve_ext(Fast_TernaryExpr_ifTrue_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::TernaryExpr::ifTrue.type");
@@ -7899,6 +7934,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::TernaryExpr::ifTrueExpr */
     if (!db_checkState(Fast_TernaryExpr_ifTrueExpr_o, DB_DEFINED)) {
         Fast_TernaryExpr_ifTrueExpr_o->type = db_resolve_ext(Fast_TernaryExpr_ifTrueExpr_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::TernaryExpr::ifTrueExpr.type");
@@ -7911,6 +7947,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::TernaryExpr::result */
     if (!db_checkState(Fast_TernaryExpr_result_o, DB_DEFINED)) {
         Fast_TernaryExpr_result_o->type = db_resolve_ext(Fast_TernaryExpr_result_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::TernaryExpr::result.type");
@@ -7923,6 +7960,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::TernaryExpr::setOperator(lang::operatorKind kind) */
     Fast_TernaryExpr_setOperator_o = db_declare(Fast_TernaryExpr_o, "setOperator(lang::operatorKind kind)", db_typedef(db_method_o));
     if (!Fast_TernaryExpr_setOperator_o) {
@@ -7945,6 +7983,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::TernaryExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
     Fast_TernaryExpr_toIc_o = db_declare(Fast_TernaryExpr_o, "toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)", db_typedef(db_virtual_o));
     if (!Fast_TernaryExpr_toIc_o) {
@@ -7967,6 +8006,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::UnaryExpr::construct(Fast::UnaryExpr object) */
     Fast_UnaryExpr_construct_o = db_declare(Fast_UnaryExpr_o, "construct(Fast::UnaryExpr object)", db_typedef(db_callback_o));
     if (!Fast_UnaryExpr_construct_o) {
@@ -7989,6 +8029,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::UnaryExpr::hasSideEffects() */
     Fast_UnaryExpr_hasSideEffects_o = db_declare(Fast_UnaryExpr_o, "hasSideEffects()", db_typedef(db_virtual_o));
     if (!Fast_UnaryExpr_hasSideEffects_o) {
@@ -8011,6 +8052,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::UnaryExpr::lvalue */
     if (!db_checkState(Fast_UnaryExpr_lvalue_o, DB_DEFINED)) {
         Fast_UnaryExpr_lvalue_o->type = db_resolve_ext(Fast_UnaryExpr_lvalue_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::UnaryExpr::lvalue.type");
@@ -8023,6 +8065,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::UnaryExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
     Fast_UnaryExpr_toIc_o = db_declare(Fast_UnaryExpr_o, "toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)", db_typedef(db_virtual_o));
     if (!Fast_UnaryExpr_toIc_o) {
@@ -8045,6 +8088,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::UnaryExpr */
     if (!db_checkState(Fast_UnaryExpr_o, DB_DEFINED)) {
         db_type(Fast_UnaryExpr_o)->defaultType = db_resolve_ext(Fast_UnaryExpr_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::UnaryExpr.defaultType");
@@ -8059,9 +8103,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_UnaryExpr_o)->size != sizeof(struct Fast_UnaryExpr_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::UnaryExpr' doesn't match C-type size '%d'", db_type(Fast_UnaryExpr_o)->size, sizeof(struct Fast_UnaryExpr_s));
     }
+
     /* Define ::hyve::Fast::Update::from */
     if (!db_checkState(Fast_Update_from_o, DB_DEFINED)) {
         Fast_Update_from_o->type = db_resolve_ext(Fast_Update_from_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::Update::from.type");
@@ -8074,6 +8120,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Variable::construct(Variable object) */
     Fast_Variable_construct_o = db_declare(Fast_Variable_o, "construct(Variable object)", db_typedef(db_callback_o));
     if (!Fast_Variable_construct_o) {
@@ -8096,6 +8143,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Variable */
     if (!db_checkState(Fast_Variable_o, DB_DEFINED)) {
         db_type(Fast_Variable_o)->defaultType = db_resolve_ext(Fast_Variable_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::Variable.defaultType");
@@ -8110,9 +8158,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_Variable_o)->size != sizeof(struct Fast_Variable_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Variable' doesn't match C-type size '%d'", db_type(Fast_Variable_o)->size, sizeof(struct Fast_Variable_s));
     }
+
     /* Declare ::hyve::Fast::Block::declare(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference) */
     Fast_Block_declare_o = db_declare(Fast_Block_o, "declare(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference)", db_typedef(db_method_o));
     if (!Fast_Block_declare_o) {
@@ -8149,6 +8199,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Local::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
     Fast_Local_toIc_o = db_declare(Fast_Local_o, "toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)", db_typedef(db_virtual_o));
     if (!Fast_Local_toIc_o) {
@@ -8171,6 +8222,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Local::type */
     if (!db_checkState(Fast_Local_type_o, DB_DEFINED)) {
         Fast_Local_type_o->type = db_resolve_ext(Fast_Local_type_o, NULL, "::hyve::Fast::Variable", FALSE, "element ::hyve::Fast::Local::type.type");
@@ -8183,6 +8235,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Local */
     if (!db_checkState(Fast_Local_o, DB_DEFINED)) {
         db_type(Fast_Local_o)->defaultType = db_resolve_ext(Fast_Local_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::Local.defaultType");
@@ -8197,9 +8250,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_Local_o)->size != sizeof(struct Fast_Local_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Local' doesn't match C-type size '%d'", db_type(Fast_Local_o)->size, sizeof(struct Fast_Local_s));
     }
+
     /* Define ::hyve::Fast::Block::declare(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference) */
     if (!db_checkState(Fast_Block_declare_o, DB_DEFINED)) {
         db_function(Fast_Block_declare_o)->returnType = db_resolve_ext(Fast_Block_declare_o, NULL, "::hyve::Fast::Local", FALSE, "element ::hyve::Fast::Block::declare(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference).returnType");
@@ -8215,6 +8270,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Block::declareReturnVariable(lang::function function) */
     if (!db_checkState(Fast_Block_declareReturnVariable_o, DB_DEFINED)) {
         db_function(Fast_Block_declareReturnVariable_o)->returnType = db_resolve_ext(Fast_Block_declareReturnVariable_o, NULL, "::hyve::Fast::Local", FALSE, "element ::hyve::Fast::Block::declareReturnVariable(lang::function function).returnType");
@@ -8230,6 +8286,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Template::construct(Template object) */
     Fast_Template_construct_o = db_declare(Fast_Template_o, "construct(Template object)", db_typedef(db_callback_o));
     if (!Fast_Template_construct_o) {
@@ -8252,6 +8309,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Template */
     if (!db_checkState(Fast_Template_o, DB_DEFINED)) {
         db_type(Fast_Template_o)->defaultType = db_resolve_ext(Fast_Template_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::Template.defaultType");
@@ -8266,9 +8324,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_Template_o)->size != sizeof(struct Fast_Template_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Template' doesn't match C-type size '%d'", db_type(Fast_Template_o)->size, sizeof(struct Fast_Template_s));
     }
+
     /* Define ::hyve::Fast::Block::declareTemplate(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference) */
     if (!db_checkState(Fast_Block_declareTemplate_o, DB_DEFINED)) {
         db_function(Fast_Block_declareTemplate_o)->returnType = db_resolve_ext(Fast_Block_declareTemplate_o, NULL, "::hyve::Fast::Template", FALSE, "element ::hyve::Fast::Block::declareTemplate(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference).returnType");
@@ -8284,6 +8344,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Block */
     if (!db_checkState(Fast_Block_o, DB_DEFINED)) {
         db_type(Fast_Block_o)->defaultType = db_resolve_ext(Fast_Block_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::Block.defaultType");
@@ -8298,9 +8359,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_Block_o)->size != sizeof(struct Fast_Block_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Block' doesn't match C-type size '%d'", db_type(Fast_Block_o)->size, sizeof(struct Fast_Block_s));
     }
+
     /* Define ::hyve::Fast::Binding::impl */
     if (!db_checkState(Fast_Binding_impl_o, DB_DEFINED)) {
         Fast_Binding_impl_o->type = db_resolve_ext(Fast_Binding_impl_o, NULL, "::hyve::Fast::Block", FALSE, "element ::hyve::Fast::Binding::impl.type");
@@ -8313,6 +8376,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Binding */
     if (!db_checkState(Fast_Binding_o, DB_DEFINED)) {
         db_type(Fast_Binding_o)->defaultType = db_resolve_ext(Fast_Binding_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::Binding.defaultType");
@@ -8325,9 +8389,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_Binding_o)->size != sizeof(Fast_Binding)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Binding' doesn't match C-type size '%d'", db_type(Fast_Binding_o)->size, sizeof(Fast_Binding));
     }
+
     /* Define ::hyve::Fast::If::trueBranch */
     if (!db_checkState(Fast_If_trueBranch_o, DB_DEFINED)) {
         Fast_If_trueBranch_o->type = db_resolve_ext(Fast_If_trueBranch_o, NULL, "::hyve::Fast::Block", FALSE, "element ::hyve::Fast::If::trueBranch.type");
@@ -8340,6 +8406,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::bind(Fast::Variable function,Fast::Block block) */
     Fast_Parser_bind_o = db_declare(Fast_Parser_o, "bind(Fast::Variable function,Fast::Block block)", db_typedef(db_method_o));
     if (!Fast_Parser_bind_o) {
@@ -8362,6 +8429,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::bindOneliner(Fast::Variable function,Fast::Block block,Fast::Expression expr) */
     Fast_Parser_bindOneliner_o = db_declare(Fast_Parser_o, "bindOneliner(Fast::Variable function,Fast::Block block,Fast::Expression expr)", db_typedef(db_method_o));
     if (!Fast_Parser_bindOneliner_o) {
@@ -8384,6 +8452,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Parser::block */
     if (!db_checkState(Fast_Parser_block_o, DB_DEFINED)) {
         Fast_Parser_block_o->type = db_resolve_ext(Fast_Parser_block_o, NULL, "::hyve::Fast::Block", FALSE, "element ::hyve::Fast::Parser::block.type");
@@ -8396,6 +8465,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Parser::blockPush(lang::bool presetBlock) */
     if (!db_checkState(Fast_Parser_blockPush_o, DB_DEFINED)) {
         db_function(Fast_Parser_blockPush_o)->returnType = db_resolve_ext(Fast_Parser_blockPush_o, NULL, "::hyve::Fast::Block", FALSE, "element ::hyve::Fast::Parser::blockPush(lang::bool presetBlock).returnType");
@@ -8411,6 +8481,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::declareFunctionParams(Variable function) */
     Fast_Parser_declareFunctionParams_o = db_declare(Fast_Parser_o, "declareFunctionParams(Variable function)", db_typedef(db_method_o));
     if (!Fast_Parser_declareFunctionParams_o) {
@@ -8433,6 +8504,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::parseExpression(lang::string expr,Fast::Block block,Fast::Variable scope,uint32 line,uint32 column) */
     Fast_Parser_parseExpression_o = db_declare(Fast_Parser_o, "parseExpression(lang::string expr,Fast::Block block,Fast::Variable scope,uint32 line,uint32 column)", db_typedef(db_method_o));
     if (!Fast_Parser_parseExpression_o) {
@@ -8455,6 +8527,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::updateStatement(Fast::Expression expr,Fast::Block block) */
     Fast_Parser_updateStatement_o = db_declare(Fast_Parser_o, "updateStatement(Fast::Expression expr,Fast::Block block)", db_typedef(db_method_o));
     if (!Fast_Parser_updateStatement_o) {
@@ -8477,6 +8550,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::whileStatement(Fast::Expression condition,Fast::Block trueBranch,lang::bool isUntil) */
     Fast_Parser_whileStatement_o = db_declare(Fast_Parser_o, "whileStatement(Fast::Expression condition,Fast::Block trueBranch,lang::bool isUntil)", db_typedef(db_method_o));
     if (!Fast_Parser_whileStatement_o) {
@@ -8499,6 +8573,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::String::block */
     if (!db_checkState(Fast_String_block_o, DB_DEFINED)) {
         Fast_String_block_o->type = db_resolve_ext(Fast_String_block_o, NULL, "::hyve::Fast::Block", FALSE, "element ::hyve::Fast::String::block.type");
@@ -8511,6 +8586,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Update::block */
     if (!db_checkState(Fast_Update_block_o, DB_DEFINED)) {
         Fast_Update_block_o->type = db_resolve_ext(Fast_Update_block_o, NULL, "::hyve::Fast::Block", FALSE, "element ::hyve::Fast::Update::block.type");
@@ -8523,6 +8599,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::While::trueBranch */
     if (!db_checkState(Fast_While_trueBranch_o, DB_DEFINED)) {
         Fast_While_trueBranch_o->type = db_resolve_ext(Fast_While_trueBranch_o, NULL, "::hyve::Fast::Block", FALSE, "element ::hyve::Fast::While::trueBranch.type");
@@ -8535,6 +8612,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::ObjectBase::construct(ObjectBase object) */
     Fast_ObjectBase_construct_o = db_declare(Fast_ObjectBase_o, "construct(ObjectBase object)", db_typedef(db_callback_o));
     if (!Fast_ObjectBase_construct_o) {
@@ -8557,6 +8635,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::ObjectBase */
     if (!db_checkState(Fast_ObjectBase_o, DB_DEFINED)) {
         db_type(Fast_ObjectBase_o)->defaultType = db_resolve_ext(Fast_ObjectBase_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::ObjectBase.defaultType");
@@ -8571,9 +8650,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_ObjectBase_o)->size != sizeof(struct Fast_ObjectBase_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::ObjectBase' doesn't match C-type size '%d'", db_type(Fast_ObjectBase_o)->size, sizeof(struct Fast_ObjectBase_s));
     }
+
     /* Declare ::hyve::Fast::Object::construct(Object object) */
     Fast_Object_construct_o = db_declare(Fast_Object_o, "construct(Object object)", db_typedef(db_callback_o));
     if (!Fast_Object_construct_o) {
@@ -8596,6 +8677,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Object::getValue() */
     Fast_Object_getValue_o = db_declare(Fast_Object_o, "getValue()", db_typedef(db_method_o));
     if (!Fast_Object_getValue_o) {
@@ -8618,6 +8700,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Object::serialize(lang::type dstType,lang::word dst) */
     Fast_Object_serialize_o = db_declare(Fast_Object_o, "serialize(lang::type dstType,lang::word dst)", db_typedef(db_method_o));
     if (!Fast_Object_serialize_o) {
@@ -8640,6 +8723,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Object::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
     Fast_Object_toIc_o = db_declare(Fast_Object_o, "toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)", db_typedef(db_virtual_o));
     if (!Fast_Object_toIc_o) {
@@ -8662,6 +8746,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Object */
     if (!db_checkState(Fast_Object_o, DB_DEFINED)) {
         db_type(Fast_Object_o)->defaultType = db_resolve_ext(Fast_Object_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::Object.defaultType");
@@ -8676,9 +8761,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_Object_o)->size != sizeof(struct Fast_Object_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Object' doesn't match C-type size '%d'", db_type(Fast_Object_o)->size, sizeof(struct Fast_Object_s));
     }
+
     /* Declare ::hyve::Fast::Parser::observerDeclaration(lang::string id,Fast::Expression object,lang::eventMask mask,Fast::Object dispatcher) */
     Fast_Parser_observerDeclaration_o = db_declare(Fast_Parser_o, "observerDeclaration(lang::string id,Fast::Expression object,lang::eventMask mask,Fast::Object dispatcher)", db_typedef(db_method_o));
     if (!Fast_Parser_observerDeclaration_o) {
@@ -8701,6 +8788,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::argumentToString(Fast::Variable type,lang::string id,lang::bool reference) */
     Fast_Parser_argumentToString_o = db_declare(Fast_Parser_o, "argumentToString(Fast::Variable type,lang::string id,lang::bool reference)", db_typedef(db_method_o));
     if (!Fast_Parser_argumentToString_o) {
@@ -8723,6 +8811,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::declaration(Variable type,lang::string id,lang::bool isReference) */
     Fast_Parser_declaration_o = db_declare(Fast_Parser_o, "declaration(Variable type,lang::string id,lang::bool isReference)", db_typedef(db_method_o));
     if (!Fast_Parser_declaration_o) {
@@ -8745,6 +8834,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::type kind,bool returnsReference) */
     Fast_Parser_declareFunction_o = db_declare(Fast_Parser_o, "declareFunction(Variable returnType,lang::string id,lang::type kind,bool returnsReference)", db_typedef(db_method_o));
     if (!Fast_Parser_declareFunction_o) {
@@ -8767,6 +8857,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::defineVariable(Variable object) */
     Fast_Parser_defineVariable_o = db_declare(Fast_Parser_o, "defineVariable(Variable object)", db_typedef(db_method_o));
     if (!Fast_Parser_defineVariable_o) {
@@ -8789,6 +8880,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Parser::popScope(Fast::Variable previous) */
     Fast_Parser_popScope_o = db_declare(Fast_Parser_o, "popScope(Fast::Variable previous)", db_typedef(db_method_o));
     if (!Fast_Parser_popScope_o) {
@@ -8811,6 +8903,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Parser::pushScope() */
     if (!db_checkState(Fast_Parser_pushScope_o, DB_DEFINED)) {
         db_function(Fast_Parser_pushScope_o)->returnType = db_resolve_ext(Fast_Parser_pushScope_o, NULL, "::hyve::Fast::Variable", FALSE, "element ::hyve::Fast::Parser::pushScope().returnType");
@@ -8826,6 +8919,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Parser::scope */
     if (!db_checkState(Fast_Parser_scope_o, DB_DEFINED)) {
         Fast_Parser_scope_o->type = db_resolve_ext(Fast_Parser_scope_o, NULL, "::hyve::Fast::Variable", FALSE, "element ::hyve::Fast::Parser::scope.type");
@@ -8838,6 +8932,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::ParserDeclaration::variable */
     if (!db_checkState(Fast_ParserDeclaration_variable_o, DB_DEFINED)) {
         Fast_ParserDeclaration_variable_o->type = db_resolve_ext(Fast_ParserDeclaration_variable_o, NULL, "::hyve::Fast::Variable", FALSE, "element ::hyve::Fast::ParserDeclaration::variable.type");
@@ -8850,6 +8945,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::ParserDeclaration */
     if (!db_checkState(Fast_ParserDeclaration_o, DB_DEFINED)) {
         db_type(Fast_ParserDeclaration_o)->defaultType = db_resolve_ext(Fast_ParserDeclaration_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::ParserDeclaration.defaultType");
@@ -8862,9 +8958,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_ParserDeclaration_o)->size != sizeof(Fast_ParserDeclaration)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::ParserDeclaration' doesn't match C-type size '%d'", db_type(Fast_ParserDeclaration_o)->size, sizeof(Fast_ParserDeclaration));
     }
+
     /* Define ::hyve::Fast::String::scope */
     if (!db_checkState(Fast_String_scope_o, DB_DEFINED)) {
         Fast_String_scope_o->type = db_resolve_ext(Fast_String_scope_o, NULL, "::hyve::Fast::Variable", FALSE, "element ::hyve::Fast::String::scope.type");
@@ -8877,6 +8975,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::String */
     if (!db_checkState(Fast_String_o, DB_DEFINED)) {
         db_type(Fast_String_o)->defaultType = db_resolve_ext(Fast_String_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::String.defaultType");
@@ -8891,9 +8990,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_String_o)->size != sizeof(struct Fast_String_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::String' doesn't match C-type size '%d'", db_type(Fast_String_o)->size, sizeof(struct Fast_String_s));
     }
+
     /* Declare ::hyve::Fast::Call::resolveActual(string signature,lang::object scope,Fast::Expression instance) */
     Fast_Call_resolveActual_o = db_declare(Fast_Call_o, "resolveActual(string signature,lang::object scope,Fast::Expression instance)", db_typedef(db_function_o));
     if (!Fast_Call_resolveActual_o) {
@@ -8915,6 +9016,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Parser::variables */
     if (!db_checkState(Fast_Parser_variables_o, DB_DEFINED)) {
         Fast_Parser_variables_o->type = db_resolve_ext(Fast_Parser_variables_o, NULL, "::hyve::lang::array{::hyve::Fast::Variable,64,::hyve::Fast::Variable}", FALSE, "element ::hyve::Fast::Parser::variables.type");
@@ -8927,6 +9029,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Wait::construct(Wait object) */
     Fast_Wait_construct_o = db_declare(Fast_Wait_o, "construct(Wait object)", db_typedef(db_callback_o));
     if (!Fast_Wait_construct_o) {
@@ -8949,6 +9052,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Wait::timeout */
     if (!db_checkState(Fast_Wait_timeout_o, DB_DEFINED)) {
         Fast_Wait_timeout_o->type = db_resolve_ext(Fast_Wait_timeout_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::Wait::timeout.type");
@@ -8961,6 +9065,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Wait::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
     Fast_Wait_toIc_o = db_declare(Fast_Wait_o, "toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)", db_typedef(db_virtual_o));
     if (!Fast_Wait_toIc_o) {
@@ -8983,6 +9088,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Wait */
     if (!db_checkState(Fast_Wait_o, DB_DEFINED)) {
         db_type(Fast_Wait_o)->defaultType = db_resolve_ext(Fast_Wait_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::Wait.defaultType");
@@ -8997,9 +9103,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_Wait_o)->size != sizeof(struct Fast_Wait_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Wait' doesn't match C-type size '%d'", db_type(Fast_Wait_o)->size, sizeof(struct Fast_Wait_s));
     }
+
     /* Define ::hyve::Fast::While::condition */
     if (!db_checkState(Fast_While_condition_o, DB_DEFINED)) {
         Fast_While_condition_o->type = db_resolve_ext(Fast_While_condition_o, NULL, "::hyve::Fast::Expression", FALSE, "element ::hyve::Fast::While::condition.type");
@@ -9012,6 +9120,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::DynamicInitializerFrame::expr */
     if (!db_checkState(Fast_DynamicInitializerFrame_expr_o, DB_DEFINED)) {
         Fast_DynamicInitializerFrame_expr_o->type = db_resolve_ext(Fast_DynamicInitializerFrame_expr_o, NULL, "::hyve::lang::array{::hyve::Fast::Expression,64,::hyve::Fast::Expression}", FALSE, "element ::hyve::Fast::DynamicInitializerFrame::expr.type");
@@ -9024,6 +9133,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::DynamicInitializerFrame::keyExpr */
     if (!db_checkState(Fast_DynamicInitializerFrame_keyExpr_o, DB_DEFINED)) {
         Fast_DynamicInitializerFrame_keyExpr_o->type = db_resolve_ext(Fast_DynamicInitializerFrame_keyExpr_o, NULL, "::hyve::lang::array{::hyve::Fast::Expression,64,::hyve::Fast::Expression}", FALSE, "element ::hyve::Fast::DynamicInitializerFrame::keyExpr.type");
@@ -9036,6 +9146,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::DynamicInitializerFrame */
     if (!db_checkState(Fast_DynamicInitializerFrame_o, DB_DEFINED)) {
         db_type(Fast_DynamicInitializerFrame_o)->defaultType = db_resolve_ext(Fast_DynamicInitializerFrame_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::DynamicInitializerFrame.defaultType");
@@ -9048,9 +9159,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_DynamicInitializerFrame_o)->size != sizeof(Fast_DynamicInitializerFrame)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::DynamicInitializerFrame' doesn't match C-type size '%d'", db_type(Fast_DynamicInitializerFrame_o)->size, sizeof(Fast_DynamicInitializerFrame));
     }
+
     /* Define ::hyve::Fast::DynamicInitializer::frames */
     if (!db_checkState(Fast_DynamicInitializer_frames_o, DB_DEFINED)) {
         Fast_DynamicInitializer_frames_o->type = db_resolve_ext(Fast_DynamicInitializer_frames_o, NULL, "::hyve::lang::array{::hyve::Fast::DynamicInitializerFrame,64,::hyve::Fast::DynamicInitializerFrame}", FALSE, "element ::hyve::Fast::DynamicInitializer::frames.type");
@@ -9063,6 +9176,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::DynamicInitializer */
     if (!db_checkState(Fast_DynamicInitializer_o, DB_DEFINED)) {
         db_type(Fast_DynamicInitializer_o)->defaultType = db_resolve_ext(Fast_DynamicInitializer_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::DynamicInitializer.defaultType");
@@ -9077,9 +9191,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_DynamicInitializer_o)->size != sizeof(struct Fast_DynamicInitializer_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::DynamicInitializer' doesn't match C-type size '%d'", db_type(Fast_DynamicInitializer_o)->size, sizeof(struct Fast_DynamicInitializer_s));
     }
+
     /* Declare ::hyve::Fast::If::construct(If object) */
     Fast_If_construct_o = db_declare(Fast_If_o, "construct(If object)", db_typedef(db_callback_o));
     if (!Fast_If_construct_o) {
@@ -9102,6 +9218,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::If::noWarnUnreachable() */
     Fast_If_noWarnUnreachable_o = db_declare(Fast_If_o, "noWarnUnreachable()", db_typedef(db_method_o));
     if (!Fast_If_noWarnUnreachable_o) {
@@ -9124,6 +9241,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::If::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
     Fast_If_toIc_o = db_declare(Fast_If_o, "toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)", db_typedef(db_virtual_o));
     if (!Fast_If_toIc_o) {
@@ -9146,6 +9264,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::If */
     if (!db_checkState(Fast_If_o, DB_DEFINED)) {
         db_type(Fast_If_o)->defaultType = db_resolve_ext(Fast_If_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::If.defaultType");
@@ -9160,9 +9279,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_If_o)->size != sizeof(struct Fast_If_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::If' doesn't match C-type size '%d'", db_type(Fast_If_o)->size, sizeof(struct Fast_If_s));
     }
+
     /* Declare ::hyve::Fast::Parser::ifStatement(Fast::Expression condition,Fast::Block trueBranch,Fast::If falseBranch) */
     Fast_Parser_ifStatement_o = db_declare(Fast_Parser_o, "ifStatement(Fast::Expression condition,Fast::Block trueBranch,Fast::If falseBranch)", db_typedef(db_method_o));
     if (!Fast_Parser_ifStatement_o) {
@@ -9185,6 +9306,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::TernaryExpr::ifstmt */
     if (!db_checkState(Fast_TernaryExpr_ifstmt_o, DB_DEFINED)) {
         Fast_TernaryExpr_ifstmt_o->type = db_resolve_ext(Fast_TernaryExpr_ifstmt_o, NULL, "::hyve::Fast::If", FALSE, "element ::hyve::Fast::TernaryExpr::ifstmt.type");
@@ -9197,6 +9319,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::TernaryExpr */
     if (!db_checkState(Fast_TernaryExpr_o, DB_DEFINED)) {
         db_type(Fast_TernaryExpr_o)->defaultType = db_resolve_ext(Fast_TernaryExpr_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::TernaryExpr.defaultType");
@@ -9211,9 +9334,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_TernaryExpr_o)->size != sizeof(struct Fast_TernaryExpr_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::TernaryExpr' doesn't match C-type size '%d'", db_type(Fast_TernaryExpr_o)->size, sizeof(struct Fast_TernaryExpr_s));
     }
+
     /* Declare ::hyve::Fast::Parser::addStatement(Fast::Node statement) */
     Fast_Parser_addStatement_o = db_declare(Fast_Parser_o, "addStatement(Fast::Node statement)", db_typedef(db_method_o));
     if (!Fast_Parser_addStatement_o) {
@@ -9236,6 +9361,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Parser */
     if (!db_checkState(Fast_Parser_o, DB_DEFINED)) {
         db_type(Fast_Parser_o)->defaultType = db_resolve_ext(Fast_Parser_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::Parser.defaultType");
@@ -9250,9 +9376,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_Parser_o)->size != sizeof(struct Fast_Parser_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Parser' doesn't match C-type size '%d'", db_type(Fast_Parser_o)->size, sizeof(struct Fast_Parser_s));
     }
+
     /* Declare ::hyve::Fast::Update::construct(Update object) */
     Fast_Update_construct_o = db_declare(Fast_Update_o, "construct(Update object)", db_typedef(db_callback_o));
     if (!Fast_Update_construct_o) {
@@ -9275,6 +9403,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::Update::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
     Fast_Update_toIc_o = db_declare(Fast_Update_o, "toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)", db_typedef(db_virtual_o));
     if (!Fast_Update_toIc_o) {
@@ -9297,6 +9426,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::Update */
     if (!db_checkState(Fast_Update_o, DB_DEFINED)) {
         db_type(Fast_Update_o)->defaultType = db_resolve_ext(Fast_Update_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::Update.defaultType");
@@ -9311,9 +9441,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_Update_o)->size != sizeof(struct Fast_Update_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::Update' doesn't match C-type size '%d'", db_type(Fast_Update_o)->size, sizeof(struct Fast_Update_s));
     }
+
     /* Declare ::hyve::Fast::While::construct(While object) */
     Fast_While_construct_o = db_declare(Fast_While_o, "construct(While object)", db_typedef(db_callback_o));
     if (!Fast_While_construct_o) {
@@ -9336,6 +9468,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Declare ::hyve::Fast::While::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
     Fast_While_toIc_o = db_declare(Fast_While_o, "toIc(lang::alias{\"db_icProgram\"} program,lang::alias{\"db_icStorage\"} storage,lang::bool stored)", db_typedef(db_virtual_o));
     if (!Fast_While_toIc_o) {
@@ -9358,6 +9491,7 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     /* Define ::hyve::Fast::While */
     if (!db_checkState(Fast_While_o, DB_DEFINED)) {
         db_type(Fast_While_o)->defaultType = db_resolve_ext(Fast_While_o, NULL, "::hyve::lang::member", FALSE, "element ::hyve::Fast::While.defaultType");
@@ -9372,9 +9506,11 @@ int Fast_load(void) {
             goto error;
         }
     }
+
     if (db_type(Fast_While_o)->size != sizeof(struct Fast_While_s)) {
         db_error("Fast_load: calculated size '%d' of type '::hyve::Fast::While' doesn't match C-type size '%d'", db_type(Fast_While_o)->size, sizeof(struct Fast_While_s));
     }
+
     if (_a_) {
         db_free(_a_);
     }
