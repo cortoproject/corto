@@ -34,22 +34,7 @@ static int gen_folder(db_object o, void *userData) {
         goto error;
     }
 
-    if (mkdir(folderPath, S_IRWXU)) {
-        int errno2 = errno;
-        fprintf(stderr, "Error: cannot create %s, error code: ", folderPath);
-        switch(errno2) {
-            case EACCES: fprintf(stderr, "EACCES"); break;
-            case EEXIST: fprintf(stderr, "EEXIST"); break;
-            case ELOOP: fprintf(stderr, "ELOOP"); break;
-            case EMLINK: fprintf(stderr, "EMLINK"); break;
-            case ENAMETOOLONG: fprintf(stderr, "ENAMETOOLONG"); break;
-            case ENOENT: fprintf(stderr, "ENOENT"); break;
-            case ENOSPC: fprintf(stderr, "ENOSPC"); break;
-            case ENOTDIR: fprintf(stderr, "ENOTDIR"); break;
-            case EROFS: fprintf(stderr, "EROFS"); break;
-            default: fprintf(stderr, "%d (unknown)", errno2); break;
-        }
-        fprintf(stderr, "\n");
+    if (db_mkdir(folderPath)) {
         goto error;
     }
 
@@ -152,8 +137,15 @@ error:
 
 
 db_int16 copyJsonParser(const char* path) {
-    
-    // create db_files.h > db_copy
+    char sourcePath[PATH_MAX];
+    char destinationPath[PATH_MAX];
+    char *hyveHome = getenv("HYVE_HOME");
+    char parserFilename[] = "objectparse.js";
+    sprintf(sourcePath, "%s/generator/html/%s", hyveHome, parserFilename);
+    sprintf(destinationPath, "%s/%s", path, parserFilename);
+    if (db_cp(sourcePath, destinationPath)) {
+        goto error;
+    }
 
     return 0;
 error:
@@ -163,20 +155,24 @@ error:
 db_int16 hyve_genMain(db_generator g) {
     char filepath[PATH_MAX] = "./doc";
 
-
-    db_html_gen_t data = {path, 1};
-    int result;
+    db_html_gen_t data = {filepath, 1};
+    int success;
     
-    if (!(result = g_walkNoScope(g, gen_folder, &data))) {
+    if (!(success = g_walkNoScope(g, gen_folder, &data))) {
         fprintf(stderr, "Error creating folders\n");
     }
+
+    if (!(success && (success = !copyJsonParser(data.path)))) {
+        fprintf(stderr, "Error copying JsonParser\n");
+    }
     
-    if (!(result && (result = g_walkNoScope(g, gen_json, &data)))) {
+    if (!(success && (success = g_walkNoScope(g, gen_json, &data)))) {
         fprintf(stderr, "Error creating js files\n");
     }
     
-    if (!(result && (result = g_walkNoScope(g, gen_html, &data)))) {
+    if (!(success && (success = g_walkNoScope(g, gen_html, &data)))) {
         fprintf(stderr, "Error creating html files\n");
     }
+
     return 0;
 }
