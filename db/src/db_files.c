@@ -107,7 +107,7 @@ int db_cp(const char *sourcePath, const char *destinationPath) {
         goto error_CloseFiles_FreeBuffer;
     }
 
-    free(buffer);
+    db_dealloc(buffer);
     fclose(sourceFile);
     fclose(destinationFile);
 
