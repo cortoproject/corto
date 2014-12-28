@@ -83,7 +83,7 @@ static db_bool db_ser_appendstrEscape(db_string_ser_t *data, db_string str) {
     *bptr = '"';
     bptr++;
     while((ch = *ptr)) {
-        bptr = stresc(*ptr, bptr, '"');
+        bptr = schresc(ch, bptr, 1);
         ptr++;
 
         if ((bptr - buffer) == 1023) { /* Avoid allocating temporary strings by reusing buffer.

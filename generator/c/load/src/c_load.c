@@ -447,7 +447,7 @@ static db_int16 c_initPrimitive(db_serializer s, db_value* v, void* userData) {
         char buff[3];
         str = malloc(strlen(buff) + 1 + 2);
         if (v) {
-            stresc(v, buff, '\'')[0] = '\0';
+            schresc(v, buff, 0)[0] = '\0';
             sprintf(str, "'%s'", buff);
         } else {
             sprintf(str, "'\\0'");
