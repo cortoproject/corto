@@ -201,6 +201,10 @@ error:
     return -1;
 }
 
+static int getGeneratorPath(db_generator *g) {
+    db_ll = g->attributes;
+    // TODO
+}
 
 db_int16 hyve_genMain(db_generator g) {
     char filepath[PATH_MAX] = "./doc";
@@ -209,23 +213,23 @@ db_int16 hyve_genMain(db_generator g) {
     int success;
     
     if (!(success = g_walkNoScope(g, gen_folder, &data))) {
-        db_error("Error creating folders.");
+        db_error("Could not create folders.");
     }
 
     if (success && !(success = !copyJsonParser(data.path))) {
-        db_error("Cannot copy \"objectparse.js\".");
+        db_error("Could not copy \"objectparse.js\".");
     }
 
     if (success && !(success = !copyStyleSheet(data.path))) {
-        db_error("Cannot copy \"object.css\".");
+        db_error("Could not copy \"object.css\".");
     }
     
     if (success && !(success = g_walkNoScope(g, gen_json, &data))) {
-        db_error("Error creating js files.");
+        db_error("Could not create \"data.js\" files.");
     }
     
     if (success && !(success = g_walkNoScope(g, gen_html, &data))) {
-        db_error("Error creating html files.");
+        db_error("Could not create \"index.html\" files.");
     }
 
     return 0;
