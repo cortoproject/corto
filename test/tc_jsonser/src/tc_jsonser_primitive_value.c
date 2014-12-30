@@ -62,8 +62,8 @@ db_int16 test_ser_primitive_value(void) {
     _test_ser_primitive_value(c1, "\"a\"");
     _test_ser_primitive_value(c2, "\"A\"");
     _test_ser_primitive_value(c3, "\"0\"");
-    // _test_ser_primitive_value(c4, "\"\\n\"");
-    // _test_ser_primitive_value(c5, "\"\\0\"");
+    _test_ser_primitive_value(c4, "\"\\n\"");
+    _test_ser_primitive_value(c5, "null");
 
     _test_ser_primitive_value(sn, "null");
     _test_ser_primitive_value(s1, "\"hello world\"");
@@ -80,6 +80,9 @@ db_int16 test_ser_primitive_value(void) {
     _test_ser_primitive_value(s12, "\"@@@@@@ hey\"");
     _test_ser_primitive_value(s13, "\"@@@@@@hey\"");
     _test_ser_primitive_value(s14, "\"@@@@@@hey you\"");
+    // _test_ser_primitive_value(s15, "a tab \\t");
+    // _test_ser_primitive_value(s16, "r\\rr");
+    // _test_ser_primitive_value(s17, "\\v");
 
     _test_ser_primitive_value(yellow, "\"@M green|red\"");
     _test_ser_primitive_value(white, "\"@M blue|green|red\"");
@@ -92,6 +95,8 @@ db_int16 test_ser_primitive_value(void) {
     _test_ser_primitive_value(Forge, "\"@E Mars\"");
     _test_ser_primitive_value(Gust, "\"@E Jupiter\"");
     _test_ser_primitive_value(Sleet, "\"@E Mercury\"");
+
+
 
     return result;
 }

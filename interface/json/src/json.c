@@ -5,6 +5,7 @@
 
 #include "db_generator.h"
 #include "db_serializer.h"
+#include "db_string.h"
 #include "hyve.h"
 #include "json.h"
 
@@ -77,10 +78,20 @@ static db_int16 db_ser_primitive(db_serializer s, db_value *info, void *userData
 
     type = db_valueType(info);
     value = db_valueValue(info);
+    db_primitiveKind kind = db_primitive(type->real)->kind;
 
     result = db_convert(db_primitive(type), value, db_primitive(db_string_o), &valueString);
     if (result) {
         goto error;
+    }
+
+    if (kind == DB_CHARACTER || (kind == DB_TEXT && (*(db_string *)value))) {
+        db_string t;
+        db_string escapedValueString = db_malloc(stresclen(valueString));
+        stresc(valueString, escapedValueString, 0);
+        t = valueString;
+        valueString = escapedValueString;
+        db_dealloc(t);
     }
 
     switch (db_primitive(type->real)->kind) {

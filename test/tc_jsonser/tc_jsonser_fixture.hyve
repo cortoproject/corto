@@ -59,6 +59,9 @@ object fixture::
     string s12: "@@@@@ hey"
     string s13: "@@@@@hey"
     string s14: "@@@@@hey you"
+    // string s15: "a tab \t"
+    // string s16: "r\rr"
+    // string s17: "\v"
 
     bitmask color:: red, green, blue
     color yellow: red | green
