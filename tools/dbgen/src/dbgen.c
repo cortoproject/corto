@@ -153,7 +153,7 @@ void printUsage(void) {
 	printf("\n");
 	printf("Examples:\n");
 	printf("   dbgen Foo.hyve --scope Foo --lang c\n");
-	printf("   dbgen Foo.hyve --scope Foo -g c_type -g c_interface -g c_load -g c_api -attr c=src -attr h=include\n");
+	printf("   dbgen Foo.hyve --scope Foo -g c_type -g c_interface -g c_load -g c_api --attr c=src --attr h=include\n");
 	printf("   dbgen Foo.hyve --scope Foo --lang cpp\n");
 	printf("   dbgen Foo.hyve --scope Foo --prefix Bar --lang cpp (replaces 'Foo' by 'Bar' in generated code)\n");
 	printf("\n");

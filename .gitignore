@@ -1,4 +1,5 @@
 *.o
+*.so
 bin/*
 benchmark/bin/*
 generator/bin/*
