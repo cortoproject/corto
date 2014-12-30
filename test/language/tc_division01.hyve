@@ -1,0 +1,31 @@
+bool result: true
+
+void fail(string msg):
+    "tc_division01: FAIL: $msg"
+    result = false
+
+var uint32 a, b = 5, 2
+var uint32 c = a / b
+var uint32 d = 5 / 2
+var float64 e = a / b
+var float64 f = 5 / 2
+
+if c != 2: fail("c != 2 ($c)")
+if d != 2: fail("d != 2 ($d)")
+if e != 2.5: fail("e != 2.5 ($e)")
+if f != 2.5: fail("f != 2.5 ($f)")
+
+var float64 g, h = 3, 1.2
+var float64 i = g / h
+var float64 j = 3 / 1.2
+var uint32 k = g / h
+var uint32 l = 3 / 1.2
+
+if i != 2.5: fail("i != 2.5 ($i)")
+if j != 2.5: fail("j != 2.5 ($j")
+if k != 2: fail("k != 2 ($k)")
+if l != 2: fail("l != 2 ($l)")
+
+if (5 / 2).typeof() != float64: fail("(5 / 2).typeof() != float64")
+
+if result: "tc_division01: OK"
