@@ -1,4 +1,3 @@
-
 #include <errno.h>
 #include <stdio.h>
 #include <sys/stat.h>
@@ -171,7 +170,7 @@ error:
 }
 
 
-db_int16 copyJsonParser(const char* path) {
+static db_int16 copyJsonParser(const char* path) {
     char sourcePath[PATH_MAX];
     char destinationPath[PATH_MAX];
     char *hyveHome = getenv("HYVE_HOME");
@@ -186,7 +185,7 @@ error:
     return -1;
 }
 
-db_int16 copyStyleSheet(const char* path) {
+static db_int16 copyStyleSheet(const char* path) {
     char sourcePath[PATH_MAX];
     char destinationPath[PATH_MAX];
     char *hyveHome = getenv("HYVE_HOME");
@@ -199,11 +198,6 @@ db_int16 copyStyleSheet(const char* path) {
     return 0;
 error:
     return -1;
-}
-
-static int getGeneratorPath(db_generator *g) {
-    db_ll = g->attributes;
-    // TODO
 }
 
 db_int16 hyve_genMain(db_generator g) {
