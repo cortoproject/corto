@@ -9,6 +9,18 @@
 #include "db_string.h"
 #include "db_mem.h"
 
+static int isesc(char c) {
+    char escapeSequences[] = "\a\b\f\n\r\t\v\"\\";
+    char *p = escapeSequences;
+    char d;
+    while ((d = *p++)) {
+        if (c == d) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
 int stricmp(const char *str1, const char *str2) {
     return strcasecmp(str1, str2);
 }
@@ -157,12 +169,39 @@ char *chresc(char in, char *out) {
     return schresc(in, out, 0);
 }
 
-char *stresc(const char *in, char *out) {
+char *stresc(const char *in, char *out, size_t n) {
     const char *p = in;
     char *q = out;
     char c;
+    size_t i = n;
+
     while ((c = *p++)) {
+        if (n) {
+            if (isesc(c)) {
+                if (i <= 2) {
+                    break;
+                }
+                i -= 2;
+            } else {
+                if (i <= 1) {
+                    break;
+                }
+                i--;
+            }
+        }
         q = schresc(c, q, 1);
     }
+    *q = '\0';
     return q;
+}
+
+size_t stresclen(const char *s) {
+    size_t count = 0;
+    const char *p = s;
+    char c;
+    while ((c = *p++)) {
+        count += isesc(c) ? 2 : 1;
+    }
+    count++;
+    return count;
 }
