@@ -1,5 +1,5 @@
 /*
- * dbgen.c
+ * cxgen.c
  *
  *  Created on: Sep 17, 2012
  *      Author: sander
@@ -141,7 +141,7 @@ static int cx_parseArguments(int argc, char* argv[]) {
 
 void printUsage(void) {
     printf("Usage:\n");
-    printf("   dbgen [file 0..n] --scope [scope] --prefix [prefix] --lang [language] -g [generator 1..n] -attr [key=value]\n");
+    printf("   cxgen [file 0..n] --scope [scope] --prefix [prefix] --lang [language] -g [generator 1..n] -attr [key=value]\n");
     printf("     file:     Any file that is loadable by Cortex (optional).\n");
     printf("     --scope:  Provide the scope for which code will be generated.\n");
     printf("     --prefix: Provide a prefix for the generated code (optional).\n");
@@ -152,10 +152,10 @@ void printUsage(void) {
     printf("               Attributes are specified using a key=value syntax.\n");
     printf("\n");
     printf("Examples:\n");
-    printf("   dbgen Foo.cortex --scope Foo --lang c\n");
-    printf("   dbgen Foo.cortex --scope Foo -g c_type -g c_interface -g c_load -g c_api --attr c=src --attr h=include\n");
-    printf("   dbgen Foo.cortex --scope Foo --lang cpp\n");
-    printf("   dbgen Foo.cortex --scope Foo --prefix Bar --lang cpp (replaces 'Foo' by 'Bar' in generated code)\n");
+    printf("   cxgen Foo.cortex --scope Foo --lang c\n");
+    printf("   cxgen Foo.cortex --scope Foo -g c_type -g c_interface -g c_load -g c_api --attr c=src --attr h=include\n");
+    printf("   cxgen Foo.cortex --scope Foo --lang cpp\n");
+    printf("   cxgen Foo.cortex --scope Foo --prefix Bar --lang cpp (replaces 'Foo' by 'Bar' in generated code)\n");
     printf("\n");
 }
 
@@ -173,7 +173,7 @@ int main(int argc, char* argv[]) {
     }
 
     if (!generators) {
-        cx_error("dbgen: no generators provided");
+        cx_error("cxgen: no generators provided");
         return -1;
     }
 
@@ -188,7 +188,7 @@ int main(int argc, char* argv[]) {
         while(cx_iterHasNext(&iter)) {
             include = cx_iterNext(&iter);
             if (cx_load(include)) {
-                cx_error("dbgen: error(s) occurred while loading file '%s', abort generation.", include);
+                cx_error("cxgen: error(s) occurred while loading file '%s', abort generation.", include);
                 return -1;
             }
         }
@@ -202,7 +202,7 @@ int main(int argc, char* argv[]) {
 
         /* Load interface */
         if (gen_load(g, lib)) {
-            cx_error("dbgen: cannot load generator '%s'.", lib);
+            cx_error("cxgen: cannot load generator '%s'.", lib);
             return -1;
         }
 
@@ -221,7 +221,7 @@ int main(int argc, char* argv[]) {
                 cx_load(fileName);
                 o = cx_resolve(NULL, scope);
                 if (!o) {
-                    cx_error("dbgen: unresolved scope '%s' .", scope);
+                    cx_error("cxgen: unresolved scope '%s' .", scope);
                     return -1;
                 }
             }
@@ -251,7 +251,7 @@ int main(int argc, char* argv[]) {
 
         /* Start generator */
         if (gen_start(g)) {
-            cx_error("dbgen: error(s) occurred while running generator '%s', abort generation.", lib);
+            cx_error("cxgen: error(s) occurred while running generator '%s', abort generation.", lib);
             gen_free(g);
             break;
         }
