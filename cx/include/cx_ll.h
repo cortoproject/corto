@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB_LL_H_
-#define DB_LL_H_
+#ifndef CX_LL_H_
+#define CX_LL_H_
 
 #include "cx__type.h"
 #include "cx_collection.h"

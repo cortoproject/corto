@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB_LOADER_H_
-#define DB_LOADER_H_
+#ifndef CX_LOADER_H_
+#define CX_LOADER_H_
 
 #include "cx__type.h"
 
@@ -23,4 +23,4 @@ int cx_loaderRegister(cx_string ext, cx_loadAction handler, void* userData);
 }
 #endif
 
-#endif /* DB_LOADER_H_ */
+#endif /* CX_LOADER_H_ */

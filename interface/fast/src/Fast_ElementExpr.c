@@ -27,10 +27,10 @@ cx_int16 Fast_ElementExpr_construct(Fast_MemberExpr object) {
 	lvalueType = Fast_Expression_getType(object->lvalue);
 
 	if (lvalueType) {
-    	if (lvalueType->kind == DB_COLLECTION) {
+    	if (lvalueType->kind == CX_COLLECTION) {
     		rvalueType = Fast_Expression_getType(object->rvalue);
     		if (rvalueType) {
-    			if (cx_collection(lvalueType)->kind != DB_MAP) {
+    			if (cx_collection(lvalueType)->kind != CX_MAP) {
 					if (!cx_type_castable(cx_type(cx_uint32_o), rvalueType)) {
 						cx_id id;
 						Fast_Parser_error(yparser(), "expected integer expression for index, got '%s'", cx_fullname(rvalueType, id));
@@ -73,8 +73,8 @@ cx_ic Fast_ElementExpr_toIc_v(Fast_ElementExpr _this, cx_icProgram program, cx_i
 /* $begin(::cortex::Fast::ElementExpr::toIc) */
 	cx_icElement result;
 	cx_ic lvalue, rvalue;
-	DB_UNUSED(stored);
-	DB_UNUSED(storage);
+	CX_UNUSED(stored);
+	CX_UNUSED(storage);
 
 	/* Get lvalue & rvalue */
 	lvalue = Fast_Node_toIc(Fast_Node(_this->lvalue), program, NULL, TRUE);

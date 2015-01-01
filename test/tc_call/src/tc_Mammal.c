@@ -21,7 +21,7 @@ tc_MammalKind tc_Mammal_getKind(tc_Mammal _this) {
 /* ::tc_call::Mammal::getProps(::cortex::lang::uint32 someValue) */
 tc_MammalProps tc_Mammal_getProps(tc_Mammal _this, cx_uint32 someValue) {
 /* $begin(::tc_call::Mammal::getProps) */
-    DB_UNUSED(someValue);
+    CX_UNUSED(someValue);
     return _this->props;
 /* $end */
 }
@@ -62,7 +62,7 @@ cx_bool tc_Mammal_matesWith(tc_Mammal _this, tc_Animal m) {
     cx_assert(_method != NULL, "unresolved method '%s::matesWith(::tc_call::Animal m)@%d'", cx_nameof(_this), _methodId);
 
     /* Call method directly if it's a C-function. */
-    if (_method->_parent.kind == DB_PROCEDURE_CDECL) {
+    if (_method->_parent.kind == CX_PROCEDURE_CDECL) {
         cx_assert(_method->_parent.impl, "missing implementation for '%s::matesWith(::tc_call::Animal m)'.", cx_nameof(_this));
         _result = ((cx_bool(*)(tc_Mammal, tc_Animal ))_method->_parent.impl)(_this, m);
     } else {

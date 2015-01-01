@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB__COMPOSITE_H_
-#define DB__COMPOSITE_H_
+#ifndef CX__COMPOSITE_H_
+#define CX__COMPOSITE_H_
 
 #include "cx_interface.h"
 
@@ -30,4 +30,4 @@ cx_int16 cx_interface_bindMethod_v(cx_interface _this, cx_method method);
 }
 #endif
 
-#endif /* DB__COMPOSITE_H_ */
+#endif /* CX__COMPOSITE_H_ */

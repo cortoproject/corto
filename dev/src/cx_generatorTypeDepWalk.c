@@ -59,9 +59,9 @@ static cx_bool cx_genTypeCompareStructural(cx_type t1, cx_type t2) {
     result = FALSE;
     if (t1->kind == t2->kind) {
         switch(t1->kind) {
-        case DB_PRIMITIVE:
+        case CX_PRIMITIVE:
             if (cx_primitive(t1)->kind == cx_primitive(t2)->kind) {
-            	if (cx_primitive(t1)->kind == DB_ALIAS) {
+            	if (cx_primitive(t1)->kind == CX_ALIAS) {
             		result = !strcmp(cx_alias(t1)->typeName, cx_alias(t2)->typeName);
             	} else {
 					if (cx_primitive(t1)->width == cx_primitive(t2)->width) {
@@ -70,11 +70,11 @@ static cx_bool cx_genTypeCompareStructural(cx_type t1, cx_type t2) {
             	}
             }
             break;
-        case DB_COLLECTION:
+        case CX_COLLECTION:
             if (cx_collection(t1)->kind == cx_collection(t2)->kind) {
                 if (cx_collection(t1)->elementType == cx_collection(t2)->elementType) {
                 	if (cx_collection(t1)->max == cx_collection(t2)->max) {
-                		if (cx_collection(t1)->kind != DB_MAP) {
+                		if (cx_collection(t1)->kind != CX_MAP) {
                 			result = TRUE;
                 		} else {
 							if (cx_map(t1)->keyType != cx_map(t2)->keyType) {
@@ -106,7 +106,7 @@ static cx_bool cx_genTypeIsParsed(cx_object o, cx_genTypeWalk_t* data) {
     while(!found && cx_iterHasNext(&iter)) {
         p = cx_iterNext(&iter);
         /* If object is scoped, it must be matched exactly */
-        if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
+        if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
             if (o == p) {
                 found = TRUE;
             }
@@ -144,7 +144,7 @@ static struct cx_genTypeDeclaration* cx_genTypeIsDeclared(cx_object o, cx_genTyp
 static int cx_genTypeAnyDependencies(cx_type t, cx_genTypeWalk_t* data) {
     cx_genTypeDeclaration* decl;
 
-    DB_UNUSED(t);
+    CX_UNUSED(t);
 
     /* Any has a dependency on type */
     if (!(decl = cx_genTypeIsDeclared(cx_type_o, data))) {
@@ -230,7 +230,7 @@ error:
 
 /* Resolve collection dependencies */
 static int cx_genTypeCollectionDependencies(cx_collection t, cx_bool allowDeclared, cx_bool* recursion, cx_genTypeWalk_t* data) {
-    if (t->kind != DB_ARRAY) {
+    if (t->kind != CX_ARRAY) {
         allowDeclared = TRUE;
     }
     return cx_genTypeParse(t->elementType, allowDeclared, recursion, data);
@@ -238,7 +238,7 @@ static int cx_genTypeCollectionDependencies(cx_collection t, cx_bool allowDeclar
 
 /* Resolve map dependencies */
 static int cx_genTypeMapDependencies(cx_map t, cx_bool allowDeclared, cx_bool* recursion, cx_genTypeWalk_t* data) {
-    DB_UNUSED(allowDeclared);
+    CX_UNUSED(allowDeclared);
 
     /* Serialize collection dependencies */
     if (cx_genTypeCollectionDependencies(cx_collection(t), allowDeclared, recursion, data)) {
@@ -273,27 +273,27 @@ static int cx_genTypeDependencies(cx_object o, cx_bool allowDeclared, cx_bool* r
         }
     } else {
         switch(cx_type(t)->kind) {
-        case DB_VOID:
+        case CX_VOID:
         	/* Void types can't have dependencies */
         	break;
 
-        case DB_ANY:
+        case CX_ANY:
             if (cx_genTypeAnyDependencies(cx_type(o), data)) {
                 goto error;
             }
             break;
 
         /* Primitives can't have dependencies */
-        case DB_PRIMITIVE:
+        case CX_PRIMITIVE:
             break;
 
         /* Serialize dependencies of composite type */
-        case DB_COMPOSITE:
+        case CX_COMPOSITE:
             switch(cx_interface(o)->kind) {
-            case DB_STRUCT:
-            case DB_INTERFACE:
-            case DB_CLASS:
-            case DB_PROCEDURE:
+            case CX_STRUCT:
+            case CX_INTERFACE:
+            case CX_CLASS:
+            case CX_PROCEDURE:
                 if (cx_genTypeInterfaceDependencies(cx_interface(o), allowDeclared, recursion, data)) {
                     goto error;
                 }
@@ -302,16 +302,16 @@ static int cx_genTypeDependencies(cx_object o, cx_bool allowDeclared, cx_bool* r
             break;
 
         /* Serialize dependencies of collection type */
-        case DB_COLLECTION:
+        case CX_COLLECTION:
             switch(cx_collection(o)->kind) {
-            case DB_ARRAY:
-            case DB_SEQUENCE:
-            case DB_LIST:
+            case CX_ARRAY:
+            case CX_SEQUENCE:
+            case CX_LIST:
                 if (cx_genTypeCollectionDependencies(cx_collection(o), allowDeclared, recursion, data)) {
                     goto error;
                 }
                 break;
-            case DB_MAP:
+            case CX_MAP:
                 if (cx_genTypeMapDependencies(cx_map(o), allowDeclared, recursion, data)) {
                     goto error;
                 }
@@ -340,14 +340,14 @@ error:
  *   to the generator. */
 static int cx_genTypeProcedureDependencies(cx_function o, cx_genTypeWalk_t* data) {
     cx_uint32 i;
-    if (o->returnType && !cx_checkAttr(o->returnType, DB_ATTR_SCOPED)) {
+    if (o->returnType && !cx_checkAttr(o->returnType, CX_ATTR_SCOPED)) {
         if (cx_genTypeParse(o->returnType, TRUE, NULL, data)) {
             goto error;
         }
     }
 
     for(i=0; i<o->parameters.length; i++) {
-        if (!cx_checkAttr(o->parameters.buffer[i].type, DB_ATTR_SCOPED)) {
+        if (!cx_checkAttr(o->parameters.buffer[i].type, CX_ATTR_SCOPED)) {
             if (cx_genTypeParse(o->parameters.buffer[i].type, TRUE, NULL, data)) {
                 goto error;
             }
@@ -367,7 +367,7 @@ static int cx_genTypeParse(cx_object o, cx_bool allowDeclared, cx_bool* recursio
     }
 
     /* Check if object is valid */
-    if (!cx_checkState(o, DB_VALID)) {
+    if (!cx_checkState(o, CX_VALID)) {
         cx_id id;
         cx_error("cx_genTypeParse: scope '%s' contains invalid objects (%s).", cx_nameof(g_getCurrent(data->g)), cx_fullname(o, id));
         return 1;
@@ -378,7 +378,7 @@ static int cx_genTypeParse(cx_object o, cx_bool allowDeclared, cx_bool* recursio
         cx_genTypeProcedureDependencies(cx_function(o), data);
     } else
     /* Check if object is defined - declared objects are allowed only for procedure objects. */
-    if (!cx_checkState(o, DB_DEFINED)) {
+    if (!cx_checkState(o, CX_DEFINED)) {
         cx_id id;
         cx_error("cx_genTypeParse: scope '%s' contains undefined objects (%s).", cx_nameof(g_getCurrent(data->g)), cx_fullname(o, id));
         return 1;
@@ -440,7 +440,7 @@ static int cx_genTypeParse(cx_object o, cx_bool allowDeclared, cx_bool* recursio
                     	if (data->onDefine(o, data->userData)) goto error;
                     } else {
                     	switch(cx_typedef(o)->real->kind) {
-                    	case DB_COMPOSITE:
+                    	case CX_COMPOSITE:
                     		/* Composite types must be forward-declared */
                     		if (!decl->printed) {
                     			if (data->onDeclare(o, data->userData)) goto error;

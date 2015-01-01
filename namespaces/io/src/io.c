@@ -13,8 +13,8 @@
 #include "io__meta.h"
 
 int cortexmain(int argc, char* argv[]) {
-	DB_UNUSED(argc);
-	DB_UNUSED(argv);
+	CX_UNUSED(argc);
+	CX_UNUSED(argv);
 
 	io_load();
 

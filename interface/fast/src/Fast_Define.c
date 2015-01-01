@@ -24,15 +24,15 @@ cx_ic Fast_Define_toIc_v(Fast_Define _this, cx_icProgram program, cx_icStorage s
 /* $begin(::cortex::Fast::Define::toIc) */
 	cx_ic object;
 	cx_icOp op;
-	DB_UNUSED(stored);
-	DB_UNUSED(storage);
+	CX_UNUSED(stored);
+	CX_UNUSED(storage);
 
 	object = Fast_Node_toIc(Fast_Node(_this->object), program, NULL, TRUE);
 
-	op = cx_icOp__create(program, Fast_Node(_this)->line, DB_IC_DEFINE, (cx_icValue)object, NULL, NULL);
+	op = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_DEFINE, (cx_icValue)object, NULL, NULL);
 	cx_icProgram_addIc(program, (cx_ic)op);
 
-    op->s1Deref = DB_IC_DEREF_ADDRESS;
+    op->s1Deref = CX_IC_DEREF_ADDRESS;
 
 	return NULL;
 /* $end */

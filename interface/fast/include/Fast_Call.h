@@ -27,8 +27,8 @@ cx_bool Fast_Call_hasSideEffects(Fast_Call _this);
 /* ::cortex::Fast::Call::hasSideEffects() */
 cx_bool Fast_Call_hasSideEffects_v(Fast_Call _this);
 
-/* ::cortex::Fast::Call::resolveActual(string signature,lang::object scope,Fast::Expression instance) */
-cx_function Fast_Call_resolveActual(cx_string signature, cx_object scope, Fast_Expression instance);
+/* ::cortex::Fast::Call::setParameters(lang::function function) */
+void Fast_Call_setParameters(Fast_Call _this, cx_function function);
 
 /* virtual ::cortex::Fast::Call::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
 cx_ic Fast_Call_toIc(Fast_Call _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);

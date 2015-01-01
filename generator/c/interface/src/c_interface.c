@@ -46,7 +46,7 @@ static int c_interfaceMethodParameter(cx_parameter* o, void* userData) {
     if (data->generateSource) g_fileWrite(data->source, "%s ", specifier);
     if (data->generateHeader) g_fileWrite(data->header, "%s ", specifier);
 
-    if (o->passByReference || ((o->type->real->kind == DB_COMPOSITE) && !o->type->real->reference)) {
+    if (o->passByReference || ((o->type->real->kind == CX_COMPOSITE) && !o->type->real->reference)) {
         if (data->generateSource) g_fileWrite(data->source, "*");
     	if (data->generateHeader) g_fileWrite(data->header, "*");
     }
@@ -101,7 +101,7 @@ static void c_interfaceParamThis(cx_type parentType, c_typeWalk_t* data, cx_bool
 	cx_id classId;
 
 	g_fullOid(data->g, parentType, classId);
-    if ((parentType->kind == DB_COMPOSITE) && !parentType->reference) {
+    if ((parentType->kind == CX_COMPOSITE) && !parentType->reference) {
     	if (toSource) {
     		g_fileWrite(data->source, "%s *_this", classId);
     	}
@@ -129,7 +129,7 @@ static int c_interfaceGenerateVirtual(cx_method o, c_typeWalk_t* data) {
      * This file will be restored at the end of the function */
     data->source = data->wrapper;
 
-	if (((cx_function)o)->returnType && (cx_function(o)->returnType->real->kind != DB_VOID)) {
+	if (((cx_function)o)->returnType && (cx_function(o)->returnType->real->kind != CX_VOID)) {
 		returnsValue = TRUE;
 		c_specifierId(data->g, cx_function(o)->returnType, returnTypeId, NULL, returnPostfix);
 	} else {
@@ -224,7 +224,7 @@ static int c__interfaceGenerateDelegate(cx_delegate o, c_typeWalk_t* data) {
      * This file will be restored at the end of the function */
     data->source = data->wrapper;
 
-    if (((cx_function)o)->returnType && (cx_function(o)->returnType->real->kind != DB_VOID)) {
+    if (((cx_function)o)->returnType && (cx_function(o)->returnType->real->kind != CX_VOID)) {
         g_fullOid(data->g, ((cx_function)o)->returnType, returnTypeId);
         returnsValue = TRUE;
     } else {
@@ -357,7 +357,7 @@ void c_procedureAddToSizeExpr(cx_type t, cx_bool isReference, c_typeWalk_t *data
     cx_id id, postfix;
 
     c_specifierId(data->g, cx_typedef(t), id, NULL, postfix);
-    if (isReference || ((t->kind == DB_COMPOSITE) && !t->reference)) {
+    if (isReference || ((t->kind == CX_COMPOSITE) && !t->reference)) {
         strcpy(id, "void*");
     }
 
@@ -405,16 +405,16 @@ static int c_interfaceClassProcedureWrapper(cx_function o, c_typeWalk_t *data) {
     g_fileIndent(data->wrapper);
 
     /* Obtain returntype string */
-    g_fileWrite(data->wrapper, "DB_UNUSED(f);\n");
+    g_fileWrite(data->wrapper, "CX_UNUSED(f);\n");
     if(!o->parameters.length) {
-        g_fileWrite(data->wrapper, "DB_UNUSED(args);\n");
+        g_fileWrite(data->wrapper, "CX_UNUSED(args);\n");
     }
     returnType = ((cx_function)o)->returnType;
     if (returnType && cx_type_sizeof(returnType->real)) {
         c_specifierId(data->g, returnType, returnSpec, NULL, returnPostfix);
         g_fileWrite(data->wrapper, "*(%s%s*)result = ", returnSpec, returnPostfix);
     }else {
-        g_fileWrite(data->wrapper, "DB_UNUSED(result);\n");
+        g_fileWrite(data->wrapper, "CX_UNUSED(result);\n");
     }
 
     /* Call function and assign result */
@@ -424,7 +424,7 @@ static int c_interfaceClassProcedureWrapper(cx_function o, c_typeWalk_t *data) {
     /* Add this */
     if (c_procedureHasThis(o)) {
         cx_type parentType;
-        if(cx_procedure(cx_typeof(o))->kind != DB_METAPROCEDURE) {
+        if(cx_procedure(cx_typeof(o))->kind != CX_METAPROCEDURE) {
             parentType = cx_parentof(o);
         }else {
             parentType = cx_type(cx_any_o);
@@ -463,7 +463,7 @@ static int c_interfaceClassProcedure(cx_object o, void* userData) {
         delegate = FALSE;
         callback = FALSE;
         kind = cx_procedure(cx_typeof(o))->kind;
-        defined = cx_checkState(o, DB_DEFINED) && (cx_function(o)->kind != DB_PROCEDURE_STUB);
+        defined = cx_checkState(o, CX_DEFINED) && (cx_function(o)->kind != CX_PROCEDURE_STUB);
 
         /* Check whether generation of stubs must be forced */
         if (doStubs) {
@@ -477,16 +477,16 @@ static int c_interfaceClassProcedure(cx_object o, void* userData) {
 		/* If procedure is a delegate, generate delegate forwarding-function. Nothing
 		 * further needs to be generated in the sourcefile for a delegate. */
         switch(kind) {
-        case DB_DELEGATE:
+        case CX_DELEGATE:
             delegate = TRUE;
             c_interfaceGenerateDelegate(o, data);
             break;
-        case DB_METHOD:
+        case CX_METHOD:
             if (cx_method(o)->virtual) {
                 c_interfaceGenerateVirtual(o, data);
             }
             break;
-        case DB_CALLBACK:
+        case CX_CALLBACK:
             callback = TRUE;
             break;
         default:
@@ -567,7 +567,7 @@ static int c_interfaceClassProcedure(cx_object o, void* userData) {
 		/* Add 'this' parameter to methods */
 		if (c_procedureHasThis(o)) {
             cx_type thisType;
-            if(cx_procedure(cx_typeof(o))->kind != DB_METAPROCEDURE) {
+            if(cx_procedure(cx_typeof(o))->kind != CX_METAPROCEDURE) {
     		    thisType = cx_parentof(o);
             }else {
                 thisType = cx_any_o;
@@ -633,7 +633,7 @@ static int c_interfaceClassProcedure(cx_object o, void* userData) {
 
                 g_fileWrite(data->source, " */\n");
 
-                if ((returnType->real->kind != DB_VOID) || (returnType->real->reference)) {
+                if ((returnType->real->kind != CX_VOID) || (returnType->real->reference)) {
                     cx_id specifier;
                     g_fullOid(data->g, returnType, specifier);
                     g_fileWrite(data->source, "%s _result;\n", specifier);
@@ -649,7 +649,7 @@ static int c_interfaceClassProcedure(cx_object o, void* userData) {
                     g_fileWrite(data->source, ",NULL");
                 }
                 if (cx_class_instanceof(cx_interface_o, cx_parentof(o))) {
-                    if (cx_procedure(cx_typeof(o))->kind != DB_FUNCTION) {
+                    if (cx_procedure(cx_typeof(o))->kind != CX_FUNCTION) {
                         if (callback) {
                             g_fileWrite(data->source, ",object", classId);
                         } else {
@@ -686,7 +686,7 @@ error:
 
 /* Check if there are procedures in the scope of an object. */
 static int c_interfaceCheckProcedures(void* o, void* udata) {
-    DB_UNUSED(udata);
+    CX_UNUSED(udata);
 
     /* If the type of the type of the object is a procedure, return 0. */
     if (cx_class_instanceof(cx_procedure_o, cx_typeof(o)->real)) {

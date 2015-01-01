@@ -34,19 +34,19 @@ cx_int16 cx_member_init(cx_member object) {
     cx_object parent;
     cx_type parentType;
 
-    if (cx_checkAttr(object, DB_ATTR_SCOPED)) {
+    if (cx_checkAttr(object, CX_ATTR_SCOPED)) {
 		parent = cx_parentof(object);
 		parentType = cx_typeof(parent)->real;
 
-		if (parentType->kind == DB_COMPOSITE) {
+		if (parentType->kind == CX_COMPOSITE) {
 			/* Bind member with composite object */
 			if (cx__interface_bindMember(parent, object)) {
 				goto error;
 			}
 			/* Set default member-modifiers - not during bootstrap */
-			if (cx_checkState(cx_type_o, DB_DEFINED)) {
-				object->modifiers = DB_GLOBAL;
-				object->state = DB_DECLARED | DB_DEFINED;
+			if (cx_checkState(cx_type_o, CX_DEFINED)) {
+				object->modifiers = CX_GLOBAL;
+				object->state = CX_DECLARED | CX_DEFINED;
 			}
 		} else {
 			cx_id id;

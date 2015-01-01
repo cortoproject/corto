@@ -22,7 +22,7 @@ typedef struct cx_list_insertWalk_t {
 
 void cx_list_insertListAction(cx_ll list, void *value, void *userData) {
     cx_list_insertWalk_t *data = userData;
-    DB_UNUSED(list);
+    CX_UNUSED(list);
     cx_iterInsert(&data->iter, value);
     cx_iterHasNext(&data->iter);
     cx_iterNext(&data->iter);
@@ -93,12 +93,12 @@ static void cx_list_do(cx_any object, cx_any element, cx_bool insert, cx_list_ac
 }
 
 static void cx_list_insertAction(cx_ll list, void *value, void *userData) {
-    DB_UNUSED(userData);
+    CX_UNUSED(userData);
     cx_llInsert(list, value);
 }
 
 static void cx_list_appendAction(cx_ll list, void *value, void *userData) {
-    DB_UNUSED(userData);
+    CX_UNUSED(userData);
     cx_llAppend(list, value);
 }
 
@@ -129,7 +129,7 @@ static void* cx_list_do_(cx_any object, cx_bool insert) {
 
 /* Free values in collection */
 static int cx_clearFreeValues(void* o, void* udata) {
-    DB_UNUSED(udata);
+    CX_UNUSED(udata);
     cx_dealloc(o);
     return 1;
 }
@@ -169,7 +169,7 @@ cx_int16 cx_list_construct(cx_list object) {
 /* $begin(::cortex::lang::list::construct) */
 	cx_type(object)->hasResources = TRUE;
 	cx_type(object)->size = sizeof(cx_ll);
-	cx_type(object)->alignment = DB_ALIGNMENT(cx_ll);
+	cx_type(object)->alignment = CX_ALIGNMENT(cx_ll);
 	return cx_type_construct(cx_type(object));
 /* $end */
 }
@@ -177,7 +177,7 @@ cx_int16 cx_list_construct(cx_list object) {
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::list::init(lang::list object) */
 cx_int16 cx_list_init(cx_list object) {
 /* $begin(::cortex::lang::list::init) */
-    cx_collection(object)->kind = DB_LIST;
+    cx_collection(object)->kind = CX_LIST;
     return cx_collection_init(cx_collection(object));
 /* $end */
 }

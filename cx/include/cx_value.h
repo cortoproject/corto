@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB_VALUE_H_
-#define DB_VALUE_H_
+#ifndef CX_VALUE_H_
+#define CX_VALUE_H_
 
 #include "cx__type.h"
 
@@ -15,25 +15,25 @@ extern "C" {
 #endif
 
 typedef enum cx_valueKind {
-    DB_OBJECT = 0,
-    DB_BASE = 1, /* serialize inheritance relation */
-    DB_VALUE = 2,
-    DB_LITERAL = 3,
-    DB_MEMBER = 4,
-    DB_CALL = 5,
-    DB_ELEMENT = 6,
-    DB_MAP_ELEMENT = 7,
-    DB_CONSTANT = 8/* must be last */
+    CX_OBJECT = 0,
+    CX_BASE = 1, /* serialize inheritance relation */
+    CX_VALUE = 2,
+    CX_LITERAL = 3,
+    CX_MEMBER = 4,
+    CX_CALL = 5,
+    CX_ELEMENT = 6,
+    CX_MAP_ELEMENT = 7,
+    CX_CONSTANT = 8/* must be last */
 }cx_valueKind;
 
 typedef enum cx_literalKind {
-	DB_LITERAL_BOOLEAN,
-	DB_LITERAL_CHARACTER,
-	DB_LITERAL_INTEGER,
-	DB_LITERAL_UNSIGNED_INTEGER,
-	DB_LITERAL_FLOATING_POINT,
-	DB_LITERAL_STRING,
-	DB_LITERAL_NULL
+	CX_LITERAL_BOOLEAN,
+	CX_LITERAL_CHARACTER,
+	CX_LITERAL_INTEGER,
+	CX_LITERAL_UNSIGNED_INTEGER,
+	CX_LITERAL_FLOATING_POINT,
+	CX_LITERAL_STRING,
+	CX_LITERAL_NULL
 }cx_literalKind;
 
 /* cx_value
@@ -132,4 +132,4 @@ void cx_valueSetValue(cx_value* val, cx_void* v);
 }
 #endif
 
-#endif /* DB_VALUE_H_ */
+#endif /* CX_VALUE_H_ */

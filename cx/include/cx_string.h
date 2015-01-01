@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB_STRING_H_
-#define DB_STRING_H_
+#ifndef CX_STRING_H_
+#define CX_STRING_H_
 
 #include "string.h"
 
@@ -26,4 +26,4 @@ char *stresc(char in, char* out, char delimiter);
 }
 #endif
 
-#endif /* DB_STRING_H_ */
+#endif /* CX_STRING_H_ */

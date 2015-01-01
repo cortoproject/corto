@@ -135,13 +135,13 @@ char* cx_itoa(int num, char* buff) {
 }
 
 char* cx_utoa(unsigned int num, char* buff) {
-	DB_UNUSED(num);
-	DB_UNUSED(buff);
+	CX_UNUSED(num);
+	CX_UNUSED(buff);
 	return NULL;
 }
 
 char* cx_ftoa(float num, char* buff) {
-	DB_UNUSED(num);
-	DB_UNUSED(buff);
+	CX_UNUSED(num);
+	CX_UNUSED(buff);
 	return NULL;
 }

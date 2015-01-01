@@ -24,7 +24,7 @@ cx_int16 Fast_UnaryExpr_construct(Fast_UnaryExpr object) {
 	lvalueType = Fast_Expression_getType(object->lvalue);
     Fast_Node(object)->kind = FAST_Unary;
 
-    if (object->operator == DB_COND_NOT) {
+    if (object->operator == CX_COND_NOT) {
     	Fast_Expression(object)->type = Fast_Variable(Fast_Object__create(cx_bool_o));
     } else {
     	Fast_Expression(object)->type = Fast_Variable(Fast_Object__create(lvalueType));
@@ -49,7 +49,7 @@ cx_ic Fast_UnaryExpr_toIc_v(Fast_UnaryExpr _this, cx_icProgram program, cx_icSto
 	cx_icStorage result;
 	cx_ic lvalue;
 	cx_icOp op;
-	DB_UNUSED(stored);
+	CX_UNUSED(stored);
 
     if (storage) {
     	result = storage;
@@ -64,8 +64,8 @@ cx_ic Fast_UnaryExpr_toIc_v(Fast_UnaryExpr _this, cx_icProgram program, cx_icSto
     lvalue = Fast_Node_toIc(Fast_Node(_this->lvalue), program, result, TRUE);
 
     switch(_this->operator) {
-    case DB_INC:
-    case DB_DEC:
+    case CX_INC:
+    case CX_DEC:
         op = cx_icOp__create(program, Fast_Node(_this)->line, cx_icOpKindFromOperator(_this->operator), (cx_icValue)lvalue, NULL, NULL);
         cx_icProgram_addIc(program, (cx_ic)op);
         result = (cx_icStorage)lvalue;

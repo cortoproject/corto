@@ -25,7 +25,7 @@ static cx_int16 cx_string_deserBuildIndexComposite(cx_serializer s, cx_value* v,
     cx_int16 result = 0;
 
     /* Only serialize direct members of object or elements */
-    if ((v->kind == DB_OBJECT) || (v->kind == DB_BASE)) {
+    if ((v->kind == CX_OBJECT) || (v->kind == CX_BASE)) {
         result = cx_serializeMembers(s, v, userData);
     }
     return result;
@@ -86,7 +86,7 @@ static struct cx_string_deserIndexInfo* cx_string_deserIndexNext(cx_string_deser
 
 /* Free nodes from index */
 int cx_string_deserWalkIndex(void* o, void* udata) {
-	DB_UNUSED(udata);
+	CX_UNUSED(udata);
 	cx_dealloc(o);
 	return 1;
 }
@@ -105,7 +105,7 @@ static cx_int16 cx_string_deserBuildIndexPrimitive(cx_serializer s, cx_value* v,
     struct cx_string_deserIndexInfo *newInfo;
     cx_member m;
 
-    DB_UNUSED(s);
+    CX_UNUSED(s);
 
     data = userData;
 
@@ -126,9 +126,9 @@ static cx_int16 cx_string_deserBuildIndexPrimitive(cx_serializer s, cx_value* v,
 
 /* This function prevents doing unwanted deepwalks of types */
 static cx_int16 cx_string_deserBuildIndexDummy(cx_serializer s, cx_value* v, void* userData) {
-    DB_UNUSED(s);
-    DB_UNUSED(v);
-    DB_UNUSED(userData);
+    CX_UNUSED(s);
+    CX_UNUSED(v);
+    CX_UNUSED(userData);
     return 0;
 }
 
@@ -137,15 +137,15 @@ static struct cx_serializer_s cx_string_deserBuildIndex_s;
 cx_serializer cx_string_deserBuildIndex(void) {
 	cx_serializerInit(&cx_string_deserBuildIndex_s);
     /* Add an indexInfo object for each primitive. */
-    cx_string_deserBuildIndex_s.program[DB_VOID] = cx_string_deserBuildIndexDummy;
-    cx_string_deserBuildIndex_s.program[DB_PRIMITIVE] = cx_string_deserBuildIndexDummy;
-    cx_string_deserBuildIndex_s.program[DB_COLLECTION] = cx_string_deserBuildIndexDummy;
-    cx_string_deserBuildIndex_s.metaprogram[DB_OBJECT] = cx_string_deserBuildIndexComposite;
-    cx_string_deserBuildIndex_s.metaprogram[DB_BASE] = cx_string_deserBuildIndexComposite;
-    cx_string_deserBuildIndex_s.metaprogram[DB_MEMBER] = cx_string_deserBuildIndexPrimitive;
-    cx_string_deserBuildIndex_s.access = DB_LOCAL;
-    cx_string_deserBuildIndex_s.accessKind = DB_NOT;
-    cx_string_deserBuildIndex_s.traceKind = DB_SERIALIZER_TRACE_ON_FAIL;
+    cx_string_deserBuildIndex_s.program[CX_VOID] = cx_string_deserBuildIndexDummy;
+    cx_string_deserBuildIndex_s.program[CX_PRIMITIVE] = cx_string_deserBuildIndexDummy;
+    cx_string_deserBuildIndex_s.program[CX_COLLECTION] = cx_string_deserBuildIndexDummy;
+    cx_string_deserBuildIndex_s.metaprogram[CX_OBJECT] = cx_string_deserBuildIndexComposite;
+    cx_string_deserBuildIndex_s.metaprogram[CX_BASE] = cx_string_deserBuildIndexComposite;
+    cx_string_deserBuildIndex_s.metaprogram[CX_MEMBER] = cx_string_deserBuildIndexPrimitive;
+    cx_string_deserBuildIndex_s.access = CX_LOCAL;
+    cx_string_deserBuildIndex_s.accessKind = CX_NOT;
+    cx_string_deserBuildIndex_s.traceKind = CX_SERIALIZER_TRACE_ON_FAIL;
     return &cx_string_deserBuildIndex_s;
 }
 
@@ -166,7 +166,7 @@ static cx_string cx_string_deserParseScope(cx_string str, struct cx_string_deser
 
     /* Offset the scope-members with the current offset */
     if (info) {
-        privateData.ptr = DB_OFFSET(data->ptr, info->m->offset);
+        privateData.ptr = CX_OFFSET(data->ptr, info->m->offset);
     } else {
         privateData.ptr = data->ptr;
     }
@@ -185,14 +185,14 @@ static cx_string cx_string_deserParseScope(cx_string str, struct cx_string_deser
 
     /* Check if type is composite or collection */
     kind = info->type->kind;
-    if ((kind != DB_COMPOSITE) && (kind != DB_COLLECTION)) {
+    if ((kind != CX_COMPOSITE) && (kind != CX_COLLECTION)) {
         cx_id id;
         cx_error("cx_string_deserParseScope: open-scope not valid for type '%s'", cx_fullname(info->type, id));
         goto error;
     }
 
     /* Build index for type */
-    if (info->type->kind == DB_COMPOSITE) {
+    if (info->type->kind == CX_COMPOSITE) {
         if (cx_metaWalk(cx_string_deserBuildIndex(), info->type, &privateData)) {
             goto error;
         }
@@ -277,7 +277,7 @@ static cx_int16 cx_string_deserParseValue(cx_string value, struct cx_string_dese
         }
 
         if (o) {
-            cx_set_ext(data->out, DB_OFFSET(data->ptr, info->m->offset), o, "Set object for anonymous object");
+            cx_set_ext(data->out, CX_OFFSET(data->ptr, info->m->offset), o, "Set object for anonymous object");
             cx_free_ext(NULL, o, "Free object for anonymous object");
         } else {
             cx_id id;
@@ -292,16 +292,16 @@ static cx_int16 cx_string_deserParseValue(cx_string value, struct cx_string_dese
     } else
 
     /* Convert string to primitive value */
-    if (info->type->kind == DB_PRIMITIVE) {
+    if (info->type->kind == CX_PRIMITIVE) {
         void *offset;
 
         if (info->m) {
-            offset = DB_OFFSET(data->ptr, info->m->offset);
+            offset = CX_OFFSET(data->ptr, info->m->offset);
         } else {
-            offset = DB_OFFSET(data->ptr, data->current * info->type->size);
+            offset = CX_OFFSET(data->ptr, data->current * info->type->size);
         }
 
-    	if (cx_primitive(info->type)->kind != DB_TEXT) {
+    	if (cx_primitive(info->type)->kind != CX_TEXT) {
 			if (cx_convert(cx_primitive(cx_string_o), &value, cx_primitive(info->type), offset)) {
 				goto error;
 			}
@@ -412,11 +412,11 @@ static cx_string cx_string_deserParseString(cx_string ptr, cx_string buffer, cx_
 static cx_string cx_string_deserParse(cx_string str, struct cx_string_deserIndexInfo* info, cx_string_deser_t* data) {
     cx_char ch;
     cx_char *ptr, *bptr;
-    cx_char buffer[DB_STRING_DESER_TOKEN_MAX];
+    cx_char buffer[CX_STRING_DESER_TOKEN_MAX];
     cx_bool proceed;
     struct cx_string_deserIndexInfo* memberInfo;
 
-    DB_UNUSED(info);
+    CX_UNUSED(info);
 
     ptr = str;
     bptr = buffer;

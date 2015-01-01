@@ -111,8 +111,8 @@ cx_ic Fast_MemberExpr_toIc_v(Fast_MemberExpr _this, cx_icProgram program, cx_icS
 	cx_icMember result;
 	cx_member member;
 	cx_ic lvalue;
-	DB_UNUSED(stored);
-	DB_UNUSED(storage);
+	CX_UNUSED(stored);
+	CX_UNUSED(storage);
 
 	/* Get lvalue & rvalue */
 	lvalue = Fast_Node_toIc(Fast_Node(_this->lvalue), program, NULL, FALSE);

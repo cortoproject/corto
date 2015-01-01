@@ -31,7 +31,7 @@ cx_int16 Fast_NewExpr_construct(Fast_NewExpr object) {
 /* ::cortex::Fast::NewExpr::hasSideEffects() */
 cx_bool Fast_NewExpr_hasSideEffects_v(Fast_NewExpr _this) {
 /* $begin(::cortex::Fast::NewExpr::hasSideEffects) */
-    DB_UNUSED(_this);
+    CX_UNUSED(_this);
     return TRUE;
 /* $end */
 }
@@ -41,7 +41,7 @@ cx_ic Fast_NewExpr_toIc_v(Fast_NewExpr _this, cx_icProgram program, cx_icStorage
 /* $begin(::cortex::Fast::NewExpr::toIc) */
 	cx_ic type, attrs, result;
 	cx_icOp op;
-	DB_UNUSED(stored);
+	CX_UNUSED(stored);
 
 	if (storage) {
 		result = (cx_ic)storage;
@@ -56,8 +56,8 @@ cx_ic Fast_NewExpr_toIc_v(Fast_NewExpr _this, cx_icProgram program, cx_icStorage
 		attrs = NULL;
 	}
 
-	op = cx_icOp__create(program, Fast_Node(_this)->line, DB_IC_NEW, (cx_icValue)result, (cx_icValue)type, (cx_icValue)attrs);
-	op->s1Deref = DB_IC_DEREF_ADDRESS;
+	op = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_NEW, (cx_icValue)result, (cx_icValue)type, (cx_icValue)attrs);
+	op->s1Deref = CX_IC_DEREF_ADDRESS;
 	cx_icProgram_addIc(program, (cx_ic)op);
 
 	return result;

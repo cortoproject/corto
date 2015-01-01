@@ -67,10 +67,10 @@ cx_ic Fast_Boolean_toIc_v(Fast_Boolean _this, cx_icProgram program, cx_icStorage
 /* $begin(::cortex::Fast::Boolean::toIc) */
 	cx_ic result;
 	cx_value v;
-	DB_UNUSED(storage);
-	DB_UNUSED(stored);
+	CX_UNUSED(storage);
+	CX_UNUSED(stored);
 
-	cx_valueLiteralInit(&v, DB_LITERAL_BOOLEAN, &_this->value);
+	cx_valueLiteralInit(&v, CX_LITERAL_BOOLEAN, &_this->value);
 	result = (cx_ic)cx_icLiteral__create(program, Fast_Node(_this)->line, v, cx_type(cx_bool_o));
 
 	return result;

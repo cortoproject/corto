@@ -162,7 +162,7 @@ int cx_libraryLoader(cx_string _file, void* udata) {
 	cx_string filename = NULL, file = NULL;
 	int (*proc)(int argc, char* argv[]);
 
-	DB_UNUSED(udata);
+	CX_UNUSED(udata);
 
 	/* Convert scoped name to filename */
 	if (strchr(_file, ':')) {
@@ -255,7 +255,7 @@ void cx_loaderOnExit(void* udata) {
 	cx_iter iter;
 	cx_string loaded;
 
-	DB_UNUSED(udata);
+	CX_UNUSED(udata);
 
 	/* Free loaded administration */
 
@@ -289,7 +289,7 @@ void cx_loaderOnExit(void* udata) {
 }
 
 /* Register handlers for shared objects */
-DB_DLL_CONSTRUCT {
+CX_DLL_CONSTRUCT {
 	/* Register exit-handler */
 	cx_onexit(cx_loaderOnExit, NULL);
 

@@ -18,10 +18,10 @@ cx_int16 cx_function_bind(cx_function object) {
 	    for(i=0; i<object->parameters.length; i++) {
 	    	cx_type paramType = object->parameters.buffer[i].type->real;
 	    	switch(paramType->kind) {
-	    	case DB_ANY:
+	    	case CX_ANY:
 	    		object->size += sizeof(cx_any);
 	    		break;
-	    	case DB_PRIMITIVE:
+	    	case CX_PRIMITIVE:
 		    	object->size += cx_type_sizeof(paramType);
 	    		break;
 	    	default:
@@ -100,7 +100,7 @@ cx_int16 cx_function_init(cx_function object) {
 /* $begin(::cortex::lang::function::init) */
 	cx_functionLookup_t walkData;
     cx_ll scope;
-	DB_UNUSED(object);
+	CX_UNUSED(object);
 
 	scope = cx_scopeClaim(cx_parentof(object));
 
@@ -143,12 +143,11 @@ cx_parameterSeq cx_function_stringToParameterSeq(cx_string name, cx_object scope
     if (*ptr != ')') {
         cx_uint32 count, i;
         cx_id id;
-        cx_bool reference;
+        int flags = 0;
 
         /* Count number of parameters for function */
         count = cx_signatureParamCount(name);
         i = 0;
-        reference = FALSE;
 
         /* Allocate size for parameters */
         result.length = count;
@@ -157,18 +156,26 @@ cx_parameterSeq cx_function_stringToParameterSeq(cx_string name, cx_object scope
 
         /* Parse arguments */
         for(i=0; i<count; i++) {
-            if (cx_signatureParamType(name, i, id, &reference)) {
-                cx_error("error occurred while parsing type of argument '%s' for signature '%s'", name);
+            if (cx_signatureParamType(name, i, id, &flags)) {
+                cx_error("error occurred while parsing type of parameter '%d' for signature '%s'", i, name);
                 goto error;
             }
 
             /* Set reference */
-            result.buffer[i].passByReference = reference;
+            result.buffer[i].passByReference = (flags & CX_PARAMETER_REFERENCE) != 0;
 
             /* Assign type */
             result.buffer[i].type = cx_resolve_ext(NULL, scope, id, FALSE, "Resolve parameter-type for function");
             if (!result.buffer[i].type) {
-                cx_error("type '%s' of argument %d in signature %s not found", id, i, name);
+                cx_error("type '%s' of parameter %d in signature %s not found", id, i, name);
+                goto error;
+            }
+
+            /* Validate whether reference is not redundantly applied */
+            if (result.buffer[i].passByReference && result.buffer[i].type->real->reference) {
+                cx_id id;
+                cx_error("redundant '&' qualifier for parameter %d, type '%s' is already a reference",
+                    i, cx_fullname(result.buffer[i].type, id));
                 goto error;
             }
 
@@ -187,7 +194,6 @@ error:
     cx_dealloc(result.buffer);
     result.buffer = NULL;
     return result;
-
 /* $end */
 }
 

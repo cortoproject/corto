@@ -52,7 +52,7 @@ int os_load(void) {
     }
 
     /* Define ::cortex */
-    if (!cx_checkState(_o, DB_DEFINED)) {
+    if (!cx_checkState(_o, CX_DEFINED)) {
         if (cx_define(_o)) {
             cx_error("os_load: failed to define object '::cortex'.");
             goto error;
@@ -73,12 +73,12 @@ int os_load(void) {
     }
 
     /* Define ::cortex::os::exit(::cortex::lang::bool success) */
-    if (!cx_checkState(os_exit_o, DB_DEFINED)) {
+    if (!cx_checkState(os_exit_o, CX_DEFINED)) {
         os_exit_o->returnType = cx_resolve_ext(os_exit_o, NULL, "::cortex::lang::void", FALSE, "element ::cortex::os::exit(::cortex::lang::bool success).returnType");
         os_exit_o->returnsReference = FALSE;
         
         /* Bind ::cortex::os::exit(::cortex::lang::bool success) with C-function */
-        cx_function(os_exit_o)->kind = DB_PROCEDURE_CDECL;
+        cx_function(os_exit_o)->kind = CX_PROCEDURE_CDECL;
         void __os_exit(void *args, void *result);
         cx_function(os_exit_o)->impl = (cx_word)__os_exit;
         if (cx_define(os_exit_o)) {
@@ -103,7 +103,7 @@ int os_load(void) {
     }
 
     /* Define ::cortex::os::loadAvgKind::MIN_1 */
-    if (!cx_checkState(os_loadAvgKind_MIN_1_o, DB_DEFINED)) {
+    if (!cx_checkState(os_loadAvgKind_MIN_1_o, CX_DEFINED)) {
         if (cx_define(os_loadAvgKind_MIN_1_o)) {
             cx_error("os_load: failed to define object '::cortex::os::loadAvgKind::MIN_1'.");
             goto error;
@@ -119,7 +119,7 @@ int os_load(void) {
     }
 
     /* Define ::cortex::os::loadAvgKind::MIN_15 */
-    if (!cx_checkState(os_loadAvgKind_MIN_15_o, DB_DEFINED)) {
+    if (!cx_checkState(os_loadAvgKind_MIN_15_o, CX_DEFINED)) {
         if (cx_define(os_loadAvgKind_MIN_15_o)) {
             cx_error("os_load: failed to define object '::cortex::os::loadAvgKind::MIN_15'.");
             goto error;
@@ -135,14 +135,14 @@ int os_load(void) {
     }
 
     /* Define ::cortex::os::loadAvgKind::MIN_5 */
-    if (!cx_checkState(os_loadAvgKind_MIN_5_o, DB_DEFINED)) {
+    if (!cx_checkState(os_loadAvgKind_MIN_5_o, CX_DEFINED)) {
         if (cx_define(os_loadAvgKind_MIN_5_o)) {
             cx_error("os_load: failed to define object '::cortex::os::loadAvgKind::MIN_5'.");
             goto error;
         }
     }
     /* Define ::cortex::os::loadAvgKind */
-    if (!cx_checkState(os_loadAvgKind_o, DB_DEFINED)) {
+    if (!cx_checkState(os_loadAvgKind_o, CX_DEFINED)) {
         if (cx_define(os_loadAvgKind_o)) {
             cx_error("os_load: failed to define object '::cortex::os::loadAvgKind'.");
             goto error;
@@ -159,12 +159,12 @@ int os_load(void) {
     }
 
     /* Define ::cortex::os::loadavg(::cortex::os::loadAvgKind kind) */
-    if (!cx_checkState(os_loadavg_o, DB_DEFINED)) {
+    if (!cx_checkState(os_loadavg_o, CX_DEFINED)) {
         os_loadavg_o->returnType = cx_resolve_ext(os_loadavg_o, NULL, "::cortex::lang::float64", FALSE, "element ::cortex::os::loadavg(::cortex::os::loadAvgKind kind).returnType");
         os_loadavg_o->returnsReference = FALSE;
         
         /* Bind ::cortex::os::loadavg(::cortex::os::loadAvgKind kind) with C-function */
-        cx_function(os_loadavg_o)->kind = DB_PROCEDURE_CDECL;
+        cx_function(os_loadavg_o)->kind = CX_PROCEDURE_CDECL;
         void __os_loadavg(void *args, void *result);
         cx_function(os_loadavg_o)->impl = (cx_word)__os_loadavg;
         if (cx_define(os_loadavg_o)) {
@@ -180,12 +180,12 @@ int os_load(void) {
     }
 
     /* Define ::cortex::os::sleep(::cortex::lang::uint32 sec,::cortex::lang::uint32 nsec) */
-    if (!cx_checkState(os_sleep_o, DB_DEFINED)) {
+    if (!cx_checkState(os_sleep_o, CX_DEFINED)) {
         os_sleep_o->returnType = cx_resolve_ext(os_sleep_o, NULL, "::cortex::lang::void", FALSE, "element ::cortex::os::sleep(::cortex::lang::uint32 sec,::cortex::lang::uint32 nsec).returnType");
         os_sleep_o->returnsReference = FALSE;
         
         /* Bind ::cortex::os::sleep(::cortex::lang::uint32 sec,::cortex::lang::uint32 nsec) with C-function */
-        cx_function(os_sleep_o)->kind = DB_PROCEDURE_CDECL;
+        cx_function(os_sleep_o)->kind = CX_PROCEDURE_CDECL;
         void __os_sleep(void *args, void *result);
         cx_function(os_sleep_o)->impl = (cx_word)__os_sleep;
         if (cx_define(os_sleep_o)) {
@@ -201,12 +201,12 @@ int os_load(void) {
     }
 
     /* Define ::cortex::os::system(::cortex::lang::string cmd) */
-    if (!cx_checkState(os_system_o, DB_DEFINED)) {
+    if (!cx_checkState(os_system_o, CX_DEFINED)) {
         os_system_o->returnType = cx_resolve_ext(os_system_o, NULL, "::cortex::lang::void", FALSE, "element ::cortex::os::system(::cortex::lang::string cmd).returnType");
         os_system_o->returnsReference = FALSE;
         
         /* Bind ::cortex::os::system(::cortex::lang::string cmd) with C-function */
-        cx_function(os_system_o)->kind = DB_PROCEDURE_CDECL;
+        cx_function(os_system_o)->kind = CX_PROCEDURE_CDECL;
         void __os_system(void *args, void *result);
         cx_function(os_system_o)->impl = (cx_word)__os_system;
         if (cx_define(os_system_o)) {
@@ -229,7 +229,7 @@ int os_load(void) {
     }
 
     /* Define ::cortex::os::thread::handle */
-    if (!cx_checkState(os_thread_handle_o, DB_DEFINED)) {
+    if (!cx_checkState(os_thread_handle_o, CX_DEFINED)) {
         os_thread_handle_o->type = cx_resolve_ext(os_thread_handle_o, NULL, "::cortex::lang::word", FALSE, "element ::cortex::os::thread::handle.type");
         os_thread_handle_o->modifiers = 0x1;
         os_thread_handle_o->state = 0x6;
@@ -248,13 +248,13 @@ int os_load(void) {
     }
 
     /* Define ::cortex::os::thread::join() */
-    if (!cx_checkState(os_thread_join_o, DB_DEFINED)) {
+    if (!cx_checkState(os_thread_join_o, CX_DEFINED)) {
         cx_function(os_thread_join_o)->returnType = cx_resolve_ext(os_thread_join_o, NULL, "::cortex::lang::void", FALSE, "element ::cortex::os::thread::join().returnType");
         cx_function(os_thread_join_o)->returnsReference = FALSE;
         os_thread_join_o->virtual = FALSE;
         
         /* Bind ::cortex::os::thread::join() with C-function */
-        cx_function(os_thread_join_o)->kind = DB_PROCEDURE_CDECL;
+        cx_function(os_thread_join_o)->kind = CX_PROCEDURE_CDECL;
         void __os_thread_join(void *args, void *result);
         cx_function(os_thread_join_o)->impl = (cx_word)__os_thread_join;
         if (cx_define(os_thread_join_o)) {
@@ -270,7 +270,7 @@ int os_load(void) {
     }
 
     /* Define ::cortex::os::thread::run() */
-    if (!cx_checkState(os_thread_run_o, DB_DEFINED)) {
+    if (!cx_checkState(os_thread_run_o, CX_DEFINED)) {
         cx_function(os_thread_run_o)->returnType = cx_resolve_ext(os_thread_run_o, NULL, "::cortex::lang::void", FALSE, "element ::cortex::os::thread::run().returnType");
         cx_function(os_thread_run_o)->returnsReference = FALSE;
         cx_method(os_thread_run_o)->virtual = TRUE;
@@ -288,13 +288,13 @@ int os_load(void) {
     }
 
     /* Define ::cortex::os::thread::start() */
-    if (!cx_checkState(os_thread_start_o, DB_DEFINED)) {
+    if (!cx_checkState(os_thread_start_o, CX_DEFINED)) {
         cx_function(os_thread_start_o)->returnType = cx_resolve_ext(os_thread_start_o, NULL, "::cortex::lang::void", FALSE, "element ::cortex::os::thread::start().returnType");
         cx_function(os_thread_start_o)->returnsReference = FALSE;
         os_thread_start_o->virtual = FALSE;
         
         /* Bind ::cortex::os::thread::start() with C-function */
-        cx_function(os_thread_start_o)->kind = DB_PROCEDURE_CDECL;
+        cx_function(os_thread_start_o)->kind = CX_PROCEDURE_CDECL;
         void __os_thread_start(void *args, void *result);
         cx_function(os_thread_start_o)->impl = (cx_word)__os_thread_start;
         if (cx_define(os_thread_start_o)) {
@@ -310,13 +310,13 @@ int os_load(void) {
     }
 
     /* Define ::cortex::os::thread::stop() */
-    if (!cx_checkState(os_thread_stop_o, DB_DEFINED)) {
+    if (!cx_checkState(os_thread_stop_o, CX_DEFINED)) {
         cx_function(os_thread_stop_o)->returnType = cx_resolve_ext(os_thread_stop_o, NULL, "::cortex::lang::void", FALSE, "element ::cortex::os::thread::stop().returnType");
         cx_function(os_thread_stop_o)->returnsReference = FALSE;
         os_thread_stop_o->virtual = FALSE;
         
         /* Bind ::cortex::os::thread::stop() with C-function */
-        cx_function(os_thread_stop_o)->kind = DB_PROCEDURE_CDECL;
+        cx_function(os_thread_stop_o)->kind = CX_PROCEDURE_CDECL;
         void __os_thread_stop(void *args, void *result);
         cx_function(os_thread_stop_o)->impl = (cx_word)__os_thread_stop;
         if (cx_define(os_thread_stop_o)) {
@@ -332,7 +332,7 @@ int os_load(void) {
     }
 
     /* Define ::cortex::os::thread::stopping */
-    if (!cx_checkState(os_thread_stopping_o, DB_DEFINED)) {
+    if (!cx_checkState(os_thread_stopping_o, CX_DEFINED)) {
         os_thread_stopping_o->type = cx_resolve_ext(os_thread_stopping_o, NULL, "::cortex::lang::bool", FALSE, "element ::cortex::os::thread::stopping.type");
         os_thread_stopping_o->modifiers = 0x2;
         os_thread_stopping_o->state = 0x6;
@@ -358,13 +358,13 @@ int os_load(void) {
     }
 
     /* Define ::cortex::os::time::get() */
-    if (!cx_checkState(os_time_get_o, DB_DEFINED)) {
+    if (!cx_checkState(os_time_get_o, CX_DEFINED)) {
         cx_function(os_time_get_o)->returnType = cx_resolve_ext(os_time_get_o, NULL, "::cortex::lang::void", FALSE, "element ::cortex::os::time::get().returnType");
         cx_function(os_time_get_o)->returnsReference = FALSE;
         os_time_get_o->virtual = FALSE;
         
         /* Bind ::cortex::os::time::get() with C-function */
-        cx_function(os_time_get_o)->kind = DB_PROCEDURE_CDECL;
+        cx_function(os_time_get_o)->kind = CX_PROCEDURE_CDECL;
         void __os_time_get(void *args, void *result);
         cx_function(os_time_get_o)->impl = (cx_word)__os_time_get;
         if (cx_define(os_time_get_o)) {
@@ -380,7 +380,7 @@ int os_load(void) {
     }
 
     /* Define ::cortex::os::time::nanoseconds */
-    if (!cx_checkState(os_time_nanoseconds_o, DB_DEFINED)) {
+    if (!cx_checkState(os_time_nanoseconds_o, CX_DEFINED)) {
         os_time_nanoseconds_o->type = cx_resolve_ext(os_time_nanoseconds_o, NULL, "::cortex::lang::uint32", FALSE, "element ::cortex::os::time::nanoseconds.type");
         os_time_nanoseconds_o->modifiers = 0x0;
         os_time_nanoseconds_o->state = 0x6;
@@ -399,7 +399,7 @@ int os_load(void) {
     }
 
     /* Define ::cortex::os::time::seconds */
-    if (!cx_checkState(os_time_seconds_o, DB_DEFINED)) {
+    if (!cx_checkState(os_time_seconds_o, CX_DEFINED)) {
         os_time_seconds_o->type = cx_resolve_ext(os_time_seconds_o, NULL, "::cortex::lang::int32", FALSE, "element ::cortex::os::time::seconds.type");
         os_time_seconds_o->modifiers = 0x0;
         os_time_seconds_o->state = 0x6;
@@ -418,13 +418,13 @@ int os_load(void) {
     }
 
     /* Define ::cortex::os::time::toFloat() */
-    if (!cx_checkState(os_time_toFloat_o, DB_DEFINED)) {
+    if (!cx_checkState(os_time_toFloat_o, CX_DEFINED)) {
         cx_function(os_time_toFloat_o)->returnType = cx_resolve_ext(os_time_toFloat_o, NULL, "::cortex::lang::float64", FALSE, "element ::cortex::os::time::toFloat().returnType");
         cx_function(os_time_toFloat_o)->returnsReference = FALSE;
         os_time_toFloat_o->virtual = FALSE;
         
         /* Bind ::cortex::os::time::toFloat() with C-function */
-        cx_function(os_time_toFloat_o)->kind = DB_PROCEDURE_CDECL;
+        cx_function(os_time_toFloat_o)->kind = CX_PROCEDURE_CDECL;
         void __os_time_toFloat(void *args, void *result);
         cx_function(os_time_toFloat_o)->impl = (cx_word)__os_time_toFloat;
         if (cx_define(os_time_toFloat_o)) {
@@ -447,7 +447,7 @@ int os_load(void) {
     }
 
     /* Define ::cortex::os::timer::nanosec */
-    if (!cx_checkState(os_timer_nanosec_o, DB_DEFINED)) {
+    if (!cx_checkState(os_timer_nanosec_o, CX_DEFINED)) {
         os_timer_nanosec_o->type = cx_resolve_ext(os_timer_nanosec_o, NULL, "::cortex::lang::uint32", FALSE, "element ::cortex::os::timer::nanosec.type");
         os_timer_nanosec_o->modifiers = 0x0;
         os_timer_nanosec_o->state = 0x6;
@@ -466,7 +466,7 @@ int os_load(void) {
     }
 
     /* Define ::cortex::os::timer::sec */
-    if (!cx_checkState(os_timer_sec_o, DB_DEFINED)) {
+    if (!cx_checkState(os_timer_sec_o, CX_DEFINED)) {
         os_timer_sec_o->type = cx_resolve_ext(os_timer_sec_o, NULL, "::cortex::lang::int32", FALSE, "element ::cortex::os::timer::sec.type");
         os_timer_sec_o->modifiers = 0x0;
         os_timer_sec_o->state = 0x6;
@@ -485,13 +485,13 @@ int os_load(void) {
     }
 
     /* Define ::cortex::os::time::add(::cortex::os::time t) */
-    if (!cx_checkState(os_time_add_o, DB_DEFINED)) {
+    if (!cx_checkState(os_time_add_o, CX_DEFINED)) {
         cx_function(os_time_add_o)->returnType = cx_resolve_ext(os_time_add_o, NULL, "::cortex::lang::void", FALSE, "element ::cortex::os::time::add(::cortex::os::time t).returnType");
         cx_function(os_time_add_o)->returnsReference = FALSE;
         os_time_add_o->virtual = FALSE;
         
         /* Bind ::cortex::os::time::add(::cortex::os::time t) with C-function */
-        cx_function(os_time_add_o)->kind = DB_PROCEDURE_CDECL;
+        cx_function(os_time_add_o)->kind = CX_PROCEDURE_CDECL;
         void __os_time_add(void *args, void *result);
         cx_function(os_time_add_o)->impl = (cx_word)__os_time_add;
         if (cx_define(os_time_add_o)) {
@@ -507,13 +507,13 @@ int os_load(void) {
     }
 
     /* Define ::cortex::os::time::sub(::cortex::os::time t) */
-    if (!cx_checkState(os_time_sub_o, DB_DEFINED)) {
+    if (!cx_checkState(os_time_sub_o, CX_DEFINED)) {
         cx_function(os_time_sub_o)->returnType = cx_resolve_ext(os_time_sub_o, NULL, "::cortex::lang::void", FALSE, "element ::cortex::os::time::sub(::cortex::os::time t).returnType");
         cx_function(os_time_sub_o)->returnsReference = FALSE;
         os_time_sub_o->virtual = FALSE;
         
         /* Bind ::cortex::os::time::sub(::cortex::os::time t) with C-function */
-        cx_function(os_time_sub_o)->kind = DB_PROCEDURE_CDECL;
+        cx_function(os_time_sub_o)->kind = CX_PROCEDURE_CDECL;
         void __os_time_sub(void *args, void *result);
         cx_function(os_time_sub_o)->impl = (cx_word)__os_time_sub;
         if (cx_define(os_time_sub_o)) {
@@ -522,7 +522,7 @@ int os_load(void) {
         }
     }
     /* Define ::cortex::os::time */
-    if (!cx_checkState(os_time_o, DB_DEFINED)) {
+    if (!cx_checkState(os_time_o, CX_DEFINED)) {
         cx_type(os_time_o)->defaultType = cx_resolve_ext(os_time_o, NULL, "::cortex::lang::member", FALSE, "element ::cortex::os::time.defaultType");
         cx_type(os_time_o)->parentType = NULL;
         cx_type(os_time_o)->parentState = 0x0;
@@ -546,13 +546,13 @@ int os_load(void) {
     }
 
     /* Define ::cortex::os::thread::construct(::cortex::os::thread object) */
-    if (!cx_checkState(os_thread_construct_o, DB_DEFINED)) {
+    if (!cx_checkState(os_thread_construct_o, CX_DEFINED)) {
         cx_function(os_thread_construct_o)->returnType = cx_resolve_ext(os_thread_construct_o, NULL, "::cortex::lang::int16", FALSE, "element ::cortex::os::thread::construct(::cortex::os::thread object).returnType");
         cx_function(os_thread_construct_o)->returnsReference = FALSE;
         os_thread_construct_o->delegate = cx_resolve_ext(os_thread_construct_o, NULL, "::cortex::lang::class::construct(lang::object object)", FALSE, "element ::cortex::os::thread::construct(::cortex::os::thread object).delegate");
         
         /* Bind ::cortex::os::thread::construct(::cortex::os::thread object) with C-function */
-        cx_function(os_thread_construct_o)->kind = DB_PROCEDURE_CDECL;
+        cx_function(os_thread_construct_o)->kind = CX_PROCEDURE_CDECL;
         void __os_thread_construct(void *args, void *result);
         cx_function(os_thread_construct_o)->impl = (cx_word)__os_thread_construct;
         if (cx_define(os_thread_construct_o)) {
@@ -568,13 +568,13 @@ int os_load(void) {
     }
 
     /* Define ::cortex::os::thread::destruct(::cortex::os::thread object) */
-    if (!cx_checkState(os_thread_destruct_o, DB_DEFINED)) {
+    if (!cx_checkState(os_thread_destruct_o, CX_DEFINED)) {
         cx_function(os_thread_destruct_o)->returnType = cx_resolve_ext(os_thread_destruct_o, NULL, "::cortex::lang::void", FALSE, "element ::cortex::os::thread::destruct(::cortex::os::thread object).returnType");
         cx_function(os_thread_destruct_o)->returnsReference = FALSE;
         os_thread_destruct_o->delegate = cx_resolve_ext(os_thread_destruct_o, NULL, "::cortex::lang::class::destruct(lang::object object)", FALSE, "element ::cortex::os::thread::destruct(::cortex::os::thread object).delegate");
         
         /* Bind ::cortex::os::thread::destruct(::cortex::os::thread object) with C-function */
-        cx_function(os_thread_destruct_o)->kind = DB_PROCEDURE_CDECL;
+        cx_function(os_thread_destruct_o)->kind = CX_PROCEDURE_CDECL;
         void __os_thread_destruct(void *args, void *result);
         cx_function(os_thread_destruct_o)->impl = (cx_word)__os_thread_destruct;
         if (cx_define(os_thread_destruct_o)) {
@@ -583,7 +583,7 @@ int os_load(void) {
         }
     }
     /* Define ::cortex::os::thread */
-    if (!cx_checkState(os_thread_o, DB_DEFINED)) {
+    if (!cx_checkState(os_thread_o, CX_DEFINED)) {
         cx_type(os_thread_o)->defaultType = cx_resolve_ext(os_thread_o, NULL, "::cortex::lang::member", FALSE, "element ::cortex::os::thread.defaultType");
         cx_type(os_thread_o)->parentType = NULL;
         cx_type(os_thread_o)->parentState = 0x0;
@@ -607,13 +607,13 @@ int os_load(void) {
     }
 
     /* Define ::cortex::os::timer::run() */
-    if (!cx_checkState(os_timer_run_o, DB_DEFINED)) {
+    if (!cx_checkState(os_timer_run_o, CX_DEFINED)) {
         cx_function(os_timer_run_o)->returnType = cx_resolve_ext(os_timer_run_o, NULL, "::cortex::lang::void", FALSE, "element ::cortex::os::timer::run().returnType");
         cx_function(os_timer_run_o)->returnsReference = FALSE;
         os_timer_run_o->virtual = FALSE;
         
         /* Bind ::cortex::os::timer::run() with C-function */
-        cx_function(os_timer_run_o)->kind = DB_PROCEDURE_CDECL;
+        cx_function(os_timer_run_o)->kind = CX_PROCEDURE_CDECL;
         void __os_timer_run(void *args, void *result);
         cx_function(os_timer_run_o)->impl = (cx_word)__os_timer_run;
         if (cx_define(os_timer_run_o)) {
@@ -629,13 +629,13 @@ int os_load(void) {
     }
 
     /* Define ::cortex::os::timer::stop() */
-    if (!cx_checkState(os_timer_stop_o, DB_DEFINED)) {
+    if (!cx_checkState(os_timer_stop_o, CX_DEFINED)) {
         cx_function(os_timer_stop_o)->returnType = cx_resolve_ext(os_timer_stop_o, NULL, "::cortex::lang::void", FALSE, "element ::cortex::os::timer::stop().returnType");
         cx_function(os_timer_stop_o)->returnsReference = FALSE;
         os_timer_stop_o->virtual = FALSE;
         
         /* Bind ::cortex::os::timer::stop() with C-function */
-        cx_function(os_timer_stop_o)->kind = DB_PROCEDURE_CDECL;
+        cx_function(os_timer_stop_o)->kind = CX_PROCEDURE_CDECL;
         void __os_timer_stop(void *args, void *result);
         cx_function(os_timer_stop_o)->impl = (cx_word)__os_timer_stop;
         if (cx_define(os_timer_stop_o)) {
@@ -644,7 +644,7 @@ int os_load(void) {
         }
     }
     /* Define ::cortex::os::timer */
-    if (!cx_checkState(os_timer_o, DB_DEFINED)) {
+    if (!cx_checkState(os_timer_o, CX_DEFINED)) {
         cx_type(os_timer_o)->defaultType = cx_resolve_ext(os_timer_o, NULL, "::cortex::lang::member", FALSE, "element ::cortex::os::timer.defaultType");
         cx_type(os_timer_o)->parentType = NULL;
         cx_type(os_timer_o)->parentState = 0x0;

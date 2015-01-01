@@ -65,7 +65,7 @@ static int gen_json(cx_object o, void *userData) {
         goto error;
     }
 
-    serializer = cx_json_ser(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
+    serializer = cx_json_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
     cx_serialize(&serializer, o, &jsonData);
 
 

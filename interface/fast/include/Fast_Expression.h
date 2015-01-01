@@ -18,6 +18,11 @@
 extern "C" {
 #endif
 
+/* $header() */
+cx_type Fast_Expression_narrowType(Fast_Expression expr);
+Fast_Expression Fast_Expression_narrow(Fast_Expression expr, cx_type target);
+/* $end */
+
 /* ::cortex::Fast::Expression::cast(lang::type type) */
 Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type);
 

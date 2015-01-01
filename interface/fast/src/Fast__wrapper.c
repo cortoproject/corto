@@ -7,20 +7,20 @@
 #include "Fast__meta.h"
 
 void __Fast_valueKindFromType(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_valueKind*)result = Fast_valueKindFromType(
         *(cx_type*)args);
 }
 
 void __Fast_BinaryExpr_construct(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_BinaryExpr_construct(
         *(Fast_BinaryExpr*)args);
 }
 
 void __Fast_BinaryExpr_fold(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(Fast_Expression*)result = Fast_BinaryExpr_fold(
         *(Fast_BinaryExpr*)args);
 }
@@ -50,15 +50,15 @@ cx_bool Fast_BinaryExpr_hasSideEffects(Fast_BinaryExpr _this) {
 }
 
 void __Fast_BinaryExpr_hasSideEffects_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_bool*)result = Fast_BinaryExpr_hasSideEffects_v(
         *(Fast_BinaryExpr*)args);
 }
 
 void __Fast_BinaryExpr_setOperator(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(result);
+    CX_UNUSED(f);
+    CX_UNUSED(result);
     Fast_BinaryExpr_setOperator(
         *(Fast_BinaryExpr*)args,
         *(cx_operatorKind*)((intptr_t)args + sizeof(Fast_BinaryExpr)));
@@ -89,7 +89,7 @@ cx_ic Fast_BinaryExpr_toIc(Fast_BinaryExpr _this, cx_icProgram program, cx_icSto
 }
 
 void __Fast_BinaryExpr_toIc_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_ic*)result = Fast_BinaryExpr_toIc_v(
         *(Fast_BinaryExpr*)args,
         *(cx_icProgram*)((intptr_t)args + sizeof(Fast_BinaryExpr)),
@@ -98,15 +98,15 @@ void __Fast_BinaryExpr_toIc_v(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Block_addStatement(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(result);
+    CX_UNUSED(f);
+    CX_UNUSED(result);
     Fast_Block_addStatement(
         *(Fast_Block*)args,
         *(Fast_Node*)((intptr_t)args + sizeof(Fast_Block)));
 }
 
 void __Fast_Block_declare(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Local*)result = Fast_Block_declare(
         *(Fast_Block*)args,
         *(cx_string*)((intptr_t)args + sizeof(Fast_Block)),
@@ -116,14 +116,14 @@ void __Fast_Block_declare(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Block_declareReturnVariable(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Local*)result = Fast_Block_declareReturnVariable(
         *(Fast_Block*)args,
         *(cx_function*)((intptr_t)args + sizeof(Fast_Block)));
 }
 
 void __Fast_Block_declareTemplate(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Template*)result = Fast_Block_declareTemplate(
         *(Fast_Block*)args,
         *(cx_string*)((intptr_t)args + sizeof(Fast_Block)),
@@ -133,29 +133,36 @@ void __Fast_Block_declareTemplate(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Block_lookup(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Expression*)result = Fast_Block_lookup(
         *(Fast_Block*)args,
         *(cx_string*)((intptr_t)args + sizeof(Fast_Block)));
 }
 
 void __Fast_Block_lookupLocal(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    *(Fast_Expression*)result = Fast_Block_lookupLocal(
+    CX_UNUSED(f);
+    *(Fast_Local*)result = Fast_Block_lookupLocal(
         *(Fast_Block*)args,
         *(cx_string*)((intptr_t)args + sizeof(Fast_Block)));
 }
 
 void __Fast_Block_resolve(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Expression*)result = Fast_Block_resolve(
         *(Fast_Block*)args,
         *(cx_string*)((intptr_t)args + sizeof(Fast_Block)));
 }
 
+void __Fast_Block_resolveLocal(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    *(Fast_Local*)result = Fast_Block_resolveLocal(
+        *(Fast_Block*)args,
+        *(cx_string*)((intptr_t)args + sizeof(Fast_Block)));
+}
+
 void __Fast_Block_setFunction(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(result);
+    CX_UNUSED(f);
+    CX_UNUSED(result);
     Fast_Block_setFunction(
         *(Fast_Block*)args,
         *(cx_function*)((intptr_t)args + sizeof(Fast_Block)));
@@ -186,7 +193,7 @@ cx_ic Fast_Block_toIc(Fast_Block _this, cx_icProgram program, cx_icStorage stora
 }
 
 void __Fast_Block_toIc_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_ic*)result = Fast_Block_toIc_v(
         *(Fast_Block*)args,
         *(cx_icProgram*)((intptr_t)args + sizeof(Fast_Block)),
@@ -219,7 +226,7 @@ cx_ic Fast_Block_toIcBody(Fast_Block _this, cx_icProgram program, cx_icStorage s
 }
 
 void __Fast_Block_toIcBody_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_ic*)result = Fast_Block_toIcBody_v(
         *(Fast_Block*)args,
         *(cx_icProgram*)((intptr_t)args + sizeof(Fast_Block)),
@@ -228,13 +235,13 @@ void __Fast_Block_toIcBody_v(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Boolean_init(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Boolean_init(
         *(Fast_Boolean*)args);
 }
 
 void __Fast_Boolean_serialize(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Boolean_serialize(
         *(Fast_Boolean*)args,
         *(cx_type*)((intptr_t)args + sizeof(Fast_Boolean)),
@@ -266,7 +273,7 @@ cx_ic Fast_Boolean_toIc(Fast_Boolean _this, cx_icProgram program, cx_icStorage s
 }
 
 void __Fast_Boolean_toIc_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_ic*)result = Fast_Boolean_toIc_v(
         *(Fast_Boolean*)args,
         *(cx_icProgram*)((intptr_t)args + sizeof(Fast_Boolean)),
@@ -275,7 +282,7 @@ void __Fast_Boolean_toIc_v(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Call_construct(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Call_construct(
         *(Fast_Call*)args);
 }
@@ -305,18 +312,18 @@ cx_bool Fast_Call_hasSideEffects(Fast_Call _this) {
 }
 
 void __Fast_Call_hasSideEffects_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_bool*)result = Fast_Call_hasSideEffects_v(
         *(Fast_Call*)args);
 }
 
-void __Fast_Call_resolveActual(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    *(cx_function*)result = Fast_Call_resolveActual(
-        *(cx_string*)args,
-        *(cx_object*)((intptr_t)args + sizeof(cx_string)),
-        *(Fast_Expression*)((intptr_t)args + sizeof(cx_string) + sizeof(cx_object)));
+void __Fast_Call_setParameters(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    CX_UNUSED(result);
+    Fast_Call_setParameters(
+        *(Fast_Call*)args,
+        *(cx_function*)((intptr_t)args + sizeof(Fast_Call)));
 }
 
 /* virtual ::cortex::Fast::Call::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
@@ -344,7 +351,7 @@ cx_ic Fast_Call_toIc(Fast_Call _this, cx_icProgram program, cx_icStorage storage
 }
 
 void __Fast_Call_toIc_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_ic*)result = Fast_Call_toIc_v(
         *(Fast_Call*)args,
         *(cx_icProgram*)((intptr_t)args + sizeof(Fast_Call)),
@@ -352,8 +359,22 @@ void __Fast_Call_toIc_v(cx_function f, void *result, void *args) {
         *(cx_bool*)((intptr_t)args + sizeof(Fast_Call) + sizeof(cx_icProgram) + sizeof(cx_icStorage)));
 }
 
+void __Fast_CallBuilder_build(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    CX_UNUSED(args);
+    *(Fast_Call*)result = Fast_CallBuilder_build(
+        *(void**)args);
+}
+
+void __Fast_CallBuilder_buildSignature(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    CX_UNUSED(args);
+    *(cx_int16*)result = Fast_CallBuilder_buildSignature(
+        *(void**)args);
+}
+
 void __Fast_CastExpr_construct(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_CastExpr_construct(
         *(Fast_CastExpr*)args);
 }
@@ -383,7 +404,7 @@ cx_ic Fast_CastExpr_toIc(Fast_CastExpr _this, cx_icProgram program, cx_icStorage
 }
 
 void __Fast_CastExpr_toIc_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_ic*)result = Fast_CastExpr_toIc_v(
         *(Fast_CastExpr*)args,
         *(cx_icProgram*)((intptr_t)args + sizeof(Fast_CastExpr)),
@@ -392,13 +413,13 @@ void __Fast_CastExpr_toIc_v(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Character_init(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Character_init(
         *(Fast_Character*)args);
 }
 
 void __Fast_Character_serialize(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Character_serialize(
         *(Fast_Character*)args,
         *(cx_type*)((intptr_t)args + sizeof(Fast_Character)),
@@ -430,7 +451,7 @@ cx_ic Fast_Character_toIc(Fast_Character _this, cx_icProgram program, cx_icStora
 }
 
 void __Fast_Character_toIc_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_ic*)result = Fast_Character_toIc_v(
         *(Fast_Character*)args,
         *(cx_icProgram*)((intptr_t)args + sizeof(Fast_Character)),
@@ -439,21 +460,21 @@ void __Fast_Character_toIc_v(cx_function f, void *result, void *args) {
 }
 
 void __Fast_CommaExpr_addExpression(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_CommaExpr_addExpression(
         *(Fast_CommaExpr*)args,
         *(Fast_Expression*)((intptr_t)args + sizeof(Fast_CommaExpr)));
 }
 
 void __Fast_CommaExpr_addOrCreate(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Expression*)result = Fast_CommaExpr_addOrCreate(
         *(Fast_Expression*)args,
         *(Fast_Expression*)((intptr_t)args + sizeof(Fast_Expression)));
 }
 
 void __Fast_CommaExpr_construct(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_CommaExpr_construct(
         *(Fast_CommaExpr*)args);
 }
@@ -483,14 +504,14 @@ cx_bool Fast_CommaExpr_hasSideEffects(Fast_CommaExpr _this) {
 }
 
 void __Fast_CommaExpr_hasSideEffects_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_bool*)result = Fast_CommaExpr_hasSideEffects_v(
         *(Fast_CommaExpr*)args);
 }
 
 void __Fast_CommaExpr_init(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_CommaExpr_init(
         *(Fast_CommaExpr*)args);
 }
@@ -520,7 +541,7 @@ cx_ic Fast_CommaExpr_toIc(Fast_CommaExpr _this, cx_icProgram program, cx_icStora
 }
 
 void __Fast_CommaExpr_toIc_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_ic*)result = Fast_CommaExpr_toIc_v(
         *(Fast_CommaExpr*)args,
         *(cx_icProgram*)((intptr_t)args + sizeof(Fast_CommaExpr)),
@@ -529,14 +550,14 @@ void __Fast_CommaExpr_toIc_v(cx_function f, void *result, void *args) {
 }
 
 void __Fast_CommaExpr_toList(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(Fast_Node_list*)result = Fast_CommaExpr_toList(
         *(Fast_CommaExpr*)args);
 }
 
 void __Fast_Define_construct(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Define_construct(
         *(Fast_Define*)args);
 }
@@ -566,7 +587,7 @@ cx_ic Fast_Define_toIc(Fast_Define _this, cx_icProgram program, cx_icStorage sto
 }
 
 void __Fast_Define_toIc_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_ic*)result = Fast_Define_toIc_v(
         *(Fast_Define*)args,
         *(cx_icProgram*)((intptr_t)args + sizeof(Fast_Define)),
@@ -574,42 +595,48 @@ void __Fast_Define_toIc_v(cx_function f, void *result, void *args) {
         *(cx_bool*)((intptr_t)args + sizeof(Fast_Define) + sizeof(cx_icProgram) + sizeof(cx_icStorage)));
 }
 
+void __Fast_DelegateCall_construct(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    *(cx_int16*)result = Fast_DelegateCall_construct(
+        *(Fast_StaticCall*)args);
+}
+
 void __Fast_DynamicInitializer_construct(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_DynamicInitializer_construct(
         *(Fast_DynamicInitializer*)args);
 }
 
 void __Fast_DynamicInitializer_define(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = Fast_DynamicInitializer_define(
         *(Fast_DynamicInitializer*)args);
 }
 
 void __Fast_DynamicInitializer_pop(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = Fast_DynamicInitializer_pop(
         *(Fast_DynamicInitializer*)args);
 }
 
 void __Fast_DynamicInitializer_push(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = Fast_DynamicInitializer_push(
         *(Fast_DynamicInitializer*)args);
 }
 
 void __Fast_DynamicInitializer_value(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_DynamicInitializer_value(
         *(Fast_DynamicInitializer*)args,
         *(Fast_Expression*)((intptr_t)args + sizeof(Fast_DynamicInitializer)));
 }
 
 void __Fast_ElementExpr_construct(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_ElementExpr_construct(
         *(Fast_MemberExpr*)args);
 }
@@ -639,7 +666,7 @@ cx_ic Fast_ElementExpr_toIc(Fast_ElementExpr _this, cx_icProgram program, cx_icS
 }
 
 void __Fast_ElementExpr_toIc_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_ic*)result = Fast_ElementExpr_toIc_v(
         *(Fast_ElementExpr*)args,
         *(cx_icProgram*)((intptr_t)args + sizeof(Fast_ElementExpr)),
@@ -648,15 +675,15 @@ void __Fast_ElementExpr_toIc_v(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Expression_cast(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Expression*)result = Fast_Expression_cast(
         *(Fast_Expression*)args,
         *(cx_type*)((intptr_t)args + sizeof(Fast_Expression)));
 }
 
 void __Fast_Expression_cleanList(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(result);
+    CX_UNUSED(f);
+    CX_UNUSED(result);
     Fast_Expression_cleanList(
         *(Fast_Expression_list*)args);
 }
@@ -686,34 +713,34 @@ Fast_Expression Fast_Expression_fold(Fast_Expression _this) {
 }
 
 void __Fast_Expression_fold_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(Fast_Expression*)result = Fast_Expression_fold_v(
         *(Fast_Expression*)args);
 }
 
 void __Fast_Expression_fromList(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Expression*)result = Fast_Expression_fromList(
         *(Fast_Expression_list*)args);
 }
 
 void __Fast_Expression_getType(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_type*)result = Fast_Expression_getType(
         *(Fast_Expression*)args);
 }
 
 void __Fast_Expression_getType_expr(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_type*)result = Fast_Expression_getType_expr(
         *(Fast_Expression*)args,
         *(Fast_Expression*)((intptr_t)args + sizeof(Fast_Expression)));
 }
 
 void __Fast_Expression_getType_type(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_type*)result = Fast_Expression_getType_type(
         *(Fast_Expression*)args,
         *(cx_type*)((intptr_t)args + sizeof(Fast_Expression)));
@@ -744,8 +771,8 @@ cx_word Fast_Expression_getValue(Fast_Expression _this) {
 }
 
 void __Fast_Expression_getValue_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_word*)result = Fast_Expression_getValue_v(
         *(Fast_Expression*)args);
 }
@@ -775,14 +802,14 @@ cx_bool Fast_Expression_hasSideEffects(Fast_Expression _this) {
 }
 
 void __Fast_Expression_hasSideEffects_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_bool*)result = Fast_Expression_hasSideEffects_v(
         *(Fast_Expression*)args);
 }
 
 void __Fast_Expression_init(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Expression_init(
         *(Fast_Expression*)args);
 }
@@ -812,7 +839,7 @@ cx_int16 Fast_Expression_serialize(Fast_Expression _this, cx_type dstType, cx_wo
 }
 
 void __Fast_Expression_serialize_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Expression_serialize_v(
         *(Fast_Expression*)args,
         *(cx_type*)((intptr_t)args + sizeof(Fast_Expression)),
@@ -844,20 +871,20 @@ Fast_Expression_list Fast_Expression_toList(Fast_Expression _this) {
 }
 
 void __Fast_Expression_toList_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(Fast_Expression_list*)result = Fast_Expression_toList_v(
         *(Fast_Expression*)args);
 }
 
 void __Fast_FloatingPoint_init(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_FloatingPoint_init(
         *(Fast_FloatingPoint*)args);
 }
 
 void __Fast_FloatingPoint_serialize(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_FloatingPoint_serialize(
         *(Fast_FloatingPoint*)args,
         *(cx_type*)((intptr_t)args + sizeof(Fast_FloatingPoint)),
@@ -889,7 +916,7 @@ cx_ic Fast_FloatingPoint_toIc(Fast_FloatingPoint _this, cx_icProgram program, cx
 }
 
 void __Fast_FloatingPoint_toIc_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_ic*)result = Fast_FloatingPoint_toIc_v(
         *(Fast_FloatingPoint*)args,
         *(cx_icProgram*)((intptr_t)args + sizeof(Fast_FloatingPoint)),
@@ -898,15 +925,15 @@ void __Fast_FloatingPoint_toIc_v(cx_function f, void *result, void *args) {
 }
 
 void __Fast_If_construct(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_If_construct(
         *(Fast_If*)args);
 }
 
 void __Fast_If_noWarnUnreachable(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
-    DB_UNUSED(result);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
+    CX_UNUSED(result);
     Fast_If_noWarnUnreachable(
         *(Fast_If*)args);
 }
@@ -936,7 +963,7 @@ cx_ic Fast_If_toIc(Fast_If _this, cx_icProgram program, cx_icStorage storage, cx
 }
 
 void __Fast_If_toIc_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_ic*)result = Fast_If_toIc_v(
         *(Fast_If*)args,
         *(cx_icProgram*)((intptr_t)args + sizeof(Fast_If)),
@@ -945,14 +972,14 @@ void __Fast_If_toIc_v(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Initializer_construct(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Initializer_construct(
         *(Fast_Initializer*)args);
 }
 
 void __Fast_Initializer_currentType(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_type*)result = Fast_Initializer_currentType(
         *(Fast_Initializer*)args);
 }
@@ -982,15 +1009,15 @@ cx_int16 Fast_Initializer_define(Fast_Initializer _this) {
 }
 
 void __Fast_Initializer_define_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = Fast_Initializer_define_v(
         *(Fast_Initializer*)args);
 }
 
 void __Fast_Initializer_initFrame(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_uint16*)result = Fast_Initializer_initFrame(
         *(Fast_Initializer*)args);
 }
@@ -1020,7 +1047,7 @@ cx_int32 Fast_Initializer_member(Fast_Initializer _this, cx_string name) {
 }
 
 void __Fast_Initializer_member_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int32*)result = Fast_Initializer_member_v(
         *(Fast_Initializer*)args,
         *(cx_string*)((intptr_t)args + sizeof(Fast_Initializer)));
@@ -1051,8 +1078,8 @@ cx_int16 Fast_Initializer_next(Fast_Initializer _this) {
 }
 
 void __Fast_Initializer_next_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = Fast_Initializer_next_v(
         *(Fast_Initializer*)args);
 }
@@ -1082,8 +1109,8 @@ cx_int8 Fast_Initializer_pop(Fast_Initializer _this) {
 }
 
 void __Fast_Initializer_pop_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int8*)result = Fast_Initializer_pop_v(
         *(Fast_Initializer*)args);
 }
@@ -1113,8 +1140,8 @@ cx_int16 Fast_Initializer_popKey(Fast_Initializer _this) {
 }
 
 void __Fast_Initializer_popKey_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = Fast_Initializer_popKey_v(
         *(Fast_Initializer*)args);
 }
@@ -1144,8 +1171,8 @@ cx_int16 Fast_Initializer_push(Fast_Initializer _this) {
 }
 
 void __Fast_Initializer_push_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = Fast_Initializer_push_v(
         *(Fast_Initializer*)args);
 }
@@ -1175,15 +1202,15 @@ cx_int16 Fast_Initializer_pushKey(Fast_Initializer _this) {
 }
 
 void __Fast_Initializer_pushKey_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = Fast_Initializer_pushKey_v(
         *(Fast_Initializer*)args);
 }
 
 void __Fast_Initializer_type(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_type*)result = Fast_Initializer_type(
         *(Fast_Initializer*)args);
 }
@@ -1213,7 +1240,7 @@ cx_int16 Fast_Initializer_value(Fast_Initializer _this, Fast_Expression v) {
 }
 
 void __Fast_Initializer_value_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Initializer_value_v(
         *(Fast_Initializer*)args,
         *(Fast_Expression*)((intptr_t)args + sizeof(Fast_Initializer)));
@@ -1244,68 +1271,68 @@ cx_int16 Fast_Initializer_valueKey(Fast_Initializer _this, Fast_Expression key) 
 }
 
 void __Fast_Initializer_valueKey_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Initializer_valueKey_v(
         *(Fast_Initializer*)args,
         *(Fast_Expression*)((intptr_t)args + sizeof(Fast_Initializer)));
 }
 
 void __Fast_InitializerExpr_construct(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_InitializerExpr_construct(
         *(Fast_InitializerExpr*)args);
 }
 
 void __Fast_InitializerExpr_define(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = Fast_InitializerExpr_define(
         *(Fast_InitializerExpr*)args);
 }
 
 void __Fast_InitializerExpr_insert(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_InitializerExpr_insert(
         *(Fast_InitializerExpr*)args,
         *(Fast_Expression*)((intptr_t)args + sizeof(Fast_InitializerExpr)));
 }
 
 void __Fast_InitializerExpr_member(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int32*)result = Fast_InitializerExpr_member(
         *(Fast_InitializerExpr*)args,
         *(cx_string*)((intptr_t)args + sizeof(Fast_InitializerExpr)));
 }
 
 void __Fast_InitializerExpr_pop(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = Fast_InitializerExpr_pop(
         *(Fast_InitializerExpr*)args);
 }
 
 void __Fast_InitializerExpr_push(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = Fast_InitializerExpr_push(
         *(Fast_InitializerExpr*)args);
 }
 
 void __Fast_InitializerExpr_value(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_InitializerExpr_value(
         *(Fast_InitializerExpr*)args,
         *(Fast_Expression*)((intptr_t)args + sizeof(Fast_InitializerExpr)));
 }
 
 void __Fast_Integer_init(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Integer_init(
         *(Fast_Integer*)args);
 }
 
 void __Fast_Integer_serialize(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Integer_serialize(
         *(Fast_Integer*)args,
         *(cx_type*)((intptr_t)args + sizeof(Fast_Integer)),
@@ -1337,7 +1364,7 @@ cx_ic Fast_Integer_toIc(Fast_Integer _this, cx_icProgram program, cx_icStorage s
 }
 
 void __Fast_Integer_toIc_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_ic*)result = Fast_Integer_toIc_v(
         *(Fast_Integer*)args,
         *(cx_icProgram*)((intptr_t)args + sizeof(Fast_Integer)),
@@ -1370,20 +1397,20 @@ cx_word Fast_Literal_getValue(Fast_Literal _this) {
 }
 
 void __Fast_Literal_getValue_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_word*)result = Fast_Literal_getValue_v(
         *(Fast_Literal*)args);
 }
 
 void __Fast_Literal_init(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Literal_init(
         *(Fast_Literal*)args);
 }
 
 void __Fast_Local_construct(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Local_construct(
         *(Fast_Local*)args);
 }
@@ -1413,7 +1440,7 @@ cx_ic Fast_Local_toIc(Fast_Local _this, cx_icProgram program, cx_icStorage stora
 }
 
 void __Fast_Local_toIc_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_ic*)result = Fast_Local_toIc_v(
         *(Fast_Local*)args,
         *(cx_icProgram*)((intptr_t)args + sizeof(Fast_Local)),
@@ -1422,7 +1449,7 @@ void __Fast_Local_toIc_v(cx_function f, void *result, void *args) {
 }
 
 void __Fast_MemberExpr_construct(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_MemberExpr_construct(
         *(Fast_MemberExpr*)args);
 }
@@ -1452,8 +1479,8 @@ cx_bool Fast_MemberExpr_hasSideEffects(Fast_MemberExpr _this) {
 }
 
 void __Fast_MemberExpr_hasSideEffects_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_bool*)result = Fast_MemberExpr_hasSideEffects_v(
         *(Fast_MemberExpr*)args);
 }
@@ -1483,7 +1510,7 @@ cx_ic Fast_MemberExpr_toIc(Fast_MemberExpr _this, cx_icProgram program, cx_icSto
 }
 
 void __Fast_MemberExpr_toIc_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_ic*)result = Fast_MemberExpr_toIc_v(
         *(Fast_MemberExpr*)args,
         *(cx_icProgram*)((intptr_t)args + sizeof(Fast_MemberExpr)),
@@ -1492,7 +1519,7 @@ void __Fast_MemberExpr_toIc_v(cx_function f, void *result, void *args) {
 }
 
 void __Fast_NewExpr_construct(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_NewExpr_construct(
         *(Fast_NewExpr*)args);
 }
@@ -1522,8 +1549,8 @@ cx_bool Fast_NewExpr_hasSideEffects(Fast_NewExpr _this) {
 }
 
 void __Fast_NewExpr_hasSideEffects_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_bool*)result = Fast_NewExpr_hasSideEffects_v(
         *(Fast_NewExpr*)args);
 }
@@ -1553,7 +1580,7 @@ cx_ic Fast_NewExpr_toIc(Fast_NewExpr _this, cx_icProgram program, cx_icStorage s
 }
 
 void __Fast_NewExpr_toIc_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_ic*)result = Fast_NewExpr_toIc_v(
         *(Fast_NewExpr*)args,
         *(cx_icProgram*)((intptr_t)args + sizeof(Fast_NewExpr)),
@@ -1562,7 +1589,7 @@ void __Fast_NewExpr_toIc_v(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Node_init(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Node_init(
         *(Fast_Node*)args);
 }
@@ -1592,7 +1619,7 @@ cx_ic Fast_Node_toIc(Fast_Node _this, cx_icProgram program, cx_icStorage storage
 }
 
 void __Fast_Node_toIc_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_ic*)result = Fast_Node_toIc_v(
         *(Fast_Node*)args,
         *(cx_icProgram*)((intptr_t)args + sizeof(Fast_Node)),
@@ -1601,13 +1628,13 @@ void __Fast_Node_toIc_v(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Null_init(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Null_init(
         *(Fast_Null*)args);
 }
 
 void __Fast_Null_serialize(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Null_serialize(
         *(Fast_Null*)args,
         *(cx_type*)((intptr_t)args + sizeof(Fast_Null)),
@@ -1639,7 +1666,7 @@ cx_ic Fast_Null_toIc(Fast_Null _this, cx_icProgram program, cx_icStorage storage
 }
 
 void __Fast_Null_toIc_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_ic*)result = Fast_Null_toIc_v(
         *(Fast_Null*)args,
         *(cx_icProgram*)((intptr_t)args + sizeof(Fast_Null)),
@@ -1648,20 +1675,20 @@ void __Fast_Null_toIc_v(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Object_construct(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Object_construct(
         *(Fast_Object*)args);
 }
 
 void __Fast_Object_getValue(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_word*)result = Fast_Object_getValue(
         *(Fast_Object*)args);
 }
 
 void __Fast_Object_serialize(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Object_serialize(
         *(Fast_Object*)args,
         *(cx_type*)((intptr_t)args + sizeof(Fast_Object)),
@@ -1693,7 +1720,7 @@ cx_ic Fast_Object_toIc(Fast_Object _this, cx_icProgram program, cx_icStorage sto
 }
 
 void __Fast_Object_toIc_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_ic*)result = Fast_Object_toIc_v(
         *(Fast_Object*)args,
         *(cx_icProgram*)((intptr_t)args + sizeof(Fast_Object)),
@@ -1702,21 +1729,21 @@ void __Fast_Object_toIc_v(cx_function f, void *result, void *args) {
 }
 
 void __Fast_ObjectBase_construct(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_ObjectBase_construct(
         *(Fast_ObjectBase*)args);
 }
 
 void __Fast_Parser_addStatement(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(result);
+    CX_UNUSED(f);
+    CX_UNUSED(result);
     Fast_Parser_addStatement(
         *(Fast_Parser*)args,
         *(Fast_Node*)((intptr_t)args + sizeof(Fast_Parser)));
 }
 
 void __Fast_Parser_argumentToString(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_string*)result = Fast_Parser_argumentToString(
         *(Fast_Parser*)args,
         *(Fast_Variable*)((intptr_t)args + sizeof(Fast_Parser)),
@@ -1725,7 +1752,7 @@ void __Fast_Parser_argumentToString(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Parser_binaryExpr(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Expression*)result = Fast_Parser_binaryExpr(
         *(Fast_Parser*)args,
         *(Fast_Expression*)((intptr_t)args + sizeof(Fast_Parser)),
@@ -1734,7 +1761,7 @@ void __Fast_Parser_binaryExpr(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Parser_bind(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Parser_bind(
         *(Fast_Parser*)args,
         *(Fast_Variable*)((intptr_t)args + sizeof(Fast_Parser)),
@@ -1742,7 +1769,7 @@ void __Fast_Parser_bind(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Parser_bindOneliner(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Parser_bindOneliner(
         *(Fast_Parser*)args,
         *(Fast_Variable*)((intptr_t)args + sizeof(Fast_Parser)),
@@ -1751,22 +1778,22 @@ void __Fast_Parser_bindOneliner(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Parser_blockPop(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
-    DB_UNUSED(result);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
+    CX_UNUSED(result);
     Fast_Parser_blockPop(
         *(Fast_Parser*)args);
 }
 
 void __Fast_Parser_blockPush(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Block*)result = Fast_Parser_blockPush(
         *(Fast_Parser*)args,
         *(cx_bool*)((intptr_t)args + sizeof(Fast_Parser)));
 }
 
 void __Fast_Parser_callExpr(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Expression*)result = Fast_Parser_callExpr(
         *(Fast_Parser*)args,
         *(Fast_Expression*)((intptr_t)args + sizeof(Fast_Parser)),
@@ -1774,7 +1801,7 @@ void __Fast_Parser_callExpr(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Parser_castExpr(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Expression*)result = Fast_Parser_castExpr(
         *(Fast_Parser*)args,
         *(Fast_Expression*)((intptr_t)args + sizeof(Fast_Parser)),
@@ -1782,29 +1809,29 @@ void __Fast_Parser_castExpr(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Parser_collect(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(result);
+    CX_UNUSED(f);
+    CX_UNUSED(result);
     Fast_Parser_collect(
         *(Fast_Parser*)args,
         *(cx_object*)((intptr_t)args + sizeof(Fast_Parser)));
 }
 
 void __Fast_Parser_collectHeap(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(result);
+    CX_UNUSED(f);
+    CX_UNUSED(result);
     Fast_Parser_collectHeap(
         *(Fast_Parser*)args,
         *(cx_word*)((intptr_t)args + sizeof(Fast_Parser)));
 }
 
 void __Fast_Parser_construct(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Parser_construct(
         *(Fast_Parser*)args);
 }
 
 void __Fast_Parser_declaration(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Variable*)result = Fast_Parser_declaration(
         *(Fast_Parser*)args,
         *(Fast_Variable*)((intptr_t)args + sizeof(Fast_Parser)),
@@ -1813,7 +1840,7 @@ void __Fast_Parser_declaration(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Parser_declareFunction(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Variable*)result = Fast_Parser_declareFunction(
         *(Fast_Parser*)args,
         *(Fast_Variable*)((intptr_t)args + sizeof(Fast_Parser)),
@@ -1823,42 +1850,42 @@ void __Fast_Parser_declareFunction(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Parser_declareFunctionParams(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Block*)result = Fast_Parser_declareFunctionParams(
         *(Fast_Parser*)args,
         *(Fast_Variable*)((intptr_t)args + sizeof(Fast_Parser)));
 }
 
 void __Fast_Parser_define(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = Fast_Parser_define(
         *(Fast_Parser*)args);
 }
 
 void __Fast_Parser_defineScope(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = Fast_Parser_defineScope(
         *(Fast_Parser*)args);
 }
 
 void __Fast_Parser_defineVariable(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Parser_defineVariable(
         *(Fast_Parser*)args,
         *(Fast_Variable*)((intptr_t)args + sizeof(Fast_Parser)));
 }
 
 void __Fast_Parser_destruct(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(result);
+    CX_UNUSED(f);
+    CX_UNUSED(result);
     Fast_Parser_destruct(
         *(Fast_Parser*)args);
 }
 
 void __Fast_Parser_elementExpr(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Expression*)result = Fast_Parser_elementExpr(
         *(Fast_Parser*)args,
         *(Fast_Expression*)((intptr_t)args + sizeof(Fast_Parser)),
@@ -1866,7 +1893,7 @@ void __Fast_Parser_elementExpr(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Parser_foreach(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Parser_foreach(
         *(Fast_Parser*)args,
         *(cx_string*)((intptr_t)args + sizeof(Fast_Parser)),
@@ -1874,28 +1901,28 @@ void __Fast_Parser_foreach(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Parser_getComplexType(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_type*)result = Fast_Parser_getComplexType(
         *(Fast_Parser*)args);
 }
 
 void __Fast_Parser_getLvalue(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Expression*)result = Fast_Parser_getLvalue(
         *(Fast_Parser*)args,
         *(cx_bool*)((intptr_t)args + sizeof(Fast_Parser)));
 }
 
 void __Fast_Parser_getLvalueType(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_type*)result = Fast_Parser_getLvalueType(
         *(Fast_Parser*)args,
         *(cx_bool*)((intptr_t)args + sizeof(Fast_Parser)));
 }
 
 void __Fast_Parser_ifStatement(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Node*)result = Fast_Parser_ifStatement(
         *(Fast_Parser*)args,
         *(Fast_Expression*)((intptr_t)args + sizeof(Fast_Parser)),
@@ -1904,79 +1931,79 @@ void __Fast_Parser_ifStatement(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Parser_initDeclareStaged(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(result);
+    CX_UNUSED(f);
+    CX_UNUSED(result);
     Fast_Parser_initDeclareStaged(
         *(Fast_Parser*)args,
         *(Fast_Expression*)((intptr_t)args + sizeof(Fast_Parser)));
 }
 
 void __Fast_Parser_initKeyValuePop(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = Fast_Parser_initKeyValuePop(
         *(Fast_Parser*)args);
 }
 
 void __Fast_Parser_initKeyValuePush(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = Fast_Parser_initKeyValuePush(
         *(Fast_Parser*)args);
 }
 
 void __Fast_Parser_initKeyValueSet(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Parser_initKeyValueSet(
         *(Fast_Parser*)args,
         *(Fast_Expression*)((intptr_t)args + sizeof(Fast_Parser)));
 }
 
 void __Fast_Parser_initMember(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Parser_initMember(
         *(Fast_Parser*)args,
         *(cx_string*)((intptr_t)args + sizeof(Fast_Parser)));
 }
 
 void __Fast_Parser_initPop(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = Fast_Parser_initPop(
         *(Fast_Parser*)args);
 }
 
 void __Fast_Parser_initPush(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = Fast_Parser_initPush(
         *(Fast_Parser*)args);
 }
 
 void __Fast_Parser_initPushExpression(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(Fast_Expression*)result = Fast_Parser_initPushExpression(
         *(Fast_Parser*)args);
 }
 
 void __Fast_Parser_initPushIdentifier(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Expression*)result = Fast_Parser_initPushIdentifier(
         *(Fast_Parser*)args,
         *(Fast_Expression*)((intptr_t)args + sizeof(Fast_Parser)));
 }
 
 void __Fast_Parser_initPushStatic(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = Fast_Parser_initPushStatic(
         *(Fast_Parser*)args);
 }
 
 void __Fast_Parser_initStage(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(result);
+    CX_UNUSED(f);
+    CX_UNUSED(result);
     Fast_Parser_initStage(
         *(Fast_Parser*)args,
         *(cx_string*)((intptr_t)args + sizeof(Fast_Parser)),
@@ -1984,28 +2011,28 @@ void __Fast_Parser_initStage(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Parser_initValue(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Parser_initValue(
         *(Fast_Parser*)args,
         *(Fast_Expression*)((intptr_t)args + sizeof(Fast_Parser)));
 }
 
 void __Fast_Parser_isAbortSet(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_bool*)result = Fast_Parser_isAbortSet(
         *(Fast_Parser*)args);
 }
 
 void __Fast_Parser_isErrSet(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_bool*)result = Fast_Parser_isErrSet(
         *(Fast_Parser*)args);
 }
 
 void __Fast_Parser_lookup(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Expression*)result = Fast_Parser_lookup(
         *(Fast_Parser*)args,
         *(cx_string*)((intptr_t)args + sizeof(Fast_Parser)),
@@ -2013,7 +2040,7 @@ void __Fast_Parser_lookup(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Parser_memberExpr(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Expression*)result = Fast_Parser_memberExpr(
         *(Fast_Parser*)args,
         *(Fast_Expression*)((intptr_t)args + sizeof(Fast_Parser)),
@@ -2021,7 +2048,7 @@ void __Fast_Parser_memberExpr(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Parser_observerDeclaration(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Variable*)result = Fast_Parser_observerDeclaration(
         *(Fast_Parser*)args,
         *(cx_string*)((intptr_t)args + sizeof(Fast_Parser)),
@@ -2031,30 +2058,30 @@ void __Fast_Parser_observerDeclaration(cx_function f, void *result, void *args) 
 }
 
 void __Fast_Parser_observerPop(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
-    DB_UNUSED(result);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
+    CX_UNUSED(result);
     Fast_Parser_observerPop(
         *(Fast_Parser*)args);
 }
 
 void __Fast_Parser_observerPush(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
-    DB_UNUSED(result);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
+    CX_UNUSED(result);
     Fast_Parser_observerPush(
         *(Fast_Parser*)args);
 }
 
 void __Fast_Parser_parse(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_uint32*)result = Fast_Parser_parse(
         *(Fast_Parser*)args);
 }
 
 void __Fast_Parser_parseExpression(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Expression*)result = Fast_Parser_parseExpression(
         *(Fast_Parser*)args,
         *(cx_string*)((intptr_t)args + sizeof(Fast_Parser)),
@@ -2065,31 +2092,31 @@ void __Fast_Parser_parseExpression(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Parser_popComplexType(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
-    DB_UNUSED(result);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
+    CX_UNUSED(result);
     Fast_Parser_popComplexType(
         *(Fast_Parser*)args);
 }
 
 void __Fast_Parser_popLvalue(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
-    DB_UNUSED(result);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
+    CX_UNUSED(result);
     Fast_Parser_popLvalue(
         *(Fast_Parser*)args);
 }
 
 void __Fast_Parser_popScope(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(result);
+    CX_UNUSED(f);
+    CX_UNUSED(result);
     Fast_Parser_popScope(
         *(Fast_Parser*)args,
         *(Fast_Variable*)((intptr_t)args + sizeof(Fast_Parser)));
 }
 
 void __Fast_Parser_postfixExpr(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Expression*)result = Fast_Parser_postfixExpr(
         *(Fast_Parser*)args,
         *(Fast_Expression*)((intptr_t)args + sizeof(Fast_Parser)),
@@ -2097,16 +2124,16 @@ void __Fast_Parser_postfixExpr(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Parser_pushComplexType(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(result);
+    CX_UNUSED(f);
+    CX_UNUSED(result);
     Fast_Parser_pushComplexType(
         *(Fast_Parser*)args,
         *(Fast_Expression*)((intptr_t)args + sizeof(Fast_Parser)));
 }
 
 void __Fast_Parser_pushLvalue(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(result);
+    CX_UNUSED(f);
+    CX_UNUSED(result);
     Fast_Parser_pushLvalue(
         *(Fast_Parser*)args,
         *(Fast_Expression*)((intptr_t)args + sizeof(Fast_Parser)),
@@ -2114,30 +2141,30 @@ void __Fast_Parser_pushLvalue(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Parser_pushReturnAsLvalue(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(result);
+    CX_UNUSED(f);
+    CX_UNUSED(result);
     Fast_Parser_pushReturnAsLvalue(
         *(Fast_Parser*)args,
         *(cx_function*)((intptr_t)args + sizeof(Fast_Parser)));
 }
 
 void __Fast_Parser_pushScope(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(Fast_Variable*)result = Fast_Parser_pushScope(
         *(Fast_Parser*)args);
 }
 
 void __Fast_Parser_reset(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
-    DB_UNUSED(result);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
+    CX_UNUSED(result);
     Fast_Parser_reset(
         *(Fast_Parser*)args);
 }
 
 void __Fast_Parser_ternaryExpr(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Expression*)result = Fast_Parser_ternaryExpr(
         *(Fast_Parser*)args,
         *(Fast_Expression*)((intptr_t)args + sizeof(Fast_Parser)),
@@ -2146,7 +2173,7 @@ void __Fast_Parser_ternaryExpr(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Parser_unaryExpr(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Expression*)result = Fast_Parser_unaryExpr(
         *(Fast_Parser*)args,
         *(Fast_Expression*)((intptr_t)args + sizeof(Fast_Parser)),
@@ -2154,7 +2181,7 @@ void __Fast_Parser_unaryExpr(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Parser_updateStatement(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Node*)result = Fast_Parser_updateStatement(
         *(Fast_Parser*)args,
         *(Fast_Expression*)((intptr_t)args + sizeof(Fast_Parser)),
@@ -2162,7 +2189,7 @@ void __Fast_Parser_updateStatement(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Parser_waitExpr(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Expression*)result = Fast_Parser_waitExpr(
         *(Fast_Parser*)args,
         *(Fast_Expression_list*)((intptr_t)args + sizeof(Fast_Parser)),
@@ -2170,7 +2197,7 @@ void __Fast_Parser_waitExpr(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Parser_whileStatement(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(Fast_Node*)result = Fast_Parser_whileStatement(
         *(Fast_Parser*)args,
         *(Fast_Expression*)((intptr_t)args + sizeof(Fast_Parser)),
@@ -2179,7 +2206,7 @@ void __Fast_Parser_whileStatement(cx_function f, void *result, void *args) {
 }
 
 void __Fast_PostfixExpr_construct(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_PostfixExpr_construct(
         *(Fast_PostfixExpr*)args);
 }
@@ -2209,7 +2236,7 @@ cx_ic Fast_PostfixExpr_toIc(Fast_PostfixExpr _this, cx_icProgram program, cx_icS
 }
 
 void __Fast_PostfixExpr_toIc_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_ic*)result = Fast_PostfixExpr_toIc_v(
         *(Fast_PostfixExpr*)args,
         *(cx_icProgram*)((intptr_t)args + sizeof(Fast_PostfixExpr)),
@@ -2218,13 +2245,13 @@ void __Fast_PostfixExpr_toIc_v(cx_function f, void *result, void *args) {
 }
 
 void __Fast_SignedInteger_init(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_SignedInteger_init(
         *(Fast_SignedInteger*)args);
 }
 
 void __Fast_SignedInteger_serialize(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_SignedInteger_serialize(
         *(Fast_SignedInteger*)args,
         *(cx_type*)((intptr_t)args + sizeof(Fast_SignedInteger)),
@@ -2256,7 +2283,7 @@ cx_ic Fast_SignedInteger_toIc(Fast_SignedInteger _this, cx_icProgram program, cx
 }
 
 void __Fast_SignedInteger_toIc_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_ic*)result = Fast_SignedInteger_toIc_v(
         *(Fast_SignedInteger*)args,
         *(cx_icProgram*)((intptr_t)args + sizeof(Fast_SignedInteger)),
@@ -2264,54 +2291,60 @@ void __Fast_SignedInteger_toIc_v(cx_function f, void *result, void *args) {
         *(cx_bool*)((intptr_t)args + sizeof(Fast_SignedInteger) + sizeof(cx_icProgram) + sizeof(cx_icStorage)));
 }
 
+void __Fast_StaticCall_construct(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    *(cx_int16*)result = Fast_StaticCall_construct(
+        *(Fast_StaticCall*)args);
+}
+
 void __Fast_StaticInitializer_construct(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_StaticInitializer_construct(
         *(Fast_StaticInitializer*)args);
 }
 
 void __Fast_StaticInitializer_define(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = Fast_StaticInitializer_define(
         *(Fast_StaticInitializer*)args);
 }
 
 void __Fast_StaticInitializer_push(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = Fast_StaticInitializer_push(
         *(Fast_StaticInitializer*)args);
 }
 
 void __Fast_StaticInitializer_value(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_StaticInitializer_value(
         *(Fast_StaticInitializer*)args,
         *(Fast_Expression*)((intptr_t)args + sizeof(Fast_StaticInitializer)));
 }
 
 void __Fast_String_construct(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_String_construct(
         *(Fast_String*)args);
 }
 
 void __Fast_String_getValue(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_word*)result = Fast_String_getValue(
         *(Fast_String*)args);
 }
 
 void __Fast_String_init(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_String_init(
         *(Fast_String*)args);
 }
 
 void __Fast_String_serialize(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_String_serialize(
         *(Fast_String*)args,
         *(cx_type*)((intptr_t)args + sizeof(Fast_String)),
@@ -2343,7 +2376,7 @@ cx_ic Fast_String_toIc(Fast_String _this, cx_icProgram program, cx_icStorage sto
 }
 
 void __Fast_String_toIc_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_ic*)result = Fast_String_toIc_v(
         *(Fast_String*)args,
         *(cx_icProgram*)((intptr_t)args + sizeof(Fast_String)),
@@ -2352,13 +2385,13 @@ void __Fast_String_toIc_v(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Template_construct(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Template_construct(
         *(Fast_Template*)args);
 }
 
 void __Fast_TernaryExpr_construct(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_TernaryExpr_construct(
         *(Fast_TernaryExpr*)args);
 }
@@ -2388,15 +2421,15 @@ cx_bool Fast_TernaryExpr_hasSideEffects(Fast_TernaryExpr _this) {
 }
 
 void __Fast_TernaryExpr_hasSideEffects_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_bool*)result = Fast_TernaryExpr_hasSideEffects_v(
         *(Fast_TernaryExpr*)args);
 }
 
 void __Fast_TernaryExpr_setOperator(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(result);
+    CX_UNUSED(f);
+    CX_UNUSED(result);
     Fast_TernaryExpr_setOperator(
         *(Fast_TernaryExpr*)args,
         *(cx_operatorKind*)((intptr_t)args + sizeof(Fast_TernaryExpr)));
@@ -2427,7 +2460,7 @@ cx_ic Fast_TernaryExpr_toIc(Fast_TernaryExpr _this, cx_icProgram program, cx_icS
 }
 
 void __Fast_TernaryExpr_toIc_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_ic*)result = Fast_TernaryExpr_toIc_v(
         *(Fast_TernaryExpr*)args,
         *(cx_icProgram*)((intptr_t)args + sizeof(Fast_TernaryExpr)),
@@ -2436,7 +2469,7 @@ void __Fast_TernaryExpr_toIc_v(cx_function f, void *result, void *args) {
 }
 
 void __Fast_UnaryExpr_construct(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_UnaryExpr_construct(
         *(Fast_UnaryExpr*)args);
 }
@@ -2466,8 +2499,8 @@ cx_bool Fast_UnaryExpr_hasSideEffects(Fast_UnaryExpr _this) {
 }
 
 void __Fast_UnaryExpr_hasSideEffects_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
-    DB_UNUSED(args);
+    CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_bool*)result = Fast_UnaryExpr_hasSideEffects_v(
         *(Fast_UnaryExpr*)args);
 }
@@ -2497,7 +2530,7 @@ cx_ic Fast_UnaryExpr_toIc(Fast_UnaryExpr _this, cx_icProgram program, cx_icStora
 }
 
 void __Fast_UnaryExpr_toIc_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_ic*)result = Fast_UnaryExpr_toIc_v(
         *(Fast_UnaryExpr*)args,
         *(cx_icProgram*)((intptr_t)args + sizeof(Fast_UnaryExpr)),
@@ -2506,7 +2539,7 @@ void __Fast_UnaryExpr_toIc_v(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Update_construct(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Update_construct(
         *(Fast_Update*)args);
 }
@@ -2536,7 +2569,7 @@ cx_ic Fast_Update_toIc(Fast_Update _this, cx_icProgram program, cx_icStorage sto
 }
 
 void __Fast_Update_toIc_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_ic*)result = Fast_Update_toIc_v(
         *(Fast_Update*)args,
         *(cx_icProgram*)((intptr_t)args + sizeof(Fast_Update)),
@@ -2545,13 +2578,13 @@ void __Fast_Update_toIc_v(cx_function f, void *result, void *args) {
 }
 
 void __Fast_Variable_construct(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Variable_construct(
         *(Fast_Variable*)args);
 }
 
 void __Fast_Wait_construct(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_Wait_construct(
         *(Fast_Wait*)args);
 }
@@ -2581,7 +2614,7 @@ cx_ic Fast_Wait_toIc(Fast_Wait _this, cx_icProgram program, cx_icStorage storage
 }
 
 void __Fast_Wait_toIc_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_ic*)result = Fast_Wait_toIc_v(
         *(Fast_Wait*)args,
         *(cx_icProgram*)((intptr_t)args + sizeof(Fast_Wait)),
@@ -2590,7 +2623,7 @@ void __Fast_Wait_toIc_v(cx_function f, void *result, void *args) {
 }
 
 void __Fast_While_construct(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_int16*)result = Fast_While_construct(
         *(Fast_While*)args);
 }
@@ -2620,7 +2653,7 @@ cx_ic Fast_While_toIc(Fast_While _this, cx_icProgram program, cx_icStorage stora
 }
 
 void __Fast_While_toIc_v(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_ic*)result = Fast_While_toIc_v(
         *(Fast_While*)args,
         *(cx_icProgram*)((intptr_t)args + sizeof(Fast_While)),

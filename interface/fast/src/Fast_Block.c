@@ -103,12 +103,12 @@ Fast_Expression Fast_Block_lookup(Fast_Block _this, cx_string id) {
 /* $begin(::cortex::Fast::Block::lookup) */
 	Fast_Expression result = NULL;
 
-	result = Fast_Block_lookupLocal(_this, id);
+	result = Fast_Expression(Fast_Block_lookupLocal(_this, id));
 
     if (!result) {
     	if (_this->function) {
-    		if ((cx_procedure(cx_typeof(_this->function))->kind == DB_METHOD) ||
-    			((cx_procedure(cx_typeof(_this->function))->kind == DB_OBSERVER) && cx_observer(_this->function)->template)) {
+    		if ((cx_procedure(cx_typeof(_this->function))->kind == CX_METHOD) ||
+    			((cx_procedure(cx_typeof(_this->function))->kind == CX_OBSERVER) && cx_observer(_this->function)->template)) {
     			if (strcmp(id, "this")) {
 					cx_interface parent;
 					cx_member m;
@@ -121,7 +121,7 @@ Fast_Expression Fast_Block_lookup(Fast_Block _this, cx_string id) {
 					 * in the case of anonymous observers) using the parser-scope is safe since these functions can't be forward
 					 * declared.
 					 */
-					if (cx_checkAttr(_this->function, DB_ATTR_SCOPED)) {
+					if (cx_checkAttr(_this->function, CX_ATTR_SCOPED)) {
 					    parent = cx_parentof(_this->function);
 					} else {
 					    parent = Fast_ObjectBase(yparser()->scope)->value;
@@ -163,9 +163,9 @@ Fast_Expression Fast_Block_lookup(Fast_Block _this, cx_string id) {
 }
 
 /* ::cortex::Fast::Block::lookupLocal(lang::string id) */
-Fast_Expression Fast_Block_lookupLocal(Fast_Block _this, cx_string id) {
+Fast_Local Fast_Block_lookupLocal(Fast_Block _this, cx_string id) {
 /* $begin(::cortex::Fast::Block::lookupLocal) */
-	Fast_Expression result = NULL;
+	Fast_Local result = NULL;
 
     if (_this->locals) {
     	cx_iter iter;
@@ -174,7 +174,7 @@ Fast_Expression Fast_Block_lookupLocal(Fast_Block _this, cx_string id) {
     	while(cx_iterHasNext(&iter)) {
     		local = cx_iterNext(&iter);
     		if (!strcmp(local->name, id)) {
-    			result = Fast_Expression(local);
+    			result = local;
     			break;
     		}
     	}
@@ -199,6 +199,21 @@ Fast_Expression Fast_Block_resolve(Fast_Block _this, cx_string id) {
 /* $end */
 }
 
+/* ::cortex::Fast::Block::resolveLocal(lang::string id) */
+Fast_Local Fast_Block_resolveLocal(Fast_Block _this, cx_string id) {
+/* $begin(::cortex::Fast::Block::resolveLocal) */
+    Fast_Local result = NULL;
+
+    if (!(result = Fast_Block_lookupLocal(_this, id))) {
+        if (_this->parent && !_this->function) {
+            result = Fast_Block_resolveLocal(_this->parent, id);
+        }
+    }
+
+    return result;
+/* $end */
+}
+
 /* ::cortex::Fast::Block::setFunction(lang::function function */
 void Fast_Block_setFunction(Fast_Block _this, cx_function function) {
 /* $begin(::cortex::Fast::Block::setFunction) */
@@ -211,8 +226,8 @@ void Fast_Block_setFunction(Fast_Block _this, cx_function function) {
 cx_ic Fast_Block_toIc_v(Fast_Block _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Block::toIc) */
     cx_icScope scope;
-	DB_UNUSED(storage);
-	DB_UNUSED(stored);
+	CX_UNUSED(storage);
+	CX_UNUSED(stored);
     
     scope = cx_icProgram_scopePush(program, Fast_Node(_this)->line);
     
@@ -235,8 +250,8 @@ cx_ic Fast_Block_toIcBody_v(Fast_Block _this, cx_icProgram program, cx_icStorage
 	cx_iter statementIter;
 	cx_iter localIter;
 	Fast_Local local;
-	DB_UNUSED(storage);
-	DB_UNUSED(stored);
+	CX_UNUSED(storage);
+	CX_UNUSED(stored);
     
     /* Declare locals */
     if (_this->locals) {

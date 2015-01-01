@@ -22,12 +22,12 @@ static void cpp_implStub(cx_function o, cx_string metaFunction, cpp_implWalk_t* 
 
 	/* Returnvalue */
 	returnType = o->returnType;
-	if ((returnType->real->kind != DB_VOID) || (returnType->real->reference)) {
+	if ((returnType->real->kind != CX_VOID) || (returnType->real->reference)) {
 		cx_id specifier;
-		g_setIdKind(data->g, DB_GENERATOR_ID_CLASS_LOWER);
+		g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_LOWER);
 	    cpp_specifierId(data->g, returnType, specifier);
 		g_fileWrite(data->file, "%s _result;\n", specifier);
-		g_setIdKind(data->g, DB_GENERATOR_ID_CLASS_UPPER);
+		g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_UPPER);
 	} else {
 		returnType = NULL;
 	}
@@ -40,7 +40,7 @@ static void cpp_implStub(cx_function o, cx_string metaFunction, cpp_implWalk_t* 
 		g_fileWrite(data->file, ",NULL");
 	}
 	if (cx_class_instanceof(cx_interface_o, cx_parentof(o))) {
-		if (cx_procedure(cx_typeof(o))->kind != DB_FUNCTION) {
+		if (cx_procedure(cx_typeof(o))->kind != CX_FUNCTION) {
 			g_fileWrite(data->file, ",this->__handle");
 		}
 	}
@@ -106,12 +106,12 @@ static int c_implProcedure(cx_object o, void* userData) {
     data = userData;
 
     /* Only generate code for procedures */
-    if (cx_class_instanceof(cx_procedure_o, cx_typeof(o)) && (cx_procedure(cx_typeof(o))->kind != DB_METAPROCEDURE)) { /* TODO: Metaprocedures are not yet mapped to C++ */
-        defined = cx_checkState(o, DB_DEFINED) && (cx_function(o)->kind != DB_PROCEDURE_STUB);
+    if (cx_class_instanceof(cx_procedure_o, cx_typeof(o)) && (cx_procedure(cx_typeof(o))->kind != CX_METAPROCEDURE)) { /* TODO: Metaprocedures are not yet mapped to C++ */
+        defined = cx_checkState(o, CX_DEFINED) && (cx_function(o)->kind != CX_PROCEDURE_STUB);
 
     	/* Do not generate code for defined callbacks - these will never be called
     	 * directly, so generating a stub for them makes no sense. */
-    	if (!((cx_procedure(cx_typeof(o))->kind == DB_CALLBACK) && defined)) {
+    	if (!((cx_procedure(cx_typeof(o))->kind == CX_CALLBACK) && defined)) {
 			cx_string snippet;
 			cx_id id;
 			cx_bool isMethod = cx_instanceof(cx_typedef(cx_method_o), o);
@@ -147,7 +147,7 @@ static int c_implProcedure(cx_object o, void* userData) {
 						/* Non-overloaded functions may have snippets without argumentlists */
 						snippet = g_fileLookupSnippet(data->file, id);
 					} else {
-						if (cx_procedure(cx_typeof(o))->kind != DB_OBSERVER) {
+						if (cx_procedure(cx_typeof(o))->kind != CX_OBSERVER) {
 							cx_warning("function '%s' has no argumentlist.", cx_nameof(o));
 						}
 					}
@@ -190,10 +190,10 @@ static cx_int16 cpp_onMember(cx_serializer s, cx_value* v, void* userData) {
 	cx_id id;
 
 	data = userData;
-	DB_UNUSED(s);
+	CX_UNUSED(s);
 
 	/* Get member */
-	if (v->kind == DB_MEMBER) {
+	if (v->kind == CX_MEMBER) {
 		m = v->is.member.t;
 		g_fileWrite(data->file, "this->%s(%s);\n",
 				g_id(data->g, cx_nameof(m), id),
@@ -208,10 +208,10 @@ static cx_int16 cpp_onMember(cx_serializer s, cx_value* v, void* userData) {
 static struct cx_serializer_s cpp_memberSerializer(void) {
 	struct cx_serializer_s result;
 	cx_serializerInit(&result);
-	result.access = DB_LOCAL|DB_PRIVATE;
-	result.accessKind = DB_NOT;
-	result.traceKind = DB_SERIALIZER_TRACE_ON_FAIL;
-	result.metaprogram[DB_MEMBER] = cpp_onMember;
+	result.access = CX_LOCAL|CX_PRIVATE;
+	result.accessKind = CX_NOT;
+	result.traceKind = CX_SERIALIZER_TRACE_ON_FAIL;
+	result.metaprogram[CX_MEMBER] = cpp_onMember;
 	return result;
 }
 
@@ -236,7 +236,7 @@ static void cpp_implConstructor(cx_generator g, g_file file, cx_interface o) {
 	g_fileWrite(file, "// Constructor\n");
 	cpp_constructorDecl(g, file, o, FALSE);
 	if (base) {
-	    g_fileWrite(file, " : %s((%s)NULL)", g_fullOid(g, base, id), g_fullOidExt(g, base, id2, DB_GENERATOR_ID_CLASS_LOWER));
+	    g_fileWrite(file, " : %s((%s)NULL)", g_fullOid(g, base, id), g_fullOidExt(g, base, id2, CX_GENERATOR_ID_CLASS_LOWER));
 	}
 	g_fileWrite(file, " {\n");
 	g_fileIndent(file);
@@ -277,7 +277,7 @@ static void cpp_implConstructorScoped(cx_generator g, g_file file, cx_interface 
 	g_fileWrite(file, "// Constructor (declare & define)\n");
 	cpp_constructorScopedDecl(g, file, o, FALSE);
 	if (base) {
-	    g_fileWrite(file, " : %s((%s)NULL)", g_fullOid(g, base, id), g_fullOidExt(g, base, id2, DB_GENERATOR_ID_CLASS_LOWER));
+	    g_fileWrite(file, " : %s((%s)NULL)", g_fullOid(g, base, id), g_fullOidExt(g, base, id2, CX_GENERATOR_ID_CLASS_LOWER));
 	}
 	g_fileWrite(file, " {\n");
 	g_fileIndent(file);
@@ -318,7 +318,7 @@ static void cpp_implConstructorHandle(cx_generator g, g_file file, cx_interface 
 	g_fileWrite(file, "// Construct from handle\n");
 	cpp_constructorHandleDecl(g, file, o, FALSE);
 	if (base) {
-	    g_fileWrite(file, " : %s((%s)handle, owner)", g_fullOid(g, base, id), g_fullOidExt(g, base, id2, DB_GENERATOR_ID_CLASS_LOWER));
+	    g_fileWrite(file, " : %s((%s)handle, owner)", g_fullOid(g, base, id), g_fullOidExt(g, base, id2, CX_GENERATOR_ID_CLASS_LOWER));
 	}
 	g_fileWrite(file, " {\n");
 	g_fileIndent(file);
@@ -337,7 +337,7 @@ static void cpp_implHandleGet(cx_generator g, g_file file, cx_interface o) {
     g_fileIndent(file);
 
     /* Create object */
-    g_fileWrite(file, "return (%s)this->__handle;\n", g_fullOidExt(g, o, id, DB_GENERATOR_ID_CLASS_LOWER));
+    g_fileWrite(file, "return (%s)this->__handle;\n", g_fullOidExt(g, o, id, CX_GENERATOR_ID_CLASS_LOWER));
 
     g_fileDedent(file);
     g_fileWrite(file, "}\n");
@@ -354,12 +354,12 @@ static void cpp_implGetter(cx_generator g, g_file file, cx_member m) {
 	/* Return value */
 	if (!m->type->real->reference) {
 		g_fileWrite(file, "return ((%s)this->__handle)->%s;\n",
-				g_fullOidExt(g, cx_parentof(m), id, DB_GENERATOR_ID_CLASS_LOWER),
+				g_fullOidExt(g, cx_parentof(m), id, CX_GENERATOR_ID_CLASS_LOWER),
 				g_id(g, cx_nameof(m), memberId));
 	} else {
 		g_fileWrite(file, "%s result(((%s)this->__handle)->%s);\n",
 				g_fullOid(g, m->type, refId),
-				g_fullOidExt(g, cx_parentof(m), id, DB_GENERATOR_ID_CLASS_LOWER),
+				g_fullOidExt(g, cx_parentof(m), id, CX_GENERATOR_ID_CLASS_LOWER),
 				g_id(g, cx_nameof(m), memberId));
 		g_fileWrite(file, "return result;\n");
 	}
@@ -378,35 +378,35 @@ static void cpp_implSetter(cx_generator g, g_file file, cx_member m) {
 
 	/* Set value */
 	if (!m->type->real->reference) {
-	    if ((m->type->real->kind == DB_PRIMITIVE) && (cx_primitive(m->type->real)->kind == DB_TEXT)) {
+	    if ((m->type->real->kind == CX_PRIMITIVE) && (cx_primitive(m->type->real)->kind == CX_TEXT)) {
             g_fileWrite(file, "if (((%s)this->__handle)->%s) {\n",
-                    g_fullOidExt(g, cx_parentof(m), id, DB_GENERATOR_ID_CLASS_LOWER),
+                    g_fullOidExt(g, cx_parentof(m), id, CX_GENERATOR_ID_CLASS_LOWER),
                     g_id(g, cx_nameof(m), memberId));
             g_fileIndent(file);
             g_fileWrite(file, "cortex::dealloc(((%s)this->__handle)->%s);\n",
-                    g_fullOidExt(g, cx_parentof(m), id, DB_GENERATOR_ID_CLASS_LOWER),
+                    g_fullOidExt(g, cx_parentof(m), id, CX_GENERATOR_ID_CLASS_LOWER),
                     g_id(g, cx_nameof(m), memberId));
             g_fileDedent(file);
             g_fileWrite(file, "};\n");
             g_fileWrite(file, "((%s)this->__handle)->%s = v ? cortex::strdup(v) : NULL;\n",
-                    g_fullOidExt(g, cx_parentof(m), id, DB_GENERATOR_ID_CLASS_LOWER),
+                    g_fullOidExt(g, cx_parentof(m), id, CX_GENERATOR_ID_CLASS_LOWER),
                     g_id(g, cx_nameof(m), memberId));
 	    } else {
             g_fileWrite(file, "((%s)this->__handle)->%s = v;\n",
-                    g_fullOidExt(g, cx_parentof(m), id, DB_GENERATOR_ID_CLASS_LOWER),
+                    g_fullOidExt(g, cx_parentof(m), id, CX_GENERATOR_ID_CLASS_LOWER),
                     g_id(g, cx_nameof(m), memberId));
 	    }
 	} else {
 		g_fileWrite(file, "if (v) {\n");
 		g_fileIndent(file);
 		g_fileWrite(file, "cortex::set((cortex::lang::object*)&((%s)this->__handle)->%s, v._handle());\n",
-				g_fullOidExt(g, cx_parentof(m), id, DB_GENERATOR_ID_CLASS_LOWER),
+				g_fullOidExt(g, cx_parentof(m), id, CX_GENERATOR_ID_CLASS_LOWER),
 				g_id(g, cx_nameof(m), memberId));
 		g_fileDedent(file);
 		g_fileWrite(file, "} else {\n");
 		g_fileIndent(file);
 		g_fileWrite(file, "cortex::set((cortex::lang::object*)&((%s)this->__handle)->%s, NULL);\n",
-						g_fullOidExt(g, cx_parentof(m), id, DB_GENERATOR_ID_CLASS_LOWER),
+						g_fullOidExt(g, cx_parentof(m), id, CX_GENERATOR_ID_CLASS_LOWER),
 						g_id(g, cx_nameof(m), memberId));
 		g_fileDedent(file);
 		g_fileWrite(file, "}\n");
@@ -544,7 +544,7 @@ static g_file cpp_implOpen(cx_object o, cx_generator g) {
 }
 
 static void cpp_implClose(cx_object o, g_file file) {
-    DB_UNUSED(o);
+    CX_UNUSED(o);
     g_fileWrite(file, "\n");
 }
 

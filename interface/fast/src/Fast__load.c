@@ -17,7 +17,7 @@ cx_threadKey FAST_PARSER_KEY;
 int fast_cortexRun(cx_string file, void* udata) {
     cx_char* source;
     Fast_Parser p;
-    DB_UNUSED(udata);
+    CX_UNUSED(udata);
 
     source = cx_fileLoad(file);
     if (source) {
@@ -43,8 +43,8 @@ error:
 
 /* This function is the entrypoint for the library and * loads definitions of the 'Fast' scope */
 int cortexmain(int argc, char* argv[]) {
-    DB_UNUSED(argc);
-    DB_UNUSED(argv);
+    CX_UNUSED(argc);
+    CX_UNUSED(argv);
     
     /* $begin(cortexmain) */
     /* Obtain thread local storage key for parser */

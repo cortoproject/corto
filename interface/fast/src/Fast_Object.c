@@ -108,8 +108,8 @@ error:
 cx_ic Fast_Object_toIc_v(Fast_Object _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Object::toIc) */
 	cx_ic result;
-	DB_UNUSED(storage);
-	DB_UNUSED(stored);
+	CX_UNUSED(storage);
+	CX_UNUSED(stored);
 
 	result = (cx_ic)cx_icObject__create(program, Fast_Node(_this)->line, _this->_parent.value);
 

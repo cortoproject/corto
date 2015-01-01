@@ -30,7 +30,7 @@ cx_int16 Fast_Null_init(Fast_Null object) {
 cx_int16 Fast_Null_serialize(Fast_Null _this, cx_type dstType, cx_word dst) {
 /* $begin(::cortex::Fast::Null::serialize) */
 	Fast_valueKind kind;
-	DB_UNUSED(_this);
+	CX_UNUSED(_this);
 
 	kind = Fast_valueKindFromType(dstType);
 	
@@ -68,13 +68,13 @@ error:
 cx_ic Fast_Null_toIc_v(Fast_Null _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Null::toIc) */
     cx_ic result;
-    DB_UNUSED(storage);
-    DB_UNUSED(stored);
-    DB_UNUSED(_this);
+    CX_UNUSED(storage);
+    CX_UNUSED(stored);
+    CX_UNUSED(_this);
     cx_value value;
 
-    value.kind = DB_LITERAL;
-    value.is.literal.kind = DB_LITERAL_NULL;
+    value.kind = CX_LITERAL;
+    value.is.literal.kind = CX_LITERAL_NULL;
     result = (cx_ic)cx_icLiteral__create(program, Fast_Node(_this)->line, value, cx_type(cx_void_o));
 
     return result;

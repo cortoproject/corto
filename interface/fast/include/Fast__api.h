@@ -38,8 +38,12 @@ Fast_Boolean Fast_Boolean__create(cx_bool value);
 /* ::cortex::Fast::Call */
 Fast_Call Fast_Call__new(void);
 Fast_Call Fast_Call__declare(cx_object _parent, cx_string _name);
-int Fast_Call__define(Fast_Call _this, Fast_Expression function, Fast_Expression arguments);
-Fast_Call Fast_Call__create(Fast_Expression function, Fast_Expression arguments);
+int Fast_Call__define(Fast_Call _this, Fast_Expression instanceExpr, Fast_Expression arguments);
+Fast_Call Fast_Call__create(Fast_Expression instanceExpr, Fast_Expression arguments);
+
+/* ::cortex::Fast::CallBuilder */
+void Fast_CallBuilder__init(Fast_CallBuilder *_this, cx_string name, Fast_Expression arguments, Fast_Expression instance, cx_object scope, Fast_Block block);
+void Fast_CallBuilder__deinit(Fast_CallBuilder *_this);
 
 /* ::cortex::Fast::CastExpr */
 Fast_CastExpr Fast_CastExpr__new(void);
@@ -64,6 +68,12 @@ Fast_Define Fast_Define__new(void);
 Fast_Define Fast_Define__declare(cx_object _parent, cx_string _name);
 int Fast_Define__define(Fast_Define _this, Fast_Expression object);
 Fast_Define Fast_Define__create(Fast_Expression object);
+
+/* ::cortex::Fast::DelegateCall */
+Fast_DelegateCall Fast_DelegateCall__new(void);
+Fast_DelegateCall Fast_DelegateCall__declare(cx_object _parent, cx_string _name);
+int Fast_DelegateCall__define(Fast_DelegateCall _this, Fast_Expression instanceExpr, Fast_Expression arguments, Fast_Expression expr);
+Fast_DelegateCall Fast_DelegateCall__create(Fast_Expression instanceExpr, Fast_Expression arguments, Fast_Expression expr);
 
 /* ::cortex::Fast::DynamicInitializer */
 Fast_DynamicInitializer Fast_DynamicInitializer__new(void);
@@ -211,6 +221,12 @@ Fast_SignedInteger Fast_SignedInteger__declare(cx_object _parent, cx_string _nam
 int Fast_SignedInteger__define(Fast_SignedInteger _this, cx_int64 value);
 Fast_SignedInteger Fast_SignedInteger__create(cx_int64 value);
 
+/* ::cortex::Fast::StaticCall */
+Fast_StaticCall Fast_StaticCall__new(void);
+Fast_StaticCall Fast_StaticCall__declare(cx_object _parent, cx_string _name);
+int Fast_StaticCall__define(Fast_StaticCall _this, Fast_Expression instanceExpr, Fast_Expression arguments, cx_function function);
+Fast_StaticCall Fast_StaticCall__create(Fast_Expression instanceExpr, Fast_Expression arguments, cx_function function);
+
 /* ::cortex::Fast::StaticInitializer */
 Fast_StaticInitializer Fast_StaticInitializer__new(void);
 Fast_StaticInitializer Fast_StaticInitializer__declare(cx_object _parent, cx_string _name);
@@ -270,7 +286,7 @@ int Fast_While__define(Fast_While _this, Fast_Expression condition, Fast_Block t
 Fast_While Fast_While__create(Fast_Expression condition, Fast_Block trueBranch, cx_bool isUntil);
 
 
-/* <0x9c73420> */
+/* <0x82e1ff8> */
 #define Fast_Binding_list__foreach(list, elem) \
     cx_iter elem##_iter = cx_llIter(list);\
     Fast_Binding *elem;\
@@ -285,7 +301,7 @@ void Fast_Binding_list__clear(Fast_Binding_list list);
 Fast_Binding* Fast_Binding_list__get(Fast_Binding_list list, cx_uint32 index);
 cx_uint32 Fast_Binding_list__size(Fast_Binding_list list);
 
-/* <0x9c198e8> */
+/* <0x8280918> */
 #define Fast_Expression_list__foreach(list, elem) \
     cx_iter elem##_iter = cx_llIter(list);\
     Fast_Expression elem;\
@@ -300,7 +316,7 @@ void Fast_Expression_list__clear(Fast_Expression_list list);
 Fast_Expression Fast_Expression_list__get(Fast_Expression_list list, cx_uint32 index);
 cx_uint32 Fast_Expression_list__size(Fast_Expression_list list);
 
-/* <0x9c708f0> */
+/* <0x82df4b0> */
 #define Fast_InitOper_list__foreach(list, elem) \
     cx_iter elem##_iter = cx_llIter(list);\
     Fast_InitOper *elem;\
@@ -315,7 +331,7 @@ void Fast_InitOper_list__clear(Fast_InitOper_list list);
 Fast_InitOper* Fast_InitOper_list__get(Fast_InitOper_list list, cx_uint32 index);
 cx_uint32 Fast_InitOper_list__size(Fast_InitOper_list list);
 
-/* <0x9c670c0> */
+/* <0x82cb770> */
 #define Fast_Local_list__foreach(list, elem) \
     cx_iter elem##_iter = cx_llIter(list);\
     Fast_Local elem;\
@@ -330,7 +346,7 @@ void Fast_Local_list__clear(Fast_Local_list list);
 Fast_Local Fast_Local_list__get(Fast_Local_list list, cx_uint32 index);
 cx_uint32 Fast_Local_list__size(Fast_Local_list list);
 
-/* <0x9c66ed0> */
+/* <0x82cb580> */
 #define Fast_Node_list__foreach(list, elem) \
     cx_iter elem##_iter = cx_llIter(list);\
     Fast_Node elem;\
@@ -345,7 +361,7 @@ void Fast_Node_list__clear(Fast_Node_list list);
 Fast_Node Fast_Node_list__get(Fast_Node_list list, cx_uint32 index);
 cx_uint32 Fast_Node_list__size(Fast_Node_list list);
 
-/* <0x9c73a90> */
+/* <0x82e2688> */
 #define Fast_Object_list__foreach(list, elem) \
     cx_iter elem##_iter = cx_llIter(list);\
     Fast_Object elem;\
@@ -360,7 +376,7 @@ void Fast_Object_list__clear(Fast_Object_list list);
 Fast_Object Fast_Object_list__get(Fast_Object_list list, cx_uint32 index);
 cx_uint32 Fast_Object_list__size(Fast_Object_list list);
 
-/* <0x9c71548> */
+/* <0x82e0168> */
 #define Fast_ParserDeclaration_seq256__foreach(seq, elem) \
     cx_uint32 elem##_iter;\
     Fast_ParserDeclaration *elem;\
@@ -371,7 +387,18 @@ Fast_ParserDeclaration* Fast_ParserDeclaration_seq256__append(Fast_ParserDeclara
 void Fast_ParserDeclaration_seq256__size(Fast_ParserDeclaration_seq256 *seq, cx_uint32 length);
 void Fast_ParserDeclaration_seq256__clear(Fast_ParserDeclaration_seq256 *seq);
 
-/* <0x9c738f0> */
+/* <0x82cf290> */
+#define cx_parameter_seq__foreach(seq, elem) \
+    cx_uint32 elem##_iter;\
+    cx_parameter *elem;\
+    for(elem##_iter=0; elem##_iter<seq.length; elem##_iter++) {\
+        elem = &seq.buffer[elem##_iter];
+
+cx_parameter* cx_parameter_seq__append(cx_parameter_seq *seq);
+void cx_parameter_seq__size(cx_parameter_seq *seq, cx_uint32 length);
+void cx_parameter_seq__clear(cx_parameter_seq *seq);
+
+/* <0x82e24e8> */
 #define cx_word_list__foreach(list, elem) \
     cx_iter elem##_iter = cx_llIter(list);\
     cx_word *elem;\

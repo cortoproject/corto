@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB_XMLREADER_H_
-#define DB_XMLREADER_H_
+#ifndef CX_XMLREADER_H_
+#define CX_XMLREADER_H_
 
 typedef struct cx_xmlreader_s* cx_xmlreader;
 typedef void* cx_xmlnode;

@@ -251,8 +251,8 @@ cx_ic Fast_String_toIc_v(Fast_String _this, cx_icProgram program, cx_icStorage s
 /* $begin(::cortex::Fast::String::toIc) */
 	cx_ic result = NULL;
 	cx_value v;
-	DB_UNUSED(storage);
-	DB_UNUSED(stored);
+	CX_UNUSED(storage);
+	CX_UNUSED(stored);
 
 	/* Parse string after parsing script and thus not interfere with parser */
 	if (Fast_String_parse(_this)) {
@@ -260,7 +260,7 @@ cx_ic Fast_String_toIc_v(Fast_String _this, cx_icProgram program, cx_icStorage s
 	}
 
 	if (!cx_llSize(_this->elements)) {
-		cx_valueLiteralInit(&v, DB_LITERAL_STRING, &_this->value);
+		cx_valueLiteralInit(&v, CX_LITERAL_STRING, &_this->value);
 		result = (cx_ic)cx_icLiteral__create(program, Fast_Node(_this)->line, v, cx_type(cx_string_o));
 	} else {
 		if (stored) {
@@ -283,7 +283,7 @@ cx_ic Fast_String_toIc_v(Fast_String _this, cx_icProgram program, cx_icStorage s
 			}
 
 			v.is.value.storage = 0; /* Create NULL-string */
-			cx_valueLiteralInit(&v, DB_LITERAL_STRING, &v.is.value.storage);
+			cx_valueLiteralInit(&v, CX_LITERAL_STRING, &v.is.value.storage);
 			dummy = (cx_ic)cx_icLiteral__create(program, Fast_Node(_this)->line, v, cx_type(cx_string_o));
 
 			result = (cx_ic)storage;
@@ -295,7 +295,7 @@ cx_ic Fast_String_toIc_v(Fast_String _this, cx_icProgram program, cx_icStorage s
 
 				elementType = Fast_Expression_getType(element);
 				if (!elementType) {
-					element = Fast_Expression(Fast_String__create(DB_NULL_STRING));
+					element = Fast_Expression(Fast_String__create(CX_NULL_STRING));
 				} else if (elementType != cx_type(cx_string_o)) {
 					element = Fast_Expression_cast(element, cx_type(cx_string_o));
 					if(!element) {
@@ -309,7 +309,7 @@ cx_ic Fast_String_toIc_v(Fast_String _this, cx_icProgram program, cx_icStorage s
 				}
 				if (elementCount == 1) {
 					if (storage) {
-						op = cx_icOp__create(program, Fast_Node(_this)->line, DB_IC_STRCPY, NULL, (cx_icValue)storage, (cx_icValue)icElement1);
+						op = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_STRCPY, NULL, (cx_icValue)storage, (cx_icValue)icElement1);
 						cx_icProgram_addIc(program, (cx_ic)op);
 					} else {
 						result = (cx_ic)icElement1;
@@ -324,7 +324,7 @@ cx_ic Fast_String_toIc_v(Fast_String _this, cx_icProgram program, cx_icStorage s
 							elementType = Fast_Expression_getType(element);
 
 							if (!elementType) {
-								element = Fast_Expression(Fast_String__create(DB_NULL_STRING));
+								element = Fast_Expression(Fast_String__create(CX_NULL_STRING));
 							} else if (elementType && (Fast_Expression_getType(element) != cx_type(cx_string_o))) {
 								element = Fast_Expression_cast(element, cx_type(cx_string_o));
 								if (!element) {
@@ -336,12 +336,12 @@ cx_ic Fast_String_toIc_v(Fast_String _this, cx_icProgram program, cx_icStorage s
 							if (!icElement2) {
 								goto error;
 							}
-							op = cx_icOp__create(program, Fast_Node(_this)->line, DB_IC_STRCAT, NULL, (cx_icValue)icElement1, (cx_icValue)icElement2);
+							op = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_STRCAT, NULL, (cx_icValue)icElement1, (cx_icValue)icElement2);
 							cx_icProgram_addIc(program, (cx_ic)op);
 							elementCount--;
 						}
 					} else {
-						op = cx_icOp__create(program, Fast_Node(_this)->line, DB_IC_STRCAT, NULL, (cx_icValue)icElement1, (cx_icValue)dummy);
+						op = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_STRCAT, NULL, (cx_icValue)icElement1, (cx_icValue)dummy);
 						cx_icProgram_addIc(program, (cx_ic)op);
 					}
 				}
@@ -350,7 +350,7 @@ cx_ic Fast_String_toIc_v(Fast_String _this, cx_icProgram program, cx_icStorage s
 
 			/* If string is not yet copied, insert copy instruction */
 			if (!stored) {
-				op = cx_icOp__create(program, Fast_Node(_this)->line, DB_IC_STRCPY, NULL, (cx_icValue)storage, (cx_icValue)dummy);
+				op = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_STRCPY, NULL, (cx_icValue)storage, (cx_icValue)dummy);
 				cx_icProgram_addIc(program, (cx_ic)op);
 				stored = TRUE;
 			}

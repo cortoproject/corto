@@ -80,7 +80,7 @@ void cx_deserXmlNsUse(cx_string ns, deser_xmldata data) {
 cx_object cx_deserXmlNsResolve(cx_object src, cx_string name, deser_xmldata data) {
 	cx_object o, ns;
 
-	DB_UNUSED(src);
+	CX_UNUSED(src);
 
 	o = cx_resolve(data->scope, name);
 	if (!o) {
@@ -147,7 +147,7 @@ int cx_deserXmlReference(const char* str, cx_typedef t, void* o, deser_xmldata d
 		ref = cx_resolve(data->scope, (cx_string)str);
 		if (ref) {
 			/* Check if resolved object has the right type */
-			if ((cx_typeof(ref)->real == t->real) || (cx_class_instanceof(cx_class_o, t) && cx_class_instanceof(cx_class(t), ref)) || (t->real->kind == DB_VOID)) {
+			if ((cx_typeof(ref)->real == t->real) || (cx_class_instanceof(cx_class_o, t) && cx_class_instanceof(cx_class(t), ref)) || (t->real->kind == CX_VOID)) {
 				*(cx_void**)o = ref;
 			} else {
 				xml_error(data, "reference to object '%s' of type '%s' does not match reference type '%s'.",
@@ -208,16 +208,16 @@ int cx_deserXmlCollectionNew(cx_typedef t, void* o) {
 	ctype = (cx_collection)t->real;
 
 	switch(ctype->kind) {
-	case DB_ARRAY:
+	case CX_ARRAY:
 		break;
-	case DB_SEQUENCE:
+	case CX_SEQUENCE:
 		((cx_objectSeq*)o)->length = 0;
 		((cx_objectSeq*)o)->buffer = 0;
 		break;
-	case DB_LIST:
+	case CX_LIST:
 		*((cx_ll*)o) = cx_llNew();
 		break;
-	case DB_MAP:
+	case CX_MAP:
 		*((cx_rbtree*)o) = cx_rbtreeNew(((cx_map)ctype)->keyType->real);
 		break;
 	default:
@@ -252,18 +252,18 @@ void* cx_deserXmlCollectionNewElement(deser_xmlElementData* data) {
 	cx_assert(elementSize, "collection has elementType of size 0.");
 
 	switch(ctype->kind) {
-	case DB_ARRAY:
+	case CX_ARRAY:
 		result = data->collection;
-		data->collection = DB_OFFSET(data->collection, elementSize);
+		data->collection = CX_OFFSET(data->collection, elementSize);
 		break;
-	case DB_SEQUENCE:
+	case CX_SEQUENCE:
 		seq = (cx_objectSeq*)data->collection;
 		seq->buffer = cx_realloc(seq->buffer, (seq->length+1) * elementSize);
-		result = DB_OFFSET(seq->buffer, elementSize * seq->length);
+		result = CX_OFFSET(seq->buffer, elementSize * seq->length);
 		seq->length++;
 		break;
-	case DB_LIST:
-	case DB_MAP:
+	case CX_LIST:
+	case CX_MAP:
 		result = cx_malloc(elementSize);
 		break;
 	default:
@@ -289,15 +289,15 @@ int cx_deserXmlCollectionInsertElement(cx_xmlnode node, void* o, deser_xmlElemen
 	ctype = (cx_collection)data->t->real;
 
 	switch(ctype->kind) {
-	case DB_ARRAY:
-	case DB_SEQUENCE:
+	case CX_ARRAY:
+	case CX_SEQUENCE:
 		/* Do nothing */
 		break;
-	case DB_LIST:
+	case CX_LIST:
 		/* Insert element in list */
 		cx_llAppend(*(cx_ll*)data->collection, o);
 		break;
-	case DB_MAP:
+	case CX_MAP:
 		{
 			cx_string key;
 			cx_void* toValue;
@@ -362,7 +362,7 @@ int cx_deserXmlElement(cx_xmlnode node, deser_xmlElementData* userData) {
 		}
 
 	/* Element subtype is used as tagname */
-	} else if (cx_checkAttr(subtype, DB_ATTR_SCOPED) && !strcmp(cx_nameof(subtype), cx_xmlnodeName(node))) {
+	} else if (cx_checkAttr(subtype, CX_ATTR_SCOPED) && !strcmp(cx_nameof(subtype), cx_xmlnodeName(node))) {
 		deser_xmldata_s privateData;
 
 		privateData = cx_deserXmlDataClone(userData->data);
@@ -375,7 +375,7 @@ int cx_deserXmlElement(cx_xmlnode node, deser_xmlElementData* userData) {
 		}
 
 		/* If collection is a map, mark the 'key' attribute as processed so it won't be read as member */
-		if (cx_collection(userData->t->real)->kind == DB_MAP) {
+		if (cx_collection(userData->t->real)->kind == CX_MAP) {
 		    cx_deserXmlMemberSet("key", &privateData);
 		}
 		if (cx_deserXmlValue(node, XML_ELEMENT, subtype, o, &privateData)) {
@@ -448,7 +448,7 @@ typedef struct deser_xmlMemberData_s {
 static int cx_deserXmlAttrWalk(cx_string ns, cx_string attr, cx_string content, deser_xmlMemberData userData) {
 	cx_member member;
 	cx_type t;
-	DB_UNUSED(ns);
+	CX_UNUSED(ns);
 
 	/* Check if attribute has not been consumed yet */
 	if (cx_deserXmlMemberCheck(attr, userData->data)) {
@@ -460,8 +460,8 @@ static int cx_deserXmlAttrWalk(cx_string ns, cx_string attr, cx_string content, 
 	if (member) {
 		t = member->type->real;
 		/* Check if member is of a primitive type */
-		if ((t->kind == DB_PRIMITIVE) || t->reference) {
-			if (cx_deserXmlPrimitive(content, member->type, DB_OFFSET(userData->o, member->offset), userData->data)) {
+		if ((t->kind == CX_PRIMITIVE) || t->reference) {
+			if (cx_deserXmlPrimitive(content, member->type, CX_OFFSET(userData->o, member->offset), userData->data)) {
 				goto error;
 			}
 		} else {
@@ -498,9 +498,9 @@ cx_string cx_deserXmlIsInlinedElement(cx_string type, deser_xmlMemberData userDa
 	/* Look for collections that can be used inlined */
 	for(i=0; i<s->members.length; i++) {
 		m = s->members.buffer[i];
-		if (m->type->real->kind == DB_COLLECTION) {
+		if (m->type->real->kind == CX_COLLECTION) {
 			subtype = ((cx_collection)m->type->real)->elementType;
-			if (cx_checkAttr(subtype, DB_ATTR_SCOPED) && !strcmp(cx_nameof(subtype), type)) {
+			if (cx_checkAttr(subtype, CX_ATTR_SCOPED) && !strcmp(cx_nameof(subtype), type)) {
 				result = cx_nameof(s->members.buffer[i]);
 				break;
 
@@ -541,7 +541,7 @@ int cx_deserXmlInlinedMember(cx_xmlnode node, cx_string name, deser_xmlMemberDat
 			if (member) {
 
 				/* Deserialize collection */
-				if (cx_deserXmlCollection(cx_xmlnodeParent(node), member->type, DB_OFFSET(userData->o, member->offset), 1, userData->data)) {
+				if (cx_deserXmlCollection(cx_xmlnodeParent(node), member->type, CX_OFFSET(userData->o, member->offset), 1, userData->data)) {
 				    cx_free(member);
 					goto error;
 				}
@@ -580,7 +580,7 @@ static int cx_deserXmlMemberWalk(cx_xmlnode node, deser_xmlMemberData userData) 
 			deser_xmldata_s privateData = *userData->data;
 
 			privateData.attrParsed = 0;
-			if (cx_deserXmlValue(node, XML_MEMBER, member->type, DB_OFFSET(userData->o, member->offset), &privateData)) {
+			if (cx_deserXmlValue(node, XML_MEMBER, member->type, CX_OFFSET(userData->o, member->offset), &privateData)) {
 				goto error;
 			}
 			if (privateData.attrParsed) {
@@ -628,7 +628,7 @@ int cx_deserXmlValue(cx_xmlnode node, cx_deserXmlScope scope, cx_typedef type, v
 	t = type->real;
 
 	/* Deserialize primitive */
-	if ((t->kind == DB_PRIMITIVE) || (t->reference && (scope != XML_OBJECT))) {
+	if ((t->kind == CX_PRIMITIVE) || (t->reference && (scope != XML_OBJECT))) {
 		cx_string content;
 		if (cx_deserXmlPrimitive((content = cx_xmlnodeContent(node)), type, o, data)) {
 			goto error;
@@ -637,14 +637,14 @@ int cx_deserXmlValue(cx_xmlnode node, cx_deserXmlScope scope, cx_typedef type, v
 		cx_dealloc(content);
 
 	/* Deserialize collection */
-	} else if (t->kind == DB_COLLECTION) {
+	} else if (t->kind == CX_COLLECTION) {
 		if (cx_deserXmlCollection(node, type, o, 0, data)) {
 			goto error;
 		}
 	}
 
 	/* Deserialize complex type */
-	else if ((t->kind == DB_COMPOSITE) || (t->reference && (scope == XML_OBJECT))) {
+	else if ((t->kind == CX_COMPOSITE) || (t->reference && (scope == XML_OBJECT))) {
 		if (cx_deserXmlComplex(node, type, o, data)) {
 			goto error;
 		}
@@ -907,7 +907,7 @@ error:
 int cx_deserXml(cx_string file, void* udata) {
 	deser_xmldata_s data;
 
-	DB_UNUSED(udata);
+	CX_UNUSED(udata);
 
 	/* Load reader */
 	data.reader = cx_xmlreaderNew(file, "meta");

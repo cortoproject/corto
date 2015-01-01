@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB_VM_H_
-#define DB_VM_H_
+#ifndef CX_VM_H_
+#define CX_VM_H_
 
 #include "stdint.h"
 #include "cx_object.h"
@@ -41,7 +41,7 @@ extern "C" {
  */
 
 #define VM_OPERAND(op,code)\
-    DB_VM_##op##_##code\
+    CX_VM_##op##_##code\
 
 #define VM_OPERAND_PQRV(op,type,lvalue)\
     VM_OPERAND(op, type##lvalue##V),\
@@ -154,14 +154,14 @@ extern "C" {
     VM_LVALUE(op,W,postfix)
 
 typedef enum cx_vmOpKind {
-	DB_VM_NOOP,
+	CX_VM_NOOP,
 
 	/* Copy a value to a variable/object */
 	VM_2OP(SET,PQRV),
 
 	/* Special set instruction that takes the address of a register so calculations can be performed on it.
 	 * This is useful when calculating dynamic offsets, for example when using arrays i.c.w. a variable index. */
-	DB_VM_SET_WRX,
+	CX_VM_SET_WRX,
 
 	/* Specialized SET for references */
 	VM_2OP_W(SETREF,PQRV),
@@ -171,10 +171,10 @@ typedef enum cx_vmOpKind {
 	VM_2OP_W(SETSTRDUP,PQRV),
 
 	/* Initialize register-memory to zero */
-	DB_VM_ZERO,
+	CX_VM_ZERO,
 
 	/* Call initializer */
-    DB_VM_INIT,
+    CX_VM_INIT,
 
 	/* Inc & dec */
 	VM_1OP(INC),
@@ -210,8 +210,8 @@ typedef enum cx_vmOpKind {
 	VM_2OP_V(STAGE2,PQRV),
     
     /* Stage 1 double operand in stage variable 2 */
-    DB_VM_STAGE12_DP,
-    DB_VM_STAGE12_DV,
+    CX_VM_STAGE12_DP,
+    CX_VM_STAGE12_DV,
     
 	/* Comparisons */
 	VM_1OP_COND(CAND),
@@ -245,10 +245,10 @@ typedef enum cx_vmOpKind {
 	/* Program control */
     VM_1OP(JEQ),
     VM_1OP(JNEQ),
-	DB_VM_JUMP,
+	CX_VM_JUMP,
 
 	/* Calculate member-address from register base */
-	DB_VM_MEMBER, /* Takes destination register, base register and offset */
+	CX_VM_MEMBER, /* Takes destination register, base register and offset */
 
 	/* Collections */
 	VM_OPERAND_PQRV(ELEMA,W,R), /* Takes register(1), elementsize(3) and index variable(2) */
@@ -266,8 +266,8 @@ typedef enum cx_vmOpKind {
 
 	VM_OPERAND_PQR(CALL,L,),		/* Call function with returnvalue */
 	VM_OPERAND_PQR(CALLVM,L,),		/* Call vm function with returnvalue */
-    DB_VM_CALLVOID,					/* Call function with void returnvalue */
-    DB_VM_CALLVMVOID,				/* Call vm function with void returnvalue */
+    CX_VM_CALLVOID,					/* Call function with void returnvalue */
+    CX_VM_CALLVMVOID,				/* Call vm function with void returnvalue */
 	VM_1OP(RET),					/* Return value smaller than 8 bytes */
 	VM_OPERAND_PQR(RETCPY,L,), 		/* Return value larger than 8 bytes */
 
@@ -313,7 +313,7 @@ typedef enum cx_vmOpKind {
 	VM_OPERAND_PQRV(WAITFOR,W,), /* Add objects to wait-queue */
 	VM_2OP_W(WAIT,PQRV), /* Do the actual wait */
 
-	DB_VM_STOP /* Stop the current program (or function) */
+	CX_VM_STOP /* Stop the current program (or function) */
 } cx_vmOpKind;
 
 typedef union cx_vmParameter16 {
@@ -340,7 +340,7 @@ typedef struct cx_vmOp {
     cx_vmParameter16 ic;
     cx_vmParameter lo;
     cx_vmParameter hi;
-#ifdef DB_VM_DEBUG
+#ifdef CX_VM_DEBUG
     cx_vmOpKind opKind; /* Actual operation kind. Only used for debugging purposes */
 #endif
 }cx_vmOp;
@@ -373,4 +373,4 @@ cx_vmOp *cx_vmProgram_addOp(cx_vmProgram program, uint32_t line);
 }
 #endif
 
-#endif /* DB_VM_H_ */
+#endif /* CX_VM_H_ */

@@ -36,7 +36,7 @@ cx_ic Fast_PostfixExpr_toIc_v(Fast_PostfixExpr _this, cx_icProgram program, cx_i
 	cx_icStorage result;
 	cx_ic lvalue;
 	cx_icOp op;
-	DB_UNUSED(stored);
+	CX_UNUSED(stored);
 
     if (storage) {
     	result = storage;

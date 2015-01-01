@@ -142,7 +142,7 @@ char* cx_backtraceString(void) {
     return result;
 }
 
-#define DB_MAX_LOG (1024)
+#define CX_MAX_LOG (1024)
 
 cx_err cx_logv(cx_err kind, unsigned int level, char* fmt, va_list arg, FILE* f) {
 	char msg[512];
@@ -150,32 +150,32 @@ cx_err cx_logv(cx_err kind, unsigned int level, char* fmt, va_list arg, FILE* f)
 	struct timespec time;
 	unsigned int length, written;
 
-	DB_UNUSED(level);
+	CX_UNUSED(level);
 
 	clock_gettime(CLOCK_REALTIME, &time);
 
-	if (vsprintf(msg, fmt, arg) > DB_MAX_LOG) {
+	if (vsprintf(msg, fmt, arg) > CX_MAX_LOG) {
 		cx_critical("Invalid parameter for cx_logv: message size exceeds 512 characters.");
 	}
 
 	/* If writing to stdout, don't write timestamps */
 	if (f == stdout) {
-        if ((length = sprintf(msg_hdr, "%s  %s\n", cx_logKind[kind], msg)) > DB_MAX_LOG) {
+        if ((length = sprintf(msg_hdr, "%s  %s\n", cx_logKind[kind], msg)) > CX_MAX_LOG) {
             printf("Invalid parameter for cx_logv: message (incl. header) exceeds 512 characters.\n");
             abort();
         }
 	} else {
-        if ((length = sprintf(msg_hdr, "%.9u.%.9u %s %s\n", (int)time.tv_sec, (int)time.tv_nsec, cx_logKind[kind], msg)) > DB_MAX_LOG) {
+        if ((length = sprintf(msg_hdr, "%.9u.%.9u %s %s\n", (int)time.tv_sec, (int)time.tv_nsec, cx_logKind[kind], msg)) > CX_MAX_LOG) {
             printf("Invalid parameter for cx_logv: message (incl. header) exceeds 512 characters.\n");
             abort();
         }
 	}
 
-	if (kind == DB_ERROR) {
+	if (kind == CX_ERROR) {
 		cx_setLasterror(msg);
 	}
 
-	if (cx_getEcho() || ((kind == DB_CRITICAL) || (kind == DB_ASSERT))){
+	if (cx_getEcho() || ((kind == CX_CRITICAL) || (kind == CX_ASSERT))){
 		if ((written = fwrite(msg_hdr, 1, length, f)) != length) {
 			fprintf(f, "Error in cx_logv: number of bytes written (%d) does not match length of message (%d).\n", written, length);
 		}
@@ -186,33 +186,33 @@ cx_err cx_logv(cx_err kind, unsigned int level, char* fmt, va_list arg, FILE* f)
 
 void _cx_assertv(unsigned int condition, char* fmt, va_list args) {
     if (!condition) {
-        cx_logv(DB_ASSERT, 0, fmt, args, stdout);
+        cx_logv(CX_ASSERT, 0, fmt, args, stdout);
         cx_backtrace(stdout);
         abort();
     }
 }
 
 void cx_criticalv(char* fmt, va_list args) {
-    cx_logv(DB_CRITICAL, 0, fmt, args, stdout);
+    cx_logv(CX_CRITICAL, 0, fmt, args, stdout);
     cx_backtrace(stdout);
     fflush(stdout);
     abort();
 }
 
 cx_err cx_debugv(char* fmt, va_list args) {
-    return cx_logv(DB_DEBUG, 0, fmt, args, stdout);
+    return cx_logv(CX_DEBUG, 0, fmt, args, stdout);
 }
 
 cx_err cx_tracev(char* fmt, va_list args) {
-    return cx_logv(DB_TRACE, 0, fmt, args, stdout);
+    return cx_logv(CX_TRACE, 0, fmt, args, stdout);
 }
 
 cx_err cx_warningv(char* fmt, va_list args) {
-    return cx_logv(DB_WARNING, 0, fmt, args, stdout);
+    return cx_logv(CX_WARNING, 0, fmt, args, stdout);
 }
 
 cx_err cx_errorv(char* fmt, va_list args) {
-    return cx_logv(DB_ERROR, 0, fmt, args, stdout);
+    return cx_logv(CX_ERROR, 0, fmt, args, stdout);
 }
 
 cx_err cx_debug(char* fmt, ...) {

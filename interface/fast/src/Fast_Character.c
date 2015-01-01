@@ -61,10 +61,10 @@ cx_ic Fast_Character_toIc_v(Fast_Character _this, cx_icProgram program, cx_icSto
 /* $begin(::cortex::Fast::Character::toIc) */
 	cx_ic result;
 	cx_value v;
-	DB_UNUSED(storage);
-	DB_UNUSED(stored);
+	CX_UNUSED(storage);
+	CX_UNUSED(stored);
 
-	cx_valueLiteralInit(&v, DB_LITERAL_CHARACTER, &_this->value);
+	cx_valueLiteralInit(&v, CX_LITERAL_CHARACTER, &_this->value);
 	result = (cx_ic)cx_icLiteral__create(program, Fast_Node(_this)->line, v, cx_type(cx_char_o));
 
 	return result;

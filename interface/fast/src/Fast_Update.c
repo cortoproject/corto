@@ -52,8 +52,8 @@ cx_ic Fast_Update_toIc_v(Fast_Update _this, cx_icProgram program, cx_icStorage s
     cx_ic expr, from = NULL;
     cx_iter exprIter;
     cx_icOp op;
-    DB_UNUSED(storage);
-    DB_UNUSED(stored);
+    CX_UNUSED(storage);
+    CX_UNUSED(stored);
 
     /* Evaluate expression */
     if (_this->from) {
@@ -66,14 +66,14 @@ cx_ic Fast_Update_toIc_v(Fast_Update _this, cx_icProgram program, cx_icStorage s
     	Fast_Expression fastExpr = cx_iterNext(&exprIter);
     	expr = Fast_Node_toIc(Fast_Node(fastExpr), program, NULL, TRUE);
 		if (!_this->block) {
-			op = cx_icOp__create(program, Fast_Node(_this)->line, DB_IC_UPDATE, (cx_icValue)expr, (cx_icValue)from, NULL);
+			op = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_UPDATE, (cx_icValue)expr, (cx_icValue)from, NULL);
 			cx_icProgram_addIc(program, (cx_ic)op);
-			op->s1Deref = DB_IC_DEREF_ADDRESS;
+			op->s1Deref = CX_IC_DEREF_ADDRESS;
 
 		} else {
-			op = cx_icOp__create(program, Fast_Node(_this)->line, DB_IC_UPDATEBEGIN, (cx_icValue)expr, NULL, NULL);
+			op = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_UPDATEBEGIN, (cx_icValue)expr, NULL, NULL);
 			cx_icProgram_addIc(program, (cx_ic)op);
-			op->s1Deref = DB_IC_DEREF_ADDRESS;
+			op->s1Deref = CX_IC_DEREF_ADDRESS;
 		}
     }
 
@@ -85,9 +85,9 @@ cx_ic Fast_Update_toIc_v(Fast_Update _this, cx_icProgram program, cx_icStorage s
         while(cx_iterHasNext(&exprIter)) {
         	Fast_Expression fastExpr = cx_iterNext(&exprIter);
         	expr = Fast_Node_toIc(Fast_Node(fastExpr), program, NULL, TRUE);
-			op = cx_icOp__create(program, Fast_Node(_this)->line, DB_IC_UPDATEEND, (cx_icValue)expr, (cx_icValue)from, NULL);
+			op = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_UPDATEEND, (cx_icValue)expr, (cx_icValue)from, NULL);
 			cx_icProgram_addIc(program, (cx_ic)op);
-			op->s1Deref = DB_IC_DEREF_ADDRESS;
+			op->s1Deref = CX_IC_DEREF_ADDRESS;
         }
     }
 

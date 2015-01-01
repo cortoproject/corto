@@ -8,7 +8,7 @@
 #include "cortex.h"
 #include "cx_loader.h"
 
-extern cx_bool DB_DEBUG_ENABLED;
+extern cx_bool CX_DEBUG_ENABLED;
 
 int main(int argc, char* argv[]) {
     int i;
@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
     for(i=1; i<argc; i++) {
         if (*argv[i] == '-') {
             if (*(argv[i]+1) == 'd') {
-                DB_DEBUG_ENABLED = TRUE;
+                CX_DEBUG_ENABLED = TRUE;
             }
         } else
     	if (!strstr(argv[i], ".cx")) {

@@ -110,7 +110,7 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value* v, void* userData) {
     void* o;
     char* result;
 
-    DB_UNUSED(s);
+    CX_UNUSED(s);
     result = NULL;
 
     data = (cx_string_ser_t*)userData;
@@ -118,7 +118,7 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value* v, void* userData) {
     o = cx_valueValue(v);
 
     /* If src is string and value is null, put NULL in result. */
-    if (cx_primitive(t)->kind == DB_TEXT) {
+    if (cx_primitive(t)->kind == CX_TEXT) {
         if (*(cx_string*)o) {
             if (!cx_ser_appendstrEscape(data, *(cx_string*)o)) {
                 goto finished;
@@ -128,7 +128,7 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value* v, void* userData) {
                 goto finished;
             }
         }
-    } else if (cx_primitive(t)->kind == DB_CHARACTER) {
+    } else if (cx_primitive(t)->kind == CX_CHARACTER) {
         if (*(cx_char*)o) {
             if (!cx_ser_appendstr(data, "'%c'", *(cx_char*)o)) {
                 goto finished;
@@ -169,7 +169,7 @@ static cx_int16 cx_ser_reference(cx_serializer s, cx_value* v, void* userData) {
 
     /* Obtain fully scoped name */
     if (object) {
-        if (cx_checkAttr(object, DB_ATTR_SCOPED) || (cx_valueObject(v) == object)) {
+        if (cx_checkAttr(object, CX_ATTR_SCOPED) || (cx_valueObject(v) == object)) {
             str = (char*)cx_fullname(object, id);
         } else {
             cx_string_ser_t walkData;
@@ -196,7 +196,7 @@ static cx_int16 cx_ser_reference(cx_serializer s, cx_value* v, void* userData) {
                 cx_llAppend(data->anonymousObjects, object);
                 cx_ser_appendstr(userData, "<%d>", cx_llSize(data->anonymousObjects));
 
-                v.kind = DB_OBJECT;
+                v.kind = CX_OBJECT;
                 v.is.o = object;
                 v.parent = NULL;
                 if (cx_ser_object(s, &v, &walkData)) {
@@ -241,9 +241,9 @@ static cx_int16 cx_ser_scope(cx_serializer s, cx_value* v, void* userData) {
     if (!cx_ser_appendstr(&privateData, "{")) {
         goto finished;
     }
-    if (t->kind == DB_COMPOSITE) {
+    if (t->kind == CX_COMPOSITE) {
         result = cx_serializeMembers(s, v, &privateData);
-    } else if (t->kind == DB_COLLECTION){
+    } else if (t->kind == CX_COLLECTION){
         result = cx_serializeElements(s, v, &privateData);
     } else {
         cx_assert(0, "cx_ser_scope: invalid typekind for function.");
@@ -264,7 +264,7 @@ finished:
 /* Serialize item (can be either member or element) */
 static cx_int16 cx_ser_item(cx_serializer s, cx_value* v, void* userData) {
     cx_string_ser_t* data;
-    DB_UNUSED(s);
+    CX_UNUSED(s);
 
     data = userData;
 
@@ -276,7 +276,7 @@ static cx_int16 cx_ser_item(cx_serializer s, cx_value* v, void* userData) {
     }
 
     if (!data->compactNotation) {
-        if (v->kind == DB_MEMBER) {
+        if (v->kind == CX_MEMBER) {
             if (!cx_ser_appendstr(data, "%s=", cx_nameof(v->is.member.t))) {
                 goto finished;
             }
@@ -311,7 +311,7 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
         o = cx_valueObject(v);
         cx_fullname(cx_typeof(o), id);
 
-        if (cx_typeof(o)->real->kind != DB_PRIMITIVE) {
+        if (cx_typeof(o)->real->kind != CX_PRIMITIVE) {
             if (data->buffer) {
                 result = cx_malloc(strlen(data->buffer) + strlen(id) + 1);
                 sprintf(result, "%s%s", id, data->buffer);
@@ -340,8 +340,8 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
 }
 
 static cx_int16 cx_ser_construct(cx_serializer s, cx_value *info, void* userData) {
-    DB_UNUSED(s);
-    DB_UNUSED(info);
+    CX_UNUSED(s);
+    CX_UNUSED(info);
     
     cx_string_ser_t* data = userData;
     data->ptr = data->buffer;
@@ -354,7 +354,7 @@ static cx_int16 cx_ser_construct(cx_serializer s, cx_value *info, void* userData
 }
 
 cx_int16 cx_ser_destruct(cx_serializer s, void* userData) {
-    DB_UNUSED(s);
+    CX_UNUSED(s);
     
     cx_string_ser_t* data = userData;
     if (data->anonymousObjects) {
@@ -373,16 +373,16 @@ struct cx_serializer_s cx_string_ser(cx_modifier access, cx_operatorKind accessK
     s.traceKind = trace;
     s.construct = cx_ser_construct;
     s.destruct = cx_ser_destruct;
-    s.program[DB_VOID] = NULL;
-    s.program[DB_PRIMITIVE] = cx_ser_primitive;
-    s.program[DB_COMPOSITE] = cx_ser_scope;
-    s.program[DB_COLLECTION] = cx_ser_scope;
-    s.metaprogram[DB_MEMBER] = cx_ser_item;
-    s.metaprogram[DB_BASE] = cx_serializeMembers;   /* Skip the scope-callback by directly calling serializeMembers. This will cause the extra
+    s.program[CX_VOID] = NULL;
+    s.program[CX_PRIMITIVE] = cx_ser_primitive;
+    s.program[CX_COMPOSITE] = cx_ser_scope;
+    s.program[CX_COLLECTION] = cx_ser_scope;
+    s.metaprogram[CX_MEMBER] = cx_ser_item;
+    s.metaprogram[CX_BASE] = cx_serializeMembers;   /* Skip the scope-callback by directly calling serializeMembers. This will cause the extra
                                                      * '{ }' not to appear, which is required by this string format. */
-    s.metaprogram[DB_ELEMENT] = cx_ser_item;
-    s.metaprogram[DB_OBJECT] = cx_ser_object;
-    s.metaprogram[DB_CONSTANT] = NULL;
+    s.metaprogram[CX_ELEMENT] = cx_ser_item;
+    s.metaprogram[CX_OBJECT] = cx_ser_object;
+    s.metaprogram[CX_CONSTANT] = NULL;
     s.reference = cx_ser_reference;
     return s;
 }

@@ -24,7 +24,7 @@ cx_int16 cx_delegate_init(cx_delegate object) {
         /* Parent of delegate must be an abstract */
         if (cx_class_instanceof(cx_interface_o, parent)) {
             /* Bind delegate to class */
-            if (cx_interface(parent)->kind == DB_CLASS) {
+            if (cx_interface(parent)->kind == CX_CLASS) {
                 if (cx_class_bindDelegate(cx_class(parent), object)) {
                     goto error;
                 }

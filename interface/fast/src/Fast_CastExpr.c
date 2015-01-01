@@ -73,7 +73,7 @@ cx_ic Fast_CastExpr_toIc_v(Fast_CastExpr _this, cx_icProgram program, cx_icStora
 	cx_ic lvalue, rvalue, result;
 	cx_icOp op;
 	cx_type _thisType = Fast_Expression_getType(Fast_Expression(_this));
-	DB_UNUSED(stored);
+	CX_UNUSED(stored);
 
     if (storage && (storage->type == _thisType)) {
         result = (cx_ic)storage;
@@ -88,7 +88,7 @@ cx_ic Fast_CastExpr_toIc_v(Fast_CastExpr _this, cx_icProgram program, cx_icStora
     lvalue = Fast_Node_toIc(Fast_Node(_this->lvalue), program, NULL, TRUE);
     rvalue = Fast_Node_toIc(Fast_Node(_this->rvalue), program, (cx_icStorage)NULL, TRUE);
 
-    op = cx_icOp__create(program, Fast_Node(_this)->line, DB_IC_CAST, (cx_icValue)result, (cx_icValue)rvalue, (cx_icValue)lvalue);
+    op = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_CAST, (cx_icValue)result, (cx_icValue)rvalue, (cx_icValue)lvalue);
     cx_icProgram_addIc(program, (cx_ic)op);
 
     return result;

@@ -19,7 +19,7 @@ typedef struct c_typeWalk_t {
 
 /* Resolve object */
 static cx_char* c_loadResolve(cx_object o, cx_char* out, cx_char* src, cx_char* context) {
-	if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
+	if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
 		cx_id id, escaped, escapedContextStr;
 		cx_fullname(o, id);
 
@@ -40,7 +40,7 @@ static cx_char* c_loadResolve(cx_object o, cx_char* out, cx_char* src, cx_char* 
 		cx_string_ser_t data;
 
 		/* Serialize object string */
-		stringSer = cx_string_ser(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
+		stringSer = cx_string_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
 
 		*ostr = '\0';
 		data.compactNotation = TRUE;
@@ -77,7 +77,7 @@ error:
 
 /* Get variable id */
 static cx_char* c_loadVarId(cx_generator g, cx_object o, cx_char* out) {
-	if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
+	if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
 		if (o != root_o) {
 			g_fullOid(g, o, out);
 			strcat(out, "_o");
@@ -100,7 +100,7 @@ static cx_char* c_loadElementId(cx_value* v, cx_char* out, cx_int32 offset) {
 	ptr = v;
 
 	do {
-		if (ptr->kind == DB_ELEMENT) {
+		if (ptr->kind == CX_ELEMENT) {
 			i++;
 		}
 	}while((ptr = ptr->parent));
@@ -113,7 +113,7 @@ static cx_char* c_loadElementId(cx_value* v, cx_char* out, cx_int32 offset) {
 /* This function translates from a value-object to a valid C-string identifying a
  * part of the object that is being serialized. */
 static cx_char* c_loadMemberId(c_typeWalk_t* data, cx_value* v, cx_char* out, cx_bool addMemberOperator) {
-    cx_value* stack[DB_MAX_TYPE_DEPTH];
+    cx_value* stack[CX_MAX_TYPE_DEPTH];
     cx_uint32 count;
     cx_value *ptr;
     cx_object o;
@@ -125,7 +125,7 @@ static cx_char* c_loadMemberId(c_typeWalk_t* data, cx_value* v, cx_char* out, cx
     /* Build serializer-stack */
     ptr = v;
     count = 0;
-    while((ptr->kind != DB_OBJECT) && (ptr->kind != DB_BASE)) {
+    while((ptr->kind != CX_OBJECT) && (ptr->kind != CX_BASE)) {
         stack[count] = ptr;
         ptr = ptr->parent;
         count++;
@@ -136,7 +136,7 @@ static cx_char* c_loadMemberId(c_typeWalk_t* data, cx_value* v, cx_char* out, cx
     o = cx_valueObject(v);
 
     /* If object is an array, dereference object, so the '[ ]' operator can be used on object. Same for primtives, primitive-objects are pointers to primitive values. */
-    objectIsArray = (cx_typeof(o)->real->kind == DB_PRIMITIVE) || ((cx_typeof(o)->real->kind == DB_COLLECTION) && (cx_collection(cx_typeof(o)->real)->kind == DB_ARRAY));
+    objectIsArray = (cx_typeof(o)->real->kind == CX_PRIMITIVE) || ((cx_typeof(o)->real->kind == CX_COLLECTION) && (cx_collection(cx_typeof(o)->real)->kind == CX_ARRAY));
 
     /* Use '->' operator whenever possible */
     if (!objectIsArray) {
@@ -176,7 +176,7 @@ static cx_char* c_loadMemberId(c_typeWalk_t* data, cx_value* v, cx_char* out, cx
         switch(stack[count]->kind) {
 
         /* Member */
-        case DB_MEMBER:
+        case CX_MEMBER:
         	/* When previous object is a reference, use -> operator. */
         	if (derefMemberOperator) {
         		strcat(out, "->");
@@ -190,7 +190,7 @@ static cx_char* c_loadMemberId(c_typeWalk_t* data, cx_value* v, cx_char* out, cx
             break;
 
         /* Element */
-        case DB_ELEMENT: {
+        case CX_ELEMENT: {
             cx_collection t;
             cx_char arrayIndex[24];
 
@@ -199,13 +199,13 @@ static cx_char* c_loadMemberId(c_typeWalk_t* data, cx_value* v, cx_char* out, cx
             switch(t->kind) {
 
             /* Array element, use array operator. */
-            case DB_ARRAY:
+            case CX_ARRAY:
                 sprintf(arrayIndex, "[%d]", stack[count]->is.element.t.index);
                 strcat(out, arrayIndex);
                 break;
 
             /* Sequence element, use buffer-array */
-            case DB_SEQUENCE:
+            case CX_SEQUENCE:
             	if (derefMemberOperator) {
             		strcat(out, "->");
             	} else {
@@ -219,7 +219,7 @@ static cx_char* c_loadMemberId(c_typeWalk_t* data, cx_value* v, cx_char* out, cx
             default: {
             	cx_char elementId[9]; /* One-million nested collections should be adequate in most cases. */
 
-            	if ((cx_valueType(stack[count])->real->kind == DB_COLLECTION) && (cx_collection(cx_valueType(stack[count])->real)->kind == DB_ARRAY)) {
+            	if ((cx_valueType(stack[count])->real->kind == CX_COLLECTION) && (cx_collection(cx_valueType(stack[count])->real)->kind == CX_ARRAY)) {
             		sprintf(out, "(*%s)", c_loadElementId(stack[count], elementId, 0));
             	} else {
             		sprintf(out, "%s", c_loadElementId(stack[count], elementId, 0));
@@ -231,7 +231,7 @@ static cx_char* c_loadMemberId(c_typeWalk_t* data, cx_value* v, cx_char* out, cx
             break;
         }
 
-        /* DB_OBJECT and DB_CONSTANT will not be encountered in this loop. */
+        /* CX_OBJECT and CX_CONSTANT will not be encountered in this loop. */
         default:
         	cx_assert(0, "invalid valueKind at this place.");
             break;
@@ -384,7 +384,7 @@ static void c_varPrintStart(cx_value* v, c_typeWalk_t* data) {
     t = cx_valueType(v)->real;
 
     /* Only write an identifier if the object is a primitive type, or a reference. */
-    if ((t->kind == DB_PRIMITIVE) || (t->reference && !(v->kind == DB_OBJECT))) {
+    if ((t->kind == CX_PRIMITIVE) || (t->reference && !(v->kind == CX_OBJECT))) {
         /* Print memberId if object is member */
 		g_fileWrite(data->source, "%s = ",
 				c_loadMemberId(data, v, memberId, FALSE));
@@ -397,7 +397,7 @@ static void c_varPrintEnd(cx_value* v, c_typeWalk_t* data) {
 
     /* Get member object */
     t = cx_valueType(v)->real;
-    if ((t->kind == DB_PRIMITIVE) || (t->reference && !(v->kind == DB_OBJECT))) {
+    if ((t->kind == CX_PRIMITIVE) || (t->reference && !(v->kind == CX_OBJECT))) {
         /* Print end of member-assignment */
         g_fileWrite(data->source, ";\n");
     }
@@ -409,7 +409,7 @@ static cx_int16 c_initPrimitive(cx_serializer s, cx_value* v, void* userData) {
     cx_type t;
     cx_string str;
     c_typeWalk_t* data;
-    DB_UNUSED(s);
+    CX_UNUSED(s);
 
     ptr = cx_valueValue(v);
     t = cx_valueType(v)->real;
@@ -420,21 +420,21 @@ static cx_int16 c_initPrimitive(cx_serializer s, cx_value* v, void* userData) {
 
     /* Treat booleans separately, the default convert translates booleans to 'true' and 'false' while
      * the language mapping of C TRUE and FALSE is. */
-    if (cx_primitive(t)->kind == DB_BOOLEAN) {
+    if (cx_primitive(t)->kind == CX_BOOLEAN) {
     	if (*(cx_bool*)ptr) {
     		str = cx_strdup("TRUE");
     	} else {
     		str = cx_strdup("FALSE");
     	}
-    } else if (cx_primitive(t)->kind == DB_ENUM) {
+    } else if (cx_primitive(t)->kind == CX_ENUM) {
         cx_id enumId;
 
         /* Convert constant-name to language id */
         str = cx_strdup(c_constantId(data->g, cx_enum_constant(cx_enum(t), *(cx_uint32*)ptr), enumId));
-    } else if (cx_primitive(t)->kind == DB_BITMASK) {
+    } else if (cx_primitive(t)->kind == CX_BITMASK) {
         str = cx_malloc(11);
         sprintf(str, "0x%x", *(cx_uint32*)ptr);
-    } else if (cx_primitive(t)->kind == DB_TEXT) {
+    } else if (cx_primitive(t)->kind == CX_TEXT) {
         cx_string v = *(cx_string*)ptr;
         if (v) {
             str = malloc(strlen("cx_strdup()") + strlen(v) + 1 + 2);
@@ -442,7 +442,7 @@ static cx_int16 c_initPrimitive(cx_serializer s, cx_value* v, void* userData) {
         } else {
             str = cx_strdup("NULL");
         }
-    } else if (cx_primitive(t)->kind == DB_CHARACTER) {
+    } else if (cx_primitive(t)->kind == CX_CHARACTER) {
         cx_char v = *(cx_char*)ptr;
         char buff[3];
         str = malloc(strlen(buff) + 1 + 2);
@@ -473,7 +473,7 @@ error:
 static cx_int16 c_initReference(cx_serializer s, cx_value* v, void* userData) {
     cx_object *optr, o;
     c_typeWalk_t* data;
-    DB_UNUSED(s);
+    CX_UNUSED(s);
 
     data = userData;
     optr = cx_valueValue(v);
@@ -505,8 +505,8 @@ static cx_int16 c_initElement(cx_serializer s, cx_value* v, void* userData) {
 
 	/* Allocate space for element */
 	switch(t->kind) {
-	case DB_LIST:
-	case DB_MAP: {
+	case CX_LIST:
+	case CX_MAP: {
 		cx_id elementId, specifier, postfix;
 		g_fileWrite(data->source, "\n");
 
@@ -524,14 +524,14 @@ static cx_int16 c_initElement(cx_serializer s, cx_value* v, void* userData) {
 	}
 
 	switch(t->kind) {
-	case DB_LIST: {
+	case CX_LIST: {
 		cx_id parentId, elementId;
 		g_fileWrite(data->source, "cx_llAppend(%s, %s);\n",
 				c_loadMemberId(data, v->parent, parentId, FALSE),
 				c_loadElementId(v, elementId, 0));
 		break;
 	}
-	case DB_MAP: /*{
+	case CX_MAP: /*{
 		cx_id parentId, elementId;
 		g_fileWrite(data->source, "cx_rbtreeSet(%s, %s)",
 				c_loadMemberId(data->g, v->parent, parentId),
@@ -562,10 +562,10 @@ static cx_int16 c_initCollection(cx_serializer s, cx_value* v, void* userData) {
     data = userData;
 
     switch(t->kind) {
-    case DB_ARRAY:
+    case CX_ARRAY:
         size = t->max;
         break;
-    case DB_SEQUENCE: {
+    case CX_SEQUENCE: {
         cx_uint32 length;
     	cx_id specifier, postfix;
 
@@ -596,7 +596,7 @@ static cx_int16 c_initCollection(cx_serializer s, cx_value* v, void* userData) {
         }
         break;
     }
-    case DB_LIST:
+    case CX_LIST:
         /* Create list object */
     	if (*(cx_ll*)ptr) {
 			g_fileWrite(data->source, "%s = cx_llNew();\n",
@@ -606,7 +606,7 @@ static cx_int16 c_initCollection(cx_serializer s, cx_value* v, void* userData) {
     	}
         size = cx_llSize(*(cx_ll*)ptr);
         break;
-    case DB_MAP: {
+    case CX_MAP: {
     	cx_id keyId;
         /* Create map object */
     	if (*(cx_rbtree*)ptr) {
@@ -623,8 +623,8 @@ static cx_int16 c_initCollection(cx_serializer s, cx_value* v, void* userData) {
 	/* For the non-array types, allocate a member variable, if size of collection is not zero. */
     if (size) {
 		switch(t->kind) {
-		case DB_LIST:
-		case DB_MAP: {
+		case CX_LIST:
+		case CX_MAP: {
 			cx_id elementId, elementTypeId;
 			g_fileWrite(data->source, "{\n");
 			g_fileIndent(data->source);
@@ -641,8 +641,8 @@ static cx_int16 c_initCollection(cx_serializer s, cx_value* v, void* userData) {
 
     if (size) {
 		switch(t->kind) {
-		case DB_LIST:
-		case DB_MAP: {
+		case CX_LIST:
+		case CX_MAP: {
 			g_fileDedent(data->source);
 			g_fileWrite(data->source, "}\n");
 			break;
@@ -675,12 +675,12 @@ static struct cx_serializer_s c_initSerializer(void) {
 
     cx_serializerInit(&s);
 
-    s.access = DB_LOCAL;
-    s.accessKind = DB_NOT;
-    s.traceKind = DB_SERIALIZER_TRACE_ON_FAIL;
-    s.program[DB_PRIMITIVE] = c_initPrimitive;
-    s.program[DB_COLLECTION] = c_initCollection;
-    s.metaprogram[DB_ELEMENT] = c_initElement;
+    s.access = CX_LOCAL;
+    s.accessKind = CX_NOT;
+    s.traceKind = CX_SERIALIZER_TRACE_ON_FAIL;
+    s.program[CX_PRIMITIVE] = c_initPrimitive;
+    s.program[CX_COLLECTION] = c_initCollection;
+    s.metaprogram[CX_ELEMENT] = c_initElement;
     s.reference = c_initReference;
 
     return s;
@@ -695,13 +695,13 @@ static int c_loadDeclare(cx_object o, void* userData) {
     data = userData;
 
     /* Only declare scoped objects */
-    if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
+    if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
         c_escapeString(cx_nameof(o), escapedName);
 
         /* Declaration */
         g_fileWrite(data->source, "/* Declare %s */\n", cx_fullname(o, id));
 
-        if (!cx_checkAttr(cx_typeof(o), DB_ATTR_SCOPED)) {
+        if (!cx_checkAttr(cx_typeof(o), CX_ATTR_SCOPED)) {
             g_fileWrite(data->source, "%s = cx_declare(%s, \"%s\", (_a_ ? cx_free(_a_) : 0, _a_ = cx_typedef(%s)));\n",
                     c_loadVarId(data->g, o, id),
                     c_loadVarId(data->g, cx_parentof(o), parentId),
@@ -726,7 +726,7 @@ static int c_loadDeclare(cx_object o, void* userData) {
         g_fileDedent(data->source);
 
         /* Serialize object if object is a primitive */
-        if(cx_typeof(o)->real->kind == DB_PRIMITIVE) {
+        if(cx_typeof(o)->real->kind == CX_PRIMITIVE) {
             g_fileWrite(data->source, "} else {\n");
             g_fileIndent(data->source);
             s = c_initSerializer();
@@ -743,7 +743,7 @@ static int c_loadDeclare(cx_object o, void* userData) {
 static int c_loadDefine(cx_object o, void* userData) {
     struct cx_serializer_s s;
 
-    if (cx_checkAttr(o, DB_ATTR_SCOPED) && (cx_typeof(o)->real->kind != DB_PRIMITIVE)) {
+    if (cx_checkAttr(o, CX_ATTR_SCOPED) && (cx_typeof(o)->real->kind != CX_PRIMITIVE)) {
         c_typeWalk_t* data;
         cx_id escapedId, fullname, varId, typeId;
 
@@ -754,11 +754,11 @@ static int c_loadDefine(cx_object o, void* userData) {
         g_fullOid(data->g, o, typeId);
 
         g_fileWrite(data->source, "/* Define %s */\n", fullname);
-        g_fileWrite(data->source, "if (!cx_checkState(%s, DB_DEFINED)) {\n", varId);
+        g_fileWrite(data->source, "if (!cx_checkState(%s, CX_DEFINED)) {\n", varId);
         g_fileIndent(data->source);
 
         /* Serialize object if object is not a primitive */
-        if(cx_typeof(o)->real->kind != DB_PRIMITIVE) {
+        if(cx_typeof(o)->real->kind != CX_PRIMITIVE) {
             s = c_initSerializer();
             cx_serialize(&s, o, userData);
         }
@@ -769,7 +769,7 @@ static int c_loadDefine(cx_object o, void* userData) {
             g_fileWrite(data->source, "\n");
             if (!cx_function(o)->impl) {
                 g_fileWrite(data->source, "/* Bind %s with C-function */\n", fullname);
-                g_fileWrite(data->source, "cx_function(%s)->kind = DB_PROCEDURE_CDECL;\n", varId);
+                g_fileWrite(data->source, "cx_function(%s)->kind = CX_PROCEDURE_CDECL;\n", varId);
                 c_loadCFunction(o, data, name);
                 g_fileWrite(data->source, "void __%s(void *args, void *result);\n", name);
                 g_fileWrite(data->source, "cx_function(%s)->impl = (cx_word)__%s;\n", varId, name);

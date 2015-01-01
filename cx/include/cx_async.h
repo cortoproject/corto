@@ -5,8 +5,8 @@
  *      Author: Sander
  */
 
-#ifndef DB_ASYNC_H_
-#define DB_ASYNC_H_
+#ifndef CX_ASYNC_H_
+#define CX_ASYNC_H_
 
 #include "cx__type.h"
 #include "cx_async_posix.h"
@@ -15,7 +15,7 @@
 extern "C" {
 #endif
 
-#define DB_LOCK_BUSY (1)
+#define CX_LOCK_BUSY (1)
 
 /* Thread */
 typedef unsigned long int cx_thread;
@@ -76,4 +76,4 @@ int cx_adec(int* count);
 }
 #endif
 
-#endif /* DB_ASYNC_H */
+#endif /* CX_ASYNC_H */

@@ -16,13 +16,13 @@ extern "C" {
 #endif
 
 typedef enum cx_err {
-	DB_OK = 0,
-	DB_DEBUG = 1,
-	DB_TRACE = 2,
-	DB_WARNING = 3,
-	DB_ERROR = 4,
-	DB_CRITICAL = 5,
-	DB_ASSERT = 6
+	CX_OK = 0,
+	CX_DEBUG = 1,
+	CX_TRACE = 2,
+	CX_WARNING = 3,
+	CX_ERROR = 4,
+	CX_CRITICAL = 5,
+	CX_ASSERT = 6
 }cx_err;
 
 #define cx_assert(condition, ...) if (!(condition)){_cx_assert(condition, "(" #condition ") " __VA_ARGS__);}

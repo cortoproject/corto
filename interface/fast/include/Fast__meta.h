@@ -90,6 +90,9 @@ extern cx_member Fast_Block_parent_o;
 /* ::cortex::Fast::Block::resolve(lang::string id) */
 extern cx_method Fast_Block_resolve_o;
 
+/* ::cortex::Fast::Block::resolveLocal(lang::string id) */
+extern cx_method Fast_Block_resolveLocal_o;
+
 /* ::cortex::Fast::Block::setFunction(lang::function function */
 extern cx_method Fast_Block_setFunction_o;
 
@@ -123,29 +126,71 @@ extern cx_member Fast_Boolean_value_o;
 /* ::cortex::Fast::Call */
 extern cx_class Fast_Call_o;
 
-/* ::cortex::Fast::Call::actualFunction */
-extern cx_member Fast_Call_actualFunction_o;
-
 /* ::cortex::Fast::Call::arguments */
 extern cx_member Fast_Call_arguments_o;
 
 /* ::cortex::Fast::Call::construct(Fast::Call object) */
 extern cx_callback Fast_Call_construct_o;
 
-/* ::cortex::Fast::Call::function */
-extern cx_member Fast_Call_function_o;
+/* ::cortex::Fast::Call::functionExpr */
+extern cx_member Fast_Call_functionExpr_o;
 
 /* ::cortex::Fast::Call::hasSideEffects() */
 extern cx_virtual Fast_Call_hasSideEffects_o;
 
-/* ::cortex::Fast::Call::resolveActual(string signature,lang::object scope,Fast::Expression instance) */
-extern cx_function Fast_Call_resolveActual_o;
+/* ::cortex::Fast::Call::instanceExpr */
+extern cx_member Fast_Call_instanceExpr_o;
 
-/* ::cortex::Fast::Call::signature */
-extern cx_member Fast_Call_signature_o;
+/* ::cortex::Fast::Call::instanceIsAny */
+extern cx_member Fast_Call_instanceIsAny_o;
+
+/* ::cortex::Fast::Call::overloaded */
+extern cx_member Fast_Call_overloaded_o;
+
+/* ::cortex::Fast::Call::parameters */
+extern cx_member Fast_Call_parameters_o;
+
+/* ::cortex::Fast::Call::returnsReference */
+extern cx_member Fast_Call_returnsReference_o;
+
+/* ::cortex::Fast::Call::returnType */
+extern cx_member Fast_Call_returnType_o;
+
+/* ::cortex::Fast::Call::setParameters(lang::function function) */
+extern cx_method Fast_Call_setParameters_o;
 
 /* ::cortex::Fast::Call::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
 extern cx_virtual Fast_Call_toIc_o;
+
+/* ::cortex::Fast::CallBuilder */
+extern cx_struct Fast_CallBuilder_o;
+
+/* ::cortex::Fast::CallBuilder::arguments */
+extern cx_member Fast_CallBuilder_arguments_o;
+
+/* ::cortex::Fast::CallBuilder::block */
+extern cx_member Fast_CallBuilder_block_o;
+
+/* ::cortex::Fast::CallBuilder::build() */
+extern cx_method Fast_CallBuilder_build_o;
+
+/* ::cortex::Fast::CallBuilder::buildSignature() */
+extern cx_method Fast_CallBuilder_buildSignature_o;
+
+/* ::cortex::Fast::CallBuilder::instance */
+extern cx_member Fast_CallBuilder_instance_o;
+
+/* ::cortex::Fast::CallBuilder::name */
+extern cx_member Fast_CallBuilder_name_o;
+
+/* ::cortex::Fast::CallBuilder::overloaded */
+extern cx_member Fast_CallBuilder_overloaded_o;
+
+/* ::cortex::Fast::CallBuilder::scope */
+extern cx_member Fast_CallBuilder_scope_o;
+
+/* ::cortex::Fast::CallBuilder::signature */
+extern cx_member Fast_CallBuilder_signature_o;
 
 /* ::cortex::Fast::CastExpr */
 extern cx_class Fast_CastExpr_o;
@@ -215,6 +260,15 @@ extern cx_member Fast_Define_object_o;
 
 /* ::cortex::Fast::Define::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
 extern cx_virtual Fast_Define_toIc_o;
+
+/* ::cortex::Fast::DelegateCall */
+extern cx_class Fast_DelegateCall_o;
+
+/* ::cortex::Fast::DelegateCall::construct(Fast::StaticCall object) */
+extern cx_callback Fast_DelegateCall_construct_o;
+
+/* ::cortex::Fast::DelegateCall::expr */
+extern cx_member Fast_DelegateCall_expr_o;
 
 /* ::cortex::Fast::DynamicInitializer */
 extern cx_class Fast_DynamicInitializer_o;
@@ -1103,6 +1157,15 @@ extern cx_virtual Fast_SignedInteger_toIc_o;
 
 /* ::cortex::Fast::SignedInteger::value */
 extern cx_member Fast_SignedInteger_value_o;
+
+/* ::cortex::Fast::StaticCall */
+extern cx_class Fast_StaticCall_o;
+
+/* ::cortex::Fast::StaticCall::construct(Fast::StaticCall object) */
+extern cx_callback Fast_StaticCall_construct_o;
+
+/* ::cortex::Fast::StaticCall::function */
+extern cx_member Fast_StaticCall_function_o;
 
 /* ::cortex::Fast::StaticInitializer */
 extern cx_class Fast_StaticInitializer_o;

@@ -16,7 +16,7 @@
 cx_int16 cx__enum_bindConstant(cx_enum _this, cx_constant* c) {
 	cx_rbtree scope;
 
-    if (cx_checkState(cx_type_o, DB_DEFINED)) {
+    if (cx_checkState(cx_type_o, CX_DEFINED)) {
         scope = cx_scopeof(_this);
         *c = cx_rbtreeSize(scope)-1;
     }
@@ -89,8 +89,8 @@ cx_void cx_enum_destruct(cx_enum object) {
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::enum::init(lang::enum object) */
 cx_int16 cx_enum_init(cx_enum object) {
 /* $begin(::cortex::lang::enum::init) */
-    cx_primitive(object)->kind = DB_ENUM;
-    cx_primitive(object)->width = DB_WIDTH_32;
+    cx_primitive(object)->kind = CX_ENUM;
+    cx_primitive(object)->width = CX_WIDTH_32;
     cx_set(&cx_type(object)->defaultType, cx_constant_o);
     return cx_primitive_init((cx_primitive)object);
 /* $end */

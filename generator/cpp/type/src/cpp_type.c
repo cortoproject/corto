@@ -21,12 +21,12 @@ static cx_int16 cpp_typeConstant(cx_serializer s, cx_value* v, void* userData) {
     cpp_typeWalk_t* data;
     cx_id constantId;
 
-    DB_UNUSED(s);
+    CX_UNUSED(s);
 
     data = userData;
 
     switch(cx_primitive(cx_parentof(v->is.constant.t))->kind) {
-    case DB_ENUM:
+    case CX_ENUM:
         if (data->prefixComma) {
             g_fileWrite(data->header, ",\n");
         } else {
@@ -34,7 +34,7 @@ static cx_int16 cpp_typeConstant(cx_serializer s, cx_value* v, void* userData) {
         }
         g_fileWrite(data->header, "%s = %d", cpp_constantId(data->g, v->is.constant.t, constantId), *v->is.constant.t);
         break;
-    case DB_BITMASK:
+    case CX_BITMASK:
         g_fileWrite(data->header, "extern int32_t %s;\n", cpp_constantId(data->g, v->is.constant.t, constantId));
         cpp_openScope(data->source, cx_parentof(cx_parentof(v->is.constant.t)));
         g_fileWrite(data->source, "int32_t %s = 0x%x;\n", cpp_constantId(data->g, v->is.constant.t, constantId), *v->is.constant.t);
@@ -56,9 +56,9 @@ static cx_int16 cpp_typeMember(cx_serializer s, cx_value* v, void* userData) {
     cx_member m;
     cx_id specifier, memberId;
 
-    DB_UNUSED(s);
+    CX_UNUSED(s);
 
-    if (v->kind == DB_MEMBER) {
+    if (v->kind == CX_MEMBER) {
 		data = userData;
 		m = v->is.member.t;
 
@@ -82,7 +82,7 @@ static cx_int16 cpp_typePrimitiveEnum(cx_serializer s, cx_value* v, void* userDa
     cx_enum t;
     cx_id id;
 
-    DB_UNUSED(s);
+    CX_UNUSED(s);
 
     data = userData;
     t = cx_enum(cx_valueType(v));
@@ -111,12 +111,12 @@ static cx_int16 cpp_typePrimitiveBitmask(cx_serializer s, cx_value* v, void* use
     cx_enum t;
     cx_id id;
 
-    DB_UNUSED(s);
+    CX_UNUSED(s);
 
     data = userData;
     t = cx_enum(cx_valueType(v));
 
-    g_fileWrite(data->header, "DB_BITMASK(%s);\n", g_oid(data->g, t, id));
+    g_fileWrite(data->header, "CX_BITMASK(%s);\n", g_oid(data->g, t, id));
 
     /* Write enumeration constants */
     if (cx_serializeConstants(s, v, userData)) {
@@ -134,7 +134,7 @@ static cx_int16 cpp_typeAny(cx_serializer s, cx_value* v, void* userData) {
     cpp_typeWalk_t* data;
     cx_id id;
 
-    DB_UNUSED(s);
+    CX_UNUSED(s);
 
     t = cx_valueType(v)->real;
     data = userData;
@@ -156,7 +156,7 @@ static cx_int16 cpp_typeVoid(cx_serializer s, cx_value* v, void* userData) {
     cpp_typeWalk_t* data;
     cx_id id;
 
-    DB_UNUSED(s);
+    CX_UNUSED(s);
 
 	t = cx_valueType(v)->real;
     data = userData;
@@ -177,24 +177,24 @@ static cx_int16 cpp_typePrimitive(cx_serializer s, cx_value* v, void* userData) 
     cx_id id;
     cpp_typeWalk_t* data;
 
-    DB_UNUSED(s);
+    CX_UNUSED(s);
 
     data = userData;
     t = cx_valueType(v)->real;
 
     /* Obtain platform type-name for primitive */
-    if (cx_checkAttr(t, DB_ATTR_SCOPED)) {
+    if (cx_checkAttr(t, CX_ATTR_SCOPED)) {
         /* Only parse scoped primitive types, anonymous primitives will always
          * refer to the base platform primtives. */
         switch(cx_primitive(t)->kind) {
-        case DB_ENUM:
+        case CX_ENUM:
             g_fileWrite(data->header, "\n");
             g_fileWrite(data->header, "/* %s */\n", cx_fullname(t, id));
             if (cpp_typePrimitiveEnum(s, v, userData)) {
                 goto error;
             }
             break;
-        case DB_BITMASK:
+        case CX_BITMASK:
             g_fileWrite(data->header, "\n");
             g_fileWrite(data->header, "/* %s */\n", cx_fullname(t, id));
             if (cpp_typePrimitiveBitmask(s, v, userData)) {
@@ -248,9 +248,9 @@ error:
 
 /* Abstract object */
 static cx_int16 cpp_typeAbstract(cx_serializer s, cx_value* v, void* userData) {
-    DB_UNUSED(s);
-    DB_UNUSED(v);
-    DB_UNUSED(userData);
+    CX_UNUSED(s);
+    CX_UNUSED(v);
+    CX_UNUSED(userData);
 
     return 0;
 }
@@ -266,12 +266,12 @@ static cx_int16 cpp_typeClass(cx_serializer s, cx_value* v, void* userData) {
 
     /* Open class */
     if (t->alignment) {
-        g_fileWrite(data->header, "DB_CLASS_DEF(%s) {\n", g_oid(data->g, t, id));
+        g_fileWrite(data->header, "CX_CLASS_DEF(%s) {\n", g_oid(data->g, t, id));
         g_fileIndent(data->header);
 
         /* Write base */
         if (cx_interface(t)->base && cx_type(cx_interface(t)->base)->alignment) {
-            g_fileWrite(data->header, "DB_EXTEND(%s);\n", cpp_specifierId(data->g, cx_typedef(cx_interface(t)->base), id));
+            g_fileWrite(data->header, "CX_EXTEND(%s);\n", cpp_specifierId(data->g, cx_typedef(cx_interface(t)->base), id));
         }
 
         /* Serialize members */
@@ -300,12 +300,12 @@ static cx_int16 cpp_typeProcedure(cx_serializer s, cx_value* v, void* userData) 
 
     /* Open class */
     if (t->alignment) {
-        g_fileWrite(data->header, "DB_PROCEDURE_DEF(%s) {\n", g_oid(data->g, t, id));
+        g_fileWrite(data->header, "CX_PROCEDURE_DEF(%s) {\n", g_oid(data->g, t, id));
         g_fileIndent(data->header);
 
         /* Write base */
         if (cx_interface(t)->base && cx_type(cx_interface(t)->base)->alignment) {
-            g_fileWrite(data->header, "DB_EXTEND(%s);\n", g_oid(data->g, cx_interface(t)->base, id));
+            g_fileWrite(data->header, "CX_EXTEND(%s);\n", g_oid(data->g, cx_interface(t)->base, id));
         }
 
         /* Serialize members */
@@ -329,22 +329,22 @@ static cx_int16 cpp_typeComposite(cx_serializer s, cx_value* v, void* userData) 
 
     t = cx_valueType(v)->real;
     switch(cx_interface(t)->kind) {
-    case DB_STRUCT:
+    case CX_STRUCT:
         if (cpp_typeStruct(s, v, userData)) {
             goto error;
         }
         break;
-    case DB_INTERFACE:
+    case CX_INTERFACE:
     	if (cpp_typeAbstract(s, v, userData)) {
     		goto error;
     	}
     	break;
-    case DB_CLASS:
+    case CX_CLASS:
     	if (cpp_typeClass(s, v, userData)) {
     		goto error;
     	}
     	break;
-    case DB_PROCEDURE:
+    case CX_PROCEDURE:
     	if (cpp_typeProcedure(s, v, userData)) {
     		goto error;
     	}
@@ -367,8 +367,8 @@ static cx_int16 cpp_typeArray(cx_serializer s, cx_value* v, void* userData) {
 	cpp_typeWalk_t* data;
 	cx_id id, id2;
 
-	DB_UNUSED(s);
-	DB_UNUSED(v);
+	CX_UNUSED(s);
+	CX_UNUSED(v);
 
 	data = userData;
 	t = cx_valueType(v)->real;
@@ -388,14 +388,14 @@ static cx_int16 cpp_typeSequence(cx_serializer s, cx_value* v, void* userData) {
 	cpp_typeWalk_t* data;
 	cx_id id, id2;
 
-	DB_UNUSED(s);
-	DB_UNUSED(v);
+	CX_UNUSED(s);
+	CX_UNUSED(v);
 
 	data = userData;
 	t = cx_valueType(v)->real;
 
 
-	g_fileWrite(data->header, "DB_SEQUENCE(%s, %s,/* No postfix */);\n",
+	g_fileWrite(data->header, "CX_SEQUENCE(%s, %s,/* No postfix */);\n",
 	        cpp_specifierDecl(data->g, cx_typedef(t), id),
 			g_fullOid(data->g, cx_collection(t)->elementType, id2));
 
@@ -409,19 +409,19 @@ static cx_int16 cpp_typeCollection(cx_serializer s, cx_value* v, void* userData)
 	t = cx_valueType(v)->real;
 
 	switch(cx_collection(t)->kind) {
-	case DB_ARRAY:
+	case CX_ARRAY:
 		if (cpp_typeArray(s, v, userData)) {
 			goto error;
 		}
 		break;
-	case DB_SEQUENCE:
+	case CX_SEQUENCE:
 		if (cpp_typeSequence(s, v, userData)) {
 			goto error;
 		}
 		break;
-	case DB_LIST:
+	case CX_LIST:
 		break;
-	case DB_MAP:
+	case CX_MAP:
 		break;
 	}
 
@@ -443,16 +443,16 @@ static cx_int16 cpp_typeObject(cx_serializer s, cx_value* v, void* userData) {
     data->prefixComma = FALSE;
 
     /* Open scope */
-    if (cx_checkAttr(t, DB_ATTR_SCOPED)) {
+    if (cx_checkAttr(t, CX_ATTR_SCOPED)) {
         cpp_openScope(data->header, cx_parentof(t));
     } else {
         /* Place anonymous collection-types in the scope of the elementType */
-        if (t->kind == DB_COLLECTION) {
+        if (t->kind == CX_COLLECTION) {
             /* Anonymous lists and maps are mapped directly to cortex::ll or cortex::rbtree, so
              * no need to open a scope for them. */
             switch(cx_collection(t)->kind) {
-            case DB_ARRAY:
-            case DB_SEQUENCE:
+            case CX_ARRAY:
+            case CX_SEQUENCE:
                 cpp_openScope(data->header, cx_collection(t)->elementType);
                 break;
             default:
@@ -463,19 +463,19 @@ static cx_int16 cpp_typeObject(cx_serializer s, cx_value* v, void* userData) {
 
     /* Forward to specific type-functions */
     switch(t->kind) {
-    case DB_ANY:
+    case CX_ANY:
         result = cpp_typeAny(s, v, userData);
         break;
-    case DB_VOID:
+    case CX_VOID:
     	result = cpp_typeVoid(s, v, userData);
     	break;
-    case DB_PRIMITIVE:
+    case CX_PRIMITIVE:
         result = cpp_typePrimitive(s, v, userData);
         break;
-    case DB_COMPOSITE:
+    case CX_COMPOSITE:
         result = cpp_typeComposite(s, v, userData);
         break;
-    case DB_COLLECTION:
+    case CX_COLLECTION:
     	result = cpp_typeCollection(s, v, userData);
         break;
     default:
@@ -495,13 +495,13 @@ struct cx_serializer_s cpp_typeSerializer(void) {
 
     /* Initialize serializer */
     cx_serializerInit(&s);
-    s.metaprogram[DB_OBJECT] = cpp_typeObject;
-    s.metaprogram[DB_MEMBER] = cpp_typeMember;
-    s.metaprogram[DB_BASE] = cpp_typeMember;
-    s.metaprogram[DB_CONSTANT] = cpp_typeConstant;
-    s.access = DB_GLOBAL;
-    s.accessKind = DB_XOR;
-    s.traceKind = DB_SERIALIZER_TRACE_ON_FAIL;
+    s.metaprogram[CX_OBJECT] = cpp_typeObject;
+    s.metaprogram[CX_MEMBER] = cpp_typeMember;
+    s.metaprogram[CX_BASE] = cpp_typeMember;
+    s.metaprogram[CX_CONSTANT] = cpp_typeConstant;
+    s.access = CX_GLOBAL;
+    s.accessKind = CX_XOR;
+    s.traceKind = CX_SERIALIZER_TRACE_ON_FAIL;
 
     return s;
 }
@@ -603,19 +603,19 @@ static int cpp_typeDeclare(cx_object o, void* userData) {
     g_fileWrite(data->header, "/*  %s */\n", cx_fullname(t, id));
 
     switch(t->kind) {
-    case DB_COMPOSITE:
+    case CX_COMPOSITE:
         switch(cx_interface(t)->kind) {
-        case DB_STRUCT:
+        case CX_STRUCT:
             g_fileWrite(data->header, "typedef struct %s %s;\n", g_oid(data->g, t, id), g_oid(data->g, t, id));
             break;
-        case DB_CLASS:
-            g_fileWrite(data->header, "DB_CLASS(%s);\n", g_oid(data->g, t, id));
+        case CX_CLASS:
+            g_fileWrite(data->header, "CX_CLASS(%s);\n", g_oid(data->g, t, id));
             break;
-        case DB_INTERFACE:
-            g_fileWrite(data->header, "DB_INTERFACE(%s);\n", g_oid(data->g, t, id));
+        case CX_INTERFACE:
+            g_fileWrite(data->header, "CX_INTERFACE(%s);\n", g_oid(data->g, t, id));
             break;
-        case DB_PROCEDURE:
-        	g_fileWrite(data->header, "DB_PROCEDURE(%s);\n", g_oid(data->g, t, id));
+        case CX_PROCEDURE:
+        	g_fileWrite(data->header, "CX_PROCEDURE(%s);\n", g_oid(data->g, t, id));
         	break;
         }
         break;
@@ -692,11 +692,11 @@ cx_int16 cortex_genMain(cx_generator g) {
 	walkData.prefixComma = FALSE;
 
 	/* Predeclare all classes */
-	g_setIdKind(g, DB_GENERATOR_ID_CLASS_UPPER);
+	g_setIdKind(g, CX_GENERATOR_ID_CLASS_UPPER);
 	g_walkRecursive(g, cpp_classWalk, &walkData);
 
 	/* Generate cortex-types */
-	g_setIdKind(g, DB_GENERATOR_ID_CLASS_LOWER);
+	g_setIdKind(g, CX_GENERATOR_ID_CLASS_LOWER);
 
 	/* Walk objects */
 	if (cx_genTypeDepWalk(g, cpp_typeDeclare, cpp_typeDefine, &walkData)) {

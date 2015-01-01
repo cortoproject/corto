@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB_RBTREE_H_
-#define DB_RBTREE_H_
+#ifndef CX_RBTREE_H_
+#define CX_RBTREE_H_
 
 #include "cx__type.h"
 #include "cx_collection.h"
@@ -37,4 +37,4 @@ cx_typedef cx_rbtreeKeyType(cx_rbtree tree);
 }
 #endif
 
-#endif /* DB_RBTREE_H_ */
+#endif /* CX_RBTREE_H_ */

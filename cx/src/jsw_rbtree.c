@@ -104,7 +104,7 @@ static jsw_rbnode_t *jsw_double ( jsw_rbnode_t *root, int dir )
 */
 static jsw_rbnode_t *new_node ( jsw_rbtree_t *tree, void* key, void *data )
 {
-  DB_UNUSED(tree);
+  CX_UNUSED(tree);
   jsw_rbnode_t *rn = (jsw_rbnode_t *)malloc ( sizeof *rn );
 
   if ( rn == NULL )
@@ -174,8 +174,8 @@ void jsw_keyFree( jsw_rbtree_t *tree, void *key )
         if (keyType->reference) {
             cx_free(*(cx_object*)key);
         } else {
-            if (keyType->kind == DB_PRIMITIVE) {
-                if (cx_primitive(keyType)->kind == DB_TEXT) {
+            if (keyType->kind == CX_PRIMITIVE) {
+                if (cx_primitive(keyType)->kind == CX_TEXT) {
                     free(*(cx_string*)key);
                 }
             }

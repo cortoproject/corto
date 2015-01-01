@@ -22,12 +22,12 @@ cx_int16 cx_typedef_construct(cx_typedef object) {
     }
 
     while(real != real->type) {
-        if (!cx_checkState(real, DB_VALID)) {
+        if (!cx_checkState(real, CX_VALID)) {
             cx_id id, id2;
             cx_error("typedef::construct: typedef '%s' points to object '%s' which is not valid", cx_fullname(object, id), cx_fullname(real, id2));
             goto error;
         }
-        if (!cx_checkState(real, DB_DEFINED)) {
+        if (!cx_checkState(real, CX_DEFINED)) {
             cx_id id, id2;
             cx_error("typedef::construct: typedef '%s' points to object '%s' which is not defined", cx_fullname(object, id), cx_fullname(real, id2));
             goto error;
@@ -59,11 +59,11 @@ cx_void cx_typedef_destruct(cx_typedef object) {
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::typedef::init(lang::typedef object) */
 cx_int16 cx_typedef_init(cx_typedef object) {
 /* $begin(::cortex::lang::typedef::init) */
-    DB_UNUSED(object);
+    CX_UNUSED(object);
 
     if (object->type) {
         cx_typedef_construct(object);
-        if (cx_checkAttr(object, DB_ATTR_SCOPED) && (cx_parentof(object) == cortex_lang_o)) {
+        if (cx_checkAttr(object, CX_ATTR_SCOPED) && (cx_parentof(object) == cortex_lang_o)) {
             cx_keep_ext(object, object->real, "Keep self for real member");
         }
 

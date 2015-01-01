@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB_OBJECT_H_
-#define DB_OBJECT_H_
+#ifndef CX_OBJECT_H_
+#define CX_OBJECT_H_
 
 #include "cx__type.h"
 #include "cx_ll.h"
@@ -25,30 +25,36 @@ typedef char cx_id[512];
 typedef int (*cx_scopeWalkAction)(cx_object o, void* userData);
 
 /* Object attribute flags */
-#define DB_ATTR_SCOPED      (1)
-#define DB_ATTR_WRITABLE    (2)
-#define DB_ATTR_OBSERVABLE  (4)
+#define CX_ATTR_SCOPED      (1)
+#define CX_ATTR_WRITABLE    (2)
+#define CX_ATTR_OBSERVABLE  (4)
 
 /* Object state flags */
-#define DB_VALID      (1)
-#define DB_DECLARED   (2)
-#define DB_DEFINED    (4)
-#define DB_DESTRUCTED (8)
+#define CX_VALID      (1)
+#define CX_DECLARED   (2)
+#define CX_DEFINED    (4)
+#define CX_DESTRUCTED (8)
 
 /* Object event flags */
-#define DB_ON_DECLARE  			(1)
-#define DB_ON_DEFINE 	(2)
-#define DB_ON_DESTRUCT 		(4)
-#define DB_ON_INVALIDATE 	(8)
-#define DB_ON_UPDATE 		(16)
-#define DB_ON_SELF 			(32)
-#define DB_ON_SCOPE 		(64)
-#define DB_ON_VALUE         (128)
-#define DB_ON_METAVALUE     (256)
+#define CX_ON_DECLARE  			(1)
+#define CX_ON_DEFINE 	(2)
+#define CX_ON_DESTRUCT 		(4)
+#define CX_ON_INVALIDATE 	(8)
+#define CX_ON_UPDATE 		(16)
+#define CX_ON_SELF 			(32)
+#define CX_ON_SCOPE 		(64)
+#define CX_ON_VALUE         (128)
+#define CX_ON_METAVALUE     (256)
 
 /* Event-kinds */
-#define DB_EVENT_NONE		(0)
-#define DB_EVENT_OBSERVABLE (1)
+#define CX_EVENT_NONE		(0)
+#define CX_EVENT_OBSERVABLE (1)
+
+/* Parameter kinds */
+#define CX_PARAMETER_REFERENCE          (1)
+#define CX_PARAMETER_FORCEREFERENCE     (2)
+#define CX_PARAMETER_WILDCARD           (4)
+#define CX_PARAMETER_NULL               (8)
 
 /* Object lifecycle */
 cx_object cx_new(cx_typedef type);
@@ -118,7 +124,7 @@ void cx_set(void* ptr, cx_object value);
 void cx_set_ext(cx_object source, void* ptr, cx_object value, cx_string context);
 
 /* Measure to what extend a function meets requested signature */
-cx_int16 cx_overload(cx_function object, cx_string name, cx_int32* distance, cx_bool allowCastable);
+cx_int16 cx_overload(cx_object object, cx_string name, cx_int32* distance, cx_bool allowCastable);
 
 /* Obtain information from signature.
  *   Signatures can be of the following form:
@@ -131,11 +137,11 @@ cx_int16 cx_overload(cx_function object, cx_string name, cx_int32* distance, cx_
 cx_int32 cx_signatureName(cx_string signature, cx_id buffer);
 cx_int32 cx_signatureParamCount(cx_string signature);
 cx_int32 cx_signatureParamName(cx_string signature, cx_uint32 id, cx_id buffer);
-cx_int32 cx_signatureParamType(cx_string signature, cx_uint32 id, cx_id buffer, cx_bool* reference);
+cx_int32 cx_signatureParamType(cx_string signature, cx_uint32 id, cx_id buffer, int* reference);
 
 /* Create request signature */
 cx_string cx_signatureOpen(cx_string name);
-cx_string cx_signatureAdd(cx_string sig, cx_typedef type, cx_bool isReference);
+cx_string cx_signatureAdd(cx_string sig, cx_typedef type, int flags);
 cx_string cx_signatureAddWildcard(cx_string sig, cx_bool isReference);
 cx_string cx_signatureClose(cx_string sig);
 
@@ -182,4 +188,4 @@ cx_int16 cx_valueCopy(cx_value *from, cx_value *to);
 }
 #endif
 
-#endif /* DB_OBJECT_H_ */
+#endif /* CX_OBJECT_H_ */

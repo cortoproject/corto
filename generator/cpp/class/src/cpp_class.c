@@ -144,7 +144,7 @@ static g_file cpp_headerOpen(cx_interface o, cx_generator g) {
 }
 
 static void cpp_headerClose(cx_interface class, g_file file) {
-    DB_UNUSED(class);
+    CX_UNUSED(class);
     g_fileWrite(file, "\n");
     g_fileWrite(file, "#endif\n\n");
 }
@@ -170,7 +170,7 @@ void cpp_functionDeclExt(cx_generator g, g_file file, cx_function o, cx_bool inl
 	}
 
 	/* Callback functions are static as well as non-member functions in a class-scope */
-	if ((cx_procedure(cx_typeof(o))->kind == DB_FUNCTION) || (cx_procedure(cx_typeof(o))->kind == DB_CALLBACK)) {
+	if ((cx_procedure(cx_typeof(o))->kind == CX_FUNCTION) || (cx_procedure(cx_typeof(o))->kind == CX_CALLBACK)) {
 		if (inlined) {
 			if (cx_class_instanceof(cx_interface_o, cx_typeof(cx_parentof(o)))) {
 				g_fileWrite(file, "static ");
@@ -240,10 +240,10 @@ static cx_int16 cpp_onMember(cx_serializer s, cx_value* v, void* userData) {
 	cpp_member_t* data;
 
 	data = userData;
-	DB_UNUSED(s);
+	CX_UNUSED(s);
 
 	/* Get member */
-	if (v->kind == DB_MEMBER) {
+	if (v->kind == CX_MEMBER) {
 		cx_id spec, member;
 		m = v->is.member.t;
 
@@ -267,8 +267,8 @@ static cx_int16 cpp_onMember(cx_serializer s, cx_value* v, void* userData) {
 }
 
 static cx_int16 cpp_onMemberCount(cx_serializer s, cx_value* v, void* userData) {
-	DB_UNUSED(s);
-	DB_UNUSED(v);
+	CX_UNUSED(s);
+	CX_UNUSED(v);
 	(*(cx_uint32*)userData)++;
 	return 0;
 }
@@ -276,20 +276,20 @@ static cx_int16 cpp_onMemberCount(cx_serializer s, cx_value* v, void* userData) 
 static struct cx_serializer_s cpp_memberSerializer(void) {
 	struct cx_serializer_s result;
 	cx_serializerInit(&result);
-	result.access = DB_LOCAL|DB_PRIVATE;
-	result.accessKind = DB_NOT;
-	result.traceKind = DB_SERIALIZER_TRACE_ON_FAIL;
-	result.metaprogram[DB_MEMBER] = cpp_onMember;
+	result.access = CX_LOCAL|CX_PRIVATE;
+	result.accessKind = CX_NOT;
+	result.traceKind = CX_SERIALIZER_TRACE_ON_FAIL;
+	result.metaprogram[CX_MEMBER] = cpp_onMember;
 	return result;
 }
 
 struct cx_serializer_s cpp_memberCountSerializer(void) {
 	struct cx_serializer_s result;
 	cx_serializerInit(&result);
-	result.access = DB_LOCAL|DB_PRIVATE;
-	result.accessKind = DB_NOT;
-	result.traceKind = DB_SERIALIZER_TRACE_ON_FAIL;
-	result.metaprogram[DB_MEMBER] = cpp_onMemberCount;
+	result.access = CX_LOCAL|CX_PRIVATE;
+	result.accessKind = CX_NOT;
+	result.traceKind = CX_SERIALIZER_TRACE_ON_FAIL;
+	result.metaprogram[CX_MEMBER] = cpp_onMemberCount;
 	return result;
 }
 
@@ -363,9 +363,9 @@ void cpp_constructorHandleDecl(cx_generator g, g_file file, cx_interface o, cx_b
 	}
 
 	if (!inlined) {
-		g_fileWrite(file, "%s(%s handle, bool owner)", g_oid(g, o, id), g_fullOidExt(g, o, lowId, DB_GENERATOR_ID_CLASS_LOWER));
+		g_fileWrite(file, "%s(%s handle, bool owner)", g_oid(g, o, id), g_fullOidExt(g, o, lowId, CX_GENERATOR_ID_CLASS_LOWER));
 	} else {
-		g_fileWrite(file, "%s(%s handle, bool owner = TRUE)", g_oid(g, o, id), g_fullOidExt(g, o, lowId, DB_GENERATOR_ID_CLASS_LOWER));
+		g_fileWrite(file, "%s(%s handle, bool owner = TRUE)", g_oid(g, o, id), g_fullOidExt(g, o, lowId, CX_GENERATOR_ID_CLASS_LOWER));
 	}
 }
 
@@ -377,7 +377,7 @@ void cpp_handleGetDecl(cx_generator g, g_file file, cx_interface o, cx_bool inli
         g_fileWrite(file, "public: ");
     }
 
-    g_fileWrite(file, "%s ", g_fullOidExt(g, o, lowId, DB_GENERATOR_ID_CLASS_LOWER));
+    g_fileWrite(file, "%s ", g_fullOidExt(g, o, lowId, CX_GENERATOR_ID_CLASS_LOWER));
 
     if (!inlined) {
         g_fileWrite(file, "%s::", g_oid(g, o, id));
@@ -453,9 +453,9 @@ static int cpp_scopeWalk(cx_object o, void* userData) {
 		}
 
 	}/* Else, check if o is a procedure */
-	else if (cx_class_instanceof(cx_procedure_o, cx_typeof(o)) && (cx_procedure(cx_typeof(o))->kind != DB_METAPROCEDURE)) {
+	else if (cx_class_instanceof(cx_procedure_o, cx_typeof(o)) && (cx_procedure(cx_typeof(o))->kind != CX_METAPROCEDURE)) {
 		if (data->methods) {
-			if (!(cx_checkState(o, DB_DEFINED) && cx_procedure(cx_typeof(o))->kind == DB_CALLBACK)) {
+			if (!(cx_checkState(o, CX_DEFINED) && cx_procedure(cx_typeof(o))->kind == CX_CALLBACK)) {
 				g_fileWrite(data->file, "\n");
 				g_fileWrite(data->file, "// %s\n", cx_nameof(o));
 				cpp_functionDecl(data->g, data->file, cx_function(o), TRUE);
@@ -629,11 +629,11 @@ error:
 
 /* Check if there are procedures in the scope of an object. */
 static int cpp_checkProcedures(void* o, void* udata) {
-    DB_UNUSED(udata);
+    CX_UNUSED(udata);
 
     /* If the type of the type of the object is a procedure, return 0. */
     if (cx_class_instanceof(cx_procedure_o, cx_typeof(o)->real)) {
-        if (cx_procedure(cx_typeof(o))->kind != DB_CALLBACK) {
+        if (cx_procedure(cx_typeof(o))->kind != CX_CALLBACK) {
             return 0;
         }
     }
@@ -663,7 +663,7 @@ error:
 /* Generator main */
 cx_int16 cortex_genMain(cx_generator g) {
 
-	g_setIdKind(g, DB_GENERATOR_ID_CLASS_UPPER);
+	g_setIdKind(g, CX_GENERATOR_ID_CLASS_UPPER);
 
     /* Walk classes */
     if (!g_walkRecursive(g, cpp_implWalk, g)) {

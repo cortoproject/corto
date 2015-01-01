@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB_MM_H_
-#define DB_MM_H_
+#ifndef CX_MM_H_
+#define CX_MM_H_
 
 #include "cx_object.h"
 
@@ -14,9 +14,9 @@
 extern "C" {
 #endif
 
-#define DB_MAX_CYCLE_DEPTH (256)
+#define CX_MAX_CYCLE_DEPTH (256)
 
-#define DB_MMNODE_INIT {FALSE, 0}
+#define CX_MMNODE_INIT {FALSE, 0}
 struct cx_mmNode {
     cx_uint8 marked;
     cx_uint16 cycles;
@@ -26,4 +26,4 @@ struct cx_mmNode {
 }
 #endif
 
-#endif /* DB_MM_H_ */
+#endif /* CX_MM_H_ */

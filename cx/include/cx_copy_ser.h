@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB_COPY_SER_H_
-#define DB_COPY_SER_H_
+#ifndef CX_COPY_SER_H_
+#define CX_COPY_SER_H_
 
 #include "cx_serializer.h"
 
@@ -28,4 +28,4 @@ extern "C" {
 }
 #endif
 
-#endif /* DB_COPY_SER_H_ */
+#endif /* CX_COPY_SER_H_ */

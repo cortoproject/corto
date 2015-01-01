@@ -35,8 +35,8 @@ cx_int16 Fast_Local_construct(Fast_Local object) {
 cx_ic Fast_Local_toIc_v(Fast_Local _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Local::toIc) */
 	cx_ic result;
-	DB_UNUSED(storage);
-	DB_UNUSED(stored);
+	CX_UNUSED(storage);
+	CX_UNUSED(stored);
 
 	result = (cx_ic)cx_icLocal__create(
                 program,

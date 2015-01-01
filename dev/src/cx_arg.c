@@ -287,7 +287,7 @@ static int cx_argValidate(cx_ll parsed) {
 }
 
 static int cx_freeParsedWalk(char* arg, void* udata) {
-	DB_UNUSED(udata);
+	CX_UNUSED(udata);
     free(arg);
     return 1;
 }
@@ -367,7 +367,7 @@ int cx_argParse(int argc, char* argv[]) {
 int cx_argClearArg(void* o, void* udata) {
 	cx_arg* arg;
 
-	DB_UNUSED(udata);
+	CX_UNUSED(udata);
 
 	arg = o;
 	if (arg->depend) {

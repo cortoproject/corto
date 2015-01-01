@@ -22,7 +22,7 @@ cx_int16 cx_procedure_init(cx_procedure object) {
     	goto error;
     }
 
-    cx_interface(object)->kind = DB_PROCEDURE;
+    cx_interface(object)->kind = CX_PROCEDURE;
     cx_type(object)->reference = TRUE;
 
     return 0;
@@ -34,7 +34,7 @@ error:
 /* ::cortex::lang::procedure::unbind(lang::object object) */
 cx_void cx_procedure_unbind(cx_procedure _this, cx_object object) {
 /* $begin(::cortex::lang::procedure::unbind) */
-    if (_this->kind == DB_OBSERVER){
+    if (_this->kind == CX_OBSERVER){
         cx_observer_unbind(object);
     } else {
         cx_function_unbind(object);

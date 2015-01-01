@@ -19,18 +19,18 @@ cx_int16 cx_ser_initCollection(cx_serializer s, cx_value* v, void* userData) {
 	o = cx_valueValue(v);
     
 	switch(cx_collection(t)->kind) {
-        case DB_ARRAY:
+        case CX_ARRAY:
             /* Serialize elements */
             if (cx_serializeElements(s, v, userData)) {
                 goto error;
             }
             break;
-        case DB_SEQUENCE:
+        case CX_SEQUENCE:
             break;
-        case DB_LIST:
+        case CX_LIST:
             *(cx_ll*)o = cx_llNew();
             break;
-        case DB_MAP:
+        case CX_MAP:
             /**(cx_rbtree*)o = cx_rbtreeNew(t);*/
             break;
         default:
@@ -53,6 +53,6 @@ struct cx_serializer_s cx_ser_init(cx_modifier access, cx_operatorKind accessKin
 	s.access = access;
 	s.accessKind = accessKind;
 	s.traceKind = trace;
-	s.program[DB_COLLECTION] = cx_ser_initCollection;
+	s.program[CX_COLLECTION] = cx_ser_initCollection;
 	return s;
 }

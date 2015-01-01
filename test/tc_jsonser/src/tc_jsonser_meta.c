@@ -25,7 +25,7 @@ cx_int16 test_ser_meta(void) {
     cx_int16 result = 0;
 
     struct cx_serializer_s serializer = 
-        cx_json_ser(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
+        cx_json_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
 
     _test_ser_meta(i8n, "{\"name\":\"i8n\",\"type\":\"::cortex::lang::int8\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"parent\":\"::fixture\",\"childCount\":0}");
     _test_ser_meta(u32z, "{\"name\":\"u32z\",\"type\":\"::cortex::lang::uint32\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"parent\":\"::fixture\",\"childCount\":0}");

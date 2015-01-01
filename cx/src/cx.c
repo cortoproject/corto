@@ -36,8 +36,8 @@ static cx_mutex_s cx_adminLock;
 static cx_ll cx_exitHandlers = NULL;
 static cx_ll cx_unloadHandlers = NULL;
 
-cx_threadKey DB_KEY_OBSERVER_ADMIN;
-cx_threadKey DB_KEY_WAIT_ADMIN;
+cx_threadKey CX_KEY_OBSERVER_ADMIN;
+cx_threadKey CX_KEY_WAIT_ADMIN;
 
 #define SSO_OP_VOID(op, type) op(cx_##type##_o, 0)
 #define SSO_OP_PRIM(op, type) op(cx_##type##_o, sizeof(cx_##type))
@@ -135,7 +135,7 @@ cx_threadKey DB_KEY_WAIT_ADMIN;
     SSO_OP_PROCEDURETYPE(op);\
 	SSO_OP_CLASSTYPE(op);
 
-#define SSO_OBJECT(obj) DB_OFFSET(&obj##__o, sizeof(cx_SSO))
+#define SSO_OBJECT(obj) CX_OFFSET(&obj##__o, sizeof(cx_SSO))
 #define SSO_OP_OBJ(op, obj) op(SSO_OBJECT(obj))
 
 /* 1st degree objects (members, methods and constants) */
@@ -520,7 +520,7 @@ static void cx_freeObject(cx_object o) {
 }
 
 static void cx_freeType(cx_object o, cx_uint32 size) {
-    DB_UNUSED(size);
+    CX_UNUSED(size);
     cx_freeObject(o);
 }
 
@@ -530,14 +530,14 @@ static void cx_initObject(cx_object o) {
     if(cx_type_init_hasCallback(cx_typeof(o)->real)) {
         cx_type_init(cx_typeof(o)->real, o);
     }
-    if (cx_typeof(o)->real->kind == DB_VOID) {
-        cx__setState(o, DB_DEFINED);
+    if (cx_typeof(o)->real->kind == CX_VOID) {
+        cx__setState(o, CX_DEFINED);
     }
 }
 
 /* Initialization of types */
 static void cx_initType(cx_object o, cx_uint32 size) {
-    DB_UNUSED(size);
+    CX_UNUSED(size);
     cx_initObject(o);
 }
 
@@ -579,7 +579,7 @@ static void cx_destructObject(cx_object o) {
 /* Destruct type */
 static void cx_destructType(cx_object o, cx_uint32 size) {
     cx_vtable* vtable;
-    DB_UNUSED(size);
+    CX_UNUSED(size);
 
     cx__destructor(o);
 
@@ -600,26 +600,26 @@ static void cx_destructType(cx_object o, cx_uint32 size) {
 /* Update references */
 static void cx_updateRef(cx_object o) {
 	struct cx_serializer_s s;
-	s = cx_ser_keep(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
+	s = cx_ser_keep(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
 	cx_serialize(&s, o, NULL);
 }
 
 /* Update references for type */
 static void cx_updateRefType(cx_object o, cx_uint32 size) {
-	DB_UNUSED(size);
+	CX_UNUSED(size);
 	cx_updateRef(o);
 }
 
 /* Decrease references */
 static void cx_decreaseRef(cx_object o) {
 	struct cx_serializer_s s;
-	s = cx_ser_free(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
+	s = cx_ser_free(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
 	cx_serialize(&s, o, NULL);
 }
 
 /* Decrease references for type */
 static void cx_decreaseRefType(cx_object o, cx_uint32 size) {
-	DB_UNUSED(size);
+	CX_UNUSED(size);
 	cx_decreaseRef(o);
 }
 
@@ -676,7 +676,7 @@ void cx_bindMethods(void) {
      * This in effect would make it impossible for 'class' to correctly resolve all of it's (virtual) methods.
      *
      * The values below can be deduced from the fact that in the whole inheritance tree of a class only 'type'
-     * has delegates ('init' and 'compare') which have obtained id 1 and 2. These numbers are asserted on later in the
+     * has delegatee ('init') which has obtained id 1. These numbers are asserted on later in the
      * bootstrap, so if at a later time additional delegates are added, the bootstrap will fail, which is a good thing.
      *
      * The same goes for the procedure::bind function, which fulfills the same purpose for procedure objects
@@ -693,8 +693,8 @@ void cx_bindMethods(void) {
 int cx_start(void) {
 
 	/* Initialize threadkeys */
-	cx_threadTlsKey(&DB_KEY_OBSERVER_ADMIN, NULL);
-	cx_threadTlsKey(&DB_KEY_WAIT_ADMIN, NULL);
+	cx_threadTlsKey(&CX_KEY_OBSERVER_ADMIN, NULL);
+	cx_threadTlsKey(&CX_KEY_WAIT_ADMIN, NULL);
 
 	/* Init admin-lock */
 	cx_adminLock = cx_mutexNew();

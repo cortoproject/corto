@@ -49,7 +49,7 @@ int io_load(void) {
     }
 
     /* Define ::cortex */
-    if (!cx_checkState(_o, DB_DEFINED)) {
+    if (!cx_checkState(_o, CX_DEFINED)) {
         if (cx_define(_o)) {
             cx_error("io_load: failed to define object '::cortex'.");
             goto error;
@@ -77,7 +77,7 @@ int io_load(void) {
     }
 
     /* Define ::cortex::io::file::binary */
-    if (!cx_checkState(io_file_binary_o, DB_DEFINED)) {
+    if (!cx_checkState(io_file_binary_o, CX_DEFINED)) {
         io_file_binary_o->type = cx_resolve_ext(io_file_binary_o, NULL, "::cortex::lang::bool", FALSE, "element ::cortex::io::file::binary.type");
         io_file_binary_o->modifiers = 0x0;
         io_file_binary_o->state = 0x6;
@@ -96,13 +96,13 @@ int io_load(void) {
     }
 
     /* Define ::cortex::io::file::flush() */
-    if (!cx_checkState(io_file_flush_o, DB_DEFINED)) {
+    if (!cx_checkState(io_file_flush_o, CX_DEFINED)) {
         cx_function(io_file_flush_o)->returnType = cx_resolve_ext(io_file_flush_o, NULL, "::cortex::lang::void", FALSE, "element ::cortex::io::file::flush().returnType");
         cx_function(io_file_flush_o)->returnsReference = FALSE;
         io_file_flush_o->virtual = FALSE;
         
         /* Bind io_file_flush_o with C-function */
-        cx_function(io_file_flush_o)->kind = DB_PROCEDURE_CDECL;
+        cx_function(io_file_flush_o)->kind = CX_PROCEDURE_CDECL;
         void __io_file_flush(void *args, void *result);
         cx_function(io_file_flush_o)->impl = (cx_word)__io_file_flush;
         if (cx_define(io_file_flush_o)) {
@@ -118,7 +118,7 @@ int io_load(void) {
     }
 
     /* Define ::cortex::io::file::handle */
-    if (!cx_checkState(io_file_handle_o, DB_DEFINED)) {
+    if (!cx_checkState(io_file_handle_o, CX_DEFINED)) {
         io_file_handle_o->type = cx_resolve_ext(io_file_handle_o, NULL, "::cortex::lang::word", FALSE, "element ::cortex::io::file::handle.type");
         io_file_handle_o->modifiers = 0x1;
         io_file_handle_o->state = 0x6;
@@ -144,7 +144,7 @@ int io_load(void) {
     }
 
     /* Define ::cortex::io::file::name */
-    if (!cx_checkState(io_file_name_o, DB_DEFINED)) {
+    if (!cx_checkState(io_file_name_o, CX_DEFINED)) {
         io_file_name_o->type = cx_resolve_ext(io_file_name_o, NULL, "::cortex::lang::string", FALSE, "element ::cortex::io::file::name.type");
         io_file_name_o->modifiers = 0x0;
         io_file_name_o->state = 0x6;
@@ -177,13 +177,13 @@ int io_load(void) {
     }
 
     /* Define ::cortex::io::file::readLn() */
-    if (!cx_checkState(io_file_readLn_o, DB_DEFINED)) {
+    if (!cx_checkState(io_file_readLn_o, CX_DEFINED)) {
         cx_function(io_file_readLn_o)->returnType = cx_resolve_ext(io_file_readLn_o, NULL, "::cortex::lang::string", FALSE, "element ::cortex::io::file::readLn().returnType");
         cx_function(io_file_readLn_o)->returnsReference = FALSE;
         io_file_readLn_o->virtual = FALSE;
         
         /* Bind io_file_readLn_o with C-function */
-        cx_function(io_file_readLn_o)->kind = DB_PROCEDURE_CDECL;
+        cx_function(io_file_readLn_o)->kind = CX_PROCEDURE_CDECL;
         void __io_file_readLn(void *args, void *result);
         cx_function(io_file_readLn_o)->impl = (cx_word)__io_file_readLn;
         if (cx_define(io_file_readLn_o)) {
@@ -199,13 +199,13 @@ int io_load(void) {
     }
 
     /* Define ::cortex::io::file::readText() */
-    if (!cx_checkState(io_file_readText_o, DB_DEFINED)) {
+    if (!cx_checkState(io_file_readText_o, CX_DEFINED)) {
         cx_function(io_file_readText_o)->returnType = cx_resolve_ext(io_file_readText_o, NULL, "::cortex::lang::string", FALSE, "element ::cortex::io::file::readText().returnType");
         cx_function(io_file_readText_o)->returnsReference = FALSE;
         io_file_readText_o->virtual = FALSE;
         
         /* Bind io_file_readText_o with C-function */
-        cx_function(io_file_readText_o)->kind = DB_PROCEDURE_CDECL;
+        cx_function(io_file_readText_o)->kind = CX_PROCEDURE_CDECL;
         void __io_file_readText(void *args, void *result);
         cx_function(io_file_readText_o)->impl = (cx_word)__io_file_readText;
         if (cx_define(io_file_readText_o)) {
@@ -221,13 +221,13 @@ int io_load(void) {
     }
 
     /* Define ::cortex::io::file::writeText(::cortex::lang::string txt) */
-    if (!cx_checkState(io_file_writeText_o, DB_DEFINED)) {
+    if (!cx_checkState(io_file_writeText_o, CX_DEFINED)) {
         cx_function(io_file_writeText_o)->returnType = cx_resolve_ext(io_file_writeText_o, NULL, "::cortex::lang::uint32", FALSE, "element ::cortex::io::file::writeText(::cortex::lang::string txt).returnType");
         cx_function(io_file_writeText_o)->returnsReference = FALSE;
         io_file_writeText_o->virtual = FALSE;
         
         /* Bind io_file_writeText_o with C-function */
-        cx_function(io_file_writeText_o)->kind = DB_PROCEDURE_CDECL;
+        cx_function(io_file_writeText_o)->kind = CX_PROCEDURE_CDECL;
         void __io_file_writeText(void *args, void *result);
         cx_function(io_file_writeText_o)->impl = (cx_word)__io_file_writeText;
         if (cx_define(io_file_writeText_o)) {
@@ -250,7 +250,7 @@ int io_load(void) {
     }
 
     /* Define ::cortex::io::fileMode::Append */
-    if (!cx_checkState(io_fileMode_Append_o, DB_DEFINED)) {
+    if (!cx_checkState(io_fileMode_Append_o, CX_DEFINED)) {
         (*io_fileMode_Append_o) = 2;
         if (cx_define(io_fileMode_Append_o)) {
             cx_error("io_load: failed to define object '::cortex::io::fileMode::Append'.");
@@ -265,7 +265,7 @@ int io_load(void) {
     }
 
     /* Define ::cortex::io::fileMode::Read */
-    if (!cx_checkState(io_fileMode_Read_o, DB_DEFINED)) {
+    if (!cx_checkState(io_fileMode_Read_o, CX_DEFINED)) {
         (*io_fileMode_Read_o) = 0;
         if (cx_define(io_fileMode_Read_o)) {
             cx_error("io_load: failed to define object '::cortex::io::fileMode::Read'.");
@@ -280,7 +280,7 @@ int io_load(void) {
     }
 
     /* Define ::cortex::io::fileMode::ReadAppend */
-    if (!cx_checkState(io_fileMode_ReadAppend_o, DB_DEFINED)) {
+    if (!cx_checkState(io_fileMode_ReadAppend_o, CX_DEFINED)) {
         (*io_fileMode_ReadAppend_o) = 4;
         if (cx_define(io_fileMode_ReadAppend_o)) {
             cx_error("io_load: failed to define object '::cortex::io::fileMode::ReadAppend'.");
@@ -295,7 +295,7 @@ int io_load(void) {
     }
 
     /* Define ::cortex::io::fileMode::ReadWrite */
-    if (!cx_checkState(io_fileMode_ReadWrite_o, DB_DEFINED)) {
+    if (!cx_checkState(io_fileMode_ReadWrite_o, CX_DEFINED)) {
         (*io_fileMode_ReadWrite_o) = 3;
         if (cx_define(io_fileMode_ReadWrite_o)) {
             cx_error("io_load: failed to define object '::cortex::io::fileMode::ReadWrite'.");
@@ -310,7 +310,7 @@ int io_load(void) {
     }
 
     /* Define ::cortex::io::fileMode::Write */
-    if (!cx_checkState(io_fileMode_Write_o, DB_DEFINED)) {
+    if (!cx_checkState(io_fileMode_Write_o, CX_DEFINED)) {
         (*io_fileMode_Write_o) = 1;
         if (cx_define(io_fileMode_Write_o)) {
             cx_error("io_load: failed to define object '::cortex::io::fileMode::Write'.");
@@ -318,14 +318,14 @@ int io_load(void) {
         }
     }
     /* Define ::cortex::io::fileMode */
-    if (!cx_checkState(io_fileMode_o, DB_DEFINED)) {
+    if (!cx_checkState(io_fileMode_o, CX_DEFINED)) {
         if (cx_define(io_fileMode_o)) {
             cx_error("io_load: failed to define object '::cortex::io::fileMode'.");
             goto error;
         }
     }
     /* Define ::cortex::io::file::mode */
-    if (!cx_checkState(io_file_mode_o, DB_DEFINED)) {
+    if (!cx_checkState(io_file_mode_o, CX_DEFINED)) {
         io_file_mode_o->type = cx_resolve_ext(io_file_mode_o, NULL, "::cortex::io::fileMode", FALSE, "element ::cortex::io::file::mode.type");
         io_file_mode_o->modifiers = 0x0;
         io_file_mode_o->state = 0x6;
@@ -344,12 +344,12 @@ int io_load(void) {
     }
 
     /* Define ::cortex::io::print(::cortex::lang::string str) */
-    if (!cx_checkState(io_print_o, DB_DEFINED)) {
+    if (!cx_checkState(io_print_o, CX_DEFINED)) {
         io_print_o->returnType = cx_resolve_ext(io_print_o, NULL, "::cortex::lang::void", FALSE, "element ::cortex::io::print(::cortex::lang::string str).returnType");
         io_print_o->returnsReference = FALSE;
         
         /* Bind io_print_o with C-function */
-        cx_function(io_print_o)->kind = DB_PROCEDURE_CDECL;
+        cx_function(io_print_o)->kind = CX_PROCEDURE_CDECL;
         void __io_print(void *args, void *result);
         cx_function(io_print_o)->impl = (cx_word)__io_print;
         if (cx_define(io_print_o)) {
@@ -365,12 +365,12 @@ int io_load(void) {
     }
 
     /* Define ::cortex::io::println(::cortex::lang::string str) */
-    if (!cx_checkState(io_println_o, DB_DEFINED)) {
+    if (!cx_checkState(io_println_o, CX_DEFINED)) {
         io_println_o->returnType = cx_resolve_ext(io_println_o, NULL, "::cortex::lang::void", FALSE, "element ::cortex::io::println(::cortex::lang::string str).returnType");
         io_println_o->returnsReference = FALSE;
         
         /* Bind io_println_o with C-function */
-        cx_function(io_println_o)->kind = DB_PROCEDURE_CDECL;
+        cx_function(io_println_o)->kind = CX_PROCEDURE_CDECL;
         void __io_println(void *args, void *result);
         cx_function(io_println_o)->impl = (cx_word)__io_println;
         if (cx_define(io_println_o)) {
@@ -386,12 +386,12 @@ int io_load(void) {
     }
 
     /* Define ::cortex::io::readln() */
-    if (!cx_checkState(io_readln_o, DB_DEFINED)) {
+    if (!cx_checkState(io_readln_o, CX_DEFINED)) {
         io_readln_o->returnType = cx_resolve_ext(io_readln_o, NULL, "::cortex::lang::string", FALSE, "element ::cortex::io::readln().returnType");
         io_readln_o->returnsReference = FALSE;
         
         /* Bind io_readln_o with C-function */
-        cx_function(io_readln_o)->kind = DB_PROCEDURE_CDECL;
+        cx_function(io_readln_o)->kind = CX_PROCEDURE_CDECL;
         void __io_readln(void *args, void *result);
         cx_function(io_readln_o)->impl = (cx_word)__io_readln;
         if (cx_define(io_readln_o)) {
@@ -400,13 +400,13 @@ int io_load(void) {
         }
     }
     /* Define ::cortex::io::file::read(::cortex::lang::uint32 bytes) */
-    if (!cx_checkState(io_file_read_o, DB_DEFINED)) {
+    if (!cx_checkState(io_file_read_o, CX_DEFINED)) {
         cx_function(io_file_read_o)->returnType = cx_resolve_ext(io_file_read_o, NULL, "::cortex::lang::sequence{::cortex::lang::octet,0}", FALSE, "element ::cortex::io::file::read(::cortex::lang::uint32 bytes).returnType");
         cx_function(io_file_read_o)->returnsReference = FALSE;
         io_file_read_o->virtual = FALSE;
         
         /* Bind io_file_read_o with C-function */
-        cx_function(io_file_read_o)->kind = DB_PROCEDURE_CDECL;
+        cx_function(io_file_read_o)->kind = CX_PROCEDURE_CDECL;
         void __io_file_read(void *args, void *result);
         cx_function(io_file_read_o)->impl = (cx_word)__io_file_read;
         if (cx_define(io_file_read_o)) {
@@ -415,13 +415,13 @@ int io_load(void) {
         }
     }
     /* Define ::cortex::io::file::readAll() */
-    if (!cx_checkState(io_file_readAll_o, DB_DEFINED)) {
+    if (!cx_checkState(io_file_readAll_o, CX_DEFINED)) {
         cx_function(io_file_readAll_o)->returnType = cx_resolve_ext(io_file_readAll_o, NULL, "::cortex::lang::sequence{::cortex::lang::octet,0}", FALSE, "element ::cortex::io::file::readAll().returnType");
         cx_function(io_file_readAll_o)->returnsReference = FALSE;
         io_file_readAll_o->virtual = FALSE;
         
         /* Bind io_file_readAll_o with C-function */
-        cx_function(io_file_readAll_o)->kind = DB_PROCEDURE_CDECL;
+        cx_function(io_file_readAll_o)->kind = CX_PROCEDURE_CDECL;
         void __io_file_readAll(void *args, void *result);
         cx_function(io_file_readAll_o)->impl = (cx_word)__io_file_readAll;
         if (cx_define(io_file_readAll_o)) {
@@ -437,13 +437,13 @@ int io_load(void) {
     }
 
     /* Define ::cortex::io::file::write(::cortex::lang::sequence{::cortex::lang::octet,0} data) */
-    if (!cx_checkState(io_file_write_o, DB_DEFINED)) {
+    if (!cx_checkState(io_file_write_o, CX_DEFINED)) {
         cx_function(io_file_write_o)->returnType = cx_resolve_ext(io_file_write_o, NULL, "::cortex::lang::uint32", FALSE, "element ::cortex::io::file::write(::cortex::lang::sequence{::cortex::lang::octet,0} data).returnType");
         cx_function(io_file_write_o)->returnsReference = FALSE;
         io_file_write_o->virtual = FALSE;
         
         /* Bind io_file_write_o with C-function */
-        cx_function(io_file_write_o)->kind = DB_PROCEDURE_CDECL;
+        cx_function(io_file_write_o)->kind = CX_PROCEDURE_CDECL;
         void __io_file_write(void *args, void *result);
         cx_function(io_file_write_o)->impl = (cx_word)__io_file_write;
         if (cx_define(io_file_write_o)) {
@@ -459,13 +459,13 @@ int io_load(void) {
     }
 
     /* Define ::cortex::io::file::construct(::cortex::io::file object) */
-    if (!cx_checkState(io_file_construct_o, DB_DEFINED)) {
+    if (!cx_checkState(io_file_construct_o, CX_DEFINED)) {
         cx_function(io_file_construct_o)->returnType = cx_resolve_ext(io_file_construct_o, NULL, "::cortex::lang::int16", FALSE, "element ::cortex::io::file::construct(::cortex::io::file object).returnType");
         cx_function(io_file_construct_o)->returnsReference = FALSE;
         io_file_construct_o->delegate = cx_resolve_ext(io_file_construct_o, NULL, "::cortex::lang::class::construct(lang::object object)", FALSE, "element ::cortex::io::file::construct(::cortex::io::file object).delegate");
         
         /* Bind io_file_construct_o with C-function */
-        cx_function(io_file_construct_o)->kind = DB_PROCEDURE_CDECL;
+        cx_function(io_file_construct_o)->kind = CX_PROCEDURE_CDECL;
         void __io_file_construct(void *args, void *result);
         cx_function(io_file_construct_o)->impl = (cx_word)__io_file_construct;
         if (cx_define(io_file_construct_o)) {
@@ -481,13 +481,13 @@ int io_load(void) {
     }
 
     /* Define ::cortex::io::file::destruct(::cortex::io::file object) */
-    if (!cx_checkState(io_file_destruct_o, DB_DEFINED)) {
+    if (!cx_checkState(io_file_destruct_o, CX_DEFINED)) {
         cx_function(io_file_destruct_o)->returnType = cx_resolve_ext(io_file_destruct_o, NULL, "::cortex::lang::void", FALSE, "element ::cortex::io::file::destruct(::cortex::io::file object).returnType");
         cx_function(io_file_destruct_o)->returnsReference = FALSE;
         io_file_destruct_o->delegate = cx_resolve_ext(io_file_destruct_o, NULL, "::cortex::lang::class::destruct(lang::object object)", FALSE, "element ::cortex::io::file::destruct(::cortex::io::file object).delegate");
         
         /* Bind io_file_destruct_o with C-function */
-        cx_function(io_file_destruct_o)->kind = DB_PROCEDURE_CDECL;
+        cx_function(io_file_destruct_o)->kind = CX_PROCEDURE_CDECL;
         void __io_file_destruct(void *args, void *result);
         cx_function(io_file_destruct_o)->impl = (cx_word)__io_file_destruct;
         if (cx_define(io_file_destruct_o)) {
@@ -496,7 +496,7 @@ int io_load(void) {
         }
     }
     /* Define ::cortex::io::file */
-    if (!cx_checkState(io_file_o, DB_DEFINED)) {
+    if (!cx_checkState(io_file_o, CX_DEFINED)) {
         cx_type(io_file_o)->defaultType = cx_resolve_ext(io_file_o, NULL, "::cortex::lang::member", FALSE, "element ::cortex::io::file.defaultType");
         cx_type(io_file_o)->parentType = NULL;
         cx_type(io_file_o)->parentState = 0x0;
@@ -517,7 +517,7 @@ int io_load(void) {
     }
 
     /* Define ::cortex::io::err */
-    if (!cx_checkState(io_err_o, DB_DEFINED)) {
+    if (!cx_checkState(io_err_o, CX_DEFINED)) {
         io_err_o->name = cx_strdup("#err");
         io_err_o->mode = IO_Write;
         io_err_o->binary = FALSE;
@@ -534,7 +534,7 @@ int io_load(void) {
     }
 
     /* Define ::cortex::io::in */
-    if (!cx_checkState(io_in_o, DB_DEFINED)) {
+    if (!cx_checkState(io_in_o, CX_DEFINED)) {
         io_in_o->name = cx_strdup("#in");
         io_in_o->mode = IO_Read;
         io_in_o->binary = FALSE;
@@ -551,7 +551,7 @@ int io_load(void) {
     }
 
     /* Define ::cortex::io::out */
-    if (!cx_checkState(io_out_o, DB_DEFINED)) {
+    if (!cx_checkState(io_out_o, CX_DEFINED)) {
         io_out_o->name = cx_strdup("#out");
         io_out_o->mode = IO_Write;
         io_out_o->binary = FALSE;

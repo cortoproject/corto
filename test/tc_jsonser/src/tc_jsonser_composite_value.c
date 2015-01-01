@@ -25,7 +25,7 @@ cx_int16 test_ser_composite_value(void) {
     cx_int16 result = 0;
 
     struct cx_serializer_s serializer = 
-        cx_json_ser(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
+        cx_json_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
 
     _test_ser_composite_value(p, "{\"x\":3,\"y\":4}");
 

@@ -21,22 +21,22 @@ Fast_Expression Fast_Parser_getAnonymousLocal(Fast_Parser _this, Fast_Variable t
 cx_int8 Fast_Expression_getTypeScore(cx_primitive t) {
 	cx_int8 result = 0;
 	switch(t->kind) {
-	case DB_BOOLEAN:
-	case DB_BINARY:
-	case DB_INTEGER:
-	case DB_UINTEGER:
-	case DB_ALIAS:
+	case CX_BOOLEAN:
+	case CX_BINARY:
+	case CX_INTEGER:
+	case CX_UINTEGER:
+	case CX_ALIAS:
 		result = 1;
 		break;
-	case DB_ENUM:
-	case DB_BITMASK:
-	case DB_CHARACTER:
+	case CX_ENUM:
+	case CX_BITMASK:
+	case CX_CHARACTER:
 		result = 2;
 		break;
-	case DB_FLOAT:
+	case CX_FLOAT:
 		result = 3;
 		break;
-	case DB_TEXT:
+	case CX_TEXT:
 		result = 4;
 		break;
 	}
@@ -47,20 +47,20 @@ cx_int8 Fast_Expression_getTypeScore(cx_primitive t) {
 cx_int16 Fast_Expression_getCastScore(cx_primitive t) {
 	cx_int8 result = 0;
 	switch(t->kind) {
-        case DB_BOOLEAN:
-        case DB_BINARY:
-        case DB_INTEGER:
-        case DB_UINTEGER:
-        case DB_ALIAS:
-        case DB_ENUM:
-        case DB_BITMASK:
-        case DB_CHARACTER:
+        case CX_BOOLEAN:
+        case CX_BINARY:
+        case CX_INTEGER:
+        case CX_UINTEGER:
+        case CX_ALIAS:
+        case CX_ENUM:
+        case CX_BITMASK:
+        case CX_CHARACTER:
             result = 1;
             break;
-        case DB_FLOAT:
+        case CX_FLOAT:
             result = 2;
             break;
-        case DB_TEXT:
+        case CX_TEXT:
             result = 3;
             break;
 	}
@@ -68,21 +68,21 @@ cx_int16 Fast_Expression_getCastScore(cx_primitive t) {
 }
 
 cx_icDerefMode Fast_Expression_getDerefMode(Fast_Expression _this, Fast_Expression rvalue, cx_int32 *check) {
-	cx_icDerefMode result = DB_IC_DEREF_VALUE;
+	cx_icDerefMode result = CX_IC_DEREF_VALUE;
     
 	if (_this->forceReference) {
-		result = DB_IC_DEREF_ADDRESS;
+		result = CX_IC_DEREF_ADDRESS;
 	} else {
 		cx_type t = Fast_Expression_getType(_this);
         
 		if (rvalue->forceReference || (t && t->reference)) {
 			if (Fast_Node(_this)->kind == FAST_Variable) {
                 if (Fast_Variable(_this)->kind == FAST_Object) {
-                    result = DB_IC_DEREF_ADDRESS;
+                    result = CX_IC_DEREF_ADDRESS;
                 } else if ((Fast_Variable(_this)->kind == FAST_Local) && (*Fast_Local(_this)->name == '<') && Fast_Local(_this)->isReference) {
-                    result = DB_IC_DEREF_ADDRESS; /* Anonymous locals are treated as objects */
+                    result = CX_IC_DEREF_ADDRESS; /* Anonymous locals are treated as objects */
                 } else if (_this->isReference && !(t && t->reference)) {
-                    result = DB_IC_DEREF_ADDRESS;
+                    result = CX_IC_DEREF_ADDRESS;
                 } else {
                     if (check) *check = -1;
                 }
@@ -101,9 +101,136 @@ cx_icDerefMode Fast_Expression_getDerefMode(Fast_Expression _this, Fast_Expressi
            	   cx_nameof(cx_typeof(_this)),
                rvalue->forceReference, rvalue->isReference, cx_fullname(r,id2), 
                cx_nameof(cx_typeof(rvalue)),
-               result == DB_IC_DEREF_VALUE, check?*check:0);
+               result == CX_IC_DEREF_VALUE, check?*check:0);
     }*/
 	return result;
+}
+
+/* Obtain inttype from value */
+cx_type Fast_Expression_getIntTypeFromValue(cx_int64 v, cx_primitive t) {
+    cx_type result = NULL;
+
+    if (v < 0) {
+        if(t->kind == CX_UINTEGER) {
+            /* Overflow */
+            if (((cx_uint64)v) <= 4294967295) {
+                result = cx_type(cx_uint32_o);
+            } else {
+                result = cx_type(cx_uint64_o);
+            }
+        } else if (v >= -128) {
+            result = cx_type(cx_int8_o);
+        } else if (v >= -32768) {
+            result = cx_type(cx_int16_o);
+        } else if (v >= -2147483648) {
+            result = cx_type(cx_int32_o);
+        } else {
+            result = cx_type(cx_int64_o);
+        }
+    } else {
+        if (v <= 255) {
+            result = cx_type(cx_uint8_o);
+        } else if (v <= 65535) {
+            result = cx_type(cx_uint16_o);
+        } else {
+            result = cx_type(cx_uint32_o);
+        }
+    }
+
+    return result;
+}
+
+cx_type Fast_Expression_narrowType(Fast_Expression expr) {
+    cx_int64 v;
+    cx_type t = Fast_Expression_getType(expr);
+    if (Fast_Node(expr)->kind == FAST_Literal) {
+        if (t && (t->kind == CX_PRIMITIVE)) {
+            switch(cx_primitive(t)->kind) {
+            case CX_INTEGER:
+            case CX_UINTEGER:
+                Fast_Expression_serialize(expr, cx_type(cx_int64_o), (cx_word)&v);
+                t = Fast_Expression_getIntTypeFromValue(v, cx_primitive(t));
+                break;
+            default:
+                break;
+            }
+        }
+    }
+
+    return t;
+}
+
+/* Check if expression is integer literal that is eligible to changing type, if this is the case do the cast */
+Fast_Expression Fast_Expression_narrow(Fast_Expression expr, cx_type target) {
+
+    if (Fast_Node(expr)->kind == FAST_Literal) {
+        if (!target) {
+            target = Fast_Expression_narrowType(expr);
+        }
+        cx_type t = Fast_Expression_getType_type(expr, target);
+        if (target && (t != target) &&
+           (target->kind == CX_PRIMITIVE) &&
+           (cx_primitive(target)->kind == cx_primitive(t)->kind)) {
+            cx_width width = cx_primitive(target)->width;
+            Fast_Variable targetVar = Fast_Variable(Fast_Object__create(target));
+            Fast_Parser_collect(yparser(), targetVar);
+
+            if (t->kind == CX_PRIMITIVE) {
+                switch(cx_primitive(t)->kind) {
+                case CX_INTEGER: {
+                    cx_int64 v = *(cx_int64*)Fast_Expression_getValue(expr);
+                    switch(width) {
+                    case CX_WIDTH_8:
+                        if ((v <= 127) && (v >= -128)) {
+                            cx_set(&expr->type, targetVar);
+                        }
+                        break;
+                    case CX_WIDTH_16:
+                        if ((v <= 32767) && (v >= -32768)) {
+                            cx_set(&expr->type, targetVar);
+                        }
+                        break;
+                    case CX_WIDTH_32:
+                        if ((v <= 2147483647) && (v >= -2147483648)) {
+                            cx_set(&expr->type, targetVar);
+                        }
+                        break;
+                    default:
+                        break;
+                    }
+                    break;
+                }
+                case CX_UINTEGER: {
+                    cx_uint64 v = *(cx_uint64*)Fast_Expression_getValue(expr);
+                    switch(width) {
+                    case CX_WIDTH_8:
+                        if (v <= 255) {
+                            cx_set(&expr->type, targetVar);
+                        }
+                        break;
+                    case CX_WIDTH_16:
+                        if (v <= 65535) {
+                            cx_set(&expr->type, targetVar);
+                        }
+                        break;
+                    case CX_WIDTH_32:
+                        if (v <= 4294967295) {
+                            cx_set(&expr->type, targetVar);
+                        }
+                        break;
+                    default:
+                        break;
+                    }
+                    break;
+                }
+                default:
+                    break;
+                }
+            }
+        }
+    }
+
+    return expr;
 }
 
 /* $end */
@@ -141,7 +268,7 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type) {
 
 			/* If expression is a literal or constant create new literal of right type */
 			value = (void*)Fast_Expression_getValue(_this);
-            if (value && (exprType->kind == DB_PRIMITIVE) && (cx_primitive(exprType)->kind == DB_TEXT)) {
+            if (value && (exprType->kind == CX_PRIMITIVE) && (cx_primitive(exprType)->kind == CX_TEXT)) {
                 valueAddr = value;
                 value = &valueAddr;
             }
@@ -166,51 +293,51 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type) {
 
 				/* Create literal expressions based on destination type */
 				switch(cx_primitive(type)->kind) {
-				case DB_BOOLEAN: {
+				case CX_BOOLEAN: {
 					cx_bool dstValue = FALSE;
 					cx_convert(cx_primitive(exprType), value, cx_primitive(cx_bool_o), &dstValue);
 					result = Fast_Expression(Fast_Boolean__create(dstValue));
 					break;
 				}
-				case DB_CHARACTER: {
+				case CX_CHARACTER: {
 					cx_char dstValue;
 					cx_convert(cx_primitive(exprType), value, cx_primitive(cx_char_o), &dstValue);
 					result = Fast_Expression(Fast_Character__create(dstValue));
 					break;
 				}
-                case DB_BINARY:
-				case DB_UINTEGER: {
+                case CX_BINARY:
+				case CX_UINTEGER: {
 					cx_uint64 dstValue;
 					cx_convert(cx_primitive(exprType), value, cx_primitive(cx_uint64_o), &dstValue);
 					result = Fast_Expression(Fast_Integer__create(dstValue));
 					break;
 				}
-				case DB_INTEGER: {
+				case CX_INTEGER: {
 					cx_int64 dstValue;
 					cx_convert(cx_primitive(exprType), value, cx_primitive(cx_int64_o), &dstValue);
 					result = Fast_Expression(Fast_SignedInteger__create(dstValue));
 					break;
 				}
-				case DB_FLOAT: {
+				case CX_FLOAT: {
 					cx_float64 dstValue;
 					cx_convert(cx_primitive(exprType), value, cx_primitive(cx_float64_o), &dstValue);
 					result = Fast_Expression(Fast_FloatingPoint__create(dstValue));
 					break;
 				}
-				case DB_TEXT: {
+				case CX_TEXT: {
 					cx_string dstValue;
 					cx_convert(cx_primitive(exprType), value, cx_primitive(cx_string_o), &dstValue);
 					result = Fast_Expression(Fast_String__create(dstValue));
 					break;
 				}
-				case DB_ENUM:
-				case DB_BITMASK: {
+				case CX_ENUM:
+				case CX_BITMASK: {
 					cx_int32 dstValue;
 					cx_convert(cx_primitive(exprType), value, cx_primitive(cx_int32_o), &dstValue);
 					result = Fast_Expression(Fast_SignedInteger__create(dstValue));
 					break;
 				}
-				case DB_ALIAS: {
+				case CX_ALIAS: {
 					cx_int32 dstValue;
 					cx_convert(cx_primitive(exprType), value, cx_primitive(cx_word_o), &dstValue);
 					result = Fast_Expression(Fast_SignedInteger__create(dstValue));
@@ -231,8 +358,8 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type) {
 
 				/* If both types are primitive make sure that no cast is inserted for primitives
 				 * of the same kind or 'score' to the same width */
-				if ((exprType->kind == DB_PRIMITIVE) &&
-				   (type->kind == DB_PRIMITIVE) &&
+				if ((exprType->kind == CX_PRIMITIVE) &&
+				   (type->kind == CX_PRIMITIVE) &&
 				   (exprCastScore == castCastScore)) {
 					if (cx_primitive(exprType)->width != cx_primitive(type)->width) {
 						Fast_Object dstTypeObject = Fast_Object__create(type);
@@ -254,29 +381,17 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type) {
 			}
 		/* If object is a reference and targetType is string, insert toString operation */
 		} else /*if (_this->isReference || Fast_Expression_getType(_this)->reference)*/ {
-			if ((type->kind == DB_PRIMITIVE) && (cx_primitive(type)->kind == DB_TEXT)) {
-				Fast_Expression member;
-				Fast_String operation;
-
-				/* Lookup insert or append */
-				operation = Fast_String__create("toString");
-
-				/* Create memberexpression */
-				member = Fast_Expression(Fast_MemberExpr__create(_this, Fast_Expression(operation)));
-				if (!member) {
-					/* TODO: free resources */
-					goto error;
-				}
+			if ((type->kind == CX_PRIMITIVE) && (cx_primitive(type)->kind == CX_TEXT)) {
 
 				/* Create call-expression */
-				result = Fast_Expression(Fast_Call__create(member, NULL));
-
-				/* Garbage collect objects */
-				Fast_Parser_collect(yparser(), operation);
-				Fast_Parser_collect(yparser(), member);
+				result = Fast_Expression(Fast_createCallWithArguments(_this, "toString", NULL));
+                if (!result) {
+                    goto error;
+                }
+                cx_keep(result);
 
 			/* If type is of a generic reference type, accept any reference without cast */
-			} else if (type->kind == DB_VOID && type->reference) {
+			} else if (type->kind == CX_VOID && type->reference) {
 				castRequired = FALSE;
 			}
 		}
@@ -317,7 +432,7 @@ void Fast_Expression_cleanList(Fast_Expression_list list) {
 /* ::cortex::Fast::Expression::fold() */
 Fast_Expression Fast_Expression_fold_v(Fast_Expression _this) {
 /* $begin(::cortex::Fast::Expression::fold) */
-	DB_UNUSED(_this);
+	CX_UNUSED(_this);
     return _this;
 /* $end */
 }
@@ -396,7 +511,7 @@ cx_type Fast_Expression_getType_type(Fast_Expression _this, cx_type target) {
 				if (target) {
 					if (target->reference) {
 						result = target;
-					} else if ((target->kind == DB_PRIMITIVE) && (cx_primitive(target)->kind == DB_TEXT)){
+					} else if ((target->kind == CX_PRIMITIVE) && (cx_primitive(target)->kind == CX_TEXT)){
 						result = cx_type(cx_string_o);
 					} else {
 						result = target;
@@ -406,7 +521,7 @@ cx_type Fast_Expression_getType_type(Fast_Expression _this, cx_type target) {
 		}
 	} else {
 		if (!result->reference) {
-			if (target && target->kind == DB_VOID) {
+			if (target && target->kind == CX_VOID) {
 				if (_this->isReference) {
 					result = cx_object_o;
 				}
@@ -421,7 +536,7 @@ cx_type Fast_Expression_getType_type(Fast_Expression _this, cx_type target) {
 /* ::cortex::Fast::Expression::getValue() */
 cx_word Fast_Expression_getValue_v(Fast_Expression _this) {
 /* $begin(::cortex::Fast::Expression::getValue) */
-	DB_UNUSED(_this);
+	CX_UNUSED(_this);
     return 0;
 /* $end */
 }
@@ -429,7 +544,7 @@ cx_word Fast_Expression_getValue_v(Fast_Expression _this) {
 /* ::cortex::Fast::Expression::hasSideEffects() */
 cx_bool Fast_Expression_hasSideEffects_v(Fast_Expression _this) {
 /* $begin(::cortex::Fast::Expression::hasSideEffects) */
-    DB_UNUSED(_this);
+    CX_UNUSED(_this);
     return FALSE;
 /* $end */
 }
@@ -444,9 +559,9 @@ cx_int16 Fast_Expression_init(Fast_Expression object) {
 /* ::cortex::Fast::Expression::serialize(lang::type dstType,lang::word dst) */
 cx_int16 Fast_Expression_serialize_v(Fast_Expression _this, cx_type dstType, cx_word dst) {
 /* $begin(::cortex::Fast::Expression::serialize) */
-	DB_UNUSED(_this);
-	DB_UNUSED(dstType);
-	DB_UNUSED(dst);
+	CX_UNUSED(_this);
+	CX_UNUSED(dstType);
+	CX_UNUSED(dst);
 	cx_assert(0, "call to pure virtual function Fast::Expression::serialize");
 	return 0;
 /* $end */

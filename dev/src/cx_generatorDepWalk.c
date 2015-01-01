@@ -142,10 +142,10 @@ void g_itemDepend(g_item o, cx_uint8 kind, g_item dependency, cx_uint8 dependenc
 
 		/* Increase corresponding counter */
 		switch(kind) {
-		case DB_DECLARED:
+		case CX_DECLARED:
 			o->declareCount++;
 			break;
-		case DB_DEFINED:
+		case CX_DEFINED:
 			o->defineCount++;
 			break;
 		default:
@@ -155,16 +155,16 @@ void g_itemDepend(g_item o, cx_uint8 kind, g_item dependency, cx_uint8 dependenc
 
 		/* Insert in corresponding list of dependency */
 		switch(dependencyKind) {
-		case DB_DECLARED:
+		case CX_DECLARED:
 			if (!dependency->onDeclared) {
 				dependency->onDeclared = cx_llNew();
 			}
 			cx_llInsert(dependency->onDeclared, dep);
 			break;
-		case DB_DECLARED | DB_DEFINED:
+		case CX_DECLARED | CX_DEFINED:
 			dep->weak = TRUE;
 			/* no break */
-		case DB_DEFINED:
+		case CX_DEFINED:
 			if (!dependency->onDefined) {
 				dependency->onDefined = cx_llNew();
 			}
@@ -189,7 +189,7 @@ int g_itemResolveDependency(void* o, void* userData) {
 
     if (!dep->processed) {
         switch(dep->kind) {
-        case DB_DECLARED:
+        case CX_DECLARED:
             dep->item->declareCount--;
 
             cx_assert(dep->item->declareCount >= 0, "negative declareCount for item '%s'.", cx_nameof(dep->item->o));
@@ -198,7 +198,7 @@ int g_itemResolveDependency(void* o, void* userData) {
                 cx_llInsert(data->toPrint, dep->item);
             }
             break;
-        case DB_DEFINED:
+        case CX_DEFINED:
             dep->item->defineCount--;
 
             cx_assert(dep->item->defineCount >= 0, "negative defineCount for item '%s'.", cx_nameof(dep->item->o));
@@ -226,7 +226,7 @@ static void g_itemDeclare(g_item item, g_itemWalk_t data) {
 static void g_itemDefine(g_item item, g_itemWalk_t data) {
 
     /* VOID objects are defined at the moment of declaration. */
-    if ((cx_typeof(item->o)->real->kind != DB_VOID) || (cx_typeof(item->o)->real->reference)) {
+    if ((cx_typeof(item->o)->real->kind != CX_VOID) || (cx_typeof(item->o)->real->reference)) {
         if (data->onDefine) {
             data->onDefine(item->o, data->userData);
         }
@@ -273,7 +273,7 @@ cx_int16 cx_genDepReference(cx_serializer s, cx_value* info, void* userData) {
     cx_object o;
     g_depWalk_t data;
 
-    DB_UNUSED(s);
+    CX_UNUSED(s);
 
     data = userData;
     o = *(cx_object*)cx_valueValue(info);
@@ -285,7 +285,7 @@ cx_int16 cx_genDepReference(cx_serializer s, cx_value* info, void* userData) {
         m = NULL;
         item = g_itemLookup(o, data->data);
 
-        if (info->kind == DB_MEMBER) {
+        if (info->kind == CX_MEMBER) {
             m = info->is.member.t;
             if (!m->type->real->reference) {
                 m = NULL;
@@ -294,9 +294,9 @@ cx_int16 cx_genDepReference(cx_serializer s, cx_value* info, void* userData) {
 
         /* Add dependency on item */
         if (m) {
-            g_itemDepend(data->item, DB_DEFINED, item, m->state);
+            g_itemDepend(data->item, CX_DEFINED, item, m->state);
         } else {
-            g_itemDepend(data->item, DB_DEFINED, item, DB_DEFINED);
+            g_itemDepend(data->item, CX_DEFINED, item, CX_DEFINED);
         }
     }
 
@@ -309,9 +309,9 @@ struct cx_serializer_s cx_genDepSerializer(void) {
 
     cx_serializerInit(&s);
     s.reference = cx_genDepReference;
-    s.access = DB_LOCAL;
-    s.accessKind = DB_NOT;
-    s.traceKind = DB_SERIALIZER_TRACE_ON_FAIL;
+    s.access = CX_LOCAL;
+    s.accessKind = CX_NOT;
+    s.traceKind = CX_SERIALIZER_TRACE_ON_FAIL;
 
     return s;
 }
@@ -327,7 +327,7 @@ static int cx_genDepBuildProc(g_item item, g_itemWalk_t data) {
     /* Walk through parameter types, add them as dependencies */
     f = item->o;
 
-    if (cx_procedure(cx_typeof(f))->kind != DB_OBSERVER) {
+    if (cx_procedure(cx_typeof(f))->kind != CX_OBSERVER) {
 		count = cx_signatureParamCount(cx_nameof(f));
 		for(i=0; i<count; i++) {
 			cx_signatureParamType(cx_nameof(f), i, typeBuff, NULL);
@@ -338,7 +338,7 @@ static int cx_genDepBuildProc(g_item item, g_itemWalk_t data) {
 			}
 			if (g_mustParse(data->g, t)) {
 				tItem = g_itemLookup(t, data);
-				g_itemDepend(item, DB_DECLARED, tItem, DB_DECLARED | DB_DEFINED); /* The type must be at least declared when the function is declared. */
+				g_itemDepend(item, CX_DECLARED, tItem, CX_DECLARED | CX_DEFINED); /* The type must be at least declared when the function is declared. */
 			}
 			cx_free_ext(NULL, t, "Free resolved parameter type for dependency builder");
 		}
@@ -371,7 +371,7 @@ int cx_genDepBuildAction(cx_object o, void* userData) {
 		/* Insert type-dependency: object can be declared only after it's type is defined. */
 		if (g_mustParse(data->g, cx_typeof(o))) {
 			type = g_itemLookup(cx_typeof(o), data);
-			g_itemDepend(dependee, DB_DECLARED, type, DB_DEFINED);
+			g_itemDepend(dependee, CX_DECLARED, type, CX_DEFINED);
 		}
 
 		if (cx_class_instanceof(cx_procedure_o, cx_typeof(o))) {
@@ -380,7 +380,7 @@ int cx_genDepBuildAction(cx_object o, void* userData) {
 				if (cx_class_instanceof(cx_class_o, cx_parentof(o)) && cx_interface(cx_parentof(o))->base) {
 				    if (g_mustParse(data->g, cx_interface(cx_parentof(o))->base)) {
                         g_item base = g_itemLookup(cx_interface(cx_parentof(o))->base, data);
-                        g_itemDepend(dependee, DB_DECLARED, base, DB_DEFINED);
+                        g_itemDepend(dependee, CX_DECLARED, base, CX_DEFINED);
 				    }
 				}
 			}
@@ -392,25 +392,25 @@ int cx_genDepBuildAction(cx_object o, void* userData) {
 		}
 
 		/* Insert dependency on parent */
-		if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
+		if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
 			parent = g_itemLookup(cx_parentof(o), data);
 			if (parent && (parent->o != root_o)) { /* Root is always available */
 				switch(cx_typedef(cx_typeof(o))->real->parentState) {
 				case 0:
-				case DB_DECLARED | DB_DEFINED:
+				case CX_DECLARED | CX_DEFINED:
 					/* If it doesn't matter whether the parent is declared or defined, mark
 					 * the dependency as DECLARED, which ensures it is resolved as soon as possible. */
-					g_itemDepend(dependee, DB_DECLARED, parent, DB_DECLARED);
+					g_itemDepend(dependee, CX_DECLARED, parent, CX_DECLARED);
 					break;
-				case DB_DECLARED:
-					g_itemDepend(dependee, DB_DECLARED, parent, DB_DECLARED);
+				case CX_DECLARED:
+					g_itemDepend(dependee, CX_DECLARED, parent, CX_DECLARED);
 
 					/* If child must be declared when parent is declared, parent may only be defined after
 					 * all such childs are defined. */
-					g_itemDepend(parent, DB_DEFINED, dependee, DB_DEFINED);
+					g_itemDepend(parent, CX_DEFINED, dependee, CX_DEFINED);
 					break;
-				case DB_DEFINED:
-					g_itemDepend(dependee, DB_DECLARED, parent, DB_DEFINED);
+				case CX_DEFINED:
+					g_itemDepend(dependee, CX_DECLARED, parent, CX_DEFINED);
 					break;
 				}
 			}
@@ -571,7 +571,7 @@ static int cx_genDeclareAction(cx_object o, void* userData) {
 static int cx_genDefineAction(cx_object o, void* userData) {
     g_itemWalk_t data;
     data = userData;
-    if (cx_typeof(o)->real->kind != DB_VOID) {
+    if (cx_typeof(o)->real->kind != CX_VOID) {
         if (data->onDefine) {
     		data->onDefine(o, data->userData);
         }
@@ -583,7 +583,7 @@ int cx_genCollectAnonymous(void* o, void* userData) {
 	cx_ll list = userData;
 	g_item item = o;
 
-	if (!cx_checkAttr(item->o, DB_ATTR_SCOPED)) {
+	if (!cx_checkAttr(item->o, CX_ATTR_SCOPED)) {
 		cx_llInsert(list, item->o);
 	}
 

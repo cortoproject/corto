@@ -119,15 +119,15 @@ error:
 cx_int16 cx_struct_init(cx_struct object) {
 /* $begin(::cortex::lang::struct::init) */
     /* If not bootstrapping, set baseAccess to GLOBAL | PUBLIC */
-    if (cx_checkState(cx_type_o, DB_DEFINED)) {
-        object->baseAccess = DB_GLOBAL;
+    if (cx_checkState(cx_type_o, CX_DEFINED)) {
+        object->baseAccess = CX_GLOBAL;
     }
 
     if (cx_interface_init(cx_interface(object))) {
     	goto error;
     }
 
-    cx_interface(object)->kind = DB_STRUCT;
+    cx_interface(object)->kind = CX_STRUCT;
     cx_type(object)->reference = FALSE;
 
     return 0;

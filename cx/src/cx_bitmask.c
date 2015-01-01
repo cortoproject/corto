@@ -14,7 +14,7 @@
 cx_int16 cx__bitmask_bindConstant(cx_bitmask _this, cx_constant* c) {
     cx_rbtree scope;
 
-    if (cx_checkState(cx_type_o, DB_DEFINED)) {
+    if (cx_checkState(cx_type_o, CX_DEFINED)) {
         scope = cx_scopeof(_this);
         *c = 0x1 << (cx_rbtreeSize(scope)-1);
     }
@@ -31,8 +31,8 @@ cx_int16 cx__bitmask_bindConstant(cx_bitmask _this, cx_constant* c) {
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::bitmask::init(lang::bitmask object) */
 cx_int16 cx_bitmask_init(cx_bitmask object) {
 /* $begin(::cortex::lang::bitmask::init) */
-    cx_primitive(object)->kind = DB_BITMASK;
-    cx_primitive(object)->width = DB_WIDTH_32;
+    cx_primitive(object)->kind = CX_BITMASK;
+    cx_primitive(object)->width = CX_WIDTH_32;
     cx_set(&cx_type(object)->defaultType, cx_constant_o);
     return cx_primitive_init((cx_primitive)object);
 /* $end */

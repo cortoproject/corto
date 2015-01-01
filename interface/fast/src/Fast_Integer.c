@@ -63,10 +63,10 @@ cx_ic Fast_Integer_toIc_v(Fast_Integer _this, cx_icProgram program, cx_icStorage
 /* $begin(::cortex::Fast::Integer::toIc) */
 	cx_ic result;
 	cx_value v;
-	DB_UNUSED(storage);
-	DB_UNUSED(stored);
+	CX_UNUSED(storage);
+	CX_UNUSED(stored);
 
-	cx_valueLiteralInit(&v, DB_LITERAL_UNSIGNED_INTEGER, &_this->value);
+	cx_valueLiteralInit(&v, CX_LITERAL_UNSIGNED_INTEGER, &_this->value);
 	result = (cx_ic)cx_icLiteral__create(
 			program, Fast_Node(_this)->line, v, Fast_Expression_getType(Fast_Expression(_this)));
 

@@ -12,7 +12,7 @@
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::os::thread::construct(::cortex::os::thread object) */
 cx_int16 os_thread_construct(os_thread object) {
 /* $begin(::cortex::os::thread::construct) */
-	DB_UNUSED(object);
+	CX_UNUSED(object);
 
     return 0;
 /* $end */

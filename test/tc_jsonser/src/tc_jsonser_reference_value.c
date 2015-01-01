@@ -25,7 +25,7 @@ cx_int16 test_ser_reference_value(void) {
     cx_int16 result = 0;
 
     struct cx_serializer_s serializer = 
-        cx_json_ser(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
+        cx_json_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
 
     _test_ser_reference_value(Dog, "{\"@base\":{\"@base\":{\"@base\":{\"defaultType\":\"@R ::cortex::lang::member\",\"parentType\":null,\"parentState\":\"@M 0\"},\"base\":null},\"baseAccess\":\"@M GLOBAL\"},\"implements\":{}}");
     _test_ser_reference_value(dog1, "{\"breed\":\"@E GoldenRetriever\",\"name\":\"Gijs\",\"age\":10,\"lover\":null}");

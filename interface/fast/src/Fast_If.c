@@ -30,7 +30,7 @@ cx_int16 Fast_If_construct(Fast_If object) {
 		conditionType = Fast_Expression_getType(object->condition);
 		if (conditionType) {
 			/* Check if condition can evaluate to a boolean value */
-			if (!object->condition->forceReference && !conditionType->reference && (conditionType->kind != DB_PRIMITIVE)) {
+			if (!object->condition->forceReference && !conditionType->reference && (conditionType->kind != CX_PRIMITIVE)) {
 				Fast_Parser_error(yparser(), "expression does not evaluate to condition");
 				goto error;
 			}
@@ -61,8 +61,8 @@ cx_ic Fast_If_toIc_v(Fast_If _this, cx_icProgram program, cx_icStorage storage, 
 	cx_icOp eval, jumpEnd;
     cx_bool inverse = FALSE, condResult = FALSE;
     Fast_Expression condition = NULL;
-	DB_UNUSED(storage);
-	DB_UNUSED(stored);
+	CX_UNUSED(storage);
+	CX_UNUSED(stored);
     
     if (_this->condition && !(condition = Fast_Node_optimizeCondition(_this->condition, &condResult, &inverse))) {
 		if (condResult) {
@@ -103,18 +103,18 @@ cx_ic Fast_If_toIc_v(Fast_If _this, cx_icProgram program, cx_icStorage storage, 
 
 			/* Evaluate condition, insert jump */
 			if (_this->falseBranch) {
-				eval = cx_icOp__create(program, Fast_Node(_this)->line, inverse ? DB_IC_JNEQ : DB_IC_JEQ, (cx_icValue)expr, (cx_icValue)labelEval, NULL);
+				eval = cx_icOp__create(program, Fast_Node(_this)->line, inverse ? CX_IC_JNEQ : CX_IC_JEQ, (cx_icValue)expr, (cx_icValue)labelEval, NULL);
 				cx_icProgram_addIc(program, (cx_ic)eval);
 
 				/* Label to jump over true-branch */
 				labelEnd = cx_icLabel__create(program, Fast_Node(_this)->line);
 			} else {
-				eval = cx_icOp__create(program, Fast_Node(_this)->line, inverse ? DB_IC_JEQ : DB_IC_JNEQ, (cx_icValue)expr, (cx_icValue)labelEval, NULL);
+				eval = cx_icOp__create(program, Fast_Node(_this)->line, inverse ? CX_IC_JEQ : CX_IC_JNEQ, (cx_icValue)expr, (cx_icValue)labelEval, NULL);
 				cx_icProgram_addIc(program, (cx_ic)eval);
 			}
 
 			if (condition->forceReference) {
-				eval->s1Deref = DB_IC_DEREF_ADDRESS;
+				eval->s1Deref = CX_IC_DEREF_ADDRESS;
 			}
 
 			cx_icProgram_accumulatorPop(program, Fast_Node(_this)->line);
@@ -125,7 +125,7 @@ cx_ic Fast_If_toIc_v(Fast_If _this, cx_icProgram program, cx_icStorage storage, 
 			Fast_If_toIc(_this->falseBranch, program, NULL, TRUE);
 
 			/* Insert jump to end (would otherwise continue at true-branch) */
-			jumpEnd = cx_icOp__create(program, Fast_Node(_this)->line, DB_IC_JUMP, (cx_icValue)labelEnd, NULL, NULL);
+			jumpEnd = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_JUMP, (cx_icValue)labelEnd, NULL, NULL);
 			cx_icProgram_addIc(program, (cx_ic)jumpEnd);
 
 			/* If condition evaluates true, jump to this label */

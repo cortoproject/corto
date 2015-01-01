@@ -7,8 +7,8 @@
  *  Private definitions for the class type
  */
 
-#ifndef DB__CLASS_H_
-#define DB__CLASS_H_
+#ifndef CX__CLASS_H_
+#define CX__CLASS_H_
 
 #include "cx__type.h"
 #include "cx_class.h"
@@ -32,4 +32,4 @@ cx_vtable* cx_class_getObserverVtable(cx_object o);
 }
 #endif
 
-#endif /* DB__CLASS_H_ */
+#endif /* CX__CLASS_H_ */

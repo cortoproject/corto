@@ -351,8 +351,8 @@ cx_bool tc_destruct(void) {
 
 int main(int argc, char* argv[]) {
     cx_bool success = TRUE;
-    DB_UNUSED(argc);
-    DB_UNUSED(argv);
+    CX_UNUSED(argc);
+    CX_UNUSED(argv);
 
     cx_start();
     tc_event_load();

@@ -35,10 +35,10 @@ static void cx_notifyObserverThis(cx__observer* data, cx_object _this, cx_object
 static void cx_notifyObserverThisCdecl(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask);
 
 /* Thread local storage key that keeps track of the objects that are prepared to wait for. */
-extern cx_threadKey DB_KEY_WAIT_ADMIN;
+extern cx_threadKey CX_KEY_WAIT_ADMIN;
 
 typedef struct cx_waitForObject {
-    cx_object objects[DB_MAX_WAIT_FOR_OBJECTS];
+    cx_object objects[CX_MAX_WAIT_FOR_OBJECTS];
     cx_uint32 count;
     cx_object triggered;
     cx_sem semaphore;
@@ -53,7 +53,7 @@ typedef struct cx_waitForObject {
  * 	will not look at their own threadId, since this would indicate listen\silence is called from an observer being
  * 	notified. This key is created in cx_start. */
 /* TODO: when a thread exits, the corresponding element must be free'd again - use tls destructor function */
-extern cx_threadKey DB_KEY_OBSERVER_ADMIN;
+extern cx_threadKey CX_KEY_OBSERVER_ADMIN;
 
 /* Lists all the anonymous objects in use. Used by the garbage collector. */
 cx_ll cx_anonymousObjects = NULL;
@@ -65,16 +65,16 @@ typedef struct cx_observerElement {
 
 typedef struct cx_observerAdmin {
 	cx_thread id;
-	cx_observerElement stack[DB_MAX_NOTIFY_DEPTH];
+	cx_observerElement stack[CX_MAX_NOTIFY_DEPTH];
 	cx_uint32 sp;
 }cx_observerAdmin;
-static cx_observerAdmin observerAdmin[DB_MAX_THREADS];
+static cx_observerAdmin observerAdmin[CX_MAX_THREADS];
 
 /* Push observer-array to thread administration. Rather than passing the array pass the
  * address of the array so that setting the administration can be done atomic. */
 cx__observer** cx_observersPush(cx__observer**  *observers) {
 	cx__observer** result;
-	cx_observerAdmin *admin = cx_threadTlsGet(DB_KEY_OBSERVER_ADMIN);
+	cx_observerAdmin *admin = cx_threadTlsGet(CX_KEY_OBSERVER_ADMIN);
 	if (!admin) {
 		cx_thread thr = cx_threadSelf();
 		cx_uint32 i;
@@ -82,13 +82,13 @@ cx__observer** cx_observersPush(cx__observer**  *observers) {
 			i = 0;
 			while(observerAdmin[i].id) { /* Find a free slot for thread in administration */
 				i++;
-				if (i >= DB_MAX_THREADS) {
-					cx_critical("maximum number of supported threads reached! (%d)", DB_MAX_THREADS);
+				if (i >= CX_MAX_THREADS) {
+					cx_critical("maximum number of supported threads reached! (%d)", CX_MAX_THREADS);
 				}
 			}
 		}while(!cx_cas(&observerAdmin[i].id,0,thr));
 		admin = &observerAdmin[i];
-		cx_threadTlsSet(DB_KEY_OBSERVER_ADMIN, admin);
+		cx_threadTlsSet(CX_KEY_OBSERVER_ADMIN, admin);
 	}
 	result = admin->stack[admin->sp].observers = *observers;
 	admin->stack[admin->sp++].free = FALSE;
@@ -96,7 +96,7 @@ cx__observer** cx_observersPush(cx__observer**  *observers) {
 }
 
 cx_bool cx_observersPop(void) {
-	cx_observerAdmin *admin = cx_threadTlsGet(DB_KEY_OBSERVER_ADMIN); /* Admin must always exist when popping */
+	cx_observerAdmin *admin = cx_threadTlsGet(CX_KEY_OBSERVER_ADMIN); /* Admin must always exist when popping */
 	return admin->stack[--admin->sp].free;
 }
 
@@ -113,7 +113,7 @@ cx_bool cx_observersWaitForUnused(cx__observer** observers) {
 	 * in a notification by any of the running threads. */
 	do {
 		inUse = FALSE;
-		for(i=0; i<DB_MAX_THREADS; i++) {
+		for(i=0; i<CX_MAX_THREADS; i++) {
 			if (observerAdmin[i].id) {
 				/* Check whether the observer array is in use by threads other than myself */
 				if ((observerAdmin[i].id != self)) {
@@ -148,7 +148,7 @@ static cx__scope* cx__objectScope(cx__object* o) {
     cx__scope* result = NULL;
 
     if (o->attrs.scope) {
-        result = DB_OFFSET(o, -sizeof(cx__scope));
+        result = CX_OFFSET(o, -sizeof(cx__scope));
     }
     return result;
 }
@@ -157,10 +157,10 @@ static cx__writable* cx__objectWritable(cx__object* o) {
     cx__writable* result = (void*)o;
 
     if (o->attrs.scope) {
-        result = DB_OFFSET(result, -sizeof(cx__scope));
+        result = CX_OFFSET(result, -sizeof(cx__scope));
     }
     if (o->attrs.write) {
-        result = DB_OFFSET(result, -sizeof(cx__writable));
+        result = CX_OFFSET(result, -sizeof(cx__writable));
     } else {
         result = NULL;
     }
@@ -172,13 +172,13 @@ static cx__observable* cx__objectObservable(cx__object* o) {
     cx__observable* result = (void*)o;
 
     if (o->attrs.scope) {
-    	result = DB_OFFSET(result, -sizeof(cx__scope));
+    	result = CX_OFFSET(result, -sizeof(cx__scope));
     }
 	if (o->attrs.write) {
-		result = DB_OFFSET(result, -sizeof(cx__writable));
+		result = CX_OFFSET(result, -sizeof(cx__writable));
 	}
 	if (result && o->attrs.observable) {
-		result = DB_OFFSET(result, -sizeof(cx__observable));
+		result = CX_OFFSET(result, -sizeof(cx__observable));
 	} else {
 		result = NULL;
 	}
@@ -190,14 +190,14 @@ static void* cx__objectStartAddr(cx__object* o) {
     void* result;
     result = o;
     if (o->attrs.scope) {
-        result = DB_OFFSET(result, -sizeof(cx__scope));
+        result = CX_OFFSET(result, -sizeof(cx__scope));
     }
     if (o->attrs.write) {
-        result = DB_OFFSET(result, -sizeof(cx__writable));
+        result = CX_OFFSET(result, -sizeof(cx__writable));
     }
 
     if (o->attrs.observable) {
-        result = DB_OFFSET(result, -sizeof(cx__observable));
+        result = CX_OFFSET(result, -sizeof(cx__observable));
     }
     return result;
 }
@@ -207,7 +207,7 @@ static cx_int16 cx__initScope(cx_object o, cx_string name, cx_object parent) {
     cx__object* _o;
     cx__scope* scope;
 
-    _o = DB_OFFSET(o, -sizeof(cx__object));
+    _o = CX_OFFSET(o, -sizeof(cx__object));
     scope = cx__objectScope(_o);
     cx_assert(scope != NULL, "cx__initScope: created scoped object, but cx__objectScope returned NULL.");
 
@@ -229,7 +229,7 @@ static void cx__deinitScope(cx_object o) {
     cx__scope* scope;
 
     /* Obtain own scope */
-    _o = DB_OFFSET(o, -sizeof(cx__object));
+    _o = CX_OFFSET(o, -sizeof(cx__object));
     scope = cx__objectScope(_o);
     cx_assert(scope != NULL, "cx__deinitScope: called on non-scoped object <%p>.", o);
     cx_assert(scope->attached == NULL, "cx__deinitScope: object has still objects attached");
@@ -256,7 +256,7 @@ static void cx__initWritable(cx_object o) {
     cx__object* _o;
     cx__writable* writable;
 
-    _o = DB_OFFSET(o, -sizeof(cx__object));
+    _o = CX_OFFSET(o, -sizeof(cx__object));
     writable = cx__objectWritable(_o);
     cx_assert(writable != NULL, "cx__initWritable: created writable object, but cx__objectWritable returned NULL.");
 
@@ -267,7 +267,7 @@ static void cx__deinitWritable(cx_object o) {
     cx__object* _o;
     cx__writable* writable;
 
-    _o = DB_OFFSET(o, -sizeof(cx__object));
+    _o = CX_OFFSET(o, -sizeof(cx__object));
     writable = cx__objectWritable(_o);
     cx_assert(writable != NULL, "cx__deinitWritable: called on non-writable object <%p>.", o);
 
@@ -280,13 +280,13 @@ static void cx__initObservable(cx_object o) {
     cx__observable *observable, *parentObservable;
     cx_object parent;
 
-    _o = DB_OFFSET(o, -sizeof(cx__object));
+    _o = CX_OFFSET(o, -sizeof(cx__object));
     observable = cx__objectObservable(_o);
     cx_assert(observable != NULL, "cx__initObservable: created observable object, but cx__objectObservable returned NULL.");
 
     observable->selfLock = cx_rwmutexNew();
 
-    if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
+    if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
         observable->childLock = cx_rwmutexNew();
     }
 
@@ -301,7 +301,7 @@ static void cx__initObservable(cx_object o) {
 
     parent = o;
     while((parent = cx_parentof(parent))) {
-        if ((parentObservable = cx__objectObservable(DB_OFFSET(parent, -sizeof(cx__object))))) {
+        if ((parentObservable = cx__objectObservable(CX_OFFSET(parent, -sizeof(cx__object))))) {
             cx_rwmutexRead(&parentObservable->childLock);
 
             /* Inherit childLockRequired from first observable parent */
@@ -325,7 +325,7 @@ static void cx__initObservable(cx_object o) {
     }
 
     /* Override lockRequired if object is not writable */
-    if (!cx_checkAttr(o, DB_ATTR_WRITABLE)) {
+    if (!cx_checkAttr(o, CX_ATTR_WRITABLE)) {
         observable->lockRequired = FALSE;
     }
 }
@@ -334,7 +334,7 @@ static void cx__deinitObservable(cx_object o) {
     cx__object* _o;
     cx__observable* observable;
 
-    _o = DB_OFFSET(o, -sizeof(cx__object));
+    _o = CX_OFFSET(o, -sizeof(cx__object));
     observable = cx__objectObservable(_o);
     cx_assert(observable != NULL, "cx__deinitObservable: called on non-observable object <%p>.", o);
 
@@ -381,7 +381,7 @@ void cx__newSSO(cx_object sso) {
     cx__object* o;
     cx__scope* scope;
 
-    o = DB_OFFSET(sso, -sizeof(cx__object));
+    o = CX_OFFSET(sso, -sizeof(cx__object));
     scope = cx__objectScope(o);
 
     /* Don't call initScope because name is already set. */
@@ -391,7 +391,7 @@ void cx__newSSO(cx_object sso) {
     }
 
     /* Init observable */
-    if (cx_checkAttr(sso, DB_ATTR_OBSERVABLE)) {
+    if (cx_checkAttr(sso, CX_ATTR_OBSERVABLE)) {
         cx__initObservable(sso);
     }
 
@@ -404,7 +404,7 @@ void cx__freeSSO(cx_object sso) {
     cx__object* o;
     cx__scope* scope;
 
-    o = DB_OFFSET(sso, -sizeof(cx__object));
+    o = CX_OFFSET(sso, -sizeof(cx__object));
     scope = cx__objectScope(o);
 
     cx_assert(scope != NULL, "cx__freeSSO: static scoped object has no scope (very unlikely, cx__freeSSO called on non-static object?)")
@@ -424,7 +424,7 @@ void cx__freeSSO(cx_object sso) {
     cx_rwmutexFree(&scope->scopeLock);
 
     /* Deinitialize observable */
-    if (cx_checkAttr(sso, DB_ATTR_OBSERVABLE)) {
+    if (cx_checkAttr(sso, CX_ATTR_OBSERVABLE)) {
         cx__deinitObservable(sso);
     }
 
@@ -438,7 +438,7 @@ int cx__adoptSSO(cx_object sso) {
     cx__scope* scope;
     cx_object parent;
 
-    o = DB_OFFSET(sso, -sizeof(cx__object));
+    o = CX_OFFSET(sso, -sizeof(cx__object));
     scope = cx__objectScope(o);
 
     cx_assert(scope != NULL, "cx__adoptSSO: static scoped object has no scope (very unlikely, cx__adoptSSO called on non-static object?)");
@@ -459,8 +459,8 @@ int cx__destructor(cx_object o) {
     cx__object* _o;
 
     t = cx_typeof(o)->real;
-    if (cx_checkState(o, DB_DEFINED)) {
-        _o = DB_OFFSET(o, -sizeof(cx__object));
+    if (cx_checkState(o, CX_DEFINED)) {
+        _o = CX_OFFSET(o, -sizeof(cx__object));
         if (cx_class_instanceof(cx_class_o, t)) {
             /* Detach observers from object */
             cx_class_detachObservers(cx_class(t), o);
@@ -474,7 +474,7 @@ int cx__destructor(cx_object o) {
             cx_procedure_unbind(cx_procedure(cx_typeof(o)), o);
         }
 
-        _o->attrs.state &= !DB_DEFINED;
+        _o->attrs.state &= !CX_DEFINED;
     } else {
         cx_id id, id2;
         cx_error("%s::destruct: object '%s' is not defined", cx_fullname(t, id2), cx_fullname(o, id));
@@ -490,14 +490,14 @@ error:
 void cx__setState(cx_object o, cx_uint8 state) {
     cx__object* _o;
 
-    _o = DB_OFFSET(o, -sizeof(cx__object));
+    _o = CX_OFFSET(o, -sizeof(cx__object));
     _o->attrs.state |= state;
 }
 
 static cx_equalityKind cx_objectCompare(cx_type _this, const void* o1, const void* o2) {
     cx_char *argList1, *argList2;
     int r;
-    DB_UNUSED(_this);
+    CX_UNUSED(_this);
 
     /* Added support for overloaded functions. When resolving overloaded functions and not specifying
      * an argumentlist in the lookup-expression, don't take it into account but just resolve the
@@ -515,29 +515,29 @@ static cx_equalityKind cx_objectCompare(cx_type _this, const void* o1, const voi
             strncpy(id, o1, argList1 - (cx_char*)o1);
             id[argList1 - (cx_char*)o1] = '\0';
 
-            return ((r = stricmp(id, o2)) < 0) ? DB_LT : (r > 0) ? DB_GT : DB_EQ;
+            return ((r = stricmp(id, o2)) < 0) ? CX_LT : (r > 0) ? CX_GT : CX_EQ;
         }
     }
 
-    return ((r = stricmp(o1, o2)) < 0) ? DB_LT : (r > 0) ? DB_GT : DB_EQ;
+    return ((r = stricmp(o1, o2)) < 0) ? CX_LT : (r > 0) ? CX_GT : CX_EQ;
 }
 
 /* Match a state exclusively:
- *                DB_DECLARED - DB_DECLARED | DB_DEFINED
- *  DB_DECLARED        X
- *  DB_DEFINED                       X
- *  DB_DECLARED |      X             X
- *     DB_DEFINED
+ *                CX_DECLARED - CX_DECLARED | CX_DEFINED
+ *  CX_DECLARED        X
+ *  CX_DEFINED                       X
+ *  CX_DECLARED |      X             X
+ *     CX_DEFINED
  */
 static cx_bool cx__checkStateXOR(cx_object o, cx_uint8 state) {
     cx_uint8 ostate;
     cx__object* _o;
 
-    _o = DB_OFFSET(o, -sizeof(cx__object));
+    _o = CX_OFFSET(o, -sizeof(cx__object));
 
     ostate = _o->attrs.state;
-    if (ostate & DB_DEFINED) {
-        ostate = DB_DEFINED;
+    if (ostate & CX_DEFINED) {
+        ostate = CX_DEFINED;
     }
 
     return ostate & state;
@@ -550,12 +550,12 @@ static int cx_adopt(cx_object parent, cx_object child) {
     cx_typedef parentType;
     cx_type childType;
 
-    _parent = DB_OFFSET(parent, -sizeof(cx__object));
-    _child = DB_OFFSET(child, -sizeof(cx__object));
+    _parent = CX_OFFSET(parent, -sizeof(cx__object));
+    _child = CX_OFFSET(child, -sizeof(cx__object));
     childType = cx_typeof(child)->real;
 
     /* Parent must be a valid object */
-    if (!cx_checkState(parent, DB_VALID)) {
+    if (!cx_checkState(parent, CX_VALID)) {
         cx_error("cannot adopt, parentobject <%p> is invalid", parent);
         goto err_invalid_parent;
     }
@@ -655,14 +655,14 @@ void cx_attach(cx_object parent, cx_object child) {
     cx__object *_parent;
     cx__scope *_scope;
 
-    if (!cx_checkAttr(parent, DB_ATTR_SCOPED)) {
+    if (!cx_checkAttr(parent, CX_ATTR_SCOPED)) {
     	cx_critical("attach: cannot attach to non-scoped object");
     }
-    if (cx_checkAttr(child, DB_ATTR_SCOPED)) {
+    if (cx_checkAttr(child, CX_ATTR_SCOPED)) {
     	cx_critical("attach: cannot attach scoped object");
     }
 
-    _parent = DB_OFFSET(parent, -sizeof(cx__object));
+    _parent = CX_OFFSET(parent, -sizeof(cx__object));
     _scope = cx__objectScope(_parent);
 
     cx_rwmutexWrite(&_scope->scopeLock);
@@ -677,14 +677,14 @@ void cx_detach(cx_object parent, cx_object child) {
     cx__object *_parent;
     cx__scope *_scope;
 
-    if (!cx_checkAttr(parent, DB_ATTR_SCOPED)) {
+    if (!cx_checkAttr(parent, CX_ATTR_SCOPED)) {
     	cx_critical("attach: cannot attach to non-scoped object");
     }
-    if (cx_checkAttr(child, DB_ATTR_SCOPED)) {
+    if (cx_checkAttr(child, CX_ATTR_SCOPED)) {
     	cx_critical("attach: cannot attach scoped object");
     }
 
-    _parent = DB_OFFSET(parent, -sizeof(cx__object));
+    _parent = CX_OFFSET(parent, -sizeof(cx__object));
     _scope = cx__objectScope(_parent);
 
     cx_rwmutexWrite(&_scope->scopeLock);
@@ -697,11 +697,11 @@ void cx__orphan(cx_object o) {
     cx__object *_parent, *_child;
     cx__scope *p_scope, *c_scope;
 
-    _child = DB_OFFSET(o, -sizeof(cx__object));
+    _child = CX_OFFSET(o, -sizeof(cx__object));
     c_scope = cx__objectScope(_child);
 
     if (c_scope->parent) {
-        _parent = DB_OFFSET(c_scope->parent, -sizeof(cx__object));
+        _parent = CX_OFFSET(c_scope->parent, -sizeof(cx__object));
         p_scope = cx__objectScope(_parent);
 
         /* Remove object from parent scope */
@@ -727,8 +727,8 @@ cx_object cx_new_ext(cx_object src, cx_typedef type, cx_uint8 attrs, cx_string c
     cx_uint32 size, headerSize;
     cx__object* o;
     
-    DB_UNUSED(src);
-    DB_UNUSED(context);
+    CX_UNUSED(src);
+    CX_UNUSED(context);
 
     headerSize = sizeof(cx__object);
 
@@ -736,13 +736,13 @@ cx_object cx_new_ext(cx_object src, cx_typedef type, cx_uint8 attrs, cx_string c
     size = cx_type_allocSize(type->real);
 
     /* Calculate size of attributes */
-    if (attrs & DB_ATTR_SCOPED) {
+    if (attrs & CX_ATTR_SCOPED) {
         headerSize += sizeof(cx__scope);
     }
-    if (attrs & DB_ATTR_WRITABLE) {
+    if (attrs & CX_ATTR_WRITABLE) {
     	headerSize += sizeof(cx__writable);
     }
-    if (attrs & DB_ATTR_OBSERVABLE) {
+    if (attrs & CX_ATTR_OBSERVABLE) {
     	headerSize += sizeof(cx__observable);
     }
 
@@ -753,7 +753,7 @@ cx_object cx_new_ext(cx_object src, cx_typedef type, cx_uint8 attrs, cx_string c
     if (o) {
 
 		/* Offset o so it points to object */
-		o = DB_OFFSET(o, headerSize - sizeof(cx__object));
+		o = CX_OFFSET(o, headerSize - sizeof(cx__object));
 
         /* Give object initial refcount */
         o->refcount = 1;
@@ -762,57 +762,57 @@ cx_object cx_new_ext(cx_object src, cx_typedef type, cx_uint8 attrs, cx_string c
 		o->type = type;
 
 		/* Set attributes */
-		if (attrs & DB_ATTR_SCOPED) {
+		if (attrs & CX_ATTR_SCOPED) {
 			o->attrs.scope = TRUE;
 		}
-		if (attrs & DB_ATTR_WRITABLE) {
-			if (type->real->kind == DB_VOID) {
+		if (attrs & CX_ATTR_WRITABLE) {
+			if (type->real->kind == CX_VOID) {
 			    if (!type->real->reference) {
 			        cx_warning("cx_new_ext: writable void object created.");
 			    }
 			}
 			o->attrs.write = TRUE;
-			cx__initWritable(DB_OFFSET(o, sizeof(cx__object)));
+			cx__initWritable(CX_OFFSET(o, sizeof(cx__object)));
 		}
-		if (attrs & DB_ATTR_OBSERVABLE) {
+		if (attrs & CX_ATTR_OBSERVABLE) {
 			o->attrs.observable = TRUE;
 		}
 
 		/* Initially, an object is valid and declared */
-		o->attrs.state = DB_VALID | DB_DECLARED;
+		o->attrs.state = CX_VALID | CX_DECLARED;
 
 		/* void objects, primitives and references are instantly defined because they have no value. */
-		if ((type->real->kind == DB_VOID) || (type->real->kind == DB_PRIMITIVE)) {
-			o->attrs.state |= DB_DEFINED;
+		if ((type->real->kind == CX_VOID) || (type->real->kind == CX_PRIMITIVE)) {
+			o->attrs.state |= CX_DEFINED;
 		}
 
         /* If object is of a classType, set the number of delegates in callback-vtable */
         if (cx_class_instanceof(cx_class_o, type)) {
             if (cx__class_delegateCount(cx_class(type->real))) {
-                *(cx_uint32*)DB_OFFSET(o, sizeof(cx__object) + type->real->size) = cx__class_delegateCount(cx_class(type->real));
+                *(cx_uint32*)CX_OFFSET(o, sizeof(cx__object) + type->real->size) = cx__class_delegateCount(cx_class(type->real));
             }
         }
 
-        cx_keep_ext(DB_OFFSET(o, sizeof(cx__object)), type, "Keep type of object");
+        cx_keep_ext(CX_OFFSET(o, sizeof(cx__object)), type, "Keep type of object");
 
-        if (!(attrs & DB_ATTR_SCOPED)) {
+        if (!(attrs & CX_ATTR_SCOPED)) {
             /* Call framework initializer */
-            cx_init(DB_OFFSET(o, sizeof(cx__object)));
+            cx_init(CX_OFFSET(o, sizeof(cx__object)));
             
             /* Call initializer */
             if (cx_type_init_hasCallback(type->real) &&  
-                cx_type_init(type->real, DB_OFFSET(o, sizeof(cx__object)))) {
+                cx_type_init(type->real, CX_OFFSET(o, sizeof(cx__object)))) {
                 goto error;
             }
             /* Add object to anonymous cache */
             if (!cx_anonymousObjects) {
             	cx_anonymousObjects = cx_llNew();
             }
-            cx_llInsert(cx_anonymousObjects, DB_OFFSET(o, sizeof(cx__object)));
+            cx_llInsert(cx_anonymousObjects, CX_OFFSET(o, sizeof(cx__object)));
         }
     }
 
-    return DB_OFFSET(o, sizeof(cx__object));
+    return CX_OFFSET(o, sizeof(cx__object));
 error:
     return NULL;
 }
@@ -821,10 +821,10 @@ error:
 cx_object cx_new(cx_typedef type) {
     int attr;
 
-    if (type->real->kind == DB_VOID) {
-    	attr = DB_ATTR_OBSERVABLE;
+    if (type->real->kind == CX_VOID) {
+    	attr = CX_ATTR_OBSERVABLE;
     } else {
-    	attr = DB_ATTR_WRITABLE | DB_ATTR_OBSERVABLE;
+    	attr = CX_ATTR_WRITABLE | CX_ATTR_OBSERVABLE;
     }
 
     return cx_new_ext(NULL, type, attr, NULL);
@@ -840,7 +840,7 @@ cx_object cx_declare(cx_object parent, cx_string name, cx_typedef type) {
     }
 
     /* Type must be valid and defined */
-    if (!cx_checkState(type, DB_VALID | DB_DEFINED)) {
+    if (!cx_checkState(type, CX_VALID | CX_DEFINED)) {
         cx_id pid, tid;
         cx_error("cx_declare: failed to declare object '%s' in scope '%s', type '%s' is not valid and/or defined", name, cx_fullname(parent, pid), cx_fullname(type, tid));
         goto error;
@@ -854,10 +854,10 @@ cx_object cx_declare(cx_object parent, cx_string name, cx_typedef type) {
     }
 
     /* When the object is of a void-type, it should not be writable. */
-    if (type->real->kind != DB_VOID) {
-    	state = DB_ATTR_SCOPED | DB_ATTR_WRITABLE | DB_ATTR_OBSERVABLE;
+    if (type->real->kind != CX_VOID) {
+    	state = CX_ATTR_SCOPED | CX_ATTR_WRITABLE | CX_ATTR_OBSERVABLE;
     } else {
-    	state = DB_ATTR_SCOPED | DB_ATTR_OBSERVABLE;
+    	state = CX_ATTR_SCOPED | CX_ATTR_OBSERVABLE;
     }
 
     /* Check if object already exists */
@@ -878,7 +878,7 @@ cx_object cx_declare(cx_object parent, cx_string name, cx_typedef type) {
         if (o) {
             /* Initialize object parameters. */
             if (!cx__initScope(o, name, parent)) {
-                if (state & DB_ATTR_WRITABLE) {
+                if (state & CX_ATTR_WRITABLE) {
                     cx__initWritable(o);
                 }
                 cx__initObservable(o);
@@ -897,7 +897,7 @@ cx_object cx_declare(cx_object parent, cx_string name, cx_typedef type) {
             }
 
             /* Notify parent of new object */
-            cx_notify(cx__objectObservable(DB_OFFSET(parent,-sizeof(cx__object))), parent, o, DB_ON_DECLARE);
+            cx_notify(cx__objectObservable(CX_OFFSET(parent,-sizeof(cx__object))), parent, o, CX_ON_DECLARE);
         }
     }
 
@@ -913,11 +913,11 @@ cx_int16 cx_define(cx_object o) {
     cx__object *_o;
 
     result = 0;
-    _o = DB_OFFSET(o, -sizeof(cx__object));
+    _o = CX_OFFSET(o, -sizeof(cx__object));
     t = cx_typeof(o)->real;
 
     /* Only define valid, undefined objects */
-    if (cx_checkState(o, DB_VALID | DB_DECLARED) && !cx_checkState(o, DB_DEFINED)) {
+    if (cx_checkState(o, CX_VALID | CX_DECLARED) && !cx_checkState(o, CX_DEFINED)) {
 
         /* If object is instance of a class, call the constructor */
         if (cx_class_instanceof(cx_class_o, t)) {
@@ -934,10 +934,10 @@ cx_int16 cx_define(cx_object o) {
         }
 
         if (!result) {
-            _o->attrs.state |= DB_DEFINED;
+            _o->attrs.state |= CX_DEFINED;
 
             /* Notify observers of defined object */
-            cx_notify(cx__objectObservable(DB_OFFSET(o,-sizeof(cx__object))), o, o, DB_ON_DEFINE);
+            cx_notify(cx__objectObservable(CX_OFFSET(o,-sizeof(cx__object))), o, o, CX_ON_DEFINE);
 
         } else {
             /* Remove valid state */
@@ -953,7 +953,7 @@ void cx_destruct(cx_object o) {
     cx__object* _o;
     cx__scope* scope;
 
-    _o = DB_OFFSET(o, -sizeof(cx__object));
+    _o = CX_OFFSET(o, -sizeof(cx__object));
     scope = cx__objectScope(_o);
 
     if (cx_ainc(&scope->orphaned) == 1) {
@@ -966,29 +966,29 @@ void cx_destruct(cx_object o) {
 /* Invalidate object by removing valid flag */
 void cx_invalidate(cx_object o) {
     cx__object* _o;
-    _o = DB_OFFSET(o, -sizeof(cx__object));
-    _o->attrs.state &= !DB_VALID;
+    _o = CX_OFFSET(o, -sizeof(cx__object));
+    _o->attrs.state &= !CX_VALID;
     /* Notify observers */
-    cx_notify(cx__objectObservable(DB_OFFSET(o,-sizeof(cx__object))), o, o, DB_ON_INVALIDATE);
+    cx_notify(cx__objectObservable(CX_OFFSET(o,-sizeof(cx__object))), o, o, CX_ON_INVALIDATE);
 }
 
 /* Get type */
 cx_typedef cx_typeof(cx_object o) {
-    cx__object* _o = DB_OFFSET(o, -sizeof(cx__object));
+    cx__object* _o = CX_OFFSET(o, -sizeof(cx__object));
     return _o->type;
 }
 
 /* Get refcount */
 cx_int32 cx_countof(cx_object o) {
     cx__object* _o;
-    _o = DB_OFFSET(o, -sizeof(cx__object));
+    _o = CX_OFFSET(o, -sizeof(cx__object));
     return _o->refcount;
 }
 
 /* Check for a state */
 cx_bool cx_checkState(cx_object o, cx_int8 state) {
     cx__object* _o;
-    _o = DB_OFFSET(o, -sizeof(cx__object));
+    _o = CX_OFFSET(o, -sizeof(cx__object));
     return (_o->attrs.state & state) == state;
 }
 
@@ -997,16 +997,16 @@ cx_bool cx_checkAttr(cx_object o, cx_int8 attr) {
     cx_bool result;
     cx__object* _o;
 
-    _o = DB_OFFSET(o, -sizeof(cx__object));
+    _o = CX_OFFSET(o, -sizeof(cx__object));
     result = TRUE;
 
-    if (attr & DB_ATTR_SCOPED) {
+    if (attr & CX_ATTR_SCOPED) {
         if (!_o->attrs.scope) result = FALSE;
     }
-    if (attr & DB_ATTR_WRITABLE) {
+    if (attr & CX_ATTR_WRITABLE) {
         if (!_o->attrs.write) result = FALSE;
     }
-    if (attr & DB_ATTR_OBSERVABLE) {
+    if (attr & CX_ATTR_OBSERVABLE) {
         if (!_o->attrs.observable) result = FALSE;
     }
     return result;
@@ -1024,7 +1024,7 @@ cx_bool cx_instanceof(cx_typedef type, cx_object o) {
 
 	    if (t->kind == type->real->kind) {
             switch(type->real->kind) {
-            case DB_COMPOSITE: {
+            case CX_COMPOSITE: {
                 cx_interface p;
                 p = (cx_interface)t;
 
@@ -1034,10 +1034,10 @@ cx_bool cx_instanceof(cx_typedef type, cx_object o) {
                 }
                 break;
             }
-            case DB_PRIMITIVE:
+            case CX_PRIMITIVE:
                 switch(cx_primitive(type->real)->kind) {
-                case DB_ENUM:
-                case DB_BITMASK:
+                case CX_ENUM:
+                case CX_BITMASK:
                     if (cx_parentof(o) == type) {
                         result = TRUE;
                     }
@@ -1062,7 +1062,7 @@ cx_object cx_parentof(cx_object o) {
     cx_object result;
 
     result = NULL;
-    _o = DB_OFFSET(o, -sizeof(cx__object));
+    _o = CX_OFFSET(o, -sizeof(cx__object));
     scope = cx__objectScope(_o);
     if (scope) {
         result = scope->parent;
@@ -1083,7 +1083,7 @@ cx_string cx_nameof(cx_object o) {
     cx_string result;
 
     result = NULL;
-    _o = DB_OFFSET(o, -sizeof(cx__object));
+    _o = CX_OFFSET(o, -sizeof(cx__object));
     scope = cx__objectScope(_o);
     if (scope) {
         result = scope->name;
@@ -1105,7 +1105,7 @@ cx_rbtree cx_scopeof(cx_object o) {
 
 	result = NULL;
 
-    _o = DB_OFFSET(o, -sizeof(cx__object));
+    _o = CX_OFFSET(o, -sizeof(cx__object));
     scope = cx__objectScope(_o);
     if (scope) {
         result = scope->scope;
@@ -1127,7 +1127,7 @@ cx_uint32 cx_scopeSize(cx_object o) {
 
     result = 0;
 
-    _o = DB_OFFSET(o, -sizeof(cx__object));
+    _o = CX_OFFSET(o, -sizeof(cx__object));
     scope = cx__objectScope(_o);
     if (scope) {
         tree = scope->scope;
@@ -1154,7 +1154,7 @@ cx_int32 cx_scopeWalk(cx_object o, cx_scopeWalkAction action, void* userData) {
     }
 
     result = 1;
-    scope = cx__objectScope(DB_OFFSET(o, -sizeof(cx__object)));
+    scope = cx__objectScope(CX_OFFSET(o, -sizeof(cx__object)));
     if (scope) {
         if (scope->scope) {
             cx_rwmutexRead(&scope->scopeLock);
@@ -1168,7 +1168,7 @@ cx_int32 cx_scopeWalk(cx_object o, cx_scopeWalkAction action, void* userData) {
 
 /* Obtain scoped identifier (serves as global unique identifier) */
 cx_string cx_fullname(cx_object o, cx_id buffer) {
-	cx_object stack[DB_MAX_SCOPE_DEPTH];
+	cx_object stack[CX_MAX_SCOPE_DEPTH];
 	cx_uint32 depth;
 	cx_string name;
 	cx_char* ptr;
@@ -1181,7 +1181,7 @@ cx_string cx_fullname(cx_object o, cx_id buffer) {
 	    return buffer;
 	}
 
-	if (!cx_checkAttr(o, DB_ATTR_SCOPED)) {
+	if (!cx_checkAttr(o, CX_ATTR_SCOPED)) {
 		sprintf(buffer, "<%p>", o);
 	} else {
 		do {
@@ -1190,7 +1190,7 @@ cx_string cx_fullname(cx_object o, cx_id buffer) {
 
 		ptr = buffer;
 		if (depth == 1) {
-			*(cx_uint16*)ptr = DB_SCOPE_HEX;
+			*(cx_uint16*)ptr = CX_SCOPE_HEX;
 			ptr += 2;
 		} else {
 			while(depth) {
@@ -1199,7 +1199,7 @@ cx_string cx_fullname(cx_object o, cx_id buffer) {
 
 				if ((name = cx_nameof(o))) {
 					/* Copy scope operator */
-					*(cx_uint16*)ptr = DB_SCOPE_HEX;
+					*(cx_uint16*)ptr = CX_SCOPE_HEX;
 					ptr += 2;
 
 					/* Copy name */
@@ -1235,8 +1235,8 @@ static cx_object* cx_scopeStack(cx_object o, cx_object scopeStack[], cx_uint32 *
 }
 
 cx_string cx_relname(cx_object from, cx_object o, cx_id buffer) {
-	cx_object from_s[DB_MAX_SCOPE_DEPTH];
-	cx_object o_s[DB_MAX_SCOPE_DEPTH];
+	cx_object from_s[CX_MAX_SCOPE_DEPTH];
+	cx_object o_s[CX_MAX_SCOPE_DEPTH];
 	cx_uint32 from_i, o_i;
 	cx_char* ptr;
 	cx_uint32 length;
@@ -1269,7 +1269,7 @@ cx_string cx_relname(cx_object from, cx_object o, cx_id buffer) {
 			length = strlen(cx_nameof(o_s[o_i]));
 			memcpy(ptr, cx_nameof(o_s[o_i]), length);
 			ptr += length;
-			*(cx_uint16*)ptr = DB_SCOPE_HEX;
+			*(cx_uint16*)ptr = CX_SCOPE_HEX;
 			ptr += 2;
 			o_i--;
 		}
@@ -1285,11 +1285,11 @@ cx_string cx_relname(cx_object from, cx_object o, cx_id buffer) {
 cx_uint16 cx__destruct(cx_object o) {
 	cx__object* _o;
 
-	_o = DB_OFFSET(o, -sizeof(cx__object));
+	_o = CX_OFFSET(o, -sizeof(cx__object));
 	cx_ainc(&_o->refcount);
 
 	/* Only the following steps if the object is valid. */
-	if (!cx_checkState(o, DB_DESTRUCTED)) {
+	if (!cx_checkState(o, CX_DESTRUCTED)) {
 		cx_vtable *ct, *ot;
 
 		ct = cx_class_getCallbackVtable(o);
@@ -1299,12 +1299,12 @@ cx_uint16 cx__destruct(cx_object o) {
         _o->mm.cycles = -1;
 
 	    /* Only do the following steps if the object is defined */
-	    if (cx_checkState(o, DB_DEFINED)) {
+	    if (cx_checkState(o, CX_DEFINED)) {
 	        /* From here, object is marked as destructed. */
-	        _o->attrs.state |= DB_DESTRUCTED;
+	        _o->attrs.state |= CX_DESTRUCTED;
 
 	        /* Integrity check */
-            if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
+            if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
                 if (cx_parentof(o) == cortex_lang_o) {
                     cx_id id;
                     cx_critical("illegal attempt to destruct builtin-object '%s'.", cx_fullname(o, id));
@@ -1312,7 +1312,7 @@ cx_uint16 cx__destruct(cx_object o) {
             }
 
             /* Notify destruct */
-            cx_notify(cx__objectObservable(DB_OFFSET(o,-sizeof(cx__object))), o, o, DB_ON_DESTRUCT);
+            cx_notify(cx__objectObservable(CX_OFFSET(o,-sizeof(cx__object))), o, o, CX_ON_DESTRUCT);
 
             /* Call object-destructor */
             if (cx__destructor(o)) {
@@ -1320,7 +1320,7 @@ cx_uint16 cx__destruct(cx_object o) {
             }
 	    } else {
             /* Notify destruct */
-            cx_notify(cx__objectObservable(DB_OFFSET(o,-sizeof(cx__object))), o, o, DB_ON_DESTRUCT);
+            cx_notify(cx__objectObservable(CX_OFFSET(o,-sizeof(cx__object))), o, o, CX_ON_DESTRUCT);
 	    }
 
         cx_deinit(o);
@@ -1338,7 +1338,7 @@ cx_uint16 cx__destruct(cx_object o) {
         }
 
         /* Deinit observable */
-        if (cx_checkAttr(o, DB_ATTR_OBSERVABLE)) {
+        if (cx_checkAttr(o, CX_ATTR_OBSERVABLE)) {
             cx__deinitObservable(o);
         }
 
@@ -1346,12 +1346,12 @@ cx_uint16 cx__destruct(cx_object o) {
         cx_free_ext(o, cx_typeof(o), "Free type of object");
 
         /* Deinit writable */
-        if (cx_checkAttr(o, DB_ATTR_WRITABLE)) {
+        if (cx_checkAttr(o, CX_ATTR_WRITABLE)) {
             cx__deinitWritable(o);
         }
 
         /* Deinit scope */
-        if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
+        if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
             cx__deinitScope(o);
         } else {
             /* Remove from anonymous cache */
@@ -1382,16 +1382,16 @@ cx_uint16 cx__destruct(cx_object o) {
 }
 
 /* Name-based tracing */
-/*#define DB_TRACE_DEBUG
-#define DB_TRACE "48"*/
-#ifdef DB_TRACE
-#define DB_TRACE_KEEP(o)\
+/*#define CX_TRACE_DEBUG
+#define CX_TRACE "48"*/
+#ifdef CX_TRACE
+#define CX_TRACE_KEEP(o)\
 	{\
 		cx__object* _o;\
-		_o = DB_OFFSET(o, -sizeof(cx__object));\
+		_o = CX_OFFSET(o, -sizeof(cx__object));\
 		if (cx__objectScope(_o)) {\
-			if ((cx_nameof(o) == DB_TRACE) || (DB_TRACE && (cx_nameof(o) && !strcmp(cx_nameof(o), DB_TRACE)))) {\
-			    DB_TRACE_ADDR = o;\
+			if ((cx_nameof(o) == CX_TRACE) || (CX_TRACE && (cx_nameof(o) && !strcmp(cx_nameof(o), CX_TRACE)))) {\
+			    CX_TRACE_ADDR = o;\
 				cx_trace("keep (%p)'%s' -> %d (context = \"%s\")", o, cx_nameof(o), _o->refcount, context);\
 				if (src) {\
 					cx_id id;\
@@ -1401,13 +1401,13 @@ cx_uint16 cx__destruct(cx_object o) {
 			}\
 		}\
 	}
-#define DB_TRACE_FREE(object)\
+#define CX_TRACE_FREE(object)\
 	{\
 		cx__object* _o;\
-		_o = DB_OFFSET(o, -sizeof(cx__object));\
+		_o = CX_OFFSET(o, -sizeof(cx__object));\
 		if (cx__objectScope(_o)) {\
-			if ((cx_nameof(o) == DB_TRACE) || (DB_TRACE && (cx_nameof(o) && !strcmp(cx_nameof(o), DB_TRACE)))) {\
-			    DB_TRACE_ADDR = o;\
+			if ((cx_nameof(o) == CX_TRACE) || (CX_TRACE && (cx_nameof(o) && !strcmp(cx_nameof(o), CX_TRACE)))) {\
+			    CX_TRACE_ADDR = o;\
 				cx_trace("free (%p)'%s' -> %d (context = \"%s\", cycles=%d)", o, cx_nameof(o), _o->refcount, context, _o->mm.cycles);\
                 if (src) {\
                 	cx_id id;\
@@ -1420,14 +1420,14 @@ cx_uint16 cx__destruct(cx_object o) {
 #endif
 
 /* Type-based tracing */
-/* #define DB_TRACE_DEBUG
-#define DB_TRACE_TYPE "Local"*/
-#ifdef DB_TRACE_TYPE
-#define DB_TRACE_KEEP(o)\
+/* #define CX_TRACE_DEBUG
+#define CX_TRACE_TYPE "Local"*/
+#ifdef CX_TRACE_TYPE
+#define CX_TRACE_KEEP(o)\
 	{\
 		cx__object* _o;\
-		_o = DB_OFFSET(o, -sizeof(cx__object));\
-        if ((cx_nameof(cx_typeof(o)) == DB_TRACE_TYPE) || (DB_TRACE_TYPE && (cx_nameof(cx_typeof(o)) && !strcmp(cx_nameof(cx_typeof(o)), DB_TRACE_TYPE)))) {\
+		_o = CX_OFFSET(o, -sizeof(cx__object));\
+        if ((cx_nameof(cx_typeof(o)) == CX_TRACE_TYPE) || (CX_TRACE_TYPE && (cx_nameof(cx_typeof(o)) && !strcmp(cx_nameof(cx_typeof(o)), CX_TRACE_TYPE)))) {\
             cx_id id;\
             cx_trace("keep (%p)'%s' -> %d (context = \"%s\")", o, cx_fullname(o, id), cx_countof(o), context);\
             if (src) {\
@@ -1437,11 +1437,11 @@ cx_uint16 cx__destruct(cx_object o) {
             cx_backtrace(stdout);\
         }\
 	}
-#define DB_TRACE_FREE(object)\
+#define CX_TRACE_FREE(object)\
 	{\
 		cx__object* _o;\
-		_o = DB_OFFSET(o, -sizeof(cx__object));\
-        if ((cx_nameof(cx_typeof(o)) == DB_TRACE_TYPE) || (DB_TRACE_TYPE && (cx_nameof(cx_typeof(o)) && !strcmp(cx_nameof(cx_typeof(o)), DB_TRACE_TYPE)))) {\
+		_o = CX_OFFSET(o, -sizeof(cx__object));\
+        if ((cx_nameof(cx_typeof(o)) == CX_TRACE_TYPE) || (CX_TRACE_TYPE && (cx_nameof(cx_typeof(o)) && !strcmp(cx_nameof(cx_typeof(o)), CX_TRACE_TYPE)))) {\
             cx_id id;\
             cx_trace("free (%p)'%s' -> %d (context = \"%s\", cycles=%d)", o, cx_fullname(o, id), cx_countof(o), context, _o->mm.cycles);\
             if (src) {\
@@ -1454,15 +1454,15 @@ cx_uint16 cx__destruct(cx_object o) {
 #endif
 
 /* Parent based tracing */
-/*#define DB_TRACE_DEBUG
-#define DB_TRACE_TYPEPARENT "Fast"*/
-#ifdef DB_TRACE_TYPEPARENT
-#define DB_TRACE_KEEP(o)\
+/*#define CX_TRACE_DEBUG
+#define CX_TRACE_TYPEPARENT "Fast"*/
+#ifdef CX_TRACE_TYPEPARENT
+#define CX_TRACE_KEEP(o)\
 	{\
 		cx__object* _o;\
-		_o = DB_OFFSET(cx_typeof(o), -sizeof(cx__object));\
+		_o = CX_OFFSET(cx_typeof(o), -sizeof(cx__object));\
 		if (cx__objectScope(_o)) {\
-			if ((cx_nameof(cx_parentof(cx_typeof(o))) == DB_TRACE_TYPEPARENT) || (DB_TRACE_TYPEPARENT && (cx_nameof(cx_parentof(cx_typeof(o))) && !strcmp(cx_nameof(cx_parentof(cx_typeof(o))), DB_TRACE_TYPEPARENT)))) {\
+			if ((cx_nameof(cx_parentof(cx_typeof(o))) == CX_TRACE_TYPEPARENT) || (CX_TRACE_TYPEPARENT && (cx_nameof(cx_parentof(cx_typeof(o))) && !strcmp(cx_nameof(cx_parentof(cx_typeof(o))), CX_TRACE_TYPEPARENT)))) {\
 				cx_id id;\
 				cx_trace("keep (%p)'%s' -> %d (context = \"%s\")", o, cx_fullname(o, id), cx_countof(o), context);\
 				if (src) {\
@@ -1473,12 +1473,12 @@ cx_uint16 cx__destruct(cx_object o) {
 			}\
 		}\
 	}
-#define DB_TRACE_FREE(object)\
+#define CX_TRACE_FREE(object)\
 	{\
 		cx__object* _o;\
-		_o = DB_OFFSET(cx_typeof(o), -sizeof(cx__object));\
+		_o = CX_OFFSET(cx_typeof(o), -sizeof(cx__object));\
 		if (cx__objectScope(_o)) {\
-			if ((cx_nameof(cx_parentof(cx_typeof(o))) == DB_TRACE_TYPEPARENT) || (DB_TRACE_TYPEPARENT && (cx_nameof(cx_parentof(cx_typeof(o))) && !strcmp(cx_nameof(cx_parentof(cx_typeof(o))), DB_TRACE_TYPEPARENT)))) {\
+			if ((cx_nameof(cx_parentof(cx_typeof(o))) == CX_TRACE_TYPEPARENT) || (CX_TRACE_TYPEPARENT && (cx_nameof(cx_parentof(cx_typeof(o))) && !strcmp(cx_nameof(cx_parentof(cx_typeof(o))), CX_TRACE_TYPEPARENT)))) {\
 				cx_id id;\
 				cx_trace("free (%p)'%s' -> %d (context = \"%s\", cycles=%d)", o, cx_fullname(o, id), cx_countof(o), context, _o->mm.cycles);\
                 if (src) {\
@@ -1492,35 +1492,35 @@ cx_uint16 cx__destruct(cx_object o) {
 #endif
 
 
-#ifndef DB_TRACE
-#ifndef DB_TRACE_TYPE
-#ifndef DB_TRACE_TYPEPARENT
-#define DB_TRACE_KEEP(o)
-#define DB_TRACE_FREE(o)
+#ifndef CX_TRACE
+#ifndef CX_TRACE_TYPE
+#ifndef CX_TRACE_TYPEPARENT
+#define CX_TRACE_KEEP(o)
+#define CX_TRACE_FREE(o)
 #endif
 #endif
 #endif
 
-#ifdef DB_TRACE_DEBUG
-cx_object DB_TRACE_ADDR = NULL;
+#ifdef CX_TRACE_DEBUG
+cx_object CX_TRACE_ADDR = NULL;
 #endif
 cx_int32 cx_keep_ext(cx_object src, cx_object o, cx_string context) {
     cx__object* _o;
     cx_uint32 i;
-	DB_UNUSED(src);
-	DB_UNUSED(context);
+	CX_UNUSED(src);
+	CX_UNUSED(context);
 
-	_o = DB_OFFSET(o, -sizeof(cx__object));
+	_o = CX_OFFSET(o, -sizeof(cx__object));
 	i = cx_ainc(&_o->refcount);
 
-#ifdef DB_TRACE_DEBUG
-	if (DB_TRACE_ADDR == o) {
+#ifdef CX_TRACE_DEBUG
+	if (CX_TRACE_ADDR == o) {
 	    cx_id id, id2;
 	    cx_trace("keep %s of type %s -> %d (cycles=%d, source=%p, context='%s')", cx_fullname(o, id), cx_fullname(cx_typeof(o), id2), i, _o->mm.cycles, src, context);
 	    /*cx_backtrace(stdout);*/
 	}
 
-    DB_TRACE_KEEP(o);
+    CX_TRACE_KEEP(o);
 
 	if (i == 0) {
 		cx_id id1, id2;
@@ -1535,21 +1535,21 @@ cx_int32 cx_keep_ext(cx_object src, cx_object o, cx_string context) {
 cx_int32 cx_free_ext(cx_object src, cx_object o, cx_string context) {
 	cx_int32 i;
 	cx__object* _o;
-	DB_UNUSED(src);
-	DB_UNUSED(context);
+	CX_UNUSED(src);
+	CX_UNUSED(context);
 
-	_o = DB_OFFSET(o, -sizeof(cx__object));
+	_o = CX_OFFSET(o, -sizeof(cx__object));
 	i = cx_adec(&_o->refcount);
 
-#ifdef DB_TRACE_DEBUG
-    if ((DB_TRACE_ADDR == o)) {
+#ifdef CX_TRACE_DEBUG
+    if ((CX_TRACE_ADDR == o)) {
         cx_id id, id2;
         cx_trace("free (%p)%s of type %s -> %d (cycles=%d, valid=%d, destructed = %d, source=%p, context='%s')",
-        		o, cx_fullname(o, id), cx_fullname(cx_typeof(o), id2), i, _o->mm.cycles, cx_checkState(o, DB_VALID), cx_checkState(o, DB_DESTRUCTED), src, context);
+        		o, cx_fullname(o, id), cx_fullname(cx_typeof(o), id2), i, _o->mm.cycles, cx_checkState(o, CX_VALID), cx_checkState(o, CX_DESTRUCTED), src, context);
         /*cx_backtrace(stdout);*/
     }
 
-	DB_TRACE_FREE(o);
+	CX_TRACE_FREE(o);
 #endif
 
 	if (i == _o->mm.cycles) {
@@ -1557,7 +1557,7 @@ cx_int32 cx_free_ext(cx_object src, cx_object o, cx_string context) {
 
 	/* If an invalid scoped object doesn't have a name, it must still be free'd - can occur when objects are
 	 * dangling because of double cycles. */
-	} else if (!i && cx_checkState(o, DB_DESTRUCTED) && (_o->mm.cycles == 65535)) {
+	} else if (!i && cx_checkState(o, CX_DESTRUCTED) && (_o->mm.cycles == 65535)) {
         cx__destruct(o);
 	}
 	if (i < 0) {
@@ -1590,7 +1590,7 @@ static int cx_dropWalk(void* o, void* userData) {
 	data = userData;
 
 	/* Drops are recursive */
-	_o = DB_OFFSET(o, -sizeof(cx__object));
+	_o = CX_OFFSET(o, -sizeof(cx__object));
 	scope = cx__objectScope(_o);
 	if (scope) {
 		cx_rwmutexRead(&scope->scopeLock);
@@ -1623,7 +1623,7 @@ void cx_drop(cx_object o) {
 	cx__scope* scope;
 	cx_dropWalk_t walkData;
 
-	_o = DB_OFFSET(o, -sizeof(cx__object));
+	_o = CX_OFFSET(o, -sizeof(cx__object));
 	scope = cx__objectScope(_o);
 	if (scope) {
 	    cx_iter iter;
@@ -1653,7 +1653,7 @@ void cx_drop(cx_object o) {
 				collected = cx_iterNext(&iter);
 				cx_free_ext(NULL, collected, "free from temporary drop-list");
 				/* Double free - because cx_drop itself introduced a keep. */
-				if (cx_checkAttr(collected, DB_ATTR_SCOPED)) {
+				if (cx_checkAttr(collected, CX_ATTR_SCOPED)) {
 					cx_destruct(collected);
 				} else {
 					cx_free_ext(NULL, collected, "free attached object");
@@ -1672,7 +1672,7 @@ cx_object cx_lookup_ext(cx_object src, cx_object o, cx_string name, cx_string co
     cx__scope* scope;
     cx_rbtree tree;
 
-    _o = DB_OFFSET(o, -sizeof(cx__object));
+    _o = CX_OFFSET(o, -sizeof(cx__object));
     scope = cx__objectScope(_o);
 
     if (scope) {
@@ -1691,7 +1691,7 @@ cx_object cx_lookup_ext(cx_object src, cx_object o, cx_string name, cx_string co
                       * thread might try to acquire this object. Setting the refcount back to zero will enable these lookups to also detect
                       * that the object is being deleted.
                       */
-                    _result = DB_OFFSET(result, -sizeof(cx__object));
+                    _result = CX_OFFSET(result, -sizeof(cx__object));
                     _result->refcount = 0;
                     result = NULL;
                 }
@@ -1717,11 +1717,11 @@ cx_object cx_lookup(cx_object o, cx_string name) {
 
 /* Resolve anonymous object */
 static cx_char* cx_resolveAnonymous(cx_object src, cx_object scope, cx_object o, cx_string str, cx_object* out) {
-    DB_UNUSED(src);
+    CX_UNUSED(src);
     cx_object result;
     cx_string_deser_t data;
 
-    result = cx_new_ext(NULL, cx_typedef(o), (cx_typedef(o)->real->kind == DB_VOID) ? DB_ATTR_WRITABLE : 0, "Create anonymous object");
+    result = cx_new_ext(NULL, cx_typedef(o), (cx_typedef(o)->real->kind == CX_VOID) ? CX_ATTR_WRITABLE : 0, "Create anonymous object");
     data.out = result;
     data.scope = scope;
     data.type = NULL;
@@ -1770,7 +1770,7 @@ cx_object cx_resolve_ext(cx_object src, cx_object _scope, cx_string str, cx_bool
     }
 
     /* If expression starts with scope operator, start from root */
-    if (*(cx_uint16*)str == DB_SCOPE_HEX) {
+    if (*(cx_uint16*)str == CX_SCOPE_HEX) {
         str += 2;
         scope = root_o;
     }
@@ -1846,7 +1846,7 @@ repeat:
                     cx_free_ext(src, prev, "Free type of anonymous identifier");
                     break;
                 } else
-                if (*(cx_uint16*)ptr == DB_SCOPE_HEX) {
+                if (*(cx_uint16*)ptr == CX_SCOPE_HEX) {
                     ptr += 2;
                 } else {
                     cx_error("cx_resolve: invalid ':' in expression '%s'", str);
@@ -1958,7 +1958,7 @@ static void cx_observersArrayFree(cx__observer** array) {
  * the child and the observableData's observer.
  * PRE: childlock of observableData must be locked. */
 void cx_setChildParentObservers(cx_object observable, cx__observable *observableData) {
-    if (cx_checkAttr(observable, DB_ATTR_SCOPED)) {
+    if (cx_checkAttr(observable, CX_ATTR_SCOPED)) {
         cx_iter childIter;
         cx_object child;
         cx__observable *childObservable;
@@ -1968,7 +1968,7 @@ void cx_setChildParentObservers(cx_object observable, cx__observable *observable
         while(cx_iterHasNext(&childIter)) {
             cx_bool parentSet = FALSE;
             child = cx_iterNext(&childIter);
-            if ((childObservable = cx__objectObservable(DB_OFFSET(child, -sizeof(cx__object))))) {
+            if ((childObservable = cx__objectObservable(CX_OFFSET(child, -sizeof(cx__object))))) {
                 cx_rwmutexWrite(&childObservable->childLock);
                 if (childObservable->parent == observableData->parent) {
                     childObservable->parent = observableData;
@@ -1990,7 +1990,7 @@ void cx_setChildParentObservers(cx_object observable, cx__observable *observable
  * child object because a parent has an observer interested in childs that
  * requires locking. */
 void cx_setChildLockRequired(cx_object observable) {
-    if (cx_checkAttr(observable, DB_ATTR_SCOPED)) {
+    if (cx_checkAttr(observable, CX_ATTR_SCOPED)) {
         cx_iter childIter;
         cx_object child;
         cx__observable *childObservable;
@@ -1999,9 +1999,9 @@ void cx_setChildLockRequired(cx_object observable) {
         childIter = cx_llIter(scope);
         while(cx_iterHasNext(&childIter)) {
             child = cx_iterNext(&childIter);
-            if ((childObservable = cx__objectObservable(DB_OFFSET(child, -sizeof(cx__object))))) {
+            if ((childObservable = cx__objectObservable(CX_OFFSET(child, -sizeof(cx__object))))) {
                 cx_rwmutexWrite(&childObservable->childLock);
-                if (cx_checkAttr(child,DB_ATTR_WRITABLE)) {
+                if (cx_checkAttr(child,CX_ATTR_WRITABLE)) {
                     childObservable->lockRequired = TRUE;
                 }
                 cx_setChildLockRequired(child);
@@ -2013,9 +2013,9 @@ void cx_setChildLockRequired(cx_object observable) {
     }
 }
 
-/*#define DB_TRACE_NOTIFICATIONS*/
+/*#define CX_TRACE_NOTIFICATIONS*/
 
-#ifdef DB_TRACE_NOTIFICATIONS
+#ifdef CX_TRACE_NOTIFICATIONS
 static cx_uint32 indent = 0;
 #endif
 
@@ -2024,7 +2024,7 @@ static void cx_notifyObserver(cx__observer *data, cx_object observable, cx_objec
     cx_observer observer = data->observer;
 
     if (mask & observer->mask) {
-#ifdef DB_TRACE_NOTIFICATIONS
+#ifdef CX_TRACE_NOTIFICATIONS
 {
     cx_id id1, id2, id3;
     printf("%*s [notify] observable '%s' observer '%s' me '%s'\n",
@@ -2045,7 +2045,7 @@ indent++;
 
                 /* Destruct events must always be send synchronous because otherwise the object's value might no longer
                  * be valid when it is received by the observer (object destruction will continue after notification). */
-                if (mask & DB_ON_DESTRUCT) {
+                if (mask & CX_ON_DESTRUCT) {
                     cx_keep_ext(NULL, event, "Temporarily keep destruct event");
                     cx_dispatcher_post(dispatcher, cx_event(event));
                     while(!event->_parent.handled) {
@@ -2057,7 +2057,7 @@ indent++;
                 }
             }
         }
-#ifdef DB_TRACE_NOTIFICATIONS
+#ifdef CX_TRACE_NOTIFICATIONS
         indent--;
 #endif
     }
@@ -2076,9 +2076,9 @@ int cx_observerAlignScope(cx_object o, void *userData) {
     cx_observerAlignData *data;
 
     data = userData;
-    cx_notifyObserver(data->observer, data->observable, o, DB_ON_DECLARE);
+    cx_notifyObserver(data->observer, data->observable, o, CX_ON_DECLARE);
 
-    if (data->observer->observer->mask & DB_ON_SCOPE) {
+    if (data->observer->observer->mask & CX_ON_SCOPE) {
     	return cx_scopeWalk(o, cx_observerAlignScope, userData);
     } else {
     	return 1;
@@ -2095,7 +2095,7 @@ void cx_observerAlign(cx_object observable, cx__observer *observer) {
     cx_scopeWalk(observable, cx_observerAlignScope, &walkData);
 }
 
-#ifdef DB_TRACE_NOTIFICATIONS
+#ifdef CX_TRACE_NOTIFICATIONS
 static int indent=0;
 #endif
 
@@ -2106,10 +2106,10 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
 	cx_bool added;
 	cx__observer **oldSelfArray = NULL, **oldChildArray = NULL;
 
-	if (cx_checkAttr(observable, DB_ATTR_OBSERVABLE)) {
-		_o = cx__objectObservable(DB_OFFSET(observable, -sizeof(cx__object)));
+	if (cx_checkAttr(observable, CX_ATTR_OBSERVABLE)) {
+		_o = cx__objectObservable(CX_OFFSET(observable, -sizeof(cx__object)));
 
-#ifdef DB_TRACE_NOTIFICATIONS
+#ifdef CX_TRACE_NOTIFICATIONS
     	{
     		cx_id id1, id2, id3;
     		printf("%*s [listen] observable '%s' observer '%s' me '%s'\n",
@@ -2129,7 +2129,7 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
 
 		/* Resolve the kind of the observer. This reduces the number of
 		 * conditions that need to be evaluated in the notifyObserver function. */
-        if (cx_function(observer)->kind == DB_PROCEDURE_CDECL) {
+        if (cx_function(observer)->kind == CX_PROCEDURE_CDECL) {
             if (_this) {
                 _observerData->notify = cx_notifyObserverThisCdecl;
             } else {
@@ -2146,7 +2146,7 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
 		added = FALSE;
 
 		/* If observer must trigger on updates of me, add it to onSelf list */
-		if (observer->mask & DB_ON_SELF) {
+		if (observer->mask & CX_ON_SELF) {
 			cx_rwmutexWrite(&_o->selfLock);
 			if (!cx_observerFind(_o->onSelf, observer, _this)) {
 				if (!_o->onSelf) {
@@ -2161,8 +2161,8 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
 				oldSelfArray = _o->onSelfArray;
 				_o->onSelfArray = cx_observersArrayNew(_o->onSelf);
 			}
-			if (observer->mask & DB_ON_VALUE) {
-			    if (cx_checkAttr(observable, DB_ATTR_WRITABLE)) {
+			if (observer->mask & CX_ON_VALUE) {
+			    if (cx_checkAttr(observable, CX_ATTR_WRITABLE)) {
 			        _o->lockRequired = TRUE;
 			    }
 			}
@@ -2170,8 +2170,8 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
 		}
 
 		/* If observer must trigger on updates of childs, add it to onChilds list */
-		if (observer->mask & DB_ON_SCOPE) {
-			if (cx_checkAttr(observable, DB_ATTR_SCOPED)) {
+		if (observer->mask & CX_ON_SCOPE) {
+			if (cx_checkAttr(observable, CX_ATTR_SCOPED)) {
 			    cx_bool firstChildObserver = FALSE;
 				cx_rwmutexWrite(&_o->childLock);
 				if (!cx_observerFind(_o->onChild, observer, _this)) {
@@ -2197,7 +2197,7 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
                     cx_setChildParentObservers(observable, _o);
                 }
 
-                if (observer->mask & DB_ON_VALUE) {
+                if (observer->mask & CX_ON_VALUE) {
                     if (!_o->childLockRequired) {
                         _o->childLockRequired = TRUE;
                         cx_setChildLockRequired(observable);
@@ -2218,7 +2218,7 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
 			cx_dealloc(_observerData);
 		} else {
 		    /* If observer is subscribed to new events, align observer with existing */
-		    if (observer->mask & DB_ON_DECLARE) {
+		    if (observer->mask & CX_ON_DECLARE) {
 		        cx_observerAlign(observable, _observerData);
 		    }
 		}
@@ -2260,12 +2260,12 @@ cx_int32 cx_silence(cx_object observable, cx_observer observer, cx_object _this)
 	cx__observable* _o;
     cx__observer **oldSelfArray = NULL, **oldChildArray = NULL;
 
-    if (cx_checkAttr(observable, DB_ATTR_OBSERVABLE)) {
-        _o = cx__objectObservable(DB_OFFSET(observable, -sizeof(cx__object)));
+    if (cx_checkAttr(observable, CX_ATTR_OBSERVABLE)) {
+        _o = cx__objectObservable(CX_OFFSET(observable, -sizeof(cx__object)));
         observerData = NULL;
 
         /* If observer triggered on updates of me, remove from onSelf list */
-        if (observer->mask & DB_ON_SELF) {
+        if (observer->mask & CX_ON_SELF) {
             cx_rwmutexWrite(&_o->selfLock);
             observerData = cx_observerFind(_o->onSelf, observer, _this);
             if (observerData) {
@@ -2276,7 +2276,7 @@ cx_int32 cx_silence(cx_object observable, cx_observer observer, cx_object _this)
                 /* Build new observer array */
                 oldSelfArray = _o->onSelfArray;
                 _o->onSelfArray = cx_observersArrayNew(_o->onSelf);
-#ifdef DB_TRACE_NOTIFICATIONS
+#ifdef CX_TRACE_NOTIFICATIONS
             {
                 cx_id id1, id2, id3;
                 printf("%*s [silence] observable '%s' observer '%s' me '%s'\n",
@@ -2291,8 +2291,8 @@ cx_int32 cx_silence(cx_object observable, cx_observer observer, cx_object _this)
         }
 
 		/* If observer triggered on updates of childs, remove from onChilds list */
-		if (observer->mask & DB_ON_SCOPE) {
-			if (cx_checkAttr(observable, DB_ATTR_SCOPED)) {
+		if (observer->mask & CX_ON_SCOPE) {
+			if (cx_checkAttr(observable, CX_ATTR_SCOPED)) {
 				cx_rwmutexWrite(&_o->childLock);
 				observerData = cx_observerFind(_o->onChild, observer, _this);
 				if (observerData) {
@@ -2338,12 +2338,12 @@ cx_bool cx_listening(cx_object observable, cx_observer observer, cx_object _this
     cx__observable* _o;
     cx_bool result = FALSE;
 
-    _o = cx__objectObservable(DB_OFFSET(observable, -sizeof(cx__object)));
+    _o = cx__objectObservable(CX_OFFSET(observable, -sizeof(cx__object)));
     observerData = NULL;
 
     /* If observer triggered on updates of me, remove from onSelf list */
     if (_o) {
-		if (observer->mask & DB_ON_SELF) {
+		if (observer->mask & CX_ON_SELF) {
 			cx_rwmutexWrite(&_o->selfLock);
 			observerData = cx_observerFind(_o->onSelf, observer, _this);
 			if (observerData) {
@@ -2353,9 +2353,9 @@ cx_bool cx_listening(cx_object observable, cx_observer observer, cx_object _this
 		}
 
 		if (!result) {
-			if (cx_checkAttr(observable, DB_ATTR_OBSERVABLE)) {
-				if (observer->mask & DB_ON_SCOPE) {
-					if (cx_checkAttr(observable, DB_ATTR_SCOPED)) {
+			if (cx_checkAttr(observable, CX_ATTR_OBSERVABLE)) {
+				if (observer->mask & CX_ON_SCOPE) {
+					if (cx_checkAttr(observable, CX_ATTR_SCOPED)) {
 						cx_rwmutexWrite(&_o->childLock);
 						observerData = cx_observerFind(_o->onChild, observer, _this);
 						if (observerData) {
@@ -2379,20 +2379,20 @@ error:
 
 static void cx_notifyObserverDefault(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask) {
     cx_function f = cx_function(data->observer);
-    DB_UNUSED(_this);
-    DB_UNUSED(mask);
+    CX_UNUSED(_this);
+    CX_UNUSED(mask);
     cx_call(f, NULL, observable, source);
 }
 
 static void cx_notifyObserverCdecl(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask) {
     cx_function f = cx_function(data->observer);
-    DB_UNUSED(_this);
-    DB_UNUSED(mask);
+    CX_UNUSED(_this);
+    CX_UNUSED(mask);
     ((void(*)(cx_object,cx_object))f->implData)(observable, source);
 }
 
 static void cx_notifyObserverThis(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask) {
-    DB_UNUSED(mask);
+    CX_UNUSED(mask);
 
     if (!_this || (_this != source)) {
         cx_function f = cx_function(data->observer);
@@ -2400,7 +2400,7 @@ static void cx_notifyObserverThis(cx__observer* data, cx_object _this, cx_object
     }
 }
 static void cx_notifyObserverThisCdecl(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask) {
-    DB_UNUSED(mask);
+    CX_UNUSED(mask);
     if (!_this || (_this != source)) {
         cx_function f = cx_function(data->observer);
         ((void(*)(cx_object,cx_object,cx_object))f->implData)(_this, observable, source);
@@ -2456,16 +2456,16 @@ cx_int32 cx_update(cx_object observable) {
     cx__observable *_o;
     cx__writable* _wr;
 
-    _o = cx__objectObservable(DB_OFFSET(observable, -sizeof(cx__object)));
+    _o = cx__objectObservable(CX_OFFSET(observable, -sizeof(cx__object)));
     if (_o->lockRequired) {
-        _wr = cx__objectWritable(DB_OFFSET(observable, -sizeof(cx__object)));
+        _wr = cx__objectWritable(CX_OFFSET(observable, -sizeof(cx__object)));
         cx_rwmutexRead(&_wr->lock);
-        if (cx_notify(_o, observable, observable, DB_ON_UPDATE)) {
+        if (cx_notify(_o, observable, observable, CX_ON_UPDATE)) {
             goto error;
         }
         cx_rwmutexUnlock(&_wr->lock);
     } else {
-        if (cx_notify(_o, observable, observable, DB_ON_UPDATE)) {
+        if (cx_notify(_o, observable, observable, CX_ON_UPDATE)) {
             goto error;
         }
     }
@@ -2480,16 +2480,16 @@ cx_int32 cx_updateFrom(cx_object observable, cx_object _this) {
     cx__observable *_o;
     cx__writable* _wr;
 
-    _o = cx__objectObservable(DB_OFFSET(observable, -sizeof(cx__object)));
+    _o = cx__objectObservable(CX_OFFSET(observable, -sizeof(cx__object)));
     if (_o->lockRequired) {
-        _wr = cx__objectWritable(DB_OFFSET(observable, -sizeof(cx__object)));
+        _wr = cx__objectWritable(CX_OFFSET(observable, -sizeof(cx__object)));
         cx_rwmutexRead(&_wr->lock);
-        if (cx_notify(_o, observable, _this, DB_ON_UPDATE)) {
+        if (cx_notify(_o, observable, _this, CX_ON_UPDATE)) {
             goto error;
         }
         cx_rwmutexUnlock(&_wr->lock);
     } else {
-        if (cx_notify(_o, observable, _this, DB_ON_UPDATE)) {
+        if (cx_notify(_o, observable, _this, CX_ON_UPDATE)) {
             goto error;
         }
     }
@@ -2503,10 +2503,10 @@ cx_int32 cx_updateBegin(cx_object observable) {
     cx__observable *_o;
 	cx__writable* _wr;
 
-	_o = cx__objectObservable(DB_OFFSET(observable, -sizeof(cx__object)));
+	_o = cx__objectObservable(CX_OFFSET(observable, -sizeof(cx__object)));
 
 	if (_o->lockRequired) {
-        _wr = cx__objectWritable(DB_OFFSET(observable, -sizeof(cx__object)));
+        _wr = cx__objectWritable(CX_OFFSET(observable, -sizeof(cx__object)));
         if (_wr) {
             if (cx_rwmutexWrite(&_wr->lock)) {
                 cx_id id;
@@ -2527,9 +2527,9 @@ error:
 cx_int32 cx_updateTry(cx_object observable) {
 	cx__writable* _wr;
 
-    _wr = cx__objectWritable(DB_OFFSET(observable, -sizeof(cx__object)));
+    _wr = cx__objectWritable(CX_OFFSET(observable, -sizeof(cx__object)));
     if (_wr) {
-        if (cx_rwmutexTryWrite(&_wr->lock) == DB_LOCK_BUSY) {
+        if (cx_rwmutexTryWrite(&_wr->lock) == CX_LOCK_BUSY) {
             goto busy;
         }
     } else {
@@ -2539,21 +2539,21 @@ cx_int32 cx_updateTry(cx_object observable) {
 
 	return 0;
 busy:
-	return DB_LOCK_BUSY;
+	return CX_LOCK_BUSY;
 }
 
 cx_int32 cx_updateEnd(cx_object observable) {
     cx__writable* _wr;
     cx__observable *_o;
 
-    _o = cx__objectObservable(DB_OFFSET(observable, -sizeof(cx__object)));
+    _o = cx__objectObservable(CX_OFFSET(observable, -sizeof(cx__object)));
 
-    if (cx_notify(_o, observable, observable, DB_ON_UPDATE)) {
+    if (cx_notify(_o, observable, observable, CX_ON_UPDATE)) {
         goto error;
     }
 
     if (_o->lockRequired) {
-        _wr = cx__objectWritable(DB_OFFSET(observable, -sizeof(cx__object)));
+        _wr = cx__objectWritable(CX_OFFSET(observable, -sizeof(cx__object)));
         if (_wr) {
             cx_rwmutexUnlock(&_wr->lock);
         }
@@ -2565,18 +2565,18 @@ error:
 }
 
 cx_int32 cx_updateEndFrom(cx_object observable, cx_object _this) {
-	if (cx_checkAttr(observable, DB_ATTR_OBSERVABLE)) {
+	if (cx_checkAttr(observable, CX_ATTR_OBSERVABLE)) {
 		cx__writable* _wr;
 	    cx__observable *_o;
 
-	    _o = cx__objectObservable(DB_OFFSET(observable, -sizeof(cx__object)));
+	    _o = cx__objectObservable(CX_OFFSET(observable, -sizeof(cx__object)));
 
-		if (cx_notify(_o, observable, _this, DB_ON_UPDATE)) {
+		if (cx_notify(_o, observable, _this, CX_ON_UPDATE)) {
 			goto error;
 		}
 
 		if (_o->lockRequired) {
-			_wr = cx__objectWritable(DB_OFFSET(observable, -sizeof(cx__object)));
+			_wr = cx__objectWritable(CX_OFFSET(observable, -sizeof(cx__object)));
 			if (_wr) {
 				cx_rwmutexUnlock(&_wr->lock);
 			}
@@ -2594,10 +2594,10 @@ error:
 
 cx_int32 cx_updateCancel(cx_object observable) {
 
-	if (cx_checkAttr(observable, DB_ATTR_OBSERVABLE)) {
+	if (cx_checkAttr(observable, CX_ATTR_OBSERVABLE)) {
 		cx__writable* _wr;
 
-		_wr = cx__objectWritable(DB_OFFSET(observable, -sizeof(cx__object)));
+		_wr = cx__objectWritable(CX_OFFSET(observable, -sizeof(cx__object)));
 
 		cx_rwmutexUnlock(&_wr->lock);
 	} else {
@@ -2613,7 +2613,7 @@ error:
 
 static void cx_waitObserver(cx_object me, cx_object observable, cx_object source) {
     cx_waitForObject *waitAdmin;
-    DB_UNUSED(source);
+    CX_UNUSED(source);
 
     waitAdmin = (cx_waitForObject*)me;
 
@@ -2632,8 +2632,8 @@ static void cx_waitObserver(cx_object me, cx_object observable, cx_object source
 }
 
 static void __cx_waitObserver(cx_function f, void* result, void* args) {
-    DB_UNUSED(f);
-    DB_UNUSED(result);
+    CX_UNUSED(f);
+    CX_UNUSED(result);
     cx_waitObserver(
         *(cx_object*)args,
         *(cx_object*)((intptr_t)args + sizeof(cx_object)),
@@ -2644,7 +2644,7 @@ cx_int32 cx_waitfor(cx_object observable) {
     cx_waitForObject *waitAdmin;
 
     /* Obtain waitadministration */
-    waitAdmin = cx_threadTlsGet(DB_KEY_WAIT_ADMIN);
+    waitAdmin = cx_threadTlsGet(CX_KEY_WAIT_ADMIN);
     if (!waitAdmin) {
         cx_observer observer;
 
@@ -2657,12 +2657,12 @@ cx_int32 cx_waitfor(cx_object observable) {
         observer = cx_new(cx_typedef(cx_observer_o));
         cx_function(observer)->impl = (cx_word)__cx_waitObserver;
         cx_function(observer)->implData = (cx_word)cx_waitObserver;
-        cx_function(observer)->kind = DB_PROCEDURE_CDECL;
-        observer->mask = DB_ON_UPDATE;
+        cx_function(observer)->kind = CX_PROCEDURE_CDECL;
+        observer->mask = CX_ON_UPDATE;
 
         cx_define(observer);
         waitAdmin->observer = observer;
-        cx_threadTlsSet(DB_KEY_WAIT_ADMIN, waitAdmin);
+        cx_threadTlsSet(CX_KEY_WAIT_ADMIN, waitAdmin);
     }
 
     /* Add object to waitadministration */
@@ -2675,11 +2675,11 @@ cx_int32 cx_waitfor(cx_object observable) {
 cx_object cx_wait(cx_int32 timeout_sec, cx_int32 timeout_nanosec) {
     cx_waitForObject *waitAdmin;
     cx_object result = NULL;
-    DB_UNUSED(timeout_sec);
-    DB_UNUSED(timeout_nanosec);
+    CX_UNUSED(timeout_sec);
+    CX_UNUSED(timeout_nanosec);
 
     /* Obtain waitadministration */
-    waitAdmin = cx_threadTlsGet(DB_KEY_WAIT_ADMIN);
+    waitAdmin = cx_threadTlsGet(CX_KEY_WAIT_ADMIN);
     if (waitAdmin) {
         cx_uint32 i;
 
@@ -2701,10 +2701,10 @@ cx_object cx_wait(cx_int32 timeout_sec, cx_int32 timeout_nanosec) {
 
 /* Thread-safe reading */
 cx_int32 cx_readBegin(cx_object object) {
-	if (cx_checkAttr(object, DB_ATTR_WRITABLE)) {
+	if (cx_checkAttr(object, CX_ATTR_WRITABLE)) {
 		cx__writable* _o;
 
-		_o = cx__objectWritable(DB_OFFSET(object, -sizeof(cx__object)));
+		_o = cx__objectWritable(CX_OFFSET(object, -sizeof(cx__object)));
 		if (cx_rwmutexRead(&_o->lock)) {
 			goto error;
 		}
@@ -2716,10 +2716,10 @@ error:
 }
 
 cx_int32 cx_readEnd(cx_object object) {
-	if (cx_checkAttr(object, DB_ATTR_WRITABLE)) {
+	if (cx_checkAttr(object, CX_ATTR_WRITABLE)) {
 		cx__writable* _o;
 
-		_o = cx__objectWritable(DB_OFFSET(object, -sizeof(cx__object)));
+		_o = cx__objectWritable(CX_OFFSET(object, -sizeof(cx__object)));
 		if (cx_rwmutexUnlock(&_o->lock)) {
 			goto error;
 		}
@@ -2793,13 +2793,13 @@ error:
 }
 
 /* Obtain function parameter types from signature */
-cx_int32 cx_signatureParamType(cx_string signature, cx_uint32 id, cx_id buffer, cx_bool* reference) {
+cx_int32 cx_signatureParamType(cx_string signature, cx_uint32 id, cx_id buffer, int* flags) {
     cx_char ch, *srcptr, *bptr;
     cx_uint32 i;
     cx_bool parsed;
 
-    if (reference) {
-        *reference = FALSE;
+    if (flags) {
+        *flags = 0;
     }
 
     srcptr = strchr(signature, '(');
@@ -2853,8 +2853,17 @@ cx_int32 cx_signatureParamType(cx_string signature, cx_uint32 id, cx_id buffer, 
     }
     *bptr = '\0';
 
-    if ((ch == '&') && reference) {
-        *reference = TRUE;
+    if (flags && (ch == '&')) {
+        *flags |= CX_PARAMETER_REFERENCE;
+        if(*(srcptr+1) == '&') {
+            *flags |= CX_PARAMETER_FORCEREFERENCE;
+        }
+    }
+    if (flags && !strcmp(buffer, "?")) {
+        *flags |= CX_PARAMETER_WILDCARD;
+    }
+    if (flags && !strcmp(buffer, "null")) {
+        *flags |= CX_PARAMETER_NULL;
     }
 
     return 0;
@@ -2884,6 +2893,10 @@ cx_int32 cx_signatureParamName(cx_string signature, cx_uint32 id, cx_id buffer) 
             switch(ch) {
             case '&':
                 srcptr++;
+                if(*srcptr == '&') { /* Forcereference */
+                    srcptr++;
+                }
+
                 /* no break */
             case ' ':
                 srcptr++;
@@ -2933,6 +2946,124 @@ error:
     return -1;
 }
 
+/* Helper functions for overloading */
+cx_uint32 cx_overloadParamCount(cx_object o) {
+    cx_uint32 result;
+    if (cx_interface(cx_typeof(o)->real)->kind == CX_PROCEDURE) {
+        result = cx_function(o)->parameters.length;
+    } else {
+        result = cx_procptr(cx_typeof(o))->parameters.length;
+    }
+    return result;
+}
+
+/* Helper function that obtains type from signature */
+cx_type cx_overloadParamType(cx_object object, cx_int32 i, cx_bool *reference) {
+    cx_id buffer;
+    cx_int32 flags = 0;
+
+    if (cx_signatureParamType(cx_nameof(object), i, buffer, &flags)) {
+        goto error;
+    }
+
+    if (flags & CX_PARAMETER_REFERENCE) {
+        if (reference) *reference = TRUE;
+    } else {
+        if (reference) *reference = FALSE;
+    }
+
+    return cx_typedef(cx_resolve(object, buffer))->real;
+error:
+    cx_error("failed to obtain parameter %d from signature %s", i, cx_nameof(object));
+    return NULL;
+}
+
+
+/* Compare parameter */
+cx_uint32 cx_overloadParamCompare(
+    cx_type o_type,
+    cx_type r_type,
+    cx_bool o_reference,
+    cx_bool r_reference,
+    cx_bool r_forceReference,
+    cx_bool r_wildcard,
+    cx_bool r_null) {
+    cx_int32 d = 0;
+
+    /* Match wildcards */
+    if (r_wildcard) {
+        goto match;
+    }
+
+    /* Match reference modifiers */
+    if (o_reference) {
+        if (!r_reference && !r_null) {
+            goto nomatch; /* Parameter accepts only references */
+        } else {
+            if (!r_forceReference) {
+                d++; /* Favor pass by value in case of implicit reference passing */
+            }
+        }
+    } else if (r_reference) {
+        d++;
+    }
+
+    /* Match any */
+    if ((o_type->kind == CX_ANY) || (r_type && (r_type->kind == CX_ANY))) {
+        goto match;
+    }
+
+    /* Match null */
+    if (r_null) {
+        if (!o_reference && 
+            ((o_type->kind != CX_PRIMITIVE) || (cx_primitive(o_type)->kind != CX_TEXT))) {
+            goto nomatch;
+        } else {
+            goto match;
+        }
+    }
+
+    /* Match type compatibility */
+    if (cx_checkState(o_type, CX_DEFINED) && (cx_checkState(r_type, CX_DEFINED))) {
+        if (o_type == r_type) {
+            goto match;
+        }
+
+        /* If an interface, increase distance for each level in inheritance tree  */
+        if ((o_type->kind == CX_COMPOSITE) && (r_type->kind == CX_COMPOSITE)) {
+            cx_interface base = cx_interface(r_type);
+            while(base && (base != cx_interface(o_type))) {
+                d++;
+                base = base->base;
+            }
+            if (!base) {
+                goto nomatch; /* o_type doesn't occur in the inheritance tree of r_type */
+            }
+
+        /* If a generic reference, increase distance with the max levels in r's inheritance tree. This
+         * way, a more specific signature will always be favored */
+        } else if (o_reference && o_type->kind == CX_VOID) {
+            if (r_type->kind == CX_COMPOSITE) {
+                cx_interface base = cx_interface(r_type);
+                do { /* Always increase at least by one */
+                    d++;
+                } while((base = base->base));
+            } else {
+                d++;
+            } 
+        } else if (!cx_type_compatible(o_type, r_type)) {
+            goto nomatch; /* If not an interface or generic reference, types don't match */
+        }
+    } else if (o_type != r_type) {
+        goto nomatch;
+    }
+
+match:
+    return d;
+nomatch:
+    return -1;
+}
+
 /* Check if argumentlist-expr matches function.
  *   The offered string (the name of the object) looks like:
  *      name(type1 arg1,type2 arg2,...)
@@ -2942,203 +3073,97 @@ error:
  *   No extra whitespaces are allowed in both. Type-names are relative
  *   to the scope of the function-object.
  */
-cx_int16 cx_overload(cx_function object, cx_string name, cx_int32* distance, cx_bool allowCastable) {
-    cx_id offName, reqName;
-    cx_int32 offCount, reqCount;
-    int d;
+cx_int16 cx_overload(cx_object object, cx_string requested, cx_int32* distance, cx_bool allowCastable) {
+    cx_id r_name, o_name;
+    cx_int32 r_parameterCount, o_parameterCount;
+    cx_int32 i = 0, d = 0;
 
-    d = 0;
+    CX_UNUSED(allowCastable);
 
-    /* Obtain name from function (strip argumentlist) */
-    if (cx_signatureName(cx_nameof(object), offName)) {
+    /* Validate if function object is valid */
+    if (!cx_checkState(object, CX_VALID)) {
+        goto error;
+    }
+
+    /* Obtain name of offered object */
+    if (cx_signatureName(cx_nameof(object), o_name)) {
+        goto error;
+    }
+
+    /* Obtain name of requested object */
+    if (cx_signatureName(requested, r_name)) {
+        goto error;
+    }
+
+    /* Validate if names of request and offered match */
+    if (strcmp(o_name, r_name)) {
         goto nomatch;
     }
 
-    /* Obtain name from requested signature */
-    if (cx_signatureName(name, reqName)) {
+    /* Validate whether number of parameters is equal. A request is allowed to
+     * omit parameters */
+    r_parameterCount = cx_signatureParamCount(requested);
+    o_parameterCount = cx_overloadParamCount(object);
+
+    if ((r_parameterCount != -1) && (r_parameterCount != o_parameterCount)) {
         goto nomatch;
     }
 
-    /* Two function-names must be equal, otherwise requested name doesn't match */
-    if (strcmp(offName, reqName)) {
-        goto nomatch;
-    }
+    /* If request contains parameters, compare parameters of both */
+    if (r_parameterCount == o_parameterCount) {
+        for (i = 0; i < o_parameterCount; i++) {
+            cx_bool o_reference = FALSE, r_reference = FALSE; 
+            cx_bool r_forceReference = FALSE, r_wildcard = FALSE, r_null = FALSE;
+            cx_type o_type, r_type;
+            cx_id r_typeName;
+            int flags, paramDistance = 0;
 
-    /* Compare number of arguments */
-    offCount = cx_signatureParamCount(cx_nameof(object));
-    if (offCount == -1) {
-        cx_error("functionname '%s' is missing argumentlist", cx_nameof(object));
-        goto nomatch; /* Error */
-    }
-
-    reqCount = cx_signatureParamCount(name); /* reqCount is allowed to be -1, because the requested string may be omitting arguments */
-    if (reqCount != -1) {
-        if (offCount != reqCount) {
-            goto nomatch;
-        }
-    } else {
-        /* Ambiguous references are allowed but potentially dangerous. */
-    }
-
-    /* Compare argumentlists */
-    if (offCount == reqCount) {
-        cx_int32 i;
-        cx_bool defined = TRUE;
-
-        i = 0;
-
-        /* Variables offptr and reqptr now points to the first type of the argumentlist. Now loop through
-         * the arguments, and verify one-by-one that they match. */
-        for(i=0; i<reqCount; i++){
-            cx_id offTypeBuff, reqTypeBuff;
-            cx_bool referenceRequested, referenceOffered;
-
-            /* Get name of offered type */
-            if (cx_signatureParamType(cx_nameof(object), i, offTypeBuff, &referenceOffered)) {
-                goto nomatch; /* Error in argumentlist */
+            /* Obtain offered and requested type */
+            if (!(o_type = cx_overloadParamType(object, i, &o_reference))) {
+                goto error;
             }
-
-            /* Get name of requested type */
-            if (cx_signatureParamType(name, i, reqTypeBuff, &referenceRequested)) {
-                goto nomatch; /* Error in argumentlist */
-            }
-
-            /* If requested and offered are equal, there is a direct match - do not increase distance. */
-            if (!strcmp(reqTypeBuff, offTypeBuff)) {
-                continue;
+            if (cx_signatureParamType(requested, i, r_typeName, &flags)) {
+                goto error;
             } else {
-                cx_object offered=NULL, requested=NULL; /* Pointers to requested vs. offered types */
-                cx_bool requestedIsNull=FALSE;
+                r_type = cx_resolve(object, r_typeName);
+                if (r_type) {
+                    r_type = cx_typedef(r_type)->real;
+                }
+            }
 
-                 /* If types are not equal, resolve types and check if they are compatible(!) - so not castable! */
-                offered = cx_resolve_ext(NULL, cx_parentof(object), offTypeBuff, FALSE, "Resolve offered type for overload-check");
-                if (!offered) {
-                    cx_error("type '%s' of parameter %d in parameterlist of function '%s' not found", offTypeBuff, i, cx_nameof(object));
-                    if (requested) {
-                        cx_free_ext(NULL, requested, "Free requested type (error occurred).");
-                    }
-                    goto error;
-                }
-                
-                /* Validate offered is a type */
-                if (!cx_class_instanceof(cx_typedef_o, offered)) {
-                    cx_id id;
-                    cx_error("offered object '%s' is not a type", cx_fullname(offered, id));
-                    goto error;
-                }
-                
-                /* Determine whether offered is defined */
-                if (!cx_checkState(offered, DB_DEFINED)) {
-                    defined = FALSE;
-                }
+            /* Obtain flags */
+            o_reference |= o_type->reference;
+            r_reference |= (flags & CX_PARAMETER_REFERENCE) | (r_type ? r_type->reference : 0);
+            r_forceReference |= (flags & CX_PARAMETER_FORCEREFERENCE) | (r_type ? r_type->reference : 0);
+            r_wildcard = flags & CX_PARAMETER_WILDCARD;
+            r_null = flags & CX_PARAMETER_NULL;
 
-                /* If requested is 'null', type can either match a string or a reference */
-                if (!strcmp(reqTypeBuff, "null")) {
-                    requestedIsNull = TRUE;
-                } else if (!strcmp(reqTypeBuff, "?")) {
-                    cx_free_ext(NULL, offered, "wildcard encountered in request");
-                    continue; /* If the request type is a wildcard don't perform additional checks */
-                } else {
-                    requested = cx_resolve_ext(NULL, cx_parentof(object), reqTypeBuff, FALSE, "Resolve requested type for overload-check");
-                    if (!requested) {
-                        cx_error("type '%s' of parameter %d in request '%s' not found", reqTypeBuff, i, name);
-                        if (offered) {
-                            cx_free_ext(NULL, offered, "Free offered type (error occurred).");
-                        }
-                        goto error;
-                    }
-                    
-                    /* Check whether requested is a type */
-                    if (!cx_class_instanceof(cx_typedef_o, requested)) {
-                        cx_id id;
-                        cx_error("requested object '%s' is not a type", cx_fullname(requested, id));
-                        goto error;
-                    }
-                    
-                    /* Determine whether requested is defined */
-                    if (!cx_checkState(requested,DB_DEFINED)) {
-                        defined = FALSE;
-                    }
-                }
+            /* Evaluate whether parameter types are compatible */
+            paramDistance += cx_overloadParamCompare(
+                o_type, 
+                r_type, 
+                o_reference, 
+                r_reference, 
+                r_forceReference, 
+                r_wildcard, 
+                r_null);
 
-                /* If one or both types are not defined they must match exactly */
-                if (!defined && (offered != requested)) {
-                	goto nomatch;
-                }
-
-                /* If requested is 'null', check whether offered is either an any, reference or a string */
-                if (requestedIsNull) {
-                    if (!(cx_typedef(offered)->real->reference || referenceOffered)) {
-                        if ((cx_typedef(offered)->real->kind != DB_PRIMITIVE) || (cx_primitive(cx_typedef(offered)->real)->kind != DB_TEXT)) {
-                            if (cx_typedef(offered)->real->kind != DB_ANY) {
-                                goto nomatch;
-                            }
-                        }
-                    }
-                } else if (cx_type_compatible(cx_typedef(offered)->real, cx_typedef(requested)->real)) {
-                    /* If types are extendable, determine distance */
-                    if (cx_class_instanceof(cx_interface_o, offered)) {
-                    	cx_interface base;
-                    	base = cx_interface(requested);
-                    	while(base && (base != offered)) {
-                    		d++; /* Increase distance */
-                    		base = base->base;
-                    	}
-                    } else {
-                    	/* If not extendable, do not increase distance when types are equal, else increase distance by one */
-                    	if (cx_typedef(offered)->real != cx_typedef(requested)->real) {
-                    		/* If types are of the same primitive kind, don't increase distance */
-                    		if (cx_typedef(offered)->real->kind != DB_PRIMITIVE) {
-                    			d++;
-                    		} else {
-                    			if (cx_primitive(offered)->kind != cx_primitive(requested)->kind) {
-                    				d++;
-                    			}
-                    		}
-                    	}
-                    }
-                } else {
-                    if (allowCastable && cx_type_castable(cx_typedef(offered)->real, cx_typedef(requested)->real)) {
-                        /* Increase distance by one. This algorithm could have been made more complex to automatically select
-                         * the closest matching function w.r.t. downcasting but for the sake of understandability this
-                         * algorithm is kept simple. When ambiguity occurs because of this, an explicit cast is required. */
-                        d++;
-                    } else {
-                    	/* If offered type accepts any kind of reference and requested is a reference value (regardless
-                    	 * of whether it's a reference type) increase distance by one. */
-                    	if (((cx_typedef(offered)->real->kind == DB_VOID) &&
-                    		 cx_typedef(offered)->real->reference) &&
-                    		 referenceRequested) {
-                    		d++;
-                    	} else {
-							/* If types are not compatible and casting is not allowed, offered does not meet requested. */
-							cx_free_ext(NULL, offered, "Free offered-type.");
-							cx_free_ext(NULL, requested, "Free requested type.");
-							goto nomatch;
-                    	}
-                    }
-                }
-
-                cx_free_ext(NULL, offered, "Free offered type.");
-                if (requested) {
-                    cx_free_ext(NULL, requested, "Free requested type.");
-                }
+            if (paramDistance == -1) {
+                goto nomatch;
+            } else {
+                d += paramDistance;
             }
         }
     }
 
-    /* Assign distance (allows a user to pick the closest match). */
-    if (distance) {
-        *distance = d;
-    }
+    *distance = d;
 
-/*match:*/
     return 0;
 nomatch:
     *distance = -1;
     return 0;
 error:
-	return -1;
+    return -1;
 }
 
 typedef struct cx_lookupFunction_t {
@@ -3151,34 +3176,36 @@ typedef struct cx_lookupFunction_t {
 
 /* Lookup function in scope */
 int cx_lookupFunctionWalk(cx_object o, void* userData) {
-	cx_int32 d;
-	cx_lookupFunction_t* data;
+    cx_int32 d;
+    cx_lookupFunction_t* data;
 
-	data = userData;
+    data = userData;
 
-	/* If current object is a function, match it */
-	if (cx_class_instanceof(cx_procedure_o, cx_typeof(o))) {
-		if (cx_overload(o, data->request, &d, data->castableOverloading)) {
-			data->error = TRUE;
-			goto found;
-		}
+    /* If current object is a function, match it */
+    if ((cx_typeof(o)->real->kind == CX_COMPOSITE) && 
+        ((cx_interface(cx_typeof(o))->kind == CX_PROCEDURE) || 
+        (cx_interface(cx_typeof(o))->kind == CX_PROCPTR))) {
+        if (cx_overload(o, data->request, &d, data->castableOverloading)) {
+            data->error = TRUE;
+            goto found;
+        }
 
-		if (d != -1) {
-			if (d < data->d) {
-				data->result = o;
-				data->d = d;
-			}
+        if (d != -1) {
+            if (d < data->d) {
+                data->result = o;
+                data->d = d;
+            }
 
-			/* If distance is zero, the function is an exact match. */
-			if (!d) {
-				goto found;
-			}
-		}
-	}
+            /* If distance is zero, the function is an exact match. */
+            if (!d) {
+                goto found;
+            }
+        }
+    }
 
-	return 1;
+    return 1;
 found:
-	return 0;
+    return 0;
 }
 
 static int cx_scopeCollectWalk(cx_object o, void* userData) {
@@ -3189,7 +3216,7 @@ static int cx_scopeCollectWalk(cx_object o, void* userData) {
 }
 
 static int cx_scopeFreeWalk(cx_object o, void* userData) {
-	DB_UNUSED(userData);
+	CX_UNUSED(userData);
 	cx_free_ext(NULL, o, "Free collected objects in scope");
 	return 1;
 }
@@ -3256,30 +3283,37 @@ cx_string cx_signatureOpen(cx_string name) {
 	return result;
 }
 
-cx_string cx_signatureAdd(cx_string sig, cx_typedef type, cx_bool isReference) {
-	cx_uint32 len;
-	cx_string result;
-	cx_id id;
+cx_string cx_signatureAdd(cx_string sig, cx_typedef type, int flags) {
+    cx_uint32 len;
+    cx_string result;
+    cx_id id;
+    cx_bool reference = flags & CX_PARAMETER_REFERENCE;
+    cx_bool forceReference = flags & CX_PARAMETER_FORCEREFERENCE;
+    cx_bool wildcard = flags & CX_PARAMETER_WILDCARD;
     
     if (type) {
         cx_fullname(type, id);
+    } else if (wildcard) {
+        strcpy(id, "?");
     } else {
         strcpy(id, "null");
     }
     
-	len = strlen(sig);
-	if (sig[len-1] == '(') {
-		result = cx_realloc(sig, len + strlen(id) + 1 + (isReference ? 1 : 0));
-		strcat(result, id);
-		if (isReference) strcat(result, "&");
-	} else {
-		result = cx_realloc(sig, len + strlen(id) + 1 + 1 + (isReference ? 1 : 0));
-		strcat(result, ",");
-		strcat(result, id);
-		if (isReference) strcat(result, "&");
-	}
+    len = strlen(sig);
+    if (sig[len-1] == '(') {
+        result = cx_realloc(sig, len + strlen(id) + 1 + ((reference|forceReference) ? 2 : 0));
+        strcat(result, id);
+        if (flags & (reference|forceReference)) strcat(result, "&");
+        if (flags & (forceReference)) strcat(result, "&");
+    } else {
+        result = cx_realloc(sig, len + strlen(id) + 1 + 1 + ((reference|forceReference) ? 2 : 0));
+        strcat(result, ",");
+        strcat(result, id);
+        if (flags & (reference|forceReference)) strcat(result, "&");
+        if (flags & (forceReference)) strcat(result, "&");
+    }
 
-	return result;
+    return result;
 }
 
 cx_string cx_signatureAddWildcard(cx_string sig, cx_bool isReference) {
@@ -3337,7 +3371,7 @@ cx_string cx_toString(cx_object object, cx_uint32 maxLength) {
 	serData.compactNotation = TRUE;
 	serData.prefixType = FALSE;
 
-	s = cx_string_ser(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
+	s = cx_string_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
 	cx_serialize(&s, object, &serData);
 
 	return serData.buffer;
@@ -3353,7 +3387,7 @@ cx_string cx_valueToString(cx_value* v, cx_uint32 maxLength) {
 	serData.compactNotation = TRUE;
 	serData.prefixType = FALSE;
 
-	s = cx_string_ser(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
+	s = cx_string_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
 	cx_serializeValue(&s, v, &serData);
 
 	return serData.buffer;
@@ -3423,9 +3457,9 @@ cx_equalityKind cx_valueCompare(cx_value *value1, cx_value *value2) {
 cx_int16 cx_init(cx_object o) {
     cx_typeKind kind = cx_typeof(o)->real->kind;
     switch(kind) {
-        case DB_COMPOSITE:
-        case DB_COLLECTION: {
-            struct cx_serializer_s s = cx_ser_init(0, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
+        case CX_COMPOSITE:
+        case CX_COLLECTION: {
+            struct cx_serializer_s s = cx_ser_init(0, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
             cx_serialize(&s, o, NULL);
             break;
         }
@@ -3437,7 +3471,7 @@ cx_int16 cx_init(cx_object o) {
 
 /* Init value */
 cx_int16 cx_initValue(cx_value *v) {
-    struct cx_serializer_s s = cx_ser_init(0, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
+    struct cx_serializer_s s = cx_ser_init(0, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
 	return cx_serializeValue(&s, v, NULL);
 }
 
@@ -3445,9 +3479,9 @@ cx_int16 cx_initValue(cx_value *v) {
 cx_int16 cx_deinit(cx_object o) {
     cx_typeKind kind = cx_typeof(o)->real->kind;
     switch(kind) {
-        case DB_COMPOSITE:
-        case DB_COLLECTION: {
-            struct cx_serializer_s s = cx_ser_freeResources(0, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
+        case CX_COMPOSITE:
+        case CX_COLLECTION: {
+            struct cx_serializer_s s = cx_ser_freeResources(0, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
             cx_serialize(&s, o, NULL);
             break;
         }
@@ -3459,13 +3493,13 @@ cx_int16 cx_deinit(cx_object o) {
 
 /* Deinit value */
 cx_int16 cx_deinitValue(cx_value *v) {
-    struct cx_serializer_s s = cx_ser_freeResources(0, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
+    struct cx_serializer_s s = cx_ser_freeResources(0, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
 	return cx_serializeValue(&s, v, NULL);
 }
 
 /* Copy object */
 cx_int16 cx_copy(cx_object dst, cx_object src) {
-    struct cx_serializer_s s = cx_copy_ser(DB_PRIVATE, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
+    struct cx_serializer_s s = cx_copy_ser(CX_PRIVATE, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
     cx_copy_ser_t data;
     cx_int16 result;
     cx_valueObjectInit(&data.value, dst);
@@ -3475,7 +3509,7 @@ cx_int16 cx_copy(cx_object dst, cx_object src) {
 
 /* Copy value */
 cx_int16 cx_valueCopy(cx_value *dst, cx_value *src) {
-    struct cx_serializer_s s = cx_copy_ser(DB_PRIVATE, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
+    struct cx_serializer_s s = cx_copy_ser(CX_PRIVATE, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
     cx_copy_ser_t data;
     cx_int16 result;
     data.value = *dst;
@@ -3492,12 +3526,12 @@ cx_object cx_cortex__new(cx_typedef type, cx_attr attributes) {
 }
 
 void __cx_cortex_new(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_object*)result = cx_cortex_new(*(cx_typedef*)args);
 }
 
 void __cx_cortex__new(cx_function f, void *result, void *args) {
-    DB_UNUSED(f);
+    CX_UNUSED(f);
     *(cx_object*)result = cx_cortex__new(
         *(cx_typedef*)args,
         *(cx_attr*)((intptr_t)args + sizeof(cx_typedef)));

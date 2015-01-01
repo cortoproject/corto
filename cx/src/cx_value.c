@@ -26,33 +26,33 @@ cx_typedef cx_valueType(cx_value* val) {
     cx_typedef result;
 
     switch(val->kind) {
-    case DB_OBJECT:
+    case CX_OBJECT:
         result = cx_typeof(val->is.o);
         break;
-    case DB_BASE:
+    case CX_BASE:
         result = val->is.base.t;
         break;
-    case DB_VALUE:
+    case CX_VALUE:
         result = val->is.value.t;
         break;
-    case DB_LITERAL:
+    case CX_LITERAL:
     	switch(val->is.literal.kind) {
-    	case DB_LITERAL_BOOLEAN:
+    	case CX_LITERAL_BOOLEAN:
     		result = cx_typedef(cx_bool_o);
     		break;
-    	case DB_LITERAL_CHARACTER:
+    	case CX_LITERAL_CHARACTER:
     		result = cx_typedef(cx_char_o);
     		break;
-    	case DB_LITERAL_INTEGER:
+    	case CX_LITERAL_INTEGER:
     		result = cx_typedef(cx_int64_o);
     		break;
-    	case DB_LITERAL_UNSIGNED_INTEGER:
+    	case CX_LITERAL_UNSIGNED_INTEGER:
     		result = cx_typedef(cx_uint64_o);
     		break;
-    	case DB_LITERAL_FLOATING_POINT:
+    	case CX_LITERAL_FLOATING_POINT:
     		result = cx_typedef(cx_float64_o);
     		break;
-    	case DB_LITERAL_STRING:
+    	case CX_LITERAL_STRING:
     		result = cx_typedef(cx_string_o);
     		break;
     	default:
@@ -61,19 +61,19 @@ cx_typedef cx_valueType(cx_value* val) {
     		break;
     	}
     	break;
-    case DB_MEMBER:
+    case CX_MEMBER:
         result = val->is.member.t->type;
         break;
-    case DB_CALL:
+    case CX_CALL:
     	result = val->is.call.t->returnType;
     	break;
-    case DB_CONSTANT:
+    case CX_CONSTANT:
         result = cx_valueType(val->parent);
         break;
-    case DB_ELEMENT:
+    case CX_ELEMENT:
         result = val->is.element.t.type;
         break;
-    case DB_MAP_ELEMENT:
+    case CX_MAP_ELEMENT:
     	result = val->is.mapElement.t.type;
     	break;
     default:
@@ -88,31 +88,31 @@ cx_typedef cx_valueType(cx_value* val) {
 cx_void* cx_valueValue(cx_value* val) {
     cx_void* result;
     switch(val->kind) {
-    case DB_OBJECT:
+    case CX_OBJECT:
         result = val->is.o;
         break;
-    case DB_BASE:
+    case CX_BASE:
         result = val->is.base.v;
         break;
-    case DB_LITERAL:
+    case CX_LITERAL:
     	result = &val->is.literal.v;
     	break;
-    case DB_VALUE:
+    case CX_VALUE:
         result = val->is.value.v;
         break;
-    case DB_MEMBER:
+    case CX_MEMBER:
         result = val->is.member.v;
         break;
-    case DB_CALL:
+    case CX_CALL:
     	result = NULL; /* A call has no value */
     	break;
-    case DB_CONSTANT:
+    case CX_CONSTANT:
         result = val->is.constant.v;
         break;
-    case DB_ELEMENT:
+    case CX_ELEMENT:
         result = val->is.element.v;
         break;
-    case DB_MAP_ELEMENT:
+    case CX_MAP_ELEMENT:
     	result = val->is.mapElement.v;
     	break;
     default:
@@ -127,31 +127,31 @@ cx_object cx_valueObject(cx_value* val) {
     cx_object result;
 
     switch(val->kind) {
-    case DB_OBJECT:
+    case CX_OBJECT:
         result = val->is.o;
         break;
-    case DB_BASE:
+    case CX_BASE:
         result = val->is.base.o;
         break;
-    case DB_LITERAL:
+    case CX_LITERAL:
     	result = NULL;
     	break;
-    case DB_VALUE:
+    case CX_VALUE:
         result = val->is.value.o;
         break;
-    case DB_MEMBER:
+    case CX_MEMBER:
         result = val->is.member.o;
         break;
-    case DB_CALL:
+    case CX_CALL:
     	result = val->is.call.o;
     	break;
-    case DB_CONSTANT:
+    case CX_CONSTANT:
         result = val->is.constant.o;
         break;
-    case DB_ELEMENT:
+    case CX_ELEMENT:
         result = val->is.element.o;
         break;
-    case DB_MAP_ELEMENT:
+    case CX_MAP_ELEMENT:
     	result = val->is.mapElement.o;
     	break;
     default:
@@ -166,7 +166,7 @@ cx_function cx_valueFunction(cx_value* val) {
     cx_function result;
 
     switch(val->kind) {
-    case DB_OBJECT:
+    case CX_OBJECT:
         if (cx_class_instanceof(cx_procedure_o, cx_typeof(val->is.o))) {
             result = val->is.o;
         } else {
@@ -175,7 +175,7 @@ cx_function cx_valueFunction(cx_value* val) {
             result = NULL;
         }
         break;
-    case DB_CALL:
+    case CX_CALL:
         result = val->is.call.t;
         break;
     default:
@@ -190,7 +190,7 @@ cx_function cx_valueFunction(cx_value* val) {
 cx_uint32 cx_valueIndex(cx_value* val) {
     cx_uint32 result = 0;
     switch(val->kind) {
-    case DB_ELEMENT:
+    case CX_ELEMENT:
         result = val->is.element.t.index;
         break;
     default:
@@ -204,7 +204,7 @@ cx_void *cx_valueThis(cx_value* val) {
     cx_void *result;
 
     switch(val->kind) {
-    case DB_CALL:
+    case CX_CALL:
         if (val->parent) {
             result = cx_valueValue(val->parent);
         } else {
@@ -221,12 +221,12 @@ cx_void *cx_valueThis(cx_value* val) {
     return result;
 }
 
-static char* cx_valueKindString[DB_CONSTANT+1] = {"object", "base", "member", "constant", "element"};
+static char* cx_valueKindString[CX_CONSTANT+1] = {"object", "base", "member", "constant", "element"};
 
 char* cx_valueString(cx_value* v, char* buffer, unsigned int length) {
     cx_id object_name;
     cx_member m;
-    cx_value* parents[DB_MAX_TYPE_DEPTH];
+    cx_value* parents[CX_MAX_TYPE_DEPTH];
     cx_int32 parentCount, i;
     cx_value* vptr;
 
@@ -252,7 +252,7 @@ char* cx_valueString(cx_value* v, char* buffer, unsigned int length) {
     parentCount = 0;
     vptr = v;
     do{
-        if (vptr->kind != DB_OBJECT) {
+        if (vptr->kind != CX_OBJECT) {
             parents[parentCount] = vptr;
             parentCount++;
         }
@@ -263,16 +263,16 @@ char* cx_valueString(cx_value* v, char* buffer, unsigned int length) {
         vptr = parents[i];
         m = NULL;
         switch(vptr->kind) {
-        case DB_LITERAL:
-        case DB_VALUE:
+        case CX_LITERAL:
+        case CX_VALUE:
             /* Nothing to add for just a value */
             break;
-        case DB_BASE:
+        case CX_BASE:
             break;
-        case DB_MEMBER:
+        case CX_MEMBER:
             m = vptr->is.member.t;
             break;
-        case DB_ELEMENT:
+        case CX_ELEMENT:
             sprintf(buffer, "%s[%d]", buffer, vptr->is.element.t.index);
             m = NULL;
             break;
@@ -298,7 +298,7 @@ error:
 
 char* cx_valueExpr(cx_value* v, char* buffer, unsigned int length) {
     cx_member m;
-    cx_value* parents[DB_MAX_TYPE_DEPTH];
+    cx_value* parents[CX_MAX_TYPE_DEPTH];
     cx_int32 parentCount, i;
     cx_value* vptr;
 
@@ -308,7 +308,7 @@ char* cx_valueExpr(cx_value* v, char* buffer, unsigned int length) {
     parentCount = 0;
     vptr = v;
     do{
-        if (vptr->kind != DB_OBJECT) {
+        if (vptr->kind != CX_OBJECT) {
             parents[parentCount] = vptr;
             parentCount++;
         }
@@ -319,15 +319,15 @@ char* cx_valueExpr(cx_value* v, char* buffer, unsigned int length) {
         vptr = parents[i];
         m = NULL;
         switch(vptr->kind) {
-        case DB_LITERAL:
-        case DB_VALUE:
+        case CX_LITERAL:
+        case CX_VALUE:
             break;
-        case DB_BASE:
+        case CX_BASE:
             break;
-        case DB_MEMBER:
+        case CX_MEMBER:
             m = vptr->is.member.t;
             break;
-        case DB_ELEMENT:
+        case CX_ELEMENT:
             sprintf(buffer, "%s[%d]", buffer, vptr->is.element.t.index);
             m = NULL;
             break;
@@ -352,42 +352,42 @@ error:
 }
 
 void cx_valueObjectInit(cx_value* val, cx_object o) {
-    val->kind = DB_OBJECT;
+    val->kind = CX_OBJECT;
     val->is.o = o;
 }
 
 void cx_valueBaseInit(cx_value* val, cx_void *v, cx_typedef t) {
-    val->kind = DB_BASE;
+    val->kind = CX_BASE;
     val->is.base.v = v;
     val->is.base.t = t;
 }
 
 void cx_valueValueInit(cx_value* val, cx_object o, cx_typedef t, cx_void* v) {
     val->parent = NULL;
-    val->kind = DB_VALUE;
+    val->kind = CX_VALUE;
     val->is.value.o = o;
     val->is.value.t = t;
     val->is.value.v = v;
 }
 void cx_valueMemberInit(cx_value* val, cx_object o, cx_member t, cx_void* v) {
-    val->kind = DB_MEMBER;
+    val->kind = CX_MEMBER;
     val->is.member.o = o;
     val->is.member.t = t;
     val->is.member.v = v;
 }
 void cx_valueCallInit(cx_value* val, cx_object o, cx_function t) {
-    val->kind = DB_CALL;
+    val->kind = CX_CALL;
     val->is.call.o = o;
     val->is.call.t = t;
 }
 void cx_valueConstantInit(cx_value* val, cx_object o, cx_constant* t, cx_void* v) {
-    val->kind = DB_CONSTANT;
+    val->kind = CX_CONSTANT;
     val->is.constant.o = o;
     val->is.constant.t = t;
     val->is.constant.v = v;
 }
 void cx_valueElementInit(cx_value* val, cx_object o, cx_typedef t, cx_uint32 index, cx_void* v) {
-    val->kind = DB_ELEMENT;
+    val->kind = CX_ELEMENT;
     val->is.element.o = o;
     val->is.element.t.type = t;
     val->is.element.t.index = index;
@@ -395,7 +395,7 @@ void cx_valueElementInit(cx_value* val, cx_object o, cx_typedef t, cx_uint32 ind
 }
 
 void cx_valueMapElementInit(cx_value* val, cx_object o, cx_typedef t, cx_typedef keyType, cx_void *key, cx_void* v) {
-    val->kind = DB_MAP_ELEMENT;
+    val->kind = CX_MAP_ELEMENT;
     val->is.mapElement.o = o;
     val->is.mapElement.t.type = t;
     val->is.mapElement.t.keyType = keyType;
@@ -404,55 +404,55 @@ void cx_valueMapElementInit(cx_value* val, cx_object o, cx_typedef t, cx_typedef
 }
 
 void cx_valueLiteralInit(cx_value* val, cx_literalKind kind, cx_void* value) {
-	val->kind = DB_LITERAL;
+	val->kind = CX_LITERAL;
 	val->is.literal.kind = kind;
 
 	switch(kind) {
-	case DB_LITERAL_BOOLEAN:
+	case CX_LITERAL_BOOLEAN:
 		val->is.literal.v._boolean = *(cx_bool*)value;
 		break;
-	case DB_LITERAL_CHARACTER:
+	case CX_LITERAL_CHARACTER:
 		val->is.literal.v._character = *(cx_char*)value;
 		break;
-	case DB_LITERAL_INTEGER:
+	case CX_LITERAL_INTEGER:
 		val->is.literal.v._integer = *(cx_int64*)value;
 		break;
-	case DB_LITERAL_UNSIGNED_INTEGER:
+	case CX_LITERAL_UNSIGNED_INTEGER:
 		val->is.literal.v._unsigned_integer = *(cx_uint64*)value;
 		break;
-	case DB_LITERAL_FLOATING_POINT:
+	case CX_LITERAL_FLOATING_POINT:
 		val->is.literal.v._floating_point = *(cx_float64*)value;
 		break;
-	case DB_LITERAL_STRING:
+	case CX_LITERAL_STRING:
 		if (*(cx_string*)value) {
 			val->is.literal.v._string = cx_strdup(*(cx_string*)value);
 		} else {
 			val->is.literal.v._string = NULL;
 		}
 		break;
-	case DB_LITERAL_NULL:
+	case CX_LITERAL_NULL:
 		break;
 	}
 }
 
 void cx_valueSetValue(cx_value* val, cx_void* v) {
 	switch(val->kind) {
-	case DB_OBJECT:
+	case CX_OBJECT:
 		val->is.o = v; /* Dangerous, but allowed */
 		break;
-	case DB_BASE:
+	case CX_BASE:
 	    val->is.base.v = v;
 	    break;
-	case DB_MEMBER:
+	case CX_MEMBER:
 		val->is.member.v = v;
 		break;
-	case DB_CONSTANT:
+	case CX_CONSTANT:
 		val->is.constant.v = v;
 		break;
-	case DB_ELEMENT:
+	case CX_ELEMENT:
 		val->is.element.v = v;
 		break;
-	case DB_MAP_ELEMENT:
+	case CX_MAP_ELEMENT:
 		val->is.mapElement.v = v;
 		break;
 	default:
@@ -463,9 +463,9 @@ void cx_valueSetValue(cx_value* val, cx_void* v) {
 
 void cx_valueFree(cx_value* val) {
     switch(val->kind) {
-    case DB_LITERAL:
+    case CX_LITERAL:
         switch(val->is.literal.kind) {
-        case DB_LITERAL_STRING:
+        case CX_LITERAL_STRING:
             cx_dealloc(val->is.literal.v._string);
             break;
         default:

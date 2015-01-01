@@ -19,7 +19,7 @@ cx_int16 cx_observer_bind(cx_observer object) {
     cx_parameter *p;
 
 	/* If this is a scoped observer, automatically bind with parent if it's a class. */
-	if (cx_checkAttr(object, DB_ATTR_SCOPED)) {
+	if (cx_checkAttr(object, CX_ATTR_SCOPED)) {
 		if (cx_class_instanceof(cx_class_o, cx_parentof(object))) {
 			cx_class_bindObserver(cx_parentof(object), object);
 		}
@@ -38,7 +38,7 @@ cx_int16 cx_observer_bind(cx_observer object) {
 	p = &cx_function(object)->parameters.buffer[0];
 	p->name = cx_strdup("observable");
 	p->passByReference = TRUE;
-	if (object->observable && (!(object->mask & DB_ON_SCOPE) && !(object->mask & DB_ON_DECLARE))) {
+	if (object->observable && (!(object->mask & CX_ON_SCOPE) && !(object->mask & CX_ON_DECLARE))) {
 		p->type = cx_typeof(object->observable);
 		cx_keep_ext(object, cx_typeof(object->observable), "Keep parameter type");
 	} else {
@@ -54,13 +54,13 @@ cx_int16 cx_observer_bind(cx_observer object) {
 	cx_keep_ext(object, cx_object_o, "Keep type of source parameter for observer");
 
     /* Check if mask specifies either SELF or CHILDS, if not enable SELF */
-    if (!((object->mask & DB_ON_SELF) || (object->mask & DB_ON_SCOPE))) {
-        object->mask |= DB_ON_SELF;
+    if (!((object->mask & CX_ON_SELF) || (object->mask & CX_ON_SCOPE))) {
+        object->mask |= CX_ON_SELF;
     }
 
 	/* Check if mask specifies either VALUE or METAVALUE, if not enable VALUE */
-	if (!((object->mask & DB_ON_VALUE) || (object->mask & DB_ON_METAVALUE))) {
-	    object->mask |= DB_ON_VALUE;
+	if (!((object->mask & CX_ON_VALUE) || (object->mask & CX_ON_METAVALUE))) {
+	    object->mask |= CX_ON_VALUE;
 	}
 
     /* Listen to observable */
@@ -110,8 +110,8 @@ cx_int16 cx_observer_listen(cx_observer _this, cx_object observable, cx_object m
 	}
 
 	if (observable) {
-		if (!me || cx_checkState(me, DB_DEFINED)) {
-			if (cx_checkAttr(observable, DB_ATTR_OBSERVABLE)) {
+		if (!me || cx_checkState(me, CX_DEFINED)) {
+			if (cx_checkAttr(observable, CX_ATTR_OBSERVABLE)) {
 				cx_listen(observable, _this, me);
 			} else {
 				if (!_this->template) {

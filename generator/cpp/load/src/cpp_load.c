@@ -19,7 +19,7 @@ typedef struct cpp_typeWalk_t {
 
 /* Resolve object */
 static cx_char* cpp_loadResolve(cx_object o, cx_char* out) {
-	if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
+	if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
 		cx_id id;
 		sprintf(out, "::cortex::resolve(NULL, \"%s\")", cx_fullname(o, id));
 	} else {
@@ -28,7 +28,7 @@ static cx_char* cpp_loadResolve(cx_object o, cx_char* out) {
 		cx_string_ser_t data;
 
 		/* Serialize object string */
-		stringSer = cx_string_ser(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
+		stringSer = cx_string_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
 
 		*ostr = '\0';
 		data.compactNotation = TRUE;
@@ -50,7 +50,7 @@ error:
 
 /* Get variable id */
 static cx_char* cpp_loadVarId(cx_generator g, cx_object o, cx_char* out) {
-	if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
+	if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
 		cpp_metaFullname(g, o, CPP_HANDLE, out);
 	} else {
 		cx_id id;
@@ -81,7 +81,7 @@ static cx_char* cpp_loadElementId(cx_value* v, cx_char* out, cx_int32 offset) {
 	ptr = v;
 
 	do {
-		if (ptr->kind == DB_ELEMENT) {
+		if (ptr->kind == CX_ELEMENT) {
 			i++;
 		}
 	}while((ptr = ptr->parent));
@@ -94,7 +94,7 @@ static cx_char* cpp_loadElementId(cx_value* v, cx_char* out, cx_int32 offset) {
 /* This function translates from a value-object to a valid C-string identifying a
  * part of the object that is being serialized. */
 static cx_char* cpp_loadMemberId(cpp_typeWalk_t* data, cx_value* v, cx_char* out, cx_bool addMemberOperator) {
-    cx_value* stack[DB_MAX_TYPE_DEPTH];
+    cx_value* stack[CX_MAX_TYPE_DEPTH];
     cx_uint32 count;
     cx_value *ptr;
     cx_object o;
@@ -106,7 +106,7 @@ static cx_char* cpp_loadMemberId(cpp_typeWalk_t* data, cx_value* v, cx_char* out
     /* Build serializer-stack */
     ptr = v;
     count = 0;
-    while((ptr->kind != DB_OBJECT) && (ptr->kind != DB_BASE)) {
+    while((ptr->kind != CX_OBJECT) && (ptr->kind != CX_BASE)) {
         stack[count] = ptr;
         ptr = ptr->parent;
         count++;
@@ -117,7 +117,7 @@ static cx_char* cpp_loadMemberId(cpp_typeWalk_t* data, cx_value* v, cx_char* out
     o = cx_valueObject(v);
 
     /* If object is an array, dereference object, so the '[ ]' operator can be used on object. Same for primtives, primitive-objects are pointers to primitive values. */
-    objectIsArray = (cx_typeof(o)->real->kind == DB_PRIMITIVE) || ((cx_typeof(o)->real->kind == DB_COLLECTION) && (cx_collection(cx_typeof(o)->real)->kind == DB_ARRAY));
+    objectIsArray = (cx_typeof(o)->real->kind == CX_PRIMITIVE) || ((cx_typeof(o)->real->kind == CX_COLLECTION) && (cx_collection(cx_typeof(o)->real)->kind == CX_ARRAY));
 
     /* Use '->' operator whenever possible */
     if (!objectIsArray) {
@@ -157,7 +157,7 @@ static cx_char* cpp_loadMemberId(cpp_typeWalk_t* data, cx_value* v, cx_char* out
         switch(stack[count]->kind) {
 
         /* Member */
-        case DB_MEMBER: {
+        case CX_MEMBER: {
         	cx_id id;
         	/* When previous object is a reference, use -> operator. */
         	if (derefMemberOperator) {
@@ -173,7 +173,7 @@ static cx_char* cpp_loadMemberId(cpp_typeWalk_t* data, cx_value* v, cx_char* out
         }
 
         /* Element */
-        case DB_ELEMENT: {
+        case CX_ELEMENT: {
             cx_collection t;
             cx_char arrayIndex[24];
 
@@ -182,13 +182,13 @@ static cx_char* cpp_loadMemberId(cpp_typeWalk_t* data, cx_value* v, cx_char* out
             switch(t->kind) {
 
             /* Array element, use array operator. */
-            case DB_ARRAY:
+            case CX_ARRAY:
                 sprintf(arrayIndex, "[%d]", stack[count]->is.element.t.index);
                 strcat(out, arrayIndex);
                 break;
 
             /* Sequence element, use buffer-array */
-            case DB_SEQUENCE:
+            case CX_SEQUENCE:
             	if (derefMemberOperator) {
             		strcat(out, "->");
             	} else {
@@ -202,7 +202,7 @@ static cx_char* cpp_loadMemberId(cpp_typeWalk_t* data, cx_value* v, cx_char* out
             default: {
             	cx_char elementId[9]; /* One-million nested collections should be adequate in most cases. */
 
-            	if ((cx_valueType(stack[count])->real->kind == DB_COLLECTION) && (cx_collection(cx_valueType(stack[count])->real)->kind == DB_ARRAY)) {
+            	if ((cx_valueType(stack[count])->real->kind == CX_COLLECTION) && (cx_collection(cx_valueType(stack[count])->real)->kind == CX_ARRAY)) {
             		sprintf(out, "(*%s)", cpp_loadElementId(stack[count], elementId, 0));
             	} else {
             		sprintf(out, "%s", cpp_loadElementId(stack[count], elementId, 0));
@@ -214,7 +214,7 @@ static cx_char* cpp_loadMemberId(cpp_typeWalk_t* data, cx_value* v, cx_char* out
             break;
         }
 
-        /* DB_OBJECT and DB_CONSTANT will not be encountered in this loop. */
+        /* CX_OBJECT and CX_CONSTANT will not be encountered in this loop. */
         default:
         	cx_assert(0, "invalid valueKind at this place.");
             break;
@@ -242,7 +242,7 @@ static int cpp_loadDeclareWalk(cx_object o, void* userData) {
     data = userData;
     t = cx_typeof(o);
 
-    if (!(cx_typeof(cx_parentof(o))->real->kind == DB_VOID)) {
+    if (!(cx_typeof(cx_parentof(o))->real->kind == CX_VOID)) {
     	cpp_openScope(data->header, cx_parentof(cx_parentof(o)));
     	cpp_openScope(data->source, cx_parentof(cx_parentof(o)));
     } else {
@@ -272,28 +272,28 @@ static int cpp_loadDeclareWalk(cx_object o, void* userData) {
         g_fileWrite(data->header, "extern %s *%s;\n", specifier, cpp_metaName(data->g, o, CPP_HANDLE, objectId));
         g_fileWrite(data->source, "%s *%s;\n", specifier, objectId);
 		if (isClass) { /* Maybe someday extendables might become non-ref types, this code makes sure that this is covered. */
-			g_setIdKind(data->g, DB_GENERATOR_ID_CLASS_UPPER);
+			g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_UPPER);
 		    /* Get upper-case typespecifier */
 		    if (!cpp_specifierId(data->g, t, specifier)) {
 		    	goto error;
 		    }
 			g_fileWrite(data->header, "extern %s %s;\n", specifier, cpp_metaName(data->g, o, CPP_OBJECT, objectId));
 			g_fileWrite(data->source, "%s %s;\n", specifier, cpp_metaName(data->g, o, CPP_OBJECT, objectId));
-			g_setIdKind(data->g, DB_GENERATOR_ID_CLASS_LOWER);
+			g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_LOWER);
 		}
     } else {
         /* Here, the type is already a reftype, therefore it's not required to put an '*' in front of the variable name */
         g_fileWrite(data->header, "extern %s %s;\n", specifier, cpp_metaName(data->g, o, CPP_HANDLE, objectId));
         g_fileWrite(data->source, "%s %s;\n", specifier, objectId);
 		if (isClass) {
-			g_setIdKind(data->g, DB_GENERATOR_ID_CLASS_UPPER);
+			g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_UPPER);
 		    /* Get upper-case typespecifier */
 		    if (!cpp_specifierId(data->g, t, specifier)) {
 		    	goto error;
 		    }
 			g_fileWrite(data->header, "extern %s (*%s);\n", specifier, cpp_metaName(data->g, o, CPP_OBJECT, objectId));
 			g_fileWrite(data->source, "%s (*%s);\n", specifier, cpp_metaName(data->g, o, CPP_OBJECT, objectId));
-			g_setIdKind(data->g, DB_GENERATOR_ID_CLASS_LOWER);
+			g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_LOWER);
 		}
     }
 
@@ -313,7 +313,7 @@ typedef enum cpp_proxyKind {
 
 /* Generate stubs for method */
 static int cpp_loadMethodProxy(cx_object o, void* userData) {
-    if (cx_class_instanceof(cx_procedure_o, cx_typeof(o)) && (cx_procedure(cx_typeof(o))->kind != DB_METAPROCEDURE)) {
+    if (cx_class_instanceof(cx_procedure_o, cx_typeof(o)) && (cx_procedure(cx_typeof(o))->kind != CX_METAPROCEDURE)) {
 		cx_id specifier, id;
 		cpp_typeWalk_t* data;
 		cx_uint32 i, paramCount;
@@ -325,11 +325,11 @@ static int cpp_loadMethodProxy(cx_object o, void* userData) {
 		kind = cx_procedure(cx_typeof(o)->real)->kind;
 		thisType = NULL;
 
-		if ((kind == DB_METHOD) || (kind == DB_DELEGATE) || ((kind == DB_OBSERVER) && (cx_class_instanceof(cx_class_o, cx_parentof(o))))) {
+		if ((kind == CX_METHOD) || (kind == CX_DELEGATE) || ((kind == CX_OBSERVER) && (cx_class_instanceof(cx_class_o, cx_parentof(o))))) {
 			proxyKind = CLASS_PROXY;
 			thisType = cx_parentof(o); /* Type of this is parent of procedure */
-		} else if (kind == DB_CALLBACK) {
-			if (cx_checkState(o, DB_DEFINED)) {
+		} else if (kind == CX_CALLBACK) {
+			if (cx_checkState(o, CX_DEFINED)) {
 				proxyKind = NO_PROXY;
 			} else {
 				proxyKind = DELEGATE_PROXY;
@@ -380,7 +380,7 @@ static int cpp_loadMethodProxy(cx_object o, void* userData) {
 			/* Print implementation */
 			g_fileWrite(data->source, ") {\n");
 			g_fileIndent(data->source);
-			g_setIdKind(data->g, DB_GENERATOR_ID_CLASS_UPPER);
+			g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_UPPER);
 
 			/* If procedure has this, create C++ proxy-object (this is always an abstract object) */
 			if (thisType) {
@@ -398,10 +398,10 @@ static int cpp_loadMethodProxy(cx_object o, void* userData) {
 								g_id(data->g, p->name, id2));
 				}
 			}
-			g_setIdKind(data->g, DB_GENERATOR_ID_CLASS_LOWER);
+			g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_LOWER);
 
 			/* If procedure has returnType, return */
-			if (cx_function(o)->returnType && ((cx_function(o)->returnType->real->kind != DB_VOID) || cx_function(o)->returnType->real->reference)) {
+			if (cx_function(o)->returnType && ((cx_function(o)->returnType->real->kind != CX_VOID) || cx_function(o)->returnType->real->reference)) {
 				g_fileWrite(data->source, "return ");
 			}
 
@@ -411,13 +411,13 @@ static int cpp_loadMethodProxy(cx_object o, void* userData) {
 
 			/* If function is static class-member, prefix class-scope */
 			} else if ((proxyKind == STATIC_PROXY) || (proxyKind == DELEGATE_PROXY)) {
-				g_setIdKind(data->g, DB_GENERATOR_ID_CLASS_UPPER);
+				g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_UPPER);
 				g_fileWrite(data->source, "%s::", g_fullOid(data->g, cx_parentof(o), id));
-				g_setIdKind(data->g, DB_GENERATOR_ID_CLASS_LOWER);
+				g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_LOWER);
 			}
 
 			paramCount = 0;
-			if ((kind == DB_METHOD) && (cx_method(o)->virtual)) {
+			if ((kind == CX_METHOD) && (cx_method(o)->virtual)) {
 				g_fileWrite(data->source, "%s_v(", cpp_procId(data->g, o, id));
 			} else {
 				g_fileWrite(data->source, "%s(", cpp_procId(data->g, o, id));
@@ -491,9 +491,9 @@ static int cpp_printIncludes(void* o, void* userData) {
 
     data = userData;
     cpp_topath(cx_parentof(o), path);
-    g_setIdKind(data->g, DB_GENERATOR_ID_CLASS_UPPER);
+    g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_UPPER);
     g_fileWrite(data->source, "#include \"%s/%s.hpp\"\n", path, g_oid(data->g, o, id));
-    g_setIdKind(data->g, DB_GENERATOR_ID_CLASS_LOWER);
+    g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_LOWER);
     return 1;
 }
 
@@ -505,7 +505,7 @@ static int cpp_loadProxyWalk(cx_object o, void* userData) {
 
 	if (cx_class_instanceof(cx_interface_o, o) && cx_type(o)->reference) {
 		cpp_metaFullname(data->g, o, CPP_HANDLE, h_var);
-		g_setIdKind(data->g, DB_GENERATOR_ID_CLASS_UPPER);
+		g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_UPPER);
 		cpp_metaFullname(data->g, o, CPP_OBJECT, o_var);
 		g_fullOid(data->g, cx_typeof(o), className);
 		g_fileWrite(data->source, "%s = new %s(%s);\n", o_var, className, h_var);
@@ -521,10 +521,10 @@ static int cpp_unloadProxyWalk(cx_object o, void* userData) {
     data = userData;
 
     if (cx_class_instanceof(cx_interface_o, o) && cx_type(o)->reference) {
-        g_setIdKind(data->g, DB_GENERATOR_ID_CLASS_UPPER);
+        g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_UPPER);
         cpp_metaFullname(data->g, o, CPP_OBJECT, o_var);
         g_fileWrite(data->source, "delete %s;\n", o_var);
-        g_setIdKind(data->g, DB_GENERATOR_ID_CLASS_LOWER);
+        g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_LOWER);
     }
 
     return 1;
@@ -662,7 +662,7 @@ static int cpp_loadDeclare(cx_object o, void* userData) {
     data = userData;
 
     /* Only declare scoped objects */
-    if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
+    if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
 
         /* Declaration */
         g_fileWrite(data->source, "/* Declare %s */\n", cx_fullname(o, id));
@@ -675,7 +675,7 @@ static int cpp_loadDeclare(cx_object o, void* userData) {
                     cx_fullname(o, fullId));
         g_fileIndent(data->source);
 
-        if (!cx_checkAttr(cx_typeof(o), DB_ATTR_SCOPED)) {
+        if (!cx_checkAttr(cx_typeof(o), CX_ATTR_SCOPED)) {
 			g_fileWrite(data->source, "%s = (%s%s)::cortex::declare(%s, \"%s\", (_a_ ? ::cortex::free(_a_) : 0, _a_ = ((::cortex::lang::_typedef)%s)));\n",
 					cpp_loadVarId(data->g, o, id),
                     specId,
@@ -722,7 +722,7 @@ static void cpp_varPrintStart(cx_value* v, cpp_typeWalk_t* data) {
     t = cx_valueType(v)->real;
 
     /* Only write an identifier if the object is a primitive type, or a reference. */
-    if ((t->kind == DB_PRIMITIVE) || (t->reference && !(v->kind == DB_OBJECT))) {
+    if ((t->kind == CX_PRIMITIVE) || (t->reference && !(v->kind == CX_OBJECT))) {
         /* Print memberId if object is member */
 		g_fileWrite(data->source, "%s = ",
 				cpp_loadMemberId(data, v, memberId, FALSE));
@@ -735,7 +735,7 @@ static void cpp_varPrintEnd(cx_value* v, cpp_typeWalk_t* data) {
 
     /* Get member object */
     t = cx_valueType(v)->real;
-    if ((t->kind == DB_PRIMITIVE) || (t->reference && !(v->kind == DB_OBJECT))) {
+    if ((t->kind == CX_PRIMITIVE) || (t->reference && !(v->kind == CX_OBJECT))) {
         /* Print end of member-assignment */
         g_fileWrite(data->source, ";\n");
     }
@@ -747,7 +747,7 @@ static cx_int16 cpp_initPrimitive(cx_serializer s, cx_value* v, void* userData) 
     cx_type t;
     cx_string str;
     cpp_typeWalk_t* data;
-    DB_UNUSED(s);
+    CX_UNUSED(s);
 
     ptr = cx_valueValue(v);
     t = cx_valueType(v)->real;
@@ -758,13 +758,13 @@ static cx_int16 cpp_initPrimitive(cx_serializer s, cx_value* v, void* userData) 
 
     /* Treat booleans separately, the default convert translates booleans to 'true' and 'false' while
      * the language mapping of C TRUE and FALSE is. */
-    if (cx_primitive(t)->kind == DB_BOOLEAN) {
+    if (cx_primitive(t)->kind == CX_BOOLEAN) {
     	if (*(cx_bool*)ptr) {
     		str = cx_strdup("TRUE");
     	} else {
     		str = cx_strdup("FALSE");
     	}
-    } else if (cx_primitive(t)->kind == DB_ENUM) {
+    } else if (cx_primitive(t)->kind == CX_ENUM) {
         cx_id enumId, scopeId;
         cx_constant *c;
 
@@ -779,10 +779,10 @@ static cx_int16 cpp_initPrimitive(cx_serializer s, cx_value* v, void* userData) 
         /* Convert constant-name to language id */
         str = cx_malloc(strlen(enumId) + strlen(scopeId) + 2 + 1);
         sprintf(str, "%s::%s", scopeId, enumId);
-    } else if (cx_primitive(t)->kind == DB_BITMASK) {
+    } else if (cx_primitive(t)->kind == CX_BITMASK) {
         str = cx_malloc(11);
         sprintf(str, "0x%x", *(cx_uint32*)ptr);
-    } else if (cx_primitive(t)->kind == DB_TEXT) {
+    } else if (cx_primitive(t)->kind == CX_TEXT) {
     	cx_string v = *(cx_string*)ptr;
     	if (v) {
     		str = malloc(strlen("::cortex::strdup()") + strlen(v) + 1);
@@ -800,8 +800,8 @@ static cx_int16 cpp_initPrimitive(cx_serializer s, cx_value* v, void* userData) 
 	g_fileWrite(data->source, "%s", str);
 	cx_dealloc(str);
 
-	if (cx_primitive(t)->width == DB_WIDTH_64) {
-	    if (cx_primitive(t)->kind == DB_UINTEGER) {
+	if (cx_primitive(t)->width == CX_WIDTH_64) {
+	    if (cx_primitive(t)->kind == CX_UINTEGER) {
 	        g_fileWrite(data->source, "ULL");
 	    }
 	}
@@ -817,7 +817,7 @@ error:
 static cx_int16 cpp_initReference(cx_serializer s, cx_value* v, void* userData) {
     cx_object *optr, o;
     cpp_typeWalk_t* data;
-    DB_UNUSED(s);
+    CX_UNUSED(s);
 
     data = userData;
     optr = cx_valueValue(v);
@@ -849,8 +849,8 @@ static cx_int16 cpp_initElement(cx_serializer s, cx_value* v, void* userData) {
 
 	/* Allocate space for element */
 	switch(t->kind) {
-	case DB_LIST:
-	case DB_MAP: {
+	case CX_LIST:
+	case CX_MAP: {
 		cx_id elementId, specifier;
 		g_fileWrite(data->source, "\n");
 
@@ -868,14 +868,14 @@ static cx_int16 cpp_initElement(cx_serializer s, cx_value* v, void* userData) {
 	}
 
 	switch(t->kind) {
-	case DB_LIST: {
+	case CX_LIST: {
 		cx_id parentId, elementId;
 		g_fileWrite(data->source, "%s->append(%s);\n",
 				cpp_loadMemberId(data, v->parent, parentId, FALSE),
 				cpp_loadElementId(v, elementId, 0));
 		break;
 	}
-	case DB_MAP: /*{
+	case CX_MAP: /*{
 		cx_id parentId, elementId;
 		g_fileWrite(data->source, "cx_rbtreeSet(%s, %s)",
 				cpp_loadMemberId(data->g, v->parent, parentId),
@@ -906,10 +906,10 @@ static cx_int16 cpp_initCollection(cx_serializer s, cx_value* v, void* userData)
     data = userData;
 
     switch(t->kind) {
-    case DB_ARRAY:
+    case CX_ARRAY:
         size = t->max;
         break;
-    case DB_SEQUENCE: {
+    case CX_SEQUENCE: {
         cx_uint32 length;
     	cx_id specifier;
 
@@ -941,7 +941,7 @@ static cx_int16 cpp_initCollection(cx_serializer s, cx_value* v, void* userData)
         }
         break;
     }
-    case DB_LIST:
+    case CX_LIST:
         /* Create list object */
     	if (*(cx_ll*)ptr) {
             size = cx_llSize(*(cx_ll*)ptr);
@@ -951,7 +951,7 @@ static cx_int16 cpp_initCollection(cx_serializer s, cx_value* v, void* userData)
     		g_fileWrite(data->source, "%s = NULL;\n", cpp_loadMemberId(data, v, memberId, FALSE));
     	}
         break;
-    case DB_MAP: {
+    case CX_MAP: {
     	cx_id keyId;
         /* Create map object */
     	if (*(cx_rbtree*)ptr) {
@@ -968,8 +968,8 @@ static cx_int16 cpp_initCollection(cx_serializer s, cx_value* v, void* userData)
 	/* For the non-array types, allocate a member variable, if size of collection is not zero. */
     if (size) {
 		switch(t->kind) {
-		case DB_LIST:
-		case DB_MAP: {
+		case CX_LIST:
+		case CX_MAP: {
 			cx_id elementId, elementTypeId;
 			g_fileWrite(data->source, "{\n");
 			g_fileIndent(data->source);
@@ -986,8 +986,8 @@ static cx_int16 cpp_initCollection(cx_serializer s, cx_value* v, void* userData)
 
     if (size) {
 		switch(t->kind) {
-		case DB_LIST:
-		case DB_MAP: {
+		case CX_LIST:
+		case CX_MAP: {
 			g_fileDedent(data->source);
 			g_fileWrite(data->source, "}\n");
 			break;
@@ -1019,16 +1019,16 @@ static cx_int16 cpp_initObject(cx_serializer s, cx_value* v, void* userData) {
     cx_serializeValue(s, v, userData);
 
     /* If object is a procedure, set function implementation */
-    if (cx_class_instanceof(cx_procedure_o, cx_typeof(o)) && (cx_procedure(cx_typeof(o))->kind != DB_METAPROCEDURE)) {
+    if (cx_class_instanceof(cx_procedure_o, cx_typeof(o)) && (cx_procedure(cx_typeof(o))->kind != CX_METAPROCEDURE)) {
     	isProcedure = TRUE;
 
     	/* C++ uses CDECL convention */
         g_fileWrite(data->source, "\n");
         g_fileWrite(data->source, "/* Bind %s with C++ function */\n", id);
-        g_fileWrite(data->source, "((::cortex::lang::function)%s)->kind = DB_PROCEDURE_CDECL;\n", cpp_loadVarId(data->g, o, id));
+        g_fileWrite(data->source, "((::cortex::lang::function)%s)->kind = CX_PROCEDURE_CDECL;\n", cpp_loadVarId(data->g, o, id));
 
         /* Bind function-object with marshall function */
-		if (!(cx_checkState(o, DB_DEFINED) && (cx_procedure(cx_typeof(o))->kind == DB_CALLBACK))) {
+		if (!(cx_checkState(o, CX_DEFINED) && (cx_procedure(cx_typeof(o))->kind == CX_CALLBACK))) {
 			g_fileWrite(data->source, "((::cortex::lang::function)%s)->impl = reinterpret_cast< ::cortex::lang::word>(%s);\n", id, cpp_loadMarshallId(data->g, o, id2));
 		} else {
 			/* Callback functions are not generated when they are defined while the load-routine was generated. This is because a callback
@@ -1036,11 +1036,11 @@ static cx_int16 cpp_initObject(cx_serializer s, cx_value* v, void* userData) {
 			g_fileWrite(data->source, "((::cortex::lang::function)%s)->impl = 0;\n", id);
 		}
 
-        g_setIdKind(data->g, DB_GENERATOR_ID_CLASS_LOWER);
+        g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_LOWER);
     }
 
     /* Define object, but not if the object is a procedure and the parent is an abstract class, because these have no implementation. */
-    if (!(isProcedure && (cx_interface(cx_parentof(o))->kind == DB_INTERFACE))) {
+    if (!(isProcedure && (cx_interface(cx_parentof(o))->kind == CX_INTERFACE))) {
 		g_fileWrite(data->source, "if (::cortex::define(%s)) {\n", cpp_loadVarId(data->g, o, id));
 		g_fileIndent(data->source);
 		g_fileWrite(data->source, "::cortex::error(\"%s_load: failed to define object '%s'.\");\n",
@@ -1063,13 +1063,13 @@ static struct cx_serializer_s cpp_initSerializer(void) {
 
     cx_serializerInit(&s);
 
-    s.access = DB_LOCAL;
-    s.accessKind = DB_NOT;
-    s.traceKind = DB_SERIALIZER_TRACE_ON_FAIL;
-    s.program[DB_PRIMITIVE] = cpp_initPrimitive;
-    s.program[DB_COLLECTION] = cpp_initCollection;
-    s.metaprogram[DB_OBJECT] = cpp_initObject;
-    s.metaprogram[DB_ELEMENT] = cpp_initElement;
+    s.access = CX_LOCAL;
+    s.accessKind = CX_NOT;
+    s.traceKind = CX_SERIALIZER_TRACE_ON_FAIL;
+    s.program[CX_PRIMITIVE] = cpp_initPrimitive;
+    s.program[CX_COLLECTION] = cpp_initCollection;
+    s.metaprogram[CX_OBJECT] = cpp_initObject;
+    s.metaprogram[CX_ELEMENT] = cpp_initElement;
     s.reference = cpp_initReference;
 
     return s;
@@ -1079,7 +1079,7 @@ static struct cx_serializer_s cpp_initSerializer(void) {
 static int cpp_loadDefine(cx_object o, void* userData) {
     struct cx_serializer_s s;
 
-    if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
+    if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
         /* Obtain serializer to initialize object values */
         s = cpp_initSerializer();
 
@@ -1095,7 +1095,7 @@ int cortex_genMain(cx_generator g) {
     cpp_typeWalk_t walkData;
     cx_ll headers;
 
-    g_setIdKind(g, DB_GENERATOR_ID_CLASS_LOWER);
+    g_setIdKind(g, CX_GENERATOR_ID_CLASS_LOWER);
 
     /* Prepare walkData, create header- and sourcefile */
     walkData.g = g;

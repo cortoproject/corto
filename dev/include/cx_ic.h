@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB_IC_H_
-#define DB_IC_H_
+#ifndef CX_IC_H_
+#define CX_IC_H_
 
 #include "cx_type.h"
 #include "cx_value.h"
@@ -19,85 +19,85 @@ extern "C" {
 
 typedef enum cx_icOpKind {
 	/* Set (assign) */
-	DB_IC_SET,
+	CX_IC_SET,
 
 	/* Cast */
-	DB_IC_CAST,
+	CX_IC_CAST,
 
 	/* String concatenation */
-	DB_IC_STRCAT,
-	DB_IC_STRCPY,
+	CX_IC_STRCAT,
+	CX_IC_STRCPY,
 
 	/* Memory management */
-	DB_IC_NEW,
-	DB_IC_DEFINE,
-	DB_IC_FREE,
-	DB_IC_KEEP,
+	CX_IC_NEW,
+	CX_IC_DEFINE,
+	CX_IC_FREE,
+	CX_IC_KEEP,
 
 	/* Notifications */
-	DB_IC_UPDATE,
-	DB_IC_UPDATEBEGIN,
-	DB_IC_UPDATEEND,
-	DB_IC_UPDATECANCEL,
+	CX_IC_UPDATE,
+	CX_IC_UPDATEBEGIN,
+	CX_IC_UPDATEEND,
+	CX_IC_UPDATECANCEL,
 
 	/* Waiting */
-	DB_IC_WAITFOR,
-	DB_IC_WAIT,
+	CX_IC_WAITFOR,
+	CX_IC_WAIT,
 
 	/* Operators */
-	DB_IC_ADD,
-	DB_IC_SUB,
-	DB_IC_MUL,
-	DB_IC_DIV,
-	DB_IC_MOD,
-	DB_IC_INC,
-	DB_IC_DEC,
-	DB_IC_XOR,
-	DB_IC_OR,
-	DB_IC_AND,
-	DB_IC_NOT,
-	DB_IC_SHIFT_LEFT,
-	DB_IC_SHIFT_RIGHT,
-	DB_IC_STAGE1,
-	DB_IC_STAGE2,
-	DB_IC_COND_OR,
-	DB_IC_COND_AND,
-	DB_IC_COND_NOT,
-	DB_IC_COND_EQ,
-	DB_IC_COND_NEQ,
-	DB_IC_COND_GT,
-	DB_IC_COND_LT,
-	DB_IC_COND_GTEQ,
-	DB_IC_COND_LTEQ,
+	CX_IC_ADD,
+	CX_IC_SUB,
+	CX_IC_MUL,
+	CX_IC_DIV,
+	CX_IC_MOD,
+	CX_IC_INC,
+	CX_IC_DEC,
+	CX_IC_XOR,
+	CX_IC_OR,
+	CX_IC_AND,
+	CX_IC_NOT,
+	CX_IC_SHIFT_LEFT,
+	CX_IC_SHIFT_RIGHT,
+	CX_IC_STAGE1,
+	CX_IC_STAGE2,
+	CX_IC_COND_OR,
+	CX_IC_COND_AND,
+	CX_IC_COND_NOT,
+	CX_IC_COND_EQ,
+	CX_IC_COND_NEQ,
+	CX_IC_COND_GT,
+	CX_IC_COND_LT,
+	CX_IC_COND_GTEQ,
+	CX_IC_COND_LTEQ,
 
 	/* Program control */
-	DB_IC_JUMP,
-	DB_IC_JEQ,
-	DB_IC_JNEQ,
-	DB_IC_STOP,
+	CX_IC_JUMP,
+	CX_IC_JEQ,
+	CX_IC_JNEQ,
+	CX_IC_STOP,
 
 	/* Function calls */
-	DB_IC_PUSH,
-	DB_IC_CALL,
-	DB_IC_RET
+	CX_IC_PUSH,
+	CX_IC_CALL,
+	CX_IC_RET
 }cx_icOpKind;
 
 /* Intermediate structures */
 typedef enum cx_icKind {
-	DB_IC_STORAGE,
-	DB_IC_LITERAL,
-	DB_IC_LABEL,
-	DB_IC_FUNCTION,
-	DB_IC_OP,
-	DB_IC_SCOPE
+	CX_IC_STORAGE,
+	CX_IC_LITERAL,
+	CX_IC_LABEL,
+	CX_IC_FUNCTION,
+	CX_IC_OP,
+	CX_IC_SCOPE
 }cx_icKind;
 
 typedef enum cx_icStorageKind {
-	DB_STORAGE_OBJECT,
-	DB_STORAGE_LOCAL,
-	DB_STORAGE_ACCUMULATOR,
-	DB_STORAGE_MEMBER,
-	DB_STORAGE_ELEMENT
+	CX_STORAGE_OBJECT,
+	CX_STORAGE_LOCAL,
+	CX_STORAGE_ACCUMULATOR,
+	CX_STORAGE_MEMBER,
+	CX_STORAGE_ELEMENT
 }cx_icStorageKind;
 
 typedef struct cx_ic_s *cx_ic;
@@ -126,9 +126,9 @@ typedef struct cx_icValue_s {
 }cx_icValue_s;
 
 typedef enum cx_icDerefMode {
-    DB_IC_DEREF_VALUE = 0,
-    DB_IC_DEREF_ADDRESS,
-    DB_IC_DEREF_PUSH
+    CX_IC_DEREF_VALUE = 0,
+    CX_IC_DEREF_ADDRESS,
+    CX_IC_DEREF_PUSH
 }cx_icDerefMode;
 
 typedef struct cx_icStorage_s {
@@ -270,4 +270,4 @@ cx_icOpKind cx_icOpKindFromOperator(cx_operatorKind operator);
 }
 #endif
 
-#endif /* DB_IC_H_ */
+#endif /* CX_IC_H_ */

@@ -15,13 +15,13 @@
 
 cx_int16 cx_ser_keepReference(cx_serializer s, cx_value* v, void* userData) {
 	cx_object o;
-	DB_UNUSED(s);
-	DB_UNUSED(userData);
+	CX_UNUSED(s);
+	CX_UNUSED(userData);
 
     o = *(cx_object*)cx_valueValue(v);
     if (o) {
         cx_bool weak = FALSE;
-        if (v->kind == DB_MEMBER) {
+        if (v->kind == CX_MEMBER) {
             if (v->is.member.t->weak) {
                 weak = TRUE;
             }
@@ -38,15 +38,15 @@ cx_int16 cx_ser_freePrimitive(cx_serializer s, cx_value* v, void* udata) {
 	cx_type t;
 	void* o;
 
-	DB_UNUSED(s);
-	DB_UNUSED(udata);
+	CX_UNUSED(s);
+	CX_UNUSED(udata);
 
 	t = cx_valueType(v)->real;
 	o = cx_valueValue(v);
 
 	/* Free strings */
 	switch(cx_primitive(t)->kind) {
-	case DB_TEXT: {
+	case CX_TEXT: {
 	    cx_string str;
 	    if ((str = *(cx_string*)o)) {
 	        cx_dealloc(str);
@@ -61,7 +61,7 @@ cx_int16 cx_ser_freePrimitive(cx_serializer s, cx_value* v, void* udata) {
 }
 
 int cx_ser_clear(void* o, void* udata) {
-    DB_UNUSED(udata);
+    CX_UNUSED(udata);
     cx_dealloc(o);
     return 1;
 }
@@ -79,9 +79,9 @@ cx_int16 cx_ser_freeCollection(cx_serializer s, cx_value* v, void* userData) {
 	}
 
 	switch(cx_collection(t)->kind) {
-	case DB_ARRAY:
+	case CX_ARRAY:
 		break;
-	case DB_SEQUENCE: {
+	case CX_SEQUENCE: {
 	    void* buffer;
 	    buffer = ((struct{cx_uint32 length; void* buffer;}*)o)->buffer;
 	    if (buffer) {
@@ -89,7 +89,7 @@ cx_int16 cx_ser_freeCollection(cx_serializer s, cx_value* v, void* userData) {
 	    }
 	    break;
 	}
-	case DB_LIST:
+	case CX_LIST:
 	    if (*(cx_ll*)o) {
 	        /* Free memory allocated for listnodes */
 	        if (cx_collection_elementRequiresAlloc(cx_collection(t))) {
@@ -98,7 +98,7 @@ cx_int16 cx_ser_freeCollection(cx_serializer s, cx_value* v, void* userData) {
 	        cx_llFree(*(cx_ll*)o);
 	    }
 	    break;
-	case DB_MAP:
+	case CX_MAP:
 	    if (*(cx_rbtree*)o) {
 	        /* Free memory allocated for mapnodes */
             if (cx_collection_elementRequiresAlloc(cx_collection(t))) {
@@ -123,13 +123,13 @@ error:
 cx_int16 cx_ser_freeReference(cx_serializer s, cx_value* v, void* userData) {
     cx_object *optr, o;
 
-    DB_UNUSED(s);
-    DB_UNUSED(userData);
+    CX_UNUSED(s);
+    CX_UNUSED(userData);
     optr = cx_valueValue(v);
 
     if ((o = *optr)) {
         cx_bool weak = FALSE;
-        if (v->kind == DB_MEMBER) {
+        if (v->kind == CX_MEMBER) {
             if (v->is.member.t->weak) {
                 weak = TRUE;
             }
@@ -175,8 +175,8 @@ struct cx_serializer_s cx_ser_freeResources(cx_modifier access, cx_operatorKind 
 	s.access = access;
 	s.accessKind = accessKind;
 	s.traceKind = trace;
-	s.program[DB_PRIMITIVE] = cx_ser_freePrimitive;
-	s.program[DB_COLLECTION] = cx_ser_freeCollection;
+	s.program[CX_PRIMITIVE] = cx_ser_freePrimitive;
+	s.program[CX_COLLECTION] = cx_ser_freeCollection;
 	s.reference = cx_ser_freeReference;
 	return s;
 }

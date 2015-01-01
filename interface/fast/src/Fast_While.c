@@ -53,8 +53,8 @@ cx_ic Fast_While_toIc_v(Fast_While _this, cx_icProgram program, cx_icStorage sto
     cx_bool condResult = FALSE, inverse = FALSE;
 	cx_ic expr = NULL;
 	cx_icOp eval;
-	DB_UNUSED(storage);
-	DB_UNUSED(stored);
+	CX_UNUSED(storage);
+	CX_UNUSED(stored);
 
 	/* Obtain accumulator for evaluating the condition */
 	accumulator = (cx_icStorage)cx_icProgram_accumulatorPush(
@@ -75,7 +75,7 @@ cx_ic Fast_While_toIc_v(Fast_While _this, cx_icProgram program, cx_icStorage sto
         
         /* Evaluate condition, insert jump */
         if (expr) {
-            eval = cx_icOp__create(program, Fast_Node(_this)->line, inverse?DB_IC_JEQ:DB_IC_JNEQ, (cx_icValue)expr, (cx_icValue)labelNeq, NULL);
+            eval = cx_icOp__create(program, Fast_Node(_this)->line, inverse?CX_IC_JEQ:CX_IC_JNEQ, (cx_icValue)expr, (cx_icValue)labelNeq, NULL);
             cx_icProgram_addIc(program, (cx_ic)eval);
         }
     }
@@ -104,7 +104,7 @@ cx_ic Fast_While_toIc_v(Fast_While _this, cx_icProgram program, cx_icStorage sto
 
     /* Evaluate condition, insert jump to evaluate */
     if (expr) {
-        eval = cx_icOp__create(program, Fast_Node(_this)->line, inverse?DB_IC_JNEQ:DB_IC_JEQ, (cx_icValue)expr, (cx_icValue)labelEval, NULL);
+        eval = cx_icOp__create(program, Fast_Node(_this)->line, inverse?CX_IC_JNEQ:CX_IC_JEQ, (cx_icValue)expr, (cx_icValue)labelEval, NULL);
         cx_icProgram_addIc(program, (cx_ic)eval);
     }
 

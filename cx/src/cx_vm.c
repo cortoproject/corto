@@ -26,7 +26,7 @@
 #pragma GCC diagnostic ignored "-pedantic"
 #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 
-cx_bool DB_DEBUG_ENABLED = 0;
+cx_bool CX_DEBUG_ENABLED = 0;
 
 #include "signal.h"
 
@@ -373,14 +373,14 @@ typedef union Di2f_t {
 	PUSH_##code:\
 		fetchOp1(PUSH,code);\
 		*(type##_t*)c.sp = op_##code;\
-		c.sp = DB_OFFSET(c.sp, sizeof(type##_t));\
+		c.sp = CX_OFFSET(c.sp, sizeof(type##_t));\
 		next();\
 
 #define PUSHX(type,code)\
 	PUSHX_##code:\
 		fetchOp1(PUSHX,code);\
 		*(cx_word*)c.sp = (cx_word)&op_##code;\
-		c.sp = DB_OFFSET(c.sp, sizeof(cx_word));\
+		c.sp = CX_OFFSET(c.sp, sizeof(cx_word));\
 		next();\
 
 #define _PUSHANY(opx,_type,code,postfix,deref,typearg,_pc,v)\
@@ -390,7 +390,7 @@ typedef union Di2f_t {
     ((cx_any*)c.sp)->type = (cx_type)typearg;\
     ((cx_any*)c.sp)->value = (void*)deref _pc op##v##_##code;\
     ((cx_any*)c.sp)->owner = FALSE;\
-    c.sp = DB_OFFSET(c.sp, sizeof(cx_any));\
+    c.sp = CX_OFFSET(c.sp, sizeof(cx_any));\
     next();\
 
 #define PUSHANYX(_type,code)    _PUSHANY(X,_type,code,,&,c.hi.w,,)
@@ -641,7 +641,7 @@ typedef union Di2f_t {
         op1_##code = (W_t)cx_wait(0,0);\
         next();\
 
-#ifdef DB_VM_BOUNDSCHECK
+#ifdef CX_VM_BOUNDSCHECK
 #define CHECK_BOUNDS(size, index)\
     if ((int)size <= (int)index) {\
         printf("Exception: element [%" PRIdPTR "] is out of bounds (collection size is %" PRId32 ")\n", index, size);\
@@ -664,7 +664,7 @@ typedef union Di2f_t {
 		{\
 			cx_objectSeq* seq = (cx_objectSeq*)op1_##code##V;\
             CHECK_BOUNDS(seq->length, op2_##code##V);\
-			op1_##code##V = (W_t)DB_OFFSET(seq->buffer,op2_##code##V * op3_##code##V);\
+			op1_##code##V = (W_t)CX_OFFSET(seq->buffer,op2_##code##V * op3_##code##V);\
 		}\
 		next();\
 
@@ -802,7 +802,7 @@ typedef union Di2f_t {
 
 /* Translation from opcode-id to address */
 #define TOJMP_OPERAND(_op,type,lvalue,rvalue)\
-	case DB_VM_##_op##_##type##lvalue##rvalue: p[i].op = toJump(_op##_##type##lvalue##rvalue); break;\
+	case CX_VM_##_op##_##type##lvalue##rvalue: p[i].op = toJump(_op##_##type##lvalue##rvalue); break;\
 
 #define TOJMP_OPERAND_PQRV(_op,type,lvalue)\
     TOJMP_OPERAND(_op,type,lvalue,V)\
@@ -916,7 +916,7 @@ typedef union Di2f_t {
 
 /* Translation from opcode-id to string */
 #define TOSTR_OPERAND(_op,type,lvalue,rvalue)\
-    case DB_VM_##_op##_##type##lvalue##rvalue: result = cx_vmOp_toString(result, &p[i], #_op, #type, #lvalue, #rvalue, ""); break;\
+    case CX_VM_##_op##_##type##lvalue##rvalue: result = cx_vmOp_toString(result, &p[i], #_op, #type, #lvalue, #rvalue, ""); break;\
 
 #define TOSTR_OPERAND_PQRV(_op,type,lvalue)\
     TOSTR_OPERAND(_op,type,lvalue,V)\
@@ -1050,7 +1050,7 @@ struct cx_vm_context {
     cx_stringConcatCache *strcache;
 };
 
-#ifdef DB_VM_DEBUG
+#ifdef CX_VM_DEBUG
 typedef void(*sigfunc)(int);
 static sigfunc prevSegfaultHandler;
 static sigfunc prevAbortHandler;
@@ -1077,7 +1077,7 @@ static void cx_vm_sig(int sig) {
         }
         
         /* Print program with location of crash */
-#ifdef DB_IC_TRACING
+#ifdef CX_IC_TRACING
         if(sp == (cx_int32)programData->sp-1) {
             cx_string str = cx_vmProgram_toString(program, programData->c[sp]->pc);
             printf("\n%s\n", str);
@@ -1159,18 +1159,18 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
         cx_vmOp *p = program->program;
         uint32_t i;
         for(i=0; i<size;i++) {
-#ifdef DB_VM_DEBUG
+#ifdef CX_VM_DEBUG
             p[i].opKind = p[i].op; /* Cache actual opKind for debugging purposes */
 #endif
             switch(p[i].op) {
-				case DB_VM_NOOP: p[i].op = toJump(NOOP); break;
+				case CX_VM_NOOP: p[i].op = toJump(NOOP); break;
                 TOJMP_OP2(SET,PQRV);
-				case DB_VM_SET_WRX: p[i].op = toJump(SET_WRX); break;
+				case CX_VM_SET_WRX: p[i].op = toJump(SET_WRX); break;
 				TOJMP_OP2_W(SETREF,PQRV);
 				TOJMP_OP2_W(SETSTR,PQRV);
 				TOJMP_OP2_W(SETSTRDUP,PQRV);
-				case DB_VM_ZERO: p[i].op = toJump(ZERO); break;
-                case DB_VM_INIT: p[i].op = toJump(INIT); break;
+				case CX_VM_ZERO: p[i].op = toJump(ZERO); break;
+                case CX_VM_INIT: p[i].op = toJump(INIT); break;
 
                 TOJMP_OP1(INC);
                 TOJMP_OP1(DEC);
@@ -1192,10 +1192,10 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
                 TOJMP_OP1(NOT);
 
                 TOJMP_OP1_PQRV(STAGE1);
-                case DB_VM_STAGE12_DP: p[i].op = toJump(STAGE12_DP); break;
-                case DB_VM_STAGE12_DV: p[i].op = toJump(STAGE12_DV); break;
+                case CX_VM_STAGE12_DP: p[i].op = toJump(STAGE12_DP); break;
+                case CX_VM_STAGE12_DV: p[i].op = toJump(STAGE12_DV); break;
                 TOJMP_OP2_V(STAGE2,PQRV);
-                case DB_VM_STAGE2_DVV: p[i].op = toJump(STAGE2_DVV); break;
+                case CX_VM_STAGE2_DVV: p[i].op = toJump(STAGE2_DVV); break;
 
                 TOJMP_OP1_COND(CAND);
                 TOJMP_OP1_COND(COR);
@@ -1223,9 +1223,9 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
 
                 TOJMP_OP1(JEQ);
                 TOJMP_OP1(JNEQ);
-				case DB_VM_JUMP: p[i].op = toJump(JUMP); break;
+				case CX_VM_JUMP: p[i].op = toJump(JUMP); break;
 
-				case DB_VM_MEMBER: p[i].op = toJump(MEMBER); break;
+				case CX_VM_MEMBER: p[i].op = toJump(MEMBER); break;
 
 				TOJMP_OPERAND_PQRV(ELEMA,W,R);
 				TOJMP_OPERAND_PQRV(ELEMS,W,R);
@@ -1241,8 +1241,8 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
 
                 TOJMP_OPERAND_PQR(CALL,L,);
                 TOJMP_OPERAND_PQR(CALLVM,L,);
-                case DB_VM_CALLVOID: p[i].op = toJump(CALLVOID); break;
-                case DB_VM_CALLVMVOID: p[i].op = toJump(CALLVMVOID); break;
+                case CX_VM_CALLVOID: p[i].op = toJump(CALLVOID); break;
+                case CX_VM_CALLVMVOID: p[i].op = toJump(CALLVMVOID); break;
                 TOJMP_OP1(RET);
                 TOJMP_OPERAND_PQR(RETCPY,L,);
 
@@ -1269,7 +1269,7 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
                 TOJMP_OPERAND_PQRV(WAITFOR,W,);
                 TOJMP_OP2_W(WAIT,PQRV);
 
-                case DB_VM_STOP: p[i].op = toJump(STOP); break;
+                case CX_VM_STOP: p[i].op = toJump(STOP); break;
                 default:
                 	cx_assert(0, "invalid instruction in sequence %d @ %d", p[i].op, i);
                 	break;
@@ -1465,7 +1465,7 @@ int32_t cx_vm_run(cx_vmProgram program, void *result) {
     return cx_vm_run_w_storage(program, storage, result);
 }
 
-#ifdef DB_IC_TRACING
+#ifdef CX_IC_TRACING
 char * cx_vmOp_toString(char * string, cx_vmOp *instr, const char *op, const char *type, const char *lvalue, const char *rvalue, const char* fetch) {
     char *result = string;
 
@@ -1482,13 +1482,13 @@ char * cx_vmOp_toString(char * string, cx_vmOp *instr, const char *op, const cha
 char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
     char * result = NULL;
     cx_int32 shown = 4;
-    DB_UNUSED(program);
+    CX_UNUSED(program);
 
-#ifdef DB_IC_TRACING
+#ifdef CX_IC_TRACING
     cx_vmOp *p = program->program;
     uint32_t i;
     
-#ifndef DB_VM_DEBUG
+#ifndef CX_VM_DEBUG
     if (!program->translated) {
         printf("cannot convert active program to string with non-debug version\n");
         abort();
@@ -1512,7 +1512,7 @@ char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
             } else {
                 result = strappend(result, "%u: ", &p[i]);
             }
-    #ifdef DB_VM_DEBUG
+    #ifdef CX_VM_DEBUG
             if (program->translated) {
                 kind = p[i].opKind;
             } else {
@@ -1522,14 +1522,14 @@ char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
             kind = p[i].op;
     #endif
             switch(kind) {
-                case DB_VM_NOOP: result = strappend(result, "NOOP\n"); break;
+                case CX_VM_NOOP: result = strappend(result, "NOOP\n"); break;
                 TOSTR_OP2(SET,PQRV);
                 TOSTR_OP2_W(SETREF,PQRV);
                 TOSTR_OP2_W(SETSTR,PQRV);
                 TOSTR_OP2_W(SETSTRDUP,PQRV);
-                case DB_VM_SET_WRX: result = strappend(result, "SET_WRX %u %u\n", p[i].ic.b._1, p[i].ic.b._2); break;
-                case DB_VM_ZERO: result = strappend(result, "ZERO %u %u\n", p[i].ic.b._1, p[i].lo.w); break;
-                case DB_VM_INIT: result = strappend(result, "INIT %u %u\n", p[i].ic.b._1, p[i].lo.w); break;
+                case CX_VM_SET_WRX: result = strappend(result, "SET_WRX %u %u\n", p[i].ic.b._1, p[i].ic.b._2); break;
+                case CX_VM_ZERO: result = strappend(result, "ZERO %u %u\n", p[i].ic.b._1, p[i].lo.w); break;
+                case CX_VM_INIT: result = strappend(result, "INIT %u %u\n", p[i].ic.b._1, p[i].lo.w); break;
 
                 TOSTR_OP1(INC);
                 TOSTR_OP1(DEC);
@@ -1551,10 +1551,10 @@ char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
                 TOSTR_OP1(NOT);
 
                 TOSTR_OP1_DV(STAGE1);
-                case DB_VM_STAGE12_DP: result = strappend(result, "STAGE12_DP %u\n", p[i].lo.w); break;
-                case DB_VM_STAGE12_DV: result = strappend(result, "STAGE12_DV %u\n", *(D_t*)&p[i].lo.w); break;
+                case CX_VM_STAGE12_DP: result = strappend(result, "STAGE12_DP %u\n", p[i].lo.w); break;
+                case CX_VM_STAGE12_DV: result = strappend(result, "STAGE12_DV %u\n", *(D_t*)&p[i].lo.w); break;
                 TOSTR_OP2_V(STAGE2,PQRV);
-                case DB_VM_STAGE2_DVV: result = strappend(result, "STAGE2_DVV %u %u\n", p[i].lo.w, p[i].hi.w); break;
+                case CX_VM_STAGE2_DVV: result = strappend(result, "STAGE2_DVV %u %u\n", p[i].lo.w, p[i].hi.w); break;
 
                 TOSTR_OP1_COND(CAND);
                 TOSTR_OP1_COND(COR);
@@ -1582,9 +1582,9 @@ char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
 
                 TOSTR_OP1(JEQ);
                 TOSTR_OP1(JNEQ);
-                case DB_VM_JUMP: result = strappend(result, "JUMP %u\n", p[i].lo.w); break;
+                case CX_VM_JUMP: result = strappend(result, "JUMP %u\n", p[i].lo.w); break;
 
-                case DB_VM_MEMBER: result = strappend(result, "MEMBER %u %u %u\n", p[i].ic.b._1, p[i].ic.b._2, p[i].lo.w); break;
+                case CX_VM_MEMBER: result = strappend(result, "MEMBER %u %u %u\n", p[i].ic.b._1, p[i].ic.b._2, p[i].lo.w); break;
                 TOSTR_OPERAND_PQRV(ELEMA,W,R);
                 TOSTR_OPERAND_PQRV(ELEMS,W,R);
                 TOSTR_OPERAND_PQRV(ELEML,W,R);
@@ -1599,8 +1599,8 @@ char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
 
                 TOSTR_OPERAND_PQR(CALL,L,);
                 TOSTR_OPERAND_PQR(CALLVM,L,);
-                case DB_VM_CALLVOID: result = strappend(result, "DB_VM_CALLVOID %u\n", p[i].hi.w); break;
-                case DB_VM_CALLVMVOID: result = strappend(result, "DB_VM_CALLVMVOID %u\n", p[i].hi.w); break;
+                case CX_VM_CALLVOID: result = strappend(result, "CX_VM_CALLVOID %u\n", p[i].hi.w); break;
+                case CX_VM_CALLVMVOID: result = strappend(result, "CX_VM_CALLVMVOID %u\n", p[i].hi.w); break;
                 TOSTR_OP1(RET);
                 TOSTR_OPERAND_PQR(RETCPY,L,);
 
@@ -1626,7 +1626,7 @@ char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
                 TOSTR_OPERAND_PQRV(WAITFOR,W,);
                 TOSTR_OP2_W(WAIT,PQRV);
 
-                case DB_VM_STOP: result = strappend(result, "STOP\n"); break;
+                case CX_VM_STOP: result = strappend(result, "STOP\n"); break;
                 default:
                     cx_assert(0, "invalid instruction %d in sequence @ %d", p[i].op, i);
                     break;

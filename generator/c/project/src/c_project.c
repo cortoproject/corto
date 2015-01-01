@@ -32,8 +32,8 @@ static cx_int16 c_projectGenerateMainFile(cx_generator g) {
     g_fileWrite(file, " * loads definitions of the '%s' scope */\n", g_getName(g));
 	g_fileWrite(file, "int cortexmain(int argc, char* argv[]) {\n");
 	g_fileIndent(file);
-	g_fileWrite(file, "DB_UNUSED(argc);\n");
-	g_fileWrite(file, "DB_UNUSED(argv);\n");
+	g_fileWrite(file, "CX_UNUSED(argc);\n");
+	g_fileWrite(file, "CX_UNUSED(argv);\n");
 
     if ((snippet = g_fileLookupSnippet(file, "cortexmain"))) {
         g_fileWrite(file, "\n");

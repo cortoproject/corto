@@ -27,9 +27,9 @@ static cx_int16 c_apiAssignMember(cx_serializer s, cx_value* v, void* userData) 
     cx_member m;
     cx_id memberIdTmp, memberParamId, memberId;
 
-    DB_UNUSED(s);
+    CX_UNUSED(s);
 
-    if (v->kind == DB_MEMBER) {
+    if (v->kind == CX_MEMBER) {
         m = v->is.member.t;
         data = userData;
 
@@ -46,7 +46,7 @@ static cx_int16 c_apiAssignMember(cx_serializer s, cx_value* v, void* userData) 
         }
 
         /* If member is of array-type, use memcpy */
-        if ((m->type->real->kind == DB_COLLECTION) && (cx_collection(m->type->real)->kind == DB_ARRAY)) {
+        if ((m->type->real->kind == CX_COLLECTION) && (cx_collection(m->type->real)->kind == CX_ARRAY)) {
             cx_id typeId, postfix;
     		/* Get typespecifier */
     		if (c_specifierId(data->g, m->type, typeId, NULL, postfix)) {
@@ -77,7 +77,7 @@ static cx_int16 c_apiAssignMember(cx_serializer s, cx_value* v, void* userData) 
             }
 
             /* Strdup strings */
-            if ((m->type->real->kind == DB_PRIMITIVE) && (cx_primitive(m->type->real)->kind == DB_TEXT)) {
+            if ((m->type->real->kind == CX_PRIMITIVE) && (cx_primitive(m->type->real)->kind == CX_TEXT)) {
                 g_fileWrite(data->source, "(%s ? cx_strdup(%s) : NULL);\n", memberParamId, memberParamId);
             } else {
                 g_fileWrite(data->source, "%s;\n", memberParamId);
@@ -98,9 +98,9 @@ static cx_int16 c_apiParamMember(cx_serializer s, cx_value* v, void* userData) {
     cx_member m;
     cx_id typeSpec, typePostfix, memberIdTmp, memberId;
 
-    DB_UNUSED(s);
+    CX_UNUSED(s);
 
-    if (v->kind == DB_MEMBER) {
+    if (v->kind == CX_MEMBER) {
         m = v->is.member.t;
         data = userData;
 
@@ -130,9 +130,9 @@ static struct cx_serializer_s c_apiParamSerializer(void) {
     struct cx_serializer_s s;
 
     cx_serializerInit(&s);
-    s.metaprogram[DB_MEMBER] = c_apiParamMember;
-    s.access = DB_LOCAL|DB_READONLY|DB_PRIVATE;
-    s.accessKind = DB_NOT;
+    s.metaprogram[CX_MEMBER] = c_apiParamMember;
+    s.access = CX_LOCAL|CX_READONLY|CX_PRIVATE;
+    s.accessKind = CX_NOT;
 
     return s;
 }
@@ -142,9 +142,9 @@ static struct cx_serializer_s c_apiAssignSerializer(void) {
     struct cx_serializer_s s;
 
     cx_serializerInit(&s);
-    s.metaprogram[DB_MEMBER] = c_apiAssignMember;
-    s.access = DB_LOCAL|DB_READONLY|DB_PRIVATE;
-    s.accessKind = DB_NOT;
+    s.metaprogram[CX_MEMBER] = c_apiAssignMember;
+    s.access = CX_LOCAL|CX_READONLY|CX_PRIVATE;
+    s.accessKind = CX_NOT;
 
     return s;
 }
@@ -407,7 +407,7 @@ error:
 static cx_bool c_apiElementRequiresInit(cx_type elementType) {
     cx_bool result = FALSE;
 
-    if ((elementType->kind != DB_PRIMITIVE) && !elementType->reference) {
+    if ((elementType->kind != CX_PRIMITIVE) && !elementType->reference) {
         result = TRUE;
     }
 
@@ -526,11 +526,11 @@ static cx_int16 c_apiSequenceTypeSize(cx_sequence o, c_apiWalk_t* data) {
     /* Initialize new elements */
     g_fileWrite(data->source, "if (length > seq->length) {\n");
     g_fileIndent(data->source);
-    if (elementType->kind != DB_PRIMITIVE) {
+    if (elementType->kind != CX_PRIMITIVE) {
         g_fileWrite(data->source, "cx_uint32 i;\n");
     }
     g_fileWrite(data->source, "memset(&seq->buffer[seq->length], 0, size * (length - seq->length));\n");
-    if (elementType->kind != DB_PRIMITIVE) {
+    if (elementType->kind != CX_PRIMITIVE) {
         g_fileWrite(data->source, "for(i=seq->length; i<length; i++) {\n");
         g_fileIndent(data->source);
         c_apiElementInit(elementId, "&seq->buffer[i]", FALSE, data);
@@ -895,17 +895,17 @@ static int c_apiCollectionWalk(void* o, void* userData) {
     
     /* Forward sequences, lists and maps */
     switch(cx_collection(o)->kind) {
-        case DB_SEQUENCE:
+        case CX_SEQUENCE:
             if (c_apiWalkSequence(cx_sequence(o), userData)) {
                 goto error;
             }
             break;
-        case DB_LIST:
+        case CX_LIST:
             if (c_apiWalkList(cx_list(o), userData)) {
                 goto error;
             }
             break;
-        case DB_MAP:
+        case CX_MAP:
             /*if (c_apiWalkMap(cx_map(o), userData)) {
              goto error;
              }*/
@@ -979,26 +979,26 @@ static g_file c_apiSourceOpen(cx_generator g) {
 }
 
 static cx_equalityKind c_apiCompareCollections(cx_collection c1, cx_collection c2) {
-    cx_equalityKind result = DB_EQ;
+    cx_equalityKind result = CX_EQ;
     if (c1->kind != c2->kind) {
-        result = DB_NEQ;
+        result = CX_NEQ;
     } else if (c1->elementType != c2->elementType) {
-        result = DB_NEQ;
+        result = CX_NEQ;
     } else if (c1->max != c2->max) {
-        result = DB_NEQ ;
-    } else if (c1->kind == DB_MAP) {
+        result = CX_NEQ ;
+    } else if (c1->kind == CX_MAP) {
         if (cx_map(c1)->keyType != cx_map(c2)->keyType) {
-            result = DB_NEQ;
+            result = CX_NEQ;
         }
     }
     return result;
 }
 
 static int c_apiCheckDuplicates(void* o, void* userData) {
-    if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
+    if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
         return 1;
     } else {
-        return c_apiCompareCollections(cx_collection(o), cx_collection(userData)) != DB_EQ;
+        return c_apiCompareCollections(cx_collection(o), cx_collection(userData)) != CX_EQ;
     }
 }
 

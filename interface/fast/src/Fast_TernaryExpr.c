@@ -66,13 +66,13 @@ cx_int16 Fast_TernaryExpr_construct(Fast_TernaryExpr object) {
     
     /* Create true statement */
     trueBranch = Fast_Node(Fast_Parser_blockPush(yparser(), FALSE));
-    trueExpr = Fast_Expression(Fast_Parser_binaryExpr(yparser(), object->result, object->ifTrue, DB_ASSIGN));
+    trueExpr = Fast_Expression(Fast_Parser_binaryExpr(yparser(), object->result, object->ifTrue, CX_ASSIGN));
     Fast_Block_addStatement(Fast_Block(trueBranch), Fast_Node(trueExpr));
     Fast_Parser_blockPop(yparser());
     
     /* Create false statement */
     falseBranch = Fast_Node(Fast_Parser_blockPush(yparser(), FALSE));
-    falseExpr = Fast_Expression(Fast_Parser_binaryExpr(yparser(), object->result, object->ifFalse, DB_ASSIGN));
+    falseExpr = Fast_Expression(Fast_Parser_binaryExpr(yparser(), object->result, object->ifFalse, CX_ASSIGN));
     Fast_Block_addStatement(Fast_Block(falseBranch), Fast_Node(falseExpr));
     Fast_Parser_blockPop(yparser());
 

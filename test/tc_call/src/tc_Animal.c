@@ -38,7 +38,7 @@ cx_bool tc_Animal_matesWith(tc_Animal _this, tc_Animal m) {
     cx_assert(_method != NULL, "unresolved method '%s::matesWith(::tc_call::Animal m)@%d'", cx_nameof(_this), _methodId);
 
     /* Call method directly if it's a C-function. */
-    if (_method->_parent.kind == DB_PROCEDURE_CDECL) {
+    if (_method->_parent.kind == CX_PROCEDURE_CDECL) {
         cx_assert(_method->_parent.impl, "missing implementation for '%s::matesWith(::tc_call::Animal m)'.", cx_nameof(_this));
         _result = ((cx_bool(*)(tc_Animal, tc_Animal ))_method->_parent.impl)(_this, m);
     } else {

@@ -13,8 +13,8 @@
 #include "Fast_Expression.h"
 #include "Fast__api.h"
 
-/*#define DB_INIT_DEBUG*/
-#ifdef DB_INIT_DEBUG
+/*#define CX_INIT_DEBUG*/
+#ifdef CX_INIT_DEBUG
 static int indent;
 #endif
 
@@ -40,7 +40,7 @@ cx_int16 Fast_Initializer_findMember(cx_serializer s, cx_value* v, void* userDat
 	data = userData;
 
 	switch(v->kind) {
-	case DB_MEMBER:
+	case CX_MEMBER:
 		if (v->is.member.t->id == (cx_uint32)-1) {
 			result = cx_serializeValue(s, v, userData);
 		} else {
@@ -72,10 +72,10 @@ found:
 struct cx_serializer_s Fast_findMemberSerializer(void) {
 	struct cx_serializer_s s;
 	cx_serializerInit(&s);
-	s.metaprogram[DB_MEMBER] = Fast_Initializer_findMember;
-	s.access = DB_LOCAL | DB_PRIVATE | DB_READONLY;
-	s.accessKind = DB_NOT;
-	s.traceKind = DB_SERIALIZER_TRACE_NEVER;
+	s.metaprogram[CX_MEMBER] = Fast_Initializer_findMember;
+	s.access = CX_LOCAL | CX_PRIVATE | CX_READONLY;
+	s.accessKind = CX_NOT;
+	s.traceKind = CX_SERIALIZER_TRACE_NEVER;
 	return s;
 }
 
@@ -94,7 +94,7 @@ cx_type Fast_Parser_initGetType(Fast_Initializer _this, cx_member *m_out) {
 			result = cx_map(t)->keyType->real;
 		} else {
 			switch(t->kind) {
-			case DB_COMPOSITE: {
+			case CX_COMPOSITE: {
 				struct cx_serializer_s s;
 				Fast_Initializer_findMember_t walkData;
 				s = Fast_findMemberSerializer();
@@ -119,7 +119,7 @@ cx_type Fast_Parser_initGetType(Fast_Initializer _this, cx_member *m_out) {
 				}
 				break;
 			}
-			case DB_COLLECTION:
+			case CX_COLLECTION:
 				result = cx_collection(t)->elementType->real;
 				break;
 			default: {
@@ -178,7 +178,7 @@ cx_int16 Fast_Initializer_construct(Fast_Initializer object) {
 	}
 	object->fp = 0;
 
-#ifdef DB_INIT_DEBUG
+#ifdef CX_INIT_DEBUG
     {
         cx_id id, id2;
         printf("%*s%d[%s %p]: construct (type=%s)\n", indent, " ", yparser()->line, cx_fullname(cx_typeof(object), id), object, cx_fullname(t, id2));
@@ -187,7 +187,7 @@ cx_int16 Fast_Initializer_construct(Fast_Initializer object) {
 #endif
     
     /* If type of initializer is either a composite or a collection type, do an initial push */
-    if (((t->kind == DB_COMPOSITE) || (t->kind == DB_COLLECTION))) {
+    if (((t->kind == CX_COMPOSITE) || (t->kind == CX_COLLECTION))) {
         if (Fast_Initializer_push(object)) {
             goto error;
         }
@@ -212,8 +212,8 @@ cx_type Fast_Initializer_currentType(Fast_Initializer _this) {
 /* ::cortex::Fast::Initializer::define() */
 cx_int16 Fast_Initializer_define_v(Fast_Initializer _this) {
 /* $begin(::cortex::Fast::Initializer::define) */
-    DB_UNUSED(_this);
-#ifdef DB_INIT_DEBUG
+    CX_UNUSED(_this);
+#ifdef CX_INIT_DEBUG
     {
         cx_id id;
         indent--;
@@ -242,7 +242,7 @@ cx_uint16 Fast_Initializer_initFrame(Fast_Initializer _this) {
         walkData.lookForString = NULL;
         walkData.m = NULL;
         walkData.current = _this->frames[_this->fp].location;
-        if (t->kind == DB_COMPOSITE) {
+        if (t->kind == CX_COMPOSITE) {
             cx_metaWalk(&s, t, &walkData);
         }
         if (walkData.m) {
@@ -252,7 +252,7 @@ cx_uint16 Fast_Initializer_initFrame(Fast_Initializer _this) {
             /*cx_set(&yparser()->rvalueType, walkData.m->type->real);*/
         } else {
             cx_set(&_this->frames[_this->fp].member, NULL);
-            if (t->kind == DB_COLLECTION) {
+            if (t->kind == CX_COLLECTION) {
                 cx_set(&_this->frames[_this->fp].type, cx_collection(t)->elementType);
                 /*cx_set(&yparser()->rvalueType, cx_collection(t)->elementType);*/
             } else {
@@ -281,7 +281,7 @@ cx_int32 Fast_Initializer_member_v(Fast_Initializer _this, cx_string name) {
 	walkData.lookForString = name;
 	walkData.m = NULL;
 	walkData.current = _this->frames[_this->fp].location;
-    if (t->kind == DB_COMPOSITE) {
+    if (t->kind == CX_COMPOSITE) {
         cx_metaWalk(&s, t, &walkData);
     }
     if (walkData.m) {
@@ -310,7 +310,7 @@ cx_int16 Fast_Initializer_next_v(Fast_Initializer _this) {
 	_this->frames[_this->fp].location++;
     Fast_Initializer_initFrame(_this);
     
-#ifdef DB_INIT_DEBUG
+#ifdef CX_INIT_DEBUG
     {
         cx_id id, id2;
         printf("%*s%d[%s %p]: next(fp=%d, location=%d, type=%s, member=%s)\n",
@@ -331,7 +331,7 @@ cx_int8 Fast_Initializer_pop_v(Fast_Initializer _this) {
     if (_this->fp) {
         _this->fp--;
     
-#ifdef DB_INIT_DEBUG
+#ifdef CX_INIT_DEBUG
     {
         cx_id id;
         indent--;
@@ -363,7 +363,7 @@ cx_int16 Fast_Initializer_push_v(Fast_Initializer _this) {
         cx_set(&_this->frames[_this->fp].type, t);
         Fast_Initializer_initFrame(_this);
         
-#ifdef DB_INIT_DEBUG
+#ifdef CX_INIT_DEBUG
         {
             cx_id id, id2;
             printf("%*s%d[%s %p]: push(fp=%d, location=%d, type=%s, member=%s)\n",
@@ -403,7 +403,7 @@ cx_type Fast_Initializer_type(Fast_Initializer _this) {
 /* ::cortex::Fast::Initializer::value(Expression v) */
 cx_int16 Fast_Initializer_value_v(Fast_Initializer _this, Fast_Expression v) {
 /* $begin(::cortex::Fast::Initializer::value) */
-    DB_UNUSED(v);
+    CX_UNUSED(v);
     return Fast_Initializer_next(_this);
 /* $end */
 }

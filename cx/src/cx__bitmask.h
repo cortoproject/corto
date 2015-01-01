@@ -1,6 +1,6 @@
 
-#ifndef DB__BITMASK_H_
-#define DB__BITMASK_H_
+#ifndef CX__BITMASK_H_
+#define CX__BITMASK_H_
 
 #ifdef __cplusplus
 extern "C" {

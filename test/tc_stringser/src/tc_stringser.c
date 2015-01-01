@@ -43,7 +43,7 @@ int tc__classPrimitives(void) {
     }
 
     /* Compare objects */
-    result = cx_compare(o1, o2) != DB_EQ ? 1 : result;
+    result = cx_compare(o1, o2) != CX_EQ ? 1 : result;
 
     /* Free string */
     cx_dealloc(str1);
@@ -98,7 +98,7 @@ int tc__classInherit(void) {
     }
 
     /* Compare objects */
-    result = cx_compare(o1, o2) != DB_EQ ? 1 : result;
+    result = cx_compare(o1, o2) != CX_EQ ? 1 : result;
 
     /* Free string */
     cx_dealloc(str1);
@@ -143,7 +143,7 @@ int tc__arrayOfBool(void) {
     }
 
     /* Compare objects */
-    result = cx_valueCompare(&info1, &info2) != DB_EQ ? 1 : result;
+    result = cx_valueCompare(&info1, &info2) != CX_EQ ? 1 : result;
 
     /* Free strings */
     cx_dealloc(str1);
@@ -177,7 +177,7 @@ int tc__arrayOfChar(void) {
     }
 
     /* Compare objects */
-    result = cx_valueCompare(&info1, &info2) != DB_EQ ? 1 : result;
+    result = cx_valueCompare(&info1, &info2) != CX_EQ ? 1 : result;
 
     /* Free strings */
     cx_dealloc(str1);
@@ -211,7 +211,7 @@ int tc__arrayOfInt(void) {
     }
 
     /* Compare objects */
-    result = cx_valueCompare(&info1, &info2) != DB_EQ ? 1 : result;
+    result = cx_valueCompare(&info1, &info2) != CX_EQ ? 1 : result;
 
     /* Free strings */
     cx_dealloc(str1);
@@ -245,7 +245,7 @@ int tc__arrayOfFloat(void) {
     }
 
     /* Compare objects */
-    result = cx_valueCompare(&info1, &info2) != DB_EQ ? 1 : result;
+    result = cx_valueCompare(&info1, &info2) != CX_EQ ? 1 : result;
 
     /* Free strings */
     cx_dealloc(str1);
@@ -279,7 +279,7 @@ int tc__arrayOfString(void) {
     }
 
     /* Compare objects */
-    result = cx_valueCompare(&info1, &info2) != DB_EQ ? 1 : result;
+    result = cx_valueCompare(&info1, &info2) != CX_EQ ? 1 : result;
 
     /* Free strings */
     cx_dealloc(str1);
@@ -315,7 +315,7 @@ int tc__arrayOfColor(void) {
     }
 
     /* Compare objects */
-    result = cx_valueCompare(&info1, &info2) != DB_EQ ? 1 : result;
+    result = cx_valueCompare(&info1, &info2) != CX_EQ ? 1 : result;
 
     /* Free strings */
     cx_dealloc(str1);
@@ -349,7 +349,7 @@ int tc__arrayOfMoveMode(void) {
     }
 
     /* Compare objects */
-    result = cx_valueCompare(&info1, &info2) != DB_EQ ? 1 : result;
+    result = cx_valueCompare(&info1, &info2) != CX_EQ ? 1 : result;
 
     /* Free strings */
     cx_dealloc(str1);
@@ -359,8 +359,8 @@ int tc__arrayOfMoveMode(void) {
 }
 
 int main(int argc, char* argv[]) {
-    DB_UNUSED(argc);
-    DB_UNUSED(argv);
+    CX_UNUSED(argc);
+    CX_UNUSED(argv);
     cx_bool result = TRUE;
 
     /* Start database */

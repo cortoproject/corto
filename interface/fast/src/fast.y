@@ -76,7 +76,7 @@ Fast_Expression Fast_declarationSeqDo(Fast_Variable type, Fast_ParserDeclaration
         
         /* In a declaration of locals assignment is always a reference-assignment. */
         if (isReference) {
-            expr = Fast_Expression(Fast_Parser_unaryExpr(yparser(), expr, DB_AND));
+            expr = Fast_Expression(Fast_Parser_unaryExpr(yparser(), expr, CX_AND));
             Fast_Parser_collect(yparser(), expr);
         }
         
@@ -405,8 +405,8 @@ postfix_expr
     | postfix_expr '(' ')' 						{$$ = Fast_Parser_callExpr(yparser(), $1, NULL); fast_op;}
     | postfix_expr bracket_expr                 {$$ = Fast_Parser_callExpr(yparser(), $1, $2); fast_op;}
     | postfix_expr '.' any_id                   {Fast_String str = Fast_String__create($3); if (!str) {YYERROR;} $$ = Fast_Parser_memberExpr(yparser(), $1, Fast_Expression(str)); cx_free(str); fast_op;}
-	| postfix_expr INC							{$$ = Fast_Parser_postfixExpr(yparser(), $1, DB_INC); fast_op}
-	| postfix_expr DEC							{$$ = Fast_Parser_postfixExpr(yparser(), $1, DB_DEC); fast_op}
+	| postfix_expr INC							{$$ = Fast_Parser_postfixExpr(yparser(), $1, CX_INC); fast_op}
+	| postfix_expr DEC							{$$ = Fast_Parser_postfixExpr(yparser(), $1, CX_DEC); fast_op}
 	;
 
 unary_expr
@@ -415,13 +415,13 @@ unary_expr
 	;
 	
 unary_operator
-	: '-' {$$ = DB_SUB;}
-	| '~' {$$ = DB_NOT;}
-	| '!' {$$ = DB_COND_NOT;}
-    | LNOT {$$ = DB_COND_NOT;}
-	| INC {$$ = DB_INC;}
-	| DEC {$$ = DB_DEC;}
-	| '&' {$$ = DB_AND;}
+	: '-' {$$ = CX_SUB;}
+	| '~' {$$ = CX_NOT;}
+	| '!' {$$ = CX_COND_NOT;}
+    | LNOT {$$ = CX_COND_NOT;}
+	| INC {$$ = CX_INC;}
+	| DEC {$$ = CX_DEC;}
+	| '&' {$$ = CX_AND;}
 	;
 
 multiplicative_expr
@@ -430,9 +430,9 @@ multiplicative_expr
 	;
 	
 multiplicative_operator
-	: '*' {$$ = DB_MUL;}
-	| '/' {$$ = DB_DIV;}
-	| '%' {$$ = DB_MOD;}
+	: '*' {$$ = CX_MUL;}
+	| '/' {$$ = CX_DIV;}
+	| '%' {$$ = CX_MOD;}
 	;
 	
 additive_expr
@@ -441,29 +441,29 @@ additive_expr
 	;
 	
 additive_operator
-	: '+' {$$ = DB_ADD;}
-	| '-' {$$ = DB_SUB;}
+	: '+' {$$ = CX_ADD;}
+	| '-' {$$ = CX_SUB;}
 	;
 	
 shift_expr
 	: additive_expr
-	| shift_expr {PUSHLVALUE($1)} SHIFT_LEFT additive_expr  {POPLVALUE()} {$$ = Fast_Parser_binaryExpr(yparser(), $1, $4, DB_SHIFT_LEFT); fast_op;}
-	| shift_expr {PUSHLVALUE($1)} SHIFT_RIGHT additive_expr {POPLVALUE()} {$$ = Fast_Parser_binaryExpr(yparser(), $1, $4, DB_SHIFT_RIGHT); fast_op;}
+	| shift_expr {PUSHLVALUE($1)} SHIFT_LEFT additive_expr  {POPLVALUE()} {$$ = Fast_Parser_binaryExpr(yparser(), $1, $4, CX_SHIFT_LEFT); fast_op;}
+	| shift_expr {PUSHLVALUE($1)} SHIFT_RIGHT additive_expr {POPLVALUE()} {$$ = Fast_Parser_binaryExpr(yparser(), $1, $4, CX_SHIFT_RIGHT); fast_op;}
 	;
 
 and_expr
 	: shift_expr
-    | and_expr {PUSHLVALUE($1)} '&' shift_expr {POPLVALUE()} {$$ = Fast_Parser_binaryExpr(yparser(), $1, $4, DB_AND); fast_op;}
+    | and_expr {PUSHLVALUE($1)} '&' shift_expr {POPLVALUE()} {$$ = Fast_Parser_binaryExpr(yparser(), $1, $4, CX_AND); fast_op;}
 	;
 	
 xor_expr
 	: and_expr
-	| xor_expr {PUSHLVALUE($1)} '^' and_expr {POPLVALUE()} {$$ = Fast_Parser_binaryExpr(yparser(), $1, $4, DB_XOR); fast_op;}
+	| xor_expr {PUSHLVALUE($1)} '^' and_expr {POPLVALUE()} {$$ = Fast_Parser_binaryExpr(yparser(), $1, $4, CX_XOR); fast_op;}
 	;
 
 or_expr
 	: xor_expr
-	| or_expr {PUSHLVALUE($1)} '|' xor_expr {POPLVALUE()} {$$ = Fast_Parser_binaryExpr(yparser(), $1, $4, DB_OR); fast_op;}
+	| or_expr {PUSHLVALUE($1)} '|' xor_expr {POPLVALUE()} {$$ = Fast_Parser_binaryExpr(yparser(), $1, $4, CX_OR); fast_op;}
 	;
 
 boolean_expr
@@ -472,10 +472,10 @@ boolean_expr
     ;
 
 boolean_operator
-    : '<' {$$ = DB_COND_LT;}
-    | '>' {$$ = DB_COND_GT;}
-    | LEQ {$$ = DB_COND_LTEQ;}
-    | GEQ {$$ = DB_COND_GTEQ;}
+    : '<' {$$ = CX_COND_LT;}
+    | '>' {$$ = CX_COND_GT;}
+    | LEQ {$$ = CX_COND_LTEQ;}
+    | GEQ {$$ = CX_COND_GTEQ;}
     ;
 
 equality_expr
@@ -484,18 +484,18 @@ equality_expr
     ;
 
 equality_operator
-    : EQ {$$ = DB_COND_EQ;}
-    | NEQ {$$ = DB_COND_NEQ;}
+    : EQ {$$ = CX_COND_EQ;}
+    | NEQ {$$ = CX_COND_NEQ;}
     ;
 
 logical_and_expr
 	: equality_expr
-	| logical_and_expr {PUSHLVALUE($1)} LAND equality_expr {POPLVALUE()} {$$ = Fast_Parser_binaryExpr(yparser(), $1, $4, DB_COND_AND); fast_op;}
+	| logical_and_expr {PUSHLVALUE($1)} LAND equality_expr {POPLVALUE()} {$$ = Fast_Parser_binaryExpr(yparser(), $1, $4, CX_COND_AND); fast_op;}
 	;
 	
 logical_or_expr
 	: logical_and_expr
-	| logical_or_expr {PUSHLVALUE($1)} LOR logical_and_expr {POPLVALUE()} {$$ = Fast_Parser_binaryExpr(yparser(), $1, $4, DB_COND_OR); fast_op;}
+	| logical_or_expr {PUSHLVALUE($1)} LOR logical_and_expr {POPLVALUE()} {$$ = Fast_Parser_binaryExpr(yparser(), $1, $4, CX_COND_OR); fast_op;}
 	;
 
 initializer_expr
@@ -530,13 +530,13 @@ assignment_expr
 	;
 
 assignment_operator
-    : '=' {$$ = DB_ASSIGN;}
-    | ADD_ASSIGN {$$ = DB_ASSIGN_ADD;}
-    | SUB_ASSIGN {$$ = DB_ASSIGN_SUB;}
-    | MUL_ASSIGN {$$ = DB_ASSIGN_MUL;}
-    | DIV_ASSIGN {$$ = DB_ASSIGN_DIV;}
-    | AND_ASSIGN {$$ = DB_ASSIGN_AND;}
-    | OR_ASSIGN  {$$ = DB_ASSIGN_OR;}
+    : '=' {$$ = CX_ASSIGN;}
+    | ADD_ASSIGN {$$ = CX_ASSIGN_ADD;}
+    | SUB_ASSIGN {$$ = CX_ASSIGN_SUB;}
+    | MUL_ASSIGN {$$ = CX_ASSIGN_MUL;}
+    | DIV_ASSIGN {$$ = CX_ASSIGN_DIV;}
+    | AND_ASSIGN {$$ = CX_ASSIGN_AND;}
+    | OR_ASSIGN  {$$ = CX_ASSIGN_OR;}
     ;
 
 wait_expr
@@ -567,7 +567,7 @@ declaration_expr
         }
         Fast_Parser_pushLvalue(yparser(), $1, TRUE);
     } comma_expr  {
-        $$ = Fast_Parser_binaryExpr(yparser(), $1, $4, DB_ASSIGN); fast_op;
+        $$ = Fast_Parser_binaryExpr(yparser(), $1, $4, CX_ASSIGN); fast_op;
         Fast_Parser_popLvalue(yparser());
     }
     ;
@@ -707,16 +707,16 @@ event_flag
     ;
 
 event_baseflag
-    : KW_UPDATE         {$$ = DB_ON_UPDATE;}
-    | KW_DECLARE        {$$ = DB_ON_DECLARE;}
-    | KW_DEFINE         {$$ = DB_ON_DEFINE;}
-    | KW_DESTRUCT       {$$ = DB_ON_DESTRUCT;}
+    : KW_UPDATE         {$$ = CX_ON_UPDATE;}
+    | KW_DECLARE        {$$ = CX_ON_DECLARE;}
+    | KW_DEFINE         {$$ = CX_ON_DEFINE;}
+    | KW_DESTRUCT       {$$ = CX_ON_DESTRUCT;}
     ;
 
 event_childflag
-    : KW_SELF           {$$ = DB_ON_SELF;}
-    | KW_SCOPE          {$$ = DB_ON_SCOPE;}
-    | KW_SYNCHRONIZED   {$$ = DB_ON_VALUE;}
+    : KW_SELF           {$$ = CX_ON_SELF;}
+    | KW_SCOPE          {$$ = CX_ON_SCOPE;}
+    | KW_SYNCHRONIZED   {$$ = CX_ON_VALUE;}
     ;
 
 /* ======================================================================== */

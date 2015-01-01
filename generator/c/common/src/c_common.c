@@ -58,7 +58,7 @@ cx_string cortex_genId(cx_string str, cx_id id) {
 
     /* Strip scope-operator for rootscope */
     if (*ptr) {
-		if (*(cx_int16*)ptr == DB_SCOPE_HEX) {
+		if (*(cx_int16*)ptr == CX_SCOPE_HEX) {
 			ptr += 2;
 		}
 
@@ -102,13 +102,13 @@ cx_char* c_primitiveId(cx_primitive t, cx_char* buff) {
     appendT = FALSE;
 
     switch(t->kind) {
-    case DB_BOOLEAN:
-    case DB_CHARACTER:
+    case CX_BOOLEAN:
+    case CX_CHARACTER:
         switch(t->width) {
-        case DB_WIDTH_8:
+        case CX_WIDTH_8:
             strcpy(buff, "char");
             break;
-        case DB_WIDTH_16:
+        case CX_WIDTH_16:
             strcpy(buff, "wchar");
             appendT = TRUE;
             break;
@@ -120,23 +120,23 @@ cx_char* c_primitiveId(cx_primitive t, cx_char* buff) {
         }
         }
         break;
-    case DB_BINARY:
-    case DB_UINTEGER:
+    case CX_BINARY:
+    case CX_UINTEGER:
         strcpy(buff, "uint");
         appendWidth = TRUE;
         appendT = TRUE;
         break;
-    case DB_INTEGER:
+    case CX_INTEGER:
         strcpy(buff, "int");
         appendWidth = TRUE;
         appendT = TRUE;
         break;
-    case DB_FLOAT:
+    case CX_FLOAT:
         switch(t->width) {
-        case DB_WIDTH_32:
+        case CX_WIDTH_32:
             strcpy(buff, "float");
             break;
-        case DB_WIDTH_64:
+        case CX_WIDTH_64:
             strcpy(buff, "double");
             break;
         default: {
@@ -147,15 +147,15 @@ cx_char* c_primitiveId(cx_primitive t, cx_char* buff) {
         }
         }
         break;
-    case DB_ENUM:
-    case DB_BITMASK:
+    case CX_ENUM:
+    case CX_BITMASK:
         cx_error("c_typePrimitivePlatformType: enumeration\\bitmasks types must be defined using the 'enum' keyword.");
         goto error;
         break;
-    case DB_TEXT:
+    case CX_TEXT:
         strcpy(buff, "char*");
         break;
-    case DB_ALIAS:
+    case CX_ALIAS:
     	strcpy(buff, cx_alias(t)->typeName);
     	break;
     }
@@ -163,19 +163,19 @@ cx_char* c_primitiveId(cx_primitive t, cx_char* buff) {
     /* Append width */
     if (appendWidth) {
         switch(t->width) {
-        case DB_WIDTH_8:
+        case CX_WIDTH_8:
             strcat(buff, "8");
             break;
-        case DB_WIDTH_16:
+        case CX_WIDTH_16:
             strcat(buff, "16");
             break;
-        case DB_WIDTH_32:
+        case CX_WIDTH_32:
             strcat(buff, "32");
             break;
-        case DB_WIDTH_64:
+        case CX_WIDTH_64:
             strcat(buff, "64");
             break;
-        case DB_WIDTH_WORD:
+        case CX_WIDTH_WORD:
             strcat(buff, "ptr");
             break;
         }
@@ -244,7 +244,7 @@ cx_int16 c_specifierId(cx_generator g, cx_typedef t, cx_char* specifier, cx_bool
     }
 
     /* Check if object is scoped */
-    if (cx_checkAttr(t, DB_ATTR_SCOPED)) {
+    if (cx_checkAttr(t, CX_ATTR_SCOPED)) {
         g_fullOid(g, t, specifier);
     } else {
         if (t != cx_typedef(t->real)) {
@@ -253,30 +253,30 @@ cx_int16 c_specifierId(cx_generator g, cx_typedef t, cx_char* specifier, cx_bool
         }
 
         switch(cx_type(t)->kind) {
-        case DB_PRIMITIVE:
+        case CX_PRIMITIVE:
             c_primitiveId(cx_primitive(t), specifier);
             break;
-        case DB_COLLECTION: {
+        case CX_COLLECTION: {
             cx_id _specifier, _postfix;
             cx_type elementType = cx_collection(t)->elementType->real;
             switch(cx_collection(t)->kind) {
-            case DB_ARRAY:
+            case CX_ARRAY:
                 /* Get specifier of elementType */
                 if (c_specifierId(g, cx_collection(t)->elementType, _specifier, NULL, _postfix)) {
                     goto error;
                 }
-                if ((elementType->kind == DB_COLLECTION) && (cx_collection(elementType)->kind == DB_ARRAY)) {
+                if ((elementType->kind == CX_COLLECTION) && (cx_collection(elementType)->kind == CX_ARRAY)) {
                     sprintf(specifier, "%s_%d", _specifier, cx_collection(t)->max);
                 } else {
                     sprintf(specifier, "%s_array%d", _specifier, cx_collection(t)->max);
                 }
                 break;
-            case DB_SEQUENCE:
+            case CX_SEQUENCE:
                 /* Get specifier of elementType */
                 if (c_specifierId(g, cx_collection(t)->elementType, _specifier, NULL, _postfix)) {
                     goto error;
                 }
-                if ((elementType->kind == DB_COLLECTION) && (cx_collection(elementType)->kind == DB_SEQUENCE)) {
+                if ((elementType->kind == CX_COLLECTION) && (cx_collection(elementType)->kind == CX_SEQUENCE)) {
                     sprintf(specifier, "%s_%d", _specifier, cx_collection(t)->max);
                 } else {
                     if (cx_collection(t)->max) {
@@ -286,11 +286,11 @@ cx_int16 c_specifierId(cx_generator g, cx_typedef t, cx_char* specifier, cx_bool
                     }
                 }
                 break;
-            case DB_LIST:
+            case CX_LIST:
                 if (c_specifierId(g, cx_collection(t)->elementType, _specifier, NULL, _postfix)) {
                     goto error;
                 }
-                if ((elementType->kind == DB_COLLECTION) && (cx_collection(elementType)->kind == DB_LIST)) {
+                if ((elementType->kind == CX_COLLECTION) && (cx_collection(elementType)->kind == CX_LIST)) {
                     sprintf(specifier, "%s_%d", _specifier, cx_collection(t)->max);
                 } else {
                     if (cx_collection(t)->max) {
@@ -300,7 +300,7 @@ cx_int16 c_specifierId(cx_generator g, cx_typedef t, cx_char* specifier, cx_bool
                     }
                 }
                 break;
-            case DB_MAP:
+            case CX_MAP:
                 strcpy(specifier, "cx_rbtree");
                 break;
             }

@@ -32,7 +32,7 @@ cx_int16 cx_array_construct(cx_array object) {
 	}
 
 	/* Arrays can only be defined when their elementType is also defined. */
-   if (!cx_checkState((cx_collection(object)->elementType), DB_DEFINED)) {
+   if (!cx_checkState((cx_collection(object)->elementType), CX_DEFINED)) {
        if (!(cx_instanceof(cx_typedef(cx_type_o), cx_collection(object)->elementType) && cx_type(cx_collection(object)->elementType)->reference)) {
             cx_id id;
             cx_error("array::construct: elementType '%s' is not defined.", cx_fullname(cx_collection(object)->elementType, id));
@@ -79,7 +79,7 @@ cx_void cx_array_destruct(cx_array object) {
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::array::init(lang::array object) */
 cx_int16 cx_array_init(cx_array object) {
 /* $begin(::cortex::lang::array::init) */
-    cx_collection(object)->kind = DB_ARRAY;
+    cx_collection(object)->kind = CX_ARRAY;
     return cx_collection_init(cx_collection(object));
 /* $end */
 }

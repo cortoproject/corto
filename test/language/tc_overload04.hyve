@@ -1,0 +1,30 @@
+// Test overloading with reference parameters
+bool result: true
+void fail(string msg):
+    "tc_overload04: FAIL: $msg"
+    result = false
+
+uint32 num, obj, generic
+
+uint32 numberOrObject(uint32 a, uint32 b): 
+    numberOrObject = a + b
+    num++
+
+uint32 numberOrObject(uint32 &a, uint32 b): 
+    numberOrObject = a + b
+    obj++
+
+uint32 a: 10
+uint32 b: 20
+uint32 ret
+
+ret = numberOrObject(a, b) // Increases 'num'
+if ret != 30: fail("ret != 30 ($ret)")
+if num != 1: fail("num != 1 ($num)")
+
+a, b = 30, 40
+ret = numberOrObject(&a, b) // Increases 'num'
+if ret != 70: fail("ret != 70 ($ret)")
+if obj != 1: fail("obj != 1 ($obj)")
+
+if result: "tc_overload04: OK"

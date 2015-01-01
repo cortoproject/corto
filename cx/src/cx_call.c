@@ -19,7 +19,7 @@ typedef struct bindingHandler {
 }bindingHandler;
 
 static int languageId = 1;
-static bindingHandler bindings[DB_MAX_BINDINGS];
+static bindingHandler bindings[CX_MAX_BINDINGS];
 
 /* Register language */
 int cx_callRegisterBinding(cx_callHandler handler, cx_contextSwitchHandler onSwitch, cx_contextRestoreHandler onRestore, cx_callDestructHandler onDestruct) {
@@ -36,7 +36,7 @@ int cx_callRegisterBinding(cx_callHandler handler, cx_contextSwitchHandler onSwi
 
 struct cx_context_s {
     cx_object object;
-    void* context[DB_MAX_BINDINGS];
+    void* context[CX_MAX_BINDINGS];
 };
 
 cx_context cx_contextSwitch(cx_object object) {

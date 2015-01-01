@@ -24,7 +24,7 @@ cx_int16 cx_metaWalk(cx_serializer s, cx_type type, void* userData) {
 	o->type = cx_typedef(type);
 	o->refcount = 1;
 
-	result = cx_serialize(s, DB_OFFSET(o, sizeof(cx__object)), userData);
+	result = cx_serialize(s, CX_OFFSET(o, sizeof(cx__object)), userData);
 	cx_dealloc(o);
 
 	return result;
@@ -38,18 +38,18 @@ cx_int16 cx_serializeConstants(cx_serializer s, cx_value* v, void* userData) {
 	t = cx_enum(cx_valueType(v)->real);
 
 	/* If there is a callback for constants, serialize them */
-	if (s->metaprogram[DB_CONSTANT]) {
+	if (s->metaprogram[CX_CONSTANT]) {
 		cx_value info;
 		for(i=0; i<t->constants.length; i++) {
 			/* Fill info */
 			info.parent = v;
-			info.kind = DB_CONSTANT;
+			info.kind = CX_CONSTANT;
 			info.is.constant.t = t->constants.buffer[i];
 			info.is.constant.v = NULL;
 			info.is.constant.o = cx_valueObject(v);
 
 			/* Serialize constant */
-			if (s->metaprogram[DB_CONSTANT](s, &info, userData)) {
+			if (s->metaprogram[CX_CONSTANT](s, &info, userData)) {
 				goto error;
 			}
 		}

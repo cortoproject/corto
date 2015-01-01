@@ -18,7 +18,7 @@ extern "C" {
 
 /* Type definitions */
 /* ::fixture::color */
-DB_BITMASK(fixture_color);
+CX_BITMASK(fixture_color);
     #define FIXTURE_red (0x1)
     #define FIXTURE_green (0x2)
     #define FIXTURE_blue (0x4)
@@ -39,9 +39,9 @@ typedef enum fixture_DogBreed {
 } fixture_DogBreed;
 
 /*  ::fixture::Dog */
-DB_CLASS(fixture_Dog);
+CX_CLASS(fixture_Dog);
 
-DB_CLASS_DEF(fixture_Dog) {
+CX_CLASS_DEF(fixture_Dog) {
     fixture_DogBreed breed;
     cx_string name;
     cx_uint8 age;

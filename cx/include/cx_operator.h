@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB_OPERATOR_H_
-#define DB_OPERATOR_H_
+#ifndef CX_OPERATOR_H_
+#define CX_OPERATOR_H_
 
 #include "cx__type.h"
 
@@ -22,4 +22,4 @@ cx_int16 cx_binaryOperator(cx_type type, cx_operatorKind operator, void *operand
 }
 #endif
 
-#endif /* DB_OPERATOR_H_ */
+#endif /* CX_OPERATOR_H_ */

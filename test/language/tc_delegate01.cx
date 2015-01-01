@@ -19,7 +19,7 @@ op = obj.adding
 
 
 // Call the delegate
-// op(10, 20)
+op(10, 20)
 
 //"tc_delegate01: FAIL: not implemented"
 

@@ -20,12 +20,12 @@ static cx_int16 c_typeConstant(cx_serializer s, cx_value* v, void* userData) {
     c_typeWalk_t* data;
     cx_id constantId;
 
-    DB_UNUSED(s);
+    CX_UNUSED(s);
 
     data = userData;
 
     switch(cx_primitive(cx_parentof(v->is.constant.t))->kind) {
-    case DB_ENUM:
+    case CX_ENUM:
         if (data->prefixComma) {
             g_fileWrite(data->header, ",\n");
         } else {
@@ -33,7 +33,7 @@ static cx_int16 c_typeConstant(cx_serializer s, cx_value* v, void* userData) {
         }
         g_fileWrite(data->header, "%s = %d", c_constantId(data->g, v->is.constant.t, constantId), *v->is.constant.t);
         break;
-    case DB_BITMASK:
+    case CX_BITMASK:
         g_fileWrite(data->header, "#define %s (0x%x)\n", c_constantId(data->g, v->is.constant.t, constantId), *v->is.constant.t);
         break;
     default:
@@ -53,9 +53,9 @@ static cx_int16 c_typeMember(cx_serializer s, cx_value* v, void* userData) {
     cx_member m;
     cx_id specifier, postfix, memberId;
 
-    DB_UNUSED(s);
+    CX_UNUSED(s);
 
-    if (v->kind == DB_MEMBER) {
+    if (v->kind == CX_MEMBER) {
 		data = userData;
 		m = v->is.member.t;
 
@@ -83,7 +83,7 @@ static cx_int16 c_typePrimitiveEnum(cx_serializer s, cx_value* v, void* userData
     cx_enum t;
     cx_id id;
 
-    DB_UNUSED(s);
+    CX_UNUSED(s);
 
     data = userData;
     t = cx_enum(cx_valueType(v));
@@ -112,12 +112,12 @@ static cx_int16 c_typePrimitiveBitmask(cx_serializer s, cx_value* v, void* userD
     cx_enum t;
     cx_id id;
 
-    DB_UNUSED(s);
+    CX_UNUSED(s);
 
     data = userData;
     t = cx_enum(cx_valueType(v));
 
-    g_fileWrite(data->header, "DB_BITMASK(%s);\n", g_fullOid(data->g, t, id));
+    g_fileWrite(data->header, "CX_BITMASK(%s);\n", g_fullOid(data->g, t, id));
 
     /* Write enumeration constants */
     g_fileIndent(data->header);
@@ -138,7 +138,7 @@ static cx_int16 c_typeVoid(cx_serializer s, cx_value* v, void* userData) {
     c_typeWalk_t* data;
     cx_id id;
 
-    DB_UNUSED(s);
+    CX_UNUSED(s);
 
 	t = cx_valueType(v)->real;
     data = userData;
@@ -160,7 +160,7 @@ static cx_int16 c_typeAny(cx_serializer s, cx_value* v, void* userData) {
     c_typeWalk_t* data;
     cx_id id;
 
-    DB_UNUSED(s);
+    CX_UNUSED(s);
 
     t = cx_valueType(v)->real;
     data = userData;
@@ -178,26 +178,26 @@ static cx_int16 c_typePrimitive(cx_serializer s, cx_value* v, void* userData) {
     cx_id id;
     c_typeWalk_t* data;
 
-    DB_UNUSED(s);
+    CX_UNUSED(s);
 
     data = userData;
     t = cx_valueType(v)->real;
 
     /* Obtain platform type-name for primitive */
     switch(cx_primitive(t)->kind) {
-    case DB_ENUM:
+    case CX_ENUM:
     	g_fileWrite(data->header, "/* %s */\n", cx_fullname(t, id));
         if (c_typePrimitiveEnum(s, v, userData)) {
             goto error;
         }
         break;
-    case DB_BITMASK:
+    case CX_BITMASK:
     	g_fileWrite(data->header, "/* %s */\n", cx_fullname(t, id));
         if (c_typePrimitiveBitmask(s, v, userData)) {
             goto error;
         }
         break;
-    case DB_ALIAS:
+    case CX_ALIAS:
     	/* Don't generate for alias types */
     	break;
     default:
@@ -206,7 +206,7 @@ static cx_int16 c_typePrimitive(cx_serializer s, cx_value* v, void* userData) {
         }
 
         /* Write typedef */
-        if (cx_checkAttr(t, DB_ATTR_SCOPED)) {
+        if (cx_checkAttr(t, CX_ATTR_SCOPED)) {
             g_fileWrite(data->header, "/* %s */\n", cx_fullname(t, id));
         	g_fileWrite(data->header, "typedef %s %s;\n\n", buff, g_fullOid(data->g, t, id));
         }
@@ -249,9 +249,9 @@ error:
 
 /* Abstract object */
 static cx_int16 c_typeAbstract(cx_serializer s, cx_value* v, void* userData) {
-    DB_UNUSED(s);
-    DB_UNUSED(v);
-    DB_UNUSED(userData);
+    CX_UNUSED(s);
+    CX_UNUSED(v);
+    CX_UNUSED(userData);
 
     return 0;
 }
@@ -267,12 +267,12 @@ static cx_int16 c_typeClass(cx_serializer s, cx_value* v, void* userData) {
 
     /* Open class */
     if (t->alignment) {
-        g_fileWrite(data->header, "DB_CLASS_DEF(%s) {\n", g_fullOid(data->g, t, id));
+        g_fileWrite(data->header, "CX_CLASS_DEF(%s) {\n", g_fullOid(data->g, t, id));
         g_fileIndent(data->header);
 
         /* Write base */
         if (cx_interface(t)->base && cx_type(cx_interface(t)->base)->alignment) {
-            g_fileWrite(data->header, "DB_EXTEND(%s);\n", g_fullOid(data->g, cx_interface(t)->base, id));
+            g_fileWrite(data->header, "CX_EXTEND(%s);\n", g_fullOid(data->g, cx_interface(t)->base, id));
         }
 
         /* Serialize members */
@@ -296,18 +296,18 @@ static cx_int16 c_typeComposite(cx_serializer s, cx_value* v, void* userData) {
 
     t = cx_valueType(v)->real;
     switch(cx_interface(t)->kind) {
-    case DB_STRUCT:
+    case CX_STRUCT:
         if (c_typeStruct(s, v, userData)) {
             goto error;
         }
         break;
-    case DB_INTERFACE:
+    case CX_INTERFACE:
     	if (c_typeAbstract(s, v, userData)) {
     		goto error;
     	}
     	break;
-    case DB_PROCEDURE:
-    case DB_CLASS:
+    case CX_PROCEDURE:
+    case CX_CLASS:
     	if (c_typeClass(s, v, userData)) {
     		goto error;
     	}
@@ -327,8 +327,8 @@ static cx_int16 c_typeArray(cx_serializer s, cx_value* v, void* userData) {
 	c_typeWalk_t* data;
 	cx_id id, id3, postfix, postfix2;
 
-	DB_UNUSED(s);
-	DB_UNUSED(v);
+	CX_UNUSED(s);
+	CX_UNUSED(v);
 
 	data = userData;
 	t = cx_valueType(v)->real;
@@ -348,14 +348,14 @@ static cx_int16 c_typeSequence(cx_serializer s, cx_value* v, void* userData) {
 	c_typeWalk_t* data;
 	cx_id id, id3, postfix, postfix2;
 
-	DB_UNUSED(s);
-	DB_UNUSED(v);
+	CX_UNUSED(s);
+	CX_UNUSED(v);
 
 	data = userData;
 	t = cx_valueType(v)->real;
 	c_specifierId(data->g, cx_typedef(t), id, NULL, postfix);
 	c_specifierId(data->g, cx_typedef(cx_collection(t)->elementType), id3, NULL, postfix2);
-	g_fileWrite(data->header, "DB_SEQUENCE(%s, %s,);\n\n",
+	g_fileWrite(data->header, "CX_SEQUENCE(%s, %s,);\n\n",
 			id,
 			id3);
 
@@ -368,13 +368,13 @@ static cx_int16 c_typeList(cx_serializer s, cx_value* v, void* userData) {
 	c_typeWalk_t* data;
 	cx_id id, postfix;
 
-	DB_UNUSED(s);
-	DB_UNUSED(v);
+	CX_UNUSED(s);
+	CX_UNUSED(v);
 
 	data = userData;
 	t = cx_valueType(v)->real;
 	c_specifierId(data->g, cx_typedef(t), id, NULL, postfix);
-	g_fileWrite(data->header, "DB_LIST(%s);\n\n",
+	g_fileWrite(data->header, "CX_LIST(%s);\n\n",
 			id);
 
 	return 0;
@@ -386,22 +386,22 @@ static cx_int16 c_typeCollection(cx_serializer s, cx_value* v, void* userData) {
 
 	t = cx_valueType(v)->real;
 	switch(cx_collection(t)->kind) {
-	case DB_ARRAY:
+	case CX_ARRAY:
 		if (c_typeArray(s, v, userData)) {
 			goto error;
 		}
 		break;
-	case DB_SEQUENCE:
+	case CX_SEQUENCE:
 		if (c_typeSequence(s, v, userData)) {
 			goto error;
 		}
 		break;
-	case DB_LIST:
+	case CX_LIST:
 		if (c_typeList(s, v, userData)) {
 			goto error;
 		}
 		break;
-	case DB_MAP:
+	case CX_MAP:
 		break;
 	}
 
@@ -424,19 +424,19 @@ static cx_int16 c_typeObject(cx_serializer s, cx_value* v, void* userData) {
 
     /* Forward to specific type-functions */
     switch(t->kind) {
-    case DB_VOID:
+    case CX_VOID:
     	result = c_typeVoid(s, v, userData);
     	break;
-    case DB_ANY:
+    case CX_ANY:
         result = c_typeAny(s, v, userData);
         break;
-    case DB_PRIMITIVE:
+    case CX_PRIMITIVE:
         result = c_typePrimitive(s, v, userData);
         break;
-    case DB_COMPOSITE:
+    case CX_COMPOSITE:
         result = c_typeComposite(s, v, userData);
         break;
-    case DB_COLLECTION:
+    case CX_COLLECTION:
     	result = c_typeCollection(s, v, userData);
         break;
     default:
@@ -456,13 +456,13 @@ struct cx_serializer_s c_typeSerializer(void) {
 
     /* Initialize serializer */
     cx_serializerInit(&s);
-    s.metaprogram[DB_OBJECT] = c_typeObject;
-    s.metaprogram[DB_BASE] = c_typeMember;
-    s.metaprogram[DB_MEMBER] = c_typeMember;
-    s.metaprogram[DB_CONSTANT] = c_typeConstant;
-    s.access = DB_GLOBAL;
-    s.accessKind = DB_XOR;
-    s.traceKind = DB_SERIALIZER_TRACE_ON_FAIL;
+    s.metaprogram[CX_OBJECT] = c_typeObject;
+    s.metaprogram[CX_BASE] = c_typeMember;
+    s.metaprogram[CX_MEMBER] = c_typeMember;
+    s.metaprogram[CX_CONSTANT] = c_typeConstant;
+    s.access = CX_GLOBAL;
+    s.accessKind = CX_XOR;
+    s.traceKind = CX_SERIALIZER_TRACE_ON_FAIL;
 
     return s;
 }
@@ -552,23 +552,23 @@ static int c_typeDeclare(cx_object o, void* userData) {
     data = userData;
     t = o;
 
-    if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
+    if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
         g_fileWrite(data->header, "/*  %s */\n", cx_fullname(t, id));
 
         switch(t->kind) {
-        case DB_COMPOSITE:
+        case CX_COMPOSITE:
             switch(cx_interface(t)->kind) {
-            case DB_STRUCT:
+            case CX_STRUCT:
                 g_fileWrite(data->header, "typedef struct %s %s;\n\n", g_fullOid(data->g, t, id), g_fullOid(data->g, t, id));
                 break;
-            case DB_CLASS:
-                g_fileWrite(data->header, "DB_CLASS(%s);\n\n", g_fullOid(data->g, t, id));
+            case CX_CLASS:
+                g_fileWrite(data->header, "CX_CLASS(%s);\n\n", g_fullOid(data->g, t, id));
                 break;
-            case DB_INTERFACE:
-                g_fileWrite(data->header, "DB_INTERFACE(%s);\n\n", g_fullOid(data->g, t, id));
+            case CX_INTERFACE:
+                g_fileWrite(data->header, "CX_INTERFACE(%s);\n\n", g_fullOid(data->g, t, id));
                 break;
-            case DB_PROCEDURE:
-                g_fileWrite(data->header, "DB_CLASS(%s);\n\n", g_fullOid(data->g, t, id));
+            case CX_PROCEDURE:
+                g_fileWrite(data->header, "CX_CLASS(%s);\n\n", g_fullOid(data->g, t, id));
                 break;
             }
             break;

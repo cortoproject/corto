@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB_CALL_H_
-#define DB_CALL_H_
+#ifndef CX_CALL_H_
+#define CX_CALL_H_
 
 #include "cx_object.h"
 #include "cx__type.h"
@@ -41,5 +41,5 @@ void cx_callDestroy(cx_function f);
 }
 #endif
 
-#endif /* DB_CALL_H_ */
+#endif /* CX_CALL_H_ */
 

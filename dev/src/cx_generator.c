@@ -41,7 +41,7 @@ cx_generator gen_new(cx_string name, cx_string language) {
     }
 
     /* Set id-generation to default */
-    result->idKind = DB_GENERATOR_ID_DEFAULT;
+    result->idKind = CX_GENERATOR_ID_DEFAULT;
 
     /* Set action-callbacks */
     result->start_action = NULL;
@@ -215,7 +215,7 @@ error:
 static int g_freeObjects(void* _o, void* udata) {
 	g_object* o;
 
-	DB_UNUSED(udata);
+	CX_UNUSED(udata);
 
 	o = _o;
 	if (o->prefix) {
@@ -257,7 +257,7 @@ static int g_freeSnippet(void* o, void* udata) {
 /* Close file */
 static int g_closeFile(void* o, void* udata) {
     g_file file;
-    DB_UNUSED(udata);
+    CX_UNUSED(udata);
 
     file = o;
 
@@ -281,7 +281,7 @@ static int g_closeFile(void* o, void* udata) {
 static int g_freeAttribute(void* _o, void* udata) {
     g_attribute* o;
 
-    DB_UNUSED(udata);
+    CX_UNUSED(udata);
 
     o = _o;
     if (o->key) {
@@ -353,7 +353,7 @@ cx_int16 g_serializeImportsReference(cx_serializer s, cx_value *v, void* userDat
 	o = *(cx_object*)cx_valueValue(v);
 	if (o) {
 	    /* Search unscoped object for references to other modules */
-		if (!cx_checkAttr(o, DB_ATTR_SCOPED)) {
+		if (!cx_checkAttr(o, CX_ATTR_SCOPED)) {
 		    cx_uint32 i;
 
 		    /* Make sure to not serialize an object twice, in case of a cycle */
@@ -377,7 +377,7 @@ cx_int16 g_serializeImportsReference(cx_serializer s, cx_value *v, void* userDat
 	    		}
 	    		if (!parent) {
 		    		parent = o;
-		    		while(parent && (cx_typeof(parent)->real->kind != DB_VOID)) {
+		    		while(parent && (cx_typeof(parent)->real->kind != CX_VOID)) {
 		    			parent = cx_parentof(parent);
 		    		}
 		    		if (!g->imports) {
@@ -399,8 +399,8 @@ struct cx_serializer_s g_serializeImportsSerializer(void) {
 	struct cx_serializer_s result;
 	cx_serializerInit(&result);
 	result.reference = g_serializeImportsReference;
-	result.access = DB_PRIVATE;
-	result.accessKind = DB_NOT; /* Serialize not nothing, thus everything. */
+	result.access = CX_PRIVATE;
+	result.accessKind = CX_NOT; /* Serialize not nothing, thus everything. */
 	return result;
 }
 
@@ -554,7 +554,7 @@ cx_string g_getPrefix(cx_generator g, cx_object o) {
 
 /* Object transformations */
 static cx_char* g_oidTransform(cx_generator g, cx_object o, cx_id _id, g_idKind kind) {
-	DB_UNUSED(g);
+	CX_UNUSED(g);
 
 	/* If the object is a function with an argumentlist, cut the argumentlist
 	 * from the name if the function is not overloaded. This keeps processing for
@@ -566,7 +566,7 @@ static cx_char* g_oidTransform(cx_generator g, cx_object o, cx_id _id, g_idKind 
             if (ptr) {
                 *ptr = '\0';
             } else {
-            	if (cx_procedure(cx_typeof(o))->kind != DB_OBSERVER) {
+            	if (cx_procedure(cx_typeof(o))->kind != CX_OBSERVER) {
 					cx_id id;
 					cx_warning("function object '%s' without argument list.", cx_fullname(o, id));
             	}
@@ -598,7 +598,7 @@ static cx_char* g_oidTransform(cx_generator g, cx_object o, cx_id _id, g_idKind 
 	}
 
 	/* Check if class-identifiers must be altered */
-	if (kind != DB_GENERATOR_ID_DEFAULT) {
+	if (kind != CX_GENERATOR_ID_DEFAULT) {
 	    cx_object i = o;
         cx_char* ptr;
 
@@ -614,7 +614,7 @@ static cx_char* g_oidTransform(cx_generator g, cx_object o, cx_id _id, g_idKind 
                 } else {
                 	start = ptr;
                 }
-				if (kind == DB_GENERATOR_ID_CLASS_UPPER) {
+				if (kind == CX_GENERATOR_ID_CLASS_UPPER) {
 					strtoupper(start);
 				} else {
 					strtolower(start);
@@ -649,12 +649,12 @@ cx_string g_fullOidExt(cx_generator g, cx_object o, cx_id id, g_idKind kind) {
 	match = NULL;
 	prefix = g_findPrefix(g, o, &match);
 
-	/* TODO: prefix i.c.m. !DB_GENERATOR_ID_DEFAULT & nested classes i.c.m. !DB_GENERATOR_ID_DEFAULT */
+	/* TODO: prefix i.c.m. !CX_GENERATOR_ID_DEFAULT & nested classes i.c.m. !CX_GENERATOR_ID_DEFAULT */
 
 	/* If prefix is found, replace the scope up until the found object with the prefix */
 	if (prefix && prefix->prefix) {
 		cx_uint32 count;
-		cx_object scopes[DB_MAX_SCOPE_DEPTH];
+		cx_object scopes[CX_MAX_SCOPE_DEPTH];
 
 		/* Obtain list of scopes from matched to object */
 		count = 0;
@@ -906,7 +906,7 @@ error:
 cx_string g_fileLookupSnippetIntern(g_file file, cx_string snippetId, cx_ll list) {
     cx_iter iter;
     g_fileSnippet* snippet;
-    DB_UNUSED(file);
+    CX_UNUSED(file);
 
     snippet = NULL;
 
@@ -964,7 +964,7 @@ cx_bool g_mustParse(cx_generator g, cx_object o) {
 	cx_bool result;
 
 	result = TRUE;
-    if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
+    if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
     	if (cx_llWalk(g->objects, g_checkParseWalk, o)) {
 			result = FALSE;
     	}
@@ -1089,11 +1089,11 @@ static cx_uint32 cx_genMemberCacheGet(cx_ll cache, cx_member m) {
 
 static cx_int16 cx_genMemberCache_member(cx_serializer s, cx_value *info, void* userData) {
 	cx_ll cache;
-	DB_UNUSED(s);
+	CX_UNUSED(s);
 
 	cache = userData;
 
-	if (info->kind == DB_MEMBER) {
+	if (info->kind == CX_MEMBER) {
 		cx_genWalkMember_t *parameter;
 		cx_member m = info->is.member.t;
 
@@ -1129,9 +1129,9 @@ cx_ll cx_genMemberCacheBuild(cx_interface o) {
 	cx_ll result;
 
 	cx_serializerInit(&s);
-	s.access = DB_LOCAL | DB_PRIVATE;
-	s.accessKind = DB_NOT;
-	s.metaprogram[DB_MEMBER] = cx_genMemberCache_member;
+	s.access = CX_LOCAL | CX_PRIVATE;
+	s.accessKind = CX_NOT;
+	s.metaprogram[CX_MEMBER] = cx_genMemberCache_member;
 	result = cx_llNew();
 
 	cx_metaWalk(&s, cx_type(o), result);

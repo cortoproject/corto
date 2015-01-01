@@ -12,7 +12,7 @@ void test(Point value, int32 x, int32 y, string msg):
 	if value.x != x: fail("$msg (x = ${value.x})")
 	if value.y != y: fail("$msg (y = ${value.y})")
 		
-void testref(Point &value, int32 x, int32 y, string msg):
+void testref(Point value, int32 x, int32 y, string msg):
 	if value.x != x: fail("$msg (x = ${value.x})")
 	if value.y != y: fail("$msg (y = ${value.y})")
 	test(value, x, y, "$msg (passthrough)")

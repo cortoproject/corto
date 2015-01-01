@@ -13,13 +13,13 @@
 #include "cx_loader.h"
 #include "cx_err.h"
 
-#define DBSH_CMD_MAX (1024)
+#define CXSH_CMD_MAX (1024)
 
-#define DBSH_COL_NAME     (32)
-#define DBSH_COL_TYPE     (32)
-#define DBSH_COL_STATE    (15)
-#define DBSH_COL_ATTR     (10)
-#define DBSH_COL_TOTAL	  (DBSH_COL_NAME + DBSH_COL_TYPE + DBSH_COL_STATE + DBSH_COL_ATTR)
+#define CXSH_COL_NAME     (32)
+#define CXSH_COL_TYPE     (32)
+#define CXSH_COL_STATE    (15)
+#define CXSH_COL_ATTR     (10)
+#define CXSH_COL_TOTAL	  (CXSH_COL_NAME + CXSH_COL_TYPE + CXSH_COL_STATE + CXSH_COL_ATTR)
 
 #define BLACK  "\033[1;30m"
 #define RED    "\033[1;31m"
@@ -60,13 +60,13 @@ static void cxsh_printColumnBar(int width) {
 
 static void cxsh_printColumnHeader(void) {
 	printf("  ");
-	cxsh_printColumn("name", DBSH_COL_NAME);
-	cxsh_printColumn("type", DBSH_COL_TYPE);
-	cxsh_printColumn("state", DBSH_COL_STATE);
-	cxsh_printColumn("attr", DBSH_COL_ATTR);
+	cxsh_printColumn("name", CXSH_COL_NAME);
+	cxsh_printColumn("type", CXSH_COL_TYPE);
+	cxsh_printColumn("state", CXSH_COL_STATE);
+	cxsh_printColumn("attr", CXSH_COL_ATTR);
 	cxsh_color(INTERFACE_COLOR);
 	printf("\n");
-	cxsh_printColumnBar(DBSH_COL_TOTAL);
+	cxsh_printColumnBar(CXSH_COL_TOTAL);
 	cxsh_color(NORMAL);
 }
 
@@ -83,13 +83,13 @@ static char* cxsh_stateStr(cx_object o, char* buff) {
 	buff[0] = '\0';
 
     /* Get state */
-    if (cx_checkState(o, DB_VALID)) {
+    if (cx_checkState(o, CX_VALID)) {
        strcpy(buff, "V");
     }
-    if (cx_checkState(o, DB_DECLARED)) {
+    if (cx_checkState(o, CX_DECLARED)) {
        strcat(buff, "|DCL");
     }
-    if (cx_checkState(o, DB_DEFINED)) {
+    if (cx_checkState(o, CX_DEFINED)) {
        strcat(buff, "|DEF");
     }
 
@@ -102,11 +102,11 @@ static char* cxsh_attrStr(cx_object o, char* buff) {
 	*buff = '\0';
 
 	first = TRUE;
-	if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
+	if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
 		strcat(buff, "S");
 		first = FALSE;
 	}
-	if (cx_checkAttr(o, DB_ATTR_WRITABLE)) {
+	if (cx_checkAttr(o, CX_ATTR_WRITABLE)) {
 		if (!first) {
 			strcat(buff, "|W");
 		} else {
@@ -114,7 +114,7 @@ static char* cxsh_attrStr(cx_object o, char* buff) {
 			first = FALSE;
 		}
 	}
-	if (cx_checkAttr(o, DB_ATTR_OBSERVABLE)) {
+	if (cx_checkAttr(o, CX_ATTR_OBSERVABLE)) {
 		if (!first) {
 			strcat(buff, "|O");
 		} else {
@@ -129,18 +129,18 @@ static int cxsh_scopeWalk(cx_object o, void* udata) {
 	char state[sizeof("valid | declared | defined")];
 	char attr[sizeof("scope | writable | observable")];
 
-	DB_UNUSED(udata);
+	CX_UNUSED(udata);
 
 	/* Get name of type */
 	cx_fullname(cx_typeof(o), typeName);
 
 	/* Print columns */
 	printf("  ");
-	cxsh_color(OBJECT_COLOR); cxsh_printColumn(cx_nameof(o), DBSH_COL_NAME); cxsh_color(NORMAL);
-	cxsh_color(TYPE_COLOR); cxsh_printColumn(typeName, DBSH_COL_TYPE); cxsh_color(NORMAL);
+	cxsh_color(OBJECT_COLOR); cxsh_printColumn(cx_nameof(o), CXSH_COL_NAME); cxsh_color(NORMAL);
+	cxsh_color(TYPE_COLOR); cxsh_printColumn(typeName, CXSH_COL_TYPE); cxsh_color(NORMAL);
 	cxsh_color(META_COLOR);
-	cxsh_printColumn(cxsh_stateStr(o, state), DBSH_COL_STATE);
-	cxsh_printColumn(cxsh_attrStr(o, attr), DBSH_COL_ATTR);
+	cxsh_printColumn(cxsh_stateStr(o, state), CXSH_COL_STATE);
+	cxsh_printColumn(cxsh_attrStr(o, attr), CXSH_COL_ATTR);
 	cxsh_color(NORMAL);
 
 	printf("\n");
@@ -311,7 +311,7 @@ static int cxsh_show(char* object) {
     if ((o = cx_resolve(scope, object))) {
 
     	/* Initialize serializer userData */
-        s = cx_string_ser(DB_PRIVATE, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
+        s = cx_string_ser(CX_PRIVATE, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
         sdata.buffer = NULL;
         sdata.length = 0;
         sdata.maxlength = 0;
@@ -327,7 +327,7 @@ static int cxsh_show(char* object) {
 			printf("%srefcount:%s     %d\n", INTERFACE_COLOR, NORMAL, cx_countof(o)-1); /* Correct for cxsh's own keep */
 			printf("%sstate:%s        %s%s%s\n", INTERFACE_COLOR, NORMAL, META_COLOR, cxsh_stateStr(o, state), NORMAL);
 			printf("%sattributes:%s   %s%s%s\n", INTERFACE_COLOR, NORMAL, META_COLOR, cxsh_attrStr(o, attr), NORMAL);
-			if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
+			if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
 				printf("%sparent:       %s%s%s\n", INTERFACE_COLOR, OBJECT_COLOR, cx_fullname(cx_parentof(o), id), NORMAL);
 				if (cx_scopeof(o)) {
 					printf("%schildcount:%s   %d\n", INTERFACE_COLOR, NORMAL, cx_rbtreeSize(cx_scopeof(o)));
@@ -350,9 +350,9 @@ static int cxsh_show(char* object) {
 
         /* If object is a type, do a metawalk with the string-serializer */
         if (o) {
-			if (cx_class_instanceof(cx_type_o, o) && cx_checkState(o, DB_DEFINED)) {
-			    s.access = DB_LOCAL | DB_READONLY | DB_PRIVATE;
-			    s.accessKind = DB_NOT;
+			if (cx_class_instanceof(cx_type_o, o) && cx_checkState(o, CX_DEFINED)) {
+			    s.access = CX_LOCAL | CX_READONLY | CX_PRIVATE;
+			    s.accessKind = CX_NOT;
 				cx_metaWalk(&s, o, &sdata);
 				if (sdata.buffer) {
 					printf("%sinitializer:%s     %s\n", INTERFACE_COLOR, NORMAL, sdata.buffer);
@@ -430,7 +430,7 @@ static void cxsh_help(void) {
 }
 
 static int cxsh_doCmd(char* cmd) {
-	char arg[DBSH_CMD_MAX];
+	char arg[CXSH_CMD_MAX];
 
 	arg[0] = '\0';
 
@@ -485,7 +485,7 @@ quit:
 
 /* Shell */
 static void cxsh_shell(void) {
-	char cmd[DBSH_CMD_MAX];
+	char cmd[CXSH_CMD_MAX];
 	cx_bool quit;
 
 	quit = FALSE;

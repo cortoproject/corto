@@ -128,7 +128,7 @@ int fixture_load(void) {
     }
 
     /* Define ::fixture */
-    if (!cx_checkState(fixture_o, DB_DEFINED)) {
+    if (!cx_checkState(fixture_o, CX_DEFINED)) {
         if (cx_define(fixture_o)) {
             cx_error("fixture_load: failed to define object '::fixture'.");
             goto error;
@@ -233,7 +233,7 @@ int fixture_load(void) {
     }
 
     /* Define ::fixture::color */
-    if (!cx_checkState(fixture_color_o, DB_DEFINED)) {
+    if (!cx_checkState(fixture_color_o, CX_DEFINED)) {
         if (cx_define(fixture_color_o)) {
             cx_error("fixture_load: failed to define object '::fixture::color'.");
             goto error;
@@ -315,7 +315,7 @@ int fixture_load(void) {
     }
 
     /* Define ::fixture::Djinn */
-    if (!cx_checkState(fixture_Djinn_o, DB_DEFINED)) {
+    if (!cx_checkState(fixture_Djinn_o, CX_DEFINED)) {
         if (cx_define(fixture_Djinn_o)) {
             cx_error("fixture_load: failed to define object '::fixture::Djinn'.");
             goto error;
@@ -377,7 +377,7 @@ int fixture_load(void) {
     }
 
     /* Define ::fixture::Dog::age */
-    if (!cx_checkState(fixture_Dog_age_o, DB_DEFINED)) {
+    if (!cx_checkState(fixture_Dog_age_o, CX_DEFINED)) {
         fixture_Dog_age_o->type = cx_resolve_ext(fixture_Dog_age_o, NULL, "::cortex::lang::uint8", FALSE, "element ::fixture::Dog::age.type");
         fixture_Dog_age_o->modifiers = 0x0;
         fixture_Dog_age_o->state = 0x6;
@@ -411,7 +411,7 @@ int fixture_load(void) {
     }
 
     /* Define ::fixture::Dog::name */
-    if (!cx_checkState(fixture_Dog_name_o, DB_DEFINED)) {
+    if (!cx_checkState(fixture_Dog_name_o, CX_DEFINED)) {
         fixture_Dog_name_o->type = cx_resolve_ext(fixture_Dog_name_o, NULL, "::cortex::lang::string", FALSE, "element ::fixture::Dog::name.type");
         fixture_Dog_name_o->modifiers = 0x0;
         fixture_Dog_name_o->state = 0x6;
@@ -458,7 +458,7 @@ int fixture_load(void) {
     }
 
     /* Define ::fixture::DogBreed */
-    if (!cx_checkState(fixture_DogBreed_o, DB_DEFINED)) {
+    if (!cx_checkState(fixture_DogBreed_o, CX_DEFINED)) {
         if (cx_define(fixture_DogBreed_o)) {
             cx_error("fixture_load: failed to define object '::fixture::DogBreed'.");
             goto error;
@@ -470,7 +470,7 @@ int fixture_load(void) {
     }
 
     /* Define ::fixture::Dog::breed */
-    if (!cx_checkState(fixture_Dog_breed_o, DB_DEFINED)) {
+    if (!cx_checkState(fixture_Dog_breed_o, CX_DEFINED)) {
         fixture_Dog_breed_o->type = cx_resolve_ext(fixture_Dog_breed_o, NULL, "::fixture::DogBreed", FALSE, "element ::fixture::Dog::breed.type");
         fixture_Dog_breed_o->modifiers = 0x0;
         fixture_Dog_breed_o->state = 0x6;
@@ -652,7 +652,7 @@ int fixture_load(void) {
     }
 
     /* Define ::fixture::ints */
-    if (!cx_checkState(fixture_ints_o, DB_DEFINED)) {
+    if (!cx_checkState(fixture_ints_o, CX_DEFINED)) {
         cx_collection(fixture_ints_o)->elementType = cx_resolve_ext(fixture_ints_o, NULL, "::cortex::lang::uint32", FALSE, "element ::fixture::ints.elementType");
         cx_collection(fixture_ints_o)->max = 4;
         fixture_ints_o->elementType = cx_resolve_ext(fixture_ints_o, NULL, "::cortex::lang::uint32", FALSE, "element ::fixture::ints.elementType");
@@ -674,7 +674,7 @@ int fixture_load(void) {
     }
 
     /* Define ::fixture::myarray */
-    if (!cx_checkState(fixture_myarray_o, DB_DEFINED)) {
+    if (!cx_checkState(fixture_myarray_o, CX_DEFINED)) {
         (*fixture_myarray_o)[0] = 26;
         (*fixture_myarray_o)[1] = 47;
         (*fixture_myarray_o)[2] = 6;
@@ -725,7 +725,7 @@ int fixture_load(void) {
     }
 
     /* Define ::fixture::point2D::x */
-    if (!cx_checkState(fixture_point2D_x_o, DB_DEFINED)) {
+    if (!cx_checkState(fixture_point2D_x_o, CX_DEFINED)) {
         fixture_point2D_x_o->type = cx_resolve_ext(fixture_point2D_x_o, NULL, "::cortex::lang::int32", FALSE, "element ::fixture::point2D::x.type");
         fixture_point2D_x_o->modifiers = 0x0;
         fixture_point2D_x_o->state = 0x6;
@@ -745,7 +745,7 @@ int fixture_load(void) {
     }
 
     /* Define ::fixture::point2D::y */
-    if (!cx_checkState(fixture_point2D_y_o, DB_DEFINED)) {
+    if (!cx_checkState(fixture_point2D_y_o, CX_DEFINED)) {
         fixture_point2D_y_o->type = cx_resolve_ext(fixture_point2D_y_o, NULL, "::cortex::lang::int32", FALSE, "element ::fixture::point2D::y.type");
         fixture_point2D_y_o->modifiers = 0x0;
         fixture_point2D_y_o->state = 0x6;
@@ -758,7 +758,7 @@ int fixture_load(void) {
     }
 
     /* Define ::fixture::point2D */
-    if (!cx_checkState(fixture_point2D_o, DB_DEFINED)) {
+    if (!cx_checkState(fixture_point2D_o, CX_DEFINED)) {
         cx_type(fixture_point2D_o)->defaultType = cx_resolve_ext(fixture_point2D_o, NULL, "::cortex::lang::member", FALSE, "element ::fixture::point2D.defaultType");
         cx_type(fixture_point2D_o)->parentType = NULL;
         cx_type(fixture_point2D_o)->parentState = 0x0;
@@ -782,7 +782,7 @@ int fixture_load(void) {
     }
 
     /* Define ::fixture::p */
-    if (!cx_checkState(fixture_p_o, DB_DEFINED)) {
+    if (!cx_checkState(fixture_p_o, CX_DEFINED)) {
         fixture_p_o->x = 3;
         fixture_p_o->y = 4;
         if (cx_define(fixture_p_o)) {
@@ -1139,7 +1139,7 @@ int fixture_load(void) {
     }
 
     /* Define ::fixture::Dog::lover */
-    if (!cx_checkState(fixture_Dog_lover_o, DB_DEFINED)) {
+    if (!cx_checkState(fixture_Dog_lover_o, CX_DEFINED)) {
         fixture_Dog_lover_o->type = cx_resolve_ext(fixture_Dog_lover_o, NULL, "::fixture::Dog", FALSE, "element ::fixture::Dog::lover.type");
         fixture_Dog_lover_o->modifiers = 0x0;
         fixture_Dog_lover_o->state = 0x6;
@@ -1152,7 +1152,7 @@ int fixture_load(void) {
     }
 
     /* Define ::fixture::Dog */
-    if (!cx_checkState(fixture_Dog_o, DB_DEFINED)) {
+    if (!cx_checkState(fixture_Dog_o, CX_DEFINED)) {
         cx_type(fixture_Dog_o)->defaultType = cx_resolve_ext(fixture_Dog_o, NULL, "::cortex::lang::member", FALSE, "element ::fixture::Dog.defaultType");
         cx_type(fixture_Dog_o)->parentType = NULL;
         cx_type(fixture_Dog_o)->parentState = 0x0;
@@ -1178,7 +1178,7 @@ int fixture_load(void) {
     }
 
     /* Define ::fixture::dog1 */
-    if (!cx_checkState(fixture_dog1_o, DB_DEFINED)) {
+    if (!cx_checkState(fixture_dog1_o, CX_DEFINED)) {
         fixture_dog1_o->breed = FIXTURE_GoldenRetriever;
         fixture_dog1_o->name = cx_strdup("Gijs");
         fixture_dog1_o->age = 10;
@@ -1197,7 +1197,7 @@ int fixture_load(void) {
     }
 
     /* Define ::fixture::dog2 */
-    if (!cx_checkState(fixture_dog2_o, DB_DEFINED)) {
+    if (!cx_checkState(fixture_dog2_o, CX_DEFINED)) {
         fixture_dog2_o->breed = FIXTURE_Pug;
         fixture_dog2_o->name = cx_strdup("Lolly");
         fixture_dog2_o->age = 4;
@@ -1216,7 +1216,7 @@ int fixture_load(void) {
     }
 
     /* Define ::fixture::dog3 */
-    if (!cx_checkState(fixture_dog3_o, DB_DEFINED)) {
+    if (!cx_checkState(fixture_dog3_o, CX_DEFINED)) {
         fixture_dog3_o->breed = FIXTURE_Chihuahua;
         fixture_dog3_o->name = cx_strdup("I'm annoying");
         fixture_dog3_o->age = 3;
@@ -1235,7 +1235,7 @@ int fixture_load(void) {
     }
 
     /* Define ::fixture::v0::dog1 */
-    if (!cx_checkState(fixture_v0_dog1_o, DB_DEFINED)) {
+    if (!cx_checkState(fixture_v0_dog1_o, CX_DEFINED)) {
         fixture_v0_dog1_o->breed = FIXTURE_Pug;
         fixture_v0_dog1_o->name = cx_strdup("MyPug");
         fixture_v0_dog1_o->age = 55;

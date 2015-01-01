@@ -130,8 +130,8 @@ int tc_call_04(void) {
 /* Test call-functionality */
 int main(int argc, char* argv[]) {
 	int result;
-    DB_UNUSED(argc);
-    DB_UNUSED(argv);
+    CX_UNUSED(argc);
+    CX_UNUSED(argv);
 
     result = 0;
 

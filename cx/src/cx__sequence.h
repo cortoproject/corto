@@ -1,5 +1,5 @@
-#ifndef DB__SEQUENCE_H_
-#define DB__SEQUENCE_H_
+#ifndef CX__SEQUENCE_H_
+#define CX__SEQUENCE_H_
 
 #include "cx__type.h"
 
@@ -13,4 +13,4 @@ int cx_sequence_alloc(cx_collection _this, cx_void* collection, cx_uint32 elemen
 }
 #endif
 
-#endif /* DB__SEQUENCE_H_ */
+#endif /* CX__SEQUENCE_H_ */
