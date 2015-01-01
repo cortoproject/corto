@@ -5,7 +5,7 @@ OFLAGS	= -O0
 CFLAGS	= $(OFLAGS) $(COVFLAGS) -g -Wall -Wextra -Wno-gnu-label-as-value -Wno-unknown-pragmas -Wstrict-prototypes -pedantic -std=c99 -fPIC -D_GNU_SOURCE -D_XOPEN_SOURCE=500 -D_POSIX_C_SOURCE=199506
 
 # default libraries and includes
-INCLUDE += include $(CORTEX_HOME)/db/include
+INCLUDE += include $(CORTEX_HOME)/cx/include
 
 INCLUDES = $(INCLUDE:%=-I"%")
 SOURCES += $(wildcard src/*.c)

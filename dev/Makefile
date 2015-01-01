@@ -1,7 +1,7 @@
 
 TARGET =	cortexdev
 
-INCLUDE = 	$(CORTEX_HOME)/db/src 
+INCLUDE = 	$(CORTEX_HOME)/cx/src 
 
 LIBS	= lang dl
 

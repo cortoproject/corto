@@ -238,8 +238,8 @@ finished:
     return 1;
 }
 
-/* TODO this is copy-past from dbsh.c */
-static char* dbsh_stateStr(cx_object o, char* buff) {
+/* TODO this is copy-past from cx.c */
+static char* cx_stateStr(cx_object o, char* buff) {
     buff[0] = '\0';
 
     /* Get state */
@@ -256,8 +256,8 @@ static char* dbsh_stateStr(cx_object o, char* buff) {
     return buff;
 }
 
-/* TODO this is copy-paste from dbsh.c */
-static char* dbsh_attrStr(cx_object o, char* buff) {
+/* TODO this is copy-paste from cx.c */
+static char* cx_attrStr(cx_object o, char* buff) {
     cx_bool first;
     *buff = '\0';
 
@@ -309,13 +309,13 @@ static cx_int16 cx_ser_meta(cx_serializer s, cx_value* v, void* userData) {
     }
 
     char states[sizeof("V|DCL|DEF")];
-    dbsh_stateStr(object, states);
+    cx_stateStr(object, states);
     if (!cx_ser_appendstr(data, "\"states\":\"%s\",", states)) {
         goto finished;
     }
 
     char attributes[sizeof("S|W|O")];
-    dbsh_attrStr(object, attributes);
+    cx_attrStr(object, attributes);
     if (!cx_ser_appendstr(data, "\"attributes\":\"%s\",", attributes)) {
         goto finished;
     }
@@ -360,13 +360,13 @@ static int cx_walkScopeAction_ser_meta(cx_object o, void* userData) {
     }
 
     char states[sizeof("V|DCL|DEF")];
-    dbsh_stateStr(o, states);
+    cx_stateStr(o, states);
     if (!cx_ser_appendstr(userData, "\"states\":\"%s\",", states)) {
         goto finished;
     }
 
     char attributes[sizeof("S|W|O")];
-    dbsh_attrStr(o, attributes);
+    cx_attrStr(o, attributes);
     if (!cx_ser_appendstr(userData, "\"attributes\":\"%s\",", attributes)) {
         goto finished;
     }

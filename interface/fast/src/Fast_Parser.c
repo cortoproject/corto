@@ -14,7 +14,7 @@
 /*#define FAST_PARSER_DEBUG*/
 #define fast_err _this->errSet = TRUE; _this->errLine = __LINE__;
 
-#include "db.h"
+#include "cx.h"
 #include "stdio.h"
 #include "Fast__api.h"
 #include "Fast__meta.h"

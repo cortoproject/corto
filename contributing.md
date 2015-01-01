@@ -57,7 +57,7 @@ cortex filename.cortex
 
 You can also start the cortex shell which allows exploring the object store:
 ```
-dbsh
+cx.h
 ```
 
 To validate that your build is sound run the testsuite with the following command:

@@ -294,7 +294,7 @@ object tc_jsonser::
     Point3D pp: 1, 2, Point{5, 6};
 ```
 
-The following is the view in `dbsh`
+The following is the view in `cx.h`
 
 ```
 $ pp
