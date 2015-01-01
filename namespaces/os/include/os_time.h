@@ -18,16 +18,16 @@ extern "C" {
 #endif
 
 /* ::cortex::os::time::add(::cortex::os::time t) */
-db_void os_time_add(os_time _this, os_time t);
+cx_void os_time_add(os_time _this, os_time t);
 
 /* ::cortex::os::time::get() */
-db_void os_time_get(os_time _this);
+cx_void os_time_get(os_time _this);
 
 /* ::cortex::os::time::sub(::cortex::os::time t) */
-db_void os_time_sub(os_time _this, os_time t);
+cx_void os_time_sub(os_time _this, os_time t);
 
 /* ::cortex::os::time::toFloat() */
-db_float64 os_time_toFloat(os_time _this);
+cx_float64 os_time_toFloat(os_time _this);
 
 #ifdef __cplusplus
 }

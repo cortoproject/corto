@@ -19,13 +19,13 @@ extern "C" {
 #endif
 
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Wait::construct(Wait object) */
-db_int16 Fast_Wait_construct(Fast_Wait object);
+cx_int16 Fast_Wait_construct(Fast_Wait object);
 
-/* virtual ::cortex::Fast::Wait::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_Wait_toIc(Fast_Wait _this, db_icProgram program, db_icStorage storage, db_bool stored);
+/* virtual ::cortex::Fast::Wait::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+cx_ic Fast_Wait_toIc(Fast_Wait _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);
 
-/* ::cortex::Fast::Wait::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_Wait_toIc_v(Fast_Wait _this, db_icProgram program, db_icStorage storage, db_bool stored);
+/* ::cortex::Fast::Wait::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+cx_ic Fast_Wait_toIc_v(Fast_Wait _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);
 
 #ifdef __cplusplus
 }

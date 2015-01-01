@@ -16,9 +16,9 @@
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 Fast_Parser yparser(void);
 
-void Fast_buildInheritanceStack(db_interface t, db_interface *stack, db_uint32 *count) {
-    db_interface base;
-    db_uint32 sp;
+void Fast_buildInheritanceStack(cx_interface t, cx_interface *stack, cx_uint32 *count) {
+    cx_interface base;
+    cx_uint32 sp;
 
     (*count) = 0;
 
@@ -36,10 +36,10 @@ void Fast_buildInheritanceStack(db_interface t, db_interface *stack, db_uint32 *
     }while((base = base->base));
 }
 
-db_interface Fast_findCommonAncestor(db_interface t1, db_interface t2) {
-    db_interface result = NULL;
-    db_interface stack1[DB_MAX_INHERITANCE_DEPTH], stack2[DB_MAX_INHERITANCE_DEPTH];
-    db_uint32 count1, count2;
+cx_interface Fast_findCommonAncestor(cx_interface t1, cx_interface t2) {
+    cx_interface result = NULL;
+    cx_interface stack1[DB_MAX_INHERITANCE_DEPTH], stack2[DB_MAX_INHERITANCE_DEPTH];
+    cx_uint32 count1, count2;
 
     /* Build inheritance stacks */
     Fast_buildInheritanceStack(t1, stack1, &count1);
@@ -61,20 +61,20 @@ db_interface Fast_findCommonAncestor(db_interface t1, db_interface t2) {
 /* $end */
 
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Wait::construct(Wait object) */
-db_int16 Fast_Wait_construct(Fast_Wait object) {
+cx_int16 Fast_Wait_construct(Fast_Wait object) {
 /* $begin(::cortex::Fast::Wait::construct) */
-    db_iter exprIter;
+    cx_iter exprIter;
     Fast_Expression expr, timeoutExpr;
-    db_type exprType, resultType = NULL;
+    cx_type exprType, resultType = NULL;
 
     Fast_Node(object)->kind = FAST_Wait;
 
     /* Walk types of waitlist, check if all expressions evaluate to objects or reference values. Compare types in
      * waitlist to determine type of wait expression by taking the highest common ancestor. If no common ancestor
      * is found the type of the wait expression is a generic object. */
-    exprIter = db_llIter(object->exprList);
-    while(db_iterHasNext(&exprIter) && (resultType != db_object_o)) {
-        expr = db_iterNext(&exprIter);
+    exprIter = cx_llIter(object->exprList);
+    while(cx_iterHasNext(&exprIter) && (resultType != cx_object_o)) {
+        expr = cx_iterNext(&exprIter);
         exprType = Fast_Expression_getType(expr);
 
         if (!(exprType->reference || expr->isReference)) {
@@ -89,13 +89,13 @@ db_int16 Fast_Wait_construct(Fast_Wait object) {
             if (resultType != exprType) {
                 switch(resultType->kind) {
                 case DB_COMPOSITE:
-                    resultType = (db_type)Fast_findCommonAncestor((db_interface)resultType, (db_interface)exprType);
+                    resultType = (cx_type)Fast_findCommonAncestor((cx_interface)resultType, (cx_interface)exprType);
                     if (!resultType) {
-                        resultType = db_object_o;
+                        resultType = cx_object_o;
                     }
                     break;
                 default:
-                    resultType = db_object_o; /* No common ancestor */
+                    resultType = cx_object_o; /* No common ancestor */
                     break;
                 }
             }
@@ -103,9 +103,9 @@ db_int16 Fast_Wait_construct(Fast_Wait object) {
     }
 
     if (object->timeout) {
-        timeoutExpr = Fast_Expression_cast(object->timeout, db_type(db_float32_o));
+        timeoutExpr = Fast_Expression_cast(object->timeout, cx_type(cx_float32_o));
         if (timeoutExpr) {
-            db_set(&object->timeout, timeoutExpr);
+            cx_set(&object->timeout, timeoutExpr);
         }
     } else {
         object->timeout = Fast_Expression(Fast_FloatingPoint__create(0));
@@ -121,33 +121,33 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::Wait::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_Wait_toIc_v(Fast_Wait _this, db_icProgram program, db_icStorage storage, db_bool stored) {
+/* ::cortex::Fast::Wait::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+cx_ic Fast_Wait_toIc_v(Fast_Wait _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Wait::toIc) */
-    db_iter exprIter;
+    cx_iter exprIter;
     Fast_Expression expr;
-    db_ic ic, result;
-    db_icOp op;
+    cx_ic ic, result;
+    cx_icOp op;
 
     DB_UNUSED(stored);
 
     if (storage) {
-        result = (db_ic)storage;
+        result = (cx_ic)storage;
     } else {
-        result = (db_ic)db_icProgram_accumulatorPush(
+        result = (cx_ic)cx_icProgram_accumulatorPush(
             program, Fast_Node(_this)->line, Fast_Expression_getType(Fast_Expression(_this)), TRUE);
     }
 
-    exprIter = db_llIter(_this->exprList);
-    while(db_iterHasNext(&exprIter)) {
-        expr = db_iterNext(&exprIter);
+    exprIter = cx_llIter(_this->exprList);
+    while(cx_iterHasNext(&exprIter)) {
+        expr = cx_iterNext(&exprIter);
 
         /* Parse object-expression */
         ic = Fast_Node_toIc(Fast_Node(expr), program, NULL, TRUE);
 
         /* Insert waitfor instruction */
-        op = db_icOp__create(program, Fast_Node(_this)->line, DB_IC_WAITFOR, (db_icValue)ic, NULL, NULL);
-        db_icProgram_addIc(program, (db_ic)op);
+        op = cx_icOp__create(program, Fast_Node(_this)->line, DB_IC_WAITFOR, (cx_icValue)ic, NULL, NULL);
+        cx_icProgram_addIc(program, (cx_ic)op);
         if (expr->isReference) {
             op->s1Deref = DB_IC_DEREF_ADDRESS;
         }
@@ -161,8 +161,8 @@ db_ic Fast_Wait_toIc_v(Fast_Wait _this, db_icProgram program, db_icStorage stora
     }
 
     /* Insert wait instruction */
-    op = db_icOp__create(program, Fast_Node(_this)->line, DB_IC_WAIT, (db_icValue)result, (db_icValue)ic, NULL);
-    db_icProgram_addIc(program, (db_ic)op);
+    op = cx_icOp__create(program, Fast_Node(_this)->line, DB_IC_WAIT, (cx_icValue)result, (cx_icValue)ic, NULL);
+    cx_icProgram_addIc(program, (cx_ic)op);
 
     return result;
 /* $end */

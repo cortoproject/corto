@@ -1,4 +1,4 @@
-/* db_list.c
+/* cx_list.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -7,83 +7,83 @@
  */
 
 #include "db.h"
-#include "db__meta.h"
+#include "cx__meta.h"
 
 /* $header() */
-#include "db_value.h"
-typedef void (*db_list_action)(db_ll list, void *value, void *userData);
-static void db_list_do(db_any object, db_any element, db_bool insert, db_list_action action, void *userData);
+#include "cx_value.h"
+typedef void (*cx_list_action)(cx_ll list, void *value, void *userData);
+static void cx_list_do(cx_any object, cx_any element, cx_bool insert, cx_list_action action, void *userData);
 
 /* In place insertion of list to a list */
-typedef struct db_list_insertWalk_t {
-    db_iter iter;
-    db_any *dest;
-}db_list_insertWalk_t;
+typedef struct cx_list_insertWalk_t {
+    cx_iter iter;
+    cx_any *dest;
+}cx_list_insertWalk_t;
 
-void db_list_insertListAction(db_ll list, void *value, void *userData) {
-    db_list_insertWalk_t *data = userData;
+void cx_list_insertListAction(cx_ll list, void *value, void *userData) {
+    cx_list_insertWalk_t *data = userData;
     DB_UNUSED(list);
-    db_iterInsert(&data->iter, value);
-    db_iterHasNext(&data->iter);
-    db_iterNext(&data->iter);
+    cx_iterInsert(&data->iter, value);
+    cx_iterHasNext(&data->iter);
+    cx_iterNext(&data->iter);
 }
 
-int db_list_insertWalk(void* o, void* userData) {
-    db_list_insertWalk_t *data = userData;
-    db_any src;
+int cx_list_insertWalk(void* o, void* userData) {
+    cx_list_insertWalk_t *data = userData;
+    cx_any src;
     src.value = o;
-    src.type = db_collection(data->dest->type)->elementType->real;
+    src.type = cx_collection(data->dest->type)->elementType->real;
     src.owner = FALSE;
-    db_list_do(*data->dest, src, TRUE, db_list_insertListAction, data);
+    cx_list_do(*data->dest, src, TRUE, cx_list_insertListAction, data);
     return 1;
 }
 
 /* Append list to list */
-int db_list_appendWalk(void* o, void* userData) {
-    db_any *dest = userData;
-    db_any src;
+int cx_list_appendWalk(void* o, void* userData) {
+    cx_any *dest = userData;
+    cx_any src;
     src.value = o;
-    src.type = db_collection(dest->type)->elementType->real;
+    src.type = cx_collection(dest->type)->elementType->real;
     src.owner = FALSE;
-    db_list_append_lang_any(*dest, src);
+    cx_list_append_lang_any(*dest, src);
     return 1;
 }
 
 /* Insert or append an element */
-static void db_list_do(db_any object, db_any element, db_bool insert, db_list_action action, void *userData) {
-    db_ll list = *(db_ll*)object.value;
+static void cx_list_do(cx_any object, cx_any element, cx_bool insert, cx_list_action action, void *userData) {
+    cx_ll list = *(cx_ll*)object.value;
     void* value = NULL;
-    db_bool doCopy = TRUE;
-    db_value src, dst;
+    cx_bool doCopy = TRUE;
+    cx_value src, dst;
     
     /* If appending a list of the same type, insert all elements from 'element' to object */
-    if (db_type_castable(object.type, element.type)) {
+    if (cx_type_castable(object.type, element.type)) {
         if (!insert) {
-            db_llWalk(*(db_ll*)element.value, db_list_appendWalk, &object);
+            cx_llWalk(*(cx_ll*)element.value, cx_list_appendWalk, &object);
             doCopy = FALSE;
         } else {
-            db_list_insertWalk_t walkData;
-            walkData.iter = db_llIter(list);
+            cx_list_insertWalk_t walkData;
+            walkData.iter = cx_llIter(list);
             walkData.dest = &object;
-            db_llWalk(*(db_ll*)element.value, db_list_insertWalk, &walkData);
+            cx_llWalk(*(cx_ll*)element.value, cx_list_insertWalk, &walkData);
             doCopy = FALSE;
             
         }
-    } else if (db_collection_elementRequiresAlloc(db_collection(object.type))) {
-        db_uint32 size = db_type_sizeof(db_collection(object.type)->elementType->real);
-        value = db_calloc(size);
-        db_valueValueInit(&dst, NULL, db_collection(object.type)->elementType, value);
-        db_initValue(&dst);
-        db_valueValueInit(&src, NULL, db_collection(object.type)->elementType, element.value);
+    } else if (cx_collection_elementRequiresAlloc(cx_collection(object.type))) {
+        cx_uint32 size = cx_type_sizeof(cx_collection(object.type)->elementType->real);
+        value = cx_calloc(size);
+        cx_valueValueInit(&dst, NULL, cx_collection(object.type)->elementType, value);
+        cx_initValue(&dst);
+        cx_valueValueInit(&src, NULL, cx_collection(object.type)->elementType, element.value);
     } else {
         value = NULL;
-        db_valueValueInit(&dst, NULL, db_collection(object.type)->elementType, &value);
-        db_initValue(&dst);
-        db_valueValueInit(&src, NULL, db_collection(object.type)->elementType, element.value);
+        cx_valueValueInit(&dst, NULL, cx_collection(object.type)->elementType, &value);
+        cx_initValue(&dst);
+        cx_valueValueInit(&src, NULL, cx_collection(object.type)->elementType, element.value);
     }
     
     if (doCopy) {
-        db_valueCopy(&dst, &src);
+        cx_valueCopy(&dst, &src);
         if (insert) {
             action(list, value, userData);
         } else {
@@ -92,117 +92,117 @@ static void db_list_do(db_any object, db_any element, db_bool insert, db_list_ac
     }
 }
 
-static void db_list_insertAction(db_ll list, void *value, void *userData) {
+static void cx_list_insertAction(cx_ll list, void *value, void *userData) {
     DB_UNUSED(userData);
-    db_llInsert(list, value);
+    cx_llInsert(list, value);
 }
 
-static void db_list_appendAction(db_ll list, void *value, void *userData) {
+static void cx_list_appendAction(cx_ll list, void *value, void *userData) {
     DB_UNUSED(userData);
-    db_llAppend(list, value);
+    cx_llAppend(list, value);
 }
 
-static void* db_list_do_(db_any object, db_bool insert) {
-    db_ll list = *(db_ll*)object.value;
+static void* cx_list_do_(cx_any object, cx_bool insert) {
+    cx_ll list = *(cx_ll*)object.value;
     void* value = NULL;
-    db_value dst;
+    cx_value dst;
     
-    if (db_collection_elementRequiresAlloc(db_collection(object.type))) {
-        db_uint32 size = db_type_sizeof(db_collection(object.type)->elementType->real);
-        value = db_calloc(size);
-        db_valueValueInit(&dst, NULL, db_collection(object.type)->elementType, value);
-        db_initValue(&dst);
+    if (cx_collection_elementRequiresAlloc(cx_collection(object.type))) {
+        cx_uint32 size = cx_type_sizeof(cx_collection(object.type)->elementType->real);
+        value = cx_calloc(size);
+        cx_valueValueInit(&dst, NULL, cx_collection(object.type)->elementType, value);
+        cx_initValue(&dst);
     } else {
         value = NULL;
-        db_valueValueInit(&dst, NULL, db_collection(object.type)->elementType, &value);
-        db_initValue(&dst);
+        cx_valueValueInit(&dst, NULL, cx_collection(object.type)->elementType, &value);
+        cx_initValue(&dst);
     }
 
     if (insert) {
-        db_llInsert(list, value);
+        cx_llInsert(list, value);
     } else {
-        db_llAppend(list, value);
+        cx_llAppend(list, value);
     }
 
     return value;
 }
 
 /* Free values in collection */
-static int db_clearFreeValues(void* o, void* udata) {
+static int cx_clearFreeValues(void* o, void* udata) {
     DB_UNUSED(udata);
-    db_dealloc(o);
+    cx_dealloc(o);
     return 1;
 }
 /* $end */
 
 /* ::cortex::lang::list::append() */
-db_any db_list_append_(db_any _this) {
+cx_any cx_list_append_(cx_any _this) {
 /* $begin(::cortex::lang::list::append()) */
-    db_any result;
-    result.type = db_collection(_this.type)->elementType->real;
-    result.value = db_list_do_(_this, FALSE);
+    cx_any result;
+    result.type = cx_collection(_this.type)->elementType->real;
+    result.value = cx_list_do_(_this, FALSE);
     result.owner = FALSE;
     return result;
 /* $end */
 }
 
 /* ::cortex::lang::list::append(lang::any element) */
-db_void db_list_append_lang_any(db_any _this, db_any element) {
+cx_void cx_list_append_lang_any(cx_any _this, cx_any element) {
 /* $begin(::cortex::lang::list::append(lang::any element)) */
-	db_list_do(_this, element, FALSE, db_list_appendAction, NULL);
+	cx_list_do(_this, element, FALSE, cx_list_appendAction, NULL);
 /* $end */
 }
 
 /* ::cortex::lang::list::clear() */
-db_void db_list_clear(db_any _this) {
+cx_void cx_list_clear(cx_any _this) {
 /* $begin(::cortex::lang::list::clear) */
-    db_collection c = db_collection(_this.type);
-    if (db_collection_elementRequiresAlloc(c)) {
-        db_llWalk(*(db_ll*)_this.value, db_clearFreeValues, NULL);
+    cx_collection c = cx_collection(_this.type);
+    if (cx_collection_elementRequiresAlloc(c)) {
+        cx_llWalk(*(cx_ll*)_this.value, cx_clearFreeValues, NULL);
     }
-    db_llClear(*(db_ll*)_this.value);
+    cx_llClear(*(cx_ll*)_this.value);
 /* $end */
 }
 
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::list::construct(lang::list object) */
-db_int16 db_list_construct(db_list object) {
+cx_int16 cx_list_construct(cx_list object) {
 /* $begin(::cortex::lang::list::construct) */
-	db_type(object)->hasResources = TRUE;
-	db_type(object)->size = sizeof(db_ll);
-	db_type(object)->alignment = DB_ALIGNMENT(db_ll);
-	return db_type_construct(db_type(object));
+	cx_type(object)->hasResources = TRUE;
+	cx_type(object)->size = sizeof(cx_ll);
+	cx_type(object)->alignment = DB_ALIGNMENT(cx_ll);
+	return cx_type_construct(cx_type(object));
 /* $end */
 }
 
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::list::init(lang::list object) */
-db_int16 db_list_init(db_list object) {
+cx_int16 cx_list_init(cx_list object) {
 /* $begin(::cortex::lang::list::init) */
-    db_collection(object)->kind = DB_LIST;
-    return db_collection_init(db_collection(object));
+    cx_collection(object)->kind = DB_LIST;
+    return cx_collection_init(cx_collection(object));
 /* $end */
 }
 
 /* ::cortex::lang::list::insert() */
-db_any db_list_insert_(db_any _this) {
+cx_any cx_list_insert_(cx_any _this) {
 /* $begin(::cortex::lang::list::insert()) */
-    db_any result;
-    result.type = db_collection(_this.type)->elementType->real;
-    result.value = db_list_do_(_this, TRUE);
+    cx_any result;
+    result.type = cx_collection(_this.type)->elementType->real;
+    result.value = cx_list_do_(_this, TRUE);
     result.owner = FALSE;
     return result;
 /* $end */
 }
 
 /* ::cortex::lang::list::insert(lang::any element) */
-db_void db_list_insert_lang_any(db_any _this, db_any element) {
+cx_void cx_list_insert_lang_any(cx_any _this, cx_any element) {
 /* $begin(::cortex::lang::list::insert(lang::any element)) */
-    db_list_do(_this, element, TRUE, db_list_insertAction, NULL);
+    cx_list_do(_this, element, TRUE, cx_list_insertAction, NULL);
 /* $end */
 }
 
 /* ::cortex::lang::list::reverse() */
-db_void db_list_reverse(db_any _this) {
+cx_void cx_list_reverse(cx_any _this) {
 /* $begin(::cortex::lang::list::reverse) */
-	db_llReverse(*(db_ll*)_this.value);
+	cx_llReverse(*(cx_ll*)_this.value);
 /* $end */
 }

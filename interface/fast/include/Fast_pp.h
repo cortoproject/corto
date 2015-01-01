@@ -16,7 +16,7 @@ extern "C" {
 #define LANG_MAX_INDENT (256)
 
 /* Preprocess code */
-db_string fast_pp(db_string filename, db_string code);
+cx_string fast_pp(cx_string filename, cx_string code);
 
 #ifdef __cplusplus
 }

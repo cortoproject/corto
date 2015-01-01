@@ -1,4 +1,4 @@
-/* db_event.c
+/* cx_event.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -7,25 +7,25 @@
  */
 
 #include "db.h"
-#include "db__meta.h"
+#include "cx__meta.h"
 
 /* $header() */
-static int db_maxEventId = 16; /* kind 0 - 15 are reserved for internal usage */
+static int cx_maxEventId = 16; /* kind 0 - 15 are reserved for internal usage */
 /* $end */
 
 /* ::cortex::lang::event::processed() */
-db_void db_event_processed(db_event _this) {
+cx_void cx_event_processed(cx_event _this) {
 /* $begin(::cortex::lang::event::processed) */
 	_this->handled = TRUE;
 /* $end */
 }
 
 /* ::cortex::lang::event::uniqueKind() */
-db_int16 db_event_uniqueKind(void) {
+cx_int16 cx_event_uniqueKind(void) {
 /* $begin(::cortex::lang::event::uniqueKind) */
-	int result = db_ainc(&db_maxEventId)-1;
+	int result = cx_ainc(&cx_maxEventId)-1;
 	if (result == 65535) {
-		db_critical("event-kinds exhausted (>=65536)!");
+		cx_critical("event-kinds exhausted (>=65536)!");
 	}
 	return result;
 /* $end */

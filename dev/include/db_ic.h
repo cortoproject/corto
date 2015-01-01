@@ -1,5 +1,5 @@
 /*
- * db_vm.h
+ * cx_vm.h
  *
  *  Created on: Aug 14, 2013
  *      Author: sander
@@ -8,16 +8,16 @@
 #ifndef DB_IC_H_
 #define DB_IC_H_
 
-#include "db_type.h"
-#include "db_value.h"
-#include "db_vm.h"
-#include "db_def.h"
+#include "cx_type.h"
+#include "cx_value.h"
+#include "cx_vm.h"
+#include "cx_def.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef enum db_icOpKind {
+typedef enum cx_icOpKind {
 	/* Set (assign) */
 	DB_IC_SET,
 
@@ -80,191 +80,191 @@ typedef enum db_icOpKind {
 	DB_IC_PUSH,
 	DB_IC_CALL,
 	DB_IC_RET
-}db_icOpKind;
+}cx_icOpKind;
 
 /* Intermediate structures */
-typedef enum db_icKind {
+typedef enum cx_icKind {
 	DB_IC_STORAGE,
 	DB_IC_LITERAL,
 	DB_IC_LABEL,
 	DB_IC_FUNCTION,
 	DB_IC_OP,
 	DB_IC_SCOPE
-}db_icKind;
+}cx_icKind;
 
-typedef enum db_icStorageKind {
+typedef enum cx_icStorageKind {
 	DB_STORAGE_OBJECT,
 	DB_STORAGE_LOCAL,
 	DB_STORAGE_ACCUMULATOR,
 	DB_STORAGE_MEMBER,
 	DB_STORAGE_ELEMENT
-}db_icStorageKind;
+}cx_icStorageKind;
 
-typedef struct db_ic_s *db_ic;
-typedef struct db_icValue_s *db_icValue;
-typedef struct db_icStorage_s *db_icStorage;
-typedef struct db_icObject_s *db_icObject;
-typedef struct db_icLocal_s *db_icLocal;
-typedef struct db_icMember_s *db_icMember;
-typedef struct db_icElement_s *db_icElement;
-typedef struct db_icAccumulator_s *db_icAccumulator;
-typedef struct db_icLiteral_s *db_icLiteral;
-typedef struct db_icLabel_s *db_icLabel;
-typedef struct db_icFunction_s *db_icFunction;
-typedef struct db_icOp_s *db_icOp;
-typedef struct db_icScope_s *db_icScope;
-typedef struct db_icProgram_s *db_icProgram;
+typedef struct cx_ic_s *cx_ic;
+typedef struct cx_icValue_s *cx_icValue;
+typedef struct cx_icStorage_s *cx_icStorage;
+typedef struct cx_icObject_s *cx_icObject;
+typedef struct cx_icLocal_s *cx_icLocal;
+typedef struct cx_icMember_s *cx_icMember;
+typedef struct cx_icElement_s *cx_icElement;
+typedef struct cx_icAccumulator_s *cx_icAccumulator;
+typedef struct cx_icLiteral_s *cx_icLiteral;
+typedef struct cx_icLabel_s *cx_icLabel;
+typedef struct cx_icFunction_s *cx_icFunction;
+typedef struct cx_icOp_s *cx_icOp;
+typedef struct cx_icScope_s *cx_icScope;
+typedef struct cx_icProgram_s *cx_icProgram;
 
-typedef struct db_ic_s {
-	db_icKind kind;
-	db_icProgram program;
-	db_uint32 line;
-}db_ic_s;
+typedef struct cx_ic_s {
+	cx_icKind kind;
+	cx_icProgram program;
+	cx_uint32 line;
+}cx_ic_s;
 
-typedef struct db_icValue_s {
-	db_ic_s _parent;
-}db_icValue_s;
+typedef struct cx_icValue_s {
+	cx_ic_s _parent;
+}cx_icValue_s;
 
-typedef enum db_icDerefMode {
+typedef enum cx_icDerefMode {
     DB_IC_DEREF_VALUE = 0,
     DB_IC_DEREF_ADDRESS,
     DB_IC_DEREF_PUSH
-}db_icDerefMode;
+}cx_icDerefMode;
 
-typedef struct db_icStorage_s {
-	db_icValue_s _parent;
-	db_icStorageKind kind;
-	db_string name;
-	db_type type;
-	db_bool isReference; /* Is the storage a reference */
-    db_uint32 used; /* Count how many times value is used in program */
-    db_bool holdsReturn; /* If accumulator holds returnvalue, it potentially holds resources */
-}db_icStorage_s;
+typedef struct cx_icStorage_s {
+	cx_icValue_s _parent;
+	cx_icStorageKind kind;
+	cx_string name;
+	cx_type type;
+	cx_bool isReference; /* Is the storage a reference */
+    cx_uint32 used; /* Count how many times value is used in program */
+    cx_bool holdsReturn; /* If accumulator holds returnvalue, it potentially holds resources */
+}cx_icStorage_s;
 
-typedef struct db_icObject_s {
-    db_icStorage_s _parent;
-    db_object ptr;
-}db_icObject_s;
+typedef struct cx_icObject_s {
+    cx_icStorage_s _parent;
+    cx_object ptr;
+}cx_icObject_s;
 
-typedef struct db_icLocal_s {
-    db_icStorage_s _parent;
-    db_bool isParameter;
-    db_bool isReturn; /* Return locals are special in that resources are not free'd when leaving scope */
-}db_icLocal_s;
+typedef struct cx_icLocal_s {
+    cx_icStorage_s _parent;
+    cx_bool isParameter;
+    cx_bool isReturn; /* Return locals are special in that resources are not free'd when leaving scope */
+}cx_icLocal_s;
 
-typedef struct db_icMember_s {
-    db_icStorage_s _parent;
-    db_icStorage base;
-    db_member member;
-}db_icMember_s;
+typedef struct cx_icMember_s {
+    cx_icStorage_s _parent;
+    cx_icStorage base;
+    cx_member member;
+}cx_icMember_s;
 
-typedef struct db_icElement_s {
-    db_icStorage_s _parent;
-    db_icStorage base;
-    db_icValue index;
-    db_collection collectionType;
-    db_bool dynamic; /* If TRUE, index-expression is not a literal and element needs to be calculated at runtime */
-}db_icElement_s;
+typedef struct cx_icElement_s {
+    cx_icStorage_s _parent;
+    cx_icStorage base;
+    cx_icValue index;
+    cx_collection collectionType;
+    cx_bool dynamic; /* If TRUE, index-expression is not a literal and element needs to be calculated at runtime */
+}cx_icElement_s;
 
-typedef struct db_icAccumulator_s {
-    db_icStorage_s _parent;
-    db_uint32 accumulatorId;
-}db_icAccumulator_s;
+typedef struct cx_icAccumulator_s {
+    cx_icStorage_s _parent;
+    cx_uint32 accumulatorId;
+}cx_icAccumulator_s;
 
-typedef struct db_icLiteral_s {
-	db_icValue_s _parent;
-	db_value value;
-	db_type type;
-}db_icLiteral_s;
+typedef struct cx_icLiteral_s {
+	cx_icValue_s _parent;
+	cx_value value;
+	cx_type type;
+}cx_icLiteral_s;
 
-typedef struct db_icLabel_s {
-	db_icValue_s _parent;
-	db_uint32 id;
-}db_icLabel_s;
+typedef struct cx_icLabel_s {
+	cx_icValue_s _parent;
+	cx_uint32 id;
+}cx_icLabel_s;
 
-typedef struct db_icFunction_s {
-    db_icValue_s _parent;
-    db_function function;
-}db_icFunction_s;
+typedef struct cx_icFunction_s {
+    cx_icValue_s _parent;
+    cx_function function;
+}cx_icFunction_s;
 
-typedef struct db_icOp_s {
-	db_ic_s _parent;
-	db_icOpKind kind;
-	db_icValue s1;
-	db_icValue s2;
-	db_icValue s3;
+typedef struct cx_icOp_s {
+	cx_ic_s _parent;
+	cx_icOpKind kind;
+	cx_icValue s1;
+	cx_icValue s2;
+	cx_icValue s3;
 	/* If VALUE, storage will be interpreted as value. PVALUE will interpret value of storage. PPVALUE will interpret value of address in storage. */
-	db_icDerefMode s1Deref;
-	db_icDerefMode s2Deref;
-	db_icDerefMode s3Deref;
+	cx_icDerefMode s1Deref;
+	cx_icDerefMode s2Deref;
+	cx_icDerefMode s3Deref;
 	/* If s1Any, treat s1 as an any-value */
-	db_bool s1Any;
-}db_icOp_s;
+	cx_bool s1Any;
+}cx_icOp_s;
 
-typedef struct db_icScope_s {
-	db_ic_s _parent;
-	db_icScope parent;
-	db_ll storages; /* Stores accumulators and local variables */
-	db_ll program;
-	db_bool isFunction;
-}db_icScope_s;
+typedef struct cx_icScope_s {
+	cx_ic_s _parent;
+	cx_icScope parent;
+	cx_ll storages; /* Stores accumulators and local variables */
+	cx_ll program;
+	cx_bool isFunction;
+}cx_icScope_s;
 
-typedef struct db_icProgram_s {
-	db_ll storages; /* Stores objects */
-	db_ll scopes;
-	db_ll labels;
-	db_ll functions;
-	db_ll literals;
-	db_ll ops;
-	db_string filename;
-	db_uint32 labelCount;
-	db_uint32 accumulatorId;
-	db_icAccumulator accumulatorStack[256];
-	db_icScope scope;
-    db_int32 errors;
-}db_icProgram_s;
+typedef struct cx_icProgram_s {
+	cx_ll storages; /* Stores objects */
+	cx_ll scopes;
+	cx_ll labels;
+	cx_ll functions;
+	cx_ll literals;
+	cx_ll ops;
+	cx_string filename;
+	cx_uint32 labelCount;
+	cx_uint32 accumulatorId;
+	cx_icAccumulator accumulatorStack[256];
+	cx_icScope scope;
+    cx_int32 errors;
+}cx_icProgram_s;
 
 /* Intermediate program */
-db_icProgram db_icProgram__create(db_string filename);
-void db_icProgram__free(db_icProgram program);
-void db_icProgram_addIc(db_icProgram program, db_ic ic);
-db_icAccumulator db_icProgram_accumulatorPush(db_icProgram _this, db_uint32 line, db_type type, db_bool isReference);
-void db_icProgram_accumulatorPop(db_icProgram _this, db_uint32 line);
-db_icScope db_icProgram_scopePush(db_icProgram _this, db_uint32 line);
-db_icScope db_icProgram_functionPush(db_icProgram _this, db_uint32 line, db_function function);
-void db_icProgram_scopePop(db_icProgram _this, db_uint32 line);
-db_string db_icProgram_toString(db_icProgram program);
-db_vmProgram db_icProgram_toVm(db_icProgram program);
+cx_icProgram cx_icProgram__create(cx_string filename);
+void cx_icProgram__free(cx_icProgram program);
+void cx_icProgram_addIc(cx_icProgram program, cx_ic ic);
+cx_icAccumulator cx_icProgram_accumulatorPush(cx_icProgram _this, cx_uint32 line, cx_type type, cx_bool isReference);
+void cx_icProgram_accumulatorPop(cx_icProgram _this, cx_uint32 line);
+cx_icScope cx_icProgram_scopePush(cx_icProgram _this, cx_uint32 line);
+cx_icScope cx_icProgram_functionPush(cx_icProgram _this, cx_uint32 line, cx_function function);
+void cx_icProgram_scopePop(cx_icProgram _this, cx_uint32 line);
+cx_string cx_icProgram_toString(cx_icProgram program);
+cx_vmProgram cx_icProgram_toVm(cx_icProgram program);
 
 /* Storages */
-void db_icStorage_init(
-		db_icStorage storage,
-		db_icProgram program,
-		db_uint32 line,
-		db_icStorageKind kind,
-		db_string name,
-		db_type type);
-db_icObject db_icObject__create(db_icProgram program, db_uint32 line, db_object object);
-db_icLocal db_icLocal__create(db_icProgram program, db_uint32 line, db_string name, db_type type, db_bool isParameter, db_bool isReturn, db_bool declare);
-db_icAccumulator db_icAccumulator__create(db_icProgram program, db_uint32 line, db_type type, db_uint32 accumulatorId);
-db_icMember db_icMember__create(db_icProgram program, db_uint32 line, db_icStorage base, db_member member);
-db_icElement db_icElement__create(db_icProgram program, db_uint32 line, db_type type, db_icStorage base, db_icValue index);
+void cx_icStorage_init(
+		cx_icStorage storage,
+		cx_icProgram program,
+		cx_uint32 line,
+		cx_icStorageKind kind,
+		cx_string name,
+		cx_type type);
+cx_icObject cx_icObject__create(cx_icProgram program, cx_uint32 line, cx_object object);
+cx_icLocal cx_icLocal__create(cx_icProgram program, cx_uint32 line, cx_string name, cx_type type, cx_bool isParameter, cx_bool isReturn, cx_bool declare);
+cx_icAccumulator cx_icAccumulator__create(cx_icProgram program, cx_uint32 line, cx_type type, cx_uint32 accumulatorId);
+cx_icMember cx_icMember__create(cx_icProgram program, cx_uint32 line, cx_icStorage base, cx_member member);
+cx_icElement cx_icElement__create(cx_icProgram program, cx_uint32 line, cx_type type, cx_icStorage base, cx_icValue index);
 
 /* Values */
-db_icLiteral db_icLiteral__create(db_icProgram program, db_uint32 line, db_value value, db_type type);
-db_icLabel db_icLabel__create(db_icProgram program, db_uint32 line);
-db_icFunction db_icFunction__create(db_icProgram program, db_uint32 line, db_function function);
+cx_icLiteral cx_icLiteral__create(cx_icProgram program, cx_uint32 line, cx_value value, cx_type type);
+cx_icLabel cx_icLabel__create(cx_icProgram program, cx_uint32 line);
+cx_icFunction cx_icFunction__create(cx_icProgram program, cx_uint32 line, cx_function function);
 
 /* Scopes */
-db_icScope db_icScope__create(db_icProgram program, db_uint32 line, db_icScope parent, db_bool isFunction);
-void db_icScope_addIc(db_icScope scope, db_ic ic);
-db_icStorage db_icScope_lookupStorage(db_icScope scope, db_string name, db_bool recursive);
+cx_icScope cx_icScope__create(cx_icProgram program, cx_uint32 line, cx_icScope parent, cx_bool isFunction);
+void cx_icScope_addIc(cx_icScope scope, cx_ic ic);
+cx_icStorage cx_icScope_lookupStorage(cx_icScope scope, cx_string name, cx_bool recursive);
 
 /* Create operation */
-db_icOp db_icOp__create(db_icProgram program, db_uint32 line, db_icOpKind kind, db_icValue s1, db_icValue s2, db_icValue s3);
+cx_icOp cx_icOp__create(cx_icProgram program, cx_uint32 line, cx_icOpKind kind, cx_icValue s1, cx_icValue s2, cx_icValue s3);
 
 /* Utility */
-db_icOpKind db_icOpKindFromOperator(db_operatorKind operator);
+cx_icOpKind cx_icOpKindFromOperator(cx_operatorKind operator);
 
 #ifdef __cplusplus
 }

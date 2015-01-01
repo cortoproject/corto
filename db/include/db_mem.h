@@ -1,5 +1,5 @@
 /*
- * db_mem.h
+ * cx_mem.h
  *
  *  Created on: Apr 9, 2012
  *      Author: sander
@@ -10,17 +10,17 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "db_err.h"
+#include "cx_err.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define db_calloc(n) calloc(n, 1)
-#define db_malloc(n) malloc(n);
-#define db_dealloc free
-#define db_realloc realloc
-#define db_strdup strdup
+#define cx_calloc(n) calloc(n, 1)
+#define cx_malloc(n) malloc(n);
+#define cx_dealloc free
+#define cx_realloc realloc
+#define cx_strdup strdup
 
 #ifdef __cplusplus
 }

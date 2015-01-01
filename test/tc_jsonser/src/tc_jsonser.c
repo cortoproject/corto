@@ -18,9 +18,9 @@ int main(int argc, char* argv[]) {
     DB_UNUSED(argc);
     DB_UNUSED(argv);
     
-    db_int16 result = 0;
+    cx_int16 result = 0;
 
-    db_start();
+    cx_start();
     fixture_load();
 
     result += test_ser_primitive_value();
@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
     result += test_ser_meta();
     result += test_ser_scope();
  
-    db_stop();
+    cx_stop();
 
     if (!result) {
         printf("tc_jsonser: OK\n");

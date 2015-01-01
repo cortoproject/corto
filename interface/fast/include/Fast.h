@@ -18,11 +18,11 @@ extern "C" {
 #endif
 
 /* $header() */
-Fast_Call Fast_createMethodCall(Fast_Expression obj, db_string function, db_uint32 numArgs, ...);
+Fast_Call Fast_createMethodCall(Fast_Expression obj, cx_string function, cx_uint32 numArgs, ...);
 /* $end */
 
 /* ::cortex::Fast::valueKindFromType(lang::type type) */
-Fast_valueKind Fast_valueKindFromType(db_type type);
+Fast_valueKind Fast_valueKindFromType(cx_type type);
 
 #ifdef __cplusplus
 }

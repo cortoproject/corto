@@ -13,18 +13,18 @@
 #include "Fast__api.h"
 #include "Fast_Parser.h"
 #include "Fast_Literal.h"
-#include "db_operator.h"
+#include "cx_operator.h"
 Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 void Fast_Parser_warning(Fast_Parser _this, char* fmt, ...);
-db_int8 Fast_Expression_getTypeScore(db_primitive t);
-db_int8 Fast_Expression_getCastScore(db_primitive t);
-db_icDerefMode Fast_Expression_getDerefMode(Fast_Expression _this, Fast_Expression rvalue, db_int32 *check);
+cx_int8 Fast_Expression_getTypeScore(cx_primitive t);
+cx_int8 Fast_Expression_getCastScore(cx_primitive t);
+cx_icDerefMode Fast_Expression_getDerefMode(Fast_Expression _this, Fast_Expression rvalue, cx_int32 *check);
 
 
 /* Determine whether expression is an assignment */
-db_bool Fast_BinaryExpr_isAssignment(Fast_BinaryExpr expr) {
-    db_bool result;
+cx_bool Fast_BinaryExpr_isAssignment(Fast_BinaryExpr expr) {
+    cx_bool result;
     switch(expr->operator) {
     case DB_ASSIGN:
     case DB_ASSIGN_ADD:
@@ -44,8 +44,8 @@ db_bool Fast_BinaryExpr_isAssignment(Fast_BinaryExpr expr) {
 }
 
 /* Determine whether expression is an assignment */
-db_bool Fast_BinaryExpr_isConditional(Fast_BinaryExpr expr) {
-    db_bool result;
+cx_bool Fast_BinaryExpr_isConditional(Fast_BinaryExpr expr) {
+    cx_bool result;
     switch(expr->operator) {
     case DB_COND_EQ:
     case DB_COND_NEQ:
@@ -66,20 +66,20 @@ db_bool Fast_BinaryExpr_isConditional(Fast_BinaryExpr expr) {
 }
 
 /* Check if expression is integer literal that is eligible to changing type, if this is the case do the cast */
-Fast_Expression Fast_BinaryExpr_narrow(Fast_Expression expr, db_type target) {
+Fast_Expression Fast_BinaryExpr_narrow(Fast_Expression expr, cx_type target) {
     Fast_Expression result = expr;
 
     if (Fast_Node(expr)->kind == FAST_Literal) {
-        db_type t = Fast_Expression_getType_type(expr, target);
+        cx_type t = Fast_Expression_getType_type(expr, target);
         if ((t != target) &&
            (target->kind == DB_PRIMITIVE) &&
-           (db_primitive(target)->kind == db_primitive(t)->kind)) {
-            db_width width = db_primitive(target)->width;
+           (cx_primitive(target)->kind == cx_primitive(t)->kind)) {
+            cx_width width = cx_primitive(target)->width;
 
             if (t->kind == DB_PRIMITIVE) {
-                switch(db_primitive(t)->kind) {
+                switch(cx_primitive(t)->kind) {
                 case DB_INTEGER: {
-                    db_int64 v = *(db_int64*)Fast_Expression_getValue(expr);
+                    cx_int64 v = *(cx_int64*)Fast_Expression_getValue(expr);
                     switch(width) {
                     case DB_WIDTH_8:
                         if ((v <= 127) && (v >= -128)) {
@@ -102,7 +102,7 @@ Fast_Expression Fast_BinaryExpr_narrow(Fast_Expression expr, db_type target) {
                     break;
                 }
                 case DB_UINTEGER: {
-                    db_uint64 v = *(db_uint64*)Fast_Expression_getValue(expr);
+                    cx_uint64 v = *(cx_uint64*)Fast_Expression_getValue(expr);
                     switch(width) {
                     case DB_WIDTH_8:
                         if (v <= 255) {
@@ -135,8 +135,8 @@ Fast_Expression Fast_BinaryExpr_narrow(Fast_Expression expr, db_type target) {
 }
 
 /* If types of a binary expression don't match, figure out which casts are required */
-db_int16 Fast_BinaryExpr_cast(Fast_BinaryExpr _this, db_type *returnType) {
-    db_type lvalueType, rvalueType, castType = NULL;
+cx_int16 Fast_BinaryExpr_cast(Fast_BinaryExpr _this, cx_type *returnType) {
+    cx_type lvalueType, rvalueType, castType = NULL;
     Fast_Expression lvalue, rvalue;
 
     /* Get lvalueType and rvalueType */
@@ -149,20 +149,20 @@ db_int16 Fast_BinaryExpr_cast(Fast_BinaryExpr _this, db_type *returnType) {
     /* Narrow expressions where possible */
     _this->lvalue = Fast_BinaryExpr_narrow(lvalue, rvalueType);
     if (_this->lvalue) {
-        db_keep_ext(_this, _this->lvalue, "Keep narrow'd lvalue");
-        db_free_ext(_this, lvalue, "Free old lvalue");
+        cx_keep_ext(_this, _this->lvalue, "Keep narrow'd lvalue");
+        cx_free_ext(_this, lvalue, "Free old lvalue");
         lvalueType = Fast_Expression_getType_expr(_this->lvalue, _this->rvalue);
     }
 
     _this->rvalue = Fast_BinaryExpr_narrow(rvalue, lvalueType);
     if (_this->rvalue) {
-        db_keep_ext(_this, _this->rvalue, "Keep narrow'd rvalue");
-        db_free_ext(_this, rvalue, "Free old rvalue");
+        cx_keep_ext(_this, _this->rvalue, "Keep narrow'd rvalue");
+        cx_free_ext(_this, rvalue, "Free old rvalue");
         rvalueType = Fast_Expression_getType_expr(_this->rvalue, _this->lvalue);
     }
 
     if (_this->operator == DB_DIV) {
-        castType = db_type(db_float64_o);
+        castType = cx_type(cx_float64_o);
     } else if (lvalueType != rvalueType) {
         Fast_nodeKind lKind = Fast_Node(_this->lvalue)->kind;
         Fast_nodeKind rKind = Fast_Node(_this->rvalue)->kind;
@@ -178,9 +178,9 @@ db_int16 Fast_BinaryExpr_cast(Fast_BinaryExpr _this, db_type *returnType) {
 
         /* Can only cast between primitive types */
         if ((lvalueType->kind == DB_PRIMITIVE ) && (rvalueType->kind == DB_PRIMITIVE)) {
-            db_primitive ltype = db_primitive(lvalueType), rtype = db_primitive(rvalueType);
-            db_int8 lscore, rscore;
-            db_int8 lCastScore, rCastScore;
+            cx_primitive ltype = cx_primitive(lvalueType), rtype = cx_primitive(rvalueType);
+            cx_int8 lscore, rscore;
+            cx_int8 lCastScore, rCastScore;
 
             lscore = Fast_Expression_getTypeScore(ltype);
             rscore = Fast_Expression_getTypeScore(rtype);
@@ -228,9 +228,9 @@ db_int16 Fast_BinaryExpr_cast(Fast_BinaryExpr _this, db_type *returnType) {
         } else if (lvalueType->reference && rvalueType->reference) {
             castType = NULL;
         } else {
-            db_id id1, id2;
+            cx_id id1, id2;
             Fast_Parser_error(yparser(), "no cast between '%s' and '%s'",
-                    db_fullname(lvalueType, id1), db_fullname(rvalueType, id2));
+                    cx_fullname(lvalueType, id1), cx_fullname(rvalueType, id2));
             goto error;
         }
     }
@@ -240,12 +240,12 @@ db_int16 Fast_BinaryExpr_cast(Fast_BinaryExpr _this, db_type *returnType) {
         Fast_Expression oldRvalue = _this->rvalue;
         _this->rvalue = Fast_Expression_cast(_this->rvalue, castType);
         if (_this->rvalue) {
-            db_keep(_this->rvalue);
-            db_free(oldRvalue);
+            cx_keep(_this->rvalue);
+            cx_free(oldRvalue);
         } else {
-            db_id id, id2;
+            cx_id id, id2;
             Fast_Parser_error(yparser(), "failed to cast rvalue from '%s' to '%s'",
-                    db_fullname(rvalueType, id), db_fullname(castType, id2));
+                    cx_fullname(rvalueType, id), cx_fullname(castType, id2));
             goto error;
         }
     }
@@ -253,12 +253,12 @@ db_int16 Fast_BinaryExpr_cast(Fast_BinaryExpr _this, db_type *returnType) {
         Fast_Expression oldLvalue = _this->lvalue;
         _this->lvalue = Fast_Expression_cast(_this->lvalue, castType);
         if (_this->lvalue) {
-            db_keep(_this->lvalue);
-            db_free(oldLvalue);
+            cx_keep(_this->lvalue);
+            cx_free(oldLvalue);
         } else {
-            db_id id, id2;
+            cx_id id, id2;
             Fast_Parser_error(yparser(), "failed to cast lvalue from '%s' to '%s'",
-                    db_fullname(lvalueType, id), db_fullname(castType, id2));
+                    cx_fullname(lvalueType, id), cx_fullname(castType, id2));
             goto error;
         }
     }
@@ -274,31 +274,31 @@ error:
 
 void Fast_BinaryExpr_toIc_strOp(
         Fast_BinaryExpr _this,
-        db_icProgram program,
-        db_icStorage storage,
-        db_icValue lvalue,
-        db_icValue rvalue) {
-    db_icOp op;
-    db_ic dummy;
-    db_value v;
+        cx_icProgram program,
+        cx_icStorage storage,
+        cx_icValue lvalue,
+        cx_icValue rvalue) {
+    cx_icOp op;
+    cx_ic dummy;
+    cx_value v;
 
     switch(_this->operator) {
     /* Append strings */
     case DB_ADD:
         v.is.value.storage = 0; /* Create NULL-string */
-        db_valueLiteralInit(&v, DB_LITERAL_STRING, &v.is.value.storage);
-        dummy = (db_ic)db_icLiteral__create(program, Fast_Node(_this)->line, v, db_type(db_string_o));
+        cx_valueLiteralInit(&v, DB_LITERAL_STRING, &v.is.value.storage);
+        dummy = (cx_ic)cx_icLiteral__create(program, Fast_Node(_this)->line, v, cx_type(cx_string_o));
 
-        op = db_icOp__create(program, Fast_Node(_this)->line, DB_IC_STRCAT, NULL, (db_icValue)lvalue, (db_icValue)rvalue);
-        db_icProgram_addIc(program, (db_ic)op);
+        op = cx_icOp__create(program, Fast_Node(_this)->line, DB_IC_STRCAT, NULL, (cx_icValue)lvalue, (cx_icValue)rvalue);
+        cx_icProgram_addIc(program, (cx_ic)op);
 
-        op = db_icOp__create(program, Fast_Node(_this)->line, DB_IC_STRCPY, NULL, (db_icValue)storage, (db_icValue)dummy);
-        db_icProgram_addIc(program, (db_ic)op);
+        op = cx_icOp__create(program, Fast_Node(_this)->line, DB_IC_STRCPY, NULL, (cx_icValue)storage, (cx_icValue)dummy);
+        cx_icProgram_addIc(program, (cx_ic)op);
         break;
 
     default:
-        op = db_icOp__create(program, Fast_Node(_this)->line, db_icOpKindFromOperator(_this->operator), (db_icValue)storage, (db_icValue)lvalue, (db_icValue)rvalue);
-        db_icProgram_addIc(program, (db_ic)op);
+        op = cx_icOp__create(program, Fast_Node(_this)->line, cx_icOpKindFromOperator(_this->operator), (cx_icValue)storage, (cx_icValue)lvalue, (cx_icValue)rvalue);
+        cx_icProgram_addIc(program, (cx_ic)op);
         break;
     }
 }
@@ -306,20 +306,20 @@ void Fast_BinaryExpr_toIc_strOp(
 /* $end */
 
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::BinaryExpr::construct(Fast::BinaryExpr object) */
-db_int16 Fast_BinaryExpr_construct(Fast_BinaryExpr object) {
+cx_int16 Fast_BinaryExpr_construct(Fast_BinaryExpr object) {
 /* $begin(::cortex::Fast::BinaryExpr::construct) */
-    db_type lvalueType, rvalueType;
-    db_int32 checkReferences=0;
+    cx_type lvalueType, rvalueType;
+    cx_int32 checkReferences=0;
 
     Fast_Node(object)->kind = FAST_Binary;
     lvalueType = Fast_Expression_getType_expr(object->lvalue, object->rvalue);
     rvalueType = Fast_Expression_getType_expr(object->rvalue, object->lvalue);
 
     if (lvalueType && rvalueType) {
-        if (!db_type_castable(lvalueType, rvalueType)) {
-            db_id id, id2;
+        if (!cx_type_castable(lvalueType, rvalueType)) {
+            cx_id id, id2;
             Fast_Parser_error(yparser(), "type '%s' of right operand cannot be converted to '%s' in binary expression",
-                    db_fullname(rvalueType, id), db_fullname(lvalueType, id2));
+                    cx_fullname(rvalueType, id), cx_fullname(lvalueType, id2));
             goto error;
         }
 
@@ -351,7 +351,7 @@ Fast_Expression Fast_BinaryExpr_fold(Fast_BinaryExpr _this) {
 /* $begin(::cortex::Fast::BinaryExpr::fold) */
     Fast_Expression result = Fast_Expression(_this);
     void *lptr, *rptr, *resultPtr;
-    db_type type, rtype;
+    cx_type type, rtype;
 
     if(!_this->lvalue || !_this->rvalue) {
         Fast_Parser_error(yparser(), "invalid binary expression");
@@ -373,7 +373,7 @@ Fast_Expression Fast_BinaryExpr_fold(Fast_BinaryExpr _this) {
                 if (Fast_BinaryExpr_isConditional(_this)) {
                     result = Fast_Expression(Fast_Boolean__create(FALSE));
                     resultPtr = (void*)Fast_Literal_getValue(Fast_Literal(result));
-                    db_binaryOperator(db_object_o, _this->operator, &lptr, &rptr, resultPtr);
+                    cx_binaryOperator(cx_object_o, _this->operator, &lptr, &rptr, resultPtr);
                 } else {
                     result = Fast_Expression(Fast_Null__create());
                 }
@@ -389,7 +389,7 @@ Fast_Expression Fast_BinaryExpr_fold(Fast_BinaryExpr _this) {
             if (Fast_BinaryExpr_isConditional(_this)) {
                 result = Fast_Expression(Fast_Boolean__create(FALSE));
             } else {
-                switch(db_primitive(type)->kind) {
+                switch(cx_primitive(type)->kind) {
                 case DB_BOOLEAN: result = Fast_Expression(Fast_Boolean__create(FALSE)); break;
                 case DB_CHARACTER: result = Fast_Expression(Fast_Character__create('a')); break;
                 case DB_BITMASK:
@@ -412,7 +412,7 @@ Fast_Expression Fast_BinaryExpr_fold(Fast_BinaryExpr _this) {
             resultPtr = (void*)Fast_Literal_getValue(Fast_Literal(result));
 
             /* Perform operation */
-            db_binaryOperator(type, _this->operator, lptr, rptr, resultPtr);
+            cx_binaryOperator(type, _this->operator, lptr, rptr, resultPtr);
         } else {
             /* Expressions of non-primitive type are not folded. */
         }
@@ -426,9 +426,9 @@ error:
 }
 
 /* ::cortex::Fast::BinaryExpr::hasSideEffects() */
-db_bool Fast_BinaryExpr_hasSideEffects_v(Fast_BinaryExpr _this) {
+cx_bool Fast_BinaryExpr_hasSideEffects_v(Fast_BinaryExpr _this) {
 /* $begin(::cortex::Fast::BinaryExpr::hasSideEffects) */
-    db_bool result = FALSE;
+    cx_bool result = FALSE;
     
     switch(_this->operator) {
         case DB_ASSIGN:
@@ -450,10 +450,10 @@ db_bool Fast_BinaryExpr_hasSideEffects_v(Fast_BinaryExpr _this) {
 }
 
 /* ::cortex::Fast::BinaryExpr::setOperator(lang::operatorKind kind) */
-db_void Fast_BinaryExpr_setOperator(Fast_BinaryExpr _this, db_operatorKind kind) {
+cx_void Fast_BinaryExpr_setOperator(Fast_BinaryExpr _this, cx_operatorKind kind) {
 /* $begin(::cortex::Fast::BinaryExpr::setOperator) */
     Fast_BinaryExpr compoundExpr = NULL;
-    db_type exprType = NULL;
+    cx_type exprType = NULL;
 
     exprType = Fast_Expression_getType_expr(_this->lvalue, _this->rvalue);
 
@@ -476,7 +476,7 @@ db_void Fast_BinaryExpr_setOperator(Fast_BinaryExpr _this, db_operatorKind kind)
 
     if (compoundExpr) {
         _this->operator = DB_ASSIGN;
-        db_set(&_this->rvalue, compoundExpr);
+        cx_set(&_this->rvalue, compoundExpr);
         Fast_Parser_collect(yparser(), compoundExpr);
     }
 
@@ -497,10 +497,10 @@ db_void Fast_BinaryExpr_setOperator(Fast_BinaryExpr _this, db_operatorKind kind)
     case DB_COND_GTEQ:
     case DB_COND_AND:
     case DB_COND_OR:
-        db_set(&Fast_Expression(_this)->type, Fast_Variable(Fast_Object__create(db_bool_o)));
+        cx_set(&Fast_Expression(_this)->type, Fast_Variable(Fast_Object__create(cx_bool_o)));
         break;
     default:
-        db_set(&Fast_Expression(_this)->type, Fast_Variable(Fast_Object__create(exprType)));
+        cx_set(&Fast_Expression(_this)->type, Fast_Variable(Fast_Object__create(exprType)));
         break;
     }
 
@@ -510,56 +510,56 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::BinaryExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_BinaryExpr_toIc_v(Fast_BinaryExpr _this, db_icProgram program, db_icStorage storage, db_bool stored) {
+/* ::cortex::Fast::BinaryExpr::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+cx_ic Fast_BinaryExpr_toIc_v(Fast_BinaryExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::BinaryExpr::toIc) */
-    db_ic lvalue, rvalue, result, conditionLvalue, conditionRvalue = NULL;
-    db_icOp op = NULL;
-    db_type _thisType = Fast_Expression_getType(Fast_Expression(_this));
-    db_bool condition = Fast_BinaryExpr_isConditional(_this);
-    db_bool isReference = _this->lvalue->forceReference || _this->rvalue->forceReference;
+    cx_ic lvalue, rvalue, result, conditionLvalue, conditionRvalue = NULL;
+    cx_icOp op = NULL;
+    cx_type _thisType = Fast_Expression_getType(Fast_Expression(_this));
+    cx_bool condition = Fast_BinaryExpr_isConditional(_this);
+    cx_bool isReference = _this->lvalue->forceReference || _this->rvalue->forceReference;
 
     if (storage && (storage->type == _thisType)) {
-        result = (db_ic)storage;
+        result = (cx_ic)storage;
     } else {
-        result = (db_ic)db_icProgram_accumulatorPush(program, Fast_Node(_this)->line, _thisType, isReference);
+        result = (cx_ic)cx_icProgram_accumulatorPush(program, Fast_Node(_this)->line, _thisType, isReference);
     }
 
     if (condition) {
-        conditionLvalue = (db_ic)db_icProgram_accumulatorPush(program, Fast_Node(_this)->line, Fast_Expression_getType(_this->lvalue), _this->lvalue->isReference);
-        conditionRvalue = (db_ic)db_icProgram_accumulatorPush(program, Fast_Node(_this)->line, Fast_Expression_getType(_this->rvalue), _this->rvalue->isReference);
+        conditionLvalue = (cx_ic)cx_icProgram_accumulatorPush(program, Fast_Node(_this)->line, Fast_Expression_getType(_this->lvalue), _this->lvalue->isReference);
+        conditionRvalue = (cx_ic)cx_icProgram_accumulatorPush(program, Fast_Node(_this)->line, Fast_Expression_getType(_this->rvalue), _this->rvalue->isReference);
     }
 
     /* Parse lvalue and rvalue */
     lvalue = Fast_Node_toIc(
             Fast_Node(_this->lvalue),
             program,
-            condition ? (db_icStorage)conditionLvalue :  (db_icStorage)result,
+            condition ? (cx_icStorage)conditionLvalue :  (cx_icStorage)result,
             TRUE);
 
     /* If operator is assign, pass lvalue as storage */
     if (_this->operator == DB_ASSIGN) {
-        rvalue = Fast_Node_toIc(Fast_Node(_this->rvalue), program, (db_icStorage)lvalue, TRUE);
+        rvalue = Fast_Node_toIc(Fast_Node(_this->rvalue), program, (cx_icStorage)lvalue, TRUE);
 
         /* Add instruction to program if lvalue != rvalue */
         if (lvalue != rvalue) {
-            op = db_icOp__create(program, Fast_Node(_this)->line, db_icOpKindFromOperator(DB_ASSIGN), stored ? (db_icValue)result : NULL, (db_icValue)lvalue, (db_icValue)rvalue);
-            db_icProgram_addIc(program, (db_ic)op);
+            op = cx_icOp__create(program, Fast_Node(_this)->line, cx_icOpKindFromOperator(DB_ASSIGN), stored ? (cx_icValue)result : NULL, (cx_icValue)lvalue, (cx_icValue)rvalue);
+            cx_icProgram_addIc(program, (cx_ic)op);
 
             op->s2Deref = Fast_Expression_getDerefMode(_this->lvalue, _this->rvalue, NULL);
             op->s3Deref = Fast_Expression_getDerefMode(_this->rvalue, _this->lvalue, NULL);
         }
     /* Only compile expression when there is a result - if it's not an assignment */
     } else if (stored && result) {
-        rvalue = Fast_Node_toIc(Fast_Node(_this->rvalue), program, (db_icStorage)conditionRvalue, TRUE);
+        rvalue = Fast_Node_toIc(Fast_Node(_this->rvalue), program, (cx_icStorage)conditionRvalue, TRUE);
 
         /* If operation is a string, insert string-specific operations */
-        if ((_thisType->kind == DB_PRIMITIVE) && (db_primitive(_thisType)->kind == DB_TEXT)) {
-            Fast_BinaryExpr_toIc_strOp(_this, program, (db_icStorage)result, (db_icValue)lvalue, (db_icValue)rvalue);
+        if ((_thisType->kind == DB_PRIMITIVE) && (cx_primitive(_thisType)->kind == DB_TEXT)) {
+            Fast_BinaryExpr_toIc_strOp(_this, program, (cx_icStorage)result, (cx_icValue)lvalue, (cx_icValue)rvalue);
         } else {
             /* Add instruction to program. */
-            op = db_icOp__create(program, Fast_Node(_this)->line, db_icOpKindFromOperator(_this->operator), stored ? (db_icValue)result : NULL, (db_icValue)lvalue, (db_icValue)rvalue);
-            db_icProgram_addIc(program, (db_ic)op);
+            op = cx_icOp__create(program, Fast_Node(_this)->line, cx_icOpKindFromOperator(_this->operator), stored ? (cx_icValue)result : NULL, (cx_icValue)lvalue, (cx_icValue)rvalue);
+            cx_icProgram_addIc(program, (cx_ic)op);
         }
 
         if (op) {
@@ -568,17 +568,17 @@ db_ic Fast_BinaryExpr_toIc_v(Fast_BinaryExpr _this, db_icProgram program, db_icS
         }
     } else {
         if (Fast_Expression_hasSideEffects(_this->rvalue)) {
-            rvalue = Fast_Node_toIc(Fast_Node(_this->rvalue), program, (db_icStorage)conditionRvalue, FALSE);
+            rvalue = Fast_Node_toIc(Fast_Node(_this->rvalue), program, (cx_icStorage)conditionRvalue, FALSE);
         }
     }
 
     if (condition) {
-        db_icProgram_accumulatorPop(program, Fast_Node(_this)->line);
-        db_icProgram_accumulatorPop(program, Fast_Node(_this)->line);
+        cx_icProgram_accumulatorPop(program, Fast_Node(_this)->line);
+        cx_icProgram_accumulatorPop(program, Fast_Node(_this)->line);
     }
 
-    if ((db_ic)storage != result) {
-        db_icProgram_accumulatorPop(program, Fast_Node(_this)->line);
+    if ((cx_ic)storage != result) {
+        cx_icProgram_accumulatorPop(program, Fast_Node(_this)->line);
     }
 
     return result;

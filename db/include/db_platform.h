@@ -1,5 +1,5 @@
 /*
- * db_platform.h
+ * cx_platform.h
  *
  *  Created on: May 22, 2012
  *      Author: sander

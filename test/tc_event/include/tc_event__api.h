@@ -17,9 +17,9 @@ extern "C" {
 
 /* ::tc_event::Point */
 tc_Point tc_Point__new(void);
-tc_Point tc_Point__declare(db_object _parent, db_string _name);
-int tc_Point__define(tc_Point _this, db_uint32 x, db_uint32 y);
-tc_Point tc_Point__create(db_uint32 x, db_uint32 y);
+tc_Point tc_Point__declare(cx_object _parent, cx_string _name);
+int tc_Point__define(tc_Point _this, cx_uint32 x, cx_uint32 y);
+tc_Point tc_Point__create(cx_uint32 x, cx_uint32 y);
 
 
 #ifdef __cplusplus

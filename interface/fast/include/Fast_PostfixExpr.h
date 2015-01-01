@@ -19,13 +19,13 @@ extern "C" {
 #endif
 
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::PostfixExpr::construct(Fast::PostfixExpr object) */
-db_int16 Fast_PostfixExpr_construct(Fast_PostfixExpr object);
+cx_int16 Fast_PostfixExpr_construct(Fast_PostfixExpr object);
 
-/* virtual ::cortex::Fast::PostfixExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_PostfixExpr_toIc(Fast_PostfixExpr _this, db_icProgram program, db_icStorage storage, db_bool stored);
+/* virtual ::cortex::Fast::PostfixExpr::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+cx_ic Fast_PostfixExpr_toIc(Fast_PostfixExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);
 
-/* ::cortex::Fast::PostfixExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_PostfixExpr_toIc_v(Fast_PostfixExpr _this, db_icProgram program, db_icStorage storage, db_bool stored);
+/* ::cortex::Fast::PostfixExpr::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+cx_ic Fast_PostfixExpr_toIc_v(Fast_PostfixExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);
 
 #ifdef __cplusplus
 }

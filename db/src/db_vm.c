@@ -1,22 +1,22 @@
 /*
- * db_vm.c
+ * cx_vm.c
  *
  *  Created on: Aug 16, 2013
  *      Author: sander
  */
 
-#include "db_vm.h"
-#include "db__vm_operands.h"
-#include "db_convert.h"
-#include "db_err.h"
-#include "db_string.h"
-#include "db_util.h"
-#include "db_call.h"
-#include "db_mem.h"
-#include "db_type.h"
-#include "db_async.h"
-#include "db_def.h"
-#include "db__meta.h"
+#include "cx_vm.h"
+#include "cx__vm_operands.h"
+#include "cx_convert.h"
+#include "cx_err.h"
+#include "cx_string.h"
+#include "cx_util.h"
+#include "cx_call.h"
+#include "cx_mem.h"
+#include "cx_type.h"
+#include "cx_async.h"
+#include "cx_def.h"
+#include "cx__meta.h"
 #include "inttypes.h"
 
 #include "alloca.h"
@@ -26,35 +26,35 @@
 #pragma GCC diagnostic ignored "-pedantic"
 #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 
-db_bool DB_DEBUG_ENABLED = 0;
+cx_bool DB_DEBUG_ENABLED = 0;
 
 #include "signal.h"
 
-static db_threadKey db_stringConcatCacheKey;
-static db_threadKey db_currentProgramKey;
-typedef struct db_vm_context db_vm_context;
+static cx_threadKey cx_stringConcatCacheKey;
+static cx_threadKey cx_currentProgramKey;
+typedef struct cx_vm_context cx_vm_context;
 
-/* TLS structure for db_currentProgramKey, used for debugging */
-typedef struct db_currentProgramData {
-    db_vmProgram stack[64];
-    db_vm_context *c[64];
-    db_uint32 sp;
-}db_currentProgramData;
+/* TLS structure for cx_currentProgramKey, used for debugging */
+typedef struct cx_currentProgramData {
+    cx_vmProgram stack[64];
+    cx_vm_context *c[64];
+    cx_uint32 sp;
+}cx_currentProgramData;
 
-/* TLS structure for db_stringConcatCacheKey */
-typedef struct db_stringConcatCacheNode {
-    db_vmProgram program;
-	db_string str;
-	db_uint32 length;
-}db_stringConcatCacheNode;
+/* TLS structure for cx_stringConcatCacheKey */
+typedef struct cx_stringConcatCacheNode {
+    cx_vmProgram program;
+	cx_string str;
+	cx_uint32 length;
+}cx_stringConcatCacheNode;
 
-typedef struct db_stringConcatCache {
-	db_stringConcatCacheNode staged[256]; /* Limit the amount of allocations required for a
+typedef struct cx_stringConcatCache {
+	cx_stringConcatCacheNode staged[256]; /* Limit the amount of allocations required for a
 											 stringconcatenation involving multiple elements
 											 with a factor 256 */
-	db_uint32 count;
-	db_uint32 length;
-}db_stringConcatCache;
+	cx_uint32 count;
+	cx_uint32 length;
+}cx_stringConcatCache;
 
 /* Translation */
 #define toJump(in) (((intptr_t)&&in))
@@ -62,11 +62,11 @@ typedef struct db_stringConcatCache {
 /* Program control */
 #define go() goto *(void*)(c.pc->op);
 #define next() c.pc++; go()
-#define jump(r) c.pc = (db_vmOp*)r; go()
+#define jump(r) c.pc = (cx_vmOp*)r; go()
 #define fetchIc() c.ic = c.pc->ic
 #define fetchLo() c.lo = c.pc->lo
 #define fetchHi() c.hi = c.pc->hi
-#define fetchDbl() c.dbl = *(db_int64*)&c.pc->lo
+#define fetchDbl() c.dbl = *(cx_int64*)&c.pc->lo
 
 /** Instruction postfixes
  * B	byte   (8 byte)
@@ -106,23 +106,23 @@ typedef struct db_stringConcatCache {
 #define SETREF(type,code)\
     SETREF_##code:{\
         fetchOp2(SETREF,code);\
-        db_set((db_object*)&op1_##code, (db_object)op2_##code);\
+        cx_set((cx_object*)&op1_##code, (cx_object)op2_##code);\
     }\
     next();\
 
 #define SETSTR(type,code)\
 	SETSTR_##code:\
     	fetchOp2(SETSTR,code);\
-    	if (op1_##code) db_dealloc((db_string)op1_##code);\
+    	if (op1_##code) cx_dealloc((cx_string)op1_##code);\
     	op1_##code = op2_##code;\
     	next();\
 
 #define SETSTRDUP(type,code)\
 	SETSTRDUP_##code:\
     	fetchOp2(SETSTRDUP,code);\
-    	if (op1_##code) db_dealloc((db_string)op1_##code);\
+    	if (op1_##code) cx_dealloc((cx_string)op1_##code);\
     	if (op2_##code) {\
-    		op1_##code = (W_t)db_strdup((db_string)op2_##code);\
+    		op1_##code = (W_t)cx_strdup((cx_string)op2_##code);\
     	} else {\
     		op1_##code = 0;\
     	}\
@@ -333,7 +333,7 @@ typedef union Di2f_t {
 	CEQSTR_##code:\
 		fetchOp1(CEQSTR,code);\
 		if (stage1_W && stage2_W) {\
-    		op_##code = !strcmp((db_string)stage1_W, (db_string)stage2_W);\
+    		op_##code = !strcmp((cx_string)stage1_W, (cx_string)stage2_W);\
 		} else {\
 			op_##code = stage1_W == stage2_W;\
 		}\
@@ -343,7 +343,7 @@ typedef union Di2f_t {
 	CNEQSTR_##code:\
 		fetchOp1(CNEQSTR,code);\
 		if (stage1_W && stage2_W) {\
-			op_##code = strcmp((db_string)stage1_W, (db_string)stage2_W);\
+			op_##code = strcmp((cx_string)stage1_W, (cx_string)stage2_W);\
 		} else {\
 			op_##code = stage1_W != stage2_W;\
 		}\
@@ -379,40 +379,40 @@ typedef union Di2f_t {
 #define PUSHX(type,code)\
 	PUSHX_##code:\
 		fetchOp1(PUSHX,code);\
-		*(db_word*)c.sp = (db_word)&op_##code;\
-		c.sp = DB_OFFSET(c.sp, sizeof(db_word));\
+		*(cx_word*)c.sp = (cx_word)&op_##code;\
+		c.sp = DB_OFFSET(c.sp, sizeof(cx_word));\
 		next();\
 
 #define _PUSHANY(opx,_type,code,postfix,deref,typearg,_pc,v)\
     PUSHANY##opx##_##code##postfix:\
     fetchOp1(PUSHANY,code);\
     fetchHi();\
-    ((db_any*)c.sp)->type = (db_type)typearg;\
-    ((db_any*)c.sp)->value = (void*)deref _pc op##v##_##code;\
-    ((db_any*)c.sp)->owner = FALSE;\
-    c.sp = DB_OFFSET(c.sp, sizeof(db_any));\
+    ((cx_any*)c.sp)->type = (cx_type)typearg;\
+    ((cx_any*)c.sp)->value = (void*)deref _pc op##v##_##code;\
+    ((cx_any*)c.sp)->owner = FALSE;\
+    c.sp = DB_OFFSET(c.sp, sizeof(cx_any));\
     next();\
 
 #define PUSHANYX(_type,code)    _PUSHANY(X,_type,code,,&,c.hi.w,,)
-#define PUSHANYX_U(_type,code)  _PUSHANY(X,_type,code,U,&,db_uint64_o,,)
-#define PUSHANYX_I(_type,code)  _PUSHANY(X,_type,code,I,&,db_int64_o,,)
-#define PUSHANYX_F(_type,code)  _PUSHANY(X,_type,code,F,&,db_float64_o,,)
+#define PUSHANYX_U(_type,code)  _PUSHANY(X,_type,code,U,&,cx_uint64_o,,)
+#define PUSHANYX_I(_type,code)  _PUSHANY(X,_type,code,I,&,cx_int64_o,,)
+#define PUSHANYX_F(_type,code)  _PUSHANY(X,_type,code,F,&,cx_float64_o,,)
 
 #define PUSHANYX_V(_type,code)  _PUSHANY(X,_type,code,,&,c.hi.w,c.pc->,x)
-#define PUSHANYX_VU(_type,code) _PUSHANY(X,_type,code,U,&,db_uint64_o,c.pc->,x)
-#define PUSHANYX_VI(_type,code) _PUSHANY(X,_type,code,I,&,db_int64_o,c.pc->,x)
-#define PUSHANYX_VF(_type,code) _PUSHANY(X,_type,code,F,&,db_float64_o,c.pc->,x)
+#define PUSHANYX_VU(_type,code) _PUSHANY(X,_type,code,U,&,cx_uint64_o,c.pc->,x)
+#define PUSHANYX_VI(_type,code) _PUSHANY(X,_type,code,I,&,cx_int64_o,c.pc->,x)
+#define PUSHANYX_VF(_type,code) _PUSHANY(X,_type,code,F,&,cx_float64_o,c.pc->,x)
 
-#define PUSHANY(_type,code)     _PUSHANY(,_type,code,,(db_word),c.hi.w,,)
-#define PUSHANY_U(_type,code)   _PUSHANY(,_type,code,U,(db_word),db_uint64_o,,)
-#define PUSHANY_I(_type,code)   _PUSHANY(,_type,code,I,(db_word),db_int64_o,,)
-#define PUSHANY_F(_type,code)   _PUSHANY(,_type,code,F,(db_word),db_float64_o,,)
+#define PUSHANY(_type,code)     _PUSHANY(,_type,code,,(cx_word),c.hi.w,,)
+#define PUSHANY_U(_type,code)   _PUSHANY(,_type,code,U,(cx_word),cx_uint64_o,,)
+#define PUSHANY_I(_type,code)   _PUSHANY(,_type,code,I,(cx_word),cx_int64_o,,)
+#define PUSHANY_F(_type,code)   _PUSHANY(,_type,code,F,(cx_word),cx_float64_o,,)
 
 #define CALL(type,code)\
     CALL_##code:\
     	fetchOp1(CALL,code);\
     	fetchHi();\
-        db_callb((db_function)c.hi.w, &op_##code, c.stack);\
+        cx_callb((cx_function)c.hi.w, &op_##code, c.stack);\
         c.sp = c.stack; /* Reset stack pointer */\
         next();\
 
@@ -420,21 +420,21 @@ typedef union Di2f_t {
     CALLVM_##code:\
         fetchOp1(CALLVM,code);\
         fetchHi();\
-        db_vm_run_w_storage((db_vmProgram)((db_function)c.hi.w)->implData, c.stack, &op_##code);\
+        cx_vm_run_w_storage((cx_vmProgram)((cx_function)c.hi.w)->implData, c.stack, &op_##code);\
         c.sp = c.stack; /* Reset stack pointer */\
         next();\
 
 #define CALLVOID()\
     CALLVOID:\
         fetchHi();\
-        db_callb((db_function)c.hi.w, NULL, c.stack);\
+        cx_callb((cx_function)c.hi.w, NULL, c.stack);\
         c.sp = c.stack; /* Reset stack pointer */\
         next();\
 
 #define CALLVMVOID()\
     CALLVMVOID:\
         fetchHi();\
-        db_vm_run_w_storage((db_vmProgram)((db_function)c.hi.w)->implData, c.stack, NULL);\
+        cx_vm_run_w_storage((cx_vmProgram)((cx_function)c.hi.w)->implData, c.stack, NULL);\
         c.sp = c.stack; /* Reset stack pointer */\
         next();\
 
@@ -459,11 +459,11 @@ typedef union Di2f_t {
             abort();\
         	goto STOP;\
 		}\
-        if (!db_instanceof((db_typedef)op2_##code, (db_object)op1_##code)) {\
-            db_id id1,id2;\
+        if (!cx_instanceof((cx_typedef)op2_##code, (cx_object)op1_##code)) {\
+            cx_id id1,id2;\
             printf("Exception: invalid cast from type '%s' to '%s'\n", \
-                db_fullname((db_object)op2_##code, id1), \
-                db_fullname(db_typeof((db_object)op1_##code), id2));\
+                cx_fullname((cx_object)op2_##code, id1), \
+                cx_fullname(cx_typeof((cx_object)op1_##code), id2));\
                 goto STOP;\
         }\
         next();\
@@ -471,20 +471,20 @@ typedef union Di2f_t {
 #define PCAST(type,code)\
     PCAST_##code:\
         fetchOp2(PCAST,code)\
-        db_convert(db_primitive(stage1_W), &op2_##code, db_primitive(stage2_W), &op1_##code);\
+        cx_convert(cx_primitive(stage1_W), &op2_##code, cx_primitive(stage2_W), &op1_##code);\
         next();
 
 #define STRCAT(type,code)\
 	STRCAT_##code:\
 	{\
-        db_string str1,str2;\
+        cx_string str1,str2;\
 		fetchOp2(STRCAT,code)\
-		if ((str1 = (db_string)op1_##code)) {\
+		if ((str1 = (cx_string)op1_##code)) {\
 			c.strcache->length += c.strcache->staged[c.strcache->count].length = strlen(str1);\
 			c.strcache->staged[c.strcache->count].str = str1;\
 			c.strcache->count++;\
 		}\
-		if ((str2 = (db_string)op2_##code)) {\
+		if ((str2 = (cx_string)op2_##code)) {\
 			c.strcache->length += c.strcache->staged[c.strcache->count].length = strlen(str2);\
 			c.strcache->staged[c.strcache->count].str = str2;\
 			c.strcache->count++;\
@@ -495,16 +495,16 @@ typedef union Di2f_t {
 #define STRCPY(type,code)\
 	STRCPY_##code:\
 	{\
-		db_string result, ptr, str;\
-		db_uint32 i;\
+		cx_string result, ptr, str;\
+		cx_uint32 i;\
 		fetchOp2(STRCPY,code);\
-		db_uint32 length=0;\
-		if ((str = (db_string)op2_##code)) {\
+		cx_uint32 length=0;\
+		if ((str = (cx_string)op2_##code)) {\
 			c.strcache->length += c.strcache->staged[c.strcache->count].length = strlen(str);\
 			c.strcache->staged[c.strcache->count].str = str;\
 			c.strcache->count++;\
 		}\
-		result = db_malloc(c.strcache->length + 1);\
+		result = cx_malloc(c.strcache->length + 1);\
 		ptr = result;\
 		for(i=0; i<c.strcache->count; i++) {\
 			length = c.strcache->staged[i].length;\
@@ -522,20 +522,20 @@ typedef union Di2f_t {
 	NEW_##code:\
 		fetchOp1(NEW,code);\
 		fetchOp2(NEW,code);\
-		op1_##code = (db_word)db_new((db_typedef)op2_##code);\
+		op1_##code = (cx_word)cx_new((cx_typedef)op2_##code);\
 		next();\
 
 #define DEALLOC(type,code)\
     DEALLOC_##code:\
         fetchOp1(DEALLOC,code);\
-        db_dealloc((void*)op_##code);\
+        cx_dealloc((void*)op_##code);\
         next();\
 
 #define KEEP(type,code)\
     KEEP_##code:\
         fetchOp1(KEEP,code);\
         if (op_##code) {\
-        	db_keep_ext(NULL, (db_object)op_##code, "KEEP(vm)");\
+        	cx_keep_ext(NULL, (cx_object)op_##code, "KEEP(vm)");\
         }\
         next();\
 
@@ -543,7 +543,7 @@ typedef union Di2f_t {
     FREE_##code:\
         fetchOp1(FREE,code);\
         if (op_##code) {\
-        	db_free_ext(NULL, (db_object)op_##code, "FREE(vm)");\
+        	cx_free_ext(NULL, (cx_object)op_##code, "FREE(vm)");\
         }\
         next();\
 
@@ -555,7 +555,7 @@ typedef union Di2f_t {
             abort();\
             goto STOP;\
         }\
-        db_define((db_object)op_##code);\
+        cx_define((cx_object)op_##code);\
         next();\
 
 #define UPDATE(type,code)\
@@ -566,7 +566,7 @@ typedef union Di2f_t {
             abort();\
         	goto STOP;\
         }\
-        db_updateFrom((db_object)op_##code,NULL);\
+        cx_updateFrom((cx_object)op_##code,NULL);\
         next();\
 
 #define UPDATEBEGIN(type,code)\
@@ -577,7 +577,7 @@ typedef union Di2f_t {
             abort();\
         	goto STOP;\
         }\
-        db_updateBegin((db_object)op_##code);\
+        cx_updateBegin((cx_object)op_##code);\
         next();\
 
 #define UPDATEEND(type,code)\
@@ -588,7 +588,7 @@ typedef union Di2f_t {
             abort();\
         	goto STOP;\
         }\
-        db_updateEndFrom((db_object)op_##code,NULL);\
+        cx_updateEndFrom((cx_object)op_##code,NULL);\
         next();\
 
 #define UPDATEFROM(type,code)\
@@ -599,7 +599,7 @@ typedef union Di2f_t {
             abort();\
         	goto STOP;\
         }\
-		db_updateFrom((db_object)op1_##code,(db_object)op2_##code);\
+		cx_updateFrom((cx_object)op1_##code,(cx_object)op2_##code);\
 		next();\
 
 #define UPDATEENDFROM(type,code)\
@@ -610,7 +610,7 @@ typedef union Di2f_t {
             abort();\
         	goto STOP;\
         }\
-        db_updateEndFrom((db_object)op1_##code,(db_object)op2_##code);\
+        cx_updateEndFrom((cx_object)op1_##code,(cx_object)op2_##code);\
         next();\
 
 #define UPDATECANCEL(type,code)\
@@ -621,7 +621,7 @@ typedef union Di2f_t {
             abort();\
         	goto STOP;\
         }\
-        db_updateCancel((db_object)op_##code);\
+        cx_updateCancel((cx_object)op_##code);\
         next();\
 
 #define WAITFOR(type, code)\
@@ -632,13 +632,13 @@ typedef union Di2f_t {
             abort();\
             goto STOP;\
         }\
-        db_waitfor((db_object)op_##code);\
+        cx_waitfor((cx_object)op_##code);\
         next();\
 
 #define WAIT(type,code)\
     WAIT_##code:\
         fetchOp2(WAIT,code);\
-        op1_##code = (W_t)db_wait(0,0);\
+        op1_##code = (W_t)cx_wait(0,0);\
         next();\
 
 #ifdef DB_VM_BOUNDSCHECK
@@ -662,7 +662,7 @@ typedef union Di2f_t {
 	ELEMS_##code:\
 		fetchOp3(ELEMS,code##V);\
 		{\
-			db_objectSeq* seq = (db_objectSeq*)op1_##code##V;\
+			cx_objectSeq* seq = (cx_objectSeq*)op1_##code##V;\
             CHECK_BOUNDS(seq->length, op2_##code##V);\
 			op1_##code##V = (W_t)DB_OFFSET(seq->buffer,op2_##code##V * op3_##code##V);\
 		}\
@@ -671,27 +671,27 @@ typedef union Di2f_t {
 #define ELEML(type,code)\
 	ELEML_##code:\
 		fetchOp2(ELEML, code);\
-        CHECK_BOUNDS(db_llSize(*(db_ll*)op1_##code), op2_##code)\
-		op1_##code = (W_t)db_llGet(*(db_ll*)op1_##code, op2_##code);\
+        CHECK_BOUNDS(cx_llSize(*(cx_ll*)op1_##code), op2_##code)\
+		op1_##code = (W_t)cx_llGet(*(cx_ll*)op1_##code, op2_##code);\
 		next();
 
 #define ELEMLX(type,code)\
 	ELEMLX_##code:\
 		fetchOp2(ELEMLX, code);\
-        CHECK_BOUNDS(db_llSize(*(db_ll*)op1_##code), op2_##code)\
-		op1_##code = (W_t)db_llGetPtr(*(db_ll*)op1_##code, op2_##code);\
+        CHECK_BOUNDS(cx_llSize(*(cx_ll*)op1_##code), op2_##code)\
+		op1_##code = (W_t)cx_llGetPtr(*(cx_ll*)op1_##code, op2_##code);\
 		next();\
 
 #define ELEMM(type,code)\
 	ELEMM_##code:\
 		fetchOp2(ELEMM, code);\
-		op1_##code = (W_t)db_rbtreeGet(*(db_rbtree*)op1_##code, (void*)&op2_##code);\
+		op1_##code = (W_t)cx_rbtreeGet(*(cx_rbtree*)op1_##code, (void*)&op2_##code);\
 		next();\
 
 #define ELEMMX(type,code)\
     ELEMMX_##code:\
     fetchOp2(ELEMMX, code);\
-    op1_##code = (W_t)db_rbtreeGetPtr(*(db_rbtree*)op1_##code, (void*)&op2_##code);\
+    op1_##code = (W_t)cx_rbtreeGetPtr(*(cx_rbtree*)op1_##code, (void*)&op2_##code);\
     next();\
 
 /* Instruction implementation expansions */
@@ -916,7 +916,7 @@ typedef union Di2f_t {
 
 /* Translation from opcode-id to string */
 #define TOSTR_OPERAND(_op,type,lvalue,rvalue)\
-    case DB_VM_##_op##_##type##lvalue##rvalue: result = db_vmOp_toString(result, &p[i], #_op, #type, #lvalue, #rvalue, ""); break;\
+    case DB_VM_##_op##_##type##lvalue##rvalue: result = cx_vmOp_toString(result, &p[i], #_op, #type, #lvalue, #rvalue, ""); break;\
 
 #define TOSTR_OPERAND_PQRV(_op,type,lvalue)\
     TOSTR_OPERAND(_op,type,lvalue,V)\
@@ -1037,17 +1037,17 @@ typedef union Di2f_t {
     TOSTR_LVALUE(op,W,postfix)\
     TOSTR_OPERAND_##postfix(op,W,V)
 
-struct db_vm_context {
-    db_vmOp *pc; /* Instruction counter */
-    db_vmParameter16 ic;    /* First (16-bit) parameter */
-    db_vmParameter lo; /* Lo parameter */
-    db_vmParameter hi; /* Hi parameter */
-    db_uint64 dbl; /* Double parameter */
-    db_uint64 dbl2;
-    db_vmParameter stage1;
-    db_vmParameter stage2;
+struct cx_vm_context {
+    cx_vmOp *pc; /* Instruction counter */
+    cx_vmParameter16 ic;    /* First (16-bit) parameter */
+    cx_vmParameter lo; /* Lo parameter */
+    cx_vmParameter hi; /* Hi parameter */
+    cx_uint64 dbl; /* Double parameter */
+    cx_uint64 dbl2;
+    cx_vmParameter stage1;
+    cx_vmParameter stage2;
     void *stack, *sp;
-    db_stringConcatCache *strcache;
+    cx_stringConcatCache *strcache;
 };
 
 #ifdef DB_VM_DEBUG
@@ -1055,9 +1055,9 @@ typedef void(*sigfunc)(int);
 static sigfunc prevSegfaultHandler;
 static sigfunc prevAbortHandler;
 
-static void db_vm_sig(int sig) {
-    db_int32 sp;
-    db_currentProgramData *programData = db_threadTlsGet(db_currentProgramKey);
+static void cx_vm_sig(int sig) {
+    cx_int32 sp;
+    cx_currentProgramData *programData = cx_threadTlsGet(cx_currentProgramKey);
     
     if (sig == SIGSEGV) {
         printf("Access violation\n");
@@ -1067,21 +1067,21 @@ static void db_vm_sig(int sig) {
     }
 
     for(sp = programData->sp-1; sp>=0; sp--) {
-        db_id id;
-        db_vmProgram program = programData->stack[sp];
-        db_uint32 line = program->debugInfo[((db_word)programData->c[sp]->pc - (db_word)program->program)/sizeof(db_vmOp)].line;
+        cx_id id;
+        cx_vmProgram program = programData->stack[sp];
+        cx_uint32 line = program->debugInfo[((cx_word)programData->c[sp]->pc - (cx_word)program->program)/sizeof(cx_vmOp)].line;
         if (program->function) {
-            printf("[%d] %s (%s:%d)\n", sp+1, db_fullname(program->function, id), program->filename, line);
+            printf("[%d] %s (%s:%d)\n", sp+1, cx_fullname(program->function, id), program->filename, line);
         } else {
             printf("[%d] <main> (%s:%d)\n", sp+1, program->filename, line);
         }
         
         /* Print program with location of crash */
 #ifdef DB_IC_TRACING
-        if(sp == (db_int32)programData->sp-1) {
-            db_string str = db_vmProgram_toString(program, programData->c[sp]->pc);
+        if(sp == (cx_int32)programData->sp-1) {
+            cx_string str = cx_vmProgram_toString(program, programData->c[sp]->pc);
             printf("\n%s\n", str);
-            db_dealloc(str);
+            cx_dealloc(str);
         }
 #endif
     }
@@ -1089,74 +1089,74 @@ static void db_vm_sig(int sig) {
     exit(-1);
 }
 
-static void db_vm_pushCurrentProgram(db_vmProgram program, db_vm_context *c) {
-    db_currentProgramData *data = NULL;
-    if (!db_currentProgramKey) {
-    	db_threadTlsKey(&db_currentProgramKey, NULL);
+static void cx_vm_pushCurrentProgram(cx_vmProgram program, cx_vm_context *c) {
+    cx_currentProgramData *data = NULL;
+    if (!cx_currentProgramKey) {
+    	cx_threadTlsKey(&cx_currentProgramKey, NULL);
     }
-    data = db_threadTlsGet(db_currentProgramKey);
+    data = cx_threadTlsGet(cx_currentProgramKey);
     if (!data) {
-        data = db_malloc(sizeof(db_currentProgramData));
+        data = cx_malloc(sizeof(cx_currentProgramData));
         data->sp = 0;
-        db_threadTlsSet(db_currentProgramKey, data);
+        cx_threadTlsSet(cx_currentProgramKey, data);
     }
     data->stack[data->sp] = program;
     data->c[data->sp] = c;
     data->sp++;
 }
 
-static void db_vm_popCurrentProgram(void) {
-    db_currentProgramData *data = db_threadTlsGet(db_currentProgramKey);
+static void cx_vm_popCurrentProgram(void) {
+    cx_currentProgramData *data = cx_threadTlsGet(cx_currentProgramKey);
     data->sp--;
 }
 
-static void db_vm_pushSignalHandler(db_vmProgram program, db_vm_context *c) {
-    sigfunc result = signal(SIGSEGV, db_vm_sig);
+static void cx_vm_pushSignalHandler(cx_vmProgram program, cx_vm_context *c) {
+    sigfunc result = signal(SIGSEGV, cx_vm_sig);
     if (result == SIG_ERR) {
-        db_error("failed to install signal handler for SIGSEGV");
+        cx_error("failed to install signal handler for SIGSEGV");
     } else {
         prevSegfaultHandler = result;
     }
-    result = signal(SIGABRT, db_vm_sig);
+    result = signal(SIGABRT, cx_vm_sig);
     if (result == SIG_ERR) {
-        db_error("failed to install signal handler for SIGABRT");
+        cx_error("failed to install signal handler for SIGABRT");
     } else {
         prevAbortHandler = result;
     }
     
     /* Store current program in TLS */
-    db_vm_pushCurrentProgram(program, c);
+    cx_vm_pushCurrentProgram(program, c);
 }
 
-static void db_vm_popSignalHandler(void) {
+static void cx_vm_popSignalHandler(void) {
     if (signal(SIGSEGV, prevSegfaultHandler) == SIG_ERR) {
-        db_error("failed to uninstall signal handler for SIGSEGV");
+        cx_error("failed to uninstall signal handler for SIGSEGV");
     } else {
         prevSegfaultHandler = NULL;
     }
     if (signal(SIGABRT, prevAbortHandler) == SIG_ERR) {
-        db_error("failed to uninstall signal handler for SIGABRT");
+        cx_error("failed to uninstall signal handler for SIGABRT");
     } else {
         prevSegfaultHandler = NULL;
     }
     
-    db_vm_popCurrentProgram();
+    cx_vm_popCurrentProgram();
 }
 #else
-#define db_vm_pushSignalHandler(p,c)
-#define db_vm_popSignalHandler()
+#define cx_vm_pushSignalHandler(p,c)
+#define cx_vm_popSignalHandler()
 #endif
 
-static int32_t db_vm_run_w_storage(db_vmProgram program, void* reg, void *result) {
-    db_vm_context c;
-    c.strcache = db_threadTlsGet(db_stringConcatCacheKey);
+static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result) {
+    cx_vm_context c;
+    c.strcache = cx_threadTlsGet(cx_stringConcatCacheKey);
     
-    db_vm_pushSignalHandler(program, &c);
+    cx_vm_pushSignalHandler(program, &c);
 
     /* Translate program if required */
     if (!program->translated)  {
     	uint32_t size = program->size;
-        db_vmOp *p = program->program;
+        cx_vmOp *p = program->program;
         uint32_t i;
         for(i=0; i<size;i++) {
 #ifdef DB_VM_DEBUG
@@ -1271,7 +1271,7 @@ static int32_t db_vm_run_w_storage(db_vmProgram program, void* reg, void *result
 
                 case DB_VM_STOP: p[i].op = toJump(STOP); break;
                 default:
-                	db_assert(0, "invalid instruction in sequence %d @ %d", p[i].op, i);
+                	cx_assert(0, "invalid instruction in sequence %d @ %d", p[i].op, i);
                 	break;
             }
         }
@@ -1317,9 +1317,9 @@ static int32_t db_vm_run_w_storage(db_vmProgram program, void* reg, void *result
         fetch_WRV;
         fetch1_WRV;
         fetch2_WRV;
-        db_value v;
-        db_valueValueInit(&v, NULL, (db_typedef)op2_WRV, &op1_WRV);
-        db_initValue(&v);
+        cx_value v;
+        cx_valueValueInit(&v, NULL, (cx_typedef)op2_WRV, &op1_WRV);
+        cx_initValue(&v);
         next();
     }
 
@@ -1434,39 +1434,39 @@ static int32_t db_vm_run_w_storage(db_vmProgram program, void* reg, void *result
     OP2_W(WAIT,PQRV);
 
 STOP:
-    db_vm_popSignalHandler();
+    cx_vm_popSignalHandler();
     return 0;
 }
 
-static void db_stringConcatCacheClean(void *data) {
-	db_dealloc(data);
+static void cx_stringConcatCacheClean(void *data) {
+	cx_dealloc(data);
 }
 
-static void db_stringConcatCacheCreate(void) {
-    db_stringConcatCache *concatCache;
-    if (!db_stringConcatCacheKey) {
-    	db_threadTlsKey(&db_stringConcatCacheKey, db_stringConcatCacheClean);
+static void cx_stringConcatCacheCreate(void) {
+    cx_stringConcatCache *concatCache;
+    if (!cx_stringConcatCacheKey) {
+    	cx_threadTlsKey(&cx_stringConcatCacheKey, cx_stringConcatCacheClean);
     }
 
-    concatCache = db_threadTlsGet(db_stringConcatCacheKey);
+    concatCache = cx_threadTlsGet(cx_stringConcatCacheKey);
     if (!concatCache) {
-    	concatCache = db_malloc(sizeof(db_stringConcatCache));
-    	memset(concatCache, 0, sizeof(db_stringConcatCache));
-    	db_threadTlsSet(db_stringConcatCacheKey, concatCache);
+    	concatCache = cx_malloc(sizeof(cx_stringConcatCache));
+    	memset(concatCache, 0, sizeof(cx_stringConcatCache));
+    	cx_threadTlsSet(cx_stringConcatCacheKey, concatCache);
     }
 }
 
-int32_t db_vm_run(db_vmProgram program, void *result) {
+int32_t cx_vm_run(cx_vmProgram program, void *result) {
     void *storage;
 
     storage = alloca(program->storage);
-    db_stringConcatCacheCreate();
+    cx_stringConcatCacheCreate();
 
-    return db_vm_run_w_storage(program, storage, result);
+    return cx_vm_run_w_storage(program, storage, result);
 }
 
 #ifdef DB_IC_TRACING
-char * db_vmOp_toString(char * string, db_vmOp *instr, const char *op, const char *type, const char *lvalue, const char *rvalue, const char* fetch) {
+char * cx_vmOp_toString(char * string, cx_vmOp *instr, const char *op, const char *type, const char *lvalue, const char *rvalue, const char* fetch) {
     char *result = string;
 
     if (fetch && strlen(fetch)) {
@@ -1479,13 +1479,13 @@ char * db_vmOp_toString(char * string, db_vmOp *instr, const char *op, const cha
 }
 #endif
 
-char * db_vmProgram_toString(db_vmProgram program, db_vmOp *addr) {
+char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
     char * result = NULL;
-    db_int32 shown = 4;
+    cx_int32 shown = 4;
     DB_UNUSED(program);
 
 #ifdef DB_IC_TRACING
-    db_vmOp *p = program->program;
+    cx_vmOp *p = program->program;
     uint32_t i;
     
 #ifndef DB_VM_DEBUG
@@ -1499,9 +1499,9 @@ char * db_vmProgram_toString(db_vmProgram program, db_vmOp *addr) {
     }
     
     for(i=0; i<program->size;i++) {
-        db_int32 diff = addr - &p[i];
+        cx_int32 diff = addr - &p[i];
         if (!addr || ((diff <= shown) && (diff >= -shown))) {
-            db_vmOpKind kind;
+            cx_vmOpKind kind;
    
             if (addr) {
                 if (addr == &p[i]) {
@@ -1628,7 +1628,7 @@ char * db_vmProgram_toString(db_vmProgram program, db_vmOp *addr) {
 
                 case DB_VM_STOP: result = strappend(result, "STOP\n"); break;
                 default:
-                    db_assert(0, "invalid instruction %d in sequence @ %d", p[i].op, i);
+                    cx_assert(0, "invalid instruction %d in sequence @ %d", p[i].op, i);
                     break;
             }
         }
@@ -1642,13 +1642,13 @@ char * db_vmProgram_toString(db_vmProgram program, db_vmOp *addr) {
 
 #pragma GCC diagnostic pop
 
-db_vmProgram db_vmProgram_new(char *filename, db_object function) {
-	db_vmProgram result;
+cx_vmProgram cx_vmProgram_new(char *filename, cx_object function) {
+	cx_vmProgram result;
 
-	result = db_malloc(sizeof(db_vmProgram_s));
+	result = cx_malloc(sizeof(cx_vmProgram_s));
 	result->program = NULL;
     result->debugInfo = NULL;
-    result->filename = db_strdup(filename);
+    result->filename = cx_strdup(filename);
     result->function = function;
 	result->size = 0;
 	result->maxSize = 0;
@@ -1659,16 +1659,16 @@ db_vmProgram db_vmProgram_new(char *filename, db_object function) {
 	return result;
 }
 
-void db_vmProgram_free(db_vmProgram program) {
+void cx_vmProgram_free(cx_vmProgram program) {
     if (program) {
         if (program->program) {
-            db_dealloc(program->program);
+            cx_dealloc(program->program);
         }
-        db_dealloc(program);
+        cx_dealloc(program);
     }
 }
 
-db_vmOp *db_vmProgram_addOp(db_vmProgram program, uint32_t line) {
+cx_vmOp *cx_vmProgram_addOp(cx_vmProgram program, uint32_t line) {
 	if (!program->size) {
 		program->size = 1;
 		program->maxSize = 8;
@@ -1678,31 +1678,31 @@ db_vmOp *db_vmProgram_addOp(db_vmProgram program, uint32_t line) {
 			program->maxSize *= 2;
 		}
 	}
-	program->program = db_realloc(program->program, program->maxSize * sizeof(db_vmOp));
-    program->debugInfo = db_realloc(program->debugInfo, program->maxSize * sizeof(db_vmDebugInfo));
+	program->program = cx_realloc(program->program, program->maxSize * sizeof(cx_vmOp));
+    program->debugInfo = cx_realloc(program->debugInfo, program->maxSize * sizeof(cx_vmDebugInfo));
 
-	memset(&program->program[program->size-1], 0, sizeof(db_vmOp));
-    memset(&program->debugInfo[program->size-1], 0, sizeof(db_vmDebugInfo));
+	memset(&program->program[program->size-1], 0, sizeof(cx_vmOp));
+    memset(&program->debugInfo[program->size-1], 0, sizeof(cx_vmDebugInfo));
     program->debugInfo[program->size-1].line = line;
     
 	return &program->program[program->size-1];
 }
 
-void db_call_vm(db_function f, db_void* result, void* args) {
-    db_vmProgram program;
+void cx_call_vm(cx_function f, cx_void* result, void* args) {
+    cx_vmProgram program;
     void *storage = NULL;
 
-    program = (db_vmProgram)f->implData;
+    program = (cx_vmProgram)f->implData;
 
     storage = alloca(program->storage);
     memcpy(storage, args, f->size);
 
-    db_stringConcatCacheCreate();
+    cx_stringConcatCacheCreate();
 
-    db_vm_run_w_storage(program, storage, result);
+    cx_vm_run_w_storage(program, storage, result);
 }
 
-void db_callDestruct_vm(db_function f) {
-    db_vmProgram_free((db_vmProgram)f->implData);
+void cx_callDestruct_vm(cx_function f) {
+    cx_vmProgram_free((cx_vmProgram)f->implData);
 }
 

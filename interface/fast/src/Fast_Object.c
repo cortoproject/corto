@@ -18,12 +18,12 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Object::construct(Object object) */
-db_int16 Fast_Object_construct(Fast_Object object) {
+cx_int16 Fast_Object_construct(Fast_Object object) {
 /* $begin(::cortex::Fast::Object::construct) */
-	db_type t = db_typeof(Fast_ObjectBase(object)->value)->real;
+	cx_type t = cx_typeof(Fast_ObjectBase(object)->value)->real;
 
-	if(t == db_type(db_constant_o)) {
-		t = db_parentof(Fast_ObjectBase(object)->value);
+	if(t == cx_type(cx_constant_o)) {
+		t = cx_parentof(Fast_ObjectBase(object)->value);
 	}
 
     Fast_Expression(object)->type = Fast_Variable(Fast_ObjectBase__create(t));
@@ -34,14 +34,14 @@ db_int16 Fast_Object_construct(Fast_Object object) {
 }
 
 /* ::cortex::Fast::Object::getValue() */
-db_word Fast_Object_getValue(Fast_Object _this) {
+cx_word Fast_Object_getValue(Fast_Object _this) {
 /* $begin(::cortex::Fast::Object::getValue) */
-	db_word result = 0;
+	cx_word result = 0;
 
 	/* Value of objects can only be used at compiletime when object is of
 	 * type constant. */
-    if (db_instanceof(db_typedef(db_constant_o), Fast_ObjectBase(_this)->value)) {
-        result = (db_word)Fast_ObjectBase(_this)->value;
+    if (cx_instanceof(cx_typedef(cx_constant_o), Fast_ObjectBase(_this)->value)) {
+        result = (cx_word)Fast_ObjectBase(_this)->value;
     }
 
     return result;
@@ -49,19 +49,19 @@ db_word Fast_Object_getValue(Fast_Object _this) {
 }
 
 /* ::cortex::Fast::Object::serialize(lang::type dstType,lang::word dst) */
-db_int16 Fast_Object_serialize(Fast_Object _this, db_type dstType, db_word dst) {
+cx_int16 Fast_Object_serialize(Fast_Object _this, cx_type dstType, cx_word dst) {
 /* $begin(::cortex::Fast::Object::serialize) */
 	Fast_valueKind kind;
 
 	if (!dstType->reference) {
-		if (db_instanceof((db_typedef)dstType, Fast_ObjectBase(_this)->value)) {
+		if (cx_instanceof((cx_typedef)dstType, Fast_ObjectBase(_this)->value)) {
 			/* If object is not of a reference type and object is of dstType, copy value */
-			memcpy((void*)dst, Fast_ObjectBase(_this)->value, db_type_sizeof(dstType));
+			memcpy((void*)dst, Fast_ObjectBase(_this)->value, cx_type_sizeof(dstType));
 		} else {
-			db_id id, id2;
+			cx_id id, id2;
 			Fast_Parser_error(yparser(), "type '%s' of object does not match destinationtype '%s'",
-					db_fullname(db_typeof(Fast_ObjectBase(_this)->value), id),
-					db_fullname(dstType, id2));
+					cx_fullname(cx_typeof(Fast_ObjectBase(_this)->value), id),
+					cx_fullname(dstType, id2));
 		}
 	} else {
 	    if (Fast_Expression(_this)->isReference) {
@@ -72,26 +72,26 @@ db_int16 Fast_Object_serialize(Fast_Object _this, db_type dstType, db_word dst) 
 
 		switch(kind) {
 		case FAST_Boolean:
-			*(db_bool*)dst = Fast_ObjectBase(_this)->value ? TRUE : FALSE;
+			*(cx_bool*)dst = Fast_ObjectBase(_this)->value ? TRUE : FALSE;
 			break;
 		case FAST_String: {
-			db_id id;
-			if (*(db_string*)dst) {
-				db_dealloc(*(db_string*)dst);
+			cx_id id;
+			if (*(cx_string*)dst) {
+				cx_dealloc(*(cx_string*)dst);
 			}
-			*(db_string*)dst = db_strdup(db_fullname(Fast_ObjectBase(_this)->value, id));
+			*(cx_string*)dst = cx_strdup(cx_fullname(Fast_ObjectBase(_this)->value, id));
 			break;
 		}
 		case FAST_Reference:
-			if (*(db_object*)dst) {
-				db_free(*(db_object*)dst);
+			if (*(cx_object*)dst) {
+				cx_free(*(cx_object*)dst);
 			}
-			*(db_object*)dst = Fast_ObjectBase(_this)->value;
-			db_keep_ext(NULL, *(db_object*)dst, "Serialize object value");
+			*(cx_object*)dst = Fast_ObjectBase(_this)->value;
+			cx_keep_ext(NULL, *(cx_object*)dst, "Serialize object value");
 			break;
 		default: {
-            db_id id;
-            Fast_Parser_error(yparser(), "cannot serialize object value to storage of type '%s'", db_fullname(dstType, id));
+            cx_id id;
+            Fast_Parser_error(yparser(), "cannot serialize object value to storage of type '%s'", cx_fullname(dstType, id));
             goto error;
 			break;
 		}
@@ -104,14 +104,14 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::Object::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_Object_toIc_v(Fast_Object _this, db_icProgram program, db_icStorage storage, db_bool stored) {
+/* ::cortex::Fast::Object::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+cx_ic Fast_Object_toIc_v(Fast_Object _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Object::toIc) */
-	db_ic result;
+	cx_ic result;
 	DB_UNUSED(storage);
 	DB_UNUSED(stored);
 
-	result = (db_ic)db_icObject__create(program, Fast_Node(_this)->line, _this->_parent.value);
+	result = (cx_ic)cx_icObject__create(program, Fast_Node(_this)->line, _this->_parent.value);
 
 	return result;
 /* $end */

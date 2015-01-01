@@ -1,81 +1,81 @@
 /*
- * db_ic_assemble.c
+ * cx_ic_assemble.c
  *
  *  Created on: Aug 28, 2013
  *      Author: sander
  */
 
-#include "db_ic.h"
-#include "db_ll.h"
-#include "db_mem.h"
-#include "db_util.h"
-#include "db_err.h"
-#include "db__meta.h"
-#include "db_value.h"
-#include "db__vm_operands.h"
-#include "db_object.h"
-#include "db_struct.h"
+#include "cx_ic.h"
+#include "cx_ll.h"
+#include "cx_mem.h"
+#include "cx_util.h"
+#include "cx_err.h"
+#include "cx__meta.h"
+#include "cx_value.h"
+#include "cx__vm_operands.h"
+#include "cx_object.h"
+#include "cx_struct.h"
 
-typedef struct db_ic_vmLabel {
-	db_uint32 id;
-	db_uint32 pc;
+typedef struct cx_ic_vmLabel {
+	cx_uint32 id;
+	cx_uint32 pc;
 	void *referees[256]; /* The jumps to this label. At assemble-time, the exact address of the label is not yet known
 	                      * so this information is filled in after the program is assembled for each referee */
-	db_uint32 refereeCount;
-}db_ic_vmLabel;
+	cx_uint32 refereeCount;
+}cx_ic_vmLabel;
 
-typedef struct db_ic_vmStorage db_ic_vmStorage;
-struct db_ic_vmStorage {
-    db_icStorage accumulator;
-    db_uint32 firstUsed;
-    db_uint32 lastUsed;
+typedef struct cx_ic_vmStorage cx_ic_vmStorage;
+struct cx_ic_vmStorage {
+    cx_icStorage accumulator;
+    cx_uint32 firstUsed;
+    cx_uint32 lastUsed;
     void *referees[256]; /* The jumps to this accumulator. At assemble-time, the exact address of the accumulator is not yet known
                           * so this information is filled in after the program is assembled for each referee */
-    db_uint32 refereeCount;
-    db_uint16 addr;
+    cx_uint32 refereeCount;
+    cx_uint16 addr;
 
     /* Member & element accumulators have a base and offset */
-    db_uint16 offset;
-    db_ic_vmStorage *base;
-    db_bool assembled; /* Offsets of multiple member-operations are accumulated into one register so that
+    cx_uint16 offset;
+    cx_ic_vmStorage *base;
+    cx_bool assembled; /* Offsets of multiple member-operations are accumulated into one register so that
     					* instead of calculating multiple offsets at runtime, only one operation is required. This
     					* variable remains FALSE until the storage is used after which an operation is inserted
     					* to calculate the accumulated offset.
     					* This is only applicable for access to dynamically allocated objects or storages with dynamic
     					* components (elements with variable indexes). By default this value is TRUE. */
-    db_bool dynamic;   /* A dynamic storage needs to be assembled each time it is evaluated because the storage depends
+    cx_bool dynamic;   /* A dynamic storage needs to be assembled each time it is evaluated because the storage depends
                         * on the value of other storages, for example the index-expression of an element storage. */
 };
 
-typedef struct db_ic_vmInlineFunction {
-    db_vmProgram program;
-    db_function function;
-}db_ic_vmInlineFunction;
+typedef struct cx_ic_vmInlineFunction {
+    cx_vmProgram program;
+    cx_function function;
+}cx_ic_vmInlineFunction;
 
-typedef struct db_ic_vmProgram {
-	db_icProgram icProgram;
-    db_vmProgram main; /* Keep track of what is the main-module of a program (where the program starts) */
-	db_vmProgram program;
-	db_icFunction function;
-	db_ll labels;
-	db_ll accumulators;
-	db_ll inlineFunctions;
-	db_uint16 scopeSize[256];
-	db_uint32 scope;
-	db_uint32 maxScopeSize; /* The maximum scope-size is where accumulators are allocated (thus after the locals) */
-	db_uint32 stackSize;
-	db_uint32 maxStackSize; /* The maximum stack-size is the maximum amount of space a call needs for its arguments */
-}db_ic_vmProgram;
+typedef struct cx_ic_vmProgram {
+	cx_icProgram icProgram;
+    cx_vmProgram main; /* Keep track of what is the main-module of a program (where the program starts) */
+	cx_vmProgram program;
+	cx_icFunction function;
+	cx_ll labels;
+	cx_ll accumulators;
+	cx_ll inlineFunctions;
+	cx_uint16 scopeSize[256];
+	cx_uint32 scope;
+	cx_uint32 maxScopeSize; /* The maximum scope-size is where accumulators are allocated (thus after the locals) */
+	cx_uint32 stackSize;
+	cx_uint32 maxStackSize; /* The maximum stack-size is the maximum amount of space a call needs for its arguments */
+}cx_ic_vmProgram;
 
-typedef enum db_ic_vmType {
+typedef enum cx_ic_vmType {
 	DB_IC_VMTYPE_B,
 	DB_IC_VMTYPE_S,
 	DB_IC_VMTYPE_L,
     DB_IC_VMTYPE_W,
 	DB_IC_VMTYPE_D
-}db_ic_vmType;
+}cx_ic_vmType;
 
-typedef enum db_ic_vmOperand {
+typedef enum cx_ic_vmOperand {
 	DB_IC_VMOPERAND_NONE,
 	DB_IC_VMOPERAND_V,
 	DB_IC_VMOPERAND_R,
@@ -83,9 +83,9 @@ typedef enum db_ic_vmOperand {
 	DB_IC_VMOPERAND_Q,
 	DB_IC_VMOPERAND_X,
 	DB_IC_VMOPERAND_L
-}db_ic_vmOperand;
+}cx_ic_vmOperand;
 
-db_string db_ic_vmOperandStr(db_ic_vmOperand op) {
+cx_string cx_ic_vmOperandStr(cx_ic_vmOperand op) {
     switch(op) {
         case DB_IC_VMOPERAND_NONE: return "none";
         case DB_IC_VMOPERAND_V: return "V";
@@ -98,50 +98,50 @@ db_string db_ic_vmOperandStr(db_ic_vmOperand op) {
     return "<?>";
 }
 
-static db_ic_vmStorage *db_ic_vmStorageGet(db_ic_vmProgram *program, db_icStorage icAccumulator);
+static cx_ic_vmStorage *cx_ic_vmStorageGet(cx_ic_vmProgram *program, cx_icStorage icAccumulator);
 
-static void db_ic_vmProgram_fillInLabels(db_ic_vmProgram *program) {
-    db_iter labelIter;
-    db_ic_vmLabel *label;
-    db_uint32 referee;
+static void cx_ic_vmProgram_fillInLabels(cx_ic_vmProgram *program) {
+    cx_iter labelIter;
+    cx_ic_vmLabel *label;
+    cx_uint32 referee;
 
     if (program->labels) {
-        labelIter = db_llIter(program->labels);
-        while(db_iterHasNext(&labelIter)) {
-            label = db_iterNext(&labelIter);
+        labelIter = cx_llIter(program->labels);
+        while(cx_iterHasNext(&labelIter)) {
+            label = cx_iterNext(&labelIter);
             for(referee=0; referee < label->refereeCount; referee++) {
                 *(void**)DB_OFFSET(label->referees[referee], program->program->program) = &program->program->program[label->pc];
             }
 
             /* Free label */
-            db_dealloc(label);
+            cx_dealloc(label);
         }
 
         /* Free label list */
-        db_llFree(program->labels);
+        cx_llFree(program->labels);
         program->labels = NULL;
     }
 }
 
 /* Administration that keeps track of claims accumulators have on the register */
-typedef struct db_ic_registerClaim {
-    db_ic_vmStorage *accumulator;
-    db_uint16 addr;
-    db_uint16 size;
-    db_uint32 start;
-    db_uint32 end;
-}db_ic_registerClaim;
+typedef struct cx_ic_registerClaim {
+    cx_ic_vmStorage *accumulator;
+    cx_uint16 addr;
+    cx_uint16 size;
+    cx_uint32 start;
+    cx_uint32 end;
+}cx_ic_registerClaim;
 
 /* Determine whether storage is of a reference type or passed by reference. */
-db_bool db_ic_isReference(db_icStorage storage) {
-	db_type t = storage->type;
-	db_bool result = FALSE;
+cx_bool cx_ic_isReference(cx_icStorage storage) {
+	cx_type t = storage->type;
+	cx_bool result = FALSE;
 
 	if (storage->isReference) {
 		result = TRUE;
 	} else {
 		if (storage->kind == DB_STORAGE_LOCAL) {
-			if (((db_icLocal)storage)->isParameter) {
+			if (((cx_icLocal)storage)->isParameter) {
 				if (t->kind != DB_PRIMITIVE) {
 					result = TRUE;
 				}
@@ -154,20 +154,20 @@ db_bool db_ic_isReference(db_icStorage storage) {
 
 /* Determine whether for a storage space must be allocated or whether a storage is pointing
  * directly to an object\local. */
-db_bool db_ic_storageMustAllocate(db_ic_vmProgram *program, db_ic_vmStorage *accumulator, db_bool *collapsed) {
-	db_bool result = FALSE;
+cx_bool cx_ic_storageMustAllocate(cx_ic_vmProgram *program, cx_ic_vmStorage *accumulator, cx_bool *collapsed) {
+	cx_bool result = FALSE;
 
 	/* Accumulator must be referred otherwise it should not take up space */
 	if (accumulator->refereeCount) {
-        db_icStorageKind kind = accumulator->accumulator->kind;
+        cx_icStorageKind kind = accumulator->accumulator->kind;
 
         /* Accumulators must always be allocated */
         if (kind == DB_STORAGE_ACCUMULATOR) {
         	result = TRUE;
         } else {
         	if ((kind == DB_STORAGE_MEMBER) || (kind == DB_STORAGE_ELEMENT)) {
-        		db_bool collapse = FALSE;
-        		db_icStorage base = accumulator->base->accumulator;
+        		cx_bool collapse = FALSE;
+        		cx_icStorage base = accumulator->base->accumulator;
 
         		/* Determine whether accumulator must be collapsed with base because its offset
         		 * is zero. Only applicable for member-storages and element-storages of which the
@@ -177,7 +177,7 @@ db_bool db_ic_storageMustAllocate(db_ic_vmProgram *program, db_ic_vmStorage *acc
         			if (kind == DB_STORAGE_MEMBER) {
         				collapse = TRUE;
         			} else {
-        				db_collection type = db_collection(accumulator->accumulator->type);
+        				cx_collection type = cx_collection(accumulator->accumulator->type);
         				switch(type->kind) {
         				case DB_ARRAY:
         					collapse = TRUE;
@@ -194,7 +194,7 @@ db_bool db_ic_storageMustAllocate(db_ic_vmProgram *program, db_ic_vmStorage *acc
         		/* If the base is of a reference type and the base is not an object, address
         		 * is stored in an accumulator for which space must be allocated. If the offset of the
         		 * member is zero do not allocate the accumulator, instead use the base (see below). */
-        		if (!collapse && (db_ic_isReference(base) && (base->kind != DB_STORAGE_OBJECT))) {
+        		if (!collapse && (cx_ic_isReference(base) && (base->kind != DB_STORAGE_OBJECT))) {
         			result = TRUE;
 
         		/* If storage is dynamic, address must be temporarily stored in an accumulator
@@ -202,12 +202,12 @@ db_bool db_ic_storageMustAllocate(db_ic_vmProgram *program, db_ic_vmStorage *acc
         		} else if (accumulator->dynamic) {
         			result = TRUE;
         		} else {
-        		    db_uint32 referee;
+        		    cx_uint32 referee;
                     /* If base is dynamic or offset is 0 (meaning address is equal to base), collapse this accumulator into the base. */
                     for(referee=0; referee < accumulator->refereeCount; referee++) {
-                        *(db_uint16*)DB_OFFSET(accumulator->referees[referee], program->program->program) = accumulator->base->addr;
+                        *(cx_uint16*)DB_OFFSET(accumulator->referees[referee], program->program->program) = accumulator->base->addr;
                         if(!accumulator->base->dynamic) {
-                            *(db_uint16*)DB_OFFSET(accumulator->referees[referee], program->program->program) += accumulator->offset;
+                            *(cx_uint16*)DB_OFFSET(accumulator->referees[referee], program->program->program) += accumulator->offset;
                         }
                     }
                     /* No need to allocate this accumulator */
@@ -220,24 +220,24 @@ db_bool db_ic_storageMustAllocate(db_ic_vmProgram *program, db_ic_vmStorage *acc
 	return result;
 }
 
-static void db_ic_vmProgram_allocateAccumulators(db_ic_vmProgram *program) {
-    db_iter accumulatorIter;
-    db_ic_vmStorage *accumulator;
-    db_uint16 offset;
-    db_ic_registerClaim claims[256];
-    db_ic_registerClaim *claim;
-    db_uint32 i, referee;
-    db_bool overlap;
+static void cx_ic_vmProgram_allocateAccumulators(cx_ic_vmProgram *program) {
+    cx_iter accumulatorIter;
+    cx_ic_vmStorage *accumulator;
+    cx_uint16 offset;
+    cx_ic_registerClaim claims[256];
+    cx_ic_registerClaim *claim;
+    cx_uint32 i, referee;
+    cx_bool overlap;
 
     memset(claims, 0, sizeof(claims));
     offset = program->maxScopeSize;
 
     if (program->accumulators) {
-        accumulatorIter = db_llIter(program->accumulators);
-        while(db_iterHasNext(&accumulatorIter)) {
-            accumulator = db_iterNext(&accumulatorIter);
+        accumulatorIter = cx_llIter(program->accumulators);
+        while(cx_iterHasNext(&accumulatorIter)) {
+            accumulator = cx_iterNext(&accumulatorIter);
 
-            if (db_ic_storageMustAllocate(program, accumulator, NULL)) {
+            if (cx_ic_storageMustAllocate(program, accumulator, NULL)) {
             	/* Find lfree claim */
                 claim = claims;
                 while(claim->accumulator) {
@@ -254,9 +254,9 @@ static void db_ic_vmProgram_allocateAccumulators(db_ic_vmProgram *program) {
                 
                 /* If accumulator has to be allocated and it has a base, accumulator represents a member address */
                 if (accumulator->base) {
-                    claim->size = sizeof(db_word);
+                    claim->size = sizeof(cx_word);
                 } else {
-                    claim->size = db_type_sizeof(accumulator->accumulator->type);
+                    claim->size = cx_type_sizeof(accumulator->accumulator->type);
                 }
                 /* Find free register */
                 do {
@@ -287,24 +287,24 @@ static void db_ic_vmProgram_allocateAccumulators(db_ic_vmProgram *program) {
 
             	/* Walk referees */
                 for(referee=0; referee < accumulator->refereeCount; referee++) {
-                    *(db_uint16*)DB_OFFSET(accumulator->referees[referee], program->program->program) = claim->addr;
+                    *(cx_uint16*)DB_OFFSET(accumulator->referees[referee], program->program->program) = claim->addr;
                 }
                 accumulator->addr = claim->addr;
             }
         }
 
         /* Free resources */
-        accumulatorIter = db_llIter(program->accumulators);
-        while(db_iterHasNext(&accumulatorIter)) {
-            accumulator = db_iterNext(&accumulatorIter);
-            db_dealloc(accumulator);
+        accumulatorIter = cx_llIter(program->accumulators);
+        while(cx_iterHasNext(&accumulatorIter)) {
+            accumulator = cx_iterNext(&accumulatorIter);
+            cx_dealloc(accumulator);
         }
-        db_llFree(program->accumulators);
+        cx_llFree(program->accumulators);
         program->accumulators = NULL;
     }
 }
 
-void db_ic_vmProgram_clean(db_ic_vmProgram *vmProgram) {
+void cx_ic_vmProgram_clean(cx_ic_vmProgram *vmProgram) {
     /* Reset values */
     vmProgram->scope = 0;
     vmProgram->maxScopeSize = 0;
@@ -313,22 +313,22 @@ void db_ic_vmProgram_clean(db_ic_vmProgram *vmProgram) {
     vmProgram->program = NULL;
 }
 
-extern db_bool DB_DEBUG_ENABLED;
+extern cx_bool DB_DEBUG_ENABLED;
 
-void db_ic_vmProgram_finalize(db_ic_vmProgram *vmProgram) {
-    db_vmOp  *stop;
+void cx_ic_vmProgram_finalize(cx_ic_vmProgram *vmProgram) {
+    cx_vmOp  *stop;
 
     /* Add STOP instruction if this is the main-module */
     if (vmProgram->main == vmProgram->program) {
-        stop = db_vmProgram_addOp(vmProgram->program, 0);
+        stop = cx_vmProgram_addOp(vmProgram->program, 0);
         stop->op = DB_VM_STOP;
     }
 
     /* Fill in labels */
-    db_ic_vmProgram_fillInLabels(vmProgram);
+    cx_ic_vmProgram_fillInLabels(vmProgram);
 
     /* Allocate and fill in accumulators */
-    db_ic_vmProgram_allocateAccumulators(vmProgram);
+    cx_ic_vmProgram_allocateAccumulators(vmProgram);
 
     /* Set size of program */
     vmProgram->program->storage = vmProgram->maxScopeSize;
@@ -336,18 +336,18 @@ void db_ic_vmProgram_finalize(db_ic_vmProgram *vmProgram) {
 
     /* If program is a function, set the function-implementation to the program */
     if (vmProgram->function) {
-        db_function function = vmProgram->function->function;
-        function->impl = (db_word)db_call_vm;
-        function->implData = (db_word)vmProgram->program;
-        db_define(function);
+        cx_function function = vmProgram->function->function;
+        function->impl = (cx_word)cx_call_vm;
+        function->implData = (cx_word)vmProgram->program;
+        cx_define(function);
 
 #ifdef DB_IC_TRACING
         if (DB_DEBUG_ENABLED)
         {
-            db_id id;
-            db_string programStr = db_vmProgram_toString(vmProgram->program, NULL);
-            printf("%s %s\n%s\n", db_nameof(db_typeof(function)), db_fullname(function, id), programStr);
-            db_dealloc(programStr);
+            cx_id id;
+            cx_string programStr = cx_vmProgram_toString(vmProgram->program, NULL);
+            printf("%s %s\n%s\n", cx_nameof(cx_typeof(function)), cx_fullname(function, id), programStr);
+            cx_dealloc(programStr);
         }
 #endif
     }
@@ -355,21 +355,21 @@ void db_ic_vmProgram_finalize(db_ic_vmProgram *vmProgram) {
 #ifdef DB_IC_TRACING
     if (DB_DEBUG_ENABLED) {
         if (vmProgram->main == vmProgram->program) {
-            db_string programStr = db_vmProgram_toString(vmProgram->program, NULL);
+            cx_string programStr = cx_vmProgram_toString(vmProgram->program, NULL);
             printf("main\n%s\n", programStr);
-            db_dealloc(programStr);
+            cx_dealloc(programStr);
         }
     }
 #endif
 
     /* Clean resources */
-    db_ic_vmProgram_clean(vmProgram);
+    cx_ic_vmProgram_clean(vmProgram);
 }
 
-static db_ic_vmLabel *db_ic_vmLabelNew(db_uint32 id) {
-	db_ic_vmLabel *result;
+static cx_ic_vmLabel *cx_ic_vmLabelNew(cx_uint32 id) {
+	cx_ic_vmLabel *result;
 
-	result = db_malloc(sizeof(db_ic_vmLabel));
+	result = cx_malloc(sizeof(cx_ic_vmLabel));
 	result->id = id;
 	result->pc = 0;
 	result->refereeCount = 0;
@@ -377,14 +377,14 @@ static db_ic_vmLabel *db_ic_vmLabelNew(db_uint32 id) {
 	return result;
 }
 
-static db_ic_vmLabel *db_ic_vmLabelGet(db_ic_vmProgram *program, db_uint32 id) {
-	db_iter labelIter;
-	db_ic_vmLabel *label = NULL;
+static cx_ic_vmLabel *cx_ic_vmLabelGet(cx_ic_vmProgram *program, cx_uint32 id) {
+	cx_iter labelIter;
+	cx_ic_vmLabel *label = NULL;
 
 	if (program->labels) {
-		labelIter = db_llIter(program->labels);
-		while(db_iterHasNext(&labelIter)) {
-			label = db_iterNext(&labelIter);
+		labelIter = cx_llIter(program->labels);
+		while(cx_iterHasNext(&labelIter)) {
+			label = cx_iterNext(&labelIter);
 			if (label->id == id) {
 				break;
 			} else {
@@ -394,26 +394,26 @@ static db_ic_vmLabel *db_ic_vmLabelGet(db_ic_vmProgram *program, db_uint32 id) {
 	}
 
 	if (!label) {
-		label = db_ic_vmLabelNew(id);
+		label = cx_ic_vmLabelNew(id);
 		if (!program->labels) {
-			program->labels = db_llNew();
+			program->labels = cx_llNew();
 		}
-		db_llAppend(program->labels, label);
+		cx_llAppend(program->labels, label);
 	}
 
 	return label;
 }
 
-static void db_ic_vmLabelAddReferee(db_ic_vmProgram *program, db_ic_vmLabel *label, void *referee) {
+static void cx_ic_vmLabelAddReferee(cx_ic_vmProgram *program, cx_ic_vmLabel *label, void *referee) {
     label->referees[label->refereeCount] = DB_OFFSET(referee, -(intptr_t)program->program->program);;
-    db_assert(label->refereeCount < 256, "unsupported number of references to one label (max is 256)");
+    cx_assert(label->refereeCount < 256, "unsupported number of references to one label (max is 256)");
     label->refereeCount++;
 }
 
-static db_ic_vmStorage *db_ic_vmStorageNew(db_ic_vmProgram *program, db_icStorage accumulator, db_uint32 firstUsed) {
-    db_ic_vmStorage *result;
+static cx_ic_vmStorage *cx_ic_vmStorageNew(cx_ic_vmProgram *program, cx_icStorage accumulator, cx_uint32 firstUsed) {
+    cx_ic_vmStorage *result;
 
-    result = db_malloc(sizeof(db_ic_vmStorage));
+    result = cx_malloc(sizeof(cx_ic_vmStorage));
     result->accumulator = accumulator;
     result->refereeCount = 0;
     result->firstUsed = firstUsed;
@@ -424,11 +424,11 @@ static db_ic_vmStorage *db_ic_vmStorageNew(db_ic_vmProgram *program, db_icStorag
     result->assembled = TRUE;
 
     if (accumulator->kind == DB_STORAGE_MEMBER) {
-        db_icMember member = ((db_icMember)accumulator);
+        cx_icMember member = ((cx_icMember)accumulator);
     	result->assembled = FALSE;
 
     	if (member->base) {
-    		result->base = db_ic_vmStorageGet(program, member->base);
+    		result->base = cx_ic_vmStorageGet(program, member->base);
     		if (member->member) {
     		    result->offset = result->base->offset + member->member->offset;
     		}
@@ -438,17 +438,17 @@ static db_ic_vmStorage *db_ic_vmStorageNew(db_ic_vmProgram *program, db_icStorag
     		}
        	}
     } else if (accumulator->kind == DB_STORAGE_ELEMENT) {
-        db_icElement element = ((db_icElement)accumulator);
+        cx_icElement element = ((cx_icElement)accumulator);
         result->assembled = FALSE;
 
         if (element->base) {
-        	result->base = db_ic_vmStorageGet(program, element->base);
+        	result->base = cx_ic_vmStorageGet(program, element->base);
 
         	/* If element is an array and index-expression is a literal, offset is determined at compile-time. */
             if (element->index->_parent.kind == DB_IC_LITERAL) {
                 if (element->collectionType->kind == DB_ARRAY) {
-            		db_uint32 index = ((db_icLiteral)element->index)->value.is.literal.v._unsigned_integer;
-            		result->offset = index * db_type_sizeof(element->collectionType->elementType->real);
+            		cx_uint32 index = ((cx_icLiteral)element->index)->value.is.literal.v._unsigned_integer;
+            		result->offset = index * cx_type_sizeof(element->collectionType->elementType->real);
                     result->dynamic = FALSE;
             	} else {
             		result->dynamic = TRUE;
@@ -476,20 +476,20 @@ static db_ic_vmStorage *db_ic_vmStorageNew(db_ic_vmProgram *program, db_icStorag
     return result;
 }
 
-static void db_ic_vmStorageAddReferee(db_ic_vmProgram *program, db_ic_vmStorage *accumulator, void *referee) {
+static void cx_ic_vmStorageAddReferee(cx_ic_vmProgram *program, cx_ic_vmStorage *accumulator, void *referee) {
     accumulator->referees[accumulator->refereeCount] = DB_OFFSET(referee, -(intptr_t)program->program->program);
-    db_assert(accumulator->refereeCount < 256, "unsupported number of references to one accumulator (max is 256)");
+    cx_assert(accumulator->refereeCount < 256, "unsupported number of references to one accumulator (max is 256)");
     accumulator->refereeCount++;
 }
 
-static db_ic_vmStorage *db_ic_vmStorageGet(db_ic_vmProgram *program, db_icStorage icAccumulator) {
-    db_iter accumulatorIter;
-    db_ic_vmStorage *accumulator = NULL;
+static cx_ic_vmStorage *cx_ic_vmStorageGet(cx_ic_vmProgram *program, cx_icStorage icAccumulator) {
+    cx_iter accumulatorIter;
+    cx_ic_vmStorage *accumulator = NULL;
 
     if (program->accumulators) {
-        accumulatorIter = db_llIter(program->accumulators);
-        while(db_iterHasNext(&accumulatorIter)) {
-            accumulator = db_iterNext(&accumulatorIter);
+        accumulatorIter = cx_llIter(program->accumulators);
+        while(cx_iterHasNext(&accumulatorIter)) {
+            accumulator = cx_iterNext(&accumulatorIter);
             if (accumulator->accumulator == icAccumulator) {
                 break;
             } else {
@@ -500,13 +500,13 @@ static db_ic_vmStorage *db_ic_vmStorageGet(db_ic_vmProgram *program, db_icStorag
 
     if (!accumulator) {
     	if (!program->program) {
-    		program->program = db_vmProgram_new(program->icProgram->filename, program->function->function);
+    		program->program = cx_vmProgram_new(program->icProgram->filename, program->function->function);
     	}
-        accumulator = db_ic_vmStorageNew(program, icAccumulator, program->program->size);
+        accumulator = cx_ic_vmStorageNew(program, icAccumulator, program->program->size);
         if (!program->accumulators) {
-            program->accumulators = db_llNew();
+            program->accumulators = cx_llNew();
         }
-        db_llAppend(program->accumulators, accumulator);
+        cx_llAppend(program->accumulators, accumulator);
     }
 
     /* Keep track of where an accumulator is last used */
@@ -515,117 +515,117 @@ static db_ic_vmStorage *db_ic_vmStorageGet(db_ic_vmProgram *program, db_icStorag
     return accumulator;
 }
 
-db_type db_ic_valueType(db_icValue s) {
-	db_type t = NULL;
+cx_type cx_ic_valueType(cx_icValue s) {
+	cx_type t = NULL;
 
 	switch(s->_parent.kind) {
 	case DB_IC_LITERAL:
-		t = ((db_icLiteral)s)->type;
+		t = ((cx_icLiteral)s)->type;
 		break;
 	case DB_IC_STORAGE:
-		t = ((db_icStorage)s)->type;
+		t = ((cx_icStorage)s)->type;
 		break;
 	default:
-		db_assert(0, "invalid operand type");
+		cx_assert(0, "invalid operand type");
 		break;
 	}
 
 	return t;
 }
 
-db_void *db_ic_valueValue_width(db_ic_vmProgram *program, db_icValue s, void* truncated, int width) {
+cx_void *cx_ic_valueValue_width(cx_ic_vmProgram *program, cx_icValue s, void* truncated, int width) {
 	void *result = NULL;
 
 	switch(s->_parent.kind) {
 	case DB_IC_LITERAL: {
-	    db_value *v = &((db_icLiteral)s)->value;
+	    cx_value *v = &((cx_icLiteral)s)->value;
 	    switch(v->is.literal.kind) {
 	    case DB_LITERAL_BOOLEAN:
-	    	*(db_uint16*)truncated = *(db_bool*)db_valueValue(v);
+	    	*(cx_uint16*)truncated = *(cx_bool*)cx_valueValue(v);
 	    	result = truncated;
 	    	break;
 	    case DB_LITERAL_FLOATING_POINT:
-	        if (width == sizeof(db_float32)) {
+	        if (width == sizeof(cx_float32)) {
 	            if (truncated) {
-	                *(db_float32*)truncated = *(db_float64*)db_valueValue(v);
+	                *(cx_float32*)truncated = *(cx_float64*)cx_valueValue(v);
 	                result = truncated;
 	            } else {
-	                result = db_valueValue(v);
+	                result = cx_valueValue(v);
 	            }
 	        } else {
-	            result = db_valueValue(v);
+	            result = cx_valueValue(v);
 	        }
 	        break;
 	    case DB_LITERAL_NULL:
-	    	*(db_word*)truncated = 0;
+	    	*(cx_word*)truncated = 0;
 	    	result = truncated;
 	    	break;
 	    default:
-	        result = db_valueValue(v);
+	        result = cx_valueValue(v);
 	        break;
 	    }
 		break;
 	}
 	case DB_IC_STORAGE:
-		switch(((db_icStorage)s)->kind) {
+		switch(((cx_icStorage)s)->kind) {
 		case DB_STORAGE_OBJECT:
-			result = &((db_icObject)s)->ptr;
+			result = &((cx_icObject)s)->ptr;
 			break;
 		case DB_STORAGE_LOCAL:
-		    db_assert(0, "local cannot be interpreted as a value");
+		    cx_assert(0, "local cannot be interpreted as a value");
 			result = NULL;
 			break;
 		case DB_STORAGE_ACCUMULATOR:
-			result = &((db_icAccumulator)s)->accumulatorId;
+			result = &((cx_icAccumulator)s)->accumulatorId;
 			break;
 		case DB_STORAGE_MEMBER:
-		    if (((db_icMember)s)->base->kind == DB_STORAGE_OBJECT) {
-		    	db_ic_vmStorage *vmStorage = db_ic_vmStorageGet(program, (db_icStorage)s);
-		    	db_object obj = ((db_icObject)vmStorage->base->accumulator)->ptr;
-		        *(void**)truncated = DB_OFFSET(obj, ((db_icMember)s)->member->offset);
+		    if (((cx_icMember)s)->base->kind == DB_STORAGE_OBJECT) {
+		    	cx_ic_vmStorage *vmStorage = cx_ic_vmStorageGet(program, (cx_icStorage)s);
+		    	cx_object obj = ((cx_icObject)vmStorage->base->accumulator)->ptr;
+		        *(void**)truncated = DB_OFFSET(obj, ((cx_icMember)s)->member->offset);
 		        result = truncated;
 		    } else {
-		    	db_assert(0, "local/dynamic member '%s' cannot be interpreted as a value", ((db_icStorage)s)->name);
+		    	cx_assert(0, "local/dynamic member '%s' cannot be interpreted as a value", ((cx_icStorage)s)->name);
 		    }
 		    break;
 		case DB_STORAGE_ELEMENT:
-		    if (!((db_icElement)s)->dynamic) {
-		    	db_ic_vmStorage *vmStorage = db_ic_vmStorageGet(program, (db_icStorage)s);
-		    	db_object obj = ((db_icObject)vmStorage->base->accumulator)->ptr;
+		    if (!((cx_icElement)s)->dynamic) {
+		    	cx_ic_vmStorage *vmStorage = cx_ic_vmStorageGet(program, (cx_icStorage)s);
+		    	cx_object obj = ((cx_icObject)vmStorage->base->accumulator)->ptr;
 		        *(void**)truncated = DB_OFFSET(obj, vmStorage->offset);
 		        result = truncated;
 		    } else {
-		    	db_assert(0, "local/dynamic member '%s' cannot be interpreted as a value", ((db_icStorage)s)->name);
+		    	cx_assert(0, "local/dynamic member '%s' cannot be interpreted as a value", ((cx_icStorage)s)->name);
 		    }
 			break;
 		default:
-			db_assert(0, "invalid storage kind");
+			cx_assert(0, "invalid storage kind");
 			break;
 		}
 		break;
     case DB_IC_LABEL:
-        result = &((db_icLabel)s)->id;
+        result = &((cx_icLabel)s)->id;
         break;
 	default:
-		db_assert(0, "invalid operand type");
+		cx_assert(0, "invalid operand type");
 		break;
 	}
 
 	return result;
 }
 
-db_ic_vmType db_ic_getVmType(db_icValue s, db_icDerefMode deref) {
-	db_ic_vmType result = DB_IC_VMTYPE_B;
-	db_type t = db_ic_valueType(s);
+cx_ic_vmType cx_ic_getVmType(cx_icValue s, cx_icDerefMode deref) {
+	cx_ic_vmType result = DB_IC_VMTYPE_B;
+	cx_type t = cx_ic_valueType(s);
 
 	/* Determine VM type based on width of a type. If the value is
 	 * a storage and derefMode is value, the value is considered a
 	 * pointer and thus the type is W */
-	if ((((db_ic)s)->kind == DB_IC_STORAGE) && (deref == DB_IC_DEREF_ADDRESS)) {
+	if ((((cx_ic)s)->kind == DB_IC_STORAGE) && (deref == DB_IC_DEREF_ADDRESS)) {
 	    result = DB_IC_VMTYPE_W;
 	} else {
         if (t->kind == DB_PRIMITIVE) {
-            switch(db_primitive(t)->width) {
+            switch(cx_primitive(t)->width) {
             case DB_WIDTH_8:
                 result = DB_IC_VMTYPE_B;
                 break;
@@ -640,7 +640,7 @@ db_ic_vmType db_ic_getVmType(db_icValue s, db_icDerefMode deref) {
                 break;
             case DB_WIDTH_WORD:
                 /* Reserve usage of W for pointer/string types */
-                if (db_primitive(t)->kind == DB_TEXT) {
+                if (cx_primitive(t)->kind == DB_TEXT) {
                     result = DB_IC_VMTYPE_W;
                 } else {
                     if (sizeof(intptr_t) == 4) {
@@ -660,8 +660,8 @@ db_ic_vmType db_ic_getVmType(db_icValue s, db_icDerefMode deref) {
 	return result;
 }
 
-db_ic_vmOperand db_ic_getVmOperand(db_ic_vmProgram *program, db_icDerefMode deref, db_icValue s) {
-	db_ic_vmOperand result = DB_IC_VMOPERAND_V;
+cx_ic_vmOperand cx_ic_getVmOperand(cx_ic_vmProgram *program, cx_icDerefMode deref, cx_icValue s) {
+	cx_ic_vmOperand result = DB_IC_VMOPERAND_V;
 
 	switch(s->_parent.kind) {
 	case DB_IC_LABEL:
@@ -671,16 +671,16 @@ db_ic_vmOperand db_ic_getVmOperand(db_ic_vmProgram *program, db_icDerefMode dere
 		result = DB_IC_VMOPERAND_V;
 		break;
 	case DB_IC_STORAGE: {
-		db_ic_vmStorage *acc = db_ic_vmStorageGet(program, (db_icStorage)s);
-		db_icStorage base = acc->base ? acc->base->accumulator : NULL;
-		db_icStorageKind kind = ((db_icStorage)s)->kind;
-		db_bool isReference = base ? db_ic_isReference(base) : db_ic_isReference((db_icStorage)s);
-		db_bool isRefType = ((db_icStorage)s)->type->reference;
-		db_bool isPrimitiveType = ((db_icStorage)s)->type->kind == DB_PRIMITIVE;
-		db_bool isObject = kind == DB_STORAGE_OBJECT;
-		db_bool isStatic = !acc->dynamic && (!base || !acc->base->dynamic);
-		db_bool collapse = FALSE;
-		db_ic_storageMustAllocate(program, acc, &collapse);
+		cx_ic_vmStorage *acc = cx_ic_vmStorageGet(program, (cx_icStorage)s);
+		cx_icStorage base = acc->base ? acc->base->accumulator : NULL;
+		cx_icStorageKind kind = ((cx_icStorage)s)->kind;
+		cx_bool isReference = base ? cx_ic_isReference(base) : cx_ic_isReference((cx_icStorage)s);
+		cx_bool isRefType = ((cx_icStorage)s)->type->reference;
+		cx_bool isPrimitiveType = ((cx_icStorage)s)->type->kind == DB_PRIMITIVE;
+		cx_bool isObject = kind == DB_STORAGE_OBJECT;
+		cx_bool isStatic = !acc->dynamic && (!base || !acc->base->dynamic);
+		cx_bool collapse = FALSE;
+		cx_ic_storageMustAllocate(program, acc, &collapse);
 
 		if (!acc->dynamic && base && !acc->base->dynamic) {
 			isObject = base->kind == DB_STORAGE_OBJECT;
@@ -745,7 +745,7 @@ db_ic_vmOperand db_ic_getVmOperand(db_ic_vmProgram *program, db_icDerefMode dere
         					result = DB_IC_VMOPERAND_Q; /* When a primitive type is a reference, it must have been passed as a reference
         												 * parameter. Use Q to directly obtain the value of the reference. */
         				} else {
-        					if (!collapse && base && db_ic_isReference(base) && ((deref != DB_IC_DEREF_PUSH) || isRefType)) {
+        					if (!collapse && base && cx_ic_isReference(base) && ((deref != DB_IC_DEREF_PUSH) || isRefType)) {
         						result = DB_IC_VMOPERAND_Q;
         					} else {
         						result = DB_IC_VMOPERAND_R;
@@ -762,31 +762,31 @@ db_ic_vmOperand db_ic_getVmOperand(db_ic_vmProgram *program, db_icDerefMode dere
         break;
 	}
 	default:
-		db_assert(0, "invalid value-kind");
+		cx_assert(0, "invalid value-kind");
 		break;
 	}
 
 	return result;
 }
 
-static db_int16 db_icLabel_toVm(db_icLabel label, db_ic_vmProgram *program) {
-	db_ic_vmLabel *lbl;
+static cx_int16 cx_icLabel_toVm(cx_icLabel label, cx_ic_vmProgram *program) {
+	cx_ic_vmLabel *lbl;
 
-	lbl = db_ic_vmLabelGet(program, label->id);
+	lbl = cx_ic_vmLabelGet(program, label->id);
 	lbl->pc = program->program->size;
 
 	return 0;
 }
 
-db_void *db_ic_valueValue(db_ic_vmProgram *program, db_icValue s) {
-    return db_ic_valueValue_width(program, s, NULL, 0);
+cx_void *cx_ic_valueValue(cx_ic_vmProgram *program, cx_icValue s) {
+    return cx_ic_valueValue_width(program, s, NULL, 0);
 }
 
 /* Retrieve operand-addresses by using the operand-macros from the VM. Though the code is somewhat complex it negates the need
  * to duplicate all knowledge about which operands are used for every permutation of operand-kinds. */
 #define DB_IC_OPADDR_GET_V(op,type,caseval,code)\
 	case DB_IC_VMOPERAND_##caseval:\
-		result = (void*) ((db_word) op##_##type##code);\
+		result = (void*) ((cx_word) op##_##type##code);\
 		break;\
 
 #define DB_IC_OPADDR_GET_RP(op,type,caseval,code)\
@@ -799,9 +799,9 @@ db_void *db_ic_valueValue(db_ic_vmProgram *program, db_icValue s) {
 		reg = qreg;\
 		result = (void*) (& op##_##type##code);\
         {\
-            db_uint32 v = (db_uint32)(db_word)result;\
+            cx_uint32 v = (cx_uint32)(cx_word)result;\
     		reg = NULL;\
-    		switch((db_word)v) {\
+    		switch((cx_word)v) {\
     		case 0x1000000:\
     			result = (void*)1;\
     			break;\
@@ -809,8 +809,8 @@ db_void *db_ic_valueValue(db_ic_vmProgram *program, db_icValue s) {
     			result = (void*)2;\
     			break;\
             default:\
-                db_assert(0, "Q-operand kind (%u - %x) invalid for " #op "_" #type #code " (expected %x or %x)\n",\
-                    (db_word)result, (db_word)result, 0x1000000, 0x10000);\
+                cx_assert(0, "Q-operand kind (%u - %x) invalid for " #op "_" #type #code " (expected %x or %x)\n",\
+                    (cx_word)result, (cx_word)result, 0x1000000, 0x10000);\
                 break;\
     		}\
         }\
@@ -824,7 +824,7 @@ db_void *db_ic_valueValue(db_ic_vmProgram *program, db_icValue s) {
 	DB_IC_OPADDR_GET_##rp(op_,type,R,prefix##R)\
 	DB_IC_OPADDR_GET_##v(op_,type,V,prefix##V)\
 	default:\
-		db_assert(0,"operand-kind other than PQRV not valid");\
+		cx_assert(0,"operand-kind other than PQRV not valid");\
 		break;\
 	}\
 
@@ -837,7 +837,7 @@ db_void *db_ic_valueValue(db_ic_vmProgram *program, db_icValue s) {
 	DB_IC_OPADDR_GET_##v(op_,type,V,prefix##V)\
 	DB_IC_OPADDR_GET_##v(op_,type,L,prefix##L)\
 	default:\
-		db_assert(0,"invalid operand-kind");\
+		cx_assert(0,"invalid operand-kind");\
 		break;\
 	}\
 
@@ -846,7 +846,7 @@ db_void *db_ic_valueValue(db_ic_vmProgram *program, db_icValue s) {
 	switch(op##n##Kind) {\
 	DB_IC_OPADDR_GET_##v(op_,type,V,prefix##V)\
 	default:\
-		db_error("operand other than V not valid for operand " #n " of type " #type " (%d)", op##n##Kind);\
+		cx_error("operand other than V not valid for operand " #n " of type " #type " (%d)", op##n##Kind);\
 		break;\
 	}\
 /*
@@ -879,7 +879,7 @@ db_void *db_ic_valueValue(db_ic_vmProgram *program, db_icValue s) {
 		DB_IC_OPADDR_GET1_##func(op_,type,n2,prefix##V,V,V,V,op1func)\
 		break;\
 	default:\
-		db_assert(0,"invalid operand-kind");\
+		cx_assert(0,"invalid operand-kind");\
 		break;\
 	}
 
@@ -904,7 +904,7 @@ db_void *db_ic_valueValue(db_ic_vmProgram *program, db_icValue s) {
 		DB_IC_OPADDR_GET2##func(op,type,2,3,V,v)\
 		break;\*/\
 	default:\
-		db_assert(0,"operand-kind other than PQR not valid for first operand of 3-operand instruction");\
+		cx_assert(0,"operand-kind other than PQR not valid for first operand of 3-operand instruction");\
 		break;\
 	}\
 
@@ -930,11 +930,11 @@ db_void *db_ic_valueValue(db_ic_vmProgram *program, db_icValue s) {
 		switch(typeKind) {\
 		typeSwitch(macro)\
 		default:\
-			db_error("type %d not valid for macro " #macro"\n",typeKind);\
+			cx_error("type %d not valid for macro " #macro"\n",typeKind);\
 			break;\
 		}\
 \
-		switch((db_word)result) {\
+		switch((cx_word)result) {\
 		case 1: vmOpAddr = &op->ic.b._1; break;\
 		case 2: vmOpAddr = &op->ic.b._2; break;\
 		case 4: vmOpAddr = &op->ic.s; break;\
@@ -947,49 +947,49 @@ db_void *db_ic_valueValue(db_ic_vmProgram *program, db_icValue s) {
 		case 5: vmOpAddr = &op->lo.w; break;\
 		case 9: vmOpAddr = &op->hi.w; break;\
 		default:\
-			db_assert(0, "operand-macro " #macro " returned invalid value (%u) for operand " #vId " and type %d", (db_word)result, typeKind);\
+			cx_assert(0, "operand-macro " #macro " returned invalid value (%u) for operand " #vId " and type %d", (cx_word)result, typeKind);\
 			break;\
 		}\
 \
 		memset(vmOpAddr, 0, size);\
 		switch(op##vId##Kind) {\
 		case DB_IC_VMOPERAND_V:{\
-		    db_float32 truncated;\
-            memcpy(vmOpAddr, db_ic_valueValue_width(program, v##vId, &truncated, size), size);\
+		    cx_float32 truncated;\
+            memcpy(vmOpAddr, cx_ic_valueValue_width(program, v##vId, &truncated, size), size);\
 			break;\
 		}\
 		case DB_IC_VMOPERAND_P:\
 		    /* If storage is an object, copy address, otherwise calculate pointer + offset */\
-		    if (((db_icStorage)v##vId)->kind == DB_STORAGE_OBJECT) {\
-			    *(db_object*)vmOpAddr = *(db_object*)db_ic_valueValue(program, v##vId);\
+		    if (((cx_icStorage)v##vId)->kind == DB_STORAGE_OBJECT) {\
+			    *(cx_object*)vmOpAddr = *(cx_object*)cx_ic_valueValue(program, v##vId);\
 		    } else {\
-		        db_object ptr;\
-		        db_ic_vmStorage *acc;\
-		        /*db_assert(((db_icStorage)v##vId)->kind == DB_STORAGE_MEMBER, "P operand without storage being either an object or a member");*/\
-		        acc = db_ic_vmStorageGet(program, (db_icStorage)v##vId);\
-		        ptr = ((db_icObject)acc->base->accumulator)->ptr;\
-		        *(db_object*)vmOpAddr = DB_OFFSET(ptr, acc->offset);\
+		        cx_object ptr;\
+		        cx_ic_vmStorage *acc;\
+		        /*cx_assert(((cx_icStorage)v##vId)->kind == DB_STORAGE_MEMBER, "P operand without storage being either an object or a member");*/\
+		        acc = cx_ic_vmStorageGet(program, (cx_icStorage)v##vId);\
+		        ptr = ((cx_icObject)acc->base->accumulator)->ptr;\
+		        *(cx_object*)vmOpAddr = DB_OFFSET(ptr, acc->offset);\
 		    }\
 		    break;\
 		case DB_IC_VMOPERAND_Q:\
 		case DB_IC_VMOPERAND_R:\
 		case DB_IC_VMOPERAND_X:\
 			if (v##vId->_parent.kind == DB_IC_STORAGE) {\
-				if (((db_icStorage)v##vId)->kind == DB_STORAGE_LOCAL) {\
-					db_ic_vmStorage *local;\
-					local = db_ic_vmStorageGet(program, (db_icStorage)v##vId);\
-					*(db_uint16*)vmOpAddr = local->addr;\
-				} else if (((db_icStorage)v##vId)->kind == DB_STORAGE_ACCUMULATOR){\
-				    db_ic_vmStorage *accumulator;\
-				    accumulator = db_ic_vmStorageGet(program, (db_icStorage)v##vId);\
-				    db_ic_vmStorageAddReferee(program, accumulator, vmOpAddr);\
-				} else if ((((db_icStorage)v##vId)->kind == DB_STORAGE_MEMBER) || (((db_icStorage)v##vId)->kind == DB_STORAGE_ELEMENT)){\
-				    db_ic_vmStorage *accumulator;\
-				    accumulator = db_ic_vmStorageGet(program, (db_icStorage)v##vId);\
+				if (((cx_icStorage)v##vId)->kind == DB_STORAGE_LOCAL) {\
+					cx_ic_vmStorage *local;\
+					local = cx_ic_vmStorageGet(program, (cx_icStorage)v##vId);\
+					*(cx_uint16*)vmOpAddr = local->addr;\
+				} else if (((cx_icStorage)v##vId)->kind == DB_STORAGE_ACCUMULATOR){\
+				    cx_ic_vmStorage *accumulator;\
+				    accumulator = cx_ic_vmStorageGet(program, (cx_icStorage)v##vId);\
+				    cx_ic_vmStorageAddReferee(program, accumulator, vmOpAddr);\
+				} else if ((((cx_icStorage)v##vId)->kind == DB_STORAGE_MEMBER) || (((cx_icStorage)v##vId)->kind == DB_STORAGE_ELEMENT)){\
+				    cx_ic_vmStorage *accumulator;\
+				    accumulator = cx_ic_vmStorageGet(program, (cx_icStorage)v##vId);\
 				    switch(accumulator->base->accumulator->kind) {\
                     case DB_STORAGE_LOCAL:\
-                        if (!accumulator->dynamic && !db_ic_isReference(accumulator->base->accumulator)) {\
-                            *(db_uint16*)vmOpAddr = accumulator->base->addr + accumulator->offset;\
+                        if (!accumulator->dynamic && !cx_ic_isReference(accumulator->base->accumulator)) {\
+                            *(cx_uint16*)vmOpAddr = accumulator->base->addr + accumulator->offset;\
                             break;\
                         }\
                     /* If base is member or element it is a dynamic storage which requires allocation. */\
@@ -997,20 +997,20 @@ db_void *db_ic_valueValue(db_ic_vmProgram *program, db_icValue s) {
                     case DB_STORAGE_ELEMENT:\
                     case DB_STORAGE_ACCUMULATOR:\
                     default:\
-                        db_ic_vmStorageAddReferee(program, accumulator, vmOpAddr);\
+                        cx_ic_vmStorageAddReferee(program, accumulator, vmOpAddr);\
                         break;\
 				    }\
 				}\
 			}\
 			break;\
 		case DB_IC_VMOPERAND_L: {\
-		    db_ic_vmLabel *label;\
-		    label = db_ic_vmLabelGet(program, *(db_uint32*)db_ic_valueValue(program, v##vId));\
-		    db_ic_vmLabelAddReferee(program, label, vmOpAddr);\
+		    cx_ic_vmLabel *label;\
+		    label = cx_ic_vmLabelGet(program, *(cx_uint32*)cx_ic_valueValue(program, v##vId));\
+		    cx_ic_vmLabelAddReferee(program, label, vmOpAddr);\
 		    break;\
 		}\
 		default:\
-			db_assert(0, "invalid operand kind %d", op##vId##Kind);\
+			cx_assert(0, "invalid operand kind %d", op##vId##Kind);\
 			break;\
 		}\
 
@@ -1030,20 +1030,20 @@ typedef struct _vmParameter {
     uintptr_t w;
 }_vmParameter;
 
-db_uint32 db_ic_vmTypeKindSize(db_ic_vmType typeKind, db_ic_vmOperand operand) {
-    db_uint32 result = 0;
+cx_uint32 cx_ic_vmTypeKindSize(cx_ic_vmType typeKind, cx_ic_vmOperand operand) {
+    cx_uint32 result = 0;
     switch(typeKind) {
     case DB_IC_VMTYPE_B: result = 1; break;
     case DB_IC_VMTYPE_S: result = 2; break;
     case DB_IC_VMTYPE_L: result = 4; break;
-    case DB_IC_VMTYPE_W: result = sizeof(db_word); break;
+    case DB_IC_VMTYPE_W: result = sizeof(cx_word); break;
     case DB_IC_VMTYPE_D: result = 8; break;
     }
 
     switch(operand) {
-    case DB_IC_VMOPERAND_P: result = sizeof(db_word); break;
-    case DB_IC_VMOPERAND_R: result = sizeof(db_uint16); break;
-    case DB_IC_VMOPERAND_Q: result = sizeof(db_uint16); break;
+    case DB_IC_VMOPERAND_P: result = sizeof(cx_word); break;
+    case DB_IC_VMOPERAND_R: result = sizeof(cx_uint16); break;
+    case DB_IC_VMOPERAND_Q: result = sizeof(cx_uint16); break;
     default:
         break; 
     }
@@ -1051,17 +1051,17 @@ db_uint32 db_ic_vmTypeKindSize(db_ic_vmType typeKind, db_ic_vmOperand operand) {
     return result;
 }
 
-static void db_ic_vmSetOp1Addr(db_ic_vmProgram *program, db_vmOp *op, db_ic_vmType typeKind, db_ic_vmOperand op1Kind, db_icValue v1) {
-	db_uint32 qreg[] = {0,1};
+static void cx_ic_vmSetOp1Addr(cx_ic_vmProgram *program, cx_vmOp *op, cx_ic_vmType typeKind, cx_ic_vmOperand op1Kind, cx_icValue v1) {
+	cx_uint32 qreg[] = {0,1};
     struct {
         _vmParameter16 ic;
         _vmParameter lo;
-        db_uint64 dbl;
+        cx_uint64 dbl;
     } c;
-    db_uint32 *reg = NULL;
+    cx_uint32 *reg = NULL;
 	void *result = NULL;
 	void *vmOpAddr = NULL;
-	db_uint32 size = db_ic_vmTypeKindSize(typeKind, op1Kind);
+	cx_uint32 size = cx_ic_vmTypeKindSize(typeKind, op1Kind);
 
 	DB_UNUSED(op);
 	DB_UNUSED(typeKind);
@@ -1085,17 +1085,17 @@ static void db_ic_vmSetOp1Addr(db_ic_vmProgram *program, db_vmOp *op, db_ic_vmTy
 	DB_IC_ASSIGN_OPERAND(DB_IC_SWITCH_TYPE_ALL,DB_IC_OP1ADDR,1)
 }
 
-static void db_ic_vmSetOp2Addr(db_ic_vmProgram *program, db_vmOp *op, db_ic_vmType typeKind, db_ic_vmOperand op1Kind, db_ic_vmOperand op2Kind, db_icValue v1, db_icValue v2) {
-	db_uint32 qreg[] = {0,1};
+static void cx_ic_vmSetOp2Addr(cx_ic_vmProgram *program, cx_vmOp *op, cx_ic_vmType typeKind, cx_ic_vmOperand op1Kind, cx_ic_vmOperand op2Kind, cx_icValue v1, cx_icValue v2) {
+	cx_uint32 qreg[] = {0,1};
     struct {
         _vmParameter16 ic;
         _vmParameter lo, hi;
-        db_uint64 dbl;
+        cx_uint64 dbl;
     } c;
-    db_uint32 *reg = NULL;
+    cx_uint32 *reg = NULL;
 	void *result = NULL;
 	void *vmOpAddr = NULL;
-	db_uint32 size = db_ic_vmTypeKindSize(typeKind, op1Kind);
+	cx_uint32 size = cx_ic_vmTypeKindSize(typeKind, op1Kind);
 
 	/* Setup dummy environment for operand macros, give the operands unique masks so they can be identified
 	 * after executing the corresponding macro. */
@@ -1115,21 +1115,21 @@ static void db_ic_vmSetOp2Addr(db_ic_vmProgram *program, db_vmOp *op, db_ic_vmTy
 
 	DB_IC_ASSIGN_OPERAND(DB_IC_SWITCH_TYPE_ALL,DB_IC_OP2ADDR1,1)
 
-    size = db_ic_vmTypeKindSize(typeKind, op2Kind);
+    size = cx_ic_vmTypeKindSize(typeKind, op2Kind);
 	DB_IC_ASSIGN_OPERAND(DB_IC_SWITCH_TYPE_ALL,DB_IC_OP2ADDR2,2)
 }
 
-static void db_ic_vmSetOp3Addr(db_ic_vmProgram *program, db_vmOp *op, db_ic_vmType typeKind, db_ic_vmOperand op1Kind, db_ic_vmOperand op2Kind, db_ic_vmOperand op3Kind, db_icValue v1, db_icValue v2, db_icValue v3) {
-	db_word qreg[] = {0,1};
+static void cx_ic_vmSetOp3Addr(cx_ic_vmProgram *program, cx_vmOp *op, cx_ic_vmType typeKind, cx_ic_vmOperand op1Kind, cx_ic_vmOperand op2Kind, cx_ic_vmOperand op3Kind, cx_icValue v1, cx_icValue v2, cx_icValue v3) {
+	cx_word qreg[] = {0,1};
 	struct {
         _vmParameter16 ic;
         _vmParameter lo;
         _vmParameter hi;
     } c;
-    db_word *reg = NULL;
+    cx_word *reg = NULL;
 	void *result = NULL;
 	void *vmOpAddr = NULL;
-	db_uint32 size = db_ic_vmTypeKindSize(typeKind, op1Kind);
+	cx_uint32 size = cx_ic_vmTypeKindSize(typeKind, op1Kind);
 
 	/* Setup dummy environment for operand macros, give the operands unique masks so they can be identified
 	 * after executing the corresponding macro. */
@@ -1148,31 +1148,31 @@ static void db_ic_vmSetOp3Addr(db_ic_vmProgram *program, db_vmOp *op, db_ic_vmTy
 
 	DB_IC_ASSIGN_OPERAND(DB_IC_SWITCH_TYPE_W,DB_IC_OP3ADDR1,1)
 
-    size = db_ic_vmTypeKindSize(typeKind, op2Kind);
+    size = cx_ic_vmTypeKindSize(typeKind, op2Kind);
 	DB_IC_ASSIGN_OPERAND(DB_IC_SWITCH_TYPE_W,DB_IC_OP3ADDR2,2)
 
-    size = db_ic_vmTypeKindSize(typeKind, op3Kind);
+    size = cx_ic_vmTypeKindSize(typeKind, op3Kind);
 	DB_IC_ASSIGN_OPERAND(DB_IC_SWITCH_TYPE_W,DB_IC_OP3ADDR3,3)
 }
 
-static db_ic_vmInlineFunction *db_ic_vmInlineFunctionNew(db_vmProgram program, db_function function) {
-    db_ic_vmInlineFunction *result;
+static cx_ic_vmInlineFunction *cx_ic_vmInlineFunctionNew(cx_vmProgram program, cx_function function) {
+    cx_ic_vmInlineFunction *result;
 
-    result = db_malloc(sizeof(db_ic_vmInlineFunction));
+    result = cx_malloc(sizeof(cx_ic_vmInlineFunction));
     result->program = program;
     result->function = function;
 
     return result;
 }
 
-static void db_ic_vmInlineFunctionMark(db_ic_vmProgram *program, db_vmProgram vmProgram, db_function function) {
-    db_iter inlineFunctionIter;
-    db_ic_vmInlineFunction *inlineFunction = NULL;
+static void cx_ic_vmInlineFunctionMark(cx_ic_vmProgram *program, cx_vmProgram vmProgram, cx_function function) {
+    cx_iter inlineFunctionIter;
+    cx_ic_vmInlineFunction *inlineFunction = NULL;
 
     if (program->labels) {
-        inlineFunctionIter = db_llIter(program->labels);
-        while(db_iterHasNext(&inlineFunctionIter)) {
-            inlineFunction = db_iterNext(&inlineFunctionIter);
+        inlineFunctionIter = cx_llIter(program->labels);
+        while(cx_iterHasNext(&inlineFunctionIter)) {
+            inlineFunction = cx_iterNext(&inlineFunctionIter);
             if (inlineFunction->program == vmProgram) {
                 if (inlineFunction->function == function) {
                     break;
@@ -1184,11 +1184,11 @@ static void db_ic_vmInlineFunctionMark(db_ic_vmProgram *program, db_vmProgram vm
     }
 
     if (!inlineFunction) {
-        inlineFunction = db_ic_vmInlineFunctionNew(vmProgram, function);
+        inlineFunction = cx_ic_vmInlineFunctionNew(vmProgram, function);
         if (!program->inlineFunctions) {
-            program->inlineFunctions = db_llNew();
+            program->inlineFunctions = cx_llNew();
         }
-        db_llAppend(program->inlineFunctions, inlineFunction);
+        cx_llAppend(program->inlineFunctions, inlineFunction);
     }
 }
 
@@ -1205,7 +1205,7 @@ static void db_ic_vmInlineFunctionMark(db_ic_vmProgram *program, db_vmProgram vm
 			DB_IC_OPERAND(op,type##lvalue##P,P)\
 			DB_IC_OPERAND(op,type##lvalue##Q,Q)\
 			default:\
-				db_assert(0, "operand %s not valid for lvalue of " #op " operation of type " #type, db_ic_vmOperandStr(op2));\
+				cx_assert(0, "operand %s not valid for lvalue of " #op " operation of type " #type, cx_ic_vmOperandStr(op2));\
 				break;\
 		}\
 		break;\
@@ -1217,18 +1217,18 @@ static void db_ic_vmInlineFunctionMark(db_ic_vmProgram *program, db_vmProgram vm
             DB_IC_OPERAND(op,type##lvalue##P,P)\
             DB_IC_OPERAND(op,type##lvalue##Q,Q)\
             default:\
-                db_assert(0, "operand %s not valid for lvalue of " #op " operation of type " #type, db_ic_vmOperandStr(op2));\
+                cx_assert(0, "operand %s not valid for lvalue of " #op " operation of type " #type, cx_ic_vmOperandStr(op2));\
                 break;\
         }\
         break;\
 
 #define DB_IC_OP1_LVALUE_ANY(op, type, lvalue)\
 		case DB_IC_VMOPERAND_##lvalue:\
-			if (db_primitive(t)->kind == DB_UINTEGER) {\
+			if (cx_primitive(t)->kind == DB_UINTEGER) {\
 				result = DB_VM_##op##_##type##lvalue##U;\
-			} else if (db_primitive(t)->kind == DB_INTEGER) {\
+			} else if (cx_primitive(t)->kind == DB_INTEGER) {\
 				result = DB_VM_##op##_##type##lvalue##I;\
-			} else if (db_primitive(t)->kind == DB_FLOAT) {\
+			} else if (cx_primitive(t)->kind == DB_FLOAT) {\
 				result = DB_VM_##op##_##type##lvalue##F;\
 			}\
 			break;\
@@ -1240,7 +1240,7 @@ case DB_IC_VMTYPE_##type:\
 		DB_IC_OP2_##postfix(op,type,P)\
 		DB_IC_OP2_##postfix(op,type,Q)\
 		default:\
-			db_assert(0, "operand %s not valid for lvalue of " #op " operation of type " #type, db_ic_vmOperandStr(op1));\
+			cx_assert(0, "operand %s not valid for lvalue of " #op " operation of type " #type, cx_ic_vmOperandStr(op1));\
 			break;\
 	}\
 	break;\
@@ -1253,7 +1253,7 @@ case DB_IC_VMTYPE_##type:\
 		DB_IC_OP2_##postfix(op,type,Q)\
 		DB_IC_OP2_##postfix(op,type,V)\
 		default:\
-			db_assert(0, "operand %s not valid for lvalue of " #op " operation of type " #type, db_ic_vmOperandStr(op1));\
+			cx_assert(0, "operand %s not valid for lvalue of " #op " operation of type " #type, cx_ic_vmOperandStr(op1));\
 			break;\
 	}\
 	break;\
@@ -1263,7 +1263,7 @@ case DB_IC_VMTYPE_##type:\
 	switch(op1) {\
 		DB_IC_OP2_##postfix(op,type, R)\
 		default:\
-			db_assert(0, "operand %s not valid for lvalue of " #op " operation of type " #type, db_ic_vmOperandStr(op1));\
+			cx_assert(0, "operand %s not valid for lvalue of " #op " operation of type " #type, cx_ic_vmOperandStr(op1));\
 			break;\
 	}\
 	break;\
@@ -1276,7 +1276,7 @@ case DB_IC_VMTYPE_##type:\
 		DB_IC_OPERAND(op,type##P,P)\
 		DB_IC_OPERAND(op,type##Q,Q)\
 		default:\
-			db_assert(0, "operand %s not valid for lvalue of " #op " operation of type " #type, db_ic_vmOperandStr(op1));\
+			cx_assert(0, "operand %s not valid for lvalue of " #op " operation of type " #type, cx_ic_vmOperandStr(op1));\
 			break;\
 	}\
 	break;\
@@ -1289,7 +1289,7 @@ case DB_IC_VMTYPE_##type:\
         DB_IC_OPERAND(op,type##P,P)\
         DB_IC_OPERAND(op,type##Q,Q)\
         default:\
-            db_assert(0, "operand %s not valid for lvalue of " #op " operation of type " #type, db_ic_vmOperandStr(op1));\
+            cx_assert(0, "operand %s not valid for lvalue of " #op " operation of type " #type, cx_ic_vmOperandStr(op1));\
             break;\
     }\
     break;\
@@ -1301,14 +1301,14 @@ case DB_IC_VMTYPE_##type:\
 		DB_IC_OPERAND(op,type##P,P)\
 		DB_IC_OPERAND(op,type##Q,Q)\
 		default:\
-			db_assert(0, "operand %s not valid for lvalue of " #op " operation of type " #type, db_ic_vmOperandStr(op1));\
+			cx_assert(0, "operand %s not valid for lvalue of " #op " operation of type " #type, cx_ic_vmOperandStr(op1));\
 			break;\
 	}\
 	break;\
 
 #define DB_IC_GETOP1(op,postfix)\
-static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1) {\
-	db_vmOpKind result = DB_VM_STOP;\
+static cx_vmOpKind cx_ic_getVm##op(cx_ic_vmType type, cx_ic_vmOperand op1) {\
+	cx_vmOpKind result = DB_VM_STOP;\
 	\
 	switch(type) {\
 		DB_IC_OP1_##postfix(op,B)\
@@ -1316,7 +1316,7 @@ static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1) {\
 		DB_IC_OP1_##postfix(op,L)\
 		DB_IC_OP1_##postfix(op,D)\
     default:\
-        db_assert(0, "Type (%d) not applicable for " #op, type);\
+        cx_assert(0, "Type (%d) not applicable for " #op, type);\
         break;\
 	}\
 	\
@@ -1324,13 +1324,13 @@ static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1) {\
 }\
 
 #define DB_IC_GETOP1_L(op,postfix)\
-static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1) {\
-    db_vmOpKind result = DB_VM_STOP;\
+static cx_vmOpKind cx_ic_getVm##op(cx_ic_vmType type, cx_ic_vmOperand op1) {\
+    cx_vmOpKind result = DB_VM_STOP;\
     \
     switch(type) {\
         DB_IC_OP1_##postfix(op,L)\
         default:\
-            db_assert(0, "Type other than L not valid for " #op);\
+            cx_assert(0, "Type other than L not valid for " #op);\
             break;\
     }\
     \
@@ -1338,13 +1338,13 @@ static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1) {\
 }\
 
 #define DB_IC_GETOP1_W(op,postfix)\
-static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1) {\
-    db_vmOpKind result = DB_VM_STOP;\
+static cx_vmOpKind cx_ic_getVm##op(cx_ic_vmType type, cx_ic_vmOperand op1) {\
+    cx_vmOpKind result = DB_VM_STOP;\
     \
     switch(type) {\
         DB_IC_OP1_##postfix(op,W)\
         default:\
-            db_assert(0, "Type other than W not valid for " #op);\
+            cx_assert(0, "Type other than W not valid for " #op);\
             break;\
     }\
     \
@@ -1352,13 +1352,13 @@ static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1) {\
 }\
 
 #define DB_IC_GETOP1_B(op,postfix)\
-static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1) {\
-    db_vmOpKind result = DB_VM_STOP;\
+static cx_vmOpKind cx_ic_getVm##op(cx_ic_vmType type, cx_ic_vmOperand op1) {\
+    cx_vmOpKind result = DB_VM_STOP;\
     \
     switch(type) {\
         DB_IC_OP1_##postfix(op,B)\
         default:\
-            db_assert(0, "Type other than B not valid for " #op);\
+            cx_assert(0, "Type other than B not valid for " #op);\
             break;\
     }\
     \
@@ -1371,24 +1371,24 @@ static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1) {\
 	DB_IC_GETOP1_B(op##L,postfix)\
 	DB_IC_GETOP1_B(op##D,postfix)\
 \
-static db_vmOpKind db_ic_getVm##op(db_type t, db_ic_vmType op1Type, db_ic_vmOperand op1) {\
-	db_vmOpKind result = DB_VM_STOP;\
+static cx_vmOpKind cx_ic_getVm##op(cx_type t, cx_ic_vmType op1Type, cx_ic_vmOperand op1) {\
+	cx_vmOpKind result = DB_VM_STOP;\
 	DB_UNUSED(t);\
 	switch(op1Type) {\
 	case DB_IC_VMTYPE_B:\
-		result = db_ic_getVm##op##B(DB_IC_VMTYPE_B, op1);\
+		result = cx_ic_getVm##op##B(DB_IC_VMTYPE_B, op1);\
 		break;\
 	case DB_IC_VMTYPE_S:\
-		result = db_ic_getVm##op##S(DB_IC_VMTYPE_B, op1);\
+		result = cx_ic_getVm##op##S(DB_IC_VMTYPE_B, op1);\
 		break;\
 	case DB_IC_VMTYPE_L:\
-		result = db_ic_getVm##op##L(DB_IC_VMTYPE_B, op1);\
+		result = cx_ic_getVm##op##L(DB_IC_VMTYPE_B, op1);\
 		break;\
 	case DB_IC_VMTYPE_D:\
-		result = db_ic_getVm##op##D(DB_IC_VMTYPE_B, op1);\
+		result = cx_ic_getVm##op##D(DB_IC_VMTYPE_B, op1);\
 		break;\
     default:\
-        db_assert(0, "Type (%d) not applicable for " #op, op1Type);\
+        cx_assert(0, "Type (%d) not applicable for " #op, op1Type);\
         break;\
 	}\
 	return result;\
@@ -1398,18 +1398,18 @@ static db_vmOpKind db_ic_getVm##op(db_type t, db_ic_vmType op1Type, db_ic_vmOper
 	DB_IC_GETOP1_B(op##L,postfix)\
 	DB_IC_GETOP1_B(op##D,postfix)\
 \
-static db_vmOpKind db_ic_getVm##op(db_type t, db_ic_vmType op1Type, db_ic_vmOperand op1) {\
-	db_vmOpKind result = DB_VM_STOP;\
+static cx_vmOpKind cx_ic_getVm##op(cx_type t, cx_ic_vmType op1Type, cx_ic_vmOperand op1) {\
+	cx_vmOpKind result = DB_VM_STOP;\
 	DB_UNUSED(t);\
 	switch(op1Type) {\
 	case DB_IC_VMTYPE_L:\
-		result = db_ic_getVm##op##L(DB_IC_VMTYPE_B, op1);\
+		result = cx_ic_getVm##op##L(DB_IC_VMTYPE_B, op1);\
 		break;\
 	case DB_IC_VMTYPE_D:\
-		result = db_ic_getVm##op##D(DB_IC_VMTYPE_B, op1);\
+		result = cx_ic_getVm##op##D(DB_IC_VMTYPE_B, op1);\
 		break;\
 	default:\
-		db_assert(0,"byte or short operands not valid for " #op);\
+		cx_assert(0,"byte or short operands not valid for " #op);\
 		break;\
 	}\
 	return result;\
@@ -1419,35 +1419,35 @@ static db_vmOpKind db_ic_getVm##op(db_type t, db_ic_vmType op1Type, db_ic_vmOper
 	DB_IC_GETOP1_COND(op##I,postfix)\
 	DB_IC_GETOP1_COND(op##U,postfix)\
 	DB_IC_GETOP1_COND_LD(op##F,postfix)\
-static db_vmOpKind db_ic_getVm##op(db_type t, db_ic_vmType op1Type, db_ic_vmOperand op1) {\
-	db_vmOpKind result = DB_VM_STOP;\
+static cx_vmOpKind cx_ic_getVm##op(cx_type t, cx_ic_vmType op1Type, cx_ic_vmOperand op1) {\
+	cx_vmOpKind result = DB_VM_STOP;\
 	if (t->kind == DB_PRIMITIVE) {\
-		switch(db_primitive(t)->kind) {\
+		switch(cx_primitive(t)->kind) {\
 		case DB_ENUM:\
 		case DB_INTEGER:\
-			result = db_ic_getVm##op##I(t, op1Type, op1);\
+			result = cx_ic_getVm##op##I(t, op1Type, op1);\
 			break;\
 		case DB_BINARY:\
 		case DB_CHARACTER:\
 		case DB_UINTEGER:\
-			result = db_ic_getVm##op##U(t, op1Type, op1);\
+			result = cx_ic_getVm##op##U(t, op1Type, op1);\
 			break;\
 		case DB_FLOAT:\
-			result = db_ic_getVm##op##F(t, op1Type, op1);\
+			result = cx_ic_getVm##op##F(t, op1Type, op1);\
 			break;\
 		default:\
-			db_assert(0, "conditional operation " #op " works only for INTEGER, UINTEGER and FLOAT primitives (got %s)", db_nameof(t));\
+			cx_assert(0, "conditional operation " #op " works only for INTEGER, UINTEGER and FLOAT primitives (got %s)", cx_nameof(t));\
 			break;\
 		}\
 	} else {\
-		db_assert(0, "conditional operation " #op " works only for primitive types");\
+		cx_assert(0, "conditional operation " #op " works only for primitive types");\
 	}\
 	return result;\
 }\
 
 #define DB_IC_GETOP2(op,lpostfix,rpostfix)\
-static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1, db_ic_vmOperand op2) {\
-	db_vmOpKind result = DB_VM_STOP;\
+static cx_vmOpKind cx_ic_getVm##op(cx_ic_vmType type, cx_ic_vmOperand op1, cx_ic_vmOperand op2) {\
+	cx_vmOpKind result = DB_VM_STOP;\
 	\
 	switch(type) {\
 		DB_IC_OP2_##lpostfix(op,B,rpostfix)\
@@ -1455,7 +1455,7 @@ static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1, db_ic
 		DB_IC_OP2_##lpostfix(op,L,rpostfix)\
 		DB_IC_OP2_##lpostfix(op,D,rpostfix)\
         default:\
-            db_assert(0, "Type (%d) not valid for " #op, type);\
+            cx_assert(0, "Type (%d) not valid for " #op, type);\
             break;\
 	}\
 	\
@@ -1463,8 +1463,8 @@ static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1, db_ic
 }\
 
 #define DB_IC_GETOP2_V(op,lpostfix,rpostfix)\
-static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1, db_ic_vmOperand op2) {\
-	db_vmOpKind result = DB_VM_STOP;\
+static cx_vmOpKind cx_ic_getVm##op(cx_ic_vmType type, cx_ic_vmOperand op1, cx_ic_vmOperand op2) {\
+	cx_vmOpKind result = DB_VM_STOP;\
 	\
 	switch(type) {\
 		DB_IC_OP2V_##lpostfix(op,B,rpostfix)\
@@ -1472,7 +1472,7 @@ static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1, db_ic
 		DB_IC_OP2V_##lpostfix(op,L,rpostfix)\
 		DB_IC_OP2V_##lpostfix(op,D,rpostfix)\
         default:\
-            db_assert(0, "Type (%d) not valid for " #op, type);\
+            cx_assert(0, "Type (%d) not valid for " #op, type);\
             break;\
 	}\
 	\
@@ -1480,13 +1480,13 @@ static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1, db_ic
 }\
 
 #define DB_IC_GETOP2_TYPE(op, lpostfix, rpostfix, type)\
-    static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1, db_ic_vmOperand op2) {\
-        db_vmOpKind result = DB_VM_STOP;\
+    static cx_vmOpKind cx_ic_getVm##op(cx_ic_vmType type, cx_ic_vmOperand op1, cx_ic_vmOperand op2) {\
+        cx_vmOpKind result = DB_VM_STOP;\
         \
         switch(type) {\
             DB_IC_OP2_##lpostfix(op,type,rpostfix)\
             default:\
-                db_assert(0, "Type other than " #type " (%d) not valid for " #op, type);\
+                cx_assert(0, "Type other than " #type " (%d) not valid for " #op, type);\
                 break;\
         }\
         \
@@ -1498,13 +1498,13 @@ static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1, db_ic
 #define DB_IC_GETOP2_D(op,lpostfix,rpostfix) DB_IC_GETOP2_TYPE(op, lpostfix, rpostfix, D)
 
 #define DB_IC_GETOP2V_W(op,lpostfix,rpostfix)\
-static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1, db_ic_vmOperand op2) {\
-	db_vmOpKind result = DB_VM_STOP;\
+static cx_vmOpKind cx_ic_getVm##op(cx_ic_vmType type, cx_ic_vmOperand op1, cx_ic_vmOperand op2) {\
+	cx_vmOpKind result = DB_VM_STOP;\
 	\
 	switch(type) {\
 		DB_IC_OP2V_##lpostfix(op,W,rpostfix)\
 		default:\
-            db_assert(0, "Type other than W (%d) not valid for " #op, type);\
+            cx_assert(0, "Type other than W (%d) not valid for " #op, type);\
             break;\
 	}\
 	\
@@ -1512,14 +1512,14 @@ static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1, db_ic
 }\
 
 #define DB_IC_GETOP2_LD(op,lpostfix,rpostfix)\
-static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1, db_ic_vmOperand op2) {\
-    db_vmOpKind result = DB_VM_STOP;\
+static cx_vmOpKind cx_ic_getVm##op(cx_ic_vmType type, cx_ic_vmOperand op1, cx_ic_vmOperand op2) {\
+    cx_vmOpKind result = DB_VM_STOP;\
     \
     switch(type) {\
         DB_IC_OP2_##lpostfix(op,L,rpostfix)\
         DB_IC_OP2_##lpostfix(op,D,rpostfix)\
         default:\
-            db_assert(0, "type not applicable for floating point operation " # op);\
+            cx_assert(0, "type not applicable for floating point operation " # op);\
             break;\
     }\
     \
@@ -1527,15 +1527,15 @@ static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1, db_ic
 }\
 
 #define DB_IC_GETOP2_SLD(op,lpostfix,rpostfix)\
-static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1, db_ic_vmOperand op2) {\
-    db_vmOpKind result = DB_VM_STOP;\
+static cx_vmOpKind cx_ic_getVm##op(cx_ic_vmType type, cx_ic_vmOperand op1, cx_ic_vmOperand op2) {\
+    cx_vmOpKind result = DB_VM_STOP;\
     \
     switch(type) {\
         DB_IC_OP2_##lpostfix(op,S,rpostfix)\
         DB_IC_OP2_##lpostfix(op,L,rpostfix)\
         DB_IC_OP2_##lpostfix(op,D,rpostfix)\
         default:\
-            db_assert(0, "B not applicable for instruction " # op);\
+            cx_assert(0, "B not applicable for instruction " # op);\
             break;\
     }\
     \
@@ -1543,15 +1543,15 @@ static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1, db_ic
 }\
 
 #define DB_IC_GETOP2_BLD(op,lpostfix,rpostfix)\
-static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1, db_ic_vmOperand op2) {\
-    db_vmOpKind result = DB_VM_STOP;\
+static cx_vmOpKind cx_ic_getVm##op(cx_ic_vmType type, cx_ic_vmOperand op1, cx_ic_vmOperand op2) {\
+    cx_vmOpKind result = DB_VM_STOP;\
     \
     switch(type) {\
         DB_IC_OP2_##lpostfix(op,B,rpostfix)\
         DB_IC_OP2_##lpostfix(op,L,rpostfix)\
         DB_IC_OP2_##lpostfix(op,D,rpostfix)\
         default:\
-            db_assert(0, "S not applicable for instruction " # op);\
+            cx_assert(0, "S not applicable for instruction " # op);\
             break;\
     }\
     \
@@ -1559,15 +1559,15 @@ static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1, db_ic
 }\
 
 #define DB_IC_GETOP2_BSD(op,lpostfix,rpostfix)\
-static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1, db_ic_vmOperand op2) {\
-    db_vmOpKind result = DB_VM_STOP;\
+static cx_vmOpKind cx_ic_getVm##op(cx_ic_vmType type, cx_ic_vmOperand op1, cx_ic_vmOperand op2) {\
+    cx_vmOpKind result = DB_VM_STOP;\
     \
     switch(type) {\
         DB_IC_OP2_##lpostfix(op,B,rpostfix)\
         DB_IC_OP2_##lpostfix(op,S,rpostfix)\
         DB_IC_OP2_##lpostfix(op,D,rpostfix)\
         default:\
-            db_assert(0, "L not applicable for instruction " # op);\
+            cx_assert(0, "L not applicable for instruction " # op);\
             break;\
     }\
     \
@@ -1575,15 +1575,15 @@ static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1, db_ic
 }\
 
 #define DB_IC_GETOP2_BSL(op,lpostfix,rpostfix)\
-static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1, db_ic_vmOperand op2) {\
-    db_vmOpKind result = DB_VM_STOP;\
+static cx_vmOpKind cx_ic_getVm##op(cx_ic_vmType type, cx_ic_vmOperand op1, cx_ic_vmOperand op2) {\
+    cx_vmOpKind result = DB_VM_STOP;\
     \
     switch(type) {\
         DB_IC_OP2_##lpostfix(op,B,rpostfix)\
         DB_IC_OP2_##lpostfix(op,S,rpostfix)\
         DB_IC_OP2_##lpostfix(op,L,rpostfix)\
         default:\
-            db_assert(0, "D not applicable for instruction " # op);\
+            cx_assert(0, "D not applicable for instruction " # op);\
             break;\
     }\
     \
@@ -1591,12 +1591,12 @@ static db_vmOpKind db_ic_getVm##op(db_ic_vmType type, db_ic_vmOperand op1, db_ic
 }\
 
 #define DB_IC_GETOP1_ANY(op)\
-static db_vmOpKind db_ic_getVm##op(db_type t, db_ic_vmType type, db_ic_vmOperand op1) {\
-	db_vmOpKind result = DB_VM_STOP;\
+static cx_vmOpKind cx_ic_getVm##op(cx_type t, cx_ic_vmType type, cx_ic_vmOperand op1) {\
+	cx_vmOpKind result = DB_VM_STOP;\
 	\
     if (op1 == DB_IC_VMOPERAND_V) {\
         if (t->kind == DB_PRIMITIVE) {\
-            if (db_primitive(t)->width == DB_WIDTH_64) {\
+            if (cx_primitive(t)->width == DB_WIDTH_64) {\
                 type = DB_IC_VMTYPE_D;\
             } else {\
                 type = DB_IC_VMTYPE_L;\
@@ -1607,7 +1607,7 @@ static db_vmOpKind db_ic_getVm##op(db_type t, db_ic_vmType type, db_ic_vmOperand
 		DB_IC_OP1_PQRV(op,L)\
 		DB_IC_OP1_ANY(op,D)\
         default:\
-            db_assert(0, "B or S not applicable for instruction " #op);\
+            cx_assert(0, "B or S not applicable for instruction " #op);\
             break;\
 	}\
 	\
@@ -1618,27 +1618,27 @@ static db_vmOpKind db_ic_getVm##op(db_type t, db_ic_vmType type, db_ic_vmOperand
 #define DB_IC_GETOP2_ARITH(op,lpostfix,rpostfix)\
 DB_IC_GETOP2(op##I,lpostfix,rpostfix)\
 DB_IC_GETOP2_LD(op##F,lpostfix,rpostfix)\
-static db_vmOpKind db_ic_getVm##op(db_type t, db_ic_vmType typeKind, db_ic_vmOperand op1, db_ic_vmOperand op2) {\
-	db_vmOpKind result = DB_VM_STOP;\
+static cx_vmOpKind cx_ic_getVm##op(cx_type t, cx_ic_vmType typeKind, cx_ic_vmOperand op1, cx_ic_vmOperand op2) {\
+	cx_vmOpKind result = DB_VM_STOP;\
 	\
 	if (t->kind == DB_PRIMITIVE) {\
-		switch(db_primitive(t)->kind) {\
+		switch(cx_primitive(t)->kind) {\
 		case DB_INTEGER:\
 		case DB_UINTEGER:\
 		case DB_ENUM:\
 		case DB_BINARY:\
 		case DB_CHARACTER:\
-			result = db_ic_getVm##op##I(typeKind, op1, op2);\
+			result = cx_ic_getVm##op##I(typeKind, op1, op2);\
 			break;\
 		case DB_FLOAT:\
-			result = db_ic_getVm##op##F(typeKind, op1, op2);\
+			result = cx_ic_getVm##op##F(typeKind, op1, op2);\
 			break;\
 		default:\
-			db_assert(0, "invalid primitive-kind for operation " #op);\
+			cx_assert(0, "invalid primitive-kind for operation " #op);\
 			break;\
 		}\
 	} else {\
-		db_assert(0, "invalid type-kind for operation");\
+		cx_assert(0, "invalid type-kind for operation");\
 	}\
 	return result;\
 }\
@@ -1722,76 +1722,76 @@ DB_IC_GETOP1_W(UPDATECANCEL,PQRV)
 DB_IC_GETOP1_W(WAITFOR,PQRV)
 DB_IC_GETOP2_W(WAIT,,PQRV)
 
-static db_vmOp *db_ic_vmStorageAssembleElement(db_icStorage storage, db_ic_vmProgram *program, db_vmOp *vmOp, db_icStorage topLevelStorage) {
-	db_ic_vmOperand indexKind;
-	db_icValue icElementSize;
-	db_collection type = db_collection(((db_icElement)storage)->base->type); /* Obtain collectiontype */
-	db_value elementSizeValue;
-	db_uint64 elementSize;
+static cx_vmOp *cx_ic_vmStorageAssembleElement(cx_icStorage storage, cx_ic_vmProgram *program, cx_vmOp *vmOp, cx_icStorage topLevelStorage) {
+	cx_ic_vmOperand indexKind;
+	cx_icValue icElementSize;
+	cx_collection type = cx_collection(((cx_icElement)storage)->base->type); /* Obtain collectiontype */
+	cx_value elementSizeValue;
+	cx_uint64 elementSize;
 
 	/* Obtain kind for index */
-	indexKind = db_ic_getVmOperand(program, DB_IC_DEREF_VALUE, ((db_icElement)storage)->index);
+	indexKind = cx_ic_getVmOperand(program, DB_IC_DEREF_VALUE, ((cx_icElement)storage)->index);
 
 	/* Create value for elementSize */
-	elementSize = db_type_sizeof(type->elementType->real);
-	db_valueLiteralInit(&elementSizeValue, DB_LITERAL_UNSIGNED_INTEGER, &elementSize);
-	icElementSize = (db_icValue)db_icLiteral__create(program->icProgram, ((db_ic)storage)->line, elementSizeValue, (db_type)db_uint32_o);
+	elementSize = cx_type_sizeof(type->elementType->real);
+	cx_valueLiteralInit(&elementSizeValue, DB_LITERAL_UNSIGNED_INTEGER, &elementSize);
+	icElementSize = (cx_icValue)cx_icLiteral__create(program->icProgram, ((cx_ic)storage)->line, elementSizeValue, (cx_type)cx_uint32_o);
 
 	switch(type->kind) {
 	case DB_ARRAY:
-		vmOp->op = db_ic_getVmELEMA(DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind);
-		db_ic_vmSetOp3Addr(program, vmOp, DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind, DB_IC_VMOPERAND_V, (db_icValue)topLevelStorage, ((db_icElement)storage)->index, icElementSize);
+		vmOp->op = cx_ic_getVmELEMA(DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind);
+		cx_ic_vmSetOp3Addr(program, vmOp, DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind, DB_IC_VMOPERAND_V, (cx_icValue)topLevelStorage, ((cx_icElement)storage)->index, icElementSize);
 		break;
 	case DB_SEQUENCE:
-		vmOp->op = db_ic_getVmELEMS(DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind);
-		db_ic_vmSetOp3Addr(program, vmOp, DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind, DB_IC_VMOPERAND_V, (db_icValue)topLevelStorage, ((db_icElement)storage)->index, icElementSize);
+		vmOp->op = cx_ic_getVmELEMS(DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind);
+		cx_ic_vmSetOp3Addr(program, vmOp, DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind, DB_IC_VMOPERAND_V, (cx_icValue)topLevelStorage, ((cx_icElement)storage)->index, icElementSize);
 		break;
 	case DB_LIST:
-		if (db_collection_elementRequiresAlloc(type)) {
-			vmOp->op = db_ic_getVmELEML(DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind);
+		if (cx_collection_elementRequiresAlloc(type)) {
+			vmOp->op = cx_ic_getVmELEML(DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind);
 		} else {
-			vmOp->op = db_ic_getVmELEMLX(DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind);
+			vmOp->op = cx_ic_getVmELEMLX(DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind);
 		}
-		db_ic_vmSetOp2Addr(program, vmOp, DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind, (db_icValue)topLevelStorage, ((db_icElement)storage)->index);
+		cx_ic_vmSetOp2Addr(program, vmOp, DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind, (cx_icValue)topLevelStorage, ((cx_icElement)storage)->index);
 		break;
 	case DB_MAP:
-        if (db_collection_elementRequiresAlloc(type)) {
-            vmOp->op = db_ic_getVmELEMM(DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind);
+        if (cx_collection_elementRequiresAlloc(type)) {
+            vmOp->op = cx_ic_getVmELEMM(DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind);
         } else {
-            vmOp->op = db_ic_getVmELEMMX(DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind);
+            vmOp->op = cx_ic_getVmELEMMX(DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind);
         }
-		db_ic_vmSetOp2Addr(program, vmOp, DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind, (db_icValue)topLevelStorage, ((db_icElement)storage)->index);
+		cx_ic_vmSetOp2Addr(program, vmOp, DB_IC_VMTYPE_W, DB_IC_VMOPERAND_R, indexKind, (cx_icValue)topLevelStorage, ((cx_icElement)storage)->index);
 		break;
 	}
 
-	return db_vmProgram_addOp(program->program, ((db_ic)storage)->line);
+	return cx_vmProgram_addOp(program->program, ((cx_ic)storage)->line);
 }
 
-static db_vmOp *db_ic_vmStorageAssembleNested(db_icStorage icStorage, db_ic_vmProgram *program, db_vmOp *vmOp, db_icStorage icTopLevelStorage) {
-    db_ic_vmStorage *storage = db_ic_vmStorageGet(program, icStorage);
+static cx_vmOp *cx_ic_vmStorageAssembleNested(cx_icStorage icStorage, cx_ic_vmProgram *program, cx_vmOp *vmOp, cx_icStorage icTopLevelStorage) {
+    cx_ic_vmStorage *storage = cx_ic_vmStorageGet(program, icStorage);
     
 	if (!storage->assembled && (storage->accumulator->used || storage->dynamic)) {
 	    if (storage->accumulator->kind == DB_STORAGE_MEMBER) {
-	    	if ((storage->base->accumulator->kind != DB_STORAGE_OBJECT) && (db_ic_isReference(storage->base->accumulator) || storage->base->dynamic)) {
-				db_icStorage base = storage->base->accumulator;
-				db_uint32 offset = storage->offset;
+	    	if ((storage->base->accumulator->kind != DB_STORAGE_OBJECT) && (cx_ic_isReference(storage->base->accumulator) || storage->base->dynamic)) {
+				cx_icStorage base = storage->base->accumulator;
+				cx_uint32 offset = storage->offset;
 
 				/* Assemble base */
-				vmOp = db_ic_vmStorageAssembleNested(base, program, vmOp, base);
+				vmOp = cx_ic_vmStorageAssembleNested(base, program, vmOp, base);
 
 				if (storage->offset) {
-				    db_ic_vmStorage *vmBase = db_ic_vmStorageGet(program, base);
+				    cx_ic_vmStorage *vmBase = cx_ic_vmStorageGet(program, base);
                     /* Set the base-address in the accumulator, conserve the register value where the original
                      * address is stored. This conserved value can be used as base for other member-storages. If
                      * the base is dynamic this value doesn't need to be conserved because the storage it points
                      * to is not static. */
 				    if (!vmBase->dynamic) {
                         vmOp->op = DB_VM_MEMBER; /* Member instruction takes a destination, base and offset */
-                        db_ic_vmStorageAddReferee(program, storage, &vmOp->ic.b._1);
+                        cx_ic_vmStorageAddReferee(program, storage, &vmOp->ic.b._1);
                         if (base->kind == DB_STORAGE_LOCAL) {
                             vmOp->ic.b._2 = storage->base->addr;
                         } else {
-                            db_ic_vmStorageAddReferee(program, storage->base, &vmOp->ic.b._2);
+                            cx_ic_vmStorageAddReferee(program, storage->base, &vmOp->ic.b._2);
                         }
                         vmOp->lo.w = offset;
                         
@@ -1805,56 +1805,56 @@ static db_vmOp *db_ic_vmStorageAssembleNested(db_icStorage icStorage, db_ic_vmPr
 						if (storage->accumulator->kind == DB_STORAGE_LOCAL) {
 							vmOp->ic.b._1 = storage->addr;
 						} else {
-							db_ic_vmStorageAddReferee(program, storage, &vmOp->ic.b._1);
+							cx_ic_vmStorageAddReferee(program, storage, &vmOp->ic.b._1);
 						}
 
 						vmOp->lo.w = offset;
 				    }
 
                     /* Give new operation to assembler */
-                    vmOp = db_vmProgram_addOp(program->program, ((db_ic)icStorage)->line);
+                    vmOp = cx_vmProgram_addOp(program->program, ((cx_ic)icStorage)->line);
 				}
 	    	}
 		} else if (storage->accumulator->kind == DB_STORAGE_ELEMENT) {
-			db_icStorage base = storage->base->accumulator;
-            db_ic_vmStorage *topLevelStorage = db_ic_vmStorageGet(program, icTopLevelStorage);
+			cx_icStorage base = storage->base->accumulator;
+            cx_ic_vmStorage *topLevelStorage = cx_ic_vmStorageGet(program, icTopLevelStorage);
 
 			/* Assemble base */
-			vmOp = db_ic_vmStorageAssembleNested(base, program, vmOp, icTopLevelStorage);
+			vmOp = cx_ic_vmStorageAssembleNested(base, program, vmOp, icTopLevelStorage);
 
 			/* If element is not dynamic the address can be determined at compile-time. When the element
 			 * is dynamic the address will be calculated at runtime. */
-			if (storage->dynamic || db_ic_isReference(storage->base->accumulator)) {
+			if (storage->dynamic || cx_ic_isReference(storage->base->accumulator)) {
 				/* If the base is an object store the address in the accumulator */
 				if (base->kind == DB_STORAGE_OBJECT) {
                     vmOp->op = sizeof(intptr_t) == 4 ? DB_VM_SET_LRV : DB_VM_SET_DRV;
-                    db_ic_vmStorageAddReferee(program, topLevelStorage, &vmOp->ic.b._1);
-                    vmOp->lo.w = (intptr_t)((db_icObject)base)->ptr;
+                    cx_ic_vmStorageAddReferee(program, topLevelStorage, &vmOp->ic.b._1);
+                    vmOp->lo.w = (intptr_t)((cx_icObject)base)->ptr;
 				    if (storage->offset) {
 				        vmOp->lo.w += storage->offset;
 				    }
-				    vmOp = db_vmProgram_addOp(program->program, ((db_ic)icStorage)->line);
+				    vmOp = cx_vmProgram_addOp(program->program, ((cx_ic)icStorage)->line);
 
 				/* If the base is a local store the address of the local in the accumulator */
 				} else if (base->kind == DB_STORAGE_LOCAL) {
-					if (!db_ic_isReference(storage->base->accumulator)) {
+					if (!cx_ic_isReference(storage->base->accumulator)) {
 						vmOp->op = DB_VM_SET_WRX;
-						db_ic_vmStorageAddReferee(program, topLevelStorage, &vmOp->ic.b._1);
+						cx_ic_vmStorageAddReferee(program, topLevelStorage, &vmOp->ic.b._1);
 						vmOp->ic.b._2 = storage->base->addr;
 						if (storage->offset) {
 							vmOp->ic.b._2 += storage->offset;
 						}
-						vmOp = db_vmProgram_addOp(program->program, ((db_ic)icStorage)->line);
+						vmOp = cx_vmProgram_addOp(program->program, ((cx_ic)icStorage)->line);
 					} else {
 						vmOp->op = sizeof(intptr_t) == 4 ? DB_VM_SET_LRR : DB_VM_SET_DRR;
-						db_ic_vmStorageAddReferee(program, topLevelStorage, &vmOp->ic.b._1);
+						cx_ic_vmStorageAddReferee(program, topLevelStorage, &vmOp->ic.b._1);
 						vmOp->ic.b._2 = storage->base->addr;
-						vmOp = db_vmProgram_addOp(program->program, ((db_ic)icStorage)->line);
+						vmOp = cx_vmProgram_addOp(program->program, ((cx_ic)icStorage)->line);
 					}
 				}
 
 				/* Insert element-instruction */
-				vmOp = db_ic_vmStorageAssembleElement(icStorage, program, vmOp, icTopLevelStorage);
+				vmOp = cx_ic_vmStorageAssembleElement(icStorage, program, vmOp, icTopLevelStorage);
 			}
 		}
 	}
@@ -1862,13 +1862,13 @@ static db_vmOp *db_ic_vmStorageAssembleNested(db_icStorage icStorage, db_ic_vmPr
 	return vmOp;
 }
 
-static db_vmOp *db_ic_vmStorageAssemble(db_icStorage icStorage, db_ic_vmProgram *program, db_vmOp *vmOp) {
-    return db_ic_vmStorageAssembleNested(icStorage, program, vmOp, icStorage);
+static cx_vmOp *cx_ic_vmStorageAssemble(cx_icStorage icStorage, cx_ic_vmProgram *program, cx_vmOp *vmOp) {
+    return cx_ic_vmStorageAssembleNested(icStorage, program, vmOp, icStorage);
 }
 
 /* Returns which operations have support for the W-operand type */
-static db_bool db_ic_supportsVmWordType(db_icOpKind kind) {
-    db_bool result = FALSE;
+static cx_bool cx_ic_supportsVmWordType(cx_icOpKind kind) {
+    cx_bool result = FALSE;
     switch(kind) {
     case DB_IC_SET:  /* SETREF supports W, but this is handled elsewhere in the code */
     case DB_IC_CAST:
@@ -1921,88 +1921,88 @@ static db_bool db_ic_supportsVmWordType(db_icOpKind kind) {
         result = TRUE;
         break;
     default:
-        db_assert(0, "invalid intermediate op-code");
+        cx_assert(0, "invalid intermediate op-code");
         break;
     }
     return result;
 }
 
-static db_ic_vmType db_vmTranslateVmType(db_icOpKind kind, db_ic_vmType type) {
-    if (!db_ic_supportsVmWordType(kind) && (type == DB_IC_VMTYPE_W)) {
+static cx_ic_vmType cx_vmTranslateVmType(cx_icOpKind kind, cx_ic_vmType type) {
+    if (!cx_ic_supportsVmWordType(kind) && (type == DB_IC_VMTYPE_W)) {
         if (sizeof(intptr_t) == 4) {
             type = DB_IC_VMTYPE_L;
         } else if (sizeof(intptr_t) == 8) {
             type = DB_IC_VMTYPE_D;
         }else {
-            db_assert(0, "Architecture not supported");
+            cx_assert(0, "Architecture not supported");
         }
     }
     return type;
 }
 
-static db_vmOpKind db_ic_getVmCast(db_ic_vmProgram *program, db_icOp op, db_type t, db_ic_vmType typeKind, db_ic_vmOperand storage, db_ic_vmOperand op1) {
-    db_type srcType, dstType;
-    db_vmOpKind result = DB_VM_STOP;
+static cx_vmOpKind cx_ic_getVmCast(cx_ic_vmProgram *program, cx_icOp op, cx_type t, cx_ic_vmType typeKind, cx_ic_vmOperand storage, cx_ic_vmOperand op1) {
+    cx_type srcType, dstType;
+    cx_vmOpKind result = DB_VM_STOP;
 
     DB_UNUSED(op);
     DB_UNUSED(t);
 
-    dstType = *(db_type*)db_ic_valueValue(program, op->s3);
-    srcType = db_ic_valueType(op->s2);
+    dstType = *(cx_type*)cx_ic_valueValue(program, op->s3);
+    srcType = cx_ic_valueType(op->s2);
 
     if (srcType->kind == dstType->kind) {
         if (srcType->kind == DB_PRIMITIVE) {
-            result = db_ic_getVmPCAST(typeKind, storage, op1);
+            result = cx_ic_getVmPCAST(typeKind, storage, op1);
         } else {
             if (srcType->reference) {
-                result = db_ic_getVmCAST(DB_IC_VMTYPE_W, storage, DB_IC_VMOPERAND_P);
+                result = cx_ic_getVmCAST(DB_IC_VMTYPE_W, storage, DB_IC_VMOPERAND_P);
             } else {
                 /* No cast for non-reference types */
             }
         }
     } else if ((srcType->kind == DB_VOID) && srcType->reference) {
-        result = db_ic_getVmCAST(DB_IC_VMTYPE_W, storage, DB_IC_VMOPERAND_P);
+        result = cx_ic_getVmCAST(DB_IC_VMTYPE_W, storage, DB_IC_VMOPERAND_P);
     }
 
-    db_assert(result != DB_VM_STOP, "no cast-instruction found from type '%s' to '%s'", db_nameof(srcType), db_nameof(dstType));
+    cx_assert(result != DB_VM_STOP, "no cast-instruction found from type '%s' to '%s'", cx_nameof(srcType), cx_nameof(dstType));
 
     return result;
 }
 
-static db_vmOpKind db_ic_getVmFree(db_icOp op, db_type t, db_ic_vmType typeKind, db_ic_vmOperand op1) {
-    db_vmOpKind result = DB_VM_STOP;
+static cx_vmOpKind cx_ic_getVmFree(cx_icOp op, cx_type t, cx_ic_vmType typeKind, cx_ic_vmOperand op1) {
+    cx_vmOpKind result = DB_VM_STOP;
     DB_UNUSED(t);
     DB_UNUSED(typeKind);
 
-    if (((db_icStorage)op->s1)->isReference) {
-        result = db_ic_getVmFREE(DB_IC_VMTYPE_W, op1);
+    if (((cx_icStorage)op->s1)->isReference) {
+        result = cx_ic_getVmFREE(DB_IC_VMTYPE_W, op1);
     } else {
-        result = db_ic_getVmDEALLOC(DB_IC_VMTYPE_W, op1);
+        result = cx_ic_getVmDEALLOC(DB_IC_VMTYPE_W, op1);
     }
 
     return result;
 }
 
-static db_vmOpKind db_ic_getVmSet(db_type type, db_icStorage op1, db_ic_vmType typeKind, db_ic_vmOperand opKind1, db_ic_vmOperand opKind2, db_icDerefMode deref1, db_icDerefMode deref2) {
-	db_vmOpKind result;
+static cx_vmOpKind cx_ic_getVmSet(cx_type type, cx_icStorage op1, cx_ic_vmType typeKind, cx_ic_vmOperand opKind1, cx_ic_vmOperand opKind2, cx_icDerefMode deref1, cx_icDerefMode deref2) {
+	cx_vmOpKind result;
     
     DB_UNUSED(deref2);
 
 	/* Accummulators are only meant as temporary storage and therefore don't do resource management */
 	if (op1->kind == DB_STORAGE_ACCUMULATOR) {
         /* Translate type - it can be W */
-        typeKind = db_vmTranslateVmType(DB_IC_SET, typeKind);
-	    result = db_ic_getVmSET(typeKind, opKind1, opKind2);
+        typeKind = cx_vmTranslateVmType(DB_IC_SET, typeKind);
+	    result = cx_ic_getVmSET(typeKind, opKind1, opKind2);
 	} else {
         /* printf("op1->isReference=%d, deref==value=%d, typeKind=%d, opKind1=%d, opKind2=%d\n",
                op1->isReference, deref==DB_IC_DEREF_VALUE, typeKind, opKind1, opKind2); */
         if (op1->type->reference || (deref1 == DB_IC_DEREF_ADDRESS)) {
-            result = db_ic_getVmSETREF(DB_IC_VMTYPE_W, opKind1, opKind2);
+            result = cx_ic_getVmSETREF(DB_IC_VMTYPE_W, opKind1, opKind2);
         } else {
-            if ((type->kind == DB_PRIMITIVE) && (db_primitive(type)->kind == DB_TEXT)) {
-                result = db_ic_getVmSETSTRDUP(DB_IC_VMTYPE_W, opKind1, opKind2);
+            if ((type->kind == DB_PRIMITIVE) && (cx_primitive(type)->kind == DB_TEXT)) {
+                result = cx_ic_getVmSETSTRDUP(DB_IC_VMTYPE_W, opKind1, opKind2);
             } else {
-                result = db_ic_getVmSET(typeKind, opKind1, opKind2);
+                result = cx_ic_getVmSET(typeKind, opKind1, opKind2);
             }
         }
 	}
@@ -2010,155 +2010,155 @@ static db_vmOpKind db_ic_getVmSet(db_type type, db_icStorage op1, db_ic_vmType t
 	return result;
 }
 
-static db_vmOpKind db_ic_getVmOpKind(db_ic_vmProgram *program, db_icOp op, db_icValue storage, db_type t, db_ic_vmType typeKind, db_ic_vmOperand op1, db_ic_vmOperand op2, db_icDerefMode deref1, db_icDerefMode deref2) {
-	db_vmOpKind result = DB_VM_STOP;
+static cx_vmOpKind cx_ic_getVmOpKind(cx_ic_vmProgram *program, cx_icOp op, cx_icValue storage, cx_type t, cx_ic_vmType typeKind, cx_ic_vmOperand op1, cx_ic_vmOperand op2, cx_icDerefMode deref1, cx_icDerefMode deref2) {
+	cx_vmOpKind result = DB_VM_STOP;
 
     /* When there is no dedicated W-operation, switch to L or D based on architecture */
-    typeKind = db_vmTranslateVmType(op->kind, typeKind);
+    typeKind = cx_vmTranslateVmType(op->kind, typeKind);
 
 	switch(op->kind) {
 	/* Set (assign) */
 	case DB_IC_SET:
-	    result = db_ic_getVmSet(t, (db_icStorage)storage, typeKind, op1, op2, deref1, deref2);
+	    result = cx_ic_getVmSet(t, (cx_icStorage)storage, typeKind, op1, op2, deref1, deref2);
 	    break;
 
     /* Casting */
     case DB_IC_CAST:
-    	result = db_ic_getVmCast(program, op, t, typeKind,
-    			db_ic_getVmOperand(program, op->s1Deref, op->s1),
-    			db_ic_getVmOperand(program, op->s2Deref, op->s2));
+    	result = cx_ic_getVmCast(program, op, t, typeKind,
+    			cx_ic_getVmOperand(program, op->s1Deref, op->s1),
+    			cx_ic_getVmOperand(program, op->s2Deref, op->s2));
     	break;
 
     /* String concatenation */
-    case DB_IC_STRCAT: result = db_ic_getVmSTRCAT(typeKind, op1, op2); break;
-    case DB_IC_STRCPY: result = db_ic_getVmSTRCPY(typeKind, op1, op2); break;
+    case DB_IC_STRCAT: result = cx_ic_getVmSTRCAT(typeKind, op1, op2); break;
+    case DB_IC_STRCPY: result = cx_ic_getVmSTRCPY(typeKind, op1, op2); break;
 
 	/* Operators */
-	case DB_IC_ADD: result = db_ic_getVmADD(t, typeKind, op1, op2); break;
-	case DB_IC_SUB: result = db_ic_getVmSUB(t, typeKind, op1, op2); break;
-	case DB_IC_MUL: result = db_ic_getVmMUL(t, typeKind, op1, op2); break;
-	case DB_IC_DIV: result = db_ic_getVmDIV(t, typeKind, op1, op2); break;
-	case DB_IC_MOD: result = db_ic_getVmMODI(typeKind, op1, op2); break;
-	case DB_IC_INC: result = db_ic_getVmINC(typeKind, op1); break;
-	case DB_IC_DEC: result = db_ic_getVmDEC(typeKind, op1); break;
-	case DB_IC_XOR: result = db_ic_getVmXOR(typeKind, op1, op2); break;
-	case DB_IC_OR: result = db_ic_getVmOR(typeKind, op1, op2); break;
-	case DB_IC_AND: result = db_ic_getVmAND(typeKind, op1, op2); break;
-	case DB_IC_NOT: result = db_ic_getVmNOT(typeKind, op1); break;
-	case DB_IC_SHIFT_LEFT: result = db_ic_getVmSHIFT_LEFT(typeKind, op1, op2); break;
-	case DB_IC_SHIFT_RIGHT: result = db_ic_getVmSHIFT_RIGHT(typeKind, op1, op2); break;
-	case DB_IC_STAGE1: result = db_ic_getVmSTAGE1(typeKind, op1); break;
-	case DB_IC_STAGE2: result = db_ic_getVmSTAGE2(typeKind, op1, op2); break;
-	case DB_IC_COND_OR: result = db_ic_getVmCOR(t, typeKind, op1); break;
-	case DB_IC_COND_AND: result = db_ic_getVmCAND(t, typeKind, op1); break;
-	case DB_IC_COND_NOT: result = db_ic_getVmCNOT(t, typeKind, op1); break;
+	case DB_IC_ADD: result = cx_ic_getVmADD(t, typeKind, op1, op2); break;
+	case DB_IC_SUB: result = cx_ic_getVmSUB(t, typeKind, op1, op2); break;
+	case DB_IC_MUL: result = cx_ic_getVmMUL(t, typeKind, op1, op2); break;
+	case DB_IC_DIV: result = cx_ic_getVmDIV(t, typeKind, op1, op2); break;
+	case DB_IC_MOD: result = cx_ic_getVmMODI(typeKind, op1, op2); break;
+	case DB_IC_INC: result = cx_ic_getVmINC(typeKind, op1); break;
+	case DB_IC_DEC: result = cx_ic_getVmDEC(typeKind, op1); break;
+	case DB_IC_XOR: result = cx_ic_getVmXOR(typeKind, op1, op2); break;
+	case DB_IC_OR: result = cx_ic_getVmOR(typeKind, op1, op2); break;
+	case DB_IC_AND: result = cx_ic_getVmAND(typeKind, op1, op2); break;
+	case DB_IC_NOT: result = cx_ic_getVmNOT(typeKind, op1); break;
+	case DB_IC_SHIFT_LEFT: result = cx_ic_getVmSHIFT_LEFT(typeKind, op1, op2); break;
+	case DB_IC_SHIFT_RIGHT: result = cx_ic_getVmSHIFT_RIGHT(typeKind, op1, op2); break;
+	case DB_IC_STAGE1: result = cx_ic_getVmSTAGE1(typeKind, op1); break;
+	case DB_IC_STAGE2: result = cx_ic_getVmSTAGE2(typeKind, op1, op2); break;
+	case DB_IC_COND_OR: result = cx_ic_getVmCOR(t, typeKind, op1); break;
+	case DB_IC_COND_AND: result = cx_ic_getVmCAND(t, typeKind, op1); break;
+	case DB_IC_COND_NOT: result = cx_ic_getVmCNOT(t, typeKind, op1); break;
 	case DB_IC_COND_EQ: {
-		if ((t->kind == DB_PRIMITIVE) && (db_primitive(t)->kind == DB_TEXT)) {
-			result = db_ic_getVmCEQSTR(DB_IC_VMTYPE_B, op1);
+		if ((t->kind == DB_PRIMITIVE) && (cx_primitive(t)->kind == DB_TEXT)) {
+			result = cx_ic_getVmCEQSTR(DB_IC_VMTYPE_B, op1);
 		} else {
-			result = db_ic_getVmCEQ(t, typeKind, op1);
+			result = cx_ic_getVmCEQ(t, typeKind, op1);
 		}
 		break;
 	}
 	case DB_IC_COND_NEQ: {
-		if ((t->kind == DB_PRIMITIVE) && (db_primitive(t)->kind == DB_TEXT)) {
-			result = db_ic_getVmCNEQSTR(DB_IC_VMTYPE_B, op1);
+		if ((t->kind == DB_PRIMITIVE) && (cx_primitive(t)->kind == DB_TEXT)) {
+			result = cx_ic_getVmCNEQSTR(DB_IC_VMTYPE_B, op1);
 		} else {
-			result = db_ic_getVmCNEQ(t, typeKind, op1);
+			result = cx_ic_getVmCNEQ(t, typeKind, op1);
 		}
 		break;
 	}
-	case DB_IC_COND_GT: result = db_ic_getVmCGT(t, typeKind, op1); break;
-	case DB_IC_COND_LT: result = db_ic_getVmCLT(t, typeKind, op1); break;
-	case DB_IC_COND_GTEQ: result = db_ic_getVmCGTEQ(t, typeKind, op1); break;
-	case DB_IC_COND_LTEQ: result = db_ic_getVmCLTEQ(t, typeKind, op1); break;
+	case DB_IC_COND_GT: result = cx_ic_getVmCGT(t, typeKind, op1); break;
+	case DB_IC_COND_LT: result = cx_ic_getVmCLT(t, typeKind, op1); break;
+	case DB_IC_COND_GTEQ: result = cx_ic_getVmCGTEQ(t, typeKind, op1); break;
+	case DB_IC_COND_LTEQ: result = cx_ic_getVmCLTEQ(t, typeKind, op1); break;
 
 	/* Program control */
 	case DB_IC_JUMP: result = DB_VM_JUMP; break;
-	case DB_IC_JEQ: result = db_ic_getVmJEQ(typeKind, op1); break;
-	case DB_IC_JNEQ: result = db_ic_getVmJNEQ(typeKind, op1); break;
+	case DB_IC_JEQ: result = cx_ic_getVmJEQ(typeKind, op1); break;
+	case DB_IC_JNEQ: result = cx_ic_getVmJNEQ(typeKind, op1); break;
 	case DB_IC_STOP: result = DB_VM_STOP; break;
 
 	/* Function calls */
 	case DB_IC_PUSH: {
 		if (op->s1Any) {
 			if ((op1 != DB_IC_VMOPERAND_X) && (op->s1->_parent.kind != DB_IC_LITERAL) ) {
-				result = db_ic_getVmPUSHANY(DB_IC_VMTYPE_W, op1);
+				result = cx_ic_getVmPUSHANY(DB_IC_VMTYPE_W, op1);
 			} else {
-				result = db_ic_getVmPUSHANYX(t, typeKind, op1 == DB_IC_VMOPERAND_X ? DB_IC_VMOPERAND_R : op1);
+				result = cx_ic_getVmPUSHANYX(t, typeKind, op1 == DB_IC_VMOPERAND_X ? DB_IC_VMOPERAND_R : op1);
 			}
 		} else {
 			if (op1 != DB_IC_VMOPERAND_X) {
-				result = db_ic_getVmPUSH(typeKind, op1);
+				result = cx_ic_getVmPUSH(typeKind, op1);
 			} else {
-				result = db_ic_getVmPUSHX(typeKind, DB_IC_VMOPERAND_R);
+				result = cx_ic_getVmPUSHX(typeKind, DB_IC_VMOPERAND_R);
 			}
 		}
 		break;
 	}
 
 	case DB_IC_CALL: {
-        db_function f = ((db_icObject)op->s2)->ptr;
+        cx_function f = ((cx_icObject)op->s2)->ptr;
         if (f->kind == DB_PROCEDURE_VM) {
             if ((f->returnType->real->kind == DB_VOID) && (!f->returnType->real->reference)) {
                 result = DB_VM_CALLVMVOID;
             } else {
-                result = db_ic_getVmCALLVM(DB_IC_VMTYPE_L, op1);
+                result = cx_ic_getVmCALLVM(DB_IC_VMTYPE_L, op1);
             }
         } else {
             if ((f->returnType->real->kind == DB_VOID) && (!f->returnType->real->reference)) {
                 result = DB_VM_CALLVOID;
             } else {
-                result = db_ic_getVmCALL(DB_IC_VMTYPE_L, op1);
+                result = cx_ic_getVmCALL(DB_IC_VMTYPE_L, op1);
             }
         }
         break;
 	}
 
 	case DB_IC_RET:
-        if (db_type_sizeof(t) <= 8) {
-            if (db_type_sizeof(t) == 8) {
-                result = db_ic_getVmRET(DB_IC_VMTYPE_D, op1);
+        if (cx_type_sizeof(t) <= 8) {
+            if (cx_type_sizeof(t) == 8) {
+                result = cx_ic_getVmRET(DB_IC_VMTYPE_D, op1);
             } else {
-                result = db_ic_getVmRET(typeKind, op1);
+                result = cx_ic_getVmRET(typeKind, op1);
             }
         } else {
-            result = db_ic_getVmRETCPY(DB_IC_VMTYPE_L, op1);
+            result = cx_ic_getVmRETCPY(DB_IC_VMTYPE_L, op1);
         }
         break;
 
     /* Memory management */
-	case DB_IC_NEW: result = db_ic_getVmNEW(typeKind, op1, op2); break;
-    case DB_IC_FREE: result = db_ic_getVmFree(op, t, typeKind, op1); break;
-    case DB_IC_KEEP: result = db_ic_getVmKEEP(typeKind, op1); break;
+	case DB_IC_NEW: result = cx_ic_getVmNEW(typeKind, op1, op2); break;
+    case DB_IC_FREE: result = cx_ic_getVmFree(op, t, typeKind, op1); break;
+    case DB_IC_KEEP: result = cx_ic_getVmKEEP(typeKind, op1); break;
 
-    case DB_IC_DEFINE: result = db_ic_getVmDEFINE(typeKind, op1); break;
+    case DB_IC_DEFINE: result = cx_ic_getVmDEFINE(typeKind, op1); break;
 
     /* Notifications */
     case DB_IC_UPDATE:
     	if (op->s2) {
-    		result = db_ic_getVmUPDATEFROM(typeKind, op1, op2);
+    		result = cx_ic_getVmUPDATEFROM(typeKind, op1, op2);
     	} else {
-    		result = db_ic_getVmUPDATE(typeKind, op1);
+    		result = cx_ic_getVmUPDATE(typeKind, op1);
     	}
     	break;
 
     case DB_IC_UPDATEEND:
     	if (op->s2) {
-    		result = db_ic_getVmUPDATEENDFROM(typeKind, op1, op2);
+    		result = cx_ic_getVmUPDATEENDFROM(typeKind, op1, op2);
     	} else {
-    		result = db_ic_getVmUPDATEEND(typeKind, op1);
+    		result = cx_ic_getVmUPDATEEND(typeKind, op1);
     	}
     	break;
 
-    case DB_IC_UPDATEBEGIN: result = db_ic_getVmUPDATEBEGIN(typeKind, op1); break;
-    case DB_IC_UPDATECANCEL: result = db_ic_getVmUPDATECANCEL(typeKind, op1); break;
+    case DB_IC_UPDATEBEGIN: result = cx_ic_getVmUPDATEBEGIN(typeKind, op1); break;
+    case DB_IC_UPDATECANCEL: result = cx_ic_getVmUPDATECANCEL(typeKind, op1); break;
 
-    case DB_IC_WAITFOR: result = db_ic_getVmWAITFOR(typeKind, op1); break;
-    case DB_IC_WAIT: result = db_ic_getVmWAIT(typeKind, op1, op2); break;
+    case DB_IC_WAITFOR: result = cx_ic_getVmWAITFOR(typeKind, op1); break;
+    case DB_IC_WAIT: result = cx_ic_getVmWAIT(typeKind, op1, op2); break;
 
 	default:
-		db_assert(0, "invalid intermediate op-code");
+		cx_assert(0, "invalid intermediate op-code");
 		break;
 	}
 
@@ -2167,99 +2167,99 @@ static db_vmOpKind db_ic_getVmOpKind(db_ic_vmProgram *program, db_icOp op, db_ic
 
 /* Get type and storage kind for operands and assemble operand when necessary (in case an
  * offset-instruction has to be inserted for a dynamically allocated object). */
-static db_vmOp* db_vmGetTypeAndAssemble(
+static cx_vmOp* cx_vmGetTypeAndAssemble(
 
     /* In parameters */
-    db_ic_vmProgram *program, 
-    db_vmOp *vmOp, 
-    db_icOp op, 
-    db_bool threeOperands, 
-    db_icValue storage, 
-    db_icValue op1, 
-    db_icValue op2, 
-    db_icDerefMode storageDeref, 
-    db_icDerefMode opDeref1, 
-    db_icDerefMode opDeref2,
+    cx_ic_vmProgram *program, 
+    cx_vmOp *vmOp, 
+    cx_icOp op, 
+    cx_bool threeOperands, 
+    cx_icValue storage, 
+    cx_icValue op1, 
+    cx_icValue op2, 
+    cx_icDerefMode storageDeref, 
+    cx_icDerefMode opDeref1, 
+    cx_icDerefMode opDeref2,
 
     /* Out parameters */
-    db_type *t, 
-    db_ic_vmType *type, 
-    db_ic_vmOperand *storageKind, 
-    db_ic_vmOperand *opKind1, 
-    db_ic_vmOperand *opKind2) {
+    cx_type *t, 
+    cx_ic_vmType *type, 
+    cx_ic_vmOperand *storageKind, 
+    cx_ic_vmOperand *opKind1, 
+    cx_ic_vmOperand *opKind2) {
     
     if (op1) {
-        *opKind1 = db_ic_getVmOperand(program, opDeref1, op1);
-        *t = db_ic_valueType(op1);
+        *opKind1 = cx_ic_getVmOperand(program, opDeref1, op1);
+        *t = cx_ic_valueType(op1);
         
         if (!op->s1Any && !threeOperands) {
-            *type = db_ic_getVmType(op1, opDeref1);
+            *type = cx_ic_getVmType(op1, opDeref1);
         } else if (op->s1Any) {
-            if (((op->s1->_parent.kind != DB_IC_LITERAL) || (((*t)->kind != DB_PRIMITIVE) || (db_primitive(*t)->width != DB_WIDTH_64)))) {
+            if (((op->s1->_parent.kind != DB_IC_LITERAL) || (((*t)->kind != DB_PRIMITIVE) || (cx_primitive(*t)->width != DB_WIDTH_64)))) {
                 *type = DB_IC_VMTYPE_W;
             } else {
-               *type = db_ic_getVmType(op1, opDeref1);
+               *type = cx_ic_getVmType(op1, opDeref1);
             }
         } else {
             *type = DB_IC_VMTYPE_W;
         }
-        if (((db_ic)op1)->kind == DB_IC_STORAGE) {
-            vmOp = db_ic_vmStorageAssemble((db_icStorage)op1, program, vmOp);
+        if (((cx_ic)op1)->kind == DB_IC_STORAGE) {
+            vmOp = cx_ic_vmStorageAssemble((cx_icStorage)op1, program, vmOp);
         }
     }
     if (op2) {
-        if (((db_ic)op2)->kind == DB_IC_STORAGE) {
+        if (((cx_ic)op2)->kind == DB_IC_STORAGE) {
             if (op2 != op1) {
-                vmOp = db_ic_vmStorageAssemble((db_icStorage)op2, program, vmOp);
+                vmOp = cx_ic_vmStorageAssemble((cx_icStorage)op2, program, vmOp);
             }
         }
-        *opKind2 = db_ic_getVmOperand(program, opDeref2, op2);
+        *opKind2 = cx_ic_getVmOperand(program, opDeref2, op2);
     }
     if (storage) {
-        if (((db_ic)storage)->kind == DB_IC_STORAGE) {
+        if (((cx_ic)storage)->kind == DB_IC_STORAGE) {
             if ((storage != op1) && (storage != op2))
-                vmOp = db_ic_vmStorageAssemble((db_icStorage)storage, program, vmOp);
+                vmOp = cx_ic_vmStorageAssemble((cx_icStorage)storage, program, vmOp);
         }
-        *storageKind = db_ic_getVmOperand(program, storageDeref, storage);
+        *storageKind = cx_ic_getVmOperand(program, storageDeref, storage);
     }
     
     /* If storage is any, set hi to storage-type. However, don't set the type when the
      * operand is a literal and the value is 64 bit. In that case there is no space
      * for the type, and the assembler will select an instruction that hard-codes the type. */
-	if (op->s1Any && !((((db_ic)op1)->kind == DB_IC_LITERAL) &&
+	if (op->s1Any && !((((cx_ic)op1)->kind == DB_IC_LITERAL) &&
                        (*opKind1 == DB_IC_VMOPERAND_V) &&
                        (((*t)->kind == DB_PRIMITIVE) &&
-                       (db_primitive(*t)->width == DB_WIDTH_64)))) {
-		vmOp->hi.w = (db_word)db_ic_valueType(op1);
+                       (cx_primitive(*t)->width == DB_WIDTH_64)))) {
+		vmOp->hi.w = (cx_word)cx_ic_valueType(op1);
 	}
     
     return vmOp;
 }
 
 /* Instruction without operands */
-static void db_vmOp0(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, db_icValue op1, db_icDerefMode opDeref1) {
-    db_type t;
-    db_ic_vmType type;
-    db_ic_vmOperand opKind1;
-    vmOp = db_vmGetTypeAndAssemble(program, vmOp, op, FALSE, NULL, op1, NULL, 0, opDeref1, 0,  &t, &type, NULL, &opKind1, NULL);
-    vmOp->op = db_ic_getVmOpKind(program, op, op1, NULL, 0, 0, 0, 0, 0);
+static void cx_vmOp0(cx_ic_vmProgram *program, cx_vmOp *vmOp, cx_icOp op, cx_icValue op1, cx_icDerefMode opDeref1) {
+    cx_type t;
+    cx_ic_vmType type;
+    cx_ic_vmOperand opKind1;
+    vmOp = cx_vmGetTypeAndAssemble(program, vmOp, op, FALSE, NULL, op1, NULL, 0, opDeref1, 0,  &t, &type, NULL, &opKind1, NULL);
+    vmOp->op = cx_ic_getVmOpKind(program, op, op1, NULL, 0, 0, 0, 0, 0);
 }
 
 /* Instruction with one operand */
-static void db_vmOp1(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, db_icValue op1, db_icDerefMode opDeref1) {
-    db_type t;
-    db_ic_vmType type;
-    db_ic_vmOperand opKind1;
-    vmOp = db_vmGetTypeAndAssemble(program, vmOp, op, FALSE, NULL, op1, NULL, 0, opDeref1, 0,  &t, &type, NULL, &opKind1, NULL);
-    vmOp->op = db_ic_getVmOpKind(program, op, op1, t, type, opKind1, DB_IC_VMOPERAND_NONE, opDeref1, 0);
+static void cx_vmOp1(cx_ic_vmProgram *program, cx_vmOp *vmOp, cx_icOp op, cx_icValue op1, cx_icDerefMode opDeref1) {
+    cx_type t;
+    cx_ic_vmType type;
+    cx_ic_vmOperand opKind1;
+    vmOp = cx_vmGetTypeAndAssemble(program, vmOp, op, FALSE, NULL, op1, NULL, 0, opDeref1, 0,  &t, &type, NULL, &opKind1, NULL);
+    vmOp->op = cx_ic_getVmOpKind(program, op, op1, t, type, opKind1, DB_IC_VMOPERAND_NONE, opDeref1, 0);
 
     /* Set size of type in case return instruction needs to do a memcpy */ 
     if (op->kind == DB_IC_RET) {
-        vmOp->hi.w = db_type_sizeof(t);
+        vmOp->hi.w = cx_type_sizeof(t);
     }
 
-    type = db_vmTranslateVmType(op->kind, type);
-    db_ic_vmSetOp1Addr(program, vmOp, type, opKind1, op1);
+    type = cx_vmTranslateVmType(op->kind, type);
+    cx_ic_vmSetOp1Addr(program, vmOp, type, opKind1, op1);
 }
 
 /* Instruction with one operand and one staged operand
@@ -2268,32 +2268,32 @@ static void db_vmOp1(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, db_icV
  * reason to do this with a stage rather than with a set is that a conditional operation has
  * a boolean value as a result, which can be of a different size than the operands.
  */
-static void db_vmOp1Staged(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, db_icValue storage, db_icValue op1, db_icDerefMode storageDeref, db_icDerefMode opDeref1) {
-    db_vmOp *vmStoredOp;
-    db_type t;
-    db_ic_vmType type;
-    db_ic_vmOperand opKind1, storageKind;
+static void cx_vmOp1Staged(cx_ic_vmProgram *program, cx_vmOp *vmOp, cx_icOp op, cx_icValue storage, cx_icValue op1, cx_icDerefMode storageDeref, cx_icDerefMode opDeref1) {
+    cx_vmOp *vmStoredOp;
+    cx_type t;
+    cx_ic_vmType type;
+    cx_ic_vmOperand opKind1, storageKind;
 
-    vmOp = db_vmGetTypeAndAssemble(program, vmOp, op, FALSE, storage, op1, NULL, storageDeref, opDeref1, 0,  &t, &type, &storageKind, &opKind1, NULL);
-    type = db_vmTranslateVmType(op->kind, type);
-    vmOp->op = db_ic_getVmSTAGE1(type, opKind1);
-    db_ic_vmSetOp1Addr(program, vmOp, type, opKind1, op1);
+    vmOp = cx_vmGetTypeAndAssemble(program, vmOp, op, FALSE, storage, op1, NULL, storageDeref, opDeref1, 0,  &t, &type, &storageKind, &opKind1, NULL);
+    type = cx_vmTranslateVmType(op->kind, type);
+    vmOp->op = cx_ic_getVmSTAGE1(type, opKind1);
+    cx_ic_vmSetOp1Addr(program, vmOp, type, opKind1, op1);
     
-    vmStoredOp = db_vmProgram_addOp(program->program, ((db_ic)op)->line);
-    vmStoredOp->op = db_ic_getVmOpKind(program, op, op1, t, type, storageKind, opKind1, storageDeref, opDeref1);
-    db_ic_vmSetOp1Addr(program, vmStoredOp, type, storageKind, storage);
+    vmStoredOp = cx_vmProgram_addOp(program->program, ((cx_ic)op)->line);
+    vmStoredOp->op = cx_ic_getVmOpKind(program, op, op1, t, type, storageKind, opKind1, storageDeref, opDeref1);
+    cx_ic_vmSetOp1Addr(program, vmStoredOp, type, storageKind, storage);
 }
 
 /* Instruction with two operands */
-static void db_vmOp2(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, db_icValue op1, db_icValue op2, db_icDerefMode opDeref1, db_icDerefMode opDeref2) {
-    db_type t;
-    db_ic_vmType type;
-    db_ic_vmOperand opKind1, opKind2;
+static void cx_vmOp2(cx_ic_vmProgram *program, cx_vmOp *vmOp, cx_icOp op, cx_icValue op1, cx_icValue op2, cx_icDerefMode opDeref1, cx_icDerefMode opDeref2) {
+    cx_type t;
+    cx_ic_vmType type;
+    cx_ic_vmOperand opKind1, opKind2;
     
-    vmOp = db_vmGetTypeAndAssemble(program, vmOp, op, FALSE, NULL, op1, op2, 0, opDeref1, opDeref2,  &t, &type, NULL, &opKind1, &opKind2);
+    vmOp = cx_vmGetTypeAndAssemble(program, vmOp, op, FALSE, NULL, op1, op2, 0, opDeref1, opDeref2,  &t, &type, NULL, &opKind1, &opKind2);
 
-    vmOp->op = db_ic_getVmOpKind(program, op, op1, t, type, opKind1, opKind2, opDeref1, opDeref2);
-    db_ic_vmSetOp2Addr(program, vmOp, type, opKind1, opKind2, op1, op2);
+    vmOp->op = cx_ic_getVmOpKind(program, op, op1, t, type, opKind1, opKind2, opDeref1, opDeref2);
+    cx_ic_vmSetOp2Addr(program, vmOp, type, opKind1, opKind2, op1, op2);
 }
 
 /* Instruction with two operands and a storage
@@ -2303,19 +2303,19 @@ static void db_vmOp2(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, db_icV
  * set  Storage Operand1 (vmOp)
  * [op] Storage Operand2 (vmStoredOp)
  * */
-static void db_vmOp2Storage(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, db_icValue storage, db_icValue op1, db_icValue op2, db_icDerefMode storageDeref, db_icDerefMode opDeref1, db_icDerefMode opDeref2) {
-    db_vmOp *vmStoredOp;
-    db_type t;
-    db_ic_vmType type;
-    db_ic_vmOperand opKind1, opKind2, storageKind;
+static void cx_vmOp2Storage(cx_ic_vmProgram *program, cx_vmOp *vmOp, cx_icOp op, cx_icValue storage, cx_icValue op1, cx_icValue op2, cx_icDerefMode storageDeref, cx_icDerefMode opDeref1, cx_icDerefMode opDeref2) {
+    cx_vmOp *vmStoredOp;
+    cx_type t;
+    cx_ic_vmType type;
+    cx_ic_vmOperand opKind1, opKind2, storageKind;
     
-    vmOp = db_vmGetTypeAndAssemble(program, vmOp, op, FALSE, storage, op1, op2, storageDeref, opDeref1, opDeref2,  &t, &type, &storageKind, &opKind1, &opKind2);
-    vmOp->op = db_ic_getVmSet(t, (db_icStorage)storage, type, storageKind, opKind1, storageDeref, opDeref1);
-    db_ic_vmSetOp2Addr(program, vmOp, type, storageKind, opKind1, storage, op1);
+    vmOp = cx_vmGetTypeAndAssemble(program, vmOp, op, FALSE, storage, op1, op2, storageDeref, opDeref1, opDeref2,  &t, &type, &storageKind, &opKind1, &opKind2);
+    vmOp->op = cx_ic_getVmSet(t, (cx_icStorage)storage, type, storageKind, opKind1, storageDeref, opDeref1);
+    cx_ic_vmSetOp2Addr(program, vmOp, type, storageKind, opKind1, storage, op1);
     
-    vmStoredOp = db_vmProgram_addOp(program->program, ((db_ic)op)->line);
-    vmStoredOp->op = db_ic_getVmOpKind(program, op, storage, t, type, storageKind, opKind2, storageDeref, opDeref2);
-    db_ic_vmSetOp2Addr(program, vmStoredOp, type, storageKind, opKind2, storage, op2);
+    vmStoredOp = cx_vmProgram_addOp(program->program, ((cx_ic)op)->line);
+    vmStoredOp->op = cx_ic_getVmOpKind(program, op, storage, t, type, storageKind, opKind2, storageDeref, opDeref2);
+    cx_ic_vmSetOp2Addr(program, vmStoredOp, type, storageKind, opKind2, storage, op2);
 }
 
 /* Set-instruction with two operands and a storage
@@ -2325,19 +2325,19 @@ static void db_vmOp2Storage(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op,
  * set  Operand1 Operand2 (vmOp)
  * set  Storage Operand1 (vmStoredOp)
  * */
-static void db_vmOp2Set(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, db_icValue storage, db_icValue op1, db_icValue op2, db_icDerefMode storageDeref, db_icDerefMode opDeref1, db_icDerefMode opDeref2) {
-    db_vmOp *vmStoredOp;
-    db_type t;
-    db_ic_vmType type;
-    db_ic_vmOperand opKind1, opKind2, storageKind;
+static void cx_vmOp2Set(cx_ic_vmProgram *program, cx_vmOp *vmOp, cx_icOp op, cx_icValue storage, cx_icValue op1, cx_icValue op2, cx_icDerefMode storageDeref, cx_icDerefMode opDeref1, cx_icDerefMode opDeref2) {
+    cx_vmOp *vmStoredOp;
+    cx_type t;
+    cx_ic_vmType type;
+    cx_ic_vmOperand opKind1, opKind2, storageKind;
     
-    vmOp = db_vmGetTypeAndAssemble(program, vmOp, op, FALSE, storage, op1, op2, storageDeref, opDeref1, opDeref2,  &t, &type, &storageKind, &opKind1, &opKind2);
-    vmOp->op = db_ic_getVmSet(t, (db_icStorage)op1, type, opKind1, opKind2, opDeref1, opDeref2);
-    db_ic_vmSetOp2Addr(program, vmOp, type, opKind1, opKind2, op1, op2);
+    vmOp = cx_vmGetTypeAndAssemble(program, vmOp, op, FALSE, storage, op1, op2, storageDeref, opDeref1, opDeref2,  &t, &type, &storageKind, &opKind1, &opKind2);
+    vmOp->op = cx_ic_getVmSet(t, (cx_icStorage)op1, type, opKind1, opKind2, opDeref1, opDeref2);
+    cx_ic_vmSetOp2Addr(program, vmOp, type, opKind1, opKind2, op1, op2);
 
-    vmStoredOp = db_vmProgram_addOp(program->program, ((db_ic)op)->line);
-    vmStoredOp->op = db_ic_getVmSet(t, (db_icStorage)storage, type, storageKind, opKind1, storageDeref, opDeref1);
-    db_ic_vmSetOp2Addr(program, vmStoredOp, type, storageKind, opKind1, storage, op1);
+    vmStoredOp = cx_vmProgram_addOp(program->program, ((cx_ic)op)->line);
+    vmStoredOp->op = cx_ic_getVmSet(t, (cx_icStorage)storage, type, storageKind, opKind1, storageDeref, opDeref1);
+    cx_ic_vmSetOp2Addr(program, vmStoredOp, type, storageKind, opKind1, storage, op1);
 }
 
 /* Instruction with two operands and two staged
@@ -2346,63 +2346,63 @@ static void db_vmOp2Set(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, db_
  * reason to do this with a stage rather than with a set is that a conditional operation has
  * a boolean value as a result, which can be of a different size than the operands.
  */
-static void db_vmOp2Staged(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, db_icValue storage, db_icValue op1, db_icValue op2, db_icDerefMode storageDeref, db_icDerefMode opDeref1, db_icDerefMode opDeref2) {
-    db_vmOp *vmStoredOp;
-    db_type t;
-    db_ic_vmType type;
-    db_ic_vmOperand opKind1, opKind2, storageKind;
+static void cx_vmOp2Staged(cx_ic_vmProgram *program, cx_vmOp *vmOp, cx_icOp op, cx_icValue storage, cx_icValue op1, cx_icValue op2, cx_icDerefMode storageDeref, cx_icDerefMode opDeref1, cx_icDerefMode opDeref2) {
+    cx_vmOp *vmStoredOp;
+    cx_type t;
+    cx_ic_vmType type;
+    cx_ic_vmOperand opKind1, opKind2, storageKind;
     
-    vmOp = db_vmGetTypeAndAssemble(program, vmOp, op, FALSE, storage, op1, op2, storageDeref, opDeref1, opDeref2,  &t, &type, &storageKind, &opKind1, &opKind2);
-    type = db_vmTranslateVmType(op->kind, type);
+    vmOp = cx_vmGetTypeAndAssemble(program, vmOp, op, FALSE, storage, op1, op2, storageDeref, opDeref1, opDeref2,  &t, &type, &storageKind, &opKind1, &opKind2);
+    type = cx_vmTranslateVmType(op->kind, type);
 
-    vmOp->op = db_ic_getVmSTAGE2(type, opKind1, opKind2);
-    db_ic_vmSetOp2Addr(program, vmOp, type, opKind1, opKind2, op1, op2);
+    vmOp->op = cx_ic_getVmSTAGE2(type, opKind1, opKind2);
+    cx_ic_vmSetOp2Addr(program, vmOp, type, opKind1, opKind2, op1, op2);
     
-    vmStoredOp = db_vmProgram_addOp(program->program, ((db_ic)op)->line);
-    vmStoredOp->op = db_ic_getVmOpKind(program, op, storage, t, type, storageKind, opKind1, storageDeref, opDeref1);
-    db_ic_vmSetOp1Addr(program, vmStoredOp, type, storageKind, storage);
+    vmStoredOp = cx_vmProgram_addOp(program->program, ((cx_ic)op)->line);
+    vmStoredOp->op = cx_ic_getVmOpKind(program, op, storage, t, type, storageKind, opKind1, storageDeref, opDeref1);
+    cx_ic_vmSetOp1Addr(program, vmStoredOp, type, storageKind, storage);
 }
 
 /* Cast instruction with either a reference cast or two staged types, a source and storage */
-static void db_vmOp2Cast(db_ic_vmProgram *program, db_vmOp *vmOp, db_icOp op, db_icValue storage, db_icValue op1, db_icValue op2, db_icDerefMode storageDeref, db_icDerefMode opDeref1, db_icDerefMode opDeref2) {
-    db_vmOp *vmStoredOp;
-    db_type sourceType, destinationType;
-    db_ic_vmType type;
-    db_ic_vmOperand opKind1, opKind2, storageKind;
+static void cx_vmOp2Cast(cx_ic_vmProgram *program, cx_vmOp *vmOp, cx_icOp op, cx_icValue storage, cx_icValue op1, cx_icValue op2, cx_icDerefMode storageDeref, cx_icDerefMode opDeref1, cx_icDerefMode opDeref2) {
+    cx_vmOp *vmStoredOp;
+    cx_type sourceType, destinationType;
+    cx_ic_vmType type;
+    cx_ic_vmOperand opKind1, opKind2, storageKind;
     
-    destinationType = db_ic_valueType(storage);
+    destinationType = cx_ic_valueType(storage);
     
     /* If destinationType is a reference, insert regular 2-operand instruction */
     if (destinationType->reference) {
-        db_vmOp2Storage(program, vmOp, op, storage, op1, op2, storageDeref, opDeref1, opDeref2);
+        cx_vmOp2Storage(program, vmOp, op, storage, op1, op2, storageDeref, opDeref1, opDeref2);
     /* If destinationType is not a reference, stage types and insert primitive cast */
     } else {
-        vmOp = db_vmGetTypeAndAssemble(program, vmOp, op, FALSE, storage, op1, op2, storageDeref, opDeref1, opDeref2,  &sourceType, &type, &storageKind, &opKind1, &opKind2);
-        type = db_vmTranslateVmType(op->kind, type);
+        vmOp = cx_vmGetTypeAndAssemble(program, vmOp, op, FALSE, storage, op1, op2, storageDeref, opDeref1, opDeref2,  &sourceType, &type, &storageKind, &opKind1, &opKind2);
+        type = cx_vmTranslateVmType(op->kind, type);
 
         if (sizeof(intptr_t) == 4) {
             vmOp->op = DB_VM_STAGE2_LVV;
         } else if (sizeof(intptr_t) == 8) {
             vmOp->op = DB_VM_STAGE2_DPP;
         }
-        vmOp->lo.w = (db_word)sourceType;
-        vmOp->hi.w = (db_word)destinationType;
+        vmOp->lo.w = (cx_word)sourceType;
+        vmOp->hi.w = (cx_word)destinationType;
         
-        vmStoredOp = db_vmProgram_addOp(program->program, ((db_ic)op)->line);
-        vmStoredOp->op = db_ic_getVmOpKind(program, op, storage, sourceType, type, storageKind, opKind1, storageDeref, opDeref1);
-        db_ic_vmSetOp2Addr(program, vmStoredOp, type, storageKind, opKind1, storage, op1);
+        vmStoredOp = cx_vmProgram_addOp(program->program, ((cx_ic)op)->line);
+        vmStoredOp->op = cx_ic_getVmOpKind(program, op, storage, sourceType, type, storageKind, opKind1, storageDeref, opDeref1);
+        cx_ic_vmSetOp2Addr(program, vmStoredOp, type, storageKind, opKind1, storage, op1);
     }
 }
 
-static void db_ic_getVmOp(db_ic_vmProgram *program, db_icOp op) {
-	db_icDerefMode opDeref1=0, opDeref2=0, storageDeref=0;
-	db_icValue op1 = NULL, op2 = NULL, storage = NULL;
-	db_vmOp *vmOp;
-	db_bool stageOperands = FALSE;
-    db_bool castOperands = FALSE;
+static void cx_ic_getVmOp(cx_ic_vmProgram *program, cx_icOp op) {
+	cx_icDerefMode opDeref1=0, opDeref2=0, storageDeref=0;
+	cx_icValue op1 = NULL, op2 = NULL, storage = NULL;
+	cx_vmOp *vmOp;
+	cx_bool stageOperands = FALSE;
+    cx_bool castOperands = FALSE;
 
 	/* Allocate operation */
-	vmOp = db_vmProgram_addOp(program->program, ((db_ic)op)->line);
+	vmOp = cx_vmProgram_addOp(program->program, ((cx_ic)op)->line);
 
 	switch(op->kind) {
 	/* Following operations do not have storage and one operand (op->s1 points to 1st operand) */
@@ -2453,9 +2453,9 @@ static void db_ic_getVmOp(db_ic_vmProgram *program, db_icOp op) {
 
 	/* Jump sets jump address */
 	case DB_IC_JUMP: {
-        db_ic_vmLabel *label;
-        label = db_ic_vmLabelGet(program, *(db_uint32*)db_ic_valueValue(program, op->s1));
-        db_ic_vmLabelAddReferee(program, label, &vmOp->lo.w);
+        cx_ic_vmLabel *label;
+        label = cx_ic_vmLabelGet(program, *(cx_uint32*)cx_ic_valueValue(program, op->s1));
+        cx_ic_vmLabelAddReferee(program, label, &vmOp->lo.w);
         op1 = NULL;
         op2 = NULL;
         storage = NULL;
@@ -2466,7 +2466,7 @@ static void db_ic_getVmOp(db_ic_vmProgram *program, db_icOp op) {
 	case DB_IC_CALL:
 		op1 = op->s1;
 		storage = NULL;
-		vmOp->hi.w = (db_word)((db_icObject)op->s2)->ptr;
+		vmOp->hi.w = (cx_word)((cx_icObject)op->s2)->ptr;
 		opDeref1 = op->s1Deref;
 		break;
 
@@ -2504,48 +2504,48 @@ static void db_ic_getVmOp(db_ic_vmProgram *program, db_icOp op) {
 			/* If operation has a storage-operand, insert set-operation */
 			if (storage && (storage != op1)) {
 				if (op->kind == DB_IC_SET) {
-					db_vmOp2Set(program, vmOp, op, storage, op1, op2, storageDeref, opDeref1, opDeref2);
+					cx_vmOp2Set(program, vmOp, op, storage, op1, op2, storageDeref, opDeref1, opDeref2);
 				} else{
 					if (!stageOperands) {
                         if (castOperands) {
-                            db_vmOp2Cast(program, vmOp, op, storage, op1, op2, storageDeref, opDeref1, opDeref2);
+                            cx_vmOp2Cast(program, vmOp, op, storage, op1, op2, storageDeref, opDeref1, opDeref2);
                         } else {
-                            db_vmOp2Storage(program, vmOp, op, storage, op1, op2, storageDeref, opDeref1, opDeref2);
+                            cx_vmOp2Storage(program, vmOp, op, storage, op1, op2, storageDeref, opDeref1, opDeref2);
                         }
                     } else {
-                        db_vmOp2Staged(program, vmOp, op, storage, op1, op2, storageDeref, opDeref1, opDeref2);
+                        cx_vmOp2Staged(program, vmOp, op, storage, op1, op2, storageDeref, opDeref1, opDeref2);
 					}
 				}
 			} else {
-				db_vmOp2(program, vmOp, op, op1, op2, opDeref1, opDeref2);
+				cx_vmOp2(program, vmOp, op, op1, op2, opDeref1, opDeref2);
 			}
 		/* Operation has one operand */
 		} else {
 			if (!stageOperands) {
-				db_vmOp1(program, vmOp, op, op1, opDeref1);
+				cx_vmOp1(program, vmOp, op, op1, opDeref1);
 			} else {
-                db_vmOp1Staged(program, vmOp, op, storage, op1, storageDeref, opDeref1);
+                cx_vmOp1Staged(program, vmOp, op, storage, op1, storageDeref, opDeref1);
 			}
 		}
 	} else {
-	    db_vmOp0(program, vmOp, op, storage, storageDeref);
+	    cx_vmOp0(program, vmOp, op, storage, storageDeref);
 	}
 }
 
-static db_int16 db_icOp_toVm(db_icOp op, db_ic_vmProgram *program) {
+static cx_int16 cx_icOp_toVm(cx_icOp op, cx_ic_vmProgram *program) {
 	DB_UNUSED(program);
 
 	if (!program->program) {
-	    program->program = db_vmProgram_new(program->icProgram->filename, program->function->function);
+	    program->program = cx_vmProgram_new(program->icProgram->filename, program->function->function);
 	}
 
 	/* If operation is push, increase stack-size */
 	if (op->kind == DB_IC_PUSH) {
         if(op->s1Any) {
-            program->stackSize += sizeof(db_any);
+            program->stackSize += sizeof(cx_any);
         }else {
-    	    db_type t = db_ic_valueType(op->s1);
-    	    program->stackSize += db_type_sizeof(t);
+    	    cx_type t = cx_ic_valueType(op->s1);
+    	    program->stackSize += cx_type_sizeof(t);
         }
 	    if (program->stackSize > program->maxStackSize) {
 	        program->maxStackSize = program->stackSize;
@@ -2553,10 +2553,10 @@ static db_int16 db_icOp_toVm(db_icOp op, db_ic_vmProgram *program) {
 	}
 
 	if (op->kind == DB_IC_CALL) {
-	    db_function f;
+	    cx_function f;
 
 	    /* When the function is a vm-function the vm will directly invoke the function
-	     * without using db_call. To avoid memcpy'ing between the stack of the calling
+	     * without using cx_call. To avoid memcpy'ing between the stack of the calling
 	     * function and the storage of the called function the stack is made as big as the
 	     * largest storage of all called functions.
 	     *
@@ -2564,15 +2564,15 @@ static db_int16 db_icOp_toVm(db_icOp op, db_ic_vmProgram *program) {
 	     * yet defined, setting the stack-size is in this case delayed until all functions
 	     * are assembled.
 	     */
-	    f = ((db_icObject)op->s2)->ptr;
+	    f = ((cx_icObject)op->s2)->ptr;
         if (f->kind == DB_PROCEDURE_VM) {
-            if (db_checkState(f, DB_DEFINED)) {
-                db_vmProgram inlineProgram = (db_vmProgram)f->implData;
+            if (cx_checkState(f, DB_DEFINED)) {
+                cx_vmProgram inlineProgram = (cx_vmProgram)f->implData;
                 if (inlineProgram->storage > program->maxStackSize) {
                     program->maxStackSize = inlineProgram->storage;
                 }
             } else {
-                db_ic_vmInlineFunctionMark(program, program->program, f);
+                cx_ic_vmInlineFunctionMark(program, program->program, f);
             }
 	    }
 
@@ -2580,13 +2580,13 @@ static db_int16 db_icOp_toVm(db_icOp op, db_ic_vmProgram *program) {
 	    program->stackSize = 0;
 	}
 
-	db_ic_getVmOp(program, op);
+	cx_ic_getVmOp(program, op);
 
 	return 0;
 }
 
-static db_uint16 db_ic_vmProgram_push(db_ic_vmProgram *program) {
-    db_uint16 result = 0;
+static cx_uint16 cx_ic_vmProgram_push(cx_ic_vmProgram *program) {
+    cx_uint16 result = 0;
 
     if (program->scope) {
         result = program->scopeSize[program->scope - 1];
@@ -2598,39 +2598,39 @@ static db_uint16 db_ic_vmProgram_push(db_ic_vmProgram *program) {
 	return result;
 }
 
-static void db_ic_vmProgram_setScopeSize(db_ic_vmProgram *program, db_uint16 size) {
+static void cx_ic_vmProgram_setScopeSize(cx_ic_vmProgram *program, cx_uint16 size) {
     program->scopeSize[program->scope-1] = size;
     if (size > program->maxScopeSize) {
     	program->maxScopeSize = size;
     }
 }
 
-static void db_ic_vmProgram_pop(db_ic_vmProgram *program) {
+static void cx_ic_vmProgram_pop(cx_ic_vmProgram *program) {
 	program->scope--;
 }
 
-static void db_icZeroLocal(db_ic_vmProgram *program, db_uint16 initStart, db_uint16 size) {
-    db_vmOp *vmOp;
+static void cx_icZeroLocal(cx_ic_vmProgram *program, cx_uint16 initStart, cx_uint16 size) {
+    cx_vmOp *vmOp;
 
-	vmOp = db_vmProgram_addOp(program->program, 0);
+	vmOp = cx_vmProgram_addOp(program->program, 0);
 
 	switch(size) {
-	case sizeof(db_uint8):
+	case sizeof(cx_uint8):
 		vmOp->op = DB_VM_SET_BRV;
 		vmOp->ic.b._1 = initStart;
 		vmOp->ic.b._2 = 0;
 		break;
-	case sizeof(db_uint16):
+	case sizeof(cx_uint16):
 		vmOp->op = DB_VM_SET_SRV;
 		vmOp->ic.b._1 = initStart;
 		vmOp->ic.b._2 = 0;
 		break;
-	case sizeof(db_uint32):
+	case sizeof(cx_uint32):
 		vmOp->op = DB_VM_SET_LRV;
 		vmOp->ic.b._1 = initStart;
 		vmOp->lo.w = 0;
 		break;
-	case sizeof(db_uint64):
+	case sizeof(cx_uint64):
 		vmOp->op = DB_VM_SET_DRV;
 		vmOp->ic.b._1 = initStart;
 		vmOp->lo.w = 0;
@@ -2643,40 +2643,40 @@ static void db_icZeroLocal(db_ic_vmProgram *program, db_uint16 initStart, db_uin
 	}
 }
 
-static void db_icInitLocal(db_ic_vmProgram *program, db_uint16 localAddr, db_type type) {
-    db_vmOp *vmOp;
+static void cx_icInitLocal(cx_ic_vmProgram *program, cx_uint16 localAddr, cx_type type) {
+    cx_vmOp *vmOp;
     
-	vmOp = db_vmProgram_addOp(program->program, 0);
+	vmOp = cx_vmProgram_addOp(program->program, 0);
 
     vmOp->op = DB_VM_INIT;
     vmOp->ic.b._1 = localAddr;
-    vmOp->lo.w = (db_word)type;
+    vmOp->lo.w = (cx_word)type;
 }
 
-static db_int16 db_icScope_toVm(db_icScope scope, db_ic_vmProgram *program) {
-    db_iter programIter, localIter;
-    db_ic ic;
-    db_int16 result = 0;
-    db_icStorage storage = NULL, local = NULL;
-    db_uint16 size, initStart;
-	db_ic_vmStorage *thisLocal = NULL;
+static cx_int16 cx_icScope_toVm(cx_icScope scope, cx_ic_vmProgram *program) {
+    cx_iter programIter, localIter;
+    cx_ic ic;
+    cx_int16 result = 0;
+    cx_icStorage storage = NULL, local = NULL;
+    cx_uint16 size, initStart;
+	cx_ic_vmStorage *thisLocal = NULL;
 
     /* Push a new scope to the program. This manages an administration
      * which keeps track of how much memory each scope requires. */
-    size = db_ic_vmProgram_push(program);
+    size = cx_ic_vmProgram_push(program);
 
     /* Add locals to program */
-    localIter = db_llIter(scope->storages);
+    localIter = cx_llIter(scope->storages);
     initStart = size;
-    while(db_iterHasNext(&localIter)) {
-    	storage = db_iterNext(&localIter);
+    while(cx_iterHasNext(&localIter)) {
+    	storage = cx_iterNext(&localIter);
     	if (storage->kind == DB_STORAGE_LOCAL) {
-    	    db_ic_vmStorage *vmLocal;
-            db_bool zeroLocal = TRUE;
+    	    cx_ic_vmStorage *vmLocal;
+            cx_bool zeroLocal = TRUE;
     	    local = storage;
 
     		/* Lookup local in program */
-	    	vmLocal = db_ic_vmStorageGet(program, local);
+	    	vmLocal = cx_ic_vmStorageGet(program, local);
 
 	    	/* The 'super' local is actually an alias for the 'this' local
 	    	 * with a different type. As such it doesn't need extra space and
@@ -2691,23 +2691,23 @@ static db_int16 db_icScope_toVm(db_icScope scope, db_ic_vmProgram *program) {
     	    		thisLocal = vmLocal;
     	    	}
 
-        		if (((db_icLocal)local)->isParameter) {
+        		if (((cx_icLocal)local)->isParameter) {
         			/* Parameters are not zero'd, so zero all locals up to this point */
         			if (initStart != size) {
-        				db_icZeroLocal(program, initStart, size - initStart);
+        				cx_icZeroLocal(program, initStart, size - initStart);
         			}
                     zeroLocal = FALSE;
-        		} else if (!local->isReference && (local->type->kind == DB_COLLECTION) && (db_collection(local->type)->kind == DB_LIST)) {
-                    db_icZeroLocal(program, initStart, size - initStart);
-                    db_icInitLocal(program, size, local->type);
+        		} else if (!local->isReference && (local->type->kind == DB_COLLECTION) && (cx_collection(local->type)->kind == DB_LIST)) {
+                    cx_icZeroLocal(program, initStart, size - initStart);
+                    cx_icInitLocal(program, size, local->type);
                     zeroLocal = FALSE;
                 }
 
         		/* Increase size */
-        		if (db_ic_isReference(local)) {
-					size += sizeof(db_word);
+        		if (cx_ic_isReference(local)) {
+					size += sizeof(cx_word);
         		} else {
-                    size += db_type_sizeof(local->type);
+                    size += cx_type_sizeof(local->type);
         		}
 
                 if (!zeroLocal) {
@@ -2718,53 +2718,53 @@ static db_int16 db_icScope_toVm(db_icScope scope, db_ic_vmProgram *program) {
     }
 
     if (size != initStart) {
-    	if (!((db_icLocal)local)->isParameter) {
-    		db_icZeroLocal(program, initStart, size - initStart);
+    	if (!((cx_icLocal)local)->isParameter) {
+    		cx_icZeroLocal(program, initStart, size - initStart);
     	}
     }
 
     /* Set size of scope so that child-scopes know where there locals starts. */
-    db_ic_vmProgram_setScopeSize(program, size);
+    cx_ic_vmProgram_setScopeSize(program, size);
 
-    programIter = db_llIter(scope->program);
-    while(db_iterHasNext(&programIter)) {
-        ic = db_iterNext(&programIter);
+    programIter = cx_llIter(scope->program);
+    while(cx_iterHasNext(&programIter)) {
+        ic = cx_iterNext(&programIter);
         switch(ic->kind) {
         case DB_IC_FUNCTION:
-            db_ic_vmProgram_finalize(program);
-            program->function = (db_icFunction)ic;
+            cx_ic_vmProgram_finalize(program);
+            program->function = (cx_icFunction)ic;
             break;
         case DB_IC_STORAGE:
         case DB_IC_LITERAL:
         	break;
         case DB_IC_LABEL:
-        	result = db_icLabel_toVm((db_icLabel)ic, program);
+        	result = cx_icLabel_toVm((cx_icLabel)ic, program);
         	break;
         case DB_IC_SCOPE:
-        	result = db_icScope_toVm((db_icScope)ic, program);
+        	result = cx_icScope_toVm((cx_icScope)ic, program);
         	break;
         case DB_IC_OP:
-        	result = db_icOp_toVm((db_icOp)ic, program);
+        	result = cx_icOp_toVm((cx_icOp)ic, program);
         	break;
         }
     }
 
-    db_ic_vmProgram_pop(program);
+    cx_ic_vmProgram_pop(program);
 
     return result;
 }
 
-db_vmProgram db_icProgram_toVm(db_icProgram program) {
-    db_ic_vmProgram vmProgram;
-    db_iter functionIter;
-    db_function function;
-    db_iter inlineFunctionIter;
-    db_ic_vmInlineFunction *inlineFunction;
+cx_vmProgram cx_icProgram_toVm(cx_icProgram program) {
+    cx_ic_vmProgram vmProgram;
+    cx_iter functionIter;
+    cx_function function;
+    cx_iter inlineFunctionIter;
+    cx_ic_vmInlineFunction *inlineFunction;
     
     if (!program->errors) {
         /* Parse main-program */
         vmProgram.icProgram = program;
-        vmProgram.main = db_vmProgram_new(program->filename, NULL);
+        vmProgram.main = cx_vmProgram_new(program->filename, NULL);
         vmProgram.program = vmProgram.main;
         vmProgram.function = NULL;
         vmProgram.labels = NULL;
@@ -2778,34 +2778,34 @@ db_vmProgram db_icProgram_toVm(db_icProgram program) {
         /* Set kind of functions to VM - that way they can be
          * recognized as such and make usage of optimzations available
          * when calling vm-to-vm functions. */
-        functionIter = db_llIter(program->functions);
-        while(db_iterHasNext(&functionIter)) {
-            function = ((db_icFunction)db_iterNext(&functionIter))->function;
+        functionIter = cx_llIter(program->functions);
+        while(cx_iterHasNext(&functionIter)) {
+            function = ((cx_icFunction)cx_iterNext(&functionIter))->function;
             function->kind = DB_PROCEDURE_VM;
         }
 
         /* Start assembling */
-        if (db_icScope_toVm(program->scope, &vmProgram)) {
+        if (cx_icScope_toVm(program->scope, &vmProgram)) {
             goto error;
         }
 
         /* Finalize last program */
-        db_ic_vmProgram_finalize(&vmProgram);
+        cx_ic_vmProgram_finalize(&vmProgram);
 
         /* Correct stack-sizes for inline functions that have been finalized
          * after they were encountered */
         if (vmProgram.inlineFunctions) {
-            inlineFunctionIter = db_llIter(vmProgram.inlineFunctions);
-            while(db_iterHasNext(&inlineFunctionIter)) {
-                db_vmProgram program;
-                inlineFunction = db_iterNext(&inlineFunctionIter);
-                program = (db_vmProgram)inlineFunction->function->implData;
+            inlineFunctionIter = cx_llIter(vmProgram.inlineFunctions);
+            while(cx_iterHasNext(&inlineFunctionIter)) {
+                cx_vmProgram program;
+                inlineFunction = cx_iterNext(&inlineFunctionIter);
+                program = (cx_vmProgram)inlineFunction->function->implData;
                 if (program->storage > inlineFunction->program->stack) {
                     inlineFunction->program->stack = program->storage;
                 }
-                db_dealloc(inlineFunction);
+                cx_dealloc(inlineFunction);
             }
-            db_llFree(vmProgram.inlineFunctions);
+            cx_llFree(vmProgram.inlineFunctions);
         }
     } else {
         printf("%s: program contains errors, cannot compile.\n", program->filename);

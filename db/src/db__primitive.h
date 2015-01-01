@@ -1,5 +1,5 @@
 /*
- * db__primitive.h
+ * cx__primitive.h
  *
  *  Created on: Aug 28, 2012
  *      Author: sander
@@ -8,7 +8,7 @@
 #ifndef DB__PRIMITIVE_H_
 #define DB__PRIMITIVE_H_
 
-#include "db_primitive.h"
+#include "cx_primitive.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -16,9 +16,9 @@ extern "C" {
 
 #define DB_PRIMITIVE_MAX_CONVERTID (24)
 
-db_uint8 db__primitive_convertId(db_primitiveKind kind, db_width width);
+cx_uint8 cx__primitive_convertId(cx_primitiveKind kind, cx_width width);
 
-db_int16 db__bitmask_bindConstant(db_bitmask _this, db_constant* c);
+cx_int16 cx__bitmask_bindConstant(cx_bitmask _this, cx_constant* c);
 
 #ifdef __cplusplus
 }

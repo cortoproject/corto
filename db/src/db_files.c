@@ -11,8 +11,8 @@
 #include <limits.h>
 #endif
 
-#include "db_files.h"
-#include "db_mem.h"
+#include "cx_files.h"
+#include "cx_mem.h"
 
 /*
  * Receives:
@@ -35,10 +35,10 @@ static void printError(int e, const char *msg) {
         default: sprintf(errorrepr, "unknown code"); break;
     }
     
-    db_error("(%s): %s.", errorrepr, msg);
+    cx_error("(%s): %s.", errorrepr, msg);
 }
 
-int db_mkdir(const char *name) {
+int cx_mkdir(const char *name) {
     struct stat st = {0};
     int _errno;
     char msg[PATH_MAX];
@@ -57,7 +57,7 @@ error:
     return -1;
 }
 
-int db_cp(const char *sourcePath, const char *destinationPath) {
+int cx_cp(const char *sourcePath, const char *destinationPath) {
     int _errno;
     char msg[PATH_MAX];
     FILE *destinationFile;
@@ -88,7 +88,7 @@ int db_cp(const char *sourcePath, const char *destinationPath) {
     fileSize = (size_t)ftell(sourceFile);
     rewind(sourceFile);
 
-    char *buffer = db_malloc(fileSize);
+    char *buffer = cx_malloc(fileSize);
     if (!buffer) {
         _errno = 0;
         sprintf(msg, "Cannot allocate buffer for copying files");
@@ -107,7 +107,7 @@ int db_cp(const char *sourcePath, const char *destinationPath) {
         goto error_CloseFiles_FreeBuffer;
     }
 
-    db_dealloc(buffer);
+    cx_dealloc(buffer);
     fclose(sourceFile);
     fclose(destinationFile);
 

@@ -6,19 +6,19 @@
  */
 
 #include "cortex.h"
-#include "db_loader.h"
+#include "cx_loader.h"
 
-extern db_bool DB_DEBUG_ENABLED;
+extern cx_bool DB_DEBUG_ENABLED;
 
 int main(int argc, char* argv[]) {
     int i;
-    db_id filename;
+    cx_id filename;
 
     /* Start database */
-    db_start();
+    cx_start();
 
     /* Pre-load cortex-ast parser */
-    db_load("fast");
+    cx_load("fast");
 
     /* Parse arguments */
     for(i=1; i<argc; i++) {
@@ -29,18 +29,18 @@ int main(int argc, char* argv[]) {
         } else
     	if (!strstr(argv[i], ".cx")) {
             sprintf(filename, "%s.cx", argv[i]);
-            if (db_load(filename)) {
-            	db_error("failed to load file '%s'", argv[i]);
+            if (cx_load(filename)) {
+            	cx_error("failed to load file '%s'", argv[i]);
             }
     	} else {
-    		if (db_load(argv[i])) {
-    			db_error("failed to load file '%s'", argv[i]);
+    		if (cx_load(argv[i])) {
+    			cx_error("failed to load file '%s'", argv[i]);
     		}
     	}
     }
 
     /* Stop database */
-    db_stop();
+    cx_stop();
 
     return 0;
 }

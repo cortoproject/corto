@@ -1,4 +1,4 @@
-/* db_dispatcher.c
+/* cx_dispatcher.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -7,10 +7,10 @@
  */
 
 #include "db.h"
-#include "db__meta.h"
+#include "cx__meta.h"
 
 /* ::cortex::lang::dispatcher::getEvent(lang::observer observer,lang::object me,lang::object observable,lang::object src) */
-db_observableEvent db_dispatcher_getEvent_v(db_dispatcher _this, db_observer observer, db_object me, db_object observable, db_object src) {
+cx_observableEvent cx_dispatcher_getEvent_v(cx_dispatcher _this, cx_observer observer, cx_object me, cx_object observable, cx_object src) {
 /* $begin(::cortex::lang::dispatcher::getEvent) */
 
     DB_UNUSED(_this);
@@ -24,7 +24,7 @@ db_observableEvent db_dispatcher_getEvent_v(db_dispatcher _this, db_observer obs
 }
 
 /* ::cortex::lang::dispatcher::post(lang::event event) */
-db_void db_dispatcher_post_v(db_dispatcher _this, db_event event) {
+cx_void cx_dispatcher_post_v(cx_dispatcher _this, cx_event event) {
 /* $begin(::cortex::lang::dispatcher::post) */
 
     DB_UNUSED(_this);

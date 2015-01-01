@@ -1,5 +1,5 @@
 /*
- * db_util.h
+ * cx_util.h
  *
  *  Created on: Apr 10, 2012
  *      Author: sander
@@ -19,7 +19,7 @@ extern "C" {
 #define DB_OFFSET(o, offset) (void*)(((uintptr_t)o) + ((uintptr_t)offset))
 
 /* Determine alignment of struct */
-#define DB_ALIGNMENT(t) ((db_word)(&((struct {db_char dummy;t alignMember;}*)(void *)0)->alignMember))
+#define DB_ALIGNMENT(t) ((cx_word)(&((struct {cx_char dummy;t alignMember;}*)(void *)0)->alignMember))
 
 /* Determine offset based on size of type and alignment */
 #define DB_ALIGN(size,alignment) ((((size-1)/alignment)+1)*alignment)
@@ -31,7 +31,7 @@ extern "C" {
 #define DB_TYPEHASH_MAX (50)
 
 /* 16bit value for convenient matching on scope-characters */
-#define DB_SCOPE_HEX ((db_uint16)(0x3A3A)) /* '::' */
+#define DB_SCOPE_HEX ((cx_uint16)(0x3A3A)) /* '::' */
 
 #ifdef __cplusplus
 }

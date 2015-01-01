@@ -1,14 +1,14 @@
 
 #include "db.h"
-#include "db_generator.h"
-#include "db_files.h"
-#include "db_file.h"
+#include "cx_generator.h"
+#include "cx_files.h"
+#include "cx_file.h"
 
 /* Generate file containing component loader */
-static db_int16 c_projectGenerateMainFile(db_generator g) {
-	db_id filename;
+static cx_int16 c_projectGenerateMainFile(cx_generator g) {
+	cx_id filename;
 	g_file file;
-    db_string snippet;
+    cx_string snippet;
 
 	sprintf(filename, "%s__load.c", g_getName(g));
 
@@ -52,11 +52,11 @@ error:
 }
 
 /* Generate makefile for project */
-static db_int16 c_projectGenerateMakefile(db_generator g) {
+static cx_int16 c_projectGenerateMakefile(cx_generator g) {
 	g_file file;
 
     /* Only generate makefile when no makefile is present */
-    if(!db_fileTest("makefile")) {
+    if(!cx_fileTest("makefile")) {
     	file = g_fileOpen(g, "makefile");
     	if(!file) {
     		goto error;
@@ -74,11 +74,11 @@ error:
 }
 
 /* Generator main */
-db_int16 cortex_genMain(db_generator g) {
+cx_int16 cortex_genMain(cx_generator g) {
 
     /* Create source and include directories */
-    db_mkdir("src");
-    db_mkdir("include");
+    cx_mkdir("src");
+    cx_mkdir("include");
 
 	if(c_projectGenerateMainFile(g)) {
 		goto error;

@@ -1,5 +1,5 @@
 /*
- * db_serializer.h
+ * cx_serializer.h
  *
  *  Created on: Aug 22, 2012
  *      Author: sander
@@ -8,45 +8,45 @@
 #ifndef DB_SERIALIZER_H_
 #define DB_SERIALIZER_H_
 
-#include "db__type.h"
-#include "db_value.h"
+#include "cx__type.h"
+#include "cx_value.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-DB_CLASS(db_serializer);
+DB_CLASS(cx_serializer);
 
-typedef db_int16(*db_serializerCallback)(db_serializer _this, db_value *v, void* userData);
-typedef db_int16(*db_serializerConstruct)(db_serializer _this, db_value *v, void* userData);
-typedef db_int16(*db_serializerDestruct)(db_serializer _this, void* userData);
+typedef cx_int16(*cx_serializerCallback)(cx_serializer _this, cx_value *v, void* userData);
+typedef cx_int16(*cx_serializerConstruct)(cx_serializer _this, cx_value *v, void* userData);
+typedef cx_int16(*cx_serializerDestruct)(cx_serializer _this, void* userData);
 
-typedef enum db_serializerTraceKind {
+typedef enum cx_serializerTraceKind {
     DB_SERIALIZER_TRACE_ALWAYS,
     DB_SERIALIZER_TRACE_ON_FAIL,
     DB_SERIALIZER_TRACE_NEVER
-}db_serializerTraceKind;
+}cx_serializerTraceKind;
 
-DB_CLASS_DEF(db_serializer) {
-    db_bool initialized;
-    db_bool constructed;
-    db_modifier access;
-    db_operatorKind accessKind; /* OR, XOR, NOT */
-    db_serializerTraceKind traceKind;
-    db_serializerConstruct construct;
-    db_serializerDestruct destruct;
-    db_serializerCallback program[DB_COLLECTION+1];
-    db_serializerCallback metaprogram[DB_CONSTANT+1];
-    db_serializerCallback reference;
+DB_CLASS_DEF(cx_serializer) {
+    cx_bool initialized;
+    cx_bool constructed;
+    cx_modifier access;
+    cx_operatorKind accessKind; /* OR, XOR, NOT */
+    cx_serializerTraceKind traceKind;
+    cx_serializerConstruct construct;
+    cx_serializerDestruct destruct;
+    cx_serializerCallback program[DB_COLLECTION+1];
+    cx_serializerCallback metaprogram[DB_CONSTANT+1];
+    cx_serializerCallback reference;
 };
 
-db_int16 db_serialize(db_serializer _this, db_object o, void* userData);
-void db_serializerInit(db_serializer _this);
-db_int16 db_serializeDestruct(db_serializer _this, void* userData);
-db_int16 db_serializeAny(db_serializer _this, db_value* info, void* userData);
-db_int16 db_serializeMembers(db_serializer _this, db_value* info, void* userData);
-db_int16 db_serializeElements(db_serializer _this, db_value* info, void* userData);
-db_int16 db_serializeValue(db_serializer _this, db_value* info, void* userData);
+cx_int16 cx_serialize(cx_serializer _this, cx_object o, void* userData);
+void cx_serializerInit(cx_serializer _this);
+cx_int16 cx_serializeDestruct(cx_serializer _this, void* userData);
+cx_int16 cx_serializeAny(cx_serializer _this, cx_value* info, void* userData);
+cx_int16 cx_serializeMembers(cx_serializer _this, cx_value* info, void* userData);
+cx_int16 cx_serializeElements(cx_serializer _this, cx_value* info, void* userData);
+cx_int16 cx_serializeValue(cx_serializer _this, cx_value* info, void* userData);
 
 #ifdef __cplusplus
 }

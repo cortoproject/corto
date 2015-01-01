@@ -1,4 +1,4 @@
-/* db_boolean.c
+/* cx_boolean.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -7,13 +7,13 @@
  */
 
 #include "db.h"
-#include "db__meta.h"
+#include "cx__meta.h"
 
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::boolean::init(lang::boolean object) */
-db_int16 db_boolean_init(db_boolean object) {
+cx_int16 cx_boolean_init(cx_boolean object) {
 /* $begin(::cortex::lang::boolean::init) */
-    db_primitive(object)->kind = DB_BOOLEAN;
-    db_primitive(object)->width = DB_WIDTH_8;
-    return db_primitive_init((db_primitive)object);
+    cx_primitive(object)->kind = DB_BOOLEAN;
+    cx_primitive(object)->width = DB_WIDTH_8;
+    return cx_primitive_init((cx_primitive)object);
 /* $end */
 }

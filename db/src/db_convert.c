@@ -1,42 +1,42 @@
 /*
- * db_convert.c
+ * cx_convert.c
  *
  *  Created on: Aug 23, 2012
  *      Author: sander
  */
 
-#include "db_object.h"
-#include "db_convert.h"
-#include "db_util.h"
-#include "db_err.h"
-#include "db_mem.h"
-#include "db__primitive.h"
+#include "cx_object.h"
+#include "cx_convert.h"
+#include "cx_util.h"
+#include "cx_err.h"
+#include "cx_mem.h"
+#include "cx__primitive.h"
 #include "stddef.h"
 #include "stdint.h"
 #include "inttypes.h"
 #include "db.h"
 
-typedef db_int16 (*db_conversion)(db_primitive fromType, void* from, db_primitive toType, void* to);
+typedef cx_int16 (*cx_conversion)(cx_primitive fromType, void* from, cx_primitive toType, void* to);
 
-static db_conversion _conversions[DB_PRIMITIVE_MAX_CONVERTID+1][DB_PRIMITIVE_MAX_CONVERTID+1];
+static cx_conversion _conversions[DB_PRIMITIVE_MAX_CONVERTID+1][DB_PRIMITIVE_MAX_CONVERTID+1];
 
 /* Conversion functionname */
-#define DB_NAME_TRANSFORM(from, to) __db_##from##_##to##_convert
+#define DB_NAME_TRANSFORM(from, to) __cx_##from##_##to##_convert
 
 /* Templates for transformator functions */
-#define DB_DECL_TRANSFORM(typeFrom, typeTo) static db_int16 DB_NAME_TRANSFORM(typeFrom, typeTo) (db_primitive fromType, void* from, db_primitive toType, void* to)
+#define DB_DECL_TRANSFORM(typeFrom, typeTo) static cx_int16 DB_NAME_TRANSFORM(typeFrom, typeTo) (cx_primitive fromType, void* from, cx_primitive toType, void* to)
 
 /* Conversion typedefs for char and floating point types (integer types come from stdint.h) */
 typedef char char8_t;
 typedef wchar_t char16_t;
 typedef float float32_t;
 typedef double float64_t;
-typedef db_int8 bin8_t;
-typedef db_int16 bin16_t;
-typedef db_int32 bin32_t;
-typedef db_int64 bin64_t;
-typedef db_word word_t;
-typedef db_bool bool_t;
+typedef cx_int8 bin8_t;
+typedef cx_int16 bin16_t;
+typedef cx_int32 bin32_t;
+typedef cx_int64 bin64_t;
+typedef cx_word word_t;
+typedef cx_bool bool_t;
 
 /* Conversions between numeric types */
 #define DB_CONVERT_NUM(typeFrom, typeTo) \
@@ -63,11 +63,11 @@ typedef db_bool bool_t;
 /* Conversions to string */
 #define DB_CONVERT_TO_STR(typeFrom, fmt) \
     DB_DECL_TRANSFORM(typeFrom,string) {\
-        char* str = db_malloc(128);\
+        char* str = cx_malloc(128);\
         DB_UNUSED(fromType);\
         DB_UNUSED(toType);\
         sprintf(str, fmt, *(typeFrom##_t*)from);\
-        *(db_string*)to = str;\
+        *(cx_string*)to = str;\
         return 0;\
     }
 
@@ -76,7 +76,7 @@ typedef db_bool bool_t;
     DB_DECL_TRANSFORM(string, typeTo) {\
         DB_UNUSED(fromType);\
         DB_UNUSED(toType);\
-        *(typeTo##_t*)to = **(db_string*)from;\
+        *(typeTo##_t*)to = **(cx_string*)from;\
         return 0;\
     }
 
@@ -85,7 +85,7 @@ typedef db_bool bool_t;
     DB_DECL_TRANSFORM(string, typeTo) {\
         DB_UNUSED(fromType);\
         DB_UNUSED(toType);\
-        *(typeTo##_t*)to = atoi(*(db_string*)from);\
+        *(typeTo##_t*)to = atoi(*(cx_string*)from);\
         return 0;\
     }
 
@@ -94,7 +94,7 @@ typedef db_bool bool_t;
     DB_DECL_TRANSFORM(string, typeTo) {\
         DB_UNUSED(fromType);\
         DB_UNUSED(toType);\
-        *(typeTo##_t*)to = atof(*(db_string*)from);\
+        *(typeTo##_t*)to = atof(*(cx_string*)from);\
         return 0;\
     }
 
@@ -102,10 +102,10 @@ typedef db_bool bool_t;
 DB_DECL_TRANSFORM(string, string) {
     DB_UNUSED(toType);
     DB_UNUSED(fromType);
-    if (*(db_string*)from) {
-        *(db_string*)to = db_strdup(*(db_string*)from);
+    if (*(cx_string*)from) {
+        *(cx_string*)to = cx_strdup(*(cx_string*)from);
     } else {
-    	*(db_string*)to = NULL;
+    	*(cx_string*)to = NULL;
     }
     return 0;
 }
@@ -115,24 +115,24 @@ DB_DECL_TRANSFORM(boolean, string) {
     DB_UNUSED(toType);
     DB_UNUSED(fromType);
 
-    if (*(db_bool*)from) {
-        *(db_string*)to = db_strdup("true");
+    if (*(cx_bool*)from) {
+        *(cx_string*)to = cx_strdup("true");
     } else {
-        *(db_string*)to = db_strdup("false");
+        *(cx_string*)to = cx_strdup("false");
     }
     return 0;
 }
 
 /* string to boolean */
 DB_DECL_TRANSFORM(string, boolean) {
-    db_string str;
+    cx_string str;
     DB_UNUSED(toType);
     DB_UNUSED(fromType);
-    str = *(db_string*)from;
+    str = *(cx_string*)from;
     if (!strcmp(str, "TRUE") || !strcmp(str, "true")) {
-        *(db_bool*)to = TRUE;
+        *(cx_bool*)to = TRUE;
     } else if (!strcmp(str, "FALSE") || !strcmp(str, "false")) {
-        *(db_bool*)to = FALSE;
+        *(cx_bool*)to = FALSE;
     } else {
         return -1;
     }
@@ -141,30 +141,30 @@ DB_DECL_TRANSFORM(string, boolean) {
 
 /* enum to string */
 DB_DECL_TRANSFORM(enum, string) {
-    db_object constant;
+    cx_object constant;
     DB_UNUSED(toType);
-    constant = db_enum_constant((db_enum)fromType, *(db_int32*)from);
+    constant = cx_enum_constant((cx_enum)fromType, *(cx_int32*)from);
     if (!constant) {
-        db_id fullname;
-        db_error("value %d is not valid for enumeration '%s'.", *(db_uint32*)from, db_fullname(fromType, fullname));
+        cx_id fullname;
+        cx_error("value %d is not valid for enumeration '%s'.", *(cx_uint32*)from, cx_fullname(fromType, fullname));
         return -1;
     }
-    *(db_string*)to = db_strdup(db_nameof(constant));
+    *(cx_string*)to = cx_strdup(cx_nameof(constant));
     return 0;
 }
 
 /* string to enum */
 DB_DECL_TRANSFORM(string, enum) {
-    db_constant* o;
+    cx_constant* o;
     DB_UNUSED(fromType);
-    o = db_resolve_ext(NULL, toType, *(db_string*)from, FALSE, "Resolve enumeration");
+    o = cx_resolve_ext(NULL, toType, *(cx_string*)from, FALSE, "Resolve enumeration");
     if (!o) {
-        db_id fullname;
-        db_error("constant identifier '%s' is not valid for enumeration '%s'.", *(db_string*)from, db_fullname(toType, fullname));
+        cx_id fullname;
+        cx_error("constant identifier '%s' is not valid for enumeration '%s'.", *(cx_string*)from, cx_fullname(toType, fullname));
         goto error;
     } else {
-        *(db_int32*)to = *o;
-        db_free(o);
+        *(cx_int32*)to = *o;
+        cx_free(o);
     }
     return 0;
 error:
@@ -175,7 +175,7 @@ error:
 DB_DECL_TRANSFORM(enum, int32) {
     DB_UNUSED(fromType);
     DB_UNUSED(toType);
-    *(db_int32*)to = *(db_constant*)from;
+    *(cx_int32*)to = *(cx_constant*)from;
     return 0;
 }
 
@@ -183,7 +183,7 @@ DB_DECL_TRANSFORM(enum, int32) {
 DB_DECL_TRANSFORM(int32, enum) {
     DB_UNUSED(fromType);
     DB_UNUSED(toType);
-    *(db_constant*)to = *(db_int32*)from;
+    *(cx_constant*)to = *(cx_int32*)from;
     return 0;
 }
 
@@ -191,7 +191,7 @@ DB_DECL_TRANSFORM(int32, enum) {
 DB_DECL_TRANSFORM(enum, int64) {
     DB_UNUSED(fromType);
     DB_UNUSED(toType);
-    *(db_int64*)to = *(db_constant*)from;
+    *(cx_int64*)to = *(cx_constant*)from;
     return 0;
 }
 
@@ -199,62 +199,62 @@ DB_DECL_TRANSFORM(enum, int64) {
 DB_DECL_TRANSFORM(int64, enum) {
     DB_UNUSED(fromType);
     DB_UNUSED(toType);
-    *(db_constant*)to = *(db_int64*)from;
+    *(cx_constant*)to = *(cx_int64*)from;
     return 0;
 }
 
 /* bitmask to string */
 DB_DECL_TRANSFORM(bitmask, string) {
-    db_object constant;
-    db_constant v, cv;
-    db_uint32 i, length;
-    db_string result;
+    cx_object constant;
+    cx_constant v, cv;
+    cx_uint32 i, length;
+    cx_string result;
     DB_UNUSED(toType);
 
-    v = *(db_constant*)from;
+    v = *(cx_constant*)from;
     result = NULL;
     length = 1; /* 0-terminator */
 
 
-	for(i=0; i<db_enum(fromType)->constants.length;i++) {
-		constant = db_enum(fromType)->constants.buffer[i];
-		cv = *(db_constant*)constant;
+	for(i=0; i<cx_enum(fromType)->constants.length;i++) {
+		constant = cx_enum(fromType)->constants.buffer[i];
+		cv = *(cx_constant*)constant;
 
 		if ((((cv & v) == cv) && cv) || !(cv | v)) {
-			length += strlen(db_nameof(constant));
+			length += strlen(cx_nameof(constant));
 			if (!result) {
-				result = db_realloc(result, length);
+				result = cx_realloc(result, length);
 				*result = '\0';
 			} else {
 				length+=1;
-				result = db_realloc(result, length);
+				result = cx_realloc(result, length);
 				strcat(result, "|");
 			}
 
-			strcat(result, db_nameof(constant));
+			strcat(result, cx_nameof(constant));
 		}
 	}
 
 	if (!result) {
-		result = db_strdup("0");
+		result = cx_strdup("0");
 	}
 
-    *(db_string*)to = result;
+    *(cx_string*)to = result;
 
     return 0;
 }
 
 /* string to bitmask */
 DB_DECL_TRANSFORM(string, bitmask) {
-    db_id buffer;
-    db_string fromstr;
-    db_char *ptr, *bptr, ch;
-    db_constant v;
-    db_object constant;
+    cx_id buffer;
+    cx_string fromstr;
+    cx_char *ptr, *bptr, ch;
+    cx_constant v;
+    cx_object constant;
 
     DB_UNUSED(fromType);
 
-    fromstr = *(db_string*)from;
+    fromstr = *(cx_string*)from;
     bptr = buffer;
     ptr = fromstr;
     v = 0;
@@ -266,19 +266,19 @@ DB_DECL_TRANSFORM(string, bitmask) {
             case '|':
             case '\0':
                 *bptr = '\0';
-                constant = db_lookup(toType, buffer);
+                constant = cx_lookup(toType, buffer);
                 if (!constant) {
-                    db_id fullname;
-                    db_error("constant identifier '%s' is not valid for bitmask '%s'.", buffer, db_fullname(toType, fullname));
+                    cx_id fullname;
+                    cx_error("constant identifier '%s' is not valid for bitmask '%s'.", buffer, cx_fullname(toType, fullname));
                     v = 0;
                     goto error;
                 }
 
                 /* 'or' constant-value with resultvalue. */
-                v |= *(db_constant*)constant;
+                v |= *(cx_constant*)constant;
                 bptr = buffer;
 
-                db_free(constant);
+                cx_free(constant);
 
                 break;
             default:
@@ -294,7 +294,7 @@ DB_DECL_TRANSFORM(string, bitmask) {
         }while(1);
     }
 
-    *(db_constant*)to = v;
+    *(cx_constant*)to = v;
 
     return 0;
 error:
@@ -370,7 +370,7 @@ DB_CONVERT_FROM_STR_FLOAT(float64)
 
 /* Init numeric conversion slot */
 #define DB_CONVERT_INIT_NUM(kind, width, toKind, toWidth, fromType, toType)\
-    _conversions[db__primitive_convertId(kind, width)][db__primitive_convertId(toKind, toWidth)] = DB_NAME_TRANSFORM(fromType, toType)
+    _conversions[cx__primitive_convertId(kind, width)][cx__primitive_convertId(toKind, toWidth)] = DB_NAME_TRANSFORM(fromType, toType)
 
 /* All numeric conversion slots */
 #define DB_CONVERT_INIT_NUM_ALL(kind, width, type)\
@@ -419,7 +419,7 @@ DB_CONVERT_FROM_STR_FLOAT(float64)
     DB_CONVERT_INIT_NUM(kind, width, DB_TEXT, DB_WIDTH_WORD, type, string);\
 
 /* Init conversions */
-void db_convertInit(void) {
+void cx_convertInit(void) {
     DB_CONVERT_INIT_NUM_INT(DB_BOOLEAN, DB_WIDTH_8, bool);
 	DB_CONVERT_INIT_NUM_INT(DB_BINARY, DB_WIDTH_8, uint8);
 	DB_CONVERT_INIT_NUM_INT(DB_BINARY, DB_WIDTH_16, int16);
@@ -498,8 +498,8 @@ void db_convertInit(void) {
 }
 
 /* Convert a value from one primitive type to another */
-db_int16 db_convert(db_primitive fromType, void *from, db_primitive toType, void *to) {
-    db_conversion c;
+cx_int16 cx_convert(cx_primitive fromType, void *from, cx_primitive toType, void *to) {
+    cx_conversion c;
     
     /* Get conversion */
     c = _conversions[fromType->convertId][toType->convertId];
@@ -509,8 +509,8 @@ db_int16 db_convert(db_primitive fromType, void *from, db_primitive toType, void
             goto error;
         }
     } else {
-        db_id id1, id2;
-        db_error("no conversion possible from primitive type '%s' to '%s'.", db_fullname(fromType, id1), db_fullname(toType, id2));
+        cx_id id1, id2;
+        cx_error("no conversion possible from primitive type '%s' to '%s'.", cx_fullname(fromType, id1), cx_fullname(toType, id2));
         goto error;
     }
 

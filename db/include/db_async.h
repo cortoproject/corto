@@ -1,5 +1,5 @@
 /*
- * db_async.h
+ * cx_async.h
  *
  *  Created on: 20 aug. 2010
  *      Author: Sander
@@ -8,8 +8,8 @@
 #ifndef DB_ASYNC_H_
 #define DB_ASYNC_H_
 
-#include "db__type.h"
-#include "db_async_posix.h"
+#include "cx__type.h"
+#include "cx_async_posix.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -18,59 +18,59 @@ extern "C" {
 #define DB_LOCK_BUSY (1)
 
 /* Thread */
-typedef unsigned long int db_thread;
-typedef void* (*db_threadFunc)(void*);
+typedef unsigned long int cx_thread;
+typedef void* (*cx_threadFunc)(void*);
 
-db_thread db_threadNew(db_threadFunc f, void* arg);
-int db_threadJoin(db_thread thread, void**);
-int db_threadDetach(db_thread thread);
-int db_threadFree(db_thread thread);
-int db_threadSetPriority(db_thread thread, int priority);
-int db_threadGetPriority(db_thread thread);
-int db_threadKill(db_thread, int signal);
-int db_threadCancel(db_thread);
-db_thread db_threadSelf(void);
-int db_threadTlsKey(db_threadKey* key, void(*destructor)(void*));
-int db_threadTlsSet(db_threadKey key, void* value);
-void* db_threadTlsGet(db_threadKey key);
+cx_thread cx_threadNew(cx_threadFunc f, void* arg);
+int cx_threadJoin(cx_thread thread, void**);
+int cx_threadDetach(cx_thread thread);
+int cx_threadFree(cx_thread thread);
+int cx_threadSetPriority(cx_thread thread, int priority);
+int cx_threadGetPriority(cx_thread thread);
+int cx_threadKill(cx_thread, int signal);
+int cx_threadCancel(cx_thread);
+cx_thread cx_threadSelf(void);
+int cx_threadTlsKey(cx_threadKey* key, void(*destructor)(void*));
+int cx_threadTlsSet(cx_threadKey key, void* value);
+void* cx_threadTlsGet(cx_threadKey key);
 
 /* Mutex */
-typedef struct db_mutex_s* db_mutex;
+typedef struct cx_mutex_s* cx_mutex;
 
-struct db_mutex_s db_mutexNew(void);
-int db_mutexLock(db_mutex mutex);
-int db_mutexUnlock(db_mutex mutex);
-int db_mutexFree(db_mutex mutex);
-int db_mutexTry(db_mutex mutex);
+struct cx_mutex_s cx_mutexNew(void);
+int cx_mutexLock(cx_mutex mutex);
+int cx_mutexUnlock(cx_mutex mutex);
+int cx_mutexFree(cx_mutex mutex);
+int cx_mutexTry(cx_mutex mutex);
 
 /* Read-write mutex */
-typedef struct db_rwmutex_s* db_rwmutex;
+typedef struct cx_rwmutex_s* cx_rwmutex;
 
-struct db_rwmutex_s db_rwmutexNew(void);
-int db_rwmutexRead(db_rwmutex mutex);
-int db_rwmutexWrite(db_rwmutex mutex);
-int db_rwmutexTryRead(db_rwmutex mutex);
-int db_rwmutexTryWrite(db_rwmutex mutex);
-int db_rwmutexUnlock(db_rwmutex mutex);
-int db_rwmutexFree(db_rwmutex mutex);
+struct cx_rwmutex_s cx_rwmutexNew(void);
+int cx_rwmutexRead(cx_rwmutex mutex);
+int cx_rwmutexWrite(cx_rwmutex mutex);
+int cx_rwmutexTryRead(cx_rwmutex mutex);
+int cx_rwmutexTryWrite(cx_rwmutex mutex);
+int cx_rwmutexUnlock(cx_rwmutex mutex);
+int cx_rwmutexFree(cx_rwmutex mutex);
 
 /* Semaphore */
-typedef struct db_sem_s db_sem_s;
-typedef db_sem_s* db_sem;
+typedef struct cx_sem_s cx_sem_s;
+typedef cx_sem_s* cx_sem;
 
-db_sem db_semNew(unsigned int initValue);
-int db_semPost(db_sem);
-int db_semWait(db_sem);
-int db_semTryWait(db_sem);
-int db_semValue(db_sem);
-int db_semFree(db_sem);
+cx_sem cx_semNew(unsigned int initValue);
+int cx_semPost(cx_sem);
+int cx_semWait(cx_sem);
+int cx_semTryWait(cx_sem);
+int cx_semValue(cx_sem);
+int cx_semFree(cx_sem);
 
 /* Atomic increment and decrement */
-int db_ainc(int* count);
-int db_adec(int* count);
+int cx_ainc(int* count);
+int cx_adec(int* count);
 
 /* use GNU atomic compare and swap */
-#define db_cas(ptr,old,new) __sync_bool_compare_and_swap(ptr,old,new)
+#define cx_cas(ptr,old,new) __sync_bool_compare_and_swap(ptr,old,new)
 
 #ifdef __cplusplus
 }

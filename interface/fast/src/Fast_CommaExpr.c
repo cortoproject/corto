@@ -16,13 +16,13 @@ Fast_Parser yparser(void);
 /* $end */
 
 /* ::cortex::Fast::CommaExpr::addExpression(Expression expr) */
-db_int16 Fast_CommaExpr_addExpression(Fast_CommaExpr _this, Fast_Expression expr) {
+cx_int16 Fast_CommaExpr_addExpression(Fast_CommaExpr _this, Fast_Expression expr) {
 /* $begin(::cortex::Fast::CommaExpr::addExpression) */
     if (expr) {
-        db_assert(_this->expressions != NULL, "initialization failed");
-        db_llAppend(_this->expressions, expr); db_keep(expr);
-        if (db_llSize(_this->expressions) == 1) {
-            db_set(&Fast_Expression(_this)->type, expr->type);
+        cx_assert(_this->expressions != NULL, "initialization failed");
+        cx_llAppend(_this->expressions, expr); cx_keep(expr);
+        if (cx_llSize(_this->expressions) == 1) {
+            cx_set(&Fast_Expression(_this)->type, expr->type);
         }
     }
 
@@ -52,14 +52,14 @@ Fast_Expression Fast_CommaExpr_addOrCreate(Fast_Expression list, Fast_Expression
 }
 
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::CommaExpr::construct(CommaExpr object) */
-db_int16 Fast_CommaExpr_construct(Fast_CommaExpr object) {
+cx_int16 Fast_CommaExpr_construct(Fast_CommaExpr object) {
 /* $begin(::cortex::Fast::CommaExpr::construct) */
     if (object->expressions) {
-        Fast_Expression firstExpr = db_llGet(object->expressions, 0);
+        Fast_Expression firstExpr = cx_llGet(object->expressions, 0);
 
         if (yparser()->line == 8) {
             if (firstExpr) {
-                db_set(&Fast_Expression(object)->type, firstExpr->type);
+                cx_set(&Fast_Expression(object)->type, firstExpr->type);
             }
         }
     }
@@ -69,9 +69,9 @@ db_int16 Fast_CommaExpr_construct(Fast_CommaExpr object) {
 }
 
 /* ::cortex::Fast::CommaExpr::hasSideEffects() */
-db_bool Fast_CommaExpr_hasSideEffects_v(Fast_CommaExpr _this) {
+cx_bool Fast_CommaExpr_hasSideEffects_v(Fast_CommaExpr _this) {
 /* $begin(::cortex::Fast::CommaExpr::hasSideEffects) */
-    db_bool result = FALSE;
+    cx_bool result = FALSE;
     
     Fast_Expression_list__foreach(_this->expressions, elem)
         if (Fast_Expression_hasSideEffects(elem)) {
@@ -85,7 +85,7 @@ db_bool Fast_CommaExpr_hasSideEffects_v(Fast_CommaExpr _this) {
 }
 
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::CommaExpr::init(CommaExpr object) */
-db_int16 Fast_CommaExpr_init(Fast_CommaExpr object) {
+cx_int16 Fast_CommaExpr_init(Fast_CommaExpr object) {
 /* $begin(::cortex::Fast::CommaExpr::init) */
 
     Fast_Node(object)->kind = FAST_CommaExpr;
@@ -95,15 +95,15 @@ db_int16 Fast_CommaExpr_init(Fast_CommaExpr object) {
 /* $end */
 }
 
-/* ::cortex::Fast::CommaExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_CommaExpr_toIc_v(Fast_CommaExpr _this, db_icProgram program, db_icStorage storage, db_bool stored) {
+/* ::cortex::Fast::CommaExpr::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+cx_ic Fast_CommaExpr_toIc_v(Fast_CommaExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::CommaExpr::toIc) */
-    db_iter iter;
+    cx_iter iter;
     Fast_Node expr;
     
-    iter = db_llIter(_this->expressions);
-    while(db_iterHasNext(&iter)) {
-        expr = db_iterNext(&iter);
+    iter = cx_llIter(_this->expressions);
+    while(cx_iterHasNext(&iter)) {
+        expr = cx_iterNext(&iter);
         Fast_Node_toIc(expr, program, storage, stored);
     }
 
@@ -115,12 +115,12 @@ db_ic Fast_CommaExpr_toIc_v(Fast_CommaExpr _this, db_icProgram program, db_icSto
 Fast_Node_list Fast_CommaExpr_toList(Fast_CommaExpr _this) {
 /* $begin(::cortex::Fast::CommaExpr::toList) */
     Fast_Node node;
-    db_iter iter;
-    Fast_Node_list result = db_llNew();
-    iter = db_llIter(_this->expressions);
-    while(db_iterHasNext(&iter)) {
-        node = db_iterNext(&iter);
-        db_llAppend(result, node); db_keep(node);
+    cx_iter iter;
+    Fast_Node_list result = cx_llNew();
+    iter = cx_llIter(_this->expressions);
+    while(cx_iterHasNext(&iter)) {
+        node = cx_iterNext(&iter);
+        cx_llAppend(result, node); cx_keep(node);
     }
 
     return result;

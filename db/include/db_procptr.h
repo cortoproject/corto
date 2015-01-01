@@ -1,31 +1,31 @@
-/* db_procptr.h
+/* cx_procptr.h
  *
  * This file contains generated code. Do not modify!
  */
 
-#ifndef db_procptr_H
-#define db_procptr_H
+#ifndef cx_procptr_H
+#define cx_procptr_H
 
 #include "cortex.h"
-#include "db_struct.h"
-#include "db__type.h"
+#include "cx_struct.h"
+#include "cx__type.h"
 
-#include "db__api.h"
+#include "cx__api.h"
 
-#include "db__meta.h"
+#include "cx__meta.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* virtual ::cortex::lang::procptr::compatible(lang::type type) */
-db_bool db_procptr_compatible(db_procptr _this, db_type type);
+cx_bool cx_procptr_compatible(cx_procptr _this, cx_type type);
 
 /* ::cortex::lang::procptr::compatible(lang::type type) */
-db_bool db_procptr_compatible_v(db_procptr _this, db_type type);
+cx_bool cx_procptr_compatible_v(cx_procptr _this, cx_type type);
 
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::procptr::init(lang::procptr object) */
-db_int16 db_procptr_init(db_procptr object);
+cx_int16 cx_procptr_init(cx_procptr object);
 
 #ifdef __cplusplus
 }

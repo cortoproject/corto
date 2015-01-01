@@ -14,13 +14,13 @@ extern "C" {
 #endif
 
 /* ::cortex::io::print(::cortex::lang::string str) */
-db_void io_print(db_string str);
+cx_void io_print(cx_string str);
 
 /* ::cortex::io::println(::cortex::lang::string str) */
-db_void io_println(db_string str);
+cx_void io_println(cx_string str);
 
 /* ::cortex::io::readln() */
-db_string io_readln(void);
+cx_string io_readln(void);
 
 #ifdef __cplusplus
 }

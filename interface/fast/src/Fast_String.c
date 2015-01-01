@@ -20,9 +20,9 @@ static char alphaMask[256];
 static char numericMask[256];
 static int maskSet = 0;
 
-static void db_tokenMaskSet(db_bool *mask, db_string chars) {
-    db_char *ptr, ch;
-    memset(mask, FALSE, sizeof(db_bool) * 128);
+static void cx_tokenMaskSet(cx_bool *mask, cx_string chars) {
+    cx_char *ptr, ch;
+    memset(mask, FALSE, sizeof(cx_bool) * 128);
     ptr = chars;
     while((ch = *ptr)) {
         mask[(int)ch] = TRUE;
@@ -31,15 +31,15 @@ static void db_tokenMaskSet(db_bool *mask, db_string chars) {
 }
 
 /* Parse embedded expression */
-db_char *Fast_String_parseEmbedded(Fast_String _this, db_char *expr) {
-	db_char ch, *ptr;
-	db_uint32 nesting;
+cx_char *Fast_String_parseEmbedded(Fast_String _this, cx_char *expr) {
+	cx_char ch, *ptr;
+	cx_uint32 nesting;
 	Fast_Expression element;
-	db_bool bracketExpr = FALSE;
+	cx_bool bracketExpr = FALSE;
 
 	if (!maskSet) {
-		db_tokenMaskSet(alphaMask, ":abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_");
-		db_tokenMaskSet(numericMask, "0123456789");
+		cx_tokenMaskSet(alphaMask, ":abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_");
+		cx_tokenMaskSet(numericMask, "0123456789");
 	}
 
 	ptr = expr;
@@ -87,8 +87,8 @@ db_char *Fast_String_parseEmbedded(Fast_String _this, db_char *expr) {
 
 	element = Fast_Parser_parseExpression(yparser(), expr, _this->block, _this->scope, Fast_Node(_this)->line, Fast_Node(_this)->column);
 	if (element) {
-		db_llAppend(_this->elements, element);
-		db_keep(element);
+		cx_llAppend(_this->elements, element);
+		cx_keep(element);
 	} else {
 		goto error;
 	}
@@ -104,8 +104,8 @@ error:
 }
 
 /* Walk embedded expressions in string */
-db_int16 Fast_String_parse(Fast_String _this) {
-	db_char *ptr, ch, *str;
+cx_int16 Fast_String_parse(Fast_String _this) {
+	cx_char *ptr, ch, *str;
 	Fast_String element;
 
 	ptr = _this->value;
@@ -121,7 +121,7 @@ db_int16 Fast_String_parse(Fast_String _this) {
                     *ptr = '\0';
 
                     element = Fast_String__create(str);
-                    db_llAppend(_this->elements, element);
+                    cx_llAppend(_this->elements, element);
 
                     *ptr = ch;
                 }
@@ -145,11 +145,11 @@ db_int16 Fast_String_parse(Fast_String _this) {
          * string to elements list */
         if ((str != _this->value) && *str) {
             element = Fast_String__create(str);
-            db_llAppend(_this->elements, element);
+            cx_llAppend(_this->elements, element);
         }
     } else {
         element = Fast_String__create("null");
-        db_llAppend(_this->elements, element);
+        cx_llAppend(_this->elements, element);
     }
 
 	return 0;
@@ -160,15 +160,15 @@ error:
 /* $end */
 
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::String::construct(String object) */
-db_int16 Fast_String_construct(Fast_String object) {
+cx_int16 Fast_String_construct(Fast_String object) {
 /* $begin(::cortex::Fast::String::construct) */
     
 	if (!yparser()->block || !yparser()->scope) {
 		goto error;
 	}
 
-	object->block = yparser()->block; db_keep_ext(object, object->block, "object->block (keep block for string-expression)");
-	object->scope = yparser()->scope; db_keep_ext(object, object->scope, "object->scope (keep scope for string-expression)");
+	object->block = yparser()->block; cx_keep_ext(object, object->block, "object->block (keep block for string-expression)");
+	object->scope = yparser()->scope; cx_keep_ext(object, object->scope, "object->scope (keep scope for string-expression)");
     
 	return 0;
 error:
@@ -177,15 +177,15 @@ error:
 }
 
 /* ::cortex::Fast::String::getValue() */
-db_word Fast_String_getValue(Fast_String _this) {
+cx_word Fast_String_getValue(Fast_String _this) {
 /* $begin(::cortex::Fast::String::getValue) */
-	db_char *ptr, ch;
-	db_word result;
+	cx_char *ptr, ch;
+	cx_word result;
 
     /* Determine whether string has embedded expressions */
 	ptr = _this->value;
 	while((ch = *ptr) && ch && (ch != '$')) {
-		switch((db_uint8)ch) {
+		switch((cx_uint8)ch) {
 		case '\\':
 			ptr++;
 			break;
@@ -198,7 +198,7 @@ db_word Fast_String_getValue(Fast_String _this) {
 	if (ch == '$') {
 		result = 0;
 	} else {
-		result = (db_word)_this->value;
+		result = (cx_word)_this->value;
 	}
 
 	return result;
@@ -206,7 +206,7 @@ db_word Fast_String_getValue(Fast_String _this) {
 }
 
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::String::init(String object) */
-db_int16 Fast_String_init(Fast_String object) {
+cx_int16 Fast_String_init(Fast_String object) {
 /* $begin(::cortex::Fast::String::init) */
     Fast_Literal(object)->kind = FAST_String;
     return Fast_Literal_init((Fast_Literal)object);
@@ -214,7 +214,7 @@ db_int16 Fast_String_init(Fast_String object) {
 }
 
 /* ::cortex::Fast::String::serialize(lang::type dstType,lang::word dst) */
-db_int16 Fast_String_serialize(Fast_String _this, db_type dstType, db_word dst) {
+cx_int16 Fast_String_serialize(Fast_String _this, cx_type dstType, cx_word dst) {
 /* $begin(::cortex::Fast::String::serialize) */
 	Fast_valueKind kind;
 
@@ -225,16 +225,16 @@ db_int16 Fast_String_serialize(Fast_String _this, db_type dstType, db_word dst) 
 	case FAST_Integer:
 	case FAST_SignedInteger:
 	case FAST_String:
-		db_convert(db_primitive(db_string_o), &_this->value, db_primitive(dstType), (void*)dst);
+		cx_convert(cx_primitive(cx_string_o), &_this->value, cx_primitive(dstType), (void*)dst);
 		break;
     case FAST_Reference: {
-        db_object o = db_resolve_ext(NULL, NULL, _this->value, FALSE, "Serialize reference from string");
-		db_set_ext(NULL, &dst, o, "serialize string to reference");
+        cx_object o = cx_resolve_ext(NULL, NULL, _this->value, FALSE, "Serialize reference from string");
+		cx_set_ext(NULL, &dst, o, "serialize string to reference");
 		break;
     }
 	default: {
-        db_id id;
-        Fast_Parser_error(yparser(), "cannot serialize string value to storage of type '%s'", db_fullname(dstType, id));
+        cx_id id;
+        Fast_Parser_error(yparser(), "cannot serialize string value to storage of type '%s'", cx_fullname(dstType, id));
         goto error;
 		break;
 	}
@@ -246,11 +246,11 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::String::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_String_toIc_v(Fast_String _this, db_icProgram program, db_icStorage storage, db_bool stored) {
+/* ::cortex::Fast::String::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+cx_ic Fast_String_toIc_v(Fast_String _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::String::toIc) */
-	db_ic result = NULL;
-	db_value v;
+	cx_ic result = NULL;
+	cx_value v;
 	DB_UNUSED(storage);
 	DB_UNUSED(stored);
 
@@ -259,90 +259,90 @@ db_ic Fast_String_toIc_v(Fast_String _this, db_icProgram program, db_icStorage s
 		goto error;
 	}
 
-	if (!db_llSize(_this->elements)) {
-		db_valueLiteralInit(&v, DB_LITERAL_STRING, &_this->value);
-		result = (db_ic)db_icLiteral__create(program, Fast_Node(_this)->line, v, db_type(db_string_o));
+	if (!cx_llSize(_this->elements)) {
+		cx_valueLiteralInit(&v, DB_LITERAL_STRING, &_this->value);
+		result = (cx_ic)cx_icLiteral__create(program, Fast_Node(_this)->line, v, cx_type(cx_string_o));
 	} else {
 		if (stored) {
-			db_iter elementIter;
+			cx_iter elementIter;
 			Fast_Expression element;
-			db_ic icElement1, icElement2;
-			db_icOp op;
-			db_uint32 elementCount = db_llSize(_this->elements);
-			db_bool stored = FALSE;
-			db_ic dummy;
-			db_uint32 accPushCount = 0;
-			db_type elementType;
+			cx_ic icElement1, icElement2;
+			cx_icOp op;
+			cx_uint32 elementCount = cx_llSize(_this->elements);
+			cx_bool stored = FALSE;
+			cx_ic dummy;
+			cx_uint32 accPushCount = 0;
+			cx_type elementType;
 
-			if (storage && (storage->type != db_type(db_string_o))) {
+			if (storage && (storage->type != cx_type(cx_string_o))) {
 				Fast_Parser_error(yparser(),
 						"storage for string-expression '%s' has invalid type (%s)",
 						_this->value,
-						db_nameof(storage->type));
+						cx_nameof(storage->type));
 				goto error;
 			}
 
 			v.is.value.storage = 0; /* Create NULL-string */
-			db_valueLiteralInit(&v, DB_LITERAL_STRING, &v.is.value.storage);
-			dummy = (db_ic)db_icLiteral__create(program, Fast_Node(_this)->line, v, db_type(db_string_o));
+			cx_valueLiteralInit(&v, DB_LITERAL_STRING, &v.is.value.storage);
+			dummy = (cx_ic)cx_icLiteral__create(program, Fast_Node(_this)->line, v, cx_type(cx_string_o));
 
-			result = (db_ic)storage;
-			elementIter = db_llIter(_this->elements);
-			while(db_iterHasNext(&elementIter)) {
-				db_icAccumulator acc = db_icProgram_accumulatorPush(program, Fast_Node(_this)->line, (db_type)db_string_o, FALSE);
+			result = (cx_ic)storage;
+			elementIter = cx_llIter(_this->elements);
+			while(cx_iterHasNext(&elementIter)) {
+				cx_icAccumulator acc = cx_icProgram_accumulatorPush(program, Fast_Node(_this)->line, (cx_type)cx_string_o, FALSE);
 				accPushCount++;
-				element = db_iterNext(&elementIter);
+				element = cx_iterNext(&elementIter);
 
 				elementType = Fast_Expression_getType(element);
 				if (!elementType) {
 					element = Fast_Expression(Fast_String__create(DB_NULL_STRING));
-				} else if (elementType != db_type(db_string_o)) {
-					element = Fast_Expression_cast(element, db_type(db_string_o));
+				} else if (elementType != cx_type(cx_string_o)) {
+					element = Fast_Expression_cast(element, cx_type(cx_string_o));
 					if(!element) {
 						goto error;
 					}
 				}
 
-				icElement1 = Fast_Node_toIc(Fast_Node(element), program, (db_icStorage)acc, TRUE);
+				icElement1 = Fast_Node_toIc(Fast_Node(element), program, (cx_icStorage)acc, TRUE);
 				if (!icElement1) {
 					goto error;
 				}
 				if (elementCount == 1) {
 					if (storage) {
-						op = db_icOp__create(program, Fast_Node(_this)->line, DB_IC_STRCPY, NULL, (db_icValue)storage, (db_icValue)icElement1);
-						db_icProgram_addIc(program, (db_ic)op);
+						op = cx_icOp__create(program, Fast_Node(_this)->line, DB_IC_STRCPY, NULL, (cx_icValue)storage, (cx_icValue)icElement1);
+						cx_icProgram_addIc(program, (cx_ic)op);
 					} else {
-						result = (db_ic)icElement1;
+						result = (cx_ic)icElement1;
 					}
 					stored = TRUE;
 				} else {
 					if (elementCount) {
-						if (db_iterHasNext(&elementIter)) {
-							db_icAccumulator acc = db_icProgram_accumulatorPush(program, Fast_Node(_this)->line, (db_type)db_string_o, FALSE);
+						if (cx_iterHasNext(&elementIter)) {
+							cx_icAccumulator acc = cx_icProgram_accumulatorPush(program, Fast_Node(_this)->line, (cx_type)cx_string_o, FALSE);
 							accPushCount++;
-							element = db_iterNext(&elementIter);
+							element = cx_iterNext(&elementIter);
 							elementType = Fast_Expression_getType(element);
 
 							if (!elementType) {
 								element = Fast_Expression(Fast_String__create(DB_NULL_STRING));
-							} else if (elementType && (Fast_Expression_getType(element) != db_type(db_string_o))) {
-								element = Fast_Expression_cast(element, db_type(db_string_o));
+							} else if (elementType && (Fast_Expression_getType(element) != cx_type(cx_string_o))) {
+								element = Fast_Expression_cast(element, cx_type(cx_string_o));
 								if (!element) {
 									goto error;
 								}
 							}
 
-							icElement2 = Fast_Node_toIc(Fast_Node(element), program, (db_icStorage)acc, TRUE);
+							icElement2 = Fast_Node_toIc(Fast_Node(element), program, (cx_icStorage)acc, TRUE);
 							if (!icElement2) {
 								goto error;
 							}
-							op = db_icOp__create(program, Fast_Node(_this)->line, DB_IC_STRCAT, NULL, (db_icValue)icElement1, (db_icValue)icElement2);
-							db_icProgram_addIc(program, (db_ic)op);
+							op = cx_icOp__create(program, Fast_Node(_this)->line, DB_IC_STRCAT, NULL, (cx_icValue)icElement1, (cx_icValue)icElement2);
+							cx_icProgram_addIc(program, (cx_ic)op);
 							elementCount--;
 						}
 					} else {
-						op = db_icOp__create(program, Fast_Node(_this)->line, DB_IC_STRCAT, NULL, (db_icValue)icElement1, (db_icValue)dummy);
-						db_icProgram_addIc(program, (db_ic)op);
+						op = cx_icOp__create(program, Fast_Node(_this)->line, DB_IC_STRCAT, NULL, (cx_icValue)icElement1, (cx_icValue)dummy);
+						cx_icProgram_addIc(program, (cx_ic)op);
 					}
 				}
 				elementCount--;
@@ -350,13 +350,13 @@ db_ic Fast_String_toIc_v(Fast_String _this, db_icProgram program, db_icStorage s
 
 			/* If string is not yet copied, insert copy instruction */
 			if (!stored) {
-				op = db_icOp__create(program, Fast_Node(_this)->line, DB_IC_STRCPY, NULL, (db_icValue)storage, (db_icValue)dummy);
-				db_icProgram_addIc(program, (db_ic)op);
+				op = cx_icOp__create(program, Fast_Node(_this)->line, DB_IC_STRCPY, NULL, (cx_icValue)storage, (cx_icValue)dummy);
+				cx_icProgram_addIc(program, (cx_ic)op);
 				stored = TRUE;
 			}
 
 			while(accPushCount) {
-				db_icProgram_accumulatorPop(program, Fast_Node(_this)->line);
+				cx_icProgram_accumulatorPop(program, Fast_Node(_this)->line);
 				accPushCount--;
 			}
 		}

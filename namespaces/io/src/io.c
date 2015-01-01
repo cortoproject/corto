@@ -23,28 +23,28 @@ int cortexmain(int argc, char* argv[]) {
 /* $end */
 
 /* ::cortex::io::print(::cortex::lang::string str) */
-db_void io_print(db_string str) {
+cx_void io_print(cx_string str) {
 /* $begin(::cortex::io::print) */
     printf("%s", str);
 /* $end */
 }
 
 /* ::cortex::io::println(::cortex::lang::string str) */
-db_void io_println(db_string str) {
+cx_void io_println(cx_string str) {
 /* $begin(::cortex::io::println) */
     printf("%s\n", str);
 /* $end */
 }
 
 /* ::cortex::io::readln() */
-db_string io_readln(void) {
+cx_string io_readln(void) {
 /* $begin(::cortex::io::readln) */
     size_t size=256;
     int read;
-    db_string result = db_malloc(size+1);
+    cx_string result = cx_malloc(size+1);
 
     if ((read = getline(&result, &size, stdin)) == -1) {
-        db_error("io::readln: read error\n");
+        cx_error("io::readln: read error\n");
         goto error;
     }
     
@@ -53,7 +53,7 @@ db_string io_readln(void) {
     
     return result;
 error:
-    db_dealloc(result);
+    cx_dealloc(result);
     return NULL;
 /* $end */
 }

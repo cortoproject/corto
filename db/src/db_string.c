@@ -1,13 +1,13 @@
 /*
- * db_string.c
+ * cx_string.c
  *
  *  Created on: Dec 27, 2012
  *      Author: sander
  */
 
 #include "stdarg.h"
-#include "db_string.h"
-#include "db_mem.h"
+#include "cx_string.h"
+#include "cx_mem.h"
 
 int stricmp(const char* str1, const char* str2) {
 	return strcasecmp(str1, str2);
@@ -38,7 +38,7 @@ char *strappend(char *src, char *fmt, ...) {
 		sourceLength = strlen(src);
 	}
 
-	src = db_realloc(src, sourceLength + strlen(buff) + 1);
+	src = cx_realloc(src, sourceLength + strlen(buff) + 1);
 	strcpy(&src[sourceLength], buff);
 
 	return src;

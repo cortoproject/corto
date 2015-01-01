@@ -14,7 +14,7 @@ extern "C" {
 #endif
 
 /* ::cortex::Fast::valueKindFromType(lang::type type) */
-cortex_Fast_valueKind cortex_Fast_valueKindFromType(db_type type);
+cortex_Fast_valueKind cortex_Fast_valueKindFromType(cx_type type);
 
 #ifdef __cplusplus
 }

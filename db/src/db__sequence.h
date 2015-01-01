@@ -1,13 +1,13 @@
 #ifndef DB__SEQUENCE_H_
 #define DB__SEQUENCE_H_
 
-#include "db__type.h"
+#include "cx__type.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-int db_sequence_alloc(db_collection _this, db_void* collection, db_uint32 elements);
+int cx_sequence_alloc(cx_collection _this, cx_void* collection, cx_uint32 elements);
 
 #ifdef __cplusplus
 }

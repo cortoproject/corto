@@ -1,109 +1,109 @@
 /*
- * db_object.c
+ * cx_object.c
  *
  *  Created on: Aug 3, 2012
  *      Author: sander
  */
-#include "db__meta.h"
-#include "db__object.h"
-#include "db_memory_ser.h"
-#include "db_mm.h"
-#include "db_err.h"
-#include "db_util.h"
-#include "db_mem.h"
-#include "db_string.h"
-#include "db_serializer.h"
-#include "db_type.h"
-#include "db__class.h"
-#include "db_string_deser.h"
-#include "db_init_ser.h"
-#include "db_copy_ser.h"
-#include "db_procedure.h"
-#include "db_call.h"
-#include "db_string_ser.h"
-#include "db_convert.h"
-#include "db_interface.h"
-#include "db_dispatcher.h"
-#include "db_time.h"
+#include "cx__meta.h"
+#include "cx__object.h"
+#include "cx_memory_ser.h"
+#include "cx_mm.h"
+#include "cx_err.h"
+#include "cx_util.h"
+#include "cx_mem.h"
+#include "cx_string.h"
+#include "cx_serializer.h"
+#include "cx_type.h"
+#include "cx__class.h"
+#include "cx_string_deser.h"
+#include "cx_init_ser.h"
+#include "cx_copy_ser.h"
+#include "cx_procedure.h"
+#include "cx_call.h"
+#include "cx_string_ser.h"
+#include "cx_convert.h"
+#include "cx_interface.h"
+#include "cx_dispatcher.h"
+#include "cx_time.h"
 
-static int db_adopt(db_object parent, db_object child);
-static db_int32 db_notify(db__observable *_o, db_object observable, db_object _this, db_uint32 mask);
+static int cx_adopt(cx_object parent, cx_object child);
+static cx_int32 cx_notify(cx__observable *_o, cx_object observable, cx_object _this, cx_uint32 mask);
 
-static void db_notifyObserverDefault(db__observer* data, db_object _this, db_object observable, db_object source, db_uint32 mask);
-static void db_notifyObserverCdecl(db__observer* data, db_object _this, db_object observable, db_object source, db_uint32 mask);
-static void db_notifyObserverThis(db__observer* data, db_object _this, db_object observable, db_object source, db_uint32 mask);
-static void db_notifyObserverThisCdecl(db__observer* data, db_object _this, db_object observable, db_object source, db_uint32 mask);
+static void cx_notifyObserverDefault(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask);
+static void cx_notifyObserverCdecl(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask);
+static void cx_notifyObserverThis(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask);
+static void cx_notifyObserverThisCdecl(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask);
 
 /* Thread local storage key that keeps track of the objects that are prepared to wait for. */
-extern db_threadKey DB_KEY_WAIT_ADMIN;
+extern cx_threadKey DB_KEY_WAIT_ADMIN;
 
-typedef struct db_waitForObject {
-    db_object objects[DB_MAX_WAIT_FOR_OBJECTS];
-    db_uint32 count;
-    db_object triggered;
-    db_sem semaphore;
-    db_observer observer;
+typedef struct cx_waitForObject {
+    cx_object objects[DB_MAX_WAIT_FOR_OBJECTS];
+    cx_uint32 count;
+    cx_object triggered;
+    cx_sem semaphore;
+    cx_observer observer;
     int triggerCount; /* Value is atomically incremented\decremented to make sure wait is only triggered once */
-}db_waitForObject;
+}cx_waitForObject;
 
 /* Thread local storage key for administration that keeps track for which observables notifications take place.
  * 	This key points to an element in a list keyed by threadId's for which notifications have taken place. Value
  * 	of this element is the observable being notified at the moment. When a listen\silence call needs to clean
  * 	memory it can look at this administration to see if it is in use. To prevent deadlocks, listen\silence calls
  * 	will not look at their own threadId, since this would indicate listen\silence is called from an observer being
- * 	notified. This key is created in db_start. */
+ * 	notified. This key is created in cx_start. */
 /* TODO: when a thread exits, the corresponding element must be free'd again - use tls destructor function */
-extern db_threadKey DB_KEY_OBSERVER_ADMIN;
+extern cx_threadKey DB_KEY_OBSERVER_ADMIN;
 
 /* Lists all the anonymous objects in use. Used by the garbage collector. */
-db_ll db_anonymousObjects = NULL;
+cx_ll cx_anonymousObjects = NULL;
 
-typedef struct db_observerElement {
-	db__observer ** observers;
-	db_bool free;
-}db_observerElement;
+typedef struct cx_observerElement {
+	cx__observer ** observers;
+	cx_bool free;
+}cx_observerElement;
 
-typedef struct db_observerAdmin {
-	db_thread id;
-	db_observerElement stack[DB_MAX_NOTIFY_DEPTH];
-	db_uint32 sp;
-}db_observerAdmin;
-static db_observerAdmin observerAdmin[DB_MAX_THREADS];
+typedef struct cx_observerAdmin {
+	cx_thread id;
+	cx_observerElement stack[DB_MAX_NOTIFY_DEPTH];
+	cx_uint32 sp;
+}cx_observerAdmin;
+static cx_observerAdmin observerAdmin[DB_MAX_THREADS];
 
 /* Push observer-array to thread administration. Rather than passing the array pass the
  * address of the array so that setting the administration can be done atomic. */
-db__observer** db_observersPush(db__observer**  *observers) {
-	db__observer** result;
-	db_observerAdmin *admin = db_threadTlsGet(DB_KEY_OBSERVER_ADMIN);
+cx__observer** cx_observersPush(cx__observer**  *observers) {
+	cx__observer** result;
+	cx_observerAdmin *admin = cx_threadTlsGet(DB_KEY_OBSERVER_ADMIN);
 	if (!admin) {
-		db_thread thr = db_threadSelf();
-		db_uint32 i;
+		cx_thread thr = cx_threadSelf();
+		cx_uint32 i;
 		do {
 			i = 0;
 			while(observerAdmin[i].id) { /* Find a free slot for thread in administration */
 				i++;
 				if (i >= DB_MAX_THREADS) {
-					db_critical("maximum number of supported threads reached! (%d)", DB_MAX_THREADS);
+					cx_critical("maximum number of supported threads reached! (%d)", DB_MAX_THREADS);
 				}
 			}
-		}while(!db_cas(&observerAdmin[i].id,0,thr));
+		}while(!cx_cas(&observerAdmin[i].id,0,thr));
 		admin = &observerAdmin[i];
-		db_threadTlsSet(DB_KEY_OBSERVER_ADMIN, admin);
+		cx_threadTlsSet(DB_KEY_OBSERVER_ADMIN, admin);
 	}
 	result = admin->stack[admin->sp].observers = *observers;
 	admin->stack[admin->sp++].free = FALSE;
 	return result;
 }
 
-db_bool db_observersPop(void) {
-	db_observerAdmin *admin = db_threadTlsGet(DB_KEY_OBSERVER_ADMIN); /* Admin must always exist when popping */
+cx_bool cx_observersPop(void) {
+	cx_observerAdmin *admin = cx_threadTlsGet(DB_KEY_OBSERVER_ADMIN); /* Admin must always exist when popping */
 	return admin->stack[--admin->sp].free;
 }
 
-db_bool db_observersWaitForUnused(db__observer** observers) {
-	db_thread self = db_threadSelf();
-	db_uint32 i, j;
-	db_bool inUse, freeArray = TRUE; /* Initialization merely to satisfy the compiler */
+cx_bool cx_observersWaitForUnused(cx__observer** observers) {
+	cx_thread self = cx_threadSelf();
+	cx_uint32 i, j;
+	cx_bool inUse, freeArray = TRUE; /* Initialization merely to satisfy the compiler */
 
 	if (!observers) {
 		return FALSE;
@@ -144,23 +144,23 @@ db_bool db_observersWaitForUnused(db__observer** observers) {
 	return freeArray;
 }
 
-static db__scope* db__objectScope(db__object* o) {
-    db__scope* result = NULL;
+static cx__scope* cx__objectScope(cx__object* o) {
+    cx__scope* result = NULL;
 
     if (o->attrs.scope) {
-        result = DB_OFFSET(o, -sizeof(db__scope));
+        result = DB_OFFSET(o, -sizeof(cx__scope));
     }
     return result;
 }
 
-static db__writable* db__objectWritable(db__object* o) {
-    db__writable* result = (void*)o;
+static cx__writable* cx__objectWritable(cx__object* o) {
+    cx__writable* result = (void*)o;
 
     if (o->attrs.scope) {
-        result = DB_OFFSET(result, -sizeof(db__scope));
+        result = DB_OFFSET(result, -sizeof(cx__scope));
     }
     if (o->attrs.write) {
-        result = DB_OFFSET(result, -sizeof(db__writable));
+        result = DB_OFFSET(result, -sizeof(cx__writable));
     } else {
         result = NULL;
     }
@@ -168,17 +168,17 @@ static db__writable* db__objectWritable(db__object* o) {
     return result;
 }
 
-static db__observable* db__objectObservable(db__object* o) {
-    db__observable* result = (void*)o;
+static cx__observable* cx__objectObservable(cx__object* o) {
+    cx__observable* result = (void*)o;
 
     if (o->attrs.scope) {
-    	result = DB_OFFSET(result, -sizeof(db__scope));
+    	result = DB_OFFSET(result, -sizeof(cx__scope));
     }
 	if (o->attrs.write) {
-		result = DB_OFFSET(result, -sizeof(db__writable));
+		result = DB_OFFSET(result, -sizeof(cx__writable));
 	}
 	if (result && o->attrs.observable) {
-		result = DB_OFFSET(result, -sizeof(db__observable));
+		result = DB_OFFSET(result, -sizeof(cx__observable));
 	} else {
 		result = NULL;
 	}
@@ -186,36 +186,36 @@ static db__observable* db__objectObservable(db__object* o) {
     return result;
 }
 
-static void* db__objectStartAddr(db__object* o) {
+static void* cx__objectStartAddr(cx__object* o) {
     void* result;
     result = o;
     if (o->attrs.scope) {
-        result = DB_OFFSET(result, -sizeof(db__scope));
+        result = DB_OFFSET(result, -sizeof(cx__scope));
     }
     if (o->attrs.write) {
-        result = DB_OFFSET(result, -sizeof(db__writable));
+        result = DB_OFFSET(result, -sizeof(cx__writable));
     }
 
     if (o->attrs.observable) {
-        result = DB_OFFSET(result, -sizeof(db__observable));
+        result = DB_OFFSET(result, -sizeof(cx__observable));
     }
     return result;
 }
 
 /* Initialze scope-part of object */
-static db_int16 db__initScope(db_object o, db_string name, db_object parent) {
-    db__object* _o;
-    db__scope* scope;
+static cx_int16 cx__initScope(cx_object o, cx_string name, cx_object parent) {
+    cx__object* _o;
+    cx__scope* scope;
 
-    _o = DB_OFFSET(o, -sizeof(db__object));
-    scope = db__objectScope(_o);
-    db_assert(scope != NULL, "db__initScope: created scoped object, but db__objectScope returned NULL.");
+    _o = DB_OFFSET(o, -sizeof(cx__object));
+    scope = cx__objectScope(_o);
+    cx_assert(scope != NULL, "cx__initScope: created scoped object, but cx__objectScope returned NULL.");
 
-    scope->name = db_strdup(name);
-    scope->scopeLock = db_rwmutexNew();
+    scope->name = cx_strdup(name);
+    scope->scopeLock = cx_rwmutexNew();
 
     /* Add object to the scope of the parent-object */
-    if (db_adopt(parent, o)) {
+    if (cx_adopt(parent, o)) {
         goto error;
     }
 
@@ -224,18 +224,18 @@ error:
     return -1;
 }
 
-static void db__deinitScope(db_object o) {
-    db__object *_o;
-    db__scope* scope;
+static void cx__deinitScope(cx_object o) {
+    cx__object *_o;
+    cx__scope* scope;
 
     /* Obtain own scope */
-    _o = DB_OFFSET(o, -sizeof(db__object));
-    scope = db__objectScope(_o);
-    db_assert(scope != NULL, "db__deinitScope: called on non-scoped object <%p>.", o);
-    db_assert(scope->attached == NULL, "db__deinitScope: object has still objects attached");
+    _o = DB_OFFSET(o, -sizeof(cx__object));
+    scope = cx__objectScope(_o);
+    cx_assert(scope != NULL, "cx__deinitScope: called on non-scoped object <%p>.", o);
+    cx_assert(scope->attached == NULL, "cx__deinitScope: object has still objects attached");
 
     /* Free parent */
-    db_free_ext(o, scope->parent, "Free parent of object");
+    cx_free_ext(o, scope->parent, "Free parent of object");
     scope->parent = NULL;
 
     /* We cannot actually remove the scope itself, since there might be childs which
@@ -243,51 +243,51 @@ static void db__deinitScope(db_object o) {
      * of removing the parent's scope. */
 
     if (scope->name) {
-        db_dealloc(scope->name);
+        cx_dealloc(scope->name);
         scope->name = NULL;
     }
 
     /* Finally, free own scopeLock. */
-    db_rwmutexFree(&scope->scopeLock);
+    cx_rwmutexFree(&scope->scopeLock);
 }
 
 /* Initialize writable-part of object */
-static void db__initWritable(db_object o) {
-    db__object* _o;
-    db__writable* writable;
+static void cx__initWritable(cx_object o) {
+    cx__object* _o;
+    cx__writable* writable;
 
-    _o = DB_OFFSET(o, -sizeof(db__object));
-    writable = db__objectWritable(_o);
-    db_assert(writable != NULL, "db__initWritable: created writable object, but db__objectWritable returned NULL.");
+    _o = DB_OFFSET(o, -sizeof(cx__object));
+    writable = cx__objectWritable(_o);
+    cx_assert(writable != NULL, "cx__initWritable: created writable object, but cx__objectWritable returned NULL.");
 
-    writable->lock = db_rwmutexNew();
+    writable->lock = cx_rwmutexNew();
 }
 
-static void db__deinitWritable(db_object o) {
-    db__object* _o;
-    db__writable* writable;
+static void cx__deinitWritable(cx_object o) {
+    cx__object* _o;
+    cx__writable* writable;
 
-    _o = DB_OFFSET(o, -sizeof(db__object));
-    writable = db__objectWritable(_o);
-    db_assert(writable != NULL, "db__deinitWritable: called on non-writable object <%p>.", o);
+    _o = DB_OFFSET(o, -sizeof(cx__object));
+    writable = cx__objectWritable(_o);
+    cx_assert(writable != NULL, "cx__deinitWritable: called on non-writable object <%p>.", o);
 
-    db_rwmutexFree(&writable->lock);
+    cx_rwmutexFree(&writable->lock);
 }
 
 /* Initialize observable-part of object */
-static void db__initObservable(db_object o) {
-    db__object* _o;
-    db__observable *observable, *parentObservable;
-    db_object parent;
+static void cx__initObservable(cx_object o) {
+    cx__object* _o;
+    cx__observable *observable, *parentObservable;
+    cx_object parent;
 
-    _o = DB_OFFSET(o, -sizeof(db__object));
-    observable = db__objectObservable(_o);
-    db_assert(observable != NULL, "db__initObservable: created observable object, but db__objectObservable returned NULL.");
+    _o = DB_OFFSET(o, -sizeof(cx__object));
+    observable = cx__objectObservable(_o);
+    cx_assert(observable != NULL, "cx__initObservable: created observable object, but cx__objectObservable returned NULL.");
 
-    observable->selfLock = db_rwmutexNew();
+    observable->selfLock = cx_rwmutexNew();
 
-    if (db_checkAttr(o, DB_ATTR_SCOPED)) {
-        observable->childLock = db_rwmutexNew();
+    if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
+        observable->childLock = cx_rwmutexNew();
     }
 
     observable->onSelf = NULL;
@@ -300,9 +300,9 @@ static void db__initObservable(db_object o) {
     observable->childLockRequired = FALSE;
 
     parent = o;
-    while((parent = db_parentof(parent))) {
-        if ((parentObservable = db__objectObservable(DB_OFFSET(parent, -sizeof(db__object))))) {
-            db_rwmutexRead(&parentObservable->childLock);
+    while((parent = cx_parentof(parent))) {
+        if ((parentObservable = cx__objectObservable(DB_OFFSET(parent, -sizeof(cx__object))))) {
+            cx_rwmutexRead(&parentObservable->childLock);
 
             /* Inherit childLockRequired from first observable parent */
             if (parentObservable->childLockRequired) {
@@ -316,7 +316,7 @@ static void db__initObservable(db_object o) {
                     observable->parent = parentObservable->parent;
                 }
             }
-            db_rwmutexUnlock(&parentObservable->childLock);
+            cx_rwmutexUnlock(&parentObservable->childLock);
 
             if (observable->childLockRequired) {
                 break;
@@ -325,159 +325,159 @@ static void db__initObservable(db_object o) {
     }
 
     /* Override lockRequired if object is not writable */
-    if (!db_checkAttr(o, DB_ATTR_WRITABLE)) {
+    if (!cx_checkAttr(o, DB_ATTR_WRITABLE)) {
         observable->lockRequired = FALSE;
     }
 }
 
-static void db__deinitObservable(db_object o) {
-    db__object* _o;
-    db__observable* observable;
+static void cx__deinitObservable(cx_object o) {
+    cx__object* _o;
+    cx__observable* observable;
 
-    _o = DB_OFFSET(o, -sizeof(db__object));
-    observable = db__objectObservable(_o);
-    db_assert(observable != NULL, "db__deinitObservable: called on non-observable object <%p>.", o);
+    _o = DB_OFFSET(o, -sizeof(cx__object));
+    observable = cx__objectObservable(_o);
+    cx_assert(observable != NULL, "cx__deinitObservable: called on non-observable object <%p>.", o);
 
     /* Delete observer objects in onSelf and onChild */
     if (observable->onSelf) {
-        db__observer* observer;
-        while((observer = db_llTakeFirst(observable->onSelf))) {
+        cx__observer* observer;
+        while((observer = cx_llTakeFirst(observable->onSelf))) {
         	/* Clear template observer data */
         	if (observer->observer->template) {
-        		db_object observerObj = observer->_this;
-        		db_class_setObservable(db_class(db_typeof(observerObj)), observer->observer, observer->_this, NULL);
+        		cx_object observerObj = observer->_this;
+        		cx_class_setObservable(cx_class(cx_typeof(observerObj)), observer->observer, observer->_this, NULL);
         	}
             if (!--observer->count) {
-                db_dealloc(observer);
+                cx_dealloc(observer);
             }
         }
-        db_llFree(observable->onSelf);
+        cx_llFree(observable->onSelf);
         observable->onSelf = NULL;
     }
 
     if (observable->onChild) {
-        db__observer* observer;
-        while((observer = db_llTakeFirst(observable->onChild))) {
+        cx__observer* observer;
+        while((observer = cx_llTakeFirst(observable->onChild))) {
         	/* Clear template observer data */
         	if (observer->observer->template) {
-        		db_object observerObj = observer->_this;
-        		db_class_setObservable(db_class(db_typeof(observerObj)), observer->observer, observer->_this, NULL);
+        		cx_object observerObj = observer->_this;
+        		cx_class_setObservable(cx_class(cx_typeof(observerObj)), observer->observer, observer->_this, NULL);
         	}
             observer->count--;
              if (!observer->count) {
-                db_dealloc(observer);
+                cx_dealloc(observer);
             }
         }
-        db_llFree(observable->onChild);
+        cx_llFree(observable->onChild);
         observable->onChild = NULL;
     }
 
-    db_rwmutexFree(&observable->selfLock);
-    db_rwmutexFree(&observable->childLock);
+    cx_rwmutexFree(&observable->selfLock);
+    cx_rwmutexFree(&observable->childLock);
 }
 
 /* Initialize static scoped object */
-void db__newSSO(db_object sso) {
-    db__object* o;
-    db__scope* scope;
+void cx__newSSO(cx_object sso) {
+    cx__object* o;
+    cx__scope* scope;
 
-    o = DB_OFFSET(sso, -sizeof(db__object));
-    scope = db__objectScope(o);
+    o = DB_OFFSET(sso, -sizeof(cx__object));
+    scope = cx__objectScope(o);
 
     /* Don't call initScope because name is already set. */
-    scope->scopeLock = db_rwmutexNew();
+    scope->scopeLock = cx_rwmutexNew();
     if (scope->parent) {
-    	db__adoptSSO(sso);
+    	cx__adoptSSO(sso);
     }
 
     /* Init observable */
-    if (db_checkAttr(sso, DB_ATTR_OBSERVABLE)) {
-        db__initObservable(sso);
+    if (cx_checkAttr(sso, DB_ATTR_OBSERVABLE)) {
+        cx__initObservable(sso);
     }
 
     /* Keep type */
-    db_keep_ext(sso, db_typeof(sso), "Keep type of object.");
+    cx_keep_ext(sso, cx_typeof(sso), "Keep type of object.");
 }
 
 /* Deinitialize static scoped object */
-void db__freeSSO(db_object sso) {
-    db__object* o;
-    db__scope* scope;
+void cx__freeSSO(cx_object sso) {
+    cx__object* o;
+    cx__scope* scope;
 
-    o = DB_OFFSET(sso, -sizeof(db__object));
-    scope = db__objectScope(o);
+    o = DB_OFFSET(sso, -sizeof(cx__object));
+    scope = cx__objectScope(o);
 
-    db_assert(scope != NULL, "db__freeSSO: static scoped object has no scope (very unlikely, db__freeSSO called on non-static object?)")
+    cx_assert(scope != NULL, "cx__freeSSO: static scoped object has no scope (very unlikely, cx__freeSSO called on non-static object?)")
 
     if (scope->parent) {
-        db_free(scope->parent);
+        cx_free(scope->parent);
     }
 
     if (scope->scope) {
-        if (db_rbtreeSize(scope->scope)) {
-            db_error("db__freeSSO: scope of object '%s' is not empty", db_nameof(sso));
+        if (cx_rbtreeSize(scope->scope)) {
+            cx_error("cx__freeSSO: scope of object '%s' is not empty", cx_nameof(sso));
         }
-        db_rbtreeFree(scope->scope);
+        cx_rbtreeFree(scope->scope);
         scope->scope = NULL;
     }
 
-    db_rwmutexFree(&scope->scopeLock);
+    cx_rwmutexFree(&scope->scopeLock);
 
     /* Deinitialize observable */
-    if (db_checkAttr(sso, DB_ATTR_OBSERVABLE)) {
-        db__deinitObservable(sso);
+    if (cx_checkAttr(sso, DB_ATTR_OBSERVABLE)) {
+        cx__deinitObservable(sso);
     }
 
     /* Free type */
-    db_free_ext(sso, db_typeof(sso), "free type of builtin-object");
+    cx_free_ext(sso, cx_typeof(sso), "free type of builtin-object");
 }
 
 /* Adopt static scoped object */
-int db__adoptSSO(db_object sso) {
-    db__object* o;
-    db__scope* scope;
-    db_object parent;
+int cx__adoptSSO(cx_object sso) {
+    cx__object* o;
+    cx__scope* scope;
+    cx_object parent;
 
-    o = DB_OFFSET(sso, -sizeof(db__object));
-    scope = db__objectScope(o);
+    o = DB_OFFSET(sso, -sizeof(cx__object));
+    scope = cx__objectScope(o);
 
-    db_assert(scope != NULL, "db__adoptSSO: static scoped object has no scope (very unlikely, db__adoptSSO called on non-static object?)");
+    cx_assert(scope != NULL, "cx__adoptSSO: static scoped object has no scope (very unlikely, cx__adoptSSO called on non-static object?)");
 
     parent = scope->parent;
 
-    db_assert(parent != NULL, "db__adoptSSO: static scoped object has no parent");
+    cx_assert(parent != NULL, "cx__adoptSSO: static scoped object has no parent");
 
-    /* Reset the parent to NULL, since db_adopt will otherwise conclude that this object is adopted twice */
+    /* Reset the parent to NULL, since cx_adopt will otherwise conclude that this object is adopted twice */
     scope->parent = NULL;
 
-    return db_adopt(parent, sso);
+    return cx_adopt(parent, sso);
 }
 
 /* Destruct object */
-int db__destructor(db_object o) {
-    db_type t;
-    db__object* _o;
+int cx__destructor(cx_object o) {
+    cx_type t;
+    cx__object* _o;
 
-    t = db_typeof(o)->real;
-    if (db_checkState(o, DB_DEFINED)) {
-        _o = DB_OFFSET(o, -sizeof(db__object));
-        if (db_class_instanceof(db_class_o, t)) {
+    t = cx_typeof(o)->real;
+    if (cx_checkState(o, DB_DEFINED)) {
+        _o = DB_OFFSET(o, -sizeof(cx__object));
+        if (cx_class_instanceof(cx_class_o, t)) {
             /* Detach observers from object */
-            db_class_detachObservers(db_class(t), o);
+            cx_class_detachObservers(cx_class(t), o);
 
             /* Call destructor */
-            if(db_class_destruct_hasCallback(db_class(db_typeof(o)))) {
-                db_class_destruct(db_class(db_typeof(o)), o);
+            if(cx_class_destruct_hasCallback(cx_class(cx_typeof(o)))) {
+                cx_class_destruct(cx_class(cx_typeof(o)), o);
             }
-        } else if (db_class_instanceof(db_procedure_o, t)) {
+        } else if (cx_class_instanceof(cx_procedure_o, t)) {
             /* Call unbind */
-            db_procedure_unbind(db_procedure(db_typeof(o)), o);
+            cx_procedure_unbind(cx_procedure(cx_typeof(o)), o);
         }
 
         _o->attrs.state &= !DB_DEFINED;
     } else {
-        db_id id, id2;
-        db_error("%s::destruct: object '%s' is not defined", db_fullname(t, id2), db_fullname(o, id));
+        cx_id id, id2;
+        cx_error("%s::destruct: object '%s' is not defined", cx_fullname(t, id2), cx_fullname(o, id));
         goto error;
     }
 
@@ -487,15 +487,15 @@ error:
 }
 
 /* Set state on object */
-void db__setState(db_object o, db_uint8 state) {
-    db__object* _o;
+void cx__setState(cx_object o, cx_uint8 state) {
+    cx__object* _o;
 
-    _o = DB_OFFSET(o, -sizeof(db__object));
+    _o = DB_OFFSET(o, -sizeof(cx__object));
     _o->attrs.state |= state;
 }
 
-static db_equalityKind db_objectCompare(db_type _this, const void* o1, const void* o2) {
-    db_char *argList1, *argList2;
+static cx_equalityKind cx_objectCompare(cx_type _this, const void* o1, const void* o2) {
+    cx_char *argList1, *argList2;
     int r;
     DB_UNUSED(_this);
 
@@ -508,12 +508,12 @@ static db_equalityKind db_objectCompare(db_type _this, const void* o1, const voi
         if ((argList2 = strchr(o2, '('))) {
             /* This results in an exact compare of the names - default behavior */
         } else {
-            db_id id;
+            cx_id id;
             /* This results in comparing with the source(o1) from which the argumentlist
              * is stripped.
              */
-            strncpy(id, o1, argList1 - (db_char*)o1);
-            id[argList1 - (db_char*)o1] = '\0';
+            strncpy(id, o1, argList1 - (cx_char*)o1);
+            id[argList1 - (cx_char*)o1] = '\0';
 
             return ((r = stricmp(id, o2)) < 0) ? DB_LT : (r > 0) ? DB_GT : DB_EQ;
         }
@@ -529,11 +529,11 @@ static db_equalityKind db_objectCompare(db_type _this, const void* o1, const voi
  *  DB_DECLARED |      X             X
  *     DB_DEFINED
  */
-static db_bool db__checkStateXOR(db_object o, db_uint8 state) {
-    db_uint8 ostate;
-    db__object* _o;
+static cx_bool cx__checkStateXOR(cx_object o, cx_uint8 state) {
+    cx_uint8 ostate;
+    cx__object* _o;
 
-    _o = DB_OFFSET(o, -sizeof(db__object));
+    _o = DB_OFFSET(o, -sizeof(cx__object));
 
     ostate = _o->attrs.state;
     if (ostate & DB_DEFINED) {
@@ -544,79 +544,79 @@ static db_bool db__checkStateXOR(db_object o, db_uint8 state) {
 }
 
 /* Adopt an object */
-static int db_adopt(db_object parent, db_object child) {
-    db__object *_parent, *_child;
-    db__scope *p_scope, *c_scope;
-    db_typedef parentType;
-    db_type childType;
+static int cx_adopt(cx_object parent, cx_object child) {
+    cx__object *_parent, *_child;
+    cx__scope *p_scope, *c_scope;
+    cx_typedef parentType;
+    cx_type childType;
 
-    _parent = DB_OFFSET(parent, -sizeof(db__object));
-    _child = DB_OFFSET(child, -sizeof(db__object));
-    childType = db_typeof(child)->real;
+    _parent = DB_OFFSET(parent, -sizeof(cx__object));
+    _child = DB_OFFSET(child, -sizeof(cx__object));
+    childType = cx_typeof(child)->real;
 
     /* Parent must be a valid object */
-    if (!db_checkState(parent, DB_VALID)) {
-        db_error("cannot adopt, parentobject <%p> is invalid", parent);
+    if (!cx_checkState(parent, DB_VALID)) {
+        cx_error("cannot adopt, parentobject <%p> is invalid", parent);
         goto err_invalid_parent;
     }
 
     /* Check if parentType matches scopeType of child type */
     if (childType->parentType) {
-        parentType = db_typeof(parent);
-        if ((childType->parentType != parentType) && !db_class_instanceof((db_class)childType->parentType, parent)) {
-            db_id parentId, parentTypeId, childTypeId, childParentTypeId;
-            db_error("parent '%s' of type '%s' cannot adopt object '%s' of type '%s' (must be defined in '%s')",
-                    db_fullname(parent, parentId), db_fullname(parentType, parentTypeId), db_nameof(child), db_fullname(childType, childTypeId), db_fullname(childType->parentType, childParentTypeId));
+        parentType = cx_typeof(parent);
+        if ((childType->parentType != parentType) && !cx_class_instanceof((cx_class)childType->parentType, parent)) {
+            cx_id parentId, parentTypeId, childTypeId, childParentTypeId;
+            cx_error("parent '%s' of type '%s' cannot adopt object '%s' of type '%s' (must be defined in '%s')",
+                    cx_fullname(parent, parentId), cx_fullname(parentType, parentTypeId), cx_nameof(child), cx_fullname(childType, childTypeId), cx_fullname(childType->parentType, childParentTypeId));
             goto err_invalid_parent;
         }
     }
 
     /* Check if parentState matches scopeState of child type */
-    if (childType->parentState && !db__checkStateXOR(parent, childType->parentState)) {
-        db_id parentId, childTypeId;
-        db_string s_parentState, s_childState;
-        db_uint32 parentState, childState;
+    if (childType->parentState && !cx__checkStateXOR(parent, childType->parentState)) {
+        cx_id parentId, childTypeId;
+        cx_string s_parentState, s_childState;
+        cx_uint32 parentState, childState;
         parentState = _parent->attrs.state;
         childState = childType->parentState;
-        db_convert(db_primitive(db_state_o), &parentState, db_primitive(db_string_o), &s_parentState);
-        db_convert(db_primitive(db_state_o), &childState, db_primitive(db_string_o), &s_childState);
-        db_error("state %s of parent '%s' does not match %s, cannot adopt '%s' of type '%s'",
-        		s_parentState, db_fullname(parent, parentId), s_childState, db_nameof(child), db_fullname(childType, childTypeId));
+        cx_convert(cx_primitive(cx_state_o), &parentState, cx_primitive(cx_string_o), &s_parentState);
+        cx_convert(cx_primitive(cx_state_o), &childState, cx_primitive(cx_string_o), &s_childState);
+        cx_error("state %s of parent '%s' does not match %s, cannot adopt '%s' of type '%s'",
+        		s_parentState, cx_fullname(parent, parentId), s_childState, cx_nameof(child), cx_fullname(childType, childTypeId));
 
         if (s_parentState) {
-        	db_dealloc(s_parentState);
+        	cx_dealloc(s_parentState);
         }
         if (s_childState) {
-        	db_dealloc(s_childState);
+        	cx_dealloc(s_childState);
         }
 
         goto err_invalid_parent;
     }
 
     /* Obtain pointers to scope of parent and child */
-    p_scope = db__objectScope(_parent);
+    p_scope = cx__objectScope(_parent);
     if (p_scope) {
-        c_scope = db__objectScope(_child);
+        c_scope = cx__objectScope(_child);
         if (c_scope) {
             /* Set parent of child */
-            if (db_rwmutexWrite(&c_scope->scopeLock)) goto err_child_mutex;
+            if (cx_rwmutexWrite(&c_scope->scopeLock)) goto err_child_mutex;
             if (c_scope->parent) {
                 /* Cannot adopt an already adopted child */
                 goto err_already_adopted;
             }
             c_scope->parent = parent;
-            if (db_rwmutexUnlock(&c_scope->scopeLock)) goto err_child_mutex;
+            if (cx_rwmutexUnlock(&c_scope->scopeLock)) goto err_child_mutex;
 
             /* Insert child in parent-scope */
-            if (db_rwmutexWrite(&p_scope->scopeLock)) goto err_parent_mutex;
+            if (cx_rwmutexWrite(&p_scope->scopeLock)) goto err_parent_mutex;
             if (!p_scope->scope) {
-                p_scope->scope = db_rbtreeNew_w_func(db_objectCompare);
+                p_scope->scope = cx_rbtreeNew_w_func(cx_objectCompare);
             }
-            db_rbtreeSet(p_scope->scope, c_scope->name, child);
+            cx_rbtreeSet(p_scope->scope, c_scope->name, child);
 
             /* Parent must not be deleted before all childs are gone. */
-            db_keep_ext(child, parent, "keep parent of object.");
-            if (db_rwmutexUnlock(&p_scope->scopeLock)) goto err_parent_mutex;
+            cx_keep_ext(child, parent, "keep parent of object.");
+            if (cx_rwmutexUnlock(&p_scope->scopeLock)) goto err_parent_mutex;
         } else {
             goto err_no_child_scope;
         }
@@ -627,133 +627,133 @@ static int db_adopt(db_object parent, db_object child) {
     return 0;
 
 err_child_mutex:
-    db_error("db_adopt: lock operation on scopeLock of child failed");
+    cx_error("cx_adopt: lock operation on scopeLock of child failed");
     return -1;
 
 err_parent_mutex:
-    db_error("db_adopt: lock operation on scopeLock of parent failed");
+    cx_error("cx_adopt: lock operation on scopeLock of parent failed");
     return -1;
 
 err_already_adopted:
-    db_rwmutexUnlock(&c_scope->scopeLock);
-    db_error("db_adopt: child-object is already adopted");
+    cx_rwmutexUnlock(&c_scope->scopeLock);
+    cx_error("cx_adopt: child-object is already adopted");
     return -1;
 
 err_no_parent_scope:
-    db_critical("db_adopt: parent-object is not scoped");
+    cx_critical("cx_adopt: parent-object is not scoped");
     return -1;
 
 err_no_child_scope:
-    db_critical("db_adopt: child-object is not scoped");
+    cx_critical("cx_adopt: child-object is not scoped");
     return -1;
 
 err_invalid_parent:
     return -1;
 }
 
-void db_attach(db_object parent, db_object child) {
-    db__object *_parent;
-    db__scope *_scope;
+void cx_attach(cx_object parent, cx_object child) {
+    cx__object *_parent;
+    cx__scope *_scope;
 
-    if (!db_checkAttr(parent, DB_ATTR_SCOPED)) {
-    	db_critical("attach: cannot attach to non-scoped object");
+    if (!cx_checkAttr(parent, DB_ATTR_SCOPED)) {
+    	cx_critical("attach: cannot attach to non-scoped object");
     }
-    if (db_checkAttr(child, DB_ATTR_SCOPED)) {
-    	db_critical("attach: cannot attach scoped object");
+    if (cx_checkAttr(child, DB_ATTR_SCOPED)) {
+    	cx_critical("attach: cannot attach scoped object");
     }
 
-    _parent = DB_OFFSET(parent, -sizeof(db__object));
-    _scope = db__objectScope(_parent);
+    _parent = DB_OFFSET(parent, -sizeof(cx__object));
+    _scope = cx__objectScope(_parent);
 
-    db_rwmutexWrite(&_scope->scopeLock);
+    cx_rwmutexWrite(&_scope->scopeLock);
     if (!_scope->attached) {
-    	_scope->attached = db_llNew();
+    	_scope->attached = cx_llNew();
     }
-    db_llAppend(_scope->attached, child);
-    db_rwmutexUnlock(&_scope->scopeLock);
+    cx_llAppend(_scope->attached, child);
+    cx_rwmutexUnlock(&_scope->scopeLock);
 }
 
-void db_detach(db_object parent, db_object child) {
-    db__object *_parent;
-    db__scope *_scope;
+void cx_detach(cx_object parent, cx_object child) {
+    cx__object *_parent;
+    cx__scope *_scope;
 
-    if (!db_checkAttr(parent, DB_ATTR_SCOPED)) {
-    	db_critical("attach: cannot attach to non-scoped object");
+    if (!cx_checkAttr(parent, DB_ATTR_SCOPED)) {
+    	cx_critical("attach: cannot attach to non-scoped object");
     }
-    if (db_checkAttr(child, DB_ATTR_SCOPED)) {
-    	db_critical("attach: cannot attach scoped object");
+    if (cx_checkAttr(child, DB_ATTR_SCOPED)) {
+    	cx_critical("attach: cannot attach scoped object");
     }
 
-    _parent = DB_OFFSET(parent, -sizeof(db__object));
-    _scope = db__objectScope(_parent);
+    _parent = DB_OFFSET(parent, -sizeof(cx__object));
+    _scope = cx__objectScope(_parent);
 
-    db_rwmutexWrite(&_scope->scopeLock);
-    db_llRemove(_scope->attached, child);
-    db_rwmutexUnlock(&_scope->scopeLock);
+    cx_rwmutexWrite(&_scope->scopeLock);
+    cx_llRemove(_scope->attached, child);
+    cx_rwmutexUnlock(&_scope->scopeLock);
 }
 
 /* Orphan object - not a public function as this will only happen during destruction of an object. */
-void db__orphan(db_object o) {
-    db__object *_parent, *_child;
-    db__scope *p_scope, *c_scope;
+void cx__orphan(cx_object o) {
+    cx__object *_parent, *_child;
+    cx__scope *p_scope, *c_scope;
 
-    _child = DB_OFFSET(o, -sizeof(db__object));
-    c_scope = db__objectScope(_child);
+    _child = DB_OFFSET(o, -sizeof(cx__object));
+    c_scope = cx__objectScope(_child);
 
     if (c_scope->parent) {
-        _parent = DB_OFFSET(c_scope->parent, -sizeof(db__object));
-        p_scope = db__objectScope(_parent);
+        _parent = DB_OFFSET(c_scope->parent, -sizeof(cx__object));
+        p_scope = cx__objectScope(_parent);
 
         /* Remove object from parent scope */
-        if (db_rwmutexWrite(&p_scope->scopeLock)) goto err_parent_mutex;
-        db_rbtreeRemove(p_scope->scope, (void*)db_nameof(o));
+        if (cx_rwmutexWrite(&p_scope->scopeLock)) goto err_parent_mutex;
+        cx_rbtreeRemove(p_scope->scope, (void*)cx_nameof(o));
 
         /* If scope is empty delete it. */
-        if (!db_rbtreeSize(p_scope->scope)) {
-        	db_rbtreeFree(p_scope->scope);
+        if (!cx_rbtreeSize(p_scope->scope)) {
+        	cx_rbtreeFree(p_scope->scope);
         	p_scope->scope = NULL;
         }
 
-        if (db_rwmutexUnlock(&p_scope->scopeLock)) goto err_parent_mutex;
+        if (cx_rwmutexUnlock(&p_scope->scopeLock)) goto err_parent_mutex;
     }
 
     return;
 err_parent_mutex:
-    db_error("db__orphan: lock operation of scopeLock of parent failed");
+    cx_error("cx__orphan: lock operation of scopeLock of parent failed");
 }
 
 /* Create new object with attributes */
-db_object db_new_ext(db_object src, db_typedef type, db_uint8 attrs, db_string context) {
-    db_uint32 size, headerSize;
-    db__object* o;
+cx_object cx_new_ext(cx_object src, cx_typedef type, cx_uint8 attrs, cx_string context) {
+    cx_uint32 size, headerSize;
+    cx__object* o;
     
     DB_UNUSED(src);
     DB_UNUSED(context);
 
-    headerSize = sizeof(db__object);
+    headerSize = sizeof(cx__object);
 
     /* Get size of type */
-    size = db_type_allocSize(type->real);
+    size = cx_type_allocSize(type->real);
 
     /* Calculate size of attributes */
     if (attrs & DB_ATTR_SCOPED) {
-        headerSize += sizeof(db__scope);
+        headerSize += sizeof(cx__scope);
     }
     if (attrs & DB_ATTR_WRITABLE) {
-    	headerSize += sizeof(db__writable);
+    	headerSize += sizeof(cx__writable);
     }
     if (attrs & DB_ATTR_OBSERVABLE) {
-    	headerSize += sizeof(db__observable);
+    	headerSize += sizeof(cx__observable);
     }
 
     size += headerSize;
 
     /* Allocate object */
-    o = db_calloc(size);
+    o = cx_calloc(size);
     if (o) {
 
 		/* Offset o so it points to object */
-		o = DB_OFFSET(o, headerSize - sizeof(db__object));
+		o = DB_OFFSET(o, headerSize - sizeof(cx__object));
 
         /* Give object initial refcount */
         o->refcount = 1;
@@ -768,11 +768,11 @@ db_object db_new_ext(db_object src, db_typedef type, db_uint8 attrs, db_string c
 		if (attrs & DB_ATTR_WRITABLE) {
 			if (type->real->kind == DB_VOID) {
 			    if (!type->real->reference) {
-			        db_warning("db_new_ext: writable void object created.");
+			        cx_warning("cx_new_ext: writable void object created.");
 			    }
 			}
 			o->attrs.write = TRUE;
-			db__initWritable(DB_OFFSET(o, sizeof(db__object)));
+			cx__initWritable(DB_OFFSET(o, sizeof(cx__object)));
 		}
 		if (attrs & DB_ATTR_OBSERVABLE) {
 			o->attrs.observable = TRUE;
@@ -787,38 +787,38 @@ db_object db_new_ext(db_object src, db_typedef type, db_uint8 attrs, db_string c
 		}
 
         /* If object is of a classType, set the number of delegates in callback-vtable */
-        if (db_class_instanceof(db_class_o, type)) {
-            if (db__class_delegateCount(db_class(type->real))) {
-                *(db_uint32*)DB_OFFSET(o, sizeof(db__object) + type->real->size) = db__class_delegateCount(db_class(type->real));
+        if (cx_class_instanceof(cx_class_o, type)) {
+            if (cx__class_delegateCount(cx_class(type->real))) {
+                *(cx_uint32*)DB_OFFSET(o, sizeof(cx__object) + type->real->size) = cx__class_delegateCount(cx_class(type->real));
             }
         }
 
-        db_keep_ext(DB_OFFSET(o, sizeof(db__object)), type, "Keep type of object");
+        cx_keep_ext(DB_OFFSET(o, sizeof(cx__object)), type, "Keep type of object");
 
         if (!(attrs & DB_ATTR_SCOPED)) {
             /* Call framework initializer */
-            db_init(DB_OFFSET(o, sizeof(db__object)));
+            cx_init(DB_OFFSET(o, sizeof(cx__object)));
             
             /* Call initializer */
-            if (db_type_init_hasCallback(type->real) &&  
-                db_type_init(type->real, DB_OFFSET(o, sizeof(db__object)))) {
+            if (cx_type_init_hasCallback(type->real) &&  
+                cx_type_init(type->real, DB_OFFSET(o, sizeof(cx__object)))) {
                 goto error;
             }
             /* Add object to anonymous cache */
-            if (!db_anonymousObjects) {
-            	db_anonymousObjects = db_llNew();
+            if (!cx_anonymousObjects) {
+            	cx_anonymousObjects = cx_llNew();
             }
-            db_llInsert(db_anonymousObjects, DB_OFFSET(o, sizeof(db__object)));
+            cx_llInsert(cx_anonymousObjects, DB_OFFSET(o, sizeof(cx__object)));
         }
     }
 
-    return DB_OFFSET(o, sizeof(db__object));
+    return DB_OFFSET(o, sizeof(cx__object));
 error:
     return NULL;
 }
 
 /* Create new object */
-db_object db_new(db_typedef type) {
+cx_object cx_new(cx_typedef type) {
     int attr;
 
     if (type->real->kind == DB_VOID) {
@@ -827,29 +827,29 @@ db_object db_new(db_typedef type) {
     	attr = DB_ATTR_WRITABLE | DB_ATTR_OBSERVABLE;
     }
 
-    return db_new_ext(NULL, type, attr, NULL);
+    return cx_new_ext(NULL, type, attr, NULL);
 }
 
 /* Declare object */
-db_object db_declare(db_object parent, db_string name, db_typedef type) {
-    db_object o;
-    db_uint8 state;
+cx_object cx_declare(cx_object parent, cx_string name, cx_typedef type) {
+    cx_object o;
+    cx_uint8 state;
 
     if (!parent) {
     	parent = root_o;
     }
 
     /* Type must be valid and defined */
-    if (!db_checkState(type, DB_VALID | DB_DEFINED)) {
-        db_id pid, tid;
-        db_error("db_declare: failed to declare object '%s' in scope '%s', type '%s' is not valid and/or defined", name, db_fullname(parent, pid), db_fullname(type, tid));
+    if (!cx_checkState(type, DB_VALID | DB_DEFINED)) {
+        cx_id pid, tid;
+        cx_error("cx_declare: failed to declare object '%s' in scope '%s', type '%s' is not valid and/or defined", name, cx_fullname(parent, pid), cx_fullname(type, tid));
         goto error;
     }
 
     /* Pointer must be of type-class */
-    if (!db_class_instanceof(db_typedef_o, type)) {
-        db_id pid, tid;
-        db_error("db_declare: failed to declare object '%s' in scope '%s': object '%s' is not- or does not refer a type", name, db_fullname(parent, pid), db_fullname(type, tid));
+    if (!cx_class_instanceof(cx_typedef_o, type)) {
+        cx_id pid, tid;
+        cx_error("cx_declare: failed to declare object '%s' in scope '%s': object '%s' is not- or does not refer a type", name, cx_fullname(parent, pid), cx_fullname(type, tid));
         goto error;
     }
 
@@ -861,43 +861,43 @@ db_object db_declare(db_object parent, db_string name, db_typedef type) {
     }
 
     /* Check if object already exists */
-    if ((o = db_lookup(parent, name))) {
-        db_free(o);
-        if (db_typeof(o) != type) {
-            db_id tid, tid2, pid;
+    if ((o = cx_lookup(parent, name))) {
+        cx_free(o);
+        if (cx_typeof(o) != type) {
+            cx_id tid, tid2, pid;
             if (parent != root_o) {
-            	db_error("cannot declare '%s %s::%s', it is already declared as an object of a different type '%s'", db_fullname(type, tid), db_fullname(parent, pid), name, db_fullname(db_typeof(o), tid2));
+            	cx_error("cannot declare '%s %s::%s', it is already declared as an object of a different type '%s'", cx_fullname(type, tid), cx_fullname(parent, pid), name, cx_fullname(cx_typeof(o), tid2));
             } else {
-               	db_error("cannot declare '%s ::%s', it is already declared as an object of a different type '%s'", db_fullname(type, tid), name, db_fullname(db_typeof(o), tid2));
+               	cx_error("cannot declare '%s ::%s', it is already declared as an object of a different type '%s'", cx_fullname(type, tid), name, cx_fullname(cx_typeof(o), tid2));
             }
             goto error;
         }
     } else {
         /* Create new object */
-        o = db_new_ext(parent, type, state, "Declare object in scope");
+        o = cx_new_ext(parent, type, state, "Declare object in scope");
         if (o) {
             /* Initialize object parameters. */
-            if (!db__initScope(o, name, parent)) {
+            if (!cx__initScope(o, name, parent)) {
                 if (state & DB_ATTR_WRITABLE) {
-                    db__initWritable(o);
+                    cx__initWritable(o);
                 }
-                db__initObservable(o);
+                cx__initObservable(o);
                 
                 /* Call framework initializer */
-                db_init(o);
+                cx_init(o);
 
                 /* Init object value */
-                if (db_type_init_hasCallback(db_typeof(o)->real) && db_type_init(db_typeof(o)->real, o)) {
-                    db_invalidate(o);
+                if (cx_type_init_hasCallback(cx_typeof(o)->real) && cx_type_init(cx_typeof(o)->real, o)) {
+                    cx_invalidate(o);
                     goto error;
                 }
             } else {
-                db_invalidate(o);
+                cx_invalidate(o);
                 goto error;
             }
 
             /* Notify parent of new object */
-            db_notify(db__objectObservable(DB_OFFSET(parent,-sizeof(db__object))), parent, o, DB_ON_DECLARE);
+            cx_notify(cx__objectObservable(DB_OFFSET(parent,-sizeof(cx__object))), parent, o, DB_ON_DECLARE);
         }
     }
 
@@ -907,41 +907,41 @@ error:
 }
 
 /* Define object */
-db_int16 db_define(db_object o) {
-    db_type t;
-    db_int16 result;
-    db__object *_o;
+cx_int16 cx_define(cx_object o) {
+    cx_type t;
+    cx_int16 result;
+    cx__object *_o;
 
     result = 0;
-    _o = DB_OFFSET(o, -sizeof(db__object));
-    t = db_typeof(o)->real;
+    _o = DB_OFFSET(o, -sizeof(cx__object));
+    t = cx_typeof(o)->real;
 
     /* Only define valid, undefined objects */
-    if (db_checkState(o, DB_VALID | DB_DECLARED) && !db_checkState(o, DB_DEFINED)) {
+    if (cx_checkState(o, DB_VALID | DB_DECLARED) && !cx_checkState(o, DB_DEFINED)) {
 
         /* If object is instance of a class, call the constructor */
-        if (db_class_instanceof(db_class_o, t)) {
+        if (cx_class_instanceof(cx_class_o, t)) {
         	/* Attach observers to object */
-        	db_class_attachObservers(db_class(t), o);
+        	cx_class_attachObservers(cx_class(t), o);
             /* Call constructor */
-            if(db_class_construct_hasCallback(db_class(t))) {
-                result = db_class_construct(db_class(t), o);
+            if(cx_class_construct_hasCallback(cx_class(t))) {
+                result = cx_class_construct(cx_class(t), o);
             }
             /* Start listening with attached observers */
-            db_class_listenObservers(db_class(t), o);
-        } else if (db_class_instanceof(db_procedure_o, t)) {
-            result = db_procedure_bind(db_procedure(t), o);
+            cx_class_listenObservers(cx_class(t), o);
+        } else if (cx_class_instanceof(cx_procedure_o, t)) {
+            result = cx_procedure_bind(cx_procedure(t), o);
         }
 
         if (!result) {
             _o->attrs.state |= DB_DEFINED;
 
             /* Notify observers of defined object */
-            db_notify(db__objectObservable(DB_OFFSET(o,-sizeof(db__object))), o, o, DB_ON_DEFINE);
+            cx_notify(cx__objectObservable(DB_OFFSET(o,-sizeof(cx__object))), o, o, DB_ON_DEFINE);
 
         } else {
             /* Remove valid state */
-            db_invalidate(o);
+            cx_invalidate(o);
         }
     }
 
@@ -949,55 +949,55 @@ db_int16 db_define(db_object o) {
 }
 
 /* Destruct object */
-void db_destruct(db_object o) {
-    db__object* _o;
-    db__scope* scope;
+void cx_destruct(cx_object o) {
+    cx__object* _o;
+    cx__scope* scope;
 
-    _o = DB_OFFSET(o, -sizeof(db__object));
-    scope = db__objectScope(_o);
+    _o = DB_OFFSET(o, -sizeof(cx__object));
+    scope = cx__objectScope(_o);
 
-    if (db_ainc(&scope->orphaned) == 1) {
+    if (cx_ainc(&scope->orphaned) == 1) {
     	/* Orphan object */
-    	db__orphan(o);
-        db_free_ext(db_parentof(o), o, "destroy scope reference");
+    	cx__orphan(o);
+        cx_free_ext(cx_parentof(o), o, "destroy scope reference");
     }
 }
 
 /* Invalidate object by removing valid flag */
-void db_invalidate(db_object o) {
-    db__object* _o;
-    _o = DB_OFFSET(o, -sizeof(db__object));
+void cx_invalidate(cx_object o) {
+    cx__object* _o;
+    _o = DB_OFFSET(o, -sizeof(cx__object));
     _o->attrs.state &= !DB_VALID;
     /* Notify observers */
-    db_notify(db__objectObservable(DB_OFFSET(o,-sizeof(db__object))), o, o, DB_ON_INVALIDATE);
+    cx_notify(cx__objectObservable(DB_OFFSET(o,-sizeof(cx__object))), o, o, DB_ON_INVALIDATE);
 }
 
 /* Get type */
-db_typedef db_typeof(db_object o) {
-    db__object* _o = DB_OFFSET(o, -sizeof(db__object));
+cx_typedef cx_typeof(cx_object o) {
+    cx__object* _o = DB_OFFSET(o, -sizeof(cx__object));
     return _o->type;
 }
 
 /* Get refcount */
-db_int32 db_countof(db_object o) {
-    db__object* _o;
-    _o = DB_OFFSET(o, -sizeof(db__object));
+cx_int32 cx_countof(cx_object o) {
+    cx__object* _o;
+    _o = DB_OFFSET(o, -sizeof(cx__object));
     return _o->refcount;
 }
 
 /* Check for a state */
-db_bool db_checkState(db_object o, db_int8 state) {
-    db__object* _o;
-    _o = DB_OFFSET(o, -sizeof(db__object));
+cx_bool cx_checkState(cx_object o, cx_int8 state) {
+    cx__object* _o;
+    _o = DB_OFFSET(o, -sizeof(cx__object));
     return (_o->attrs.state & state) == state;
 }
 
 /* Check for an attribute */
-db_bool db_checkAttr(db_object o, db_int8 attr) {
-    db_bool result;
-    db__object* _o;
+cx_bool cx_checkAttr(cx_object o, cx_int8 attr) {
+    cx_bool result;
+    cx__object* _o;
 
-    _o = DB_OFFSET(o, -sizeof(db__object));
+    _o = DB_OFFSET(o, -sizeof(cx__object));
     result = TRUE;
 
     if (attr & DB_ATTR_SCOPED) {
@@ -1012,33 +1012,33 @@ db_bool db_checkAttr(db_object o, db_int8 attr) {
     return result;
 }
 
-db_bool db_instanceof(db_typedef type, db_object o) {
-	db_typedef objectType = db_typeof(o);
-	db_bool result = TRUE;
+cx_bool cx_instanceof(cx_typedef type, cx_object o) {
+	cx_typedef objectType = cx_typeof(o);
+	cx_bool result = TRUE;
 
 	if (type->real != objectType->real) {
-	    db_type t;
+	    cx_type t;
 
 	    result = FALSE;
-	    t = db_typeof(o)->real;
+	    t = cx_typeof(o)->real;
 
 	    if (t->kind == type->real->kind) {
             switch(type->real->kind) {
             case DB_COMPOSITE: {
-                db_interface p;
-                p = (db_interface)t;
+                cx_interface p;
+                p = (cx_interface)t;
 
                 while(p && !result) {
-                    result = (p == (db_interface)type->real);
+                    result = (p == (cx_interface)type->real);
                     p = p->base;
                 }
                 break;
             }
             case DB_PRIMITIVE:
-                switch(db_primitive(type->real)->kind) {
+                switch(cx_primitive(type->real)->kind) {
                 case DB_ENUM:
                 case DB_BITMASK:
-                    if (db_parentof(o) == type) {
+                    if (cx_parentof(o) == type) {
                         result = TRUE;
                     }
                     break;
@@ -1056,14 +1056,14 @@ db_bool db_instanceof(db_typedef type, db_object o) {
 }
 
 /* Get parent (requires scoped object) */
-db_object db_parentof(db_object o) {
-    db__object* _o;
-    db__scope* scope;
-    db_object result;
+cx_object cx_parentof(cx_object o) {
+    cx__object* _o;
+    cx__scope* scope;
+    cx_object result;
 
     result = NULL;
-    _o = DB_OFFSET(o, -sizeof(db__object));
-    scope = db__objectScope(_o);
+    _o = DB_OFFSET(o, -sizeof(cx__object));
+    scope = cx__objectScope(_o);
     if (scope) {
         result = scope->parent;
     } else {
@@ -1072,19 +1072,19 @@ db_object db_parentof(db_object o) {
 
     return result;
 err_not_scoped:
-    db_critical("db_parentof: object %p is not scoped.", o);
+    cx_critical("cx_parentof: object %p is not scoped.", o);
     return NULL;
 }
 
 /* Get name (requires scoped object) */
-db_string db_nameof(db_object o) {
-    db__object* _o;
-    db__scope* scope;
-    db_string result;
+cx_string cx_nameof(cx_object o) {
+    cx__object* _o;
+    cx__scope* scope;
+    cx_string result;
 
     result = NULL;
-    _o = DB_OFFSET(o, -sizeof(db__object));
-    scope = db__objectScope(_o);
+    _o = DB_OFFSET(o, -sizeof(cx__object));
+    scope = cx__objectScope(_o);
     if (scope) {
         result = scope->name;
     } else {
@@ -1093,20 +1093,20 @@ db_string db_nameof(db_object o) {
 
     return result;
 err_not_scoped:
-    db_critical("db_nameof: object %p is not scoped.", o);
+    cx_critical("cx_nameof: object %p is not scoped.", o);
     return NULL;
 }
 
 /* Get scope (requires scoped object) */
-db_rbtree db_scopeof(db_object o) {
-	db__object* _o;
-	db__scope* scope;
-	db_rbtree result;
+cx_rbtree cx_scopeof(cx_object o) {
+	cx__object* _o;
+	cx__scope* scope;
+	cx_rbtree result;
 
 	result = NULL;
 
-    _o = DB_OFFSET(o, -sizeof(db__object));
-    scope = db__objectScope(_o);
+    _o = DB_OFFSET(o, -sizeof(cx__object));
+    scope = cx__objectScope(_o);
     if (scope) {
         result = scope->scope;
     } else {
@@ -1115,24 +1115,24 @@ db_rbtree db_scopeof(db_object o) {
 
     return result;
 err_not_scoped:
-	db_error("db_scopeof: object <%p> is not scoped", o);
+	cx_error("cx_scopeof: object <%p> is not scoped", o);
 	return NULL;
 }
 
-db_uint32 db_scopeSize(db_object o) {
-    db__object* _o;
-    db__scope* scope;
-    db_rbtree tree;
-    db_uint32 result;
+cx_uint32 cx_scopeSize(cx_object o) {
+    cx__object* _o;
+    cx__scope* scope;
+    cx_rbtree tree;
+    cx_uint32 result;
 
     result = 0;
 
-    _o = DB_OFFSET(o, -sizeof(db__object));
-    scope = db__objectScope(_o);
+    _o = DB_OFFSET(o, -sizeof(cx__object));
+    scope = cx__objectScope(_o);
     if (scope) {
         tree = scope->scope;
         if (tree) {
-            result = db_rbtreeSize(tree);
+            result = cx_rbtreeSize(tree);
         }
     } else {
         goto err_not_scoped;
@@ -1140,26 +1140,26 @@ db_uint32 db_scopeSize(db_object o) {
 
     return result;
 err_not_scoped:
-    db_error("db_scopeof: object <%p> is not scoped", o);
+    cx_error("cx_scopeof: object <%p> is not scoped", o);
     return 0;
 }
 
 /* Walk objects in scope */
-db_int32 db_scopeWalk(db_object o, db_scopeWalkAction action, void* userData) {
-	db_int32 result;
-    db__scope* scope;
+cx_int32 cx_scopeWalk(cx_object o, cx_scopeWalkAction action, void* userData) {
+	cx_int32 result;
+    cx__scope* scope;
 
     if (!o) {
     	o = root_o;
     }
 
     result = 1;
-    scope = db__objectScope(DB_OFFSET(o, -sizeof(db__object)));
+    scope = cx__objectScope(DB_OFFSET(o, -sizeof(cx__object)));
     if (scope) {
         if (scope->scope) {
-            db_rwmutexRead(&scope->scopeLock);
-            result = db_rbtreeWalk(scope->scope, (db_walkAction)action, userData);
-            db_rwmutexUnlock(&scope->scopeLock);
+            cx_rwmutexRead(&scope->scopeLock);
+            result = cx_rbtreeWalk(scope->scope, (cx_walkAction)action, userData);
+            cx_rwmutexUnlock(&scope->scopeLock);
         }
     }
 
@@ -1167,12 +1167,12 @@ db_int32 db_scopeWalk(db_object o, db_scopeWalkAction action, void* userData) {
 }
 
 /* Obtain scoped identifier (serves as global unique identifier) */
-db_string db_fullname(db_object o, db_id buffer) {
-	db_object stack[DB_MAX_SCOPE_DEPTH];
-	db_uint32 depth;
-	db_string name;
-	db_char* ptr;
-	db_uint32 len;
+cx_string cx_fullname(cx_object o, cx_id buffer) {
+	cx_object stack[DB_MAX_SCOPE_DEPTH];
+	cx_uint32 depth;
+	cx_string name;
+	cx_char* ptr;
+	cx_uint32 len;
 
 	depth = 0;
 
@@ -1181,25 +1181,25 @@ db_string db_fullname(db_object o, db_id buffer) {
 	    return buffer;
 	}
 
-	if (!db_checkAttr(o, DB_ATTR_SCOPED)) {
+	if (!cx_checkAttr(o, DB_ATTR_SCOPED)) {
 		sprintf(buffer, "<%p>", o);
 	} else {
 		do {
 			stack[depth++] = o;
-		}while((o = db_parentof(o)));
+		}while((o = cx_parentof(o)));
 
 		ptr = buffer;
 		if (depth == 1) {
-			*(db_uint16*)ptr = DB_SCOPE_HEX;
+			*(cx_uint16*)ptr = DB_SCOPE_HEX;
 			ptr += 2;
 		} else {
 			while(depth) {
 	            depth--;
 				o = stack[depth];
 
-				if ((name = db_nameof(o))) {
+				if ((name = cx_nameof(o))) {
 					/* Copy scope operator */
-					*(db_uint16*)ptr = DB_SCOPE_HEX;
+					*(cx_uint16*)ptr = DB_SCOPE_HEX;
 					ptr += 2;
 
 					/* Copy name */
@@ -1215,15 +1215,15 @@ db_string db_fullname(db_object o, db_id buffer) {
 	return buffer;
 }
 
-static db_object* db_scopeStack(db_object o, db_object scopeStack[], db_uint32 *length) {
-	db_object ptr;
-	db_uint32 i;
+static cx_object* cx_scopeStack(cx_object o, cx_object scopeStack[], cx_uint32 *length) {
+	cx_object ptr;
+	cx_uint32 i;
 
 	ptr = o;
 	i = 0;
 	while(ptr) {
 		scopeStack[i] = ptr;
-		ptr = db_parentof(ptr);
+		ptr = cx_parentof(ptr);
 		i++;
 	}
 	scopeStack[i] = NULL;
@@ -1234,21 +1234,21 @@ static db_object* db_scopeStack(db_object o, db_object scopeStack[], db_uint32 *
 	return scopeStack;
 }
 
-db_string db_relname(db_object from, db_object o, db_id buffer) {
-	db_object from_s[DB_MAX_SCOPE_DEPTH];
-	db_object o_s[DB_MAX_SCOPE_DEPTH];
-	db_uint32 from_i, o_i;
-	db_char* ptr;
-	db_uint32 length;
+cx_string cx_relname(cx_object from, cx_object o, cx_id buffer) {
+	cx_object from_s[DB_MAX_SCOPE_DEPTH];
+	cx_object o_s[DB_MAX_SCOPE_DEPTH];
+	cx_uint32 from_i, o_i;
+	cx_char* ptr;
+	cx_uint32 length;
 
-	db_assert(from != NULL, "relname called with NULL for parameter 'from'.");
-	db_assert(o != NULL, "relname called with NULL for parameter 'to'.");
+	cx_assert(from != NULL, "relname called with NULL for parameter 'from'.");
+	cx_assert(o != NULL, "relname called with NULL for parameter 'to'.");
 
 	if (from == root_o) {
-		db_fullname(o, buffer);
+		cx_fullname(o, buffer);
 	} else {
-		db_scopeStack(from, from_s, &from_i);
-		db_scopeStack(o, o_s, &o_i);
+		cx_scopeStack(from, from_s, &from_i);
+		cx_scopeStack(o, o_s, &o_i);
 
 		from_i--;
 		o_i--;
@@ -1266,15 +1266,15 @@ db_string db_relname(db_object from, db_object o, db_id buffer) {
 
 		ptr = buffer;
 		while(o_i) {
-			length = strlen(db_nameof(o_s[o_i]));
-			memcpy(ptr, db_nameof(o_s[o_i]), length);
+			length = strlen(cx_nameof(o_s[o_i]));
+			memcpy(ptr, cx_nameof(o_s[o_i]), length);
 			ptr += length;
-			*(db_uint16*)ptr = DB_SCOPE_HEX;
+			*(cx_uint16*)ptr = DB_SCOPE_HEX;
 			ptr += 2;
 			o_i--;
 		}
-		length = strlen(db_nameof(o_s[o_i]));
-		memcpy(ptr, db_nameof(o_s[o_i]), length);
+		length = strlen(cx_nameof(o_s[o_i]));
+		memcpy(ptr, cx_nameof(o_s[o_i]), length);
 		ptr += length;
 		*ptr = '\0';
 	}
@@ -1282,55 +1282,55 @@ db_string db_relname(db_object from, db_object o, db_id buffer) {
 }
 
 /* Destruct object. */
-db_uint16 db__destruct(db_object o) {
-	db__object* _o;
+cx_uint16 cx__destruct(cx_object o) {
+	cx__object* _o;
 
-	_o = DB_OFFSET(o, -sizeof(db__object));
-	db_ainc(&_o->refcount);
+	_o = DB_OFFSET(o, -sizeof(cx__object));
+	cx_ainc(&_o->refcount);
 
 	/* Only the following steps if the object is valid. */
-	if (!db_checkState(o, DB_DESTRUCTED)) {
-		db_vtable *ct, *ot;
+	if (!cx_checkState(o, DB_DESTRUCTED)) {
+		cx_vtable *ct, *ot;
 
-		ct = db_class_getCallbackVtable(o);
-		ot = db_class_getObserverVtable(o);
+		ct = cx_class_getCallbackVtable(o);
+		ot = cx_class_getObserverVtable(o);
 
         /* Prevents from calling destructor nested */
         _o->mm.cycles = -1;
 
 	    /* Only do the following steps if the object is defined */
-	    if (db_checkState(o, DB_DEFINED)) {
+	    if (cx_checkState(o, DB_DEFINED)) {
 	        /* From here, object is marked as destructed. */
 	        _o->attrs.state |= DB_DESTRUCTED;
 
 	        /* Integrity check */
-            if (db_checkAttr(o, DB_ATTR_SCOPED)) {
-                if (db_parentof(o) == cortex_lang_o) {
-                    db_id id;
-                    db_critical("illegal attempt to destruct builtin-object '%s'.", db_fullname(o, id));
+            if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
+                if (cx_parentof(o) == cortex_lang_o) {
+                    cx_id id;
+                    cx_critical("illegal attempt to destruct builtin-object '%s'.", cx_fullname(o, id));
                 }
             }
 
             /* Notify destruct */
-            db_notify(db__objectObservable(DB_OFFSET(o,-sizeof(db__object))), o, o, DB_ON_DESTRUCT);
+            cx_notify(cx__objectObservable(DB_OFFSET(o,-sizeof(cx__object))), o, o, DB_ON_DESTRUCT);
 
             /* Call object-destructor */
-            if (db__destructor(o)) {
+            if (cx__destructor(o)) {
                 return -1;
             }
 	    } else {
             /* Notify destruct */
-            db_notify(db__objectObservable(DB_OFFSET(o,-sizeof(db__object))), o, o, DB_ON_DESTRUCT);
+            cx_notify(cx__objectObservable(DB_OFFSET(o,-sizeof(cx__object))), o, o, DB_ON_DESTRUCT);
 	    }
 
-        db_deinit(o);
+        cx_deinit(o);
 
         /* If object is of a classType, free callbacks */
         if (ct && ct->buffer) {
-        	db_uint32 i;
+        	cx_uint32 i;
         	for(i=0; i<ct->length; i++) {
         		if (ct->buffer[i]) {
-        			db_free_ext(o, ct->buffer[i], "Free callback.");
+        			cx_free_ext(o, ct->buffer[i], "Free callback.");
         		}
         	}
         	ct->buffer = NULL;
@@ -1338,24 +1338,24 @@ db_uint16 db__destruct(db_object o) {
         }
 
         /* Deinit observable */
-        if (db_checkAttr(o, DB_ATTR_OBSERVABLE)) {
-            db__deinitObservable(o);
+        if (cx_checkAttr(o, DB_ATTR_OBSERVABLE)) {
+            cx__deinitObservable(o);
         }
 
         /* Free type of object */
-        db_free_ext(o, db_typeof(o), "Free type of object");
+        cx_free_ext(o, cx_typeof(o), "Free type of object");
 
         /* Deinit writable */
-        if (db_checkAttr(o, DB_ATTR_WRITABLE)) {
-            db__deinitWritable(o);
+        if (cx_checkAttr(o, DB_ATTR_WRITABLE)) {
+            cx__deinitWritable(o);
         }
 
         /* Deinit scope */
-        if (db_checkAttr(o, DB_ATTR_SCOPED)) {
-            db__deinitScope(o);
+        if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
+            cx__deinitScope(o);
         } else {
             /* Remove from anonymous cache */
-            db_llRemove(db_anonymousObjects, o);
+            cx_llRemove(cx_anonymousObjects, o);
         }
 
         /* Reset template observable table */
@@ -1371,13 +1371,13 @@ db_uint16 db__destruct(db_object o) {
 	 * of this object. Therefore when the reference count of this object is non-zero, it cannot yet be free'd.
 	 */
 
-	db_adec(&_o->refcount);
+	cx_adec(&_o->refcount);
 
-	if (!db_countof(o)) {
-	    db_dealloc(db__objectStartAddr(_o));
+	if (!cx_countof(o)) {
+	    cx_dealloc(cx__objectStartAddr(_o));
 	    return 0;
 	} else {
-	    return db_countof(o);
+	    return cx_countof(o);
 	}
 }
 
@@ -1387,33 +1387,33 @@ db_uint16 db__destruct(db_object o) {
 #ifdef DB_TRACE
 #define DB_TRACE_KEEP(o)\
 	{\
-		db__object* _o;\
-		_o = DB_OFFSET(o, -sizeof(db__object));\
-		if (db__objectScope(_o)) {\
-			if ((db_nameof(o) == DB_TRACE) || (DB_TRACE && (db_nameof(o) && !strcmp(db_nameof(o), DB_TRACE)))) {\
+		cx__object* _o;\
+		_o = DB_OFFSET(o, -sizeof(cx__object));\
+		if (cx__objectScope(_o)) {\
+			if ((cx_nameof(o) == DB_TRACE) || (DB_TRACE && (cx_nameof(o) && !strcmp(cx_nameof(o), DB_TRACE)))) {\
 			    DB_TRACE_ADDR = o;\
-				db_trace("keep (%p)'%s' -> %d (context = \"%s\")", o, db_nameof(o), _o->refcount, context);\
+				cx_trace("keep (%p)'%s' -> %d (context = \"%s\")", o, cx_nameof(o), _o->refcount, context);\
 				if (src) {\
-					db_id id;\
-				    db_trace("    source: %s", db_fullname(src, id));\
+					cx_id id;\
+				    cx_trace("    source: %s", cx_fullname(src, id));\
                 }\
-                db_backtrace(stdout);\
+                cx_backtrace(stdout);\
 			}\
 		}\
 	}
 #define DB_TRACE_FREE(object)\
 	{\
-		db__object* _o;\
-		_o = DB_OFFSET(o, -sizeof(db__object));\
-		if (db__objectScope(_o)) {\
-			if ((db_nameof(o) == DB_TRACE) || (DB_TRACE && (db_nameof(o) && !strcmp(db_nameof(o), DB_TRACE)))) {\
+		cx__object* _o;\
+		_o = DB_OFFSET(o, -sizeof(cx__object));\
+		if (cx__objectScope(_o)) {\
+			if ((cx_nameof(o) == DB_TRACE) || (DB_TRACE && (cx_nameof(o) && !strcmp(cx_nameof(o), DB_TRACE)))) {\
 			    DB_TRACE_ADDR = o;\
-				db_trace("free (%p)'%s' -> %d (context = \"%s\", cycles=%d)", o, db_nameof(o), _o->refcount, context, _o->mm.cycles);\
+				cx_trace("free (%p)'%s' -> %d (context = \"%s\", cycles=%d)", o, cx_nameof(o), _o->refcount, context, _o->mm.cycles);\
                 if (src) {\
-                	db_id id;\
-                    db_trace("    source: %s", db_fullname(src, id));\
+                	cx_id id;\
+                    cx_trace("    source: %s", cx_fullname(src, id));\
                 }\
-                db_backtrace(stdout);\
+                cx_backtrace(stdout);\
 			}\
 		}\
 	}
@@ -1425,30 +1425,30 @@ db_uint16 db__destruct(db_object o) {
 #ifdef DB_TRACE_TYPE
 #define DB_TRACE_KEEP(o)\
 	{\
-		db__object* _o;\
-		_o = DB_OFFSET(o, -sizeof(db__object));\
-        if ((db_nameof(db_typeof(o)) == DB_TRACE_TYPE) || (DB_TRACE_TYPE && (db_nameof(db_typeof(o)) && !strcmp(db_nameof(db_typeof(o)), DB_TRACE_TYPE)))) {\
-            db_id id;\
-            db_trace("keep (%p)'%s' -> %d (context = \"%s\")", o, db_fullname(o, id), db_countof(o), context);\
+		cx__object* _o;\
+		_o = DB_OFFSET(o, -sizeof(cx__object));\
+        if ((cx_nameof(cx_typeof(o)) == DB_TRACE_TYPE) || (DB_TRACE_TYPE && (cx_nameof(cx_typeof(o)) && !strcmp(cx_nameof(cx_typeof(o)), DB_TRACE_TYPE)))) {\
+            cx_id id;\
+            cx_trace("keep (%p)'%s' -> %d (context = \"%s\")", o, cx_fullname(o, id), cx_countof(o), context);\
             if (src) {\
-                db_id id;\
-                db_trace("    source: %s", db_fullname(src, id));\
+                cx_id id;\
+                cx_trace("    source: %s", cx_fullname(src, id));\
             }\
-            db_backtrace(stdout);\
+            cx_backtrace(stdout);\
         }\
 	}
 #define DB_TRACE_FREE(object)\
 	{\
-		db__object* _o;\
-		_o = DB_OFFSET(o, -sizeof(db__object));\
-        if ((db_nameof(db_typeof(o)) == DB_TRACE_TYPE) || (DB_TRACE_TYPE && (db_nameof(db_typeof(o)) && !strcmp(db_nameof(db_typeof(o)), DB_TRACE_TYPE)))) {\
-            db_id id;\
-            db_trace("free (%p)'%s' -> %d (context = \"%s\", cycles=%d)", o, db_fullname(o, id), db_countof(o), context, _o->mm.cycles);\
+		cx__object* _o;\
+		_o = DB_OFFSET(o, -sizeof(cx__object));\
+        if ((cx_nameof(cx_typeof(o)) == DB_TRACE_TYPE) || (DB_TRACE_TYPE && (cx_nameof(cx_typeof(o)) && !strcmp(cx_nameof(cx_typeof(o)), DB_TRACE_TYPE)))) {\
+            cx_id id;\
+            cx_trace("free (%p)'%s' -> %d (context = \"%s\", cycles=%d)", o, cx_fullname(o, id), cx_countof(o), context, _o->mm.cycles);\
             if (src) {\
-                db_id id;\
-                db_trace("    source: %s", db_fullname(src, id));\
+                cx_id id;\
+                cx_trace("    source: %s", cx_fullname(src, id));\
             }\
-            db_backtrace(stdout);\
+            cx_backtrace(stdout);\
         }\
 	}
 #endif
@@ -1459,33 +1459,33 @@ db_uint16 db__destruct(db_object o) {
 #ifdef DB_TRACE_TYPEPARENT
 #define DB_TRACE_KEEP(o)\
 	{\
-		db__object* _o;\
-		_o = DB_OFFSET(db_typeof(o), -sizeof(db__object));\
-		if (db__objectScope(_o)) {\
-			if ((db_nameof(db_parentof(db_typeof(o))) == DB_TRACE_TYPEPARENT) || (DB_TRACE_TYPEPARENT && (db_nameof(db_parentof(db_typeof(o))) && !strcmp(db_nameof(db_parentof(db_typeof(o))), DB_TRACE_TYPEPARENT)))) {\
-				db_id id;\
-				db_trace("keep (%p)'%s' -> %d (context = \"%s\")", o, db_fullname(o, id), db_countof(o), context);\
+		cx__object* _o;\
+		_o = DB_OFFSET(cx_typeof(o), -sizeof(cx__object));\
+		if (cx__objectScope(_o)) {\
+			if ((cx_nameof(cx_parentof(cx_typeof(o))) == DB_TRACE_TYPEPARENT) || (DB_TRACE_TYPEPARENT && (cx_nameof(cx_parentof(cx_typeof(o))) && !strcmp(cx_nameof(cx_parentof(cx_typeof(o))), DB_TRACE_TYPEPARENT)))) {\
+				cx_id id;\
+				cx_trace("keep (%p)'%s' -> %d (context = \"%s\")", o, cx_fullname(o, id), cx_countof(o), context);\
 				if (src) {\
-					db_id id;\
-				    db_trace("    source: %s", db_fullname(src, id));\
+					cx_id id;\
+				    cx_trace("    source: %s", cx_fullname(src, id));\
                 }\
-                /*db_backtrace(stdout);*/\
+                /*cx_backtrace(stdout);*/\
 			}\
 		}\
 	}
 #define DB_TRACE_FREE(object)\
 	{\
-		db__object* _o;\
-		_o = DB_OFFSET(db_typeof(o), -sizeof(db__object));\
-		if (db__objectScope(_o)) {\
-			if ((db_nameof(db_parentof(db_typeof(o))) == DB_TRACE_TYPEPARENT) || (DB_TRACE_TYPEPARENT && (db_nameof(db_parentof(db_typeof(o))) && !strcmp(db_nameof(db_parentof(db_typeof(o))), DB_TRACE_TYPEPARENT)))) {\
-				db_id id;\
-				db_trace("free (%p)'%s' -> %d (context = \"%s\", cycles=%d)", o, db_fullname(o, id), db_countof(o), context, _o->mm.cycles);\
+		cx__object* _o;\
+		_o = DB_OFFSET(cx_typeof(o), -sizeof(cx__object));\
+		if (cx__objectScope(_o)) {\
+			if ((cx_nameof(cx_parentof(cx_typeof(o))) == DB_TRACE_TYPEPARENT) || (DB_TRACE_TYPEPARENT && (cx_nameof(cx_parentof(cx_typeof(o))) && !strcmp(cx_nameof(cx_parentof(cx_typeof(o))), DB_TRACE_TYPEPARENT)))) {\
+				cx_id id;\
+				cx_trace("free (%p)'%s' -> %d (context = \"%s\", cycles=%d)", o, cx_fullname(o, id), cx_countof(o), context, _o->mm.cycles);\
                 if (src) {\
-                	db_id id;\
-                    db_trace("    source: %s", db_fullname(src, id));\
+                	cx_id id;\
+                    cx_trace("    source: %s", cx_fullname(src, id));\
                 }\
-                /*db_backtrace(stdout);\*/\
+                /*cx_backtrace(stdout);\*/\
 			}\
 		}\
 	}
@@ -1502,187 +1502,187 @@ db_uint16 db__destruct(db_object o) {
 #endif
 
 #ifdef DB_TRACE_DEBUG
-db_object DB_TRACE_ADDR = NULL;
+cx_object DB_TRACE_ADDR = NULL;
 #endif
-db_int32 db_keep_ext(db_object src, db_object o, db_string context) {
-    db__object* _o;
-    db_uint32 i;
+cx_int32 cx_keep_ext(cx_object src, cx_object o, cx_string context) {
+    cx__object* _o;
+    cx_uint32 i;
 	DB_UNUSED(src);
 	DB_UNUSED(context);
 
-	_o = DB_OFFSET(o, -sizeof(db__object));
-	i = db_ainc(&_o->refcount);
+	_o = DB_OFFSET(o, -sizeof(cx__object));
+	i = cx_ainc(&_o->refcount);
 
 #ifdef DB_TRACE_DEBUG
 	if (DB_TRACE_ADDR == o) {
-	    db_id id, id2;
-	    db_trace("keep %s of type %s -> %d (cycles=%d, source=%p, context='%s')", db_fullname(o, id), db_fullname(db_typeof(o), id2), i, _o->mm.cycles, src, context);
-	    /*db_backtrace(stdout);*/
+	    cx_id id, id2;
+	    cx_trace("keep %s of type %s -> %d (cycles=%d, source=%p, context='%s')", cx_fullname(o, id), cx_fullname(cx_typeof(o), id2), i, _o->mm.cycles, src, context);
+	    /*cx_backtrace(stdout);*/
 	}
 
     DB_TRACE_KEEP(o);
 
 	if (i == 0) {
-		db_id id1, id2;
-		db_critical("keep resulted in refcount of 0 for object '%s' of type '%s'",
-				db_fullname(o, id1), db_fullname(db_typeof(o), id2));
+		cx_id id1, id2;
+		cx_critical("keep resulted in refcount of 0 for object '%s' of type '%s'",
+				cx_fullname(o, id1), cx_fullname(cx_typeof(o), id2));
 	}
 #endif
 
 	return i;
 }
 
-db_int32 db_free_ext(db_object src, db_object o, db_string context) {
-	db_int32 i;
-	db__object* _o;
+cx_int32 cx_free_ext(cx_object src, cx_object o, cx_string context) {
+	cx_int32 i;
+	cx__object* _o;
 	DB_UNUSED(src);
 	DB_UNUSED(context);
 
-	_o = DB_OFFSET(o, -sizeof(db__object));
-	i = db_adec(&_o->refcount);
+	_o = DB_OFFSET(o, -sizeof(cx__object));
+	i = cx_adec(&_o->refcount);
 
 #ifdef DB_TRACE_DEBUG
     if ((DB_TRACE_ADDR == o)) {
-        db_id id, id2;
-        db_trace("free (%p)%s of type %s -> %d (cycles=%d, valid=%d, destructed = %d, source=%p, context='%s')",
-        		o, db_fullname(o, id), db_fullname(db_typeof(o), id2), i, _o->mm.cycles, db_checkState(o, DB_VALID), db_checkState(o, DB_DESTRUCTED), src, context);
-        /*db_backtrace(stdout);*/
+        cx_id id, id2;
+        cx_trace("free (%p)%s of type %s -> %d (cycles=%d, valid=%d, destructed = %d, source=%p, context='%s')",
+        		o, cx_fullname(o, id), cx_fullname(cx_typeof(o), id2), i, _o->mm.cycles, cx_checkState(o, DB_VALID), cx_checkState(o, DB_DESTRUCTED), src, context);
+        /*cx_backtrace(stdout);*/
     }
 
 	DB_TRACE_FREE(o);
 #endif
 
 	if (i == _o->mm.cycles) {
-		db__destruct(o);
+		cx__destruct(o);
 
 	/* If an invalid scoped object doesn't have a name, it must still be free'd - can occur when objects are
 	 * dangling because of double cycles. */
-	} else if (!i && db_checkState(o, DB_DESTRUCTED) && (_o->mm.cycles == 65535)) {
-        db__destruct(o);
+	} else if (!i && cx_checkState(o, DB_DESTRUCTED) && (_o->mm.cycles == 65535)) {
+        cx__destruct(o);
 	}
 	if (i < 0) {
-		db_id id, typeId;
-		db_critical("negative reference count of object (%p) '%s' of type '%s'", o, db_fullname(o, id), db_fullname(db_typeof(o), typeId));
-		db_backtrace(stdout);
+		cx_id id, typeId;
+		cx_critical("negative reference count of object (%p) '%s' of type '%s'", o, cx_fullname(o, id), cx_fullname(cx_typeof(o), typeId));
+		cx_backtrace(stdout);
 	}
 
 	return i;
 }
 
-db_int32 db_keep(db_object o) {
-	return db_keep_ext(NULL, o, NULL);
+cx_int32 cx_keep(cx_object o) {
+	return cx_keep_ext(NULL, o, NULL);
 }
 
-db_int32 db_free(db_object o) {
-	return db_free_ext(NULL, o, NULL);
+cx_int32 cx_free(cx_object o) {
+	return cx_free_ext(NULL, o, NULL);
 }
 
-typedef struct db_dropWalk_t {
-	db_ll objects;
-}db_dropWalk_t;
+typedef struct cx_dropWalk_t {
+	cx_ll objects;
+}cx_dropWalk_t;
 
 /* Collect objects in scope, so they can be removed outside of scopeLock. */
-static int db_dropWalk(void* o, void* userData) {
-    db__object* _o;
-    db__scope* scope;
-	db_dropWalk_t* data;
+static int cx_dropWalk(void* o, void* userData) {
+    cx__object* _o;
+    cx__scope* scope;
+	cx_dropWalk_t* data;
 
 	data = userData;
 
 	/* Drops are recursive */
-	_o = DB_OFFSET(o, -sizeof(db__object));
-	scope = db__objectScope(_o);
+	_o = DB_OFFSET(o, -sizeof(cx__object));
+	scope = cx__objectScope(_o);
 	if (scope) {
-		db_rwmutexRead(&scope->scopeLock);
+		cx_rwmutexRead(&scope->scopeLock);
 		if (scope->scope) {
-			db_rbtreeWalk(scope->scope, db_dropWalk, data);
+			cx_rbtreeWalk(scope->scope, cx_dropWalk, data);
 		}
 		if (scope->attached) {
-			db_llWalk(scope->attached, db_dropWalk, data);
-			db_llFree(scope->attached);
+			cx_llWalk(scope->attached, cx_dropWalk, data);
+			cx_llFree(scope->attached);
 			scope->attached = NULL;
 		}
-		db_rwmutexUnlock(&scope->scopeLock);
+		cx_rwmutexUnlock(&scope->scopeLock);
 	}
 
 	/* Prevent object from being deleted when scopeLock is released, which
 	 * would result in invalid reference in list. */
-	db_keep_ext(NULL, o, "keep object in temporary drop-list");
+	cx_keep_ext(NULL, o, "keep object in temporary drop-list");
 
 	/* Insert object in list */
 	if (!data->objects) {
-	    data->objects = db_llNew();
+	    data->objects = cx_llNew();
 	}
-	db_llInsert(data->objects, o);
+	cx_llInsert(data->objects, o);
 
 	return 1;
 }
 
-void db_drop(db_object o) {
-	db__object* _o;
-	db__scope* scope;
-	db_dropWalk_t walkData;
+void cx_drop(cx_object o) {
+	cx__object* _o;
+	cx__scope* scope;
+	cx_dropWalk_t walkData;
 
-	_o = DB_OFFSET(o, -sizeof(db__object));
-	scope = db__objectScope(_o);
+	_o = DB_OFFSET(o, -sizeof(cx__object));
+	scope = cx__objectScope(_o);
 	if (scope) {
-	    db_iter iter;
-	    db_object collected;
+	    cx_iter iter;
+	    cx_object collected;
 
 		/* Because object refcounts can reach zero after a free, a
 		 * walk in which objects are collected is needed first. During
 		 * destruction of an object, this scopeLock is also required,
 		 * which would result in deadlocks. */
 
-		db_rwmutexRead(&scope->scopeLock);
+		cx_rwmutexRead(&scope->scopeLock);
 		walkData.objects = NULL;
 		if (scope->scope) {
-			db_rbtreeWalk(scope->scope, db_dropWalk, &walkData);
+			cx_rbtreeWalk(scope->scope, cx_dropWalk, &walkData);
 		}
 		if (scope->attached) {
-			db_llWalk(scope->attached, db_dropWalk, &walkData);
-			db_llFree(scope->attached);
+			cx_llWalk(scope->attached, cx_dropWalk, &walkData);
+			cx_llFree(scope->attached);
 			scope->attached = NULL;
 		}
-		db_rwmutexUnlock(&scope->scopeLock);
+		cx_rwmutexUnlock(&scope->scopeLock);
 
 		/* Free objects outside scopeLock */
 		if (walkData.objects) {
-			iter = db_llIter(walkData.objects);
-			while(db_iterHasNext(&iter)) {
-				collected = db_iterNext(&iter);
-				db_free_ext(NULL, collected, "free from temporary drop-list");
-				/* Double free - because db_drop itself introduced a keep. */
-				if (db_checkAttr(collected, DB_ATTR_SCOPED)) {
-					db_destruct(collected);
+			iter = cx_llIter(walkData.objects);
+			while(cx_iterHasNext(&iter)) {
+				collected = cx_iterNext(&iter);
+				cx_free_ext(NULL, collected, "free from temporary drop-list");
+				/* Double free - because cx_drop itself introduced a keep. */
+				if (cx_checkAttr(collected, DB_ATTR_SCOPED)) {
+					cx_destruct(collected);
 				} else {
-					db_free_ext(NULL, collected, "free attached object");
+					cx_free_ext(NULL, collected, "free attached object");
 				}
 			}
-			db_llFree(walkData.objects);
+			cx_llFree(walkData.objects);
 		}
 	} else {
-		db_critical("db_drop: object <%p> is not scoped.", o);
+		cx_critical("cx_drop: object <%p> is not scoped.", o);
 	}
 }
 
-db_object db_lookup_ext(db_object src, db_object o, db_string name, db_string context) {
-    db_object result;
-    db__object *_o, *_result;
-    db__scope* scope;
-    db_rbtree tree;
+cx_object cx_lookup_ext(cx_object src, cx_object o, cx_string name, cx_string context) {
+    cx_object result;
+    cx__object *_o, *_result;
+    cx__scope* scope;
+    cx_rbtree tree;
 
-    _o = DB_OFFSET(o, -sizeof(db__object));
-    scope = db__objectScope(_o);
+    _o = DB_OFFSET(o, -sizeof(cx__object));
+    scope = cx__objectScope(_o);
 
     if (scope) {
-        db_rwmutexRead(&scope->scopeLock);
+        cx_rwmutexRead(&scope->scopeLock);
         if ((tree = scope->scope)) {
-            if ((!db_rbtreeHasKey(tree, name, (void**)&result))) {
+            if ((!cx_rbtreeHasKey(tree, name, (void**)&result))) {
                 result = NULL;
             } else {
                 /* Keep object. If the refcount was zero, this object will be deleted soon, so prevent the object from being referenced again. */
-                if (db_keep_ext(src, result, context) == 1) {
+                if (cx_keep_ext(src, result, context) == 1) {
                      /* Set the refcount to zero again. There can be no more objects that are looking up this object right now because
                       * we have the scopeLock of the parent. Additionally, the object will not yet have been free'd because the destruct
                       * function also needs the parent's scopelock to remove the object from the scope.
@@ -1691,7 +1691,7 @@ db_object db_lookup_ext(db_object src, db_object o, db_string name, db_string co
                       * thread might try to acquire this object. Setting the refcount back to zero will enable these lookups to also detect
                       * that the object is being deleted.
                       */
-                    _result = DB_OFFSET(result, -sizeof(db__object));
+                    _result = DB_OFFSET(result, -sizeof(cx__object));
                     _result->refcount = 0;
                     result = NULL;
                 }
@@ -1699,10 +1699,10 @@ db_object db_lookup_ext(db_object src, db_object o, db_string name, db_string co
         } else {
             result = NULL;
         }
-        db_rwmutexUnlock(&scope->scopeLock);
+        cx_rwmutexUnlock(&scope->scopeLock);
     } else {
-        db_id id;
-        db_error("db_lookup: object '%s' has no scope", db_fullname(o, id));
+        cx_id id;
+        cx_error("cx_lookup: object '%s' has no scope", cx_fullname(o, id));
         goto error;
     }
 
@@ -1711,54 +1711,54 @@ error:
     return NULL;
 }
 
-db_object db_lookup(db_object o, db_string name) {
-    return db_lookup_ext(NULL, o, name, NULL);
+cx_object cx_lookup(cx_object o, cx_string name) {
+    return cx_lookup_ext(NULL, o, name, NULL);
 }
 
 /* Resolve anonymous object */
-static db_char* db_resolveAnonymous(db_object src, db_object scope, db_object o, db_string str, db_object* out) {
+static cx_char* cx_resolveAnonymous(cx_object src, cx_object scope, cx_object o, cx_string str, cx_object* out) {
     DB_UNUSED(src);
-    db_object result;
-    db_string_deser_t data;
+    cx_object result;
+    cx_string_deser_t data;
 
-    result = db_new_ext(NULL, db_typedef(o), (db_typedef(o)->real->kind == DB_VOID) ? DB_ATTR_WRITABLE : 0, "Create anonymous object");
+    result = cx_new_ext(NULL, cx_typedef(o), (cx_typedef(o)->real->kind == DB_VOID) ? DB_ATTR_WRITABLE : 0, "Create anonymous object");
     data.out = result;
     data.scope = scope;
     data.type = NULL;
-    str = db_string_deser(str, &data);
+    str = cx_string_deser(str, &data);
     *out = result;
 
-    db_define(result);
+    cx_define(result);
 
     return str;
 }
 
 /* Resolve address-identifier */
-static db_object db_resolveAddress(db_string str) {
-	db_word addr;
+static cx_object cx_resolveAddress(cx_string str) {
+	cx_word addr;
 
 	addr = strtoul(str+1, NULL, 16);
 
-	db_keep_ext(NULL, (db_object)addr, "Resolve by address");
+	cx_keep_ext(NULL, (cx_object)addr, "Resolve by address");
 
-	return (db_object)addr;
+	return (cx_object)addr;
 }
 
 /* Resolve fully scoped name */
-db_object db_resolve_ext(db_object src, db_object _scope, db_string str, db_bool allowCastableOverloading, db_string context) {
-    db_object scope, _scope_start, o, lookup;
+cx_object cx_resolve_ext(cx_object src, cx_object _scope, cx_string str, cx_bool allowCastableOverloading, cx_string context) {
+    cx_object scope, _scope_start, o, lookup;
     const char* ptr;
     char* bptr;
-    db_id buffer;
-    db_char ch;
-    db_bool overload;
+    cx_id buffer;
+    cx_char ch;
+    cx_bool overload;
 
     if (!*str) {
         return NULL;
     }
 
     if (*str == '<') {
-    	return db_resolveAddress(str);
+    	return cx_resolveAddress(str);
     }
 
     _scope_start = _scope;
@@ -1770,7 +1770,7 @@ db_object db_resolve_ext(db_object src, db_object _scope, db_string str, db_bool
     }
 
     /* If expression starts with scope operator, start from root */
-    if (*(db_uint16*)str == DB_SCOPE_HEX) {
+    if (*(cx_uint16*)str == DB_SCOPE_HEX) {
         str += 2;
         scope = root_o;
     }
@@ -1805,11 +1805,11 @@ repeat:
             *bptr = '\0';
 
             /* Lookup object */
-            if (db_scopeof(o)) {
+            if (cx_scopeof(o)) {
             	if (!overload) {
-					o = db_lookup_ext(src, o, buffer, context);
+					o = cx_lookup_ext(src, o, buffer, context);
 					if (lookup) {
-						db_free_ext(src, lookup, "Free intermediate reference for resolve"); /* Free reference */
+						cx_free_ext(src, lookup, "Free intermediate reference for resolve"); /* Free reference */
 					}
 					lookup = o;
 					if (!o) {
@@ -1817,9 +1817,9 @@ repeat:
 					}
             	} else {
             		/* If argumentlist is provided, look for closest match */
-            		o = db_lookupFunction_ext(src, o, buffer, allowCastableOverloading, NULL, context);
+            		o = cx_lookupFunction_ext(src, o, buffer, allowCastableOverloading, NULL, context);
             		if (lookup) {
-            			db_free_ext(src, lookup, "Free intermediate procedure-reference for resolve");
+            			cx_free_ext(src, lookup, "Free intermediate procedure-reference for resolve");
             		}
             		lookup = o;
             		if (!o) {
@@ -1829,7 +1829,7 @@ repeat:
             } else {
                 o = NULL;
                 if (lookup) {
-                    db_free_ext(src, lookup, "Free intermediate reference (object not found) for resolve");
+                    cx_free_ext(src, lookup, "Free intermediate reference (object not found) for resolve");
                     lookup = NULL;
                 }
                 break;
@@ -1838,25 +1838,25 @@ repeat:
             /* Expect scope or serializable string */
             if (ch) {
                 if (ch == '{') {
-                    db_object prev = o;
-                    ptr = lookup = db_resolveAnonymous(src, _scope, o, (char*)ptr, &o);
+                    cx_object prev = o;
+                    ptr = lookup = cx_resolveAnonymous(src, _scope, o, (char*)ptr, &o);
                     if (!ptr) {
                         o = NULL;
                     }
-                    db_free_ext(src, prev, "Free type of anonymous identifier");
+                    cx_free_ext(src, prev, "Free type of anonymous identifier");
                     break;
                 } else
-                if (*(db_uint16*)ptr == DB_SCOPE_HEX) {
+                if (*(cx_uint16*)ptr == DB_SCOPE_HEX) {
                     ptr += 2;
                 } else {
-                    db_error("db_resolve: invalid ':' in expression '%s'", str);
+                    cx_error("cx_resolve: invalid ':' in expression '%s'", str);
                     o = NULL;
                     break;
                 }
             }
         }
         if (o) break;
-    }while((scope = db_parentof(scope)));
+    }while((scope = cx_parentof(scope)));
 
     /* Do implicit lookup in ::cortex::lang */
     if (!o && (_scope_start != cortex_lang_o)) {
@@ -1871,28 +1871,28 @@ repeat:
 
     /* If the current object is not obtained by a lookup, it is not yet keeped. */
     if (!lookup && o) {
-        db_keep_ext(src, o, context);
+        cx_keep_ext(src, o, context);
     }
 
     return o;
 }
 
-db_object db_resolve(db_object _scope, db_string str) {
-    return db_resolve_ext(NULL, _scope, str, FALSE, NULL);
+cx_object cx_resolve(cx_object _scope, cx_string str) {
+    return cx_resolve_ext(NULL, _scope, str, FALSE, NULL);
 }
 
 /* Event handling. */
 
-static db__observer* db_observerFind(db_ll on, db_observer observer, db_object _this) {
-	db__observer* result;
-	db_iter iter;
+static cx__observer* cx_observerFind(cx_ll on, cx_observer observer, cx_object _this) {
+	cx__observer* result;
+	cx_iter iter;
 
 	result = NULL;
 
 	if (on) {
-		iter = db_llIter(on);
-		while(db_iterHasNext(&iter)) {
-			result = db_iterNext(&iter);
+		iter = cx_llIter(on);
+		while(cx_iterHasNext(&iter)) {
+			result = cx_iterNext(&iter);
 			if ((result->observer == observer) && (result->_this == _this)) {
 				break;
 			} else {
@@ -1905,14 +1905,14 @@ static db__observer* db_observerFind(db_ll on, db_observer observer, db_object _
 }
 
 /* Copyout observers */
-static void db_observersCopyOut(db_ll list, db__observer** observers) {
-    db_iter iter;
-    db_uint32 i;
+static void cx_observersCopyOut(cx_ll list, cx__observer** observers) {
+    cx_iter iter;
+    cx_uint32 i;
 
-    iter = db_llIter(list);
+    iter = cx_llIter(list);
     i = 0;
-    while(db_iterHasNext(&iter)) {
-        observers[i] = db_iterNext(&iter);
+    while(cx_iterHasNext(&iter)) {
+        observers[i] = cx_iterNext(&iter);
         observers[i]->count++;
         i++;
     }
@@ -1920,118 +1920,118 @@ static void db_observersCopyOut(db_ll list, db__observer** observers) {
 }
 
 /* Free observer-array */
-static void db_observersFree(db__observer** observers) {
-    db__observer* observer;
+static void cx_observersFree(cx__observer** observers) {
+    cx__observer* observer;
     while((observer = *observers)) {
-        if (!db_adec(&observer->count)) {
-            db_dealloc(observer);
+        if (!cx_adec(&observer->count)) {
+            cx_dealloc(observer);
         }
         ++observers;
     }
 }
 
 /* Create observer-array */
-static db__observer** db_observersArrayNew(db_ll list) {
-    db__observer** array;
+static cx__observer** cx_observersArrayNew(cx_ll list) {
+    cx__observer** array;
 
-    array = db_malloc((db_llSize(list) + 1 + 1) * sizeof(db__observer*));
-    array[0] = (db__observer*)1;
-    db_observersCopyOut(list, &array[1]);
+    array = cx_malloc((cx_llSize(list) + 1 + 1) * sizeof(cx__observer*));
+    array[0] = (cx__observer*)1;
+    cx_observersCopyOut(list, &array[1]);
 
     /* Observers start from the second element */
     return &array[1];
 }
 
-/* There is a small chance that a thread simultaneously with db_listen obtains a pointer
+/* There is a small chance that a thread simultaneously with cx_listen obtains a pointer
  * to an old observers-array, then gets scheduled out and this function in another thread
  * deletes that array. Although unlikely this scenario must be addressed. */
-static void db_observersArrayFree(db__observer** array) {
+static void cx_observersArrayFree(cx__observer** array) {
     if (array) {
-        db_observersFree(array);
-        db_dealloc(&array[-1]);
+        cx_observersFree(array);
+        cx_dealloc(&array[-1]);
     }
 }
 
-/* Walk childs recursively, set db__observable.parent field to this observable only
+/* Walk childs recursively, set cx__observable.parent field to this observable only
  * when the current value is equal to the observableData's parent. If observable.parent does
  * not point to the observableData's parent there is an observable with childObservers between
  * the child and the observableData's observer.
  * PRE: childlock of observableData must be locked. */
-void db_setChildParentObservers(db_object observable, db__observable *observableData) {
-    if (db_checkAttr(observable, DB_ATTR_SCOPED)) {
-        db_iter childIter;
-        db_object child;
-        db__observable *childObservable;
-        db_ll scope = db_scopeClaim(observable);
+void cx_setChildParentObservers(cx_object observable, cx__observable *observableData) {
+    if (cx_checkAttr(observable, DB_ATTR_SCOPED)) {
+        cx_iter childIter;
+        cx_object child;
+        cx__observable *childObservable;
+        cx_ll scope = cx_scopeClaim(observable);
 
-        childIter = db_llIter(scope);
-        while(db_iterHasNext(&childIter)) {
-            db_bool parentSet = FALSE;
-            child = db_iterNext(&childIter);
-            if ((childObservable = db__objectObservable(DB_OFFSET(child, -sizeof(db__object))))) {
-                db_rwmutexWrite(&childObservable->childLock);
+        childIter = cx_llIter(scope);
+        while(cx_iterHasNext(&childIter)) {
+            cx_bool parentSet = FALSE;
+            child = cx_iterNext(&childIter);
+            if ((childObservable = cx__objectObservable(DB_OFFSET(child, -sizeof(cx__object))))) {
+                cx_rwmutexWrite(&childObservable->childLock);
                 if (childObservable->parent == observableData->parent) {
                     childObservable->parent = observableData;
                     parentSet = TRUE;
                 }
-                db_rwmutexUnlock(&childObservable->childLock);
+                cx_rwmutexUnlock(&childObservable->childLock);
 
                 /* Process childs of child outside childLock to enhance concurrency of listen\sleep's. */
                 if (parentSet) {
-                    db_setChildParentObservers(child, observableData);
+                    cx_setChildParentObservers(child, observableData);
                 }
             }
         }
-        db_scopeRelease(scope);
+        cx_scopeRelease(scope);
     }
 }
 
 /* Walk childs recursively, set whether a lock is required when updating a
  * child object because a parent has an observer interested in childs that
  * requires locking. */
-void db_setChildLockRequired(db_object observable) {
-    if (db_checkAttr(observable, DB_ATTR_SCOPED)) {
-        db_iter childIter;
-        db_object child;
-        db__observable *childObservable;
-        db_ll scope = db_scopeClaim(observable);
+void cx_setChildLockRequired(cx_object observable) {
+    if (cx_checkAttr(observable, DB_ATTR_SCOPED)) {
+        cx_iter childIter;
+        cx_object child;
+        cx__observable *childObservable;
+        cx_ll scope = cx_scopeClaim(observable);
 
-        childIter = db_llIter(scope);
-        while(db_iterHasNext(&childIter)) {
-            child = db_iterNext(&childIter);
-            if ((childObservable = db__objectObservable(DB_OFFSET(child, -sizeof(db__object))))) {
-                db_rwmutexWrite(&childObservable->childLock);
-                if (db_checkAttr(child,DB_ATTR_WRITABLE)) {
+        childIter = cx_llIter(scope);
+        while(cx_iterHasNext(&childIter)) {
+            child = cx_iterNext(&childIter);
+            if ((childObservable = cx__objectObservable(DB_OFFSET(child, -sizeof(cx__object))))) {
+                cx_rwmutexWrite(&childObservable->childLock);
+                if (cx_checkAttr(child,DB_ATTR_WRITABLE)) {
                     childObservable->lockRequired = TRUE;
                 }
-                db_setChildLockRequired(child);
-                db_rwmutexUnlock(&childObservable->childLock);
+                cx_setChildLockRequired(child);
+                cx_rwmutexUnlock(&childObservable->childLock);
             }
         }
 
-        db_scopeRelease(scope);
+        cx_scopeRelease(scope);
     }
 }
 
 /*#define DB_TRACE_NOTIFICATIONS*/
 
 #ifdef DB_TRACE_NOTIFICATIONS
-static db_uint32 indent = 0;
+static cx_uint32 indent = 0;
 #endif
 
 /* Notify one observer */
-static void db_notifyObserver(db__observer *data, db_object observable, db_object source, db_uint32 mask) {
-    db_observer observer = data->observer;
+static void cx_notifyObserver(cx__observer *data, cx_object observable, cx_object source, cx_uint32 mask) {
+    cx_observer observer = data->observer;
 
     if (mask & observer->mask) {
 #ifdef DB_TRACE_NOTIFICATIONS
 {
-    db_id id1, id2, id3;
+    cx_id id1, id2, id3;
     printf("%*s [notify] observable '%s' observer '%s' me '%s'\n",
             indent * 3, "",
-            db_fullname(observable, id1),
-            db_fullname(observer, id2),
-            db_fullname(data->_this, id3));
+            cx_fullname(observable, id1),
+            cx_fullname(observer, id2),
+            cx_fullname(data->_this, id3));
 }
 indent++;
 #endif
@@ -2039,21 +2039,21 @@ indent++;
             data->notify(data, data->_this, observable, source, mask);
         } else {
             if (!data->_this || (data->_this != source)) {
-                db_observableEvent event;
-                db_dispatcher dispatcher = observer->dispatcher;
-                event = (db_observableEvent)db_dispatcher_getEvent(dispatcher, observer, data->_this, observable, source);
+                cx_observableEvent event;
+                cx_dispatcher dispatcher = observer->dispatcher;
+                event = (cx_observableEvent)cx_dispatcher_getEvent(dispatcher, observer, data->_this, observable, source);
 
                 /* Destruct events must always be send synchronous because otherwise the object's value might no longer
                  * be valid when it is received by the observer (object destruction will continue after notification). */
                 if (mask & DB_ON_DESTRUCT) {
-                    db_keep_ext(NULL, event, "Temporarily keep destruct event");
-                    db_dispatcher_post(dispatcher, db_event(event));
+                    cx_keep_ext(NULL, event, "Temporarily keep destruct event");
+                    cx_dispatcher_post(dispatcher, cx_event(event));
                     while(!event->_parent.handled) {
-                        db_sleep(0,10000000);
+                        cx_sleep(0,10000000);
                     }
-                    db_free_ext(NULL, event, "Free destruct event");
+                    cx_free_ext(NULL, event, "Free destruct event");
                 } else {
-                    db_dispatcher_post(dispatcher, db_event(event));
+                    cx_dispatcher_post(dispatcher, cx_event(event));
                 }
             }
         }
@@ -2067,32 +2067,32 @@ indent++;
  * an observer doesn't need to do an object-walk over the observable manually to discover
  * all objects.
  */
-typedef struct db_observerAlignData {
-    db__observer *observer;
-    db_object observable;
-}db_observerAlignData;
+typedef struct cx_observerAlignData {
+    cx__observer *observer;
+    cx_object observable;
+}cx_observerAlignData;
 
-int db_observerAlignScope(db_object o, void *userData) {
-    db_observerAlignData *data;
+int cx_observerAlignScope(cx_object o, void *userData) {
+    cx_observerAlignData *data;
 
     data = userData;
-    db_notifyObserver(data->observer, data->observable, o, DB_ON_DECLARE);
+    cx_notifyObserver(data->observer, data->observable, o, DB_ON_DECLARE);
 
     if (data->observer->observer->mask & DB_ON_SCOPE) {
-    	return db_scopeWalk(o, db_observerAlignScope, userData);
+    	return cx_scopeWalk(o, cx_observerAlignScope, userData);
     } else {
     	return 1;
     }
 }
 
-void db_observerAlign(db_object observable, db__observer *observer) {
-    db_observerAlignData walkData;
+void cx_observerAlign(cx_object observable, cx__observer *observer) {
+    cx_observerAlignData walkData;
 
     /* Do recursive walk over scope */
     walkData.observable = observable;
     walkData.observer = observer;
 
-    db_scopeWalk(observable, db_observerAlignScope, &walkData);
+    cx_scopeWalk(observable, cx_observerAlignScope, &walkData);
 }
 
 #ifdef DB_TRACE_NOTIFICATIONS
@@ -2100,28 +2100,28 @@ static int indent=0;
 #endif
 
 /* Add observer to observable */
-db_int32 db_listen(db_object observable, db_observer observer, db_object _this) {
-	db__observer* _observerData;
-	db__observable* _o;
-	db_bool added;
-	db__observer **oldSelfArray = NULL, **oldChildArray = NULL;
+cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) {
+	cx__observer* _observerData;
+	cx__observable* _o;
+	cx_bool added;
+	cx__observer **oldSelfArray = NULL, **oldChildArray = NULL;
 
-	if (db_checkAttr(observable, DB_ATTR_OBSERVABLE)) {
-		_o = db__objectObservable(DB_OFFSET(observable, -sizeof(db__object)));
+	if (cx_checkAttr(observable, DB_ATTR_OBSERVABLE)) {
+		_o = cx__objectObservable(DB_OFFSET(observable, -sizeof(cx__object)));
 
 #ifdef DB_TRACE_NOTIFICATIONS
     	{
-    		db_id id1, id2, id3;
+    		cx_id id1, id2, id3;
     		printf("%*s [listen] observable '%s' observer '%s' me '%s'\n",
     				indent * 3, "",
-    				db_fullname(observable, id1),
-    				db_fullname(observer, id2),
-    				db_fullname(_this, id3));
+    				cx_fullname(observable, id1),
+    				cx_fullname(observer, id2),
+    				cx_fullname(_this, id3));
     	}
 #endif
 
 		/* Create observerData */
-		_observerData = db_malloc(sizeof(db__observer));
+		_observerData = cx_malloc(sizeof(cx__observer));
 		_observerData->observer = observer;
 		_observerData->_this = _this;
 		_observerData->count = 0;
@@ -2129,17 +2129,17 @@ db_int32 db_listen(db_object observable, db_observer observer, db_object _this) 
 
 		/* Resolve the kind of the observer. This reduces the number of
 		 * conditions that need to be evaluated in the notifyObserver function. */
-        if (db_function(observer)->kind == DB_PROCEDURE_CDECL) {
+        if (cx_function(observer)->kind == DB_PROCEDURE_CDECL) {
             if (_this) {
-                _observerData->notify = db_notifyObserverThisCdecl;
+                _observerData->notify = cx_notifyObserverThisCdecl;
             } else {
-                _observerData->notify = db_notifyObserverCdecl;
+                _observerData->notify = cx_notifyObserverCdecl;
             }
         } else {
             if (_this) {
-                _observerData->notify = db_notifyObserverThis;
+                _observerData->notify = cx_notifyObserverThis;
             } else {
-                _observerData->notify = db_notifyObserverDefault;
+                _observerData->notify = cx_notifyObserverDefault;
             }
         }
 
@@ -2147,46 +2147,46 @@ db_int32 db_listen(db_object observable, db_observer observer, db_object _this) 
 
 		/* If observer must trigger on updates of me, add it to onSelf list */
 		if (observer->mask & DB_ON_SELF) {
-			db_rwmutexWrite(&_o->selfLock);
-			if (!db_observerFind(_o->onSelf, observer, _this)) {
+			cx_rwmutexWrite(&_o->selfLock);
+			if (!cx_observerFind(_o->onSelf, observer, _this)) {
 				if (!_o->onSelf) {
-					_o->onSelf = db_llNew();
+					_o->onSelf = cx_llNew();
 				}
-				db_llAppend(_o->onSelf, _observerData);
+				cx_llAppend(_o->onSelf, _observerData);
 				_observerData->count++;
 				added = TRUE;
 
 				/* Build new observer array. This array can be accessed without locking and is
 				 * faster than walking the linked list. */
 				oldSelfArray = _o->onSelfArray;
-				_o->onSelfArray = db_observersArrayNew(_o->onSelf);
+				_o->onSelfArray = cx_observersArrayNew(_o->onSelf);
 			}
 			if (observer->mask & DB_ON_VALUE) {
-			    if (db_checkAttr(observable, DB_ATTR_WRITABLE)) {
+			    if (cx_checkAttr(observable, DB_ATTR_WRITABLE)) {
 			        _o->lockRequired = TRUE;
 			    }
 			}
-			db_rwmutexUnlock(&_o->selfLock);
+			cx_rwmutexUnlock(&_o->selfLock);
 		}
 
 		/* If observer must trigger on updates of childs, add it to onChilds list */
 		if (observer->mask & DB_ON_SCOPE) {
-			if (db_checkAttr(observable, DB_ATTR_SCOPED)) {
-			    db_bool firstChildObserver = FALSE;
-				db_rwmutexWrite(&_o->childLock);
-				if (!db_observerFind(_o->onChild, observer, _this)) {
+			if (cx_checkAttr(observable, DB_ATTR_SCOPED)) {
+			    cx_bool firstChildObserver = FALSE;
+				cx_rwmutexWrite(&_o->childLock);
+				if (!cx_observerFind(_o->onChild, observer, _this)) {
 					if (!_o->onChild) {
-						_o->onChild = db_llNew();
+						_o->onChild = cx_llNew();
 						firstChildObserver = TRUE;
 					}
-					db_llAppend(_o->onChild, _observerData);
+					cx_llAppend(_o->onChild, _observerData);
 					_observerData->count++;
 					added = TRUE;
 
 					/* Build new observer array. This array can be accessed without locking and is
 					 * faster than walking a linked list. */
 					oldChildArray = _o->onChildArray;
-					_o->onChildArray = db_observersArrayNew(_o->onChild);
+					_o->onChildArray = cx_observersArrayNew(_o->onChild);
 				}
 
                 /* If this is the first observer that subscribes on child-events let childs
@@ -2194,37 +2194,37 @@ db_int32 db_listen(db_object observable, db_observer observer, db_object _this) 
                  * so that child objects do not need to walk the entire hierarchy upwards when there
                  * is no interest (or not on every parent). */
                 if (firstChildObserver) {
-                    db_setChildParentObservers(observable, _o);
+                    cx_setChildParentObservers(observable, _o);
                 }
 
                 if (observer->mask & DB_ON_VALUE) {
                     if (!_o->childLockRequired) {
                         _o->childLockRequired = TRUE;
-                        db_setChildLockRequired(observable);
+                        cx_setChildLockRequired(observable);
                     }
                 }
-				db_rwmutexUnlock(&_o->childLock);
+				cx_rwmutexUnlock(&_o->childLock);
 
 			} else {
-				db_id id, id2;
-				db_error("cortex::listen: cannot listen to childs of non-scoped observable '%s' (observer %s)",
-						db_fullname(observable, id),
-						db_fullname(observer, id2));
+				cx_id id, id2;
+				cx_error("cortex::listen: cannot listen to childs of non-scoped observable '%s' (observer %s)",
+						cx_fullname(observable, id),
+						cx_fullname(observer, id2));
 				goto error;
 			}
 		}
 
 		if (!added) {
-			db_dealloc(_observerData);
+			cx_dealloc(_observerData);
 		} else {
 		    /* If observer is subscribed to new events, align observer with existing */
 		    if (observer->mask & DB_ON_DECLARE) {
-		        db_observerAlign(observable, _observerData);
+		        cx_observerAlign(observable, _observerData);
 		    }
 		}
 	} else {
-		db_id id;
-		db_assert(0, "cortex::listen: object '%s' is not an observable", db_fullname(observable, id));
+		cx_id id;
+		cx_assert(0, "cortex::listen: object '%s' is not an observable", cx_fullname(observable, id));
 		goto error;
 	}
 
@@ -2242,11 +2242,11 @@ db_int32 db_listen(db_object observable, db_observer observer, db_object _this) 
 	 */
 	 /*__atomic_thread_fence (__ATOMIC_SEQ_CST);*/
 
-	if (db_observersWaitForUnused(oldSelfArray)) {
-	    db_observersArrayFree(oldSelfArray);
+	if (cx_observersWaitForUnused(oldSelfArray)) {
+	    cx_observersArrayFree(oldSelfArray);
 	}
-	if (db_observersWaitForUnused(oldChildArray)) {
-	    db_observersArrayFree(oldChildArray);
+	if (cx_observersWaitForUnused(oldChildArray)) {
+	    cx_observersArrayFree(oldChildArray);
 	}
 
 	return 0;
@@ -2255,77 +2255,77 @@ error:
 }
 
 /* Remove observer from observable - TODO update lockRequired and parentObserves. */
-db_int32 db_silence(db_object observable, db_observer observer, db_object _this) {
-	db__observer* observerData;
-	db__observable* _o;
-    db__observer **oldSelfArray = NULL, **oldChildArray = NULL;
+cx_int32 cx_silence(cx_object observable, cx_observer observer, cx_object _this) {
+	cx__observer* observerData;
+	cx__observable* _o;
+    cx__observer **oldSelfArray = NULL, **oldChildArray = NULL;
 
-    if (db_checkAttr(observable, DB_ATTR_OBSERVABLE)) {
-        _o = db__objectObservable(DB_OFFSET(observable, -sizeof(db__object)));
+    if (cx_checkAttr(observable, DB_ATTR_OBSERVABLE)) {
+        _o = cx__objectObservable(DB_OFFSET(observable, -sizeof(cx__object)));
         observerData = NULL;
 
         /* If observer triggered on updates of me, remove from onSelf list */
         if (observer->mask & DB_ON_SELF) {
-            db_rwmutexWrite(&_o->selfLock);
-            observerData = db_observerFind(_o->onSelf, observer, _this);
+            cx_rwmutexWrite(&_o->selfLock);
+            observerData = cx_observerFind(_o->onSelf, observer, _this);
             if (observerData) {
                 observerData->enabled = FALSE;
-                db_llRemove(_o->onSelf, observerData);
+                cx_llRemove(_o->onSelf, observerData);
                 observerData->count--;
 
                 /* Build new observer array */
                 oldSelfArray = _o->onSelfArray;
-                _o->onSelfArray = db_observersArrayNew(_o->onSelf);
+                _o->onSelfArray = cx_observersArrayNew(_o->onSelf);
 #ifdef DB_TRACE_NOTIFICATIONS
             {
-                db_id id1, id2, id3;
+                cx_id id1, id2, id3;
                 printf("%*s [silence] observable '%s' observer '%s' me '%s'\n",
                         indent * 3, "",
-                        db_fullname(observable, id1),
-                        db_fullname(observer, id2),
-                        db_fullname(_this, id3));
+                        cx_fullname(observable, id1),
+                        cx_fullname(observer, id2),
+                        cx_fullname(_this, id3));
             }
 #endif
             }
-            db_rwmutexUnlock(&_o->selfLock);
+            cx_rwmutexUnlock(&_o->selfLock);
         }
 
 		/* If observer triggered on updates of childs, remove from onChilds list */
 		if (observer->mask & DB_ON_SCOPE) {
-			if (db_checkAttr(observable, DB_ATTR_SCOPED)) {
-				db_rwmutexWrite(&_o->childLock);
-				observerData = db_observerFind(_o->onChild, observer, _this);
+			if (cx_checkAttr(observable, DB_ATTR_SCOPED)) {
+				cx_rwmutexWrite(&_o->childLock);
+				observerData = cx_observerFind(_o->onChild, observer, _this);
 				if (observerData) {
-					db_llRemove(_o->onChild, observerData);
+					cx_llRemove(_o->onChild, observerData);
 					observerData->count--;
 
 	                /* Build new observer array */
 	                oldChildArray = _o->onChildArray;
-	                _o->onChildArray = db_observersArrayNew(_o->onChild);
+	                _o->onChildArray = cx_observersArrayNew(_o->onChild);
 				}
-				db_rwmutexUnlock(&_o->childLock);
+				cx_rwmutexUnlock(&_o->childLock);
 			} else {
-				db_error(0, "cortex::listen: observer subscribed on childs of non-scoped object");
+				cx_error(0, "cortex::listen: observer subscribed on childs of non-scoped object");
 				goto error;
 			}
 		}
 	} else {
-		db_id id;
-		db_error("object '%s' is not an observable", db_fullname(observable, id));
+		cx_id id;
+		cx_error("object '%s' is not an observable", cx_fullname(observable, id));
 		goto error;
 	}
 
-    /* See comments in db_listen */
+    /* See comments in cx_listen */
 	/*__atomic_thread_fence (__ATOMIC_SEQ_CST);*/
 
-    if (db_observersWaitForUnused(oldSelfArray)) {
-        db_observersArrayFree(oldSelfArray);
+    if (cx_observersWaitForUnused(oldSelfArray)) {
+        cx_observersArrayFree(oldSelfArray);
     }
-    if (db_observersWaitForUnused(oldChildArray)) {
-        db_observersArrayFree(oldChildArray);
+    if (cx_observersWaitForUnused(oldChildArray)) {
+        cx_observersArrayFree(oldChildArray);
     }
     /*if (observerData) {
-    	TODO: db_dealloc(observerData);
+    	TODO: cx_dealloc(observerData);
     }*/
 
 	return 0;
@@ -2333,40 +2333,40 @@ error:
 	return -1;
 }
 
-db_bool db_listening(db_object observable, db_observer observer, db_object _this) {
-    db__observer* observerData;
-    db__observable* _o;
-    db_bool result = FALSE;
+cx_bool cx_listening(cx_object observable, cx_observer observer, cx_object _this) {
+    cx__observer* observerData;
+    cx__observable* _o;
+    cx_bool result = FALSE;
 
-    _o = db__objectObservable(DB_OFFSET(observable, -sizeof(db__object)));
+    _o = cx__objectObservable(DB_OFFSET(observable, -sizeof(cx__object)));
     observerData = NULL;
 
     /* If observer triggered on updates of me, remove from onSelf list */
     if (_o) {
 		if (observer->mask & DB_ON_SELF) {
-			db_rwmutexWrite(&_o->selfLock);
-			observerData = db_observerFind(_o->onSelf, observer, _this);
+			cx_rwmutexWrite(&_o->selfLock);
+			observerData = cx_observerFind(_o->onSelf, observer, _this);
 			if (observerData) {
 				result = TRUE;
 			}
-			db_rwmutexUnlock(&_o->selfLock);
+			cx_rwmutexUnlock(&_o->selfLock);
 		}
 
 		if (!result) {
-			if (db_checkAttr(observable, DB_ATTR_OBSERVABLE)) {
+			if (cx_checkAttr(observable, DB_ATTR_OBSERVABLE)) {
 				if (observer->mask & DB_ON_SCOPE) {
-					if (db_checkAttr(observable, DB_ATTR_SCOPED)) {
-						db_rwmutexWrite(&_o->childLock);
-						observerData = db_observerFind(_o->onChild, observer, _this);
+					if (cx_checkAttr(observable, DB_ATTR_SCOPED)) {
+						cx_rwmutexWrite(&_o->childLock);
+						observerData = cx_observerFind(_o->onChild, observer, _this);
 						if (observerData) {
 							result = TRUE;
 						}
-						db_rwmutexUnlock(&_o->childLock);
+						cx_rwmutexUnlock(&_o->childLock);
 					}
 				}
 			} else {
-				db_id id;
-				db_error("object '%s' is not an observable", db_fullname(observable, id));
+				cx_id id;
+				cx_error("object '%s' is not an observable", cx_fullname(observable, id));
 				goto error;
 			}
 		}
@@ -2377,39 +2377,39 @@ error:
     return FALSE;
 }
 
-static void db_notifyObserverDefault(db__observer* data, db_object _this, db_object observable, db_object source, db_uint32 mask) {
-    db_function f = db_function(data->observer);
+static void cx_notifyObserverDefault(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask) {
+    cx_function f = cx_function(data->observer);
     DB_UNUSED(_this);
     DB_UNUSED(mask);
-    db_call(f, NULL, observable, source);
+    cx_call(f, NULL, observable, source);
 }
 
-static void db_notifyObserverCdecl(db__observer* data, db_object _this, db_object observable, db_object source, db_uint32 mask) {
-    db_function f = db_function(data->observer);
+static void cx_notifyObserverCdecl(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask) {
+    cx_function f = cx_function(data->observer);
     DB_UNUSED(_this);
     DB_UNUSED(mask);
-    ((void(*)(db_object,db_object))f->implData)(observable, source);
+    ((void(*)(cx_object,cx_object))f->implData)(observable, source);
 }
 
-static void db_notifyObserverThis(db__observer* data, db_object _this, db_object observable, db_object source, db_uint32 mask) {
+static void cx_notifyObserverThis(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask) {
     DB_UNUSED(mask);
 
     if (!_this || (_this != source)) {
-        db_function f = db_function(data->observer);
-        db_call(f, NULL, _this, observable, source);
+        cx_function f = cx_function(data->observer);
+        cx_call(f, NULL, _this, observable, source);
     }
 }
-static void db_notifyObserverThisCdecl(db__observer* data, db_object _this, db_object observable, db_object source, db_uint32 mask) {
+static void cx_notifyObserverThisCdecl(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask) {
     DB_UNUSED(mask);
     if (!_this || (_this != source)) {
-        db_function f = db_function(data->observer);
-        ((void(*)(db_object,db_object,db_object))f->implData)(_this, observable, source);
+        cx_function f = cx_function(data->observer);
+        ((void(*)(cx_object,cx_object,cx_object))f->implData)(_this, observable, source);
     }
 }
 
-static void db_notifyObservers(db__observer** observers, db_object observable, db_object source, db_uint32 mask) {
-    db__observer* data;
-    db_uint32 i = 0;
+static void cx_notifyObservers(cx__observer** observers, cx_object observable, cx_object source, cx_uint32 mask) {
+    cx__observer* data;
+    cx_uint32 i = 0;
     if (!observers) {
         return;
     }
@@ -2417,33 +2417,33 @@ static void db_notifyObservers(db__observer** observers, db_object observable, d
     while((data = *observers)) {
     	i++;
     	if (data->enabled) {
-    	    db_notifyObserver(data, observable, source, mask);
+    	    cx_notifyObserver(data, observable, source, mask);
     	}
         observers++;
     }
 }
 
-static db_int32 db_notify(db__observable* _o, db_object observable, db_object _this, db_uint32 mask) {
-	db__observable *_parent;
-	db__observer **observers;
+static cx_int32 cx_notify(cx__observable* _o, cx_object observable, cx_object _this, cx_uint32 mask) {
+	cx__observable *_parent;
+	cx__observer **observers;
 
 	/* Notify direct observers */
 	if (_o) {
         /* Notify observers of observable */
-		observers = db_observersPush(&_o->onSelfArray);
-        db_notifyObservers(observers, observable, _this, mask);
-        if (db_observersPop()) {
-        	db_observersArrayFree(observers);
+		observers = cx_observersPush(&_o->onSelfArray);
+        cx_notifyObservers(observers, observable, _this, mask);
+        if (cx_observersPop()) {
+        	cx_observersArrayFree(observers);
         }
 
         /* Bubble event up in hierarchy */
         _parent = _o;
         while((_parent = _parent->parent)) {
             /* Notify observers of parent */
-        	observers = db_observersPush(&_parent->onChildArray);
-            db_notifyObservers(observers, observable, _this, mask);
-            if (db_observersPop()) {
-            	db_observersArrayFree(observers);
+        	observers = cx_observersPush(&_parent->onChildArray);
+            cx_notifyObservers(observers, observable, _this, mask);
+            if (cx_observersPop()) {
+            	cx_observersArrayFree(observers);
             }
         }
 	}
@@ -2452,20 +2452,20 @@ static db_int32 db_notify(db__observable* _o, db_object observable, db_object _t
 }
 
 /* Update object */
-db_int32 db_update(db_object observable) {
-    db__observable *_o;
-    db__writable* _wr;
+cx_int32 cx_update(cx_object observable) {
+    cx__observable *_o;
+    cx__writable* _wr;
 
-    _o = db__objectObservable(DB_OFFSET(observable, -sizeof(db__object)));
+    _o = cx__objectObservable(DB_OFFSET(observable, -sizeof(cx__object)));
     if (_o->lockRequired) {
-        _wr = db__objectWritable(DB_OFFSET(observable, -sizeof(db__object)));
-        db_rwmutexRead(&_wr->lock);
-        if (db_notify(_o, observable, observable, DB_ON_UPDATE)) {
+        _wr = cx__objectWritable(DB_OFFSET(observable, -sizeof(cx__object)));
+        cx_rwmutexRead(&_wr->lock);
+        if (cx_notify(_o, observable, observable, DB_ON_UPDATE)) {
             goto error;
         }
-        db_rwmutexUnlock(&_wr->lock);
+        cx_rwmutexUnlock(&_wr->lock);
     } else {
-        if (db_notify(_o, observable, observable, DB_ON_UPDATE)) {
+        if (cx_notify(_o, observable, observable, DB_ON_UPDATE)) {
             goto error;
         }
     }
@@ -2476,20 +2476,20 @@ error:
 }
 
 /* Update object from source other than self */
-db_int32 db_updateFrom(db_object observable, db_object _this) {
-    db__observable *_o;
-    db__writable* _wr;
+cx_int32 cx_updateFrom(cx_object observable, cx_object _this) {
+    cx__observable *_o;
+    cx__writable* _wr;
 
-    _o = db__objectObservable(DB_OFFSET(observable, -sizeof(db__object)));
+    _o = cx__objectObservable(DB_OFFSET(observable, -sizeof(cx__object)));
     if (_o->lockRequired) {
-        _wr = db__objectWritable(DB_OFFSET(observable, -sizeof(db__object)));
-        db_rwmutexRead(&_wr->lock);
-        if (db_notify(_o, observable, _this, DB_ON_UPDATE)) {
+        _wr = cx__objectWritable(DB_OFFSET(observable, -sizeof(cx__object)));
+        cx_rwmutexRead(&_wr->lock);
+        if (cx_notify(_o, observable, _this, DB_ON_UPDATE)) {
             goto error;
         }
-        db_rwmutexUnlock(&_wr->lock);
+        cx_rwmutexUnlock(&_wr->lock);
     } else {
-        if (db_notify(_o, observable, _this, DB_ON_UPDATE)) {
+        if (cx_notify(_o, observable, _this, DB_ON_UPDATE)) {
             goto error;
         }
     }
@@ -2499,23 +2499,23 @@ error:
 	return -1;
 }
 
-db_int32 db_updateBegin(db_object observable) {
-    db__observable *_o;
-	db__writable* _wr;
+cx_int32 cx_updateBegin(cx_object observable) {
+    cx__observable *_o;
+	cx__writable* _wr;
 
-	_o = db__objectObservable(DB_OFFSET(observable, -sizeof(db__object)));
+	_o = cx__objectObservable(DB_OFFSET(observable, -sizeof(cx__object)));
 
 	if (_o->lockRequired) {
-        _wr = db__objectWritable(DB_OFFSET(observable, -sizeof(db__object)));
+        _wr = cx__objectWritable(DB_OFFSET(observable, -sizeof(cx__object)));
         if (_wr) {
-            if (db_rwmutexWrite(&_wr->lock)) {
-                db_id id;
-                db_error("db_updateBegin: writelock on object '%s' failed", db_fullname(observable, id));
+            if (cx_rwmutexWrite(&_wr->lock)) {
+                cx_id id;
+                cx_error("cx_updateBegin: writelock on object '%s' failed", cx_fullname(observable, id));
                 goto error;
             }
         } else {
-            db_id id;
-            db_warning("calling updateBegin for non-writable object '%s' is useless.", db_fullname(observable, id));
+            cx_id id;
+            cx_warning("calling updateBegin for non-writable object '%s' is useless.", cx_fullname(observable, id));
         }
 	}
 
@@ -2524,17 +2524,17 @@ error:
 	return -1;
 }
 
-db_int32 db_updateTry(db_object observable) {
-	db__writable* _wr;
+cx_int32 cx_updateTry(cx_object observable) {
+	cx__writable* _wr;
 
-    _wr = db__objectWritable(DB_OFFSET(observable, -sizeof(db__object)));
+    _wr = cx__objectWritable(DB_OFFSET(observable, -sizeof(cx__object)));
     if (_wr) {
-        if (db_rwmutexTryWrite(&_wr->lock) == DB_LOCK_BUSY) {
+        if (cx_rwmutexTryWrite(&_wr->lock) == DB_LOCK_BUSY) {
             goto busy;
         }
     } else {
-        db_id id;
-        db_warning("calling updateTry for non-writable object '%s' is useless.", db_fullname(observable, id));
+        cx_id id;
+        cx_warning("calling updateTry for non-writable object '%s' is useless.", cx_fullname(observable, id));
     }
 
 	return 0;
@@ -2542,20 +2542,20 @@ busy:
 	return DB_LOCK_BUSY;
 }
 
-db_int32 db_updateEnd(db_object observable) {
-    db__writable* _wr;
-    db__observable *_o;
+cx_int32 cx_updateEnd(cx_object observable) {
+    cx__writable* _wr;
+    cx__observable *_o;
 
-    _o = db__objectObservable(DB_OFFSET(observable, -sizeof(db__object)));
+    _o = cx__objectObservable(DB_OFFSET(observable, -sizeof(cx__object)));
 
-    if (db_notify(_o, observable, observable, DB_ON_UPDATE)) {
+    if (cx_notify(_o, observable, observable, DB_ON_UPDATE)) {
         goto error;
     }
 
     if (_o->lockRequired) {
-        _wr = db__objectWritable(DB_OFFSET(observable, -sizeof(db__object)));
+        _wr = cx__objectWritable(DB_OFFSET(observable, -sizeof(cx__object)));
         if (_wr) {
-            db_rwmutexUnlock(&_wr->lock);
+            cx_rwmutexUnlock(&_wr->lock);
         }
     }
 
@@ -2564,26 +2564,26 @@ error:
 	return -1;
 }
 
-db_int32 db_updateEndFrom(db_object observable, db_object _this) {
-	if (db_checkAttr(observable, DB_ATTR_OBSERVABLE)) {
-		db__writable* _wr;
-	    db__observable *_o;
+cx_int32 cx_updateEndFrom(cx_object observable, cx_object _this) {
+	if (cx_checkAttr(observable, DB_ATTR_OBSERVABLE)) {
+		cx__writable* _wr;
+	    cx__observable *_o;
 
-	    _o = db__objectObservable(DB_OFFSET(observable, -sizeof(db__object)));
+	    _o = cx__objectObservable(DB_OFFSET(observable, -sizeof(cx__object)));
 
-		if (db_notify(_o, observable, _this, DB_ON_UPDATE)) {
+		if (cx_notify(_o, observable, _this, DB_ON_UPDATE)) {
 			goto error;
 		}
 
 		if (_o->lockRequired) {
-			_wr = db__objectWritable(DB_OFFSET(observable, -sizeof(db__object)));
+			_wr = cx__objectWritable(DB_OFFSET(observable, -sizeof(cx__object)));
 			if (_wr) {
-				db_rwmutexUnlock(&_wr->lock);
+				cx_rwmutexUnlock(&_wr->lock);
 			}
 		}
 	} else {
-		db_id id;
-		db_error("object '%s' is not an observable", db_fullname(observable, id));
+		cx_id id;
+		cx_error("object '%s' is not an observable", cx_fullname(observable, id));
 		goto error;
 	}
 
@@ -2592,17 +2592,17 @@ error:
 	return -1;
 }
 
-db_int32 db_updateCancel(db_object observable) {
+cx_int32 cx_updateCancel(cx_object observable) {
 
-	if (db_checkAttr(observable, DB_ATTR_OBSERVABLE)) {
-		db__writable* _wr;
+	if (cx_checkAttr(observable, DB_ATTR_OBSERVABLE)) {
+		cx__writable* _wr;
 
-		_wr = db__objectWritable(DB_OFFSET(observable, -sizeof(db__object)));
+		_wr = cx__objectWritable(DB_OFFSET(observable, -sizeof(cx__object)));
 
-		db_rwmutexUnlock(&_wr->lock);
+		cx_rwmutexUnlock(&_wr->lock);
 	} else {
-		db_id id;
-		db_error("object '%s' is not an observable", db_fullname(observable, id));
+		cx_id id;
+		cx_error("object '%s' is not an observable", cx_fullname(observable, id));
 		goto error;
 	}
 
@@ -2611,58 +2611,58 @@ error:
 	return -1;
 }
 
-static void db_waitObserver(db_object me, db_object observable, db_object source) {
-    db_waitForObject *waitAdmin;
+static void cx_waitObserver(cx_object me, cx_object observable, cx_object source) {
+    cx_waitForObject *waitAdmin;
     DB_UNUSED(source);
 
-    waitAdmin = (db_waitForObject*)me;
+    waitAdmin = (cx_waitForObject*)me;
 
-    if (db_ainc(&waitAdmin->triggerCount) == 1) {
-        db_uint32 i;
+    if (cx_ainc(&waitAdmin->triggerCount) == 1) {
+        cx_uint32 i;
 
         waitAdmin->triggered = observable;
-        db_semPost(waitAdmin->semaphore);
+        cx_semPost(waitAdmin->semaphore);
 
         /* Silence this observer */
         for(i=0; i<waitAdmin->count; i++) {
-            db_silence(waitAdmin->objects[i], waitAdmin->observer, me);
+            cx_silence(waitAdmin->objects[i], waitAdmin->observer, me);
         }
     }
-    db_adec(&waitAdmin->triggerCount);
+    cx_adec(&waitAdmin->triggerCount);
 }
 
-static void __db_waitObserver(db_function f, void* result, void* args) {
+static void __cx_waitObserver(cx_function f, void* result, void* args) {
     DB_UNUSED(f);
     DB_UNUSED(result);
-    db_waitObserver(
-        *(db_object*)args,
-        *(db_object*)((intptr_t)args + sizeof(db_object)),
-        *(db_object*)((intptr_t)args + sizeof(db_object) * 2));
+    cx_waitObserver(
+        *(cx_object*)args,
+        *(cx_object*)((intptr_t)args + sizeof(cx_object)),
+        *(cx_object*)((intptr_t)args + sizeof(cx_object) * 2));
 }
 
-db_int32 db_waitfor(db_object observable) {
-    db_waitForObject *waitAdmin;
+cx_int32 cx_waitfor(cx_object observable) {
+    cx_waitForObject *waitAdmin;
 
     /* Obtain waitadministration */
-    waitAdmin = db_threadTlsGet(DB_KEY_WAIT_ADMIN);
+    waitAdmin = cx_threadTlsGet(DB_KEY_WAIT_ADMIN);
     if (!waitAdmin) {
-        db_observer observer;
+        cx_observer observer;
 
         /* Create thread-specific waitadministration */
-        waitAdmin = db_malloc(sizeof(db_waitForObject));
-        memset(waitAdmin, 0, sizeof(db_waitForObject));
-        waitAdmin->semaphore = db_semNew(0);
+        waitAdmin = cx_malloc(sizeof(cx_waitForObject));
+        memset(waitAdmin, 0, sizeof(cx_waitForObject));
+        waitAdmin->semaphore = cx_semNew(0);
 
         /* Create observer */
-        observer = db_new(db_typedef(db_observer_o));
-        db_function(observer)->impl = (db_word)__db_waitObserver;
-        db_function(observer)->implData = (db_word)db_waitObserver;
-        db_function(observer)->kind = DB_PROCEDURE_CDECL;
+        observer = cx_new(cx_typedef(cx_observer_o));
+        cx_function(observer)->impl = (cx_word)__cx_waitObserver;
+        cx_function(observer)->implData = (cx_word)cx_waitObserver;
+        cx_function(observer)->kind = DB_PROCEDURE_CDECL;
         observer->mask = DB_ON_UPDATE;
 
-        db_define(observer);
+        cx_define(observer);
         waitAdmin->observer = observer;
-        db_threadTlsSet(DB_KEY_WAIT_ADMIN, waitAdmin);
+        cx_threadTlsSet(DB_KEY_WAIT_ADMIN, waitAdmin);
     }
 
     /* Add object to waitadministration */
@@ -2672,40 +2672,40 @@ db_int32 db_waitfor(db_object observable) {
     return 0;
 }
 
-db_object db_wait(db_int32 timeout_sec, db_int32 timeout_nanosec) {
-    db_waitForObject *waitAdmin;
-    db_object result = NULL;
+cx_object cx_wait(cx_int32 timeout_sec, cx_int32 timeout_nanosec) {
+    cx_waitForObject *waitAdmin;
+    cx_object result = NULL;
     DB_UNUSED(timeout_sec);
     DB_UNUSED(timeout_nanosec);
 
     /* Obtain waitadministration */
-    waitAdmin = db_threadTlsGet(DB_KEY_WAIT_ADMIN);
+    waitAdmin = cx_threadTlsGet(DB_KEY_WAIT_ADMIN);
     if (waitAdmin) {
-        db_uint32 i;
+        cx_uint32 i;
 
         /* Setup observer for observables */
         for(i=0; i<waitAdmin->count; i++) {
-            db_listen(waitAdmin->objects[i], waitAdmin->observer, (db_object)waitAdmin);
+            cx_listen(waitAdmin->objects[i], waitAdmin->observer, (cx_object)waitAdmin);
         }
 
         /* Do the wait */
-        db_semWait(waitAdmin->semaphore);
+        cx_semWait(waitAdmin->semaphore);
 
         result = waitAdmin->triggered;
     } else {
-        db_error("wait called without objects that are being waited for");
+        cx_error("wait called without objects that are being waited for");
     }
 
     return result;
 }
 
 /* Thread-safe reading */
-db_int32 db_readBegin(db_object object) {
-	if (db_checkAttr(object, DB_ATTR_WRITABLE)) {
-		db__writable* _o;
+cx_int32 cx_readBegin(cx_object object) {
+	if (cx_checkAttr(object, DB_ATTR_WRITABLE)) {
+		cx__writable* _o;
 
-		_o = db__objectWritable(DB_OFFSET(object, -sizeof(db__object)));
-		if (db_rwmutexRead(&_o->lock)) {
+		_o = cx__objectWritable(DB_OFFSET(object, -sizeof(cx__object)));
+		if (cx_rwmutexRead(&_o->lock)) {
 			goto error;
 		}
 	}
@@ -2715,12 +2715,12 @@ error:
 	return -1;
 }
 
-db_int32 db_readEnd(db_object object) {
-	if (db_checkAttr(object, DB_ATTR_WRITABLE)) {
-		db__writable* _o;
+cx_int32 cx_readEnd(cx_object object) {
+	if (cx_checkAttr(object, DB_ATTR_WRITABLE)) {
+		cx__writable* _o;
 
-		_o = db__objectWritable(DB_OFFSET(object, -sizeof(db__object)));
-		if (db_rwmutexUnlock(&_o->lock)) {
+		_o = cx__objectWritable(DB_OFFSET(object, -sizeof(cx__object)));
+		if (cx_rwmutexUnlock(&_o->lock)) {
 			goto error;
 		}
 	}
@@ -2731,8 +2731,8 @@ error:
 }
 
 /* Obtain function name from signature */
-db_int32 db_signatureName(db_string signature, db_id buffer) {
-    db_char ch, *srcptr, *bptr;
+cx_int32 cx_signatureName(cx_string signature, cx_id buffer) {
+    cx_char ch, *srcptr, *bptr;
 
     /* Obtain name from function (without argumentlist) */
     srcptr = signature; bptr = buffer;
@@ -2747,9 +2747,9 @@ db_int32 db_signatureName(db_string signature, db_id buffer) {
 }
 
 /* Count number of parameters */
-db_int32 db_signatureParamCount(db_string signature) {
-    db_char *ptr, ch;
-    db_uint32 count;
+cx_int32 cx_signatureParamCount(cx_string signature) {
+    cx_char *ptr, ch;
+    cx_uint32 count;
 
     count = 0;
 
@@ -2771,7 +2771,7 @@ db_int32 db_signatureParamCount(db_string signature) {
             ptr++;
 
             if (ch == '{') {
-                db_uint32 nesting = 1;
+                cx_uint32 nesting = 1;
                 while((ch = *ptr) && nesting) {
                    ptr++;
                    switch(ch) {
@@ -2793,10 +2793,10 @@ error:
 }
 
 /* Obtain function parameter types from signature */
-db_int32 db_signatureParamType(db_string signature, db_uint32 id, db_id buffer, db_bool* reference) {
-    db_char ch, *srcptr, *bptr;
-    db_uint32 i;
-    db_bool parsed;
+cx_int32 cx_signatureParamType(cx_string signature, cx_uint32 id, cx_id buffer, cx_bool* reference) {
+    cx_char ch, *srcptr, *bptr;
+    cx_uint32 i;
+    cx_bool parsed;
 
     if (reference) {
         *reference = FALSE;
@@ -2804,7 +2804,7 @@ db_int32 db_signatureParamType(db_string signature, db_uint32 id, db_id buffer, 
 
     srcptr = strchr(signature, '(');
     if (!srcptr) {
-        db_error("missing argmentlist in signature '%s'", signature);
+        cx_error("missing argmentlist in signature '%s'", signature);
         goto error;
     }
     srcptr++;
@@ -2832,7 +2832,7 @@ db_int32 db_signatureParamType(db_string signature, db_uint32 id, db_id buffer, 
 
             srcptr++;
             if (ch == '{') {
-                db_uint32 count=1;
+                cx_uint32 count=1;
                 while((ch = *srcptr) && count) {
                     if (i == id) {
                         *bptr = ch;
@@ -2863,14 +2863,14 @@ error:
 }
 
 /* Obtain function parameter names from signature */
-db_int32 db_signatureParamName(db_string signature, db_uint32 id, db_id buffer) {
-    db_char ch, *srcptr, *bptr;
-    db_uint32 i;
-    db_bool parsed;
+cx_int32 cx_signatureParamName(cx_string signature, cx_uint32 id, cx_id buffer) {
+    cx_char ch, *srcptr, *bptr;
+    cx_uint32 i;
+    cx_bool parsed;
 
     srcptr = strchr(signature, '(');
     if (!srcptr) {
-        db_error("missing argmentlist in signature '%s'", signature);
+        cx_error("missing argmentlist in signature '%s'", signature);
         goto error;
     }
     srcptr++;
@@ -2897,7 +2897,7 @@ db_int32 db_signatureParamName(db_string signature, db_uint32 id, db_id buffer) 
                 break;
             case ')':
             case ',':
-                db_error("missing name of parameter %d in signature '%s'", id, buffer);
+                cx_error("missing name of parameter %d in signature '%s'", id, buffer);
                 break;
             default:
                 break;
@@ -2911,7 +2911,7 @@ db_int32 db_signatureParamName(db_string signature, db_uint32 id, db_id buffer) 
 
             srcptr++;
             if (ch == '{') {
-                db_uint32 count=1;
+                cx_uint32 count=1;
                 while((ch = *srcptr) && count) {
                     srcptr++;
                     switch(ch) {
@@ -2942,20 +2942,20 @@ error:
  *   No extra whitespaces are allowed in both. Type-names are relative
  *   to the scope of the function-object.
  */
-db_int16 db_overload(db_function object, db_string name, db_int32* distance, db_bool allowCastable) {
-    db_id offName, reqName;
-    db_int32 offCount, reqCount;
+cx_int16 cx_overload(cx_function object, cx_string name, cx_int32* distance, cx_bool allowCastable) {
+    cx_id offName, reqName;
+    cx_int32 offCount, reqCount;
     int d;
 
     d = 0;
 
     /* Obtain name from function (strip argumentlist) */
-    if (db_signatureName(db_nameof(object), offName)) {
+    if (cx_signatureName(cx_nameof(object), offName)) {
         goto nomatch;
     }
 
     /* Obtain name from requested signature */
-    if (db_signatureName(name, reqName)) {
+    if (cx_signatureName(name, reqName)) {
         goto nomatch;
     }
 
@@ -2965,13 +2965,13 @@ db_int16 db_overload(db_function object, db_string name, db_int32* distance, db_
     }
 
     /* Compare number of arguments */
-    offCount = db_signatureParamCount(db_nameof(object));
+    offCount = cx_signatureParamCount(cx_nameof(object));
     if (offCount == -1) {
-        db_error("functionname '%s' is missing argumentlist", db_nameof(object));
+        cx_error("functionname '%s' is missing argumentlist", cx_nameof(object));
         goto nomatch; /* Error */
     }
 
-    reqCount = db_signatureParamCount(name); /* reqCount is allowed to be -1, because the requested string may be omitting arguments */
+    reqCount = cx_signatureParamCount(name); /* reqCount is allowed to be -1, because the requested string may be omitting arguments */
     if (reqCount != -1) {
         if (offCount != reqCount) {
             goto nomatch;
@@ -2982,24 +2982,24 @@ db_int16 db_overload(db_function object, db_string name, db_int32* distance, db_
 
     /* Compare argumentlists */
     if (offCount == reqCount) {
-        db_int32 i;
-        db_bool defined = TRUE;
+        cx_int32 i;
+        cx_bool defined = TRUE;
 
         i = 0;
 
         /* Variables offptr and reqptr now points to the first type of the argumentlist. Now loop through
          * the arguments, and verify one-by-one that they match. */
         for(i=0; i<reqCount; i++){
-            db_id offTypeBuff, reqTypeBuff;
-            db_bool referenceRequested, referenceOffered;
+            cx_id offTypeBuff, reqTypeBuff;
+            cx_bool referenceRequested, referenceOffered;
 
             /* Get name of offered type */
-            if (db_signatureParamType(db_nameof(object), i, offTypeBuff, &referenceOffered)) {
+            if (cx_signatureParamType(cx_nameof(object), i, offTypeBuff, &referenceOffered)) {
                 goto nomatch; /* Error in argumentlist */
             }
 
             /* Get name of requested type */
-            if (db_signatureParamType(name, i, reqTypeBuff, &referenceRequested)) {
+            if (cx_signatureParamType(name, i, reqTypeBuff, &referenceRequested)) {
                 goto nomatch; /* Error in argumentlist */
             }
 
@@ -3007,28 +3007,28 @@ db_int16 db_overload(db_function object, db_string name, db_int32* distance, db_
             if (!strcmp(reqTypeBuff, offTypeBuff)) {
                 continue;
             } else {
-                db_object offered=NULL, requested=NULL; /* Pointers to requested vs. offered types */
-                db_bool requestedIsNull=FALSE;
+                cx_object offered=NULL, requested=NULL; /* Pointers to requested vs. offered types */
+                cx_bool requestedIsNull=FALSE;
 
                  /* If types are not equal, resolve types and check if they are compatible(!) - so not castable! */
-                offered = db_resolve_ext(NULL, db_parentof(object), offTypeBuff, FALSE, "Resolve offered type for overload-check");
+                offered = cx_resolve_ext(NULL, cx_parentof(object), offTypeBuff, FALSE, "Resolve offered type for overload-check");
                 if (!offered) {
-                    db_error("type '%s' of parameter %d in parameterlist of function '%s' not found", offTypeBuff, i, db_nameof(object));
+                    cx_error("type '%s' of parameter %d in parameterlist of function '%s' not found", offTypeBuff, i, cx_nameof(object));
                     if (requested) {
-                        db_free_ext(NULL, requested, "Free requested type (error occurred).");
+                        cx_free_ext(NULL, requested, "Free requested type (error occurred).");
                     }
                     goto error;
                 }
                 
                 /* Validate offered is a type */
-                if (!db_class_instanceof(db_typedef_o, offered)) {
-                    db_id id;
-                    db_error("offered object '%s' is not a type", db_fullname(offered, id));
+                if (!cx_class_instanceof(cx_typedef_o, offered)) {
+                    cx_id id;
+                    cx_error("offered object '%s' is not a type", cx_fullname(offered, id));
                     goto error;
                 }
                 
                 /* Determine whether offered is defined */
-                if (!db_checkState(offered, DB_DEFINED)) {
+                if (!cx_checkState(offered, DB_DEFINED)) {
                     defined = FALSE;
                 }
 
@@ -3036,27 +3036,27 @@ db_int16 db_overload(db_function object, db_string name, db_int32* distance, db_
                 if (!strcmp(reqTypeBuff, "null")) {
                     requestedIsNull = TRUE;
                 } else if (!strcmp(reqTypeBuff, "?")) {
-                    db_free_ext(NULL, offered, "wildcard encountered in request");
+                    cx_free_ext(NULL, offered, "wildcard encountered in request");
                     continue; /* If the request type is a wildcard don't perform additional checks */
                 } else {
-                    requested = db_resolve_ext(NULL, db_parentof(object), reqTypeBuff, FALSE, "Resolve requested type for overload-check");
+                    requested = cx_resolve_ext(NULL, cx_parentof(object), reqTypeBuff, FALSE, "Resolve requested type for overload-check");
                     if (!requested) {
-                        db_error("type '%s' of parameter %d in request '%s' not found", reqTypeBuff, i, name);
+                        cx_error("type '%s' of parameter %d in request '%s' not found", reqTypeBuff, i, name);
                         if (offered) {
-                            db_free_ext(NULL, offered, "Free offered type (error occurred).");
+                            cx_free_ext(NULL, offered, "Free offered type (error occurred).");
                         }
                         goto error;
                     }
                     
                     /* Check whether requested is a type */
-                    if (!db_class_instanceof(db_typedef_o, requested)) {
-                        db_id id;
-                        db_error("requested object '%s' is not a type", db_fullname(requested, id));
+                    if (!cx_class_instanceof(cx_typedef_o, requested)) {
+                        cx_id id;
+                        cx_error("requested object '%s' is not a type", cx_fullname(requested, id));
                         goto error;
                     }
                     
                     /* Determine whether requested is defined */
-                    if (!db_checkState(requested,DB_DEFINED)) {
+                    if (!cx_checkState(requested,DB_DEFINED)) {
                         defined = FALSE;
                     }
                 }
@@ -3068,37 +3068,37 @@ db_int16 db_overload(db_function object, db_string name, db_int32* distance, db_
 
                 /* If requested is 'null', check whether offered is either an any, reference or a string */
                 if (requestedIsNull) {
-                    if (!(db_typedef(offered)->real->reference || referenceOffered)) {
-                        if ((db_typedef(offered)->real->kind != DB_PRIMITIVE) || (db_primitive(db_typedef(offered)->real)->kind != DB_TEXT)) {
-                            if (db_typedef(offered)->real->kind != DB_ANY) {
+                    if (!(cx_typedef(offered)->real->reference || referenceOffered)) {
+                        if ((cx_typedef(offered)->real->kind != DB_PRIMITIVE) || (cx_primitive(cx_typedef(offered)->real)->kind != DB_TEXT)) {
+                            if (cx_typedef(offered)->real->kind != DB_ANY) {
                                 goto nomatch;
                             }
                         }
                     }
-                } else if (db_type_compatible(db_typedef(offered)->real, db_typedef(requested)->real)) {
+                } else if (cx_type_compatible(cx_typedef(offered)->real, cx_typedef(requested)->real)) {
                     /* If types are extendable, determine distance */
-                    if (db_class_instanceof(db_interface_o, offered)) {
-                    	db_interface base;
-                    	base = db_interface(requested);
+                    if (cx_class_instanceof(cx_interface_o, offered)) {
+                    	cx_interface base;
+                    	base = cx_interface(requested);
                     	while(base && (base != offered)) {
                     		d++; /* Increase distance */
                     		base = base->base;
                     	}
                     } else {
                     	/* If not extendable, do not increase distance when types are equal, else increase distance by one */
-                    	if (db_typedef(offered)->real != db_typedef(requested)->real) {
+                    	if (cx_typedef(offered)->real != cx_typedef(requested)->real) {
                     		/* If types are of the same primitive kind, don't increase distance */
-                    		if (db_typedef(offered)->real->kind != DB_PRIMITIVE) {
+                    		if (cx_typedef(offered)->real->kind != DB_PRIMITIVE) {
                     			d++;
                     		} else {
-                    			if (db_primitive(offered)->kind != db_primitive(requested)->kind) {
+                    			if (cx_primitive(offered)->kind != cx_primitive(requested)->kind) {
                     				d++;
                     			}
                     		}
                     	}
                     }
                 } else {
-                    if (allowCastable && db_type_castable(db_typedef(offered)->real, db_typedef(requested)->real)) {
+                    if (allowCastable && cx_type_castable(cx_typedef(offered)->real, cx_typedef(requested)->real)) {
                         /* Increase distance by one. This algorithm could have been made more complex to automatically select
                          * the closest matching function w.r.t. downcasting but for the sake of understandability this
                          * algorithm is kept simple. When ambiguity occurs because of this, an explicit cast is required. */
@@ -3106,22 +3106,22 @@ db_int16 db_overload(db_function object, db_string name, db_int32* distance, db_
                     } else {
                     	/* If offered type accepts any kind of reference and requested is a reference value (regardless
                     	 * of whether it's a reference type) increase distance by one. */
-                    	if (((db_typedef(offered)->real->kind == DB_VOID) &&
-                    		 db_typedef(offered)->real->reference) &&
+                    	if (((cx_typedef(offered)->real->kind == DB_VOID) &&
+                    		 cx_typedef(offered)->real->reference) &&
                     		 referenceRequested) {
                     		d++;
                     	} else {
 							/* If types are not compatible and casting is not allowed, offered does not meet requested. */
-							db_free_ext(NULL, offered, "Free offered-type.");
-							db_free_ext(NULL, requested, "Free requested type.");
+							cx_free_ext(NULL, offered, "Free offered-type.");
+							cx_free_ext(NULL, requested, "Free requested type.");
 							goto nomatch;
                     	}
                     }
                 }
 
-                db_free_ext(NULL, offered, "Free offered type.");
+                cx_free_ext(NULL, offered, "Free offered type.");
                 if (requested) {
-                    db_free_ext(NULL, requested, "Free requested type.");
+                    cx_free_ext(NULL, requested, "Free requested type.");
                 }
             }
         }
@@ -3141,24 +3141,24 @@ error:
 	return -1;
 }
 
-typedef struct db_lookupFunction_t {
-	db_string request;
-	db_function result;
-	db_bool error;
-	db_bool castableOverloading;
-	db_int32 d;
-}db_lookupFunction_t;
+typedef struct cx_lookupFunction_t {
+	cx_string request;
+	cx_function result;
+	cx_bool error;
+	cx_bool castableOverloading;
+	cx_int32 d;
+}cx_lookupFunction_t;
 
 /* Lookup function in scope */
-int db_lookupFunctionWalk(db_object o, void* userData) {
-	db_int32 d;
-	db_lookupFunction_t* data;
+int cx_lookupFunctionWalk(cx_object o, void* userData) {
+	cx_int32 d;
+	cx_lookupFunction_t* data;
 
 	data = userData;
 
 	/* If current object is a function, match it */
-	if (db_class_instanceof(db_procedure_o, db_typeof(o))) {
-		if (db_overload(o, data->request, &d, data->castableOverloading)) {
+	if (cx_class_instanceof(cx_procedure_o, cx_typeof(o))) {
+		if (cx_overload(o, data->request, &d, data->castableOverloading)) {
 			data->error = TRUE;
 			goto found;
 		}
@@ -3181,40 +3181,40 @@ found:
 	return 0;
 }
 
-static int db_scopeCollectWalk(db_object o, void* userData) {
-	db_ll list = userData;
-	db_keep_ext(NULL, o, "Collect objects in scope");
-	db_llAppend(list, o);
+static int cx_scopeCollectWalk(cx_object o, void* userData) {
+	cx_ll list = userData;
+	cx_keep_ext(NULL, o, "Collect objects in scope");
+	cx_llAppend(list, o);
 	return 1;
 }
 
-static int db_scopeFreeWalk(db_object o, void* userData) {
+static int cx_scopeFreeWalk(cx_object o, void* userData) {
 	DB_UNUSED(userData);
-	db_free_ext(NULL, o, "Free collected objects in scope");
+	cx_free_ext(NULL, o, "Free collected objects in scope");
 	return 1;
 }
 
-db_ll db_scopeClaim(db_object scope) {
-	db_ll result;
-	result = db_llNew();
-	db_scopeWalk(scope, db_scopeCollectWalk, result);
+cx_ll cx_scopeClaim(cx_object scope) {
+	cx_ll result;
+	result = cx_llNew();
+	cx_scopeWalk(scope, cx_scopeCollectWalk, result);
 	return result;
 }
 
-void db_scopeRelease(db_ll scope) {
-	db_llWalk(scope, db_scopeFreeWalk, NULL);
-	db_llFree(scope);
+void cx_scopeRelease(cx_ll scope) {
+	cx_llWalk(scope, cx_scopeFreeWalk, NULL);
+	cx_llFree(scope);
 }
 
 /* Lookup function with support for overloading */
-db_function db_lookupFunction_ext(db_object src, db_object scope, db_string requested, db_bool allowCastableOverloading, db_int32* d, db_string context) {
-	db_lookupFunction_t walkData;
-	db_ll scopeContents;
+cx_function cx_lookupFunction_ext(cx_object src, cx_object scope, cx_string requested, cx_bool allowCastableOverloading, cx_int32* d, cx_string context) {
+	cx_lookupFunction_t walkData;
+	cx_ll scopeContents;
 
 	/* Collect objects in scope first, to prevent reversed locking order (locking should
-	 * always be outer scope first, then inner scope) and deadlocking i.c.m. db_resolve.
+	 * always be outer scope first, then inner scope) and deadlocking i.c.m. cx_resolve.
 	 */
-	scopeContents = db_scopeClaim(scope);
+	scopeContents = cx_scopeClaim(scope);
 
 	/* Call the actual lookup function */
 	walkData.request = requested;
@@ -3222,7 +3222,7 @@ db_function db_lookupFunction_ext(db_object src, db_object scope, db_string requ
 	walkData.error = FALSE;
 	walkData.castableOverloading = allowCastableOverloading;
 	walkData.d = 0x7FFFFFFF;
-	db_llWalk(scopeContents, db_lookupFunctionWalk, &walkData);
+	cx_llWalk(scopeContents, cx_lookupFunctionWalk, &walkData);
 
 	if (walkData.error) {
 		return NULL;
@@ -3233,47 +3233,47 @@ db_function db_lookupFunction_ext(db_object src, db_object scope, db_string requ
 	}
 
 	if (walkData.result) {
-		db_keep_ext(src, walkData.result, context);
+		cx_keep_ext(src, walkData.result, context);
 	}
 
 	/* Free contents of scope */
-	db_scopeRelease(scopeContents);
+	cx_scopeRelease(scopeContents);
 
 	return walkData.result;
 }
 
-db_function db_lookupFunction(db_object scope, db_string requested, db_bool allowCastableOverloading, db_int32* d) {
-    return db_lookupFunction_ext(NULL, scope, requested, allowCastableOverloading, d, NULL);
+cx_function cx_lookupFunction(cx_object scope, cx_string requested, cx_bool allowCastableOverloading, cx_int32* d) {
+    return cx_lookupFunction_ext(NULL, scope, requested, allowCastableOverloading, d, NULL);
 }
 
 /* Create request signature */
-db_string db_signatureOpen(db_string name) {
-	db_string result;
+cx_string cx_signatureOpen(cx_string name) {
+	cx_string result;
 
-	result = db_malloc(strlen(name) + 1 + 1);
+	result = cx_malloc(strlen(name) + 1 + 1);
 	sprintf(result, "%s(", name);
 
 	return result;
 }
 
-db_string db_signatureAdd(db_string sig, db_typedef type, db_bool isReference) {
-	db_uint32 len;
-	db_string result;
-	db_id id;
+cx_string cx_signatureAdd(cx_string sig, cx_typedef type, cx_bool isReference) {
+	cx_uint32 len;
+	cx_string result;
+	cx_id id;
     
     if (type) {
-        db_fullname(type, id);
+        cx_fullname(type, id);
     } else {
         strcpy(id, "null");
     }
     
 	len = strlen(sig);
 	if (sig[len-1] == '(') {
-		result = db_realloc(sig, len + strlen(id) + 1 + (isReference ? 1 : 0));
+		result = cx_realloc(sig, len + strlen(id) + 1 + (isReference ? 1 : 0));
 		strcat(result, id);
 		if (isReference) strcat(result, "&");
 	} else {
-		result = db_realloc(sig, len + strlen(id) + 1 + 1 + (isReference ? 1 : 0));
+		result = cx_realloc(sig, len + strlen(id) + 1 + 1 + (isReference ? 1 : 0));
 		strcat(result, ",");
 		strcat(result, id);
 		if (isReference) strcat(result, "&");
@@ -3282,17 +3282,17 @@ db_string db_signatureAdd(db_string sig, db_typedef type, db_bool isReference) {
 	return result;
 }
 
-db_string db_signatureAddWildcard(db_string sig, db_bool isReference) {
-    db_uint32 len;
-    db_string result;
+cx_string cx_signatureAddWildcard(cx_string sig, cx_bool isReference) {
+    cx_uint32 len;
+    cx_string result;
     
     len = strlen(sig);
     if (sig[len-1] == '(') {
-        result = db_realloc(sig, len + 1 + 1 + (isReference ? 1 : 0));
+        result = cx_realloc(sig, len + 1 + 1 + (isReference ? 1 : 0));
         strcat(result, "?");
         if (isReference) strcat(result, "&");
     } else {
-        result = db_realloc(sig, len + 1 + 1 + 1 + (isReference ? 1 : 0));
+        result = cx_realloc(sig, len + 1 + 1 + 1 + (isReference ? 1 : 0));
         strcat(result, ",");
         strcat(result, "?");
         if (isReference) strcat(result, "&");
@@ -3301,114 +3301,114 @@ db_string db_signatureAddWildcard(db_string sig, db_bool isReference) {
     return result;
 }
 
-db_string db_signatureClose(db_string sig) {
-    db_uint32 length = strlen(sig) + 1;
-	sig = db_realloc(sig, length + 1);
+cx_string cx_signatureClose(cx_string sig) {
+    cx_uint32 length = strlen(sig) + 1;
+	sig = cx_realloc(sig, length + 1);
 	sig[length-1] = ')';
 	sig[length] = '\0';
 	return sig;
 }
 
 /* Set reference field */
-void db_set_ext(db_object source, void* ptr, db_object value, db_string context) {
-    db_object old;
-    old = *(db_object*)ptr;
+void cx_set_ext(cx_object source, void* ptr, cx_object value, cx_string context) {
+    cx_object old;
+    old = *(cx_object*)ptr;
     if (value) {
-    	db_keep_ext(source, value, context);
+    	cx_keep_ext(source, value, context);
     }
-    *(db_object*)ptr = value;
+    *(cx_object*)ptr = value;
     if (old) {
-        db_free_ext(source, old, context);
+        cx_free_ext(source, old, context);
     }
 }
 
 /* Set reference field */
-void db_set(void* ptr, db_object value) {
-	db_set_ext(NULL, ptr, value, NULL);
+void cx_set(void* ptr, cx_object value) {
+	cx_set_ext(NULL, ptr, value, NULL);
 }
 
 /* Convert object to string */
-db_string db_toString(db_object object, db_uint32 maxLength) {
-	db_string_ser_t serData;
-	struct db_serializer_s s;
+cx_string cx_toString(cx_object object, cx_uint32 maxLength) {
+	cx_string_ser_t serData;
+	struct cx_serializer_s s;
 	serData.buffer = NULL;
 	serData.length = 0;
 	serData.maxlength = maxLength;
 	serData.compactNotation = TRUE;
 	serData.prefixType = FALSE;
 
-	s = db_string_ser(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
-	db_serialize(&s, object, &serData);
+	s = cx_string_ser(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
+	cx_serialize(&s, object, &serData);
 
 	return serData.buffer;
 }
 
 /* Convert value to string */
-db_string db_valueToString(db_value* v, db_uint32 maxLength) {
-	db_string_ser_t serData;
-	struct db_serializer_s s;
+cx_string cx_valueToString(cx_value* v, cx_uint32 maxLength) {
+	cx_string_ser_t serData;
+	struct cx_serializer_s s;
 	serData.buffer = NULL;
 	serData.length = 0;
 	serData.maxlength = maxLength;
 	serData.compactNotation = TRUE;
 	serData.prefixType = FALSE;
 
-	s = db_string_ser(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
-	db_serializeValue(&s, v, &serData);
+	s = cx_string_ser(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
+	cx_serializeValue(&s, v, &serData);
 
 	return serData.buffer;
 }
 
 /* Deserialize object from string */
-db_object db_fromString(db_string string) {
-    db_string_deser_t serData;
+cx_object cx_fromString(cx_string string) {
+    cx_string_deser_t serData;
 
     serData.out = NULL;
     serData.scope = NULL;
     serData.type = NULL;
-    if (!db_string_deser(string, &serData)) {
-        db_assert(!serData.out, "deserializer failed but out is set");
+    if (!cx_string_deser(string, &serData)) {
+        cx_assert(!serData.out, "deserializer failed but out is set");
     }
 
     return serData.out;
 }
 
 /* Deserialize object from string */
-void *db_valueFromString(db_string string, void* out, db_typedef type) {
-    db_string_deser_t serData;
+void *cx_valueFromString(cx_string string, void* out, cx_typedef type) {
+    cx_string_deser_t serData;
 
     serData.out = out;
     serData.scope = NULL;
     serData.type = type->real;
-    if (!db_string_deser(string, &serData)) {
-        db_assert(!serData.out, "deserializer failed but out is set");
+    if (!cx_string_deser(string, &serData)) {
+        cx_assert(!serData.out, "deserializer failed but out is set");
     }
 
     return serData.out;
 }
 
 /* Compare objects */
-db_equalityKind db_compare(db_object o1, db_object o2) {
-    db_any a1, a2;
+cx_equalityKind cx_compare(cx_object o1, cx_object o2) {
+    cx_any a1, a2;
     a1.value = o1;
-    a1.type = db_typeof(o1)->real;
+    a1.type = cx_typeof(o1)->real;
     a1.owner = FALSE;
     a2.value = o2;
-    a2.type = db_typeof(o2)->real;
+    a2.type = cx_typeof(o2)->real;
     a2.owner = FALSE;
-    return db_type_compare(a1, a2);
+    return cx_type_compare(a1, a2);
 }
 
 /* Compare value */
-db_equalityKind db_valueCompare(db_value *value1, db_value *value2) {
-    db_void *v1, *v2;
-    db_any a1, a2;
-    db_type t1, t2;
+cx_equalityKind cx_valueCompare(cx_value *value1, cx_value *value2) {
+    cx_void *v1, *v2;
+    cx_any a1, a2;
+    cx_type t1, t2;
 
-    v1 = db_valueValue(value1);
-    v2 = db_valueValue(value2);
-    t1 = db_valueType(value1)->real;
-    t2 = db_valueType(value2)->real;
+    v1 = cx_valueValue(value1);
+    v2 = cx_valueValue(value2);
+    t1 = cx_valueType(value1)->real;
+    t2 = cx_valueType(value2)->real;
 
     a1.value = v1;
     a1.type = t1;
@@ -3416,17 +3416,17 @@ db_equalityKind db_valueCompare(db_value *value1, db_value *value2) {
     a2.value = v2;
     a2.type = t2;
     a2.owner = FALSE;
-    return db_type_compare(a1, a2);
+    return cx_type_compare(a1, a2);
 }
 
 /* Init object */
-db_int16 db_init(db_object o) {
-    db_typeKind kind = db_typeof(o)->real->kind;
+cx_int16 cx_init(cx_object o) {
+    cx_typeKind kind = cx_typeof(o)->real->kind;
     switch(kind) {
         case DB_COMPOSITE:
         case DB_COLLECTION: {
-            struct db_serializer_s s = db_ser_init(0, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
-            db_serialize(&s, o, NULL);
+            struct cx_serializer_s s = cx_ser_init(0, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
+            cx_serialize(&s, o, NULL);
             break;
         }
         default:
@@ -3436,19 +3436,19 @@ db_int16 db_init(db_object o) {
 }
 
 /* Init value */
-db_int16 db_initValue(db_value *v) {
-    struct db_serializer_s s = db_ser_init(0, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
-	return db_serializeValue(&s, v, NULL);
+cx_int16 cx_initValue(cx_value *v) {
+    struct cx_serializer_s s = cx_ser_init(0, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
+	return cx_serializeValue(&s, v, NULL);
 }
 
 /* Deinit object */
-db_int16 db_deinit(db_object o) {
-    db_typeKind kind = db_typeof(o)->real->kind;
+cx_int16 cx_deinit(cx_object o) {
+    cx_typeKind kind = cx_typeof(o)->real->kind;
     switch(kind) {
         case DB_COMPOSITE:
         case DB_COLLECTION: {
-            struct db_serializer_s s = db_ser_freeResources(0, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
-            db_serialize(&s, o, NULL);
+            struct cx_serializer_s s = cx_ser_freeResources(0, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
+            cx_serialize(&s, o, NULL);
             break;
         }
         default:
@@ -3458,48 +3458,48 @@ db_int16 db_deinit(db_object o) {
 }
 
 /* Deinit value */
-db_int16 db_deinitValue(db_value *v) {
-    struct db_serializer_s s = db_ser_freeResources(0, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
-	return db_serializeValue(&s, v, NULL);
+cx_int16 cx_deinitValue(cx_value *v) {
+    struct cx_serializer_s s = cx_ser_freeResources(0, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
+	return cx_serializeValue(&s, v, NULL);
 }
 
 /* Copy object */
-db_int16 db_copy(db_object dst, db_object src) {
-    struct db_serializer_s s = db_copy_ser(DB_PRIVATE, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
-    db_copy_ser_t data;
-    db_int16 result;
-    db_valueObjectInit(&data.value, dst);
-    result = db_serialize(&s, src, &data);
+cx_int16 cx_copy(cx_object dst, cx_object src) {
+    struct cx_serializer_s s = cx_copy_ser(DB_PRIVATE, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
+    cx_copy_ser_t data;
+    cx_int16 result;
+    cx_valueObjectInit(&data.value, dst);
+    result = cx_serialize(&s, src, &data);
     return result;
 }
 
 /* Copy value */
-db_int16 db_valueCopy(db_value *dst, db_value *src) {
-    struct db_serializer_s s = db_copy_ser(DB_PRIVATE, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
-    db_copy_ser_t data;
-    db_int16 result;
+cx_int16 cx_valueCopy(cx_value *dst, cx_value *src) {
+    struct cx_serializer_s s = cx_copy_ser(DB_PRIVATE, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
+    cx_copy_ser_t data;
+    cx_int16 result;
     data.value = *dst;
-    result = db_serializeValue(&s, src, &data);
+    result = cx_serializeValue(&s, src, &data);
     return result;
 }
 
-db_object db_cortex_new(db_typedef type) {
-    return db_new(type);
+cx_object cx_cortex_new(cx_typedef type) {
+    return cx_new(type);
 }
 
-db_object db_cortex__new(db_typedef type, db_attr attributes) {
-    return db_new_ext(NULL, type, attributes, NULL);
+cx_object cx_cortex__new(cx_typedef type, cx_attr attributes) {
+    return cx_new_ext(NULL, type, attributes, NULL);
 }
 
-void __db_cortex_new(db_function f, void *result, void *args) {
+void __cx_cortex_new(cx_function f, void *result, void *args) {
     DB_UNUSED(f);
-    *(db_object*)result = db_cortex_new(*(db_typedef*)args);
+    *(cx_object*)result = cx_cortex_new(*(cx_typedef*)args);
 }
 
-void __db_cortex__new(db_function f, void *result, void *args) {
+void __cx_cortex__new(cx_function f, void *result, void *args) {
     DB_UNUSED(f);
-    *(db_object*)result = db_cortex__new(
-        *(db_typedef*)args,
-        *(db_attr*)((intptr_t)args + sizeof(db_typedef)));
+    *(cx_object*)result = cx_cortex__new(
+        *(cx_typedef*)args,
+        *(cx_attr*)((intptr_t)args + sizeof(cx_typedef)));
 }
 

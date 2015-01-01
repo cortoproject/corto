@@ -1,4 +1,4 @@
-/* db_collection.c
+/* cx_collection.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -7,25 +7,25 @@
  */
 
 #include "db.h"
-#include "db__meta.h"
+#include "cx__meta.h"
 
 /* $header() */
 typedef struct __dummySeq {
-    db_uint32 length;
+    cx_uint32 length;
     void* buffer;
 }__dummySeq;
 
-static int db_arrayWalk(db_collection _this, db_void* array, db_uint32 length, db_walkAction action, db_void* userData) {
+static int cx_arrayWalk(cx_collection _this, cx_void* array, cx_uint32 length, cx_walkAction action, cx_void* userData) {
     void* v;
     int result;
-    db_type elementType;
-    db_uint32 elementSize, i;
+    cx_type elementType;
+    cx_uint32 elementSize, i;
 
     result = 1;
 
     if (array) {
         elementType = _this->elementType->real;
-        elementSize = db_type_sizeof(elementType);
+        elementSize = cx_type_sizeof(elementType);
         v = array;
 
         result = 1;
@@ -39,36 +39,36 @@ static int db_arrayWalk(db_collection _this, db_void* array, db_uint32 length, d
 }
 
 /* Walk contents of collection */
-int db_walk(db_collection _this, db_void* collection, db_walkAction action, db_void* userData) {
+int cx_walk(cx_collection _this, cx_void* collection, cx_walkAction action, cx_void* userData) {
     int result;
 
     result = 1;
 
     switch(_this->kind) {
     case DB_ARRAY:
-        result = db_arrayWalk(_this, collection, _this->max, action, userData);
+        result = cx_arrayWalk(_this, collection, _this->max, action, userData);
         break;
     case DB_SEQUENCE:
-        result = db_arrayWalk(_this, ((__dummySeq*)collection)->buffer, ((__dummySeq*)collection)->length, action, userData);
+        result = cx_arrayWalk(_this, ((__dummySeq*)collection)->buffer, ((__dummySeq*)collection)->length, action, userData);
         break;
     case DB_LIST: {
-        db_ll list = *(db_ll*)collection;
+        cx_ll list = *(cx_ll*)collection;
         if (list) {
-            if (db_collection_elementRequiresAlloc(_this)) {
-                result = db_llWalk(list, action, userData);
+            if (cx_collection_elementRequiresAlloc(_this)) {
+                result = cx_llWalk(list, action, userData);
             } else {
-                result = db_llWalkPtr(list, action, userData);
+                result = cx_llWalkPtr(list, action, userData);
             }
         }
         break;
     }
     case DB_MAP: {
-        db_rbtree tree = *(db_rbtree*)collection;
+        cx_rbtree tree = *(cx_rbtree*)collection;
         if (tree) {
-            if (db_collection_elementRequiresAlloc(_this)) {
-                result = db_rbtreeWalk(tree, action, userData);
+            if (cx_collection_elementRequiresAlloc(_this)) {
+                result = cx_rbtreeWalk(tree, action, userData);
             } else {
-                result = db_rbtreeWalkPtr(tree, action, userData);
+                result = cx_rbtreeWalkPtr(tree, action, userData);
             }
         }
         break;
@@ -78,59 +78,59 @@ int db_walk(db_collection _this, db_void* collection, db_walkAction action, db_v
 }
 
 /* Free references in collection */
-static int db_clearFreeReferences(void* o, void* udata) {
+static int cx_clearFreeReferences(void* o, void* udata) {
     DB_UNUSED(udata);
-    db_free(*(db_object*)o);
+    cx_free(*(cx_object*)o);
     return 1;
 }
 
 /* Free values in collection */
-static int db_clearFreeValues(void* o, void* udata) {
+static int cx_clearFreeValues(void* o, void* udata) {
     DB_UNUSED(udata);
-    db_dealloc(o);
+    cx_dealloc(o);
     return 1;
 }
 
 /* Clear collection */
-void db_clear(db_collection _this, db_void* collection) {
-   db_type elementType;
+void cx_clear(cx_collection _this, cx_void* collection) {
+   cx_type elementType;
 
    elementType = _this->elementType->real;
 
    /* If type is a reference type, do free's on all elements */
    if (elementType->reference) {
-       db_walk(_this, collection, db_clearFreeReferences, NULL);
+       cx_walk(_this, collection, cx_clearFreeReferences, NULL);
    }
 
    switch(_this->kind) {
    case DB_SEQUENCE:
-       db_dealloc(((__dummySeq*)collection)->buffer);
+       cx_dealloc(((__dummySeq*)collection)->buffer);
        ((__dummySeq*)collection)->buffer = NULL;
        ((__dummySeq*)collection)->length = 0;
        break;
    case DB_LIST: {
-       db_ll c;
-       if ((c = *(db_ll*)collection)) {
-           if (db_collection_elementRequiresAlloc(_this)) {
-               db_walk(_this, collection, db_clearFreeValues, NULL);
+       cx_ll c;
+       if ((c = *(cx_ll*)collection)) {
+           if (cx_collection_elementRequiresAlloc(_this)) {
+               cx_walk(_this, collection, cx_clearFreeValues, NULL);
            }
-           db_llFree(c);
+           cx_llFree(c);
        }
        break;
    }
    case DB_MAP: {
-       db_rbtree c;
-       if ((c = *(db_rbtree*)collection)) {
+       cx_rbtree c;
+       if ((c = *(cx_rbtree*)collection)) {
            if (!elementType->reference) {
-               db_walk(_this, collection, db_clearFreeValues, NULL);
+               cx_walk(_this, collection, cx_clearFreeValues, NULL);
            }
-           db_rbtreeFree(c);
+           cx_rbtreeFree(c);
        }
        break;
    }
    default: {
-       db_id id;
-       db_error("the clear operation is only valid for sequences, lists and maps (got %s)", db_fullname(_this, id));
+       cx_id id;
+       cx_error("the clear operation is only valid for sequences, lists and maps (got %s)", cx_fullname(_this, id));
        break;
    }
    }
@@ -138,17 +138,17 @@ void db_clear(db_collection _this, db_void* collection) {
 /* $end */
 
 /* ::cortex::lang::collection::castable(lang::type type) */
-db_bool db_collection_castable_v(db_collection _this, db_type type) {
+cx_bool cx_collection_castable_v(cx_collection _this, cx_type type) {
 /* $begin(::cortex::lang::collection::castable) */
-    db_bool result = FALSE;
+    cx_bool result = FALSE;
     if (type->kind == DB_COLLECTION) {
-        db_collection t = db_collection(type);
+        cx_collection t = cx_collection(type);
         
         /* Arrays are only castable when they match exactly in size */
         if (!(_this->kind == DB_ARRAY) || ((t->kind == DB_ARRAY) && (_this->max == t->max))) {
             if (_this->elementType != t->elementType) {
                 if (_this->elementType->real->kind == DB_COLLECTION) {
-                    result = db_collection_castable(db_collection(_this->elementType->real), t->elementType->real);
+                    result = cx_collection_castable(cx_collection(_this->elementType->real), t->elementType->real);
                 }
             } else {
                 result = TRUE;
@@ -161,23 +161,23 @@ db_bool db_collection_castable_v(db_collection _this, db_type type) {
 }
 
 /* ::cortex::lang::collection::elementRequiresAlloc() */
-db_bool db_collection_elementRequiresAlloc(db_collection _this) {
+cx_bool cx_collection_elementRequiresAlloc(cx_collection _this) {
 /* $begin(::cortex::lang::collection::elementRequiresAlloc) */
-    db_bool result = TRUE;
-    db_type elementType = _this->elementType->real;
+    cx_bool result = TRUE;
+    cx_type elementType = _this->elementType->real;
 
     if (elementType->reference) {
         result = FALSE;
     } else {
         switch(elementType->kind) {
         case DB_VOID:
-            db_assert(0, "non reference void type cannot be an elementtype");
+            cx_assert(0, "non reference void type cannot be an elementtype");
             break;
         case DB_ANY:
             /* Any values don't fit in an address */
             break;
         case DB_PRIMITIVE:
-            switch(db_primitive(elementType)->width) {
+            switch(cx_primitive(elementType)->width) {
             case DB_WIDTH_8:
             case DB_WIDTH_16:
             case DB_WIDTH_32:
@@ -192,7 +192,7 @@ db_bool db_collection_elementRequiresAlloc(db_collection _this) {
             }
             break;
         case DB_COLLECTION:
-            switch(db_collection(elementType)->kind) {
+            switch(cx_collection(elementType)->kind) {
             case DB_ARRAY:
             case DB_SEQUENCE:
                 /* Arrays and sequences (typically) don't fit in a collection */
@@ -214,29 +214,29 @@ db_bool db_collection_elementRequiresAlloc(db_collection _this) {
 }
 
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::collection::init(lang::collection object) */
-db_int16 db_collection_init(db_collection object) {
+cx_int16 cx_collection_init(cx_collection object) {
 /* $begin(::cortex::lang::collection::init) */
-    db_type(object)->kind = DB_COLLECTION;
-    return db_type__init(db_type(object));/* $end */
+    cx_type(object)->kind = DB_COLLECTION;
+    return cx_type__init(cx_type(object));/* $end */
 }
 
 /* ::cortex::lang::collection::size() */
-db_uint32 db_collection_size(db_any _this) {
+cx_uint32 cx_collection_size(cx_any _this) {
 /* $begin(::cortex::lang::collection::size) */
-    db_uint32 result = 0;
+    cx_uint32 result = 0;
 
-    switch(db_collection(_this.type)->kind) {
+    switch(cx_collection(_this.type)->kind) {
     case DB_ARRAY:
-        result = db_collection(_this.type)->max;
+        result = cx_collection(_this.type)->max;
         break;
     case DB_SEQUENCE:
-        result = ((db_objectSeq*)_this.value)->length;
+        result = ((cx_objectSeq*)_this.value)->length;
         break;
     case DB_LIST:
-        result = db_llSize(*(db_ll*)_this.value);
+        result = cx_llSize(*(cx_ll*)_this.value);
         break;
     case DB_MAP:
-        result = db_rbtreeSize(*(db_rbtree*)_this.value);
+        result = cx_rbtreeSize(*(cx_rbtree*)_this.value);
         break;
     }
 

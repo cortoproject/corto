@@ -6,113 +6,113 @@
  */
 
 #include "cortex.h"
-#include "db_generator.h"
-#include "db_loader.h"
-#include "db_arg.h"
+#include "cx_generator.h"
+#include "cx_loader.h"
+#include "cx_arg.h"
 
 static char* name = NULL;
 static char* language = NULL;
 static char* prefix = NULL;
 static char* lang = NULL;
-static db_ll generators = NULL;
-static db_ll scopes = NULL;
-static db_ll includes = NULL;
-static db_ll attributes = NULL;
+static cx_ll generators = NULL;
+static cx_ll scopes = NULL;
+static cx_ll includes = NULL;
+static cx_ll attributes = NULL;
 
-int db_arg_attributes(char* arg, int argc, char* argv[]) {
+int cx_arg_attributes(char* arg, int argc, char* argv[]) {
 	if (argc) {
 	    if (!attributes) {
-	        attributes = db_llNew();
+	        attributes = cx_llNew();
 	    }
-	    db_llInsert(attributes, argv[1]);
+	    cx_llInsert(attributes, argv[1]);
 	} else {
-		db_error("missing argument for '%s'.", arg);
+		cx_error("missing argument for '%s'.", arg);
 	}
 	return 1;
 }
 
-int db_arg_name(char* arg, int argc, char* argv[]) {
+int cx_arg_name(char* arg, int argc, char* argv[]) {
 	if (argc) {
 		name = argv[1];
 	} else {
-		db_error("missing argument for '%s'.", arg);
+		cx_error("missing argument for '%s'.", arg);
 	}
 	return 1;
 }
 
-int db_arg_prefix(char* arg, int argc, char* argv[]) {
+int cx_arg_prefix(char* arg, int argc, char* argv[]) {
 	if (argc) {
 		prefix = argv[1];
 	} else {
-		db_error("missing argument for '%s'.", arg);
+		cx_error("missing argument for '%s'.", arg);
 	}
 	return 1;
 }
 
-int db_arg_generator(char* arg, int argc, char* argv[]) {
+int cx_arg_generator(char* arg, int argc, char* argv[]) {
 	if (argc) {
 		if (!generators) {
-			generators = db_llNew();
+			generators = cx_llNew();
 		}
-		db_llAppend(generators, argv[1]);
+		cx_llAppend(generators, argv[1]);
 	} else {
-		db_error("missing argument for '%s'.", arg);
+		cx_error("missing argument for '%s'.", arg);
 	}
 	return 1;
 }
 
-int db_arg_scope(char* arg, int argc, char* argv[]) {
+int cx_arg_scope(char* arg, int argc, char* argv[]) {
 	if (argc) {
 		if (!scopes) {
-			scopes = db_llNew();
+			scopes = cx_llNew();
 		}
-		db_llInsert(scopes, argv[1]);
+		cx_llInsert(scopes, argv[1]);
 	} else {
-		db_error("missing argument for '%s'.", arg);
+		cx_error("missing argument for '%s'.", arg);
 	}
 	return 1;
 }
 
-int db_arg_include(char* arg, int argc, char* argv[]) {
+int cx_arg_include(char* arg, int argc, char* argv[]) {
 	if (argc) {
 		if (!includes) {
-			includes = db_llNew();
+			includes = cx_llNew();
 		}
-		db_llAppend(includes, argv[0]);
+		cx_llAppend(includes, argv[0]);
 	} else {
-		db_error("missing argument for '%s'.", arg);
+		cx_error("missing argument for '%s'.", arg);
 	}
 	return 1;
 }
 
-int db_arg_language(char* arg, int argc, char* argv[]) {
+int cx_arg_language(char* arg, int argc, char* argv[]) {
     if (argc == 2) {
         if (!generators) {
-            generators = db_llNew();
+            generators = cx_llNew();
         }
         if (!strcmp(argv[1], "c")) {
             if (!attributes) {
-                attributes = db_llNew();
+                attributes = cx_llNew();
             }
-            db_llAppend(generators, "c_project");
-            db_llAppend(generators, "c_type");
-            db_llAppend(generators, "c_interface");
-            db_llAppend(generators, "c_load");
-            db_llAppend(generators, "c_api");
-            db_llAppend(attributes, "c=src");
-            db_llAppend(attributes, "h=include");
+            cx_llAppend(generators, "c_project");
+            cx_llAppend(generators, "c_type");
+            cx_llAppend(generators, "c_interface");
+            cx_llAppend(generators, "c_load");
+            cx_llAppend(generators, "c_api");
+            cx_llAppend(attributes, "c=src");
+            cx_llAppend(attributes, "h=include");
 
             lang = "c";
         } else if (!strcmp(argv[1], "cpp")) {
-            db_llAppend(generators, "cpp_type");
-            db_llAppend(generators, "cpp_class");
-            db_llAppend(generators, "cpp_load");
+            cx_llAppend(generators, "cpp_type");
+            cx_llAppend(generators, "cpp_class");
+            cx_llAppend(generators, "cpp_load");
         } else {
-        	db_error("unknown language '%s'.", argv[1]);
+        	cx_error("unknown language '%s'.", argv[1]);
         	goto error;
         }
     } else {
-        db_error("invalid number of argument for '%s'.", arg);
+        cx_error("invalid number of argument for '%s'.", arg);
         goto error;
     }
     return 1;
@@ -122,18 +122,18 @@ error:
 
 
 /* Parse arguments */
-static int db_parseArguments(int argc, char* argv[]) {
+static int cx_parseArguments(int argc, char* argv[]) {
 	/* Specifiy arguments and callbacks */
-	db_argSet("attr", db_arg_attributes, 0, -1);
-	db_argSet("name", db_arg_name, 0, 1);
-	db_argSet("prefix", db_arg_prefix, 0, 1);
-	db_argSet("g", db_arg_generator, 0, -1);
-	db_argSet("scope", db_arg_scope, 1, -1);
-	db_argSet("lang", db_arg_language, 0, 1);
-	db_argSet(NULL, db_arg_include, 0, -1);
+	cx_argSet("attr", cx_arg_attributes, 0, -1);
+	cx_argSet("name", cx_arg_name, 0, 1);
+	cx_argSet("prefix", cx_arg_prefix, 0, 1);
+	cx_argSet("g", cx_arg_generator, 0, -1);
+	cx_argSet("scope", cx_arg_scope, 1, -1);
+	cx_argSet("lang", cx_arg_language, 0, 1);
+	cx_argSet(NULL, cx_arg_include, 0, -1);
 
 	/* Parse commandline */
-	if (db_argParse(argc, argv)) {
+	if (cx_argParse(argc, argv)) {
 		return -1;
 	}
 	return 0;
@@ -160,72 +160,72 @@ void printUsage(void) {
 }
 
 int main(int argc, char* argv[]) {
-	db_generator g;
-	db_string lib, include;
-	db_iter iter;
-	db_string scope, attr;
-	db_object o;
+	cx_generator g;
+	cx_string lib, include;
+	cx_iter iter;
+	cx_string scope, attr;
+	cx_object o;
 
-	if (db_parseArguments(argc, argv)) {
-		db_error("invalid commandline specified.");
+	if (cx_parseArguments(argc, argv)) {
+		cx_error("invalid commandline specified.");
 		printUsage();
 		return -1;
 	}
 
 	if (!generators) {
-		db_error("dbgen: no generators provided");
+		cx_error("dbgen: no generators provided");
 		return -1;
 	}
 
 	/* Start database */
-	db_start();
+	cx_start();
 
-    db_load("xml");
+    cx_load("xml");
 
 	/* Load includes */
 	if (includes) {
-		iter = db_llIter(includes);
-		while(db_iterHasNext(&iter)) {
-			include = db_iterNext(&iter);
-			if (db_load(include)) {
-			    db_error("dbgen: error(s) occurred while loading file '%s', abort generation.", include);
+		iter = cx_llIter(includes);
+		while(cx_iterHasNext(&iter)) {
+			include = cx_iterNext(&iter);
+			if (cx_load(include)) {
+			    cx_error("dbgen: error(s) occurred while loading file '%s', abort generation.", include);
 			    return -1;
 			}
 		}
 	}
 
 	/* Load library */
-	while((lib = db_llTakeFirst(generators))) {
+	while((lib = cx_llTakeFirst(generators))) {
 
 		/* Create generator for each provided generator library */
 		g = gen_new(name, language);
 
 		/* Load interface */
 		if (gen_load(g, lib)) {
-			db_error("dbgen: cannot load generator '%s'.", lib);
+			cx_error("dbgen: cannot load generator '%s'.", lib);
 			return -1;
 		}
 
 		/* Generate for all scopes */
-		iter = db_llIter(scopes);
-		while(db_iterHasNext(&iter)) {
-			scope = db_iterNext(&iter);
+		iter = cx_llIter(scopes);
+		while(cx_iterHasNext(&iter)) {
+			scope = cx_iterNext(&iter);
 
 			/* Resolve object */
-			o = db_resolve(NULL, scope);
+			o = cx_resolve(NULL, scope);
 			if (!o) {
 				/* Be smart, look for a file that matches the requested scope by adding .cortex
 				 * to the scopename. */
-			    db_load("fast");
-				db_id fileName; sprintf(fileName, "%s.cortex", scope);
-				db_load(fileName);
-				o = db_resolve(NULL, scope);
+			    cx_load("fast");
+				cx_id fileName; sprintf(fileName, "%s.cortex", scope);
+				cx_load(fileName);
+				o = cx_resolve(NULL, scope);
 				if (!o) {
-					db_error("dbgen: unresolved scope '%s' .", scope);
+					cx_error("dbgen: unresolved scope '%s' .", scope);
 					return -1;
 				}
 			}
-			db_free(o);
+			cx_free(o);
 
 			/* Parse object as scope, with provided prefix */
 			gen_parse(g, o, TRUE, TRUE, prefix);
@@ -233,11 +233,11 @@ int main(int argc, char* argv[]) {
 
 		/* Add output directories */
 		if (attributes) {
-            iter = db_llIter(attributes);
-            while(db_iterHasNext(&iter)) {
-                db_string ptr;
+            iter = cx_llIter(attributes);
+            while(cx_iterHasNext(&iter)) {
+                cx_string ptr;
 
-                attr = db_strdup(db_iterNext(&iter));
+                attr = cx_strdup(cx_iterNext(&iter));
 
                 ptr = strchr(attr, '=');
                 if (ptr) {
@@ -245,13 +245,13 @@ int main(int argc, char* argv[]) {
                     gen_setAttribute(g, attr, ptr+1);
                 }
                 *ptr = '=';
-                db_dealloc(attr);
+                cx_dealloc(attr);
             }
 		}
 
 		/* Start generator */
 		if (gen_start(g)) {
-		    db_error("dbgen: error(s) occurred while running generator '%s', abort generation.", lib);
+		    cx_error("dbgen: error(s) occurred while running generator '%s', abort generation.", lib);
 		    gen_free(g);
 		    break;
 		}
@@ -262,26 +262,26 @@ int main(int argc, char* argv[]) {
 	}
 
 	/* Cleanup application resources */
-	db_argClear();
+	cx_argClear();
 
 	if (generators) {
-		db_llFree(generators);
+		cx_llFree(generators);
 	}
 
 	if (includes) {
-		db_llFree(includes);
+		cx_llFree(includes);
 	}
 
 	if (scopes) {
-		db_llFree(scopes);
+		cx_llFree(scopes);
 	}
 
 	if (attributes) {
-	    db_llFree(attributes);
+	    cx_llFree(attributes);
 	}
 
 	/* Stop database */
-	db_stop();
+	cx_stop();
 
 	return 0;
 }

@@ -6,19 +6,19 @@
  */
 
 #include "Fast_pp.h"
-#include "db_mem.h"
-#include "db_err.h"
-#include "db_util.h"
+#include "cx_mem.h"
+#include "cx_err.h"
+#include "cx_util.h"
 #include "stdio.h"
  
 /* Preprocess code - the main job of this function is to insert indent\dedent\column tokens */
-static db_int32 fast_pp_code(db_string filename, db_string code, db_string result, db_uint32* size) {
-	db_char *ptr, *rptr, *lptr;
-	db_char ch;
-	db_uint32 indentation[LANG_MAX_INDENT];
-	db_uint32 indentationDepth;
-	db_uint32 curIndent;
-	db_uint32 line;
+static cx_int32 fast_pp_code(cx_string filename, cx_string code, cx_string result, cx_uint32* size) {
+	cx_char *ptr, *rptr, *lptr;
+	cx_char ch;
+	cx_uint32 indentation[LANG_MAX_INDENT];
+	cx_uint32 indentationDepth;
+	cx_uint32 curIndent;
+	cx_uint32 line;
 
 	ptr = code;
 
@@ -91,7 +91,7 @@ static db_int32 fast_pp_code(db_string filename, db_string code, db_string resul
                 }
                 *size -= curIndent;
                 if (!indentationDepth && curIndent) {
-                    db_error("%s:%d: invalid indentation.", filename, line);
+                    cx_error("%s:%d: invalid indentation.", filename, line);
                     goto error;
                 }   
             }
@@ -157,10 +157,10 @@ error:
 }
 
 /* List code */
-void fast_ppList(db_string code) {
-	db_char* ptr;
-	db_char ch;
-	db_uint32 line;
+void fast_ppList(cx_string code) {
+	cx_char* ptr;
+	cx_char ch;
+	cx_uint32 line;
 
 	line = 1;
 	ptr = code;
@@ -179,10 +179,10 @@ void fast_ppList(db_string code) {
 }
 
 /* Preprocess code */
-db_string fast_pp(db_string filename, db_string code) {
-	db_uint32 size,checkSize;
-	db_string result;
-    db_bool appendNewline = FALSE;
+cx_string fast_pp(cx_string filename, cx_string code) {
+	cx_uint32 size,checkSize;
+	cx_string result;
+    cx_bool appendNewline = FALSE;
 
 	size = 0;
 	checkSize = 0;
@@ -190,27 +190,27 @@ db_string fast_pp(db_string filename, db_string code) {
 
 	/* Do dryrun to get allocation size */
 	if (fast_pp_code(filename, code, NULL, &size)) {
-	    db_trace("cortex: %s: preprocessor failed.");
+	    cx_trace("cortex: %s: preprocessor failed.");
 		goto error;
 	}
 
 	/* Allocate size for preprocessed string */
-	result = db_malloc(size + 1 + appendNewline); /* Assuming true is 1 */
+	result = cx_malloc(size + 1 + appendNewline); /* Assuming true is 1 */
 
 	/* Re-run preprocessor */
 	if (fast_pp_code(filename, code, result, &checkSize)) {
-	    db_error("preprocessor failed");
+	    cx_error("preprocessor failed");
 	    goto error;
 	}
 
     if (appendNewline) {
-        db_uint32 length = strlen(result);
+        cx_uint32 length = strlen(result);
         result[length] = '\n';
         result[length+1] = '\0';
     }
 
-	db_assert(size == checkSize, "calculated size of preprocessed code-string does not match actual value.");
-	db_assert((size+appendNewline) >= strlen(result), "calculated size of preprocessed code-string does not match stringlength (%d vs. %d).", size, strlen(result));
+	cx_assert(size == checkSize, "calculated size of preprocessed code-string does not match actual value.");
+	cx_assert((size+appendNewline) >= strlen(result), "calculated size of preprocessed code-string does not match stringlength (%d vs. %d).", size, strlen(result));
 
 	return result;
 error:

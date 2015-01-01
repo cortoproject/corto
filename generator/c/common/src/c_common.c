@@ -8,7 +8,7 @@
 #include "c_common.h"
 
 /* Escape language keywords */
-static int c_typeKeywordEscape(db_string inputName, db_string buffer) {
+static int c_typeKeywordEscape(cx_string inputName, cx_string buffer) {
 
     if ( !strcmp(inputName, "auto") ||
         !strcmp(inputName, "break") ||
@@ -50,15 +50,15 @@ static int c_typeKeywordEscape(db_string inputName, db_string buffer) {
     return 0;
 }
 
-db_string cortex_genId(db_string str, db_id id) {
-    db_char *ptr, ch, *idptr;
+cx_string cortex_genId(cx_string str, cx_id id) {
+    cx_char *ptr, ch, *idptr;
 
     ptr = str;
 	idptr = id;
 
     /* Strip scope-operator for rootscope */
     if (*ptr) {
-		if (*(db_int16*)ptr == DB_SCOPE_HEX) {
+		if (*(cx_int16*)ptr == DB_SCOPE_HEX) {
 			ptr += 2;
 		}
 
@@ -95,8 +95,8 @@ db_string cortex_genId(db_string str, db_id id) {
 }
 
 /* Get string representing the base-platform type */
-db_char* c_primitiveId(db_primitive t, db_char* buff) {
-    db_bool appendWidth, appendT;
+cx_char* c_primitiveId(cx_primitive t, cx_char* buff) {
+    cx_bool appendWidth, appendT;
 
     appendWidth = FALSE;
     appendT = FALSE;
@@ -113,8 +113,8 @@ db_char* c_primitiveId(db_primitive t, db_char* buff) {
             appendT = TRUE;
             break;
         default: {
-            db_id id;
-            db_error("c_typePrimitivePlatformType: unsupported width for primitive type '%s'.", db_fullname(t, id));
+            cx_id id;
+            cx_error("c_typePrimitivePlatformType: unsupported width for primitive type '%s'.", cx_fullname(t, id));
             goto error;
             break;
         }
@@ -140,8 +140,8 @@ db_char* c_primitiveId(db_primitive t, db_char* buff) {
             strcpy(buff, "double");
             break;
         default: {
-            db_id id;
-            db_error("c_typePrimitivePlatformType: unsupported width for floating point type '%s'", db_fullname(t, id));
+            cx_id id;
+            cx_error("c_typePrimitivePlatformType: unsupported width for floating point type '%s'", cx_fullname(t, id));
             goto error;
             break;
         }
@@ -149,14 +149,14 @@ db_char* c_primitiveId(db_primitive t, db_char* buff) {
         break;
     case DB_ENUM:
     case DB_BITMASK:
-        db_error("c_typePrimitivePlatformType: enumeration\\bitmasks types must be defined using the 'enum' keyword.");
+        cx_error("c_typePrimitivePlatformType: enumeration\\bitmasks types must be defined using the 'enum' keyword.");
         goto error;
         break;
     case DB_TEXT:
         strcpy(buff, "char*");
         break;
     case DB_ALIAS:
-    	strcpy(buff, db_alias(t)->typeName);
+    	strcpy(buff, cx_alias(t)->typeName);
     	break;
     }
 
@@ -192,8 +192,8 @@ error:
 }
 
 /* Convert string to upper. */
-static db_string c_typeToUpper(db_string str, db_id buffer) {
-    db_char *ptr, *bptr, ch;
+static cx_string c_typeToUpper(cx_string str, cx_id buffer) {
+    cx_char *ptr, *bptr, ch;
 
     ptr = str;
     bptr = buffer;
@@ -211,23 +211,23 @@ static db_string c_typeToUpper(db_string str, db_id buffer) {
 }
 
 /* Translate constant to C-language id */
-db_char* c_constantId(db_generator g, db_constant* c, db_char* buffer) {
-    db_string prefix;
-    db_id prefixUpper;
+cx_char* c_constantId(cx_generator g, cx_constant* c, cx_char* buffer) {
+    cx_string prefix;
+    cx_id prefixUpper;
 
     prefix = g_getPrefix(g, c);
     if (prefix) {
-        sprintf(buffer, "%s_%s", c_typeToUpper(prefix, prefixUpper), db_nameof(c));
+        sprintf(buffer, "%s_%s", c_typeToUpper(prefix, prefixUpper), cx_nameof(c));
     } else {
-        c_typeToUpper(db_nameof(g_getCurrent(g)), prefixUpper);
-        sprintf(buffer, "%s_%s", prefixUpper, db_nameof(c));
+        c_typeToUpper(cx_nameof(g_getCurrent(g)), prefixUpper);
+        sprintf(buffer, "%s_%s", prefixUpper, cx_nameof(c));
     }
 
     return buffer;
 }
 
 /* Parse type into C-specifier */
-db_int16 c_specifierId(db_generator g, db_typedef t, db_char* specifier, db_bool* prefix, db_char* postfix) {
+cx_int16 c_specifierId(cx_generator g, cx_typedef t, cx_char* specifier, cx_bool* prefix, cx_char* postfix) {
 
     if (postfix) {
         *postfix = '\0';
@@ -244,70 +244,70 @@ db_int16 c_specifierId(db_generator g, db_typedef t, db_char* specifier, db_bool
     }
 
     /* Check if object is scoped */
-    if (db_checkAttr(t, DB_ATTR_SCOPED)) {
+    if (cx_checkAttr(t, DB_ATTR_SCOPED)) {
         g_fullOid(g, t, specifier);
     } else {
-        if (t != db_typedef(t->real)) {
-            db_error("c_type: anonymous typedefs are not allowed.");
+        if (t != cx_typedef(t->real)) {
+            cx_error("c_type: anonymous typedefs are not allowed.");
             goto error;
         }
 
-        switch(db_type(t)->kind) {
+        switch(cx_type(t)->kind) {
         case DB_PRIMITIVE:
-            c_primitiveId(db_primitive(t), specifier);
+            c_primitiveId(cx_primitive(t), specifier);
             break;
         case DB_COLLECTION: {
-            db_id _specifier, _postfix;
-            db_type elementType = db_collection(t)->elementType->real;
-            switch(db_collection(t)->kind) {
+            cx_id _specifier, _postfix;
+            cx_type elementType = cx_collection(t)->elementType->real;
+            switch(cx_collection(t)->kind) {
             case DB_ARRAY:
                 /* Get specifier of elementType */
-                if (c_specifierId(g, db_collection(t)->elementType, _specifier, NULL, _postfix)) {
+                if (c_specifierId(g, cx_collection(t)->elementType, _specifier, NULL, _postfix)) {
                     goto error;
                 }
-                if ((elementType->kind == DB_COLLECTION) && (db_collection(elementType)->kind == DB_ARRAY)) {
-                    sprintf(specifier, "%s_%d", _specifier, db_collection(t)->max);
+                if ((elementType->kind == DB_COLLECTION) && (cx_collection(elementType)->kind == DB_ARRAY)) {
+                    sprintf(specifier, "%s_%d", _specifier, cx_collection(t)->max);
                 } else {
-                    sprintf(specifier, "%s_array%d", _specifier, db_collection(t)->max);
+                    sprintf(specifier, "%s_array%d", _specifier, cx_collection(t)->max);
                 }
                 break;
             case DB_SEQUENCE:
                 /* Get specifier of elementType */
-                if (c_specifierId(g, db_collection(t)->elementType, _specifier, NULL, _postfix)) {
+                if (c_specifierId(g, cx_collection(t)->elementType, _specifier, NULL, _postfix)) {
                     goto error;
                 }
-                if ((elementType->kind == DB_COLLECTION) && (db_collection(elementType)->kind == DB_SEQUENCE)) {
-                    sprintf(specifier, "%s_%d", _specifier, db_collection(t)->max);
+                if ((elementType->kind == DB_COLLECTION) && (cx_collection(elementType)->kind == DB_SEQUENCE)) {
+                    sprintf(specifier, "%s_%d", _specifier, cx_collection(t)->max);
                 } else {
-                    if (db_collection(t)->max) {
-                        sprintf(specifier, "%s_seq%d", _specifier, db_collection(t)->max);
+                    if (cx_collection(t)->max) {
+                        sprintf(specifier, "%s_seq%d", _specifier, cx_collection(t)->max);
                     } else {
                         sprintf(specifier, "%s_seq", _specifier);
                     }
                 }
                 break;
             case DB_LIST:
-                if (c_specifierId(g, db_collection(t)->elementType, _specifier, NULL, _postfix)) {
+                if (c_specifierId(g, cx_collection(t)->elementType, _specifier, NULL, _postfix)) {
                     goto error;
                 }
-                if ((elementType->kind == DB_COLLECTION) && (db_collection(elementType)->kind == DB_LIST)) {
-                    sprintf(specifier, "%s_%d", _specifier, db_collection(t)->max);
+                if ((elementType->kind == DB_COLLECTION) && (cx_collection(elementType)->kind == DB_LIST)) {
+                    sprintf(specifier, "%s_%d", _specifier, cx_collection(t)->max);
                 } else {
-                    if (db_collection(t)->max) {
-                        sprintf(specifier, "%s_list%d", _specifier, db_collection(t)->max);
+                    if (cx_collection(t)->max) {
+                        sprintf(specifier, "%s_list%d", _specifier, cx_collection(t)->max);
                     } else {
                         sprintf(specifier, "%s_list", _specifier);
                     }
                 }
                 break;
             case DB_MAP:
-                strcpy(specifier, "db_rbtree");
+                strcpy(specifier, "cx_rbtree");
                 break;
             }
             break;
         }
         default:
-            db_error("c_type: anonymous type of kind '%s' not allowed.", db_nameof(db_enum_constant(db_typeKind_o, db_type(t)->kind)));
+            cx_error("c_type: anonymous type of kind '%s' not allowed.", cx_nameof(cx_enum_constant(cx_typeKind_o, cx_type(t)->kind)));
             goto error;
             break;
         }
@@ -318,8 +318,8 @@ error:
     return -1;
 }
 
-db_char* c_escapeString(db_string str, db_id id) {
-	db_char *ptr, *bptr, ch;
+cx_char* c_escapeString(cx_string str, cx_id id) {
+	cx_char *ptr, *bptr, ch;
 
 	ptr = str;
 	bptr = id;
@@ -338,23 +338,23 @@ db_char* c_escapeString(db_string str, db_id id) {
 	return id;
 }
 
-db_bool c_procedureHasThis(db_function o) {
-    db_bool result;
-    if (db_typeof(o) != db_typedef(db_observer_o)) {
-        result = (db_instanceof(db_typedef(db_method_o), o) || 
-                  db_instanceof(db_typedef(db_delegate_o), o) ||
-                  db_instanceof(db_typedef(db_metaprocedure_o), o));
+cx_bool c_procedureHasThis(cx_function o) {
+    cx_bool result;
+    if (cx_typeof(o) != cx_typedef(cx_observer_o)) {
+        result = (cx_instanceof(cx_typedef(cx_method_o), o) || 
+                  cx_instanceof(cx_typedef(cx_delegate_o), o) ||
+                  cx_instanceof(cx_typedef(cx_metaprocedure_o), o));
     } else {
-        result = db_class_instanceof(db_class_o, db_parentof(o));
+        result = cx_class_instanceof(cx_class_o, cx_parentof(o));
     }
     return result;
 }
 
 /* Translate a scope to a path */
-db_char* c_topath(db_object o, db_id id) {
-	db_uint32 offset;
-	db_char ch, *ptr;
-	db_fullname(o, id);
+cx_char* c_topath(cx_object o, cx_id id) {
+	cx_uint32 offset;
+	cx_char ch, *ptr;
+	cx_fullname(o, id);
 
 	ptr = id+2;
 	offset = 2;

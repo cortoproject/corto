@@ -1,5 +1,5 @@
 /*
- * db_bootstrap.h
+ * cx_bootstrap.h
  *
  *  Created on: Aug 2, 2012
  *      Author: sander
@@ -8,9 +8,9 @@
 #ifndef DB_BOOTSTRAP_H_
 #define DB_BOOTSTRAP_H_
 
-#include "db__object.h"
-#include "db__equals.h"
-#include "db_util.h"
+#include "cx__object.h"
+#include "cx__equals.h"
+#include "cx_util.h"
 
 #include "db.h"
 
@@ -107,8 +107,8 @@
  *     during initialization. This localized solution keeps the bootstrap smal(ler) and easier to comprehend.
  *
  *  6. The unbind callbacks are not resolved using a regular delegate-lookup function, but instead are directly
- *     forwarded to the db_function_unbind function. Because procedures are destructed after the destruction of
- *     all classes, the vtable of db_procedure_o does no longer exist, so the callback lookup would crash.
+ *     forwarded to the cx_function_unbind function. Because procedures are destructed after the destruction of
+ *     all classes, the vtable of cx_procedure_o does no longer exist, so the callback lookup would crash.
  *     Because lang::function is the only object with an unbind this is a safe workaround. Consequence is that
  *     end-users won't be able to use the procedure::unbind delegate, which is acceptable.
  *
@@ -124,8 +124,8 @@
  */
 
 /* Implementations of virtual functions */
-extern db_object db_cortex_new(db_typedef type);
-extern db_object db_cortex__new(db_typedef type, db_attr attributes);
+extern cx_object cx_cortex_new(cx_typedef type);
+extern cx_object cx_cortex__new(cx_typedef type, cx_attr attributes);
 
 #ifdef __cplusplus
 extern "C" {
@@ -146,43 +146,43 @@ extern "C" {
 
 #define DB_STATIC_SCOPED_OBJECT(type)\
 typedef struct sso_##type {\
-    db_SSO o;\
-    db_##type v;\
+    cx_SSO o;\
+    cx_##type v;\
     struct { /* vtable */\
-        db_uint32 length;\
+        cx_uint32 length;\
         void* buffer;\
     }vtable;\
-    db_object vbuff[16];\
+    cx_object vbuff[16];\
 }sso_##type
 
 #define DB_STATIC_SCOPED_REFOBJECT(type)\
 typedef struct sso_##type {\
-    db_SSO o;\
-    struct db_##type##_s v;\
+    cx_SSO o;\
+    struct cx_##type##_s v;\
     struct { /* vtable */\
-        db_uint32 length;\
+        cx_uint32 length;\
         void* buffer;\
     }vtable;\
-    db_object vbuff[16];\
+    cx_object vbuff[16];\
 }sso_##type
 
 /* Static Scoped Object */
-typedef struct db_SSO {
-    db__scope s;
-    db__object o;
-}db_SSO;
+typedef struct cx_SSO {
+    cx__scope s;
+    cx__object o;
+}cx_SSO;
 
 /* Static Scoped Observable Object */
-typedef struct db_SSOO {
-	db__observable v;
-    db__scope s;
-    db__object o;
-}db_SSOO;
+typedef struct cx_SSOO {
+	cx__observable v;
+    cx__scope s;
+    cx__object o;
+}cx_SSOO;
 
 /* Static Scoped Observable Object (used for scopes) */
-typedef struct db_SSOO_object {
-    db_SSOO o;
-}db_SSOO_object;
+typedef struct cx_SSOO_object {
+    cx_SSOO o;
+}cx_SSOO_object;
 
 DB_STATIC_SCOPED_REFOBJECT(typedef);
 DB_STATIC_SCOPED_REFOBJECT(type);
@@ -217,22 +217,22 @@ DB_STATIC_SCOPED_OBJECT(constant);
 
 #define VTABLE_V {16,NULL},{NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL}
 #define DB_FWDECL_SSO(type, name) sso_##type name##__o
-#define DB_FWDECL(type, name) DB_FWDECL_SSO(type, name); db_##type db_##name##_o = &name##__o.v
+#define DB_FWDECL(type, name) DB_FWDECL_SSO(type, name); cx_##type cx_##name##_o = &name##__o.v
 
 /* SSO */
 #define DB_ATTR_SSOO {1,0,1,DB_VALID | DB_DECLARED}
 #define DB_ATTR_SSO {1,0,0,DB_VALID | DB_DECLARED}
 #define DB_ATTR_SO {0,0,0,DB_VALID | DB_DECLARED}
-#define DB_ROOT_V() {{NULL,NULL,DB_RWMUTEX_INITIALIZER,DB_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE,FALSE,NULL},{NULL, NULL, _(scope)NULL, _(scopeLock)DB_RWMUTEX_INITIALIZER, _(attached)NULL, _(orphaned)0},{DB_ATTR_SSOO, 2, (db_typedef)&object__o.v, DB_MMNODE_INIT}}
-#define DB_OBJECT_V(parent, name) {{NULL,NULL,DB_RWMUTEX_INITIALIZER,DB_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE,FALSE,NULL},{DB_OFFSET(&parent##__o, sizeof(db_SSOO)), name, _(scope)NULL, _(scopeLock)DB_RWMUTEX_INITIALIZER, _(attached)NULL, _(orphaned)0},{DB_ATTR_SSOO, 2, (db_typedef)&object__o.v, DB_MMNODE_INIT}}
-#define DB_SSO_V(parent, name, type) {{DB_OFFSET(&parent##__o, sizeof(db_SSOO)), name, _(scope)NULL, _(scopeLock)DB_RWMUTEX_INITIALIZER, _(attached)NULL, _(orphaned)0},{DB_ATTR_SSO, 2, (db_typedef)&type##__o.v, DB_MMNODE_INIT}}
-#define DB_SSO_PO_V(parent, name, type) {{DB_OFFSET(&parent##__o, sizeof(db_SSO)), name, _(scope)NULL, _(scopeLock)DB_RWMUTEX_INITIALIZER, _(attached)NULL, _(orphaned)0},{DB_ATTR_SSO, 2, (db_typedef)&type##__o.v, DB_MMNODE_INIT}}
+#define DB_ROOT_V() {{NULL,NULL,DB_RWMUTEX_INITIALIZER,DB_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE,FALSE,NULL},{NULL, NULL, _(scope)NULL, _(scopeLock)DB_RWMUTEX_INITIALIZER, _(attached)NULL, _(orphaned)0},{DB_ATTR_SSOO, 2, (cx_typedef)&object__o.v, DB_MMNODE_INIT}}
+#define DB_OBJECT_V(parent, name) {{NULL,NULL,DB_RWMUTEX_INITIALIZER,DB_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE,FALSE,NULL},{DB_OFFSET(&parent##__o, sizeof(cx_SSOO)), name, _(scope)NULL, _(scopeLock)DB_RWMUTEX_INITIALIZER, _(attached)NULL, _(orphaned)0},{DB_ATTR_SSOO, 2, (cx_typedef)&object__o.v, DB_MMNODE_INIT}}
+#define DB_SSO_V(parent, name, type) {{DB_OFFSET(&parent##__o, sizeof(cx_SSOO)), name, _(scope)NULL, _(scopeLock)DB_RWMUTEX_INITIALIZER, _(attached)NULL, _(orphaned)0},{DB_ATTR_SSO, 2, (cx_typedef)&type##__o.v, DB_MMNODE_INIT}}
+#define DB_SSO_PO_V(parent, name, type) {{DB_OFFSET(&parent##__o, sizeof(cx_SSO)), name, _(scope)NULL, _(scopeLock)DB_RWMUTEX_INITIALIZER, _(attached)NULL, _(orphaned)0},{DB_ATTR_SSO, 2, (cx_typedef)&type##__o.v, DB_MMNODE_INIT}}
 
 /* SSO identifier */
-#define DB_SSO_TYPE_ID(name) (db_typedef)&name##__o.v
+#define DB_SSO_TYPE_ID(name) (cx_typedef)&name##__o.v
 
 /* typedef */
-#define DB_TYPEDEF_V(name) {DB_OFFSET(&name##__o, sizeof(db_SSO)),DB_OFFSET(&name##__o, sizeof(db_SSO))}
+#define DB_TYPEDEF_V(name) {DB_OFFSET(&name##__o, sizeof(cx_SSO)),DB_OFFSET(&name##__o, sizeof(cx_SSO))}
 
 /* type */
 #define DB_TYPE_V(name, kind, reference, scopeType, scopeTypeKind) {DB_TYPEDEF_V(name), kind, reference, FALSE, 0, 0, 0, NULL, scopeType, scopeTypeKind,{0,NULL}}
@@ -241,7 +241,7 @@ DB_STATIC_SCOPED_OBJECT(constant);
 #define DB_PRIMITIVE_V(name, kind, width, scopeType, scopeStateKind) {DB_TYPE_V(name, DB_PRIMITIVE, FALSE, scopeType, scopeStateKind), kind, width, 0}
 
 /* interface */
-#define DB_COMPOSITE_V(name, kind, base, reference, scopeType, scopeStateKind) {DB_TYPE_V(name, DB_COMPOSITE, reference, scopeType, scopeStateKind), kind, 0, {0, NULL}, {0,NULL}, db_interface(&base##__o.v)}
+#define DB_COMPOSITE_V(name, kind, base, reference, scopeType, scopeStateKind) {DB_TYPE_V(name, DB_COMPOSITE, reference, scopeType, scopeStateKind), kind, 0, {0, NULL}, {0,NULL}, cx_interface(&base##__o.v)}
 
 /* interface */
 #define DB_COMPOSITE_NOBASE_V(name, kind, reference, scopeType, scopeStateKind) {DB_TYPE_V(name, DB_COMPOSITE, reference, scopeType, scopeStateKind), kind, 0, {0, NULL}, {0,NULL}, NULL}
@@ -254,18 +254,18 @@ DB_STATIC_SCOPED_OBJECT(constant);
 	{DB_COMPOSITE_NOBASE_V(name, kind, reference, scopeType, scopeStateKind), DB_LOCAL, 0}
 
 /* collection */
-#define DB_COLLECTION_V(name, kind, elementType, max) {DB_TYPE_V(name, DB_COLLECTION, FALSE, NULL, DB_DECLARED | DB_DEFINED), kind, (db_typedef)&elementType##__o.v, max}
+#define DB_COLLECTION_V(name, kind, elementType, max) {DB_TYPE_V(name, DB_COLLECTION, FALSE, NULL, DB_DECLARED | DB_DEFINED), kind, (cx_typedef)&elementType##__o.v, max}
 
 /* sequence */
 #define DB_SEQUENCE_V(subType, length, ...) {length, (subType[]){__VA_ARGS__}}
 #define DB_SEQUENCE_EMPTY_V(subType) {0, NULL}
 
 /* member */
-#define DB_MEMBER_V(type, access, state, weak) {(db_typedef)&type##__o.v, access, state, weak, 0, 0}
+#define DB_MEMBER_V(type, access, state, weak) {(cx_typedef)&type##__o.v, access, state, weak, 0, 0}
 
 /* object */
-#define DB_OBJECT_O(name) db_SSOO_object name##__o = {DB_OBJECT_V(root, #name)}
-#define DB_OBJECT_O_SCOPE(parent, name) db_SSOO_object parent##_##name##__o = {DB_OBJECT_V(parent, #name)}
+#define DB_OBJECT_O(name) cx_SSOO_object name##__o = {DB_OBJECT_V(root, #name)}
+#define DB_OBJECT_O_SCOPE(parent, name) cx_SSOO_object parent##_##name##__o = {DB_OBJECT_V(parent, #name)}
 
 /* type object */
 #define DB_TYPE_O(name, kind, reference) static sso_type name##__o = {DB_SSO_V(cortex_lang, #name, type), DB_TYPE_V(name, kind, reference, NULL, DB_DECLARED | DB_DEFINED), VTABLE_V}
@@ -328,7 +328,7 @@ DB_STATIC_SCOPED_OBJECT(constant);
 #define DB_LIST_O(name, elementType, max) sso_list name##__o = {DB_SSO_V(cortex_lang, #name, list), {DB_COLLECTION_V(name, DB_LIST, elementType, max)}, VTABLE_V}
 
 /* map object */
-#define DB_MAP_O(name, elementType, keyType, max) sso_map name##__o = {DB_SSO_V(cortex_lang, #name, map), {DB_COLLECTION_V(name, DB_MAP, elementType, max), (db_typedef)&keyType##__o.v}, VTABLE_V}
+#define DB_MAP_O(name, elementType, keyType, max) sso_map name##__o = {DB_SSO_V(cortex_lang, #name, map), {DB_COLLECTION_V(name, DB_MAP, elementType, max), (cx_typedef)&keyType##__o.v}, VTABLE_V}
 
 /* procedure object */
 #define DB_PROCEDURE_O(name, kind, base, baseAccess, scopeType, scopeStateKind) sso_procedure name##__o = \
@@ -339,42 +339,42 @@ DB_STATIC_SCOPED_OBJECT(constant);
 /* function object */
 #define DB_FUNCTION_O(parent, name, args, returnType, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_function parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, function), {(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0, {0,NULL},0}, VTABLE_V}
+        sso_function parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, function), {(cx_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (cx_word)__##impl, (cx_word)impl, NULL, 0, {0,NULL},0}, VTABLE_V}
 
 #define DB_FUNCTION_OO_O(parent, name, args, returnType, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_function parent##_##name##__o = {DB_SSO_V(parent, #name args, function), {(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0, {0,NULL},0}, VTABLE_V}
+        sso_function parent##_##name##__o = {DB_SSO_V(parent, #name args, function), {(cx_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (cx_word)__##impl, (cx_word)impl, NULL, 0, {0,NULL},0}, VTABLE_V}
 
 #define DB_FUNCTION_OVERLOAD_OO_O(parent, name, args, returnType, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_function parent##_##name##__o = {DB_SSO_V(parent, args, function), {(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0, {0,NULL},0}, VTABLE_V}
+        sso_function parent##_##name##__o = {DB_SSO_V(parent, args, function), {(cx_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (cx_word)__##impl, (cx_word)impl, NULL, 0, {0,NULL},0}, VTABLE_V}
 
 /* method object */
 #define DB_METHOD_O(parent, name, args, returnType, virtual, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_method parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, method), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0,{0,NULL},0}, virtual}, VTABLE_V}
+        sso_method parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, method), {{(cx_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (cx_word)__##impl, (cx_word)impl, NULL, 0,{0,NULL},0}, virtual}, VTABLE_V}
 
 /* interface method object */
 #define DB_IMETHOD_O(parent, name, args, returnType, virtual) \
-        sso_method parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, method), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, 0, 0, NULL, 0,{0,NULL},0}, virtual}, VTABLE_V}
+        sso_method parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, method), {{(cx_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, 0, 0, NULL, 0,{0,NULL},0}, virtual}, VTABLE_V}
 
 /* delegate object */
 #define DB_DELEGATE_O(parent, name, args, returnType) \
-        sso_delegate parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, delegate), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, 0, 0, NULL, 0, {0,NULL},0}, 0}, VTABLE_V}
+        sso_delegate parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, delegate), {{(cx_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, 0, 0, NULL, 0, {0,NULL},0}, 0}, VTABLE_V}
 
 /* callback object */
 #define DB_CALLBACK_O(parent, name, args, delegate, returnType, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_callback parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, callback), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, sizeof(db_word), {0,NULL},0}, (db_delegate)&delegate##__o.v}, VTABLE_V}
+        sso_callback parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, callback), {{(cx_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (cx_word)__##impl, (cx_word)impl, NULL, sizeof(cx_word), {0,NULL},0}, (cx_delegate)&delegate##__o.v}, VTABLE_V}
 
 /* metaprocedure object */
 #define DB_METAPROCEDURE_O(parent, name, args, returnType, referenceOnly, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_metaprocedure parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, metaprocedure), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0, {0,NULL},0}, referenceOnly}, VTABLE_V}
+        sso_metaprocedure parent##_##name##__o = {DB_SSO_PO_V(parent, #name args, metaprocedure), {{(cx_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (cx_word)__##impl, (cx_word)impl, NULL, 0, {0,NULL},0}, referenceOnly}, VTABLE_V}
 
 #define DB_METAPROCEDURE_NAME_O(parent, name, actualName, args, returnType, referenceOnly, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_metaprocedure parent##_##name##__o = {DB_SSO_PO_V(parent, #actualName args, metaprocedure), {{(db_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (db_word)__##impl, (db_word)impl, NULL, 0, {0,NULL},0}, referenceOnly}, VTABLE_V}
+        sso_metaprocedure parent##_##name##__o = {DB_SSO_PO_V(parent, #actualName args, metaprocedure), {{(cx_typedef)&returnType##__o.v, FALSE, FALSE, DB_PROCEDURE_CDECL, (cx_word)__##impl, (cx_word)impl, NULL, 0, {0,NULL},0}, referenceOnly}, VTABLE_V}
     
 /* member object */
 #define DB_MEMBER_O(parent, name, type, access) sso_member parent##_##name##__o = {DB_SSO_PO_V(parent, #name, member), DB_MEMBER_V(type, access, DB_DECLARED | DB_DEFINED, FALSE), VTABLE_V}
@@ -480,19 +480,19 @@ DB_FWDECL(delegate, class_destruct);
 DB_FWDECL(delegate, procedure_bind);
 
 /* database root */
-db_SSOO_object root__o = {DB_ROOT_V()};
-db_object root_o = DB_OFFSET(&root__o.o.o, sizeof(db__object));
+cx_SSOO_object root__o = {DB_ROOT_V()};
+cx_object root_o = DB_OFFSET(&root__o.o.o, sizeof(cx__object));
 
 /* ::cortex, ::cortex::lang and ::cortex::serialization */
 DB_OBJECT_O(cortex);
 DB_OBJECT_O_SCOPE(cortex, lang);
 DB_OBJECT_O_SCOPE(cortex, serialization);
 
-db_object cortex_o = DB_OFFSET(&cortex__o.o.o, sizeof(db__object));
-    DB_FUNCTION_OO_O(cortex, new, "(lang::typedef type)", object, db_cortex_new);
-    DB_FUNCTION_OVERLOAD_OO_O(cortex, _new, "new(lang::typedef type,lang::attr attributes)", object, db_cortex__new);
+cx_object cortex_o = DB_OFFSET(&cortex__o.o.o, sizeof(cx__object));
+    DB_FUNCTION_OO_O(cortex, new, "(lang::typedef type)", object, cx_cortex_new);
+    DB_FUNCTION_OVERLOAD_OO_O(cortex, _new, "new(lang::typedef type,lang::attr attributes)", object, cx_cortex__new);
 
-db_object cortex_lang_o = DB_OFFSET(&cortex_lang__o.o.o, sizeof(db__object));
+cx_object cortex_lang_o = DB_OFFSET(&cortex_lang__o.o.o, sizeof(cx__object));
 
 /* Primitives */
 DB_BINARY_O(octet, DB_WIDTH_8);
@@ -511,7 +511,7 @@ DB_FLOAT_O(float64, DB_WIDTH_64, 0, 0);
 DB_TEXT_O(string, DB_WIDTH_8, 0);
 DB_BINARY_O(word, DB_WIDTH_WORD);
 DB_INT_O(constant, DB_WIDTH_32, 0, MAX_INT32, DB_SSO_TYPE_ID(enum), DB_DECLARED);
-	DB_CALLBACK_O(constant, init, "(constant& object)", type_init, int16, db_constant_init);
+	DB_CALLBACK_O(constant, init, "(constant& object)", type_init, int16, cx_constant_init);
 
 /* Any type */
 DB_TYPE_O(any, DB_ANY, FALSE);
@@ -657,10 +657,10 @@ DB_SEQUENCE_O(interfaceVectorSeq, interfaceVector, 0);
 DB_CLASS_NOBASE_O(typedef, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_REFERENCE_O(typedef, type, typedef, DB_GLOBAL, DB_DEFINED, FALSE);
     DB_REFERENCE_O(typedef, real, type, DB_LOCAL, DB_DEFINED, FALSE);
-    DB_METHOD_O(typedef, realType, "()", type, FALSE, db_typedef_realType);
-    DB_CALLBACK_O(typedef, init, "(lang::typedef object)", type_init, int16, db_typedef_init);
-    DB_CALLBACK_O(typedef, construct, "(lang::typedef object)", class_construct, int16, db_typedef_construct);
-    DB_CALLBACK_O(typedef, destruct, "(lang::typedef object)", class_destruct, void, db_typedef_destruct);
+    DB_METHOD_O(typedef, realType, "()", type, FALSE, cx_typedef_realType);
+    DB_CALLBACK_O(typedef, init, "(lang::typedef object)", type_init, int16, cx_typedef_init);
+    DB_CALLBACK_O(typedef, construct, "(lang::typedef object)", class_construct, int16, cx_typedef_construct);
+    DB_CALLBACK_O(typedef, destruct, "(lang::typedef object)", class_destruct, void, cx_typedef_destruct);
 
 /* ::cortex::lang::type */
 DB_CLASS_O(type, typedef, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
@@ -674,43 +674,43 @@ DB_CLASS_O(type, typedef, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface)
     DB_REFERENCE_O(type, parentType, typedef, DB_GLOBAL, DB_DEFINED, FALSE);
     DB_MEMBER_O(type, parentState, state, DB_GLOBAL);
     DB_MEMBER_O(type, metaprocedures, vtable, DB_LOCAL | DB_PRIVATE);
-    DB_METHOD_O(type, sizeof, "()", uint32, FALSE, db_type_sizeof);
-    DB_METHOD_O(type, alignmentof, "()", uint16, FALSE, db_type_alignmentof);
-    DB_METHOD_O(type, allocSize, "()", uint32, TRUE, db_type_allocSize_v);
-    DB_METHOD_O(type, castable, "(lang::type type)", bool, TRUE, db_type_castable_v);
-    DB_METHOD_O(type, compatible, "(lang::type type)", bool, TRUE, db_type_compatible_v);
-    DB_METHOD_O(type, resolveProcedure, "(lang::string name)", function, FALSE, db_type_resolveProcedure);
+    DB_METHOD_O(type, sizeof, "()", uint32, FALSE, cx_type_sizeof);
+    DB_METHOD_O(type, alignmentof, "()", uint16, FALSE, cx_type_alignmentof);
+    DB_METHOD_O(type, allocSize, "()", uint32, TRUE, cx_type_allocSize_v);
+    DB_METHOD_O(type, castable, "(lang::type type)", bool, TRUE, cx_type_castable_v);
+    DB_METHOD_O(type, compatible, "(lang::type type)", bool, TRUE, cx_type_compatible_v);
+    DB_METHOD_O(type, resolveProcedure, "(lang::string name)", function, FALSE, cx_type_resolveProcedure);
     DB_DELEGATE_O(type, init, "(lang::object object)", int16);
-    DB_CALLBACK_O(type, _init, "(lang::type object)", type_init, int16, db_type__init);
-    DB_CALLBACK_O(type, construct, "(lang::type object)", class_construct, int16, db_type_construct);
-    DB_CALLBACK_O(type, _destruct, "(lang::type object)", class_destruct, void, db_type__destruct);
-    DB_METAPROCEDURE_O(type, parentof, "()", object, TRUE, db_type_parentof);
-    DB_METAPROCEDURE_O(type, nameof, "()", string, TRUE, db_type_nameof);
-    DB_METAPROCEDURE_O(type, fullname, "()", string, TRUE, db_type_fullname);
-    DB_METAPROCEDURE_O(type, relname, "(lang::object from)", string, TRUE, db_type_relname);
-    DB_METAPROCEDURE_O(type, declare, "(lang::string name,lang::typedef type)", object, TRUE, db_type_declare);
-    DB_METAPROCEDURE_O(type, define, "()", int16, TRUE, db_type_define);
-    DB_METAPROCEDURE_O(type, invalidate, "()", void, TRUE, db_type_invalidate);
-    DB_METAPROCEDURE_O(type, destruct, "()", void, TRUE, db_type_destruct);
-    DB_METAPROCEDURE_O(type, resolve, "(lang::string name)", object, TRUE, db_type_resolve);
-    DB_METAPROCEDURE_O(type, lookup, "(lang::string name)", object, TRUE, db_type_lookup);
-    DB_METAPROCEDURE_O(type, checkAttr, "(lang::attr attributes)", bool, TRUE, db_type_checkAttr);
-    DB_METAPROCEDURE_O(type, checkState, "(lang::state state)", bool, TRUE, db_type_checkState);
-    DB_METAPROCEDURE_O(type, typeof, "()", type, FALSE, db_type_typeof);
-    DB_METAPROCEDURE_O(type, instanceof, "(lang::typedef type)", bool, TRUE, db_type_instanceof);
-    DB_METAPROCEDURE_O(type, compare, "(lang::any value)", equalityKind, FALSE, db_type_compare);
-    DB_METAPROCEDURE_O(type, copy, "(lang::any value)", int16, FALSE, db_type_copy);
-    DB_METAPROCEDURE_O(type, toString, "()", string, FALSE, db_type_toString);
+    DB_CALLBACK_O(type, _init, "(lang::type object)", type_init, int16, cx_type__init);
+    DB_CALLBACK_O(type, construct, "(lang::type object)", class_construct, int16, cx_type_construct);
+    DB_CALLBACK_O(type, _destruct, "(lang::type object)", class_destruct, void, cx_type__destruct);
+    DB_METAPROCEDURE_O(type, parentof, "()", object, TRUE, cx_type_parentof);
+    DB_METAPROCEDURE_O(type, nameof, "()", string, TRUE, cx_type_nameof);
+    DB_METAPROCEDURE_O(type, fullname, "()", string, TRUE, cx_type_fullname);
+    DB_METAPROCEDURE_O(type, relname, "(lang::object from)", string, TRUE, cx_type_relname);
+    DB_METAPROCEDURE_O(type, declare, "(lang::string name,lang::typedef type)", object, TRUE, cx_type_declare);
+    DB_METAPROCEDURE_O(type, define, "()", int16, TRUE, cx_type_define);
+    DB_METAPROCEDURE_O(type, invalidate, "()", void, TRUE, cx_type_invalidate);
+    DB_METAPROCEDURE_O(type, destruct, "()", void, TRUE, cx_type_destruct);
+    DB_METAPROCEDURE_O(type, resolve, "(lang::string name)", object, TRUE, cx_type_resolve);
+    DB_METAPROCEDURE_O(type, lookup, "(lang::string name)", object, TRUE, cx_type_lookup);
+    DB_METAPROCEDURE_O(type, checkAttr, "(lang::attr attributes)", bool, TRUE, cx_type_checkAttr);
+    DB_METAPROCEDURE_O(type, checkState, "(lang::state state)", bool, TRUE, cx_type_checkState);
+    DB_METAPROCEDURE_O(type, typeof, "()", type, FALSE, cx_type_typeof);
+    DB_METAPROCEDURE_O(type, instanceof, "(lang::typedef type)", bool, TRUE, cx_type_instanceof);
+    DB_METAPROCEDURE_O(type, compare, "(lang::any value)", equalityKind, FALSE, cx_type_compare);
+    DB_METAPROCEDURE_O(type, copy, "(lang::any value)", int16, FALSE, cx_type_copy);
+    DB_METAPROCEDURE_O(type, toString, "()", string, FALSE, cx_type_toString);
 
 /* ::cortex::lang::primitive */
 DB_CLASS_O(primitive, type, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_MEMBER_O(primitive, kind, primitiveKind, DB_LOCAL|DB_READONLY);
     DB_MEMBER_O(primitive, width, width, DB_GLOBAL);
     DB_MEMBER_O(primitive, convertId, uint8, DB_LOCAL | DB_PRIVATE);
-    DB_METHOD_O(primitive, castable, "(lang::type type)", bool, TRUE, db_primitive_castable_v);
-    DB_METHOD_O(primitive, compatible, "(lang::type type)", bool, TRUE, db_primitive_compatible_v);
-    DB_CALLBACK_O(primitive, init, "(lang::primitive object)", type_init, int16, db_primitive_init);
-    DB_CALLBACK_O(primitive, construct, "(lang::primitive object)", class_construct, int16, db_primitive_construct);
+    DB_METHOD_O(primitive, castable, "(lang::type type)", bool, TRUE, cx_primitive_castable_v);
+    DB_METHOD_O(primitive, compatible, "(lang::type type)", bool, TRUE, cx_primitive_compatible_v);
+    DB_CALLBACK_O(primitive, init, "(lang::primitive object)", type_init, int16, cx_primitive_init);
+    DB_CALLBACK_O(primitive, construct, "(lang::primitive object)", class_construct, int16, cx_primitive_construct);
 
 /* ::cortex::lang::interface */
 DB_CLASS_O(interface, type, DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
@@ -719,89 +719,89 @@ DB_CLASS_O(interface, type, DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, D
     DB_MEMBER_O(interface, members, memberSeq, DB_LOCAL | DB_PRIVATE);
     DB_MEMBER_O(interface, methods, vtable, DB_LOCAL | DB_PRIVATE);
 	DB_REFERENCE_O(interface, base, interface, DB_GLOBAL, DB_DEFINED, FALSE);
-    DB_CALLBACK_O(interface, init, "(lang::interface object)", type_init, int16, db_interface_init);
-    DB_CALLBACK_O(interface, construct, "(lang::interface object)", class_construct, int16, db_interface_construct);
-    DB_CALLBACK_O(interface, destruct, "(lang::interface object)", class_destruct, void, db_interface_destruct);
-    DB_METHOD_O(interface, resolveMember, "(lang::string name)", member, TRUE, db_interface_resolveMember_v);
-    DB_METHOD_O(interface, compatible, "(lang::type type)", bool, TRUE, db_interface_compatible_v);
-    DB_METHOD_O(interface, resolveMethod, "(lang::string name)", method, FALSE, db_interface_resolveMethod);
-    DB_METHOD_O(interface, resolveMethodId, "(lang::string name)", uint32, FALSE, db_interface_resolveMethodId);
-    DB_METHOD_O(interface, resolveMethodById, "(lang::uint32 id)", method, FALSE, db_interface_resolveMethodById);
-    DB_METHOD_O(interface, bindMethod, "(lang::method method)", int16, TRUE, db_interface_bindMethod_v);
-    DB_METHOD_O(interface, baseof, "(lang::interface type)", int16, FALSE, db_interface_baseof);
+    DB_CALLBACK_O(interface, init, "(lang::interface object)", type_init, int16, cx_interface_init);
+    DB_CALLBACK_O(interface, construct, "(lang::interface object)", class_construct, int16, cx_interface_construct);
+    DB_CALLBACK_O(interface, destruct, "(lang::interface object)", class_destruct, void, cx_interface_destruct);
+    DB_METHOD_O(interface, resolveMember, "(lang::string name)", member, TRUE, cx_interface_resolveMember_v);
+    DB_METHOD_O(interface, compatible, "(lang::type type)", bool, TRUE, cx_interface_compatible_v);
+    DB_METHOD_O(interface, resolveMethod, "(lang::string name)", method, FALSE, cx_interface_resolveMethod);
+    DB_METHOD_O(interface, resolveMethodId, "(lang::string name)", uint32, FALSE, cx_interface_resolveMethodId);
+    DB_METHOD_O(interface, resolveMethodById, "(lang::uint32 id)", method, FALSE, cx_interface_resolveMethodById);
+    DB_METHOD_O(interface, bindMethod, "(lang::method method)", int16, TRUE, cx_interface_bindMethod_v);
+    DB_METHOD_O(interface, baseof, "(lang::interface type)", int16, FALSE, cx_interface_baseof);
 
 /* ::cortex::lang::collection */
 DB_CLASS_O(collection, type, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_MEMBER_O(collection, kind, collectionKind, DB_LOCAL|DB_READONLY);
     DB_REFERENCE_O(collection, elementType, typedef, DB_GLOBAL, DB_DECLARED, FALSE);
 	DB_MEMBER_O(collection, max, uint32, DB_GLOBAL);
-    DB_METHOD_O(collection, castable, "(lang::type type)", bool, TRUE, db_collection_castable_v);
-    DB_METHOD_O(collection, elementRequiresAlloc, "()", bool, FALSE, db_collection_elementRequiresAlloc);
-    DB_CALLBACK_O(collection, init, "(lang::collection object)", type_init, int16, db_collection_init);
-    DB_METAPROCEDURE_O(collection, size, "()", uint32, FALSE, db_collection_size);
+    DB_METHOD_O(collection, castable, "(lang::type type)", bool, TRUE, cx_collection_castable_v);
+    DB_METHOD_O(collection, elementRequiresAlloc, "()", bool, FALSE, cx_collection_elementRequiresAlloc);
+    DB_CALLBACK_O(collection, init, "(lang::collection object)", type_init, int16, cx_collection_init);
+    DB_METAPROCEDURE_O(collection, size, "()", uint32, FALSE, cx_collection_size);
 
 /* ::cortex::lang::binary */
 DB_CLASS_O(binary, primitive, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
-    DB_CALLBACK_O(binary, init, "(lang::binary object)", type_init, int16, db_binary_init);
+    DB_CALLBACK_O(binary, init, "(lang::binary object)", type_init, int16, cx_binary_init);
 
 /* ::cortex::lang::boolean */
 DB_CLASS_O(boolean, primitive, DB_GLOBAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
-    DB_CALLBACK_O(boolean, init, "(lang::boolean object)", type_init, int16, db_boolean_init);
+    DB_CALLBACK_O(boolean, init, "(lang::boolean object)", type_init, int16, cx_boolean_init);
 
 /* ::cortex::lang::character */
 DB_CLASS_O(character, primitive, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
-    DB_CALLBACK_O(character, init, "(lang::character object)", type_init, int16, db_character_init);
+    DB_CALLBACK_O(character, init, "(lang::character object)", type_init, int16, cx_character_init);
 
 /* ::cortex::lang::int */
 DB_CLASS_O(int, primitive, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_MEMBER_O(int, min, int64, DB_GLOBAL);
     DB_MEMBER_O(int, max, int64, DB_GLOBAL);
-    DB_CALLBACK_O(int, init, "(lang::int object)", type_init, int16, db_int_init);
+    DB_CALLBACK_O(int, init, "(lang::int object)", type_init, int16, cx_int_init);
 
 /* ::cortex::lang::uint */
 DB_CLASS_O(uint, primitive, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_MEMBER_O(uint, min, uint64, DB_GLOBAL);
     DB_MEMBER_O(uint, max, uint64, DB_GLOBAL);
-    DB_CALLBACK_O(uint, init, "(lang::uint object)", type_init, int16, db_uint_init);
+    DB_CALLBACK_O(uint, init, "(lang::uint object)", type_init, int16, cx_uint_init);
 
 /* ::cortex::lang::float */
 DB_CLASS_O(float, primitive, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_MEMBER_O(float, min, float64, DB_GLOBAL);
     DB_MEMBER_O(float, max, float64, DB_GLOBAL);
-    DB_CALLBACK_O(float, init, "(lang::float object)", type_init, int16, db_float_init);
+    DB_CALLBACK_O(float, init, "(lang::float object)", type_init, int16, cx_float_init);
 
 /* ::cortex::lang::text */
 DB_CLASS_O(text, primitive, DB_LOCAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_MEMBER_O(text, charWidth, width, DB_GLOBAL);
     DB_MEMBER_O(text, length, uint64, DB_GLOBAL);
-    DB_CALLBACK_O(text, init, "(lang::text object)", type_init, int16, db_text_init);
+    DB_CALLBACK_O(text, init, "(lang::text object)", type_init, int16, cx_text_init);
 
 /* ::cortex::lang::enum */
 DB_CLASS_O(enum, primitive, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
 	DB_MEMBER_O(enum, constants, objectSeq, DB_LOCAL | DB_PRIVATE);
-    DB_CALLBACK_O(enum, init, "(lang::enum object)", type_init, int16, db_enum_init);
-    DB_CALLBACK_O(enum, destruct, "(lang::enum object)", class_destruct, void, db_enum_destruct);
-    DB_CALLBACK_O(enum, construct, "(lang::enum object)", class_construct, int16, db_enum_construct);
-    DB_METHOD_O(enum, constant, "(lang::int32 value)", object, FALSE, db_enum_constant);
+    DB_CALLBACK_O(enum, init, "(lang::enum object)", type_init, int16, cx_enum_init);
+    DB_CALLBACK_O(enum, destruct, "(lang::enum object)", class_destruct, void, cx_enum_destruct);
+    DB_CALLBACK_O(enum, construct, "(lang::enum object)", class_construct, int16, cx_enum_construct);
+    DB_METHOD_O(enum, constant, "(lang::int32 value)", object, FALSE, cx_enum_constant);
 
 /* ::cortex::lang::bitmask */
 DB_CLASS_O(bitmask, enum, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
-    DB_CALLBACK_O(bitmask, init, "(lang::bitmask object)", type_init, int16, db_bitmask_init);
+    DB_CALLBACK_O(bitmask, init, "(lang::bitmask object)", type_init, int16, cx_bitmask_init);
 
 /* ::cortex::lang::bitmask */
 DB_CLASS_O(alias, primitive, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
-    DB_CALLBACK_O(alias, init, "(lang::alias object)", type_init, int16, db_alias_init);
+    DB_CALLBACK_O(alias, init, "(lang::alias object)", type_init, int16, cx_alias_init);
 	DB_MEMBER_O(alias, typeName, string, DB_GLOBAL);
 
 /* ::cortex::lang::struct */
 DB_CLASS_O(struct, interface, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
 	DB_MEMBER_O(struct, baseAccess, modifier, DB_GLOBAL);
     DB_MEMBER_O(struct, delegateCount, uint16, DB_LOCAL|DB_PRIVATE);
-	DB_METHOD_O(struct, compatible, "(lang::type type)", bool, TRUE, db_struct_compatible_v);
-	DB_METHOD_O(struct, castable, "(lang::type type)", bool, TRUE, db_struct_castable_v);
-	DB_METHOD_O(struct, resolveMember, "(lang::string name)", member, TRUE, db_struct_resolveMember_v);
-	DB_CALLBACK_O(struct, init, "(lang::struct object)", type_init, int16, db_struct_init);
-	DB_CALLBACK_O(struct, construct, "(lang::struct object)", class_construct, int16, db_struct_construct);
+	DB_METHOD_O(struct, compatible, "(lang::type type)", bool, TRUE, cx_struct_compatible_v);
+	DB_METHOD_O(struct, castable, "(lang::type type)", bool, TRUE, cx_struct_castable_v);
+	DB_METHOD_O(struct, resolveMember, "(lang::string name)", member, TRUE, cx_struct_resolveMember_v);
+	DB_CALLBACK_O(struct, init, "(lang::struct object)", type_init, int16, cx_struct_init);
+	DB_CALLBACK_O(struct, construct, "(lang::struct object)", class_construct, int16, cx_struct_construct);
 
 /* ::cortex::lang::interfaceVector */
 DB_STRUCT_O(interfaceVector, NULL, DB_DECLARED | DB_DEFINED);
@@ -815,20 +815,20 @@ DB_CLASS_O(class, struct, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DE
     DB_MEMBER_O(class, observers, observerSeq, DB_LOCAL|DB_PRIVATE);
     DB_DELEGATE_O(class, construct, "(lang::object object)", int16);
     DB_DELEGATE_O(class, destruct, "(lang::object object)", void);
-    DB_CALLBACK_O(class, init, "(lang::class object)", type_init, int16, db_class_init);
-    DB_CALLBACK_O(class, _construct, "(lang::class object)", class_construct, int16, db_class__construct);
-    DB_CALLBACK_O(class, _destruct, "(lang::class object)", class_destruct, void, db_class__destruct);
-    DB_METHOD_O(class, bindMethod, "(lang::method method)", int16, FALSE, db_class_bindMethod);
-    DB_METHOD_O(class, allocSize, "()", uint32, TRUE, db_class_allocSize_v);
-    DB_METHOD_O(class, instanceof, "(lang::object object)", bool, FALSE, db_class_instanceof);
-    DB_METHOD_O(class, privateObserver, "(lang::object object,lang::observer observer)", observer, FALSE, db_class_privateObserver);
-    DB_METHOD_O(class, resolveDelegate, "(lang::string name)", delegate, FALSE, db_class_resolveDelegate);
-    DB_METHOD_O(class, resolveInterfaceMethod, "(lang::interface interface,lang::uint32 method)", method, FALSE, db_class_resolveInterfaceMethod);
-    DB_METHOD_O(class, resolveCallback, "(lang::delegate delegate,lang::object target)", callback, FALSE, db_class_resolveCallback);
-    DB_METHOD_O(class, bindCallback, "(lang::delegate delegate,lang::object object,lang::callback method)", int16, FALSE, db_class_bindCallback);
-    DB_METHOD_O(class, bindDelegate, "(lang::delegate delegate)", int16, FALSE, db_class_bindDelegate);
-    DB_METHOD_O(class, bindObserver, "(lang::observer observer)", void, FALSE, db_class_bindDelegate);
-    DB_METHOD_O(class, findObserver, "(lang::object observable,string expr)", observer, FALSE, db_class_findObserver);
+    DB_CALLBACK_O(class, init, "(lang::class object)", type_init, int16, cx_class_init);
+    DB_CALLBACK_O(class, _construct, "(lang::class object)", class_construct, int16, cx_class__construct);
+    DB_CALLBACK_O(class, _destruct, "(lang::class object)", class_destruct, void, cx_class__destruct);
+    DB_METHOD_O(class, bindMethod, "(lang::method method)", int16, FALSE, cx_class_bindMethod);
+    DB_METHOD_O(class, allocSize, "()", uint32, TRUE, cx_class_allocSize_v);
+    DB_METHOD_O(class, instanceof, "(lang::object object)", bool, FALSE, cx_class_instanceof);
+    DB_METHOD_O(class, privateObserver, "(lang::object object,lang::observer observer)", observer, FALSE, cx_class_privateObserver);
+    DB_METHOD_O(class, resolveDelegate, "(lang::string name)", delegate, FALSE, cx_class_resolveDelegate);
+    DB_METHOD_O(class, resolveInterfaceMethod, "(lang::interface interface,lang::uint32 method)", method, FALSE, cx_class_resolveInterfaceMethod);
+    DB_METHOD_O(class, resolveCallback, "(lang::delegate delegate,lang::object target)", callback, FALSE, cx_class_resolveCallback);
+    DB_METHOD_O(class, bindCallback, "(lang::delegate delegate,lang::object object,lang::callback method)", int16, FALSE, cx_class_bindCallback);
+    DB_METHOD_O(class, bindDelegate, "(lang::delegate delegate)", int16, FALSE, cx_class_bindDelegate);
+    DB_METHOD_O(class, bindObserver, "(lang::observer observer)", void, FALSE, cx_class_bindDelegate);
+    DB_METHOD_O(class, findObserver, "(lang::object observable,string expr)", observer, FALSE, cx_class_findObserver);
 
 /* ::cortex::lang::procptrdata */
 DB_STRUCT_O(procptrdata, NULL, DB_DECLARED | DB_DEFINED);
@@ -837,42 +837,42 @@ DB_STRUCT_O(procptrdata, NULL, DB_DECLARED | DB_DEFINED);
 
 /* ::cortex::lang::procptr */
 DB_CLASS_O(procptr, struct, DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
-    DB_CALLBACK_O(procptr, init, "(lang::procptr object)", type_init, int16, db_procptr_init);
+    DB_CALLBACK_O(procptr, init, "(lang::procptr object)", type_init, int16, cx_procptr_init);
     DB_REFERENCE_O(procptr, returnType, typedef, DB_GLOBAL, DB_DEFINED | DB_DECLARED, FALSE);
     DB_MEMBER_O(procptr, returnsReference, bool, DB_GLOBAL);
     DB_MEMBER_O(procptr, parameters, parameterSeq, DB_GLOBAL);
-    DB_METHOD_O(procptr, compatible, "(lang::type type)", bool, TRUE, db_procptr_compatible_v);
+    DB_METHOD_O(procptr, compatible, "(lang::type type)", bool, TRUE, cx_procptr_compatible_v);
 
 /* ::cortex::lang::procedure */
 DB_CLASS_O(procedure, struct, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
 	DB_MEMBER_O(procedure, kind, procedureKind, DB_GLOBAL);
-	DB_CALLBACK_O(procedure, init, "(lang::procedure object)", type_init, int16, db_procedure_init);
+	DB_CALLBACK_O(procedure, init, "(lang::procedure object)", type_init, int16, cx_procedure_init);
 	DB_DELEGATE_O(procedure, bind, "(lang::object object)", int16);
-	DB_METHOD_O(procedure, unbind, "(lang::object object)", void, FALSE, db_procedure_unbind);
+	DB_METHOD_O(procedure, unbind, "(lang::object object)", void, FALSE, cx_procedure_unbind);
 
 /* ::cortex::lang::array */
 DB_CLASS_O(array, collection, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_REFERENCE_O(array, elementType, typedef, DB_GLOBAL|DB_PRIVATE, DB_DEFINED, FALSE);
-    DB_CALLBACK_O(array, init, "(lang::array object)", type_init, int16, db_array_init);
-    DB_CALLBACK_O(array, construct, "(lang::array object)", class_construct, int16, db_array_construct);
-    DB_CALLBACK_O(array, destruct, "(lang::array object)", class_destruct, void, db_array_destruct);
+    DB_CALLBACK_O(array, init, "(lang::array object)", type_init, int16, cx_array_init);
+    DB_CALLBACK_O(array, construct, "(lang::array object)", class_construct, int16, cx_array_construct);
+    DB_CALLBACK_O(array, destruct, "(lang::array object)", class_destruct, void, cx_array_destruct);
 
 /* ::cortex::lang::sequence */
 DB_CLASS_O(sequence, collection, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
-    DB_CALLBACK_O(sequence, init, "(lang::sequence object)", type_init, int16, db_sequence_init);
-    DB_CALLBACK_O(sequence, construct, "(lang::sequence object)", class_construct, int16, db_sequence_construct);
-    DB_METAPROCEDURE_O(sequence, size, "(lang::uint32 size)", void, FALSE, db_sequence_size);
+    DB_CALLBACK_O(sequence, init, "(lang::sequence object)", type_init, int16, cx_sequence_init);
+    DB_CALLBACK_O(sequence, construct, "(lang::sequence object)", class_construct, int16, cx_sequence_construct);
+    DB_METAPROCEDURE_O(sequence, size, "(lang::uint32 size)", void, FALSE, cx_sequence_size);
 
 /* ::cortex::lang::list */
 DB_CLASS_O(list, collection, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
-    DB_CALLBACK_O(list, init, "(lang::list object)", type_init, int16, db_list_init);
-    DB_CALLBACK_O(list, construct, "(lang::list object)", class_construct, int16, db_list_construct);
-    DB_METAPROCEDURE_O(list, insert, "(lang::any element)", void, FALSE, db_list_insert_lang_any);
-    DB_METAPROCEDURE_O(list, append, "(lang::any element)", void, FALSE, db_list_append_lang_any);
-    DB_METAPROCEDURE_NAME_O(list, insert_, insert, "()", any, FALSE, db_list_insert_);
-    DB_METAPROCEDURE_NAME_O(list, append_, append, "()", any, FALSE, db_list_append_);
-    DB_METAPROCEDURE_O(list, reverse, "()", void, FALSE, db_list_reverse);
-    DB_METAPROCEDURE_O(list, clear, "()", void, FALSE, db_list_clear);
+    DB_CALLBACK_O(list, init, "(lang::list object)", type_init, int16, cx_list_init);
+    DB_CALLBACK_O(list, construct, "(lang::list object)", class_construct, int16, cx_list_construct);
+    DB_METAPROCEDURE_O(list, insert, "(lang::any element)", void, FALSE, cx_list_insert_lang_any);
+    DB_METAPROCEDURE_O(list, append, "(lang::any element)", void, FALSE, cx_list_append_lang_any);
+    DB_METAPROCEDURE_NAME_O(list, insert_, insert, "()", any, FALSE, cx_list_insert_);
+    DB_METAPROCEDURE_NAME_O(list, append_, append, "()", any, FALSE, cx_list_append_);
+    DB_METAPROCEDURE_O(list, reverse, "()", void, FALSE, cx_list_reverse);
+    DB_METAPROCEDURE_O(list, clear, "()", void, FALSE, cx_list_clear);
 
 /* ::cortex::lang::map */
 DB_CLASS_O(map, collection, DB_LOCAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
@@ -880,8 +880,8 @@ DB_CLASS_O(map, collection, DB_LOCAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_D
 	DB_REFERENCE_O(map, elementType, typedef, DB_GLOBAL, DB_DECLARED | DB_DEFINED, FALSE);
     DB_REFERENCE_O(map, keyType, typedef, DB_GLOBAL, DB_DECLARED | DB_DEFINED, FALSE);
     DB_MEMBER_O(map, max, uint32, DB_GLOBAL);
-    DB_CALLBACK_O(map, init, "(lang::map object)", type_init, int16, db_map_init);
-    DB_CALLBACK_O(map, construct, "(lang::map object)", class_construct, int16, db_map_construct);
+    DB_CALLBACK_O(map, init, "(lang::map object)", type_init, int16, cx_map_init);
+    DB_CALLBACK_O(map, construct, "(lang::map object)", class_construct, int16, cx_map_construct);
 
 /* ::cortex::lang::function */
 DB_PROCEDURE_NOBASE_O(function, DB_FUNCTION, NULL, DB_DECLARED | DB_DEFINED);
@@ -895,10 +895,10 @@ DB_PROCEDURE_NOBASE_O(function, DB_FUNCTION, NULL, DB_DECLARED | DB_DEFINED);
     DB_MEMBER_O(function, size, int16, DB_LOCAL|DB_PRIVATE);
     DB_MEMBER_O(function, parameters, parameterSeq, DB_LOCAL | DB_READONLY);
     DB_MEMBER_O(function, nextParameterId, uint32, DB_LOCAL | DB_PRIVATE);
-    DB_CALLBACK_O(function, init, "(lang::function object)", type_init, int16, db_function_init);
-    DB_CALLBACK_O(function, bind, "(lang::function object)", procedure_bind, int16, db_function_bind);
-    DB_FUNCTION_O(function, unbind, "(lang::function object)", void, db_function_unbind);
-    DB_FUNCTION_O(function, stringToParameterSeq, "(lang::string name,lang::object scope)", parameterSeq, db_function_stringToParameterSeq);
+    DB_CALLBACK_O(function, init, "(lang::function object)", type_init, int16, cx_function_init);
+    DB_CALLBACK_O(function, bind, "(lang::function object)", procedure_bind, int16, cx_function_bind);
+    DB_FUNCTION_O(function, unbind, "(lang::function object)", void, cx_function_unbind);
+    DB_FUNCTION_O(function, stringToParameterSeq, "(lang::string name,lang::object scope)", parameterSeq, cx_function_stringToParameterSeq);
 
 /* ::cortex::lang::dispatcher */
 DB_INTERFACE_O(dispatcher);
@@ -909,8 +909,8 @@ DB_INTERFACE_O(dispatcher);
 DB_CLASS_NOBASE_O(event, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
 	DB_MEMBER_O(event, kind, uint16, DB_GLOBAL);
 	DB_MEMBER_O(event, handled, bool, DB_LOCAL | DB_READONLY);
-	DB_METHOD_O(event, processed, "()", void, FALSE, db_event_processed);
-	DB_FUNCTION_O(event, uniqueKind, "()", int16, db_event_uniqueKind);
+	DB_METHOD_O(event, processed, "()", void, FALSE, cx_event_processed);
+	DB_FUNCTION_O(event, uniqueKind, "()", int16, cx_event_uniqueKind);
 
 /* ::cortex::lang::observableEvent */
 DB_CLASS_O(observableEvent, event, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
@@ -922,22 +922,22 @@ DB_CLASS_O(observableEvent, event, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NU
 /* ::cortex::lang::method */
 DB_PROCEDURE_O(method, DB_METHOD, function, DB_GLOBAL, DB_SSO_TYPE_ID(interface), DB_DECLARED);
     DB_MEMBER_O(method, virtual, bool, DB_GLOBAL);
-    DB_CALLBACK_O(method, init, "(lang::method object)", type_init, int16, db_method_init);
-    DB_CALLBACK_O(method, bind, "(lang::method object)", procedure_bind, int16, db_method_bind);
+    DB_CALLBACK_O(method, init, "(lang::method object)", type_init, int16, cx_method_init);
+    DB_CALLBACK_O(method, bind, "(lang::method object)", procedure_bind, int16, cx_method_bind);
 
 DB_PROCEDURE_O(virtual, DB_METHOD, method, DB_GLOBAL, DB_SSO_TYPE_ID(interface), DB_DECLARED);
-    DB_CALLBACK_O(virtual, init, "(lang::virtual object)", type_init, int16, db_virtual_init);
+    DB_CALLBACK_O(virtual, init, "(lang::virtual object)", type_init, int16, cx_virtual_init);
     
 /* ::cortex::lang::delegate */
 DB_PROCEDURE_O(delegate, DB_DELEGATE, function, DB_GLOBAL, NULL, DB_DECLARED | DB_DEFINED);
     DB_MEMBER_O(delegate, id, uint32, DB_LOCAL);
-    DB_CALLBACK_O(delegate, init, "(lang::delegate object)", type_init, int16, db_delegate_init);
+    DB_CALLBACK_O(delegate, init, "(lang::delegate object)", type_init, int16, cx_delegate_init);
 
 /* ::cortex::lang::callback */
 DB_PROCEDURE_O(callback, DB_CALLBACK, function, DB_GLOBAL, NULL, DB_DECLARED);
 	DB_REFERENCE_O(callback, delegate, delegate, DB_GLOBAL, DB_DEFINED, FALSE);
-	DB_CALLBACK_O(callback, init, "(lang::callback object)", type_init, int16, db_callback_init);
-    DB_CALLBACK_O(callback, bind, "(lang::callback object)", procedure_bind, int16, db_callback_bind);
+	DB_CALLBACK_O(callback, init, "(lang::callback object)", type_init, int16, cx_callback_init);
+    DB_CALLBACK_O(callback, bind, "(lang::callback object)", procedure_bind, int16, cx_callback_bind);
 
 /* ::cortex::lang::observer */
 DB_PROCEDURE_O(observer, DB_OBSERVER, function, DB_LOCAL | DB_READONLY, NULL, DB_DECLARED | DB_DEFINED);
@@ -949,16 +949,16 @@ DB_PROCEDURE_O(observer, DB_OBSERVER, function, DB_LOCAL | DB_READONLY, NULL, DB
 	DB_REFERENCE_O(observer, me, object, DB_GLOBAL, DB_DEFINED | DB_DECLARED, FALSE);
 	DB_REFERENCE_O(observer, observing, object, DB_LOCAL | DB_PRIVATE, DB_DEFINED | DB_DECLARED, FALSE);
 	DB_REFERENCE_O(observer, delayedBinder, observer, DB_LOCAL | DB_PRIVATE, DB_DEFINED | DB_DECLARED, FALSE);
-	DB_CALLBACK_O(observer, init, "(lang::observer object)", type_init, int16, db_observer_init);
-	DB_CALLBACK_O(observer, bind, "(lang::observer object)", procedure_bind, int16, db_observer_bind);
-	DB_METHOD_O(observer, listen, "(lang::object observable,lang::object me)", int16, FALSE, db_observer_listen);
-	DB_METHOD_O(observer, silence, "(lang::object me)", int16, FALSE, db_observer_silence);
-	DB_METHOD_O(observer, setDispatcher, "(lang::dispatcher dispatcher)", void, FALSE, db_observer_setDispatcher);
-    DB_FUNCTION_O(observer, unbind, "(lang::observer object)", void, db_observer_unbind);
+	DB_CALLBACK_O(observer, init, "(lang::observer object)", type_init, int16, cx_observer_init);
+	DB_CALLBACK_O(observer, bind, "(lang::observer object)", procedure_bind, int16, cx_observer_bind);
+	DB_METHOD_O(observer, listen, "(lang::object observable,lang::object me)", int16, FALSE, cx_observer_listen);
+	DB_METHOD_O(observer, silence, "(lang::object me)", int16, FALSE, cx_observer_silence);
+	DB_METHOD_O(observer, setDispatcher, "(lang::dispatcher dispatcher)", void, FALSE, cx_observer_setDispatcher);
+    DB_FUNCTION_O(observer, unbind, "(lang::observer object)", void, cx_observer_unbind);
 
 /* ::cortex::lang::metaprocedure */
 DB_PROCEDURE_O(metaprocedure, DB_METAPROCEDURE, function, DB_GLOBAL, NULL, DB_DECLARED);
-    DB_CALLBACK_O(metaprocedure, bind, "(lang::metaprocedure object)", procedure_bind, int16, db_metaprocedure_bind);
+    DB_CALLBACK_O(metaprocedure, bind, "(lang::metaprocedure object)", procedure_bind, int16, cx_metaprocedure_bind);
     DB_MEMBER_O(metaprocedure, referenceOnly, bool, DB_GLOBAL);
 
 /* ::cortex::lang::member */
@@ -969,8 +969,8 @@ DB_CLASS_NOBASE_O(member, DB_SEQUENCE_EMPTY_V(interface), DB_SSO_TYPE_ID(interfa
     DB_MEMBER_O(member, weak, bool, DB_GLOBAL);
     DB_MEMBER_O(member, id, uint32, DB_GLOBAL | DB_PRIVATE);
     DB_MEMBER_O(member, offset, uint32, DB_LOCAL | DB_PRIVATE);
-    DB_CALLBACK_O(member, init, "(lang::member object)", type_init, int16, db_member_init);
-    DB_CALLBACK_O(member, construct, "(lang::member object)", class_construct, int16, db_member_construct);
+    DB_CALLBACK_O(member, init, "(lang::member object)", type_init, int16, cx_member_init);
+    DB_CALLBACK_O(member, construct, "(lang::member object)", class_construct, int16, cx_member_construct);
 
 /* ::cortex::lang::parameter */
 DB_STRUCT_O(parameter, NULL, DB_DECLARED | DB_DEFINED);

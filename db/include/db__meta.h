@@ -1,5 +1,5 @@
 /*
- * db_meta.h
+ * cx_meta.h
  *
  *  Created on: Aug 6, 2012
  *      Author: sander
@@ -8,17 +8,17 @@
 #ifndef DB_META_H_
 #define DB_META_H_
 
-#include "db__type.h"
+#include "cx__type.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define DB_META_OBJECT(type, name) extern db_##type db_##name##_o
+#define DB_META_OBJECT(type, name) extern cx_##type cx_##name##_o
 
-extern db_object root_o;
-extern db_object cortex_o;
-extern db_object cortex_lang_o;
+extern cx_object root_o;
+extern cx_object cortex_o;
+extern cx_object cortex_lang_o;
 
 /* Forward declarations of classes */
 DB_META_OBJECT(class, typedef);

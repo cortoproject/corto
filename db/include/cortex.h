@@ -8,36 +8,36 @@
 #ifndef CORTEX_H_
 #define CORTEX_H_
 
-#include "db__type.h"
-#include "db__meta.h"
-#include "db_object.h"
-#include "db_mem.h"
-#include "db_err.h"
-#include "db_util.h"
-#include "db_string.h"
-#include "db_time.h"
-#include "db_serializer.h"
-#include "db_metawalk.h"
-#include "db_convert.h"
-#include "db_call.h"
+#include "cx__type.h"
+#include "cx__meta.h"
+#include "cx_object.h"
+#include "cx_mem.h"
+#include "cx_err.h"
+#include "cx_util.h"
+#include "cx_string.h"
+#include "cx_time.h"
+#include "cx_serializer.h"
+#include "cx_metawalk.h"
+#include "cx_convert.h"
+#include "cx_call.h"
 
-#include "db_typedef.h"
-#include "db_type.h"
-#include "db_primitive.h"
-#include "db_interface.h"
-#include "db_struct.h"
-#include "db_class.h"
-#include "db_procedure.h"
-#include "db_collection.h"
+#include "cx_typedef.h"
+#include "cx_type.h"
+#include "cx_primitive.h"
+#include "cx_interface.h"
+#include "cx_struct.h"
+#include "cx_class.h"
+#include "cx_procedure.h"
+#include "cx_collection.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-int db_start(void);
-void db_stop(void); /* Must be last statement of application. */
-void db_onunload(void(*handler)(void*), void* userData);
-void db_onexit(void(*handler)(void*), void* userData);
+int cx_start(void);
+void cx_stop(void); /* Must be last statement of application. */
+void cx_onunload(void(*handler)(void*), void* userData);
+void cx_onexit(void(*handler)(void*), void* userData);
 
 #ifdef __cplusplus
 }

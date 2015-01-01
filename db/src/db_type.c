@@ -1,4 +1,4 @@
-/* db_type.c
+/* cx_type.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -7,34 +7,34 @@
  */
 
 #include "db.h"
-#include "db__meta.h"
+#include "cx__meta.h"
 
 /* $header() */
-#include "db_compare_ser.h"
-#include "db_copy_ser.h"
-#include "db__interface.h"
+#include "cx_compare_ser.h"
+#include "cx_copy_ser.h"
+#include "cx__interface.h"
 
-db_int16 db_type_bindMetaprocedure(db_type _this, db_metaprocedure procedure) {
-    db_function* f;
-    db_int32 d = 0;
+cx_int16 cx_type_bindMetaprocedure(cx_type _this, cx_metaprocedure procedure) {
+    cx_function* f;
+    cx_int32 d = 0;
 
     /* Check if function is overloaded */
-    if ((f = db_vtableLookup(&_this->metaprocedures, db_nameof(procedure), NULL, &d))) {
+    if ((f = cx_vtableLookup(&_this->metaprocedures, cx_nameof(procedure), NULL, &d))) {
         if (d) {
-            db_function(*f)->overloaded = TRUE; /* Flag found and passed function as overloaded. */
-            db_function(procedure)->overloaded = TRUE;
+            cx_function(*f)->overloaded = TRUE; /* Flag found and passed function as overloaded. */
+            cx_function(procedure)->overloaded = TRUE;
         } else {
-            if (*f != db_function(procedure)) {
+            if (*f != cx_function(procedure)) {
                 /* Overriding metaprocedures is not allowed. */
-                db_id id, id2;
-                db_error("definition of metaprocedure '%s' conflicts with existing metaprocedure '%s'", db_fullname(*f, id), db_fullname(procedure, id2));
+                cx_id id, id2;
+                cx_error("definition of metaprocedure '%s' conflicts with existing metaprocedure '%s'", cx_fullname(*f, id), cx_fullname(procedure, id2));
                 goto error;
             }
         }
     }
 
-    if (db_vtableInsert(&_this->metaprocedures, db_function(procedure))) {
-        db_keep_ext(_this, procedure, "Bind metaprocedure to type.");
+    if (cx_vtableInsert(&_this->metaprocedures, cx_function(procedure))) {
+        cx_keep_ext(_this, procedure, "Bind metaprocedure to type.");
     }
     return 0;
 error:
@@ -43,43 +43,43 @@ error:
 /* $end */
 
 /* callback ::cortex::lang::class::destruct(lang::object object) -> ::cortex::lang::type::_destruct(lang::type object) */
-db_void db_type__destruct(db_type object) {
+cx_void cx_type__destruct(cx_type object) {
 /* $begin(::cortex::lang::type::_destruct) */
-    db_uint32 i;
+    cx_uint32 i;
 
     object->_parent.type = NULL;
-    db_free_ext(object, object, "Free self for type-member");
+    cx_free_ext(object, object, "Free self for type-member");
 
     /* Free methods */
     for(i=0; i<object->metaprocedures.length; i++) {
-        db_free_ext(object, object->metaprocedures.buffer[i], "Remove method from vtable.");
+        cx_free_ext(object, object->metaprocedures.buffer[i], "Remove method from vtable.");
     }
 
     if (object->metaprocedures.buffer) {
-        db_dealloc(object->metaprocedures.buffer);
+        cx_dealloc(object->metaprocedures.buffer);
         object->metaprocedures.buffer = NULL;
     }
 
-    db_typedef_destruct(db_typedef(object));
+    cx_typedef_destruct(cx_typedef(object));
 /* $end */
 }
 
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::type::_init(lang::type object) */
-db_int16 db_type__init(db_type object) {
+cx_int16 cx_type__init(cx_type object) {
 /* $begin(::cortex::lang::type::_init) */
-    db_keep_ext(object, object, "Keep self for type-member");
-    db_typedef(object)->type = (db_typedef)object;
-    return db_typedef_init(db_typedef(object));
+    cx_keep_ext(object, object, "Keep self for type-member");
+    cx_typedef(object)->type = (cx_typedef)object;
+    return cx_typedef_init(cx_typedef(object));
 /* $end */
 }
 
 /* ::cortex::lang::type::alignmentof() */
-db_uint16 db_type_alignmentof(db_type _this) {
+cx_uint16 cx_type_alignmentof(cx_type _this) {
 /* $begin(::cortex::lang::type::alignmentof) */
-    db_uint16 alignment;
+    cx_uint16 alignment;
 
     if (_this->reference) {
-        alignment = DB_ALIGNMENT(db_object);
+        alignment = DB_ALIGNMENT(cx_object);
     } else {
         alignment = _this->alignment;
     }
@@ -88,16 +88,16 @@ db_uint16 db_type_alignmentof(db_type _this) {
 }
 
 /* ::cortex::lang::type::allocSize() */
-db_uint32 db_type_allocSize_v(db_type _this) {
+cx_uint32 cx_type_allocSize_v(cx_type _this) {
 /* $begin(::cortex::lang::type::allocSize) */
     return _this->size;
 /* $end */
 }
 
 /* ::cortex::lang::type::castable(lang::type type) */
-db_bool db_type_castable_v(db_type _this, db_type type) {
+cx_bool cx_type_castable_v(cx_type _this, cx_type type) {
 /* $begin(::cortex::lang::type::castable) */
-    db_bool result = FALSE;
+    cx_bool result = FALSE;
 
     if (_this->kind == DB_VOID) { /* A void reference can be casted to any reference type */
         if (_this->reference && type->reference) {
@@ -106,7 +106,7 @@ db_bool db_type_castable_v(db_type _this, db_type type) {
     }
 
     if (!result) {
-        result = db_type_compatible_v(_this, type);
+        result = cx_type_compatible_v(_this, type);
     }
     
     return result;
@@ -114,41 +114,41 @@ db_bool db_type_castable_v(db_type _this, db_type type) {
 }
 
 /* ::cortex::lang::type::checkAttr(lang::attr attributes) */
-db_bool db_type_checkAttr(db_any _this, db_attr attributes) {
+cx_bool cx_type_checkAttr(cx_any _this, cx_attr attributes) {
 /* $begin(::cortex::lang::type::checkAttr) */
-    return db_checkAttr(_this.value, attributes);
+    return cx_checkAttr(_this.value, attributes);
 /* $end */
 }
 
 /* ::cortex::lang::type::checkState(lang::state state) */
-db_bool db_type_checkState(db_any _this, db_state state) {
+cx_bool cx_type_checkState(cx_any _this, cx_state state) {
 /* $begin(::cortex::lang::type::checkState) */
-    return db_checkState(_this.value, state);
+    return cx_checkState(_this.value, state);
 /* $end */
 }
 
 /* ::cortex::lang::type::compare(lang::any value) */
-db_equalityKind db_type_compare(db_any _this, db_any value) {
+cx_equalityKind cx_type_compare(cx_any _this, cx_any value) {
 /* $begin(::cortex::lang::type::compare) */
-    db_compare_ser_t data;
-    struct db_serializer_s s;
-    db_value v1;
+    cx_compare_ser_t data;
+    struct cx_serializer_s s;
+    cx_value v1;
     
-    db_valueValueInit(&v1, NULL, db_typedef(_this.type), _this.value);
-    db_valueValueInit(&data.value, NULL, db_typedef(value.type), value.value);
+    cx_valueValueInit(&v1, NULL, cx_typedef(_this.type), _this.value);
+    cx_valueValueInit(&data.value, NULL, cx_typedef(value.type), value.value);
     
-    s = db_compare_ser(DB_PRIVATE, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
+    s = cx_compare_ser(DB_PRIVATE, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
 
-    db_serializeValue(&s, &v1, &data);
+    cx_serializeValue(&s, &v1, &data);
 
     return data.result;
 /* $end */
 }
 
 /* ::cortex::lang::type::compatible(lang::type type) */
-db_bool db_type_compatible_v(db_type _this, db_type type) {
+cx_bool cx_type_compatible_v(cx_type _this, cx_type type) {
 /* $begin(::cortex::lang::type::compatible) */
-    db_bool result;
+    cx_bool result;
 
     result = FALSE;
 
@@ -171,38 +171,38 @@ db_bool db_type_compatible_v(db_type _this, db_type type) {
 }
 
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::type::construct(lang::type object) */
-db_int16 db_type_construct(db_type object) {
+cx_int16 cx_type_construct(cx_type object) {
 /* $begin(::cortex::lang::type::construct) */
     switch(object->kind) {
     case DB_ANY:
-        object->size = sizeof(db_any);
+        object->size = sizeof(cx_any);
         break;
     default:
         break;
     }
-    return db_typedef_construct(db_typedef(object));
+    return cx_typedef_construct(cx_typedef(object));
 /* $end */
 }
 
 /* ::cortex::lang::type::copy(lang::any value) */
-db_int16 db_type_copy(db_any _this, db_any value) {
+cx_int16 cx_type_copy(cx_any _this, cx_any value) {
 /* $begin(::cortex::lang::type::copy) */
-    db_copy_ser_t data;
-    struct db_serializer_s s;
-    db_value v1;
-    db_int16 result;
+    cx_copy_ser_t data;
+    struct cx_serializer_s s;
+    cx_value v1;
+    cx_int16 result;
     
-    db_valueValueInit(&data.value, NULL, db_typedef(_this.type), _this.value);
-    db_valueValueInit(&v1, NULL, db_typedef(value.type), value.value);
+    cx_valueValueInit(&data.value, NULL, cx_typedef(_this.type), _this.value);
+    cx_valueValueInit(&v1, NULL, cx_typedef(value.type), value.value);
     
-    s = db_copy_ser(DB_PRIVATE, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
+    s = cx_copy_ser(DB_PRIVATE, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
     
-    result = db_serializeValue(&s, &v1, &data);
+    result = cx_serializeValue(&s, &v1, &data);
 
     if (result) {
-        db_id id, id2;
-        db_error("type::copy: failed to copy value of type '%s' to value of type '%s'",
-                 db_fullname(_this.type, id), db_fullname(value.type, id2));
+        cx_id id, id2;
+        cx_error("type::copy: failed to copy value of type '%s' to value of type '%s'",
+                 cx_fullname(_this.type, id), cx_fullname(value.type, id2));
     }
     
     return result;
@@ -210,38 +210,38 @@ db_int16 db_type_copy(db_any _this, db_any value) {
 }
 
 /* ::cortex::lang::type::declare(lang::string name,lang::typedef type) */
-db_object db_type_declare(db_any _this, db_string name, db_typedef type) {
+cx_object cx_type_declare(cx_any _this, cx_string name, cx_typedef type) {
 /* $begin(::cortex::lang::type::declare) */
-    db_object result = db_declare(_this.value, name, type);
-    db_keep(result);
+    cx_object result = cx_declare(_this.value, name, type);
+    cx_keep(result);
     return result;
 /* $end */
 }
 
 /* ::cortex::lang::type::define() */
-db_int16 db_type_define(db_any _this) {
+cx_int16 cx_type_define(cx_any _this) {
 /* $begin(::cortex::lang::type::define) */
-    return db_define(_this.value);
+    return cx_define(_this.value);
 /* $end */
 }
 
 /* ::cortex::lang::type::destruct() */
-db_void db_type_destruct(db_any _this) {
+cx_void cx_type_destruct(cx_any _this) {
 /* $begin(::cortex::lang::type::destruct) */
-    db_destruct(_this.value);
+    cx_destruct(_this.value);
 /* $end */
 }
 
 /* ::cortex::lang::type::fullname() */
-db_string db_type_fullname(db_any _this) {
+cx_string cx_type_fullname(cx_any _this) {
 /* $begin(::cortex::lang::type::fullname) */
-    db_string result = NULL;
+    cx_string result = NULL;
 
     if (_this.value) {
-        db_id id;
-        result = db_strdup(db_fullname(_this.value, id));
+        cx_id id;
+        result = cx_strdup(cx_fullname(_this.value, id));
     } else {
-        result = db_strdup("null");
+        result = cx_strdup("null");
     }
 
     return result;
@@ -249,38 +249,38 @@ db_string db_type_fullname(db_any _this) {
 }
 
 /* ::cortex::lang::type::instanceof(lang::typedef type) */
-db_bool db_type_instanceof(db_any _this, db_typedef type) {
+cx_bool cx_type_instanceof(cx_any _this, cx_typedef type) {
 /* $begin(::cortex::lang::type::instanceof) */
-    return db_instanceof(type, _this.value);
+    return cx_instanceof(type, _this.value);
 /* $end */
 }
 
 /* ::cortex::lang::type::invalidate() */
-db_void db_type_invalidate(db_any _this) {
+cx_void cx_type_invalidate(cx_any _this) {
 /* $begin(::cortex::lang::type::invalidate) */
-    db_invalidate(_this.value);
+    cx_invalidate(_this.value);
 /* $end */
 }
 
 /* ::cortex::lang::type::lookup(lang::string name) */
-db_object db_type_lookup(db_any _this, db_string name) {
+cx_object cx_type_lookup(cx_any _this, cx_string name) {
 /* $begin(::cortex::lang::type::lookup) */
-    return db_lookup(_this.value, name);
+    return cx_lookup(_this.value, name);
 /* $end */
 }
 
 /* ::cortex::lang::type::nameof() */
-db_string db_type_nameof(db_any _this) {
+cx_string cx_type_nameof(cx_any _this) {
 /* $begin(::cortex::lang::type::nameof) */
-    db_string result = NULL;
+    cx_string result = NULL;
 
     if (_this.value) {
-        result = db_nameof(_this.value);
+        result = cx_nameof(_this.value);
         if(result) {
-            result = db_strdup(result);
+            result = cx_strdup(result);
         }
     } else {
-        result = db_strdup("null");
+        result = cx_strdup("null");
     }
 
     return result;
@@ -288,19 +288,19 @@ db_string db_type_nameof(db_any _this) {
 }
 
 /* ::cortex::lang::type::parentof() */
-db_object db_type_parentof(db_any _this) {
+cx_object cx_type_parentof(cx_any _this) {
 /* $begin(::cortex::lang::type::parentof) */
-    db_string result = NULL;
+    cx_string result = NULL;
 
-   if (db_checkAttr(_this.value, DB_ATTR_SCOPED)) {
-       result = db_parentof(_this.value);
+   if (cx_checkAttr(_this.value, DB_ATTR_SCOPED)) {
+       result = cx_parentof(_this.value);
    } else {
-       db_id id;
-       db_error("cannot get parent from non-scoped object of type '%s'", db_fullname(db_typeof(_this.value), id));
+       cx_id id;
+       cx_error("cannot get parent from non-scoped object of type '%s'", cx_fullname(cx_typeof(_this.value), id));
    }
     
    if (result) {
-       db_keep(result);
+       cx_keep(result);
    }
 
    return result;
@@ -308,15 +308,15 @@ db_object db_type_parentof(db_any _this) {
 }
 
 /* ::cortex::lang::type::relname(lang::object from) */
-db_string db_type_relname(db_any _this, db_object from) {
+cx_string cx_type_relname(cx_any _this, cx_object from) {
 /* $begin(::cortex::lang::type::relname) */
-    db_string result = NULL;
-    db_id id;
+    cx_string result = NULL;
+    cx_id id;
 
     if (_this.value) {
-        result = db_strdup(db_relname(from, _this.value, id));
+        result = cx_strdup(cx_relname(from, _this.value, id));
     } else {
-        result = db_strdup("null");
+        result = cx_strdup("null");
     }
 
     return result;
@@ -324,37 +324,37 @@ db_string db_type_relname(db_any _this, db_object from) {
 }
 
 /* ::cortex::lang::type::resolve(lang::string name) */
-db_object db_type_resolve(db_any _this, db_string name) {
+cx_object cx_type_resolve(cx_any _this, cx_string name) {
 /* $begin(::cortex::lang::type::resolve) */
-    return db_resolve(_this.value, name);
+    return cx_resolve(_this.value, name);
 /* $end */
 }
 
 /* ::cortex::lang::type::resolveProcedure(lang::string name) */
-db_function db_type_resolveProcedure(db_type _this, db_string name) {
+cx_function cx_type_resolveProcedure(cx_type _this, cx_string name) {
 /* $begin(::cortex::lang::type::resolveProcedure) */
-    db_function result = NULL;
+    cx_function result = NULL;
 
     /* If type is an interface, try first to resolve a method on the interface */
-    if (db_instanceof((db_typedef)db_interface_o, _this)) {
-        result = (db_function)db_interface_resolveMethod(db_interface(_this), name);
+    if (cx_instanceof((cx_typedef)cx_interface_o, _this)) {
+        result = (cx_function)cx_interface_resolveMethod(cx_interface(_this), name);
     }
 
     /* If no method is found or type is not an interface, resolve metaprocedure */
     if (!result) {
-        db_function *f;
-        db_int32 d = 0, prevD = 9999;
-        db_class metaclass = db_class(db_typeof(_this)->real);
+        cx_function *f;
+        cx_int32 d = 0, prevD = 9999;
+        cx_class metaclass = cx_class(cx_typeof(_this)->real);
 
         /* Walk inheritance of metaclass to find metaprocedure */
         do {
-            if ((f = db_vtableLookup(&db_type(metaclass)->metaprocedures, name, NULL, &d))) {
+            if ((f = cx_vtableLookup(&cx_type(metaclass)->metaprocedures, name, NULL, &d))) {
                 if (d < prevD) {
                     result = *f;
                     prevD = d;
                 }
             }
-            metaclass = db_class(db_interface(metaclass)->base);
+            metaclass = cx_class(cx_interface(metaclass)->base);
         }while(metaclass && !result);
     }
 
@@ -363,11 +363,11 @@ db_function db_type_resolveProcedure(db_type _this, db_string name) {
 }
 
 /* ::cortex::lang::type::sizeof() */
-db_uint32 db_type_sizeof(db_type _this) {
+cx_uint32 cx_type_sizeof(cx_type _this) {
 /* $begin(::cortex::lang::type::sizeof) */
-    db_uint32 size;
+    cx_uint32 size;
     if (_this->reference) {
-        size = sizeof(db_object);
+        size = sizeof(cx_object);
     } else {
         size = _this->size;
     }
@@ -376,20 +376,20 @@ db_uint32 db_type_sizeof(db_type _this) {
 }
 
 /* ::cortex::lang::type::toString() */
-db_string db_type_toString(db_any _this) {
+cx_string cx_type_toString(cx_any _this) {
 /* $begin(::cortex::lang::type::toString) */
-    db_value value;
-    db_string result;
+    cx_value value;
+    cx_string result;
 
     if (_this.value) {
         if (_this.type->reference) {
-            db_valueObjectInit(&value, _this.value);
+            cx_valueObjectInit(&value, _this.value);
         } else {
-            db_valueValueInit(&value, NULL, db_typedef(_this.type), _this.value);
+            cx_valueValueInit(&value, NULL, cx_typedef(_this.type), _this.value);
         }
-        result = db_valueToString(&value, 0);
+        result = cx_valueToString(&value, 0);
     } else {
-        result = db_strdup("null");
+        result = cx_strdup("null");
     }
 
     return result;
@@ -397,14 +397,14 @@ db_string db_type_toString(db_any _this) {
 }
 
 /* ::cortex::lang::type::typeof() */
-db_type db_type_typeof(db_any _this) {
+cx_type cx_type_typeof(cx_any _this) {
 /* $begin(::cortex::lang::type::typeof) */
-    db_type result = NULL;
+    cx_type result = NULL;
 
     result = _this.type;
     
     if (result) {
-        db_keep(result);
+        cx_keep(result);
     }
 
     return result;

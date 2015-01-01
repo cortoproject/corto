@@ -1,17 +1,17 @@
-/* db_interfaceVector.h
+/* cx_interfaceVector.h
  *
  * This file contains generated code. Do not modify!
  */
 
-#ifndef db_interfaceVector_H
-#define db_interfaceVector_H
+#ifndef cx_interfaceVector_H
+#define cx_interfaceVector_H
 
 #include "cortex.h"
-#include "db__type.h"
+#include "cx__type.h"
 
-#include "db__api.h"
+#include "cx__api.h"
 
-#include "db__meta.h"
+#include "cx__meta.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -1,31 +1,31 @@
-/* db_sequence.h
+/* cx_sequence.h
  *
  * This file contains generated code. Do not modify!
  */
 
-#ifndef db_sequence_H
-#define db_sequence_H
+#ifndef cx_sequence_H
+#define cx_sequence_H
 
 #include "cortex.h"
-#include "db_collection.h"
-#include "db__type.h"
+#include "cx_collection.h"
+#include "cx__type.h"
 
-#include "db__api.h"
+#include "cx__api.h"
 
-#include "db__meta.h"
+#include "cx__meta.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::sequence::construct(lang::sequence object) */
-db_int16 db_sequence_construct(db_sequence object);
+cx_int16 cx_sequence_construct(cx_sequence object);
 
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::sequence::init(lang::sequence object) */
-db_int16 db_sequence_init(db_sequence object);
+cx_int16 cx_sequence_init(cx_sequence object);
 
 /* ::cortex::lang::sequence::size(lang::uint32 size) */
-db_void db_sequence_size(db_any _this, db_uint32 size);
+cx_void cx_sequence_size(cx_any _this, cx_uint32 size);
 
 #ifdef __cplusplus
 }

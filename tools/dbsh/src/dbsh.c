@@ -6,12 +6,12 @@
  */
 
 #include "cortex.h"
-#include "db_convert.h"
-#include "db_string_ser.h"
-#include "db_metawalk.h"
-#include "db_class.h"
-#include "db_loader.h"
-#include "db_err.h"
+#include "cx_convert.h"
+#include "cx_string_ser.h"
+#include "cx_metawalk.h"
+#include "cx_class.h"
+#include "cx_loader.h"
+#include "cx_err.h"
 
 #define DBSH_CMD_MAX (1024)
 
@@ -40,13 +40,13 @@
 #define INTERFACE_COLOR (BOLD)
 #define HEADER_COLOR (WHITE)
 
-static db_object scope = NULL;
+static cx_object scope = NULL;
 
 static void dbsh_color(const char *string) {
 	printf("%s", string);
 }
 
-static void dbsh_printColumn(db_string str, int width){
+static void dbsh_printColumn(cx_string str, int width){
 	printf("%s%*s", str, (int)(width - strlen(str)), " ");
 }
 
@@ -71,25 +71,25 @@ static void dbsh_printColumnHeader(void) {
 }
 
 /* Print shell prompt */
-static void dbsh_prompt(db_object scope) {
-	db_id id;
-	db_fullname(scope, id);
+static void dbsh_prompt(cx_object scope) {
+	cx_id id;
+	cx_fullname(scope, id);
 
 	printf("%s%s%s %s$%s ", OBJECT_COLOR, id, NORMAL, SHELL_COLOR, NORMAL);
 }
 
 /* Translate object state to string */
-static char* dbsh_stateStr(db_object o, char* buff) {
+static char* dbsh_stateStr(cx_object o, char* buff) {
 	buff[0] = '\0';
 
     /* Get state */
-    if (db_checkState(o, DB_VALID)) {
+    if (cx_checkState(o, DB_VALID)) {
        strcpy(buff, "V");
     }
-    if (db_checkState(o, DB_DECLARED)) {
+    if (cx_checkState(o, DB_DECLARED)) {
        strcat(buff, "|DCL");
     }
-    if (db_checkState(o, DB_DEFINED)) {
+    if (cx_checkState(o, DB_DEFINED)) {
        strcat(buff, "|DEF");
     }
 
@@ -97,16 +97,16 @@ static char* dbsh_stateStr(db_object o, char* buff) {
 }
 
 /* Translate object attributes to string */
-static char* dbsh_attrStr(db_object o, char* buff) {
-	db_bool first;
+static char* dbsh_attrStr(cx_object o, char* buff) {
+	cx_bool first;
 	*buff = '\0';
 
 	first = TRUE;
-	if (db_checkAttr(o, DB_ATTR_SCOPED)) {
+	if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
 		strcat(buff, "S");
 		first = FALSE;
 	}
-	if (db_checkAttr(o, DB_ATTR_WRITABLE)) {
+	if (cx_checkAttr(o, DB_ATTR_WRITABLE)) {
 		if (!first) {
 			strcat(buff, "|W");
 		} else {
@@ -114,7 +114,7 @@ static char* dbsh_attrStr(db_object o, char* buff) {
 			first = FALSE;
 		}
 	}
-	if (db_checkAttr(o, DB_ATTR_OBSERVABLE)) {
+	if (cx_checkAttr(o, DB_ATTR_OBSERVABLE)) {
 		if (!first) {
 			strcat(buff, "|O");
 		} else {
@@ -124,19 +124,19 @@ static char* dbsh_attrStr(db_object o, char* buff) {
     return buff;
 }
 
-static int dbsh_scopeWalk(db_object o, void* udata) {
-	db_id typeName;
+static int dbsh_scopeWalk(cx_object o, void* udata) {
+	cx_id typeName;
 	char state[sizeof("valid | declared | defined")];
 	char attr[sizeof("scope | writable | observable")];
 
 	DB_UNUSED(udata);
 
 	/* Get name of type */
-	db_fullname(db_typeof(o), typeName);
+	cx_fullname(cx_typeof(o), typeName);
 
 	/* Print columns */
 	printf("  ");
-	dbsh_color(OBJECT_COLOR); dbsh_printColumn(db_nameof(o), DBSH_COL_NAME); dbsh_color(NORMAL);
+	dbsh_color(OBJECT_COLOR); dbsh_printColumn(cx_nameof(o), DBSH_COL_NAME); dbsh_color(NORMAL);
 	dbsh_color(TYPE_COLOR); dbsh_printColumn(typeName, DBSH_COL_TYPE); dbsh_color(NORMAL);
 	dbsh_color(META_COLOR);
 	dbsh_printColumn(dbsh_stateStr(o, state), DBSH_COL_STATE);
@@ -149,51 +149,51 @@ static int dbsh_scopeWalk(db_object o, void* udata) {
 
 /* List scope */
 static void dbsh_ls(char* arg) {
-	db_rbtree _scope;
-	db_object o;
+	cx_rbtree _scope;
+	cx_object o;
 
 	if (arg && strlen(arg)) {
-	    o = db_resolve(scope, arg);
+	    o = cx_resolve(scope, arg);
 	    if (!o) {
 	    	dbsh_color(ERROR_COLOR);
-	        db_error("expression '%s' did not resolve to object.", arg);
+	        cx_error("expression '%s' did not resolve to object.", arg);
 	        dbsh_color(NORMAL);
 	        return;
 	    }
 	} else {
 	    o = scope;
-	    db_keep(o);
+	    cx_keep(o);
 	}
 
 	/* Get scope */
-	_scope = db_scopeof(o);
+	_scope = cx_scopeof(o);
 
 	/* Print column header */
 	dbsh_printColumnHeader();
 
-	if (_scope && db_rbtreeSize(_scope)) {
+	if (_scope && cx_rbtreeSize(_scope)) {
         /* Walk scope, print contents */
-        db_rbtreeWalk(_scope, dbsh_scopeWalk, NULL);
+        cx_rbtreeWalk(_scope, dbsh_scopeWalk, NULL);
 
-        if (db_rbtreeSize(_scope) == 1) {
-            printf("total: %d object\n", db_rbtreeSize(_scope));
+        if (cx_rbtreeSize(_scope) == 1) {
+            printf("total: %d object\n", cx_rbtreeSize(_scope));
         } else {
-            printf("total: %d objects\n", db_rbtreeSize(_scope));
+            printf("total: %d objects\n", cx_rbtreeSize(_scope));
         }
 	} else {
 	    printf("no objects.\n");
 	}
 
-	db_free(o);
+	cx_free(o);
 }
 
 typedef struct dbsh_treeWalk_t {
-	db_uint8 indent;
-	db_uint32 count;
+	cx_uint8 indent;
+	cx_uint32 count;
 }dbsh_treeWalk_t;
 
 /* Walk object-hierarchy */
-static int dbsh_treeWalk(db_object o, void* userData) {
+static int dbsh_treeWalk(cx_object o, void* userData) {
     dbsh_treeWalk_t* data;
 
     data = userData;
@@ -202,25 +202,25 @@ static int dbsh_treeWalk(db_object o, void* userData) {
 
     /* Limit name-buffer to local scope */
     {
-        db_id id1;
-        db_rbtree scope;
+        cx_id id1;
+        cx_rbtree scope;
 
-        scope = db_scopeof(o);
+        scope = cx_scopeof(o);
 
         /* Indentation */
-        if (*(db_uint8*)userData) {
+        if (*(cx_uint8*)userData) {
             printf("%*s", data->indent * 2, "");
         }
 
         /* Object */
-        if (db_parentof(db_typeof(o)) == cortex_lang_o) {
-            printf("%s%s%s %s", TYPE_COLOR, db_nameof(db_typeof(o)), NORMAL, db_nameof(o));
+        if (cx_parentof(cx_typeof(o)) == cortex_lang_o) {
+            printf("%s%s%s %s", TYPE_COLOR, cx_nameof(cx_typeof(o)), NORMAL, cx_nameof(o));
         } else {
-            printf("%s%s%s %s", TYPE_COLOR, db_fullname(db_typeof(o), id1), NORMAL, db_nameof(o));
+            printf("%s%s%s %s", TYPE_COLOR, cx_fullname(cx_typeof(o), id1), NORMAL, cx_nameof(o));
         }
 
         /* Scope operator or semicolon */
-        if (scope && db_rbtreeSize(scope)) {
+        if (scope && cx_rbtreeSize(scope)) {
             printf(" %s::%s\n", BOLD, NORMAL);
         } else {
             printf("%s;%s\n", BOLD, NORMAL);
@@ -229,7 +229,7 @@ static int dbsh_treeWalk(db_object o, void* userData) {
 
     /* Do recursive scopewalk */
     data->indent++;
-    db_scopeWalk(o, dbsh_treeWalk, userData);
+    cx_scopeWalk(o, dbsh_treeWalk, userData);
     data->indent--;
 
     return 1;
@@ -237,20 +237,20 @@ static int dbsh_treeWalk(db_object o, void* userData) {
 
 /* Print object hierarchy */
 static void dbsh_tree(char* arg) {
-    db_object o;
+    cx_object o;
     dbsh_treeWalk_t walkData;
 
     if (arg && strlen(arg)) {
-        o = db_resolve(scope, arg);
+        o = cx_resolve(scope, arg);
         if (!o) {
         	dbsh_color(ERROR_COLOR);
-            db_error("expression '%s' did not resolve to object.", arg);
+            cx_error("expression '%s' did not resolve to object.", arg);
             dbsh_color(NORMAL);
             return;
         }
     } else {
         o = scope;
-        db_keep(o);
+        cx_keep(o);
     }
 
     walkData.indent = 0;
@@ -259,59 +259,59 @@ static void dbsh_tree(char* arg) {
 
     printf("total: %d objects.\n", walkData.count);
 
-    db_free(o);
+    cx_free(o);
 }
 
 /* Navigate scopes */
 static void dbsh_cd(char* arg) {
-    db_object o;
-    db_object oldScope;
+    cx_object o;
+    cx_object oldScope;
 
     oldScope = scope;
 
     if (!strlen(arg)) {
         scope = root_o;
-        db_keep(scope);
+        cx_keep(scope);
     } else if (!strcmp(arg, "..")) {
-        if (db_parentof(scope)) {
-            scope = db_parentof(scope);
+        if (cx_parentof(scope)) {
+            scope = cx_parentof(scope);
         } else {
         	dbsh_color(ERROR_COLOR);
-            db_error("scope is root.");
+            cx_error("scope is root.");
             dbsh_color(NORMAL);
             return;
         }
-        db_keep(scope);
+        cx_keep(scope);
     } else {
-        o = db_resolve(scope, arg);
+        o = cx_resolve(scope, arg);
         if (o) {
             scope = o;
         } else {
         	dbsh_color(ERROR_COLOR);
-            db_error("expression '%s' did not resolve to object.", arg);
+            cx_error("expression '%s' did not resolve to object.", arg);
             dbsh_color(NORMAL);
             return;
         }
     }
 
-    db_free(oldScope);
+    cx_free(oldScope);
 }
 
 /* Show object */
 static int dbsh_show(char* object) {
-    db_object o;
-    db_id id;
+    cx_object o;
+    cx_id id;
     char state[sizeof("valid | declared | defined")];
     char attr[sizeof("scope | writable | observable")];
-    struct db_serializer_s s;
-    db_string_ser_t sdata;
+    struct cx_serializer_s s;
+    cx_string_ser_t sdata;
 
-    db_toggleEcho(FALSE);
+    cx_toggleEcho(FALSE);
 
-    if ((o = db_resolve(scope, object))) {
+    if ((o = cx_resolve(scope, object))) {
 
     	/* Initialize serializer userData */
-        s = db_string_ser(DB_PRIVATE, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
+        s = cx_string_ser(DB_PRIVATE, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
         sdata.buffer = NULL;
         sdata.length = 0;
         sdata.maxlength = 0;
@@ -321,77 +321,77 @@ static int dbsh_show(char* object) {
 
     	/* Print object properties */
         if (o) {
-			printf("%sname:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, OBJECT_COLOR, db_fullname(o, id), NORMAL);
-			printf("%stype:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, TYPE_COLOR, db_fullname(db_typeof(o), id), NORMAL);
+			printf("%sname:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, OBJECT_COLOR, cx_fullname(o, id), NORMAL);
+			printf("%stype:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, TYPE_COLOR, cx_fullname(cx_typeof(o), id), NORMAL);
 			printf("%saddress:%s      <%p>\n", INTERFACE_COLOR, NORMAL, o);
-			printf("%srefcount:%s     %d\n", INTERFACE_COLOR, NORMAL, db_countof(o)-1); /* Correct for dbsh's own keep */
+			printf("%srefcount:%s     %d\n", INTERFACE_COLOR, NORMAL, cx_countof(o)-1); /* Correct for dbsh's own keep */
 			printf("%sstate:%s        %s%s%s\n", INTERFACE_COLOR, NORMAL, META_COLOR, dbsh_stateStr(o, state), NORMAL);
 			printf("%sattributes:%s   %s%s%s\n", INTERFACE_COLOR, NORMAL, META_COLOR, dbsh_attrStr(o, attr), NORMAL);
-			if (db_checkAttr(o, DB_ATTR_SCOPED)) {
-				printf("%sparent:       %s%s%s\n", INTERFACE_COLOR, OBJECT_COLOR, db_fullname(db_parentof(o), id), NORMAL);
-				if (db_scopeof(o)) {
-					printf("%schildcount:%s   %d\n", INTERFACE_COLOR, NORMAL, db_rbtreeSize(db_scopeof(o)));
+			if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
+				printf("%sparent:       %s%s%s\n", INTERFACE_COLOR, OBJECT_COLOR, cx_fullname(cx_parentof(o), id), NORMAL);
+				if (cx_scopeof(o)) {
+					printf("%schildcount:%s   %d\n", INTERFACE_COLOR, NORMAL, cx_rbtreeSize(cx_scopeof(o)));
 				}
 			}
         }
 
         /* Serialize value to string */
-        db_serialize(&s, o, &sdata);
+        cx_serialize(&s, o, &sdata);
         if (sdata.buffer) {
         	if (o) {
         		printf("%svalue:%s        ", INTERFACE_COLOR, NORMAL);
         	}
 
         	printf("%s\n", sdata.buffer);
-            db_dealloc(sdata.buffer);
+            cx_dealloc(sdata.buffer);
             sdata.buffer = NULL;
             sdata.ptr = NULL;
         }
 
         /* If object is a type, do a metawalk with the string-serializer */
         if (o) {
-			if (db_class_instanceof(db_type_o, o) && db_checkState(o, DB_DEFINED)) {
+			if (cx_class_instanceof(cx_type_o, o) && cx_checkState(o, DB_DEFINED)) {
 			    s.access = DB_LOCAL | DB_READONLY | DB_PRIVATE;
 			    s.accessKind = DB_NOT;
-				db_metaWalk(&s, o, &sdata);
+				cx_metaWalk(&s, o, &sdata);
 				if (sdata.buffer) {
 					printf("%sinitializer:%s     %s\n", INTERFACE_COLOR, NORMAL, sdata.buffer);
-					db_dealloc(sdata.buffer);
+					cx_dealloc(sdata.buffer);
 				}
 			}
         }
 
         if (o) {
-            db_free_ext(NULL, o, "free expression result");
+            cx_free_ext(NULL, o, "free expression result");
         }
 
         printf("\n");
 
-        db_toggleEcho(TRUE);
+        cx_toggleEcho(TRUE);
         return 0;
     } else {
-    	db_error("expression '%s' does not resolve to object", object);
-        db_toggleEcho(TRUE);
+    	cx_error("expression '%s' does not resolve to object", object);
+        cx_toggleEcho(TRUE);
     	return -1;
     }
 }
 
 /* Import file */
 static void dbsh_import(char* file) {
-    db_load(file);
+    cx_load(file);
 }
 
 /* Drop scope */
 static void dbsh_drop(char* name) {
-	db_object o;
+	cx_object o;
 
-	o = db_resolve(scope, name);
+	o = cx_resolve(scope, name);
 	if (o) {
-		db_drop(o);
-		db_free(o);
+		cx_drop(o);
+		cx_free(o);
 	} else {
 		dbsh_color(ERROR_COLOR);
-		db_error("expression '%s' did not resolve to object.", scope);
+		cx_error("expression '%s' did not resolve to object.", scope);
 		dbsh_color(NORMAL);
 	}
 }
@@ -466,14 +466,14 @@ static int dbsh_doCmd(char* cmd) {
     } else if (!memcmp(cmd, "help", strlen("help"))) {
     	dbsh_help();
     } else {
-    	db_char *lastErr;
-    	if ((lastErr = db_lasterror())) {
+    	cx_char *lastErr;
+    	if ((lastErr = cx_lasterror())) {
     		dbsh_color(ERROR_COLOR);
-    		db_error("%s", lastErr);
+    		cx_error("%s", lastErr);
     		dbsh_color(NORMAL);
     	} else {
     		dbsh_color(ERROR_COLOR);
-    		db_error("expression '%s' did not resolve to a valid expression or command", cmd);
+    		cx_error("expression '%s' did not resolve to a valid expression or command", cmd);
     		dbsh_color(NORMAL);
     	}
     }
@@ -486,7 +486,7 @@ quit:
 /* Shell */
 static void dbsh_shell(void) {
 	char cmd[DBSH_CMD_MAX];
-	db_bool quit;
+	cx_bool quit;
 
 	quit = FALSE;
 
@@ -526,27 +526,27 @@ int main(int argc, char* argv[]) {
 	int i;
 
 	/* Start database */
-	db_start();
+	cx_start();
 
 	printf("cortex shell - type 'help' for instructions.\n");
 
 	/* Parse arguments */
 	for(i=1; i<argc; i++) {
-		if ( db_load(argv[i]) ) {
-			printf("%s\n", db_lasterror());
+		if ( cx_load(argv[i]) ) {
+			printf("%s\n", cx_lasterror());
 		}
 	}
 
 	/* Assign scope to root */
 	scope = root_o;
-	db_keep(root_o); /* Keep scope */
+	cx_keep(root_o); /* Keep scope */
 
 	dbsh_shell();
 
-	db_free(scope); /* Free scope */
+	cx_free(scope); /* Free scope */
 
 	/* Stop database */
-	db_stop();
+	cx_stop();
 
 	return 0;
 }

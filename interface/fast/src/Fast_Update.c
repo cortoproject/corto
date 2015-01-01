@@ -14,23 +14,23 @@
 #include "Fast.h"
 #include "Fast_Expression.h"
 #include "Fast_Block.h"
-#include "db_ic.h"
+#include "cx_ic.h"
 Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Update::construct(Update object) */
-db_int16 Fast_Update_construct(Fast_Update object) {
+cx_int16 Fast_Update_construct(Fast_Update object) {
 /* $begin(::cortex::Fast::Update::construct) */
-	db_type t;
-	db_iter exprIter;
+	cx_type t;
+	cx_iter exprIter;
 	Fast_Expression expr;
 
     Fast_Node(object)->kind = FAST_Update;
 
-    exprIter = db_llIter(object->exprList);
-    while(db_iterHasNext(&exprIter)) {
-    	expr = db_iterNext(&exprIter);
+    exprIter = cx_llIter(object->exprList);
+    while(cx_iterHasNext(&exprIter)) {
+    	expr = cx_iterNext(&exprIter);
     	t = Fast_Expression_getType(expr);
     	if (!t->reference) {
     		if (!expr->isReference) {
@@ -46,12 +46,12 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::Update::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_Update_toIc_v(Fast_Update _this, db_icProgram program, db_icStorage storage, db_bool stored) {
+/* ::cortex::Fast::Update::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+cx_ic Fast_Update_toIc_v(Fast_Update _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Update::toIc) */
-    db_ic expr, from = NULL;
-    db_iter exprIter;
-    db_icOp op;
+    cx_ic expr, from = NULL;
+    cx_iter exprIter;
+    cx_icOp op;
     DB_UNUSED(storage);
     DB_UNUSED(stored);
 
@@ -61,18 +61,18 @@ db_ic Fast_Update_toIc_v(Fast_Update _this, db_icProgram program, db_icStorage s
     }
 
     /* Add update statement for each expression in exprList */
-    exprIter = db_llIter(_this->exprList);
-    while(db_iterHasNext(&exprIter)) {
-    	Fast_Expression fastExpr = db_iterNext(&exprIter);
+    exprIter = cx_llIter(_this->exprList);
+    while(cx_iterHasNext(&exprIter)) {
+    	Fast_Expression fastExpr = cx_iterNext(&exprIter);
     	expr = Fast_Node_toIc(Fast_Node(fastExpr), program, NULL, TRUE);
 		if (!_this->block) {
-			op = db_icOp__create(program, Fast_Node(_this)->line, DB_IC_UPDATE, (db_icValue)expr, (db_icValue)from, NULL);
-			db_icProgram_addIc(program, (db_ic)op);
+			op = cx_icOp__create(program, Fast_Node(_this)->line, DB_IC_UPDATE, (cx_icValue)expr, (cx_icValue)from, NULL);
+			cx_icProgram_addIc(program, (cx_ic)op);
 			op->s1Deref = DB_IC_DEREF_ADDRESS;
 
 		} else {
-			op = db_icOp__create(program, Fast_Node(_this)->line, DB_IC_UPDATEBEGIN, (db_icValue)expr, NULL, NULL);
-			db_icProgram_addIc(program, (db_ic)op);
+			op = cx_icOp__create(program, Fast_Node(_this)->line, DB_IC_UPDATEBEGIN, (cx_icValue)expr, NULL, NULL);
+			cx_icProgram_addIc(program, (cx_ic)op);
 			op->s1Deref = DB_IC_DEREF_ADDRESS;
 		}
     }
@@ -81,12 +81,12 @@ db_ic Fast_Update_toIc_v(Fast_Update _this, db_icProgram program, db_icStorage s
         /* Translate block to ic */
         Fast_Block_toIc(_this->block, program, NULL, FALSE);
 
-        exprIter = db_llIter(_this->exprList);
-        while(db_iterHasNext(&exprIter)) {
-        	Fast_Expression fastExpr = db_iterNext(&exprIter);
+        exprIter = cx_llIter(_this->exprList);
+        while(cx_iterHasNext(&exprIter)) {
+        	Fast_Expression fastExpr = cx_iterNext(&exprIter);
         	expr = Fast_Node_toIc(Fast_Node(fastExpr), program, NULL, TRUE);
-			op = db_icOp__create(program, Fast_Node(_this)->line, DB_IC_UPDATEEND, (db_icValue)expr, (db_icValue)from, NULL);
-			db_icProgram_addIc(program, (db_ic)op);
+			op = cx_icOp__create(program, Fast_Node(_this)->line, DB_IC_UPDATEEND, (cx_icValue)expr, (cx_icValue)from, NULL);
+			cx_icProgram_addIc(program, (cx_ic)op);
 			op->s1Deref = DB_IC_DEREF_ADDRESS;
         }
     }

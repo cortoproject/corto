@@ -1,19 +1,19 @@
 /*
- * db_generator.c
+ * cx_generator.c
  *
  *  Created on: Sep 17, 2012
  *      Author: sander
  */
 
 #include "cortex.h"
-#include "db_generator.h"
+#include "cx_generator.h"
 #include "stdarg.h"
 
 /* Generator functions */
-db_generator gen_new(db_string name, db_string language) {
-    db_generator result;
+cx_generator gen_new(cx_string name, cx_string language) {
+    cx_generator result;
 
-    result = db_malloc(sizeof(struct db_generator_s));
+    result = cx_malloc(sizeof(struct cx_generator_s));
 
     /* List of output directories is initially empty */
     result->attributes = NULL;
@@ -57,7 +57,7 @@ db_generator gen_new(db_string name, db_string language) {
 }
 
 /* Control how id's are generated */
-g_idKind g_setIdKind(db_generator g, g_idKind kind) {
+g_idKind g_setIdKind(cx_generator g, g_idKind kind) {
 	g_idKind prev;
 	prev = g->idKind;
 	g->idKind = kind;
@@ -65,22 +65,22 @@ g_idKind g_setIdKind(db_generator g, g_idKind kind) {
 }
 
 /* Get name, or if no name is provided, return name of current parse-object */
-db_string g_getName(db_generator g) {
-	db_string result;
+cx_string g_getName(cx_generator g) {
+	cx_string result;
 
 	result = NULL;
 	if (g->name) {
 		result = g->name;
 	} else if (g->current) {
-		result = db_nameof(g->current->o);
+		result = cx_nameof(g->current->o);
 	}
 
 	return result;
 }
 
 /* Get current object */
-db_object g_getCurrent(db_generator g) {
-	db_object result;
+cx_object g_getCurrent(cx_generator g) {
+	cx_object result;
 
 	result = NULL;
 
@@ -92,16 +92,16 @@ db_object g_getCurrent(db_generator g) {
 }
 
 /* Add to-parse object */
-void gen_parse(db_generator g, db_object object, db_bool parseSelf, db_bool parseScope, db_string prefix) {
+void gen_parse(cx_generator g, cx_object object, cx_bool parseSelf, cx_bool parseScope, cx_string prefix) {
     g_object* o = NULL;
-    db_iter objectIter;
+    cx_iter objectIter;
 
     /* First do a lookup, check if the object already exists */
     if (g->objects) {
     	g_object *object;
-    	objectIter = db_llIter(g->objects);
-    	while(db_iterHasNext(&objectIter)) {
-    		object = db_iterNext(&objectIter);
+    	objectIter = cx_llIter(g->objects);
+    	while(cx_iterHasNext(&objectIter)) {
+    		object = cx_iterNext(&objectIter);
     		if (object->o == object) {
     			o = object;
     			break;
@@ -109,11 +109,11 @@ void gen_parse(db_generator g, db_object object, db_bool parseSelf, db_bool pars
     	}
     }
 
-    db_trace("o = %p (%s)", o, db_nameof(object));
+    cx_trace("o = %p (%s)", o, cx_nameof(object));
 
     if (!o) {
-		o = db_malloc(sizeof(g_object));
-		db_keep(object);
+		o = cx_malloc(sizeof(g_object));
+		cx_keep(object);
 		o->o = object;
 		o->parseSelf = parseSelf;
 		o->parseScope = parseScope;
@@ -125,9 +125,9 @@ void gen_parse(db_generator g, db_object object, db_bool parseSelf, db_bool pars
 		}
 
 		if (!g->objects) {
-			g->objects = db_llNew();
+			g->objects = cx_llNew();
 		}
-		db_llAppend(g->objects, o);
+		cx_llAppend(g->objects, o);
 
 		if (!g->current) {
 			g->current = o;
@@ -135,14 +135,14 @@ void gen_parse(db_generator g, db_object object, db_bool parseSelf, db_bool pars
     } else {
     	/* Prefixes can be overridden if NULL. */
     	if (!o->prefix) {
-    		o->prefix = db_strdup(prefix);
+    		o->prefix = cx_strdup(prefix);
     	}
     }
 }
 
 static int g_genAttributeFind(void *value, void *userData) {
 	g_attribute *attr = value;
-	if(!strcmp(attr->key, *(db_string*)userData)) {
+	if(!strcmp(attr->key, *(cx_string*)userData)) {
 		*(void**)userData = attr;
 		return 0;
 	}
@@ -150,36 +150,36 @@ static int g_genAttributeFind(void *value, void *userData) {
 }
 
 /* Set attribute */
-void gen_setAttribute(db_generator g, db_string key, db_string value) {
+void gen_setAttribute(cx_generator g, cx_string key, cx_string value) {
     g_attribute* attr = NULL;
 
     if (!g->attributes) {
-        g->attributes = db_llNew();
+        g->attributes = cx_llNew();
     }else {
     	void* userData = key;
-		if(!db_llWalk(g->attributes, g_genAttributeFind, &userData)) {
+		if(!cx_llWalk(g->attributes, g_genAttributeFind, &userData)) {
 			attr = userData;
 		}
     }
 
     if(!attr) {
-	    attr = db_malloc(sizeof(g_attribute));
-	    attr->key = db_strdup(key);
+	    attr = cx_malloc(sizeof(g_attribute));
+	    attr->key = cx_strdup(key);
 	}else {
-		db_dealloc(attr->value);
+		cx_dealloc(attr->value);
 	}
-    attr->value = db_strdup(value);
+    attr->value = cx_strdup(value);
 
-    db_llAppend(g->attributes, attr);
+    cx_llAppend(g->attributes, attr);
 }
 
 /* Get attribute */
-db_string gen_getAttribute(db_generator g, db_string key) {
-	db_string result = NULL;
+cx_string gen_getAttribute(cx_generator g, cx_string key) {
+	cx_string result = NULL;
 
 	if(g->attributes) {
 		void *userData = key;
-		if(!db_llWalk(g->attributes, g_genAttributeFind, &userData)) {
+		if(!cx_llWalk(g->attributes, g_genAttributeFind, &userData)) {
 			result = ((g_attribute*)userData)->value;
 		}
 	}
@@ -188,22 +188,22 @@ db_string gen_getAttribute(db_generator g, db_string key) {
 }
 
 /* Load generator actions from library */
-db_int16 gen_load(db_generator g, db_string library) {
+cx_int16 gen_load(cx_generator g, cx_string library) {
 
     /* Load library */
-    g->library = db_dlOpen(library);
+    g->library = cx_dlOpen(library);
     if (!g->library) {
-        db_error("%s", db_dlError());
+        cx_error("%s", cx_dlError());
         goto error;
     }
 
     /* Load actions */
-    g->start_action = (g_startAction)db_dlProc(g->library, "cortex_genMain");
+    g->start_action = (g_startAction)cx_dlProc(g->library, "cortex_genMain");
     if (!g->start_action) {
-        db_error("g_Load: unresolved symbol 'cortex_genMain'");
+        cx_error("g_Load: unresolved symbol 'cortex_genMain'");
         goto error;
     }
-    g->id_action = (g_idAction)db_dlProc(g->library, "cortex_genId");
+    g->id_action = (g_idAction)cx_dlProc(g->library, "cortex_genId");
 
     /* Function is allowed to be absent. */
 
@@ -219,10 +219,10 @@ static int g_freeObjects(void* _o, void* udata) {
 
 	o = _o;
 	if (o->prefix) {
-		db_dealloc(o->prefix);
+		cx_dealloc(o->prefix);
 	}
-	db_free(o->o);
-	db_dealloc(o);
+	cx_free(o->o);
+	cx_dealloc(o);
 
 	return 1;
 }
@@ -239,17 +239,17 @@ static int g_freeSnippet(void* o, void* udata) {
 		g_fileWrite(file, "%s(%s)", snippet->option, snippet->id);
 		g_fileWrite(file, "%s", snippet->src);
 		g_fileWrite(file, "$end\n");
-		db_warning("%s: code-snippet '%s' is not used, manually merge or remove from file.", file->name, snippet->id);
+		cx_warning("%s: code-snippet '%s' is not used, manually merge or remove from file.", file->name, snippet->id);
 	}
 
 	if (snippet->id) {
-		db_dealloc(snippet->id);
+		cx_dealloc(snippet->id);
 	}
 	if (snippet->src) {
-		db_dealloc(snippet->src);
+		cx_dealloc(snippet->src);
 	}
 
-	db_dealloc(snippet);
+	cx_dealloc(snippet);
 
 	return 1;
 }
@@ -263,17 +263,17 @@ static int g_closeFile(void* o, void* udata) {
 
     /* Free snippets */
     if (file->snippets) {
-    	db_llWalk(file->snippets, g_freeSnippet, file);
-    	db_llFree(file->snippets);
+    	cx_llWalk(file->snippets, g_freeSnippet, file);
+    	cx_llFree(file->snippets);
     }
     if (file->headers) {
-    	db_llWalk(file->headers, g_freeSnippet, file);
-    	db_llFree(file->headers);
+    	cx_llWalk(file->headers, g_freeSnippet, file);
+    	cx_llFree(file->headers);
     }
 
-    db_fileClose(file->file);
-    db_dealloc(file->name);
-    db_dealloc(file);
+    cx_fileClose(file->file);
+    cx_dealloc(file->name);
+    cx_dealloc(file);
 
     return 1;
 }
@@ -285,76 +285,76 @@ static int g_freeAttribute(void* _o, void* udata) {
 
     o = _o;
     if (o->key) {
-        db_dealloc(o->key);
+        cx_dealloc(o->key);
     }
     if (o->value) {
-        db_dealloc(o->value);
+        cx_dealloc(o->value);
     }
 
-    db_dealloc(o);
+    cx_dealloc(o);
 
     return 1;
 }
 
 /* Free generator */
-void gen_free(db_generator g) {
+void gen_free(cx_generator g) {
     if (g->library) {
-        db_dlClose(g->library);
+        cx_dlClose(g->library);
         g->library = NULL;
     }
 
     if (g->objects) {
-        db_llWalk(g->objects, g_freeObjects, NULL);
-        db_llFree(g->objects);
+        cx_llWalk(g->objects, g_freeObjects, NULL);
+        cx_llFree(g->objects);
         g->objects = NULL;
     }
 
     if (g->files) {
-        db_llWalk(g->files, g_closeFile, NULL);
-        db_llFree(g->files);
+        cx_llWalk(g->files, g_closeFile, NULL);
+        cx_llFree(g->files);
         g->files = NULL;
     }
 
     if (g->attributes) {
-        db_llWalk(g->attributes, g_freeAttribute, NULL);
-        db_llFree(g->attributes);
+        cx_llWalk(g->attributes, g_freeAttribute, NULL);
+        cx_llFree(g->attributes);
         g->attributes = NULL;
     }
 
     if (g->imports) {
-    	db_llFree(g->imports);
+    	cx_llFree(g->imports);
     }
 
     if (g->name) {
-    	db_dealloc(g->name);
+    	cx_dealloc(g->name);
     }
     if (g->language) {
-        db_dealloc(g->language);
+        cx_dealloc(g->language);
     }
-    db_dealloc(g);
+    cx_dealloc(g);
 }
 
 /* Start generator */
-db_int16 gen_start(db_generator g) {
+cx_int16 gen_start(cx_generator g) {
     return g->start_action(g);
 }
 
 /* ==== Generator utility functions */
 typedef struct g_serializeImports_t {
-    db_generator g;
-    db_object stack[1024]; /* Maximum serializer-depth */
-    db_uint32 count;
+    cx_generator g;
+    cx_object stack[1024]; /* Maximum serializer-depth */
+    cx_uint32 count;
 }g_serializeImports_t;
-db_int16 g_serializeImportsReference(db_serializer s, db_value *v, void* userData) {
-	db_object o;
+cx_int16 g_serializeImportsReference(cx_serializer s, cx_value *v, void* userData) {
+	cx_object o;
 	g_serializeImports_t *data = userData;
-	db_generator g = data->g;
+	cx_generator g = data->g;
 
-	o = *(db_object*)db_valueValue(v);
+	o = *(cx_object*)cx_valueValue(v);
 	if (o) {
 	    /* Search unscoped object for references to other modules */
-		if (!db_checkAttr(o, DB_ATTR_SCOPED)) {
-		    db_uint32 i;
+		if (!cx_checkAttr(o, DB_ATTR_SCOPED)) {
+		    cx_uint32 i;
 
 		    /* Make sure to not serialize an object twice, in case of a cycle */
 		    for(i=0; i<data->count; i++) {
@@ -366,25 +366,25 @@ db_int16 g_serializeImportsReference(db_serializer s, db_value *v, void* userDat
 		    if (i == data->count) {
                 data->stack[data->count] = o;
                 data->count++;
-                db_serialize(s, o, userData);
+                cx_serialize(s, o, userData);
                 data->count--;
 		    }
 		} else {
 			if (!g_mustParse(g, o)) {
-	    		db_object parent = o;
-	    		while(parent && (db_parentof(parent) != cortex_lang_o)) {
-	    			parent = db_parentof(parent);
+	    		cx_object parent = o;
+	    		while(parent && (cx_parentof(parent) != cortex_lang_o)) {
+	    			parent = cx_parentof(parent);
 	    		}
 	    		if (!parent) {
 		    		parent = o;
-		    		while(parent && (db_typeof(parent)->real->kind != DB_VOID)) {
-		    			parent = db_parentof(parent);
+		    		while(parent && (cx_typeof(parent)->real->kind != DB_VOID)) {
+		    			parent = cx_parentof(parent);
 		    		}
 		    		if (!g->imports) {
-		    			g->imports = db_llNew();
+		    			g->imports = cx_llNew();
 		    		}
-		    		if ((parent != root_o) && !db_llHasObject(g->imports, parent)) {
-		    			db_llInsert(g->imports, parent);
+		    		if ((parent != root_o) && !cx_llHasObject(g->imports, parent)) {
+		    			cx_llInsert(g->imports, parent);
 		    		}
 	    		}
 			}
@@ -395,9 +395,9 @@ db_int16 g_serializeImportsReference(db_serializer s, db_value *v, void* userDat
 }
 
 
-struct db_serializer_s g_serializeImportsSerializer(void) {
-	struct db_serializer_s result;
-	db_serializerInit(&result);
+struct cx_serializer_s g_serializeImportsSerializer(void) {
+	struct cx_serializer_s result;
+	cx_serializerInit(&result);
 	result.reference = g_serializeImportsReference;
 	result.access = DB_PRIVATE;
 	result.accessKind = DB_NOT; /* Serialize not nothing, thus everything. */
@@ -410,19 +410,19 @@ struct g_walkObjects_t {
 };
 
 /* Resolve imports */
-int g_importWalk(db_object o, void* userData) {
-	db_generator g = userData;
+int g_importWalk(cx_object o, void* userData) {
+	cx_generator g = userData;
 	g_serializeImports_t walkData;
-	struct db_serializer_s s;
+	struct cx_serializer_s s;
 
 	walkData.count = 0;
 	walkData.g = g;
 	s = g_serializeImportsSerializer();
-	db_serialize(&s, o, &walkData);
+	cx_serialize(&s, o, &walkData);
 	return 1;
 }
 
-db_int16 g_resolveImports(db_generator generator) {
+cx_int16 g_resolveImports(cx_generator generator) {
 	g_walk(generator, g_importWalk, generator);
 	return 0;
 }
@@ -438,21 +438,21 @@ int g_walkObjects(void* o, void* userData) {
         goto stop;
     }
 
-    return db_scopeWalk(o, g_walkObjects, userData);
+    return cx_scopeWalk(o, g_walkObjects, userData);
 stop:
     return 0;
 }
 
 /* Walk objects, choose between recursive scopewalk or only top-level objects */
-static int g_walk_ext(db_generator g, g_walkAction action, void* userData, db_bool scopeWalk, db_bool recursiveWalk) {
-    db_iter iter;
+static int g_walk_ext(cx_generator g, g_walkAction action, void* userData, cx_bool scopeWalk, cx_bool recursiveWalk) {
+    cx_iter iter;
 
     if (g->objects) {
         g_object* o;
 
-        iter = db_llIter(g->objects);
-        while(db_iterHasNext(&iter)) {
-            o = db_iterNext(&iter);
+        iter = cx_llIter(g->objects);
+        while(cx_iterHasNext(&iter)) {
+            o = cx_iterNext(&iter);
 
             /* Parse object */
             if (o->parseSelf) {
@@ -465,7 +465,7 @@ static int g_walk_ext(db_generator g, g_walkAction action, void* userData, db_bo
             if (o->parseScope && scopeWalk) {
                 g->current = o;
                 if (!recursiveWalk) {
-                    if (!db_scopeWalk(o->o, action, userData)) {
+                    if (!cx_scopeWalk(o->o, action, userData)) {
                         goto stop;
                     }
                 } else {
@@ -474,7 +474,7 @@ static int g_walk_ext(db_generator g, g_walkAction action, void* userData, db_bo
                     walkData.userData = userData;
 
                     /* Recursively walk scopes */
-                    if (!db_scopeWalk(o->o, g_walkObjects, &walkData)) {
+                    if (!cx_scopeWalk(o->o, g_walkObjects, &walkData)) {
                         goto stop;
                     }
                 }
@@ -488,41 +488,41 @@ stop:
 }
 
 /* Walk objects */
-int g_walk(db_generator g, g_walkAction action, void* userData) {
+int g_walk(cx_generator g, g_walkAction action, void* userData) {
     return g_walk_ext(g, action, userData, TRUE, FALSE);
 }
 
 /* Walk objects, never walk scopes, even if object is required to. */
-int g_walkNoScope(db_generator g, g_walkAction action, void* userData) {
+int g_walkNoScope(cx_generator g, g_walkAction action, void* userData) {
     return g_walk_ext(g, action, userData, FALSE, FALSE);
 }
 
 /* Walk objects recursively */
-int g_walkRecursive(db_generator g, g_walkAction action, void* userData) {
+int g_walkRecursive(cx_generator g, g_walkAction action, void* userData) {
     return g_walk_ext(g, action, userData, TRUE, TRUE);
 }
 
 /* Find prefix for a given object. Search parse-object in generator
  * which is closest to the object passed to this function. */
-static g_object* g_findPrefix(db_generator g, db_object o, db_object* match) {
-	db_iter iter;
+static g_object* g_findPrefix(cx_generator g, cx_object o, cx_object* match) {
+	cx_iter iter;
 	g_object *result, *t;
-	db_object parent;
+	cx_object parent;
 	unsigned int distance, minDistance;
 
 	result = NULL;
 	if (g->objects) {
 		minDistance = -1;
-		iter = db_llIter(g->objects);
-		while(db_iterHasNext(&iter)) {
-			t = db_iterNext(&iter);
+		iter = cx_llIter(g->objects);
+		while(cx_iterHasNext(&iter)) {
+			t = cx_iterNext(&iter);
 
 			/* Check if object occurs in scope of 'o' and measure distance to 'o' */
 			parent = o;
 			distance = 0;
 			while(parent && (parent != t->o)) {
 				distance++;
-				parent = db_parentof(parent);
+				parent = cx_parentof(parent);
 			}
 
 			/* If a parent was found (parent of root is NULL), assign it to result if
@@ -543,7 +543,7 @@ static g_object* g_findPrefix(db_generator g, db_object o, db_object* match) {
 }
 
 /* Obtain prefix */
-db_string g_getPrefix(db_generator g, db_object o) {
+cx_string g_getPrefix(cx_generator g, cx_object o) {
     g_object* prefix;
 
     /* Lookup prefix */
@@ -553,41 +553,41 @@ db_string g_getPrefix(db_generator g, db_object o) {
 }
 
 /* Object transformations */
-static db_char* g_oidTransform(db_generator g, db_object o, db_id _id, g_idKind kind) {
+static cx_char* g_oidTransform(cx_generator g, cx_object o, cx_id _id, g_idKind kind) {
 	DB_UNUSED(g);
 
 	/* If the object is a function with an argumentlist, cut the argumentlist
 	 * from the name if the function is not overloaded. This keeps processing for
 	 * generators trivial. */
-	if (db_class_instanceof(db_procedure_o, db_typeof(o))) {
-	    if (!db_function(o)->overloaded) {
-            db_char* ptr;
+	if (cx_class_instanceof(cx_procedure_o, cx_typeof(o))) {
+	    if (!cx_function(o)->overloaded) {
+            cx_char* ptr;
             ptr = strchr(_id, '(');
             if (ptr) {
                 *ptr = '\0';
             } else {
-            	if (db_procedure(db_typeof(o))->kind != DB_OBSERVER) {
-					db_id id;
-					db_warning("function object '%s' without argument list.", db_fullname(o, id));
+            	if (cx_procedure(cx_typeof(o))->kind != DB_OBSERVER) {
+					cx_id id;
+					cx_warning("function object '%s' without argument list.", cx_fullname(o, id));
             	}
             }
 	    } else {
 	        /* If function is overloaded, construct the 'request' string, that is, the string without
 	         * the argument-names. This results in a string with only the types, which is enough to
 	         * generate unique names in languages which do not support overloading. */
-	        db_id tmp, buff;
-	        db_uint32 count, i;
+	        cx_id tmp, buff;
+	        cx_uint32 count, i;
 	        strcpy(tmp, _id);
 
-	        db_signatureName(tmp, _id);
+	        cx_signatureName(tmp, _id);
 	        strcat(_id, "(");
 
-	        count = db_signatureParamCount(tmp);
+	        count = cx_signatureParamCount(tmp);
 
 	        /* strcat is not the most efficient function here, but it is the easiest, and this
 	         * part of the code is not performance-critical. */
 	        for(i=0; i<count; i++) {
-	            db_signatureParamType(tmp, i, buff, NULL);
+	            cx_signatureParamType(tmp, i, buff, NULL);
 	            if (i) {
 	                strcat(_id, ",");
 	            }
@@ -599,16 +599,16 @@ static db_char* g_oidTransform(db_generator g, db_object o, db_id _id, g_idKind 
 
 	/* Check if class-identifiers must be altered */
 	if (kind != DB_GENERATOR_ID_DEFAULT) {
-	    db_object i = o;
-        db_char* ptr;
+	    cx_object i = o;
+        cx_char* ptr;
 
         ptr = _id + strlen(_id);
 	    while(i) {
             while((ptr > _id) && (*ptr != ':')) {
                 ptr--;
             }
-            if ((db_class_instanceof(db_interface_o, i) && db_typedef(i)->real->reference) || (i == db_typedef(db_object_o))) {
-            	db_char *start;
+            if ((cx_class_instanceof(cx_interface_o, i) && cx_typedef(i)->real->reference) || (i == cx_typedef(cx_object_o))) {
+            	cx_char *start;
                 if (*ptr == ':') {
                 	start = ptr + 1;
                 } else {
@@ -625,7 +625,7 @@ static db_char* g_oidTransform(db_generator g, db_object o, db_id _id, g_idKind 
             	break;
             }
 
-            i = db_parentof(i);
+            i = cx_parentof(i);
             if (i) {
                 if (*ptr == ':') {
                     ptr -= 2;
@@ -638,10 +638,10 @@ static db_char* g_oidTransform(db_generator g, db_object o, db_id _id, g_idKind 
 }
 
 /* Translate object-id */
-db_string g_fullOidExt(db_generator g, db_object o, db_id id, g_idKind kind) {
+cx_string g_fullOidExt(cx_generator g, cx_object o, cx_id id, g_idKind kind) {
 	g_object* prefix;
-	db_object match;
-	db_id _id;
+	cx_object match;
+	cx_id _id;
 
 	id[0] = '\0';
 
@@ -653,14 +653,14 @@ db_string g_fullOidExt(db_generator g, db_object o, db_id id, g_idKind kind) {
 
 	/* If prefix is found, replace the scope up until the found object with the prefix */
 	if (prefix && prefix->prefix) {
-		db_uint32 count;
-		db_object scopes[DB_MAX_SCOPE_DEPTH];
+		cx_uint32 count;
+		cx_object scopes[DB_MAX_SCOPE_DEPTH];
 
 		/* Obtain list of scopes from matched to object */
 		count = 0;
 		scopes[count] = o;
 		while(scopes[count] != match) {
-			scopes[count+1] = db_parentof(scopes[count]);
+			scopes[count+1] = cx_parentof(scopes[count]);
 			count++;
 		}
 
@@ -669,12 +669,12 @@ db_string g_fullOidExt(db_generator g, db_object o, db_id id, g_idKind kind) {
 		while(count) {
 			count--;
 			strcat(_id, "::");
-			strcat(_id, db_nameof(scopes[count]));
+			strcat(_id, cx_nameof(scopes[count]));
 		}
 
 	/* If no prefix is found for object, just use the scoped identifier */
 	} else {
-		db_fullname(o, _id);
+		cx_fullname(o, _id);
 	}
 
 	g_oidTransform(g, o, _id, kind);
@@ -689,13 +689,13 @@ db_string g_fullOidExt(db_generator g, db_object o, db_id id, g_idKind kind) {
 }
 
 /* Translate an object to a language-specific identifier with idKind provided. */
-db_string g_fullOid(db_generator g, db_object o, db_id id) {
+cx_string g_fullOid(cx_generator g, cx_object o, cx_id id) {
 	return g_fullOidExt(g, o, id, g->idKind);
 }
 
 /* Translate an id to language representation */
-db_string g_id(db_generator g, db_string str, db_id id) {
-	db_string result;
+cx_string g_id(cx_generator g, cx_string str, cx_id id) {
+	cx_string result;
 
 	if (g->id_action) {
 		result = g->id_action(str, id);
@@ -707,11 +707,11 @@ db_string g_id(db_generator g, db_string str, db_id id) {
 }
 
 /* Translate a class id to language representation */
-db_string g_oid(db_generator g, db_object o, db_id id) {
-	db_string result;
-	db_id cid;
+cx_string g_oid(cx_generator g, cx_object o, cx_id id) {
+	cx_string result;
+	cx_id cid;
 	g_object* prefix;
-    db_object match;
+    cx_object match;
 
     /* Find prefix for object */
     match = NULL;
@@ -722,12 +722,12 @@ db_string g_oid(db_generator g, db_object o, db_id id) {
         if (prefix->o == o) {
             strcpy(cid, prefix->prefix);
         } else {
-            strcpy(cid, db_nameof(o));
+            strcpy(cid, cx_nameof(o));
         }
 
     /* If no prefix is found for object, just use the identifier */
     } else {
-        strcpy(cid, db_nameof(o));
+        strcpy(cid, cx_nameof(o));
     }
 
 	g_oidTransform(g, o, cid, g->idKind);
@@ -745,14 +745,14 @@ db_string g_oid(db_generator g, db_object o, db_id id) {
 /* ==== Generator file-utility class */
 
 /* Convert a filename to a filepath, depending on it's extension. */
-static db_string g_filePath(db_generator g, db_string filename, db_char* buffer) {
-    db_string result;
+static cx_string g_filePath(cx_generator g, cx_string filename, cx_char* buffer) {
+    cx_string result;
 
     result = filename;
 
     if (g->attributes) {
-        db_string ext = NULL;
-        db_string fext, ptr;
+        cx_string ext = NULL;
+        cx_string fext, ptr;
 
         /* Get file-extension */
         fext = NULL;
@@ -778,14 +778,14 @@ static db_string g_filePath(db_generator g, db_string filename, db_char* buffer)
 }
 
 /* Read file */
-db_string g_fileRead(db_generator g, db_string name) {
-    db_char filepath[512];
-    return db_fileLoad(g_filePath(g, name, filepath));
+cx_string g_fileRead(cx_generator g, cx_string name) {
+    cx_char filepath[512];
+    return cx_fileLoad(g_filePath(g, name, filepath));
 }
 
 /* Find existing parts in the code that must not be overwritten. */
-db_int16 g_loadExisting(db_generator g, db_string name, db_string option, db_ll *list) {
-    db_string code = NULL, ptr = NULL;
+cx_int16 g_loadExisting(cx_generator g, cx_string name, cx_string option, cx_ll *list) {
+    cx_string code = NULL, ptr = NULL;
 
     code = g_fileRead(g, name);
     if (code) {
@@ -796,12 +796,12 @@ db_int16 g_loadExisting(db_generator g, db_string name, db_string option, db_ll 
 
 			/* Find begin of identifier */
 			if (*ptr == '(') {
-				db_string endptr;
+				cx_string endptr;
 
 				/* Find end of identifier */
 				endptr = strstr(ptr, ") */");
 				if (endptr) {
-					db_id identifier;
+					cx_id identifier;
 
 					/* Copy identifier string */
 					*endptr = '\0';
@@ -812,108 +812,108 @@ db_int16 g_loadExisting(db_generator g, db_string name, db_string option, db_ll 
 					endptr = strstr(ptr, "$end");
 					if (endptr) {
 						g_fileSnippet* existing;
-						db_string src;
+						cx_string src;
 
 						*endptr = '\0';
 						src = strdup(ptr);
 
 						if (!*list) {
-							*list = db_llNew();
+							*list = cx_llNew();
 						}
 
                         if(strstr(src, "$begin")) {
-                            db_error("%s: code-snippet '%s(%s)' contains nested $begin (did you forget an $end?)",
+                            cx_error("%s: code-snippet '%s(%s)' contains nested $begin (did you forget an $end?)",
                                 name, option, identifier);
                             goto error;
                         }
 
-						existing = db_malloc(sizeof(g_fileSnippet));
+						existing = cx_malloc(sizeof(g_fileSnippet));
 						existing->option = strdup(option);
 						existing->id = strdup(identifier);
 						existing->src = src;
 						existing->used = FALSE;
-						db_llInsert(*list, existing);
+						cx_llInsert(*list, existing);
 
 						ptr = endptr + 1;
 
 					} else {
-						db_error("generator: missing $end after $begin(%s)", identifier);
+						cx_error("generator: missing $end after $begin(%s)", identifier);
 						goto error;
 					}
 				} else {
-					db_error("generator: missing ')' after %s(", option);
+					cx_error("generator: missing ')' after %s(", option);
 					goto error;
 				}
 			} else {
-				db_error("generator: missing '(' after %s.", option);
+				cx_error("generator: missing '(' after %s.", option);
 				goto error;
 			}
 		}
-		db_dealloc(code);
+		cx_dealloc(code);
     }
 
     return 0;
 error:
     if (code) {
-        db_dealloc(code);
+        cx_dealloc(code);
     }
     return -1;
 }
 
 /* Open file */
-g_file g_fileOpen(db_generator g, db_string name) {
+g_file g_fileOpen(cx_generator g, cx_string name) {
 	g_file result;
-	db_char filepath[512];
+	cx_char filepath[512];
 
-	result = db_malloc(sizeof(struct g_file_s));
+	result = cx_malloc(sizeof(struct g_file_s));
 	result->snippets = NULL;
 	result->headers = NULL;
 	result->scope = NULL;
 	result->file = NULL;
 	result->indent = 0;
-	result->name = db_strdup(name);
+	result->name = cx_strdup(name);
 	result->generator = g;
 
 	/* First, load existing implementation if file exists */
 	if (g_loadExisting(g, name, "$header", &result->headers)) {
-		db_dealloc(result);
+		cx_dealloc(result);
 		goto error;
 	}
 	if (g_loadExisting(g, name, "$begin", &result->snippets)) {
-	    db_dealloc(result);
+	    cx_dealloc(result);
 		goto error;
 	}
 
-	result->file = db_fileOpen(g_filePath(g, name, filepath));
+	result->file = cx_fileOpen(g_filePath(g, name, filepath));
 	if (!result->file) {
-	    db_dealloc(result);
+	    cx_dealloc(result);
 	    goto error;
 	}
 
 	if (!g->files) {
-		g->files = db_llNew();
+		g->files = cx_llNew();
 	}
-	db_llInsert(g->files, result);
+	cx_llInsert(g->files, result);
 
 	return result;
 error:
-	db_error("failed to open file '%s'", name);
+	cx_error("failed to open file '%s'", name);
 	return NULL;
 }
 
 
 /* Lookup an existing code-snippet */
-db_string g_fileLookupSnippetIntern(g_file file, db_string snippetId, db_ll list) {
-    db_iter iter;
+cx_string g_fileLookupSnippetIntern(g_file file, cx_string snippetId, cx_ll list) {
+    cx_iter iter;
     g_fileSnippet* snippet;
     DB_UNUSED(file);
 
     snippet = NULL;
 
     if (list) {
-        iter = db_llIter(list);
-        while(db_iterHasNext(&iter)) {
-            snippet = db_iterNext(&iter);
+        iter = cx_llIter(list);
+        while(cx_iterHasNext(&iter)) {
+            snippet = cx_iterNext(&iter);
             if (!stricmp(snippet->id, snippetId)) {
             	snippet->used = TRUE;
                 break;
@@ -926,11 +926,11 @@ db_string g_fileLookupSnippetIntern(g_file file, db_string snippetId, db_ll list
     return snippet ? snippet->src : NULL;
 }
 
-db_string g_fileLookupSnippet(g_file file, db_string snippetId) {
+cx_string g_fileLookupSnippet(g_file file, cx_string snippetId) {
 	return g_fileLookupSnippetIntern(file, snippetId, file->snippets);
 }
 
-db_string g_fileLookupHeader(g_file file, db_string snippetId) {
+cx_string g_fileLookupHeader(g_file file, cx_string snippetId) {
 	return g_fileLookupSnippetIntern(file, snippetId, file->headers);
 }
 
@@ -948,10 +948,10 @@ int g_checkParseWalk(void* o, void* userData) {
 
     /* Look for generator object in object-scope */
     } else if (_o->parseScope) {
-        db_object ptr = userData;
+        cx_object ptr = userData;
 
         /* Walk object-scope */
-        while((ptr = db_parentof(ptr)) && ptr != _o->o);
+        while((ptr = cx_parentof(ptr)) && ptr != _o->o);
         if (ptr) {
             result = 0;
         }
@@ -960,12 +960,12 @@ int g_checkParseWalk(void* o, void* userData) {
     return result;
 }
 
-db_bool g_mustParse(db_generator g, db_object o) {
-	db_bool result;
+cx_bool g_mustParse(cx_generator g, cx_object o) {
+	cx_bool result;
 
 	result = TRUE;
-    if (db_checkAttr(o, DB_ATTR_SCOPED)) {
-    	if (db_llWalk(g->objects, g_checkParseWalk, o)) {
+    if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
+    	if (cx_llWalk(g->objects, g_checkParseWalk, o)) {
 			result = FALSE;
     	}
     }
@@ -984,33 +984,33 @@ void g_fileDedent(g_file file) {
 }
 
 /* Set scope of file */
-void g_fileScopeSet(g_file file, db_object o) {
+void g_fileScopeSet(g_file file, cx_object o) {
 	file->scope = o;
 }
 
 /* Get scope of file */
-db_object g_fileScopeGet(g_file file) {
+cx_object g_fileScopeGet(g_file file) {
 	return file->scope;
 }
 
 /* Write to file */
 void g_fileWrite(g_file file, char* fmt, ...) {
 	va_list args;
-	db_char *buffer;
-	db_uint32 len;
+	cx_char *buffer;
+	cx_uint32 len;
 
 	va_start(args, fmt);
 	len = vsnprintf(NULL, 0, fmt, args);
 	va_end(args);
 
 	if (len) {
-        buffer = db_malloc(len + 1);
+        buffer = cx_malloc(len + 1);
 
         va_start(args, fmt);
         len = vsnprintf(buffer, len + 1, fmt, args);
         va_end(args);
 
-        db_assert(len == strlen(buffer), "calculated length(%d) does not correspond with length of resulting string(%d)!", len, strlen(buffer));
+        cx_assert(len == strlen(buffer), "calculated length(%d) does not correspond with length of resulting string(%d)!", len, strlen(buffer));
 
         /*ptr = buffer;
         while((ptr = strchr(ptr, '\n'))) {
@@ -1019,7 +1019,7 @@ void g_fileWrite(g_file file, char* fmt, ...) {
         	case '\n':
         		break;
         	default:
-        		db_error("g_fileWrite: newline characters should be placed at end of string ('%s').", buffer);
+        		cx_error("g_fileWrite: newline characters should be placed at end of string ('%s').", buffer);
         		break;
         	}
         	ptr++;
@@ -1027,42 +1027,42 @@ void g_fileWrite(g_file file, char* fmt, ...) {
 
         /* Write indentation & string */
         if (file->indent && file->endLine) {
-            if (fprintf(db_fileGet(file->file), "%*s%s", file->indent * 4, " ", buffer) < 0) {
-                db_error("g_fileWrite: writing to outputfile failed.");
+            if (fprintf(cx_fileGet(file->file), "%*s%s", file->indent * 4, " ", buffer) < 0) {
+                cx_error("g_fileWrite: writing to outputfile failed.");
             }
         } else {
-            if (fprintf(db_fileGet(file->file), "%s", buffer) < 0) {
-                db_error("g_fileWrite: writing to outputfile failed.");
+            if (fprintf(cx_fileGet(file->file), "%s", buffer) < 0) {
+                cx_error("g_fileWrite: writing to outputfile failed.");
             }
         }
 
         file->endLine = buffer[strlen(buffer)-1] == '\n';
 
-        db_dealloc(buffer);
+        cx_dealloc(buffer);
 	}
 }
 
 /* Get generator */
-db_generator g_fileGetGenerator(g_file file) {
+cx_generator g_fileGetGenerator(g_file file) {
     return file->generator;
 }
 
 
 /* Translate names of members so that they can be used in the same scope (for example when used as function parameter) */
-typedef struct db_genWalkMember_t {
-	db_member member;
-	db_uint32 occurred;
-}db_genWalkMember_t;
+typedef struct cx_genWalkMember_t {
+	cx_member member;
+	cx_uint32 occurred;
+}cx_genWalkMember_t;
 
-static db_uint32 db_genMemberCacheCount(db_ll cache, db_member m) {
-	db_iter memberIter;
-	db_genWalkMember_t *member;
-	db_uint32 result = 0;
+static cx_uint32 cx_genMemberCacheCount(cx_ll cache, cx_member m) {
+	cx_iter memberIter;
+	cx_genWalkMember_t *member;
+	cx_uint32 result = 0;
 
-	memberIter = db_llIter(cache);
-	while(db_iterHasNext(&memberIter)) {
-		member = db_iterNext(&memberIter);
-		if (!strcmp(db_nameof(member->member), db_nameof(m))) {
+	memberIter = cx_llIter(cache);
+	while(cx_iterHasNext(&memberIter)) {
+		member = cx_iterNext(&memberIter);
+		if (!strcmp(cx_nameof(member->member), cx_nameof(m))) {
 			result++;
 		}
 	}
@@ -1070,14 +1070,14 @@ static db_uint32 db_genMemberCacheCount(db_ll cache, db_member m) {
 	return result;
 }
 
-static db_uint32 db_genMemberCacheGet(db_ll cache, db_member m) {
-	db_iter memberIter;
-	db_genWalkMember_t *member;
-	db_uint32 result = 0;
+static cx_uint32 cx_genMemberCacheGet(cx_ll cache, cx_member m) {
+	cx_iter memberIter;
+	cx_genWalkMember_t *member;
+	cx_uint32 result = 0;
 
-	memberIter = db_llIter(cache);
-	while(db_iterHasNext(&memberIter)) {
-		member = db_iterNext(&memberIter);
+	memberIter = cx_llIter(cache);
+	while(cx_iterHasNext(&memberIter)) {
+		member = cx_iterNext(&memberIter);
 		if (member->member == m) {
 			result = member->occurred;
 			break;
@@ -1087,35 +1087,35 @@ static db_uint32 db_genMemberCacheGet(db_ll cache, db_member m) {
 	return result;
 }
 
-static db_int16 db_genMemberCache_member(db_serializer s, db_value *info, void* userData) {
-	db_ll cache;
+static cx_int16 cx_genMemberCache_member(cx_serializer s, cx_value *info, void* userData) {
+	cx_ll cache;
 	DB_UNUSED(s);
 
 	cache = userData;
 
 	if (info->kind == DB_MEMBER) {
-		db_genWalkMember_t *parameter;
-		db_member m = info->is.member.t;
+		cx_genWalkMember_t *parameter;
+		cx_member m = info->is.member.t;
 
-		parameter = db_malloc(sizeof(db_genWalkMember_t));
+		parameter = cx_malloc(sizeof(cx_genWalkMember_t));
 		parameter->member = m;
-		parameter->occurred = db_genMemberCacheCount(cache, m);
-		db_llAppend(cache, parameter);
+		parameter->occurred = cx_genMemberCacheCount(cache, m);
+		cx_llAppend(cache, parameter);
 	} else {
-		db_serializeMembers(s, info, userData);
+		cx_serializeMembers(s, info, userData);
 	}
 
 	return 0;
 }
 
-db_char* db_genMemberName(db_generator g, db_ll cache, db_member m, db_char *result) {
-	db_uint32 count;
-	db_id temp;
+cx_char* cx_genMemberName(cx_generator g, cx_ll cache, cx_member m, cx_char *result) {
+	cx_uint32 count;
+	cx_id temp;
 
-	if ((count = db_genMemberCacheGet(cache, m))) {
-		sprintf(temp, "%s_%d", db_nameof(m), count);
+	if ((count = cx_genMemberCacheGet(cache, m))) {
+		sprintf(temp, "%s_%d", cx_nameof(m), count);
 	} else {
-		strcpy(temp, db_nameof(m));
+		strcpy(temp, cx_nameof(m));
 	}
 
 	g_id(g, temp, result);
@@ -1124,29 +1124,29 @@ db_char* db_genMemberName(db_generator g, db_ll cache, db_member m, db_char *res
 }
 
 /* Build cache to determine whether membernames occur more than once (due to inheritance) */
-db_ll db_genMemberCacheBuild(db_interface o) {
-	struct db_serializer_s s;
-	db_ll result;
+cx_ll cx_genMemberCacheBuild(cx_interface o) {
+	struct cx_serializer_s s;
+	cx_ll result;
 
-	db_serializerInit(&s);
+	cx_serializerInit(&s);
 	s.access = DB_LOCAL | DB_PRIVATE;
 	s.accessKind = DB_NOT;
-	s.metaprogram[DB_MEMBER] = db_genMemberCache_member;
-	result = db_llNew();
+	s.metaprogram[DB_MEMBER] = cx_genMemberCache_member;
+	result = cx_llNew();
 
-	db_metaWalk(&s, db_type(o), result);
+	cx_metaWalk(&s, cx_type(o), result);
 
 	return result;
 }
 
-void db_genMemberCacheClean(db_ll cache) {
-	db_iter memberIter;
-	db_genWalkMember_t *member;
+void cx_genMemberCacheClean(cx_ll cache) {
+	cx_iter memberIter;
+	cx_genWalkMember_t *member;
 
-	memberIter = db_llIter(cache);
-	while(db_iterHasNext(&memberIter)) {
-		member = db_iterNext(&memberIter);
-		db_dealloc(member);
+	memberIter = cx_llIter(cache);
+	while(cx_iterHasNext(&memberIter)) {
+		member = cx_iterNext(&memberIter);
+		cx_dealloc(member);
 	}
-	db_llFree(cache);
+	cx_llFree(cache);
 }

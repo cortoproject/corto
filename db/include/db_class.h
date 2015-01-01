@@ -1,79 +1,79 @@
-/* db_class.h
+/* cx_class.h
  *
  * This file contains generated code. Do not modify!
  */
 
-#ifndef db_class_H
-#define db_class_H
+#ifndef cx_class_H
+#define cx_class_H
 
 #include "cortex.h"
-#include "db_struct.h"
-#include "db__type.h"
+#include "cx_struct.h"
+#include "cx__type.h"
 
-#include "db__api.h"
+#include "cx__api.h"
 
-#include "db__meta.h"
+#include "cx__meta.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::class::_construct(lang::class object) */
-db_int16 db_class__construct(db_class object);
+cx_int16 cx_class__construct(cx_class object);
 
 /* callback ::cortex::lang::class::destruct(lang::object object) -> ::cortex::lang::class::_destruct(lang::class object) */
-db_void db_class__destruct(db_class object);
+cx_void cx_class__destruct(cx_class object);
 
 /* virtual ::cortex::lang::class::allocSize() */
-db_uint32 db_class_allocSize(db_class _this);
+cx_uint32 cx_class_allocSize(cx_class _this);
 
 /* ::cortex::lang::class::allocSize() */
-db_uint32 db_class_allocSize_v(db_class _this);
+cx_uint32 cx_class_allocSize_v(cx_class _this);
 
 /* ::cortex::lang::class::bindCallback(lang::delegate delegate,lang::object object,lang::callback method) */
-db_int16 db_class_bindCallback(db_class _this, db_delegate delegate, db_object object, db_callback method);
+cx_int16 cx_class_bindCallback(cx_class _this, cx_delegate delegate, cx_object object, cx_callback method);
 
 /* ::cortex::lang::class::bindDelegate(lang::delegate delegate) */
-db_int16 db_class_bindDelegate(db_class _this, db_delegate delegate);
+cx_int16 cx_class_bindDelegate(cx_class _this, cx_delegate delegate);
 
 /* ::cortex::lang::class::bindMethod(lang::method method) */
-db_int16 db_class_bindMethod(db_class _this, db_method method);
+cx_int16 cx_class_bindMethod(cx_class _this, cx_method method);
 
 /* ::cortex::lang::class::bindObserver(lang::observer observer) */
-db_void db_class_bindObserver(db_class _this, db_observer observer);
+cx_void cx_class_bindObserver(cx_class _this, cx_observer observer);
 
 /* delegate ::cortex::lang::class::construct(lang::object object), obtain callback */
-db_bool db_class_construct_hasCallback(db_class _this);
+cx_bool cx_class_construct_hasCallback(cx_class _this);
 
 /* ::cortex::lang::class::construct(lang::object object) */
-db_int16 db_class_construct(db_class _this, db_object object);
+cx_int16 cx_class_construct(cx_class _this, cx_object object);
 
 /* delegate ::cortex::lang::class::destruct(lang::object object), obtain callback */
-db_bool db_class_destruct_hasCallback(db_class _this);
+cx_bool cx_class_destruct_hasCallback(cx_class _this);
 
 /* ::cortex::lang::class::destruct(lang::object object) */
-db_void db_class_destruct(db_class _this, db_object object);
+cx_void cx_class_destruct(cx_class _this, cx_object object);
 
 /* ::cortex::lang::class::findObserver(lang::object observable,string expr) */
-db_observer db_class_findObserver(db_class _this, db_object observable, db_string expr);
+cx_observer cx_class_findObserver(cx_class _this, cx_object observable, cx_string expr);
 
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::class::init(lang::class object) */
-db_int16 db_class_init(db_class object);
+cx_int16 cx_class_init(cx_class object);
 
 /* ::cortex::lang::class::instanceof(lang::object object) */
-db_bool db_class_instanceof(db_class _this, db_object object);
+cx_bool cx_class_instanceof(cx_class _this, cx_object object);
 
 /* ::cortex::lang::class::privateObserver(lang::object object,lang::observer observer) */
-db_observer db_class_privateObserver(db_class _this, db_object object, db_observer observer);
+cx_observer cx_class_privateObserver(cx_class _this, cx_object object, cx_observer observer);
 
 /* ::cortex::lang::class::resolveCallback(lang::delegate delegate,lang::object target) */
-db_callback db_class_resolveCallback(db_class _this, db_delegate delegate, db_object target);
+cx_callback cx_class_resolveCallback(cx_class _this, cx_delegate delegate, cx_object target);
 
 /* ::cortex::lang::class::resolveDelegate(lang::string name) */
-db_delegate db_class_resolveDelegate(db_class _this, db_string name);
+cx_delegate cx_class_resolveDelegate(cx_class _this, cx_string name);
 
 /* ::cortex::lang::class::resolveInterfaceMethod(lang::interface interface,lang::uint32 method) */
-db_method db_class_resolveInterfaceMethod(db_class _this, db_interface interface, db_uint32 method);
+cx_method cx_class_resolveInterfaceMethod(cx_class _this, cx_interface interface, cx_uint32 method);
 
 #ifdef __cplusplus
 }

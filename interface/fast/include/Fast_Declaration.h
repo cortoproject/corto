@@ -16,7 +16,7 @@ extern "C" {
 #endif
 
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::Declaration::init(Declaration object) */
-db_int16 Fast_Declaration_init(Fast_Declaration object);
+cx_int16 Fast_Declaration_init(Fast_Declaration object);
 
 #ifdef __cplusplus
 }

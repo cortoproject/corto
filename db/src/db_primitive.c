@@ -1,4 +1,4 @@
-/* db_primitive.c
+/* cx_primitive.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -7,11 +7,11 @@
  */
 
 #include "db.h"
-#include "db__meta.h"
+#include "cx__meta.h"
 
 /* $header() */
-db_uint8 db__primitive_convertId(db_primitiveKind kind, db_width width) {
-    db_uint8 id = 0;
+cx_uint8 cx__primitive_convertId(cx_primitiveKind kind, cx_width width) {
+    cx_uint8 id = 0;
 
     switch(kind) {
     case DB_BINARY:
@@ -48,17 +48,17 @@ db_uint8 db__primitive_convertId(db_primitiveKind kind, db_width width) {
 /* $end */
 
 /* ::cortex::lang::primitive::castable(lang::type type) */
-db_bool db_primitive_castable_v(db_primitive _this, db_type type) {
+cx_bool cx_primitive_castable_v(cx_primitive _this, cx_type type) {
 /* $begin(::cortex::lang::primitive::castable) */
-    db_bool result;
+    cx_bool result;
 
     result = FALSE;
     
     /* Perform generic type::compatible routine first. */
-    if (!db_type_compatible_v(db_type(_this), type)) {
-        if (db_type(_this)->reference == type->reference) {
+    if (!cx_type_compatible_v(cx_type(_this), type)) {
+        if (cx_type(_this)->reference == type->reference) {
         	if (type->kind == DB_PRIMITIVE) {
-				db_primitiveKind kind = db_primitive(type)->kind;
+				cx_primitiveKind kind = cx_primitive(type)->kind;
 				if (_this->kind != kind) {
 					switch(_this->kind) {
 					case DB_ALIAS:
@@ -157,7 +157,7 @@ db_bool db_primitive_castable_v(db_primitive _this, db_type type) {
 					}
 				} else {
 					if (_this->kind == DB_ALIAS) {
-						result = !strcmp(db_alias(_this)->typeName, db_alias(type)->typeName);
+						result = !strcmp(cx_alias(_this)->typeName, cx_alias(type)->typeName);
 					} else {
 						result = TRUE;
 					}
@@ -173,21 +173,21 @@ db_bool db_primitive_castable_v(db_primitive _this, db_type type) {
 }
 
 /* ::cortex::lang::primitive::compatible(lang::type type) */
-db_bool db_primitive_compatible_v(db_primitive _this, db_type type) {
+cx_bool cx_primitive_compatible_v(cx_primitive _this, cx_type type) {
 /* $begin(::cortex::lang::primitive::compatible) */
-    db_bool result;
+    cx_bool result;
 
     result = FALSE;
 
-    if (db_class_instanceof(db_primitive_o, type)) {
-       if (_this->kind == db_primitive(type)->kind) { /* If kinds are equal, types are compatible */
+    if (cx_class_instanceof(cx_primitive_o, type)) {
+       if (_this->kind == cx_primitive(type)->kind) { /* If kinds are equal, types are compatible */
            result = TRUE;
         } else if (_this->kind == DB_ENUM) {
-    	   if (type == db_type(db_constant_o)) {
+    	   if (type == cx_type(cx_constant_o)) {
     		   result = TRUE;
     	   }
         } else if (_this->kind == DB_BITMASK) {
-           switch(db_primitive(type)->kind) {
+           switch(cx_primitive(type)->kind) {
            case DB_INTEGER:
            case DB_UINTEGER:
                result = TRUE;
@@ -200,7 +200,7 @@ db_bool db_primitive_compatible_v(db_primitive _this, db_type type) {
    			case DB_BINARY:
    			case DB_UINTEGER:
    			case DB_INTEGER:
-   				switch(db_primitive(type)->kind) {
+   				switch(cx_primitive(type)->kind) {
    				case DB_BINARY:
    				case DB_UINTEGER:
    				case DB_INTEGER:
@@ -222,43 +222,43 @@ db_bool db_primitive_compatible_v(db_primitive _this, db_type type) {
 }
 
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::primitive::construct(lang::primitive object) */
-db_int16 db_primitive_construct(db_primitive object) {
+cx_int16 cx_primitive_construct(cx_primitive object) {
 /* $begin(::cortex::lang::primitive::construct) */
 
 	switch(object->width) {
 	case DB_WIDTH_8:
-		db_type(object)->size = 1;
-		db_type(object)->alignment = DB_ALIGNMENT(db_char);
+		cx_type(object)->size = 1;
+		cx_type(object)->alignment = DB_ALIGNMENT(cx_char);
 		break;
 	case DB_WIDTH_16:
-		db_type(object)->size = 2;
-		db_type(object)->alignment = DB_ALIGNMENT(db_int16);
+		cx_type(object)->size = 2;
+		cx_type(object)->alignment = DB_ALIGNMENT(cx_int16);
 		break;
 	case DB_WIDTH_32:
-		db_type(object)->size = 4;
-		db_type(object)->alignment = DB_ALIGNMENT(db_int32);
+		cx_type(object)->size = 4;
+		cx_type(object)->alignment = DB_ALIGNMENT(cx_int32);
 		break;
 	case DB_WIDTH_64:
-		db_type(object)->size = 8;
-		db_type(object)->alignment = DB_ALIGNMENT(db_int64);
+		cx_type(object)->size = 8;
+		cx_type(object)->alignment = DB_ALIGNMENT(cx_int64);
 		break;
 	case DB_WIDTH_WORD:
-		db_type(object)->size = sizeof(void*);
-		db_type(object)->alignment = DB_ALIGNMENT(db_word);
+		cx_type(object)->size = sizeof(void*);
+		cx_type(object)->alignment = DB_ALIGNMENT(cx_word);
 		break;
 	}
 
 	/* Assign convertId which enables quick lookups of implicit primitive conversions. */
-	object->convertId = db__primitive_convertId(object->kind, object->width);
+	object->convertId = cx__primitive_convertId(object->kind, object->width);
 
-	return db_type_construct(db_type(object));
+	return cx_type_construct(cx_type(object));
 /* $end */
 }
 
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::primitive::init(lang::primitive object) */
-db_int16 db_primitive_init(db_primitive object) {
+cx_int16 cx_primitive_init(cx_primitive object) {
 /* $begin(::cortex::lang::primitive::init) */
-    db_type(object)->kind = DB_PRIMITIVE;
-    return db_type__init((db_type)object);
+    cx_type(object)->kind = DB_PRIMITIVE;
+    return cx_type__init((cx_type)object);
 /* $end */
 }

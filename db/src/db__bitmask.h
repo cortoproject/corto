@@ -6,7 +6,7 @@
 extern "C" {
 #endif
 
-db_int16 db__bitmask_bindConstant(db_bitmask _this, db_constant* c);
+cx_int16 cx__bitmask_bindConstant(cx_bitmask _this, cx_constant* c);
 
 #ifdef __cplusplus
 }

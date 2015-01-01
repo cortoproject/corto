@@ -6,7 +6,7 @@ Author: Johnny Lee (jleeothon@outlook.com)
 
 # Usage
 
-Provide a `db_json_ser_t` that follows the signature in json.h. Users can provide a `buffer` to which the JSON string should be serialized. When setting the buffer, `length` should be set to the length of the buffer (including `\0`). When `buffer` is left to NULL, the serializer will dynamically allocate enough memory to accomodate for the full JSON string. With `maxlength` a user can restrict the maximum length/memory allocated of the result string.
+Provide a `cx_json_ser_t` that follows the signature in json.h. Users can provide a `buffer` to which the JSON string should be serialized. When setting the buffer, `length` should be set to the length of the buffer (including `\0`). When `buffer` is left to NULL, the serializer will dynamically allocate enough memory to accomodate for the full JSON string. With `maxlength` a user can restrict the maximum length/memory allocated of the result string.
 
 `ptr` is for internal use and points to the location where the serializer should append the next string. `itemCount` is also for internal use and determines whether insertion of a `,` is required.
 
@@ -14,26 +14,26 @@ Provide a `db_json_ser_t` that follows the signature in json.h. Users can provid
 
 ```C
 /* json.h */
-typedef struct db_json_ser_t {
-    db_string buffer;
-    db_string ptr;
+typedef struct cx_json_ser_t {
+    cx_string buffer;
+    cx_string ptr;
     unsigned int length;
     unsigned int maxlength;
     unsigned int itemCount;
-    db_bool serializeMeta;
-    db_bool serializeValue;
-    db_bool serializeScope;
-} db_json_ser_t;
+    cx_bool serializeMeta;
+    cx_bool serializeValue;
+    cx_bool serializeScope;
+} cx_json_ser_t;
 ```
 
 Example usage:
 
 ```C
 /* test_json_serializer.c */
-struct db_serializer_s serializer = 
-        db_json_ser(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
-db_json_ser_t userData = {NULL, NULL, 0, 0, 0, TRUE, TRUE, TRUE};
-db_serialize(&serializer, tc_jsonser_p_o, &userData);
+struct cx_serializer_s serializer = 
+        cx_json_ser(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
+cx_json_ser_t userData = {NULL, NULL, 0, 0, 0, TRUE, TRUE, TRUE};
+cx_serialize(&serializer, tc_jsonser_p_o, &userData);
 ```
 
 # Serialization specification

@@ -30,12 +30,12 @@ typedef enum io_fileMode {
 /*  ::cortex::io::file */
 DB_CLASS(io_file);
 DB_CLASS_DEF(io_file) {
-    db_string name;
+    cx_string name;
     io_fileMode mode;
-    db_bool binary;
-    db_word handle;
+    cx_bool binary;
+    cx_word handle;
 };
-DB_SEQUENCE(db_octet_seq, db_octet,);
+DB_SEQUENCE(cx_octet_seq, cx_octet,);
 
 #ifdef __cplusplus
 }

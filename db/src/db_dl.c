@@ -1,45 +1,45 @@
 /*
- * db_dl.c
+ * cx_dl.c
  *
  *  Created on: Dec 27, 2010
  *      Author: sander
  */
 
-#include "db_dl.h"
+#include "cx_dl.h"
 #include "dlfcn.h"
 #include "stdio.h"
 #include "string.h"
 #include "stdint.h"
-#include "db_err.h"
+#include "cx_err.h"
 
-#include "db_err.h"
+#include "cx_err.h"
 
 typedef void*(*dlproc)(void);
 
 /* Link dynamic library */
-db_dl db_dlOpen(const char* file) {
-	db_dl dl;
+cx_dl cx_dlOpen(const char* file) {
+	cx_dl dl;
 
-	dl = (db_dl)dlopen(file, RTLD_NOW);
+	dl = (cx_dl)dlopen(file, RTLD_NOW);
 
 	return dl;
 }
 
 /* Close dynamic library */
-void db_dlClose(db_dl dl) {
+void cx_dlClose(cx_dl dl) {
 	dlclose(dl);
 }
 
 /* Lookup symbol in dynamic library */
-void* db_dlSym(db_dl dl, const char* sym) {
+void* cx_dlSym(cx_dl dl, const char* sym) {
 	return dlsym(dl, sym);
 }
 
 /* Lookup procedure in dynamic library */
-void*(*db_dlProc(db_dl dl, const char* proc))(void) {
+void*(*cx_dlProc(cx_dl dl, const char* proc))(void) {
 	return (dlproc)(intptr_t)dlsym(dl, proc);
 }
 
-const char* db_dlError(void) {
+const char* cx_dlError(void) {
 	return dlerror();
 }

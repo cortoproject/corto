@@ -19,10 +19,10 @@ extern "C" {
 #endif
 
 /* ::cortex::os::timer::run() */
-db_void os_timer_run(os_timer _this);
+cx_void os_timer_run(os_timer _this);
 
 /* ::cortex::os::timer::stop() */
-db_void os_timer_stop(os_timer _this);
+cx_void os_timer_stop(os_timer _this);
 
 #ifdef __cplusplus
 }

@@ -1,5 +1,5 @@
 /*
- * db_convert.h
+ * cx_convert.h
  *
  *  Created on: Aug 23, 2012
  *      Author: sander
@@ -11,14 +11,14 @@
 #ifndef DB_CONVERT_H_
 #define DB_CONVERT_H_
 
-#include "db__type.h"
+#include "cx__type.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void db_convertInit(void);
-db_int16 db_convert(db_primitive fromType, void *from, db_primitive toType, void *to);
+void cx_convertInit(void);
+cx_int16 cx_convert(cx_primitive fromType, void *from, cx_primitive toType, void *to);
 
 #ifdef __cplusplus
 }

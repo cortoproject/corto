@@ -10,7 +10,7 @@
 #include "Fast__meta.h"
 
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Variable::construct(Variable object) */
-db_int16 Fast_Variable_construct(Fast_Variable object) {
+cx_int16 Fast_Variable_construct(Fast_Variable object) {
 /* $begin(::cortex::Fast::Variable::construct) */
 
     Fast_Node(object)->kind = FAST_Variable;

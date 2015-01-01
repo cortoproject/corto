@@ -11,7 +11,7 @@
 
 
 /* $header() */
-#include "db_ic.h"
+#include "cx_ic.h"
 /* $end */
 
 #ifdef __cplusplus
@@ -87,8 +87,8 @@ DB_CLASS(Fast_Node);
 
 DB_CLASS_DEF(Fast_Node) {
     Fast_nodeKind kind;
-    db_uint32 line;
-    db_uint32 column;
+    cx_uint32 line;
+    cx_uint32 column;
 };
 
 /*  ::cortex::Fast::Variable */
@@ -100,8 +100,8 @@ DB_CLASS(Fast_Expression);
 DB_CLASS_DEF(Fast_Expression) {
     DB_EXTEND(Fast_Node);
     Fast_Variable type;
-    db_bool isReference;
-    db_bool forceReference;
+    cx_bool isReference;
+    cx_bool forceReference;
 };
 
 /*  ::cortex::Fast::BinaryExpr */
@@ -111,7 +111,7 @@ DB_CLASS_DEF(Fast_BinaryExpr) {
     DB_EXTEND(Fast_Expression);
     Fast_Expression lvalue;
     Fast_Expression rvalue;
-    db_operatorKind operator;
+    cx_operatorKind operator;
 };
 
 /*  ::cortex::Fast::Block */
@@ -143,10 +143,10 @@ DB_CLASS(Fast_Local);
 
 DB_CLASS_DEF(Fast_Local) {
     DB_EXTEND(Fast_Variable);
-    db_string name;
+    cx_string name;
     Fast_Variable type;
     Fast_LocalKind kind;
-    db_bool isReference;
+    cx_bool isReference;
 };
 
 DB_LIST(Fast_Local_list);
@@ -158,7 +158,7 @@ DB_CLASS_DEF(Fast_While) {
     DB_EXTEND(Fast_Node);
     Fast_Expression condition;
     Fast_Block trueBranch;
-    db_bool isUntil;
+    cx_bool isUntil;
 };
 
 DB_CLASS_DEF(Fast_Block) {
@@ -166,7 +166,7 @@ DB_CLASS_DEF(Fast_Block) {
     Fast_Block parent;
     Fast_Node_list statements;
     Fast_Local_list locals;
-    db_function function;
+    cx_function function;
     Fast_While _while;
 };
 
@@ -174,7 +174,7 @@ DB_CLASS_DEF(Fast_Block) {
 typedef struct Fast_Binding Fast_Binding;
 
 struct Fast_Binding {
-    db_function function;
+    cx_function function;
     Fast_Block impl;
 };
 
@@ -204,7 +204,7 @@ DB_CLASS(Fast_Boolean);
 
 DB_CLASS_DEF(Fast_Boolean) {
     DB_EXTEND(Fast_Literal);
-    db_bool value;
+    cx_bool value;
 };
 
 /*  ::cortex::Fast::Call */
@@ -214,8 +214,8 @@ DB_CLASS_DEF(Fast_Call) {
     DB_EXTEND(Fast_Expression);
     Fast_Expression function;
     Fast_Expression arguments;
-    db_string signature;
-    db_function actualFunction;
+    cx_string signature;
+    cx_function actualFunction;
 };
 
 /*  ::cortex::Fast::CastExpr */
@@ -232,7 +232,7 @@ DB_CLASS(Fast_Character);
 
 DB_CLASS_DEF(Fast_Character) {
     DB_EXTEND(Fast_Literal);
-    db_char value;
+    cx_char value;
 };
 
 DB_LIST(Fast_Expression_list);
@@ -257,9 +257,9 @@ DB_CLASS_DEF(Fast_Define) {
 typedef struct Fast_InitializerVariable Fast_InitializerVariable;
 
 struct Fast_InitializerVariable {
-    db_word offset;
+    cx_word offset;
     Fast_Expression object;
-    db_word key;
+    cx_word key;
 };
 
 typedef Fast_InitializerVariable Fast_InitializerVariable_array64[64];
@@ -268,10 +268,10 @@ typedef Fast_InitializerVariable Fast_InitializerVariable_array64[64];
 typedef struct Fast_InitializerFrame Fast_InitializerFrame;
 
 struct Fast_InitializerFrame {
-    db_uint32 location;
-    db_type type;
-    db_bool isKey;
-    db_member member;
+    cx_uint32 location;
+    cx_type type;
+    cx_bool isKey;
+    cx_member member;
 };
 
 typedef Fast_InitializerFrame Fast_InitializerFrame_array64[64];
@@ -282,9 +282,9 @@ DB_CLASS(Fast_Initializer);
 DB_CLASS_DEF(Fast_Initializer) {
     DB_EXTEND(Fast_Expression);
     Fast_InitializerVariable_array64 variables;
-    db_uint8 variableCount;
+    cx_uint8 variableCount;
     Fast_InitializerFrame_array64 frames;
-    db_uint8 fp;
+    cx_uint8 fp;
 };
 
 typedef Fast_Expression Fast_Expression_array64[64];
@@ -294,7 +294,7 @@ DB_CLASS(Fast_Integer);
 
 DB_CLASS_DEF(Fast_Integer) {
     DB_EXTEND(Fast_Literal);
-    db_uint64 value;
+    cx_uint64 value;
 };
 
 /*  ::cortex::Fast::DynamicInitializerFrame */
@@ -313,7 +313,7 @@ DB_CLASS(Fast_DynamicInitializer);
 
 DB_CLASS_DEF(Fast_DynamicInitializer) {
     DB_EXTEND(Fast_Initializer);
-    db_bool assignValue;
+    cx_bool assignValue;
     Fast_DynamicInitializerFrame_array64 frames;
 };
 
@@ -331,7 +331,7 @@ DB_CLASS(Fast_FloatingPoint);
 
 DB_CLASS_DEF(Fast_FloatingPoint) {
     DB_EXTEND(Fast_Literal);
-    db_float64 value;
+    cx_float64 value;
 };
 
 /*  ::cortex::Fast::If */
@@ -342,7 +342,7 @@ DB_CLASS_DEF(Fast_If) {
     Fast_Expression condition;
     Fast_Block trueBranch;
     Fast_If falseBranch;
-    db_bool warnUnreachable;
+    cx_bool warnUnreachable;
 };
 
 /* ::cortex::Fast::InitOperKind */
@@ -360,7 +360,7 @@ typedef struct Fast_InitOper Fast_InitOper;
 struct Fast_InitOper {
     Fast_InitOperKind kind;
     Fast_Expression expr;
-    db_string name;
+    cx_string name;
 };
 
 DB_LIST(Fast_InitOper_list);
@@ -370,7 +370,7 @@ DB_CLASS(Fast_InitializerExpr);
 
 DB_CLASS_DEF(Fast_InitializerExpr) {
     DB_EXTEND(Fast_Initializer);
-    db_bool assignValue;
+    cx_bool assignValue;
     Fast_InitOper_list operations;
 };
 
@@ -386,7 +386,7 @@ typedef struct Fast_Lvalue Fast_Lvalue;
 
 struct Fast_Lvalue {
     Fast_Expression expr;
-    db_bool isAssignment;
+    cx_bool isAssignment;
 };
 
 /*  ::cortex::Fast::MemberExpr */
@@ -396,8 +396,8 @@ DB_CLASS_DEF(Fast_MemberExpr) {
     DB_EXTEND(Fast_Expression);
     Fast_Expression lvalue;
     Fast_Expression rvalue;
-    db_bool superMember;
-    db_object member;
+    cx_bool superMember;
+    cx_object member;
 };
 
 /*  ::cortex::Fast::NewExpr */
@@ -421,7 +421,7 @@ DB_CLASS(Fast_ObjectBase);
 
 DB_CLASS_DEF(Fast_ObjectBase) {
     DB_EXTEND(Fast_Variable);
-    db_object value;
+    cx_object value;
 };
 
 /*  ::cortex::Fast::Object */
@@ -433,7 +433,7 @@ DB_CLASS_DEF(Fast_Object) {
 
 DB_LIST(Fast_Binding_list);
 
-DB_LIST(db_word_list);
+DB_LIST(cx_word_list);
 
 DB_LIST(Fast_Object_list);
 
@@ -445,66 +445,66 @@ typedef Fast_Initializer Fast_Initializer_array64[64];
 typedef struct Fast_Parser_stagedId Fast_Parser_stagedId;
 
 struct Fast_Parser_stagedId {
-    db_string name;
-    db_bool found;
-    db_uint32 line;
-    db_uint32 column;
+    cx_string name;
+    cx_bool found;
+    cx_uint32 line;
+    cx_uint32 column;
 };
 
 typedef Fast_Parser_stagedId Fast_Parser_stagedId_array64[64];
 
 typedef Fast_Lvalue Fast_Lvalue_array64[64];
 
-typedef db_type db_type_array64[64];
+typedef cx_type cx_type_array64[64];
 
 /*  ::cortex::Fast::Parser */
 DB_CLASS(Fast_Parser);
 
 DB_CLASS_DEF(Fast_Parser) {
-    db_string source;
-    db_string preprocessed;
-    db_string filename;
-    db_uint32 line;
-    db_uint32 column;
-    db_string token;
+    cx_string source;
+    cx_string preprocessed;
+    cx_string filename;
+    cx_uint32 line;
+    cx_uint32 column;
+    cx_string token;
     Fast_Block block;
     Fast_Variable scope;
-    db_uint32 errors;
-    db_uint32 warnings;
-    db_bool errSet;
-    db_uint32 errLine;
-    db_bool abort;
+    cx_uint32 errors;
+    cx_uint32 warnings;
+    cx_bool errSet;
+    cx_uint32 errLine;
+    cx_bool abort;
     Fast_Binding_list bindings;
-    db_uint32 pass;
-    db_word_list heapCollected;
+    cx_uint32 pass;
+    cx_word_list heapCollected;
     Fast_Object_list collected;
-    db_bool blockPreset;
-    db_bool isLocal;
-    db_bool parseSingleExpr;
+    cx_bool blockPreset;
+    cx_bool isLocal;
+    cx_bool parseSingleExpr;
     Fast_Expression singleExpr;
-    db_string lastFailedResolve;
+    cx_string lastFailedResolve;
     Fast_Variable_array64 variables;
-    db_uint32 variableCount;
-    db_bool variablesInitialized;
-    db_bool variablePushed;
+    cx_uint32 variableCount;
+    cx_bool variablesInitialized;
+    cx_bool variablePushed;
     Fast_Initializer_array64 initializers;
-    db_int8 initializerCount;
-    db_uint32 initAnonymousId;
-    db_bool initDynamic;
+    cx_int8 initializerCount;
+    cx_uint32 initAnonymousId;
+    cx_bool initDynamic;
     Fast_Parser_stagedId_array64 staged;
-    db_uint32 stagedCount;
-    db_bool stagingAllowed;
+    cx_uint32 stagedCount;
+    cx_bool stagingAllowed;
     Fast_Lvalue_array64 lvalue;
-    db_int32 lvalueSp;
-    db_type_array64 complexType;
-    db_int32 complexTypeSp;
+    cx_int32 lvalueSp;
+    cx_type_array64 complexType;
+    cx_int32 complexTypeSp;
 };
 
 /*  ::cortex::Fast::ParserDeclaration */
 typedef struct Fast_ParserDeclaration Fast_ParserDeclaration;
 
 struct Fast_ParserDeclaration {
-    db_string name;
+    cx_string name;
     Fast_Variable variable;
 };
 
@@ -527,7 +527,7 @@ DB_CLASS(Fast_PostfixExpr);
 DB_CLASS_DEF(Fast_PostfixExpr) {
     DB_EXTEND(Fast_Expression);
     Fast_Expression lvalue;
-    db_operatorKind operator;
+    cx_operatorKind operator;
 };
 
 /*  ::cortex::Fast::SignedInteger */
@@ -535,17 +535,17 @@ DB_CLASS(Fast_SignedInteger);
 
 DB_CLASS_DEF(Fast_SignedInteger) {
     DB_EXTEND(Fast_Literal);
-    db_int64 value;
+    cx_int64 value;
 };
 
-typedef db_word db_word_array64[64];
+typedef cx_word cx_word_array64[64];
 
 /*  ::cortex::Fast::StaticInitializerFrame */
 typedef struct Fast_StaticInitializerFrame Fast_StaticInitializerFrame;
 
 struct Fast_StaticInitializerFrame {
-    db_word_array64 ptr;
-    db_word_array64 keyPtr;
+    cx_word_array64 ptr;
+    cx_word_array64 keyPtr;
 };
 
 typedef Fast_StaticInitializerFrame Fast_StaticInitializerFrame_array64[64];
@@ -563,7 +563,7 @@ DB_CLASS(Fast_String);
 
 DB_CLASS_DEF(Fast_String) {
     DB_EXTEND(Fast_Literal);
-    db_string value;
+    cx_string value;
     Fast_Expression_list elements;
     Fast_Block block;
     Fast_Variable scope;
@@ -596,7 +596,7 @@ DB_CLASS(Fast_UnaryExpr);
 DB_CLASS_DEF(Fast_UnaryExpr) {
     DB_EXTEND(Fast_Expression);
     Fast_Expression lvalue;
-    db_operatorKind operator;
+    cx_operatorKind operator;
 };
 
 /*  ::cortex::Fast::Update */

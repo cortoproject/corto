@@ -1,6 +1,6 @@
 
 all:
-	@make -C db
+	@make -C cx
 	@make -C dev
 	@make -C tools
 	@make -C generator
@@ -10,7 +10,7 @@ all:
 	@make -C test
 	
 clean:
-	@make clean -C db
+	@make clean -C cx
 	@make clean -C dev
 	@make clean -C tools
 	@make clean -C generator
@@ -21,7 +21,7 @@ clean:
 	@rm -f ./bin/*
 	
 gcov:
-	@make gcov -C db
+	@make gcov -C cx
 	@make gcov -C dev
 	@make gcov -C tools
 	@make gcov -C generator
@@ -31,7 +31,7 @@ gcov:
 	@make gcov -C test
 	
 splint:
-	@make splint -C db
+	@make splint -C cx
 	@make splint -C dev
 	@make splint -C tools
 	@make splint -C generator

@@ -17,7 +17,7 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 
 /* Optimize condition, check if condition can be evaluated at compile-time or can be unwinded */
-Fast_Expression Fast_Node_optimizeCondition(Fast_Expression condition, db_bool *staticResult, db_bool *inverse) {
+Fast_Expression Fast_Node_optimizeCondition(Fast_Expression condition, cx_bool *staticResult, cx_bool *inverse) {
     Fast_Expression result = NULL;
     Fast_Expression_list conditions = Fast_Expression_toList(condition);
     *inverse = FALSE;
@@ -35,7 +35,7 @@ Fast_Expression Fast_Node_optimizeCondition(Fast_Expression condition, db_bool *
       
         /* If condition is a literal, serialize it to a boolean and resolve condition at compile-time */
         if (elem && (Fast_Node(elem)->kind == FAST_Literal)) {
-            if (Fast_Expression_serialize(elem, db_type(db_bool_o), (db_word)staticResult)) {
+            if (Fast_Expression_serialize(elem, cx_type(cx_bool_o), (cx_word)staticResult)) {
                 Fast_Parser_error(yparser(), "failed to serialize literal condition expression");
                 goto error;
             }
@@ -72,7 +72,7 @@ error:
 /* $end */
 
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::Node::init(Node object) */
-db_int16 Fast_Node_init(Fast_Node object) {
+cx_int16 Fast_Node_init(Fast_Node object) {
 /* $begin(::cortex::Fast::Node::init) */
     object->line = yparser()->line;
     object->column = yparser()->column;
@@ -80,8 +80,8 @@ db_int16 Fast_Node_init(Fast_Node object) {
 /* $end */
 }
 
-/* ::cortex::Fast::Node::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_Node_toIc_v(Fast_Node _this, db_icProgram program, db_icStorage storage, db_bool stored) {
+/* ::cortex::Fast::Node::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+cx_ic Fast_Node_toIc_v(Fast_Node _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Node::toIc) */
 	DB_UNUSED(_this);
 	DB_UNUSED(program);

@@ -1,5 +1,5 @@
 /*
- * db_def.h
+ * cx_def.h
  *
  *  Created on: Aug 2, 2012
  *      Author: sander
@@ -28,12 +28,12 @@ extern "C" {
 
 #define DB_NULL_STRING ("null")
 
-typedef int (*db_compareAction)(void* o1, void* o2);
-typedef int (*db_walkAction)(void* o, void* userData);
+typedef int (*cx_compareAction)(void* o1, void* o2);
+typedef int (*cx_walkAction)(void* o, void* userData);
 
 /* Builtin collection-implementation definitions */
-typedef struct db_rbtree_s* db_rbtree;
-typedef struct db_ll_s* db_ll;
+typedef struct cx_rbtree_s* cx_rbtree;
+typedef struct cx_ll_s* cx_ll;
 
 /* Configuration parameters */
 #define DB_MAX_SCOPE_DEPTH (256)
@@ -68,7 +68,7 @@ typedef struct db_ll_s* db_ll;
 #define DB_SEQUENCE(type, subtype, postexpr) typedef struct type {uint32_t length; subtype _()(*buffer) postexpr;} type
 #define DB_SEQUENCE_ANONYMOUS(subtype, postexpr) struct {uint32_t length; subtype _()(*buffer) postexpr;}
 
-#define DB_LIST(type) typedef db_ll type
+#define DB_LIST(type) typedef cx_ll type
 
 #define DB_STRUCT_DEF(type) struct type
 #define DB_CLASS_DEF(type) struct type##_s
@@ -76,7 +76,7 @@ typedef struct db_ll_s* db_ll;
 
 #define DB_EXTEND(type) struct type##_s _parent
 
-#define DB_ANY(__type) typedef struct __type {db_type type; void* value; db_bool owner;} __type
+#define DB_ANY(__type) typedef struct __type {cx_type type; void* value; cx_bool owner;} __type
 
 #ifdef __cplusplus
 }

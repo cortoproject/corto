@@ -1,5 +1,5 @@
 /*
- * db__class.h
+ * cx__class.h
  *
  *  Created on: July 25, 2015
  *      Author: sander
@@ -10,14 +10,14 @@
 #ifndef DB__COLLECTION_H_
 #define DB__COLLECTION_H_
 
-#include "db__type.h"
+#include "cx__type.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     
-int db_walk(db_collection _this, db_void* collection, db_walkAction action, db_void* userData);
-void db_clear(db_collection _this, db_void* collection);
+int cx_walk(cx_collection _this, cx_void* collection, cx_walkAction action, cx_void* userData);
+void cx_clear(cx_collection _this, cx_void* collection);
 
 #ifdef __cplusplus
 }

@@ -1,4 +1,4 @@
-/* db_delegate.c
+/* cx_delegate.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -7,35 +7,35 @@
  */
 
 #include "db.h"
-#include "db__meta.h"
+#include "cx__meta.h"
 
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::delegate::init(lang::delegate object) */
-db_int16 db_delegate_init(db_delegate object) {
+cx_int16 cx_delegate_init(cx_delegate object) {
 /* $begin(::cortex::lang::delegate::init) */
-    db_object parent;
+    cx_object parent;
 
     /* Initialize function */
-    if (db_function_init(db_function(object))) {
+    if (cx_function_init(cx_function(object))) {
         goto error;
     }
 
-    parent = db_parentof(object);
+    parent = cx_parentof(object);
     if (parent) {
         /* Parent of delegate must be an abstract */
-        if (db_class_instanceof(db_interface_o, parent)) {
+        if (cx_class_instanceof(cx_interface_o, parent)) {
             /* Bind delegate to class */
-            if (db_interface(parent)->kind == DB_CLASS) {
-                if (db_class_bindDelegate(db_class(parent), object)) {
+            if (cx_interface(parent)->kind == DB_CLASS) {
+                if (cx_class_bindDelegate(cx_class(parent), object)) {
                     goto error;
                 }
             } else {
-                db_id id1, id2;
-                db_error("delegate::init: parent '%s' of method '%s' is not a class object.", db_fullname(parent, id1), db_fullname(object, id2));
+                cx_id id1, id2;
+                cx_error("delegate::init: parent '%s' of method '%s' is not a class object.", cx_fullname(parent, id1), cx_fullname(object, id2));
             }
         }
     } else {
-        db_id id;
-        db_error("delegate::init: '%s' is an orphan", db_fullname(object, id));
+        cx_id id;
+        cx_error("delegate::init: '%s' is an orphan", cx_fullname(object, id));
         goto error;
     }
 

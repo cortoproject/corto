@@ -16,7 +16,7 @@ extern "C" {
 #endif
 
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::MethodExpr::construct(Fast::MethodExpr object) */
-db_int16 Fast_MethodExpr_construct(Fast_MethodExpr object);
+cx_int16 Fast_MethodExpr_construct(Fast_MethodExpr object);
 
 /* virtual ::cortex::Fast::MethodExpr::getType() */
 Fast_Variable Fast_MethodExpr_getType(Fast_MethodExpr _this);

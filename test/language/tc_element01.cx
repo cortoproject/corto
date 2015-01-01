@@ -66,7 +66,7 @@ validate(ints_ls, "Sequence var with static index")
 // List var
 // Map var
 // need to come up with a way to automatically initialize list and map fields so that they
-// contain either a valid db_ll or db_rbtree object. Especially the latter is difficult and
+// contain either a valid cx_ll or cx_rbtree object. Especially the latter is difficult and
 // cannot be automated because it requires a subtype.
 
 uint32 i : 0

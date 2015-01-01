@@ -1,5 +1,5 @@
 /*
- * db_init_ser.h
+ * cx_init_ser.h
  *
  *  Created on: July 12, 2014
  *      Author: sander
@@ -8,13 +8,13 @@
 #ifndef DB_INIT_SER_H_
 #define DB_INIT_SER_H_
 
-#include "db_serializer.h"
+#include "cx_serializer.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     
-struct db_serializer_s db_ser_init(db_modifier access, db_operatorKind accessKind, db_serializerTraceKind trace);
+struct cx_serializer_s cx_ser_init(cx_modifier access, cx_operatorKind accessKind, cx_serializerTraceKind trace);
 
 #ifdef __cplusplus
 }

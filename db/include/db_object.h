@@ -1,5 +1,5 @@
 /*
- * db_object.h
+ * cx_object.h
  *
  *  Created on: Aug 2, 2012
  *      Author: sander
@@ -8,21 +8,21 @@
 #ifndef DB_OBJECT_H_
 #define DB_OBJECT_H_
 
-#include "db__type.h"
-#include "db_ll.h"
-#include "db_value.h"
-#include "db_rbtree.h"
-#include "db_async.h"
+#include "cx__type.h"
+#include "cx_ll.h"
+#include "cx_value.h"
+#include "cx_rbtree.h"
+#include "cx_async.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* Used to hold the fully scoped name of an object */
-typedef char db_id[512];
+typedef char cx_id[512];
 
 /* Action-signature for scopeWalk */
-typedef int (*db_scopeWalkAction)(db_object o, void* userData);
+typedef int (*cx_scopeWalkAction)(cx_object o, void* userData);
 
 /* Object attribute flags */
 #define DB_ATTR_SCOPED      (1)
@@ -51,74 +51,74 @@ typedef int (*db_scopeWalkAction)(db_object o, void* userData);
 #define DB_EVENT_OBSERVABLE (1)
 
 /* Object lifecycle */
-db_object db_new(db_typedef type);
-db_object db_new_ext(db_object src, db_typedef type, db_uint8 attrs, db_string context);
-db_object db_declare(db_object parent, db_string name, db_typedef type);
-db_int16 db_define(db_object o);
-void db_destruct(db_object o);
-void db_attach(db_object parent, db_object child); /* Attach lifecycle of unscoped object to scoped object */
-void db_detach(db_object parent, db_object child); /* Detach lifecycle of unscoped object from scoped object */
-void db_invalidate(db_object o);
+cx_object cx_new(cx_typedef type);
+cx_object cx_new_ext(cx_object src, cx_typedef type, cx_uint8 attrs, cx_string context);
+cx_object cx_declare(cx_object parent, cx_string name, cx_typedef type);
+cx_int16 cx_define(cx_object o);
+void cx_destruct(cx_object o);
+void cx_attach(cx_object parent, cx_object child); /* Attach lifecycle of unscoped object to scoped object */
+void cx_detach(cx_object parent, cx_object child); /* Detach lifecycle of unscoped object from scoped object */
+void cx_invalidate(cx_object o);
 
 /* Object-data */
-db_typedef db_typeof(db_object o);
-db_int32 db_countof(db_object o);
-db_bool db_checkState(db_object o, db_int8 state);
-db_bool db_checkAttr(db_object o, db_int8 attr);
-db_bool db_instanceof(db_typedef type, db_object o);
+cx_typedef cx_typeof(cx_object o);
+cx_int32 cx_countof(cx_object o);
+cx_bool cx_checkState(cx_object o, cx_int8 state);
+cx_bool cx_checkAttr(cx_object o, cx_int8 attr);
+cx_bool cx_instanceof(cx_typedef type, cx_object o);
 
 /* Scoped object-data */
-db_string db_nameof(db_object o);
-db_object db_parentof(db_object o);
-db_rbtree db_scopeof(db_object o); /* Dangerous function, because it's not protected by locks */
-db_uint32 db_scopeSize(db_object o); /* Returns number of objects (non-recursive) in scope */
-db_ll db_scopeClaim(db_object o); /* Safe way to access scope contents */
-void db_scopeRelease(db_ll scope);
-db_int32 db_scopeWalk(db_object o, db_scopeWalkAction action, void* userData); /* Safe object-walk */
-db_string db_fullname(db_object o, db_id buffer);
-db_string db_relname(db_object from, db_object o, db_id buffer);
+cx_string cx_nameof(cx_object o);
+cx_object cx_parentof(cx_object o);
+cx_rbtree cx_scopeof(cx_object o); /* Dangerous function, because it's not protected by locks */
+cx_uint32 cx_scopeSize(cx_object o); /* Returns number of objects (non-recursive) in scope */
+cx_ll cx_scopeClaim(cx_object o); /* Safe way to access scope contents */
+void cx_scopeRelease(cx_ll scope);
+cx_int32 cx_scopeWalk(cx_object o, cx_scopeWalkAction action, void* userData); /* Safe object-walk */
+cx_string cx_fullname(cx_object o, cx_id buffer);
+cx_string cx_relname(cx_object from, cx_object o, cx_id buffer);
 
 /* Resource management */
-db_int32 db_keep(db_object o);
-db_int32 db_free(db_object o);
-db_int32 db_free_ext(db_object src, db_object o, db_string context);
-db_int32 db_keep_ext(db_object src, db_object o, db_string context);
-void db_drop(db_object o); /* Free all non-orphaned objects in scope. Object self is not free'd. */
+cx_int32 cx_keep(cx_object o);
+cx_int32 cx_free(cx_object o);
+cx_int32 cx_free_ext(cx_object src, cx_object o, cx_string context);
+cx_int32 cx_keep_ext(cx_object src, cx_object o, cx_string context);
+void cx_drop(cx_object o); /* Free all non-orphaned objects in scope. Object self is not free'd. */
 
 /* Lookup objects either using names or fully qualified names. */
-db_object db_lookup(db_object scope, db_string name);
-db_object db_lookup_ext(db_object src, db_object scope, db_string name, db_string context);
-db_function db_lookupFunction(db_object scope, db_string requested, db_bool allowCastableOverloading, db_int32 *d);
-db_function db_lookupFunction_ext(db_object src, db_object scope, db_string requested, db_bool allowCastableOverloading, db_int32 *d, db_string context);
-db_object db_resolve(db_object scope, db_string expr);
-db_object db_resolve_ext(db_object src, db_object scope, db_string expr, db_bool allowCastableOverloading, db_string context);
+cx_object cx_lookup(cx_object scope, cx_string name);
+cx_object cx_lookup_ext(cx_object src, cx_object scope, cx_string name, cx_string context);
+cx_function cx_lookupFunction(cx_object scope, cx_string requested, cx_bool allowCastableOverloading, cx_int32 *d);
+cx_function cx_lookupFunction_ext(cx_object src, cx_object scope, cx_string requested, cx_bool allowCastableOverloading, cx_int32 *d, cx_string context);
+cx_object cx_resolve(cx_object scope, cx_string expr);
+cx_object cx_resolve_ext(cx_object src, cx_object scope, cx_string expr, cx_bool allowCastableOverloading, cx_string context);
 
 /* Notifications */
-db_int32 db_listen(db_object observable, db_observer observer, db_object _this);
-db_int32 db_silence(db_object observable, db_observer observer, db_object _this);
-db_bool db_listening(db_object observable, db_observer, db_object _this);
-db_int32 db_update(db_object observable);
-db_int32 db_updateFrom(db_object observable, db_object _this);
-db_int32 db_updateBegin(db_object observable);
-db_int32 db_updateTry(db_object observable);
-db_int32 db_updateEnd(db_object observable);
-db_int32 db_updateEndFrom(db_object observable, db_object _this);
-db_int32 db_updateCancel(db_object observable);
+cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this);
+cx_int32 cx_silence(cx_object observable, cx_observer observer, cx_object _this);
+cx_bool cx_listening(cx_object observable, cx_observer, cx_object _this);
+cx_int32 cx_update(cx_object observable);
+cx_int32 cx_updateFrom(cx_object observable, cx_object _this);
+cx_int32 cx_updateBegin(cx_object observable);
+cx_int32 cx_updateTry(cx_object observable);
+cx_int32 cx_updateEnd(cx_object observable);
+cx_int32 cx_updateEndFrom(cx_object observable, cx_object _this);
+cx_int32 cx_updateCancel(cx_object observable);
 
 /* Waiting */
-db_int32 db_waitfor(db_object observable);
-db_object db_wait(db_int32 timeout_sec, db_int32 timeout_nanosec);
+cx_int32 cx_waitfor(cx_object observable);
+cx_object cx_wait(cx_int32 timeout_sec, cx_int32 timeout_nanosec);
 
 /* Thread-safe reading (polling) */
-db_int32 db_readBegin(db_object object);
-db_int32 db_readEnd(db_object object);
+cx_int32 cx_readBegin(cx_object object);
+cx_int32 cx_readEnd(cx_object object);
 
 /* Set reference field */
-void db_set(void* ptr, db_object value);
-void db_set_ext(db_object source, void* ptr, db_object value, db_string context);
+void cx_set(void* ptr, cx_object value);
+void cx_set_ext(cx_object source, void* ptr, cx_object value, cx_string context);
 
 /* Measure to what extend a function meets requested signature */
-db_int16 db_overload(db_function object, db_string name, db_int32* distance, db_bool allowCastable);
+cx_int16 cx_overload(cx_function object, cx_string name, cx_int32* distance, cx_bool allowCastable);
 
 /* Obtain information from signature.
  *   Signatures can be of the following form:
@@ -128,55 +128,55 @@ db_int16 db_overload(db_function object, db_string name, db_int32* distance, db_
  *
  *   No extra whitespaces are allowed.
  */
-db_int32 db_signatureName(db_string signature, db_id buffer);
-db_int32 db_signatureParamCount(db_string signature);
-db_int32 db_signatureParamName(db_string signature, db_uint32 id, db_id buffer);
-db_int32 db_signatureParamType(db_string signature, db_uint32 id, db_id buffer, db_bool* reference);
+cx_int32 cx_signatureName(cx_string signature, cx_id buffer);
+cx_int32 cx_signatureParamCount(cx_string signature);
+cx_int32 cx_signatureParamName(cx_string signature, cx_uint32 id, cx_id buffer);
+cx_int32 cx_signatureParamType(cx_string signature, cx_uint32 id, cx_id buffer, cx_bool* reference);
 
 /* Create request signature */
-db_string db_signatureOpen(db_string name);
-db_string db_signatureAdd(db_string sig, db_typedef type, db_bool isReference);
-db_string db_signatureAddWildcard(db_string sig, db_bool isReference);
-db_string db_signatureClose(db_string sig);
+cx_string cx_signatureOpen(cx_string name);
+cx_string cx_signatureAdd(cx_string sig, cx_typedef type, cx_bool isReference);
+cx_string cx_signatureAddWildcard(cx_string sig, cx_bool isReference);
+cx_string cx_signatureClose(cx_string sig);
 
 /* Parse member expression */
-db_value* db_parseExpr(db_object o, db_string expr, db_valueStack stack, db_uint32 *count);
+cx_value* cx_parseExpr(cx_object o, cx_string expr, cx_valueStack stack, cx_uint32 *count);
 
 /* Serialize object to string */
-db_string db_toString(db_object object, db_uint32 maxLength);
+cx_string cx_toString(cx_object object, cx_uint32 maxLength);
 
 /* Deserialize object from string */
-db_object db_fromString(db_string string);
+cx_object cx_fromString(cx_string string);
 
 /* Convert value to string */
-db_string db_valueToString(db_value* v, db_uint32 maxLength);
+cx_string cx_valueToString(cx_value* v, cx_uint32 maxLength);
 
 /* Deserialize value from string */
-void *db_valueFromString(db_string string, void* out, db_typedef type);
+void *cx_valueFromString(cx_string string, void* out, cx_typedef type);
 
 /* Compare objects */
-db_equalityKind db_compare(db_object o1, db_object o2);
+cx_equalityKind cx_compare(cx_object o1, cx_object o2);
 
 /* Compare value */
-db_equalityKind db_valueCompare(db_value *value1, db_value *value2);
+cx_equalityKind cx_valueCompare(cx_value *value1, cx_value *value2);
     
 /* Init object */
-db_int16 db_init(db_object o);
+cx_int16 cx_init(cx_object o);
     
 /* Init value */
-db_int16 db_initValue(db_value *v);
+cx_int16 cx_initValue(cx_value *v);
     
 /* Deinit object */
-db_int16 db_deinit(db_object o);
+cx_int16 cx_deinit(cx_object o);
     
 /* Deinit value */
-db_int16 db_deinitValue(db_value *v);
+cx_int16 cx_deinitValue(cx_value *v);
     
 /* Copy object */
-db_int16 db_copy(db_object from, db_object to);
+cx_int16 cx_copy(cx_object from, cx_object to);
  
 /* Copy value */
-db_int16 db_valueCopy(db_value *from, db_value *to);
+cx_int16 cx_valueCopy(cx_value *from, cx_value *to);
 
 #ifdef __cplusplus
 }

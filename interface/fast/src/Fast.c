@@ -17,12 +17,12 @@
 Fast_Parser yparser(void);
 
 /* Create a call-expression */
-Fast_Call Fast_createMethodCall(Fast_Expression obj, db_string function, db_uint32 numArgs, ...) {
+Fast_Call Fast_createMethodCall(Fast_Expression obj, cx_string function, cx_uint32 numArgs, ...) {
     Fast_Call result;
     Fast_Expression args=NULL, arg=NULL, member=NULL;
     Fast_String functionStr;
 	va_list arglist;
-    db_uint32 i;
+    cx_uint32 i;
     
     /* Create comma-expression if there is more than one argument */
     va_start(arglist, numArgs);
@@ -62,7 +62,7 @@ error:
 /* $end */
 
 /* ::cortex::Fast::valueKindFromType(lang::type type) */
-Fast_valueKind Fast_valueKindFromType(db_type type) {
+Fast_valueKind Fast_valueKindFromType(cx_type type) {
 /* $begin(::cortex::Fast::valueKindFromType) */
 	Fast_valueKind result = FAST_Null;
 
@@ -76,7 +76,7 @@ Fast_valueKind Fast_valueKindFromType(db_type type) {
             goto error;
         }
 
-		switch(db_primitive(type)->kind) {
+		switch(cx_primitive(type)->kind) {
 		case DB_BOOLEAN:
 			result = FAST_Boolean;
 			break;

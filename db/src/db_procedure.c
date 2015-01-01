@@ -1,4 +1,4 @@
-/* db_procedure.c
+/* cx_procedure.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -7,23 +7,23 @@
  */
 
 #include "db.h"
-#include "db__meta.h"
+#include "cx__meta.h"
 
 /* $header() */
-#include "db_observer.h"
-#include "db_function.h"
+#include "cx_observer.h"
+#include "cx_function.h"
 /* $end */
 
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::procedure::init(lang::procedure object) */
-db_int16 db_procedure_init(db_procedure object) {
+cx_int16 cx_procedure_init(cx_procedure object) {
 /* $begin(::cortex::lang::procedure::init) */
 
-    if (db_interface_init(db_interface(object))) {
+    if (cx_interface_init(cx_interface(object))) {
     	goto error;
     }
 
-    db_interface(object)->kind = DB_PROCEDURE;
-    db_type(object)->reference = TRUE;
+    cx_interface(object)->kind = DB_PROCEDURE;
+    cx_type(object)->reference = TRUE;
 
     return 0;
 error:
@@ -32,12 +32,12 @@ error:
 }
 
 /* ::cortex::lang::procedure::unbind(lang::object object) */
-db_void db_procedure_unbind(db_procedure _this, db_object object) {
+cx_void cx_procedure_unbind(cx_procedure _this, cx_object object) {
 /* $begin(::cortex::lang::procedure::unbind) */
     if (_this->kind == DB_OBSERVER){
-        db_observer_unbind(object);
+        cx_observer_unbind(object);
     } else {
-        db_function_unbind(object);
+        cx_function_unbind(object);
     }
 /* $end */
 }

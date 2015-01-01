@@ -13,10 +13,10 @@ extern "C" {
 #endif
 
 typedef struct tc_data {
-    db_uint32 count;
-    db_object _this;
-    db_object observable;
-    db_object source;
+    cx_uint32 count;
+    cx_object _this;
+    cx_object observable;
+    cx_object source;
 }tc_data;
 
 typedef enum tc_observableKind {

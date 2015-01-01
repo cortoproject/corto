@@ -16,7 +16,7 @@
 /* $end */
 
 /* ::tc_event::Point::construct_onThis */
-db_void tc_Point_construct_onThis(tc_Point _this, db_object *observable, db_object *source) {
+cx_void tc_Point_construct_onThis(tc_Point _this, cx_object *observable, cx_object *source) {
 /* $begin(::tc_event::Point::construct_onThis) */
     tcResult[observableOnConstructThis].count++;
     tcResult[observableOnConstructThis]._this = _this;
@@ -26,7 +26,7 @@ db_void tc_Point_construct_onThis(tc_Point _this, db_object *observable, db_obje
 }
 
 /* ::tc_event::Point::destruct_onThis */
-db_void tc_Point_destruct_onThis(tc_Point _this, db_object *observable, db_object *source) {
+cx_void tc_Point_destruct_onThis(tc_Point _this, cx_object *observable, cx_object *source) {
 /* $begin(::tc_event::Point::destruct_onThis) */
     tcResult[observableOnDestructThis].count++;
     tcResult[observableOnDestructThis]._this = _this;
@@ -36,7 +36,7 @@ db_void tc_Point_destruct_onThis(tc_Point _this, db_object *observable, db_objec
 }
 
 /* ::tc_event::Point::new_onThis */
-db_void tc_Point_new_onThis(tc_Point _this, db_object *observable, db_object *source) {
+cx_void tc_Point_new_onThis(tc_Point _this, cx_object *observable, cx_object *source) {
 /* $begin(::tc_event::Point::new_onThis) */
     tcResult[observableOnNewThis].count++;
     tcResult[observableOnNewThis]._this = _this;
@@ -46,7 +46,7 @@ db_void tc_Point_new_onThis(tc_Point _this, db_object *observable, db_object *so
 }
 
 /* ::tc_event::Point::update_onThis */
-db_void tc_Point_update_onThis(tc_Point _this, db_object *observable, db_object *source) {
+cx_void tc_Point_update_onThis(tc_Point _this, cx_object *observable, cx_object *source) {
 /* $begin(::tc_event::Point::update_onThis) */
     tcResult[observableOnUpdateThis].count++;
     tcResult[observableOnUpdateThis]._this = _this;

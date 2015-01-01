@@ -1,27 +1,27 @@
-/* db_event.h
+/* cx_event.h
  *
  * This file contains generated code. Do not modify!
  */
 
-#ifndef db_event_H
-#define db_event_H
+#ifndef cx_event_H
+#define cx_event_H
 
 #include "cortex.h"
-#include "db__type.h"
+#include "cx__type.h"
 
-#include "db__api.h"
+#include "cx__api.h"
 
-#include "db__meta.h"
+#include "cx__meta.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* ::cortex::lang::event::processed() */
-db_void db_event_processed(db_event _this);
+cx_void cx_event_processed(cx_event _this);
 
 /* ::cortex::lang::event::uniqueKind() */
-db_int16 db_event_uniqueKind(void);
+cx_int16 cx_event_uniqueKind(void);
 
 #ifdef __cplusplus
 }

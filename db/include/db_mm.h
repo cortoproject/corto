@@ -1,5 +1,5 @@
 /*
- * db_mm.h
+ * cx_mm.h
  *
  *  Created on: Sep 7, 2012
  *      Author: sander
@@ -8,7 +8,7 @@
 #ifndef DB_MM_H_
 #define DB_MM_H_
 
-#include "db_object.h"
+#include "cx_object.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -17,9 +17,9 @@ extern "C" {
 #define DB_MAX_CYCLE_DEPTH (256)
 
 #define DB_MMNODE_INIT {FALSE, 0}
-struct db_mmNode {
-    db_uint8 marked;
-    db_uint16 cycles;
+struct cx_mmNode {
+    cx_uint8 marked;
+    cx_uint16 cycles;
 };
 
 #ifdef __cplusplus

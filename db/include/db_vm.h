@@ -1,5 +1,5 @@
 /*
- * db_vm.h
+ * cx_vm.h
  *
  *  Created on: Aug 16, 2013
  *      Author: sander
@@ -9,7 +9,7 @@
 #define DB_VM_H_
 
 #include "stdint.h"
-#include "db_object.h"
+#include "cx_object.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -153,7 +153,7 @@ extern "C" {
 	VM_OPERAND_##postfix(op,W,V),\
     VM_LVALUE(op,W,postfix)
 
-typedef enum db_vmOpKind {
+typedef enum cx_vmOpKind {
 	DB_VM_NOOP,
 
 	/* Copy a value to a variable/object */
@@ -314,60 +314,60 @@ typedef enum db_vmOpKind {
 	VM_2OP_W(WAIT,PQRV), /* Do the actual wait */
 
 	DB_VM_STOP /* Stop the current program (or function) */
-} db_vmOpKind;
+} cx_vmOpKind;
 
-typedef union db_vmParameter16 {
+typedef union cx_vmParameter16 {
     struct {
         uint16_t _1;
         uint16_t _2;
     } b;
     uint16_t s;
     intptr_t w;
-}db_vmParameter16;
+}cx_vmParameter16;
 
-typedef union db_vmParameter {
-    db_vmParameter16 s;
+typedef union cx_vmParameter {
+    cx_vmParameter16 s;
     intptr_t w;
-}db_vmParameter;
+}cx_vmParameter;
 
-typedef struct db_vmOpAddr {
+typedef struct cx_vmOpAddr {
     uint16_t jump;
-    db_vmParameter16 p;
-}db_vmOpAddr;
+    cx_vmParameter16 p;
+}cx_vmOpAddr;
 
-typedef struct db_vmOp {
+typedef struct cx_vmOp {
     intptr_t op; /* direct jump to address of next operation */
-    db_vmParameter16 ic;
-    db_vmParameter lo;
-    db_vmParameter hi;
+    cx_vmParameter16 ic;
+    cx_vmParameter lo;
+    cx_vmParameter hi;
 #ifdef DB_VM_DEBUG
-    db_vmOpKind opKind; /* Actual operation kind. Only used for debugging purposes */
+    cx_vmOpKind opKind; /* Actual operation kind. Only used for debugging purposes */
 #endif
-}db_vmOp;
+}cx_vmOp;
 
-typedef struct db_vmDebugInfo {
+typedef struct cx_vmDebugInfo {
     uint32_t line;
-}db_vmDebugInfo;
+}cx_vmDebugInfo;
     
-typedef struct db_vmProgram_s *db_vmProgram;
-typedef struct db_vmProgram_s {
-	db_vmOp *program;
-    db_vmDebugInfo *debugInfo;
-    db_object function;
+typedef struct cx_vmProgram_s *cx_vmProgram;
+typedef struct cx_vmProgram_s {
+	cx_vmOp *program;
+    cx_vmDebugInfo *debugInfo;
+    cx_object function;
     char *filename;
 	uint32_t size;
 	uint32_t maxSize;
 	uint32_t storage;
 	uint32_t stack;
 	uint8_t translated;
-}db_vmProgram_s;
+}cx_vmProgram_s;
 
-void db_call_vm(db_function f, db_void* result, void* args);
-int32_t db_vm_run(db_vmProgram program, void *result);
-char *db_vmProgram_toString(db_vmProgram program, db_vmOp *addr);
-db_vmProgram db_vmProgram_new(char *filename, db_object function);
-void db_vmProgram_free(db_vmProgram program);
-db_vmOp *db_vmProgram_addOp(db_vmProgram program, uint32_t line);
+void cx_call_vm(cx_function f, cx_void* result, void* args);
+int32_t cx_vm_run(cx_vmProgram program, void *result);
+char *cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr);
+cx_vmProgram cx_vmProgram_new(char *filename, cx_object function);
+void cx_vmProgram_free(cx_vmProgram program);
+cx_vmOp *cx_vmProgram_addOp(cx_vmProgram program, uint32_t line);
 
 #ifdef __cplusplus
 }

@@ -1,4 +1,4 @@
-/* db_float.c
+/* cx_float.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -7,12 +7,12 @@
  */
 
 #include "db.h"
-#include "db__meta.h"
+#include "cx__meta.h"
 
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::float::init(lang::float object) */
-db_int16 db_float_init(db_float object) {
+cx_int16 cx_float_init(cx_float object) {
 /* $begin(::cortex::lang::float::init) */
-    db_primitive(object)->kind = DB_FLOAT;
-    return db_primitive_init((db_primitive)object);
+    cx_primitive(object)->kind = DB_FLOAT;
+    return cx_primitive_init((cx_primitive)object);
 /* $end */
 }

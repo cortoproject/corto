@@ -10,22 +10,22 @@
 #include "assert.h"
 #include "libxml/xmlreader.h"
 
-#include "db_object.h"
-#include "db_err.h"
-#include "db_xmlreader.h"
+#include "cx_object.h"
+#include "cx_err.h"
+#include "cx_xmlreader.h"
 
-static db_bool xml_initialized = FALSE;
+static cx_bool xml_initialized = FALSE;
 
-typedef struct db_xmlreader_s {
+typedef struct cx_xmlreader_s {
 	xmlDocPtr doc;
 	xmlNodePtr root;
-}db_xmlreader_s;
+}cx_xmlreader_s;
 
 /* Open xml memory */
-db_xmlreader db_xmlMemoryReaderNew(const char* str, const char* rootElement) {
+cx_xmlreader cx_xmlMemoryReaderNew(const char* str, const char* rootElement) {
 	xmlDocPtr doc;
 	xmlNodePtr root;
-	db_xmlreader reader;
+	cx_xmlreader reader;
 
 	reader = 0;
 
@@ -40,11 +40,11 @@ db_xmlreader db_xmlMemoryReaderNew(const char* str, const char* rootElement) {
 		assert(root);
 
 		if (xmlStrcmp(root->name, (const xmlChar*)rootElement)) {
-			db_error("incorrect root element '%s' (expected '%s').", root->name, rootElement);
+			cx_error("incorrect root element '%s' (expected '%s').", root->name, rootElement);
 			xmlFreeDoc(doc);
 			doc = 0;
 		} else {
-			reader = malloc(sizeof(db_xmlreader_s));
+			reader = malloc(sizeof(cx_xmlreader_s));
 			reader->doc = doc;
 			reader->root = root;
 		}
@@ -54,10 +54,10 @@ db_xmlreader db_xmlMemoryReaderNew(const char* str, const char* rootElement) {
 }
 
 /* Open xml file */
-db_xmlreader db_xmlreaderNew(const char* file, const char* rootElement) {
+cx_xmlreader cx_xmlreaderNew(const char* file, const char* rootElement) {
 	xmlDocPtr doc;
 	xmlNodePtr root;
-	db_xmlreader reader;
+	cx_xmlreader reader;
 
 	reader = 0;
 
@@ -72,11 +72,11 @@ db_xmlreader db_xmlreaderNew(const char* file, const char* rootElement) {
 		assert(root);
 
 		if (xmlStrcmp(root->name, (const xmlChar*)rootElement)) {
-			db_error("incorrect root element '%s' (expected '%s').", root->name, rootElement);
+			cx_error("incorrect root element '%s' (expected '%s').", root->name, rootElement);
 			xmlFreeDoc(doc);
 			doc = 0;
 		} else {
-			reader = malloc(sizeof(db_xmlreader_s));
+			reader = malloc(sizeof(cx_xmlreader_s));
 			reader->doc = doc;
 			reader->root = root;
 		}
@@ -86,20 +86,20 @@ db_xmlreader db_xmlreaderNew(const char* file, const char* rootElement) {
 }
 
 /* Close xml file */
-void db_xmlreaderFree(db_xmlreader reader) {
+void cx_xmlreaderFree(cx_xmlreader reader) {
 	xmlFreeDoc(reader->doc);
 	/*xmlCleanupParser();*/
 	free(reader);
 }
 
 /* Get name of node */
-const char* db_xmlnodeName(db_xmlnode cnode) {
+const char* cx_xmlnodeName(cx_xmlnode cnode) {
 	xmlNodePtr node = (xmlNodePtr)cnode;
 	return (const char*)node->name;
 }
 
 /* Get namespace of node */
-const char* db_xmlnodeNs(db_xmlnode cnode) {
+const char* cx_xmlnodeNs(cx_xmlnode cnode) {
 	xmlNodePtr node = (xmlNodePtr)cnode;
 	if (node->ns) {
 		return (const char*)node->ns->prefix;
@@ -109,41 +109,41 @@ const char* db_xmlnodeNs(db_xmlnode cnode) {
 }
 
 /* Get parent of node */
-db_xmlnode db_xmlnodeParent(db_xmlnode cnode) {
+cx_xmlnode cx_xmlnodeParent(cx_xmlnode cnode) {
 	xmlNodePtr node = (xmlNodePtr)cnode;
 	if (node->parent) {
-		return (db_xmlnode)node->parent;
+		return (cx_xmlnode)node->parent;
 	} else {
 		return 0;
 	}
 }
 
 /* Get linenumber of node */
-short int db_xmlnodeLine(db_xmlnode cnode) {
+short int cx_xmlnodeLine(cx_xmlnode cnode) {
 	xmlNodePtr node = (xmlNodePtr)cnode;
 	return node->line;
 }
 
 /* Get content of node */
-char* db_xmlnodeContent(db_xmlnode cnode) {
+char* cx_xmlnodeContent(cx_xmlnode cnode) {
 	xmlNodePtr node = (xmlNodePtr)cnode;
 	return (char*)xmlNodeGetContent(node);
 }
 
 /* Get root of doc */
-db_xmlnode db_xmlreaderRoot(db_xmlreader reader) {
-	return (db_xmlnode)reader->root;
+cx_xmlnode cx_xmlreaderRoot(cx_xmlreader reader) {
+	return (cx_xmlnode)reader->root;
 }
 
 /* Find element in node */
-db_xmlnode db_xmlnodeFind(db_xmlnode cnode, const char* element) {
+cx_xmlnode cx_xmlnodeFind(cx_xmlnode cnode, const char* element) {
 	xmlNodePtr p;
 	xmlNodePtr node = (xmlNodePtr)cnode;
 
 	p = node->children;
 	while(p) {
 		if ((p->type == XML_ELEMENT_NODE) && !strcmp((char*)p->name, element)) {
-			return (db_xmlnode)p;
+			return (cx_xmlnode)p;
 		}
 		p = p->next;
 	}
@@ -151,12 +151,12 @@ db_xmlnode db_xmlnodeFind(db_xmlnode cnode, const char* element) {
 }
 
 /* Load int */
-int db_xmlnodeInt(db_xmlnode cnode, int* out) {
+int cx_xmlnodeInt(cx_xmlnode cnode, int* out) {
 	char* str;
 	int result;
 	xmlNodePtr node = (xmlNodePtr)cnode;
 
-	db_assert(out != 0, "Invalid out parameter.");
+	cx_assert(out != 0, "Invalid out parameter.");
 
 	result = -1;
 
@@ -165,19 +165,19 @@ int db_xmlnodeInt(db_xmlnode cnode, int* out) {
 		*out = atoi(str);
 		result = 0;
 	} else {
-		db_error("node '%s' has no content (expected integer).", node->name);
+		cx_error("node '%s' has no content (expected integer).", node->name);
 	}
 
 	return result;
 }
 
 /* Load unsigned int */
-int db_xmlnodeUint(db_xmlnode cnode, unsigned int* out) {
+int cx_xmlnodeUint(cx_xmlnode cnode, unsigned int* out) {
 	char* str;
 	int result;
 	xmlNodePtr node = (xmlNodePtr)cnode;
 
-	db_assert(out != 0, "Invalid out parameter.");
+	cx_assert(out != 0, "Invalid out parameter.");
 
 	result = -1;
 
@@ -186,19 +186,19 @@ int db_xmlnodeUint(db_xmlnode cnode, unsigned int* out) {
 		*out = atoi(str);
 		result = 0;
 	} else {
-		db_error("node '%s' has no content (expected integer).", node->name);
+		cx_error("node '%s' has no content (expected integer).", node->name);
 	}
 
 	return result;
 }
 
 /* Load int */
-float db_xmlnodeFloat(db_xmlnode cnode, float* out) {
+float cx_xmlnodeFloat(cx_xmlnode cnode, float* out) {
 	char* str;
 	float result;
 	xmlNodePtr node = (xmlNodePtr)cnode;
 
-	db_assert(out != 0, "Invalid out parameter.");
+	cx_assert(out != 0, "Invalid out parameter.");
 
 	result = -1;
 
@@ -207,19 +207,19 @@ float db_xmlnodeFloat(db_xmlnode cnode, float* out) {
 		*out = (float)atof(str);
 		result = 0;
 	} else {
-		db_error("node '%s' has no content (expected float).", node->name);
+		cx_error("node '%s' has no content (expected float).", node->name);
 	}
 
 	return result;
 }
 
 /* Load boolean */
-int db_xmlnodeBool(db_xmlnode cnode, unsigned int* out) {
+int cx_xmlnodeBool(cx_xmlnode cnode, unsigned int* out) {
 	char* str;
 	int result;
 	xmlNodePtr node = (xmlNodePtr)cnode;
 
-	db_assert(out != 0, "Invalid out parameter.");
+	cx_assert(out != 0, "Invalid out parameter.");
 
 	result = -1;
 
@@ -232,36 +232,36 @@ int db_xmlnodeBool(db_xmlnode cnode, unsigned int* out) {
 			*out = 0;
 		} else {
 			result = -1;
-			db_error("invalid boolean value '%s' in node '%s'.", str, node->name);
+			cx_error("invalid boolean value '%s' in node '%s'.", str, node->name);
 		}
 		free(str);
 	} else {
-		db_error("node '%s' has no content (expected integer).", node->name);
+		cx_error("node '%s' has no content (expected integer).", node->name);
 	}
 
 	return result;
 }
 
 /* Load string */
-char* db_xmlnodeStr(db_xmlnode cnode) {
+char* cx_xmlnodeStr(cx_xmlnode cnode) {
 	char* str;
 	xmlNodePtr node = (xmlNodePtr)cnode;
 
 	str = (char*)xmlNodeGetContent(node);
 	if (!str) {
-		db_error("node %s has no content (expected string).", node->name);
+		cx_error("node %s has no content (expected string).", node->name);
 	}
 
 	return str;
 }
 
 /* Load char */
-int db_xmlnodeAttrChar(db_xmlnode cnode, const char* attribute, char* out) {
+int cx_xmlnodeAttrChar(cx_xmlnode cnode, const char* attribute, char* out) {
 	char* str;
 	char result;
 	xmlNodePtr node = (xmlNodePtr)cnode;
 
-	db_assert(out != 0, "Invalid out parameter.", "db_xmlnodeAttrChar: Invalid out parameter.");
+	cx_assert(out != 0, "Invalid out parameter.", "cx_xmlnodeAttrChar: Invalid out parameter.");
 
 	result = -1;
 
@@ -271,19 +271,19 @@ int db_xmlnodeAttrChar(db_xmlnode cnode, const char* attribute, char* out) {
 		free(str);
 		result = 0;
 	} else {
-		db_error("char attribute '%s' not found in node '%s'.", attribute, node->name);
+		cx_error("char attribute '%s' not found in node '%s'.", attribute, node->name);
 	}
 
 	return result;
 }
 
 /* Load int from attribute */
-int db_xmlnodeAttrInt(db_xmlnode cnode, const char* attribute, int* out) {
+int cx_xmlnodeAttrInt(cx_xmlnode cnode, const char* attribute, int* out) {
 	char* str;
 	int result;
 	xmlNodePtr node = (xmlNodePtr)cnode;
 
-	db_assert(out != 0, "Invalid out parameter.");
+	cx_assert(out != 0, "Invalid out parameter.");
 
 	result = -1;
 
@@ -293,19 +293,19 @@ int db_xmlnodeAttrInt(db_xmlnode cnode, const char* attribute, int* out) {
 		free(str);
 		result = 0;
 	} else {
-		db_error("integer attribute '%s' not found in node '%s'.", attribute, node->name);
+		cx_error("integer attribute '%s' not found in node '%s'.", attribute, node->name);
 	}
 
 	return result;
 }
 
 /* Load unsigned int from attribute */
-int db_xmlnodeAttrUint(db_xmlnode cnode, const char* attribute, unsigned int* out) {
+int cx_xmlnodeAttrUint(cx_xmlnode cnode, const char* attribute, unsigned int* out) {
 	char* str;
 	int result;
 	xmlNodePtr node = (xmlNodePtr)cnode;
 
-	db_assert(out != 0, "Invalid out parameter.");
+	cx_assert(out != 0, "Invalid out parameter.");
 
 	result = -1;
 
@@ -315,19 +315,19 @@ int db_xmlnodeAttrUint(db_xmlnode cnode, const char* attribute, unsigned int* ou
 		free(str);
 		result = 0;
 	} else {
-		db_error("integer attribute '%s' not found in node '%s'.", attribute, node->name);
+		cx_error("integer attribute '%s' not found in node '%s'.", attribute, node->name);
 	}
 
 	return result;
 }
 
 /* Load float from attribute */
-float db_xmlnodeAttrFloat(db_xmlnode cnode, const char* attribute, float* out) {
+float cx_xmlnodeAttrFloat(cx_xmlnode cnode, const char* attribute, float* out) {
 	char* str;
 	float result;
 	xmlNodePtr node = (xmlNodePtr)cnode;
 
-	db_assert(out != 0, "Invalid out parameter.");
+	cx_assert(out != 0, "Invalid out parameter.");
 
 	result = -1;
 
@@ -337,18 +337,18 @@ float db_xmlnodeAttrFloat(db_xmlnode cnode, const char* attribute, float* out) {
 		free(str);
 		result = 0;
 	} else {
-		db_error("float attribute '%s' not found in node '%s'.", attribute, node->name);
+		cx_error("float attribute '%s' not found in node '%s'.", attribute, node->name);
 	}
 
 	return result;
 }
 /* Load boolean from attribute */
-int db_xmlnodeAttrBool(db_xmlnode cnode, const char* attribute, unsigned int* out) {
+int cx_xmlnodeAttrBool(cx_xmlnode cnode, const char* attribute, unsigned int* out) {
 	char* str;
 	int result;
 	xmlNodePtr node = (xmlNodePtr)cnode;
 
-	db_assert(out != 0, "Invalid out parameter.");
+	cx_assert(out != 0, "Invalid out parameter.");
 
 	result = -1;
 
@@ -361,31 +361,31 @@ int db_xmlnodeAttrBool(db_xmlnode cnode, const char* attribute, unsigned int* ou
 			*out = 0;
 		} else {
 			result = -1;
-			db_error("invalid boolean value '%s' in attribute '%s' of node '%s'.", str, attribute, node->name);
+			cx_error("invalid boolean value '%s' in attribute '%s' of node '%s'.", str, attribute, node->name);
 		}
 		free(str);
 	} else {
-		db_error("boolean attribute '%s' not found in node '%s'.", attribute, node->name);
+		cx_error("boolean attribute '%s' not found in node '%s'.", attribute, node->name);
 	}
 
 	return result;
 }
 
 /* Load string from attribute */
-char* db_xmlnodeAttrStr(db_xmlnode cnode, const char* attribute) {
+char* cx_xmlnodeAttrStr(cx_xmlnode cnode, const char* attribute) {
 	char* str;
 	xmlNodePtr node = (xmlNodePtr)cnode;
 
 	str = (char*)xmlGetProp(node, (xmlChar*)attribute);
 	if (!str) {
-		db_error("string attribute '%s' not found in node '%s'.", attribute, node->name);
+		cx_error("string attribute '%s' not found in node '%s'.", attribute, node->name);
 	}
 
 	return str;
 }
 
 /* Test for attribute */
-int db_xmlnodeAttrTest(db_xmlnode cnode, const char* attribute) {
+int cx_xmlnodeAttrTest(cx_xmlnode cnode, const char* attribute) {
 	char* str;
 	int result;
 	xmlNodePtr node = (xmlNodePtr)cnode;
@@ -401,7 +401,7 @@ int db_xmlnodeAttrTest(db_xmlnode cnode, const char* attribute) {
 }
 
 /* Walk attributes */
-int db_xmlnodeWalkAttr(db_xmlnode cnode, db_xmlreaderWalkAttrCallback callback, void* userData) {
+int cx_xmlnodeWalkAttr(cx_xmlnode cnode, cx_xmlreaderWalkAttrCallback callback, void* userData) {
 	xmlNodePtr node = (xmlNodePtr)cnode;
 	xmlAttrPtr attr;
 	int result;
@@ -413,7 +413,7 @@ int db_xmlnodeWalkAttr(db_xmlnode cnode, db_xmlreaderWalkAttrCallback callback, 
 		attr = node->properties;
 
 		while(result && attr) {
-			result = callback((db_string)attr->ns, (db_string)attr->name, (db_string)attr->children->content, userData);
+			result = callback((cx_string)attr->ns, (cx_string)attr->name, (cx_string)attr->children->content, userData);
 			attr = attr->next;
 		}
 	}
@@ -422,13 +422,13 @@ int db_xmlnodeWalkAttr(db_xmlnode cnode, db_xmlreaderWalkAttrCallback callback, 
 }
 
 /* Walk children */
-int db_xmlnodeWalkChildren(db_xmlnode cnode, db_xmlreaderWalkCallback callback, void* userData) {
+int cx_xmlnodeWalkChildren(cx_xmlnode cnode, cx_xmlreaderWalkCallback callback, void* userData) {
 	xmlNodePtr node = (xmlNodePtr)cnode;
-	return db_xmlnodeWalk(node->xmlChildrenNode, callback, userData);
+	return cx_xmlnodeWalk(node->xmlChildrenNode, callback, userData);
 }
 
 /* Walk xml */
-int db_xmlnodeWalk(db_xmlnode cnode, db_xmlreaderWalkCallback callback, void* userData) {
+int cx_xmlnodeWalk(cx_xmlnode cnode, cx_xmlreaderWalkCallback callback, void* userData) {
 	int result = 1;
 	xmlNodePtr node = (xmlNodePtr)cnode;
 
@@ -445,7 +445,7 @@ int db_xmlnodeWalk(db_xmlnode cnode, db_xmlreaderWalkCallback callback, void* us
 }
 
 /* Count children of node */
-int db_xmlnodeChildrenCount(db_xmlnode cnode) {
+int cx_xmlnodeChildrenCount(cx_xmlnode cnode) {
 	int n = 0;
 	xmlNodePtr child;
 	xmlNodePtr node = (xmlNodePtr)cnode;
@@ -461,7 +461,7 @@ int db_xmlnodeChildrenCount(db_xmlnode cnode) {
 	return n;
 }
 
-db_xmlnode db_xmlnodeGetChild(db_xmlnode cnode, unsigned int childnode) {
+cx_xmlnode cx_xmlnodeGetChild(cx_xmlnode cnode, unsigned int childnode) {
 	unsigned int n = 0;
 	xmlNodePtr child;
 	xmlNodePtr node = (xmlNodePtr)cnode;
@@ -470,7 +470,7 @@ db_xmlnode db_xmlnodeGetChild(db_xmlnode cnode, unsigned int childnode) {
 	while(child) {
 		if (child->type == XML_ELEMENT_NODE) {
 			if (n == childnode) {
-				return (db_xmlnode)child;
+				return (cx_xmlnode)child;
 			}
 			n++;
 		}

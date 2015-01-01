@@ -14,22 +14,22 @@ extern "C" {
 
 #define CORE_SO_EXTENSION "so"
 
-typedef struct db_dl_s* db_dl;
+typedef struct cx_dl_s* cx_dl;
 
 /* Link dynamic library */
-db_dl db_dlOpen(const char* file);
+cx_dl cx_dlOpen(const char* file);
 
 /* Close dynamic library */
-void db_dlClose(db_dl dl);
+void cx_dlClose(cx_dl dl);
 
 /* Lookup symbol in dynamic library */
-void* db_dlSym(db_dl dl, const char* sym);
+void* cx_dlSym(cx_dl dl, const char* sym);
 
 /* Lookup procedure in dynamic library */
-void*(*db_dlProc(db_dl dl, const char* proc))(void);
+void*(*cx_dlProc(cx_dl dl, const char* proc))(void);
 
 /* Return error code */
-const char* db_dlError(void);
+const char* cx_dlError(void);
 
 #ifdef __cplusplus
 }

@@ -19,19 +19,19 @@ extern "C" {
 #endif
 
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Object::construct(Object object) */
-db_int16 Fast_Object_construct(Fast_Object object);
+cx_int16 Fast_Object_construct(Fast_Object object);
 
 /* ::cortex::Fast::Object::getValue() */
-db_word Fast_Object_getValue(Fast_Object _this);
+cx_word Fast_Object_getValue(Fast_Object _this);
 
 /* ::cortex::Fast::Object::serialize(lang::type dstType,lang::word dst) */
-db_int16 Fast_Object_serialize(Fast_Object _this, db_type dstType, db_word dst);
+cx_int16 Fast_Object_serialize(Fast_Object _this, cx_type dstType, cx_word dst);
 
-/* virtual ::cortex::Fast::Object::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_Object_toIc(Fast_Object _this, db_icProgram program, db_icStorage storage, db_bool stored);
+/* virtual ::cortex::Fast::Object::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+cx_ic Fast_Object_toIc(Fast_Object _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);
 
-/* ::cortex::Fast::Object::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_Object_toIc_v(Fast_Object _this, db_icProgram program, db_icStorage storage, db_bool stored);
+/* ::cortex::Fast::Object::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+cx_ic Fast_Object_toIc_v(Fast_Object _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);
 
 #ifdef __cplusplus
 }

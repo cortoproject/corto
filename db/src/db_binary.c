@@ -1,4 +1,4 @@
-/* db_binary.c
+/* cx_binary.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -7,12 +7,12 @@
  */
 
 #include "db.h"
-#include "db__meta.h"
+#include "cx__meta.h"
 
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::binary::init(lang::binary object) */
-db_int16 db_binary_init(db_binary object) {
+cx_int16 cx_binary_init(cx_binary object) {
 /* $begin(::cortex::lang::binary::init) */
-    db_primitive(object)->kind = DB_BINARY;
-    return db_primitive_init((db_primitive)object);
+    cx_primitive(object)->kind = DB_BINARY;
+    return cx_primitive_init((cx_primitive)object);
 /* $end */
 }

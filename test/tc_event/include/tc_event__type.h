@@ -23,10 +23,10 @@ extern "C" {
 /*  ::tc_event::Point */
 DB_CLASS(tc_Point);
 DB_CLASS_DEF(tc_Point) {
-    db_uint32 x;
-    db_uint32 y;
+    cx_uint32 x;
+    cx_uint32 y;
 };
-typedef db_uint32 tc_value;
+typedef cx_uint32 tc_value;
 
 #ifdef __cplusplus
 }

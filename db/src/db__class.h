@@ -1,5 +1,5 @@
 /*
- * db__class.h
+ * cx__class.h
  *
  *  Created on: Aug 5, 2012
  *      Author: sander
@@ -10,23 +10,23 @@
 #ifndef DB__CLASS_H_
 #define DB__CLASS_H_
 
-#include "db__type.h"
-#include "db_class.h"
+#include "cx__type.h"
+#include "cx_class.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-db_uint32 db__class_delegateCount(db_class _this);
-db_object db_class_getObservable(db_class _this, db_observer observer, db_object me);
-void db_class_setObservable(db_class _this, db_observer observer, db_object observable, db_object me);
+cx_uint32 cx__class_delegateCount(cx_class _this);
+cx_object cx_class_getObservable(cx_class _this, cx_observer observer, cx_object me);
+void cx_class_setObservable(cx_class _this, cx_observer observer, cx_object observable, cx_object me);
 
-void db_class_attachObservers(db_class _this, db_object object);
-void db_class_listenObservers(db_class _this, db_object object);
-void db_class_detachObservers(db_class _this, db_object object);
+void cx_class_attachObservers(cx_class _this, cx_object object);
+void cx_class_listenObservers(cx_class _this, cx_object object);
+void cx_class_detachObservers(cx_class _this, cx_object object);
 
-db_vtable* db_class_getCallbackVtable(db_object o);
-db_vtable* db_class_getObserverVtable(db_object o);
+cx_vtable* cx_class_getCallbackVtable(cx_object o);
+cx_vtable* cx_class_getObserverVtable(cx_object o);
 
 #ifdef __cplusplus
 }

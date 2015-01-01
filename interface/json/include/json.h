@@ -1,19 +1,19 @@
 #include <stdio.h>
 
 #include "cortex.h"
-#include "db_serializer.h"
+#include "cx_serializer.h"
 
 /* String serializer data */
-typedef struct db_json_ser_t {
+typedef struct cx_json_ser_t {
     /* Public */
-    db_string buffer;
-    db_string ptr;
+    cx_string buffer;
+    cx_string ptr;
     unsigned int length;
     unsigned int maxlength;
     unsigned int itemCount;
-    db_bool serializeMeta;
-    db_bool serializeValue;
-    db_bool serializeScope;
-} db_json_ser_t;
+    cx_bool serializeMeta;
+    cx_bool serializeValue;
+    cx_bool serializeScope;
+} cx_json_ser_t;
 
-struct db_serializer_s db_json_ser(db_modifier access, db_operatorKind accessKind, db_serializerTraceKind trace);
+struct cx_serializer_s cx_json_ser(cx_modifier access, cx_operatorKind accessKind, cx_serializerTraceKind trace);

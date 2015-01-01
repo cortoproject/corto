@@ -1,33 +1,33 @@
-/* db_dispatcher.h
+/* cx_dispatcher.h
  *
  * This file contains generated code. Do not modify!
  */
 
-#ifndef db_dispatcher_H
-#define db_dispatcher_H
+#ifndef cx_dispatcher_H
+#define cx_dispatcher_H
 
 #include "cortex.h"
-#include "db__type.h"
+#include "cx__type.h"
 
-#include "db__api.h"
+#include "cx__api.h"
 
-#include "db__meta.h"
+#include "cx__meta.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* virtual ::cortex::lang::dispatcher::getEvent(lang::observer observer,lang::object me,lang::object observable,lang::object src) */
-db_observableEvent db_dispatcher_getEvent(db_dispatcher _this, db_observer observer, db_object me, db_object observable, db_object src);
+cx_observableEvent cx_dispatcher_getEvent(cx_dispatcher _this, cx_observer observer, cx_object me, cx_object observable, cx_object src);
 
 /* ::cortex::lang::dispatcher::getEvent(lang::observer observer,lang::object me,lang::object observable,lang::object src) */
-db_observableEvent db_dispatcher_getEvent_v(db_dispatcher _this, db_observer observer, db_object me, db_object observable, db_object src);
+cx_observableEvent cx_dispatcher_getEvent_v(cx_dispatcher _this, cx_observer observer, cx_object me, cx_object observable, cx_object src);
 
 /* virtual ::cortex::lang::dispatcher::post(lang::event event) */
-void db_dispatcher_post(db_dispatcher _this, db_event event);
+void cx_dispatcher_post(cx_dispatcher _this, cx_event event);
 
 /* ::cortex::lang::dispatcher::post(lang::event event) */
-db_void db_dispatcher_post_v(db_dispatcher _this, db_event event);
+cx_void cx_dispatcher_post_v(cx_dispatcher _this, cx_event event);
 
 #ifdef __cplusplus
 }

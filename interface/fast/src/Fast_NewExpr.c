@@ -17,36 +17,36 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::NewExpr::construct(Fast::NewExpr object) */
-db_int16 Fast_NewExpr_construct(Fast_NewExpr object) {
+cx_int16 Fast_NewExpr_construct(Fast_NewExpr object) {
 /* $begin(::cortex::Fast::NewExpr::construct) */
 
     Fast_Node(object)->kind = FAST_New;
     Fast_Expression(object)->type = Fast_Variable(object->type);
-    db_keep_ext(object, object->type, "Set type of Fast::NewExpr");
+    cx_keep_ext(object, object->type, "Set type of Fast::NewExpr");
 
     return 0;
 /* $end */
 }
 
 /* ::cortex::Fast::NewExpr::hasSideEffects() */
-db_bool Fast_NewExpr_hasSideEffects_v(Fast_NewExpr _this) {
+cx_bool Fast_NewExpr_hasSideEffects_v(Fast_NewExpr _this) {
 /* $begin(::cortex::Fast::NewExpr::hasSideEffects) */
     DB_UNUSED(_this);
     return TRUE;
 /* $end */
 }
 
-/* ::cortex::Fast::NewExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_NewExpr_toIc_v(Fast_NewExpr _this, db_icProgram program, db_icStorage storage, db_bool stored) {
+/* ::cortex::Fast::NewExpr::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+cx_ic Fast_NewExpr_toIc_v(Fast_NewExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::NewExpr::toIc) */
-	db_ic type, attrs, result;
-	db_icOp op;
+	cx_ic type, attrs, result;
+	cx_icOp op;
 	DB_UNUSED(stored);
 
 	if (storage) {
-		result = (db_ic)storage;
+		result = (cx_ic)storage;
 	} else {
-		result = (db_ic)db_icProgram_accumulatorPush(program, Fast_Node(_this)->line, Fast_Expression_getType(Fast_Expression(_this)), TRUE);
+		result = (cx_ic)cx_icProgram_accumulatorPush(program, Fast_Node(_this)->line, Fast_Expression_getType(Fast_Expression(_this)), TRUE);
 	}
 
 	type = Fast_Node_toIc(Fast_Node(_this->type), program, NULL, TRUE);
@@ -56,9 +56,9 @@ db_ic Fast_NewExpr_toIc_v(Fast_NewExpr _this, db_icProgram program, db_icStorage
 		attrs = NULL;
 	}
 
-	op = db_icOp__create(program, Fast_Node(_this)->line, DB_IC_NEW, (db_icValue)result, (db_icValue)type, (db_icValue)attrs);
+	op = cx_icOp__create(program, Fast_Node(_this)->line, DB_IC_NEW, (cx_icValue)result, (cx_icValue)type, (cx_icValue)attrs);
 	op->s1Deref = DB_IC_DEREF_ADDRESS;
-	db_icProgram_addIc(program, (db_ic)op);
+	cx_icProgram_addIc(program, (cx_ic)op);
 
 	return result;
 /* $end */

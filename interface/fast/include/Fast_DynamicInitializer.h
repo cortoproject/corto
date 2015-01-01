@@ -19,19 +19,19 @@ extern "C" {
 #endif
 
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::DynamicInitializer::construct(DynamicInitializer object) */
-db_int16 Fast_DynamicInitializer_construct(Fast_DynamicInitializer object);
+cx_int16 Fast_DynamicInitializer_construct(Fast_DynamicInitializer object);
 
 /* ::cortex::Fast::DynamicInitializer::define() */
-db_int16 Fast_DynamicInitializer_define(Fast_DynamicInitializer _this);
+cx_int16 Fast_DynamicInitializer_define(Fast_DynamicInitializer _this);
 
 /* ::cortex::Fast::DynamicInitializer::pop() */
-db_int16 Fast_DynamicInitializer_pop(Fast_DynamicInitializer _this);
+cx_int16 Fast_DynamicInitializer_pop(Fast_DynamicInitializer _this);
 
 /* ::cortex::Fast::DynamicInitializer::push() */
-db_int16 Fast_DynamicInitializer_push(Fast_DynamicInitializer _this);
+cx_int16 Fast_DynamicInitializer_push(Fast_DynamicInitializer _this);
 
 /* ::cortex::Fast::DynamicInitializer::value(Expression v) */
-db_int16 Fast_DynamicInitializer_value(Fast_DynamicInitializer _this, Fast_Expression v);
+cx_int16 Fast_DynamicInitializer_value(Fast_DynamicInitializer _this, Fast_Expression v);
 
 #ifdef __cplusplus
 }

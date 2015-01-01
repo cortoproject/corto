@@ -19,16 +19,16 @@ extern "C" {
 #endif
 
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::Integer::init(Integer object) */
-db_int16 Fast_Integer_init(Fast_Integer object);
+cx_int16 Fast_Integer_init(Fast_Integer object);
 
 /* ::cortex::Fast::Integer::serialize(lang::type dstType,lang::word dst) */
-db_int16 Fast_Integer_serialize(Fast_Integer _this, db_type dstType, db_word dst);
+cx_int16 Fast_Integer_serialize(Fast_Integer _this, cx_type dstType, cx_word dst);
 
-/* virtual ::cortex::Fast::Integer::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_Integer_toIc(Fast_Integer _this, db_icProgram program, db_icStorage storage, db_bool stored);
+/* virtual ::cortex::Fast::Integer::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+cx_ic Fast_Integer_toIc(Fast_Integer _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);
 
-/* ::cortex::Fast::Integer::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_Integer_toIc_v(Fast_Integer _this, db_icProgram program, db_icStorage storage, db_bool stored);
+/* ::cortex::Fast::Integer::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+cx_ic Fast_Integer_toIc_v(Fast_Integer _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);
 
 #ifdef __cplusplus
 }

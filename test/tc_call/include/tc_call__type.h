@@ -49,9 +49,9 @@ typedef enum tc_MammalKind {
 /*  ::tc_call::MammalProps */
 typedef struct tc_MammalProps tc_MammalProps;
 struct tc_MammalProps {
-    db_uint32 legs;
+    cx_uint32 legs;
     tc_HabitatKind habitat;
-    db_float64 speed;
+    cx_float64 speed;
 };
 
 /*  ::tc_call::Mammal */

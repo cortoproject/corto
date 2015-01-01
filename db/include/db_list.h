@@ -1,46 +1,46 @@
-/* db_list.h
+/* cx_list.h
  *
  * This file contains generated code. Do not modify!
  */
 
-#ifndef db_list_H
-#define db_list_H
+#ifndef cx_list_H
+#define cx_list_H
 
 #include "cortex.h"
-#include "db_collection.h"
-#include "db__type.h"
+#include "cx_collection.h"
+#include "cx__type.h"
 
-#include "db__api.h"
+#include "cx__api.h"
 
-#include "db__meta.h"
+#include "cx__meta.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* ::cortex::lang::list::append() */
-db_any db_list_append_(db_any _this);
+cx_any cx_list_append_(cx_any _this);
 
 /* ::cortex::lang::list::append(lang::any element) */
-db_void db_list_append_lang_any(db_any _this, db_any element);
+cx_void cx_list_append_lang_any(cx_any _this, cx_any element);
 
 /* ::cortex::lang::list::clear() */
-db_void db_list_clear(db_any _this);
+cx_void cx_list_clear(cx_any _this);
 
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::list::construct(lang::list object) */
-db_int16 db_list_construct(db_list object);
+cx_int16 cx_list_construct(cx_list object);
 
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::list::init(lang::list object) */
-db_int16 db_list_init(db_list object);
+cx_int16 cx_list_init(cx_list object);
 
 /* ::cortex::lang::list::insert() */
-db_any db_list_insert_(db_any _this);
+cx_any cx_list_insert_(cx_any _this);
 
 /* ::cortex::lang::list::insert(lang::any element) */
-db_void db_list_insert_lang_any(db_any _this, db_any element);
+cx_void cx_list_insert_lang_any(cx_any _this, cx_any element);
 
 /* ::cortex::lang::list::reverse() */
-db_void db_list_reverse(db_any _this);
+cx_void cx_list_reverse(cx_any _this);
 
 #ifdef __cplusplus
 }

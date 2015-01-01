@@ -1,1180 +1,1180 @@
-/* db__api.c
+/* cx__api.c
  *
  *    API convenience functions for C-language.
  *    This file contains generated code. Do not modify!
  */
 
-#include "db__meta.h"
-#include "db__api.h"
+#include "cx__meta.h"
+#include "cx__api.h"
 
-db_alias db_alias__new(void) {
-    return db_new(db_typedef(db_alias_o));
+cx_alias cx_alias__new(void) {
+    return cx_new(cx_typedef(cx_alias_o));
 }
 
-db_alias db_alias__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_alias_o));
+cx_alias cx_alias__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_alias_o));
 }
 
-int db_alias__define(db_alias _this, db_string typeName) {
-    _this->typeName = (typeName ? db_strdup(typeName) : NULL);
-    return db_define(_this);
+int cx_alias__define(cx_alias _this, cx_string typeName) {
+    _this->typeName = (typeName ? cx_strdup(typeName) : NULL);
+    return cx_define(_this);
 }
 
-db_alias db_alias__create(db_string typeName) {
-    db_alias _this;
-    _this = db_new(db_typedef(db_alias_o));
-    _this->typeName = (typeName ? db_strdup(typeName) : NULL);
-    if (db_define(_this)) {
-        db_free(_this);
+cx_alias cx_alias__create(cx_string typeName) {
+    cx_alias _this;
+    _this = cx_new(cx_typedef(cx_alias_o));
+    _this->typeName = (typeName ? cx_strdup(typeName) : NULL);
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_array db_array__new(void) {
-    return db_new(db_typedef(db_array_o));
+cx_array cx_array__new(void) {
+    return cx_new(cx_typedef(cx_array_o));
 }
 
-db_array db_array__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_array_o));
+cx_array cx_array__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_array_o));
 }
 
-int db_array__define(db_array _this, db_typedef elementType, db_uint32 max) {
-    elementType ? db_keep_ext(_this, elementType, "element <0x9c377c8>.elementType") : 0; db_collection(_this)->elementType = elementType;
-    db_collection(_this)->max = max;
-    return db_define(_this);
+int cx_array__define(cx_array _this, cx_typedef elementType, cx_uint32 max) {
+    elementType ? cx_keep_ext(_this, elementType, "element <0x9c377c8>.elementType") : 0; cx_collection(_this)->elementType = elementType;
+    cx_collection(_this)->max = max;
+    return cx_define(_this);
 }
 
-db_array db_array__create(db_typedef elementType, db_uint32 max) {
-    db_array _this;
-    _this = db_new(db_typedef(db_array_o));
-    elementType ? db_keep_ext(_this, elementType, "element <0x9c377e8>.elementType") : 0; db_collection(_this)->elementType = elementType;
-    db_collection(_this)->max = max;
-    if (db_define(_this)) {
-        db_free(_this);
+cx_array cx_array__create(cx_typedef elementType, cx_uint32 max) {
+    cx_array _this;
+    _this = cx_new(cx_typedef(cx_array_o));
+    elementType ? cx_keep_ext(_this, elementType, "element <0x9c377e8>.elementType") : 0; cx_collection(_this)->elementType = elementType;
+    cx_collection(_this)->max = max;
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_binary db_binary__new(void) {
-    return db_new(db_typedef(db_binary_o));
+cx_binary cx_binary__new(void) {
+    return cx_new(cx_typedef(cx_binary_o));
 }
 
-db_binary db_binary__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_binary_o));
+cx_binary cx_binary__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_binary_o));
 }
 
-int db_binary__define(db_binary _this, db_width width) {
-    db_primitive(_this)->width = width;
-    return db_define(_this);
+int cx_binary__define(cx_binary _this, cx_width width) {
+    cx_primitive(_this)->width = width;
+    return cx_define(_this);
 }
 
-db_binary db_binary__create(db_width width) {
-    db_binary _this;
-    _this = db_new(db_typedef(db_binary_o));
-    db_primitive(_this)->width = width;
-    if (db_define(_this)) {
-        db_free(_this);
+cx_binary cx_binary__create(cx_width width) {
+    cx_binary _this;
+    _this = cx_new(cx_typedef(cx_binary_o));
+    cx_primitive(_this)->width = width;
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_bitmask db_bitmask__new(void) {
-    return db_new(db_typedef(db_bitmask_o));
+cx_bitmask cx_bitmask__new(void) {
+    return cx_new(cx_typedef(cx_bitmask_o));
 }
 
-db_bitmask db_bitmask__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_bitmask_o));
+cx_bitmask cx_bitmask__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_bitmask_o));
 }
 
-int db_bitmask__define(db_bitmask _this) {
-    return db_define(_this);
+int cx_bitmask__define(cx_bitmask _this) {
+    return cx_define(_this);
 }
 
-db_bitmask db_bitmask__create(void) {
-    db_bitmask _this;
-    _this = db_new(db_typedef(db_bitmask_o));
-    if (db_define(_this)) {
-        db_free(_this);
+cx_bitmask cx_bitmask__create(void) {
+    cx_bitmask _this;
+    _this = cx_new(cx_typedef(cx_bitmask_o));
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_boolean db_boolean__new(void) {
-    return db_new(db_typedef(db_boolean_o));
+cx_boolean cx_boolean__new(void) {
+    return cx_new(cx_typedef(cx_boolean_o));
 }
 
-db_boolean db_boolean__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_boolean_o));
+cx_boolean cx_boolean__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_boolean_o));
 }
 
-int db_boolean__define(db_boolean _this) {
-    return db_define(_this);
+int cx_boolean__define(cx_boolean _this) {
+    return cx_define(_this);
 }
 
-db_boolean db_boolean__create(void) {
-    db_boolean _this;
-    _this = db_new(db_typedef(db_boolean_o));
-    if (db_define(_this)) {
-        db_free(_this);
+cx_boolean cx_boolean__create(void) {
+    cx_boolean _this;
+    _this = cx_new(cx_typedef(cx_boolean_o));
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_callback db_callback__new(void) {
-    return db_new(db_typedef(db_callback_o));
+cx_callback cx_callback__new(void) {
+    return cx_new(cx_typedef(cx_callback_o));
 }
 
-db_callback db_callback__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_callback_o));
+cx_callback cx_callback__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_callback_o));
 }
 
-int db_callback__define(db_callback _this, db_typedef returnType, db_bool returnsReference, db_delegate delegate) {
-    returnType ? db_keep_ext(_this, returnType, "element <0x9c37870>.returnType") : 0; db_function(_this)->returnType = returnType;
-    db_function(_this)->returnsReference = returnsReference;
-    delegate ? db_keep_ext(_this, delegate, "element <0x9c37870>.delegate") : 0; _this->delegate = delegate;
-    return db_define(_this);
+int cx_callback__define(cx_callback _this, cx_typedef returnType, cx_bool returnsReference, cx_delegate delegate) {
+    returnType ? cx_keep_ext(_this, returnType, "element <0x9c37870>.returnType") : 0; cx_function(_this)->returnType = returnType;
+    cx_function(_this)->returnsReference = returnsReference;
+    delegate ? cx_keep_ext(_this, delegate, "element <0x9c37870>.delegate") : 0; _this->delegate = delegate;
+    return cx_define(_this);
 }
 
-db_callback db_callback__create(db_typedef returnType, db_bool returnsReference, db_delegate delegate) {
-    db_callback _this;
-    _this = db_new(db_typedef(db_callback_o));
-    returnType ? db_keep_ext(_this, returnType, "element <0x9c37870>.returnType") : 0; db_function(_this)->returnType = returnType;
-    db_function(_this)->returnsReference = returnsReference;
-    delegate ? db_keep_ext(_this, delegate, "element <0x9c37870>.delegate") : 0; _this->delegate = delegate;
-    if (db_define(_this)) {
-        db_free(_this);
+cx_callback cx_callback__create(cx_typedef returnType, cx_bool returnsReference, cx_delegate delegate) {
+    cx_callback _this;
+    _this = cx_new(cx_typedef(cx_callback_o));
+    returnType ? cx_keep_ext(_this, returnType, "element <0x9c37870>.returnType") : 0; cx_function(_this)->returnType = returnType;
+    cx_function(_this)->returnsReference = returnsReference;
+    delegate ? cx_keep_ext(_this, delegate, "element <0x9c37870>.delegate") : 0; _this->delegate = delegate;
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_character db_character__new(void) {
-    return db_new(db_typedef(db_character_o));
+cx_character cx_character__new(void) {
+    return cx_new(cx_typedef(cx_character_o));
 }
 
-db_character db_character__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_character_o));
+cx_character cx_character__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_character_o));
 }
 
-int db_character__define(db_character _this, db_width width) {
-    db_primitive(_this)->width = width;
-    return db_define(_this);
+int cx_character__define(cx_character _this, cx_width width) {
+    cx_primitive(_this)->width = width;
+    return cx_define(_this);
 }
 
-db_character db_character__create(db_width width) {
-    db_character _this;
-    _this = db_new(db_typedef(db_character_o));
-    db_primitive(_this)->width = width;
-    if (db_define(_this)) {
-        db_free(_this);
+cx_character cx_character__create(cx_width width) {
+    cx_character _this;
+    _this = cx_new(cx_typedef(cx_character_o));
+    cx_primitive(_this)->width = width;
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_class db_class__new(void) {
-    return db_new(db_typedef(db_class_o));
+cx_class cx_class__new(void) {
+    return cx_new(cx_typedef(cx_class_o));
 }
 
-db_class db_class__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_class_o));
+cx_class cx_class__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_class_o));
 }
 
-int db_class__define(db_class _this, db_interface base, db_modifier baseAccess, db_interfaceSeq implements) {
-    base ? db_keep_ext(_this, base, "element <0x9c378e0>.base") : 0; db_interface(_this)->base = base;
-    db_struct(_this)->baseAccess = baseAccess;
+int cx_class__define(cx_class _this, cx_interface base, cx_modifier baseAccess, cx_interfaceSeq implements) {
+    base ? cx_keep_ext(_this, base, "element <0x9c378e0>.base") : 0; cx_interface(_this)->base = base;
+    cx_struct(_this)->baseAccess = baseAccess;
     _this->implements = implements;
-    return db_define(_this);
+    return cx_define(_this);
 }
 
-db_class db_class__create(db_interface base, db_modifier baseAccess, db_interfaceSeq implements) {
-    db_class _this;
-    _this = db_new(db_typedef(db_class_o));
-    base ? db_keep_ext(_this, base, "element <0x9c378f0>.base") : 0; db_interface(_this)->base = base;
-    db_struct(_this)->baseAccess = baseAccess;
+cx_class cx_class__create(cx_interface base, cx_modifier baseAccess, cx_interfaceSeq implements) {
+    cx_class _this;
+    _this = cx_new(cx_typedef(cx_class_o));
+    base ? cx_keep_ext(_this, base, "element <0x9c378f0>.base") : 0; cx_interface(_this)->base = base;
+    cx_struct(_this)->baseAccess = baseAccess;
     _this->implements = implements;
-    if (db_define(_this)) {
-        db_free(_this);
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_collection db_collection__new(void) {
-    return db_new(db_typedef(db_collection_o));
+cx_collection cx_collection__new(void) {
+    return cx_new(cx_typedef(cx_collection_o));
 }
 
-db_collection db_collection__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_collection_o));
+cx_collection cx_collection__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_collection_o));
 }
 
-int db_collection__define(db_collection _this, db_typedef elementType, db_uint32 max) {
-    elementType ? db_keep_ext(_this, elementType, "element <0x9c377c8>.elementType") : 0; _this->elementType = elementType;
+int cx_collection__define(cx_collection _this, cx_typedef elementType, cx_uint32 max) {
+    elementType ? cx_keep_ext(_this, elementType, "element <0x9c377c8>.elementType") : 0; _this->elementType = elementType;
     _this->max = max;
-    return db_define(_this);
+    return cx_define(_this);
 }
 
-db_collection db_collection__create(db_typedef elementType, db_uint32 max) {
-    db_collection _this;
-    _this = db_new(db_typedef(db_collection_o));
-    elementType ? db_keep_ext(_this, elementType, "element <0x9c378e0>.elementType") : 0; _this->elementType = elementType;
+cx_collection cx_collection__create(cx_typedef elementType, cx_uint32 max) {
+    cx_collection _this;
+    _this = cx_new(cx_typedef(cx_collection_o));
+    elementType ? cx_keep_ext(_this, elementType, "element <0x9c378e0>.elementType") : 0; _this->elementType = elementType;
     _this->max = max;
-    if (db_define(_this)) {
-        db_free(_this);
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_delegate db_delegate__new(void) {
-    return db_new(db_typedef(db_delegate_o));
+cx_delegate cx_delegate__new(void) {
+    return cx_new(cx_typedef(cx_delegate_o));
 }
 
-db_delegate db_delegate__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_delegate_o));
+cx_delegate cx_delegate__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_delegate_o));
 }
 
-int db_delegate__define(db_delegate _this, db_typedef returnType, db_bool returnsReference) {
-    returnType ? db_keep_ext(_this, returnType, "element <0x9c377c8>.returnType") : 0; db_function(_this)->returnType = returnType;
-    db_function(_this)->returnsReference = returnsReference;
-    return db_define(_this);
+int cx_delegate__define(cx_delegate _this, cx_typedef returnType, cx_bool returnsReference) {
+    returnType ? cx_keep_ext(_this, returnType, "element <0x9c377c8>.returnType") : 0; cx_function(_this)->returnType = returnType;
+    cx_function(_this)->returnsReference = returnsReference;
+    return cx_define(_this);
 }
 
-db_delegate db_delegate__create(db_typedef returnType, db_bool returnsReference) {
-    db_delegate _this;
-    _this = db_new(db_typedef(db_delegate_o));
-    returnType ? db_keep_ext(_this, returnType, "element <0x9c377c8>.returnType") : 0; db_function(_this)->returnType = returnType;
-    db_function(_this)->returnsReference = returnsReference;
-    if (db_define(_this)) {
-        db_free(_this);
+cx_delegate cx_delegate__create(cx_typedef returnType, cx_bool returnsReference) {
+    cx_delegate _this;
+    _this = cx_new(cx_typedef(cx_delegate_o));
+    returnType ? cx_keep_ext(_this, returnType, "element <0x9c377c8>.returnType") : 0; cx_function(_this)->returnType = returnType;
+    cx_function(_this)->returnsReference = returnsReference;
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_dispatcher db_dispatcher__new(void) {
-    return db_new(db_typedef(db_dispatcher_o));
+cx_dispatcher cx_dispatcher__new(void) {
+    return cx_new(cx_typedef(cx_dispatcher_o));
 }
 
-db_dispatcher db_dispatcher__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_dispatcher_o));
+cx_dispatcher cx_dispatcher__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_dispatcher_o));
 }
 
-int db_dispatcher__define(db_dispatcher _this) {
-    return db_define(_this);
+int cx_dispatcher__define(cx_dispatcher _this) {
+    return cx_define(_this);
 }
 
-db_dispatcher db_dispatcher__create(void) {
-    db_dispatcher _this;
-    _this = db_new(db_typedef(db_dispatcher_o));
-    if (db_define(_this)) {
-        db_free(_this);
+cx_dispatcher cx_dispatcher__create(void) {
+    cx_dispatcher _this;
+    _this = cx_new(cx_typedef(cx_dispatcher_o));
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_enum db_enum__new(void) {
-    return db_new(db_typedef(db_enum_o));
+cx_enum cx_enum__new(void) {
+    return cx_new(cx_typedef(cx_enum_o));
 }
 
-db_enum db_enum__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_enum_o));
+cx_enum cx_enum__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_enum_o));
 }
 
-int db_enum__define(db_enum _this) {
-    return db_define(_this);
+int cx_enum__define(cx_enum _this) {
+    return cx_define(_this);
 }
 
-db_enum db_enum__create(void) {
-    db_enum _this;
-    _this = db_new(db_typedef(db_enum_o));
-    if (db_define(_this)) {
-        db_free(_this);
+cx_enum cx_enum__create(void) {
+    cx_enum _this;
+    _this = cx_new(cx_typedef(cx_enum_o));
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_event db_event__new(void) {
-    return db_new(db_typedef(db_event_o));
+cx_event cx_event__new(void) {
+    return cx_new(cx_typedef(cx_event_o));
 }
 
-db_event db_event__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_event_o));
+cx_event cx_event__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_event_o));
 }
 
-int db_event__define(db_event _this, db_uint16 kind) {
+int cx_event__define(cx_event _this, cx_uint16 kind) {
     _this->kind = kind;
-    return db_define(_this);
+    return cx_define(_this);
 }
 
-db_event db_event__create(db_uint16 kind) {
-    db_event _this;
-    _this = db_new(db_typedef(db_event_o));
+cx_event cx_event__create(cx_uint16 kind) {
+    cx_event _this;
+    _this = cx_new(cx_typedef(cx_event_o));
     _this->kind = kind;
-    if (db_define(_this)) {
-        db_free(_this);
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_float db_float__new(void) {
-    return db_new(db_typedef(db_float_o));
+cx_float cx_float__new(void) {
+    return cx_new(cx_typedef(cx_float_o));
 }
 
-db_float db_float__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_float_o));
+cx_float cx_float__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_float_o));
 }
 
-int db_float__define(db_float _this, db_width width, db_float64 min, db_float64 max) {
-    db_primitive(_this)->width = width;
+int cx_float__define(cx_float _this, cx_width width, cx_float64 min, cx_float64 max) {
+    cx_primitive(_this)->width = width;
     _this->min = min;
     _this->max = max;
-    return db_define(_this);
+    return cx_define(_this);
 }
 
-db_float db_float__create(db_width width, db_float64 min, db_float64 max) {
-    db_float _this;
-    _this = db_new(db_typedef(db_float_o));
-    db_primitive(_this)->width = width;
+cx_float cx_float__create(cx_width width, cx_float64 min, cx_float64 max) {
+    cx_float _this;
+    _this = cx_new(cx_typedef(cx_float_o));
+    cx_primitive(_this)->width = width;
     _this->min = min;
     _this->max = max;
-    if (db_define(_this)) {
-        db_free(_this);
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_function db_function__new(void) {
-    return db_new(db_typedef(db_function_o));
+cx_function cx_function__new(void) {
+    return cx_new(cx_typedef(cx_function_o));
 }
 
-db_function db_function__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_function_o));
+cx_function cx_function__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_function_o));
 }
 
-int db_function__define(db_function _this, db_typedef returnType, db_bool returnsReference) {
-    returnType ? db_keep_ext(_this, returnType, "element <0x9c37850>.returnType") : 0; _this->returnType = returnType;
+int cx_function__define(cx_function _this, cx_typedef returnType, cx_bool returnsReference) {
+    returnType ? cx_keep_ext(_this, returnType, "element <0x9c37850>.returnType") : 0; _this->returnType = returnType;
     _this->returnsReference = returnsReference;
-    return db_define(_this);
+    return cx_define(_this);
 }
 
-db_function db_function__create(db_typedef returnType, db_bool returnsReference) {
-    db_function _this;
-    _this = db_new(db_typedef(db_function_o));
-    returnType ? db_keep_ext(_this, returnType, "element <0x9c37850>.returnType") : 0; _this->returnType = returnType;
+cx_function cx_function__create(cx_typedef returnType, cx_bool returnsReference) {
+    cx_function _this;
+    _this = cx_new(cx_typedef(cx_function_o));
+    returnType ? cx_keep_ext(_this, returnType, "element <0x9c37850>.returnType") : 0; _this->returnType = returnType;
     _this->returnsReference = returnsReference;
-    if (db_define(_this)) {
-        db_free(_this);
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_int db_int__new(void) {
-    return db_new(db_typedef(db_int_o));
+cx_int cx_int__new(void) {
+    return cx_new(cx_typedef(cx_int_o));
 }
 
-db_int db_int__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_int_o));
+cx_int cx_int__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_int_o));
 }
 
-int db_int__define(db_int _this, db_width width, db_int64 min, db_int64 max) {
-    db_primitive(_this)->width = width;
+int cx_int__define(cx_int _this, cx_width width, cx_int64 min, cx_int64 max) {
+    cx_primitive(_this)->width = width;
     _this->min = min;
     _this->max = max;
-    return db_define(_this);
+    return cx_define(_this);
 }
 
-db_int db_int__create(db_width width, db_int64 min, db_int64 max) {
-    db_int _this;
-    _this = db_new(db_typedef(db_int_o));
-    db_primitive(_this)->width = width;
+cx_int cx_int__create(cx_width width, cx_int64 min, cx_int64 max) {
+    cx_int _this;
+    _this = cx_new(cx_typedef(cx_int_o));
+    cx_primitive(_this)->width = width;
     _this->min = min;
     _this->max = max;
-    if (db_define(_this)) {
-        db_free(_this);
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_interface db_interface__new(void) {
-    return db_new(db_typedef(db_interface_o));
+cx_interface cx_interface__new(void) {
+    return cx_new(cx_typedef(cx_interface_o));
 }
 
-db_interface db_interface__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_interface_o));
+cx_interface cx_interface__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_interface_o));
 }
 
-int db_interface__define(db_interface _this, db_interface base) {
-    base ? db_keep_ext(_this, base, "element <0x9c37828>.base") : 0; _this->base = base;
-    return db_define(_this);
+int cx_interface__define(cx_interface _this, cx_interface base) {
+    base ? cx_keep_ext(_this, base, "element <0x9c37828>.base") : 0; _this->base = base;
+    return cx_define(_this);
 }
 
-db_interface db_interface__create(db_interface base) {
-    db_interface _this;
-    _this = db_new(db_typedef(db_interface_o));
-    base ? db_keep_ext(_this, base, "element <0x9c37888>.base") : 0; _this->base = base;
-    if (db_define(_this)) {
-        db_free(_this);
+cx_interface cx_interface__create(cx_interface base) {
+    cx_interface _this;
+    _this = cx_new(cx_typedef(cx_interface_o));
+    base ? cx_keep_ext(_this, base, "element <0x9c37888>.base") : 0; _this->base = base;
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-void db_interfaceVector__init(db_interfaceVector *_this, db_interface interface, db_vtable vector) {
-    db_value v;
+void cx_interfaceVector__init(cx_interfaceVector *_this, cx_interface interface, cx_vtable vector) {
+    cx_value v;
     memset(_this, 0, sizeof(*_this));
-    db_valueValueInit(&v, NULL, db_typedef(db_interfaceVector_o), _this);
-    db_initValue(&v);
-    interface ? db_keep_ext(_this, interface, "element <0x9c375b8>.interface") : 0; _this->interface = interface;
+    cx_valueValueInit(&v, NULL, cx_typedef(cx_interfaceVector_o), _this);
+    cx_initValue(&v);
+    interface ? cx_keep_ext(_this, interface, "element <0x9c375b8>.interface") : 0; _this->interface = interface;
     _this->vector = vector;
 }
 
-void db_interfaceVector__deinit(db_interfaceVector *_this) {
-    db_value v;
-    db_valueValueInit(&v, NULL, db_typedef(db_interfaceVector_o), _this);
-    db_deinitValue(&v);
+void cx_interfaceVector__deinit(cx_interfaceVector *_this) {
+    cx_value v;
+    cx_valueValueInit(&v, NULL, cx_typedef(cx_interfaceVector_o), _this);
+    cx_deinitValue(&v);
 }
 
-db_list db_list__new(void) {
-    return db_new(db_typedef(db_list_o));
+cx_list cx_list__new(void) {
+    return cx_new(cx_typedef(cx_list_o));
 }
 
-db_list db_list__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_list_o));
+cx_list cx_list__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_list_o));
 }
 
-int db_list__define(db_list _this, db_typedef elementType, db_uint32 max) {
-    elementType ? db_keep_ext(_this, elementType, "element <0x9c37838>.elementType") : 0; db_collection(_this)->elementType = elementType;
-    db_collection(_this)->max = max;
-    return db_define(_this);
+int cx_list__define(cx_list _this, cx_typedef elementType, cx_uint32 max) {
+    elementType ? cx_keep_ext(_this, elementType, "element <0x9c37838>.elementType") : 0; cx_collection(_this)->elementType = elementType;
+    cx_collection(_this)->max = max;
+    return cx_define(_this);
 }
 
-db_list db_list__create(db_typedef elementType, db_uint32 max) {
-    db_list _this;
-    _this = db_new(db_typedef(db_list_o));
-    elementType ? db_keep_ext(_this, elementType, "element <0x9c37838>.elementType") : 0; db_collection(_this)->elementType = elementType;
-    db_collection(_this)->max = max;
-    if (db_define(_this)) {
-        db_free(_this);
+cx_list cx_list__create(cx_typedef elementType, cx_uint32 max) {
+    cx_list _this;
+    _this = cx_new(cx_typedef(cx_list_o));
+    elementType ? cx_keep_ext(_this, elementType, "element <0x9c37838>.elementType") : 0; cx_collection(_this)->elementType = elementType;
+    cx_collection(_this)->max = max;
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_map db_map__new(void) {
-    return db_new(db_typedef(db_map_o));
+cx_map cx_map__new(void) {
+    return cx_new(cx_typedef(cx_map_o));
 }
 
-db_map db_map__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_map_o));
+cx_map cx_map__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_map_o));
 }
 
-int db_map__define(db_map _this, db_typedef elementType, db_typedef keyType, db_uint32 max) {
-    elementType ? db_keep_ext(_this, elementType, "element <0x9c37838>.elementType") : 0; _this->elementType = elementType;
-    keyType ? db_keep_ext(_this, keyType, "element <0x9c37838>.keyType") : 0; _this->keyType = keyType;
+int cx_map__define(cx_map _this, cx_typedef elementType, cx_typedef keyType, cx_uint32 max) {
+    elementType ? cx_keep_ext(_this, elementType, "element <0x9c37838>.elementType") : 0; _this->elementType = elementType;
+    keyType ? cx_keep_ext(_this, keyType, "element <0x9c37838>.keyType") : 0; _this->keyType = keyType;
     _this->max = max;
-    return db_define(_this);
+    return cx_define(_this);
 }
 
-db_map db_map__create(db_typedef elementType, db_typedef keyType, db_uint32 max) {
-    db_map _this;
-    _this = db_new(db_typedef(db_map_o));
-    elementType ? db_keep_ext(_this, elementType, "element <0x9c377c8>.elementType") : 0; _this->elementType = elementType;
-    keyType ? db_keep_ext(_this, keyType, "element <0x9c377c8>.keyType") : 0; _this->keyType = keyType;
+cx_map cx_map__create(cx_typedef elementType, cx_typedef keyType, cx_uint32 max) {
+    cx_map _this;
+    _this = cx_new(cx_typedef(cx_map_o));
+    elementType ? cx_keep_ext(_this, elementType, "element <0x9c377c8>.elementType") : 0; _this->elementType = elementType;
+    keyType ? cx_keep_ext(_this, keyType, "element <0x9c377c8>.keyType") : 0; _this->keyType = keyType;
     _this->max = max;
-    if (db_define(_this)) {
-        db_free(_this);
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_member db_member__new(void) {
-    return db_new(db_typedef(db_member_o));
+cx_member cx_member__new(void) {
+    return cx_new(cx_typedef(cx_member_o));
 }
 
-db_member db_member__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_member_o));
+cx_member cx_member__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_member_o));
 }
 
-int db_member__define(db_member _this, db_typedef type, db_modifier modifiers, db_state state, db_bool weak) {
-    type ? db_keep_ext(_this, type, "element <0x9c378a8>.type") : 0; _this->type = type;
+int cx_member__define(cx_member _this, cx_typedef type, cx_modifier modifiers, cx_state state, cx_bool weak) {
+    type ? cx_keep_ext(_this, type, "element <0x9c378a8>.type") : 0; _this->type = type;
     _this->modifiers = modifiers;
     _this->state = state;
     _this->weak = weak;
-    return db_define(_this);
+    return cx_define(_this);
 }
 
-db_member db_member__create(db_typedef type, db_modifier modifiers, db_state state, db_bool weak) {
-    db_member _this;
-    _this = db_new(db_typedef(db_member_o));
-    type ? db_keep_ext(_this, type, "element <0x9c378a8>.type") : 0; _this->type = type;
+cx_member cx_member__create(cx_typedef type, cx_modifier modifiers, cx_state state, cx_bool weak) {
+    cx_member _this;
+    _this = cx_new(cx_typedef(cx_member_o));
+    type ? cx_keep_ext(_this, type, "element <0x9c378a8>.type") : 0; _this->type = type;
     _this->modifiers = modifiers;
     _this->state = state;
     _this->weak = weak;
-    if (db_define(_this)) {
-        db_free(_this);
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_metaprocedure db_metaprocedure__new(void) {
-    return db_new(db_typedef(db_metaprocedure_o));
+cx_metaprocedure cx_metaprocedure__new(void) {
+    return cx_new(cx_typedef(cx_metaprocedure_o));
 }
 
-db_metaprocedure db_metaprocedure__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_metaprocedure_o));
+cx_metaprocedure cx_metaprocedure__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_metaprocedure_o));
 }
 
-int db_metaprocedure__define(db_metaprocedure _this, db_typedef returnType, db_bool returnsReference, db_bool referenceOnly) {
-    returnType ? db_keep_ext(_this, returnType, "element <0x9c37800>.returnType") : 0; db_function(_this)->returnType = returnType;
-    db_function(_this)->returnsReference = returnsReference;
+int cx_metaprocedure__define(cx_metaprocedure _this, cx_typedef returnType, cx_bool returnsReference, cx_bool referenceOnly) {
+    returnType ? cx_keep_ext(_this, returnType, "element <0x9c37800>.returnType") : 0; cx_function(_this)->returnType = returnType;
+    cx_function(_this)->returnsReference = returnsReference;
     _this->referenceOnly = referenceOnly;
-    return db_define(_this);
+    return cx_define(_this);
 }
 
-db_metaprocedure db_metaprocedure__create(db_typedef returnType, db_bool returnsReference, db_bool referenceOnly) {
-    db_metaprocedure _this;
-    _this = db_new(db_typedef(db_metaprocedure_o));
-    returnType ? db_keep_ext(_this, returnType, "element <0x9c37800>.returnType") : 0; db_function(_this)->returnType = returnType;
-    db_function(_this)->returnsReference = returnsReference;
+cx_metaprocedure cx_metaprocedure__create(cx_typedef returnType, cx_bool returnsReference, cx_bool referenceOnly) {
+    cx_metaprocedure _this;
+    _this = cx_new(cx_typedef(cx_metaprocedure_o));
+    returnType ? cx_keep_ext(_this, returnType, "element <0x9c37800>.returnType") : 0; cx_function(_this)->returnType = returnType;
+    cx_function(_this)->returnsReference = returnsReference;
     _this->referenceOnly = referenceOnly;
-    if (db_define(_this)) {
-        db_free(_this);
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_method db_method__new(void) {
-    return db_new(db_typedef(db_method_o));
+cx_method cx_method__new(void) {
+    return cx_new(cx_typedef(cx_method_o));
 }
 
-db_method db_method__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_method_o));
+cx_method cx_method__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_method_o));
 }
 
-int db_method__define(db_method _this, db_typedef returnType, db_bool returnsReference, db_bool virtual) {
-    returnType ? db_keep_ext(_this, returnType, "element <0x9c37800>.returnType") : 0; db_function(_this)->returnType = returnType;
-    db_function(_this)->returnsReference = returnsReference;
+int cx_method__define(cx_method _this, cx_typedef returnType, cx_bool returnsReference, cx_bool virtual) {
+    returnType ? cx_keep_ext(_this, returnType, "element <0x9c37800>.returnType") : 0; cx_function(_this)->returnType = returnType;
+    cx_function(_this)->returnsReference = returnsReference;
     _this->virtual = virtual;
-    return db_define(_this);
+    return cx_define(_this);
 }
 
-db_method db_method__create(db_typedef returnType, db_bool returnsReference, db_bool virtual) {
-    db_method _this;
-    _this = db_new(db_typedef(db_method_o));
-    returnType ? db_keep_ext(_this, returnType, "element <0x9c37800>.returnType") : 0; db_function(_this)->returnType = returnType;
-    db_function(_this)->returnsReference = returnsReference;
+cx_method cx_method__create(cx_typedef returnType, cx_bool returnsReference, cx_bool virtual) {
+    cx_method _this;
+    _this = cx_new(cx_typedef(cx_method_o));
+    returnType ? cx_keep_ext(_this, returnType, "element <0x9c37800>.returnType") : 0; cx_function(_this)->returnType = returnType;
+    cx_function(_this)->returnsReference = returnsReference;
     _this->virtual = virtual;
-    if (db_define(_this)) {
-        db_free(_this);
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_observableEvent db_observableEvent__new(void) {
-    return db_new(db_typedef(db_observableEvent_o));
+cx_observableEvent cx_observableEvent__new(void) {
+    return cx_new(cx_typedef(cx_observableEvent_o));
 }
 
-db_observableEvent db_observableEvent__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_observableEvent_o));
+cx_observableEvent cx_observableEvent__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_observableEvent_o));
 }
 
-int db_observableEvent__define(db_observableEvent _this, db_uint16 kind, db_observer observer, db_object me, db_object source, db_object observable) {
-    db_event(_this)->kind = kind;
-    observer ? db_keep_ext(_this, observer, "element <0x9c377c8>.observer") : 0; _this->observer = observer;
-    me ? db_keep_ext(_this, me, "element <0x9c377c8>.me") : 0; _this->me = me;
-    source ? db_keep_ext(_this, source, "element <0x9c377c8>.source") : 0; _this->source = source;
-    observable ? db_keep_ext(_this, observable, "element <0x9c377c8>.observable") : 0; _this->observable = observable;
-    return db_define(_this);
+int cx_observableEvent__define(cx_observableEvent _this, cx_uint16 kind, cx_observer observer, cx_object me, cx_object source, cx_object observable) {
+    cx_event(_this)->kind = kind;
+    observer ? cx_keep_ext(_this, observer, "element <0x9c377c8>.observer") : 0; _this->observer = observer;
+    me ? cx_keep_ext(_this, me, "element <0x9c377c8>.me") : 0; _this->me = me;
+    source ? cx_keep_ext(_this, source, "element <0x9c377c8>.source") : 0; _this->source = source;
+    observable ? cx_keep_ext(_this, observable, "element <0x9c377c8>.observable") : 0; _this->observable = observable;
+    return cx_define(_this);
 }
 
-db_observableEvent db_observableEvent__create(db_uint16 kind, db_observer observer, db_object me, db_object source, db_object observable) {
-    db_observableEvent _this;
-    _this = db_new(db_typedef(db_observableEvent_o));
-    db_event(_this)->kind = kind;
-    observer ? db_keep_ext(_this, observer, "element <0x9c377c8>.observer") : 0; _this->observer = observer;
-    me ? db_keep_ext(_this, me, "element <0x9c377c8>.me") : 0; _this->me = me;
-    source ? db_keep_ext(_this, source, "element <0x9c377c8>.source") : 0; _this->source = source;
-    observable ? db_keep_ext(_this, observable, "element <0x9c377c8>.observable") : 0; _this->observable = observable;
-    if (db_define(_this)) {
-        db_free(_this);
+cx_observableEvent cx_observableEvent__create(cx_uint16 kind, cx_observer observer, cx_object me, cx_object source, cx_object observable) {
+    cx_observableEvent _this;
+    _this = cx_new(cx_typedef(cx_observableEvent_o));
+    cx_event(_this)->kind = kind;
+    observer ? cx_keep_ext(_this, observer, "element <0x9c377c8>.observer") : 0; _this->observer = observer;
+    me ? cx_keep_ext(_this, me, "element <0x9c377c8>.me") : 0; _this->me = me;
+    source ? cx_keep_ext(_this, source, "element <0x9c377c8>.source") : 0; _this->source = source;
+    observable ? cx_keep_ext(_this, observable, "element <0x9c377c8>.observable") : 0; _this->observable = observable;
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_observer db_observer__new(void) {
-    return db_new(db_typedef(db_observer_o));
+cx_observer cx_observer__new(void) {
+    return cx_new(cx_typedef(cx_observer_o));
 }
 
-db_observer db_observer__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_observer_o));
+cx_observer cx_observer__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_observer_o));
 }
 
-int db_observer__define(db_observer _this, db_object observable, db_eventMask mask, db_string expression, db_uint32 template, db_dispatcher dispatcher, db_object me) {
-    observable ? db_keep_ext(_this, observable, "element <0x9c37800>.observable") : 0; _this->observable = observable;
+int cx_observer__define(cx_observer _this, cx_object observable, cx_eventMask mask, cx_string expression, cx_uint32 template, cx_dispatcher dispatcher, cx_object me) {
+    observable ? cx_keep_ext(_this, observable, "element <0x9c37800>.observable") : 0; _this->observable = observable;
     _this->mask = mask;
-    _this->expression = (expression ? db_strdup(expression) : NULL);
+    _this->expression = (expression ? cx_strdup(expression) : NULL);
     _this->template = template;
-    dispatcher ? db_keep_ext(_this, dispatcher, "element <0x9c37800>.dispatcher") : 0; _this->dispatcher = dispatcher;
-    me ? db_keep_ext(_this, me, "element <0x9c37800>.me") : 0; _this->me = me;
-    return db_define(_this);
+    dispatcher ? cx_keep_ext(_this, dispatcher, "element <0x9c37800>.dispatcher") : 0; _this->dispatcher = dispatcher;
+    me ? cx_keep_ext(_this, me, "element <0x9c37800>.me") : 0; _this->me = me;
+    return cx_define(_this);
 }
 
-db_observer db_observer__create(db_object observable, db_eventMask mask, db_string expression, db_uint32 template, db_dispatcher dispatcher, db_object me) {
-    db_observer _this;
-    _this = db_new(db_typedef(db_observer_o));
-    observable ? db_keep_ext(_this, observable, "element <0x9c37800>.observable") : 0; _this->observable = observable;
+cx_observer cx_observer__create(cx_object observable, cx_eventMask mask, cx_string expression, cx_uint32 template, cx_dispatcher dispatcher, cx_object me) {
+    cx_observer _this;
+    _this = cx_new(cx_typedef(cx_observer_o));
+    observable ? cx_keep_ext(_this, observable, "element <0x9c37800>.observable") : 0; _this->observable = observable;
     _this->mask = mask;
-    _this->expression = (expression ? db_strdup(expression) : NULL);
+    _this->expression = (expression ? cx_strdup(expression) : NULL);
     _this->template = template;
-    dispatcher ? db_keep_ext(_this, dispatcher, "element <0x9c37800>.dispatcher") : 0; _this->dispatcher = dispatcher;
-    me ? db_keep_ext(_this, me, "element <0x9c37800>.me") : 0; _this->me = me;
-    if (db_define(_this)) {
-        db_free(_this);
+    dispatcher ? cx_keep_ext(_this, dispatcher, "element <0x9c37800>.dispatcher") : 0; _this->dispatcher = dispatcher;
+    me ? cx_keep_ext(_this, me, "element <0x9c37800>.me") : 0; _this->me = me;
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-void db_parameter__init(db_parameter *_this, db_string name, db_typedef type, db_bool passByReference) {
-    db_value v;
+void cx_parameter__init(cx_parameter *_this, cx_string name, cx_typedef type, cx_bool passByReference) {
+    cx_value v;
     memset(_this, 0, sizeof(*_this));
-    db_valueValueInit(&v, NULL, db_typedef(db_parameter_o), _this);
-    db_initValue(&v);
-    _this->name = (name ? db_strdup(name) : NULL);
-    type ? db_keep_ext(_this, type, "element <0x9c375e8>.type") : 0; _this->type = type;
+    cx_valueValueInit(&v, NULL, cx_typedef(cx_parameter_o), _this);
+    cx_initValue(&v);
+    _this->name = (name ? cx_strdup(name) : NULL);
+    type ? cx_keep_ext(_this, type, "element <0x9c375e8>.type") : 0; _this->type = type;
     _this->passByReference = passByReference;
 }
 
-void db_parameter__deinit(db_parameter *_this) {
-    db_value v;
-    db_valueValueInit(&v, NULL, db_typedef(db_parameter_o), _this);
-    db_deinitValue(&v);
+void cx_parameter__deinit(cx_parameter *_this) {
+    cx_value v;
+    cx_valueValueInit(&v, NULL, cx_typedef(cx_parameter_o), _this);
+    cx_deinitValue(&v);
 }
 
-db_primitive db_primitive__new(void) {
-    return db_new(db_typedef(db_primitive_o));
+cx_primitive cx_primitive__new(void) {
+    return cx_new(cx_typedef(cx_primitive_o));
 }
 
-db_primitive db_primitive__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_primitive_o));
+cx_primitive cx_primitive__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_primitive_o));
 }
 
-int db_primitive__define(db_primitive _this, db_width width) {
+int cx_primitive__define(cx_primitive _this, cx_width width) {
     _this->width = width;
-    return db_define(_this);
+    return cx_define(_this);
 }
 
-db_primitive db_primitive__create(db_width width) {
-    db_primitive _this;
-    _this = db_new(db_typedef(db_primitive_o));
+cx_primitive cx_primitive__create(cx_width width) {
+    cx_primitive _this;
+    _this = cx_new(cx_typedef(cx_primitive_o));
     _this->width = width;
-    if (db_define(_this)) {
-        db_free(_this);
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_procedure db_procedure__new(void) {
-    return db_new(db_typedef(db_procedure_o));
+cx_procedure cx_procedure__new(void) {
+    return cx_new(cx_typedef(cx_procedure_o));
 }
 
-db_procedure db_procedure__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_procedure_o));
+cx_procedure cx_procedure__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_procedure_o));
 }
 
-int db_procedure__define(db_procedure _this, db_procedureKind kind) {
+int cx_procedure__define(cx_procedure _this, cx_procedureKind kind) {
     _this->kind = kind;
-    return db_define(_this);
+    return cx_define(_this);
 }
 
-db_procedure db_procedure__create(db_procedureKind kind) {
-    db_procedure _this;
-    _this = db_new(db_typedef(db_procedure_o));
+cx_procedure cx_procedure__create(cx_procedureKind kind) {
+    cx_procedure _this;
+    _this = cx_new(cx_typedef(cx_procedure_o));
     _this->kind = kind;
-    if (db_define(_this)) {
-        db_free(_this);
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_procptr db_procptr__new(void) {
-    return db_new(db_typedef(db_procptr_o));
+cx_procptr cx_procptr__new(void) {
+    return cx_new(cx_typedef(cx_procptr_o));
 }
 
-db_procptr db_procptr__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_procptr_o));
+cx_procptr cx_procptr__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_procptr_o));
 }
 
-int db_procptr__define(db_procptr _this, db_typedef returnType, db_bool returnsReference, db_parameterSeq parameters) {
-    returnType ? db_keep_ext(_this, returnType, "element <0x9c377c8>.returnType") : 0; _this->returnType = returnType;
+int cx_procptr__define(cx_procptr _this, cx_typedef returnType, cx_bool returnsReference, cx_parameterSeq parameters) {
+    returnType ? cx_keep_ext(_this, returnType, "element <0x9c377c8>.returnType") : 0; _this->returnType = returnType;
     _this->returnsReference = returnsReference;
     _this->parameters = parameters;
-    return db_define(_this);
+    return cx_define(_this);
 }
 
-db_procptr db_procptr__create(db_typedef returnType, db_bool returnsReference, db_parameterSeq parameters) {
-    db_procptr _this;
-    _this = db_new(db_typedef(db_procptr_o));
-    returnType ? db_keep_ext(_this, returnType, "element <0x9c37938>.returnType") : 0; _this->returnType = returnType;
+cx_procptr cx_procptr__create(cx_typedef returnType, cx_bool returnsReference, cx_parameterSeq parameters) {
+    cx_procptr _this;
+    _this = cx_new(cx_typedef(cx_procptr_o));
+    returnType ? cx_keep_ext(_this, returnType, "element <0x9c37938>.returnType") : 0; _this->returnType = returnType;
     _this->returnsReference = returnsReference;
     _this->parameters = parameters;
-    if (db_define(_this)) {
-        db_free(_this);
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-void db_procptrdata__init(db_procptrdata *_this, db_object instance, db_function procedure) {
-    db_value v;
+void cx_procptrdata__init(cx_procptrdata *_this, cx_object instance, cx_function procedure) {
+    cx_value v;
     memset(_this, 0, sizeof(*_this));
-    db_valueValueInit(&v, NULL, db_typedef(db_procptrdata_o), _this);
-    db_initValue(&v);
-    instance ? db_keep_ext(_this, instance, "element <0x9c375d0>.instance") : 0; _this->instance = instance;
-    procedure ? db_keep_ext(_this, procedure, "element <0x9c375d0>.procedure") : 0; _this->procedure = procedure;
+    cx_valueValueInit(&v, NULL, cx_typedef(cx_procptrdata_o), _this);
+    cx_initValue(&v);
+    instance ? cx_keep_ext(_this, instance, "element <0x9c375d0>.instance") : 0; _this->instance = instance;
+    procedure ? cx_keep_ext(_this, procedure, "element <0x9c375d0>.procedure") : 0; _this->procedure = procedure;
 }
 
-void db_procptrdata__deinit(db_procptrdata *_this) {
-    db_value v;
-    db_valueValueInit(&v, NULL, db_typedef(db_procptrdata_o), _this);
-    db_deinitValue(&v);
+void cx_procptrdata__deinit(cx_procptrdata *_this) {
+    cx_value v;
+    cx_valueValueInit(&v, NULL, cx_typedef(cx_procptrdata_o), _this);
+    cx_deinitValue(&v);
 }
 
-db_sequence db_sequence__new(void) {
-    return db_new(db_typedef(db_sequence_o));
+cx_sequence cx_sequence__new(void) {
+    return cx_new(cx_typedef(cx_sequence_o));
 }
 
-db_sequence db_sequence__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_sequence_o));
+cx_sequence cx_sequence__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_sequence_o));
 }
 
-int db_sequence__define(db_sequence _this, db_typedef elementType, db_uint32 max) {
-    elementType ? db_keep_ext(_this, elementType, "element <0x9c37808>.elementType") : 0; db_collection(_this)->elementType = elementType;
-    db_collection(_this)->max = max;
-    return db_define(_this);
+int cx_sequence__define(cx_sequence _this, cx_typedef elementType, cx_uint32 max) {
+    elementType ? cx_keep_ext(_this, elementType, "element <0x9c37808>.elementType") : 0; cx_collection(_this)->elementType = elementType;
+    cx_collection(_this)->max = max;
+    return cx_define(_this);
 }
 
-db_sequence db_sequence__create(db_typedef elementType, db_uint32 max) {
-    db_sequence _this;
-    _this = db_new(db_typedef(db_sequence_o));
-    elementType ? db_keep_ext(_this, elementType, "element <0x9c37808>.elementType") : 0; db_collection(_this)->elementType = elementType;
-    db_collection(_this)->max = max;
-    if (db_define(_this)) {
-        db_free(_this);
+cx_sequence cx_sequence__create(cx_typedef elementType, cx_uint32 max) {
+    cx_sequence _this;
+    _this = cx_new(cx_typedef(cx_sequence_o));
+    elementType ? cx_keep_ext(_this, elementType, "element <0x9c37808>.elementType") : 0; cx_collection(_this)->elementType = elementType;
+    cx_collection(_this)->max = max;
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_struct db_struct__new(void) {
-    return db_new(db_typedef(db_struct_o));
+cx_struct cx_struct__new(void) {
+    return cx_new(cx_typedef(cx_struct_o));
 }
 
-db_struct db_struct__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_struct_o));
+cx_struct cx_struct__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_struct_o));
 }
 
-int db_struct__define(db_struct _this, db_interface base, db_modifier baseAccess) {
-    base ? db_keep_ext(_this, base, "element <0x9c377c8>.base") : 0; db_interface(_this)->base = base;
+int cx_struct__define(cx_struct _this, cx_interface base, cx_modifier baseAccess) {
+    base ? cx_keep_ext(_this, base, "element <0x9c377c8>.base") : 0; cx_interface(_this)->base = base;
     _this->baseAccess = baseAccess;
-    return db_define(_this);
+    return cx_define(_this);
 }
 
-db_struct db_struct__create(db_interface base, db_modifier baseAccess) {
-    db_struct _this;
-    _this = db_new(db_typedef(db_struct_o));
-    base ? db_keep_ext(_this, base, "element <0x9c377c8>.base") : 0; db_interface(_this)->base = base;
+cx_struct cx_struct__create(cx_interface base, cx_modifier baseAccess) {
+    cx_struct _this;
+    _this = cx_new(cx_typedef(cx_struct_o));
+    base ? cx_keep_ext(_this, base, "element <0x9c377c8>.base") : 0; cx_interface(_this)->base = base;
     _this->baseAccess = baseAccess;
-    if (db_define(_this)) {
-        db_free(_this);
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_text db_text__new(void) {
-    return db_new(db_typedef(db_text_o));
+cx_text cx_text__new(void) {
+    return cx_new(cx_typedef(cx_text_o));
 }
 
-db_text db_text__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_text_o));
+cx_text cx_text__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_text_o));
 }
 
-int db_text__define(db_text _this, db_width charWidth, db_uint64 length) {
+int cx_text__define(cx_text _this, cx_width charWidth, cx_uint64 length) {
     _this->charWidth = charWidth;
     _this->length = length;
-    return db_define(_this);
+    return cx_define(_this);
 }
 
-db_text db_text__create(db_width charWidth, db_uint64 length) {
-    db_text _this;
-    _this = db_new(db_typedef(db_text_o));
+cx_text cx_text__create(cx_width charWidth, cx_uint64 length) {
+    cx_text _this;
+    _this = cx_new(cx_typedef(cx_text_o));
     _this->charWidth = charWidth;
     _this->length = length;
-    if (db_define(_this)) {
-        db_free(_this);
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_type db_type__new(void) {
-    return db_new(db_typedef(db_type_o));
+cx_type cx_type__new(void) {
+    return cx_new(cx_typedef(cx_type_o));
 }
 
-db_type db_type__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_type_o));
+cx_type cx_type__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_type_o));
 }
 
-int db_type__define(db_type _this, db_typedef defaultType, db_typedef parentType, db_state parentState) {
-    defaultType ? db_keep_ext(_this, defaultType, "element <0x9c37820>.defaultType") : 0; _this->defaultType = defaultType;
-    parentType ? db_keep_ext(_this, parentType, "element <0x9c37820>.parentType") : 0; _this->parentType = parentType;
+int cx_type__define(cx_type _this, cx_typedef defaultType, cx_typedef parentType, cx_state parentState) {
+    defaultType ? cx_keep_ext(_this, defaultType, "element <0x9c37820>.defaultType") : 0; _this->defaultType = defaultType;
+    parentType ? cx_keep_ext(_this, parentType, "element <0x9c37820>.parentType") : 0; _this->parentType = parentType;
     _this->parentState = parentState;
-    return db_define(_this);
+    return cx_define(_this);
 }
 
-db_type db_type__create(db_typedef defaultType, db_typedef parentType, db_state parentState) {
-    db_type _this;
-    _this = db_new(db_typedef(db_type_o));
-    defaultType ? db_keep_ext(_this, defaultType, "element <0x9c375b8>.defaultType") : 0; _this->defaultType = defaultType;
-    parentType ? db_keep_ext(_this, parentType, "element <0x9c375b8>.parentType") : 0; _this->parentType = parentType;
+cx_type cx_type__create(cx_typedef defaultType, cx_typedef parentType, cx_state parentState) {
+    cx_type _this;
+    _this = cx_new(cx_typedef(cx_type_o));
+    defaultType ? cx_keep_ext(_this, defaultType, "element <0x9c375b8>.defaultType") : 0; _this->defaultType = defaultType;
+    parentType ? cx_keep_ext(_this, parentType, "element <0x9c375b8>.parentType") : 0; _this->parentType = parentType;
     _this->parentState = parentState;
-    if (db_define(_this)) {
-        db_free(_this);
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_typedef db_typedef__new(void) {
-    return db_new(db_typedef(db_typedef_o));
+cx_typedef cx_typedef__new(void) {
+    return cx_new(cx_typedef(cx_typedef_o));
 }
 
-db_typedef db_typedef__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_typedef_o));
+cx_typedef cx_typedef__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_typedef_o));
 }
 
-int db_typedef__define(db_typedef _this, db_typedef type) {
-    type ? db_keep_ext(_this, type, "element <0x9c37600>.type") : 0; _this->type = type;
-    return db_define(_this);
+int cx_typedef__define(cx_typedef _this, cx_typedef type) {
+    type ? cx_keep_ext(_this, type, "element <0x9c37600>.type") : 0; _this->type = type;
+    return cx_define(_this);
 }
 
-db_typedef db_typedef__create(db_typedef type) {
-    db_typedef _this;
-    _this = db_new(db_typedef(db_typedef_o));
-    type ? db_keep_ext(_this, type, "element <0x9c37600>.type") : 0; _this->type = type;
-    if (db_define(_this)) {
-        db_free(_this);
+cx_typedef cx_typedef__create(cx_typedef type) {
+    cx_typedef _this;
+    _this = cx_new(cx_typedef(cx_typedef_o));
+    type ? cx_keep_ext(_this, type, "element <0x9c37600>.type") : 0; _this->type = type;
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_uint db_uint__new(void) {
-    return db_new(db_typedef(db_uint_o));
+cx_uint cx_uint__new(void) {
+    return cx_new(cx_typedef(cx_uint_o));
 }
 
-db_uint db_uint__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_uint_o));
+cx_uint cx_uint__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_uint_o));
 }
 
-int db_uint__define(db_uint _this, db_width width, db_uint64 min, db_uint64 max) {
-    db_primitive(_this)->width = width;
+int cx_uint__define(cx_uint _this, cx_width width, cx_uint64 min, cx_uint64 max) {
+    cx_primitive(_this)->width = width;
     _this->min = min;
     _this->max = max;
-    return db_define(_this);
+    return cx_define(_this);
 }
 
-db_uint db_uint__create(db_width width, db_uint64 min, db_uint64 max) {
-    db_uint _this;
-    _this = db_new(db_typedef(db_uint_o));
-    db_primitive(_this)->width = width;
+cx_uint cx_uint__create(cx_width width, cx_uint64 min, cx_uint64 max) {
+    cx_uint _this;
+    _this = cx_new(cx_typedef(cx_uint_o));
+    cx_primitive(_this)->width = width;
     _this->min = min;
     _this->max = max;
-    if (db_define(_this)) {
-        db_free(_this);
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_virtual db_virtual__new(void) {
-    return db_new(db_typedef(db_virtual_o));
+cx_virtual cx_virtual__new(void) {
+    return cx_new(cx_typedef(cx_virtual_o));
 }
 
-db_virtual db_virtual__declare(db_object _parent, db_string _name) {
-    return db_declare(_parent, _name, db_typedef(db_virtual_o));
+cx_virtual cx_virtual__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_virtual_o));
 }
 
-int db_virtual__define(db_virtual _this, db_typedef returnType, db_bool returnsReference, db_bool virtual) {
-    returnType ? db_keep_ext(_this, returnType, "element <0x9c37820>.returnType") : 0; db_function(_this)->returnType = returnType;
-    db_function(_this)->returnsReference = returnsReference;
-    db_method(_this)->virtual = virtual;
-    return db_define(_this);
+int cx_virtual__define(cx_virtual _this, cx_typedef returnType, cx_bool returnsReference, cx_bool virtual) {
+    returnType ? cx_keep_ext(_this, returnType, "element <0x9c37820>.returnType") : 0; cx_function(_this)->returnType = returnType;
+    cx_function(_this)->returnsReference = returnsReference;
+    cx_method(_this)->virtual = virtual;
+    return cx_define(_this);
 }
 
-db_virtual db_virtual__create(db_typedef returnType, db_bool returnsReference, db_bool virtual) {
-    db_virtual _this;
-    _this = db_new(db_typedef(db_virtual_o));
-    returnType ? db_keep_ext(_this, returnType, "element <0x9c37820>.returnType") : 0; db_function(_this)->returnType = returnType;
-    db_function(_this)->returnsReference = returnsReference;
-    db_method(_this)->virtual = virtual;
-    if (db_define(_this)) {
-        db_free(_this);
+cx_virtual cx_virtual__create(cx_typedef returnType, cx_bool returnsReference, cx_bool virtual) {
+    cx_virtual _this;
+    _this = cx_new(cx_typedef(cx_virtual_o));
+    returnType ? cx_keep_ext(_this, returnType, "element <0x9c37820>.returnType") : 0; cx_function(_this)->returnType = returnType;
+    cx_function(_this)->returnsReference = returnsReference;
+    cx_method(_this)->virtual = virtual;
+    if (cx_define(_this)) {
+        cx_free(_this);
         _this = NULL;
     }
     return _this;
 }
 
-db_interface db_interfaceSeq__append(db_interfaceSeq *seq) {
-    db_uint32 size;
+cx_interface cx_interfaceSeq__append(cx_interfaceSeq *seq) {
+    cx_uint32 size;
     seq->length++;
-    seq->buffer = db_realloc(seq->buffer, seq->length * (size=db_type_sizeof(db_type(db_interface_o))));
+    seq->buffer = cx_realloc(seq->buffer, seq->length * (size=cx_type_sizeof(cx_type(cx_interface_o))));
     memset(seq->buffer[seq->length-1], 0, size);
     return seq->buffer[seq->length-1];
 }
 
-void db_interfaceSeq__size(db_interfaceSeq *seq, db_uint32 length) {
-    db_uint32 size;
-    seq->buffer = db_realloc(seq->buffer, length * (size=db_type_sizeof(db_type(db_interface_o))));
+void cx_interfaceSeq__size(cx_interfaceSeq *seq, cx_uint32 length) {
+    cx_uint32 size;
+    seq->buffer = cx_realloc(seq->buffer, length * (size=cx_type_sizeof(cx_type(cx_interface_o))));
     if (length > seq->length) {
-        db_uint32 i;
+        cx_uint32 i;
         memset(&seq->buffer[seq->length], 0, size * (length - seq->length));
         for(i=seq->length; i<length; i++) {
             {
-                db_value v;
-                db_valueValueInit(&v, NULL, db_typedef(db_interface_o), &seq->buffer[i]);
-                db_deinitValue(&v);
+                cx_value v;
+                cx_valueValueInit(&v, NULL, cx_typedef(cx_interface_o), &seq->buffer[i]);
+                cx_deinitValue(&v);
             }
         }
     }
     seq->length = length;
 }
 
-void db_interfaceSeq__clear(db_interfaceSeq *seq) {
-    db_interfaceSeq__size(seq, 0);
+void cx_interfaceSeq__clear(cx_interfaceSeq *seq) {
+    cx_interfaceSeq__size(seq, 0);
 }
 
-db_interfaceVector* db_interfaceVectorSeq__append(db_interfaceVectorSeq *seq) {
-    db_uint32 size;
+cx_interfaceVector* cx_interfaceVectorSeq__append(cx_interfaceVectorSeq *seq) {
+    cx_uint32 size;
     seq->length++;
-    seq->buffer = db_realloc(seq->buffer, seq->length * (size=db_type_sizeof(db_type(db_interfaceVector_o))));
+    seq->buffer = cx_realloc(seq->buffer, seq->length * (size=cx_type_sizeof(cx_type(cx_interfaceVector_o))));
     memset(&seq->buffer[seq->length-1], 0, size);
     {
-        db_value v;
-        db_valueValueInit(&v, NULL, db_typedef(db_interfaceVector_o), &seq->buffer[seq->length-1]);
-        db_initValue(&v);
+        cx_value v;
+        cx_valueValueInit(&v, NULL, cx_typedef(cx_interfaceVector_o), &seq->buffer[seq->length-1]);
+        cx_initValue(&v);
     }
     return &seq->buffer[seq->length-1];
 }
 
-void db_interfaceVectorSeq__size(db_interfaceVectorSeq *seq, db_uint32 length) {
-    db_uint32 size;
+void cx_interfaceVectorSeq__size(cx_interfaceVectorSeq *seq, cx_uint32 length) {
+    cx_uint32 size;
     if (length < seq->length) {
-        db_uint32 i;
+        cx_uint32 i;
         for(i=length; i<seq->length; i++) {
             {
-                db_value v;
-                db_valueValueInit(&v, NULL, db_typedef(db_interfaceVector_o), &seq->buffer[i]);
-                db_deinitValue(&v);
+                cx_value v;
+                cx_valueValueInit(&v, NULL, cx_typedef(cx_interfaceVector_o), &seq->buffer[i]);
+                cx_deinitValue(&v);
             }
         }
     }
-    seq->buffer = db_realloc(seq->buffer, length * (size=db_type_sizeof(db_type(db_interfaceVector_o))));
+    seq->buffer = cx_realloc(seq->buffer, length * (size=cx_type_sizeof(cx_type(cx_interfaceVector_o))));
     if (length > seq->length) {
-        db_uint32 i;
+        cx_uint32 i;
         memset(&seq->buffer[seq->length], 0, size * (length - seq->length));
         for(i=seq->length; i<length; i++) {
             {
-                db_value v;
-                db_valueValueInit(&v, NULL, db_typedef(db_interfaceVector_o), &seq->buffer[i]);
-                db_deinitValue(&v);
+                cx_value v;
+                cx_valueValueInit(&v, NULL, cx_typedef(cx_interfaceVector_o), &seq->buffer[i]);
+                cx_deinitValue(&v);
             }
         }
     }
     seq->length = length;
 }
 
-void db_interfaceVectorSeq__clear(db_interfaceVectorSeq *seq) {
-    db_interfaceVectorSeq__size(seq, 0);
+void cx_interfaceVectorSeq__clear(cx_interfaceVectorSeq *seq) {
+    cx_interfaceVectorSeq__size(seq, 0);
 }
 
-db_member db_memberSeq__append(db_memberSeq *seq) {
-    db_uint32 size;
+cx_member cx_memberSeq__append(cx_memberSeq *seq) {
+    cx_uint32 size;
     seq->length++;
-    seq->buffer = db_realloc(seq->buffer, seq->length * (size=db_type_sizeof(db_type(db_member_o))));
+    seq->buffer = cx_realloc(seq->buffer, seq->length * (size=cx_type_sizeof(cx_type(cx_member_o))));
     memset(seq->buffer[seq->length-1], 0, size);
     return seq->buffer[seq->length-1];
 }
 
-void db_memberSeq__size(db_memberSeq *seq, db_uint32 length) {
-    db_uint32 size;
-    seq->buffer = db_realloc(seq->buffer, length * (size=db_type_sizeof(db_type(db_member_o))));
+void cx_memberSeq__size(cx_memberSeq *seq, cx_uint32 length) {
+    cx_uint32 size;
+    seq->buffer = cx_realloc(seq->buffer, length * (size=cx_type_sizeof(cx_type(cx_member_o))));
     if (length > seq->length) {
-        db_uint32 i;
+        cx_uint32 i;
         memset(&seq->buffer[seq->length], 0, size * (length - seq->length));
         for(i=seq->length; i<length; i++) {
             {
-                db_value v;
-                db_valueValueInit(&v, NULL, db_typedef(db_member_o), &seq->buffer[i]);
-                db_deinitValue(&v);
+                cx_value v;
+                cx_valueValueInit(&v, NULL, cx_typedef(cx_member_o), &seq->buffer[i]);
+                cx_deinitValue(&v);
             }
         }
     }
     seq->length = length;
 }
 
-void db_memberSeq__clear(db_memberSeq *seq) {
-    db_memberSeq__size(seq, 0);
+void cx_memberSeq__clear(cx_memberSeq *seq) {
+    cx_memberSeq__size(seq, 0);
 }
 
-db_object db_objectSeq__append(db_objectSeq *seq) {
-    db_uint32 size;
+cx_object cx_objectSeq__append(cx_objectSeq *seq) {
+    cx_uint32 size;
     seq->length++;
-    seq->buffer = db_realloc(seq->buffer, seq->length * (size=db_type_sizeof(db_type(db_object_o))));
+    seq->buffer = cx_realloc(seq->buffer, seq->length * (size=cx_type_sizeof(cx_type(cx_object_o))));
     memset(seq->buffer[seq->length-1], 0, size);
     return seq->buffer[seq->length-1];
 }
 
-void db_objectSeq__size(db_objectSeq *seq, db_uint32 length) {
-    db_uint32 size;
-    seq->buffer = db_realloc(seq->buffer, length * (size=db_type_sizeof(db_type(db_object_o))));
+void cx_objectSeq__size(cx_objectSeq *seq, cx_uint32 length) {
+    cx_uint32 size;
+    seq->buffer = cx_realloc(seq->buffer, length * (size=cx_type_sizeof(cx_type(cx_object_o))));
     if (length > seq->length) {
-        db_uint32 i;
+        cx_uint32 i;
         memset(&seq->buffer[seq->length], 0, size * (length - seq->length));
         for(i=seq->length; i<length; i++) {
             {
-                db_value v;
-                db_valueValueInit(&v, NULL, db_typedef(db_object_o), &seq->buffer[i]);
-                db_deinitValue(&v);
+                cx_value v;
+                cx_valueValueInit(&v, NULL, cx_typedef(cx_object_o), &seq->buffer[i]);
+                cx_deinitValue(&v);
             }
         }
     }
     seq->length = length;
 }
 
-void db_objectSeq__clear(db_objectSeq *seq) {
-    db_objectSeq__size(seq, 0);
+void cx_objectSeq__clear(cx_objectSeq *seq) {
+    cx_objectSeq__size(seq, 0);
 }
 
-db_observer db_observerSeq__append(db_observerSeq *seq) {
-    db_uint32 size;
+cx_observer cx_observerSeq__append(cx_observerSeq *seq) {
+    cx_uint32 size;
     seq->length++;
-    seq->buffer = db_realloc(seq->buffer, seq->length * (size=db_type_sizeof(db_type(db_observer_o))));
+    seq->buffer = cx_realloc(seq->buffer, seq->length * (size=cx_type_sizeof(cx_type(cx_observer_o))));
     memset(seq->buffer[seq->length-1], 0, size);
     return seq->buffer[seq->length-1];
 }
 
-void db_observerSeq__size(db_observerSeq *seq, db_uint32 length) {
-    db_uint32 size;
-    seq->buffer = db_realloc(seq->buffer, length * (size=db_type_sizeof(db_type(db_observer_o))));
+void cx_observerSeq__size(cx_observerSeq *seq, cx_uint32 length) {
+    cx_uint32 size;
+    seq->buffer = cx_realloc(seq->buffer, length * (size=cx_type_sizeof(cx_type(cx_observer_o))));
     if (length > seq->length) {
-        db_uint32 i;
+        cx_uint32 i;
         memset(&seq->buffer[seq->length], 0, size * (length - seq->length));
         for(i=seq->length; i<length; i++) {
             {
-                db_value v;
-                db_valueValueInit(&v, NULL, db_typedef(db_observer_o), &seq->buffer[i]);
-                db_deinitValue(&v);
+                cx_value v;
+                cx_valueValueInit(&v, NULL, cx_typedef(cx_observer_o), &seq->buffer[i]);
+                cx_deinitValue(&v);
             }
         }
     }
     seq->length = length;
 }
 
-void db_observerSeq__clear(db_observerSeq *seq) {
-    db_observerSeq__size(seq, 0);
+void cx_observerSeq__clear(cx_observerSeq *seq) {
+    cx_observerSeq__size(seq, 0);
 }
 
-db_parameter* db_parameterSeq__append(db_parameterSeq *seq) {
-    db_uint32 size;
+cx_parameter* cx_parameterSeq__append(cx_parameterSeq *seq) {
+    cx_uint32 size;
     seq->length++;
-    seq->buffer = db_realloc(seq->buffer, seq->length * (size=db_type_sizeof(db_type(db_parameter_o))));
+    seq->buffer = cx_realloc(seq->buffer, seq->length * (size=cx_type_sizeof(cx_type(cx_parameter_o))));
     memset(&seq->buffer[seq->length-1], 0, size);
     {
-        db_value v;
-        db_valueValueInit(&v, NULL, db_typedef(db_parameter_o), &seq->buffer[seq->length-1]);
-        db_initValue(&v);
+        cx_value v;
+        cx_valueValueInit(&v, NULL, cx_typedef(cx_parameter_o), &seq->buffer[seq->length-1]);
+        cx_initValue(&v);
     }
     return &seq->buffer[seq->length-1];
 }
 
-void db_parameterSeq__size(db_parameterSeq *seq, db_uint32 length) {
-    db_uint32 size;
+void cx_parameterSeq__size(cx_parameterSeq *seq, cx_uint32 length) {
+    cx_uint32 size;
     if (length < seq->length) {
-        db_uint32 i;
+        cx_uint32 i;
         for(i=length; i<seq->length; i++) {
             {
-                db_value v;
-                db_valueValueInit(&v, NULL, db_typedef(db_parameter_o), &seq->buffer[i]);
-                db_deinitValue(&v);
+                cx_value v;
+                cx_valueValueInit(&v, NULL, cx_typedef(cx_parameter_o), &seq->buffer[i]);
+                cx_deinitValue(&v);
             }
         }
     }
-    seq->buffer = db_realloc(seq->buffer, length * (size=db_type_sizeof(db_type(db_parameter_o))));
+    seq->buffer = cx_realloc(seq->buffer, length * (size=cx_type_sizeof(cx_type(cx_parameter_o))));
     if (length > seq->length) {
-        db_uint32 i;
+        cx_uint32 i;
         memset(&seq->buffer[seq->length], 0, size * (length - seq->length));
         for(i=seq->length; i<length; i++) {
             {
-                db_value v;
-                db_valueValueInit(&v, NULL, db_typedef(db_parameter_o), &seq->buffer[i]);
-                db_deinitValue(&v);
+                cx_value v;
+                cx_valueValueInit(&v, NULL, cx_typedef(cx_parameter_o), &seq->buffer[i]);
+                cx_deinitValue(&v);
             }
         }
     }
     seq->length = length;
 }
 
-void db_parameterSeq__clear(db_parameterSeq *seq) {
-    db_parameterSeq__size(seq, 0);
+void cx_parameterSeq__clear(cx_parameterSeq *seq) {
+    cx_parameterSeq__size(seq, 0);
 }
 
-db_function db_vtable__append(db_vtable *seq) {
-    db_uint32 size;
+cx_function cx_vtable__append(cx_vtable *seq) {
+    cx_uint32 size;
     seq->length++;
-    seq->buffer = db_realloc(seq->buffer, seq->length * (size=db_type_sizeof(db_type(db_function_o))));
+    seq->buffer = cx_realloc(seq->buffer, seq->length * (size=cx_type_sizeof(cx_type(cx_function_o))));
     memset(seq->buffer[seq->length-1], 0, size);
     return seq->buffer[seq->length-1];
 }
 
-void db_vtable__size(db_vtable *seq, db_uint32 length) {
-    db_uint32 size;
-    seq->buffer = db_realloc(seq->buffer, length * (size=db_type_sizeof(db_type(db_function_o))));
+void cx_vtable__size(cx_vtable *seq, cx_uint32 length) {
+    cx_uint32 size;
+    seq->buffer = cx_realloc(seq->buffer, length * (size=cx_type_sizeof(cx_type(cx_function_o))));
     if (length > seq->length) {
-        db_uint32 i;
+        cx_uint32 i;
         memset(&seq->buffer[seq->length], 0, size * (length - seq->length));
         for(i=seq->length; i<length; i++) {
             {
-                db_value v;
-                db_valueValueInit(&v, NULL, db_typedef(db_function_o), &seq->buffer[i]);
-                db_deinitValue(&v);
+                cx_value v;
+                cx_valueValueInit(&v, NULL, cx_typedef(cx_function_o), &seq->buffer[i]);
+                cx_deinitValue(&v);
             }
         }
     }
     seq->length = length;
 }
 
-void db_vtable__clear(db_vtable *seq) {
-    db_vtable__size(seq, 0);
+void cx_vtable__clear(cx_vtable *seq) {
+    cx_vtable__size(seq, 0);
 }
 

@@ -23,7 +23,7 @@ int cortexmain(int argc, char* argv[]) {
 /* $end */
 
 /* ::cortex::math::abs(::cortex::lang::uint64 x) */
-db_uint64 mth_abs(db_uint64 x) {
+cx_uint64 mth_abs(cx_uint64 x) {
 /* $begin(::cortex::math::abs) */
 
     return llabs(x);
@@ -32,7 +32,7 @@ db_uint64 mth_abs(db_uint64 x) {
 }
 
 /* ::cortex::math::acos(::cortex::lang::float64 x) */
-db_float64 mth_acos(db_float64 x) {
+cx_float64 mth_acos(cx_float64 x) {
 /* $begin(::cortex::math::acos) */
 
     return acos(x);
@@ -41,7 +41,7 @@ db_float64 mth_acos(db_float64 x) {
 }
 
 /* ::cortex::math::asin(::cortex::lang::float64 x) */
-db_float64 mth_asin(db_float64 x) {
+cx_float64 mth_asin(cx_float64 x) {
 /* $begin(::cortex::math::asin) */
 
     return asin(x);
@@ -50,7 +50,7 @@ db_float64 mth_asin(db_float64 x) {
 }
 
 /* ::cortex::math::atan(::cortex::lang::float64 x) */
-db_float64 mth_atan(db_float64 x) {
+cx_float64 mth_atan(cx_float64 x) {
 /* $begin(::cortex::math::atan) */
 
     return atan(x);
@@ -59,7 +59,7 @@ db_float64 mth_atan(db_float64 x) {
 }
 
 /* ::cortex::math::cos(::cortex::lang::float64 x) */
-db_float64 mth_cos(db_float64 x) {
+cx_float64 mth_cos(cx_float64 x) {
 /* $begin(::cortex::math::cos) */
 
     return cos(x);
@@ -68,7 +68,7 @@ db_float64 mth_cos(db_float64 x) {
 }
 
 /* ::cortex::math::exp(::cortex::lang::float64 x) */
-db_float64 mth_exp(db_float64 x) {
+cx_float64 mth_exp(cx_float64 x) {
 /* $begin(::cortex::math::exp) */
 
     return exp(x);
@@ -77,7 +77,7 @@ db_float64 mth_exp(db_float64 x) {
 }
 
 /* ::cortex::math::log(::cortex::lang::float64 x) */
-db_float64 mth_log(db_float64 x) {
+cx_float64 mth_log(cx_float64 x) {
 /* $begin(::cortex::math::log) */
 
     return log(x);
@@ -86,7 +86,7 @@ db_float64 mth_log(db_float64 x) {
 }
 
 /* ::cortex::math::log10(::cortex::lang::float64 x) */
-db_float64 mth_log10(db_float64 x) {
+cx_float64 mth_log10(cx_float64 x) {
 /* $begin(::cortex::math::log10) */
 
     return log10(x);
@@ -95,7 +95,7 @@ db_float64 mth_log10(db_float64 x) {
 }
 
 /* ::cortex::math::pow(::cortex::lang::float64 x,::cortex::lang::float64 p) */
-db_float64 mth_pow(db_float64 x, db_float64 p) {
+cx_float64 mth_pow(cx_float64 x, cx_float64 p) {
 /* $begin(::cortex::math::pow) */
 
     return pow(x, p);
@@ -104,16 +104,16 @@ db_float64 mth_pow(db_float64 x, db_float64 p) {
 }
 
 /* ::cortex::math::rand() */
-db_float64 mth_rand(void) {
+cx_float64 mth_rand(void) {
 /* $begin(::cortex::math::rand) */
 
-    return (db_float64)rand() / (db_float64)RAND_MAX;
+    return (cx_float64)rand() / (cx_float64)RAND_MAX;
 
 /* $end */
 }
 
 /* ::cortex::math::seed(::cortex::lang::uint32 seed) */
-db_void mth_seed(db_uint32 seed) {
+cx_void mth_seed(cx_uint32 seed) {
 /* $begin(::cortex::math::seed) */
 
     srand(seed);
@@ -122,7 +122,7 @@ db_void mth_seed(db_uint32 seed) {
 }
 
 /* ::cortex::math::sin(::cortex::lang::float64 x) */
-db_float64 mth_sin(db_float64 x) {
+cx_float64 mth_sin(cx_float64 x) {
 /* $begin(::cortex::math::sin) */
 
     return sin(x);
@@ -131,7 +131,7 @@ db_float64 mth_sin(db_float64 x) {
 }
 
 /* ::cortex::math::sqrt(::cortex::lang::float64 x) */
-db_float64 mth_sqrt(db_float64 x) {
+cx_float64 mth_sqrt(cx_float64 x) {
 /* $begin(::cortex::math::sqrt) */
 
     return sqrt(x);
@@ -140,7 +140,7 @@ db_float64 mth_sqrt(db_float64 x) {
 }
 
 /* ::cortex::math::tan(::cortex::lang::float64 x) */
-db_float64 mth_tan(db_float64 x) {
+cx_float64 mth_tan(cx_float64 x) {
 /* $begin(::cortex::math::tan) */
 
     return tan(x);

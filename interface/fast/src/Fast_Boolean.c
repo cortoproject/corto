@@ -18,7 +18,7 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::Boolean::init(Boolean object) */
-db_int16 Fast_Boolean_init(Fast_Boolean object) {
+cx_int16 Fast_Boolean_init(Fast_Boolean object) {
 /* $begin(::cortex::Fast::Boolean::init) */
     Fast_Literal(object)->kind = FAST_Boolean;
     return Fast_Literal_init(Fast_Literal(object));
@@ -26,7 +26,7 @@ db_int16 Fast_Boolean_init(Fast_Boolean object) {
 }
 
 /* ::cortex::Fast::Boolean::serialize(lang::type dstType,lang::word dst) */
-db_int16 Fast_Boolean_serialize(Fast_Boolean _this, db_type dstType, db_word dst) {
+cx_int16 Fast_Boolean_serialize(Fast_Boolean _this, cx_type dstType, cx_word dst) {
 /* $begin(::cortex::Fast::Boolean::serialize) */
 	Fast_valueKind kind;
 
@@ -35,22 +35,22 @@ db_int16 Fast_Boolean_serialize(Fast_Boolean _this, db_type dstType, db_word dst
 	switch(kind) {
 	case FAST_Boolean:
 	case FAST_Integer:
-		memset((void*)dst, 0, db_type_sizeof(dstType));
-		*(db_bool*)dst = _this->value;
+		memset((void*)dst, 0, cx_type_sizeof(dstType));
+		*(cx_bool*)dst = _this->value;
 		break;
 	case FAST_String:
-		if (*(db_string*)dst) {
-			db_dealloc(*(db_string*)dst);
+		if (*(cx_string*)dst) {
+			cx_dealloc(*(cx_string*)dst);
 		}
 		if (_this->value) {
-			*(db_string*)dst = db_strdup("true");
+			*(cx_string*)dst = cx_strdup("true");
 		} else {
-			*(db_string*)dst = db_strdup("false");
+			*(cx_string*)dst = cx_strdup("false");
 		}
 		break;
 	default: {
-        db_id id;
-        Fast_Parser_error(yparser(), "cannot serialize boolean value to storage of type '%s'", db_fullname(dstType, id));
+        cx_id id;
+        Fast_Parser_error(yparser(), "cannot serialize boolean value to storage of type '%s'", cx_fullname(dstType, id));
         goto error;
 		break;
 	}
@@ -62,16 +62,16 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::Boolean::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_Boolean_toIc_v(Fast_Boolean _this, db_icProgram program, db_icStorage storage, db_bool stored) {
+/* ::cortex::Fast::Boolean::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+cx_ic Fast_Boolean_toIc_v(Fast_Boolean _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Boolean::toIc) */
-	db_ic result;
-	db_value v;
+	cx_ic result;
+	cx_value v;
 	DB_UNUSED(storage);
 	DB_UNUSED(stored);
 
-	db_valueLiteralInit(&v, DB_LITERAL_BOOLEAN, &_this->value);
-	result = (db_ic)db_icLiteral__create(program, Fast_Node(_this)->line, v, db_type(db_bool_o));
+	cx_valueLiteralInit(&v, DB_LITERAL_BOOLEAN, &_this->value);
+	result = (cx_ic)cx_icLiteral__create(program, Fast_Node(_this)->line, v, cx_type(cx_bool_o));
 
 	return result;
 /* $end */

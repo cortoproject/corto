@@ -18,7 +18,7 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::SignedInteger::init(SignedInteger object) */
-db_int16 Fast_SignedInteger_init(Fast_SignedInteger object) {
+cx_int16 Fast_SignedInteger_init(Fast_SignedInteger object) {
 /* $begin(::cortex::Fast::SignedInteger::init) */
     Fast_Literal(object)->kind = FAST_SignedInteger;
     return Fast_Literal_init(Fast_Literal(object));
@@ -26,27 +26,27 @@ db_int16 Fast_SignedInteger_init(Fast_SignedInteger object) {
 }
 
 /* ::cortex::Fast::SignedInteger::serialize(lang::type dstType,lang::word dst) */
-db_int16 Fast_SignedInteger_serialize(Fast_SignedInteger _this, db_type dstType, db_word dst) {
+cx_int16 Fast_SignedInteger_serialize(Fast_SignedInteger _this, cx_type dstType, cx_word dst) {
 /* $begin(::cortex::Fast::SignedInteger::serialize) */
 	Fast_valueKind kind;
 
 	kind = Fast_valueKindFromType(dstType);
     
-	memset((void*)dst, 0, db_type_sizeof(dstType));
+	memset((void*)dst, 0, cx_type_sizeof(dstType));
 
 	switch(kind) {
 	case FAST_Boolean:
-		*(db_bool*)dst = _this->value ? TRUE : FALSE;
+		*(cx_bool*)dst = _this->value ? TRUE : FALSE;
 		break;
 	case FAST_Integer:
 	case FAST_SignedInteger:
 	case FAST_Enumerated:
 	case FAST_String:
-		db_convert(db_primitive(db_int64_o), &_this->value, db_primitive(dstType), (void*)dst);
+		cx_convert(cx_primitive(cx_int64_o), &_this->value, cx_primitive(dstType), (void*)dst);
 		break;
 	default: {
-        db_id id;
-        Fast_Parser_error(yparser(), "cannot serialize signed integer value to storage of type '%s'", db_fullname(dstType, id));
+        cx_id id;
+        Fast_Parser_error(yparser(), "cannot serialize signed integer value to storage of type '%s'", cx_fullname(dstType, id));
         goto error;
 		break;
 	}
@@ -58,16 +58,16 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::SignedInteger::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_SignedInteger_toIc_v(Fast_SignedInteger _this, db_icProgram program, db_icStorage storage, db_bool stored) {
+/* ::cortex::Fast::SignedInteger::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+cx_ic Fast_SignedInteger_toIc_v(Fast_SignedInteger _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::SignedInteger::toIc) */
-	db_ic result;
-	db_value v;
+	cx_ic result;
+	cx_value v;
 	DB_UNUSED(storage);
 	DB_UNUSED(stored);
 
-	db_valueLiteralInit(&v, DB_LITERAL_INTEGER, &_this->value);
-	result = (db_ic)db_icLiteral__create(
+	cx_valueLiteralInit(&v, DB_LITERAL_INTEGER, &_this->value);
+	result = (cx_ic)cx_icLiteral__create(
 			program, Fast_Node(_this)->line, v, Fast_Expression_getType(Fast_Expression(_this)));
 
 	return result;

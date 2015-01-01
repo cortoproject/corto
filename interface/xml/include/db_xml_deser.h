@@ -10,7 +10,7 @@
 
 #include "cortex.h"
 
-int db_deserXml(db_string file, void* udata);
+int cx_deserXml(cx_string file, void* udata);
 
 
 #endif /* CORE_DESERXML_H_ */

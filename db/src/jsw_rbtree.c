@@ -5,9 +5,9 @@
     > Modified (Julienne Walker): March 14, 2008
 */
 #include "jsw_rbtree.h"
-#include "db_util.h"
-#include "db_err.h"
-#include "db_object.h"
+#include "cx_util.h"
+#include "cx_err.h"
+#include "cx_object.h"
 
 #ifdef __cplusplus
 #include <cstdlib>
@@ -26,12 +26,12 @@ struct jsw_rbnode {
   struct jsw_rbnode *link[2]; /* Left (0) and right (1) links */
 };
 
-typedef db_equalityKind (*db_equalFunction)(db_any _this, db_any value);
+typedef cx_equalityKind (*cx_equalFunction)(cx_any _this, cx_any value);
 
 struct jsw_rbtree {
   jsw_rbnode_t *root; /* Top of the tree */
-  db_equalsAction cmp;  /* Compare two items */
-  db_type        type; /* This object which must be passed to cmp-function */
+  cx_equalsAction cmp;  /* Compare two items */
+  cx_type        type; /* This object which must be passed to cmp-function */
   size_t        size; /* Number of items (user-defined) */
 };
 
@@ -119,14 +119,14 @@ static jsw_rbnode_t *new_node ( jsw_rbtree_t *tree, void* key, void *data )
 }
 
 /* Marshall between intern comparefunction and cortex::type::equals */
-static db_equalityKind db_rbtreeGenericCompare(db_type t, const void* v1, const void* v2) {
-    db_any any1, any2;
-    db_type keyType = db_map(t)->keyType->real;
+static cx_equalityKind cx_rbtreeGenericCompare(cx_type t, const void* v1, const void* v2) {
+    cx_any any1, any2;
+    cx_type keyType = cx_map(t)->keyType->real;
     any1.type = keyType;
     any1.value = (void*)v1;
     any2.type = keyType;
     any2.value = (void*)v2;
-    return db_type_compare(any1, any2);
+    return cx_type_compare(any1, any2);
 }
 
 /**
@@ -142,7 +142,7 @@ static db_equalityKind db_rbtreeGenericCompare(db_type t, const void* v1, const 
   The returned pointer must be released with jsw_rbdelete
   </remarks>
 */
-jsw_rbtree_t *jsw_rbnew ( db_type type, db_equalsAction cmp)
+jsw_rbtree_t *jsw_rbnew ( cx_type type, cx_equalsAction cmp)
 {
   jsw_rbtree_t *rt = (jsw_rbtree_t *)malloc ( sizeof *rt );
 
@@ -150,7 +150,7 @@ jsw_rbtree_t *jsw_rbnew ( db_type type, db_equalsAction cmp)
     return NULL;
 
   if (!cmp) {
-      cmp = db_rbtreeGenericCompare;
+      cmp = cx_rbtreeGenericCompare;
   }
 
   rt->root = NULL;
@@ -161,7 +161,7 @@ jsw_rbtree_t *jsw_rbnew ( db_type type, db_equalsAction cmp)
   return rt;
 }
 
-db_type jsw_rbtype( jsw_rbtree_t *tree) {
+cx_type jsw_rbtype( jsw_rbtree_t *tree) {
 	return tree->type;
 }
 
@@ -169,14 +169,14 @@ db_type jsw_rbtype( jsw_rbtree_t *tree) {
 void jsw_keyFree( jsw_rbtree_t *tree, void *key )
 {
     if (tree->type) {
-        db_type keyType = db_map(tree->type)->keyType->real;
+        cx_type keyType = cx_map(tree->type)->keyType->real;
 
         if (keyType->reference) {
-            db_free(*(db_object*)key);
+            cx_free(*(cx_object*)key);
         } else {
             if (keyType->kind == DB_PRIMITIVE) {
-                if (db_primitive(keyType)->kind == DB_TEXT) {
-                    free(*(db_string*)key);
+                if (cx_primitive(keyType)->kind == DB_TEXT) {
+                    free(*(cx_string*)key);
                 }
             }
         }
@@ -546,7 +546,7 @@ void *jsw_rbgetmax ( jsw_rbtree_t *tree, void** key) {
 /* Get next and prev */
 void *jsw_rbgetnext ( jsw_rbtree_t *tree, void* key, void** key_out) {
     jsw_rbnode_t* stack[32];
-    db_uint32 sp;
+    cx_uint32 sp;
     jsw_rbnode_t *it = tree->root;
     void* result;
 

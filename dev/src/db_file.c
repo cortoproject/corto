@@ -1,19 +1,19 @@
 /*
- * db_file.c
+ * cx_file.c
  *
  *  Created on: Feb 10, 2011
  *      Author: sander
  */
 
-#include "db_file.h"
+#include "cx_file.h"
 
 #include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
-#include "db_ll.h"
+#include "cx_ll.h"
 
 /* Load all contents from file, close file afterwards, return contents */
-char* db_fileLoad(const char* filename) {
+char* cx_fileLoad(const char* filename) {
 	FILE* file;
 	char* content;
 	unsigned int size;
@@ -43,38 +43,38 @@ char* db_fileLoad(const char* filename) {
 }
 
 /* Open file */
-db_file db_fileOpen(const char* file) {
+cx_file cx_fileOpen(const char* file) {
 
 	if (!strcmp(file, "<<")) {
-		return (db_file)stdin;
+		return (cx_file)stdin;
 	} else if (!strcmp(file, ">>")) {
-		return (db_file)stdout;
+		return (cx_file)stdout;
 	} else {
-		return (db_file)fopen(file, "w");
+		return (cx_file)fopen(file, "w");
 	}
 }
 
 /* Close file */
-void db_fileClose(db_file file) {
+void cx_fileClose(cx_file file) {
 	if (file) {
 		fclose((FILE*)file);
 	}
 }
 
 /* Get file - a noop in the current implementation */
-FILE* db_fileGet(db_file file) {
+FILE* cx_fileGet(cx_file file) {
 	return (FILE*)file;
 }
 
 /* Test if file exists */
-int db_fileTest(const char* file) {
-	db_file exists;
+int cx_fileTest(const char* file) {
+	cx_file exists;
 
 	exists = 0;
 
 	if (file) {
-		exists = (db_file)fopen(file, "r");
-		db_fileClose(exists);
+		exists = (cx_file)fopen(file, "r");
+		cx_fileClose(exists);
 	}
 
 	return (exists != 0);
@@ -93,7 +93,7 @@ int fileSearchWalk(const char* location, fileSearchWalk_t* userData) {
 
 	sprintf(filename, "%s/%s", location, userData->file);
 
-	if (db_fileTest(filename)) {
+	if (cx_fileTest(filename)) {
 		userData->result = filename;
 		return 0;
 	}
@@ -102,19 +102,19 @@ int fileSearchWalk(const char* location, fileSearchWalk_t* userData) {
 }
 
 /* Search file in paths */
-char* db_fileSearch(const char* file, db_ll locations) {
+char* cx_fileSearch(const char* file, cx_ll locations) {
 	fileSearchWalk_t walkData;
 
 	walkData.file = file;
 	walkData.result = 0;
 
-	db_llWalk(locations, (db_walkAction)fileSearchWalk, &walkData);
+	cx_llWalk(locations, (cx_walkAction)fileSearchWalk, &walkData);
 
 	return walkData.result;
 }
 
 /* Get file size */
-unsigned int db_fileSize(db_file file) {
+unsigned int cx_fileSize(cx_file file) {
 	unsigned int size;
 
 	/* Determine file size */
@@ -126,12 +126,12 @@ unsigned int db_fileSize(db_file file) {
 }
 
 /* Get file ptr */
-unsigned int db_fileTell(db_file file) {
+unsigned int cx_fileTell(cx_file file) {
 	return ftell((FILE*)file);
 }
 
 /* Read line from file */
-char* db_fileReadLine(db_file file, char* buf, unsigned int length) {
+char* cx_fileReadLine(cx_file file, char* buf, unsigned int length) {
 	char c;
 	char* ptr;
 

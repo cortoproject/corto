@@ -10,27 +10,27 @@
 #ifndef C_FILE_H_
 #define C_FILE_H_
 
-#include "db_ll.h"
+#include "cx_ll.h"
 #include "stdio.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef struct db_file_s* db_file;
+typedef struct cx_file_s* cx_file;
 
-char* db_fileLoad(const char* file);
+char* cx_fileLoad(const char* file);
 
-db_file db_fileOpen(const char* file);
-FILE* db_fileGet(db_file file);
-void db_fileClose(db_file);
-int db_fileTest(const char* file);
-char* db_fileSearch(const char* file, db_ll locations);
+cx_file cx_fileOpen(const char* file);
+FILE* cx_fileGet(cx_file file);
+void cx_fileClose(cx_file);
+int cx_fileTest(const char* file);
+char* cx_fileSearch(const char* file, cx_ll locations);
 
-unsigned int db_fileSize(db_file);
-unsigned int db_fileTell(db_file);
+unsigned int cx_fileSize(cx_file);
+unsigned int cx_fileTell(cx_file);
 
-char* db_fileReadLine(db_file file, char* buf, unsigned int length);
+char* cx_fileReadLine(cx_file file, char* buf, unsigned int length);
 
 #ifdef __cplusplus
 }

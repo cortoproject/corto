@@ -15,11 +15,11 @@ Fast_Parser yparser(void);
 	yparser()->token = yytext;\
 
 void lex_collect(void *o) {
-	Fast_Parser_collectHeap(yparser(), (db_word)o);
+	Fast_Parser_collectHeap(yparser(), (cx_word)o);
 }
 
 /* Escape character */
-static char *fast_charesc(char *in, db_char *out) {
+static char *fast_charesc(char *in, cx_char *out) {
 	switch(*in) {
 	case '\\':
 		in++;
@@ -77,7 +77,7 @@ error:
 }
 
 /* Escape string-token */
-static int fast_stresc(char* yptr, db_string ptr) {
+static int fast_stresc(char* yptr, cx_string ptr) {
 	char ch;
 	
 	/* Do escape sequences */
@@ -215,7 +215,7 @@ static void comment(void)
 		p->column = 1;
 	}
 	if (c == EOF) {
-		void Fast_Parser_error(Fast_Parser p, db_string fmt, ...);
+		void Fast_Parser_error(Fast_Parser p, cx_string fmt, ...);
 		Fast_Parser_error(p, "end of file encountered in comment");
 		exit(1);
 	} else {

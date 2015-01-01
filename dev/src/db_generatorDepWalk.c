@@ -1,48 +1,48 @@
 /*
- * db_generatorDepWalk.c
+ * cx_generatorDepWalk.c
  *
  *  Created on: Sep 25, 2012
  *      Author: sander
  */
 
 #include "db.h"
-#include "db_generatorDepWalk.h"
+#include "cx_generatorDepWalk.h"
 
 #define CYCLE_DEPTH (1024)
 
 typedef struct g_item* g_item;
 struct g_item {
-    db_object o;
-    db_bool declared;
-    db_bool defined;
-    db_int32 declareCount;
-    db_int32 defineCount;
-    db_ll onDeclared;
-    db_ll onDefined;
+    cx_object o;
+    cx_bool declared;
+    cx_bool defined;
+    cx_int32 declareCount;
+    cx_int32 defineCount;
+    cx_ll onDeclared;
+    cx_ll onDefined;
 };
 
 typedef struct g_dependency* g_dependency;
 struct g_dependency {
-    db_uint8 kind;
+    cx_uint8 kind;
     g_item item;
-    db_bool weak; /* A weak dependency may be degraded to DECLARED if a cycle can otherwise not be broken. */
-    db_bool marked;
-    db_bool processed; /* When a cycles are broken, it can occur that a dependency is resolved twice, as
+    cx_bool weak; /* A weak dependency may be degraded to DECLARED if a cycle can otherwise not be broken. */
+    cx_bool marked;
+    cx_bool processed; /* When a cycles are broken, it can occur that a dependency is resolved twice, as
                           a cycle is broken by resolving a dependency. This could cause refcounts to dive below
                           zero which is undesired. */
 };
 
 typedef struct g_itemWalk_t* g_itemWalk_t;
 struct g_itemWalk_t {
-    db_generator g;
-    db_ll items;
-    db_ll toPrint;
+    cx_generator g;
+    cx_ll items;
+    cx_ll toPrint;
     g_walkAction onDeclare;
     g_walkAction onDefine;
     void* userData;
     g_dependency stack[CYCLE_DEPTH]; /* For cycle detection */
-    db_uint32 sp;
-    db_bool bootstrap; /* If a bootstrap is detected, disregard all dependencies. This can only mean that
+    cx_uint32 sp;
+    cx_bool bootstrap; /* If a bootstrap is detected, disregard all dependencies. This can only mean that
     					  the builtin-types are being generated, since these are the only ones that can
     					  introduce a bootstrap (typeof(class) == class).
     					  In this case, dependencies don't matter (and are non-resolvable)*/
@@ -51,10 +51,10 @@ struct g_itemWalk_t {
 static int g_itemPrint(void* o, void* userData);
 
 /* Create new item */
-g_item g_itemNew(db_object o, g_itemWalk_t data) {
+g_item g_itemNew(cx_object o, g_itemWalk_t data) {
     g_item result;
 
-    result = db_malloc(sizeof(struct g_item));
+    result = cx_malloc(sizeof(struct g_item));
     result->o = o;
     result->declared = FALSE;
     result->defined = FALSE;
@@ -68,7 +68,7 @@ g_item g_itemNew(db_object o, g_itemWalk_t data) {
         result->defined = TRUE;
     }
 
-    db_llInsert(data->items, result);
+    cx_llInsert(data->items, result);
 
     return result;
 }
@@ -79,33 +79,33 @@ void g_itemFree(g_item item) {
 
     /* Free onDeclared list */
     if (item->onDeclared) {
-        while((dep = db_llTakeFirst(item->onDeclared))) {
-            db_dealloc(dep);
+        while((dep = cx_llTakeFirst(item->onDeclared))) {
+            cx_dealloc(dep);
         }
-        db_llFree(item->onDeclared);
+        cx_llFree(item->onDeclared);
     }
 
     /* Free onDefined list */
     if (item->onDefined) {
-        while((dep = db_llTakeFirst(item->onDefined))) {
-            db_dealloc(dep);
+        while((dep = cx_llTakeFirst(item->onDefined))) {
+            cx_dealloc(dep);
         }
-        db_llFree(item->onDefined);
+        cx_llFree(item->onDefined);
     }
 
-    db_dealloc(item);
+    cx_dealloc(item);
 }
 
 /* Lookup item in administration */
-g_item g_itemLookup(db_object o, g_itemWalk_t data) {
-    db_iter iter;
+g_item g_itemLookup(cx_object o, g_itemWalk_t data) {
+    cx_iter iter;
     g_item item;
 
     /* Lookup item for 'o' in items list */
     item = NULL;
-    iter = db_llIter(data->items);
-    while(!item && db_iterHasNext(&iter)) {
-        item = db_iterNext(&iter);
+    iter = cx_llIter(data->items);
+    while(!item && cx_iterHasNext(&iter)) {
+        item = cx_iterNext(&iter);
         if (item->o != o) {
             item = NULL;
         }
@@ -125,15 +125,15 @@ g_item g_itemLookup(db_object o, g_itemWalk_t data) {
  *   @param dependency The dependency object.
  *   @param dependencyKind The dependency object must reach at least this state before the dependency can be resolved.
  */
-void g_itemDepend(g_item o, db_uint8 kind, g_item dependency, db_uint8 dependencyKind) {
+void g_itemDepend(g_item o, cx_uint8 kind, g_item dependency, cx_uint8 dependencyKind) {
     g_dependency dep;
 
-    db_assert(dependency->o != root_o, "invalid dependency on root.");
+    cx_assert(dependency->o != root_o, "invalid dependency on root.");
 
     if (o->o != dependency->o) {
 
 		/* Create dependency object */
-		dep = db_malloc(sizeof(struct g_dependency));
+		dep = cx_malloc(sizeof(struct g_dependency));
 		dep->kind = kind;
 		dep->item = o;
 		dep->weak = FALSE;
@@ -149,7 +149,7 @@ void g_itemDepend(g_item o, db_uint8 kind, g_item dependency, db_uint8 dependenc
 			o->defineCount++;
 			break;
 		default:
-			db_assert(0, "invalid dependee-kind.");
+			cx_assert(0, "invalid dependee-kind.");
 			break;
 		}
 
@@ -157,25 +157,25 @@ void g_itemDepend(g_item o, db_uint8 kind, g_item dependency, db_uint8 dependenc
 		switch(dependencyKind) {
 		case DB_DECLARED:
 			if (!dependency->onDeclared) {
-				dependency->onDeclared = db_llNew();
+				dependency->onDeclared = cx_llNew();
 			}
-			db_llInsert(dependency->onDeclared, dep);
+			cx_llInsert(dependency->onDeclared, dep);
 			break;
 		case DB_DECLARED | DB_DEFINED:
 			dep->weak = TRUE;
 			/* no break */
 		case DB_DEFINED:
 			if (!dependency->onDefined) {
-				dependency->onDefined = db_llNew();
+				dependency->onDefined = cx_llNew();
 			}
-			db_llInsert(dependency->onDefined, dep);
+			cx_llInsert(dependency->onDefined, dep);
 			break;
 		default:
-			db_assert(0, "invalid dependency-kind.");
+			cx_assert(0, "invalid dependency-kind.");
 			break;
 		}
     } else {
-    	db_error("bootstrap detected while not in ::cortex::lang namespace - database corrupt!");
+    	cx_error("bootstrap detected while not in ::cortex::lang namespace - database corrupt!");
     }
 }
 
@@ -192,19 +192,19 @@ int g_itemResolveDependency(void* o, void* userData) {
         case DB_DECLARED:
             dep->item->declareCount--;
 
-            db_assert(dep->item->declareCount >= 0, "negative declareCount for item '%s'.", db_nameof(dep->item->o));
+            cx_assert(dep->item->declareCount >= 0, "negative declareCount for item '%s'.", cx_nameof(dep->item->o));
 
             if (!dep->item->declareCount) {
-                db_llInsert(data->toPrint, dep->item);
+                cx_llInsert(data->toPrint, dep->item);
             }
             break;
         case DB_DEFINED:
             dep->item->defineCount--;
 
-            db_assert(dep->item->defineCount >= 0, "negative defineCount for item '%s'.", db_nameof(dep->item->o));
+            cx_assert(dep->item->defineCount >= 0, "negative defineCount for item '%s'.", cx_nameof(dep->item->o));
 
             if (!dep->item->defineCount) {
-                db_llInsert(data->toPrint, dep->item);
+                cx_llInsert(data->toPrint, dep->item);
             }
             break;
         }
@@ -226,7 +226,7 @@ static void g_itemDeclare(g_item item, g_itemWalk_t data) {
 static void g_itemDefine(g_item item, g_itemWalk_t data) {
 
     /* VOID objects are defined at the moment of declaration. */
-    if ((db_typeof(item->o)->real->kind != DB_VOID) || (db_typeof(item->o)->real->reference)) {
+    if ((cx_typeof(item->o)->real->kind != DB_VOID) || (cx_typeof(item->o)->real->reference)) {
         if (data->onDefine) {
             data->onDefine(item->o, data->userData);
         }
@@ -246,7 +246,7 @@ static int g_itemPrint(void* o, void* userData) {
         item->declared = TRUE;
         g_itemDeclare(item, data);
         if (item->onDeclared) {
-            db_llWalk(item->onDeclared, g_itemResolveDependency, data);
+            cx_llWalk(item->onDeclared, g_itemResolveDependency, data);
         }
     }
 
@@ -255,7 +255,7 @@ static int g_itemPrint(void* o, void* userData) {
         item->defined = TRUE;
         g_itemDefine(item, data);
         if (item->onDefined) {
-            db_llWalk(item->onDefined, g_itemResolveDependency, data);
+            cx_llWalk(item->onDefined, g_itemResolveDependency, data);
         }
     }
 
@@ -269,18 +269,18 @@ struct g_depWalk_t  {
 };
 
 /* Serialize dependencies on references */
-db_int16 db_genDepReference(db_serializer s, db_value* info, void* userData) {
-    db_object o;
+cx_int16 cx_genDepReference(cx_serializer s, cx_value* info, void* userData) {
+    cx_object o;
     g_depWalk_t data;
 
     DB_UNUSED(s);
 
     data = userData;
-    o = *(db_object*)db_valueValue(info);
+    o = *(cx_object*)cx_valueValue(info);
 
     if (o && g_mustParse(data->data->g, o)) {
         g_item item;
-        db_member m;
+        cx_member m;
 
         m = NULL;
         item = g_itemLookup(o, data->data);
@@ -304,11 +304,11 @@ db_int16 db_genDepReference(db_serializer s, db_value* info, void* userData) {
 }
 
 /* Dependency serializer */
-struct db_serializer_s db_genDepSerializer(void) {
-    struct db_serializer_s s;
+struct cx_serializer_s cx_genDepSerializer(void) {
+    struct cx_serializer_s s;
 
-    db_serializerInit(&s);
-    s.reference = db_genDepReference;
+    cx_serializerInit(&s);
+    s.reference = cx_genDepReference;
     s.access = DB_LOCAL;
     s.accessKind = DB_NOT;
     s.traceKind = DB_SERIALIZER_TRACE_ON_FAIL;
@@ -317,30 +317,30 @@ struct db_serializer_s db_genDepSerializer(void) {
 }
 
 /* Add dependencies for function arguments */
-static int db_genDepBuildProc(g_item item, g_itemWalk_t data) {
-    db_id typeBuff;
-    db_function f;
-    db_uint32 count, i;
-    db_typedef t;
+static int cx_genDepBuildProc(g_item item, g_itemWalk_t data) {
+    cx_id typeBuff;
+    cx_function f;
+    cx_uint32 count, i;
+    cx_typedef t;
     g_item tItem;
 
     /* Walk through parameter types, add them as dependencies */
     f = item->o;
 
-    if (db_procedure(db_typeof(f))->kind != DB_OBSERVER) {
-		count = db_signatureParamCount(db_nameof(f));
+    if (cx_procedure(cx_typeof(f))->kind != DB_OBSERVER) {
+		count = cx_signatureParamCount(cx_nameof(f));
 		for(i=0; i<count; i++) {
-			db_signatureParamType(db_nameof(f), i, typeBuff, NULL);
-			t = db_resolve_ext(NULL, db_parentof(f), typeBuff, FALSE, "Resolve type for parameter in dependency builder");
+			cx_signatureParamType(cx_nameof(f), i, typeBuff, NULL);
+			t = cx_resolve_ext(NULL, cx_parentof(f), typeBuff, FALSE, "Resolve type for parameter in dependency builder");
 			if (!t) {
-				db_error("type '%s' in signature '%s' not found!", typeBuff, db_nameof(item->o));
+				cx_error("type '%s' in signature '%s' not found!", typeBuff, cx_nameof(item->o));
 				goto error;
 			}
 			if (g_mustParse(data->g, t)) {
 				tItem = g_itemLookup(t, data);
 				g_itemDepend(item, DB_DECLARED, tItem, DB_DECLARED | DB_DEFINED); /* The type must be at least declared when the function is declared. */
 			}
-			db_free_ext(NULL, t, "Free resolved parameter type for dependency builder");
+			cx_free_ext(NULL, t, "Free resolved parameter type for dependency builder");
 		}
     }
 
@@ -350,11 +350,11 @@ error:
 }
 
 /* Build dependency-administration for object */
-int db_genDepBuildAction(db_object o, void* userData) {
+int cx_genDepBuildAction(cx_object o, void* userData) {
     g_itemWalk_t data;
     struct g_depWalk_t walkData;
     g_item dependee, type, parent;
-    struct db_serializer_s s;
+    struct cx_serializer_s s;
     int result;
 
     data = userData;
@@ -369,33 +369,33 @@ int db_genDepBuildAction(db_object o, void* userData) {
 		dependee = g_itemLookup(o, data);
 
 		/* Insert type-dependency: object can be declared only after it's type is defined. */
-		if (g_mustParse(data->g, db_typeof(o))) {
-			type = g_itemLookup(db_typeof(o), data);
+		if (g_mustParse(data->g, cx_typeof(o))) {
+			type = g_itemLookup(cx_typeof(o), data);
 			g_itemDepend(dependee, DB_DECLARED, type, DB_DEFINED);
 		}
 
-		if (db_class_instanceof(db_procedure_o, db_typeof(o))) {
+		if (cx_class_instanceof(cx_procedure_o, cx_typeof(o))) {
 			/* Insert base-dependency: methods may only be declared after the base of a class has been defined. */
-			if (db_typeof(o) != db_typedef(db_function_o)) {
-				if (db_class_instanceof(db_class_o, db_parentof(o)) && db_interface(db_parentof(o))->base) {
-				    if (g_mustParse(data->g, db_interface(db_parentof(o))->base)) {
-                        g_item base = g_itemLookup(db_interface(db_parentof(o))->base, data);
+			if (cx_typeof(o) != cx_typedef(cx_function_o)) {
+				if (cx_class_instanceof(cx_class_o, cx_parentof(o)) && cx_interface(cx_parentof(o))->base) {
+				    if (g_mustParse(data->g, cx_interface(cx_parentof(o))->base)) {
+                        g_item base = g_itemLookup(cx_interface(cx_parentof(o))->base, data);
                         g_itemDepend(dependee, DB_DECLARED, base, DB_DEFINED);
 				    }
 				}
 			}
 
 			/* Add dependencies on function parameters - types must be declared before function is declared. */
-			if (db_genDepBuildProc(dependee, data)) {
+			if (cx_genDepBuildProc(dependee, data)) {
 				goto error;
 			}
 		}
 
 		/* Insert dependency on parent */
-		if (db_checkAttr(o, DB_ATTR_SCOPED)) {
-			parent = g_itemLookup(db_parentof(o), data);
+		if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
+			parent = g_itemLookup(cx_parentof(o), data);
 			if (parent && (parent->o != root_o)) { /* Root is always available */
-				switch(db_typedef(db_typeof(o))->real->parentState) {
+				switch(cx_typedef(cx_typeof(o))->real->parentState) {
 				case 0:
 				case DB_DECLARED | DB_DEFINED:
 					/* If it doesn't matter whether the parent is declared or defined, mark
@@ -419,8 +419,8 @@ int db_genDepBuildAction(db_object o, void* userData) {
 		/* Insert dependencies on references in the object-value */
 		walkData.item = dependee;
 		walkData.data = data;
-		s = db_genDepSerializer();
-		if (db_serialize(&s, o, &walkData)) {
+		s = cx_genDepSerializer();
+		if (cx_serialize(&s, o, &walkData)) {
 			goto error;
 		}
 
@@ -441,7 +441,7 @@ int g_itemCollectinitial(void* o, void* userData) {
     data = userData;
 
     if (!item->declareCount) {
-        db_llInsert(data->toPrint, item);
+        cx_llInsert(data->toPrint, item);
     }
 
     return 1;
@@ -452,12 +452,12 @@ int g_itemPrintItems(struct g_itemWalk_t* data) {
     g_item item;
 
     /* Collect initial items */
-    if (!db_llWalk(data->items, g_itemCollectinitial, data)) {
+    if (!cx_llWalk(data->items, g_itemCollectinitial, data)) {
         goto error;
     }
 
     /* Print items */
-    while((item = db_llTakeFirst(data->toPrint))) {
+    while((item = cx_llTakeFirst(data->toPrint))) {
         if (!g_itemPrint(item, data)) {
             goto error;
         }
@@ -471,9 +471,9 @@ error:
 static int g_itemResolveCycles(g_item item, struct g_itemWalk_t* data);
 
 /* Scan stack for occurrence of dependency. */
-db_uint32 g_dependencyOnStack(g_dependency dep, struct g_itemWalk_t* data) {
-    db_uint32 i;
-    db_bool found;
+cx_uint32 g_dependencyOnStack(g_dependency dep, struct g_itemWalk_t* data) {
+    cx_uint32 i;
+    cx_bool found;
 
     i = 0;
     found = FALSE;
@@ -489,7 +489,7 @@ db_uint32 g_dependencyOnStack(g_dependency dep, struct g_itemWalk_t* data) {
 
 /* Resolve cycles for dependency */
 static void g_itemResolveDependencyCycles(g_dependency dep, struct g_itemWalk_t* data) {
-    db_uint32 sp;
+    cx_uint32 sp;
 
     /* If item is already marked, there is no need to investigate it further. */
     if (!dep->marked) {
@@ -497,7 +497,7 @@ static void g_itemResolveDependencyCycles(g_dependency dep, struct g_itemWalk_t*
         if (!(sp = g_dependencyOnStack(dep, data))) {
             data->stack[data->sp] = dep;
             data->sp++;
-            db_assert(data->sp < CYCLE_DEPTH, "stack-bound overflow.");
+            cx_assert(data->sp < CYCLE_DEPTH, "stack-bound overflow.");
 
             /* Forward item and mark it. */
             g_itemResolveCycles(dep->item, data);
@@ -505,7 +505,7 @@ static void g_itemResolveDependencyCycles(g_dependency dep, struct g_itemWalk_t*
             data->sp--;
         /* If a cycle is found, look on the stack for a weak dependency. */
         } else {
-            db_uint32 i;
+            cx_uint32 i;
 
             for(i=sp-1; i<data->sp; i++) {
                 /* Break first weak dependency */
@@ -527,9 +527,9 @@ static void g_itemResolveDependencyCycles(g_dependency dep, struct g_itemWalk_t*
  * are stored as dependency objects with the 'weak' flag set to TRUE.
  */
 static int g_itemResolveCycles(g_item item, struct g_itemWalk_t* data) {
-	db_iter iter;
+	cx_iter iter;
 	g_dependency dep;
-	db_uint32 sp;
+	cx_uint32 sp;
 
 	sp = data->sp;
 
@@ -538,9 +538,9 @@ static int g_itemResolveCycles(g_item item, struct g_itemWalk_t* data) {
 	if (!item->declared && item->onDeclared) {
 
 		/* Walk dependencies */
-		iter = db_llIter(item->onDeclared);
-		while((db_iterHasNext(&iter))) {
-			dep = db_iterNext(&iter);
+		iter = cx_llIter(item->onDeclared);
+		while((cx_iterHasNext(&iter))) {
+			dep = cx_iterNext(&iter);
 			g_itemResolveDependencyCycles(dep, data);
 		}
 	}
@@ -549,9 +549,9 @@ static int g_itemResolveCycles(g_item item, struct g_itemWalk_t* data) {
 	if (!item->defined && item->onDefined) {
 
         /* Walk dependencies */
-        iter = db_llIter(item->onDefined);
-        while((db_iterHasNext(&iter))) {
-            dep = db_iterNext(&iter);
+        iter = cx_llIter(item->onDefined);
+        while((cx_iterHasNext(&iter))) {
+            dep = cx_iterNext(&iter);
             g_itemResolveDependencyCycles(dep, data);
         }
  	}
@@ -561,17 +561,17 @@ static int g_itemResolveCycles(g_item item, struct g_itemWalk_t* data) {
 	return 0;
 }
 
-static int db_genDeclareAction(db_object o, void* userData) {
+static int cx_genDeclareAction(cx_object o, void* userData) {
     g_itemWalk_t data;
     data = userData;
     data->onDeclare(o, data->userData);
     return 1;
 }
 
-static int db_genDefineAction(db_object o, void* userData) {
+static int cx_genDefineAction(cx_object o, void* userData) {
     g_itemWalk_t data;
     data = userData;
-    if (db_typeof(o)->real->kind != DB_VOID) {
+    if (cx_typeof(o)->real->kind != DB_VOID) {
         if (data->onDefine) {
     		data->onDefine(o, data->userData);
         }
@@ -579,52 +579,52 @@ static int db_genDefineAction(db_object o, void* userData) {
     return 1;
 }
 
-int db_genCollectAnonymous(void* o, void* userData) {
-	db_ll list = userData;
+int cx_genCollectAnonymous(void* o, void* userData) {
+	cx_ll list = userData;
 	g_item item = o;
 
-	if (!db_checkAttr(item->o, DB_ATTR_SCOPED)) {
-		db_llInsert(list, item->o);
+	if (!cx_checkAttr(item->o, DB_ATTR_SCOPED)) {
+		cx_llInsert(list, item->o);
 	}
 
 	return 1;
 }
 
 /* Walk objects in correct dependency order. */
-int db_genDepWalk(db_generator g, g_walkAction onDeclare, g_walkAction onDefine, void* userData) {
+int cx_genDepWalk(cx_generator g, g_walkAction onDeclare, g_walkAction onDefine, void* userData) {
     struct g_itemWalk_t walkData;
     g_item item;
-    db_iter iter;
+    cx_iter iter;
 
     /* Prepare walkData */
     walkData.g = g;
-    walkData.items = db_llNew();
-    walkData.toPrint = db_llNew();
+    walkData.items = cx_llNew();
+    walkData.toPrint = cx_llNew();
     walkData.onDeclare = onDeclare;
     walkData.onDefine = onDefine;
     walkData.userData = userData;
 
     /* Build dependency administration */
-    if (!g_walkRecursive(g, db_genDepBuildAction, &walkData)) {
+    if (!g_walkRecursive(g, cx_genDepBuildAction, &walkData)) {
     	if (!walkData.bootstrap) {
-    		db_trace("dependency-builder failed.");
+    		cx_trace("dependency-builder failed.");
     		goto error;
     	} else {
-    		g_walkRecursive(g, db_genDeclareAction, &walkData);
-    		g_walkRecursive(g, db_genDefineAction, &walkData);
+    		g_walkRecursive(g, cx_genDeclareAction, &walkData);
+    		g_walkRecursive(g, cx_genDefineAction, &walkData);
     	}
 
     	/* Cleanup administration */
-    	while((item = db_llTakeFirst(walkData.items))) {
+    	while((item = cx_llTakeFirst(walkData.items))) {
     		g_itemFree(item);
     	}
     } else {
-    	db_ll anonymousObjects = db_llNew();
+    	cx_ll anonymousObjects = cx_llNew();
 
     	/* Build dependency information for anonymous objects */
-    	db_llWalk(walkData.items, db_genCollectAnonymous, anonymousObjects);
-    	db_llWalk(anonymousObjects, db_genDepBuildAction, &walkData);
-    	db_llFree(anonymousObjects);
+    	cx_llWalk(walkData.items, cx_genCollectAnonymous, anonymousObjects);
+    	cx_llWalk(anonymousObjects, cx_genDepBuildAction, &walkData);
+    	cx_llFree(anonymousObjects);
 
 		/* Print initial items */
 		if (g_itemPrintItems(&walkData)) {
@@ -632,9 +632,9 @@ int db_genDepWalk(db_generator g, g_walkAction onDeclare, g_walkAction onDefine,
 		}
 
 		/* Resolve items with cycles */
-		iter = db_llIter(walkData.items);
-		while(db_iterHasNext(&iter)) {
-			item = db_iterNext(&iter);
+		iter = cx_llIter(walkData.items);
+		while(cx_iterHasNext(&iter)) {
+			item = cx_iterNext(&iter);
 
 			/* Process objects that have not yet been defined or declared */
 			if (!item->defined) {
@@ -653,14 +653,14 @@ int db_genDepWalk(db_generator g, g_walkAction onDeclare, g_walkAction onDefine,
 
 
 	    /* Free items and check if there are still undeclared or undefined objects. */
-	    while((item = db_llTakeFirst(walkData.items))) {
+	    while((item = cx_llTakeFirst(walkData.items))) {
 	        if (!item->defined) {
 	            if (!item->declared) {
-	                db_id name;
-	                db_warning("object '%s' has not been declared or defined.", db_fullname(item->o, name));
+	                cx_id name;
+	                cx_warning("object '%s' has not been declared or defined.", cx_fullname(item->o, name));
 	            } else if (!item->defined){
-	                db_id name;
-	                db_warning("object '%s' has not been defined.", db_fullname(item->o, name));
+	                cx_id name;
+	                cx_warning("object '%s' has not been defined.", cx_fullname(item->o, name));
 	            }
 	        }
 	        g_itemFree(item);
@@ -669,8 +669,8 @@ int db_genDepWalk(db_generator g, g_walkAction onDeclare, g_walkAction onDefine,
 
 
     /* Free lists */
-    db_llFree(walkData.toPrint);
-    db_llFree(walkData.items);
+    cx_llFree(walkData.toPrint);
+    cx_llFree(walkData.items);
 
     return 0;
 error:

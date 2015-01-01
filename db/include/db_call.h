@@ -1,5 +1,5 @@
 /*
- * db_call.h
+ * cx_call.h
  *
  *  Created on: Apr 27, 2012
  *      Author: sander
@@ -8,34 +8,34 @@
 #ifndef DB_CALL_H_
 #define DB_CALL_H_
 
-#include "db_object.h"
-#include "db__type.h"
+#include "cx_object.h"
+#include "cx__type.h"
 #include "stdarg.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef void (*db_callHandler)(db_function f, db_void* result, void* args);
-typedef void (*db_callDestructHandler)(db_function f);
-typedef void* (*db_contextSwitchHandler)(void);
-typedef void (*db_contextRestoreHandler)(void*);
-typedef struct db_context_s* db_context;
+typedef void (*cx_callHandler)(cx_function f, cx_void* result, void* args);
+typedef void (*cx_callDestructHandler)(cx_function f);
+typedef void* (*cx_contextSwitchHandler)(void);
+typedef void (*cx_contextRestoreHandler)(void*);
+typedef struct cx_context_s* cx_context;
 
 /* Register binding */
-int db_callRegisterBinding(db_callHandler handler, db_contextSwitchHandler onSwitch, db_contextRestoreHandler onRestore, db_callDestructHandler onDestruct);
+int cx_callRegisterBinding(cx_callHandler handler, cx_contextSwitchHandler onSwitch, cx_contextRestoreHandler onRestore, cx_callDestructHandler onDestruct);
 
 /* Call functions */
-void db_call(db_function f, db_void* result, ...);
-void db_callv(db_function f, db_void* result, va_list args);
-int db_calla(db_function f, db_void* result, db_uint32 argc, void* argv[]);
-void db_callb(db_function f, db_void* result, void* args);
+void cx_call(cx_function f, cx_void* result, ...);
+void cx_callv(cx_function f, cx_void* result, va_list args);
+int cx_calla(cx_function f, cx_void* result, cx_uint32 argc, void* argv[]);
+void cx_callb(cx_function f, cx_void* result, void* args);
 
 /* Binding-specific context-switches */
-db_context db_contextSwitch(db_object object);
-db_object db_contextRestore(db_context context);
+cx_context cx_contextSwitch(cx_object object);
+cx_object cx_contextRestore(cx_context context);
 
-void db_callDestroy(db_function f);
+void cx_callDestroy(cx_function f);
 
 #ifdef __cplusplus
 }

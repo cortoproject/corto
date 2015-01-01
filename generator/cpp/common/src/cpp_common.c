@@ -6,56 +6,56 @@
  */
 
 #include "cpp_common.h"
-#include "db__meta.h"
+#include "cx__meta.h"
 
-db_bool cpp_classToUpper = FALSE;
+cx_bool cpp_classToUpper = FALSE;
 
 /* Function builds a scope-stack from root to module */
 static void
 cpp_scopeStack(
-    db_object module,
-    db_object* stack /* db_object[SD_MAX_SCOPE_DEPTH] */)
+    cx_object module,
+    cx_object* stack /* cx_object[SD_MAX_SCOPE_DEPTH] */)
 {
-    db_uint32 count;
-    db_object ptr;
+    cx_uint32 count;
+    cx_object ptr;
 
-    db_assert(module != NULL, "NULL passed for module to sd_utilModuleStack");
+    cx_assert(module != NULL, "NULL passed for module to sd_utilModuleStack");
 
     /* Count scope depth */
     ptr = module;
     count = 1; /* For self */
-    while((ptr = db_parentof(ptr))) {
+    while((ptr = cx_parentof(ptr))) {
         count++;
     }
 
     if (count > DB_MAX_SCOPE_DEPTH) {
-        db_error("sd_printXmlCollection: unsupported scope-depth (depth=%d, max=%d).", count, DB_MAX_SCOPE_DEPTH);
+        cx_error("sd_printXmlCollection: unsupported scope-depth (depth=%d, max=%d).", count, DB_MAX_SCOPE_DEPTH);
     }
-    db_assert(count <= DB_MAX_SCOPE_DEPTH, "MAX_SCOPE_DEPTH overflow.");
+    cx_assert(count <= DB_MAX_SCOPE_DEPTH, "MAX_SCOPE_DEPTH overflow.");
 
     /* Fill module stack */
     ptr = module;
     while(count) {
         stack[count-1] = ptr;
-        ptr = db_parentof(ptr);
+        ptr = cx_parentof(ptr);
         count--;
     }
 
     /* ptr should be NULL */
-    db_assert(!ptr, "ptr is NULL.");
+    cx_assert(!ptr, "ptr is NULL.");
 }
 
 /* Find first common module in two module-stacks */
-static db_object
+static cx_object
 cpp_commonScope(
-    db_object from,
-    db_object to,
-    db_object* fromStack,
-    db_object* toStack,
-    db_uint32* i_out)
+    cx_object from,
+    cx_object to,
+    cx_object* fromStack,
+    cx_object* toStack,
+    cx_uint32* i_out)
 {
-    db_object fromPtr, toPtr;
-    db_uint32 i;
+    cx_object fromPtr, toPtr;
+    cx_uint32 i;
 
     /* fromPtr and toPtr will initially point to base */
     i = 0;
@@ -75,14 +75,14 @@ cpp_commonScope(
 }
 
 /* Check whether a type translates to a native construct or may act as a C++ namespace */
-db_bool
-cpp_nativeType(db_object o) {
-	db_bool result = FALSE;
+cx_bool
+cpp_nativeType(cx_object o) {
+	cx_bool result = FALSE;
 
-	if (db_class_instanceof(db_type_o, o)) {
-		switch(db_type(o)->kind) {
+	if (cx_class_instanceof(cx_type_o, o)) {
+		switch(cx_type(o)->kind) {
 		case DB_VOID:
-		    if (db_type(o)->reference) {
+		    if (cx_type(o)->reference) {
 		        result = TRUE;
 		    }
 			break;
@@ -99,13 +99,13 @@ cpp_nativeType(db_object o) {
 void
 cpp_openScope(
     g_file file,
-    db_object to)
+    cx_object to)
 {
-    db_object from;
+    cx_object from;
 
     /* Do not open namespaces for non-void type-scopes */
     while(cpp_nativeType(to)) {
-    	to = db_parentof(to);
+    	to = cx_parentof(to);
     }
 
     /* If context->module is NULL, start from root */
@@ -116,9 +116,9 @@ cpp_openScope(
 
     /* If from and to are not equal, find shortest path between modules. */
     if (from != to) {
-        db_object fromStack[DB_MAX_SCOPE_DEPTH], toStack[DB_MAX_SCOPE_DEPTH];
-        db_object fromPtr, toPtr;
-        db_uint32 i;
+        cx_object fromStack[DB_MAX_SCOPE_DEPTH], toStack[DB_MAX_SCOPE_DEPTH];
+        cx_object fromPtr, toPtr;
+        cx_uint32 i;
 
         /* Find common module. First build up a scope-stack for the two modules which
          * are ordered base -> <module>. Then walk through these stacks to find the
@@ -132,12 +132,12 @@ cpp_openScope(
         while(fromPtr != toPtr) {
             g_fileDedent(file);
             g_fileWrite(file, "}\n");
-            fromPtr = db_parentof(fromPtr);
+            fromPtr = cx_parentof(fromPtr);
         }
 
         /* Walk from toPtr to 'to' */
         while(toPtr != to) {
-            db_id id;
+            cx_id id;
             toPtr = toStack[i];
             g_fileWrite(file, "namespace %s {\n", g_oid(g_fileGetGenerator(file), toPtr, id));
             g_fileIndent(file);
@@ -150,10 +150,10 @@ cpp_openScope(
 }
 
 void cpp_closeScope(g_file file) {
-    db_object ptr;
+    cx_object ptr;
 
     if ((ptr = g_fileScopeGet(file))) {
-        while((ptr = db_parentof(ptr))) {
+        while((ptr = cx_parentof(ptr))) {
             g_fileDedent(file);
             g_fileWrite(file, "}\n");
         }
@@ -163,7 +163,7 @@ void cpp_closeScope(g_file file) {
 }
 
 /* Escape language keywords */
-static int cpp_keywordEscape(db_string inputName, db_string buffer) {
+static int cpp_keywordEscape(cx_string inputName, cx_string buffer) {
 
     if ( !strcmp(inputName, "alignas") ||
         !strcmp(inputName, "alignof") ||
@@ -256,9 +256,9 @@ static int cpp_keywordEscape(db_string inputName, db_string buffer) {
     return 0;
 }
 
-db_string cortex_genId(db_string str, db_id id) {
-    db_char *ptr, ch, *bptr;
-    db_id buff;
+cx_string cortex_genId(cx_string str, cx_id id) {
+    cx_char *ptr, ch, *bptr;
+    cx_id buff;
 
     ptr = str;
 
@@ -294,8 +294,8 @@ db_string cortex_genId(db_string str, db_id id) {
 }
 
 /* Get string representing the base-platform type */
-db_char* cpp_primitiveId(db_primitive t, db_char* buff) {
-    db_bool appendWidth, appendT;
+cx_char* cpp_primitiveId(cx_primitive t, cx_char* buff) {
+    cx_bool appendWidth, appendT;
 
     appendWidth = FALSE;
     appendT = FALSE;
@@ -314,8 +314,8 @@ db_char* cpp_primitiveId(db_primitive t, db_char* buff) {
             appendT = TRUE;
             break;
         default: {
-            db_id id;
-            db_error("c_typePrimitivePlatformType: unsupported width for primitive type '%s'.", db_fullname(t, id));
+            cx_id id;
+            cx_error("c_typePrimitivePlatformType: unsupported width for primitive type '%s'.", cx_fullname(t, id));
             goto error;
             break;
         }
@@ -341,8 +341,8 @@ db_char* cpp_primitiveId(db_primitive t, db_char* buff) {
             strcpy(buff, "double");
             break;
         default: {
-            db_id id;
-            db_error("c_typePrimitivePlatformType: unsupported width for floating point type '%s'", db_fullname(t, id));
+            cx_id id;
+            cx_error("c_typePrimitivePlatformType: unsupported width for floating point type '%s'", cx_fullname(t, id));
             goto error;
             break;
         }
@@ -350,14 +350,14 @@ db_char* cpp_primitiveId(db_primitive t, db_char* buff) {
         break;
     case DB_ENUM:
     case DB_BITMASK:
-        db_error("c_typePrimitivePlatformType: enumeration\\bitmasks types must be defined using the 'enum' keyword.");
+        cx_error("c_typePrimitivePlatformType: enumeration\\bitmasks types must be defined using the 'enum' keyword.");
         goto error;
         break;
     case DB_TEXT:
         strcpy(buff, "char*");
         break;
     case DB_ALIAS:
-        strcpy(buff, db_alias(t)->typeName);
+        strcpy(buff, cx_alias(t)->typeName);
         break;
     }
 
@@ -393,8 +393,8 @@ error:
 }
 
 /* Convert string to upper. */
-/*static db_string cpp_toUpper(db_string str, db_id buffer) {
-    db_char *ptr, *bptr, ch;
+/*static cx_string cpp_toUpper(cx_string str, cx_id buffer) {
+    cx_char *ptr, *bptr, ch;
 
     ptr = str;
     bptr = buffer;
@@ -412,60 +412,60 @@ error:
 }*/
 
 /* Translate constant to C++ language id */
-db_char* cpp_constantId(db_generator g, db_constant* c, db_char* buffer) {
+cx_char* cpp_constantId(cx_generator g, cx_constant* c, cx_char* buffer) {
 	DB_UNUSED(g);
 
-    sprintf(buffer, "%s", db_nameof(c));
+    sprintf(buffer, "%s", cx_nameof(c));
 
     return buffer;
 }
 
 /* Parse type into C-specifier */
-db_char* cpp_specifierId(db_generator g, db_typedef t, db_id specifier) {
+cx_char* cpp_specifierId(cx_generator g, cx_typedef t, cx_id specifier) {
 
     /* Check if object is scoped */
-    if (db_checkAttr(t, DB_ATTR_SCOPED)) {
+    if (cx_checkAttr(t, DB_ATTR_SCOPED)) {
         g_fullOid(g, t, specifier);
     } else {
-        if (t != db_typedef(t->real)) {
-            db_error("c_type: anonymous typedefs are not allowed.");
+        if (t != cx_typedef(t->real)) {
+            cx_error("c_type: anonymous typedefs are not allowed.");
             goto error;
         }
 
-        switch(db_type(t)->kind) {
+        switch(cx_type(t)->kind) {
         case DB_PRIMITIVE:
-            cpp_primitiveId(db_primitive(t), specifier);
+            cpp_primitiveId(cx_primitive(t), specifier);
             break;
         case DB_COLLECTION: {
-            db_id _specifier;
-            db_type elementType;
+            cx_id _specifier;
+            cx_type elementType;
             g_idKind prev;
 
             prev = g_setIdKind(g, DB_GENERATOR_ID_CLASS_LOWER);
 
-            elementType = db_collection(t)->elementType->real;
-            switch(db_collection(t)->kind) {
+            elementType = cx_collection(t)->elementType->real;
+            switch(cx_collection(t)->kind) {
             case DB_ARRAY:
                 /* Get specifier of elementType */
-                if (!cpp_specifierId(g, db_collection(t)->elementType, _specifier)) {
+                if (!cpp_specifierId(g, cx_collection(t)->elementType, _specifier)) {
                     goto error;
                 }
-                if ((elementType->kind == DB_COLLECTION) && (db_collection(elementType)->kind == DB_ARRAY)) {
-                    sprintf(specifier, "%s_%d", _specifier, db_collection(t)->max);
+                if ((elementType->kind == DB_COLLECTION) && (cx_collection(elementType)->kind == DB_ARRAY)) {
+                    sprintf(specifier, "%s_%d", _specifier, cx_collection(t)->max);
                 } else {
-                    sprintf(specifier, "%s_array%d", _specifier, db_collection(t)->max);
+                    sprintf(specifier, "%s_array%d", _specifier, cx_collection(t)->max);
                 }
                 break;
             case DB_SEQUENCE:
                 /* Get specifier of elementType */
-                if (!cpp_specifierId(g, db_collection(t)->elementType, _specifier)) {
+                if (!cpp_specifierId(g, cx_collection(t)->elementType, _specifier)) {
                     goto error;
                 }
-                if ((elementType->kind == DB_COLLECTION) && (db_collection(elementType)->kind == DB_SEQUENCE)) {
-                    sprintf(specifier, "%s_%d", _specifier, db_collection(t)->max);
+                if ((elementType->kind == DB_COLLECTION) && (cx_collection(elementType)->kind == DB_SEQUENCE)) {
+                    sprintf(specifier, "%s_%d", _specifier, cx_collection(t)->max);
                 } else {
-                    if (db_collection(t)->max) {
-                        sprintf(specifier, "%s_seq%d", _specifier, db_collection(t)->max);
+                    if (cx_collection(t)->max) {
+                        sprintf(specifier, "%s_seq%d", _specifier, cx_collection(t)->max);
                     } else {
                         sprintf(specifier, "%s_seq", _specifier);
                     }
@@ -483,7 +483,7 @@ db_char* cpp_specifierId(db_generator g, db_typedef t, db_id specifier) {
             break;
         }
         default:
-            db_error("c_type: anonymous type of kind '%s' not allowed.", db_nameof(db_enum_constant(db_typeKind_o, db_type(t)->kind)));
+            cx_error("c_type: anonymous type of kind '%s' not allowed.", cx_nameof(cx_enum_constant(cx_typeKind_o, cx_type(t)->kind)));
             goto error;
             break;
         }
@@ -495,9 +495,9 @@ error:
 }
 
 /* Parse type to Cpp name (for use in declarations) */
-db_char* cpp_specifierDecl(db_generator g, db_typedef t, db_char* specifier) {
-    db_id spec;
-    db_char *ptr;
+cx_char* cpp_specifierDecl(cx_generator g, cx_typedef t, cx_char* specifier) {
+    cx_id spec;
+    cx_char *ptr;
 
     /* Get the complete specifier */
     cpp_specifierId(g, t, spec);
@@ -513,10 +513,10 @@ db_char* cpp_specifierDecl(db_generator g, db_typedef t, db_char* specifier) {
 }
 
 /* Translate a scope to a path */
-db_char* cpp_topath(db_object o, db_id id) {
-	db_uint32 offset;
-	db_char ch, *ptr;
-	db_fullname(o, id);
+cx_char* cpp_topath(cx_object o, cx_id id) {
+	cx_uint32 offset;
+	cx_char ch, *ptr;
+	cx_fullname(o, id);
 
 	ptr = id+2;
 	offset = 2;
@@ -538,9 +538,9 @@ db_char* cpp_topath(db_object o, db_id id) {
 	return id;
 }
 
-static void cpp_escapeParameters(db_char *ptr) {
-	db_char ch;
-	db_uint32 offset = 0;
+static void cpp_escapeParameters(cx_char *ptr) {
+	cx_char ch;
+	cx_uint32 offset = 0;
 	while((ch = *ptr)) {
 		switch(ch) {
 		case '(':
@@ -568,8 +568,8 @@ static void cpp_escapeParameters(db_char *ptr) {
 	*(ptr - offset) = '\0';
 }
 
-const db_char *cpp_metaPostfix(cpp_metaIdKind kind) {\
-	db_char* postfix = NULL;
+const cx_char *cpp_metaPostfix(cpp_metaIdKind kind) {\
+	cx_char* postfix = NULL;
 	switch(kind) {
 	case CPP_DEFAULT:
 		postfix = "";
@@ -581,7 +581,7 @@ const db_char *cpp_metaPostfix(cpp_metaIdKind kind) {\
 		postfix = "_o";
 		break;
 	default:
-		db_assert(0, "invalid metaIdKind (%d)", kind);
+		cx_assert(0, "invalid metaIdKind (%d)", kind);
 		break;
 	}
 
@@ -589,20 +589,20 @@ const db_char *cpp_metaPostfix(cpp_metaIdKind kind) {\
 }
 
 /* Get meta-object identifier */
-db_char* cpp_metaFullname(db_generator g, db_object o, cpp_metaIdKind kind, db_id id) {
-	db_char *ptr;
-	const db_char *postfix;
+cx_char* cpp_metaFullname(cx_generator g, cx_object o, cpp_metaIdKind kind, cx_id id) {
+	cx_char *ptr;
+	const cx_char *postfix;
 	g_idKind prev;
 
 	postfix = cpp_metaPostfix(kind);
 	prev = g_setIdKind(g, DB_GENERATOR_ID_DEFAULT);
 
 	if (o != root_o) {
-		if (cpp_nativeType(db_parentof(o))) {
-		    db_id tmp;
-			g_fullOid(g, db_parentof(db_parentof(o)), id);
+		if (cpp_nativeType(cx_parentof(o))) {
+		    cx_id tmp;
+			g_fullOid(g, cx_parentof(cx_parentof(o)), id);
 			strcat(id, "::");
-			strcat(id, g_oid(g, db_parentof(o), tmp));
+			strcat(id, g_oid(g, cx_parentof(o), tmp));
 			strcat(id, "_");
 			strcat(id, g_oid(g, o, tmp));
 		} else {
@@ -610,7 +610,7 @@ db_char* cpp_metaFullname(db_generator g, db_object o, cpp_metaIdKind kind, db_i
 		}
 
 		if ((ptr = strchr(id, '('))) {
-			if (!db_function(o)->overloaded) {
+			if (!cx_function(o)->overloaded) {
 				*ptr = '\0';
 			} else {
 				cpp_escapeParameters(ptr);
@@ -630,18 +630,18 @@ db_char* cpp_metaFullname(db_generator g, db_object o, cpp_metaIdKind kind, db_i
 }
 
 /* Get meta-object identifier */
-db_char* cpp_metaName(db_generator g, db_object o, cpp_metaIdKind kind, db_id id) {
-	db_char *ptr;
-	const db_char *postfix;
+cx_char* cpp_metaName(cx_generator g, cx_object o, cpp_metaIdKind kind, cx_id id) {
+	cx_char *ptr;
+	const cx_char *postfix;
 	g_idKind prev;
 
 	postfix = cpp_metaPostfix(kind);
 	prev = g_setIdKind(g, DB_GENERATOR_ID_DEFAULT);
 
 	if (o != root_o) {
-        db_id tmp;
-		if (cpp_nativeType(db_parentof(o))) {
-			g_oid(g, db_parentof(o), id);
+        cx_id tmp;
+		if (cpp_nativeType(cx_parentof(o))) {
+			g_oid(g, cx_parentof(o), id);
 			strcat(id, "_");
 			strcat(id, g_oid(g, o, tmp));
 		} else {
@@ -649,7 +649,7 @@ db_char* cpp_metaName(db_generator g, db_object o, cpp_metaIdKind kind, db_id id
 		}
 
 		if ((ptr = strchr(id, '('))) {
-			if (!db_function(o)->overloaded) {
+			if (!cx_function(o)->overloaded) {
 				*ptr = '\0';
 			} else {
 				cpp_escapeParameters(ptr);
@@ -669,8 +669,8 @@ db_char* cpp_metaName(db_generator g, db_object o, cpp_metaIdKind kind, db_id id
 }
 
 /* Get procedure id (without parameterlist */
-db_char* cpp_procId(db_generator g, db_function o, db_id id) {
-    db_char *ptr;
+cx_char* cpp_procId(cx_generator g, cx_function o, cx_id id) {
+    cx_char *ptr;
     g_oid(g, o, id);
     ptr = strchr(id, '(');
     if (ptr) {

@@ -18,10 +18,10 @@ extern "C" {
 tc_AnimalKind tc_Animal_getKind(tc_Animal _this);
 
 /* virtual ::tc_call::Animal::matesWith(::tc_call::Animal m) */
-db_bool tc_Animal_matesWith(tc_Animal _this, tc_Animal m);
+cx_bool tc_Animal_matesWith(tc_Animal _this, tc_Animal m);
 
 /* ::tc_call::Animal::matesWith(::tc_call::Animal m) */
-db_bool tc_Animal_matesWith_v(tc_Animal _this, tc_Animal m);
+cx_bool tc_Animal_matesWith_v(tc_Animal _this, tc_Animal m);
 
 #ifdef __cplusplus
 }

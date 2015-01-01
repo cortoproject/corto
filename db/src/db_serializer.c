@@ -1,17 +1,17 @@
 /*
- * db_serializer.c
+ * cx_serializer.c
  *
  *  Created on: Aug 23, 2012
  *      Author: sander
  */
 
-#include "db_serializer.h"
-#include "db_util.h"
-#include "db_err.h"
-#include "db_object.h"
-#include "db__object.h"
-#include "db__meta.h"
-#include "db__collection.h"
+#include "cx_serializer.h"
+#include "cx_util.h"
+#include "cx_err.h"
+#include "cx_object.h"
+#include "cx__object.h"
+#include "cx__meta.h"
+#include "cx__collection.h"
 #include "db.h"
 
 #include "alloca.h"
@@ -23,17 +23,17 @@ static int indent = 0;
 #endif
 
 /* Forward value to the right callback function */
-db_int16 db_serializeValue(db_serializer _this, db_value* info, void* userData) {
-    db_type t;
-    db_int16 result;
-    db_serializerCallback cb;
+cx_int16 cx_serializeValue(cx_serializer _this, cx_value* info, void* userData) {
+    cx_type t;
+    cx_int16 result;
+    cx_serializerCallback cb;
 
-    t = db_valueType(info)->real;
+    t = cx_valueType(info)->real;
 
     cb = NULL;
 
     if (!_this->initialized) {
-    	db_assert(0, "serializer is not initialized!");
+    	cx_assert(0, "serializer is not initialized!");
     }
 
     if (!_this->constructed) {
@@ -65,12 +65,12 @@ error:
 	return -1;
 }
 
-void db_serializerInit(db_serializer _this) {
-    memset(_this, 0, sizeof(struct db_serializer_s));
-    _this->program[DB_ANY] = db_serializeAny;
-    _this->program[DB_BASE] = db_serializeValue;
-	_this->program[DB_COMPOSITE] = db_serializeMembers;
-	_this->program[DB_COLLECTION] = db_serializeElements;
+void cx_serializerInit(cx_serializer _this) {
+    memset(_this, 0, sizeof(struct cx_serializer_s));
+    _this->program[DB_ANY] = cx_serializeAny;
+    _this->program[DB_BASE] = cx_serializeValue;
+	_this->program[DB_COMPOSITE] = cx_serializeMembers;
+	_this->program[DB_COLLECTION] = cx_serializeElements;
 	_this->initialized = TRUE;
 	_this->constructed = FALSE;
 	_this->access = DB_GLOBAL;
@@ -78,13 +78,13 @@ void db_serializerInit(db_serializer _this) {
 }
 
 /* Start serializing */
-db_int16 db_serialize(db_serializer _this, db_object o, void* userData) {
-    db_value info;
-    db_serializerCallback cb;
-    db_int16 result;
+cx_int16 cx_serialize(cx_serializer _this, cx_object o, void* userData) {
+    cx_value info;
+    cx_serializerCallback cb;
+    cx_int16 result;
     
     if (_this->initialized != TRUE) {
-    	db_assert(0, "serializer is not initialized!");
+    	cx_assert(0, "serializer is not initialized!");
     }
     
     info.kind = DB_OBJECT;
@@ -100,14 +100,14 @@ db_int16 db_serialize(db_serializer _this, db_object o, void* userData) {
     _this->constructed = TRUE;
 
     if (!(cb = _this->metaprogram[DB_OBJECT])) {
-    	cb = db_serializeValue;
+    	cb = cx_serializeValue;
     }
     
 #ifdef DB_SERIALIZER_TRACING
     {
-        db_id id, id2;
+        cx_id id, id2;
         printf("%*sserialize(%s : %s // %s)\n",
-               indent, " ", db_fullname(o, id), db_fullname(db_typeof(o), id2), db_checkState(o, DB_DESTRUCTED)?"destructed":"valid"); fflush(stdout);
+               indent, " ", cx_fullname(o, id), cx_fullname(cx_typeof(o), id2), cx_checkState(o, DB_DESTRUCTED)?"destructed":"valid"); fflush(stdout);
         indent++;
     }
 #endif
@@ -124,7 +124,7 @@ error:
 }
 
 /* Destruct serializerdata */
-db_int16 db_serializeDestruct(db_serializer _this, void* userData) {
+cx_int16 cx_serializeDestruct(cx_serializer _this, void* userData) {
     if (_this->destruct) {
         if (_this->destruct(_this, userData)) {
             goto error;
@@ -134,8 +134,8 @@ error:
     return -1;
 }
 
-db_bool db_serializeMatchAccess(db_operatorKind accessKind, db_modifier sa, db_modifier a) {
-    db_bool result;
+cx_bool cx_serializeMatchAccess(cx_operatorKind accessKind, cx_modifier sa, cx_modifier a) {
+    cx_bool result;
 
     switch(accessKind) {
     case DB_OR:
@@ -148,7 +148,7 @@ db_bool db_serializeMatchAccess(db_operatorKind accessKind, db_modifier sa, db_m
     	result = !(sa & a);
     	break;
     default:
-    	db_error("unsupported operator %s for serializer accessKind.", db_nameof(db_enum_constant(db_operatorKind_o, accessKind)));
+    	cx_error("unsupported operator %s for serializer accessKind.", cx_nameof(cx_enum_constant(cx_operatorKind_o, accessKind)));
     	result = FALSE;
     	break;
     }
@@ -157,51 +157,51 @@ db_bool db_serializeMatchAccess(db_operatorKind accessKind, db_modifier sa, db_m
 }
 
 /* Serialize any-value */
-db_int16 db_serializeAny(db_serializer _this, db_value* info, void* userData) {
-    db_value v;
-    db_any *any;
+cx_int16 cx_serializeAny(cx_serializer _this, cx_value* info, void* userData) {
+    cx_value v;
+    cx_any *any;
 
-    any = db_valueValue(info);
+    any = cx_valueValue(info);
     v.parent = info;
-    db_valueValueInit(&v, db_valueObject(info), (db_typedef)any->type, any->value);
+    cx_valueValueInit(&v, cx_valueObject(info), (cx_typedef)any->type, any->value);
 
-    return db_serializeValue(_this, &v, userData);
+    return cx_serializeValue(_this, &v, userData);
 }
 
 /* Serialize members */
-db_int16 db_serializeMembers(db_serializer _this, db_value* info, void* userData) {
-    db_interface t;
-    db_void* v;
-    db_uint32 i;
-    db_value member;
-    db_member m;
-    db_serializerCallback cb;
-    db_object o;
+cx_int16 cx_serializeMembers(cx_serializer _this, cx_value* info, void* userData) {
+    cx_interface t;
+    cx_void* v;
+    cx_uint32 i;
+    cx_value member;
+    cx_member m;
+    cx_serializerCallback cb;
+    cx_object o;
 
-    t = db_interface(db_valueType(info)->real);
-    v = db_valueValue(info);
-    o = db_valueObject(info);
+    t = cx_interface(cx_valueType(info)->real);
+    v = cx_valueValue(info);
+    o = cx_valueObject(info);
 
 
     /* Process inheritance */
-    if (db_class_instanceof(db_struct_o, t) && db_serializeMatchAccess(_this->accessKind, _this->access, db_struct(t)->baseAccess)) {
-        db_value base;
+    if (cx_class_instanceof(cx_struct_o, t) && cx_serializeMatchAccess(_this->accessKind, _this->access, cx_struct(t)->baseAccess)) {
+        cx_value base;
 
         cb = _this->metaprogram[DB_BASE];
         if (!cb) {
-            cb = db_serializeValue;
+            cb = cx_serializeValue;
         }
 
-        if (db_interface(t)->base) {
+        if (cx_interface(t)->base) {
             base.kind = DB_BASE;
             base.parent = info;
             base.is.base.v = v;
-            base.is.base.t = db_typedef(db_interface(t)->base);
+            base.is.base.t = cx_typedef(cx_interface(t)->base);
             base.is.base.o = o;
 #ifdef DB_SERIALIZER_TRACING
             {
-                db_id id;
-                printf("%*sbase(%s)\n", indent, " ", db_fullname(base.is.base.t, id)); fflush(stdout);
+                cx_id id;
+                printf("%*sbase(%s)\n", indent, " ", cx_fullname(base.is.base.t, id)); fflush(stdout);
 			}
             indent++;
 #endif
@@ -216,13 +216,13 @@ db_int16 db_serializeMembers(db_serializer _this, db_value* info, void* userData
 
     cb = _this->metaprogram[DB_MEMBER];
     if (!cb) {
-        cb = db_serializeValue;
+        cb = cx_serializeValue;
     }
 
     /* Process members */
     for(i=0; i<t->members.length; i++) {
         m = t->members.buffer[i];
-        if (db_serializeMatchAccess(_this->accessKind, _this->access, m->modifiers)) {
+        if (cx_serializeMatchAccess(_this->accessKind, _this->access, m->modifiers)) {
             member.kind = DB_MEMBER;
             member.parent = info;
             member.is.member.o = o;
@@ -230,8 +230,8 @@ db_int16 db_serializeMembers(db_serializer _this, db_value* info, void* userData
             member.is.member.v = DB_OFFSET(v, m->offset);
 #ifdef DB_SERIALIZER_TRACING
             {
-                db_id id, id2;
-                printf("%*smember(%s : %s)\n", indent, " ", db_fullname(m, id2), db_fullname(member.is.member.t->type, id)); fflush(stdout);
+                cx_id id, id2;
+                printf("%*smember(%s : %s)\n", indent, " ", cx_fullname(m, id2), cx_fullname(member.is.member.t->type, id)); fflush(stdout);
 			}
             indent++;
 #endif
@@ -249,27 +249,27 @@ error:
     return -1;
 }
 
-struct db_serializeElement_t {
-    db_serializer _this;
+struct cx_serializeElement_t {
+    cx_serializer _this;
     void* userData;
-    db_value* info;
-    db_serializerCallback cb;
+    cx_value* info;
+    cx_serializerCallback cb;
 };
 
 /* Serialize element */
-int db_serializeElement(void* e, void* userData) {
-    struct db_serializeElement_t* data;
-    db_serializer _this;
-    db_value* info;
-    db_type t;
+int cx_serializeElement(void* e, void* userData) {
+    struct cx_serializeElement_t* data;
+    cx_serializer _this;
+    cx_value* info;
+    cx_type t;
 
     data = userData;
     _this = data->_this;
     info = data->info;
-    t = db_valueType(info->parent)->real;
+    t = cx_valueType(info->parent)->real;
 
     /* Set element value */
-    if ((db_collection(t)->kind == DB_ARRAY) || (db_collection(t)->kind == DB_SEQUENCE)) {
+    if ((cx_collection(t)->kind == DB_ARRAY) || (cx_collection(t)->kind == DB_SEQUENCE)) {
         info->is.element.v = e;
     } else {
         info->is.element.v = e;
@@ -289,18 +289,18 @@ error:
 }
 
 /* Serialize elements */
-db_int16 db_serializeElements(db_serializer _this, db_value* info, void* userData) {
-    struct db_serializeElement_t walkData;
-    db_collection t;
-    db_void* v;
-    db_value elementInfo;
+cx_int16 cx_serializeElements(cx_serializer _this, cx_value* info, void* userData) {
+    struct cx_serializeElement_t walkData;
+    cx_collection t;
+    cx_void* v;
+    cx_value elementInfo;
 
-    t = db_collection(db_valueType(info)->real);
-    v = db_valueValue(info);
+    t = cx_collection(cx_valueType(info)->real);
+    v = cx_valueValue(info);
 
     /* Value object for element */
     elementInfo.kind = DB_ELEMENT;
-    elementInfo.is.element.o = db_valueObject(info);
+    elementInfo.is.element.o = cx_valueObject(info);
     elementInfo.parent = info;
     elementInfo.is.element.t.type = t->elementType;
     elementInfo.is.element.t.index = 0;
@@ -312,11 +312,11 @@ db_int16 db_serializeElements(db_serializer _this, db_value* info, void* userDat
     /* Determine callback now, instead of having to do this in the element callback */
     walkData.cb = _this->metaprogram[DB_ELEMENT];
     if (!walkData.cb) {
-        walkData.cb = db_serializeValue;
+        walkData.cb = cx_serializeValue;
     }
 
     /* Walk elements */
-    if (!db_walk(t, v, db_serializeElement, &walkData)) {
+    if (!cx_walk(t, v, cx_serializeElement, &walkData)) {
         goto error;
     }
 

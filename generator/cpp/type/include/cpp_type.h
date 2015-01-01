@@ -9,7 +9,7 @@
 #define C_TYPE_H_
 
 #include "cortex.h"
-#include "db_generator.h"
+#include "cx_generator.h"
 
 #ifdef __cplusplus
 extern "C" {

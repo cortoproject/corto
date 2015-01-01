@@ -1,5 +1,5 @@
 /*
- * db_string.h
+ * cx_string.h
  *
  *  Created on: Dec 27, 2012
  *      Author: sander

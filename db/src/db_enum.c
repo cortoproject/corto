@@ -1,4 +1,4 @@
-/* db_enum.c
+/* cx_enum.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -7,24 +7,24 @@
  */
 
 #include "db.h"
-#include "db__meta.h"
+#include "cx__meta.h"
 
 /* $header() */
-#include "db__enum.h"
-#include "db__collection.h"
+#include "cx__enum.h"
+#include "cx__collection.h"
 
-db_int16 db__enum_bindConstant(db_enum _this, db_constant* c) {
-	db_rbtree scope;
+cx_int16 cx__enum_bindConstant(cx_enum _this, cx_constant* c) {
+	cx_rbtree scope;
 
-    if (db_checkState(db_type_o, DB_DEFINED)) {
-        scope = db_scopeof(_this);
-        *c = db_rbtreeSize(scope)-1;
+    if (cx_checkState(cx_type_o, DB_DEFINED)) {
+        scope = cx_scopeof(_this);
+        *c = cx_rbtreeSize(scope)-1;
     }
-    _this->constants.buffer = db_realloc(_this->constants.buffer, (_this->constants.length+1) * sizeof(db_constant*));
+    _this->constants.buffer = cx_realloc(_this->constants.buffer, (_this->constants.length+1) * sizeof(cx_constant*));
     _this->constants.buffer[_this->constants.length] = c;
     _this->constants.length++;
     
-    db_keep(c);
+    cx_keep(c);
 
 	return 0;
 }
@@ -32,66 +32,66 @@ db_int16 db__enum_bindConstant(db_enum _this, db_constant* c) {
 
 /* ::cortex::lang::enum::constant(lang::int32 value) */
 /* $header(::cortex::lang::enum::constant) */
-struct db_enum_findConstant_t {
-    db_int32 value;
-    db_constant* o;
+struct cx_enum_findConstant_t {
+    cx_int32 value;
+    cx_constant* o;
 };
 
-static int db_enum_findConstant(void* o, void* udata) {
-    struct db_enum_findConstant_t* userData;
+static int cx_enum_findConstant(void* o, void* udata) {
+    struct cx_enum_findConstant_t* userData;
 
     userData = udata;
-    if (*(db_constant*)o == userData->value) {
+    if (*(cx_constant*)o == userData->value) {
         userData->o = o;
     }
     return userData->o == NULL;
 }
 /* $end */
-db_object db_enum_constant(db_enum _this, db_int32 value) {
+cx_object cx_enum_constant(cx_enum _this, cx_int32 value) {
 /* $begin(::cortex::lang::enum::constant) */
-    db_rbtree scope;
-    struct db_enum_findConstant_t walkData;
+    cx_rbtree scope;
+    struct cx_enum_findConstant_t walkData;
 
     /* Get scope */
-    scope = db_scopeof(_this);
+    scope = cx_scopeof(_this);
 
     /* Walk scope */
     walkData.value = value;
     walkData.o = NULL;
-    db_rbtreeWalk(scope, db_enum_findConstant, &walkData);
+    cx_rbtreeWalk(scope, cx_enum_findConstant, &walkData);
 
     return walkData.o;
 /* $end */
 }
 
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::enum::construct(lang::enum object) */
-db_int16 db_enum_construct(db_enum object) {
+cx_int16 cx_enum_construct(cx_enum object) {
 /* $begin(::cortex::lang::enum::construct) */
-	db_uint32 i;
+	cx_uint32 i;
 
 	/* Define constants */
 	for(i=0; i<object->constants.length; i++) {
-		db_define(object->constants.buffer[i]);
+		cx_define(object->constants.buffer[i]);
 	}
 
-	return db_primitive_construct(db_primitive(object));
+	return cx_primitive_construct(cx_primitive(object));
 /* $end */
 }
 
 /* callback ::cortex::lang::class::destruct(lang::object object) -> ::cortex::lang::enum::destruct(lang::enum object) */
-db_void db_enum_destruct(db_enum object) {
+cx_void cx_enum_destruct(cx_enum object) {
 /* $begin(::cortex::lang::enum::destruct) */
-	db_clear(db_collection(db_objectSeq_o), &object->constants);
-	db_type__destruct(db_type(object));
+	cx_clear(cx_collection(cx_objectSeq_o), &object->constants);
+	cx_type__destruct(cx_type(object));
 /* $end */
 }
 
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::enum::init(lang::enum object) */
-db_int16 db_enum_init(db_enum object) {
+cx_int16 cx_enum_init(cx_enum object) {
 /* $begin(::cortex::lang::enum::init) */
-    db_primitive(object)->kind = DB_ENUM;
-    db_primitive(object)->width = DB_WIDTH_32;
-    db_set(&db_type(object)->defaultType, db_constant_o);
-    return db_primitive_init((db_primitive)object);
+    cx_primitive(object)->kind = DB_ENUM;
+    cx_primitive(object)->width = DB_WIDTH_32;
+    cx_set(&cx_type(object)->defaultType, cx_constant_o);
+    return cx_primitive_init((cx_primitive)object);
 /* $end */
 }

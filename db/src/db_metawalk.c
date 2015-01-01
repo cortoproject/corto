@@ -1,52 +1,52 @@
 /*
- * db_metawalk.c
+ * cx_metawalk.c
 
  *
  *  Created on: Aug 28, 2012
  *      Author: sander
  */
 
-#include "db_metawalk.h"
-#include "db__object.h" /* To mimic an object */
-#include "db_err.h"
-#include "db_util.h"
-#include "db_mem.h"
+#include "cx_metawalk.h"
+#include "cx__object.h" /* To mimic an object */
+#include "cx_err.h"
+#include "cx_util.h"
+#include "cx_mem.h"
 #include "string.h"
 
 /* Do metawalk on type */
-db_int16 db_metaWalk(db_serializer s, db_type type, void* userData) {
-	db__object* o;
-	db_int16 result;
+cx_int16 cx_metaWalk(cx_serializer s, cx_type type, void* userData) {
+	cx__object* o;
+	cx_int16 result;
 
 	/* Instantiate dummy-object */
-	o = db_malloc(sizeof(db__object) + type->size); /* alloca is dangerous here because objects can get large, causing stack overflows. */
-	memset(o, 0, sizeof(db__object) + type->size);
-	o->type = db_typedef(type);
+	o = cx_malloc(sizeof(cx__object) + type->size); /* alloca is dangerous here because objects can get large, causing stack overflows. */
+	memset(o, 0, sizeof(cx__object) + type->size);
+	o->type = cx_typedef(type);
 	o->refcount = 1;
 
-	result = db_serialize(s, DB_OFFSET(o, sizeof(db__object)), userData);
-	db_dealloc(o);
+	result = cx_serialize(s, DB_OFFSET(o, sizeof(cx__object)), userData);
+	cx_dealloc(o);
 
 	return result;
 }
 
 /* Serialize constants of enumeration */
-db_int16 db_serializeConstants(db_serializer s, db_value* v, void* userData) {
-	db_enum t;
-	db_uint32 i;
+cx_int16 cx_serializeConstants(cx_serializer s, cx_value* v, void* userData) {
+	cx_enum t;
+	cx_uint32 i;
 
-	t = db_enum(db_valueType(v)->real);
+	t = cx_enum(cx_valueType(v)->real);
 
 	/* If there is a callback for constants, serialize them */
 	if (s->metaprogram[DB_CONSTANT]) {
-		db_value info;
+		cx_value info;
 		for(i=0; i<t->constants.length; i++) {
 			/* Fill info */
 			info.parent = v;
 			info.kind = DB_CONSTANT;
 			info.is.constant.t = t->constants.buffer[i];
 			info.is.constant.v = NULL;
-			info.is.constant.o = db_valueObject(v);
+			info.is.constant.o = cx_valueObject(v);
 
 			/* Serialize constant */
 			if (s->metaprogram[DB_CONSTANT](s, &info, userData)) {

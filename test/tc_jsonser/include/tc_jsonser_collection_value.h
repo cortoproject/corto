@@ -1,2 +1,2 @@
 
-db_int16 test_ser_collection_value(void);
+cx_int16 test_ser_collection_value(void);

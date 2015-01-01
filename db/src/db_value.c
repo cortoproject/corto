@@ -1,33 +1,33 @@
 /*
- * db_valueue.c
+ * cx_valueue.c
  *
  *  Created on: Aug 23, 2012
  *      Author: sander
  */
 
 /*
- * db_value.c
+ * cx_value.c
  *
  *  Created on: Apr 13, 2012
  *      Author: sander
  */
 
-#include "db_object.h"
-#include "db_value.h"
-#include "db_err.h"
-#include "db_struct.h"
-#include "db_class.h"
-#include "db__meta.h"
-#include "db_mem.h"
+#include "cx_object.h"
+#include "cx_value.h"
+#include "cx_err.h"
+#include "cx_struct.h"
+#include "cx_class.h"
+#include "cx__meta.h"
+#include "cx_mem.h"
 
 #include "string.h"
 
-db_typedef db_valueType(db_value* val) {
-    db_typedef result;
+cx_typedef cx_valueType(cx_value* val) {
+    cx_typedef result;
 
     switch(val->kind) {
     case DB_OBJECT:
-        result = db_typeof(val->is.o);
+        result = cx_typeof(val->is.o);
         break;
     case DB_BASE:
         result = val->is.base.t;
@@ -38,25 +38,25 @@ db_typedef db_valueType(db_value* val) {
     case DB_LITERAL:
     	switch(val->is.literal.kind) {
     	case DB_LITERAL_BOOLEAN:
-    		result = db_typedef(db_bool_o);
+    		result = cx_typedef(cx_bool_o);
     		break;
     	case DB_LITERAL_CHARACTER:
-    		result = db_typedef(db_char_o);
+    		result = cx_typedef(cx_char_o);
     		break;
     	case DB_LITERAL_INTEGER:
-    		result = db_typedef(db_int64_o);
+    		result = cx_typedef(cx_int64_o);
     		break;
     	case DB_LITERAL_UNSIGNED_INTEGER:
-    		result = db_typedef(db_uint64_o);
+    		result = cx_typedef(cx_uint64_o);
     		break;
     	case DB_LITERAL_FLOATING_POINT:
-    		result = db_typedef(db_float64_o);
+    		result = cx_typedef(cx_float64_o);
     		break;
     	case DB_LITERAL_STRING:
-    		result = db_typedef(db_string_o);
+    		result = cx_typedef(cx_string_o);
     		break;
     	default:
-    		db_critical("db_valueType: invalid db_literalKind(%d)", val->is.literal.kind);
+    		cx_critical("cx_valueType: invalid cx_literalKind(%d)", val->is.literal.kind);
     		result = NULL;
     		break;
     	}
@@ -68,7 +68,7 @@ db_typedef db_valueType(db_value* val) {
     	result = val->is.call.t->returnType;
     	break;
     case DB_CONSTANT:
-        result = db_valueType(val->parent);
+        result = cx_valueType(val->parent);
         break;
     case DB_ELEMENT:
         result = val->is.element.t.type;
@@ -77,7 +77,7 @@ db_typedef db_valueType(db_value* val) {
     	result = val->is.mapElement.t.type;
     	break;
     default:
-        db_critical("db_valueType: invalid db_valueKind(%d).", val->kind);
+        cx_critical("cx_valueType: invalid cx_valueKind(%d).", val->kind);
         result = NULL;
         break;
     }
@@ -85,8 +85,8 @@ db_typedef db_valueType(db_value* val) {
     return result;
 }
 
-db_void* db_valueValue(db_value* val) {
-    db_void* result;
+cx_void* cx_valueValue(cx_value* val) {
+    cx_void* result;
     switch(val->kind) {
     case DB_OBJECT:
         result = val->is.o;
@@ -116,15 +116,15 @@ db_void* db_valueValue(db_value* val) {
     	result = val->is.mapElement.v;
     	break;
     default:
-        db_critical("db_valueValue: invalid db_valueKind(%d).", val->kind);
+        cx_critical("cx_valueValue: invalid cx_valueKind(%d).", val->kind);
         result = NULL;
         break;
     }
     return result;
 }
 
-db_object db_valueObject(db_value* val) {
-    db_object result;
+cx_object cx_valueObject(cx_value* val) {
+    cx_object result;
 
     switch(val->kind) {
     case DB_OBJECT:
@@ -155,23 +155,23 @@ db_object db_valueObject(db_value* val) {
     	result = val->is.mapElement.o;
     	break;
     default:
-        db_critical("db_valueObject: invalid db_valueKind(%d).", val->kind);
+        cx_critical("cx_valueObject: invalid cx_valueKind(%d).", val->kind);
         result = NULL;
         break;
     }
     return result;
 }
 
-db_function db_valueFunction(db_value* val) {
-    db_function result;
+cx_function cx_valueFunction(cx_value* val) {
+    cx_function result;
 
     switch(val->kind) {
     case DB_OBJECT:
-        if (db_class_instanceof(db_procedure_o, db_typeof(val->is.o))) {
+        if (cx_class_instanceof(cx_procedure_o, cx_typeof(val->is.o))) {
             result = val->is.o;
         } else {
-            db_id id;
-            db_error("object '%s' in value is not a function", db_fullname(val->is.o, id));
+            cx_id id;
+            cx_error("object '%s' in value is not a function", cx_fullname(val->is.o, id));
             result = NULL;
         }
         break;
@@ -179,7 +179,7 @@ db_function db_valueFunction(db_value* val) {
         result = val->is.call.t;
         break;
     default:
-       db_error("value does not represent a function");
+       cx_error("value does not represent a function");
        result = NULL;
        break;
     }
@@ -187,33 +187,33 @@ db_function db_valueFunction(db_value* val) {
     return result;
 }
 
-db_uint32 db_valueIndex(db_value* val) {
-    db_uint32 result = 0;
+cx_uint32 cx_valueIndex(cx_value* val) {
+    cx_uint32 result = 0;
     switch(val->kind) {
     case DB_ELEMENT:
         result = val->is.element.t.index;
         break;
     default:
-        db_error("cannot obtain index from non-element value");
+        cx_error("cannot obtain index from non-element value");
         break;
     }
     return result;
 }
 
-db_void *db_valueThis(db_value* val) {
-    db_void *result;
+cx_void *cx_valueThis(cx_value* val) {
+    cx_void *result;
 
     switch(val->kind) {
     case DB_CALL:
         if (val->parent) {
-            result = db_valueValue(val->parent);
+            result = cx_valueValue(val->parent);
         } else {
-            db_critical("valuestack corrupt (cannot obtain this)");
+            cx_critical("valuestack corrupt (cannot obtain this)");
             result = NULL;
         }
         break;
     default:
-        db_error("value does not represent a method");
+        cx_error("value does not represent a method");
         result = NULL;
         break;
     }
@@ -221,27 +221,27 @@ db_void *db_valueThis(db_value* val) {
     return result;
 }
 
-static char* db_valueKindString[DB_CONSTANT+1] = {"object", "base", "member", "constant", "element"};
+static char* cx_valueKindString[DB_CONSTANT+1] = {"object", "base", "member", "constant", "element"};
 
-char* db_valueString(db_value* v, char* buffer, unsigned int length) {
-    db_id object_name;
-    db_member m;
-    db_value* parents[DB_MAX_TYPE_DEPTH];
-    db_int32 parentCount, i;
-    db_value* vptr;
+char* cx_valueString(cx_value* v, char* buffer, unsigned int length) {
+    cx_id object_name;
+    cx_member m;
+    cx_value* parents[DB_MAX_TYPE_DEPTH];
+    cx_int32 parentCount, i;
+    cx_value* vptr;
 
     if (length < (strlen("ELEMENT") + 3)) {
-        db_error("buffer passed to db_valueString is too short.");
+        cx_error("buffer passed to cx_valueString is too short.");
         goto error;
     }
 
     /* Put label in buffer */
-    sprintf(buffer, "%s ", db_valueKindString[v->kind]);
+    sprintf(buffer, "%s ", cx_valueKindString[v->kind]);
 
     /* Get name of object */
-    db_fullname(db_valueObject(v), object_name);
+    cx_fullname(cx_valueObject(v), object_name);
     if ((strlen(buffer) + (strlen(object_name) + 2 + 1)) >= length) {
-        db_error("buffer passed to db_valueString is too short for object name.");
+        cx_error("buffer passed to cx_valueString is too short for object name.");
         goto error;
     }
 
@@ -277,16 +277,16 @@ char* db_valueString(db_value* v, char* buffer, unsigned int length) {
             m = NULL;
             break;
         default:
-            db_trace("db_valueString: unhandled '%s'", db_valueKindString[vptr->kind]);
+            cx_trace("cx_valueString: unhandled '%s'", cx_valueKindString[vptr->kind]);
             m = NULL;
             break;
         }
         if (m) {
-            if ((strlen(buffer) + strlen(db_nameof(m)) + 1) >= length) {
-                db_error("buffer passed to db_valueString is too short for member name");
+            if ((strlen(buffer) + strlen(cx_nameof(m)) + 1) >= length) {
+                cx_error("buffer passed to cx_valueString is too short for member name");
             } else {
                 strcat(buffer, ".");
-                strcat(buffer, db_nameof(m));
+                strcat(buffer, cx_nameof(m));
             }
         }
     }
@@ -296,11 +296,11 @@ error:
     return NULL;
 }
 
-char* db_valueExpr(db_value* v, char* buffer, unsigned int length) {
-    db_member m;
-    db_value* parents[DB_MAX_TYPE_DEPTH];
-    db_int32 parentCount, i;
-    db_value* vptr;
+char* cx_valueExpr(cx_value* v, char* buffer, unsigned int length) {
+    cx_member m;
+    cx_value* parents[DB_MAX_TYPE_DEPTH];
+    cx_int32 parentCount, i;
+    cx_value* vptr;
 
     *buffer = '\0';
 
@@ -332,16 +332,16 @@ char* db_valueExpr(db_value* v, char* buffer, unsigned int length) {
             m = NULL;
             break;
         default:
-            db_trace("db_valueExpr: unhandled '%s'", db_valueKindString[vptr->kind]);
+            cx_trace("cx_valueExpr: unhandled '%s'", cx_valueKindString[vptr->kind]);
             m = NULL;
             goto error;
         }
         if (m) {
-            if ((strlen(buffer) + strlen(db_nameof(m)) + 1) >= length) {
-                db_error("buffer passed to db_valueString is too short for member name");
+            if ((strlen(buffer) + strlen(cx_nameof(m)) + 1) >= length) {
+                cx_error("buffer passed to cx_valueString is too short for member name");
             } else {
                 strcat(buffer, ".");
-                strcat(buffer, db_nameof(m));
+                strcat(buffer, cx_nameof(m));
             }
         }
     }
@@ -351,42 +351,42 @@ error:
     return NULL;
 }
 
-void db_valueObjectInit(db_value* val, db_object o) {
+void cx_valueObjectInit(cx_value* val, cx_object o) {
     val->kind = DB_OBJECT;
     val->is.o = o;
 }
 
-void db_valueBaseInit(db_value* val, db_void *v, db_typedef t) {
+void cx_valueBaseInit(cx_value* val, cx_void *v, cx_typedef t) {
     val->kind = DB_BASE;
     val->is.base.v = v;
     val->is.base.t = t;
 }
 
-void db_valueValueInit(db_value* val, db_object o, db_typedef t, db_void* v) {
+void cx_valueValueInit(cx_value* val, cx_object o, cx_typedef t, cx_void* v) {
     val->parent = NULL;
     val->kind = DB_VALUE;
     val->is.value.o = o;
     val->is.value.t = t;
     val->is.value.v = v;
 }
-void db_valueMemberInit(db_value* val, db_object o, db_member t, db_void* v) {
+void cx_valueMemberInit(cx_value* val, cx_object o, cx_member t, cx_void* v) {
     val->kind = DB_MEMBER;
     val->is.member.o = o;
     val->is.member.t = t;
     val->is.member.v = v;
 }
-void db_valueCallInit(db_value* val, db_object o, db_function t) {
+void cx_valueCallInit(cx_value* val, cx_object o, cx_function t) {
     val->kind = DB_CALL;
     val->is.call.o = o;
     val->is.call.t = t;
 }
-void db_valueConstantInit(db_value* val, db_object o, db_constant* t, db_void* v) {
+void cx_valueConstantInit(cx_value* val, cx_object o, cx_constant* t, cx_void* v) {
     val->kind = DB_CONSTANT;
     val->is.constant.o = o;
     val->is.constant.t = t;
     val->is.constant.v = v;
 }
-void db_valueElementInit(db_value* val, db_object o, db_typedef t, db_uint32 index, db_void* v) {
+void cx_valueElementInit(cx_value* val, cx_object o, cx_typedef t, cx_uint32 index, cx_void* v) {
     val->kind = DB_ELEMENT;
     val->is.element.o = o;
     val->is.element.t.type = t;
@@ -394,7 +394,7 @@ void db_valueElementInit(db_value* val, db_object o, db_typedef t, db_uint32 ind
     val->is.element.v = v;
 }
 
-void db_valueMapElementInit(db_value* val, db_object o, db_typedef t, db_typedef keyType, db_void *key, db_void* v) {
+void cx_valueMapElementInit(cx_value* val, cx_object o, cx_typedef t, cx_typedef keyType, cx_void *key, cx_void* v) {
     val->kind = DB_MAP_ELEMENT;
     val->is.mapElement.o = o;
     val->is.mapElement.t.type = t;
@@ -403,29 +403,29 @@ void db_valueMapElementInit(db_value* val, db_object o, db_typedef t, db_typedef
     val->is.mapElement.v = v;
 }
 
-void db_valueLiteralInit(db_value* val, db_literalKind kind, db_void* value) {
+void cx_valueLiteralInit(cx_value* val, cx_literalKind kind, cx_void* value) {
 	val->kind = DB_LITERAL;
 	val->is.literal.kind = kind;
 
 	switch(kind) {
 	case DB_LITERAL_BOOLEAN:
-		val->is.literal.v._boolean = *(db_bool*)value;
+		val->is.literal.v._boolean = *(cx_bool*)value;
 		break;
 	case DB_LITERAL_CHARACTER:
-		val->is.literal.v._character = *(db_char*)value;
+		val->is.literal.v._character = *(cx_char*)value;
 		break;
 	case DB_LITERAL_INTEGER:
-		val->is.literal.v._integer = *(db_int64*)value;
+		val->is.literal.v._integer = *(cx_int64*)value;
 		break;
 	case DB_LITERAL_UNSIGNED_INTEGER:
-		val->is.literal.v._unsigned_integer = *(db_uint64*)value;
+		val->is.literal.v._unsigned_integer = *(cx_uint64*)value;
 		break;
 	case DB_LITERAL_FLOATING_POINT:
-		val->is.literal.v._floating_point = *(db_float64*)value;
+		val->is.literal.v._floating_point = *(cx_float64*)value;
 		break;
 	case DB_LITERAL_STRING:
-		if (*(db_string*)value) {
-			val->is.literal.v._string = db_strdup(*(db_string*)value);
+		if (*(cx_string*)value) {
+			val->is.literal.v._string = cx_strdup(*(cx_string*)value);
 		} else {
 			val->is.literal.v._string = NULL;
 		}
@@ -435,7 +435,7 @@ void db_valueLiteralInit(db_value* val, db_literalKind kind, db_void* value) {
 	}
 }
 
-void db_valueSetValue(db_value* val, db_void* v) {
+void cx_valueSetValue(cx_value* val, cx_void* v) {
 	switch(val->kind) {
 	case DB_OBJECT:
 		val->is.o = v; /* Dangerous, but allowed */
@@ -456,17 +456,17 @@ void db_valueSetValue(db_value* val, db_void* v) {
 		val->is.mapElement.v = v;
 		break;
 	default:
-		db_assert(0, "db_valueSetValue: invalid valueKind %d.", val->kind);
+		cx_assert(0, "cx_valueSetValue: invalid valueKind %d.", val->kind);
 		break;
 	}
 }
 
-void db_valueFree(db_value* val) {
+void cx_valueFree(cx_value* val) {
     switch(val->kind) {
     case DB_LITERAL:
         switch(val->is.literal.kind) {
         case DB_LITERAL_STRING:
-            db_dealloc(val->is.literal.v._string);
+            cx_dealloc(val->is.literal.v._string);
             break;
         default:
             break;
@@ -477,10 +477,10 @@ void db_valueFree(db_value* val) {
     }
 }
 
-void db_valueStackFree(db_value* valueStack, db_uint32 count) {
-    db_uint32 i;
+void cx_valueStackFree(cx_value* valueStack, cx_uint32 count) {
+    cx_uint32 i;
     for(i=0; i<count; i++) {
-        db_valueFree(&valueStack[i]);
+        cx_valueFree(&valueStack[i]);
     }
 }
 

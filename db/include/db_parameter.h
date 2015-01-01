@@ -1,17 +1,17 @@
-/* db_parameter.h
+/* cx_parameter.h
  *
  * This file contains generated code. Do not modify!
  */
 
-#ifndef db_parameter_H
-#define db_parameter_H
+#ifndef cx_parameter_H
+#define cx_parameter_H
 
 #include "cortex.h"
-#include "db__type.h"
+#include "cx__type.h"
 
-#include "db__api.h"
+#include "cx__api.h"
 
-#include "db__meta.h"
+#include "cx__meta.h"
 
 #ifdef __cplusplus
 extern "C" {

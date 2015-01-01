@@ -1,24 +1,24 @@
-/* db_metaprocedure.h
+/* cx_metaprocedure.h
  *
  * This file contains generated code. Do not modify!
  */
 
-#ifndef db_metaprocedure_H
-#define db_metaprocedure_H
+#ifndef cx_metaprocedure_H
+#define cx_metaprocedure_H
 
 #include "cortex.h"
-#include "db__type.h"
+#include "cx__type.h"
 
-#include "db__api.h"
+#include "cx__api.h"
 
-#include "db__meta.h"
+#include "cx__meta.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* callback ::cortex::lang::procedure::bind(lang::object object) -> ::cortex::lang::metaprocedure::bind(lang::metaprocedure object) */
-db_int16 db_metaprocedure_bind(db_metaprocedure object);
+cx_int16 cx_metaprocedure_bind(cx_metaprocedure object);
 
 #ifdef __cplusplus
 }

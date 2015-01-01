@@ -1,73 +1,73 @@
-#include "db_copy_ser.h"
-#include "db__object.h"
-#include "db_mem.h"
-#include "db_util.h"
-#include "db_err.h"
+#include "cx_copy_ser.h"
+#include "cx__object.h"
+#include "cx_mem.h"
+#include "cx_util.h"
+#include "cx_err.h"
 
 #include "string.h"
 
-static db_int16 db_ser_primitive(db_serializer s, db_value *info, void *userData) {
-    db_type type = db_valueType(info)->real;
-    db_copy_ser_t *data = userData;
-    void *_this = db_valueValue(info);
-    void *value = (void*)((db_word)db_valueValue(&data->value) + ((db_word)_this - (db_word)data->base));
+static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData) {
+    cx_type type = cx_valueType(info)->real;
+    cx_copy_ser_t *data = userData;
+    void *_this = cx_valueValue(info);
+    void *value = (void*)((cx_word)cx_valueValue(&data->value) + ((cx_word)_this - (cx_word)data->base));
     
     DB_UNUSED(s);
     
-    if (db_primitive(type)->kind != DB_TEXT) {
+    if (cx_primitive(type)->kind != DB_TEXT) {
         memcpy(value, _this, type->size);
     } else {
-        *(db_string*)value = db_strdup(*(db_string*)_this);
+        *(cx_string*)value = cx_strdup(*(cx_string*)_this);
     }
     
     return 0;
 }
 
-static db_int16 db_ser_reference(db_serializer s, db_value *info, void *userData) {
-    db_copy_ser_t *data = userData;
-    void *_this = db_valueValue(info);
-    void *value = (void*)((db_word)db_valueValue(&data->value) + ((db_word)_this - (db_word)data->base));
+static cx_int16 cx_ser_reference(cx_serializer s, cx_value *info, void *userData) {
+    cx_copy_ser_t *data = userData;
+    void *_this = cx_valueValue(info);
+    void *value = (void*)((cx_word)cx_valueValue(&data->value) + ((cx_word)_this - (cx_word)data->base));
     DB_UNUSED(s);
  
-    db_set(value, *(db_object*)_this);
+    cx_set(value, *(cx_object*)_this);
     
     return 0;
 }
 
 /* Deinit element */
-void db_collection_deinitElement(db_collection t, void *ptr) {
-    db_value v;
-    if (db_collection_elementRequiresAlloc(t)) {
-        db_valueValueInit(&v, NULL, db_typedef(t->elementType), ptr);
+void cx_collection_deinitElement(cx_collection t, void *ptr) {
+    cx_value v;
+    if (cx_collection_elementRequiresAlloc(t)) {
+        cx_valueValueInit(&v, NULL, cx_typedef(t->elementType), ptr);
     } else {
-        db_valueValueInit(&v, NULL, db_typedef(t->elementType), &ptr);
+        cx_valueValueInit(&v, NULL, cx_typedef(t->elementType), &ptr);
     }
-    db_deinitValue(&v);
+    cx_deinitValue(&v);
 }
 
-static db_int16 db_collection_copyListToArray(db_collection t, void *array, db_uint32 elementSize, db_ll list, db_bool reverse) {
-    db_equalityKind result = 0;
-    db_uint32 i=0;
-    db_iter iter;
+static cx_int16 cx_collection_copyListToArray(cx_collection t, void *array, cx_uint32 elementSize, cx_ll list, cx_bool reverse) {
+    cx_equalityKind result = 0;
+    cx_uint32 i=0;
+    cx_iter iter;
     void *e1, *e2;
-    db_type elementType = t->elementType->real;
-    db_any v1, v2;
+    cx_type elementType = t->elementType->real;
+    cx_any v1, v2;
     
-    iter = db_llIter(list);
-    while(db_iterHasNext(&iter)) {
-        if (db_collection_elementRequiresAlloc(t)) {
-            e2 = db_iterNext(&iter);
+    iter = cx_llIter(list);
+    while(cx_iterHasNext(&iter)) {
+        if (cx_collection_elementRequiresAlloc(t)) {
+            e2 = cx_iterNext(&iter);
         } else {
-            e2 = db_iterNextPtr(&iter);
+            e2 = cx_iterNextPtr(&iter);
         }
         e1 = DB_OFFSET(array, elementSize * i);
         v1.type = v2.type = elementType;
         v1.value = e1;
         v2.value = e2;
         if (!reverse) {
-            result = db_type_copy(v1, v2);
+            result = cx_type_copy(v1, v2);
         } else {
-            result = db_type_copy(v2, v1);
+            result = cx_type_copy(v2, v1);
         }
         i++;
     }
@@ -76,95 +76,95 @@ static db_int16 db_collection_copyListToArray(db_collection t, void *array, db_u
 }
 
 /* TODO: should new elements be initialized? Should all elements be deinitialized first and then initialized? */
-static db_int16 db_collection_copyListToList(db_collection t, db_ll list1, db_ll list2) {
-    db_equalityKind result = 0;
-    db_iter iter1, iter2;
+static cx_int16 cx_collection_copyListToList(cx_collection t, cx_ll list1, cx_ll list2) {
+    cx_equalityKind result = 0;
+    cx_iter iter1, iter2;
     void *e1, *e2;
-    db_type elementType = t->elementType->real;
-    db_any v1, v2;
+    cx_type elementType = t->elementType->real;
+    cx_any v1, v2;
 
-    iter1 = db_llIter(list1);
-    iter2 = db_llIter(list2);
-    while(db_iterHasNext(&iter1) && db_iterHasNext(&iter2)) {
-        if (db_collection_elementRequiresAlloc(t)) {
-            e1 = db_iterNext(&iter1);
-            e2 = db_iterNext(&iter2);
+    iter1 = cx_llIter(list1);
+    iter2 = cx_llIter(list2);
+    while(cx_iterHasNext(&iter1) && cx_iterHasNext(&iter2)) {
+        if (cx_collection_elementRequiresAlloc(t)) {
+            e1 = cx_iterNext(&iter1);
+            e2 = cx_iterNext(&iter2);
         } else {
-            e1 = db_iterNextPtr(&iter1);
-            e2 = db_iterNextPtr(&iter2);
+            e1 = cx_iterNextPtr(&iter1);
+            e2 = cx_iterNextPtr(&iter2);
         }
         v1.type = v2.type = elementType;
         v1.value = e1;
         v2.value = e2;
         
-        result = db_type_copy(v1, v2);
+        result = cx_type_copy(v1, v2);
     }
     
     return result;
 }
 
 /* Resize list */
-static void db_collection_resizeList(db_collection t, db_ll list, db_uint32 size) {
-    db_uint32 ownSize = db_llSize(list);
-    db_type elementType = t->elementType->real;
+static void cx_collection_resizeList(cx_collection t, cx_ll list, cx_uint32 size) {
+    cx_uint32 ownSize = cx_llSize(list);
+    cx_type elementType = t->elementType->real;
     
     /* If there are more elements in the destination, remove superfluous elements */
     if (ownSize > size) {
-        db_uint32 i;
+        cx_uint32 i;
         void *ptr;
         for(i=size; i<ownSize; i++) {
-            ptr = db_llTakeFirst(list);
-            db_collection_deinitElement(t, ptr);
+            ptr = cx_llTakeFirst(list);
+            cx_collection_deinitElement(t, ptr);
         }
         /* If there are less elements in the destination, add new elements */
     } else if (ownSize < size) {
-        db_uint32 i;
+        cx_uint32 i;
         for(i=ownSize; i<size; i++) {
             void *ptr = NULL;
-            if (db_collection_elementRequiresAlloc(t)) {
-                ptr = db_calloc(elementType->size);
+            if (cx_collection_elementRequiresAlloc(t)) {
+                ptr = cx_calloc(elementType->size);
             }
-            db_llInsert(list, ptr);
+            cx_llInsert(list, ptr);
         }
     }
 }
 
 
 /* Resize list */
-static void db_collection_resizeArray(db_collection t, void* sequence, db_uint32 size) {
+static void cx_collection_resizeArray(cx_collection t, void* sequence, cx_uint32 size) {
     /* Only sequences can be resized */
     if (t->kind == DB_SEQUENCE) {
-        db_uint32 ownSize = ((db_objectSeq*)sequence)->length;
-        db_type elementType = t->elementType->real;
+        cx_uint32 ownSize = ((cx_objectSeq*)sequence)->length;
+        cx_type elementType = t->elementType->real;
         
         /* If there are more elements in the destination, remove superfluous elements */
         if (ownSize > size) {
-            db_uint32 i;
+            cx_uint32 i;
             for(i=size; i<ownSize; i++) {
-                db_collection_deinitElement(t, DB_OFFSET(((db_objectSeq*)sequence)->buffer, elementType->size * i));
+                cx_collection_deinitElement(t, DB_OFFSET(((cx_objectSeq*)sequence)->buffer, elementType->size * i));
             }
             /* Reallocate buffer */
-            ((db_objectSeq*)sequence)->buffer = db_realloc(((db_objectSeq*)sequence)->buffer, elementType->size * size);
+            ((cx_objectSeq*)sequence)->buffer = cx_realloc(((cx_objectSeq*)sequence)->buffer, elementType->size * size);
             
             /* If there are less elements in the destination, add new elements */
         } else if (ownSize < size) {
             /* Reallocate buffer */
-            ((db_objectSeq*)sequence)->buffer = db_realloc(((db_objectSeq*)sequence)->buffer, elementType->size * size);
+            ((cx_objectSeq*)sequence)->buffer = cx_realloc(((cx_objectSeq*)sequence)->buffer, elementType->size * size);
             
             /* Memset new memory */
-            memset(DB_OFFSET(((db_objectSeq*)sequence)->buffer, elementType->size * ownSize), 0, (size - ownSize) * elementType->size);
+            memset(DB_OFFSET(((cx_objectSeq*)sequence)->buffer, elementType->size * ownSize), 0, (size - ownSize) * elementType->size);
         }
-        ((db_objectSeq*)sequence)->length = size;
+        ((cx_objectSeq*)sequence)->length = size;
     }
 }
 
 /* Copy collections */
-static db_int16 db_ser_collection(db_serializer s, db_value *info, void* userData) {
-    db_type t1, t2;
+static cx_int16 cx_ser_collection(cx_serializer s, cx_value *info, void* userData) {
+    cx_type t1, t2;
     void *v1, *v2;
-    db_uint32 size1;
-    db_copy_ser_t *data = userData;
-    db_uint32 result = 0;
+    cx_uint32 size1;
+    cx_copy_ser_t *data = userData;
+    cx_uint32 result = 0;
     
     DB_UNUSED(s);
     
@@ -172,53 +172,53 @@ static db_int16 db_ser_collection(db_serializer s, db_value *info, void* userDat
      * base-object was a collection, the collection type can be different. When the base-object
      * was a composite type, the collection type has to be equal, since different composite
      * types are considered non-comparable. */
-    t1 = db_valueType(info)->real;
-    v1 = db_valueValue(info);
+    t1 = cx_valueType(info)->real;
+    v1 = cx_valueValue(info);
     
     /* Verify whether current serialized object is the base-object */
     if (info->parent) {
         t2 = t1;
-        v2 = (void*)((db_word)db_valueValue(&data->value) + ((db_word)v1 - (db_word)data->base));
+        v2 = (void*)((cx_word)cx_valueValue(&data->value) + ((cx_word)v1 - (cx_word)data->base));
     } else {
-        t2 = db_valueType(&data->value)->real;
-        v2 = db_valueValue(&data->value);
+        t2 = cx_valueType(&data->value)->real;
+        v2 = cx_valueValue(&data->value);
     }
     
     {
         void *array1=NULL, *array2=NULL;
-        db_ll list1=NULL, list2=NULL;
-        db_uint32 elementSize=0;
+        cx_ll list1=NULL, list2=NULL;
+        cx_uint32 elementSize=0;
         
-        elementSize = db_type_sizeof(db_collection(t1)->elementType->real);
+        elementSize = cx_type_sizeof(cx_collection(t1)->elementType->real);
         
-        switch(db_collection(t1)->kind) {
+        switch(cx_collection(t1)->kind) {
             case DB_ARRAY:
                 array1 = v1;
-                elementSize = db_type_sizeof(db_collection(t1)->elementType->real);
-                size1 = db_collection(t1)->max;
+                elementSize = cx_type_sizeof(cx_collection(t1)->elementType->real);
+                size1 = cx_collection(t1)->max;
                 break;
             case DB_SEQUENCE:
-                array1 = ((db_objectSeq*)v1)->buffer;
-                elementSize = db_type_sizeof(db_collection(t1)->elementType->real);
-                size1 = ((db_objectSeq*)v1)->length;
+                array1 = ((cx_objectSeq*)v1)->buffer;
+                elementSize = cx_type_sizeof(cx_collection(t1)->elementType->real);
+                size1 = ((cx_objectSeq*)v1)->length;
                 break;
             case DB_LIST:
-                list1 = *(db_ll*)v1;
-                size1 = db_llSize(list1);
+                list1 = *(cx_ll*)v1;
+                size1 = cx_llSize(list1);
                 break;
             case DB_MAP:
                 break;
         }
         
-        switch(db_collection(t2)->kind) {
+        switch(cx_collection(t2)->kind) {
             case DB_ARRAY:
                 array2 = v2;
                 break;
             case DB_SEQUENCE:
-                array2 = ((db_objectSeq*)v2)->buffer;
+                array2 = ((cx_objectSeq*)v2)->buffer;
                 break;
             case DB_LIST:
-                list2 = *(db_ll*)v2;
+                list2 = *(cx_ll*)v2;
                 break;
             case DB_MAP:
                 break;
@@ -226,25 +226,25 @@ static db_int16 db_ser_collection(db_serializer s, db_value *info, void* userDat
         
         if (array1) {
             if (array2) {
-                db_copy_ser_t privateData;
+                cx_copy_ser_t privateData;
                                 
                 /* This is a bit tricky: I'm passing the pointer to what is potentially a sequence-buffer
                  * while I provide a sequence type. */
-                db_valueValueInit(&privateData.value, NULL, db_typedef(t2), array2);
+                cx_valueValueInit(&privateData.value, NULL, cx_typedef(t2), array2);
                 privateData.base = array1;
-                db_collection_resizeArray(db_collection(t2), v2, size1);
-                result = db_serializeElements(s, info, &privateData);
+                cx_collection_resizeArray(cx_collection(t2), v2, size1);
+                result = cx_serializeElements(s, info, &privateData);
             } else if (list2) {
-                db_collection_resizeList(db_collection(t1), list2, size1);
-                result = db_collection_copyListToArray(db_collection(t1), array1, elementSize, list2, TRUE);
+                cx_collection_resizeList(cx_collection(t1), list2, size1);
+                result = cx_collection_copyListToArray(cx_collection(t1), array1, elementSize, list2, TRUE);
             }
         } else if (list1) {
             if (array2) {
-                db_collection_resizeArray(db_collection(t2), v2, size1);
-                result = db_collection_copyListToArray(db_collection(t1), array2, elementSize, list1, FALSE);
+                cx_collection_resizeArray(cx_collection(t2), v2, size1);
+                result = cx_collection_copyListToArray(cx_collection(t1), array2, elementSize, list1, FALSE);
             } else if (list2) {
-                db_collection_resizeList(db_collection(t1), list2, size1);
-                result = db_collection_copyListToList(db_collection(t1), list2, list1);
+                cx_collection_resizeList(cx_collection(t1), list2, size1);
+                result = cx_collection_copyListToList(cx_collection(t1), list2, list1);
             }
         }
     }
@@ -252,31 +252,31 @@ static db_int16 db_ser_collection(db_serializer s, db_value *info, void* userDat
     return result;
 }
 
-static db_int16 db_ser_construct(db_serializer s, db_value *info, void *userData) {
-    db_copy_ser_t *data = userData;
+static cx_int16 cx_ser_construct(cx_serializer s, cx_value *info, void *userData) {
+    cx_copy_ser_t *data = userData;
     DB_UNUSED(s);
     
-    db_type t1 = db_valueType(info)->real;
-    db_type t2 = db_valueType(&data->value)->real;
+    cx_type t1 = cx_valueType(info)->real;
+    cx_type t2 = cx_valueType(&data->value)->real;
 
-    data->base = db_valueValue(info);
+    data->base = cx_valueValue(info);
     
-    return !db_type_castable(t2, t1);
+    return !cx_type_castable(t2, t1);
 }
 
-struct db_serializer_s db_copy_ser(db_modifier access, db_operatorKind accessKind, db_serializerTraceKind trace) {
-	struct db_serializer_s s;
+struct cx_serializer_s cx_copy_ser(cx_modifier access, cx_operatorKind accessKind, cx_serializerTraceKind trace) {
+	struct cx_serializer_s s;
     
-	db_serializerInit(&s);
+	cx_serializerInit(&s);
     
     s.access = access;
     s.accessKind = accessKind;
     s.traceKind = trace;
-    s.construct = db_ser_construct;
+    s.construct = cx_ser_construct;
     s.program[DB_VOID] = NULL;
-    s.program[DB_PRIMITIVE] = db_ser_primitive;
-    s.program[DB_COLLECTION] = db_ser_collection;
-    s.reference = db_ser_reference;
+    s.program[DB_PRIMITIVE] = cx_ser_primitive;
+    s.program[DB_COLLECTION] = cx_ser_collection;
+    s.reference = cx_ser_reference;
     return s;
 }
 

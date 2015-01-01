@@ -6,7 +6,7 @@
 extern "C" {
 #endif
 
-db_int16 db__enum_bindConstant(db_enum _this, db_constant* c);
+cx_int16 cx__enum_bindConstant(cx_enum _this, cx_constant* c);
 
 #ifdef __cplusplus
 }

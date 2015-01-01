@@ -16,52 +16,52 @@ extern "C" {
 #endif
 
 /* ::cortex */
-extern db_object _o;
+extern cx_object _o;
 
 /* ::cortex::math */
-extern db_object mth_o;
+extern cx_object mth_o;
 
 /* ::cortex::math::abs(::cortex::lang::uint64 x) */
-extern db_function mth_abs_o;
+extern cx_function mth_abs_o;
 
 /* ::cortex::math::acos(::cortex::lang::float64 x) */
-extern db_function mth_acos_o;
+extern cx_function mth_acos_o;
 
 /* ::cortex::math::asin(::cortex::lang::float64 x) */
-extern db_function mth_asin_o;
+extern cx_function mth_asin_o;
 
 /* ::cortex::math::atan(::cortex::lang::float64 x) */
-extern db_function mth_atan_o;
+extern cx_function mth_atan_o;
 
 /* ::cortex::math::cos(::cortex::lang::float64 x) */
-extern db_function mth_cos_o;
+extern cx_function mth_cos_o;
 
 /* ::cortex::math::exp(::cortex::lang::float64 x) */
-extern db_function mth_exp_o;
+extern cx_function mth_exp_o;
 
 /* ::cortex::math::log(::cortex::lang::float64 x) */
-extern db_function mth_log_o;
+extern cx_function mth_log_o;
 
 /* ::cortex::math::log10(::cortex::lang::float64 x) */
-extern db_function mth_log10_o;
+extern cx_function mth_log10_o;
 
 /* ::cortex::math::pow(::cortex::lang::float64 x,::cortex::lang::float64 p) */
-extern db_function mth_pow_o;
+extern cx_function mth_pow_o;
 
 /* ::cortex::math::rand() */
-extern db_function mth_rand_o;
+extern cx_function mth_rand_o;
 
 /* ::cortex::math::seed(::cortex::lang::uint32 seed) */
-extern db_function mth_seed_o;
+extern cx_function mth_seed_o;
 
 /* ::cortex::math::sin(::cortex::lang::float64 x) */
-extern db_function mth_sin_o;
+extern cx_function mth_sin_o;
 
 /* ::cortex::math::sqrt(::cortex::lang::float64 x) */
-extern db_function mth_sqrt_o;
+extern cx_function mth_sqrt_o;
 
 /* ::cortex::math::tan(::cortex::lang::float64 x) */
-extern db_function mth_tan_o;
+extern cx_function mth_tan_o;
 
 int math_load(void);
 #ifdef __cplusplus

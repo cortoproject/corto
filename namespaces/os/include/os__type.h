@@ -29,23 +29,23 @@ typedef enum os_loadAvgKind {
 /*  ::cortex::os::thread */
 DB_CLASS(os_thread);
 DB_CLASS_DEF(os_thread) {
-    db_word handle;
-    db_bool stopping;
+    cx_word handle;
+    cx_bool stopping;
 };
 
 /*  ::cortex::os::time */
 DB_CLASS(os_time);
 DB_CLASS_DEF(os_time) {
-    db_int32 seconds;
-    db_uint32 nanoseconds;
+    cx_int32 seconds;
+    cx_uint32 nanoseconds;
 };
 
 /*  ::cortex::os::timer */
 DB_CLASS(os_timer);
 DB_CLASS_DEF(os_timer) {
     DB_EXTEND(os_thread);
-    db_int32 sec;
-    db_uint32 nanosec;
+    cx_int32 sec;
+    cx_uint32 nanosec;
 };
 
 #ifdef __cplusplus

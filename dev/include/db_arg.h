@@ -26,7 +26,7 @@ extern "C" {
  * @param argv The argument-vector starting from the current argument.
  * @return The consumed number of arguments. -1 if failed.
  */
-typedef int (*db_argCallback)(char* arg, int argc, char* argv[]);
+typedef int (*cx_argCallback)(char* arg, int argc, char* argv[]);
 
 /** Set callback for specific argument.
  *
@@ -35,7 +35,7 @@ typedef int (*db_argCallback)(char* arg, int argc, char* argv[]);
  * @param min The minimum number (>0) of occurrences.
  * @param max The maximum number (>-1) of occurrences (-1 meaning infinite).
  */
-int db_argSet(char* arg, db_argCallback callback, int min, int max);
+int cx_argSet(char* arg, cx_argCallback callback, int min, int max);
 
 /** Express an exclusive relation between two arguments.
  *
@@ -45,7 +45,7 @@ int db_argSet(char* arg, db_argCallback callback, int min, int max);
  * @param arg1 First argument of exclusive relation.
  * @param arg2 Second argument of exclusive relation.
  */
-int db_argExclusive(char* arg1, char* arg2);
+int cx_argExclusive(char* arg1, char* arg2);
 
 /** Express a dependency relation between two arguments.
  *
@@ -55,15 +55,15 @@ int db_argExclusive(char* arg1, char* arg2);
  * @param arg1 First argument of dependency relation.
  * @param arg2 Second argument of dependency relation.
  */
-int db_argDepend(char* arg1, char* arg2);
+int cx_argDepend(char* arg1, char* arg2);
 
 /** Parse arguments.
  */
-int db_argParse(int argc, char* argv[]);
+int cx_argParse(int argc, char* argv[]);
 
 /** Clear argument administration
  */
-void db_argClear(void);
+void cx_argClear(void);
 
 #ifdef __cplusplus
 }

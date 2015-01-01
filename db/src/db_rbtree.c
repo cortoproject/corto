@@ -1,5 +1,5 @@
 /*
- * db_rbtree.c
+ * cx_rbtree.c
  *
  *  Created on: Jul 17, 2012
  *      Author: sander
@@ -7,70 +7,70 @@
  *  This implementation is a wrapper around the jsw_rbtree (http://www.eternallyconfuzzled.com) implementation.
  */
 
-#include "db_mem.h"
-#include "db_util.h"
-#include "db_rbtree.h"
-#include "db_type.h"
+#include "cx_mem.h"
+#include "cx_util.h"
+#include "cx_rbtree.h"
+#include "cx_type.h"
 #include "jsw_rbtree.h"
-#include "db_err.h"
+#include "cx_err.h"
 
-db_rbtree db_rbtreeNew(db_type keyType) {
+cx_rbtree cx_rbtreeNew(cx_type keyType) {
 
-    db_assert(keyType->size <= sizeof(db_word), "db_rbtreeNew: keytype sizes cannot be larger than the size of a word.");
+    cx_assert(keyType->size <= sizeof(cx_word), "cx_rbtreeNew: keytype sizes cannot be larger than the size of a word.");
 
-    return (db_rbtree)jsw_rbnew(keyType, NULL);
+    return (cx_rbtree)jsw_rbnew(keyType, NULL);
 }
 
-db_rbtree db_rbtreeNew_w_func(db_equalsAction compare) {
-    return (db_rbtree)jsw_rbnew(NULL, compare);
+cx_rbtree cx_rbtreeNew_w_func(cx_equalsAction compare) {
+    return (cx_rbtree)jsw_rbnew(NULL, compare);
 }
 
-void db_rbtreeFree(db_rbtree tree) {
+void cx_rbtreeFree(cx_rbtree tree) {
     jsw_rbdelete((jsw_rbtree_t*)tree);
 }
 
-void* db_rbtreeGet(db_rbtree tree, void* key) {
+void* cx_rbtreeGet(cx_rbtree tree, void* key) {
     return jsw_rbfind((jsw_rbtree_t*)tree, key);
 }
 
-void* db_rbtreeGetPtr(db_rbtree tree, void* key) {
+void* cx_rbtreeGetPtr(cx_rbtree tree, void* key) {
     return jsw_rbfindPtr((jsw_rbtree_t*)tree, key);
 }
 
-void db_rbtreeSet(db_rbtree tree, const void* key, void* value) {
+void cx_rbtreeSet(cx_rbtree tree, const void* key, void* value) {
     jsw_rbinsert((jsw_rbtree_t*)tree, (void*)key, value);
 }
 
-void db_rbtreeRemove(db_rbtree tree, void* key) {
+void cx_rbtreeRemove(cx_rbtree tree, void* key) {
     jsw_rberase((jsw_rbtree_t*)tree, key);
 }
 
-db_bool db_rbtreeHasKey(db_rbtree tree, const void* key, void** value) {
+cx_bool cx_rbtreeHasKey(cx_rbtree tree, const void* key, void** value) {
     return jsw_rbhaskey((jsw_rbtree_t*)tree, key, value);
 }
 
-db_uint32 db_rbtreeSize(db_rbtree tree) {
+cx_uint32 cx_rbtreeSize(cx_rbtree tree) {
     return jsw_rbsize((jsw_rbtree_t*)tree);
 }
 
-void* db_rbtreeMin(db_rbtree tree, void** key_out){
+void* cx_rbtreeMin(cx_rbtree tree, void** key_out){
     return jsw_rbgetmin((jsw_rbtree_t*)tree, key_out);
 }
 
-void* db_rbtreeMax(db_rbtree tree, void** key_out) {
+void* cx_rbtreeMax(cx_rbtree tree, void** key_out) {
     return jsw_rbgetmax((jsw_rbtree_t*)tree, key_out);
 }
 
-void* db_rbtreeNext(db_rbtree tree, void* key, void** key_out) {
+void* cx_rbtreeNext(cx_rbtree tree, void* key, void** key_out) {
     return jsw_rbgetnext((jsw_rbtree_t*)tree, key, key_out);
 }
 
-void* db_rbtreePrev(db_rbtree tree, void* key, void** key_out)  {
+void* cx_rbtreePrev(cx_rbtree tree, void* key, void** key_out)  {
     return jsw_rbgetprev((jsw_rbtree_t*)tree, key, key_out);
 }
 
 /* Note that this function cannot handle NULL values in the tree */
-int db_rbtreeWalk(db_rbtree tree, db_walkAction callback, void* userData) {
+int cx_rbtreeWalk(cx_rbtree tree, cx_walkAction callback, void* userData) {
     jsw_rbtrav_t tdata;
     void* data;
 
@@ -93,7 +93,7 @@ int db_rbtreeWalk(db_rbtree tree, db_walkAction callback, void* userData) {
 }
 
 /* Note that this function cannot handle NULL values in the tree */
-int db_rbtreeWalkPtr(db_rbtree tree, db_walkAction callback, void* userData) {
+int cx_rbtreeWalkPtr(cx_rbtree tree, cx_walkAction callback, void* userData) {
     jsw_rbtrav_t tdata;
     void* data;
     
@@ -115,6 +115,6 @@ int db_rbtreeWalkPtr(db_rbtree tree, db_walkAction callback, void* userData) {
     return 1;
 }
 
-db_typedef db_rbtreeKeyType(db_rbtree tree) {
-	return db_typedef(jsw_rbtype((jsw_rbtree_t*)tree));
+cx_typedef cx_rbtreeKeyType(cx_rbtree tree) {
+	return cx_typedef(jsw_rbtype((jsw_rbtree_t*)tree));
 }

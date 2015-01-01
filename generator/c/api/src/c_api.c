@@ -6,26 +6,26 @@
  */
 
 #include "cortex.h"
-#include "db_generator.h"
+#include "cx_generator.h"
 #include "c_common.h"
-#include "db_serializer.h"
-#include "db_generatorDepWalk.h"
+#include "cx_serializer.h"
+#include "cx_generatorDepWalk.h"
 
 typedef struct c_apiWalk_t {
-    db_generator g;
+    cx_generator g;
     g_file header;
     g_file source;
-    db_object current;
-    db_uint32 parameterCount;
-    db_ll memberCache;
-    db_ll collections;
+    cx_object current;
+    cx_uint32 parameterCount;
+    cx_ll memberCache;
+    cx_ll collections;
 }c_apiWalk_t;
 
 /* Translate members to function parameters. */
-static db_int16 c_apiAssignMember(db_serializer s, db_value* v, void* userData) {
+static cx_int16 c_apiAssignMember(cx_serializer s, cx_value* v, void* userData) {
     c_apiWalk_t* data;
-    db_member m;
-    db_id memberIdTmp, memberParamId, memberId;
+    cx_member m;
+    cx_id memberIdTmp, memberParamId, memberId;
 
     DB_UNUSED(s);
 
@@ -33,21 +33,21 @@ static db_int16 c_apiAssignMember(db_serializer s, db_value* v, void* userData) 
         m = v->is.member.t;
         data = userData;
 
-        db_genMemberName(data->g, data->memberCache, m, memberIdTmp);
+        cx_genMemberName(data->g, data->memberCache, m, memberIdTmp);
         g_id(data->g, memberIdTmp, memberParamId);
-        g_id(data->g, db_nameof(m), memberId);
+        g_id(data->g, cx_nameof(m), memberId);
 
         /* Keep references */
         if (m->type->real->reference) {
             if (!m->weak) {
-                db_id id;
-                g_fileWrite(data->source, "%s ? db_keep_ext(_this, %s, \"%s\") : 0; ", memberParamId, memberParamId, db_valueString(v,id, 256));
+                cx_id id;
+                g_fileWrite(data->source, "%s ? cx_keep_ext(_this, %s, \"%s\") : 0; ", memberParamId, memberParamId, cx_valueString(v,id, 256));
             }
         }
 
         /* If member is of array-type, use memcpy */
-        if ((m->type->real->kind == DB_COLLECTION) && (db_collection(m->type->real)->kind == DB_ARRAY)) {
-            db_id typeId, postfix;
+        if ((m->type->real->kind == DB_COLLECTION) && (cx_collection(m->type->real)->kind == DB_ARRAY)) {
+            cx_id typeId, postfix;
     		/* Get typespecifier */
     		if (c_specifierId(data->g, m->type, typeId, NULL, postfix)) {
     			goto error;
@@ -55,30 +55,30 @@ static db_int16 c_apiAssignMember(db_serializer s, db_value* v, void* userData) 
             g_fileWrite(data->source, "memcpy(");
 
             /* Cast object to right type */
-            if (data->current == db_parentof(m)) {
+            if (data->current == cx_parentof(m)) {
                 g_fileWrite(data->source, "_this->%s",
-                        db_nameof(m));
+                        cx_nameof(m));
             } else {
-                db_id typeId;
+                cx_id typeId;
                 g_fileWrite(data->source, "%s(_this)->%s",
-                        g_fullOid(data->g, db_parentof(m), typeId), db_nameof(m));
+                        g_fullOid(data->g, cx_parentof(m), typeId), cx_nameof(m));
             }
 
             g_fileWrite(data->source, ", %s, sizeof(%s%s));\n", memberParamId, typeId, postfix);
         } else {
             /* Cast object to right type */
-            if (data->current == db_parentof(m)) {
+            if (data->current == cx_parentof(m)) {
                 g_fileWrite(data->source, "_this->%s = ",
-                        db_nameof(m));
+                        cx_nameof(m));
             } else {
-                db_id typeId;
+                cx_id typeId;
                 g_fileWrite(data->source, "%s(_this)->%s = ",
-                        g_fullOid(data->g, db_parentof(m), typeId), db_nameof(m));
+                        g_fullOid(data->g, cx_parentof(m), typeId), cx_nameof(m));
             }
 
             /* Strdup strings */
-            if ((m->type->real->kind == DB_PRIMITIVE) && (db_primitive(m->type->real)->kind == DB_TEXT)) {
-                g_fileWrite(data->source, "(%s ? db_strdup(%s) : NULL);\n", memberParamId, memberParamId);
+            if ((m->type->real->kind == DB_PRIMITIVE) && (cx_primitive(m->type->real)->kind == DB_TEXT)) {
+                g_fileWrite(data->source, "(%s ? cx_strdup(%s) : NULL);\n", memberParamId, memberParamId);
             } else {
                 g_fileWrite(data->source, "%s;\n", memberParamId);
             }
@@ -93,10 +93,10 @@ error:
 }
 
 /* Translate members to function parameters. */
-static db_int16 c_apiParamMember(db_serializer s, db_value* v, void* userData) {
+static cx_int16 c_apiParamMember(cx_serializer s, cx_value* v, void* userData) {
     c_apiWalk_t* data;
-    db_member m;
-    db_id typeSpec, typePostfix, memberIdTmp, memberId;
+    cx_member m;
+    cx_id typeSpec, typePostfix, memberIdTmp, memberId;
 
     DB_UNUSED(s);
 
@@ -111,7 +111,7 @@ static db_int16 c_apiParamMember(db_serializer s, db_value* v, void* userData) {
 
         /* Get type-specifier */
         c_specifierId(data->g, m->type, typeSpec, NULL, typePostfix);
-        db_genMemberName(data->g, data->memberCache, m, memberIdTmp);
+        cx_genMemberName(data->g, data->memberCache, m, memberIdTmp);
 
         g_fileWrite(data->header, "%s%s %s",
                typeSpec, typePostfix, g_id(data->g, memberIdTmp, memberId));
@@ -126,10 +126,10 @@ static db_int16 c_apiParamMember(db_serializer s, db_value* v, void* userData) {
 }
 
 /* Member parameter serializer */
-static struct db_serializer_s c_apiParamSerializer(void) {
-    struct db_serializer_s s;
+static struct cx_serializer_s c_apiParamSerializer(void) {
+    struct cx_serializer_s s;
 
-    db_serializerInit(&s);
+    cx_serializerInit(&s);
     s.metaprogram[DB_MEMBER] = c_apiParamMember;
     s.access = DB_LOCAL|DB_READONLY|DB_PRIVATE;
     s.accessKind = DB_NOT;
@@ -138,10 +138,10 @@ static struct db_serializer_s c_apiParamSerializer(void) {
 }
 
 /* Member parameter serializer */
-static struct db_serializer_s c_apiAssignSerializer(void) {
-    struct db_serializer_s s;
+static struct cx_serializer_s c_apiAssignSerializer(void) {
+    struct cx_serializer_s s;
 
-    db_serializerInit(&s);
+    cx_serializerInit(&s);
     s.metaprogram[DB_MEMBER] = c_apiAssignMember;
     s.access = DB_LOCAL|DB_READONLY|DB_PRIVATE;
     s.accessKind = DB_NOT;
@@ -150,8 +150,8 @@ static struct db_serializer_s c_apiAssignSerializer(void) {
 }
 
 /* Create new-function */
-static db_int16 c_apiReferenceTypeNew(db_interface o, c_apiWalk_t* data) {
-    db_id id;
+static cx_int16 c_apiReferenceTypeNew(cx_interface o, c_apiWalk_t* data) {
+    cx_id id;
 
     g_fullOid(data->g, o, id);
 
@@ -161,7 +161,7 @@ static db_int16 c_apiReferenceTypeNew(db_interface o, c_apiWalk_t* data) {
     /* Function implementation */
     g_fileWrite(data->source, "%s %s__new(void) {\n", id, id);
     g_fileIndent(data->source);
-    g_fileWrite(data->source, "return db_new(db_typedef(%s_o));\n", id);
+    g_fileWrite(data->source, "return cx_new(cx_typedef(%s_o));\n", id);
     g_fileDedent(data->source);
     g_fileWrite(data->source, "}\n\n");
 
@@ -169,18 +169,18 @@ static db_int16 c_apiReferenceTypeNew(db_interface o, c_apiWalk_t* data) {
 }
 
 /* Create declare-function */
-static db_int16 c_apiReferenceTypeDeclare(db_interface o, c_apiWalk_t* data) {
-    db_id id;
+static cx_int16 c_apiReferenceTypeDeclare(cx_interface o, c_apiWalk_t* data) {
+    cx_id id;
 
     g_fullOid(data->g, o, id);
 
     /* Function declaration */
-    g_fileWrite(data->header, "%s %s__declare(db_object _parent, db_string _name);\n", id, id);
+    g_fileWrite(data->header, "%s %s__declare(cx_object _parent, cx_string _name);\n", id, id);
 
     /* Function implementation */
-    g_fileWrite(data->source, "%s %s__declare(db_object _parent, db_string _name) {\n", id, id);
+    g_fileWrite(data->source, "%s %s__declare(cx_object _parent, cx_string _name) {\n", id, id);
     g_fileIndent(data->source);
-    g_fileWrite(data->source, "return db_declare(_parent, _name, db_typedef(%s_o));\n", id);
+    g_fileWrite(data->source, "return cx_declare(_parent, _name, cx_typedef(%s_o));\n", id);
     g_fileDedent(data->source);
     g_fileWrite(data->source, "}\n\n");
 
@@ -188,9 +188,9 @@ static db_int16 c_apiReferenceTypeDeclare(db_interface o, c_apiWalk_t* data) {
 }
 
 /* Create define-function */
-static db_int16 c_apiReferenceTypeDefine(db_interface o, c_apiWalk_t* data) {
-    db_id id;
-    struct db_serializer_s s;
+static cx_int16 c_apiReferenceTypeDefine(cx_interface o, c_apiWalk_t* data) {
+    cx_id id;
+    struct cx_serializer_s s;
 
     g_fullOid(data->g, o, id);
 
@@ -203,7 +203,7 @@ static db_int16 c_apiReferenceTypeDefine(db_interface o, c_apiWalk_t* data) {
     /* Write public members as arguments for source and header */
     data->parameterCount = 1;
     s = c_apiParamSerializer();
-    db_metaWalk(&s, db_type(o), data);
+    cx_metaWalk(&s, cx_type(o), data);
 
     /* Write closing brackets for argumentlist in source and header */
     g_fileWrite(data->header, ");\n");
@@ -212,9 +212,9 @@ static db_int16 c_apiReferenceTypeDefine(db_interface o, c_apiWalk_t* data) {
 
     /* Member assignments */
     s = c_apiAssignSerializer();
-    db_metaWalk(&s, db_type(o), data);
+    cx_metaWalk(&s, cx_type(o), data);
 
-    g_fileWrite(data->source, "return db_define(_this);\n");
+    g_fileWrite(data->source, "return cx_define(_this);\n");
     g_fileDedent(data->source);
     g_fileWrite(data->source, "}\n\n");
 
@@ -222,9 +222,9 @@ static db_int16 c_apiReferenceTypeDefine(db_interface o, c_apiWalk_t* data) {
 }
 
 /* Create init-function */
-static db_int16 c_apiTypeInit(db_interface o, c_apiWalk_t* data) {
-    db_id id;
-    struct db_serializer_s s;
+static cx_int16 c_apiTypeInit(cx_interface o, c_apiWalk_t* data) {
+    cx_id id;
+    struct cx_serializer_s s;
 
     g_fullOid(data->g, o, id);
 
@@ -237,7 +237,7 @@ static db_int16 c_apiTypeInit(db_interface o, c_apiWalk_t* data) {
     /* Write public members as arguments for source and header */
     data->parameterCount = 1;
     s = c_apiParamSerializer();
-    db_metaWalk(&s, db_type(o), data);
+    cx_metaWalk(&s, cx_type(o), data);
 
     /* Write closing brackets for argumentlist in source and header */
     g_fileWrite(data->header, ");\n");
@@ -245,14 +245,14 @@ static db_int16 c_apiTypeInit(db_interface o, c_apiWalk_t* data) {
     g_fileIndent(data->source);
 
     /* Initialize value */
-    g_fileWrite(data->source, "db_value v;\n");
+    g_fileWrite(data->source, "cx_value v;\n");
     g_fileWrite(data->source, "memset(_this, 0, sizeof(*_this));\n");
-    g_fileWrite(data->source, "db_valueValueInit(&v, NULL, db_typedef(%s_o), _this);\n", id);
-    g_fileWrite(data->source, "db_initValue(&v);\n");
+    g_fileWrite(data->source, "cx_valueValueInit(&v, NULL, cx_typedef(%s_o), _this);\n", id);
+    g_fileWrite(data->source, "cx_initValue(&v);\n");
 
     /* Member assignments */
     s = c_apiAssignSerializer();
-    db_metaWalk(&s, db_type(o), data);
+    cx_metaWalk(&s, cx_type(o), data);
 
     g_fileDedent(data->source);
     g_fileWrite(data->source, "}\n\n");
@@ -261,8 +261,8 @@ static db_int16 c_apiTypeInit(db_interface o, c_apiWalk_t* data) {
 }
 
 /* Create deinit-function */
-static db_int16 c_apiTypeDeinit(db_interface o, c_apiWalk_t* data) {
-    db_id id;
+static cx_int16 c_apiTypeDeinit(cx_interface o, c_apiWalk_t* data) {
+    cx_id id;
 
     g_fullOid(data->g, o, id);
 
@@ -273,9 +273,9 @@ static db_int16 c_apiTypeDeinit(db_interface o, c_apiWalk_t* data) {
     g_fileWrite(data->source, "void %s__deinit(%s *_this) {\n", id, id, id);
     g_fileIndent(data->source);
 
-    g_fileWrite(data->source, "db_value v;\n");
-    g_fileWrite(data->source, "db_valueValueInit(&v, NULL, db_typedef(%s_o), _this);\n", id);
-    g_fileWrite(data->source, "db_deinitValue(&v);\n");
+    g_fileWrite(data->source, "cx_value v;\n");
+    g_fileWrite(data->source, "cx_valueValueInit(&v, NULL, cx_typedef(%s_o), _this);\n", id);
+    g_fileWrite(data->source, "cx_deinitValue(&v);\n");
 
     g_fileDedent(data->source);
     g_fileWrite(data->source, "}\n\n");
@@ -284,9 +284,9 @@ static db_int16 c_apiTypeDeinit(db_interface o, c_apiWalk_t* data) {
 }
 
 
-static db_int16 c_apiReferenceTypeCreate(db_interface o, c_apiWalk_t* data) {
-    db_id id;
-    struct db_serializer_s s;
+static cx_int16 c_apiReferenceTypeCreate(cx_interface o, c_apiWalk_t* data) {
+    cx_id id;
+    struct cx_serializer_s s;
 
     g_fullOid(data->g, o, id);
 
@@ -299,7 +299,7 @@ static db_int16 c_apiReferenceTypeCreate(db_interface o, c_apiWalk_t* data) {
     /* Write public members as arguments for source and header */
     data->parameterCount = 0;
     s = c_apiParamSerializer();
-    db_metaWalk(&s, db_type(o), data);
+    cx_metaWalk(&s, cx_type(o), data);
 
     /* If there are no parameters, write 'void' */
     if (!data->parameterCount) {
@@ -313,16 +313,16 @@ static db_int16 c_apiReferenceTypeCreate(db_interface o, c_apiWalk_t* data) {
 
     g_fileIndent(data->source);
     g_fileWrite(data->source, "%s _this;\n", id);
-    g_fileWrite(data->source, "_this = db_new(db_typedef(%s_o));\n", id);
+    g_fileWrite(data->source, "_this = cx_new(cx_typedef(%s_o));\n", id);
 
     /* Member assignments */
     s = c_apiAssignSerializer();
-    db_metaWalk(&s, db_type(o), data);
+    cx_metaWalk(&s, cx_type(o), data);
 
     /* Define object */
-    g_fileWrite(data->source, "if (db_define(_this)) {\n");
+    g_fileWrite(data->source, "if (cx_define(_this)) {\n");
     g_fileIndent(data->source);
-    g_fileWrite(data->source, "db_free(_this);\n");
+    g_fileWrite(data->source, "cx_free(_this);\n");
     g_fileWrite(data->source, "_this = NULL;\n");
     g_fileDedent(data->source);
     g_fileWrite(data->source, "}\n");
@@ -335,15 +335,15 @@ static db_int16 c_apiReferenceTypeCreate(db_interface o, c_apiWalk_t* data) {
 }
 
 /* Walk reference interface */
-static db_int16 c_apiWalkReferenceType(db_interface o, c_apiWalk_t* data) {
-    db_id id;
+static cx_int16 c_apiWalkReferenceType(cx_interface o, c_apiWalk_t* data) {
+    cx_id id;
 
-    g_fileWrite(data->header, "/* %s */\n", db_fullname(o, id));
+    g_fileWrite(data->header, "/* %s */\n", cx_fullname(o, id));
 
     data->current = o;
 
     /* Build nameconflict cache */
-    data->memberCache = db_genMemberCacheBuild(o);
+    data->memberCache = cx_genMemberCacheBuild(o);
 
     /* Generate _new function */
     if (c_apiReferenceTypeNew(o, data)) {
@@ -365,7 +365,7 @@ static db_int16 c_apiWalkReferenceType(db_interface o, c_apiWalk_t* data) {
         goto error;
     }
 
-    db_genMemberCacheClean(data->memberCache);
+    cx_genMemberCacheClean(data->memberCache);
 
     g_fileWrite(data->header, "\n");
 
@@ -375,15 +375,15 @@ error:
 }
 
 /* Walk non-reference interface */
-static db_int16 c_apiWalkType(db_interface o, c_apiWalk_t* data) {
-    db_id id;
+static cx_int16 c_apiWalkType(cx_interface o, c_apiWalk_t* data) {
+    cx_id id;
 
-    g_fileWrite(data->header, "/* %s */\n", db_fullname(o, id));
+    g_fileWrite(data->header, "/* %s */\n", cx_fullname(o, id));
 
     data->current = o;
 
     /* Build nameconflict cache */
-    data->memberCache = db_genMemberCacheBuild(o);
+    data->memberCache = cx_genMemberCacheBuild(o);
 
     /* Generate _init function */
     if (c_apiTypeInit(o, data)) {
@@ -395,7 +395,7 @@ static db_int16 c_apiWalkType(db_interface o, c_apiWalk_t* data) {
         goto error;
     }
 
-    db_genMemberCacheClean(data->memberCache);
+    cx_genMemberCacheClean(data->memberCache);
 
     g_fileWrite(data->header, "\n");
 
@@ -404,8 +404,8 @@ error:
     return -1;
 }
 
-static db_bool c_apiElementRequiresInit(db_type elementType) {
-    db_bool result = FALSE;
+static cx_bool c_apiElementRequiresInit(cx_type elementType) {
+    cx_bool result = FALSE;
 
     if ((elementType->kind != DB_PRIMITIVE) && !elementType->reference) {
         result = TRUE;
@@ -413,17 +413,17 @@ static db_bool c_apiElementRequiresInit(db_type elementType) {
 
     return result;
 }
-void db_valueValueInit(db_value* val, db_object o, db_typedef t, db_void* v);
+void cx_valueValueInit(cx_value* val, cx_object o, cx_typedef t, cx_void* v);
 /* Initialize or deinitialize element */
-static db_int16 c_apiElementInit(db_string elementType, db_string element, db_bool isInit, c_apiWalk_t* data) {
+static cx_int16 c_apiElementInit(cx_string elementType, cx_string element, cx_bool isInit, c_apiWalk_t* data) {
     g_fileWrite(data->source, "{\n");
     g_fileIndent(data->source);
-    g_fileWrite(data->source, "db_value v;\n");
-    g_fileWrite(data->source, "db_valueValueInit(&v, NULL, db_typedef(%s_o), %s);\n", elementType, element);
+    g_fileWrite(data->source, "cx_value v;\n");
+    g_fileWrite(data->source, "cx_valueValueInit(&v, NULL, cx_typedef(%s_o), %s);\n", elementType, element);
     if (isInit) {
-        g_fileWrite(data->source, "db_initValue(&v);\n");
+        g_fileWrite(data->source, "cx_initValue(&v);\n");
     } else {
-        g_fileWrite(data->source, "db_deinitValue(&v);\n");
+        g_fileWrite(data->source, "cx_deinitValue(&v);\n");
     }
     g_fileDedent(data->source);
     g_fileWrite(data->source, "}\n");
@@ -432,18 +432,18 @@ static db_int16 c_apiElementInit(db_string elementType, db_string element, db_bo
 }
 
 /* Create sequence foreach-macro */
-static db_int16 c_apiSequenceTypeForeach(db_sequence o, c_apiWalk_t* data) {
-    db_id id, elementId;
-    db_bool prefix;
-    db_type elementType = db_collection(o)->elementType->real;
+static cx_int16 c_apiSequenceTypeForeach(cx_sequence o, c_apiWalk_t* data) {
+    cx_id id, elementId;
+    cx_bool prefix;
+    cx_type elementType = cx_collection(o)->elementType->real;
     
-    c_specifierId(data->g, db_typedef(o), id, NULL, NULL);
-    c_specifierId(data->g, db_typedef(elementType), elementId, &prefix, NULL);
+    c_specifierId(data->g, cx_typedef(o), id, NULL, NULL);
+    c_specifierId(data->g, cx_typedef(elementType), elementId, &prefix, NULL);
     
     /* Macro */
     g_fileWrite(data->header, "#define %s__foreach(seq, elem) \\\n", id);
     g_fileIndent(data->header);
-    g_fileWrite(data->header, "db_uint32 elem##_iter;\\\n");
+    g_fileWrite(data->header, "cx_uint32 elem##_iter;\\\n");
     g_fileWrite(data->header, "%s %selem;\\\n", elementId, prefix?"*":"");
     g_fileWrite(data->header, "for(elem##_iter=0; elem##_iter<seq.length; elem##_iter++) {\\\n");
     g_fileIndent(data->header);
@@ -456,13 +456,13 @@ static db_int16 c_apiSequenceTypeForeach(db_sequence o, c_apiWalk_t* data) {
 }
 
 /* Create append-function */
-static db_int16 c_apiSequenceTypeAppend(db_sequence o, c_apiWalk_t* data) {
-    db_id id, elementId;
-    db_bool prefix;
-    db_type elementType = db_collection(o)->elementType->real;
+static cx_int16 c_apiSequenceTypeAppend(cx_sequence o, c_apiWalk_t* data) {
+    cx_id id, elementId;
+    cx_bool prefix;
+    cx_type elementType = cx_collection(o)->elementType->real;
     
-    c_specifierId(data->g, db_typedef(o), id, NULL, NULL);
-    c_specifierId(data->g, db_typedef(elementType), elementId, &prefix, NULL);
+    c_specifierId(data->g, cx_typedef(o), id, NULL, NULL);
+    c_specifierId(data->g, cx_typedef(elementType), elementId, &prefix, NULL);
 
     /* Function declaration */
     g_fileWrite(data->header, "%s%s %s__append(%s *seq);\n", elementId, prefix?"*":"", id, id);
@@ -471,9 +471,9 @@ static db_int16 c_apiSequenceTypeAppend(db_sequence o, c_apiWalk_t* data) {
     g_fileWrite(data->source, "%s%s %s__append(%s *seq) {\n", elementId, prefix?"*":"", id, id);
     
     g_fileIndent(data->source);
-    g_fileWrite(data->source, "db_uint32 size;\n");
+    g_fileWrite(data->source, "cx_uint32 size;\n");
     g_fileWrite(data->source, "seq->length++;\n");
-    g_fileWrite(data->source, "seq->buffer = db_realloc(seq->buffer, seq->length * (size=db_type_sizeof(db_type(%s_o))));\n", elementId);
+    g_fileWrite(data->source, "seq->buffer = cx_realloc(seq->buffer, seq->length * (size=cx_type_sizeof(cx_type(%s_o))));\n", elementId);
     g_fileWrite(data->source, "memset(%sseq->buffer[seq->length-1], 0, size);\n", elementType->reference?"":"&");
     if (c_apiElementRequiresInit(elementType)) {
         if (elementType->reference) {
@@ -490,27 +490,27 @@ static db_int16 c_apiSequenceTypeAppend(db_sequence o, c_apiWalk_t* data) {
 }
 
 /* Create size-function */
-static db_int16 c_apiSequenceTypeSize(db_sequence o, c_apiWalk_t* data) {
-    db_id id, elementId;
-    db_bool prefix;
-    db_type elementType = db_collection(o)->elementType->real;
+static cx_int16 c_apiSequenceTypeSize(cx_sequence o, c_apiWalk_t* data) {
+    cx_id id, elementId;
+    cx_bool prefix;
+    cx_type elementType = cx_collection(o)->elementType->real;
     
-    c_specifierId(data->g, db_typedef(o), id, NULL, NULL);
-    c_specifierId(data->g, db_typedef(elementType), elementId, &prefix, NULL);
+    c_specifierId(data->g, cx_typedef(o), id, NULL, NULL);
+    c_specifierId(data->g, cx_typedef(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
-    g_fileWrite(data->header, "void %s__size(%s *seq, db_uint32 length);\n", id, id);
+    g_fileWrite(data->header, "void %s__size(%s *seq, cx_uint32 length);\n", id, id);
     
     /* Function implementation */
-    g_fileWrite(data->source, "void %s__size(%s *seq, db_uint32 length) {\n", id, id);
+    g_fileWrite(data->source, "void %s__size(%s *seq, cx_uint32 length) {\n", id, id);
     g_fileIndent(data->source);
-    g_fileWrite(data->source, "db_uint32 size;\n");
+    g_fileWrite(data->source, "cx_uint32 size;\n");
     
     /* Deinitialize old elements if new size is smaller than old size - only valid for non-primitive types */
     if (c_apiElementRequiresInit(elementType)) {
         g_fileWrite(data->source, "if (length < seq->length) {\n");
         g_fileIndent(data->source);
-        g_fileWrite(data->source, "db_uint32 i;\n");
+        g_fileWrite(data->source, "cx_uint32 i;\n");
         g_fileWrite(data->source, "for(i=length; i<seq->length; i++) {\n");
         g_fileIndent(data->source);
         c_apiElementInit(elementId, "&seq->buffer[i]", FALSE, data);
@@ -521,13 +521,13 @@ static db_int16 c_apiSequenceTypeSize(db_sequence o, c_apiWalk_t* data) {
     }
     
     /* Resize buffer */
-    g_fileWrite(data->source, "seq->buffer = db_realloc(seq->buffer, length * (size=db_type_sizeof(db_type(%s_o))));\n", elementId);
+    g_fileWrite(data->source, "seq->buffer = cx_realloc(seq->buffer, length * (size=cx_type_sizeof(cx_type(%s_o))));\n", elementId);
     
     /* Initialize new elements */
     g_fileWrite(data->source, "if (length > seq->length) {\n");
     g_fileIndent(data->source);
     if (elementType->kind != DB_PRIMITIVE) {
-        g_fileWrite(data->source, "db_uint32 i;\n");
+        g_fileWrite(data->source, "cx_uint32 i;\n");
     }
     g_fileWrite(data->source, "memset(&seq->buffer[seq->length], 0, size * (length - seq->length));\n");
     if (elementType->kind != DB_PRIMITIVE) {
@@ -549,13 +549,13 @@ static db_int16 c_apiSequenceTypeSize(db_sequence o, c_apiWalk_t* data) {
 }
 
 /* Create sequence clear-function */
-static db_int16 c_apiSequenceTypeClear(db_sequence o, c_apiWalk_t* data) {
-    db_id id, elementId;
-    db_bool prefix;
-    db_type elementType = db_collection(o)->elementType->real;
+static cx_int16 c_apiSequenceTypeClear(cx_sequence o, c_apiWalk_t* data) {
+    cx_id id, elementId;
+    cx_bool prefix;
+    cx_type elementType = cx_collection(o)->elementType->real;
     
-    c_specifierId(data->g, db_typedef(o), id, NULL, NULL);
-    c_specifierId(data->g, db_typedef(elementType), elementId, &prefix, NULL);
+    c_specifierId(data->g, cx_typedef(o), id, NULL, NULL);
+    c_specifierId(data->g, cx_typedef(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
     g_fileWrite(data->header, "void %s__clear(%s *seq);\n", id, id);
@@ -571,10 +571,10 @@ static db_int16 c_apiSequenceTypeClear(db_sequence o, c_apiWalk_t* data) {
 }
 
 /* Walk sequence */
-static db_int16 c_apiWalkSequence(db_sequence o, c_apiWalk_t* data) {
-    db_id id;
+static cx_int16 c_apiWalkSequence(cx_sequence o, c_apiWalk_t* data) {
+    cx_id id;
     
-    g_fileWrite(data->header, "\n/* %s */\n", db_fullname(o, id));
+    g_fileWrite(data->header, "\n/* %s */\n", cx_fullname(o, id));
     
     data->current = o;
     
@@ -604,22 +604,22 @@ error:
 }
 
 /* Create list foreach-macro */
-static db_int16 c_apiListTypeForeach(db_list o, c_apiWalk_t* data) {
-    db_id id, elementId;
-    db_bool prefix;
-    db_type elementType = db_collection(o)->elementType->real;
+static cx_int16 c_apiListTypeForeach(cx_list o, c_apiWalk_t* data) {
+    cx_id id, elementId;
+    cx_bool prefix;
+    cx_type elementType = cx_collection(o)->elementType->real;
     
-    c_specifierId(data->g, db_typedef(o), id, NULL, NULL);
-    c_specifierId(data->g, db_typedef(elementType), elementId, &prefix, NULL);
+    c_specifierId(data->g, cx_typedef(o), id, NULL, NULL);
+    c_specifierId(data->g, cx_typedef(elementType), elementId, &prefix, NULL);
 
     /* Macro */
     g_fileWrite(data->header, "#define %s__foreach(list, elem) \\\n", id);
     g_fileIndent(data->header);
-    g_fileWrite(data->header, "db_iter elem##_iter = db_llIter(list);\\\n");
+    g_fileWrite(data->header, "cx_iter elem##_iter = cx_llIter(list);\\\n");
     g_fileWrite(data->header, "%s %selem;\\\n", elementId, prefix?"*":"");
-    g_fileWrite(data->header, "while(db_iterHasNext(&elem##_iter)) {\\\n");
+    g_fileWrite(data->header, "while(cx_iterHasNext(&elem##_iter)) {\\\n");
     g_fileIndent(data->header);
-    g_fileWrite(data->header, "elem = db_iterNext(&elem##_iter);\n");
+    g_fileWrite(data->header, "elem = cx_iterNext(&elem##_iter);\n");
     g_fileDedent(data->header);
     g_fileDedent(data->header);
     g_fileWrite(data->header, "\n");
@@ -627,20 +627,20 @@ static db_int16 c_apiListTypeForeach(db_list o, c_apiWalk_t* data) {
     return 0;
 }
 
-static db_string db_operationToApi(db_string operation, db_id id) {
-    sprintf(id, "db_ll%s", operation);
+static cx_string cx_operationToApi(cx_string operation, cx_id id) {
+    sprintf(id, "cx_ll%s", operation);
     id[5] -= 32; /* Capitalize first letter of operation */
     return id;
 }
 
 /* Create insert function for types that require allocation */
-static db_int16 c_apiListTypeInsertAlloc(db_list o, db_string operation, c_apiWalk_t* data) {
-    db_id id, elementId, api;
-    db_bool prefix;
-    db_type elementType = db_collection(o)->elementType->real;
+static cx_int16 c_apiListTypeInsertAlloc(cx_list o, cx_string operation, c_apiWalk_t* data) {
+    cx_id id, elementId, api;
+    cx_bool prefix;
+    cx_type elementType = cx_collection(o)->elementType->real;
     
-    c_specifierId(data->g, db_typedef(o), id, NULL, NULL);
-    c_specifierId(data->g, db_typedef(elementType), elementId, &prefix, NULL);
+    c_specifierId(data->g, cx_typedef(o), id, NULL, NULL);
+    c_specifierId(data->g, cx_typedef(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
     g_fileWrite(data->header, "%s* %s__%s(%s list);\n", elementId, id, operation, id);
@@ -650,13 +650,13 @@ static db_int16 c_apiListTypeInsertAlloc(db_list o, db_string operation, c_apiWa
     
     g_fileIndent(data->source);
     g_fileWrite(data->source, "%s* result;\n", elementId);
-    g_fileWrite(data->source, "result = db_calloc(db_type_sizeof(db_type(%s_o)));\n", elementId);
+    g_fileWrite(data->source, "result = cx_calloc(cx_type_sizeof(cx_type(%s_o)));\n", elementId);
     
     /* Initialize element */
     c_apiElementInit(elementId, "result", TRUE, data);
     
     /* Insert element to list */
-    g_fileWrite(data->source, "%s(list, result);\n", db_operationToApi(operation, api));
+    g_fileWrite(data->source, "%s(list, result);\n", cx_operationToApi(operation, api));
     
     /* Return new element */
     g_fileWrite(data->source, "return result;\n");
@@ -667,13 +667,13 @@ static db_int16 c_apiListTypeInsertAlloc(db_list o, db_string operation, c_apiWa
 }
 
 /* Create insert function for types that require no allocation */
-static db_int16 c_apiListTypeInsertNoAlloc(db_list o, db_string operation, c_apiWalk_t* data) {
-    db_id id, elementId, api;
-    db_bool prefix;
-    db_type elementType = db_collection(o)->elementType->real;
+static cx_int16 c_apiListTypeInsertNoAlloc(cx_list o, cx_string operation, c_apiWalk_t* data) {
+    cx_id id, elementId, api;
+    cx_bool prefix;
+    cx_type elementType = cx_collection(o)->elementType->real;
     
-    c_specifierId(data->g, db_typedef(o), id, NULL, NULL);
-    c_specifierId(data->g, db_typedef(elementType), elementId, &prefix, NULL);
+    c_specifierId(data->g, cx_typedef(o), id, NULL, NULL);
+    c_specifierId(data->g, cx_typedef(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
     g_fileWrite(data->header, "void %s__%s(%s list, %s element);\n", id, operation, id, elementId);
@@ -683,7 +683,7 @@ static db_int16 c_apiListTypeInsertNoAlloc(db_list o, db_string operation, c_api
     g_fileIndent(data->source);
     
     /* Insert element to list */
-    g_fileWrite(data->source, "%s(list, (void*)element);\n", db_operationToApi(operation, api));
+    g_fileWrite(data->source, "%s(list, (void*)element);\n", cx_operationToApi(operation, api));
     
     /* Return new element */
     g_fileDedent(data->source);
@@ -693,10 +693,10 @@ static db_int16 c_apiListTypeInsertNoAlloc(db_list o, db_string operation, c_api
 }
 
 /* Create insert-function */
-static db_int16 c_apiListTypeInsert(db_list o, db_string operation, c_apiWalk_t* data) {
-    db_int16 result;
+static cx_int16 c_apiListTypeInsert(cx_list o, cx_string operation, c_apiWalk_t* data) {
+    cx_int16 result;
     
-    if (db_collection_elementRequiresAlloc(db_collection(o))) {
+    if (cx_collection_elementRequiresAlloc(cx_collection(o))) {
         result = c_apiListTypeInsertAlloc(o, operation, data);
     } else {
         result = c_apiListTypeInsertNoAlloc(o, operation, data);
@@ -706,14 +706,14 @@ static db_int16 c_apiListTypeInsert(db_list o, db_string operation, c_apiWalk_t*
 }
 
 /* Create take function for types that require allocation */
-static db_int16 c_apiListTypeTake(db_list o, db_string operation, c_apiWalk_t* data) {
-    db_id id, elementId, api;
-    db_bool prefix;
-    db_type elementType = db_collection(o)->elementType->real;
-    db_bool allocRequired = db_collection_elementRequiresAlloc(db_collection(o));
+static cx_int16 c_apiListTypeTake(cx_list o, cx_string operation, c_apiWalk_t* data) {
+    cx_id id, elementId, api;
+    cx_bool prefix;
+    cx_type elementType = cx_collection(o)->elementType->real;
+    cx_bool allocRequired = cx_collection_elementRequiresAlloc(cx_collection(o));
     
-    c_specifierId(data->g, db_typedef(o), id, NULL, NULL);
-    c_specifierId(data->g, db_typedef(elementType), elementId, &prefix, NULL);
+    c_specifierId(data->g, cx_typedef(o), id, NULL, NULL);
+    c_specifierId(data->g, cx_typedef(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
     g_fileWrite(data->header, "%s%s %s__%s(%s list);\n", elementId, allocRequired?"*":"", id, operation, id);
@@ -723,7 +723,7 @@ static db_int16 c_apiListTypeTake(db_list o, db_string operation, c_apiWalk_t* d
     g_fileIndent(data->source);
     
     /* Insert element to list */
-    g_fileWrite(data->source, "return (%s%s)%s(list);\n", elementId, allocRequired?"*":"", db_operationToApi(operation, api));
+    g_fileWrite(data->source, "return (%s%s)%s(list);\n", elementId, allocRequired?"*":"", cx_operationToApi(operation, api));
 
     g_fileDedent(data->source);
     g_fileWrite(data->source, "}\n\n");
@@ -732,14 +732,14 @@ static db_int16 c_apiListTypeTake(db_list o, db_string operation, c_apiWalk_t* d
 }
 
 /* Create clear function for types that require allocation */
-static db_int16 c_apiListTypeClear(db_list o, c_apiWalk_t* data) {
-    db_id id, elementId;
-    db_bool prefix;
-    db_type elementType = db_collection(o)->elementType->real;
-    db_bool allocRequired = db_collection_elementRequiresAlloc(db_collection(o));
+static cx_int16 c_apiListTypeClear(cx_list o, c_apiWalk_t* data) {
+    cx_id id, elementId;
+    cx_bool prefix;
+    cx_type elementType = cx_collection(o)->elementType->real;
+    cx_bool allocRequired = cx_collection_elementRequiresAlloc(cx_collection(o));
     
-    c_specifierId(data->g, db_typedef(o), id, NULL, NULL);
-    c_specifierId(data->g, db_typedef(elementType), elementId, &prefix, NULL);
+    c_specifierId(data->g, cx_typedef(o), id, NULL, NULL);
+    c_specifierId(data->g, cx_typedef(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
     g_fileWrite(data->header, "void %s__clear(%s list);\n", id, id);
@@ -748,13 +748,13 @@ static db_int16 c_apiListTypeClear(db_list o, c_apiWalk_t* data) {
     g_fileWrite(data->source, "void %s__clear(%s list) {\n", id, id);
     g_fileIndent(data->source);
     g_fileWrite(data->source, "void *element;\n\n");
-    g_fileWrite(data->source, "while((element = db_llTakeFirst(list))) {\n");
+    g_fileWrite(data->source, "while((element = cx_llTakeFirst(list))) {\n");
     g_fileIndent(data->source);
     if (allocRequired) {
         c_apiElementInit(elementId, "element", FALSE, data);
-        g_fileWrite(data->source, "db_dealloc(element);\n");
+        g_fileWrite(data->source, "cx_dealloc(element);\n");
     } else if (elementType->reference) {
-        g_fileWrite(data->source, "db_free(element);\n");
+        g_fileWrite(data->source, "cx_free(element);\n");
     }
     g_fileDedent(data->source);
     g_fileWrite(data->source, "}\n");
@@ -766,24 +766,24 @@ static db_int16 c_apiListTypeClear(db_list o, c_apiWalk_t* data) {
 }
 
 /* Create get function for types that require allocation */
-static db_int16 c_apiListTypeGet(db_list o, c_apiWalk_t* data) {
-    db_id id, elementId;
-    db_bool prefix;
-    db_type elementType = db_collection(o)->elementType->real;
-    db_bool allocRequired = db_collection_elementRequiresAlloc(db_collection(o));
+static cx_int16 c_apiListTypeGet(cx_list o, c_apiWalk_t* data) {
+    cx_id id, elementId;
+    cx_bool prefix;
+    cx_type elementType = cx_collection(o)->elementType->real;
+    cx_bool allocRequired = cx_collection_elementRequiresAlloc(cx_collection(o));
     
-    c_specifierId(data->g, db_typedef(o), id, NULL, NULL);
-    c_specifierId(data->g, db_typedef(elementType), elementId, &prefix, NULL);
+    c_specifierId(data->g, cx_typedef(o), id, NULL, NULL);
+    c_specifierId(data->g, cx_typedef(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
-    g_fileWrite(data->header, "%s%s %s__get(%s list, db_uint32 index);\n", elementId, allocRequired?"*":"", id, id);
+    g_fileWrite(data->header, "%s%s %s__get(%s list, cx_uint32 index);\n", elementId, allocRequired?"*":"", id, id);
     
     /* Function implementation */
-    g_fileWrite(data->source, "%s%s %s__get(%s list, db_uint32 index) {\n", elementId, allocRequired?"*":"", id, id);
+    g_fileWrite(data->source, "%s%s %s__get(%s list, cx_uint32 index) {\n", elementId, allocRequired?"*":"", id, id);
     g_fileIndent(data->source);
     
     /* Insert element to list */
-    g_fileWrite(data->source, "return (%s%s)db_llGet(list, index);\n", elementId, allocRequired?"*":"");
+    g_fileWrite(data->source, "return (%s%s)cx_llGet(list, index);\n", elementId, allocRequired?"*":"");
     
     g_fileDedent(data->source);
     g_fileWrite(data->source, "}\n\n");
@@ -792,23 +792,23 @@ static db_int16 c_apiListTypeGet(db_list o, c_apiWalk_t* data) {
 }
 
 /* Create insert function for types that require allocation */
-static db_int16 c_apiListTypeSize(db_list o, c_apiWalk_t* data) {
-    db_id id, elementId;
-    db_bool prefix;
-    db_type elementType = db_collection(o)->elementType->real;
+static cx_int16 c_apiListTypeSize(cx_list o, c_apiWalk_t* data) {
+    cx_id id, elementId;
+    cx_bool prefix;
+    cx_type elementType = cx_collection(o)->elementType->real;
     
-    c_specifierId(data->g, db_typedef(o), id, NULL, NULL);
-    c_specifierId(data->g, db_typedef(elementType), elementId, &prefix, NULL);
+    c_specifierId(data->g, cx_typedef(o), id, NULL, NULL);
+    c_specifierId(data->g, cx_typedef(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
-    g_fileWrite(data->header, "db_uint32 %s__size(%s list);\n", id, id);
+    g_fileWrite(data->header, "cx_uint32 %s__size(%s list);\n", id, id);
     
     /* Function implementation */
-    g_fileWrite(data->source, "db_uint32 %s__size(%s list) {\n", id, id);
+    g_fileWrite(data->source, "cx_uint32 %s__size(%s list) {\n", id, id);
     g_fileIndent(data->source);
     
     /* Insert element to list */
-    g_fileWrite(data->source, "return db_llSize(list);\n");
+    g_fileWrite(data->source, "return cx_llSize(list);\n");
     
     g_fileDedent(data->source);
     g_fileWrite(data->source, "}\n\n");
@@ -817,10 +817,10 @@ static db_int16 c_apiListTypeSize(db_list o, c_apiWalk_t* data) {
 }
 
 /* Walk list */
-static db_int16 c_apiWalkList(db_list o, c_apiWalk_t* data) {
-    db_id id;
+static cx_int16 c_apiWalkList(cx_list o, c_apiWalk_t* data) {
+    cx_id id;
     
-    g_fileWrite(data->header, "\n/* %s */\n", db_fullname(o, id));
+    g_fileWrite(data->header, "\n/* %s */\n", cx_fullname(o, id));
     
     data->current = o;
     
@@ -870,16 +870,16 @@ error:
 }
 
 /* Forward objects for which code will be generated. */
-static int c_apiWalk(db_object o, void* userData) {
+static int c_apiWalk(cx_object o, void* userData) {
 
     /* Forward interfaces */
-    if (db_class_instanceof(db_interface_o, o)) {
-        if (db_type(o)->reference) {
-            if (c_apiWalkReferenceType(db_interface(o), userData)) {
+    if (cx_class_instanceof(cx_interface_o, o)) {
+        if (cx_type(o)->reference) {
+            if (c_apiWalkReferenceType(cx_interface(o), userData)) {
                 goto error;
             }
         } else {
-            if (c_apiWalkType(db_interface(o), userData)) {
+            if (c_apiWalkType(cx_interface(o), userData)) {
                 goto error;
             }
         }
@@ -894,19 +894,19 @@ error:
 static int c_apiCollectionWalk(void* o, void* userData) {
     
     /* Forward sequences, lists and maps */
-    switch(db_collection(o)->kind) {
+    switch(cx_collection(o)->kind) {
         case DB_SEQUENCE:
-            if (c_apiWalkSequence(db_sequence(o), userData)) {
+            if (c_apiWalkSequence(cx_sequence(o), userData)) {
                 goto error;
             }
             break;
         case DB_LIST:
-            if (c_apiWalkList(db_list(o), userData)) {
+            if (c_apiWalkList(cx_list(o), userData)) {
                 goto error;
             }
             break;
         case DB_MAP:
-            /*if (c_apiWalkMap(db_map(o), userData)) {
+            /*if (c_apiWalkMap(cx_map(o), userData)) {
              goto error;
              }*/
             break;
@@ -921,9 +921,9 @@ error:
 }
 
 /* Open headerfile, write standard header. */
-static g_file c_apiHeaderOpen(db_generator g) {
+static g_file c_apiHeaderOpen(cx_generator g) {
     g_file result;
-    db_id headerFileName;
+    cx_id headerFileName;
 
     /* Create file */
     sprintf(headerFileName, "%s__api.h", g_getName(g));
@@ -958,9 +958,9 @@ static void c_apiHeaderClose(g_file file) {
 }
 
 /* Open sourcefile */
-static g_file c_apiSourceOpen(db_generator g) {
+static g_file c_apiSourceOpen(cx_generator g) {
     g_file result;
-    db_id headerFileName;
+    cx_id headerFileName;
 
     /* Create file */
     sprintf(headerFileName, "%s__api.c", g_getName(g));
@@ -978,8 +978,8 @@ static g_file c_apiSourceOpen(db_generator g) {
     return result;
 }
 
-static db_equalityKind c_apiCompareCollections(db_collection c1, db_collection c2) {
-    db_equalityKind result = DB_EQ;
+static cx_equalityKind c_apiCompareCollections(cx_collection c1, cx_collection c2) {
+    cx_equalityKind result = DB_EQ;
     if (c1->kind != c2->kind) {
         result = DB_NEQ;
     } else if (c1->elementType != c2->elementType) {
@@ -987,7 +987,7 @@ static db_equalityKind c_apiCompareCollections(db_collection c1, db_collection c
     } else if (c1->max != c2->max) {
         result = DB_NEQ ;
     } else if (c1->kind == DB_MAP) {
-        if (db_map(c1)->keyType != db_map(c2)->keyType) {
+        if (cx_map(c1)->keyType != cx_map(c2)->keyType) {
             result = DB_NEQ;
         }
     }
@@ -995,19 +995,19 @@ static db_equalityKind c_apiCompareCollections(db_collection c1, db_collection c
 }
 
 static int c_apiCheckDuplicates(void* o, void* userData) {
-    if (db_checkAttr(o, DB_ATTR_SCOPED)) {
+    if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
         return 1;
     } else {
-        return c_apiCompareCollections(db_collection(o), db_collection(userData)) != DB_EQ;
+        return c_apiCompareCollections(cx_collection(o), cx_collection(userData)) != DB_EQ;
     }
 }
 
-static int c_apiFindCollections(db_object o, void* userData) {
+static int c_apiFindCollections(cx_object o, void* userData) {
     c_apiWalk_t* data = userData;
     
-    if (db_instanceof(db_typedef(db_collection_o), o)) {
-        if (!db_llSize(data->collections) || db_llWalk(data->collections, c_apiCheckDuplicates, o)) {
-            db_llAppend(data->collections, o);
+    if (cx_instanceof(cx_typedef(cx_collection_o), o)) {
+        if (!cx_llSize(data->collections) || cx_llWalk(data->collections, c_apiCheckDuplicates, o)) {
+            cx_llAppend(data->collections, o);
         }
     }
     
@@ -1015,30 +1015,30 @@ static int c_apiFindCollections(db_object o, void* userData) {
 }
 
 /* Generator main */
-db_int16 cortex_genMain(db_generator g) {
+cx_int16 cortex_genMain(cx_generator g) {
     c_apiWalk_t walkData;
 
 	/* Default prefixes for cortex namespaces */
 	gen_parse(g, cortex_o, FALSE, FALSE, "");
-    gen_parse(g, cortex_lang_o, FALSE, FALSE, "db");
+    gen_parse(g, cortex_lang_o, FALSE, FALSE, "cx");
 
     walkData.g = g;
     walkData.header = c_apiHeaderOpen(g);
     walkData.source = c_apiSourceOpen(g);
-    walkData.collections = db_llNew();
+    walkData.collections = cx_llNew();
 
     g_walkRecursive(g, c_apiWalk, &walkData);
     
     /* Do a dependency walk over scope to find all collection objects, including anonymous */
-    if (db_genDepWalk(g, c_apiFindCollections, NULL, &walkData)) {
-        db_trace("generation of api-routines failed while resolving collections.");
+    if (cx_genDepWalk(g, c_apiFindCollections, NULL, &walkData)) {
+        cx_trace("generation of api-routines failed while resolving collections.");
         return -1;
     }
     
-    db_llWalk(walkData.collections, c_apiCollectionWalk, &walkData);
+    cx_llWalk(walkData.collections, c_apiCollectionWalk, &walkData);
 
     c_apiHeaderClose(walkData.header);
-    db_llFree(walkData.collections);
+    cx_llFree(walkData.collections);
 
     return 0;
 }

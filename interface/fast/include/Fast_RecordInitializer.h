@@ -16,16 +16,16 @@ extern "C" {
 #endif
 
 /* ::cortex::Fast::RecordInitializer::define() */
-db_int16 Fast_RecordInitializer_define(Fast_RecordInitializer _this);
+cx_int16 Fast_RecordInitializer_define(Fast_RecordInitializer _this);
 
 /* ::cortex::Fast::RecordInitializer::pop() */
-db_int16 Fast_RecordInitializer_pop(Fast_RecordInitializer _this);
+cx_int16 Fast_RecordInitializer_pop(Fast_RecordInitializer _this);
 
 /* ::cortex::Fast::RecordInitializer::push() */
-db_int16 Fast_RecordInitializer_push(Fast_RecordInitializer _this);
+cx_int16 Fast_RecordInitializer_push(Fast_RecordInitializer _this);
 
 /* ::cortex::Fast::RecordInitializer::value(Expression v) */
-db_int16 Fast_RecordInitializer_value(Fast_RecordInitializer _this, Fast_Expression v);
+cx_int16 Fast_RecordInitializer_value(Fast_RecordInitializer _this, Fast_Expression v);
 
 #ifdef __cplusplus
 }

@@ -1,37 +1,37 @@
 /*
- * db_misc.c
+ * cx_misc.c
  *
  *  Created on: 23 aug. 2010
  *      Author: Sander
  */
 #include "time.h"
-#include "db_time.h"
+#include "cx_time.h"
 #include "math.h"
 #include "limits.h"
 #include "errno.h"
 #include "string.h"
-#include "db_err.h"
-#include "db_util.h"
-#include "db__type.h"
+#include "cx_err.h"
+#include "cx_util.h"
+#include "cx__type.h"
 
 /* Sleep */
-void db_sleep(unsigned int sec, unsigned int nanosec) {
+void cx_sleep(unsigned int sec, unsigned int nanosec) {
 	struct timespec sleepTime;
 
 	sleepTime.tv_sec = sec;
 	sleepTime.tv_nsec = nanosec;
 	if (nanosleep(&sleepTime, NULL)) {
-		db_error("nanosleep failed: %s", strerror(errno));
+		cx_error("nanosleep failed: %s", strerror(errno));
 	}
 }
 
-void db_timeGet(db_time* time) {
+void cx_timeGet(cx_time* time) {
 
 	clock_gettime(CLOCK_REALTIME, (struct timespec*)time);
 }
 
-db_time db_timeAdd(db_time t1, db_time t2) {
-	db_time result;
+cx_time cx_timeAdd(cx_time t1, cx_time t2) {
+	cx_time result;
 
 	result.tv_nsec = t1.tv_nsec + t2.tv_nsec;
 	result.tv_sec = t1.tv_sec + t2.tv_sec;
@@ -43,8 +43,8 @@ db_time db_timeAdd(db_time t1, db_time t2) {
 	return result;
 }
 
-db_time db_timeSub(db_time t1, db_time t2) {
-	db_time result;
+cx_time cx_timeSub(cx_time t1, cx_time t2) {
+	cx_time result;
 
 	if (t1.tv_nsec >= t2.tv_nsec) {
 		result.tv_nsec = t1.tv_nsec - t2.tv_nsec;
@@ -57,7 +57,7 @@ db_time db_timeSub(db_time t1, db_time t2) {
 	return result;
 }
 
-double db_timeToDouble(db_time t) {
+double cx_timeToDouble(cx_time t) {
 	double result;
 
 	result = t.tv_sec;
@@ -66,7 +66,7 @@ double db_timeToDouble(db_time t) {
 	return result;
 }
 
-int db_timeCompare(db_time t1, db_time t2) {
+int cx_timeCompare(cx_time t1, cx_time t2) {
 	int result;
 
 	if (t1.tv_sec < t2.tv_sec) {
@@ -87,7 +87,7 @@ int db_timeCompare(db_time t1, db_time t2) {
 static char* g_num = "0123456789";
 static int nmax = 1;
 
-char* db_itoa(int num, char* buff) {
+char* cx_itoa(int num, char* buff) {
 	char* buffptr;
 	unsigned int ch;
 	unsigned int ntest;
@@ -134,13 +134,13 @@ char* db_itoa(int num, char* buff) {
 	return buffptr;
 }
 
-char* db_utoa(unsigned int num, char* buff) {
+char* cx_utoa(unsigned int num, char* buff) {
 	DB_UNUSED(num);
 	DB_UNUSED(buff);
 	return NULL;
 }
 
-char* db_ftoa(float num, char* buff) {
+char* cx_ftoa(float num, char* buff) {
 	DB_UNUSED(num);
 	DB_UNUSED(buff);
 	return NULL;

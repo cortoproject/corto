@@ -43,19 +43,19 @@ DB_CLASS(fixture_Dog);
 
 DB_CLASS_DEF(fixture_Dog) {
     fixture_DogBreed breed;
-    db_string name;
-    db_uint8 age;
+    cx_string name;
+    cx_uint8 age;
     fixture_Dog lover;
 };
 
-typedef db_uint32 fixture_ints[4];
+typedef cx_uint32 fixture_ints[4];
 
 /*  ::fixture::point2D */
 typedef struct fixture_point2D fixture_point2D;
 
 struct fixture_point2D {
-    db_int32 x;
-    db_int32 y;
+    cx_int32 x;
+    cx_int32 y;
 };
 
 #ifdef __cplusplus

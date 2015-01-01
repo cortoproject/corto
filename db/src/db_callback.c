@@ -1,4 +1,4 @@
-/* db_callback.c
+/* cx_callback.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -7,29 +7,29 @@
  */
 
 #include "db.h"
-#include "db__meta.h"
+#include "cx__meta.h"
 
 /* callback ::cortex::lang::procedure::bind(lang::object object) -> ::cortex::lang::callback::bind(lang::callback object) */
-db_int16 db_callback_bind(db_callback object) {
+cx_int16 cx_callback_bind(cx_callback object) {
 /* $begin(::cortex::lang::callback::bind) */
-    db_class delegateClass;
-    db_object parent;
+    cx_class delegateClass;
+    cx_object parent;
 
-    db_assert(object->delegate != NULL, "callback '%s' has <null> for member delegate.", db_nameof(object));
+    cx_assert(object->delegate != NULL, "callback '%s' has <null> for member delegate.", cx_nameof(object));
 
-    if (db_function_bind(db_function(object))) {
+    if (cx_function_bind(cx_function(object))) {
     	goto error;
     }
 
-    delegateClass = db_class(db_parentof(object->delegate));
-    parent = db_parentof(object);
+    delegateClass = cx_class(cx_parentof(object->delegate));
+    parent = cx_parentof(object);
     if (parent) {
-        if (db_class_bindCallback(delegateClass, object->delegate, db_type(parent), object)) {
+        if (cx_class_bindCallback(delegateClass, object->delegate, cx_type(parent), object)) {
             goto error;
         }
     } else {
-        db_id id;
-        db_error("callback::bind: '%s' is an orphan.", db_fullname(object, id));
+        cx_id id;
+        cx_error("callback::bind: '%s' is an orphan.", cx_fullname(object, id));
         goto error;
     }
 
@@ -40,17 +40,17 @@ error:
 }
 
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::callback::init(lang::callback object) */
-db_int16 db_callback_init(db_callback object) {
+cx_int16 cx_callback_init(cx_callback object) {
 /* $begin(::cortex::lang::callback::init) */
 
     /* Call function initializer */
-    if (db_function_init(db_function(object))) {
+    if (cx_function_init(cx_function(object))) {
         goto error;
     }
 
     /* This greatly facilitates the bootstrap. */
     if (object->delegate) {
-        return db_callback_bind(object);
+        return cx_callback_bind(object);
     }
 
     return 0;

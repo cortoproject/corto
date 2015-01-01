@@ -28,7 +28,7 @@ extern "C" {
 #include <stddef.h>
 #endif
 
-#include "db__type.h"
+#include "cx__type.h"
 
 #ifndef HEIGHT_LIMIT
 #define HEIGHT_LIMIT 64 /* Tallest allowable tree */
@@ -54,9 +54,9 @@ typedef void *(*dup_f) ( void *p );
 typedef void  (*rel_f) ( void *p );
 
 /* Red Black tree functions */
-jsw_rbtree_t *jsw_rbnew ( db_type type, db_equalsAction cmp);
+jsw_rbtree_t *jsw_rbnew ( cx_type type, cx_equalsAction cmp);
 void          jsw_rbdelete ( jsw_rbtree_t *tree );
-db_type       jsw_rbtype( jsw_rbtree_t *tree);
+cx_type       jsw_rbtype( jsw_rbtree_t *tree);
 void         *jsw_rbfind ( jsw_rbtree_t *tree, void *key );
 void         *jsw_rbfindPtr ( jsw_rbtree_t *tree, void *key );
 int           jsw_rbhaskey ( jsw_rbtree_t *tree, const void *key, void** data );

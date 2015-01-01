@@ -22,18 +22,18 @@ int yy_scan_string(const char* str);
 #define POPCOMPLEX() Fast_Parser_popComplexType(yparser()); fast_op;
 
 /* Thread local storage key for parser */
-extern db_threadKey FAST_PARSER_KEY;
+extern cx_threadKey FAST_PARSER_KEY;
 
 /* Obtain parser */
 Fast_Parser yparser(void) {
-	return (Fast_Parser)db_threadTlsGet(FAST_PARSER_KEY);
+	return (Fast_Parser)cx_threadTlsGet(FAST_PARSER_KEY);
 }
 
 #define fast_err(...) _fast_err(__VA_ARGS__); YYERROR;
 #define fast_op if (Fast_Parser_isAbortSet(yparser())) {YYABORT;} else if (Fast_Parser_isErrSet(yparser())) {YYERROR;}
 
 /* Report error */
-void _fast_err(db_string msg, ...) {
+void _fast_err(cx_string msg, ...) {
 	va_list args;
 	char msgbuff[1024];
 	
@@ -49,12 +49,12 @@ void _fast_err(db_string msg, ...) {
 void Fast_declarationSeqInsert( Fast_ParserDeclarationSeq *seq, Fast_ParserDeclaration *declaration )
 {
 	seq->length++;
-	seq->buffer = db_realloc(seq->buffer, sizeof(Fast_ParserDeclaration) * seq->length);
+	seq->buffer = cx_realloc(seq->buffer, sizeof(Fast_ParserDeclaration) * seq->length);
 	memcpy(&seq->buffer[seq->length-1], declaration, sizeof(Fast_ParserDeclaration));
-	seq->buffer[seq->length-1].name = db_strdup(seq->buffer[seq->length-1].name);
+	seq->buffer[seq->length-1].name = cx_strdup(seq->buffer[seq->length-1].name);
 }
 
-Fast_Expression Fast_declarationSeqDo(Fast_Variable type, Fast_ParserDeclarationSeq *declarations, db_bool isReference)
+Fast_Expression Fast_declarationSeqDo(Fast_Variable type, Fast_ParserDeclarationSeq *declarations, cx_bool isReference)
 {
 	unsigned int i;
     Fast_CommaExpr result = Fast_CommaExpr__create();
@@ -71,7 +71,7 @@ Fast_Expression Fast_declarationSeqDo(Fast_Variable type, Fast_ParserDeclaration
 			isReference))) {
                 return NULL;
         }
-		db_dealloc(declarations->buffer[i].name);
+		cx_dealloc(declarations->buffer[i].name);
         expr = Fast_Expression(declarations->buffer[i].variable);
         
         /* In a declaration of locals assignment is always a reference-assignment. */
@@ -82,7 +82,7 @@ Fast_Expression Fast_declarationSeqDo(Fast_Variable type, Fast_ParserDeclaration
         
         Fast_CommaExpr_addExpression(result, expr);
 	}
-	db_dealloc(declarations->buffer);
+	cx_dealloc(declarations->buffer);
 	declarations->buffer = NULL;
 	declarations->length = 0;
 
@@ -128,18 +128,18 @@ Fast_Expression Fast_declarationSeqDo(Fast_Variable type, Fast_ParserDeclaration
 /* Parser-types */
 %union {
 	/* Literals */
-    db_bool Boolean;
-    db_char Character;
-    db_uint64 Integer;
-    db_int64 SignedInteger;
-    db_float64 FloatingPoint;
-    db_string String;
-    db_object Reference;
-    db_string Identifier;
-    db_ll List;
+    cx_bool Boolean;
+    cx_char Character;
+    cx_uint64 Integer;
+    cx_int64 SignedInteger;
+    cx_float64 FloatingPoint;
+    cx_string String;
+    cx_object Reference;
+    cx_string Identifier;
+    cx_ll List;
     void *Null;
     void *Fast;
-    db_operatorKind Operator;
+    cx_operatorKind Operator;
     int Mask;
     Fast_ParserDeclaration Declaration;
     Fast_ParserDeclarationSeq Declarations;
@@ -272,38 +272,38 @@ function_implementation
     ;
 
 function_declaration
-    : identifier any_id function_argumentList	{db_id id; sprintf(id, "%s(%s)", $2, $3); db_dealloc($3); $$ = Fast_Parser_declareFunction(yparser(), $1, id, NULL, FALSE); fast_op; }
+    : identifier any_id function_argumentList	{cx_id id; sprintf(id, "%s(%s)", $2, $3); cx_dealloc($3); $$ = Fast_Parser_declareFunction(yparser(), $1, id, NULL, FALSE); fast_op; }
     | identifier any_id function_argumentList any_id  {
-        db_id id;
-        db_type kind = db_resolve(NULL, $4);
+        cx_id id;
+        cx_type kind = cx_resolve(NULL, $4);
         sprintf(id, "%s(%s)", $2, $3); 
-        db_dealloc($3); 
+        cx_dealloc($3); 
         $$ = Fast_Parser_declareFunction(yparser(), $1, id, kind, FALSE); fast_op; 
-        db_free(kind);
+        cx_free(kind);
     }
-    | identifier GID function_argumentList  {db_id id; sprintf(id, "%s(%s)", $2, $3); db_dealloc($3); $$ = Fast_Parser_declareFunction(yparser(), $1, id, NULL, FALSE); fast_op; }
+    | identifier GID function_argumentList  {cx_id id; sprintf(id, "%s(%s)", $2, $3); cx_dealloc($3); $$ = Fast_Parser_declareFunction(yparser(), $1, id, NULL, FALSE); fast_op; }
 
     /* Reference returnvalue */
-    | identifier '&' any_id function_argumentList   {db_id id; sprintf(id, "%s(%s)", $3, $4); db_dealloc($4); $$ = Fast_Parser_declareFunction(yparser(), $1, id, NULL, TRUE); fast_op; }
+    | identifier '&' any_id function_argumentList   {cx_id id; sprintf(id, "%s(%s)", $3, $4); cx_dealloc($4); $$ = Fast_Parser_declareFunction(yparser(), $1, id, NULL, TRUE); fast_op; }
     | identifier '&' any_id function_argumentList any_id  {
-        db_id id;
-        db_type kind = db_resolve(NULL, $5);
+        cx_id id;
+        cx_type kind = cx_resolve(NULL, $5);
         sprintf(id, "%s(%s)", $3, $4); 
-        db_dealloc($3); 
+        cx_dealloc($3); 
         $$ = Fast_Parser_declareFunction(yparser(), $1, id, kind, TRUE); fast_op; 
-        db_free(kind);
+        cx_free(kind);
     }
-    | identifier '&' GID function_argumentList  {db_id id; sprintf(id, "%s(%s)", $3, $4); db_dealloc($4); $$ = Fast_Parser_declareFunction(yparser(), $1, id, NULL, TRUE); fast_op; }
+    | identifier '&' GID function_argumentList  {cx_id id; sprintf(id, "%s(%s)", $3, $4); cx_dealloc($4); $$ = Fast_Parser_declareFunction(yparser(), $1, id, NULL, TRUE); fast_op; }
     ;
 
 function_argumentList
-    : '(' ')' 						{$$ = db_strdup("");}
+    : '(' ')' 						{$$ = cx_strdup("");}
     | '(' function_arguments ')'	{$$ = $2;}
     ;
 
 function_arguments
-    : function_argument							{$$=db_malloc(sizeof(db_id));strcpy($$,$1); db_dealloc($1);}
-    | function_arguments ',' function_argument	{$$=$1; strcat($$,","); strcat($$,$3); db_dealloc($3);}
+    : function_argument							{$$=cx_malloc(sizeof(cx_id));strcpy($$,$1); cx_dealloc($1);}
+    | function_arguments ',' function_argument	{$$=$1; strcat($$,","); strcat($$,$3); cx_dealloc($3);}
     ;
 
 function_argument
@@ -404,7 +404,7 @@ postfix_expr
 	| postfix_expr {PUSHCOMPLEX($1)} '[' expr ']' {$$ = Fast_Parser_elementExpr(yparser(), $1, $4); fast_op; POPCOMPLEX()}
     | postfix_expr '(' ')' 						{$$ = Fast_Parser_callExpr(yparser(), $1, NULL); fast_op;}
     | postfix_expr bracket_expr                 {$$ = Fast_Parser_callExpr(yparser(), $1, $2); fast_op;}
-    | postfix_expr '.' any_id                   {Fast_String str = Fast_String__create($3); if (!str) {YYERROR;} $$ = Fast_Parser_memberExpr(yparser(), $1, Fast_Expression(str)); db_free(str); fast_op;}
+    | postfix_expr '.' any_id                   {Fast_String str = Fast_String__create($3); if (!str) {YYERROR;} $$ = Fast_Parser_memberExpr(yparser(), $1, Fast_Expression(str)); cx_free(str); fast_op;}
 	| postfix_expr INC							{$$ = Fast_Parser_postfixExpr(yparser(), $1, DB_INC); fast_op}
 	| postfix_expr DEC							{$$ = Fast_Parser_postfixExpr(yparser(), $1, DB_DEC); fast_op}
 	;
@@ -742,13 +742,13 @@ void yyerror(const char *str)
 }
 
 /* Parse sourcecode */
-int fast_yparse(Fast_Parser parser, db_uint32 line, db_uint32 column) {
-	db_char *preprocessed;
+int fast_yparse(Fast_Parser parser, cx_uint32 line, cx_uint32 column) {
+	cx_char *preprocessed;
 
 	/* Preprocess code */
 	preprocessed = fast_pp(parser->filename, parser->source);
 	if (parser->preprocessed) {
-		db_dealloc(parser->preprocessed);
+		cx_dealloc(parser->preprocessed);
 	}
 	parser->preprocessed = preprocessed;
 	

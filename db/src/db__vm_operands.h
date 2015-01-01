@@ -1,5 +1,5 @@
 /*
- * db_vm_operands.h
+ * cx_vm_operands.h
  *
  *  Created on: Aug 31, 2013
  *      Author: sander
@@ -529,97 +529,97 @@ typedef int64_t    Ds_t;
 #define fetch1_BVL	fetchIc()
 #define fetch2_BVL	fetchLo()
 #define op1_BVL		c.ic.b._1
-#define op2_BVL		(db_vmOp*)c.lo.w
+#define op2_BVL		(cx_vmOp*)c.lo.w
 
 #define fetch_BRL
 #define fetch1_BRL  fetchIc()
 #define fetch2_BRL  fetchLo()
 #define op1_BRL		*(B_t*)DB_OFFSET(reg,c.ic.b._1)
-#define op2_BRL		(db_vmOp*)c.lo.w
+#define op2_BRL		(cx_vmOp*)c.lo.w
 
 #define fetch_BPL
 #define fetch1_BPL  fetchLo()
 #define fetch2_BPL  fetchHi()
 #define op1_BPL		*(B_t*)c.lo.w
-#define op2_BPL		(db_vmOp*)c.hi.w
+#define op2_BPL		(cx_vmOp*)c.hi.w
 
 #define fetch_BQL
 #define fetch1_BQL  fetchIc()
 #define fetch2_BQL  fetchLo()
 #define op1_BQL		*(B_t*)*(void**)DB_OFFSET(reg,c.ic.b._1)
-#define op2_BQL		(db_vmOp*)c.lo.w
+#define op2_BQL		(cx_vmOp*)c.lo.w
 
 #define fetch_SVL
 #define fetch1_SVL  fetchIc()
 #define fetch2_SVL  fetchLo()
 #define op1_SVL		c.ic.b._1
-#define op2_SVL		(db_vmOp*)c.lo.w
+#define op2_SVL		(cx_vmOp*)c.lo.w
 
 #define fetch_SRL
 #define fetch1_SRL  fetchIc()
 #define fetch2_SRL  fetchLo()
 #define op1_SRL		*(S_t*)DB_OFFSET(reg,c.ic.b._1)
-#define op2_SRL		(db_vmOp*)c.lo.w
+#define op2_SRL		(cx_vmOp*)c.lo.w
 
 #define fetch_SPL
 #define fetch1_SPL  fetchLo()
 #define fetch2_SPL  fetchHi()
 #define op1_SPL		*(S_t*)c.lo.w
-#define op2_SPL		(db_vmOp*)c.hi.w
+#define op2_SPL		(cx_vmOp*)c.hi.w
 
 #define fetch_SQL
 #define fetch1_SQL  fetchIc()
 #define fetch2_SQL  fetchLo()
 #define op1_SQL		*(S_t*)*(void**)DB_OFFSET(reg,c.ic.b._1)
-#define op2_SQL		(db_vmOp*)c.lo.w
+#define op2_SQL		(cx_vmOp*)c.lo.w
 
 #define fetch_LVL
 #define fetch1_LVL  fetchLo()
 #define fetch2_LVL  fetchHi()
 #define op1_LVL		c.lo.w
-#define op2_LVL		(db_vmOp*)c.hi.w
+#define op2_LVL		(cx_vmOp*)c.hi.w
 
 #define fetch_LRL
 #define fetch1_LRL  fetchIc()
 #define fetch2_LRL  fetchLo()
 #define op1_LRL		*(L_t*)DB_OFFSET(reg,c.ic.b._1)
-#define op2_LRL		(db_vmOp*)c.lo.w
+#define op2_LRL		(cx_vmOp*)c.lo.w
 
 #define fetch_LPL
 #define fetch1_LPL  fetchLo()
 #define fetch2_LPL  fetchHi()
 #define op1_LPL		*(L_t*)c.lo.w
-#define op2_LPL		(db_vmOp*)c.hi.w
+#define op2_LPL		(cx_vmOp*)c.hi.w
 
 #define fetch_LQL
 #define fetch1_LQL  fetchIc()
 #define fetch2_LQL  fetchLo()
 #define op1_LQL		*(L_t*)*(void**)DB_OFFSET(reg,c.ic.b._1)
-#define op2_LQL		(db_vmOp*)c.lo.w
+#define op2_LQL		(cx_vmOp*)c.lo.w
 
 #define fetch_WVL
 #define fetch1_WVL  fetchLo()
 #define fetch2_WVL  fetchHi()
 #define op1_WVL		c.lo.w
-#define op2_WVL		(db_vmOp*)c.hi.w
+#define op2_WVL		(cx_vmOp*)c.hi.w
 
 #define fetch_WRL
 #define fetch1_WRL  fetchIc()
 #define fetch2_WRL  fetchLo()
 #define op1_WRL		*(W_t*)DB_OFFSET(reg,c.ic.b._1)
-#define op2_WRL		(db_vmOp*)c.lo.w
+#define op2_WRL		(cx_vmOp*)c.lo.w
 
 #define fetch_WPL
 #define fetch1_WPL  fetchLo()
 #define fetch2_WPL  fetchHi()
 #define op1_WPL		*(W_t*)c.lo.w
-#define op2_WPL		(db_vmOp*)c.hi.w
+#define op2_WPL		(cx_vmOp*)c.hi.w
 
 #define fetch_WQL
 #define fetch1_WQL  fetchIc()
 #define fetch2_WQL  fetchLo()
 #define op1_WQL		*(W_t*)*(void**)DB_OFFSET(reg,c.ic.b._1)
-#define op2_WQL		(db_vmOp*)c.lo.w
+#define op2_WQL		(cx_vmOp*)c.lo.w
 
 #define fetch_DVL	/* This instruction cannot be encoded and has to be split up */
 #define fetch1_DVL
@@ -631,19 +631,19 @@ typedef int64_t    Ds_t;
 #define fetch1_DRL  fetchIc()
 #define fetch2_DRL  fetchLo()
 #define op1_DRL		*(D_t*)DB_OFFSET(reg,c.ic.b._1)
-#define op2_DRL		(db_vmOp*)c.lo.w
+#define op2_DRL		(cx_vmOp*)c.lo.w
 
 #define fetch_DPL
 #define fetch1_DPL  fetchLo()
 #define fetch2_DPL  fetchHi()
 #define op1_DPL		*(D_t*)c.lo.w
-#define op2_DPL		(db_vmOp*)c.hi.w
+#define op2_DPL		(cx_vmOp*)c.hi.w
 
 #define fetch_DQL	fetchIc(); fetchLo()
 #define fetch1_DQL  fetchIc()
 #define fetch2_DQL  fetchLo()
 #define op1_DQL		*(D_t*)*(void**)DB_OFFSET(reg,c.ic.b._1)
-#define op2_DQL		(db_vmOp*)c.lo.w
+#define op2_DQL		(cx_vmOp*)c.lo.w
 
 /* 3-op operand templates */
 

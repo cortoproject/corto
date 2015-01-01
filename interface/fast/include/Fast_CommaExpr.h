@@ -19,28 +19,28 @@ extern "C" {
 #endif
 
 /* ::cortex::Fast::CommaExpr::addExpression(Expression expr) */
-db_int16 Fast_CommaExpr_addExpression(Fast_CommaExpr _this, Fast_Expression expr);
+cx_int16 Fast_CommaExpr_addExpression(Fast_CommaExpr _this, Fast_Expression expr);
 
 /* ::cortex::Fast::CommaExpr::addOrCreate(Expression list,Expression expr) */
 Fast_Expression Fast_CommaExpr_addOrCreate(Fast_Expression list, Fast_Expression expr);
 
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::CommaExpr::construct(CommaExpr object) */
-db_int16 Fast_CommaExpr_construct(Fast_CommaExpr object);
+cx_int16 Fast_CommaExpr_construct(Fast_CommaExpr object);
 
 /* virtual ::cortex::Fast::CommaExpr::hasSideEffects() */
-db_bool Fast_CommaExpr_hasSideEffects(Fast_CommaExpr _this);
+cx_bool Fast_CommaExpr_hasSideEffects(Fast_CommaExpr _this);
 
 /* ::cortex::Fast::CommaExpr::hasSideEffects() */
-db_bool Fast_CommaExpr_hasSideEffects_v(Fast_CommaExpr _this);
+cx_bool Fast_CommaExpr_hasSideEffects_v(Fast_CommaExpr _this);
 
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::CommaExpr::init(CommaExpr object) */
-db_int16 Fast_CommaExpr_init(Fast_CommaExpr object);
+cx_int16 Fast_CommaExpr_init(Fast_CommaExpr object);
 
-/* virtual ::cortex::Fast::CommaExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_CommaExpr_toIc(Fast_CommaExpr _this, db_icProgram program, db_icStorage storage, db_bool stored);
+/* virtual ::cortex::Fast::CommaExpr::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+cx_ic Fast_CommaExpr_toIc(Fast_CommaExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);
 
-/* ::cortex::Fast::CommaExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_CommaExpr_toIc_v(Fast_CommaExpr _this, db_icProgram program, db_icStorage storage, db_bool stored);
+/* ::cortex::Fast::CommaExpr::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+cx_ic Fast_CommaExpr_toIc_v(Fast_CommaExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);
 
 /* ::cortex::Fast::CommaExpr::toList() */
 Fast_Node_list Fast_CommaExpr_toList(Fast_CommaExpr _this);

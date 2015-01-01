@@ -10,8 +10,8 @@
 
 #define _test_ser_scope(object, expected) \
 {\
-    db_json_ser_t userData = {NULL, NULL, 0, 0, 0, FALSE, FALSE, TRUE};\
-    db_serialize(&serializer, fixture_##object##_o, &userData);\
+    cx_json_ser_t userData = {NULL, NULL, 0, 0, 0, FALSE, FALSE, TRUE};\
+    cx_serialize(&serializer, fixture_##object##_o, &userData);\
     if (strcmp(userData.buffer, "{\"scope\":"expected"}")) {\
         result = -1;\
         fprintf(\
@@ -21,11 +21,11 @@
     }\
 }
 
-db_int16 test_ser_scope(void) {
-    db_int16 result = 0;
+cx_int16 test_ser_scope(void) {
+    cx_int16 result = 0;
 
-    struct db_serializer_s serializer = 
-        db_json_ser(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
+    struct cx_serializer_s serializer = 
+        cx_json_ser(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
 
     _test_ser_scope(namesp, 
         "[{\"name\":\"a\","
