@@ -1,5 +1,5 @@
 
-TARGET =	dbgen
+TARGET =	cxgen
 
 INCLUDE = 	-I $(CORTEX_HOME)/dev/include
 

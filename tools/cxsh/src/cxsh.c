@@ -397,7 +397,7 @@ static void cxsh_drop(char* name) {
 }
 
 static void cxsh_help(void) {
-    printf("%sLyra shell help%s\n", HEADER_COLOR, NORMAL);
+    printf("%sCortex shell help%s\n", HEADER_COLOR, NORMAL);
     printf("\n");
     printf("Use cortex-expressions to read or modify data in the cortex database.\n");
     printf("If the expression resolves to an object the shell will display the object\n");
