@@ -116,5 +116,5 @@ int cx_rbtreeWalkPtr(cx_rbtree tree, cx_walkAction callback, void* userData) {
 }
 
 cx_typedef cx_rbtreeKeyType(cx_rbtree tree) {
-	return cx_typedef(jsw_rbtype((jsw_rbtree_t*)tree));
+    return cx_typedef(jsw_rbtype((jsw_rbtree_t*)tree));
 }

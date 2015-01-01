@@ -1,18 +1,18 @@
 // Multiple lvalues and rvalues with complex type
 bool result: true
 void fail(string msg):
-	"tc_exprlist04: FAIL: $msg"
-	result = false
-	
+    "tc_exprlist04: FAIL: $msg"
+    result = false
+    
 struct Point::
-	x, y: uint32
-	
+    x, y: uint32
+    
 var Point p,q = {10, 20}, {30, 40}
 if p.x != 10: fail("p.x initialization failed ($p)")
 if p.y != 20: fail("p.y initialization failed ($p)")
 if q.x != 30: fail("q.x initialization failed ($p)")
 if q.y != 40: fail("q.y initialization failed ($p)")
-	
+    
 p, q = {50, 60}, {70, 80}
 if p.x != 50: fail("p.x assignment failed ($p)")
 if p.y != 60: fail("p.y assignment failed ($p)")

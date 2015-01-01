@@ -86,17 +86,17 @@ static struct cx_string_deserIndexInfo* cx_string_deserIndexNext(cx_string_deser
 
 /* Free nodes from index */
 int cx_string_deserWalkIndex(void* o, void* udata) {
-	CX_UNUSED(udata);
-	cx_dealloc(o);
-	return 1;
+    CX_UNUSED(udata);
+    cx_dealloc(o);
+    return 1;
 }
 
 /* Free index */
 void cx_string_deserFreeIndex(cx_string_deser_t* data) {
-	if (data->index) {
-		cx_llWalk(data->index, cx_string_deserWalkIndex, NULL);
-		cx_llFree(data->index);
-	}
+    if (data->index) {
+        cx_llWalk(data->index, cx_string_deserWalkIndex, NULL);
+        cx_llFree(data->index);
+    }
 }
 
 /* Add indexInfo to indextable for each primitive */
@@ -135,7 +135,7 @@ static cx_int16 cx_string_deserBuildIndexDummy(cx_serializer s, cx_value* v, voi
 /* Serializer that builds indices from type */
 static struct cx_serializer_s cx_string_deserBuildIndex_s;
 cx_serializer cx_string_deserBuildIndex(void) {
-	cx_serializerInit(&cx_string_deserBuildIndex_s);
+    cx_serializerInit(&cx_string_deserBuildIndex_s);
     /* Add an indexInfo object for each primitive. */
     cx_string_deserBuildIndex_s.program[CX_VOID] = cx_string_deserBuildIndexDummy;
     cx_string_deserBuildIndex_s.program[CX_PRIMITIVE] = cx_string_deserBuildIndexDummy;
@@ -301,28 +301,28 @@ static cx_int16 cx_string_deserParseValue(cx_string value, struct cx_string_dese
             offset = CX_OFFSET(data->ptr, data->current * info->type->size);
         }
 
-    	if (cx_primitive(info->type)->kind != CX_TEXT) {
-			if (cx_convert(cx_primitive(cx_string_o), &value, cx_primitive(info->type), offset)) {
-				goto error;
-			}
-    	} else {
-    		cx_uint32 length;
-    		cx_string deserialized;
+        if (cx_primitive(info->type)->kind != CX_TEXT) {
+            if (cx_convert(cx_primitive(cx_string_o), &value, cx_primitive(info->type), offset)) {
+                goto error;
+            }
+        } else {
+            cx_uint32 length;
+            cx_string deserialized;
 
-    		if (strcmp(value, "null")) {
-				length = strlen(value);
-				deserialized = cx_malloc(length+1);
-				memcpy(deserialized, value, length);
-				deserialized[length] = '\0';
-    		} else {
-    			deserialized = NULL;
-    		}
+            if (strcmp(value, "null")) {
+                length = strlen(value);
+                deserialized = cx_malloc(length+1);
+                memcpy(deserialized, value, length);
+                deserialized[length] = '\0';
+            } else {
+                deserialized = NULL;
+            }
 
-    		if (*(cx_string*)offset) {
-    		    cx_dealloc(*(cx_string*)offset);
-    		}
-    		*(cx_string*)offset = deserialized;
-    	}
+            if (*(cx_string*)offset) {
+                cx_dealloc(*(cx_string*)offset);
+            }
+            *(cx_string*)offset = deserialized;
+        }
     }
 
     /* Members are only parsed once */
@@ -448,33 +448,33 @@ static cx_string cx_string_deserParse(cx_string str, struct cx_string_deserIndex
 
         case '{': /* Scope open */
 
-        	/* If a value is being parsed, the '{' is part of a nested anonymous
-        	 * object. Parse up until the '}' */
-        	if (bptr == buffer) {
-        		ptr = cx_string_deserParseScope(ptr, memberInfo, data);
-        	} else {
-        		cx_uint32 count;
-        		count = 0;
+            /* If a value is being parsed, the '{' is part of a nested anonymous
+             * object. Parse up until the '}' */
+            if (bptr == buffer) {
+                ptr = cx_string_deserParseScope(ptr, memberInfo, data);
+            } else {
+                cx_uint32 count;
+                count = 0;
 
-        		/* Parse until matching '} */
-        		do {
-        			*bptr = ch;
-        			bptr++;
-        			ptr++;
-        			if (ch == '{') {
-        				count++;
-        			} else if (ch == '}') {
-        				count--;
-        			}
-        		}while((ch = *ptr) && count);
-        		ptr--;
+                /* Parse until matching '} */
+                do {
+                    *bptr = ch;
+                    bptr++;
+                    ptr++;
+                    if (ch == '{') {
+                        count++;
+                    } else if (ch == '}') {
+                        count--;
+                    }
+                }while((ch = *ptr) && count);
+                ptr--;
 
-        		/* ptr must always end with a '}' */
-        		if (*ptr != '}') {
-        			cx_error("cx_string_deser: missing '}' in string '%s'", str);
-        			goto error;
-        		}
-        	}
+                /* ptr must always end with a '}' */
+                if (*ptr != '}') {
+                    cx_error("cx_string_deser: missing '}' in string '%s'", str);
+                    goto error;
+                }
+            }
             break;
         case '"':
             if (!(ptr = cx_string_deserParseString(ptr, buffer, &bptr))) {

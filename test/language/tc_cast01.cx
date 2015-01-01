@@ -1,8 +1,8 @@
 bool result: true
 
 void fail(string msg):
-	"tc_cast01: FAIL: $msg"
-	result = false
+    "tc_cast01: FAIL: $msg"
+    result = false
 
 // Test if signedness is correctly preserved in casts between unsigned and signed numbers
 int16 minus1_16 : -1

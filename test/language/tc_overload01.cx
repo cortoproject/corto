@@ -1,14 +1,14 @@
 // Test overloading with primitive types
 bool result : true
 void fail(string msg):
-	"tc_overload01: FAIL: $msg"
-	result = false
+    "tc_overload01: FAIL: $msg"
+    result = false
 
 // Overloading with single argument
-uint32 Foo(uint32 a) = a	
+uint32 Foo(uint32 a) = a    
 float32 Foo(float32 b) = b
 string Foo(string c) = c
-	
+    
 // Overloading with two arguments
 uint32 Foo(uint32 a, uint32 b) = a * b
 uint32 Foo(float32 a, uint32 b) = a * b

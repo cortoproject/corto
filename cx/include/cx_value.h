@@ -27,13 +27,13 @@ typedef enum cx_valueKind {
 }cx_valueKind;
 
 typedef enum cx_literalKind {
-	CX_LITERAL_BOOLEAN,
-	CX_LITERAL_CHARACTER,
-	CX_LITERAL_INTEGER,
-	CX_LITERAL_UNSIGNED_INTEGER,
-	CX_LITERAL_FLOATING_POINT,
-	CX_LITERAL_STRING,
-	CX_LITERAL_NULL
+    CX_LITERAL_BOOLEAN,
+    CX_LITERAL_CHARACTER,
+    CX_LITERAL_INTEGER,
+    CX_LITERAL_UNSIGNED_INTEGER,
+    CX_LITERAL_FLOATING_POINT,
+    CX_LITERAL_STRING,
+    CX_LITERAL_NULL
 }cx_literalKind;
 
 /* cx_value
@@ -57,15 +57,15 @@ struct cx_value {
             cx_uint64 storage; /* Optional storage for a value. */
         }value;
         struct {
-        	cx_literalKind kind;
-        	union {
-        		cx_bool _boolean;
-        		cx_char _character;
-        		cx_int64 _integer;
-        		cx_uint64 _unsigned_integer;
-        		cx_float64 _floating_point;
-        		cx_string _string;
-        	}v;
+            cx_literalKind kind;
+            union {
+                cx_bool _boolean;
+                cx_char _character;
+                cx_int64 _integer;
+                cx_uint64 _unsigned_integer;
+                cx_float64 _floating_point;
+                cx_string _string;
+            }v;
         }literal;
         struct {
             cx_object o;
@@ -73,8 +73,8 @@ struct cx_value {
             cx_void* v;
         }member;
         struct {
-        	cx_object o;
-        	cx_function t;
+            cx_object o;
+            cx_function t;
         }call;
         struct {
             cx_object o;

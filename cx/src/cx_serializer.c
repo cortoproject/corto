@@ -33,7 +33,7 @@ cx_int16 cx_serializeValue(cx_serializer _this, cx_value* info, void* userData) 
     cb = NULL;
 
     if (!_this->initialized) {
-    	cx_assert(0, "serializer is not initialized!");
+        cx_assert(0, "serializer is not initialized!");
     }
 
     if (!_this->constructed) {
@@ -62,19 +62,19 @@ cx_int16 cx_serializeValue(cx_serializer _this, cx_value* info, void* userData) 
 
     return result;
 error:
-	return -1;
+    return -1;
 }
 
 void cx_serializerInit(cx_serializer _this) {
     memset(_this, 0, sizeof(struct cx_serializer_s));
     _this->program[CX_ANY] = cx_serializeAny;
     _this->program[CX_BASE] = cx_serializeValue;
-	_this->program[CX_COMPOSITE] = cx_serializeMembers;
-	_this->program[CX_COLLECTION] = cx_serializeElements;
-	_this->initialized = TRUE;
-	_this->constructed = FALSE;
-	_this->access = CX_GLOBAL;
-	_this->accessKind = CX_XOR;
+    _this->program[CX_COMPOSITE] = cx_serializeMembers;
+    _this->program[CX_COLLECTION] = cx_serializeElements;
+    _this->initialized = TRUE;
+    _this->constructed = FALSE;
+    _this->access = CX_GLOBAL;
+    _this->accessKind = CX_XOR;
 }
 
 /* Start serializing */
@@ -84,7 +84,7 @@ cx_int16 cx_serialize(cx_serializer _this, cx_object o, void* userData) {
     cx_int16 result;
     
     if (_this->initialized != TRUE) {
-    	cx_assert(0, "serializer is not initialized!");
+        cx_assert(0, "serializer is not initialized!");
     }
     
     info.kind = CX_OBJECT;
@@ -100,7 +100,7 @@ cx_int16 cx_serialize(cx_serializer _this, cx_object o, void* userData) {
     _this->constructed = TRUE;
 
     if (!(cb = _this->metaprogram[CX_OBJECT])) {
-    	cb = cx_serializeValue;
+        cb = cx_serializeValue;
     }
     
 #ifdef CX_SERIALIZER_TRACING
@@ -139,18 +139,18 @@ cx_bool cx_serializeMatchAccess(cx_operatorKind accessKind, cx_modifier sa, cx_m
 
     switch(accessKind) {
     case CX_OR:
-    	result = (sa & a);
-    	break;
+        result = (sa & a);
+        break;
     case CX_XOR:
-    	result = (sa & a) == sa;
-    	break;
+        result = (sa & a) == sa;
+        break;
     case CX_NOT:
-    	result = !(sa & a);
-    	break;
+        result = !(sa & a);
+        break;
     default:
-    	cx_error("unsupported operator %s for serializer accessKind.", cx_nameof(cx_enum_constant(cx_operatorKind_o, accessKind)));
-    	result = FALSE;
-    	break;
+        cx_error("unsupported operator %s for serializer accessKind.", cx_nameof(cx_enum_constant(cx_operatorKind_o, accessKind)));
+        result = FALSE;
+        break;
     }
 
     return result;
@@ -202,12 +202,12 @@ cx_int16 cx_serializeMembers(cx_serializer _this, cx_value* info, void* userData
             {
                 cx_id id;
                 printf("%*sbase(%s)\n", indent, " ", cx_fullname(base.is.base.t, id)); fflush(stdout);
-			}
+            }
             indent++;
 #endif
             if (cb(_this, &base, userData)) {
-				goto error;
-			}
+                goto error;
+            }
 #ifdef CX_SERIALIZER_TRACING
             indent--;
 #endif
@@ -232,7 +232,7 @@ cx_int16 cx_serializeMembers(cx_serializer _this, cx_value* info, void* userData
             {
                 cx_id id, id2;
                 printf("%*smember(%s : %s)\n", indent, " ", cx_fullname(m, id2), cx_fullname(member.is.member.t->type, id)); fflush(stdout);
-			}
+            }
             indent++;
 #endif
             if (cb(_this, &member, userData)) {

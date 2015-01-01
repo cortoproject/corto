@@ -1,25 +1,25 @@
 // Test calling methods on non-reference objects
 bool result : true
 void fail(string msg):
-	"tc_method02: FAIL: $msg"
-	result = false
+    "tc_method02: FAIL: $msg"
+    result = false
 
 struct Point::
-	member x,y : int32	
-	int32 getX() = x
-	int32 getY() = y
-	void add(Point p):
-		x += p.x
-		y += p.y
-	
+    member x,y : int32    
+    int32 getX() = x
+    int32 getY() = y
+    void add(Point p):
+        x += p.x
+        y += p.y
+    
 struct Point3D : Point::
-	member z : int32
-	int32 getZ() = z
-	void add(Point3D p):
-		super.add(p)
-		z += p.z
-		
-	int32 sum() = getX() + getY() + getZ()
+    member z : int32
+    int32 getZ() = z
+    void add(Point3D p):
+        super.add(p)
+        z += p.z
+        
+    int32 sum() = getX() + getY() + getZ()
 
 // Call methods on objects of a non-reference type
 Point3D p1 : 10,20,30

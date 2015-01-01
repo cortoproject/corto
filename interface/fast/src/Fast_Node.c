@@ -83,11 +83,11 @@ cx_int16 Fast_Node_init(Fast_Node object) {
 /* ::cortex::Fast::Node::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
 cx_ic Fast_Node_toIc_v(Fast_Node _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Node::toIc) */
-	CX_UNUSED(_this);
-	CX_UNUSED(program);
-	CX_UNUSED(storage);
-	CX_UNUSED(stored);
-	/* No code is generated for statement */
-	return NULL;
+    CX_UNUSED(_this);
+    CX_UNUSED(program);
+    CX_UNUSED(storage);
+    CX_UNUSED(stored);
+    /* No code is generated for statement */
+    return NULL;
 /* $end */
 }

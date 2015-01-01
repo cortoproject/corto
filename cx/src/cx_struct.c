@@ -73,9 +73,9 @@ cx_int16 cx_struct_construct(cx_struct object) {
     /* Get maximum alignment from self and base-class and copy template parameters */
     if (base) {
         if (!cx_instanceof(cx_typedef(cx_struct_o), base)) {
-        	cx_id id, id2;
-        	cx_error("struct '%s' inherits from non-struct type '%s'", cx_fullname(object, id), cx_fullname(base, id2));
-        	goto error;
+            cx_id id, id2;
+            cx_error("struct '%s' inherits from non-struct type '%s'", cx_fullname(object, id), cx_fullname(base, id2));
+            goto error;
         }
 
         if (cx_type(base)->alignment) {
@@ -93,7 +93,7 @@ cx_int16 cx_struct_construct(cx_struct object) {
         size = cx_type(base)->size;
 
         if (cx_type(base)->hasResources) {
-        	cx_type(object)->hasResources = TRUE;
+            cx_type(object)->hasResources = TRUE;
         }
     }
 
@@ -124,7 +124,7 @@ cx_int16 cx_struct_init(cx_struct object) {
     }
 
     if (cx_interface_init(cx_interface(object))) {
-    	goto error;
+        goto error;
     }
 
     cx_interface(object)->kind = CX_STRUCT;

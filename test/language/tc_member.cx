@@ -1,21 +1,21 @@
 bool result : true
 
 void test(int32 value, int32 test, string msg):
-	if value != test:
-		"tc_member: FAIL: $msg"
-		result = false
+    if value != test:
+        "tc_member: FAIL: $msg"
+        result = false
 
 struct Point::
-	member x,y : int32
-	
+    member x,y : int32
+    
 struct Line::
-	member start,end : Point
-	
+    member start,end : Point
+    
 class Triangle::
-	member v1,v2,v3 : Point
-	
+    member v1,v2,v3 : Point
+    
 class TriangleHolder::
-	member triangle : ::Triangle
+    member triangle : ::Triangle
 
 // var of non-reference type
 var Line lineA = {start={1,2} end={3,4}}
@@ -54,13 +54,13 @@ var Triangle triangleA = triangleB
 Triangle triangleC : v1={3,4} v2={5,6} v3={7,8}
 TriangleHolder holder : triangleB
 if holder.triangle != triangleB:
-	io::println("holder.triangle")
-	result = false
+    io::println("holder.triangle")
+    result = false
 
 holder.triangle = triangleC
 if holder.triangle != triangleC:
-	io::println("holder.triangle (2)")
-	result = false
+    io::println("holder.triangle (2)")
+    result = false
 
 test(lineA.start.x, 10, "lineA.start.x")
 test(lineA.start.y, 20, "lineA.start.y")
@@ -90,6 +90,6 @@ test(triangleB.v2.x, 30, "triangleB.v2.x")
 test(triangleB.v2.y, 40, "triangleB.v2.y")
 test(triangleB.v3.x, 50, "triangleB.v3.x")
 test(triangleB.v3.y, 60, "triangleB.v3.y")
-	
+    
 if result: "tc_member: OK"
-	
+    

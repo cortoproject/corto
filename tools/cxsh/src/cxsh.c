@@ -19,7 +19,7 @@
 #define CXSH_COL_TYPE     (32)
 #define CXSH_COL_STATE    (15)
 #define CXSH_COL_ATTR     (10)
-#define CXSH_COL_TOTAL	  (CXSH_COL_NAME + CXSH_COL_TYPE + CXSH_COL_STATE + CXSH_COL_ATTR)
+#define CXSH_COL_TOTAL      (CXSH_COL_NAME + CXSH_COL_TYPE + CXSH_COL_STATE + CXSH_COL_ATTR)
 
 #define BLACK  "\033[1;30m"
 #define RED    "\033[1;31m"
@@ -43,44 +43,44 @@
 static cx_object scope = NULL;
 
 static void cxsh_color(const char *string) {
-	printf("%s", string);
+    printf("%s", string);
 }
 
 static void cxsh_printColumn(cx_string str, int width){
-	printf("%s%*s", str, (int)(width - strlen(str)), " ");
+    printf("%s%*s", str, (int)(width - strlen(str)), " ");
 }
 
 static void cxsh_printColumnBar(int width) {
-	while(width) {
-		printf("=");
-		width--;
-	}
-	printf("\n");
+    while(width) {
+        printf("=");
+        width--;
+    }
+    printf("\n");
 }
 
 static void cxsh_printColumnHeader(void) {
-	printf("  ");
-	cxsh_printColumn("name", CXSH_COL_NAME);
-	cxsh_printColumn("type", CXSH_COL_TYPE);
-	cxsh_printColumn("state", CXSH_COL_STATE);
-	cxsh_printColumn("attr", CXSH_COL_ATTR);
-	cxsh_color(INTERFACE_COLOR);
-	printf("\n");
-	cxsh_printColumnBar(CXSH_COL_TOTAL);
-	cxsh_color(NORMAL);
+    printf("  ");
+    cxsh_printColumn("name", CXSH_COL_NAME);
+    cxsh_printColumn("type", CXSH_COL_TYPE);
+    cxsh_printColumn("state", CXSH_COL_STATE);
+    cxsh_printColumn("attr", CXSH_COL_ATTR);
+    cxsh_color(INTERFACE_COLOR);
+    printf("\n");
+    cxsh_printColumnBar(CXSH_COL_TOTAL);
+    cxsh_color(NORMAL);
 }
 
 /* Print shell prompt */
 static void cxsh_prompt(cx_object scope) {
-	cx_id id;
-	cx_fullname(scope, id);
+    cx_id id;
+    cx_fullname(scope, id);
 
-	printf("%s%s%s %s$%s ", OBJECT_COLOR, id, NORMAL, SHELL_COLOR, NORMAL);
+    printf("%s%s%s %s$%s ", OBJECT_COLOR, id, NORMAL, SHELL_COLOR, NORMAL);
 }
 
 /* Translate object state to string */
 static char* cxsh_stateStr(cx_object o, char* buff) {
-	buff[0] = '\0';
+    buff[0] = '\0';
 
     /* Get state */
     if (cx_checkState(o, CX_VALID)) {
@@ -98,80 +98,80 @@ static char* cxsh_stateStr(cx_object o, char* buff) {
 
 /* Translate object attributes to string */
 static char* cxsh_attrStr(cx_object o, char* buff) {
-	cx_bool first;
-	*buff = '\0';
+    cx_bool first;
+    *buff = '\0';
 
-	first = TRUE;
-	if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
-		strcat(buff, "S");
-		first = FALSE;
-	}
-	if (cx_checkAttr(o, CX_ATTR_WRITABLE)) {
-		if (!first) {
-			strcat(buff, "|W");
-		} else {
-			strcat(buff, "W");
-			first = FALSE;
-		}
-	}
-	if (cx_checkAttr(o, CX_ATTR_OBSERVABLE)) {
-		if (!first) {
-			strcat(buff, "|O");
-		} else {
-			strcat(buff, "O");
-		}
-	}
+    first = TRUE;
+    if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
+        strcat(buff, "S");
+        first = FALSE;
+    }
+    if (cx_checkAttr(o, CX_ATTR_WRITABLE)) {
+        if (!first) {
+            strcat(buff, "|W");
+        } else {
+            strcat(buff, "W");
+            first = FALSE;
+        }
+    }
+    if (cx_checkAttr(o, CX_ATTR_OBSERVABLE)) {
+        if (!first) {
+            strcat(buff, "|O");
+        } else {
+            strcat(buff, "O");
+        }
+    }
     return buff;
 }
 
 static int cxsh_scopeWalk(cx_object o, void* udata) {
-	cx_id typeName;
-	char state[sizeof("valid | declared | defined")];
-	char attr[sizeof("scope | writable | observable")];
+    cx_id typeName;
+    char state[sizeof("valid | declared | defined")];
+    char attr[sizeof("scope | writable | observable")];
 
-	CX_UNUSED(udata);
+    CX_UNUSED(udata);
 
-	/* Get name of type */
-	cx_fullname(cx_typeof(o), typeName);
+    /* Get name of type */
+    cx_fullname(cx_typeof(o), typeName);
 
-	/* Print columns */
-	printf("  ");
-	cxsh_color(OBJECT_COLOR); cxsh_printColumn(cx_nameof(o), CXSH_COL_NAME); cxsh_color(NORMAL);
-	cxsh_color(TYPE_COLOR); cxsh_printColumn(typeName, CXSH_COL_TYPE); cxsh_color(NORMAL);
-	cxsh_color(META_COLOR);
-	cxsh_printColumn(cxsh_stateStr(o, state), CXSH_COL_STATE);
-	cxsh_printColumn(cxsh_attrStr(o, attr), CXSH_COL_ATTR);
-	cxsh_color(NORMAL);
+    /* Print columns */
+    printf("  ");
+    cxsh_color(OBJECT_COLOR); cxsh_printColumn(cx_nameof(o), CXSH_COL_NAME); cxsh_color(NORMAL);
+    cxsh_color(TYPE_COLOR); cxsh_printColumn(typeName, CXSH_COL_TYPE); cxsh_color(NORMAL);
+    cxsh_color(META_COLOR);
+    cxsh_printColumn(cxsh_stateStr(o, state), CXSH_COL_STATE);
+    cxsh_printColumn(cxsh_attrStr(o, attr), CXSH_COL_ATTR);
+    cxsh_color(NORMAL);
 
-	printf("\n");
-	return 1;
+    printf("\n");
+    return 1;
 }
 
 /* List scope */
 static void cxsh_ls(char* arg) {
-	cx_rbtree _scope;
-	cx_object o;
+    cx_rbtree _scope;
+    cx_object o;
 
-	if (arg && strlen(arg)) {
-	    o = cx_resolve(scope, arg);
-	    if (!o) {
-	    	cxsh_color(ERROR_COLOR);
-	        cx_error("expression '%s' did not resolve to object.", arg);
-	        cxsh_color(NORMAL);
-	        return;
-	    }
-	} else {
-	    o = scope;
-	    cx_keep(o);
-	}
+    if (arg && strlen(arg)) {
+        o = cx_resolve(scope, arg);
+        if (!o) {
+            cxsh_color(ERROR_COLOR);
+            cx_error("expression '%s' did not resolve to object.", arg);
+            cxsh_color(NORMAL);
+            return;
+        }
+    } else {
+        o = scope;
+        cx_keep(o);
+    }
 
-	/* Get scope */
-	_scope = cx_scopeof(o);
+    /* Get scope */
+    _scope = cx_scopeof(o);
 
-	/* Print column header */
-	cxsh_printColumnHeader();
+    /* Print column header */
+    cxsh_printColumnHeader();
 
-	if (_scope && cx_rbtreeSize(_scope)) {
+    if (_scope && cx_rbtreeSize(_scope)) {
         /* Walk scope, print contents */
         cx_rbtreeWalk(_scope, cxsh_scopeWalk, NULL);
 
@@ -180,16 +180,16 @@ static void cxsh_ls(char* arg) {
         } else {
             printf("total: %d objects\n", cx_rbtreeSize(_scope));
         }
-	} else {
-	    printf("no objects.\n");
-	}
+    } else {
+        printf("no objects.\n");
+    }
 
-	cx_free(o);
+    cx_free(o);
 }
 
 typedef struct cxsh_treeWalk_t {
-	cx_uint8 indent;
-	cx_uint32 count;
+    cx_uint8 indent;
+    cx_uint32 count;
 }cxsh_treeWalk_t;
 
 /* Walk object-hierarchy */
@@ -243,7 +243,7 @@ static void cxsh_tree(char* arg) {
     if (arg && strlen(arg)) {
         o = cx_resolve(scope, arg);
         if (!o) {
-        	cxsh_color(ERROR_COLOR);
+            cxsh_color(ERROR_COLOR);
             cx_error("expression '%s' did not resolve to object.", arg);
             cxsh_color(NORMAL);
             return;
@@ -276,7 +276,7 @@ static void cxsh_cd(char* arg) {
         if (cx_parentof(scope)) {
             scope = cx_parentof(scope);
         } else {
-        	cxsh_color(ERROR_COLOR);
+            cxsh_color(ERROR_COLOR);
             cx_error("scope is root.");
             cxsh_color(NORMAL);
             return;
@@ -287,7 +287,7 @@ static void cxsh_cd(char* arg) {
         if (o) {
             scope = o;
         } else {
-        	cxsh_color(ERROR_COLOR);
+            cxsh_color(ERROR_COLOR);
             cx_error("expression '%s' did not resolve to object.", arg);
             cxsh_color(NORMAL);
             return;
@@ -310,7 +310,7 @@ static int cxsh_show(char* object) {
 
     if ((o = cx_resolve(scope, object))) {
 
-    	/* Initialize serializer userData */
+        /* Initialize serializer userData */
         s = cx_string_ser(CX_PRIVATE, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
         sdata.buffer = NULL;
         sdata.length = 0;
@@ -319,30 +319,30 @@ static int cxsh_show(char* object) {
         sdata.compactNotation = FALSE;
         sdata.prefixType = FALSE;
 
-    	/* Print object properties */
+        /* Print object properties */
         if (o) {
-			printf("%sname:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, OBJECT_COLOR, cx_fullname(o, id), NORMAL);
-			printf("%stype:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, TYPE_COLOR, cx_fullname(cx_typeof(o), id), NORMAL);
-			printf("%saddress:%s      <%p>\n", INTERFACE_COLOR, NORMAL, o);
-			printf("%srefcount:%s     %d\n", INTERFACE_COLOR, NORMAL, cx_countof(o)-1); /* Correct for cxsh's own keep */
-			printf("%sstate:%s        %s%s%s\n", INTERFACE_COLOR, NORMAL, META_COLOR, cxsh_stateStr(o, state), NORMAL);
-			printf("%sattributes:%s   %s%s%s\n", INTERFACE_COLOR, NORMAL, META_COLOR, cxsh_attrStr(o, attr), NORMAL);
-			if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
-				printf("%sparent:       %s%s%s\n", INTERFACE_COLOR, OBJECT_COLOR, cx_fullname(cx_parentof(o), id), NORMAL);
-				if (cx_scopeof(o)) {
-					printf("%schildcount:%s   %d\n", INTERFACE_COLOR, NORMAL, cx_rbtreeSize(cx_scopeof(o)));
-				}
-			}
+            printf("%sname:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, OBJECT_COLOR, cx_fullname(o, id), NORMAL);
+            printf("%stype:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, TYPE_COLOR, cx_fullname(cx_typeof(o), id), NORMAL);
+            printf("%saddress:%s      <%p>\n", INTERFACE_COLOR, NORMAL, o);
+            printf("%srefcount:%s     %d\n", INTERFACE_COLOR, NORMAL, cx_countof(o)-1); /* Correct for cxsh's own keep */
+            printf("%sstate:%s        %s%s%s\n", INTERFACE_COLOR, NORMAL, META_COLOR, cxsh_stateStr(o, state), NORMAL);
+            printf("%sattributes:%s   %s%s%s\n", INTERFACE_COLOR, NORMAL, META_COLOR, cxsh_attrStr(o, attr), NORMAL);
+            if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
+                printf("%sparent:       %s%s%s\n", INTERFACE_COLOR, OBJECT_COLOR, cx_fullname(cx_parentof(o), id), NORMAL);
+                if (cx_scopeof(o)) {
+                    printf("%schildcount:%s   %d\n", INTERFACE_COLOR, NORMAL, cx_rbtreeSize(cx_scopeof(o)));
+                }
+            }
         }
 
         /* Serialize value to string */
         cx_serialize(&s, o, &sdata);
         if (sdata.buffer) {
-        	if (o) {
-        		printf("%svalue:%s        ", INTERFACE_COLOR, NORMAL);
-        	}
+            if (o) {
+                printf("%svalue:%s        ", INTERFACE_COLOR, NORMAL);
+            }
 
-        	printf("%s\n", sdata.buffer);
+            printf("%s\n", sdata.buffer);
             cx_dealloc(sdata.buffer);
             sdata.buffer = NULL;
             sdata.ptr = NULL;
@@ -350,15 +350,15 @@ static int cxsh_show(char* object) {
 
         /* If object is a type, do a metawalk with the string-serializer */
         if (o) {
-			if (cx_class_instanceof(cx_type_o, o) && cx_checkState(o, CX_DEFINED)) {
-			    s.access = CX_LOCAL | CX_READONLY | CX_PRIVATE;
-			    s.accessKind = CX_NOT;
-				cx_metaWalk(&s, o, &sdata);
-				if (sdata.buffer) {
-					printf("%sinitializer:%s     %s\n", INTERFACE_COLOR, NORMAL, sdata.buffer);
-					cx_dealloc(sdata.buffer);
-				}
-			}
+            if (cx_class_instanceof(cx_type_o, o) && cx_checkState(o, CX_DEFINED)) {
+                s.access = CX_LOCAL | CX_READONLY | CX_PRIVATE;
+                s.accessKind = CX_NOT;
+                cx_metaWalk(&s, o, &sdata);
+                if (sdata.buffer) {
+                    printf("%sinitializer:%s     %s\n", INTERFACE_COLOR, NORMAL, sdata.buffer);
+                    cx_dealloc(sdata.buffer);
+                }
+            }
         }
 
         if (o) {
@@ -370,9 +370,9 @@ static int cxsh_show(char* object) {
         cx_toggleEcho(TRUE);
         return 0;
     } else {
-    	cx_error("expression '%s' does not resolve to object", object);
+        cx_error("expression '%s' does not resolve to object", object);
         cx_toggleEcho(TRUE);
-    	return -1;
+        return -1;
     }
 }
 
@@ -383,58 +383,58 @@ static void cxsh_import(char* file) {
 
 /* Drop scope */
 static void cxsh_drop(char* name) {
-	cx_object o;
+    cx_object o;
 
-	o = cx_resolve(scope, name);
-	if (o) {
-		cx_drop(o);
-		cx_free(o);
-	} else {
-		cxsh_color(ERROR_COLOR);
-		cx_error("expression '%s' did not resolve to object.", scope);
-		cxsh_color(NORMAL);
-	}
+    o = cx_resolve(scope, name);
+    if (o) {
+        cx_drop(o);
+        cx_free(o);
+    } else {
+        cxsh_color(ERROR_COLOR);
+        cx_error("expression '%s' did not resolve to object.", scope);
+        cxsh_color(NORMAL);
+    }
 }
 
 static void cxsh_help(void) {
-	printf("%sLyra shell help%s\n", HEADER_COLOR, NORMAL);
-	printf("\n");
-	printf("Use cortex-expressions to read or modify data in the cortex database.\n");
-	printf("If the expression resolves to an object the shell will display the object\n");
-	printf("and its metadata. If shell-commands conflict with an objectname prefix the\n");
-	printf("command with an '\\'.\n");
-	printf("\n");
-	printf("%sAvailable commands:%s\n", HEADER_COLOR, NORMAL);
-	printf("  %sls [scope]%s\n", HEADER_COLOR, NORMAL);
-	printf("      List contents of a scope. If no scope is provided the\n");
-	printf("      contents of the current scope is listed.\n");
-	printf("  %stree [scope]%s\n", HEADER_COLOR, NORMAL);
-	printf("      Lists contents of a scope recursively. If no scope is\n");
-	printf("      provided the current scope is listed.\n");
-	printf("  %scd [scope]%s\n", HEADER_COLOR, NORMAL);
-	printf("      Change current scope to specified scope.\n");
-	printf("  %simport [file]%s\n", HEADER_COLOR, NORMAL);
-	printf("      Load a file into the database. The file can be of any type\n");
-	printf("      that is supported by cortex.\n");
-	printf("  %sclear%s\n", HEADER_COLOR, NORMAL);
-	printf("      Clears the screen.\n");
-	printf("  %sexit%s\n", HEADER_COLOR, NORMAL);
-	printf("      Exit database shell.\n");
-	printf("\n");
-	printf("%sExamples:%s\n", HEADER_COLOR, NORMAL);
-	printf("  %s$%s ls cortex::lang\n", SHELL_COLOR, NORMAL);
-	printf("      List objects in scope 'cortex::lang'\n");
-	printf("  %s$%s cortex::lang::class\n", SHELL_COLOR, NORMAL);
-	printf("      Display object 'cortex::lang::class'\n");
-	printf("\n");
+    printf("%sLyra shell help%s\n", HEADER_COLOR, NORMAL);
+    printf("\n");
+    printf("Use cortex-expressions to read or modify data in the cortex database.\n");
+    printf("If the expression resolves to an object the shell will display the object\n");
+    printf("and its metadata. If shell-commands conflict with an objectname prefix the\n");
+    printf("command with an '\\'.\n");
+    printf("\n");
+    printf("%sAvailable commands:%s\n", HEADER_COLOR, NORMAL);
+    printf("  %sls [scope]%s\n", HEADER_COLOR, NORMAL);
+    printf("      List contents of a scope. If no scope is provided the\n");
+    printf("      contents of the current scope is listed.\n");
+    printf("  %stree [scope]%s\n", HEADER_COLOR, NORMAL);
+    printf("      Lists contents of a scope recursively. If no scope is\n");
+    printf("      provided the current scope is listed.\n");
+    printf("  %scd [scope]%s\n", HEADER_COLOR, NORMAL);
+    printf("      Change current scope to specified scope.\n");
+    printf("  %simport [file]%s\n", HEADER_COLOR, NORMAL);
+    printf("      Load a file into the database. The file can be of any type\n");
+    printf("      that is supported by cortex.\n");
+    printf("  %sclear%s\n", HEADER_COLOR, NORMAL);
+    printf("      Clears the screen.\n");
+    printf("  %sexit%s\n", HEADER_COLOR, NORMAL);
+    printf("      Exit database shell.\n");
+    printf("\n");
+    printf("%sExamples:%s\n", HEADER_COLOR, NORMAL);
+    printf("  %s$%s ls cortex::lang\n", SHELL_COLOR, NORMAL);
+    printf("      List objects in scope 'cortex::lang'\n");
+    printf("  %s$%s cortex::lang::class\n", SHELL_COLOR, NORMAL);
+    printf("      Display object 'cortex::lang::class'\n");
+    printf("\n");
 }
 
 static int cxsh_doCmd(char* cmd) {
-	char arg[CXSH_CMD_MAX];
+    char arg[CXSH_CMD_MAX];
 
-	arg[0] = '\0';
+    arg[0] = '\0';
 
-	/* ls */
+    /* ls */
     if (!memcmp(cmd, "ls", strlen("ls"))) {
         sscanf(cmd, "ls  %s", arg);
         cxsh_ls(arg);
@@ -459,94 +459,94 @@ static int cxsh_doCmd(char* cmd) {
         cxsh_import(arg);
     } else/* drop */
     if (!memcmp(cmd, "drop", strlen("drop"))) {
-    	sscanf(cmd, "drop %s", arg);
-    	cxsh_drop(arg);
+        sscanf(cmd, "drop %s", arg);
+        cxsh_drop(arg);
     } else if (!memcmp(cmd, "clear", strlen("clear"))) {
-    	system("clear");
+        system("clear");
     } else if (!memcmp(cmd, "help", strlen("help"))) {
-    	cxsh_help();
+        cxsh_help();
     } else {
-    	cx_char *lastErr;
-    	if ((lastErr = cx_lasterror())) {
-    		cxsh_color(ERROR_COLOR);
-    		cx_error("%s", lastErr);
-    		cxsh_color(NORMAL);
-    	} else {
-    		cxsh_color(ERROR_COLOR);
-    		cx_error("expression '%s' did not resolve to a valid expression or command", cmd);
-    		cxsh_color(NORMAL);
-    	}
+        cx_char *lastErr;
+        if ((lastErr = cx_lasterror())) {
+            cxsh_color(ERROR_COLOR);
+            cx_error("%s", lastErr);
+            cxsh_color(NORMAL);
+        } else {
+            cxsh_color(ERROR_COLOR);
+            cx_error("expression '%s' did not resolve to a valid expression or command", cmd);
+            cxsh_color(NORMAL);
+        }
     }
 
     return 0;
 quit:
-	return 1;
+    return 1;
 }
 
 /* Shell */
 static void cxsh_shell(void) {
-	char cmd[CXSH_CMD_MAX];
-	cx_bool quit;
+    char cmd[CXSH_CMD_MAX];
+    cx_bool quit;
 
-	quit = FALSE;
+    quit = FALSE;
 
-	while(!quit) {
-		/* Print prompt */
-		cxsh_prompt(scope);
+    while(!quit) {
+        /* Print prompt */
+        cxsh_prompt(scope);
 
-		cmd[0] = '\0';
+        cmd[0] = '\0';
 
-		/* Read command */
-		if (fgets(cmd, 256, stdin) == 0) {
-			continue;
-		}
+        /* Read command */
+        if (fgets(cmd, 256, stdin) == 0) {
+            continue;
+        }
 
-		/* Strip '\n' */
-		cmd[strlen(cmd) - 1] = '\0';
+        /* Strip '\n' */
+        cmd[strlen(cmd) - 1] = '\0';
 
-		/* Forward commands */
-		if (strlen(cmd)) {
+        /* Forward commands */
+        if (strlen(cmd)) {
             if (cmd[0] == '/') {
-            	if (cxsh_doCmd(cmd+1)) {
-            		quit = TRUE;
-            	}
+                if (cxsh_doCmd(cmd+1)) {
+                    quit = TRUE;
+                }
             } else {
                 if (cxsh_show(cmd)) {
-                	if (cxsh_doCmd(cmd)) {
-                		quit = TRUE;
-                	}
+                    if (cxsh_doCmd(cmd)) {
+                        quit = TRUE;
+                    }
                 }
             }
-		}
-	}
+        }
+    }
 }
 
 
 int main(int argc, char* argv[]) {
-	int i;
+    int i;
 
-	/* Start database */
-	cx_start();
+    /* Start database */
+    cx_start();
 
-	printf("cortex shell - type 'help' for instructions.\n");
+    printf("cortex shell - type 'help' for instructions.\n");
 
-	/* Parse arguments */
-	for(i=1; i<argc; i++) {
-		if ( cx_load(argv[i]) ) {
-			printf("%s\n", cx_lasterror());
-		}
-	}
+    /* Parse arguments */
+    for(i=1; i<argc; i++) {
+        if ( cx_load(argv[i]) ) {
+            printf("%s\n", cx_lasterror());
+        }
+    }
 
-	/* Assign scope to root */
-	scope = root_o;
-	cx_keep(root_o); /* Keep scope */
+    /* Assign scope to root */
+    scope = root_o;
+    cx_keep(root_o); /* Keep scope */
 
-	cxsh_shell();
+    cxsh_shell();
 
-	cx_free(scope); /* Free scope */
+    cx_free(scope); /* Free scope */
 
-	/* Stop database */
-	cx_stop();
+    /* Stop database */
+    cx_stop();
 
-	return 0;
+    return 0;
 }

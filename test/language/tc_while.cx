@@ -1,13 +1,13 @@
 bool result : true
 void fail(string msg):
-	"tc_while: FAIL: $msg"
-	result = false
+    "tc_while: FAIL: $msg"
+    result = false
 
 var uint32 i
 
 i=10 
 while i:
-	i--
+    i--
 if i: fail("while (1)")
 
 i=10
@@ -16,23 +16,23 @@ if i: fail("while (2)")
 
 i=0
 while i<10:
-	i++
+    i++
 if i != 10: fail("while (3)")
 
 i=10
 :
-	i--
-	while i
+    i--
+    while i
 if i != 0: fail("while (4)")
 
 i=0
 while 0:
-	i++
+    i++
 if i: fail("while (5)")
 
 i=0
 while !1:
-	i++
+    i++
 if i: fail("while (6)")
 
 if result: "tc_while: OK"

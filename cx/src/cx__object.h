@@ -60,11 +60,11 @@ typedef struct cx__observer cx__observer;
 typedef void (*cx__notifyCallback)(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask);
 
 struct cx__observer {
-	cx_object _this;
-	cx_observer observer;
-	cx_int32 count;
-	cx__notifyCallback notify;
-	cx_bool enabled;
+    cx_object _this;
+    cx_observer observer;
+    cx_int32 count;
+    cx__notifyCallback notify;
+    cx_bool enabled;
 };
 
 typedef struct cx__observable cx__observable;

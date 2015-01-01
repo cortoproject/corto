@@ -14,7 +14,7 @@
 #include "cx__collection.h"
 
 cx_int16 cx__enum_bindConstant(cx_enum _this, cx_constant* c) {
-	cx_rbtree scope;
+    cx_rbtree scope;
 
     if (cx_checkState(cx_type_o, CX_DEFINED)) {
         scope = cx_scopeof(_this);
@@ -26,7 +26,7 @@ cx_int16 cx__enum_bindConstant(cx_enum _this, cx_constant* c) {
     
     cx_keep(c);
 
-	return 0;
+    return 0;
 }
 /* $end */
 
@@ -67,22 +67,22 @@ cx_object cx_enum_constant(cx_enum _this, cx_int32 value) {
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::enum::construct(lang::enum object) */
 cx_int16 cx_enum_construct(cx_enum object) {
 /* $begin(::cortex::lang::enum::construct) */
-	cx_uint32 i;
+    cx_uint32 i;
 
-	/* Define constants */
-	for(i=0; i<object->constants.length; i++) {
-		cx_define(object->constants.buffer[i]);
-	}
+    /* Define constants */
+    for(i=0; i<object->constants.length; i++) {
+        cx_define(object->constants.buffer[i]);
+    }
 
-	return cx_primitive_construct(cx_primitive(object));
+    return cx_primitive_construct(cx_primitive(object));
 /* $end */
 }
 
 /* callback ::cortex::lang::class::destruct(lang::object object) -> ::cortex::lang::enum::destruct(lang::enum object) */
 cx_void cx_enum_destruct(cx_enum object) {
 /* $begin(::cortex::lang::enum::destruct) */
-	cx_clear(cx_collection(cx_objectSeq_o), &object->constants);
-	cx_type__destruct(cx_type(object));
+    cx_clear(cx_collection(cx_objectSeq_o), &object->constants);
+    cx_type__destruct(cx_type(object));
 /* $end */
 }
 

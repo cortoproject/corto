@@ -2,36 +2,36 @@
 bool result : true
 
 class Point::
-	member x,y : int32
-	uint32 constructed:0
-	int16 construct(Point object):
-		constructed++
-	
+    member x,y : int32
+    uint32 constructed:0
+    int16 construct(Point object):
+        constructed++
+    
 class Point3D : Point::
-	member z : int32
-	uint32 constructed:0
-	int16 construct(Point3D object):
-		constructed++
-	
+    member z : int32
+    uint32 constructed:0
+    int16 construct(Point3D object):
+        constructed++
+    
 class Line::
-	member start,end : Point
-	
+    member start,end : Point
+    
 void fail(string msg):
-	"tc_initializers02: FAIL: $msg"
-	result = false
-	
+    "tc_initializers02: FAIL: $msg"
+    result = false
+    
 void test(Point p, int32 x, int32 y, string msg):
-	if p.x != x: fail("$msg.x (${p.x})")
-	if p.y != y: fail("$msg.y (${p.y})")
-		
+    if p.x != x: fail("$msg.x (${p.x})")
+    if p.y != y: fail("$msg.y (${p.y})")
+        
 void test(Point3D p, int32 x, int32 y, int32 z, string msg):
-	test(p, x, y, msg)
-	if p.z != z: fail("$msg.z (${p.z})")
-		
+    test(p, x, y, msg)
+    if p.z != z: fail("$msg.z (${p.z})")
+        
 void test(Line l, int32 x1, int32 y1, int32 x2, int32 y2, string msg):
-	test(l.start, x1, y1, "$msg.start")
-	test(l.end, x2, y2, "$msg.end")
-	
+    test(l.start, x1, y1, "$msg.start")
+    test(l.end, x2, y2, "$msg.end")
+    
 Point p1: 10,20
 Point p2: 30,40
 Point3D p3: 50,60,70

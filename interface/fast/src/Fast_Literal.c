@@ -16,7 +16,7 @@
 /* ::cortex::Fast::Literal::getValue() */
 cx_word Fast_Literal_getValue_v(Fast_Literal _this) {
 /* $begin(::cortex::Fast::Literal::getValue) */
-	cx_word result = 0;
+    cx_word result = 0;
 
     switch(_this->kind) {
     case FAST_Boolean: result = (cx_word)&Fast_Boolean(_this)->value; break;

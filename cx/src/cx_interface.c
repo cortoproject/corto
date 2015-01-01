@@ -447,7 +447,7 @@ cx_int16 cx_interface_bindMethod_v(cx_interface _this, cx_method method) {
 
     /* vtableLookup failed (probably due to a failed overloading request) */
     if (i == -1) {
-    	goto error;
+        goto error;
     }
 
     /* Function is reentrant */
@@ -488,7 +488,7 @@ cx_int16 cx_interface_bindMethod_v(cx_interface _this, cx_method method) {
     }
 
     if (cx_interface(_this)->kind == CX_INTERFACE) {
-    	method->virtual = TRUE;
+        method->virtual = TRUE;
     }
 
     return 0;
@@ -553,11 +553,11 @@ cx_int16 cx_interface_construct(cx_interface object) {
         cx_dealloc(superTable);
     }
 
-	if (!cx_scopeWalk(object, cx_interface_walkScope, object)) {
-	    goto error;
-	}
+    if (!cx_scopeWalk(object, cx_interface_walkScope, object)) {
+        goto error;
+    }
 
-	return cx_type_construct(cx_type(object));
+    return cx_type_construct(cx_type(object));
 error:
     return -1;
 /* $end */
@@ -566,12 +566,12 @@ error:
 /* callback ::cortex::lang::class::destruct(lang::object object) -> ::cortex::lang::interface::destruct(lang::interface object) */
 cx_void cx_interface_destruct(cx_interface object) {
 /* $begin(::cortex::lang::interface::destruct) */
-	cx_uint32 i;
+    cx_uint32 i;
 
-	/* Free members */
-	for(i=0; i<object->members.length; i++) {
-	    cx_free_ext(object, object->members.buffer[i], "Free member for interface");
-	}
+    /* Free members */
+    for(i=0; i<object->members.length; i++) {
+        cx_free_ext(object, object->members.buffer[i], "Free member for interface");
+    }
 
     if (object->members.buffer) {
         cx_dealloc(object->members.buffer);
@@ -580,15 +580,15 @@ cx_void cx_interface_destruct(cx_interface object) {
 
     /* Free methods */
     for(i=0; i<object->methods.length; i++) {
-    	cx_free_ext(object, object->methods.buffer[i], "Remove method from vtable.");
+        cx_free_ext(object, object->methods.buffer[i], "Remove method from vtable.");
     }
 
     if (object->methods.buffer) {
-		cx_dealloc(object->methods.buffer);
-		object->methods.buffer = NULL;
+        cx_dealloc(object->methods.buffer);
+        object->methods.buffer = NULL;
     }
 
-	cx_type__destruct(cx_type(object));
+    cx_type__destruct(cx_type(object));
 /* $end */
 }
 
@@ -682,9 +682,9 @@ cx_uint32 cx_interface_resolveMethodId(cx_interface _this, cx_string name) {
 
     /* Lookup method */
     if (cx_vtableLookup(&_this->methods, name, &result, NULL)) {
-    	if (result == -1) {
-    		goto error;
-    	}
+        if (result == -1) {
+            goto error;
+        }
         result++; /* Id's start at 1 */
     }
 

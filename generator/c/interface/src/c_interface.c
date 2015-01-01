@@ -35,12 +35,12 @@ static int c_interfaceMethodParameter(cx_parameter* o, void* userData) {
 
     /* Write comma */
     if (data->firstComma) {
-    	if (data->generateSource) g_fileWrite(data->source, ", ");
-    	if (data->generateHeader) g_fileWrite(data->header, ", ");
+        if (data->generateSource) g_fileWrite(data->source, ", ");
+        if (data->generateHeader) g_fileWrite(data->header, ", ");
     }
 
     if (c_specifierId(data->g, o->type, specifier, NULL, postfix)) {
-    	goto error;
+        goto error;
     }
 
     if (data->generateSource) g_fileWrite(data->source, "%s ", specifier);
@@ -48,20 +48,20 @@ static int c_interfaceMethodParameter(cx_parameter* o, void* userData) {
 
     if (o->passByReference || ((o->type->real->kind == CX_COMPOSITE) && !o->type->real->reference)) {
         if (data->generateSource) g_fileWrite(data->source, "*");
-    	if (data->generateHeader) g_fileWrite(data->header, "*");
+        if (data->generateHeader) g_fileWrite(data->header, "*");
     }
 
-	/* Write to source */
+    /* Write to source */
     if (data->generateSource) g_fileWrite(data->source, "%s%s", o->name, postfix);
 
     /* Write to header */
-	if (data->generateHeader) g_fileWrite(data->header, "%s%s", o->name, postfix);
+    if (data->generateHeader) g_fileWrite(data->header, "%s%s", o->name, postfix);
 
-	data->firstComma++;
+    data->firstComma++;
 
-	return 1;
+    return 1;
 error:
-	return 0;
+    return 0;
 }
 
 /* Generate parameters for method */
@@ -72,79 +72,79 @@ static int c_interfaceMethodParameterName(cx_parameter* o, void* userData) {
 
     /* Write comma */
     if (data->firstComma) {
-    	g_fileWrite(data->source, ", ");
+        g_fileWrite(data->source, ", ");
     }
 
-	/* Write to source */
-	g_fileWrite(data->source, "%s",
-			o->name);
+    /* Write to source */
+    g_fileWrite(data->source, "%s",
+            o->name);
 
-	data->firstComma++;
+    data->firstComma++;
 
-	return 1;
+    return 1;
 }
 
 /* Walk parameters of function */
 static int c_interfaceParamWalk(cx_object _f, int(*action)(cx_parameter*, void*), void* userData) {
-	cx_uint32 i;
-	cx_function f = _f;
-	for(i=0; i<f->parameters.length; i++) {
-		if (!action(&(f->parameters.buffer[i]), userData)) {
-			return 0;
-		}
-	}
-	return 1;
+    cx_uint32 i;
+    cx_function f = _f;
+    for(i=0; i<f->parameters.length; i++) {
+        if (!action(&(f->parameters.buffer[i]), userData)) {
+            return 0;
+        }
+    }
+    return 1;
 }
 
 /* Add this to parameter-list */
 static void c_interfaceParamThis(cx_type parentType, c_typeWalk_t* data, cx_bool toSource, cx_bool toHeader) {
-	cx_id classId;
+    cx_id classId;
 
-	g_fullOid(data->g, parentType, classId);
+    g_fullOid(data->g, parentType, classId);
     if ((parentType->kind == CX_COMPOSITE) && !parentType->reference) {
-    	if (toSource) {
-    		g_fileWrite(data->source, "%s *_this", classId);
-    	}
-    	if (toHeader) {
-    		g_fileWrite(data->header, "%s *_this", classId);
-    	}
+        if (toSource) {
+            g_fileWrite(data->source, "%s *_this", classId);
+        }
+        if (toHeader) {
+            g_fileWrite(data->header, "%s *_this", classId);
+        }
     } else {
-    	if (toSource) {
-    		g_fileWrite(data->source, "%s _this", classId);
-    	}
-		if (toHeader) {
-			g_fileWrite(data->header, "%s _this", classId);
-		}
+        if (toSource) {
+            g_fileWrite(data->source, "%s _this", classId);
+        }
+        if (toHeader) {
+            g_fileWrite(data->header, "%s _this", classId);
+        }
     }
 }
 
 /* Generate implementation for virtual methods */
 static int c_interfaceGenerateVirtual(cx_method o, c_typeWalk_t* data) {
-	cx_id id, returnTypeId, classId, returnPostfix;
-	cx_bool returnsValue;
-	cx_id nameString;
+    cx_id id, returnTypeId, classId, returnPostfix;
+    cx_bool returnsValue;
+    cx_id nameString;
     g_file originalSource = data->source;
 
     /* Replace the source with the wrapper so that all nested functions use the correct outputfile.
      * This file will be restored at the end of the function */
     data->source = data->wrapper;
 
-	if (((cx_function)o)->returnType && (cx_function(o)->returnType->real->kind != CX_VOID)) {
-		returnsValue = TRUE;
-		c_specifierId(data->g, cx_function(o)->returnType, returnTypeId, NULL, returnPostfix);
-	} else {
-		returnsValue = FALSE;
-		strcpy(returnTypeId, "void");
-	}
+    if (((cx_function)o)->returnType && (cx_function(o)->returnType->real->kind != CX_VOID)) {
+        returnsValue = TRUE;
+        c_specifierId(data->g, cx_function(o)->returnType, returnTypeId, NULL, returnPostfix);
+    } else {
+        returnsValue = FALSE;
+        strcpy(returnTypeId, "void");
+    }
 
-	g_fullOid(data->g, cx_parentof(o), classId);
+    g_fullOid(data->g, cx_parentof(o), classId);
 
-	/* Write to sourcefile */
-	g_fileWrite(data->wrapper, "\n");
-	g_fileWrite(data->wrapper, "/* virtual %s */\n", cx_fullname(o, id));
-	g_fileWrite(data->wrapper, "%s %s(",
-			returnTypeId,
-			g_fullOid(data->g, o, id));
+    /* Write to sourcefile */
+    g_fileWrite(data->wrapper, "\n");
+    g_fileWrite(data->wrapper, "/* virtual %s */\n", cx_fullname(o, id));
+    g_fileWrite(data->wrapper, "%s %s(",
+            returnTypeId,
+            g_fullOid(data->g, o, id));
 
     g_fileWrite(data->header, "\n");
     g_fileWrite(data->header, "/* virtual %s */\n", cx_fullname(o, id));
@@ -152,65 +152,65 @@ static int c_interfaceGenerateVirtual(cx_method o, c_typeWalk_t* data) {
             returnTypeId,
             g_fullOid(data->g, o, id));
 
-	/* Add 'this' parameter */
+    /* Add 'this' parameter */
     c_interfaceParamThis(cx_type(cx_parentof(o)), data, TRUE, TRUE);
-	data->firstComma = 1;
-	data->generateHeader = TRUE;
+    data->firstComma = 1;
+    data->generateHeader = TRUE;
 
-	/* Walk parameters */
-	if (!c_interfaceParamWalk(o, c_interfaceMethodParameter, data)) {
-		goto error;
-	}
+    /* Walk parameters */
+    if (!c_interfaceParamWalk(o, c_interfaceMethodParameter, data)) {
+        goto error;
+    }
 
-	g_fileWrite(data->header, ");\n");
+    g_fileWrite(data->header, ");\n");
 
-	/* Obtain string for function name */
-	c_escapeString(cx_nameof(o), nameString);
+    /* Obtain string for function name */
+    c_escapeString(cx_nameof(o), nameString);
 
-	/* Begin of function */
-	g_fileWrite(data->wrapper, ") {\n");
-	g_fileIndent(data->wrapper);
-	g_fileWrite(data->wrapper, "static cx_uint32 _methodId;\n");
-	g_fileWrite(data->wrapper, "cx_method _method;\n");
-	if (returnsValue) {
-		g_fileWrite(data->wrapper, "%s _result;\n", returnTypeId);
-	}
-	g_fileWrite(data->wrapper, "cx_interface _abstract;\n\n");
-	g_fileWrite(data->wrapper, "_abstract = cx_interface(cx_typeof(_this));\n\n");
-	g_fileWrite(data->wrapper, "/* Determine methodId once, then cache it for subsequent calls. */\n");
-	g_fileWrite(data->wrapper, "if (!_methodId) {\n");
-	g_fileIndent(data->wrapper);
-	g_fileWrite(data->wrapper, "_methodId = cx_interface_resolveMethodId(_abstract, \"%s\");\n", nameString);
-	g_fileDedent(data->wrapper);
-	g_fileWrite(data->wrapper, "}\n");
-	g_fileWrite(data->wrapper, "cx_assert(_methodId, \"virtual method '%s' not found in abstract '%%s'\", cx_nameof(_abstract));\n\n", nameString);
-	g_fileWrite(data->wrapper, "/* Lookup method-object. */\n");
-	g_fileWrite(data->wrapper, "_method = cx_interface_resolveMethodById(_abstract, _methodId);\n");
-	g_fileWrite(data->wrapper, "cx_assert(_method != NULL, \"unresolved method '%%s::%s@%%d'\", cx_nameof(_this), _methodId);\n\n", nameString);
+    /* Begin of function */
+    g_fileWrite(data->wrapper, ") {\n");
+    g_fileIndent(data->wrapper);
+    g_fileWrite(data->wrapper, "static cx_uint32 _methodId;\n");
+    g_fileWrite(data->wrapper, "cx_method _method;\n");
+    if (returnsValue) {
+        g_fileWrite(data->wrapper, "%s _result;\n", returnTypeId);
+    }
+    g_fileWrite(data->wrapper, "cx_interface _abstract;\n\n");
+    g_fileWrite(data->wrapper, "_abstract = cx_interface(cx_typeof(_this));\n\n");
+    g_fileWrite(data->wrapper, "/* Determine methodId once, then cache it for subsequent calls. */\n");
+    g_fileWrite(data->wrapper, "if (!_methodId) {\n");
+    g_fileIndent(data->wrapper);
+    g_fileWrite(data->wrapper, "_methodId = cx_interface_resolveMethodId(_abstract, \"%s\");\n", nameString);
+    g_fileDedent(data->wrapper);
+    g_fileWrite(data->wrapper, "}\n");
+    g_fileWrite(data->wrapper, "cx_assert(_methodId, \"virtual method '%s' not found in abstract '%%s'\", cx_nameof(_abstract));\n\n", nameString);
+    g_fileWrite(data->wrapper, "/* Lookup method-object. */\n");
+    g_fileWrite(data->wrapper, "_method = cx_interface_resolveMethodById(_abstract, _methodId);\n");
+    g_fileWrite(data->wrapper, "cx_assert(_method != NULL, \"unresolved method '%%s::%s@%%d'\", cx_nameof(_this), _methodId);\n\n", nameString);
 
-	if (returnsValue) {
-		g_fileWrite(data->wrapper, "cx_call(cx_function(_method), &_result, _this");
-	} else {
-		g_fileWrite(data->wrapper, "cx_call(cx_function(_method), NULL, _this");
-	}
+    if (returnsValue) {
+        g_fileWrite(data->wrapper, "cx_call(cx_function(_method), &_result, _this");
+    } else {
+        g_fileWrite(data->wrapper, "cx_call(cx_function(_method), NULL, _this");
+    }
     data->firstComma = 3;
     if (!c_interfaceParamWalk(o, c_interfaceMethodParameterName, data)) {
         goto error;
     }
     g_fileWrite(data->wrapper, ");\n");
 
-	if (returnsValue) {
-		g_fileWrite(data->wrapper, "\n");
-		g_fileWrite(data->wrapper, "return _result;\n");
-	}
-	g_fileDedent(data->wrapper);
-	g_fileWrite(data->wrapper, "}\n");
+    if (returnsValue) {
+        g_fileWrite(data->wrapper, "\n");
+        g_fileWrite(data->wrapper, "return _result;\n");
+    }
+    g_fileDedent(data->wrapper);
+    g_fileWrite(data->wrapper, "}\n");
 
     data->source = originalSource;
 
-	return 0;
+    return 0;
 error:
-	return -1;
+    return -1;
 }
 
 /* Generate implementation for delegate methods */
@@ -257,18 +257,18 @@ static int c__interfaceGenerateDelegate(cx_delegate o, c_typeWalk_t* data) {
     g_fileIndent(data->wrapper);
     g_fileWrite(data->wrapper, "cx_callback _callback;\n");
     if (returnsValue) {
-    	g_fileWrite(data->wrapper, "%s _result;\n", returnTypeId);
+        g_fileWrite(data->wrapper, "%s _result;\n", returnTypeId);
     }
     g_fileWrite(data->wrapper, "/* Lookup callback-object. */\n");
     g_fileWrite(data->wrapper, "_callback = cx_class_resolveCallback(cx_class(cx_typeof(_this)), %s_o, _this);\n\n",
         g_fullOid(data->g, o, id));
     g_fileWrite(data->wrapper, "cx_assert(_callback != NULL, \"no callback '%s' for object of type '%s' (call '%s_checkCallback' first)\");\n\n", 
         cx_nameof(o), classId, g_fullOid(data->g, o, id));
-	if (returnsValue) {
-		g_fileWrite(data->wrapper, "cx_call(cx_function(_callback), &_result");
-	} else {
-		g_fileWrite(data->wrapper, "cx_call(cx_function(_callback), NULL");
-	}
+    if (returnsValue) {
+        g_fileWrite(data->wrapper, "cx_call(cx_function(_callback), &_result");
+    } else {
+        g_fileWrite(data->wrapper, "cx_call(cx_function(_callback), NULL");
+    }
     data->firstComma = 2;
     if (!c_interfaceParamWalk(o, c_interfaceMethodParameterName, data)) {
         goto error;
@@ -276,8 +276,8 @@ static int c__interfaceGenerateDelegate(cx_delegate o, c_typeWalk_t* data) {
     g_fileWrite(data->wrapper, ");\n");
 
     if (returnsValue) {
-    	g_fileWrite(data->wrapper, "\n");
-    	g_fileWrite(data->wrapper, "return _result;\n");
+        g_fileWrite(data->wrapper, "\n");
+        g_fileWrite(data->wrapper, "return _result;\n");
     }
     g_fileDedent(data->wrapper);
     g_fileWrite(data->wrapper, "}\n");
@@ -453,11 +453,11 @@ static int c_interfaceClassProcedure(cx_object o, void* userData) {
 
     /* Only generate code for procedures */
     if (cx_class_instanceof(cx_procedure_o, cx_typeof(o))) {
-		cx_id id, classId, returnSpec, returnPostfix;
-		cx_string snippet, header;
-		cx_bool delegate, callback;
-		cx_procedureKind kind;
-		cx_typedef returnType;
+        cx_id id, classId, returnSpec, returnPostfix;
+        cx_string snippet, header;
+        cx_bool delegate, callback;
+        cx_procedureKind kind;
+        cx_typedef returnType;
         cx_string doStubs = gen_getAttribute(data->g, "stubs");
 
         delegate = FALSE;
@@ -474,8 +474,8 @@ static int c_interfaceClassProcedure(cx_object o, void* userData) {
             }
         }
 
-		/* If procedure is a delegate, generate delegate forwarding-function. Nothing
-		 * further needs to be generated in the sourcefile for a delegate. */
+        /* If procedure is a delegate, generate delegate forwarding-function. Nothing
+         * further needs to be generated in the sourcefile for a delegate. */
         switch(kind) {
         case CX_DELEGATE:
             delegate = TRUE;
@@ -503,32 +503,32 @@ static int c_interfaceClassProcedure(cx_object o, void* userData) {
             }
         }
 
-		/* Generate function-return type string */
+        /* Generate function-return type string */
         returnType = ((cx_function)o)->returnType;
-		if (returnType) {
-			c_specifierId(data->g, returnType, returnSpec, NULL, returnPostfix);
-		} else {
-			strcpy(returnSpec, "void");
-			*returnPostfix = '\0';
-		}
+        if (returnType) {
+            c_specifierId(data->g, returnType, returnSpec, NULL, returnPostfix);
+        } else {
+            strcpy(returnSpec, "void");
+            *returnPostfix = '\0';
+        }
 
-		/* Write identifying comment to headerfile */
-		g_fileWrite(data->header, "\n");
-		if (callback) {
-		    cx_id did;
-		    g_fileWrite(data->header, "/* callback %s -> %s */\n", cx_fullname(cx_callback(o)->delegate, did), cx_fullname(o, id));
-		} else {
-		    g_fileWrite(data->header, "/* %s */\n", cx_fullname(o, id));
-		}
+        /* Write identifying comment to headerfile */
+        g_fileWrite(data->header, "\n");
+        if (callback) {
+            cx_id did;
+            g_fileWrite(data->header, "/* callback %s -> %s */\n", cx_fullname(cx_callback(o)->delegate, did), cx_fullname(o, id));
+        } else {
+            g_fileWrite(data->header, "/* %s */\n", cx_fullname(o, id));
+        }
 
-		/* Start of function */
-		g_fileWrite(data->header, "%s%s %s",
-				returnSpec,
-				returnPostfix,
-				c_functionName(o, id, data));
+        /* Start of function */
+        g_fileWrite(data->header, "%s%s %s",
+                returnSpec,
+                returnPostfix,
+                c_functionName(o, id, data));
 
-		/* Write to sourcefile */
-		if (!delegate) {
+        /* Write to sourcefile */
+        if (!delegate) {
             g_fileWrite(data->source, "\n");
             if (callback) {
                 cx_id did;
@@ -537,13 +537,13 @@ static int c_interfaceClassProcedure(cx_object o, void* userData) {
                 g_fileWrite(data->source, "/* %s */\n", cx_fullname(o, id));
             }
 
-			if (cx_function(o)->overloaded) {
-				cx_fullname(o, id);
-			} else {
-				cx_id fullId;
-				cx_fullname(o, fullId);
-				cx_signatureName(fullId, id);
-			}
+            if (cx_function(o)->overloaded) {
+                cx_fullname(o, id);
+            } else {
+                cx_id fullId;
+                cx_fullname(o, fullId);
+                cx_signatureName(fullId, id);
+            }
 
             /* Lookup header for function */
             header = g_fileLookupHeader(data->source, id);
@@ -560,47 +560,47 @@ static int c_interfaceClassProcedure(cx_object o, void* userData) {
 
             g_fileWrite(data->source, "(");
             g_fileWrite(data->header, "(");        
-		} else {
-		    g_fileWrite(data->header, "(");
-		}
+        } else {
+            g_fileWrite(data->header, "(");
+        }
 
-		/* Add 'this' parameter to methods */
-		if (c_procedureHasThis(o)) {
+        /* Add 'this' parameter to methods */
+        if (c_procedureHasThis(o)) {
             cx_type thisType;
             if(cx_procedure(cx_typeof(o))->kind != CX_METAPROCEDURE) {
-    		    thisType = cx_parentof(o);
+                thisType = cx_parentof(o);
             }else {
                 thisType = cx_any_o;
             }
-			c_interfaceParamThis(thisType, data, FALSE, TRUE);
-			if (!delegate) c_interfaceParamThis(thisType, data, TRUE, FALSE);
-			data->firstComma = 1;
-		} else {
-			data->firstComma = 0;
-		}
+            c_interfaceParamThis(thisType, data, FALSE, TRUE);
+            if (!delegate) c_interfaceParamThis(thisType, data, TRUE, FALSE);
+            data->firstComma = 1;
+        } else {
+            data->firstComma = 0;
+        }
 
-		/* Walk parameters */
-		data->generateHeader = TRUE;
-		data->generateSource = !delegate;
-		if (!c_interfaceParamWalk(o, c_interfaceMethodParameter, data)) {
-			goto error;
-		}
+        /* Walk parameters */
+        data->generateHeader = TRUE;
+        data->generateSource = !delegate;
+        if (!c_interfaceParamWalk(o, c_interfaceMethodParameter, data)) {
+            goto error;
+        }
 
-		/* Append void if the argumentlist was empty */
-		if (!data->firstComma) {
-			g_fileWrite(data->header, "void");
-			if (!delegate) g_fileWrite(data->source, "void");
-		}
+        /* Append void if the argumentlist was empty */
+        if (!data->firstComma) {
+            g_fileWrite(data->header, "void");
+            if (!delegate) g_fileWrite(data->source, "void");
+        }
 
-		/* Begin of function */
-		if (!delegate) {
-			if (cx_function(o)->overloaded) {
-				cx_fullname(o, id);
-			} else {
-				cx_id fullId;
-				cx_fullname(o, fullId);
-				cx_signatureName(fullId, id);
-			}
+        /* Begin of function */
+        if (!delegate) {
+            if (cx_function(o)->overloaded) {
+                cx_fullname(o, id);
+            } else {
+                cx_id fullId;
+                cx_fullname(o, fullId);
+                cx_signatureName(fullId, id);
+            }
 
             g_fileWrite(data->source, ") {\n");
             g_fileWrite(data->source, "/* $begin(%s)", id);
@@ -610,9 +610,9 @@ static int c_interfaceClassProcedure(cx_object o, void* userData) {
 
             /* Support both short and full name when function is not overloaded */
             if (!snippet && (!cx_function(o)->overloaded)) {
-            	cx_id fullId;
-            	cx_fullname(o, fullId);
-            	snippet = g_fileLookupSnippet(data->source, fullId);
+                cx_id fullId;
+                cx_fullname(o, fullId);
+                snippet = g_fileLookupSnippet(data->source, fullId);
             }
 
             /* Lookup if there is an existing implementation. */
@@ -671,17 +671,17 @@ static int c_interfaceClassProcedure(cx_object o, void* userData) {
 
             g_fileWrite(data->source, "$end */\n");
             g_fileWrite(data->source, "}\n");
-		}
+        }
 
-		/* End function in header */
-		g_fileWrite(data->header, ");\n");
+        /* End function in header */
+        g_fileWrite(data->header, ");\n");
 
     }
 
 ok:
     return 1;
 error:
-	return 0;
+    return 0;
 }
 
 /* Check if there are procedures in the scope of an object. */
@@ -889,7 +889,7 @@ static cx_int16 c_interfaceObject(cx_object o, c_typeWalk_t* data) {
 
     /* Close */
     if (hasProcedures || isInterface) {
-    	c_interfaceHeaderFileClose(data->header);
+        c_interfaceHeaderFileClose(data->header);
     }
 
     return 0;
@@ -922,8 +922,8 @@ error:
 int cortex_genMain(cx_generator g) {
     c_typeWalk_t walkData;
 
-	/* Default prefixes for cortex namespaces */
-	gen_parse(g, cortex_o, FALSE, FALSE, "");
+    /* Default prefixes for cortex namespaces */
+    gen_parse(g, cortex_o, FALSE, FALSE, "");
     gen_parse(g, cortex_lang_o, FALSE, FALSE, "cx");
 
     /* Prepare walkData, create header- and sourcefile */

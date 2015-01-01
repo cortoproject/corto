@@ -22,27 +22,27 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Update::construct(Update object) */
 cx_int16 Fast_Update_construct(Fast_Update object) {
 /* $begin(::cortex::Fast::Update::construct) */
-	cx_type t;
-	cx_iter exprIter;
-	Fast_Expression expr;
+    cx_type t;
+    cx_iter exprIter;
+    Fast_Expression expr;
 
     Fast_Node(object)->kind = FAST_Update;
 
     exprIter = cx_llIter(object->exprList);
     while(cx_iterHasNext(&exprIter)) {
-    	expr = cx_iterNext(&exprIter);
-    	t = Fast_Expression_getType(expr);
-    	if (!t->reference) {
-    		if (!expr->isReference) {
-    			Fast_Parser_error(yparser(), "one or more expressions in the update statement are not of a reference type");
-    			goto error;
-    		}
-    	}
+        expr = cx_iterNext(&exprIter);
+        t = Fast_Expression_getType(expr);
+        if (!t->reference) {
+            if (!expr->isReference) {
+                Fast_Parser_error(yparser(), "one or more expressions in the update statement are not of a reference type");
+                goto error;
+            }
+        }
     }
 
     return 0;
 error:
-	return -1;
+    return -1;
 /* $end */
 }
 
@@ -57,24 +57,24 @@ cx_ic Fast_Update_toIc_v(Fast_Update _this, cx_icProgram program, cx_icStorage s
 
     /* Evaluate expression */
     if (_this->from) {
-    	from = Fast_Node_toIc(Fast_Node(_this->from), program, NULL, TRUE);
+        from = Fast_Node_toIc(Fast_Node(_this->from), program, NULL, TRUE);
     }
 
     /* Add update statement for each expression in exprList */
     exprIter = cx_llIter(_this->exprList);
     while(cx_iterHasNext(&exprIter)) {
-    	Fast_Expression fastExpr = cx_iterNext(&exprIter);
-    	expr = Fast_Node_toIc(Fast_Node(fastExpr), program, NULL, TRUE);
-		if (!_this->block) {
-			op = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_UPDATE, (cx_icValue)expr, (cx_icValue)from, NULL);
-			cx_icProgram_addIc(program, (cx_ic)op);
-			op->s1Deref = CX_IC_DEREF_ADDRESS;
+        Fast_Expression fastExpr = cx_iterNext(&exprIter);
+        expr = Fast_Node_toIc(Fast_Node(fastExpr), program, NULL, TRUE);
+        if (!_this->block) {
+            op = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_UPDATE, (cx_icValue)expr, (cx_icValue)from, NULL);
+            cx_icProgram_addIc(program, (cx_ic)op);
+            op->s1Deref = CX_IC_DEREF_ADDRESS;
 
-		} else {
-			op = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_UPDATEBEGIN, (cx_icValue)expr, NULL, NULL);
-			cx_icProgram_addIc(program, (cx_ic)op);
-			op->s1Deref = CX_IC_DEREF_ADDRESS;
-		}
+        } else {
+            op = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_UPDATEBEGIN, (cx_icValue)expr, NULL, NULL);
+            cx_icProgram_addIc(program, (cx_ic)op);
+            op->s1Deref = CX_IC_DEREF_ADDRESS;
+        }
     }
 
     if (_this->block) {
@@ -83,11 +83,11 @@ cx_ic Fast_Update_toIc_v(Fast_Update _this, cx_icProgram program, cx_icStorage s
 
         exprIter = cx_llIter(_this->exprList);
         while(cx_iterHasNext(&exprIter)) {
-        	Fast_Expression fastExpr = cx_iterNext(&exprIter);
-        	expr = Fast_Node_toIc(Fast_Node(fastExpr), program, NULL, TRUE);
-			op = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_UPDATEEND, (cx_icValue)expr, (cx_icValue)from, NULL);
-			cx_icProgram_addIc(program, (cx_ic)op);
-			op->s1Deref = CX_IC_DEREF_ADDRESS;
+            Fast_Expression fastExpr = cx_iterNext(&exprIter);
+            expr = Fast_Node_toIc(Fast_Node(fastExpr), program, NULL, TRUE);
+            op = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_UPDATEEND, (cx_icValue)expr, (cx_icValue)from, NULL);
+            cx_icProgram_addIc(program, (cx_ic)op);
+            op->s1Deref = CX_IC_DEREF_ADDRESS;
         }
     }
 

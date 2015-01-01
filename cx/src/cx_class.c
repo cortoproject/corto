@@ -295,14 +295,14 @@ void cx_class_detachObservers(cx_class _this, cx_object object) {
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::class::_construct(lang::class object) */
 cx_int16 cx_class__construct(cx_class object) {
 /* $begin(::cortex::lang::class::_construct) */
-	cx_int16 result;
+    cx_int16 result;
     cx_uint32 i;
 
     /* This will bind methods of potential base-class which is necessary before validating
      * whether this class correctly (fully) implements its interface. */
     result = cx_struct_construct(cx_struct(object));
 
-	/* Create interface vector */
+    /* Create interface vector */
     if (!result) {
         if (object->implements.length) {
             object->interfaceVector.length = object->implements.length;
@@ -323,7 +323,7 @@ cx_int16 cx_class__construct(cx_class object) {
         }
     }
 
-	return result;
+    return result;
 /* $end */
 }
 
@@ -335,7 +335,7 @@ cx_void cx_class__destruct(cx_class object) {
 
     /* Free attached observers */
     for(i=0; i<object->observers.length; i++) {
-    	cx_free_ext(object, object->observers.buffer[i], "Unbind observer from class");
+        cx_free_ext(object, object->observers.buffer[i], "Unbind observer from class");
     }
     cx_dealloc(object->observers.buffer);
     object->observers.buffer = NULL;
@@ -343,14 +343,14 @@ cx_void cx_class__destruct(cx_class object) {
 
     /* Free interfaceVector */
     for(i=0; i<object->interfaceVector.length; i++) {
-    	v = &object->interfaceVector.buffer[i];
-    	v->interface = NULL;
-    	for(j=0; j<v->vector.length; j++) {
-    		if (v->vector.buffer[j]) {
-				cx_free_ext(object, v->vector.buffer[j], "Unbind interface vector");
-				v->vector.buffer[j] = NULL;
-    		}
-    	}
+        v = &object->interfaceVector.buffer[i];
+        v->interface = NULL;
+        for(j=0; j<v->vector.length; j++) {
+            if (v->vector.buffer[j]) {
+                cx_free_ext(object, v->vector.buffer[j], "Unbind interface vector");
+                v->vector.buffer[j] = NULL;
+            }
+        }
     }
 
     /* Call type::destruct */
@@ -371,7 +371,7 @@ cx_uint32 cx_class_allocSize_v(cx_class _this) {
     }
 
     if ((observerCount = cx__class_observerCount(_this))) {
-    	size += sizeof(cx_vtable) + observerCount * sizeof(cx_observer);
+        size += sizeof(cx_vtable) + observerCount * sizeof(cx_observer);
     }
 
     return size;
@@ -441,7 +441,7 @@ error:
 /* ::cortex::lang::class::bindMethod(lang::method method) */
 cx_int16 cx_class_bindMethod(cx_class _this, cx_method method) {
 /* $begin(::cortex::lang::class::bindMethod) */
-	return cx_interface_bindMethod_v(cx_interface(_this), method);
+    return cx_interface_bindMethod_v(cx_interface(_this), method);
 /* $end */
 }
 
@@ -484,7 +484,7 @@ cx_observer cx_class_findObserver(cx_class _this, cx_object observable, cx_strin
 cx_int16 cx_class_init(cx_class object) {
 /* $begin(::cortex::lang::class::init) */
     if (cx_struct_init(cx_struct(object))) {
-    	goto error;
+        goto error;
     }
 
     cx_type(object)->reference = TRUE;
@@ -507,7 +507,7 @@ cx_bool cx_class_instanceof(cx_class _this, cx_object object) {
 
     if (t->kind == CX_COMPOSITE) {
         if (cx_interface(t)->kind == CX_CLASS) {
-        	cx_interface p;
+            cx_interface p;
             p = (cx_interface)t;
 
             while(p && !result) {

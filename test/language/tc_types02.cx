@@ -1,90 +1,90 @@
 bool result : true
 void fail(string msg):
-	"tc_types02: FAIL: $msg"
-	result = false
+    "tc_types02: FAIL: $msg"
+    result = false
 
 // Test members of primitive types
 enum Color:: RED, YELLOW, GREEN, BLUE
 
 class Types::
-	a : octet
-	c : uint8
-	d : uint16
-	e : uint32
-	f : uint64
-	g : int8
-	h : int16
-	i : int32
-	j : int64
-	k : Color
-	l : bool
-	m : char
-	
-	int16 construct(Types object):
-		object.a = 255
-		object.c = 255
-		object.d = 65535
-		object.e = 4294967295
-		object.f = 18446744073709551615
-		object.g = 127
-		object.h = 32767
-		object.i = 2147483647
-		object.j = 9223372036854775807
-		object.k = YELLOW
-		object.l = true
-		object.m = 'x'
-		construct = 0
-	
-	// Refer arguments from 'this' 
-	void validate():
-		a++ 
-		if a: fail("octet range error (this.a = $a)")
-		
-		c++ 
-		if c: fail("uint8 range error (this.c = $c)")
-		
-		d++ 
-		if d: fail("uint16 range error (this.d = $d)")
-		
-		e++ 
-		if e: fail("uint32 range error (this.e = $e)")
-		
-		f++ 
-		if f: fail("uint64 range error (this.f = $f)")
-		
-		g++ 
-		if g != -128: fail("int8 range error (this.g = $g)")
-		
-		h++ 
-		if h != -32768: fail("int16 range error (this.h = $h)")
-		
-		i++ 
-		if i != -2147483648: fail("int32 range error (this.i = $i)")
-		
-		j++ 
-		if j != -9223372036854775808: fail("int64 range error (this.j = $j)")	
-		
-		if k != YELLOW: fail("enum error (this.k = $k)")
-		if !l: fail("bool error (this.l = $l)")
-		if m != 'x': fail("char error (this.m = $m)")
-		
-	// Refer arguments from 'this' and parameter
-	void validate(Types t):
-		if a!=t.a: fail("octet member error (this.a = $a)")
-		if c!=t.c: fail("uint8 member error (this.c = $c)")
-		if d!=t.d: fail("uint16 member error (this.d = $d)")
-		if e!=t.e: fail("uint32 member error (this.e = $e)")
-		if f!=t.f: fail("uint64 member error (this.f = $f)")
-		if g!=t.g: fail("int8 member error (this.g = $g)")
-		if h!=t.h: fail("int16 member error (this.h = $h)")
-		if i!=t.i: fail("int32 member error (this.i = $i)")
-		if j!=t.j: fail("int64 member error (this.j = $j)")		
-		if k!=t.k: fail("enum error (this.k = $k)")
-		if l!=t.l: fail("bool error (this.l = $l)")	
-		if m!=t.m: fail("char error (this.m = $m)")
-	
+    a : octet
+    c : uint8
+    d : uint16
+    e : uint32
+    f : uint64
+    g : int8
+    h : int16
+    i : int32
+    j : int64
+    k : Color
+    l : bool
+    m : char
+    
+    int16 construct(Types object):
+        object.a = 255
+        object.c = 255
+        object.d = 65535
+        object.e = 4294967295
+        object.f = 18446744073709551615
+        object.g = 127
+        object.h = 32767
+        object.i = 2147483647
+        object.j = 9223372036854775807
+        object.k = YELLOW
+        object.l = true
+        object.m = 'x'
+        construct = 0
+    
+    // Refer arguments from 'this' 
+    void validate():
+        a++ 
+        if a: fail("octet range error (this.a = $a)")
+        
+        c++ 
+        if c: fail("uint8 range error (this.c = $c)")
+        
+        d++ 
+        if d: fail("uint16 range error (this.d = $d)")
+        
+        e++ 
+        if e: fail("uint32 range error (this.e = $e)")
+        
+        f++ 
+        if f: fail("uint64 range error (this.f = $f)")
+        
+        g++ 
+        if g != -128: fail("int8 range error (this.g = $g)")
+        
+        h++ 
+        if h != -32768: fail("int16 range error (this.h = $h)")
+        
+        i++ 
+        if i != -2147483648: fail("int32 range error (this.i = $i)")
+        
+        j++ 
+        if j != -9223372036854775808: fail("int64 range error (this.j = $j)")    
+        
+        if k != YELLOW: fail("enum error (this.k = $k)")
+        if !l: fail("bool error (this.l = $l)")
+        if m != 'x': fail("char error (this.m = $m)")
+        
+    // Refer arguments from 'this' and parameter
+    void validate(Types t):
+        if a!=t.a: fail("octet member error (this.a = $a)")
+        if c!=t.c: fail("uint8 member error (this.c = $c)")
+        if d!=t.d: fail("uint16 member error (this.d = $d)")
+        if e!=t.e: fail("uint32 member error (this.e = $e)")
+        if f!=t.f: fail("uint64 member error (this.f = $f)")
+        if g!=t.g: fail("int8 member error (this.g = $g)")
+        if h!=t.h: fail("int16 member error (this.h = $h)")
+        if i!=t.i: fail("int32 member error (this.i = $i)")
+        if j!=t.j: fail("int64 member error (this.j = $j)")        
+        if k!=t.k: fail("enum error (this.k = $k)")
+        if l!=t.l: fail("bool error (this.l = $l)")    
+        if m!=t.m: fail("char error (this.m = $m)")
+    
 Types n, o:
-n.validate()	
+n.validate()    
 
 // Refer arguments as members
 o.a++ 

@@ -1,9 +1,9 @@
 // Copy collections with varying different sizes
 bool result: true
 void fail(string msg):
-	"tc_copy07: FAIL: $msg"
-	result = false
-	
+    "tc_copy07: FAIL: $msg"
+    result = false
+    
 list{uint32} a : 1, 2
 list{uint32} b : 3
 list{uint32} c : 4, 5, 6

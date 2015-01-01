@@ -19,76 +19,76 @@ typedef struct cpp_typeWalk_t {
 
 /* Resolve object */
 static cx_char* cpp_loadResolve(cx_object o, cx_char* out) {
-	if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
-		cx_id id;
-		sprintf(out, "::cortex::resolve(NULL, \"%s\")", cx_fullname(o, id));
-	} else {
-		cx_id ostr, id;
-		struct cx_serializer_s stringSer;
-		cx_string_ser_t data;
+    if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
+        cx_id id;
+        sprintf(out, "::cortex::resolve(NULL, \"%s\")", cx_fullname(o, id));
+    } else {
+        cx_id ostr, id;
+        struct cx_serializer_s stringSer;
+        cx_string_ser_t data;
 
-		/* Serialize object string */
-		stringSer = cx_string_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
+        /* Serialize object string */
+        stringSer = cx_string_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
 
-		*ostr = '\0';
-		data.compactNotation = TRUE;
-		data.buffer = ostr;
-		data.length = sizeof(ostr);
-		data.maxlength = 0;
-		data.prefixType = FALSE;
-		if (cx_serialize(&stringSer, o, &data)) {
-			goto error;
-		}
+        *ostr = '\0';
+        data.compactNotation = TRUE;
+        data.buffer = ostr;
+        data.length = sizeof(ostr);
+        data.maxlength = 0;
+        data.prefixType = FALSE;
+        if (cx_serialize(&stringSer, o, &data)) {
+            goto error;
+        }
 
-		sprintf(out, "::cortex::resolve(NULL, \"%s%s\")", cx_fullname(cx_typeof(o), id), ostr);
-	}
+        sprintf(out, "::cortex::resolve(NULL, \"%s%s\")", cx_fullname(cx_typeof(o), id), ostr);
+    }
 
-	return out;
+    return out;
 error:
-	return NULL;
+    return NULL;
 }
 
 /* Get variable id */
 static cx_char* cpp_loadVarId(cx_generator g, cx_object o, cx_char* out) {
-	if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
-		cpp_metaFullname(g, o, CPP_HANDLE, out);
-	} else {
-		cx_id id;
-		sprintf(out, "%s", cpp_loadResolve(o, id));
-	}
+    if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
+        cpp_metaFullname(g, o, CPP_HANDLE, out);
+    } else {
+        cx_id id;
+        sprintf(out, "%s", cpp_loadResolve(o, id));
+    }
     return out;
 }
 
 /* Get marshaller id (wrapper for member-functions) */
 static cx_char* cpp_loadMarshallId(cx_generator g, cx_function o, cx_id id) {
-	cx_char *ptr;
+    cx_char *ptr;
 
-	ptr = id;
-	strcpy(ptr, "__cpp_");
-	ptr += 6;
+    ptr = id;
+    strcpy(ptr, "__cpp_");
+    ptr += 6;
 
-	cpp_metaName(g, o, CPP_DEFAULT, ptr);
+    cpp_metaName(g, o, CPP_DEFAULT, ptr);
 
-	return id;
+    return id;
 }
 
 /* Get element id, for lists and maps. */
 static cx_char* cpp_loadElementId(cx_value* v, cx_char* out, cx_int32 offset) {
-	cx_uint32 i;
-	cx_value* ptr;
+    cx_uint32 i;
+    cx_value* ptr;
 
-	i = 0;
-	ptr = v;
+    i = 0;
+    ptr = v;
 
-	do {
-		if (ptr->kind == CX_ELEMENT) {
-			i++;
-		}
-	}while((ptr = ptr->parent));
+    do {
+        if (ptr->kind == CX_ELEMENT) {
+            i++;
+        }
+    }while((ptr = ptr->parent));
 
-	sprintf(out, "_e%d_", i + offset);
+    sprintf(out, "_e%d_", i + offset);
 
-	return out;
+    return out;
 }
 
 /* This function translates from a value-object to a valid C-string identifying a
@@ -121,33 +121,33 @@ static cx_char* cpp_loadMemberId(cpp_typeWalk_t* data, cx_value* v, cx_char* out
 
     /* Use '->' operator whenever possible */
     if (!objectIsArray) {
-    	derefMemberOperator = TRUE;
+        derefMemberOperator = TRUE;
     } else {
-    	derefMemberOperator = FALSE;
+        derefMemberOperator = FALSE;
     }
 
     /* Start with a dereference */
     if (objectIsArray) {
-    	strcpy(out, "(*");
+        strcpy(out, "(*");
     }
 
     /* If the first found object-value in the value-stack is not of the type of the object,
      * cast it. This happens when using inheritance. */
     thisType = cx_valueType(ptr);
     if (cx_typedef(thisType) != cx_typeof(o)) {
-    	cx_id id, parentId, objectId;
-    	sprintf(id, "((%s)%s)",
-    			g_fullOid(data->g, thisType, parentId),
+        cx_id id, parentId, objectId;
+        sprintf(id, "((%s)%s)",
+                g_fullOid(data->g, thisType, parentId),
                 cpp_loadVarId(data->g, cx_valueObject(v), objectId));
-    	strcat(out, id);
+        strcat(out, id);
     } else {
-    	cx_id objectId;
-    	strcat(out, cpp_loadVarId(data->g, cx_valueObject(v), objectId));
+        cx_id objectId;
+        strcat(out, cpp_loadVarId(data->g, cx_valueObject(v), objectId));
     }
 
     /* End bracket used for dereferencing object */
     if (objectIsArray) {
-    	strcat(out, ")");
+        strcat(out, ")");
     }
 
     /* Walk serializer stack */
@@ -158,16 +158,16 @@ static cx_char* cpp_loadMemberId(cpp_typeWalk_t* data, cx_value* v, cx_char* out
 
         /* Member */
         case CX_MEMBER: {
-        	cx_id id;
-        	/* When previous object is a reference, use -> operator. */
-        	if (derefMemberOperator) {
-        		strcat(out, "->");
-        		derefMemberOperator = FALSE;
-        	} else {
-        		strcat(out, ".");
-        	}
+            cx_id id;
+            /* When previous object is a reference, use -> operator. */
+            if (derefMemberOperator) {
+                strcat(out, "->");
+                derefMemberOperator = FALSE;
+            } else {
+                strcat(out, ".");
+            }
 
-        	/* Reference member using it's name. */
+            /* Reference member using it's name. */
             strcat(out, g_id(data->g, cx_nameof(stack[count]->is.member.t), id));
             break;
         }
@@ -189,25 +189,25 @@ static cx_char* cpp_loadMemberId(cpp_typeWalk_t* data, cx_value* v, cx_char* out
 
             /* Sequence element, use buffer-array */
             case CX_SEQUENCE:
-            	if (derefMemberOperator) {
-            		strcat(out, "->");
-            	} else {
-            		strcat(out, ".");
-            	}
-            	sprintf(arrayIndex, "buffer[%d]", stack[count]->is.element.t.index);
+                if (derefMemberOperator) {
+                    strcat(out, "->");
+                } else {
+                    strcat(out, ".");
+                }
+                sprintf(arrayIndex, "buffer[%d]", stack[count]->is.element.t.index);
                 strcat(out, arrayIndex);
                 break;
 
             /* Use elementId's for non-array collections. */
             default: {
-            	cx_char elementId[9]; /* One-million nested collections should be adequate in most cases. */
+                cx_char elementId[9]; /* One-million nested collections should be adequate in most cases. */
 
-            	if ((cx_valueType(stack[count])->real->kind == CX_COLLECTION) && (cx_collection(cx_valueType(stack[count])->real)->kind == CX_ARRAY)) {
-            		sprintf(out, "(*%s)", cpp_loadElementId(stack[count], elementId, 0));
-            	} else {
-            		sprintf(out, "%s", cpp_loadElementId(stack[count], elementId, 0));
-            		derefMemberOperator = TRUE;
-            	}
+                if ((cx_valueType(stack[count])->real->kind == CX_COLLECTION) && (cx_collection(cx_valueType(stack[count])->real)->kind == CX_ARRAY)) {
+                    sprintf(out, "(*%s)", cpp_loadElementId(stack[count], elementId, 0));
+                } else {
+                    sprintf(out, "%s", cpp_loadElementId(stack[count], elementId, 0));
+                    derefMemberOperator = TRUE;
+                }
                 break;
             }
             }
@@ -216,17 +216,17 @@ static cx_char* cpp_loadMemberId(cpp_typeWalk_t* data, cx_value* v, cx_char* out
 
         /* CX_OBJECT and CX_CONSTANT will not be encountered in this loop. */
         default:
-        	cx_assert(0, "invalid valueKind at this place.");
+            cx_assert(0, "invalid valueKind at this place.");
             break;
         }
     }
 
     if (addMemberOperator) {
-    	if (derefMemberOperator) {
-    		strcat(out, "->");
-    	} else {
-    		strcat(out, ".");
-    	}
+        if (derefMemberOperator) {
+            strcat(out, "->");
+        } else {
+            strcat(out, ".");
+        }
     }
 
     return out;
@@ -243,22 +243,22 @@ static int cpp_loadDeclareWalk(cx_object o, void* userData) {
     t = cx_typeof(o);
 
     if (!(cx_typeof(cx_parentof(o))->real->kind == CX_VOID)) {
-    	cpp_openScope(data->header, cx_parentof(cx_parentof(o)));
-    	cpp_openScope(data->source, cx_parentof(cx_parentof(o)));
+        cpp_openScope(data->header, cx_parentof(cx_parentof(o)));
+        cpp_openScope(data->source, cx_parentof(cx_parentof(o)));
     } else {
-    	cpp_openScope(data->header, cx_parentof(o));
-    	cpp_openScope(data->source, cx_parentof(o));
+        cpp_openScope(data->header, cx_parentof(o));
+        cpp_openScope(data->source, cx_parentof(o));
     }
 
     if (cx_class_instanceof(cx_interface_o, o) && cx_type(o)->reference) {
-    	isClass = TRUE;
+        isClass = TRUE;
     } else {
-    	isClass = FALSE;
+        isClass = FALSE;
     }
 
     /* Get C++ typespecifier */
     if (!cpp_specifierId(data->g, t, specifier)) {
-    	goto error;
+        goto error;
     }
 
     /* Declare objects in headerfile and define in sourcefile */
@@ -271,178 +271,178 @@ static int cpp_loadDeclareWalk(cx_object o, void* userData) {
          * is not a reftype, a '*' is required to make it a reference. */
         g_fileWrite(data->header, "extern %s *%s;\n", specifier, cpp_metaName(data->g, o, CPP_HANDLE, objectId));
         g_fileWrite(data->source, "%s *%s;\n", specifier, objectId);
-		if (isClass) { /* Maybe someday extendables might become non-ref types, this code makes sure that this is covered. */
-			g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_UPPER);
-		    /* Get upper-case typespecifier */
-		    if (!cpp_specifierId(data->g, t, specifier)) {
-		    	goto error;
-		    }
-			g_fileWrite(data->header, "extern %s %s;\n", specifier, cpp_metaName(data->g, o, CPP_OBJECT, objectId));
-			g_fileWrite(data->source, "%s %s;\n", specifier, cpp_metaName(data->g, o, CPP_OBJECT, objectId));
-			g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_LOWER);
-		}
+        if (isClass) { /* Maybe someday extendables might become non-ref types, this code makes sure that this is covered. */
+            g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_UPPER);
+            /* Get upper-case typespecifier */
+            if (!cpp_specifierId(data->g, t, specifier)) {
+                goto error;
+            }
+            g_fileWrite(data->header, "extern %s %s;\n", specifier, cpp_metaName(data->g, o, CPP_OBJECT, objectId));
+            g_fileWrite(data->source, "%s %s;\n", specifier, cpp_metaName(data->g, o, CPP_OBJECT, objectId));
+            g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_LOWER);
+        }
     } else {
         /* Here, the type is already a reftype, therefore it's not required to put an '*' in front of the variable name */
         g_fileWrite(data->header, "extern %s %s;\n", specifier, cpp_metaName(data->g, o, CPP_HANDLE, objectId));
         g_fileWrite(data->source, "%s %s;\n", specifier, objectId);
-		if (isClass) {
-			g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_UPPER);
-		    /* Get upper-case typespecifier */
-		    if (!cpp_specifierId(data->g, t, specifier)) {
-		    	goto error;
-		    }
-			g_fileWrite(data->header, "extern %s (*%s);\n", specifier, cpp_metaName(data->g, o, CPP_OBJECT, objectId));
-			g_fileWrite(data->source, "%s (*%s);\n", specifier, cpp_metaName(data->g, o, CPP_OBJECT, objectId));
-			g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_LOWER);
-		}
+        if (isClass) {
+            g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_UPPER);
+            /* Get upper-case typespecifier */
+            if (!cpp_specifierId(data->g, t, specifier)) {
+                goto error;
+            }
+            g_fileWrite(data->header, "extern %s (*%s);\n", specifier, cpp_metaName(data->g, o, CPP_OBJECT, objectId));
+            g_fileWrite(data->source, "%s (*%s);\n", specifier, cpp_metaName(data->g, o, CPP_OBJECT, objectId));
+            g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_LOWER);
+        }
     }
 
-	return 1;
+    return 1;
 error:
-	return 0;
+    return 0;
 }
 
 /* Enumeration that indicates what kind of a proxy must be generated. */
 typedef enum cpp_proxyKind {
-	NO_PROXY, /* No proxy must be generated. */
-	FUNCTION_PROXY, /* proxy without this, just arguments */
-	STATIC_PROXY, /* Same as function proxy, but in the scope of a class */
-	CLASS_PROXY, /* proxy with a this-pointer pointing to a class-instantiation */
-	DELEGATE_PROXY /* proxy with a this-pointer pointing to the class-instantiation containing a callback's delegate */
+    NO_PROXY, /* No proxy must be generated. */
+    FUNCTION_PROXY, /* proxy without this, just arguments */
+    STATIC_PROXY, /* Same as function proxy, but in the scope of a class */
+    CLASS_PROXY, /* proxy with a this-pointer pointing to a class-instantiation */
+    DELEGATE_PROXY /* proxy with a this-pointer pointing to the class-instantiation containing a callback's delegate */
 }cpp_proxyKind;
 
 /* Generate stubs for method */
 static int cpp_loadMethodProxy(cx_object o, void* userData) {
     if (cx_class_instanceof(cx_procedure_o, cx_typeof(o)) && (cx_procedure(cx_typeof(o))->kind != CX_METAPROCEDURE)) {
-		cx_id specifier, id;
-		cpp_typeWalk_t* data;
-		cx_uint32 i, paramCount;
-		cx_parameter* p;
-		cx_procedureKind kind;
-		cpp_proxyKind proxyKind;
-		cx_object thisType;
+        cx_id specifier, id;
+        cpp_typeWalk_t* data;
+        cx_uint32 i, paramCount;
+        cx_parameter* p;
+        cx_procedureKind kind;
+        cpp_proxyKind proxyKind;
+        cx_object thisType;
 
-		kind = cx_procedure(cx_typeof(o)->real)->kind;
-		thisType = NULL;
+        kind = cx_procedure(cx_typeof(o)->real)->kind;
+        thisType = NULL;
 
-		if ((kind == CX_METHOD) || (kind == CX_DELEGATE) || ((kind == CX_OBSERVER) && (cx_class_instanceof(cx_class_o, cx_parentof(o))))) {
-			proxyKind = CLASS_PROXY;
-			thisType = cx_parentof(o); /* Type of this is parent of procedure */
-		} else if (kind == CX_CALLBACK) {
-			if (cx_checkState(o, CX_DEFINED)) {
-				proxyKind = NO_PROXY;
-			} else {
-				proxyKind = DELEGATE_PROXY;
-			}
-		} else {
-			if (cx_class_instanceof(cx_interface_o, cx_parentof(o)) && cx_type(cx_parentof(o))->reference) {
-				proxyKind = STATIC_PROXY;
-			} else {
-				proxyKind = FUNCTION_PROXY;
-			}
-		}
+        if ((kind == CX_METHOD) || (kind == CX_DELEGATE) || ((kind == CX_OBSERVER) && (cx_class_instanceof(cx_class_o, cx_parentof(o))))) {
+            proxyKind = CLASS_PROXY;
+            thisType = cx_parentof(o); /* Type of this is parent of procedure */
+        } else if (kind == CX_CALLBACK) {
+            if (cx_checkState(o, CX_DEFINED)) {
+                proxyKind = NO_PROXY;
+            } else {
+                proxyKind = DELEGATE_PROXY;
+            }
+        } else {
+            if (cx_class_instanceof(cx_interface_o, cx_parentof(o)) && cx_type(cx_parentof(o))->reference) {
+                proxyKind = STATIC_PROXY;
+            } else {
+                proxyKind = FUNCTION_PROXY;
+            }
+        }
 
-		if (proxyKind != NO_PROXY) {
+        if (proxyKind != NO_PROXY) {
 
-			data = userData;
-			paramCount = 0;
+            data = userData;
+            paramCount = 0;
 
-			/* Open correct scope (if parent is abstract, open scope of abstract) */
-			if (!cx_class_instanceof(cx_interface_o, cx_parentof(o)) && cx_type(cx_parentof(o))->reference) {
-				cpp_openScope(data->source, cx_parentof(o));
-			} else {
-				cpp_openScope(data->source, cx_parentof(cx_parentof(o)));
-			}
+            /* Open correct scope (if parent is abstract, open scope of abstract) */
+            if (!cx_class_instanceof(cx_interface_o, cx_parentof(o)) && cx_type(cx_parentof(o))->reference) {
+                cpp_openScope(data->source, cx_parentof(o));
+            } else {
+                cpp_openScope(data->source, cx_parentof(cx_parentof(o)));
+            }
 
-			/* Obtain type-specifier for return-type, write function identifier */
-			if (!cpp_specifierId(data->g, cx_function(o)->returnType, specifier)) {
-				goto error;
-			}
-			g_fileWrite(data->source, "%s %s(", specifier, cpp_loadMarshallId(data->g, o, id));
+            /* Obtain type-specifier for return-type, write function identifier */
+            if (!cpp_specifierId(data->g, cx_function(o)->returnType, specifier)) {
+                goto error;
+            }
+            g_fileWrite(data->source, "%s %s(", specifier, cpp_loadMarshallId(data->g, o, id));
 
-			/* Print '_this' */
-			if (thisType) {
-				g_fileWrite(data->source, "%s _this", g_fullOid(data->g, thisType, id));
-				paramCount = 1;
-			}
+            /* Print '_this' */
+            if (thisType) {
+                g_fileWrite(data->source, "%s _this", g_fullOid(data->g, thisType, id));
+                paramCount = 1;
+            }
 
-			/* Print arguments */
-			for(i=0; i<cx_function(o)->parameters.length; i++) {
-				p = &cx_function(o)->parameters.buffer[i];
-				cpp_specifierId(data->g, p->type, specifier);
-				if (paramCount) {
-					g_fileWrite(data->source, ", ");
-				}
-				g_fileWrite(data->source, "%s %s", specifier, g_id(data->g, p->name, id));
-				paramCount++;
-			}
+            /* Print arguments */
+            for(i=0; i<cx_function(o)->parameters.length; i++) {
+                p = &cx_function(o)->parameters.buffer[i];
+                cpp_specifierId(data->g, p->type, specifier);
+                if (paramCount) {
+                    g_fileWrite(data->source, ", ");
+                }
+                g_fileWrite(data->source, "%s %s", specifier, g_id(data->g, p->name, id));
+                paramCount++;
+            }
 
-			/* Print implementation */
-			g_fileWrite(data->source, ") {\n");
-			g_fileIndent(data->source);
-			g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_UPPER);
+            /* Print implementation */
+            g_fileWrite(data->source, ") {\n");
+            g_fileIndent(data->source);
+            g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_UPPER);
 
-			/* If procedure has this, create C++ proxy-object (this is always an abstract object) */
-			if (thisType) {
-				g_fileWrite(data->source, "%s proxy(_this,FALSE);\n", g_fullOid(data->g, thisType, id), id);
-			}
+            /* If procedure has this, create C++ proxy-object (this is always an abstract object) */
+            if (thisType) {
+                g_fileWrite(data->source, "%s proxy(_this,FALSE);\n", g_fullOid(data->g, thisType, id), id);
+            }
 
-			/* If there are parameters of abstract types, create C++ proxy-objects */
-			for(i=0; i<cx_function(o)->parameters.length; i++) {
-				p = &cx_function(o)->parameters.buffer[i];
-				if ((cx_class_instanceof(cx_interface_o, p->type) && (p->type->real->reference)) || (p->type == cx_typedef(cx_object_o))) {
-					cx_id id2;
-					g_fileWrite(data->source, "%s _%s(%s,FALSE);\n",
-								g_fullOid(data->g, p->type, id),
-								g_id(data->g, p->name, id2),
-								g_id(data->g, p->name, id2));
-				}
-			}
-			g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_LOWER);
+            /* If there are parameters of abstract types, create C++ proxy-objects */
+            for(i=0; i<cx_function(o)->parameters.length; i++) {
+                p = &cx_function(o)->parameters.buffer[i];
+                if ((cx_class_instanceof(cx_interface_o, p->type) && (p->type->real->reference)) || (p->type == cx_typedef(cx_object_o))) {
+                    cx_id id2;
+                    g_fileWrite(data->source, "%s _%s(%s,FALSE);\n",
+                                g_fullOid(data->g, p->type, id),
+                                g_id(data->g, p->name, id2),
+                                g_id(data->g, p->name, id2));
+                }
+            }
+            g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_LOWER);
 
-			/* If procedure has returnType, return */
-			if (cx_function(o)->returnType && ((cx_function(o)->returnType->real->kind != CX_VOID) || cx_function(o)->returnType->real->reference)) {
-				g_fileWrite(data->source, "return ");
-			}
+            /* If procedure has returnType, return */
+            if (cx_function(o)->returnType && ((cx_function(o)->returnType->real->kind != CX_VOID) || cx_function(o)->returnType->real->reference)) {
+                g_fileWrite(data->source, "return ");
+            }
 
-			/* Call actual function - if CLASS_PROXY, invoke method on C++ class proxy */
-			if (proxyKind == CLASS_PROXY) {
-				g_fileWrite(data->source, "proxy.");
+            /* Call actual function - if CLASS_PROXY, invoke method on C++ class proxy */
+            if (proxyKind == CLASS_PROXY) {
+                g_fileWrite(data->source, "proxy.");
 
-			/* If function is static class-member, prefix class-scope */
-			} else if ((proxyKind == STATIC_PROXY) || (proxyKind == DELEGATE_PROXY)) {
-				g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_UPPER);
-				g_fileWrite(data->source, "%s::", g_fullOid(data->g, cx_parentof(o), id));
-				g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_LOWER);
-			}
+            /* If function is static class-member, prefix class-scope */
+            } else if ((proxyKind == STATIC_PROXY) || (proxyKind == DELEGATE_PROXY)) {
+                g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_UPPER);
+                g_fileWrite(data->source, "%s::", g_fullOid(data->g, cx_parentof(o), id));
+                g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_LOWER);
+            }
 
-			paramCount = 0;
-			if ((kind == CX_METHOD) && (cx_method(o)->virtual)) {
-				g_fileWrite(data->source, "%s_v(", cpp_procId(data->g, o, id));
-			} else {
-				g_fileWrite(data->source, "%s(", cpp_procId(data->g, o, id));
-			}
+            paramCount = 0;
+            if ((kind == CX_METHOD) && (cx_method(o)->virtual)) {
+                g_fileWrite(data->source, "%s_v(", cpp_procId(data->g, o, id));
+            } else {
+                g_fileWrite(data->source, "%s(", cpp_procId(data->g, o, id));
+            }
 
-			for(i=0; i<cx_function(o)->parameters.length; i++) {
-				p = &cx_function(o)->parameters.buffer[i];
-				if (paramCount) {
-					g_fileWrite(data->source, ", ");
-				}
-				if ((cx_class_instanceof(cx_interface_o, p->type) && (p->type->real->reference)) || (p->type == cx_typedef(cx_object_o))) {
-					g_fileWrite(data->source, "_%s", g_id(data->g, p->name, id));
-				} else {
-					g_fileWrite(data->source, "%s", g_id(data->g, p->name, id));
-				}
-				paramCount++;
-			}
-			g_fileWrite(data->source, ")");
-			if ((cx_class_instanceof(cx_interface_o, cx_function(o)->returnType->real) && cx_function(o)->returnType->real->reference) || (cx_function(o)->returnType == cx_typedef(cx_object_o))) {
-				g_fileWrite(data->source, "._handle()");
-			}
-			g_fileWrite(data->source, ";\n");
-			g_fileDedent(data->source);
-			g_fileWrite(data->source, "}\n");
-		}
+            for(i=0; i<cx_function(o)->parameters.length; i++) {
+                p = &cx_function(o)->parameters.buffer[i];
+                if (paramCount) {
+                    g_fileWrite(data->source, ", ");
+                }
+                if ((cx_class_instanceof(cx_interface_o, p->type) && (p->type->real->reference)) || (p->type == cx_typedef(cx_object_o))) {
+                    g_fileWrite(data->source, "_%s", g_id(data->g, p->name, id));
+                } else {
+                    g_fileWrite(data->source, "%s", g_id(data->g, p->name, id));
+                }
+                paramCount++;
+            }
+            g_fileWrite(data->source, ")");
+            if ((cx_class_instanceof(cx_interface_o, cx_function(o)->returnType->real) && cx_function(o)->returnType->real->reference) || (cx_function(o)->returnType == cx_typedef(cx_object_o))) {
+                g_fileWrite(data->source, "._handle()");
+            }
+            g_fileWrite(data->source, ";\n");
+            g_fileDedent(data->source);
+            g_fileWrite(data->source, "}\n");
+        }
     }
 
     return 1;
@@ -453,36 +453,36 @@ error:
 /* Include files for classes */
 static int cpp_loadIncludes(cx_object o, void* userData) {
 
-	/* Add object to list */
-	if (cx_class_instanceof(cx_interface_o, o) && cx_type(o)->reference) {
-		if (!cx_llHasObject(userData, o)) {
-			cx_llInsert(userData, o);
-		}
-	}
+    /* Add object to list */
+    if (cx_class_instanceof(cx_interface_o, o) && cx_type(o)->reference) {
+        if (!cx_llHasObject(userData, o)) {
+            cx_llInsert(userData, o);
+        }
+    }
 
-	/* Add type of object to list */
-	if (cx_class_instanceof(cx_interface_o, cx_typeof(o)) && cx_type(cx_typeof(o))->reference) {
-		if (!cx_llHasObject(userData, cx_typeof(o))) {
-			cx_llInsert(userData, cx_typeof(o));
-		}
-	}
+    /* Add type of object to list */
+    if (cx_class_instanceof(cx_interface_o, cx_typeof(o)) && cx_type(cx_typeof(o))->reference) {
+        if (!cx_llHasObject(userData, cx_typeof(o))) {
+            cx_llInsert(userData, cx_typeof(o));
+        }
+    }
 
-	/* Add types of parameters and returntypes to list */
-	if (cx_class_instanceof(cx_procedure_o, cx_typeof(o))) {
-		cx_uint32 i;
-		cx_parameter *p;
-		for(i=0; i<cx_function(o)->parameters.length; i++) {
-			p = &cx_function(o)->parameters.buffer[i];
-			if (!cx_llHasObject(userData, p->type) && (cx_class_instanceof(cx_interface_o, p->type) && p->type->real->reference)) {
-				cx_llInsert(userData, p->type);
-			}
-		}
-		if (!cx_llHasObject(userData, cx_function(o)->returnType) && (cx_class_instanceof(cx_interface_o, cx_function(o)->returnType) && cx_function(o)->returnType->real->reference)) {
-			cx_llInsert(userData, cx_function(o)->returnType);
-		}
-	}
+    /* Add types of parameters and returntypes to list */
+    if (cx_class_instanceof(cx_procedure_o, cx_typeof(o))) {
+        cx_uint32 i;
+        cx_parameter *p;
+        for(i=0; i<cx_function(o)->parameters.length; i++) {
+            p = &cx_function(o)->parameters.buffer[i];
+            if (!cx_llHasObject(userData, p->type) && (cx_class_instanceof(cx_interface_o, p->type) && p->type->real->reference)) {
+                cx_llInsert(userData, p->type);
+            }
+        }
+        if (!cx_llHasObject(userData, cx_function(o)->returnType) && (cx_class_instanceof(cx_interface_o, cx_function(o)->returnType) && cx_function(o)->returnType->real->reference)) {
+            cx_llInsert(userData, cx_function(o)->returnType);
+        }
+    }
 
-	return 1;
+    return 1;
 }
 
 static int cpp_printIncludes(void* o, void* userData) {
@@ -499,19 +499,19 @@ static int cpp_printIncludes(void* o, void* userData) {
 
 static int cpp_loadProxyWalk(cx_object o, void* userData) {
     cpp_typeWalk_t* data;
-	cx_id className, h_var, o_var;
+    cx_id className, h_var, o_var;
 
-	data = userData;
+    data = userData;
 
-	if (cx_class_instanceof(cx_interface_o, o) && cx_type(o)->reference) {
-		cpp_metaFullname(data->g, o, CPP_HANDLE, h_var);
-		g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_UPPER);
-		cpp_metaFullname(data->g, o, CPP_OBJECT, o_var);
-		g_fullOid(data->g, cx_typeof(o), className);
-		g_fileWrite(data->source, "%s = new %s(%s);\n", o_var, className, h_var);
-	}
+    if (cx_class_instanceof(cx_interface_o, o) && cx_type(o)->reference) {
+        cpp_metaFullname(data->g, o, CPP_HANDLE, h_var);
+        g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_UPPER);
+        cpp_metaFullname(data->g, o, CPP_OBJECT, o_var);
+        g_fullOid(data->g, cx_typeof(o), className);
+        g_fileWrite(data->source, "%s = new %s(%s);\n", o_var, className, h_var);
+    }
 
-	return 1;
+    return 1;
 }
 
 static int cpp_unloadProxyWalk(cx_object o, void* userData) {
@@ -539,9 +539,9 @@ static g_file cpp_loadHeaderFileOpen(cx_generator g) {
 
     /* Create file */
     if (strlen(path)) {
-    	sprintf(headerFileName, "include/%s/_meta.hpp", path);
+        sprintf(headerFileName, "include/%s/_meta.hpp", path);
     } else {
-    	sprintf(headerFileName, "include/_meta.hpp");
+        sprintf(headerFileName, "include/_meta.hpp");
     }
     result = g_fileOpen(g, headerFileName);
     if (!result) {
@@ -583,9 +583,9 @@ static g_file cpp_loadSourceFileOpen(cx_generator g) {
 
     /* Create file */
     if (strlen(path)) {
-    	sprintf(fileName, "src/%s/_meta.cpp", path);
+        sprintf(fileName, "src/%s/_meta.cpp", path);
     } else {
-    	sprintf(fileName, "src/_meta.cpp");
+        sprintf(fileName, "src/_meta.cpp");
     }
     result = g_fileOpen(g, fileName);
     if (!result) {
@@ -612,7 +612,7 @@ static void cpp_sourceWriteVarDefStart(g_file file) {
 
 /* Write start of load-routine */
 static void cpp_sourceWriteLoadStart(cx_generator g, g_file file) {
-	cpp_openScope(file, g_getCurrent(g));
+    cpp_openScope(file, g_getCurrent(g));
     g_fileWrite(file, "\n");
     g_fileWrite(file, "/* Load objects in database */\n");
     g_fileWrite(file, "int load(void) {\n");
@@ -623,11 +623,11 @@ static void cpp_sourceWriteLoadStart(cx_generator g, g_file file) {
 
 /* Write end of load-routine */
 static void cpp_sourceWriteLoadEnd(g_file file) {
-	g_fileWrite(file, "if (_a_) {\n");
-	g_fileIndent(file);
-	g_fileWrite(file, "::cortex::free(NULL, _a_, \"load: free temporary reference.\");\n");
-	g_fileDedent(file);
-	g_fileWrite(file, "}\n\n");
+    g_fileWrite(file, "if (_a_) {\n");
+    g_fileIndent(file);
+    g_fileWrite(file, "::cortex::free(NULL, _a_, \"load: free temporary reference.\");\n");
+    g_fileDedent(file);
+    g_fileWrite(file, "}\n\n");
     g_fileWrite(file, "return 0;\n");
     g_fileDedent(file);
     g_fileWrite(file, "error:\n");
@@ -640,7 +640,7 @@ static void cpp_sourceWriteLoadEnd(g_file file) {
 
 /* Write start of unload-routine */
 static void cpp_sourceWriteUnloadStart(cx_generator g, g_file file) {
-	cpp_openScope(file, g_getCurrent(g));
+    cpp_openScope(file, g_getCurrent(g));
     g_fileWrite(file, "\n");
     g_fileWrite(file, "/* Load objects in database */\n");
     g_fileWrite(file, "void unload(void* udata) {\n");
@@ -676,21 +676,21 @@ static int cpp_loadDeclare(cx_object o, void* userData) {
         g_fileIndent(data->source);
 
         if (!cx_checkAttr(cx_typeof(o), CX_ATTR_SCOPED)) {
-			g_fileWrite(data->source, "%s = (%s%s)::cortex::declare(%s, \"%s\", (_a_ ? ::cortex::free(_a_) : 0, _a_ = ((::cortex::lang::_typedef)%s)));\n",
-					cpp_loadVarId(data->g, o, id),
+            g_fileWrite(data->source, "%s = (%s%s)::cortex::declare(%s, \"%s\", (_a_ ? ::cortex::free(_a_) : 0, _a_ = ((::cortex::lang::_typedef)%s)));\n",
+                    cpp_loadVarId(data->g, o, id),
                     specId,
                     cx_typeof(o)->real->reference ? "" : "*",
-					cpp_loadVarId(data->g, cx_parentof(o), parentId),
-					cx_nameof(o),
-					cpp_loadVarId(data->g, cx_typeof(o), typeId));
+                    cpp_loadVarId(data->g, cx_parentof(o), parentId),
+                    cx_nameof(o),
+                    cpp_loadVarId(data->g, cx_typeof(o), typeId));
         } else {
-			g_fileWrite(data->source, "%s = (%s%s)::cortex::declare(%s, \"%s\", ((::cortex::lang::_typedef)%s));\n",
-					cpp_loadVarId(data->g, o, id),
+            g_fileWrite(data->source, "%s = (%s%s)::cortex::declare(%s, \"%s\", ((::cortex::lang::_typedef)%s));\n",
+                    cpp_loadVarId(data->g, o, id),
                     specId,
                     cx_typeof(o)->real->reference ? "" : "*",
-					cpp_loadVarId(data->g, cx_parentof(o), parentId),
-					cx_nameof(o),
-					cpp_loadVarId(data->g, cx_typeof(o), typeId));
+                    cpp_loadVarId(data->g, cx_parentof(o), parentId),
+                    cx_nameof(o),
+                    cpp_loadVarId(data->g, cx_typeof(o), typeId));
         }
 
         /* Error checking */
@@ -724,8 +724,8 @@ static void cpp_varPrintStart(cx_value* v, cpp_typeWalk_t* data) {
     /* Only write an identifier if the object is a primitive type, or a reference. */
     if ((t->kind == CX_PRIMITIVE) || (t->reference && !(v->kind == CX_OBJECT))) {
         /* Print memberId if object is member */
-		g_fileWrite(data->source, "%s = ",
-				cpp_loadMemberId(data, v, memberId, FALSE));
+        g_fileWrite(data->source, "%s = ",
+                cpp_loadMemberId(data, v, memberId, FALSE));
     }
 }
 
@@ -759,11 +759,11 @@ static cx_int16 cpp_initPrimitive(cx_serializer s, cx_value* v, void* userData) 
     /* Treat booleans separately, the default convert translates booleans to 'true' and 'false' while
      * the language mapping of C TRUE and FALSE is. */
     if (cx_primitive(t)->kind == CX_BOOLEAN) {
-    	if (*(cx_bool*)ptr) {
-    		str = cx_strdup("TRUE");
-    	} else {
-    		str = cx_strdup("FALSE");
-    	}
+        if (*(cx_bool*)ptr) {
+            str = cx_strdup("TRUE");
+        } else {
+            str = cx_strdup("FALSE");
+        }
     } else if (cx_primitive(t)->kind == CX_ENUM) {
         cx_id enumId, scopeId;
         cx_constant *c;
@@ -783,13 +783,13 @@ static cx_int16 cpp_initPrimitive(cx_serializer s, cx_value* v, void* userData) 
         str = cx_malloc(11);
         sprintf(str, "0x%x", *(cx_uint32*)ptr);
     } else if (cx_primitive(t)->kind == CX_TEXT) {
-    	cx_string v = *(cx_string*)ptr;
-    	if (v) {
-    		str = malloc(strlen("::cortex::strdup()") + strlen(v) + 1);
-    		sprintf(str, "::cortex::strdup(%s)", v);
-    	} else {
-    		str = cx_strdup("NULL");
-    	}
+        cx_string v = *(cx_string*)ptr;
+        if (v) {
+            str = malloc(strlen("::cortex::strdup()") + strlen(v) + 1);
+            sprintf(str, "::cortex::strdup(%s)", v);
+        } else {
+            str = cx_strdup("NULL");
+        }
     } else {
         /* Convert primitive value to string using built-in conversion */
         if (cx_convert(cx_primitive(t), ptr, cx_primitive(cx_string_o), &str)) {
@@ -797,14 +797,14 @@ static cx_int16 cpp_initPrimitive(cx_serializer s, cx_value* v, void* userData) 
         }
     }
 
-	g_fileWrite(data->source, "%s", str);
-	cx_dealloc(str);
+    g_fileWrite(data->source, "%s", str);
+    cx_dealloc(str);
 
-	if (cx_primitive(t)->width == CX_WIDTH_64) {
-	    if (cx_primitive(t)->kind == CX_UINTEGER) {
-	        g_fileWrite(data->source, "ULL");
-	    }
-	}
+    if (cx_primitive(t)->width == CX_WIDTH_64) {
+        if (cx_primitive(t)->kind == CX_UINTEGER) {
+            g_fileWrite(data->source, "ULL");
+        }
+    }
 
     cpp_varPrintEnd(v, userData);
 
@@ -840,55 +840,55 @@ static cx_int16 cpp_initReference(cx_serializer s, cx_value* v, void* userData) 
 
 /* cpp_initElement */
 static cx_int16 cpp_initElement(cx_serializer s, cx_value* v, void* userData) {
-	cx_collection t;
-	cpp_typeWalk_t* data;
+    cx_collection t;
+    cpp_typeWalk_t* data;
 
-	/* Get collectionType */
-	t = cx_collection(cx_valueType(v->parent)->real);
-	data = userData;
+    /* Get collectionType */
+    t = cx_collection(cx_valueType(v->parent)->real);
+    data = userData;
 
-	/* Allocate space for element */
-	switch(t->kind) {
-	case CX_LIST:
-	case CX_MAP: {
-		cx_id elementId, specifier;
-		g_fileWrite(data->source, "\n");
+    /* Allocate space for element */
+    switch(t->kind) {
+    case CX_LIST:
+    case CX_MAP: {
+        cx_id elementId, specifier;
+        g_fileWrite(data->source, "\n");
 
-		cpp_specifierId(data->g, t->elementType, specifier);
-		g_fileWrite(data->source, "%s = ::cortex::alloc(sizeof(%s));\n", cpp_loadElementId(v, elementId, 0), specifier);
-		break;
-	}
-	default:
-		break;
-	}
+        cpp_specifierId(data->g, t->elementType, specifier);
+        g_fileWrite(data->source, "%s = ::cortex::alloc(sizeof(%s));\n", cpp_loadElementId(v, elementId, 0), specifier);
+        break;
+    }
+    default:
+        break;
+    }
 
-	/* Serialize value */
-	if (cx_serializeValue(s, v, data)) {
-		goto error;
-	}
+    /* Serialize value */
+    if (cx_serializeValue(s, v, data)) {
+        goto error;
+    }
 
-	switch(t->kind) {
-	case CX_LIST: {
-		cx_id parentId, elementId;
-		g_fileWrite(data->source, "%s->append(%s);\n",
-				cpp_loadMemberId(data, v->parent, parentId, FALSE),
-				cpp_loadElementId(v, elementId, 0));
-		break;
-	}
-	case CX_MAP: /*{
-		cx_id parentId, elementId;
-		g_fileWrite(data->source, "cx_rbtreeSet(%s, %s)",
-				cpp_loadMemberId(data->g, v->parent, parentId),
-				cpp_loadElementId(v, elementId, 0));
-		break;
-	}*/
-	default:
-		break;
-	}
+    switch(t->kind) {
+    case CX_LIST: {
+        cx_id parentId, elementId;
+        g_fileWrite(data->source, "%s->append(%s);\n",
+                cpp_loadMemberId(data, v->parent, parentId, FALSE),
+                cpp_loadElementId(v, elementId, 0));
+        break;
+    }
+    case CX_MAP: /*{
+        cx_id parentId, elementId;
+        g_fileWrite(data->source, "cx_rbtreeSet(%s, %s)",
+                cpp_loadMemberId(data->g, v->parent, parentId),
+                cpp_loadElementId(v, elementId, 0));
+        break;
+    }*/
+    default:
+        break;
+    }
 
-	return 0;
+    return 0;
 error:
-	return -1;
+    return -1;
 }
 
 /* cpp_initCollection */
@@ -911,7 +911,7 @@ static cx_int16 cpp_initCollection(cx_serializer s, cx_value* v, void* userData)
         break;
     case CX_SEQUENCE: {
         cx_uint32 length;
-    	cx_id specifier;
+        cx_id specifier;
 
         size = length = *(cx_uint32*)ptr;
 
@@ -920,8 +920,8 @@ static cx_int16 cpp_initCollection(cx_serializer s, cx_value* v, void* userData)
                 cpp_loadMemberId(data, v, memberId, TRUE),
                 length);
 
-    	/* Get type-specifier */
-    	cpp_specifierId(data->g, t->elementType, specifier);
+        /* Get type-specifier */
+        cpp_specifierId(data->g, t->elementType, specifier);
 
         /* Allocate buffer */
         if (!length) {
@@ -943,58 +943,58 @@ static cx_int16 cpp_initCollection(cx_serializer s, cx_value* v, void* userData)
     }
     case CX_LIST:
         /* Create list object */
-    	if (*(cx_ll*)ptr) {
+        if (*(cx_ll*)ptr) {
             size = cx_llSize(*(cx_ll*)ptr);
-			g_fileWrite(data->source, "%s = new ::cortex::ll();\n",
-					cpp_loadMemberId(data, v, memberId, FALSE));
-    	} else {
-    		g_fileWrite(data->source, "%s = NULL;\n", cpp_loadMemberId(data, v, memberId, FALSE));
-    	}
+            g_fileWrite(data->source, "%s = new ::cortex::ll();\n",
+                    cpp_loadMemberId(data, v, memberId, FALSE));
+        } else {
+            g_fileWrite(data->source, "%s = NULL;\n", cpp_loadMemberId(data, v, memberId, FALSE));
+        }
         break;
     case CX_MAP: {
-    	cx_id keyId;
+        cx_id keyId;
         /* Create map object */
-    	if (*(cx_rbtree*)ptr) {
+        if (*(cx_rbtree*)ptr) {
             size = cx_rbtreeSize(*(cx_rbtree*)ptr);
-			g_fileWrite(data->source, "%s = new ::cortex::rbtree();\n",
-					cpp_loadMemberId(data, v, memberId, FALSE), g_fullOid(data->g, cx_rbtreeKeyType(*(cx_rbtree*)ptr), keyId));
-    	} else {
-    		g_fileWrite(data->source, "%s = NULL;\n", cpp_loadMemberId(data, v, memberId, FALSE));
-    	}
+            g_fileWrite(data->source, "%s = new ::cortex::rbtree();\n",
+                    cpp_loadMemberId(data, v, memberId, FALSE), g_fullOid(data->g, cx_rbtreeKeyType(*(cx_rbtree*)ptr), keyId));
+        } else {
+            g_fileWrite(data->source, "%s = NULL;\n", cpp_loadMemberId(data, v, memberId, FALSE));
+        }
         break;
     }
     }
 
-	/* For the non-array types, allocate a member variable, if size of collection is not zero. */
+    /* For the non-array types, allocate a member variable, if size of collection is not zero. */
     if (size) {
-		switch(t->kind) {
-		case CX_LIST:
-		case CX_MAP: {
-			cx_id elementId, elementTypeId;
-			g_fileWrite(data->source, "{\n");
-			g_fileIndent(data->source);
-			g_fileWrite(data->source, "%s* %s;\n", g_fullOid(data->g, t->elementType, elementTypeId), cpp_loadElementId(v, elementId, 1));
-			break;
-		}
-		default:
-			break;
-		}
+        switch(t->kind) {
+        case CX_LIST:
+        case CX_MAP: {
+            cx_id elementId, elementTypeId;
+            g_fileWrite(data->source, "{\n");
+            g_fileIndent(data->source);
+            g_fileWrite(data->source, "%s* %s;\n", g_fullOid(data->g, t->elementType, elementTypeId), cpp_loadElementId(v, elementId, 1));
+            break;
+        }
+        default:
+            break;
+        }
     }
 
     /* Serialize elements */
     result = cx_serializeElements(s, v, userData);
 
     if (size) {
-		switch(t->kind) {
-		case CX_LIST:
-		case CX_MAP: {
-			g_fileDedent(data->source);
-			g_fileWrite(data->source, "}\n");
-			break;
-		}
-		default:
-			break;
-		}
+        switch(t->kind) {
+        case CX_LIST:
+        case CX_MAP: {
+            g_fileDedent(data->source);
+            g_fileWrite(data->source, "}\n");
+            break;
+        }
+        default:
+            break;
+        }
     }
 
     return result;
@@ -1020,35 +1020,35 @@ static cx_int16 cpp_initObject(cx_serializer s, cx_value* v, void* userData) {
 
     /* If object is a procedure, set function implementation */
     if (cx_class_instanceof(cx_procedure_o, cx_typeof(o)) && (cx_procedure(cx_typeof(o))->kind != CX_METAPROCEDURE)) {
-    	isProcedure = TRUE;
+        isProcedure = TRUE;
 
-    	/* C++ uses CDECL convention */
+        /* C++ uses CDECL convention */
         g_fileWrite(data->source, "\n");
         g_fileWrite(data->source, "/* Bind %s with C++ function */\n", id);
         g_fileWrite(data->source, "((::cortex::lang::function)%s)->kind = CX_PROCEDURE_CDECL;\n", cpp_loadVarId(data->g, o, id));
 
         /* Bind function-object with marshall function */
-		if (!(cx_checkState(o, CX_DEFINED) && (cx_procedure(cx_typeof(o))->kind == CX_CALLBACK))) {
-			g_fileWrite(data->source, "((::cortex::lang::function)%s)->impl = reinterpret_cast< ::cortex::lang::word>(%s);\n", id, cpp_loadMarshallId(data->g, o, id2));
-		} else {
-			/* Callback functions are not generated when they are defined while the load-routine was generated. This is because a callback
-			 * method will never be called directly, only through it's corresponding delegate function. */
-			g_fileWrite(data->source, "((::cortex::lang::function)%s)->impl = 0;\n", id);
-		}
+        if (!(cx_checkState(o, CX_DEFINED) && (cx_procedure(cx_typeof(o))->kind == CX_CALLBACK))) {
+            g_fileWrite(data->source, "((::cortex::lang::function)%s)->impl = reinterpret_cast< ::cortex::lang::word>(%s);\n", id, cpp_loadMarshallId(data->g, o, id2));
+        } else {
+            /* Callback functions are not generated when they are defined while the load-routine was generated. This is because a callback
+             * method will never be called directly, only through it's corresponding delegate function. */
+            g_fileWrite(data->source, "((::cortex::lang::function)%s)->impl = 0;\n", id);
+        }
 
         g_setIdKind(data->g, CX_GENERATOR_ID_CLASS_LOWER);
     }
 
     /* Define object, but not if the object is a procedure and the parent is an abstract class, because these have no implementation. */
     if (!(isProcedure && (cx_interface(cx_parentof(o))->kind == CX_INTERFACE))) {
-		g_fileWrite(data->source, "if (::cortex::define(%s)) {\n", cpp_loadVarId(data->g, o, id));
-		g_fileIndent(data->source);
-		g_fileWrite(data->source, "::cortex::error(\"%s_load: failed to define object '%s'.\");\n",
-				g_getName(data->g),
-				cx_fullname(o, id));
-		g_fileWrite(data->source, "goto error;\n");
-		g_fileDedent(data->source);
-		g_fileWrite(data->source, "}\n");
+        g_fileWrite(data->source, "if (::cortex::define(%s)) {\n", cpp_loadVarId(data->g, o, id));
+        g_fileIndent(data->source);
+        g_fileWrite(data->source, "::cortex::error(\"%s_load: failed to define object '%s'.\");\n",
+                g_getName(data->g),
+                cx_fullname(o, id));
+        g_fileWrite(data->source, "goto error;\n");
+        g_fileDedent(data->source);
+        g_fileWrite(data->source, "}\n");
     }
 
     g_fileDedent(data->source);
@@ -1143,7 +1143,7 @@ int cortex_genMain(cx_generator g) {
 
     /* Create C++ proxy objects */
     if (!g_walkRecursive(g, cpp_loadProxyWalk, &walkData)) {
-    	goto error;
+        goto error;
     }
 
     /* Register exithandler */

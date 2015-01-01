@@ -2,13 +2,13 @@ bool result: true
 
 // Test implicit and explicit methods and functions within classes
 void fail(string msg):
-	"tc_function05: FAIL: $msg"
-	result = false
+    "tc_function05: FAIL: $msg"
+    result = false
 
 // Create scope of a non-interface type
 uint customInt: width_word::
-	customInt get10() = 10 // Implicit function
-	customInt get20() function = 20 // Explicit function
+    customInt get10() = 10 // Implicit function
+    customInt get20() function = 20 // Explicit function
 
 // Validate type of get10
 if customInt::get10.typeof() != function: fail("customInt::get10.typeof() != function (${customInt::get10.typeof().nameof())")
@@ -24,11 +24,11 @@ if customInt::get20() != 20: fail("customInt::get20 != 20 (${customInt::get20})"
 
 // Create class with both implicit and explicit methods and functions
 class Spaceship::
-	x, y, r: int32
-	int32 engineCount: 2
-	void move(int32 x, int32 y): this.x, this.y = x, y // Implicit method
-	void turn(int32 r) method: this.r = r // Explicit method
-	uint32 engines() function = engineCount // Explicit function
+    x, y, r: int32
+    int32 engineCount: 2
+    void move(int32 x, int32 y): this.x, this.y = x, y // Implicit method
+    void turn(int32 r) method: this.r = r // Explicit method
+    uint32 engines() function = engineCount // Explicit function
 
 // Validate function types
 if Spaceship::move.typeof() != method: fail("Spaceship::move.typeof != method (${Spaceship::move.typeof().nameof()})")

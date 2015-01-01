@@ -37,7 +37,7 @@ Fast_Call Fast_createCallWithArguments(Fast_Expression instance, cx_string funct
 /* Create a call-expression */
 Fast_Call Fast_createCall(Fast_Expression instance, cx_string function, cx_uint32 numArgs, ...) {
     Fast_Expression args = NULL, arg = NULL;
-	va_list arglist;
+    va_list arglist;
     cx_uint32 i;
     
     /* Create comma-expression if there is more than one argument */
@@ -111,49 +111,49 @@ error:
 /* ::cortex::Fast::valueKindFromType(lang::type type) */
 Fast_valueKind Fast_valueKindFromType(cx_type type) {
 /* $begin(::cortex::Fast::valueKindFromType) */
-	Fast_valueKind result = FAST_Null;
+    Fast_valueKind result = FAST_Null;
 
-	if (type->reference) {
-		result = FAST_Reference;
-	} else {
-		if (type->kind != CX_PRIMITIVE) {
+    if (type->reference) {
+        result = FAST_Reference;
+    } else {
+        if (type->kind != CX_PRIMITIVE) {
             /* Exception to common error-reporting pattern: calling functions need to throw an error. The
              * rationale is that at this level there is little information available to report a meaningful
              * error. */
             goto error;
         }
 
-		switch(cx_primitive(type)->kind) {
-		case CX_BOOLEAN:
-			result = FAST_Boolean;
-			break;
-		case CX_CHARACTER:
-			result = FAST_Character;
-			break;
-		case CX_INTEGER:
-			result = FAST_SignedInteger;
-			break;
-		case CX_BINARY:
-		case CX_UINTEGER:
-			result = FAST_Integer;
-			break;
-		case CX_FLOAT:
-			result = FAST_FloatingPoint;
-			break;
-		case CX_TEXT:
-			result = FAST_String;
-			break;
-		case CX_ENUM:
-		case CX_BITMASK:
-			result = FAST_Enumerated;
-			break;
-		case CX_ALIAS:
-			result = FAST_Integer;
-			break;
-		}
-	}
+        switch(cx_primitive(type)->kind) {
+        case CX_BOOLEAN:
+            result = FAST_Boolean;
+            break;
+        case CX_CHARACTER:
+            result = FAST_Character;
+            break;
+        case CX_INTEGER:
+            result = FAST_SignedInteger;
+            break;
+        case CX_BINARY:
+        case CX_UINTEGER:
+            result = FAST_Integer;
+            break;
+        case CX_FLOAT:
+            result = FAST_FloatingPoint;
+            break;
+        case CX_TEXT:
+            result = FAST_String;
+            break;
+        case CX_ENUM:
+        case CX_BITMASK:
+            result = FAST_Enumerated;
+            break;
+        case CX_ALIAS:
+            result = FAST_Integer;
+            break;
+        }
+    }
 
-	return result;
+    return result;
 error:
     return FAST_Null;
 /* $end */

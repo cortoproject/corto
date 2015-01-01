@@ -43,9 +43,9 @@ struct g_itemWalk_t {
     g_dependency stack[CYCLE_DEPTH]; /* For cycle detection */
     cx_uint32 sp;
     cx_bool bootstrap; /* If a bootstrap is detected, disregard all dependencies. This can only mean that
-    					  the builtin-types are being generated, since these are the only ones that can
-    					  introduce a bootstrap (typeof(class) == class).
-    					  In this case, dependencies don't matter (and are non-resolvable)*/
+                          the builtin-types are being generated, since these are the only ones that can
+                          introduce a bootstrap (typeof(class) == class).
+                          In this case, dependencies don't matter (and are non-resolvable)*/
 };
 
 static int g_itemPrint(void* o, void* userData);
@@ -132,50 +132,50 @@ void g_itemDepend(g_item o, cx_uint8 kind, g_item dependency, cx_uint8 dependenc
 
     if (o->o != dependency->o) {
 
-		/* Create dependency object */
-		dep = cx_malloc(sizeof(struct g_dependency));
-		dep->kind = kind;
-		dep->item = o;
-		dep->weak = FALSE;
-		dep->marked = FALSE;
-		dep->processed = FALSE;
+        /* Create dependency object */
+        dep = cx_malloc(sizeof(struct g_dependency));
+        dep->kind = kind;
+        dep->item = o;
+        dep->weak = FALSE;
+        dep->marked = FALSE;
+        dep->processed = FALSE;
 
-		/* Increase corresponding counter */
-		switch(kind) {
-		case CX_DECLARED:
-			o->declareCount++;
-			break;
-		case CX_DEFINED:
-			o->defineCount++;
-			break;
-		default:
-			cx_assert(0, "invalid dependee-kind.");
-			break;
-		}
+        /* Increase corresponding counter */
+        switch(kind) {
+        case CX_DECLARED:
+            o->declareCount++;
+            break;
+        case CX_DEFINED:
+            o->defineCount++;
+            break;
+        default:
+            cx_assert(0, "invalid dependee-kind.");
+            break;
+        }
 
-		/* Insert in corresponding list of dependency */
-		switch(dependencyKind) {
-		case CX_DECLARED:
-			if (!dependency->onDeclared) {
-				dependency->onDeclared = cx_llNew();
-			}
-			cx_llInsert(dependency->onDeclared, dep);
-			break;
-		case CX_DECLARED | CX_DEFINED:
-			dep->weak = TRUE;
-			/* no break */
-		case CX_DEFINED:
-			if (!dependency->onDefined) {
-				dependency->onDefined = cx_llNew();
-			}
-			cx_llInsert(dependency->onDefined, dep);
-			break;
-		default:
-			cx_assert(0, "invalid dependency-kind.");
-			break;
-		}
+        /* Insert in corresponding list of dependency */
+        switch(dependencyKind) {
+        case CX_DECLARED:
+            if (!dependency->onDeclared) {
+                dependency->onDeclared = cx_llNew();
+            }
+            cx_llInsert(dependency->onDeclared, dep);
+            break;
+        case CX_DECLARED | CX_DEFINED:
+            dep->weak = TRUE;
+            /* no break */
+        case CX_DEFINED:
+            if (!dependency->onDefined) {
+                dependency->onDefined = cx_llNew();
+            }
+            cx_llInsert(dependency->onDefined, dep);
+            break;
+        default:
+            cx_assert(0, "invalid dependency-kind.");
+            break;
+        }
     } else {
-    	cx_error("bootstrap detected while not in ::cortex::lang namespace - database corrupt!");
+        cx_error("bootstrap detected while not in ::cortex::lang namespace - database corrupt!");
     }
 }
 
@@ -328,20 +328,20 @@ static int cx_genDepBuildProc(g_item item, g_itemWalk_t data) {
     f = item->o;
 
     if (cx_procedure(cx_typeof(f))->kind != CX_OBSERVER) {
-		count = cx_signatureParamCount(cx_nameof(f));
-		for(i=0; i<count; i++) {
-			cx_signatureParamType(cx_nameof(f), i, typeBuff, NULL);
-			t = cx_resolve_ext(NULL, cx_parentof(f), typeBuff, FALSE, "Resolve type for parameter in dependency builder");
-			if (!t) {
-				cx_error("type '%s' in signature '%s' not found!", typeBuff, cx_nameof(item->o));
-				goto error;
-			}
-			if (g_mustParse(data->g, t)) {
-				tItem = g_itemLookup(t, data);
-				g_itemDepend(item, CX_DECLARED, tItem, CX_DECLARED | CX_DEFINED); /* The type must be at least declared when the function is declared. */
-			}
-			cx_free_ext(NULL, t, "Free resolved parameter type for dependency builder");
-		}
+        count = cx_signatureParamCount(cx_nameof(f));
+        for(i=0; i<count; i++) {
+            cx_signatureParamType(cx_nameof(f), i, typeBuff, NULL);
+            t = cx_resolve_ext(NULL, cx_parentof(f), typeBuff, FALSE, "Resolve type for parameter in dependency builder");
+            if (!t) {
+                cx_error("type '%s' in signature '%s' not found!", typeBuff, cx_nameof(item->o));
+                goto error;
+            }
+            if (g_mustParse(data->g, t)) {
+                tItem = g_itemLookup(t, data);
+                g_itemDepend(item, CX_DECLARED, tItem, CX_DECLARED | CX_DEFINED); /* The type must be at least declared when the function is declared. */
+            }
+            cx_free_ext(NULL, t, "Free resolved parameter type for dependency builder");
+        }
     }
 
     return 0;
@@ -362,69 +362,69 @@ int cx_genDepBuildAction(cx_object o, void* userData) {
     /* If object is cortex_lang_o, signal that a bootstrap is found, indicating
      * that dependencies should be disregarded. */
     if (o == cortex_lang_o) {
-    	data->bootstrap = TRUE;
-    	result = 0;
+        data->bootstrap = TRUE;
+        result = 0;
     } else {
-		/* Lookup item for dependee */
-		dependee = g_itemLookup(o, data);
+        /* Lookup item for dependee */
+        dependee = g_itemLookup(o, data);
 
-		/* Insert type-dependency: object can be declared only after it's type is defined. */
-		if (g_mustParse(data->g, cx_typeof(o))) {
-			type = g_itemLookup(cx_typeof(o), data);
-			g_itemDepend(dependee, CX_DECLARED, type, CX_DEFINED);
-		}
+        /* Insert type-dependency: object can be declared only after it's type is defined. */
+        if (g_mustParse(data->g, cx_typeof(o))) {
+            type = g_itemLookup(cx_typeof(o), data);
+            g_itemDepend(dependee, CX_DECLARED, type, CX_DEFINED);
+        }
 
-		if (cx_class_instanceof(cx_procedure_o, cx_typeof(o))) {
-			/* Insert base-dependency: methods may only be declared after the base of a class has been defined. */
-			if (cx_typeof(o) != cx_typedef(cx_function_o)) {
-				if (cx_class_instanceof(cx_class_o, cx_parentof(o)) && cx_interface(cx_parentof(o))->base) {
-				    if (g_mustParse(data->g, cx_interface(cx_parentof(o))->base)) {
+        if (cx_class_instanceof(cx_procedure_o, cx_typeof(o))) {
+            /* Insert base-dependency: methods may only be declared after the base of a class has been defined. */
+            if (cx_typeof(o) != cx_typedef(cx_function_o)) {
+                if (cx_class_instanceof(cx_class_o, cx_parentof(o)) && cx_interface(cx_parentof(o))->base) {
+                    if (g_mustParse(data->g, cx_interface(cx_parentof(o))->base)) {
                         g_item base = g_itemLookup(cx_interface(cx_parentof(o))->base, data);
                         g_itemDepend(dependee, CX_DECLARED, base, CX_DEFINED);
-				    }
-				}
-			}
+                    }
+                }
+            }
 
-			/* Add dependencies on function parameters - types must be declared before function is declared. */
-			if (cx_genDepBuildProc(dependee, data)) {
-				goto error;
-			}
-		}
+            /* Add dependencies on function parameters - types must be declared before function is declared. */
+            if (cx_genDepBuildProc(dependee, data)) {
+                goto error;
+            }
+        }
 
-		/* Insert dependency on parent */
-		if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
-			parent = g_itemLookup(cx_parentof(o), data);
-			if (parent && (parent->o != root_o)) { /* Root is always available */
-				switch(cx_typedef(cx_typeof(o))->real->parentState) {
-				case 0:
-				case CX_DECLARED | CX_DEFINED:
-					/* If it doesn't matter whether the parent is declared or defined, mark
-					 * the dependency as DECLARED, which ensures it is resolved as soon as possible. */
-					g_itemDepend(dependee, CX_DECLARED, parent, CX_DECLARED);
-					break;
-				case CX_DECLARED:
-					g_itemDepend(dependee, CX_DECLARED, parent, CX_DECLARED);
+        /* Insert dependency on parent */
+        if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
+            parent = g_itemLookup(cx_parentof(o), data);
+            if (parent && (parent->o != root_o)) { /* Root is always available */
+                switch(cx_typedef(cx_typeof(o))->real->parentState) {
+                case 0:
+                case CX_DECLARED | CX_DEFINED:
+                    /* If it doesn't matter whether the parent is declared or defined, mark
+                     * the dependency as DECLARED, which ensures it is resolved as soon as possible. */
+                    g_itemDepend(dependee, CX_DECLARED, parent, CX_DECLARED);
+                    break;
+                case CX_DECLARED:
+                    g_itemDepend(dependee, CX_DECLARED, parent, CX_DECLARED);
 
-					/* If child must be declared when parent is declared, parent may only be defined after
-					 * all such childs are defined. */
-					g_itemDepend(parent, CX_DEFINED, dependee, CX_DEFINED);
-					break;
-				case CX_DEFINED:
-					g_itemDepend(dependee, CX_DECLARED, parent, CX_DEFINED);
-					break;
-				}
-			}
-		}
+                    /* If child must be declared when parent is declared, parent may only be defined after
+                     * all such childs are defined. */
+                    g_itemDepend(parent, CX_DEFINED, dependee, CX_DEFINED);
+                    break;
+                case CX_DEFINED:
+                    g_itemDepend(dependee, CX_DECLARED, parent, CX_DEFINED);
+                    break;
+                }
+            }
+        }
 
-		/* Insert dependencies on references in the object-value */
-		walkData.item = dependee;
-		walkData.data = data;
-		s = cx_genDepSerializer();
-		if (cx_serialize(&s, o, &walkData)) {
-			goto error;
-		}
+        /* Insert dependencies on references in the object-value */
+        walkData.item = dependee;
+        walkData.data = data;
+        s = cx_genDepSerializer();
+        if (cx_serialize(&s, o, &walkData)) {
+            goto error;
+        }
 
-		result = 1;
+        result = 1;
     }
 
     return result;
@@ -465,7 +465,7 @@ int g_itemPrintItems(struct g_itemWalk_t* data) {
 
     return 0;
 error:
-	return -1;
+    return -1;
 }
 
 static int g_itemResolveCycles(g_item item, struct g_itemWalk_t* data);
@@ -527,26 +527,26 @@ static void g_itemResolveDependencyCycles(g_dependency dep, struct g_itemWalk_t*
  * are stored as dependency objects with the 'weak' flag set to TRUE.
  */
 static int g_itemResolveCycles(g_item item, struct g_itemWalk_t* data) {
-	cx_iter iter;
-	g_dependency dep;
-	cx_uint32 sp;
+    cx_iter iter;
+    g_dependency dep;
+    cx_uint32 sp;
 
-	sp = data->sp;
+    sp = data->sp;
 
-	/* If item has not yet been declared, search onDeclared list. If the item is already declared, the
-	 * dependencies in this list have already been resolved, thus need not to be evaluated again. */
-	if (!item->declared && item->onDeclared) {
+    /* If item has not yet been declared, search onDeclared list. If the item is already declared, the
+     * dependencies in this list have already been resolved, thus need not to be evaluated again. */
+    if (!item->declared && item->onDeclared) {
 
-		/* Walk dependencies */
-		iter = cx_llIter(item->onDeclared);
-		while((cx_iterHasNext(&iter))) {
-			dep = cx_iterNext(&iter);
-			g_itemResolveDependencyCycles(dep, data);
-		}
-	}
+        /* Walk dependencies */
+        iter = cx_llIter(item->onDeclared);
+        while((cx_iterHasNext(&iter))) {
+            dep = cx_iterNext(&iter);
+            g_itemResolveDependencyCycles(dep, data);
+        }
+    }
 
-	/* Walk onDefined list if item is not yet defined. */
-	if (!item->defined && item->onDefined) {
+    /* Walk onDefined list if item is not yet defined. */
+    if (!item->defined && item->onDefined) {
 
         /* Walk dependencies */
         iter = cx_llIter(item->onDefined);
@@ -554,11 +554,11 @@ static int g_itemResolveCycles(g_item item, struct g_itemWalk_t* data) {
             dep = cx_iterNext(&iter);
             g_itemResolveDependencyCycles(dep, data);
         }
- 	}
+     }
 
-	data->sp = sp;
+    data->sp = sp;
 
-	return 0;
+    return 0;
 }
 
 static int cx_genDeclareAction(cx_object o, void* userData) {
@@ -573,21 +573,21 @@ static int cx_genDefineAction(cx_object o, void* userData) {
     data = userData;
     if (cx_typeof(o)->real->kind != CX_VOID) {
         if (data->onDefine) {
-    		data->onDefine(o, data->userData);
+            data->onDefine(o, data->userData);
         }
     }
     return 1;
 }
 
 int cx_genCollectAnonymous(void* o, void* userData) {
-	cx_ll list = userData;
-	g_item item = o;
+    cx_ll list = userData;
+    g_item item = o;
 
-	if (!cx_checkAttr(item->o, CX_ATTR_SCOPED)) {
-		cx_llInsert(list, item->o);
-	}
+    if (!cx_checkAttr(item->o, CX_ATTR_SCOPED)) {
+        cx_llInsert(list, item->o);
+    }
 
-	return 1;
+    return 1;
 }
 
 /* Walk objects in correct dependency order. */
@@ -606,65 +606,65 @@ int cx_genDepWalk(cx_generator g, g_walkAction onDeclare, g_walkAction onDefine,
 
     /* Build dependency administration */
     if (!g_walkRecursive(g, cx_genDepBuildAction, &walkData)) {
-    	if (!walkData.bootstrap) {
-    		cx_trace("dependency-builder failed.");
-    		goto error;
-    	} else {
-    		g_walkRecursive(g, cx_genDeclareAction, &walkData);
-    		g_walkRecursive(g, cx_genDefineAction, &walkData);
-    	}
+        if (!walkData.bootstrap) {
+            cx_trace("dependency-builder failed.");
+            goto error;
+        } else {
+            g_walkRecursive(g, cx_genDeclareAction, &walkData);
+            g_walkRecursive(g, cx_genDefineAction, &walkData);
+        }
 
-    	/* Cleanup administration */
-    	while((item = cx_llTakeFirst(walkData.items))) {
-    		g_itemFree(item);
-    	}
+        /* Cleanup administration */
+        while((item = cx_llTakeFirst(walkData.items))) {
+            g_itemFree(item);
+        }
     } else {
-    	cx_ll anonymousObjects = cx_llNew();
+        cx_ll anonymousObjects = cx_llNew();
 
-    	/* Build dependency information for anonymous objects */
-    	cx_llWalk(walkData.items, cx_genCollectAnonymous, anonymousObjects);
-    	cx_llWalk(anonymousObjects, cx_genDepBuildAction, &walkData);
-    	cx_llFree(anonymousObjects);
+        /* Build dependency information for anonymous objects */
+        cx_llWalk(walkData.items, cx_genCollectAnonymous, anonymousObjects);
+        cx_llWalk(anonymousObjects, cx_genDepBuildAction, &walkData);
+        cx_llFree(anonymousObjects);
 
-		/* Print initial items */
-		if (g_itemPrintItems(&walkData)) {
-			goto error;
-		}
+        /* Print initial items */
+        if (g_itemPrintItems(&walkData)) {
+            goto error;
+        }
 
-		/* Resolve items with cycles */
-		iter = cx_llIter(walkData.items);
-		while(cx_iterHasNext(&iter)) {
-			item = cx_iterNext(&iter);
+        /* Resolve items with cycles */
+        iter = cx_llIter(walkData.items);
+        while(cx_iterHasNext(&iter)) {
+            item = cx_iterNext(&iter);
 
-			/* Process objects that have not yet been defined or declared */
-			if (!item->defined) {
-				/* Locate and resolve cycles */
-				walkData.sp = 0;
-				if (g_itemResolveCycles(item, &walkData)) {
-					goto error;
-				}
+            /* Process objects that have not yet been defined or declared */
+            if (!item->defined) {
+                /* Locate and resolve cycles */
+                walkData.sp = 0;
+                if (g_itemResolveCycles(item, &walkData)) {
+                    goto error;
+                }
 
-				/* Print items after resolving cycle(s) for item. */
-				if (g_itemPrintItems(&walkData)) {
-					goto error;
-				}
-			}
-		}
+                /* Print items after resolving cycle(s) for item. */
+                if (g_itemPrintItems(&walkData)) {
+                    goto error;
+                }
+            }
+        }
 
 
-	    /* Free items and check if there are still undeclared or undefined objects. */
-	    while((item = cx_llTakeFirst(walkData.items))) {
-	        if (!item->defined) {
-	            if (!item->declared) {
-	                cx_id name;
-	                cx_warning("object '%s' has not been declared or defined.", cx_fullname(item->o, name));
-	            } else if (!item->defined){
-	                cx_id name;
-	                cx_warning("object '%s' has not been defined.", cx_fullname(item->o, name));
-	            }
-	        }
-	        g_itemFree(item);
-	    }
+        /* Free items and check if there are still undeclared or undefined objects. */
+        while((item = cx_llTakeFirst(walkData.items))) {
+            if (!item->defined) {
+                if (!item->declared) {
+                    cx_id name;
+                    cx_warning("object '%s' has not been declared or defined.", cx_fullname(item->o, name));
+                } else if (!item->defined){
+                    cx_id name;
+                    cx_warning("object '%s' has not been defined.", cx_fullname(item->o, name));
+                }
+            }
+            g_itemFree(item);
+        }
     }
 
 

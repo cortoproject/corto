@@ -1,8 +1,8 @@
 // Copy collection types with reference elementType
 bool result: true
 void fail(string msg):
-	"tc_copy04: FAIL: $msg"
-	result = false
+    "tc_copy04: FAIL: $msg"
+    result = false
 
 void rA,rB,rC,rD,rE,rF,rG,rH,rI,rJ,rK,rL,rM,rN,rO,rP,rQ,rR
 

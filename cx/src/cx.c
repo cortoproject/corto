@@ -28,8 +28,8 @@ void cx_call_vm(cx_function f, cx_void* result, void* args);
 void cx_callDestruct_vm(cx_function f);
 
 struct cx_exitHandler {
-	void(*handler)(void*);
-	void* userData;
+    void(*handler)(void*);
+    void* userData;
 };
 
 static cx_mutex_s cx_adminLock;
@@ -59,7 +59,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_CLASS(op, struct);\
     SSO_OP_CLASS(op, procedure);\
     SSO_OP_CLASS(op, event);\
-	SSO_OP_CLASS(op, observableEvent);\
+    SSO_OP_CLASS(op, observableEvent);\
     SSO_OP_CLASS(op, binary);\
     SSO_OP_CLASS(op, boolean);\
     SSO_OP_CLASS(op, character);\
@@ -85,8 +85,8 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_CLASS(op, virtual);\
     SSO_OP_CLASS(op, delegate);\
     SSO_OP_CLASS(op, callback);\
-	SSO_OP_CLASS(op, observer);\
-	SSO_OP_CLASS(op, metaprocedure);
+    SSO_OP_CLASS(op, observer);\
+    SSO_OP_CLASS(op, metaprocedure);
 
 /* ::cortex::lang objects (types only) */
 #define SSO_OP_TYPE(op)\
@@ -133,7 +133,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_PRIM(op, procptrdata);\
     SSO_OP_VOID(op, dispatcher);\
     SSO_OP_PROCEDURETYPE(op);\
-	SSO_OP_CLASSTYPE(op);
+    SSO_OP_CLASSTYPE(op);
 
 #define SSO_OBJECT(obj) CX_OFFSET(&obj##__o, sizeof(cx_SSO))
 #define SSO_OP_OBJ(op, obj) op(SSO_OBJECT(obj))
@@ -142,13 +142,13 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
 #define SSO_OP_OBJECT(op)\
     SSO_OP_OBJ(op, cortex_new);\
     SSO_OP_OBJ(op, cortex__new);\
-	SSO_OP_OBJ(op, type_init);\
+    SSO_OP_OBJ(op, type_init);\
     SSO_OP_OBJ(op, class_construct);\
     SSO_OP_OBJ(op, class_destruct);\
     SSO_OP_OBJ(op, procedure_bind);\
     SSO_OP_OBJ(op, procedure_unbind);\
-	/* constant */\
-	SSO_OP_OBJ(op, constant_init);\
+    /* constant */\
+    SSO_OP_OBJ(op, constant_init);\
     /* function */\
     SSO_OP_OBJ(op, function_returnType);\
     SSO_OP_OBJ(op, function_returnsReference);\
@@ -165,9 +165,9 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, function_unbind);\
     SSO_OP_OBJ(op, function_stringToParameterSeq);\
     /* method */\
-	SSO_OP_OBJ(op, method_virtual);\
-	SSO_OP_OBJ(op, method_init);\
-	SSO_OP_OBJ(op, method_bind);\
+    SSO_OP_OBJ(op, method_virtual);\
+    SSO_OP_OBJ(op, method_init);\
+    SSO_OP_OBJ(op, method_bind);\
     /* virtual */\
     SSO_OP_OBJ(op, virtual_init);\
     /* delegate */\
@@ -194,7 +194,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, observer_setDispatcher);\
     /* metaprocedure */\
     SSO_OP_OBJ(op, metaprocedure_referenceOnly);\
-	SSO_OP_OBJ(op, metaprocedure_bind);\
+    SSO_OP_OBJ(op, metaprocedure_bind);\
     /* dispatcher */\
     SSO_OP_OBJ(op, dispatcher_post);\
     SSO_OP_OBJ(op, dispatcher_getEvent);\
@@ -205,7 +205,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, event_uniqueKind);\
     /* observableEvent */\
     SSO_OP_OBJ(op, observableEvent_observer);\
-	SSO_OP_OBJ(op, observableEvent_me);\
+    SSO_OP_OBJ(op, observableEvent_me);\
     SSO_OP_OBJ(op, observableEvent_source);\
     SSO_OP_OBJ(op, observableEvent_observable);\
     /* width */\
@@ -232,8 +232,8 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, primitiveKind_BITMASK);\
     SSO_OP_OBJ(op, primitiveKind_ALIAS);\
     /* compositeKind */\
-	SSO_OP_OBJ(op, compositeKind_INTERFACE);\
-	SSO_OP_OBJ(op, compositeKind_STRUCT);\
+    SSO_OP_OBJ(op, compositeKind_INTERFACE);\
+    SSO_OP_OBJ(op, compositeKind_STRUCT);\
     SSO_OP_OBJ(op, compositeKind_CLASS);\
     SSO_OP_OBJ(op, compositeKind_PROCPTR);\
     SSO_OP_OBJ(op, compositeKind_PROCEDURE);\
@@ -360,8 +360,8 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, type_instanceof);\
     SSO_OP_OBJ(op, type_fullname);\
     SSO_OP_OBJ(op, type_relname);\
-	SSO_OP_OBJ(op, type_compare);\
-	SSO_OP_OBJ(op, type_copy);\
+    SSO_OP_OBJ(op, type_compare);\
+    SSO_OP_OBJ(op, type_copy);\
     SSO_OP_OBJ(op, type_toString);\
     /* primitive */\
     SSO_OP_OBJ(op, primitive_kind);\
@@ -433,8 +433,8 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     /* bitmask */\
     SSO_OP_OBJ(op, bitmask_init);\
     /* alias */\
-	SSO_OP_OBJ(op, alias_init);\
-	SSO_OP_OBJ(op, alias_typeName);\
+    SSO_OP_OBJ(op, alias_init);\
+    SSO_OP_OBJ(op, alias_typeName);\
     /* struct */\
     SSO_OP_OBJ(op, struct_init);\
     SSO_OP_OBJ(op, struct_construct);\
@@ -489,7 +489,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, list_init);\
     SSO_OP_OBJ(op, list_construct);\
     /* map */\
-	SSO_OP_OBJ(op, map_elementType);\
+    SSO_OP_OBJ(op, map_elementType);\
     SSO_OP_OBJ(op, map_keyType);\
     SSO_OP_OBJ(op, map_max);\
     SSO_OP_OBJ(op, map_init);\
@@ -526,7 +526,7 @@ static void cx_freeType(cx_object o, cx_uint32 size) {
 
 /* Initialization of objects */
 static void cx_initObject(cx_object o) {
-	cx_newObject(o);
+    cx_newObject(o);
     if(cx_type_init_hasCallback(cx_typeof(o)->real)) {
         cx_type_init(cx_typeof(o)->real, o);
     }
@@ -555,7 +555,7 @@ static void cx_defineType(cx_object o, cx_uint32 size) {
     /* Size validation */
     if (cx_type(o)->size != size) {
         cx_id id;
-    	cx_error("bootstrap: size validation failed for type '%s' - metatype = %d, c-type = %d.", cx_fullname(o, id), cx_type(o)->size, size);
+        cx_error("bootstrap: size validation failed for type '%s' - metatype = %d, c-type = %d.", cx_fullname(o, id), cx_type(o)->size, size);
     }
 }
 
@@ -567,12 +567,12 @@ static void cx_destructObject(cx_object o) {
 
     /* Free callback-vtable */
     if ((vtable = cx_class_getCallbackVtable(o))) {
-    	cx_uint32 i;
-    	for(i=0; i<vtable->length; i++) {
-    		if (vtable->buffer && vtable->buffer[i]) {
-    			cx_free_ext(o, vtable->buffer[i], "Free callback from builtin-object.");
-    		}
-    	}
+        cx_uint32 i;
+        for(i=0; i<vtable->length; i++) {
+            if (vtable->buffer && vtable->buffer[i]) {
+                cx_free_ext(o, vtable->buffer[i], "Free callback from builtin-object.");
+            }
+        }
     }
 }
 
@@ -588,39 +588,39 @@ static void cx_destructType(cx_object o, cx_uint32 size) {
 
     /* Free callback-vtable */
     if ((vtable = cx_class_getCallbackVtable(o))) {
-    	cx_uint32 i;
-    	for(i=0; i<vtable->length; i++) {
-    		if (vtable->buffer && vtable->buffer[i]) {
-    			cx_free_ext(o, vtable->buffer[i], "Free callback from builtin-object.");
-    		}
-    	}
+        cx_uint32 i;
+        for(i=0; i<vtable->length; i++) {
+            if (vtable->buffer && vtable->buffer[i]) {
+                cx_free_ext(o, vtable->buffer[i], "Free callback from builtin-object.");
+            }
+        }
     }
 }
 
 /* Update references */
 static void cx_updateRef(cx_object o) {
-	struct cx_serializer_s s;
-	s = cx_ser_keep(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
-	cx_serialize(&s, o, NULL);
+    struct cx_serializer_s s;
+    s = cx_ser_keep(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
+    cx_serialize(&s, o, NULL);
 }
 
 /* Update references for type */
 static void cx_updateRefType(cx_object o, cx_uint32 size) {
-	CX_UNUSED(size);
-	cx_updateRef(o);
+    CX_UNUSED(size);
+    cx_updateRef(o);
 }
 
 /* Decrease references */
 static void cx_decreaseRef(cx_object o) {
-	struct cx_serializer_s s;
-	s = cx_ser_free(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
-	cx_serialize(&s, o, NULL);
+    struct cx_serializer_s s;
+    s = cx_ser_free(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
+    cx_serialize(&s, o, NULL);
 }
 
 /* Decrease references for type */
 static void cx_decreaseRefType(cx_object o, cx_uint32 size) {
-	CX_UNUSED(size);
-	cx_decreaseRef(o);
+    CX_UNUSED(size);
+    cx_decreaseRef(o);
 }
 
 void cx_bindMethods(void) {
@@ -692,12 +692,12 @@ void cx_bindMethods(void) {
 
 int cx_start(void) {
 
-	/* Initialize threadkeys */
-	cx_threadTlsKey(&CX_KEY_OBSERVER_ADMIN, NULL);
-	cx_threadTlsKey(&CX_KEY_WAIT_ADMIN, NULL);
+    /* Initialize threadkeys */
+    cx_threadTlsKey(&CX_KEY_OBSERVER_ADMIN, NULL);
+    cx_threadTlsKey(&CX_KEY_WAIT_ADMIN, NULL);
 
-	/* Init admin-lock */
-	cx_adminLock = cx_mutexNew();
+    /* Init admin-lock */
+    cx_adminLock = cx_mutexNew();
 
     /* Bootstrap sizes. This is necessary because otherwise the callback-vtables which
      * are located after the object's value won't be accessible. */
@@ -788,18 +788,18 @@ void cx_onunload(void(*handler)(void*), void* userData) {
 
 /* Register exithandler */
 void cx_onexit(void(*handler)(void*), void* userData) {
-	struct cx_exitHandler* h;
+    struct cx_exitHandler* h;
 
-	h = cx_malloc(sizeof(struct cx_exitHandler));
-	h->handler = handler;
-	h->userData = userData;
+    h = cx_malloc(sizeof(struct cx_exitHandler));
+    h->handler = handler;
+    h->userData = userData;
 
-	cx_mutexLock(&cx_adminLock);
-	if (!cx_exitHandlers) {
-		cx_exitHandlers = cx_llNew();
-	}
-	cx_llInsert(cx_exitHandlers, h);
-	cx_mutexUnlock(&cx_adminLock);
+    cx_mutexLock(&cx_adminLock);
+    if (!cx_exitHandlers) {
+        cx_exitHandlers = cx_llNew();
+    }
+    cx_llInsert(cx_exitHandlers, h);
+    cx_mutexUnlock(&cx_adminLock);
 }
 
 /* Call unload-handlers */
@@ -818,16 +818,16 @@ static void cx_unload(void) {
 
 /* Call exit-handlers */
 static void cx_exit(void) {
-	struct cx_exitHandler* h;
+    struct cx_exitHandler* h;
 
-	if (cx_exitHandlers) {
-		while((h = cx_llTakeFirst(cx_exitHandlers))) {
-			h->handler(h->userData);
-			cx_dealloc(h);
-		}
-		cx_llFree(cx_exitHandlers);
-		cx_exitHandlers = NULL;
-	}
+    if (cx_exitHandlers) {
+        while((h = cx_llTakeFirst(cx_exitHandlers))) {
+            h->handler(h->userData);
+            cx_dealloc(h);
+        }
+        cx_llFree(cx_exitHandlers);
+        cx_exitHandlers = NULL;
+    }
 }
 
 void cx_stop(void) {
@@ -835,18 +835,18 @@ void cx_stop(void) {
     /* Call unload handlers */
     cx_unload();
 
-	/* Drop the rootscope. This will not actually result
-	 * in removing the rootscope itself, but it will result in the
-	 * removal of all non-static objects. */
-	cx_drop(root_o);
-	cx_free(root_o);
+    /* Drop the rootscope. This will not actually result
+     * in removing the rootscope itself, but it will result in the
+     * removal of all non-static objects. */
+    cx_drop(root_o);
+    cx_free(root_o);
 
-	/* Call exithandlers */
-	cx_exit();
+    /* Call exithandlers */
+    cx_exit();
 
     /* Decrease refcounts of public members */
-	SSO_OP_TYPE(cx_decreaseRefType);
-	SSO_OP_OBJECT(cx_decreaseRef);
+    SSO_OP_TYPE(cx_decreaseRefType);
+    SSO_OP_OBJECT(cx_decreaseRef);
     SSO_OP_OBJECT_2ND(cx_decreaseRef);
 
     /* Destruct objects */

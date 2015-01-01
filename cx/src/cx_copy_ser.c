@@ -265,9 +265,9 @@ static cx_int16 cx_ser_construct(cx_serializer s, cx_value *info, void *userData
 }
 
 struct cx_serializer_s cx_copy_ser(cx_modifier access, cx_operatorKind accessKind, cx_serializerTraceKind trace) {
-	struct cx_serializer_s s;
+    struct cx_serializer_s s;
     
-	cx_serializerInit(&s);
+    cx_serializerInit(&s);
     
     s.access = access;
     s.accessKind = accessKind;

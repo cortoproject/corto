@@ -1,8 +1,8 @@
 // Test reversing of lists
 bool result: true
 void fail(string msg):
-	"tc_list10: FAIL: $msg"
-	result = false
+    "tc_list10: FAIL: $msg"
+    result = false
 
 // Reverse lists
 list{uint32} a: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
@@ -12,9 +12,9 @@ list{uint32} d:
 
 // Sanity-check initial values
 if a[0,1,2,3,4,5,6,7,8,9] != (0,1,2,3,4,5,6,7,8,9): 
-	fail("a[0,1,2,3,4,5,6,7,8,9] != (0,1,2,3,4,5,6,7,8,9) ($a)")
+    fail("a[0,1,2,3,4,5,6,7,8,9] != (0,1,2,3,4,5,6,7,8,9) ($a)")
 if a.size() != 10: fail("a.size() != 10 (${a.size()})")
-	
+    
 if b[0] != 0: fail("b[0] != 0 ($b)")
 if b.size() != 1: fail("b.size() != 1 (${b.size()})")
 
@@ -31,7 +31,7 @@ d.reverse()
 
 // Check whether list values are reversed
 if a[0,1,2,3,4,5,6,7,8,9] != (9,8,7,6,5,4,3,2,1,0): 
-	fail("a[0,1,2,3,4,5,6,7,8,9] != (9,8,7,6,5,4,3,2,1,0) ($a)")
+    fail("a[0,1,2,3,4,5,6,7,8,9] != (9,8,7,6,5,4,3,2,1,0) ($a)")
 
 if b[0] != 0: fail("b[0] != 0 ($b)")
 

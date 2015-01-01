@@ -36,37 +36,37 @@ cx_typedef cx_valueType(cx_value* val) {
         result = val->is.value.t;
         break;
     case CX_LITERAL:
-    	switch(val->is.literal.kind) {
-    	case CX_LITERAL_BOOLEAN:
-    		result = cx_typedef(cx_bool_o);
-    		break;
-    	case CX_LITERAL_CHARACTER:
-    		result = cx_typedef(cx_char_o);
-    		break;
-    	case CX_LITERAL_INTEGER:
-    		result = cx_typedef(cx_int64_o);
-    		break;
-    	case CX_LITERAL_UNSIGNED_INTEGER:
-    		result = cx_typedef(cx_uint64_o);
-    		break;
-    	case CX_LITERAL_FLOATING_POINT:
-    		result = cx_typedef(cx_float64_o);
-    		break;
-    	case CX_LITERAL_STRING:
-    		result = cx_typedef(cx_string_o);
-    		break;
-    	default:
-    		cx_critical("cx_valueType: invalid cx_literalKind(%d)", val->is.literal.kind);
-    		result = NULL;
-    		break;
-    	}
-    	break;
+        switch(val->is.literal.kind) {
+        case CX_LITERAL_BOOLEAN:
+            result = cx_typedef(cx_bool_o);
+            break;
+        case CX_LITERAL_CHARACTER:
+            result = cx_typedef(cx_char_o);
+            break;
+        case CX_LITERAL_INTEGER:
+            result = cx_typedef(cx_int64_o);
+            break;
+        case CX_LITERAL_UNSIGNED_INTEGER:
+            result = cx_typedef(cx_uint64_o);
+            break;
+        case CX_LITERAL_FLOATING_POINT:
+            result = cx_typedef(cx_float64_o);
+            break;
+        case CX_LITERAL_STRING:
+            result = cx_typedef(cx_string_o);
+            break;
+        default:
+            cx_critical("cx_valueType: invalid cx_literalKind(%d)", val->is.literal.kind);
+            result = NULL;
+            break;
+        }
+        break;
     case CX_MEMBER:
         result = val->is.member.t->type;
         break;
     case CX_CALL:
-    	result = val->is.call.t->returnType;
-    	break;
+        result = val->is.call.t->returnType;
+        break;
     case CX_CONSTANT:
         result = cx_valueType(val->parent);
         break;
@@ -74,8 +74,8 @@ cx_typedef cx_valueType(cx_value* val) {
         result = val->is.element.t.type;
         break;
     case CX_MAP_ELEMENT:
-    	result = val->is.mapElement.t.type;
-    	break;
+        result = val->is.mapElement.t.type;
+        break;
     default:
         cx_critical("cx_valueType: invalid cx_valueKind(%d).", val->kind);
         result = NULL;
@@ -95,8 +95,8 @@ cx_void* cx_valueValue(cx_value* val) {
         result = val->is.base.v;
         break;
     case CX_LITERAL:
-    	result = &val->is.literal.v;
-    	break;
+        result = &val->is.literal.v;
+        break;
     case CX_VALUE:
         result = val->is.value.v;
         break;
@@ -104,8 +104,8 @@ cx_void* cx_valueValue(cx_value* val) {
         result = val->is.member.v;
         break;
     case CX_CALL:
-    	result = NULL; /* A call has no value */
-    	break;
+        result = NULL; /* A call has no value */
+        break;
     case CX_CONSTANT:
         result = val->is.constant.v;
         break;
@@ -113,8 +113,8 @@ cx_void* cx_valueValue(cx_value* val) {
         result = val->is.element.v;
         break;
     case CX_MAP_ELEMENT:
-    	result = val->is.mapElement.v;
-    	break;
+        result = val->is.mapElement.v;
+        break;
     default:
         cx_critical("cx_valueValue: invalid cx_valueKind(%d).", val->kind);
         result = NULL;
@@ -134,8 +134,8 @@ cx_object cx_valueObject(cx_value* val) {
         result = val->is.base.o;
         break;
     case CX_LITERAL:
-    	result = NULL;
-    	break;
+        result = NULL;
+        break;
     case CX_VALUE:
         result = val->is.value.o;
         break;
@@ -143,8 +143,8 @@ cx_object cx_valueObject(cx_value* val) {
         result = val->is.member.o;
         break;
     case CX_CALL:
-    	result = val->is.call.o;
-    	break;
+        result = val->is.call.o;
+        break;
     case CX_CONSTANT:
         result = val->is.constant.o;
         break;
@@ -152,8 +152,8 @@ cx_object cx_valueObject(cx_value* val) {
         result = val->is.element.o;
         break;
     case CX_MAP_ELEMENT:
-    	result = val->is.mapElement.o;
-    	break;
+        result = val->is.mapElement.o;
+        break;
     default:
         cx_critical("cx_valueObject: invalid cx_valueKind(%d).", val->kind);
         result = NULL;
@@ -404,61 +404,61 @@ void cx_valueMapElementInit(cx_value* val, cx_object o, cx_typedef t, cx_typedef
 }
 
 void cx_valueLiteralInit(cx_value* val, cx_literalKind kind, cx_void* value) {
-	val->kind = CX_LITERAL;
-	val->is.literal.kind = kind;
+    val->kind = CX_LITERAL;
+    val->is.literal.kind = kind;
 
-	switch(kind) {
-	case CX_LITERAL_BOOLEAN:
-		val->is.literal.v._boolean = *(cx_bool*)value;
-		break;
-	case CX_LITERAL_CHARACTER:
-		val->is.literal.v._character = *(cx_char*)value;
-		break;
-	case CX_LITERAL_INTEGER:
-		val->is.literal.v._integer = *(cx_int64*)value;
-		break;
-	case CX_LITERAL_UNSIGNED_INTEGER:
-		val->is.literal.v._unsigned_integer = *(cx_uint64*)value;
-		break;
-	case CX_LITERAL_FLOATING_POINT:
-		val->is.literal.v._floating_point = *(cx_float64*)value;
-		break;
-	case CX_LITERAL_STRING:
-		if (*(cx_string*)value) {
-			val->is.literal.v._string = cx_strdup(*(cx_string*)value);
-		} else {
-			val->is.literal.v._string = NULL;
-		}
-		break;
-	case CX_LITERAL_NULL:
-		break;
-	}
+    switch(kind) {
+    case CX_LITERAL_BOOLEAN:
+        val->is.literal.v._boolean = *(cx_bool*)value;
+        break;
+    case CX_LITERAL_CHARACTER:
+        val->is.literal.v._character = *(cx_char*)value;
+        break;
+    case CX_LITERAL_INTEGER:
+        val->is.literal.v._integer = *(cx_int64*)value;
+        break;
+    case CX_LITERAL_UNSIGNED_INTEGER:
+        val->is.literal.v._unsigned_integer = *(cx_uint64*)value;
+        break;
+    case CX_LITERAL_FLOATING_POINT:
+        val->is.literal.v._floating_point = *(cx_float64*)value;
+        break;
+    case CX_LITERAL_STRING:
+        if (*(cx_string*)value) {
+            val->is.literal.v._string = cx_strdup(*(cx_string*)value);
+        } else {
+            val->is.literal.v._string = NULL;
+        }
+        break;
+    case CX_LITERAL_NULL:
+        break;
+    }
 }
 
 void cx_valueSetValue(cx_value* val, cx_void* v) {
-	switch(val->kind) {
-	case CX_OBJECT:
-		val->is.o = v; /* Dangerous, but allowed */
-		break;
-	case CX_BASE:
-	    val->is.base.v = v;
-	    break;
-	case CX_MEMBER:
-		val->is.member.v = v;
-		break;
-	case CX_CONSTANT:
-		val->is.constant.v = v;
-		break;
-	case CX_ELEMENT:
-		val->is.element.v = v;
-		break;
-	case CX_MAP_ELEMENT:
-		val->is.mapElement.v = v;
-		break;
-	default:
-		cx_assert(0, "cx_valueSetValue: invalid valueKind %d.", val->kind);
-		break;
-	}
+    switch(val->kind) {
+    case CX_OBJECT:
+        val->is.o = v; /* Dangerous, but allowed */
+        break;
+    case CX_BASE:
+        val->is.base.v = v;
+        break;
+    case CX_MEMBER:
+        val->is.member.v = v;
+        break;
+    case CX_CONSTANT:
+        val->is.constant.v = v;
+        break;
+    case CX_ELEMENT:
+        val->is.element.v = v;
+        break;
+    case CX_MAP_ELEMENT:
+        val->is.mapElement.v = v;
+        break;
+    default:
+        cx_assert(0, "cx_valueSetValue: invalid valueKind %d.", val->kind);
+        break;
+    }
 }
 
 void cx_valueFree(cx_value* val) {

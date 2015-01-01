@@ -17,10 +17,10 @@ cx_int16 cx_method_bind(cx_method object) {
     /* Locate parent class object */
     parent = cx_parentof(object);
     if (parent) {
-    	/* Bind function */
-    	if (cx_function_bind(cx_function(object))) {
-    		goto error;
-    	}
+        /* Bind function */
+        if (cx_function_bind(cx_function(object))) {
+            goto error;
+        }
     } else {
         cx_id id;
         cx_error("method::init: '%s' is an orphan.", cx_fullname(object, id));
@@ -71,6 +71,6 @@ cx_int16 cx_method_init(cx_method object) {
 
     return cx_function_init(cx_function(object));
 error:
-	return -1;
+    return -1;
 /* $end */
 }

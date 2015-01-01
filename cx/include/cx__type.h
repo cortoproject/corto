@@ -222,18 +222,18 @@ typedef enum cx_operatorKind {
 } cx_operatorKind;
 
 CX_BITMASK(cx_state);
-	/* defined in cx_object.h */
+    /* defined in cx_object.h */
 CX_BITMASK(cx_attr);
-	/* defined in cx_object.h */
+    /* defined in cx_object.h */
 CX_BITMASK(cx_eventMask);
-	/* defined in cx_object.h */
+    /* defined in cx_object.h */
 
 CX_BITMASK(cx_modifier);
-	#define CX_GLOBAL	  (0) /* Member is global and public (no restrictions) */
+    #define CX_GLOBAL      (0) /* Member is global and public (no restrictions) */
     #define CX_LOCAL      (1) /* Member has local validity */
     #define CX_PRIVATE    (2) /* Member is not exposed for extern entities */
     #define CX_READONLY   (4) /* Member access is restricted to reading only */
-	#define CX_CONST	  (8) /* Member assignment is restricted to DECLARED objects only */
+    #define CX_CONST      (8) /* Member assignment is restricted to DECLARED objects only */
 
 /* Function types */
 typedef cx_equalityKind (*cx_equalsAction)(cx_type _this, const void* o1, const void* o2);
@@ -294,21 +294,21 @@ CX_PROCEDURE_DEF(cx_callback) {
 };
 
 CX_PROCEDURE_DEF(cx_metaprocedure) {
-	CX_EXTEND(cx_function);
+    CX_EXTEND(cx_function);
     cx_bool referenceOnly;
 };
 
 /* observer */
 CX_PROCEDURE_DEF(cx_observer) {
-	CX_EXTEND(cx_function);
-	cx_object observable;       /* The object being observed */
-	cx_uint32 mask;             /* The interest mask */
-	cx_string expression;       /* Expression (must either resolve to an object or boolean) */
-	cx_uint32 template;         /* If nonzero, this observer is a class-template which is instantiated for all class-instances */
-	cx_dispatcher dispatcher;   /* If set, events for this observer are send through this dispatcher */
-	cx_object me;               /* Set to 'this' if observer is an instantiated class observer. Prevents loopback of events. */
-	cx_object observing;
-	cx_observer delayedBinder;
+    CX_EXTEND(cx_function);
+    cx_object observable;       /* The object being observed */
+    cx_uint32 mask;             /* The interest mask */
+    cx_string expression;       /* Expression (must either resolve to an object or boolean) */
+    cx_uint32 template;         /* If nonzero, this observer is a class-template which is instantiated for all class-instances */
+    cx_dispatcher dispatcher;   /* If set, events for this observer are send through this dispatcher */
+    cx_object me;               /* Set to 'this' if observer is an instantiated class observer. Prevents loopback of events. */
+    cx_object observing;
+    cx_observer delayedBinder;
 };
 
 /* ::cortex::lang::typedef */
@@ -419,8 +419,8 @@ CX_CLASS_DEF(cx_bitmask) {
 
 /* ::cortex::lang::alias */
 CX_CLASS_DEF(cx_alias) {
-	CX_EXTEND(cx_primitive);
-	cx_string typeName;
+    CX_EXTEND(cx_primitive);
+    cx_string typeName;
 };
 
 /* ::cortex::lang::struct */
@@ -431,8 +431,8 @@ CX_CLASS_DEF(cx_struct) {
 };
 
 CX_STRUCT_DEF(cx_interfaceVector) {
-	cx_interface interface;
-	cx_vtable vector;
+    cx_interface interface;
+    cx_vtable vector;
 };
 
 /* ::cortex::lang::class */
@@ -499,17 +499,17 @@ CX_CLASS_DEF(cx_member) {
 
 /* ::cortex::lang::event */
 CX_CLASS_DEF(cx_event) {
-	cx_uint16 kind;
-	cx_bool handled;
+    cx_uint16 kind;
+    cx_bool handled;
 };
 
 /* ::cortex::lang::observableEvent */
 CX_CLASS_DEF(cx_observableEvent) {
-	CX_EXTEND(cx_event);
-	cx_observer observer;
-	cx_object me;
-	cx_object source;
-	cx_object observable;
+    CX_EXTEND(cx_event);
+    cx_observer observer;
+    cx_object me;
+    cx_object source;
+    cx_object observable;
 };
 
 #ifdef __cplusplus

@@ -2,8 +2,8 @@
 bool result: true
 
 void fail(string msg):
-	"tc_ternary08: FAIL: $msg"
-	result = false
+    "tc_ternary08: FAIL: $msg"
+    result = false
 
 struct Point:: x, y: uint32
 struct Point3D: Point:: z: uint32

@@ -47,11 +47,11 @@ typedef struct cx_waitForObject {
 }cx_waitForObject;
 
 /* Thread local storage key for administration that keeps track for which observables notifications take place.
- * 	This key points to an element in a list keyed by threadId's for which notifications have taken place. Value
- * 	of this element is the observable being notified at the moment. When a listen\silence call needs to clean
- * 	memory it can look at this administration to see if it is in use. To prevent deadlocks, listen\silence calls
- * 	will not look at their own threadId, since this would indicate listen\silence is called from an observer being
- * 	notified. This key is created in cx_start. */
+ *     This key points to an element in a list keyed by threadId's for which notifications have taken place. Value
+ *     of this element is the observable being notified at the moment. When a listen\silence call needs to clean
+ *     memory it can look at this administration to see if it is in use. To prevent deadlocks, listen\silence calls
+ *     will not look at their own threadId, since this would indicate listen\silence is called from an observer being
+ *     notified. This key is created in cx_start. */
 /* TODO: when a thread exits, the corresponding element must be free'd again - use tls destructor function */
 extern cx_threadKey CX_KEY_OBSERVER_ADMIN;
 
@@ -59,89 +59,89 @@ extern cx_threadKey CX_KEY_OBSERVER_ADMIN;
 cx_ll cx_anonymousObjects = NULL;
 
 typedef struct cx_observerElement {
-	cx__observer ** observers;
-	cx_bool free;
+    cx__observer ** observers;
+    cx_bool free;
 }cx_observerElement;
 
 typedef struct cx_observerAdmin {
-	cx_thread id;
-	cx_observerElement stack[CX_MAX_NOTIFY_DEPTH];
-	cx_uint32 sp;
+    cx_thread id;
+    cx_observerElement stack[CX_MAX_NOTIFY_DEPTH];
+    cx_uint32 sp;
 }cx_observerAdmin;
 static cx_observerAdmin observerAdmin[CX_MAX_THREADS];
 
 /* Push observer-array to thread administration. Rather than passing the array pass the
  * address of the array so that setting the administration can be done atomic. */
 cx__observer** cx_observersPush(cx__observer**  *observers) {
-	cx__observer** result;
-	cx_observerAdmin *admin = cx_threadTlsGet(CX_KEY_OBSERVER_ADMIN);
-	if (!admin) {
-		cx_thread thr = cx_threadSelf();
-		cx_uint32 i;
-		do {
-			i = 0;
-			while(observerAdmin[i].id) { /* Find a free slot for thread in administration */
-				i++;
-				if (i >= CX_MAX_THREADS) {
-					cx_critical("maximum number of supported threads reached! (%d)", CX_MAX_THREADS);
-				}
-			}
-		}while(!cx_cas(&observerAdmin[i].id,0,thr));
-		admin = &observerAdmin[i];
-		cx_threadTlsSet(CX_KEY_OBSERVER_ADMIN, admin);
-	}
-	result = admin->stack[admin->sp].observers = *observers;
-	admin->stack[admin->sp++].free = FALSE;
-	return result;
+    cx__observer** result;
+    cx_observerAdmin *admin = cx_threadTlsGet(CX_KEY_OBSERVER_ADMIN);
+    if (!admin) {
+        cx_thread thr = cx_threadSelf();
+        cx_uint32 i;
+        do {
+            i = 0;
+            while(observerAdmin[i].id) { /* Find a free slot for thread in administration */
+                i++;
+                if (i >= CX_MAX_THREADS) {
+                    cx_critical("maximum number of supported threads reached! (%d)", CX_MAX_THREADS);
+                }
+            }
+        }while(!cx_cas(&observerAdmin[i].id,0,thr));
+        admin = &observerAdmin[i];
+        cx_threadTlsSet(CX_KEY_OBSERVER_ADMIN, admin);
+    }
+    result = admin->stack[admin->sp].observers = *observers;
+    admin->stack[admin->sp++].free = FALSE;
+    return result;
 }
 
 cx_bool cx_observersPop(void) {
-	cx_observerAdmin *admin = cx_threadTlsGet(CX_KEY_OBSERVER_ADMIN); /* Admin must always exist when popping */
-	return admin->stack[--admin->sp].free;
+    cx_observerAdmin *admin = cx_threadTlsGet(CX_KEY_OBSERVER_ADMIN); /* Admin must always exist when popping */
+    return admin->stack[--admin->sp].free;
 }
 
 cx_bool cx_observersWaitForUnused(cx__observer** observers) {
-	cx_thread self = cx_threadSelf();
-	cx_uint32 i, j;
-	cx_bool inUse, freeArray = TRUE; /* Initialization merely to satisfy the compiler */
+    cx_thread self = cx_threadSelf();
+    cx_uint32 i, j;
+    cx_bool inUse, freeArray = TRUE; /* Initialization merely to satisfy the compiler */
 
-	if (!observers) {
-		return FALSE;
-	}
+    if (!observers) {
+        return FALSE;
+    }
 
-	/* Spinning loop which waits as long as an observer array is being used
-	 * in a notification by any of the running threads. */
-	do {
-		inUse = FALSE;
-		for(i=0; i<CX_MAX_THREADS; i++) {
-			if (observerAdmin[i].id) {
-				/* Check whether the observer array is in use by threads other than myself */
-				if ((observerAdmin[i].id != self)) {
-					for(j=0; j<observerAdmin[i].sp; j++) {
-						if (observerAdmin[i].stack[j].observers == observers) {
-							inUse = TRUE; /* Array is found, so keep waiting */
-						}
-						break;
-					}
-					
-				/* Check whether the observer array is in use by my own thread */
-				} else {
-					freeArray = TRUE;
-					for(j=0; j<observerAdmin[i].sp; j++) {
-						/* The array is in use by my own thread so I can't keep spinning. Notify the observing function to 
-						 * free the array */
-						if (observerAdmin[i].stack[j].observers == observers) {
-							observerAdmin[i].stack[j].free = TRUE; /* Signal the notification routine to free the array */
-							freeArray = FALSE; /* Since the array is still in use by myself don't free array yet */
-							break;
-						}
-					}
-				}
-			}
-		}
-	}while(inUse);
+    /* Spinning loop which waits as long as an observer array is being used
+     * in a notification by any of the running threads. */
+    do {
+        inUse = FALSE;
+        for(i=0; i<CX_MAX_THREADS; i++) {
+            if (observerAdmin[i].id) {
+                /* Check whether the observer array is in use by threads other than myself */
+                if ((observerAdmin[i].id != self)) {
+                    for(j=0; j<observerAdmin[i].sp; j++) {
+                        if (observerAdmin[i].stack[j].observers == observers) {
+                            inUse = TRUE; /* Array is found, so keep waiting */
+                        }
+                        break;
+                    }
+                    
+                /* Check whether the observer array is in use by my own thread */
+                } else {
+                    freeArray = TRUE;
+                    for(j=0; j<observerAdmin[i].sp; j++) {
+                        /* The array is in use by my own thread so I can't keep spinning. Notify the observing function to 
+                         * free the array */
+                        if (observerAdmin[i].stack[j].observers == observers) {
+                            observerAdmin[i].stack[j].free = TRUE; /* Signal the notification routine to free the array */
+                            freeArray = FALSE; /* Since the array is still in use by myself don't free array yet */
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }while(inUse);
 
-	return freeArray;
+    return freeArray;
 }
 
 static cx__scope* cx__objectScope(cx__object* o) {
@@ -172,16 +172,16 @@ static cx__observable* cx__objectObservable(cx__object* o) {
     cx__observable* result = (void*)o;
 
     if (o->attrs.scope) {
-    	result = CX_OFFSET(result, -sizeof(cx__scope));
+        result = CX_OFFSET(result, -sizeof(cx__scope));
     }
-	if (o->attrs.write) {
-		result = CX_OFFSET(result, -sizeof(cx__writable));
-	}
-	if (result && o->attrs.observable) {
-		result = CX_OFFSET(result, -sizeof(cx__observable));
-	} else {
-		result = NULL;
-	}
+    if (o->attrs.write) {
+        result = CX_OFFSET(result, -sizeof(cx__writable));
+    }
+    if (result && o->attrs.observable) {
+        result = CX_OFFSET(result, -sizeof(cx__observable));
+    } else {
+        result = NULL;
+    }
 
     return result;
 }
@@ -342,11 +342,11 @@ static void cx__deinitObservable(cx_object o) {
     if (observable->onSelf) {
         cx__observer* observer;
         while((observer = cx_llTakeFirst(observable->onSelf))) {
-        	/* Clear template observer data */
-        	if (observer->observer->template) {
-        		cx_object observerObj = observer->_this;
-        		cx_class_setObservable(cx_class(cx_typeof(observerObj)), observer->observer, observer->_this, NULL);
-        	}
+            /* Clear template observer data */
+            if (observer->observer->template) {
+                cx_object observerObj = observer->_this;
+                cx_class_setObservable(cx_class(cx_typeof(observerObj)), observer->observer, observer->_this, NULL);
+            }
             if (!--observer->count) {
                 cx_dealloc(observer);
             }
@@ -358,11 +358,11 @@ static void cx__deinitObservable(cx_object o) {
     if (observable->onChild) {
         cx__observer* observer;
         while((observer = cx_llTakeFirst(observable->onChild))) {
-        	/* Clear template observer data */
-        	if (observer->observer->template) {
-        		cx_object observerObj = observer->_this;
-        		cx_class_setObservable(cx_class(cx_typeof(observerObj)), observer->observer, observer->_this, NULL);
-        	}
+            /* Clear template observer data */
+            if (observer->observer->template) {
+                cx_object observerObj = observer->_this;
+                cx_class_setObservable(cx_class(cx_typeof(observerObj)), observer->observer, observer->_this, NULL);
+            }
             observer->count--;
              if (!observer->count) {
                 cx_dealloc(observer);
@@ -387,7 +387,7 @@ void cx__newSSO(cx_object sso) {
     /* Don't call initScope because name is already set. */
     scope->scopeLock = cx_rwmutexNew();
     if (scope->parent) {
-    	cx__adoptSSO(sso);
+        cx__adoptSSO(sso);
     }
 
     /* Init observable */
@@ -581,13 +581,13 @@ static int cx_adopt(cx_object parent, cx_object child) {
         cx_convert(cx_primitive(cx_state_o), &parentState, cx_primitive(cx_string_o), &s_parentState);
         cx_convert(cx_primitive(cx_state_o), &childState, cx_primitive(cx_string_o), &s_childState);
         cx_error("state %s of parent '%s' does not match %s, cannot adopt '%s' of type '%s'",
-        		s_parentState, cx_fullname(parent, parentId), s_childState, cx_nameof(child), cx_fullname(childType, childTypeId));
+                s_parentState, cx_fullname(parent, parentId), s_childState, cx_nameof(child), cx_fullname(childType, childTypeId));
 
         if (s_parentState) {
-        	cx_dealloc(s_parentState);
+            cx_dealloc(s_parentState);
         }
         if (s_childState) {
-        	cx_dealloc(s_childState);
+            cx_dealloc(s_childState);
         }
 
         goto err_invalid_parent;
@@ -656,10 +656,10 @@ void cx_attach(cx_object parent, cx_object child) {
     cx__scope *_scope;
 
     if (!cx_checkAttr(parent, CX_ATTR_SCOPED)) {
-    	cx_critical("attach: cannot attach to non-scoped object");
+        cx_critical("attach: cannot attach to non-scoped object");
     }
     if (cx_checkAttr(child, CX_ATTR_SCOPED)) {
-    	cx_critical("attach: cannot attach scoped object");
+        cx_critical("attach: cannot attach scoped object");
     }
 
     _parent = CX_OFFSET(parent, -sizeof(cx__object));
@@ -667,7 +667,7 @@ void cx_attach(cx_object parent, cx_object child) {
 
     cx_rwmutexWrite(&_scope->scopeLock);
     if (!_scope->attached) {
-    	_scope->attached = cx_llNew();
+        _scope->attached = cx_llNew();
     }
     cx_llAppend(_scope->attached, child);
     cx_rwmutexUnlock(&_scope->scopeLock);
@@ -678,10 +678,10 @@ void cx_detach(cx_object parent, cx_object child) {
     cx__scope *_scope;
 
     if (!cx_checkAttr(parent, CX_ATTR_SCOPED)) {
-    	cx_critical("attach: cannot attach to non-scoped object");
+        cx_critical("attach: cannot attach to non-scoped object");
     }
     if (cx_checkAttr(child, CX_ATTR_SCOPED)) {
-    	cx_critical("attach: cannot attach scoped object");
+        cx_critical("attach: cannot attach scoped object");
     }
 
     _parent = CX_OFFSET(parent, -sizeof(cx__object));
@@ -710,8 +710,8 @@ void cx__orphan(cx_object o) {
 
         /* If scope is empty delete it. */
         if (!cx_rbtreeSize(p_scope->scope)) {
-        	cx_rbtreeFree(p_scope->scope);
-        	p_scope->scope = NULL;
+            cx_rbtreeFree(p_scope->scope);
+            p_scope->scope = NULL;
         }
 
         if (cx_rwmutexUnlock(&p_scope->scopeLock)) goto err_parent_mutex;
@@ -740,10 +740,10 @@ cx_object cx_new_ext(cx_object src, cx_typedef type, cx_uint8 attrs, cx_string c
         headerSize += sizeof(cx__scope);
     }
     if (attrs & CX_ATTR_WRITABLE) {
-    	headerSize += sizeof(cx__writable);
+        headerSize += sizeof(cx__writable);
     }
     if (attrs & CX_ATTR_OBSERVABLE) {
-    	headerSize += sizeof(cx__observable);
+        headerSize += sizeof(cx__observable);
     }
 
     size += headerSize;
@@ -752,39 +752,39 @@ cx_object cx_new_ext(cx_object src, cx_typedef type, cx_uint8 attrs, cx_string c
     o = cx_calloc(size);
     if (o) {
 
-		/* Offset o so it points to object */
-		o = CX_OFFSET(o, headerSize - sizeof(cx__object));
+        /* Offset o so it points to object */
+        o = CX_OFFSET(o, headerSize - sizeof(cx__object));
 
         /* Give object initial refcount */
         o->refcount = 1;
 
-		/* Set type */
-		o->type = type;
+        /* Set type */
+        o->type = type;
 
-		/* Set attributes */
-		if (attrs & CX_ATTR_SCOPED) {
-			o->attrs.scope = TRUE;
-		}
-		if (attrs & CX_ATTR_WRITABLE) {
-			if (type->real->kind == CX_VOID) {
-			    if (!type->real->reference) {
-			        cx_warning("cx_new_ext: writable void object created.");
-			    }
-			}
-			o->attrs.write = TRUE;
-			cx__initWritable(CX_OFFSET(o, sizeof(cx__object)));
-		}
-		if (attrs & CX_ATTR_OBSERVABLE) {
-			o->attrs.observable = TRUE;
-		}
+        /* Set attributes */
+        if (attrs & CX_ATTR_SCOPED) {
+            o->attrs.scope = TRUE;
+        }
+        if (attrs & CX_ATTR_WRITABLE) {
+            if (type->real->kind == CX_VOID) {
+                if (!type->real->reference) {
+                    cx_warning("cx_new_ext: writable void object created.");
+                }
+            }
+            o->attrs.write = TRUE;
+            cx__initWritable(CX_OFFSET(o, sizeof(cx__object)));
+        }
+        if (attrs & CX_ATTR_OBSERVABLE) {
+            o->attrs.observable = TRUE;
+        }
 
-		/* Initially, an object is valid and declared */
-		o->attrs.state = CX_VALID | CX_DECLARED;
+        /* Initially, an object is valid and declared */
+        o->attrs.state = CX_VALID | CX_DECLARED;
 
-		/* void objects, primitives and references are instantly defined because they have no value. */
-		if ((type->real->kind == CX_VOID) || (type->real->kind == CX_PRIMITIVE)) {
-			o->attrs.state |= CX_DEFINED;
-		}
+        /* void objects, primitives and references are instantly defined because they have no value. */
+        if ((type->real->kind == CX_VOID) || (type->real->kind == CX_PRIMITIVE)) {
+            o->attrs.state |= CX_DEFINED;
+        }
 
         /* If object is of a classType, set the number of delegates in callback-vtable */
         if (cx_class_instanceof(cx_class_o, type)) {
@@ -806,7 +806,7 @@ cx_object cx_new_ext(cx_object src, cx_typedef type, cx_uint8 attrs, cx_string c
             }
             /* Add object to anonymous cache */
             if (!cx_anonymousObjects) {
-            	cx_anonymousObjects = cx_llNew();
+                cx_anonymousObjects = cx_llNew();
             }
             cx_llInsert(cx_anonymousObjects, CX_OFFSET(o, sizeof(cx__object)));
         }
@@ -822,9 +822,9 @@ cx_object cx_new(cx_typedef type) {
     int attr;
 
     if (type->real->kind == CX_VOID) {
-    	attr = CX_ATTR_OBSERVABLE;
+        attr = CX_ATTR_OBSERVABLE;
     } else {
-    	attr = CX_ATTR_WRITABLE | CX_ATTR_OBSERVABLE;
+        attr = CX_ATTR_WRITABLE | CX_ATTR_OBSERVABLE;
     }
 
     return cx_new_ext(NULL, type, attr, NULL);
@@ -836,7 +836,7 @@ cx_object cx_declare(cx_object parent, cx_string name, cx_typedef type) {
     cx_uint8 state;
 
     if (!parent) {
-    	parent = root_o;
+        parent = root_o;
     }
 
     /* Type must be valid and defined */
@@ -855,9 +855,9 @@ cx_object cx_declare(cx_object parent, cx_string name, cx_typedef type) {
 
     /* When the object is of a void-type, it should not be writable. */
     if (type->real->kind != CX_VOID) {
-    	state = CX_ATTR_SCOPED | CX_ATTR_WRITABLE | CX_ATTR_OBSERVABLE;
+        state = CX_ATTR_SCOPED | CX_ATTR_WRITABLE | CX_ATTR_OBSERVABLE;
     } else {
-    	state = CX_ATTR_SCOPED | CX_ATTR_OBSERVABLE;
+        state = CX_ATTR_SCOPED | CX_ATTR_OBSERVABLE;
     }
 
     /* Check if object already exists */
@@ -866,9 +866,9 @@ cx_object cx_declare(cx_object parent, cx_string name, cx_typedef type) {
         if (cx_typeof(o) != type) {
             cx_id tid, tid2, pid;
             if (parent != root_o) {
-            	cx_error("cannot declare '%s %s::%s', it is already declared as an object of a different type '%s'", cx_fullname(type, tid), cx_fullname(parent, pid), name, cx_fullname(cx_typeof(o), tid2));
+                cx_error("cannot declare '%s %s::%s', it is already declared as an object of a different type '%s'", cx_fullname(type, tid), cx_fullname(parent, pid), name, cx_fullname(cx_typeof(o), tid2));
             } else {
-               	cx_error("cannot declare '%s ::%s', it is already declared as an object of a different type '%s'", cx_fullname(type, tid), name, cx_fullname(cx_typeof(o), tid2));
+                   cx_error("cannot declare '%s ::%s', it is already declared as an object of a different type '%s'", cx_fullname(type, tid), name, cx_fullname(cx_typeof(o), tid2));
             }
             goto error;
         }
@@ -921,8 +921,8 @@ cx_int16 cx_define(cx_object o) {
 
         /* If object is instance of a class, call the constructor */
         if (cx_class_instanceof(cx_class_o, t)) {
-        	/* Attach observers to object */
-        	cx_class_attachObservers(cx_class(t), o);
+            /* Attach observers to object */
+            cx_class_attachObservers(cx_class(t), o);
             /* Call constructor */
             if(cx_class_construct_hasCallback(cx_class(t))) {
                 result = cx_class_construct(cx_class(t), o);
@@ -957,8 +957,8 @@ void cx_destruct(cx_object o) {
     scope = cx__objectScope(_o);
 
     if (cx_ainc(&scope->orphaned) == 1) {
-    	/* Orphan object */
-    	cx__orphan(o);
+        /* Orphan object */
+        cx__orphan(o);
         cx_free_ext(cx_parentof(o), o, "destroy scope reference");
     }
 }
@@ -1013,16 +1013,16 @@ cx_bool cx_checkAttr(cx_object o, cx_int8 attr) {
 }
 
 cx_bool cx_instanceof(cx_typedef type, cx_object o) {
-	cx_typedef objectType = cx_typeof(o);
-	cx_bool result = TRUE;
+    cx_typedef objectType = cx_typeof(o);
+    cx_bool result = TRUE;
 
-	if (type->real != objectType->real) {
-	    cx_type t;
+    if (type->real != objectType->real) {
+        cx_type t;
 
-	    result = FALSE;
-	    t = cx_typeof(o)->real;
+        result = FALSE;
+        t = cx_typeof(o)->real;
 
-	    if (t->kind == type->real->kind) {
+        if (t->kind == type->real->kind) {
             switch(type->real->kind) {
             case CX_COMPOSITE: {
                 cx_interface p;
@@ -1050,9 +1050,9 @@ cx_bool cx_instanceof(cx_typedef type, cx_object o) {
                 break;
             }
         }
-	}
+    }
 
-	return result;
+    return result;
 }
 
 /* Get parent (requires scoped object) */
@@ -1099,11 +1099,11 @@ err_not_scoped:
 
 /* Get scope (requires scoped object) */
 cx_rbtree cx_scopeof(cx_object o) {
-	cx__object* _o;
-	cx__scope* scope;
-	cx_rbtree result;
+    cx__object* _o;
+    cx__scope* scope;
+    cx_rbtree result;
 
-	result = NULL;
+    result = NULL;
 
     _o = CX_OFFSET(o, -sizeof(cx__object));
     scope = cx__objectScope(_o);
@@ -1115,8 +1115,8 @@ cx_rbtree cx_scopeof(cx_object o) {
 
     return result;
 err_not_scoped:
-	cx_error("cx_scopeof: object <%p> is not scoped", o);
-	return NULL;
+    cx_error("cx_scopeof: object <%p> is not scoped", o);
+    return NULL;
 }
 
 cx_uint32 cx_scopeSize(cx_object o) {
@@ -1146,11 +1146,11 @@ err_not_scoped:
 
 /* Walk objects in scope */
 cx_int32 cx_scopeWalk(cx_object o, cx_scopeWalkAction action, void* userData) {
-	cx_int32 result;
+    cx_int32 result;
     cx__scope* scope;
 
     if (!o) {
-    	o = root_o;
+        o = root_o;
     }
 
     result = 1;
@@ -1168,142 +1168,142 @@ cx_int32 cx_scopeWalk(cx_object o, cx_scopeWalkAction action, void* userData) {
 
 /* Obtain scoped identifier (serves as global unique identifier) */
 cx_string cx_fullname(cx_object o, cx_id buffer) {
-	cx_object stack[CX_MAX_SCOPE_DEPTH];
-	cx_uint32 depth;
-	cx_string name;
-	cx_char* ptr;
-	cx_uint32 len;
+    cx_object stack[CX_MAX_SCOPE_DEPTH];
+    cx_uint32 depth;
+    cx_string name;
+    cx_char* ptr;
+    cx_uint32 len;
 
-	depth = 0;
+    depth = 0;
 
-	if (!o) {
-	    *buffer = '\0';
-	    return buffer;
-	}
+    if (!o) {
+        *buffer = '\0';
+        return buffer;
+    }
 
-	if (!cx_checkAttr(o, CX_ATTR_SCOPED)) {
-		sprintf(buffer, "<%p>", o);
-	} else {
-		do {
-			stack[depth++] = o;
-		}while((o = cx_parentof(o)));
+    if (!cx_checkAttr(o, CX_ATTR_SCOPED)) {
+        sprintf(buffer, "<%p>", o);
+    } else {
+        do {
+            stack[depth++] = o;
+        }while((o = cx_parentof(o)));
 
-		ptr = buffer;
-		if (depth == 1) {
-			*(cx_uint16*)ptr = CX_SCOPE_HEX;
-			ptr += 2;
-		} else {
-			while(depth) {
-	            depth--;
-				o = stack[depth];
+        ptr = buffer;
+        if (depth == 1) {
+            *(cx_uint16*)ptr = CX_SCOPE_HEX;
+            ptr += 2;
+        } else {
+            while(depth) {
+                depth--;
+                o = stack[depth];
 
-				if ((name = cx_nameof(o))) {
-					/* Copy scope operator */
-					*(cx_uint16*)ptr = CX_SCOPE_HEX;
-					ptr += 2;
+                if ((name = cx_nameof(o))) {
+                    /* Copy scope operator */
+                    *(cx_uint16*)ptr = CX_SCOPE_HEX;
+                    ptr += 2;
 
-					/* Copy name */
-					len = strlen(name);
-					memcpy(ptr, name, len + 1);
-					ptr += len;
-				}
-			}
-		}
-		*ptr = '\0';
-	}
+                    /* Copy name */
+                    len = strlen(name);
+                    memcpy(ptr, name, len + 1);
+                    ptr += len;
+                }
+            }
+        }
+        *ptr = '\0';
+    }
 
-	return buffer;
+    return buffer;
 }
 
 static cx_object* cx_scopeStack(cx_object o, cx_object scopeStack[], cx_uint32 *length) {
-	cx_object ptr;
-	cx_uint32 i;
+    cx_object ptr;
+    cx_uint32 i;
 
-	ptr = o;
-	i = 0;
-	while(ptr) {
-		scopeStack[i] = ptr;
-		ptr = cx_parentof(ptr);
-		i++;
-	}
-	scopeStack[i] = NULL;
-	if (length) {
-		*length = i;
-	}
+    ptr = o;
+    i = 0;
+    while(ptr) {
+        scopeStack[i] = ptr;
+        ptr = cx_parentof(ptr);
+        i++;
+    }
+    scopeStack[i] = NULL;
+    if (length) {
+        *length = i;
+    }
 
-	return scopeStack;
+    return scopeStack;
 }
 
 cx_string cx_relname(cx_object from, cx_object o, cx_id buffer) {
-	cx_object from_s[CX_MAX_SCOPE_DEPTH];
-	cx_object o_s[CX_MAX_SCOPE_DEPTH];
-	cx_uint32 from_i, o_i;
-	cx_char* ptr;
-	cx_uint32 length;
+    cx_object from_s[CX_MAX_SCOPE_DEPTH];
+    cx_object o_s[CX_MAX_SCOPE_DEPTH];
+    cx_uint32 from_i, o_i;
+    cx_char* ptr;
+    cx_uint32 length;
 
-	cx_assert(from != NULL, "relname called with NULL for parameter 'from'.");
-	cx_assert(o != NULL, "relname called with NULL for parameter 'to'.");
+    cx_assert(from != NULL, "relname called with NULL for parameter 'from'.");
+    cx_assert(o != NULL, "relname called with NULL for parameter 'to'.");
 
-	if (from == root_o) {
-		cx_fullname(o, buffer);
-	} else {
-		cx_scopeStack(from, from_s, &from_i);
-		cx_scopeStack(o, o_s, &o_i);
+    if (from == root_o) {
+        cx_fullname(o, buffer);
+    } else {
+        cx_scopeStack(from, from_s, &from_i);
+        cx_scopeStack(o, o_s, &o_i);
 
-		from_i--;
-		o_i--;
-		while(from_s[from_i] == o_s[o_i]) {
-			from_i--;
-			o_i--;
-			if (!o_i || !from_i) {
-				break;
-			}
-		}
+        from_i--;
+        o_i--;
+        while(from_s[from_i] == o_s[o_i]) {
+            from_i--;
+            o_i--;
+            if (!o_i || !from_i) {
+                break;
+            }
+        }
 
-		if (from_s[from_i] == o_s[o_i] && o_i) {
-			o_i--;
-		}
+        if (from_s[from_i] == o_s[o_i] && o_i) {
+            o_i--;
+        }
 
-		ptr = buffer;
-		while(o_i) {
-			length = strlen(cx_nameof(o_s[o_i]));
-			memcpy(ptr, cx_nameof(o_s[o_i]), length);
-			ptr += length;
-			*(cx_uint16*)ptr = CX_SCOPE_HEX;
-			ptr += 2;
-			o_i--;
-		}
-		length = strlen(cx_nameof(o_s[o_i]));
-		memcpy(ptr, cx_nameof(o_s[o_i]), length);
-		ptr += length;
-		*ptr = '\0';
-	}
+        ptr = buffer;
+        while(o_i) {
+            length = strlen(cx_nameof(o_s[o_i]));
+            memcpy(ptr, cx_nameof(o_s[o_i]), length);
+            ptr += length;
+            *(cx_uint16*)ptr = CX_SCOPE_HEX;
+            ptr += 2;
+            o_i--;
+        }
+        length = strlen(cx_nameof(o_s[o_i]));
+        memcpy(ptr, cx_nameof(o_s[o_i]), length);
+        ptr += length;
+        *ptr = '\0';
+    }
     return buffer;
 }
 
 /* Destruct object. */
 cx_uint16 cx__destruct(cx_object o) {
-	cx__object* _o;
+    cx__object* _o;
 
-	_o = CX_OFFSET(o, -sizeof(cx__object));
-	cx_ainc(&_o->refcount);
+    _o = CX_OFFSET(o, -sizeof(cx__object));
+    cx_ainc(&_o->refcount);
 
-	/* Only the following steps if the object is valid. */
-	if (!cx_checkState(o, CX_DESTRUCTED)) {
-		cx_vtable *ct, *ot;
+    /* Only the following steps if the object is valid. */
+    if (!cx_checkState(o, CX_DESTRUCTED)) {
+        cx_vtable *ct, *ot;
 
-		ct = cx_class_getCallbackVtable(o);
-		ot = cx_class_getObserverVtable(o);
+        ct = cx_class_getCallbackVtable(o);
+        ot = cx_class_getObserverVtable(o);
 
         /* Prevents from calling destructor nested */
         _o->mm.cycles = -1;
 
-	    /* Only do the following steps if the object is defined */
-	    if (cx_checkState(o, CX_DEFINED)) {
-	        /* From here, object is marked as destructed. */
-	        _o->attrs.state |= CX_DESTRUCTED;
+        /* Only do the following steps if the object is defined */
+        if (cx_checkState(o, CX_DEFINED)) {
+            /* From here, object is marked as destructed. */
+            _o->attrs.state |= CX_DESTRUCTED;
 
-	        /* Integrity check */
+            /* Integrity check */
             if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
                 if (cx_parentof(o) == cortex_lang_o) {
                     cx_id id;
@@ -1318,23 +1318,23 @@ cx_uint16 cx__destruct(cx_object o) {
             if (cx__destructor(o)) {
                 return -1;
             }
-	    } else {
+        } else {
             /* Notify destruct */
             cx_notify(cx__objectObservable(CX_OFFSET(o,-sizeof(cx__object))), o, o, CX_ON_DESTRUCT);
-	    }
+        }
 
         cx_deinit(o);
 
         /* If object is of a classType, free callbacks */
         if (ct && ct->buffer) {
-        	cx_uint32 i;
-        	for(i=0; i<ct->length; i++) {
-        		if (ct->buffer[i]) {
-        			cx_free_ext(o, ct->buffer[i], "Free callback.");
-        		}
-        	}
-        	ct->buffer = NULL;
-        	ct->length = 0;
+            cx_uint32 i;
+            for(i=0; i<ct->length; i++) {
+                if (ct->buffer[i]) {
+                    cx_free_ext(o, ct->buffer[i], "Free callback.");
+                }
+            }
+            ct->buffer = NULL;
+            ct->length = 0;
         }
 
         /* Deinit observable */
@@ -1360,25 +1360,25 @@ cx_uint16 cx__destruct(cx_object o) {
 
         /* Reset template observable table */
         if (ot && ot->buffer) {
-        	ot->buffer = NULL; /* Buffer is allocated as part of object - so no leakage */
-        	ot->length = 0;
+            ot->buffer = NULL; /* Buffer is allocated as part of object - so no leakage */
+            ot->length = 0;
         }
-	}
+    }
 
-	/* Although after the destruct-operation it is ensured that this object no longer participates in any cycles, it cannot be assumed
-	 * that all objects using this are free'd. For example, another object that has multiple reference cycles might still be
-	 * referencing this object, but can itself not yet be free'd because of the other cycles, which cannot be solved by the destruction
-	 * of this object. Therefore when the reference count of this object is non-zero, it cannot yet be free'd.
-	 */
+    /* Although after the destruct-operation it is ensured that this object no longer participates in any cycles, it cannot be assumed
+     * that all objects using this are free'd. For example, another object that has multiple reference cycles might still be
+     * referencing this object, but can itself not yet be free'd because of the other cycles, which cannot be solved by the destruction
+     * of this object. Therefore when the reference count of this object is non-zero, it cannot yet be free'd.
+     */
 
-	cx_adec(&_o->refcount);
+    cx_adec(&_o->refcount);
 
-	if (!cx_countof(o)) {
-	    cx_dealloc(cx__objectStartAddr(_o));
-	    return 0;
-	} else {
-	    return cx_countof(o);
-	}
+    if (!cx_countof(o)) {
+        cx_dealloc(cx__objectStartAddr(_o));
+        return 0;
+    } else {
+        return cx_countof(o);
+    }
 }
 
 /* Name-based tracing */
@@ -1386,37 +1386,37 @@ cx_uint16 cx__destruct(cx_object o) {
 #define CX_TRACE "48"*/
 #ifdef CX_TRACE
 #define CX_TRACE_KEEP(o)\
-	{\
-		cx__object* _o;\
-		_o = CX_OFFSET(o, -sizeof(cx__object));\
-		if (cx__objectScope(_o)) {\
-			if ((cx_nameof(o) == CX_TRACE) || (CX_TRACE && (cx_nameof(o) && !strcmp(cx_nameof(o), CX_TRACE)))) {\
-			    CX_TRACE_ADDR = o;\
-				cx_trace("keep (%p)'%s' -> %d (context = \"%s\")", o, cx_nameof(o), _o->refcount, context);\
-				if (src) {\
-					cx_id id;\
-				    cx_trace("    source: %s", cx_fullname(src, id));\
-                }\
-                cx_backtrace(stdout);\
-			}\
-		}\
-	}
-#define CX_TRACE_FREE(object)\
-	{\
-		cx__object* _o;\
-		_o = CX_OFFSET(o, -sizeof(cx__object));\
-		if (cx__objectScope(_o)) {\
-			if ((cx_nameof(o) == CX_TRACE) || (CX_TRACE && (cx_nameof(o) && !strcmp(cx_nameof(o), CX_TRACE)))) {\
-			    CX_TRACE_ADDR = o;\
-				cx_trace("free (%p)'%s' -> %d (context = \"%s\", cycles=%d)", o, cx_nameof(o), _o->refcount, context, _o->mm.cycles);\
+    {\
+        cx__object* _o;\
+        _o = CX_OFFSET(o, -sizeof(cx__object));\
+        if (cx__objectScope(_o)) {\
+            if ((cx_nameof(o) == CX_TRACE) || (CX_TRACE && (cx_nameof(o) && !strcmp(cx_nameof(o), CX_TRACE)))) {\
+                CX_TRACE_ADDR = o;\
+                cx_trace("keep (%p)'%s' -> %d (context = \"%s\")", o, cx_nameof(o), _o->refcount, context);\
                 if (src) {\
-                	cx_id id;\
+                    cx_id id;\
                     cx_trace("    source: %s", cx_fullname(src, id));\
                 }\
                 cx_backtrace(stdout);\
-			}\
-		}\
-	}
+            }\
+        }\
+    }
+#define CX_TRACE_FREE(object)\
+    {\
+        cx__object* _o;\
+        _o = CX_OFFSET(o, -sizeof(cx__object));\
+        if (cx__objectScope(_o)) {\
+            if ((cx_nameof(o) == CX_TRACE) || (CX_TRACE && (cx_nameof(o) && !strcmp(cx_nameof(o), CX_TRACE)))) {\
+                CX_TRACE_ADDR = o;\
+                cx_trace("free (%p)'%s' -> %d (context = \"%s\", cycles=%d)", o, cx_nameof(o), _o->refcount, context, _o->mm.cycles);\
+                if (src) {\
+                    cx_id id;\
+                    cx_trace("    source: %s", cx_fullname(src, id));\
+                }\
+                cx_backtrace(stdout);\
+            }\
+        }\
+    }
 #endif
 
 /* Type-based tracing */
@@ -1424,9 +1424,9 @@ cx_uint16 cx__destruct(cx_object o) {
 #define CX_TRACE_TYPE "Local"*/
 #ifdef CX_TRACE_TYPE
 #define CX_TRACE_KEEP(o)\
-	{\
-		cx__object* _o;\
-		_o = CX_OFFSET(o, -sizeof(cx__object));\
+    {\
+        cx__object* _o;\
+        _o = CX_OFFSET(o, -sizeof(cx__object));\
         if ((cx_nameof(cx_typeof(o)) == CX_TRACE_TYPE) || (CX_TRACE_TYPE && (cx_nameof(cx_typeof(o)) && !strcmp(cx_nameof(cx_typeof(o)), CX_TRACE_TYPE)))) {\
             cx_id id;\
             cx_trace("keep (%p)'%s' -> %d (context = \"%s\")", o, cx_fullname(o, id), cx_countof(o), context);\
@@ -1436,11 +1436,11 @@ cx_uint16 cx__destruct(cx_object o) {
             }\
             cx_backtrace(stdout);\
         }\
-	}
+    }
 #define CX_TRACE_FREE(object)\
-	{\
-		cx__object* _o;\
-		_o = CX_OFFSET(o, -sizeof(cx__object));\
+    {\
+        cx__object* _o;\
+        _o = CX_OFFSET(o, -sizeof(cx__object));\
         if ((cx_nameof(cx_typeof(o)) == CX_TRACE_TYPE) || (CX_TRACE_TYPE && (cx_nameof(cx_typeof(o)) && !strcmp(cx_nameof(cx_typeof(o)), CX_TRACE_TYPE)))) {\
             cx_id id;\
             cx_trace("free (%p)'%s' -> %d (context = \"%s\", cycles=%d)", o, cx_fullname(o, id), cx_countof(o), context, _o->mm.cycles);\
@@ -1450,7 +1450,7 @@ cx_uint16 cx__destruct(cx_object o) {
             }\
             cx_backtrace(stdout);\
         }\
-	}
+    }
 #endif
 
 /* Parent based tracing */
@@ -1458,37 +1458,37 @@ cx_uint16 cx__destruct(cx_object o) {
 #define CX_TRACE_TYPEPARENT "Fast"*/
 #ifdef CX_TRACE_TYPEPARENT
 #define CX_TRACE_KEEP(o)\
-	{\
-		cx__object* _o;\
-		_o = CX_OFFSET(cx_typeof(o), -sizeof(cx__object));\
-		if (cx__objectScope(_o)) {\
-			if ((cx_nameof(cx_parentof(cx_typeof(o))) == CX_TRACE_TYPEPARENT) || (CX_TRACE_TYPEPARENT && (cx_nameof(cx_parentof(cx_typeof(o))) && !strcmp(cx_nameof(cx_parentof(cx_typeof(o))), CX_TRACE_TYPEPARENT)))) {\
-				cx_id id;\
-				cx_trace("keep (%p)'%s' -> %d (context = \"%s\")", o, cx_fullname(o, id), cx_countof(o), context);\
-				if (src) {\
-					cx_id id;\
-				    cx_trace("    source: %s", cx_fullname(src, id));\
+    {\
+        cx__object* _o;\
+        _o = CX_OFFSET(cx_typeof(o), -sizeof(cx__object));\
+        if (cx__objectScope(_o)) {\
+            if ((cx_nameof(cx_parentof(cx_typeof(o))) == CX_TRACE_TYPEPARENT) || (CX_TRACE_TYPEPARENT && (cx_nameof(cx_parentof(cx_typeof(o))) && !strcmp(cx_nameof(cx_parentof(cx_typeof(o))), CX_TRACE_TYPEPARENT)))) {\
+                cx_id id;\
+                cx_trace("keep (%p)'%s' -> %d (context = \"%s\")", o, cx_fullname(o, id), cx_countof(o), context);\
+                if (src) {\
+                    cx_id id;\
+                    cx_trace("    source: %s", cx_fullname(src, id));\
                 }\
                 /*cx_backtrace(stdout);*/\
-			}\
-		}\
-	}
+            }\
+        }\
+    }
 #define CX_TRACE_FREE(object)\
-	{\
-		cx__object* _o;\
-		_o = CX_OFFSET(cx_typeof(o), -sizeof(cx__object));\
-		if (cx__objectScope(_o)) {\
-			if ((cx_nameof(cx_parentof(cx_typeof(o))) == CX_TRACE_TYPEPARENT) || (CX_TRACE_TYPEPARENT && (cx_nameof(cx_parentof(cx_typeof(o))) && !strcmp(cx_nameof(cx_parentof(cx_typeof(o))), CX_TRACE_TYPEPARENT)))) {\
-				cx_id id;\
-				cx_trace("free (%p)'%s' -> %d (context = \"%s\", cycles=%d)", o, cx_fullname(o, id), cx_countof(o), context, _o->mm.cycles);\
+    {\
+        cx__object* _o;\
+        _o = CX_OFFSET(cx_typeof(o), -sizeof(cx__object));\
+        if (cx__objectScope(_o)) {\
+            if ((cx_nameof(cx_parentof(cx_typeof(o))) == CX_TRACE_TYPEPARENT) || (CX_TRACE_TYPEPARENT && (cx_nameof(cx_parentof(cx_typeof(o))) && !strcmp(cx_nameof(cx_parentof(cx_typeof(o))), CX_TRACE_TYPEPARENT)))) {\
+                cx_id id;\
+                cx_trace("free (%p)'%s' -> %d (context = \"%s\", cycles=%d)", o, cx_fullname(o, id), cx_countof(o), context, _o->mm.cycles);\
                 if (src) {\
-                	cx_id id;\
+                    cx_id id;\
                     cx_trace("    source: %s", cx_fullname(src, id));\
                 }\
                 /*cx_backtrace(stdout);\*/\
-			}\
-		}\
-	}
+            }\
+        }\
+    }
 #endif
 
 
@@ -1507,163 +1507,163 @@ cx_object CX_TRACE_ADDR = NULL;
 cx_int32 cx_keep_ext(cx_object src, cx_object o, cx_string context) {
     cx__object* _o;
     cx_uint32 i;
-	CX_UNUSED(src);
-	CX_UNUSED(context);
+    CX_UNUSED(src);
+    CX_UNUSED(context);
 
-	_o = CX_OFFSET(o, -sizeof(cx__object));
-	i = cx_ainc(&_o->refcount);
+    _o = CX_OFFSET(o, -sizeof(cx__object));
+    i = cx_ainc(&_o->refcount);
 
 #ifdef CX_TRACE_DEBUG
-	if (CX_TRACE_ADDR == o) {
-	    cx_id id, id2;
-	    cx_trace("keep %s of type %s -> %d (cycles=%d, source=%p, context='%s')", cx_fullname(o, id), cx_fullname(cx_typeof(o), id2), i, _o->mm.cycles, src, context);
-	    /*cx_backtrace(stdout);*/
-	}
+    if (CX_TRACE_ADDR == o) {
+        cx_id id, id2;
+        cx_trace("keep %s of type %s -> %d (cycles=%d, source=%p, context='%s')", cx_fullname(o, id), cx_fullname(cx_typeof(o), id2), i, _o->mm.cycles, src, context);
+        /*cx_backtrace(stdout);*/
+    }
 
     CX_TRACE_KEEP(o);
 
-	if (i == 0) {
-		cx_id id1, id2;
-		cx_critical("keep resulted in refcount of 0 for object '%s' of type '%s'",
-				cx_fullname(o, id1), cx_fullname(cx_typeof(o), id2));
-	}
+    if (i == 0) {
+        cx_id id1, id2;
+        cx_critical("keep resulted in refcount of 0 for object '%s' of type '%s'",
+                cx_fullname(o, id1), cx_fullname(cx_typeof(o), id2));
+    }
 #endif
 
-	return i;
+    return i;
 }
 
 cx_int32 cx_free_ext(cx_object src, cx_object o, cx_string context) {
-	cx_int32 i;
-	cx__object* _o;
-	CX_UNUSED(src);
-	CX_UNUSED(context);
+    cx_int32 i;
+    cx__object* _o;
+    CX_UNUSED(src);
+    CX_UNUSED(context);
 
-	_o = CX_OFFSET(o, -sizeof(cx__object));
-	i = cx_adec(&_o->refcount);
+    _o = CX_OFFSET(o, -sizeof(cx__object));
+    i = cx_adec(&_o->refcount);
 
 #ifdef CX_TRACE_DEBUG
     if ((CX_TRACE_ADDR == o)) {
         cx_id id, id2;
         cx_trace("free (%p)%s of type %s -> %d (cycles=%d, valid=%d, destructed = %d, source=%p, context='%s')",
-        		o, cx_fullname(o, id), cx_fullname(cx_typeof(o), id2), i, _o->mm.cycles, cx_checkState(o, CX_VALID), cx_checkState(o, CX_DESTRUCTED), src, context);
+                o, cx_fullname(o, id), cx_fullname(cx_typeof(o), id2), i, _o->mm.cycles, cx_checkState(o, CX_VALID), cx_checkState(o, CX_DESTRUCTED), src, context);
         /*cx_backtrace(stdout);*/
     }
 
-	CX_TRACE_FREE(o);
+    CX_TRACE_FREE(o);
 #endif
 
-	if (i == _o->mm.cycles) {
-		cx__destruct(o);
-
-	/* If an invalid scoped object doesn't have a name, it must still be free'd - can occur when objects are
-	 * dangling because of double cycles. */
-	} else if (!i && cx_checkState(o, CX_DESTRUCTED) && (_o->mm.cycles == 65535)) {
+    if (i == _o->mm.cycles) {
         cx__destruct(o);
-	}
-	if (i < 0) {
-		cx_id id, typeId;
-		cx_critical("negative reference count of object (%p) '%s' of type '%s'", o, cx_fullname(o, id), cx_fullname(cx_typeof(o), typeId));
-		cx_backtrace(stdout);
-	}
 
-	return i;
+    /* If an invalid scoped object doesn't have a name, it must still be free'd - can occur when objects are
+     * dangling because of double cycles. */
+    } else if (!i && cx_checkState(o, CX_DESTRUCTED) && (_o->mm.cycles == 65535)) {
+        cx__destruct(o);
+    }
+    if (i < 0) {
+        cx_id id, typeId;
+        cx_critical("negative reference count of object (%p) '%s' of type '%s'", o, cx_fullname(o, id), cx_fullname(cx_typeof(o), typeId));
+        cx_backtrace(stdout);
+    }
+
+    return i;
 }
 
 cx_int32 cx_keep(cx_object o) {
-	return cx_keep_ext(NULL, o, NULL);
+    return cx_keep_ext(NULL, o, NULL);
 }
 
 cx_int32 cx_free(cx_object o) {
-	return cx_free_ext(NULL, o, NULL);
+    return cx_free_ext(NULL, o, NULL);
 }
 
 typedef struct cx_dropWalk_t {
-	cx_ll objects;
+    cx_ll objects;
 }cx_dropWalk_t;
 
 /* Collect objects in scope, so they can be removed outside of scopeLock. */
 static int cx_dropWalk(void* o, void* userData) {
     cx__object* _o;
     cx__scope* scope;
-	cx_dropWalk_t* data;
+    cx_dropWalk_t* data;
 
-	data = userData;
+    data = userData;
 
-	/* Drops are recursive */
-	_o = CX_OFFSET(o, -sizeof(cx__object));
-	scope = cx__objectScope(_o);
-	if (scope) {
-		cx_rwmutexRead(&scope->scopeLock);
-		if (scope->scope) {
-			cx_rbtreeWalk(scope->scope, cx_dropWalk, data);
-		}
-		if (scope->attached) {
-			cx_llWalk(scope->attached, cx_dropWalk, data);
-			cx_llFree(scope->attached);
-			scope->attached = NULL;
-		}
-		cx_rwmutexUnlock(&scope->scopeLock);
-	}
+    /* Drops are recursive */
+    _o = CX_OFFSET(o, -sizeof(cx__object));
+    scope = cx__objectScope(_o);
+    if (scope) {
+        cx_rwmutexRead(&scope->scopeLock);
+        if (scope->scope) {
+            cx_rbtreeWalk(scope->scope, cx_dropWalk, data);
+        }
+        if (scope->attached) {
+            cx_llWalk(scope->attached, cx_dropWalk, data);
+            cx_llFree(scope->attached);
+            scope->attached = NULL;
+        }
+        cx_rwmutexUnlock(&scope->scopeLock);
+    }
 
-	/* Prevent object from being deleted when scopeLock is released, which
-	 * would result in invalid reference in list. */
-	cx_keep_ext(NULL, o, "keep object in temporary drop-list");
+    /* Prevent object from being deleted when scopeLock is released, which
+     * would result in invalid reference in list. */
+    cx_keep_ext(NULL, o, "keep object in temporary drop-list");
 
-	/* Insert object in list */
-	if (!data->objects) {
-	    data->objects = cx_llNew();
-	}
-	cx_llInsert(data->objects, o);
+    /* Insert object in list */
+    if (!data->objects) {
+        data->objects = cx_llNew();
+    }
+    cx_llInsert(data->objects, o);
 
-	return 1;
+    return 1;
 }
 
 void cx_drop(cx_object o) {
-	cx__object* _o;
-	cx__scope* scope;
-	cx_dropWalk_t walkData;
+    cx__object* _o;
+    cx__scope* scope;
+    cx_dropWalk_t walkData;
 
-	_o = CX_OFFSET(o, -sizeof(cx__object));
-	scope = cx__objectScope(_o);
-	if (scope) {
-	    cx_iter iter;
-	    cx_object collected;
+    _o = CX_OFFSET(o, -sizeof(cx__object));
+    scope = cx__objectScope(_o);
+    if (scope) {
+        cx_iter iter;
+        cx_object collected;
 
-		/* Because object refcounts can reach zero after a free, a
-		 * walk in which objects are collected is needed first. During
-		 * destruction of an object, this scopeLock is also required,
-		 * which would result in deadlocks. */
+        /* Because object refcounts can reach zero after a free, a
+         * walk in which objects are collected is needed first. During
+         * destruction of an object, this scopeLock is also required,
+         * which would result in deadlocks. */
 
-		cx_rwmutexRead(&scope->scopeLock);
-		walkData.objects = NULL;
-		if (scope->scope) {
-			cx_rbtreeWalk(scope->scope, cx_dropWalk, &walkData);
-		}
-		if (scope->attached) {
-			cx_llWalk(scope->attached, cx_dropWalk, &walkData);
-			cx_llFree(scope->attached);
-			scope->attached = NULL;
-		}
-		cx_rwmutexUnlock(&scope->scopeLock);
+        cx_rwmutexRead(&scope->scopeLock);
+        walkData.objects = NULL;
+        if (scope->scope) {
+            cx_rbtreeWalk(scope->scope, cx_dropWalk, &walkData);
+        }
+        if (scope->attached) {
+            cx_llWalk(scope->attached, cx_dropWalk, &walkData);
+            cx_llFree(scope->attached);
+            scope->attached = NULL;
+        }
+        cx_rwmutexUnlock(&scope->scopeLock);
 
-		/* Free objects outside scopeLock */
-		if (walkData.objects) {
-			iter = cx_llIter(walkData.objects);
-			while(cx_iterHasNext(&iter)) {
-				collected = cx_iterNext(&iter);
-				cx_free_ext(NULL, collected, "free from temporary drop-list");
-				/* Double free - because cx_drop itself introduced a keep. */
-				if (cx_checkAttr(collected, CX_ATTR_SCOPED)) {
-					cx_destruct(collected);
-				} else {
-					cx_free_ext(NULL, collected, "free attached object");
-				}
-			}
-			cx_llFree(walkData.objects);
-		}
-	} else {
-		cx_critical("cx_drop: object <%p> is not scoped.", o);
-	}
+        /* Free objects outside scopeLock */
+        if (walkData.objects) {
+            iter = cx_llIter(walkData.objects);
+            while(cx_iterHasNext(&iter)) {
+                collected = cx_iterNext(&iter);
+                cx_free_ext(NULL, collected, "free from temporary drop-list");
+                /* Double free - because cx_drop itself introduced a keep. */
+                if (cx_checkAttr(collected, CX_ATTR_SCOPED)) {
+                    cx_destruct(collected);
+                } else {
+                    cx_free_ext(NULL, collected, "free attached object");
+                }
+            }
+            cx_llFree(walkData.objects);
+        }
+    } else {
+        cx_critical("cx_drop: object <%p> is not scoped.", o);
+    }
 }
 
 cx_object cx_lookup_ext(cx_object src, cx_object o, cx_string name, cx_string context) {
@@ -1735,13 +1735,13 @@ static cx_char* cx_resolveAnonymous(cx_object src, cx_object scope, cx_object o,
 
 /* Resolve address-identifier */
 static cx_object cx_resolveAddress(cx_string str) {
-	cx_word addr;
+    cx_word addr;
 
-	addr = strtoul(str+1, NULL, 16);
+    addr = strtoul(str+1, NULL, 16);
 
-	cx_keep_ext(NULL, (cx_object)addr, "Resolve by address");
+    cx_keep_ext(NULL, (cx_object)addr, "Resolve by address");
 
-	return (cx_object)addr;
+    return (cx_object)addr;
 }
 
 /* Resolve fully scoped name */
@@ -1758,7 +1758,7 @@ cx_object cx_resolve_ext(cx_object src, cx_object _scope, cx_string str, cx_bool
     }
 
     if (*str == '<') {
-    	return cx_resolveAddress(str);
+        return cx_resolveAddress(str);
     }
 
     _scope_start = _scope;
@@ -1786,7 +1786,7 @@ repeat:
             break;
         }
         while(ch) {
-        	overload = FALSE;
+            overload = FALSE;
             /* Parse name */
             bptr = buffer;
             while((ch = *ptr) && (ch != ':') && (ch != '{')) {
@@ -1794,7 +1794,7 @@ repeat:
                 bptr++;
                 ptr++;
                 if (ch == '(') { /* Scope operators & initializers in argumentlists are ignored. */
-                	overload = TRUE;
+                    overload = TRUE;
                     while((ch = *ptr) && (ch != ')')) {
                         *bptr = ch;
                         bptr++;
@@ -1806,26 +1806,26 @@ repeat:
 
             /* Lookup object */
             if (cx_scopeof(o)) {
-            	if (!overload) {
-					o = cx_lookup_ext(src, o, buffer, context);
-					if (lookup) {
-						cx_free_ext(src, lookup, "Free intermediate reference for resolve"); /* Free reference */
-					}
-					lookup = o;
-					if (!o) {
-						break;
-					}
-            	} else {
-            		/* If argumentlist is provided, look for closest match */
-            		o = cx_lookupFunction_ext(src, o, buffer, allowCastableOverloading, NULL, context);
-            		if (lookup) {
-            			cx_free_ext(src, lookup, "Free intermediate procedure-reference for resolve");
-            		}
-            		lookup = o;
-            		if (!o) {
-            			break;
-            		}
-            	}
+                if (!overload) {
+                    o = cx_lookup_ext(src, o, buffer, context);
+                    if (lookup) {
+                        cx_free_ext(src, lookup, "Free intermediate reference for resolve"); /* Free reference */
+                    }
+                    lookup = o;
+                    if (!o) {
+                        break;
+                    }
+                } else {
+                    /* If argumentlist is provided, look for closest match */
+                    o = cx_lookupFunction_ext(src, o, buffer, allowCastableOverloading, NULL, context);
+                    if (lookup) {
+                        cx_free_ext(src, lookup, "Free intermediate procedure-reference for resolve");
+                    }
+                    lookup = o;
+                    if (!o) {
+                        break;
+                    }
+                }
             } else {
                 o = NULL;
                 if (lookup) {
@@ -1863,10 +1863,10 @@ repeat:
         scope = cortex_lang_o;
         _scope_start = cortex_lang_o;
         goto repeat; /* Do this instead of a recursive call. Besides saving (a little bit of) performance,
-        				this also preserves the original searchscope, which is needed in anonymous type lookups, which
-        				uses the stringserializer. In a serialized string references to other objects may be relatively
-        				scoped. For example: the string sequence{F} results in an anonymous sequence object with
-        				elementType 'F', which is looked up in scope '_scope_start'. */
+                        this also preserves the original searchscope, which is needed in anonymous type lookups, which
+                        uses the stringserializer. In a serialized string references to other objects may be relatively
+                        scoped. For example: the string sequence{F} results in an anonymous sequence object with
+                        elementType 'F', which is looked up in scope '_scope_start'. */
     }
 
     /* If the current object is not obtained by a lookup, it is not yet keeped. */
@@ -1884,24 +1884,24 @@ cx_object cx_resolve(cx_object _scope, cx_string str) {
 /* Event handling. */
 
 static cx__observer* cx_observerFind(cx_ll on, cx_observer observer, cx_object _this) {
-	cx__observer* result;
-	cx_iter iter;
+    cx__observer* result;
+    cx_iter iter;
 
-	result = NULL;
+    result = NULL;
 
-	if (on) {
-		iter = cx_llIter(on);
-		while(cx_iterHasNext(&iter)) {
-			result = cx_iterNext(&iter);
-			if ((result->observer == observer) && (result->_this == _this)) {
-				break;
-			} else {
-				result = NULL;
-			}
-		}
-	}
+    if (on) {
+        iter = cx_llIter(on);
+        while(cx_iterHasNext(&iter)) {
+            result = cx_iterNext(&iter);
+            if ((result->observer == observer) && (result->_this == _this)) {
+                break;
+            } else {
+                result = NULL;
+            }
+        }
+    }
 
-	return result;
+    return result;
 }
 
 /* Copyout observers */
@@ -2079,9 +2079,9 @@ int cx_observerAlignScope(cx_object o, void *userData) {
     cx_notifyObserver(data->observer, data->observable, o, CX_ON_DECLARE);
 
     if (data->observer->observer->mask & CX_ON_SCOPE) {
-    	return cx_scopeWalk(o, cx_observerAlignScope, userData);
+        return cx_scopeWalk(o, cx_observerAlignScope, userData);
     } else {
-    	return 1;
+        return 1;
     }
 }
 
@@ -2101,34 +2101,34 @@ static int indent=0;
 
 /* Add observer to observable */
 cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) {
-	cx__observer* _observerData;
-	cx__observable* _o;
-	cx_bool added;
-	cx__observer **oldSelfArray = NULL, **oldChildArray = NULL;
+    cx__observer* _observerData;
+    cx__observable* _o;
+    cx_bool added;
+    cx__observer **oldSelfArray = NULL, **oldChildArray = NULL;
 
-	if (cx_checkAttr(observable, CX_ATTR_OBSERVABLE)) {
-		_o = cx__objectObservable(CX_OFFSET(observable, -sizeof(cx__object)));
+    if (cx_checkAttr(observable, CX_ATTR_OBSERVABLE)) {
+        _o = cx__objectObservable(CX_OFFSET(observable, -sizeof(cx__object)));
 
 #ifdef CX_TRACE_NOTIFICATIONS
-    	{
-    		cx_id id1, id2, id3;
-    		printf("%*s [listen] observable '%s' observer '%s' me '%s'\n",
-    				indent * 3, "",
-    				cx_fullname(observable, id1),
-    				cx_fullname(observer, id2),
-    				cx_fullname(_this, id3));
-    	}
+        {
+            cx_id id1, id2, id3;
+            printf("%*s [listen] observable '%s' observer '%s' me '%s'\n",
+                    indent * 3, "",
+                    cx_fullname(observable, id1),
+                    cx_fullname(observer, id2),
+                    cx_fullname(_this, id3));
+        }
 #endif
 
-		/* Create observerData */
-		_observerData = cx_malloc(sizeof(cx__observer));
-		_observerData->observer = observer;
-		_observerData->_this = _this;
-		_observerData->count = 0;
-		_observerData->enabled = TRUE;
+        /* Create observerData */
+        _observerData = cx_malloc(sizeof(cx__observer));
+        _observerData->observer = observer;
+        _observerData->_this = _this;
+        _observerData->count = 0;
+        _observerData->enabled = TRUE;
 
-		/* Resolve the kind of the observer. This reduces the number of
-		 * conditions that need to be evaluated in the notifyObserver function. */
+        /* Resolve the kind of the observer. This reduces the number of
+         * conditions that need to be evaluated in the notifyObserver function. */
         if (cx_function(observer)->kind == CX_PROCEDURE_CDECL) {
             if (_this) {
                 _observerData->notify = cx_notifyObserverThisCdecl;
@@ -2143,51 +2143,51 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
             }
         }
 
-		added = FALSE;
+        added = FALSE;
 
-		/* If observer must trigger on updates of me, add it to onSelf list */
-		if (observer->mask & CX_ON_SELF) {
-			cx_rwmutexWrite(&_o->selfLock);
-			if (!cx_observerFind(_o->onSelf, observer, _this)) {
-				if (!_o->onSelf) {
-					_o->onSelf = cx_llNew();
-				}
-				cx_llAppend(_o->onSelf, _observerData);
-				_observerData->count++;
-				added = TRUE;
+        /* If observer must trigger on updates of me, add it to onSelf list */
+        if (observer->mask & CX_ON_SELF) {
+            cx_rwmutexWrite(&_o->selfLock);
+            if (!cx_observerFind(_o->onSelf, observer, _this)) {
+                if (!_o->onSelf) {
+                    _o->onSelf = cx_llNew();
+                }
+                cx_llAppend(_o->onSelf, _observerData);
+                _observerData->count++;
+                added = TRUE;
 
-				/* Build new observer array. This array can be accessed without locking and is
-				 * faster than walking the linked list. */
-				oldSelfArray = _o->onSelfArray;
-				_o->onSelfArray = cx_observersArrayNew(_o->onSelf);
-			}
-			if (observer->mask & CX_ON_VALUE) {
-			    if (cx_checkAttr(observable, CX_ATTR_WRITABLE)) {
-			        _o->lockRequired = TRUE;
-			    }
-			}
-			cx_rwmutexUnlock(&_o->selfLock);
-		}
+                /* Build new observer array. This array can be accessed without locking and is
+                 * faster than walking the linked list. */
+                oldSelfArray = _o->onSelfArray;
+                _o->onSelfArray = cx_observersArrayNew(_o->onSelf);
+            }
+            if (observer->mask & CX_ON_VALUE) {
+                if (cx_checkAttr(observable, CX_ATTR_WRITABLE)) {
+                    _o->lockRequired = TRUE;
+                }
+            }
+            cx_rwmutexUnlock(&_o->selfLock);
+        }
 
-		/* If observer must trigger on updates of childs, add it to onChilds list */
-		if (observer->mask & CX_ON_SCOPE) {
-			if (cx_checkAttr(observable, CX_ATTR_SCOPED)) {
-			    cx_bool firstChildObserver = FALSE;
-				cx_rwmutexWrite(&_o->childLock);
-				if (!cx_observerFind(_o->onChild, observer, _this)) {
-					if (!_o->onChild) {
-						_o->onChild = cx_llNew();
-						firstChildObserver = TRUE;
-					}
-					cx_llAppend(_o->onChild, _observerData);
-					_observerData->count++;
-					added = TRUE;
+        /* If observer must trigger on updates of childs, add it to onChilds list */
+        if (observer->mask & CX_ON_SCOPE) {
+            if (cx_checkAttr(observable, CX_ATTR_SCOPED)) {
+                cx_bool firstChildObserver = FALSE;
+                cx_rwmutexWrite(&_o->childLock);
+                if (!cx_observerFind(_o->onChild, observer, _this)) {
+                    if (!_o->onChild) {
+                        _o->onChild = cx_llNew();
+                        firstChildObserver = TRUE;
+                    }
+                    cx_llAppend(_o->onChild, _observerData);
+                    _observerData->count++;
+                    added = TRUE;
 
-					/* Build new observer array. This array can be accessed without locking and is
-					 * faster than walking a linked list. */
-					oldChildArray = _o->onChildArray;
-					_o->onChildArray = cx_observersArrayNew(_o->onChild);
-				}
+                    /* Build new observer array. This array can be accessed without locking and is
+                     * faster than walking a linked list. */
+                    oldChildArray = _o->onChildArray;
+                    _o->onChildArray = cx_observersArrayNew(_o->onChild);
+                }
 
                 /* If this is the first observer that subscribes on child-events let childs
                  * of this observable recursively know that it has interest. This is an optimization
@@ -2203,61 +2203,61 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
                         cx_setChildLockRequired(observable);
                     }
                 }
-				cx_rwmutexUnlock(&_o->childLock);
+                cx_rwmutexUnlock(&_o->childLock);
 
-			} else {
-				cx_id id, id2;
-				cx_error("cortex::listen: cannot listen to childs of non-scoped observable '%s' (observer %s)",
-						cx_fullname(observable, id),
-						cx_fullname(observer, id2));
-				goto error;
-			}
-		}
+            } else {
+                cx_id id, id2;
+                cx_error("cortex::listen: cannot listen to childs of non-scoped observable '%s' (observer %s)",
+                        cx_fullname(observable, id),
+                        cx_fullname(observer, id2));
+                goto error;
+            }
+        }
 
-		if (!added) {
-			cx_dealloc(_observerData);
-		} else {
-		    /* If observer is subscribed to new events, align observer with existing */
-		    if (observer->mask & CX_ON_DECLARE) {
-		        cx_observerAlign(observable, _observerData);
-		    }
-		}
-	} else {
-		cx_id id;
-		cx_assert(0, "cortex::listen: object '%s' is not an observable", cx_fullname(observable, id));
-		goto error;
-	}
+        if (!added) {
+            cx_dealloc(_observerData);
+        } else {
+            /* If observer is subscribed to new events, align observer with existing */
+            if (observer->mask & CX_ON_DECLARE) {
+                cx_observerAlign(observable, _observerData);
+            }
+        }
+    } else {
+        cx_id id;
+        cx_assert(0, "cortex::listen: object '%s' is not an observable", cx_fullname(observable, id));
+        goto error;
+    }
 
-	/* From this point onwards the old observer arrays are no longer accessible. However, since notifications can
-	 * still be in progress these arrays can't be deleted yet. Therefore wait until the arrays are no longer being
-	 * used. 
-	 *
-	 * The administration where this information is stored is not protected by locking so that notifying objects can
-	 * remain lock-free. There is however a slight chance that a notification pushed the old array to the administration
-	 * but that this change is not yet visible due to a number of issues w.r.t. concurrency. In this case the functions
-	 * below will assume the array is unused, which is incorrect.
-	 *
-	 * To be absolutely sure that the observed administration is up to date a memory barrier is required here. A simple
-	 * mutex will not do since this would encumber the notifications too much.
-	 */
-	 /*__atomic_thread_fence (__ATOMIC_SEQ_CST);*/
+    /* From this point onwards the old observer arrays are no longer accessible. However, since notifications can
+     * still be in progress these arrays can't be deleted yet. Therefore wait until the arrays are no longer being
+     * used. 
+     *
+     * The administration where this information is stored is not protected by locking so that notifying objects can
+     * remain lock-free. There is however a slight chance that a notification pushed the old array to the administration
+     * but that this change is not yet visible due to a number of issues w.r.t. concurrency. In this case the functions
+     * below will assume the array is unused, which is incorrect.
+     *
+     * To be absolutely sure that the observed administration is up to date a memory barrier is required here. A simple
+     * mutex will not do since this would encumber the notifications too much.
+     */
+     /*__atomic_thread_fence (__ATOMIC_SEQ_CST);*/
 
-	if (cx_observersWaitForUnused(oldSelfArray)) {
-	    cx_observersArrayFree(oldSelfArray);
-	}
-	if (cx_observersWaitForUnused(oldChildArray)) {
-	    cx_observersArrayFree(oldChildArray);
-	}
+    if (cx_observersWaitForUnused(oldSelfArray)) {
+        cx_observersArrayFree(oldSelfArray);
+    }
+    if (cx_observersWaitForUnused(oldChildArray)) {
+        cx_observersArrayFree(oldChildArray);
+    }
 
-	return 0;
+    return 0;
 error:
-	return -1;
+    return -1;
 }
 
 /* Remove observer from observable - TODO update lockRequired and parentObserves. */
 cx_int32 cx_silence(cx_object observable, cx_observer observer, cx_object _this) {
-	cx__observer* observerData;
-	cx__observable* _o;
+    cx__observer* observerData;
+    cx__observable* _o;
     cx__observer **oldSelfArray = NULL, **oldChildArray = NULL;
 
     if (cx_checkAttr(observable, CX_ATTR_OBSERVABLE)) {
@@ -2290,33 +2290,33 @@ cx_int32 cx_silence(cx_object observable, cx_observer observer, cx_object _this)
             cx_rwmutexUnlock(&_o->selfLock);
         }
 
-		/* If observer triggered on updates of childs, remove from onChilds list */
-		if (observer->mask & CX_ON_SCOPE) {
-			if (cx_checkAttr(observable, CX_ATTR_SCOPED)) {
-				cx_rwmutexWrite(&_o->childLock);
-				observerData = cx_observerFind(_o->onChild, observer, _this);
-				if (observerData) {
-					cx_llRemove(_o->onChild, observerData);
-					observerData->count--;
+        /* If observer triggered on updates of childs, remove from onChilds list */
+        if (observer->mask & CX_ON_SCOPE) {
+            if (cx_checkAttr(observable, CX_ATTR_SCOPED)) {
+                cx_rwmutexWrite(&_o->childLock);
+                observerData = cx_observerFind(_o->onChild, observer, _this);
+                if (observerData) {
+                    cx_llRemove(_o->onChild, observerData);
+                    observerData->count--;
 
-	                /* Build new observer array */
-	                oldChildArray = _o->onChildArray;
-	                _o->onChildArray = cx_observersArrayNew(_o->onChild);
-				}
-				cx_rwmutexUnlock(&_o->childLock);
-			} else {
-				cx_error(0, "cortex::listen: observer subscribed on childs of non-scoped object");
-				goto error;
-			}
-		}
-	} else {
-		cx_id id;
-		cx_error("object '%s' is not an observable", cx_fullname(observable, id));
-		goto error;
-	}
+                    /* Build new observer array */
+                    oldChildArray = _o->onChildArray;
+                    _o->onChildArray = cx_observersArrayNew(_o->onChild);
+                }
+                cx_rwmutexUnlock(&_o->childLock);
+            } else {
+                cx_error(0, "cortex::listen: observer subscribed on childs of non-scoped object");
+                goto error;
+            }
+        }
+    } else {
+        cx_id id;
+        cx_error("object '%s' is not an observable", cx_fullname(observable, id));
+        goto error;
+    }
 
     /* See comments in cx_listen */
-	/*__atomic_thread_fence (__ATOMIC_SEQ_CST);*/
+    /*__atomic_thread_fence (__ATOMIC_SEQ_CST);*/
 
     if (cx_observersWaitForUnused(oldSelfArray)) {
         cx_observersArrayFree(oldSelfArray);
@@ -2325,12 +2325,12 @@ cx_int32 cx_silence(cx_object observable, cx_observer observer, cx_object _this)
         cx_observersArrayFree(oldChildArray);
     }
     /*if (observerData) {
-    	TODO: cx_dealloc(observerData);
+        TODO: cx_dealloc(observerData);
     }*/
 
-	return 0;
+    return 0;
 error:
-	return -1;
+    return -1;
 }
 
 cx_bool cx_listening(cx_object observable, cx_observer observer, cx_object _this) {
@@ -2343,33 +2343,33 @@ cx_bool cx_listening(cx_object observable, cx_observer observer, cx_object _this
 
     /* If observer triggered on updates of me, remove from onSelf list */
     if (_o) {
-		if (observer->mask & CX_ON_SELF) {
-			cx_rwmutexWrite(&_o->selfLock);
-			observerData = cx_observerFind(_o->onSelf, observer, _this);
-			if (observerData) {
-				result = TRUE;
-			}
-			cx_rwmutexUnlock(&_o->selfLock);
-		}
+        if (observer->mask & CX_ON_SELF) {
+            cx_rwmutexWrite(&_o->selfLock);
+            observerData = cx_observerFind(_o->onSelf, observer, _this);
+            if (observerData) {
+                result = TRUE;
+            }
+            cx_rwmutexUnlock(&_o->selfLock);
+        }
 
-		if (!result) {
-			if (cx_checkAttr(observable, CX_ATTR_OBSERVABLE)) {
-				if (observer->mask & CX_ON_SCOPE) {
-					if (cx_checkAttr(observable, CX_ATTR_SCOPED)) {
-						cx_rwmutexWrite(&_o->childLock);
-						observerData = cx_observerFind(_o->onChild, observer, _this);
-						if (observerData) {
-							result = TRUE;
-						}
-						cx_rwmutexUnlock(&_o->childLock);
-					}
-				}
-			} else {
-				cx_id id;
-				cx_error("object '%s' is not an observable", cx_fullname(observable, id));
-				goto error;
-			}
-		}
+        if (!result) {
+            if (cx_checkAttr(observable, CX_ATTR_OBSERVABLE)) {
+                if (observer->mask & CX_ON_SCOPE) {
+                    if (cx_checkAttr(observable, CX_ATTR_SCOPED)) {
+                        cx_rwmutexWrite(&_o->childLock);
+                        observerData = cx_observerFind(_o->onChild, observer, _this);
+                        if (observerData) {
+                            result = TRUE;
+                        }
+                        cx_rwmutexUnlock(&_o->childLock);
+                    }
+                }
+            } else {
+                cx_id id;
+                cx_error("object '%s' is not an observable", cx_fullname(observable, id));
+                goto error;
+            }
+        }
     }
 
     return result;
@@ -2415,40 +2415,40 @@ static void cx_notifyObservers(cx__observer** observers, cx_object observable, c
     }
 
     while((data = *observers)) {
-    	i++;
-    	if (data->enabled) {
-    	    cx_notifyObserver(data, observable, source, mask);
-    	}
+        i++;
+        if (data->enabled) {
+            cx_notifyObserver(data, observable, source, mask);
+        }
         observers++;
     }
 }
 
 static cx_int32 cx_notify(cx__observable* _o, cx_object observable, cx_object _this, cx_uint32 mask) {
-	cx__observable *_parent;
-	cx__observer **observers;
+    cx__observable *_parent;
+    cx__observer **observers;
 
-	/* Notify direct observers */
-	if (_o) {
+    /* Notify direct observers */
+    if (_o) {
         /* Notify observers of observable */
-		observers = cx_observersPush(&_o->onSelfArray);
+        observers = cx_observersPush(&_o->onSelfArray);
         cx_notifyObservers(observers, observable, _this, mask);
         if (cx_observersPop()) {
-        	cx_observersArrayFree(observers);
+            cx_observersArrayFree(observers);
         }
 
         /* Bubble event up in hierarchy */
         _parent = _o;
         while((_parent = _parent->parent)) {
             /* Notify observers of parent */
-        	observers = cx_observersPush(&_parent->onChildArray);
+            observers = cx_observersPush(&_parent->onChildArray);
             cx_notifyObservers(observers, observable, _this, mask);
             if (cx_observersPop()) {
-            	cx_observersArrayFree(observers);
+                cx_observersArrayFree(observers);
             }
         }
-	}
+    }
 
-	return 0;
+    return 0;
 }
 
 /* Update object */
@@ -2470,9 +2470,9 @@ cx_int32 cx_update(cx_object observable) {
         }
     }
 
-	return 0;
+    return 0;
 error:
-	return -1;
+    return -1;
 }
 
 /* Update object from source other than self */
@@ -2494,18 +2494,18 @@ cx_int32 cx_updateFrom(cx_object observable, cx_object _this) {
         }
     }
 
-	return 0;
+    return 0;
 error:
-	return -1;
+    return -1;
 }
 
 cx_int32 cx_updateBegin(cx_object observable) {
     cx__observable *_o;
-	cx__writable* _wr;
+    cx__writable* _wr;
 
-	_o = cx__objectObservable(CX_OFFSET(observable, -sizeof(cx__object)));
+    _o = cx__objectObservable(CX_OFFSET(observable, -sizeof(cx__object)));
 
-	if (_o->lockRequired) {
+    if (_o->lockRequired) {
         _wr = cx__objectWritable(CX_OFFSET(observable, -sizeof(cx__object)));
         if (_wr) {
             if (cx_rwmutexWrite(&_wr->lock)) {
@@ -2517,15 +2517,15 @@ cx_int32 cx_updateBegin(cx_object observable) {
             cx_id id;
             cx_warning("calling updateBegin for non-writable object '%s' is useless.", cx_fullname(observable, id));
         }
-	}
+    }
 
-	return 0;
+    return 0;
 error:
-	return -1;
+    return -1;
 }
 
 cx_int32 cx_updateTry(cx_object observable) {
-	cx__writable* _wr;
+    cx__writable* _wr;
 
     _wr = cx__objectWritable(CX_OFFSET(observable, -sizeof(cx__object)));
     if (_wr) {
@@ -2537,9 +2537,9 @@ cx_int32 cx_updateTry(cx_object observable) {
         cx_warning("calling updateTry for non-writable object '%s' is useless.", cx_fullname(observable, id));
     }
 
-	return 0;
+    return 0;
 busy:
-	return CX_LOCK_BUSY;
+    return CX_LOCK_BUSY;
 }
 
 cx_int32 cx_updateEnd(cx_object observable) {
@@ -2559,56 +2559,56 @@ cx_int32 cx_updateEnd(cx_object observable) {
         }
     }
 
-	return 0;
+    return 0;
 error:
-	return -1;
+    return -1;
 }
 
 cx_int32 cx_updateEndFrom(cx_object observable, cx_object _this) {
-	if (cx_checkAttr(observable, CX_ATTR_OBSERVABLE)) {
-		cx__writable* _wr;
-	    cx__observable *_o;
+    if (cx_checkAttr(observable, CX_ATTR_OBSERVABLE)) {
+        cx__writable* _wr;
+        cx__observable *_o;
 
-	    _o = cx__objectObservable(CX_OFFSET(observable, -sizeof(cx__object)));
+        _o = cx__objectObservable(CX_OFFSET(observable, -sizeof(cx__object)));
 
-		if (cx_notify(_o, observable, _this, CX_ON_UPDATE)) {
-			goto error;
-		}
+        if (cx_notify(_o, observable, _this, CX_ON_UPDATE)) {
+            goto error;
+        }
 
-		if (_o->lockRequired) {
-			_wr = cx__objectWritable(CX_OFFSET(observable, -sizeof(cx__object)));
-			if (_wr) {
-				cx_rwmutexUnlock(&_wr->lock);
-			}
-		}
-	} else {
-		cx_id id;
-		cx_error("object '%s' is not an observable", cx_fullname(observable, id));
-		goto error;
-	}
+        if (_o->lockRequired) {
+            _wr = cx__objectWritable(CX_OFFSET(observable, -sizeof(cx__object)));
+            if (_wr) {
+                cx_rwmutexUnlock(&_wr->lock);
+            }
+        }
+    } else {
+        cx_id id;
+        cx_error("object '%s' is not an observable", cx_fullname(observable, id));
+        goto error;
+    }
 
-	return 0;
+    return 0;
 error:
-	return -1;
+    return -1;
 }
 
 cx_int32 cx_updateCancel(cx_object observable) {
 
-	if (cx_checkAttr(observable, CX_ATTR_OBSERVABLE)) {
-		cx__writable* _wr;
+    if (cx_checkAttr(observable, CX_ATTR_OBSERVABLE)) {
+        cx__writable* _wr;
 
-		_wr = cx__objectWritable(CX_OFFSET(observable, -sizeof(cx__object)));
+        _wr = cx__objectWritable(CX_OFFSET(observable, -sizeof(cx__object)));
 
-		cx_rwmutexUnlock(&_wr->lock);
-	} else {
-		cx_id id;
-		cx_error("object '%s' is not an observable", cx_fullname(observable, id));
-		goto error;
-	}
+        cx_rwmutexUnlock(&_wr->lock);
+    } else {
+        cx_id id;
+        cx_error("object '%s' is not an observable", cx_fullname(observable, id));
+        goto error;
+    }
 
-	return 0;
+    return 0;
 error:
-	return -1;
+    return -1;
 }
 
 static void cx_waitObserver(cx_object me, cx_object observable, cx_object source) {
@@ -2701,33 +2701,33 @@ cx_object cx_wait(cx_int32 timeout_sec, cx_int32 timeout_nanosec) {
 
 /* Thread-safe reading */
 cx_int32 cx_readBegin(cx_object object) {
-	if (cx_checkAttr(object, CX_ATTR_WRITABLE)) {
-		cx__writable* _o;
+    if (cx_checkAttr(object, CX_ATTR_WRITABLE)) {
+        cx__writable* _o;
 
-		_o = cx__objectWritable(CX_OFFSET(object, -sizeof(cx__object)));
-		if (cx_rwmutexRead(&_o->lock)) {
-			goto error;
-		}
-	}
+        _o = cx__objectWritable(CX_OFFSET(object, -sizeof(cx__object)));
+        if (cx_rwmutexRead(&_o->lock)) {
+            goto error;
+        }
+    }
 
-	return 0;
+    return 0;
 error:
-	return -1;
+    return -1;
 }
 
 cx_int32 cx_readEnd(cx_object object) {
-	if (cx_checkAttr(object, CX_ATTR_WRITABLE)) {
-		cx__writable* _o;
+    if (cx_checkAttr(object, CX_ATTR_WRITABLE)) {
+        cx__writable* _o;
 
-		_o = cx__objectWritable(CX_OFFSET(object, -sizeof(cx__object)));
-		if (cx_rwmutexUnlock(&_o->lock)) {
-			goto error;
-		}
-	}
+        _o = cx__objectWritable(CX_OFFSET(object, -sizeof(cx__object)));
+        if (cx_rwmutexUnlock(&_o->lock)) {
+            goto error;
+        }
+    }
 
-	return 0;
+    return 0;
 error:
-	return -1;
+    return -1;
 }
 
 /* Obtain function name from signature */
@@ -3167,11 +3167,11 @@ error:
 }
 
 typedef struct cx_lookupFunction_t {
-	cx_string request;
-	cx_function result;
-	cx_bool error;
-	cx_bool castableOverloading;
-	cx_int32 d;
+    cx_string request;
+    cx_function result;
+    cx_bool error;
+    cx_bool castableOverloading;
+    cx_int32 d;
 }cx_lookupFunction_t;
 
 /* Lookup function in scope */
@@ -3209,64 +3209,64 @@ found:
 }
 
 static int cx_scopeCollectWalk(cx_object o, void* userData) {
-	cx_ll list = userData;
-	cx_keep_ext(NULL, o, "Collect objects in scope");
-	cx_llAppend(list, o);
-	return 1;
+    cx_ll list = userData;
+    cx_keep_ext(NULL, o, "Collect objects in scope");
+    cx_llAppend(list, o);
+    return 1;
 }
 
 static int cx_scopeFreeWalk(cx_object o, void* userData) {
-	CX_UNUSED(userData);
-	cx_free_ext(NULL, o, "Free collected objects in scope");
-	return 1;
+    CX_UNUSED(userData);
+    cx_free_ext(NULL, o, "Free collected objects in scope");
+    return 1;
 }
 
 cx_ll cx_scopeClaim(cx_object scope) {
-	cx_ll result;
-	result = cx_llNew();
-	cx_scopeWalk(scope, cx_scopeCollectWalk, result);
-	return result;
+    cx_ll result;
+    result = cx_llNew();
+    cx_scopeWalk(scope, cx_scopeCollectWalk, result);
+    return result;
 }
 
 void cx_scopeRelease(cx_ll scope) {
-	cx_llWalk(scope, cx_scopeFreeWalk, NULL);
-	cx_llFree(scope);
+    cx_llWalk(scope, cx_scopeFreeWalk, NULL);
+    cx_llFree(scope);
 }
 
 /* Lookup function with support for overloading */
 cx_function cx_lookupFunction_ext(cx_object src, cx_object scope, cx_string requested, cx_bool allowCastableOverloading, cx_int32* d, cx_string context) {
-	cx_lookupFunction_t walkData;
-	cx_ll scopeContents;
+    cx_lookupFunction_t walkData;
+    cx_ll scopeContents;
 
-	/* Collect objects in scope first, to prevent reversed locking order (locking should
-	 * always be outer scope first, then inner scope) and deadlocking i.c.m. cx_resolve.
-	 */
-	scopeContents = cx_scopeClaim(scope);
+    /* Collect objects in scope first, to prevent reversed locking order (locking should
+     * always be outer scope first, then inner scope) and deadlocking i.c.m. cx_resolve.
+     */
+    scopeContents = cx_scopeClaim(scope);
 
-	/* Call the actual lookup function */
-	walkData.request = requested;
-	walkData.result = NULL;
-	walkData.error = FALSE;
-	walkData.castableOverloading = allowCastableOverloading;
-	walkData.d = 0x7FFFFFFF;
-	cx_llWalk(scopeContents, cx_lookupFunctionWalk, &walkData);
+    /* Call the actual lookup function */
+    walkData.request = requested;
+    walkData.result = NULL;
+    walkData.error = FALSE;
+    walkData.castableOverloading = allowCastableOverloading;
+    walkData.d = 0x7FFFFFFF;
+    cx_llWalk(scopeContents, cx_lookupFunctionWalk, &walkData);
 
-	if (walkData.error) {
-		return NULL;
-	}
+    if (walkData.error) {
+        return NULL;
+    }
 
-	if (d) {
-		*d = walkData.d;
-	}
+    if (d) {
+        *d = walkData.d;
+    }
 
-	if (walkData.result) {
-		cx_keep_ext(src, walkData.result, context);
-	}
+    if (walkData.result) {
+        cx_keep_ext(src, walkData.result, context);
+    }
 
-	/* Free contents of scope */
-	cx_scopeRelease(scopeContents);
+    /* Free contents of scope */
+    cx_scopeRelease(scopeContents);
 
-	return walkData.result;
+    return walkData.result;
 }
 
 cx_function cx_lookupFunction(cx_object scope, cx_string requested, cx_bool allowCastableOverloading, cx_int32* d) {
@@ -3275,12 +3275,12 @@ cx_function cx_lookupFunction(cx_object scope, cx_string requested, cx_bool allo
 
 /* Create request signature */
 cx_string cx_signatureOpen(cx_string name) {
-	cx_string result;
+    cx_string result;
 
-	result = cx_malloc(strlen(name) + 1 + 1);
-	sprintf(result, "%s(", name);
+    result = cx_malloc(strlen(name) + 1 + 1);
+    sprintf(result, "%s(", name);
 
-	return result;
+    return result;
 }
 
 cx_string cx_signatureAdd(cx_string sig, cx_typedef type, int flags) {
@@ -3337,10 +3337,10 @@ cx_string cx_signatureAddWildcard(cx_string sig, cx_bool isReference) {
 
 cx_string cx_signatureClose(cx_string sig) {
     cx_uint32 length = strlen(sig) + 1;
-	sig = cx_realloc(sig, length + 1);
-	sig[length-1] = ')';
-	sig[length] = '\0';
-	return sig;
+    sig = cx_realloc(sig, length + 1);
+    sig[length-1] = ')';
+    sig[length] = '\0';
+    return sig;
 }
 
 /* Set reference field */
@@ -3348,7 +3348,7 @@ void cx_set_ext(cx_object source, void* ptr, cx_object value, cx_string context)
     cx_object old;
     old = *(cx_object*)ptr;
     if (value) {
-    	cx_keep_ext(source, value, context);
+        cx_keep_ext(source, value, context);
     }
     *(cx_object*)ptr = value;
     if (old) {
@@ -3358,39 +3358,39 @@ void cx_set_ext(cx_object source, void* ptr, cx_object value, cx_string context)
 
 /* Set reference field */
 void cx_set(void* ptr, cx_object value) {
-	cx_set_ext(NULL, ptr, value, NULL);
+    cx_set_ext(NULL, ptr, value, NULL);
 }
 
 /* Convert object to string */
 cx_string cx_toString(cx_object object, cx_uint32 maxLength) {
-	cx_string_ser_t serData;
-	struct cx_serializer_s s;
-	serData.buffer = NULL;
-	serData.length = 0;
-	serData.maxlength = maxLength;
-	serData.compactNotation = TRUE;
-	serData.prefixType = FALSE;
+    cx_string_ser_t serData;
+    struct cx_serializer_s s;
+    serData.buffer = NULL;
+    serData.length = 0;
+    serData.maxlength = maxLength;
+    serData.compactNotation = TRUE;
+    serData.prefixType = FALSE;
 
-	s = cx_string_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
-	cx_serialize(&s, object, &serData);
+    s = cx_string_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
+    cx_serialize(&s, object, &serData);
 
-	return serData.buffer;
+    return serData.buffer;
 }
 
 /* Convert value to string */
 cx_string cx_valueToString(cx_value* v, cx_uint32 maxLength) {
-	cx_string_ser_t serData;
-	struct cx_serializer_s s;
-	serData.buffer = NULL;
-	serData.length = 0;
-	serData.maxlength = maxLength;
-	serData.compactNotation = TRUE;
-	serData.prefixType = FALSE;
+    cx_string_ser_t serData;
+    struct cx_serializer_s s;
+    serData.buffer = NULL;
+    serData.length = 0;
+    serData.maxlength = maxLength;
+    serData.compactNotation = TRUE;
+    serData.prefixType = FALSE;
 
-	s = cx_string_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
-	cx_serializeValue(&s, v, &serData);
+    s = cx_string_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
+    cx_serializeValue(&s, v, &serData);
 
-	return serData.buffer;
+    return serData.buffer;
 }
 
 /* Deserialize object from string */
@@ -3472,7 +3472,7 @@ cx_int16 cx_init(cx_object o) {
 /* Init value */
 cx_int16 cx_initValue(cx_value *v) {
     struct cx_serializer_s s = cx_ser_init(0, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
-	return cx_serializeValue(&s, v, NULL);
+    return cx_serializeValue(&s, v, NULL);
 }
 
 /* Deinit object */
@@ -3494,7 +3494,7 @@ cx_int16 cx_deinit(cx_object o) {
 /* Deinit value */
 cx_int16 cx_deinitValue(cx_value *v) {
     struct cx_serializer_s s = cx_ser_freeResources(0, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
-	return cx_serializeValue(&s, v, NULL);
+    return cx_serializeValue(&s, v, NULL);
 }
 
 /* Copy object */

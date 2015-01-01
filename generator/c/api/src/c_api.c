@@ -48,10 +48,10 @@ static cx_int16 c_apiAssignMember(cx_serializer s, cx_value* v, void* userData) 
         /* If member is of array-type, use memcpy */
         if ((m->type->real->kind == CX_COLLECTION) && (cx_collection(m->type->real)->kind == CX_ARRAY)) {
             cx_id typeId, postfix;
-    		/* Get typespecifier */
-    		if (c_specifierId(data->g, m->type, typeId, NULL, postfix)) {
-    			goto error;
-    		}
+            /* Get typespecifier */
+            if (c_specifierId(data->g, m->type, typeId, NULL, postfix)) {
+                goto error;
+            }
             g_fileWrite(data->source, "memcpy(");
 
             /* Cast object to right type */
@@ -89,7 +89,7 @@ static cx_int16 c_apiAssignMember(cx_serializer s, cx_value* v, void* userData) 
 
     return 0;
 error:
-	return -1;
+    return -1;
 }
 
 /* Translate members to function parameters. */
@@ -1018,8 +1018,8 @@ static int c_apiFindCollections(cx_object o, void* userData) {
 cx_int16 cortex_genMain(cx_generator g) {
     c_apiWalk_t walkData;
 
-	/* Default prefixes for cortex namespaces */
-	gen_parse(g, cortex_o, FALSE, FALSE, "");
+    /* Default prefixes for cortex namespaces */
+    gen_parse(g, cortex_o, FALSE, FALSE, "");
     gen_parse(g, cortex_lang_o, FALSE, FALSE, "cx");
 
     walkData.g = g;

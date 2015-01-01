@@ -13,52 +13,52 @@
  
 /* Preprocess code - the main job of this function is to insert indent\dedent\column tokens */
 static cx_int32 fast_pp_code(cx_string filename, cx_string code, cx_string result, cx_uint32* size) {
-	cx_char *ptr, *rptr, *lptr;
-	cx_char ch;
-	cx_uint32 indentation[LANG_MAX_INDENT];
-	cx_uint32 indentationDepth;
-	cx_uint32 curIndent;
-	cx_uint32 line;
+    cx_char *ptr, *rptr, *lptr;
+    cx_char ch;
+    cx_uint32 indentation[LANG_MAX_INDENT];
+    cx_uint32 indentationDepth;
+    cx_uint32 curIndent;
+    cx_uint32 line;
 
-	ptr = code;
+    ptr = code;
 
-	indentationDepth = 0;
-	indentation[indentationDepth] = 0;
-	curIndent = 0;
-	line = 1;
-	rptr = result;
+    indentationDepth = 0;
+    indentation[indentationDepth] = 0;
+    curIndent = 0;
+    line = 1;
+    rptr = result;
 
-	while((ch = *ptr)) {
-		curIndent = 0;
+    while((ch = *ptr)) {
+        curIndent = 0;
 
-		/* Check if line is not just plain whitespace or comment (in that case, don't bother indentation) */
+        /* Check if line is not just plain whitespace or comment (in that case, don't bother indentation) */
 
-		lptr = ptr;
-		while(lptr && (ch = *lptr)  && (ch != '\n') && (ch != '\0')) {
-		    switch(ch) {
-		    case ' ':
-		    case '\t':
-		    case 13: /* ASCII carriage return */
-		        lptr++;
-		        break;
-		    case '/':
-		        lptr++;
-		        if (*lptr == '/') { /* Comment */
-		            while((ch = *lptr) && (ch != '\n') && (ch != '\0')) { /* Skip until end of line */
-		                lptr++;
-		            }
-		        }
-		        break;
-		    default:
-		        lptr = NULL;
-		        break;
-		    }
-		}
+        lptr = ptr;
+        while(lptr && (ch = *lptr)  && (ch != '\n') && (ch != '\0')) {
+            switch(ch) {
+            case ' ':
+            case '\t':
+            case 13: /* ASCII carriage return */
+                lptr++;
+                break;
+            case '/':
+                lptr++;
+                if (*lptr == '/') { /* Comment */
+                    while((ch = *lptr) && (ch != '\n') && (ch != '\0')) { /* Skip until end of line */
+                        lptr++;
+                    }
+                }
+                break;
+            default:
+                lptr = NULL;
+                break;
+            }
+        }
 
-		ch = *ptr;
+        ch = *ptr;
 
-		/* If line is not just whitespaces, check indentation */
-		if (!lptr) {
+        /* If line is not just whitespaces, check indentation */
+        if (!lptr) {
 
             /* Count indentation at beginning of line */
             while((ch == '\t') || (ch == ' ')) {
@@ -111,10 +111,10 @@ static cx_int32 fast_pp_code(cx_string filename, cx_string code, cx_string resul
                     *size += 3;
                 }
             }
-		}
+        }
 
         /* Scan until end of line */
-		while(ch && (ch != '\n')) {
+        while(ch && (ch != '\n')) {
             if (rptr) {
                 *rptr = ch;
                 rptr++;
@@ -132,76 +132,76 @@ static cx_int32 fast_pp_code(cx_string filename, cx_string code, cx_string resul
             ptr++;
             line++;
         }
-	}
+    }
 
-	/* Do remaining dedents */
-	while(indentationDepth) {
-	    *size += strlen("#ded ");
-	    if (rptr) {
+    /* Do remaining dedents */
+    while(indentationDepth) {
+        *size += strlen("#ded ");
+        if (rptr) {
             strcpy(rptr, "#ded ");
             rptr += strlen("#ded ");
-	    }
-	    indentationDepth--;
-	}
+        }
+        indentationDepth--;
+    }
 
-	if (rptr) {
-		*rptr = '\0';
-	}
+    if (rptr) {
+        *rptr = '\0';
+    }
 
-	*size += strlen(code);
+    *size += strlen(code);
 
-	return 0;
+    return 0;
 error:
-	return -1;
+    return -1;
 
 }
 
 /* List code */
 void fast_ppList(cx_string code) {
-	cx_char* ptr;
-	cx_char ch;
-	cx_uint32 line;
+    cx_char* ptr;
+    cx_char ch;
+    cx_uint32 line;
 
-	line = 1;
-	ptr = code;
+    line = 1;
+    ptr = code;
 
-	while(*ptr) {
-		printf("%d: ", line);
+    while(*ptr) {
+        printf("%d: ", line);
 
-		while((ch = *ptr) && (ch != '\n')) {
-			printf("%c", ch);
-			ptr++;
-		}
-		printf("\n");
-		ptr++;
-		line++;
-	}
+        while((ch = *ptr) && (ch != '\n')) {
+            printf("%c", ch);
+            ptr++;
+        }
+        printf("\n");
+        ptr++;
+        line++;
+    }
 }
 
 /* Preprocess code */
 cx_string fast_pp(cx_string filename, cx_string code) {
-	cx_uint32 size,checkSize;
-	cx_string result;
+    cx_uint32 size,checkSize;
+    cx_string result;
     cx_bool appendNewline = FALSE;
 
-	size = 0;
-	checkSize = 0;
+    size = 0;
+    checkSize = 0;
     appendNewline = code[strlen(code)-1] != '\n'; /* Automatically insert newline at the end of file */
 
-	/* Do dryrun to get allocation size */
-	if (fast_pp_code(filename, code, NULL, &size)) {
-	    cx_trace("cortex: %s: preprocessor failed.");
-		goto error;
-	}
+    /* Do dryrun to get allocation size */
+    if (fast_pp_code(filename, code, NULL, &size)) {
+        cx_trace("cortex: %s: preprocessor failed.");
+        goto error;
+    }
 
-	/* Allocate size for preprocessed string */
-	result = cx_malloc(size + 1 + appendNewline); /* Assuming true is 1 */
+    /* Allocate size for preprocessed string */
+    result = cx_malloc(size + 1 + appendNewline); /* Assuming true is 1 */
 
-	/* Re-run preprocessor */
-	if (fast_pp_code(filename, code, result, &checkSize)) {
-	    cx_error("preprocessor failed");
-	    goto error;
-	}
+    /* Re-run preprocessor */
+    if (fast_pp_code(filename, code, result, &checkSize)) {
+        cx_error("preprocessor failed");
+        goto error;
+    }
 
     if (appendNewline) {
         cx_uint32 length = strlen(result);
@@ -209,10 +209,10 @@ cx_string fast_pp(cx_string filename, cx_string code) {
         result[length+1] = '\0';
     }
 
-	cx_assert(size == checkSize, "calculated size of preprocessed code-string does not match actual value.");
-	cx_assert((size+appendNewline) >= strlen(result), "calculated size of preprocessed code-string does not match stringlength (%d vs. %d).", size, strlen(result));
+    cx_assert(size == checkSize, "calculated size of preprocessed code-string does not match actual value.");
+    cx_assert((size+appendNewline) >= strlen(result), "calculated size of preprocessed code-string does not match stringlength (%d vs. %d).", size, strlen(result));
 
-	return result;
+    return result;
 error:
-	return NULL;
+    return NULL;
 }

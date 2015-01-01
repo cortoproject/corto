@@ -1,8 +1,8 @@
 // Test other operators than assignments with ternary operator
 bool result: true
 void fail(string msg):
-	"tc_ternary05: FAIL: $msg"
-	result = false
+    "tc_ternary05: FAIL: $msg"
+    result = false
 
 // Use a function to achieve a side-effect
 bool test(bool @not) = !@not

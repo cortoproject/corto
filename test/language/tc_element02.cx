@@ -2,11 +2,11 @@
 // This program tests the element operator for various variables with complex collection-types.
 bool result : true
 void fail(string msg):
-	"tc_element02: FAIL: $msg"
-	result = false
+    "tc_element02: FAIL: $msg"
+    result = false
 
 struct Point::
-	member x,y : int32
+    member x,y : int32
 
 typedef PointsArray : array{Point,3}
 typedef PointsSeq : sequence{Point,3}
@@ -91,18 +91,18 @@ uint32 i : 0
 // Array object with variable object index
 PointsArray points_avo : {1,2},{3,4},{5,6}
 while i<3:
-	points_avo[i].x *= 10
-	points_avo[i].y *= 10
-	i++
+    points_avo[i].x *= 10
+    points_avo[i].y *= 10
+    i++
 validate(points_avo, "tc_element02 FAIL: Array object with dynamic object index")
-	
+    
 // Sequence object with variable object index
 PointsSeq points_svo : {1,2},{3,4},{5,6}
 i=0
 while i<3:
-	points_svo[i].x *= 10
-	points_svo[i].y *= 10
-	i++
+    points_svo[i].x *= 10
+    points_svo[i].y *= 10
+    i++
 validate(points_svo, "tc_element02 FAIL: Sequence object with dynamic object index")
 
 
@@ -112,18 +112,18 @@ var uint32 j = 0
 // Array object with variable object index
 PointsArray points_avl : {1,2},{3,4},{5,6}
 while j<3:
-	points_avl[j].x *= 10
-	points_avl[j].y *= 10
-	j++
+    points_avl[j].x *= 10
+    points_avl[j].y *= 10
+    j++
 validate(points_avl, "tc_element02 FAIL: Array object with dynamic var index")
 
 // Sequence object with variable object index
 PointsSeq points_svl : {1,2},{3,4},{5,6}
 j=0
 while j<3:
-	points_svl[j].x *= 10
-	points_svl[j].y *= 10
-	j++
+    points_svl[j].x *= 10
+    points_svl[j].y *= 10
+    j++
 validate(points_svl, "tc_element02 FAIL: Sequence object with dynamic var index")
 
 
@@ -132,18 +132,18 @@ validate(points_svl, "tc_element02 FAIL: Sequence object with dynamic var index"
 var PointsArray points_alvo = {{1,2},{3,4},{5,6}}
 i=0
 while i<3:
-	points_alvo[i].x *= 10
-	points_alvo[i].y *= 10
-	i++
+    points_alvo[i].x *= 10
+    points_alvo[i].y *= 10
+    i++
 validate(points_alvo, "tc_element02 FAIL: Array var with dynamic object index")
-	
+    
 // Sequence var with variable object index
 var PointsSeq points_slvo = {{1,2},{3,4},{5,6}}
 i=0
 while i<3:
-	points_slvo[i].x *= 10
-	points_slvo[i].y *= 10
-	i++
+    points_slvo[i].x *= 10
+    points_slvo[i].y *= 10
+    i++
 validate(points_slvo, "tc_element02 FAIL: Sequence object with dynamic object index")
 
 
@@ -152,20 +152,20 @@ validate(points_slvo, "tc_element02 FAIL: Sequence object with dynamic object in
 var PointsArray points_alvl = {{1,2},{3,4},{5,6}}
 j=0
 while j<3:
-	points_alvl[j].x *= 10
-	points_alvl[j].y *= 10
-	j++
+    points_alvl[j].x *= 10
+    points_alvl[j].y *= 10
+    j++
 validate(points_alvl, "tc_element02 FAIL: Array var with dynamic var index")
 
 // Sequence var with variable var index
 var PointsSeq points_slvl = {{1,2},{3,4},{5,6}}
 j=0
 while j<3:
-	points_slvl[j].x *= 10
-	points_slvl[j].y *= 10
-	j++
+    points_slvl[j].x *= 10
+    points_slvl[j].y *= 10
+    j++
 validate(points_slvl, "tc_element02 FAIL: Sequence var with dynamic var index")
 
 // Print OK if no testcase failed
 if result: "tc_element02: OK"
-	
+    

@@ -30,10 +30,10 @@ int cx_sequence_alloc(cx_collection _this, cx_void* collection, cx_uint32 elemen
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::sequence::construct(lang::sequence object) */
 cx_int16 cx_sequence_construct(cx_sequence object) {
 /* $begin(::cortex::lang::sequence::construct) */
-	cx_type(object)->hasResources = TRUE;
-	cx_type(object)->size = sizeof(__dummySeq);
-	cx_type(object)->alignment = CX_ALIGNMENT(__dummySeq);
-	return cx_type_construct(cx_type(object));
+    cx_type(object)->hasResources = TRUE;
+    cx_type(object)->size = sizeof(__dummySeq);
+    cx_type(object)->alignment = CX_ALIGNMENT(__dummySeq);
+    return cx_type_construct(cx_type(object));
 /* $end */
 }
 

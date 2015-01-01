@@ -77,22 +77,22 @@ cpp_commonScope(
 /* Check whether a type translates to a native construct or may act as a C++ namespace */
 cx_bool
 cpp_nativeType(cx_object o) {
-	cx_bool result = FALSE;
+    cx_bool result = FALSE;
 
-	if (cx_class_instanceof(cx_type_o, o)) {
-		switch(cx_type(o)->kind) {
-		case CX_VOID:
-		    if (cx_type(o)->reference) {
-		        result = TRUE;
-		    }
-			break;
-		default:
-			result = TRUE;
-			break;
-		}
-	}
+    if (cx_class_instanceof(cx_type_o, o)) {
+        switch(cx_type(o)->kind) {
+        case CX_VOID:
+            if (cx_type(o)->reference) {
+                result = TRUE;
+            }
+            break;
+        default:
+            result = TRUE;
+            break;
+        }
+    }
 
-	return result;
+    return result;
 }
 
 /* Open a scope */
@@ -105,7 +105,7 @@ cpp_openScope(
 
     /* Do not open namespaces for non-void type-scopes */
     while(cpp_nativeType(to)) {
-    	to = cx_parentof(to);
+        to = cx_parentof(to);
     }
 
     /* If context->module is NULL, start from root */
@@ -302,8 +302,8 @@ cx_char* cpp_primitiveId(cx_primitive t, cx_char* buff) {
 
     switch(t->kind) {
     case CX_BOOLEAN:
-    	strcpy(buff, "bool");
-    	break;
+        strcpy(buff, "bool");
+        break;
     case CX_CHARACTER:
         switch(t->width) {
         case CX_WIDTH_8:
@@ -413,7 +413,7 @@ error:
 
 /* Translate constant to C++ language id */
 cx_char* cpp_constantId(cx_generator g, cx_constant* c, cx_char* buffer) {
-	CX_UNUSED(g);
+    CX_UNUSED(g);
 
     sprintf(buffer, "%s", cx_nameof(c));
 
@@ -514,158 +514,158 @@ cx_char* cpp_specifierDecl(cx_generator g, cx_typedef t, cx_char* specifier) {
 
 /* Translate a scope to a path */
 cx_char* cpp_topath(cx_object o, cx_id id) {
-	cx_uint32 offset;
-	cx_char ch, *ptr;
-	cx_fullname(o, id);
+    cx_uint32 offset;
+    cx_char ch, *ptr;
+    cx_fullname(o, id);
 
-	ptr = id+2;
-	offset = 2;
-	while((ch = *ptr)) {
-		switch(ch) {
-		case ':':
-			*(ptr-offset) = '/';
-			ptr++;
-			offset++;
-			break;
-		default:
-			*(ptr-offset) = *ptr;
-			break;
-		}
-		ptr++;
-	}
-	*(ptr-offset) = '\0';
+    ptr = id+2;
+    offset = 2;
+    while((ch = *ptr)) {
+        switch(ch) {
+        case ':':
+            *(ptr-offset) = '/';
+            ptr++;
+            offset++;
+            break;
+        default:
+            *(ptr-offset) = *ptr;
+            break;
+        }
+        ptr++;
+    }
+    *(ptr-offset) = '\0';
 
-	return id;
+    return id;
 }
 
 static void cpp_escapeParameters(cx_char *ptr) {
-	cx_char ch;
-	cx_uint32 offset = 0;
-	while((ch = *ptr)) {
-		switch(ch) {
-		case '(':
-		case '{':
-		case ',':
-			*(ptr-offset) = '_';
-			break;
-		case ')':
-		case '}':
-			offset++;
-			break;
-		case ':':
-			*(ptr-offset) = '_';
-			offset++;
-			break;
-		case ' ':
-			*(ptr-offset) = '_';
-			break;
-		default:
-			*(ptr-offset) = ch;
-			break;
-		}
-		ptr++;
-	}
-	*(ptr - offset) = '\0';
+    cx_char ch;
+    cx_uint32 offset = 0;
+    while((ch = *ptr)) {
+        switch(ch) {
+        case '(':
+        case '{':
+        case ',':
+            *(ptr-offset) = '_';
+            break;
+        case ')':
+        case '}':
+            offset++;
+            break;
+        case ':':
+            *(ptr-offset) = '_';
+            offset++;
+            break;
+        case ' ':
+            *(ptr-offset) = '_';
+            break;
+        default:
+            *(ptr-offset) = ch;
+            break;
+        }
+        ptr++;
+    }
+    *(ptr - offset) = '\0';
 }
 
 const cx_char *cpp_metaPostfix(cpp_metaIdKind kind) {\
-	cx_char* postfix = NULL;
-	switch(kind) {
-	case CPP_DEFAULT:
-		postfix = "";
-		break;
-	case CPP_HANDLE:
-		postfix = "_h";
-		break;
-	case CPP_OBJECT:
-		postfix = "_o";
-		break;
-	default:
-		cx_assert(0, "invalid metaIdKind (%d)", kind);
-		break;
-	}
+    cx_char* postfix = NULL;
+    switch(kind) {
+    case CPP_DEFAULT:
+        postfix = "";
+        break;
+    case CPP_HANDLE:
+        postfix = "_h";
+        break;
+    case CPP_OBJECT:
+        postfix = "_o";
+        break;
+    default:
+        cx_assert(0, "invalid metaIdKind (%d)", kind);
+        break;
+    }
 
-	return postfix;
+    return postfix;
 }
 
 /* Get meta-object identifier */
 cx_char* cpp_metaFullname(cx_generator g, cx_object o, cpp_metaIdKind kind, cx_id id) {
-	cx_char *ptr;
-	const cx_char *postfix;
-	g_idKind prev;
+    cx_char *ptr;
+    const cx_char *postfix;
+    g_idKind prev;
 
-	postfix = cpp_metaPostfix(kind);
-	prev = g_setIdKind(g, CX_GENERATOR_ID_DEFAULT);
+    postfix = cpp_metaPostfix(kind);
+    prev = g_setIdKind(g, CX_GENERATOR_ID_DEFAULT);
 
-	if (o != root_o) {
-		if (cpp_nativeType(cx_parentof(o))) {
-		    cx_id tmp;
-			g_fullOid(g, cx_parentof(cx_parentof(o)), id);
-			strcat(id, "::");
-			strcat(id, g_oid(g, cx_parentof(o), tmp));
-			strcat(id, "_");
-			strcat(id, g_oid(g, o, tmp));
-		} else {
-			g_fullOidExt(g, o, id, CX_GENERATOR_ID_DEFAULT);
-		}
+    if (o != root_o) {
+        if (cpp_nativeType(cx_parentof(o))) {
+            cx_id tmp;
+            g_fullOid(g, cx_parentof(cx_parentof(o)), id);
+            strcat(id, "::");
+            strcat(id, g_oid(g, cx_parentof(o), tmp));
+            strcat(id, "_");
+            strcat(id, g_oid(g, o, tmp));
+        } else {
+            g_fullOidExt(g, o, id, CX_GENERATOR_ID_DEFAULT);
+        }
 
-		if ((ptr = strchr(id, '('))) {
-			if (!cx_function(o)->overloaded) {
-				*ptr = '\0';
-			} else {
-				cpp_escapeParameters(ptr);
-			}
-		}
+        if ((ptr = strchr(id, '('))) {
+            if (!cx_function(o)->overloaded) {
+                *ptr = '\0';
+            } else {
+                cpp_escapeParameters(ptr);
+            }
+        }
 
-		strcat(id, postfix);
-	} else {
-		strcpy(id, "::root");
-		strcat(id, postfix);
-	}
+        strcat(id, postfix);
+    } else {
+        strcpy(id, "::root");
+        strcat(id, postfix);
+    }
 
     /* Reset ID-kind */
     g_setIdKind(g, prev);
 
-	return id;
+    return id;
 }
 
 /* Get meta-object identifier */
 cx_char* cpp_metaName(cx_generator g, cx_object o, cpp_metaIdKind kind, cx_id id) {
-	cx_char *ptr;
-	const cx_char *postfix;
-	g_idKind prev;
+    cx_char *ptr;
+    const cx_char *postfix;
+    g_idKind prev;
 
-	postfix = cpp_metaPostfix(kind);
-	prev = g_setIdKind(g, CX_GENERATOR_ID_DEFAULT);
+    postfix = cpp_metaPostfix(kind);
+    prev = g_setIdKind(g, CX_GENERATOR_ID_DEFAULT);
 
-	if (o != root_o) {
+    if (o != root_o) {
         cx_id tmp;
-		if (cpp_nativeType(cx_parentof(o))) {
-			g_oid(g, cx_parentof(o), id);
-			strcat(id, "_");
-			strcat(id, g_oid(g, o, tmp));
-		} else {
-			g_id(g, g_oid(g, o, tmp), id);
-		}
+        if (cpp_nativeType(cx_parentof(o))) {
+            g_oid(g, cx_parentof(o), id);
+            strcat(id, "_");
+            strcat(id, g_oid(g, o, tmp));
+        } else {
+            g_id(g, g_oid(g, o, tmp), id);
+        }
 
-		if ((ptr = strchr(id, '('))) {
-			if (!cx_function(o)->overloaded) {
-				*ptr = '\0';
-			} else {
-				cpp_escapeParameters(ptr);
-			}
-		}
+        if ((ptr = strchr(id, '('))) {
+            if (!cx_function(o)->overloaded) {
+                *ptr = '\0';
+            } else {
+                cpp_escapeParameters(ptr);
+            }
+        }
 
-		strcat(id, postfix);
-	} else {
-		strcpy(id, "root");
-		strcat(id, postfix);
-	}
+        strcat(id, postfix);
+    } else {
+        strcpy(id, "root");
+        strcat(id, postfix);
+    }
 
-	/* Reset ID-kind */
-	g_setIdKind(g, prev);
+    /* Reset ID-kind */
+    g_setIdKind(g, prev);
 
-	return id;
+    return id;
 }
 
 /* Get procedure id (without parameterlist */

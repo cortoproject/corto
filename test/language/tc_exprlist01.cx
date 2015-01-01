@@ -1,9 +1,9 @@
 // Multiple lvalue-assignments
 bool result: true
 void fail(string msg):
-	"tc_exprlist01: FAIL: $msg"
-	result = false
-	
+    "tc_exprlist01: FAIL: $msg"
+    result = false
+    
 var uint32 a, b = 10
 
 if a != 10: fail("a != 10 ($a)")

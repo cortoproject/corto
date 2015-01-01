@@ -1,11 +1,11 @@
 // Collections and expression lists
 bool result: true
 void fail(string msg):
-	"tc_exprlist09: FAIL: $msg"
-	result = false
-	
+    "tc_exprlist09: FAIL: $msg"
+    result = false
+    
 // Multiple lvalues
-var list{uint32} v0, v1	= {0,1,2}
+var list{uint32} v0, v1    = {0,1,2}
 if (v0,v1)[0,1,2] != (0,1,2,0,1,2): fail("(v0,v1)[0,1,2] != (0,1,2,0,1,2) ($v0 $v1)")
 
 // Copy (implicitly) to two collections
@@ -19,6 +19,6 @@ if (v2,v3)[0,1,2] != (0,1,2,3,4,5): fail("(v2,v3)[0,1,2] != (0,1,2,3,4,5) ($v2 $
 // Copy (implicitly) two values to two collections
 v2, v3 = list{uint32}{6,7,8}, list{uint32}{9,10,11}
 if (v2,v3)[0,1,2] != (6,7,8,9,10,11): fail("(v2,v3)[0,1,2] != (6,7,8,9,10,11) ($v2 $v3)")
-	
+    
 if result: "tc_exprlist09: OK"
 

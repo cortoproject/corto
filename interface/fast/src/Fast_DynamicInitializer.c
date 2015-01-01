@@ -30,22 +30,22 @@ cx_int16 Fast_Initializer_assign(Fast_DynamicInitializer _this, Fast_Expression 
 
 /* Assign or add value to expression */
 Fast_Expression Fast_Initializer_expr(Fast_DynamicInitializer _this, cx_uint8 variable, Fast_Expression v) {
-	Fast_Expression result, base;
+    Fast_Expression result, base;
     cx_uint16 fp = Fast_Initializer(_this)->fp;
-	Fast_InitializerFrame *frame = &Fast_Initializer(_this)->frames[fp?fp-1:0];
-	Fast_DynamicInitializerFrame *baseFrame = &(_this->frames[fp?fp-1:0]);
+    Fast_InitializerFrame *frame = &Fast_Initializer(_this)->frames[fp?fp-1:0];
+    Fast_DynamicInitializerFrame *baseFrame = &(_this->frames[fp?fp-1:0]);
     Fast_InitializerFrame *thisFrame = &Fast_Initializer(_this)->frames[fp];
-	
+    
     result = 0;
     
-	base = baseFrame->expr[variable];
-	if (!base) {
-		Fast_Parser_error(yparser(), "parser error: base is zero in offset calculation");
-		goto error;
-	}
+    base = baseFrame->expr[variable];
+    if (!base) {
+        Fast_Parser_error(yparser(), "parser error: base is zero in offset calculation");
+        goto error;
+    }
     
-	/* Switch on current type */
-	switch(frame->type->kind) {
+    /* Switch on current type */
+    switch(frame->type->kind) {
         case CX_PRIMITIVE:
             result = base;
             break;
@@ -105,11 +105,11 @@ Fast_Expression Fast_Initializer_expr(Fast_DynamicInitializer _this, cx_uint8 va
             }
             break;
         }
-	}
+    }
     
-	return result;
+    return result;
 error:
-	return 0;
+    return 0;
 
 }
 
@@ -118,13 +118,13 @@ error:
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::DynamicInitializer::construct(DynamicInitializer object) */
 cx_int16 Fast_DynamicInitializer_construct(Fast_DynamicInitializer object) {
 /* $begin(::cortex::Fast::DynamicInitializer::construct) */
-	cx_int8 variable;
+    cx_int8 variable;
     
     /* Copy offsets of variables into frames */
-	for(variable=0; variable<Fast_Initializer(object)->variableCount; variable++) {
+    for(variable=0; variable<Fast_Initializer(object)->variableCount; variable++) {
         Fast_Expression var = Fast_Initializer(object)->variables[variable].object;
         cx_set_ext(object, &object->frames[0].expr[variable], var, ".frames[0].expr[variable]");
-	}
+    }
     
     return Fast_Initializer_construct(Fast_Initializer(object));
 /* $end */
@@ -133,7 +133,7 @@ cx_int16 Fast_DynamicInitializer_construct(Fast_DynamicInitializer object) {
 /* ::cortex::Fast::DynamicInitializer::define() */
 cx_int16 Fast_DynamicInitializer_define(Fast_DynamicInitializer _this) {
 /* $begin(::cortex::Fast::DynamicInitializer::define) */
-	cx_int8 variable;
+    cx_int8 variable;
     cx_type t = Fast_Initializer_type(Fast_Initializer(_this));
     
     /* Copy offsets of variables into frames */
@@ -166,7 +166,7 @@ cx_int16 Fast_DynamicInitializer_pop(Fast_DynamicInitializer _this) {
 /* ::cortex::Fast::DynamicInitializer::push() */
 cx_int16 Fast_DynamicInitializer_push(Fast_DynamicInitializer _this) {
 /* $begin(::cortex::Fast::DynamicInitializer::push) */
-	cx_uint8 variable;
+    cx_uint8 variable;
     cx_type t = Fast_Initializer_currentType(Fast_Initializer(_this));
     cx_uint8 fp = Fast_Initializer(_this)->fp;
     Fast_Node expr = Fast_Node(_this->frames[fp].expr[0]);
@@ -232,7 +232,7 @@ error:
 /* ::cortex::Fast::DynamicInitializer::value(Expression v) */
 cx_int16 Fast_DynamicInitializer_value(Fast_DynamicInitializer _this, Fast_Expression v) {
 /* $begin(::cortex::Fast::DynamicInitializer::value) */
-	cx_uint32 variable;
+    cx_uint32 variable;
     cx_uint32 fp = Fast_Initializer(_this)->fp;
     cx_type type = Fast_Initializer_currentType(Fast_Initializer(_this));
     
@@ -251,8 +251,8 @@ cx_int16 Fast_DynamicInitializer_value(Fast_DynamicInitializer _this, Fast_Expre
         goto error;
     }
     
-	/* Serialize value to all variables being initialized */
-	for(variable=0; variable<Fast_Initializer(_this)->variableCount; variable++) {
+    /* Serialize value to all variables being initialized */
+    for(variable=0; variable<Fast_Initializer(_this)->variableCount; variable++) {
         if (Fast_Initializer(_this)->frames[fp].isKey) {
             cx_set(&_this->frames[fp].keyExpr[variable], v);
         } else {
@@ -260,7 +260,7 @@ cx_int16 Fast_DynamicInitializer_value(Fast_DynamicInitializer _this, Fast_Expre
         }
     }
     
-	return Fast_Initializer_next(Fast_Initializer(_this));
+    return Fast_Initializer_next(Fast_Initializer(_this));
 error:
     return -1;
 /* $end */

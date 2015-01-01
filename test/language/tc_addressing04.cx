@@ -1,21 +1,21 @@
 bool result : true
 
 class Foo::
-	member x, y : Foo
+    member x, y : Foo
 
 string testname : "tc_addressing04"
 void fail(string msg): 
-	"$testname: FAIL: $msg"
-	result = false
-	
+    "$testname: FAIL: $msg"
+    result = false
+    
 void testparam(Foo value, Foo x, string msg):
-	if value != x: fail("$msg (passing parameter in function, value=$value, x=$x)")
+    if value != x: fail("$msg (passing parameter in function, value=$value, x=$x)")
 
 void test(Foo value, Foo x, Foo y, string msg):
-	if value.x != x: fail("$msg (x = ${value.x}, param = $x)")
-	if value.y != y: fail("$msg (y = ${value.y}, param = $y)")
-	testparam(value.x, x, msg)
-	testparam(value.y, y, msg)
+    if value.x != x: fail("$msg (x = ${value.x}, param = $x)")
+    if value.y != y: fail("$msg (y = ${value.y}, param = $y)")
+    testparam(value.x, x, msg)
+    testparam(value.y, y, msg)
 
 Foo p1, p2:
 

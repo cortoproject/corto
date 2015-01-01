@@ -19,7 +19,7 @@ cx_int16 cx_procedure_init(cx_procedure object) {
 /* $begin(::cortex::lang::procedure::init) */
 
     if (cx_interface_init(cx_interface(object))) {
-    	goto error;
+        goto error;
     }
 
     cx_interface(object)->kind = CX_PROCEDURE;
@@ -27,7 +27,7 @@ cx_int16 cx_procedure_init(cx_procedure object) {
 
     return 0;
 error:
-	return -1;
+    return -1;
 /* $end */
 }
 

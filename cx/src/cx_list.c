@@ -149,7 +149,7 @@ cx_any cx_list_append_(cx_any _this) {
 /* ::cortex::lang::list::append(lang::any element) */
 cx_void cx_list_append_lang_any(cx_any _this, cx_any element) {
 /* $begin(::cortex::lang::list::append(lang::any element)) */
-	cx_list_do(_this, element, FALSE, cx_list_appendAction, NULL);
+    cx_list_do(_this, element, FALSE, cx_list_appendAction, NULL);
 /* $end */
 }
 
@@ -167,10 +167,10 @@ cx_void cx_list_clear(cx_any _this) {
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::list::construct(lang::list object) */
 cx_int16 cx_list_construct(cx_list object) {
 /* $begin(::cortex::lang::list::construct) */
-	cx_type(object)->hasResources = TRUE;
-	cx_type(object)->size = sizeof(cx_ll);
-	cx_type(object)->alignment = CX_ALIGNMENT(cx_ll);
-	return cx_type_construct(cx_type(object));
+    cx_type(object)->hasResources = TRUE;
+    cx_type(object)->size = sizeof(cx_ll);
+    cx_type(object)->alignment = CX_ALIGNMENT(cx_ll);
+    return cx_type_construct(cx_type(object));
 /* $end */
 }
 
@@ -203,6 +203,6 @@ cx_void cx_list_insert_lang_any(cx_any _this, cx_any element) {
 /* ::cortex::lang::list::reverse() */
 cx_void cx_list_reverse(cx_any _this) {
 /* $begin(::cortex::lang::list::reverse) */
-	cx_llReverse(*(cx_ll*)_this.value);
+    cx_llReverse(*(cx_ll*)_this.value);
 /* $end */
 }

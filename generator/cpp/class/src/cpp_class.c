@@ -33,21 +33,21 @@ static cx_string cpp_escapeName(cx_string fullname, cx_id escaped) {
 }
 
 static int cpp_headerWalk(cx_object o, void* userData) {
-	/* Add types of parameters and returntypes to list */
-	if (cx_class_instanceof(cx_procedure_o, cx_typeof(o))) {
-		cx_uint32 i;
-		cx_parameter *p;
-		for(i=0; i<cx_function(o)->parameters.length; i++) {
-			p = &cx_function(o)->parameters.buffer[i];
-			if (!cx_llHasObject(userData, p->type) && (cx_class_instanceof(cx_interface_o, p->type) && p->type->real->reference)) {
-				cx_llInsert(userData, p->type);
-			}
-		}
-		if (!cx_llHasObject(userData, cx_function(o)->returnType) && (cx_class_instanceof(cx_interface_o, cx_function(o)->returnType) && cx_function(o)->returnType->real->reference)) {
-			cx_llInsert(userData, cx_function(o)->returnType);
-		}
-	}
-	return 1;
+    /* Add types of parameters and returntypes to list */
+    if (cx_class_instanceof(cx_procedure_o, cx_typeof(o))) {
+        cx_uint32 i;
+        cx_parameter *p;
+        for(i=0; i<cx_function(o)->parameters.length; i++) {
+            p = &cx_function(o)->parameters.buffer[i];
+            if (!cx_llHasObject(userData, p->type) && (cx_class_instanceof(cx_interface_o, p->type) && p->type->real->reference)) {
+                cx_llInsert(userData, p->type);
+            }
+        }
+        if (!cx_llHasObject(userData, cx_function(o)->returnType) && (cx_class_instanceof(cx_interface_o, cx_function(o)->returnType) && cx_function(o)->returnType->real->reference)) {
+            cx_llInsert(userData, cx_function(o)->returnType);
+        }
+    }
+    return 1;
 }
 
 static g_file cpp_headerOpen(cx_interface o, cx_generator g) {
@@ -64,9 +64,9 @@ static g_file cpp_headerOpen(cx_interface o, cx_generator g) {
     cpp_topath(g_getCurrent(g), path);
 
     if (strlen(path)) {
-    	sprintf(headerFileName, "include/%s/%s.hpp", path, g_oid(g, o, id));
+        sprintf(headerFileName, "include/%s/%s.hpp", path, g_oid(g, o, id));
     } else {
-    	sprintf(headerFileName, "include/%s.hpp", g_oid(g, o, id));
+        sprintf(headerFileName, "include/%s.hpp", g_oid(g, o, id));
     }
 
     result = g_fileOpen(g, headerFileName);
@@ -89,7 +89,7 @@ static g_file cpp_headerOpen(cx_interface o, cx_generator g) {
         /* If there is a base-class, include that file too. */
         if (cx_class_instanceof(cx_struct_o, o)) {
             if (cx_interface(o)->base) {
-            	cx_llAppend(headers, cx_interface(o)->base);
+                cx_llAppend(headers, cx_interface(o)->base);
             } else {
                 g_fileWrite(result, "#include \"cortex/lang/Object.hpp\"\n");
             }
@@ -97,12 +97,12 @@ static g_file cpp_headerOpen(cx_interface o, cx_generator g) {
 
         /* Include implemented interfaces */
         if (cx_class_instanceof(cx_class_o, o)) {
-        	cx_uint32 i;
-        	cx_interface abstract;
-        	for(i=0; i<cx_class(o)->implements.length; i++) {\
-        		abstract = cx_class(o)->implements.buffer[i];
-				cx_llAppend(headers, abstract);
-        	}
+            cx_uint32 i;
+            cx_interface abstract;
+            for(i=0; i<cx_class(o)->implements.length; i++) {\
+                abstract = cx_class(o)->implements.buffer[i];
+                cx_llAppend(headers, abstract);
+            }
         }
 
         /* Print headers */
@@ -150,223 +150,223 @@ static void cpp_headerClose(cx_interface class, g_file file) {
 }
 
 typedef struct cpp_scopeWalk_t {
-	cx_generator g;
-	g_file file;
-	cx_bool methods;
-	cx_bool members;
+    cx_generator g;
+    g_file file;
+    cx_bool methods;
+    cx_bool members;
 }cpp_scopeWalk_t;
 
 /* Function declaration */
 void cpp_functionDeclExt(cx_generator g, g_file file, cx_function o, cx_bool inlined, cx_bool virtualStub) {
-	cx_id oid, id;
-	cx_uint32 i;
-	cx_bool callback;
-	cx_parameter* p;
+    cx_id oid, id;
+    cx_uint32 i;
+    cx_bool callback;
+    cx_parameter* p;
 
-	callback = FALSE;
+    callback = FALSE;
 
-	if (inlined) {
-		g_fileWrite(file, "public: ");
-	}
+    if (inlined) {
+        g_fileWrite(file, "public: ");
+    }
 
-	/* Callback functions are static as well as non-member functions in a class-scope */
-	if ((cx_procedure(cx_typeof(o))->kind == CX_FUNCTION) || (cx_procedure(cx_typeof(o))->kind == CX_CALLBACK)) {
-		if (inlined) {
-			if (cx_class_instanceof(cx_interface_o, cx_typeof(cx_parentof(o)))) {
-				g_fileWrite(file, "static ");
-			}
-		}
-		callback = TRUE;
-	}
+    /* Callback functions are static as well as non-member functions in a class-scope */
+    if ((cx_procedure(cx_typeof(o))->kind == CX_FUNCTION) || (cx_procedure(cx_typeof(o))->kind == CX_CALLBACK)) {
+        if (inlined) {
+            if (cx_class_instanceof(cx_interface_o, cx_typeof(cx_parentof(o)))) {
+                g_fileWrite(file, "static ");
+            }
+        }
+        callback = TRUE;
+    }
 
-	/* Function return-types are always return by value, including classes */
-	g_fileWrite(file, "%s ", g_fullOid(g, cx_function(o)->returnType, oid));
+    /* Function return-types are always return by value, including classes */
+    g_fileWrite(file, "%s ", g_fullOid(g, cx_function(o)->returnType, oid));
 
-	if (!inlined && cx_class_instanceof(cx_interface_o, cx_parentof(o))) {
-		g_fileWrite(file, "%s::", g_oid(g, cx_parentof(o), id));
-	}
+    if (!inlined && cx_class_instanceof(cx_interface_o, cx_parentof(o))) {
+        g_fileWrite(file, "%s::", g_oid(g, cx_parentof(o), id));
+    }
 
-	if (!virtualStub) {
-		g_fileWrite(file, "%s(", cpp_procId(g, o, id));
-	} else {
-		g_fileWrite(file, "%s_v(", cpp_procId(g, o, id));
-	}
+    if (!virtualStub) {
+        g_fileWrite(file, "%s(", cpp_procId(g, o, id));
+    } else {
+        g_fileWrite(file, "%s_v(", cpp_procId(g, o, id));
+    }
 
-	for(i=0; i<cx_function(o)->parameters.length; i++) {
-	    cx_id specifier;
+    for(i=0; i<cx_function(o)->parameters.length; i++) {
+        cx_id specifier;
 
-		if (i) {
-			g_fileWrite(file, ", ");
-		}
-		p = &cx_function(o)->parameters.buffer[i];
+        if (i) {
+            g_fileWrite(file, ", ");
+        }
+        p = &cx_function(o)->parameters.buffer[i];
 
-		if (p->type->real->reference) {
-			g_fileWrite(file, "const ");
-		}
+        if (p->type->real->reference) {
+            g_fileWrite(file, "const ");
+        }
 
-		cpp_specifierId(g, p->type, specifier);
+        cpp_specifierId(g, p->type, specifier);
 
-		g_fileWrite(file, "%s ",
-				specifier);
+        g_fileWrite(file, "%s ",
+                specifier);
 
-		if (p->type->real->reference) {
-			g_fileWrite(file, "&");
-		}
+        if (p->type->real->reference) {
+            g_fileWrite(file, "&");
+        }
 
-		g_fileWrite(file, "%s",
-				g_id(g, p->name, id));
-	}
+        g_fileWrite(file, "%s",
+                g_id(g, p->name, id));
+    }
 
-	g_fileWrite(file, ")");
-	if (!callback) {
-		g_fileWrite(file, " const");
-	}
+    g_fileWrite(file, ")");
+    if (!callback) {
+        g_fileWrite(file, " const");
+    }
 }
 
 /* Function declaration */
 void cpp_functionDecl(cx_generator g, g_file file, cx_function o, cx_bool inlined) {
-	cpp_functionDeclExt(g, file, o, inlined, FALSE);
+    cpp_functionDeclExt(g, file, o, inlined, FALSE);
 }
 
 typedef struct cpp_member_t {
-	cx_generator g;
-	g_file file;
-	cx_uint32 count;
-	cx_ll memberCache;
+    cx_generator g;
+    g_file file;
+    cx_uint32 count;
+    cx_ll memberCache;
 }cpp_member_t;
 
 static cx_int16 cpp_onMember(cx_serializer s, cx_value* v, void* userData) {
-	cx_member m;
-	cpp_member_t* data;
+    cx_member m;
+    cpp_member_t* data;
 
-	data = userData;
-	CX_UNUSED(s);
+    data = userData;
+    CX_UNUSED(s);
 
-	/* Get member */
-	if (v->kind == CX_MEMBER) {
-		cx_id spec, member;
-		m = v->is.member.t;
+    /* Get member */
+    if (v->kind == CX_MEMBER) {
+        cx_id spec, member;
+        m = v->is.member.t;
 
-		if (data->count) {
-			g_fileWrite(data->file, ",\n");
-			g_fileWrite(data->file, "        ");
-		}
-		cpp_specifierId(data->g, m->type, spec);
+        if (data->count) {
+            g_fileWrite(data->file, ",\n");
+            g_fileWrite(data->file, "        ");
+        }
+        cpp_specifierId(data->g, m->type, spec);
 
-		g_fileWrite(data->file, "%s %s %s%s",
-				m->type->real->reference ? "const" : "",
-				spec,
-				m->type->real->reference ? "&" : "",
-				cx_genMemberName(data->g, data->memberCache, m, member));
-		data->count++;
-	} else {
-		cx_serializeMembers(s, v, userData);
-	}
+        g_fileWrite(data->file, "%s %s %s%s",
+                m->type->real->reference ? "const" : "",
+                spec,
+                m->type->real->reference ? "&" : "",
+                cx_genMemberName(data->g, data->memberCache, m, member));
+        data->count++;
+    } else {
+        cx_serializeMembers(s, v, userData);
+    }
 
-	return 0;
+    return 0;
 }
 
 static cx_int16 cpp_onMemberCount(cx_serializer s, cx_value* v, void* userData) {
-	CX_UNUSED(s);
-	CX_UNUSED(v);
-	(*(cx_uint32*)userData)++;
-	return 0;
+    CX_UNUSED(s);
+    CX_UNUSED(v);
+    (*(cx_uint32*)userData)++;
+    return 0;
 }
 
 static struct cx_serializer_s cpp_memberSerializer(void) {
-	struct cx_serializer_s result;
-	cx_serializerInit(&result);
-	result.access = CX_LOCAL|CX_PRIVATE;
-	result.accessKind = CX_NOT;
-	result.traceKind = CX_SERIALIZER_TRACE_ON_FAIL;
-	result.metaprogram[CX_MEMBER] = cpp_onMember;
-	return result;
+    struct cx_serializer_s result;
+    cx_serializerInit(&result);
+    result.access = CX_LOCAL|CX_PRIVATE;
+    result.accessKind = CX_NOT;
+    result.traceKind = CX_SERIALIZER_TRACE_ON_FAIL;
+    result.metaprogram[CX_MEMBER] = cpp_onMember;
+    return result;
 }
 
 struct cx_serializer_s cpp_memberCountSerializer(void) {
-	struct cx_serializer_s result;
-	cx_serializerInit(&result);
-	result.access = CX_LOCAL|CX_PRIVATE;
-	result.accessKind = CX_NOT;
-	result.traceKind = CX_SERIALIZER_TRACE_ON_FAIL;
-	result.metaprogram[CX_MEMBER] = cpp_onMemberCount;
-	return result;
+    struct cx_serializer_s result;
+    cx_serializerInit(&result);
+    result.access = CX_LOCAL|CX_PRIVATE;
+    result.accessKind = CX_NOT;
+    result.traceKind = CX_SERIALIZER_TRACE_ON_FAIL;
+    result.metaprogram[CX_MEMBER] = cpp_onMemberCount;
+    return result;
 }
 
 /* Constructor */
 void cpp_constructorDecl(cx_generator g, g_file file, cx_interface o, cx_bool inlined) {
-	cx_id id;
-	cpp_member_t walkData;
-	struct cx_serializer_s s;
+    cx_id id;
+    cpp_member_t walkData;
+    struct cx_serializer_s s;
 
-	if (inlined) {
-		g_fileWrite(file, "public: ");
-	}
+    if (inlined) {
+        g_fileWrite(file, "public: ");
+    }
 
-	if (!inlined) {
-		g_fileWrite(file, "%s::", g_oid(g, o, id));
-	}
+    if (!inlined) {
+        g_fileWrite(file, "%s::", g_oid(g, o, id));
+    }
 
-	walkData.memberCache = cx_genMemberCacheBuild(o);
+    walkData.memberCache = cx_genMemberCacheBuild(o);
 
-	g_fileWrite(file, "%s(", g_oid(g, o, id));
-	walkData.g = g;
-	walkData.file = file;
-	walkData.count = 0;
-	s = cpp_memberSerializer();
-	cx_metaWalk(&s, cx_type(o), &walkData);
+    g_fileWrite(file, "%s(", g_oid(g, o, id));
+    walkData.g = g;
+    walkData.file = file;
+    walkData.count = 0;
+    s = cpp_memberSerializer();
+    cx_metaWalk(&s, cx_type(o), &walkData);
 
-	cx_genMemberCacheClean(walkData.memberCache);
+    cx_genMemberCacheClean(walkData.memberCache);
 
-	g_fileWrite(file, ")");
+    g_fileWrite(file, ")");
 }
 
 /* Scoped constructor */
 void cpp_constructorScopedDecl(cx_generator g, g_file file, cx_interface o, cx_bool inlined) {
-	cx_id id;
-	cpp_member_t walkData;
-	struct cx_serializer_s s;
+    cx_id id;
+    cpp_member_t walkData;
+    struct cx_serializer_s s;
 
-	if (inlined) {
-		g_fileWrite(file, "public: ");
-	}
+    if (inlined) {
+        g_fileWrite(file, "public: ");
+    }
 
-	if (!inlined) {
-		g_fileWrite(file, "%s::", g_oid(g, o, id));
-	}
+    if (!inlined) {
+        g_fileWrite(file, "%s::", g_oid(g, o, id));
+    }
 
-	walkData.memberCache = cx_genMemberCacheBuild(o);
+    walkData.memberCache = cx_genMemberCacheBuild(o);
 
-	g_fileWrite(file, "%s(::cortex::lang::Object *_parent,\n", g_oid(g, o, id));
-	g_fileWrite(file, "        ::cortex::lang::string _name");
-	walkData.g = g;
-	walkData.file = file;
-	walkData.count = 2;
-	s = cpp_memberSerializer();
-	cx_metaWalk(&s, cx_type(o), &walkData);
+    g_fileWrite(file, "%s(::cortex::lang::Object *_parent,\n", g_oid(g, o, id));
+    g_fileWrite(file, "        ::cortex::lang::string _name");
+    walkData.g = g;
+    walkData.file = file;
+    walkData.count = 2;
+    s = cpp_memberSerializer();
+    cx_metaWalk(&s, cx_type(o), &walkData);
 
-	cx_genMemberCacheClean(walkData.memberCache);
+    cx_genMemberCacheClean(walkData.memberCache);
 
-	g_fileWrite(file, ")");
+    g_fileWrite(file, ")");
 }
 
 /* Handle constructor */
 void cpp_constructorHandleDecl(cx_generator g, g_file file, cx_interface o, cx_bool inlined) {
-	cx_id id, lowId;
+    cx_id id, lowId;
 
-	if (inlined) {
-		g_fileWrite(file, "public: ");
-	}
+    if (inlined) {
+        g_fileWrite(file, "public: ");
+    }
 
-	if (!inlined) {
-		g_fileWrite(file, "%s::", g_oid(g, o, id));
-	}
+    if (!inlined) {
+        g_fileWrite(file, "%s::", g_oid(g, o, id));
+    }
 
-	if (!inlined) {
-		g_fileWrite(file, "%s(%s handle, bool owner)", g_oid(g, o, id), g_fullOidExt(g, o, lowId, CX_GENERATOR_ID_CLASS_LOWER));
-	} else {
-		g_fileWrite(file, "%s(%s handle, bool owner = TRUE)", g_oid(g, o, id), g_fullOidExt(g, o, lowId, CX_GENERATOR_ID_CLASS_LOWER));
-	}
+    if (!inlined) {
+        g_fileWrite(file, "%s(%s handle, bool owner)", g_oid(g, o, id), g_fullOidExt(g, o, lowId, CX_GENERATOR_ID_CLASS_LOWER));
+    } else {
+        g_fileWrite(file, "%s(%s handle, bool owner = TRUE)", g_oid(g, o, id), g_fullOidExt(g, o, lowId, CX_GENERATOR_ID_CLASS_LOWER));
+    }
 }
 
 /* Get handle */
@@ -388,91 +388,91 @@ void cpp_handleGetDecl(cx_generator g, g_file file, cx_interface o, cx_bool inli
 
 /* Getter declaration */
 void cpp_memberGetter(cx_generator g, g_file file, cx_member o, cx_bool inlined) {
-	cx_id typeId, memberId;
+    cx_id typeId, memberId;
 
-	if (inlined) {
-	    g_fileWrite(file, "public: ");
-	}
-	g_fileWrite(file, "%s ",
-	        cpp_specifierId(g, cx_member(o)->type, typeId));
+    if (inlined) {
+        g_fileWrite(file, "public: ");
+    }
+    g_fileWrite(file, "%s ",
+            cpp_specifierId(g, cx_member(o)->type, typeId));
 
-	if (!inlined) {
-		cx_id id;
-		g_fileWrite(file, "%s::",
-				g_oid(g, cx_parentof(o), id));
-	}
-	g_fileWrite(file, "%s() const",
-			g_id(g, cx_nameof(o), memberId));
+    if (!inlined) {
+        cx_id id;
+        g_fileWrite(file, "%s::",
+                g_oid(g, cx_parentof(o), id));
+    }
+    g_fileWrite(file, "%s() const",
+            g_id(g, cx_nameof(o), memberId));
 }
 
 /* Setter declaration */
 void cpp_memberSetter(cx_generator g, g_file file, cx_member o, cx_bool inlined) {
-	cx_id typeId, memberId;
+    cx_id typeId, memberId;
 
-	if (inlined) {
-		g_fileWrite(file, "public: ");
-	}
-	g_fileWrite(file, "void ");
+    if (inlined) {
+        g_fileWrite(file, "public: ");
+    }
+    g_fileWrite(file, "void ");
 
-	if (!inlined) {
-		cx_id id;
-		g_fileWrite(file, "%s::",
-				g_oid(g, cx_parentof(o), id));
-	}
-	g_fileWrite(file, "%s(%s %s ",
-			g_id(g, cx_nameof(o), memberId),
-			o->type->real->reference ? "const" : "",
-			cpp_specifierId(g, cx_member(o)->type, typeId));
+    if (!inlined) {
+        cx_id id;
+        g_fileWrite(file, "%s::",
+                g_oid(g, cx_parentof(o), id));
+    }
+    g_fileWrite(file, "%s(%s %s ",
+            g_id(g, cx_nameof(o), memberId),
+            o->type->real->reference ? "const" : "",
+            cpp_specifierId(g, cx_member(o)->type, typeId));
 
-	if (o->type->real->reference) {
-		g_fileWrite(file, "&");
-	}
+    if (o->type->real->reference) {
+        g_fileWrite(file, "&");
+    }
 
-	g_fileWrite(file, "v) const");
+    g_fileWrite(file, "v) const");
 }
 
 /* Walk scope of a class, process members and\or methods. */
 static int cpp_scopeWalk(cx_object o, void* userData) {
-	cpp_scopeWalk_t* data;
-	data = userData;
+    cpp_scopeWalk_t* data;
+    data = userData;
 
-	/* Check if o is a member */
-	if (cx_class_instanceof(cx_member_o, o)) {
-		if (data->members) {
-			cx_id typeId;
-			g_fileWrite(data->file, "\n");
-			g_fileWrite(data->file, "// %s %s\n", cx_fullname(cx_member(o)->type, typeId), cx_nameof(o));
+    /* Check if o is a member */
+    if (cx_class_instanceof(cx_member_o, o)) {
+        if (data->members) {
+            cx_id typeId;
+            g_fileWrite(data->file, "\n");
+            g_fileWrite(data->file, "// %s %s\n", cx_fullname(cx_member(o)->type, typeId), cx_nameof(o));
 
-			/* Getter */
-			cpp_memberGetter(data->g, data->file, o, TRUE);
-			g_fileWrite(data->file, ";\n");
+            /* Getter */
+            cpp_memberGetter(data->g, data->file, o, TRUE);
+            g_fileWrite(data->file, ";\n");
 
-			/* Setter */
-			cpp_memberSetter(data->g, data->file, o, TRUE);
-			g_fileWrite(data->file, ";\n");
-		}
+            /* Setter */
+            cpp_memberSetter(data->g, data->file, o, TRUE);
+            g_fileWrite(data->file, ";\n");
+        }
 
-	}/* Else, check if o is a procedure */
-	else if (cx_class_instanceof(cx_procedure_o, cx_typeof(o)) && (cx_procedure(cx_typeof(o))->kind != CX_METAPROCEDURE)) {
-		if (data->methods) {
-			if (!(cx_checkState(o, CX_DEFINED) && cx_procedure(cx_typeof(o))->kind == CX_CALLBACK)) {
-				g_fileWrite(data->file, "\n");
-				g_fileWrite(data->file, "// %s\n", cx_nameof(o));
-				cpp_functionDecl(data->g, data->file, cx_function(o), TRUE);
-				g_fileWrite(data->file, ";\n");
+    }/* Else, check if o is a procedure */
+    else if (cx_class_instanceof(cx_procedure_o, cx_typeof(o)) && (cx_procedure(cx_typeof(o))->kind != CX_METAPROCEDURE)) {
+        if (data->methods) {
+            if (!(cx_checkState(o, CX_DEFINED) && cx_procedure(cx_typeof(o))->kind == CX_CALLBACK)) {
+                g_fileWrite(data->file, "\n");
+                g_fileWrite(data->file, "// %s\n", cx_nameof(o));
+                cpp_functionDecl(data->g, data->file, cx_function(o), TRUE);
+                g_fileWrite(data->file, ";\n");
 
-				if (cx_instanceof(cx_typedef(cx_method_o), o)) {
-					if (cx_method(o)->virtual) {
-						/* Generate extra header for virtual method implementation */
-						cpp_functionDeclExt(data->g, data->file, cx_function(o), TRUE, TRUE);
-						g_fileWrite(data->file, ";\n");
-					}
-				}
-			}
-		}
-	}
+                if (cx_instanceof(cx_typedef(cx_method_o), o)) {
+                    if (cx_method(o)->virtual) {
+                        /* Generate extra header for virtual method implementation */
+                        cpp_functionDeclExt(data->g, data->file, cx_function(o), TRUE, TRUE);
+                        g_fileWrite(data->file, ";\n");
+                    }
+                }
+            }
+        }
+    }
 
-	return 1;
+    return 1;
 }
 
 /* Process a class */
@@ -504,27 +504,27 @@ static int cpp_class(cx_interface class, cx_generator g) {
             g_fileWrite(file, " : public %s",
                     g_fullOid(g, cx_interface(class)->base, base));
         } else {
-       		g_fileWrite(file, " : public ::cortex::lang::Object");
+               g_fileWrite(file, " : public ::cortex::lang::Object");
         }
     } else {
-   		g_fileWrite(file, " : public ::cortex::lang::Object");
+           g_fileWrite(file, " : public ::cortex::lang::Object");
     }
 
     /*if (cx_class_instanceof(cx_class_o, class)) {
         cx_uint32 i;
-    	cx_interface abstract;
-    	for(i=0; i<cx_class(class)->implements.length; i++) {
-    		abstract = cx_class(class)->implements.buffer[i];
-    		g_fileWrite(file, ", public %s", g_fullOid(g, abstract, id));
-    	}
+        cx_interface abstract;
+        for(i=0; i<cx_class(class)->implements.length; i++) {
+            abstract = cx_class(class)->implements.buffer[i];
+            g_fileWrite(file, ", public %s", g_fullOid(g, abstract, id));
+        }
     }*/
 
-	/* Allow users to add inheritance relations to generated classes. */
-	if ((snippet = g_fileLookupSnippet(file, "$classinherits"))) {
-		g_fileWrite(file, "/* $begin($classinherits)");
-		g_fileWrite(file, "%s", snippet);
-		g_fileWrite(file, "$end */\n");
-	}
+    /* Allow users to add inheritance relations to generated classes. */
+    if ((snippet = g_fileLookupSnippet(file, "$classinherits"))) {
+        g_fileWrite(file, "/* $begin($classinherits)");
+        g_fileWrite(file, "%s", snippet);
+        g_fileWrite(file, "$end */\n");
+    }
 
     g_fileWrite(file, " {\n");
     g_fileIndent(file);
@@ -537,28 +537,28 @@ static int cpp_class(cx_interface class, cx_generator g) {
      }
 
     /* Constructor (new,define) */
-	g_fileWrite(file, "\n");
-	g_fileWrite(file, "// Constructor (new,define)\n");
-	cpp_constructorDecl(g, file, class, TRUE);
-	g_fileWrite(file, ";\n");
+    g_fileWrite(file, "\n");
+    g_fileWrite(file, "// Constructor (new,define)\n");
+    cpp_constructorDecl(g, file, class, TRUE);
+    g_fileWrite(file, ";\n");
 
-	/* Scoped constructor (declare,define) */
-	g_fileWrite(file, "\n");
-	g_fileWrite(file, "// Scoped constructor (declare,define)\n");
-	cpp_constructorScopedDecl(g, file, class, TRUE);
-	g_fileWrite(file, ";\n");
+    /* Scoped constructor (declare,define) */
+    g_fileWrite(file, "\n");
+    g_fileWrite(file, "// Scoped constructor (declare,define)\n");
+    cpp_constructorScopedDecl(g, file, class, TRUE);
+    g_fileWrite(file, ";\n");
 
-	/* Handle constructor */
-	g_fileWrite(file, "\n");
-	g_fileWrite(file, "// Handle constructor\n");
-	cpp_constructorHandleDecl(g, file, class, TRUE);
-	g_fileWrite(file, ";\n");
+    /* Handle constructor */
+    g_fileWrite(file, "\n");
+    g_fileWrite(file, "// Handle constructor\n");
+    cpp_constructorHandleDecl(g, file, class, TRUE);
+    g_fileWrite(file, ";\n");
 
-	/* Return typed handle to database object */
-	g_fileWrite(file, "\n");
-	g_fileWrite(file, "// Obtain handle\n");
-	cpp_handleGetDecl(g, file, class, TRUE);
-	g_fileWrite(file, ";\n");
+    /* Return typed handle to database object */
+    g_fileWrite(file, "\n");
+    g_fileWrite(file, "// Obtain handle\n");
+    cpp_handleGetDecl(g, file, class, TRUE);
+    g_fileWrite(file, ";\n");
 
     /* Walk scope of class */
     walkData.g = g;
@@ -571,12 +571,12 @@ static int cpp_class(cx_interface class, cx_generator g) {
     walkData.methods = TRUE;
     cx_scopeWalk(class, cpp_scopeWalk, &walkData);
 
-	/* Allow users to add extra operations to class-implementations. */
-	if ((snippet = g_fileLookupSnippet(file, "$classfooter"))) {
-		g_fileWrite(file, "/* $begin($classfooter)");
-		g_fileWrite(file, "%s", snippet);
-		g_fileWrite(file, "$end */\n");
-	}
+    /* Allow users to add extra operations to class-implementations. */
+    if ((snippet = g_fileLookupSnippet(file, "$classfooter"))) {
+        g_fileWrite(file, "/* $begin($classfooter)");
+        g_fileWrite(file, "%s", snippet);
+        g_fileWrite(file, "$end */\n");
+    }
 
     g_fileDedent(file);
 
@@ -615,7 +615,7 @@ static int cpp_scope(cx_object o, cx_generator g) {
     walkData.methods = TRUE;
     walkData.members = FALSE;
     if (!cx_scopeWalk(o, cpp_scopeWalk, &walkData)) {
-    	goto error;
+        goto error;
     }
 
     cpp_closeScope(file);
@@ -624,7 +624,7 @@ static int cpp_scope(cx_object o, cx_generator g) {
 
     return 0;
 error:
-	return -1;
+    return -1;
 }
 
 /* Check if there are procedures in the scope of an object. */
@@ -647,12 +647,12 @@ static int cpp_implWalk(cx_object o, void* userData) {
         if (cpp_class(cx_interface(o), userData)) {
             goto error;
         }
-       	cpp_impl(o, userData);
+           cpp_impl(o, userData);
     } else if (!cx_scopeWalk(o, cpp_checkProcedures, NULL) && (o != cx_object_o)) {
-    	if (cpp_scope(o, userData)) {
-    		goto error;
-    	}
-    	cpp_impl(o, userData);
+        if (cpp_scope(o, userData)) {
+            goto error;
+        }
+        cpp_impl(o, userData);
     }
 
     return 1;
@@ -663,7 +663,7 @@ error:
 /* Generator main */
 cx_int16 cortex_genMain(cx_generator g) {
 
-	g_setIdKind(g, CX_GENERATOR_ID_CLASS_UPPER);
+    g_setIdKind(g, CX_GENERATOR_ID_CLASS_UPPER);
 
     /* Walk classes */
     if (!g_walkRecursive(g, cpp_implWalk, g)) {

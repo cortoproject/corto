@@ -162,7 +162,7 @@ jsw_rbtree_t *jsw_rbnew ( cx_type type, cx_equalsAction cmp)
 }
 
 cx_type jsw_rbtype( jsw_rbtree_t *tree) {
-	return tree->type;
+    return tree->type;
 }
 
 

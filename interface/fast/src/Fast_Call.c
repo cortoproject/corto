@@ -18,12 +18,12 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 
 /* Insert implicit casts when argument-expressions do not match */
 cx_int16 Fast_Call_insertCasts(Fast_Call _this) {
-	cx_iter argumentIter;
-	Fast_Expression argument;
-	cx_uint32 i = 0;
-	cx_type parameterType, argumentType;
+    cx_iter argumentIter;
+    Fast_Expression argument;
+    cx_uint32 i = 0;
+    cx_type parameterType, argumentType;
 
-	if (_this->arguments) {
+    if (_this->arguments) {
         cx_ll arguments = Fast_Expression_toList(_this->arguments);
         argumentIter = cx_llIter(arguments);
         while(cx_iterHasNext(&argumentIter)) {
@@ -32,10 +32,10 @@ cx_int16 Fast_Call_insertCasts(Fast_Call _this) {
             argumentType = Fast_Expression_getType(argument);
 
             if (_this->parameters.buffer[i].passByReference) {
-            	if (!argument->isReference) {
-            		Fast_Parser_error(yparser(), "cannot pass non-reference value as reference");
-            		goto error;
-            	}
+                if (!argument->isReference) {
+                    Fast_Parser_error(yparser(), "cannot pass non-reference value as reference");
+                    goto error;
+                }
             }
             
             /* If both types are not equal, insert cast */
@@ -60,9 +60,9 @@ cx_int16 Fast_Call_insertCasts(Fast_Call _this) {
         Fast_Expression_cleanList(arguments);
     }
 
-	return 0;
+    return 0;
 error:
-	return -1;
+    return -1;
 }
 
 /* $end */
@@ -74,21 +74,21 @@ cx_int16 Fast_Call_construct(Fast_Call object) {
 
     Fast_Node(object)->kind = FAST_Call;
 
-	/* Insert casts based on expression list and arguments */
-	if (Fast_Call_insertCasts(object)) {
-		goto error;
+    /* Insert casts based on expression list and arguments */
+    if (Fast_Call_insertCasts(object)) {
+        goto error;
     }
 
     returnTypeExpr = Fast_Expression(Fast_Object__create(object->returnType));
     Fast_Parser_collect(yparser(), returnTypeExpr);
 
-	cx_set(&Fast_Expression(object)->type, returnTypeExpr);
-	Fast_Expression(object)->isReference = 
-		object->returnsReference || object->returnType->reference;
+    cx_set(&Fast_Expression(object)->type, returnTypeExpr);
+    Fast_Expression(object)->isReference = 
+        object->returnsReference || object->returnType->reference;
 
     return 0;
 error:
-	return -1;
+    return -1;
 /* $end */
 }
 
@@ -121,25 +121,25 @@ void Fast_Call_setParameters(Fast_Call _this, cx_function function) {
 /* ::cortex::Fast::Call::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
 cx_ic Fast_Call_toIc_v(Fast_Call _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Call::toIc) */
-	cx_icStorage result = NULL;
+    cx_icStorage result = NULL;
     cx_ic function;
-	cx_icOp call = NULL;
-	Fast_Expression argument = NULL;
-	cx_icOp *pushIcs = NULL; /* Cache push instructions before inserting in program to avoid issues with nested calls */
-	cx_int32 argumentId = 0, argumentCount = 0;
-	cx_type _thisType = Fast_Expression_getType(Fast_Expression(_this));
+    cx_icOp call = NULL;
+    Fast_Expression argument = NULL;
+    cx_icOp *pushIcs = NULL; /* Cache push instructions before inserting in program to avoid issues with nested calls */
+    cx_int32 argumentId = 0, argumentCount = 0;
+    cx_type _thisType = Fast_Expression_getType(Fast_Expression(_this));
     cx_ll arguments = NULL;
     cx_uint32 argumentStorageCount = 0;
 
-	CX_UNUSED(stored);
-	CX_UNUSED(storage);
+    CX_UNUSED(stored);
+    CX_UNUSED(storage);
     
-	if (storage && (storage->type == _thisType)) {
-		result = storage;
-	} else {
-		result = (cx_icStorage)cx_icProgram_accumulatorPush(
+    if (storage && (storage->type == _thisType)) {
+        result = storage;
+    } else {
+        result = (cx_icStorage)cx_icProgram_accumulatorPush(
             program, Fast_Node(_this)->line, _thisType, _this->returnsReference);
-	}
+    }
     
     /* Signal that storage will hold return value */
     result->holdsReturn = TRUE;
@@ -152,29 +152,29 @@ cx_ic Fast_Call_toIc_v(Fast_Call _this, cx_icProgram program, cx_icStorage stora
         }
     }
     
-	/* Push 'this' if function is a method or metaprocedure */
-	if (_this->instanceExpr) {
-		cx_ic thisIc = Fast_Node_toIc(Fast_Node(_this->instanceExpr), program, NULL, TRUE);
-		argumentCount += 1;
-	    pushIcs = alloca(argumentCount * sizeof(cx_icOp));
-	    pushIcs[argumentId] = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_PUSH, (cx_icValue)thisIc, NULL, NULL);
-	    pushIcs[argumentId]->s1Deref = CX_IC_DEREF_ADDRESS;
+    /* Push 'this' if function is a method or metaprocedure */
+    if (_this->instanceExpr) {
+        cx_ic thisIc = Fast_Node_toIc(Fast_Node(_this->instanceExpr), program, NULL, TRUE);
+        argumentCount += 1;
+        pushIcs = alloca(argumentCount * sizeof(cx_icOp));
+        pushIcs[argumentId] = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_PUSH, (cx_icValue)thisIc, NULL, NULL);
+        pushIcs[argumentId]->s1Deref = CX_IC_DEREF_ADDRESS;
         pushIcs[argumentId]->s1Any = _this->instanceIsAny;
-	    argumentId++;
-	} else {
-		if (_this->arguments) {
-			pushIcs = alloca(argumentCount * sizeof(cx_icOp));
-		}
-	}
+        argumentId++;
+    } else {
+        if (_this->arguments) {
+            pushIcs = alloca(argumentCount * sizeof(cx_icOp));
+        }
+    }
 
-	/* Push arguments */
-	if (arguments) {
+    /* Push arguments */
+    if (arguments) {
         cx_iter argumentIter;
         cx_ic argumentIc = NULL;
         cx_icStorage argumentStorage = NULL;
-	    cx_uint32 i = 0;
+        cx_uint32 i = 0;
 
-	    /* Temporary storage for push-instructions required for pushing the arguments of this function */
+        /* Temporary storage for push-instructions required for pushing the arguments of this function */
         argumentIter = cx_llIter(arguments);
         while(cx_iterHasNext(&argumentIter)) {
             cx_type paramType, exprType;
@@ -183,10 +183,10 @@ cx_ic Fast_Call_toIc_v(Fast_Call _this, cx_icProgram program, cx_icStorage stora
               (argumentIc == (cx_ic)argumentStorage) ||
               (Fast_Expression_getType(argument) != argumentStorage->type)) {
                 argumentStorage = (cx_icStorage)cx_icProgram_accumulatorPush(
-                	program, 
-                	Fast_Node(_this)->line, 
-                	Fast_Expression_getType(argument),
-                	argument->isReference);
+                    program, 
+                    Fast_Node(_this)->line, 
+                    Fast_Expression_getType(argument),
+                    argument->isReference);
                 argumentStorageCount++;
             }
             argumentIc = Fast_Node_toIc(Fast_Node(argument), program, argumentStorage, TRUE);
@@ -208,17 +208,17 @@ cx_ic Fast_Call_toIc_v(Fast_Call _this, cx_icProgram program, cx_icStorage stora
                 if (!exprType) {
                     exprType = paramType;
                 }
-            	if (_this->parameters.buffer[i].passByReference || (paramType->reference && !exprType->reference)) {
-            		pushIcs[argumentId-1]->s1Deref = CX_IC_DEREF_ADDRESS;
-            	} else {
-            		pushIcs[argumentId-1]->s1Deref = CX_IC_DEREF_PUSH;
-            	}
+                if (_this->parameters.buffer[i].passByReference || (paramType->reference && !exprType->reference)) {
+                    pushIcs[argumentId-1]->s1Deref = CX_IC_DEREF_ADDRESS;
+                } else {
+                    pushIcs[argumentId-1]->s1Deref = CX_IC_DEREF_PUSH;
+                }
             }
             i++;
         }
         
         Fast_Expression_cleanList(arguments);
-	}
+    }
 
     /* Add push-instructions just before doing the call so it doesn't interfere with call-expressions in
      * the argument list */
@@ -226,24 +226,24 @@ cx_ic Fast_Call_toIc_v(Fast_Call _this, cx_icProgram program, cx_icStorage stora
         cx_icProgram_addIc(program, (cx_ic)pushIcs[argumentId]);
     }
 
-	/* Do call */
+    /* Do call */
     function = Fast_Node_toIc(Fast_Node(_this->functionExpr), program, storage, stored);
-	call = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_CALL, (cx_icValue)result, (cx_icValue)function, NULL);
+    call = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_CALL, (cx_icValue)result, (cx_icValue)function, NULL);
     if (_this->returnsReference) {
         call->s1Deref = CX_IC_DEREF_ADDRESS;
     }
 
-	cx_icProgram_addIc(program, (cx_ic)call);
+    cx_icProgram_addIc(program, (cx_ic)call);
 
     while(argumentStorageCount) {
         cx_icProgram_accumulatorPop(program, Fast_Node(_this)->line);
         argumentStorageCount--;
     }
 
-	if (storage != result) {
-		cx_icProgram_accumulatorPop(program, Fast_Node(_this)->line);
-	}
+    if (storage != result) {
+        cx_icProgram_accumulatorPop(program, Fast_Node(_this)->line);
+    }
     
-	return (cx_ic)result;
+    return (cx_ic)result;
 /* $end */
 }

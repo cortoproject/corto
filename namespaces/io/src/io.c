@@ -13,12 +13,12 @@
 #include "io__meta.h"
 
 int cortexmain(int argc, char* argv[]) {
-	CX_UNUSED(argc);
-	CX_UNUSED(argv);
+    CX_UNUSED(argc);
+    CX_UNUSED(argv);
 
-	io_load();
+    io_load();
 
-	return 0;
+    return 0;
 }
 /* $end */
 

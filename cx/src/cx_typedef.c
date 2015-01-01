@@ -42,7 +42,7 @@ cx_int16 cx_typedef_construct(cx_typedef object) {
 
     cx_set_ext(object, &cx_typedef(object)->real, real, "Set real-member");
 
-	return 0;
+    return 0;
 error:
     return -1;
 /* $end */
@@ -51,8 +51,8 @@ error:
 /* callback ::cortex::lang::class::destruct(lang::object object) -> ::cortex::lang::typedef::destruct(lang::typedef object) */
 cx_void cx_typedef_destruct(cx_typedef object) {
 /* $begin(::cortex::lang::typedef::destruct) */
-	cx_free_ext(object, object->real, "Free real member");
-	object->real = NULL;
+    cx_free_ext(object, object->real, "Free real member");
+    object->real = NULL;
 /* $end */
 }
 
@@ -76,6 +76,6 @@ cx_int16 cx_typedef_init(cx_typedef object) {
 /* ::cortex::lang::typedef::realType() */
 cx_type cx_typedef_realType(cx_typedef _this) {
 /* $begin(::cortex::lang::typedef::realType) */
-	return _this->real;
+    return _this->real;
 /* $end */
 }

@@ -57,70 +57,70 @@ cx_bool cx_primitive_castable_v(cx_primitive _this, cx_type type) {
     /* Perform generic type::compatible routine first. */
     if (!cx_type_compatible_v(cx_type(_this), type)) {
         if (cx_type(_this)->reference == type->reference) {
-        	if (type->kind == CX_PRIMITIVE) {
-				cx_primitiveKind kind = cx_primitive(type)->kind;
-				if (_this->kind != kind) {
-					switch(_this->kind) {
-					case CX_ALIAS:
-						result = FALSE;
-						break;
+            if (type->kind == CX_PRIMITIVE) {
+                cx_primitiveKind kind = cx_primitive(type)->kind;
+                if (_this->kind != kind) {
+                    switch(_this->kind) {
+                    case CX_ALIAS:
+                        result = FALSE;
+                        break;
                     case CX_BOOLEAN:
-					case CX_BINARY:
-						switch(kind) {
-						case CX_BOOLEAN:
-						case CX_BINARY:
-						case CX_INTEGER:
-						case CX_UINTEGER:
-                        case CX_FLOAT:
-						case CX_TEXT:
-						case CX_ENUM:
-						case CX_BITMASK:
-							result = TRUE;
-							break;
-						default:
-							break;
-						}
-						break;
-					case CX_CHARACTER:
-						switch(kind) {
-						case CX_BINARY:
-						case CX_INTEGER:
-						case CX_UINTEGER:
-						case CX_TEXT:
-							result = TRUE;
-							break;
-						default:
-							break;
-						}
-						break;
-					case CX_INTEGER:
-					case CX_UINTEGER:
-						switch(kind) {
-						case CX_BINARY:
-						case CX_BOOLEAN:
-						case CX_CHARACTER:
-						case CX_INTEGER:
-						case CX_UINTEGER:
-						case CX_FLOAT:
-						case CX_TEXT:
-						case CX_ENUM:
-						case CX_BITMASK:
-							result = TRUE;
-						default:
-							break;
-						}
-						break;
-					case CX_FLOAT:
-						switch(kind) {
+                    case CX_BINARY:
+                        switch(kind) {
+                        case CX_BOOLEAN:
                         case CX_BINARY:
-						case CX_INTEGER:
-						case CX_UINTEGER:
-						case CX_TEXT:
-							result = TRUE;
-						default:
-							break;
-						}
-						break;
+                        case CX_INTEGER:
+                        case CX_UINTEGER:
+                        case CX_FLOAT:
+                        case CX_TEXT:
+                        case CX_ENUM:
+                        case CX_BITMASK:
+                            result = TRUE;
+                            break;
+                        default:
+                            break;
+                        }
+                        break;
+                    case CX_CHARACTER:
+                        switch(kind) {
+                        case CX_BINARY:
+                        case CX_INTEGER:
+                        case CX_UINTEGER:
+                        case CX_TEXT:
+                            result = TRUE;
+                            break;
+                        default:
+                            break;
+                        }
+                        break;
+                    case CX_INTEGER:
+                    case CX_UINTEGER:
+                        switch(kind) {
+                        case CX_BINARY:
+                        case CX_BOOLEAN:
+                        case CX_CHARACTER:
+                        case CX_INTEGER:
+                        case CX_UINTEGER:
+                        case CX_FLOAT:
+                        case CX_TEXT:
+                        case CX_ENUM:
+                        case CX_BITMASK:
+                            result = TRUE;
+                        default:
+                            break;
+                        }
+                        break;
+                    case CX_FLOAT:
+                        switch(kind) {
+                        case CX_BINARY:
+                        case CX_INTEGER:
+                        case CX_UINTEGER:
+                        case CX_TEXT:
+                            result = TRUE;
+                        default:
+                            break;
+                        }
+                        break;
                     case CX_BITMASK:
                         switch(kind) {
                             case CX_BOOLEAN:
@@ -129,40 +129,40 @@ cx_bool cx_primitive_castable_v(cx_primitive _this, cx_type type) {
                             default:
                                 break;
                         }
-					case CX_ENUM:
-						switch(kind) {
-						case CX_INTEGER:
-						case CX_UINTEGER:
-						case CX_TEXT:
-							result = TRUE;
-							break;
-						default:
-							break;
-						}
-						break;
-					case CX_TEXT:
-						switch(kind) {
-						case CX_BINARY:
-						case CX_BOOLEAN:
-						case CX_CHARACTER:
-						case CX_INTEGER:
-						case CX_UINTEGER:
-						case CX_FLOAT:
-						case CX_ENUM:
-							result = TRUE;
-						default:
-							break;
-						}
-						break;
-					}
-				} else {
-					if (_this->kind == CX_ALIAS) {
-						result = !strcmp(cx_alias(_this)->typeName, cx_alias(type)->typeName);
-					} else {
-						result = TRUE;
-					}
-				}
-        	}
+                    case CX_ENUM:
+                        switch(kind) {
+                        case CX_INTEGER:
+                        case CX_UINTEGER:
+                        case CX_TEXT:
+                            result = TRUE;
+                            break;
+                        default:
+                            break;
+                        }
+                        break;
+                    case CX_TEXT:
+                        switch(kind) {
+                        case CX_BINARY:
+                        case CX_BOOLEAN:
+                        case CX_CHARACTER:
+                        case CX_INTEGER:
+                        case CX_UINTEGER:
+                        case CX_FLOAT:
+                        case CX_ENUM:
+                            result = TRUE;
+                        default:
+                            break;
+                        }
+                        break;
+                    }
+                } else {
+                    if (_this->kind == CX_ALIAS) {
+                        result = !strcmp(cx_alias(_this)->typeName, cx_alias(type)->typeName);
+                    } else {
+                        result = TRUE;
+                    }
+                }
+            }
         }
     } else {
         result = TRUE;
@@ -183,9 +183,9 @@ cx_bool cx_primitive_compatible_v(cx_primitive _this, cx_type type) {
        if (_this->kind == cx_primitive(type)->kind) { /* If kinds are equal, types are compatible */
            result = TRUE;
         } else if (_this->kind == CX_ENUM) {
-    	   if (type == cx_type(cx_constant_o)) {
-    		   result = TRUE;
-    	   }
+           if (type == cx_type(cx_constant_o)) {
+               result = TRUE;
+           }
         } else if (_this->kind == CX_BITMASK) {
            switch(cx_primitive(type)->kind) {
            case CX_INTEGER:
@@ -196,23 +196,23 @@ cx_bool cx_primitive_compatible_v(cx_primitive _this, cx_type type) {
                break;
            }
         } else { /* Integer types are interchangable */
-       		switch(_this->kind) {
-   			case CX_BINARY:
-   			case CX_UINTEGER:
-   			case CX_INTEGER:
-   				switch(cx_primitive(type)->kind) {
-   				case CX_BINARY:
-   				case CX_UINTEGER:
-   				case CX_INTEGER:
-   					result = TRUE;
-       				break;
-       			default:
-	       			break;
-   				}
-       			break;
-   			default:
-       			break;
-       		}
+               switch(_this->kind) {
+               case CX_BINARY:
+               case CX_UINTEGER:
+               case CX_INTEGER:
+                   switch(cx_primitive(type)->kind) {
+                   case CX_BINARY:
+                   case CX_UINTEGER:
+                   case CX_INTEGER:
+                       result = TRUE;
+                       break;
+                   default:
+                       break;
+                   }
+                   break;
+               default:
+                   break;
+               }
 
        }
     }
@@ -225,33 +225,33 @@ cx_bool cx_primitive_compatible_v(cx_primitive _this, cx_type type) {
 cx_int16 cx_primitive_construct(cx_primitive object) {
 /* $begin(::cortex::lang::primitive::construct) */
 
-	switch(object->width) {
-	case CX_WIDTH_8:
-		cx_type(object)->size = 1;
-		cx_type(object)->alignment = CX_ALIGNMENT(cx_char);
-		break;
-	case CX_WIDTH_16:
-		cx_type(object)->size = 2;
-		cx_type(object)->alignment = CX_ALIGNMENT(cx_int16);
-		break;
-	case CX_WIDTH_32:
-		cx_type(object)->size = 4;
-		cx_type(object)->alignment = CX_ALIGNMENT(cx_int32);
-		break;
-	case CX_WIDTH_64:
-		cx_type(object)->size = 8;
-		cx_type(object)->alignment = CX_ALIGNMENT(cx_int64);
-		break;
-	case CX_WIDTH_WORD:
-		cx_type(object)->size = sizeof(void*);
-		cx_type(object)->alignment = CX_ALIGNMENT(cx_word);
-		break;
-	}
+    switch(object->width) {
+    case CX_WIDTH_8:
+        cx_type(object)->size = 1;
+        cx_type(object)->alignment = CX_ALIGNMENT(cx_char);
+        break;
+    case CX_WIDTH_16:
+        cx_type(object)->size = 2;
+        cx_type(object)->alignment = CX_ALIGNMENT(cx_int16);
+        break;
+    case CX_WIDTH_32:
+        cx_type(object)->size = 4;
+        cx_type(object)->alignment = CX_ALIGNMENT(cx_int32);
+        break;
+    case CX_WIDTH_64:
+        cx_type(object)->size = 8;
+        cx_type(object)->alignment = CX_ALIGNMENT(cx_int64);
+        break;
+    case CX_WIDTH_WORD:
+        cx_type(object)->size = sizeof(void*);
+        cx_type(object)->alignment = CX_ALIGNMENT(cx_word);
+        break;
+    }
 
-	/* Assign convertId which enables quick lookups of implicit primitive conversions. */
-	object->convertId = cx__primitive_convertId(object->kind, object->width);
+    /* Assign convertId which enables quick lookups of implicit primitive conversions. */
+    object->convertId = cx__primitive_convertId(object->kind, object->width);
 
-	return cx_type_construct(cx_type(object));
+    return cx_type_construct(cx_type(object));
 /* $end */
 }
 

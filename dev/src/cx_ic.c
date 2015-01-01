@@ -449,66 +449,66 @@ cx_string cx_icProgram_toString(cx_icProgram program) {
 }
 
 cx_icStorage cx_icScope_lookupStorage(cx_icScope scope, cx_string name, cx_bool recursive) {
-	cx_iter storageIter;
-	cx_icStorage result = NULL;
+    cx_iter storageIter;
+    cx_icStorage result = NULL;
 
-	storageIter = cx_llIter(scope->storages);
-	while(cx_iterHasNext(&storageIter)) {
-		result = cx_iterNext(&storageIter);
-		if (!strcmp(result->name, name)) {
-			break;
-		} else {
-			result = NULL;
-		}
-	}
+    storageIter = cx_llIter(scope->storages);
+    while(cx_iterHasNext(&storageIter)) {
+        result = cx_iterNext(&storageIter);
+        if (!strcmp(result->name, name)) {
+            break;
+        } else {
+            result = NULL;
+        }
+    }
 
-	if (!result && scope->parent && recursive && !scope->isFunction) {
-		result = cx_icScope_lookupStorage(scope->parent, name, TRUE);
-	}
+    if (!result && scope->parent && recursive && !scope->isFunction) {
+        result = cx_icScope_lookupStorage(scope->parent, name, TRUE);
+    }
 
-	return result;
+    return result;
 }
 
 static cx_icStorage cx_icProgram_lookupStorage(cx_icProgram program, cx_string name, cx_bool recursive) {
-	cx_iter storageIter;
-	cx_icStorage result = NULL;
+    cx_iter storageIter;
+    cx_icStorage result = NULL;
 
-	if (!(result = cx_icScope_lookupStorage(program->scope, name, recursive))) {
-		storageIter = cx_llIter(program->storages);
-		while(cx_iterHasNext(&storageIter)) {
-			result = cx_iterNext(&storageIter);
-			if (!strcmp(result->name, name)) {
-		        break;
-			} else {
-				result = NULL;
-			}
-		}
-	}
+    if (!(result = cx_icScope_lookupStorage(program->scope, name, recursive))) {
+        storageIter = cx_llIter(program->storages);
+        while(cx_iterHasNext(&storageIter)) {
+            result = cx_iterNext(&storageIter);
+            if (!strcmp(result->name, name)) {
+                break;
+            } else {
+                result = NULL;
+            }
+        }
+    }
 
-	return result;
+    return result;
 }
 
 cx_icProgram cx_icProgram__create(cx_string filename) {
-	cx_icProgram result;
-	result = cx_calloc(sizeof(cx_icProgram_s));
-	result->filename = cx_strdup(filename);
-	result->storages = cx_llNew();
-	result->labels = cx_llNew();
-	result->scopes = cx_llNew();
-	result->functions = cx_llNew();
-	result->literals = cx_llNew();
-	result->ops = cx_llNew();
+    cx_icProgram result;
+    result = cx_calloc(sizeof(cx_icProgram_s));
+    result->filename = cx_strdup(filename);
+    result->storages = cx_llNew();
+    result->labels = cx_llNew();
+    result->scopes = cx_llNew();
+    result->functions = cx_llNew();
+    result->literals = cx_llNew();
+    result->ops = cx_llNew();
     result->errors = 0;
-	return result;
+    return result;
 }
 
 void cx_icStorage_init(
-		cx_icStorage storage,
-		cx_icProgram program,
-		cx_uint32 line,
-		cx_icStorageKind kind,
-		cx_string name,
-		cx_type type) {
+        cx_icStorage storage,
+        cx_icProgram program,
+        cx_uint32 line,
+        cx_icStorageKind kind,
+        cx_string name,
+        cx_type type) {
 
     storage->_parent._parent.kind = CX_IC_STORAGE;
     storage->_parent._parent.line = line;
@@ -571,20 +571,20 @@ cx_icAccumulator cx_icAccumulator__create(cx_icProgram program, cx_uint32 line, 
 }
 
 cx_icMember cx_icMember__create(cx_icProgram program, cx_uint32 line, cx_icStorage base, cx_member member) {
-	cx_icMember result;
-	cx_id name;
+    cx_icMember result;
+    cx_id name;
 
-	sprintf(name, "%s.%s", base->name, cx_nameof(member));
+    sprintf(name, "%s.%s", base->name, cx_nameof(member));
 
-	if (!(result = (cx_icMember)cx_icProgram_lookupStorage(program, name, TRUE))) {
-		result = cx_calloc(sizeof(cx_icMember_s));
-		cx_icStorage_init((cx_icStorage)result, program, line, CX_STORAGE_MEMBER, name, member->type->real);
-		result->base = base;
-		result->member = member;
-		cx_llAppend(program->scope->storages, result);
-	}
+    if (!(result = (cx_icMember)cx_icProgram_lookupStorage(program, name, TRUE))) {
+        result = cx_calloc(sizeof(cx_icMember_s));
+        cx_icStorage_init((cx_icStorage)result, program, line, CX_STORAGE_MEMBER, name, member->type->real);
+        result->base = base;
+        result->member = member;
+        cx_llAppend(program->scope->storages, result);
+    }
 
-	return result;
+    return result;
 }
 
 cx_icElement cx_icElement__create(cx_icProgram program, cx_uint32 line, cx_type type, cx_icStorage base, cx_icValue index) {
@@ -610,28 +610,28 @@ cx_icElement cx_icElement__create(cx_icProgram program, cx_uint32 line, cx_type 
 }
 
 cx_icLiteral cx_icLiteral__create(cx_icProgram program, cx_uint32 line, cx_value value, cx_type type) {
-	cx_icLiteral result;
+    cx_icLiteral result;
     if (!line) abort();
-	result = cx_calloc(sizeof(cx_icLiteral_s));
-	result->_parent._parent.kind = CX_IC_LITERAL;
-	result->_parent._parent.program = program;
-	result->_parent._parent.line = line;
-	result->value = value;
-	result->type = type;
-	cx_llAppend(program->literals, result);
-	return result;
+    result = cx_calloc(sizeof(cx_icLiteral_s));
+    result->_parent._parent.kind = CX_IC_LITERAL;
+    result->_parent._parent.program = program;
+    result->_parent._parent.line = line;
+    result->value = value;
+    result->type = type;
+    cx_llAppend(program->literals, result);
+    return result;
 }
 
 cx_icLabel cx_icLabel__create(cx_icProgram program, cx_uint32 line) {
-	cx_icLabel result;
+    cx_icLabel result;
     if (!line) abort();
-	result = cx_calloc(sizeof(cx_icLabel_s));
-	result->_parent._parent.kind = CX_IC_LABEL;
-	result->_parent._parent.line = line;
-	result->_parent._parent.program = program;
-	result->id = cx_llSize(program->labels);
-	cx_llAppend(program->labels, result);
-	return result;
+    result = cx_calloc(sizeof(cx_icLabel_s));
+    result->_parent._parent.kind = CX_IC_LABEL;
+    result->_parent._parent.line = line;
+    result->_parent._parent.program = program;
+    result->id = cx_llSize(program->labels);
+    cx_llAppend(program->labels, result);
+    return result;
 }
 
 cx_icFunction cx_icFunction__create(cx_icProgram program, cx_uint32 line, cx_function function) {
@@ -647,60 +647,60 @@ cx_icFunction cx_icFunction__create(cx_icProgram program, cx_uint32 line, cx_fun
 }
 
 cx_icDerefMode cx_icOp_derefMode(cx_icValue value) {
-	cx_icDerefMode result = CX_IC_DEREF_VALUE;
-	if (value && ((cx_ic)value)->kind == CX_IC_STORAGE) {
-		cx_icStorage s = (cx_icStorage)value;
-		s->used++;
-	}
-	return result;
+    cx_icDerefMode result = CX_IC_DEREF_VALUE;
+    if (value && ((cx_ic)value)->kind == CX_IC_STORAGE) {
+        cx_icStorage s = (cx_icStorage)value;
+        s->used++;
+    }
+    return result;
 }
 
 cx_icOp cx_icOp__create(cx_icProgram program, cx_uint32 line, cx_icOpKind kind, cx_icValue s1, cx_icValue s2, cx_icValue s3) {
-	cx_icOp result;
+    cx_icOp result;
     if (!line) abort();
-	result = cx_calloc(sizeof(cx_icOp_s));
-	result->_parent.kind = CX_IC_OP;
-	result->_parent.line = line;
-	result->_parent.program = program;
-	result->kind = kind;
-	result->s1 = s1;
-	result->s2 = s2;
-	result->s3 = s3;
+    result = cx_calloc(sizeof(cx_icOp_s));
+    result->_parent.kind = CX_IC_OP;
+    result->_parent.line = line;
+    result->_parent.program = program;
+    result->kind = kind;
+    result->s1 = s1;
+    result->s2 = s2;
+    result->s3 = s3;
 
-	/* The used-member is indicates whether an accumulator is used in an instruction. This is used
-	 * when inserting operations to release resources held by an accumulator.
-	 *
-	 * Based on the type of a storage the derefMode is set to the most commonly used value for such
-	 * an storage. An operation may override these initial values. */
-	result->s1Deref = cx_icOp_derefMode(s1);
-	result->s2Deref = cx_icOp_derefMode(s2);;
-	result->s3Deref = cx_icOp_derefMode(s3);;
-	result->s1Any = FALSE;
+    /* The used-member is indicates whether an accumulator is used in an instruction. This is used
+     * when inserting operations to release resources held by an accumulator.
+     *
+     * Based on the type of a storage the derefMode is set to the most commonly used value for such
+     * an storage. An operation may override these initial values. */
+    result->s1Deref = cx_icOp_derefMode(s1);
+    result->s2Deref = cx_icOp_derefMode(s2);;
+    result->s3Deref = cx_icOp_derefMode(s3);;
+    result->s1Any = FALSE;
 
-	cx_llAppend(program->ops, result);
-	return result;
+    cx_llAppend(program->ops, result);
+    return result;
 }
 
 cx_icScope cx_icScope__create(cx_icProgram program, cx_uint32 line, cx_icScope parent, cx_bool isFunction) {
-	cx_icScope result;
-	result = cx_calloc(sizeof(cx_icScope_s));
-	result->_parent.kind = CX_IC_SCOPE;
-	result->_parent.line = line;
-	result->parent = parent;
-	result->program = cx_llNew();
-	result->storages = cx_llNew();
+    cx_icScope result;
+    result = cx_calloc(sizeof(cx_icScope_s));
+    result->_parent.kind = CX_IC_SCOPE;
+    result->_parent.line = line;
+    result->parent = parent;
+    result->program = cx_llNew();
+    result->storages = cx_llNew();
     result->isFunction = isFunction;
-	cx_llAppend(program->scopes, result);
-	return result;
+    cx_llAppend(program->scopes, result);
+    return result;
 }
 
 void cx_icStorage__free(cx_icStorage _this) {
-	cx_dealloc(_this->name);
-	cx_dealloc(_this);
+    cx_dealloc(_this->name);
+    cx_dealloc(_this);
 }
 
 void cx_icLabel__free(cx_icLabel _this) {
-	cx_dealloc(_this);
+    cx_dealloc(_this);
 }
 
 void cx_icFunction__free(cx_icFunction _this) {
@@ -712,39 +712,39 @@ void cx_icLiteral__free(cx_icLiteral _this) {
 }
 
 void cx_icOp__free(cx_icOp _this) {
-	cx_dealloc(_this);
+    cx_dealloc(_this);
 }
 
 void cx_icScope__free(cx_icScope _this) {
-	cx_iter iter;
+    cx_iter iter;
 
-	iter = cx_llIter(_this->storages);
-	while(cx_iterHasNext(&iter)) {
-		cx_icStorage__free(cx_iterNext(&iter));
-	}
+    iter = cx_llIter(_this->storages);
+    while(cx_iterHasNext(&iter)) {
+        cx_icStorage__free(cx_iterNext(&iter));
+    }
 
-	cx_llFree(_this->storages);
-	cx_llFree(_this->program);
-	cx_dealloc(_this);
+    cx_llFree(_this->storages);
+    cx_llFree(_this->program);
+    cx_dealloc(_this);
 }
 
 void cx_icProgram__free(cx_icProgram _this) {
-	cx_iter iter;
+    cx_iter iter;
 
-	iter = cx_llIter(_this->storages);
-	while(cx_iterHasNext(&iter)) {
-		cx_icStorage__free(cx_iterNext(&iter));
-	}
+    iter = cx_llIter(_this->storages);
+    while(cx_iterHasNext(&iter)) {
+        cx_icStorage__free(cx_iterNext(&iter));
+    }
 
-	iter = cx_llIter(_this->labels);
-	while(cx_iterHasNext(&iter)) {
-		cx_icLabel__free(cx_iterNext(&iter));
-	}
+    iter = cx_llIter(_this->labels);
+    while(cx_iterHasNext(&iter)) {
+        cx_icLabel__free(cx_iterNext(&iter));
+    }
 
-	iter = cx_llIter(_this->scopes);
-	while(cx_iterHasNext(&iter)) {
-		cx_icScope__free(cx_iterNext(&iter));
-	}
+    iter = cx_llIter(_this->scopes);
+    while(cx_iterHasNext(&iter)) {
+        cx_icScope__free(cx_iterNext(&iter));
+    }
 
     iter = cx_llIter(_this->functions);
     while(cx_iterHasNext(&iter)) {
@@ -756,27 +756,27 @@ void cx_icProgram__free(cx_icProgram _this) {
         cx_icLiteral__free(cx_iterNext(&iter));
     }
 
-	iter = cx_llIter(_this->ops);
-	while(cx_iterHasNext(&iter)) {
-		cx_icOp__free(cx_iterNext(&iter));
-	}
+    iter = cx_llIter(_this->ops);
+    while(cx_iterHasNext(&iter)) {
+        cx_icOp__free(cx_iterNext(&iter));
+    }
 
 
-	cx_llFree(_this->ops);
-	cx_llFree(_this->storages);
-	cx_llFree(_this->labels);
-	cx_llFree(_this->functions);
-	cx_llFree(_this->literals);
-	cx_llFree(_this->scopes);
-	cx_dealloc(_this->filename);
-	cx_dealloc(_this);
+    cx_llFree(_this->ops);
+    cx_llFree(_this->storages);
+    cx_llFree(_this->labels);
+    cx_llFree(_this->functions);
+    cx_llFree(_this->literals);
+    cx_llFree(_this->scopes);
+    cx_dealloc(_this->filename);
+    cx_dealloc(_this);
 }
 
 cx_icAccumulator cx_icProgram_accumulatorPush(cx_icProgram _this, cx_uint32 line, cx_type type, cx_bool isReference) {
-	_this->accumulatorStack[_this->accumulatorId] = cx_icAccumulator__create(_this, line, type ? type : cx_void_o, _this->accumulatorId);
+    _this->accumulatorStack[_this->accumulatorId] = cx_icAccumulator__create(_this, line, type ? type : cx_void_o, _this->accumulatorId);
     ((cx_icStorage)_this->accumulatorStack[_this->accumulatorId])->isReference = isReference;
     _this->accumulatorId++;
-	return _this->accumulatorStack[_this->accumulatorId-1];
+    return _this->accumulatorStack[_this->accumulatorId-1];
 }
 
 static void cx_icStorageFree(cx_icProgram _this, cx_icStorage storage, cx_uint32 line) {
@@ -797,7 +797,7 @@ void cx_icProgram_accumulatorPop(cx_icProgram _this, cx_uint32 line) {
     CX_UNUSED(line);
     cx_icStorage acc;
     
-	_this->accumulatorId--;
+    _this->accumulatorId--;
     acc = (cx_icStorage)_this->accumulatorStack[_this->accumulatorId];
     
     if (((cx_icStorage)acc)->holdsReturn) {
@@ -806,11 +806,11 @@ void cx_icProgram_accumulatorPop(cx_icProgram _this, cx_uint32 line) {
 }
 
 cx_icScope cx_icProgram_scopePush(cx_icProgram _this, cx_uint32 line) {
-	_this->scope = cx_icScope__create(_this, line, _this->scope, FALSE);
-	if (_this->scope->parent) {
-		cx_llAppend(_this->scope->parent->program, _this->scope);
-	}
-	return _this->scope;
+    _this->scope = cx_icScope__create(_this, line, _this->scope, FALSE);
+    if (_this->scope->parent) {
+        cx_llAppend(_this->scope->parent->program, _this->scope);
+    }
+    return _this->scope;
 }
 
 cx_icScope cx_icProgram_functionPush(cx_icProgram _this, cx_uint32 line, cx_function function) {
@@ -842,9 +842,9 @@ void cx_icProgram_scopePop(cx_icProgram _this, cx_uint32 line) {
         }
     }
 
-	if (_this->scope->parent) {
-		_this->scope = _this->scope->parent;
-	}
+    if (_this->scope->parent) {
+        _this->scope = _this->scope->parent;
+    }
 }
 
 void cx_icProgram_addIc(cx_icProgram program, cx_ic ic) {
@@ -853,7 +853,7 @@ void cx_icProgram_addIc(cx_icProgram program, cx_ic ic) {
             program->errors++;
         }
     }
-	cx_llAppend(program->scope->program, ic);
+    cx_llAppend(program->scope->program, ic);
 }
 
 void cx_icScope_addIc(cx_icScope scope, cx_ic ic) {
@@ -862,35 +862,35 @@ void cx_icScope_addIc(cx_icScope scope, cx_ic ic) {
 
 cx_icOpKind cx_icOpKindFromOperator(cx_operatorKind operator) {
 
-	switch(operator) {
-	case CX_ASSIGN: return CX_IC_SET;
-	case CX_ADD: return CX_IC_ADD;
-	case CX_SUB: return CX_IC_SUB;
-	case CX_MUL: return CX_IC_MUL;
-	case CX_DIV: return CX_IC_DIV;
-	case CX_MOD: return CX_IC_MOD;
-	case CX_INC: return CX_IC_INC;
-	case CX_DEC: return CX_IC_DEC;
-	case CX_XOR: return CX_IC_XOR;
-	case CX_OR: return CX_IC_OR;
-	case CX_AND: return CX_IC_AND;
-	case CX_NOT: return CX_IC_NOT;
-	case CX_SHIFT_LEFT: return CX_IC_SHIFT_LEFT;
-	case CX_SHIFT_RIGHT: return CX_IC_SHIFT_RIGHT;
-	case CX_COND_OR: return CX_IC_COND_OR;
-	case CX_COND_AND: return CX_IC_COND_AND;
-	case CX_COND_NOT: return CX_IC_COND_NOT;
-	case CX_COND_EQ: return CX_IC_COND_EQ;
-	case CX_COND_NEQ: return CX_IC_COND_NEQ;
-	case CX_COND_GT: return CX_IC_COND_GT;
-	case CX_COND_LT: return CX_IC_COND_LT;
-	case CX_COND_GTEQ: return CX_IC_COND_GTEQ;
-	case CX_COND_LTEQ: return CX_IC_COND_LTEQ;
-	default:
-		cx_assert(0, "invalid operatorkind (%d)", operator);
-		break;
-	}
-	return CX_IC_SET;
+    switch(operator) {
+    case CX_ASSIGN: return CX_IC_SET;
+    case CX_ADD: return CX_IC_ADD;
+    case CX_SUB: return CX_IC_SUB;
+    case CX_MUL: return CX_IC_MUL;
+    case CX_DIV: return CX_IC_DIV;
+    case CX_MOD: return CX_IC_MOD;
+    case CX_INC: return CX_IC_INC;
+    case CX_DEC: return CX_IC_DEC;
+    case CX_XOR: return CX_IC_XOR;
+    case CX_OR: return CX_IC_OR;
+    case CX_AND: return CX_IC_AND;
+    case CX_NOT: return CX_IC_NOT;
+    case CX_SHIFT_LEFT: return CX_IC_SHIFT_LEFT;
+    case CX_SHIFT_RIGHT: return CX_IC_SHIFT_RIGHT;
+    case CX_COND_OR: return CX_IC_COND_OR;
+    case CX_COND_AND: return CX_IC_COND_AND;
+    case CX_COND_NOT: return CX_IC_COND_NOT;
+    case CX_COND_EQ: return CX_IC_COND_EQ;
+    case CX_COND_NEQ: return CX_IC_COND_NEQ;
+    case CX_COND_GT: return CX_IC_COND_GT;
+    case CX_COND_LT: return CX_IC_COND_LT;
+    case CX_COND_GTEQ: return CX_IC_COND_GTEQ;
+    case CX_COND_LTEQ: return CX_IC_COND_LTEQ;
+    default:
+        cx_assert(0, "invalid operatorkind (%d)", operator);
+        break;
+    }
+    return CX_IC_SET;
 }
 
 

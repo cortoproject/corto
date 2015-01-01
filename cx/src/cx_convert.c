@@ -105,7 +105,7 @@ CX_DECL_TRANSFORM(string, string) {
     if (*(cx_string*)from) {
         *(cx_string*)to = cx_strdup(*(cx_string*)from);
     } else {
-    	*(cx_string*)to = NULL;
+        *(cx_string*)to = NULL;
     }
     return 0;
 }
@@ -216,28 +216,28 @@ CX_DECL_TRANSFORM(bitmask, string) {
     length = 1; /* 0-terminator */
 
 
-	for(i=0; i<cx_enum(fromType)->constants.length;i++) {
-		constant = cx_enum(fromType)->constants.buffer[i];
-		cv = *(cx_constant*)constant;
+    for(i=0; i<cx_enum(fromType)->constants.length;i++) {
+        constant = cx_enum(fromType)->constants.buffer[i];
+        cv = *(cx_constant*)constant;
 
-		if ((((cv & v) == cv) && cv) || !(cv | v)) {
-			length += strlen(cx_nameof(constant));
-			if (!result) {
-				result = cx_realloc(result, length);
-				*result = '\0';
-			} else {
-				length+=1;
-				result = cx_realloc(result, length);
-				strcat(result, "|");
-			}
+        if ((((cv & v) == cv) && cv) || !(cv | v)) {
+            length += strlen(cx_nameof(constant));
+            if (!result) {
+                result = cx_realloc(result, length);
+                *result = '\0';
+            } else {
+                length+=1;
+                result = cx_realloc(result, length);
+                strcat(result, "|");
+            }
 
-			strcat(result, cx_nameof(constant));
-		}
-	}
+            strcat(result, cx_nameof(constant));
+        }
+    }
 
-	if (!result) {
-		result = cx_strdup("0");
-	}
+    if (!result) {
+        result = cx_strdup("0");
+    }
 
     *(cx_string*)to = result;
 
@@ -374,7 +374,7 @@ CX_CONVERT_FROM_STR_FLOAT(float64)
 
 /* All numeric conversion slots */
 #define CX_CONVERT_INIT_NUM_ALL(kind, width, type)\
-	CX_CONVERT_INIT_NUM(kind, width, CX_BOOLEAN, CX_WIDTH_8, type, bool);\
+    CX_CONVERT_INIT_NUM(kind, width, CX_BOOLEAN, CX_WIDTH_8, type, bool);\
     CX_CONVERT_INIT_NUM(kind, width, CX_BINARY, CX_WIDTH_8, type, uint8);\
     CX_CONVERT_INIT_NUM(kind, width, CX_BINARY, CX_WIDTH_16, type, uint16);\
     CX_CONVERT_INIT_NUM(kind, width, CX_BINARY, CX_WIDTH_32, type, uint32);\
@@ -397,7 +397,7 @@ CX_CONVERT_FROM_STR_FLOAT(float64)
 
 /* Numeric conversion slots for integers */
 #define CX_CONVERT_INIT_NUM_INT(kind, width, type)\
-	CX_CONVERT_INIT_NUM(kind, width, CX_BOOLEAN, CX_WIDTH_8, type, bool);\
+    CX_CONVERT_INIT_NUM(kind, width, CX_BOOLEAN, CX_WIDTH_8, type, bool);\
     CX_CONVERT_INIT_NUM(kind, width, CX_BINARY, CX_WIDTH_8, type, uint8);\
     CX_CONVERT_INIT_NUM(kind, width, CX_BINARY, CX_WIDTH_16, type, uint16);\
     CX_CONVERT_INIT_NUM(kind, width, CX_BINARY, CX_WIDTH_32, type, uint32);\
@@ -421,14 +421,14 @@ CX_CONVERT_FROM_STR_FLOAT(float64)
 /* Init conversions */
 void cx_convertInit(void) {
     CX_CONVERT_INIT_NUM_INT(CX_BOOLEAN, CX_WIDTH_8, bool);
-	CX_CONVERT_INIT_NUM_INT(CX_BINARY, CX_WIDTH_8, uint8);
-	CX_CONVERT_INIT_NUM_INT(CX_BINARY, CX_WIDTH_16, int16);
-	CX_CONVERT_INIT_NUM_INT(CX_BINARY, CX_WIDTH_32, uint32);
-	CX_CONVERT_INIT_NUM_INT(CX_BINARY, CX_WIDTH_64, uint64);
-	CX_CONVERT_INIT_NUM_ALL(CX_BINARY, CX_WIDTH_WORD, word);
-	CX_CONVERT_INIT_NUM_INT(CX_CHARACTER, CX_WIDTH_8, char8);
-	CX_CONVERT_INIT_NUM_INT(CX_INTEGER, CX_WIDTH_8, int8);
-	CX_CONVERT_INIT_NUM_INT(CX_INTEGER, CX_WIDTH_16, int16);
+    CX_CONVERT_INIT_NUM_INT(CX_BINARY, CX_WIDTH_8, uint8);
+    CX_CONVERT_INIT_NUM_INT(CX_BINARY, CX_WIDTH_16, int16);
+    CX_CONVERT_INIT_NUM_INT(CX_BINARY, CX_WIDTH_32, uint32);
+    CX_CONVERT_INIT_NUM_INT(CX_BINARY, CX_WIDTH_64, uint64);
+    CX_CONVERT_INIT_NUM_ALL(CX_BINARY, CX_WIDTH_WORD, word);
+    CX_CONVERT_INIT_NUM_INT(CX_CHARACTER, CX_WIDTH_8, char8);
+    CX_CONVERT_INIT_NUM_INT(CX_INTEGER, CX_WIDTH_8, int8);
+    CX_CONVERT_INIT_NUM_INT(CX_INTEGER, CX_WIDTH_16, int16);
     CX_CONVERT_INIT_NUM_INT(CX_INTEGER, CX_WIDTH_32, int32);
     CX_CONVERT_INIT_NUM_INT(CX_INTEGER, CX_WIDTH_64, int64);
     CX_CONVERT_INIT_NUM_INT(CX_INTEGER, CX_WIDTH_WORD, intptr);

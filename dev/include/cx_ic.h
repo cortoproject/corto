@@ -18,86 +18,86 @@ extern "C" {
 #endif
 
 typedef enum cx_icOpKind {
-	/* Set (assign) */
-	CX_IC_SET,
+    /* Set (assign) */
+    CX_IC_SET,
 
-	/* Cast */
-	CX_IC_CAST,
+    /* Cast */
+    CX_IC_CAST,
 
-	/* String concatenation */
-	CX_IC_STRCAT,
-	CX_IC_STRCPY,
+    /* String concatenation */
+    CX_IC_STRCAT,
+    CX_IC_STRCPY,
 
-	/* Memory management */
-	CX_IC_NEW,
-	CX_IC_DEFINE,
-	CX_IC_FREE,
-	CX_IC_KEEP,
+    /* Memory management */
+    CX_IC_NEW,
+    CX_IC_DEFINE,
+    CX_IC_FREE,
+    CX_IC_KEEP,
 
-	/* Notifications */
-	CX_IC_UPDATE,
-	CX_IC_UPDATEBEGIN,
-	CX_IC_UPDATEEND,
-	CX_IC_UPDATECANCEL,
+    /* Notifications */
+    CX_IC_UPDATE,
+    CX_IC_UPDATEBEGIN,
+    CX_IC_UPDATEEND,
+    CX_IC_UPDATECANCEL,
 
-	/* Waiting */
-	CX_IC_WAITFOR,
-	CX_IC_WAIT,
+    /* Waiting */
+    CX_IC_WAITFOR,
+    CX_IC_WAIT,
 
-	/* Operators */
-	CX_IC_ADD,
-	CX_IC_SUB,
-	CX_IC_MUL,
-	CX_IC_DIV,
-	CX_IC_MOD,
-	CX_IC_INC,
-	CX_IC_DEC,
-	CX_IC_XOR,
-	CX_IC_OR,
-	CX_IC_AND,
-	CX_IC_NOT,
-	CX_IC_SHIFT_LEFT,
-	CX_IC_SHIFT_RIGHT,
-	CX_IC_STAGE1,
-	CX_IC_STAGE2,
-	CX_IC_COND_OR,
-	CX_IC_COND_AND,
-	CX_IC_COND_NOT,
-	CX_IC_COND_EQ,
-	CX_IC_COND_NEQ,
-	CX_IC_COND_GT,
-	CX_IC_COND_LT,
-	CX_IC_COND_GTEQ,
-	CX_IC_COND_LTEQ,
+    /* Operators */
+    CX_IC_ADD,
+    CX_IC_SUB,
+    CX_IC_MUL,
+    CX_IC_DIV,
+    CX_IC_MOD,
+    CX_IC_INC,
+    CX_IC_DEC,
+    CX_IC_XOR,
+    CX_IC_OR,
+    CX_IC_AND,
+    CX_IC_NOT,
+    CX_IC_SHIFT_LEFT,
+    CX_IC_SHIFT_RIGHT,
+    CX_IC_STAGE1,
+    CX_IC_STAGE2,
+    CX_IC_COND_OR,
+    CX_IC_COND_AND,
+    CX_IC_COND_NOT,
+    CX_IC_COND_EQ,
+    CX_IC_COND_NEQ,
+    CX_IC_COND_GT,
+    CX_IC_COND_LT,
+    CX_IC_COND_GTEQ,
+    CX_IC_COND_LTEQ,
 
-	/* Program control */
-	CX_IC_JUMP,
-	CX_IC_JEQ,
-	CX_IC_JNEQ,
-	CX_IC_STOP,
+    /* Program control */
+    CX_IC_JUMP,
+    CX_IC_JEQ,
+    CX_IC_JNEQ,
+    CX_IC_STOP,
 
-	/* Function calls */
-	CX_IC_PUSH,
-	CX_IC_CALL,
-	CX_IC_RET
+    /* Function calls */
+    CX_IC_PUSH,
+    CX_IC_CALL,
+    CX_IC_RET
 }cx_icOpKind;
 
 /* Intermediate structures */
 typedef enum cx_icKind {
-	CX_IC_STORAGE,
-	CX_IC_LITERAL,
-	CX_IC_LABEL,
-	CX_IC_FUNCTION,
-	CX_IC_OP,
-	CX_IC_SCOPE
+    CX_IC_STORAGE,
+    CX_IC_LITERAL,
+    CX_IC_LABEL,
+    CX_IC_FUNCTION,
+    CX_IC_OP,
+    CX_IC_SCOPE
 }cx_icKind;
 
 typedef enum cx_icStorageKind {
-	CX_STORAGE_OBJECT,
-	CX_STORAGE_LOCAL,
-	CX_STORAGE_ACCUMULATOR,
-	CX_STORAGE_MEMBER,
-	CX_STORAGE_ELEMENT
+    CX_STORAGE_OBJECT,
+    CX_STORAGE_LOCAL,
+    CX_STORAGE_ACCUMULATOR,
+    CX_STORAGE_MEMBER,
+    CX_STORAGE_ELEMENT
 }cx_icStorageKind;
 
 typedef struct cx_ic_s *cx_ic;
@@ -116,13 +116,13 @@ typedef struct cx_icScope_s *cx_icScope;
 typedef struct cx_icProgram_s *cx_icProgram;
 
 typedef struct cx_ic_s {
-	cx_icKind kind;
-	cx_icProgram program;
-	cx_uint32 line;
+    cx_icKind kind;
+    cx_icProgram program;
+    cx_uint32 line;
 }cx_ic_s;
 
 typedef struct cx_icValue_s {
-	cx_ic_s _parent;
+    cx_ic_s _parent;
 }cx_icValue_s;
 
 typedef enum cx_icDerefMode {
@@ -132,11 +132,11 @@ typedef enum cx_icDerefMode {
 }cx_icDerefMode;
 
 typedef struct cx_icStorage_s {
-	cx_icValue_s _parent;
-	cx_icStorageKind kind;
-	cx_string name;
-	cx_type type;
-	cx_bool isReference; /* Is the storage a reference */
+    cx_icValue_s _parent;
+    cx_icStorageKind kind;
+    cx_string name;
+    cx_type type;
+    cx_bool isReference; /* Is the storage a reference */
     cx_uint32 used; /* Count how many times value is used in program */
     cx_bool holdsReturn; /* If accumulator holds returnvalue, it potentially holds resources */
 }cx_icStorage_s;
@@ -172,14 +172,14 @@ typedef struct cx_icAccumulator_s {
 }cx_icAccumulator_s;
 
 typedef struct cx_icLiteral_s {
-	cx_icValue_s _parent;
-	cx_value value;
-	cx_type type;
+    cx_icValue_s _parent;
+    cx_value value;
+    cx_type type;
 }cx_icLiteral_s;
 
 typedef struct cx_icLabel_s {
-	cx_icValue_s _parent;
-	cx_uint32 id;
+    cx_icValue_s _parent;
+    cx_uint32 id;
 }cx_icLabel_s;
 
 typedef struct cx_icFunction_s {
@@ -188,39 +188,39 @@ typedef struct cx_icFunction_s {
 }cx_icFunction_s;
 
 typedef struct cx_icOp_s {
-	cx_ic_s _parent;
-	cx_icOpKind kind;
-	cx_icValue s1;
-	cx_icValue s2;
-	cx_icValue s3;
-	/* If VALUE, storage will be interpreted as value. PVALUE will interpret value of storage. PPVALUE will interpret value of address in storage. */
-	cx_icDerefMode s1Deref;
-	cx_icDerefMode s2Deref;
-	cx_icDerefMode s3Deref;
-	/* If s1Any, treat s1 as an any-value */
-	cx_bool s1Any;
+    cx_ic_s _parent;
+    cx_icOpKind kind;
+    cx_icValue s1;
+    cx_icValue s2;
+    cx_icValue s3;
+    /* If VALUE, storage will be interpreted as value. PVALUE will interpret value of storage. PPVALUE will interpret value of address in storage. */
+    cx_icDerefMode s1Deref;
+    cx_icDerefMode s2Deref;
+    cx_icDerefMode s3Deref;
+    /* If s1Any, treat s1 as an any-value */
+    cx_bool s1Any;
 }cx_icOp_s;
 
 typedef struct cx_icScope_s {
-	cx_ic_s _parent;
-	cx_icScope parent;
-	cx_ll storages; /* Stores accumulators and local variables */
-	cx_ll program;
-	cx_bool isFunction;
+    cx_ic_s _parent;
+    cx_icScope parent;
+    cx_ll storages; /* Stores accumulators and local variables */
+    cx_ll program;
+    cx_bool isFunction;
 }cx_icScope_s;
 
 typedef struct cx_icProgram_s {
-	cx_ll storages; /* Stores objects */
-	cx_ll scopes;
-	cx_ll labels;
-	cx_ll functions;
-	cx_ll literals;
-	cx_ll ops;
-	cx_string filename;
-	cx_uint32 labelCount;
-	cx_uint32 accumulatorId;
-	cx_icAccumulator accumulatorStack[256];
-	cx_icScope scope;
+    cx_ll storages; /* Stores objects */
+    cx_ll scopes;
+    cx_ll labels;
+    cx_ll functions;
+    cx_ll literals;
+    cx_ll ops;
+    cx_string filename;
+    cx_uint32 labelCount;
+    cx_uint32 accumulatorId;
+    cx_icAccumulator accumulatorStack[256];
+    cx_icScope scope;
     cx_int32 errors;
 }cx_icProgram_s;
 
@@ -238,12 +238,12 @@ cx_vmProgram cx_icProgram_toVm(cx_icProgram program);
 
 /* Storages */
 void cx_icStorage_init(
-		cx_icStorage storage,
-		cx_icProgram program,
-		cx_uint32 line,
-		cx_icStorageKind kind,
-		cx_string name,
-		cx_type type);
+        cx_icStorage storage,
+        cx_icProgram program,
+        cx_uint32 line,
+        cx_icStorageKind kind,
+        cx_string name,
+        cx_type type);
 cx_icObject cx_icObject__create(cx_icProgram program, cx_uint32 line, cx_object object);
 cx_icLocal cx_icLocal__create(cx_icProgram program, cx_uint32 line, cx_string name, cx_type type, cx_bool isParameter, cx_bool isReturn, cx_bool declare);
 cx_icAccumulator cx_icAccumulator__create(cx_icProgram program, cx_uint32 line, cx_type type, cx_uint32 accumulatorId);

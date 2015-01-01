@@ -1,21 +1,21 @@
 bool result : true
 
 class Point::
-	member x, y : int32
+    member x, y : int32
 
 string testname : "tc_addressing03"
 void fail(string msg): 
-	"$testname: FAIL: $msg"
-	result = false
+    "$testname: FAIL: $msg"
+    result = false
 
 void test(Point value, int32 x, int32 y, string msg):
-	if value.x != x: fail("$msg (x = ${value.x})")
-	if value.y != y: fail("$msg (y = ${value.y})")
-		
+    if value.x != x: fail("$msg (x = ${value.x})")
+    if value.y != y: fail("$msg (y = ${value.y})")
+        
 void testref(Point value, int32 x, int32 y, string msg):
-	if value.x != x: fail("$msg (x = ${value.x})")
-	if value.y != y: fail("$msg (y = ${value.y})")
-	test(value, x, y, "$msg (passthrough)")
+    if value.x != x: fail("$msg (x = ${value.x})")
+    if value.y != y: fail("$msg (y = ${value.y})")
+    test(value, x, y, "$msg (passthrough)")
 
 Point p1, p2:
 

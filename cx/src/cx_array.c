@@ -12,26 +12,26 @@
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::array::construct(lang::array object) */
 cx_int16 cx_array_construct(cx_array object) {
 /* $begin(::cortex::lang::array::construct) */
-	cx_uint32 elementTypeSize;
-	cx_type elementType;
+    cx_uint32 elementTypeSize;
+    cx_type elementType;
   
-	/* Copy array::elementType to collection::elementType, transfer ownership of reference. */
-	if (object->elementType) {
+    /* Copy array::elementType to collection::elementType, transfer ownership of reference. */
+    if (object->elementType) {
         if (!cx_collection(object)->elementType) {
             cx_keep_ext(object, object->elementType, "Keep elementType for array");
-    		cx_collection(object)->elementType = object->elementType;
+            cx_collection(object)->elementType = object->elementType;
         }
-	} else if (cx_collection(object)->elementType) {
+    } else if (cx_collection(object)->elementType) {
         if (!object->elementType) {
             cx_keep_ext(object, cx_collection(object)->elementType, "Keep elementType for array");
-    		object->elementType = cx_collection(object)->elementType;
+            object->elementType = cx_collection(object)->elementType;
         }
-	} else {
-		cx_error("array::construct: no elementType provided for array");
-		goto error;
-	}
+    } else {
+        cx_error("array::construct: no elementType provided for array");
+        goto error;
+    }
 
-	/* Arrays can only be defined when their elementType is also defined. */
+    /* Arrays can only be defined when their elementType is also defined. */
    if (!cx_checkState((cx_collection(object)->elementType), CX_DEFINED)) {
        if (!(cx_instanceof(cx_typedef(cx_type_o), cx_collection(object)->elementType) && cx_type(cx_collection(object)->elementType)->reference)) {
             cx_id id;
@@ -43,25 +43,25 @@ cx_int16 cx_array_construct(cx_array object) {
    elementType = cx_collection(object)->elementType->real;
 
    /* Calculate the size of the array */
-	elementTypeSize = cx_type_sizeof(elementType);
-	if (elementTypeSize) {
-	    if (cx_collection(object)->max) {
+    elementTypeSize = cx_type_sizeof(elementType);
+    if (elementTypeSize) {
+        if (cx_collection(object)->max) {
             cx_type(object)->size = elementTypeSize * cx_collection(object)->max;
             cx_type(object)->alignment = cx_type_alignmentof(elementType);
-	    } else {
-	        cx_id id;
-	        cx_error("array::construct: invalid array '%s' with size '0'.", cx_fullname(object, id));
-	        goto error;
-	    }
-	} else {
-		cx_id id1, id2;
-		cx_error("array::construct: elementType '%s' of arraytype '%s' has size 0", cx_fullname(elementType, id1), cx_fullname(object, id2));
-		goto error;
-	}
+        } else {
+            cx_id id;
+            cx_error("array::construct: invalid array '%s' with size '0'.", cx_fullname(object, id));
+            goto error;
+        }
+    } else {
+        cx_id id1, id2;
+        cx_error("array::construct: elementType '%s' of arraytype '%s' has size 0", cx_fullname(elementType, id1), cx_fullname(object, id2));
+        goto error;
+    }
 
-	return cx_type_construct(cx_type(object));
+    return cx_type_construct(cx_type(object));
 error:
-	return -1;
+    return -1;
 /* $end */
 }
 

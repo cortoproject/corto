@@ -27,16 +27,16 @@ int main(int argc, char* argv[]) {
                 CX_DEBUG_ENABLED = TRUE;
             }
         } else
-    	if (!strstr(argv[i], ".cx")) {
+        if (!strstr(argv[i], ".cx")) {
             sprintf(filename, "%s.cx", argv[i]);
             if (cx_load(filename)) {
-            	cx_error("failed to load file '%s'", argv[i]);
+                cx_error("failed to load file '%s'", argv[i]);
             }
-    	} else {
-    		if (cx_load(argv[i])) {
-    			cx_error("failed to load file '%s'", argv[i]);
-    		}
-    	}
+        } else {
+            if (cx_load(argv[i])) {
+                cx_error("failed to load file '%s'", argv[i]);
+            }
+        }
     }
 
     /* Stop database */

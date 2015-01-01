@@ -1,7 +1,7 @@
 bool result : true
 void fail(string msg):
-	"tc_string01: FAIL: $msg"
-	result = false
+    "tc_string01: FAIL: $msg"
+    result = false
 
 // Compare string literals
 if "aaa" != "aaa": fail("\"aaa\" != \"aaa\"")
@@ -55,4 +55,4 @@ if m.toString() != "'x'":        fail("char toString() failed ($m)")
 if n.toString() != "\"foo\"":    fail("string toString() failed ($n)")
 
 if result: "tc_string01: OK"
-	
+    

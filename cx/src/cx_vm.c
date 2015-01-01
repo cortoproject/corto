@@ -44,16 +44,16 @@ typedef struct cx_currentProgramData {
 /* TLS structure for cx_stringConcatCacheKey */
 typedef struct cx_stringConcatCacheNode {
     cx_vmProgram program;
-	cx_string str;
-	cx_uint32 length;
+    cx_string str;
+    cx_uint32 length;
 }cx_stringConcatCacheNode;
 
 typedef struct cx_stringConcatCache {
-	cx_stringConcatCacheNode staged[256]; /* Limit the amount of allocations required for a
-											 stringconcatenation involving multiple elements
-											 with a factor 256 */
-	cx_uint32 count;
-	cx_uint32 length;
+    cx_stringConcatCacheNode staged[256]; /* Limit the amount of allocations required for a
+                                             stringconcatenation involving multiple elements
+                                             with a factor 256 */
+    cx_uint32 count;
+    cx_uint32 length;
 }cx_stringConcatCache;
 
 /* Translation */
@@ -69,16 +69,16 @@ typedef struct cx_stringConcatCache {
 #define fetchDbl() c.dbl = *(cx_int64*)&c.pc->lo
 
 /** Instruction postfixes
- * B	byte   (8 byte)
- * S	short  (16 bit)
- * L	long   (word)
- * D	double (64 bit)
+ * B    byte   (8 byte)
+ * S    short  (16 bit)
+ * L    long   (word)
+ * D    double (64 bit)
  *
- * V	value
- * R	register (addressed by 8 bit operand)
- * P	pointer  (word)
- * Q	pointer  (stored in registry, addressed by 8 bit operand)
- * L	label	 (only used in jump-instructions)
+ * V    value
+ * R    register (addressed by 8 bit operand)
+ * P    pointer  (word)
+ * Q    pointer  (stored in registry, addressed by 8 bit operand)
+ * L    label     (only used in jump-instructions)
  */
 
 /* Instruction implementation templates */
@@ -86,15 +86,15 @@ typedef struct cx_stringConcatCache {
         fetch_##code;\
 
 #define fetchOp2(op,code)\
-		fetch_##code;\
+        fetch_##code;\
         fetch1_##code;\
         fetch2_##code;\
 
 #define fetchOp3(op,code)\
-		fetch_##code;\
-		fetch1_##code;\
-		fetch2_##code;\
-		fetch3_##code;\
+        fetch_##code;\
+        fetch1_##code;\
+        fetch2_##code;\
+        fetch3_##code;\
 
 /* Set */
 #define SET(type,code)\
@@ -111,35 +111,35 @@ typedef struct cx_stringConcatCache {
     next();\
 
 #define SETSTR(type,code)\
-	SETSTR_##code:\
-    	fetchOp2(SETSTR,code);\
-    	if (op1_##code) cx_dealloc((cx_string)op1_##code);\
-    	op1_##code = op2_##code;\
-    	next();\
+    SETSTR_##code:\
+        fetchOp2(SETSTR,code);\
+        if (op1_##code) cx_dealloc((cx_string)op1_##code);\
+        op1_##code = op2_##code;\
+        next();\
 
 #define SETSTRDUP(type,code)\
-	SETSTRDUP_##code:\
-    	fetchOp2(SETSTRDUP,code);\
-    	if (op1_##code) cx_dealloc((cx_string)op1_##code);\
-    	if (op2_##code) {\
-    		op1_##code = (W_t)cx_strdup((cx_string)op2_##code);\
-    	} else {\
-    		op1_##code = 0;\
-    	}\
-    	next();\
+    SETSTRDUP_##code:\
+        fetchOp2(SETSTRDUP,code);\
+        if (op1_##code) cx_dealloc((cx_string)op1_##code);\
+        if (op2_##code) {\
+            op1_##code = (W_t)cx_strdup((cx_string)op2_##code);\
+        } else {\
+            op1_##code = 0;\
+        }\
+        next();\
 
 /* Inc & dec */
 #define INC(type,code)\
-	INC_##code:\
-		fetchOp1(INC,code);\
-		++ op_##code;\
-		next();\
+    INC_##code:\
+        fetchOp1(INC,code);\
+        ++ op_##code;\
+        next();\
 
 #define DEC(type,code)\
-	DEC_##code:\
-		fetchOp1(DEC,code);\
-		-- op_##code;\
-		next();\
+    DEC_##code:\
+        fetchOp1(DEC,code);\
+        -- op_##code;\
+        next();\
 
 /* Integer arithmetic */
 #define ADDI(type,code)\
@@ -178,29 +178,29 @@ typedef double Df_t;
 
 /* Union for converting between int-operand and float */
 typedef union Li2f_t {
-	L_t _i;
-	Lf_t _f;
+    L_t _i;
+    Lf_t _f;
 }Li2f_t;
 
 typedef union Di2f_t {
-	D_t _i;
-	Df_t _f;
+    D_t _i;
+    Df_t _f;
 }Di2f_t;
 
 #define ADDF(type,code)\
     ADDF_##code: {\
-		type##i2f_t u;\
-		fetchOp2(ADDF,code);\
-		u._i = op2_##code;\
+        type##i2f_t u;\
+        fetchOp2(ADDF,code);\
+        u._i = op2_##code;\
         *(type##f_t*)&op1_##code += u._f;\
         next();\
     }\
 
 #define SUBF(type,code)\
     SUBF_##code: {\
-		type##i2f_t u;\
-		fetchOp2(SUBF,code);\
-		u._i = op2_##code;\
+        type##i2f_t u;\
+        fetchOp2(SUBF,code);\
+        u._i = op2_##code;\
         *(type##f_t*)&op1_##code -= u._f;\
         next();\
     }\
@@ -216,12 +216,12 @@ typedef union Di2f_t {
 
 #define DIVF(type,code)\
     DIVF_##code: {\
-		type##i2f_t u;\
-		fetchOp2(DIVF,code);\
-		u._i = op2_##code;\
+        type##i2f_t u;\
+        fetchOp2(DIVF,code);\
+        u._i = op2_##code;\
         *(type##f_t*)&op1_##code /= u._f;\
         next();\
-	}\
+    }\
 
 /* Bitwise operators */
 #define AND(type,code)\
@@ -250,10 +250,10 @@ typedef union Di2f_t {
 
 /* Staging */
 #define STAGE1(type,code)\
-	STAGE1_##code:\
-		fetchOp1(STAGE1,code);\
-		stage1_##type = op_##code;\
-		next();\
+    STAGE1_##code:\
+        fetchOp1(STAGE1,code);\
+        stage1_##type = op_##code;\
+        next();\
 
 /* Staging */
 #define STAGE12(type,code)\
@@ -266,43 +266,43 @@ typedef union Di2f_t {
     }\
 
 #define STAGE2(type,code)\
-	STAGE2_##code: {\
-		fetchOp2(STAGE2,code);\
+    STAGE2_##code: {\
+        fetchOp2(STAGE2,code);\
         type##_t tmp1 = op1_##code;\
-		stage2_##type = op2_##code;\
+        stage2_##type = op2_##code;\
         stage1_##type = tmp1;\
-		next();\
+        next();\
     }\
 
 
 /* Expand compare operators for all stagetypes */
 #define COND_OP_STAGETYPE(op, type, code, stageType, operator, cast)\
-	op##_##code: \
-		fetchOp1(op,code);\
-		op_##code = (cast)stage1_##stageType operator (cast)stage2_##stageType;\
-		next();\
+    op##_##code: \
+        fetchOp1(op,code);\
+        op_##code = (cast)stage1_##stageType operator (cast)stage2_##stageType;\
+        next();\
 
 #define COND_OP_LD(op,type,code,operator,sign)\
-	COND_OP_STAGETYPE(op##L,type,code,L,operator,L##sign##_t)\
-	COND_OP_STAGETYPE(op##D,type,code,D,operator,D##sign##_t)
+    COND_OP_STAGETYPE(op##L,type,code,L,operator,L##sign##_t)\
+    COND_OP_STAGETYPE(op##D,type,code,D,operator,D##sign##_t)
 
 #define COND_OP(op,type,code,operator,sign)\
-	COND_OP_STAGETYPE(op##B,type,code,B,operator,B##sign##_t)\
-	COND_OP_STAGETYPE(op##S,type,code,S,operator,S##sign##_t)\
-	COND_OP_LD(op,type,code,operator,sign)\
+    COND_OP_STAGETYPE(op##B,type,code,B,operator,B##sign##_t)\
+    COND_OP_STAGETYPE(op##S,type,code,S,operator,S##sign##_t)\
+    COND_OP_LD(op,type,code,operator,sign)\
 
 
 #define COND_OP1_STAGETYPE(op, type, code, stageType, operator)\
-	op##_##code:\
-		fetchOp1(op,code);\
-		op_##code = operator stage1_##stageType;\
-		next();\
+    op##_##code:\
+        fetchOp1(op,code);\
+        op_##code = operator stage1_##stageType;\
+        next();\
 
 #define COND_OP1(op,type,code,operator)\
-	COND_OP1_STAGETYPE(op##B,type,code,B,operator)\
-	COND_OP1_STAGETYPE(op##S,type,code,S,operator)\
-	COND_OP1_STAGETYPE(op##L,type,code,L,operator)\
-	COND_OP1_STAGETYPE(op##D,type,code,D,operator)
+    COND_OP1_STAGETYPE(op##B,type,code,B,operator)\
+    COND_OP1_STAGETYPE(op##S,type,code,S,operator)\
+    COND_OP1_STAGETYPE(op##L,type,code,L,operator)\
+    COND_OP1_STAGETYPE(op##D,type,code,D,operator)
 
 /* Compare operators */
 #define CAND(type,code) COND_OP(CAND,type,code,&&,)
@@ -330,58 +330,58 @@ typedef union Di2f_t {
 #define CLTEQF(type,code) COND_OP_LD(CLTEQF,type,code,<=,f)
 
 #define CEQSTR(type,code)\
-	CEQSTR_##code:\
-		fetchOp1(CEQSTR,code);\
-		if (stage1_W && stage2_W) {\
-    		op_##code = !strcmp((cx_string)stage1_W, (cx_string)stage2_W);\
-		} else {\
-			op_##code = stage1_W == stage2_W;\
-		}\
-		next();
+    CEQSTR_##code:\
+        fetchOp1(CEQSTR,code);\
+        if (stage1_W && stage2_W) {\
+            op_##code = !strcmp((cx_string)stage1_W, (cx_string)stage2_W);\
+        } else {\
+            op_##code = stage1_W == stage2_W;\
+        }\
+        next();
 
 #define CNEQSTR(type,code)\
-	CNEQSTR_##code:\
-		fetchOp1(CNEQSTR,code);\
-		if (stage1_W && stage2_W) {\
-			op_##code = strcmp((cx_string)stage1_W, (cx_string)stage2_W);\
-		} else {\
-			op_##code = stage1_W != stage2_W;\
-		}\
-		next();
+    CNEQSTR_##code:\
+        fetchOp1(CNEQSTR,code);\
+        if (stage1_W && stage2_W) {\
+            op_##code = strcmp((cx_string)stage1_W, (cx_string)stage2_W);\
+        } else {\
+            op_##code = stage1_W != stage2_W;\
+        }\
+        next();
 
 #define JEQ(type,code)\
-	JEQ_##code:\
-		fetch_##code##L;\
-		fetch1_##code##L;\
-		if (op1_##code##L) {\
-			fetch2_##code##L;\
-			jump(op2_##code##L);\
-		}\
-		next();\
+    JEQ_##code:\
+        fetch_##code##L;\
+        fetch1_##code##L;\
+        if (op1_##code##L) {\
+            fetch2_##code##L;\
+            jump(op2_##code##L);\
+        }\
+        next();\
 
 #define JNEQ(type,code)\
-	JNEQ_##code:\
-    	fetch_##code##L;\
-		fetch1_##code##L;\
-	    if (op1_##code##L) {\
-	        next();\
-	    }\
-	    fetch2_##code##L;\
-	    jump(op2_##code##L);\
+    JNEQ_##code:\
+        fetch_##code##L;\
+        fetch1_##code##L;\
+        if (op1_##code##L) {\
+            next();\
+        }\
+        fetch2_##code##L;\
+        jump(op2_##code##L);\
 
 #define PUSH(type,code)\
-	PUSH_##code:\
-		fetchOp1(PUSH,code);\
-		*(type##_t*)c.sp = op_##code;\
-		c.sp = CX_OFFSET(c.sp, sizeof(type##_t));\
-		next();\
+    PUSH_##code:\
+        fetchOp1(PUSH,code);\
+        *(type##_t*)c.sp = op_##code;\
+        c.sp = CX_OFFSET(c.sp, sizeof(type##_t));\
+        next();\
 
 #define PUSHX(type,code)\
-	PUSHX_##code:\
-		fetchOp1(PUSHX,code);\
-		*(cx_word*)c.sp = (cx_word)&op_##code;\
-		c.sp = CX_OFFSET(c.sp, sizeof(cx_word));\
-		next();\
+    PUSHX_##code:\
+        fetchOp1(PUSHX,code);\
+        *(cx_word*)c.sp = (cx_word)&op_##code;\
+        c.sp = CX_OFFSET(c.sp, sizeof(cx_word));\
+        next();\
 
 #define _PUSHANY(opx,_type,code,postfix,deref,typearg,_pc,v)\
     PUSHANY##opx##_##code##postfix:\
@@ -410,8 +410,8 @@ typedef union Di2f_t {
 
 #define CALL(type,code)\
     CALL_##code:\
-    	fetchOp1(CALL,code);\
-    	fetchHi();\
+        fetchOp1(CALL,code);\
+        fetchHi();\
         cx_callb((cx_function)c.hi.w, &op_##code, c.stack);\
         c.sp = c.stack; /* Reset stack pointer */\
         next();\
@@ -455,10 +455,10 @@ typedef union Di2f_t {
     CAST_##code:\
         fetchOp2(CAST,code)\
         if (!op1_##code) {\
-        	printf("Exception: null dereference in cast\n");\
+            printf("Exception: null dereference in cast\n");\
             abort();\
-        	goto STOP;\
-		}\
+            goto STOP;\
+        }\
         if (!cx_instanceof((cx_typedef)op2_##code, (cx_object)op1_##code)) {\
             cx_id id1,id2;\
             printf("Exception: invalid cast from type '%s' to '%s'\n", \
@@ -475,55 +475,55 @@ typedef union Di2f_t {
         next();
 
 #define STRCAT(type,code)\
-	STRCAT_##code:\
-	{\
+    STRCAT_##code:\
+    {\
         cx_string str1,str2;\
-		fetchOp2(STRCAT,code)\
-		if ((str1 = (cx_string)op1_##code)) {\
-			c.strcache->length += c.strcache->staged[c.strcache->count].length = strlen(str1);\
-			c.strcache->staged[c.strcache->count].str = str1;\
-			c.strcache->count++;\
-		}\
-		if ((str2 = (cx_string)op2_##code)) {\
-			c.strcache->length += c.strcache->staged[c.strcache->count].length = strlen(str2);\
-			c.strcache->staged[c.strcache->count].str = str2;\
-			c.strcache->count++;\
-		}\
-		next();\
-	}\
+        fetchOp2(STRCAT,code)\
+        if ((str1 = (cx_string)op1_##code)) {\
+            c.strcache->length += c.strcache->staged[c.strcache->count].length = strlen(str1);\
+            c.strcache->staged[c.strcache->count].str = str1;\
+            c.strcache->count++;\
+        }\
+        if ((str2 = (cx_string)op2_##code)) {\
+            c.strcache->length += c.strcache->staged[c.strcache->count].length = strlen(str2);\
+            c.strcache->staged[c.strcache->count].str = str2;\
+            c.strcache->count++;\
+        }\
+        next();\
+    }\
 
 #define STRCPY(type,code)\
-	STRCPY_##code:\
-	{\
-		cx_string result, ptr, str;\
-		cx_uint32 i;\
-		fetchOp2(STRCPY,code);\
-		cx_uint32 length=0;\
-		if ((str = (cx_string)op2_##code)) {\
-			c.strcache->length += c.strcache->staged[c.strcache->count].length = strlen(str);\
-			c.strcache->staged[c.strcache->count].str = str;\
-			c.strcache->count++;\
-		}\
-		result = cx_malloc(c.strcache->length + 1);\
-		ptr = result;\
-		for(i=0; i<c.strcache->count; i++) {\
-			length = c.strcache->staged[i].length;\
-			memcpy(ptr, c.strcache->staged[i].str, length);\
-			ptr += length;\
-		}\
-		*ptr = '\0';\
-		c.strcache->count = 0;\
-		c.strcache->length = 0;\
-		op1_##code = (W_t)result;\
-		next();\
-	}\
+    STRCPY_##code:\
+    {\
+        cx_string result, ptr, str;\
+        cx_uint32 i;\
+        fetchOp2(STRCPY,code);\
+        cx_uint32 length=0;\
+        if ((str = (cx_string)op2_##code)) {\
+            c.strcache->length += c.strcache->staged[c.strcache->count].length = strlen(str);\
+            c.strcache->staged[c.strcache->count].str = str;\
+            c.strcache->count++;\
+        }\
+        result = cx_malloc(c.strcache->length + 1);\
+        ptr = result;\
+        for(i=0; i<c.strcache->count; i++) {\
+            length = c.strcache->staged[i].length;\
+            memcpy(ptr, c.strcache->staged[i].str, length);\
+            ptr += length;\
+        }\
+        *ptr = '\0';\
+        c.strcache->count = 0;\
+        c.strcache->length = 0;\
+        op1_##code = (W_t)result;\
+        next();\
+    }\
 
 #define NEW(type,code)\
-	NEW_##code:\
-		fetchOp1(NEW,code);\
-		fetchOp2(NEW,code);\
-		op1_##code = (cx_word)cx_new((cx_typedef)op2_##code);\
-		next();\
+    NEW_##code:\
+        fetchOp1(NEW,code);\
+        fetchOp2(NEW,code);\
+        op1_##code = (cx_word)cx_new((cx_typedef)op2_##code);\
+        next();\
 
 #define DEALLOC(type,code)\
     DEALLOC_##code:\
@@ -535,7 +535,7 @@ typedef union Di2f_t {
     KEEP_##code:\
         fetchOp1(KEEP,code);\
         if (op_##code) {\
-        	cx_keep_ext(NULL, (cx_object)op_##code, "KEEP(vm)");\
+            cx_keep_ext(NULL, (cx_object)op_##code, "KEEP(vm)");\
         }\
         next();\
 
@@ -543,7 +543,7 @@ typedef union Di2f_t {
     FREE_##code:\
         fetchOp1(FREE,code);\
         if (op_##code) {\
-        	cx_free_ext(NULL, (cx_object)op_##code, "FREE(vm)");\
+            cx_free_ext(NULL, (cx_object)op_##code, "FREE(vm)");\
         }\
         next();\
 
@@ -562,9 +562,9 @@ typedef union Di2f_t {
     UPDATE_##code:\
         fetchOp1(UPDATE,code);\
         if (!op_##code) {\
-        	printf("Exception: null dereference in updateFrom\n");\
+            printf("Exception: null dereference in updateFrom\n");\
             abort();\
-        	goto STOP;\
+            goto STOP;\
         }\
         cx_updateFrom((cx_object)op_##code,NULL);\
         next();\
@@ -573,9 +573,9 @@ typedef union Di2f_t {
     UPDATEBEGIN_##code:\
         fetchOp1(UPDATEBEGIN,code);\
         if (!op_##code) {\
-        	printf("Exception: null dereference in updateBegin\n");\
+            printf("Exception: null dereference in updateBegin\n");\
             abort();\
-        	goto STOP;\
+            goto STOP;\
         }\
         cx_updateBegin((cx_object)op_##code);\
         next();\
@@ -584,31 +584,31 @@ typedef union Di2f_t {
     UPDATEEND_##code:\
         fetchOp1(UPDATEEND,code);\
         if (!op_##code) {\
-        	printf("Exception: null dereference in updateEnd\n");\
+            printf("Exception: null dereference in updateEnd\n");\
             abort();\
-        	goto STOP;\
+            goto STOP;\
         }\
         cx_updateEndFrom((cx_object)op_##code,NULL);\
         next();\
 
 #define UPDATEFROM(type,code)\
-	UPDATEFROM_##code:\
-		fetchOp2(UPDATEFROM, code);\
+    UPDATEFROM_##code:\
+        fetchOp2(UPDATEFROM, code);\
         if (!op1_##code) {\
-        	printf("Exception: null dereference in updateFrom\n");\
+            printf("Exception: null dereference in updateFrom\n");\
             abort();\
-        	goto STOP;\
+            goto STOP;\
         }\
-		cx_updateFrom((cx_object)op1_##code,(cx_object)op2_##code);\
-		next();\
+        cx_updateFrom((cx_object)op1_##code,(cx_object)op2_##code);\
+        next();\
 
 #define UPDATEENDFROM(type,code)\
     UPDATEENDFROM_##code:\
         fetchOp2(UPDATEENDFROM,code);\
         if (!op1_##code) {\
-        	printf("Exception: null dereference in updateEndFrom\n");\
+            printf("Exception: null dereference in updateEndFrom\n");\
             abort();\
-        	goto STOP;\
+            goto STOP;\
         }\
         cx_updateEndFrom((cx_object)op1_##code,(cx_object)op2_##code);\
         next();\
@@ -617,9 +617,9 @@ typedef union Di2f_t {
     UPDATECANCEL_##code:\
         fetchOp1(UPDATECANCEL,code);\
         if (!op_##code) {\
-        	printf("Exception: null dereference in updateCancel\n");\
+            printf("Exception: null dereference in updateCancel\n");\
             abort();\
-        	goto STOP;\
+            goto STOP;\
         }\
         cx_updateCancel((cx_object)op_##code);\
         next();\
@@ -653,40 +653,40 @@ typedef union Di2f_t {
 #endif
 
 #define ELEMA(type,code)\
-	ELEMA_##code:\
-		fetchOp3(ELEMA,code##V);\
-		op1_##code##V += op2_##code##V * op3_##code##V;\
-		next();\
+    ELEMA_##code:\
+        fetchOp3(ELEMA,code##V);\
+        op1_##code##V += op2_##code##V * op3_##code##V;\
+        next();\
 
 #define ELEMS(type,code)\
-	ELEMS_##code:\
-		fetchOp3(ELEMS,code##V);\
-		{\
-			cx_objectSeq* seq = (cx_objectSeq*)op1_##code##V;\
+    ELEMS_##code:\
+        fetchOp3(ELEMS,code##V);\
+        {\
+            cx_objectSeq* seq = (cx_objectSeq*)op1_##code##V;\
             CHECK_BOUNDS(seq->length, op2_##code##V);\
-			op1_##code##V = (W_t)CX_OFFSET(seq->buffer,op2_##code##V * op3_##code##V);\
-		}\
-		next();\
+            op1_##code##V = (W_t)CX_OFFSET(seq->buffer,op2_##code##V * op3_##code##V);\
+        }\
+        next();\
 
 #define ELEML(type,code)\
-	ELEML_##code:\
-		fetchOp2(ELEML, code);\
+    ELEML_##code:\
+        fetchOp2(ELEML, code);\
         CHECK_BOUNDS(cx_llSize(*(cx_ll*)op1_##code), op2_##code)\
-		op1_##code = (W_t)cx_llGet(*(cx_ll*)op1_##code, op2_##code);\
-		next();
+        op1_##code = (W_t)cx_llGet(*(cx_ll*)op1_##code, op2_##code);\
+        next();
 
 #define ELEMLX(type,code)\
-	ELEMLX_##code:\
-		fetchOp2(ELEMLX, code);\
+    ELEMLX_##code:\
+        fetchOp2(ELEMLX, code);\
         CHECK_BOUNDS(cx_llSize(*(cx_ll*)op1_##code), op2_##code)\
-		op1_##code = (W_t)cx_llGetPtr(*(cx_ll*)op1_##code, op2_##code);\
-		next();\
+        op1_##code = (W_t)cx_llGetPtr(*(cx_ll*)op1_##code, op2_##code);\
+        next();\
 
 #define ELEMM(type,code)\
-	ELEMM_##code:\
-		fetchOp2(ELEMM, code);\
-		op1_##code = (W_t)cx_rbtreeGet(*(cx_rbtree*)op1_##code, (void*)&op2_##code);\
-		next();\
+    ELEMM_##code:\
+        fetchOp2(ELEMM, code);\
+        op1_##code = (W_t)cx_rbtreeGet(*(cx_rbtree*)op1_##code, (void*)&op2_##code);\
+        next();\
 
 #define ELEMMX(type,code)\
     ELEMMX_##code:\
@@ -707,13 +707,13 @@ typedef union Di2f_t {
     op(type,type##lvalue##Q)
 
 #define OP_LVALUE(op,type,postfix)\
-	OPERAND_##postfix(op,type,P)\
-	OPERAND_##postfix(op,type,R)\
-	OPERAND_##postfix(op,type,Q)
+    OPERAND_##postfix(op,type,P)\
+    OPERAND_##postfix(op,type,R)\
+    OPERAND_##postfix(op,type,Q)
 
 #define OP_LVALUE_V(op,type,postfix)\
-	OP_LVALUE(op,type,postfix)\
-	OPERAND_##postfix(op,type,V)
+    OP_LVALUE(op,type,postfix)\
+    OPERAND_##postfix(op,type,V)
 
 #define OP_LVALUE_FLOAT(op,type,postfix)\
     OPERAND_##postfix(op,type,P)\
@@ -721,23 +721,23 @@ typedef union Di2f_t {
     OPERAND_##postfix(op,type,Q)
 
 #define OP_LVALUE_FLOAT_V(op,type,postfix)\
-	OP_LVALUE_FLOAT(op,type,postfix)\
+    OP_LVALUE_FLOAT(op,type,postfix)\
     op(type,type##VR)\
     op(type,type##VP)\
     op(type,type##VQ)\
 
 #define OP1(op)\
-	OPERAND_PQR(op,B,)\
-	OPERAND_PQR(op,S,)\
-	OPERAND_PQR(op,L,)\
-	OPERAND_PQR(op,D,)
+    OPERAND_PQR(op,B,)\
+    OPERAND_PQR(op,S,)\
+    OPERAND_PQR(op,L,)\
+    OPERAND_PQR(op,D,)
 
 #define OP1_COND(op)\
-	OPERAND_PQR(op,B,)
+    OPERAND_PQR(op,B,)
 
 #define OP1_PQRV(op)\
-	OPERAND_PQRV(op,B,)\
-	OPERAND_PQRV(op,S,)\
+    OPERAND_PQRV(op,B,)\
+    OPERAND_PQRV(op,S,)\
     OPERAND_PQRV(op,L,)\
     OPERAND_PQRV(op,D,)\
 
@@ -748,8 +748,8 @@ typedef union Di2f_t {
     op##_VF(D,DV)\
 
 #define OP1_ANY(op)\
-	OPERAND_PQR(op,L,)\
-	OPERAND_PQR(op,D,)\
+    OPERAND_PQR(op,L,)\
+    OPERAND_PQR(op,D,)\
 
 #define OP2(op, postfix)\
     OP_LVALUE(op,B, postfix)\
@@ -797,12 +797,12 @@ typedef union Di2f_t {
     OP_LVALUE(op, D, postfix)
 
 #define OP2V_W(op, postfix)\
-	OPERAND_##postfix(op, W, V)\
-	OP_LVALUE(op, W, postfix)\
+    OPERAND_##postfix(op, W, V)\
+    OP_LVALUE(op, W, postfix)\
 
 /* Translation from opcode-id to address */
 #define TOJMP_OPERAND(_op,type,lvalue,rvalue)\
-	case CX_VM_##_op##_##type##lvalue##rvalue: p[i].op = toJump(_op##_##type##lvalue##rvalue); break;\
+    case CX_VM_##_op##_##type##lvalue##rvalue: p[i].op = toJump(_op##_##type##lvalue##rvalue); break;\
 
 #define TOJMP_OPERAND_PQRV(_op,type,lvalue)\
     TOJMP_OPERAND(_op,type,lvalue,V)\
@@ -821,16 +821,16 @@ typedef union Di2f_t {
     TOJMP_OPERAND_##postfix(op,type,Q)\
 
 #define TOJMP_LVALUE_V(op,type,postfix)\
-	TOJMP_LVALUE(op,type,postfix)\
+    TOJMP_LVALUE(op,type,postfix)\
     TOJMP_OPERAND_##postfix(op,type,V)\
 
 #define TOJMP_LVALUE_FLOAT(_op,type,postfix)\
     TOJMP_OPERAND_##postfix(_op,type,P);\
-	TOJMP_OPERAND_##postfix(_op,type,R);\
-	TOJMP_OPERAND_##postfix(_op,type,Q);\
+    TOJMP_OPERAND_##postfix(_op,type,R);\
+    TOJMP_OPERAND_##postfix(_op,type,Q);\
 
 #define TOJMP_LVALUE_FLOAT_V(_op,type,postfix)\
-	TOJMP_LVALUE_FLOAT(_op,type,postfix)\
+    TOJMP_LVALUE_FLOAT(_op,type,postfix)\
     TOJMP_OPERAND(_op,type,V,R)\
     TOJMP_OPERAND(_op,type,V,P)\
     TOJMP_OPERAND(_op,type,V,Q)\
@@ -842,18 +842,18 @@ typedef union Di2f_t {
     TOJMP_OPERAND_PQR(op,D,)\
 
 #define TOJMP_OP1_COND(op)\
-	TOJMP_OPERAND_PQR(op##B,B,)\
-	TOJMP_OPERAND_PQR(op##S,B,)\
-	TOJMP_OPERAND_PQR(op##L,B,)\
-	TOJMP_OPERAND_PQR(op##D,B,)
+    TOJMP_OPERAND_PQR(op##B,B,)\
+    TOJMP_OPERAND_PQR(op##S,B,)\
+    TOJMP_OPERAND_PQR(op##L,B,)\
+    TOJMP_OPERAND_PQR(op##D,B,)
 
 #define TOJMP_OP1_COND_LD(op)\
-	TOJMP_OPERAND_PQR(op##L,B,)\
-	TOJMP_OPERAND_PQR(op##D,B,)
+    TOJMP_OPERAND_PQR(op##L,B,)\
+    TOJMP_OPERAND_PQR(op##D,B,)
 
 #define TOJMP_OP1_PQRV(_op)\
     TOJMP_OPERAND_PQRV(_op,B,)\
-	TOJMP_OPERAND_PQRV(_op,S,)\
+    TOJMP_OPERAND_PQRV(_op,S,)\
     TOJMP_OPERAND_PQRV(_op,L,)\
     TOJMP_OPERAND_PQRV(_op,D,)\
 
@@ -935,7 +935,7 @@ typedef union Di2f_t {
     TOSTR_OPERAND_##postfix(op,type,Q)\
 
 #define TOSTR_LVALUE_V(op,type,postfix)\
-	TOSTR_LVALUE(op,type,postfix)\
+    TOSTR_LVALUE(op,type,postfix)\
     TOSTR_OPERAND_##postfix(op,type,V)\
 
 #define TOSTR_LVALUE_FLOAT(_op,type,postfix)\
@@ -946,7 +946,7 @@ typedef union Di2f_t {
     TOSTR_OPERAND_##postfix(_op,type,Q);\
 
 #define TOSTR_LVALUE_FLOAT_V(_op,type,postfix)\
-	TOSTR_LVALUE_FLOAT(_op,type,postfix)\
+    TOSTR_LVALUE_FLOAT(_op,type,postfix)\
     TOSTR_OPERAND(_op,type,V,R);\
     TOSTR_OPERAND(_op,type,V,P);\
     TOSTR_OPERAND(_op,type,V,Q);\
@@ -976,7 +976,7 @@ typedef union Di2f_t {
 
 #define TOSTR_OP1_PQRV(op)\
     TOSTR_OPERAND_PQRV(op,B,)\
-	TOSTR_OPERAND_PQRV(op,S,)\
+    TOSTR_OPERAND_PQRV(op,S,)\
     TOSTR_OPERAND_PQRV(op,L,)\
     TOSTR_OPERAND_PQRV(op,D,)\
 
@@ -1092,7 +1092,7 @@ static void cx_vm_sig(int sig) {
 static void cx_vm_pushCurrentProgram(cx_vmProgram program, cx_vm_context *c) {
     cx_currentProgramData *data = NULL;
     if (!cx_currentProgramKey) {
-    	cx_threadTlsKey(&cx_currentProgramKey, NULL);
+        cx_threadTlsKey(&cx_currentProgramKey, NULL);
     }
     data = cx_threadTlsGet(cx_currentProgramKey);
     if (!data) {
@@ -1155,7 +1155,7 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
 
     /* Translate program if required */
     if (!program->translated)  {
-    	uint32_t size = program->size;
+        uint32_t size = program->size;
         cx_vmOp *p = program->program;
         uint32_t i;
         for(i=0; i<size;i++) {
@@ -1163,13 +1163,13 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
             p[i].opKind = p[i].op; /* Cache actual opKind for debugging purposes */
 #endif
             switch(p[i].op) {
-				case CX_VM_NOOP: p[i].op = toJump(NOOP); break;
+                case CX_VM_NOOP: p[i].op = toJump(NOOP); break;
                 TOJMP_OP2(SET,PQRV);
-				case CX_VM_SET_WRX: p[i].op = toJump(SET_WRX); break;
-				TOJMP_OP2_W(SETREF,PQRV);
-				TOJMP_OP2_W(SETSTR,PQRV);
-				TOJMP_OP2_W(SETSTRDUP,PQRV);
-				case CX_VM_ZERO: p[i].op = toJump(ZERO); break;
+                case CX_VM_SET_WRX: p[i].op = toJump(SET_WRX); break;
+                TOJMP_OP2_W(SETREF,PQRV);
+                TOJMP_OP2_W(SETSTR,PQRV);
+                TOJMP_OP2_W(SETSTRDUP,PQRV);
+                case CX_VM_ZERO: p[i].op = toJump(ZERO); break;
                 case CX_VM_INIT: p[i].op = toJump(INIT); break;
 
                 TOJMP_OP1(INC);
@@ -1223,18 +1223,18 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
 
                 TOJMP_OP1(JEQ);
                 TOJMP_OP1(JNEQ);
-				case CX_VM_JUMP: p[i].op = toJump(JUMP); break;
+                case CX_VM_JUMP: p[i].op = toJump(JUMP); break;
 
-				case CX_VM_MEMBER: p[i].op = toJump(MEMBER); break;
+                case CX_VM_MEMBER: p[i].op = toJump(MEMBER); break;
 
-				TOJMP_OPERAND_PQRV(ELEMA,W,R);
-				TOJMP_OPERAND_PQRV(ELEMS,W,R);
-				TOJMP_OPERAND_PQRV(ELEML,W,R);
-				TOJMP_OPERAND_PQRV(ELEMLX,W,R);
-				TOJMP_OPERAND_PQRV(ELEMM,W,R);
+                TOJMP_OPERAND_PQRV(ELEMA,W,R);
+                TOJMP_OPERAND_PQRV(ELEMS,W,R);
+                TOJMP_OPERAND_PQRV(ELEML,W,R);
+                TOJMP_OPERAND_PQRV(ELEMLX,W,R);
+                TOJMP_OPERAND_PQRV(ELEMM,W,R);
                 TOJMP_OPERAND_PQRV(ELEMMX,W,R);
 
-				TOJMP_OP1_PQRV(PUSH);
+                TOJMP_OP1_PQRV(PUSH);
                 TOJMP_OP1(PUSHX);
                 TOJMP_OPERAND_PQRV(PUSHANY,W,);
                 TOJMP_OP1_ANY(PUSHANYX);
@@ -1271,8 +1271,8 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
 
                 case CX_VM_STOP: p[i].op = toJump(STOP); break;
                 default:
-                	cx_assert(0, "invalid instruction in sequence %d @ %d", p[i].op, i);
-                	break;
+                    cx_assert(0, "invalid instruction in sequence %d @ %d", p[i].op, i);
+                    break;
             }
         }
         program->translated = TRUE;
@@ -1287,12 +1287,12 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
     go();
 
     /* Instruction implementations */
-	NOOP:
-		fetchIc();
-		fetchLo();
-		fetchHi();
-		next();
-	
+    NOOP:
+        fetchIc();
+        fetchLo();
+        fetchHi();
+        next();
+    
     OP2(SET,PQRV);
     
     OP2_W(SETREF,PQRV);
@@ -1300,18 +1300,18 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
     OP2_W(SETSTRDUP,PQRV);
 
     SET_WRX:
-    	fetch_WRR;
-    	fetch1_WRR;
-    	fetch2_WRR;
-    	op1_WRR = (W_t)&op2_WRR;
-    	next();
+        fetch_WRR;
+        fetch1_WRR;
+        fetch2_WRR;
+        op1_WRR = (W_t)&op2_WRR;
+        next();
 
     ZERO:
-    	fetch_WRV;
-    	fetch1_WRV;
-    	fetch2_WRV;
-    	memset(&op1_WRV,0,op2_WRV);
-    	next();
+        fetch_WRV;
+        fetch1_WRV;
+        fetch2_WRV;
+        memset(&op1_WRV,0,op2_WRV);
+        next();
     
     INIT: {
         fetch_WRV;
@@ -1380,22 +1380,22 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
         jump(c.lo.w);
 
     MEMBER:
-    	fetch_LRR;
-    	fetch1_LRR;
-    	fetch2_LRR;
-    	fetchLo();
-    	if (!op2_LRR) {
-    		printf("Error: dereferencing null\n");
-    		goto STOP;
-    	}
-    	op1_WRR = op2_WRR + c.lo.w;
-    	next();
+        fetch_LRR;
+        fetch1_LRR;
+        fetch2_LRR;
+        fetchLo();
+        if (!op2_LRR) {
+            printf("Error: dereferencing null\n");
+            goto STOP;
+        }
+        op1_WRR = op2_WRR + c.lo.w;
+        next();
 
-	OPERAND_PQRV(ELEMA,W,R);
-	OPERAND_PQRV(ELEMS,W,R);
-	OPERAND_PQRV(ELEML,W,R);
-	OPERAND_PQRV(ELEMLX,W,R);
-	OPERAND_PQRV(ELEMM,W,R);
+    OPERAND_PQRV(ELEMA,W,R);
+    OPERAND_PQRV(ELEMS,W,R);
+    OPERAND_PQRV(ELEML,W,R);
+    OPERAND_PQRV(ELEMLX,W,R);
+    OPERAND_PQRV(ELEMM,W,R);
     OPERAND_PQRV(ELEMMX,W,R);
 
     OP1_PQRV(PUSH);
@@ -1439,20 +1439,20 @@ STOP:
 }
 
 static void cx_stringConcatCacheClean(void *data) {
-	cx_dealloc(data);
+    cx_dealloc(data);
 }
 
 static void cx_stringConcatCacheCreate(void) {
     cx_stringConcatCache *concatCache;
     if (!cx_stringConcatCacheKey) {
-    	cx_threadTlsKey(&cx_stringConcatCacheKey, cx_stringConcatCacheClean);
+        cx_threadTlsKey(&cx_stringConcatCacheKey, cx_stringConcatCacheClean);
     }
 
     concatCache = cx_threadTlsGet(cx_stringConcatCacheKey);
     if (!concatCache) {
-    	concatCache = cx_malloc(sizeof(cx_stringConcatCache));
-    	memset(concatCache, 0, sizeof(cx_stringConcatCache));
-    	cx_threadTlsSet(cx_stringConcatCacheKey, concatCache);
+        concatCache = cx_malloc(sizeof(cx_stringConcatCache));
+        memset(concatCache, 0, sizeof(cx_stringConcatCache));
+        cx_threadTlsSet(cx_stringConcatCacheKey, concatCache);
     }
 }
 
@@ -1643,20 +1643,20 @@ char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
 #pragma GCC diagnostic pop
 
 cx_vmProgram cx_vmProgram_new(char *filename, cx_object function) {
-	cx_vmProgram result;
+    cx_vmProgram result;
 
-	result = cx_malloc(sizeof(cx_vmProgram_s));
-	result->program = NULL;
+    result = cx_malloc(sizeof(cx_vmProgram_s));
+    result->program = NULL;
     result->debugInfo = NULL;
     result->filename = cx_strdup(filename);
     result->function = function;
-	result->size = 0;
-	result->maxSize = 0;
-	result->stack = 0;
-	result->storage = 0;
-	result->translated = FALSE;
+    result->size = 0;
+    result->maxSize = 0;
+    result->stack = 0;
+    result->storage = 0;
+    result->translated = FALSE;
 
-	return result;
+    return result;
 }
 
 void cx_vmProgram_free(cx_vmProgram program) {
@@ -1669,23 +1669,23 @@ void cx_vmProgram_free(cx_vmProgram program) {
 }
 
 cx_vmOp *cx_vmProgram_addOp(cx_vmProgram program, uint32_t line) {
-	if (!program->size) {
-		program->size = 1;
-		program->maxSize = 8;
-	} else {
-		program->size ++;
-		if (program->size > program->maxSize) {
-			program->maxSize *= 2;
-		}
-	}
-	program->program = cx_realloc(program->program, program->maxSize * sizeof(cx_vmOp));
+    if (!program->size) {
+        program->size = 1;
+        program->maxSize = 8;
+    } else {
+        program->size ++;
+        if (program->size > program->maxSize) {
+            program->maxSize *= 2;
+        }
+    }
+    program->program = cx_realloc(program->program, program->maxSize * sizeof(cx_vmOp));
     program->debugInfo = cx_realloc(program->debugInfo, program->maxSize * sizeof(cx_vmDebugInfo));
 
-	memset(&program->program[program->size-1], 0, sizeof(cx_vmOp));
+    memset(&program->program[program->size-1], 0, sizeof(cx_vmOp));
     memset(&program->debugInfo[program->size-1], 0, sizeof(cx_vmDebugInfo));
     program->debugInfo[program->size-1].line = line;
     
-	return &program->program[program->size-1];
+    return &program->program[program->size-1];
 }
 
 void cx_call_vm(cx_function f, cx_void* result, void* args) {

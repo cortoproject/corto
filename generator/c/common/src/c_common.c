@@ -54,37 +54,37 @@ cx_string cortex_genId(cx_string str, cx_id id) {
     cx_char *ptr, ch, *idptr;
 
     ptr = str;
-	idptr = id;
+    idptr = id;
 
     /* Strip scope-operator for rootscope */
     if (*ptr) {
-		if (*(cx_int16*)ptr == CX_SCOPE_HEX) {
-			ptr += 2;
-		}
+        if (*(cx_int16*)ptr == CX_SCOPE_HEX) {
+            ptr += 2;
+        }
 
-		/* Replace '::' with '_' */
-		while((ch = *ptr)) {
-			switch(ch) {
-			case ':':
-				ptr++;
-				/* no break */
-			case ',':
-			case '(':
-			case ' ':
-			case '{':
-				*idptr = '_';
-				idptr++;
-				break;
-			case ')':
-			case '}':
-				break;
-			default:
-				*idptr = ch;
-				idptr++;
-				break;
-			}
-			ptr++;
-		}
+        /* Replace '::' with '_' */
+        while((ch = *ptr)) {
+            switch(ch) {
+            case ':':
+                ptr++;
+                /* no break */
+            case ',':
+            case '(':
+            case ' ':
+            case '{':
+                *idptr = '_';
+                idptr++;
+                break;
+            case ')':
+            case '}':
+                break;
+            default:
+                *idptr = ch;
+                idptr++;
+                break;
+            }
+            ptr++;
+        }
     }
     *idptr = '\0';
 
@@ -156,8 +156,8 @@ cx_char* c_primitiveId(cx_primitive t, cx_char* buff) {
         strcpy(buff, "char*");
         break;
     case CX_ALIAS:
-    	strcpy(buff, cx_alias(t)->typeName);
-    	break;
+        strcpy(buff, cx_alias(t)->typeName);
+        break;
     }
 
     /* Append width */
@@ -319,23 +319,23 @@ error:
 }
 
 cx_char* c_escapeString(cx_string str, cx_id id) {
-	cx_char *ptr, *bptr, ch;
+    cx_char *ptr, *bptr, ch;
 
-	ptr = str;
-	bptr = id;
+    ptr = str;
+    bptr = id;
 
-	while((ch = *ptr)) {
-		if (ch == '"') {
-			*bptr = '\\';
-			bptr++;
-		}
-		*bptr = ch;
-		bptr++;
-		ptr++;
-	}
-	*bptr = '\0';
+    while((ch = *ptr)) {
+        if (ch == '"') {
+            *bptr = '\\';
+            bptr++;
+        }
+        *bptr = ch;
+        bptr++;
+        ptr++;
+    }
+    *bptr = '\0';
 
-	return id;
+    return id;
 }
 
 cx_bool c_procedureHasThis(cx_function o) {
@@ -352,27 +352,27 @@ cx_bool c_procedureHasThis(cx_function o) {
 
 /* Translate a scope to a path */
 cx_char* c_topath(cx_object o, cx_id id) {
-	cx_uint32 offset;
-	cx_char ch, *ptr;
-	cx_fullname(o, id);
+    cx_uint32 offset;
+    cx_char ch, *ptr;
+    cx_fullname(o, id);
 
-	ptr = id+2;
-	offset = 2;
-	while((ch = *ptr)) {
-		switch(ch) {
-		case ':':
-			*(ptr-offset) = '/';
-			ptr++;
-			offset++;
-			break;
-		default:
-			*(ptr-offset) = *ptr;
-			break;
-		}
-		ptr++;
-	}
-	*(ptr-offset) = '\0';
+    ptr = id+2;
+    offset = 2;
+    while((ch = *ptr)) {
+        switch(ch) {
+        case ':':
+            *(ptr-offset) = '/';
+            ptr++;
+            offset++;
+            break;
+        default:
+            *(ptr-offset) = *ptr;
+            break;
+        }
+        ptr++;
+    }
+    *(ptr-offset) = '\0';
 
-	return id;
+    return id;
 }
 

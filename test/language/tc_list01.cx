@@ -2,8 +2,8 @@
 bool result: true
 
 void fail(string msg):
-	"tc_list01: FAIL: $msg"
-	result = false
+    "tc_list01: FAIL: $msg"
+    result = false
 
 list{uint32} a: 1, 2, 3
 list{uint64} b: 1, 2, 3

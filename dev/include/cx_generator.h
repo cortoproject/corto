@@ -38,9 +38,9 @@ CX_STRUCT_DEF(g_attribute) {
 };
 
 typedef enum g_idKind {
-	CX_GENERATOR_ID_DEFAULT,
-	CX_GENERATOR_ID_CLASS_UPPER,
-	CX_GENERATOR_ID_CLASS_LOWER
+    CX_GENERATOR_ID_DEFAULT,
+    CX_GENERATOR_ID_CLASS_UPPER,
+    CX_GENERATOR_ID_CLASS_LOWER
 }g_idKind;
 
 CX_CLASS_DEF(cx_generator) {
@@ -60,7 +60,7 @@ CX_CLASS_DEF(cx_generator) {
 };
 
 typedef struct g_fileSnippet {
-	cx_string option;
+    cx_string option;
     cx_string id;
     cx_string src;
     cx_bool used;

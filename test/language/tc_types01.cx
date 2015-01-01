@@ -1,8 +1,8 @@
 bool result : true
 
 void fail(string msg):
-	"tc_types01: FAIL: $msg"
-	result = false
+    "tc_types01: FAIL: $msg"
+    result = false
 
 // Test variables of primitive types
 enum Color:: RED, YELLOW, GREEN, BLUE

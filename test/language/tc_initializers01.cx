@@ -4,37 +4,37 @@ bool result: true
 string testname : "tc_initializers01"
 
 struct Point::
-	member x, y : uint32
-	
+    member x, y : uint32
+    
 struct Point3D : Point::
-	member z : uint32
-	
+    member z : uint32
+    
 enum Color::
-	constant Red,Yellow,Blue	
-	
+    constant Red,Yellow,Blue    
+    
 struct Line::
-	member start,stop : Point3D
-	member color : ::Color
-	
+    member start,stop : Point3D
+    member color : ::Color
+    
 void fail(string txt):
-	"$testname: FAIL: $txt"
-	result = false
-	
+    "$testname: FAIL: $txt"
+    result = false
+    
 void test(Point p, int32 x, int32 y, string msg):
-	if p.x != x: fail("$msg.x (${p.x} vs. $x)")
-	if p.y != y: fail("$msg.y (${p.y} vs. $y)")
-		
+    if p.x != x: fail("$msg.x (${p.x} vs. $x)")
+    if p.y != y: fail("$msg.y (${p.y} vs. $y)")
+        
 void test(Point3D p, int32 x, int32 y, int32 z, string msg):
-	test(p, x, y, msg)
-	if p.z != z: fail("$msg.z (${p.z} vs $z)")
-		
+    test(p, x, y, msg)
+    if p.z != z: fail("$msg.z (${p.z} vs $z)")
+        
 void test(Line l, int32 x1, int32 y1, int32 z1, int32 x2, int32 y2, int32 z2, Color color, string msg):
-	test(l.start, x1, y1, z1, "$msg.start")
-	test(l.stop, x2, y2, z2, "$msg.stop")
-	if l.color != color: fail("$msg.color")
-	
+    test(l.start, x1, y1, z1, "$msg.start")
+    test(l.stop, x2, y2, z2, "$msg.stop")
+    if l.color != color: fail("$msg.color")
+    
 Color c1 : Red
-	
+    
 Point3D p1 : 10,20,30
 Point3D p2 : x=40 y=50 z=60
 Point3D p3 : x=70 y=80 z=90

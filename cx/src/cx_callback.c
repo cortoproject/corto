@@ -18,7 +18,7 @@ cx_int16 cx_callback_bind(cx_callback object) {
     cx_assert(object->delegate != NULL, "callback '%s' has <null> for member delegate.", cx_nameof(object));
 
     if (cx_function_bind(cx_function(object))) {
-    	goto error;
+        goto error;
     }
 
     delegateClass = cx_class(cx_parentof(object->delegate));

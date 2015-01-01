@@ -9,7 +9,7 @@
 #define CX_COMPARE(type,v1,v2) *(type*)v1 > *(type*)v2 ? CX_GT : *(type*)v1 < *(type*)v2 ? CX_LT : CX_EQ
 
 static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData) {
-	cx_equalityKind result = CX_EQ;
+    cx_equalityKind result = CX_EQ;
     cx_compare_ser_t *data = userData;
     cx_type type = cx_valueType(info)->real;
     void *_this = cx_valueValue(info);
@@ -17,7 +17,7 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData
     
     CX_UNUSED(s);
     
-	switch(cx_primitive(type)->kind) {
+    switch(cx_primitive(type)->kind) {
         case CX_BINARY:
             switch(cx_primitive(type)->width) {
                 case CX_WIDTH_8:
@@ -103,11 +103,11 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData
         case CX_ALIAS:
             result = CX_COMPARE(cx_word, _this, value);
             break;
-	}
+    }
     
     data->result = result;
     
-	return data->result != CX_EQ;
+    return data->result != CX_EQ;
 }
 
 static cx_int16 cx_ser_reference(cx_serializer s, cx_value *info, void *userData) {
@@ -337,9 +337,9 @@ static cx_int16 cx_ser_construct(cx_serializer s, cx_value *info, void *userData
 }
 
 struct cx_serializer_s cx_compare_ser(cx_modifier access, cx_operatorKind accessKind, cx_serializerTraceKind trace) {
-	struct cx_serializer_s s;
+    struct cx_serializer_s s;
     
-	cx_serializerInit(&s);
+    cx_serializerInit(&s);
     
     s.access = access;
     s.accessKind = accessKind;

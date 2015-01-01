@@ -1,9 +1,9 @@
 // Comparisons of simple collection types
 bool result : true
 void fail(string msg):
-	"tc_compare05: FAIL: $msg"
-	result = false
-	
+    "tc_compare05: FAIL: $msg"
+    result = false
+    
 typedef arrayInt : array{uint32,3}
 typedef seqInt : sequence{uint32}
 typedef listInt : list{uint32}
@@ -68,4 +68,4 @@ if l2.compare(s3) != LT: fail("l2.compare(s3) (${l2.compare(s3)} != LT)")
 if l3.compare(s2) != GT: fail("l3.compare(s2) (${l3.compare(s2)} != GT)")
 
 if result: "tc_compare05: OK"
-	
+    

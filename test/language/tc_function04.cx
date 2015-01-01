@@ -1,11 +1,11 @@
 // Test functions with complex returntypes and parameters
 bool result: true
 void fail(string msg):
-	"tc_function04: FAIL: $msg"
-	result = false
+    "tc_function04: FAIL: $msg"
+    result = false
 
 struct Point::
-	x, y: uint32
+    x, y: uint32
 
 Point p:
 Point q: 10,20
@@ -15,8 +15,8 @@ var Point t = {70, 80}
 
 // Assign result to return variable
 Point add(Point a, Point b):
-	add.x = a.x + b.x
-	add.y = a.y + b.y
+    add.x = a.x + b.x
+    add.y = a.y + b.y
 
 // Test with object 
 p = add(q, r)

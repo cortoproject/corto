@@ -1,16 +1,16 @@
 // Methods, members and expression lists
 bool result: true
 void fail(string msg):
-	"tc_exprlist08: FAIL: $msg"
-	result = false
-	
+    "tc_exprlist08: FAIL: $msg"
+    result = false
+    
 struct Int::
-	v: uint32
-	uint32 inc() = v++
-	
+    v: uint32
+    uint32 inc() = v++
+    
 struct Ints::
-	a,b,c,d : Int
-	
+    a,b,c,d : Int
+    
 Ints o:
 
 o[a,b,c,d].inc()

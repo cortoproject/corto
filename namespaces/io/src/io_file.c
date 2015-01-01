@@ -79,7 +79,7 @@ cx_void io_file_flush(io_file _this) {
 /* ::cortex::io::file::read(::cortex::lang::uint32 bytes) */
 cx_octet_seq io_file_read(io_file _this, cx_uint32 bytes) {
 /* $begin(::cortex::io::file::read) */
-	cx_octet_seq result;
+    cx_octet_seq result;
 
     result.buffer = cx_malloc(bytes);
     result.length = fread(result.buffer, bytes, 1, (FILE*)_this->handle);
@@ -91,12 +91,12 @@ cx_octet_seq io_file_read(io_file _this, cx_uint32 bytes) {
 /* ::cortex::io::file::readAll() */
 cx_octet_seq io_file_readAll(io_file _this) {
 /* $begin(::cortex::io::file::readAll) */
-	cx_octet_seq result;
+    cx_octet_seq result;
 
-	CX_UNUSED(_this);
+    CX_UNUSED(_this);
 
-	result.length = 0;
-	result.buffer = NULL;
+    result.length = 0;
+    result.buffer = NULL;
 
     cx_trace("io::File::readAll not yet implemented.");
 
@@ -107,22 +107,22 @@ cx_octet_seq io_file_readAll(io_file _this) {
 /* ::cortex::io::file::readLn() */
 cx_string io_file_readLn(io_file _this) {
 /* $begin(::cortex::io::file::readLn) */
-	CX_UNUSED(_this);
+    CX_UNUSED(_this);
 
     cx_trace("io::File::readLn not yet implemented.");
 
-	return NULL;
+    return NULL;
 /* $end */
 }
 
 /* ::cortex::io::file::readText() */
 cx_string io_file_readText(io_file _this) {
 /* $begin(::cortex::io::file::readText) */
-	CX_UNUSED(_this);
+    CX_UNUSED(_this);
 
     cx_trace("io::File::readText not yet implemented.");
 
-	return NULL;
+    return NULL;
 /* $end */
 }
 
