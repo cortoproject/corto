@@ -61,9 +61,9 @@ error:
 
 /* $end */
 
-/* ::hyve::Fast::valueKindFromType(lang::type type) */
+/* ::cortex::Fast::valueKindFromType(lang::type type) */
 Fast_valueKind Fast_valueKindFromType(db_type type) {
-/* $begin(::hyve::Fast::valueKindFromType) */
+/* $begin(::cortex::Fast::valueKindFromType) */
 	Fast_valueKind result = FAST_Null;
 
 	if (type->reference) {

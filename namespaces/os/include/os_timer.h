@@ -6,7 +6,7 @@
 #ifndef os_timer_H
 #define os_timer_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "os_thread.h"
 #include "os__type.h"
 
@@ -18,10 +18,10 @@
 extern "C" {
 #endif
 
-/* ::hyve::os::timer::run() */
+/* ::cortex::os::timer::run() */
 db_void os_timer_run(os_timer _this);
 
-/* ::hyve::os::timer::stop() */
+/* ::cortex::os::timer::stop() */
 db_void os_timer_stop(os_timer _this);
 
 #ifdef __cplusplus

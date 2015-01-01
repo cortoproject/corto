@@ -16,9 +16,9 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::UnaryExpr::construct(Fast::UnaryExpr object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::UnaryExpr::construct(Fast::UnaryExpr object) */
 db_int16 Fast_UnaryExpr_construct(Fast_UnaryExpr object) {
-/* $begin(::hyve::Fast::UnaryExpr::construct) */
+/* $begin(::cortex::Fast::UnaryExpr::construct) */
 	db_type lvalueType;
 
 	lvalueType = Fast_Expression_getType(object->lvalue);
@@ -34,18 +34,18 @@ db_int16 Fast_UnaryExpr_construct(Fast_UnaryExpr object) {
 /* $end */
 }
 
-/* ::hyve::Fast::UnaryExpr::hasSideEffects() */
+/* ::cortex::Fast::UnaryExpr::hasSideEffects() */
 db_bool Fast_UnaryExpr_hasSideEffects_v(Fast_UnaryExpr _this) {
-/* $begin(::hyve::Fast::UnaryExpr::hasSideEffects) */
+/* $begin(::cortex::Fast::UnaryExpr::hasSideEffects) */
 
     return Fast_Expression_hasSideEffects(_this->lvalue);
 
 /* $end */
 }
 
-/* ::hyve::Fast::UnaryExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::UnaryExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_UnaryExpr_toIc_v(Fast_UnaryExpr _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-/* $begin(::hyve::Fast::UnaryExpr::toIc) */
+/* $begin(::cortex::Fast::UnaryExpr::toIc) */
 	db_icStorage result;
 	db_ic lvalue;
 	db_icOp op;

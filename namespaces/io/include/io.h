@@ -6,20 +6,20 @@
 #ifndef io_H
 #define io_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "io__type.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/* ::hyve::io::print(::hyve::lang::string str) */
+/* ::cortex::io::print(::cortex::lang::string str) */
 db_void io_print(db_string str);
 
-/* ::hyve::io::println(::hyve::lang::string str) */
+/* ::cortex::io::println(::cortex::lang::string str) */
 db_void io_println(db_string str);
 
-/* ::hyve::io::readln() */
+/* ::cortex::io::readln() */
 db_string io_readln(void);
 
 #ifdef __cplusplus

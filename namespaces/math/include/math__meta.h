@@ -7,7 +7,7 @@
 #ifndef math_META_H
 #define math_META_H
 
-#include "hyve.h"
+#include "cortex.h"
 
 #include "math__type.h"
 
@@ -15,52 +15,52 @@
 extern "C" {
 #endif
 
-/* ::hyve */
+/* ::cortex */
 extern db_object _o;
 
-/* ::hyve::math */
+/* ::cortex::math */
 extern db_object mth_o;
 
-/* ::hyve::math::abs(::hyve::lang::uint64 x) */
+/* ::cortex::math::abs(::cortex::lang::uint64 x) */
 extern db_function mth_abs_o;
 
-/* ::hyve::math::acos(::hyve::lang::float64 x) */
+/* ::cortex::math::acos(::cortex::lang::float64 x) */
 extern db_function mth_acos_o;
 
-/* ::hyve::math::asin(::hyve::lang::float64 x) */
+/* ::cortex::math::asin(::cortex::lang::float64 x) */
 extern db_function mth_asin_o;
 
-/* ::hyve::math::atan(::hyve::lang::float64 x) */
+/* ::cortex::math::atan(::cortex::lang::float64 x) */
 extern db_function mth_atan_o;
 
-/* ::hyve::math::cos(::hyve::lang::float64 x) */
+/* ::cortex::math::cos(::cortex::lang::float64 x) */
 extern db_function mth_cos_o;
 
-/* ::hyve::math::exp(::hyve::lang::float64 x) */
+/* ::cortex::math::exp(::cortex::lang::float64 x) */
 extern db_function mth_exp_o;
 
-/* ::hyve::math::log(::hyve::lang::float64 x) */
+/* ::cortex::math::log(::cortex::lang::float64 x) */
 extern db_function mth_log_o;
 
-/* ::hyve::math::log10(::hyve::lang::float64 x) */
+/* ::cortex::math::log10(::cortex::lang::float64 x) */
 extern db_function mth_log10_o;
 
-/* ::hyve::math::pow(::hyve::lang::float64 x,::hyve::lang::float64 p) */
+/* ::cortex::math::pow(::cortex::lang::float64 x,::cortex::lang::float64 p) */
 extern db_function mth_pow_o;
 
-/* ::hyve::math::rand() */
+/* ::cortex::math::rand() */
 extern db_function mth_rand_o;
 
-/* ::hyve::math::seed(::hyve::lang::uint32 seed) */
+/* ::cortex::math::seed(::cortex::lang::uint32 seed) */
 extern db_function mth_seed_o;
 
-/* ::hyve::math::sin(::hyve::lang::float64 x) */
+/* ::cortex::math::sin(::cortex::lang::float64 x) */
 extern db_function mth_sin_o;
 
-/* ::hyve::math::sqrt(::hyve::lang::float64 x) */
+/* ::cortex::math::sqrt(::cortex::lang::float64 x) */
 extern db_function mth_sqrt_o;
 
-/* ::hyve::math::tan(::hyve::lang::float64 x) */
+/* ::cortex::math::tan(::cortex::lang::float64 x) */
 extern db_function mth_tan_o;
 
 int math_load(void);

@@ -9,7 +9,7 @@
 #define tc_stringser__API_H
 
 #include "tc_stringser__type.h"
-#include "hyve.h"
+#include "cortex.h"
 
 #ifdef __cplusplus
 extern "C" {

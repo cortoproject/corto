@@ -5,7 +5,7 @@
  *      Author: sander
  */
 
-#include "hyve.h"
+#include "cortex.h"
 #include "db_generator.h"
 #include "db_loader.h"
 #include "db_arg.h"
@@ -142,7 +142,7 @@ static int db_parseArguments(int argc, char* argv[]) {
 void printUsage(void) {
 	printf("Usage:\n");
 	printf("   dbgen [file 0..n] --scope [scope] --prefix [prefix] --lang [language] -g [generator 1..n] -attr [key=value]\n");
-	printf("     file:     Any file that is loadable by Hyve (optional).\n");
+	printf("     file:     Any file that is loadable by Cortex (optional).\n");
 	printf("     --scope:  Provide the scope for which code will be generated.\n");
 	printf("     --prefix: Provide a prefix for the generated code (optional).\n");
 	printf("     --lang:   Provide the language. Possible choices are c and cpp (optional).\n");
@@ -152,10 +152,10 @@ void printUsage(void) {
 	printf("               Attributes are specified using a key=value syntax.\n");
 	printf("\n");
 	printf("Examples:\n");
-	printf("   dbgen Foo.hyve --scope Foo --lang c\n");
-	printf("   dbgen Foo.hyve --scope Foo -g c_type -g c_interface -g c_load -g c_api --attr c=src --attr h=include\n");
-	printf("   dbgen Foo.hyve --scope Foo --lang cpp\n");
-	printf("   dbgen Foo.hyve --scope Foo --prefix Bar --lang cpp (replaces 'Foo' by 'Bar' in generated code)\n");
+	printf("   dbgen Foo.cortex --scope Foo --lang c\n");
+	printf("   dbgen Foo.cortex --scope Foo -g c_type -g c_interface -g c_load -g c_api --attr c=src --attr h=include\n");
+	printf("   dbgen Foo.cortex --scope Foo --lang cpp\n");
+	printf("   dbgen Foo.cortex --scope Foo --prefix Bar --lang cpp (replaces 'Foo' by 'Bar' in generated code)\n");
 	printf("\n");
 }
 
@@ -214,10 +214,10 @@ int main(int argc, char* argv[]) {
 			/* Resolve object */
 			o = db_resolve(NULL, scope);
 			if (!o) {
-				/* Be smart, look for a file that matches the requested scope by adding .hyve
+				/* Be smart, look for a file that matches the requested scope by adding .cortex
 				 * to the scopename. */
 			    db_load("fast");
-				db_id fileName; sprintf(fileName, "%s.hyve", scope);
+				db_id fileName; sprintf(fileName, "%s.cortex", scope);
 				db_load(fileName);
 				o = db_resolve(NULL, scope);
 				if (!o) {

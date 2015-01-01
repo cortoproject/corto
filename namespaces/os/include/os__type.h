@@ -7,7 +7,7 @@
 #ifndef os__type_H
 #define os__type_H
 
-#include "hyve.h"
+#include "cortex.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -19,28 +19,28 @@ extern "C" {
 
 /* Type definitions */
 
-/* ::hyve::os::loadAvgKind */
+/* ::cortex::os::loadAvgKind */
 typedef enum os_loadAvgKind {
     OS_MIN_1 = 0,
     OS_MIN_5 = 1,
     OS_MIN_15 = 2
 } os_loadAvgKind;
 
-/*  ::hyve::os::thread */
+/*  ::cortex::os::thread */
 DB_CLASS(os_thread);
 DB_CLASS_DEF(os_thread) {
     db_word handle;
     db_bool stopping;
 };
 
-/*  ::hyve::os::time */
+/*  ::cortex::os::time */
 DB_CLASS(os_time);
 DB_CLASS_DEF(os_time) {
     db_int32 seconds;
     db_uint32 nanoseconds;
 };
 
-/*  ::hyve::os::timer */
+/*  ::cortex::os::timer */
 DB_CLASS(os_timer);
 DB_CLASS_DEF(os_timer) {
     DB_EXTEND(os_thread);

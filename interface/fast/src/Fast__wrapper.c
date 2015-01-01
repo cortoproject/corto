@@ -1,6 +1,6 @@
 /* Fast__wrapper.c
  *
- * This file contains wrapper functions for ::hyve::Fast.
+ * This file contains wrapper functions for ::cortex::Fast.
  */
 
 #include "Fast.h"
@@ -25,7 +25,7 @@ void __Fast_BinaryExpr_fold(db_function f, void *result, void *args) {
         *(Fast_BinaryExpr*)args);
 }
 
-/* virtual ::hyve::Fast::BinaryExpr::hasSideEffects() */
+/* virtual ::cortex::Fast::BinaryExpr::hasSideEffects() */
 db_bool Fast_BinaryExpr_hasSideEffects(Fast_BinaryExpr _this) {
     static db_uint32 _methodId;
     db_method _method;
@@ -64,7 +64,7 @@ void __Fast_BinaryExpr_setOperator(db_function f, void *result, void *args) {
         *(db_operatorKind*)((intptr_t)args + sizeof(Fast_BinaryExpr)));
 }
 
-/* virtual ::hyve::Fast::BinaryExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::BinaryExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_BinaryExpr_toIc(Fast_BinaryExpr _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
     db_method _method;
@@ -161,7 +161,7 @@ void __Fast_Block_setFunction(db_function f, void *result, void *args) {
         *(db_function*)((intptr_t)args + sizeof(Fast_Block)));
 }
 
-/* virtual ::hyve::Fast::Block::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::Block::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Block_toIc(Fast_Block _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
     db_method _method;
@@ -194,7 +194,7 @@ void __Fast_Block_toIc_v(db_function f, void *result, void *args) {
         *(db_bool*)((intptr_t)args + sizeof(Fast_Block) + sizeof(db_icProgram) + sizeof(db_icStorage)));
 }
 
-/* virtual ::hyve::Fast::Block::toIcBody(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::Block::toIcBody(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Block_toIcBody(Fast_Block _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
     db_method _method;
@@ -241,7 +241,7 @@ void __Fast_Boolean_serialize(db_function f, void *result, void *args) {
         *(db_word*)((intptr_t)args + sizeof(Fast_Boolean) + sizeof(db_type)));
 }
 
-/* virtual ::hyve::Fast::Boolean::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::Boolean::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Boolean_toIc(Fast_Boolean _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
     db_method _method;
@@ -280,7 +280,7 @@ void __Fast_Call_construct(db_function f, void *result, void *args) {
         *(Fast_Call*)args);
 }
 
-/* virtual ::hyve::Fast::Call::hasSideEffects() */
+/* virtual ::cortex::Fast::Call::hasSideEffects() */
 db_bool Fast_Call_hasSideEffects(Fast_Call _this) {
     static db_uint32 _methodId;
     db_method _method;
@@ -319,7 +319,7 @@ void __Fast_Call_resolveActual(db_function f, void *result, void *args) {
         *(Fast_Expression*)((intptr_t)args + sizeof(db_string) + sizeof(db_object)));
 }
 
-/* virtual ::hyve::Fast::Call::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::Call::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Call_toIc(Fast_Call _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
     db_method _method;
@@ -358,7 +358,7 @@ void __Fast_CastExpr_construct(db_function f, void *result, void *args) {
         *(Fast_CastExpr*)args);
 }
 
-/* virtual ::hyve::Fast::CastExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::CastExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_CastExpr_toIc(Fast_CastExpr _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
     db_method _method;
@@ -405,7 +405,7 @@ void __Fast_Character_serialize(db_function f, void *result, void *args) {
         *(db_word*)((intptr_t)args + sizeof(Fast_Character) + sizeof(db_type)));
 }
 
-/* virtual ::hyve::Fast::Character::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::Character::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Character_toIc(Fast_Character _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
     db_method _method;
@@ -458,7 +458,7 @@ void __Fast_CommaExpr_construct(db_function f, void *result, void *args) {
         *(Fast_CommaExpr*)args);
 }
 
-/* virtual ::hyve::Fast::CommaExpr::hasSideEffects() */
+/* virtual ::cortex::Fast::CommaExpr::hasSideEffects() */
 db_bool Fast_CommaExpr_hasSideEffects(Fast_CommaExpr _this) {
     static db_uint32 _methodId;
     db_method _method;
@@ -495,7 +495,7 @@ void __Fast_CommaExpr_init(db_function f, void *result, void *args) {
         *(Fast_CommaExpr*)args);
 }
 
-/* virtual ::hyve::Fast::CommaExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::CommaExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_CommaExpr_toIc(Fast_CommaExpr _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
     db_method _method;
@@ -541,7 +541,7 @@ void __Fast_Define_construct(db_function f, void *result, void *args) {
         *(Fast_Define*)args);
 }
 
-/* virtual ::hyve::Fast::Define::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::Define::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Define_toIc(Fast_Define _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
     db_method _method;
@@ -614,7 +614,7 @@ void __Fast_ElementExpr_construct(db_function f, void *result, void *args) {
         *(Fast_MemberExpr*)args);
 }
 
-/* virtual ::hyve::Fast::ElementExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::ElementExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_ElementExpr_toIc(Fast_ElementExpr _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
     db_method _method;
@@ -661,7 +661,7 @@ void __Fast_Expression_cleanList(db_function f, void *result, void *args) {
         *(Fast_Expression_list*)args);
 }
 
-/* virtual ::hyve::Fast::Expression::fold() */
+/* virtual ::cortex::Fast::Expression::fold() */
 Fast_Expression Fast_Expression_fold(Fast_Expression _this) {
     static db_uint32 _methodId;
     db_method _method;
@@ -719,7 +719,7 @@ void __Fast_Expression_getType_type(db_function f, void *result, void *args) {
         *(db_type*)((intptr_t)args + sizeof(Fast_Expression)));
 }
 
-/* virtual ::hyve::Fast::Expression::getValue() */
+/* virtual ::cortex::Fast::Expression::getValue() */
 db_word Fast_Expression_getValue(Fast_Expression _this) {
     static db_uint32 _methodId;
     db_method _method;
@@ -750,7 +750,7 @@ void __Fast_Expression_getValue_v(db_function f, void *result, void *args) {
         *(Fast_Expression*)args);
 }
 
-/* virtual ::hyve::Fast::Expression::hasSideEffects() */
+/* virtual ::cortex::Fast::Expression::hasSideEffects() */
 db_bool Fast_Expression_hasSideEffects(Fast_Expression _this) {
     static db_uint32 _methodId;
     db_method _method;
@@ -787,7 +787,7 @@ void __Fast_Expression_init(db_function f, void *result, void *args) {
         *(Fast_Expression*)args);
 }
 
-/* virtual ::hyve::Fast::Expression::serialize(lang::type dstType,lang::word dst) */
+/* virtual ::cortex::Fast::Expression::serialize(lang::type dstType,lang::word dst) */
 db_int16 Fast_Expression_serialize(Fast_Expression _this, db_type dstType, db_word dst) {
     static db_uint32 _methodId;
     db_method _method;
@@ -819,7 +819,7 @@ void __Fast_Expression_serialize_v(db_function f, void *result, void *args) {
         *(db_word*)((intptr_t)args + sizeof(Fast_Expression) + sizeof(db_type)));
 }
 
-/* virtual ::hyve::Fast::Expression::toList() */
+/* virtual ::cortex::Fast::Expression::toList() */
 Fast_Expression_list Fast_Expression_toList(Fast_Expression _this) {
     static db_uint32 _methodId;
     db_method _method;
@@ -864,7 +864,7 @@ void __Fast_FloatingPoint_serialize(db_function f, void *result, void *args) {
         *(db_word*)((intptr_t)args + sizeof(Fast_FloatingPoint) + sizeof(db_type)));
 }
 
-/* virtual ::hyve::Fast::FloatingPoint::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::FloatingPoint::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_FloatingPoint_toIc(Fast_FloatingPoint _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
     db_method _method;
@@ -911,7 +911,7 @@ void __Fast_If_noWarnUnreachable(db_function f, void *result, void *args) {
         *(Fast_If*)args);
 }
 
-/* virtual ::hyve::Fast::If::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::If::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_If_toIc(Fast_If _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
     db_method _method;
@@ -957,7 +957,7 @@ void __Fast_Initializer_currentType(db_function f, void *result, void *args) {
         *(Fast_Initializer*)args);
 }
 
-/* virtual ::hyve::Fast::Initializer::define() */
+/* virtual ::cortex::Fast::Initializer::define() */
 db_int16 Fast_Initializer_define(Fast_Initializer _this) {
     static db_uint32 _methodId;
     db_method _method;
@@ -995,7 +995,7 @@ void __Fast_Initializer_initFrame(db_function f, void *result, void *args) {
         *(Fast_Initializer*)args);
 }
 
-/* virtual ::hyve::Fast::Initializer::member(lang::string name) */
+/* virtual ::cortex::Fast::Initializer::member(lang::string name) */
 db_int32 Fast_Initializer_member(Fast_Initializer _this, db_string name) {
     static db_uint32 _methodId;
     db_method _method;
@@ -1026,7 +1026,7 @@ void __Fast_Initializer_member_v(db_function f, void *result, void *args) {
         *(db_string*)((intptr_t)args + sizeof(Fast_Initializer)));
 }
 
-/* virtual ::hyve::Fast::Initializer::next() */
+/* virtual ::cortex::Fast::Initializer::next() */
 db_int16 Fast_Initializer_next(Fast_Initializer _this) {
     static db_uint32 _methodId;
     db_method _method;
@@ -1057,7 +1057,7 @@ void __Fast_Initializer_next_v(db_function f, void *result, void *args) {
         *(Fast_Initializer*)args);
 }
 
-/* virtual ::hyve::Fast::Initializer::pop() */
+/* virtual ::cortex::Fast::Initializer::pop() */
 db_int8 Fast_Initializer_pop(Fast_Initializer _this) {
     static db_uint32 _methodId;
     db_method _method;
@@ -1088,7 +1088,7 @@ void __Fast_Initializer_pop_v(db_function f, void *result, void *args) {
         *(Fast_Initializer*)args);
 }
 
-/* virtual ::hyve::Fast::Initializer::popKey() */
+/* virtual ::cortex::Fast::Initializer::popKey() */
 db_int16 Fast_Initializer_popKey(Fast_Initializer _this) {
     static db_uint32 _methodId;
     db_method _method;
@@ -1119,7 +1119,7 @@ void __Fast_Initializer_popKey_v(db_function f, void *result, void *args) {
         *(Fast_Initializer*)args);
 }
 
-/* virtual ::hyve::Fast::Initializer::push() */
+/* virtual ::cortex::Fast::Initializer::push() */
 db_int16 Fast_Initializer_push(Fast_Initializer _this) {
     static db_uint32 _methodId;
     db_method _method;
@@ -1150,7 +1150,7 @@ void __Fast_Initializer_push_v(db_function f, void *result, void *args) {
         *(Fast_Initializer*)args);
 }
 
-/* virtual ::hyve::Fast::Initializer::pushKey() */
+/* virtual ::cortex::Fast::Initializer::pushKey() */
 db_int16 Fast_Initializer_pushKey(Fast_Initializer _this) {
     static db_uint32 _methodId;
     db_method _method;
@@ -1188,7 +1188,7 @@ void __Fast_Initializer_type(db_function f, void *result, void *args) {
         *(Fast_Initializer*)args);
 }
 
-/* virtual ::hyve::Fast::Initializer::value(Expression v) */
+/* virtual ::cortex::Fast::Initializer::value(Expression v) */
 db_int16 Fast_Initializer_value(Fast_Initializer _this, Fast_Expression v) {
     static db_uint32 _methodId;
     db_method _method;
@@ -1219,7 +1219,7 @@ void __Fast_Initializer_value_v(db_function f, void *result, void *args) {
         *(Fast_Expression*)((intptr_t)args + sizeof(Fast_Initializer)));
 }
 
-/* virtual ::hyve::Fast::Initializer::valueKey(Expression key) */
+/* virtual ::cortex::Fast::Initializer::valueKey(Expression key) */
 db_int16 Fast_Initializer_valueKey(Fast_Initializer _this, Fast_Expression key) {
     static db_uint32 _methodId;
     db_method _method;
@@ -1312,7 +1312,7 @@ void __Fast_Integer_serialize(db_function f, void *result, void *args) {
         *(db_word*)((intptr_t)args + sizeof(Fast_Integer) + sizeof(db_type)));
 }
 
-/* virtual ::hyve::Fast::Integer::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::Integer::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Integer_toIc(Fast_Integer _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
     db_method _method;
@@ -1345,7 +1345,7 @@ void __Fast_Integer_toIc_v(db_function f, void *result, void *args) {
         *(db_bool*)((intptr_t)args + sizeof(Fast_Integer) + sizeof(db_icProgram) + sizeof(db_icStorage)));
 }
 
-/* virtual ::hyve::Fast::Literal::getValue() */
+/* virtual ::cortex::Fast::Literal::getValue() */
 db_word Fast_Literal_getValue(Fast_Literal _this) {
     static db_uint32 _methodId;
     db_method _method;
@@ -1388,7 +1388,7 @@ void __Fast_Local_construct(db_function f, void *result, void *args) {
         *(Fast_Local*)args);
 }
 
-/* virtual ::hyve::Fast::Local::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::Local::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Local_toIc(Fast_Local _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
     db_method _method;
@@ -1427,7 +1427,7 @@ void __Fast_MemberExpr_construct(db_function f, void *result, void *args) {
         *(Fast_MemberExpr*)args);
 }
 
-/* virtual ::hyve::Fast::MemberExpr::hasSideEffects() */
+/* virtual ::cortex::Fast::MemberExpr::hasSideEffects() */
 db_bool Fast_MemberExpr_hasSideEffects(Fast_MemberExpr _this) {
     static db_uint32 _methodId;
     db_method _method;
@@ -1458,7 +1458,7 @@ void __Fast_MemberExpr_hasSideEffects_v(db_function f, void *result, void *args)
         *(Fast_MemberExpr*)args);
 }
 
-/* virtual ::hyve::Fast::MemberExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::MemberExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_MemberExpr_toIc(Fast_MemberExpr _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
     db_method _method;
@@ -1497,7 +1497,7 @@ void __Fast_NewExpr_construct(db_function f, void *result, void *args) {
         *(Fast_NewExpr*)args);
 }
 
-/* virtual ::hyve::Fast::NewExpr::hasSideEffects() */
+/* virtual ::cortex::Fast::NewExpr::hasSideEffects() */
 db_bool Fast_NewExpr_hasSideEffects(Fast_NewExpr _this) {
     static db_uint32 _methodId;
     db_method _method;
@@ -1528,7 +1528,7 @@ void __Fast_NewExpr_hasSideEffects_v(db_function f, void *result, void *args) {
         *(Fast_NewExpr*)args);
 }
 
-/* virtual ::hyve::Fast::NewExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::NewExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_NewExpr_toIc(Fast_NewExpr _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
     db_method _method;
@@ -1567,7 +1567,7 @@ void __Fast_Node_init(db_function f, void *result, void *args) {
         *(Fast_Node*)args);
 }
 
-/* virtual ::hyve::Fast::Node::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::Node::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Node_toIc(Fast_Node _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
     db_method _method;
@@ -1614,7 +1614,7 @@ void __Fast_Null_serialize(db_function f, void *result, void *args) {
         *(db_word*)((intptr_t)args + sizeof(Fast_Null) + sizeof(db_type)));
 }
 
-/* virtual ::hyve::Fast::Null::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::Null::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Null_toIc(Fast_Null _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
     db_method _method;
@@ -1668,7 +1668,7 @@ void __Fast_Object_serialize(db_function f, void *result, void *args) {
         *(db_word*)((intptr_t)args + sizeof(Fast_Object) + sizeof(db_type)));
 }
 
-/* virtual ::hyve::Fast::Object::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::Object::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Object_toIc(Fast_Object _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
     db_method _method;
@@ -2184,7 +2184,7 @@ void __Fast_PostfixExpr_construct(db_function f, void *result, void *args) {
         *(Fast_PostfixExpr*)args);
 }
 
-/* virtual ::hyve::Fast::PostfixExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::PostfixExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_PostfixExpr_toIc(Fast_PostfixExpr _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
     db_method _method;
@@ -2231,7 +2231,7 @@ void __Fast_SignedInteger_serialize(db_function f, void *result, void *args) {
         *(db_word*)((intptr_t)args + sizeof(Fast_SignedInteger) + sizeof(db_type)));
 }
 
-/* virtual ::hyve::Fast::SignedInteger::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::SignedInteger::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_SignedInteger_toIc(Fast_SignedInteger _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
     db_method _method;
@@ -2318,7 +2318,7 @@ void __Fast_String_serialize(db_function f, void *result, void *args) {
         *(db_word*)((intptr_t)args + sizeof(Fast_String) + sizeof(db_type)));
 }
 
-/* virtual ::hyve::Fast::String::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::String::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_String_toIc(Fast_String _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
     db_method _method;
@@ -2363,7 +2363,7 @@ void __Fast_TernaryExpr_construct(db_function f, void *result, void *args) {
         *(Fast_TernaryExpr*)args);
 }
 
-/* virtual ::hyve::Fast::TernaryExpr::hasSideEffects() */
+/* virtual ::cortex::Fast::TernaryExpr::hasSideEffects() */
 db_bool Fast_TernaryExpr_hasSideEffects(Fast_TernaryExpr _this) {
     static db_uint32 _methodId;
     db_method _method;
@@ -2402,7 +2402,7 @@ void __Fast_TernaryExpr_setOperator(db_function f, void *result, void *args) {
         *(db_operatorKind*)((intptr_t)args + sizeof(Fast_TernaryExpr)));
 }
 
-/* virtual ::hyve::Fast::TernaryExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::TernaryExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_TernaryExpr_toIc(Fast_TernaryExpr _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
     db_method _method;
@@ -2441,7 +2441,7 @@ void __Fast_UnaryExpr_construct(db_function f, void *result, void *args) {
         *(Fast_UnaryExpr*)args);
 }
 
-/* virtual ::hyve::Fast::UnaryExpr::hasSideEffects() */
+/* virtual ::cortex::Fast::UnaryExpr::hasSideEffects() */
 db_bool Fast_UnaryExpr_hasSideEffects(Fast_UnaryExpr _this) {
     static db_uint32 _methodId;
     db_method _method;
@@ -2472,7 +2472,7 @@ void __Fast_UnaryExpr_hasSideEffects_v(db_function f, void *result, void *args) 
         *(Fast_UnaryExpr*)args);
 }
 
-/* virtual ::hyve::Fast::UnaryExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::UnaryExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_UnaryExpr_toIc(Fast_UnaryExpr _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
     db_method _method;
@@ -2511,7 +2511,7 @@ void __Fast_Update_construct(db_function f, void *result, void *args) {
         *(Fast_Update*)args);
 }
 
-/* virtual ::hyve::Fast::Update::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::Update::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Update_toIc(Fast_Update _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
     db_method _method;
@@ -2556,7 +2556,7 @@ void __Fast_Wait_construct(db_function f, void *result, void *args) {
         *(Fast_Wait*)args);
 }
 
-/* virtual ::hyve::Fast::Wait::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::Wait::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Wait_toIc(Fast_Wait _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
     db_method _method;
@@ -2595,7 +2595,7 @@ void __Fast_While_construct(db_function f, void *result, void *args) {
         *(Fast_While*)args);
 }
 
-/* virtual ::hyve::Fast::While::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::While::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_While_toIc(Fast_While _this, db_icProgram program, db_icStorage storage, db_bool stored) {
     static db_uint32 _methodId;
     db_method _method;

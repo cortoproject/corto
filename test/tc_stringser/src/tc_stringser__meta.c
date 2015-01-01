@@ -223,7 +223,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::classInherit::a */
     if (!db_checkState(tc_classInherit_a_o, DB_DEFINED)) {
-        tc_classInherit_a_o->type = db_resolve_ext(tc_classInherit_a_o, NULL, "::hyve::lang::bool", FALSE, "element ::tc_stringser::classInherit::a.type");
+        tc_classInherit_a_o->type = db_resolve_ext(tc_classInherit_a_o, NULL, "::cortex::lang::bool", FALSE, "element ::tc_stringser::classInherit::a.type");
         tc_classInherit_a_o->modifiers = 0x0;
         tc_classInherit_a_o->state = 0x6;
         tc_classInherit_a_o->weak = FALSE;
@@ -242,7 +242,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::classInherit::b */
     if (!db_checkState(tc_classInherit_b_o, DB_DEFINED)) {
-        tc_classInherit_b_o->type = db_resolve_ext(tc_classInherit_b_o, NULL, "::hyve::lang::char", FALSE, "element ::tc_stringser::classInherit::b.type");
+        tc_classInherit_b_o->type = db_resolve_ext(tc_classInherit_b_o, NULL, "::cortex::lang::char", FALSE, "element ::tc_stringser::classInherit::b.type");
         tc_classInherit_b_o->modifiers = 0x0;
         tc_classInherit_b_o->state = 0x6;
         tc_classInherit_b_o->weak = FALSE;
@@ -261,7 +261,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::classInherit::c */
     if (!db_checkState(tc_classInherit_c_o, DB_DEFINED)) {
-        tc_classInherit_c_o->type = db_resolve_ext(tc_classInherit_c_o, NULL, "::hyve::lang::int32", FALSE, "element ::tc_stringser::classInherit::c.type");
+        tc_classInherit_c_o->type = db_resolve_ext(tc_classInherit_c_o, NULL, "::cortex::lang::int32", FALSE, "element ::tc_stringser::classInherit::c.type");
         tc_classInherit_c_o->modifiers = 0x0;
         tc_classInherit_c_o->state = 0x6;
         tc_classInherit_c_o->weak = FALSE;
@@ -280,7 +280,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::classInherit::d */
     if (!db_checkState(tc_classInherit_d_o, DB_DEFINED)) {
-        tc_classInherit_d_o->type = db_resolve_ext(tc_classInherit_d_o, NULL, "::hyve::lang::float32", FALSE, "element ::tc_stringser::classInherit::d.type");
+        tc_classInherit_d_o->type = db_resolve_ext(tc_classInherit_d_o, NULL, "::cortex::lang::float32", FALSE, "element ::tc_stringser::classInherit::d.type");
         tc_classInherit_d_o->modifiers = 0x0;
         tc_classInherit_d_o->state = 0x6;
         tc_classInherit_d_o->weak = FALSE;
@@ -299,7 +299,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::classInherit::e */
     if (!db_checkState(tc_classInherit_e_o, DB_DEFINED)) {
-        tc_classInherit_e_o->type = db_resolve_ext(tc_classInherit_e_o, NULL, "::hyve::lang::string", FALSE, "element ::tc_stringser::classInherit::e.type");
+        tc_classInherit_e_o->type = db_resolve_ext(tc_classInherit_e_o, NULL, "::cortex::lang::string", FALSE, "element ::tc_stringser::classInherit::e.type");
         tc_classInherit_e_o->modifiers = 0x0;
         tc_classInherit_e_o->state = 0x6;
         tc_classInherit_e_o->weak = FALSE;
@@ -332,7 +332,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::listOfClassInherit */
     if (!db_checkState(tc_listOfClassInherit_o, DB_DEFINED)) {
-        tc_listOfClassInherit_o->type = db_resolve_ext(tc_listOfClassInherit_o, NULL, "::hyve::lang::list{::tc_stringser::classInherit,3}", FALSE, "element ::tc_stringser::listOfClassInherit.type");
+        tc_listOfClassInherit_o->type = db_resolve_ext(tc_listOfClassInherit_o, NULL, "::cortex::lang::list{::tc_stringser::classInherit,3}", FALSE, "element ::tc_stringser::listOfClassInherit.type");
         if (db_define(tc_listOfClassInherit_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::listOfClassInherit'.");
             goto error;
@@ -359,7 +359,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::sequenceOfClassInherit */
     if (!db_checkState(tc_sequenceOfClassInherit_o, DB_DEFINED)) {
-        tc_sequenceOfClassInherit_o->type = db_resolve_ext(tc_sequenceOfClassInherit_o, NULL, "::hyve::lang::sequence{::tc_stringser::classInherit,3}", FALSE, "element ::tc_stringser::sequenceOfClassInherit.type");
+        tc_sequenceOfClassInherit_o->type = db_resolve_ext(tc_sequenceOfClassInherit_o, NULL, "::cortex::lang::sequence{::tc_stringser::classInherit,3}", FALSE, "element ::tc_stringser::sequenceOfClassInherit.type");
         if (db_define(tc_sequenceOfClassInherit_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::sequenceOfClassInherit'.");
             goto error;
@@ -428,7 +428,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::listOfClassNested */
     if (!db_checkState(tc_listOfClassNested_o, DB_DEFINED)) {
-        tc_listOfClassNested_o->type = db_resolve_ext(tc_listOfClassNested_o, NULL, "::hyve::lang::list{::tc_stringser::classNested,3}", FALSE, "element ::tc_stringser::listOfClassNested.type");
+        tc_listOfClassNested_o->type = db_resolve_ext(tc_listOfClassNested_o, NULL, "::cortex::lang::list{::tc_stringser::classNested,3}", FALSE, "element ::tc_stringser::listOfClassNested.type");
         if (db_define(tc_listOfClassNested_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::listOfClassNested'.");
             goto error;
@@ -455,7 +455,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::sequenceOfClassNested */
     if (!db_checkState(tc_sequenceOfClassNested_o, DB_DEFINED)) {
-        tc_sequenceOfClassNested_o->type = db_resolve_ext(tc_sequenceOfClassNested_o, NULL, "::hyve::lang::sequence{::tc_stringser::classNested,3}", FALSE, "element ::tc_stringser::sequenceOfClassNested.type");
+        tc_sequenceOfClassNested_o->type = db_resolve_ext(tc_sequenceOfClassNested_o, NULL, "::cortex::lang::sequence{::tc_stringser::classNested,3}", FALSE, "element ::tc_stringser::sequenceOfClassNested.type");
         if (db_define(tc_sequenceOfClassNested_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::sequenceOfClassNested'.");
             goto error;
@@ -477,7 +477,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::classPrimitives::a */
     if (!db_checkState(tc_classPrimitives_a_o, DB_DEFINED)) {
-        tc_classPrimitives_a_o->type = db_resolve_ext(tc_classPrimitives_a_o, NULL, "::hyve::lang::bool", FALSE, "element ::tc_stringser::classPrimitives::a.type");
+        tc_classPrimitives_a_o->type = db_resolve_ext(tc_classPrimitives_a_o, NULL, "::cortex::lang::bool", FALSE, "element ::tc_stringser::classPrimitives::a.type");
         tc_classPrimitives_a_o->modifiers = 0x0;
         tc_classPrimitives_a_o->state = 0x6;
         tc_classPrimitives_a_o->weak = FALSE;
@@ -496,7 +496,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::classPrimitives::b */
     if (!db_checkState(tc_classPrimitives_b_o, DB_DEFINED)) {
-        tc_classPrimitives_b_o->type = db_resolve_ext(tc_classPrimitives_b_o, NULL, "::hyve::lang::char", FALSE, "element ::tc_stringser::classPrimitives::b.type");
+        tc_classPrimitives_b_o->type = db_resolve_ext(tc_classPrimitives_b_o, NULL, "::cortex::lang::char", FALSE, "element ::tc_stringser::classPrimitives::b.type");
         tc_classPrimitives_b_o->modifiers = 0x0;
         tc_classPrimitives_b_o->state = 0x6;
         tc_classPrimitives_b_o->weak = FALSE;
@@ -515,7 +515,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::classPrimitives::c */
     if (!db_checkState(tc_classPrimitives_c_o, DB_DEFINED)) {
-        tc_classPrimitives_c_o->type = db_resolve_ext(tc_classPrimitives_c_o, NULL, "::hyve::lang::int32", FALSE, "element ::tc_stringser::classPrimitives::c.type");
+        tc_classPrimitives_c_o->type = db_resolve_ext(tc_classPrimitives_c_o, NULL, "::cortex::lang::int32", FALSE, "element ::tc_stringser::classPrimitives::c.type");
         tc_classPrimitives_c_o->modifiers = 0x0;
         tc_classPrimitives_c_o->state = 0x6;
         tc_classPrimitives_c_o->weak = FALSE;
@@ -534,7 +534,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::classPrimitives::d */
     if (!db_checkState(tc_classPrimitives_d_o, DB_DEFINED)) {
-        tc_classPrimitives_d_o->type = db_resolve_ext(tc_classPrimitives_d_o, NULL, "::hyve::lang::float32", FALSE, "element ::tc_stringser::classPrimitives::d.type");
+        tc_classPrimitives_d_o->type = db_resolve_ext(tc_classPrimitives_d_o, NULL, "::cortex::lang::float32", FALSE, "element ::tc_stringser::classPrimitives::d.type");
         tc_classPrimitives_d_o->modifiers = 0x0;
         tc_classPrimitives_d_o->state = 0x6;
         tc_classPrimitives_d_o->weak = FALSE;
@@ -553,7 +553,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::classPrimitives::e */
     if (!db_checkState(tc_classPrimitives_e_o, DB_DEFINED)) {
-        tc_classPrimitives_e_o->type = db_resolve_ext(tc_classPrimitives_e_o, NULL, "::hyve::lang::string", FALSE, "element ::tc_stringser::classPrimitives::e.type");
+        tc_classPrimitives_e_o->type = db_resolve_ext(tc_classPrimitives_e_o, NULL, "::cortex::lang::string", FALSE, "element ::tc_stringser::classPrimitives::e.type");
         tc_classPrimitives_e_o->modifiers = 0x0;
         tc_classPrimitives_e_o->state = 0x6;
         tc_classPrimitives_e_o->weak = FALSE;
@@ -586,7 +586,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::listOfClassPrimitives */
     if (!db_checkState(tc_listOfClassPrimitives_o, DB_DEFINED)) {
-        tc_listOfClassPrimitives_o->type = db_resolve_ext(tc_listOfClassPrimitives_o, NULL, "::hyve::lang::list{::tc_stringser::classPrimitives,3}", FALSE, "element ::tc_stringser::listOfClassPrimitives.type");
+        tc_listOfClassPrimitives_o->type = db_resolve_ext(tc_listOfClassPrimitives_o, NULL, "::cortex::lang::list{::tc_stringser::classPrimitives,3}", FALSE, "element ::tc_stringser::listOfClassPrimitives.type");
         if (db_define(tc_listOfClassPrimitives_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::listOfClassPrimitives'.");
             goto error;
@@ -601,7 +601,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::sequenceOfClassPrimitives */
     if (!db_checkState(tc_sequenceOfClassPrimitives_o, DB_DEFINED)) {
-        tc_sequenceOfClassPrimitives_o->type = db_resolve_ext(tc_sequenceOfClassPrimitives_o, NULL, "::hyve::lang::sequence{::tc_stringser::classPrimitives,3}", FALSE, "element ::tc_stringser::sequenceOfClassPrimitives.type");
+        tc_sequenceOfClassPrimitives_o->type = db_resolve_ext(tc_sequenceOfClassPrimitives_o, NULL, "::cortex::lang::sequence{::tc_stringser::classPrimitives,3}", FALSE, "element ::tc_stringser::sequenceOfClassPrimitives.type");
         if (db_define(tc_sequenceOfClassPrimitives_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::sequenceOfClassPrimitives'.");
             goto error;
@@ -692,7 +692,7 @@ int tc_stringser_load(void) {
     }
     /* Define ::tc_stringser::arrayOfColor */
     if (!db_checkState(tc_arrayOfColor_o, DB_DEFINED)) {
-        tc_arrayOfColor_o->type = db_resolve_ext(tc_arrayOfColor_o, NULL, "::hyve::lang::array{::tc_stringser::color,3,::tc_stringser::color}", FALSE, "element ::tc_stringser::arrayOfColor.type");
+        tc_arrayOfColor_o->type = db_resolve_ext(tc_arrayOfColor_o, NULL, "::cortex::lang::array{::tc_stringser::color,3,::tc_stringser::color}", FALSE, "element ::tc_stringser::arrayOfColor.type");
         if (db_define(tc_arrayOfColor_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::arrayOfColor'.");
             goto error;
@@ -707,7 +707,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::listOfColor */
     if (!db_checkState(tc_listOfColor_o, DB_DEFINED)) {
-        tc_listOfColor_o->type = db_resolve_ext(tc_listOfColor_o, NULL, "::hyve::lang::list{::tc_stringser::color,3}", FALSE, "element ::tc_stringser::listOfColor.type");
+        tc_listOfColor_o->type = db_resolve_ext(tc_listOfColor_o, NULL, "::cortex::lang::list{::tc_stringser::color,3}", FALSE, "element ::tc_stringser::listOfColor.type");
         if (db_define(tc_listOfColor_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::listOfColor'.");
             goto error;
@@ -722,7 +722,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::sequenceOfColor */
     if (!db_checkState(tc_sequenceOfColor_o, DB_DEFINED)) {
-        tc_sequenceOfColor_o->type = db_resolve_ext(tc_sequenceOfColor_o, NULL, "::hyve::lang::sequence{::tc_stringser::color,3}", FALSE, "element ::tc_stringser::sequenceOfColor.type");
+        tc_sequenceOfColor_o->type = db_resolve_ext(tc_sequenceOfColor_o, NULL, "::cortex::lang::sequence{::tc_stringser::color,3}", FALSE, "element ::tc_stringser::sequenceOfColor.type");
         if (db_define(tc_sequenceOfColor_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::sequenceOfColor'.");
             goto error;
@@ -893,7 +893,7 @@ int tc_stringser_load(void) {
     }
     /* Define ::tc_stringser::arrayOfClassInherit */
     if (!db_checkState(tc_arrayOfClassInherit_o, DB_DEFINED)) {
-        tc_arrayOfClassInherit_o->type = db_resolve_ext(tc_arrayOfClassInherit_o, NULL, "::hyve::lang::array{::tc_stringser::classInherit,3,::tc_stringser::classInherit}", FALSE, "element ::tc_stringser::arrayOfClassInherit.type");
+        tc_arrayOfClassInherit_o->type = db_resolve_ext(tc_arrayOfClassInherit_o, NULL, "::cortex::lang::array{::tc_stringser::classInherit,3,::tc_stringser::classInherit}", FALSE, "element ::tc_stringser::arrayOfClassInherit.type");
         if (db_define(tc_arrayOfClassInherit_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::arrayOfClassInherit'.");
             goto error;
@@ -925,7 +925,7 @@ int tc_stringser_load(void) {
     }
     /* Define ::tc_stringser::arrayOfClassPrimitives */
     if (!db_checkState(tc_arrayOfClassPrimitives_o, DB_DEFINED)) {
-        tc_arrayOfClassPrimitives_o->type = db_resolve_ext(tc_arrayOfClassPrimitives_o, NULL, "::hyve::lang::array{::tc_stringser::classPrimitives,3,::tc_stringser::classPrimitives}", FALSE, "element ::tc_stringser::arrayOfClassPrimitives.type");
+        tc_arrayOfClassPrimitives_o->type = db_resolve_ext(tc_arrayOfClassPrimitives_o, NULL, "::cortex::lang::array{::tc_stringser::classPrimitives,3,::tc_stringser::classPrimitives}", FALSE, "element ::tc_stringser::arrayOfClassPrimitives.type");
         if (db_define(tc_arrayOfClassPrimitives_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::arrayOfClassPrimitives'.");
             goto error;
@@ -933,7 +933,7 @@ int tc_stringser_load(void) {
     }
     /* Define ::tc_stringser::arrayOfMoveMode */
     if (!db_checkState(tc_arrayOfMoveMode_o, DB_DEFINED)) {
-        tc_arrayOfMoveMode_o->type = db_resolve_ext(tc_arrayOfMoveMode_o, NULL, "::hyve::lang::array{::tc_stringser::moveMode,3,::tc_stringser::moveMode}", FALSE, "element ::tc_stringser::arrayOfMoveMode.type");
+        tc_arrayOfMoveMode_o->type = db_resolve_ext(tc_arrayOfMoveMode_o, NULL, "::cortex::lang::array{::tc_stringser::moveMode,3,::tc_stringser::moveMode}", FALSE, "element ::tc_stringser::arrayOfMoveMode.type");
         if (db_define(tc_arrayOfMoveMode_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::arrayOfMoveMode'.");
             goto error;
@@ -941,7 +941,7 @@ int tc_stringser_load(void) {
     }
     /* Define ::tc_stringser::listOfMoveMode */
     if (!db_checkState(tc_listOfMoveMode_o, DB_DEFINED)) {
-        tc_listOfMoveMode_o->type = db_resolve_ext(tc_listOfMoveMode_o, NULL, "::hyve::lang::list{::tc_stringser::moveMode,3}", FALSE, "element ::tc_stringser::listOfMoveMode.type");
+        tc_listOfMoveMode_o->type = db_resolve_ext(tc_listOfMoveMode_o, NULL, "::cortex::lang::list{::tc_stringser::moveMode,3}", FALSE, "element ::tc_stringser::listOfMoveMode.type");
         if (db_define(tc_listOfMoveMode_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::listOfMoveMode'.");
             goto error;
@@ -956,7 +956,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::sequenceOfMoveMode */
     if (!db_checkState(tc_sequenceOfMoveMode_o, DB_DEFINED)) {
-        tc_sequenceOfMoveMode_o->type = db_resolve_ext(tc_sequenceOfMoveMode_o, NULL, "::hyve::lang::sequence{::tc_stringser::moveMode,3}", FALSE, "element ::tc_stringser::sequenceOfMoveMode.type");
+        tc_sequenceOfMoveMode_o->type = db_resolve_ext(tc_sequenceOfMoveMode_o, NULL, "::cortex::lang::sequence{::tc_stringser::moveMode,3}", FALSE, "element ::tc_stringser::sequenceOfMoveMode.type");
         if (db_define(tc_sequenceOfMoveMode_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::sequenceOfMoveMode'.");
             goto error;
@@ -999,7 +999,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::arrayOfBool */
     if (!db_checkState(tc_arrayOfBool_o, DB_DEFINED)) {
-        tc_arrayOfBool_o->type = db_resolve_ext(tc_arrayOfBool_o, NULL, "::hyve::lang::array{::hyve::lang::bool,3,::hyve::lang::bool}", FALSE, "element ::tc_stringser::arrayOfBool.type");
+        tc_arrayOfBool_o->type = db_resolve_ext(tc_arrayOfBool_o, NULL, "::cortex::lang::array{::cortex::lang::bool,3,::cortex::lang::bool}", FALSE, "element ::tc_stringser::arrayOfBool.type");
         if (db_define(tc_arrayOfBool_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::arrayOfBool'.");
             goto error;
@@ -1007,7 +1007,7 @@ int tc_stringser_load(void) {
     }
     /* Define ::tc_stringser::arrayOfChar */
     if (!db_checkState(tc_arrayOfChar_o, DB_DEFINED)) {
-        tc_arrayOfChar_o->type = db_resolve_ext(tc_arrayOfChar_o, NULL, "::hyve::lang::array{::hyve::lang::char,3,::hyve::lang::char}", FALSE, "element ::tc_stringser::arrayOfChar.type");
+        tc_arrayOfChar_o->type = db_resolve_ext(tc_arrayOfChar_o, NULL, "::cortex::lang::array{::cortex::lang::char,3,::cortex::lang::char}", FALSE, "element ::tc_stringser::arrayOfChar.type");
         if (db_define(tc_arrayOfChar_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::arrayOfChar'.");
             goto error;
@@ -1015,7 +1015,7 @@ int tc_stringser_load(void) {
     }
     /* Define ::tc_stringser::arrayOfFloat */
     if (!db_checkState(tc_arrayOfFloat_o, DB_DEFINED)) {
-        tc_arrayOfFloat_o->type = db_resolve_ext(tc_arrayOfFloat_o, NULL, "::hyve::lang::array{::hyve::lang::float32,3,::hyve::lang::float32}", FALSE, "element ::tc_stringser::arrayOfFloat.type");
+        tc_arrayOfFloat_o->type = db_resolve_ext(tc_arrayOfFloat_o, NULL, "::cortex::lang::array{::cortex::lang::float32,3,::cortex::lang::float32}", FALSE, "element ::tc_stringser::arrayOfFloat.type");
         if (db_define(tc_arrayOfFloat_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::arrayOfFloat'.");
             goto error;
@@ -1023,7 +1023,7 @@ int tc_stringser_load(void) {
     }
     /* Define ::tc_stringser::arrayOfInt */
     if (!db_checkState(tc_arrayOfInt_o, DB_DEFINED)) {
-        tc_arrayOfInt_o->type = db_resolve_ext(tc_arrayOfInt_o, NULL, "::hyve::lang::array{::hyve::lang::int32,3,::hyve::lang::int32}", FALSE, "element ::tc_stringser::arrayOfInt.type");
+        tc_arrayOfInt_o->type = db_resolve_ext(tc_arrayOfInt_o, NULL, "::cortex::lang::array{::cortex::lang::int32,3,::cortex::lang::int32}", FALSE, "element ::tc_stringser::arrayOfInt.type");
         if (db_define(tc_arrayOfInt_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::arrayOfInt'.");
             goto error;
@@ -1043,7 +1043,7 @@ int tc_stringser_load(void) {
     }
     /* Define ::tc_stringser::arrayOfString */
     if (!db_checkState(tc_arrayOfString_o, DB_DEFINED)) {
-        tc_arrayOfString_o->type = db_resolve_ext(tc_arrayOfString_o, NULL, "::hyve::lang::array{::hyve::lang::string,3,::hyve::lang::string}", FALSE, "element ::tc_stringser::arrayOfString.type");
+        tc_arrayOfString_o->type = db_resolve_ext(tc_arrayOfString_o, NULL, "::cortex::lang::array{::cortex::lang::string,3,::cortex::lang::string}", FALSE, "element ::tc_stringser::arrayOfString.type");
         if (db_define(tc_arrayOfString_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::arrayOfString'.");
             goto error;
@@ -1051,7 +1051,7 @@ int tc_stringser_load(void) {
     }
     /* Define ::tc_stringser::listOfBool */
     if (!db_checkState(tc_listOfBool_o, DB_DEFINED)) {
-        tc_listOfBool_o->type = db_resolve_ext(tc_listOfBool_o, NULL, "::hyve::lang::list{::hyve::lang::bool,3}", FALSE, "element ::tc_stringser::listOfBool.type");
+        tc_listOfBool_o->type = db_resolve_ext(tc_listOfBool_o, NULL, "::cortex::lang::list{::cortex::lang::bool,3}", FALSE, "element ::tc_stringser::listOfBool.type");
         if (db_define(tc_listOfBool_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::listOfBool'.");
             goto error;
@@ -1059,7 +1059,7 @@ int tc_stringser_load(void) {
     }
     /* Define ::tc_stringser::listOfChar */
     if (!db_checkState(tc_listOfChar_o, DB_DEFINED)) {
-        tc_listOfChar_o->type = db_resolve_ext(tc_listOfChar_o, NULL, "::hyve::lang::list{::hyve::lang::char,3}", FALSE, "element ::tc_stringser::listOfChar.type");
+        tc_listOfChar_o->type = db_resolve_ext(tc_listOfChar_o, NULL, "::cortex::lang::list{::cortex::lang::char,3}", FALSE, "element ::tc_stringser::listOfChar.type");
         if (db_define(tc_listOfChar_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::listOfChar'.");
             goto error;
@@ -1067,7 +1067,7 @@ int tc_stringser_load(void) {
     }
     /* Define ::tc_stringser::listOfFloat */
     if (!db_checkState(tc_listOfFloat_o, DB_DEFINED)) {
-        tc_listOfFloat_o->type = db_resolve_ext(tc_listOfFloat_o, NULL, "::hyve::lang::list{::hyve::lang::float32,3}", FALSE, "element ::tc_stringser::listOfFloat.type");
+        tc_listOfFloat_o->type = db_resolve_ext(tc_listOfFloat_o, NULL, "::cortex::lang::list{::cortex::lang::float32,3}", FALSE, "element ::tc_stringser::listOfFloat.type");
         if (db_define(tc_listOfFloat_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::listOfFloat'.");
             goto error;
@@ -1075,7 +1075,7 @@ int tc_stringser_load(void) {
     }
     /* Define ::tc_stringser::listOfInt */
     if (!db_checkState(tc_listOfInt_o, DB_DEFINED)) {
-        tc_listOfInt_o->type = db_resolve_ext(tc_listOfInt_o, NULL, "::hyve::lang::list{::hyve::lang::int32,3}", FALSE, "element ::tc_stringser::listOfInt.type");
+        tc_listOfInt_o->type = db_resolve_ext(tc_listOfInt_o, NULL, "::cortex::lang::list{::cortex::lang::int32,3}", FALSE, "element ::tc_stringser::listOfInt.type");
         if (db_define(tc_listOfInt_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::listOfInt'.");
             goto error;
@@ -1095,7 +1095,7 @@ int tc_stringser_load(void) {
     }
     /* Define ::tc_stringser::listOfString */
     if (!db_checkState(tc_listOfString_o, DB_DEFINED)) {
-        tc_listOfString_o->type = db_resolve_ext(tc_listOfString_o, NULL, "::hyve::lang::list{::hyve::lang::string,3}", FALSE, "element ::tc_stringser::listOfString.type");
+        tc_listOfString_o->type = db_resolve_ext(tc_listOfString_o, NULL, "::cortex::lang::list{::cortex::lang::string,3}", FALSE, "element ::tc_stringser::listOfString.type");
         if (db_define(tc_listOfString_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::listOfString'.");
             goto error;
@@ -1103,7 +1103,7 @@ int tc_stringser_load(void) {
     }
     /* Define ::tc_stringser::sequenceOfBool */
     if (!db_checkState(tc_sequenceOfBool_o, DB_DEFINED)) {
-        tc_sequenceOfBool_o->type = db_resolve_ext(tc_sequenceOfBool_o, NULL, "::hyve::lang::sequence{::hyve::lang::bool,3}", FALSE, "element ::tc_stringser::sequenceOfBool.type");
+        tc_sequenceOfBool_o->type = db_resolve_ext(tc_sequenceOfBool_o, NULL, "::cortex::lang::sequence{::cortex::lang::bool,3}", FALSE, "element ::tc_stringser::sequenceOfBool.type");
         if (db_define(tc_sequenceOfBool_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::sequenceOfBool'.");
             goto error;
@@ -1111,7 +1111,7 @@ int tc_stringser_load(void) {
     }
     /* Define ::tc_stringser::sequenceOfChar */
     if (!db_checkState(tc_sequenceOfChar_o, DB_DEFINED)) {
-        tc_sequenceOfChar_o->type = db_resolve_ext(tc_sequenceOfChar_o, NULL, "::hyve::lang::sequence{::hyve::lang::char,3}", FALSE, "element ::tc_stringser::sequenceOfChar.type");
+        tc_sequenceOfChar_o->type = db_resolve_ext(tc_sequenceOfChar_o, NULL, "::cortex::lang::sequence{::cortex::lang::char,3}", FALSE, "element ::tc_stringser::sequenceOfChar.type");
         if (db_define(tc_sequenceOfChar_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::sequenceOfChar'.");
             goto error;
@@ -1119,7 +1119,7 @@ int tc_stringser_load(void) {
     }
     /* Define ::tc_stringser::sequenceOfFloat */
     if (!db_checkState(tc_sequenceOfFloat_o, DB_DEFINED)) {
-        tc_sequenceOfFloat_o->type = db_resolve_ext(tc_sequenceOfFloat_o, NULL, "::hyve::lang::sequence{::hyve::lang::float32,3}", FALSE, "element ::tc_stringser::sequenceOfFloat.type");
+        tc_sequenceOfFloat_o->type = db_resolve_ext(tc_sequenceOfFloat_o, NULL, "::cortex::lang::sequence{::cortex::lang::float32,3}", FALSE, "element ::tc_stringser::sequenceOfFloat.type");
         if (db_define(tc_sequenceOfFloat_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::sequenceOfFloat'.");
             goto error;
@@ -1127,7 +1127,7 @@ int tc_stringser_load(void) {
     }
     /* Define ::tc_stringser::sequenceOfInt */
     if (!db_checkState(tc_sequenceOfInt_o, DB_DEFINED)) {
-        tc_sequenceOfInt_o->type = db_resolve_ext(tc_sequenceOfInt_o, NULL, "::hyve::lang::sequence{::hyve::lang::int32,3}", FALSE, "element ::tc_stringser::sequenceOfInt.type");
+        tc_sequenceOfInt_o->type = db_resolve_ext(tc_sequenceOfInt_o, NULL, "::cortex::lang::sequence{::cortex::lang::int32,3}", FALSE, "element ::tc_stringser::sequenceOfInt.type");
         if (db_define(tc_sequenceOfInt_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::sequenceOfInt'.");
             goto error;
@@ -1160,7 +1160,7 @@ int tc_stringser_load(void) {
     }
     /* Define ::tc_stringser::arrayOfClassNested */
     if (!db_checkState(tc_arrayOfClassNested_o, DB_DEFINED)) {
-        tc_arrayOfClassNested_o->type = db_resolve_ext(tc_arrayOfClassNested_o, NULL, "::hyve::lang::array{::tc_stringser::classNested,3,::tc_stringser::classNested}", FALSE, "element ::tc_stringser::arrayOfClassNested.type");
+        tc_arrayOfClassNested_o->type = db_resolve_ext(tc_arrayOfClassNested_o, NULL, "::cortex::lang::array{::tc_stringser::classNested,3,::tc_stringser::classNested}", FALSE, "element ::tc_stringser::arrayOfClassNested.type");
         if (db_define(tc_arrayOfClassNested_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::arrayOfClassNested'.");
             goto error;
@@ -1193,7 +1193,7 @@ int tc_stringser_load(void) {
     }
     /* Define ::tc_stringser::sequenceOfString */
     if (!db_checkState(tc_sequenceOfString_o, DB_DEFINED)) {
-        tc_sequenceOfString_o->type = db_resolve_ext(tc_sequenceOfString_o, NULL, "::hyve::lang::sequence{::hyve::lang::string,3}", FALSE, "element ::tc_stringser::sequenceOfString.type");
+        tc_sequenceOfString_o->type = db_resolve_ext(tc_sequenceOfString_o, NULL, "::cortex::lang::sequence{::cortex::lang::string,3}", FALSE, "element ::tc_stringser::sequenceOfString.type");
         if (db_define(tc_sequenceOfString_o)) {
             db_error("tc_stringser_load: failed to define object '::tc_stringser::sequenceOfString'.");
             goto error;

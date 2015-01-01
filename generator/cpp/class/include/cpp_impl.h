@@ -8,7 +8,7 @@
 #ifndef CPP_CLASSIMPL_H_
 #define CPP_CLASSIMPL_H_
 
-#include "hyve.h"
+#include "cortex.h"
 #include "db_generator.h"
 
 #ifdef __cplusplus

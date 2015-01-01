@@ -141,9 +141,9 @@ static db_int16 cpp_typeAny(db_serializer s, db_value* v, void* userData) {
 
     g_fileWrite(data->header, "struct %s{\n", g_oid(data->g, t, id));
     g_fileIndent(data->header);
-    g_fileWrite(data->header, "hyve::lang::type type;\n");
+    g_fileWrite(data->header, "cortex::lang::type type;\n");
     g_fileWrite(data->header, "void* value;\n");
-    g_fileWrite(data->header, "hyve::lang::_bool owner;\n");
+    g_fileWrite(data->header, "cortex::lang::_bool owner;\n");
     g_fileDedent(data->header);
     g_fileWrite(data->header, "};\n");
 
@@ -448,7 +448,7 @@ static db_int16 cpp_typeObject(db_serializer s, db_value* v, void* userData) {
     } else {
         /* Place anonymous collection-types in the scope of the elementType */
         if (t->kind == DB_COLLECTION) {
-            /* Anonymous lists and maps are mapped directly to hyve::ll or hyve::rbtree, so
+            /* Anonymous lists and maps are mapped directly to cortex::ll or cortex::rbtree, so
              * no need to open a scope for them. */
             switch(db_collection(t)->kind) {
             case DB_ARRAY:
@@ -531,10 +531,10 @@ static g_file cpp_typeHeaderFileOpen(db_generator g) {
         g_fileWrite(result, " */\n\n");
         g_fileWrite(result, "#ifndef %s__type_HPP\n", g_getName(g));
         g_fileWrite(result, "#define %s__type_HPP\n\n", g_getName(g));
-        if (g_getCurrent(g) != hyve_lang_o) {
-            g_fileWrite(result, "#include \"hyve.hpp\"\n");
+        if (g_getCurrent(g) != cortex_lang_o) {
+            g_fileWrite(result, "#include \"cortex.hpp\"\n");
         }
-        g_fileWrite(result, "#include \"hyve/def.hpp\"\n\n");
+        g_fileWrite(result, "#include \"cortex/def.hpp\"\n\n");
 	} else {
 	    db_error("cpp_typeHeaderFileOpen: failed to open file '%s'", headerFileName);
 	}
@@ -682,7 +682,7 @@ static int cpp_classWalk(db_object o, void* userData) {
 }
 
 /* Generator main */
-db_int16 hyve_genMain(db_generator g) {
+db_int16 cortex_genMain(db_generator g) {
 	cpp_typeWalk_t walkData;
 
 	/* Prepare walkdata, open headerfile */
@@ -695,7 +695,7 @@ db_int16 hyve_genMain(db_generator g) {
 	g_setIdKind(g, DB_GENERATOR_ID_CLASS_UPPER);
 	g_walkRecursive(g, cpp_classWalk, &walkData);
 
-	/* Generate hyve-types */
+	/* Generate cortex-types */
 	g_setIdKind(g, DB_GENERATOR_ID_CLASS_LOWER);
 
 	/* Walk objects */

@@ -47,9 +47,9 @@ db_uint8 db__primitive_convertId(db_primitiveKind kind, db_width width) {
 }
 /* $end */
 
-/* ::hyve::lang::primitive::castable(lang::type type) */
+/* ::cortex::lang::primitive::castable(lang::type type) */
 db_bool db_primitive_castable_v(db_primitive _this, db_type type) {
-/* $begin(::hyve::lang::primitive::castable) */
+/* $begin(::cortex::lang::primitive::castable) */
     db_bool result;
 
     result = FALSE;
@@ -172,9 +172,9 @@ db_bool db_primitive_castable_v(db_primitive _this, db_type type) {
 /* $end */
 }
 
-/* ::hyve::lang::primitive::compatible(lang::type type) */
+/* ::cortex::lang::primitive::compatible(lang::type type) */
 db_bool db_primitive_compatible_v(db_primitive _this, db_type type) {
-/* $begin(::hyve::lang::primitive::compatible) */
+/* $begin(::cortex::lang::primitive::compatible) */
     db_bool result;
 
     result = FALSE;
@@ -221,9 +221,9 @@ db_bool db_primitive_compatible_v(db_primitive _this, db_type type) {
 /* $end */
 }
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::lang::primitive::construct(lang::primitive object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::primitive::construct(lang::primitive object) */
 db_int16 db_primitive_construct(db_primitive object) {
-/* $begin(::hyve::lang::primitive::construct) */
+/* $begin(::cortex::lang::primitive::construct) */
 
 	switch(object->width) {
 	case DB_WIDTH_8:
@@ -255,9 +255,9 @@ db_int16 db_primitive_construct(db_primitive object) {
 /* $end */
 }
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::primitive::init(lang::primitive object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::primitive::init(lang::primitive object) */
 db_int16 db_primitive_init(db_primitive object) {
-/* $begin(::hyve::lang::primitive::init) */
+/* $begin(::cortex::lang::primitive::init) */
     db_type(object)->kind = DB_PRIMITIVE;
     return db_type__init((db_type)object);
 /* $end */

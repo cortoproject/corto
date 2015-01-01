@@ -6,7 +6,7 @@
 #ifndef os_thread_H
 #define os_thread_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "os__type.h"
 
 #include "os__api.h"
@@ -17,25 +17,25 @@
 extern "C" {
 #endif
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::os::thread::construct(::hyve::os::thread object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::os::thread::construct(::cortex::os::thread object) */
 db_int16 os_thread_construct(os_thread object);
 
-/* callback ::hyve::lang::class::destruct(lang::object object) -> ::hyve::os::thread::destruct(::hyve::os::thread object) */
+/* callback ::cortex::lang::class::destruct(lang::object object) -> ::cortex::os::thread::destruct(::cortex::os::thread object) */
 db_void os_thread_destruct(os_thread object);
 
-/* ::hyve::os::thread::join() */
+/* ::cortex::os::thread::join() */
 db_void os_thread_join(os_thread _this);
 
-/* virtual ::hyve::os::thread::run() */
+/* virtual ::cortex::os::thread::run() */
 void os_thread_run(os_thread _this);
 
-/* ::hyve::os::thread::run() */
+/* ::cortex::os::thread::run() */
 db_void os_thread_run_v(os_thread _this);
 
-/* ::hyve::os::thread::start() */
+/* ::cortex::os::thread::start() */
 db_void os_thread_start(os_thread _this);
 
-/* ::hyve::os::thread::stop() */
+/* ::cortex::os::thread::stop() */
 db_void os_thread_stop(os_thread _this);
 
 #ifdef __cplusplus

@@ -256,7 +256,7 @@ static int cpp_keywordEscape(db_string inputName, db_string buffer) {
     return 0;
 }
 
-db_string hyve_genId(db_string str, db_id id) {
+db_string cortex_genId(db_string str, db_id id) {
     db_char *ptr, ch, *bptr;
     db_id buff;
 
@@ -472,10 +472,10 @@ db_char* cpp_specifierId(db_generator g, db_typedef t, db_id specifier) {
                 }
                 break;
             case DB_LIST:
-                strcpy(specifier, "hyve::ll_h");
+                strcpy(specifier, "cortex::ll_h");
                 break;
             case DB_MAP:
-                strcpy(specifier, "hyve::rbtree_h");
+                strcpy(specifier, "cortex::rbtree_h");
                 break;
             }
 

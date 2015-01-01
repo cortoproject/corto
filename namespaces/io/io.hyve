@@ -1,4 +1,4 @@
-object hyve::
+object cortex::
 	void io::
 		// Print to console (no newline)
 		void print(string str)

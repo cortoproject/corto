@@ -17,9 +17,9 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::Object::construct(Object object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Object::construct(Object object) */
 db_int16 Fast_Object_construct(Fast_Object object) {
-/* $begin(::hyve::Fast::Object::construct) */
+/* $begin(::cortex::Fast::Object::construct) */
 	db_type t = db_typeof(Fast_ObjectBase(object)->value)->real;
 
 	if(t == db_type(db_constant_o)) {
@@ -33,9 +33,9 @@ db_int16 Fast_Object_construct(Fast_Object object) {
 /* $end */
 }
 
-/* ::hyve::Fast::Object::getValue() */
+/* ::cortex::Fast::Object::getValue() */
 db_word Fast_Object_getValue(Fast_Object _this) {
-/* $begin(::hyve::Fast::Object::getValue) */
+/* $begin(::cortex::Fast::Object::getValue) */
 	db_word result = 0;
 
 	/* Value of objects can only be used at compiletime when object is of
@@ -48,9 +48,9 @@ db_word Fast_Object_getValue(Fast_Object _this) {
 /* $end */
 }
 
-/* ::hyve::Fast::Object::serialize(lang::type dstType,lang::word dst) */
+/* ::cortex::Fast::Object::serialize(lang::type dstType,lang::word dst) */
 db_int16 Fast_Object_serialize(Fast_Object _this, db_type dstType, db_word dst) {
-/* $begin(::hyve::Fast::Object::serialize) */
+/* $begin(::cortex::Fast::Object::serialize) */
 	Fast_valueKind kind;
 
 	if (!dstType->reference) {
@@ -104,9 +104,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Object::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Object::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Object_toIc_v(Fast_Object _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-/* $begin(::hyve::Fast::Object::toIc) */
+/* $begin(::cortex::Fast::Object::toIc) */
 	db_ic result;
 	DB_UNUSED(storage);
 	DB_UNUSED(stored);

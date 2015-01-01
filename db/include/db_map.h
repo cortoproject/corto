@@ -6,7 +6,7 @@
 #ifndef db_map_H
 #define db_map_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "db_collection.h"
 #include "db__type.h"
 
@@ -18,10 +18,10 @@
 extern "C" {
 #endif
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::lang::map::construct(lang::map object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::map::construct(lang::map object) */
 db_int16 db_map_construct(db_map object);
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::map::init(lang::map object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::map::init(lang::map object) */
 db_int16 db_map_init(db_map object);
 
 #ifdef __cplusplus

@@ -13,9 +13,9 @@
 #include "db__class.h"
 /* $end */
 
-/* callback ::hyve::lang::procedure::bind(lang::object object) -> ::hyve::lang::observer::bind(lang::observer object) */
+/* callback ::cortex::lang::procedure::bind(lang::object object) -> ::cortex::lang::observer::bind(lang::observer object) */
 db_int16 db_observer_bind(db_observer object) {
-/* $begin(::hyve::lang::observer::bind) */
+/* $begin(::cortex::lang::observer::bind) */
     db_parameter *p;
 
 	/* If this is a scoped observer, automatically bind with parent if it's a class. */
@@ -76,9 +76,9 @@ error:
 /* $end */
 }
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::observer::init(lang::observer object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::observer::init(lang::observer object) */
 db_int16 db_observer_init(db_observer object) {
-/* $begin(::hyve::lang::observer::init) */
+/* $begin(::cortex::lang::observer::init) */
 	db_function(object)->returnType = db_typedef(db_void_o); db_keep_ext(object, db_void_o, "Keep void-type of observer object.");
 	db_function(object)->size = sizeof(db_object) * 2;
 
@@ -86,9 +86,9 @@ db_int16 db_observer_init(db_observer object) {
 /* $end */
 }
 
-/* ::hyve::lang::observer::listen(lang::object observable,lang::object me) */
+/* ::cortex::lang::observer::listen(lang::object observable,lang::object me) */
 db_int16 db_observer_listen(db_observer _this, db_object observable, db_object me) {
-/* $begin(::hyve::lang::observer::listen) */
+/* $begin(::cortex::lang::observer::listen) */
     db_object oldObservable = NULL;
 
     /* Silence old observable */
@@ -131,17 +131,17 @@ error:
 /* $end */
 }
 
-/* ::hyve::lang::observer::setDispatcher(lang::dispatcher dispatcher) */
+/* ::cortex::lang::observer::setDispatcher(lang::dispatcher dispatcher) */
 db_void db_observer_setDispatcher(db_observer _this, db_dispatcher dispatcher) {
-/* $begin(::hyve::lang::observer::setDispatcher) */
+/* $begin(::cortex::lang::observer::setDispatcher) */
     /* TODO: when observer is a template observer only set the dispatcher in observerData. */
 	db_set_ext(_this, &_this->dispatcher, dispatcher, "Set dispatcher member.");
 /* $end */
 }
 
-/* ::hyve::lang::observer::silence(lang::object me) */
+/* ::cortex::lang::observer::silence(lang::object me) */
 db_int16 db_observer_silence(db_observer _this, db_object me) {
-/* $begin(::hyve::lang::observer::silence) */
+/* $begin(::cortex::lang::observer::silence) */
 	db_object oldObservable;
 
     /* Silence old observable */
@@ -166,9 +166,9 @@ db_int16 db_observer_silence(db_observer _this, db_object me) {
 /* $end */
 }
 
-/* ::hyve::lang::observer::unbind(lang::observer object) */
+/* ::cortex::lang::observer::unbind(lang::observer object) */
 db_void db_observer_unbind(db_observer object) {
-/* $begin(::hyve::lang::observer::unbind) */
+/* $begin(::cortex::lang::observer::unbind) */
     if (!object->template) {
 		if (object->observable) {
 			if (object->observing) {

@@ -13,7 +13,7 @@
 #include "db_generator.h"
 #include "db_serializer.h"
 #include "html.h"
-#include "hyve.h"
+#include "cortex.h"
 #include "json.h"
 
 /*
@@ -174,9 +174,9 @@ error:
 db_int16 copyJsonParser(const char* path) {
     char sourcePath[PATH_MAX];
     char destinationPath[PATH_MAX];
-    char *hyveHome = getenv("HYVE_HOME");
+    char *cortexHome = getenv("CORTEX_HOME");
     char parserFilename[] = "objectparse.js";
-    sprintf(sourcePath, "%s/generator/html/%s", hyveHome, parserFilename);
+    sprintf(sourcePath, "%s/generator/html/%s", cortexHome, parserFilename);
     sprintf(destinationPath, "%s/%s", path, parserFilename);
     if (db_cp(sourcePath, destinationPath)) {
         goto error;
@@ -189,9 +189,9 @@ error:
 db_int16 copyStyleSheet(const char* path) {
     char sourcePath[PATH_MAX];
     char destinationPath[PATH_MAX];
-    char *hyveHome = getenv("HYVE_HOME");
+    char *cortexHome = getenv("CORTEX_HOME");
     char stylesheetFilename[] = "object.css";
-    sprintf(sourcePath, "%s/generator/html/%s", hyveHome, stylesheetFilename);
+    sprintf(sourcePath, "%s/generator/html/%s", cortexHome, stylesheetFilename);
     sprintf(destinationPath, "%s/%s", path, stylesheetFilename);
     if (db_cp(sourcePath, destinationPath)) {
         goto error;
@@ -202,7 +202,7 @@ error:
 }
 
 
-db_int16 hyve_genMain(db_generator g) {
+db_int16 cortex_genMain(db_generator g) {
     char filepath[PATH_MAX] = "./doc";
 
     db_html_gen_t data = {filepath, 1};

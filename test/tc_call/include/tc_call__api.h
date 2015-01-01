@@ -9,7 +9,7 @@
 #define tc_call__API_H
 
 #include "tc_call__type.h"
-#include "hyve.h"
+#include "cortex.h"
 
 #ifdef __cplusplus
 extern "C" {

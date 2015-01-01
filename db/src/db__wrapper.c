@@ -1,6 +1,6 @@
 /* db__wrapper.c
  *
- * This file contains wrapper functions for ::hyve::lang.
+ * This file contains wrapper functions for ::cortex::lang.
  */
 
 #include "db.h"
@@ -80,7 +80,7 @@ void __db_class__destruct(db_function f, void *result, void *args) {
         *(db_class*)args);
 }
 
-/* virtual ::hyve::lang::class::allocSize() */
+/* virtual ::cortex::lang::class::allocSize() */
 db_uint32 db_class_allocSize(db_class _this) {
     static db_uint32 _methodId;
     db_method _method;
@@ -142,7 +142,7 @@ void __db_class_bindObserver(db_function f, void *result, void *args) {
         *(db_observer*)((intptr_t)args + sizeof(db_class)));
 }
 
-/* delegate ::hyve::lang::class::construct(lang::object object) */
+/* delegate ::cortex::lang::class::construct(lang::object object) */
 db_int16 db_class_construct(db_class _this, db_object object) {
     db_callback _callback;
     db_int16 _result;
@@ -156,7 +156,7 @@ db_int16 db_class_construct(db_class _this, db_object object) {
     return _result;
 }
 
-/* delegate ::hyve::lang::class::construct(lang::object object), obtain callback */
+/* delegate ::cortex::lang::class::construct(lang::object object), obtain callback */
 db_bool db_class_construct_hasCallback(db_class _this) {
     /* Lookup callback-object. */
     return db_class_resolveCallback(db_class(db_typeof(_this)), db_class_construct_o, _this) != NULL;
@@ -169,7 +169,7 @@ void __db_class_construct(db_function f, void *result, void *args) {
         *(db_object*)((intptr_t)args + sizeof(db_class)));
 }
 
-/* delegate ::hyve::lang::class::destruct(lang::object object) */
+/* delegate ::cortex::lang::class::destruct(lang::object object) */
 void db_class_destruct(db_class _this, db_object object) {
     db_callback _callback;
     /* Lookup callback-object. */
@@ -180,7 +180,7 @@ void db_class_destruct(db_class _this, db_object object) {
     db_call(db_function(_callback), NULL, object);
 }
 
-/* delegate ::hyve::lang::class::destruct(lang::object object), obtain callback */
+/* delegate ::cortex::lang::class::destruct(lang::object object), obtain callback */
 db_bool db_class_destruct_hasCallback(db_class _this) {
     /* Lookup callback-object. */
     return db_class_resolveCallback(db_class(db_typeof(_this)), db_class_destruct_o, _this) != NULL;
@@ -246,7 +246,7 @@ void __db_class_resolveInterfaceMethod(db_function f, void *result, void *args) 
         *(db_uint32*)((intptr_t)args + sizeof(db_class) + sizeof(db_interface)));
 }
 
-/* virtual ::hyve::lang::collection::castable(lang::type type) */
+/* virtual ::cortex::lang::collection::castable(lang::type type) */
 db_bool db_collection_castable(db_collection _this, db_type type) {
     static db_uint32 _methodId;
     db_method _method;
@@ -309,7 +309,7 @@ void __db_delegate_init(db_function f, void *result, void *args) {
         *(db_delegate*)args);
 }
 
-/* virtual ::hyve::lang::dispatcher::getEvent(lang::observer observer,lang::object me,lang::object observable,lang::object src) */
+/* virtual ::cortex::lang::dispatcher::getEvent(lang::observer observer,lang::object me,lang::object observable,lang::object src) */
 db_observableEvent db_dispatcher_getEvent(db_dispatcher _this, db_observer observer, db_object me, db_object observable, db_object src) {
     static db_uint32 _methodId;
     db_method _method;
@@ -343,7 +343,7 @@ void __db_dispatcher_getEvent_v(db_function f, void *result, void *args) {
         *(db_object*)((intptr_t)args + sizeof(db_dispatcher) + sizeof(db_observer) + sizeof(db_object) + sizeof(db_object)));
 }
 
-/* virtual ::hyve::lang::dispatcher::post(lang::event event) */
+/* virtual ::cortex::lang::dispatcher::post(lang::event event) */
 void db_dispatcher_post(db_dispatcher _this, db_event event) {
     static db_uint32 _methodId;
     db_method _method;
@@ -458,7 +458,7 @@ void __db_interface_baseof(db_function f, void *result, void *args) {
         *(db_interface*)((intptr_t)args + sizeof(db_interface)));
 }
 
-/* virtual ::hyve::lang::interface::bindMethod(lang::method method) */
+/* virtual ::cortex::lang::interface::bindMethod(lang::method method) */
 db_int16 db_interface_bindMethod(db_interface _this, db_method method) {
     static db_uint32 _methodId;
     db_method _method;
@@ -489,7 +489,7 @@ void __db_interface_bindMethod_v(db_function f, void *result, void *args) {
         *(db_method*)((intptr_t)args + sizeof(db_interface)));
 }
 
-/* virtual ::hyve::lang::interface::compatible(lang::type type) */
+/* virtual ::cortex::lang::interface::compatible(lang::type type) */
 db_bool db_interface_compatible(db_interface _this, db_type type) {
     static db_uint32 _methodId;
     db_method _method;
@@ -539,7 +539,7 @@ void __db_interface_init(db_function f, void *result, void *args) {
         *(db_interface*)args);
 }
 
-/* virtual ::hyve::lang::interface::resolveMember(lang::string name) */
+/* virtual ::cortex::lang::interface::resolveMember(lang::string name) */
 db_member db_interface_resolveMember(db_interface _this, db_string name) {
     static db_uint32 _methodId;
     db_method _method;
@@ -733,7 +733,7 @@ void __db_observer_unbind(db_function f, void *result, void *args) {
         *(db_observer*)args);
 }
 
-/* virtual ::hyve::lang::primitive::castable(lang::type type) */
+/* virtual ::cortex::lang::primitive::castable(lang::type type) */
 db_bool db_primitive_castable(db_primitive _this, db_type type) {
     static db_uint32 _methodId;
     db_method _method;
@@ -764,7 +764,7 @@ void __db_primitive_castable_v(db_function f, void *result, void *args) {
         *(db_type*)((intptr_t)args + sizeof(db_primitive)));
 }
 
-/* virtual ::hyve::lang::primitive::compatible(lang::type type) */
+/* virtual ::cortex::lang::primitive::compatible(lang::type type) */
 db_bool db_primitive_compatible(db_primitive _this, db_type type) {
     static db_uint32 _methodId;
     db_method _method;
@@ -807,7 +807,7 @@ void __db_primitive_init(db_function f, void *result, void *args) {
         *(db_primitive*)args);
 }
 
-/* delegate ::hyve::lang::procedure::bind(lang::object object) */
+/* delegate ::cortex::lang::procedure::bind(lang::object object) */
 db_int16 db_procedure_bind(db_procedure _this, db_object object) {
     db_callback _callback;
     db_int16 _result;
@@ -821,7 +821,7 @@ db_int16 db_procedure_bind(db_procedure _this, db_object object) {
     return _result;
 }
 
-/* delegate ::hyve::lang::procedure::bind(lang::object object), obtain callback */
+/* delegate ::cortex::lang::procedure::bind(lang::object object), obtain callback */
 db_bool db_procedure_bind_hasCallback(db_procedure _this) {
     /* Lookup callback-object. */
     return db_class_resolveCallback(db_class(db_typeof(_this)), db_procedure_bind_o, _this) != NULL;
@@ -848,7 +848,7 @@ void __db_procedure_unbind(db_function f, void *result, void *args) {
         *(db_object*)((intptr_t)args + sizeof(db_procedure)));
 }
 
-/* virtual ::hyve::lang::procptr::compatible(lang::type type) */
+/* virtual ::cortex::lang::procptr::compatible(lang::type type) */
 db_bool db_procptr_compatible(db_procptr _this, db_type type) {
     static db_uint32 _methodId;
     db_method _method;
@@ -905,7 +905,7 @@ void __db_sequence_size(db_function f, void *result, void *args) {
         *(db_uint32*)((intptr_t)args + sizeof(db_any)));
 }
 
-/* virtual ::hyve::lang::struct::castable(lang::type type) */
+/* virtual ::cortex::lang::struct::castable(lang::type type) */
 db_bool db_struct_castable(db_struct _this, db_type type) {
     static db_uint32 _methodId;
     db_method _method;
@@ -936,7 +936,7 @@ void __db_struct_castable_v(db_function f, void *result, void *args) {
         *(db_type*)((intptr_t)args + sizeof(db_struct)));
 }
 
-/* virtual ::hyve::lang::struct::compatible(lang::type type) */
+/* virtual ::cortex::lang::struct::compatible(lang::type type) */
 db_bool db_struct_compatible(db_struct _this, db_type type) {
     static db_uint32 _methodId;
     db_method _method;
@@ -979,7 +979,7 @@ void __db_struct_init(db_function f, void *result, void *args) {
         *(db_struct*)args);
 }
 
-/* virtual ::hyve::lang::struct::resolveMember(lang::string name) */
+/* virtual ::cortex::lang::struct::resolveMember(lang::string name) */
 db_member db_struct_resolveMember(db_struct _this, db_string name) {
     static db_uint32 _methodId;
     db_method _method;
@@ -1036,7 +1036,7 @@ void __db_type_alignmentof(db_function f, void *result, void *args) {
         *(db_type*)args);
 }
 
-/* virtual ::hyve::lang::type::allocSize() */
+/* virtual ::cortex::lang::type::allocSize() */
 db_uint32 db_type_allocSize(db_type _this) {
     static db_uint32 _methodId;
     db_method _method;
@@ -1067,7 +1067,7 @@ void __db_type_allocSize_v(db_function f, void *result, void *args) {
         *(db_type*)args);
 }
 
-/* virtual ::hyve::lang::type::castable(lang::type type) */
+/* virtual ::cortex::lang::type::castable(lang::type type) */
 db_bool db_type_castable(db_type _this, db_type type) {
     static db_uint32 _methodId;
     db_method _method;
@@ -1119,7 +1119,7 @@ void __db_type_compare(db_function f, void *result, void *args) {
         *(db_any*)((intptr_t)args + sizeof(db_any)));
 }
 
-/* virtual ::hyve::lang::type::compatible(lang::type type) */
+/* virtual ::cortex::lang::type::compatible(lang::type type) */
 db_bool db_type_compatible(db_type _this, db_type type) {
     static db_uint32 _methodId;
     db_method _method;
@@ -1193,7 +1193,7 @@ void __db_type_fullname(db_function f, void *result, void *args) {
         *(db_any*)args);
 }
 
-/* delegate ::hyve::lang::type::init(lang::object object) */
+/* delegate ::cortex::lang::type::init(lang::object object) */
 db_int16 db_type_init(db_type _this, db_object object) {
     db_callback _callback;
     db_int16 _result;
@@ -1207,7 +1207,7 @@ db_int16 db_type_init(db_type _this, db_object object) {
     return _result;
 }
 
-/* delegate ::hyve::lang::type::init(lang::object object), obtain callback */
+/* delegate ::cortex::lang::type::init(lang::object object), obtain callback */
 db_bool db_type_init_hasCallback(db_type _this) {
     /* Lookup callback-object. */
     return db_class_resolveCallback(db_class(db_typeof(_this)), db_type_init_o, _this) != NULL;

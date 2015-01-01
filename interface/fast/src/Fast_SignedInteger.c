@@ -17,17 +17,17 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::Fast::SignedInteger::init(SignedInteger object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::SignedInteger::init(SignedInteger object) */
 db_int16 Fast_SignedInteger_init(Fast_SignedInteger object) {
-/* $begin(::hyve::Fast::SignedInteger::init) */
+/* $begin(::cortex::Fast::SignedInteger::init) */
     Fast_Literal(object)->kind = FAST_SignedInteger;
     return Fast_Literal_init(Fast_Literal(object));
 /* $end */
 }
 
-/* ::hyve::Fast::SignedInteger::serialize(lang::type dstType,lang::word dst) */
+/* ::cortex::Fast::SignedInteger::serialize(lang::type dstType,lang::word dst) */
 db_int16 Fast_SignedInteger_serialize(Fast_SignedInteger _this, db_type dstType, db_word dst) {
-/* $begin(::hyve::Fast::SignedInteger::serialize) */
+/* $begin(::cortex::Fast::SignedInteger::serialize) */
 	Fast_valueKind kind;
 
 	kind = Fast_valueKindFromType(dstType);
@@ -58,9 +58,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::SignedInteger::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::SignedInteger::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_SignedInteger_toIc_v(Fast_SignedInteger _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-/* $begin(::hyve::Fast::SignedInteger::toIc) */
+/* $begin(::cortex::Fast::SignedInteger::toIc) */
 	db_ic result;
 	db_value v;
 	DB_UNUSED(storage);

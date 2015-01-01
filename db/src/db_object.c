@@ -1305,7 +1305,7 @@ db_uint16 db__destruct(db_object o) {
 
 	        /* Integrity check */
             if (db_checkAttr(o, DB_ATTR_SCOPED)) {
-                if (db_parentof(o) == hyve_lang_o) {
+                if (db_parentof(o) == cortex_lang_o) {
                     db_id id;
                     db_critical("illegal attempt to destruct builtin-object '%s'.", db_fullname(o, id));
                 }
@@ -1858,10 +1858,10 @@ repeat:
         if (o) break;
     }while((scope = db_parentof(scope)));
 
-    /* Do implicit lookup in ::hyve::lang */
-    if (!o && (_scope_start != hyve_lang_o)) {
-        scope = hyve_lang_o;
-        _scope_start = hyve_lang_o;
+    /* Do implicit lookup in ::cortex::lang */
+    if (!o && (_scope_start != cortex_lang_o)) {
+        scope = cortex_lang_o;
+        _scope_start = cortex_lang_o;
         goto repeat; /* Do this instead of a recursive call. Besides saving (a little bit of) performance,
         				this also preserves the original searchscope, which is needed in anonymous type lookups, which
         				uses the stringserializer. In a serialized string references to other objects may be relatively
@@ -2207,7 +2207,7 @@ db_int32 db_listen(db_object observable, db_observer observer, db_object _this) 
 
 			} else {
 				db_id id, id2;
-				db_error("hyve::listen: cannot listen to childs of non-scoped observable '%s' (observer %s)",
+				db_error("cortex::listen: cannot listen to childs of non-scoped observable '%s' (observer %s)",
 						db_fullname(observable, id),
 						db_fullname(observer, id2));
 				goto error;
@@ -2224,7 +2224,7 @@ db_int32 db_listen(db_object observable, db_observer observer, db_object _this) 
 		}
 	} else {
 		db_id id;
-		db_assert(0, "hyve::listen: object '%s' is not an observable", db_fullname(observable, id));
+		db_assert(0, "cortex::listen: object '%s' is not an observable", db_fullname(observable, id));
 		goto error;
 	}
 
@@ -2305,7 +2305,7 @@ db_int32 db_silence(db_object observable, db_observer observer, db_object _this)
 				}
 				db_rwmutexUnlock(&_o->childLock);
 			} else {
-				db_error(0, "hyve::listen: observer subscribed on childs of non-scoped object");
+				db_error(0, "cortex::listen: observer subscribed on childs of non-scoped object");
 				goto error;
 			}
 		}
@@ -3483,22 +3483,22 @@ db_int16 db_valueCopy(db_value *dst, db_value *src) {
     return result;
 }
 
-db_object db_hyve_new(db_typedef type) {
+db_object db_cortex_new(db_typedef type) {
     return db_new(type);
 }
 
-db_object db_hyve__new(db_typedef type, db_attr attributes) {
+db_object db_cortex__new(db_typedef type, db_attr attributes) {
     return db_new_ext(NULL, type, attributes, NULL);
 }
 
-void __db_hyve_new(db_function f, void *result, void *args) {
+void __db_cortex_new(db_function f, void *result, void *args) {
     DB_UNUSED(f);
-    *(db_object*)result = db_hyve_new(*(db_typedef*)args);
+    *(db_object*)result = db_cortex_new(*(db_typedef*)args);
 }
 
-void __db_hyve__new(db_function f, void *result, void *args) {
+void __db_cortex__new(db_function f, void *result, void *args) {
     DB_UNUSED(f);
-    *(db_object*)result = db_hyve__new(
+    *(db_object*)result = db_cortex__new(
         *(db_typedef*)args,
         *(db_attr*)((intptr_t)args + sizeof(db_typedef)));
 }

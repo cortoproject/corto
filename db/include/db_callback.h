@@ -6,7 +6,7 @@
 #ifndef db_callback_H
 #define db_callback_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "db__type.h"
 
 #include "db__api.h"
@@ -17,10 +17,10 @@
 extern "C" {
 #endif
 
-/* callback ::hyve::lang::procedure::bind(lang::object object) -> ::hyve::lang::callback::bind(lang::callback object) */
+/* callback ::cortex::lang::procedure::bind(lang::object object) -> ::cortex::lang::callback::bind(lang::callback object) */
 db_int16 db_callback_bind(db_callback object);
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::callback::init(lang::callback object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::callback::init(lang::callback object) */
 db_int16 db_callback_init(db_callback object);
 
 #ifdef __cplusplus

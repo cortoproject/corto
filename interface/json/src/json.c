@@ -5,7 +5,7 @@
 
 #include "db_generator.h"
 #include "db_serializer.h"
-#include "hyve.h"
+#include "cortex.h"
 #include "json.h"
 
 /* agreed not to change anything except the first argument of the signature */

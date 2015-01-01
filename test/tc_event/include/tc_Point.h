@@ -7,7 +7,7 @@
 #ifndef tc_Point_H
 #define tc_Point_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "tc_event__type.h"
 
 #ifdef __cplusplus

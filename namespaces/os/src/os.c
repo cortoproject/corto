@@ -9,18 +9,18 @@
 #include "os.h"
 #include "os__meta.h"
 
-/* ::hyve::os::exit(::hyve::lang::bool success) */
+/* ::cortex::os::exit(::cortex::lang::bool success) */
 db_void os_exit(db_bool success) {
-/* $begin(::hyve::os::exit) */
+/* $begin(::cortex::os::exit) */
 
     exit(success ? EXIT_SUCCESS : EXIT_FAILURE);
 
 /* $end */
 }
 
-/* ::hyve::os::loadavg(::hyve::os::loadAvgKind kind) */
+/* ::cortex::os::loadavg(::cortex::os::loadAvgKind kind) */
 db_float64 os_loadavg(os_loadAvgKind kind) {
-/* $begin(::hyve::os::loadavg) */
+/* $begin(::cortex::os::loadavg) */
     double result[3];
     unsigned int c;
 
@@ -48,18 +48,18 @@ db_float64 os_loadavg(os_loadAvgKind kind) {
 /* $end */
 }
 
-/* ::hyve::os::sleep(::hyve::lang::uint32 sec,::hyve::lang::uint32 nsec) */
+/* ::cortex::os::sleep(::cortex::lang::uint32 sec,::cortex::lang::uint32 nsec) */
 db_void os_sleep(db_uint32 sec, db_uint32 nsec) {
-/* $begin(::hyve::os::sleep) */
+/* $begin(::cortex::os::sleep) */
 
     db_sleep(sec, nsec);
 
 /* $end */
 }
 
-/* ::hyve::os::system(::hyve::lang::string cmd) */
+/* ::cortex::os::system(::cortex::lang::string cmd) */
 db_void os_system(db_string cmd) {
-/* $begin(::hyve::os::system) */
+/* $begin(::cortex::os::system) */
 
     system(cmd);
 

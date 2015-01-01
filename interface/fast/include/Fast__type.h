@@ -7,7 +7,7 @@
 #ifndef Fast__type_H
 #define Fast__type_H
 
-#include "hyve.h"
+#include "cortex.h"
 
 
 /* $header() */
@@ -57,7 +57,7 @@ extern "C" {
 #define Fast_While(o) ((Fast_While)o)
 
 /* Type definitions */
-/* ::hyve::Fast::nodeKind */
+/* ::cortex::Fast::nodeKind */
 typedef enum Fast_nodeKind {
     FAST_Binary = 0,
     FAST_Call = 1,
@@ -82,7 +82,7 @@ typedef enum Fast_nodeKind {
     FAST_While = 20
 } Fast_nodeKind;
 
-/*  ::hyve::Fast::Node */
+/*  ::cortex::Fast::Node */
 DB_CLASS(Fast_Node);
 
 DB_CLASS_DEF(Fast_Node) {
@@ -91,10 +91,10 @@ DB_CLASS_DEF(Fast_Node) {
     db_uint32 column;
 };
 
-/*  ::hyve::Fast::Variable */
+/*  ::cortex::Fast::Variable */
 DB_CLASS(Fast_Variable);
 
-/*  ::hyve::Fast::Expression */
+/*  ::cortex::Fast::Expression */
 DB_CLASS(Fast_Expression);
 
 DB_CLASS_DEF(Fast_Expression) {
@@ -104,7 +104,7 @@ DB_CLASS_DEF(Fast_Expression) {
     db_bool forceReference;
 };
 
-/*  ::hyve::Fast::BinaryExpr */
+/*  ::cortex::Fast::BinaryExpr */
 DB_CLASS(Fast_BinaryExpr);
 
 DB_CLASS_DEF(Fast_BinaryExpr) {
@@ -114,12 +114,12 @@ DB_CLASS_DEF(Fast_BinaryExpr) {
     db_operatorKind operator;
 };
 
-/*  ::hyve::Fast::Block */
+/*  ::cortex::Fast::Block */
 DB_CLASS(Fast_Block);
 
 DB_LIST(Fast_Node_list);
 
-/* ::hyve::Fast::variableKind */
+/* ::cortex::Fast::variableKind */
 typedef enum Fast_variableKind {
     FAST_Local = 0,
     FAST_Template = 1,
@@ -131,14 +131,14 @@ DB_CLASS_DEF(Fast_Variable) {
     Fast_variableKind kind;
 };
 
-/* ::hyve::Fast::LocalKind */
+/* ::cortex::Fast::LocalKind */
 typedef enum Fast_LocalKind {
     FAST_LocalDefault = 0,
     FAST_LocalParameter = 1,
     FAST_LocalReturn = 2
 } Fast_LocalKind;
 
-/*  ::hyve::Fast::Local */
+/*  ::cortex::Fast::Local */
 DB_CLASS(Fast_Local);
 
 DB_CLASS_DEF(Fast_Local) {
@@ -151,7 +151,7 @@ DB_CLASS_DEF(Fast_Local) {
 
 DB_LIST(Fast_Local_list);
 
-/*  ::hyve::Fast::While */
+/*  ::cortex::Fast::While */
 DB_CLASS(Fast_While);
 
 DB_CLASS_DEF(Fast_While) {
@@ -170,7 +170,7 @@ DB_CLASS_DEF(Fast_Block) {
     Fast_While _while;
 };
 
-/*  ::hyve::Fast::Binding */
+/*  ::cortex::Fast::Binding */
 typedef struct Fast_Binding Fast_Binding;
 
 struct Fast_Binding {
@@ -178,7 +178,7 @@ struct Fast_Binding {
     Fast_Block impl;
 };
 
-/* ::hyve::Fast::valueKind */
+/* ::cortex::Fast::valueKind */
 typedef enum Fast_valueKind {
     FAST_Boolean = 0,
     FAST_Character = 1,
@@ -191,7 +191,7 @@ typedef enum Fast_valueKind {
     FAST_Null = 8
 } Fast_valueKind;
 
-/*  ::hyve::Fast::Literal */
+/*  ::cortex::Fast::Literal */
 DB_CLASS(Fast_Literal);
 
 DB_CLASS_DEF(Fast_Literal) {
@@ -199,7 +199,7 @@ DB_CLASS_DEF(Fast_Literal) {
     Fast_valueKind kind;
 };
 
-/*  ::hyve::Fast::Boolean */
+/*  ::cortex::Fast::Boolean */
 DB_CLASS(Fast_Boolean);
 
 DB_CLASS_DEF(Fast_Boolean) {
@@ -207,7 +207,7 @@ DB_CLASS_DEF(Fast_Boolean) {
     db_bool value;
 };
 
-/*  ::hyve::Fast::Call */
+/*  ::cortex::Fast::Call */
 DB_CLASS(Fast_Call);
 
 DB_CLASS_DEF(Fast_Call) {
@@ -218,7 +218,7 @@ DB_CLASS_DEF(Fast_Call) {
     db_function actualFunction;
 };
 
-/*  ::hyve::Fast::CastExpr */
+/*  ::cortex::Fast::CastExpr */
 DB_CLASS(Fast_CastExpr);
 
 DB_CLASS_DEF(Fast_CastExpr) {
@@ -227,7 +227,7 @@ DB_CLASS_DEF(Fast_CastExpr) {
     Fast_Expression rvalue;
 };
 
-/*  ::hyve::Fast::Character */
+/*  ::cortex::Fast::Character */
 DB_CLASS(Fast_Character);
 
 DB_CLASS_DEF(Fast_Character) {
@@ -237,7 +237,7 @@ DB_CLASS_DEF(Fast_Character) {
 
 DB_LIST(Fast_Expression_list);
 
-/*  ::hyve::Fast::CommaExpr */
+/*  ::cortex::Fast::CommaExpr */
 DB_CLASS(Fast_CommaExpr);
 
 DB_CLASS_DEF(Fast_CommaExpr) {
@@ -245,7 +245,7 @@ DB_CLASS_DEF(Fast_CommaExpr) {
     Fast_Expression_list expressions;
 };
 
-/*  ::hyve::Fast::Define */
+/*  ::cortex::Fast::Define */
 DB_CLASS(Fast_Define);
 
 DB_CLASS_DEF(Fast_Define) {
@@ -253,7 +253,7 @@ DB_CLASS_DEF(Fast_Define) {
     Fast_Expression object;
 };
 
-/*  ::hyve::Fast::InitializerVariable */
+/*  ::cortex::Fast::InitializerVariable */
 typedef struct Fast_InitializerVariable Fast_InitializerVariable;
 
 struct Fast_InitializerVariable {
@@ -264,7 +264,7 @@ struct Fast_InitializerVariable {
 
 typedef Fast_InitializerVariable Fast_InitializerVariable_array64[64];
 
-/*  ::hyve::Fast::InitializerFrame */
+/*  ::cortex::Fast::InitializerFrame */
 typedef struct Fast_InitializerFrame Fast_InitializerFrame;
 
 struct Fast_InitializerFrame {
@@ -276,7 +276,7 @@ struct Fast_InitializerFrame {
 
 typedef Fast_InitializerFrame Fast_InitializerFrame_array64[64];
 
-/*  ::hyve::Fast::Initializer */
+/*  ::cortex::Fast::Initializer */
 DB_CLASS(Fast_Initializer);
 
 DB_CLASS_DEF(Fast_Initializer) {
@@ -289,7 +289,7 @@ DB_CLASS_DEF(Fast_Initializer) {
 
 typedef Fast_Expression Fast_Expression_array64[64];
 
-/*  ::hyve::Fast::Integer */
+/*  ::cortex::Fast::Integer */
 DB_CLASS(Fast_Integer);
 
 DB_CLASS_DEF(Fast_Integer) {
@@ -297,7 +297,7 @@ DB_CLASS_DEF(Fast_Integer) {
     db_uint64 value;
 };
 
-/*  ::hyve::Fast::DynamicInitializerFrame */
+/*  ::cortex::Fast::DynamicInitializerFrame */
 typedef struct Fast_DynamicInitializerFrame Fast_DynamicInitializerFrame;
 
 struct Fast_DynamicInitializerFrame {
@@ -308,7 +308,7 @@ struct Fast_DynamicInitializerFrame {
 
 typedef Fast_DynamicInitializerFrame Fast_DynamicInitializerFrame_array64[64];
 
-/*  ::hyve::Fast::DynamicInitializer */
+/*  ::cortex::Fast::DynamicInitializer */
 DB_CLASS(Fast_DynamicInitializer);
 
 DB_CLASS_DEF(Fast_DynamicInitializer) {
@@ -317,7 +317,7 @@ DB_CLASS_DEF(Fast_DynamicInitializer) {
     Fast_DynamicInitializerFrame_array64 frames;
 };
 
-/*  ::hyve::Fast::ElementExpr */
+/*  ::cortex::Fast::ElementExpr */
 DB_CLASS(Fast_ElementExpr);
 
 DB_CLASS_DEF(Fast_ElementExpr) {
@@ -326,7 +326,7 @@ DB_CLASS_DEF(Fast_ElementExpr) {
     Fast_Expression rvalue;
 };
 
-/*  ::hyve::Fast::FloatingPoint */
+/*  ::cortex::Fast::FloatingPoint */
 DB_CLASS(Fast_FloatingPoint);
 
 DB_CLASS_DEF(Fast_FloatingPoint) {
@@ -334,7 +334,7 @@ DB_CLASS_DEF(Fast_FloatingPoint) {
     db_float64 value;
 };
 
-/*  ::hyve::Fast::If */
+/*  ::cortex::Fast::If */
 DB_CLASS(Fast_If);
 
 DB_CLASS_DEF(Fast_If) {
@@ -345,7 +345,7 @@ DB_CLASS_DEF(Fast_If) {
     db_bool warnUnreachable;
 };
 
-/* ::hyve::Fast::InitOperKind */
+/* ::cortex::Fast::InitOperKind */
 typedef enum Fast_InitOperKind {
     FAST_InitPush = 0,
     FAST_InitPop = 1,
@@ -354,7 +354,7 @@ typedef enum Fast_InitOperKind {
     FAST_InitMember = 4
 } Fast_InitOperKind;
 
-/*  ::hyve::Fast::InitOper */
+/*  ::cortex::Fast::InitOper */
 typedef struct Fast_InitOper Fast_InitOper;
 
 struct Fast_InitOper {
@@ -365,7 +365,7 @@ struct Fast_InitOper {
 
 DB_LIST(Fast_InitOper_list);
 
-/*  ::hyve::Fast::InitializerExpr */
+/*  ::cortex::Fast::InitializerExpr */
 DB_CLASS(Fast_InitializerExpr);
 
 DB_CLASS_DEF(Fast_InitializerExpr) {
@@ -374,14 +374,14 @@ DB_CLASS_DEF(Fast_InitializerExpr) {
     Fast_InitOper_list operations;
 };
 
-/* ::hyve::Fast::InitializerKind */
+/* ::cortex::Fast::InitializerKind */
 typedef enum Fast_InitializerKind {
     FAST_InitStatic = 0,
     FAST_InitDynamic = 1,
     FAST_InitExpression = 2
 } Fast_InitializerKind;
 
-/*  ::hyve::Fast::Lvalue */
+/*  ::cortex::Fast::Lvalue */
 typedef struct Fast_Lvalue Fast_Lvalue;
 
 struct Fast_Lvalue {
@@ -389,7 +389,7 @@ struct Fast_Lvalue {
     db_bool isAssignment;
 };
 
-/*  ::hyve::Fast::MemberExpr */
+/*  ::cortex::Fast::MemberExpr */
 DB_CLASS(Fast_MemberExpr);
 
 DB_CLASS_DEF(Fast_MemberExpr) {
@@ -400,7 +400,7 @@ DB_CLASS_DEF(Fast_MemberExpr) {
     db_object member;
 };
 
-/*  ::hyve::Fast::NewExpr */
+/*  ::cortex::Fast::NewExpr */
 DB_CLASS(Fast_NewExpr);
 
 DB_CLASS_DEF(Fast_NewExpr) {
@@ -409,14 +409,14 @@ DB_CLASS_DEF(Fast_NewExpr) {
     Fast_Expression attributes;
 };
 
-/*  ::hyve::Fast::Null */
+/*  ::cortex::Fast::Null */
 DB_CLASS(Fast_Null);
 
 DB_CLASS_DEF(Fast_Null) {
     DB_EXTEND(Fast_Literal);
 };
 
-/*  ::hyve::Fast::ObjectBase */
+/*  ::cortex::Fast::ObjectBase */
 DB_CLASS(Fast_ObjectBase);
 
 DB_CLASS_DEF(Fast_ObjectBase) {
@@ -424,7 +424,7 @@ DB_CLASS_DEF(Fast_ObjectBase) {
     db_object value;
 };
 
-/*  ::hyve::Fast::Object */
+/*  ::cortex::Fast::Object */
 DB_CLASS(Fast_Object);
 
 DB_CLASS_DEF(Fast_Object) {
@@ -441,7 +441,7 @@ typedef Fast_Variable Fast_Variable_array64[64];
 
 typedef Fast_Initializer Fast_Initializer_array64[64];
 
-/*  ::hyve::Fast::Parser::stagedId */
+/*  ::cortex::Fast::Parser::stagedId */
 typedef struct Fast_Parser_stagedId Fast_Parser_stagedId;
 
 struct Fast_Parser_stagedId {
@@ -457,7 +457,7 @@ typedef Fast_Lvalue Fast_Lvalue_array64[64];
 
 typedef db_type db_type_array64[64];
 
-/*  ::hyve::Fast::Parser */
+/*  ::cortex::Fast::Parser */
 DB_CLASS(Fast_Parser);
 
 DB_CLASS_DEF(Fast_Parser) {
@@ -500,7 +500,7 @@ DB_CLASS_DEF(Fast_Parser) {
     db_int32 complexTypeSp;
 };
 
-/*  ::hyve::Fast::ParserDeclaration */
+/*  ::cortex::Fast::ParserDeclaration */
 typedef struct Fast_ParserDeclaration Fast_ParserDeclaration;
 
 struct Fast_ParserDeclaration {
@@ -511,7 +511,7 @@ struct Fast_ParserDeclaration {
 DB_SEQUENCE(Fast_ParserDeclaration_seq256, Fast_ParserDeclaration,);
 
 typedef Fast_ParserDeclaration_seq256 Fast_ParserDeclarationSeq;
-/*  ::hyve::Fast::ParserNew */
+/*  ::cortex::Fast::ParserNew */
 typedef struct Fast_ParserNew Fast_ParserNew;
 
 struct Fast_ParserNew {
@@ -521,7 +521,7 @@ struct Fast_ParserNew {
     Fast_Expression attr;
 };
 
-/*  ::hyve::Fast::PostfixExpr */
+/*  ::cortex::Fast::PostfixExpr */
 DB_CLASS(Fast_PostfixExpr);
 
 DB_CLASS_DEF(Fast_PostfixExpr) {
@@ -530,7 +530,7 @@ DB_CLASS_DEF(Fast_PostfixExpr) {
     db_operatorKind operator;
 };
 
-/*  ::hyve::Fast::SignedInteger */
+/*  ::cortex::Fast::SignedInteger */
 DB_CLASS(Fast_SignedInteger);
 
 DB_CLASS_DEF(Fast_SignedInteger) {
@@ -540,7 +540,7 @@ DB_CLASS_DEF(Fast_SignedInteger) {
 
 typedef db_word db_word_array64[64];
 
-/*  ::hyve::Fast::StaticInitializerFrame */
+/*  ::cortex::Fast::StaticInitializerFrame */
 typedef struct Fast_StaticInitializerFrame Fast_StaticInitializerFrame;
 
 struct Fast_StaticInitializerFrame {
@@ -550,7 +550,7 @@ struct Fast_StaticInitializerFrame {
 
 typedef Fast_StaticInitializerFrame Fast_StaticInitializerFrame_array64[64];
 
-/*  ::hyve::Fast::StaticInitializer */
+/*  ::cortex::Fast::StaticInitializer */
 DB_CLASS(Fast_StaticInitializer);
 
 DB_CLASS_DEF(Fast_StaticInitializer) {
@@ -558,7 +558,7 @@ DB_CLASS_DEF(Fast_StaticInitializer) {
     Fast_StaticInitializerFrame_array64 frames;
 };
 
-/*  ::hyve::Fast::String */
+/*  ::cortex::Fast::String */
 DB_CLASS(Fast_String);
 
 DB_CLASS_DEF(Fast_String) {
@@ -569,14 +569,14 @@ DB_CLASS_DEF(Fast_String) {
     Fast_Variable scope;
 };
 
-/*  ::hyve::Fast::Template */
+/*  ::cortex::Fast::Template */
 DB_CLASS(Fast_Template);
 
 DB_CLASS_DEF(Fast_Template) {
     DB_EXTEND(Fast_Local);
 };
 
-/*  ::hyve::Fast::TernaryExpr */
+/*  ::cortex::Fast::TernaryExpr */
 DB_CLASS(Fast_TernaryExpr);
 
 DB_CLASS_DEF(Fast_TernaryExpr) {
@@ -590,7 +590,7 @@ DB_CLASS_DEF(Fast_TernaryExpr) {
     Fast_If ifstmt;
 };
 
-/*  ::hyve::Fast::UnaryExpr */
+/*  ::cortex::Fast::UnaryExpr */
 DB_CLASS(Fast_UnaryExpr);
 
 DB_CLASS_DEF(Fast_UnaryExpr) {
@@ -599,7 +599,7 @@ DB_CLASS_DEF(Fast_UnaryExpr) {
     db_operatorKind operator;
 };
 
-/*  ::hyve::Fast::Update */
+/*  ::cortex::Fast::Update */
 DB_CLASS(Fast_Update);
 
 DB_CLASS_DEF(Fast_Update) {
@@ -609,7 +609,7 @@ DB_CLASS_DEF(Fast_Update) {
     Fast_Expression from;
 };
 
-/*  ::hyve::Fast::Wait */
+/*  ::cortex::Fast::Wait */
 DB_CLASS(Fast_Wait);
 
 DB_CLASS_DEF(Fast_Wait) {

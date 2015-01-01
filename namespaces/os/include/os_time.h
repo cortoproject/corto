@@ -6,7 +6,7 @@
 #ifndef os_time_H
 #define os_time_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "os__type.h"
 
 #include "os__api.h"
@@ -17,16 +17,16 @@
 extern "C" {
 #endif
 
-/* ::hyve::os::time::add(::hyve::os::time t) */
+/* ::cortex::os::time::add(::cortex::os::time t) */
 db_void os_time_add(os_time _this, os_time t);
 
-/* ::hyve::os::time::get() */
+/* ::cortex::os::time::get() */
 db_void os_time_get(os_time _this);
 
-/* ::hyve::os::time::sub(::hyve::os::time t) */
+/* ::cortex::os::time::sub(::cortex::os::time t) */
 db_void os_time_sub(os_time _this, os_time t);
 
-/* ::hyve::os::time::toFloat() */
+/* ::cortex::os::time::toFloat() */
 db_float64 os_time_toFloat(os_time _this);
 
 #ifdef __cplusplus

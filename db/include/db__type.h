@@ -249,7 +249,7 @@ DB_SEQUENCE(db_interfaceVectorSeq, db_interfaceVector,);
 
 typedef db_rbtree db_scope;
 
-/* ::hyve::lang::parameter */
+/* ::cortex::lang::parameter */
 DB_STRUCT_DEF(db_parameter) {
     db_string name;
     db_typedef type;
@@ -311,13 +311,13 @@ DB_PROCEDURE_DEF(db_observer) {
 	db_observer delayedBinder;
 };
 
-/* ::hyve::lang::typedef */
+/* ::cortex::lang::typedef */
 DB_CLASS_DEF(db_typedef) {
     db_typedef type;
     db_type real;
 };
 
-/* ::hyve::lang::type */
+/* ::cortex::lang::type */
 DB_CLASS_DEF(db_type) {
     DB_EXTEND(db_typedef);
     db_typeKind kind;           /* Is type a void, any, primitive, composite or collection */
@@ -332,12 +332,12 @@ DB_CLASS_DEF(db_type) {
     db_vtable metaprocedures;   /* Metaprocedures of type */
 };
 
-/* ::hyve::lang::template */
+/* ::cortex::lang::template */
 DB_CLASS_DEF(db_template) {
     DB_EXTEND(db_type);
 };
 
-/* ::hyve::lang::primitive */
+/* ::cortex::lang::primitive */
 DB_CLASS_DEF(db_primitive) {
     DB_EXTEND(db_type);
     db_primitiveKind kind;
@@ -345,7 +345,7 @@ DB_CLASS_DEF(db_primitive) {
     db_uint8 convertId;
 };
 
-/* ::hyve::lang::interface */
+/* ::cortex::lang::interface */
 DB_CLASS_DEF(db_interface) {
     DB_EXTEND(db_type);
     db_compositeKind kind;
@@ -355,7 +355,7 @@ DB_CLASS_DEF(db_interface) {
     db_interface base;
 };
 
-/* ::hyve::lang::collection */
+/* ::cortex::lang::collection */
 DB_CLASS_DEF(db_collection) {
     DB_EXTEND(db_type);
     db_collectionKind kind;
@@ -363,67 +363,67 @@ DB_CLASS_DEF(db_collection) {
     db_uint32 max;
 };
 
-/* ::hyve::lang::binary */
+/* ::cortex::lang::binary */
 DB_CLASS_DEF(db_binary) {
     DB_EXTEND(db_primitive);
 };
 
-/* ::hyve::lang::boolean */
+/* ::cortex::lang::boolean */
 DB_CLASS_DEF(db_boolean) {
     DB_EXTEND(db_primitive);
 };
 
-/* ::hyve::lang::character */
+/* ::cortex::lang::character */
 DB_CLASS_DEF(db_character) {
     DB_EXTEND(db_primitive);
 };
 
-/* ::hyve::lang::int */
+/* ::cortex::lang::int */
 DB_CLASS_DEF(db_int) {
     DB_EXTEND(db_primitive);
     db_int64 min;
     db_int64 max;
 };
 
-/* ::hyve::lang::uint */
+/* ::cortex::lang::uint */
 DB_CLASS_DEF(db_uint) {
     DB_EXTEND(db_primitive);
     db_uint64 min;
     db_uint64 max;
 };
 
-/* ::hyve::lang::float */
+/* ::cortex::lang::float */
 DB_CLASS_DEF(db_float) {
     DB_EXTEND(db_primitive);
     db_float64 min;
     db_float64 max;
 };
 
-/* ::hyve::lang::text */
+/* ::cortex::lang::text */
 DB_CLASS_DEF(db_text) {
     DB_EXTEND(db_primitive);
     db_width charWidth;
     db_uint64 length;
 };
 
-/* ::hyve::lang::enum */
+/* ::cortex::lang::enum */
 DB_CLASS_DEF(db_enum) {
     DB_EXTEND(db_primitive);
     db_objectSeq constants;
 };
 
-/* ::hyve::lang::bitmask */
+/* ::cortex::lang::bitmask */
 DB_CLASS_DEF(db_bitmask) {
     DB_EXTEND(db_enum);
 };
 
-/* ::hyve::lang::alias */
+/* ::cortex::lang::alias */
 DB_CLASS_DEF(db_alias) {
 	DB_EXTEND(db_primitive);
 	db_string typeName;
 };
 
-/* ::hyve::lang::struct */
+/* ::cortex::lang::struct */
 DB_CLASS_DEF(db_struct) {
     DB_EXTEND(db_interface);
     db_modifier baseAccess;
@@ -435,7 +435,7 @@ DB_STRUCT_DEF(db_interfaceVector) {
 	db_vtable vector;
 };
 
-/* ::hyve::lang::class */
+/* ::cortex::lang::class */
 DB_CLASS_DEF(db_class) {
     DB_EXTEND(db_struct);
     db_interfaceSeq implements;
@@ -443,13 +443,13 @@ DB_CLASS_DEF(db_class) {
     db_observerSeq observers;
 };
 
-/* ::hyve::lang::procptrdata */
+/* ::cortex::lang::procptrdata */
 DB_STRUCT_DEF(db_procptrdata) {
     db_object instance;
     db_function procedure;
 };
 
-/* ::hyve::lang::procptr */
+/* ::cortex::lang::procptr */
 DB_CLASS_DEF(db_procptr) {
     DB_EXTEND(db_struct);
     db_typedef returnType;
@@ -457,29 +457,29 @@ DB_CLASS_DEF(db_procptr) {
     db_parameterSeq parameters;
 };
 
-/* ::hyve::lang::procedure */
+/* ::cortex::lang::procedure */
 DB_CLASS_DEF(db_procedure) {
     DB_EXTEND(db_struct);
     db_procedureKind kind;
 };
 
-/* ::hyve::lang::array */
+/* ::cortex::lang::array */
 DB_CLASS_DEF(db_array) {
     DB_EXTEND(db_collection);
     db_typedef elementType;
 };
 
-/* ::hyve::lang::sequence */
+/* ::cortex::lang::sequence */
 DB_CLASS_DEF(db_sequence) {
     DB_EXTEND(db_collection);
 };
 
-/* ::hyve::lang::list */
+/* ::cortex::lang::list */
 DB_CLASS_DEF(db_list) {
   DB_EXTEND(db_collection);
 };
 
-/* ::hyve::lang::map */
+/* ::cortex::lang::map */
 DB_CLASS_DEF(db_map) {
     DB_EXTEND(db_collection);
     db_typedef elementType;
@@ -487,7 +487,7 @@ DB_CLASS_DEF(db_map) {
     db_uint32 max;
 };
 
-/* ::hyve::lang::member */
+/* ::cortex::lang::member */
 DB_CLASS_DEF(db_member) {
     db_typedef type;
     db_modifier modifiers;
@@ -497,13 +497,13 @@ DB_CLASS_DEF(db_member) {
     db_uint32 offset;
 };
 
-/* ::hyve::lang::event */
+/* ::cortex::lang::event */
 DB_CLASS_DEF(db_event) {
 	db_uint16 kind;
 	db_bool handled;
 };
 
-/* ::hyve::lang::observableEvent */
+/* ::cortex::lang::observableEvent */
 DB_CLASS_DEF(db_observableEvent) {
 	DB_EXTEND(db_event);
 	db_observer observer;

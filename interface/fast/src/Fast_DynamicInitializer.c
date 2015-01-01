@@ -201,9 +201,9 @@ error:
 
 /* $end */
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::DynamicInitializer::construct(DynamicInitializer object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::DynamicInitializer::construct(DynamicInitializer object) */
 db_int16 Fast_DynamicInitializer_construct(Fast_DynamicInitializer object) {
-/* $begin(::hyve::Fast::DynamicInitializer::construct) */
+/* $begin(::cortex::Fast::DynamicInitializer::construct) */
 	db_int8 variable;
     
     /* Copy offsets of variables into frames */
@@ -216,9 +216,9 @@ db_int16 Fast_DynamicInitializer_construct(Fast_DynamicInitializer object) {
 /* $end */
 }
 
-/* ::hyve::Fast::DynamicInitializer::define() */
+/* ::cortex::Fast::DynamicInitializer::define() */
 db_int16 Fast_DynamicInitializer_define(Fast_DynamicInitializer _this) {
-/* $begin(::hyve::Fast::DynamicInitializer::define) */
+/* $begin(::cortex::Fast::DynamicInitializer::define) */
 	db_int8 variable;
     db_type t = Fast_Initializer_type(Fast_Initializer(_this));
     
@@ -236,9 +236,9 @@ db_int16 Fast_DynamicInitializer_define(Fast_DynamicInitializer _this) {
 /* $end */
 }
 
-/* ::hyve::Fast::DynamicInitializer::pop() */
+/* ::cortex::Fast::DynamicInitializer::pop() */
 db_int16 Fast_DynamicInitializer_pop(Fast_DynamicInitializer _this) {
-/* $begin(::hyve::Fast::DynamicInitializer::pop) */
+/* $begin(::cortex::Fast::DynamicInitializer::pop) */
     db_uint8 fp = Fast_Initializer(_this)->fp;
 
     if (_this->frames[fp-1].sequenceSize) {
@@ -249,9 +249,9 @@ db_int16 Fast_DynamicInitializer_pop(Fast_DynamicInitializer _this) {
 /* $end */
 }
 
-/* ::hyve::Fast::DynamicInitializer::push() */
+/* ::cortex::Fast::DynamicInitializer::push() */
 db_int16 Fast_DynamicInitializer_push(Fast_DynamicInitializer _this) {
-/* $begin(::hyve::Fast::DynamicInitializer::push) */
+/* $begin(::cortex::Fast::DynamicInitializer::push) */
 	db_uint8 variable;
     db_type t = Fast_Initializer_currentType(Fast_Initializer(_this));
     db_uint8 fp = Fast_Initializer(_this)->fp;
@@ -307,9 +307,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::DynamicInitializer::value(Expression v) */
+/* ::cortex::Fast::DynamicInitializer::value(Expression v) */
 db_int16 Fast_DynamicInitializer_value(Fast_DynamicInitializer _this, Fast_Expression v) {
-/* $begin(::hyve::Fast::DynamicInitializer::value) */
+/* $begin(::cortex::Fast::DynamicInitializer::value) */
 	db_uint32 variable;
     db_uint32 fp = Fast_Initializer(_this)->fp;
     db_type type = Fast_Initializer_currentType(Fast_Initializer(_this));

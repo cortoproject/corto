@@ -7,7 +7,7 @@
 #ifndef Fast_RecordInitializer_H
 #define Fast_RecordInitializer_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "Fast_Initializer.h"
 #include "Fast__type.h"
 
@@ -15,16 +15,16 @@
 extern "C" {
 #endif
 
-/* ::hyve::Fast::RecordInitializer::define() */
+/* ::cortex::Fast::RecordInitializer::define() */
 db_int16 Fast_RecordInitializer_define(Fast_RecordInitializer _this);
 
-/* ::hyve::Fast::RecordInitializer::pop() */
+/* ::cortex::Fast::RecordInitializer::pop() */
 db_int16 Fast_RecordInitializer_pop(Fast_RecordInitializer _this);
 
-/* ::hyve::Fast::RecordInitializer::push() */
+/* ::cortex::Fast::RecordInitializer::push() */
 db_int16 Fast_RecordInitializer_push(Fast_RecordInitializer _this);
 
-/* ::hyve::Fast::RecordInitializer::value(Expression v) */
+/* ::cortex::Fast::RecordInitializer::value(Expression v) */
 db_int16 Fast_RecordInitializer_value(Fast_RecordInitializer _this, Fast_Expression v);
 
 #ifdef __cplusplus

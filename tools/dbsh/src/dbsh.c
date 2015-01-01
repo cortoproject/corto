@@ -5,7 +5,7 @@
  *      Author: sander
  */
 
-#include "hyve.h"
+#include "cortex.h"
 #include "db_convert.h"
 #include "db_string_ser.h"
 #include "db_metawalk.h"
@@ -213,7 +213,7 @@ static int dbsh_treeWalk(db_object o, void* userData) {
         }
 
         /* Object */
-        if (db_parentof(db_typeof(o)) == hyve_lang_o) {
+        if (db_parentof(db_typeof(o)) == cortex_lang_o) {
             printf("%s%s%s %s", TYPE_COLOR, db_nameof(db_typeof(o)), NORMAL, db_nameof(o));
         } else {
             printf("%s%s%s %s", TYPE_COLOR, db_fullname(db_typeof(o), id1), NORMAL, db_nameof(o));
@@ -399,7 +399,7 @@ static void dbsh_drop(char* name) {
 static void dbsh_help(void) {
 	printf("%sLyra shell help%s\n", HEADER_COLOR, NORMAL);
 	printf("\n");
-	printf("Use hyve-expressions to read or modify data in the hyve database.\n");
+	printf("Use cortex-expressions to read or modify data in the cortex database.\n");
 	printf("If the expression resolves to an object the shell will display the object\n");
 	printf("and its metadata. If shell-commands conflict with an objectname prefix the\n");
 	printf("command with an '\\'.\n");
@@ -415,17 +415,17 @@ static void dbsh_help(void) {
 	printf("      Change current scope to specified scope.\n");
 	printf("  %simport [file]%s\n", HEADER_COLOR, NORMAL);
 	printf("      Load a file into the database. The file can be of any type\n");
-	printf("      that is supported by hyve.\n");
+	printf("      that is supported by cortex.\n");
 	printf("  %sclear%s\n", HEADER_COLOR, NORMAL);
 	printf("      Clears the screen.\n");
 	printf("  %sexit%s\n", HEADER_COLOR, NORMAL);
 	printf("      Exit database shell.\n");
 	printf("\n");
 	printf("%sExamples:%s\n", HEADER_COLOR, NORMAL);
-	printf("  %s$%s ls hyve::lang\n", SHELL_COLOR, NORMAL);
-	printf("      List objects in scope 'hyve::lang'\n");
-	printf("  %s$%s hyve::lang::class\n", SHELL_COLOR, NORMAL);
-	printf("      Display object 'hyve::lang::class'\n");
+	printf("  %s$%s ls cortex::lang\n", SHELL_COLOR, NORMAL);
+	printf("      List objects in scope 'cortex::lang'\n");
+	printf("  %s$%s cortex::lang::class\n", SHELL_COLOR, NORMAL);
+	printf("      Display object 'cortex::lang::class'\n");
 	printf("\n");
 }
 
@@ -528,7 +528,7 @@ int main(int argc, char* argv[]) {
 	/* Start database */
 	db_start();
 
-	printf("hyve shell - type 'help' for instructions.\n");
+	printf("cortex shell - type 'help' for instructions.\n");
 
 	/* Parse arguments */
 	for(i=1; i<argc; i++) {

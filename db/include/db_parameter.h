@@ -6,7 +6,7 @@
 #ifndef db_parameter_H
 #define db_parameter_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "db__type.h"
 
 #include "db__api.h"

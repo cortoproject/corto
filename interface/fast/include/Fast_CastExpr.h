@@ -6,7 +6,7 @@
 #ifndef Fast_CastExpr_H
 #define Fast_CastExpr_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "Fast_Expression.h"
 #include "Fast__type.h"
 
@@ -18,13 +18,13 @@
 extern "C" {
 #endif
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::CastExpr::construct(Fast::CastExpr object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::CastExpr::construct(Fast::CastExpr object) */
 db_int16 Fast_CastExpr_construct(Fast_CastExpr object);
 
-/* virtual ::hyve::Fast::CastExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::CastExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_CastExpr_toIc(Fast_CastExpr _this, db_icProgram program, db_icStorage storage, db_bool stored);
 
-/* ::hyve::Fast::CastExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::CastExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_CastExpr_toIc_v(Fast_CastExpr _this, db_icProgram program, db_icStorage storage, db_bool stored);
 
 #ifdef __cplusplus

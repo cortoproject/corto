@@ -6,7 +6,7 @@
 #ifndef Fast_StaticInitializer_H
 #define Fast_StaticInitializer_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "Fast_Initializer.h"
 #include "Fast__type.h"
 
@@ -18,16 +18,16 @@
 extern "C" {
 #endif
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::StaticInitializer::construct(StaticInitializer object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::StaticInitializer::construct(StaticInitializer object) */
 db_int16 Fast_StaticInitializer_construct(Fast_StaticInitializer object);
 
-/* ::hyve::Fast::StaticInitializer::define() */
+/* ::cortex::Fast::StaticInitializer::define() */
 db_int16 Fast_StaticInitializer_define(Fast_StaticInitializer _this);
 
-/* ::hyve::Fast::StaticInitializer::push() */
+/* ::cortex::Fast::StaticInitializer::push() */
 db_int16 Fast_StaticInitializer_push(Fast_StaticInitializer _this);
 
-/* ::hyve::Fast::StaticInitializer::value(Expression v) */
+/* ::cortex::Fast::StaticInitializer::value(Expression v) */
 db_int16 Fast_StaticInitializer_value(Fast_StaticInitializer _this, Fast_Expression v);
 
 #ifdef __cplusplus

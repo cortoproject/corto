@@ -6,7 +6,7 @@
  */
 
 #include "db_xml_deser.h"
-#include "hyve.h"
+#include "cortex.h"
 #include "db_class.h"
 #include "db_xmlreader.h"
 #include "db_loader.h"

@@ -13,9 +13,9 @@
 db_int16 db_type_bindMetaprocedure(db_type _this, db_metaprocedure procedure);
 /* $end */
 
-/* callback ::hyve::lang::procedure::bind(lang::object object) -> ::hyve::lang::metaprocedure::bind(lang::metaprocedure object) */
+/* callback ::cortex::lang::procedure::bind(lang::object object) -> ::cortex::lang::metaprocedure::bind(lang::metaprocedure object) */
 db_int16 db_metaprocedure_bind(db_metaprocedure object) {
-/* $begin(::hyve::lang::metaprocedure::bind) */
+/* $begin(::cortex::lang::metaprocedure::bind) */
 	db_object parent;
 
 	parent = db_parentof(object);

@@ -127,9 +127,9 @@ error:
 }
 /* $end */
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::Call::construct(Fast::Call object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Call::construct(Fast::Call object) */
 db_int16 Fast_Call_construct(Fast_Call object) {
-/* $begin(::hyve::Fast::Call::construct) */
+/* $begin(::cortex::Fast::Call::construct) */
 	db_type functionType;
 	db_function function = NULL;
     Fast_nodeKind kind = Fast_Node(object->function)->kind;
@@ -223,17 +223,17 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Call::hasSideEffects() */
+/* ::cortex::Fast::Call::hasSideEffects() */
 db_bool Fast_Call_hasSideEffects_v(Fast_Call _this) {
-/* $begin(::hyve::Fast::Call::hasSideEffects) */
+/* $begin(::cortex::Fast::Call::hasSideEffects) */
     DB_UNUSED(_this);
     return TRUE;
 /* $end */
 }
 
-/* ::hyve::Fast::Call::resolveActual(string signature,lang::object scope,Fast::Expression instance) */
+/* ::cortex::Fast::Call::resolveActual(string signature,lang::object scope,Fast::Expression instance) */
 db_function Fast_Call_resolveActual(db_string signature, db_object scope, Fast_Expression instance) {
-/* $begin(::hyve::Fast::Call::resolveActual) */
+/* $begin(::cortex::Fast::Call::resolveActual) */
     db_function actualFunction = NULL;
 
     if (!instance) {
@@ -284,9 +284,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Call::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Call::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Call_toIc_v(Fast_Call _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-/* $begin(::hyve::Fast::Call::toIc) */
+/* $begin(::cortex::Fast::Call::toIc) */
 	db_icStorage function, result = NULL, argumentStorage = NULL;
 	db_uint32 argumentStorageCount = 0;
 	db_ic argumentIc = NULL;

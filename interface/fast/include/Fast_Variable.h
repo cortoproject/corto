@@ -6,7 +6,7 @@
 #ifndef Fast_Variable_H
 #define Fast_Variable_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "Fast_Expression.h"
 #include "Fast__type.h"
 
@@ -18,7 +18,7 @@
 extern "C" {
 #endif
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::Variable::construct(Variable object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Variable::construct(Variable object) */
 db_int16 Fast_Variable_construct(Fast_Variable object);
 
 #ifdef __cplusplus

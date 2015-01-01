@@ -135,9 +135,9 @@ static int db_clearFreeValues(void* o, void* udata) {
 }
 /* $end */
 
-/* ::hyve::lang::list::append() */
+/* ::cortex::lang::list::append() */
 db_any db_list_append_(db_any _this) {
-/* $begin(::hyve::lang::list::append()) */
+/* $begin(::cortex::lang::list::append()) */
     db_any result;
     result.type = db_collection(_this.type)->elementType->real;
     result.value = db_list_do_(_this, FALSE);
@@ -146,16 +146,16 @@ db_any db_list_append_(db_any _this) {
 /* $end */
 }
 
-/* ::hyve::lang::list::append(lang::any element) */
+/* ::cortex::lang::list::append(lang::any element) */
 db_void db_list_append_lang_any(db_any _this, db_any element) {
-/* $begin(::hyve::lang::list::append(lang::any element)) */
+/* $begin(::cortex::lang::list::append(lang::any element)) */
 	db_list_do(_this, element, FALSE, db_list_appendAction, NULL);
 /* $end */
 }
 
-/* ::hyve::lang::list::clear() */
+/* ::cortex::lang::list::clear() */
 db_void db_list_clear(db_any _this) {
-/* $begin(::hyve::lang::list::clear) */
+/* $begin(::cortex::lang::list::clear) */
     db_collection c = db_collection(_this.type);
     if (db_collection_elementRequiresAlloc(c)) {
         db_llWalk(*(db_ll*)_this.value, db_clearFreeValues, NULL);
@@ -164,9 +164,9 @@ db_void db_list_clear(db_any _this) {
 /* $end */
 }
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::lang::list::construct(lang::list object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::list::construct(lang::list object) */
 db_int16 db_list_construct(db_list object) {
-/* $begin(::hyve::lang::list::construct) */
+/* $begin(::cortex::lang::list::construct) */
 	db_type(object)->hasResources = TRUE;
 	db_type(object)->size = sizeof(db_ll);
 	db_type(object)->alignment = DB_ALIGNMENT(db_ll);
@@ -174,17 +174,17 @@ db_int16 db_list_construct(db_list object) {
 /* $end */
 }
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::list::init(lang::list object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::list::init(lang::list object) */
 db_int16 db_list_init(db_list object) {
-/* $begin(::hyve::lang::list::init) */
+/* $begin(::cortex::lang::list::init) */
     db_collection(object)->kind = DB_LIST;
     return db_collection_init(db_collection(object));
 /* $end */
 }
 
-/* ::hyve::lang::list::insert() */
+/* ::cortex::lang::list::insert() */
 db_any db_list_insert_(db_any _this) {
-/* $begin(::hyve::lang::list::insert()) */
+/* $begin(::cortex::lang::list::insert()) */
     db_any result;
     result.type = db_collection(_this.type)->elementType->real;
     result.value = db_list_do_(_this, TRUE);
@@ -193,16 +193,16 @@ db_any db_list_insert_(db_any _this) {
 /* $end */
 }
 
-/* ::hyve::lang::list::insert(lang::any element) */
+/* ::cortex::lang::list::insert(lang::any element) */
 db_void db_list_insert_lang_any(db_any _this, db_any element) {
-/* $begin(::hyve::lang::list::insert(lang::any element)) */
+/* $begin(::cortex::lang::list::insert(lang::any element)) */
     db_list_do(_this, element, TRUE, db_list_insertAction, NULL);
 /* $end */
 }
 
-/* ::hyve::lang::list::reverse() */
+/* ::cortex::lang::list::reverse() */
 db_void db_list_reverse(db_any _this) {
-/* $begin(::hyve::lang::list::reverse) */
+/* $begin(::cortex::lang::list::reverse) */
 	db_llReverse(*(db_ll*)_this.value);
 /* $end */
 }

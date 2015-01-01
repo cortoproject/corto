@@ -8,7 +8,7 @@
 #define fixture__API_H
 
 #include "fixture__type.h"
-#include "hyve.h"
+#include "cortex.h"
 
 #ifdef __cplusplus
 extern "C" {

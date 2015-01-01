@@ -175,7 +175,7 @@ void g_itemDepend(g_item o, db_uint8 kind, g_item dependency, db_uint8 dependenc
 			break;
 		}
     } else {
-    	db_error("bootstrap detected while not in ::hyve::lang namespace - database corrupt!");
+    	db_error("bootstrap detected while not in ::cortex::lang namespace - database corrupt!");
     }
 }
 
@@ -359,9 +359,9 @@ int db_genDepBuildAction(db_object o, void* userData) {
 
     data = userData;
 
-    /* If object is hyve_lang_o, signal that a bootstrap is found, indicating
+    /* If object is cortex_lang_o, signal that a bootstrap is found, indicating
      * that dependencies should be disregarded. */
-    if (o == hyve_lang_o) {
+    if (o == cortex_lang_o) {
     	data->bootstrap = TRUE;
     	result = 0;
     } else {

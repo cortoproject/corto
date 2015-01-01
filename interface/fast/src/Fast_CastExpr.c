@@ -17,9 +17,9 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::CastExpr::construct(Fast::CastExpr object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::CastExpr::construct(Fast::CastExpr object) */
 db_int16 Fast_CastExpr_construct(Fast_CastExpr object) {
-/* $begin(::hyve::Fast::CastExpr::construct) */
+/* $begin(::cortex::Fast::CastExpr::construct) */
 
 	Fast_Node(object)->kind = FAST_Call;
 
@@ -67,9 +67,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::CastExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::CastExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_CastExpr_toIc_v(Fast_CastExpr _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-/* $begin(::hyve::Fast::CastExpr::toIc) */
+/* $begin(::cortex::Fast::CastExpr::toIc) */
 	db_ic lvalue, rvalue, result;
 	db_icOp op;
 	db_type _thisType = Fast_Expression_getType(Fast_Expression(_this));

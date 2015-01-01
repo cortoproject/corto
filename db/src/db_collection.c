@@ -137,9 +137,9 @@ void db_clear(db_collection _this, db_void* collection) {
 }
 /* $end */
 
-/* ::hyve::lang::collection::castable(lang::type type) */
+/* ::cortex::lang::collection::castable(lang::type type) */
 db_bool db_collection_castable_v(db_collection _this, db_type type) {
-/* $begin(::hyve::lang::collection::castable) */
+/* $begin(::cortex::lang::collection::castable) */
     db_bool result = FALSE;
     if (type->kind == DB_COLLECTION) {
         db_collection t = db_collection(type);
@@ -160,9 +160,9 @@ db_bool db_collection_castable_v(db_collection _this, db_type type) {
 /* $end */
 }
 
-/* ::hyve::lang::collection::elementRequiresAlloc() */
+/* ::cortex::lang::collection::elementRequiresAlloc() */
 db_bool db_collection_elementRequiresAlloc(db_collection _this) {
-/* $begin(::hyve::lang::collection::elementRequiresAlloc) */
+/* $begin(::cortex::lang::collection::elementRequiresAlloc) */
     db_bool result = TRUE;
     db_type elementType = _this->elementType->real;
 
@@ -182,7 +182,7 @@ db_bool db_collection_elementRequiresAlloc(db_collection _this) {
             case DB_WIDTH_16:
             case DB_WIDTH_32:
             case DB_WIDTH_WORD:
-                /* At least a 32-bit architecture is required for hyve. */
+                /* At least a 32-bit architecture is required for cortex. */
                 result = FALSE;
                 break;
             case DB_WIDTH_64:
@@ -213,16 +213,16 @@ db_bool db_collection_elementRequiresAlloc(db_collection _this) {
 /* $end */
 }
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::collection::init(lang::collection object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::collection::init(lang::collection object) */
 db_int16 db_collection_init(db_collection object) {
-/* $begin(::hyve::lang::collection::init) */
+/* $begin(::cortex::lang::collection::init) */
     db_type(object)->kind = DB_COLLECTION;
     return db_type__init(db_type(object));/* $end */
 }
 
-/* ::hyve::lang::collection::size() */
+/* ::cortex::lang::collection::size() */
 db_uint32 db_collection_size(db_any _this) {
-/* $begin(::hyve::lang::collection::size) */
+/* $begin(::cortex::lang::collection::size) */
     db_uint32 result = 0;
 
     switch(db_collection(_this.type)->kind) {

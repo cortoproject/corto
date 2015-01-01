@@ -5,7 +5,7 @@ OFLAGS	= -O0
 CFLAGS	= $(OFLAGS) $(COVFLAGS) -g -Wall -Wextra -Wno-gnu-label-as-value -Wno-unknown-pragmas -Wstrict-prototypes -pedantic -std=c99 -fPIC -D_GNU_SOURCE -D_XOPEN_SOURCE=500 -D_POSIX_C_SOURCE=199506
 
 # default libraries and includes
-INCLUDE += include $(HYVE_HOME)/db/include
+INCLUDE += include $(CORTEX_HOME)/db/include
 
 INCLUDES = $(INCLUDE:%=-I"%")
 SOURCES += $(wildcard src/*.c)
@@ -14,7 +14,7 @@ OBJECTS += $(SOURCES_NODIR:%.c=obj/%.o)
 GCOV = $(SOURCES:%.c=gcov/%.c.gcov)
 SPLINT = $(SOURCES:%.c=src/%.c)
 LINKPATH = $(LIBPATH:%=-L%)
-LINK = -L$(HYVE_HOME)/bin $(LINKPATH) $(LIBS:%=-l%)
+LINK = -L$(CORTEX_HOME)/bin $(LINKPATH) $(LIBS:%=-l%)
 
 obj/%.o: src/%.c
 	@mkdir -p obj

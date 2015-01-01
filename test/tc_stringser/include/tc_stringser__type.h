@@ -8,7 +8,7 @@
 #ifndef tc_stringser__type_H
 #define tc_stringser__type_H
 
-#include "hyve.h"
+#include "cortex.h"
 #ifdef __cplusplus
 extern "C" {
 #endif

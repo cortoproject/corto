@@ -105,7 +105,7 @@ static db_string Fast_Parser_id(db_object o, db_id buffer) {
     return buffer;
 }
 
-/* Translate result of parser to hyve intermediate bytecode */
+/* Translate result of parser to cortex intermediate bytecode */
 db_int16 Fast_Parser_toIc(Fast_Parser _this) {
 	db_icProgram program = db_icProgram__create(_this->filename);
 	Fast_Binding *binding;
@@ -899,9 +899,9 @@ error:
 
 /* $end */
 
-/* ::hyve::Fast::Parser::addStatement(Fast::Node statement) */
+/* ::cortex::Fast::Parser::addStatement(Fast::Node statement) */
 void Fast_Parser_addStatement(Fast_Parser _this, Fast_Node statement) {
-/* $begin(::hyve::Fast::Parser::addStatement) */
+/* $begin(::cortex::Fast::Parser::addStatement) */
     FAST_CHECK_ERRSET(_this);
     
     /* Process staged declarations that do not have initializers (for example, enum Color:: RED, YELLOW, GREEN, BLUE;) */
@@ -942,9 +942,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::argumentToString(Fast::Variable type,lang::string id,lang::bool reference) */
+/* ::cortex::Fast::Parser::argumentToString(Fast::Variable type,lang::string id,lang::bool reference) */
 db_string Fast_Parser_argumentToString(Fast_Parser _this, Fast_Variable type, db_string id, db_bool reference) {
-/* $begin(::hyve::Fast::Parser::argumentToString) */
+/* $begin(::cortex::Fast::Parser::argumentToString) */
 	db_string str;
 	db_object type_o;
 	db_string result;
@@ -992,9 +992,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::binaryExpr(Fast::Expression lvalues,Fast::Expression rvalues,lang::operatorKind operator) */
+/* ::cortex::Fast::Parser::binaryExpr(Fast::Expression lvalues,Fast::Expression rvalues,lang::operatorKind operator) */
 Fast_Expression Fast_Parser_binaryExpr(Fast_Parser _this, Fast_Expression lvalues, Fast_Expression rvalues, db_operatorKind operator) {
-/* $begin(::hyve::Fast::Parser::binaryExpr) */
+/* $begin(::cortex::Fast::Parser::binaryExpr) */
     Fast_Expression result = NULL;
     FAST_CHECK_ERRSET(_this);
     
@@ -1028,9 +1028,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::bind(Fast::Variable function,Fast::Block block) */
+/* ::cortex::Fast::Parser::bind(Fast::Variable function,Fast::Block block) */
 db_int16 Fast_Parser_bind(Fast_Parser _this, Fast_Variable function, Fast_Block block) {
-/* $begin(::hyve::Fast::Parser::bind) */
+/* $begin(::cortex::Fast::Parser::bind) */
     Fast_Binding *binding;
     FAST_CHECK_ERRSET(_this);
 
@@ -1048,9 +1048,9 @@ db_int16 Fast_Parser_bind(Fast_Parser _this, Fast_Variable function, Fast_Block 
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::bindOneliner(Fast::Variable function,Fast::Block block,Fast::Expression expr) */
+/* ::cortex::Fast::Parser::bindOneliner(Fast::Variable function,Fast::Block block,Fast::Expression expr) */
 db_int16 Fast_Parser_bindOneliner(Fast_Parser _this, Fast_Variable function, Fast_Block block, Fast_Expression expr) {
-/* $begin(::hyve::Fast::Parser::bindOneliner) */
+/* $begin(::cortex::Fast::Parser::bindOneliner) */
     FAST_CHECK_ERRSET(_this);
 
 	if (_this->pass) {
@@ -1084,9 +1084,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::blockPop() */
+/* ::cortex::Fast::Parser::blockPop() */
 void Fast_Parser_blockPop(Fast_Parser _this) {
-/* $begin(::hyve::Fast::Parser::blockPop) */
+/* $begin(::cortex::Fast::Parser::blockPop) */
     FAST_CHECK_ERRSET(_this);
 
     /* Blocks are parsed only in 2nd pass */
@@ -1104,9 +1104,9 @@ void Fast_Parser_blockPop(Fast_Parser _this) {
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::blockPush(lang::bool presetBlock) */
+/* ::cortex::Fast::Parser::blockPush(lang::bool presetBlock) */
 Fast_Block Fast_Parser_blockPush(Fast_Parser _this, db_bool presetBlock) {
-/* $begin(::hyve::Fast::Parser::blockPush) */
+/* $begin(::cortex::Fast::Parser::blockPush) */
     FAST_CHECK_ERRSET(_this);
 
     /* Blocks are parsed only in 2nd pass */
@@ -1130,9 +1130,9 @@ Fast_Block Fast_Parser_blockPush(Fast_Parser _this, db_bool presetBlock) {
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::callExpr(Fast::Expression function,Fast::Expression arguments) */
+/* ::cortex::Fast::Parser::callExpr(Fast::Expression function,Fast::Expression arguments) */
 Fast_Expression Fast_Parser_callExpr(Fast_Parser _this, Fast_Expression function, Fast_Expression arguments) {
-/* $begin(::hyve::Fast::Parser::callExpr) */
+/* $begin(::cortex::Fast::Parser::callExpr) */
 	Fast_Expression result = NULL;
     
     _this->stagingAllowed = FALSE;
@@ -1178,9 +1178,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::castExpr(Fast::Expression lvalue,Fast::Expression rvalue) */
+/* ::cortex::Fast::Parser::castExpr(Fast::Expression lvalue,Fast::Expression rvalue) */
 Fast_Expression Fast_Parser_castExpr(Fast_Parser _this, Fast_Expression lvalue, Fast_Expression rvalue) {
-/* $begin(::hyve::Fast::Parser::castExpr) */
+/* $begin(::cortex::Fast::Parser::castExpr) */
 	Fast_Expression result = NULL;
     
     _this->stagingAllowed = FALSE;
@@ -1234,9 +1234,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::collect(lang::object o) */
+/* ::cortex::Fast::Parser::collect(lang::object o) */
 db_void Fast_Parser_collect(Fast_Parser _this, db_object o) {
-/* $begin(::hyve::Fast::Parser::collect) */
+/* $begin(::cortex::Fast::Parser::collect) */
     /* 1st pass & 2nd pass are equal */
 
     db_assert(_this->collected != NULL, "initialization failed");
@@ -1245,9 +1245,9 @@ db_void Fast_Parser_collect(Fast_Parser _this, db_object o) {
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::collectHeap(word addr) */
+/* ::cortex::Fast::Parser::collectHeap(word addr) */
 db_void Fast_Parser_collectHeap(Fast_Parser _this, db_word addr) {
-/* $begin(::hyve::Fast::Parser::collectHeap) */
+/* $begin(::cortex::Fast::Parser::collectHeap) */
     FAST_CHECK_ERRSET(_this);
 
     /* 1st pass & 2nd pass are equal */
@@ -1257,18 +1257,18 @@ db_void Fast_Parser_collectHeap(Fast_Parser _this, db_word addr) {
 /* $end */
 }
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::Parser::construct(Parser object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Parser::construct(Parser object) */
 db_int16 Fast_Parser_construct(Fast_Parser object) {
-/* $begin(::hyve::Fast::Parser::construct) */
+/* $begin(::cortex::Fast::Parser::construct) */
     DB_UNUSED(object);
     Fast_Parser_reset(object);
     return 0;
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::declaration(Variable type,lang::string id,lang::bool isReference) */
+/* ::cortex::Fast::Parser::declaration(Variable type,lang::string id,lang::bool isReference) */
 Fast_Variable Fast_Parser_declaration(Fast_Parser _this, Fast_Variable type, db_string id, db_bool isReference) {
-/* $begin(::hyve::Fast::Parser::declaration) */
+/* $begin(::cortex::Fast::Parser::declaration) */
 	Fast_Variable result = NULL;
     FAST_CHECK_ERRSET(_this);
 
@@ -1351,9 +1351,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::type kind,bool returnsReference) */
+/* ::cortex::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::type kind,bool returnsReference) */
 Fast_Variable Fast_Parser_declareFunction(Fast_Parser _this, Fast_Variable returnType, db_string id, db_type kind, db_bool returnsReference) {
-/* $begin(::hyve::Fast::Parser::declareFunction) */
+/* $begin(::cortex::Fast::Parser::declareFunction) */
 	db_function function;
     db_object o;
 	db_typedef functionType = db_typedef(kind);
@@ -1468,9 +1468,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::declareFunctionParams(Variable function) */
+/* ::cortex::Fast::Parser::declareFunctionParams(Variable function) */
 Fast_Block Fast_Parser_declareFunctionParams(Fast_Parser _this, Fast_Variable function) {
-/* $begin(::hyve::Fast::Parser::declareFunctionParams) */
+/* $begin(::cortex::Fast::Parser::declareFunctionParams) */
 	db_function function_o;
 	db_parameter *param;
 	Fast_Object typeVariable;
@@ -1519,9 +1519,9 @@ Fast_Block Fast_Parser_declareFunctionParams(Fast_Parser _this, Fast_Variable fu
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::define() */
+/* ::cortex::Fast::Parser::define() */
 db_int16 Fast_Parser_define(Fast_Parser _this) {
-/* $begin(::hyve::Fast::Parser::define) */
+/* $begin(::cortex::Fast::Parser::define) */
     FAST_CHECK_ERRSET(_this);
 
 	if ((_this->initializerCount >= 0) && _this->initializers[_this->initializerCount]) {
@@ -1539,9 +1539,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::defineScope() */
+/* ::cortex::Fast::Parser::defineScope() */
 db_int16 Fast_Parser_defineScope(Fast_Parser _this) {
-/* $begin(::hyve::Fast::Parser::defineScope) */
+/* $begin(::cortex::Fast::Parser::defineScope) */
     FAST_CHECK_ERRSET(_this);
 
     if (!_this->pass) {
@@ -1564,9 +1564,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::defineVariable(Variable object) */
+/* ::cortex::Fast::Parser::defineVariable(Variable object) */
 db_int16 Fast_Parser_defineVariable(Fast_Parser _this, Fast_Variable object) {
-/* $begin(::hyve::Fast::Parser::defineVariable) */
+/* $begin(::cortex::Fast::Parser::defineVariable) */
     db_int16 result = 0;
     DB_UNUSED(_this);
     FAST_CHECK_ERRSET(_this);
@@ -1593,9 +1593,9 @@ error:
 /* $end */
 }
 
-/* callback ::hyve::lang::class::destruct(lang::object object) -> ::hyve::Fast::Parser::destruct(Parser object) */
+/* callback ::cortex::lang::class::destruct(lang::object object) -> ::cortex::Fast::Parser::destruct(Parser object) */
 void Fast_Parser_destruct(Fast_Parser object) {
-/* $begin(::hyve::Fast::Parser::destruct) */
+/* $begin(::cortex::Fast::Parser::destruct) */
 	db_iter iter;
 
 	if (object->heapCollected) {
@@ -1613,9 +1613,9 @@ void Fast_Parser_destruct(Fast_Parser object) {
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::elementExpr(Fast::Expression lvalue,Fast::Expression rvalue) */
+/* ::cortex::Fast::Parser::elementExpr(Fast::Expression lvalue,Fast::Expression rvalue) */
 Fast_Expression Fast_Parser_elementExpr(Fast_Parser _this, Fast_Expression lvalue, Fast_Expression rvalue) {
-/* $begin(::hyve::Fast::Parser::elementExpr) */
+/* $begin(::cortex::Fast::Parser::elementExpr) */
 	Fast_Expression result = NULL;
 
     /* Expand element expression with comma-expressions */
@@ -1645,9 +1645,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::foreach(lang::string loopId,Fast::Expression collection) */
+/* ::cortex::Fast::Parser::foreach(lang::string loopId,Fast::Expression collection) */
 db_int16 Fast_Parser_foreach(Fast_Parser _this, db_string loopId, Fast_Expression collection) {
-/* $begin(::hyve::Fast::Parser::foreach) */
+/* $begin(::cortex::Fast::Parser::foreach) */
     if (_this->pass) {
         Fast_Block block;
         db_object type;
@@ -1683,9 +1683,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::getComplexType() */
+/* ::cortex::Fast::Parser::getComplexType() */
 db_type Fast_Parser_getComplexType(Fast_Parser _this) {
-/* $begin(::hyve::Fast::Parser::getComplexType) */
+/* $begin(::cortex::Fast::Parser::getComplexType) */
     db_type result = NULL;
 
     if (_this->complexTypeSp > 0) {
@@ -1699,9 +1699,9 @@ db_type Fast_Parser_getComplexType(Fast_Parser _this) {
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::getLvalue(lang::bool assignment) */
+/* ::cortex::Fast::Parser::getLvalue(lang::bool assignment) */
 Fast_Expression Fast_Parser_getLvalue(Fast_Parser _this, db_bool assignment) {
-/* $begin(::hyve::Fast::Parser::getLvalue) */
+/* $begin(::cortex::Fast::Parser::getLvalue) */
     Fast_Expression result = NULL;
 
     if (_this->lvalueSp > 0) {
@@ -1717,9 +1717,9 @@ Fast_Expression Fast_Parser_getLvalue(Fast_Parser _this, db_bool assignment) {
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::getLvalueType(lang::bool assignment) */
+/* ::cortex::Fast::Parser::getLvalueType(lang::bool assignment) */
 db_type Fast_Parser_getLvalueType(Fast_Parser _this, db_bool assignment) {
-/* $begin(::hyve::Fast::Parser::getLvalueType) */
+/* $begin(::cortex::Fast::Parser::getLvalueType) */
     db_type result = NULL;
 
     /* Check if the parser set an lvalue */
@@ -1744,9 +1744,9 @@ db_type Fast_Parser_getLvalueType(Fast_Parser _this, db_bool assignment) {
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::ifStatement(Fast::Expression condition,Fast::Block trueBranch,Fast::If falseBranch) */
+/* ::cortex::Fast::Parser::ifStatement(Fast::Expression condition,Fast::Block trueBranch,Fast::If falseBranch) */
 Fast_Node Fast_Parser_ifStatement(Fast_Parser _this, Fast_Expression condition, Fast_Block trueBranch, Fast_If falseBranch) {
-/* $begin(::hyve::Fast::Parser::ifStatement) */
+/* $begin(::cortex::Fast::Parser::ifStatement) */
 	Fast_Node result = NULL;
 
 	if (_this->pass) {
@@ -1764,9 +1764,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::initDeclareStaged(Fast::Expression expr) */
+/* ::cortex::Fast::Parser::initDeclareStaged(Fast::Expression expr) */
 void Fast_Parser_initDeclareStaged(Fast_Parser _this, Fast_Expression expr) {
-/* $begin(::hyve::Fast::Parser::initDeclareStaged) */
+/* $begin(::cortex::Fast::Parser::initDeclareStaged) */
     db_uint32 i;
     
     _this->variableCount = 0;
@@ -1817,9 +1817,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::initKeyValuePop() */
+/* ::cortex::Fast::Parser::initKeyValuePop() */
 db_int16 Fast_Parser_initKeyValuePop(Fast_Parser _this) {
-/* $begin(::hyve::Fast::Parser::initKeyValuePop) */
+/* $begin(::cortex::Fast::Parser::initKeyValuePop) */
     if ((_this->initializerCount >= 0) && _this->initializers[_this->initializerCount]) {
         if (Fast_Initializer_popKey(_this->initializers[_this->initializerCount])) {
             goto error;
@@ -1832,9 +1832,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::initKeyValuePush() */
+/* ::cortex::Fast::Parser::initKeyValuePush() */
 db_int16 Fast_Parser_initKeyValuePush(Fast_Parser _this) {
-/* $begin(::hyve::Fast::Parser::initKeyValuePush) */
+/* $begin(::cortex::Fast::Parser::initKeyValuePush) */
     if ((_this->initializerCount >= 0) && _this->initializers[_this->initializerCount]) {
         if (Fast_Initializer_pushKey(_this->initializers[_this->initializerCount])) {
             goto error;
@@ -1847,9 +1847,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::initKeyValueSet(Fast::Expression expr) */
+/* ::cortex::Fast::Parser::initKeyValueSet(Fast::Expression expr) */
 db_int16 Fast_Parser_initKeyValueSet(Fast_Parser _this, Fast_Expression expr) {
-/* $begin(::hyve::Fast::Parser::initKeyValueSet) */
+/* $begin(::cortex::Fast::Parser::initKeyValueSet) */
     if ((_this->initializerCount >= 0) && _this->initializers[_this->initializerCount]) {
         if (Fast_Initializer_valueKey(_this->initializers[_this->initializerCount], expr)) {
             goto error;
@@ -1863,9 +1863,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::initMember(lang::string member) */
+/* ::cortex::Fast::Parser::initMember(lang::string member) */
 db_int16 Fast_Parser_initMember(Fast_Parser _this, db_string member) {
-/* $begin(::hyve::Fast::Parser::initMember) */
+/* $begin(::cortex::Fast::Parser::initMember) */
     FAST_CHECK_ERRSET(_this);
 
 	if ((_this->initializerCount >= 0) && _this->initializers[_this->initializerCount]) {
@@ -1881,9 +1881,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::initPop() */
+/* ::cortex::Fast::Parser::initPop() */
 db_int16 Fast_Parser_initPop(Fast_Parser _this) {
-/* $begin(::hyve::Fast::Parser::initPop) */
+/* $begin(::cortex::Fast::Parser::initPop) */
     FAST_CHECK_ERRSET(_this);
 
     /* Primitive values are not pushed/pop'd */
@@ -1900,9 +1900,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::initPush() */
+/* ::cortex::Fast::Parser::initPush() */
 db_int16 Fast_Parser_initPush(Fast_Parser _this) {
-/* $begin(::hyve::Fast::Parser::initPush) */
+/* $begin(::cortex::Fast::Parser::initPush) */
     FAST_CHECK_ERRSET(_this);
 
     if (!_this->variablePushed) {
@@ -1923,9 +1923,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::initPushExpression() */
+/* ::cortex::Fast::Parser::initPushExpression() */
 Fast_Expression Fast_Parser_initPushExpression(Fast_Parser _this) {
-/* $begin(::hyve::Fast::Parser::initPushExpression) */
+/* $begin(::cortex::Fast::Parser::initPushExpression) */
     Fast_Initializer initializer = NULL;
     
     _this->initializerCount++;
@@ -1946,9 +1946,9 @@ Fast_Expression Fast_Parser_initPushExpression(Fast_Parser _this) {
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::initPushIdentifier(Expression type) */
+/* ::cortex::Fast::Parser::initPushIdentifier(Expression type) */
 Fast_Expression Fast_Parser_initPushIdentifier(Fast_Parser _this, Fast_Expression type) {
-/* $begin(::hyve::Fast::Parser::initPushIdentifier) */
+/* $begin(::cortex::Fast::Parser::initPushIdentifier) */
     db_typedef t;
     db_bool isDynamic = TRUE;
     db_bool forceStatic = FALSE;
@@ -2016,9 +2016,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::initPushStatic() */
+/* ::cortex::Fast::Parser::initPushStatic() */
 db_int16 Fast_Parser_initPushStatic(Fast_Parser _this) {
-/* $begin(::hyve::Fast::Parser::initPushStatic) */
+/* $begin(::cortex::Fast::Parser::initPushStatic) */
     db_bool isLocal = _this->isLocal;
     Fast_InitializerVariable_array64 variables;
     Fast_Initializer initializer;
@@ -2070,9 +2070,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::initStage(lang::string id,bool found) */
+/* ::cortex::Fast::Parser::initStage(lang::string id,bool found) */
 void Fast_Parser_initStage(Fast_Parser _this, db_string id, db_bool found) {
-/* $begin(::hyve::Fast::Parser::initStage) */
+/* $begin(::cortex::Fast::Parser::initStage) */
     
     _this->staged[_this->stagedCount].name = db_strdup(id);
     _this->staged[_this->stagedCount].line = _this->line;
@@ -2083,9 +2083,9 @@ void Fast_Parser_initStage(Fast_Parser _this, db_string id, db_bool found) {
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::initValue(Expression expr) */
+/* ::cortex::Fast::Parser::initValue(Expression expr) */
 db_int16 Fast_Parser_initValue(Fast_Parser _this, Fast_Expression expr) {
-/* $begin(::hyve::Fast::Parser::initValue) */
+/* $begin(::cortex::Fast::Parser::initValue) */
     FAST_CHECK_ERRSET(_this);
 
     if ((_this->initializerCount >= 0) && _this->initializers[_this->initializerCount]) {
@@ -2102,27 +2102,27 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::isAbortSet() */
+/* ::cortex::Fast::Parser::isAbortSet() */
 db_bool Fast_Parser_isAbortSet(Fast_Parser _this) {
-/* $begin(::hyve::Fast::Parser::isAbortSet) */
+/* $begin(::cortex::Fast::Parser::isAbortSet) */
     db_bool result = _this->abort;
     _this->abort = FALSE;
     return result;
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::isErrSet() */
+/* ::cortex::Fast::Parser::isErrSet() */
 db_bool Fast_Parser_isErrSet(Fast_Parser _this) {
-/* $begin(::hyve::Fast::Parser::isErrSet) */
+/* $begin(::cortex::Fast::Parser::isErrSet) */
     db_bool result = _this->errSet;
     _this->errSet = FALSE;
     return result;
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::lookup(lang::string id,lang::object source) */
+/* ::cortex::Fast::Parser::lookup(lang::string id,lang::object source) */
 Fast_Expression Fast_Parser_lookup(Fast_Parser _this, db_string id, db_object source) {
-/* $begin(::hyve::Fast::Parser::lookup) */
+/* $begin(::cortex::Fast::Parser::lookup) */
     Fast_Expression result = NULL;
     FAST_CHECK_ERRSET(_this);
 
@@ -2166,9 +2166,9 @@ Fast_Expression Fast_Parser_lookup(Fast_Parser _this, db_string id, db_object so
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::memberExpr(Fast::Expression lvalue,Fast::Expression rvalue) */
+/* ::cortex::Fast::Parser::memberExpr(Fast::Expression lvalue,Fast::Expression rvalue) */
 Fast_Expression Fast_Parser_memberExpr(Fast_Parser _this, Fast_Expression lvalue, Fast_Expression rvalue) {
-/* $begin(::hyve::Fast::Parser::memberExpr) */
+/* $begin(::cortex::Fast::Parser::memberExpr) */
 	Fast_Expression result = NULL;
     
     _this->stagingAllowed = FALSE;
@@ -2192,9 +2192,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::observerDeclaration(lang::string id,Fast::Expression object,lang::eventMask mask,Fast::Object dispatcher) */
+/* ::cortex::Fast::Parser::observerDeclaration(lang::string id,Fast::Expression object,lang::eventMask mask,Fast::Object dispatcher) */
 Fast_Variable Fast_Parser_observerDeclaration(Fast_Parser _this, db_string id, Fast_Expression object, db_eventMask mask, Fast_Object dispatcher) {
-/* $begin(::hyve::Fast::Parser::observerDeclaration) */
+/* $begin(::cortex::Fast::Parser::observerDeclaration) */
     DB_UNUSED(object);
     DB_UNUSED(mask);
     FAST_CHECK_ERRSET(_this);
@@ -2281,9 +2281,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::observerPop() */
+/* ::cortex::Fast::Parser::observerPop() */
 void Fast_Parser_observerPop(Fast_Parser _this) {
-/* $begin(::hyve::Fast::Parser::observerPop) */
+/* $begin(::cortex::Fast::Parser::observerPop) */
     FAST_CHECK_ERRSET(_this);
 
     /* Deprecated */
@@ -2291,9 +2291,9 @@ void Fast_Parser_observerPop(Fast_Parser _this) {
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::observerPush() */
+/* ::cortex::Fast::Parser::observerPush() */
 void Fast_Parser_observerPush(Fast_Parser _this) {
-/* $begin(::hyve::Fast::Parser::observerPush) */
+/* $begin(::cortex::Fast::Parser::observerPush) */
     FAST_CHECK_ERRSET(_this);
 
     /* Observer-implementations are parsed in the 2nd pass */
@@ -2312,9 +2312,9 @@ void Fast_Parser_observerPush(Fast_Parser _this) {
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::parse() */
+/* ::cortex::Fast::Parser::parse() */
 db_uint32 Fast_Parser_parse(Fast_Parser _this) {
-/* $begin(::hyve::Fast::Parser::parse) */
+/* $begin(::cortex::Fast::Parser::parse) */
     FAST_CHECK_ERRSET(_this);
 
     _this->pass = 0;
@@ -2336,7 +2336,7 @@ db_uint32 Fast_Parser_parse(Fast_Parser _this) {
         goto error;
     }
 
-    /* Parse to hyve intermediate code */
+    /* Parse to cortex intermediate code */
     if ( Fast_Parser_toIc(_this)) {
         printf("%s: parsed with errors (%d errors, %d warnings)\n", _this->filename, _this->errors, _this->warnings);
         goto error;
@@ -2349,9 +2349,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::parseExpression(lang::string expr,Fast::Block block,Fast::Variable scope,uint32 line,uint32 column) */
+/* ::cortex::Fast::Parser::parseExpression(lang::string expr,Fast::Block block,Fast::Variable scope,uint32 line,uint32 column) */
 Fast_Expression Fast_Parser_parseExpression(Fast_Parser _this, db_string expr, Fast_Block block, Fast_Variable scope, db_uint32 line, db_uint32 column) {
-/* $begin(::hyve::Fast::Parser::parseExpression) */
+/* $begin(::cortex::Fast::Parser::parseExpression) */
 	Fast_Expression result = NULL;
 	db_string exprFinalized;
 
@@ -2413,9 +2413,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::popComplexType() */
+/* ::cortex::Fast::Parser::popComplexType() */
 void Fast_Parser_popComplexType(Fast_Parser _this) {
-/* $begin(::hyve::Fast::Parser::popComplexType) */
+/* $begin(::cortex::Fast::Parser::popComplexType) */
 
     _this->complexTypeSp--;
     if (_this->complexTypeSp < 0) {
@@ -2426,9 +2426,9 @@ void Fast_Parser_popComplexType(Fast_Parser _this) {
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::popLvalue() */
+/* ::cortex::Fast::Parser::popLvalue() */
 void Fast_Parser_popLvalue(Fast_Parser _this) {
-/* $begin(::hyve::Fast::Parser::popLvalue) */
+/* $begin(::cortex::Fast::Parser::popLvalue) */
 
     _this->lvalueSp--;
     if (_this->lvalueSp < 0) {
@@ -2439,9 +2439,9 @@ void Fast_Parser_popLvalue(Fast_Parser _this) {
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::popScope(Fast::Variable previous) */
+/* ::cortex::Fast::Parser::popScope(Fast::Variable previous) */
 void Fast_Parser_popScope(Fast_Parser _this, Fast_Variable previous) {
-/* $begin(::hyve::Fast::Parser::popScope) */
+/* $begin(::cortex::Fast::Parser::popScope) */
     FAST_CHECK_ERRSET(_this);
 
     /* Restore scope */
@@ -2449,9 +2449,9 @@ void Fast_Parser_popScope(Fast_Parser _this, Fast_Variable previous) {
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::postfixExpr(Fast::Expression lvalue,lang::operatorKind operator) */
+/* ::cortex::Fast::Parser::postfixExpr(Fast::Expression lvalue,lang::operatorKind operator) */
 Fast_Expression Fast_Parser_postfixExpr(Fast_Parser _this, Fast_Expression lvalue, db_operatorKind operator) {
-/* $begin(::hyve::Fast::Parser::postfixExpr) */
+/* $begin(::cortex::Fast::Parser::postfixExpr) */
 	Fast_Expression result = NULL;
     
     _this->stagingAllowed = FALSE;
@@ -2471,9 +2471,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::pushComplexType(Fast::Expression lvalue) */
+/* ::cortex::Fast::Parser::pushComplexType(Fast::Expression lvalue) */
 void Fast_Parser_pushComplexType(Fast_Parser _this, Fast_Expression lvalue) {
-/* $begin(::hyve::Fast::Parser::pushComplexType) */
+/* $begin(::cortex::Fast::Parser::pushComplexType) */
 
     if (lvalue) {
         db_set(&_this->complexType[_this->complexTypeSp], Fast_Expression_getType(lvalue));
@@ -2485,9 +2485,9 @@ void Fast_Parser_pushComplexType(Fast_Parser _this, Fast_Expression lvalue) {
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::pushLvalue(Fast::Expression lvalue,lang::bool isAssignment) */
+/* ::cortex::Fast::Parser::pushLvalue(Fast::Expression lvalue,lang::bool isAssignment) */
 void Fast_Parser_pushLvalue(Fast_Parser _this, Fast_Expression lvalue, db_bool isAssignment) {
-/* $begin(::hyve::Fast::Parser::pushLvalue) */
+/* $begin(::cortex::Fast::Parser::pushLvalue) */
 
     db_set_ext(_this, &_this->lvalue[_this->lvalueSp].expr, lvalue, ".lvalue[_this->lvalueSp]");
     _this->lvalue[_this->lvalueSp].isAssignment = isAssignment;
@@ -2496,9 +2496,9 @@ void Fast_Parser_pushLvalue(Fast_Parser _this, Fast_Expression lvalue, db_bool i
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::pushReturnAsLvalue(lang::function function) */
+/* ::cortex::Fast::Parser::pushReturnAsLvalue(lang::function function) */
 void Fast_Parser_pushReturnAsLvalue(Fast_Parser _this, db_function function) {
-/* $begin(::hyve::Fast::Parser::pushReturnAsLvalue) */
+/* $begin(::cortex::Fast::Parser::pushReturnAsLvalue) */
     Fast_Expression result = NULL;
 
     if (_this->pass) {
@@ -2521,9 +2521,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::pushScope() */
+/* ::cortex::Fast::Parser::pushScope() */
 Fast_Variable Fast_Parser_pushScope(Fast_Parser _this) {
-/* $begin(::hyve::Fast::Parser::pushScope) */
+/* $begin(::cortex::Fast::Parser::pushScope) */
     Fast_Variable oldScope = NULL;
 
     FAST_CHECK_ERRSET(_this);
@@ -2544,9 +2544,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::reset() */
+/* ::cortex::Fast::Parser::reset() */
 void Fast_Parser_reset(Fast_Parser _this) {
-/* $begin(::hyve::Fast::Parser::reset) */
+/* $begin(::cortex::Fast::Parser::reset) */
     db_uint32 i;
 
     _this->variableCount = 0;
@@ -2573,9 +2573,9 @@ void Fast_Parser_reset(Fast_Parser _this) {
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::ternaryExpr(Fast::Expression cond,Fast::Expression iftrue,Fast::Expression iffalse) */
+/* ::cortex::Fast::Parser::ternaryExpr(Fast::Expression cond,Fast::Expression iftrue,Fast::Expression iffalse) */
 Fast_Expression Fast_Parser_ternaryExpr(Fast_Parser _this, Fast_Expression cond, Fast_Expression iftrue, Fast_Expression iffalse) {
-/* $begin(::hyve::Fast::Parser::ternaryExpr) */
+/* $begin(::cortex::Fast::Parser::ternaryExpr) */
     Fast_Expression result = NULL;
 
     if (_this->pass) {
@@ -2598,9 +2598,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::unaryExpr(Fast::Expression lvalue,lang::operatorKind operator) */
+/* ::cortex::Fast::Parser::unaryExpr(Fast::Expression lvalue,lang::operatorKind operator) */
 Fast_Expression Fast_Parser_unaryExpr(Fast_Parser _this, Fast_Expression lvalue, db_operatorKind operator) {
-/* $begin(::hyve::Fast::Parser::unaryExpr) */
+/* $begin(::cortex::Fast::Parser::unaryExpr) */
 	Fast_Expression result = NULL;
 
     _this->stagingAllowed = FALSE;
@@ -2691,9 +2691,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::updateStatement(Fast::Expression expr,Fast::Block block) */
+/* ::cortex::Fast::Parser::updateStatement(Fast::Expression expr,Fast::Block block) */
 Fast_Node Fast_Parser_updateStatement(Fast_Parser _this, Fast_Expression expr, Fast_Block block) {
-/* $begin(::hyve::Fast::Parser::updateStatement) */
+/* $begin(::cortex::Fast::Parser::updateStatement) */
     Fast_Node result = NULL;
     
     _this->stagingAllowed = FALSE;
@@ -2738,9 +2738,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::waitExpr(list{Fast::Expression} exprList,Fast::Expression timeout) */
+/* ::cortex::Fast::Parser::waitExpr(list{Fast::Expression} exprList,Fast::Expression timeout) */
 Fast_Expression Fast_Parser_waitExpr(Fast_Parser _this, Fast_Expression_list exprList, Fast_Expression timeout) {
-/* $begin(::hyve::Fast::Parser::waitExpr) */
+/* $begin(::cortex::Fast::Parser::waitExpr) */
     Fast_Expression result = NULL;
     
     _this->stagingAllowed = FALSE;
@@ -2773,9 +2773,9 @@ Fast_Expression Fast_Parser_waitExpr(Fast_Parser _this, Fast_Expression_list exp
 /* $end */
 }
 
-/* ::hyve::Fast::Parser::whileStatement(Fast::Expression condition,Fast::Block trueBranch,lang::bool isUntil) */
+/* ::cortex::Fast::Parser::whileStatement(Fast::Expression condition,Fast::Block trueBranch,lang::bool isUntil) */
 Fast_Node Fast_Parser_whileStatement(Fast_Parser _this, Fast_Expression condition, Fast_Block trueBranch, db_bool isUntil) {
-/* $begin(::hyve::Fast::Parser::whileStatement) */
+/* $begin(::cortex::Fast::Parser::whileStatement) */
 	Fast_Node result = NULL;
     
     _this->stagingAllowed = FALSE;

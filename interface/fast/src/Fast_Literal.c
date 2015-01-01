@@ -13,9 +13,9 @@
 #include "Fast__api.h"
 /* $end */
 
-/* ::hyve::Fast::Literal::getValue() */
+/* ::cortex::Fast::Literal::getValue() */
 db_word Fast_Literal_getValue_v(Fast_Literal _this) {
-/* $begin(::hyve::Fast::Literal::getValue) */
+/* $begin(::cortex::Fast::Literal::getValue) */
 	db_word result = 0;
 
     switch(_this->kind) {
@@ -31,9 +31,9 @@ db_word Fast_Literal_getValue_v(Fast_Literal _this) {
 /* $end */
 }
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::Fast::Literal::init(Literal object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::Literal::init(Literal object) */
 db_int16 Fast_Literal_init(Fast_Literal object) {
-/* $begin(::hyve::Fast::Literal::init) */
+/* $begin(::cortex::Fast::Literal::init) */
     if (!Fast_Expression(object)->type) {
         switch(object->kind) {
         case FAST_Boolean:

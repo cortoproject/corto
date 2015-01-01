@@ -8,7 +8,7 @@
 #ifndef tc_call_META_H
 #define tc_call_META_H
 
-#include "hyve.h"
+#include "cortex.h"
 
 #include "tc_call__type.h"
 
@@ -64,7 +64,7 @@ extern db_class tc_Mammal_o;
 /* ::tc_call::Mammal::getKind() */
 extern db_method tc_Mammal_getKind_o;
 
-/* ::tc_call::Mammal::getProps(::hyve::lang::uint32 someValue) */
+/* ::tc_call::Mammal::getProps(::cortex::lang::uint32 someValue) */
 extern db_method tc_Mammal_getProps_o;
 
 /* ::tc_call::Mammal::getSpeed() */
@@ -85,7 +85,7 @@ extern db_member tc_Mammal_props_o;
 /* ::tc_call::Mammal::setProps(::tc_call::MammalProps props) */
 extern db_method tc_Mammal_setProps_o;
 
-/* ::tc_call::Mammal::setSpeed(::hyve::lang::float64 speed) */
+/* ::tc_call::Mammal::setSpeed(::cortex::lang::float64 speed) */
 extern db_method tc_Mammal_setSpeed_o;
 
 /* ::tc_call::MammalKind */

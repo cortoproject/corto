@@ -9,9 +9,9 @@
 #include "db.h"
 #include "db__meta.h"
 
-/* callback ::hyve::lang::procedure::bind(lang::object object) -> ::hyve::lang::method::bind(lang::method object) */
+/* callback ::cortex::lang::procedure::bind(lang::object object) -> ::cortex::lang::method::bind(lang::method object) */
 db_int16 db_method_bind(db_method object) {
-/* $begin(::hyve::lang::method::bind) */
+/* $begin(::cortex::lang::method::bind) */
     db_object parent;
 
     /* Locate parent class object */
@@ -33,9 +33,9 @@ error:
 /* $end */
 }
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::method::init(lang::method object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::method::init(lang::method object) */
 db_int16 db_method_init(db_method object) {
-/* $begin(::hyve::lang::method::init) */
+/* $begin(::cortex::lang::method::init) */
     db_object parent;
 
     /* Locate parent class object */

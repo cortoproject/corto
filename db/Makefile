@@ -3,4 +3,4 @@ TARGET =	lang
 
 LIBS	= rt dl m
 
-include $(HYVE_HOME)/build/component.makefile
+include $(CORTEX_HOME)/build/component.makefile

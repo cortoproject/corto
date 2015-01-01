@@ -14,9 +14,9 @@
 #include "db__bitmask.h"
 /* $end */
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::constant::init(constant& object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::constant::init(constant& object) */
 db_int16 db_constant_init(db_constant *object) {
-/* $begin(::hyve::lang::constant::init) */
+/* $begin(::cortex::lang::constant::init) */
 	db_object parent;
 
 	parent = db_parentof(object);

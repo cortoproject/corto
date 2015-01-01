@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "hyve.h"
+#include "cortex.h"
 #include "db_serializer.h"
 
 /* String serializer data */

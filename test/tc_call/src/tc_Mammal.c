@@ -18,7 +18,7 @@ tc_MammalKind tc_Mammal_getKind(tc_Mammal _this) {
 /* $end */
 }
 
-/* ::tc_call::Mammal::getProps(::hyve::lang::uint32 someValue) */
+/* ::tc_call::Mammal::getProps(::cortex::lang::uint32 someValue) */
 tc_MammalProps tc_Mammal_getProps(tc_Mammal _this, db_uint32 someValue) {
 /* $begin(::tc_call::Mammal::getProps) */
     DB_UNUSED(someValue);
@@ -34,7 +34,7 @@ db_float64 tc_Mammal_getSpeed(tc_Mammal _this) {
 /* $end */
 }
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::tc_call::Mammal::init(::tc_call::Mammal object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::tc_call::Mammal::init(::tc_call::Mammal object) */
 db_int16 tc_Mammal_init(tc_Mammal object) {
 /* $begin(::tc_call::Mammal::init) */
     tc_Animal(object)->kind = TC_MAMMAL;
@@ -87,7 +87,7 @@ db_void tc_Mammal_setProps(tc_Mammal _this, tc_MammalProps *props) {
 /* $end */
 }
 
-/* ::tc_call::Mammal::setSpeed(::hyve::lang::float64 speed) */
+/* ::tc_call::Mammal::setSpeed(::cortex::lang::float64 speed) */
 db_void tc_Mammal_setSpeed(tc_Mammal _this, db_float64 speed) {
 /* $begin(::tc_call::Mammal::setSpeed) */
     _this->props.speed = speed;

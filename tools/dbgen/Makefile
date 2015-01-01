@@ -1,9 +1,9 @@
 
 TARGET =	dbgen
 
-INCLUDE = 	-I $(HYVE_HOME)/dev/include
+INCLUDE = 	-I $(CORTEX_HOME)/dev/include
 
-LIBS	= lang hyvedev
+LIBS	= lang cortexdev
 
-include $(HYVE_HOME)/build/executable.makefile
+include $(CORTEX_HOME)/build/executable.makefile
 

@@ -17,17 +17,17 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::Fast::Boolean::init(Boolean object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::Boolean::init(Boolean object) */
 db_int16 Fast_Boolean_init(Fast_Boolean object) {
-/* $begin(::hyve::Fast::Boolean::init) */
+/* $begin(::cortex::Fast::Boolean::init) */
     Fast_Literal(object)->kind = FAST_Boolean;
     return Fast_Literal_init(Fast_Literal(object));
 /* $end */
 }
 
-/* ::hyve::Fast::Boolean::serialize(lang::type dstType,lang::word dst) */
+/* ::cortex::Fast::Boolean::serialize(lang::type dstType,lang::word dst) */
 db_int16 Fast_Boolean_serialize(Fast_Boolean _this, db_type dstType, db_word dst) {
-/* $begin(::hyve::Fast::Boolean::serialize) */
+/* $begin(::cortex::Fast::Boolean::serialize) */
 	Fast_valueKind kind;
 
 	kind = Fast_valueKindFromType(dstType);
@@ -62,9 +62,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Boolean::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Boolean::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Boolean_toIc_v(Fast_Boolean _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-/* $begin(::hyve::Fast::Boolean::toIc) */
+/* $begin(::cortex::Fast::Boolean::toIc) */
 	db_ic result;
 	db_value v;
 	DB_UNUSED(storage);

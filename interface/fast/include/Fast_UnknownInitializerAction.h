@@ -7,7 +7,7 @@
 #ifndef Fast_UnknownInitializerAction_H
 #define Fast_UnknownInitializerAction_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "Fast__type.h"
 
 #ifdef __cplusplus

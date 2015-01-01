@@ -15,9 +15,9 @@
 Fast_Parser yparser(void);
 /* $end */
 
-/* ::hyve::Fast::CommaExpr::addExpression(Expression expr) */
+/* ::cortex::Fast::CommaExpr::addExpression(Expression expr) */
 db_int16 Fast_CommaExpr_addExpression(Fast_CommaExpr _this, Fast_Expression expr) {
-/* $begin(::hyve::Fast::CommaExpr::addExpression) */
+/* $begin(::cortex::Fast::CommaExpr::addExpression) */
     if (expr) {
         db_assert(_this->expressions != NULL, "initialization failed");
         db_llAppend(_this->expressions, expr); db_keep(expr);
@@ -30,9 +30,9 @@ db_int16 Fast_CommaExpr_addExpression(Fast_CommaExpr _this, Fast_Expression expr
 /* $end */
 }
 
-/* ::hyve::Fast::CommaExpr::addOrCreate(Expression list,Expression expr) */
+/* ::cortex::Fast::CommaExpr::addOrCreate(Expression list,Expression expr) */
 Fast_Expression Fast_CommaExpr_addOrCreate(Fast_Expression list, Fast_Expression expr) {
-/* $begin(::hyve::Fast::CommaExpr::addOrCreate) */
+/* $begin(::cortex::Fast::CommaExpr::addOrCreate) */
     Fast_Expression result;
     
     if (!list) {
@@ -51,9 +51,9 @@ Fast_Expression Fast_CommaExpr_addOrCreate(Fast_Expression list, Fast_Expression
 /* $end */
 }
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::CommaExpr::construct(CommaExpr object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::CommaExpr::construct(CommaExpr object) */
 db_int16 Fast_CommaExpr_construct(Fast_CommaExpr object) {
-/* $begin(::hyve::Fast::CommaExpr::construct) */
+/* $begin(::cortex::Fast::CommaExpr::construct) */
     if (object->expressions) {
         Fast_Expression firstExpr = db_llGet(object->expressions, 0);
 
@@ -68,9 +68,9 @@ db_int16 Fast_CommaExpr_construct(Fast_CommaExpr object) {
 /* $end */
 }
 
-/* ::hyve::Fast::CommaExpr::hasSideEffects() */
+/* ::cortex::Fast::CommaExpr::hasSideEffects() */
 db_bool Fast_CommaExpr_hasSideEffects_v(Fast_CommaExpr _this) {
-/* $begin(::hyve::Fast::CommaExpr::hasSideEffects) */
+/* $begin(::cortex::Fast::CommaExpr::hasSideEffects) */
     db_bool result = FALSE;
     
     Fast_Expression_list__foreach(_this->expressions, elem)
@@ -84,9 +84,9 @@ db_bool Fast_CommaExpr_hasSideEffects_v(Fast_CommaExpr _this) {
 /* $end */
 }
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::Fast::CommaExpr::init(CommaExpr object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::CommaExpr::init(CommaExpr object) */
 db_int16 Fast_CommaExpr_init(Fast_CommaExpr object) {
-/* $begin(::hyve::Fast::CommaExpr::init) */
+/* $begin(::cortex::Fast::CommaExpr::init) */
 
     Fast_Node(object)->kind = FAST_CommaExpr;
     Fast_Expression(object)->type = NULL;
@@ -95,9 +95,9 @@ db_int16 Fast_CommaExpr_init(Fast_CommaExpr object) {
 /* $end */
 }
 
-/* ::hyve::Fast::CommaExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::CommaExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_CommaExpr_toIc_v(Fast_CommaExpr _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-/* $begin(::hyve::Fast::CommaExpr::toIc) */
+/* $begin(::cortex::Fast::CommaExpr::toIc) */
     db_iter iter;
     Fast_Node expr;
     
@@ -111,9 +111,9 @@ db_ic Fast_CommaExpr_toIc_v(Fast_CommaExpr _this, db_icProgram program, db_icSto
 /* $end */
 }
 
-/* ::hyve::Fast::CommaExpr::toList() */
+/* ::cortex::Fast::CommaExpr::toList() */
 Fast_Node_list Fast_CommaExpr_toList(Fast_CommaExpr _this) {
-/* $begin(::hyve::Fast::CommaExpr::toList) */
+/* $begin(::cortex::Fast::CommaExpr::toList) */
     Fast_Node node;
     db_iter iter;
     Fast_Node_list result = db_llNew();

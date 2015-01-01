@@ -7,7 +7,7 @@
 #ifndef tc_structCompositeCollection_H
 #define tc_structCompositeCollection_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "tc_stringser__type.h"
 
 #ifdef __cplusplus

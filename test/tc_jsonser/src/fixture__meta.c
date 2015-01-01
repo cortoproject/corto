@@ -378,7 +378,7 @@ int fixture_load(void) {
 
     /* Define ::fixture::Dog::age */
     if (!db_checkState(fixture_Dog_age_o, DB_DEFINED)) {
-        fixture_Dog_age_o->type = db_resolve_ext(fixture_Dog_age_o, NULL, "::hyve::lang::uint8", FALSE, "element ::fixture::Dog::age.type");
+        fixture_Dog_age_o->type = db_resolve_ext(fixture_Dog_age_o, NULL, "::cortex::lang::uint8", FALSE, "element ::fixture::Dog::age.type");
         fixture_Dog_age_o->modifiers = 0x0;
         fixture_Dog_age_o->state = 0x6;
         fixture_Dog_age_o->weak = FALSE;
@@ -412,7 +412,7 @@ int fixture_load(void) {
 
     /* Define ::fixture::Dog::name */
     if (!db_checkState(fixture_Dog_name_o, DB_DEFINED)) {
-        fixture_Dog_name_o->type = db_resolve_ext(fixture_Dog_name_o, NULL, "::hyve::lang::string", FALSE, "element ::fixture::Dog::name.type");
+        fixture_Dog_name_o->type = db_resolve_ext(fixture_Dog_name_o, NULL, "::cortex::lang::string", FALSE, "element ::fixture::Dog::name.type");
         fixture_Dog_name_o->modifiers = 0x0;
         fixture_Dog_name_o->state = 0x6;
         fixture_Dog_name_o->weak = FALSE;
@@ -653,9 +653,9 @@ int fixture_load(void) {
 
     /* Define ::fixture::ints */
     if (!db_checkState(fixture_ints_o, DB_DEFINED)) {
-        db_collection(fixture_ints_o)->elementType = db_resolve_ext(fixture_ints_o, NULL, "::hyve::lang::uint32", FALSE, "element ::fixture::ints.elementType");
+        db_collection(fixture_ints_o)->elementType = db_resolve_ext(fixture_ints_o, NULL, "::cortex::lang::uint32", FALSE, "element ::fixture::ints.elementType");
         db_collection(fixture_ints_o)->max = 4;
-        fixture_ints_o->elementType = db_resolve_ext(fixture_ints_o, NULL, "::hyve::lang::uint32", FALSE, "element ::fixture::ints.elementType");
+        fixture_ints_o->elementType = db_resolve_ext(fixture_ints_o, NULL, "::cortex::lang::uint32", FALSE, "element ::fixture::ints.elementType");
         if (db_define(fixture_ints_o)) {
             db_error("fixture_load: failed to define object '::fixture::ints'.");
             goto error;
@@ -726,7 +726,7 @@ int fixture_load(void) {
 
     /* Define ::fixture::point2D::x */
     if (!db_checkState(fixture_point2D_x_o, DB_DEFINED)) {
-        fixture_point2D_x_o->type = db_resolve_ext(fixture_point2D_x_o, NULL, "::hyve::lang::int32", FALSE, "element ::fixture::point2D::x.type");
+        fixture_point2D_x_o->type = db_resolve_ext(fixture_point2D_x_o, NULL, "::cortex::lang::int32", FALSE, "element ::fixture::point2D::x.type");
         fixture_point2D_x_o->modifiers = 0x0;
         fixture_point2D_x_o->state = 0x6;
         fixture_point2D_x_o->weak = FALSE;
@@ -746,7 +746,7 @@ int fixture_load(void) {
 
     /* Define ::fixture::point2D::y */
     if (!db_checkState(fixture_point2D_y_o, DB_DEFINED)) {
-        fixture_point2D_y_o->type = db_resolve_ext(fixture_point2D_y_o, NULL, "::hyve::lang::int32", FALSE, "element ::fixture::point2D::y.type");
+        fixture_point2D_y_o->type = db_resolve_ext(fixture_point2D_y_o, NULL, "::cortex::lang::int32", FALSE, "element ::fixture::point2D::y.type");
         fixture_point2D_y_o->modifiers = 0x0;
         fixture_point2D_y_o->state = 0x6;
         fixture_point2D_y_o->weak = FALSE;
@@ -759,7 +759,7 @@ int fixture_load(void) {
 
     /* Define ::fixture::point2D */
     if (!db_checkState(fixture_point2D_o, DB_DEFINED)) {
-        db_type(fixture_point2D_o)->defaultType = db_resolve_ext(fixture_point2D_o, NULL, "::hyve::lang::member", FALSE, "element ::fixture::point2D.defaultType");
+        db_type(fixture_point2D_o)->defaultType = db_resolve_ext(fixture_point2D_o, NULL, "::cortex::lang::member", FALSE, "element ::fixture::point2D.defaultType");
         db_type(fixture_point2D_o)->parentType = NULL;
         db_type(fixture_point2D_o)->parentState = 0x0;
         db_interface(fixture_point2D_o)->base = NULL;
@@ -1153,7 +1153,7 @@ int fixture_load(void) {
 
     /* Define ::fixture::Dog */
     if (!db_checkState(fixture_Dog_o, DB_DEFINED)) {
-        db_type(fixture_Dog_o)->defaultType = db_resolve_ext(fixture_Dog_o, NULL, "::hyve::lang::member", FALSE, "element ::fixture::Dog.defaultType");
+        db_type(fixture_Dog_o)->defaultType = db_resolve_ext(fixture_Dog_o, NULL, "::cortex::lang::member", FALSE, "element ::fixture::Dog.defaultType");
         db_type(fixture_Dog_o)->parentType = NULL;
         db_type(fixture_Dog_o)->parentState = 0x0;
         db_interface(fixture_Dog_o)->base = NULL;

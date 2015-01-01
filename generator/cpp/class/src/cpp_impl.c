@@ -33,7 +33,7 @@ static void cpp_implStub(db_function o, db_string metaFunction, cpp_implWalk_t* 
 	}
 
 	/* Call implemented function */
-	g_fileWrite(data->file, "::hyve::call((::hyve::lang::function)(%s)", metaFunction);
+	g_fileWrite(data->file, "::cortex::call((::cortex::lang::function)(%s)", metaFunction);
 	if (returnType) {
 		g_fileWrite(data->file, ",&_result");
 	} else {
@@ -78,18 +78,18 @@ static int cpp_implVirtual(db_method o, cpp_implWalk_t *data) {
 
 	g_fileWrite(data->file, " {\n");
 	g_fileIndent(data->file);
-	g_fileWrite(data->file, "hyve::lang::Class _type((hyve::lang::_class)this->_typeof()._handle());\n");
-	g_fileWrite(data->file, "static hyve::lang::uint32 _actualMethodId;\n");
+	g_fileWrite(data->file, "cortex::lang::Class _type((cortex::lang::_class)this->_typeof()._handle());\n");
+	g_fileWrite(data->file, "static cortex::lang::uint32 _actualMethodId;\n");
 	g_fileWrite(data->file, "\n");
 	g_fileWrite(data->file, "if (!_actualMethodId) {\n");
 	g_fileIndent(data->file);
-	g_fileWrite(data->file, "_actualMethodId = _type.resolveMethodId((hyve::lang::string)\"%s\");\n", db_nameof(o));
+	g_fileWrite(data->file, "_actualMethodId = _type.resolveMethodId((cortex::lang::string)\"%s\");\n", db_nameof(o));
 	g_fileDedent(data->file);
 	g_fileWrite(data->file, "}\n");
-	g_fileWrite(data->file, "hyve::lang::Method _actualMethod = _type.resolveMethodById(_actualMethodId);\n");
+	g_fileWrite(data->file, "cortex::lang::Method _actualMethod = _type.resolveMethodById(_actualMethodId);\n");
 
 	/* Insert stub code */
-	cpp_implStub(db_function(o), "(hyve::lang::function)_actualMethod._handle()", data);
+	cpp_implStub(db_function(o), "(cortex::lang::function)_actualMethod._handle()", data);
 
 	g_fileDedent(data->file);
 	g_fileWrite(data->file, "}\n");
@@ -242,7 +242,7 @@ static void cpp_implConstructor(db_generator g, g_file file, db_interface o) {
 	g_fileIndent(file);
 
 	/* Create object */
-	g_fileWrite(file, "this->__handle = ::hyve::_new((::hyve::lang::_typedef)%s);\n",
+	g_fileWrite(file, "this->__handle = ::cortex::_new((::cortex::lang::_typedef)%s);\n",
 			cpp_metaFullname(g, o, CPP_HANDLE, id));
 
 	walkData.g = g;
@@ -283,7 +283,7 @@ static void cpp_implConstructorScoped(db_generator g, g_file file, db_interface 
 	g_fileIndent(file);
 
 	/* Create object */
-	g_fileWrite(file, "this->__handle = ::hyve::declare(_parent->_handle(), _name, (::hyve::lang::_typedef)%s);\n",
+	g_fileWrite(file, "this->__handle = ::cortex::declare(_parent->_handle(), _name, (::cortex::lang::_typedef)%s);\n",
 			cpp_metaFullname(g, o, CPP_HANDLE, id));
 
 	walkData.g = g;
@@ -383,12 +383,12 @@ static void cpp_implSetter(db_generator g, g_file file, db_member m) {
                     g_fullOidExt(g, db_parentof(m), id, DB_GENERATOR_ID_CLASS_LOWER),
                     g_id(g, db_nameof(m), memberId));
             g_fileIndent(file);
-            g_fileWrite(file, "hyve::dealloc(((%s)this->__handle)->%s);\n",
+            g_fileWrite(file, "cortex::dealloc(((%s)this->__handle)->%s);\n",
                     g_fullOidExt(g, db_parentof(m), id, DB_GENERATOR_ID_CLASS_LOWER),
                     g_id(g, db_nameof(m), memberId));
             g_fileDedent(file);
             g_fileWrite(file, "};\n");
-            g_fileWrite(file, "((%s)this->__handle)->%s = v ? hyve::strdup(v) : NULL;\n",
+            g_fileWrite(file, "((%s)this->__handle)->%s = v ? cortex::strdup(v) : NULL;\n",
                     g_fullOidExt(g, db_parentof(m), id, DB_GENERATOR_ID_CLASS_LOWER),
                     g_id(g, db_nameof(m), memberId));
 	    } else {
@@ -399,13 +399,13 @@ static void cpp_implSetter(db_generator g, g_file file, db_member m) {
 	} else {
 		g_fileWrite(file, "if (v) {\n");
 		g_fileIndent(file);
-		g_fileWrite(file, "hyve::set((hyve::lang::object*)&((%s)this->__handle)->%s, v._handle());\n",
+		g_fileWrite(file, "cortex::set((cortex::lang::object*)&((%s)this->__handle)->%s, v._handle());\n",
 				g_fullOidExt(g, db_parentof(m), id, DB_GENERATOR_ID_CLASS_LOWER),
 				g_id(g, db_nameof(m), memberId));
 		g_fileDedent(file);
 		g_fileWrite(file, "} else {\n");
 		g_fileIndent(file);
-		g_fileWrite(file, "hyve::set((hyve::lang::object*)&((%s)this->__handle)->%s, NULL);\n",
+		g_fileWrite(file, "cortex::set((cortex::lang::object*)&((%s)this->__handle)->%s, NULL);\n",
 						g_fullOidExt(g, db_parentof(m), id, DB_GENERATOR_ID_CLASS_LOWER),
 						g_id(g, db_nameof(m), memberId));
 		g_fileDedent(file);
@@ -529,8 +529,8 @@ static g_file cpp_implOpen(db_object o, db_generator g) {
         g_fileWrite(result, " *    Don't mess with the begin and end tags, since these will ensure that modified\n");
         g_fileWrite(result, " *    code in interface functions isn't replaced when code is re-generated.\n");
         g_fileWrite(result, " */\n\n");
-        g_fileWrite(result, "#include \"hyve/lang/Class.hpp\"\n", path, g_oid(g, o, id));
-        g_fileWrite(result, "#include \"hyve/lang/Method.hpp\"\n", path, g_oid(g, o, id));
+        g_fileWrite(result, "#include \"cortex/lang/Class.hpp\"\n", path, g_oid(g, o, id));
+        g_fileWrite(result, "#include \"cortex/lang/Method.hpp\"\n", path, g_oid(g, o, id));
         g_fileWrite(result, "#include \"%s/%s.hpp\"\n", path, g_oid(g, o, id));
         g_fileWrite(result, "#include \"%s/_meta.hpp\"\n", path, g_oid(g, o, id));
         if (db_class_instanceof(db_interface_o, o)) {

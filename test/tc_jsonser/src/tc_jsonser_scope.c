@@ -1,7 +1,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "hyve.h"
+#include "cortex.h"
 #include "json.h"
 #include "fixture__api.h"
 #include "fixture__meta.h"
@@ -29,12 +29,12 @@ db_int16 test_ser_scope(void) {
 
     _test_ser_scope(namesp, 
         "[{\"name\":\"a\","
-            "\"type\":\"::hyve::lang::int16\",\""
+            "\"type\":\"::cortex::lang::int16\",\""
             "states\":\"V|DCL|DEF\",\""
             "attributes\":\"S|W|O\",\""
             "childCount\":0},"
         "{\"name\":\"b\",\""
-            "type\":\"::hyve::lang::string\","
+            "type\":\"::cortex::lang::string\","
             "\"states\":\"V|DCL|DEF\",\""
             "attributes\":\"S|W|O\","
             "\"childCount\":0}]"
@@ -42,10 +42,10 @@ db_int16 test_ser_scope(void) {
 
     _test_ser_scope(Dog,
         "["
-        "{\"name\":\"age\",\"type\":\"::hyve::lang::member\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"childCount\":0},"
-        "{\"name\":\"breed\",\"type\":\"::hyve::lang::member\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"childCount\":0},"
-        "{\"name\":\"lover\",\"type\":\"::hyve::lang::member\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"childCount\":0},"
-        "{\"name\":\"name\",\"type\":\"::hyve::lang::member\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"childCount\":0}"
+        "{\"name\":\"age\",\"type\":\"::cortex::lang::member\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"childCount\":0},"
+        "{\"name\":\"breed\",\"type\":\"::cortex::lang::member\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"childCount\":0},"
+        "{\"name\":\"lover\",\"type\":\"::cortex::lang::member\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"childCount\":0},"
+        "{\"name\":\"name\",\"type\":\"::cortex::lang::member\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"childCount\":0}"
         "]"
     );
 

@@ -9,9 +9,9 @@
 #include "db.h"
 #include "db__meta.h"
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::virtual::init(lang::virtual object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::virtual::init(lang::virtual object) */
 db_int16 db_virtual_init(db_virtual object) {
-/* $begin(::hyve::lang::virtual::init) */
+/* $begin(::cortex::lang::virtual::init) */
     db_method(object)->virtual = TRUE;
     return db_method_init(db_method(object));
 /* $end */

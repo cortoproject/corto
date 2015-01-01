@@ -159,9 +159,9 @@ error:
 
 /* $end */
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::String::construct(String object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::String::construct(String object) */
 db_int16 Fast_String_construct(Fast_String object) {
-/* $begin(::hyve::Fast::String::construct) */
+/* $begin(::cortex::Fast::String::construct) */
     
 	if (!yparser()->block || !yparser()->scope) {
 		goto error;
@@ -176,9 +176,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::String::getValue() */
+/* ::cortex::Fast::String::getValue() */
 db_word Fast_String_getValue(Fast_String _this) {
-/* $begin(::hyve::Fast::String::getValue) */
+/* $begin(::cortex::Fast::String::getValue) */
 	db_char *ptr, ch;
 	db_word result;
 
@@ -205,17 +205,17 @@ db_word Fast_String_getValue(Fast_String _this) {
 /* $end */
 }
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::Fast::String::init(String object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::String::init(String object) */
 db_int16 Fast_String_init(Fast_String object) {
-/* $begin(::hyve::Fast::String::init) */
+/* $begin(::cortex::Fast::String::init) */
     Fast_Literal(object)->kind = FAST_String;
     return Fast_Literal_init((Fast_Literal)object);
 /* $end */
 }
 
-/* ::hyve::Fast::String::serialize(lang::type dstType,lang::word dst) */
+/* ::cortex::Fast::String::serialize(lang::type dstType,lang::word dst) */
 db_int16 Fast_String_serialize(Fast_String _this, db_type dstType, db_word dst) {
-/* $begin(::hyve::Fast::String::serialize) */
+/* $begin(::cortex::Fast::String::serialize) */
 	Fast_valueKind kind;
 
 	kind = Fast_valueKindFromType(dstType);
@@ -246,9 +246,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::String::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::String::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_String_toIc_v(Fast_String _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-/* $begin(::hyve::Fast::String::toIc) */
+/* $begin(::cortex::Fast::String::toIc) */
 	db_ic result = NULL;
 	db_value v;
 	DB_UNUSED(storage);

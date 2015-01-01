@@ -1,6 +1,6 @@
 %{
 
-#include "hyve.h"
+#include "cortex.h"
 #include "Fast__type.h"
 #include "y.tab.h"
 #include "stdio.h"

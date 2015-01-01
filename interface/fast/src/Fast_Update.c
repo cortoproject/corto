@@ -19,9 +19,9 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::Update::construct(Update object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Update::construct(Update object) */
 db_int16 Fast_Update_construct(Fast_Update object) {
-/* $begin(::hyve::Fast::Update::construct) */
+/* $begin(::cortex::Fast::Update::construct) */
 	db_type t;
 	db_iter exprIter;
 	Fast_Expression expr;
@@ -46,9 +46,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Update::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Update::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Update_toIc_v(Fast_Update _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-/* $begin(::hyve::Fast::Update::toIc) */
+/* $begin(::cortex::Fast::Update::toIc) */
     db_ic expr, from = NULL;
     db_iter exprIter;
     db_icOp op;

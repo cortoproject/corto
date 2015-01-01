@@ -12,7 +12,7 @@
 /* $header() */
 #include "io__meta.h"
 
-int hyvemain(int argc, char* argv[]) {
+int cortexmain(int argc, char* argv[]) {
 	DB_UNUSED(argc);
 	DB_UNUSED(argv);
 
@@ -22,23 +22,23 @@ int hyvemain(int argc, char* argv[]) {
 }
 /* $end */
 
-/* ::hyve::io::print(::hyve::lang::string str) */
+/* ::cortex::io::print(::cortex::lang::string str) */
 db_void io_print(db_string str) {
-/* $begin(::hyve::io::print) */
+/* $begin(::cortex::io::print) */
     printf("%s", str);
 /* $end */
 }
 
-/* ::hyve::io::println(::hyve::lang::string str) */
+/* ::cortex::io::println(::cortex::lang::string str) */
 db_void io_println(db_string str) {
-/* $begin(::hyve::io::println) */
+/* $begin(::cortex::io::println) */
     printf("%s\n", str);
 /* $end */
 }
 
-/* ::hyve::io::readln() */
+/* ::cortex::io::readln() */
 db_string io_readln(void) {
-/* $begin(::hyve::io::readln) */
+/* $begin(::cortex::io::readln) */
     size_t size=256;
     int read;
     db_string result = db_malloc(size+1);

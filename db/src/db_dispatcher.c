@@ -9,9 +9,9 @@
 #include "db.h"
 #include "db__meta.h"
 
-/* ::hyve::lang::dispatcher::getEvent(lang::observer observer,lang::object me,lang::object observable,lang::object src) */
+/* ::cortex::lang::dispatcher::getEvent(lang::observer observer,lang::object me,lang::object observable,lang::object src) */
 db_observableEvent db_dispatcher_getEvent_v(db_dispatcher _this, db_observer observer, db_object me, db_object observable, db_object src) {
-/* $begin(::hyve::lang::dispatcher::getEvent) */
+/* $begin(::cortex::lang::dispatcher::getEvent) */
 
     DB_UNUSED(_this);
     DB_UNUSED(observer);
@@ -23,9 +23,9 @@ db_observableEvent db_dispatcher_getEvent_v(db_dispatcher _this, db_observer obs
 /* $end */
 }
 
-/* ::hyve::lang::dispatcher::post(lang::event event) */
+/* ::cortex::lang::dispatcher::post(lang::event event) */
 db_void db_dispatcher_post_v(db_dispatcher _this, db_event event) {
-/* $begin(::hyve::lang::dispatcher::post) */
+/* $begin(::cortex::lang::dispatcher::post) */
 
     DB_UNUSED(_this);
     DB_UNUSED(event);

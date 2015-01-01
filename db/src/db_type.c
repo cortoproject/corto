@@ -42,9 +42,9 @@ error:
 }
 /* $end */
 
-/* callback ::hyve::lang::class::destruct(lang::object object) -> ::hyve::lang::type::_destruct(lang::type object) */
+/* callback ::cortex::lang::class::destruct(lang::object object) -> ::cortex::lang::type::_destruct(lang::type object) */
 db_void db_type__destruct(db_type object) {
-/* $begin(::hyve::lang::type::_destruct) */
+/* $begin(::cortex::lang::type::_destruct) */
     db_uint32 i;
 
     object->_parent.type = NULL;
@@ -64,18 +64,18 @@ db_void db_type__destruct(db_type object) {
 /* $end */
 }
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::type::_init(lang::type object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::type::_init(lang::type object) */
 db_int16 db_type__init(db_type object) {
-/* $begin(::hyve::lang::type::_init) */
+/* $begin(::cortex::lang::type::_init) */
     db_keep_ext(object, object, "Keep self for type-member");
     db_typedef(object)->type = (db_typedef)object;
     return db_typedef_init(db_typedef(object));
 /* $end */
 }
 
-/* ::hyve::lang::type::alignmentof() */
+/* ::cortex::lang::type::alignmentof() */
 db_uint16 db_type_alignmentof(db_type _this) {
-/* $begin(::hyve::lang::type::alignmentof) */
+/* $begin(::cortex::lang::type::alignmentof) */
     db_uint16 alignment;
 
     if (_this->reference) {
@@ -87,16 +87,16 @@ db_uint16 db_type_alignmentof(db_type _this) {
 /* $end */
 }
 
-/* ::hyve::lang::type::allocSize() */
+/* ::cortex::lang::type::allocSize() */
 db_uint32 db_type_allocSize_v(db_type _this) {
-/* $begin(::hyve::lang::type::allocSize) */
+/* $begin(::cortex::lang::type::allocSize) */
     return _this->size;
 /* $end */
 }
 
-/* ::hyve::lang::type::castable(lang::type type) */
+/* ::cortex::lang::type::castable(lang::type type) */
 db_bool db_type_castable_v(db_type _this, db_type type) {
-/* $begin(::hyve::lang::type::castable) */
+/* $begin(::cortex::lang::type::castable) */
     db_bool result = FALSE;
 
     if (_this->kind == DB_VOID) { /* A void reference can be casted to any reference type */
@@ -113,23 +113,23 @@ db_bool db_type_castable_v(db_type _this, db_type type) {
 /* $end */
 }
 
-/* ::hyve::lang::type::checkAttr(lang::attr attributes) */
+/* ::cortex::lang::type::checkAttr(lang::attr attributes) */
 db_bool db_type_checkAttr(db_any _this, db_attr attributes) {
-/* $begin(::hyve::lang::type::checkAttr) */
+/* $begin(::cortex::lang::type::checkAttr) */
     return db_checkAttr(_this.value, attributes);
 /* $end */
 }
 
-/* ::hyve::lang::type::checkState(lang::state state) */
+/* ::cortex::lang::type::checkState(lang::state state) */
 db_bool db_type_checkState(db_any _this, db_state state) {
-/* $begin(::hyve::lang::type::checkState) */
+/* $begin(::cortex::lang::type::checkState) */
     return db_checkState(_this.value, state);
 /* $end */
 }
 
-/* ::hyve::lang::type::compare(lang::any value) */
+/* ::cortex::lang::type::compare(lang::any value) */
 db_equalityKind db_type_compare(db_any _this, db_any value) {
-/* $begin(::hyve::lang::type::compare) */
+/* $begin(::cortex::lang::type::compare) */
     db_compare_ser_t data;
     struct db_serializer_s s;
     db_value v1;
@@ -145,9 +145,9 @@ db_equalityKind db_type_compare(db_any _this, db_any value) {
 /* $end */
 }
 
-/* ::hyve::lang::type::compatible(lang::type type) */
+/* ::cortex::lang::type::compatible(lang::type type) */
 db_bool db_type_compatible_v(db_type _this, db_type type) {
-/* $begin(::hyve::lang::type::compatible) */
+/* $begin(::cortex::lang::type::compatible) */
     db_bool result;
 
     result = FALSE;
@@ -170,9 +170,9 @@ db_bool db_type_compatible_v(db_type _this, db_type type) {
 /* $end */
 }
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::lang::type::construct(lang::type object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::type::construct(lang::type object) */
 db_int16 db_type_construct(db_type object) {
-/* $begin(::hyve::lang::type::construct) */
+/* $begin(::cortex::lang::type::construct) */
     switch(object->kind) {
     case DB_ANY:
         object->size = sizeof(db_any);
@@ -184,9 +184,9 @@ db_int16 db_type_construct(db_type object) {
 /* $end */
 }
 
-/* ::hyve::lang::type::copy(lang::any value) */
+/* ::cortex::lang::type::copy(lang::any value) */
 db_int16 db_type_copy(db_any _this, db_any value) {
-/* $begin(::hyve::lang::type::copy) */
+/* $begin(::cortex::lang::type::copy) */
     db_copy_ser_t data;
     struct db_serializer_s s;
     db_value v1;
@@ -209,32 +209,32 @@ db_int16 db_type_copy(db_any _this, db_any value) {
 /* $end */
 }
 
-/* ::hyve::lang::type::declare(lang::string name,lang::typedef type) */
+/* ::cortex::lang::type::declare(lang::string name,lang::typedef type) */
 db_object db_type_declare(db_any _this, db_string name, db_typedef type) {
-/* $begin(::hyve::lang::type::declare) */
+/* $begin(::cortex::lang::type::declare) */
     db_object result = db_declare(_this.value, name, type);
     db_keep(result);
     return result;
 /* $end */
 }
 
-/* ::hyve::lang::type::define() */
+/* ::cortex::lang::type::define() */
 db_int16 db_type_define(db_any _this) {
-/* $begin(::hyve::lang::type::define) */
+/* $begin(::cortex::lang::type::define) */
     return db_define(_this.value);
 /* $end */
 }
 
-/* ::hyve::lang::type::destruct() */
+/* ::cortex::lang::type::destruct() */
 db_void db_type_destruct(db_any _this) {
-/* $begin(::hyve::lang::type::destruct) */
+/* $begin(::cortex::lang::type::destruct) */
     db_destruct(_this.value);
 /* $end */
 }
 
-/* ::hyve::lang::type::fullname() */
+/* ::cortex::lang::type::fullname() */
 db_string db_type_fullname(db_any _this) {
-/* $begin(::hyve::lang::type::fullname) */
+/* $begin(::cortex::lang::type::fullname) */
     db_string result = NULL;
 
     if (_this.value) {
@@ -248,30 +248,30 @@ db_string db_type_fullname(db_any _this) {
 /* $end */
 }
 
-/* ::hyve::lang::type::instanceof(lang::typedef type) */
+/* ::cortex::lang::type::instanceof(lang::typedef type) */
 db_bool db_type_instanceof(db_any _this, db_typedef type) {
-/* $begin(::hyve::lang::type::instanceof) */
+/* $begin(::cortex::lang::type::instanceof) */
     return db_instanceof(type, _this.value);
 /* $end */
 }
 
-/* ::hyve::lang::type::invalidate() */
+/* ::cortex::lang::type::invalidate() */
 db_void db_type_invalidate(db_any _this) {
-/* $begin(::hyve::lang::type::invalidate) */
+/* $begin(::cortex::lang::type::invalidate) */
     db_invalidate(_this.value);
 /* $end */
 }
 
-/* ::hyve::lang::type::lookup(lang::string name) */
+/* ::cortex::lang::type::lookup(lang::string name) */
 db_object db_type_lookup(db_any _this, db_string name) {
-/* $begin(::hyve::lang::type::lookup) */
+/* $begin(::cortex::lang::type::lookup) */
     return db_lookup(_this.value, name);
 /* $end */
 }
 
-/* ::hyve::lang::type::nameof() */
+/* ::cortex::lang::type::nameof() */
 db_string db_type_nameof(db_any _this) {
-/* $begin(::hyve::lang::type::nameof) */
+/* $begin(::cortex::lang::type::nameof) */
     db_string result = NULL;
 
     if (_this.value) {
@@ -287,9 +287,9 @@ db_string db_type_nameof(db_any _this) {
 /* $end */
 }
 
-/* ::hyve::lang::type::parentof() */
+/* ::cortex::lang::type::parentof() */
 db_object db_type_parentof(db_any _this) {
-/* $begin(::hyve::lang::type::parentof) */
+/* $begin(::cortex::lang::type::parentof) */
     db_string result = NULL;
 
    if (db_checkAttr(_this.value, DB_ATTR_SCOPED)) {
@@ -307,9 +307,9 @@ db_object db_type_parentof(db_any _this) {
 /* $end */
 }
 
-/* ::hyve::lang::type::relname(lang::object from) */
+/* ::cortex::lang::type::relname(lang::object from) */
 db_string db_type_relname(db_any _this, db_object from) {
-/* $begin(::hyve::lang::type::relname) */
+/* $begin(::cortex::lang::type::relname) */
     db_string result = NULL;
     db_id id;
 
@@ -323,16 +323,16 @@ db_string db_type_relname(db_any _this, db_object from) {
 /* $end */
 }
 
-/* ::hyve::lang::type::resolve(lang::string name) */
+/* ::cortex::lang::type::resolve(lang::string name) */
 db_object db_type_resolve(db_any _this, db_string name) {
-/* $begin(::hyve::lang::type::resolve) */
+/* $begin(::cortex::lang::type::resolve) */
     return db_resolve(_this.value, name);
 /* $end */
 }
 
-/* ::hyve::lang::type::resolveProcedure(lang::string name) */
+/* ::cortex::lang::type::resolveProcedure(lang::string name) */
 db_function db_type_resolveProcedure(db_type _this, db_string name) {
-/* $begin(::hyve::lang::type::resolveProcedure) */
+/* $begin(::cortex::lang::type::resolveProcedure) */
     db_function result = NULL;
 
     /* If type is an interface, try first to resolve a method on the interface */
@@ -362,9 +362,9 @@ db_function db_type_resolveProcedure(db_type _this, db_string name) {
 /* $end */
 }
 
-/* ::hyve::lang::type::sizeof() */
+/* ::cortex::lang::type::sizeof() */
 db_uint32 db_type_sizeof(db_type _this) {
-/* $begin(::hyve::lang::type::sizeof) */
+/* $begin(::cortex::lang::type::sizeof) */
     db_uint32 size;
     if (_this->reference) {
         size = sizeof(db_object);
@@ -375,9 +375,9 @@ db_uint32 db_type_sizeof(db_type _this) {
 /* $end */
 }
 
-/* ::hyve::lang::type::toString() */
+/* ::cortex::lang::type::toString() */
 db_string db_type_toString(db_any _this) {
-/* $begin(::hyve::lang::type::toString) */
+/* $begin(::cortex::lang::type::toString) */
     db_value value;
     db_string result;
 
@@ -396,9 +396,9 @@ db_string db_type_toString(db_any _this) {
 /* $end */
 }
 
-/* ::hyve::lang::type::typeof() */
+/* ::cortex::lang::type::typeof() */
 db_type db_type_typeof(db_any _this) {
-/* $begin(::hyve::lang::type::typeof) */
+/* $begin(::cortex::lang::type::typeof) */
     db_type result = NULL;
 
     result = _this.type;

@@ -416,9 +416,9 @@ db_bool db_interface_checkProcedureCompatibility(db_function o1, db_function o2)
 
 /* $end */
 
-/* ::hyve::lang::interface::baseof(lang::interface type) */
+/* ::cortex::lang::interface::baseof(lang::interface type) */
 db_int16 db_interface_baseof(db_interface _this, db_interface type) {
-/* $begin(::hyve::lang::interface::baseof) */
+/* $begin(::cortex::lang::interface::baseof) */
     db_interface ptr = _this->base;
     db_bool result = _this == type;
     
@@ -434,9 +434,9 @@ db_int16 db_interface_baseof(db_interface _this, db_interface type) {
 /* $end */
 }
 
-/* ::hyve::lang::interface::bindMethod(lang::method method) */
+/* ::cortex::lang::interface::bindMethod(lang::method method) */
 db_int16 db_interface_bindMethod_v(db_interface _this, db_method method) {
-/* $begin(::hyve::lang::interface::bindMethod) */
+/* $begin(::cortex::lang::interface::bindMethod) */
     db_method* virtual;
     db_int32 i;
     db_int32 d;
@@ -497,9 +497,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::lang::interface::compatible(lang::type type) */
+/* ::cortex::lang::interface::compatible(lang::type type) */
 db_bool db_interface_compatible_v(db_interface _this, db_type type) {
-/* $begin(::hyve::lang::interface::compatible) */
+/* $begin(::cortex::lang::interface::compatible) */
     db_bool result;
 
     /* First test if types are compatible using the rules that are
@@ -521,9 +521,9 @@ db_bool db_interface_compatible_v(db_interface _this, db_type type) {
 /* $end */
 }
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::lang::interface::construct(lang::interface object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::interface::construct(lang::interface object) */
 db_int16 db_interface_construct(db_interface object) {
-/* $begin(::hyve::lang::interface::construct) */
+/* $begin(::cortex::lang::interface::construct) */
     db_vtable *superTable, ownTable;
     db_uint32 i;
 
@@ -563,9 +563,9 @@ error:
 /* $end */
 }
 
-/* callback ::hyve::lang::class::destruct(lang::object object) -> ::hyve::lang::interface::destruct(lang::interface object) */
+/* callback ::cortex::lang::class::destruct(lang::object object) -> ::cortex::lang::interface::destruct(lang::interface object) */
 db_void db_interface_destruct(db_interface object) {
-/* $begin(::hyve::lang::interface::destruct) */
+/* $begin(::cortex::lang::interface::destruct) */
 	db_uint32 i;
 
 	/* Free members */
@@ -592,9 +592,9 @@ db_void db_interface_destruct(db_interface object) {
 /* $end */
 }
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::interface::init(lang::interface object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::interface::init(lang::interface object) */
 db_int16 db_interface_init(db_interface object) {
-/* $begin(::hyve::lang::interface::init) */
+/* $begin(::cortex::lang::interface::init) */
     db_type(object)->reference = TRUE;
     db_type(object)->kind = DB_COMPOSITE;
     db_set(&db_type(object)->defaultType, db_member_o);
@@ -603,9 +603,9 @@ db_int16 db_interface_init(db_interface object) {
 /* $end */
 }
 
-/* ::hyve::lang::interface::resolveMember(lang::string name) */
+/* ::cortex::lang::interface::resolveMember(lang::string name) */
 db_member db_interface_resolveMember_v(db_interface _this, db_string name) {
-/* $begin(::hyve::lang::interface::resolveMember) */
+/* $begin(::cortex::lang::interface::resolveMember) */
     db_uint32 i;
     db_member result;
 
@@ -622,9 +622,9 @@ db_member db_interface_resolveMember_v(db_interface _this, db_string name) {
 /* $end */
 }
 
-/* ::hyve::lang::interface::resolveMethod(lang::string name) */
+/* ::cortex::lang::interface::resolveMethod(lang::string name) */
 db_method db_interface_resolveMethod(db_interface _this, db_string name) {
-/* $begin(::hyve::lang::interface::resolveMethod) */
+/* $begin(::cortex::lang::interface::resolveMethod) */
     db_method result;
     db_method* found;
 
@@ -639,9 +639,9 @@ db_method db_interface_resolveMethod(db_interface _this, db_string name) {
 /* $end */
 }
 
-/* ::hyve::lang::interface::resolveMethodById(lang::uint32 id) */
+/* ::cortex::lang::interface::resolveMethodById(lang::uint32 id) */
 db_method db_interface_resolveMethodById(db_interface _this, db_uint32 id) {
-/* $begin(::hyve::lang::interface::resolveMethodById) */
+/* $begin(::cortex::lang::interface::resolveMethodById) */
     db_method result;
     db_vtable* vtable;
 
@@ -666,9 +666,9 @@ db_method db_interface_resolveMethodById(db_interface _this, db_uint32 id) {
 /* $end */
 }
 
-/* ::hyve::lang::interface::resolveMethodId(lang::string name) */
+/* ::cortex::lang::interface::resolveMethodId(lang::string name) */
 db_uint32 db_interface_resolveMethodId(db_interface _this, db_string name) {
-/* $begin(::hyve::lang::interface::resolveMethodId) */
+/* $begin(::cortex::lang::interface::resolveMethodId) */
     db_int32 result;
 
     result = 0;

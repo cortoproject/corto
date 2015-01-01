@@ -4,7 +4,7 @@ void fail(string msg):
 	"tc_root01: FAIL: $msg"
 	result = false
 
-if @:: != hyve.parentof(): fail("@:: != hyve.parentof")
+if @:: != cortex.parentof(): fail("@:: != cortex.parentof")
 
 if @::.typeof() != object: fail("@::.typeof != object")
 

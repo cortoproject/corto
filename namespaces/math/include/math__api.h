@@ -9,7 +9,7 @@
 #define math__API_H
 
 #include "math__type.h"
-#include "hyve.h"
+#include "cortex.h"
 
 #ifdef __cplusplus
 extern "C" {

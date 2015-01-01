@@ -8,7 +8,7 @@
 #ifndef tc_stringser_META_H
 #define tc_stringser_META_H
 
-#include "hyve.h"
+#include "cortex.h"
 
 #include "tc_stringser__type.h"
 

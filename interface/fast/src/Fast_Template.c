@@ -9,9 +9,9 @@
 #include "Fast.h"
 #include "Fast__meta.h"
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::Template::construct(Template object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Template::construct(Template object) */
 db_int16 Fast_Template_construct(Fast_Template object) {
-/* $begin(::hyve::Fast::Template::construct) */
+/* $begin(::cortex::Fast::Template::construct) */
 
 	if (Fast_Local_construct(Fast_Local(object))) {
 		goto error;

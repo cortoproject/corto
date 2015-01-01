@@ -17,9 +17,9 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::ElementExpr::construct(Fast::MemberExpr object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::ElementExpr::construct(Fast::MemberExpr object) */
 db_int16 Fast_ElementExpr_construct(Fast_MemberExpr object) {
-/* $begin(::hyve::Fast::ElementExpr::construct) */
+/* $begin(::cortex::Fast::ElementExpr::construct) */
 	db_type lvalueType, rvalueType;
 
 	Fast_Node(object)->kind = FAST_Element;
@@ -68,9 +68,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::ElementExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::ElementExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_ElementExpr_toIc_v(Fast_ElementExpr _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-/* $begin(::hyve::Fast::ElementExpr::toIc) */
+/* $begin(::cortex::Fast::ElementExpr::toIc) */
 	db_icElement result;
 	db_ic lvalue, rvalue;
 	DB_UNUSED(stored);

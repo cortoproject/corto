@@ -1,6 +1,6 @@
 /* math__wrapper.c
  *
- * This file contains wrapper functions for ::hyve::math.
+ * This file contains wrapper functions for ::cortex::math.
  */
 
 #include "mth.h"

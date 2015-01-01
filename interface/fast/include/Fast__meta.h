@@ -7,7 +7,7 @@
 #ifndef Fast_META_H
 #define Fast_META_H
 
-#include "hyve.h"
+#include "cortex.h"
 
 #include "Fast__type.h"
 
@@ -15,1315 +15,1315 @@
 extern "C" {
 #endif
 
-/* ::hyve */
+/* ::cortex */
 extern db_object _o;
 
-/* ::hyve::Fast */
+/* ::cortex::Fast */
 extern db_void (*Fast_o);
 
-/* ::hyve::Fast::BinaryExpr */
+/* ::cortex::Fast::BinaryExpr */
 extern db_class Fast_BinaryExpr_o;
 
-/* ::hyve::Fast::BinaryExpr::construct(Fast::BinaryExpr object) */
+/* ::cortex::Fast::BinaryExpr::construct(Fast::BinaryExpr object) */
 extern db_callback Fast_BinaryExpr_construct_o;
 
-/* ::hyve::Fast::BinaryExpr::fold() */
+/* ::cortex::Fast::BinaryExpr::fold() */
 extern db_method Fast_BinaryExpr_fold_o;
 
-/* ::hyve::Fast::BinaryExpr::hasSideEffects() */
+/* ::cortex::Fast::BinaryExpr::hasSideEffects() */
 extern db_virtual Fast_BinaryExpr_hasSideEffects_o;
 
-/* ::hyve::Fast::BinaryExpr::lvalue */
+/* ::cortex::Fast::BinaryExpr::lvalue */
 extern db_member Fast_BinaryExpr_lvalue_o;
 
-/* ::hyve::Fast::BinaryExpr::operator */
+/* ::cortex::Fast::BinaryExpr::operator */
 extern db_member Fast_BinaryExpr_operator_o;
 
-/* ::hyve::Fast::BinaryExpr::rvalue */
+/* ::cortex::Fast::BinaryExpr::rvalue */
 extern db_member Fast_BinaryExpr_rvalue_o;
 
-/* ::hyve::Fast::BinaryExpr::setOperator(lang::operatorKind kind) */
+/* ::cortex::Fast::BinaryExpr::setOperator(lang::operatorKind kind) */
 extern db_method Fast_BinaryExpr_setOperator_o;
 
-/* ::hyve::Fast::BinaryExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::BinaryExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 extern db_virtual Fast_BinaryExpr_toIc_o;
 
-/* ::hyve::Fast::Binding */
+/* ::cortex::Fast::Binding */
 extern db_struct Fast_Binding_o;
 
-/* ::hyve::Fast::Binding::function */
+/* ::cortex::Fast::Binding::function */
 extern db_member Fast_Binding_function_o;
 
-/* ::hyve::Fast::Binding::impl */
+/* ::cortex::Fast::Binding::impl */
 extern db_member Fast_Binding_impl_o;
 
-/* ::hyve::Fast::Block */
+/* ::cortex::Fast::Block */
 extern db_class Fast_Block_o;
 
-/* ::hyve::Fast::Block::addStatement(Fast::Node statement) */
+/* ::cortex::Fast::Block::addStatement(Fast::Node statement) */
 extern db_method Fast_Block_addStatement_o;
 
-/* ::hyve::Fast::Block::declare(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference) */
+/* ::cortex::Fast::Block::declare(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference) */
 extern db_method Fast_Block_declare_o;
 
-/* ::hyve::Fast::Block::declareReturnVariable(lang::function function) */
+/* ::cortex::Fast::Block::declareReturnVariable(lang::function function) */
 extern db_method Fast_Block_declareReturnVariable_o;
 
-/* ::hyve::Fast::Block::declareTemplate(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference) */
+/* ::cortex::Fast::Block::declareTemplate(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference) */
 extern db_method Fast_Block_declareTemplate_o;
 
-/* ::hyve::Fast::Block::function */
+/* ::cortex::Fast::Block::function */
 extern db_member Fast_Block_function_o;
 
-/* ::hyve::Fast::Block::locals */
+/* ::cortex::Fast::Block::locals */
 extern db_member Fast_Block_locals_o;
 
-/* ::hyve::Fast::Block::lookup(lang::string id) */
+/* ::cortex::Fast::Block::lookup(lang::string id) */
 extern db_method Fast_Block_lookup_o;
 
-/* ::hyve::Fast::Block::lookupLocal(lang::string id) */
+/* ::cortex::Fast::Block::lookupLocal(lang::string id) */
 extern db_method Fast_Block_lookupLocal_o;
 
-/* ::hyve::Fast::Block::parent */
+/* ::cortex::Fast::Block::parent */
 extern db_member Fast_Block_parent_o;
 
-/* ::hyve::Fast::Block::resolve(lang::string id) */
+/* ::cortex::Fast::Block::resolve(lang::string id) */
 extern db_method Fast_Block_resolve_o;
 
-/* ::hyve::Fast::Block::setFunction(lang::function function */
+/* ::cortex::Fast::Block::setFunction(lang::function function */
 extern db_method Fast_Block_setFunction_o;
 
-/* ::hyve::Fast::Block::statements */
+/* ::cortex::Fast::Block::statements */
 extern db_member Fast_Block_statements_o;
 
-/* ::hyve::Fast::Block::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Block::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 extern db_virtual Fast_Block_toIc_o;
 
-/* ::hyve::Fast::Block::toIcBody(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Block::toIcBody(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 extern db_virtual Fast_Block_toIcBody_o;
 
-/* ::hyve::Fast::Block::while */
+/* ::cortex::Fast::Block::while */
 extern db_member Fast_Block_while_o;
 
-/* ::hyve::Fast::Boolean */
+/* ::cortex::Fast::Boolean */
 extern db_class Fast_Boolean_o;
 
-/* ::hyve::Fast::Boolean::init(Boolean object) */
+/* ::cortex::Fast::Boolean::init(Boolean object) */
 extern db_callback Fast_Boolean_init_o;
 
-/* ::hyve::Fast::Boolean::serialize(lang::type dstType,lang::word dst) */
+/* ::cortex::Fast::Boolean::serialize(lang::type dstType,lang::word dst) */
 extern db_method Fast_Boolean_serialize_o;
 
-/* ::hyve::Fast::Boolean::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Boolean::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 extern db_virtual Fast_Boolean_toIc_o;
 
-/* ::hyve::Fast::Boolean::value */
+/* ::cortex::Fast::Boolean::value */
 extern db_member Fast_Boolean_value_o;
 
-/* ::hyve::Fast::Call */
+/* ::cortex::Fast::Call */
 extern db_class Fast_Call_o;
 
-/* ::hyve::Fast::Call::actualFunction */
+/* ::cortex::Fast::Call::actualFunction */
 extern db_member Fast_Call_actualFunction_o;
 
-/* ::hyve::Fast::Call::arguments */
+/* ::cortex::Fast::Call::arguments */
 extern db_member Fast_Call_arguments_o;
 
-/* ::hyve::Fast::Call::construct(Fast::Call object) */
+/* ::cortex::Fast::Call::construct(Fast::Call object) */
 extern db_callback Fast_Call_construct_o;
 
-/* ::hyve::Fast::Call::function */
+/* ::cortex::Fast::Call::function */
 extern db_member Fast_Call_function_o;
 
-/* ::hyve::Fast::Call::hasSideEffects() */
+/* ::cortex::Fast::Call::hasSideEffects() */
 extern db_virtual Fast_Call_hasSideEffects_o;
 
-/* ::hyve::Fast::Call::resolveActual(string signature,lang::object scope,Fast::Expression instance) */
+/* ::cortex::Fast::Call::resolveActual(string signature,lang::object scope,Fast::Expression instance) */
 extern db_function Fast_Call_resolveActual_o;
 
-/* ::hyve::Fast::Call::signature */
+/* ::cortex::Fast::Call::signature */
 extern db_member Fast_Call_signature_o;
 
-/* ::hyve::Fast::Call::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Call::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 extern db_virtual Fast_Call_toIc_o;
 
-/* ::hyve::Fast::CastExpr */
+/* ::cortex::Fast::CastExpr */
 extern db_class Fast_CastExpr_o;
 
-/* ::hyve::Fast::CastExpr::construct(Fast::CastExpr object) */
+/* ::cortex::Fast::CastExpr::construct(Fast::CastExpr object) */
 extern db_callback Fast_CastExpr_construct_o;
 
-/* ::hyve::Fast::CastExpr::lvalue */
+/* ::cortex::Fast::CastExpr::lvalue */
 extern db_member Fast_CastExpr_lvalue_o;
 
-/* ::hyve::Fast::CastExpr::rvalue */
+/* ::cortex::Fast::CastExpr::rvalue */
 extern db_member Fast_CastExpr_rvalue_o;
 
-/* ::hyve::Fast::CastExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::CastExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 extern db_virtual Fast_CastExpr_toIc_o;
 
-/* ::hyve::Fast::Character */
+/* ::cortex::Fast::Character */
 extern db_class Fast_Character_o;
 
-/* ::hyve::Fast::Character::init(Character object) */
+/* ::cortex::Fast::Character::init(Character object) */
 extern db_callback Fast_Character_init_o;
 
-/* ::hyve::Fast::Character::serialize(lang::type dstType,lang::word dst) */
+/* ::cortex::Fast::Character::serialize(lang::type dstType,lang::word dst) */
 extern db_method Fast_Character_serialize_o;
 
-/* ::hyve::Fast::Character::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Character::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 extern db_virtual Fast_Character_toIc_o;
 
-/* ::hyve::Fast::Character::value */
+/* ::cortex::Fast::Character::value */
 extern db_member Fast_Character_value_o;
 
-/* ::hyve::Fast::CommaExpr */
+/* ::cortex::Fast::CommaExpr */
 extern db_class Fast_CommaExpr_o;
 
-/* ::hyve::Fast::CommaExpr::addExpression(Expression expr) */
+/* ::cortex::Fast::CommaExpr::addExpression(Expression expr) */
 extern db_method Fast_CommaExpr_addExpression_o;
 
-/* ::hyve::Fast::CommaExpr::addOrCreate(Expression list,Expression expr) */
+/* ::cortex::Fast::CommaExpr::addOrCreate(Expression list,Expression expr) */
 extern db_function Fast_CommaExpr_addOrCreate_o;
 
-/* ::hyve::Fast::CommaExpr::construct(CommaExpr object) */
+/* ::cortex::Fast::CommaExpr::construct(CommaExpr object) */
 extern db_callback Fast_CommaExpr_construct_o;
 
-/* ::hyve::Fast::CommaExpr::expressions */
+/* ::cortex::Fast::CommaExpr::expressions */
 extern db_member Fast_CommaExpr_expressions_o;
 
-/* ::hyve::Fast::CommaExpr::hasSideEffects() */
+/* ::cortex::Fast::CommaExpr::hasSideEffects() */
 extern db_virtual Fast_CommaExpr_hasSideEffects_o;
 
-/* ::hyve::Fast::CommaExpr::init(CommaExpr object) */
+/* ::cortex::Fast::CommaExpr::init(CommaExpr object) */
 extern db_callback Fast_CommaExpr_init_o;
 
-/* ::hyve::Fast::CommaExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::CommaExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 extern db_virtual Fast_CommaExpr_toIc_o;
 
-/* ::hyve::Fast::CommaExpr::toList() */
+/* ::cortex::Fast::CommaExpr::toList() */
 extern db_method Fast_CommaExpr_toList_o;
 
-/* ::hyve::Fast::Define */
+/* ::cortex::Fast::Define */
 extern db_class Fast_Define_o;
 
-/* ::hyve::Fast::Define::construct(Fast::Define object) */
+/* ::cortex::Fast::Define::construct(Fast::Define object) */
 extern db_callback Fast_Define_construct_o;
 
-/* ::hyve::Fast::Define::object */
+/* ::cortex::Fast::Define::object */
 extern db_member Fast_Define_object_o;
 
-/* ::hyve::Fast::Define::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Define::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 extern db_virtual Fast_Define_toIc_o;
 
-/* ::hyve::Fast::DynamicInitializer */
+/* ::cortex::Fast::DynamicInitializer */
 extern db_class Fast_DynamicInitializer_o;
 
-/* ::hyve::Fast::DynamicInitializer::assignValue */
+/* ::cortex::Fast::DynamicInitializer::assignValue */
 extern db_member Fast_DynamicInitializer_assignValue_o;
 
-/* ::hyve::Fast::DynamicInitializer::construct(DynamicInitializer object) */
+/* ::cortex::Fast::DynamicInitializer::construct(DynamicInitializer object) */
 extern db_callback Fast_DynamicInitializer_construct_o;
 
-/* ::hyve::Fast::DynamicInitializer::define() */
+/* ::cortex::Fast::DynamicInitializer::define() */
 extern db_method Fast_DynamicInitializer_define_o;
 
-/* ::hyve::Fast::DynamicInitializer::frames */
+/* ::cortex::Fast::DynamicInitializer::frames */
 extern db_member Fast_DynamicInitializer_frames_o;
 
-/* ::hyve::Fast::DynamicInitializer::pop() */
+/* ::cortex::Fast::DynamicInitializer::pop() */
 extern db_method Fast_DynamicInitializer_pop_o;
 
-/* ::hyve::Fast::DynamicInitializer::push() */
+/* ::cortex::Fast::DynamicInitializer::push() */
 extern db_method Fast_DynamicInitializer_push_o;
 
-/* ::hyve::Fast::DynamicInitializer::value(Expression v) */
+/* ::cortex::Fast::DynamicInitializer::value(Expression v) */
 extern db_method Fast_DynamicInitializer_value_o;
 
-/* ::hyve::Fast::DynamicInitializerFrame */
+/* ::cortex::Fast::DynamicInitializerFrame */
 extern db_struct Fast_DynamicInitializerFrame_o;
 
-/* ::hyve::Fast::DynamicInitializerFrame::expr */
+/* ::cortex::Fast::DynamicInitializerFrame::expr */
 extern db_member Fast_DynamicInitializerFrame_expr_o;
 
-/* ::hyve::Fast::DynamicInitializerFrame::keyExpr */
+/* ::cortex::Fast::DynamicInitializerFrame::keyExpr */
 extern db_member Fast_DynamicInitializerFrame_keyExpr_o;
 
-/* ::hyve::Fast::DynamicInitializerFrame::sequenceSize */
+/* ::cortex::Fast::DynamicInitializerFrame::sequenceSize */
 extern db_member Fast_DynamicInitializerFrame_sequenceSize_o;
 
-/* ::hyve::Fast::ElementExpr */
+/* ::cortex::Fast::ElementExpr */
 extern db_class Fast_ElementExpr_o;
 
-/* ::hyve::Fast::ElementExpr::construct(Fast::MemberExpr object) */
+/* ::cortex::Fast::ElementExpr::construct(Fast::MemberExpr object) */
 extern db_callback Fast_ElementExpr_construct_o;
 
-/* ::hyve::Fast::ElementExpr::lvalue */
+/* ::cortex::Fast::ElementExpr::lvalue */
 extern db_member Fast_ElementExpr_lvalue_o;
 
-/* ::hyve::Fast::ElementExpr::rvalue */
+/* ::cortex::Fast::ElementExpr::rvalue */
 extern db_member Fast_ElementExpr_rvalue_o;
 
-/* ::hyve::Fast::ElementExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::ElementExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 extern db_virtual Fast_ElementExpr_toIc_o;
 
-/* ::hyve::Fast::Expression */
+/* ::cortex::Fast::Expression */
 extern db_class Fast_Expression_o;
 
-/* ::hyve::Fast::Expression::cast(lang::type type) */
+/* ::cortex::Fast::Expression::cast(lang::type type) */
 extern db_method Fast_Expression_cast_o;
 
-/* ::hyve::Fast::Expression::cleanList(list{Expression} list) */
+/* ::cortex::Fast::Expression::cleanList(list{Expression} list) */
 extern db_function Fast_Expression_cleanList_o;
 
-/* ::hyve::Fast::Expression::fold() */
+/* ::cortex::Fast::Expression::fold() */
 extern db_virtual Fast_Expression_fold_o;
 
-/* ::hyve::Fast::Expression::forceReference */
+/* ::cortex::Fast::Expression::forceReference */
 extern db_member Fast_Expression_forceReference_o;
 
-/* ::hyve::Fast::Expression::fromList(list{Expression} list) */
+/* ::cortex::Fast::Expression::fromList(list{Expression} list) */
 extern db_function Fast_Expression_fromList_o;
 
-/* ::hyve::Fast::Expression::getType() */
+/* ::cortex::Fast::Expression::getType() */
 extern db_method Fast_Expression_getType_o;
 
-/* ::hyve::Fast::Expression::getType_expr(Expression target) */
+/* ::cortex::Fast::Expression::getType_expr(Expression target) */
 extern db_method Fast_Expression_getType_expr_o;
 
-/* ::hyve::Fast::Expression::getType_type(lang::type target) */
+/* ::cortex::Fast::Expression::getType_type(lang::type target) */
 extern db_method Fast_Expression_getType_type_o;
 
-/* ::hyve::Fast::Expression::getValue() */
+/* ::cortex::Fast::Expression::getValue() */
 extern db_virtual Fast_Expression_getValue_o;
 
-/* ::hyve::Fast::Expression::hasSideEffects() */
+/* ::cortex::Fast::Expression::hasSideEffects() */
 extern db_virtual Fast_Expression_hasSideEffects_o;
 
-/* ::hyve::Fast::Expression::init(Expression object) */
+/* ::cortex::Fast::Expression::init(Expression object) */
 extern db_callback Fast_Expression_init_o;
 
-/* ::hyve::Fast::Expression::isReference */
+/* ::cortex::Fast::Expression::isReference */
 extern db_member Fast_Expression_isReference_o;
 
-/* ::hyve::Fast::Expression::serialize(lang::type dstType,lang::word dst) */
+/* ::cortex::Fast::Expression::serialize(lang::type dstType,lang::word dst) */
 extern db_virtual Fast_Expression_serialize_o;
 
-/* ::hyve::Fast::Expression::toList() */
+/* ::cortex::Fast::Expression::toList() */
 extern db_virtual Fast_Expression_toList_o;
 
-/* ::hyve::Fast::Expression::type */
+/* ::cortex::Fast::Expression::type */
 extern db_member Fast_Expression_type_o;
 
-/* ::hyve::Fast::FloatingPoint */
+/* ::cortex::Fast::FloatingPoint */
 extern db_class Fast_FloatingPoint_o;
 
-/* ::hyve::Fast::FloatingPoint::init(FloatingPoint object) */
+/* ::cortex::Fast::FloatingPoint::init(FloatingPoint object) */
 extern db_callback Fast_FloatingPoint_init_o;
 
-/* ::hyve::Fast::FloatingPoint::serialize(lang::type dstType,lang::word dst) */
+/* ::cortex::Fast::FloatingPoint::serialize(lang::type dstType,lang::word dst) */
 extern db_method Fast_FloatingPoint_serialize_o;
 
-/* ::hyve::Fast::FloatingPoint::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::FloatingPoint::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 extern db_virtual Fast_FloatingPoint_toIc_o;
 
-/* ::hyve::Fast::FloatingPoint::value */
+/* ::cortex::Fast::FloatingPoint::value */
 extern db_member Fast_FloatingPoint_value_o;
 
-/* ::hyve::Fast::If */
+/* ::cortex::Fast::If */
 extern db_class Fast_If_o;
 
-/* ::hyve::Fast::If::condition */
+/* ::cortex::Fast::If::condition */
 extern db_member Fast_If_condition_o;
 
-/* ::hyve::Fast::If::construct(If object) */
+/* ::cortex::Fast::If::construct(If object) */
 extern db_callback Fast_If_construct_o;
 
-/* ::hyve::Fast::If::falseBranch */
+/* ::cortex::Fast::If::falseBranch */
 extern db_member Fast_If_falseBranch_o;
 
-/* ::hyve::Fast::If::noWarnUnreachable() */
+/* ::cortex::Fast::If::noWarnUnreachable() */
 extern db_method Fast_If_noWarnUnreachable_o;
 
-/* ::hyve::Fast::If::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::If::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 extern db_virtual Fast_If_toIc_o;
 
-/* ::hyve::Fast::If::trueBranch */
+/* ::cortex::Fast::If::trueBranch */
 extern db_member Fast_If_trueBranch_o;
 
-/* ::hyve::Fast::If::warnUnreachable */
+/* ::cortex::Fast::If::warnUnreachable */
 extern db_member Fast_If_warnUnreachable_o;
 
-/* ::hyve::Fast::Initializer */
+/* ::cortex::Fast::Initializer */
 extern db_class Fast_Initializer_o;
 
-/* ::hyve::Fast::Initializer::construct(Initializer object) */
+/* ::cortex::Fast::Initializer::construct(Initializer object) */
 extern db_callback Fast_Initializer_construct_o;
 
-/* ::hyve::Fast::Initializer::currentType() */
+/* ::cortex::Fast::Initializer::currentType() */
 extern db_method Fast_Initializer_currentType_o;
 
-/* ::hyve::Fast::Initializer::define() */
+/* ::cortex::Fast::Initializer::define() */
 extern db_virtual Fast_Initializer_define_o;
 
-/* ::hyve::Fast::Initializer::fp */
+/* ::cortex::Fast::Initializer::fp */
 extern db_member Fast_Initializer_fp_o;
 
-/* ::hyve::Fast::Initializer::frames */
+/* ::cortex::Fast::Initializer::frames */
 extern db_member Fast_Initializer_frames_o;
 
-/* ::hyve::Fast::Initializer::initFrame() */
+/* ::cortex::Fast::Initializer::initFrame() */
 extern db_method Fast_Initializer_initFrame_o;
 
-/* ::hyve::Fast::Initializer::member(lang::string name) */
+/* ::cortex::Fast::Initializer::member(lang::string name) */
 extern db_virtual Fast_Initializer_member_o;
 
-/* ::hyve::Fast::Initializer::next() */
+/* ::cortex::Fast::Initializer::next() */
 extern db_virtual Fast_Initializer_next_o;
 
-/* ::hyve::Fast::Initializer::pop() */
+/* ::cortex::Fast::Initializer::pop() */
 extern db_virtual Fast_Initializer_pop_o;
 
-/* ::hyve::Fast::Initializer::popKey() */
+/* ::cortex::Fast::Initializer::popKey() */
 extern db_virtual Fast_Initializer_popKey_o;
 
-/* ::hyve::Fast::Initializer::push() */
+/* ::cortex::Fast::Initializer::push() */
 extern db_virtual Fast_Initializer_push_o;
 
-/* ::hyve::Fast::Initializer::pushKey() */
+/* ::cortex::Fast::Initializer::pushKey() */
 extern db_virtual Fast_Initializer_pushKey_o;
 
-/* ::hyve::Fast::Initializer::type() */
+/* ::cortex::Fast::Initializer::type() */
 extern db_method Fast_Initializer_type_o;
 
-/* ::hyve::Fast::Initializer::value(Expression v) */
+/* ::cortex::Fast::Initializer::value(Expression v) */
 extern db_virtual Fast_Initializer_value_o;
 
-/* ::hyve::Fast::Initializer::valueKey(Expression key) */
+/* ::cortex::Fast::Initializer::valueKey(Expression key) */
 extern db_virtual Fast_Initializer_valueKey_o;
 
-/* ::hyve::Fast::Initializer::variableCount */
+/* ::cortex::Fast::Initializer::variableCount */
 extern db_member Fast_Initializer_variableCount_o;
 
-/* ::hyve::Fast::Initializer::variables */
+/* ::cortex::Fast::Initializer::variables */
 extern db_member Fast_Initializer_variables_o;
 
-/* ::hyve::Fast::InitializerExpr */
+/* ::cortex::Fast::InitializerExpr */
 extern db_class Fast_InitializerExpr_o;
 
-/* ::hyve::Fast::InitializerExpr::assignValue */
+/* ::cortex::Fast::InitializerExpr::assignValue */
 extern db_member Fast_InitializerExpr_assignValue_o;
 
-/* ::hyve::Fast::InitializerExpr::construct(InitializerExpr object) */
+/* ::cortex::Fast::InitializerExpr::construct(InitializerExpr object) */
 extern db_callback Fast_InitializerExpr_construct_o;
 
-/* ::hyve::Fast::InitializerExpr::define() */
+/* ::cortex::Fast::InitializerExpr::define() */
 extern db_method Fast_InitializerExpr_define_o;
 
-/* ::hyve::Fast::InitializerExpr::insert(Expression variable) */
+/* ::cortex::Fast::InitializerExpr::insert(Expression variable) */
 extern db_method Fast_InitializerExpr_insert_o;
 
-/* ::hyve::Fast::InitializerExpr::member(lang::string name) */
+/* ::cortex::Fast::InitializerExpr::member(lang::string name) */
 extern db_method Fast_InitializerExpr_member_o;
 
-/* ::hyve::Fast::InitializerExpr::operations */
+/* ::cortex::Fast::InitializerExpr::operations */
 extern db_member Fast_InitializerExpr_operations_o;
 
-/* ::hyve::Fast::InitializerExpr::pop() */
+/* ::cortex::Fast::InitializerExpr::pop() */
 extern db_method Fast_InitializerExpr_pop_o;
 
-/* ::hyve::Fast::InitializerExpr::push() */
+/* ::cortex::Fast::InitializerExpr::push() */
 extern db_method Fast_InitializerExpr_push_o;
 
-/* ::hyve::Fast::InitializerExpr::value(Expression v) */
+/* ::cortex::Fast::InitializerExpr::value(Expression v) */
 extern db_method Fast_InitializerExpr_value_o;
 
-/* ::hyve::Fast::InitializerFrame */
+/* ::cortex::Fast::InitializerFrame */
 extern db_struct Fast_InitializerFrame_o;
 
-/* ::hyve::Fast::InitializerFrame::isKey */
+/* ::cortex::Fast::InitializerFrame::isKey */
 extern db_member Fast_InitializerFrame_isKey_o;
 
-/* ::hyve::Fast::InitializerFrame::location */
+/* ::cortex::Fast::InitializerFrame::location */
 extern db_member Fast_InitializerFrame_location_o;
 
-/* ::hyve::Fast::InitializerFrame::member */
+/* ::cortex::Fast::InitializerFrame::member */
 extern db_member Fast_InitializerFrame_member_o;
 
-/* ::hyve::Fast::InitializerFrame::type */
+/* ::cortex::Fast::InitializerFrame::type */
 extern db_member Fast_InitializerFrame_type_o;
 
-/* ::hyve::Fast::InitializerKind */
+/* ::cortex::Fast::InitializerKind */
 extern db_enum Fast_InitializerKind_o;
 
-/* ::hyve::Fast::InitializerKind::InitDynamic */
+/* ::cortex::Fast::InitializerKind::InitDynamic */
 extern db_constant (*Fast_InitializerKind_InitDynamic_o);
 
-/* ::hyve::Fast::InitializerKind::InitExpression */
+/* ::cortex::Fast::InitializerKind::InitExpression */
 extern db_constant (*Fast_InitializerKind_InitExpression_o);
 
-/* ::hyve::Fast::InitializerKind::InitStatic */
+/* ::cortex::Fast::InitializerKind::InitStatic */
 extern db_constant (*Fast_InitializerKind_InitStatic_o);
 
-/* ::hyve::Fast::InitializerVariable */
+/* ::cortex::Fast::InitializerVariable */
 extern db_struct Fast_InitializerVariable_o;
 
-/* ::hyve::Fast::InitializerVariable::key */
+/* ::cortex::Fast::InitializerVariable::key */
 extern db_member Fast_InitializerVariable_key_o;
 
-/* ::hyve::Fast::InitializerVariable::object */
+/* ::cortex::Fast::InitializerVariable::object */
 extern db_member Fast_InitializerVariable_object_o;
 
-/* ::hyve::Fast::InitializerVariable::offset */
+/* ::cortex::Fast::InitializerVariable::offset */
 extern db_member Fast_InitializerVariable_offset_o;
 
-/* ::hyve::Fast::InitOper */
+/* ::cortex::Fast::InitOper */
 extern db_struct Fast_InitOper_o;
 
-/* ::hyve::Fast::InitOper::expr */
+/* ::cortex::Fast::InitOper::expr */
 extern db_member Fast_InitOper_expr_o;
 
-/* ::hyve::Fast::InitOper::kind */
+/* ::cortex::Fast::InitOper::kind */
 extern db_member Fast_InitOper_kind_o;
 
-/* ::hyve::Fast::InitOper::name */
+/* ::cortex::Fast::InitOper::name */
 extern db_member Fast_InitOper_name_o;
 
-/* ::hyve::Fast::InitOperKind */
+/* ::cortex::Fast::InitOperKind */
 extern db_enum Fast_InitOperKind_o;
 
-/* ::hyve::Fast::InitOperKind::InitDefine */
+/* ::cortex::Fast::InitOperKind::InitDefine */
 extern db_constant (*Fast_InitOperKind_InitDefine_o);
 
-/* ::hyve::Fast::InitOperKind::InitMember */
+/* ::cortex::Fast::InitOperKind::InitMember */
 extern db_constant (*Fast_InitOperKind_InitMember_o);
 
-/* ::hyve::Fast::InitOperKind::InitPop */
+/* ::cortex::Fast::InitOperKind::InitPop */
 extern db_constant (*Fast_InitOperKind_InitPop_o);
 
-/* ::hyve::Fast::InitOperKind::InitPush */
+/* ::cortex::Fast::InitOperKind::InitPush */
 extern db_constant (*Fast_InitOperKind_InitPush_o);
 
-/* ::hyve::Fast::InitOperKind::InitValue */
+/* ::cortex::Fast::InitOperKind::InitValue */
 extern db_constant (*Fast_InitOperKind_InitValue_o);
 
-/* ::hyve::Fast::Integer */
+/* ::cortex::Fast::Integer */
 extern db_class Fast_Integer_o;
 
-/* ::hyve::Fast::Integer::init(Integer object) */
+/* ::cortex::Fast::Integer::init(Integer object) */
 extern db_callback Fast_Integer_init_o;
 
-/* ::hyve::Fast::Integer::serialize(lang::type dstType,lang::word dst) */
+/* ::cortex::Fast::Integer::serialize(lang::type dstType,lang::word dst) */
 extern db_method Fast_Integer_serialize_o;
 
-/* ::hyve::Fast::Integer::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Integer::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 extern db_virtual Fast_Integer_toIc_o;
 
-/* ::hyve::Fast::Integer::value */
+/* ::cortex::Fast::Integer::value */
 extern db_member Fast_Integer_value_o;
 
-/* ::hyve::Fast::Literal */
+/* ::cortex::Fast::Literal */
 extern db_class Fast_Literal_o;
 
-/* ::hyve::Fast::Literal::getValue() */
+/* ::cortex::Fast::Literal::getValue() */
 extern db_virtual Fast_Literal_getValue_o;
 
-/* ::hyve::Fast::Literal::init(Literal object) */
+/* ::cortex::Fast::Literal::init(Literal object) */
 extern db_callback Fast_Literal_init_o;
 
-/* ::hyve::Fast::Literal::kind */
+/* ::cortex::Fast::Literal::kind */
 extern db_member Fast_Literal_kind_o;
 
-/* ::hyve::Fast::Local */
+/* ::cortex::Fast::Local */
 extern db_class Fast_Local_o;
 
-/* ::hyve::Fast::Local::construct(Local object) */
+/* ::cortex::Fast::Local::construct(Local object) */
 extern db_callback Fast_Local_construct_o;
 
-/* ::hyve::Fast::Local::isReference */
+/* ::cortex::Fast::Local::isReference */
 extern db_member Fast_Local_isReference_o;
 
-/* ::hyve::Fast::Local::kind */
+/* ::cortex::Fast::Local::kind */
 extern db_member Fast_Local_kind_o;
 
-/* ::hyve::Fast::Local::name */
+/* ::cortex::Fast::Local::name */
 extern db_member Fast_Local_name_o;
 
-/* ::hyve::Fast::Local::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Local::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 extern db_virtual Fast_Local_toIc_o;
 
-/* ::hyve::Fast::Local::type */
+/* ::cortex::Fast::Local::type */
 extern db_member Fast_Local_type_o;
 
-/* ::hyve::Fast::LocalKind */
+/* ::cortex::Fast::LocalKind */
 extern db_enum Fast_LocalKind_o;
 
-/* ::hyve::Fast::LocalKind::LocalDefault */
+/* ::cortex::Fast::LocalKind::LocalDefault */
 extern db_constant (*Fast_LocalKind_LocalDefault_o);
 
-/* ::hyve::Fast::LocalKind::LocalParameter */
+/* ::cortex::Fast::LocalKind::LocalParameter */
 extern db_constant (*Fast_LocalKind_LocalParameter_o);
 
-/* ::hyve::Fast::LocalKind::LocalReturn */
+/* ::cortex::Fast::LocalKind::LocalReturn */
 extern db_constant (*Fast_LocalKind_LocalReturn_o);
 
-/* ::hyve::Fast::Lvalue */
+/* ::cortex::Fast::Lvalue */
 extern db_struct Fast_Lvalue_o;
 
-/* ::hyve::Fast::Lvalue::expr */
+/* ::cortex::Fast::Lvalue::expr */
 extern db_member Fast_Lvalue_expr_o;
 
-/* ::hyve::Fast::Lvalue::isAssignment */
+/* ::cortex::Fast::Lvalue::isAssignment */
 extern db_member Fast_Lvalue_isAssignment_o;
 
-/* ::hyve::Fast::MemberExpr */
+/* ::cortex::Fast::MemberExpr */
 extern db_class Fast_MemberExpr_o;
 
-/* ::hyve::Fast::MemberExpr::construct(Fast::MemberExpr object) */
+/* ::cortex::Fast::MemberExpr::construct(Fast::MemberExpr object) */
 extern db_callback Fast_MemberExpr_construct_o;
 
-/* ::hyve::Fast::MemberExpr::hasSideEffects() */
+/* ::cortex::Fast::MemberExpr::hasSideEffects() */
 extern db_virtual Fast_MemberExpr_hasSideEffects_o;
 
-/* ::hyve::Fast::MemberExpr::lvalue */
+/* ::cortex::Fast::MemberExpr::lvalue */
 extern db_member Fast_MemberExpr_lvalue_o;
 
-/* ::hyve::Fast::MemberExpr::member */
+/* ::cortex::Fast::MemberExpr::member */
 extern db_member Fast_MemberExpr_member_o;
 
-/* ::hyve::Fast::MemberExpr::rvalue */
+/* ::cortex::Fast::MemberExpr::rvalue */
 extern db_member Fast_MemberExpr_rvalue_o;
 
-/* ::hyve::Fast::MemberExpr::superMember */
+/* ::cortex::Fast::MemberExpr::superMember */
 extern db_member Fast_MemberExpr_superMember_o;
 
-/* ::hyve::Fast::MemberExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::MemberExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 extern db_virtual Fast_MemberExpr_toIc_o;
 
-/* ::hyve::Fast::NewExpr */
+/* ::cortex::Fast::NewExpr */
 extern db_class Fast_NewExpr_o;
 
-/* ::hyve::Fast::NewExpr::attributes */
+/* ::cortex::Fast::NewExpr::attributes */
 extern db_member Fast_NewExpr_attributes_o;
 
-/* ::hyve::Fast::NewExpr::construct(Fast::NewExpr object) */
+/* ::cortex::Fast::NewExpr::construct(Fast::NewExpr object) */
 extern db_callback Fast_NewExpr_construct_o;
 
-/* ::hyve::Fast::NewExpr::hasSideEffects() */
+/* ::cortex::Fast::NewExpr::hasSideEffects() */
 extern db_virtual Fast_NewExpr_hasSideEffects_o;
 
-/* ::hyve::Fast::NewExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::NewExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 extern db_virtual Fast_NewExpr_toIc_o;
 
-/* ::hyve::Fast::NewExpr::type */
+/* ::cortex::Fast::NewExpr::type */
 extern db_member Fast_NewExpr_type_o;
 
-/* ::hyve::Fast::Node */
+/* ::cortex::Fast::Node */
 extern db_class Fast_Node_o;
 
-/* ::hyve::Fast::Node::column */
+/* ::cortex::Fast::Node::column */
 extern db_member Fast_Node_column_o;
 
-/* ::hyve::Fast::Node::init(Node object) */
+/* ::cortex::Fast::Node::init(Node object) */
 extern db_callback Fast_Node_init_o;
 
-/* ::hyve::Fast::Node::kind */
+/* ::cortex::Fast::Node::kind */
 extern db_member Fast_Node_kind_o;
 
-/* ::hyve::Fast::Node::line */
+/* ::cortex::Fast::Node::line */
 extern db_member Fast_Node_line_o;
 
-/* ::hyve::Fast::Node::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Node::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 extern db_virtual Fast_Node_toIc_o;
 
-/* ::hyve::Fast::nodeKind */
+/* ::cortex::Fast::nodeKind */
 extern db_enum Fast_nodeKind_o;
 
-/* ::hyve::Fast::nodeKind::Binary */
+/* ::cortex::Fast::nodeKind::Binary */
 extern db_constant (*Fast_nodeKind_Binary_o);
 
-/* ::hyve::Fast::nodeKind::Call */
+/* ::cortex::Fast::nodeKind::Call */
 extern db_constant (*Fast_nodeKind_Call_o);
 
-/* ::hyve::Fast::nodeKind::Cast */
+/* ::cortex::Fast::nodeKind::Cast */
 extern db_constant (*Fast_nodeKind_Cast_o);
 
-/* ::hyve::Fast::nodeKind::CommaExpr */
+/* ::cortex::Fast::nodeKind::CommaExpr */
 extern db_constant (*Fast_nodeKind_CommaExpr_o);
 
-/* ::hyve::Fast::nodeKind::Declaration */
+/* ::cortex::Fast::nodeKind::Declaration */
 extern db_constant (*Fast_nodeKind_Declaration_o);
 
-/* ::hyve::Fast::nodeKind::Declare */
+/* ::cortex::Fast::nodeKind::Declare */
 extern db_constant (*Fast_nodeKind_Declare_o);
 
-/* ::hyve::Fast::nodeKind::Define */
+/* ::cortex::Fast::nodeKind::Define */
 extern db_constant (*Fast_nodeKind_Define_o);
 
-/* ::hyve::Fast::nodeKind::Element */
+/* ::cortex::Fast::nodeKind::Element */
 extern db_constant (*Fast_nodeKind_Element_o);
 
-/* ::hyve::Fast::nodeKind::If */
+/* ::cortex::Fast::nodeKind::If */
 extern db_constant (*Fast_nodeKind_If_o);
 
-/* ::hyve::Fast::nodeKind::Initializer */
+/* ::cortex::Fast::nodeKind::Initializer */
 extern db_constant (*Fast_nodeKind_Initializer_o);
 
-/* ::hyve::Fast::nodeKind::Literal */
+/* ::cortex::Fast::nodeKind::Literal */
 extern db_constant (*Fast_nodeKind_Literal_o);
 
-/* ::hyve::Fast::nodeKind::Member */
+/* ::cortex::Fast::nodeKind::Member */
 extern db_constant (*Fast_nodeKind_Member_o);
 
-/* ::hyve::Fast::nodeKind::Method */
+/* ::cortex::Fast::nodeKind::Method */
 extern db_constant (*Fast_nodeKind_Method_o);
 
-/* ::hyve::Fast::nodeKind::New */
+/* ::cortex::Fast::nodeKind::New */
 extern db_constant (*Fast_nodeKind_New_o);
 
-/* ::hyve::Fast::nodeKind::Postfix */
+/* ::cortex::Fast::nodeKind::Postfix */
 extern db_constant (*Fast_nodeKind_Postfix_o);
 
-/* ::hyve::Fast::nodeKind::Ternary */
+/* ::cortex::Fast::nodeKind::Ternary */
 extern db_constant (*Fast_nodeKind_Ternary_o);
 
-/* ::hyve::Fast::nodeKind::Unary */
+/* ::cortex::Fast::nodeKind::Unary */
 extern db_constant (*Fast_nodeKind_Unary_o);
 
-/* ::hyve::Fast::nodeKind::Update */
+/* ::cortex::Fast::nodeKind::Update */
 extern db_constant (*Fast_nodeKind_Update_o);
 
-/* ::hyve::Fast::nodeKind::Variable */
+/* ::cortex::Fast::nodeKind::Variable */
 extern db_constant (*Fast_nodeKind_Variable_o);
 
-/* ::hyve::Fast::nodeKind::Wait */
+/* ::cortex::Fast::nodeKind::Wait */
 extern db_constant (*Fast_nodeKind_Wait_o);
 
-/* ::hyve::Fast::nodeKind::While */
+/* ::cortex::Fast::nodeKind::While */
 extern db_constant (*Fast_nodeKind_While_o);
 
-/* ::hyve::Fast::Null */
+/* ::cortex::Fast::Null */
 extern db_class Fast_Null_o;
 
-/* ::hyve::Fast::Null::init(Null object) */
+/* ::cortex::Fast::Null::init(Null object) */
 extern db_callback Fast_Null_init_o;
 
-/* ::hyve::Fast::Null::serialize(lang::type dstType,lang::word dst) */
+/* ::cortex::Fast::Null::serialize(lang::type dstType,lang::word dst) */
 extern db_method Fast_Null_serialize_o;
 
-/* ::hyve::Fast::Null::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Null::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 extern db_virtual Fast_Null_toIc_o;
 
-/* ::hyve::Fast::Object */
+/* ::cortex::Fast::Object */
 extern db_class Fast_Object_o;
 
-/* ::hyve::Fast::Object::construct(Object object) */
+/* ::cortex::Fast::Object::construct(Object object) */
 extern db_callback Fast_Object_construct_o;
 
-/* ::hyve::Fast::Object::getValue() */
+/* ::cortex::Fast::Object::getValue() */
 extern db_method Fast_Object_getValue_o;
 
-/* ::hyve::Fast::Object::serialize(lang::type dstType,lang::word dst) */
+/* ::cortex::Fast::Object::serialize(lang::type dstType,lang::word dst) */
 extern db_method Fast_Object_serialize_o;
 
-/* ::hyve::Fast::Object::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Object::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 extern db_virtual Fast_Object_toIc_o;
 
-/* ::hyve::Fast::ObjectBase */
+/* ::cortex::Fast::ObjectBase */
 extern db_class Fast_ObjectBase_o;
 
-/* ::hyve::Fast::ObjectBase::construct(ObjectBase object) */
+/* ::cortex::Fast::ObjectBase::construct(ObjectBase object) */
 extern db_callback Fast_ObjectBase_construct_o;
 
-/* ::hyve::Fast::ObjectBase::value */
+/* ::cortex::Fast::ObjectBase::value */
 extern db_member Fast_ObjectBase_value_o;
 
-/* ::hyve::Fast::Parser */
+/* ::cortex::Fast::Parser */
 extern db_class Fast_Parser_o;
 
-/* ::hyve::Fast::Parser::abort */
+/* ::cortex::Fast::Parser::abort */
 extern db_member Fast_Parser_abort_o;
 
-/* ::hyve::Fast::Parser::addStatement(Fast::Node statement) */
+/* ::cortex::Fast::Parser::addStatement(Fast::Node statement) */
 extern db_method Fast_Parser_addStatement_o;
 
-/* ::hyve::Fast::Parser::argumentToString(Fast::Variable type,lang::string id,lang::bool reference) */
+/* ::cortex::Fast::Parser::argumentToString(Fast::Variable type,lang::string id,lang::bool reference) */
 extern db_method Fast_Parser_argumentToString_o;
 
-/* ::hyve::Fast::Parser::binaryExpr(Fast::Expression lvalues,Fast::Expression rvalues,lang::operatorKind operator) */
+/* ::cortex::Fast::Parser::binaryExpr(Fast::Expression lvalues,Fast::Expression rvalues,lang::operatorKind operator) */
 extern db_method Fast_Parser_binaryExpr_o;
 
-/* ::hyve::Fast::Parser::bind(Fast::Variable function,Fast::Block block) */
+/* ::cortex::Fast::Parser::bind(Fast::Variable function,Fast::Block block) */
 extern db_method Fast_Parser_bind_o;
 
-/* ::hyve::Fast::Parser::bindings */
+/* ::cortex::Fast::Parser::bindings */
 extern db_member Fast_Parser_bindings_o;
 
-/* ::hyve::Fast::Parser::bindOneliner(Fast::Variable function,Fast::Block block,Fast::Expression expr) */
+/* ::cortex::Fast::Parser::bindOneliner(Fast::Variable function,Fast::Block block,Fast::Expression expr) */
 extern db_method Fast_Parser_bindOneliner_o;
 
-/* ::hyve::Fast::Parser::block */
+/* ::cortex::Fast::Parser::block */
 extern db_member Fast_Parser_block_o;
 
-/* ::hyve::Fast::Parser::blockPop() */
+/* ::cortex::Fast::Parser::blockPop() */
 extern db_method Fast_Parser_blockPop_o;
 
-/* ::hyve::Fast::Parser::blockPreset */
+/* ::cortex::Fast::Parser::blockPreset */
 extern db_member Fast_Parser_blockPreset_o;
 
-/* ::hyve::Fast::Parser::blockPush(lang::bool presetBlock) */
+/* ::cortex::Fast::Parser::blockPush(lang::bool presetBlock) */
 extern db_method Fast_Parser_blockPush_o;
 
-/* ::hyve::Fast::Parser::callExpr(Fast::Expression function,Fast::Expression arguments) */
+/* ::cortex::Fast::Parser::callExpr(Fast::Expression function,Fast::Expression arguments) */
 extern db_method Fast_Parser_callExpr_o;
 
-/* ::hyve::Fast::Parser::castExpr(Fast::Expression lvalue,Fast::Expression rvalue) */
+/* ::cortex::Fast::Parser::castExpr(Fast::Expression lvalue,Fast::Expression rvalue) */
 extern db_method Fast_Parser_castExpr_o;
 
-/* ::hyve::Fast::Parser::collect(lang::object o) */
+/* ::cortex::Fast::Parser::collect(lang::object o) */
 extern db_method Fast_Parser_collect_o;
 
-/* ::hyve::Fast::Parser::collected */
+/* ::cortex::Fast::Parser::collected */
 extern db_member Fast_Parser_collected_o;
 
-/* ::hyve::Fast::Parser::collectHeap(word addr) */
+/* ::cortex::Fast::Parser::collectHeap(word addr) */
 extern db_method Fast_Parser_collectHeap_o;
 
-/* ::hyve::Fast::Parser::column */
+/* ::cortex::Fast::Parser::column */
 extern db_member Fast_Parser_column_o;
 
-/* ::hyve::Fast::Parser::complexType */
+/* ::cortex::Fast::Parser::complexType */
 extern db_member Fast_Parser_complexType_o;
 
-/* ::hyve::Fast::Parser::complexTypeSp */
+/* ::cortex::Fast::Parser::complexTypeSp */
 extern db_member Fast_Parser_complexTypeSp_o;
 
-/* ::hyve::Fast::Parser::construct(Parser object) */
+/* ::cortex::Fast::Parser::construct(Parser object) */
 extern db_callback Fast_Parser_construct_o;
 
-/* ::hyve::Fast::Parser::declaration(Variable type,lang::string id,lang::bool isReference) */
+/* ::cortex::Fast::Parser::declaration(Variable type,lang::string id,lang::bool isReference) */
 extern db_method Fast_Parser_declaration_o;
 
-/* ::hyve::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::type kind,bool returnsReference) */
+/* ::cortex::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::type kind,bool returnsReference) */
 extern db_method Fast_Parser_declareFunction_o;
 
-/* ::hyve::Fast::Parser::declareFunctionParams(Variable function) */
+/* ::cortex::Fast::Parser::declareFunctionParams(Variable function) */
 extern db_method Fast_Parser_declareFunctionParams_o;
 
-/* ::hyve::Fast::Parser::define() */
+/* ::cortex::Fast::Parser::define() */
 extern db_method Fast_Parser_define_o;
 
-/* ::hyve::Fast::Parser::defineScope() */
+/* ::cortex::Fast::Parser::defineScope() */
 extern db_method Fast_Parser_defineScope_o;
 
-/* ::hyve::Fast::Parser::defineVariable(Variable object) */
+/* ::cortex::Fast::Parser::defineVariable(Variable object) */
 extern db_method Fast_Parser_defineVariable_o;
 
-/* ::hyve::Fast::Parser::destruct(Parser object) */
+/* ::cortex::Fast::Parser::destruct(Parser object) */
 extern db_callback Fast_Parser_destruct_o;
 
-/* ::hyve::Fast::Parser::elementExpr(Fast::Expression lvalue,Fast::Expression rvalue) */
+/* ::cortex::Fast::Parser::elementExpr(Fast::Expression lvalue,Fast::Expression rvalue) */
 extern db_method Fast_Parser_elementExpr_o;
 
-/* ::hyve::Fast::Parser::errLine */
+/* ::cortex::Fast::Parser::errLine */
 extern db_member Fast_Parser_errLine_o;
 
-/* ::hyve::Fast::Parser::errors */
+/* ::cortex::Fast::Parser::errors */
 extern db_member Fast_Parser_errors_o;
 
-/* ::hyve::Fast::Parser::errSet */
+/* ::cortex::Fast::Parser::errSet */
 extern db_member Fast_Parser_errSet_o;
 
-/* ::hyve::Fast::Parser::filename */
+/* ::cortex::Fast::Parser::filename */
 extern db_member Fast_Parser_filename_o;
 
-/* ::hyve::Fast::Parser::foreach(lang::string loopId,Fast::Expression collection) */
+/* ::cortex::Fast::Parser::foreach(lang::string loopId,Fast::Expression collection) */
 extern db_method Fast_Parser_foreach_o;
 
-/* ::hyve::Fast::Parser::getComplexType() */
+/* ::cortex::Fast::Parser::getComplexType() */
 extern db_method Fast_Parser_getComplexType_o;
 
-/* ::hyve::Fast::Parser::getLvalue(lang::bool assignment) */
+/* ::cortex::Fast::Parser::getLvalue(lang::bool assignment) */
 extern db_method Fast_Parser_getLvalue_o;
 
-/* ::hyve::Fast::Parser::getLvalueType(lang::bool assignment) */
+/* ::cortex::Fast::Parser::getLvalueType(lang::bool assignment) */
 extern db_method Fast_Parser_getLvalueType_o;
 
-/* ::hyve::Fast::Parser::heapCollected */
+/* ::cortex::Fast::Parser::heapCollected */
 extern db_member Fast_Parser_heapCollected_o;
 
-/* ::hyve::Fast::Parser::ifStatement(Fast::Expression condition,Fast::Block trueBranch,Fast::If falseBranch) */
+/* ::cortex::Fast::Parser::ifStatement(Fast::Expression condition,Fast::Block trueBranch,Fast::If falseBranch) */
 extern db_method Fast_Parser_ifStatement_o;
 
-/* ::hyve::Fast::Parser::initAnonymousId */
+/* ::cortex::Fast::Parser::initAnonymousId */
 extern db_member Fast_Parser_initAnonymousId_o;
 
-/* ::hyve::Fast::Parser::initDeclareStaged(Fast::Expression expr) */
+/* ::cortex::Fast::Parser::initDeclareStaged(Fast::Expression expr) */
 extern db_method Fast_Parser_initDeclareStaged_o;
 
-/* ::hyve::Fast::Parser::initDynamic */
+/* ::cortex::Fast::Parser::initDynamic */
 extern db_member Fast_Parser_initDynamic_o;
 
-/* ::hyve::Fast::Parser::initializerCount */
+/* ::cortex::Fast::Parser::initializerCount */
 extern db_member Fast_Parser_initializerCount_o;
 
-/* ::hyve::Fast::Parser::initializers */
+/* ::cortex::Fast::Parser::initializers */
 extern db_member Fast_Parser_initializers_o;
 
-/* ::hyve::Fast::Parser::initKeyValuePop() */
+/* ::cortex::Fast::Parser::initKeyValuePop() */
 extern db_method Fast_Parser_initKeyValuePop_o;
 
-/* ::hyve::Fast::Parser::initKeyValuePush() */
+/* ::cortex::Fast::Parser::initKeyValuePush() */
 extern db_method Fast_Parser_initKeyValuePush_o;
 
-/* ::hyve::Fast::Parser::initKeyValueSet(Fast::Expression expr) */
+/* ::cortex::Fast::Parser::initKeyValueSet(Fast::Expression expr) */
 extern db_method Fast_Parser_initKeyValueSet_o;
 
-/* ::hyve::Fast::Parser::initMember(lang::string member) */
+/* ::cortex::Fast::Parser::initMember(lang::string member) */
 extern db_method Fast_Parser_initMember_o;
 
-/* ::hyve::Fast::Parser::initPop() */
+/* ::cortex::Fast::Parser::initPop() */
 extern db_method Fast_Parser_initPop_o;
 
-/* ::hyve::Fast::Parser::initPush() */
+/* ::cortex::Fast::Parser::initPush() */
 extern db_method Fast_Parser_initPush_o;
 
-/* ::hyve::Fast::Parser::initPushExpression() */
+/* ::cortex::Fast::Parser::initPushExpression() */
 extern db_method Fast_Parser_initPushExpression_o;
 
-/* ::hyve::Fast::Parser::initPushIdentifier(Expression type) */
+/* ::cortex::Fast::Parser::initPushIdentifier(Expression type) */
 extern db_method Fast_Parser_initPushIdentifier_o;
 
-/* ::hyve::Fast::Parser::initPushStatic() */
+/* ::cortex::Fast::Parser::initPushStatic() */
 extern db_method Fast_Parser_initPushStatic_o;
 
-/* ::hyve::Fast::Parser::initStage(lang::string id,bool found) */
+/* ::cortex::Fast::Parser::initStage(lang::string id,bool found) */
 extern db_method Fast_Parser_initStage_o;
 
-/* ::hyve::Fast::Parser::initValue(Expression expr) */
+/* ::cortex::Fast::Parser::initValue(Expression expr) */
 extern db_method Fast_Parser_initValue_o;
 
-/* ::hyve::Fast::Parser::isAbortSet() */
+/* ::cortex::Fast::Parser::isAbortSet() */
 extern db_method Fast_Parser_isAbortSet_o;
 
-/* ::hyve::Fast::Parser::isErrSet() */
+/* ::cortex::Fast::Parser::isErrSet() */
 extern db_method Fast_Parser_isErrSet_o;
 
-/* ::hyve::Fast::Parser::isLocal */
+/* ::cortex::Fast::Parser::isLocal */
 extern db_member Fast_Parser_isLocal_o;
 
-/* ::hyve::Fast::Parser::lastFailedResolve */
+/* ::cortex::Fast::Parser::lastFailedResolve */
 extern db_member Fast_Parser_lastFailedResolve_o;
 
-/* ::hyve::Fast::Parser::line */
+/* ::cortex::Fast::Parser::line */
 extern db_member Fast_Parser_line_o;
 
-/* ::hyve::Fast::Parser::lookup(lang::string id,lang::object source) */
+/* ::cortex::Fast::Parser::lookup(lang::string id,lang::object source) */
 extern db_method Fast_Parser_lookup_o;
 
-/* ::hyve::Fast::Parser::lvalue */
+/* ::cortex::Fast::Parser::lvalue */
 extern db_member Fast_Parser_lvalue_o;
 
-/* ::hyve::Fast::Parser::lvalueSp */
+/* ::cortex::Fast::Parser::lvalueSp */
 extern db_member Fast_Parser_lvalueSp_o;
 
-/* ::hyve::Fast::Parser::memberExpr(Fast::Expression lvalue,Fast::Expression rvalue) */
+/* ::cortex::Fast::Parser::memberExpr(Fast::Expression lvalue,Fast::Expression rvalue) */
 extern db_method Fast_Parser_memberExpr_o;
 
-/* ::hyve::Fast::Parser::observerDeclaration(lang::string id,Fast::Expression object,lang::eventMask mask,Fast::Object dispatcher) */
+/* ::cortex::Fast::Parser::observerDeclaration(lang::string id,Fast::Expression object,lang::eventMask mask,Fast::Object dispatcher) */
 extern db_method Fast_Parser_observerDeclaration_o;
 
-/* ::hyve::Fast::Parser::observerPop() */
+/* ::cortex::Fast::Parser::observerPop() */
 extern db_method Fast_Parser_observerPop_o;
 
-/* ::hyve::Fast::Parser::observerPush() */
+/* ::cortex::Fast::Parser::observerPush() */
 extern db_method Fast_Parser_observerPush_o;
 
-/* ::hyve::Fast::Parser::parse() */
+/* ::cortex::Fast::Parser::parse() */
 extern db_method Fast_Parser_parse_o;
 
-/* ::hyve::Fast::Parser::parseExpression(lang::string expr,Fast::Block block,Fast::Variable scope,uint32 line,uint32 column) */
+/* ::cortex::Fast::Parser::parseExpression(lang::string expr,Fast::Block block,Fast::Variable scope,uint32 line,uint32 column) */
 extern db_method Fast_Parser_parseExpression_o;
 
-/* ::hyve::Fast::Parser::parseSingleExpr */
+/* ::cortex::Fast::Parser::parseSingleExpr */
 extern db_member Fast_Parser_parseSingleExpr_o;
 
-/* ::hyve::Fast::Parser::pass */
+/* ::cortex::Fast::Parser::pass */
 extern db_member Fast_Parser_pass_o;
 
-/* ::hyve::Fast::Parser::popComplexType() */
+/* ::cortex::Fast::Parser::popComplexType() */
 extern db_method Fast_Parser_popComplexType_o;
 
-/* ::hyve::Fast::Parser::popLvalue() */
+/* ::cortex::Fast::Parser::popLvalue() */
 extern db_method Fast_Parser_popLvalue_o;
 
-/* ::hyve::Fast::Parser::popScope(Fast::Variable previous) */
+/* ::cortex::Fast::Parser::popScope(Fast::Variable previous) */
 extern db_method Fast_Parser_popScope_o;
 
-/* ::hyve::Fast::Parser::postfixExpr(Fast::Expression lvalue,lang::operatorKind operator) */
+/* ::cortex::Fast::Parser::postfixExpr(Fast::Expression lvalue,lang::operatorKind operator) */
 extern db_method Fast_Parser_postfixExpr_o;
 
-/* ::hyve::Fast::Parser::preprocessed */
+/* ::cortex::Fast::Parser::preprocessed */
 extern db_member Fast_Parser_preprocessed_o;
 
-/* ::hyve::Fast::Parser::pushComplexType(Fast::Expression lvalue) */
+/* ::cortex::Fast::Parser::pushComplexType(Fast::Expression lvalue) */
 extern db_method Fast_Parser_pushComplexType_o;
 
-/* ::hyve::Fast::Parser::pushLvalue(Fast::Expression lvalue,lang::bool isAssignment) */
+/* ::cortex::Fast::Parser::pushLvalue(Fast::Expression lvalue,lang::bool isAssignment) */
 extern db_method Fast_Parser_pushLvalue_o;
 
-/* ::hyve::Fast::Parser::pushReturnAsLvalue(lang::function function) */
+/* ::cortex::Fast::Parser::pushReturnAsLvalue(lang::function function) */
 extern db_method Fast_Parser_pushReturnAsLvalue_o;
 
-/* ::hyve::Fast::Parser::pushScope() */
+/* ::cortex::Fast::Parser::pushScope() */
 extern db_method Fast_Parser_pushScope_o;
 
-/* ::hyve::Fast::Parser::reset() */
+/* ::cortex::Fast::Parser::reset() */
 extern db_method Fast_Parser_reset_o;
 
-/* ::hyve::Fast::Parser::scope */
+/* ::cortex::Fast::Parser::scope */
 extern db_member Fast_Parser_scope_o;
 
-/* ::hyve::Fast::Parser::singleExpr */
+/* ::cortex::Fast::Parser::singleExpr */
 extern db_member Fast_Parser_singleExpr_o;
 
-/* ::hyve::Fast::Parser::source */
+/* ::cortex::Fast::Parser::source */
 extern db_member Fast_Parser_source_o;
 
-/* ::hyve::Fast::Parser::staged */
+/* ::cortex::Fast::Parser::staged */
 extern db_member Fast_Parser_staged_o;
 
-/* ::hyve::Fast::Parser::stagedCount */
+/* ::cortex::Fast::Parser::stagedCount */
 extern db_member Fast_Parser_stagedCount_o;
 
-/* ::hyve::Fast::Parser::stagedId */
+/* ::cortex::Fast::Parser::stagedId */
 extern db_struct Fast_Parser_stagedId_o;
 
-/* ::hyve::Fast::Parser::stagedId::column */
+/* ::cortex::Fast::Parser::stagedId::column */
 extern db_member Fast_Parser_stagedId_column_o;
 
-/* ::hyve::Fast::Parser::stagedId::found */
+/* ::cortex::Fast::Parser::stagedId::found */
 extern db_member Fast_Parser_stagedId_found_o;
 
-/* ::hyve::Fast::Parser::stagedId::line */
+/* ::cortex::Fast::Parser::stagedId::line */
 extern db_member Fast_Parser_stagedId_line_o;
 
-/* ::hyve::Fast::Parser::stagedId::name */
+/* ::cortex::Fast::Parser::stagedId::name */
 extern db_member Fast_Parser_stagedId_name_o;
 
-/* ::hyve::Fast::Parser::stagingAllowed */
+/* ::cortex::Fast::Parser::stagingAllowed */
 extern db_member Fast_Parser_stagingAllowed_o;
 
-/* ::hyve::Fast::Parser::ternaryExpr(Fast::Expression cond,Fast::Expression iftrue,Fast::Expression iffalse) */
+/* ::cortex::Fast::Parser::ternaryExpr(Fast::Expression cond,Fast::Expression iftrue,Fast::Expression iffalse) */
 extern db_method Fast_Parser_ternaryExpr_o;
 
-/* ::hyve::Fast::Parser::token */
+/* ::cortex::Fast::Parser::token */
 extern db_member Fast_Parser_token_o;
 
-/* ::hyve::Fast::Parser::unaryExpr(Fast::Expression lvalue,lang::operatorKind operator) */
+/* ::cortex::Fast::Parser::unaryExpr(Fast::Expression lvalue,lang::operatorKind operator) */
 extern db_method Fast_Parser_unaryExpr_o;
 
-/* ::hyve::Fast::Parser::updateStatement(Fast::Expression expr,Fast::Block block) */
+/* ::cortex::Fast::Parser::updateStatement(Fast::Expression expr,Fast::Block block) */
 extern db_method Fast_Parser_updateStatement_o;
 
-/* ::hyve::Fast::Parser::variableCount */
+/* ::cortex::Fast::Parser::variableCount */
 extern db_member Fast_Parser_variableCount_o;
 
-/* ::hyve::Fast::Parser::variablePushed */
+/* ::cortex::Fast::Parser::variablePushed */
 extern db_member Fast_Parser_variablePushed_o;
 
-/* ::hyve::Fast::Parser::variables */
+/* ::cortex::Fast::Parser::variables */
 extern db_member Fast_Parser_variables_o;
 
-/* ::hyve::Fast::Parser::variablesInitialized */
+/* ::cortex::Fast::Parser::variablesInitialized */
 extern db_member Fast_Parser_variablesInitialized_o;
 
-/* ::hyve::Fast::Parser::waitExpr(list{Fast::Expression} exprList,Fast::Expression timeout) */
+/* ::cortex::Fast::Parser::waitExpr(list{Fast::Expression} exprList,Fast::Expression timeout) */
 extern db_method Fast_Parser_waitExpr_o;
 
-/* ::hyve::Fast::Parser::warnings */
+/* ::cortex::Fast::Parser::warnings */
 extern db_member Fast_Parser_warnings_o;
 
-/* ::hyve::Fast::Parser::whileStatement(Fast::Expression condition,Fast::Block trueBranch,lang::bool isUntil) */
+/* ::cortex::Fast::Parser::whileStatement(Fast::Expression condition,Fast::Block trueBranch,lang::bool isUntil) */
 extern db_method Fast_Parser_whileStatement_o;
 
-/* ::hyve::Fast::ParserDeclaration */
+/* ::cortex::Fast::ParserDeclaration */
 extern db_struct Fast_ParserDeclaration_o;
 
-/* ::hyve::Fast::ParserDeclaration::name */
+/* ::cortex::Fast::ParserDeclaration::name */
 extern db_member Fast_ParserDeclaration_name_o;
 
-/* ::hyve::Fast::ParserDeclaration::variable */
+/* ::cortex::Fast::ParserDeclaration::variable */
 extern db_member Fast_ParserDeclaration_variable_o;
 
-/* ::hyve::Fast::ParserDeclarationSeq */
+/* ::cortex::Fast::ParserDeclarationSeq */
 extern db_typedef Fast_ParserDeclarationSeq_o;
 
-/* ::hyve::Fast::ParserNew */
+/* ::cortex::Fast::ParserNew */
 extern db_struct Fast_ParserNew_o;
 
-/* ::hyve::Fast::ParserNew::attr */
+/* ::cortex::Fast::ParserNew::attr */
 extern db_member Fast_ParserNew_attr_o;
 
-/* ::hyve::Fast::ParserNew::kind */
+/* ::cortex::Fast::ParserNew::kind */
 extern db_member Fast_ParserNew_kind_o;
 
-/* ::hyve::Fast::ParserNew::name */
+/* ::cortex::Fast::ParserNew::name */
 extern db_member Fast_ParserNew_name_o;
 
-/* ::hyve::Fast::ParserNew::parent */
+/* ::cortex::Fast::ParserNew::parent */
 extern db_member Fast_ParserNew_parent_o;
 
-/* ::hyve::Fast::PostfixExpr */
+/* ::cortex::Fast::PostfixExpr */
 extern db_class Fast_PostfixExpr_o;
 
-/* ::hyve::Fast::PostfixExpr::construct(Fast::PostfixExpr object) */
+/* ::cortex::Fast::PostfixExpr::construct(Fast::PostfixExpr object) */
 extern db_callback Fast_PostfixExpr_construct_o;
 
-/* ::hyve::Fast::PostfixExpr::lvalue */
+/* ::cortex::Fast::PostfixExpr::lvalue */
 extern db_member Fast_PostfixExpr_lvalue_o;
 
-/* ::hyve::Fast::PostfixExpr::operator */
+/* ::cortex::Fast::PostfixExpr::operator */
 extern db_member Fast_PostfixExpr_operator_o;
 
-/* ::hyve::Fast::PostfixExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::PostfixExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 extern db_virtual Fast_PostfixExpr_toIc_o;
 
-/* ::hyve::Fast::SignedInteger */
+/* ::cortex::Fast::SignedInteger */
 extern db_class Fast_SignedInteger_o;
 
-/* ::hyve::Fast::SignedInteger::init(SignedInteger object) */
+/* ::cortex::Fast::SignedInteger::init(SignedInteger object) */
 extern db_callback Fast_SignedInteger_init_o;
 
-/* ::hyve::Fast::SignedInteger::serialize(lang::type dstType,lang::word dst) */
+/* ::cortex::Fast::SignedInteger::serialize(lang::type dstType,lang::word dst) */
 extern db_method Fast_SignedInteger_serialize_o;
 
-/* ::hyve::Fast::SignedInteger::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::SignedInteger::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 extern db_virtual Fast_SignedInteger_toIc_o;
 
-/* ::hyve::Fast::SignedInteger::value */
+/* ::cortex::Fast::SignedInteger::value */
 extern db_member Fast_SignedInteger_value_o;
 
-/* ::hyve::Fast::StaticInitializer */
+/* ::cortex::Fast::StaticInitializer */
 extern db_class Fast_StaticInitializer_o;
 
-/* ::hyve::Fast::StaticInitializer::construct(StaticInitializer object) */
+/* ::cortex::Fast::StaticInitializer::construct(StaticInitializer object) */
 extern db_callback Fast_StaticInitializer_construct_o;
 
-/* ::hyve::Fast::StaticInitializer::define() */
+/* ::cortex::Fast::StaticInitializer::define() */
 extern db_method Fast_StaticInitializer_define_o;
 
-/* ::hyve::Fast::StaticInitializer::frames */
+/* ::cortex::Fast::StaticInitializer::frames */
 extern db_member Fast_StaticInitializer_frames_o;
 
-/* ::hyve::Fast::StaticInitializer::push() */
+/* ::cortex::Fast::StaticInitializer::push() */
 extern db_method Fast_StaticInitializer_push_o;
 
-/* ::hyve::Fast::StaticInitializer::value(Expression v) */
+/* ::cortex::Fast::StaticInitializer::value(Expression v) */
 extern db_method Fast_StaticInitializer_value_o;
 
-/* ::hyve::Fast::StaticInitializerFrame */
+/* ::cortex::Fast::StaticInitializerFrame */
 extern db_struct Fast_StaticInitializerFrame_o;
 
-/* ::hyve::Fast::StaticInitializerFrame::keyPtr */
+/* ::cortex::Fast::StaticInitializerFrame::keyPtr */
 extern db_member Fast_StaticInitializerFrame_keyPtr_o;
 
-/* ::hyve::Fast::StaticInitializerFrame::ptr */
+/* ::cortex::Fast::StaticInitializerFrame::ptr */
 extern db_member Fast_StaticInitializerFrame_ptr_o;
 
-/* ::hyve::Fast::String */
+/* ::cortex::Fast::String */
 extern db_class Fast_String_o;
 
-/* ::hyve::Fast::String::block */
+/* ::cortex::Fast::String::block */
 extern db_member Fast_String_block_o;
 
-/* ::hyve::Fast::String::construct(String object) */
+/* ::cortex::Fast::String::construct(String object) */
 extern db_callback Fast_String_construct_o;
 
-/* ::hyve::Fast::String::elements */
+/* ::cortex::Fast::String::elements */
 extern db_member Fast_String_elements_o;
 
-/* ::hyve::Fast::String::getValue() */
+/* ::cortex::Fast::String::getValue() */
 extern db_method Fast_String_getValue_o;
 
-/* ::hyve::Fast::String::init(String object) */
+/* ::cortex::Fast::String::init(String object) */
 extern db_callback Fast_String_init_o;
 
-/* ::hyve::Fast::String::scope */
+/* ::cortex::Fast::String::scope */
 extern db_member Fast_String_scope_o;
 
-/* ::hyve::Fast::String::serialize(lang::type dstType,lang::word dst) */
+/* ::cortex::Fast::String::serialize(lang::type dstType,lang::word dst) */
 extern db_method Fast_String_serialize_o;
 
-/* ::hyve::Fast::String::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::String::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 extern db_virtual Fast_String_toIc_o;
 
-/* ::hyve::Fast::String::value */
+/* ::cortex::Fast::String::value */
 extern db_member Fast_String_value_o;
 
-/* ::hyve::Fast::Template */
+/* ::cortex::Fast::Template */
 extern db_class Fast_Template_o;
 
-/* ::hyve::Fast::Template::construct(Template object) */
+/* ::cortex::Fast::Template::construct(Template object) */
 extern db_callback Fast_Template_construct_o;
 
-/* ::hyve::Fast::TernaryExpr */
+/* ::cortex::Fast::TernaryExpr */
 extern db_class Fast_TernaryExpr_o;
 
-/* ::hyve::Fast::TernaryExpr::condition */
+/* ::cortex::Fast::TernaryExpr::condition */
 extern db_member Fast_TernaryExpr_condition_o;
 
-/* ::hyve::Fast::TernaryExpr::construct(Fast::TernaryExpr object) */
+/* ::cortex::Fast::TernaryExpr::construct(Fast::TernaryExpr object) */
 extern db_callback Fast_TernaryExpr_construct_o;
 
-/* ::hyve::Fast::TernaryExpr::hasSideEffects() */
+/* ::cortex::Fast::TernaryExpr::hasSideEffects() */
 extern db_virtual Fast_TernaryExpr_hasSideEffects_o;
 
-/* ::hyve::Fast::TernaryExpr::ifFalse */
+/* ::cortex::Fast::TernaryExpr::ifFalse */
 extern db_member Fast_TernaryExpr_ifFalse_o;
 
-/* ::hyve::Fast::TernaryExpr::ifFalseExpr */
+/* ::cortex::Fast::TernaryExpr::ifFalseExpr */
 extern db_member Fast_TernaryExpr_ifFalseExpr_o;
 
-/* ::hyve::Fast::TernaryExpr::ifstmt */
+/* ::cortex::Fast::TernaryExpr::ifstmt */
 extern db_member Fast_TernaryExpr_ifstmt_o;
 
-/* ::hyve::Fast::TernaryExpr::ifTrue */
+/* ::cortex::Fast::TernaryExpr::ifTrue */
 extern db_member Fast_TernaryExpr_ifTrue_o;
 
-/* ::hyve::Fast::TernaryExpr::ifTrueExpr */
+/* ::cortex::Fast::TernaryExpr::ifTrueExpr */
 extern db_member Fast_TernaryExpr_ifTrueExpr_o;
 
-/* ::hyve::Fast::TernaryExpr::result */
+/* ::cortex::Fast::TernaryExpr::result */
 extern db_member Fast_TernaryExpr_result_o;
 
-/* ::hyve::Fast::TernaryExpr::setOperator(lang::operatorKind kind) */
+/* ::cortex::Fast::TernaryExpr::setOperator(lang::operatorKind kind) */
 extern db_method Fast_TernaryExpr_setOperator_o;
 
-/* ::hyve::Fast::TernaryExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::TernaryExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 extern db_virtual Fast_TernaryExpr_toIc_o;
 
-/* ::hyve::Fast::UnaryExpr */
+/* ::cortex::Fast::UnaryExpr */
 extern db_class Fast_UnaryExpr_o;
 
-/* ::hyve::Fast::UnaryExpr::construct(Fast::UnaryExpr object) */
+/* ::cortex::Fast::UnaryExpr::construct(Fast::UnaryExpr object) */
 extern db_callback Fast_UnaryExpr_construct_o;
 
-/* ::hyve::Fast::UnaryExpr::hasSideEffects() */
+/* ::cortex::Fast::UnaryExpr::hasSideEffects() */
 extern db_virtual Fast_UnaryExpr_hasSideEffects_o;
 
-/* ::hyve::Fast::UnaryExpr::lvalue */
+/* ::cortex::Fast::UnaryExpr::lvalue */
 extern db_member Fast_UnaryExpr_lvalue_o;
 
-/* ::hyve::Fast::UnaryExpr::operator */
+/* ::cortex::Fast::UnaryExpr::operator */
 extern db_member Fast_UnaryExpr_operator_o;
 
-/* ::hyve::Fast::UnaryExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::UnaryExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 extern db_virtual Fast_UnaryExpr_toIc_o;
 
-/* ::hyve::Fast::Update */
+/* ::cortex::Fast::Update */
 extern db_class Fast_Update_o;
 
-/* ::hyve::Fast::Update::block */
+/* ::cortex::Fast::Update::block */
 extern db_member Fast_Update_block_o;
 
-/* ::hyve::Fast::Update::construct(Update object) */
+/* ::cortex::Fast::Update::construct(Update object) */
 extern db_callback Fast_Update_construct_o;
 
-/* ::hyve::Fast::Update::exprList */
+/* ::cortex::Fast::Update::exprList */
 extern db_member Fast_Update_exprList_o;
 
-/* ::hyve::Fast::Update::from */
+/* ::cortex::Fast::Update::from */
 extern db_member Fast_Update_from_o;
 
-/* ::hyve::Fast::Update::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Update::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 extern db_virtual Fast_Update_toIc_o;
 
-/* ::hyve::Fast::valueKind */
+/* ::cortex::Fast::valueKind */
 extern db_enum Fast_valueKind_o;
 
-/* ::hyve::Fast::valueKind::Boolean */
+/* ::cortex::Fast::valueKind::Boolean */
 extern db_constant (*Fast_valueKind_Boolean_o);
 
-/* ::hyve::Fast::valueKind::Character */
+/* ::cortex::Fast::valueKind::Character */
 extern db_constant (*Fast_valueKind_Character_o);
 
-/* ::hyve::Fast::valueKind::Enumerated */
+/* ::cortex::Fast::valueKind::Enumerated */
 extern db_constant (*Fast_valueKind_Enumerated_o);
 
-/* ::hyve::Fast::valueKind::FloatingPoint */
+/* ::cortex::Fast::valueKind::FloatingPoint */
 extern db_constant (*Fast_valueKind_FloatingPoint_o);
 
-/* ::hyve::Fast::valueKind::Integer */
+/* ::cortex::Fast::valueKind::Integer */
 extern db_constant (*Fast_valueKind_Integer_o);
 
-/* ::hyve::Fast::valueKind::Null */
+/* ::cortex::Fast::valueKind::Null */
 extern db_constant (*Fast_valueKind_Null_o);
 
-/* ::hyve::Fast::valueKind::Reference */
+/* ::cortex::Fast::valueKind::Reference */
 extern db_constant (*Fast_valueKind_Reference_o);
 
-/* ::hyve::Fast::valueKind::SignedInteger */
+/* ::cortex::Fast::valueKind::SignedInteger */
 extern db_constant (*Fast_valueKind_SignedInteger_o);
 
-/* ::hyve::Fast::valueKind::String */
+/* ::cortex::Fast::valueKind::String */
 extern db_constant (*Fast_valueKind_String_o);
 
-/* ::hyve::Fast::valueKindFromType(lang::type type) */
+/* ::cortex::Fast::valueKindFromType(lang::type type) */
 extern db_function Fast_valueKindFromType_o;
 
-/* ::hyve::Fast::Variable */
+/* ::cortex::Fast::Variable */
 extern db_class Fast_Variable_o;
 
-/* ::hyve::Fast::Variable::construct(Variable object) */
+/* ::cortex::Fast::Variable::construct(Variable object) */
 extern db_callback Fast_Variable_construct_o;
 
-/* ::hyve::Fast::Variable::kind */
+/* ::cortex::Fast::Variable::kind */
 extern db_member Fast_Variable_kind_o;
 
-/* ::hyve::Fast::variableKind */
+/* ::cortex::Fast::variableKind */
 extern db_enum Fast_variableKind_o;
 
-/* ::hyve::Fast::variableKind::Local */
+/* ::cortex::Fast::variableKind::Local */
 extern db_constant (*Fast_variableKind_Local_o);
 
-/* ::hyve::Fast::variableKind::Object */
+/* ::cortex::Fast::variableKind::Object */
 extern db_constant (*Fast_variableKind_Object_o);
 
-/* ::hyve::Fast::variableKind::Template */
+/* ::cortex::Fast::variableKind::Template */
 extern db_constant (*Fast_variableKind_Template_o);
 
-/* ::hyve::Fast::Wait */
+/* ::cortex::Fast::Wait */
 extern db_class Fast_Wait_o;
 
-/* ::hyve::Fast::Wait::construct(Wait object) */
+/* ::cortex::Fast::Wait::construct(Wait object) */
 extern db_callback Fast_Wait_construct_o;
 
-/* ::hyve::Fast::Wait::exprList */
+/* ::cortex::Fast::Wait::exprList */
 extern db_member Fast_Wait_exprList_o;
 
-/* ::hyve::Fast::Wait::timeout */
+/* ::cortex::Fast::Wait::timeout */
 extern db_member Fast_Wait_timeout_o;
 
-/* ::hyve::Fast::Wait::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Wait::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 extern db_virtual Fast_Wait_toIc_o;
 
-/* ::hyve::Fast::While */
+/* ::cortex::Fast::While */
 extern db_class Fast_While_o;
 
-/* ::hyve::Fast::While::condition */
+/* ::cortex::Fast::While::condition */
 extern db_member Fast_While_condition_o;
 
-/* ::hyve::Fast::While::construct(While object) */
+/* ::cortex::Fast::While::construct(While object) */
 extern db_callback Fast_While_construct_o;
 
-/* ::hyve::Fast::While::isUntil */
+/* ::cortex::Fast::While::isUntil */
 extern db_member Fast_While_isUntil_o;
 
-/* ::hyve::Fast::While::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::While::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 extern db_virtual Fast_While_toIc_o;
 
-/* ::hyve::Fast::While::trueBranch */
+/* ::cortex::Fast::While::trueBranch */
 extern db_member Fast_While_trueBranch_o;
 
 int Fast_load(void);

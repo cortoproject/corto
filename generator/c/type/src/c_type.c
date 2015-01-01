@@ -507,7 +507,7 @@ static g_file c_typeHeaderFileOpen(db_generator g) {
 	g_fileWrite(result, " */\n\n");
 	g_fileWrite(result, "#ifndef %s__type_H\n", g_getName(g));
 	g_fileWrite(result, "#define %s__type_H\n\n", g_getName(g));
-	g_fileWrite(result, "#include \"hyve.h\"\n\n");
+	g_fileWrite(result, "#include \"cortex.h\"\n\n");
 
 	/* Include imports */
 	if (g->imports) {
@@ -621,7 +621,7 @@ static int c_typeDefine(db_object o, void* userData) {
 }
 
 /* Generator main */
-db_int16 hyve_genMain(db_generator g) {
+db_int16 cortex_genMain(db_generator g) {
 	c_typeWalk_t walkData;
 
     /* Resolve imports so include files for external can be added. */
@@ -636,9 +636,9 @@ db_int16 hyve_genMain(db_generator g) {
 	walkData.g = g;
 	walkData.prefixComma = FALSE;
 
-	/* Default prefixes for hyve namespaces */
-	gen_parse(g, hyve_o, FALSE, FALSE, "");
-	gen_parse(g, hyve_lang_o, FALSE, FALSE, "db");
+	/* Default prefixes for cortex namespaces */
+	gen_parse(g, cortex_o, FALSE, FALSE, "");
+	gen_parse(g, cortex_lang_o, FALSE, FALSE, "db");
 
 	/* Walk classes, print cast-macro's */
 	g_fileWrite(walkData.header, "\n");

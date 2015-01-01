@@ -6,7 +6,7 @@
 #ifndef db_int_H
 #define db_int_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "db_primitive.h"
 #include "db__type.h"
 
@@ -18,7 +18,7 @@
 extern "C" {
 #endif
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::int::init(lang::int object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::int::init(lang::int object) */
 db_int16 db_int_init(db_int object);
 
 #ifdef __cplusplus

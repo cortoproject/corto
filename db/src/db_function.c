@@ -9,9 +9,9 @@
 #include "db.h"
 #include "db__meta.h"
 
-/* callback ::hyve::lang::procedure::bind(lang::object object) -> ::hyve::lang::function::bind(lang::function object) */
+/* callback ::cortex::lang::procedure::bind(lang::object object) -> ::cortex::lang::function::bind(lang::function object) */
 db_int16 db_function_bind(db_function object) {
-/* $begin(::hyve::lang::function::bind) */
+/* $begin(::cortex::lang::function::bind) */
 	/* Count the size based on the parameters and store parameters in slots */
 	if (!object->size) {
 	    db_uint32 i;
@@ -44,8 +44,8 @@ db_int16 db_function_bind(db_function object) {
 /* $end */
 }
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::function::init(lang::function object) */
-/* $header(::hyve::lang::function::init) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::function::init(lang::function object) */
+/* $header(::cortex::lang::function::init) */
 static db_int16 db_function_parseArguments(db_function object) {
     object->parameters = db_function_stringToParameterSeq(db_nameof(object), db_parentof(object));
     return 0;
@@ -97,7 +97,7 @@ finish:
 }
 /* $end */
 db_int16 db_function_init(db_function object) {
-/* $begin(::hyve::lang::function::init) */
+/* $begin(::cortex::lang::function::init) */
 	db_functionLookup_t walkData;
     db_ll scope;
 	DB_UNUSED(object);
@@ -125,9 +125,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::lang::function::stringToParameterSeq(lang::string name,lang::object scope) */
+/* ::cortex::lang::function::stringToParameterSeq(lang::string name,lang::object scope) */
 db_parameterSeq db_function_stringToParameterSeq(db_string name, db_object scope) {
-/* $begin(::hyve::lang::function::stringToParameterSeq) */
+/* $begin(::cortex::lang::function::stringToParameterSeq) */
     db_parameterSeq result = {0, NULL};
 
     db_char* ptr;
@@ -191,9 +191,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::lang::function::unbind(lang::function object) */
+/* ::cortex::lang::function::unbind(lang::function object) */
 db_void db_function_unbind(db_function object) {
-/* $begin(::hyve::lang::function::unbind) */
+/* $begin(::cortex::lang::function::unbind) */
     db_uint32 i;
 
     db_callDestroy(object);

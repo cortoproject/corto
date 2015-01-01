@@ -9,9 +9,9 @@
 #include "db.h"
 #include "db__meta.h"
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::delegate::init(lang::delegate object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::delegate::init(lang::delegate object) */
 db_int16 db_delegate_init(db_delegate object) {
-/* $begin(::hyve::lang::delegate::init) */
+/* $begin(::cortex::lang::delegate::init) */
     db_object parent;
 
     /* Initialize function */

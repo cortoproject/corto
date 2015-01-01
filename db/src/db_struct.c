@@ -14,16 +14,16 @@
 #include "db__class.h"
 /* $end */
 
-/* ::hyve::lang::struct::castable(lang::type type) */
+/* ::cortex::lang::struct::castable(lang::type type) */
 db_bool db_struct_castable_v(db_struct _this, db_type type) {
-/* $begin(::hyve::lang::struct::castable) */
+/* $begin(::cortex::lang::struct::castable) */
     return db_struct_compatible(_this, type);
 /* $end */
 }
 
-/* ::hyve::lang::struct::compatible(lang::type type) */
+/* ::cortex::lang::struct::compatible(lang::type type) */
 db_bool db_struct_compatible_v(db_struct _this, db_type type) {
-/* $begin(::hyve::lang::struct::compatible) */
+/* $begin(::cortex::lang::struct::compatible) */
     db_bool result;
 
     db_assert(db_class_instanceof(db_struct_o, _this), "struct::compatible called on non-struct object.");
@@ -50,9 +50,9 @@ db_bool db_struct_compatible_v(db_struct _this, db_type type) {
 /* $end */
 }
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::lang::struct::construct(lang::struct object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::struct::construct(lang::struct object) */
 db_int16 db_struct_construct(db_struct object) {
-/* $begin(::hyve::lang::struct::construct) */
+/* $begin(::cortex::lang::struct::construct) */
     db_struct base;
     db_uint16 alignment;
     db_uint32 size;
@@ -115,9 +115,9 @@ error:
 /* $end */
 }
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::struct::init(lang::struct object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::struct::init(lang::struct object) */
 db_int16 db_struct_init(db_struct object) {
-/* $begin(::hyve::lang::struct::init) */
+/* $begin(::cortex::lang::struct::init) */
     /* If not bootstrapping, set baseAccess to GLOBAL | PUBLIC */
     if (db_checkState(db_type_o, DB_DEFINED)) {
         object->baseAccess = DB_GLOBAL;
@@ -136,9 +136,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::lang::struct::resolveMember(lang::string name) */
+/* ::cortex::lang::struct::resolveMember(lang::string name) */
 db_member db_struct_resolveMember_v(db_struct _this, db_string name) {
-/* $begin(::hyve::lang::struct::resolveMember) */
+/* $begin(::cortex::lang::struct::resolveMember) */
     db_interface base;
     db_member m;
 

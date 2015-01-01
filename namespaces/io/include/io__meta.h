@@ -7,7 +7,7 @@
 #ifndef io_META_H
 #define io_META_H
 
-#include "hyve.h"
+#include "cortex.h"
 
 #include "io__type.h"
 
@@ -15,88 +15,88 @@
 extern "C" {
 #endif
 
-/* ::hyve */
+/* ::cortex */
 extern db_object _o;
 
-/* ::hyve::io */
+/* ::cortex::io */
 extern db_void (*io_o);
 
-/* ::hyve::io::err */
+/* ::cortex::io::err */
 extern io_file io_err_o;
 
-/* ::hyve::io::file */
+/* ::cortex::io::file */
 extern db_class io_file_o;
 
-/* ::hyve::io::file::binary */
+/* ::cortex::io::file::binary */
 extern db_member io_file_binary_o;
 
-/* ::hyve::io::file::construct(::hyve::io::file object) */
+/* ::cortex::io::file::construct(::cortex::io::file object) */
 extern db_callback io_file_construct_o;
 
-/* ::hyve::io::file::destruct(::hyve::io::file object) */
+/* ::cortex::io::file::destruct(::cortex::io::file object) */
 extern db_callback io_file_destruct_o;
 
-/* ::hyve::io::file::flush() */
+/* ::cortex::io::file::flush() */
 extern db_method io_file_flush_o;
 
-/* ::hyve::io::file::handle */
+/* ::cortex::io::file::handle */
 extern db_member io_file_handle_o;
 
-/* ::hyve::io::file::mode */
+/* ::cortex::io::file::mode */
 extern db_member io_file_mode_o;
 
-/* ::hyve::io::file::name */
+/* ::cortex::io::file::name */
 extern db_member io_file_name_o;
 
-/* ::hyve::io::file::read(::hyve::lang::uint32 bytes) */
+/* ::cortex::io::file::read(::cortex::lang::uint32 bytes) */
 extern db_method io_file_read_o;
 
-/* ::hyve::io::file::readAll() */
+/* ::cortex::io::file::readAll() */
 extern db_method io_file_readAll_o;
 
-/* ::hyve::io::file::readLn() */
+/* ::cortex::io::file::readLn() */
 extern db_method io_file_readLn_o;
 
-/* ::hyve::io::file::readText() */
+/* ::cortex::io::file::readText() */
 extern db_method io_file_readText_o;
 
-/* ::hyve::io::file::write(::hyve::lang::sequence{::hyve::lang::octet,0} data) */
+/* ::cortex::io::file::write(::cortex::lang::sequence{::cortex::lang::octet,0} data) */
 extern db_method io_file_write_o;
 
-/* ::hyve::io::file::writeText(::hyve::lang::string txt) */
+/* ::cortex::io::file::writeText(::cortex::lang::string txt) */
 extern db_method io_file_writeText_o;
 
-/* ::hyve::io::fileMode */
+/* ::cortex::io::fileMode */
 extern db_enum io_fileMode_o;
 
-/* ::hyve::io::fileMode::Append */
+/* ::cortex::io::fileMode::Append */
 extern db_constant (*io_fileMode_Append_o);
 
-/* ::hyve::io::fileMode::Read */
+/* ::cortex::io::fileMode::Read */
 extern db_constant (*io_fileMode_Read_o);
 
-/* ::hyve::io::fileMode::ReadAppend */
+/* ::cortex::io::fileMode::ReadAppend */
 extern db_constant (*io_fileMode_ReadAppend_o);
 
-/* ::hyve::io::fileMode::ReadWrite */
+/* ::cortex::io::fileMode::ReadWrite */
 extern db_constant (*io_fileMode_ReadWrite_o);
 
-/* ::hyve::io::fileMode::Write */
+/* ::cortex::io::fileMode::Write */
 extern db_constant (*io_fileMode_Write_o);
 
-/* ::hyve::io::in */
+/* ::cortex::io::in */
 extern io_file io_in_o;
 
-/* ::hyve::io::out */
+/* ::cortex::io::out */
 extern io_file io_out_o;
 
-/* ::hyve::io::print(::hyve::lang::string str) */
+/* ::cortex::io::print(::cortex::lang::string str) */
 extern db_function io_print_o;
 
-/* ::hyve::io::println(::hyve::lang::string str) */
+/* ::cortex::io::println(::cortex::lang::string str) */
 extern db_function io_println_o;
 
-/* ::hyve::io::readln() */
+/* ::cortex::io::readln() */
 extern db_function io_readln_o;
 
 int io_load(void);

@@ -6,7 +6,7 @@
 #ifndef Fast_Literal_H
 #define Fast_Literal_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "Fast_Expression.h"
 #include "Fast__type.h"
 
@@ -18,13 +18,13 @@
 extern "C" {
 #endif
 
-/* virtual ::hyve::Fast::Literal::getValue() */
+/* virtual ::cortex::Fast::Literal::getValue() */
 db_word Fast_Literal_getValue(Fast_Literal _this);
 
-/* ::hyve::Fast::Literal::getValue() */
+/* ::cortex::Fast::Literal::getValue() */
 db_word Fast_Literal_getValue_v(Fast_Literal _this);
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::Fast::Literal::init(Literal object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::Literal::init(Literal object) */
 db_int16 Fast_Literal_init(Fast_Literal object);
 
 #ifdef __cplusplus

@@ -7,7 +7,7 @@
 #ifndef Fast_Declaration_H
 #define Fast_Declaration_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "Fast_Expression.h"
 #include "Fast__type.h"
 
@@ -15,7 +15,7 @@
 extern "C" {
 #endif
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::Fast::Declaration::init(Declaration object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::Declaration::init(Declaration object) */
 db_int16 Fast_Declaration_init(Fast_Declaration object);
 
 #ifdef __cplusplus

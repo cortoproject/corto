@@ -1,6 +1,6 @@
 
 // Operating system facilities
-object hyve::
+object cortex::
 	void os::
 		// sleep
 		void sleep(uint32 sec, uint32 nsec)

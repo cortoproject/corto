@@ -108,9 +108,9 @@ db_icDerefMode Fast_Expression_getDerefMode(Fast_Expression _this, Fast_Expressi
 
 /* $end */
 
-/* ::hyve::Fast::Expression::cast(lang::type type) */
+/* ::cortex::Fast::Expression::cast(lang::type type) */
 Fast_Expression Fast_Expression_cast(Fast_Expression _this, db_type type) {
-/* $begin(::hyve::Fast::Expression::cast) */
+/* $begin(::cortex::Fast::Expression::cast) */
 	db_type exprType;
 	Fast_Expression result = NULL;
 	db_bool castRequired = TRUE;
@@ -301,9 +301,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Expression::cleanList(list{Expression} list) */
+/* ::cortex::Fast::Expression::cleanList(list{Expression} list) */
 void Fast_Expression_cleanList(Fast_Expression_list list) {
-/* $begin(::hyve::Fast::Expression::cleanList) */
+/* $begin(::cortex::Fast::Expression::cleanList) */
     if (list) {
         db_iter iter = db_llIter(list);
         while(db_iterHasNext(&iter)) {
@@ -314,17 +314,17 @@ void Fast_Expression_cleanList(Fast_Expression_list list) {
 /* $end */
 }
 
-/* ::hyve::Fast::Expression::fold() */
+/* ::cortex::Fast::Expression::fold() */
 Fast_Expression Fast_Expression_fold_v(Fast_Expression _this) {
-/* $begin(::hyve::Fast::Expression::fold) */
+/* $begin(::cortex::Fast::Expression::fold) */
 	DB_UNUSED(_this);
     return _this;
 /* $end */
 }
 
-/* ::hyve::Fast::Expression::fromList(list{Expression} list) */
+/* ::cortex::Fast::Expression::fromList(list{Expression} list) */
 Fast_Expression Fast_Expression_fromList(Fast_Expression_list list) {
-/* $begin(::hyve::Fast::Expression::fromList) */
+/* $begin(::cortex::Fast::Expression::fromList) */
     Fast_Expression result = NULL;
 
     /* Convert list to comma expression */
@@ -352,9 +352,9 @@ Fast_Expression Fast_Expression_fromList(Fast_Expression_list list) {
 /* $end */
 }
 
-/* ::hyve::Fast::Expression::getType() */
+/* ::cortex::Fast::Expression::getType() */
 db_type Fast_Expression_getType(Fast_Expression _this) {
-/* $begin(::hyve::Fast::Expression::getType) */
+/* $begin(::cortex::Fast::Expression::getType) */
 	db_type result = NULL;
 	if (_this->type && (_this->type->kind == FAST_Object)) {
 		result = Fast_ObjectBase(_this->type)->value;
@@ -363,9 +363,9 @@ db_type Fast_Expression_getType(Fast_Expression _this) {
 /* $end */
 }
 
-/* ::hyve::Fast::Expression::getType_expr(Expression target) */
+/* ::cortex::Fast::Expression::getType_expr(Expression target) */
 db_type Fast_Expression_getType_expr(Fast_Expression _this, Fast_Expression target) {
-/* $begin(::hyve::Fast::Expression::getType_expr) */
+/* $begin(::cortex::Fast::Expression::getType_expr) */
 	db_type type,result;
 
 	result = Fast_Expression_getType(_this);
@@ -385,9 +385,9 @@ db_type Fast_Expression_getType_expr(Fast_Expression _this, Fast_Expression targ
 /* $end */
 }
 
-/* ::hyve::Fast::Expression::getType_type(lang::type target) */
+/* ::cortex::Fast::Expression::getType_type(lang::type target) */
 db_type Fast_Expression_getType_type(Fast_Expression _this, db_type target) {
-/* $begin(::hyve::Fast::Expression::getType_type) */
+/* $begin(::cortex::Fast::Expression::getType_type) */
 	db_type result=Fast_Expression_getType(_this);
 
 	if (!result) {
@@ -418,32 +418,32 @@ db_type Fast_Expression_getType_type(Fast_Expression _this, db_type target) {
 /* $end */
 }
 
-/* ::hyve::Fast::Expression::getValue() */
+/* ::cortex::Fast::Expression::getValue() */
 db_word Fast_Expression_getValue_v(Fast_Expression _this) {
-/* $begin(::hyve::Fast::Expression::getValue) */
+/* $begin(::cortex::Fast::Expression::getValue) */
 	DB_UNUSED(_this);
     return 0;
 /* $end */
 }
 
-/* ::hyve::Fast::Expression::hasSideEffects() */
+/* ::cortex::Fast::Expression::hasSideEffects() */
 db_bool Fast_Expression_hasSideEffects_v(Fast_Expression _this) {
-/* $begin(::hyve::Fast::Expression::hasSideEffects) */
+/* $begin(::cortex::Fast::Expression::hasSideEffects) */
     DB_UNUSED(_this);
     return FALSE;
 /* $end */
 }
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::Fast::Expression::init(Expression object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::Expression::init(Expression object) */
 db_int16 Fast_Expression_init(Fast_Expression object) {
-/* $begin(::hyve::Fast::Expression::init) */
+/* $begin(::cortex::Fast::Expression::init) */
     return Fast_Node_init((Fast_Node)object);
 /* $end */
 }
 
-/* ::hyve::Fast::Expression::serialize(lang::type dstType,lang::word dst) */
+/* ::cortex::Fast::Expression::serialize(lang::type dstType,lang::word dst) */
 db_int16 Fast_Expression_serialize_v(Fast_Expression _this, db_type dstType, db_word dst) {
-/* $begin(::hyve::Fast::Expression::serialize) */
+/* $begin(::cortex::Fast::Expression::serialize) */
 	DB_UNUSED(_this);
 	DB_UNUSED(dstType);
 	DB_UNUSED(dst);
@@ -452,9 +452,9 @@ db_int16 Fast_Expression_serialize_v(Fast_Expression _this, db_type dstType, db_
 /* $end */
 }
 
-/* ::hyve::Fast::Expression::toList() */
+/* ::cortex::Fast::Expression::toList() */
 Fast_Expression_list Fast_Expression_toList_v(Fast_Expression _this) {
-/* $begin(::hyve::Fast::Expression::toList) */
+/* $begin(::cortex::Fast::Expression::toList) */
     Fast_Node_list result = NULL;
     
     if (_this) {

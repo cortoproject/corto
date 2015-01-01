@@ -10,7 +10,7 @@
 #include "db_loader.h"
 #include "db_util.h"
 
-int hyvemain(int argc, char* argv[]) {
+int cortexmain(int argc, char* argv[]) {
 	DB_UNUSED(argc);
 	DB_UNUSED(argv);
 	db_loaderRegister("xml", db_deserXml, NULL);

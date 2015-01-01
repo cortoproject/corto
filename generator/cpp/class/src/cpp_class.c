@@ -5,7 +5,7 @@
  *      Author: sander
  */
 
-#include "hyve.h"
+#include "cortex.h"
 #include "db_generator.h"
 #include "cpp_common.h"
 #include "cpp_impl.h"
@@ -83,7 +83,7 @@ static g_file cpp_headerOpen(db_interface o, db_generator g) {
         g_fileWrite(result, " */\n\n");
         g_fileWrite(result, "#ifndef %s_H\n", escaped+1);
         g_fileWrite(result, "#define %s_H\n\n", escaped+1);
-        g_fileWrite(result, "#include \"hyve.hpp\"\n");
+        g_fileWrite(result, "#include \"cortex.hpp\"\n");
         g_fileWrite(result, "#include \"%s/_type.hpp\"\n", path);
 
         /* If there is a base-class, include that file too. */
@@ -91,7 +91,7 @@ static g_file cpp_headerOpen(db_interface o, db_generator g) {
             if (db_interface(o)->base) {
             	db_llAppend(headers, db_interface(o)->base);
             } else {
-                g_fileWrite(result, "#include \"hyve/lang/Object.hpp\"\n");
+                g_fileWrite(result, "#include \"cortex/lang/Object.hpp\"\n");
             }
         }
 
@@ -337,8 +337,8 @@ void cpp_constructorScopedDecl(db_generator g, g_file file, db_interface o, db_b
 
 	walkData.memberCache = db_genMemberCacheBuild(o);
 
-	g_fileWrite(file, "%s(::hyve::lang::Object *_parent,\n", g_oid(g, o, id));
-	g_fileWrite(file, "        ::hyve::lang::string _name");
+	g_fileWrite(file, "%s(::cortex::lang::Object *_parent,\n", g_oid(g, o, id));
+	g_fileWrite(file, "        ::cortex::lang::string _name");
 	walkData.g = g;
 	walkData.file = file;
 	walkData.count = 2;
@@ -504,10 +504,10 @@ static int cpp_class(db_interface class, db_generator g) {
             g_fileWrite(file, " : public %s",
                     g_fullOid(g, db_interface(class)->base, base));
         } else {
-       		g_fileWrite(file, " : public ::hyve::lang::Object");
+       		g_fileWrite(file, " : public ::cortex::lang::Object");
         }
     } else {
-   		g_fileWrite(file, " : public ::hyve::lang::Object");
+   		g_fileWrite(file, " : public ::cortex::lang::Object");
     }
 
     /*if (db_class_instanceof(db_class_o, class)) {
@@ -661,7 +661,7 @@ error:
 }
 
 /* Generator main */
-db_int16 hyve_genMain(db_generator g) {
+db_int16 cortex_genMain(db_generator g) {
 
 	g_setIdKind(g, DB_GENERATOR_ID_CLASS_UPPER);
 

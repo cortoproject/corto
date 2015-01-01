@@ -5,11 +5,11 @@ IFLAGS	= -O3 -march=native -xT -unroll -fp-model fast=2 -rcd -no-prec-div
 OFLAGS	= -O3
 CFLAGS	= $(OFLAGS) -g -Wall -Wextra -Wstrict-prototypes -std=c99 -D_GNU_SOURCE -D_XOPEN_SOURCE=500 -D_POSIX_C_SOURCE=199506
 
-TARGET_OBJECT = $(HYVE_HOME)/bin/$(TARGET)
+TARGET_OBJECT = $(CORTEX_HOME)/bin/$(TARGET)
 INCLUDES = $(INCLUDE:%=-I"%")
 OBJECTS = $(SOURCES:%.c=obj/%.o)
 LINKPATH = $(LIBPATH:%=-L%)
-LINK = -L$(HYVE_HOME)/bin $(LINKPATH) $(LIBS:%=-l%)
+LINK = -L$(CORTEX_HOME)/bin $(LINKPATH) $(LIBS:%=-l%)
 
 obj/%.o: src/%.c
 	$(CC) $(CFLAGS) $(INCLUDES) $< -c -o $@
@@ -18,4 +18,4 @@ all: $(TARGET_OBJECT)
 	
 clean: 
 	@rm -f obj/*.o >/dev/null
-	@rm -f $(HYVE_HOME)/bin/$(TARGET) >/dev/null
+	@rm -f $(CORTEX_HOME)/bin/$(TARGET) >/dev/null

@@ -6,7 +6,7 @@
 #ifndef Fast_Node_H
 #define Fast_Node_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "Fast__type.h"
 
 #include "Fast__api.h"
@@ -21,13 +21,13 @@ extern "C" {
 Fast_Expression Fast_Node_optimizeCondition(Fast_Expression condition, db_bool *result, db_bool *inverse);
 /* $end */
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::Fast::Node::init(Node object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::Node::init(Node object) */
 db_int16 Fast_Node_init(Fast_Node object);
 
-/* virtual ::hyve::Fast::Node::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::Node::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Node_toIc(Fast_Node _this, db_icProgram program, db_icStorage storage, db_bool stored);
 
-/* ::hyve::Fast::Node::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Node::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Node_toIc_v(Fast_Node _this, db_icProgram program, db_icStorage storage, db_bool stored);
 
 #ifdef __cplusplus

@@ -14,9 +14,9 @@
 #include "db_function.h"
 /* $end */
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::procedure::init(lang::procedure object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::procedure::init(lang::procedure object) */
 db_int16 db_procedure_init(db_procedure object) {
-/* $begin(::hyve::lang::procedure::init) */
+/* $begin(::cortex::lang::procedure::init) */
 
     if (db_interface_init(db_interface(object))) {
     	goto error;
@@ -31,9 +31,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::lang::procedure::unbind(lang::object object) */
+/* ::cortex::lang::procedure::unbind(lang::object object) */
 db_void db_procedure_unbind(db_procedure _this, db_object object) {
-/* $begin(::hyve::lang::procedure::unbind) */
+/* $begin(::cortex::lang::procedure::unbind) */
     if (_this->kind == DB_OBSERVER){
         db_observer_unbind(object);
     } else {

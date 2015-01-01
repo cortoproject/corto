@@ -19,9 +19,9 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 void Fast_Parser_warning(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::If::construct(If object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::If::construct(If object) */
 db_int16 Fast_If_construct(Fast_If object) {
-/* $begin(::hyve::Fast::If::construct) */
+/* $begin(::cortex::Fast::If::construct) */
 	db_type conditionType;
 
 	Fast_Node(object)->kind = FAST_If;
@@ -45,16 +45,16 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::If::noWarnUnreachable() */
+/* ::cortex::Fast::If::noWarnUnreachable() */
 void Fast_If_noWarnUnreachable(Fast_If _this) {
-/* $begin(::hyve::Fast::If::noWarnUnreachable) */
+/* $begin(::cortex::Fast::If::noWarnUnreachable) */
     _this->warnUnreachable = FALSE;
 /* $end */
 }
 
-/* ::hyve::Fast::If::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::If::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_If_toIc_v(Fast_If _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-/* $begin(::hyve::Fast::If::toIc) */
+/* $begin(::cortex::Fast::If::toIc) */
 	db_icStorage accumulator;
 	db_icLabel labelEval = NULL, labelEnd = NULL;
 	db_ic expr;

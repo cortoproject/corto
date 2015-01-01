@@ -9,9 +9,9 @@
 #include "db.h"
 #include "db__meta.h"
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::binary::init(lang::binary object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::binary::init(lang::binary object) */
 db_int16 db_binary_init(db_binary object) {
-/* $begin(::hyve::lang::binary::init) */
+/* $begin(::cortex::lang::binary::init) */
     db_primitive(object)->kind = DB_BINARY;
     return db_primitive_init((db_primitive)object);
 /* $end */

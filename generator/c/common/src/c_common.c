@@ -50,7 +50,7 @@ static int c_typeKeywordEscape(db_string inputName, db_string buffer) {
     return 0;
 }
 
-db_string hyve_genId(db_string str, db_id id) {
+db_string cortex_genId(db_string str, db_id id) {
     db_char *ptr, ch, *idptr;
 
     ptr = str;

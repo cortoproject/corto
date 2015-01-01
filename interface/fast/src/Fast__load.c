@@ -13,8 +13,8 @@
 
 db_threadKey FAST_PARSER_KEY;
 
-/* Run a hyve file */
-int fast_hyveRun(db_string file, void* udata) {
+/* Run a cortex file */
+int fast_cortexRun(db_string file, void* udata) {
     db_char* source;
     Fast_Parser p;
     DB_UNUSED(udata);
@@ -42,18 +42,18 @@ error:
 /* $end */
 
 /* This function is the entrypoint for the library and * loads definitions of the 'Fast' scope */
-int hyvemain(int argc, char* argv[]) {
+int cortexmain(int argc, char* argv[]) {
     DB_UNUSED(argc);
     DB_UNUSED(argv);
     
-    /* $begin(hyvemain) */
+    /* $begin(cortexmain) */
     /* Obtain thread local storage key for parser */
     if (db_threadTlsKey(&FAST_PARSER_KEY, NULL)) {
         return -1;
     }
 
-    /* Register hyve extension */
-    db_loaderRegister("hyve", fast_hyveRun, NULL);
+    /* Register cortex extension */
+    db_loaderRegister("cx", fast_cortexRun, NULL);
     /* $end */
 
     return Fast_load();

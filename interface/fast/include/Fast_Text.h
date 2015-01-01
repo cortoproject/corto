@@ -7,7 +7,7 @@
 #ifndef Fast_Text_H
 #define Fast_Text_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "Fast_Literal.h"
 #include "Fast__type.h"
 

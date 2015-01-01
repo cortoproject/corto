@@ -13,9 +13,9 @@
 #include "Fast__api.h"
 /* $end */
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::Local::construct(Local object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Local::construct(Local object) */
 db_int16 Fast_Local_construct(Fast_Local object) {
-/* $begin(::hyve::Fast::Local::construct) */
+/* $begin(::cortex::Fast::Local::construct) */
 
     Fast_Node(object)->kind = FAST_Variable;
     Fast_Variable(object)->kind = FAST_Local;
@@ -31,9 +31,9 @@ db_int16 Fast_Local_construct(Fast_Local object) {
 /* $end */
 }
 
-/* ::hyve::Fast::Local::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Local::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Local_toIc_v(Fast_Local _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-/* $begin(::hyve::Fast::Local::toIc) */
+/* $begin(::cortex::Fast::Local::toIc) */
 	db_ic result;
 	DB_UNUSED(storage);
 	DB_UNUSED(stored);

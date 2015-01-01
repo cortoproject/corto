@@ -60,9 +60,9 @@ db_interface Fast_findCommonAncestor(db_interface t1, db_interface t2) {
 
 /* $end */
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::Wait::construct(Wait object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Wait::construct(Wait object) */
 db_int16 Fast_Wait_construct(Fast_Wait object) {
-/* $begin(::hyve::Fast::Wait::construct) */
+/* $begin(::cortex::Fast::Wait::construct) */
     db_iter exprIter;
     Fast_Expression expr, timeoutExpr;
     db_type exprType, resultType = NULL;
@@ -121,9 +121,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Wait::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Wait::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Wait_toIc_v(Fast_Wait _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-/* $begin(::hyve::Fast::Wait::toIc) */
+/* $begin(::cortex::Fast::Wait::toIc) */
     db_iter exprIter;
     Fast_Expression expr;
     db_ic ic, result;

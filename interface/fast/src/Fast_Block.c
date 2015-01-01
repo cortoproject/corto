@@ -18,18 +18,18 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 Fast_Parser yparser(void);
 /* $end */
 
-/* ::hyve::Fast::Block::addStatement(Fast::Node statement) */
+/* ::cortex::Fast::Block::addStatement(Fast::Node statement) */
 void Fast_Block_addStatement(Fast_Block _this, Fast_Node statement) {
-/* $begin(::hyve::Fast::Block::addStatement) */
+/* $begin(::cortex::Fast::Block::addStatement) */
 	db_assert(_this->statements != NULL, "initialization failed");
 	db_llAppend(_this->statements, statement);
 	db_keep_ext(_this, statement, "Add statement to block");
 /* $end */
 }
 
-/* ::hyve::Fast::Block::declare(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference) */
+/* ::cortex::Fast::Block::declare(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference) */
 Fast_Local Fast_Block_declare(Fast_Block _this, db_string id, Fast_Variable type, db_bool isParameter, db_bool isReference) {
-/* $begin(::hyve::Fast::Block::declare) */
+/* $begin(::cortex::Fast::Block::declare) */
 	Fast_Local result;
     Fast_LocalKind kind = 0;
 
@@ -53,9 +53,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Block::declareReturnVariable(lang::function function) */
+/* ::cortex::Fast::Block::declareReturnVariable(lang::function function) */
 Fast_Local Fast_Block_declareReturnVariable(Fast_Block _this, db_function function) {
-/* $begin(::hyve::Fast::Block::declareReturnVariable) */
+/* $begin(::cortex::Fast::Block::declareReturnVariable) */
 	Fast_Local result;
     Fast_Object type;
 	db_id id;
@@ -75,9 +75,9 @@ Fast_Local Fast_Block_declareReturnVariable(Fast_Block _this, db_function functi
 /* $end */
 }
 
-/* ::hyve::Fast::Block::declareTemplate(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference) */
+/* ::cortex::Fast::Block::declareTemplate(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference) */
 Fast_Template Fast_Block_declareTemplate(Fast_Block _this, db_string id, Fast_Variable type, db_bool isParameter, db_bool isReference) {
-/* $begin(::hyve::Fast::Block::declareTemplate) */
+/* $begin(::cortex::Fast::Block::declareTemplate) */
 	Fast_Template result;
 
 	db_assert(_this->locals != NULL, "initialization failed");
@@ -98,9 +98,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Block::lookup(lang::string id) */
+/* ::cortex::Fast::Block::lookup(lang::string id) */
 Fast_Expression Fast_Block_lookup(Fast_Block _this, db_string id) {
-/* $begin(::hyve::Fast::Block::lookup) */
+/* $begin(::cortex::Fast::Block::lookup) */
 	Fast_Expression result = NULL;
 
 	result = Fast_Block_lookupLocal(_this, id);
@@ -162,9 +162,9 @@ Fast_Expression Fast_Block_lookup(Fast_Block _this, db_string id) {
 /* $end */
 }
 
-/* ::hyve::Fast::Block::lookupLocal(lang::string id) */
+/* ::cortex::Fast::Block::lookupLocal(lang::string id) */
 Fast_Expression Fast_Block_lookupLocal(Fast_Block _this, db_string id) {
-/* $begin(::hyve::Fast::Block::lookupLocal) */
+/* $begin(::cortex::Fast::Block::lookupLocal) */
 	Fast_Expression result = NULL;
 
     if (_this->locals) {
@@ -184,9 +184,9 @@ Fast_Expression Fast_Block_lookupLocal(Fast_Block _this, db_string id) {
 /* $end */
 }
 
-/* ::hyve::Fast::Block::resolve(lang::string id) */
+/* ::cortex::Fast::Block::resolve(lang::string id) */
 Fast_Expression Fast_Block_resolve(Fast_Block _this, db_string id) {
-/* $begin(::hyve::Fast::Block::resolve) */
+/* $begin(::cortex::Fast::Block::resolve) */
 	Fast_Expression result = NULL;
 
     if (!(result = Fast_Block_lookup(_this, id))) {
@@ -199,17 +199,17 @@ Fast_Expression Fast_Block_resolve(Fast_Block _this, db_string id) {
 /* $end */
 }
 
-/* ::hyve::Fast::Block::setFunction(lang::function function */
+/* ::cortex::Fast::Block::setFunction(lang::function function */
 void Fast_Block_setFunction(Fast_Block _this, db_function function) {
-/* $begin(::hyve::Fast::Block::setFunction) */
+/* $begin(::cortex::Fast::Block::setFunction) */
 	_this->function = function;
 	db_keep_ext(_this, function, "Set function for block");
 /* $end */
 }
 
-/* ::hyve::Fast::Block::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Block::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Block_toIc_v(Fast_Block _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-/* $begin(::hyve::Fast::Block::toIc) */
+/* $begin(::cortex::Fast::Block::toIc) */
     db_icScope scope;
 	DB_UNUSED(storage);
 	DB_UNUSED(stored);
@@ -228,9 +228,9 @@ db_ic Fast_Block_toIc_v(Fast_Block _this, db_icProgram program, db_icStorage sto
 /* $end */
 }
 
-/* ::hyve::Fast::Block::toIcBody(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Block::toIcBody(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Block_toIcBody_v(Fast_Block _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-/* $begin(::hyve::Fast::Block::toIcBody) */
+/* $begin(::cortex::Fast::Block::toIcBody) */
 	Fast_Node statement;
 	db_iter statementIter;
 	db_iter localIter;

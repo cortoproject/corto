@@ -55,9 +55,9 @@ Fast_If Fast_TernaryExpr_createIf(Fast_Expression condition, Fast_Node ifTrue, F
 
 /* $end */
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::TernaryExpr::construct(Fast::TernaryExpr object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::TernaryExpr::construct(Fast::TernaryExpr object) */
 db_int16 Fast_TernaryExpr_construct(Fast_TernaryExpr object) {
-/* $begin(::hyve::Fast::TernaryExpr::construct) */
+/* $begin(::cortex::Fast::TernaryExpr::construct) */
     Fast_Node trueBranch=NULL, falseBranch=NULL;
     Fast_Expression trueExpr, falseExpr;
     db_type resultType = Fast_Expression_getType(object->result);
@@ -88,18 +88,18 @@ db_int16 Fast_TernaryExpr_construct(Fast_TernaryExpr object) {
 /* $end */
 }
 
-/* ::hyve::Fast::TernaryExpr::hasSideEffects() */
+/* ::cortex::Fast::TernaryExpr::hasSideEffects() */
 db_bool Fast_TernaryExpr_hasSideEffects_v(Fast_TernaryExpr _this) {
-/* $begin(::hyve::Fast::TernaryExpr::hasSideEffects) */
+/* $begin(::cortex::Fast::TernaryExpr::hasSideEffects) */
     return Fast_Expression_hasSideEffects(_this->condition) ||
            Fast_Expression_hasSideEffects(_this->ifTrue) ||
            Fast_Expression_hasSideEffects(_this->ifFalse);
 /* $end */
 }
 
-/* ::hyve::Fast::TernaryExpr::setOperator(lang::operatorKind kind) */
+/* ::cortex::Fast::TernaryExpr::setOperator(lang::operatorKind kind) */
 db_void Fast_TernaryExpr_setOperator(Fast_TernaryExpr _this, db_operatorKind kind) {
-/* $begin(::hyve::Fast::TernaryExpr::setOperator) */
+/* $begin(::cortex::Fast::TernaryExpr::setOperator) */
 
     if (_this->ifTrueExpr && db_instanceof(db_typedef(Fast_BinaryExpr_o), _this->ifTrueExpr)) {
         Fast_BinaryExpr_setOperator(Fast_BinaryExpr(_this->ifTrueExpr), kind);
@@ -111,9 +111,9 @@ db_void Fast_TernaryExpr_setOperator(Fast_TernaryExpr _this, db_operatorKind kin
 /* $end */
 }
 
-/* ::hyve::Fast::TernaryExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::TernaryExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_TernaryExpr_toIc_v(Fast_TernaryExpr _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-/* $begin(::hyve::Fast::TernaryExpr::toIc) */
+/* $begin(::cortex::Fast::TernaryExpr::toIc) */
     Fast_If_toIc(_this->ifstmt, program, storage, stored);
     return Fast_Node_toIc(Fast_Node(_this->result), program, storage, stored);
 /* $end */

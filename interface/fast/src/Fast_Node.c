@@ -71,18 +71,18 @@ error:
 
 /* $end */
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::Fast::Node::init(Node object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::Node::init(Node object) */
 db_int16 Fast_Node_init(Fast_Node object) {
-/* $begin(::hyve::Fast::Node::init) */
+/* $begin(::cortex::Fast::Node::init) */
     object->line = yparser()->line;
     object->column = yparser()->column;
     return 0;
 /* $end */
 }
 
-/* ::hyve::Fast::Node::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Node::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Node_toIc_v(Fast_Node _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-/* $begin(::hyve::Fast::Node::toIc) */
+/* $begin(::cortex::Fast::Node::toIc) */
 	DB_UNUSED(_this);
 	DB_UNUSED(program);
 	DB_UNUSED(storage);

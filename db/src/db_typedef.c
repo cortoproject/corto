@@ -9,9 +9,9 @@
 #include "db.h"
 #include "db__meta.h"
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::lang::typedef::construct(lang::typedef object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::typedef::construct(lang::typedef object) */
 db_int16 db_typedef_construct(db_typedef object) {
-/* $begin(::hyve::lang::typedef::construct) */
+/* $begin(::cortex::lang::typedef::construct) */
     db_typedef real;
 
     real = db_typedef(object)->type;
@@ -48,22 +48,22 @@ error:
 /* $end */
 }
 
-/* callback ::hyve::lang::class::destruct(lang::object object) -> ::hyve::lang::typedef::destruct(lang::typedef object) */
+/* callback ::cortex::lang::class::destruct(lang::object object) -> ::cortex::lang::typedef::destruct(lang::typedef object) */
 db_void db_typedef_destruct(db_typedef object) {
-/* $begin(::hyve::lang::typedef::destruct) */
+/* $begin(::cortex::lang::typedef::destruct) */
 	db_free_ext(object, object->real, "Free real member");
 	object->real = NULL;
 /* $end */
 }
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::typedef::init(lang::typedef object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::typedef::init(lang::typedef object) */
 db_int16 db_typedef_init(db_typedef object) {
-/* $begin(::hyve::lang::typedef::init) */
+/* $begin(::cortex::lang::typedef::init) */
     DB_UNUSED(object);
 
     if (object->type) {
         db_typedef_construct(object);
-        if (db_checkAttr(object, DB_ATTR_SCOPED) && (db_parentof(object) == hyve_lang_o)) {
+        if (db_checkAttr(object, DB_ATTR_SCOPED) && (db_parentof(object) == cortex_lang_o)) {
             db_keep_ext(object, object->real, "Keep self for real member");
         }
 
@@ -73,9 +73,9 @@ db_int16 db_typedef_init(db_typedef object) {
 /* $end */
 }
 
-/* ::hyve::lang::typedef::realType() */
+/* ::cortex::lang::typedef::realType() */
 db_type db_typedef_realType(db_typedef _this) {
-/* $begin(::hyve::lang::typedef::realType) */
+/* $begin(::cortex::lang::typedef::realType) */
 	return _this->real;
 /* $end */
 }

@@ -1,6 +1,6 @@
 void tc_dbgen::
 
-	// Primitive types (hides types from hyve::lang)
+	// Primitive types (hides types from cortex::lang)
 	boolean bool{};
 	int int32{WIDTH_32};
 	uint uint32{WIDTH_32};

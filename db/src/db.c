@@ -88,7 +88,7 @@ db_threadKey DB_KEY_WAIT_ADMIN;
 	SSO_OP_CLASS(op, observer);\
 	SSO_OP_CLASS(op, metaprocedure);
 
-/* ::hyve::lang objects (types only) */
+/* ::cortex::lang objects (types only) */
 #define SSO_OP_TYPE(op)\
     SSO_OP_PRIM(op, octet);\
     SSO_OP_PRIM(op, bool);\
@@ -140,8 +140,8 @@ db_threadKey DB_KEY_WAIT_ADMIN;
 
 /* 1st degree objects (members, methods and constants) */
 #define SSO_OP_OBJECT(op)\
-    SSO_OP_OBJ(op, hyve_new);\
-    SSO_OP_OBJ(op, hyve__new);\
+    SSO_OP_OBJ(op, cortex_new);\
+    SSO_OP_OBJ(op, cortex__new);\
 	SSO_OP_OBJ(op, type_init);\
     SSO_OP_OBJ(op, class_construct);\
     SSO_OP_OBJ(op, class_destruct);\
@@ -727,8 +727,8 @@ int db_start(void) {
 
     /* Initialize builtin scopes */
     db_initObject(root_o);
-    db_initObject(hyve_o);
-    db_initObject(hyve_lang_o);
+    db_initObject(cortex_o);
+    db_initObject(cortex_lang_o);
 
     /* Init objects */
     SSO_OP_TYPE(db_initType);
@@ -860,8 +860,8 @@ void db_stop(void) {
     SSO_OP_TYPE(db_freeType);
 
     /* Deinitialize root */
-    db__freeSSO(hyve_lang_o);
-    db__freeSSO(hyve_o);
+    db__freeSSO(cortex_lang_o);
+    db__freeSSO(cortex_o);
 
     db__freeSSO(root_o);
 

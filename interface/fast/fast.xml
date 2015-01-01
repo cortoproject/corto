@@ -1,8 +1,8 @@
-<meta xmlns:meta="https://hyve.com/meta">
-	<meta:scope name="hyve">
-		<!-- hyve::fast -->
+<meta xmlns:meta="https://cortex.com/meta">
+	<meta:scope name="cortex">
+		<!-- cortex::fast -->
 		<meta:scope name="Fast">
-			<!-- Enumeration representing the values that can be represented in hyve -->
+			<!-- Enumeration representing the values that can be represented in cortex -->
 			<enum name="valueKind">
 				<meta:scope>
 					<constant name="Boolean"/>

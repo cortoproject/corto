@@ -13,9 +13,9 @@
 #include "db__interface.h"
 /* $end */
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::lang::member::construct(lang::member object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::member::construct(lang::member object) */
 db_int16 db_member_construct(db_member object) {
-/* $begin(::hyve::lang::member::construct) */
+/* $begin(::cortex::lang::member::construct) */
 	if (!object->type) {
 	    db_id id;
 	    db_error("member '%s' has no type.", db_fullname(object, id));
@@ -28,9 +28,9 @@ error:
 /* $end */
 }
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::member::init(lang::member object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::member::init(lang::member object) */
 db_int16 db_member_init(db_member object) {
-/* $begin(::hyve::lang::member::init) */
+/* $begin(::cortex::lang::member::init) */
     db_object parent;
     db_type parentType;
 

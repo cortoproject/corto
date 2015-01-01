@@ -1,4 +1,4 @@
-// Test metaprocedures of type class and hyve scope
+// Test metaprocedures of type class and cortex scope
 bool result: true
 void fail(string msg):
 	"tc_metaprocedure01: FAIL: $msg"

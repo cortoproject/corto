@@ -305,9 +305,9 @@ void Fast_BinaryExpr_toIc_strOp(
 
 /* $end */
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::BinaryExpr::construct(Fast::BinaryExpr object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::BinaryExpr::construct(Fast::BinaryExpr object) */
 db_int16 Fast_BinaryExpr_construct(Fast_BinaryExpr object) {
-/* $begin(::hyve::Fast::BinaryExpr::construct) */
+/* $begin(::cortex::Fast::BinaryExpr::construct) */
     db_type lvalueType, rvalueType;
     db_int32 checkReferences=0;
 
@@ -346,9 +346,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::BinaryExpr::fold() */
+/* ::cortex::Fast::BinaryExpr::fold() */
 Fast_Expression Fast_BinaryExpr_fold(Fast_BinaryExpr _this) {
-/* $begin(::hyve::Fast::BinaryExpr::fold) */
+/* $begin(::cortex::Fast::BinaryExpr::fold) */
     Fast_Expression result = Fast_Expression(_this);
     void *lptr, *rptr, *resultPtr;
     db_type type, rtype;
@@ -425,9 +425,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::BinaryExpr::hasSideEffects() */
+/* ::cortex::Fast::BinaryExpr::hasSideEffects() */
 db_bool Fast_BinaryExpr_hasSideEffects_v(Fast_BinaryExpr _this) {
-/* $begin(::hyve::Fast::BinaryExpr::hasSideEffects) */
+/* $begin(::cortex::Fast::BinaryExpr::hasSideEffects) */
     db_bool result = FALSE;
     
     switch(_this->operator) {
@@ -449,9 +449,9 @@ db_bool Fast_BinaryExpr_hasSideEffects_v(Fast_BinaryExpr _this) {
 /* $end */
 }
 
-/* ::hyve::Fast::BinaryExpr::setOperator(lang::operatorKind kind) */
+/* ::cortex::Fast::BinaryExpr::setOperator(lang::operatorKind kind) */
 db_void Fast_BinaryExpr_setOperator(Fast_BinaryExpr _this, db_operatorKind kind) {
-/* $begin(::hyve::Fast::BinaryExpr::setOperator) */
+/* $begin(::cortex::Fast::BinaryExpr::setOperator) */
     Fast_BinaryExpr compoundExpr = NULL;
     db_type exprType = NULL;
 
@@ -510,9 +510,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::BinaryExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::BinaryExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_BinaryExpr_toIc_v(Fast_BinaryExpr _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-/* $begin(::hyve::Fast::BinaryExpr::toIc) */
+/* $begin(::cortex::Fast::BinaryExpr::toIc) */
     db_ic lvalue, rvalue, result, conditionLvalue, conditionRvalue = NULL;
     db_icOp op = NULL;
     db_type _thisType = Fast_Expression_getType(Fast_Expression(_this));

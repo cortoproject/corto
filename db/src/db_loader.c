@@ -193,20 +193,20 @@ int db_libraryLoader(db_string _file, void* udata) {
 	    filename = file;
 	}
 
-	/* Load shared object from HYVE_HOME */
+	/* Load shared object from CORTEX_HOME */
 	dl = db_dlOpen(file);
 	if (!dl) {
 	    int length;
 	    db_char path[256];
 	    db_char str[256];
 	    db_string err;
-        db_string hyveHome = getenv("HYVE_HOME");
+        db_string cortexHome = getenv("CORTEX_HOME");
 	    err = db_strdup(db_dlError());
 	    length = (db_word)filename - (db_word)file;
         memcpy(path, file, length);
         path[length]='\0';
         if (length) {
-            sprintf(str, "%s/bin/%slib%s.so", hyveHome, path, filename);
+            sprintf(str, "%s/bin/%slib%s.so", cortexHome, path, filename);
         } else {
             sprintf(str, "lib%s.so", filename);
         }
@@ -218,15 +218,15 @@ int db_libraryLoader(db_string _file, void* udata) {
 	}
 
 	/* Lookup main function */
-	proc = (int(*)(int,char*[]))db_dlProc(dl, "hyvemain");
+	proc = (int(*)(int,char*[]))db_dlProc(dl, "cortexmain");
 	if (!proc) {
-		db_error("unresolved 'hyvemain' in library '%s'.", file);
+		db_error("unresolved 'cortexmain' in library '%s'.", file);
 		goto error;
 	}
 
 	/* Call main */
 	if (proc(0, NULL)) {
-		db_error("%s: hyvemain failed.", file);
+		db_error("%s: cortexmain failed.", file);
 		goto error;
 	}
 

@@ -115,9 +115,9 @@ error:
 }
 /* $end */
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::StaticInitializer::construct(StaticInitializer object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::StaticInitializer::construct(StaticInitializer object) */
 db_int16 Fast_StaticInitializer_construct(Fast_StaticInitializer object) {
-/* $begin(::hyve::Fast::StaticInitializer::construct) */
+/* $begin(::cortex::Fast::StaticInitializer::construct) */
 	db_int8 variable;
     
     /* Copy offsets of variables into frames */
@@ -136,9 +136,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::StaticInitializer::define() */
+/* ::cortex::Fast::StaticInitializer::define() */
 db_int16 Fast_StaticInitializer_define(Fast_StaticInitializer _this) {
-/* $begin(::hyve::Fast::StaticInitializer::define) */
+/* $begin(::cortex::Fast::StaticInitializer::define) */
 	db_uint32 variable;
 	db_object o;
 
@@ -182,9 +182,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::StaticInitializer::push() */
+/* ::cortex::Fast::StaticInitializer::push() */
 db_int16 Fast_StaticInitializer_push(Fast_StaticInitializer _this) {
-/* $begin(::hyve::Fast::StaticInitializer::push) */
+/* $begin(::cortex::Fast::StaticInitializer::push) */
 	db_uint8 variable;
     
     /* Obtain offset for all that variables being initialized */
@@ -197,9 +197,9 @@ db_int16 Fast_StaticInitializer_push(Fast_StaticInitializer _this) {
 /* $end */
 }
 
-/* ::hyve::Fast::StaticInitializer::value(Expression v) */
+/* ::cortex::Fast::StaticInitializer::value(Expression v) */
 db_int16 Fast_StaticInitializer_value(Fast_StaticInitializer _this, Fast_Expression v) {
-/* $begin(::hyve::Fast::StaticInitializer::value) */
+/* $begin(::cortex::Fast::StaticInitializer::value) */
 	db_word offset;
 	db_uint32 variable;
     db_uint32 fp = Fast_Initializer(_this)->fp;

@@ -4,9 +4,9 @@ TARGET =	fast
 LEX		=	fast.l
 YACC	= 	fast.y
 
-INCLUDE = 	$(HYVE_HOME)/dev/include
+INCLUDE = 	$(CORTEX_HOME)/dev/include
 
-LIBS	=	lang hyvedev fl
+LIBS	=	lang cortexdev fl
 
-include $(HYVE_HOME)/build/lexyacc.makefile
+include $(CORTEX_HOME)/build/lexyacc.makefile
 

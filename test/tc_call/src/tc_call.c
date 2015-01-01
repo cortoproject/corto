@@ -9,7 +9,7 @@
 #include "tc_call__meta.h"
 #include "tc_call__api.h"
 #include "tc_Animal.h"
-#include "hyve.h"
+#include "cortex.h"
 
 /* Call non-virtual function */
 int tc_call_01(void) {

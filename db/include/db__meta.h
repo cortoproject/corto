@@ -17,8 +17,8 @@ extern "C" {
 #define DB_META_OBJECT(type, name) extern db_##type db_##name##_o
 
 extern db_object root_o;
-extern db_object hyve_o;
-extern db_object hyve_lang_o;
+extern db_object cortex_o;
+extern db_object cortex_lang_o;
 
 /* Forward declarations of classes */
 DB_META_OBJECT(class, typedef);

@@ -19,7 +19,7 @@ extern "C" {
 #elif INTPTR_MAX == INT64_MAX
 #define DB_CPU_X64
 #else
-#error "hyve is not supported on platforms which are neither 32- nor 64-bit."
+#error "cortex is not supported on platforms which are neither 32- nor 64-bit."
 #endif
 
 #if defined(WIN32) || defined(WIN64)
@@ -27,7 +27,7 @@ extern "C" {
 #elif defined(__linux__)
 #define DB_OS_LINUX
 #else
-#error "hyve is not supported on non-linux or windows operating systems."
+#error "cortex is not supported on non-linux or windows operating systems."
 #endif
 
 #ifdef DB_CPU_X86

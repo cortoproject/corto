@@ -30,14 +30,14 @@ static db_int16 c_projectGenerateMainFile(db_generator g) {
 
     g_fileWrite(file, "/* This function is the entrypoint for the library and");
     g_fileWrite(file, " * loads definitions of the '%s' scope */\n", g_getName(g));
-	g_fileWrite(file, "int hyvemain(int argc, char* argv[]) {\n");
+	g_fileWrite(file, "int cortexmain(int argc, char* argv[]) {\n");
 	g_fileIndent(file);
 	g_fileWrite(file, "DB_UNUSED(argc);\n");
 	g_fileWrite(file, "DB_UNUSED(argv);\n");
 
-    if ((snippet = g_fileLookupSnippet(file, "hyvemain"))) {
+    if ((snippet = g_fileLookupSnippet(file, "cortexmain"))) {
         g_fileWrite(file, "\n");
-        g_fileWrite(file, "/* $begin(hyvemain)");
+        g_fileWrite(file, "/* $begin(cortexmain)");
         g_fileWrite(file, "%s", snippet);
         g_fileWrite(file, "$end */\n\n");
     }
@@ -65,7 +65,7 @@ static db_int16 c_projectGenerateMakefile(db_generator g) {
         g_fileWrite(file, "\n");
         g_fileWrite(file, "TARGET = %s\n\n", g_getName(g));
         g_fileWrite(file, "LIBS = lang\n\n");
-        g_fileWrite(file, "include $(HYVE_HOME)/build/component.makefile\n\n");
+        g_fileWrite(file, "include $(CORTEX_HOME)/build/component.makefile\n\n");
     }
 
 	return 0;
@@ -74,7 +74,7 @@ error:
 }
 
 /* Generator main */
-db_int16 hyve_genMain(db_generator g) {
+db_int16 cortex_genMain(db_generator g) {
 
     /* Create source and include directories */
     db_mkdir("src");

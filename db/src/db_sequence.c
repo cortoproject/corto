@@ -27,9 +27,9 @@ int db_sequence_alloc(db_collection _this, db_void* collection, db_uint32 elemen
 }
 /* $end */
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::lang::sequence::construct(lang::sequence object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::sequence::construct(lang::sequence object) */
 db_int16 db_sequence_construct(db_sequence object) {
-/* $begin(::hyve::lang::sequence::construct) */
+/* $begin(::cortex::lang::sequence::construct) */
 	db_type(object)->hasResources = TRUE;
 	db_type(object)->size = sizeof(__dummySeq);
 	db_type(object)->alignment = DB_ALIGNMENT(__dummySeq);
@@ -37,17 +37,17 @@ db_int16 db_sequence_construct(db_sequence object) {
 /* $end */
 }
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::sequence::init(lang::sequence object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::sequence::init(lang::sequence object) */
 db_int16 db_sequence_init(db_sequence object) {
-/* $begin(::hyve::lang::sequence::init) */
+/* $begin(::cortex::lang::sequence::init) */
     db_collection(object)->kind = DB_SEQUENCE;
     return db_collection_init(db_collection(object));
 /* $end */
 }
 
-/* ::hyve::lang::sequence::size(lang::uint32 size) */
+/* ::cortex::lang::sequence::size(lang::uint32 size) */
 db_void db_sequence_size(db_any _this, db_uint32 size) {
-/* $begin(::hyve::lang::sequence::size) */
+/* $begin(::cortex::lang::sequence::size) */
     db_uint32 oldSize, elementSize;
 
     oldSize = ((db_objectSeq*)_this.value)->length;

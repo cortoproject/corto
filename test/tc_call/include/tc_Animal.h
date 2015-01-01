@@ -7,7 +7,7 @@
 #ifndef tc_Animal_H
 #define tc_Animal_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "tc_call__type.h"
 
 #ifdef __cplusplus

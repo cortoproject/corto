@@ -6,7 +6,7 @@
 #ifndef Fast_Template_H
 #define Fast_Template_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "Fast_Local.h"
 #include "Fast__type.h"
 
@@ -18,7 +18,7 @@
 extern "C" {
 #endif
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::Template::construct(Template object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Template::construct(Template object) */
 db_int16 Fast_Template_construct(Fast_Template object);
 
 #ifdef __cplusplus

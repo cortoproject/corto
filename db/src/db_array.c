@@ -9,9 +9,9 @@
 #include "db.h"
 #include "db__meta.h"
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::lang::array::construct(lang::array object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::array::construct(lang::array object) */
 db_int16 db_array_construct(db_array object) {
-/* $begin(::hyve::lang::array::construct) */
+/* $begin(::cortex::lang::array::construct) */
 	db_uint32 elementTypeSize;
 	db_type elementType;
   
@@ -65,9 +65,9 @@ error:
 /* $end */
 }
 
-/* callback ::hyve::lang::class::destruct(lang::object object) -> ::hyve::lang::array::destruct(lang::array object) */
+/* callback ::cortex::lang::class::destruct(lang::object object) -> ::cortex::lang::array::destruct(lang::array object) */
 db_void db_array_destruct(db_array object) {
-/* $begin(::hyve::lang::array::destruct) */
+/* $begin(::cortex::lang::array::destruct) */
     db_free_ext(object, object->elementType, "elementType");
     object->elementType = NULL;
     db_free_ext(object, db_collection(object)->elementType, "super.elementType");
@@ -76,9 +76,9 @@ db_void db_array_destruct(db_array object) {
 /* $end */
 }
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::array::init(lang::array object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::array::init(lang::array object) */
 db_int16 db_array_init(db_array object) {
-/* $begin(::hyve::lang::array::init) */
+/* $begin(::cortex::lang::array::init) */
     db_collection(object)->kind = DB_ARRAY;
     return db_collection_init(db_collection(object));
 /* $end */

@@ -5,7 +5,7 @@
  *      Author: sander
  */
 
-#include "hyve.h"
+#include "cortex.h"
 #include "db_generatorDepWalk.h"
 #include "cpp_common.h"
 #include "db_string_ser.h"
@@ -21,7 +21,7 @@ typedef struct cpp_typeWalk_t {
 static db_char* cpp_loadResolve(db_object o, db_char* out) {
 	if (db_checkAttr(o, DB_ATTR_SCOPED)) {
 		db_id id;
-		sprintf(out, "::hyve::resolve(NULL, \"%s\")", db_fullname(o, id));
+		sprintf(out, "::cortex::resolve(NULL, \"%s\")", db_fullname(o, id));
 	} else {
 		db_id ostr, id;
 		struct db_serializer_s stringSer;
@@ -40,7 +40,7 @@ static db_char* cpp_loadResolve(db_object o, db_char* out) {
 			goto error;
 		}
 
-		sprintf(out, "::hyve::resolve(NULL, \"%s%s\")", db_fullname(db_typeof(o), id), ostr);
+		sprintf(out, "::cortex::resolve(NULL, \"%s%s\")", db_fullname(db_typeof(o), id), ostr);
 	}
 
 	return out;
@@ -556,7 +556,7 @@ static g_file cpp_loadHeaderFileOpen(db_generator g) {
         g_fileWrite(result, " */\n\n");
         g_fileWrite(result, "#ifndef %s_META_H\n", g_getName(g));
         g_fileWrite(result, "#define %s_META_H\n\n", g_getName(g));
-        g_fileWrite(result, "#include \"hyve.hpp\"\n\n");
+        g_fileWrite(result, "#include \"cortex.hpp\"\n\n");
         g_fileWrite(result, "#include \"%s/_type.hpp\"\n\n", path);
     }
 
@@ -599,7 +599,7 @@ static g_file cpp_loadSourceFileOpen(db_generator g) {
         g_fileWrite(result, " *    This file contains generated code. Do not modify!\n");
         g_fileWrite(result, " */\n\n");
         g_fileWrite(result, "#include \"%s/_type.hpp\"\n", path, g_getName(g));
-        g_fileWrite(result, "#include \"hyve.hpp\"\n\n");
+        g_fileWrite(result, "#include \"cortex.hpp\"\n\n");
     }
 
     return result;
@@ -617,7 +617,7 @@ static void cpp_sourceWriteLoadStart(db_generator g, g_file file) {
     g_fileWrite(file, "/* Load objects in database */\n");
     g_fileWrite(file, "int load(void) {\n");
     g_fileIndent(file);
-    g_fileWrite(file, "::hyve::lang::object _a_; /* Used for resolving anonymous objects */\n");
+    g_fileWrite(file, "::cortex::lang::object _a_; /* Used for resolving anonymous objects */\n");
     g_fileWrite(file, "_a_ = NULL;\n\n");
 }
 
@@ -625,7 +625,7 @@ static void cpp_sourceWriteLoadStart(db_generator g, g_file file) {
 static void cpp_sourceWriteLoadEnd(g_file file) {
 	g_fileWrite(file, "if (_a_) {\n");
 	g_fileIndent(file);
-	g_fileWrite(file, "::hyve::free(NULL, _a_, \"load: free temporary reference.\");\n");
+	g_fileWrite(file, "::cortex::free(NULL, _a_, \"load: free temporary reference.\");\n");
 	g_fileDedent(file);
 	g_fileWrite(file, "}\n\n");
     g_fileWrite(file, "return 0;\n");
@@ -667,7 +667,7 @@ static int cpp_loadDeclare(db_object o, void* userData) {
         /* Declaration */
         g_fileWrite(data->source, "/* Declare %s */\n", db_fullname(o, id));
         cpp_specifierId(data->g, db_typeof(o), specId);
-        g_fileWrite(data->source, "if (!(%s = (%s%s)::hyve::resolve(NULL, NULL, \"%s\", \"load: check if object '%s' already exists.\"))) {\n",
+        g_fileWrite(data->source, "if (!(%s = (%s%s)::cortex::resolve(NULL, NULL, \"%s\", \"load: check if object '%s' already exists.\"))) {\n",
                     cpp_loadVarId(data->g, o, id),
                     specId,
                     db_typeof(o)->real->reference ? "" : "*",
@@ -676,7 +676,7 @@ static int cpp_loadDeclare(db_object o, void* userData) {
         g_fileIndent(data->source);
 
         if (!db_checkAttr(db_typeof(o), DB_ATTR_SCOPED)) {
-			g_fileWrite(data->source, "%s = (%s%s)::hyve::declare(%s, \"%s\", (_a_ ? ::hyve::free(_a_) : 0, _a_ = ((::hyve::lang::_typedef)%s)));\n",
+			g_fileWrite(data->source, "%s = (%s%s)::cortex::declare(%s, \"%s\", (_a_ ? ::cortex::free(_a_) : 0, _a_ = ((::cortex::lang::_typedef)%s)));\n",
 					cpp_loadVarId(data->g, o, id),
                     specId,
                     db_typeof(o)->real->reference ? "" : "*",
@@ -684,7 +684,7 @@ static int cpp_loadDeclare(db_object o, void* userData) {
 					db_nameof(o),
 					cpp_loadVarId(data->g, db_typeof(o), typeId));
         } else {
-			g_fileWrite(data->source, "%s = (%s%s)::hyve::declare(%s, \"%s\", ((::hyve::lang::_typedef)%s));\n",
+			g_fileWrite(data->source, "%s = (%s%s)::cortex::declare(%s, \"%s\", ((::cortex::lang::_typedef)%s));\n",
 					cpp_loadVarId(data->g, o, id),
                     specId,
                     db_typeof(o)->real->reference ? "" : "*",
@@ -696,7 +696,7 @@ static int cpp_loadDeclare(db_object o, void* userData) {
         /* Error checking */
         g_fileWrite(data->source, "if (!%s) {\n", cpp_loadVarId(data->g, o, id));
         g_fileIndent(data->source);
-        g_fileWrite(data->source, "::hyve::error(\"%s_load: failed to declare object '%s'.\");\n",
+        g_fileWrite(data->source, "::cortex::error(\"%s_load: failed to declare object '%s'.\");\n",
                 g_getName(data->g),
                 db_fullname(o, id));
         g_fileWrite(data->source, "goto error;\n");
@@ -706,7 +706,7 @@ static int cpp_loadDeclare(db_object o, void* userData) {
         g_fileDedent(data->source);
         g_fileWrite(data->source, "} else {\n");
         g_fileIndent(data->source);
-        g_fileWrite(data->source, "::hyve::free(%s);\n", cpp_loadVarId(data->g, o, id));
+        g_fileWrite(data->source, "::cortex::free(%s);\n", cpp_loadVarId(data->g, o, id));
         g_fileDedent(data->source);
         g_fileWrite(data->source, "}\n\n");
     }
@@ -785,8 +785,8 @@ static db_int16 cpp_initPrimitive(db_serializer s, db_value* v, void* userData) 
     } else if (db_primitive(t)->kind == DB_TEXT) {
     	db_string v = *(db_string*)ptr;
     	if (v) {
-    		str = malloc(strlen("::hyve::strdup()") + strlen(v) + 1);
-    		sprintf(str, "::hyve::strdup(%s)", v);
+    		str = malloc(strlen("::cortex::strdup()") + strlen(v) + 1);
+    		sprintf(str, "::cortex::strdup(%s)", v);
     	} else {
     		str = db_strdup("NULL");
     	}
@@ -855,7 +855,7 @@ static db_int16 cpp_initElement(db_serializer s, db_value* v, void* userData) {
 		g_fileWrite(data->source, "\n");
 
 		cpp_specifierId(data->g, t->elementType, specifier);
-		g_fileWrite(data->source, "%s = ::hyve::alloc(sizeof(%s));\n", cpp_loadElementId(v, elementId, 0), specifier);
+		g_fileWrite(data->source, "%s = ::cortex::alloc(sizeof(%s));\n", cpp_loadElementId(v, elementId, 0), specifier);
 		break;
 	}
 	default:
@@ -928,12 +928,12 @@ static db_int16 cpp_initCollection(db_serializer s, db_value* v, void* userData)
             g_fileWrite(data->source, "%sbuffer = NULL;\n",
                     cpp_loadMemberId(data, v, memberId, TRUE));
         } else if (length == 1) {
-            g_fileWrite(data->source, "%sbuffer = (%s*)::hyve::alloc(sizeof(%s));\n",
+            g_fileWrite(data->source, "%sbuffer = (%s*)::cortex::alloc(sizeof(%s));\n",
                     cpp_loadMemberId(data, v, memberId, TRUE),
                     specifier,
                     specifier);
         } else {
-            g_fileWrite(data->source, "%sbuffer = (%s*)::hyve::alloc(sizeof(%s) * %d);\n",
+            g_fileWrite(data->source, "%sbuffer = (%s*)::cortex::alloc(sizeof(%s) * %d);\n",
                     cpp_loadMemberId(data, v, memberId, TRUE),
                     specifier,
                     specifier,
@@ -945,7 +945,7 @@ static db_int16 cpp_initCollection(db_serializer s, db_value* v, void* userData)
         /* Create list object */
     	if (*(db_ll*)ptr) {
             size = db_llSize(*(db_ll*)ptr);
-			g_fileWrite(data->source, "%s = new ::hyve::ll();\n",
+			g_fileWrite(data->source, "%s = new ::cortex::ll();\n",
 					cpp_loadMemberId(data, v, memberId, FALSE));
     	} else {
     		g_fileWrite(data->source, "%s = NULL;\n", cpp_loadMemberId(data, v, memberId, FALSE));
@@ -956,7 +956,7 @@ static db_int16 cpp_initCollection(db_serializer s, db_value* v, void* userData)
         /* Create map object */
     	if (*(db_rbtree*)ptr) {
             size = db_rbtreeSize(*(db_rbtree*)ptr);
-			g_fileWrite(data->source, "%s = new ::hyve::rbtree();\n",
+			g_fileWrite(data->source, "%s = new ::cortex::rbtree();\n",
 					cpp_loadMemberId(data, v, memberId, FALSE), g_fullOid(data->g, db_rbtreeKeyType(*(db_rbtree*)ptr), keyId));
     	} else {
     		g_fileWrite(data->source, "%s = NULL;\n", cpp_loadMemberId(data, v, memberId, FALSE));
@@ -1012,7 +1012,7 @@ static db_int16 cpp_initObject(db_serializer s, db_value* v, void* userData) {
     isProcedure = FALSE;
 
     g_fileWrite(data->source, "/* Define %s */\n", db_fullname(o, id));
-    g_fileWrite(data->source, "if (!::hyve::checkState((::hyve::lang::object)%s, ::hyve::lang::DEFINED)) {\n", cpp_loadVarId(data->g, o, id));
+    g_fileWrite(data->source, "if (!::cortex::checkState((::cortex::lang::object)%s, ::cortex::lang::DEFINED)) {\n", cpp_loadVarId(data->g, o, id));
     g_fileIndent(data->source);
 
     /* Serialize object value */
@@ -1025,15 +1025,15 @@ static db_int16 cpp_initObject(db_serializer s, db_value* v, void* userData) {
     	/* C++ uses CDECL convention */
         g_fileWrite(data->source, "\n");
         g_fileWrite(data->source, "/* Bind %s with C++ function */\n", id);
-        g_fileWrite(data->source, "((::hyve::lang::function)%s)->kind = DB_PROCEDURE_CDECL;\n", cpp_loadVarId(data->g, o, id));
+        g_fileWrite(data->source, "((::cortex::lang::function)%s)->kind = DB_PROCEDURE_CDECL;\n", cpp_loadVarId(data->g, o, id));
 
         /* Bind function-object with marshall function */
 		if (!(db_checkState(o, DB_DEFINED) && (db_procedure(db_typeof(o))->kind == DB_CALLBACK))) {
-			g_fileWrite(data->source, "((::hyve::lang::function)%s)->impl = reinterpret_cast< ::hyve::lang::word>(%s);\n", id, cpp_loadMarshallId(data->g, o, id2));
+			g_fileWrite(data->source, "((::cortex::lang::function)%s)->impl = reinterpret_cast< ::cortex::lang::word>(%s);\n", id, cpp_loadMarshallId(data->g, o, id2));
 		} else {
 			/* Callback functions are not generated when they are defined while the load-routine was generated. This is because a callback
 			 * method will never be called directly, only through it's corresponding delegate function. */
-			g_fileWrite(data->source, "((::hyve::lang::function)%s)->impl = 0;\n", id);
+			g_fileWrite(data->source, "((::cortex::lang::function)%s)->impl = 0;\n", id);
 		}
 
         g_setIdKind(data->g, DB_GENERATOR_ID_CLASS_LOWER);
@@ -1041,9 +1041,9 @@ static db_int16 cpp_initObject(db_serializer s, db_value* v, void* userData) {
 
     /* Define object, but not if the object is a procedure and the parent is an abstract class, because these have no implementation. */
     if (!(isProcedure && (db_interface(db_parentof(o))->kind == DB_INTERFACE))) {
-		g_fileWrite(data->source, "if (::hyve::define(%s)) {\n", cpp_loadVarId(data->g, o, id));
+		g_fileWrite(data->source, "if (::cortex::define(%s)) {\n", cpp_loadVarId(data->g, o, id));
 		g_fileIndent(data->source);
-		g_fileWrite(data->source, "::hyve::error(\"%s_load: failed to define object '%s'.\");\n",
+		g_fileWrite(data->source, "::cortex::error(\"%s_load: failed to define object '%s'.\");\n",
 				g_getName(data->g),
 				db_fullname(o, id));
 		g_fileWrite(data->source, "goto error;\n");
@@ -1091,7 +1091,7 @@ static int cpp_loadDefine(db_object o, void* userData) {
 }
 
 /* Entry point for generator */
-int hyve_genMain(db_generator g) {
+int cortex_genMain(db_generator g) {
     cpp_typeWalk_t walkData;
     db_ll headers;
 
@@ -1147,7 +1147,7 @@ int hyve_genMain(db_generator g) {
     }
 
     /* Register exithandler */
-    g_fileWrite(walkData.source, "hyve::onunload(unload, NULL);\n");
+    g_fileWrite(walkData.source, "cortex::onunload(unload, NULL);\n");
 
     /* Close load-routine */
     cpp_sourceWriteLoadEnd(walkData.source);

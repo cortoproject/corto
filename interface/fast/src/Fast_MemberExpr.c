@@ -54,9 +54,9 @@ error:
 
 /* $end */
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::MemberExpr::construct(Fast::MemberExpr object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::MemberExpr::construct(Fast::MemberExpr object) */
 db_int16 Fast_MemberExpr_construct(Fast_MemberExpr object) {
-/* $begin(::hyve::Fast::MemberExpr::construct) */
+/* $begin(::cortex::Fast::MemberExpr::construct) */
 	db_type lvalueType;
 	db_type exprType;
 
@@ -98,16 +98,16 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::MemberExpr::hasSideEffects() */
+/* ::cortex::Fast::MemberExpr::hasSideEffects() */
 db_bool Fast_MemberExpr_hasSideEffects_v(Fast_MemberExpr _this) {
-/* $begin(::hyve::Fast::MemberExpr::hasSideEffects) */
+/* $begin(::cortex::Fast::MemberExpr::hasSideEffects) */
     return Fast_Expression_hasSideEffects(_this->lvalue);
 /* $end */
 }
 
-/* ::hyve::Fast::MemberExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::MemberExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_MemberExpr_toIc_v(Fast_MemberExpr _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-/* $begin(::hyve::Fast::MemberExpr::toIc) */
+/* $begin(::cortex::Fast::MemberExpr::toIc) */
 	db_icMember result;
 	db_member member;
 	db_ic lvalue;

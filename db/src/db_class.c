@@ -14,7 +14,7 @@
 
 /* An object of a class-type has extra information appended to it's value. This is the information
 * required to store callbacks and observers. The memory layout
-* of a class-instantiation is (exclusive hyve object-header):
+* of a class-instantiation is (exclusive cortex object-header):
 *
 * +-----------------+
 * |  object-value   |
@@ -292,9 +292,9 @@ void db_class_detachObservers(db_class _this, db_object object) {
 
 /* $end */
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::lang::class::_construct(lang::class object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::class::_construct(lang::class object) */
 db_int16 db_class__construct(db_class object) {
-/* $begin(::hyve::lang::class::_construct) */
+/* $begin(::cortex::lang::class::_construct) */
 	db_int16 result;
     db_uint32 i;
 
@@ -327,9 +327,9 @@ db_int16 db_class__construct(db_class object) {
 /* $end */
 }
 
-/* callback ::hyve::lang::class::destruct(lang::object object) -> ::hyve::lang::class::_destruct(lang::class object) */
+/* callback ::cortex::lang::class::destruct(lang::object object) -> ::cortex::lang::class::_destruct(lang::class object) */
 db_void db_class__destruct(db_class object) {
-/* $begin(::hyve::lang::class::_destruct) */
+/* $begin(::cortex::lang::class::_destruct) */
     db_uint32 i,j;
     db_interfaceVector *v;
 
@@ -358,9 +358,9 @@ db_void db_class__destruct(db_class object) {
 /* $end */
 }
 
-/* ::hyve::lang::class::allocSize() */
+/* ::cortex::lang::class::allocSize() */
 db_uint32 db_class_allocSize_v(db_class _this) {
-/* $begin(::hyve::lang::class::allocSize) */
+/* $begin(::cortex::lang::class::allocSize) */
     db_uint32 delegateCount, observerCount;
     db_uint32 size;
 
@@ -378,9 +378,9 @@ db_uint32 db_class_allocSize_v(db_class _this) {
 /* $end */
 }
 
-/* ::hyve::lang::class::bindCallback(lang::delegate delegate,lang::object object,lang::callback method) */
+/* ::cortex::lang::class::bindCallback(lang::delegate delegate,lang::object object,lang::callback method) */
 db_int16 db_class_bindCallback(db_class _this, db_delegate delegate, db_object object, db_callback method) {
-/* $begin(::hyve::lang::class::bindCallback) */
+/* $begin(::cortex::lang::class::bindCallback) */
     db_vtable* vtable;
     db_type targetType;
 
@@ -407,9 +407,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::lang::class::bindDelegate(lang::delegate delegate) */
+/* ::cortex::lang::class::bindDelegate(lang::delegate delegate) */
 db_int16 db_class_bindDelegate(db_class _this, db_delegate delegate) {
-/* $begin(::hyve::lang::class::bindDelegate) */
+/* $begin(::cortex::lang::class::bindDelegate) */
     db_delegate* found;
 
     /* Check if a method with the same name is already in the vtable */
@@ -438,16 +438,16 @@ error:
 /* $end */
 }
 
-/* ::hyve::lang::class::bindMethod(lang::method method) */
+/* ::cortex::lang::class::bindMethod(lang::method method) */
 db_int16 db_class_bindMethod(db_class _this, db_method method) {
-/* $begin(::hyve::lang::class::bindMethod) */
+/* $begin(::cortex::lang::class::bindMethod) */
 	return db_interface_bindMethod_v(db_interface(_this), method);
 /* $end */
 }
 
-/* ::hyve::lang::class::bindObserver(lang::observer observer) */
+/* ::cortex::lang::class::bindObserver(lang::observer observer) */
 db_void db_class_bindObserver(db_class _this, db_observer observer) {
-/* $begin(::hyve::lang::class::bindObserver) */
+/* $begin(::cortex::lang::class::bindObserver) */
     _this->observers.buffer = db_realloc(_this->observers.buffer, (_this->observers.length + 1) * sizeof(db_observer));
     _this->observers.buffer[_this->observers.length] = observer;
     _this->observers.length++;
@@ -456,9 +456,9 @@ db_void db_class_bindObserver(db_class _this, db_observer observer) {
 /* $end */
 }
 
-/* ::hyve::lang::class::findObserver(lang::object observable,string expr) */
+/* ::cortex::lang::class::findObserver(lang::object observable,string expr) */
 db_observer db_class_findObserver(db_class _this, db_object observable, db_string expr) {
-/* $begin(::hyve::lang::class::findObserver) */
+/* $begin(::cortex::lang::class::findObserver) */
     db_uint32 i;
     db_observer result = NULL;
 
@@ -480,9 +480,9 @@ db_observer db_class_findObserver(db_class _this, db_object observable, db_strin
 /* $end */
 }
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::class::init(lang::class object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::class::init(lang::class object) */
 db_int16 db_class_init(db_class object) {
-/* $begin(::hyve::lang::class::init) */
+/* $begin(::cortex::lang::class::init) */
     if (db_struct_init(db_struct(object))) {
     	goto error;
     }
@@ -496,9 +496,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::lang::class::instanceof(lang::object object) */
+/* ::cortex::lang::class::instanceof(lang::object object) */
 db_bool db_class_instanceof(db_class _this, db_object object) {
-/* $begin(::hyve::lang::class::instanceof) */
+/* $begin(::cortex::lang::class::instanceof) */
     db_type t;
     db_bool result;
 
@@ -521,18 +521,18 @@ db_bool db_class_instanceof(db_class _this, db_object object) {
 /* $end */
 }
 
-/* ::hyve::lang::class::privateObserver(lang::object object,lang::observer observer) */
+/* ::cortex::lang::class::privateObserver(lang::object object,lang::observer observer) */
 db_observer db_class_privateObserver(db_class _this, db_object object, db_observer observer) {
-/* $begin(::hyve::lang::class::privateObserver) */
+/* $begin(::cortex::lang::class::privateObserver) */
     DB_UNUSED(_this);
     DB_UNUSED(object);
     return observer; /* Workaround - this function can be removed */
 /* $end */
 }
 
-/* ::hyve::lang::class::resolveCallback(lang::delegate delegate,lang::object target) */
+/* ::cortex::lang::class::resolveCallback(lang::delegate delegate,lang::object target) */
 db_callback db_class_resolveCallback(db_class _this, db_delegate delegate, db_object target) {
-/* $begin(::hyve::lang::class::resolveCallback) */
+/* $begin(::cortex::lang::class::resolveCallback) */
     db_type targetType;
     db_vtable *vtable;
     db_callback result;
@@ -568,9 +568,9 @@ db_callback db_class_resolveCallback(db_class _this, db_delegate delegate, db_ob
 /* $end */
 }
 
-/* ::hyve::lang::class::resolveDelegate(lang::string name) */
+/* ::cortex::lang::class::resolveDelegate(lang::string name) */
 db_delegate db_class_resolveDelegate(db_class _this, db_string name) {
-/* $begin(::hyve::lang::class::resolveDelegate) */
+/* $begin(::cortex::lang::class::resolveDelegate) */
     db_delegate result;
     db_function* found;
 
@@ -589,9 +589,9 @@ db_delegate db_class_resolveDelegate(db_class _this, db_string name) {
 /* $end */
 }
 
-/* ::hyve::lang::class::resolveInterfaceMethod(lang::interface interface,lang::uint32 method) */
+/* ::cortex::lang::class::resolveInterfaceMethod(lang::interface interface,lang::uint32 method) */
 db_method db_class_resolveInterfaceMethod(db_class _this, db_interface interface, db_uint32 method) {
-/* $begin(::hyve::lang::class::resolveInterfaceMethod) */
+/* $begin(::cortex::lang::class::resolveInterfaceMethod) */
     db_uint32 i;
     db_interfaceVector *v;
 

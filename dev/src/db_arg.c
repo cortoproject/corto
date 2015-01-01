@@ -10,7 +10,7 @@
  *
  */
 
-#include "hyve.h"
+#include "cortex.h"
 #include "db_arg.h"
 
 #include "stdlib.h"

@@ -8,7 +8,7 @@
 #ifndef CORE_DESERXML_H_
 #define CORE_DESERXML_H_
 
-#include "hyve.h"
+#include "cortex.h"
 
 int db_deserXml(db_string file, void* udata);
 

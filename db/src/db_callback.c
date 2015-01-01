@@ -9,9 +9,9 @@
 #include "db.h"
 #include "db__meta.h"
 
-/* callback ::hyve::lang::procedure::bind(lang::object object) -> ::hyve::lang::callback::bind(lang::callback object) */
+/* callback ::cortex::lang::procedure::bind(lang::object object) -> ::cortex::lang::callback::bind(lang::callback object) */
 db_int16 db_callback_bind(db_callback object) {
-/* $begin(::hyve::lang::callback::bind) */
+/* $begin(::cortex::lang::callback::bind) */
     db_class delegateClass;
     db_object parent;
 
@@ -39,9 +39,9 @@ error:
 /* $end */
 }
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::callback::init(lang::callback object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::callback::init(lang::callback object) */
 db_int16 db_callback_init(db_callback object) {
-/* $begin(::hyve::lang::callback::init) */
+/* $begin(::cortex::lang::callback::init) */
 
     /* Call function initializer */
     if (db_function_init(db_function(object))) {

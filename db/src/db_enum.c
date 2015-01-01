@@ -30,8 +30,8 @@ db_int16 db__enum_bindConstant(db_enum _this, db_constant* c) {
 }
 /* $end */
 
-/* ::hyve::lang::enum::constant(lang::int32 value) */
-/* $header(::hyve::lang::enum::constant) */
+/* ::cortex::lang::enum::constant(lang::int32 value) */
+/* $header(::cortex::lang::enum::constant) */
 struct db_enum_findConstant_t {
     db_int32 value;
     db_constant* o;
@@ -48,7 +48,7 @@ static int db_enum_findConstant(void* o, void* udata) {
 }
 /* $end */
 db_object db_enum_constant(db_enum _this, db_int32 value) {
-/* $begin(::hyve::lang::enum::constant) */
+/* $begin(::cortex::lang::enum::constant) */
     db_rbtree scope;
     struct db_enum_findConstant_t walkData;
 
@@ -64,9 +64,9 @@ db_object db_enum_constant(db_enum _this, db_int32 value) {
 /* $end */
 }
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::lang::enum::construct(lang::enum object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::enum::construct(lang::enum object) */
 db_int16 db_enum_construct(db_enum object) {
-/* $begin(::hyve::lang::enum::construct) */
+/* $begin(::cortex::lang::enum::construct) */
 	db_uint32 i;
 
 	/* Define constants */
@@ -78,17 +78,17 @@ db_int16 db_enum_construct(db_enum object) {
 /* $end */
 }
 
-/* callback ::hyve::lang::class::destruct(lang::object object) -> ::hyve::lang::enum::destruct(lang::enum object) */
+/* callback ::cortex::lang::class::destruct(lang::object object) -> ::cortex::lang::enum::destruct(lang::enum object) */
 db_void db_enum_destruct(db_enum object) {
-/* $begin(::hyve::lang::enum::destruct) */
+/* $begin(::cortex::lang::enum::destruct) */
 	db_clear(db_collection(db_objectSeq_o), &object->constants);
 	db_type__destruct(db_type(object));
 /* $end */
 }
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::enum::init(lang::enum object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::enum::init(lang::enum object) */
 db_int16 db_enum_init(db_enum object) {
-/* $begin(::hyve::lang::enum::init) */
+/* $begin(::cortex::lang::enum::init) */
     db_primitive(object)->kind = DB_ENUM;
     db_primitive(object)->width = DB_WIDTH_32;
     db_set(&db_type(object)->defaultType, db_constant_o);

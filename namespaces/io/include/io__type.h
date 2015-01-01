@@ -8,7 +8,7 @@
 #ifndef io__type_H
 #define io__type_H
 
-#include "hyve.h"
+#include "cortex.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -18,7 +18,7 @@ extern "C" {
 
 /* Type definitions */
 
-/* ::hyve::io::fileMode */
+/* ::cortex::io::fileMode */
 typedef enum io_fileMode {
     IO_Read = 0,
     IO_Write = 1,
@@ -27,7 +27,7 @@ typedef enum io_fileMode {
     IO_ReadAppend = 4
 } io_fileMode;
 
-/*  ::hyve::io::file */
+/*  ::cortex::io::file */
 DB_CLASS(io_file);
 DB_CLASS_DEF(io_file) {
     db_string name;

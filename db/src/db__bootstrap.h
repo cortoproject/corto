@@ -124,8 +124,8 @@
  */
 
 /* Implementations of virtual functions */
-extern db_object db_hyve_new(db_typedef type);
-extern db_object db_hyve__new(db_typedef type, db_attr attributes);
+extern db_object db_cortex_new(db_typedef type);
+extern db_object db_cortex__new(db_typedef type, db_attr attributes);
 
 #ifdef __cplusplus
 extern "C" {
@@ -268,73 +268,73 @@ DB_STATIC_SCOPED_OBJECT(constant);
 #define DB_OBJECT_O_SCOPE(parent, name) db_SSOO_object parent##_##name##__o = {DB_OBJECT_V(parent, #name)}
 
 /* type object */
-#define DB_TYPE_O(name, kind, reference) static sso_type name##__o = {DB_SSO_V(hyve_lang, #name, type), DB_TYPE_V(name, kind, reference, NULL, DB_DECLARED | DB_DEFINED), VTABLE_V}
+#define DB_TYPE_O(name, kind, reference) static sso_type name##__o = {DB_SSO_V(cortex_lang, #name, type), DB_TYPE_V(name, kind, reference, NULL, DB_DECLARED | DB_DEFINED), VTABLE_V}
 
 /* primitive object */
-#define DB_PRIMITIVE_O(name, kind, width) sso_primitive name##__o = {DB_SSO_V(hyve_lang, #name, primitive), DB_PRIMITIVE_V(name, kind, width), VTABLE_V}
+#define DB_PRIMITIVE_O(name, kind, width) sso_primitive name##__o = {DB_SSO_V(cortex_lang, #name, primitive), DB_PRIMITIVE_V(name, kind, width), VTABLE_V}
 
 /* binary object */
-#define DB_BINARY_O(name, width) sso_binary name##__o = {DB_SSO_V(hyve_lang, #name, binary), {DB_PRIMITIVE_V(name, DB_BINARY, width, NULL, DB_DECLARED | DB_DEFINED)}, VTABLE_V}
+#define DB_BINARY_O(name, width) sso_binary name##__o = {DB_SSO_V(cortex_lang, #name, binary), {DB_PRIMITIVE_V(name, DB_BINARY, width, NULL, DB_DECLARED | DB_DEFINED)}, VTABLE_V}
 
 /* boolean object */
-#define DB_BOOLEAN_O(name) sso_boolean name##__o = {DB_SSO_V(hyve_lang, #name, boolean), {DB_PRIMITIVE_V(name, DB_BOOLEAN, DB_WIDTH_8, NULL, DB_DECLARED | DB_DEFINED)}, VTABLE_V}
+#define DB_BOOLEAN_O(name) sso_boolean name##__o = {DB_SSO_V(cortex_lang, #name, boolean), {DB_PRIMITIVE_V(name, DB_BOOLEAN, DB_WIDTH_8, NULL, DB_DECLARED | DB_DEFINED)}, VTABLE_V}
 
 /* character object */
-#define DB_CHARACTER_O(name, width) sso_character name##__o = {DB_SSO_V(hyve_lang, #name, character), {DB_PRIMITIVE_V(name, DB_CHARACTER, width, NULL, DB_DECLARED | DB_DEFINED)}, VTABLE_V}
+#define DB_CHARACTER_O(name, width) sso_character name##__o = {DB_SSO_V(cortex_lang, #name, character), {DB_PRIMITIVE_V(name, DB_CHARACTER, width, NULL, DB_DECLARED | DB_DEFINED)}, VTABLE_V}
 
 /* int object */
-#define DB_INT_O(name, width, min, max, scopeType, scopeStateKind) sso_int name##__o = {DB_SSO_V(hyve_lang, #name, int), {DB_PRIMITIVE_V(name, DB_INTEGER, width, scopeType, scopeStateKind), min, max}, VTABLE_V}
+#define DB_INT_O(name, width, min, max, scopeType, scopeStateKind) sso_int name##__o = {DB_SSO_V(cortex_lang, #name, int), {DB_PRIMITIVE_V(name, DB_INTEGER, width, scopeType, scopeStateKind), min, max}, VTABLE_V}
 
 /* uint object */
-#define DB_UINT_O(name, width, min, max) sso_uint name##__o = {DB_SSO_V(hyve_lang, #name, uint), {DB_PRIMITIVE_V(name, DB_UINTEGER, width, NULL, DB_DECLARED | DB_DEFINED), min, max}, VTABLE_V}
+#define DB_UINT_O(name, width, min, max) sso_uint name##__o = {DB_SSO_V(cortex_lang, #name, uint), {DB_PRIMITIVE_V(name, DB_UINTEGER, width, NULL, DB_DECLARED | DB_DEFINED), min, max}, VTABLE_V}
 
 /* float object */
-#define DB_FLOAT_O(name, width, min, max) sso_float name##__o = {DB_SSO_V(hyve_lang, #name, float), {DB_PRIMITIVE_V(name, DB_FLOAT, width, NULL, DB_DECLARED | DB_DEFINED), min, max}, VTABLE_V}
+#define DB_FLOAT_O(name, width, min, max) sso_float name##__o = {DB_SSO_V(cortex_lang, #name, float), {DB_PRIMITIVE_V(name, DB_FLOAT, width, NULL, DB_DECLARED | DB_DEFINED), min, max}, VTABLE_V}
 
 /* text object */
-#define DB_TEXT_O(name, width, length) sso_text name##__o = {DB_SSO_V(hyve_lang, #name, text), {DB_PRIMITIVE_V(name, DB_TEXT, DB_WIDTH_WORD, NULL, DB_DECLARED | DB_DEFINED), width, length}, VTABLE_V}
+#define DB_TEXT_O(name, width, length) sso_text name##__o = {DB_SSO_V(cortex_lang, #name, text), {DB_PRIMITIVE_V(name, DB_TEXT, DB_WIDTH_WORD, NULL, DB_DECLARED | DB_DEFINED), width, length}, VTABLE_V}
 
 /* enum object */
-#define DB_ENUM_O(name) sso_enum name##__o = {DB_SSO_V(hyve_lang, #name, enum), {DB_PRIMITIVE_V(name, DB_ENUM, DB_WIDTH_32, NULL, DB_DECLARED | DB_DEFINED), DB_SEQUENCE_EMPTY_V(constant)}, VTABLE_V}
+#define DB_ENUM_O(name) sso_enum name##__o = {DB_SSO_V(cortex_lang, #name, enum), {DB_PRIMITIVE_V(name, DB_ENUM, DB_WIDTH_32, NULL, DB_DECLARED | DB_DEFINED), DB_SEQUENCE_EMPTY_V(constant)}, VTABLE_V}
 
 /* bitmask object */
-#define DB_BITMASK_O(name) sso_bitmask name##__o = {DB_SSO_V(hyve_lang, #name, bitmask), {{DB_PRIMITIVE_V(name, DB_BITMASK, DB_WIDTH_32, NULL, DB_DECLARED | DB_DEFINED), DB_SEQUENCE_EMPTY_V(constant)}}, VTABLE_V}
+#define DB_BITMASK_O(name) sso_bitmask name##__o = {DB_SSO_V(cortex_lang, #name, bitmask), {{DB_PRIMITIVE_V(name, DB_BITMASK, DB_WIDTH_32, NULL, DB_DECLARED | DB_DEFINED), DB_SEQUENCE_EMPTY_V(constant)}}, VTABLE_V}
 
 /* constant object */
 #define DB_CONSTANT_O(parent, name) sso_constant parent##_##name##__o = {DB_SSO_PO_V(parent, #name, constant), DB_##name, VTABLE_V}
 
 /* struct object */
 #define DB_STRUCT_O(name, scopeType, scopeStateKind) sso_struct name##__o = \
-    {DB_SSO_V(hyve_lang, #name, struct), DB_STRUCT_NOBASE_V(name, DB_STRUCT, FALSE, scopeType, scopeStateKind), VTABLE_V}
+    {DB_SSO_V(cortex_lang, #name, struct), DB_STRUCT_NOBASE_V(name, DB_STRUCT, FALSE, scopeType, scopeStateKind), VTABLE_V}
 
 /* interface object */
 #define DB_INTERFACE_O(name) sso_interface name##__o = \
-    {DB_SSO_V(hyve_lang, #name, interface), DB_COMPOSITE_NOBASE_V(name, DB_INTERFACE, TRUE, NULL, 0), VTABLE_V}
+    {DB_SSO_V(cortex_lang, #name, interface), DB_COMPOSITE_NOBASE_V(name, DB_INTERFACE, TRUE, NULL, 0), VTABLE_V}
 
 /* class object */
 #define DB_CLASS_NOBASE_O(name, implements, scopeType, scopeStateKind) sso_class name##__o = \
-    {DB_SSO_V(hyve_lang, #name, class), {DB_STRUCT_NOBASE_V(name, DB_CLASS, TRUE, scopeType, scopeStateKind), {0,NULL}, {0,NULL}, {0,NULL}}, VTABLE_V}
+    {DB_SSO_V(cortex_lang, #name, class), {DB_STRUCT_NOBASE_V(name, DB_CLASS, TRUE, scopeType, scopeStateKind), {0,NULL}, {0,NULL}, {0,NULL}}, VTABLE_V}
 
 #define DB_CLASS_O(name, base, baseAccess, implements, scopeType, scopeStateKind) sso_class name##__o = \
-		{DB_SSO_V(hyve_lang, #name, class), {DB_STRUCT_V(name, DB_CLASS, base, baseAccess, TRUE, scopeType, scopeStateKind), implements, {0,NULL}, {0,NULL}}, VTABLE_V}
+		{DB_SSO_V(cortex_lang, #name, class), {DB_STRUCT_V(name, DB_CLASS, base, baseAccess, TRUE, scopeType, scopeStateKind), implements, {0,NULL}, {0,NULL}}, VTABLE_V}
 
 /* array object */
-#define DB_ARRAY_O(name, elementType, size) sso_array name##__o = {DB_SSO_V(hyve_lang, #name, array), {DB_COLLECTION_V(name, DB_ARRAY, elementType, size)}, VTABLE_V}
+#define DB_ARRAY_O(name, elementType, size) sso_array name##__o = {DB_SSO_V(cortex_lang, #name, array), {DB_COLLECTION_V(name, DB_ARRAY, elementType, size)}, VTABLE_V}
 
 /* sequence object */
-#define DB_SEQUENCE_O(name, elementType, max) sso_sequence name##__o = {DB_SSO_V(hyve_lang, #name, sequence), {DB_COLLECTION_V(name, DB_SEQUENCE, elementType, max)}, VTABLE_V}
+#define DB_SEQUENCE_O(name, elementType, max) sso_sequence name##__o = {DB_SSO_V(cortex_lang, #name, sequence), {DB_COLLECTION_V(name, DB_SEQUENCE, elementType, max)}, VTABLE_V}
 
 /* list object */
-#define DB_LIST_O(name, elementType, max) sso_list name##__o = {DB_SSO_V(hyve_lang, #name, list), {DB_COLLECTION_V(name, DB_LIST, elementType, max)}, VTABLE_V}
+#define DB_LIST_O(name, elementType, max) sso_list name##__o = {DB_SSO_V(cortex_lang, #name, list), {DB_COLLECTION_V(name, DB_LIST, elementType, max)}, VTABLE_V}
 
 /* map object */
-#define DB_MAP_O(name, elementType, keyType, max) sso_map name##__o = {DB_SSO_V(hyve_lang, #name, map), {DB_COLLECTION_V(name, DB_MAP, elementType, max), (db_typedef)&keyType##__o.v}, VTABLE_V}
+#define DB_MAP_O(name, elementType, keyType, max) sso_map name##__o = {DB_SSO_V(cortex_lang, #name, map), {DB_COLLECTION_V(name, DB_MAP, elementType, max), (db_typedef)&keyType##__o.v}, VTABLE_V}
 
 /* procedure object */
 #define DB_PROCEDURE_O(name, kind, base, baseAccess, scopeType, scopeStateKind) sso_procedure name##__o = \
-		{DB_SSO_V(hyve_lang, #name, procedure), {DB_STRUCT_V(name, DB_PROCEDURE, base, baseAccess, TRUE, scopeType, scopeStateKind), kind}, VTABLE_V}
+		{DB_SSO_V(cortex_lang, #name, procedure), {DB_STRUCT_V(name, DB_PROCEDURE, base, baseAccess, TRUE, scopeType, scopeStateKind), kind}, VTABLE_V}
 #define DB_PROCEDURE_NOBASE_O(name, kind, scopeType, scopeStateKind) sso_procedure name##__o = \
-		{DB_SSO_V(hyve_lang, #name, procedure), {DB_STRUCT_NOBASE_V(name, DB_PROCEDURE, TRUE, scopeType, scopeStateKind), kind}, VTABLE_V}
+		{DB_SSO_V(cortex_lang, #name, procedure), {DB_STRUCT_NOBASE_V(name, DB_PROCEDURE, TRUE, scopeType, scopeStateKind), kind}, VTABLE_V}
 
 /* function object */
 #define DB_FUNCTION_O(parent, name, args, returnType, impl) \
@@ -469,7 +469,7 @@ DB_FWDECL(sequence, observerSeq);
 DB_FWDECL(sequence, vtable);
 DB_FWDECL(sequence, interfaceVectorSeq);
 
-/* ::hyve::serialization module */
+/* ::cortex::serialization module */
 DB_FWDECL(class, serializer);
 DB_FWDECL(enum, serializerTraceKind);
 
@@ -483,16 +483,16 @@ DB_FWDECL(delegate, procedure_bind);
 db_SSOO_object root__o = {DB_ROOT_V()};
 db_object root_o = DB_OFFSET(&root__o.o.o, sizeof(db__object));
 
-/* ::hyve, ::hyve::lang and ::hyve::serialization */
-DB_OBJECT_O(hyve);
-DB_OBJECT_O_SCOPE(hyve, lang);
-DB_OBJECT_O_SCOPE(hyve, serialization);
+/* ::cortex, ::cortex::lang and ::cortex::serialization */
+DB_OBJECT_O(cortex);
+DB_OBJECT_O_SCOPE(cortex, lang);
+DB_OBJECT_O_SCOPE(cortex, serialization);
 
-db_object hyve_o = DB_OFFSET(&hyve__o.o.o, sizeof(db__object));
-    DB_FUNCTION_OO_O(hyve, new, "(lang::typedef type)", object, db_hyve_new);
-    DB_FUNCTION_OVERLOAD_OO_O(hyve, _new, "new(lang::typedef type,lang::attr attributes)", object, db_hyve__new);
+db_object cortex_o = DB_OFFSET(&cortex__o.o.o, sizeof(db__object));
+    DB_FUNCTION_OO_O(cortex, new, "(lang::typedef type)", object, db_cortex_new);
+    DB_FUNCTION_OVERLOAD_OO_O(cortex, _new, "new(lang::typedef type,lang::attr attributes)", object, db_cortex__new);
 
-db_object hyve_lang_o = DB_OFFSET(&hyve_lang__o.o.o, sizeof(db__object));
+db_object cortex_lang_o = DB_OFFSET(&cortex_lang__o.o.o, sizeof(db__object));
 
 /* Primitives */
 DB_BINARY_O(octet, DB_WIDTH_8);
@@ -653,7 +653,7 @@ DB_SEQUENCE_O(observerSeq, observer, 0);
 DB_SEQUENCE_O(vtable, function, 0);
 DB_SEQUENCE_O(interfaceVectorSeq, interfaceVector, 0);
 
-/* ::hyve::lang::typedef */
+/* ::cortex::lang::typedef */
 DB_CLASS_NOBASE_O(typedef, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_REFERENCE_O(typedef, type, typedef, DB_GLOBAL, DB_DEFINED, FALSE);
     DB_REFERENCE_O(typedef, real, type, DB_LOCAL, DB_DEFINED, FALSE);
@@ -662,7 +662,7 @@ DB_CLASS_NOBASE_O(typedef, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | D
     DB_CALLBACK_O(typedef, construct, "(lang::typedef object)", class_construct, int16, db_typedef_construct);
     DB_CALLBACK_O(typedef, destruct, "(lang::typedef object)", class_destruct, void, db_typedef_destruct);
 
-/* ::hyve::lang::type */
+/* ::cortex::lang::type */
 DB_CLASS_O(type, typedef, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_MEMBER_O(type, kind, typeKind, DB_READONLY | DB_LOCAL);
     DB_MEMBER_O(type, reference, bool, DB_READONLY | DB_LOCAL);
@@ -702,7 +702,7 @@ DB_CLASS_O(type, typedef, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface)
     DB_METAPROCEDURE_O(type, copy, "(lang::any value)", int16, FALSE, db_type_copy);
     DB_METAPROCEDURE_O(type, toString, "()", string, FALSE, db_type_toString);
 
-/* ::hyve::lang::primitive */
+/* ::cortex::lang::primitive */
 DB_CLASS_O(primitive, type, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_MEMBER_O(primitive, kind, primitiveKind, DB_LOCAL|DB_READONLY);
     DB_MEMBER_O(primitive, width, width, DB_GLOBAL);
@@ -712,7 +712,7 @@ DB_CLASS_O(primitive, type, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interfac
     DB_CALLBACK_O(primitive, init, "(lang::primitive object)", type_init, int16, db_primitive_init);
     DB_CALLBACK_O(primitive, construct, "(lang::primitive object)", class_construct, int16, db_primitive_construct);
 
-/* ::hyve::lang::interface */
+/* ::cortex::lang::interface */
 DB_CLASS_O(interface, type, DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_MEMBER_O(interface, kind, compositeKind, DB_LOCAL|DB_READONLY);
     DB_MEMBER_O(interface, nextMemberId, uint32, DB_LOCAL | DB_PRIVATE);
@@ -730,7 +730,7 @@ DB_CLASS_O(interface, type, DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, D
     DB_METHOD_O(interface, bindMethod, "(lang::method method)", int16, TRUE, db_interface_bindMethod_v);
     DB_METHOD_O(interface, baseof, "(lang::interface type)", int16, FALSE, db_interface_baseof);
 
-/* ::hyve::lang::collection */
+/* ::cortex::lang::collection */
 DB_CLASS_O(collection, type, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_MEMBER_O(collection, kind, collectionKind, DB_LOCAL|DB_READONLY);
     DB_REFERENCE_O(collection, elementType, typedef, DB_GLOBAL, DB_DECLARED, FALSE);
@@ -740,43 +740,43 @@ DB_CLASS_O(collection, type, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interfa
     DB_CALLBACK_O(collection, init, "(lang::collection object)", type_init, int16, db_collection_init);
     DB_METAPROCEDURE_O(collection, size, "()", uint32, FALSE, db_collection_size);
 
-/* ::hyve::lang::binary */
+/* ::cortex::lang::binary */
 DB_CLASS_O(binary, primitive, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_CALLBACK_O(binary, init, "(lang::binary object)", type_init, int16, db_binary_init);
 
-/* ::hyve::lang::boolean */
+/* ::cortex::lang::boolean */
 DB_CLASS_O(boolean, primitive, DB_GLOBAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_CALLBACK_O(boolean, init, "(lang::boolean object)", type_init, int16, db_boolean_init);
 
-/* ::hyve::lang::character */
+/* ::cortex::lang::character */
 DB_CLASS_O(character, primitive, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_CALLBACK_O(character, init, "(lang::character object)", type_init, int16, db_character_init);
 
-/* ::hyve::lang::int */
+/* ::cortex::lang::int */
 DB_CLASS_O(int, primitive, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_MEMBER_O(int, min, int64, DB_GLOBAL);
     DB_MEMBER_O(int, max, int64, DB_GLOBAL);
     DB_CALLBACK_O(int, init, "(lang::int object)", type_init, int16, db_int_init);
 
-/* ::hyve::lang::uint */
+/* ::cortex::lang::uint */
 DB_CLASS_O(uint, primitive, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_MEMBER_O(uint, min, uint64, DB_GLOBAL);
     DB_MEMBER_O(uint, max, uint64, DB_GLOBAL);
     DB_CALLBACK_O(uint, init, "(lang::uint object)", type_init, int16, db_uint_init);
 
-/* ::hyve::lang::float */
+/* ::cortex::lang::float */
 DB_CLASS_O(float, primitive, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_MEMBER_O(float, min, float64, DB_GLOBAL);
     DB_MEMBER_O(float, max, float64, DB_GLOBAL);
     DB_CALLBACK_O(float, init, "(lang::float object)", type_init, int16, db_float_init);
 
-/* ::hyve::lang::text */
+/* ::cortex::lang::text */
 DB_CLASS_O(text, primitive, DB_LOCAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_MEMBER_O(text, charWidth, width, DB_GLOBAL);
     DB_MEMBER_O(text, length, uint64, DB_GLOBAL);
     DB_CALLBACK_O(text, init, "(lang::text object)", type_init, int16, db_text_init);
 
-/* ::hyve::lang::enum */
+/* ::cortex::lang::enum */
 DB_CLASS_O(enum, primitive, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
 	DB_MEMBER_O(enum, constants, objectSeq, DB_LOCAL | DB_PRIVATE);
     DB_CALLBACK_O(enum, init, "(lang::enum object)", type_init, int16, db_enum_init);
@@ -784,16 +784,16 @@ DB_CLASS_O(enum, primitive, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interfac
     DB_CALLBACK_O(enum, construct, "(lang::enum object)", class_construct, int16, db_enum_construct);
     DB_METHOD_O(enum, constant, "(lang::int32 value)", object, FALSE, db_enum_constant);
 
-/* ::hyve::lang::bitmask */
+/* ::cortex::lang::bitmask */
 DB_CLASS_O(bitmask, enum, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_CALLBACK_O(bitmask, init, "(lang::bitmask object)", type_init, int16, db_bitmask_init);
 
-/* ::hyve::lang::bitmask */
+/* ::cortex::lang::bitmask */
 DB_CLASS_O(alias, primitive, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_CALLBACK_O(alias, init, "(lang::alias object)", type_init, int16, db_alias_init);
 	DB_MEMBER_O(alias, typeName, string, DB_GLOBAL);
 
-/* ::hyve::lang::struct */
+/* ::cortex::lang::struct */
 DB_CLASS_O(struct, interface, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
 	DB_MEMBER_O(struct, baseAccess, modifier, DB_GLOBAL);
     DB_MEMBER_O(struct, delegateCount, uint16, DB_LOCAL|DB_PRIVATE);
@@ -803,12 +803,12 @@ DB_CLASS_O(struct, interface, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, D
 	DB_CALLBACK_O(struct, init, "(lang::struct object)", type_init, int16, db_struct_init);
 	DB_CALLBACK_O(struct, construct, "(lang::struct object)", class_construct, int16, db_struct_construct);
 
-/* ::hyve::lang::interfaceVector */
+/* ::cortex::lang::interfaceVector */
 DB_STRUCT_O(interfaceVector, NULL, DB_DECLARED | DB_DEFINED);
 	DB_MEMBER_O(interfaceVector, interface, interface, DB_GLOBAL);
 	DB_MEMBER_O(interfaceVector, vector, vtable, DB_GLOBAL);
 
-/* ::hyve::lang::class */
+/* ::cortex::lang::class */
 DB_CLASS_O(class, struct, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_MEMBER_O(class, implements, interfaceSeq, DB_GLOBAL);
     DB_MEMBER_O(class, interfaceVector, interfaceVectorSeq, DB_LOCAL|DB_PRIVATE);
@@ -830,12 +830,12 @@ DB_CLASS_O(class, struct, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DE
     DB_METHOD_O(class, bindObserver, "(lang::observer observer)", void, FALSE, db_class_bindDelegate);
     DB_METHOD_O(class, findObserver, "(lang::object observable,string expr)", observer, FALSE, db_class_findObserver);
 
-/* ::hyve::lang::procptrdata */
+/* ::cortex::lang::procptrdata */
 DB_STRUCT_O(procptrdata, NULL, DB_DECLARED | DB_DEFINED);
     DB_MEMBER_O(procptrdata, instance, object, DB_GLOBAL);
     DB_MEMBER_O(procptrdata, procedure, function, DB_GLOBAL);
 
-/* ::hyve::lang::procptr */
+/* ::cortex::lang::procptr */
 DB_CLASS_O(procptr, struct, DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_CALLBACK_O(procptr, init, "(lang::procptr object)", type_init, int16, db_procptr_init);
     DB_REFERENCE_O(procptr, returnType, typedef, DB_GLOBAL, DB_DEFINED | DB_DECLARED, FALSE);
@@ -843,27 +843,27 @@ DB_CLASS_O(procptr, struct, DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, D
     DB_MEMBER_O(procptr, parameters, parameterSeq, DB_GLOBAL);
     DB_METHOD_O(procptr, compatible, "(lang::type type)", bool, TRUE, db_procptr_compatible_v);
 
-/* ::hyve::lang::procedure */
+/* ::cortex::lang::procedure */
 DB_CLASS_O(procedure, struct, DB_LOCAL | DB_READONLY, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
 	DB_MEMBER_O(procedure, kind, procedureKind, DB_GLOBAL);
 	DB_CALLBACK_O(procedure, init, "(lang::procedure object)", type_init, int16, db_procedure_init);
 	DB_DELEGATE_O(procedure, bind, "(lang::object object)", int16);
 	DB_METHOD_O(procedure, unbind, "(lang::object object)", void, FALSE, db_procedure_unbind);
 
-/* ::hyve::lang::array */
+/* ::cortex::lang::array */
 DB_CLASS_O(array, collection, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_REFERENCE_O(array, elementType, typedef, DB_GLOBAL|DB_PRIVATE, DB_DEFINED, FALSE);
     DB_CALLBACK_O(array, init, "(lang::array object)", type_init, int16, db_array_init);
     DB_CALLBACK_O(array, construct, "(lang::array object)", class_construct, int16, db_array_construct);
     DB_CALLBACK_O(array, destruct, "(lang::array object)", class_destruct, void, db_array_destruct);
 
-/* ::hyve::lang::sequence */
+/* ::cortex::lang::sequence */
 DB_CLASS_O(sequence, collection, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_CALLBACK_O(sequence, init, "(lang::sequence object)", type_init, int16, db_sequence_init);
     DB_CALLBACK_O(sequence, construct, "(lang::sequence object)", class_construct, int16, db_sequence_construct);
     DB_METAPROCEDURE_O(sequence, size, "(lang::uint32 size)", void, FALSE, db_sequence_size);
 
-/* ::hyve::lang::list */
+/* ::cortex::lang::list */
 DB_CLASS_O(list, collection, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
     DB_CALLBACK_O(list, init, "(lang::list object)", type_init, int16, db_list_init);
     DB_CALLBACK_O(list, construct, "(lang::list object)", class_construct, int16, db_list_construct);
@@ -874,7 +874,7 @@ DB_CLASS_O(list, collection, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB
     DB_METAPROCEDURE_O(list, reverse, "()", void, FALSE, db_list_reverse);
     DB_METAPROCEDURE_O(list, clear, "()", void, FALSE, db_list_clear);
 
-/* ::hyve::lang::map */
+/* ::cortex::lang::map */
 DB_CLASS_O(map, collection, DB_LOCAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
 	/* Duplicate members for a more convenient order in the initializer */
 	DB_REFERENCE_O(map, elementType, typedef, DB_GLOBAL, DB_DECLARED | DB_DEFINED, FALSE);
@@ -883,7 +883,7 @@ DB_CLASS_O(map, collection, DB_LOCAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_D
     DB_CALLBACK_O(map, init, "(lang::map object)", type_init, int16, db_map_init);
     DB_CALLBACK_O(map, construct, "(lang::map object)", class_construct, int16, db_map_construct);
 
-/* ::hyve::lang::function */
+/* ::cortex::lang::function */
 DB_PROCEDURE_NOBASE_O(function, DB_FUNCTION, NULL, DB_DECLARED | DB_DEFINED);
     DB_REFERENCE_O(function, returnType, typedef, DB_GLOBAL, DB_DEFINED | DB_DECLARED, FALSE);
     DB_MEMBER_O(function, returnsReference, bool, DB_GLOBAL);
@@ -900,26 +900,26 @@ DB_PROCEDURE_NOBASE_O(function, DB_FUNCTION, NULL, DB_DECLARED | DB_DEFINED);
     DB_FUNCTION_O(function, unbind, "(lang::function object)", void, db_function_unbind);
     DB_FUNCTION_O(function, stringToParameterSeq, "(lang::string name,lang::object scope)", parameterSeq, db_function_stringToParameterSeq);
 
-/* ::hyve::lang::dispatcher */
+/* ::cortex::lang::dispatcher */
 DB_INTERFACE_O(dispatcher);
 	DB_IMETHOD_O(dispatcher, post, "(lang::event event)", void, FALSE);
 	DB_IMETHOD_O(dispatcher, getEvent, "(lang::observer observer,lang::object me,lang::object observable,lang::object src)", observableEvent, FALSE);
 
-/* ::hyve::lang::event */
+/* ::cortex::lang::event */
 DB_CLASS_NOBASE_O(event, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
 	DB_MEMBER_O(event, kind, uint16, DB_GLOBAL);
 	DB_MEMBER_O(event, handled, bool, DB_LOCAL | DB_READONLY);
 	DB_METHOD_O(event, processed, "()", void, FALSE, db_event_processed);
 	DB_FUNCTION_O(event, uniqueKind, "()", int16, db_event_uniqueKind);
 
-/* ::hyve::lang::observableEvent */
+/* ::cortex::lang::observableEvent */
 DB_CLASS_O(observableEvent, event, DB_GLOBAL, DB_SEQUENCE_EMPTY_V(interface), NULL, DB_DECLARED | DB_DEFINED);
 	DB_REFERENCE_O(observableEvent, observer, observer, DB_GLOBAL, DB_DEFINED | DB_DECLARED, FALSE);
 	DB_REFERENCE_O(observableEvent, me, object, DB_GLOBAL, DB_DEFINED | DB_DECLARED, FALSE);
 	DB_REFERENCE_O(observableEvent, source, object, DB_GLOBAL, DB_DEFINED | DB_DECLARED, FALSE);
 	DB_REFERENCE_O(observableEvent, observable, object, DB_GLOBAL, DB_DEFINED | DB_DECLARED, FALSE);
 
-/* ::hyve::lang::method */
+/* ::cortex::lang::method */
 DB_PROCEDURE_O(method, DB_METHOD, function, DB_GLOBAL, DB_SSO_TYPE_ID(interface), DB_DECLARED);
     DB_MEMBER_O(method, virtual, bool, DB_GLOBAL);
     DB_CALLBACK_O(method, init, "(lang::method object)", type_init, int16, db_method_init);
@@ -928,18 +928,18 @@ DB_PROCEDURE_O(method, DB_METHOD, function, DB_GLOBAL, DB_SSO_TYPE_ID(interface)
 DB_PROCEDURE_O(virtual, DB_METHOD, method, DB_GLOBAL, DB_SSO_TYPE_ID(interface), DB_DECLARED);
     DB_CALLBACK_O(virtual, init, "(lang::virtual object)", type_init, int16, db_virtual_init);
     
-/* ::hyve::lang::delegate */
+/* ::cortex::lang::delegate */
 DB_PROCEDURE_O(delegate, DB_DELEGATE, function, DB_GLOBAL, NULL, DB_DECLARED | DB_DEFINED);
     DB_MEMBER_O(delegate, id, uint32, DB_LOCAL);
     DB_CALLBACK_O(delegate, init, "(lang::delegate object)", type_init, int16, db_delegate_init);
 
-/* ::hyve::lang::callback */
+/* ::cortex::lang::callback */
 DB_PROCEDURE_O(callback, DB_CALLBACK, function, DB_GLOBAL, NULL, DB_DECLARED);
 	DB_REFERENCE_O(callback, delegate, delegate, DB_GLOBAL, DB_DEFINED, FALSE);
 	DB_CALLBACK_O(callback, init, "(lang::callback object)", type_init, int16, db_callback_init);
     DB_CALLBACK_O(callback, bind, "(lang::callback object)", procedure_bind, int16, db_callback_bind);
 
-/* ::hyve::lang::observer */
+/* ::cortex::lang::observer */
 DB_PROCEDURE_O(observer, DB_OBSERVER, function, DB_LOCAL | DB_READONLY, NULL, DB_DECLARED | DB_DEFINED);
 	DB_REFERENCE_O(observer, observable, object, DB_GLOBAL, DB_DEFINED | DB_DECLARED, FALSE);
 	DB_MEMBER_O(observer, mask, eventMask, DB_GLOBAL);
@@ -956,12 +956,12 @@ DB_PROCEDURE_O(observer, DB_OBSERVER, function, DB_LOCAL | DB_READONLY, NULL, DB
 	DB_METHOD_O(observer, setDispatcher, "(lang::dispatcher dispatcher)", void, FALSE, db_observer_setDispatcher);
     DB_FUNCTION_O(observer, unbind, "(lang::observer object)", void, db_observer_unbind);
 
-/* ::hyve::lang::metaprocedure */
+/* ::cortex::lang::metaprocedure */
 DB_PROCEDURE_O(metaprocedure, DB_METAPROCEDURE, function, DB_GLOBAL, NULL, DB_DECLARED);
     DB_CALLBACK_O(metaprocedure, bind, "(lang::metaprocedure object)", procedure_bind, int16, db_metaprocedure_bind);
     DB_MEMBER_O(metaprocedure, referenceOnly, bool, DB_GLOBAL);
 
-/* ::hyve::lang::member */
+/* ::cortex::lang::member */
 DB_CLASS_NOBASE_O(member, DB_SEQUENCE_EMPTY_V(interface), DB_SSO_TYPE_ID(interface), DB_DECLARED);
     DB_REFERENCE_O(member, type, typedef, DB_GLOBAL, DB_DECLARED | DB_DEFINED, FALSE);
     DB_MEMBER_O(member, modifiers, modifier, DB_GLOBAL);
@@ -972,7 +972,7 @@ DB_CLASS_NOBASE_O(member, DB_SEQUENCE_EMPTY_V(interface), DB_SSO_TYPE_ID(interfa
     DB_CALLBACK_O(member, init, "(lang::member object)", type_init, int16, db_member_init);
     DB_CALLBACK_O(member, construct, "(lang::member object)", class_construct, int16, db_member_construct);
 
-/* ::hyve::lang::parameter */
+/* ::cortex::lang::parameter */
 DB_STRUCT_O(parameter, NULL, DB_DECLARED | DB_DEFINED);
     DB_MEMBER_O(parameter, name, string, DB_GLOBAL);
     DB_REFERENCE_O(parameter, type, typedef, DB_GLOBAL, DB_DECLARED | DB_DEFINED, FALSE);

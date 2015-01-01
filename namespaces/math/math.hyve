@@ -1,4 +1,4 @@
-object hyve::
+object cortex::
 	object math::
 		
 		// Generate random number

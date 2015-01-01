@@ -383,7 +383,7 @@ int tc_call_load(void) {
 
     /* Define ::tc_call::MammalProps::legs */
     if (!db_checkState(tc_MammalProps_legs_o, DB_DEFINED)) {
-        tc_MammalProps_legs_o->type = db_resolve_ext(tc_MammalProps_legs_o, NULL, "::hyve::lang::uint32", FALSE, "element ::tc_call::MammalProps::legs.type");
+        tc_MammalProps_legs_o->type = db_resolve_ext(tc_MammalProps_legs_o, NULL, "::cortex::lang::uint32", FALSE, "element ::tc_call::MammalProps::legs.type");
         tc_MammalProps_legs_o->modifiers = 0x0;
         tc_MammalProps_legs_o->state = 0x6;
         tc_MammalProps_legs_o->weak = FALSE;
@@ -402,7 +402,7 @@ int tc_call_load(void) {
 
     /* Define ::tc_call::MammalProps::speed */
     if (!db_checkState(tc_MammalProps_speed_o, DB_DEFINED)) {
-        tc_MammalProps_speed_o->type = db_resolve_ext(tc_MammalProps_speed_o, NULL, "::hyve::lang::float64", FALSE, "element ::tc_call::MammalProps::speed.type");
+        tc_MammalProps_speed_o->type = db_resolve_ext(tc_MammalProps_speed_o, NULL, "::cortex::lang::float64", FALSE, "element ::tc_call::MammalProps::speed.type");
         tc_MammalProps_speed_o->modifiers = 0x0;
         tc_MammalProps_speed_o->state = 0x6;
         tc_MammalProps_speed_o->weak = FALSE;
@@ -444,7 +444,7 @@ int tc_call_load(void) {
 
     /* Define ::tc_call::Animal::matesWith(::tc_call::Animal m) */
     if (!db_checkState(tc_Animal_matesWith_o, DB_DEFINED)) {
-        db_function(tc_Animal_matesWith_o)->returnType = db_resolve_ext(tc_Animal_matesWith_o, NULL, "::hyve::lang::bool", FALSE, "element ::tc_call::Animal::matesWith(::tc_call::Animal m).returnType");
+        db_function(tc_Animal_matesWith_o)->returnType = db_resolve_ext(tc_Animal_matesWith_o, NULL, "::cortex::lang::bool", FALSE, "element ::tc_call::Animal::matesWith(::tc_call::Animal m).returnType");
         tc_Animal_matesWith_o->virtual = TRUE;
         
         /* Bind tc_Animal_matesWith_o with C-function */
@@ -490,16 +490,16 @@ int tc_call_load(void) {
             goto error;
         }
     }
-    /* Declare ::tc_call::Mammal::getProps(::hyve::lang::uint32 someValue) */
-    tc_Mammal_getProps_o = db_declare(tc_Mammal_o, "getProps(::hyve::lang::uint32 someValue)", db_typedef(db_method_o));
+    /* Declare ::tc_call::Mammal::getProps(::cortex::lang::uint32 someValue) */
+    tc_Mammal_getProps_o = db_declare(tc_Mammal_o, "getProps(::cortex::lang::uint32 someValue)", db_typedef(db_method_o));
     if (!tc_Mammal_getProps_o) {
-        db_error("tc_call_load: failed to declare object '::tc_call::Mammal::getProps(::hyve::lang::uint32 someValue)'.");
+        db_error("tc_call_load: failed to declare object '::tc_call::Mammal::getProps(::cortex::lang::uint32 someValue)'.");
         goto error;
     }
 
-    /* Define ::tc_call::Mammal::getProps(::hyve::lang::uint32 someValue) */
+    /* Define ::tc_call::Mammal::getProps(::cortex::lang::uint32 someValue) */
     if (!db_checkState(tc_Mammal_getProps_o, DB_DEFINED)) {
-        db_function(tc_Mammal_getProps_o)->returnType = db_resolve_ext(tc_Mammal_getProps_o, NULL, "::tc_call::MammalProps", FALSE, "element ::tc_call::Mammal::getProps(::hyve::lang::uint32 someValue).returnType");
+        db_function(tc_Mammal_getProps_o)->returnType = db_resolve_ext(tc_Mammal_getProps_o, NULL, "::tc_call::MammalProps", FALSE, "element ::tc_call::Mammal::getProps(::cortex::lang::uint32 someValue).returnType");
         tc_Mammal_getProps_o->virtual = FALSE;
         
         /* Bind tc_Mammal_getProps_o with C-function */
@@ -507,7 +507,7 @@ int tc_call_load(void) {
         tc_MammalProps tc_Mammal_getProps(tc_Mammal _this, db_uint32 someValue);
         db_function(tc_Mammal_getProps_o)->impl = (db_word)tc_Mammal_getProps;
         if (db_define(tc_Mammal_getProps_o)) {
-            db_error("tc_call_load: failed to define object '::tc_call::Mammal::getProps(::hyve::lang::uint32 someValue)'.");
+            db_error("tc_call_load: failed to define object '::tc_call::Mammal::getProps(::cortex::lang::uint32 someValue)'.");
             goto error;
         }
     }
@@ -520,7 +520,7 @@ int tc_call_load(void) {
 
     /* Define ::tc_call::Mammal::getSpeed() */
     if (!db_checkState(tc_Mammal_getSpeed_o, DB_DEFINED)) {
-        db_function(tc_Mammal_getSpeed_o)->returnType = db_resolve_ext(tc_Mammal_getSpeed_o, NULL, "::hyve::lang::float64", FALSE, "element ::tc_call::Mammal::getSpeed().returnType");
+        db_function(tc_Mammal_getSpeed_o)->returnType = db_resolve_ext(tc_Mammal_getSpeed_o, NULL, "::cortex::lang::float64", FALSE, "element ::tc_call::Mammal::getSpeed().returnType");
         tc_Mammal_getSpeed_o->virtual = FALSE;
         
         /* Bind tc_Mammal_getSpeed_o with C-function */
@@ -541,8 +541,8 @@ int tc_call_load(void) {
 
     /* Define ::tc_call::Mammal::init(::tc_call::Mammal object) */
     if (!db_checkState(tc_Mammal_init_o, DB_DEFINED)) {
-        db_function(tc_Mammal_init_o)->returnType = db_resolve_ext(tc_Mammal_init_o, NULL, "::hyve::lang::int16", FALSE, "element ::tc_call::Mammal::init(::tc_call::Mammal object).returnType");
-        tc_Mammal_init_o->delegate = db_resolve_ext(tc_Mammal_init_o, NULL, "::hyve::lang::type::init(lang::object object)", FALSE, "element ::tc_call::Mammal::init(::tc_call::Mammal object).delegate");
+        db_function(tc_Mammal_init_o)->returnType = db_resolve_ext(tc_Mammal_init_o, NULL, "::cortex::lang::int16", FALSE, "element ::tc_call::Mammal::init(::tc_call::Mammal object).returnType");
+        tc_Mammal_init_o->delegate = db_resolve_ext(tc_Mammal_init_o, NULL, "::cortex::lang::type::init(lang::object object)", FALSE, "element ::tc_call::Mammal::init(::tc_call::Mammal object).delegate");
         
         /* Bind tc_Mammal_init_o with C-function */
         db_function(tc_Mammal_init_o)->kind = DB_PROCEDURE_CDECL;
@@ -562,7 +562,7 @@ int tc_call_load(void) {
 
     /* Define ::tc_call::Mammal::matesWith(::tc_call::Animal m) */
     if (!db_checkState(tc_Mammal_matesWith_o, DB_DEFINED)) {
-        db_function(tc_Mammal_matesWith_o)->returnType = db_resolve_ext(tc_Mammal_matesWith_o, NULL, "::hyve::lang::bool", FALSE, "element ::tc_call::Mammal::matesWith(::tc_call::Animal m).returnType");
+        db_function(tc_Mammal_matesWith_o)->returnType = db_resolve_ext(tc_Mammal_matesWith_o, NULL, "::cortex::lang::bool", FALSE, "element ::tc_call::Mammal::matesWith(::tc_call::Animal m).returnType");
         tc_Mammal_matesWith_o->virtual = TRUE;
         
         /* Bind tc_Mammal_matesWith_o with C-function */
@@ -583,7 +583,7 @@ int tc_call_load(void) {
 
     /* Define ::tc_call::Mammal::setProps(::tc_call::MammalProps props) */
     if (!db_checkState(tc_Mammal_setProps_o, DB_DEFINED)) {
-        db_function(tc_Mammal_setProps_o)->returnType = db_resolve_ext(tc_Mammal_setProps_o, NULL, "::hyve::lang::void", FALSE, "element ::tc_call::Mammal::setProps(::tc_call::MammalProps props).returnType");
+        db_function(tc_Mammal_setProps_o)->returnType = db_resolve_ext(tc_Mammal_setProps_o, NULL, "::cortex::lang::void", FALSE, "element ::tc_call::Mammal::setProps(::tc_call::MammalProps props).returnType");
         tc_Mammal_setProps_o->virtual = FALSE;
         
         /* Bind tc_Mammal_setProps_o with C-function */
@@ -595,16 +595,16 @@ int tc_call_load(void) {
             goto error;
         }
     }
-    /* Declare ::tc_call::Mammal::setSpeed(::hyve::lang::float64 speed) */
-    tc_Mammal_setSpeed_o = db_declare(tc_Mammal_o, "setSpeed(::hyve::lang::float64 speed)", db_typedef(db_method_o));
+    /* Declare ::tc_call::Mammal::setSpeed(::cortex::lang::float64 speed) */
+    tc_Mammal_setSpeed_o = db_declare(tc_Mammal_o, "setSpeed(::cortex::lang::float64 speed)", db_typedef(db_method_o));
     if (!tc_Mammal_setSpeed_o) {
-        db_error("tc_call_load: failed to declare object '::tc_call::Mammal::setSpeed(::hyve::lang::float64 speed)'.");
+        db_error("tc_call_load: failed to declare object '::tc_call::Mammal::setSpeed(::cortex::lang::float64 speed)'.");
         goto error;
     }
 
-    /* Define ::tc_call::Mammal::setSpeed(::hyve::lang::float64 speed) */
+    /* Define ::tc_call::Mammal::setSpeed(::cortex::lang::float64 speed) */
     if (!db_checkState(tc_Mammal_setSpeed_o, DB_DEFINED)) {
-        db_function(tc_Mammal_setSpeed_o)->returnType = db_resolve_ext(tc_Mammal_setSpeed_o, NULL, "::hyve::lang::void", FALSE, "element ::tc_call::Mammal::setSpeed(::hyve::lang::float64 speed).returnType");
+        db_function(tc_Mammal_setSpeed_o)->returnType = db_resolve_ext(tc_Mammal_setSpeed_o, NULL, "::cortex::lang::void", FALSE, "element ::tc_call::Mammal::setSpeed(::cortex::lang::float64 speed).returnType");
         tc_Mammal_setSpeed_o->virtual = FALSE;
         
         /* Bind tc_Mammal_setSpeed_o with C-function */
@@ -612,7 +612,7 @@ int tc_call_load(void) {
         db_void tc_Mammal_setSpeed(tc_Mammal _this, db_float64 speed);
         db_function(tc_Mammal_setSpeed_o)->impl = (db_word)tc_Mammal_setSpeed;
         if (db_define(tc_Mammal_setSpeed_o)) {
-            db_error("tc_call_load: failed to define object '::tc_call::Mammal::setSpeed(::hyve::lang::float64 speed)'.");
+            db_error("tc_call_load: failed to define object '::tc_call::Mammal::setSpeed(::cortex::lang::float64 speed)'.");
             goto error;
         }
     }

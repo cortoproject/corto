@@ -118,7 +118,7 @@ static jsw_rbnode_t *new_node ( jsw_rbtree_t *tree, void* key, void *data )
   return rn;
 }
 
-/* Marshall between intern comparefunction and hyve::type::equals */
+/* Marshall between intern comparefunction and cortex::type::equals */
 static db_equalityKind db_rbtreeGenericCompare(db_type t, const void* v1, const void* v2) {
     db_any any1, any2;
     db_type keyType = db_map(t)->keyType->real;

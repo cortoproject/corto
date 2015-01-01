@@ -6,7 +6,7 @@
 #ifndef db_event_H
 #define db_event_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "db__type.h"
 
 #include "db__api.h"
@@ -17,10 +17,10 @@
 extern "C" {
 #endif
 
-/* ::hyve::lang::event::processed() */
+/* ::cortex::lang::event::processed() */
 db_void db_event_processed(db_event _this);
 
-/* ::hyve::lang::event::uniqueKind() */
+/* ::cortex::lang::event::uniqueKind() */
 db_int16 db_event_uniqueKind(void);
 
 #ifdef __cplusplus

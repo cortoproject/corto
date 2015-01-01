@@ -6,7 +6,7 @@
 #ifndef db_metaprocedure_H
 #define db_metaprocedure_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "db__type.h"
 
 #include "db__api.h"
@@ -17,7 +17,7 @@
 extern "C" {
 #endif
 
-/* callback ::hyve::lang::procedure::bind(lang::object object) -> ::hyve::lang::metaprocedure::bind(lang::metaprocedure object) */
+/* callback ::cortex::lang::procedure::bind(lang::object object) -> ::cortex::lang::metaprocedure::bind(lang::metaprocedure object) */
 db_int16 db_metaprocedure_bind(db_metaprocedure object);
 
 #ifdef __cplusplus

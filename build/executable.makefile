@@ -1,6 +1,6 @@
-TARGET_OBJECT = $(HYVE_HOME)/bin/$(TARGET)
+TARGET_OBJECT = $(CORTEX_HOME)/bin/$(TARGET)
 
-include $(HYVE_HOME)/build/makefile.makefile
+include $(CORTEX_HOME)/build/makefile.makefile
 
 $(TARGET_OBJECT): $(OBJECTS)
 	mkdir -p $(dir $(TARGET_OBJECT))
@@ -9,4 +9,4 @@ $(TARGET_OBJECT): $(OBJECTS)
 clean: 
 	@rm -rf obj/
 	@rm -rf gcov/
-	@rm -rf $(HYVE_HOME)/bin/$(TARGET) >/dev/null
+	@rm -rf $(CORTEX_HOME)/bin/$(TARGET) >/dev/null

@@ -6,7 +6,7 @@
 #ifndef db_list_H
 #define db_list_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "db_collection.h"
 #include "db__type.h"
 
@@ -18,28 +18,28 @@
 extern "C" {
 #endif
 
-/* ::hyve::lang::list::append() */
+/* ::cortex::lang::list::append() */
 db_any db_list_append_(db_any _this);
 
-/* ::hyve::lang::list::append(lang::any element) */
+/* ::cortex::lang::list::append(lang::any element) */
 db_void db_list_append_lang_any(db_any _this, db_any element);
 
-/* ::hyve::lang::list::clear() */
+/* ::cortex::lang::list::clear() */
 db_void db_list_clear(db_any _this);
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::lang::list::construct(lang::list object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::list::construct(lang::list object) */
 db_int16 db_list_construct(db_list object);
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::list::init(lang::list object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::list::init(lang::list object) */
 db_int16 db_list_init(db_list object);
 
-/* ::hyve::lang::list::insert() */
+/* ::cortex::lang::list::insert() */
 db_any db_list_insert_(db_any _this);
 
-/* ::hyve::lang::list::insert(lang::any element) */
+/* ::cortex::lang::list::insert(lang::any element) */
 db_void db_list_insert_lang_any(db_any _this, db_any element);
 
-/* ::hyve::lang::list::reverse() */
+/* ::cortex::lang::list::reverse() */
 db_void db_list_reverse(db_any _this);
 
 #ifdef __cplusplus

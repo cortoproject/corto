@@ -1,12 +1,12 @@
 /*
- * hyve.h
+ * cortex.h
  *
  *  Created on: Aug 21, 2012
  *      Author: sander
  */
 
-#ifndef HYVE_H_
-#define HYVE_H_
+#ifndef CORTEX_H_
+#define CORTEX_H_
 
 #include "db__type.h"
 #include "db__meta.h"
@@ -43,4 +43,4 @@ void db_onexit(void(*handler)(void*), void* userData);
 }
 #endif
 
-#endif /* HYVE_H_ */
+#endif /* CORTEX_H_ */

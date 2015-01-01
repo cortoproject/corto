@@ -159,9 +159,9 @@ db_type Fast_Parser_initGetType(Fast_Initializer _this, db_member *m_out) {
 
 /* $end */
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::Initializer::construct(Initializer object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Initializer::construct(Initializer object) */
 db_int16 Fast_Initializer_construct(Fast_Initializer object) {
-/* $begin(::hyve::Fast::Initializer::construct) */
+/* $begin(::cortex::Fast::Initializer::construct) */
 	db_uint32 variable;
 	db_type t = Fast_Expression_getType(object->variables[0].object);
     
@@ -202,16 +202,16 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Initializer::currentType() */
+/* ::cortex::Fast::Initializer::currentType() */
 db_type Fast_Initializer_currentType(Fast_Initializer _this) {
-/* $begin(::hyve::Fast::Initializer::currentType) */
+/* $begin(::cortex::Fast::Initializer::currentType) */
     return Fast_Parser_initGetType(_this, NULL);
 /* $end */
 }
 
-/* ::hyve::Fast::Initializer::define() */
+/* ::cortex::Fast::Initializer::define() */
 db_int16 Fast_Initializer_define_v(Fast_Initializer _this) {
-/* $begin(::hyve::Fast::Initializer::define) */
+/* $begin(::cortex::Fast::Initializer::define) */
     DB_UNUSED(_this);
 #ifdef DB_INIT_DEBUG
     {
@@ -225,9 +225,9 @@ db_int16 Fast_Initializer_define_v(Fast_Initializer _this) {
 /* $end */
 }
 
-/* ::hyve::Fast::Initializer::initFrame() */
+/* ::cortex::Fast::Initializer::initFrame() */
 db_uint16 Fast_Initializer_initFrame(Fast_Initializer _this) {
-/* $begin(::hyve::Fast::Initializer::initFrame) */
+/* $begin(::cortex::Fast::Initializer::initFrame) */
     struct db_serializer_s s;
 	db_type t;
 	Fast_Initializer_findMember_t walkData;
@@ -265,9 +265,9 @@ db_uint16 Fast_Initializer_initFrame(Fast_Initializer _this) {
 /* $end */
 }
 
-/* ::hyve::Fast::Initializer::member(lang::string name) */
+/* ::cortex::Fast::Initializer::member(lang::string name) */
 db_int32 Fast_Initializer_member_v(Fast_Initializer _this, db_string name) {
-/* $begin(::hyve::Fast::Initializer::member) */
+/* $begin(::cortex::Fast::Initializer::member) */
 	struct db_serializer_s s;
 	db_type t;
 	Fast_Initializer_findMember_t walkData;
@@ -302,9 +302,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Initializer::next() */
+/* ::cortex::Fast::Initializer::next() */
 db_int16 Fast_Initializer_next_v(Fast_Initializer _this) {
-/* $begin(::hyve::Fast::Initializer::next) */
+/* $begin(::cortex::Fast::Initializer::next) */
     
     /* Increase location by one */
 	_this->frames[_this->fp].location++;
@@ -324,9 +324,9 @@ db_int16 Fast_Initializer_next_v(Fast_Initializer _this) {
 /* $end */
 }
 
-/* ::hyve::Fast::Initializer::pop() */
+/* ::cortex::Fast::Initializer::pop() */
 db_int8 Fast_Initializer_pop_v(Fast_Initializer _this) {
-/* $begin(::hyve::Fast::Initializer::pop) */
+/* $begin(::cortex::Fast::Initializer::pop) */
 
     if (_this->fp) {
         _this->fp--;
@@ -345,16 +345,16 @@ db_int8 Fast_Initializer_pop_v(Fast_Initializer _this) {
 /* $end */
 }
 
-/* ::hyve::Fast::Initializer::popKey() */
+/* ::cortex::Fast::Initializer::popKey() */
 db_int16 Fast_Initializer_popKey_v(Fast_Initializer _this) {
-/* $begin(::hyve::Fast::Initializer::popKey) */
+/* $begin(::cortex::Fast::Initializer::popKey) */
     return Fast_Initializer_pop(_this);
 /* $end */
 }
 
-/* ::hyve::Fast::Initializer::push() */
+/* ::cortex::Fast::Initializer::push() */
 db_int16 Fast_Initializer_push_v(Fast_Initializer _this) {
-/* $begin(::hyve::Fast::Initializer::push) */
+/* $begin(::cortex::Fast::Initializer::push) */
     db_type t = Fast_Initializer_currentType(_this);
 
     if (!_this->fp || (_this->fp && !t->reference)) {
@@ -385,32 +385,32 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::Initializer::pushKey() */
+/* ::cortex::Fast::Initializer::pushKey() */
 db_int16 Fast_Initializer_pushKey_v(Fast_Initializer _this) {
-/* $begin(::hyve::Fast::Initializer::pushKey) */
+/* $begin(::cortex::Fast::Initializer::pushKey) */
     _this->frames[_this->fp+1].isKey = TRUE;
     return Fast_Initializer_push(_this);
 /* $end */
 }
 
-/* ::hyve::Fast::Initializer::type() */
+/* ::cortex::Fast::Initializer::type() */
 db_type Fast_Initializer_type(Fast_Initializer _this) {
-/* $begin(::hyve::Fast::Initializer::type) */
+/* $begin(::cortex::Fast::Initializer::type) */
     return Fast_Expression_getType(_this->variables[0].object);
 /* $end */
 }
 
-/* ::hyve::Fast::Initializer::value(Expression v) */
+/* ::cortex::Fast::Initializer::value(Expression v) */
 db_int16 Fast_Initializer_value_v(Fast_Initializer _this, Fast_Expression v) {
-/* $begin(::hyve::Fast::Initializer::value) */
+/* $begin(::cortex::Fast::Initializer::value) */
     DB_UNUSED(v);
     return Fast_Initializer_next(_this);
 /* $end */
 }
 
-/* ::hyve::Fast::Initializer::valueKey(Expression key) */
+/* ::cortex::Fast::Initializer::valueKey(Expression key) */
 db_int16 Fast_Initializer_valueKey_v(Fast_Initializer _this, Fast_Expression key) {
-/* $begin(::hyve::Fast::Initializer::valueKey) */
+/* $begin(::cortex::Fast::Initializer::valueKey) */
     _this->frames[_this->fp].isKey = TRUE;
     return Fast_Initializer_value(_this, key);
 /* $end */

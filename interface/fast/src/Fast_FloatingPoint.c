@@ -17,17 +17,17 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::Fast::FloatingPoint::init(FloatingPoint object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::FloatingPoint::init(FloatingPoint object) */
 db_int16 Fast_FloatingPoint_init(Fast_FloatingPoint object) {
-/* $begin(::hyve::Fast::FloatingPoint::init) */
+/* $begin(::cortex::Fast::FloatingPoint::init) */
     Fast_Literal(object)->kind = FAST_FloatingPoint;
     return Fast_Literal_init(Fast_Literal(object));
 /* $end */
 }
 
-/* ::hyve::Fast::FloatingPoint::serialize(lang::type dstType,lang::word dst) */
+/* ::cortex::Fast::FloatingPoint::serialize(lang::type dstType,lang::word dst) */
 db_int16 Fast_FloatingPoint_serialize(Fast_FloatingPoint _this, db_type dstType, db_word dst) {
-/* $begin(::hyve::Fast::FloatingPoint::serialize) */
+/* $begin(::cortex::Fast::FloatingPoint::serialize) */
 	Fast_valueKind kind;
 
 	kind = Fast_valueKindFromType(dstType);
@@ -57,9 +57,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::FloatingPoint::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::FloatingPoint::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_FloatingPoint_toIc_v(Fast_FloatingPoint _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-/* $begin(::hyve::Fast::FloatingPoint::toIc) */
+/* $begin(::cortex::Fast::FloatingPoint::toIc) */
 	db_ic result;
 	db_value v;
 	DB_UNUSED(storage);

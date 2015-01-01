@@ -8,7 +8,7 @@
 #include "tc_stringser__type.h"
 #include "tc_stringser__meta.h"
 #include "tc_stringser__api.h"
-#include "hyve.h"
+#include "cortex.h"
 
 int tc__classPrimitives(void) {
     tc_classPrimitives o1, o2;

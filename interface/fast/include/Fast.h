@@ -6,7 +6,7 @@
 #ifndef Fast_H
 #define Fast_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "Fast__type.h"
 
 #include "Fast__api.h"
@@ -21,7 +21,7 @@ extern "C" {
 Fast_Call Fast_createMethodCall(Fast_Expression obj, db_string function, db_uint32 numArgs, ...);
 /* $end */
 
-/* ::hyve::Fast::valueKindFromType(lang::type type) */
+/* ::cortex::Fast::valueKindFromType(lang::type type) */
 Fast_valueKind Fast_valueKindFromType(db_type type);
 
 #ifdef __cplusplus

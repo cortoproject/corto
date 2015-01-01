@@ -13,9 +13,9 @@
 #include "stdio.h"
 /* $end */
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::io::file::construct(::hyve::io::file object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::io::file::construct(::cortex::io::file object) */
 db_int16 io_file_construct(io_file object) {
-/* $begin(::hyve::io::file::construct) */
+/* $begin(::cortex::io::file::construct) */
     if (object->name) {\
         /* Special directive, for opening stdout, stdin and stderr */
         if (*object->name == '#') {
@@ -60,25 +60,25 @@ error:
 /* $end */
 }
 
-/* callback ::hyve::lang::class::destruct(lang::object object) -> ::hyve::io::file::destruct(::hyve::io::file object) */
+/* callback ::cortex::lang::class::destruct(lang::object object) -> ::cortex::io::file::destruct(::cortex::io::file object) */
 db_void io_file_destruct(io_file object) {
-/* $begin(::hyve::io::file::destruct) */
+/* $begin(::cortex::io::file::destruct) */
     if (object->handle) {
         fclose((FILE*)object->handle);
     }
 /* $end */
 }
 
-/* ::hyve::io::file::flush() */
+/* ::cortex::io::file::flush() */
 db_void io_file_flush(io_file _this) {
-/* $begin(::hyve::io::file::flush) */
+/* $begin(::cortex::io::file::flush) */
     fflush((FILE*)_this->handle);
 /* $end */
 }
 
-/* ::hyve::io::file::read(::hyve::lang::uint32 bytes) */
+/* ::cortex::io::file::read(::cortex::lang::uint32 bytes) */
 db_octet_seq io_file_read(io_file _this, db_uint32 bytes) {
-/* $begin(::hyve::io::file::read) */
+/* $begin(::cortex::io::file::read) */
 	db_octet_seq result;
 
     result.buffer = db_malloc(bytes);
@@ -88,9 +88,9 @@ db_octet_seq io_file_read(io_file _this, db_uint32 bytes) {
 /* $end */
 }
 
-/* ::hyve::io::file::readAll() */
+/* ::cortex::io::file::readAll() */
 db_octet_seq io_file_readAll(io_file _this) {
-/* $begin(::hyve::io::file::readAll) */
+/* $begin(::cortex::io::file::readAll) */
 	db_octet_seq result;
 
 	DB_UNUSED(_this);
@@ -104,9 +104,9 @@ db_octet_seq io_file_readAll(io_file _this) {
 /* $end */
 }
 
-/* ::hyve::io::file::readLn() */
+/* ::cortex::io::file::readLn() */
 db_string io_file_readLn(io_file _this) {
-/* $begin(::hyve::io::file::readLn) */
+/* $begin(::cortex::io::file::readLn) */
 	DB_UNUSED(_this);
 
     db_trace("io::File::readLn not yet implemented.");
@@ -115,9 +115,9 @@ db_string io_file_readLn(io_file _this) {
 /* $end */
 }
 
-/* ::hyve::io::file::readText() */
+/* ::cortex::io::file::readText() */
 db_string io_file_readText(io_file _this) {
-/* $begin(::hyve::io::file::readText) */
+/* $begin(::cortex::io::file::readText) */
 	DB_UNUSED(_this);
 
     db_trace("io::File::readText not yet implemented.");
@@ -126,9 +126,9 @@ db_string io_file_readText(io_file _this) {
 /* $end */
 }
 
-/* ::hyve::io::file::write(::hyve::lang::sequence{::hyve::lang::octet,0} data) */
+/* ::cortex::io::file::write(::cortex::lang::sequence{::cortex::lang::octet,0} data) */
 db_uint32 io_file_write(io_file _this, db_octet_seq data) {
-/* $begin(::hyve::io::file::write) */
+/* $begin(::cortex::io::file::write) */
     DB_UNUSED(_this);
     DB_UNUSED(data);
 
@@ -138,9 +138,9 @@ db_uint32 io_file_write(io_file _this, db_octet_seq data) {
 /* $end */
 }
 
-/* ::hyve::io::file::writeText(::hyve::lang::string txt) */
+/* ::cortex::io::file::writeText(::cortex::lang::string txt) */
 db_uint32 io_file_writeText(io_file _this, db_string txt) {
-/* $begin(::hyve::io::file::writeText) */
+/* $begin(::cortex::io::file::writeText) */
     return fwrite(txt, strlen(txt), 1, (FILE*)_this->handle);
 /* $end */
 }

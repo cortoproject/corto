@@ -1,6 +1,6 @@
 /* io__wrapper.c
  *
- * This file contains wrapper functions for ::hyve::io.
+ * This file contains wrapper functions for ::cortex::io.
  */
 
 #include "io.h"

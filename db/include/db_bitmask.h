@@ -6,7 +6,7 @@
 #ifndef db_bitmask_H
 #define db_bitmask_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "db_enum.h"
 #include "db__type.h"
 
@@ -18,7 +18,7 @@
 extern "C" {
 #endif
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::bitmask::init(lang::bitmask object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::bitmask::init(lang::bitmask object) */
 db_int16 db_bitmask_init(db_bitmask object);
 
 #ifdef __cplusplus

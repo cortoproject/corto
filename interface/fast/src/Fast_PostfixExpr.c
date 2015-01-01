@@ -17,9 +17,9 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::PostfixExpr::construct(Fast::PostfixExpr object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::PostfixExpr::construct(Fast::PostfixExpr object) */
 db_int16 Fast_PostfixExpr_construct(Fast_PostfixExpr object) {
-/* $begin(::hyve::Fast::PostfixExpr::construct) */
+/* $begin(::cortex::Fast::PostfixExpr::construct) */
 	db_type lvalueType;
 
     Fast_Node(object)->kind = FAST_Postfix;
@@ -30,9 +30,9 @@ db_int16 Fast_PostfixExpr_construct(Fast_PostfixExpr object) {
 /* $end */
 }
 
-/* ::hyve::Fast::PostfixExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::PostfixExpr::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_PostfixExpr_toIc_v(Fast_PostfixExpr _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-/* $begin(::hyve::Fast::PostfixExpr::toIc) */
+/* $begin(::cortex::Fast::PostfixExpr::toIc) */
 	db_icStorage result;
 	db_ic lvalue;
 	db_icOp op;

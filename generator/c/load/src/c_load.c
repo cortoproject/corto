@@ -303,7 +303,7 @@ static g_file c_loadHeaderFileOpen(db_generator g) {
     g_fileWrite(result, " */\n\n");
     g_fileWrite(result, "#ifndef %s_META_H\n", g_getName(g));
     g_fileWrite(result, "#define %s_META_H\n\n", g_getName(g));
-    g_fileWrite(result, "#include \"hyve.h\"\n\n");
+    g_fileWrite(result, "#include \"cortex.h\"\n\n");
     g_fileWrite(result, "#include \"%s__type.h\"\n\n", g_getName(g));
     g_fileWrite(result, "#ifdef __cplusplus\n");
     g_fileWrite(result, "extern \"C\" {\n");
@@ -822,12 +822,12 @@ static int c_loadDefine(db_object o, void* userData) {
 }
 
 /* Entry point for generator */
-int hyve_genMain(db_generator g) {
+int cortex_genMain(db_generator g) {
     c_typeWalk_t walkData;
 
-	/* Default prefixes for hyve namespaces */
-	gen_parse(g, hyve_o, FALSE, FALSE, "");
-    gen_parse(g, hyve_lang_o, FALSE, FALSE, "db");
+	/* Default prefixes for cortex namespaces */
+	gen_parse(g, cortex_o, FALSE, FALSE, "");
+    gen_parse(g, cortex_lang_o, FALSE, FALSE, "db");
 
     /* Prepare walkData, create header- and sourcefile */
     walkData.g = g;

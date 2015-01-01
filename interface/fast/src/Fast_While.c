@@ -19,9 +19,9 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::While::construct(While object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::While::construct(While object) */
 db_int16 Fast_While_construct(Fast_While object) {
-/* $begin(::hyve::Fast::While::construct) */
+/* $begin(::cortex::Fast::While::construct) */
 	db_type conditionType;
 
 	Fast_Node(object)->kind = FAST_While;
@@ -44,9 +44,9 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::While::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::While::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_While_toIc_v(Fast_While _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-/* $begin(::hyve::Fast::While::toIc) */
+/* $begin(::cortex::Fast::While::toIc) */
 	db_icStorage accumulator;
 	db_icLabel labelEval, labelNeq;
     Fast_Expression condition = NULL;

@@ -9,9 +9,9 @@
 #include "Fast.h"
 #include "Fast__meta.h"
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::Define::construct(Fast::Define object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Define::construct(Fast::Define object) */
 db_int16 Fast_Define_construct(Fast_Define object) {
-/* $begin(::hyve::Fast::Define::construct) */
+/* $begin(::cortex::Fast::Define::construct) */
 
     Fast_Node(object)->kind = FAST_Define;
 
@@ -19,9 +19,9 @@ db_int16 Fast_Define_construct(Fast_Define object) {
 /* $end */
 }
 
-/* ::hyve::Fast::Define::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Define::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
 db_ic Fast_Define_toIc_v(Fast_Define _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-/* $begin(::hyve::Fast::Define::toIc) */
+/* $begin(::cortex::Fast::Define::toIc) */
 	db_ic object;
 	db_icOp op;
 	DB_UNUSED(stored);

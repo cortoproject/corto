@@ -5,7 +5,7 @@
  *      Author: sander
  */
 
-#include "hyve.h"
+#include "cortex.h"
 #include "db_generator.h"
 #include "stdarg.h"
 
@@ -198,12 +198,12 @@ db_int16 gen_load(db_generator g, db_string library) {
     }
 
     /* Load actions */
-    g->start_action = (g_startAction)db_dlProc(g->library, "hyve_genMain");
+    g->start_action = (g_startAction)db_dlProc(g->library, "cortex_genMain");
     if (!g->start_action) {
-        db_error("g_Load: unresolved symbol 'hyve_genMain'");
+        db_error("g_Load: unresolved symbol 'cortex_genMain'");
         goto error;
     }
-    g->id_action = (g_idAction)db_dlProc(g->library, "hyve_genId");
+    g->id_action = (g_idAction)db_dlProc(g->library, "cortex_genId");
 
     /* Function is allowed to be absent. */
 
@@ -372,7 +372,7 @@ db_int16 g_serializeImportsReference(db_serializer s, db_value *v, void* userDat
 		} else {
 			if (!g_mustParse(g, o)) {
 	    		db_object parent = o;
-	    		while(parent && (db_parentof(parent) != hyve_lang_o)) {
+	    		while(parent && (db_parentof(parent) != cortex_lang_o)) {
 	    			parent = db_parentof(parent);
 	    		}
 	    		if (!parent) {

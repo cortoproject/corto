@@ -8,7 +8,7 @@
 #ifndef C_COMMON_H_
 #define C_COMMON_H_
 
-#include "hyve.h"
+#include "cortex.h"
 #include "db_generator.h"
 
 #ifdef __cplusplus
@@ -16,7 +16,7 @@ extern "c" {
 #endif
 
 /* Translate id to C-id */
-db_string hyve_genId(db_string str, db_id id);
+db_string cortex_genId(db_string str, db_id id);
 
 /* Return string with C type for primitive */
 db_char* cpp_primitiveId(db_primitive t, db_char* buff);

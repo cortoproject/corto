@@ -9,9 +9,9 @@
 #include "db.h"
 #include "db__meta.h"
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::text::init(lang::text object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::text::init(lang::text object) */
 db_int16 db_text_init(db_text object) {
-/* $begin(::hyve::lang::text::init) */
+/* $begin(::cortex::lang::text::init) */
 	db_type(object)->hasResources = TRUE;
     db_primitive(object)->kind = DB_TEXT;
     db_primitive(object)->width = DB_WIDTH_WORD;

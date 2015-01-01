@@ -9,9 +9,9 @@
 #include "db.h"
 #include "db__meta.h"
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::lang::map::construct(lang::map object) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::map::construct(lang::map object) */
 db_int16 db_map_construct(db_map object) {
-/* $begin(::hyve::lang::map::construct) */
+/* $begin(::cortex::lang::map::construct) */
 	db_type(object)->hasResources = TRUE;
 	db_type(object)->size = sizeof(db_map);
 	db_type(object)->alignment = DB_ALIGNMENT(db_map);
@@ -22,9 +22,9 @@ db_int16 db_map_construct(db_map object) {
 /* $end */
 }
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::map::init(lang::map object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::map::init(lang::map object) */
 db_int16 db_map_init(db_map object) {
-/* $begin(::hyve::lang::map::init) */
+/* $begin(::cortex::lang::map::init) */
     db_collection(object)->kind = DB_MAP;
     return db_collection_init(db_collection(object));
 /* $end */

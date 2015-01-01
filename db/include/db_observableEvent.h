@@ -6,7 +6,7 @@
 #ifndef db_observableEvent_H
 #define db_observableEvent_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "db_event.h"
 #include "db__type.h"
 

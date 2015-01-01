@@ -1,6 +1,6 @@
 /* os__wrapper.c
  *
- * This file contains wrapper functions for ::hyve::os.
+ * This file contains wrapper functions for ::cortex::os.
  */
 
 #include "os.h"
@@ -55,7 +55,7 @@ void __os_thread_join(db_function f, void *result, void *args) {
         *(os_thread*)args);
 }
 
-/* virtual ::hyve::os::thread::run() */
+/* virtual ::cortex::os::thread::run() */
 void os_thread_run(os_thread _this) {
     static db_uint32 _methodId;
     db_method _method;

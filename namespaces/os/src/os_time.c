@@ -13,9 +13,9 @@
 #include "db_time.h"
 /* $end */
 
-/* ::hyve::os::time::add(::hyve::os::time t) */
+/* ::cortex::os::time::add(::cortex::os::time t) */
 db_void os_time_add(os_time _this, os_time t) {
-/* $begin(::hyve::os::time::add) */
+/* $begin(::cortex::os::time::add) */
     db_time t1, t2;
 
     /* Avoid type-punning warnings */
@@ -33,18 +33,18 @@ db_void os_time_add(os_time _this, os_time t) {
 /* $end */
 }
 
-/* ::hyve::os::time::get() */
+/* ::cortex::os::time::get() */
 db_void os_time_get(os_time _this) {
-/* $begin(::hyve::os::time::get) */
+/* $begin(::cortex::os::time::get) */
 
     db_timeGet((db_time*)_this); /* os_Time is equally formed as db_time */
 
 /* $end */
 }
 
-/* ::hyve::os::time::sub(::hyve::os::time t) */
+/* ::cortex::os::time::sub(::cortex::os::time t) */
 db_void os_time_sub(os_time _this, os_time t) {
-/* $begin(::hyve::os::time::sub) */
+/* $begin(::cortex::os::time::sub) */
     db_time t1, t2;
 
     /* Avoid type-punning warnings */
@@ -62,9 +62,9 @@ db_void os_time_sub(os_time _this, os_time t) {
 /* $end */
 }
 
-/* ::hyve::os::time::toFloat() */
+/* ::cortex::os::time::toFloat() */
 db_float64 os_time_toFloat(os_time _this) {
-/* $begin(::hyve::os::time::toFloat) */
+/* $begin(::cortex::os::time::toFloat) */
     db_time t;
 
     t.tv_sec = _this->seconds;

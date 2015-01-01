@@ -28,9 +28,9 @@ db_int16 db__bitmask_bindConstant(db_bitmask _this, db_constant* c) {
 }
 /* $end */
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::bitmask::init(lang::bitmask object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::bitmask::init(lang::bitmask object) */
 db_int16 db_bitmask_init(db_bitmask object) {
-/* $begin(::hyve::lang::bitmask::init) */
+/* $begin(::cortex::lang::bitmask::init) */
     db_primitive(object)->kind = DB_BITMASK;
     db_primitive(object)->width = DB_WIDTH_32;
     db_set(&db_type(object)->defaultType, db_constant_o);

@@ -7,7 +7,7 @@
 #ifndef tc_classNested_H
 #define tc_classNested_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "tc_stringser__type.h"
 
 #ifdef __cplusplus

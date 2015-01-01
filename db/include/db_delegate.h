@@ -6,7 +6,7 @@
 #ifndef db_delegate_H
 #define db_delegate_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "db__type.h"
 
 #include "db__api.h"
@@ -17,7 +17,7 @@
 extern "C" {
 #endif
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::lang::delegate::init(lang::delegate object) */
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::delegate::init(lang::delegate object) */
 db_int16 db_delegate_init(db_delegate object);
 
 #ifdef __cplusplus

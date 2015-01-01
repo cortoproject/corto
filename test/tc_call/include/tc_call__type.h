@@ -8,7 +8,7 @@
 #ifndef tc_call__type_H
 #define tc_call__type_H
 
-#include "hyve.h"
+#include "cortex.h"
 #ifdef __cplusplus
 extern "C" {
 #endif

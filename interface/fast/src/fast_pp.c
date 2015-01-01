@@ -190,7 +190,7 @@ db_string fast_pp(db_string filename, db_string code) {
 
 	/* Do dryrun to get allocation size */
 	if (fast_pp_code(filename, code, NULL, &size)) {
-	    db_trace("hyve: %s: preprocessor failed.");
+	    db_trace("cortex: %s: preprocessor failed.");
 		goto error;
 	}
 

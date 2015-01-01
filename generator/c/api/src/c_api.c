@@ -5,7 +5,7 @@
  *      Author: sander
  */
 
-#include "hyve.h"
+#include "cortex.h"
 #include "db_generator.h"
 #include "c_common.h"
 #include "db_serializer.h"
@@ -938,7 +938,7 @@ static g_file c_apiHeaderOpen(db_generator g) {
     g_fileWrite(result, "#ifndef %s__API_H\n", g_getName(g));
     g_fileWrite(result, "#define %s__API_H\n\n", g_getName(g));
     g_fileWrite(result, "#include \"%s__type.h\"\n", g_getName(g));
-    g_fileWrite(result, "#include \"hyve.h\"\n\n");
+    g_fileWrite(result, "#include \"cortex.h\"\n\n");
     g_fileWrite(result, "#ifdef __cplusplus\n");
     g_fileWrite(result, "extern \"C\" {\n");
     g_fileWrite(result, "#endif\n");
@@ -1015,12 +1015,12 @@ static int c_apiFindCollections(db_object o, void* userData) {
 }
 
 /* Generator main */
-db_int16 hyve_genMain(db_generator g) {
+db_int16 cortex_genMain(db_generator g) {
     c_apiWalk_t walkData;
 
-	/* Default prefixes for hyve namespaces */
-	gen_parse(g, hyve_o, FALSE, FALSE, "");
-    gen_parse(g, hyve_lang_o, FALSE, FALSE, "db");
+	/* Default prefixes for cortex namespaces */
+	gen_parse(g, cortex_o, FALSE, FALSE, "");
+    gen_parse(g, cortex_lang_o, FALSE, FALSE, "db");
 
     walkData.g = g;
     walkData.header = c_apiHeaderOpen(g);
