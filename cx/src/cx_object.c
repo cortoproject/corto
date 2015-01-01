@@ -47,11 +47,11 @@ typedef struct cx_waitForObject {
 }cx_waitForObject;
 
 /* Thread local storage key for administration that keeps track for which observables notifications take place.
- *     This key points to an element in a list keyed by threadId's for which notifications have taken place. Value
- *     of this element is the observable being notified at the moment. When a listen\silence call needs to clean
- *     memory it can look at this administration to see if it is in use. To prevent deadlocks, listen\silence calls
- *     will not look at their own threadId, since this would indicate listen\silence is called from an observer being
- *     notified. This key is created in cx_start. */
+ * This key points to an element in a list keyed by threadId's for which notifications have taken place. Value
+ * of this element is the observable being notified at the moment. When a listen\silence call needs to clean
+ * memory it can look at this administration to see if it is in use. To prevent deadlocks, listen\silence calls
+ * will not look at their own threadId, since this would indicate listen\silence is called from an observer being
+ * notified. This key is created in cx_start. */
 /* TODO: when a thread exits, the corresponding element must be free'd again - use tls destructor function */
 extern cx_threadKey CX_KEY_OBSERVER_ADMIN;
 
@@ -2961,8 +2961,13 @@ cx_uint32 cx_overloadParamCount(cx_object o) {
 cx_type cx_overloadParamType(cx_object object, cx_int32 i, cx_bool *reference) {
     cx_id buffer;
     cx_int32 flags = 0;
+    cx_id signature;
 
-    if (cx_signatureParamType(cx_nameof(object), i, buffer, &flags)) {
+    if (cx_signature(object, signature)) {
+        goto error;
+    }
+
+    if (cx_signatureParamType(signature, i, buffer, &flags)) {
         goto error;
     }
 
@@ -2974,13 +2979,13 @@ cx_type cx_overloadParamType(cx_object object, cx_int32 i, cx_bool *reference) {
 
     return cx_typedef(cx_resolve(object, buffer))->real;
 error:
-    cx_error("failed to obtain parameter %d from signature %s", i, cx_nameof(object));
+    cx_error("failed to obtain parameter %d from signature %s", i, signature);
     return NULL;
 }
 
 
 /* Compare parameter */
-cx_uint32 cx_overloadParamCompare(
+static cx_uint32 cx_overloadParamCompare(
     cx_type o_type,
     cx_type r_type,
     cx_bool o_reference,
@@ -3064,6 +3069,49 @@ nomatch:
     return -1;
 }
 
+/* Create signature from delegate */
+static void cx_signatureFromDelegate(cx_object o, cx_id buffer) {
+    cx_procptr type = cx_procptr(cx_typeof(o)->real);
+    cx_uint32 i;
+
+    /* Construct signature */
+    cx_string signature = cx_signatureOpen(cx_nameof(o));
+    for (i = 0; i < type->parameters.length; i++) {
+        cx_parameter *p = &type->parameters.buffer[i];
+        signature = cx_signatureAdd(signature, p->type, p->passByReference ? CX_PARAMETER_FORCEREFERENCE : 0);
+    }
+    signature = cx_signatureClose(signature);
+
+    /* Copy signature to buffer */
+    strcpy(buffer, signature);
+    cx_dealloc(signature);
+}
+
+/* Obtain signature from object */
+cx_int16 cx_signature(cx_object object, cx_id buffer) {
+    cx_type t = cx_typeof(object)->real;
+
+    if (t->kind != CX_COMPOSITE) {
+        goto error;
+    }
+
+    switch(cx_interface(t)->kind) {
+    case CX_PROCPTR:
+        cx_signatureFromDelegate(object, buffer);
+        break;
+    case CX_PROCEDURE:
+        strcpy(buffer, cx_nameof(object));
+        break;
+    default:
+        goto error;
+    }
+
+    return 0;
+error:
+    cx_error("cannot obtain signature from a non callable object");
+    return -1;
+}
+
 /* Check if argumentlist-expr matches function.
  *   The offered string (the name of the object) looks like:
  *      name(type1 arg1,type2 arg2,...)
@@ -3077,6 +3125,7 @@ cx_int16 cx_overload(cx_object object, cx_string requested, cx_int32* distance, 
     cx_id r_name, o_name;
     cx_int32 r_parameterCount, o_parameterCount;
     cx_int32 i = 0, d = 0;
+    cx_id offered;
 
     CX_UNUSED(allowCastable);
 
@@ -3085,8 +3134,13 @@ cx_int16 cx_overload(cx_object object, cx_string requested, cx_int32* distance, 
         goto error;
     }
 
+    /* Obtain offered singature */
+    if (cx_signature(object, offered)) {
+        goto error;
+    }
+
     /* Obtain name of offered object */
-    if (cx_signatureName(cx_nameof(object), o_name)) {
+    if (cx_signatureName(offered, o_name)) {
         goto error;
     }
 

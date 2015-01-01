@@ -18,7 +18,10 @@ int main(int argc, char* argv[]) {
     cx_start();
 
     /* Pre-load cortex-ast parser */
-    cx_load("fast");
+    if (cx_load("fast")) {
+        cx_error("failed to load parser package");
+        goto error;
+    }
 
     /* Parse arguments */
     for(i=1; i<argc; i++) {
@@ -31,10 +34,12 @@ int main(int argc, char* argv[]) {
             sprintf(filename, "%s.cx", argv[i]);
             if (cx_load(filename)) {
                 cx_error("failed to load file '%s'", argv[i]);
+                goto error;
             }
         } else {
             if (cx_load(argv[i])) {
                 cx_error("failed to load file '%s'", argv[i]);
+                goto error;
             }
         }
     }
@@ -43,4 +48,6 @@ int main(int argc, char* argv[]) {
     cx_stop();
 
     return 0;
+error:
+    return -1;
 }

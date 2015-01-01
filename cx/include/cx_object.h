@@ -145,6 +145,9 @@ cx_string cx_signatureAdd(cx_string sig, cx_typedef type, int flags);
 cx_string cx_signatureAddWildcard(cx_string sig, cx_bool isReference);
 cx_string cx_signatureClose(cx_string sig);
 
+/* Obtain signature from object */
+cx_int16 cx_signature(cx_object o, cx_id buffer);
+
 /* Parse member expression */
 cx_value* cx_parseExpr(cx_object o, cx_string expr, cx_valueStack stack, cx_uint32 *count);
 
