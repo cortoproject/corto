@@ -36,18 +36,18 @@ typedef int (*cx_scopeWalkAction)(cx_object o, void* userData);
 #define CX_DESTRUCTED (8)
 
 /* Object event flags */
-#define CX_ON_DECLARE              (1)
+#define CX_ON_DECLARE    (1)
 #define CX_ON_DEFINE     (2)
-#define CX_ON_DESTRUCT         (4)
-#define CX_ON_INVALIDATE     (8)
-#define CX_ON_UPDATE         (16)
-#define CX_ON_SELF             (32)
-#define CX_ON_SCOPE         (64)
-#define CX_ON_VALUE         (128)
-#define CX_ON_METAVALUE     (256)
+#define CX_ON_DESTRUCT   (4)
+#define CX_ON_INVALIDATE (8)
+#define CX_ON_UPDATE     (16)
+#define CX_ON_SELF       (32)
+#define CX_ON_SCOPE      (64)
+#define CX_ON_VALUE      (128)
+#define CX_ON_METAVALUE  (256)
 
 /* Event-kinds */
-#define CX_EVENT_NONE        (0)
+#define CX_EVENT_NONE       (0)
 #define CX_EVENT_OBSERVABLE (1)
 
 /* Parameter kinds */

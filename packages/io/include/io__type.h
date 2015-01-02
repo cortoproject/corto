@@ -1,6 +1,5 @@
 /* io__type.h
  *
- *  Generated on Dec  1 2014
  *    Type-definitions for C-language.
  *    This file contains generated code. Do not modify!
  */
@@ -9,6 +8,7 @@
 #define io__type_H
 
 #include "cortex.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -17,7 +17,6 @@ extern "C" {
 #define io_file(o) ((io_file)o)
 
 /* Type definitions */
-
 /* ::cortex::io::fileMode */
 typedef enum io_fileMode {
     IO_Read = 0,
@@ -29,12 +28,14 @@ typedef enum io_fileMode {
 
 /*  ::cortex::io::file */
 CX_CLASS(io_file);
+
 CX_CLASS_DEF(io_file) {
     cx_string name;
     io_fileMode mode;
     cx_bool binary;
     cx_word handle;
 };
+
 CX_SEQUENCE(cx_octet_seq, cx_octet,);
 
 #ifdef __cplusplus

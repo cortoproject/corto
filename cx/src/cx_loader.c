@@ -259,7 +259,7 @@ int cx_fileLoader(cx_string file, void* udata) {
     /* Test whether a file with extension .cx is available in current directory */
     sprintf(testName, "%s.cx", file);
     if (cx_fileTest(testName)) {
-        cx_load("fast");
+        cx_load("Fast");
         return cx_load(testName);
     }
 
