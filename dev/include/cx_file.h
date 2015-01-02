@@ -10,6 +10,7 @@
 #ifndef C_FILE_H_
 #define C_FILE_H_
 
+#include "cx_files.h"
 #include "cx_ll.h"
 #include "stdio.h"
 
@@ -24,7 +25,6 @@ char* cx_fileLoad(const char* file);
 cx_file cx_fileOpen(const char* file);
 FILE* cx_fileGet(cx_file file);
 void cx_fileClose(cx_file);
-int cx_fileTest(const char* file);
 char* cx_fileSearch(const char* file, cx_ll locations);
 
 unsigned int cx_fileSize(cx_file);

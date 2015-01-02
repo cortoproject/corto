@@ -43,6 +43,7 @@ int math_load(void) {
             goto error;
         }
     }
+
     /* Declare ::cortex::math */
     mth_o = cx_declare(_o, "math", cx_typedef(cx_object_o));
     if (!mth_o) {
@@ -57,6 +58,7 @@ int math_load(void) {
             goto error;
         }
     }
+
     /* Declare ::cortex::math::abs(::cortex::lang::uint64 x) */
     mth_abs_o = cx_declare(mth_o, "abs(::cortex::lang::uint64 x)", cx_typedef(cx_function_o));
     if (!mth_abs_o) {
@@ -69,7 +71,7 @@ int math_load(void) {
         mth_abs_o->returnType = cx_resolve_ext(mth_abs_o, NULL, "::cortex::lang::uint64", FALSE, "element ::cortex::math::abs(::cortex::lang::uint64 x).returnType");
         mth_abs_o->returnsReference = FALSE;
         
-        /* Bind mth_abs_o with C-function */
+        /* Bind ::cortex::math::abs(::cortex::lang::uint64 x) with C-function */
         cx_function(mth_abs_o)->kind = CX_PROCEDURE_CDECL;
         void __mth_abs(void *args, void *result);
         cx_function(mth_abs_o)->impl = (cx_word)__mth_abs;
@@ -78,6 +80,7 @@ int math_load(void) {
             goto error;
         }
     }
+
     /* Declare ::cortex::math::acos(::cortex::lang::float64 x) */
     mth_acos_o = cx_declare(mth_o, "acos(::cortex::lang::float64 x)", cx_typedef(cx_function_o));
     if (!mth_acos_o) {
@@ -90,7 +93,7 @@ int math_load(void) {
         mth_acos_o->returnType = cx_resolve_ext(mth_acos_o, NULL, "::cortex::lang::float64", FALSE, "element ::cortex::math::acos(::cortex::lang::float64 x).returnType");
         mth_acos_o->returnsReference = FALSE;
         
-        /* Bind mth_acos_o with C-function */
+        /* Bind ::cortex::math::acos(::cortex::lang::float64 x) with C-function */
         cx_function(mth_acos_o)->kind = CX_PROCEDURE_CDECL;
         void __mth_acos(void *args, void *result);
         cx_function(mth_acos_o)->impl = (cx_word)__mth_acos;
@@ -99,6 +102,7 @@ int math_load(void) {
             goto error;
         }
     }
+
     /* Declare ::cortex::math::asin(::cortex::lang::float64 x) */
     mth_asin_o = cx_declare(mth_o, "asin(::cortex::lang::float64 x)", cx_typedef(cx_function_o));
     if (!mth_asin_o) {
@@ -111,7 +115,7 @@ int math_load(void) {
         mth_asin_o->returnType = cx_resolve_ext(mth_asin_o, NULL, "::cortex::lang::float64", FALSE, "element ::cortex::math::asin(::cortex::lang::float64 x).returnType");
         mth_asin_o->returnsReference = FALSE;
         
-        /* Bind mth_asin_o with C-function */
+        /* Bind ::cortex::math::asin(::cortex::lang::float64 x) with C-function */
         cx_function(mth_asin_o)->kind = CX_PROCEDURE_CDECL;
         void __mth_asin(void *args, void *result);
         cx_function(mth_asin_o)->impl = (cx_word)__mth_asin;
@@ -120,6 +124,7 @@ int math_load(void) {
             goto error;
         }
     }
+
     /* Declare ::cortex::math::atan(::cortex::lang::float64 x) */
     mth_atan_o = cx_declare(mth_o, "atan(::cortex::lang::float64 x)", cx_typedef(cx_function_o));
     if (!mth_atan_o) {
@@ -132,7 +137,7 @@ int math_load(void) {
         mth_atan_o->returnType = cx_resolve_ext(mth_atan_o, NULL, "::cortex::lang::float64", FALSE, "element ::cortex::math::atan(::cortex::lang::float64 x).returnType");
         mth_atan_o->returnsReference = FALSE;
         
-        /* Bind mth_atan_o with C-function */
+        /* Bind ::cortex::math::atan(::cortex::lang::float64 x) with C-function */
         cx_function(mth_atan_o)->kind = CX_PROCEDURE_CDECL;
         void __mth_atan(void *args, void *result);
         cx_function(mth_atan_o)->impl = (cx_word)__mth_atan;
@@ -141,6 +146,7 @@ int math_load(void) {
             goto error;
         }
     }
+
     /* Declare ::cortex::math::cos(::cortex::lang::float64 x) */
     mth_cos_o = cx_declare(mth_o, "cos(::cortex::lang::float64 x)", cx_typedef(cx_function_o));
     if (!mth_cos_o) {
@@ -153,7 +159,7 @@ int math_load(void) {
         mth_cos_o->returnType = cx_resolve_ext(mth_cos_o, NULL, "::cortex::lang::float64", FALSE, "element ::cortex::math::cos(::cortex::lang::float64 x).returnType");
         mth_cos_o->returnsReference = FALSE;
         
-        /* Bind mth_cos_o with C-function */
+        /* Bind ::cortex::math::cos(::cortex::lang::float64 x) with C-function */
         cx_function(mth_cos_o)->kind = CX_PROCEDURE_CDECL;
         void __mth_cos(void *args, void *result);
         cx_function(mth_cos_o)->impl = (cx_word)__mth_cos;
@@ -162,6 +168,7 @@ int math_load(void) {
             goto error;
         }
     }
+
     /* Declare ::cortex::math::exp(::cortex::lang::float64 x) */
     mth_exp_o = cx_declare(mth_o, "exp(::cortex::lang::float64 x)", cx_typedef(cx_function_o));
     if (!mth_exp_o) {
@@ -174,7 +181,7 @@ int math_load(void) {
         mth_exp_o->returnType = cx_resolve_ext(mth_exp_o, NULL, "::cortex::lang::float64", FALSE, "element ::cortex::math::exp(::cortex::lang::float64 x).returnType");
         mth_exp_o->returnsReference = FALSE;
         
-        /* Bind mth_exp_o with C-function */
+        /* Bind ::cortex::math::exp(::cortex::lang::float64 x) with C-function */
         cx_function(mth_exp_o)->kind = CX_PROCEDURE_CDECL;
         void __mth_exp(void *args, void *result);
         cx_function(mth_exp_o)->impl = (cx_word)__mth_exp;
@@ -183,6 +190,7 @@ int math_load(void) {
             goto error;
         }
     }
+
     /* Declare ::cortex::math::log(::cortex::lang::float64 x) */
     mth_log_o = cx_declare(mth_o, "log(::cortex::lang::float64 x)", cx_typedef(cx_function_o));
     if (!mth_log_o) {
@@ -195,7 +203,7 @@ int math_load(void) {
         mth_log_o->returnType = cx_resolve_ext(mth_log_o, NULL, "::cortex::lang::float64", FALSE, "element ::cortex::math::log(::cortex::lang::float64 x).returnType");
         mth_log_o->returnsReference = FALSE;
         
-        /* Bind mth_log_o with C-function */
+        /* Bind ::cortex::math::log(::cortex::lang::float64 x) with C-function */
         cx_function(mth_log_o)->kind = CX_PROCEDURE_CDECL;
         void __mth_log(void *args, void *result);
         cx_function(mth_log_o)->impl = (cx_word)__mth_log;
@@ -204,6 +212,7 @@ int math_load(void) {
             goto error;
         }
     }
+
     /* Declare ::cortex::math::log10(::cortex::lang::float64 x) */
     mth_log10_o = cx_declare(mth_o, "log10(::cortex::lang::float64 x)", cx_typedef(cx_function_o));
     if (!mth_log10_o) {
@@ -216,7 +225,7 @@ int math_load(void) {
         mth_log10_o->returnType = cx_resolve_ext(mth_log10_o, NULL, "::cortex::lang::float64", FALSE, "element ::cortex::math::log10(::cortex::lang::float64 x).returnType");
         mth_log10_o->returnsReference = FALSE;
         
-        /* Bind mth_log10_o with C-function */
+        /* Bind ::cortex::math::log10(::cortex::lang::float64 x) with C-function */
         cx_function(mth_log10_o)->kind = CX_PROCEDURE_CDECL;
         void __mth_log10(void *args, void *result);
         cx_function(mth_log10_o)->impl = (cx_word)__mth_log10;
@@ -225,6 +234,7 @@ int math_load(void) {
             goto error;
         }
     }
+
     /* Declare ::cortex::math::pow(::cortex::lang::float64 x,::cortex::lang::float64 p) */
     mth_pow_o = cx_declare(mth_o, "pow(::cortex::lang::float64 x,::cortex::lang::float64 p)", cx_typedef(cx_function_o));
     if (!mth_pow_o) {
@@ -237,7 +247,7 @@ int math_load(void) {
         mth_pow_o->returnType = cx_resolve_ext(mth_pow_o, NULL, "::cortex::lang::float64", FALSE, "element ::cortex::math::pow(::cortex::lang::float64 x,::cortex::lang::float64 p).returnType");
         mth_pow_o->returnsReference = FALSE;
         
-        /* Bind mth_pow_o with C-function */
+        /* Bind ::cortex::math::pow(::cortex::lang::float64 x,::cortex::lang::float64 p) with C-function */
         cx_function(mth_pow_o)->kind = CX_PROCEDURE_CDECL;
         void __mth_pow(void *args, void *result);
         cx_function(mth_pow_o)->impl = (cx_word)__mth_pow;
@@ -246,6 +256,7 @@ int math_load(void) {
             goto error;
         }
     }
+
     /* Declare ::cortex::math::rand() */
     mth_rand_o = cx_declare(mth_o, "rand()", cx_typedef(cx_function_o));
     if (!mth_rand_o) {
@@ -258,7 +269,7 @@ int math_load(void) {
         mth_rand_o->returnType = cx_resolve_ext(mth_rand_o, NULL, "::cortex::lang::float64", FALSE, "element ::cortex::math::rand().returnType");
         mth_rand_o->returnsReference = FALSE;
         
-        /* Bind mth_rand_o with C-function */
+        /* Bind ::cortex::math::rand() with C-function */
         cx_function(mth_rand_o)->kind = CX_PROCEDURE_CDECL;
         void __mth_rand(void *args, void *result);
         cx_function(mth_rand_o)->impl = (cx_word)__mth_rand;
@@ -267,6 +278,7 @@ int math_load(void) {
             goto error;
         }
     }
+
     /* Declare ::cortex::math::seed(::cortex::lang::uint32 seed) */
     mth_seed_o = cx_declare(mth_o, "seed(::cortex::lang::uint32 seed)", cx_typedef(cx_function_o));
     if (!mth_seed_o) {
@@ -279,7 +291,7 @@ int math_load(void) {
         mth_seed_o->returnType = cx_resolve_ext(mth_seed_o, NULL, "::cortex::lang::void", FALSE, "element ::cortex::math::seed(::cortex::lang::uint32 seed).returnType");
         mth_seed_o->returnsReference = FALSE;
         
-        /* Bind mth_seed_o with C-function */
+        /* Bind ::cortex::math::seed(::cortex::lang::uint32 seed) with C-function */
         cx_function(mth_seed_o)->kind = CX_PROCEDURE_CDECL;
         void __mth_seed(void *args, void *result);
         cx_function(mth_seed_o)->impl = (cx_word)__mth_seed;
@@ -288,6 +300,7 @@ int math_load(void) {
             goto error;
         }
     }
+
     /* Declare ::cortex::math::sin(::cortex::lang::float64 x) */
     mth_sin_o = cx_declare(mth_o, "sin(::cortex::lang::float64 x)", cx_typedef(cx_function_o));
     if (!mth_sin_o) {
@@ -300,7 +313,7 @@ int math_load(void) {
         mth_sin_o->returnType = cx_resolve_ext(mth_sin_o, NULL, "::cortex::lang::float64", FALSE, "element ::cortex::math::sin(::cortex::lang::float64 x).returnType");
         mth_sin_o->returnsReference = FALSE;
         
-        /* Bind mth_sin_o with C-function */
+        /* Bind ::cortex::math::sin(::cortex::lang::float64 x) with C-function */
         cx_function(mth_sin_o)->kind = CX_PROCEDURE_CDECL;
         void __mth_sin(void *args, void *result);
         cx_function(mth_sin_o)->impl = (cx_word)__mth_sin;
@@ -309,6 +322,7 @@ int math_load(void) {
             goto error;
         }
     }
+
     /* Declare ::cortex::math::sqrt(::cortex::lang::float64 x) */
     mth_sqrt_o = cx_declare(mth_o, "sqrt(::cortex::lang::float64 x)", cx_typedef(cx_function_o));
     if (!mth_sqrt_o) {
@@ -321,7 +335,7 @@ int math_load(void) {
         mth_sqrt_o->returnType = cx_resolve_ext(mth_sqrt_o, NULL, "::cortex::lang::float64", FALSE, "element ::cortex::math::sqrt(::cortex::lang::float64 x).returnType");
         mth_sqrt_o->returnsReference = FALSE;
         
-        /* Bind mth_sqrt_o with C-function */
+        /* Bind ::cortex::math::sqrt(::cortex::lang::float64 x) with C-function */
         cx_function(mth_sqrt_o)->kind = CX_PROCEDURE_CDECL;
         void __mth_sqrt(void *args, void *result);
         cx_function(mth_sqrt_o)->impl = (cx_word)__mth_sqrt;
@@ -330,6 +344,7 @@ int math_load(void) {
             goto error;
         }
     }
+
     /* Declare ::cortex::math::tan(::cortex::lang::float64 x) */
     mth_tan_o = cx_declare(mth_o, "tan(::cortex::lang::float64 x)", cx_typedef(cx_function_o));
     if (!mth_tan_o) {
@@ -342,7 +357,7 @@ int math_load(void) {
         mth_tan_o->returnType = cx_resolve_ext(mth_tan_o, NULL, "::cortex::lang::float64", FALSE, "element ::cortex::math::tan(::cortex::lang::float64 x).returnType");
         mth_tan_o->returnsReference = FALSE;
         
-        /* Bind mth_tan_o with C-function */
+        /* Bind ::cortex::math::tan(::cortex::lang::float64 x) with C-function */
         cx_function(mth_tan_o)->kind = CX_PROCEDURE_CDECL;
         void __mth_tan(void *args, void *result);
         cx_function(mth_tan_o)->impl = (cx_word)__mth_tan;
@@ -351,6 +366,7 @@ int math_load(void) {
             goto error;
         }
     }
+
     if (_a_) {
         cx_free(_a_);
     }

@@ -16,8 +16,8 @@ Fast_BinaryExpr Fast_BinaryExpr__declare(cx_object _parent, cx_string _name) {
 }
 
 int Fast_BinaryExpr__define(Fast_BinaryExpr _this, Fast_Expression lvalue, Fast_Expression rvalue, cx_operatorKind operator) {
-    lvalue ? cx_keep_ext(_this, lvalue, "element <0x82985a0>.lvalue") : 0; _this->lvalue = lvalue;
-    rvalue ? cx_keep_ext(_this, rvalue, "element <0x82985a0>.rvalue") : 0; _this->rvalue = rvalue;
+    lvalue ? cx_keep_ext(_this, lvalue, "element <0x8aa7780>.lvalue") : 0; _this->lvalue = lvalue;
+    rvalue ? cx_keep_ext(_this, rvalue, "element <0x8aa7780>.rvalue") : 0; _this->rvalue = rvalue;
     _this->operator = operator;
     return cx_define(_this);
 }
@@ -25,8 +25,8 @@ int Fast_BinaryExpr__define(Fast_BinaryExpr _this, Fast_Expression lvalue, Fast_
 Fast_BinaryExpr Fast_BinaryExpr__create(Fast_Expression lvalue, Fast_Expression rvalue, cx_operatorKind operator) {
     Fast_BinaryExpr _this;
     _this = cx_new(cx_typedef(Fast_BinaryExpr_o));
-    lvalue ? cx_keep_ext(_this, lvalue, "element <0x82985a0>.lvalue") : 0; _this->lvalue = lvalue;
-    rvalue ? cx_keep_ext(_this, rvalue, "element <0x82985a0>.rvalue") : 0; _this->rvalue = rvalue;
+    lvalue ? cx_keep_ext(_this, lvalue, "element <0x8aa7780>.lvalue") : 0; _this->lvalue = lvalue;
+    rvalue ? cx_keep_ext(_this, rvalue, "element <0x8aa7780>.rvalue") : 0; _this->rvalue = rvalue;
     _this->operator = operator;
     if (cx_define(_this)) {
         cx_free(_this);
@@ -40,8 +40,8 @@ void Fast_Binding__init(Fast_Binding *_this, cx_function function, Fast_Block im
     memset(_this, 0, sizeof(*_this));
     cx_valueValueInit(&v, NULL, cx_typedef(Fast_Binding_o), _this);
     cx_initValue(&v);
-    function ? cx_keep_ext(_this, function, "element <0x82e60b0>.function") : 0; _this->function = function;
-    impl ? cx_keep_ext(_this, impl, "element <0x82e60b0>.impl") : 0; _this->impl = impl;
+    function ? cx_keep_ext(_this, function, "element <0x8a96e60>.function") : 0; _this->function = function;
+    impl ? cx_keep_ext(_this, impl, "element <0x8a96e60>.impl") : 0; _this->impl = impl;
 }
 
 void Fast_Binding__deinit(Fast_Binding *_this) {
@@ -59,14 +59,14 @@ Fast_Block Fast_Block__declare(cx_object _parent, cx_string _name) {
 }
 
 int Fast_Block__define(Fast_Block _this, Fast_Block parent) {
-    parent ? cx_keep_ext(_this, parent, "element <0x82985a0>.parent") : 0; _this->parent = parent;
+    parent ? cx_keep_ext(_this, parent, "element <0x8aa7780>.parent") : 0; _this->parent = parent;
     return cx_define(_this);
 }
 
 Fast_Block Fast_Block__create(Fast_Block parent) {
     Fast_Block _this;
     _this = cx_new(cx_typedef(Fast_Block_o));
-    parent ? cx_keep_ext(_this, parent, "element <0x82985a0>.parent") : 0; _this->parent = parent;
+    parent ? cx_keep_ext(_this, parent, "element <0x8aa7780>.parent") : 0; _this->parent = parent;
     if (cx_define(_this)) {
         cx_free(_this);
         _this = NULL;
@@ -107,16 +107,16 @@ Fast_Call Fast_Call__declare(cx_object _parent, cx_string _name) {
 }
 
 int Fast_Call__define(Fast_Call _this, Fast_Expression instanceExpr, Fast_Expression arguments) {
-    instanceExpr ? cx_keep_ext(_this, instanceExpr, "element <0x829cd68>.instanceExpr") : 0; _this->instanceExpr = instanceExpr;
-    arguments ? cx_keep_ext(_this, arguments, "element <0x829cd68>.arguments") : 0; _this->arguments = arguments;
+    instanceExpr ? cx_keep_ext(_this, instanceExpr, "element <0x8a920b0>.instanceExpr") : 0; _this->instanceExpr = instanceExpr;
+    arguments ? cx_keep_ext(_this, arguments, "element <0x8a920b0>.arguments") : 0; _this->arguments = arguments;
     return cx_define(_this);
 }
 
 Fast_Call Fast_Call__create(Fast_Expression instanceExpr, Fast_Expression arguments) {
     Fast_Call _this;
     _this = cx_new(cx_typedef(Fast_Call_o));
-    instanceExpr ? cx_keep_ext(_this, instanceExpr, "element <0x8289ba0>.instanceExpr") : 0; _this->instanceExpr = instanceExpr;
-    arguments ? cx_keep_ext(_this, arguments, "element <0x8289ba0>.arguments") : 0; _this->arguments = arguments;
+    instanceExpr ? cx_keep_ext(_this, instanceExpr, "element <0x8aa7700>.instanceExpr") : 0; _this->instanceExpr = instanceExpr;
+    arguments ? cx_keep_ext(_this, arguments, "element <0x8aa7700>.arguments") : 0; _this->arguments = arguments;
     if (cx_define(_this)) {
         cx_free(_this);
         _this = NULL;
@@ -130,10 +130,10 @@ void Fast_CallBuilder__init(Fast_CallBuilder *_this, cx_string name, Fast_Expres
     cx_valueValueInit(&v, NULL, cx_typedef(Fast_CallBuilder_o), _this);
     cx_initValue(&v);
     _this->name = (name ? cx_strdup(name) : NULL);
-    arguments ? cx_keep_ext(_this, arguments, "element <0x8278328>.arguments") : 0; _this->arguments = arguments;
-    instance ? cx_keep_ext(_this, instance, "element <0x8278328>.instance") : 0; _this->instance = instance;
-    scope ? cx_keep_ext(_this, scope, "element <0x8278328>.scope") : 0; _this->scope = scope;
-    block ? cx_keep_ext(_this, block, "element <0x8278328>.block") : 0; _this->block = block;
+    arguments ? cx_keep_ext(_this, arguments, "element <0x8ae19d8>.arguments") : 0; _this->arguments = arguments;
+    instance ? cx_keep_ext(_this, instance, "element <0x8ae19d8>.instance") : 0; _this->instance = instance;
+    scope ? cx_keep_ext(_this, scope, "element <0x8ae19d8>.scope") : 0; _this->scope = scope;
+    block ? cx_keep_ext(_this, block, "element <0x8ae19d8>.block") : 0; _this->block = block;
 }
 
 void Fast_CallBuilder__deinit(Fast_CallBuilder *_this) {
@@ -151,16 +151,16 @@ Fast_CastExpr Fast_CastExpr__declare(cx_object _parent, cx_string _name) {
 }
 
 int Fast_CastExpr__define(Fast_CastExpr _this, Fast_Expression lvalue, Fast_Expression rvalue) {
-    lvalue ? cx_keep_ext(_this, lvalue, "element <0x8278328>.lvalue") : 0; _this->lvalue = lvalue;
-    rvalue ? cx_keep_ext(_this, rvalue, "element <0x8278328>.rvalue") : 0; _this->rvalue = rvalue;
+    lvalue ? cx_keep_ext(_this, lvalue, "element <0x8adfde0>.lvalue") : 0; _this->lvalue = lvalue;
+    rvalue ? cx_keep_ext(_this, rvalue, "element <0x8adfde0>.rvalue") : 0; _this->rvalue = rvalue;
     return cx_define(_this);
 }
 
 Fast_CastExpr Fast_CastExpr__create(Fast_Expression lvalue, Fast_Expression rvalue) {
     Fast_CastExpr _this;
     _this = cx_new(cx_typedef(Fast_CastExpr_o));
-    lvalue ? cx_keep_ext(_this, lvalue, "element <0x8278328>.lvalue") : 0; _this->lvalue = lvalue;
-    rvalue ? cx_keep_ext(_this, rvalue, "element <0x8278328>.rvalue") : 0; _this->rvalue = rvalue;
+    lvalue ? cx_keep_ext(_this, lvalue, "element <0x8adfde0>.lvalue") : 0; _this->lvalue = lvalue;
+    rvalue ? cx_keep_ext(_this, rvalue, "element <0x8adfde0>.rvalue") : 0; _this->rvalue = rvalue;
     if (cx_define(_this)) {
         cx_free(_this);
         _this = NULL;
@@ -223,14 +223,14 @@ Fast_Define Fast_Define__declare(cx_object _parent, cx_string _name) {
 }
 
 int Fast_Define__define(Fast_Define _this, Fast_Expression object) {
-    object ? cx_keep_ext(_this, object, "element <0x82e91b0>.object") : 0; _this->object = object;
+    object ? cx_keep_ext(_this, object, "element <0x8a8ffb8>.object") : 0; _this->object = object;
     return cx_define(_this);
 }
 
 Fast_Define Fast_Define__create(Fast_Expression object) {
     Fast_Define _this;
     _this = cx_new(cx_typedef(Fast_Define_o));
-    object ? cx_keep_ext(_this, object, "element <0x82e91b0>.object") : 0; _this->object = object;
+    object ? cx_keep_ext(_this, object, "element <0x8a8ffb8>.object") : 0; _this->object = object;
     if (cx_define(_this)) {
         cx_free(_this);
         _this = NULL;
@@ -247,18 +247,18 @@ Fast_DelegateCall Fast_DelegateCall__declare(cx_object _parent, cx_string _name)
 }
 
 int Fast_DelegateCall__define(Fast_DelegateCall _this, Fast_Expression instanceExpr, Fast_Expression arguments, Fast_Expression expr) {
-    instanceExpr ? cx_keep_ext(_this, instanceExpr, "element <0x829cd68>.instanceExpr") : 0; Fast_Call(_this)->instanceExpr = instanceExpr;
-    arguments ? cx_keep_ext(_this, arguments, "element <0x829cd68>.arguments") : 0; Fast_Call(_this)->arguments = arguments;
-    expr ? cx_keep_ext(_this, expr, "element <0x829cd68>.expr") : 0; _this->expr = expr;
+    instanceExpr ? cx_keep_ext(_this, instanceExpr, "element <0x8a920b0>.instanceExpr") : 0; Fast_Call(_this)->instanceExpr = instanceExpr;
+    arguments ? cx_keep_ext(_this, arguments, "element <0x8a920b0>.arguments") : 0; Fast_Call(_this)->arguments = arguments;
+    expr ? cx_keep_ext(_this, expr, "element <0x8a920b0>.expr") : 0; _this->expr = expr;
     return cx_define(_this);
 }
 
 Fast_DelegateCall Fast_DelegateCall__create(Fast_Expression instanceExpr, Fast_Expression arguments, Fast_Expression expr) {
     Fast_DelegateCall _this;
     _this = cx_new(cx_typedef(Fast_DelegateCall_o));
-    instanceExpr ? cx_keep_ext(_this, instanceExpr, "element <0x8289ba0>.instanceExpr") : 0; Fast_Call(_this)->instanceExpr = instanceExpr;
-    arguments ? cx_keep_ext(_this, arguments, "element <0x8289ba0>.arguments") : 0; Fast_Call(_this)->arguments = arguments;
-    expr ? cx_keep_ext(_this, expr, "element <0x8289ba0>.expr") : 0; _this->expr = expr;
+    instanceExpr ? cx_keep_ext(_this, instanceExpr, "element <0x8aa7700>.instanceExpr") : 0; Fast_Call(_this)->instanceExpr = instanceExpr;
+    arguments ? cx_keep_ext(_this, arguments, "element <0x8aa7700>.arguments") : 0; Fast_Call(_this)->arguments = arguments;
+    expr ? cx_keep_ext(_this, expr, "element <0x8aa7700>.expr") : 0; _this->expr = expr;
     if (cx_define(_this)) {
         cx_free(_this);
         _this = NULL;
@@ -301,7 +301,7 @@ void Fast_DynamicInitializerFrame__init(Fast_DynamicInitializerFrame *_this, Fas
     cx_initValue(&v);
     memcpy(_this->expr, expr, sizeof(Fast_Expression_array64));
     memcpy(_this->keyExpr, keyExpr, sizeof(Fast_Expression_array64));
-    sequenceSize ? cx_keep_ext(_this, sequenceSize, "element <0x82a7dd0>.sequenceSize") : 0; _this->sequenceSize = sequenceSize;
+    sequenceSize ? cx_keep_ext(_this, sequenceSize, "element <0x8aa0198>.sequenceSize") : 0; _this->sequenceSize = sequenceSize;
 }
 
 void Fast_DynamicInitializerFrame__deinit(Fast_DynamicInitializerFrame *_this) {
@@ -319,16 +319,16 @@ Fast_ElementExpr Fast_ElementExpr__declare(cx_object _parent, cx_string _name) {
 }
 
 int Fast_ElementExpr__define(Fast_ElementExpr _this, Fast_Expression lvalue, Fast_Expression rvalue) {
-    lvalue ? cx_keep_ext(_this, lvalue, "element <0x82af6a8>.lvalue") : 0; _this->lvalue = lvalue;
-    rvalue ? cx_keep_ext(_this, rvalue, "element <0x82af6a8>.rvalue") : 0; _this->rvalue = rvalue;
+    lvalue ? cx_keep_ext(_this, lvalue, "element <0x8add9f8>.lvalue") : 0; _this->lvalue = lvalue;
+    rvalue ? cx_keep_ext(_this, rvalue, "element <0x8add9f8>.rvalue") : 0; _this->rvalue = rvalue;
     return cx_define(_this);
 }
 
 Fast_ElementExpr Fast_ElementExpr__create(Fast_Expression lvalue, Fast_Expression rvalue) {
     Fast_ElementExpr _this;
     _this = cx_new(cx_typedef(Fast_ElementExpr_o));
-    lvalue ? cx_keep_ext(_this, lvalue, "element <0x82af6a8>.lvalue") : 0; _this->lvalue = lvalue;
-    rvalue ? cx_keep_ext(_this, rvalue, "element <0x82af6a8>.rvalue") : 0; _this->rvalue = rvalue;
+    lvalue ? cx_keep_ext(_this, lvalue, "element <0x8add9f8>.lvalue") : 0; _this->lvalue = lvalue;
+    rvalue ? cx_keep_ext(_this, rvalue, "element <0x8add9f8>.rvalue") : 0; _this->rvalue = rvalue;
     if (cx_define(_this)) {
         cx_free(_this);
         _this = NULL;
@@ -393,18 +393,18 @@ Fast_If Fast_If__declare(cx_object _parent, cx_string _name) {
 }
 
 int Fast_If__define(Fast_If _this, Fast_Expression condition, Fast_Block trueBranch, Fast_If falseBranch) {
-    condition ? cx_keep_ext(_this, condition, "element <0x82af6a8>.condition") : 0; _this->condition = condition;
-    trueBranch ? cx_keep_ext(_this, trueBranch, "element <0x82af6a8>.trueBranch") : 0; _this->trueBranch = trueBranch;
-    falseBranch ? cx_keep_ext(_this, falseBranch, "element <0x82af6a8>.falseBranch") : 0; _this->falseBranch = falseBranch;
+    condition ? cx_keep_ext(_this, condition, "element <0x8aa3bf0>.condition") : 0; _this->condition = condition;
+    trueBranch ? cx_keep_ext(_this, trueBranch, "element <0x8aa3bf0>.trueBranch") : 0; _this->trueBranch = trueBranch;
+    falseBranch ? cx_keep_ext(_this, falseBranch, "element <0x8aa3bf0>.falseBranch") : 0; _this->falseBranch = falseBranch;
     return cx_define(_this);
 }
 
 Fast_If Fast_If__create(Fast_Expression condition, Fast_Block trueBranch, Fast_If falseBranch) {
     Fast_If _this;
     _this = cx_new(cx_typedef(Fast_If_o));
-    condition ? cx_keep_ext(_this, condition, "element <0x82af6a8>.condition") : 0; _this->condition = condition;
-    trueBranch ? cx_keep_ext(_this, trueBranch, "element <0x82af6a8>.trueBranch") : 0; _this->trueBranch = trueBranch;
-    falseBranch ? cx_keep_ext(_this, falseBranch, "element <0x82af6a8>.falseBranch") : 0; _this->falseBranch = falseBranch;
+    condition ? cx_keep_ext(_this, condition, "element <0x8aa3bf0>.condition") : 0; _this->condition = condition;
+    trueBranch ? cx_keep_ext(_this, trueBranch, "element <0x8aa3bf0>.trueBranch") : 0; _this->trueBranch = trueBranch;
+    falseBranch ? cx_keep_ext(_this, falseBranch, "element <0x8aa3bf0>.falseBranch") : 0; _this->falseBranch = falseBranch;
     if (cx_define(_this)) {
         cx_free(_this);
         _this = NULL;
@@ -472,9 +472,9 @@ void Fast_InitializerFrame__init(Fast_InitializerFrame *_this, cx_uint32 locatio
     cx_valueValueInit(&v, NULL, cx_typedef(Fast_InitializerFrame_o), _this);
     cx_initValue(&v);
     _this->location = location;
-    type ? cx_keep_ext(_this, type, "element <0x82adae8>.type") : 0; _this->type = type;
+    type ? cx_keep_ext(_this, type, "element <0x8a81fd8>.type") : 0; _this->type = type;
     _this->isKey = isKey;
-    member ? cx_keep_ext(_this, member, "element <0x82adae8>.member") : 0; _this->member = member;
+    member ? cx_keep_ext(_this, member, "element <0x8a81fd8>.member") : 0; _this->member = member;
 }
 
 void Fast_InitializerFrame__deinit(Fast_InitializerFrame *_this) {
@@ -489,7 +489,7 @@ void Fast_InitializerVariable__init(Fast_InitializerVariable *_this, cx_word off
     cx_valueValueInit(&v, NULL, cx_typedef(Fast_InitializerVariable_o), _this);
     cx_initValue(&v);
     _this->offset = offset;
-    object ? cx_keep_ext(_this, object, "element <0x82a5c78>.object") : 0; _this->object = object;
+    object ? cx_keep_ext(_this, object, "element <0x8a85068>.object") : 0; _this->object = object;
     _this->key = key;
 }
 
@@ -505,7 +505,7 @@ void Fast_InitOper__init(Fast_InitOper *_this, Fast_InitOperKind kind, Fast_Expr
     cx_valueValueInit(&v, NULL, cx_typedef(Fast_InitOper_o), _this);
     cx_initValue(&v);
     _this->kind = kind;
-    expr ? cx_keep_ext(_this, expr, "element <0x82a5c78>.expr") : 0; _this->expr = expr;
+    expr ? cx_keep_ext(_this, expr, "element <0x8a85068>.expr") : 0; _this->expr = expr;
     _this->name = (name ? cx_strdup(name) : NULL);
 }
 
@@ -573,7 +573,7 @@ Fast_Local Fast_Local__declare(cx_object _parent, cx_string _name) {
 
 int Fast_Local__define(Fast_Local _this, cx_string name, Fast_Variable type_1, Fast_LocalKind kind_2, cx_bool isReference_1) {
     _this->name = (name ? cx_strdup(name) : NULL);
-    type_1 ? cx_keep_ext(_this, type_1, "element <0x82c7290>.type") : 0; _this->type = type_1;
+    type_1 ? cx_keep_ext(_this, type_1, "element <0x8adf350>.type") : 0; _this->type = type_1;
     _this->kind = kind_2;
     _this->isReference = isReference_1;
     return cx_define(_this);
@@ -583,7 +583,7 @@ Fast_Local Fast_Local__create(cx_string name, Fast_Variable type_1, Fast_LocalKi
     Fast_Local _this;
     _this = cx_new(cx_typedef(Fast_Local_o));
     _this->name = (name ? cx_strdup(name) : NULL);
-    type_1 ? cx_keep_ext(_this, type_1, "element <0x82c7290>.type") : 0; _this->type = type_1;
+    type_1 ? cx_keep_ext(_this, type_1, "element <0x8adf350>.type") : 0; _this->type = type_1;
     _this->kind = kind_2;
     _this->isReference = isReference_1;
     if (cx_define(_this)) {
@@ -598,7 +598,7 @@ void Fast_Lvalue__init(Fast_Lvalue *_this, Fast_Expression expr, cx_bool isAssig
     memset(_this, 0, sizeof(*_this));
     cx_valueValueInit(&v, NULL, cx_typedef(Fast_Lvalue_o), _this);
     cx_initValue(&v);
-    expr ? cx_keep_ext(_this, expr, "element <0x82a5c78>.expr") : 0; _this->expr = expr;
+    expr ? cx_keep_ext(_this, expr, "element <0x8a85068>.expr") : 0; _this->expr = expr;
     _this->isAssignment = isAssignment;
 }
 
@@ -617,16 +617,16 @@ Fast_MemberExpr Fast_MemberExpr__declare(cx_object _parent, cx_string _name) {
 }
 
 int Fast_MemberExpr__define(Fast_MemberExpr _this, Fast_Expression lvalue, Fast_Expression rvalue) {
-    lvalue ? cx_keep_ext(_this, lvalue, "element <0x8292040>.lvalue") : 0; _this->lvalue = lvalue;
-    rvalue ? cx_keep_ext(_this, rvalue, "element <0x8292040>.rvalue") : 0; _this->rvalue = rvalue;
+    lvalue ? cx_keep_ext(_this, lvalue, "element <0x8ab6d70>.lvalue") : 0; _this->lvalue = lvalue;
+    rvalue ? cx_keep_ext(_this, rvalue, "element <0x8ab6d70>.rvalue") : 0; _this->rvalue = rvalue;
     return cx_define(_this);
 }
 
 Fast_MemberExpr Fast_MemberExpr__create(Fast_Expression lvalue, Fast_Expression rvalue) {
     Fast_MemberExpr _this;
     _this = cx_new(cx_typedef(Fast_MemberExpr_o));
-    lvalue ? cx_keep_ext(_this, lvalue, "element <0x8292040>.lvalue") : 0; _this->lvalue = lvalue;
-    rvalue ? cx_keep_ext(_this, rvalue, "element <0x8292040>.rvalue") : 0; _this->rvalue = rvalue;
+    lvalue ? cx_keep_ext(_this, lvalue, "element <0x8ab6d70>.lvalue") : 0; _this->lvalue = lvalue;
+    rvalue ? cx_keep_ext(_this, rvalue, "element <0x8ab6d70>.rvalue") : 0; _this->rvalue = rvalue;
     if (cx_define(_this)) {
         cx_free(_this);
         _this = NULL;
@@ -643,16 +643,16 @@ Fast_NewExpr Fast_NewExpr__declare(cx_object _parent, cx_string _name) {
 }
 
 int Fast_NewExpr__define(Fast_NewExpr _this, Fast_Expression type_1, Fast_Expression attributes) {
-    type_1 ? cx_keep_ext(_this, type_1, "element <0x82aa5c0>.type") : 0; _this->type = type_1;
-    attributes ? cx_keep_ext(_this, attributes, "element <0x82aa5c0>.attributes") : 0; _this->attributes = attributes;
+    type_1 ? cx_keep_ext(_this, type_1, "element <0x8a8fce0>.type") : 0; _this->type = type_1;
+    attributes ? cx_keep_ext(_this, attributes, "element <0x8a8fce0>.attributes") : 0; _this->attributes = attributes;
     return cx_define(_this);
 }
 
 Fast_NewExpr Fast_NewExpr__create(Fast_Expression type_1, Fast_Expression attributes) {
     Fast_NewExpr _this;
     _this = cx_new(cx_typedef(Fast_NewExpr_o));
-    type_1 ? cx_keep_ext(_this, type_1, "element <0x82aa5c0>.type") : 0; _this->type = type_1;
-    attributes ? cx_keep_ext(_this, attributes, "element <0x82aa5c0>.attributes") : 0; _this->attributes = attributes;
+    type_1 ? cx_keep_ext(_this, type_1, "element <0x8abfc38>.type") : 0; _this->type = type_1;
+    attributes ? cx_keep_ext(_this, attributes, "element <0x8abfc38>.attributes") : 0; _this->attributes = attributes;
     if (cx_define(_this)) {
         cx_free(_this);
         _this = NULL;
@@ -715,14 +715,14 @@ Fast_Object Fast_Object__declare(cx_object _parent, cx_string _name) {
 }
 
 int Fast_Object__define(Fast_Object _this, cx_object value) {
-    value ? cx_keep_ext(_this, value, "element <0x82aa5c0>.value") : 0; Fast_ObjectBase(_this)->value = value;
+    value ? cx_keep_ext(_this, value, "element <0x8abfc38>.value") : 0; Fast_ObjectBase(_this)->value = value;
     return cx_define(_this);
 }
 
 Fast_Object Fast_Object__create(cx_object value) {
     Fast_Object _this;
     _this = cx_new(cx_typedef(Fast_Object_o));
-    value ? cx_keep_ext(_this, value, "element <0x82aa5c0>.value") : 0; Fast_ObjectBase(_this)->value = value;
+    value ? cx_keep_ext(_this, value, "element <0x8abfc38>.value") : 0; Fast_ObjectBase(_this)->value = value;
     if (cx_define(_this)) {
         cx_free(_this);
         _this = NULL;
@@ -739,14 +739,14 @@ Fast_ObjectBase Fast_ObjectBase__declare(cx_object _parent, cx_string _name) {
 }
 
 int Fast_ObjectBase__define(Fast_ObjectBase _this, cx_object value) {
-    value ? cx_keep_ext(_this, value, "element <0x82aa5c0>.value") : 0; _this->value = value;
+    value ? cx_keep_ext(_this, value, "element <0x8abfc38>.value") : 0; _this->value = value;
     return cx_define(_this);
 }
 
 Fast_ObjectBase Fast_ObjectBase__create(cx_object value) {
     Fast_ObjectBase _this;
     _this = cx_new(cx_typedef(Fast_ObjectBase_o));
-    value ? cx_keep_ext(_this, value, "element <0x82aa5c0>.value") : 0; _this->value = value;
+    value ? cx_keep_ext(_this, value, "element <0x8abfc38>.value") : 0; _this->value = value;
     if (cx_define(_this)) {
         cx_free(_this);
         _this = NULL;
@@ -803,7 +803,7 @@ void Fast_ParserDeclaration__init(Fast_ParserDeclaration *_this, cx_string name,
     cx_valueValueInit(&v, NULL, cx_typedef(Fast_ParserDeclaration_o), _this);
     cx_initValue(&v);
     _this->name = (name ? cx_strdup(name) : NULL);
-    variable ? cx_keep_ext(_this, variable, "element <0x82e6390>.variable") : 0; _this->variable = variable;
+    variable ? cx_keep_ext(_this, variable, "element <0x8ae2230>.variable") : 0; _this->variable = variable;
 }
 
 void Fast_ParserDeclaration__deinit(Fast_ParserDeclaration *_this) {
@@ -818,9 +818,9 @@ void Fast_ParserNew__init(Fast_ParserNew *_this, Fast_nodeKind kind, Fast_Expres
     cx_valueValueInit(&v, NULL, cx_typedef(Fast_ParserNew_o), _this);
     cx_initValue(&v);
     _this->kind = kind;
-    parent ? cx_keep_ext(_this, parent, "element <0x82a84a8>.parent") : 0; _this->parent = parent;
-    name ? cx_keep_ext(_this, name, "element <0x82a84a8>.name") : 0; _this->name = name;
-    attr ? cx_keep_ext(_this, attr, "element <0x82a84a8>.attr") : 0; _this->attr = attr;
+    parent ? cx_keep_ext(_this, parent, "element <0x8ae5aa0>.parent") : 0; _this->parent = parent;
+    name ? cx_keep_ext(_this, name, "element <0x8ae5aa0>.name") : 0; _this->name = name;
+    attr ? cx_keep_ext(_this, attr, "element <0x8ae5aa0>.attr") : 0; _this->attr = attr;
 }
 
 void Fast_ParserNew__deinit(Fast_ParserNew *_this) {
@@ -838,7 +838,7 @@ Fast_PostfixExpr Fast_PostfixExpr__declare(cx_object _parent, cx_string _name) {
 }
 
 int Fast_PostfixExpr__define(Fast_PostfixExpr _this, Fast_Expression lvalue, cx_operatorKind operator) {
-    lvalue ? cx_keep_ext(_this, lvalue, "element <0x82b3338>.lvalue") : 0; _this->lvalue = lvalue;
+    lvalue ? cx_keep_ext(_this, lvalue, "element <0x8ae3210>.lvalue") : 0; _this->lvalue = lvalue;
     _this->operator = operator;
     return cx_define(_this);
 }
@@ -846,7 +846,7 @@ int Fast_PostfixExpr__define(Fast_PostfixExpr _this, Fast_Expression lvalue, cx_
 Fast_PostfixExpr Fast_PostfixExpr__create(Fast_Expression lvalue, cx_operatorKind operator) {
     Fast_PostfixExpr _this;
     _this = cx_new(cx_typedef(Fast_PostfixExpr_o));
-    lvalue ? cx_keep_ext(_this, lvalue, "element <0x82b3338>.lvalue") : 0; _this->lvalue = lvalue;
+    lvalue ? cx_keep_ext(_this, lvalue, "element <0x8ae3210>.lvalue") : 0; _this->lvalue = lvalue;
     _this->operator = operator;
     if (cx_define(_this)) {
         cx_free(_this);
@@ -888,18 +888,18 @@ Fast_StaticCall Fast_StaticCall__declare(cx_object _parent, cx_string _name) {
 }
 
 int Fast_StaticCall__define(Fast_StaticCall _this, Fast_Expression instanceExpr, Fast_Expression arguments, cx_function function) {
-    instanceExpr ? cx_keep_ext(_this, instanceExpr, "element <0x82a5948>.instanceExpr") : 0; Fast_Call(_this)->instanceExpr = instanceExpr;
-    arguments ? cx_keep_ext(_this, arguments, "element <0x82a5948>.arguments") : 0; Fast_Call(_this)->arguments = arguments;
-    function ? cx_keep_ext(_this, function, "element <0x82a5948>.function") : 0; _this->function = function;
+    instanceExpr ? cx_keep_ext(_this, instanceExpr, "element <0x8addfb8>.instanceExpr") : 0; Fast_Call(_this)->instanceExpr = instanceExpr;
+    arguments ? cx_keep_ext(_this, arguments, "element <0x8addfb8>.arguments") : 0; Fast_Call(_this)->arguments = arguments;
+    function ? cx_keep_ext(_this, function, "element <0x8addfb8>.function") : 0; _this->function = function;
     return cx_define(_this);
 }
 
 Fast_StaticCall Fast_StaticCall__create(Fast_Expression instanceExpr, Fast_Expression arguments, cx_function function) {
     Fast_StaticCall _this;
     _this = cx_new(cx_typedef(Fast_StaticCall_o));
-    instanceExpr ? cx_keep_ext(_this, instanceExpr, "element <0x82c7470>.instanceExpr") : 0; Fast_Call(_this)->instanceExpr = instanceExpr;
-    arguments ? cx_keep_ext(_this, arguments, "element <0x82c7470>.arguments") : 0; Fast_Call(_this)->arguments = arguments;
-    function ? cx_keep_ext(_this, function, "element <0x82c7470>.function") : 0; _this->function = function;
+    instanceExpr ? cx_keep_ext(_this, instanceExpr, "element <0x8a9acd8>.instanceExpr") : 0; Fast_Call(_this)->instanceExpr = instanceExpr;
+    arguments ? cx_keep_ext(_this, arguments, "element <0x8a9acd8>.arguments") : 0; Fast_Call(_this)->arguments = arguments;
+    function ? cx_keep_ext(_this, function, "element <0x8a9acd8>.function") : 0; _this->function = function;
     if (cx_define(_this)) {
         cx_free(_this);
         _this = NULL;
@@ -982,7 +982,7 @@ Fast_Template Fast_Template__declare(cx_object _parent, cx_string _name) {
 
 int Fast_Template__define(Fast_Template _this, cx_string name, Fast_Variable type_1, Fast_LocalKind kind_2, cx_bool isReference_1) {
     Fast_Local(_this)->name = (name ? cx_strdup(name) : NULL);
-    type_1 ? cx_keep_ext(_this, type_1, "element <0x82b0a60>.type") : 0; Fast_Local(_this)->type = type_1;
+    type_1 ? cx_keep_ext(_this, type_1, "element <0x8a8b118>.type") : 0; Fast_Local(_this)->type = type_1;
     Fast_Local(_this)->kind = kind_2;
     Fast_Local(_this)->isReference = isReference_1;
     return cx_define(_this);
@@ -992,7 +992,7 @@ Fast_Template Fast_Template__create(cx_string name, Fast_Variable type_1, Fast_L
     Fast_Template _this;
     _this = cx_new(cx_typedef(Fast_Template_o));
     Fast_Local(_this)->name = (name ? cx_strdup(name) : NULL);
-    type_1 ? cx_keep_ext(_this, type_1, "element <0x82b0a60>.type") : 0; Fast_Local(_this)->type = type_1;
+    type_1 ? cx_keep_ext(_this, type_1, "element <0x8a8b118>.type") : 0; Fast_Local(_this)->type = type_1;
     Fast_Local(_this)->kind = kind_2;
     Fast_Local(_this)->isReference = isReference_1;
     if (cx_define(_this)) {
@@ -1011,20 +1011,20 @@ Fast_TernaryExpr Fast_TernaryExpr__declare(cx_object _parent, cx_string _name) {
 }
 
 int Fast_TernaryExpr__define(Fast_TernaryExpr _this, Fast_Expression condition, Fast_Expression ifTrue, Fast_Expression ifFalse, Fast_Expression result) {
-    condition ? cx_keep_ext(_this, condition, "element <0x82ac820>.condition") : 0; _this->condition = condition;
-    ifTrue ? cx_keep_ext(_this, ifTrue, "element <0x82ac820>.ifTrue") : 0; _this->ifTrue = ifTrue;
-    ifFalse ? cx_keep_ext(_this, ifFalse, "element <0x82ac820>.ifFalse") : 0; _this->ifFalse = ifFalse;
-    result ? cx_keep_ext(_this, result, "element <0x82ac820>.result") : 0; _this->result = result;
+    condition ? cx_keep_ext(_this, condition, "element <0x8a90680>.condition") : 0; _this->condition = condition;
+    ifTrue ? cx_keep_ext(_this, ifTrue, "element <0x8a90680>.ifTrue") : 0; _this->ifTrue = ifTrue;
+    ifFalse ? cx_keep_ext(_this, ifFalse, "element <0x8a90680>.ifFalse") : 0; _this->ifFalse = ifFalse;
+    result ? cx_keep_ext(_this, result, "element <0x8a90680>.result") : 0; _this->result = result;
     return cx_define(_this);
 }
 
 Fast_TernaryExpr Fast_TernaryExpr__create(Fast_Expression condition, Fast_Expression ifTrue, Fast_Expression ifFalse, Fast_Expression result) {
     Fast_TernaryExpr _this;
     _this = cx_new(cx_typedef(Fast_TernaryExpr_o));
-    condition ? cx_keep_ext(_this, condition, "element <0x82a9410>.condition") : 0; _this->condition = condition;
-    ifTrue ? cx_keep_ext(_this, ifTrue, "element <0x82a9410>.ifTrue") : 0; _this->ifTrue = ifTrue;
-    ifFalse ? cx_keep_ext(_this, ifFalse, "element <0x82a9410>.ifFalse") : 0; _this->ifFalse = ifFalse;
-    result ? cx_keep_ext(_this, result, "element <0x82a9410>.result") : 0; _this->result = result;
+    condition ? cx_keep_ext(_this, condition, "element <0x8ae52d8>.condition") : 0; _this->condition = condition;
+    ifTrue ? cx_keep_ext(_this, ifTrue, "element <0x8ae52d8>.ifTrue") : 0; _this->ifTrue = ifTrue;
+    ifFalse ? cx_keep_ext(_this, ifFalse, "element <0x8ae52d8>.ifFalse") : 0; _this->ifFalse = ifFalse;
+    result ? cx_keep_ext(_this, result, "element <0x8ae52d8>.result") : 0; _this->result = result;
     if (cx_define(_this)) {
         cx_free(_this);
         _this = NULL;
@@ -1041,7 +1041,7 @@ Fast_UnaryExpr Fast_UnaryExpr__declare(cx_object _parent, cx_string _name) {
 }
 
 int Fast_UnaryExpr__define(Fast_UnaryExpr _this, Fast_Expression lvalue, cx_operatorKind operator) {
-    lvalue ? cx_keep_ext(_this, lvalue, "element <0x8287238>.lvalue") : 0; _this->lvalue = lvalue;
+    lvalue ? cx_keep_ext(_this, lvalue, "element <0x8ab6d30>.lvalue") : 0; _this->lvalue = lvalue;
     _this->operator = operator;
     return cx_define(_this);
 }
@@ -1049,7 +1049,7 @@ int Fast_UnaryExpr__define(Fast_UnaryExpr _this, Fast_Expression lvalue, cx_oper
 Fast_UnaryExpr Fast_UnaryExpr__create(Fast_Expression lvalue, cx_operatorKind operator) {
     Fast_UnaryExpr _this;
     _this = cx_new(cx_typedef(Fast_UnaryExpr_o));
-    lvalue ? cx_keep_ext(_this, lvalue, "element <0x8287238>.lvalue") : 0; _this->lvalue = lvalue;
+    lvalue ? cx_keep_ext(_this, lvalue, "element <0x8ab6d30>.lvalue") : 0; _this->lvalue = lvalue;
     _this->operator = operator;
     if (cx_define(_this)) {
         cx_free(_this);
@@ -1068,8 +1068,8 @@ Fast_Update Fast_Update__declare(cx_object _parent, cx_string _name) {
 
 int Fast_Update__define(Fast_Update _this, Fast_Expression_list exprList, Fast_Block block, Fast_Expression from) {
     _this->exprList = exprList;
-    block ? cx_keep_ext(_this, block, "element <0x8287238>.block") : 0; _this->block = block;
-    from ? cx_keep_ext(_this, from, "element <0x8287238>.from") : 0; _this->from = from;
+    block ? cx_keep_ext(_this, block, "element <0x8a92d68>.block") : 0; _this->block = block;
+    from ? cx_keep_ext(_this, from, "element <0x8a92d68>.from") : 0; _this->from = from;
     return cx_define(_this);
 }
 
@@ -1077,8 +1077,8 @@ Fast_Update Fast_Update__create(Fast_Expression_list exprList, Fast_Block block,
     Fast_Update _this;
     _this = cx_new(cx_typedef(Fast_Update_o));
     _this->exprList = exprList;
-    block ? cx_keep_ext(_this, block, "element <0x8287238>.block") : 0; _this->block = block;
-    from ? cx_keep_ext(_this, from, "element <0x8287238>.from") : 0; _this->from = from;
+    block ? cx_keep_ext(_this, block, "element <0x8ae0bc0>.block") : 0; _this->block = block;
+    from ? cx_keep_ext(_this, from, "element <0x8ae0bc0>.from") : 0; _this->from = from;
     if (cx_define(_this)) {
         cx_free(_this);
         _this = NULL;
@@ -1120,7 +1120,7 @@ Fast_Wait Fast_Wait__declare(cx_object _parent, cx_string _name) {
 
 int Fast_Wait__define(Fast_Wait _this, Fast_Expression_list exprList, Fast_Expression timeout) {
     _this->exprList = exprList;
-    timeout ? cx_keep_ext(_this, timeout, "element <0x8287238>.timeout") : 0; _this->timeout = timeout;
+    timeout ? cx_keep_ext(_this, timeout, "element <0x8a82e48>.timeout") : 0; _this->timeout = timeout;
     return cx_define(_this);
 }
 
@@ -1128,7 +1128,7 @@ Fast_Wait Fast_Wait__create(Fast_Expression_list exprList, Fast_Expression timeo
     Fast_Wait _this;
     _this = cx_new(cx_typedef(Fast_Wait_o));
     _this->exprList = exprList;
-    timeout ? cx_keep_ext(_this, timeout, "element <0x8287238>.timeout") : 0; _this->timeout = timeout;
+    timeout ? cx_keep_ext(_this, timeout, "element <0x8ae19d8>.timeout") : 0; _this->timeout = timeout;
     if (cx_define(_this)) {
         cx_free(_this);
         _this = NULL;
@@ -1145,8 +1145,8 @@ Fast_While Fast_While__declare(cx_object _parent, cx_string _name) {
 }
 
 int Fast_While__define(Fast_While _this, Fast_Expression condition, Fast_Block trueBranch, cx_bool isUntil) {
-    condition ? cx_keep_ext(_this, condition, "element <0x8287238>.condition") : 0; _this->condition = condition;
-    trueBranch ? cx_keep_ext(_this, trueBranch, "element <0x8287238>.trueBranch") : 0; _this->trueBranch = trueBranch;
+    condition ? cx_keep_ext(_this, condition, "element <0x8aa5188>.condition") : 0; _this->condition = condition;
+    trueBranch ? cx_keep_ext(_this, trueBranch, "element <0x8aa5188>.trueBranch") : 0; _this->trueBranch = trueBranch;
     _this->isUntil = isUntil;
     return cx_define(_this);
 }
@@ -1154,8 +1154,8 @@ int Fast_While__define(Fast_While _this, Fast_Expression condition, Fast_Block t
 Fast_While Fast_While__create(Fast_Expression condition, Fast_Block trueBranch, cx_bool isUntil) {
     Fast_While _this;
     _this = cx_new(cx_typedef(Fast_While_o));
-    condition ? cx_keep_ext(_this, condition, "element <0x8287238>.condition") : 0; _this->condition = condition;
-    trueBranch ? cx_keep_ext(_this, trueBranch, "element <0x8287238>.trueBranch") : 0; _this->trueBranch = trueBranch;
+    condition ? cx_keep_ext(_this, condition, "element <0x8aa5188>.condition") : 0; _this->condition = condition;
+    trueBranch ? cx_keep_ext(_this, trueBranch, "element <0x8aa5188>.trueBranch") : 0; _this->trueBranch = trueBranch;
     _this->isUntil = isUntil;
     if (cx_define(_this)) {
         cx_free(_this);

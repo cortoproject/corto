@@ -11,15 +11,6 @@
 
 /* $header() */
 #include "math.h"
-
-int cortexmain(int argc, char* argv[]) {
-    CX_UNUSED(argc);
-    CX_UNUSED(argv);
-
-    math_load();
-
-    return 0;
-}
 /* $end */
 
 /* ::cortex::math::abs(::cortex::lang::uint64 x) */

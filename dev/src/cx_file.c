@@ -66,20 +66,6 @@ FILE* cx_fileGet(cx_file file) {
     return (FILE*)file;
 }
 
-/* Test if file exists */
-int cx_fileTest(const char* file) {
-    cx_file exists;
-
-    exists = 0;
-
-    if (file) {
-        exists = (cx_file)fopen(file, "r");
-        cx_fileClose(exists);
-    }
-
-    return (exists != 0);
-}
-
 typedef struct fileSearchWalk_t {
     const char* file;
     char* result;

@@ -109,8 +109,6 @@ void gen_parse(cx_generator g, cx_object object, cx_bool parseSelf, cx_bool pars
         }
     }
 
-    cx_trace("o = %p (%s)", o, cx_nameof(object));
-
     if (!o) {
         o = cx_malloc(sizeof(g_object));
         cx_keep(object);
