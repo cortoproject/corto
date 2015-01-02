@@ -65,7 +65,7 @@ static cx_int16 c_projectGenerateMakefile(cx_generator g) {
         g_fileWrite(file, "\n");
         g_fileWrite(file, "TARGET = %s\n\n", g_getName(g));
         g_fileWrite(file, "LIBS = lang\n\n");
-        g_fileWrite(file, "include $(CORTEX_HOME)/build/component.makefile\n\n");
+        g_fileWrite(file, "include $(CORTEX_HOME)/build/package.makefile\n\n");
     }
 
     return 0;

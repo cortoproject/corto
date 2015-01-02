@@ -395,7 +395,6 @@ static int cx_genTypeParse(cx_object o, cx_bool allowDeclared, cx_bool* recursio
                 if (!allowDeclared) {
                     /* If caller handles recursion, report that recursion has occurred. */
                     if (recursion) {
-                        cx_trace("recursion has occurred!");
                         *recursion = TRUE;
                         goto recursion;
                     } else {

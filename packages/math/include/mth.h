@@ -9,6 +9,10 @@
 #include "cortex.h"
 #include "math__type.h"
 
+#include "math__api.h"
+
+#include "math__meta.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

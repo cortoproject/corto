@@ -38,6 +38,21 @@ static void printError(int e, const char *msg) {
     cx_error("(%s): %s.", errorrepr, msg);
 }
 
+int cx_fileTest(const char* file) {
+    FILE* exists;
+
+    exists = NULL;
+
+    if (file) {
+        exists = fopen(file, "rb");
+        if (exists) {
+            fclose(exists);
+        }
+    }
+
+    return (exists != 0);
+}
+
 int cx_mkdir(const char *name) {
     struct stat st = {0};
     int _errno;

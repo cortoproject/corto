@@ -5,14 +5,15 @@
  *      Author: sander
  */
 
-#include "cx_loader.h"
-#include "string.h"
-#include "cx_err.h"
-#include "cx_util.h"
-#include "cx_mem.h"
-#include "cx_ll.h"
 #include "cx_dl.h"
+#include "cx_err.h"
+#include "cx_files.h"
+#include "cx_ll.h"
+#include "cx_loader.h"
+#include "cx_mem.h"
+#include "cx_util.h"
 #include "stdlib.h"
+#include "string.h"
 
 void cx_onexit(void(*handler)(void*),void*userData);
 
@@ -161,6 +162,10 @@ int cx_libraryLoader(cx_string _file, void* udata) {
     cx_dl dl;
     cx_string filename = NULL, file = NULL;
     int (*proc)(int argc, char* argv[]);
+    int length;
+    cx_char path[256];
+    cx_char str[256];
+    cx_string cortexHome = getenv("CORTEX_HOME");
 
     CX_UNUSED(udata);
 
@@ -193,40 +198,26 @@ int cx_libraryLoader(cx_string _file, void* udata) {
         filename = file;
     }
 
-    /* Load shared object from CORTEX_HOME */
-    dl = cx_dlOpen(file);
-    if (!dl) {
-        int length;
-        cx_char path[256];
-        cx_char str[256];
-        cx_string err;
-        cx_string cortexHome = getenv("CORTEX_HOME");
-        err = cx_strdup(cx_dlError());
-        length = (cx_word)filename - (cx_word)file;
-        memcpy(path, file, length);
-        path[length]='\0';
-        if (length) {
-            sprintf(str, "%s/bin/%slib%s.so", cortexHome, path, filename);
-        } else {
-            sprintf(str, "lib%s.so", filename);
-        }
-        if (!(dl = cx_dlOpen(str))) {
-            cx_error("cx_libraryLoader: %s, %s", err, cx_dlError());
-            goto error;
-        }
-        cx_dealloc(err);
+    length = (cx_word)filename - (cx_word)file;
+    memcpy(path, file, length);
+    path[length]='\0';
+    sprintf(str, "%s/bin/%slib%s.so", cortexHome, path, filename);
+
+    if (!(dl = cx_dlOpen(str))) {
+        cx_error("%s: %s", _file, cx_dlError());
+        goto error;
     }
 
     /* Lookup main function */
     proc = (int(*)(int,char*[]))cx_dlProc(dl, "cortexmain");
     if (!proc) {
-        cx_error("unresolved 'cortexmain' in library '%s'.", file);
+        cx_error("%s: unresolved 'cortexmain' in library '%s'", _file, str);
         goto error;
     }
 
     /* Call main */
     if (proc(0, NULL)) {
-        cx_error("%s: cortexmain failed.", file);
+        cx_error("%s: cortexmain failed", _file);
         goto error;
     }
 
@@ -246,6 +237,34 @@ error:
         cx_dealloc(file);
     }
     return -1;
+}
+
+/* Load file with unspecified extension */
+int cx_fileLoader(cx_string file, void* udata) {
+    CX_UNUSED(udata);
+    cx_id testName;
+
+    /* If filename is a scoped name, always load library */
+    if (strchr(file, ':')) {
+        return cx_libraryLoader(file, udata);
+    }
+
+    /* Test whether a file with extension .xml is available in current directory */
+    sprintf(testName, "%s.xml", file);
+    if (cx_fileTest(testName)) {
+        cx_load("xml");
+        return cx_load(testName);
+    }
+
+    /* Test whether a file with extension .cx is available in current directory */
+    sprintf(testName, "%s.cx", file);
+    if (cx_fileTest(testName)) {
+        cx_load("Fast");
+        return cx_load(testName);
+    }
+
+    /* When no .xml or .cx are available, try to load package */
+    return cx_libraryLoader(file, NULL);
 }
 
 void cx_loaderOnExit(void* udata) {
@@ -294,7 +313,7 @@ CX_DLL_CONSTRUCT {
     cx_onexit(cx_loaderOnExit, NULL);
 
     /* Register library-binding */
-    cx_loaderRegister("", cx_libraryLoader, NULL);
+    cx_loaderRegister("", cx_fileLoader, NULL);
     cx_loaderRegister("so", cx_libraryLoader, NULL);
     cx_loaderRegister("dll", cx_libraryLoader, NULL);
 }

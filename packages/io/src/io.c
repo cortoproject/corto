@@ -9,19 +9,6 @@
 #include "io.h"
 #include "io__meta.h"
 
-/* $header() */
-#include "io__meta.h"
-
-int cortexmain(int argc, char* argv[]) {
-    CX_UNUSED(argc);
-    CX_UNUSED(argv);
-
-    io_load();
-
-    return 0;
-}
-/* $end */
-
 /* ::cortex::io::print(::cortex::lang::string str) */
 cx_void io_print(cx_string str) {
 /* $begin(::cortex::io::print) */

@@ -8,6 +8,7 @@
 #define os__type_H
 
 #include "cortex.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -18,7 +19,6 @@ extern "C" {
 #define os_timer(o) ((os_timer)o)
 
 /* Type definitions */
-
 /* ::cortex::os::loadAvgKind */
 typedef enum os_loadAvgKind {
     OS_MIN_1 = 0,
@@ -28,6 +28,7 @@ typedef enum os_loadAvgKind {
 
 /*  ::cortex::os::thread */
 CX_CLASS(os_thread);
+
 CX_CLASS_DEF(os_thread) {
     cx_word handle;
     cx_bool stopping;
@@ -35,6 +36,7 @@ CX_CLASS_DEF(os_thread) {
 
 /*  ::cortex::os::time */
 CX_CLASS(os_time);
+
 CX_CLASS_DEF(os_time) {
     cx_int32 seconds;
     cx_uint32 nanoseconds;
@@ -42,6 +44,7 @@ CX_CLASS_DEF(os_time) {
 
 /*  ::cortex::os::timer */
 CX_CLASS(os_timer);
+
 CX_CLASS_DEF(os_timer) {
     CX_EXTEND(os_thread);
     cx_int32 sec;
