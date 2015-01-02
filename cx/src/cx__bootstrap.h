@@ -736,7 +736,7 @@ CX_CLASS_O(collection, type, CX_LOCAL | CX_READONLY, CX_SEQUENCE_EMPTY_V(interfa
     CX_REFERENCE_O(collection, elementType, typedef, CX_GLOBAL, CX_DECLARED, FALSE);
     CX_MEMBER_O(collection, max, uint32, CX_GLOBAL);
     CX_METHOD_O(collection, castable, "(lang::type type)", bool, TRUE, cx_collection_castable_v);
-    CX_METHOD_O(collection, compatible, "(lang::type type)", bool, TRUE, cx_collection_compatibel_v);
+    CX_METHOD_O(collection, compatible, "(lang::type type)", bool, TRUE, cx_collection_compatible_v);
     CX_METHOD_O(collection, elementRequiresAlloc, "()", bool, FALSE, cx_collection_elementRequiresAlloc);
     CX_CALLBACK_O(collection, init, "(lang::collection object)", type_init, int16, cx_collection_init);
     CX_METAPROCEDURE_O(collection, size, "()", uint32, FALSE, cx_collection_size);
