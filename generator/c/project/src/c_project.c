@@ -43,6 +43,10 @@ static cx_int16 c_projectGenerateMainFile(cx_generator g) {
         g_fileWrite(file, "/* $begin(cortexmain)");
         g_fileWrite(file, "%s", snippet);
         g_fileWrite(file, "$end */\n\n");
+    } else {
+        g_fileWrite(file, "/* $begin(cortexmain) */\n");
+        g_fileWrite(file, "/* Insert user-code here */\n");
+        g_fileWrite(file, "/* $end */\n");
     }
 
     g_fileWrite(file, "return result;\n");
