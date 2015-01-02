@@ -1655,10 +1655,17 @@ cx_int16 Fast_Parser_defineScope(Fast_Parser _this) {
 
     if (!_this->pass) {
         if (Fast_Variable(_this->scope)->kind == FAST_Object) {
-            if (cx_define(Fast_ObjectBase(_this->scope)->value)) {
-                cx_id id;
-                Fast_Parser_error(_this, "failed to define scope '%s'", Fast_Parser_id(Fast_ObjectBase(_this->scope)->value, id));
-                goto error;
+            cx_object o = Fast_ObjectBase(_this->scope)->value;
+            if (cx_instanceof(cx_typedef(cx_type_o), o)) {
+                if (cx_define(o)) {
+                    cx_id id;
+                    Fast_Parser_error(_this, "failed to define scope '%s'", Fast_Parser_id(Fast_ObjectBase(_this->scope)->value, id));
+                    goto error;
+                }
+            } else {
+                Fast_Define defineExpr = Fast_Define__create(Fast_Expression(_this->scope));
+                Fast_Parser_addStatement(_this, Fast_Node(defineExpr));
+                Fast_Parser_collect(_this, defineExpr);
             }
         } else {
             Fast_Parser_error(_this, "variables as scope are not yet supported.");
