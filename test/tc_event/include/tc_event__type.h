@@ -8,7 +8,7 @@
 #ifndef tc_event__type_H
 #define tc_event__type_H
 
-#include "hyve.h"
+#include "cortex.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -21,12 +21,12 @@ extern "C" {
 
 
 /*  ::tc_event::Point */
-DB_CLASS(tc_Point);
-DB_CLASS_DEF(tc_Point) {
-    db_uint32 x;
-    db_uint32 y;
+CX_CLASS(tc_Point);
+CX_CLASS_DEF(tc_Point) {
+    cx_uint32 x;
+    cx_uint32 y;
 };
-typedef db_uint32 tc_value;
+typedef cx_uint32 tc_value;
 
 #ifdef __cplusplus
 }

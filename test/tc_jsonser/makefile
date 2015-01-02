@@ -1,6 +1,6 @@
 TARGET  =  ../test/bin/tc_jsonser
 
-INCLUDE = $(HYVE_HOME)/interface/json/include
+INCLUDE = $(CORTEX_HOME)/interface/json/include
 LIBS    = lang json
 
-include $(HYVE_HOME)/build/executable.makefile
+include $(CORTEX_HOME)/build/executable.makefile

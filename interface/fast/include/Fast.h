@@ -6,7 +6,7 @@
 #ifndef Fast_H
 #define Fast_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "Fast__type.h"
 
 #include "Fast__api.h"
@@ -18,11 +18,16 @@ extern "C" {
 #endif
 
 /* $header() */
-Fast_Call Fast_createMethodCall(Fast_Expression obj, db_string function, db_uint32 numArgs, ...);
+Fast_Call Fast_createCall(Fast_Expression instance, cx_string function, cx_uint32 numArgs, ...);
+Fast_Call Fast_createCallWithArguments(Fast_Expression instance, cx_string function, Fast_Expression arguments);
+Fast_Call Fast_createCallFromExpr(Fast_Expression f, Fast_Expression arguments);
+Fast_Parser yparser(void);
+void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
+void Fast_Parser_warning(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* ::hyve::Fast::valueKindFromType(lang::type type) */
-Fast_valueKind Fast_valueKindFromType(db_type type);
+/* ::cortex::Fast::valueKindFromType(lang::type type) */
+Fast_valueKind Fast_valueKindFromType(cx_type type);
 
 #ifdef __cplusplus
 }
@@ -34,10 +39,12 @@ Fast_valueKind Fast_valueKindFromType(db_type type);
 #include "Fast_Block.h"
 #include "Fast_Boolean.h"
 #include "Fast_Call.h"
+#include "Fast_CallBuilder.h"
 #include "Fast_CastExpr.h"
 #include "Fast_Character.h"
 #include "Fast_CommaExpr.h"
 #include "Fast_Define.h"
+#include "Fast_DelegateCall.h"
 #include "Fast_DynamicInitializer.h"
 #include "Fast_DynamicInitializerFrame.h"
 #include "Fast_ElementExpr.h"
@@ -65,6 +72,7 @@ Fast_valueKind Fast_valueKindFromType(db_type type);
 #include "Fast_ParserNew.h"
 #include "Fast_PostfixExpr.h"
 #include "Fast_SignedInteger.h"
+#include "Fast_StaticCall.h"
 #include "Fast_StaticInitializer.h"
 #include "Fast_StaticInitializerFrame.h"
 #include "Fast_String.h"

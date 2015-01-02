@@ -1,0 +1,27 @@
+// Nested members with expression lists
+bool result: true
+void fail(string msg):
+    "tc_exprlist06: FAIL: $msg"
+    result = false
+
+struct Point::
+    x, y: uint32
+    
+struct Line::
+    start, stop: Point
+    
+Line a, b:
+
+a[start,stop].x = 10
+a[start,stop].y = 20
+
+a.start.x ++
+a.start.y ++
+
+if a[start,stop][x,y] == (11,21,10,20): 0
+else: fail("a[start,stop][x,y] == 10,10,20,20 ($a)")
+
+if (a[start,stop].x == (11,10)) && (a[start,stop].y == (21,20)): 0
+else: fail("(a[start,stop].x == (11,10)) && (a[start,stop].y == (21,20)) ($a)")
+
+if result: "tc_exprlist06: OK"

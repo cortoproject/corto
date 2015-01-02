@@ -1,0 +1,38 @@
+bool result : true
+void fail(string msg):
+    "tc_while: FAIL: $msg"
+    result = false
+
+var uint32 i
+
+i=10 
+while i:
+    i--
+if i: fail("while (1)")
+
+i=10
+while i--:
+if i: fail("while (2)")
+
+i=0
+while i<10:
+    i++
+if i != 10: fail("while (3)")
+
+i=10
+:
+    i--
+    while i
+if i != 0: fail("while (4)")
+
+i=0
+while 0:
+    i++
+if i: fail("while (5)")
+
+i=0
+while !1:
+    i++
+if i: fail("while (6)")
+
+if result: "tc_while: OK"

@@ -1,9 +1,9 @@
 
 TARGET =	c_common
 
-INCLUDE = 	$(HYVE_HOME)/dev/include
+INCLUDE = 	$(CORTEX_HOME)/dev/include
 
-LIBS	= lang hyvedev
+LIBS	= lang cortexdev
 
-include $(HYVE_HOME)/build/generator.makefile
+include $(CORTEX_HOME)/build/generator.makefile
 

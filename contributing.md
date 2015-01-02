@@ -1,10 +1,10 @@
 # Contributing
 
-This document describes the steps to get started with Hyve development as well as the 'rules of engagement'. The overall goal is to have a lean, not mean, development process. 
+This document describes the steps to get started with Cortex development as well as the 'rules of engagement'. The overall goal is to have a lean, not mean, development process. 
 
 ## Requirements
 
-As of now, Hyve can only be built in 32-bit or 64-bit Linux. It is recommended to use an Ubuntu virtual machine. The examples hereby are provided for `apt-get`.
+As of now, Cortex can only be built in 32-bit or 64-bit Linux. It is recommended to use an Ubuntu virtual machine. The examples hereby are provided for `apt-get`.
 
 Install the GNU C++ compiler (required to build the C++ language binding).
 
@@ -35,29 +35,29 @@ apt-get install bison
 You can use the GitHub desktop application, or type:
 
 ```
-git clone https://github.com/Seldomberry/Hyve.git
+git clone https://github.com/Seldomberry/Cortex.git
 ```
 
 ## Building
 
-Setup the environment for building and running Hyve:
+Setup the environment for building and running Cortex:
 ```
 source configure
 ```
 
-From the Hyve root directory, run the command:
+From the Cortex root directory, run the command:
 ```
 make
 ```
 
-Now you can use the hyve interpreter to run a hyve script:
+Now you can use the cortex interpreter to run a cortex script:
 ```
-hyve filename.hyve
+cortex filename.cortex
 ```
 
-You can also start the hyve shell which allows exploring the object store:
+You can also start the cortex shell which allows exploring the object store:
 ```
-dbsh
+cx.h
 ```
 
 To validate that your build is sound run the testsuite with the following command:

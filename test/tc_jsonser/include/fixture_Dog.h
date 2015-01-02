@@ -6,7 +6,7 @@
 #ifndef fixture_Dog_H
 #define fixture_Dog_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "fixture__type.h"
 
 #include "fixture__api.h"

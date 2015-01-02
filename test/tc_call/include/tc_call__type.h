@@ -8,7 +8,7 @@
 #ifndef tc_call__type_H
 #define tc_call__type_H
 
-#include "hyve.h"
+#include "cortex.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -28,8 +28,8 @@ typedef enum tc_AnimalKind {
 } tc_AnimalKind;
 
 /*  ::tc_call::Animal */
-DB_CLASS(tc_Animal);
-DB_CLASS_DEF(tc_Animal) {
+CX_CLASS(tc_Animal);
+CX_CLASS_DEF(tc_Animal) {
     tc_AnimalKind kind;
 };
 /* ::tc_call::HabitatKind */
@@ -49,15 +49,15 @@ typedef enum tc_MammalKind {
 /*  ::tc_call::MammalProps */
 typedef struct tc_MammalProps tc_MammalProps;
 struct tc_MammalProps {
-    db_uint32 legs;
+    cx_uint32 legs;
     tc_HabitatKind habitat;
-    db_float64 speed;
+    cx_float64 speed;
 };
 
 /*  ::tc_call::Mammal */
-DB_CLASS(tc_Mammal);
-DB_CLASS_DEF(tc_Mammal) {
-    DB_EXTEND(tc_Animal);
+CX_CLASS(tc_Mammal);
+CX_CLASS_DEF(tc_Mammal) {
+    CX_EXTEND(tc_Animal);
     tc_MammalKind kind;
     tc_MammalProps props;
 };

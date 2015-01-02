@@ -8,11 +8,12 @@
 #include <limits.h>
 #endif
 
-#include "db_files.h"
-#include "db_generator.h"
-#include "db_serializer.h"
+#include "cx_files.h"
+#include "cx_generator.h"
+#include "cx_object.h"
+#include "cx_serializer.h"
 #include "html.h"
-#include "hyve.h"
+#include "cortex.h"
 #include "json.h"
 
 /*
@@ -23,24 +24,24 @@
  * Make a data.json file inside
  * Call recursively for every object in this scope
  */
-static int gen_folder(db_object o, void *userData) {
-    db_html_gen_t *data = userData;
+static int gen_folder(cx_object o, void *userData) {
+    cx_html_gen_t *data = userData;
     char folderPath[PATH_MAX];
 
-    if (sprintf(folderPath, "%s/%s", data->path, db_nameof(o)) < 0) {
-        db_error("Cannot create path for object \"%s\" in path:\"%s\".",
-            db_nameof(o), data->path);
+    if (sprintf(folderPath, "%s/%s", data->path, cx_nameof(o)) < 0) {
+        cx_error("Cannot create path for object \"%s\" in path:\"%s\".",
+            cx_nameof(o), data->path);
         goto error;
     }
 
-    if (db_mkdir(folderPath)) {
+    if (cx_mkdir(folderPath)) {
         goto error;
     }
 
-    db_html_gen_t scopeData = *data;
+    cx_html_gen_t scopeData = *data;
     scopeData.path = folderPath;
 
-    return db_scopeWalk(o, gen_folder, &scopeData);
+    return cx_scopeWalk(o, gen_folder, &scopeData);
 error:
     return 0;
 }
@@ -49,29 +50,31 @@ error:
 /*
  * Prints the resulting json into a "data.json" file.
  */
-static int gen_json(db_object o, void *userData) {
-    db_json_ser_t jsonData = {NULL, NULL, 0, 0, 0, TRUE, TRUE, TRUE};
-    db_html_gen_t *htmlData = userData;
+static int gen_json(cx_object o, void *userData) {
+    cx_json_ser_t jsonData = {NULL, NULL, 0, 0, 0, TRUE, TRUE, FALSE};
+    cx_html_gen_t *htmlData = userData;
     char folderPath[PATH_MAX];
     char filepath[PATH_MAX];
-    struct db_serializer_s serializer;
+    struct cx_serializer_s serializer;
     FILE *file;
+    cx_id fullname;
 
-    if (sprintf(folderPath, "%s/%s", htmlData->path, db_nameof(o)) < 0) {
+    if (sprintf(folderPath, "%s/%s", htmlData->path, cx_nameof(o)) < 0) {
         goto error;
     }
     if (sprintf(filepath, "%s/data.js", folderPath) < 0) {
         goto error;
     }
 
-    serializer = db_json_ser(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
-    db_serialize(&serializer, o, &jsonData);
+    serializer = cx_json_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
+    cx_serialize(&serializer, o, &jsonData);
 
+    cx_fullname(o, fullname);
 
     if ((file = fopen(filepath, "w")) == NULL) {
         goto error;
     }
-    if (fprintf(file, "var thisObject = %s", jsonData.buffer) < 0) {
+    if (fprintf(file, "objects[\"%s\"] = %s;", fullname, jsonData.buffer) < 0) {
         goto error;
     }
     if (fflush(file)) {
@@ -81,20 +84,32 @@ static int gen_json(db_object o, void *userData) {
         goto error;
     }
 
-    db_html_gen_t scopeData = *htmlData;
+    cx_html_gen_t scopeData = *htmlData;
     scopeData.path = folderPath;
 
-    return db_scopeWalk(o, gen_json, &scopeData);
+    return cx_scopeWalk(o, gen_json, &scopeData);
 error:
     return 0;
 }
+
+static int printIncludeScopeItem(cx_object o, void *userData) {
+    FILE *file = userData;
+    if (fprintf(file, "<script src=\"./%s/data.js\"></script>", cx_nameof(o)) < 0) {
+        goto error;
+    }
+    return 1;
+error:
+    return 0;
+}
+
 
 /*
  * Assumes that the file is already opened.
  * Returns 0 on success, -1 otherwise.
  */
-static int printHtml(db_html_gen_t *data, FILE* file) {
+static int printHtml(cx_html_gen_t *data, cx_object o, FILE* file) {
     unsigned int level;
+    cx_id fullname;
 
     #define _printHtml(text) if (fprintf(file, text) < 0) goto error;
     
@@ -104,15 +119,44 @@ static int printHtml(db_html_gen_t *data, FILE* file) {
     _printHtml("<head>");
     _printHtml("<meta charset=\"utf-8\">");
 
-    /* This object */
-    _printHtml("<script src=\"./data.js\"></script>");
+    /* jQuery */
+    _printHtml("<script src=\"");
+    for (level = 0; level < data->level; level++) {
+        _printHtml("../");
+    }
+    _printHtml("jquery-1.11.2.min.js\"></script>");
 
     /* Parsing script */
-    _printHtml("<script src=\"../");
-    for (level = 1; level < data->level; level++) {
+    _printHtml("<script src=\"");
+    for (level = 0; level < data->level; level++) {
         _printHtml("../");
     }
     _printHtml("objectparse.js\"></script>");
+
+    /* This object */
+    _printHtml("<script src=\"./data.js\"></script>");
+
+    /* Parent object */
+    if (data->level > 1) {
+        _printHtml("<script src=\"../data.js\"></script>");
+    }
+
+    /* Child objects */
+    if (!cx_scopeWalk(o, printIncludeScopeItem, file)) {
+        cx_error("Error traversing scope children to include their \"data.js\"");
+        goto error;
+    }
+
+    if (fprintf(file, "<script>rootName = \"%s\";</script>",
+                data->rootFullname) < 0) {
+        goto error;
+    }
+
+    /* This object name */
+    cx_fullname(o, fullname);
+    if (fprintf(file, "<script>thisName = \"%s\";</script>", fullname) < 0) {
+        goto error;
+    }
 
     /* CSS */
     _printHtml("<link href=\"../");
@@ -132,13 +176,14 @@ error:
     return -1;
 }
 
-static int gen_html(db_object o, void *userData) {
-    db_html_gen_t *htmlData = userData;
+static int gen_html(cx_object o, void *userData) {
+    static cx_id rootFullname = "";
+    cx_html_gen_t *htmlData = userData;
     char folderPath[PATH_MAX];
     char filepath[PATH_MAX];
     FILE *file;
 
-    if (sprintf(folderPath, "%s/%s", htmlData->path, db_nameof(o)) < 0) {
+    if (sprintf(folderPath, "%s/%s", htmlData->path, cx_nameof(o)) < 0) {
         goto error;
     }
     if (sprintf(filepath, "%s/index.html", folderPath) < 0) {
@@ -149,19 +194,24 @@ static int gen_html(db_object o, void *userData) {
         goto error;
     }
     
-    if (printHtml(htmlData, file)) {
+    if (htmlData->level == 1) {
+        cx_fullname(o, rootFullname);
+        htmlData->rootFullname = rootFullname;
+    }
+
+    if (printHtml(htmlData, o, file)) {
         goto error_closeFile;
     }
 
-    if (fflush(file)) { // TODO maybe this is unncessary
+    if (fflush(file)) {
         goto error_closeFile;
     }
     
     fclose(file);
 
-    db_html_gen_t childHtmlData = {folderPath, htmlData->level + 1};
+    cx_html_gen_t childHtmlData = {folderPath, htmlData->level + 1, rootFullname};
 
-    return db_scopeWalk(o, gen_html, &childHtmlData);
+    return cx_scopeWalk(o, gen_html, &childHtmlData);
 
 error_closeFile:
     fclose(file);
@@ -170,14 +220,14 @@ error:
 }
 
 
-static db_int16 copyJsonParser(const char* path) {
+static cx_int16 copyJQuery(const char *path) {
     char sourcePath[PATH_MAX];
     char destinationPath[PATH_MAX];
-    char *hyveHome = getenv("HYVE_HOME");
-    char parserFilename[] = "objectparse.js";
-    sprintf(sourcePath, "%s/generator/html/%s", hyveHome, parserFilename);
+    char *cortexHome = getenv("CORTEX_HOME");
+    char parserFilename[] = "jquery-1.11.2.min.js";
+    sprintf(sourcePath, "%s/generator/html/%s", cortexHome, parserFilename);
     sprintf(destinationPath, "%s/%s", path, parserFilename);
-    if (db_cp(sourcePath, destinationPath)) {
+    if (cx_cp(sourcePath, destinationPath)) {
         goto error;
     }
     return 0;
@@ -185,14 +235,15 @@ error:
     return -1;
 }
 
-static db_int16 copyStyleSheet(const char* path) {
+
+static cx_int16 copyJsonParser(const char *path) {
     char sourcePath[PATH_MAX];
     char destinationPath[PATH_MAX];
-    char *hyveHome = getenv("HYVE_HOME");
-    char stylesheetFilename[] = "object.css";
-    sprintf(sourcePath, "%s/generator/html/%s", hyveHome, stylesheetFilename);
-    sprintf(destinationPath, "%s/%s", path, stylesheetFilename);
-    if (db_cp(sourcePath, destinationPath)) {
+    char *cortexHome = getenv("CORTEX_HOME");
+    char parserFilename[] = "objectparse.js";
+    sprintf(sourcePath, "%s/generator/html/%s", cortexHome, parserFilename);
+    sprintf(destinationPath, "%s/%s", path, parserFilename);
+    if (cx_cp(sourcePath, destinationPath)) {
         goto error;
     }
     return 0;
@@ -200,30 +251,51 @@ error:
     return -1;
 }
 
-db_int16 hyve_genMain(db_generator g) {
+
+static cx_int16 copyStyleSheet(const char* path) {
+    char sourcePath[PATH_MAX];
+    char destinationPath[PATH_MAX];
+    char *cortexHome = getenv("CORTEX_HOME");
+    char stylesheetFilename[] = "object.css";
+    sprintf(sourcePath, "%s/generator/html/%s", cortexHome, stylesheetFilename);
+    sprintf(destinationPath, "%s/%s", path, stylesheetFilename);
+    if (cx_cp(sourcePath, destinationPath)) {
+        goto error;
+    }
+    return 0;
+error:
+    return -1;
+}
+
+
+cx_int16 cortex_genMain(cx_generator g) {
     char filepath[PATH_MAX] = "./doc";
 
-    db_html_gen_t data = {filepath, 1};
+    cx_html_gen_t data = {filepath, 1, ""};
     int success;
     
     if (!(success = g_walkNoScope(g, gen_folder, &data))) {
-        db_error("Could not create folders.");
+        cx_error("Error creating folders.");
+    }
+
+    if (success && !(success = !copyJQuery(data.path))) {
+        cx_error("Cannot copy \"jQuery\".");
     }
 
     if (success && !(success = !copyJsonParser(data.path))) {
-        db_error("Could not copy \"objectparse.js\".");
+        cx_error("Cannot copy \"objectparse.js\".");
     }
 
     if (success && !(success = !copyStyleSheet(data.path))) {
-        db_error("Could not copy \"object.css\".");
+        cx_error("Cannot copy \"object.css\".");
     }
     
     if (success && !(success = g_walkNoScope(g, gen_json, &data))) {
-        db_error("Could not create \"data.js\" files.");
+        cx_error("Error creating js files.");
     }
     
     if (success && !(success = g_walkNoScope(g, gen_html, &data))) {
-        db_error("Could not create \"index.html\" files.");
+        cx_error("Error creating html files.");
     }
 
     return 0;

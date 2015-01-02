@@ -9,9 +9,9 @@
 #include "Fast.h"
 #include "Fast__meta.h"
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::ObjectBase::construct(ObjectBase object) */
-db_int16 Fast_ObjectBase_construct(Fast_ObjectBase object) {
-/* $begin(::hyve::Fast::ObjectBase::construct) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::ObjectBase::construct(ObjectBase object) */
+cx_int16 Fast_ObjectBase_construct(Fast_ObjectBase object) {
+/* $begin(::cortex::Fast::ObjectBase::construct) */
 
     Fast_Variable(object)->kind = FAST_Object;
 

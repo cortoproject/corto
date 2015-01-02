@@ -6,31 +6,31 @@
 
 /* $header() */
 #include "Fast.h"
-#include "db_util.h"
-#include "db_loader.h"
-#include "db_file.h"
-#include "db_mm.h"
+#include "cx_util.h"
+#include "cx_loader.h"
+#include "cx_file.h"
+#include "cx_mm.h"
 
-db_threadKey FAST_PARSER_KEY;
+cx_threadKey FAST_PARSER_KEY;
 
-/* Run a hyve file */
-int fast_hyveRun(db_string file, void* udata) {
-    db_char* source;
+/* Run a cortex file */
+int fast_cortexRun(cx_string file, void* udata) {
+    cx_char* source;
     Fast_Parser p;
-    DB_UNUSED(udata);
+    CX_UNUSED(udata);
 
-    source = db_fileLoad(file);
+    source = cx_fileLoad(file);
     if (source) {
         /* Create parser */
         p = Fast_Parser__create(source, file);
 
         /* Set parser in local storage of thread (enables multithreaded parsers) */
-        db_threadTlsSet(FAST_PARSER_KEY, p);
+        cx_threadTlsSet(FAST_PARSER_KEY, p);
 
         /* Parse script */
         Fast_Parser_parse(p);
-        db_free(p);
-        db_dealloc(source);
+        cx_free(p);
+        cx_dealloc(source);
     } else {
         goto error;
     }
@@ -42,18 +42,18 @@ error:
 /* $end */
 
 /* This function is the entrypoint for the library and * loads definitions of the 'Fast' scope */
-int hyvemain(int argc, char* argv[]) {
-    DB_UNUSED(argc);
-    DB_UNUSED(argv);
+int cortexmain(int argc, char* argv[]) {
+    CX_UNUSED(argc);
+    CX_UNUSED(argv);
     
-    /* $begin(hyvemain) */
+    /* $begin(cortexmain) */
     /* Obtain thread local storage key for parser */
-    if (db_threadTlsKey(&FAST_PARSER_KEY, NULL)) {
+    if (cx_threadTlsKey(&FAST_PARSER_KEY, NULL)) {
         return -1;
     }
 
-    /* Register hyve extension */
-    db_loaderRegister("hyve", fast_hyveRun, NULL);
+    /* Register cortex extension */
+    cx_loaderRegister("cx", fast_cortexRun, NULL);
     /* $end */
 
     return Fast_load();

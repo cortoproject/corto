@@ -9,9 +9,9 @@
 #include "Fast.h"
 #include "Fast__meta.h"
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::Define::construct(Fast::Define object) */
-db_int16 Fast_Define_construct(Fast_Define object) {
-/* $begin(::hyve::Fast::Define::construct) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Define::construct(Fast::Define object) */
+cx_int16 Fast_Define_construct(Fast_Define object) {
+/* $begin(::cortex::Fast::Define::construct) */
 
     Fast_Node(object)->kind = FAST_Define;
 
@@ -19,21 +19,21 @@ db_int16 Fast_Define_construct(Fast_Define object) {
 /* $end */
 }
 
-/* ::hyve::Fast::Define::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_Define_toIc_v(Fast_Define _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-/* $begin(::hyve::Fast::Define::toIc) */
-	db_ic object;
-	db_icOp op;
-	DB_UNUSED(stored);
-	DB_UNUSED(storage);
+/* ::cortex::Fast::Define::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+cx_ic Fast_Define_toIc_v(Fast_Define _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
+/* $begin(::cortex::Fast::Define::toIc) */
+    cx_ic object;
+    cx_icOp op;
+    CX_UNUSED(stored);
+    CX_UNUSED(storage);
 
-	object = Fast_Node_toIc(Fast_Node(_this->object), program, NULL, TRUE);
+    object = Fast_Node_toIc(Fast_Node(_this->object), program, NULL, TRUE);
 
-	op = db_icOp__create(program, Fast_Node(_this)->line, DB_IC_DEFINE, (db_icValue)object, NULL, NULL);
-	db_icProgram_addIc(program, (db_ic)op);
+    op = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_DEFINE, (cx_icValue)object, NULL, NULL);
+    cx_icProgram_addIc(program, (cx_ic)op);
 
-    op->s1Deref = DB_IC_DEREF_ADDRESS;
+    op->s1Deref = CX_IC_DEREF_ADDRESS;
 
-	return NULL;
+    return NULL;
 /* $end */
 }

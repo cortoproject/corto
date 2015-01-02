@@ -6,7 +6,7 @@
 #ifndef Fast_Call_H
 #define Fast_Call_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "Fast_Expression.h"
 #include "Fast__type.h"
 
@@ -18,23 +18,23 @@
 extern "C" {
 #endif
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::Call::construct(Fast::Call object) */
-db_int16 Fast_Call_construct(Fast_Call object);
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Call::construct(Fast::Call object) */
+cx_int16 Fast_Call_construct(Fast_Call object);
 
-/* virtual ::hyve::Fast::Call::hasSideEffects() */
-db_bool Fast_Call_hasSideEffects(Fast_Call _this);
+/* virtual ::cortex::Fast::Call::hasSideEffects() */
+cx_bool Fast_Call_hasSideEffects(Fast_Call _this);
 
-/* ::hyve::Fast::Call::hasSideEffects() */
-db_bool Fast_Call_hasSideEffects_v(Fast_Call _this);
+/* ::cortex::Fast::Call::hasSideEffects() */
+cx_bool Fast_Call_hasSideEffects_v(Fast_Call _this);
 
-/* ::hyve::Fast::Call::resolveActual(string signature,lang::object scope,Fast::Expression instance) */
-db_function Fast_Call_resolveActual(db_string signature, db_object scope, Fast_Expression instance);
+/* ::cortex::Fast::Call::setParameters(lang::function function) */
+void Fast_Call_setParameters(Fast_Call _this, cx_function function);
 
-/* virtual ::hyve::Fast::Call::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_Call_toIc(Fast_Call _this, db_icProgram program, db_icStorage storage, db_bool stored);
+/* virtual ::cortex::Fast::Call::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+cx_ic Fast_Call_toIc(Fast_Call _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);
 
-/* ::hyve::Fast::Call::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_Call_toIc_v(Fast_Call _this, db_icProgram program, db_icStorage storage, db_bool stored);
+/* ::cortex::Fast::Call::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+cx_ic Fast_Call_toIc_v(Fast_Call _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);
 
 #ifdef __cplusplus
 }

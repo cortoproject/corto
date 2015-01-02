@@ -1,7 +1,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "hyve.h"
+#include "cortex.h"
 #include "json.h"
 #include "fixture__api.h"
 #include "fixture__meta.h"
@@ -10,8 +10,8 @@
 
 #define _test_ser_scope(object, expected) \
 {\
-    db_json_ser_t userData = {NULL, NULL, 0, 0, 0, FALSE, FALSE, TRUE};\
-    db_serialize(&serializer, fixture_##object##_o, &userData);\
+    cx_json_ser_t userData = {NULL, NULL, 0, 0, 0, FALSE, FALSE, TRUE};\
+    cx_serialize(&serializer, fixture_##object##_o, &userData);\
     if (strcmp(userData.buffer, "{\"scope\":"expected"}")) {\
         result = -1;\
         fprintf(\
@@ -21,20 +21,20 @@
     }\
 }
 
-db_int16 test_ser_scope(void) {
-    db_int16 result = 0;
+cx_int16 test_ser_scope(void) {
+    cx_int16 result = 0;
 
-    struct db_serializer_s serializer = 
-        db_json_ser(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
+    struct cx_serializer_s serializer = 
+        cx_json_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
 
     _test_ser_scope(namesp, 
         "[{\"name\":\"a\","
-            "\"type\":\"::hyve::lang::int16\",\""
+            "\"type\":\"::cortex::lang::int16\",\""
             "states\":\"V|DCL|DEF\",\""
             "attributes\":\"S|W|O\",\""
             "childCount\":0},"
         "{\"name\":\"b\",\""
-            "type\":\"::hyve::lang::string\","
+            "type\":\"::cortex::lang::string\","
             "\"states\":\"V|DCL|DEF\",\""
             "attributes\":\"S|W|O\","
             "\"childCount\":0}]"
@@ -42,10 +42,10 @@ db_int16 test_ser_scope(void) {
 
     _test_ser_scope(Dog,
         "["
-        "{\"name\":\"age\",\"type\":\"::hyve::lang::member\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"childCount\":0},"
-        "{\"name\":\"breed\",\"type\":\"::hyve::lang::member\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"childCount\":0},"
-        "{\"name\":\"lover\",\"type\":\"::hyve::lang::member\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"childCount\":0},"
-        "{\"name\":\"name\",\"type\":\"::hyve::lang::member\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"childCount\":0}"
+        "{\"name\":\"age\",\"type\":\"::cortex::lang::member\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"childCount\":0},"
+        "{\"name\":\"breed\",\"type\":\"::cortex::lang::member\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"childCount\":0},"
+        "{\"name\":\"lover\",\"type\":\"::cortex::lang::member\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"childCount\":0},"
+        "{\"name\":\"name\",\"type\":\"::cortex::lang::member\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"childCount\":0}"
         "]"
     );
 

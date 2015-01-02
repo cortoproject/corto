@@ -13,32 +13,32 @@
 #include "Fast__api.h"
 /* $end */
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::Local::construct(Local object) */
-db_int16 Fast_Local_construct(Fast_Local object) {
-/* $begin(::hyve::Fast::Local::construct) */
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Local::construct(Local object) */
+cx_int16 Fast_Local_construct(Fast_Local object) {
+/* $begin(::cortex::Fast::Local::construct) */
 
     Fast_Node(object)->kind = FAST_Variable;
     Fast_Variable(object)->kind = FAST_Local;
-    Fast_Expression(object)->type = Fast_Variable(Fast_Object__create(db_typedef(Fast_ObjectBase(object->type)->value)->real));
+    Fast_Expression(object)->type = Fast_Variable(Fast_Object__create(cx_typedef(Fast_ObjectBase(object->type)->value)->real));
     object->isReference |= Fast_Expression_getType(Fast_Expression(object))->reference;
     Fast_Expression(object)->isReference = object->isReference;
 
     if (Fast_Expression_getType(Fast_Expression(object))->reference) {
-    	Fast_Expression(object)->forceReference = TRUE;
+        Fast_Expression(object)->forceReference = TRUE;
     }
 
     return 0;
 /* $end */
 }
 
-/* ::hyve::Fast::Local::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_Local_toIc_v(Fast_Local _this, db_icProgram program, db_icStorage storage, db_bool stored) {
-/* $begin(::hyve::Fast::Local::toIc) */
-	db_ic result;
-	DB_UNUSED(storage);
-	DB_UNUSED(stored);
+/* ::cortex::Fast::Local::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+cx_ic Fast_Local_toIc_v(Fast_Local _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
+/* $begin(::cortex::Fast::Local::toIc) */
+    cx_ic result;
+    CX_UNUSED(storage);
+    CX_UNUSED(stored);
 
-	result = (db_ic)db_icLocal__create(
+    result = (cx_ic)cx_icLocal__create(
                 program,
                 Fast_Node(_this)->line,
                 _this->name,
@@ -47,10 +47,10 @@ db_ic Fast_Local_toIc_v(Fast_Local _this, db_icProgram program, db_icStorage sto
                _this->kind == FAST_LocalReturn,
                FALSE);
 
-	if (_this->isReference) {
-		((db_icStorage)result)->isReference = TRUE;
-	}
+    if (_this->isReference) {
+        ((cx_icStorage)result)->isReference = TRUE;
+    }
 
-	return result;
+    return result;
 /* $end */
 }

@@ -1,0 +1,49 @@
+bool result : true
+void fail(string msg):
+    "tc_if01: FAIL: $msg"
+    result = false
+    
+var uint32 i
+
+i=1
+if i:
+    i--
+if i: fail("if (1)")
+
+i=0
+if i<1:
+    i++
+if i != 1: fail("if (2)")
+
+i=0
+if 0:
+    i++
+if i: fail("if (3)")
+
+i=0
+if !1:
+    i++
+if i: fail("if (4)")
+
+i=0
+if i:
+    i=1
+else:
+    i=2
+if i != 2: fail("if (5)")
+
+i = 0
+if i==1: i = 2
+else if i==0: i = 3
+if i != 3: fail("if (6)")
+
+i = 0
+if i==1:
+    i = 2
+else if i==2:
+    i = 3
+else:
+    i = 4
+if i != 4: fail("if (7)")
+
+if result: "tc_if01: OK"

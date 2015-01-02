@@ -1,7 +1,7 @@
-TARGET_OBJECT = $(HYVE_HOME)/generator/bin/$(TARGET)
-LIBPATH += $(HYVE_HOME)/generator/bin
+TARGET_OBJECT = $(CORTEX_HOME)/generator/bin/$(TARGET)
+LIBPATH += $(CORTEX_HOME)/generator/bin
 
-include $(HYVE_HOME)/build/makefile.makefile
+include $(CORTEX_HOME)/build/makefile.makefile
 
 $(TARGET_OBJECT): $(OBJECTS)
 	@mkdir -p $(dir $(TARGET_OBJECT))
@@ -10,4 +10,4 @@ $(TARGET_OBJECT): $(OBJECTS)
 clean: 
 	@rm -f obj/$(PPREFIX)/*
 	@rm -f gcov/*
-	@rm -f $(HYVE_HOME)/$(TARGET) >/dev/null
+	@rm -f $(CORTEX_HOME)/$(TARGET) >/dev/null

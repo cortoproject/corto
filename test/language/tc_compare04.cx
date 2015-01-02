@@ -1,0 +1,46 @@
+// Comparisons of simple struct types
+
+bool result : true
+void fail(string msg):
+    "tc_compare04: FAIL: $msg"
+    result = false
+    
+struct Point::
+    x,y : uint32
+    
+struct Line::
+    start, stop : Point
+    
+Point p1: 10,20
+Point p2: 15,20
+Point p3: 10,25
+
+Line l1: start={10,20} stop={30,40}
+Line l2: start={10,25} stop={30,40}
+Line l3: start={10,20} stop={30,45}
+
+// Point
+if p1.compare(p2) != LT: fail("p1.compare(p2) (${p1.compare(p2)} != LT)")
+if p2.compare(p1) != GT: fail("p2.compare(p1) (${p2.compare(p1)} != GT)")
+if p1.compare(p1) != EQ: fail("p1.compare(p1) (${p1.compare(p1)} != EQ)")
+
+if p1.compare(p3) != LT: fail("p1.compare(p3) (${p1.compare(p3)} != LT)")
+if p3.compare(p1) != GT: fail("p3.compare(p1) (${p3.compare(p1)} != GT)")
+
+if p2.compare(p3) != GT: fail("p2.compare(p3) (${p2.compare(p3)} != GT)")
+if p3.compare(p2) != LT: fail("p3.compare(p2) (${p3.compare(p2)} != LT)")
+
+// Line
+if l1.compare(l2) != LT: fail("l1.compare(l2) (${l1.compare(l2)} != LT)")
+if l2.compare(l1) != GT: fail("l2.compare(l1) (${l2.compare(l1)} != GT)")
+if l1.compare(l1) != EQ: fail("l1.compare(l1) (${l1.compare(l1)} != EQ)")
+
+if l1.compare(l3) != LT: fail("l1.compare(l3) (${l1.compare(l3)} != LT)")
+if l3.compare(l1) != GT: fail("l3.compare(l1) (${l3.compare(l1)} != GT)")
+
+if l2.compare(l3) != GT: fail("l2.compare(l3) (${l2.compare(l3)} != GT)")
+if l3.compare(l2) != LT: fail("l3.compare(l2) (${l3.compare(l2)} != LT)")
+
+if p1.compare(l1) != NEQ: fail("p1.compare(l1) (${p1.compare(l1)} != NEQ")
+
+if result: "tc_compare04: OK"

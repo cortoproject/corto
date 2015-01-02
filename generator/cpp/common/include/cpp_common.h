@@ -8,47 +8,47 @@
 #ifndef C_COMMON_H_
 #define C_COMMON_H_
 
-#include "hyve.h"
-#include "db_generator.h"
+#include "cortex.h"
+#include "cx_generator.h"
 
 #ifdef __cplusplus
 extern "c" {
 #endif
 
 /* Translate id to C-id */
-db_string hyve_genId(db_string str, db_id id);
+cx_string cortex_genId(cx_string str, cx_id id);
 
 /* Return string with C type for primitive */
-db_char* cpp_primitiveId(db_primitive t, db_char* buff);
+cx_char* cpp_primitiveId(cx_primitive t, cx_char* buff);
 
 /* Parse type into C-specifier */
-db_char* cpp_specifierId(db_generator g, db_typedef t, db_char* specifier);
-db_char* cpp_specifierDecl(db_generator g, db_typedef t, db_char* specifier);
+cx_char* cpp_specifierId(cx_generator g, cx_typedef t, cx_char* specifier);
+cx_char* cpp_specifierDecl(cx_generator g, cx_typedef t, cx_char* specifier);
 
 /* Translate constant to C-language id */
-db_char* cpp_constantId(db_generator g, db_constant* c, db_char* buffer);
+cx_char* cpp_constantId(cx_generator g, cx_constant* c, cx_char* buffer);
 
 /* Open a scope */
-void cpp_openScope(g_file file, db_object o);
+void cpp_openScope(g_file file, cx_object o);
 void cpp_closeScope(g_file file);
 
 /* Translate a scope to a path */
-db_char* cpp_topath(db_object o, db_id id);
+cx_char* cpp_topath(cx_object o, cx_id id);
 
 typedef enum cpp_metaIdKind {
-	CPP_DEFAULT,
-	CPP_HANDLE,
-	CPP_OBJECT
+    CPP_DEFAULT,
+    CPP_HANDLE,
+    CPP_OBJECT
 }cpp_metaIdKind;
 
 /* Get meta-object identifier */
-db_char* cpp_metaFullname(db_generator g, db_object o, cpp_metaIdKind kind, db_id id);
+cx_char* cpp_metaFullname(cx_generator g, cx_object o, cpp_metaIdKind kind, cx_id id);
 
 /* Get meta-object identifier */
-db_char* cpp_metaName(db_generator g, db_object o, cpp_metaIdKind kind, db_id id);
+cx_char* cpp_metaName(cx_generator g, cx_object o, cpp_metaIdKind kind, cx_id id);
 
 /* Get procedure id (without parameterlist */
-db_char* cpp_procId(db_generator g, db_function o, db_id id);
+cx_char* cpp_procId(cx_generator g, cx_function o, cx_id id);
 
 #ifdef __cplusplus
 }

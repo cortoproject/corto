@@ -1,11 +1,11 @@
 
 TARGET =	c_type
 
-INCLUDE = 	$(HYVE_HOME)/dev/include \
+INCLUDE = 	$(CORTEX_HOME)/dev/include \
 			../common/include
 
-LIBS	= lang hyvedev :c_common
+LIBS	= lang cortexdev :c_common
 LIBPATH	=	
 
-include $(HYVE_HOME)/build/generator.makefile
+include $(CORTEX_HOME)/build/generator.makefile
 

@@ -2,13 +2,13 @@
 TARGET  = html
 
 INCLUDE = include \
-          $(HYVE_HOME)/db/include \
-          $(HYVE_HOME)/dev/include \
-          $(HYVE_HOME)/public/c/include \
-          $(HYVE_HOME)/interface/json/include
+          $(CORTEX_HOME)/cx/include \
+          $(CORTEX_HOME)/dev/include \
+          $(CORTEX_HOME)/public/c/include \
+          $(CORTEX_HOME)/interface/json/include
 
-LIBS    = lang hyvedev json
+LIBS    = lang cortexdev json
 LIBPATH =
 
-include $(HYVE_HOME)/build/generator.makefile
+include $(CORTEX_HOME)/build/generator.makefile
 

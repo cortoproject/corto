@@ -6,7 +6,7 @@
 #ifndef Fast_ParserDeclaration_H
 #define Fast_ParserDeclaration_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "Fast__type.h"
 
 #include "Fast__api.h"

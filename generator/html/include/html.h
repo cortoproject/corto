@@ -1,5 +1,7 @@
+#include "cx_object.h"
 
-typedef struct db_html_gen {
+typedef struct cx_html_gen {
     const char *path;
     unsigned int level;
-} db_html_gen_t;
+    const char *rootFullname;
+} cx_html_gen_t;

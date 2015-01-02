@@ -7,7 +7,7 @@
 #ifndef tc_MammalProps_H
 #define tc_MammalProps_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "tc_call__type.h"
 
 #ifdef __cplusplus

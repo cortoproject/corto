@@ -1,0 +1,48 @@
+bool result : true
+void fail(string msg):
+    "tc_declaration: FAIL: $msg"
+    result = false
+    
+// One object per declaration, explicit object-type    
+struct Point::
+    member x : uint32
+    member y : uint32
+    
+// Initializer before scope
+struct Point3D : Point::
+    member z : uint32    
+
+// Multiple objects per declaration, explicit object-type    
+struct Line::
+    member start, stop : Point
+
+// One object per declaration, implicit object-type
+struct Triangle::
+    p1 : Point
+    p2 : Point
+    p3 : Point
+
+// Test membernames that usually resolve to objects in comma-expressions
+struct ParseThis::
+    state : uint32
+    collectionKind : uint32
+    
+// Multiple objects per declaration, implicit object-type
+struct Square::
+    p1, p2, p3, p4 : Point
+    
+// Implicit object-type, not a declaration statement
+enum Color:: RED, ORANGE, YELLOW, GREEN, BLUE, VIOLET
+
+// Implicit object-type, default initializer
+enum Tree:: OAK, MAPLE, PALM:    
+    
+// Test types (initializer validation happens in tc_initializer* testcases)
+Point p:     10,20
+Point3D p3d:10, 20, 30
+Line l:     {10, 20}, {30, 40}
+Triangle t: {10, 20}, {30, 40}, {50, 60}
+Square s:    {10, 20}, {30, 40}, {50, 60}, {70, 80}
+Color c: BLUE
+
+if result: "tc_declaration: OK"

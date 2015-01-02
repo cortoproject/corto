@@ -14,10 +14,10 @@
 #include "Fast_DynamicInitializer.h"
 /* $end */
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::InitializerExpr::construct(InitializerExpr object) */
-db_int16 Fast_InitializerExpr_construct(Fast_InitializerExpr object) {
-/* $begin(::hyve::Fast::InitializerExpr::construct) */
-    db_int16 result = 0;
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::InitializerExpr::construct(InitializerExpr object) */
+cx_int16 Fast_InitializerExpr_construct(Fast_InitializerExpr object) {
+/* $begin(::cortex::Fast::InitializerExpr::construct) */
+    cx_int16 result = 0;
 
     Fast_Node(object)->kind = FAST_Initializer;
     if (!result) {
@@ -35,26 +35,26 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::InitializerExpr::define() */
-db_int16 Fast_InitializerExpr_define(Fast_InitializerExpr _this) {
-/* $begin(::hyve::Fast::InitializerExpr::define) */
+/* ::cortex::Fast::InitializerExpr::define() */
+cx_int16 Fast_InitializerExpr_define(Fast_InitializerExpr _this) {
+/* $begin(::cortex::Fast::InitializerExpr::define) */
     Fast_InitOper *elem = Fast_InitOper_list__append(_this->operations);
     elem->kind = FAST_InitDefine;
     return 0;
 /* $end */
 }
 
-/* ::hyve::Fast::InitializerExpr::insert(Expression variable) */
-db_int16 Fast_InitializerExpr_insert(Fast_InitializerExpr _this, Fast_Expression variable) {
-/* $begin(::hyve::Fast::InitializerExpr::insert) */
+/* ::cortex::Fast::InitializerExpr::insert(Expression variable) */
+cx_int16 Fast_InitializerExpr_insert(Fast_InitializerExpr _this, Fast_Expression variable) {
+/* $begin(::cortex::Fast::InitializerExpr::insert) */
     Fast_DynamicInitializer initializer;
 
-    db_set_ext(_this, &Fast_Initializer(_this)->variables[0].object, variable, ".variables[0].object");
-    db_set_ext(_this, &Fast_Expression(_this)->type, variable->type, ".type");
+    cx_set_ext(_this, &Fast_Initializer(_this)->variables[0].object, variable, ".variables[0].object");
+    cx_set_ext(_this, &Fast_Expression(_this)->type, variable->type, ".type");
 
     /* Create initializer */
     /* Note that since I'm passing MY list of variables, I need to fix the reference count! */
-    db_keep_ext(NULL, Fast_Initializer(_this)->variables[0].object, "keep object for dynamic initializer");
+    cx_keep_ext(NULL, Fast_Initializer(_this)->variables[0].object, "keep object for dynamic initializer");
     initializer = Fast_DynamicInitializer__create(Fast_Initializer(_this)->variables, 1, _this->assignValue);
     
     /* Walk operations */
@@ -88,7 +88,7 @@ db_int16 Fast_InitializerExpr_insert(Fast_InitializerExpr _this, Fast_Expression
         }
     }
 
-    db_free_ext(NULL, initializer, "free temporary initializer");
+    cx_free_ext(NULL, initializer, "free temporary initializer");
 
     return 0;
 error:
@@ -96,40 +96,40 @@ error:
 /* $end */
 }
 
-/* ::hyve::Fast::InitializerExpr::member(lang::string name) */
-db_int32 Fast_InitializerExpr_member(Fast_InitializerExpr _this, db_string name) {
-/* $begin(::hyve::Fast::InitializerExpr::member) */
+/* ::cortex::Fast::InitializerExpr::member(lang::string name) */
+cx_int32 Fast_InitializerExpr_member(Fast_InitializerExpr _this, cx_string name) {
+/* $begin(::cortex::Fast::InitializerExpr::member) */
     Fast_InitOper *elem = Fast_InitOper_list__append(_this->operations);
     elem->kind = FAST_InitMember;
-    elem->name = db_strdup(name);
+    elem->name = cx_strdup(name);
     return 0;
 /* $end */
 }
 
-/* ::hyve::Fast::InitializerExpr::pop() */
-db_int16 Fast_InitializerExpr_pop(Fast_InitializerExpr _this) {
-/* $begin(::hyve::Fast::InitializerExpr::pop) */
+/* ::cortex::Fast::InitializerExpr::pop() */
+cx_int16 Fast_InitializerExpr_pop(Fast_InitializerExpr _this) {
+/* $begin(::cortex::Fast::InitializerExpr::pop) */
     Fast_InitOper *elem = Fast_InitOper_list__append(_this->operations);
     elem->kind = FAST_InitPop;
     return 0;
 /* $end */
 }
 
-/* ::hyve::Fast::InitializerExpr::push() */
-db_int16 Fast_InitializerExpr_push(Fast_InitializerExpr _this) {
-/* $begin(::hyve::Fast::InitializerExpr::push) */
+/* ::cortex::Fast::InitializerExpr::push() */
+cx_int16 Fast_InitializerExpr_push(Fast_InitializerExpr _this) {
+/* $begin(::cortex::Fast::InitializerExpr::push) */
     Fast_InitOper *elem = Fast_InitOper_list__append(_this->operations);
     elem->kind = FAST_InitPush;
     return 0;
 /* $end */
 }
 
-/* ::hyve::Fast::InitializerExpr::value(Expression v) */
-db_int16 Fast_InitializerExpr_value(Fast_InitializerExpr _this, Fast_Expression v) {
-/* $begin(::hyve::Fast::InitializerExpr::value) */
+/* ::cortex::Fast::InitializerExpr::value(Expression v) */
+cx_int16 Fast_InitializerExpr_value(Fast_InitializerExpr _this, Fast_Expression v) {
+/* $begin(::cortex::Fast::InitializerExpr::value) */
     Fast_InitOper *elem = Fast_InitOper_list__append(_this->operations);
     elem->kind = FAST_InitValue;
-    db_set(&elem->expr, v);
+    cx_set(&elem->expr, v);
     return 0;
 /* $end */
 }

@@ -1,8 +1,8 @@
 
 TARGET  = json
 
-INCLUDE = $(HYVE_HOME)/dev/include
+INCLUDE = $(CORTEX_HOME)/dev/include
 
-LIBS    = lang hyvedev
+LIBS    = lang cortexdev
 
-include $(HYVE_HOME)/build/component.makefile
+include $(CORTEX_HOME)/build/component.makefile

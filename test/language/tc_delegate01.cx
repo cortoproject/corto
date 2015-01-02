@@ -1,0 +1,25 @@
+
+// The delegate type
+uint32 binaryOperation(uint32 a, uint32 b) procptr:
+
+// A function that matches the delegate signature
+uint32 add(uint32 a, uint32 b) = a + b
+
+// Assign function to delegate
+binaryOperation op:
+op = add
+
+class Foo::
+    i: uint32
+    uint32 adding(uint32 a, uint32 b):
+        adding = i = a + b
+   
+Foo obj:
+op = obj.adding
+
+
+// Call the delegate
+op(10, 20)
+
+//"tc_delegate01: FAIL: not implemented"
+

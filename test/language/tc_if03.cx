@@ -1,0 +1,40 @@
+// Test comma-separated expression lists in if-statements
+bool result: true
+void fail(string msg):
+    "tc_if03: FAIL: $msg"
+    result = false
+
+// Boolean comparisons
+bool a, b, c: true
+
+if a, b, c: 0
+else: fail("a, b, c")
+
+if a, !b, c: fail("a, !b, c")
+else: 0
+
+// Numeric comparisons
+uint32 x, y, z
+x, y, z = 10, 20, 30
+
+// Single comparisons
+if (x, y, z) == 30: fail("(x, y, z) == 30") // == expands using && (and)
+else: 0
+
+if (x, y, z) != 30: 0 // != expands using || (or)
+else: fail("(x, y, z) != 30")
+
+// Multiple comparisons:
+if (x, y, z) == (10, 20, 30): 0 // == 
+else: fail("x, y, z == 10, 20, 30")
+
+if (x, y, z) != (10, 20, 30): fail("x, y, z != 10, 20, 30") // != 
+else: 0
+
+if (x, y, z) == (10, 22, 30): fail("x, y, z == 10, 22, 30") // ==
+else: 0
+
+if (x, y, z) != (10, 22, 30): 0
+else: fail("x, y, z == 10, 22, 30") // !=
+ 
+if result: "tc_if03: OK"

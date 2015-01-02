@@ -1,22 +1,22 @@
 
 all:
-	@make -C dbsh
-	@make -C hyve
-	@make -C dbgen
+	@make -C cxsh
+	@make -C cortex
+	@make -C cxgen
 	
 clean:
-	@make clean -C dbsh
-	@make clean -C hyve
-	@make clean -C dbgen
+	@make clean -C cxsh
+	@make clean -C cortex
+	@make clean -C cxgen
 	
 gcov:
-	@make gcov -C dbsh
-	@make gcov -C hyve
-	@make clean -C dbgen
+	@make gcov -C cxsh
+	@make gcov -C cortex
+	@make clean -C cxgen
 	
 splint:
-	@make splint -C dbsh
-	@make splint -C hyve
-	@make clean -C dbgen
+	@make splint -C cxsh
+	@make splint -C cortex
+	@make clean -C cxgen
 	
 

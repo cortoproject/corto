@@ -1,6 +1,6 @@
-export HYVE_HOME=`pwd`
-export LD_LIBRARY_PATH=$HYVE_HOME/bin:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=$HYVE_HOME/generator/bin:$LD_LIBRARY_PATH
-export PATH=$HYVE_HOME/bin:$PATH
-export PATH=$HYVE_HOME/scripts:$PATH
+export CORTEX_HOME=`pwd`
+export LD_LIBRARY_PATH=$CORTEX_HOME/bin:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$CORTEX_HOME/generator/bin:$LD_LIBRARY_PATH
+export PATH=$CORTEX_HOME/bin:$PATH
+export PATH=$CORTEX_HOME/scripts:$PATH
 

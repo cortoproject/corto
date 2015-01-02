@@ -1,0 +1,76 @@
+// Test nested ternary operations
+bool result: true
+uint32 T, Q, F
+
+void fail(string msg):
+    "tc_ternary02: FAIL: $msg"
+    result = false
+
+void validate(uint32 T, uint32 Q, uint32 F, uint32 tT, uint32 tQ, uint32 tF, string msg):
+    if (T != tT) || (Q != tQ) || (F != tF):
+        "tc_ternary02: FAIL: $msg (tT=$tT T=$T tQ=$tQ Q=$Q tF$tF F=$F)"
+        result = false
+
+// Literal comparison, no result
+true  ? true ? T++ : Q++ : F++  
+validate(T, Q, F, 1, 0, 0, "true?true?::")
+
+true  ? false ? T++ : Q++ : F++ 
+validate(T, Q, F, 1, 1, 0, "true?false?::")
+
+false ? true ? T++ : Q++ : F++  
+validate(T, Q, F, 1, 1, 1, "false?true?::")
+
+false ? false ? T++ : Q++ : F++ 
+validate(T, Q, F, 1, 1, 2, "false?false?::")
+
+false ? T++ : true ? Q++ : F++  
+validate(T, Q, F, 1, 2, 2, "false?:true?:")
+
+false ? T++ : false ? Q++ : F++ 
+validate(T, Q, F, 1, 2, 3, "false?:false?:")
+
+
+// Var comparison, no result
+var bool a, b = true
+T, Q, F = 0
+a  ? b ? T++ : Q++ : F++  
+validate(T, Q, F, 1, 0, 0, "a?b?::")
+
+a  ? !b ? T++ : Q++ : F++ 
+validate(T, Q, F, 1, 1, 0, "a?!b?::")
+
+!a ? b ? T++ : Q++ : F++  
+validate(T, Q, F, 1, 1, 1, "!a?b?::")
+
+!a ? !b ? T++ : Q++ : F++ 
+validate(T, Q, F, 1, 1, 2, "!a?!b?::")
+
+!a ? T++ : b ? Q++ : F++  
+validate(T, Q, F, 1, 2, 2, "!a?:b?:")
+
+!a ? T++ : !b ? Q++ : F++ 
+validate(T, Q, F, 1, 2, 3, "!a?:!b?:")
+
+
+// Var comparison, store result
+var uint32 r = 0
+r = a ? b ? 10 : 20 : 30   
+if r != 10: fail("r != 10 ($result)")
+
+r = a ? !b ? 10 : 20 : 30  
+if r != 20: fail("r != 20 ($result)")
+
+r = !a ? b ? 10 : 20 : 30  
+if r != 30: fail("r != 30 ($result)")
+
+r = !a ? !b ? 10 : 20 : 30 
+if r != 30: fail("r != 30 ($result) #2")
+
+r = !a ? 10 : b ? 20 : 30  
+if r != 20: fail("r != 20 ($result) #3")
+
+r = !a ? 10 : !b ? 20 : 30 
+if r != 30: fail("r != 30 ($result) #2")
+
+if result: "tc_ternary02: OK"

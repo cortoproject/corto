@@ -5,9 +5,9 @@
 #include "fixture__meta.h"
 
 /* This function is the entrypoint for the library and * loads definitions of the 'fixture' scope */
-int hyvemain(int argc, char* argv[]) {
-    DB_UNUSED(argc);
-    DB_UNUSED(argv);
+int cortexmain(int argc, char* argv[]) {
+    CX_UNUSED(argc);
+    CX_UNUSED(argv);
     return fixture_load();
 }
 

@@ -1,0 +1,14 @@
+bool result: true
+void fail(string msg):
+    "tc_basic01: FAIL: $msg"
+    result = false
+
+// Test expressions without side effects (if it compiles, it's ok)
+'a'
+10
+(10)
+10.5
+10, 20, 30
+'a', 10, (10), 10.5
+
+if result: "tc_basic01: OK"

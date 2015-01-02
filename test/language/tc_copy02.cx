@@ -1,0 +1,30 @@
+// Copy composite types
+bool result: true
+void fail(string msg):
+    "tc_copy02: FAIL: $msg"
+    result = false
+    
+struct Point::
+    x, y: uint32
+    
+struct Line::
+    start, stop: Point
+    
+Point p1: 10, 20
+Point p2: 30, 40
+Line l1: {50,60}, {70,80}
+Line l2: {90,100}, {110, 120}
+
+p1.copy(p2)
+if p1[x,y] != (30, 40): fail("p1[x,y] != 30,40 ($p1)")
+
+l1.copy(l2)
+if l1[start,stop][x,y] != (90,100,110,120): fail("l1[start,stop][x,y] != 90,100,110,120 ($l1)")
+    
+l1.start.copy(p1)
+if l1[start,stop][x,y] != (30,40,110,120): fail("l1[start,stop][x,y] != 30,40,110,120 ($l1)")
+    
+l1.stop.copy(l1.start)
+if l1[start,stop][x,y] != (30,40,30,40): fail("l1[start,stop][x,y] != 30,40,30,40 ($l1)")
+
+if result: "tc_copy02: OK"

@@ -6,7 +6,7 @@
 #ifndef Fast_Character_H
 #define Fast_Character_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "Fast_Literal.h"
 #include "Fast__type.h"
 
@@ -18,17 +18,17 @@
 extern "C" {
 #endif
 
-/* callback ::hyve::lang::type::init(lang::object object) -> ::hyve::Fast::Character::init(Character object) */
-db_int16 Fast_Character_init(Fast_Character object);
+/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::Character::init(Character object) */
+cx_int16 Fast_Character_init(Fast_Character object);
 
-/* ::hyve::Fast::Character::serialize(lang::type dstType,lang::word dst) */
-db_int16 Fast_Character_serialize(Fast_Character _this, db_type dstType, db_word dst);
+/* ::cortex::Fast::Character::serialize(lang::type dstType,lang::word dst) */
+cx_int16 Fast_Character_serialize(Fast_Character _this, cx_type dstType, cx_word dst);
 
-/* virtual ::hyve::Fast::Character::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_Character_toIc(Fast_Character _this, db_icProgram program, db_icStorage storage, db_bool stored);
+/* virtual ::cortex::Fast::Character::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+cx_ic Fast_Character_toIc(Fast_Character _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);
 
-/* ::hyve::Fast::Character::toIc(lang::alias{"db_icProgram"} program,lang::alias{"db_icStorage"} storage,lang::bool stored) */
-db_ic Fast_Character_toIc_v(Fast_Character _this, db_icProgram program, db_icStorage storage, db_bool stored);
+/* ::cortex::Fast::Character::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+cx_ic Fast_Character_toIc_v(Fast_Character _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);
 
 #ifdef __cplusplus
 }

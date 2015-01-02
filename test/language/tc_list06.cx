@@ -1,0 +1,35 @@
+// Test assigning various complex values to a list
+bool result: true
+void fail(string msg):
+    "tc_list06: FAIL: $msg"
+    result = false
+
+struct Point::
+    x, y: uint32
+
+list{Point} pointListA: {30,40}
+list{Point} pointListB: {70,80}, {90,100}
+Point p: 110, 120
+
+// Sanity check
+if pointListA.size() != 1: fail("pointListA.size() != 1 (${pointListA.size()})")
+if pointListA[0][x,y] != (30,40): fail("pointListA[0][x,y] != (30,40) ($pointListA)")
+
+// Assign collection with a collection initializer
+// !! Note that a collection with an initializer-assignment always expects a collection-initializer.
+pointListA = {{50, 60}}
+if pointListA.size() != 1: fail("pointListA.size() != 1 (${pointListA.size()})")
+if pointListA[0][x,y] != (50,60): fail("pointListA[0][x,y] != (50,60) ($pointListA)")
+
+// Assign another list
+pointListA = pointListB
+if pointListA.size() != 2: fail("pointListA.size() != 2 (${pointListA.size()})")
+if pointListA[0,1][x,y] != (70,80,90,100): fail("pointListA[0][x,y] != (70,80) ($pointListA)")
+
+// Assign a complex object
+pointListA = p
+if pointListA.size() != 1: fail("pointListA.size() != 1 (${pointListA.size()})")
+if pointListA[0][x,y] != (110,120): fail("pointListA[0][x,y] != (110,120) ($pointListA)")
+
+if result: "tc_list06: OK"
+

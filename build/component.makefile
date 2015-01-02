@@ -1,7 +1,7 @@
 
-TARGET_OBJECT = $(HYVE_HOME)/bin/$(dir $(TARGET))lib$(notdir $(TARGET)).so
+TARGET_OBJECT = $(CORTEX_HOME)/bin/$(dir $(TARGET))lib$(notdir $(TARGET)).so
 
-include $(HYVE_HOME)/build/makefile.makefile
+include $(CORTEX_HOME)/build/makefile.makefile
 
 $(TARGET_OBJECT): $(OBJECTS)
 	mkdir -p $(dir $(TARGET_OBJECT))

@@ -6,7 +6,7 @@
 #ifndef Fast_ObjectBase_H
 #define Fast_ObjectBase_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "Fast_Variable.h"
 #include "Fast__type.h"
 
@@ -18,8 +18,8 @@
 extern "C" {
 #endif
 
-/* callback ::hyve::lang::class::construct(lang::object object) -> ::hyve::Fast::ObjectBase::construct(ObjectBase object) */
-db_int16 Fast_ObjectBase_construct(Fast_ObjectBase object);
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::ObjectBase::construct(ObjectBase object) */
+cx_int16 Fast_ObjectBase_construct(Fast_ObjectBase object);
 
 #ifdef __cplusplus
 }

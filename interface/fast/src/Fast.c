@@ -14,15 +14,31 @@
 #include "Fast_Call.h"
 #include "Fast_CommaExpr.h"
 #include "Fast__api.h"
-Fast_Parser yparser(void);
+#include "cx.h"
 
 /* Create a call-expression */
-Fast_Call Fast_createMethodCall(Fast_Expression obj, db_string function, db_uint32 numArgs, ...) {
+Fast_Call Fast_createCallWithArguments(Fast_Expression instance, cx_string function, Fast_Expression arguments) {
     Fast_Call result;
-    Fast_Expression args=NULL, arg=NULL, member=NULL;
-    Fast_String functionStr;
-	va_list arglist;
-    db_uint32 i;
+    Fast_CallBuilder builder;
+
+    /* Initialize builder */
+    Fast_CallBuilder__init(&builder, 
+        function, 
+        arguments, 
+        instance, 
+        Fast_ObjectBase(yparser()->scope)->value, 
+        yparser()->block);
+    result = Fast_CallBuilder_build(&builder);
+    Fast_CallBuilder__deinit(&builder);
+
+    return result;
+}
+
+/* Create a call-expression */
+Fast_Call Fast_createCall(Fast_Expression instance, cx_string function, cx_uint32 numArgs, ...) {
+    Fast_Expression args = NULL, arg = NULL;
+    va_list arglist;
+    cx_uint32 i;
     
     /* Create comma-expression if there is more than one argument */
     va_start(arglist, numArgs);
@@ -36,77 +52,108 @@ Fast_Call Fast_createMethodCall(Fast_Expression obj, db_string function, db_uint
         args = va_arg(arglist, Fast_Expression);
     }
     va_end(arglist);
-    
-    /* Create member expression */
-    functionStr = Fast_String__create(function);
 
-    /* Create memberexpression */
-    member = Fast_Expression(Fast_MemberExpr__create(obj, Fast_Expression(functionStr)));
-    if (!member) {
-        /* TODO: free resources */
-        goto error;
-    }
-
-    result = Fast_Call__create(member, Fast_Expression(args));
-    Fast_Parser_collect(yparser(), result);
     if (args) {
         Fast_Parser_collect(yparser(), args);
     }
-    Fast_Parser_collect(yparser(), member);
+
+    return Fast_createCallWithArguments(instance, function, args);
+}
+
+Fast_Call Fast_createCallFromExpr(Fast_Expression f, Fast_Expression arguments) {
+    Fast_Call result = NULL;
+    Fast_Expression instance = NULL;
+    cx_id name;
+    cx_object scope = Fast_ObjectBase(yparser()->scope)->value;
+    Fast_CallBuilder builder;
+
+    /* Extract information from expressions */
+    switch(Fast_Node(f)->kind) {
+
+    /* Member expression */
+    case FAST_Member:
+        instance = Fast_MemberExpr(f)->lvalue;
+        strcpy(name, Fast_String(Fast_MemberExpr(f)->rvalue)->value);
+        break;
+    case FAST_Variable:
+        switch(Fast_Variable(f)->kind) {
+        case FAST_Object: {
+            cx_object o = Fast_ObjectBase(f)->value;
+            cx_signatureName(cx_nameof(o), name);
+            scope = cx_parentof(o);
+            break;
+        }
+        case FAST_Local:
+            strcpy(name, Fast_Local(f)->name);
+            break;
+        default:
+            Fast_Parser_error(yparser(), "variable expression %s is not callable",
+                cx_nameof(cx_enum_constant(Fast_variableKind_o, Fast_Variable(f)->kind)));
+            goto error;
+        }
+        break;
+    default:
+        Fast_Parser_error(yparser(), "expression is not callable");
+        goto error;
+    }
+
+    /* Initialize builder */
+    Fast_CallBuilder__init(&builder, name, arguments, instance, scope, yparser()->block);
+    result = Fast_CallBuilder_build(&builder);
+    Fast_CallBuilder__deinit(&builder);
 
     return result;
 error:
     return NULL;
 }
-
 /* $end */
 
-/* ::hyve::Fast::valueKindFromType(lang::type type) */
-Fast_valueKind Fast_valueKindFromType(db_type type) {
-/* $begin(::hyve::Fast::valueKindFromType) */
-	Fast_valueKind result = FAST_Null;
+/* ::cortex::Fast::valueKindFromType(lang::type type) */
+Fast_valueKind Fast_valueKindFromType(cx_type type) {
+/* $begin(::cortex::Fast::valueKindFromType) */
+    Fast_valueKind result = FAST_Null;
 
-	if (type->reference) {
-		result = FAST_Reference;
-	} else {
-		if (type->kind != DB_PRIMITIVE) {
+    if (type->reference) {
+        result = FAST_Reference;
+    } else {
+        if (type->kind != CX_PRIMITIVE) {
             /* Exception to common error-reporting pattern: calling functions need to throw an error. The
              * rationale is that at this level there is little information available to report a meaningful
              * error. */
             goto error;
         }
 
-		switch(db_primitive(type)->kind) {
-		case DB_BOOLEAN:
-			result = FAST_Boolean;
-			break;
-		case DB_CHARACTER:
-			result = FAST_Character;
-			break;
-		case DB_INTEGER:
-			result = FAST_SignedInteger;
-			break;
-		case DB_BINARY:
-		case DB_UINTEGER:
-			result = FAST_Integer;
-			break;
-		case DB_FLOAT:
-			result = FAST_FloatingPoint;
-			break;
-		case DB_TEXT:
-			result = FAST_String;
-			break;
-		case DB_ENUM:
-		case DB_BITMASK:
-			result = FAST_Enumerated;
-			break;
-		case DB_ALIAS:
-			result = FAST_Integer;
-			break;
-		}
-	}
+        switch(cx_primitive(type)->kind) {
+        case CX_BOOLEAN:
+            result = FAST_Boolean;
+            break;
+        case CX_CHARACTER:
+            result = FAST_Character;
+            break;
+        case CX_INTEGER:
+            result = FAST_SignedInteger;
+            break;
+        case CX_BINARY:
+        case CX_UINTEGER:
+            result = FAST_Integer;
+            break;
+        case CX_FLOAT:
+            result = FAST_FloatingPoint;
+            break;
+        case CX_TEXT:
+            result = FAST_String;
+            break;
+        case CX_ENUM:
+        case CX_BITMASK:
+            result = FAST_Enumerated;
+            break;
+        case CX_ALIAS:
+            result = FAST_Integer;
+            break;
+        }
+    }
 
-	return result;
+    return result;
 error:
     return FAST_Null;
 /* $end */

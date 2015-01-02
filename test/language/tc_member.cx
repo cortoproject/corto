@@ -1,0 +1,95 @@
+bool result : true
+
+void test(int32 value, int32 test, string msg):
+    if value != test:
+        "tc_member: FAIL: $msg"
+        result = false
+
+struct Point::
+    member x,y : int32
+    
+struct Line::
+    member start,end : Point
+    
+class Triangle::
+    member v1,v2,v3 : Point
+    
+class TriangleHolder::
+    member triangle : ::Triangle
+
+// var of non-reference type
+var Line lineA = {start={1,2} end={3,4}}
+lineA.start.x = 10
+lineA.start.y = lineA.start.x * 2
+lineA.end.x = 30
+lineA.end.y = 40
+
+// 2nd var of non-reference type
+var Line lineB = {start={1,2} end={3,4}}
+lineB.start.x = lineB.end.y
+lineB.start.y = 20
+lineB.end.x *= 10
+lineB.end.y = 40
+
+// Object of non-reference type
+Line lineC : start={1,2} end={3,4}
+lineC.start.x = 10
+lineC.start.y = (lineC.start.x + 10) * 2
+lineC.end.x *= 10
+lineC.end.y = 40
+
+// Object of reference type
+Triangle triangleB : v1={1,2} v2={3,4} v3={5,6}
+triangleB.v1.x = 10
+triangleB.v1.y *= 20
+triangleB.v2.x = 30
+triangleB.v2.y = 40
+triangleB.v3.x = 50
+triangleB.v3.y = 60
+
+// var of reference type
+var Triangle triangleA = triangleB
+
+// Object with reference-member
+Triangle triangleC : v1={3,4} v2={5,6} v3={7,8}
+TriangleHolder holder : triangleB
+if holder.triangle != triangleB:
+    io::println("holder.triangle")
+    result = false
+
+holder.triangle = triangleC
+if holder.triangle != triangleC:
+    io::println("holder.triangle (2)")
+    result = false
+
+test(lineA.start.x, 10, "lineA.start.x")
+test(lineA.start.y, 20, "lineA.start.y")
+test(lineA.end.x, 30, "lineA.end.x")
+test(lineA.end.y, 40, "lineA.end.y")
+
+test(lineB.start.x, 4, "lineB.start.x")
+test(lineB.start.y, 20, "lineB.start.y")
+test(lineB.end.x, 30, "lineB.end.x")
+test(lineB.end.y, 40, "lineB.end.y")
+
+test(lineC.start.x, 10, "lineC.start.x")
+test(lineC.start.y, 40, "lineC.start.y")
+test(lineC.end.x, 30, "lineC.end.x")
+test(lineC.end.y, 40, "lineC.end.y")
+
+test(triangleA.v1.x, 10, "triangleA.v1.x")
+test(triangleA.v1.y, 40, "triangleA.v1.y")
+test(triangleA.v2.x, 30, "triangleA.v2.x")
+test(triangleA.v2.y, 40, "triangleA.v2.y")
+test(triangleA.v3.x, 50, "triangleA.v3.x")
+test(triangleA.v3.y, 60, "triangleA.v3.y")
+
+test(triangleB.v1.x, 10, "triangleB.v1.x")
+test(triangleB.v1.y, 40, "triangleB.v1.y")
+test(triangleB.v2.x, 30, "triangleB.v2.x")
+test(triangleB.v2.y, 40, "triangleB.v2.y")
+test(triangleB.v3.x, 50, "triangleB.v3.x")
+test(triangleB.v3.y, 60, "triangleB.v3.y")
+    
+if result: "tc_member: OK"
+    

@@ -1,10 +1,10 @@
 
 TARGET =	xml
 
-INCLUDE = 	$(HYVE_HOME)/dev/include \
+INCLUDE = 	$(CORTEX_HOME)/dev/include \
 			/usr/include/libxml2
 
 LIBS	= lang xml2
 
-include $(HYVE_HOME)/build/component.makefile
+include $(CORTEX_HOME)/build/component.makefile
 

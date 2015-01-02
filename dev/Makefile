@@ -1,9 +1,9 @@
 
-TARGET =	hyvedev
+TARGET =	cortexdev
 
-INCLUDE = 	$(HYVE_HOME)/db/src 
+INCLUDE = 	$(CORTEX_HOME)/cx/src 
 
 LIBS	= lang dl
 
-include $(HYVE_HOME)/build/component.makefile
+include $(CORTEX_HOME)/build/component.makefile
 

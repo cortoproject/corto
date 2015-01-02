@@ -6,7 +6,7 @@ Author: Johnny Lee (jleeothon@outlook.com)
 
 # Usage
 
-Provide a `db_json_ser_t` that follows the signature in json.h. Users can provide a `buffer` to which the JSON string should be serialized. When setting the buffer, `length` should be set to the length of the buffer (including `\0`). When `buffer` is left to NULL, the serializer will dynamically allocate enough memory to accomodate for the full JSON string. With `maxlength` a user can restrict the maximum length/memory allocated of the result string.
+Provide a `cx_json_ser_t` that follows the signature in json.h. Users can provide a `buffer` to which the JSON string should be serialized. When setting the buffer, `length` should be set to the length of the buffer (including `\0`). When `buffer` is left to NULL, the serializer will dynamically allocate enough memory to accomodate for the full JSON string. With `maxlength` a user can restrict the maximum length/memory allocated of the result string.
 
 `ptr` is for internal use and points to the location where the serializer should append the next string. `itemCount` is also for internal use and determines whether insertion of a `,` is required.
 
@@ -14,26 +14,26 @@ Provide a `db_json_ser_t` that follows the signature in json.h. Users can provid
 
 ```C
 /* json.h */
-typedef struct db_json_ser_t {
-    db_string buffer;
-    db_string ptr;
+typedef struct cx_json_ser_t {
+    cx_string buffer;
+    cx_string ptr;
     unsigned int length;
     unsigned int maxlength;
     unsigned int itemCount;
-    db_bool serializeMeta;
-    db_bool serializeValue;
-    db_bool serializeScope;
-} db_json_ser_t;
+    cx_bool serializeMeta;
+    cx_bool serializeValue;
+    cx_bool serializeScope;
+} cx_json_ser_t;
 ```
 
 Example usage:
 
 ```C
 /* test_json_serializer.c */
-struct db_serializer_s serializer = 
-        db_json_ser(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
-db_json_ser_t userData = {NULL, NULL, 0, 0, 0, TRUE, TRUE, TRUE};
-db_serialize(&serializer, tc_jsonser_p_o, &userData);
+struct cx_serializer_s serializer = 
+        cx_json_ser(DB_LOCAL, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
+cx_json_ser_t userData = {NULL, NULL, 0, 0, 0, TRUE, TRUE, TRUE};
+cx_serialize(&serializer, tc_jsonser_p_o, &userData);
 ```
 
 # Serialization specification
@@ -42,7 +42,7 @@ Depending on what the serializer is told to serialize, a top-level JSON object w
 
 E.g. if the value and meta are requested but not the scope:
 
-```Hyve
+```Cortex
 void example::
 
     class Point::
@@ -76,9 +76,9 @@ void example::
 
 ### Primitive kinds
 
-Serialization of primitive types is simple. The following table defines the relationship between Hyve primitive values and their corresponding JSON serialization. Some have embedded annotation for their types.
+Serialization of primitive types is simple. The following table defines the relationship between Cortex primitive values and their corresponding JSON serialization. Some have embedded annotation for their types.
 
-| Hyve value | JSON value
+| Cortex value | JSON value
 -------------|-----------
 | `binary` | A string starting with "@B" and followed by a uppercase Hex numbers separated by a space e.g. `@B A87C 4948 E9F7`
 | `bitmask` | A string starting with "@M" and followed by or'd values e.g. `@M gluten_free|peanut_free|lactose_free`
@@ -89,9 +89,9 @@ Serialization of primitive types is simple. The following table defines the rela
 | `null` |  `null`
 | `string` | JSON strings
 
-For example, the following Hyve object
+For example, the following Cortex object
 
-```Hyve
+```Cortex
 uint64 numberOfStars: 42; // the rest is an illusion
 ```
 
@@ -107,9 +107,9 @@ will be serialized into this JSON (only value)
 
 The members are serialized as a JSON object where the key is the name of the member and the value depends on its `kind`. The following example is a simplified version of an example above.
 
-Members of primitive types are serialized just as specified [above](#primitive-kinds). For example, in the following source Hyve script, the object `void::example::p`:
+Members of primitive types are serialized just as specified [above](#primitive-kinds). For example, in the following source Cortex script, the object `void::example::p`:
 
-```Hyve
+```Cortex
 void example::
 
     class Point::
@@ -128,13 +128,13 @@ is serialized (only value) into this JSON:
 
 Members of reference types (e.g. instances of a class) are annotated with "@R" followed by the fully scoped name of the object.
 
-| Hyve value | JSON value
+| Cortex value | JSON value
 |------------|-----------
 | reference e.g. `::example::myobject` | `"@R ::example::myobject"`
 
-For `example::mydog` in the following Hyve script:
+For `example::mydog` in the following Cortex script:
  
-```Hyve
+```Cortex
 void example::
     
     class DogFood:
@@ -169,11 +169,11 @@ In summary, these annotations can appear:
 | @E         | `enum`
 | @R         | reference
 
-Hyve strings that start with the annotation character (@) will always be escaped regardless of whether or not we can run into disambiguation with the above types.
+Cortex strings that start with the annotation character (@) will always be escaped regardless of whether or not we can run into disambiguation with the above types.
 
 Example:
 
-| Hyve string   | JSON string
+| Cortex string   | JSON string
 |---------------|------------
 | `"hello"`     | `"hello"`
 | `"@E"`        | `"@@E"`
@@ -183,20 +183,20 @@ Example:
 
 Some backwards inferences:
 
-| JSON string | Hyve value
+| JSON string | Cortex value
 |-------------|-----------
 | `@E a`      | `enum` with the value `a`
 | `@E`        | not valid
 
-In summary, the serialization of Hyve strings do always have either none, or two or more leading at (@) characters.
+In summary, the serialization of Cortex strings do always have either none, or two or more leading at (@) characters.
 
 ### Collection kinds
 
 `array`, `sequence`, and `list` types are serialized as JSON arrays. The items within the lists are serialized according to the rules for [primitives](#primitive-kinds) or [references](#composite-kinds-and-reference-members).
 
-For example, in the following Hyve script:
+For example, in the following Cortex script:
 
-```hyve
+```cortex
 void example::
     list{string} greetings: "hello", "hallo", "hola", "konnichiwa";
 ```
@@ -211,11 +211,11 @@ the object `::example::greetings` will be serialized as:
 
 **TODO the following specificatino is not JSON-compliant**
 
-`map` kinds are serialized similar to composite types, that is, a JSON object, but they key and values of the JSON object follow appropriate serialization rules for the kinds of the keys and values of the Hyve map.
+`map` kinds are serialized similar to composite types, that is, a JSON object, but they key and values of the JSON object follow appropriate serialization rules for the kinds of the keys and values of the Cortex map.
 
-For example, in the following Hyve script:
+For example, in the following Cortex script:
 
-```Hyve
+```Cortex
 void example::
     map{int16, string} hakkaNumbers: 1: "yit", 2: "gni", 3:"sam";
 ```
@@ -238,9 +238,9 @@ Objects of type `void` cannot generate a `"value"` key. The serializer will fail
 
 The scope of an object is serialized as a JSON array of JSON objects describing the metadata of each.
 
-For ``::example`` in the this Hyve script:
+For ``::example`` in the this Cortex script:
 
-```Hyve
+```Cortex
 void example::
     int16 a: 9;
     string b: "10";
@@ -252,7 +252,7 @@ the following JSON is generated (meta and scope, value cannot be generated for `
 {
     "meta": {
         "name":         "::example",
-        "type":         "::hyve::lang::void",
+        "type":         "::cortex::lang::void",
         "state":        "V|DCL|DEF",
         "attributes":   "S|O",
         "parent":       "::",
@@ -261,14 +261,14 @@ the following JSON is generated (meta and scope, value cannot be generated for `
     "scope": [
         {
             "name":         "::example::a",
-            "type":         "::hyve::lang::int16",
+            "type":         "::cortex::lang::int16",
             "state":        "V|DCL|DEF",
             "attributes":   "S|W |O ",
             "parent":       "::example"
         },
         {
             "name":         "::example::b",
-            "type":         "::hyve::lang::string",
+            "type":         "::cortex::lang::string",
             "state":        "V|DCL|DEF",
             "attributes":   "S|W |O ",
             "parent":       "::example"
@@ -294,7 +294,7 @@ object tc_jsonser::
     Point3D pp: 1, 2, Point{5, 6};
 ```
 
-The following is the view in `dbsh`
+The following is the view in `cx.h`
 
 ```
 $ pp

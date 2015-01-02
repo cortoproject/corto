@@ -1,0 +1,36 @@
+bool result : true
+void fail(string msg):
+    "tc_reference: FAIL: $msg"
+    result = false
+
+void passIntByRef(uint32& a):
+    if a != 10:             fail("failed to resolve correct value of reference parameter ($a)")        
+    if a.nameof() != "foo": fail("failed to use reference parameter as object")
+
+void passAnyObject(object a, string name): if a.nameof() != name: fail("failed to pass object of any type")
+
+uint32 foo : 5
+var uint32 &refvar = foo
+var uint32 intvar = refvar
+
+if refvar != 5: fail("reference var does not return correct value")
+
+refvar *= 2
+if refvar != 10: fail("equality-operator on reference var failed")
+
+if refvar.nameof() != "foo": fail("accessing reference var as object failed")
+
+// Test passing object by reference
+passIntByRef(foo)
+
+// Pass reference var as reference parameter
+passIntByRef(refvar)
+
+// Pass int object as reference
+passAnyObject(foo, "foo")
+
+// Pass void object as reference
+void voidObject
+passAnyObject(voidObject, "voidObject")
+
+if result: "tc_reference: OK"

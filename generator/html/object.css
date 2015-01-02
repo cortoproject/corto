@@ -1,4 +1,10 @@
 
-th {
+main {
+    margin-right: 50px;
+    min-width: 700px;
+    margin-left: 50px;
+}
+
+table.meta th {
     text-align: right;
 }

@@ -6,7 +6,7 @@
 #ifndef Fast_InitOper_H
 #define Fast_InitOper_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "Fast__type.h"
 
 #include "Fast__api.h"

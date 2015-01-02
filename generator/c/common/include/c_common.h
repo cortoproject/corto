@@ -8,31 +8,31 @@
 #ifndef C_COMMON_H_
 #define C_COMMON_H_
 
-#include "hyve.h"
-#include "db_generator.h"
+#include "cortex.h"
+#include "cx_generator.h"
 
 #ifdef __cplusplus
 extern "c" {
 #endif
 
 /* Translate id to C-id */
-db_string hyve_genId(db_string str, db_id id);
+cx_string cortex_genId(cx_string str, cx_id id);
 
 /* Return string with C type for primitive */
-db_char* c_primitiveId(db_primitive t, db_char* buff);
+cx_char* c_primitiveId(cx_primitive t, cx_char* buff);
 
 /* Parse type into C-specifier */
-db_int16 c_specifierId(db_generator g, db_typedef t, db_char* specifier, db_bool* prefix, db_char* postfix);
+cx_int16 c_specifierId(cx_generator g, cx_typedef t, cx_char* specifier, cx_bool* prefix, cx_char* postfix);
 
 /* Translate constant to C-language id */
-db_char* c_constantId(db_generator g, db_constant* c, db_char* buffer);
+cx_char* c_constantId(cx_generator g, cx_constant* c, cx_char* buffer);
 
 /* Translate string to c-compatible string (do escaping of ") */
-db_char* c_escapeString(db_string str, db_id id);
+cx_char* c_escapeString(cx_string str, cx_id id);
 
-db_bool c_procedureHasThis(db_function o);
+cx_bool c_procedureHasThis(cx_function o);
 
-db_char* c_topath(db_object o, db_id id);
+cx_char* c_topath(cx_object o, cx_id id);
 
 #ifdef __cplusplus
 }

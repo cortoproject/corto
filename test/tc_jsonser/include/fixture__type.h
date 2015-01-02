@@ -7,7 +7,7 @@
 #ifndef fixture__type_H
 #define fixture__type_H
 
-#include "hyve.h"
+#include "cortex.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -18,7 +18,7 @@ extern "C" {
 
 /* Type definitions */
 /* ::fixture::color */
-DB_BITMASK(fixture_color);
+CX_BITMASK(fixture_color);
     #define FIXTURE_red (0x1)
     #define FIXTURE_green (0x2)
     #define FIXTURE_blue (0x4)
@@ -39,23 +39,23 @@ typedef enum fixture_DogBreed {
 } fixture_DogBreed;
 
 /*  ::fixture::Dog */
-DB_CLASS(fixture_Dog);
+CX_CLASS(fixture_Dog);
 
-DB_CLASS_DEF(fixture_Dog) {
+CX_CLASS_DEF(fixture_Dog) {
     fixture_DogBreed breed;
-    db_string name;
-    db_uint8 age;
+    cx_string name;
+    cx_uint8 age;
     fixture_Dog lover;
 };
 
-typedef db_uint32 fixture_ints[4];
+typedef cx_uint32 fixture_ints[4];
 
 /*  ::fixture::point2D */
 typedef struct fixture_point2D fixture_point2D;
 
 struct fixture_point2D {
-    db_int32 x;
-    db_int32 y;
+    cx_int32 x;
+    cx_int32 y;
 };
 
 #ifdef __cplusplus

@@ -7,7 +7,7 @@
 #ifndef tc_structPrimitives_H
 #define tc_structPrimitives_H
 
-#include "hyve.h"
+#include "cortex.h"
 #include "tc_stringser__type.h"
 
 #ifdef __cplusplus

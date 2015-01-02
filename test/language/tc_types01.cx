@@ -1,0 +1,54 @@
+bool result : true
+
+void fail(string msg):
+    "tc_types01: FAIL: $msg"
+    result = false
+
+// Test variables of primitive types
+enum Color:: RED, YELLOW, GREEN, BLUE
+
+var octet a = 255
+var uint8 c = 255
+var uint16 d = 65535
+var uint32 e = 4294967295
+var uint64 f = 18446744073709551615
+var int8 g = 127
+var int16 h = 32767
+var int32 i = 2147483647
+var int64 j = 9223372036854775807
+var Color k = YELLOW
+var bool l = true
+var char m = 'x'
+
+a++ 
+if a: fail("octet range error ($a)")
+
+c++ 
+if c: fail("uint8 range error ($c)")
+
+d++ 
+if d: fail("uint16 range error ($d)")
+
+e++ 
+if e: fail("uint32 range error ($e)")
+
+f++ 
+if f: fail("uint64 range error ($f)")
+
+g++ 
+if g != -128: fail("int8 range error ($g)")
+
+h++ 
+if h != -32768: fail("int16 range error ($h)")
+
+i++ 
+if i != -2147483648: fail("int32 range error ($i)")
+
+j++ 
+if j != -9223372036854775808: fail("int64 range error ($j)")
+
+if k != YELLOW: fail("enum error ($k)")
+if !l: fail("bool error ($l)")
+if m != 'x': fail("char error ($m)")
+
+if result: "tc_types01: OK"
