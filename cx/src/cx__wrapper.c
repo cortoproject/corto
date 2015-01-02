@@ -277,6 +277,37 @@ void __cx_collection_castable_v(cx_function f, void *result, void *args) {
         *(cx_type*)((intptr_t)args + sizeof(cx_collection)));
 }
 
+/* virtual ::cortex::lang::collection::compatible(lang::type type) */
+cx_bool cx_collection_compatible(cx_collection _this, cx_type type) {
+    static cx_uint32 _methodId;
+    cx_method _method;
+    cx_bool _result;
+    cx_interface _abstract;
+
+    _abstract = cx_interface(cx_typeof(_this));
+
+    /* Determine methodId once, then cache it for subsequent calls. */
+    if (!_methodId) {
+        _methodId = cx_interface_resolveMethodId(_abstract, "compatible(lang::type type)");
+    }
+    cx_assert(_methodId, "virtual method 'compatible(lang::type type)' not found in abstract '%s'", cx_nameof(_abstract));
+
+    /* Lookup method-object. */
+    _method = cx_interface_resolveMethodById(_abstract, _methodId);
+    cx_assert(_method != NULL, "unresolved method '%s::compatible(lang::type type)@%d'", cx_nameof(_this), _methodId);
+
+    cx_call(cx_function(_method), &_result, _this, type);
+    
+    return _result;
+}
+
+void __cx_collection_compatible_v(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    *(cx_bool*)result = cx_collection_compatible_v(
+        *(cx_collection*)args,
+        *(cx_type*)((intptr_t)args + sizeof(cx_collection)));
+}
+
 void __cx_collection_elementRequiresAlloc(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     CX_UNUSED(args);
