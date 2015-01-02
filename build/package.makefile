@@ -5,9 +5,10 @@ export LIBS
 export LEX
 export YACC
 
+LIBS += lang
+
 TARGET_OBJECT = $(CORTEX_HOME)/bin/$(dir $(TARGET))lib$(notdir $(TARGET)).so
 DEFINITION_FILE = $(wildcard $(TARGET).*)
-LIBS += lang
 GENERATED_C_FILES = src/$(TARGET)__api.c \
 				  src/$(TARGET)__meta.c \
 				  src/$(TARGET)__wrapper.c
@@ -28,7 +29,7 @@ all: include/$(TARGET)__meta.h $(TARGET_OBJECT)
 
 $(TARGET_OBJECT): $(PACKAGE_OBJECTS)
 
-$(PACKAGE_OBJECTS):
+$(PACKAGE_OBJECTS): $(DEFINITION_FILE)
 	@make -f $(CORTEX_HOME)/build/$(MAKEFILE).makefile all
 
 include/$(TARGET)__meta.h: $(DEFINITION_FILE)
