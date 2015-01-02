@@ -392,6 +392,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, collection_elementType);\
     SSO_OP_OBJ(op, collection_max);\
     SSO_OP_OBJ(op, collection_castable);\
+    SSO_OP_OBJ(op, collection_compatible);\
     SSO_OP_OBJ(op, collection_elementRequiresAlloc);\
     SSO_OP_OBJ(op, collection_init);\
     SSO_OP_OBJ(op, collection_size);\

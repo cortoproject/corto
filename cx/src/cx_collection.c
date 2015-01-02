@@ -160,6 +160,28 @@ cx_bool cx_collection_castable_v(cx_collection _this, cx_type type) {
 /* $end */
 }
 
+/* ::cortex::lang::collection::compatible(lang::type type) */
+cx_bool cx_collection_compatible_v(cx_collection _this, cx_type type) {
+/* $begin(::cortex::lang::collection::compatible) */
+    cx_bool result = FALSE;
+
+    if (type->kind == CX_COLLECTION) {
+        if (cx_collection(_this)->kind == cx_collection(type)->kind) {
+            if(cx_collection(_this)->elementType == cx_collection(type)->elementType) {
+                result = TRUE;
+            }
+            if(cx_collection(_this)->kind == CX_MAP) {
+                if(cx_map(_this)->keyType != cx_map(type)->keyType) {
+                    result = FALSE;
+                }
+            }
+        }
+    }
+
+    return result;
+/* $end */
+}
+
 /* ::cortex::lang::collection::elementRequiresAlloc() */
 cx_bool cx_collection_elementRequiresAlloc(cx_collection _this) {
 /* $begin(::cortex::lang::collection::elementRequiresAlloc) */
