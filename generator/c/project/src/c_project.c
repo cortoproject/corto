@@ -35,6 +35,9 @@ static cx_int16 c_projectGenerateMainFile(cx_generator g) {
     g_fileWrite(file, "CX_UNUSED(argc);\n");
     g_fileWrite(file, "CX_UNUSED(argv);\n");
 
+    g_fileWrite(file, "\n");
+    g_fileWrite(file, "result = %s_load();\n", g_getName(g));
+
     if ((snippet = g_fileLookupSnippet(file, "cortexmain"))) {
         g_fileWrite(file, "\n");
         g_fileWrite(file, "/* $begin(cortexmain)");
@@ -42,7 +45,7 @@ static cx_int16 c_projectGenerateMainFile(cx_generator g) {
         g_fileWrite(file, "$end */\n\n");
     }
 
-    g_fileWrite(file, "return %s_load();\n", g_getName(g));
+    g_fileWrite(file, "return result;\n");
     g_fileDedent(file);
     g_fileWrite(file, "}\n\n");
 
@@ -64,7 +67,6 @@ static cx_int16 c_projectGenerateMakefile(cx_generator g) {
 
         g_fileWrite(file, "\n");
         g_fileWrite(file, "TARGET = %s\n\n", g_getName(g));
-        g_fileWrite(file, "LIBS = lang\n\n");
         g_fileWrite(file, "include $(CORTEX_HOME)/build/package.makefile\n\n");
     }
 
