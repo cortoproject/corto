@@ -36,7 +36,7 @@ static cx_int16 c_projectGenerateMainFile(cx_generator g) {
     g_fileWrite(file, "CX_UNUSED(argv);\n");
 
     g_fileWrite(file, "\n");
-    g_fileWrite(file, "result = %s_load();\n", g_getName(g));
+    g_fileWrite(file, "int result = %s_load();\n", g_getName(g));
 
     if ((snippet = g_fileLookupSnippet(file, "cortexmain"))) {
         g_fileWrite(file, "\n");
