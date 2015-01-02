@@ -1,0 +1,20 @@
+object cortex::
+    void test::
+        class result::
+            package: object
+
+        class unit::
+            success: bool, readonly
+            failmsg: string, readonly
+            int16 construct(unit object)
+            void fail(string msg)
+            // When delegates are implemented, unit should contain a delegate to the function being tested
+
+        class suite::
+            package: object // The package being tested
+            silent: bool // Whether to silence fail messages to the console
+            success: bool, readonly
+            unit: test::unit, private|local // The unit under test
+            result: test::result, private|local // Container for test results
+            int16 construct(suite object)
+            void fail(string msg)

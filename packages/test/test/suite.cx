@@ -1,0 +1,23 @@
+
+void Animals::
+    class Dog::
+        bark: string
+        int16 construct(Dog object):
+            object.bark = "woof"
+
+// Test suite testing a phony package
+test::suite tc_animals: package=Animals::
+    void woof():
+        var Animals::Dog gijs = Animals::Dog{}
+        if gijs.bark != "woof":
+            tc_animals.fail("the dog does not bark properly")
+
+    void bark():
+        var Animals::Dog gijs = Animals::Dog{}
+        if gijs.bark != "bark":
+            tc_animals.fail("the dog barks properly but I'm failing nonetheless")
+
+// Test suite testing the test suite
+test::suite tc_test: package=cortex::test ::
+    void suiteResult():
+        if tc_animals.success: tc_test.fail("tc_animals.success is not false")
