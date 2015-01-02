@@ -3,15 +3,15 @@
 
 #include "cortex.h"
 #include "json.h"
-#include "fixture__api.h"
-#include "fixture__meta.h"
-#include "fixture__type.h"
+#include "tc_jsonser_fixture__api.h"
+#include "tc_jsonser_fixture__meta.h"
+#include "tc_jsonser_fixture__type.h"
 
 
 #define _test_ser_reference_value(object, expected) \
 {\
     cx_json_ser_t userData = {NULL, NULL, 0, 0, 0, FALSE, TRUE, FALSE};\
-    cx_serialize(&serializer, fixture_##object##_o, &userData);\
+    cx_serialize(&serializer, tc_jsonser_fixture_##object##_o, &userData);\
     if (strcmp(userData.buffer, "{\"value\":"expected"}")) {\
         result = -1;\
         fprintf(\

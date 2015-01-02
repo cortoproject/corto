@@ -3,9 +3,9 @@
 #include "cortex.h"
 #include "json.h"
 
-#include "fixture__meta.h"
-#include "fixture__api.h"
-#include "fixture__type.h"
+#include "tc_jsonser_fixture__meta.h"
+#include "tc_jsonser_fixture__api.h"
+#include "tc_jsonser_fixture__type.h"
 
 #include "tc_jsonser_meta.h"
 #include "tc_jsonser_collection_value.h"
@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) {
     cx_int16 result = 0;
 
     cx_start();
-    fixture_load();
+    tc_jsonser_fixture_load();
 
     result += test_ser_primitive_value();
     result += test_ser_reference_value();
