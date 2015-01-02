@@ -136,6 +136,13 @@ int cx_load(cx_string str){
     /* Get extension from filename */
     cx_fileExt(ext, str);
 
+    /* Handle known extensions */
+    if (!strcmp(ext, "cx")) {
+        cx_load("Fast");
+    } else if (!strcmp(ext, "xml")) {
+        cx_load("xml");
+    }
+
     /* Lookup extension */
     h = cx_lookupExt(ext);
     if (h) {
