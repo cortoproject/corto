@@ -27,9 +27,9 @@ MAKEFILE ?= component
 
 all: include/$(TARGET)__meta.h $(TARGET_OBJECT)
 
-$(TARGET_OBJECT): $(PACKAGE_OBJECTS)
+$(TARGET_OBJECT): objects
 
-$(PACKAGE_OBJECTS): $(DEFINITION_FILE)
+objects: $(DEFINITION_FILE) $(PACKAGE_SOURCES)
 	@make -f $(CORTEX_HOME)/build/$(MAKEFILE).makefile all
 
 include/$(TARGET)__meta.h: $(DEFINITION_FILE)
