@@ -128,7 +128,7 @@ static int cx_parseArguments(int argc, char* argv[]) {
     cx_argSet("name", cx_arg_name, 0, 1);
     cx_argSet("prefix", cx_arg_prefix, 0, 1);
     cx_argSet("g", cx_arg_generator, 0, -1);
-    cx_argSet("scope", cx_arg_scope, 1, -1);
+    cx_argSet("scope", cx_arg_scope, 0, -1);
     cx_argSet("lang", cx_arg_language, 0, 1);
     cx_argSet(NULL, cx_arg_include, 0, -1);
 
@@ -180,8 +180,6 @@ int main(int argc, char* argv[]) {
     /* Start database */
     cx_start();
 
-    cx_load("xml");
-
     /* Load includes */
     if (includes) {
         iter = cx_llIter(includes);
@@ -190,6 +188,16 @@ int main(int argc, char* argv[]) {
             if (cx_load(include)) {
                 cx_error("cxgen: error(s) occurred while loading file '%s', abort generation.", include);
                 return -1;
+            } else {
+                /* Add name to scope list if none provided */
+                if (!scopes && (cx_llSize(includes) == 1) && !strchr(include, '.')) {
+                    scopes = cx_llNew();
+                    cx_llInsert(scopes, include);
+                }
+                /* Add prefix to scope if none provided */
+                if (!prefix && (cx_llSize(includes) == 1) && !strchr(include, '.')) {
+                    prefix = include;                 
+                }
             }
         }
     }
@@ -214,11 +222,6 @@ int main(int argc, char* argv[]) {
             /* Resolve object */
             o = cx_resolve(NULL, scope);
             if (!o) {
-                /* Be smart, look for a file that matches the requested scope by adding .cortex
-                 * to the scopename. */
-                cx_load("fast");
-                cx_id fileName; sprintf(fileName, "%s.cortex", scope);
-                cx_load(fileName);
                 o = cx_resolve(NULL, scope);
                 if (!o) {
                     cx_error("cxgen: unresolved scope '%s' .", scope);

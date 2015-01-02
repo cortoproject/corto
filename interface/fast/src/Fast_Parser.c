@@ -1056,7 +1056,19 @@ cx_string Fast_Parser_argumentToString(Fast_Parser _this, Fast_Variable type, cx
         cx_id id;
         str = strdup(Fast_Parser_id(type_o, id));
     } else {
-        str = cx_toString(type_o, 0);
+        struct cx_serializer_s s;
+        cx_string_ser_t walkData;
+
+        memset(&walkData, 0, sizeof(walkData));
+        s = cx_string_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
+
+        walkData.compactNotation = TRUE;
+        walkData.prefixType = TRUE;
+
+        if (cx_serialize(&s, type_o, &walkData)) {
+            goto error;
+        }
+        str = walkData.buffer;
     }
 
     result = cx_malloc(strlen(str) + 1 + strlen(id) + 1 + 1);
@@ -1442,7 +1454,7 @@ Fast_Variable Fast_Parser_declareFunction(Fast_Parser _this, Fast_Variable retur
     Fast_Variable result = NULL;
     cx_int32 distance;
     FAST_CHECK_ERRSET(_this);
-    
+
     if (!_this->pass) {
         cx_id functionName;
         cx_delegate delegate = NULL;

@@ -1,5 +1,5 @@
 <meta xmlns:meta="https://hyve.com/meta">
-	<meta:scope name="hyve">
+	<meta:scope name="cortex">
 		<!-- hyve::fast -->
 		<meta:scope name="Fast">
 			<!-- Enumeration representing the values that can be represented in hyve -->
@@ -62,7 +62,7 @@
 					<member name="kind" type="nodeKind"/>
                     <member name="line" type="lang::uint32" modifiers="readonly"/>
                     <member name="column" type="lang::uint32" modifiers="readonly"/>
-					<virtual name="toIc(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;db_ic&quot;}"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
 			</class>
 			
@@ -99,7 +99,7 @@
                     <method name="toList()" returnType="list{Node}"/>
                     <function name="addOrCreate(Expression list,Expression expr)" returnType="Expression"/>
                     <virtual name="hasSideEffects()" returnType="lang::bool"/>
-                    <virtual name="toIc(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;db_ic&quot;}"/>
+                    <virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
                 </meta:scope>
             </class>
 
@@ -118,7 +118,7 @@
 					<callback name="init(Boolean object)" delegate="type::init" returnType="int16"/>
 					<method name="serialize(lang::type dstType,lang::word dst)" returnType="int16"/>
 					<member name="value" type="bool"/>
-					<virtual name="toIc(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;db_ic&quot;}"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
 			</class>
 			
@@ -128,7 +128,7 @@
 					<callback name="init(Character object)" delegate="type::init" returnType="int16"/>
 					<method name="serialize(lang::type dstType,lang::word dst)" returnType="int16"/>
 					<member name="value" type="char"/>
-					<virtual name="toIc(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;db_ic&quot;}"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
 			</class>
 			
@@ -138,7 +138,7 @@
 					<callback name="init(Integer object)" delegate="type::init" returnType="int16"/>
 					<method name="serialize(lang::type dstType,lang::word dst)" returnType="int16"/>
 					<member name="value" type="uint64"/>
-					<virtual name="toIc(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;db_ic&quot;}"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
 			</class>
 			
@@ -148,7 +148,7 @@
 					<callback name="init(SignedInteger object)" delegate="type::init" returnType="int16"/>
 					<method name="serialize(lang::type dstType,lang::word dst)" returnType="int16"/>
 					<member name="value" type="int64"/>
-					<virtual name="toIc(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;db_ic&quot;}"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
 			</class>
 			
@@ -158,7 +158,7 @@
 					<callback name="init(FloatingPoint object)" delegate="type::init" returnType="int16"/>
 					<method name="serialize(lang::type dstType,lang::word dst)" returnType="int16"/>
 					<member name="value" type="float64"/>
-					<virtual name="toIc(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;db_ic&quot;}"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
 			</class>
 			
@@ -167,7 +167,7 @@
 				<meta:scope>
 					<callback name="init(Null object)" delegate="type::init" returnType="int16"/>
 					<method name="serialize(lang::type dstType,lang::word dst)" returnType="int16"/>
-					<virtual name="toIc(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;db_ic&quot;}"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
 			</class>
 			
@@ -197,7 +197,7 @@
 					<member name="type" type="Fast::Variable"/>
 					<member name="kind" type="Fast::LocalKind"/>
 					<member name="isReference" type="lang::bool"/>
-					<virtual name="toIc(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;db_ic&quot;}"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
 			</class>
 			
@@ -221,7 +221,7 @@
 				<meta:scope>
 					<callback name="construct(Object object)" delegate="class::construct" returnType="int16"/>
 					<method name="serialize(lang::type dstType,lang::word dst)" returnType="int16"/>
-					<virtual name="toIc(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;db_ic&quot;}"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
 					<method name="getValue()" returnType="word"/>
 				</meta:scope>
 			</class>
@@ -246,9 +246,9 @@
 					<method name="resolve(lang::string id)" returnType="Fast::Expression"/>
 					<method name="resolveLocal(lang::string id)" returnType="Fast::Local"/>
 					<method name="addStatement(Fast::Node statement)"/>
-					<virtual name="toIc(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;db_ic&quot;}"/>
-                    <virtual name="toIcBody(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)"
-                        returnType="lang::alias{&quot;db_ic&quot;}"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+                    <virtual name="toIcBody(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)"
+                        returnType="lang::alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
 			</class>
 			
@@ -261,7 +261,7 @@
 					<member name="superMember" type="lang::bool" modifiers="readonly"/>
 					<member name="member" type="lang::object" modifiers="private"/> <!-- Only set when determined at compile-time -->
                     <virtual name="hasSideEffects()" returnType="lang::bool"/>
-					<virtual name="toIc(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;db_ic&quot;}"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
 			</class>
 			
@@ -271,7 +271,7 @@
 					<callback name="construct(Fast::MemberExpr object)" returnType="int16" delegate="class::construct"/>
 					<member name="lvalue" type="Fast::Expression"/>
 					<member name="rvalue" type="Fast::Expression"/>
-					<virtual name="toIc(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;db_ic&quot;}"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
 			</class>
 			
@@ -292,7 +292,7 @@
 					
 					<method name="setParameters(lang::function function)"/>
                     <virtual name="hasSideEffects()" returnType="lang::bool"/>
-					<virtual name="toIc(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;db_ic&quot;}"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
 			</class>
 
@@ -333,7 +333,7 @@
 					<callback name="construct(Fast::CastExpr object)" returnType="int16" delegate="class::construct"/>
 					<member name="lvalue" type="Fast::Expression"/>
 					<member name="rvalue" type="Fast::Expression"/>
-					<virtual name="toIc(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;db_ic&quot;}"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
 			</class>
 			
@@ -343,7 +343,7 @@
 					<callback name="construct(Fast::PostfixExpr object)" returnType="int16" delegate="class::construct"/>
 					<member name="lvalue" type="Fast::Expression"/>
 					<member name="operator" type="lang::operatorKind"/>
-					<virtual name="toIc(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;db_ic&quot;}"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
 			</class>
 			
@@ -354,7 +354,7 @@
 					<member name="lvalue" type="Fast::Expression"/>
 					<member name="operator" type="lang::operatorKind"/>
                     <virtual name="hasSideEffects()" returnType="lang::bool"/>
-					<virtual name="toIc(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;db_ic&quot;}"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
 			</class>
 						
@@ -368,7 +368,7 @@
 					<method name="fold()" returnType="Fast::Expression"/>
 					<method name="setOperator(lang::operatorKind kind)" returnType="void"/>
                     <virtual name="hasSideEffects()" returnType="lang::bool"/>
-					<virtual name="toIc(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;db_ic&quot;}"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
 			</class>
             
@@ -387,7 +387,7 @@
                     <member name="ifstmt" type="Fast::If" modifiers="local|private"/>
                     <method name="setOperator(lang::operatorKind kind)" returnType="lang::void"/>
                     <virtual name="hasSideEffects()" returnType="lang::bool"/>
-                    <virtual name="toIc(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;db_ic&quot;}"/>
+                    <virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
                 </meta:scope>
             </class>
 									
@@ -398,7 +398,7 @@
 					<member name="type" type="Fast::Expression"/>
 					<member name="attributes" type="Fast::Expression"/>
                     <virtual name="hasSideEffects()" returnType="lang::bool"/>
-					<virtual name="toIc(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;db_ic&quot;}"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
 			</class>
 			
@@ -407,7 +407,7 @@
 				<meta:scope>
 					<callback name="construct(Fast::Define object)" returnType="int16" delegate="class::construct"/>
 					<member name="object" type="Fast::Expression"/>
-					<virtual name="toIc(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;db_ic&quot;}"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
 			</class>
 			
@@ -422,7 +422,7 @@
 					<member name="block" type="Fast::Block" modifiers="readonly"/>
 					<member name="scope" type="Fast::Variable" modifiers="readonly"/>
 					<method name="getValue()" returnType="word"/>
-					<virtual name="toIc(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;db_ic&quot;}"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
 			</class>
 			
@@ -435,7 +435,7 @@
 					<member name="falseBranch" type="Fast::If"/>
                     <member name="warnUnreachable" type="lang::bool" modifiers="private|local"/>
                     <method name="noWarnUnreachable()"/>
-					<virtual name="toIc(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;db_ic&quot;}"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
 			</class>
 			
@@ -446,7 +446,7 @@
 					<member name="condition" type="Fast::Expression"/>
 					<member name="trueBranch" type="Fast::Block"/>
                     <member name="isUntil" type="lang::bool"/>
-					<virtual name="toIc(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;db_ic&quot;}"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
 			</class>
 			
@@ -457,7 +457,7 @@
 					<member name="exprList" type="list{Fast::Expression}"/>
 					<member name="block" type="Fast::Block"/>
 					<member name="from" type="Fast::Expression"/>
-					<virtual name="toIc(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;db_ic&quot;}"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
 			</class>
 			
@@ -467,7 +467,7 @@
 					<callback name="construct(Wait object)" returnType="int16" delegate="class::construct"/>
 					<member name="exprList" type="list{Fast::Expression}"/>
 					<member name="timeout" type="Fast::Expression"/>
-					<virtual name="toIc(lang::alias{&quot;db_icProgram&quot;} program,lang::alias{&quot;db_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;db_ic&quot;}"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
 			</class>
             

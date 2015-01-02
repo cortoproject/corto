@@ -286,7 +286,7 @@ int Fast_While__define(Fast_While _this, Fast_Expression condition, Fast_Block t
 Fast_While Fast_While__create(Fast_Expression condition, Fast_Block trueBranch, cx_bool isUntil);
 
 
-/* <0x82e1ff8> */
+/* <0x8adafb8> */
 #define Fast_Binding_list__foreach(list, elem) \
     cx_iter elem##_iter = cx_llIter(list);\
     Fast_Binding *elem;\
@@ -301,7 +301,7 @@ void Fast_Binding_list__clear(Fast_Binding_list list);
 Fast_Binding* Fast_Binding_list__get(Fast_Binding_list list, cx_uint32 index);
 cx_uint32 Fast_Binding_list__size(Fast_Binding_list list);
 
-/* <0x8280918> */
+/* <0x8a79ee0> */
 #define Fast_Expression_list__foreach(list, elem) \
     cx_iter elem##_iter = cx_llIter(list);\
     Fast_Expression elem;\
@@ -316,7 +316,7 @@ void Fast_Expression_list__clear(Fast_Expression_list list);
 Fast_Expression Fast_Expression_list__get(Fast_Expression_list list, cx_uint32 index);
 cx_uint32 Fast_Expression_list__size(Fast_Expression_list list);
 
-/* <0x82df4b0> */
+/* <0x8ad8470> */
 #define Fast_InitOper_list__foreach(list, elem) \
     cx_iter elem##_iter = cx_llIter(list);\
     Fast_InitOper *elem;\
@@ -331,7 +331,7 @@ void Fast_InitOper_list__clear(Fast_InitOper_list list);
 Fast_InitOper* Fast_InitOper_list__get(Fast_InitOper_list list, cx_uint32 index);
 cx_uint32 Fast_InitOper_list__size(Fast_InitOper_list list);
 
-/* <0x82cb770> */
+/* <0x8ac4738> */
 #define Fast_Local_list__foreach(list, elem) \
     cx_iter elem##_iter = cx_llIter(list);\
     Fast_Local elem;\
@@ -346,7 +346,7 @@ void Fast_Local_list__clear(Fast_Local_list list);
 Fast_Local Fast_Local_list__get(Fast_Local_list list, cx_uint32 index);
 cx_uint32 Fast_Local_list__size(Fast_Local_list list);
 
-/* <0x82cb580> */
+/* <0x8ac4548> */
 #define Fast_Node_list__foreach(list, elem) \
     cx_iter elem##_iter = cx_llIter(list);\
     Fast_Node elem;\
@@ -361,7 +361,7 @@ void Fast_Node_list__clear(Fast_Node_list list);
 Fast_Node Fast_Node_list__get(Fast_Node_list list, cx_uint32 index);
 cx_uint32 Fast_Node_list__size(Fast_Node_list list);
 
-/* <0x82e2688> */
+/* <0x8adb628> */
 #define Fast_Object_list__foreach(list, elem) \
     cx_iter elem##_iter = cx_llIter(list);\
     Fast_Object elem;\
@@ -376,7 +376,7 @@ void Fast_Object_list__clear(Fast_Object_list list);
 Fast_Object Fast_Object_list__get(Fast_Object_list list, cx_uint32 index);
 cx_uint32 Fast_Object_list__size(Fast_Object_list list);
 
-/* <0x82e0168> */
+/* <0x8ad9108> */
 #define Fast_ParserDeclaration_seq256__foreach(seq, elem) \
     cx_uint32 elem##_iter;\
     Fast_ParserDeclaration *elem;\
@@ -387,7 +387,7 @@ Fast_ParserDeclaration* Fast_ParserDeclaration_seq256__append(Fast_ParserDeclara
 void Fast_ParserDeclaration_seq256__size(Fast_ParserDeclaration_seq256 *seq, cx_uint32 length);
 void Fast_ParserDeclaration_seq256__clear(Fast_ParserDeclaration_seq256 *seq);
 
-/* <0x82cf290> */
+/* <0x8ac8250> */
 #define cx_parameter_seq__foreach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_parameter *elem;\
@@ -398,7 +398,7 @@ cx_parameter* cx_parameter_seq__append(cx_parameter_seq *seq);
 void cx_parameter_seq__size(cx_parameter_seq *seq, cx_uint32 length);
 void cx_parameter_seq__clear(cx_parameter_seq *seq);
 
-/* <0x82e24e8> */
+/* <0x8adb488> */
 #define cx_word_list__foreach(list, elem) \
     cx_iter elem##_iter = cx_llIter(list);\
     cx_word *elem;\

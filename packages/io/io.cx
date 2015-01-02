@@ -1,7 +1,6 @@
 object cortex::
 	void io::
-		// Print to console (no newline)
-		void print(string str)
+		void print(string str) // Print to console (no newline)
 		
 		// Print to console (newline)
 		void println(string str)

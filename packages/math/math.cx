@@ -1,8 +1,6 @@
 object cortex::
 	object math::
-		
-		// Generate random number
-		float64 rand()
+		float64 rand() // Generate random number
 				
 		// Provide random seed
 		void seed(uint32 seed)

@@ -19,7 +19,7 @@
 #define CXSH_COL_TYPE     (32)
 #define CXSH_COL_STATE    (15)
 #define CXSH_COL_ATTR     (10)
-#define CXSH_COL_TOTAL      (CXSH_COL_NAME + CXSH_COL_TYPE + CXSH_COL_STATE + CXSH_COL_ATTR)
+#define CXSH_COL_TOTAL    (CXSH_COL_NAME + CXSH_COL_TYPE + CXSH_COL_STATE + CXSH_COL_ATTR)
 
 #define BLACK  "\033[1;30m"
 #define RED    "\033[1;31m"
