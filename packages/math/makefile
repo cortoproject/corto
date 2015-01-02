@@ -1,6 +1,7 @@
 
-TARGET =	math
+TARGET = math
 
-LIBS	=	lang fl m
+LIBS	= m
+PREFIX  = mth
 
-include $(CORTEX_HOME)/build/component.makefile
+include $(CORTEX_HOME)/build/package.makefile
