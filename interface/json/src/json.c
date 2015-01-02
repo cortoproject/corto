@@ -101,7 +101,6 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData
             break;
         case CX_CHARACTER:
         case CX_TEXT:
-            // TODO escape @'s and other characters
             if (!*(cx_string *)value) {
                 if (!cx_ser_appendstr(data, "null")) {
                     goto finished;
@@ -421,16 +420,18 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
     }
 
     if (data->serializeValue) {
-        if (c && !cx_ser_appendstr(data, ",")) {
-            goto finished;
+        if (cx_valueType(v)->real->kind != CX_VOID) {
+            if (c && !cx_ser_appendstr(data, ",")) {
+                goto finished;
+            }
+            if (!cx_ser_appendstr(data, "\"value\":")) {
+                goto finished;
+            }
+            if (cx_serializeValue(s, v, userData)) {
+                goto error;
+            }
+            c += 1;
         }
-        if (!cx_ser_appendstr(data, "\"value\":")) {
-            goto finished;
-        }
-        if (cx_serializeValue(s, v, userData)) {
-            goto error;
-        }
-        c += 1;
     }
 
     if (data->serializeScope) {
