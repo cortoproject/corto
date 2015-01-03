@@ -153,7 +153,7 @@ Fast_Expression Fast_declarationSeqDo(Fast_Variable type, Fast_ParserDeclaration
 %type <Integer> INTEGER
 %type <SignedInteger> SIGNEDINTEGER
 %type <FloatingPoint> FLOATINGPOINT
-%type <String> STRING
+%type <String> STRING identifier_string
 %type <String> ID GID function_argument function_arguments function_argumentList any_id
 %type <Null> NUL
 
@@ -273,7 +273,7 @@ function_implementation
 
 function_declaration
     : identifier any_id function_argumentList    {cx_id id; sprintf(id, "%s(%s)", $2, $3); cx_dealloc($3); $$ = Fast_Parser_declareFunction(yparser(), $1, id, NULL, FALSE); fast_op; }
-    | identifier any_id function_argumentList any_id  {
+    | identifier any_id function_argumentList identifier_string  {
         cx_id id;
         cx_type kind = cx_resolve(NULL, $4);
         sprintf(id, "%s(%s)", $2, $3); 
@@ -285,7 +285,7 @@ function_declaration
 
     /* Reference returnvalue */
     | identifier '&' any_id function_argumentList   {cx_id id; sprintf(id, "%s(%s)", $3, $4); cx_dealloc($4); $$ = Fast_Parser_declareFunction(yparser(), $1, id, NULL, TRUE); fast_op; }
-    | identifier '&' any_id function_argumentList any_id  {
+    | identifier '&' any_id function_argumentList identifier_string  {
         cx_id id;
         cx_type kind = cx_resolve(NULL, $5);
         sprintf(id, "%s(%s)", $3, $4); 
@@ -590,8 +590,12 @@ identifier
     ;
 
 identifier_id
-    : GID {$$ = Fast_Parser_lookup(yparser(), $1, NULL); fast_op;}
-    | any_id {$$ = Fast_Parser_lookup(yparser(), $1, NULL); fast_op;}
+    : identifier_string {$$ = Fast_Parser_lookup(yparser(), $1, NULL); fast_op;}
+    ;
+
+identifier_string
+    : GID
+    | any_id
     ;
 
 any_id

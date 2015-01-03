@@ -30,7 +30,7 @@ cx_int16 Fast_CastExpr_construct(Fast_CastExpr object) {
                 cx_type rvalueType;
                 rvalueType = Fast_Expression_getType(object->rvalue);
                 if (rvalueType) {
-                    if (cx_type_castable(rvalueType, cx_type(lvalue))) {
+                    if (cx_type_castable(cx_type(lvalue), rvalueType) || cx_type_castable(rvalueType, cx_type(lvalue))) {
                         /* TODO: cx_assert(!cx_type_compatible(rvalueType, cx_type(lvalue)), "%d: redundant cast inserted", yparser()->line); */
                         Fast_Expression(object)->type = (Fast_Variable)object->lvalue;
                         Fast_Expression(object)->isReference = cx_type(lvalue)->reference;
@@ -89,6 +89,9 @@ cx_ic Fast_CastExpr_toIc_v(Fast_CastExpr _this, cx_icProgram program, cx_icStora
     rvalue = Fast_Node_toIc(Fast_Node(_this->rvalue), program, (cx_icStorage)NULL, TRUE);
 
     op = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_CAST, (cx_icValue)result, (cx_icValue)rvalue, (cx_icValue)lvalue);
+    if (_this->rvalue->forceReference) {
+        op->s2Deref = CX_IC_DEREF_ADDRESS;
+    }
     cx_icProgram_addIc(program, (cx_ic)op);
 
     return result;

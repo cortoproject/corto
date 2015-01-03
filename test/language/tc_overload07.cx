@@ -1,0 +1,33 @@
+bool result: true
+void fail(string msg):
+    "tc_overload07: FAIL: $msg"
+    result = false
+
+bool referenceAsBool(bool arg) = arg
+
+var type ref = class // Store reference
+var type empty = null // Store empty reference
+var object genericRef = class // Store generic reference
+var object genericEmpty = null // Store generic null reference
+
+bool trueObj: true
+bool falseObj: false
+
+var bool& trueVar = trueObj
+var bool& falseVar = falseObj
+var bool& nullVar = null
+
+// Test references
+if !referenceAsBool(ref): fail("!referenceAsBool(ref)")
+if referenceAsBool(empty): fail("referenceAsBool(empty)")
+if !referenceAsBool(genericRef): fail("!referenceAsBool(genericRef)")
+if referenceAsBool(genericEmpty): fail("referenceAsBool(genericEmpty)")
+
+// Test passing bool object as value and as reference
+if !referenceAsBool(trueVar): fail("!referenceAsBool(trueVar)")
+if referenceAsBool(falseVar): fail("referenceAsBool(falseVar)")
+if !referenceAsBool(&trueVar): fail("!referenceAsBool(&trueVar)")
+if !referenceAsBool(&falseVar): fail("!referenceAsBool(&falseVar)")
+if referenceAsBool(&nullVar): fail("referenceAsBool(&nullVar)")
+
+if result: "tc_overload07: OK"

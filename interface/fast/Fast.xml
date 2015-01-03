@@ -79,7 +79,7 @@
 					<method name="getType_expr(Expression target)" returnType="lang::type"/>
 					<method name="getType_type(lang::type target)" returnType="lang::type"/>
 					<virtual name="serialize(lang::type dstType,lang::word dst)" returnType="int16"/>
-					<method name="cast(lang::type type)" returnType="Fast::Expression"/>
+					<method name="cast(lang::type type,lang::bool isReference)" returnType="Fast::Expression"/>
 					<virtual name="fold()" returnType="Fast::Expression"/>
 					<virtual name="getValue()" returnType="word"/>
                     <virtual name="toList()" returnType="list{Expression}"/>
@@ -307,7 +307,7 @@
 			<!-- Runtime-defined (delegate) function call -->
 			<class name="DelegateCall" base="Call">
 				<meta:scope>
-					<callback name="construct(Fast::StaticCall object)" returnType="int16" delegate="class::construct"/>
+					<callback name="construct(Fast::DelegateCall object)" returnType="int16" delegate="class::construct"/>
 					<member name="expr" type="Fast::Expression"/>
 				</meta:scope>
 			</class>

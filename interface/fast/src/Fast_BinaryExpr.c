@@ -67,11 +67,12 @@ cx_bool Fast_BinaryExpr_isConditional(Fast_BinaryExpr expr) {
 cx_int16 Fast_BinaryExpr_cast(Fast_BinaryExpr _this, cx_type *returnType) {
     cx_type lvalueType, rvalueType, castType = NULL;
     Fast_Expression lvalue, rvalue;
+    cx_bool referenceMismatch = FALSE;
 
     /* Get lvalueType and rvalueType */
     lvalue = _this->lvalue;
     rvalue = _this->rvalue;
-    lvalueType = Fast_Expression_getType_expr(lvalue, rvalue);
+    lvalueType = Fast_Expression_getType(lvalue);
     rvalueType = Fast_Expression_getType_expr(rvalue, lvalue);
     castType = NULL;
 
@@ -80,7 +81,7 @@ cx_int16 Fast_BinaryExpr_cast(Fast_BinaryExpr _this, cx_type *returnType) {
     if (_this->lvalue) {
         cx_keep_ext(_this, _this->lvalue, "Keep narrow'd lvalue");
         cx_free_ext(_this, lvalue, "Free old lvalue");
-        lvalueType = Fast_Expression_getType_expr(_this->lvalue, _this->rvalue);
+        lvalueType = Fast_Expression_getType(_this->lvalue);
     }
 
     _this->rvalue = Fast_Expression_narrow(rvalue, lvalueType);
@@ -88,6 +89,10 @@ cx_int16 Fast_BinaryExpr_cast(Fast_BinaryExpr _this, cx_type *returnType) {
         cx_keep_ext(_this, _this->rvalue, "Keep narrow'd rvalue");
         cx_free_ext(_this, rvalue, "Free old rvalue");
         rvalueType = Fast_Expression_getType_expr(_this->rvalue, _this->lvalue);
+    }
+
+    if(!lvalueType) {
+        lvalueType = rvalueType;
     }
 
     if (_this->operator == CX_DIV) {
@@ -156,18 +161,27 @@ cx_int16 Fast_BinaryExpr_cast(Fast_BinaryExpr _this, cx_type *returnType) {
             }
         } else if (lvalueType->reference && rvalueType->reference) {
             castType = NULL;
-        } else {
+        } else if ((rvalueType->reference || _this->rvalue->forceReference) && !lvalueType->reference) {
+            if (cx_type_castable(lvalueType, cx_object_o)) {
+                castType = lvalueType;
+            }
+        }  else {
             cx_id id1, id2;
             Fast_Parser_error(yparser(), "no cast between '%s' and '%s'",
                     cx_fullname(lvalueType, id1), cx_fullname(rvalueType, id2));
             goto error;
         }
+    } else if ((rvalueType->reference || _this->rvalue->forceReference) && !lvalueType->reference) {
+        if (cx_type_castable(lvalueType, cx_object_o)) {
+            castType = lvalueType;
+            referenceMismatch = TRUE;
+        }
     }
 
     /* Cast-score indicates whether a cast is required */
-    if (rvalueType && castType && (rvalueType != castType)) {
+    if (rvalueType && castType && ((rvalueType != castType) || referenceMismatch)) {
         Fast_Expression oldRvalue = _this->rvalue;
-        _this->rvalue = Fast_Expression_cast(_this->rvalue, castType);
+        _this->rvalue = Fast_Expression_cast(_this->rvalue, castType, _this->lvalue->forceReference);
         if (_this->rvalue) {
             cx_keep(_this->rvalue);
             cx_free(oldRvalue);
@@ -180,7 +194,7 @@ cx_int16 Fast_BinaryExpr_cast(Fast_BinaryExpr _this, cx_type *returnType) {
     }
     if (lvalueType && castType && (lvalueType != castType)) {
         Fast_Expression oldLvalue = _this->lvalue;
-        _this->lvalue = Fast_Expression_cast(_this->lvalue, castType);
+        _this->lvalue = Fast_Expression_cast(_this->lvalue, castType, _this->rvalue->forceReference);
         if (_this->lvalue) {
             cx_keep(_this->lvalue);
             cx_free(oldLvalue);
@@ -309,7 +323,7 @@ Fast_Expression Fast_BinaryExpr_fold(Fast_BinaryExpr _this) {
            }
     } else if (lptr && rptr) {
         if (type != rtype) {
-            Fast_Expression rvalueCast = Fast_Expression_cast(_this->rvalue, type);
+            Fast_Expression rvalueCast = Fast_Expression_cast(_this->rvalue, type, _this->lvalue->isReference);
             rptr = (void*)Fast_Expression_getValue(rvalueCast);
         }
 
@@ -442,7 +456,7 @@ error:
 /* ::cortex::Fast::BinaryExpr::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
 cx_ic Fast_BinaryExpr_toIc_v(Fast_BinaryExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::BinaryExpr::toIc) */
-    cx_ic lvalue, rvalue, result, conditionLvalue, conditionRvalue = NULL;
+    cx_ic lvalue, rvalue, result, returnsResult, conditionLvalue, conditionRvalue = NULL;
     cx_icOp op = NULL;
     cx_type _thisType = Fast_Expression_getType(Fast_Expression(_this));
     cx_bool condition = Fast_BinaryExpr_isConditional(_this);
@@ -453,6 +467,8 @@ cx_ic Fast_BinaryExpr_toIc_v(Fast_BinaryExpr _this, cx_icProgram program, cx_icS
     } else {
         result = (cx_ic)cx_icProgram_accumulatorPush(program, Fast_Node(_this)->line, _thisType, isReference);
     }
+
+    returnsResult = result;
 
     if (condition) {
         conditionLvalue = (cx_ic)cx_icProgram_accumulatorPush(program, Fast_Node(_this)->line, Fast_Expression_getType(_this->lvalue), _this->lvalue->isReference);
@@ -477,6 +493,8 @@ cx_ic Fast_BinaryExpr_toIc_v(Fast_BinaryExpr _this, cx_icProgram program, cx_icS
 
             op->s2Deref = Fast_Expression_getDerefMode(_this->lvalue, _this->rvalue, NULL);
             op->s3Deref = Fast_Expression_getDerefMode(_this->rvalue, _this->lvalue, NULL);
+        } else {
+            returnsResult = rvalue;
         }
     /* Only compile expression when there is a result - if it's not an assignment */
     } else if (stored && result) {
@@ -510,6 +528,6 @@ cx_ic Fast_BinaryExpr_toIc_v(Fast_BinaryExpr _this, cx_icProgram program, cx_icS
         cx_icProgram_accumulatorPop(program, Fast_Node(_this)->line);
     }
 
-    return result;
+    return returnsResult;
 /* $end */
 }

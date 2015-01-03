@@ -297,7 +297,7 @@ cx_ic Fast_String_toIc_v(Fast_String _this, cx_icProgram program, cx_icStorage s
                 if (!elementType) {
                     element = Fast_Expression(Fast_String__create(CX_NULL_STRING));
                 } else if (elementType != cx_type(cx_string_o)) {
-                    element = Fast_Expression_cast(element, cx_type(cx_string_o));
+                    element = Fast_Expression_cast(element, cx_type(cx_string_o), FALSE);
                     if(!element) {
                         goto error;
                     }
@@ -326,7 +326,7 @@ cx_ic Fast_String_toIc_v(Fast_String _this, cx_icProgram program, cx_icStorage s
                             if (!elementType) {
                                 element = Fast_Expression(Fast_String__create(CX_NULL_STRING));
                             } else if (elementType && (Fast_Expression_getType(element) != cx_type(cx_string_o))) {
-                                element = Fast_Expression_cast(element, cx_type(cx_string_o));
+                                element = Fast_Expression_cast(element, cx_type(cx_string_o), FALSE);
                                 if (!element) {
                                     goto error;
                                 }

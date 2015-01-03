@@ -235,20 +235,24 @@ Fast_Expression Fast_Expression_narrow(Fast_Expression expr, cx_type target) {
 
 /* $end */
 
-/* ::cortex::Fast::Expression::cast(lang::type type) */
-Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type) {
+/* ::cortex::Fast::Expression::cast(lang::type type,lang::bool isReference) */
+Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_bool isReference) {
 /* $begin(::cortex::Fast::Expression::cast) */
-    cx_type exprType;
+    cx_type exprType, refType;
     Fast_Expression result = NULL;
     cx_bool castRequired = TRUE;
     
     cx_assert(type != NULL, "cannot cast to unknown type NULL");
 
     exprType = Fast_Expression_getType(_this);
+    if(_this->forceReference && !isReference && !exprType->reference) {
+        refType = cx_object_o;
+    } else {
+        refType = exprType;
+    }
 
     /* If types are different, cast */
-    if (exprType != type) {
-        
+    if (refType != type) {
         if (!exprType) {
             /* If expression is an untyped initializer, create an anonymous variable of the destination type 
              * and assign it to the initializer. */
@@ -262,7 +266,7 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type) {
             }else {
                 castRequired = FALSE;
             }
-        } else if (cx_type_castable(type, exprType)) {
+        } else if (cx_type_castable(type, refType)) {
             void *value = NULL;
             void *valueAddr = NULL;
 
@@ -353,7 +357,7 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type) {
             } else {
                 /* TODO: This functionality must be pushed down to the assembler. For all this function is concerned a cast
                  should only be required when a type is a) castable and b) not compatible. */
-                cx_int8 exprCastScore = Fast_Expression_getCastScore(cx_primitive(exprType));
+                cx_int8 exprCastScore = Fast_Expression_getCastScore(cx_primitive(refType));
                 cx_int8 castCastScore = Fast_Expression_getCastScore(cx_primitive(type));
 
                 /* If both types are primitive make sure that no cast is inserted for primitives
