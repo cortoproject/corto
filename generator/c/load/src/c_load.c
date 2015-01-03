@@ -48,6 +48,7 @@ static cx_char* c_loadResolve(cx_object o, cx_char* out, cx_char* src, cx_char* 
         data.length = sizeof(ostr);
         data.maxlength = 0;
         data.prefixType = FALSE;
+        data.enableColors = FALSE;
         if (cx_serialize(&stringSer, o, &data)) {
             goto error;
         }

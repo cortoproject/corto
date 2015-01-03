@@ -3429,6 +3429,7 @@ cx_string cx_toString(cx_object object, cx_uint32 maxLength) {
     serData.maxlength = maxLength;
     serData.compactNotation = TRUE;
     serData.prefixType = FALSE;
+    serData.enableColors = FALSE;
 
     s = cx_string_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
     cx_serialize(&s, object, &serData);
@@ -3445,6 +3446,7 @@ cx_string cx_valueToString(cx_value* v, cx_uint32 maxLength) {
     serData.maxlength = maxLength;
     serData.compactNotation = TRUE;
     serData.prefixType = FALSE;
+    serData.enableColors = FALSE;
 
     s = cx_string_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
     cx_serializeValue(&s, v, &serData);

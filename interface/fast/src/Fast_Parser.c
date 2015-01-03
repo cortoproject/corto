@@ -102,6 +102,7 @@ static cx_string Fast_Parser_id(cx_object o, cx_id buffer) {
         serData.maxlength = sizeof(cx_id)-strlen("<anonymous>");
         serData.compactNotation=TRUE;
         serData.prefixType = TRUE;
+        serData.enableColors = FALSE;
         s = cx_string_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
         cx_serialize(&s, o, &serData);
         strcpy(buffer, tmp);
