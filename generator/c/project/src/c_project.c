@@ -27,8 +27,8 @@ static cx_int16 c_projectGenerateMainFile(cx_generator g) {
         g_fileWrite(file, "%s", snippet);
         g_fileWrite(file, "$end */\n\n");
     } else {
-        g_fileWrite(file, "/* $header() */");
-        g_fileWrite(file, "/* Insert user-includes here */");
+        g_fileWrite(file, "/* $header() */\n");
+        g_fileWrite(file, "/* Insert user-includes here */\n");
         g_fileWrite(file, "/* $end */\n\n");    
     }
 
