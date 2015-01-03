@@ -21,6 +21,7 @@ typedef struct cx_string_ser_t {
     unsigned int length;
     unsigned int maxlength;
     cx_bool prefixType;
+    cx_bool enableColors;
 
     /* Private */
     char* ptr;

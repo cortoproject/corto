@@ -15,30 +15,31 @@
 
 #define CXSH_CMD_MAX (1024)
 
-#define CXSH_COL_NAME     (32)
-#define CXSH_COL_TYPE     (32)
-#define CXSH_COL_STATE    (15)
-#define CXSH_COL_ATTR     (10)
+#define CXSH_COL_NAME     (38)
+#define CXSH_COL_TYPE     (22)
+#define CXSH_COL_STATE    (12)
+#define CXSH_COL_ATTR     (8)
 #define CXSH_COL_TOTAL    (CXSH_COL_NAME + CXSH_COL_TYPE + CXSH_COL_STATE + CXSH_COL_ATTR)
 
 #define BLACK  "\033[1;30m"
 #define RED    "\033[1;31m"
 #define GREEN  "\033[1;32m"
-#define YELLOW "\033[1;33m"
+#define YELLOW "\033[0;33m"
 #define BLUE   "\033[1;34m"
 #define MAGENTA "\033[1;35m"
 #define CYAN   "\033[1;36m"
 #define WHITE  "\033[1;37m"
 #define NORMAL "\033[0;49m"
 #define BOLD   "\033[1;30m"
+#define GREY  "\033[0;37m"
 
 #define SHELL_COLOR (BOLD)
 #define ERROR_COLOR (RED)
-#define TYPE_COLOR (BLUE)
+#define TYPE_COLOR (GREEN)
 #define OBJECT_COLOR (BLUE)
 #define META_COLOR (MAGENTA)
 #define INTERFACE_COLOR (BOLD)
-#define HEADER_COLOR (WHITE)
+#define HEADER_COLOR (BOLD)
 
 static cx_object scope = NULL;
 
@@ -48,6 +49,65 @@ static void cxsh_color(const char *string) {
 
 static void cxsh_printColumn(cx_string str, int width){
     printf("%s%*s", str, (int)(width - strlen(str)), " ");
+}
+
+/* Find preferred character on which to break a string */
+static cx_string cxsh_findPreferredBreak(cx_string str) {
+    char ch, *ptr = str, *breakpt = str + strlen(str);
+    while ((ch = *ptr)) {
+        switch (ch) {
+        case ' ':
+        case ',':
+        case '(':
+        case ')':
+        case '{':
+        case '}':
+            breakpt = ptr+1;
+            break;
+        default:
+            break;
+        }
+        ptr++;
+    }
+
+    /* If no breakpoints were found, look again for scope operators. The reason
+     * to not check for these in the first run is because it is preferred that identifiers
+     * are on one line. */
+    if (breakpt == (str + strlen(str))) {
+        while ((ch = *ptr)) {
+            switch (ch) {
+            case ':':
+                if (*(ptr + 1)) {
+                    breakpt = ptr + 1;
+                } else {
+                    breakpt = ptr;
+                }
+                break;
+            default:
+                break;
+            }
+            ptr++;
+        }
+    }
+
+    return breakpt;
+}
+
+static cx_string cxsh_printColumnValue(cx_string str, int width){
+    cx_string result = NULL;
+    if ((int)strlen(str) < (width - 2)) {
+        printf("%s%*s", str, (int)(width - strlen(str)), " ");
+    } else {
+        cx_id buffer;
+        snprintf(buffer, width - 2, "%s", str);
+        (*cxsh_findPreferredBreak(buffer)) = '\0';
+        printf("%s%*s", buffer, width - strlen(buffer), " ");
+        result = str + strlen(buffer);
+        if (*result == ' ') {
+            result++;
+        }
+    }
+    return result;
 }
 
 static void cxsh_printColumnBar(int width) {
@@ -126,24 +186,37 @@ static char* cxsh_attrStr(cx_object o, char* buff) {
 
 static int cxsh_scopeWalk(cx_object o, void* udata) {
     cx_id typeName;
+    cx_string remaining = 0;
     char state[sizeof("valid | declared | defined")];
     char attr[sizeof("scope | writable | observable")];
 
     CX_UNUSED(udata);
 
     /* Get name of type */
-    cx_fullname(cx_typeof(o), typeName);
+    if(cx_parentof(cx_typeof(o)) == cortex_lang_o) {
+        strcpy(typeName, cx_nameof(cx_typeof(o)));
+    } else {
+        cx_fullname(cx_typeof(o), typeName);
+    }
 
     /* Print columns */
     printf("  ");
-    cxsh_color(OBJECT_COLOR); cxsh_printColumn(cx_nameof(o), CXSH_COL_NAME); cxsh_color(NORMAL);
-    cxsh_color(TYPE_COLOR); cxsh_printColumn(typeName, CXSH_COL_TYPE); cxsh_color(NORMAL);
+    cxsh_color(OBJECT_COLOR); remaining = cxsh_printColumnValue(cx_nameof(o), CXSH_COL_NAME); cxsh_color(NORMAL);
+    cxsh_color(TYPE_COLOR); cxsh_printColumnValue(typeName, CXSH_COL_TYPE); cxsh_color(NORMAL);
     cxsh_color(META_COLOR);
-    cxsh_printColumn(cxsh_stateStr(o, state), CXSH_COL_STATE);
-    cxsh_printColumn(cxsh_attrStr(o, attr), CXSH_COL_ATTR);
+    cxsh_printColumnValue(cxsh_stateStr(o, state), CXSH_COL_STATE);
+    cxsh_printColumnValue(cxsh_attrStr(o, attr), CXSH_COL_ATTR);
     cxsh_color(NORMAL);
-
     printf("\n");
+
+    /* Print remainder of the name */
+    while (remaining) {
+        cxsh_color(OBJECT_COLOR);
+        printf("    ");
+        remaining = cxsh_printColumnValue(remaining, CXSH_COL_NAME - 4);
+        cxsh_color(NORMAL);
+        printf("\n");
+    }
     return 1;
 }
 
@@ -204,6 +277,7 @@ static int cxsh_treeWalk(cx_object o, void* userData) {
     {
         cx_id id1;
         cx_rbtree scope;
+        cx_string name;
 
         scope = cx_scopeof(o);
 
@@ -213,17 +287,18 @@ static int cxsh_treeWalk(cx_object o, void* userData) {
         }
 
         /* Object */
+        name = cx_nameof(o);
         if (cx_parentof(cx_typeof(o)) == cortex_lang_o) {
-            printf("%s%s%s %s", TYPE_COLOR, cx_nameof(cx_typeof(o)), NORMAL, cx_nameof(o));
+            printf("%s%s%s %s", TYPE_COLOR, cx_nameof(cx_typeof(o)), NORMAL, name?name:"");
         } else {
-            printf("%s%s%s %s", TYPE_COLOR, cx_fullname(cx_typeof(o), id1), NORMAL, cx_nameof(o));
+            printf("%s%s%s %s", TYPE_COLOR, cx_fullname(cx_typeof(o), id1), NORMAL, name?name:"");
         }
 
-        /* Scope operator or semicolon */
+        /* Scope operator */
         if (scope && cx_rbtreeSize(scope)) {
-            printf(" %s::%s\n", BOLD, NORMAL);
+            printf("%s::%s\n", BOLD, NORMAL);
         } else {
-            printf("%s;%s\n", BOLD, NORMAL);
+            printf("\n");
         }
     }
 
@@ -315,24 +390,20 @@ static int cxsh_show(char* object) {
         sdata.buffer = NULL;
         sdata.length = 0;
         sdata.maxlength = 0;
+        sdata.enableColors = TRUE;
         sdata.ptr = NULL;
         sdata.compactNotation = FALSE;
         sdata.prefixType = FALSE;
 
         /* Print object properties */
         if (o) {
-            printf("%sname:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, OBJECT_COLOR, cx_fullname(o, id), NORMAL);
-            printf("%stype:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, TYPE_COLOR, cx_fullname(cx_typeof(o), id), NORMAL);
-            printf("%saddress:%s      <%p>\n", INTERFACE_COLOR, NORMAL, o);
-            printf("%srefcount:%s     %d\n", INTERFACE_COLOR, NORMAL, cx_countof(o)-1); /* Correct for cxsh's own keep */
+            if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
+                printf("%sname:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, OBJECT_COLOR, cx_fullname(o, id), NORMAL);
+                printf("%sparent:       %s%s%s\n", INTERFACE_COLOR, OBJECT_COLOR, cx_fullname(cx_parentof(o), id), NORMAL);
+            }            
+            printf("%stype:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, OBJECT_COLOR, cx_fullname(cx_typeof(o), id), NORMAL);
             printf("%sstate:%s        %s%s%s\n", INTERFACE_COLOR, NORMAL, META_COLOR, cxsh_stateStr(o, state), NORMAL);
             printf("%sattributes:%s   %s%s%s\n", INTERFACE_COLOR, NORMAL, META_COLOR, cxsh_attrStr(o, attr), NORMAL);
-            if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
-                printf("%sparent:       %s%s%s\n", INTERFACE_COLOR, OBJECT_COLOR, cx_fullname(cx_parentof(o), id), NORMAL);
-                if (cx_scopeof(o)) {
-                    printf("%schildcount:%s   %d\n", INTERFACE_COLOR, NORMAL, cx_rbtreeSize(cx_scopeof(o)));
-                }
-            }
         }
 
         /* Serialize value to string */
