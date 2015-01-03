@@ -27,24 +27,24 @@ cx_int16 test_ser_meta(void) {
     struct cx_serializer_s serializer = 
         cx_json_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
 
-    _test_ser_meta(i8n, "{\"name\":\"i8n\",\"type\":\"::cortex::lang::int8\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"parent\":\"::fixture\",\"childCount\":0}");
-    _test_ser_meta(u32z, "{\"name\":\"u32z\",\"type\":\"::cortex::lang::uint32\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"parent\":\"::fixture\",\"childCount\":0}");
-    _test_ser_meta(u64p, "{\"name\":\"u64p\",\"type\":\"::cortex::lang::uint64\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"parent\":\"::fixture\",\"childCount\":0}");
-    _test_ser_meta(f32z, "{\"name\":\"f32z\",\"type\":\"::cortex::lang::float32\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"parent\":\"::fixture\",\"childCount\":0}");
-    _test_ser_meta(f64p, "{\"name\":\"f64p\",\"type\":\"::cortex::lang::float64\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"parent\":\"::fixture\",\"childCount\":0}");
-    _test_ser_meta(bt, "{\"name\":\"bt\",\"type\":\"::cortex::lang::bool\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"parent\":\"::fixture\",\"childCount\":0}");
-    _test_ser_meta(sn, "{\"name\":\"sn\",\"type\":\"::cortex::lang::string\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"parent\":\"::fixture\",\"childCount\":0}");
-    _test_ser_meta(p, "{\"name\":\"p\",\"type\":\"::fixture::point2D\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"parent\":\"::fixture\",\"childCount\":0}");
-    _test_ser_meta(Gust, "{\"name\":\"Gust\",\"type\":\"::fixture::Djinn\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"parent\":\"::fixture\",\"childCount\":0}");
-    _test_ser_meta(Dog, "{\"name\":\"Dog\",\"type\":\"::cortex::lang::class\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"parent\":\"::fixture\",\"childCount\":4}");
-    _test_ser_meta(v0, "{\"name\":\"v0\",\"type\":\"::cortex::lang::void\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|O\",\"parent\":\"::fixture\",\"childCount\":1}");
-    _test_ser_meta(v1, "{\"name\":\"v1\",\"type\":\"::cortex::lang::void\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|O\",\"parent\":\"::fixture\",\"childCount\":3}");
-    _test_ser_meta(v1_v1, "{\"name\":\"v1\",\"type\":\"::cortex::lang::void\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|O\",\"parent\":\"::fixture::v1\",\"childCount\":4}");
-    _test_ser_meta(v1_v2, "{\"name\":\"v2\",\"type\":\"::cortex::lang::void\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|O\",\"parent\":\"::fixture::v1\",\"childCount\":5}");
-    _test_ser_meta(v1_v3, "{\"name\":\"v3\",\"type\":\"::cortex::lang::void\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|O\",\"parent\":\"::fixture::v1\",\"childCount\":6}");
-    _test_ser_meta(v1_v1_v1, "{\"name\":\"v1\",\"type\":\"::cortex::lang::void\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|O\",\"parent\":\"::fixture::v1::v1\",\"childCount\":0}");
-    _test_ser_meta(v1_v2_v2, "{\"name\":\"v2\",\"type\":\"::cortex::lang::void\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|O\",\"parent\":\"::fixture::v1::v2\",\"childCount\":0}");
-    _test_ser_meta(v1_v3_v6, "{\"name\":\"v6\",\"type\":\"::cortex::lang::void\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|O\",\"parent\":\"::fixture::v1::v3\",\"childCount\":0}");
+    _test_ser_meta(i8n, "{\"name\":\"i8n\",\"type\":\"::cortex::lang::int8\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"parent\":\"::tc_jsonser_fixture\",\"childCount\":0}");
+    _test_ser_meta(u32z, "{\"name\":\"u32z\",\"type\":\"::cortex::lang::uint32\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"parent\":\"::tc_jsonser_fixture\",\"childCount\":0}");
+    _test_ser_meta(u64p, "{\"name\":\"u64p\",\"type\":\"::cortex::lang::uint64\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"parent\":\"::tc_jsonser_fixture\",\"childCount\":0}");
+    _test_ser_meta(f32z, "{\"name\":\"f32z\",\"type\":\"::cortex::lang::float32\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"parent\":\"::tc_jsonser_fixture\",\"childCount\":0}");
+    _test_ser_meta(f64p, "{\"name\":\"f64p\",\"type\":\"::cortex::lang::float64\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"parent\":\"::tc_jsonser_fixture\",\"childCount\":0}");
+    _test_ser_meta(bt, "{\"name\":\"bt\",\"type\":\"::cortex::lang::bool\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"parent\":\"::tc_jsonser_fixture\",\"childCount\":0}");
+    _test_ser_meta(sn, "{\"name\":\"sn\",\"type\":\"::cortex::lang::string\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"parent\":\"::tc_jsonser_fixture\",\"childCount\":0}");
+    _test_ser_meta(p, "{\"name\":\"p\",\"type\":\"::tc_jsonser_fixture::point2D\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"parent\":\"::tc_jsonser_fixture\",\"childCount\":0}");
+    _test_ser_meta(Gust, "{\"name\":\"Gust\",\"type\":\"::tc_jsonser_fixture::Djinn\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"parent\":\"::tc_jsonser_fixture\",\"childCount\":0}");
+    _test_ser_meta(Dog, "{\"name\":\"Dog\",\"type\":\"::cortex::lang::class\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"parent\":\"::tc_jsonser_fixture\",\"childCount\":4}");
+    _test_ser_meta(v0, "{\"name\":\"v0\",\"type\":\"::cortex::lang::void\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|O\",\"parent\":\"::tc_jsonser_fixture\",\"childCount\":1}");
+    _test_ser_meta(v1, "{\"name\":\"v1\",\"type\":\"::cortex::lang::void\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|O\",\"parent\":\"::tc_jsonser_fixture\",\"childCount\":3}");
+    _test_ser_meta(v1_v1, "{\"name\":\"v1\",\"type\":\"::cortex::lang::void\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|O\",\"parent\":\"::tc_jsonser_fixture::v1\",\"childCount\":4}");
+    _test_ser_meta(v1_v2, "{\"name\":\"v2\",\"type\":\"::cortex::lang::void\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|O\",\"parent\":\"::tc_jsonser_fixture::v1\",\"childCount\":5}");
+    _test_ser_meta(v1_v3, "{\"name\":\"v3\",\"type\":\"::cortex::lang::void\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|O\",\"parent\":\"::tc_jsonser_fixture::v1\",\"childCount\":6}");
+    _test_ser_meta(v1_v1_v1, "{\"name\":\"v1\",\"type\":\"::cortex::lang::void\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|O\",\"parent\":\"::tc_jsonser_fixture::v1::v1\",\"childCount\":0}");
+    _test_ser_meta(v1_v2_v2, "{\"name\":\"v2\",\"type\":\"::cortex::lang::void\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|O\",\"parent\":\"::tc_jsonser_fixture::v1::v2\",\"childCount\":0}");
+    _test_ser_meta(v1_v3_v6, "{\"name\":\"v6\",\"type\":\"::cortex::lang::void\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|O\",\"parent\":\"::tc_jsonser_fixture::v1::v3\",\"childCount\":0}");
 
     return result;
 }

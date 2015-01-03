@@ -30,7 +30,7 @@ cx_int16 test_ser_reference_value(void) {
     _test_ser_reference_value(Dog, "{\"@base\":{\"@base\":{\"@base\":{\"defaultType\":\"@R ::cortex::lang::member\",\"parentType\":null,\"parentState\":\"@M 0\"},\"base\":null},\"baseAccess\":\"@M GLOBAL\"},\"implements\":{}}");
     _test_ser_reference_value(dog1, "{\"breed\":\"@E GoldenRetriever\",\"name\":\"Gijs\",\"age\":10,\"lover\":null}");
     _test_ser_reference_value(dog2, "{\"breed\":\"@E Pug\",\"name\":\"Lolly\",\"age\":4,\"lover\":null}");
-    _test_ser_reference_value(dog3, "{\"breed\":\"@E Chihuahua\",\"name\":\"I'm annoying\",\"age\":3,\"lover\":\"@R ::fixture::dog2\"}");
+    _test_ser_reference_value(dog3, "{\"breed\":\"@E Chihuahua\",\"name\":\"I'm annoying\",\"age\":3,\"lover\":\"@R ::tc_jsonser_fixture::dog2\"}");
     
 
     return result;
