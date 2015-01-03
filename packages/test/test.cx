@@ -1,8 +1,6 @@
 object cortex::
     void test::
-        class result::
-            package: object
-
+        procedure test: base=function
         class unit::
             success: bool, readonly
             failmsg: string, readonly
@@ -15,6 +13,12 @@ object cortex::
             silent: bool // Whether to silence fail messages to the console
             success: bool, readonly
             unit: test::unit, private|local // The unit under test
-            result: test::result, private|local // Container for test results
+            result: object, private|local // Container for test results
+
+            // Constructor
             int16 construct(suite object)
+
+            // Failures and assertions
             void fail(string msg)
+            void assert(bool cond, string msg)
+            void assert(any v1, any v2, string msg)

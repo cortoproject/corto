@@ -39,13 +39,13 @@ cx_int16 Fast_Call_insertCasts(Fast_Call _this) {
             }
             
             /* If both types are not equal, insert cast */
-            if (parameterType != argumentType) {
+            if ((parameterType != argumentType) || (argument->forceReference && !argumentType->reference)) {
                 Fast_Expression expr;
 
                 /* Any types are handled in the translation to the target representation. It is often
                  * more efficient to push a value as any than to first cast it to any and then push it. */
                 if (parameterType->kind != CX_ANY) {
-                    expr = Fast_Expression_cast(argument, parameterType);
+                    expr = Fast_Expression_cast(argument, parameterType, _this->parameters.buffer[i].passByReference);
                     if (expr) {
                         cx_keep_ext(_this, expr, "Keep cast-expression as argument");
                         cx_llReplace(arguments, argument, expr);
@@ -208,7 +208,8 @@ cx_ic Fast_Call_toIc_v(Fast_Call _this, cx_icProgram program, cx_icStorage stora
                 if (!exprType) {
                     exprType = paramType;
                 }
-                if (_this->parameters.buffer[i].passByReference || (paramType->reference && !exprType->reference)) {
+                if (_this->parameters.buffer[i].passByReference || 
+                   (paramType->reference && !exprType->reference)) {
                     pushIcs[argumentId-1]->s1Deref = CX_IC_DEREF_ADDRESS;
                 } else {
                     pushIcs[argumentId-1]->s1Deref = CX_IC_DEREF_PUSH;

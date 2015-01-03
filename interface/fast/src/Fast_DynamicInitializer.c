@@ -198,7 +198,7 @@ cx_int16 Fast_DynamicInitializer_push(Fast_DynamicInitializer _this) {
         /* Cast the size to uint32 so that the expression won't be replaced by a cast when it is inserted in the argumentlist
         * of sequence::size(uint32). This way there is no need for keeping track of a size-expression per variable. Note: the
         * native type of a Fast::Integer is uint64. */
-        size = Fast_Integer(Fast_Expression_cast(Fast_Expression(size), cx_type(cx_uint32_o)));
+        size = Fast_Integer(Fast_Expression_cast(Fast_Expression(size), cx_type(cx_uint32_o), FALSE));
         cx_set_ext(_this, &_this->frames[fp].sequenceSize, size, ".frames[fp].sequenceSize");
         
         for(variable=0; variable<Fast_Initializer(_this)->variableCount; variable++) {

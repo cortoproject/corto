@@ -1,0 +1,28 @@
+bool result: true
+
+void fail(string msg):
+    "tc_cast04: FAIL: $msg"
+    result = false
+    
+var type ref = class
+var type empty = null
+var object genericRef = class
+var object genericEmpty = null
+
+bool trueObj: true
+bool falseObj: false
+var bool& trueVar = trueObj
+var bool& falseVar = falseObj
+var bool& emptyVar = null
+
+bool test
+
+if !(test = ref): fail("!(test = ref)")
+if (test = empty): fail("(test = empty)")
+if !(test = genericRef): fail("!(test = genericRef)")
+if (test = genericEmpty): fail("(test = genericEmpty)")
+if !(test = &trueVar): fail("!(test = trueVar)")
+if !(test = &falseVar): fail("!(test = falseVar)")
+if (test = &emptyVar): fail("!(test = emptyVar)")
+
+if result: "tc_cast04: OK"

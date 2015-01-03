@@ -93,9 +93,16 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData
                     break;
             }
             break;
-        case CX_TEXT:
-            result = strcmp(*(cx_string*)_this, *(cx_string*)value);
+        case CX_TEXT: {
+            cx_string thisStr = *(cx_string*)_this;
+            cx_string valueStr = *(cx_string*)value;
+            if (thisStr && valueStr) {
+                result = strcmp(thisStr, valueStr);
+            } else {
+                result = !(thisStr == valueStr);
+            }
             break;
+        }
         case CX_ENUM:
         case CX_BITMASK:
             result = CX_COMPARE(cx_int32, _this, value);
@@ -325,6 +332,15 @@ static cx_int16 cx_ser_construct(cx_serializer s, cx_value *info, void *userData
                 }
                 break;
             }
+        } else {
+            if ((!t1->reference && (t1->kind == CX_VOID)) && (t2->reference || 
+               ((t2->kind == CX_PRIMITIVE) && (cx_primitive(t2)->kind == CX_TEXT)))) {
+                compare = TRUE;
+            }
+            if ((!t2->reference && (t2->kind == CX_VOID)) && (t1->reference || 
+               ((t1->kind == CX_PRIMITIVE) && (cx_primitive(t1)->kind == CX_TEXT)))) {
+                compare = TRUE;
+            }
         }
     } else {
         compare = TRUE;
@@ -332,7 +348,7 @@ static cx_int16 cx_ser_construct(cx_serializer s, cx_value *info, void *userData
     
     data->result = compare ? CX_EQ : CX_NEQ;
     data->base = cx_valueValue(info);
-    
+
     return !compare;
 }
 

@@ -845,8 +845,8 @@ CX_CLASS_O(procptr, struct, CX_READONLY, CX_SEQUENCE_EMPTY_V(interface), NULL, C
     CX_METHOD_O(procptr, compatible, "(lang::type type)", bool, TRUE, cx_procptr_compatible_v);
 
 /* ::cortex::lang::procedure */
-CX_CLASS_O(procedure, struct, CX_LOCAL | CX_READONLY, CX_SEQUENCE_EMPTY_V(interface), NULL, CX_DECLARED | CX_DEFINED);
-    CX_MEMBER_O(procedure, kind, procedureKind, CX_GLOBAL);
+CX_CLASS_O(procedure, struct, CX_GLOBAL, CX_SEQUENCE_EMPTY_V(interface), NULL, CX_DECLARED | CX_DEFINED);
+    CX_MEMBER_O(procedure, kind, procedureKind, CX_READONLY);
     CX_CALLBACK_O(procedure, init, "(lang::procedure object)", type_init, int16, cx_procedure_init);
     CX_DELEGATE_O(procedure, bind, "(lang::object object)", int16);
     CX_METHOD_O(procedure, unbind, "(lang::object object)", void, FALSE, cx_procedure_unbind);

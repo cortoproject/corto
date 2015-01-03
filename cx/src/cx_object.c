@@ -3055,7 +3055,12 @@ static cx_uint32 cx_overloadParamCompare(
                 } while((base = base->base));
             } else {
                 d++;
-            } 
+            }
+        /* If the requested type is a (forced) reference check if treating it as a generic
+         * reference would result in a match - this is for example useful when casting form
+         * references to a boolean or string type */
+        } else if (r_forceReference && !cx_type_compatible(o_type, cx_object_o)) {
+            d++;
         } else if (!cx_type_compatible(o_type, r_type)) {
             goto nomatch; /* If not an interface or generic reference, types don't match */
         }

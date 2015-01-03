@@ -307,17 +307,17 @@ Fast_Expression Fast_Parser_binaryCollectionExpr(Fast_Parser _this, Fast_Express
             /* Cast operand to elementType */
             if (!equality && Fast_Expression_getType(operand) != collectionType->elementType->real) {
                 if (collectionType->elementType->real->reference || (collectionType->elementType->real->kind == CX_PRIMITIVE)) {
-                    castedOperand = Fast_Expression_cast(operand, collectionType->elementType->real);
+                    castedOperand = Fast_Expression_cast(operand, collectionType->elementType->real, FALSE);
                     if (!castedOperand) {
                         castedOperand = operand;
                     }
                 }
             } else {
                 if (Fast_Node(collection)->kind == FAST_Initializer) {
-                    castedOperand = Fast_Expression_cast(collection, tleft);
+                    castedOperand = Fast_Expression_cast(collection, tleft, FALSE);
                     collection = operand;
                 } else if (Fast_Node(operand)->kind == FAST_Initializer) {
-                    castedOperand = Fast_Expression_cast(operand, tleft);
+                    castedOperand = Fast_Expression_cast(operand, tleft, FALSE);
                 } else {
                     castedOperand = operand;
                 }
@@ -1304,7 +1304,7 @@ Fast_Expression Fast_Parser_castExpr(Fast_Parser _this, Fast_Expression lvalue, 
                             Fast_Parser_id(rvalueType, id1), Fast_Parser_id(lvalueType, id2));
                 }
             } else if (Fast_Node(rvalue)->kind == FAST_Literal) {
-                result = Fast_Expression_cast(rvalue, lvalueType);
+                result = Fast_Expression_cast(rvalue, lvalueType, lvalue->isReference);
                 castRequired = FALSE;
             }
         }

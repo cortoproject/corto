@@ -103,7 +103,7 @@ cx_int16 Fast_Wait_construct(Fast_Wait object) {
     }
 
     if (object->timeout) {
-        timeoutExpr = Fast_Expression_cast(object->timeout, cx_type(cx_float32_o));
+        timeoutExpr = Fast_Expression_cast(object->timeout, cx_type(cx_float32_o), FALSE);
         if (timeoutExpr) {
             cx_set(&object->timeout, timeoutExpr);
         }

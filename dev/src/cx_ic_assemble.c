@@ -1960,6 +1960,11 @@ static cx_vmOpKind cx_ic_getVmCast(cx_ic_vmProgram *program, cx_icOp op, cx_type
                 /* No cast for non-reference types */
             }
         }
+
+    } else if ((dstType->kind == CX_PRIMITIVE) && (cx_primitive(dstType)->kind == CX_BOOLEAN)) {
+        if (((cx_icStorage)op->s3)->isReference) {
+            result = cx_ic_getVmPCAST(typeKind, storage, op1);
+        }
     } else if ((srcType->kind == CX_VOID) && srcType->reference) {
         result = cx_ic_getVmCAST(CX_IC_VMTYPE_W, storage, CX_IC_VMOPERAND_P);
     }

@@ -55,7 +55,7 @@ cx_bool cx_primitive_castable_v(cx_primitive _this, cx_type type) {
     result = FALSE;
     
     /* Perform generic type::compatible routine first. */
-    if (!cx_type_compatible_v(cx_type(_this), type)) {
+    if (!cx_primitive_compatible_v(_this, type)) {
         if (cx_type(_this)->reference == type->reference) {
             if (type->kind == CX_PRIMITIVE) {
                 cx_primitiveKind kind = cx_primitive(type)->kind;
@@ -179,42 +179,52 @@ cx_bool cx_primitive_compatible_v(cx_primitive _this, cx_type type) {
 
     result = FALSE;
 
-    if (cx_class_instanceof(cx_primitive_o, type)) {
-       if (_this->kind == cx_primitive(type)->kind) { /* If kinds are equal, types are compatible */
-           result = TRUE;
-        } else if (_this->kind == CX_ENUM) {
-           if (type == cx_type(cx_constant_o)) {
+    if (!cx_type_compatible_v(cx_type(_this), type)) {
+        if (type->kind == CX_PRIMITIVE) {
+           if (_this->kind == cx_primitive(type)->kind) { /* If kinds are equal, types are compatible */
                result = TRUE;
-           }
-        } else if (_this->kind == CX_BITMASK) {
-           switch(cx_primitive(type)->kind) {
-           case CX_INTEGER:
-           case CX_UINTEGER:
-               result = TRUE;
-               break;
-           default:
-               break;
-           }
-        } else { /* Integer types are interchangable */
-               switch(_this->kind) {
-               case CX_BINARY:
-               case CX_UINTEGER:
+            } else if (_this->kind == CX_ENUM) {
+               if (type == cx_type(cx_constant_o)) {
+                   result = TRUE;
+               }
+            } else if (_this->kind == CX_BITMASK) {
+               switch(cx_primitive(type)->kind) {
                case CX_INTEGER:
-                   switch(cx_primitive(type)->kind) {
-                   case CX_BINARY:
-                   case CX_UINTEGER:
-                   case CX_INTEGER:
-                       result = TRUE;
-                       break;
-                   default:
-                       break;
-                   }
+               case CX_UINTEGER:
+                   result = TRUE;
                    break;
                default:
                    break;
                }
+            } else { /* Integer types are interchangable */
+                   switch(_this->kind) {
+                   case CX_BINARY:
+                   case CX_UINTEGER:
+                   case CX_INTEGER:
+                       switch(cx_primitive(type)->kind) {
+                       case CX_BINARY:
+                       case CX_UINTEGER:
+                       case CX_INTEGER:
+                           result = TRUE;
+                           break;
+                       default:
+                           break;
+                       }
+                       break;
+                   default:
+                       break;
+                   }
 
-       }
+            }
+        } else {
+            if (_this->kind == CX_BOOLEAN) {
+                if (type->reference) {
+                    result = TRUE;
+                }
+            }
+        }
+    } else {
+        result = TRUE;
     }
 
     return result;
