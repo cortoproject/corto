@@ -1,5 +1,5 @@
 /** 
- * This file is fully generated. Do not modify!
+ * This file is generated. Only insert code in appropriate places
  */
 
 #include "Fast__meta.h"
@@ -46,6 +46,8 @@ int cortexmain(int argc, char* argv[]) {
     CX_UNUSED(argc);
     CX_UNUSED(argv);
     
+    int result = Fast_load();
+    
     /* $begin(cortexmain) */
     /* Obtain thread local storage key for parser */
     if (cx_threadTlsKey(&FAST_PARSER_KEY, NULL)) {
@@ -56,6 +58,6 @@ int cortexmain(int argc, char* argv[]) {
     cx_loaderRegister("cx", fast_cortexRun, NULL);
     /* $end */
 
-    return Fast_load();
+    return result;
 }
 
