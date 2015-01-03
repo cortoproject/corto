@@ -174,8 +174,8 @@ cx_primitive cx_primitive__create(cx_width width);
 /* ::cortex::lang::procedure */
 cx_procedure cx_procedure__new(void);
 cx_procedure cx_procedure__declare(cx_object _parent, cx_string _name);
-int cx_procedure__define(cx_procedure _this, cx_procedureKind kind);
-cx_procedure cx_procedure__create(cx_procedureKind kind);
+int cx_procedure__define(cx_procedure _this, cx_interface base, cx_modifier baseAccess);
+cx_procedure cx_procedure__create(cx_interface base, cx_modifier baseAccess);
 
 /* ::cortex::lang::procptr */
 cx_procptr cx_procptr__new(void);

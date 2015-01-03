@@ -9,13 +9,33 @@
 #include "test.h"
 #include "test__meta.h"
 
+/* ::cortex::test::suite::assert(::cortex::lang::any v1,::cortex::lang::any v2,::cortex::lang::string msg) */
+cx_void test_suite_assert__cortex_lang_any__cortex_lang_any__cortex_lang_string(test_suite _this, cx_any v1, cx_any v2, cx_string msg) {
+/* $begin(::cortex::test::suite::assert(::cortex::lang::any v1,::cortex::lang::any v2,::cortex::lang::string msg)) */
+
+    if (cx_type_compare(v1, v2) != CX_EQ) {
+        test_suite_fail(_this, msg);
+    }
+
+/* $end */
+}
+
+/* ::cortex::test::suite::assert(::cortex::lang::bool cond,::cortex::lang::string msg) */
+cx_void test_suite_assert__cortex_lang_bool__cortex_lang_string(test_suite _this, cx_bool cond, cx_string msg) {
+/* $begin(::cortex::test::suite::assert(::cortex::lang::bool cond,::cortex::lang::string msg)) */
+    if (!cond) {
+        test_suite_fail(_this, msg);
+    }
+/* $end */
+}
+
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::test::suite::construct(::cortex::test::suite object) */
 /* $header(::cortex::test::suite::construct) */
 int test_suite_walk(cx_object o, void *userData) {
     test_suite _this = userData;
 
     /* Run procedures in scope of suite */
-    if ((cx_typeof(o)->real->kind == CX_COMPOSITE) && (cx_interface(cx_typeof(o)->real)->kind == CX_PROCEDURE)) {
+    if (cx_instanceof(cx_typedef(test_test_o), o)) {
         cx_id id;
 
         /* Create unit for procedure */
@@ -32,15 +52,13 @@ int test_suite_walk(cx_object o, void *userData) {
 }
 
 cx_object test_suite_createResultTree(test_suite _this, cx_object object) {
-    test_result result = NULL;
+    cx_object result = NULL;
     if (cx_parentof(object) != root_o) {
         result = test_suite_createResultTree(_this, cx_parentof(object));
-        result = test_result__declare(result, cx_nameof(object));
-        test_result__define(result, object);
+        result = cx_declare(result, cx_nameof(object), cx_typeof(cx_void_o));
     } else {
         result = cx_declare(NULL, "test", cx_typedef(cx_void_o));
-        result = test_result__declare(result, cx_nameof(object));
-        test_result__define(result, _this->package);
+        result = cx_declare(result, cx_nameof(object), cx_typedef(cx_void_o));
     }
     return result;
 }
