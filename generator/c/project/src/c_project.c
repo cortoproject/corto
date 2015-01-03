@@ -17,7 +17,7 @@ static cx_int16 c_projectGenerateMainFile(cx_generator g) {
         goto error;
     }
     g_fileWrite(file, "/** \n");
-    g_fileWrite(file, " * This file is fully generated. Do not modify!\n");
+    g_fileWrite(file, " * This file is generated. Only insert code in appropriate places\n");
     g_fileWrite(file, " */\n\n");
 
     g_fileWrite(file, "#include \"%s__meta.h\"\n\n", g_getName(g));
@@ -26,6 +26,10 @@ static cx_int16 c_projectGenerateMainFile(cx_generator g) {
         g_fileWrite(file, "/* $header()");
         g_fileWrite(file, "%s", snippet);
         g_fileWrite(file, "$end */\n\n");
+    } else {
+        g_fileWrite(file, "/* $header() */");
+        g_fileWrite(file, "/* Insert user-includes here */");
+        g_fileWrite(file, "/* $end */\n\n");    
     }
 
     g_fileWrite(file, "/* This function is the entrypoint for the library and");
@@ -44,9 +48,10 @@ static cx_int16 c_projectGenerateMainFile(cx_generator g) {
         g_fileWrite(file, "%s", snippet);
         g_fileWrite(file, "$end */\n\n");
     } else {
+        g_fileWrite(file, "\n");
         g_fileWrite(file, "/* $begin(cortexmain) */\n");
         g_fileWrite(file, "/* Insert user-code here */\n");
-        g_fileWrite(file, "/* $end */\n");
+        g_fileWrite(file, "/* $end */\n\n");
     }
 
     g_fileWrite(file, "return result;\n");
