@@ -17,12 +17,7 @@ char *utostr(unsigned int value, char *result, int base);
  * surrounding single quotes.
  * Returns the next available location to write, usually out+1 or out+2.
  */
-char *schresc(char in, char *out, int isstr);
-
-/*
- * Wraps around `schresc`
- */
-char *chresc(char in, char *out);
+char *chresc(char *out, char in, char delimiter);
 
 /*
  * Escapes a null-terminated string `in` and attempts to print it to `out`.
@@ -33,13 +28,7 @@ char *chresc(char in, char *out);
  * `stresclen`, adding 2 if you surrounding double quotes.
  * The resulting string is null terminated.
  */
-char *stresc(const char *in, char *out, size_t n);
-
-/*
- * Returns the length-to-be of a null-terminated string as if escaped with
- * stresc.
- */
-size_t stresclen(const char *s);
+size_t stresc(char *out, size_t n, const char *in);
 
 #ifdef __cplusplus
 }
