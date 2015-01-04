@@ -208,7 +208,7 @@ static cx_int16 cx_ser_complex(cx_serializer s, cx_value* v, void* userData) {
     cx_type type = cx_valueType(v)->real;
     cx_bool useCurlyBraces = FALSE;
 
-    if (type->kind == CX_COMPOSITE || cx_collection(type) == CX_MAP) {
+    if (type->kind == CX_COMPOSITE || cx_collection(type)->kind == CX_MAP) {
         useCurlyBraces = TRUE;
     }
 
