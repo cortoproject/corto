@@ -111,11 +111,12 @@ error:
 /* ::cortex::Fast::report(lang::string kind,lang::string filename,lang::uint32 line,lang::uint32 column,lang::string error,lang::string token) */
 void Fast_report(cx_string kind, cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token) {
 /* $begin(::cortex::Fast::report) */
-
+    CX_UNUSED(token);
+    
     if(filename) {
         cx_print("%s:%d:%d: %s: %s", filename, line, column, kind, error);
     } else {
-        cx_print("%d: %s: %s", column, kind, error);
+        cx_print("%d:%d: %s: %s", line, column, kind, error);
     }
 
 /* $end */

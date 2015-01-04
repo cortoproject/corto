@@ -261,7 +261,7 @@ cx_int16 Fast_BinaryExpr_construct(Fast_BinaryExpr object) {
     if (lvalueType && rvalueType) {
         if (!cx_type_castable(lvalueType, rvalueType)) {
             cx_id id, id2;
-            Fast_Parser_error(yparser(), "type '%s' of right operand cannot be converted to '%s' in binary expression",
+            Fast_Parser_error(yparser(), "cannot convert '%s' to '%s'",
                     cx_fullname(rvalueType, id), cx_fullname(lvalueType, id2));
             goto error;
         }

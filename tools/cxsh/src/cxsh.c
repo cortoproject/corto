@@ -134,11 +134,14 @@ static void cxsh_printColumnHeader(void) {
 }
 
 /* Print shell prompt */
-static void cxsh_prompt(cx_object scope) {
-    cx_id id;
-    cx_fullname(scope, id);
-
-    printf("%s%s%s %s$%s ", OBJECT_COLOR, id, NORMAL, SHELL_COLOR, NORMAL);
+static void cxsh_prompt(cx_object scope, int enableColors, cx_id prompt) {
+    cx_id name;
+    cx_fullname(scope, name);
+    if (enableColors) {
+        sprintf(prompt, "%s%s%s %s$%s ", OBJECT_COLOR, name, NORMAL, SHELL_COLOR, NORMAL);
+    } else {
+        sprintf(prompt, "%s $ ", name);
+    }
 }
 
 /* Translate object state to string */
@@ -498,6 +501,18 @@ static void cxsh_help(void) {
     printf("\n");
 }
 
+int cxsh_getErrorLocation(cx_string str) {
+    int result = 0;
+
+    /* Only give location when on the first line */
+    if ((str[0] == '1') && (str[1] == ':')) {
+        str += 2;
+        result = atoi(str);
+    }
+
+    return result;
+}
+
 static int cxsh_doCmd(char* cmd) {
     char arg[CXSH_CMD_MAX];
 
@@ -537,11 +552,21 @@ static int cxsh_doCmd(char* cmd) {
     } else {
         cx_char *lastErr;
         if ((lastErr = cx_lasterror())) {
+            int location = 0;
+            cxsh_color(ERROR_COLOR);
+
+            /* If lastError starts with a line:column: indication, print an arrow */
+            if ((location = cxsh_getErrorLocation(lastErr))) {
+                cx_id prompt;
+                cxsh_prompt(scope, FALSE, prompt);
+                printf("%*s^\n", location - 1 + strlen(prompt), "");
+            }
+
             do {
-                cxsh_color(ERROR_COLOR);
                 cx_print("%s", lastErr);
-                cxsh_color(NORMAL);
             } while ((lastErr = cx_lasterror()));
+
+            cxsh_color(NORMAL);
         } else {
             cxsh_color(ERROR_COLOR);
             cx_print("expression '%s' did not resolve to a valid expression or command", cmd);
@@ -558,12 +583,14 @@ quit:
 static void cxsh_shell(void) {
     char cmd[CXSH_CMD_MAX];
     cx_bool quit;
+    cx_id prompt;
 
     quit = FALSE;
 
     while(!quit) {
         /* Print prompt */
-        cxsh_prompt(scope);
+        cxsh_prompt(scope, TRUE, prompt);
+        printf("%s", prompt);
 
         cmd[0] = '\0';
 
@@ -599,7 +626,9 @@ int main(int argc, char* argv[]) {
     /* Start database */
     cx_start();
 
+    cxsh_color(SHELL_COLOR);
     printf("cortex shell - type 'help' for instructions.\n");
+    cxsh_color(NORMAL);
 
     /* Parse arguments */
     for(i=1; i<argc; i++) {
