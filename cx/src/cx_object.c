@@ -2718,6 +2718,11 @@ cx_int16 cx_expr(cx_object scope, cx_string expr, cx_value *value) {
     /* Parser cannot be loaded, revert to plain object resolving */
     } else {
         cx_object o = cx_resolve(scope, expr);
+        if (!o) {
+            cx_error("'%s' does not resolve to a valid object", expr);
+            goto error;
+        }
+
         cx_valueObjectInit(value, o);
     }
 
