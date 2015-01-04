@@ -206,7 +206,13 @@ finished:
 static cx_int16 cx_ser_complex(cx_serializer s, cx_value* v, void* userData) {
     cx_json_ser_t *data = userData;
     cx_type type = cx_valueType(v)->real;
-    if (!cx_ser_appendstr(data, "{")) {
+    cx_bool useCurlyBraces = FALSE;
+
+    if (type->kind == CX_COMPOSITE || cx_collection(type) == CX_MAP) {
+        useCurlyBraces = TRUE;
+    }
+
+    if (!cx_ser_appendstr(data, (useCurlyBraces ? "{" : "["))) {
         goto finished;
     }
     if (type->kind == CX_COMPOSITE) {
@@ -220,7 +226,8 @@ static cx_int16 cx_ser_complex(cx_serializer s, cx_value* v, void* userData) {
     } else {
         goto error;
     }
-    if (!cx_ser_appendstr(data, "}")) {
+
+    if (!cx_ser_appendstr(data, (useCurlyBraces ? "}" : "]"))) {
         goto finished;
     }
     return 0;
