@@ -136,8 +136,10 @@ static cx_char* c_loadMemberId(c_typeWalk_t* data, cx_value* v, cx_char* out, cx
     /* Print object */
     o = cx_valueObject(v);
 
-    /* If object is an array, dereference object, so the '[ ]' operator can be used on object. Same for primtives, primitive-objects are pointers to primitive values. */
-    objectIsArray = (cx_typeof(o)->real->kind == CX_PRIMITIVE) || ((cx_typeof(o)->real->kind == CX_COLLECTION) && (cx_collection(cx_typeof(o)->real)->kind == CX_ARRAY));
+    /* If object is a collection or primtive, dereference object pointer */
+    objectIsArray = 
+        (cx_typeof(o)->real->kind == CX_PRIMITIVE) || 
+        (cx_typeof(o)->real->kind == CX_COLLECTION);
 
     /* Use '->' operator whenever possible */
     if (!objectIsArray) {
@@ -511,8 +513,10 @@ static cx_int16 c_initElement(cx_serializer s, cx_value* v, void* userData) {
         cx_id elementId, specifier, postfix;
         g_fileWrite(data->source, "\n");
 
-        c_specifierId(data->g, t->elementType, specifier, NULL, postfix);
-        g_fileWrite(data->source, "%s = cx_malloc(sizeof(%s%s));\n", c_loadElementId(v, elementId, 0), specifier, postfix);
+        if (cx_collection_elementRequiresAlloc(t)) {
+            c_specifierId(data->g, t->elementType, specifier, NULL, postfix);
+            g_fileWrite(data->source, "%s = cx_malloc(sizeof(%s%s));\n", c_loadElementId(v, elementId, 0), specifier, postfix);
+        }
         break;
     }
     default:
@@ -629,7 +633,14 @@ static cx_int16 c_initCollection(cx_serializer s, cx_value* v, void* userData) {
             cx_id elementId, elementTypeId;
             g_fileWrite(data->source, "{\n");
             g_fileIndent(data->source);
-            g_fileWrite(data->source, "%s* %s;\n", g_fullOid(data->g, t->elementType, elementTypeId), c_loadElementId(v, elementId, 1));
+
+            g_fileWrite(
+                data->source, 
+                "%s%s %s;\n", 
+                g_fullOid(data->g, t->elementType, elementTypeId), 
+                cx_collection_elementRequiresAlloc(t) ? "*" : "",
+                c_loadElementId(v, elementId, 1));
+
             break;
         }
         default:
