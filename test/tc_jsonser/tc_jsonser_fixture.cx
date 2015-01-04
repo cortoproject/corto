@@ -1,4 +1,4 @@
-object fixture::
+object tc_jsonser_fixture::
     int8 i8n: -2
     int8 i8z: 0
     int8 i8p: 45
@@ -59,6 +59,9 @@ object fixture::
     string s12: "@@@@@ hey"
     string s13: "@@@@@hey"
     string s14: "@@@@@hey you"
+    // string s15: "a tab \t"
+    // string s16: "r\rr"
+    // string s17: "\v"
 
     bitmask color:: red, green, blue
     color yellow: red | green

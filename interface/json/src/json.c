@@ -5,6 +5,7 @@
 
 #include "cx_generator.h"
 #include "cx_serializer.h"
+#include "cx_string.h"
 #include "cortex.h"
 #include "json.h"
 
@@ -77,10 +78,20 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData
 
     type = cx_valueType(info);
     value = cx_valueValue(info);
+    cx_primitiveKind kind = cx_primitive(type->real)->kind;
 
     result = cx_convert(cx_primitive(type), value, cx_primitive(cx_string_o), &valueString);
     if (result) {
         goto error;
+    }
+
+    if (kind == CX_CHARACTER || (kind == CX_TEXT && (*(cx_string *)value))) {
+        cx_string t;
+        cx_string escapedValueString = cx_malloc(stresclen(valueString));
+        stresc(valueString, escapedValueString, 0);
+        t = valueString;
+        valueString = escapedValueString;
+        cx_dealloc(t);
     }
 
     switch (cx_primitive(type->real)->kind) {
@@ -101,6 +112,7 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData
             break;
         case CX_CHARACTER:
         case CX_TEXT:
+            // TODO escape @'s and other characters
             if (!*(cx_string *)value) {
                 if (!cx_ser_appendstr(data, "null")) {
                     goto finished;
@@ -237,8 +249,8 @@ finished:
     return 1;
 }
 
-/* TODO this is copy-past from cx.c */
-static char* cx_stateStr(cx_object o, char* buff) {
+/* TODO this is copy-past from dbsh.c */
+static char* dbsh_stateStr(cx_object o, char* buff) {
     buff[0] = '\0';
 
     /* Get state */
@@ -255,8 +267,8 @@ static char* cx_stateStr(cx_object o, char* buff) {
     return buff;
 }
 
-/* TODO this is copy-paste from cx.c */
-static char* cx_attrStr(cx_object o, char* buff) {
+/* TODO this is copy-paste from dbsh.c */
+static char* dbsh_attrStr(cx_object o, char* buff) {
     cx_bool first;
     *buff = '\0';
 
@@ -308,13 +320,13 @@ static cx_int16 cx_ser_meta(cx_serializer s, cx_value* v, void* userData) {
     }
 
     char states[sizeof("V|DCL|DEF")];
-    cx_stateStr(object, states);
+    dbsh_stateStr(object, states);
     if (!cx_ser_appendstr(data, "\"states\":\"%s\",", states)) {
         goto finished;
     }
 
     char attributes[sizeof("S|W|O")];
-    cx_attrStr(object, attributes);
+    dbsh_attrStr(object, attributes);
     if (!cx_ser_appendstr(data, "\"attributes\":\"%s\",", attributes)) {
         goto finished;
     }
@@ -359,13 +371,13 @@ static int cx_walkScopeAction_ser_meta(cx_object o, void* userData) {
     }
 
     char states[sizeof("V|DCL|DEF")];
-    cx_stateStr(o, states);
+    dbsh_stateStr(o, states);
     if (!cx_ser_appendstr(userData, "\"states\":\"%s\",", states)) {
         goto finished;
     }
 
     char attributes[sizeof("S|W|O")];
-    cx_attrStr(o, attributes);
+    dbsh_attrStr(o, attributes);
     if (!cx_ser_appendstr(userData, "\"attributes\":\"%s\",", attributes)) {
         goto finished;
     }
@@ -420,18 +432,16 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
     }
 
     if (data->serializeValue) {
-        if (cx_valueType(v)->real->kind != CX_VOID) {
-            if (c && !cx_ser_appendstr(data, ",")) {
-                goto finished;
-            }
-            if (!cx_ser_appendstr(data, "\"value\":")) {
-                goto finished;
-            }
-            if (cx_serializeValue(s, v, userData)) {
-                goto error;
-            }
-            c += 1;
+        if (c && !cx_ser_appendstr(data, ",")) {
+            goto finished;
         }
+        if (!cx_ser_appendstr(data, "\"value\":")) {
+            goto finished;
+        }
+        if (cx_serializeValue(s, v, userData)) {
+            goto error;
+        }
+        c += 1;
     }
 
     if (data->serializeScope) {

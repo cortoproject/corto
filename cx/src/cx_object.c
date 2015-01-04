@@ -2705,7 +2705,7 @@ cx_int16 cx_expr(cx_object scope, cx_string expr, cx_value *value) {
     cx_int16 result = 0;
 
     /* Load parser */
-    if (!cx_load("fast")) {
+    if (!cx_load("Fast")) {
         cx_function parseLine = cx_resolve(NULL, "::Fast::Parser::parseLine");
         if (!parseLine) {
             cx_error("function ::Fast::Parser::parseLine could not be resolved");
