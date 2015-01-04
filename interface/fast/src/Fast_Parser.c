@@ -574,13 +574,18 @@ error:
 cx_object Fast_Parser_expandBinaryExpr(Fast_Parser _this, Fast_Expression lvalue, Fast_Expression rvalue, void *userData) {
     Fast_Expression result = NULL;
     cx_type tleft, tright;
-    cx_bool isReference, forceReference;
+    cx_bool isReference = FALSE, forceReference;
 
     tleft = Fast_Expression_getType_expr(lvalue,rvalue);
     tright = Fast_Expression_getType_expr(rvalue,lvalue);
 
     forceReference = lvalue->forceReference || rvalue->forceReference;
-    isReference = forceReference || (tleft && tleft->reference) || (tright && tright->reference);
+
+    if ((Fast_Node(lvalue)->kind != FAST_Variable) || 
+        (Fast_Variable(lvalue)->kind != FAST_Object) ||
+        (*(cx_operatorKind*)userData != CX_ASSIGN)) {
+        isReference = forceReference || (tleft && tleft->reference) || (tright && tright->reference);
+    }
 
     if (tleft && (tleft->kind == CX_COMPOSITE) && (cx_interface(tleft)->kind == CX_PROCPTR)) {
         rvalue = Fast_Parser_delegateAssignment(_this, lvalue, rvalue);

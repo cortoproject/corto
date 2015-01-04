@@ -1999,9 +1999,9 @@ static cx_vmOpKind cx_ic_getVmSet(cx_type type, cx_icStorage op1, cx_ic_vmType t
         typeKind = cx_vmTranslateVmType(CX_IC_SET, typeKind);
         result = cx_ic_getVmSET(typeKind, opKind1, opKind2);
     } else {
-        /* printf("op1->isReference=%d, deref==value=%d, typeKind=%d, opKind1=%d, opKind2=%d\n",
-               op1->isReference, deref==CX_IC_DEREF_VALUE, typeKind, opKind1, opKind2); */
-        if (op1->type->reference || (deref1 == CX_IC_DEREF_ADDRESS)) {
+        /*printf("op1->isReference=%d, deref1==address=%d, deref2==address=%d, typeKind=%d, opKind1=%d, opKind2=%d\n",
+               op1->isReference, deref1==CX_IC_DEREF_ADDRESS, deref2==CX_IC_DEREF_ADDRESS, typeKind, opKind1, opKind2);*/
+        if ((deref1 == CX_IC_DEREF_ADDRESS) || (deref2 == CX_IC_DEREF_ADDRESS)) {
             result = cx_ic_getVmSETREF(CX_IC_VMTYPE_W, opKind1, opKind2);
         } else {
             if ((type->kind == CX_PRIMITIVE) && (cx_primitive(type)->kind == CX_TEXT)) {
