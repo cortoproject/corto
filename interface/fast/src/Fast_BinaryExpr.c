@@ -261,7 +261,7 @@ cx_int16 Fast_BinaryExpr_construct(Fast_BinaryExpr object) {
     if (lvalueType && rvalueType) {
         if (!cx_type_castable(lvalueType, rvalueType)) {
             cx_id id, id2;
-            Fast_Parser_error(yparser(), "type '%s' of right operand cannot be converted to '%s' in binary expression",
+            Fast_Parser_error(yparser(), "cannot convert '%s' to '%s'",
                     cx_fullname(rvalueType, id), cx_fullname(lvalueType, id2));
             goto error;
         }
@@ -493,6 +493,12 @@ cx_ic Fast_BinaryExpr_toIc_v(Fast_BinaryExpr _this, cx_icProgram program, cx_icS
 
             op->s2Deref = Fast_Expression_getDerefMode(_this->lvalue, _this->rvalue, NULL);
             op->s3Deref = Fast_Expression_getDerefMode(_this->rvalue, _this->lvalue, NULL);
+
+            /* If lvalue is an object, never use address in assignments */
+            if ((Fast_Node(_this->lvalue)->kind == FAST_Variable) && (Fast_Variable(_this->lvalue)->kind == FAST_Object)) {
+                op->s2Deref = CX_IC_DEREF_VALUE;
+                op->s3Deref = CX_IC_DEREF_VALUE;
+            }
         } else {
             returnsResult = rvalue;
         }

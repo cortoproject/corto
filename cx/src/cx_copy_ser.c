@@ -62,13 +62,20 @@ static cx_int16 cx_collection_copyListToArray(cx_collection t, void *array, cx_u
         }
         e1 = CX_OFFSET(array, elementSize * i);
         v1.type = v2.type = elementType;
-        v1.value = e1;
-        v2.value = e2;
         if (!reverse) {
-            result = cx_type_copy(v1, v2);
+            v1.value = e1;
+            v2.value = e2;
         } else {
-            result = cx_type_copy(v2, v1);
+            v1.value = e2;
+            v2.value = e1;            
         }
+
+        if (elementType->reference) {
+            *(cx_object*)v1.value = *(cx_object*)v2.value;
+        } else {
+            result = cx_type_copy(v1, v2);
+        }
+        
         i++;
     }
     
@@ -93,11 +100,15 @@ static cx_int16 cx_collection_copyListToList(cx_collection t, cx_ll list1, cx_ll
             e1 = cx_iterNextPtr(&iter1);
             e2 = cx_iterNextPtr(&iter2);
         }
-        v1.type = v2.type = elementType;
-        v1.value = e1;
-        v2.value = e2;
-        
-        result = cx_type_copy(v1, v2);
+
+        if (elementType->reference) {
+            *(cx_object*)e1 = *(cx_object*)e2;
+        } else {
+            v1.type = v2.type = elementType;
+            v1.value = e1;
+            v2.value = e2;
+            result = cx_type_copy(v1, v2);
+        }
     }
     
     return result;

@@ -1067,13 +1067,18 @@ static void cx_vm_sig(int sig) {
     }
 
     for(sp = programData->sp-1; sp>=0; sp--) {
-        cx_id id;
+        cx_id id, file;
         cx_vmProgram program = programData->stack[sp];
         cx_uint32 line = program->debugInfo[((cx_word)programData->c[sp]->pc - (cx_word)program->program)/sizeof(cx_vmOp)].line;
-        if (program->function) {
-            printf("[%d] %s (%s:%d)\n", sp+1, cx_fullname(program->function, id), program->filename, line);
+        if (program->filename) {
+            sprintf(file, "%s:", program->filename);
         } else {
-            printf("[%d] <main> (%s:%d)\n", sp+1, program->filename, line);
+            *file = '\0';
+        }
+        if (program->function) {
+            printf("[%d] %s (%s%d)\n", sp+1, cx_fullname(program->function, id), file, line);
+        } else {
+            printf("[%d] <main> (%s%d)\n", sp+1, file, line);
         }
         
         /* Print program with location of crash */

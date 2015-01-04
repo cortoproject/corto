@@ -191,9 +191,14 @@ cx_int16 cx_type_copy(cx_any _this, cx_any value) {
     struct cx_serializer_s s;
     cx_value v1;
     cx_int16 result;
-    
-    cx_valueValueInit(&data.value, NULL, cx_typedef(_this.type), _this.value);
-    cx_valueValueInit(&v1, NULL, cx_typedef(value.type), value.value);
+
+    if (_this.type->reference || value.type->reference) {
+        cx_valueObjectInit(&data.value, _this.value);
+        cx_valueObjectInit(&v1, value.value);       
+    } else {
+        cx_valueValueInit(&data.value, NULL, cx_typedef(_this.type), _this.value);
+        cx_valueValueInit(&v1, NULL, cx_typedef(value.type), value.value);
+    }
     
     s = cx_copy_ser(CX_PRIVATE, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
     
