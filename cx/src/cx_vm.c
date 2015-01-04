@@ -1648,7 +1648,7 @@ cx_vmProgram cx_vmProgram_new(char *filename, cx_object function) {
     result = cx_malloc(sizeof(cx_vmProgram_s));
     result->program = NULL;
     result->debugInfo = NULL;
-    result->filename = cx_strdup(filename);
+    result->filename = filename ? cx_strdup(filename) : NULL;
     result->function = function;
     result->size = 0;
     result->maxSize = 0;

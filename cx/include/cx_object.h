@@ -115,6 +115,9 @@ cx_int32 cx_updateCancel(cx_object observable);
 cx_int32 cx_waitfor(cx_object observable);
 cx_object cx_wait(cx_int32 timeout_sec, cx_int32 timeout_nanosec);
 
+/* REPL functionality */
+cx_int16 cx_expr(cx_object scope, cx_string expr, cx_value *value);
+
 /* Thread-safe reading (polling) */
 cx_int32 cx_readBegin(cx_object object);
 cx_int32 cx_readEnd(cx_object object);

@@ -14,6 +14,8 @@
 /*#define FAST_PARSER_DEBUG*/
 #define fast_err _this->errSet = TRUE; _this->errLine = __LINE__;
 
+extern cx_threadKey FAST_PARSER_KEY;
+
 #include "cx.h"
 #include "stdio.h"
 #include "Fast__api.h"
@@ -51,41 +53,32 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ... ) {
     vsprintf(msgbuff, fmt, args);
     va_end(args);
 
-#ifdef FAST_PARSER_DEBUG
-    if (_this->initializerCount >= 0) {
-        printf("%s:%d:%d (pass=%d, initCount=%d, initializer=%p) error: %s near %s\n",
-               _this->filename, _this->line, _this->column,
-               _this->pass, _this->initializerCount, _this->initializers[_this->initializerCount],
-               msgbuff, token);
-    } else {
-        printf("%s:%d:%d (pass=%d, initCount=%d) error: %s near %s\n",
-               _this->filename, _this->line, _this->column, _this->pass, _this->initializerCount,
-               msgbuff, token);
-    }
-#else
-    if (_this->token) {
-        printf("%s:%d:%d error: %s near %s\n", _this->filename, _this->line, _this->column, msgbuff, token);
-    } else {
-        printf("%s:%d:%d error: %s\n", _this->filename, _this->line, _this->column, msgbuff);
-    }
-#endif
-    
+    Fast_reportError(_this->filename, _this->line, _this->column, msgbuff, token);
+
     _this->errors++;
 }
 
 void Fast_Parser_warning(Fast_Parser _this, char* fmt, ... ) {
     va_list args;
     char msgbuff[1024];
+    cx_id token;
+
+    if (_this->token) {
+        if (*_this->token == '\n') {
+            sprintf(token, "end of line");
+        } else {
+            sprintf(token, "'%s'", _this->token);
+        }
+    } else {
+        *token = '\0';
+    }
 
     va_start(args, fmt);
     vsprintf(msgbuff, fmt, args);
     va_end(args);
 
-    if (_this->token) {
-        printf("%s:%d:%d warning: %s near token '%s'\n", _this->filename, _this->line, _this->column, msgbuff, _this->token);
-    } else {
-        printf("%s:%d:%d warning: %s\n", _this->filename, _this->line, _this->column, msgbuff);
-    }
+    Fast_reportWarning(_this->filename, _this->line, _this->column, msgbuff, token);
+
     _this->warnings++;
 }
 
@@ -168,7 +161,7 @@ cx_int16 Fast_Parser_toIc(Fast_Parser _this) {
     if (CX_DEBUG_ENABLED) {
         cx_string programStr;
         programStr = cx_icProgram_toString(program);
-        printf("%s\n", programStr);
+        cx_print("%s", programStr);
         cx_dealloc(programStr);
     }
 #endif
@@ -263,14 +256,14 @@ Fast_Expression Fast_Parser_binaryCollectionExpr(Fast_Parser _this, Fast_Express
         Fast_Parser_error(_this, "collection-expression types do not match (left: %s, right: %s)",
                           Fast_Parser_id(tleft, id1),
                           Fast_Parser_id(tright, id2));
-        printf("   valid options:\n");
+        cx_print("   valid options:");
         if (tleft->kind == CX_COLLECTION) {
-            printf("      left: %s right: %s\n", Fast_Parser_id(tleft, id1), Fast_Parser_id(cx_collection(tleft)->elementType, id2));
-            printf("      left: %s right: %s\n", Fast_Parser_id(tleft, id1), Fast_Parser_id(tleft, id1));
+            cx_print("      left: %s right: %s", Fast_Parser_id(tleft, id1), Fast_Parser_id(cx_collection(tleft)->elementType, id2));
+            cx_print("      left: %s right: %s", Fast_Parser_id(tleft, id1), Fast_Parser_id(tleft, id1));
         }
         if (tright->kind == CX_COLLECTION) {
-            printf("      left: %s right: %s\n", Fast_Parser_id(cx_collection(tright)->elementType, id1), Fast_Parser_id(tright, id2));
-            printf("      left: %s right: %s\n", Fast_Parser_id(tright, id1), Fast_Parser_id(tright, id1));
+            cx_print("      left: %s right: %s", Fast_Parser_id(cx_collection(tright)->elementType, id1), Fast_Parser_id(tright, id2));
+            cx_print("      left: %s right: %s", Fast_Parser_id(tright, id1), Fast_Parser_id(tright, id1));
         }
         goto error;
     }
@@ -1011,12 +1004,16 @@ void Fast_Parser_addStatement(Fast_Parser _this, Fast_Node statement) {
                 }
             } else if (_this->pass) {
                 /* If statement is a string, insert println function */
-                Fast_Expression println = Fast_Parser_lookup(_this, "io::println", NULL);
-                Fast_CommaExpr args = Fast_CommaExpr__create();
-                Fast_CommaExpr_addExpression(args, Fast_Expression(statement));
-                Fast_Expression callExpr = Fast_Parser_callExpr(_this, println, Fast_Expression(args));
-                Fast_Block_addStatement(_this->block, Fast_Node(callExpr));
-                Fast_Parser_collect(_this, args);
+                if (!_this->repl) {
+                    Fast_Expression println = Fast_Parser_lookup(_this, "io::println", NULL);
+                    Fast_CommaExpr args = Fast_CommaExpr__create();
+                    Fast_CommaExpr_addExpression(args, Fast_Expression(statement));
+                    Fast_Expression callExpr = Fast_Parser_callExpr(_this, println, Fast_Expression(args));
+                    Fast_Block_addStatement(_this->block, Fast_Node(callExpr));
+                    Fast_Parser_collect(_this, args);
+                } else {
+                    Fast_Block_addStatement(_this->block, statement);
+                }
             }
         }
     }
@@ -1356,6 +1353,7 @@ cx_int16 Fast_Parser_construct(Fast_Parser object) {
 /* $begin(::cortex::Fast::Parser::construct) */
     CX_UNUSED(object);
     Fast_Parser_reset(object);
+    cx_threadTlsSet(FAST_PARSER_KEY, object);
     return 0;
 /* $end */
 }
@@ -1423,7 +1421,7 @@ Fast_Variable Fast_Parser_declaration(Fast_Parser _this, Fast_Variable type, cx_
                 Fast_Parser_error(_this, "declare of '%s' of type '%s' failed",
                         id,
                         Fast_Parser_id(Fast_ObjectBase(type)->value, id1));
-                goto error;
+                goto error;  
             }
         } else {
             o = cx_resolve_ext(_this, parent, id, FALSE, "Resolve object in 2nd pass");
@@ -1885,6 +1883,10 @@ error:
 void Fast_Parser_initDeclareStaged(Fast_Parser _this, Fast_Expression expr) {
 /* $begin(::cortex::Fast::Parser::initDeclareStaged) */
     cx_uint32 i;
+
+    if (_this->repl) {
+        return; /* No declaration of staged variables in repl mode */
+    }
     
     _this->variableCount = 0;
 
@@ -2191,11 +2193,13 @@ error:
 void Fast_Parser_initStage(Fast_Parser _this, cx_string id, cx_bool found) {
 /* $begin(::cortex::Fast::Parser::initStage) */
     
-    _this->staged[_this->stagedCount].name = cx_strdup(id);
-    _this->staged[_this->stagedCount].line = _this->line;
-    _this->staged[_this->stagedCount].column = _this->column;
-    _this->staged[_this->stagedCount].found = found;
-    _this->stagedCount++;
+    if (!_this->repl) {
+        _this->staged[_this->stagedCount].name = cx_strdup(id);
+        _this->staged[_this->stagedCount].line = _this->line;
+        _this->staged[_this->stagedCount].column = _this->column;
+        _this->staged[_this->stagedCount].found = found;
+        _this->stagedCount++;
+    }
 
 /* $end */
 }
@@ -2436,26 +2440,22 @@ cx_uint32 Fast_Parser_parse(Fast_Parser _this) {
 
     _this->pass = 0;
     if ( fast_yparse(_this, 1, 1)) {
-        printf("%s: parsed with errors (%d errors, %d warnings)\n", _this->filename, _this->errors, _this->warnings);
+        cx_print("%s: parsed with errors (%d errors, %d warnings)", _this->filename, _this->errors, _this->warnings);
         goto error;
     }
 
     /* Reset parser-state so 2nd pass starts clean */
     Fast_Parser_reset(_this);
 
-    /* Reset block */
-    /*cx_free_ext(_this, _this->block, "Free root-block");
-    _this->block = NULL;*/
-
     _this->pass = 1;
     if ( fast_yparse(_this, 1, 1)) {
-        printf("%s: parsed with errors (%d errors, %d warnings)\n", _this->filename, _this->errors, _this->warnings);
+        cx_print("%s: parsed with errors (%d errors, %d warnings)", _this->filename, _this->errors, _this->warnings);
         goto error;
     }
 
     /* Parse to cortex intermediate code */
     if ( Fast_Parser_toIc(_this)) {
-        printf("%s: parsed with errors (%d errors, %d warnings)\n", _this->filename, _this->errors, _this->warnings);
+        cx_print("%s: parsed with errors (%d errors, %d warnings)", _this->filename, _this->errors, _this->warnings);
         goto error;
     }
 
@@ -2489,7 +2489,7 @@ Fast_Expression Fast_Parser_parseExpression(Fast_Parser _this, cx_string expr, F
     // Give expression its own block 
     Fast_Parser_blockPush(_this, FALSE);
     if (fast_yparse(_this, line, column)) {
-        printf("%s: expression '%s' parsed with errors\n", _this->filename, expr);
+        cx_print("%s: expression '%s' parsed with errors", _this->filename, expr);
         Fast_Parser_blockPop(_this);
         goto error;
     }
@@ -2507,26 +2507,143 @@ Fast_Expression Fast_Parser_parseExpression(Fast_Parser _this, cx_string expr, F
                     result = Fast_Expression(node);
                 } else {
                     cx_id id;
-                    printf("%s: '%s' does not resolve to a valid expression (found %s).\n",
+                    cx_print("%s: '%s' does not resolve to a valid expression (found %s).",
                             _this->filename, expr, Fast_Parser_id(cx_typeof(node), id));
                     goto error;
                 }
             } else {
-                printf("%s: expression '%s' is not allowed to contain multiple statements\n", _this->filename, expr);
+                cx_print("%s: expression '%s' is not allowed to contain multiple statements", _this->filename, expr);
                 goto error;
             }
         } else {
-            printf("%s: expression '%s' did not result in a statement\n", _this->filename, expr);
+            cx_print("%s: expression '%s' did not result in a statement", _this->filename, expr);
             goto error;
         }
     } else {
-        printf("parser error: no block set in parser after parsing expression.\n");
+        cx_print("parser error: no block set in parser after parsing expression.");
         goto error;
     }
 
     return result;
 error:
     return NULL;
+/* $end */
+}
+
+/* ::cortex::Fast::Parser::parseLine(lang::string expr,lang::object scope,lang::alias{"cx_value*"} value) */
+cx_int16 Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_value* value) {
+/* $begin(::cortex::Fast::Parser::parseLine) */
+    Fast_Parser parser = Fast_Parser__create(expr, NULL);
+    cx_icProgram program = cx_icProgram__create(parser->filename);
+    cx_vmProgram vmProgram;
+    Fast_Expression result = NULL; /* Resulting ast-expression of 'exr' */
+    cx_icScope icScope; /* Parsed intermediate-code program */
+    cx_icStorage returnValue = NULL; /* Intermediate representation of return value */
+    cx_typedef returnType = NULL; /* Return type */
+    cx_ic ret = NULL; /* ret or stop instruction */
+    Fast_Variable astScope = Fast_Variable(Fast_Object__create(scope));
+    Fast_Parser_collect(parser, astScope);
+
+    parser->repl = TRUE;
+
+    parser->pass = 0;
+    cx_set(&parser->scope, astScope);
+    if ( fast_yparse(parser, 1, 1)) {
+        cx_error("'%s' parsed with errors (%d errors, %d warnings)", expr, parser->errors, parser->warnings);
+        goto error;
+    }
+
+    if (parser->errors) {
+        goto error;
+    }
+
+    /* Reset parser-state so 2nd pass starts clean */
+    Fast_Parser_reset(parser);
+
+    parser->pass = 1;
+    cx_set(&parser->scope, astScope);
+    if ( fast_yparse(parser, 1, 1)) {
+        cx_error("'%s' parsed with errors (%d errors, %d warnings)", expr, parser->errors, parser->warnings);
+        goto error;
+    }
+
+    /* Find last executed expression */
+    if (parser->block) {
+        if (cx_llSize(parser->block->statements)) {
+            Fast_Node lastNode = cx_llLast(parser->block->statements);
+
+            /* If node is an expression, store expression in variable so it can be resolved later */
+            if (cx_instanceof(cx_typedef(Fast_Expression_o), lastNode)) {
+                Fast_Local resultLocal;
+                Fast_BinaryExpr assignment;
+                result = Fast_Expression(lastNode);
+                returnType = cx_typedef(Fast_Expression_getType(Fast_Expression(lastNode)));
+                resultLocal = Fast_Block_declare(parser->block, "<<result>>", result->type, FALSE, result->isReference);
+                resultLocal->kind = FAST_LocalReturn;
+                result->forceReference = result->isReference;
+                assignment = Fast_BinaryExpr__create(Fast_Expression(resultLocal), result, CX_ASSIGN);
+                cx_llReplace(parser->block->statements, lastNode, assignment);
+                cx_free(lastNode);
+            }
+        }
+    }
+
+    /* Parse root-block */
+    icScope = (cx_icScope)Fast_Block_toIc(parser->block, program, NULL, FALSE);
+    if (parser->errors) {
+        goto error;
+    }
+
+    returnValue = cx_icScope_lookupStorage(icScope, "<<result>>", TRUE);
+    if (returnValue) {
+        ret = (cx_ic)cx_icOp__create(program, parser->line, CX_IC_RET, (cx_icValue)returnValue, NULL, NULL);
+        if (result->isReference) {
+            ((cx_icStorage)returnValue)->isReference = TRUE;
+            ((cx_icOp)ret)->s1Deref = CX_IC_DEREF_ADDRESS;
+        }else {
+            ((cx_icOp)ret)->s1Deref = CX_IC_DEREF_VALUE;
+        }
+    } else {
+        ret = (cx_ic)cx_icOp__create(program, parser->line, CX_IC_STOP, NULL, NULL, NULL);
+    }
+    cx_icProgram_addIc(program, ret);
+
+    /* Translate program to vm code */
+    vmProgram = cx_icProgram_toVm(program);
+
+    /* Run vm program */
+    if (vmProgram) {
+        if (returnValue) {
+            if (result->isReference) {
+                cx_object o = NULL;
+                cx_vm_run(vmProgram, &o);
+                cx_valueObjectInit(value, o);
+            } else {
+                if(returnType->real->kind == CX_PRIMITIVE) {
+                    cx_valueValueInit(value, NULL, returnType, &value->is.value.storage);
+                    cx_vm_run(vmProgram, &value->is.value.storage);
+                } else {
+                    void *ptr = cx_malloc(cx_type_sizeof(returnType->real));
+                    cx_vm_run(vmProgram, &ptr);
+                    cx_valueValueInit(value, NULL, returnType, ptr);
+                }
+            }
+        } else {
+            cx_vm_run(vmProgram, NULL);
+            cx_valueValueInit(value, NULL, cx_typedef(cx_void_o), NULL);
+        }
+    }
+    
+    /* Free program */
+    cx_icProgram__free(program);
+    cx_vmProgram_free(vmProgram);
+
+    /* Free parser */
+    cx_free(parser);
+
+    return 0;
+error:
+    return -1;
 /* $end */
 }
 
@@ -2673,12 +2790,12 @@ void Fast_Parser_reset(Fast_Parser _this) {
     _this->complexTypeSp = 0;
     _this->initializerCount = -1;
     _this->stagingAllowed = TRUE;
+    _this->token = NULL;
     
     if (_this->pass) {
         for(i=0; i<_this->stagedCount; i++) {
             if (!_this->staged[i].found) {
-                printf("%s:%d:%d error: unresolved identifier '%s'\n",
-                       _this->filename, _this->staged[i].line, _this->staged[i].column, _this->staged[i].name);
+                Fast_Parser_error(_this, "unresolved identifier '%s'", _this->staged[i].name);
                 fast_err;
             }
             cx_dealloc(_this->staged[i].name);

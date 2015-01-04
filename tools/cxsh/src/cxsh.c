@@ -43,15 +43,18 @@
 
 static cx_object scope = NULL;
 
+/* Print color */
 static void cxsh_color(const char *string) {
     printf("%s", string);
 }
 
+/* Print a column of certain length */
 static void cxsh_printColumn(cx_string str, int width){
     printf("%s%*s", str, (int)(width - strlen(str)), " ");
 }
 
-/* Find preferred character on which to break a string */
+/* Find preferred character on which to break a string, in case it's too long
+ * to fit on one column */
 static cx_string cxsh_findPreferredBreak(cx_string str) {
     char ch, *ptr = str, *breakpt = str + strlen(str);
     while ((ch = *ptr)) {
@@ -71,8 +74,8 @@ static cx_string cxsh_findPreferredBreak(cx_string str) {
     }
 
     /* If no breakpoints were found, look again for scope operators. The reason
-     * to not check for these in the first run is because it is preferred that identifiers
-     * are on one line. */
+     * to not check for these in the first run is because it is preferred that 
+     * identifiers are on one line. */
     if (breakpt == (str + strlen(str))) {
         while ((ch = *ptr)) {
             switch (ch) {
@@ -374,26 +377,27 @@ static void cxsh_cd(char* arg) {
 
 /* Show object */
 static int cxsh_show(char* object) {
-    cx_object o;
     cx_id id;
     char state[sizeof("valid | declared | defined")];
     char attr[sizeof("scope | writable | observable")];
     struct cx_serializer_s s;
     cx_string_ser_t sdata;
+    cx_value result;
+
+    memset(&result, 0, sizeof(cx_value));
 
     cx_toggleEcho(FALSE);
 
-    if ((o = cx_resolve(scope, object))) {
+    if (!cx_expr(scope, object, &result)) {
+        cx_object o = NULL;
+        if (result.kind == CX_OBJECT) {
+            o = cx_valueObject(&result);
+        }
 
         /* Initialize serializer userData */
         s = cx_string_ser(CX_PRIVATE, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
-        sdata.buffer = NULL;
-        sdata.length = 0;
-        sdata.maxlength = 0;
+        memset(&sdata, 0, sizeof(cx_string_ser_t));
         sdata.enableColors = TRUE;
-        sdata.ptr = NULL;
-        sdata.compactNotation = FALSE;
-        sdata.prefixType = FALSE;
 
         /* Print object properties */
         if (o) {
@@ -401,19 +405,19 @@ static int cxsh_show(char* object) {
                 printf("%sname:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, OBJECT_COLOR, cx_fullname(o, id), NORMAL);
                 printf("%sparent:       %s%s%s\n", INTERFACE_COLOR, OBJECT_COLOR, cx_fullname(cx_parentof(o), id), NORMAL);
             }            
-            printf("%stype:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, OBJECT_COLOR, cx_fullname(cx_typeof(o), id), NORMAL);
             printf("%sstate:%s        %s%s%s\n", INTERFACE_COLOR, NORMAL, META_COLOR, cxsh_stateStr(o, state), NORMAL);
             printf("%sattributes:%s   %s%s%s\n", INTERFACE_COLOR, NORMAL, META_COLOR, cxsh_attrStr(o, attr), NORMAL);
+            printf("%stype:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, OBJECT_COLOR, cx_fullname(cx_valueType(&result), id), NORMAL);
         }
 
         /* Serialize value to string */
-        cx_serialize(&s, o, &sdata);
+        cx_serializeValue(&s, &result, &sdata);
         if (sdata.buffer) {
             if (o) {
                 printf("%svalue:%s        ", INTERFACE_COLOR, NORMAL);
             }
-
             printf("%s\n", sdata.buffer);
+
             cx_dealloc(sdata.buffer);
             sdata.buffer = NULL;
             sdata.ptr = NULL;
@@ -430,18 +434,12 @@ static int cxsh_show(char* object) {
                     cx_dealloc(sdata.buffer);
                 }
             }
+            printf("\n");
         }
-
-        if (o) {
-            cx_free_ext(NULL, o, "free expression result");
-        }
-
-        printf("\n");
 
         cx_toggleEcho(TRUE);
         return 0;
     } else {
-        cx_error("expression '%s' does not resolve to object", object);
         cx_toggleEcho(TRUE);
         return -1;
     }
@@ -539,12 +537,14 @@ static int cxsh_doCmd(char* cmd) {
     } else {
         cx_char *lastErr;
         if ((lastErr = cx_lasterror())) {
-            cxsh_color(ERROR_COLOR);
-            cx_error("%s", lastErr);
-            cxsh_color(NORMAL);
+            do {
+                cxsh_color(ERROR_COLOR);
+                cx_print("%s", lastErr);
+                cxsh_color(NORMAL);
+            } while ((lastErr = cx_lasterror()));
         } else {
             cxsh_color(ERROR_COLOR);
-            cx_error("expression '%s' did not resolve to a valid expression or command", cmd);
+            cx_print("expression '%s' did not resolve to a valid expression or command", cmd);
             cxsh_color(NORMAL);
         }
     }
