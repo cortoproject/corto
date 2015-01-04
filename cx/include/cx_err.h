@@ -32,12 +32,14 @@ cx_err cx_debug(char* fmt, ...);
 cx_err cx_trace(char* fmt, ...);
 cx_err cx_warning(char* fmt, ...);
 cx_err cx_error(char* fmt, ...);
+void cx_print(char* fmt, ...);
 
 void _cx_assertv(unsigned int condition, char* fmt, va_list args);
 cx_err cx_debugv(char* fmt, va_list args);
 cx_err cx_tracev(char* fmt, va_list args);
 cx_err cx_warningv(char* fmt, va_list args);
 cx_err cx_errorv(char* fmt, va_list args);
+void cx_printv(char *fmt, va_list args);
 void cx_criticalv(char* fmt, va_list args);
 
 /* A critical error will print a backtrace and quit the application. */

@@ -491,7 +491,7 @@ static cx_icStorage cx_icProgram_lookupStorage(cx_icProgram program, cx_string n
 cx_icProgram cx_icProgram__create(cx_string filename) {
     cx_icProgram result;
     result = cx_calloc(sizeof(cx_icProgram_s));
-    result->filename = cx_strdup(filename);
+    result->filename = filename ? cx_strdup(filename) : NULL;
     result->storages = cx_llNew();
     result->labels = cx_llNew();
     result->scopes = cx_llNew();

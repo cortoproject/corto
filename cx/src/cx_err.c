@@ -17,11 +17,13 @@
 #include <execinfo.h>
 #include <string.h>
 
-static char* cx_logKind[] = {"ok:     ", "debug:   ", "trace:   ", "warning: ", "error:   ", "critical:", "assert: "};
+static char* cx_logKind[] = {"", "debug:    ", "trace:    ", "warning:  ", "error:    ", "critical: ", "assert:  "};
 static cx_threadKey cx_errKey = 0;
 
 typedef struct cx_errThreadData {
-    cx_string lastError;
+    cx_string lastError[64]; /* Retain 64 last errors */
+    int count;
+    int consumed;
     int echo;
 } cx_errThreadData;
 
@@ -29,7 +31,12 @@ typedef struct cx_errThreadData {
 
 static void cx_lasterrorFree(void* tls) {
     if (tls) {
-        cx_dealloc(((cx_errThreadData*)tls)->lastError);
+        cx_uint32 i;
+        for (i = 0; i < 64; i++) {
+            if (((cx_errThreadData*)tls)->lastError[i]) {
+                cx_dealloc(((cx_errThreadData*)tls)->lastError[i]);
+            }
+        }
         cx_dealloc(tls);
     }
 }
@@ -42,15 +49,24 @@ static cx_errThreadData* cx_getThreadData(void){
     result = cx_threadTlsGet(cx_errKey);
     if (!result) {
         result = cx_malloc(sizeof(cx_errThreadData));
+        memset(result, 0, sizeof(cx_errThreadData));
         result->echo = TRUE;
-        result->lastError = NULL;
         cx_threadTlsSet(cx_errKey, result);
     }
     return result;
 }
 
 static char* cx_getLasterror(void) {
-    return cx_getThreadData()->lastError;
+    cx_errThreadData *data = cx_getThreadData();
+
+    if (data->consumed < data->count) {
+        data->consumed++;
+        return data->lastError[data->consumed-1];
+    } else {
+        data->consumed = 0;
+        data->count = 0;
+        return NULL;
+    }
 }
 
 int cx_getEcho(void) {
@@ -64,7 +80,7 @@ char* cx_lasterror(void) {
     if (err) {
         return err;
     } else {
-        return "";
+        return NULL;
     }
 }
 
@@ -72,10 +88,13 @@ static void cx_setLasterror(char* err) {
     cx_errThreadData* data;
 
     data = cx_getThreadData();
-    if (data->lastError) {
-        cx_dealloc(data->lastError);
+    if (!data->echo) {
+        if (data->lastError) {
+            cx_dealloc(data->lastError[data->count]);
+        }
+        data->lastError[data->count] = cx_strdup(err);
+        data->count++;
     }
-    data->lastError = cx_strdup(err);
 }
 
 /* Enable or disable echo */
@@ -86,6 +105,11 @@ int cx_toggleEcho(int enable) {
     data = cx_getThreadData();
     oldValue = data->echo;
     data->echo = enable;
+
+    if (!enable && oldValue) {
+        data->count = 0;
+        data->consumed = 0;
+    }
 
     return oldValue;
 }
@@ -160,7 +184,7 @@ cx_err cx_logv(cx_err kind, unsigned int level, char* fmt, va_list arg, FILE* f)
 
     /* If writing to stdout, don't write timestamps */
     if (f == stdout) {
-        if ((length = sprintf(msg_hdr, "%s  %s\n", cx_logKind[kind], msg)) > CX_MAX_LOG) {
+        if ((length = sprintf(msg_hdr, "%s%s\n", cx_logKind[kind], msg)) > CX_MAX_LOG) {
             printf("Invalid parameter for cx_logv: message (incl. header) exceeds 512 characters.\n");
             abort();
         }
@@ -171,9 +195,7 @@ cx_err cx_logv(cx_err kind, unsigned int level, char* fmt, va_list arg, FILE* f)
         }
     }
 
-    if (kind == CX_ERROR) {
-        cx_setLasterror(msg);
-    }
+    cx_setLasterror(msg);
 
     if (cx_getEcho() || ((kind == CX_CRITICAL) || (kind == CX_ASSERT))){
         if ((written = fwrite(msg_hdr, 1, length, f)) != length) {
@@ -213,6 +235,10 @@ cx_err cx_warningv(char* fmt, va_list args) {
 
 cx_err cx_errorv(char* fmt, va_list args) {
     return cx_logv(CX_ERROR, 0, fmt, args, stdout);
+}
+
+void cx_printv(char* fmt, va_list args) {
+    cx_logv(CX_OK, 0, fmt, args, stdout);
 }
 
 cx_err cx_debug(char* fmt, ...) {
@@ -257,6 +283,14 @@ cx_err cx_error(char* fmt, ...) {
     va_end(arglist);
 
     return result;
+}
+
+void cx_print(char* fmt, ...) {
+    va_list arglist;
+
+    va_start(arglist, fmt);
+    cx_printv(fmt, arglist);
+    va_end(arglist);
 }
 
 void cx_critical(char* fmt, ...) {

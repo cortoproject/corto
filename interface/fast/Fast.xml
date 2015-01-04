@@ -18,6 +18,9 @@
 			</enum>
 			
 			<function name="valueKindFromType(lang::type type)" returnType="valueKind"/>
+			<function name="report(lang::string kind,lang::string filename,lang::uint32 line,lang::uint32 column,lang::string error,lang::string token)"/>
+			<function name="reportError(lang::string filename,lang::uint32 line,lang::uint32 column,lang::string error,lang::string token)"/>
+			<function name="reportWarning(lang::string filename,lang::uint32 line,lang::uint32 column,lang::string error,lang::string token)"/>
 			
 			<!-- Enumeration representing the different treenode kinds -->
 			<enum name="nodeKind">
@@ -247,8 +250,7 @@
 					<method name="resolveLocal(lang::string id)" returnType="Fast::Local"/>
 					<method name="addStatement(Fast::Node statement)"/>
 					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
-                    <virtual name="toIcBody(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)"
-                        returnType="lang::alias{&quot;cx_ic&quot;}"/>
+                    <virtual name="toIcBody(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
 			</class>
 			
@@ -637,6 +639,7 @@
 					<member name="source" type="lang::string"/>
 					<member name="preprocessed" type="lang::string" modifiers="readonly"/>
 					<member name="filename" type="lang::string"/>
+					<member name="repl" type="uint32" modifiers="readonly"/> <!-- Is parser running in interpreted mode -->
 					<member name="line" type="uint32" modifiers="readonly"/>
 					<member name="column" type="uint32" modifiers="readonly"/>
 					<member name="token" type="lang::string" modifiers="readonly"/>
@@ -691,6 +694,7 @@
 					
 					<!-- Parser framework functions -->
 					<method name="parse()" returnType="uint32"/>
+					<function name="parseLine(lang::string expr,lang::object scope,lang::alias{&quot;cx_value*&quot;} value)" returnType="int16"/> <!--  Parse a single line -->
 					<method name="parseExpression(lang::string expr,Fast::Block block,Fast::Variable scope,uint32 line,uint32 column)" returnType="Fast::Expression"/>
 					<method name="isErrSet()" returnType="bool"/>
 					<method name="isAbortSet()" returnType="bool"/>

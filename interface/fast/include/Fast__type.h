@@ -493,6 +493,7 @@ CX_CLASS_DEF(Fast_Parser) {
     cx_string source;
     cx_string preprocessed;
     cx_string filename;
+    cx_uint32 repl;
     cx_uint32 line;
     cx_uint32 column;
     cx_string token;

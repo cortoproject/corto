@@ -4,6 +4,7 @@
 #include "Fast__type.h"
 #include "Fast__api.h"
 
+#include "Fast.h"
 #include "Fast_pp.h"
 #include "Fast_Parser.h"
 #include "Fast_CommaExpr.h"
@@ -41,7 +42,7 @@ void _fast_err(cx_string msg, ...) {
     vsprintf(msgbuff, msg, args);    
     va_end(args);
     
-    printf("%s:%d:%d error: %s near token '%s'\n", yparser()->filename, yparser()->line, yparser()->column, msgbuff, yparser()->token);
+    Fast_reportError(yparser()->filename, yparser()->line, yparser()->column, msgbuff, yparser()->token);
     
     yparser()->errors++;
 }
@@ -209,7 +210,6 @@ statements
         if(!yparser()->errors) {
             printf("unreported error:%d: Fast_Parser.c:%d\n", yparser()->line, yparser()->errLine); 
         }
-        exit(1);
     }
     ;
 
@@ -741,7 +741,7 @@ update_statement
 void yyerror(const char *str)
 {
     Fast_Parser p = yparser();
-    printf("%s:%d:%d: %s (near token '%s').\n", p->filename, p->line, p->column, str, p->token);
+    Fast_reportError(p->filename, p->line, p->column, (cx_string)str, p->token);
     p->errors++;
 }
 

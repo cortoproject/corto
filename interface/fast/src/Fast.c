@@ -108,6 +108,37 @@ error:
 }
 /* $end */
 
+/* ::cortex::Fast::report(lang::string kind,lang::string filename,lang::uint32 line,lang::uint32 column,lang::string error,lang::string token) */
+void Fast_report(cx_string kind, cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token) {
+/* $begin(::cortex::Fast::report) */
+
+    if(filename) {
+        cx_print("%s:%d:%d: %s: %s", filename, line, column, kind, error);
+    } else {
+        cx_print("%d: %s: %s", column, kind, error);
+    }
+
+/* $end */
+}
+
+/* ::cortex::Fast::reportError(lang::string filename,lang::uint32 line,lang::uint32 column,lang::string error,lang::string token) */
+void Fast_reportError(cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token) {
+/* $begin(::cortex::Fast::reportError) */
+    
+    Fast_report("error", filename, line, column, error, token);
+
+/* $end */
+}
+
+/* ::cortex::Fast::reportWarning(lang::string filename,lang::uint32 line,lang::uint32 column,lang::string error,lang::string token) */
+void Fast_reportWarning(cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token) {
+/* $begin(::cortex::Fast::reportWarning) */
+
+    Fast_report("warning", filename, line, column, error, token);
+
+/* $end */
+}
+
 /* ::cortex::Fast::valueKindFromType(lang::type type) */
 Fast_valueKind Fast_valueKindFromType(cx_type type) {
 /* $begin(::cortex::Fast::valueKindFromType) */

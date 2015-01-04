@@ -789,7 +789,7 @@ CX_CLASS_O(enum, primitive, CX_LOCAL | CX_READONLY, CX_SEQUENCE_EMPTY_V(interfac
 CX_CLASS_O(bitmask, enum, CX_LOCAL | CX_READONLY, CX_SEQUENCE_EMPTY_V(interface), NULL, CX_DECLARED | CX_DEFINED);
     CX_CALLBACK_O(bitmask, init, "(lang::bitmask object)", type_init, int16, cx_bitmask_init);
 
-/* ::cortex::lang::bitmask */
+/* ::cortex::lang::alias */
 CX_CLASS_O(alias, primitive, CX_LOCAL | CX_READONLY, CX_SEQUENCE_EMPTY_V(interface), NULL, CX_DECLARED | CX_DEFINED);
     CX_CALLBACK_O(alias, init, "(lang::alias object)", type_init, int16, cx_alias_init);
     CX_MEMBER_O(alias, typeName, string, CX_GLOBAL);
