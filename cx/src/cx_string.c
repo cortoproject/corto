@@ -2,18 +2,6 @@
 #include "stdarg.h"
 #include "cx_mem.h"
 
-static int isesc(char c) {
-    char escapeSequences[] = "\a\b\f\n\r\t\v\"\\";
-    char *p = escapeSequences;
-    char d;
-    while ((d = *p++)) {
-        if (c == d) {
-            return 1;
-        }
-    }
-    return 0;
-}
-
 int stricmp(const char *str1, const char *str2) {
     return strcasecmp(str1, str2);
 }
@@ -89,7 +77,7 @@ char *utostr(unsigned int value, char *result, int base) {
 }
 
 
-char *schresc(char in, char *out, int isstr) {
+char *chresc(char *out, char in, char delimiter) {
     char *bptr = out;
     switch(in) {
     case '\a':
@@ -124,65 +112,37 @@ char *schresc(char in, char *out, int isstr) {
         *bptr++ = '\\';
         *bptr = '\\';
         break;
-    case '\'':
-        if (!isstr) {
-            *bptr++ = '\\';
-        }
-        *bptr = '\'';
-        break;
-    case '"':
-        if (isstr) {
-            *bptr++ = '\\';
-        }
-        *bptr = '"';
-        break;
     default:
-        *bptr = in;
+        if (in == delimiter) {
+            *bptr = '\\';
+            *(++bptr) = delimiter;
+        } else {
+            *bptr = in;
+        }
         break;
     }
 
-    bptr++;
+    *(++bptr) = '\0';
 
     return bptr;
 }
 
-char *chresc(char in, char *out) {
-    return schresc(in, out, 0);
-}
+size_t stresc(char *out, size_t n, const char *in) {
+    const char *ptr = in;
+    char ch, *bptr = out, buff[3];
+    size_t written = 0;
 
-char *stresc(const char *in, char *out, size_t n) {
-    const char *p = in;
-    char *q = out;
-    char c;
-    size_t i = n;
-
-    while ((c = *p++)) {
-        if (n) {
-            if (isesc(c)) {
-                if (i <= 2) {
-                    break;
-                }
-                i -= 2;
-            } else {
-                if (i <= 1) {
-                    break;
-                }
-                i--;
+    while ((ch = *ptr++)) {
+        if ((written += (chresc(buff, ch, '"') - buff)) <= n) {
+            *bptr++ = buff[0];
+            if ((*bptr = buff[1])) {
+                bptr++;
             }
         }
-        q = schresc(c, q, 1);
     }
-    *q = '\0';
-    return q;
+
+    if (bptr) *bptr = '\0';
+
+    return written;
 }
 
-size_t stresclen(const char *s) {
-    size_t count = 0;
-    const char *p = s;
-    char c;
-    while ((c = *p++)) {
-        count += isesc(c) ? 2 : 1;
-    }
-    count++;
-    return count;
-}
