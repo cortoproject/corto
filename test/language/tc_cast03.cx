@@ -48,6 +48,8 @@ if c != 65: fail("c = (int32)'A' ($c)")
 c = int32("-1")
 if c != -1: fail("c = (int32)\"-1\" ($c)")
 
+c = int32(2.5 + 2.5)
+if c != 5: fail("c != 5")
 
 // Cast literals to strings
 string d

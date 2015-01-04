@@ -38,10 +38,12 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ... ) {
     va_list args;
     char msgbuff[1024];
     cx_id token;
+    int line = _this->line;
 
     if (_this->token) {
         if (*_this->token == '\n') {
             sprintf(token, "end of line");
+            line--;
         } else {
             sprintf(token, "'%s'", _this->token);
         }
@@ -53,7 +55,7 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ... ) {
     vsprintf(msgbuff, fmt, args);
     va_end(args);
 
-    Fast_reportError(_this->filename, _this->line, _this->column, msgbuff, token);
+    Fast_reportError(_this->filename, line, _this->column, msgbuff, token);
 
     _this->errors++;
 }
@@ -62,10 +64,12 @@ void Fast_Parser_warning(Fast_Parser _this, char* fmt, ... ) {
     va_list args;
     char msgbuff[1024];
     cx_id token;
+    int line = _this->line;
 
     if (_this->token) {
         if (*_this->token == '\n') {
             sprintf(token, "end of line");
+            line--;
         } else {
             sprintf(token, "'%s'", _this->token);
         }
@@ -77,7 +81,7 @@ void Fast_Parser_warning(Fast_Parser _this, char* fmt, ... ) {
     vsprintf(msgbuff, fmt, args);
     va_end(args);
 
-    Fast_reportWarning(_this->filename, _this->line, _this->column, msgbuff, token);
+    Fast_reportWarning(_this->filename, line, _this->column, msgbuff, token);
 
     _this->warnings++;
 }
@@ -570,13 +574,18 @@ error:
 cx_object Fast_Parser_expandBinaryExpr(Fast_Parser _this, Fast_Expression lvalue, Fast_Expression rvalue, void *userData) {
     Fast_Expression result = NULL;
     cx_type tleft, tright;
-    cx_bool isReference, forceReference;
+    cx_bool isReference = FALSE, forceReference;
 
     tleft = Fast_Expression_getType_expr(lvalue,rvalue);
     tright = Fast_Expression_getType_expr(rvalue,lvalue);
 
     forceReference = lvalue->forceReference || rvalue->forceReference;
-    isReference = forceReference || (tleft && tleft->reference) || (tright && tright->reference);
+
+    if ((Fast_Node(lvalue)->kind != FAST_Variable) || 
+        (Fast_Variable(lvalue)->kind != FAST_Object) ||
+        (*(cx_operatorKind*)userData != CX_ASSIGN)) {
+        isReference = forceReference || (tleft && tleft->reference) || (tright && tright->reference);
+    }
 
     if (tleft && (tleft->kind == CX_COMPOSITE) && (cx_interface(tleft)->kind == CX_PROCPTR)) {
         rvalue = Fast_Parser_delegateAssignment(_this, lvalue, rvalue);
@@ -2549,7 +2558,6 @@ cx_int16 Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_value* value)
     parser->pass = 0;
     cx_set(&parser->scope, astScope);
     if ( fast_yparse(parser, 1, 1)) {
-        cx_error("'%s' parsed with errors (%d errors, %d warnings)", expr, parser->errors, parser->warnings);
         goto error;
     }
 
@@ -2563,7 +2571,6 @@ cx_int16 Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_value* value)
     parser->pass = 1;
     cx_set(&parser->scope, astScope);
     if ( fast_yparse(parser, 1, 1)) {
-        cx_error("'%s' parsed with errors (%d errors, %d warnings)", expr, parser->errors, parser->warnings);
         goto error;
     }
 
@@ -2583,7 +2590,6 @@ cx_int16 Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_value* value)
                 result->forceReference = result->isReference;
                 assignment = Fast_BinaryExpr__create(Fast_Expression(resultLocal), result, CX_ASSIGN);
                 cx_llReplace(parser->block->statements, lastNode, assignment);
-                cx_free(lastNode);
             }
         }
     }
