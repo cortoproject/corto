@@ -5,6 +5,8 @@
  *      Author: sander
  */
 
+#include <ctype.h>
+
 #include "cortex.h"
 #include "cx_generator.h"
 #include "stdarg.h"
@@ -613,9 +615,9 @@ static cx_char* g_oidTransform(cx_generator g, cx_object o, cx_id _id, g_idKind 
                     start = ptr;
                 }
                 if (kind == CX_GENERATOR_ID_CLASS_UPPER) {
-                    strtoupper(start);
+                    *start = toupper(*start);
                 } else {
-                    strtolower(start);
+                    *start = tolower(*start);
                 }
             }
 

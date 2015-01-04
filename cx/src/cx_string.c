@@ -18,18 +18,6 @@ int stricmp(const char *str1, const char *str2) {
     return strcasecmp(str1, str2);
 }
 
-void strtoupper(char *ch) {
-    if ((*ch >= 97) && (*ch <= 122)) {
-        *ch -= 32;
-    }
-}
-
-void strtolower(char *ch) {
-    if ((*ch >= 65) && (*ch <= 90)) {
-        *ch += 32;
-    }
-}
-
 char *strappend(char *src, char *fmt, ...) {
     char buff[1024];
     va_list args;

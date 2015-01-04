@@ -8,8 +8,6 @@ extern "C" {
 #endif
 
 int stricmp(const char *str1, const char *str2);
-void strtoupper(char *ch);
-void strtolower(char *ch);
 char *strappend(char *src, char *fmt, ...);
 char *itostr(int value, char *result, int base);
 char *utostr(unsigned int value, char *result, int base);
