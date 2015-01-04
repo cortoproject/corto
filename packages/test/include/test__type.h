@@ -14,18 +14,10 @@ extern "C" {
 #endif
 
 /* Casting macro's for classes */
-#define test_result(o) ((test_result)o)
 #define test_suite(o) ((test_suite)o)
 #define test_unit(o) ((test_unit)o)
 
 /* Type definitions */
-/*  ::cortex::test::result */
-CX_CLASS(test_result);
-
-CX_CLASS_DEF(test_result) {
-    cx_object package;
-};
-
 /*  ::cortex::test::unit */
 CX_CLASS(test_unit);
 
@@ -42,7 +34,14 @@ CX_CLASS_DEF(test_suite) {
     cx_bool silent;
     cx_bool success;
     test_unit unit;
-    test_result result;
+    cx_object result;
+};
+
+/*  ::cortex::test::test */
+CX_CLASS(test_test);
+
+CX_CLASS_DEF(test_test) {
+    CX_EXTEND(cx_function);
 };
 
 #ifdef __cplusplus

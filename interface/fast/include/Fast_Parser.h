@@ -155,6 +155,9 @@ cx_uint32 Fast_Parser_parse(Fast_Parser _this);
 /* ::cortex::Fast::Parser::parseExpression(lang::string expr,Fast::Block block,Fast::Variable scope,uint32 line,uint32 column) */
 Fast_Expression Fast_Parser_parseExpression(Fast_Parser _this, cx_string expr, Fast_Block block, Fast_Variable scope, cx_uint32 line, cx_uint32 column);
 
+/* ::cortex::Fast::Parser::parseLine(lang::string expr,lang::object scope,lang::alias{"cx_value*"} value) */
+cx_int16 Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_value* value);
+
 /* ::cortex::Fast::Parser::popComplexType() */
 void Fast_Parser_popComplexType(Fast_Parser _this);
 

@@ -24,9 +24,6 @@ int fast_cortexRun(cx_string file, void* udata) {
         /* Create parser */
         p = Fast_Parser__create(source, file);
 
-        /* Set parser in local storage of thread (enables multithreaded parsers) */
-        cx_threadTlsSet(FAST_PARSER_KEY, p);
-
         /* Parse script */
         Fast_Parser_parse(p);
         cx_free(p);

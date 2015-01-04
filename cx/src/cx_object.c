@@ -25,6 +25,7 @@
 #include "cx_interface.h"
 #include "cx_dispatcher.h"
 #include "cx_time.h"
+#include "cx_loader.h"
 
 static int cx_adopt(cx_object parent, cx_object child);
 static cx_int32 cx_notify(cx__observable *_o, cx_object observable, cx_object _this, cx_uint32 mask);
@@ -842,14 +843,14 @@ cx_object cx_declare(cx_object parent, cx_string name, cx_typedef type) {
     /* Type must be valid and defined */
     if (!cx_checkState(type, CX_VALID | CX_DEFINED)) {
         cx_id pid, tid;
-        cx_error("cx_declare: failed to declare object '%s' in scope '%s', type '%s' is not valid and/or defined", name, cx_fullname(parent, pid), cx_fullname(type, tid));
+        cx_error("failed to declare object '%s' in scope '%s', type '%s' is not valid and/or defined", name, cx_fullname(parent, pid), cx_fullname(type, tid));
         goto error;
     }
 
     /* Pointer must be of type-class */
     if (!cx_class_instanceof(cx_typedef_o, type)) {
         cx_id pid, tid;
-        cx_error("cx_declare: failed to declare object '%s' in scope '%s': object '%s' is not- or does not refer a type", name, cx_fullname(parent, pid), cx_fullname(type, tid));
+        cx_error("failed to declare object '%s' in scope '%s': object '%s' is not- or does not refer a type", name, cx_fullname(parent, pid), cx_fullname(type, tid));
         goto error;
     }
 
@@ -2699,6 +2700,32 @@ cx_object cx_wait(cx_int32 timeout_sec, cx_int32 timeout_nanosec) {
     return result;
 }
 
+/* REPL functionality */
+cx_int16 cx_expr(cx_object scope, cx_string expr, cx_value *value) {
+    cx_int16 result = 0;
+
+    /* Load parser */
+    if (!cx_load("fast")) {
+        cx_function parseLine = cx_resolve(NULL, "::Fast::Parser::parseLine");
+        if (!parseLine) {
+            cx_error("function ::Fast::Parser::parseLine could not be resolved");
+            goto error;
+        }
+
+        /* Parse expression */
+        cx_call(parseLine, &result, expr, scope, value);
+
+    /* Parser cannot be loaded, revert to plain object resolving */
+    } else {
+        cx_object o = cx_resolve(scope, expr);
+        cx_valueObjectInit(value, o);
+    }
+
+    return result;
+error:
+    return -1;
+}
+
 /* Thread-safe reading */
 cx_int32 cx_readBegin(cx_object object) {
     if (cx_checkAttr(object, CX_ATTR_WRITABLE)) {
@@ -3055,7 +3082,12 @@ static cx_uint32 cx_overloadParamCompare(
                 } while((base = base->base));
             } else {
                 d++;
-            } 
+            }
+        /* If the requested type is a (forced) reference check if treating it as a generic
+         * reference would result in a match - this is for example useful when casting form
+         * references to a boolean or string type */
+        } else if (r_forceReference && !cx_type_compatible(o_type, cx_object_o)) {
+            d++;
         } else if (!cx_type_compatible(o_type, r_type)) {
             goto nomatch; /* If not an interface or generic reference, types don't match */
         }
@@ -3424,6 +3456,7 @@ cx_string cx_toString(cx_object object, cx_uint32 maxLength) {
     serData.maxlength = maxLength;
     serData.compactNotation = TRUE;
     serData.prefixType = FALSE;
+    serData.enableColors = FALSE;
 
     s = cx_string_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
     cx_serialize(&s, object, &serData);
@@ -3440,6 +3473,7 @@ cx_string cx_valueToString(cx_value* v, cx_uint32 maxLength) {
     serData.maxlength = maxLength;
     serData.compactNotation = TRUE;
     serData.prefixType = FALSE;
+    serData.enableColors = FALSE;
 
     s = cx_string_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
     cx_serializeValue(&s, v, &serData);

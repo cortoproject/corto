@@ -4,6 +4,7 @@
 #include "Fast__type.h"
 #include "Fast__api.h"
 
+#include "Fast.h"
 #include "Fast_pp.h"
 #include "Fast_Parser.h"
 #include "Fast_CommaExpr.h"
@@ -41,7 +42,7 @@ void _fast_err(cx_string msg, ...) {
     vsprintf(msgbuff, msg, args);    
     va_end(args);
     
-    printf("%s:%d:%d error: %s near token '%s'\n", yparser()->filename, yparser()->line, yparser()->column, msgbuff, yparser()->token);
+    Fast_reportError(yparser()->filename, yparser()->line, yparser()->column, msgbuff, yparser()->token);
     
     yparser()->errors++;
 }
@@ -153,7 +154,7 @@ Fast_Expression Fast_declarationSeqDo(Fast_Variable type, Fast_ParserDeclaration
 %type <Integer> INTEGER
 %type <SignedInteger> SIGNEDINTEGER
 %type <FloatingPoint> FLOATINGPOINT
-%type <String> STRING
+%type <String> STRING identifier_string
 %type <String> ID GID function_argument function_arguments function_argumentList any_id
 %type <Null> NUL
 
@@ -209,7 +210,6 @@ statements
         if(!yparser()->errors) {
             printf("unreported error:%d: Fast_Parser.c:%d\n", yparser()->line, yparser()->errLine); 
         }
-        exit(1);
     }
     ;
 
@@ -273,7 +273,7 @@ function_implementation
 
 function_declaration
     : identifier any_id function_argumentList    {cx_id id; sprintf(id, "%s(%s)", $2, $3); cx_dealloc($3); $$ = Fast_Parser_declareFunction(yparser(), $1, id, NULL, FALSE); fast_op; }
-    | identifier any_id function_argumentList any_id  {
+    | identifier any_id function_argumentList identifier_string  {
         cx_id id;
         cx_type kind = cx_resolve(NULL, $4);
         sprintf(id, "%s(%s)", $2, $3); 
@@ -285,7 +285,7 @@ function_declaration
 
     /* Reference returnvalue */
     | identifier '&' any_id function_argumentList   {cx_id id; sprintf(id, "%s(%s)", $3, $4); cx_dealloc($4); $$ = Fast_Parser_declareFunction(yparser(), $1, id, NULL, TRUE); fast_op; }
-    | identifier '&' any_id function_argumentList any_id  {
+    | identifier '&' any_id function_argumentList identifier_string  {
         cx_id id;
         cx_type kind = cx_resolve(NULL, $5);
         sprintf(id, "%s(%s)", $3, $4); 
@@ -590,8 +590,12 @@ identifier
     ;
 
 identifier_id
-    : GID {$$ = Fast_Parser_lookup(yparser(), $1, NULL); fast_op;}
-    | any_id {$$ = Fast_Parser_lookup(yparser(), $1, NULL); fast_op;}
+    : identifier_string {$$ = Fast_Parser_lookup(yparser(), $1, NULL); fast_op;}
+    ;
+
+identifier_string
+    : GID
+    | any_id
     ;
 
 any_id
@@ -737,7 +741,7 @@ update_statement
 void yyerror(const char *str)
 {
     Fast_Parser p = yparser();
-    printf("%s:%d:%d: %s (near token '%s').\n", p->filename, p->line, p->column, str, p->token);
+    Fast_reportError(p->filename, p->line, p->column, (cx_string)str, p->token);
     p->errors++;
 }
 
