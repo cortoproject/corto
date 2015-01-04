@@ -11,6 +11,7 @@
 
 #include "cx_files.h"
 #include "cx_generator.h"
+#include "cx_object.h"
 #include "cx_serializer.h"
 #include "html.h"
 #include "cortex.h"
@@ -51,12 +52,13 @@ error:
  * Prints the resulting json into a "data.json" file.
  */
 static int gen_json(cx_object o, void *userData) {
-    cx_json_ser_t jsonData = {NULL, NULL, 0, 0, 0, TRUE, TRUE, TRUE};
+    cx_json_ser_t jsonData = {NULL, NULL, 0, 0, 0, TRUE, TRUE, FALSE};
     cx_html_gen_t *htmlData = userData;
     char folderPath[PATH_MAX];
     char filepath[PATH_MAX];
     struct cx_serializer_s serializer;
     FILE *file;
+    cx_id fullname;
 
     if (sprintf(folderPath, "%s/%s", htmlData->path, cx_nameof(o)) < 0) {
         goto error;
@@ -68,11 +70,12 @@ static int gen_json(cx_object o, void *userData) {
     serializer = cx_json_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
     cx_serialize(&serializer, o, &jsonData);
 
+    cx_fullname(o, fullname);
 
     if ((file = fopen(filepath, "w")) == NULL) {
         goto error;
     }
-    if (fprintf(file, "var thisObject = %s", jsonData.buffer) < 0) {
+    if (fprintf(file, "objects[\"%s\"] = %s;", fullname, jsonData.buffer) < 0) {
         goto error;
     }
     if (fflush(file)) {
@@ -90,12 +93,24 @@ error:
     return 0;
 }
 
+static int printIncludeScopeItem(cx_object o, void *userData) {
+    FILE *file = userData;
+    if (fprintf(file, "<script src=\"./%s/data.js\"></script>", cx_nameof(o)) < 0) {
+        goto error;
+    }
+    return 1;
+error:
+    return 0;
+}
+
+
 /*
  * Assumes that the file is already opened.
  * Returns 0 on success, -1 otherwise.
  */
-static int printHtml(cx_html_gen_t *data, FILE* file) {
+static int printHtml(cx_html_gen_t *data, cx_object o, FILE* file) {
     unsigned int level;
+    cx_id fullname;
 
     #define _printHtml(text) if (fprintf(file, text) < 0) goto error;
     
@@ -105,15 +120,44 @@ static int printHtml(cx_html_gen_t *data, FILE* file) {
     _printHtml("<head>");
     _printHtml("<meta charset=\"utf-8\">");
 
-    /* This object */
-    _printHtml("<script src=\"./data.js\"></script>");
+    /* jQuery */
+    _printHtml("<script src=\"");
+    for (level = 0; level < data->level; level++) {
+        _printHtml("../");
+    }
+    _printHtml("jquery-1.11.2.min.js\"></script>");
 
     /* Parsing script */
-    _printHtml("<script src=\"../");
-    for (level = 1; level < data->level; level++) {
+    _printHtml("<script src=\"");
+    for (level = 0; level < data->level; level++) {
         _printHtml("../");
     }
     _printHtml("objectparse.js\"></script>");
+
+    /* This object */
+    _printHtml("<script src=\"./data.js\"></script>");
+
+    /* Parent object */
+    if (data->level > 1) {
+        _printHtml("<script src=\"../data.js\"></script>");
+    }
+
+    /* Child objects */
+    if (!cx_scopeWalk(o, printIncludeScopeItem, file)) {
+        cx_error("Error traversing scope children to include their \"data.js\"");
+        goto error;
+    }
+
+    if (fprintf(file, "<script>rootName = \"%s\";</script>",
+                data->rootFullname) < 0) {
+        goto error;
+    }
+
+    /* This object name */
+    cx_fullname(o, fullname);
+    if (fprintf(file, "<script>thisName = \"%s\";</script>", fullname) < 0) {
+        goto error;
+    }
 
     /* CSS */
     _printHtml("<link href=\"../");
@@ -134,6 +178,7 @@ error:
 }
 
 static int gen_html(cx_object o, void *userData) {
+    static cx_id rootFullname = "";
     cx_html_gen_t *htmlData = userData;
     char folderPath[PATH_MAX];
     char filepath[PATH_MAX];
@@ -150,17 +195,22 @@ static int gen_html(cx_object o, void *userData) {
         goto error;
     }
     
-    if (printHtml(htmlData, file)) {
+    if (htmlData->level == 1) {
+        cx_fullname(o, rootFullname);
+        htmlData->rootFullname = rootFullname;
+    }
+
+    if (printHtml(htmlData, o, file)) {
         goto error_closeFile;
     }
 
-    if (fflush(file)) { // TODO maybe this is unncessary
+    if (fflush(file)) {
         goto error_closeFile;
     }
     
     fclose(file);
 
-    cx_html_gen_t childHtmlData = {folderPath, htmlData->level + 1};
+    cx_html_gen_t childHtmlData = {folderPath, htmlData->level + 1, rootFullname};
 
     return cx_scopeWalk(o, gen_html, &childHtmlData);
 
@@ -171,7 +221,23 @@ error:
 }
 
 
-cx_int16 copyJsonParser(const char* path) {
+static cx_int16 copyJQuery(const char *path) {
+    char sourcePath[PATH_MAX];
+    char destinationPath[PATH_MAX];
+    char *cortexHome = getenv("CORTEX_HOME");
+    char parserFilename[] = "jquery-1.11.2.min.js";
+    sprintf(sourcePath, "%s/generator/html/%s", cortexHome, parserFilename);
+    sprintf(destinationPath, "%s/%s", path, parserFilename);
+    if (cx_cp(sourcePath, destinationPath)) {
+        goto error;
+    }
+    return 0;
+error:
+    return -1;
+}
+
+
+static cx_int16 copyJsonParser(const char *path) {
     char sourcePath[PATH_MAX];
     char destinationPath[PATH_MAX];
     char *cortexHome = getenv("CORTEX_HOME");
@@ -186,7 +252,8 @@ error:
     return -1;
 }
 
-cx_int16 copyStyleSheet(const char* path) {
+
+static cx_int16 copyStyleSheet(const char* path) {
     char sourcePath[PATH_MAX];
     char destinationPath[PATH_MAX];
     char *cortexHome = getenv("CORTEX_HOME");
@@ -205,11 +272,15 @@ error:
 cx_int16 cortex_genMain(cx_generator g) {
     char filepath[PATH_MAX] = "./doc";
 
-    cx_html_gen_t data = {filepath, 1};
+    cx_html_gen_t data = {filepath, 1, ""};
     int success;
     
     if (!(success = g_walkNoScope(g, gen_folder, &data))) {
         cx_error("Error creating folders.");
+    }
+
+    if (success && !(success = !copyJQuery(data.path))) {
+        cx_error("Cannot copy \"jQuery\".");
     }
 
     if (success && !(success = !copyJsonParser(data.path))) {
