@@ -9,8 +9,8 @@
 #include "Fast.h"
 #include "Fast__meta.h"
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::DelegateCall::construct(Fast::StaticCall object) */
-cx_int16 Fast_DelegateCall_construct(Fast_StaticCall object) {
+/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::DelegateCall::construct(Fast::DelegateCall object) */
+cx_int16 Fast_DelegateCall_construct(Fast_DelegateCall object) {
 /* $begin(::cortex::Fast::DelegateCall::construct) */
 
     /* << Insert implementation >> */
