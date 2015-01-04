@@ -440,8 +440,11 @@ static cx_int16 c_initPrimitive(cx_serializer s, cx_value* v, void* userData) {
     } else if (cx_primitive(t)->kind == CX_TEXT) {
         cx_string v = *(cx_string*)ptr;
         if (v) {
-            str = malloc(strlen("cx_strdup()") + strlen(v) + 1 + 2);
-            sprintf(str, "cx_strdup(\"%s\")", v);
+            size_t n = stresc(NULL, 0, v);
+            str = malloc(strlen("cx_strdup()") + n + 1 + 2);
+            strcpy(str, "cx_strdup(\"");
+            stresc(str + strlen("cx_strdup(\""), n, v);
+            strcat(str, "\")");
         } else {
             str = cx_strdup("NULL");
         }
