@@ -154,7 +154,6 @@ extern "C" {
     VM_LVALUE(op,W,postfix)
 
 typedef enum cx_vmOpKind {
-    CX_VM_NOOP,
 
     /* Copy a value to a variable/object */
     VM_2OP(SET,PQRV),
@@ -251,25 +250,26 @@ typedef enum cx_vmOpKind {
     CX_VM_MEMBER, /* Takes destination register, base register and offset */
 
     /* Collections */
-    VM_OPERAND_PQRV(ELEMA,W,R), /* Takes register(1), elementsize(3) and index variable(2) */
-    VM_OPERAND_PQRV(ELEMS,W,R), /* Takes register(1), elementsize(3) and index variable(2) */
-    VM_OPERAND_PQRV(ELEML,W,R), /* Takes register(1) and index variable(2) */
-    VM_OPERAND_PQRV(ELEMLX,W,R),/* Takes register(1) and index variable(2) - obtains pointer to listnode */
-    VM_OPERAND_PQRV(ELEMM,W,R), /* Takes register(1) and index variable(2) */
-    VM_OPERAND_PQRV(ELEMMX,W,R), /* Takes register(1) and index variable(2) - obtains pointer to mapnode*/
+    VM_OPERAND_PQRV(ELEMA,W,R),  /* Takes register(1), elementsize(3) and index variable(2) */
+    VM_OPERAND_PQRV(ELEMS,W,R),  /* Takes register(1), elementsize(3) and index variable(2) */
+    VM_OPERAND_PQRV(ELEML,W,R),  /* Takes register(1) and index variable(2) */
+    VM_OPERAND_PQRV(ELEMLX,W,R), /* Takes register(1) and index variable(2) - obtains pointer to listnode */
+    VM_OPERAND_PQRV(ELEMM,W,R),  /* Takes register(1) and index variable(2) */
+    VM_OPERAND_PQRV(ELEMMX,W,R), /* Takes register(1) and index variable(2) - obtains pointer to mapnode */
     
     /* Calls */
     VM_1OP_PQRV(PUSH),
-    VM_1OP(PUSHX),                     /* Push address of value */
-    VM_OPERAND_PQRV(PUSHANY,W,),    /* Push value as any */
-    VM_1OP_ANY(PUSHANYX),            /* Push address of value as any */
+    VM_1OP(PUSHX),                    /* Push address of value */
+    VM_OPERAND_PQRV(PUSHANY,W,),      /* Push value as any */
+    VM_1OP_ANY(PUSHANYX),             /* Push address of value as any */
 
-    VM_OPERAND_PQR(CALL,L,),        /* Call function with returnvalue */
+    VM_OPERAND_PQR(CALL,L,),          /* Call function with returnvalue */
+    CX_VM_CALLVOID,                   /* Call function with void returnvalue */
     VM_OPERAND_PQR(CALLVM,L,),        /* Call vm function with returnvalue */
-    CX_VM_CALLVOID,                    /* Call function with void returnvalue */
-    CX_VM_CALLVMVOID,                /* Call vm function with void returnvalue */
-    VM_1OP(RET),                    /* Return value smaller than 8 bytes */
-    VM_OPERAND_PQR(RETCPY,L,),         /* Return value larger than 8 bytes */
+    CX_VM_CALLVMVOID,                 /* Call vm function with void returnvalue */
+    VM_OPERAND_PQR(CALLPTR,L,),       /* Call a delegate */
+    VM_1OP(RET),                      /* Return value smaller than 8 bytes */
+    VM_OPERAND_PQR(RETCPY,L,),        /* Return value larger than 8 bytes */
 
     /* Casts */
     VM_2OP(I2FL,PQRV),

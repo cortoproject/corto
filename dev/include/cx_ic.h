@@ -58,8 +58,6 @@ typedef enum cx_icOpKind {
     CX_IC_NOT,
     CX_IC_SHIFT_LEFT,
     CX_IC_SHIFT_RIGHT,
-    CX_IC_STAGE1,
-    CX_IC_STAGE2,
     CX_IC_COND_OR,
     CX_IC_COND_AND,
     CX_IC_COND_NOT,

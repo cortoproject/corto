@@ -259,15 +259,17 @@ int cx_fileLoader(cx_string file, void* udata) {
     /* Test whether a file with extension .xml is available in current directory */
     sprintf(testName, "%s.xml", file);
     if (cx_fileTest(testName)) {
-        cx_load("xml");
-        return cx_load(testName);
+        if (!cx_load("xml")) {
+            return cx_load(testName);
+        }
     }
 
     /* Test whether a file with extension .cx is available in current directory */
     sprintf(testName, "%s.cx", file);
     if (cx_fileTest(testName)) {
-        cx_load("Fast");
-        return cx_load(testName);
+        if (!cx_load("Fast")) {
+            return cx_load(testName);
+        }
     }
 
     /* When no .xml or .cx are available, try to load package */

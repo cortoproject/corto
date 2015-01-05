@@ -1055,6 +1055,7 @@ typedef void(*sigfunc)(int);
 static sigfunc prevSegfaultHandler;
 static sigfunc prevAbortHandler;
 
+/* The VM signal handler */
 static void cx_vm_sig(int sig) {
     cx_int32 sp;
     cx_currentProgramData *programData = cx_threadTlsGet(cx_currentProgramKey);
@@ -1066,6 +1067,7 @@ static void cx_vm_sig(int sig) {
         printf("Abort\n");
     }
 
+    /* Walk the stack, print frames */
     for(sp = programData->sp-1; sp>=0; sp--) {
         cx_id id, file;
         cx_vmProgram program = programData->stack[sp];
@@ -1094,6 +1096,7 @@ static void cx_vm_sig(int sig) {
     exit(-1);
 }
 
+/* Push a program to the exception stack (see pushSignalHandler) */
 static void cx_vm_pushCurrentProgram(cx_vmProgram program, cx_vm_context *c) {
     cx_currentProgramData *data = NULL;
     if (!cx_currentProgramKey) {
@@ -1110,11 +1113,14 @@ static void cx_vm_pushCurrentProgram(cx_vmProgram program, cx_vm_context *c) {
     data->sp++;
 }
 
+/* Pop a program from the exception stack */
 static void cx_vm_popCurrentProgram(void) {
     cx_currentProgramData *data = cx_threadTlsGet(cx_currentProgramKey);
     data->sp--;
 }
 
+/* Push a program to the signal handler stack. This will allow backtracing the
+ * stack when an error occurs. */
 static void cx_vm_pushSignalHandler(cx_vmProgram program, cx_vm_context *c) {
     sigfunc result = signal(SIGSEGV, cx_vm_sig);
     if (result == SIG_ERR) {
@@ -1133,6 +1139,7 @@ static void cx_vm_pushSignalHandler(cx_vmProgram program, cx_vm_context *c) {
     cx_vm_pushCurrentProgram(program, c);
 }
 
+/* Pop a program from the signal handler stack */
 static void cx_vm_popSignalHandler(void) {
     if (signal(SIGSEGV, prevSegfaultHandler) == SIG_ERR) {
         cx_error("failed to uninstall signal handler for SIGSEGV");
@@ -1156,9 +1163,16 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
     cx_vm_context c;
     c.strcache = cx_threadTlsGet(cx_stringConcatCacheKey);
     
+    /* The signal handler will catch any exceptions and report when (and where)
+     * an error is occurring */
     cx_vm_pushSignalHandler(program, &c);
 
-    /* Translate program if required */
+    /* Translate program if required
+     * This will translate from the VM instruction codes (the constants from
+     * the cx_vm_opKind enumeration) to the actual addresses of the
+     * implementations. This allows the execution of code to jump directly
+     * from one instruction to the next, thereby skipping the overhead of
+     * an evaluation-then-jump construction like a switch statement. */
     if (!program->translated)  {
         uint32_t size = program->size;
         cx_vmOp *p = program->program;
@@ -1168,7 +1182,6 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
             p[i].opKind = p[i].op; /* Cache actual opKind for debugging purposes */
 #endif
             switch(p[i].op) {
-                case CX_VM_NOOP: p[i].op = toJump(NOOP); break;
                 TOJMP_OP2(SET,PQRV);
                 case CX_VM_SET_WRX: p[i].op = toJump(SET_WRX); break;
                 TOJMP_OP2_W(SETREF,PQRV);
@@ -1291,13 +1304,22 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
     /* Run program */
     go();
 
-    /* Instruction implementations */
-    NOOP:
-        fetchIc();
-        fetchLo();
-        fetchHi();
-        next();
-    
+    /* Instruction implementations
+     * Most of these lines are macro's which are expanded into the appropriate
+     * actual instructions. For example, OP1(FOO) expands into:
+     *  - CX_VM_FOO_BP <- byte operations (8 bit)
+     *  - CX_VM_FOO_BR
+     *  - CX_VM_FOO_BQ
+     *  - CX_VM_FOO_SP <- short operations (16 bit)
+     *  - CX_VM_FOO_SR
+     *  - CX_VM_FOO_SQ
+     *  - CX_VM_FOO_LP <- long operations (32 bit)
+     *  - CX_VM_FOO_LR
+     *  - CX_VM_FOO_LQ
+     *  - CX_VM_FOO_DP <- double operations (64 bit)
+     *  - CX_VM_FOO_DR
+     *  - CX_VM_FOO_DQ
+     */
     OP2(SET,PQRV);
     
     OP2_W(SETREF,PQRV);
@@ -1443,10 +1465,13 @@ STOP:
     return 0;
 }
 
+/* Delete a string concatenation cache (cleanup function for thread
+ * specific memory) */
 static void cx_stringConcatCacheClean(void *data) {
     cx_dealloc(data);
 }
 
+/* Create a string concatenation cache */
 static void cx_stringConcatCacheCreate(void) {
     cx_stringConcatCache *concatCache;
     if (!cx_stringConcatCacheKey) {
@@ -1461,6 +1486,7 @@ static void cx_stringConcatCacheCreate(void) {
     }
 }
 
+/* Execute a program */
 int32_t cx_vm_run(cx_vmProgram program, void *result) {
     void *storage;
 
@@ -1470,6 +1496,7 @@ int32_t cx_vm_run(cx_vmProgram program, void *result) {
     return cx_vm_run_w_storage(program, storage, result);
 }
 
+/* This function converts a single instruction to a string */
 #ifdef CX_IC_TRACING
 char * cx_vmOp_toString(char * string, cx_vmOp *instr, const char *op, const char *type, const char *lvalue, const char *rvalue, const char* fetch) {
     char *result = string;
@@ -1484,11 +1511,14 @@ char * cx_vmOp_toString(char * string, cx_vmOp *instr, const char *op, const cha
 }
 #endif
 
+/* Convert an instruction sequence to a string */
 char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
     char * result = NULL;
     cx_int32 shown = 4;
     CX_UNUSED(program);
 
+/* Since these strings can occupy a lot of space, they're only compiled in
+ * when these two macros are enabled */
 #ifdef CX_IC_TRACING
     cx_vmOp *p = program->program;
     uint32_t i;
@@ -1527,7 +1557,6 @@ char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
             kind = p[i].op;
     #endif
             switch(kind) {
-                case CX_VM_NOOP: result = strappend(result, "NOOP\n"); break;
                 TOSTR_OP2(SET,PQRV);
                 TOSTR_OP2_W(SETREF,PQRV);
                 TOSTR_OP2_W(SETSTR,PQRV);
@@ -1647,6 +1676,7 @@ char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
 
 #pragma GCC diagnostic pop
 
+/* Create a new VM program */
 cx_vmProgram cx_vmProgram_new(char *filename, cx_object function) {
     cx_vmProgram result;
 
@@ -1664,6 +1694,7 @@ cx_vmProgram cx_vmProgram_new(char *filename, cx_object function) {
     return result;
 }
 
+/* Free a VM program */
 void cx_vmProgram_free(cx_vmProgram program) {
     if (program) {
         if (program->program) {
@@ -1673,7 +1704,10 @@ void cx_vmProgram_free(cx_vmProgram program) {
     }
 }
 
+/* Add new instruction to a VM program */
 cx_vmOp *cx_vmProgram_addOp(cx_vmProgram program, uint32_t line) {
+    /* Try to be smart with memory allocations, don't allocate new memory
+     * every time an instruction is added. */
     if (!program->size) {
         program->size = 1;
         program->maxSize = 8;
@@ -1686,27 +1720,37 @@ cx_vmOp *cx_vmProgram_addOp(cx_vmProgram program, uint32_t line) {
     program->program = cx_realloc(program->program, program->maxSize * sizeof(cx_vmOp));
     program->debugInfo = cx_realloc(program->debugInfo, program->maxSize * sizeof(cx_vmDebugInfo));
 
+    /* Initialize instruction and debug data to zero */
     memset(&program->program[program->size-1], 0, sizeof(cx_vmOp));
     memset(&program->debugInfo[program->size-1], 0, sizeof(cx_vmDebugInfo));
     program->debugInfo[program->size-1].line = line;
     
+    /* Return potentially realloc'd program */
     return &program->program[program->size-1];
 }
 
+/* Language binding function that calls a VM function */
 void cx_call_vm(cx_function f, cx_void* result, void* args) {
     cx_vmProgram program;
     void *storage = NULL;
 
+    /* Obtain instruction sequence */
     program = (cx_vmProgram)f->implData;
 
+    /* Allocate a storage for a program. This memory will 
+     * store all local variables, and space required to 
+     * prepare a stack for calling functions */
     storage = alloca(program->storage);
-    memcpy(storage, args, f->size);
+    memcpy(storage, args, f->size); /* Copy parameters into storage */
 
+    /* Thread specific cache that speeds up string concatenations */
     cx_stringConcatCacheCreate();
 
+    /* Execute the instructions */
     cx_vm_run_w_storage(program, storage, result);
 }
 
+/* Language binding function that frees a VM function */
 void cx_callDestruct_vm(cx_function f) {
     cx_vmProgram_free((cx_vmProgram)f->implData);
 }

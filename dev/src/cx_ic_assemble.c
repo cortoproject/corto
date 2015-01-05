@@ -1885,8 +1885,6 @@ static cx_bool cx_ic_supportsVmWordType(cx_icOpKind kind) {
     case CX_IC_NOT:
     case CX_IC_SHIFT_LEFT: 
     case CX_IC_SHIFT_RIGHT:
-    case CX_IC_STAGE1: 
-    case CX_IC_STAGE2: 
     case CX_IC_COND_OR:
     case CX_IC_COND_AND:
     case CX_IC_COND_NOT: 
@@ -1988,7 +1986,16 @@ static cx_vmOpKind cx_ic_getVmFree(cx_icOp op, cx_type t, cx_ic_vmType typeKind,
     return result;
 }
 
-static cx_vmOpKind cx_ic_getVmSet(cx_type type, cx_icStorage op1, cx_ic_vmType typeKind, cx_ic_vmOperand opKind1, cx_ic_vmOperand opKind2, cx_icDerefMode deref1, cx_icDerefMode deref2) {
+/* Return correct SET instruction. Selects between 
+ * normal, string and reference assignments. */
+static cx_vmOpKind cx_ic_getVmSet(
+    cx_type type, 
+    cx_icStorage op1, 
+    cx_ic_vmType typeKind, 
+    cx_ic_vmOperand opKind1, 
+    cx_ic_vmOperand opKind2, 
+    cx_icDerefMode deref1, 
+    cx_icDerefMode deref2) {
     cx_vmOpKind result;
     
     CX_UNUSED(deref2);
@@ -2013,6 +2020,38 @@ static cx_vmOpKind cx_ic_getVmSet(cx_type type, cx_icStorage op1, cx_ic_vmType t
     }
 
     return result;
+}
+
+/* Return correct CALL instruction. Selects between 
+ * normal, VM and delegate calls */
+static cx_vmOpKind cx_ic_getVmCall(cx_icOp op, cx_ic_vmOperand op1) {
+    cx_vmOpKind result = CX_VM_STOP;
+    cx_icStorage icFunction = ((cx_icStorage)op->s2);
+
+    if (icFunction->type->kind == CX_COMPOSITE) {
+        if (cx_interface(icFunction->type)->kind == CX_PROCPTR) {
+            /* Delegate instruction selection goes here */
+        } else if (cx_interface(icFunction->type)->kind == CX_PROCEDURE) {
+            cx_function f = ((cx_icObject)op->s2)->ptr;
+            if (f->kind == CX_PROCEDURE_VM) {
+                if ((f->returnType->real->kind == CX_VOID) && 
+                    (!f->returnType->real->reference)) {
+                    result = CX_VM_CALLVMVOID;
+                } else {
+                    result = cx_ic_getVmCALLVM(CX_IC_VMTYPE_L, op1);
+                }
+            } else {
+                if ((f->returnType->real->kind == CX_VOID) && 
+                    (!f->returnType->real->reference)) {
+                    result = CX_VM_CALLVOID;
+                } else {
+                    result = cx_ic_getVmCALL(CX_IC_VMTYPE_L, op1);
+                }
+            }
+        }
+    }
+
+    return result;   
 }
 
 static cx_vmOpKind cx_ic_getVmOpKind(cx_ic_vmProgram *program, cx_icOp op, cx_icValue storage, cx_type t, cx_ic_vmType typeKind, cx_ic_vmOperand op1, cx_ic_vmOperand op2, cx_icDerefMode deref1, cx_icDerefMode deref2) {
@@ -2052,8 +2091,6 @@ static cx_vmOpKind cx_ic_getVmOpKind(cx_ic_vmProgram *program, cx_icOp op, cx_ic
     case CX_IC_NOT: result = cx_ic_getVmNOT(typeKind, op1); break;
     case CX_IC_SHIFT_LEFT: result = cx_ic_getVmSHIFT_LEFT(typeKind, op1, op2); break;
     case CX_IC_SHIFT_RIGHT: result = cx_ic_getVmSHIFT_RIGHT(typeKind, op1, op2); break;
-    case CX_IC_STAGE1: result = cx_ic_getVmSTAGE1(typeKind, op1); break;
-    case CX_IC_STAGE2: result = cx_ic_getVmSTAGE2(typeKind, op1, op2); break;
     case CX_IC_COND_OR: result = cx_ic_getVmCOR(t, typeKind, op1); break;
     case CX_IC_COND_AND: result = cx_ic_getVmCAND(t, typeKind, op1); break;
     case CX_IC_COND_NOT: result = cx_ic_getVmCNOT(t, typeKind, op1); break;
@@ -2103,20 +2140,7 @@ static cx_vmOpKind cx_ic_getVmOpKind(cx_ic_vmProgram *program, cx_icOp op, cx_ic
     }
 
     case CX_IC_CALL: {
-        cx_function f = ((cx_icObject)op->s2)->ptr;
-        if (f->kind == CX_PROCEDURE_VM) {
-            if ((f->returnType->real->kind == CX_VOID) && (!f->returnType->real->reference)) {
-                result = CX_VM_CALLVMVOID;
-            } else {
-                result = cx_ic_getVmCALLVM(CX_IC_VMTYPE_L, op1);
-            }
-        } else {
-            if ((f->returnType->real->kind == CX_VOID) && (!f->returnType->real->reference)) {
-                result = CX_VM_CALLVOID;
-            } else {
-                result = cx_ic_getVmCALL(CX_IC_VMTYPE_L, op1);
-            }
-        }
+        result = cx_ic_getVmCall(op, op1);
         break;
     }
 
