@@ -21,6 +21,9 @@ extern "C" {
 /* $header() */
 cx_type Fast_Expression_narrowType(Fast_Expression expr);
 Fast_Expression Fast_Expression_narrow(Fast_Expression expr, cx_type target);
+cx_int8 Fast_Expression_getTypeScore(cx_primitive t);
+cx_int8 Fast_Expression_getCastScore(cx_primitive t);
+cx_icDerefMode Fast_Expression_getDerefMode(Fast_Expression _this, Fast_Expression rvalue, cx_int32 *check);
 /* $end */
 
 /* ::cortex::Fast::Expression::cast(lang::type type,lang::bool isReference) */

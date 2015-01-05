@@ -44,7 +44,7 @@ cx_int8 Fast_Expression_getTypeScore(cx_primitive t) {
 }
 
 /* Categorize types on castability - if equal no cast is required when width is equal */
-cx_int16 Fast_Expression_getCastScore(cx_primitive t) {
+cx_int8 Fast_Expression_getCastScore(cx_primitive t) {
     cx_int8 result = 0;
     switch(t->kind) {
         case CX_BOOLEAN:
@@ -76,13 +76,13 @@ cx_icDerefMode Fast_Expression_getDerefMode(Fast_Expression _this, Fast_Expressi
         cx_type t = Fast_Expression_getType(_this);
         
         if (rvalue->forceReference || (t && t->reference)) {
-            if (Fast_Node(_this)->kind == FAST_Variable) {
+            if (_this->isReference && rvalue->forceReference) {
+                result = CX_IC_DEREF_ADDRESS;
+            } else if (Fast_Node(_this)->kind == FAST_Variable) {
                 if (Fast_Variable(_this)->kind == FAST_Object) {
                     result = CX_IC_DEREF_ADDRESS;
                 } else if ((Fast_Variable(_this)->kind == FAST_Local) && (*Fast_Local(_this)->name == '<') && Fast_Local(_this)->isReference) {
                     result = CX_IC_DEREF_ADDRESS; /* Anonymous locals are treated as objects */
-                } else if (_this->isReference && !(t && t->reference)) {
-                    result = CX_IC_DEREF_ADDRESS;
                 } else {
                     if (check) *check = -1;
                 }
