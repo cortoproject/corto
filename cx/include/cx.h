@@ -17,6 +17,7 @@
 #include "cx_int.h"
 #include "cx_interface.h"
 #include "cx_interfaceVector.h"
+#include "cx_iterator.h"
 #include "cx_list.h"
 #include "cx_map.h"
 #include "cx_member.h"

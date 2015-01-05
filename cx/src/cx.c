@@ -56,6 +56,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_CLASS(op, primitive);\
     SSO_OP_CLASS(op, interface);\
     SSO_OP_CLASS(op, collection);\
+    SSO_OP_CLASS(op, iterator);\
     SSO_OP_CLASS(op, struct);\
     SSO_OP_CLASS(op, procedure);\
     SSO_OP_CLASS(op, event);\
@@ -220,6 +221,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, typeKind_PRIMITIVE);\
     SSO_OP_OBJ(op, typeKind_COMPOSITE);\
     SSO_OP_OBJ(op, typeKind_COLLECTION);\
+    SSO_OP_OBJ(op, typeKind_ITERATOR);\
     /* primitiveKind */\
     SSO_OP_OBJ(op, primitiveKind_BINARY);\
     SSO_OP_OBJ(op, primitiveKind_BOOLEAN);\
@@ -396,6 +398,9 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, collection_elementRequiresAlloc);\
     SSO_OP_OBJ(op, collection_init);\
     SSO_OP_OBJ(op, collection_size);\
+    /* iterator */\
+    SSO_OP_OBJ(op, iterator_elementType);\
+    SSO_OP_OBJ(op, iterator_init);\
     /* list */\
     SSO_OP_OBJ(op, list_insert);\
     SSO_OP_OBJ(op, list_insert_);\

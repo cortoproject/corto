@@ -389,6 +389,7 @@ CX_FWDECL(class, template);
 CX_FWDECL(class, primitive);
 CX_FWDECL(class, interface);
 CX_FWDECL(class, collection);
+CX_FWDECL(class, iterator);
 CX_FWDECL(class, procedure);
 CX_FWDECL(class, binary);
 CX_FWDECL(class, boolean);
@@ -536,6 +537,7 @@ CX_ENUM_O(typeKind);
     CX_CONSTANT_O(typeKind, PRIMITIVE);
     CX_CONSTANT_O(typeKind, COMPOSITE);
     CX_CONSTANT_O(typeKind, COLLECTION);
+    CX_CONSTANT_O(typeKind, ITERATOR);
 
 CX_ENUM_O(primitiveKind);
     CX_CONSTANT_O(primitiveKind, BINARY);
@@ -740,6 +742,12 @@ CX_CLASS_O(collection, type, CX_LOCAL | CX_READONLY, CX_SEQUENCE_EMPTY_V(interfa
     CX_METHOD_O(collection, elementRequiresAlloc, "()", bool, FALSE, cx_collection_elementRequiresAlloc);
     CX_CALLBACK_O(collection, init, "(lang::collection object)", type_init, int16, cx_collection_init);
     CX_METAPROCEDURE_O(collection, size, "()", uint32, FALSE, cx_collection_size);
+
+/* ::cortex::lang::iterator */
+CX_CLASS_O(iterator, type, CX_LOCAL | CX_READONLY, CX_SEQUENCE_EMPTY_V(interface), NULL, CX_DECLARED | CX_DEFINED);
+    CX_REFERENCE_O(iterator, elementType, typedef, CX_GLOBAL, CX_DECLARED, FALSE);
+    CX_CALLBACK_O(iterator, init, "(lang::iterator object)", type_init, int16, cx_iterator_init);
+
 
 /* ::cortex::lang::binary */
 CX_CLASS_O(binary, primitive, CX_GLOBAL, CX_SEQUENCE_EMPTY_V(interface), NULL, CX_DECLARED | CX_DEFINED);
