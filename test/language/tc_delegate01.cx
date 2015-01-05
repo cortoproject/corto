@@ -29,6 +29,3 @@ op = obj.add
 if op(10, 20) != 130: fail("op(10, 20) != 130")
 
 if result: "tc_delegate01: OK"
-
-
-ef
