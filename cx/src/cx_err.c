@@ -169,38 +169,32 @@ char* cx_backtraceString(void) {
 #define CX_MAX_LOG (1024)
 
 cx_err cx_logv(cx_err kind, unsigned int level, char* fmt, va_list arg, FILE* f) {
-    char msg[512];
-    char msg_hdr[512];
-    struct timespec time;
-    unsigned int length, written;
+    char buff[CX_MAX_LOG + 1];
+    unsigned int written;
+    size_t n = 0, l = 0;
+    cx_string alloc = NULL;
+    cx_string msg = buff;
 
     CX_UNUSED(level);
 
-    clock_gettime(CLOCK_REALTIME, &time);
-
-    if (vsprintf(msg, fmt, arg) > CX_MAX_LOG) {
-        cx_critical("Invalid parameter for cx_logv: message size exceeds 512 characters.");
-    }
-
-    /* If writing to stdout, don't write timestamps */
-    if (f == stdout) {
-        if ((length = sprintf(msg_hdr, "%s%s\n", cx_logKind[kind], msg)) > CX_MAX_LOG) {
-            printf("Invalid parameter for cx_logv: message (incl. header) exceeds 512 characters.\n");
-            abort();
-        }
-    } else {
-        if ((length = sprintf(msg_hdr, "%.9u.%.9u %s %s\n", (int)time.tv_sec, (int)time.tv_nsec, cx_logKind[kind], msg)) > CX_MAX_LOG) {
-            printf("Invalid parameter for cx_logv: message (incl. header) exceeds 512 characters.\n");
-            abort();
-        }
+    if ((n = (vsnprintf(buff, CX_MAX_LOG, fmt, arg) + (l = strlen(cx_logKind[kind])))) > CX_MAX_LOG) {
+        alloc = cx_malloc(n + 2);
+        strcpy(alloc, cx_logKind[kind]);
+        vsnprintf(alloc + l, n - l, fmt, arg);
+        strcat(alloc, "\n");
+        msg = alloc;
     }
 
     cx_setLasterror(msg);
 
     if (cx_getEcho() || ((kind == CX_CRITICAL) || (kind == CX_ASSERT))){
-        if ((written = fwrite(msg_hdr, 1, length, f)) != length) {
-            fprintf(f, "Error in cx_logv: number of bytes written (%d) does not match length of message (%d).\n", written, length);
+        if ((written = fwrite(msg, 1, n, f)) != n) {
+            fprintf(f, "Error in cx_logv: number of bytes written (%d) does not match length of message (%d).\n", written, n);
         }
+    }
+
+    if (alloc) {
+        cx_dealloc(alloc);
     }
 
     return kind;

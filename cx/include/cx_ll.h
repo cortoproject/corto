@@ -22,7 +22,7 @@ typedef struct cx_iter {
     cx_llNode next;
     cx_llNode cur;
     cx_ll list;
-}cx_iter;
+} cx_iter;
 
 cx_ll cx_llNew(void);
 void cx_llFree(cx_ll);

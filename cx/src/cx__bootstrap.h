@@ -139,7 +139,7 @@ extern "C" {
 #define MAX_INT16 ((MAX_UINT16/2-1))
 #define MAX_INT32 ((MAX_UINT32/2-1))
 #define MAX_INT64 ((MAX_UINT64/2-1))
-#define MIN_INT8 (-(MAX_UINT8/2+1))
+#define MIN_INT8  (-(MAX_UINT8/2+1))
 #define MIN_INT16 (-(MAX_UINT16/2+1))
 #define MIN_INT32 (-(MAX_UINT32/2+1))
 #define MIN_INT64 (-(MAX_UINT64/2+1))
