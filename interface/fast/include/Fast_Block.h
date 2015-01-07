@@ -34,10 +34,13 @@ Fast_Template Fast_Block_declareTemplate(Fast_Block _this, cx_string id, Fast_Va
 Fast_Expression Fast_Block_lookup(Fast_Block _this, cx_string id);
 
 /* ::cortex::Fast::Block::lookupLocal(lang::string id) */
-Fast_Expression Fast_Block_lookupLocal(Fast_Block _this, cx_string id);
+Fast_Local Fast_Block_lookupLocal(Fast_Block _this, cx_string id);
 
 /* ::cortex::Fast::Block::resolve(lang::string id) */
 Fast_Expression Fast_Block_resolve(Fast_Block _this, cx_string id);
+
+/* ::cortex::Fast::Block::resolveLocal(lang::string id) */
+Fast_Local Fast_Block_resolveLocal(Fast_Block _this, cx_string id);
 
 /* ::cortex::Fast::Block::setFunction(lang::function function */
 void Fast_Block_setFunction(Fast_Block _this, cx_function function);

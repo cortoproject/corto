@@ -1,32 +1,32 @@
 bool result:true
 void fail(string msg):
-	"tc_update01: FAIL: $msg"
-	result = false
+    "tc_update01: FAIL: $msg"
+    result = false
 
 uint32 aTriggered, bTriggered, bChildsTriggered, cTriggered
 uint32 dTriggered, dChildsTriggered, dSelfChildsTriggered, eTriggered
 
 class Counter::
-	member count, triggered : uint32
-	
-	// Notify others	
-	void trigger():	
-		update this: 
-			triggered++ 
-		
-	// Observe self
-	on update this:
-		count++
-	
+    member count, triggered : uint32
+    
+    // Notify others    
+    void trigger():    
+        update this: 
+            triggered++ 
+        
+    // Observe self
+    on update this:
+        count++
+    
 void test(Counter c, uint32 count, uint32 triggered):
-	if c.count != count:         fail("${c.fullname()}.count != $count")
-	if c.triggered != triggered: fail("${c.fullname()}.triggered != $triggered")
-	
+    if c.count != count:         fail("${c.fullname()}.count != $count")
+    if c.triggered != triggered: fail("${c.fullname()}.triggered != $triggered")
+    
 Counter a:
 Counter b:::
-	Counter c:
-	Counter d:::
-		Counter e:
+    Counter c:
+    Counter d:::
+        Counter e:
 
 // Let object notify others
 a.trigger()

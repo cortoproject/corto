@@ -2,18 +2,18 @@ bool result : true
 
 string testname : "tc_addressing01"
 void fail(string msg): 
-	"$testname: FAIL: $msg"
-	result = false
+    "$testname: FAIL: $msg"
+    result = false
 
 void test(int32 value, int32 test, string msg):
-	if value != test: fail(msg)
-		
+    if value != test: fail(msg)
+        
 void testref(int32 &value, int32 testval, string msg):
-	if value != testval: fail(msg)
-	test(value, testval, "$msg (passthrough)")
+    if value != testval: fail(msg)
+    test(value, testval, "$msg (passthrough)")
 
 void testobject(object o, string name, string msg):
-	if o.nameof() != name: fail(msg)
+    if o.nameof() != name: fail(msg)
 
 int32 x, x1:
 

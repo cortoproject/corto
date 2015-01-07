@@ -28,10 +28,10 @@ cpp_scopeStack(
         count++;
     }
 
-    if (count > DB_MAX_SCOPE_DEPTH) {
-        cx_error("sd_printXmlCollection: unsupported scope-depth (depth=%d, max=%d).", count, DB_MAX_SCOPE_DEPTH);
+    if (count > CX_MAX_SCOPE_DEPTH) {
+        cx_error("sd_printXmlCollection: unsupported scope-depth (depth=%d, max=%d).", count, CX_MAX_SCOPE_DEPTH);
     }
-    cx_assert(count <= DB_MAX_SCOPE_DEPTH, "MAX_SCOPE_DEPTH overflow.");
+    cx_assert(count <= CX_MAX_SCOPE_DEPTH, "MAX_SCOPE_DEPTH overflow.");
 
     /* Fill module stack */
     ptr = module;
@@ -77,22 +77,22 @@ cpp_commonScope(
 /* Check whether a type translates to a native construct or may act as a C++ namespace */
 cx_bool
 cpp_nativeType(cx_object o) {
-	cx_bool result = FALSE;
+    cx_bool result = FALSE;
 
-	if (cx_class_instanceof(cx_type_o, o)) {
-		switch(cx_type(o)->kind) {
-		case DB_VOID:
-		    if (cx_type(o)->reference) {
-		        result = TRUE;
-		    }
-			break;
-		default:
-			result = TRUE;
-			break;
-		}
-	}
+    if (cx_class_instanceof(cx_type_o, o)) {
+        switch(cx_type(o)->kind) {
+        case CX_VOID:
+            if (cx_type(o)->reference) {
+                result = TRUE;
+            }
+            break;
+        default:
+            result = TRUE;
+            break;
+        }
+    }
 
-	return result;
+    return result;
 }
 
 /* Open a scope */
@@ -105,7 +105,7 @@ cpp_openScope(
 
     /* Do not open namespaces for non-void type-scopes */
     while(cpp_nativeType(to)) {
-    	to = cx_parentof(to);
+        to = cx_parentof(to);
     }
 
     /* If context->module is NULL, start from root */
@@ -116,7 +116,7 @@ cpp_openScope(
 
     /* If from and to are not equal, find shortest path between modules. */
     if (from != to) {
-        cx_object fromStack[DB_MAX_SCOPE_DEPTH], toStack[DB_MAX_SCOPE_DEPTH];
+        cx_object fromStack[CX_MAX_SCOPE_DEPTH], toStack[CX_MAX_SCOPE_DEPTH];
         cx_object fromPtr, toPtr;
         cx_uint32 i;
 
@@ -301,15 +301,15 @@ cx_char* cpp_primitiveId(cx_primitive t, cx_char* buff) {
     appendT = FALSE;
 
     switch(t->kind) {
-    case DB_BOOLEAN:
-    	strcpy(buff, "bool");
-    	break;
-    case DB_CHARACTER:
+    case CX_BOOLEAN:
+        strcpy(buff, "bool");
+        break;
+    case CX_CHARACTER:
         switch(t->width) {
-        case DB_WIDTH_8:
+        case CX_WIDTH_8:
             strcpy(buff, "char");
             break;
-        case DB_WIDTH_16:
+        case CX_WIDTH_16:
             strcpy(buff, "wchar");
             appendT = TRUE;
             break;
@@ -321,23 +321,23 @@ cx_char* cpp_primitiveId(cx_primitive t, cx_char* buff) {
         }
         }
         break;
-    case DB_BINARY:
-    case DB_UINTEGER:
+    case CX_BINARY:
+    case CX_UINTEGER:
         strcpy(buff, "uint");
         appendWidth = TRUE;
         appendT = TRUE;
         break;
-    case DB_INTEGER:
+    case CX_INTEGER:
         strcpy(buff, "int");
         appendWidth = TRUE;
         appendT = TRUE;
         break;
-    case DB_FLOAT:
+    case CX_FLOAT:
         switch(t->width) {
-        case DB_WIDTH_32:
+        case CX_WIDTH_32:
             strcpy(buff, "float");
             break;
-        case DB_WIDTH_64:
+        case CX_WIDTH_64:
             strcpy(buff, "double");
             break;
         default: {
@@ -348,15 +348,15 @@ cx_char* cpp_primitiveId(cx_primitive t, cx_char* buff) {
         }
         }
         break;
-    case DB_ENUM:
-    case DB_BITMASK:
+    case CX_ENUM:
+    case CX_BITMASK:
         cx_error("c_typePrimitivePlatformType: enumeration\\bitmasks types must be defined using the 'enum' keyword.");
         goto error;
         break;
-    case DB_TEXT:
+    case CX_TEXT:
         strcpy(buff, "char*");
         break;
-    case DB_ALIAS:
+    case CX_ALIAS:
         strcpy(buff, cx_alias(t)->typeName);
         break;
     }
@@ -364,19 +364,19 @@ cx_char* cpp_primitiveId(cx_primitive t, cx_char* buff) {
     /* Append width */
     if (appendWidth) {
         switch(t->width) {
-        case DB_WIDTH_8:
+        case CX_WIDTH_8:
             strcat(buff, "8");
             break;
-        case DB_WIDTH_16:
+        case CX_WIDTH_16:
             strcat(buff, "16");
             break;
-        case DB_WIDTH_32:
+        case CX_WIDTH_32:
             strcat(buff, "32");
             break;
-        case DB_WIDTH_64:
+        case CX_WIDTH_64:
             strcat(buff, "64");
             break;
-        case DB_WIDTH_WORD:
+        case CX_WIDTH_WORD:
             strcat(buff, "ptr");
             break;
         }
@@ -413,7 +413,7 @@ error:
 
 /* Translate constant to C++ language id */
 cx_char* cpp_constantId(cx_generator g, cx_constant* c, cx_char* buffer) {
-	DB_UNUSED(g);
+    CX_UNUSED(g);
 
     sprintf(buffer, "%s", cx_nameof(c));
 
@@ -424,7 +424,7 @@ cx_char* cpp_constantId(cx_generator g, cx_constant* c, cx_char* buffer) {
 cx_char* cpp_specifierId(cx_generator g, cx_typedef t, cx_id specifier) {
 
     /* Check if object is scoped */
-    if (cx_checkAttr(t, DB_ATTR_SCOPED)) {
+    if (cx_checkAttr(t, CX_ATTR_SCOPED)) {
         g_fullOid(g, t, specifier);
     } else {
         if (t != cx_typedef(t->real)) {
@@ -433,35 +433,35 @@ cx_char* cpp_specifierId(cx_generator g, cx_typedef t, cx_id specifier) {
         }
 
         switch(cx_type(t)->kind) {
-        case DB_PRIMITIVE:
+        case CX_PRIMITIVE:
             cpp_primitiveId(cx_primitive(t), specifier);
             break;
-        case DB_COLLECTION: {
+        case CX_COLLECTION: {
             cx_id _specifier;
             cx_type elementType;
             g_idKind prev;
 
-            prev = g_setIdKind(g, DB_GENERATOR_ID_CLASS_LOWER);
+            prev = g_setIdKind(g, CX_GENERATOR_ID_CLASS_LOWER);
 
             elementType = cx_collection(t)->elementType->real;
             switch(cx_collection(t)->kind) {
-            case DB_ARRAY:
+            case CX_ARRAY:
                 /* Get specifier of elementType */
                 if (!cpp_specifierId(g, cx_collection(t)->elementType, _specifier)) {
                     goto error;
                 }
-                if ((elementType->kind == DB_COLLECTION) && (cx_collection(elementType)->kind == DB_ARRAY)) {
+                if ((elementType->kind == CX_COLLECTION) && (cx_collection(elementType)->kind == CX_ARRAY)) {
                     sprintf(specifier, "%s_%d", _specifier, cx_collection(t)->max);
                 } else {
                     sprintf(specifier, "%s_array%d", _specifier, cx_collection(t)->max);
                 }
                 break;
-            case DB_SEQUENCE:
+            case CX_SEQUENCE:
                 /* Get specifier of elementType */
                 if (!cpp_specifierId(g, cx_collection(t)->elementType, _specifier)) {
                     goto error;
                 }
-                if ((elementType->kind == DB_COLLECTION) && (cx_collection(elementType)->kind == DB_SEQUENCE)) {
+                if ((elementType->kind == CX_COLLECTION) && (cx_collection(elementType)->kind == CX_SEQUENCE)) {
                     sprintf(specifier, "%s_%d", _specifier, cx_collection(t)->max);
                 } else {
                     if (cx_collection(t)->max) {
@@ -471,10 +471,10 @@ cx_char* cpp_specifierId(cx_generator g, cx_typedef t, cx_id specifier) {
                     }
                 }
                 break;
-            case DB_LIST:
+            case CX_LIST:
                 strcpy(specifier, "cortex::ll_h");
                 break;
-            case DB_MAP:
+            case CX_MAP:
                 strcpy(specifier, "cortex::rbtree_h");
                 break;
             }
@@ -514,158 +514,158 @@ cx_char* cpp_specifierDecl(cx_generator g, cx_typedef t, cx_char* specifier) {
 
 /* Translate a scope to a path */
 cx_char* cpp_topath(cx_object o, cx_id id) {
-	cx_uint32 offset;
-	cx_char ch, *ptr;
-	cx_fullname(o, id);
+    cx_uint32 offset;
+    cx_char ch, *ptr;
+    cx_fullname(o, id);
 
-	ptr = id+2;
-	offset = 2;
-	while((ch = *ptr)) {
-		switch(ch) {
-		case ':':
-			*(ptr-offset) = '/';
-			ptr++;
-			offset++;
-			break;
-		default:
-			*(ptr-offset) = *ptr;
-			break;
-		}
-		ptr++;
-	}
-	*(ptr-offset) = '\0';
+    ptr = id+2;
+    offset = 2;
+    while((ch = *ptr)) {
+        switch(ch) {
+        case ':':
+            *(ptr-offset) = '/';
+            ptr++;
+            offset++;
+            break;
+        default:
+            *(ptr-offset) = *ptr;
+            break;
+        }
+        ptr++;
+    }
+    *(ptr-offset) = '\0';
 
-	return id;
+    return id;
 }
 
 static void cpp_escapeParameters(cx_char *ptr) {
-	cx_char ch;
-	cx_uint32 offset = 0;
-	while((ch = *ptr)) {
-		switch(ch) {
-		case '(':
-		case '{':
-		case ',':
-			*(ptr-offset) = '_';
-			break;
-		case ')':
-		case '}':
-			offset++;
-			break;
-		case ':':
-			*(ptr-offset) = '_';
-			offset++;
-			break;
-		case ' ':
-			*(ptr-offset) = '_';
-			break;
-		default:
-			*(ptr-offset) = ch;
-			break;
-		}
-		ptr++;
-	}
-	*(ptr - offset) = '\0';
+    cx_char ch;
+    cx_uint32 offset = 0;
+    while((ch = *ptr)) {
+        switch(ch) {
+        case '(':
+        case '{':
+        case ',':
+            *(ptr-offset) = '_';
+            break;
+        case ')':
+        case '}':
+            offset++;
+            break;
+        case ':':
+            *(ptr-offset) = '_';
+            offset++;
+            break;
+        case ' ':
+            *(ptr-offset) = '_';
+            break;
+        default:
+            *(ptr-offset) = ch;
+            break;
+        }
+        ptr++;
+    }
+    *(ptr - offset) = '\0';
 }
 
 const cx_char *cpp_metaPostfix(cpp_metaIdKind kind) {\
-	cx_char* postfix = NULL;
-	switch(kind) {
-	case CPP_DEFAULT:
-		postfix = "";
-		break;
-	case CPP_HANDLE:
-		postfix = "_h";
-		break;
-	case CPP_OBJECT:
-		postfix = "_o";
-		break;
-	default:
-		cx_assert(0, "invalid metaIdKind (%d)", kind);
-		break;
-	}
+    cx_char* postfix = NULL;
+    switch(kind) {
+    case CPP_DEFAULT:
+        postfix = "";
+        break;
+    case CPP_HANDLE:
+        postfix = "_h";
+        break;
+    case CPP_OBJECT:
+        postfix = "_o";
+        break;
+    default:
+        cx_assert(0, "invalid metaIdKind (%d)", kind);
+        break;
+    }
 
-	return postfix;
+    return postfix;
 }
 
 /* Get meta-object identifier */
 cx_char* cpp_metaFullname(cx_generator g, cx_object o, cpp_metaIdKind kind, cx_id id) {
-	cx_char *ptr;
-	const cx_char *postfix;
-	g_idKind prev;
+    cx_char *ptr;
+    const cx_char *postfix;
+    g_idKind prev;
 
-	postfix = cpp_metaPostfix(kind);
-	prev = g_setIdKind(g, DB_GENERATOR_ID_DEFAULT);
+    postfix = cpp_metaPostfix(kind);
+    prev = g_setIdKind(g, CX_GENERATOR_ID_DEFAULT);
 
-	if (o != root_o) {
-		if (cpp_nativeType(cx_parentof(o))) {
-		    cx_id tmp;
-			g_fullOid(g, cx_parentof(cx_parentof(o)), id);
-			strcat(id, "::");
-			strcat(id, g_oid(g, cx_parentof(o), tmp));
-			strcat(id, "_");
-			strcat(id, g_oid(g, o, tmp));
-		} else {
-			g_fullOidExt(g, o, id, DB_GENERATOR_ID_DEFAULT);
-		}
+    if (o != root_o) {
+        if (cpp_nativeType(cx_parentof(o))) {
+            cx_id tmp;
+            g_fullOid(g, cx_parentof(cx_parentof(o)), id);
+            strcat(id, "::");
+            strcat(id, g_oid(g, cx_parentof(o), tmp));
+            strcat(id, "_");
+            strcat(id, g_oid(g, o, tmp));
+        } else {
+            g_fullOidExt(g, o, id, CX_GENERATOR_ID_DEFAULT);
+        }
 
-		if ((ptr = strchr(id, '('))) {
-			if (!cx_function(o)->overloaded) {
-				*ptr = '\0';
-			} else {
-				cpp_escapeParameters(ptr);
-			}
-		}
+        if ((ptr = strchr(id, '('))) {
+            if (!cx_function(o)->overloaded) {
+                *ptr = '\0';
+            } else {
+                cpp_escapeParameters(ptr);
+            }
+        }
 
-		strcat(id, postfix);
-	} else {
-		strcpy(id, "::root");
-		strcat(id, postfix);
-	}
+        strcat(id, postfix);
+    } else {
+        strcpy(id, "::root");
+        strcat(id, postfix);
+    }
 
     /* Reset ID-kind */
     g_setIdKind(g, prev);
 
-	return id;
+    return id;
 }
 
 /* Get meta-object identifier */
 cx_char* cpp_metaName(cx_generator g, cx_object o, cpp_metaIdKind kind, cx_id id) {
-	cx_char *ptr;
-	const cx_char *postfix;
-	g_idKind prev;
+    cx_char *ptr;
+    const cx_char *postfix;
+    g_idKind prev;
 
-	postfix = cpp_metaPostfix(kind);
-	prev = g_setIdKind(g, DB_GENERATOR_ID_DEFAULT);
+    postfix = cpp_metaPostfix(kind);
+    prev = g_setIdKind(g, CX_GENERATOR_ID_DEFAULT);
 
-	if (o != root_o) {
+    if (o != root_o) {
         cx_id tmp;
-		if (cpp_nativeType(cx_parentof(o))) {
-			g_oid(g, cx_parentof(o), id);
-			strcat(id, "_");
-			strcat(id, g_oid(g, o, tmp));
-		} else {
-			g_id(g, g_oid(g, o, tmp), id);
-		}
+        if (cpp_nativeType(cx_parentof(o))) {
+            g_oid(g, cx_parentof(o), id);
+            strcat(id, "_");
+            strcat(id, g_oid(g, o, tmp));
+        } else {
+            g_id(g, g_oid(g, o, tmp), id);
+        }
 
-		if ((ptr = strchr(id, '('))) {
-			if (!cx_function(o)->overloaded) {
-				*ptr = '\0';
-			} else {
-				cpp_escapeParameters(ptr);
-			}
-		}
+        if ((ptr = strchr(id, '('))) {
+            if (!cx_function(o)->overloaded) {
+                *ptr = '\0';
+            } else {
+                cpp_escapeParameters(ptr);
+            }
+        }
 
-		strcat(id, postfix);
-	} else {
-		strcpy(id, "root");
-		strcat(id, postfix);
-	}
+        strcat(id, postfix);
+    } else {
+        strcpy(id, "root");
+        strcat(id, postfix);
+    }
 
-	/* Reset ID-kind */
-	g_setIdKind(g, prev);
+    /* Reset ID-kind */
+    g_setIdKind(g, prev);
 
-	return id;
+    return id;
 }
 
 /* Get procedure id (without parameterlist */

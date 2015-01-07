@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB__PRIMITIVE_H_
-#define DB__PRIMITIVE_H_
+#ifndef CX__PRIMITIVE_H_
+#define CX__PRIMITIVE_H_
 
 #include "cx_primitive.h"
 
@@ -14,7 +14,7 @@
 extern "C" {
 #endif
 
-#define DB_PRIMITIVE_MAX_CONVERTID (24)
+#define CX_PRIMITIVE_MAX_CONVERTID (24)
 
 cx_uint8 cx__primitive_convertId(cx_primitiveKind kind, cx_width width);
 
@@ -24,4 +24,4 @@ cx_int16 cx__bitmask_bindConstant(cx_bitmask _this, cx_constant* c);
 }
 #endif
 
-#endif /* DB__PRIMITIVE_H_ */
+#endif /* CX__PRIMITIVE_H_ */

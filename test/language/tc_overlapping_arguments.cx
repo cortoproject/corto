@@ -1,12 +1,12 @@
 bool result : true
 void fail(string msg):
-	"tc_overlapping_arguments: FAIL: $msg"
-	result = false
+    "tc_overlapping_arguments: FAIL: $msg"
+    result = false
 
 class Foo::
-	member x : uint32
-	uint32 returnArg(uint32 x) = x
-	uint32 returnMbr(uint32 x) = this.x
+    member x : uint32
+    uint32 returnArg(uint32 x) = x
+    uint32 returnMbr(uint32 x) = this.x
 
 Foo a:10
 

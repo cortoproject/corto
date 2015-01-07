@@ -1,15 +1,15 @@
 // Nested members with expression lists
 bool result: true
 void fail(string msg):
-	"tc_exprlist06: FAIL: $msg"
-	result = false
+    "tc_exprlist06: FAIL: $msg"
+    result = false
 
 struct Point::
-	x, y: uint32
-	
+    x, y: uint32
+    
 struct Line::
-	start, stop: Point
-	
+    start, stop: Point
+    
 Line a, b:
 
 a[start,stop].x = 10

@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB_H_
-#define DB_H_
+#ifndef CX_H_
+#define CX_H_
 
 #include "cx_def.h"
 
@@ -33,50 +33,50 @@ typedef cx_int32 cx_constant;
 typedef uintptr_t cx_word;
 
 /* Class declarations */
-DB_CLASS(cx_typedef);
-DB_CLASS(cx_type);
-DB_CLASS(cx_template);
-DB_CLASS(cx_primitive);
-DB_CLASS(cx_interface);
-DB_CLASS(cx_collection);
-DB_CLASS(cx_binary);
-DB_CLASS(cx_boolean);
-DB_CLASS(cx_character);
-DB_CLASS(cx_int);
-DB_CLASS(cx_uint);
-DB_CLASS(cx_float);
-DB_CLASS(cx_text);
-DB_CLASS(cx_enum);
-DB_CLASS(cx_bitmask);
-DB_CLASS(cx_alias);
-DB_CLASS(cx_struct);
-DB_CLASS(cx_class);
-DB_CLASS(cx_procptr);
-DB_CLASS(cx_procedure);
-DB_CLASS(cx_array);
-DB_CLASS(cx_sequence);
-DB_CLASS(cx_list);
-DB_CLASS(cx_map);
-DB_CLASS(cx_virtual);
-DB_CLASS(cx_member);
-DB_CLASS(cx_event);
-DB_CLASS(cx_observableEvent);
+CX_CLASS(cx_typedef);
+CX_CLASS(cx_type);
+CX_CLASS(cx_template);
+CX_CLASS(cx_primitive);
+CX_CLASS(cx_interface);
+CX_CLASS(cx_collection);
+CX_CLASS(cx_binary);
+CX_CLASS(cx_boolean);
+CX_CLASS(cx_character);
+CX_CLASS(cx_int);
+CX_CLASS(cx_uint);
+CX_CLASS(cx_float);
+CX_CLASS(cx_text);
+CX_CLASS(cx_enum);
+CX_CLASS(cx_bitmask);
+CX_CLASS(cx_alias);
+CX_CLASS(cx_struct);
+CX_CLASS(cx_class);
+CX_CLASS(cx_procptr);
+CX_CLASS(cx_procedure);
+CX_CLASS(cx_array);
+CX_CLASS(cx_sequence);
+CX_CLASS(cx_list);
+CX_CLASS(cx_map);
+CX_CLASS(cx_virtual);
+CX_CLASS(cx_member);
+CX_CLASS(cx_event);
+CX_CLASS(cx_observableEvent);
 
-DB_INTERFACE(cx_dispatcher);
+CX_INTERFACE(cx_dispatcher);
 
-DB_STRUCT(cx_parameter);
-DB_STRUCT(cx_procptrdata);
-DB_STRUCT(cx_interfaceVector);
+CX_STRUCT(cx_parameter);
+CX_STRUCT(cx_procptrdata);
+CX_STRUCT(cx_interfaceVector);
 
-DB_PROCEDURE(cx_function);
-DB_PROCEDURE(cx_method);
-DB_PROCEDURE(cx_delegate);
-DB_PROCEDURE(cx_callback);
-DB_PROCEDURE(cx_observer);
-DB_PROCEDURE(cx_metaprocedure);
+CX_PROCEDURE(cx_function);
+CX_PROCEDURE(cx_method);
+CX_PROCEDURE(cx_delegate);
+CX_PROCEDURE(cx_callback);
+CX_PROCEDURE(cx_observer);
+CX_PROCEDURE(cx_metaprocedure);
 
 /* any */
-DB_ANY(cx_any);
+CX_ANY(cx_any);
 
 /* Class convenience macro's */
 #define cx_typedef(t) ((cx_typedef)t)
@@ -121,143 +121,143 @@ typedef void* cx_object;
 
 /* Enumeration declarations */
 typedef enum cx_width {
-    DB_WIDTH_8,
-    DB_WIDTH_16,
-    DB_WIDTH_32,
-    DB_WIDTH_64,
-    DB_WIDTH_WORD
+    CX_WIDTH_8,
+    CX_WIDTH_16,
+    CX_WIDTH_32,
+    CX_WIDTH_64,
+    CX_WIDTH_WORD
 }cx_width;
 
 typedef enum cx_typeKind {
-    DB_VOID,
-    DB_ANY,
-    DB_PRIMITIVE,
-    DB_COMPOSITE,
-    DB_COLLECTION
+    CX_VOID,
+    CX_ANY,
+    CX_PRIMITIVE,
+    CX_COMPOSITE,
+    CX_COLLECTION
 }cx_typeKind;
 
 typedef enum cx_primitiveKind {
-    DB_BINARY,
-    DB_BOOLEAN,
-    DB_CHARACTER,
-    DB_INTEGER,
-    DB_UINTEGER,
-    DB_FLOAT,
-    DB_TEXT,
-    DB_ENUM,
-    DB_BITMASK,
-    DB_ALIAS
+    CX_BINARY,
+    CX_BOOLEAN,
+    CX_CHARACTER,
+    CX_INTEGER,
+    CX_UINTEGER,
+    CX_FLOAT,
+    CX_TEXT,
+    CX_ENUM,
+    CX_BITMASK,
+    CX_ALIAS
 }cx_primitiveKind;
 
 typedef enum cx_compositeKind {
-    DB_INTERFACE,
-    DB_STRUCT,
-    DB_CLASS,
-    DB_PROCPTR,
-    DB_PROCEDURE,
+    CX_INTERFACE,
+    CX_STRUCT,
+    CX_CLASS,
+    CX_PROCPTR,
+    CX_PROCEDURE,
 }cx_compositeKind;
 
 typedef enum cx_collectionKind {
-    DB_ARRAY,
-    DB_SEQUENCE,
-    DB_LIST,
-    DB_MAP
+    CX_ARRAY,
+    CX_SEQUENCE,
+    CX_LIST,
+    CX_MAP
 }cx_collectionKind;
 
 typedef enum cx_procedureKind {
-    DB_FUNCTION,
-    DB_METHOD,
-    DB_DELEGATE,
-    DB_CALLBACK,
-    DB_OBSERVER,
-    DB_METAPROCEDURE
+    CX_FUNCTION,
+    CX_METHOD,
+    CX_DELEGATE,
+    CX_CALLBACK,
+    CX_OBSERVER,
+    CX_METAPROCEDURE
 }cx_procedureKind;
 
 typedef enum cx_equalityKind {
-    DB_EQ = 0,
-    DB_LT = -1,
-    DB_GT = 1,
-    DB_NEQ = 2
+    CX_EQ = 0,
+    CX_LT = -1,
+    CX_GT = 1,
+    CX_NEQ = 2
 }cx_equalityKind;
 
 typedef enum cx_operatorKind {
-    DB_ASSIGN,
-    DB_ADD,
-    DB_SUB,
-    DB_MUL,
-    DB_DIV,
-    DB_MOD,
-    DB_INC,
-    DB_DEC,
-    DB_XOR,
-    DB_OR,
-    DB_AND,
-    DB_NOT,
-    DB_ASSIGN_ADD,
-    DB_ASSIGN_SUB,
-    DB_ASSIGN_MUL,
-    DB_ASSIGN_DIV,
-    DB_ASSIGN_MOD,
-    DB_ASSIGN_XOR,
-    DB_ASSIGN_OR,
-    DB_ASSIGN_AND,
-    DB_COND_OR,
-    DB_COND_AND,
-    DB_COND_NOT,
-    DB_COND_EQ,
-    DB_COND_NEQ,
-    DB_COND_GT,
-    DB_COND_LT,
-    DB_COND_GTEQ,
-    DB_COND_LTEQ,
-    DB_SHIFT_LEFT,
-    DB_SHIFT_RIGHT,
-    DB_COMMA,
-    DB_REF,
-    DB_MEMBER_RESOLVE,
-    DB_ELEMENT_OPEN,
-    DB_ELEMENT_CLOSE,
-    DB_BRACKET_OPEN,
-    DB_BRACKET_CLOSE /* Must be last */
+    CX_ASSIGN,
+    CX_ADD,
+    CX_SUB,
+    CX_MUL,
+    CX_DIV,
+    CX_MOD,
+    CX_INC,
+    CX_DEC,
+    CX_XOR,
+    CX_OR,
+    CX_AND,
+    CX_NOT,
+    CX_ASSIGN_ADD,
+    CX_ASSIGN_SUB,
+    CX_ASSIGN_MUL,
+    CX_ASSIGN_DIV,
+    CX_ASSIGN_MOD,
+    CX_ASSIGN_XOR,
+    CX_ASSIGN_OR,
+    CX_ASSIGN_AND,
+    CX_COND_OR,
+    CX_COND_AND,
+    CX_COND_NOT,
+    CX_COND_EQ,
+    CX_COND_NEQ,
+    CX_COND_GT,
+    CX_COND_LT,
+    CX_COND_GTEQ,
+    CX_COND_LTEQ,
+    CX_SHIFT_LEFT,
+    CX_SHIFT_RIGHT,
+    CX_COMMA,
+    CX_REF,
+    CX_MEMBER_RESOLVE,
+    CX_ELEMENT_OPEN,
+    CX_ELEMENT_CLOSE,
+    CX_BRACKET_OPEN,
+    CX_BRACKET_CLOSE /* Must be last */
 } cx_operatorKind;
 
-DB_BITMASK(cx_state);
-	/* defined in cx_object.h */
-DB_BITMASK(cx_attr);
-	/* defined in cx_object.h */
-DB_BITMASK(cx_eventMask);
-	/* defined in cx_object.h */
+CX_BITMASK(cx_state);
+    /* defined in cx_object.h */
+CX_BITMASK(cx_attr);
+    /* defined in cx_object.h */
+CX_BITMASK(cx_eventMask);
+    /* defined in cx_object.h */
 
-DB_BITMASK(cx_modifier);
-	#define DB_GLOBAL	  (0) /* Member is global and public (no restrictions) */
-    #define DB_LOCAL      (1) /* Member has local validity */
-    #define DB_PRIVATE    (2) /* Member is not exposed for extern entities */
-    #define DB_READONLY   (4) /* Member access is restricted to reading only */
-	#define DB_CONST	  (8) /* Member assignment is restricted to DECLARED objects only */
+CX_BITMASK(cx_modifier);
+    #define CX_GLOBAL      (0) /* Member is global and public (no restrictions) */
+    #define CX_LOCAL      (1) /* Member has local validity */
+    #define CX_PRIVATE    (2) /* Member is not exposed for extern entities */
+    #define CX_READONLY   (4) /* Member access is restricted to reading only */
+    #define CX_CONST      (8) /* Member assignment is restricted to DECLARED objects only */
 
 /* Function types */
 typedef cx_equalityKind (*cx_equalsAction)(cx_type _this, const void* o1, const void* o2);
 
 /* Collections */
-DB_SEQUENCE(cx_objectSeq, cx_object,);
-DB_SEQUENCE(cx_interfaceSeq, cx_interface,);
-DB_SEQUENCE(cx_memberSeq, cx_member,);
-DB_SEQUENCE(cx_parameterSeq, cx_parameter,);
-DB_SEQUENCE(cx_observerSeq, cx_observer,);
-DB_SEQUENCE(cx_vtable, cx_function,);
-DB_SEQUENCE(cx_interfaceVectorSeq, cx_interfaceVector,);
+CX_SEQUENCE(cx_objectSeq, cx_object,);
+CX_SEQUENCE(cx_interfaceSeq, cx_interface,);
+CX_SEQUENCE(cx_memberSeq, cx_member,);
+CX_SEQUENCE(cx_parameterSeq, cx_parameter,);
+CX_SEQUENCE(cx_observerSeq, cx_observer,);
+CX_SEQUENCE(cx_vtable, cx_function,);
+CX_SEQUENCE(cx_interfaceVectorSeq, cx_interfaceVector,);
 
 typedef cx_rbtree cx_scope;
 
 /* ::cortex::lang::parameter */
-DB_STRUCT_DEF(cx_parameter) {
+CX_STRUCT_DEF(cx_parameter) {
     cx_string name;
     cx_typedef type;
     cx_bool passByReference;
 };
 
 /* function */
-DB_PROCEDURE_DEF(cx_function) {
+CX_PROCEDURE_DEF(cx_function) {
     cx_typedef returnType;
     cx_bool returnsReference;
     cx_bool overloaded;
@@ -271,55 +271,55 @@ DB_PROCEDURE_DEF(cx_function) {
 };
 
 /* method */
-DB_PROCEDURE_DEF(cx_method) {
-    DB_EXTEND(cx_function);
+CX_PROCEDURE_DEF(cx_method) {
+    CX_EXTEND(cx_function);
     cx_bool virtual;
 };
 
 /* virtual */
-DB_PROCEDURE_DEF(cx_virtual) {
-    DB_EXTEND(cx_method);
+CX_PROCEDURE_DEF(cx_virtual) {
+    CX_EXTEND(cx_method);
 };
 
 /* delegate */
-DB_PROCEDURE_DEF(cx_delegate) {
-    DB_EXTEND(cx_function);
+CX_PROCEDURE_DEF(cx_delegate) {
+    CX_EXTEND(cx_function);
     cx_uint32 id;
 };
 
 /* callback */
-DB_PROCEDURE_DEF(cx_callback) {
-    DB_EXTEND(cx_function);
+CX_PROCEDURE_DEF(cx_callback) {
+    CX_EXTEND(cx_function);
     cx_delegate delegate;
 };
 
-DB_PROCEDURE_DEF(cx_metaprocedure) {
-	DB_EXTEND(cx_function);
+CX_PROCEDURE_DEF(cx_metaprocedure) {
+    CX_EXTEND(cx_function);
     cx_bool referenceOnly;
 };
 
 /* observer */
-DB_PROCEDURE_DEF(cx_observer) {
-	DB_EXTEND(cx_function);
-	cx_object observable;       /* The object being observed */
-	cx_uint32 mask;             /* The interest mask */
-	cx_string expression;       /* Expression (must either resolve to an object or boolean) */
-	cx_uint32 template;         /* If nonzero, this observer is a class-template which is instantiated for all class-instances */
-	cx_dispatcher dispatcher;   /* If set, events for this observer are send through this dispatcher */
-	cx_object me;               /* Set to 'this' if observer is an instantiated class observer. Prevents loopback of events. */
-	cx_object observing;
-	cx_observer delayedBinder;
+CX_PROCEDURE_DEF(cx_observer) {
+    CX_EXTEND(cx_function);
+    cx_object observable;       /* The object being observed */
+    cx_uint32 mask;             /* The interest mask */
+    cx_string expression;       /* Expression (must either resolve to an object or boolean) */
+    cx_uint32 template;         /* If nonzero, this observer is a class-template which is instantiated for all class-instances */
+    cx_dispatcher dispatcher;   /* If set, events for this observer are send through this dispatcher */
+    cx_object me;               /* Set to 'this' if observer is an instantiated class observer. Prevents loopback of events. */
+    cx_object observing;
+    cx_observer delayedBinder;
 };
 
 /* ::cortex::lang::typedef */
-DB_CLASS_DEF(cx_typedef) {
+CX_CLASS_DEF(cx_typedef) {
     cx_typedef type;
     cx_type real;
 };
 
 /* ::cortex::lang::type */
-DB_CLASS_DEF(cx_type) {
-    DB_EXTEND(cx_typedef);
+CX_CLASS_DEF(cx_type) {
+    CX_EXTEND(cx_typedef);
     cx_typeKind kind;           /* Is type a void, any, primitive, composite or collection */
     cx_bool reference;          /* Is type a reference-type (meaning that an instance is always an object) */
     cx_bool hasResources;       /* Optimization: does the type have allocated resources */
@@ -333,21 +333,21 @@ DB_CLASS_DEF(cx_type) {
 };
 
 /* ::cortex::lang::template */
-DB_CLASS_DEF(cx_template) {
-    DB_EXTEND(cx_type);
+CX_CLASS_DEF(cx_template) {
+    CX_EXTEND(cx_type);
 };
 
 /* ::cortex::lang::primitive */
-DB_CLASS_DEF(cx_primitive) {
-    DB_EXTEND(cx_type);
+CX_CLASS_DEF(cx_primitive) {
+    CX_EXTEND(cx_type);
     cx_primitiveKind kind;
     cx_width width;
     cx_uint8 convertId;
 };
 
 /* ::cortex::lang::interface */
-DB_CLASS_DEF(cx_interface) {
-    DB_EXTEND(cx_type);
+CX_CLASS_DEF(cx_interface) {
+    CX_EXTEND(cx_type);
     cx_compositeKind kind;
     cx_uint32 nextMemberId;
     cx_memberSeq members;
@@ -356,139 +356,139 @@ DB_CLASS_DEF(cx_interface) {
 };
 
 /* ::cortex::lang::collection */
-DB_CLASS_DEF(cx_collection) {
-    DB_EXTEND(cx_type);
+CX_CLASS_DEF(cx_collection) {
+    CX_EXTEND(cx_type);
     cx_collectionKind kind;
     cx_typedef elementType;
     cx_uint32 max;
 };
 
 /* ::cortex::lang::binary */
-DB_CLASS_DEF(cx_binary) {
-    DB_EXTEND(cx_primitive);
+CX_CLASS_DEF(cx_binary) {
+    CX_EXTEND(cx_primitive);
 };
 
 /* ::cortex::lang::boolean */
-DB_CLASS_DEF(cx_boolean) {
-    DB_EXTEND(cx_primitive);
+CX_CLASS_DEF(cx_boolean) {
+    CX_EXTEND(cx_primitive);
 };
 
 /* ::cortex::lang::character */
-DB_CLASS_DEF(cx_character) {
-    DB_EXTEND(cx_primitive);
+CX_CLASS_DEF(cx_character) {
+    CX_EXTEND(cx_primitive);
 };
 
 /* ::cortex::lang::int */
-DB_CLASS_DEF(cx_int) {
-    DB_EXTEND(cx_primitive);
+CX_CLASS_DEF(cx_int) {
+    CX_EXTEND(cx_primitive);
     cx_int64 min;
     cx_int64 max;
 };
 
 /* ::cortex::lang::uint */
-DB_CLASS_DEF(cx_uint) {
-    DB_EXTEND(cx_primitive);
+CX_CLASS_DEF(cx_uint) {
+    CX_EXTEND(cx_primitive);
     cx_uint64 min;
     cx_uint64 max;
 };
 
 /* ::cortex::lang::float */
-DB_CLASS_DEF(cx_float) {
-    DB_EXTEND(cx_primitive);
+CX_CLASS_DEF(cx_float) {
+    CX_EXTEND(cx_primitive);
     cx_float64 min;
     cx_float64 max;
 };
 
 /* ::cortex::lang::text */
-DB_CLASS_DEF(cx_text) {
-    DB_EXTEND(cx_primitive);
+CX_CLASS_DEF(cx_text) {
+    CX_EXTEND(cx_primitive);
     cx_width charWidth;
     cx_uint64 length;
 };
 
 /* ::cortex::lang::enum */
-DB_CLASS_DEF(cx_enum) {
-    DB_EXTEND(cx_primitive);
+CX_CLASS_DEF(cx_enum) {
+    CX_EXTEND(cx_primitive);
     cx_objectSeq constants;
 };
 
 /* ::cortex::lang::bitmask */
-DB_CLASS_DEF(cx_bitmask) {
-    DB_EXTEND(cx_enum);
+CX_CLASS_DEF(cx_bitmask) {
+    CX_EXTEND(cx_enum);
 };
 
 /* ::cortex::lang::alias */
-DB_CLASS_DEF(cx_alias) {
-	DB_EXTEND(cx_primitive);
-	cx_string typeName;
+CX_CLASS_DEF(cx_alias) {
+    CX_EXTEND(cx_primitive);
+    cx_string typeName;
 };
 
 /* ::cortex::lang::struct */
-DB_CLASS_DEF(cx_struct) {
-    DB_EXTEND(cx_interface);
+CX_CLASS_DEF(cx_struct) {
+    CX_EXTEND(cx_interface);
     cx_modifier baseAccess;
     cx_uint16 delegateCount;
 };
 
-DB_STRUCT_DEF(cx_interfaceVector) {
-	cx_interface interface;
-	cx_vtable vector;
+CX_STRUCT_DEF(cx_interfaceVector) {
+    cx_interface interface;
+    cx_vtable vector;
 };
 
 /* ::cortex::lang::class */
-DB_CLASS_DEF(cx_class) {
-    DB_EXTEND(cx_struct);
+CX_CLASS_DEF(cx_class) {
+    CX_EXTEND(cx_struct);
     cx_interfaceSeq implements;
     cx_interfaceVectorSeq interfaceVector;
     cx_observerSeq observers;
 };
 
 /* ::cortex::lang::procptrdata */
-DB_STRUCT_DEF(cx_procptrdata) {
+CX_STRUCT_DEF(cx_procptrdata) {
     cx_object instance;
     cx_function procedure;
 };
 
 /* ::cortex::lang::procptr */
-DB_CLASS_DEF(cx_procptr) {
-    DB_EXTEND(cx_struct);
+CX_CLASS_DEF(cx_procptr) {
+    CX_EXTEND(cx_struct);
     cx_typedef returnType;
     cx_bool returnsReference;
     cx_parameterSeq parameters;
 };
 
 /* ::cortex::lang::procedure */
-DB_CLASS_DEF(cx_procedure) {
-    DB_EXTEND(cx_struct);
+CX_CLASS_DEF(cx_procedure) {
+    CX_EXTEND(cx_struct);
     cx_procedureKind kind;
 };
 
 /* ::cortex::lang::array */
-DB_CLASS_DEF(cx_array) {
-    DB_EXTEND(cx_collection);
+CX_CLASS_DEF(cx_array) {
+    CX_EXTEND(cx_collection);
     cx_typedef elementType;
 };
 
 /* ::cortex::lang::sequence */
-DB_CLASS_DEF(cx_sequence) {
-    DB_EXTEND(cx_collection);
+CX_CLASS_DEF(cx_sequence) {
+    CX_EXTEND(cx_collection);
 };
 
 /* ::cortex::lang::list */
-DB_CLASS_DEF(cx_list) {
-  DB_EXTEND(cx_collection);
+CX_CLASS_DEF(cx_list) {
+  CX_EXTEND(cx_collection);
 };
 
 /* ::cortex::lang::map */
-DB_CLASS_DEF(cx_map) {
-    DB_EXTEND(cx_collection);
+CX_CLASS_DEF(cx_map) {
+    CX_EXTEND(cx_collection);
     cx_typedef elementType;
     cx_typedef keyType;
     cx_uint32 max;
 };
 
 /* ::cortex::lang::member */
-DB_CLASS_DEF(cx_member) {
+CX_CLASS_DEF(cx_member) {
     cx_typedef type;
     cx_modifier modifiers;
     cx_state state;
@@ -498,22 +498,22 @@ DB_CLASS_DEF(cx_member) {
 };
 
 /* ::cortex::lang::event */
-DB_CLASS_DEF(cx_event) {
-	cx_uint16 kind;
-	cx_bool handled;
+CX_CLASS_DEF(cx_event) {
+    cx_uint16 kind;
+    cx_bool handled;
 };
 
 /* ::cortex::lang::observableEvent */
-DB_CLASS_DEF(cx_observableEvent) {
-	DB_EXTEND(cx_event);
-	cx_observer observer;
-	cx_object me;
-	cx_object source;
-	cx_object observable;
+CX_CLASS_DEF(cx_observableEvent) {
+    CX_EXTEND(cx_event);
+    cx_observer observer;
+    cx_object me;
+    cx_object source;
+    cx_object observable;
 };
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* DB_H_ */
+#endif /* CX_H_ */

@@ -22,18 +22,18 @@ cx_int16 Fast_Define_construct(Fast_Define object) {
 /* ::cortex::Fast::Define::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
 cx_ic Fast_Define_toIc_v(Fast_Define _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Define::toIc) */
-	cx_ic object;
-	cx_icOp op;
-	DB_UNUSED(stored);
-	DB_UNUSED(storage);
+    cx_ic object;
+    cx_icOp op;
+    CX_UNUSED(stored);
+    CX_UNUSED(storage);
 
-	object = Fast_Node_toIc(Fast_Node(_this->object), program, NULL, TRUE);
+    object = Fast_Node_toIc(Fast_Node(_this->object), program, NULL, TRUE);
 
-	op = cx_icOp__create(program, Fast_Node(_this)->line, DB_IC_DEFINE, (cx_icValue)object, NULL, NULL);
-	cx_icProgram_addIc(program, (cx_ic)op);
+    op = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_DEFINE, (cx_icValue)object, NULL, NULL);
+    cx_icProgram_addIc(program, (cx_ic)op);
 
-    op->s1Deref = DB_IC_DEREF_ADDRESS;
+    op->s1Deref = CX_IC_DEREF_ADDRESS;
 
-	return NULL;
+    return NULL;
 /* $end */
 }

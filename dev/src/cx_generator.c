@@ -5,6 +5,8 @@
  *      Author: sander
  */
 
+#include <ctype.h>
+
 #include "cortex.h"
 #include "cx_generator.h"
 #include "stdarg.h"
@@ -29,9 +31,9 @@ cx_generator gen_new(cx_string name, cx_string language) {
 
     /* Set name */
     if (name) {
-    	result->name = strdup(name);
+        result->name = strdup(name);
     } else {
-    	result->name = NULL;
+        result->name = NULL;
     }
 
     if (language) {
@@ -41,7 +43,7 @@ cx_generator gen_new(cx_string name, cx_string language) {
     }
 
     /* Set id-generation to default */
-    result->idKind = DB_GENERATOR_ID_DEFAULT;
+    result->idKind = CX_GENERATOR_ID_DEFAULT;
 
     /* Set action-callbacks */
     result->start_action = NULL;
@@ -58,37 +60,37 @@ cx_generator gen_new(cx_string name, cx_string language) {
 
 /* Control how id's are generated */
 g_idKind g_setIdKind(cx_generator g, g_idKind kind) {
-	g_idKind prev;
-	prev = g->idKind;
-	g->idKind = kind;
-	return prev;
+    g_idKind prev;
+    prev = g->idKind;
+    g->idKind = kind;
+    return prev;
 }
 
 /* Get name, or if no name is provided, return name of current parse-object */
 cx_string g_getName(cx_generator g) {
-	cx_string result;
+    cx_string result;
 
-	result = NULL;
-	if (g->name) {
-		result = g->name;
-	} else if (g->current) {
-		result = cx_nameof(g->current->o);
-	}
+    result = NULL;
+    if (g->name) {
+        result = g->name;
+    } else if (g->current) {
+        result = cx_nameof(g->current->o);
+    }
 
-	return result;
+    return result;
 }
 
 /* Get current object */
 cx_object g_getCurrent(cx_generator g) {
-	cx_object result;
+    cx_object result;
 
-	result = NULL;
+    result = NULL;
 
-	if (g->current) {
-		result = g->current->o;
-	}
+    if (g->current) {
+        result = g->current->o;
+    }
 
-	return result;
+    return result;
 }
 
 /* Add to-parse object */
@@ -98,55 +100,53 @@ void gen_parse(cx_generator g, cx_object object, cx_bool parseSelf, cx_bool pars
 
     /* First do a lookup, check if the object already exists */
     if (g->objects) {
-    	g_object *object;
-    	objectIter = cx_llIter(g->objects);
-    	while(cx_iterHasNext(&objectIter)) {
-    		object = cx_iterNext(&objectIter);
-    		if (object->o == object) {
-    			o = object;
-    			break;
-    		}
-    	}
+        g_object *object;
+        objectIter = cx_llIter(g->objects);
+        while(cx_iterHasNext(&objectIter)) {
+            object = cx_iterNext(&objectIter);
+            if (object->o == object) {
+                o = object;
+                break;
+            }
+        }
     }
 
-    cx_trace("o = %p (%s)", o, cx_nameof(object));
-
     if (!o) {
-		o = cx_malloc(sizeof(g_object));
-		cx_keep(object);
-		o->o = object;
-		o->parseSelf = parseSelf;
-		o->parseScope = parseScope;
+        o = cx_malloc(sizeof(g_object));
+        cx_keep(object);
+        o->o = object;
+        o->parseSelf = parseSelf;
+        o->parseScope = parseScope;
 
-		if (prefix) {
-			o->prefix = strdup(prefix);
-		} else {
-			o->prefix = NULL;
-		}
+        if (prefix) {
+            o->prefix = strdup(prefix);
+        } else {
+            o->prefix = NULL;
+        }
 
-		if (!g->objects) {
-			g->objects = cx_llNew();
-		}
-		cx_llAppend(g->objects, o);
+        if (!g->objects) {
+            g->objects = cx_llNew();
+        }
+        cx_llAppend(g->objects, o);
 
-		if (!g->current) {
-			g->current = o;
-		}
+        if (!g->current) {
+            g->current = o;
+        }
     } else {
-    	/* Prefixes can be overridden if NULL. */
-    	if (!o->prefix) {
-    		o->prefix = cx_strdup(prefix);
-    	}
+        /* Prefixes can be overridden if NULL. */
+        if (!o->prefix) {
+            o->prefix = cx_strdup(prefix);
+        }
     }
 }
 
 static int g_genAttributeFind(void *value, void *userData) {
-	g_attribute *attr = value;
-	if(!strcmp(attr->key, *(cx_string*)userData)) {
-		*(void**)userData = attr;
-		return 0;
-	}
-	return 1;
+    g_attribute *attr = value;
+    if(!strcmp(attr->key, *(cx_string*)userData)) {
+        *(void**)userData = attr;
+        return 0;
+    }
+    return 1;
 }
 
 /* Set attribute */
@@ -156,18 +156,18 @@ void gen_setAttribute(cx_generator g, cx_string key, cx_string value) {
     if (!g->attributes) {
         g->attributes = cx_llNew();
     }else {
-    	void* userData = key;
-		if(!cx_llWalk(g->attributes, g_genAttributeFind, &userData)) {
-			attr = userData;
-		}
+        void* userData = key;
+        if(!cx_llWalk(g->attributes, g_genAttributeFind, &userData)) {
+            attr = userData;
+        }
     }
 
     if(!attr) {
-	    attr = cx_malloc(sizeof(g_attribute));
-	    attr->key = cx_strdup(key);
-	}else {
-		cx_dealloc(attr->value);
-	}
+        attr = cx_malloc(sizeof(g_attribute));
+        attr->key = cx_strdup(key);
+    }else {
+        cx_dealloc(attr->value);
+    }
     attr->value = cx_strdup(value);
 
     cx_llAppend(g->attributes, attr);
@@ -175,16 +175,16 @@ void gen_setAttribute(cx_generator g, cx_string key, cx_string value) {
 
 /* Get attribute */
 cx_string gen_getAttribute(cx_generator g, cx_string key) {
-	cx_string result = NULL;
+    cx_string result = NULL;
 
-	if(g->attributes) {
-		void *userData = key;
-		if(!cx_llWalk(g->attributes, g_genAttributeFind, &userData)) {
-			result = ((g_attribute*)userData)->value;
-		}
-	}
+    if(g->attributes) {
+        void *userData = key;
+        if(!cx_llWalk(g->attributes, g_genAttributeFind, &userData)) {
+            result = ((g_attribute*)userData)->value;
+        }
+    }
 
-	return result;
+    return result;
 }
 
 /* Load generator actions from library */
@@ -213,62 +213,62 @@ error:
 }
 
 static int g_freeObjects(void* _o, void* udata) {
-	g_object* o;
+    g_object* o;
 
-	DB_UNUSED(udata);
+    CX_UNUSED(udata);
 
-	o = _o;
-	if (o->prefix) {
-		cx_dealloc(o->prefix);
-	}
-	cx_free(o->o);
-	cx_dealloc(o);
+    o = _o;
+    if (o->prefix) {
+        cx_dealloc(o->prefix);
+    }
+    cx_free(o->o);
+    cx_dealloc(o);
 
-	return 1;
+    return 1;
 }
 
 /* Free snippet */
 static int g_freeSnippet(void* o, void* udata) {
-	g_fileSnippet* snippet;
-	g_file file;
+    g_fileSnippet* snippet;
+    g_file file;
 
-	snippet = o;
-	file = udata;
+    snippet = o;
+    file = udata;
 
-	if (!snippet->used) {
-		g_fileWrite(file, "%s(%s)", snippet->option, snippet->id);
-		g_fileWrite(file, "%s", snippet->src);
-		g_fileWrite(file, "$end\n");
-		cx_warning("%s: code-snippet '%s' is not used, manually merge or remove from file.", file->name, snippet->id);
-	}
+    if (!snippet->used) {
+        g_fileWrite(file, "%s(%s)", snippet->option, snippet->id);
+        g_fileWrite(file, "%s", snippet->src);
+        g_fileWrite(file, "$end\n");
+        cx_warning("%s: code-snippet '%s' is not used, manually merge or remove from file.", file->name, snippet->id);
+    }
 
-	if (snippet->id) {
-		cx_dealloc(snippet->id);
-	}
-	if (snippet->src) {
-		cx_dealloc(snippet->src);
-	}
+    if (snippet->id) {
+        cx_dealloc(snippet->id);
+    }
+    if (snippet->src) {
+        cx_dealloc(snippet->src);
+    }
 
-	cx_dealloc(snippet);
+    cx_dealloc(snippet);
 
-	return 1;
+    return 1;
 }
 
 /* Close file */
 static int g_closeFile(void* o, void* udata) {
     g_file file;
-    DB_UNUSED(udata);
+    CX_UNUSED(udata);
 
     file = o;
 
     /* Free snippets */
     if (file->snippets) {
-    	cx_llWalk(file->snippets, g_freeSnippet, file);
-    	cx_llFree(file->snippets);
+        cx_llWalk(file->snippets, g_freeSnippet, file);
+        cx_llFree(file->snippets);
     }
     if (file->headers) {
-    	cx_llWalk(file->headers, g_freeSnippet, file);
-    	cx_llFree(file->headers);
+        cx_llWalk(file->headers, g_freeSnippet, file);
+        cx_llFree(file->headers);
     }
 
     cx_fileClose(file->file);
@@ -281,7 +281,7 @@ static int g_closeFile(void* o, void* udata) {
 static int g_freeAttribute(void* _o, void* udata) {
     g_attribute* o;
 
-    DB_UNUSED(udata);
+    CX_UNUSED(udata);
 
     o = _o;
     if (o->key) {
@@ -322,11 +322,11 @@ void gen_free(cx_generator g) {
     }
 
     if (g->imports) {
-    	cx_llFree(g->imports);
+        cx_llFree(g->imports);
     }
 
     if (g->name) {
-    	cx_dealloc(g->name);
+        cx_dealloc(g->name);
     }
     if (g->language) {
         cx_dealloc(g->language);
@@ -346,62 +346,62 @@ typedef struct g_serializeImports_t {
     cx_uint32 count;
 }g_serializeImports_t;
 cx_int16 g_serializeImportsReference(cx_serializer s, cx_value *v, void* userData) {
-	cx_object o;
-	g_serializeImports_t *data = userData;
-	cx_generator g = data->g;
+    cx_object o;
+    g_serializeImports_t *data = userData;
+    cx_generator g = data->g;
 
-	o = *(cx_object*)cx_valueValue(v);
-	if (o) {
-	    /* Search unscoped object for references to other modules */
-		if (!cx_checkAttr(o, DB_ATTR_SCOPED)) {
-		    cx_uint32 i;
+    o = *(cx_object*)cx_valueValue(v);
+    if (o) {
+        /* Search unscoped object for references to other modules */
+        if (!cx_checkAttr(o, CX_ATTR_SCOPED)) {
+            cx_uint32 i;
 
-		    /* Make sure to not serialize an object twice, in case of a cycle */
-		    for(i=0; i<data->count; i++) {
-		        if (data->stack[i] == o) {
-		            break;
-		        }
-		    }
+            /* Make sure to not serialize an object twice, in case of a cycle */
+            for(i=0; i<data->count; i++) {
+                if (data->stack[i] == o) {
+                    break;
+                }
+            }
 
-		    if (i == data->count) {
+            if (i == data->count) {
                 data->stack[data->count] = o;
                 data->count++;
                 cx_serialize(s, o, userData);
                 data->count--;
-		    }
-		} else {
-			if (!g_mustParse(g, o)) {
-	    		cx_object parent = o;
-	    		while(parent && (cx_parentof(parent) != cortex_lang_o)) {
-	    			parent = cx_parentof(parent);
-	    		}
-	    		if (!parent) {
-		    		parent = o;
-		    		while(parent && (cx_typeof(parent)->real->kind != DB_VOID)) {
-		    			parent = cx_parentof(parent);
-		    		}
-		    		if (!g->imports) {
-		    			g->imports = cx_llNew();
-		    		}
-		    		if ((parent != root_o) && !cx_llHasObject(g->imports, parent)) {
-		    			cx_llInsert(g->imports, parent);
-		    		}
-	    		}
-			}
-		}
-	}
+            }
+        } else {
+            if (!g_mustParse(g, o)) {
+                cx_object parent = o;
+                while(parent && (cx_parentof(parent) != cortex_lang_o)) {
+                    parent = cx_parentof(parent);
+                }
+                if (!parent) {
+                    parent = o;
+                    while(parent && (cx_typeof(parent)->real->kind != CX_VOID)) {
+                        parent = cx_parentof(parent);
+                    }
+                    if (!g->imports) {
+                        g->imports = cx_llNew();
+                    }
+                    if ((parent != root_o) && !cx_llHasObject(g->imports, parent)) {
+                        cx_llInsert(g->imports, parent);
+                    }
+                }
+            }
+        }
+    }
 
-	return 0;
+    return 0;
 }
 
 
 struct cx_serializer_s g_serializeImportsSerializer(void) {
-	struct cx_serializer_s result;
-	cx_serializerInit(&result);
-	result.reference = g_serializeImportsReference;
-	result.access = DB_PRIVATE;
-	result.accessKind = DB_NOT; /* Serialize not nothing, thus everything. */
-	return result;
+    struct cx_serializer_s result;
+    cx_serializerInit(&result);
+    result.reference = g_serializeImportsReference;
+    result.access = CX_PRIVATE;
+    result.accessKind = CX_NOT; /* Serialize not nothing, thus everything. */
+    return result;
 }
 
 struct g_walkObjects_t {
@@ -411,20 +411,20 @@ struct g_walkObjects_t {
 
 /* Resolve imports */
 int g_importWalk(cx_object o, void* userData) {
-	cx_generator g = userData;
-	g_serializeImports_t walkData;
-	struct cx_serializer_s s;
+    cx_generator g = userData;
+    g_serializeImports_t walkData;
+    struct cx_serializer_s s;
 
-	walkData.count = 0;
-	walkData.g = g;
-	s = g_serializeImportsSerializer();
-	cx_serialize(&s, o, &walkData);
-	return 1;
+    walkData.count = 0;
+    walkData.g = g;
+    s = g_serializeImportsSerializer();
+    cx_serialize(&s, o, &walkData);
+    return 1;
 }
 
 cx_int16 g_resolveImports(cx_generator generator) {
-	g_walk(generator, g_importWalk, generator);
-	return 0;
+    g_walk(generator, g_importWalk, generator);
+    return 0;
 }
 
 
@@ -505,41 +505,41 @@ int g_walkRecursive(cx_generator g, g_walkAction action, void* userData) {
 /* Find prefix for a given object. Search parse-object in generator
  * which is closest to the object passed to this function. */
 static g_object* g_findPrefix(cx_generator g, cx_object o, cx_object* match) {
-	cx_iter iter;
-	g_object *result, *t;
-	cx_object parent;
-	unsigned int distance, minDistance;
+    cx_iter iter;
+    g_object *result, *t;
+    cx_object parent;
+    unsigned int distance, minDistance;
 
-	result = NULL;
-	if (g->objects) {
-		minDistance = -1;
-		iter = cx_llIter(g->objects);
-		while(cx_iterHasNext(&iter)) {
-			t = cx_iterNext(&iter);
+    result = NULL;
+    if (g->objects) {
+        minDistance = -1;
+        iter = cx_llIter(g->objects);
+        while(cx_iterHasNext(&iter)) {
+            t = cx_iterNext(&iter);
 
-			/* Check if object occurs in scope of 'o' and measure distance to 'o' */
-			parent = o;
-			distance = 0;
-			while(parent && (parent != t->o)) {
-				distance++;
-				parent = cx_parentof(parent);
-			}
+            /* Check if object occurs in scope of 'o' and measure distance to 'o' */
+            parent = o;
+            distance = 0;
+            while(parent && (parent != t->o)) {
+                distance++;
+                parent = cx_parentof(parent);
+            }
 
-			/* If a parent was found (parent of root is NULL), assign it to result if
-			 * distance is smaller than minDistance */
-			if (parent) {
-				if ((distance < minDistance)) {
-					result = t;
-					minDistance = distance;
-					if (match) {
-						*match = parent;
-					}
-				}
-			}
-		}
-	}
+            /* If a parent was found (parent of root is NULL), assign it to result if
+             * distance is smaller than minDistance */
+            if (parent) {
+                if ((distance < minDistance)) {
+                    result = t;
+                    minDistance = distance;
+                    if (match) {
+                        *match = parent;
+                    }
+                }
+            }
+        }
+    }
 
-	return result;
+    return result;
 }
 
 /* Obtain prefix */
@@ -554,75 +554,75 @@ cx_string g_getPrefix(cx_generator g, cx_object o) {
 
 /* Object transformations */
 static cx_char* g_oidTransform(cx_generator g, cx_object o, cx_id _id, g_idKind kind) {
-	DB_UNUSED(g);
+    CX_UNUSED(g);
 
-	/* If the object is a function with an argumentlist, cut the argumentlist
-	 * from the name if the function is not overloaded. This keeps processing for
-	 * generators trivial. */
-	if (cx_class_instanceof(cx_procedure_o, cx_typeof(o))) {
-	    if (!cx_function(o)->overloaded) {
+    /* If the object is a function with an argumentlist, cut the argumentlist
+     * from the name if the function is not overloaded. This keeps processing for
+     * generators trivial. */
+    if (cx_class_instanceof(cx_procedure_o, cx_typeof(o))) {
+        if (!cx_function(o)->overloaded) {
             cx_char* ptr;
             ptr = strchr(_id, '(');
             if (ptr) {
                 *ptr = '\0';
             } else {
-            	if (cx_procedure(cx_typeof(o))->kind != DB_OBSERVER) {
-					cx_id id;
-					cx_warning("function object '%s' without argument list.", cx_fullname(o, id));
-            	}
+                if (cx_procedure(cx_typeof(o))->kind != CX_OBSERVER) {
+                    cx_id id;
+                    cx_warning("function object '%s' without argument list.", cx_fullname(o, id));
+                }
             }
-	    } else {
-	        /* If function is overloaded, construct the 'request' string, that is, the string without
-	         * the argument-names. This results in a string with only the types, which is enough to
-	         * generate unique names in languages which do not support overloading. */
-	        cx_id tmp, buff;
-	        cx_uint32 count, i;
-	        strcpy(tmp, _id);
+        } else {
+            /* If function is overloaded, construct the 'request' string, that is, the string without
+             * the argument-names. This results in a string with only the types, which is enough to
+             * generate unique names in languages which do not support overloading. */
+            cx_id tmp, buff;
+            cx_uint32 count, i;
+            strcpy(tmp, _id);
 
-	        cx_signatureName(tmp, _id);
-	        strcat(_id, "(");
+            cx_signatureName(tmp, _id);
+            strcat(_id, "(");
 
-	        count = cx_signatureParamCount(tmp);
+            count = cx_signatureParamCount(tmp);
 
-	        /* strcat is not the most efficient function here, but it is the easiest, and this
-	         * part of the code is not performance-critical. */
-	        for(i=0; i<count; i++) {
-	            cx_signatureParamType(tmp, i, buff, NULL);
-	            if (i) {
-	                strcat(_id, ",");
-	            }
-	            strcat(_id, buff);
-	        }
-	        strcat(_id, ")");
-	    }
-	}
+            /* strcat is not the most efficient function here, but it is the easiest, and this
+             * part of the code is not performance-critical. */
+            for(i=0; i<count; i++) {
+                cx_signatureParamType(tmp, i, buff, NULL);
+                if (i) {
+                    strcat(_id, ",");
+                }
+                strcat(_id, buff);
+            }
+            strcat(_id, ")");
+        }
+    }
 
-	/* Check if class-identifiers must be altered */
-	if (kind != DB_GENERATOR_ID_DEFAULT) {
-	    cx_object i = o;
+    /* Check if class-identifiers must be altered */
+    if (kind != CX_GENERATOR_ID_DEFAULT) {
+        cx_object i = o;
         cx_char* ptr;
 
         ptr = _id + strlen(_id);
-	    while(i) {
+        while(i) {
             while((ptr > _id) && (*ptr != ':')) {
                 ptr--;
             }
             if ((cx_class_instanceof(cx_interface_o, i) && cx_typedef(i)->real->reference) || (i == cx_typedef(cx_object_o))) {
-            	cx_char *start;
+                cx_char *start;
                 if (*ptr == ':') {
-                	start = ptr + 1;
+                    start = ptr + 1;
                 } else {
-                	start = ptr;
+                    start = ptr;
                 }
-				if (kind == DB_GENERATOR_ID_CLASS_UPPER) {
-					strtoupper(start);
-				} else {
-					strtolower(start);
-				}
+                if (kind == CX_GENERATOR_ID_CLASS_UPPER) {
+                    *start = toupper(*start);
+                } else {
+                    *start = tolower(*start);
+                }
             }
 
             if (ptr == _id) {
-            	break;
+                break;
             }
 
             i = cx_parentof(i);
@@ -631,86 +631,86 @@ static cx_char* g_oidTransform(cx_generator g, cx_object o, cx_id _id, g_idKind 
                     ptr -= 2;
                 }
             }
-	    }
-	}
+        }
+    }
 
-	return _id;
+    return _id;
 }
 
 /* Translate object-id */
 cx_string g_fullOidExt(cx_generator g, cx_object o, cx_id id, g_idKind kind) {
-	g_object* prefix;
-	cx_object match;
-	cx_id _id;
+    g_object* prefix;
+    cx_object match;
+    cx_id _id;
 
-	id[0] = '\0';
+    id[0] = '\0';
 
-	/* Find prefix for object */
-	match = NULL;
-	prefix = g_findPrefix(g, o, &match);
+    /* Find prefix for object */
+    match = NULL;
+    prefix = g_findPrefix(g, o, &match);
 
-	/* TODO: prefix i.c.m. !DB_GENERATOR_ID_DEFAULT & nested classes i.c.m. !DB_GENERATOR_ID_DEFAULT */
+    /* TODO: prefix i.c.m. !CX_GENERATOR_ID_DEFAULT & nested classes i.c.m. !CX_GENERATOR_ID_DEFAULT */
 
-	/* If prefix is found, replace the scope up until the found object with the prefix */
-	if (prefix && prefix->prefix) {
-		cx_uint32 count;
-		cx_object scopes[DB_MAX_SCOPE_DEPTH];
+    /* If prefix is found, replace the scope up until the found object with the prefix */
+    if (prefix && prefix->prefix) {
+        cx_uint32 count;
+        cx_object scopes[CX_MAX_SCOPE_DEPTH];
 
-		/* Obtain list of scopes from matched to object */
-		count = 0;
-		scopes[count] = o;
-		while(scopes[count] != match) {
-			scopes[count+1] = cx_parentof(scopes[count]);
-			count++;
-		}
+        /* Obtain list of scopes from matched to object */
+        count = 0;
+        scopes[count] = o;
+        while(scopes[count] != match) {
+            scopes[count+1] = cx_parentof(scopes[count]);
+            count++;
+        }
 
-		/* Paste in prefix */
-		strcpy(_id, prefix->prefix);
-		while(count) {
-			count--;
-			strcat(_id, "::");
-			strcat(_id, cx_nameof(scopes[count]));
-		}
+        /* Paste in prefix */
+        strcpy(_id, prefix->prefix);
+        while(count) {
+            count--;
+            strcat(_id, "::");
+            strcat(_id, cx_nameof(scopes[count]));
+        }
 
-	/* If no prefix is found for object, just use the scoped identifier */
-	} else {
-		cx_fullname(o, _id);
-	}
+    /* If no prefix is found for object, just use the scoped identifier */
+    } else {
+        cx_fullname(o, _id);
+    }
 
-	g_oidTransform(g, o, _id, kind);
+    g_oidTransform(g, o, _id, kind);
 
-	if (g->id_action) {
-		g->id_action(_id, id);
-	} else {
-		strcpy(_id, id);
-	}
+    if (g->id_action) {
+        g->id_action(_id, id);
+    } else {
+        strcpy(_id, id);
+    }
 
-	return id;
+    return id;
 }
 
 /* Translate an object to a language-specific identifier with idKind provided. */
 cx_string g_fullOid(cx_generator g, cx_object o, cx_id id) {
-	return g_fullOidExt(g, o, id, g->idKind);
+    return g_fullOidExt(g, o, id, g->idKind);
 }
 
 /* Translate an id to language representation */
 cx_string g_id(cx_generator g, cx_string str, cx_id id) {
-	cx_string result;
+    cx_string result;
 
-	if (g->id_action) {
-		result = g->id_action(str, id);
-	} else {
-		result = str;
-	}
+    if (g->id_action) {
+        result = g->id_action(str, id);
+    } else {
+        result = str;
+    }
 
-	return result;
+    return result;
 }
 
 /* Translate a class id to language representation */
 cx_string g_oid(cx_generator g, cx_object o, cx_id id) {
-	cx_string result;
-	cx_id cid;
-	g_object* prefix;
+    cx_string result;
+    cx_id cid;
+    g_object* prefix;
     cx_object match;
 
     /* Find prefix for object */
@@ -730,15 +730,15 @@ cx_string g_oid(cx_generator g, cx_object o, cx_id id) {
         strcpy(cid, cx_nameof(o));
     }
 
-	g_oidTransform(g, o, cid, g->idKind);
+    g_oidTransform(g, o, cid, g->idKind);
 
-	if (g->id_action) {
-		result = g->id_action(cid, id);
-	} else {
-		result = id;
-	}
+    if (g->id_action) {
+        result = g->id_action(cid, id);
+    } else {
+        result = id;
+    }
 
-	return result;
+    return result;
 }
 
 
@@ -764,8 +764,8 @@ static cx_string g_filePath(cx_generator g, cx_string filename, cx_char* buffer)
 
         /* Check whether there is an attribute with the file extension - determines where to put the file */
         if(fext) {
-	        ext = gen_getAttribute(g, fext);
-	    }
+            ext = gen_getAttribute(g, fext);
+        }
 
         /* Append filename to location. */
         if (ext) {
@@ -791,35 +791,35 @@ cx_int16 g_loadExisting(cx_generator g, cx_string name, cx_string option, cx_ll 
     if (code) {
         ptr = code;
 
-		while((ptr = strstr(ptr, option))) {
-			ptr += strlen(option);
+        while((ptr = strstr(ptr, option))) {
+            ptr += strlen(option);
 
-			/* Find begin of identifier */
-			if (*ptr == '(') {
-				cx_string endptr;
+            /* Find begin of identifier */
+            if (*ptr == '(') {
+                cx_string endptr;
 
-				/* Find end of identifier */
-				endptr = strstr(ptr, ") */");
-				if (endptr) {
-					cx_id identifier;
+                /* Find end of identifier */
+                endptr = strstr(ptr, ") */");
+                if (endptr) {
+                    cx_id identifier;
 
-					/* Copy identifier string */
-					*endptr = '\0';
-					strcpy(identifier, ptr + 1);
-					ptr = endptr + 1;
+                    /* Copy identifier string */
+                    *endptr = '\0';
+                    strcpy(identifier, ptr + 1);
+                    ptr = endptr + 1;
 
-					/* Find $end */
-					endptr = strstr(ptr, "$end");
-					if (endptr) {
-						g_fileSnippet* existing;
-						cx_string src;
+                    /* Find $end */
+                    endptr = strstr(ptr, "$end");
+                    if (endptr) {
+                        g_fileSnippet* existing;
+                        cx_string src;
 
-						*endptr = '\0';
-						src = strdup(ptr);
+                        *endptr = '\0';
+                        src = strdup(ptr);
 
-						if (!*list) {
-							*list = cx_llNew();
-						}
+                        if (!*list) {
+                            *list = cx_llNew();
+                        }
 
                         if(strstr(src, "$begin")) {
                             cx_error("%s: code-snippet '%s(%s)' contains nested $begin (did you forget an $end?)",
@@ -827,29 +827,29 @@ cx_int16 g_loadExisting(cx_generator g, cx_string name, cx_string option, cx_ll 
                             goto error;
                         }
 
-						existing = cx_malloc(sizeof(g_fileSnippet));
-						existing->option = strdup(option);
-						existing->id = strdup(identifier);
-						existing->src = src;
-						existing->used = FALSE;
-						cx_llInsert(*list, existing);
+                        existing = cx_malloc(sizeof(g_fileSnippet));
+                        existing->option = strdup(option);
+                        existing->id = strdup(identifier);
+                        existing->src = src;
+                        existing->used = FALSE;
+                        cx_llInsert(*list, existing);
 
-						ptr = endptr + 1;
+                        ptr = endptr + 1;
 
-					} else {
-						cx_error("generator: missing $end after $begin(%s)", identifier);
-						goto error;
-					}
-				} else {
-					cx_error("generator: missing ')' after %s(", option);
-					goto error;
-				}
-			} else {
-				cx_error("generator: missing '(' after %s.", option);
-				goto error;
-			}
-		}
-		cx_dealloc(code);
+                    } else {
+                        cx_error("generator: missing $end after $begin(%s)", identifier);
+                        goto error;
+                    }
+                } else {
+                    cx_error("generator: missing ')' after %s(", option);
+                    goto error;
+                }
+            } else {
+                cx_error("generator: missing '(' after %s.", option);
+                goto error;
+            }
+        }
+        cx_dealloc(code);
     }
 
     return 0;
@@ -862,43 +862,43 @@ error:
 
 /* Open file */
 g_file g_fileOpen(cx_generator g, cx_string name) {
-	g_file result;
-	cx_char filepath[512];
+    g_file result;
+    cx_char filepath[512];
 
-	result = cx_malloc(sizeof(struct g_file_s));
-	result->snippets = NULL;
-	result->headers = NULL;
-	result->scope = NULL;
-	result->file = NULL;
-	result->indent = 0;
-	result->name = cx_strdup(name);
-	result->generator = g;
+    result = cx_malloc(sizeof(struct g_file_s));
+    result->snippets = NULL;
+    result->headers = NULL;
+    result->scope = NULL;
+    result->file = NULL;
+    result->indent = 0;
+    result->name = cx_strdup(name);
+    result->generator = g;
 
-	/* First, load existing implementation if file exists */
-	if (g_loadExisting(g, name, "$header", &result->headers)) {
-		cx_dealloc(result);
-		goto error;
-	}
-	if (g_loadExisting(g, name, "$begin", &result->snippets)) {
-	    cx_dealloc(result);
-		goto error;
-	}
+    /* First, load existing implementation if file exists */
+    if (g_loadExisting(g, name, "$header", &result->headers)) {
+        cx_dealloc(result);
+        goto error;
+    }
+    if (g_loadExisting(g, name, "$begin", &result->snippets)) {
+        cx_dealloc(result);
+        goto error;
+    }
 
-	result->file = cx_fileOpen(g_filePath(g, name, filepath));
-	if (!result->file) {
-	    cx_dealloc(result);
-	    goto error;
-	}
+    result->file = cx_fileOpen(g_filePath(g, name, filepath));
+    if (!result->file) {
+        cx_dealloc(result);
+        goto error;
+    }
 
-	if (!g->files) {
-		g->files = cx_llNew();
-	}
-	cx_llInsert(g->files, result);
+    if (!g->files) {
+        g->files = cx_llNew();
+    }
+    cx_llInsert(g->files, result);
 
-	return result;
+    return result;
 error:
-	cx_error("failed to open file '%s'", name);
-	return NULL;
+    cx_error("failed to open file '%s'", name);
+    return NULL;
 }
 
 
@@ -906,7 +906,7 @@ error:
 cx_string g_fileLookupSnippetIntern(g_file file, cx_string snippetId, cx_ll list) {
     cx_iter iter;
     g_fileSnippet* snippet;
-    DB_UNUSED(file);
+    CX_UNUSED(file);
 
     snippet = NULL;
 
@@ -915,7 +915,7 @@ cx_string g_fileLookupSnippetIntern(g_file file, cx_string snippetId, cx_ll list
         while(cx_iterHasNext(&iter)) {
             snippet = cx_iterNext(&iter);
             if (!stricmp(snippet->id, snippetId)) {
-            	snippet->used = TRUE;
+                snippet->used = TRUE;
                 break;
             } else {
                 snippet = NULL;
@@ -927,11 +927,11 @@ cx_string g_fileLookupSnippetIntern(g_file file, cx_string snippetId, cx_ll list
 }
 
 cx_string g_fileLookupSnippet(g_file file, cx_string snippetId) {
-	return g_fileLookupSnippetIntern(file, snippetId, file->snippets);
+    return g_fileLookupSnippetIntern(file, snippetId, file->snippets);
 }
 
 cx_string g_fileLookupHeader(g_file file, cx_string snippetId) {
-	return g_fileLookupSnippetIntern(file, snippetId, file->headers);
+    return g_fileLookupSnippetIntern(file, snippetId, file->headers);
 }
 
 /* Test if object must be parsed */
@@ -961,13 +961,13 @@ int g_checkParseWalk(void* o, void* userData) {
 }
 
 cx_bool g_mustParse(cx_generator g, cx_object o) {
-	cx_bool result;
+    cx_bool result;
 
-	result = TRUE;
-    if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
-    	if (cx_llWalk(g->objects, g_checkParseWalk, o)) {
-			result = FALSE;
-    	}
+    result = TRUE;
+    if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
+        if (cx_llWalk(g->objects, g_checkParseWalk, o)) {
+            result = FALSE;
+        }
     }
 
     return result;
@@ -975,35 +975,35 @@ cx_bool g_mustParse(cx_generator g, cx_object o) {
 
 /* Increase indentation */
 void g_fileIndent(g_file file) {
-	file->indent++;
+    file->indent++;
 }
 
 /* Decrease indentation */
 void g_fileDedent(g_file file) {
-	file->indent--;
+    file->indent--;
 }
 
 /* Set scope of file */
 void g_fileScopeSet(g_file file, cx_object o) {
-	file->scope = o;
+    file->scope = o;
 }
 
 /* Get scope of file */
 cx_object g_fileScopeGet(g_file file) {
-	return file->scope;
+    return file->scope;
 }
 
 /* Write to file */
 void g_fileWrite(g_file file, char* fmt, ...) {
-	va_list args;
-	cx_char *buffer;
-	cx_uint32 len;
+    va_list args;
+    cx_char *buffer;
+    cx_uint32 len;
 
-	va_start(args, fmt);
-	len = vsnprintf(NULL, 0, fmt, args);
-	va_end(args);
+    va_start(args, fmt);
+    len = vsnprintf(NULL, 0, fmt, args);
+    va_end(args);
 
-	if (len) {
+    if (len) {
         buffer = cx_malloc(len + 1);
 
         va_start(args, fmt);
@@ -1014,15 +1014,15 @@ void g_fileWrite(g_file file, char* fmt, ...) {
 
         /*ptr = buffer;
         while((ptr = strchr(ptr, '\n'))) {
-        	switch(*(ptr+1)) {
-        	case '\0':
-        	case '\n':
-        		break;
-        	default:
-        		cx_error("g_fileWrite: newline characters should be placed at end of string ('%s').", buffer);
-        		break;
-        	}
-        	ptr++;
+            switch(*(ptr+1)) {
+            case '\0':
+            case '\n':
+                break;
+            default:
+                cx_error("g_fileWrite: newline characters should be placed at end of string ('%s').", buffer);
+                break;
+            }
+            ptr++;
         }*/
 
         /* Write indentation & string */
@@ -1039,7 +1039,7 @@ void g_fileWrite(g_file file, char* fmt, ...) {
         file->endLine = buffer[strlen(buffer)-1] == '\n';
 
         cx_dealloc(buffer);
-	}
+    }
 }
 
 /* Get generator */
@@ -1050,103 +1050,103 @@ cx_generator g_fileGetGenerator(g_file file) {
 
 /* Translate names of members so that they can be used in the same scope (for example when used as function parameter) */
 typedef struct cx_genWalkMember_t {
-	cx_member member;
-	cx_uint32 occurred;
+    cx_member member;
+    cx_uint32 occurred;
 }cx_genWalkMember_t;
 
 static cx_uint32 cx_genMemberCacheCount(cx_ll cache, cx_member m) {
-	cx_iter memberIter;
-	cx_genWalkMember_t *member;
-	cx_uint32 result = 0;
+    cx_iter memberIter;
+    cx_genWalkMember_t *member;
+    cx_uint32 result = 0;
 
-	memberIter = cx_llIter(cache);
-	while(cx_iterHasNext(&memberIter)) {
-		member = cx_iterNext(&memberIter);
-		if (!strcmp(cx_nameof(member->member), cx_nameof(m))) {
-			result++;
-		}
-	}
+    memberIter = cx_llIter(cache);
+    while(cx_iterHasNext(&memberIter)) {
+        member = cx_iterNext(&memberIter);
+        if (!strcmp(cx_nameof(member->member), cx_nameof(m))) {
+            result++;
+        }
+    }
 
-	return result;
+    return result;
 }
 
 static cx_uint32 cx_genMemberCacheGet(cx_ll cache, cx_member m) {
-	cx_iter memberIter;
-	cx_genWalkMember_t *member;
-	cx_uint32 result = 0;
+    cx_iter memberIter;
+    cx_genWalkMember_t *member;
+    cx_uint32 result = 0;
 
-	memberIter = cx_llIter(cache);
-	while(cx_iterHasNext(&memberIter)) {
-		member = cx_iterNext(&memberIter);
-		if (member->member == m) {
-			result = member->occurred;
-			break;
-		}
-	}
+    memberIter = cx_llIter(cache);
+    while(cx_iterHasNext(&memberIter)) {
+        member = cx_iterNext(&memberIter);
+        if (member->member == m) {
+            result = member->occurred;
+            break;
+        }
+    }
 
-	return result;
+    return result;
 }
 
 static cx_int16 cx_genMemberCache_member(cx_serializer s, cx_value *info, void* userData) {
-	cx_ll cache;
-	DB_UNUSED(s);
+    cx_ll cache;
+    CX_UNUSED(s);
 
-	cache = userData;
+    cache = userData;
 
-	if (info->kind == DB_MEMBER) {
-		cx_genWalkMember_t *parameter;
-		cx_member m = info->is.member.t;
+    if (info->kind == CX_MEMBER) {
+        cx_genWalkMember_t *parameter;
+        cx_member m = info->is.member.t;
 
-		parameter = cx_malloc(sizeof(cx_genWalkMember_t));
-		parameter->member = m;
-		parameter->occurred = cx_genMemberCacheCount(cache, m);
-		cx_llAppend(cache, parameter);
-	} else {
-		cx_serializeMembers(s, info, userData);
-	}
+        parameter = cx_malloc(sizeof(cx_genWalkMember_t));
+        parameter->member = m;
+        parameter->occurred = cx_genMemberCacheCount(cache, m);
+        cx_llAppend(cache, parameter);
+    } else {
+        cx_serializeMembers(s, info, userData);
+    }
 
-	return 0;
+    return 0;
 }
 
 cx_char* cx_genMemberName(cx_generator g, cx_ll cache, cx_member m, cx_char *result) {
-	cx_uint32 count;
-	cx_id temp;
+    cx_uint32 count;
+    cx_id temp;
 
-	if ((count = cx_genMemberCacheGet(cache, m))) {
-		sprintf(temp, "%s_%d", cx_nameof(m), count);
-	} else {
-		strcpy(temp, cx_nameof(m));
-	}
+    if ((count = cx_genMemberCacheGet(cache, m))) {
+        sprintf(temp, "%s_%d", cx_nameof(m), count);
+    } else {
+        strcpy(temp, cx_nameof(m));
+    }
 
-	g_id(g, temp, result);
+    g_id(g, temp, result);
 
-	return result;
+    return result;
 }
 
 /* Build cache to determine whether membernames occur more than once (due to inheritance) */
 cx_ll cx_genMemberCacheBuild(cx_interface o) {
-	struct cx_serializer_s s;
-	cx_ll result;
+    struct cx_serializer_s s;
+    cx_ll result;
 
-	cx_serializerInit(&s);
-	s.access = DB_LOCAL | DB_PRIVATE;
-	s.accessKind = DB_NOT;
-	s.metaprogram[DB_MEMBER] = cx_genMemberCache_member;
-	result = cx_llNew();
+    cx_serializerInit(&s);
+    s.access = CX_LOCAL | CX_PRIVATE;
+    s.accessKind = CX_NOT;
+    s.metaprogram[CX_MEMBER] = cx_genMemberCache_member;
+    result = cx_llNew();
 
-	cx_metaWalk(&s, cx_type(o), result);
+    cx_metaWalk(&s, cx_type(o), result);
 
-	return result;
+    return result;
 }
 
 void cx_genMemberCacheClean(cx_ll cache) {
-	cx_iter memberIter;
-	cx_genWalkMember_t *member;
+    cx_iter memberIter;
+    cx_genWalkMember_t *member;
 
-	memberIter = cx_llIter(cache);
-	while(cx_iterHasNext(&memberIter)) {
-		member = cx_iterNext(&memberIter);
-		cx_dealloc(member);
-	}
-	cx_llFree(cache);
+    memberIter = cx_llIter(cache);
+    while(cx_iterHasNext(&memberIter)) {
+        member = cx_iterNext(&memberIter);
+        cx_dealloc(member);
+    }
+    cx_llFree(cache);
 }

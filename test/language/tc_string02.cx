@@ -1,7 +1,7 @@
 bool result : true
 void fail(string msg):
-	"tc_string02: FAIL: $msg"
-	result = false
+    "tc_string02: FAIL: $msg"
+    result = false
 
 string stringObject, stringObject2: "Object"
 var string stringvar, stringvar2 = "var"
@@ -9,20 +9,20 @@ string emptyString
 var string emptyString2 = null
 
 // String comparison
-if stringObject != "Object":      fail("string-comparison between object and literal failed")	
-if stringObject != stringObject2: fail("string comparison between objects failed")	
-if stringvar != stringvar2:       fail("string comparison between vars failed")	
-if stringvar != "var": 	          fail("string-comparison between var and literal failed")
+if stringObject != "Object":      fail("string-comparison between object and literal failed")    
+if stringObject != stringObject2: fail("string comparison between objects failed")    
+if stringvar != stringvar2:       fail("string comparison between vars failed")    
+if stringvar != "var":               fail("string-comparison between var and literal failed")
 if stringObject == stringvar:     fail("string-comparison between object and var failed")
 if stringObject == emptyString:   fail("string comparison between object and empty string failed")
 if emptyString != null:           fail("string comparison between empty strings failed")
 if emptyString != emptyString2:   fail("string comparison between object and var empty string failed")
-	
+    
 // String concatenation
 var string concat
 var uint32 i=5 
 while i--:
-	concat += "ab"
+    concat += "ab"
 concat += stringObject
 concat += stringvar
 concat += emptyString
@@ -31,8 +31,8 @@ if concat != "ababababObjectvar": fail("tc_string: string concatenation failed (
 
 // Embedded string expressions
 enum Color::
-	constant Red,Yellow,Blue
-	
+    constant Red,Yellow,Blue
+    
 var int32 a = -5
 var uint32 b = 10
 var Color c = Yellow
@@ -51,26 +51,26 @@ if "${e+1}" != "y":   fail("incorrect result for embedded character\\add express
 if "$null" != "null": fail("incorrect result for null")
 
 void printAdd(uint32 x, int32 y):
-	if "$x + $y = ${x + y}" != "10 + -5 = 5": 
-		fail("incorrect result for embedded add expression in function ($x + $y = ${x + y})")
+    if "$x + $y = ${x + y}" != "10 + -5 = 5": 
+        fail("incorrect result for embedded add expression in function ($x + $y = ${x + y})")
 
 printAdd(b,a)
 
 void Embedded::
-	uint32 x : 20
-	int32 y : -5
-	if "$x + $y = ${x + y}" != "20 + -5 = 15":
-		fail("incorrect result for embedded add expression in scope ($x + $y = ${x + y})")
+    uint32 x : 20
+    int32 y : -5
+    if "$x + $y = ${x + y}" != "20 + -5 = 15":
+        fail("incorrect result for embedded add expression in scope ($x + $y = ${x + y})")
 
-	if "$x + $y = ${x + y}" == "20 + -5 = 16":
-		fail("incorrect result for embedded add expression in scope")
+    if "$x + $y = ${x + y}" == "20 + -5 = 16":
+        fail("incorrect result for embedded add expression in scope")
 
 class Point::
-	member x,y : uint32
-	
+    member x,y : uint32
+    
 class Foo::
-	member x,y : object
-	
+    member x,y : object
+    
 Point p : 10,20
 Foo f : p, f
 

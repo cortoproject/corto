@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB__PROCEDURE_H_
-#define DB__PROCEDURE_H_
+#ifndef CX__PROCEDURE_H_
+#define CX__PROCEDURE_H_
 
 #include "cx_procedure.h"
 
@@ -20,4 +20,4 @@ cx_int16 cx__function_bindParameter(cx_function _this, cx_parameter o);
 }
 #endif
 
-#endif /* DB__PROCEDURE_H_ */
+#endif /* CX__PROCEDURE_H_ */

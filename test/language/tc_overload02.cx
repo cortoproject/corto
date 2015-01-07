@@ -1,8 +1,8 @@
 // Test overloading with inheritance
 bool result: true
 void fail(string msg):
-	"tc_overload02: FAIL: $msg"
-	result = false
+    "tc_overload02: FAIL: $msg"
+    result = false
 
 struct Point:: x, y: uint32
 struct Point3D: Point:: z: uint32

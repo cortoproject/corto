@@ -2,15 +2,15 @@
 
 bool result : true
 void fail(string msg):
-	"tc_compare04: FAIL: $msg"
-	result = false
-	
+    "tc_compare04: FAIL: $msg"
+    result = false
+    
 struct Point::
-	x,y : uint32
-	
+    x,y : uint32
+    
 struct Line::
-	start, stop : Point
-	
+    start, stop : Point
+    
 Point p1: 10,20
 Point p2: 15,20
 Point p3: 10,25

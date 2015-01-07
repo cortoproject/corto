@@ -1,8 +1,8 @@
 // Test using complex returnvalues directly (without storing them in a variable first)
 bool result: true
 void fail(string msg):
-	"tc_function06: FAIL: $msg"
-	result = false
+    "tc_function06: FAIL: $msg"
+    result = false
 
 // Composite values
 struct Point:: x, y, z: uint32

@@ -1,0 +1,791 @@
+<meta xmlns:meta="https://hyve.com/meta">
+	<meta:scope name="cortex">
+		<!-- hyve::fast -->
+		<meta:scope name="Fast">
+			<!-- Enumeration representing the values that can be represented in hyve -->
+			<enum name="valueKind">
+				<meta:scope>
+					<constant name="Boolean"/>
+					<constant name="Character"/>
+					<constant name="Integer"/>
+					<constant name="SignedInteger"/>
+					<constant name="FloatingPoint"/>
+					<constant name="String"/>
+					<constant name="Enumerated"/>
+					<constant name="Reference"/>
+					<constant name="Null"/>
+				</meta:scope>
+			</enum>
+			
+			<function name="valueKindFromType(lang::type type)" returnType="valueKind"/>
+			<function name="report(lang::string kind,lang::string filename,lang::uint32 line,lang::uint32 column,lang::string error,lang::string token)"/>
+			<function name="reportError(lang::string filename,lang::uint32 line,lang::uint32 column,lang::string error,lang::string token)"/>
+			<function name="reportWarning(lang::string filename,lang::uint32 line,lang::uint32 column,lang::string error,lang::string token)"/>
+			
+			<!-- Enumeration representing the different treenode kinds -->
+			<enum name="nodeKind">
+				<meta:scope>
+					<constant name="Binary"/>
+                    <constant name="Call"/>
+					<constant name="Cast"/>
+                    <constant name="CommaExpr"/>
+                    <constant name="Declaration"/>
+					<constant name="Declare"/>
+					<constant name="Define"/>
+					<constant name="Element"/>
+					<constant name="If"/>
+                    <constant name="Initializer"/>
+					<constant name="Literal"/>
+					<constant name="Member"/>
+					<constant name="Method"/>
+					<constant name="New"/>
+					<constant name="Postfix"/>
+                    <constant name="Ternary"/>
+					<constant name="Unary"/>
+                    <constant name="Update"/>
+                    <constant name="Variable"/>
+                    <constant name="Wait"/>
+                    <constant name="While"/>
+				</meta:scope>
+			</enum>
+			
+			<!-- Enumeration representing the different variable kinds -->
+			<enum name="variableKind">
+				<meta:scope>
+					<constant name="Local"/>
+					<constant name="Template"/>
+					<constant name="Object"/>
+				</meta:scope>
+			</enum>
+
+			<!-- Base node -->
+			<class name="Node">
+				<meta:scope>
+					<callback name="init(Node object)" delegate="type::init" returnType="int16"/>
+					<member name="kind" type="nodeKind"/>
+                    <member name="line" type="lang::uint32" modifiers="readonly"/>
+                    <member name="column" type="lang::uint32" modifiers="readonly"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+				</meta:scope>
+			</class>
+			
+			<meta:object name="Variable" type="lang::class"/>
+			
+			<!-- Base expression node -->
+			<class name="Expression" base="Node">
+				<meta:scope>
+					<callback name="init(Expression object)" delegate="type::init" returnType="int16"/>
+					<member name="type" type="Fast::Variable" modifiers="readonly"/>
+					<member name="isReference" type="lang::bool" modifiers="readonly"/>
+					<member name="forceReference" type="lang::bool" modifiers="readonly"/> <!-- Force treating value as reference -->
+					<method name="getType()" returnType="lang::type"/>
+					<method name="getType_expr(Expression target)" returnType="lang::type"/>
+					<method name="getType_type(lang::type target)" returnType="lang::type"/>
+					<virtual name="serialize(lang::type dstType,lang::word dst)" returnType="int16"/>
+					<method name="cast(lang::type type,lang::bool isReference)" returnType="Fast::Expression"/>
+					<virtual name="fold()" returnType="Fast::Expression"/>
+					<virtual name="getValue()" returnType="word"/>
+                    <virtual name="toList()" returnType="list{Expression}"/>
+                    <virtual name="hasSideEffects()" returnType="lang::bool"/>
+                    <function name="fromList(list{Expression} list)" returnType="Expression"/>
+                    <function name="cleanList(list{Expression} list)"/>
+				</meta:scope>
+			</class>
+            
+            <!-- Comma expression node -->
+            <class name="CommaExpr" base="Expression" baseAccess="readonly">
+                <meta:scope>
+                    <callback name="init(CommaExpr object)" delegate="type::init" returnType="int16"/>
+                    <callback name="construct(CommaExpr object)" delegate="class::construct" returnType="int16"/>
+                    <member name="expressions" type="list{Expression}" modifiers="private"/>
+                    <method name="addExpression(Expression expr)" returnType="int16"/>
+                    <method name="toList()" returnType="list{Node}"/>
+                    <function name="addOrCreate(Expression list,Expression expr)" returnType="Expression"/>
+                    <virtual name="hasSideEffects()" returnType="lang::bool"/>
+                    <virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+                </meta:scope>
+            </class>
+
+			<!-- Base literal node -->
+			<class name="Literal" base="Expression" baseAccess="readonly">
+				<meta:scope>
+					<callback name="init(Literal object)" delegate="type::init" returnType="int16"/>
+					<member name="kind" type="valueKind"/>
+					<virtual name="getValue()" returnType="word"/>
+				</meta:scope>
+			</class>
+			
+			<!-- Boolean literal -->
+			<class name="Boolean" base="Literal" baseAccess="readonly">
+				<meta:scope>
+					<callback name="init(Boolean object)" delegate="type::init" returnType="int16"/>
+					<method name="serialize(lang::type dstType,lang::word dst)" returnType="int16"/>
+					<member name="value" type="bool"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+				</meta:scope>
+			</class>
+			
+			<!-- Character literal -->
+			<class name="Character" base="Literal" baseAccess="readonly">
+				<meta:scope>
+					<callback name="init(Character object)" delegate="type::init" returnType="int16"/>
+					<method name="serialize(lang::type dstType,lang::word dst)" returnType="int16"/>
+					<member name="value" type="char"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+				</meta:scope>
+			</class>
+			
+			<!-- Integer literal -->
+			<class name="Integer" base="Literal" baseAccess="readonly">
+				<meta:scope>
+					<callback name="init(Integer object)" delegate="type::init" returnType="int16"/>
+					<method name="serialize(lang::type dstType,lang::word dst)" returnType="int16"/>
+					<member name="value" type="uint64"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+				</meta:scope>
+			</class>
+			
+			<!-- Signed integer literal -->
+			<class name="SignedInteger" base="Literal" baseAccess="readonly">
+				<meta:scope>
+					<callback name="init(SignedInteger object)" delegate="type::init" returnType="int16"/>
+					<method name="serialize(lang::type dstType,lang::word dst)" returnType="int16"/>
+					<member name="value" type="int64"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+				</meta:scope>
+			</class>
+			
+			<!-- Floating point literal -->
+			<class name="FloatingPoint" base="Literal" baseAccess="readonly">
+				<meta:scope>
+					<callback name="init(FloatingPoint object)" delegate="type::init" returnType="int16"/>
+					<method name="serialize(lang::type dstType,lang::word dst)" returnType="int16"/>
+					<member name="value" type="float64"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+				</meta:scope>
+			</class>
+			
+			<!-- Null literal -->
+			<class name="Null" base="Literal" baseAccess="readonly">
+				<meta:scope>
+					<callback name="init(Null object)" delegate="type::init" returnType="int16"/>
+					<method name="serialize(lang::type dstType,lang::word dst)" returnType="int16"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+				</meta:scope>
+			</class>
+			
+			<!-- Base variable node -->
+			<class name="Variable" base="Expression" baseAccess="readonly">
+				<meta:scope>
+					<callback name="construct(Variable object)" delegate="class::construct" returnType="int16"/>
+					<member name="kind" type="variableKind"/>
+				</meta:scope>
+			</class>
+			
+
+			<!-- Different kinds of locals -->
+			<enum name="LocalKind">
+				<meta:scope>
+					<constant name="LocalDefault"/>
+					<constant name="LocalParameter"/>
+					<constant name="LocalReturn"/>
+				</meta:scope>
+			</enum>
+
+			<!-- Local variable node -->
+			<class name="Local" base="Variable" baseAccess="readonly">
+				<meta:scope>
+					<callback name="construct(Local object)" delegate="class::construct" returnType="int16"/>
+					<member name="name" type="lang::string"/>
+					<member name="type" type="Fast::Variable"/>
+					<member name="kind" type="Fast::LocalKind"/>
+					<member name="isReference" type="lang::bool"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+				</meta:scope>
+			</class>
+			
+			<!-- Observer template variable -->
+			<class name="Template" base="Local">
+				<meta:scope>
+					<callback name="construct(Template object)" delegate="class::construct" returnType="int16"/>
+				</meta:scope>
+			</class>
+			
+			<!-- Object variable node used as type for Object nodes (so no recursion occurs) -->
+			<class name="ObjectBase" base="Variable" baseAccess="readonly">
+				<meta:scope>
+					<callback name="construct(ObjectBase object)" delegate="class::construct" returnType="int16"/>
+					<member name="value" type="lang::object"/>
+				</meta:scope>
+			</class>
+			
+			<!-- Object variable node -->
+			<class name="Object" base="ObjectBase">
+				<meta:scope>
+					<callback name="construct(Object object)" delegate="class::construct" returnType="int16"/>
+					<method name="serialize(lang::type dstType,lang::word dst)" returnType="int16"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+					<method name="getValue()" returnType="word"/>
+				</meta:scope>
+			</class>
+
+			<!-- Forward declaration of while -->
+            <meta:object name="While" type="lang::class"/>
+			
+			<!-- Statement block -->
+			<class name="Block" base="Node" baseAccess="readonly">
+				<meta:scope>
+					<member name="parent" type="Fast::Block"/>
+					<member name="statements" type="list{Fast::Node}" modifiers="private|local"/>
+					<member name="locals" type="list{Fast::Local}" modifiers="private|local"/>
+					<member name="function" type="lang::function" modifiers="readonly"/>
+                    <member name="while" type="Fast::While" modifiers="readonly"/>
+					<method name="setFunction(lang::function function"/>
+					<method name="declare(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference)" returnType="Fast::Local"/>
+					<method name="declareTemplate(lang::string id,Fast::Variable type,lang::bool isParameter,bool isReference)" returnType="Fast::Template"/>
+					<method name="declareReturnVariable(lang::function function)" returnType="Fast::Local"/>
+					<method name="lookup(lang::string id)" returnType="Fast::Expression"/>
+					<method name="lookupLocal(lang::string id)" returnType="Fast::Local"/> <!-- Only search for locals -->
+					<method name="resolve(lang::string id)" returnType="Fast::Expression"/>
+					<method name="resolveLocal(lang::string id)" returnType="Fast::Local"/>
+					<method name="addStatement(Fast::Node statement)"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+                    <virtual name="toIcBody(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+				</meta:scope>
+			</class>
+			
+			<!-- Member expression -->
+			<class name="MemberExpr" base="Expression" baseAccess="readonly">
+				<meta:scope>
+					<callback name="construct(Fast::MemberExpr object)" returnType="int16" delegate="class::construct"/>
+					<member name="lvalue" type="Fast::Expression"/>
+					<member name="rvalue" type="Fast::Expression"/>
+					<member name="superMember" type="lang::bool" modifiers="readonly"/>
+					<member name="member" type="lang::object" modifiers="private"/> <!-- Only set when determined at compile-time -->
+                    <virtual name="hasSideEffects()" returnType="lang::bool"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+				</meta:scope>
+			</class>
+			
+			<!-- Element expression -->
+			<class name="ElementExpr" base="Expression" baseAccess="readonly">
+				<meta:scope>
+					<callback name="construct(Fast::MemberExpr object)" returnType="int16" delegate="class::construct"/>
+					<member name="lvalue" type="Fast::Expression"/>
+					<member name="rvalue" type="Fast::Expression"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+				</meta:scope>
+			</class>
+			
+			<!-- Call expression -->
+			<class name="Call" base="Expression" baseAccess="readonly">
+				<meta:scope>
+					<callback name="construct(Fast::Call object)" returnType="int16" delegate="class::construct"/>
+
+					<member name="instanceExpr" type="Fast::Expression"/>
+					<member name="arguments" type="Fast::Expression"/>
+					<member name="functionExpr" type="Fast::Expression" modifiers="readonly"/>
+					<member name="instanceIsAny" type="lang::bool" modifiers="readonly"/>
+
+					<member name="returnType" type="lang::type" modifiers="readonly"/>
+					<member name="returnsReference" type="lang::bool" modifiers="readonly"/>
+					<member name="parameters" type="sequence{parameter}" modifiers="readonly"/>
+					<member name="overloaded" type="lang::bool" modifiers="readonly"/>
+					
+					<method name="setParameters(lang::function function)"/>
+                    <virtual name="hasSideEffects()" returnType="lang::bool"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+				</meta:scope>
+			</class>
+
+			<!-- Compiler-defined function call -->
+			<class name="StaticCall" base="Call">
+				<meta:scope>
+					<callback name="construct(Fast::StaticCall object)" returnType="int16" delegate="class::construct"/>
+					<member name="function" type="lang::function"/>
+				</meta:scope>
+			</class>
+
+			<!-- Runtime-defined (delegate) function call -->
+			<class name="DelegateCall" base="Call">
+				<meta:scope>
+					<callback name="construct(Fast::DelegateCall object)" returnType="int16" delegate="class::construct"/>
+					<member name="expr" type="Fast::Expression"/>
+				</meta:scope>
+			</class>
+
+			<!-- Helps finding the correct procedure given a name and argumentlist and build call expression -->
+			<struct name="CallBuilder">
+				<meta:scope>
+					<member name="name" type="lang::string"/>
+					<member name="arguments" type="Fast::Expression"/>
+					<member name="instance" type="Fast::Expression"/>
+					<member name="scope" type="lang::object"/>
+					<member name="block" type="Fast::Block"/>
+					<member name="overloaded" type="lang::bool" modifiers="local|private"/>
+					<member name="signature" type="lang::string" modifiers="local|private"/>
+					<method name="buildSignature()" returnType="lang::int16"/>
+					<method name="build()" returnType="Fast::Call"/>
+				</meta:scope>
+			</struct>
+
+			<!-- Cast expression -->
+			<class name="CastExpr" base="Expression" baseAccess="readonly">
+				<meta:scope>
+					<callback name="construct(Fast::CastExpr object)" returnType="int16" delegate="class::construct"/>
+					<member name="lvalue" type="Fast::Expression"/>
+					<member name="rvalue" type="Fast::Expression"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+				</meta:scope>
+			</class>
+			
+			<!-- Postfix expression -->
+			<class name="PostfixExpr" base="Expression" baseAccess="readonly">
+				<meta:scope>
+					<callback name="construct(Fast::PostfixExpr object)" returnType="int16" delegate="class::construct"/>
+					<member name="lvalue" type="Fast::Expression"/>
+					<member name="operator" type="lang::operatorKind"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+				</meta:scope>
+			</class>
+			
+			<!-- Unary expression -->
+			<class name="UnaryExpr" base="Expression" baseAccess="readonly">
+				<meta:scope>
+					<callback name="construct(Fast::UnaryExpr object)" returnType="int16" delegate="class::construct"/>
+					<member name="lvalue" type="Fast::Expression"/>
+					<member name="operator" type="lang::operatorKind"/>
+                    <virtual name="hasSideEffects()" returnType="lang::bool"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+				</meta:scope>
+			</class>
+						
+			<!-- Binary expression -->
+			<class name="BinaryExpr" base="Expression" baseAccess="readonly">
+				<meta:scope>
+					<callback name="construct(Fast::BinaryExpr object)" returnType="int16" delegate="class::construct"/>
+					<member name="lvalue" type="Fast::Expression"/>
+					<member name="rvalue" type="Fast::Expression"/>
+					<member name="operator" type="lang::operatorKind"/>
+					<method name="fold()" returnType="Fast::Expression"/>
+					<method name="setOperator(lang::operatorKind kind)" returnType="void"/>
+                    <virtual name="hasSideEffects()" returnType="lang::bool"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+				</meta:scope>
+			</class>
+            
+            <meta:object name="If" type="lang::class"/>
+            
+            <!-- Ternary expression -->
+            <class name="TernaryExpr" base="Expression" baseAccess="readonly">
+                <meta:scope>
+                    <callback name="construct(Fast::TernaryExpr object)" returnType="int16" delegate="class::construct"/>
+                    <member name="condition" type="Fast::Expression"/>
+                    <member name="ifTrue" type="Fast::Expression"/>
+                    <member name="ifFalse" type="Fast::Expression"/>
+                    <member name="ifTrueExpr" type="Fast::Expression" modifiers="local|private"/>
+                    <member name="ifFalseExpr" type="Fast::Expression" modifiers="local|private"/>
+                    <member name="result" type="Fast::Expression"/>
+                    <member name="ifstmt" type="Fast::If" modifiers="local|private"/>
+                    <method name="setOperator(lang::operatorKind kind)" returnType="lang::void"/>
+                    <virtual name="hasSideEffects()" returnType="lang::bool"/>
+                    <virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+                </meta:scope>
+            </class>
+									
+			<!-- New expression -->
+			<class name="NewExpr" base="Expression" baseAccess="readonly">
+				<meta:scope>
+					<callback name="construct(Fast::NewExpr object)" returnType="int16" delegate="class::construct"/>
+					<member name="type" type="Fast::Expression"/>
+					<member name="attributes" type="Fast::Expression"/>
+                    <virtual name="hasSideEffects()" returnType="lang::bool"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+				</meta:scope>
+			</class>
+			
+			<!-- Define statement -->
+			<class name="Define" base="Node" baseAccess="readonly">
+				<meta:scope>
+					<callback name="construct(Fast::Define object)" returnType="int16" delegate="class::construct"/>
+					<member name="object" type="Fast::Expression"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+				</meta:scope>
+			</class>
+			
+			<!-- Text literal -->
+			<class name="String" base="Literal" baseAccess="readonly">
+				<meta:scope>
+					<callback name="init(String object)" delegate="type::init" returnType="int16"/>
+					<callback name="construct(String object)" delegate="class::construct" returnType="int16"/>
+					<method name="serialize(lang::type dstType,lang::word dst)" returnType="int16"/>
+					<member name="value" type="lang::string"/>
+					<member name="elements" type="list{Fast::Expression}" modifiers="readonly"/>
+					<member name="block" type="Fast::Block" modifiers="readonly"/>
+					<member name="scope" type="Fast::Variable" modifiers="readonly"/>
+					<method name="getValue()" returnType="word"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+				</meta:scope>
+			</class>
+			
+			<!-- If statement -->
+			<class name="If" base="Node" baseAccess="readonly">
+				<meta:scope>
+					<callback name="construct(If object)" returnType="int16" delegate="class::construct"/>
+					<member name="condition" type="Fast::Expression"/>
+					<member name="trueBranch" type="Fast::Block"/>
+					<member name="falseBranch" type="Fast::If"/>
+                    <member name="warnUnreachable" type="lang::bool" modifiers="private|local"/>
+                    <method name="noWarnUnreachable()"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+				</meta:scope>
+			</class>
+			
+			<!-- While statement -->
+			<class name="While" base="Node" baseAccess="readonly">
+				<meta:scope>
+					<callback name="construct(While object)" returnType="int16" delegate="class::construct"/>
+					<member name="condition" type="Fast::Expression"/>
+					<member name="trueBranch" type="Fast::Block"/>
+                    <member name="isUntil" type="lang::bool"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+				</meta:scope>
+			</class>
+			
+			<!-- Update statement -->
+			<class name="Update" base="Node" baseAccess="readonly">
+				<meta:scope>
+					<callback name="construct(Update object)" returnType="int16" delegate="class::construct"/>
+					<member name="exprList" type="list{Fast::Expression}"/>
+					<member name="block" type="Fast::Block"/>
+					<member name="from" type="Fast::Expression"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+				</meta:scope>
+			</class>
+			
+			<!-- Wait expression -->
+			<class name="Wait" base="Expression" baseAccess="readonly">
+				<meta:scope>
+					<callback name="construct(Wait object)" returnType="int16" delegate="class::construct"/>
+					<member name="exprList" type="list{Fast::Expression}"/>
+					<member name="timeout" type="Fast::Expression"/>
+					<virtual name="toIc(lang::alias{&quot;cx_icProgram&quot;} program,lang::alias{&quot;cx_icStorage&quot;} storage,lang::bool stored)" returnType="lang::alias{&quot;cx_ic&quot;}"/>
+				</meta:scope>
+			</class>
+            
+            <!-- Initializer -->
+            <enum name="InitializerKind">
+                <meta:scope>
+                    <constant name="InitStatic"/>
+                    <constant name="InitDynamic"/>
+                    <constant name="InitExpression"/>
+                </meta:scope>
+            </enum>
+		
+			<!-- Initializer stack element -->
+			<struct name="InitializerVariable">
+				<meta:scope>
+					<member name="offset" type="lang::word"/>
+					<member name="object" type="Expression"/>
+					<!-- Key-values (of associative collections) are serialized to this member -->
+					<member name="key" type="word"/>
+				</meta:scope>
+			</struct>
+			
+			<struct name="InitializerFrame">
+				<meta:scope>
+					<member name="location" type="lang::uint32"/>
+					<member name="type" type="lang::type"/>
+					<member name="isKey" type="lang::bool"/>
+					<member name="member" type="lang::member"/>
+				</meta:scope>
+			</struct>
+			
+			<class name="Initializer" base="Expression" baseAccess="readonly">
+				<meta:scope>
+					<member name="variables" type="array{InitializerVariable,64}"/>
+					<member name="variableCount" type="uint8"/>
+					<member name="frames" type="array{InitializerFrame,64}" modifiers="private|local"/>
+					<member name="fp" type="uint8" modifiers="private|local"/>
+					<callback name="construct(Initializer object)" returnType="int16" delegate="class::construct"/>
+					<method name="currentType()" returnType="lang::type"/>
+                    <method name="type()" returnType="lang::type"/>
+					<virtual name="push()" returnType="int16"/>
+					<virtual name="pop()" returnType="int8"/>
+                    <virtual name="value(Expression v)" returnType="int16"/>
+					<virtual name="member(lang::string name)" returnType="int32"/>
+                    <virtual name="pushKey()" returnType="int16"/>
+                    <virtual name="popKey()" returnType="int16"/>
+                    <virtual name="valueKey(Expression key)" returnType="int16"/>
+					<virtual name="define()" returnType="int16"/>
+					<virtual name="next()" returnType="int16"/>
+                    <method name="initFrame()" returnType="lang::uint16"/>
+				</meta:scope>
+			</class>
+			
+			<struct name="StaticInitializerFrame">
+				<meta:scope>
+					<member name="ptr" type="array{lang::word,64}"/>
+                    <member name="keyPtr" type="array{lang::word,64}"/>
+				</meta:scope>
+			</struct>
+			
+            <!-- A static initializer represents an object that is initialized during compiletime -->
+			<class name="StaticInitializer" base="Initializer">
+				<meta:scope>
+					<callback name="construct(StaticInitializer object)" returnType="int16" delegate="class::construct"/>
+					<member name="frames" type="array{StaticInitializerFrame,64}" modifiers="private|local"/>
+					<method name="push()" returnType="int16"/>
+					<method name="value(Expression v)" returnType="int16"/>
+					<method name="define()" returnType="int16"/>
+				</meta:scope>
+			</class>
+			
+			<struct name="DynamicInitializerFrame">
+				<meta:scope>
+					<member name="expr" type="array{Fast::Expression,64}"/>
+                    <member name="keyExpr" type="array{Fast::Expression,64}"/>
+                    <member name="sequenceSize" type="Fast::Integer"/>
+				</meta:scope>
+			</struct>
+			
+            <!-- A dynamic initializer represents an object that is initialized during runtime -->
+			<class name="DynamicInitializer" base="Initializer">
+				<meta:scope>
+                    <callback name="construct(DynamicInitializer object)" returnType="int16" delegate="class::construct"/>
+                    <member name="assignValue" type="bool"/>
+					<member name="frames" type="array{DynamicInitializerFrame,64}" modifiers="private|local"/>
+					<method name="push()" returnType="int16"/>
+                    <method name="pop()" returnType="int16"/>
+					<method name="value(Expression v)" returnType="int16"/>
+					<method name="define()" returnType="int16"/>
+				</meta:scope>
+			</class>
+            
+            <!-- Recorded Initializer operation -->
+            <enum name="InitOperKind">
+                <meta:scope>
+                    <constant name="InitPush"/>
+                    <constant name="InitPop"/>
+                    <constant name="InitDefine"/>
+                    <constant name="InitValue"/>
+                    <constant name="InitMember"/>
+                </meta:scope>
+            </enum>
+            <struct name="InitOper">
+                <meta:scope>
+                    <member name="kind" type="InitOperKind"/>
+                    <member name="expr" type="Fast::Expression"/>
+                    <member name="name" type="lang::string"/>
+                </meta:scope>
+            </struct>
+            
+            <!-- Record initializer for later evaluation -->
+            <class name="InitializerExpr" base="Initializer">
+                <meta:scope>
+                    <callback name="construct(InitializerExpr object)" returnType="int16" delegate="class::construct"/>
+                    <member name="assignValue" type="bool"/>
+                    <member name="operations" type="list{InitOper}" modifiers="private|local"/>
+                    <method name="push()" returnType="int16"/>
+                    <method name="pop()" returnType="int16"/>
+                    <method name="value(Expression v)" returnType="int16"/>
+                    <method name="member(lang::string name)" returnType="int32"/>
+                    <method name="define()" returnType="int16"/>
+                    <method name="insert(Expression variable)" returnType="int16"/>
+                </meta:scope>
+            </class>
+			
+			<!-- ParseDeclaration is used to transfer declaration-information within the parser -->
+			<struct name="ParserDeclaration">
+				<meta:scope>
+					<member name="name" type="lang::string"/>
+					<member name="variable" type="Fast::Variable"/>
+				</meta:scope>
+			</struct>
+			
+			<typedef name="ParserDeclarationSeq" type="sequence{ParserDeclaration,256}"/>
+			
+			<!-- ParserNew is used to transfer new-expression information within the parser -->
+			<struct name="ParserNew">
+				<meta:scope>
+					<member name="kind" type="Fast::nodeKind"/>
+					<member name="parent" type="Fast::Expression"/>
+					<member name="name" type="Fast::Expression"/>
+					<member name="attr" type="Fast::Expression"/>
+				</meta:scope>
+			</struct>
+			
+			<!-- Binds function to an implementation -->
+			<struct name="Binding">
+				<meta:scope>
+					<member name="function" type="lang::function"/>
+					<member name="impl" type="Fast::Block"/>
+				</meta:scope>
+			</struct>
+
+			<!-- Keep track of lvalue-stack and whether lvalue is an assignment or not -->
+			<struct name="Lvalue">
+				<meta:scope>
+					<member name="expr" type="Fast::Expression"/>
+					<member name="isAssignment" type="lang::bool"/>
+				</meta:scope>
+			</struct>
+				
+			<!-- Parser object -->
+			<class name="Parser">
+				<meta:scope>
+					<callback name="construct(Parser object)" returnType="int16" delegate="class::construct"/>
+					<callback name="destruct(Parser object)" delegate="class::destruct"/>
+					<member name="source" type="lang::string"/>
+					<member name="preprocessed" type="lang::string" modifiers="readonly"/>
+					<member name="filename" type="lang::string"/>
+					<member name="repl" type="uint32" modifiers="readonly"/> <!-- Is parser running in interpreted mode -->
+					<member name="line" type="uint32" modifiers="readonly"/>
+					<member name="column" type="uint32" modifiers="readonly"/>
+					<member name="token" type="lang::string" modifiers="readonly"/>
+					<member name="block" type="Fast::Block" modifiers="readonly"/>
+					<member name="scope" type="Fast::Variable" modifiers="readonly"/>
+					<member name="errors" type="uint32" modifiers="readonly"/>
+					<member name="warnings" type="uint32" modifiers="readonly"/>
+					<member name="errSet" type="bool" modifiers="readonly|private"/> <!-- If set the last operation on the parser returned an error -->
+                    <member name="errLine" type="uint32" modifiers="readonly|private"/>
+					<member name="abort" type="bool" modifiers="readonly"/> <!-- If set the last operation on the parser indicated parsing should abort -->
+					<member name="bindings" type="list{Fast::Binding}" modifiers="readonly"/>
+					<member name="pass" type="uint32" modifiers="private|local"/>
+					<method name="collectHeap(word addr)" returnType="void"/>
+					<member name="heapCollected" type="list{word}" modifiers="private|local"/>
+					<member name="collected" type="list{object}" modifiers="private|local"/>
+					<member name="blockPreset" type="lang::bool" modifiers="private|local"/>
+					<member name="isLocal" type="lang::bool" modifiers="private|local"/> <!-- If set, next declaration will result in local variable -->				
+					<member name="parseSingleExpr" type="lang::bool" modifiers="private|local"/> <!-- If set parser is parsing one instruction -->
+					<member name="singleExpr" type="Fast::Expression" modifiers="private|local"/>
+					<!-- Due to limitations in the parser sometimes failed resolves can't be immediately reported.
+						 This field keeps track of a failed resolve and will be used in a report if it causes issues. -->
+					<member name="lastFailedResolve" type="lang::string" modifiers="private|local"/>
+					
+					<!-- Variables prepared for initializer (maximum of 64 variables can be initialized simultaneously) -->
+					<member name="variables" type="array{Fast::Variable,64}" modifiers="private|readonly"/>
+					<member name="variableCount" type="uint32" modifiers="private|readonly"/>
+					<!-- Have variables been initialized? (required for deciding whether to define or not) -->
+					<member name="variablesInitialized" type="lang::bool" modifiers="private|readonly"/>
+					
+					<!-- If variablePushed is TRUE it means that an object was pushed on the initializer stack without a
+						 declaration (using parseInitPushVariable). The next parseInitPush doesn't have to push. -->
+					<member name="variablePushed" type="lang::bool" modifiers="private|readonly"/>
+					
+					<!-- An initializer can have a maximum depth of 64 -->
+					<member name="initializers" type="array{Initializer,64}" modifiers="private|local"/>
+					<member name="initializerCount" type="int8" modifiers="private|local"/>
+                    <member name="initAnonymousId" type="uint32" modifiers="private|local"/>
+                    <member name="initDynamic" type="lang::bool" modifiers="private|local"/>
+                    
+                    <!-- Stage unresolved variables for implicit declaration -->
+                    <struct name="stagedId">
+                        <meta:scope>
+                            <member name="name" type="lang::string"/>
+                            <member name="found" type="lang::bool"/>
+                            <member name="line" type="lang::uint32"/>
+                            <member name="column" type="lang::uint32"/>
+                        </meta:scope>
+                    </struct>
+                    <member name="staged" type="array{stagedId,64}" modifiers="private|local"/>
+                    <member name="stagedCount" type="uint32" modifiers="private|local"/>
+                    <member name="stagingAllowed" type="bool" modifiers="private|local"/>
+					
+					<!-- Parser framework functions -->
+					<method name="parse()" returnType="uint32"/>
+					<function name="parseLine(lang::string expr,lang::object scope,lang::alias{&quot;cx_value*&quot;} value)" returnType="int16"/> <!--  Parse a single line -->
+					<method name="parseExpression(lang::string expr,Fast::Block block,Fast::Variable scope,uint32 line,uint32 column)" returnType="Fast::Expression"/>
+					<method name="isErrSet()" returnType="bool"/>
+					<method name="isAbortSet()" returnType="bool"/>
+					<method name="collect(lang::object o)" returnType="void"/>
+					<method name="reset()"/>
+					<method name="argumentToString(Fast::Variable type,lang::string id,lang::bool reference)" returnType="lang::string"/> <!-- Convert function argument to string -->	
+
+					<!-- Scope management -->
+					<method name="pushScope()" returnType="Fast::Variable"/>
+					<method name="popScope(Fast::Variable previous)"/>
+					
+					<!-- Lookup -->
+					<method name="lookup(lang::string id,lang::object source)" returnType="Fast::Expression"/>
+					
+					<!-- Blocks management -->
+					<method name="blockPush(lang::bool presetBlock)" returnType="Fast::Block"/>
+					<method name="blockPop()"/>
+					<method name="addStatement(Fast::Node statement)"/>
+					
+					<!-- Declaration -->
+					<method name="declaration(Variable type,lang::string id,lang::bool isReference)" returnType="Variable"/>
+					<method name="declareFunction(Variable returnType,lang::string id,lang::type kind,bool returnsReference)" returnType="Variable"/>
+					<method name="declareFunctionParams(Variable function)" returnType="Fast::Block"/>
+					<method name="define()" returnType="int16"/>
+					<method name="defineScope()" returnType="int16"/>
+					<method name="defineVariable(Variable object)" returnType="int16"/>
+					
+					<!-- Bind function to implementation -->
+					<method name="bind(Fast::Variable function,Fast::Block block)" returnType="int16"/>
+					<method name="bindOneliner(Fast::Variable function,Fast::Block block,Fast::Expression expr)" returnType="int16"/>
+                    
+                    <method name="initStage(lang::string id,bool found)"/>
+                    <method name="initDeclareStaged(Fast::Expression expr)"/>
+                    <method name="initPushStatic()" returnType="int16"/>
+                    <method name="initPushExpression()" returnType="Expression"/>
+					<method name="initPush()" returnType="int16"/>
+					<method name="initPushIdentifier(Expression type)" returnType="Expression"/>
+					<method name="initPop()" returnType="int16"/>
+					<method name="initValue(Expression expr)" returnType="int16"/>
+					<method name="initMember(lang::string member)" returnType="int16"/>
+					<method name="initKeyValuePush()" returnType="int16"/>
+					<method name="initKeyValuePop()" returnType="int16"/>
+					<method name="initKeyValueSet(Fast::Expression expr)" returnType="int16"/>
+					
+                    <!-- Set lvalue -->
+                    <member name="lvalue" type="array{Fast::Lvalue,64}" modifiers="private|local"/>
+                    <member name="lvalueSp" type="int32" modifiers="private|local"/>
+                    <method name="pushLvalue(Fast::Expression lvalue,lang::bool isAssignment)"/>
+                    <method name="pushReturnAsLvalue(lang::function function)"/>
+                    <method name="popLvalue()"/>
+                    <method name="getLvalue(lang::bool assignment)" returnType="Fast::Expression"/>
+                    <method name="getLvalueType(lang::bool assignment)" returnType="lang::type"/>
+
+                    <!-- This complex type is used to lookup member identifiers in element expression -->
+                    <member name="complexType" type="array{lang::type,64}" modifiers="private|local"/>
+                    <member name="complexTypeSp" type="int32" modifiers="private|local"/>
+                    <method name="pushComplexType(Fast::Expression lvalue)"/>
+                    <method name="popComplexType()"/>
+                    <method name="getComplexType()" returnType="lang::type"/>
+
+					<!-- Observer -->
+					<method name="observerPush()"/>
+					<method name="observerPop()"/>
+					<method name="observerDeclaration(lang::string id,Fast::Expression object,lang::eventMask mask,Fast::Object dispatcher)" returnType="Variable"/>
+					
+					<!-- Foreach -->
+					<method name="foreach(lang::string loopId,Fast::Expression collection)" returnType="int16"/>
+															
+					<!-- Postfix expressions -->
+					<method name="callExpr(Fast::Expression function,Fast::Expression arguments)" returnType="Fast::Expression"/>
+					<method name="memberExpr(Fast::Expression lvalue,Fast::Expression rvalue)" returnType="Fast::Expression"/>
+					<method name="elementExpr(Fast::Expression lvalue,Fast::Expression rvalue)" returnType="Fast::Expression"/>
+					<method name="castExpr(Fast::Expression lvalue,Fast::Expression rvalue)" returnType="Fast::Expression"/>
+					
+					<!-- Arithmic expressions -->
+					<method name="postfixExpr(Fast::Expression lvalue,lang::operatorKind operator)" returnType="Fast::Expression"/>
+					<method name="unaryExpr(Fast::Expression lvalue,lang::operatorKind operator)" returnType="Fast::Expression"/>
+					<method name="binaryExpr(Fast::Expression lvalues,Fast::Expression rvalues,lang::operatorKind operator)" returnType="Fast::Expression"/>
+                    <method name="ternaryExpr(Fast::Expression cond,Fast::Expression iftrue,Fast::Expression iffalse)" returnType="Fast::Expression"/>
+					
+					<!-- Wait expression -->
+					<method name="waitExpr(list{Fast::Expression} exprList,Fast::Expression timeout)" returnType="Fast::Expression"/>
+					
+					<!-- Loops and conditional statements -->
+					<method name="ifStatement(Fast::Expression condition,Fast::Block trueBranch,Fast::If falseBranch)" returnType="Fast::Node"/>
+					<method name="whileStatement(Fast::Expression condition,Fast::Block trueBranch,lang::bool isUntil)" returnType="Fast::Node"/>	
+					
+					<!-- Update -->
+					<method name="updateStatement(Fast::Expression expr,Fast::Block block)" returnType="Fast::Node"/>				
+				</meta:scope>
+			</class>
+		</meta:scope>
+	</meta:scope>
+</meta>

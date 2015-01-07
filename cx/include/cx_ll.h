@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB_LL_H_
-#define DB_LL_H_
+#ifndef CX_LL_H_
+#define CX_LL_H_
 
 #include "cx__type.h"
 #include "cx_collection.h"
@@ -19,10 +19,10 @@ extern "C" {
 typedef struct cx_llNode_s* cx_llNode;
 
 typedef struct cx_iter {
-	cx_llNode next;
-	cx_llNode cur;
-	cx_ll list;
-}cx_iter;
+    cx_llNode next;
+    cx_llNode cur;
+    cx_ll list;
+} cx_iter;
 
 cx_ll cx_llNew(void);
 void cx_llFree(cx_ll);

@@ -1,5 +1,5 @@
 
-TARGET = cx.h
+TARGET = cxsh
 
 LIBS = lang
 

@@ -2,9 +2,9 @@
 
 bool result : true
 void fail(string msg):
-	"tc_compare01: FAIL: $msg"
-	result = false
-	
+    "tc_compare01: FAIL: $msg"
+    result = false
+    
 // Literal comparisons
 // Booleans
 if false.compare(true) != LT: fail("false.compare(true) (${false.compare(true)} != LT)")

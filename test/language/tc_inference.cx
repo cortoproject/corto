@@ -1,8 +1,8 @@
 bool result : true
 
 void fail(string msg):
-	"tc_inference: FAIL: $msg"
-	result = false
+    "tc_inference: FAIL: $msg"
+    result = false
 
 enum Color:: RED, YELLOW, GREEN, BLUE
 
@@ -31,34 +31,34 @@ t = (b=1).typeof()
 if t != lang::word: fail("word/uint inference failed (${t.nameof()})")
 
 t = (c=1).typeof() 
-if t != lang::uint8: fail("uint8/uint inference failed (${t.nameof()})")	
+if t != lang::uint8: fail("uint8/uint inference failed (${t.nameof()})")    
 
 t = (d=1).typeof() 
-if t != lang::uint16: fail("uint16/uint inference failed (${t.nameof()})")	
+if t != lang::uint16: fail("uint16/uint inference failed (${t.nameof()})")    
 
 t = (e=1).typeof() 
-if t != lang::uint32: fail("uint32/uint inference failed (${t.nameof()})")	
+if t != lang::uint32: fail("uint32/uint inference failed (${t.nameof()})")    
 
 t = (f=1).typeof() 
-if t != lang::uint64: fail("uint64/uint inference failed (${t.nameof()})")	
+if t != lang::uint64: fail("uint64/uint inference failed (${t.nameof()})")    
 
 t = (g=1).typeof() 
-if t != lang::int8: fail("int8/uint inference failed (${t.nameof()})")	
+if t != lang::int8: fail("int8/uint inference failed (${t.nameof()})")    
 
 t = (h=1).typeof() 
-if t != lang::int16: fail("int16/uint inference failed (${t.nameof()})")	
+if t != lang::int16: fail("int16/uint inference failed (${t.nameof()})")    
 
 t = (i=1).typeof() 
-if t != lang::int32: fail("int32/uint inference failed (${t.nameof()})")	
+if t != lang::int32: fail("int32/uint inference failed (${t.nameof()})")    
 
 t = (j=1).typeof() 
 if t != lang::int64: fail("int64/uint inference failed (${t.nameof()})")
 
 t = (k=1).typeof() 
-if t != lang::float32: fail("float32/uint inference failed (${t.nameof()})")	
+if t != lang::float32: fail("float32/uint inference failed (${t.nameof()})")    
 
 t = (l=1).typeof() 
-if t != lang::float64: fail("float64/uint inference failed (${t.nameof()})")	
+if t != lang::float64: fail("float64/uint inference failed (${t.nameof()})")    
 
 t = (m=1).typeof() 
 if t != lang::string: fail("string/uint inference failed (${t.nameof()})")
@@ -75,31 +75,31 @@ t = (b= -1).typeof()
 if t != lang::word: fail("word/int inference failed (${t.nameof()})")
 
 t = (c= -1).typeof() 
-if t != lang::uint8: fail("uint8/int inference failed (${t.nameof()})")	
+if t != lang::uint8: fail("uint8/int inference failed (${t.nameof()})")    
 
 t = (d= -1).typeof() 
-if t != lang::uint16: fail("uint16/int inference failed (${t.nameof()})")	
+if t != lang::uint16: fail("uint16/int inference failed (${t.nameof()})")    
 
 t = (e= -1).typeof() 
-if t != lang::uint32: fail("uint32/int inference failed (${t.nameof()})")	
+if t != lang::uint32: fail("uint32/int inference failed (${t.nameof()})")    
 
 t = (f= -1).typeof() 
 if t != lang::uint64: fail("uint64/int inference failed (${t.nameof()})")
 
 t = (g= -1).typeof() 
-if t != lang::int8: fail("int8/int inference failed (${t.nameof()})")	
+if t != lang::int8: fail("int8/int inference failed (${t.nameof()})")    
 
 t = (h= -1).typeof() 
-if t != lang::int16: fail("int16/int inference failed (${t.nameof()})")	
+if t != lang::int16: fail("int16/int inference failed (${t.nameof()})")    
 
 t = (i= -1).typeof() 
-if t != lang::int32: fail("int32/int inference failed (${t.nameof()})")	
+if t != lang::int32: fail("int32/int inference failed (${t.nameof()})")    
 
 t = (j= -1).typeof() 
 if t != lang::int64: fail("int64/int inference failed (${t.nameof()})")
 
 t = (k= -1).typeof() 
-if t != lang::float32: fail("float32/int inference failed (${t.nameof()})")	
+if t != lang::float32: fail("float32/int inference failed (${t.nameof()})")    
 
 t = (l= -1).typeof() 
 if t != lang::float64: fail("float64/int inference failed (${t.nameof()})")
@@ -108,7 +108,7 @@ t = (m= -1).typeof()
 if t != lang::string: fail("string/int inference failed (${t.nameof()})")
 
 t = (n= -1).typeof() 
-if t != Color: fail("enum/int inference failed (${t.nameof()})")	
+if t != Color: fail("enum/int inference failed (${t.nameof()})")    
 
 
 // Inference with float literal
@@ -119,31 +119,31 @@ t = (b=1.1).typeof()
 if t != lang::word: fail("word/float inference failed (${t.nameof()})")
 
 t = (c=1.1).typeof() 
-if t != lang::uint8: fail("uint8/float inference failed (${t.nameof()})")	
+if t != lang::uint8: fail("uint8/float inference failed (${t.nameof()})")    
 
 t = (d=1.1).typeof() 
-if t != lang::uint16: fail("uint16/float inference failed (${t.nameof()})")	
+if t != lang::uint16: fail("uint16/float inference failed (${t.nameof()})")    
 
 t = (e=1.1).typeof() 
-if t != lang::uint32: fail("uint32/float inference failed (${t.nameof()})")	
+if t != lang::uint32: fail("uint32/float inference failed (${t.nameof()})")    
 
 t = (f=1.1).typeof() 
-if t != lang::uint64: fail("uint64/float inference failed (${t.nameof()})")	
+if t != lang::uint64: fail("uint64/float inference failed (${t.nameof()})")    
 
 t = (g=1.1).typeof() 
-if t != lang::int8: fail("int8/float inference failed (${t.nameof()})")	
+if t != lang::int8: fail("int8/float inference failed (${t.nameof()})")    
 
 t = (h=1.1).typeof() 
-if t != lang::int16: fail("int16/float inference failed (${t.nameof()})")	
+if t != lang::int16: fail("int16/float inference failed (${t.nameof()})")    
 
 t = (i=1.1).typeof() 
-if t != lang::int32: fail("int32/float inference failed (${t.nameof()})")	
+if t != lang::int32: fail("int32/float inference failed (${t.nameof()})")    
 
 t = (j=1.1).typeof() 
 if t != lang::int64: fail("int64/float inference failed (${t.nameof()})")
 
 t = (k=1.1).typeof() 
-if t != lang::float32: fail("float32/float inference failed (${t.nameof()})")	
+if t != lang::float32: fail("float32/float inference failed (${t.nameof()})")    
 
 t = (l=1.1).typeof() 
 if t != lang::float64: fail("float64/float inference failed (${t.nameof()})")
@@ -161,31 +161,31 @@ t = (b="1").typeof()
 if t != lang::word: fail("word/string inference failed (${t.nameof()})")
 
 t = (c="1").typeof() 
-if t != lang::uint8: fail("uint8/string inference failed (${t.nameof()})")	
+if t != lang::uint8: fail("uint8/string inference failed (${t.nameof()})")    
 
 t = (d="1").typeof() 
-if t != lang::uint16: fail("uint16/string inference failed (${t.nameof()})")	
+if t != lang::uint16: fail("uint16/string inference failed (${t.nameof()})")    
 
 t = (e="1").typeof() 
-if t != lang::uint32: fail("uint32/string inference failed (${t.nameof()})")	
+if t != lang::uint32: fail("uint32/string inference failed (${t.nameof()})")    
 
 t = (f="1").typeof() 
-if t != lang::uint64: fail("uint64/string inference failed (${t.nameof()})")	
+if t != lang::uint64: fail("uint64/string inference failed (${t.nameof()})")    
 
 t = (g="1").typeof() 
-if t != lang::int8: fail("int8/string inference failed (${t.nameof()})")	
+if t != lang::int8: fail("int8/string inference failed (${t.nameof()})")    
 
 t = (h="1").typeof() 
 if t != lang::int16: fail("int16/string inference failed (${t.nameof()})")
 
 t = (i="1").typeof() 
-if t != lang::int32: fail("int32/string inference failed (${t.nameof()})")	
+if t != lang::int32: fail("int32/string inference failed (${t.nameof()})")    
 
 t = (j="1").typeof() 
 if t != lang::int64: fail("int64/string inference failed (${t.nameof()})")
 
 t = (k="1").typeof() 
-if t != lang::float32: fail("float32/string inference failed (${t.nameof()})")	
+if t != lang::float32: fail("float32/string inference failed (${t.nameof()})")    
 
 t = (l="1").typeof() 
 if t != lang::float64: fail("float64/string inference failed (${t.nameof()})")

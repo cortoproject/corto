@@ -1,11 +1,11 @@
 // Test assigning various complex values to a list
 bool result: true
 void fail(string msg):
-	"tc_list06: FAIL: $msg"
-	result = false
+    "tc_list06: FAIL: $msg"
+    result = false
 
 struct Point::
-	x, y: uint32
+    x, y: uint32
 
 list{Point} pointListA: {30,40}
 list{Point} pointListB: {70,80}, {90,100}

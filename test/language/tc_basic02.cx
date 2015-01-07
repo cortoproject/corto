@@ -1,7 +1,7 @@
 bool result: true
 void fail(string msg):
-	"tc_basic02: FAIL: $msg"
-	result = false
+    "tc_basic02: FAIL: $msg"
+    result = false
 
 // Declare two variables
 var uint32 a
@@ -21,8 +21,8 @@ if b != 0: fail("b != 0 ($b) #2")
 // Do calculations without assignments, validate that operands are nonetheless evaluated
 uint32 count : 0
 int32 foo(uint32 x): 
-	count+=x
-	foo = x
+    count+=x
+    foo = x
 
 foo(10) + foo(20)
 if count != 30: fail("count != 30 ($count)")

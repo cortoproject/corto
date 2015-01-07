@@ -1,8 +1,8 @@
 // Conditional operators and expression lists
 bool result: true
 void fail(string msg):
-	"tc_exprlist10: FAIL: $msg"
-	result = false
+    "tc_exprlist10: FAIL: $msg"
+    result = false
 
 bool a: false
 

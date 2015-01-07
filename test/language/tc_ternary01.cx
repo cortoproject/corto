@@ -2,13 +2,13 @@ bool result: true
 uint32 T, F
 
 void fail(string msg):
-	"tc_ternary01: FAIL: $msg"
-	result = false
+    "tc_ternary01: FAIL: $msg"
+    result = false
 
 void validate(uint32 T, uint32 F, uint32 tT, uint32 tF, string msg):
-	if (T != tT) || (F != tF):
-		"tc_ternary01: FAIL: $msg (tT=$tT T=$T tF$tF F=$F)"
-		result = false
+    if (T != tT) || (F != tF):
+        "tc_ternary01: FAIL: $msg (tT=$tT T=$T tF$tF F=$F)"
+        result = false
 
 // Literal comparison, no result
 true  ? T++ : F++ 

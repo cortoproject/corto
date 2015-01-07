@@ -1,9 +1,9 @@
 // Multiple lvalues and rvalues
 bool result: true
 void fail(string msg):
-	"tc_exprlist03: FAIL: $msg"
-	result = false
-	
+    "tc_exprlist03: FAIL: $msg"
+    result = false
+    
 var uint32 a, b = 10, 20
 
 if a != 10: fail("a != 10 ($a)")

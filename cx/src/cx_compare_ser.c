@@ -6,127 +6,134 @@
 
 #include "string.h"
 
-#define DB_COMPARE(type,v1,v2) *(type*)v1 > *(type*)v2 ? DB_GT : *(type*)v1 < *(type*)v2 ? DB_LT : DB_EQ
+#define CX_COMPARE(type,v1,v2) *(type*)v1 > *(type*)v2 ? CX_GT : *(type*)v1 < *(type*)v2 ? CX_LT : CX_EQ
 
 static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData) {
-	cx_equalityKind result = DB_EQ;
+    cx_equalityKind result = CX_EQ;
     cx_compare_ser_t *data = userData;
     cx_type type = cx_valueType(info)->real;
     void *_this = cx_valueValue(info);
     void *value = (void*)((cx_word)cx_valueValue(&data->value) + ((cx_word)_this - (cx_word)data->base));
     
-    DB_UNUSED(s);
+    CX_UNUSED(s);
     
-	switch(cx_primitive(type)->kind) {
-        case DB_BINARY:
+    switch(cx_primitive(type)->kind) {
+        case CX_BINARY:
             switch(cx_primitive(type)->width) {
-                case DB_WIDTH_8:
-                    result = DB_COMPARE(cx_octet, _this, value);
+                case CX_WIDTH_8:
+                    result = CX_COMPARE(cx_octet, _this, value);
                     break;
-                case DB_WIDTH_16:
-                    result = DB_COMPARE(cx_uint16, _this, value);
+                case CX_WIDTH_16:
+                    result = CX_COMPARE(cx_uint16, _this, value);
                     break;
-                case DB_WIDTH_32:
-                    result = DB_COMPARE(cx_uint32, _this, value);
+                case CX_WIDTH_32:
+                    result = CX_COMPARE(cx_uint32, _this, value);
                     break;
-                case DB_WIDTH_64:
-                    result = DB_COMPARE(cx_uint64, _this, value);
+                case CX_WIDTH_64:
+                    result = CX_COMPARE(cx_uint64, _this, value);
                     break;
-                case DB_WIDTH_WORD:
-                    result = DB_COMPARE(cx_word, _this, value);
+                case CX_WIDTH_WORD:
+                    result = CX_COMPARE(cx_word, _this, value);
                     break;
             }
             break;
-        case DB_BOOLEAN:
-            result = DB_COMPARE(cx_bool, _this, value);
+        case CX_BOOLEAN:
+            result = CX_COMPARE(cx_bool, _this, value);
             break;
-        case DB_CHARACTER:
-            result = DB_COMPARE(cx_char, _this, value);
+        case CX_CHARACTER:
+            result = CX_COMPARE(cx_char, _this, value);
             break;
-        case DB_INTEGER:
+        case CX_INTEGER:
             switch(cx_primitive(type)->width) {
-                case DB_WIDTH_8:
-                    result = DB_COMPARE(cx_int8, _this, value);
+                case CX_WIDTH_8:
+                    result = CX_COMPARE(cx_int8, _this, value);
                     break;
-                case DB_WIDTH_16:
-                    result = DB_COMPARE(cx_int16, _this, value);
+                case CX_WIDTH_16:
+                    result = CX_COMPARE(cx_int16, _this, value);
                     break;
-                case DB_WIDTH_32:
-                    result = DB_COMPARE(cx_int32, _this, value);
+                case CX_WIDTH_32:
+                    result = CX_COMPARE(cx_int32, _this, value);
                     break;
-                case DB_WIDTH_64:
-                    result = DB_COMPARE(cx_int64, _this, value);
+                case CX_WIDTH_64:
+                    result = CX_COMPARE(cx_int64, _this, value);
                     break;
-                case DB_WIDTH_WORD:
-                    result = DB_COMPARE(intptr_t, _this, value);
+                case CX_WIDTH_WORD:
+                    result = CX_COMPARE(intptr_t, _this, value);
                     break;
             }
             break;
-        case DB_UINTEGER:
+        case CX_UINTEGER:
             switch(cx_primitive(type)->width) {
-                case DB_WIDTH_8:
-                    result = DB_COMPARE(cx_uint8, _this, value);
+                case CX_WIDTH_8:
+                    result = CX_COMPARE(cx_uint8, _this, value);
                     break;
-                case DB_WIDTH_16:
-                    result = DB_COMPARE(cx_uint16, _this, value);
+                case CX_WIDTH_16:
+                    result = CX_COMPARE(cx_uint16, _this, value);
                     break;
-                case DB_WIDTH_32:
-                    result = DB_COMPARE(cx_uint32, _this, value);
+                case CX_WIDTH_32:
+                    result = CX_COMPARE(cx_uint32, _this, value);
                     break;
-                case DB_WIDTH_64:
-                    result = DB_COMPARE(cx_uint64, _this, value);
+                case CX_WIDTH_64:
+                    result = CX_COMPARE(cx_uint64, _this, value);
                     break;
-                case DB_WIDTH_WORD:
-                    result = DB_COMPARE(uintptr_t, _this, value);
+                case CX_WIDTH_WORD:
+                    result = CX_COMPARE(uintptr_t, _this, value);
                     break;
             }
             break;
-        case DB_FLOAT:
+        case CX_FLOAT:
             switch(cx_primitive(type)->width) {
-                case DB_WIDTH_32:
-                    result = DB_COMPARE(cx_float32, _this, value);
+                case CX_WIDTH_32:
+                    result = CX_COMPARE(cx_float32, _this, value);
                     break;
-                case DB_WIDTH_64:
-                    result = DB_COMPARE(cx_float64, _this, value);
+                case CX_WIDTH_64:
+                    result = CX_COMPARE(cx_float64, _this, value);
                     break;
                 default:
                     break;
             }
             break;
-        case DB_TEXT:
-            result = strcmp(*(cx_string*)_this, *(cx_string*)value);
+        case CX_TEXT: {
+            cx_string thisStr = *(cx_string*)_this;
+            cx_string valueStr = *(cx_string*)value;
+            if (thisStr && valueStr) {
+                result = strcmp(thisStr, valueStr);
+            } else {
+                result = !(thisStr == valueStr);
+            }
             break;
-        case DB_ENUM:
-        case DB_BITMASK:
-            result = DB_COMPARE(cx_int32, _this, value);
+        }
+        case CX_ENUM:
+        case CX_BITMASK:
+            result = CX_COMPARE(cx_int32, _this, value);
             break;
-        case DB_ALIAS:
-            result = DB_COMPARE(cx_word, _this, value);
+        case CX_ALIAS:
+            result = CX_COMPARE(cx_word, _this, value);
             break;
-	}
+    }
     
     data->result = result;
     
-	return data->result != DB_EQ;
+    return data->result != CX_EQ;
 }
 
 static cx_int16 cx_ser_reference(cx_serializer s, cx_value *info, void *userData) {
     cx_compare_ser_t *data = userData;
     void *_this = cx_valueValue(info);
     void *value = (void*)((cx_word)cx_valueValue(&data->value) + ((cx_word)_this - (cx_word)data->base));
-    DB_UNUSED(s);
+    CX_UNUSED(s);
     
     if (*(cx_object*)_this != *(cx_object*)value) {
-        data->result = DB_NEQ;
+        data->result = CX_NEQ;
     } else {
-        data->result = DB_EQ;
+        data->result = CX_EQ;
     }
     
-    return data->result != DB_EQ;
+    return data->result != CX_EQ;
 }
 
 static cx_equalityKind cx_collection_compareArrayWithList(cx_collection t, void *array, cx_uint32 elementSize, cx_ll list) {
-    cx_equalityKind result = DB_EQ;
+    cx_equalityKind result = CX_EQ;
     cx_uint32 i=0;
     cx_iter iter;
     void *e1, *e2;
@@ -140,12 +147,12 @@ static cx_equalityKind cx_collection_compareArrayWithList(cx_collection t, void 
         } else {
             e1 = cx_iterNextPtr(&iter);
         }
-        e2 = DB_OFFSET(array, elementSize * i);
+        e2 = CX_OFFSET(array, elementSize * i);
         v1.type = v2.type = elementType;
         v1.value = e2;
         v2.value = e1;
         result = cx_type_compare(v1, v2);
-        if (result != DB_EQ) {
+        if (result != CX_EQ) {
             break;
         }
         i++;
@@ -155,7 +162,7 @@ static cx_equalityKind cx_collection_compareArrayWithList(cx_collection t, void 
 }
 
 static cx_equalityKind cx_collection_compareListWithList(cx_collection t, cx_ll list1, cx_ll list2) {
-    cx_equalityKind result = DB_EQ;
+    cx_equalityKind result = CX_EQ;
     cx_iter iter1, iter2;
     void *e1, *e2;
     cx_type elementType = t->elementType->real;
@@ -175,7 +182,7 @@ static cx_equalityKind cx_collection_compareListWithList(cx_collection t, cx_ll 
         v1.value = e1;
         v2.value = e2;
         result = cx_type_compare(v1, v2);
-        if (result != DB_EQ) {
+        if (result != CX_EQ) {
             break;
         }
     }
@@ -187,12 +194,12 @@ static cx_equalityKind cx_collection_compareListWithList(cx_collection t, cx_ll 
 static cx_int16 cx_ser_collection(cx_serializer s, cx_value *info, void* userData) {
     cx_type t1, t2;
     void *v1, *v2;
-    cx_equalityKind result = DB_EQ;
+    cx_equalityKind result = CX_EQ;
     cx_uint32 size1 = 0, size2 = 0;
     cx_compare_ser_t *data = userData;
     cx_any a1, a2;
     
-    DB_UNUSED(s);
+    CX_UNUSED(s);
     
     /* If this function is reached, collection-types are either equal or comparable. When the 
      * base-object was a collection, the collection type can be different. When the base-object
@@ -224,34 +231,34 @@ static cx_int16 cx_ser_collection(cx_serializer s, cx_value *info, void* userDat
         elementSize = cx_type_sizeof(cx_collection(t1)->elementType->real);
         
         switch(cx_collection(t1)->kind) {
-            case DB_ARRAY:
+            case CX_ARRAY:
                 array1 = v1;
                 elementSize = cx_type_sizeof(cx_collection(t1)->elementType->real);
                 mem = cx_collection(t1)->max * elementSize;
                 break;
-            case DB_SEQUENCE:
+            case CX_SEQUENCE:
                 array1 = ((cx_objectSeq*)v1)->buffer;
                 elementSize = cx_type_sizeof(cx_collection(t1)->elementType->real);
                 mem = ((cx_objectSeq*)v1)->length * elementSize;
                 break;
-            case DB_LIST:
+            case CX_LIST:
                 list1 = *(cx_ll*)v1;
                 break;
-            case DB_MAP:
+            case CX_MAP:
                 break;
         }
         
         switch(cx_collection(t2)->kind) {
-            case DB_ARRAY:
+            case CX_ARRAY:
                 array2 = v2;
                 break;
-            case DB_SEQUENCE:
+            case CX_SEQUENCE:
                 array2 = ((cx_objectSeq*)v2)->buffer;
                 break;
-            case DB_LIST:
+            case CX_LIST:
                 list2 = *(cx_ll*)v2;
                 break;
-            case DB_MAP:
+            case CX_MAP:
                 break;
         }
         
@@ -265,11 +272,11 @@ static cx_int16 cx_ser_collection(cx_serializer s, cx_value *info, void* userDat
             if (array2) {
                 result = cx_collection_compareArrayWithList(cx_collection(t1), array2, elementSize, list1);
                 /* Reverse result */
-                if (result != DB_EQ) {
-                    if (result == DB_GT) {
-                        result = DB_LT;
+                if (result != CX_EQ) {
+                    if (result == CX_GT) {
+                        result = CX_LT;
                     } else {
-                        result = DB_GT;
+                        result = CX_GT;
                     }
                 }
             } else if (list2) {
@@ -277,18 +284,18 @@ static cx_int16 cx_ser_collection(cx_serializer s, cx_value *info, void* userDat
             }
         }
     } else {
-        result = size1 > size2 ? DB_GT : DB_LT;
+        result = size1 > size2 ? CX_GT : CX_LT;
     }
     
     data->result = result < 0 ? -1 : result > 0 ? 1 : 0;
     
-    return data->result != DB_EQ;
+    return data->result != CX_EQ;
 }
 
 static cx_int16 cx_ser_construct(cx_serializer s, cx_value *info, void *userData) {
     cx_compare_ser_t *data = userData;
     cx_bool compare = FALSE;
-    DB_UNUSED(s);
+    CX_UNUSED(s);
     
     cx_type t1 = cx_valueType(info)->real;
     cx_type t2 = cx_valueType(&data->value)->real;
@@ -297,26 +304,26 @@ static cx_int16 cx_ser_construct(cx_serializer s, cx_value *info, void *userData
     if (t1 != t2) {
         /* Certain types of collections can be compared with each other as long as their elementTypes
          * are equal */
-        if ((t1->kind == DB_COLLECTION) && (t1->kind == t2->kind)) {
+        if ((t1->kind == CX_COLLECTION) && (t1->kind == t2->kind)) {
             switch(cx_collection(t1)->kind) {
-            case DB_ARRAY:
-            case DB_SEQUENCE:
-            case DB_LIST:
+            case CX_ARRAY:
+            case CX_SEQUENCE:
+            case CX_LIST:
                 switch(cx_collection(t2)->kind) {
-                case DB_ARRAY:
-                case DB_SEQUENCE:
-                case DB_LIST:
+                case CX_ARRAY:
+                case CX_SEQUENCE:
+                case CX_LIST:
                     if (cx_collection(t1)->elementType == cx_collection(t2)->elementType) {
                         compare = TRUE;
                     }
                     break;
-                case DB_MAP:
+                case CX_MAP:
                     compare = FALSE;
                     break;
                 }
                 break;
-            case DB_MAP:
-                if (cx_collection(t2)->kind == DB_MAP) {
+            case CX_MAP:
+                if (cx_collection(t2)->kind == CX_MAP) {
                     if (cx_collection(t1)->elementType == cx_collection(t2)->elementType) {
                         if (cx_map(t1)->keyType == cx_map(t2)->keyType) {
                             compare = TRUE;
@@ -325,29 +332,38 @@ static cx_int16 cx_ser_construct(cx_serializer s, cx_value *info, void *userData
                 }
                 break;
             }
+        } else {
+            if ((!t1->reference && (t1->kind == CX_VOID)) && (t2->reference || 
+               ((t2->kind == CX_PRIMITIVE) && (cx_primitive(t2)->kind == CX_TEXT)))) {
+                compare = TRUE;
+            }
+            if ((!t2->reference && (t2->kind == CX_VOID)) && (t1->reference || 
+               ((t1->kind == CX_PRIMITIVE) && (cx_primitive(t1)->kind == CX_TEXT)))) {
+                compare = TRUE;
+            }
         }
     } else {
         compare = TRUE;
     }
     
-    data->result = compare ? DB_EQ : DB_NEQ;
+    data->result = compare ? CX_EQ : CX_NEQ;
     data->base = cx_valueValue(info);
-    
+
     return !compare;
 }
 
 struct cx_serializer_s cx_compare_ser(cx_modifier access, cx_operatorKind accessKind, cx_serializerTraceKind trace) {
-	struct cx_serializer_s s;
+    struct cx_serializer_s s;
     
-	cx_serializerInit(&s);
+    cx_serializerInit(&s);
     
     s.access = access;
     s.accessKind = accessKind;
     s.traceKind = trace;
     s.construct = cx_ser_construct;
-    s.program[DB_VOID] = NULL;
-    s.program[DB_PRIMITIVE] = cx_ser_primitive;
-    s.program[DB_COLLECTION] = cx_ser_collection;
+    s.program[CX_VOID] = NULL;
+    s.program[CX_PRIMITIVE] = cx_ser_primitive;
+    s.program[CX_COLLECTION] = cx_ser_collection;
     s.reference = cx_ser_reference;
 
     return s;

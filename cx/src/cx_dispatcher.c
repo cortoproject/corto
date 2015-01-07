@@ -13,11 +13,11 @@
 cx_observableEvent cx_dispatcher_getEvent_v(cx_dispatcher _this, cx_observer observer, cx_object me, cx_object observable, cx_object src) {
 /* $begin(::cortex::lang::dispatcher::getEvent) */
 
-    DB_UNUSED(_this);
-    DB_UNUSED(observer);
-    DB_UNUSED(me);
-    DB_UNUSED(observable);
-    DB_UNUSED(src);
+    CX_UNUSED(_this);
+    CX_UNUSED(observer);
+    CX_UNUSED(me);
+    CX_UNUSED(observable);
+    CX_UNUSED(src);
     return NULL;
 
 /* $end */
@@ -27,8 +27,8 @@ cx_observableEvent cx_dispatcher_getEvent_v(cx_dispatcher _this, cx_observer obs
 cx_void cx_dispatcher_post_v(cx_dispatcher _this, cx_event event) {
 /* $begin(::cortex::lang::dispatcher::post) */
 
-    DB_UNUSED(_this);
-    DB_UNUSED(event);
+    CX_UNUSED(_this);
+    CX_UNUSED(event);
 
 /* $end */
 }

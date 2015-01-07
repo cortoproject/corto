@@ -24,7 +24,7 @@ cx_int16 Fast_Local_construct(Fast_Local object) {
     Fast_Expression(object)->isReference = object->isReference;
 
     if (Fast_Expression_getType(Fast_Expression(object))->reference) {
-    	Fast_Expression(object)->forceReference = TRUE;
+        Fast_Expression(object)->forceReference = TRUE;
     }
 
     return 0;
@@ -34,11 +34,11 @@ cx_int16 Fast_Local_construct(Fast_Local object) {
 /* ::cortex::Fast::Local::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
 cx_ic Fast_Local_toIc_v(Fast_Local _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Local::toIc) */
-	cx_ic result;
-	DB_UNUSED(storage);
-	DB_UNUSED(stored);
+    cx_ic result;
+    CX_UNUSED(storage);
+    CX_UNUSED(stored);
 
-	result = (cx_ic)cx_icLocal__create(
+    result = (cx_ic)cx_icLocal__create(
                 program,
                 Fast_Node(_this)->line,
                 _this->name,
@@ -47,10 +47,10 @@ cx_ic Fast_Local_toIc_v(Fast_Local _this, cx_icProgram program, cx_icStorage sto
                _this->kind == FAST_LocalReturn,
                FALSE);
 
-	if (_this->isReference) {
-		((cx_icStorage)result)->isReference = TRUE;
-	}
+    if (_this->isReference) {
+        ((cx_icStorage)result)->isReference = TRUE;
+    }
 
-	return result;
+    return result;
 /* $end */
 }

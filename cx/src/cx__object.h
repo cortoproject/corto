@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB__OBJECT_H_
-#define DB__OBJECT_H_
+#ifndef CX__OBJECT_H_
+#define CX__OBJECT_H_
 
 #include "cx__type.h"
 #include "cx_rbtree.h"
@@ -50,21 +50,21 @@ typedef struct cx__writable {
 }cx__writable;
 
 typedef enum cx__observerKind {
-    DB__OBSERVER,
-    DB__OBSERVER_THIS,
-    DB__OBSERVER_CDECL,
-    DB__OBSERVER_CDECL_THIS,
+    CX__OBSERVER,
+    CX__OBSERVER_THIS,
+    CX__OBSERVER_CDECL,
+    CX__OBSERVER_CDECL_THIS,
 }cx__observerKind;
 
 typedef struct cx__observer cx__observer;
 typedef void (*cx__notifyCallback)(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask);
 
 struct cx__observer {
-	cx_object _this;
-	cx_observer observer;
-	cx_int32 count;
-	cx__notifyCallback notify;
-	cx_bool enabled;
+    cx_object _this;
+    cx_observer observer;
+    cx_int32 count;
+    cx__notifyCallback notify;
+    cx_bool enabled;
 };
 
 typedef struct cx__observable cx__observable;
@@ -122,4 +122,4 @@ void cx__setState(cx_object o, cx_uint8 state);
 }
 #endif
 
-#endif /* DB__OBJECT_H_ */
+#endif /* CX__OBJECT_H_ */

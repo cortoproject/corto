@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB__EQUALS_H_
-#define DB__EQUALS_H_
+#ifndef CX__EQUALS_H_
+#define CX__EQUALS_H_
 
 #include "cx__type.h"
 
@@ -37,4 +37,4 @@ cx_equalityKind cx_string_equals(cx_any value1, cx_any value2);
 }
 #endif
 
-#endif /* DB__EQUALS_H_ */
+#endif /* CX__EQUALS_H_ */

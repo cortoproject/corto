@@ -12,9 +12,9 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData
     void *_this = cx_valueValue(info);
     void *value = (void*)((cx_word)cx_valueValue(&data->value) + ((cx_word)_this - (cx_word)data->base));
     
-    DB_UNUSED(s);
+    CX_UNUSED(s);
     
-    if (cx_primitive(type)->kind != DB_TEXT) {
+    if (cx_primitive(type)->kind != CX_TEXT) {
         memcpy(value, _this, type->size);
     } else {
         *(cx_string*)value = cx_strdup(*(cx_string*)_this);
@@ -27,7 +27,7 @@ static cx_int16 cx_ser_reference(cx_serializer s, cx_value *info, void *userData
     cx_copy_ser_t *data = userData;
     void *_this = cx_valueValue(info);
     void *value = (void*)((cx_word)cx_valueValue(&data->value) + ((cx_word)_this - (cx_word)data->base));
-    DB_UNUSED(s);
+    CX_UNUSED(s);
  
     cx_set(value, *(cx_object*)_this);
     
@@ -60,15 +60,22 @@ static cx_int16 cx_collection_copyListToArray(cx_collection t, void *array, cx_u
         } else {
             e2 = cx_iterNextPtr(&iter);
         }
-        e1 = DB_OFFSET(array, elementSize * i);
+        e1 = CX_OFFSET(array, elementSize * i);
         v1.type = v2.type = elementType;
-        v1.value = e1;
-        v2.value = e2;
         if (!reverse) {
-            result = cx_type_copy(v1, v2);
+            v1.value = e1;
+            v2.value = e2;
         } else {
-            result = cx_type_copy(v2, v1);
+            v1.value = e2;
+            v2.value = e1;            
         }
+
+        if (elementType->reference) {
+            *(cx_object*)v1.value = *(cx_object*)v2.value;
+        } else {
+            result = cx_type_copy(v1, v2);
+        }
+        
         i++;
     }
     
@@ -93,11 +100,15 @@ static cx_int16 cx_collection_copyListToList(cx_collection t, cx_ll list1, cx_ll
             e1 = cx_iterNextPtr(&iter1);
             e2 = cx_iterNextPtr(&iter2);
         }
-        v1.type = v2.type = elementType;
-        v1.value = e1;
-        v2.value = e2;
-        
-        result = cx_type_copy(v1, v2);
+
+        if (elementType->reference) {
+            *(cx_object*)e1 = *(cx_object*)e2;
+        } else {
+            v1.type = v2.type = elementType;
+            v1.value = e1;
+            v2.value = e2;
+            result = cx_type_copy(v1, v2);
+        }
     }
     
     return result;
@@ -133,7 +144,7 @@ static void cx_collection_resizeList(cx_collection t, cx_ll list, cx_uint32 size
 /* Resize list */
 static void cx_collection_resizeArray(cx_collection t, void* sequence, cx_uint32 size) {
     /* Only sequences can be resized */
-    if (t->kind == DB_SEQUENCE) {
+    if (t->kind == CX_SEQUENCE) {
         cx_uint32 ownSize = ((cx_objectSeq*)sequence)->length;
         cx_type elementType = t->elementType->real;
         
@@ -141,7 +152,7 @@ static void cx_collection_resizeArray(cx_collection t, void* sequence, cx_uint32
         if (ownSize > size) {
             cx_uint32 i;
             for(i=size; i<ownSize; i++) {
-                cx_collection_deinitElement(t, DB_OFFSET(((cx_objectSeq*)sequence)->buffer, elementType->size * i));
+                cx_collection_deinitElement(t, CX_OFFSET(((cx_objectSeq*)sequence)->buffer, elementType->size * i));
             }
             /* Reallocate buffer */
             ((cx_objectSeq*)sequence)->buffer = cx_realloc(((cx_objectSeq*)sequence)->buffer, elementType->size * size);
@@ -152,7 +163,7 @@ static void cx_collection_resizeArray(cx_collection t, void* sequence, cx_uint32
             ((cx_objectSeq*)sequence)->buffer = cx_realloc(((cx_objectSeq*)sequence)->buffer, elementType->size * size);
             
             /* Memset new memory */
-            memset(DB_OFFSET(((cx_objectSeq*)sequence)->buffer, elementType->size * ownSize), 0, (size - ownSize) * elementType->size);
+            memset(CX_OFFSET(((cx_objectSeq*)sequence)->buffer, elementType->size * ownSize), 0, (size - ownSize) * elementType->size);
         }
         ((cx_objectSeq*)sequence)->length = size;
     }
@@ -166,7 +177,7 @@ static cx_int16 cx_ser_collection(cx_serializer s, cx_value *info, void* userDat
     cx_copy_ser_t *data = userData;
     cx_uint32 result = 0;
     
-    DB_UNUSED(s);
+    CX_UNUSED(s);
     
     /* If this function is reached, collection-types are either equal or comparable. When the
      * base-object was a collection, the collection type can be different. When the base-object
@@ -192,35 +203,35 @@ static cx_int16 cx_ser_collection(cx_serializer s, cx_value *info, void* userDat
         elementSize = cx_type_sizeof(cx_collection(t1)->elementType->real);
         
         switch(cx_collection(t1)->kind) {
-            case DB_ARRAY:
+            case CX_ARRAY:
                 array1 = v1;
                 elementSize = cx_type_sizeof(cx_collection(t1)->elementType->real);
                 size1 = cx_collection(t1)->max;
                 break;
-            case DB_SEQUENCE:
+            case CX_SEQUENCE:
                 array1 = ((cx_objectSeq*)v1)->buffer;
                 elementSize = cx_type_sizeof(cx_collection(t1)->elementType->real);
                 size1 = ((cx_objectSeq*)v1)->length;
                 break;
-            case DB_LIST:
+            case CX_LIST:
                 list1 = *(cx_ll*)v1;
                 size1 = cx_llSize(list1);
                 break;
-            case DB_MAP:
+            case CX_MAP:
                 break;
         }
         
         switch(cx_collection(t2)->kind) {
-            case DB_ARRAY:
+            case CX_ARRAY:
                 array2 = v2;
                 break;
-            case DB_SEQUENCE:
+            case CX_SEQUENCE:
                 array2 = ((cx_objectSeq*)v2)->buffer;
                 break;
-            case DB_LIST:
+            case CX_LIST:
                 list2 = *(cx_ll*)v2;
                 break;
-            case DB_MAP:
+            case CX_MAP:
                 break;
         }
         
@@ -254,7 +265,7 @@ static cx_int16 cx_ser_collection(cx_serializer s, cx_value *info, void* userDat
 
 static cx_int16 cx_ser_construct(cx_serializer s, cx_value *info, void *userData) {
     cx_copy_ser_t *data = userData;
-    DB_UNUSED(s);
+    CX_UNUSED(s);
     
     cx_type t1 = cx_valueType(info)->real;
     cx_type t2 = cx_valueType(&data->value)->real;
@@ -265,17 +276,17 @@ static cx_int16 cx_ser_construct(cx_serializer s, cx_value *info, void *userData
 }
 
 struct cx_serializer_s cx_copy_ser(cx_modifier access, cx_operatorKind accessKind, cx_serializerTraceKind trace) {
-	struct cx_serializer_s s;
+    struct cx_serializer_s s;
     
-	cx_serializerInit(&s);
+    cx_serializerInit(&s);
     
     s.access = access;
     s.accessKind = accessKind;
     s.traceKind = trace;
     s.construct = cx_ser_construct;
-    s.program[DB_VOID] = NULL;
-    s.program[DB_PRIMITIVE] = cx_ser_primitive;
-    s.program[DB_COLLECTION] = cx_ser_collection;
+    s.program[CX_VOID] = NULL;
+    s.program[CX_PRIMITIVE] = cx_ser_primitive;
+    s.program[CX_COLLECTION] = cx_ser_collection;
     s.reference = cx_ser_reference;
     return s;
 }

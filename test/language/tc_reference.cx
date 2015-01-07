@@ -1,11 +1,11 @@
 bool result : true
 void fail(string msg):
-	"tc_reference: FAIL: $msg"
-	result = false
+    "tc_reference: FAIL: $msg"
+    result = false
 
 void passIntByRef(uint32& a):
-	if a != 10:             fail("failed to resolve correct value of reference parameter ($a)")		
-	if a.nameof() != "foo": fail("failed to use reference parameter as object")
+    if a != 10:             fail("failed to resolve correct value of reference parameter ($a)")        
+    if a.nameof() != "foo": fail("failed to use reference parameter as object")
 
 void passAnyObject(object a, string name): if a.nameof() != name: fail("failed to pass object of any type")
 

@@ -1,12 +1,12 @@
 // Multiple lvalue-assignments with complex type
 bool result: true
 void fail(string msg):
-	"tc_exprlist02: FAIL: $msg"
-	result = false
-	
+    "tc_exprlist02: FAIL: $msg"
+    result = false
+    
 struct Point::
-	x, y: uint32
-	
+    x, y: uint32
+    
 var Point p,q = {10, 20}
 if p.x != 10: fail("p.x initialization failed ($p)")
 if p.y != 20: fail("p.y initialization failed ($p)")

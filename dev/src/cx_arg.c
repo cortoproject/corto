@@ -202,13 +202,13 @@ typedef struct cx_argCountWalk_t {
 }cx_argCountWalk_t;
 static void cx_argCountWalk(char* arg, cx_argCountWalk_t* userData) {
     if (arg) {
-    	if (userData->arg && !strcmp(arg, userData->arg)) {
-    		userData->count++;
-    	}
+        if (userData->arg && !strcmp(arg, userData->arg)) {
+            userData->count++;
+        }
     } else {
-    	if (!userData->arg) {
-    		userData->count++;
-    	}
+        if (!userData->arg) {
+            userData->count++;
+        }
     }
 }
 
@@ -255,18 +255,18 @@ static int cx_argValidateWalk(cx_arg* arg, cx_ll parsed) {
     if ((arg->min <= occurred) && (occurred <= arg->max)) {
         /* Check dependencies */
         if (occurred) {
-        	if (arg->depend) {
-				if (!cx_llWalk(arg->depend, (cx_walkAction)cx_argDependencyWalk, parsed)) {
-					cx_error("cx_argValidateWalk: not all dependencies are resolved for argument '%s'.", arg_str);
-					result = 0;
-				}
-        	}
-        	if (arg->exclusive) {
-				if (!cx_llWalk(arg->exclusive, (cx_walkAction)cx_argExclusiveWalk, parsed)) {
-					cx_error("cx_argValidateWalk: invalid combination of arguments encountered while parsing '%s'.", arg_str);
-					result = 0;
-				}
-        	}
+            if (arg->depend) {
+                if (!cx_llWalk(arg->depend, (cx_walkAction)cx_argDependencyWalk, parsed)) {
+                    cx_error("cx_argValidateWalk: not all dependencies are resolved for argument '%s'.", arg_str);
+                    result = 0;
+                }
+            }
+            if (arg->exclusive) {
+                if (!cx_llWalk(arg->exclusive, (cx_walkAction)cx_argExclusiveWalk, parsed)) {
+                    cx_error("cx_argValidateWalk: invalid combination of arguments encountered while parsing '%s'.", arg_str);
+                    result = 0;
+                }
+            }
         }
     } else {
         if (occurred < arg->min) {
@@ -287,7 +287,7 @@ static int cx_argValidate(cx_ll parsed) {
 }
 
 static int cx_freeParsedWalk(char* arg, void* udata) {
-	DB_UNUSED(udata);
+    CX_UNUSED(udata);
     free(arg);
     return 1;
 }
@@ -310,43 +310,43 @@ int cx_argParse(int argc, char* argv[]) {
 
     if (argc != 1) {
 
-		/* Parse arguments */
-		while(i<argc) {
-			arg = argv[i];
+        /* Parse arguments */
+        while(i<argc) {
+            arg = argv[i];
 
-			if (arg) {
-				if (*arg == '-') {
-					arg++;
-					if (*arg == '-') {
-						arg++;
-					} else {
-						argBuff[0] = *arg;
-						arg = argBuff;
-					}
+            if (arg) {
+                if (*arg == '-') {
+                    arg++;
+                    if (*arg == '-') {
+                        arg++;
+                    } else {
+                        argBuff[0] = *arg;
+                        arg = argBuff;
+                    }
 
-					/* Execute argument */
-					next = cx_argExec(arg, argc-i, &argv[i]);
-					if (next > 0) {
-						i += next + 1;
+                    /* Execute argument */
+                    next = cx_argExec(arg, argc-i, &argv[i]);
+                    if (next > 0) {
+                        i += next + 1;
 
-						/* Add argument to parsed list */
-						cx_llInsert(parsed, strdup(arg));
+                        /* Add argument to parsed list */
+                        cx_llInsert(parsed, strdup(arg));
 
-					} else {
-						result = -1;
-						break;
-					}
-				} else {
-					/* Execute argument without '-' or '--' */
-					if (cx_argExec(0, argc-i, &argv[i]) > 0) {
-						i++;
-					} else {
-						result = -1;
-						break;
-					}
-				}
-			}
-		}
+                    } else {
+                        result = -1;
+                        break;
+                    }
+                } else {
+                    /* Execute argument without '-' or '--' */
+                    if (cx_argExec(0, argc-i, &argv[i]) > 0) {
+                        i++;
+                    } else {
+                        result = -1;
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     /* Validate rules */
@@ -354,7 +354,7 @@ int cx_argParse(int argc, char* argv[]) {
         result = cx_argValidate(parsed);
     }
     if (!result) {
-    	/*cx_argUsage(argv[0]);*/
+        /*cx_argUsage(argv[0]);*/
     }
 
     /* Free parsed */
@@ -365,25 +365,25 @@ int cx_argParse(int argc, char* argv[]) {
 }
 
 int cx_argClearArg(void* o, void* udata) {
-	cx_arg* arg;
+    cx_arg* arg;
 
-	DB_UNUSED(udata);
+    CX_UNUSED(udata);
 
-	arg = o;
-	if (arg->depend) {
-		cx_llFree(arg->depend);
-	}
-	if (arg->exclusive) {
-		cx_llFree(arg->exclusive);
-	}
-	cx_dealloc(arg);
-	return 1;
+    arg = o;
+    if (arg->depend) {
+        cx_llFree(arg->depend);
+    }
+    if (arg->exclusive) {
+        cx_llFree(arg->exclusive);
+    }
+    cx_dealloc(arg);
+    return 1;
 }
 
 void cx_argClear(void) {
-	cx_llWalk(cx_argList, cx_argClearArg, NULL);
-	cx_llFree(cx_argList);
-	cx_argList = NULL;
+    cx_llWalk(cx_argList, cx_argClearArg, NULL);
+    cx_llFree(cx_argList);
+    cx_argList = NULL;
 }
 
 

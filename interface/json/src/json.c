@@ -5,6 +5,7 @@
 
 #include "cx_generator.h"
 #include "cx_serializer.h"
+#include "cx_string.h"
 #include "cortex.h"
 #include "json.h"
 
@@ -68,7 +69,7 @@ static cx_bool cx_ser_appendstr(cx_json_ser_t* data, cx_string fmt, ...) {
 
 
 static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData) {
-    DB_UNUSED(s);
+    CX_UNUSED(s);
     cx_typedef type;
     cx_void *value;
     cx_string valueString = NULL;
@@ -77,30 +78,39 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData
 
     type = cx_valueType(info);
     value = cx_valueValue(info);
+    cx_primitiveKind kind = cx_primitive(type->real)->kind;
 
     result = cx_convert(cx_primitive(type), value, cx_primitive(cx_string_o), &valueString);
     if (result) {
         goto error;
     }
 
+    if (kind == CX_CHARACTER || (kind == CX_TEXT && (*(cx_string *)value))) {
+        size_t length;
+        cx_string escapedValueString = cx_malloc((length = stresc(NULL, 0, valueString)) + 1);
+        stresc(escapedValueString, length, valueString);
+        cx_dealloc(valueString);
+        valueString = escapedValueString;
+    }
+
     switch (cx_primitive(type->real)->kind) {
-        case DB_BINARY:
+        case CX_BINARY:
             if (!cx_ser_appendstr(data, "\"@B %s\"", valueString)) {
                 goto finished;
             }
             break;
-        case DB_BITMASK:
+        case CX_BITMASK:
             if (!cx_ser_appendstr(data, "\"@M %s\"", valueString)) {
                 goto finished;
             }
             break;
-        case DB_ENUM:
+        case CX_ENUM:
             if (!cx_ser_appendstr(data, "\"@E %s\"", valueString)) {
                 goto finished;
             }
             break;
-        case DB_CHARACTER:
-        case DB_TEXT:
+        case CX_CHARACTER:
+        case CX_TEXT:
             // TODO escape @'s and other characters
             if (!*(cx_string *)value) {
                 if (!cx_ser_appendstr(data, "null")) {
@@ -135,7 +145,7 @@ error:
 }
 
 static cx_int16 cx_ser_reference(cx_serializer s, cx_value *v, void *userData) {
-    DB_UNUSED(s);
+    CX_UNUSED(s);
 
     cx_json_ser_t *data;
     void *o;
@@ -147,7 +157,7 @@ static cx_int16 cx_ser_reference(cx_serializer s, cx_value *v, void *userData) {
     object = *(cx_object*)o;
 
     if (object) {
-        if (cx_checkAttr(object, DB_ATTR_SCOPED) || (cx_valueObject(v) == object)) {
+        if (cx_checkAttr(object, CX_ATTR_SCOPED) || (cx_valueObject(v) == object)) {
             cx_fullname(object, id);
             if (!cx_ser_appendstr(data, "\"@R %s\"", id)) {
                 goto finished;
@@ -174,7 +184,7 @@ static cx_int16 cx_ser_item(cx_serializer s, cx_value *info, void *userData) {
     if (data->itemCount && !cx_ser_appendstr(data, ",")) {
         goto finished;
     }
-    if (info->kind == DB_MEMBER) {
+    if (info->kind == CX_MEMBER) {
         if (!cx_ser_appendstr(data, "\"%s\":", name)) {
             goto finished;
         }
@@ -198,11 +208,11 @@ static cx_int16 cx_ser_complex(cx_serializer s, cx_value* v, void* userData) {
     if (!cx_ser_appendstr(data, "{")) {
         goto finished;
     }
-    if (type->kind == DB_COMPOSITE) {
+    if (type->kind == CX_COMPOSITE) {
         if (cx_serializeMembers(s, v, userData)) {
             goto error;
         }
-    } else if (type->kind == DB_COLLECTION) {
+    } else if (type->kind == CX_COLLECTION) {
         if (cx_serializeElements(s, v, userData)) {
             goto error;
         }
@@ -238,35 +248,35 @@ finished:
     return 1;
 }
 
-/* TODO this is copy-past from cx.c */
-static char* cx_stateStr(cx_object o, char* buff) {
+/* TODO this is copy-past from dbsh.c */
+static char* dbsh_stateStr(cx_object o, char* buff) {
     buff[0] = '\0';
 
     /* Get state */
-    if (cx_checkState(o, DB_VALID)) {
+    if (cx_checkState(o, CX_VALID)) {
        strcpy(buff, "V");
     }
-    if (cx_checkState(o, DB_DECLARED)) {
+    if (cx_checkState(o, CX_DECLARED)) {
        strcat(buff, "|DCL");
     }
-    if (cx_checkState(o, DB_DEFINED)) {
+    if (cx_checkState(o, CX_DEFINED)) {
        strcat(buff, "|DEF");
     }
 
     return buff;
 }
 
-/* TODO this is copy-paste from cx.c */
-static char* cx_attrStr(cx_object o, char* buff) {
+/* TODO this is copy-paste from dbsh.c */
+static char* dbsh_attrStr(cx_object o, char* buff) {
     cx_bool first;
     *buff = '\0';
 
     first = TRUE;
-    if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
+    if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
         strcat(buff, "S");
         first = FALSE;
     }
-    if (cx_checkAttr(o, DB_ATTR_WRITABLE)) {
+    if (cx_checkAttr(o, CX_ATTR_WRITABLE)) {
         if (!first) {
             strcat(buff, "|W");
         } else {
@@ -274,7 +284,7 @@ static char* cx_attrStr(cx_object o, char* buff) {
             first = FALSE;
         }
     }
-    if (cx_checkAttr(o, DB_ATTR_OBSERVABLE)) {
+    if (cx_checkAttr(o, CX_ATTR_OBSERVABLE)) {
         if (!first) {
             strcat(buff, "|O");
         } else {
@@ -285,7 +295,7 @@ static char* cx_attrStr(cx_object o, char* buff) {
 }
 
 static cx_int16 cx_ser_meta(cx_serializer s, cx_value* v, void* userData) {
-    DB_UNUSED(s);
+    CX_UNUSED(s);
     cx_json_ser_t *data = userData;
     cx_object object = cx_valueValue(v);
     
@@ -309,13 +319,13 @@ static cx_int16 cx_ser_meta(cx_serializer s, cx_value* v, void* userData) {
     }
 
     char states[sizeof("V|DCL|DEF")];
-    cx_stateStr(object, states);
+    dbsh_stateStr(object, states);
     if (!cx_ser_appendstr(data, "\"states\":\"%s\",", states)) {
         goto finished;
     }
 
     char attributes[sizeof("S|W|O")];
-    cx_attrStr(object, attributes);
+    dbsh_attrStr(object, attributes);
     if (!cx_ser_appendstr(data, "\"attributes\":\"%s\",", attributes)) {
         goto finished;
     }
@@ -360,13 +370,13 @@ static int cx_walkScopeAction_ser_meta(cx_object o, void* userData) {
     }
 
     char states[sizeof("V|DCL|DEF")];
-    cx_stateStr(o, states);
+    dbsh_stateStr(o, states);
     if (!cx_ser_appendstr(userData, "\"states\":\"%s\",", states)) {
         goto finished;
     }
 
     char attributes[sizeof("S|W|O")];
-    cx_attrStr(o, attributes);
+    dbsh_attrStr(o, attributes);
     if (!cx_ser_appendstr(userData, "\"attributes\":\"%s\",", attributes)) {
         goto finished;
     }
@@ -386,7 +396,7 @@ finished:
 }
 
 static cx_int16 cx_ser_scope_meta(cx_serializer s, cx_value* v, void* userData) {
-    DB_UNUSED(s); /* should we receive s for scalability or should we dismiss it? */
+    CX_UNUSED(s); /* should we receive s for scalability or should we dismiss it? */
     int last;
     size_t sizeBefore, sizeAfter;
     cx_json_ser_t *data = userData;
@@ -467,13 +477,13 @@ struct cx_serializer_s cx_json_ser(cx_modifier access, cx_operatorKind accessKin
     s.access = access;
     s.accessKind = accessKind;
     s.traceKind = trace;
-    s.program[DB_PRIMITIVE] = cx_ser_primitive;
+    s.program[CX_PRIMITIVE] = cx_ser_primitive;
     s.reference = cx_ser_reference;
-    s.program[DB_COMPOSITE] = cx_ser_complex;
-    s.program[DB_COLLECTION] = cx_ser_complex;
-    s.metaprogram[DB_ELEMENT] = cx_ser_item;
-    s.metaprogram[DB_MEMBER] = cx_ser_item;
-    s.metaprogram[DB_BASE] = cx_ser_base;
-    s.metaprogram[DB_OBJECT] = cx_ser_object;
+    s.program[CX_COMPOSITE] = cx_ser_complex;
+    s.program[CX_COLLECTION] = cx_ser_complex;
+    s.metaprogram[CX_ELEMENT] = cx_ser_item;
+    s.metaprogram[CX_MEMBER] = cx_ser_item;
+    s.metaprogram[CX_BASE] = cx_ser_base;
+    s.metaprogram[CX_OBJECT] = cx_ser_object;
     return s;
 }

@@ -12,7 +12,7 @@
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::binary::init(lang::binary object) */
 cx_int16 cx_binary_init(cx_binary object) {
 /* $begin(::cortex::lang::binary::init) */
-    cx_primitive(object)->kind = DB_BINARY;
+    cx_primitive(object)->kind = CX_BINARY;
     return cx_primitive_init((cx_primitive)object);
 /* $end */
 }

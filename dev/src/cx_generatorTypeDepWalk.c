@@ -16,12 +16,12 @@
 #include "cx_generatorTypeDepWalk.h"
 
 typedef struct cx_genTypeWalk_t {
-	cx_generator g;
-	cx_ll parsed; /* List of parsed types */
-	cx_ll declared; /* List of declared objects */
-	g_walkAction onDeclare;
-	g_walkAction onDefine;
-	void* userData;
+    cx_generator g;
+    cx_ll parsed; /* List of parsed types */
+    cx_ll declared; /* List of declared objects */
+    g_walkAction onDeclare;
+    g_walkAction onDefine;
+    void* userData;
 }cx_genTypeWalk_t;
 
 static int cx_genTypeParse(cx_object o, cx_bool allowDeclared, cx_bool* recursion, cx_genTypeWalk_t* data);
@@ -59,29 +59,29 @@ static cx_bool cx_genTypeCompareStructural(cx_type t1, cx_type t2) {
     result = FALSE;
     if (t1->kind == t2->kind) {
         switch(t1->kind) {
-        case DB_PRIMITIVE:
+        case CX_PRIMITIVE:
             if (cx_primitive(t1)->kind == cx_primitive(t2)->kind) {
-            	if (cx_primitive(t1)->kind == DB_ALIAS) {
-            		result = !strcmp(cx_alias(t1)->typeName, cx_alias(t2)->typeName);
-            	} else {
-					if (cx_primitive(t1)->width == cx_primitive(t2)->width) {
-						result = TRUE;
-					}
-            	}
+                if (cx_primitive(t1)->kind == CX_ALIAS) {
+                    result = !strcmp(cx_alias(t1)->typeName, cx_alias(t2)->typeName);
+                } else {
+                    if (cx_primitive(t1)->width == cx_primitive(t2)->width) {
+                        result = TRUE;
+                    }
+                }
             }
             break;
-        case DB_COLLECTION:
+        case CX_COLLECTION:
             if (cx_collection(t1)->kind == cx_collection(t2)->kind) {
                 if (cx_collection(t1)->elementType == cx_collection(t2)->elementType) {
-                	if (cx_collection(t1)->max == cx_collection(t2)->max) {
-                		if (cx_collection(t1)->kind != DB_MAP) {
-                			result = TRUE;
-                		} else {
-							if (cx_map(t1)->keyType != cx_map(t2)->keyType) {
-								result = TRUE;
-							}
-                		}
-                	}
+                    if (cx_collection(t1)->max == cx_collection(t2)->max) {
+                        if (cx_collection(t1)->kind != CX_MAP) {
+                            result = TRUE;
+                        } else {
+                            if (cx_map(t1)->keyType != cx_map(t2)->keyType) {
+                                result = TRUE;
+                            }
+                        }
+                    }
                 }
             }
             break;
@@ -106,17 +106,17 @@ static cx_bool cx_genTypeIsParsed(cx_object o, cx_genTypeWalk_t* data) {
     while(!found && cx_iterHasNext(&iter)) {
         p = cx_iterNext(&iter);
         /* If object is scoped, it must be matched exactly */
-        if (cx_checkAttr(o, DB_ATTR_SCOPED)) {
+        if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
             if (o == p) {
                 found = TRUE;
             }
         /* If object is not scoped (anonymous), it is matched structurally */
         } else {
-        	if (cx_typeof(o) == cx_typeof(p)) {
-				if (cx_genTypeCompareStructural(o, p)) {
-					found = TRUE;
-				}
-        	}
+            if (cx_typeof(o) == cx_typeof(p)) {
+                if (cx_genTypeCompareStructural(o, p)) {
+                    found = TRUE;
+                }
+            }
         }
     }
 
@@ -144,7 +144,7 @@ static struct cx_genTypeDeclaration* cx_genTypeIsDeclared(cx_object o, cx_genTyp
 static int cx_genTypeAnyDependencies(cx_type t, cx_genTypeWalk_t* data) {
     cx_genTypeDeclaration* decl;
 
-    DB_UNUSED(t);
+    CX_UNUSED(t);
 
     /* Any has a dependency on type */
     if (!(decl = cx_genTypeIsDeclared(cx_type_o, data))) {
@@ -230,7 +230,7 @@ error:
 
 /* Resolve collection dependencies */
 static int cx_genTypeCollectionDependencies(cx_collection t, cx_bool allowDeclared, cx_bool* recursion, cx_genTypeWalk_t* data) {
-    if (t->kind != DB_ARRAY) {
+    if (t->kind != CX_ARRAY) {
         allowDeclared = TRUE;
     }
     return cx_genTypeParse(t->elementType, allowDeclared, recursion, data);
@@ -238,7 +238,7 @@ static int cx_genTypeCollectionDependencies(cx_collection t, cx_bool allowDeclar
 
 /* Resolve map dependencies */
 static int cx_genTypeMapDependencies(cx_map t, cx_bool allowDeclared, cx_bool* recursion, cx_genTypeWalk_t* data) {
-    DB_UNUSED(allowDeclared);
+    CX_UNUSED(allowDeclared);
 
     /* Serialize collection dependencies */
     if (cx_genTypeCollectionDependencies(cx_collection(t), allowDeclared, recursion, data)) {
@@ -273,27 +273,27 @@ static int cx_genTypeDependencies(cx_object o, cx_bool allowDeclared, cx_bool* r
         }
     } else {
         switch(cx_type(t)->kind) {
-        case DB_VOID:
-        	/* Void types can't have dependencies */
-        	break;
+        case CX_VOID:
+            /* Void types can't have dependencies */
+            break;
 
-        case DB_ANY:
+        case CX_ANY:
             if (cx_genTypeAnyDependencies(cx_type(o), data)) {
                 goto error;
             }
             break;
 
         /* Primitives can't have dependencies */
-        case DB_PRIMITIVE:
+        case CX_PRIMITIVE:
             break;
 
         /* Serialize dependencies of composite type */
-        case DB_COMPOSITE:
+        case CX_COMPOSITE:
             switch(cx_interface(o)->kind) {
-            case DB_STRUCT:
-            case DB_INTERFACE:
-            case DB_CLASS:
-            case DB_PROCEDURE:
+            case CX_STRUCT:
+            case CX_INTERFACE:
+            case CX_CLASS:
+            case CX_PROCEDURE:
                 if (cx_genTypeInterfaceDependencies(cx_interface(o), allowDeclared, recursion, data)) {
                     goto error;
                 }
@@ -302,16 +302,16 @@ static int cx_genTypeDependencies(cx_object o, cx_bool allowDeclared, cx_bool* r
             break;
 
         /* Serialize dependencies of collection type */
-        case DB_COLLECTION:
+        case CX_COLLECTION:
             switch(cx_collection(o)->kind) {
-            case DB_ARRAY:
-            case DB_SEQUENCE:
-            case DB_LIST:
+            case CX_ARRAY:
+            case CX_SEQUENCE:
+            case CX_LIST:
                 if (cx_genTypeCollectionDependencies(cx_collection(o), allowDeclared, recursion, data)) {
                     goto error;
                 }
                 break;
-            case DB_MAP:
+            case CX_MAP:
                 if (cx_genTypeMapDependencies(cx_map(o), allowDeclared, recursion, data)) {
                     goto error;
                 }
@@ -340,14 +340,14 @@ error:
  *   to the generator. */
 static int cx_genTypeProcedureDependencies(cx_function o, cx_genTypeWalk_t* data) {
     cx_uint32 i;
-    if (o->returnType && !cx_checkAttr(o->returnType, DB_ATTR_SCOPED)) {
+    if (o->returnType && !cx_checkAttr(o->returnType, CX_ATTR_SCOPED)) {
         if (cx_genTypeParse(o->returnType, TRUE, NULL, data)) {
             goto error;
         }
     }
 
     for(i=0; i<o->parameters.length; i++) {
-        if (!cx_checkAttr(o->parameters.buffer[i].type, DB_ATTR_SCOPED)) {
+        if (!cx_checkAttr(o->parameters.buffer[i].type, CX_ATTR_SCOPED)) {
             if (cx_genTypeParse(o->parameters.buffer[i].type, TRUE, NULL, data)) {
                 goto error;
             }
@@ -367,7 +367,7 @@ static int cx_genTypeParse(cx_object o, cx_bool allowDeclared, cx_bool* recursio
     }
 
     /* Check if object is valid */
-    if (!cx_checkState(o, DB_VALID)) {
+    if (!cx_checkState(o, CX_VALID)) {
         cx_id id;
         cx_error("cx_genTypeParse: scope '%s' contains invalid objects (%s).", cx_nameof(g_getCurrent(data->g)), cx_fullname(o, id));
         return 1;
@@ -378,7 +378,7 @@ static int cx_genTypeParse(cx_object o, cx_bool allowDeclared, cx_bool* recursio
         cx_genTypeProcedureDependencies(cx_function(o), data);
     } else
     /* Check if object is defined - declared objects are allowed only for procedure objects. */
-    if (!cx_checkState(o, DB_DEFINED)) {
+    if (!cx_checkState(o, CX_DEFINED)) {
         cx_id id;
         cx_error("cx_genTypeParse: scope '%s' contains undefined objects (%s).", cx_nameof(g_getCurrent(data->g)), cx_fullname(o, id));
         return 1;
@@ -395,7 +395,6 @@ static int cx_genTypeParse(cx_object o, cx_bool allowDeclared, cx_bool* recursio
                 if (!allowDeclared) {
                     /* If caller handles recursion, report that recursion has occurred. */
                     if (recursion) {
-						cx_trace("recursion has occurred!");
                         *recursion = TRUE;
                         goto recursion;
                     } else {
@@ -422,7 +421,7 @@ static int cx_genTypeParse(cx_object o, cx_bool allowDeclared, cx_bool* recursio
 
                 /* Declare type, this allows the serializer to detect recursive references. */
                 if (!(decl = cx_genTypeIsDeclared(o, data))) {
-                	decl = cx_genTypeDeclared(o, data);
+                    decl = cx_genTypeDeclared(o, data);
                 }
                 decl->parsing = TRUE;
 
@@ -437,19 +436,19 @@ static int cx_genTypeParse(cx_object o, cx_bool allowDeclared, cx_bool* recursio
                     /* If an typedef object equals it's real pointer, than it's the type itself. Otherwise it
                      * is a typedef. */
                     if (cx_typedef(o)->real != o) {
-                    	if (data->onDefine(o, data->userData)) goto error;
+                        if (data->onDefine(o, data->userData)) goto error;
                     } else {
-                    	switch(cx_typedef(o)->real->kind) {
-                    	case DB_COMPOSITE:
-                    		/* Composite types must be forward-declared */
-                    		if (!decl->printed) {
-                    			if (data->onDeclare(o, data->userData)) goto error;
-                    		}
-                    		/* no break */
-                    	default:
-                    		if (data->onDefine(o, data->userData)) goto error;
-                    		break;
-                    	}
+                        switch(cx_typedef(o)->real->kind) {
+                        case CX_COMPOSITE:
+                            /* Composite types must be forward-declared */
+                            if (!decl->printed) {
+                                if (data->onDeclare(o, data->userData)) goto error;
+                            }
+                            /* no break */
+                        default:
+                            if (data->onDefine(o, data->userData)) goto error;
+                            break;
+                        }
                     }
 
                     /* Mark object as parsed */
@@ -480,36 +479,36 @@ error:
 
 /* Walk objects, forward typedefs and types */
 static int cx_genTypeWalk(cx_object o, void* userData) {
-	return !cx_genTypeParse(o, FALSE, NULL, userData);
+    return !cx_genTypeParse(o, FALSE, NULL, userData);
 }
 
 /* Generator main */
 int cx_genTypeDepWalk(cx_generator g, g_walkAction onDeclare, g_walkAction onDefine, void* userData) {
-	cx_genTypeWalk_t walkData;
-	struct cx_genTypeDeclaration* decl;
+    cx_genTypeWalk_t walkData;
+    struct cx_genTypeDeclaration* decl;
 
-	/* Prepare walkdata, open headerfile */
-	walkData.g = g;
-	walkData.parsed = cx_llNew();
-	walkData.declared = cx_llNew();
-	walkData.onDeclare = onDeclare;
-	walkData.onDefine = onDefine;
-	walkData.userData = userData;
+    /* Prepare walkdata, open headerfile */
+    walkData.g = g;
+    walkData.parsed = cx_llNew();
+    walkData.declared = cx_llNew();
+    walkData.onDeclare = onDeclare;
+    walkData.onDefine = onDefine;
+    walkData.userData = userData;
 
-	/* Walk objects */
-	if (!g_walkRecursive(g, cx_genTypeWalk, &walkData)) {
-	    goto error;
-	}
+    /* Walk objects */
+    if (!g_walkRecursive(g, cx_genTypeWalk, &walkData)) {
+        goto error;
+    }
 
-	/* Free parsed-list */
-	cx_llFree(walkData.parsed);
+    /* Free parsed-list */
+    cx_llFree(walkData.parsed);
 
-	while((decl = cx_llTakeFirst(walkData.declared))) {
-	    cx_dealloc(decl);
-	}
-	cx_llFree(walkData.declared);
+    while((decl = cx_llTakeFirst(walkData.declared))) {
+        cx_dealloc(decl);
+    }
+    cx_llFree(walkData.declared);
 
-	return 0;
+    return 0;
 error:
     return -1;
 }

@@ -8,8 +8,8 @@
  *      are more flexible, not limited to primitive types, but also more heavy-weight.
  */
 
-#ifndef DB_CONVERT_H_
-#define DB_CONVERT_H_
+#ifndef CX_CONVERT_H_
+#define CX_CONVERT_H_
 
 #include "cx__type.h"
 
@@ -24,4 +24,4 @@ cx_int16 cx_convert(cx_primitive fromType, void *from, cx_primitive toType, void
 }
 #endif
 
-#endif /* DB_CONVERT_H_ */
+#endif /* CX_CONVERT_H_ */

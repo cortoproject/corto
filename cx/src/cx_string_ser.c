@@ -14,6 +14,25 @@
 #include "cx_object.h"
 #include "stdarg.h"
 
+#define BLACK  "\033[1;30m"
+#define RED    "\033[1;31m"
+#define GREEN  "\033[1;32m"
+#define YELLOW "\033[0;33m"
+#define BLUE   "\033[1;34m"
+#define MAGENTA "\033[1;35m"
+#define CYAN   "\033[1;36m"
+#define WHITE  "\033[1;37m"
+#define GREY  "\033[0;37m"
+#define NORMAL "\033[0;49m"
+#define BOLD   "\033[1;30m"
+
+#define STRING (RED)
+#define REFERENCE (BLUE)
+#define BOOLEAN (GREEN)
+#define NUMBER (GREEN)
+#define CONSTANT (MAGENTA)
+#define MEMBER (BOLD)
+
 static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData);
 
 static cx_bool cx_ser_appendstrbuff(cx_string_ser_t* data, char* str) {
@@ -83,7 +102,7 @@ static cx_bool cx_ser_appendstrEscape(cx_string_ser_t *data, cx_string str) {
     *bptr = '"';
     bptr++;
     while((ch = *ptr)) {
-        bptr = stresc(*ptr, bptr, '"');
+        bptr = chresc(bptr, ch, '"');
         ptr++;
 
         if ((bptr - buffer) == 1023) { /* Avoid allocating temporary strings by reusing buffer.
@@ -103,6 +122,15 @@ finished:
     return 1;
 }
 
+/* Insert color if enabled */
+static cx_bool cx_ser_appendColor(cx_string_ser_t *data, cx_string color) {
+    cx_bool result = TRUE;
+    if (data->enableColors) {
+        result = cx_ser_appendstr(data, color);
+    }
+    return result;
+}
+
 /* Serialize primitive values */
 static cx_int16 cx_ser_primitive(cx_serializer s, cx_value* v, void* userData) {
     cx_string_ser_t* data;
@@ -110,7 +138,7 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value* v, void* userData) {
     void* o;
     char* result;
 
-    DB_UNUSED(s);
+    CX_UNUSED(s);
     result = NULL;
 
     data = (cx_string_ser_t*)userData;
@@ -118,17 +146,21 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value* v, void* userData) {
     o = cx_valueValue(v);
 
     /* If src is string and value is null, put NULL in result. */
-    if (cx_primitive(t)->kind == DB_TEXT) {
+    if (cx_primitive(t)->kind == CX_TEXT) {
         if (*(cx_string*)o) {
+            cx_ser_appendColor(data, STRING);
             if (!cx_ser_appendstrEscape(data, *(cx_string*)o)) {
                 goto finished;
             }
         } else {
+            cx_ser_appendColor(data, BOOLEAN);
             if (!cx_ser_appendstr(data, "null")) {
                 goto finished;
             }
         }
-    } else if (cx_primitive(t)->kind == DB_CHARACTER) {
+        cx_ser_appendColor(data, NORMAL);
+    } else if (cx_primitive(t)->kind == CX_CHARACTER) {
+        cx_ser_appendColor(data, STRING);
         if (*(cx_char*)o) {
             if (!cx_ser_appendstr(data, "'%c'", *(cx_char*)o)) {
                 goto finished;
@@ -138,7 +170,25 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value* v, void* userData) {
                 goto finished;
             }
         }
+        cx_ser_appendColor(data, STRING);
     } else {
+        switch(cx_primitive(t)->kind) {
+            case CX_ENUM:
+            case CX_BITMASK:
+                cx_ser_appendColor(data, CONSTANT);
+                break;
+            case CX_BOOLEAN:
+                cx_ser_appendColor(data, BOOLEAN);
+                break;
+            case CX_INTEGER:
+            case CX_UINTEGER:
+            case CX_FLOAT:
+            case CX_BINARY:
+                cx_ser_appendColor(data, NUMBER);
+                break;
+            default:
+                break;
+        }
         /* Convert primitive value to string */
         cx_convert(cx_primitive(t), o, cx_primitive(cx_string_o), &result);
 
@@ -148,6 +198,7 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value* v, void* userData) {
             goto finished;
         }
         cx_dealloc(result);
+        cx_ser_appendColor(data, NORMAL);
     }
 
     return 0;
@@ -169,7 +220,8 @@ static cx_int16 cx_ser_reference(cx_serializer s, cx_value* v, void* userData) {
 
     /* Obtain fully scoped name */
     if (object) {
-        if (cx_checkAttr(object, DB_ATTR_SCOPED) || (cx_valueObject(v) == object)) {
+        cx_ser_appendColor(data, REFERENCE);
+        if (cx_checkAttr(object, CX_ATTR_SCOPED) || (cx_valueObject(v) == object)) {
             str = (char*)cx_fullname(object, id);
         } else {
             cx_string_ser_t walkData;
@@ -196,7 +248,7 @@ static cx_int16 cx_ser_reference(cx_serializer s, cx_value* v, void* userData) {
                 cx_llAppend(data->anonymousObjects, object);
                 cx_ser_appendstr(userData, "<%d>", cx_llSize(data->anonymousObjects));
 
-                v.kind = DB_OBJECT;
+                v.kind = CX_OBJECT;
                 v.is.o = object;
                 v.parent = NULL;
                 if (cx_ser_object(s, &v, &walkData)) {
@@ -208,6 +260,7 @@ static cx_int16 cx_ser_reference(cx_serializer s, cx_value* v, void* userData) {
             }
         }
     } else {
+        cx_ser_appendColor(data, BOOLEAN);
         str = "null";
     }
 
@@ -215,6 +268,7 @@ static cx_int16 cx_ser_reference(cx_serializer s, cx_value* v, void* userData) {
     if (!cx_ser_appendstrbuff(userData, str)) {
         goto finished;
     }
+    cx_ser_appendColor(data, NORMAL);
 
     return 0;
 error:
@@ -241,9 +295,9 @@ static cx_int16 cx_ser_scope(cx_serializer s, cx_value* v, void* userData) {
     if (!cx_ser_appendstr(&privateData, "{")) {
         goto finished;
     }
-    if (t->kind == DB_COMPOSITE) {
+    if (t->kind == CX_COMPOSITE) {
         result = cx_serializeMembers(s, v, &privateData);
-    } else if (t->kind == DB_COLLECTION){
+    } else if (t->kind == CX_COLLECTION){
         result = cx_serializeElements(s, v, &privateData);
     } else {
         cx_assert(0, "cx_ser_scope: invalid typekind for function.");
@@ -264,7 +318,7 @@ finished:
 /* Serialize item (can be either member or element) */
 static cx_int16 cx_ser_item(cx_serializer s, cx_value* v, void* userData) {
     cx_string_ser_t* data;
-    DB_UNUSED(s);
+    CX_UNUSED(s);
 
     data = userData;
 
@@ -276,10 +330,11 @@ static cx_int16 cx_ser_item(cx_serializer s, cx_value* v, void* userData) {
     }
 
     if (!data->compactNotation) {
-        if (v->kind == DB_MEMBER) {
-            if (!cx_ser_appendstr(data, "%s=", cx_nameof(v->is.member.t))) {
-                goto finished;
-            }
+        if (v->kind == CX_MEMBER) {
+            if (!cx_ser_appendColor(data, MEMBER)) goto finished;
+            if (!cx_ser_appendstr(data, "%s", cx_nameof(v->is.member.t))) goto finished;
+            if (!cx_ser_appendColor(data, NORMAL)) goto finished;
+            if (!cx_ser_appendstr(data, "=")) goto finished;
         }
     }
 
@@ -311,7 +366,7 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
         o = cx_valueObject(v);
         cx_fullname(cx_typeof(o), id);
 
-        if (cx_typeof(o)->real->kind != DB_PRIMITIVE) {
+        if (cx_typeof(o)->real->kind != CX_PRIMITIVE) {
             if (data->buffer) {
                 result = cx_malloc(strlen(data->buffer) + strlen(id) + 1);
                 sprintf(result, "%s%s", id, data->buffer);
@@ -340,8 +395,8 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
 }
 
 static cx_int16 cx_ser_construct(cx_serializer s, cx_value *info, void* userData) {
-    DB_UNUSED(s);
-    DB_UNUSED(info);
+    CX_UNUSED(s);
+    CX_UNUSED(info);
     
     cx_string_ser_t* data = userData;
     data->ptr = data->buffer;
@@ -354,7 +409,7 @@ static cx_int16 cx_ser_construct(cx_serializer s, cx_value *info, void* userData
 }
 
 cx_int16 cx_ser_destruct(cx_serializer s, void* userData) {
-    DB_UNUSED(s);
+    CX_UNUSED(s);
     
     cx_string_ser_t* data = userData;
     if (data->anonymousObjects) {
@@ -373,16 +428,16 @@ struct cx_serializer_s cx_string_ser(cx_modifier access, cx_operatorKind accessK
     s.traceKind = trace;
     s.construct = cx_ser_construct;
     s.destruct = cx_ser_destruct;
-    s.program[DB_VOID] = NULL;
-    s.program[DB_PRIMITIVE] = cx_ser_primitive;
-    s.program[DB_COMPOSITE] = cx_ser_scope;
-    s.program[DB_COLLECTION] = cx_ser_scope;
-    s.metaprogram[DB_MEMBER] = cx_ser_item;
-    s.metaprogram[DB_BASE] = cx_serializeMembers;   /* Skip the scope-callback by directly calling serializeMembers. This will cause the extra
+    s.program[CX_VOID] = NULL;
+    s.program[CX_PRIMITIVE] = cx_ser_primitive;
+    s.program[CX_COMPOSITE] = cx_ser_scope;
+    s.program[CX_COLLECTION] = cx_ser_scope;
+    s.metaprogram[CX_MEMBER] = cx_ser_item;
+    s.metaprogram[CX_BASE] = cx_serializeMembers;   /* Skip the scope-callback by directly calling serializeMembers. This will cause the extra
                                                      * '{ }' not to appear, which is required by this string format. */
-    s.metaprogram[DB_ELEMENT] = cx_ser_item;
-    s.metaprogram[DB_OBJECT] = cx_ser_object;
-    s.metaprogram[DB_CONSTANT] = NULL;
+    s.metaprogram[CX_ELEMENT] = cx_ser_item;
+    s.metaprogram[CX_OBJECT] = cx_ser_object;
+    s.metaprogram[CX_CONSTANT] = NULL;
     s.reference = cx_ser_reference;
     return s;
 }

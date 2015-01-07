@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB_GEN_H_
-#define DB_GEN_H_
+#ifndef CX_GEN_H_
+#define CX_GEN_H_
 
 #include "cx.h"
 #include "cx_file.h"
@@ -16,34 +16,34 @@
 extern "C" {
 #endif
 
-DB_CLASS(cx_generator);
+CX_CLASS(cx_generator);
 
 typedef int (*g_walkAction)(cx_object o, void* userData);
 typedef cx_string (*g_idAction)(cx_string in, cx_id out);
 typedef cx_int16 (*g_startAction)(cx_generator g);
 typedef void (*g_stopAction)(cx_generator g);
 
-DB_STRUCT(g_object);
-DB_STRUCT_DEF(g_object) {
+CX_STRUCT(g_object);
+CX_STRUCT_DEF(g_object) {
     cx_object o;
     cx_bool parseSelf;
     cx_bool parseScope;
     cx_string prefix;
 };
 
-DB_STRUCT(g_attribute);
-DB_STRUCT_DEF(g_attribute) {
+CX_STRUCT(g_attribute);
+CX_STRUCT_DEF(g_attribute) {
     cx_string key;
     cx_string value;
 };
 
 typedef enum g_idKind {
-	DB_GENERATOR_ID_DEFAULT,
-	DB_GENERATOR_ID_CLASS_UPPER,
-	DB_GENERATOR_ID_CLASS_LOWER
+    CX_GENERATOR_ID_DEFAULT,
+    CX_GENERATOR_ID_CLASS_UPPER,
+    CX_GENERATOR_ID_CLASS_LOWER
 }g_idKind;
 
-DB_CLASS_DEF(cx_generator) {
+CX_CLASS_DEF(cx_generator) {
     cx_ll objects;
     cx_ll files;
     cx_dl library;
@@ -60,14 +60,14 @@ DB_CLASS_DEF(cx_generator) {
 };
 
 typedef struct g_fileSnippet {
-	cx_string option;
+    cx_string option;
     cx_string id;
     cx_string src;
     cx_bool used;
 }g_fileSnippet;
 
-DB_CLASS(g_file);
-DB_CLASS_DEF(g_file) {
+CX_CLASS(g_file);
+CX_CLASS_DEF(g_file) {
     cx_file file;
     cx_string name;
     cx_uint32 indent;
@@ -196,4 +196,4 @@ void cx_genMemberCacheClean(cx_ll cache);
 }
 #endif
 
-#endif /* DB_GEN_H_ */
+#endif /* CX_GEN_H_ */

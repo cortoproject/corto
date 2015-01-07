@@ -1,8 +1,8 @@
 // Functions with reference returntypes
 bool result: true
 void fail(string msg):
-	"tc_function03: FAIL: $msg"
-	result = false
+    "tc_function03: FAIL: $msg"
+    result = false
 
 // Function that returns value of reference type
 class Point:: x, y: uint32

@@ -1,28 +1,28 @@
 // Test calling functions on members
 bool result : true
 void fail(string msg):
-	"tc_method04: FAIL: $msg"
-	result = false
+    "tc_method04: FAIL: $msg"
+    result = false
 
 struct Point::
-	member x,y : int32	
-	int32 getX() = x
-	int32 getY() = y
-	void add(Point p):
-		x += p.x
-		y += p.y
-	
+    member x,y : int32    
+    int32 getX() = x
+    int32 getY() = y
+    void add(Point p):
+        x += p.x
+        y += p.y
+    
 struct Point3D : Point::
-	member z : int32
-	int32 getZ() = z
-	void add(Point3D p):
-		super.add(p)
-		z += p.z
-		
-	int32 sum() = getX() + getY() + getZ()
-	
+    member z : int32
+    int32 getZ() = z
+    void add(Point3D p):
+        super.add(p)
+        z += p.z
+        
+    int32 sum() = getX() + getY() + getZ()
+    
 struct Line ::
-	start, stop: Point3D
+    start, stop: Point3D
 
 // Call methods on objects of a non-reference type
 Line l1 : {10,20,30}, {40,50,60}

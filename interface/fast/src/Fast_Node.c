@@ -27,7 +27,7 @@ Fast_Expression Fast_Node_optimizeCondition(Fast_Expression condition, cx_bool *
 
         /* If condition is a unary NOT inverse the condition and evaluate lvalue of NOT expression instead */
         if (Fast_Node(elem)->kind == FAST_Unary) {
-            if (Fast_UnaryExpr(elem)->operator == DB_COND_NOT) {
+            if (Fast_UnaryExpr(elem)->operator == CX_COND_NOT) {
                 *inverse = TRUE;
                 elem = Fast_UnaryExpr(elem)->lvalue;
             }
@@ -50,7 +50,7 @@ Fast_Expression Fast_Node_optimizeCondition(Fast_Expression condition, cx_bool *
         } else {
             /* If element, add element to AND expression */
             if (elem) {
-                result = Fast_Expression(Fast_BinaryExpr__create(result, elem, DB_COND_AND));
+                result = Fast_Expression(Fast_BinaryExpr__create(result, elem, CX_COND_AND));
                 Fast_Parser_collect(yparser(), result);
                 
             /* If element was a literal either ignore it (if result was TRUE) or discard all other
@@ -83,11 +83,11 @@ cx_int16 Fast_Node_init(Fast_Node object) {
 /* ::cortex::Fast::Node::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
 cx_ic Fast_Node_toIc_v(Fast_Node _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Node::toIc) */
-	DB_UNUSED(_this);
-	DB_UNUSED(program);
-	DB_UNUSED(storage);
-	DB_UNUSED(stored);
-	/* No code is generated for statement */
-	return NULL;
+    CX_UNUSED(_this);
+    CX_UNUSED(program);
+    CX_UNUSED(storage);
+    CX_UNUSED(stored);
+    /* No code is generated for statement */
+    return NULL;
 /* $end */
 }

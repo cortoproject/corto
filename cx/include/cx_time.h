@@ -9,8 +9,8 @@
 #define CORE_TIME_H_
 
 typedef struct cx_time {
-	int tv_sec;
-	int tv_nsec;
+    int tv_sec;
+    int tv_nsec;
 }cx_time;
 
 void cx_sleep(unsigned int sec, unsigned int nanosec);

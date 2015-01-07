@@ -3,8 +3,8 @@
 // The test is equal to tc_element01 except it uses collections of references.
 bool result : true
 void fail(string msg):
-	"tc_element03: FAIL: $msg"
-	result = false
+    "tc_element03: FAIL: $msg"
+    result = false
 
 class Foo:: x: uint32
 Foo a: 10
@@ -81,16 +81,16 @@ uint32 i : 0
 // Array object with variable object index
 FooArray Foo_avo: null, null, null
 while i<3:
-	Foo_avo[i] = Foo_aCheck[i]
-	i++
+    Foo_avo[i] = Foo_aCheck[i]
+    i++
 validate(Foo_avo, "Array object with dynamic object index")
-	
+    
 // Sequence object with variable object index
 FooSeq Foo_svo: null, null, null
 i=0
 while i<3:
-	Foo_svo[i] = Foo_aCheck[i]
-	i++
+    Foo_svo[i] = Foo_aCheck[i]
+    i++
 validate(Foo_svo, "Sequence object with dynamic object index")
 
 var uint32 j = 0
@@ -98,49 +98,49 @@ var uint32 j = 0
 // Array object with variable var index
 FooArray Foo_avl: null, null, null
 while j<3:
-	Foo_avl[j] = Foo_aCheck[j]
-	j++
+    Foo_avl[j] = Foo_aCheck[j]
+    j++
 validate(Foo_avl, "Array object with dynamic var index")
-	
+    
 // Sequence object with variable var index
 FooSeq Foo_svl: null, null, null
 j=0
 while j<3:
-	Foo_svl[j] = Foo_aCheck[j]
-	j++
+    Foo_svl[j] = Foo_aCheck[j]
+    j++
 validate(Foo_svl, "Sequence object with dynamic var index")
-	
+    
 // vars with variable indexes
 // Array var with variable object index
 var FooArray Foo_alvo = {null, null, null}
 i=0
 while i<3:
-	Foo_alvo[i] = Foo_aCheck[i]
-	i++
+    Foo_alvo[i] = Foo_aCheck[i]
+    i++
 validate(Foo_alvo, "Array var with variable object index")
 
 // Sequence var with variable object index
 var FooSeq Foo_slvo = {null,null,null}
 i=0
 while i<3:
-	Foo_slvo[i] = Foo_aCheck[i]
-	i++
+    Foo_slvo[i] = Foo_aCheck[i]
+    i++
 validate(Foo_slvo, "Sequence var with variable object index")
 
 // Array var with variable var index
 var FooArray Foo_alvl = {null,null,null}
 j=0
 while j<3:
-	Foo_alvl[j] = Foo_aCheck[j]
-	j++
+    Foo_alvl[j] = Foo_aCheck[j]
+    j++
 validate(Foo_alvl, "Array var with variable var index")
-	
+    
 // Sequence var with variable var index
 var FooSeq Foo_slvl = {null,null,null}
 j=0
 while j<3:
-	Foo_slvl[j] = Foo_aCheck[j]
-	j++
+    Foo_slvl[j] = Foo_aCheck[j]
+    j++
 validate(Foo_slvl, "Sequence var with variable var index")
 
 if result: "tc_element03: OK"

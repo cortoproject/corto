@@ -2,8 +2,8 @@
 // This program tests the element operator for various variables with basic collection-types.
 bool result : true
 void fail(string msg):
-	"tc_element01: FAIL: $msg"
-	result = false
+    "tc_element01: FAIL: $msg"
+    result = false
 
 typedef IntsArray : array{uint32,3}
 typedef IntsSeq : sequence{uint32,3}
@@ -75,16 +75,16 @@ uint32 i : 0
 // Array object with variable object index
 IntsArray ints_avo : 1,2,3
 while i<3:
-	ints_avo[i] *= 10
-	i++
+    ints_avo[i] *= 10
+    i++
 validate(ints_avo, "Array object with dynamic object index")
-	
+    
 // Sequence object with variable object index
 IntsSeq ints_svo : 1,2,3
 i=0
 while i<3:
-	ints_svo[i] *= 10
-	i++
+    ints_svo[i] *= 10
+    i++
 validate(ints_svo, "Sequence object with dynamic object index")
 
 var uint32 j = 0
@@ -92,49 +92,49 @@ var uint32 j = 0
 // Array object with variable var index
 IntsArray ints_avl : 1,2,3
 while j<3:
-	ints_avl[j] *= 10
-	j++
+    ints_avl[j] *= 10
+    j++
 validate(ints_avl, "Array object with dynamic var index")
-	
+    
 // Sequence object with variable var index
 IntsSeq ints_svl : 1,2,3
 j=0
 while j<3:
-	ints_svl[j] *= 10
-	j++
+    ints_svl[j] *= 10
+    j++
 validate(ints_svl, "Sequence object with dynamic var index")
-	
+    
 // vars with variable indexes
 // Array var with variable object index
 var IntsArray ints_alvo = {1,2,3}
 i=0
 while i<3:
-	ints_alvo[i] *= 10
-	i++
+    ints_alvo[i] *= 10
+    i++
 validate(ints_alvo, "Array var with variable object index")
-	
+    
 // Sequence var with variable object index
 var IntsSeq ints_slvo = {1,2,3}
 i=0
 while i<3:
-	ints_slvo[i] *= 10
-	i++
+    ints_slvo[i] *= 10
+    i++
 validate(ints_slvo, "Sequence var with variable object index")
 
 // Array var with variable var index
 var IntsArray ints_alvl = {1,2,3}
 j=0
 while j<3:
-	ints_alvl[j] *= 10
-	j++
+    ints_alvl[j] *= 10
+    j++
 validate(ints_alvl, "Array var with variable var index")
-	
+    
 // Sequence var with variable var index
 var IntsSeq ints_slvl = {1,2,3}
 j=0
 while j<3:
-	ints_slvl[j] *= 10
-	j++
+    ints_slvl[j] *= 10
+    j++
 validate(ints_slvl, "Sequence var with variable var index")
 
 if result: "tc_element01: OK"

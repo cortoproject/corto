@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB_ASYNC_POSIX_H_
-#define DB_ASYNC_POSIX_H_
+#ifndef CX_ASYNC_POSIX_H_
+#define CX_ASYNC_POSIX_H_
 
 #include "pthread.h"
 #include "signal.h"
@@ -41,11 +41,11 @@ typedef struct cx_mutex_s {
 #endif
 }cx_mutex_s;
 
-#define DB_MUTEX_INITIALIZER {PTHREAD_MUTEX_INITIALIZER}
-#define DB_RWMUTEX_INITIALIZER {PTHREAD_RWLOCK_INITIALIZER}
+#define CX_MUTEX_INITIALIZER {PTHREAD_MUTEX_INITIALIZER}
+#define CX_RWMUTEX_INITIALIZER {PTHREAD_RWLOCK_INITIALIZER}
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* DB_ASYNC_POSIX_H_ */
+#endif /* CX_ASYNC_POSIX_H_ */

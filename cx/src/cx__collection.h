@@ -7,8 +7,8 @@
  *  Private definitions for the collection types
  */
 
-#ifndef DB__COLLECTION_H_
-#define DB__COLLECTION_H_
+#ifndef CX__COLLECTION_H_
+#define CX__COLLECTION_H_
 
 #include "cx__type.h"
 
@@ -23,4 +23,4 @@ void cx_clear(cx_collection _this, cx_void* collection);
 }
 #endif
 
-#endif /* DB__COLLECTION_H_ */
+#endif /* CX__COLLECTION_H_ */

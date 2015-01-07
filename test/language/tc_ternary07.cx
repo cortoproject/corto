@@ -2,8 +2,8 @@
 bool result: true
 
 void fail(string msg):
-	"tc_ternary07: FAIL: $msg"
-	result = false
+    "tc_ternary07: FAIL: $msg"
+    result = false
 
 enum Color:: RED,GREEN,BLUE
 bool returnBool(bool cond) = cond ? false : true

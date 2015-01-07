@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB_MEM_H_
-#define DB_MEM_H_
+#ifndef CX_MEM_H_
+#define CX_MEM_H_
 
 #include <stdlib.h>
 #include <string.h>
@@ -26,4 +26,4 @@ extern "C" {
 }
 #endif
 
-#endif /* DB_MEM_H_ */
+#endif /* CX_MEM_H_ */

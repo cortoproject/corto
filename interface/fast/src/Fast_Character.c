@@ -28,29 +28,29 @@ cx_int16 Fast_Character_init(Fast_Character object) {
 /* ::cortex::Fast::Character::serialize(lang::type dstType,lang::word dst) */
 cx_int16 Fast_Character_serialize(Fast_Character _this, cx_type dstType, cx_word dst) {
 /* $begin(::cortex::Fast::Character::serialize) */
-	Fast_valueKind kind;
+    Fast_valueKind kind;
 
-	kind = Fast_valueKindFromType(dstType);
+    kind = Fast_valueKindFromType(dstType);
 
-	switch(kind) {
-	case FAST_Boolean:
-		*(cx_bool*)dst = _this->value ? TRUE : FALSE;
-		break;
-	case FAST_Character:
-	case FAST_Integer:
-	case FAST_SignedInteger:
-	case FAST_String:
-		cx_convert(cx_primitive(cx_char_o), &_this->value, cx_primitive(dstType), (void*)dst);
-		break;
-	default: {
+    switch(kind) {
+    case FAST_Boolean:
+        *(cx_bool*)dst = _this->value ? TRUE : FALSE;
+        break;
+    case FAST_Character:
+    case FAST_Integer:
+    case FAST_SignedInteger:
+    case FAST_String:
+        cx_convert(cx_primitive(cx_char_o), &_this->value, cx_primitive(dstType), (void*)dst);
+        break;
+    default: {
         cx_id id;
         Fast_Parser_error(yparser(), "cannot serialize character value to storage of type '%s'", cx_fullname(dstType, id));
         goto error;
-		break;
-	}
-	}
+        break;
+    }
+    }
 
-	return 0;
+    return 0;
 error:
     return -1;
 /* $end */
@@ -59,14 +59,14 @@ error:
 /* ::cortex::Fast::Character::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
 cx_ic Fast_Character_toIc_v(Fast_Character _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Character::toIc) */
-	cx_ic result;
-	cx_value v;
-	DB_UNUSED(storage);
-	DB_UNUSED(stored);
+    cx_ic result;
+    cx_value v;
+    CX_UNUSED(storage);
+    CX_UNUSED(stored);
 
-	cx_valueLiteralInit(&v, DB_LITERAL_CHARACTER, &_this->value);
-	result = (cx_ic)cx_icLiteral__create(program, Fast_Node(_this)->line, v, cx_type(cx_char_o));
+    cx_valueLiteralInit(&v, CX_LITERAL_CHARACTER, &_this->value);
+    result = (cx_ic)cx_icLiteral__create(program, Fast_Node(_this)->line, v, cx_type(cx_char_o));
 
-	return result;
+    return result;
 /* $end */
 }

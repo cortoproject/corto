@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB_INIT_SER_H_
-#define DB_INIT_SER_H_
+#ifndef CX_INIT_SER_H_
+#define CX_INIT_SER_H_
 
 #include "cx_serializer.h"
 
@@ -20,4 +20,4 @@ struct cx_serializer_s cx_ser_init(cx_modifier access, cx_operatorKind accessKin
 }
 #endif
 
-#endif /* DB_INIT_SER_H_ */
+#endif /* CX_INIT_SER_H_ */

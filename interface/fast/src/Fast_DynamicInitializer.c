@@ -18,129 +18,38 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 void Fast_Parser_warning(Fast_Parser _this, char* fmt, ...);
 
-/* Add instructions that set sequence size */
-Fast_Expression Fast_Initializer_setSequenceSize(Fast_DynamicInitializer _this, Fast_Expression expression, Fast_Expression size) {
-    cx_function sequenceSize;
-    Fast_String sequenceSizeString;
-    Fast_MemberExpr memberExpr;
-    Fast_Call sequenceSizeCall;
-    
-    DB_UNUSED(_this);
-    
-    sequenceSize = cx_resolve_ext(_this, NULL, "sequence::size(uint32)", FALSE, "Insert size-function for setting sequence size");
-    sequenceSizeString = Fast_String__create(cx_strdup(cx_nameof(sequenceSize)));
-    cx_free_ext(_this, sequenceSize, "Free size-function for setting sequence size");
-    
-    /* Create member-expression with call statement and insert to ast */
-    memberExpr = Fast_MemberExpr__create(expression, Fast_Expression(sequenceSizeString));
-    sequenceSizeCall = Fast_Call__create(Fast_Expression(memberExpr), size);
-    Fast_Parser_addStatement(yparser(), Fast_Node(sequenceSizeCall));
-    
-    /* Garbagecollection of objects */
-    Fast_Parser_collect(yparser(), sequenceSizeString);
-    Fast_Parser_collect(yparser(), sequenceSizeCall);
-    Fast_Parser_collect(yparser(), memberExpr);
-    
-    return sequenceSizeCall->arguments;
-}
-
 cx_int16 Fast_Initializer_assign(Fast_DynamicInitializer _this, Fast_Expression lvalue, Fast_Expression rvalue) {
-    DB_UNUSED(_this);
+    CX_UNUSED(_this);
     if (rvalue) {
-        Fast_BinaryExpr expr = Fast_BinaryExpr__create(lvalue, rvalue, DB_ASSIGN);
+        Fast_BinaryExpr expr = Fast_BinaryExpr__create(lvalue, rvalue, CX_ASSIGN);
         Fast_Parser_addStatement(yparser(), Fast_Node(expr));
         Fast_Parser_collect(yparser(), expr);
     }
     return 0;
 }
 
-cx_int16 Fast_Initializer_append(Fast_DynamicInitializer _this, Fast_Expression lvalue, Fast_Expression rvalue) {
-    DB_UNUSED(_this);
-    Fast_Expression member;
-    Fast_String operation;
-    Fast_Expression statement;
-
-    operation = Fast_String__create("append");
-    
-    /* Create memberexpression */
-    member = Fast_Expression(Fast_MemberExpr__create(lvalue, Fast_Expression(operation)));
-    if (!member) {
-        /* TODO: free resources */
-        goto error;
-    }
-    
-    /* Create call-expression */
-    if (!(statement = Fast_Expression(Fast_Call__create(member, rvalue)))) {
-        goto error;
-    }
-    
-    Fast_Parser_addStatement(yparser(), Fast_Node(statement));
-    
-    /* Garbage collect objects */
-    Fast_Parser_collect(yparser(), operation);
-    Fast_Parser_collect(yparser(), member);
-    Fast_Parser_collect(yparser(), statement);
-
-    return 0;
-error:
-    return -1;
-}
-
-cx_int16 Fast_Initializer_clear(Fast_DynamicInitializer _this, Fast_Expression lvalue) {
-    DB_UNUSED(_this);
-
-    Fast_Expression member;
-    Fast_String operation;
-    Fast_Expression statement;
-    
-    operation = Fast_String__create("clear");
-    
-    /* Create memberexpression */
-    member = Fast_Expression(Fast_MemberExpr__create(lvalue, Fast_Expression(operation)));
-    if (!member) {
-        /* TODO: free resources */
-        goto error;
-    }
-    
-    /* Create call-expression */
-    if (!(statement = Fast_Expression(Fast_Call__create(member, NULL)))) {
-        goto error;
-    }
-    
-    Fast_Parser_addStatement(yparser(), Fast_Node(statement));
-    
-    /* Garbage collect objects */
-    Fast_Parser_collect(yparser(), operation);
-    Fast_Parser_collect(yparser(), member);
-    Fast_Parser_collect(yparser(), statement);
-    
-    return 0;
-error:
-    return -1;
-}
-
 /* Assign or add value to expression */
 Fast_Expression Fast_Initializer_expr(Fast_DynamicInitializer _this, cx_uint8 variable, Fast_Expression v) {
-	Fast_Expression result, base;
+    Fast_Expression result, base;
     cx_uint16 fp = Fast_Initializer(_this)->fp;
-	Fast_InitializerFrame *frame = &Fast_Initializer(_this)->frames[fp?fp-1:0];
-	Fast_DynamicInitializerFrame *baseFrame = &(_this->frames[fp?fp-1:0]);
+    Fast_InitializerFrame *frame = &Fast_Initializer(_this)->frames[fp?fp-1:0];
+    Fast_DynamicInitializerFrame *baseFrame = &(_this->frames[fp?fp-1:0]);
     Fast_InitializerFrame *thisFrame = &Fast_Initializer(_this)->frames[fp];
-	
+    
     result = 0;
     
-	base = baseFrame->expr[variable];
-	if (!base) {
-		Fast_Parser_error(yparser(), "parser error: base is zero in offset calculation");
-		goto error;
-	}
+    base = baseFrame->expr[variable];
+    if (!base) {
+        Fast_Parser_error(yparser(), "parser error: base is zero in offset calculation");
+        goto error;
+    }
     
-	/* Switch on current type */
-	switch(frame->type->kind) {
-        case DB_PRIMITIVE:
+    /* Switch on current type */
+    switch(frame->type->kind) {
+        case CX_PRIMITIVE:
             result = base;
             break;
-        case DB_COMPOSITE:
+        case CX_COMPOSITE:
             if (fp) {
                 Fast_String memberString = Fast_String__create(cx_nameof(thisFrame->member));
                 result = Fast_Expression(Fast_MemberExpr__create(base, Fast_Expression(memberString)));
@@ -151,23 +60,28 @@ Fast_Expression Fast_Initializer_expr(Fast_DynamicInitializer _this, cx_uint8 va
             }
             Fast_Initializer_assign(_this, result, v);
             break;
-        case DB_COLLECTION: {
+        case CX_COLLECTION: {
             if (fp) {
                 switch(cx_collection(frame->type)->kind) {
-                case DB_LIST:
-                    Fast_Initializer_append(_this, base, v);
-                case DB_SEQUENCE:
-                case DB_ARRAY: {
+                case CX_LIST: {
+                    Fast_Node statement;
+                    if (!(statement = Fast_Node(Fast_createCall(base, "append", 1, v)))) {
+                        goto error;
+                    }
+                    Fast_Parser_addStatement(yparser(), statement);
+                }
+                case CX_SEQUENCE:
+                case CX_ARRAY: {
                     Fast_Integer index = Fast_Integer__create(thisFrame->location);
                     result = Fast_Expression(Fast_ElementExpr__create(base, Fast_Expression(index)));
                     Fast_Parser_collect(yparser(), result);
                     Fast_Parser_collect(yparser(), index);
-                    if (cx_collection(frame->type)->kind != DB_LIST) {
+                    if (cx_collection(frame->type)->kind != CX_LIST) {
                         Fast_Initializer_assign(_this, result, v);
                     }
                     break;
                 }
-                case DB_MAP:
+                case CX_MAP:
                     if (!thisFrame->isKey) {
                         result = Fast_Expression(Fast_ElementExpr__create(base, Fast_Expression(_this->frames[fp].keyExpr[variable])));
                         Fast_Parser_collect(yparser(), result);
@@ -191,11 +105,11 @@ Fast_Expression Fast_Initializer_expr(Fast_DynamicInitializer _this, cx_uint8 va
             }
             break;
         }
-	}
+    }
     
-	return result;
+    return result;
 error:
-	return 0;
+    return 0;
 
 }
 
@@ -204,13 +118,13 @@ error:
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::DynamicInitializer::construct(DynamicInitializer object) */
 cx_int16 Fast_DynamicInitializer_construct(Fast_DynamicInitializer object) {
 /* $begin(::cortex::Fast::DynamicInitializer::construct) */
-	cx_int8 variable;
+    cx_int8 variable;
     
     /* Copy offsets of variables into frames */
-	for(variable=0; variable<Fast_Initializer(object)->variableCount; variable++) {
+    for(variable=0; variable<Fast_Initializer(object)->variableCount; variable++) {
         Fast_Expression var = Fast_Initializer(object)->variables[variable].object;
         cx_set_ext(object, &object->frames[0].expr[variable], var, ".frames[0].expr[variable]");
-	}
+    }
     
     return Fast_Initializer_construct(Fast_Initializer(object));
 /* $end */
@@ -219,11 +133,11 @@ cx_int16 Fast_DynamicInitializer_construct(Fast_DynamicInitializer object) {
 /* ::cortex::Fast::DynamicInitializer::define() */
 cx_int16 Fast_DynamicInitializer_define(Fast_DynamicInitializer _this) {
 /* $begin(::cortex::Fast::DynamicInitializer::define) */
-	cx_int8 variable;
+    cx_int8 variable;
     cx_type t = Fast_Initializer_type(Fast_Initializer(_this));
     
     /* Copy offsets of variables into frames */
-    if (!_this->assignValue && (t->kind == DB_COMPOSITE)) {
+    if (!_this->assignValue && (t->kind == CX_COMPOSITE)) {
         for(variable=0; variable<Fast_Initializer(_this)->variableCount; variable++) {
             Fast_Define defineExpr = Fast_Define__create(_this->frames[0].expr[variable]);
             Fast_Parser_addStatement(yparser(), Fast_Node(defineExpr));
@@ -252,7 +166,7 @@ cx_int16 Fast_DynamicInitializer_pop(Fast_DynamicInitializer _this) {
 /* ::cortex::Fast::DynamicInitializer::push() */
 cx_int16 Fast_DynamicInitializer_push(Fast_DynamicInitializer _this) {
 /* $begin(::cortex::Fast::DynamicInitializer::push) */
-	cx_uint8 variable;
+    cx_uint8 variable;
     cx_type t = Fast_Initializer_currentType(Fast_Initializer(_this));
     cx_uint8 fp = Fast_Initializer(_this)->fp;
     Fast_Node expr = Fast_Node(_this->frames[fp].expr[0]);
@@ -277,24 +191,32 @@ cx_int16 Fast_DynamicInitializer_push(Fast_DynamicInitializer _this) {
     
     /* If scope contains contents of a sequence insert operation to set sequence-size. Because size is not known beforehand,
      * cache the expression that contains the size. This will be set to it's final value when sequence-scope is pop'd. */
-    if ((t->kind == DB_COLLECTION) && (cx_collection(t)->kind == DB_SEQUENCE)) {
+    if ((t->kind == CX_COLLECTION) && (cx_collection(t)->kind == CX_SEQUENCE)) {
         Fast_Integer size = Fast_Integer__create(0);
         Fast_Parser_collect(yparser(), size);
         
         /* Cast the size to uint32 so that the expression won't be replaced by a cast when it is inserted in the argumentlist
         * of sequence::size(uint32). This way there is no need for keeping track of a size-expression per variable. Note: the
         * native type of a Fast::Integer is uint64. */
-        size = Fast_Integer(Fast_Expression_cast(Fast_Expression(size), cx_type(cx_uint32_o)));
+        size = Fast_Integer(Fast_Expression_cast(Fast_Expression(size), cx_type(cx_uint32_o), FALSE));
         cx_set_ext(_this, &_this->frames[fp].sequenceSize, size, ".frames[fp].sequenceSize");
         
         for(variable=0; variable<Fast_Initializer(_this)->variableCount; variable++) {
-            Fast_Initializer_setSequenceSize(_this, _this->frames[fp].expr[variable], Fast_Expression(size));
+            Fast_Node statement;
+            if(!(statement = Fast_Node(Fast_createCall(_this->frames[fp].expr[variable], "size", 1, Fast_Expression(size))))) {
+                goto error;
+            }
+            Fast_Parser_addStatement(yparser(), statement);
         }
-    } else if ((t->kind == DB_COLLECTION) && (cx_collection(t)->kind == DB_LIST)) {
+    } else if ((t->kind == CX_COLLECTION) && (cx_collection(t)->kind == CX_LIST)) {
         if (_this->assignValue) {
             /* If assigning a complex value to a list, clear list first */
             for(variable=0; variable<Fast_Initializer(_this)->variableCount; variable++) {
-                Fast_Initializer_clear(_this, _this->frames[fp].expr[variable]);
+                Fast_Node statement;
+                if (!(statement = Fast_Node(Fast_createCall(_this->frames[fp].expr[variable], "clear", 0)))) {
+                    goto error;
+                }
+                Fast_Parser_addStatement(yparser(), statement);
             }
         }
     } else {
@@ -310,7 +232,7 @@ error:
 /* ::cortex::Fast::DynamicInitializer::value(Expression v) */
 cx_int16 Fast_DynamicInitializer_value(Fast_DynamicInitializer _this, Fast_Expression v) {
 /* $begin(::cortex::Fast::DynamicInitializer::value) */
-	cx_uint32 variable;
+    cx_uint32 variable;
     cx_uint32 fp = Fast_Initializer(_this)->fp;
     cx_type type = Fast_Initializer_currentType(Fast_Initializer(_this));
     
@@ -329,8 +251,8 @@ cx_int16 Fast_DynamicInitializer_value(Fast_DynamicInitializer _this, Fast_Expre
         goto error;
     }
     
-	/* Serialize value to all variables being initialized */
-	for(variable=0; variable<Fast_Initializer(_this)->variableCount; variable++) {
+    /* Serialize value to all variables being initialized */
+    for(variable=0; variable<Fast_Initializer(_this)->variableCount; variable++) {
         if (Fast_Initializer(_this)->frames[fp].isKey) {
             cx_set(&_this->frames[fp].keyExpr[variable], v);
         } else {
@@ -338,7 +260,7 @@ cx_int16 Fast_DynamicInitializer_value(Fast_DynamicInitializer _this, Fast_Expre
         }
     }
     
-	return Fast_Initializer_next(Fast_Initializer(_this));
+    return Fast_Initializer_next(Fast_Initializer(_this));
 error:
     return -1;
 /* $end */

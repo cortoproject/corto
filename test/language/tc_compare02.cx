@@ -2,9 +2,9 @@
 
 bool result : true
 void fail(string msg):
-	"tc_compare02: FAIL: $msg"
-	result = false
-	
+    "tc_compare02: FAIL: $msg"
+    result = false
+    
 // Object comparisons
 bool bTrue: true
 bool bFalse: false

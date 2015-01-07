@@ -139,8 +139,8 @@ int cx_interface_walkScope(cx_object o, void* userData) {
     cx_interface _this;
     _this = userData;
 
-    if (cx_class_instanceof(cx_procedure_o, cx_typeof(o)) && ((cx_procedure(cx_typeof(o))->kind == DB_METHOD) || (cx_procedure(cx_typeof(o))->kind == DB_DELEGATE))) {
-        if (!cx_checkState(o, DB_DEFINED)) {
+    if (cx_class_instanceof(cx_procedure_o, cx_typeof(o)) && ((cx_procedure(cx_typeof(o))->kind == CX_METHOD) || (cx_procedure(cx_typeof(o))->kind == CX_DELEGATE))) {
+        if (!cx_checkState(o, CX_DEFINED)) {
             if (cx_interface_bindMethod_v(_this, o)) {
                 goto error;
             }
@@ -240,7 +240,7 @@ cx_uint32 cx__interface_calculateSize(cx_interface _this, cx_uint32 base) {
 
         /* Align size */
         alignment = cx_type_alignmentof(memberType);
-        size = DB_ALIGN(size, alignment);
+        size = CX_ALIGN(size, alignment);
 
         if (m->type->real->hasResources || m->type->real->reference) {
             cx_type(_this)->hasResources = TRUE;
@@ -250,7 +250,7 @@ cx_uint32 cx__interface_calculateSize(cx_interface _this, cx_uint32 base) {
         size += memberSize;
     }
 
-    return interfaceAlignment ? DB_ALIGN(size, interfaceAlignment) : 0;
+    return interfaceAlignment ? CX_ALIGN(size, interfaceAlignment) : 0;
 }
 
 static int cx_interface_insertMemberAction(void* o, void* userData) {
@@ -328,7 +328,7 @@ static cx_bool cx_interface_checkProcedureParameters(cx_function o1, cx_function
                 /* Perform a stricter check during bootstrap. This is because the cx_type_compatible method
                  * is not yet available during bootstrap, because the vtable of type is not yet final, resulting
                  * in unstable methodId's. */
-                if (!cx_checkState(cx_type_o, DB_DEFINED)) { /* If lang::type is not yet defined, we're still bootstrapping. */
+                if (!cx_checkState(cx_type_o, CX_DEFINED)) { /* If lang::type is not yet defined, we're still bootstrapping. */
                     if (p1 != p2) {
                         if (!(p1 == cx_object_o) && (p2->reference)) {
                             cx_error("bootstrap failure: types of parameters '%s' and '%s' are not compatible.",
@@ -347,8 +347,8 @@ static cx_bool cx_interface_checkProcedureParameters(cx_function o1, cx_function
 
             /* Check if both parameters have equal reference semantics */
             if (o1->parameters.buffer[i].passByReference != o2->parameters.buffer[i].passByReference) {
-                if ((((p1->kind == DB_VOID) && (p1->reference)) && o2->parameters.buffer[i].passByReference) ||
-                    (((p2->kind == DB_VOID) && (p2->reference)) && o1->parameters.buffer[i].passByReference)) {
+                if ((((p1->kind == CX_VOID) && (p1->reference)) && o2->parameters.buffer[i].passByReference) ||
+                    (((p2->kind == CX_VOID) && (p2->reference)) && o1->parameters.buffer[i].passByReference)) {
 
                 } else {
                     cx_error("parameter '%s' of function '%s' and '%s' has conflicting pass-by-reference semantics.",
@@ -387,24 +387,24 @@ cx_bool cx_interface_checkProcedureCompatibility(cx_function o1, cx_function o2)
         result = FALSE; /* Returntypes must match exactly (save for typedefs) */
     } else {
         switch(cx_procedure(t1)->kind) {
-        case DB_METAPROCEDURE:
-        case DB_FUNCTION:
+        case CX_METAPROCEDURE:
+        case CX_FUNCTION:
             result = FALSE; /* Static functions will never be overridden. */
             break;
-        case DB_METHOD:
+        case CX_METHOD:
             result = cx_interface_checkProcedureParameters(o1, o2);
             break;
-        case DB_DELEGATE:
-            if (cx_procedure(t2)->kind != DB_CALLBACK) {
+        case CX_DELEGATE:
+            if (cx_procedure(t2)->kind != CX_CALLBACK) {
                 result = FALSE;
             } else {
                 result = cx_interface_checkProcedureParameters(o1, o2);
             }
             break;
-        case DB_CALLBACK:
+        case CX_CALLBACK:
             result = FALSE; /* Callbacks will never be compared to eachother */
             break;
-        case DB_OBSERVER:
+        case CX_OBSERVER:
             result = FALSE; /* Observers are not overridable and thus never need to be compared. */
             break;
         }
@@ -447,7 +447,7 @@ cx_int16 cx_interface_bindMethod_v(cx_interface _this, cx_method method) {
 
     /* vtableLookup failed (probably due to a failed overloading request) */
     if (i == -1) {
-    	goto error;
+        goto error;
     }
 
     /* Function is reentrant */
@@ -487,8 +487,8 @@ cx_int16 cx_interface_bindMethod_v(cx_interface _this, cx_method method) {
         }
     }
 
-    if (cx_interface(_this)->kind == DB_INTERFACE) {
-    	method->virtual = TRUE;
+    if (cx_interface(_this)->kind == CX_INTERFACE) {
+        method->virtual = TRUE;
     }
 
     return 0;
@@ -553,11 +553,11 @@ cx_int16 cx_interface_construct(cx_interface object) {
         cx_dealloc(superTable);
     }
 
-	if (!cx_scopeWalk(object, cx_interface_walkScope, object)) {
-	    goto error;
-	}
+    if (!cx_scopeWalk(object, cx_interface_walkScope, object)) {
+        goto error;
+    }
 
-	return cx_type_construct(cx_type(object));
+    return cx_type_construct(cx_type(object));
 error:
     return -1;
 /* $end */
@@ -566,12 +566,12 @@ error:
 /* callback ::cortex::lang::class::destruct(lang::object object) -> ::cortex::lang::interface::destruct(lang::interface object) */
 cx_void cx_interface_destruct(cx_interface object) {
 /* $begin(::cortex::lang::interface::destruct) */
-	cx_uint32 i;
+    cx_uint32 i;
 
-	/* Free members */
-	for(i=0; i<object->members.length; i++) {
-	    cx_free_ext(object, object->members.buffer[i], "Free member for interface");
-	}
+    /* Free members */
+    for(i=0; i<object->members.length; i++) {
+        cx_free_ext(object, object->members.buffer[i], "Free member for interface");
+    }
 
     if (object->members.buffer) {
         cx_dealloc(object->members.buffer);
@@ -580,15 +580,15 @@ cx_void cx_interface_destruct(cx_interface object) {
 
     /* Free methods */
     for(i=0; i<object->methods.length; i++) {
-    	cx_free_ext(object, object->methods.buffer[i], "Remove method from vtable.");
+        cx_free_ext(object, object->methods.buffer[i], "Remove method from vtable.");
     }
 
     if (object->methods.buffer) {
-		cx_dealloc(object->methods.buffer);
-		object->methods.buffer = NULL;
+        cx_dealloc(object->methods.buffer);
+        object->methods.buffer = NULL;
     }
 
-	cx_type__destruct(cx_type(object));
+    cx_type__destruct(cx_type(object));
 /* $end */
 }
 
@@ -596,9 +596,9 @@ cx_void cx_interface_destruct(cx_interface object) {
 cx_int16 cx_interface_init(cx_interface object) {
 /* $begin(::cortex::lang::interface::init) */
     cx_type(object)->reference = TRUE;
-    cx_type(object)->kind = DB_COMPOSITE;
+    cx_type(object)->kind = CX_COMPOSITE;
     cx_set(&cx_type(object)->defaultType, cx_member_o);
-    object->kind = DB_INTERFACE;
+    object->kind = CX_INTERFACE;
     return cx_type__init(cx_type(object));
 /* $end */
 }
@@ -673,7 +673,7 @@ cx_uint32 cx_interface_resolveMethodId(cx_interface _this, cx_string name) {
 
     result = 0;
 
-    if (!cx_checkState(_this, DB_DEFINED)) {
+    if (!cx_checkState(_this, CX_DEFINED)) {
         cx_id id;
         cx_error("cannot resolve methodId for method '%s' from undefined interface '%s'", name, cx_fullname(_this, id));
         abort();
@@ -682,9 +682,9 @@ cx_uint32 cx_interface_resolveMethodId(cx_interface _this, cx_string name) {
 
     /* Lookup method */
     if (cx_vtableLookup(&_this->methods, name, &result, NULL)) {
-    	if (result == -1) {
-    		goto error;
-    	}
+        if (result == -1) {
+            goto error;
+        }
         result++; /* Id's start at 1 */
     }
 

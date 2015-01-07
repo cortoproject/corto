@@ -89,7 +89,7 @@ int tc_stringser_load(void) {
     }
 
     /* Define ::tc_stringser */
-    if (!cx_checkState(tc_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_o, CX_DEFINED)) {
         if (cx_define(tc_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser'.");
             goto error;
@@ -222,7 +222,7 @@ int tc_stringser_load(void) {
     }
 
     /* Define ::tc_stringser::classInherit::a */
-    if (!cx_checkState(tc_classInherit_a_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classInherit_a_o, CX_DEFINED)) {
         tc_classInherit_a_o->type = cx_resolve_ext(tc_classInherit_a_o, NULL, "::cortex::lang::bool", FALSE, "element ::tc_stringser::classInherit::a.type");
         tc_classInherit_a_o->modifiers = 0x0;
         tc_classInherit_a_o->state = 0x6;
@@ -241,7 +241,7 @@ int tc_stringser_load(void) {
     }
 
     /* Define ::tc_stringser::classInherit::b */
-    if (!cx_checkState(tc_classInherit_b_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classInherit_b_o, CX_DEFINED)) {
         tc_classInherit_b_o->type = cx_resolve_ext(tc_classInherit_b_o, NULL, "::cortex::lang::char", FALSE, "element ::tc_stringser::classInherit::b.type");
         tc_classInherit_b_o->modifiers = 0x0;
         tc_classInherit_b_o->state = 0x6;
@@ -260,7 +260,7 @@ int tc_stringser_load(void) {
     }
 
     /* Define ::tc_stringser::classInherit::c */
-    if (!cx_checkState(tc_classInherit_c_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classInherit_c_o, CX_DEFINED)) {
         tc_classInherit_c_o->type = cx_resolve_ext(tc_classInherit_c_o, NULL, "::cortex::lang::int32", FALSE, "element ::tc_stringser::classInherit::c.type");
         tc_classInherit_c_o->modifiers = 0x0;
         tc_classInherit_c_o->state = 0x6;
@@ -279,7 +279,7 @@ int tc_stringser_load(void) {
     }
 
     /* Define ::tc_stringser::classInherit::d */
-    if (!cx_checkState(tc_classInherit_d_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classInherit_d_o, CX_DEFINED)) {
         tc_classInherit_d_o->type = cx_resolve_ext(tc_classInherit_d_o, NULL, "::cortex::lang::float32", FALSE, "element ::tc_stringser::classInherit::d.type");
         tc_classInherit_d_o->modifiers = 0x0;
         tc_classInherit_d_o->state = 0x6;
@@ -298,7 +298,7 @@ int tc_stringser_load(void) {
     }
 
     /* Define ::tc_stringser::classInherit::e */
-    if (!cx_checkState(tc_classInherit_e_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classInherit_e_o, CX_DEFINED)) {
         tc_classInherit_e_o->type = cx_resolve_ext(tc_classInherit_e_o, NULL, "::cortex::lang::string", FALSE, "element ::tc_stringser::classInherit::e.type");
         tc_classInherit_e_o->modifiers = 0x0;
         tc_classInherit_e_o->state = 0x6;
@@ -331,7 +331,7 @@ int tc_stringser_load(void) {
     }
 
     /* Define ::tc_stringser::listOfClassInherit */
-    if (!cx_checkState(tc_listOfClassInherit_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_listOfClassInherit_o, CX_DEFINED)) {
         tc_listOfClassInherit_o->type = cx_resolve_ext(tc_listOfClassInherit_o, NULL, "::cortex::lang::list{::tc_stringser::classInherit,3}", FALSE, "element ::tc_stringser::listOfClassInherit.type");
         if (cx_define(tc_listOfClassInherit_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::listOfClassInherit'.");
@@ -339,7 +339,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::classCompositeCollection::e */
-    if (!cx_checkState(tc_classCompositeCollection_e_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classCompositeCollection_e_o, CX_DEFINED)) {
         tc_classCompositeCollection_e_o->type = cx_resolve_ext(tc_classCompositeCollection_e_o, NULL, "::tc_stringser::listOfClassInherit", FALSE, "element ::tc_stringser::classCompositeCollection::e.type");
         tc_classCompositeCollection_e_o->modifiers = 0x0;
         tc_classCompositeCollection_e_o->state = 0x6;
@@ -358,7 +358,7 @@ int tc_stringser_load(void) {
     }
 
     /* Define ::tc_stringser::sequenceOfClassInherit */
-    if (!cx_checkState(tc_sequenceOfClassInherit_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_sequenceOfClassInherit_o, CX_DEFINED)) {
         tc_sequenceOfClassInherit_o->type = cx_resolve_ext(tc_sequenceOfClassInherit_o, NULL, "::cortex::lang::sequence{::tc_stringser::classInherit,3}", FALSE, "element ::tc_stringser::sequenceOfClassInherit.type");
         if (cx_define(tc_sequenceOfClassInherit_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::sequenceOfClassInherit'.");
@@ -366,7 +366,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::classCompositeCollection::c */
-    if (!cx_checkState(tc_classCompositeCollection_c_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classCompositeCollection_c_o, CX_DEFINED)) {
         tc_classCompositeCollection_c_o->type = cx_resolve_ext(tc_classCompositeCollection_c_o, NULL, "::tc_stringser::sequenceOfClassInherit", FALSE, "element ::tc_stringser::classCompositeCollection::c.type");
         tc_classCompositeCollection_c_o->modifiers = 0x0;
         tc_classCompositeCollection_c_o->state = 0x6;
@@ -427,7 +427,7 @@ int tc_stringser_load(void) {
     }
 
     /* Define ::tc_stringser::listOfClassNested */
-    if (!cx_checkState(tc_listOfClassNested_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_listOfClassNested_o, CX_DEFINED)) {
         tc_listOfClassNested_o->type = cx_resolve_ext(tc_listOfClassNested_o, NULL, "::cortex::lang::list{::tc_stringser::classNested,3}", FALSE, "element ::tc_stringser::listOfClassNested.type");
         if (cx_define(tc_listOfClassNested_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::listOfClassNested'.");
@@ -435,7 +435,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::classCompositeCollection::d */
-    if (!cx_checkState(tc_classCompositeCollection_d_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classCompositeCollection_d_o, CX_DEFINED)) {
         tc_classCompositeCollection_d_o->type = cx_resolve_ext(tc_classCompositeCollection_d_o, NULL, "::tc_stringser::listOfClassNested", FALSE, "element ::tc_stringser::classCompositeCollection::d.type");
         tc_classCompositeCollection_d_o->modifiers = 0x0;
         tc_classCompositeCollection_d_o->state = 0x6;
@@ -454,7 +454,7 @@ int tc_stringser_load(void) {
     }
 
     /* Define ::tc_stringser::sequenceOfClassNested */
-    if (!cx_checkState(tc_sequenceOfClassNested_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_sequenceOfClassNested_o, CX_DEFINED)) {
         tc_sequenceOfClassNested_o->type = cx_resolve_ext(tc_sequenceOfClassNested_o, NULL, "::cortex::lang::sequence{::tc_stringser::classNested,3}", FALSE, "element ::tc_stringser::sequenceOfClassNested.type");
         if (cx_define(tc_sequenceOfClassNested_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::sequenceOfClassNested'.");
@@ -476,7 +476,7 @@ int tc_stringser_load(void) {
     }
 
     /* Define ::tc_stringser::classPrimitives::a */
-    if (!cx_checkState(tc_classPrimitives_a_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classPrimitives_a_o, CX_DEFINED)) {
         tc_classPrimitives_a_o->type = cx_resolve_ext(tc_classPrimitives_a_o, NULL, "::cortex::lang::bool", FALSE, "element ::tc_stringser::classPrimitives::a.type");
         tc_classPrimitives_a_o->modifiers = 0x0;
         tc_classPrimitives_a_o->state = 0x6;
@@ -495,7 +495,7 @@ int tc_stringser_load(void) {
     }
 
     /* Define ::tc_stringser::classPrimitives::b */
-    if (!cx_checkState(tc_classPrimitives_b_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classPrimitives_b_o, CX_DEFINED)) {
         tc_classPrimitives_b_o->type = cx_resolve_ext(tc_classPrimitives_b_o, NULL, "::cortex::lang::char", FALSE, "element ::tc_stringser::classPrimitives::b.type");
         tc_classPrimitives_b_o->modifiers = 0x0;
         tc_classPrimitives_b_o->state = 0x6;
@@ -514,7 +514,7 @@ int tc_stringser_load(void) {
     }
 
     /* Define ::tc_stringser::classPrimitives::c */
-    if (!cx_checkState(tc_classPrimitives_c_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classPrimitives_c_o, CX_DEFINED)) {
         tc_classPrimitives_c_o->type = cx_resolve_ext(tc_classPrimitives_c_o, NULL, "::cortex::lang::int32", FALSE, "element ::tc_stringser::classPrimitives::c.type");
         tc_classPrimitives_c_o->modifiers = 0x0;
         tc_classPrimitives_c_o->state = 0x6;
@@ -533,7 +533,7 @@ int tc_stringser_load(void) {
     }
 
     /* Define ::tc_stringser::classPrimitives::d */
-    if (!cx_checkState(tc_classPrimitives_d_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classPrimitives_d_o, CX_DEFINED)) {
         tc_classPrimitives_d_o->type = cx_resolve_ext(tc_classPrimitives_d_o, NULL, "::cortex::lang::float32", FALSE, "element ::tc_stringser::classPrimitives::d.type");
         tc_classPrimitives_d_o->modifiers = 0x0;
         tc_classPrimitives_d_o->state = 0x6;
@@ -552,7 +552,7 @@ int tc_stringser_load(void) {
     }
 
     /* Define ::tc_stringser::classPrimitives::e */
-    if (!cx_checkState(tc_classPrimitives_e_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classPrimitives_e_o, CX_DEFINED)) {
         tc_classPrimitives_e_o->type = cx_resolve_ext(tc_classPrimitives_e_o, NULL, "::cortex::lang::string", FALSE, "element ::tc_stringser::classPrimitives::e.type");
         tc_classPrimitives_e_o->modifiers = 0x0;
         tc_classPrimitives_e_o->state = 0x6;
@@ -585,7 +585,7 @@ int tc_stringser_load(void) {
     }
 
     /* Define ::tc_stringser::listOfClassPrimitives */
-    if (!cx_checkState(tc_listOfClassPrimitives_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_listOfClassPrimitives_o, CX_DEFINED)) {
         tc_listOfClassPrimitives_o->type = cx_resolve_ext(tc_listOfClassPrimitives_o, NULL, "::cortex::lang::list{::tc_stringser::classPrimitives,3}", FALSE, "element ::tc_stringser::listOfClassPrimitives.type");
         if (cx_define(tc_listOfClassPrimitives_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::listOfClassPrimitives'.");
@@ -600,7 +600,7 @@ int tc_stringser_load(void) {
     }
 
     /* Define ::tc_stringser::sequenceOfClassPrimitives */
-    if (!cx_checkState(tc_sequenceOfClassPrimitives_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_sequenceOfClassPrimitives_o, CX_DEFINED)) {
         tc_sequenceOfClassPrimitives_o->type = cx_resolve_ext(tc_sequenceOfClassPrimitives_o, NULL, "::cortex::lang::sequence{::tc_stringser::classPrimitives,3}", FALSE, "element ::tc_stringser::sequenceOfClassPrimitives.type");
         if (cx_define(tc_sequenceOfClassPrimitives_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::sequenceOfClassPrimitives'.");
@@ -622,7 +622,7 @@ int tc_stringser_load(void) {
     }
 
     /* Define ::tc_stringser::color::BLUE */
-    if (!cx_checkState(tc_color_BLUE_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_color_BLUE_o, CX_DEFINED)) {
         (*tc_color_BLUE_o) = 2;
         if (cx_define(tc_color_BLUE_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::color::BLUE'.");
@@ -637,7 +637,7 @@ int tc_stringser_load(void) {
     }
 
     /* Define ::tc_stringser::color::RED */
-    if (!cx_checkState(tc_color_RED_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_color_RED_o, CX_DEFINED)) {
         (*tc_color_RED_o) = 0;
         if (cx_define(tc_color_RED_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::color::RED'.");
@@ -652,7 +652,7 @@ int tc_stringser_load(void) {
     }
 
     /* Define ::tc_stringser::color::YELLOW */
-    if (!cx_checkState(tc_color_YELLOW_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_color_YELLOW_o, CX_DEFINED)) {
         (*tc_color_YELLOW_o) = 1;
         if (cx_define(tc_color_YELLOW_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::color::YELLOW'.");
@@ -660,14 +660,14 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::color */
-    if (!cx_checkState(tc_color_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_color_o, CX_DEFINED)) {
         if (cx_define(tc_color_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::color'.");
             goto error;
         }
     }
     /* Define ::tc_stringser::classInherit::f */
-    if (!cx_checkState(tc_classInherit_f_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classInherit_f_o, CX_DEFINED)) {
         tc_classInherit_f_o->type = cx_resolve_ext(tc_classInherit_f_o, NULL, "::tc_stringser::color", FALSE, "element ::tc_stringser::classInherit::f.type");
         tc_classInherit_f_o->modifiers = 0x0;
         tc_classInherit_f_o->state = 0x6;
@@ -679,7 +679,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::classPrimitives::f */
-    if (!cx_checkState(tc_classPrimitives_f_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classPrimitives_f_o, CX_DEFINED)) {
         tc_classPrimitives_f_o->type = cx_resolve_ext(tc_classPrimitives_f_o, NULL, "::tc_stringser::color", FALSE, "element ::tc_stringser::classPrimitives::f.type");
         tc_classPrimitives_f_o->modifiers = 0x0;
         tc_classPrimitives_f_o->state = 0x6;
@@ -691,7 +691,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::arrayOfColor */
-    if (!cx_checkState(tc_arrayOfColor_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_arrayOfColor_o, CX_DEFINED)) {
         tc_arrayOfColor_o->type = cx_resolve_ext(tc_arrayOfColor_o, NULL, "::cortex::lang::array{::tc_stringser::color,3,::tc_stringser::color}", FALSE, "element ::tc_stringser::arrayOfColor.type");
         if (cx_define(tc_arrayOfColor_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::arrayOfColor'.");
@@ -706,7 +706,7 @@ int tc_stringser_load(void) {
     }
 
     /* Define ::tc_stringser::listOfColor */
-    if (!cx_checkState(tc_listOfColor_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_listOfColor_o, CX_DEFINED)) {
         tc_listOfColor_o->type = cx_resolve_ext(tc_listOfColor_o, NULL, "::cortex::lang::list{::tc_stringser::color,3}", FALSE, "element ::tc_stringser::listOfColor.type");
         if (cx_define(tc_listOfColor_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::listOfColor'.");
@@ -721,7 +721,7 @@ int tc_stringser_load(void) {
     }
 
     /* Define ::tc_stringser::sequenceOfColor */
-    if (!cx_checkState(tc_sequenceOfColor_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_sequenceOfColor_o, CX_DEFINED)) {
         tc_sequenceOfColor_o->type = cx_resolve_ext(tc_sequenceOfColor_o, NULL, "::cortex::lang::sequence{::tc_stringser::color,3}", FALSE, "element ::tc_stringser::sequenceOfColor.type");
         if (cx_define(tc_sequenceOfColor_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::sequenceOfColor'.");
@@ -785,7 +785,7 @@ int tc_stringser_load(void) {
     }
 
     /* Define ::tc_stringser::moveMode::FLY */
-    if (!cx_checkState(tc_moveMode_FLY_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_moveMode_FLY_o, CX_DEFINED)) {
         (*tc_moveMode_FLY_o) = 4;
         if (cx_define(tc_moveMode_FLY_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::moveMode::FLY'.");
@@ -800,7 +800,7 @@ int tc_stringser_load(void) {
     }
 
     /* Define ::tc_stringser::moveMode::SWIM */
-    if (!cx_checkState(tc_moveMode_SWIM_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_moveMode_SWIM_o, CX_DEFINED)) {
         (*tc_moveMode_SWIM_o) = 2;
         if (cx_define(tc_moveMode_SWIM_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::moveMode::SWIM'.");
@@ -815,7 +815,7 @@ int tc_stringser_load(void) {
     }
 
     /* Define ::tc_stringser::moveMode::WALK */
-    if (!cx_checkState(tc_moveMode_WALK_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_moveMode_WALK_o, CX_DEFINED)) {
         (*tc_moveMode_WALK_o) = 1;
         if (cx_define(tc_moveMode_WALK_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::moveMode::WALK'.");
@@ -823,14 +823,14 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::moveMode */
-    if (!cx_checkState(tc_moveMode_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_moveMode_o, CX_DEFINED)) {
         if (cx_define(tc_moveMode_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::moveMode'.");
             goto error;
         }
     }
     /* Define ::tc_stringser::classInherit::g */
-    if (!cx_checkState(tc_classInherit_g_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classInherit_g_o, CX_DEFINED)) {
         tc_classInherit_g_o->type = cx_resolve_ext(tc_classInherit_g_o, NULL, "::tc_stringser::moveMode", FALSE, "element ::tc_stringser::classInherit::g.type");
         tc_classInherit_g_o->modifiers = 0x0;
         tc_classInherit_g_o->state = 0x6;
@@ -842,7 +842,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::classPrimitives::g */
-    if (!cx_checkState(tc_classPrimitives_g_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classPrimitives_g_o, CX_DEFINED)) {
         tc_classPrimitives_g_o->type = cx_resolve_ext(tc_classPrimitives_g_o, NULL, "::tc_stringser::moveMode", FALSE, "element ::tc_stringser::classPrimitives::g.type");
         tc_classPrimitives_g_o->modifiers = 0x0;
         tc_classPrimitives_g_o->state = 0x6;
@@ -854,7 +854,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::classPrimitives */
-    if (!cx_checkState(tc_classPrimitives_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classPrimitives_o, CX_DEFINED)) {
         cx_type(tc_classPrimitives_o)->parentType = NULL;
         cx_type(tc_classPrimitives_o)->parentState = 0x0;
         cx_interface(tc_classPrimitives_o)->base = NULL;
@@ -867,7 +867,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::classInherit */
-    if (!cx_checkState(tc_classInherit_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classInherit_o, CX_DEFINED)) {
         cx_type(tc_classInherit_o)->parentType = NULL;
         cx_type(tc_classInherit_o)->parentState = 0x0;
         cx_interface(tc_classInherit_o)->base = cx_resolve_ext(tc_classInherit_o, NULL, "::tc_stringser::classPrimitives", FALSE, "element ::tc_stringser::classInherit.base");
@@ -880,7 +880,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::classNested::b */
-    if (!cx_checkState(tc_classNested_b_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classNested_b_o, CX_DEFINED)) {
         tc_classNested_b_o->type = cx_resolve_ext(tc_classNested_b_o, NULL, "::tc_stringser::classInherit", FALSE, "element ::tc_stringser::classNested::b.type");
         tc_classNested_b_o->modifiers = 0x0;
         tc_classNested_b_o->state = 0x6;
@@ -892,7 +892,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::arrayOfClassInherit */
-    if (!cx_checkState(tc_arrayOfClassInherit_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_arrayOfClassInherit_o, CX_DEFINED)) {
         tc_arrayOfClassInherit_o->type = cx_resolve_ext(tc_arrayOfClassInherit_o, NULL, "::cortex::lang::array{::tc_stringser::classInherit,3,::tc_stringser::classInherit}", FALSE, "element ::tc_stringser::arrayOfClassInherit.type");
         if (cx_define(tc_arrayOfClassInherit_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::arrayOfClassInherit'.");
@@ -900,7 +900,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::classCompositeCollection::a */
-    if (!cx_checkState(tc_classCompositeCollection_a_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classCompositeCollection_a_o, CX_DEFINED)) {
         tc_classCompositeCollection_a_o->type = cx_resolve_ext(tc_classCompositeCollection_a_o, NULL, "::tc_stringser::arrayOfClassInherit", FALSE, "element ::tc_stringser::classCompositeCollection::a.type");
         tc_classCompositeCollection_a_o->modifiers = 0x0;
         tc_classCompositeCollection_a_o->state = 0x6;
@@ -912,7 +912,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::classNested::a */
-    if (!cx_checkState(tc_classNested_a_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classNested_a_o, CX_DEFINED)) {
         tc_classNested_a_o->type = cx_resolve_ext(tc_classNested_a_o, NULL, "::tc_stringser::classPrimitives", FALSE, "element ::tc_stringser::classNested::a.type");
         tc_classNested_a_o->modifiers = 0x0;
         tc_classNested_a_o->state = 0x6;
@@ -924,7 +924,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::arrayOfClassPrimitives */
-    if (!cx_checkState(tc_arrayOfClassPrimitives_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_arrayOfClassPrimitives_o, CX_DEFINED)) {
         tc_arrayOfClassPrimitives_o->type = cx_resolve_ext(tc_arrayOfClassPrimitives_o, NULL, "::cortex::lang::array{::tc_stringser::classPrimitives,3,::tc_stringser::classPrimitives}", FALSE, "element ::tc_stringser::arrayOfClassPrimitives.type");
         if (cx_define(tc_arrayOfClassPrimitives_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::arrayOfClassPrimitives'.");
@@ -932,7 +932,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::arrayOfMoveMode */
-    if (!cx_checkState(tc_arrayOfMoveMode_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_arrayOfMoveMode_o, CX_DEFINED)) {
         tc_arrayOfMoveMode_o->type = cx_resolve_ext(tc_arrayOfMoveMode_o, NULL, "::cortex::lang::array{::tc_stringser::moveMode,3,::tc_stringser::moveMode}", FALSE, "element ::tc_stringser::arrayOfMoveMode.type");
         if (cx_define(tc_arrayOfMoveMode_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::arrayOfMoveMode'.");
@@ -940,7 +940,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::listOfMoveMode */
-    if (!cx_checkState(tc_listOfMoveMode_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_listOfMoveMode_o, CX_DEFINED)) {
         tc_listOfMoveMode_o->type = cx_resolve_ext(tc_listOfMoveMode_o, NULL, "::cortex::lang::list{::tc_stringser::moveMode,3}", FALSE, "element ::tc_stringser::listOfMoveMode.type");
         if (cx_define(tc_listOfMoveMode_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::listOfMoveMode'.");
@@ -955,7 +955,7 @@ int tc_stringser_load(void) {
     }
 
     /* Define ::tc_stringser::sequenceOfMoveMode */
-    if (!cx_checkState(tc_sequenceOfMoveMode_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_sequenceOfMoveMode_o, CX_DEFINED)) {
         tc_sequenceOfMoveMode_o->type = cx_resolve_ext(tc_sequenceOfMoveMode_o, NULL, "::cortex::lang::sequence{::tc_stringser::moveMode,3}", FALSE, "element ::tc_stringser::sequenceOfMoveMode.type");
         if (cx_define(tc_sequenceOfMoveMode_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::sequenceOfMoveMode'.");
@@ -998,7 +998,7 @@ int tc_stringser_load(void) {
     }
 
     /* Define ::tc_stringser::arrayOfBool */
-    if (!cx_checkState(tc_arrayOfBool_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_arrayOfBool_o, CX_DEFINED)) {
         tc_arrayOfBool_o->type = cx_resolve_ext(tc_arrayOfBool_o, NULL, "::cortex::lang::array{::cortex::lang::bool,3,::cortex::lang::bool}", FALSE, "element ::tc_stringser::arrayOfBool.type");
         if (cx_define(tc_arrayOfBool_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::arrayOfBool'.");
@@ -1006,7 +1006,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::arrayOfChar */
-    if (!cx_checkState(tc_arrayOfChar_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_arrayOfChar_o, CX_DEFINED)) {
         tc_arrayOfChar_o->type = cx_resolve_ext(tc_arrayOfChar_o, NULL, "::cortex::lang::array{::cortex::lang::char,3,::cortex::lang::char}", FALSE, "element ::tc_stringser::arrayOfChar.type");
         if (cx_define(tc_arrayOfChar_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::arrayOfChar'.");
@@ -1014,7 +1014,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::arrayOfFloat */
-    if (!cx_checkState(tc_arrayOfFloat_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_arrayOfFloat_o, CX_DEFINED)) {
         tc_arrayOfFloat_o->type = cx_resolve_ext(tc_arrayOfFloat_o, NULL, "::cortex::lang::array{::cortex::lang::float32,3,::cortex::lang::float32}", FALSE, "element ::tc_stringser::arrayOfFloat.type");
         if (cx_define(tc_arrayOfFloat_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::arrayOfFloat'.");
@@ -1022,7 +1022,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::arrayOfInt */
-    if (!cx_checkState(tc_arrayOfInt_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_arrayOfInt_o, CX_DEFINED)) {
         tc_arrayOfInt_o->type = cx_resolve_ext(tc_arrayOfInt_o, NULL, "::cortex::lang::array{::cortex::lang::int32,3,::cortex::lang::int32}", FALSE, "element ::tc_stringser::arrayOfInt.type");
         if (cx_define(tc_arrayOfInt_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::arrayOfInt'.");
@@ -1030,7 +1030,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::classNested::c */
-    if (!cx_checkState(tc_classNested_c_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classNested_c_o, CX_DEFINED)) {
         tc_classNested_c_o->type = cx_resolve_ext(tc_classNested_c_o, NULL, "::tc_stringser::arrayOfInt", FALSE, "element ::tc_stringser::classNested::c.type");
         tc_classNested_c_o->modifiers = 0x0;
         tc_classNested_c_o->state = 0x6;
@@ -1042,7 +1042,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::arrayOfString */
-    if (!cx_checkState(tc_arrayOfString_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_arrayOfString_o, CX_DEFINED)) {
         tc_arrayOfString_o->type = cx_resolve_ext(tc_arrayOfString_o, NULL, "::cortex::lang::array{::cortex::lang::string,3,::cortex::lang::string}", FALSE, "element ::tc_stringser::arrayOfString.type");
         if (cx_define(tc_arrayOfString_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::arrayOfString'.");
@@ -1050,7 +1050,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::listOfBool */
-    if (!cx_checkState(tc_listOfBool_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_listOfBool_o, CX_DEFINED)) {
         tc_listOfBool_o->type = cx_resolve_ext(tc_listOfBool_o, NULL, "::cortex::lang::list{::cortex::lang::bool,3}", FALSE, "element ::tc_stringser::listOfBool.type");
         if (cx_define(tc_listOfBool_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::listOfBool'.");
@@ -1058,7 +1058,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::listOfChar */
-    if (!cx_checkState(tc_listOfChar_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_listOfChar_o, CX_DEFINED)) {
         tc_listOfChar_o->type = cx_resolve_ext(tc_listOfChar_o, NULL, "::cortex::lang::list{::cortex::lang::char,3}", FALSE, "element ::tc_stringser::listOfChar.type");
         if (cx_define(tc_listOfChar_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::listOfChar'.");
@@ -1066,7 +1066,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::listOfFloat */
-    if (!cx_checkState(tc_listOfFloat_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_listOfFloat_o, CX_DEFINED)) {
         tc_listOfFloat_o->type = cx_resolve_ext(tc_listOfFloat_o, NULL, "::cortex::lang::list{::cortex::lang::float32,3}", FALSE, "element ::tc_stringser::listOfFloat.type");
         if (cx_define(tc_listOfFloat_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::listOfFloat'.");
@@ -1074,7 +1074,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::listOfInt */
-    if (!cx_checkState(tc_listOfInt_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_listOfInt_o, CX_DEFINED)) {
         tc_listOfInt_o->type = cx_resolve_ext(tc_listOfInt_o, NULL, "::cortex::lang::list{::cortex::lang::int32,3}", FALSE, "element ::tc_stringser::listOfInt.type");
         if (cx_define(tc_listOfInt_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::listOfInt'.");
@@ -1082,7 +1082,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::classNested::e */
-    if (!cx_checkState(tc_classNested_e_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classNested_e_o, CX_DEFINED)) {
         tc_classNested_e_o->type = cx_resolve_ext(tc_classNested_e_o, NULL, "::tc_stringser::listOfInt", FALSE, "element ::tc_stringser::classNested::e.type");
         tc_classNested_e_o->modifiers = 0x0;
         tc_classNested_e_o->state = 0x6;
@@ -1094,7 +1094,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::listOfString */
-    if (!cx_checkState(tc_listOfString_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_listOfString_o, CX_DEFINED)) {
         tc_listOfString_o->type = cx_resolve_ext(tc_listOfString_o, NULL, "::cortex::lang::list{::cortex::lang::string,3}", FALSE, "element ::tc_stringser::listOfString.type");
         if (cx_define(tc_listOfString_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::listOfString'.");
@@ -1102,7 +1102,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::sequenceOfBool */
-    if (!cx_checkState(tc_sequenceOfBool_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_sequenceOfBool_o, CX_DEFINED)) {
         tc_sequenceOfBool_o->type = cx_resolve_ext(tc_sequenceOfBool_o, NULL, "::cortex::lang::sequence{::cortex::lang::bool,3}", FALSE, "element ::tc_stringser::sequenceOfBool.type");
         if (cx_define(tc_sequenceOfBool_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::sequenceOfBool'.");
@@ -1110,7 +1110,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::sequenceOfChar */
-    if (!cx_checkState(tc_sequenceOfChar_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_sequenceOfChar_o, CX_DEFINED)) {
         tc_sequenceOfChar_o->type = cx_resolve_ext(tc_sequenceOfChar_o, NULL, "::cortex::lang::sequence{::cortex::lang::char,3}", FALSE, "element ::tc_stringser::sequenceOfChar.type");
         if (cx_define(tc_sequenceOfChar_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::sequenceOfChar'.");
@@ -1118,7 +1118,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::sequenceOfFloat */
-    if (!cx_checkState(tc_sequenceOfFloat_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_sequenceOfFloat_o, CX_DEFINED)) {
         tc_sequenceOfFloat_o->type = cx_resolve_ext(tc_sequenceOfFloat_o, NULL, "::cortex::lang::sequence{::cortex::lang::float32,3}", FALSE, "element ::tc_stringser::sequenceOfFloat.type");
         if (cx_define(tc_sequenceOfFloat_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::sequenceOfFloat'.");
@@ -1126,7 +1126,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::sequenceOfInt */
-    if (!cx_checkState(tc_sequenceOfInt_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_sequenceOfInt_o, CX_DEFINED)) {
         tc_sequenceOfInt_o->type = cx_resolve_ext(tc_sequenceOfInt_o, NULL, "::cortex::lang::sequence{::cortex::lang::int32,3}", FALSE, "element ::tc_stringser::sequenceOfInt.type");
         if (cx_define(tc_sequenceOfInt_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::sequenceOfInt'.");
@@ -1134,7 +1134,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::classNested::d */
-    if (!cx_checkState(tc_classNested_d_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classNested_d_o, CX_DEFINED)) {
         tc_classNested_d_o->type = cx_resolve_ext(tc_classNested_d_o, NULL, "::tc_stringser::sequenceOfInt", FALSE, "element ::tc_stringser::classNested::d.type");
         tc_classNested_d_o->modifiers = 0x0;
         tc_classNested_d_o->state = 0x6;
@@ -1146,7 +1146,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::classNested */
-    if (!cx_checkState(tc_classNested_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classNested_o, CX_DEFINED)) {
         cx_type(tc_classNested_o)->parentType = NULL;
         cx_type(tc_classNested_o)->parentState = 0x0;
         cx_interface(tc_classNested_o)->base = NULL;
@@ -1159,7 +1159,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::arrayOfClassNested */
-    if (!cx_checkState(tc_arrayOfClassNested_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_arrayOfClassNested_o, CX_DEFINED)) {
         tc_arrayOfClassNested_o->type = cx_resolve_ext(tc_arrayOfClassNested_o, NULL, "::cortex::lang::array{::tc_stringser::classNested,3,::tc_stringser::classNested}", FALSE, "element ::tc_stringser::arrayOfClassNested.type");
         if (cx_define(tc_arrayOfClassNested_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::arrayOfClassNested'.");
@@ -1167,7 +1167,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::classCompositeCollection::b */
-    if (!cx_checkState(tc_classCompositeCollection_b_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classCompositeCollection_b_o, CX_DEFINED)) {
         tc_classCompositeCollection_b_o->type = cx_resolve_ext(tc_classCompositeCollection_b_o, NULL, "::tc_stringser::arrayOfClassNested", FALSE, "element ::tc_stringser::classCompositeCollection::b.type");
         tc_classCompositeCollection_b_o->modifiers = 0x0;
         tc_classCompositeCollection_b_o->state = 0x6;
@@ -1179,7 +1179,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::classCompositeCollection */
-    if (!cx_checkState(tc_classCompositeCollection_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_classCompositeCollection_o, CX_DEFINED)) {
         cx_type(tc_classCompositeCollection_o)->parentType = NULL;
         cx_type(tc_classCompositeCollection_o)->parentState = 0x0;
         cx_interface(tc_classCompositeCollection_o)->base = NULL;
@@ -1192,7 +1192,7 @@ int tc_stringser_load(void) {
         }
     }
     /* Define ::tc_stringser::sequenceOfString */
-    if (!cx_checkState(tc_sequenceOfString_o, DB_DEFINED)) {
+    if (!cx_checkState(tc_sequenceOfString_o, CX_DEFINED)) {
         tc_sequenceOfString_o->type = cx_resolve_ext(tc_sequenceOfString_o, NULL, "::cortex::lang::sequence{::cortex::lang::string,3}", FALSE, "element ::tc_stringser::sequenceOfString.type");
         if (cx_define(tc_sequenceOfString_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::sequenceOfString'.");

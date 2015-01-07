@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB_METAWALK_H_
-#define DB_METAWALK_H_
+#ifndef CX_METAWALK_H_
+#define CX_METAWALK_H_
 
 #include "cx_serializer.h"
 
@@ -21,4 +21,4 @@ cx_int16 cx_serializeConstants(cx_serializer s, cx_value* v, void* userData);
 }
 #endif
 
-#endif /* DB_METAWALK_H_ */
+#endif /* CX_METAWALK_H_ */

@@ -12,6 +12,9 @@ int cx_mkdir(const char *name);
 /* Returns zero if OK, -1 if failed */
 int cx_cp(const char *source, const char *destination);
 
+/* Test whether a file exists */
+int cx_fileTest(const char* file);
+
 #ifdef __cplusplus
 }
 #endif

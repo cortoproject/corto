@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB_STRING_DESER_H_
-#define DB_STRING_DESER_H_
+#ifndef CX_STRING_DESER_H_
+#define CX_STRING_DESER_H_
 
 #include "cx__type.h"
 #include "cx_ll.h"
@@ -15,7 +15,7 @@
 extern "C" {
 #endif
 
-#define DB_STRING_DESER_TOKEN_MAX (1024) /* Specifies the maximum length for a token */
+#define CX_STRING_DESER_TOKEN_MAX (1024) /* Specifies the maximum length for a token */
 
 struct cx_indexInfo;
 
@@ -41,4 +41,4 @@ cx_string cx_string_deser(cx_string str, cx_string_deser_t* data);
 }
 #endif
 
-#endif /* DB_STRING_DESER_H_ */
+#endif /* CX_STRING_DESER_H_ */

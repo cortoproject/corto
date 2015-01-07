@@ -38,7 +38,7 @@ void Fast_buildInheritanceStack(cx_interface t, cx_interface *stack, cx_uint32 *
 
 cx_interface Fast_findCommonAncestor(cx_interface t1, cx_interface t2) {
     cx_interface result = NULL;
-    cx_interface stack1[DB_MAX_INHERITANCE_DEPTH], stack2[DB_MAX_INHERITANCE_DEPTH];
+    cx_interface stack1[CX_MAX_INHERITANCE_DEPTH], stack2[CX_MAX_INHERITANCE_DEPTH];
     cx_uint32 count1, count2;
 
     /* Build inheritance stacks */
@@ -88,7 +88,7 @@ cx_int16 Fast_Wait_construct(Fast_Wait object) {
         } else {
             if (resultType != exprType) {
                 switch(resultType->kind) {
-                case DB_COMPOSITE:
+                case CX_COMPOSITE:
                     resultType = (cx_type)Fast_findCommonAncestor((cx_interface)resultType, (cx_interface)exprType);
                     if (!resultType) {
                         resultType = cx_object_o;
@@ -103,7 +103,7 @@ cx_int16 Fast_Wait_construct(Fast_Wait object) {
     }
 
     if (object->timeout) {
-        timeoutExpr = Fast_Expression_cast(object->timeout, cx_type(cx_float32_o));
+        timeoutExpr = Fast_Expression_cast(object->timeout, cx_type(cx_float32_o), FALSE);
         if (timeoutExpr) {
             cx_set(&object->timeout, timeoutExpr);
         }
@@ -129,7 +129,7 @@ cx_ic Fast_Wait_toIc_v(Fast_Wait _this, cx_icProgram program, cx_icStorage stora
     cx_ic ic, result;
     cx_icOp op;
 
-    DB_UNUSED(stored);
+    CX_UNUSED(stored);
 
     if (storage) {
         result = (cx_ic)storage;
@@ -146,10 +146,10 @@ cx_ic Fast_Wait_toIc_v(Fast_Wait _this, cx_icProgram program, cx_icStorage stora
         ic = Fast_Node_toIc(Fast_Node(expr), program, NULL, TRUE);
 
         /* Insert waitfor instruction */
-        op = cx_icOp__create(program, Fast_Node(_this)->line, DB_IC_WAITFOR, (cx_icValue)ic, NULL, NULL);
+        op = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_WAITFOR, (cx_icValue)ic, NULL, NULL);
         cx_icProgram_addIc(program, (cx_ic)op);
         if (expr->isReference) {
-            op->s1Deref = DB_IC_DEREF_ADDRESS;
+            op->s1Deref = CX_IC_DEREF_ADDRESS;
         }
     }
 
@@ -161,7 +161,7 @@ cx_ic Fast_Wait_toIc_v(Fast_Wait _this, cx_icProgram program, cx_icStorage stora
     }
 
     /* Insert wait instruction */
-    op = cx_icOp__create(program, Fast_Node(_this)->line, DB_IC_WAIT, (cx_icValue)result, (cx_icValue)ic, NULL);
+    op = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_WAIT, (cx_icValue)result, (cx_icValue)ic, NULL);
     cx_icProgram_addIc(program, (cx_ic)op);
 
     return result;

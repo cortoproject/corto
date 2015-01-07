@@ -1,6 +1,6 @@
 
-#ifndef DB__ENUM_H_
-#define DB__ENUM_H_
+#ifndef CX__ENUM_H_
+#define CX__ENUM_H_
 
 #ifdef __cplusplus
 extern "C" {

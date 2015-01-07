@@ -81,14 +81,14 @@ static cx_bool cx_vtableSet(cx_vtable* vtable, cx_uint32 i, cx_function method) 
 
     if (vtable->length <= i) {
         vtable->buffer = cx_realloc(vtable->buffer, sizeof(cx_member) * (i + 1));
-        memset(DB_OFFSET(vtable->buffer, sizeof(cx_member) * vtable->length), 0, sizeof(cx_member) * (i - vtable->length + 1));
+        memset(CX_OFFSET(vtable->buffer, sizeof(cx_member) * vtable->length), 0, sizeof(cx_member) * (i - vtable->length + 1));
     }
 
     /* If the length != 0 but the vtable buffer is NULL, than this is the first time the vtable is used.
      * Initialize the buffer to point to the address right after the vtable, which is where the buffer
      * is located. This only occurs for SSO objects. */
     if (!vtable->buffer) {
-        vtable->buffer = DB_OFFSET(vtable, sizeof(cx_vtable));
+        vtable->buffer = CX_OFFSET(vtable, sizeof(cx_vtable));
     }
 
     cx_assert(!vtable->buffer[i] || vtable->buffer[i] == method, "slot %d in vtable is already occupied by method that doesn't match", i);
@@ -154,7 +154,7 @@ cx_vtable* cx_class_getCallbackVtable(cx_object o) {
     /* Obtain vtable. */
     if (cx_class_instanceof(cx_class_o, type)) {
         if (cx__class_delegateCount(cx_class(type))) {
-            result = (cx_vtable*)DB_OFFSET(o, type->size);
+            result = (cx_vtable*)CX_OFFSET(o, type->size);
         }
     }
 
@@ -173,9 +173,9 @@ cx_vtable* cx_class_getObserverVtable(cx_object o) {
     /* Obtain vtable. */
     if (cx_class_instanceof(cx_class_o, type)) {
         if ((observerCount = cx__class_observerCount(cx_class(type)))) {
-            result = (cx_vtable*)DB_OFFSET(o, type->size);
+            result = (cx_vtable*)CX_OFFSET(o, type->size);
             if ((delegateCount = cx__class_delegateCount(cx_class(type)))) {
-                result = DB_OFFSET(result, sizeof(cx_vtable) + delegateCount * sizeof(cx_callback));
+                result = CX_OFFSET(result, sizeof(cx_vtable) + delegateCount * sizeof(cx_callback));
             }
         }
     }
@@ -186,7 +186,7 @@ cx_vtable* cx_class_getObserverVtable(cx_object o) {
 cx_object cx_class_getObservable(cx_class _this, cx_observer observer, cx_object me) {
     cx_vtable* observers;
     cx_object result = NULL;
-    DB_UNUSED(_this);
+    CX_UNUSED(_this);
     observers = cx_class_getObserverVtable(me);
     if (observers) {
         result = observers->buffer[observer->template-1];
@@ -199,7 +199,7 @@ cx_object cx_class_getObservable(cx_class _this, cx_observer observer, cx_object
 
 void cx_class_setObservable(cx_class _this, cx_observer observer, cx_object me, cx_object observable) {
     cx_vtable* observers;
-    DB_UNUSED(_this);
+    CX_UNUSED(_this);
 
     observers = cx_class_getObserverVtable(me);
     if (observers) {
@@ -220,7 +220,7 @@ void cx_class_attachObservers(cx_class _this, cx_object object) {
     observers = cx_class_getObserverVtable(object);
     if (observers) {
         id = cx__class_observerCount(_this);
-        observers->buffer = DB_OFFSET(observers, sizeof(cx_vtable));
+        observers->buffer = CX_OFFSET(observers, sizeof(cx_vtable));
         observers->length = id;
         base = _this;
 
@@ -252,8 +252,8 @@ void cx_class_listenObservers(cx_class _this, cx_object object) {
                 }
                 if (!cx_listening(observable, base->observers.buffer[i], object)) {
                     /* Do not activate observers that listen for non-observables and childs on non-scoped objects */
-                    if (cx_checkAttr(observable, DB_ATTR_OBSERVABLE) &&
-                            (!(base->observers.buffer[i]->mask & DB_ON_SCOPE) || cx_checkAttr(object, DB_ATTR_SCOPED))) {
+                    if (cx_checkAttr(observable, CX_ATTR_OBSERVABLE) &&
+                            (!(base->observers.buffer[i]->mask & CX_ON_SCOPE) || cx_checkAttr(object, CX_ATTR_SCOPED))) {
                         cx_listen(observable, base->observers.buffer[i], object);
                     }
                 }
@@ -272,7 +272,7 @@ void cx_class_detachObservers(cx_class _this, cx_object object) {
     observers = cx_class_getObserverVtable(object);
     if (observers) {
         id = cx__class_observerCount(_this);
-        observers->buffer = DB_OFFSET(observers, sizeof(cx_vtable));
+        observers->buffer = CX_OFFSET(observers, sizeof(cx_vtable));
         observers->length = id;
         base = _this;
         do {
@@ -280,8 +280,8 @@ void cx_class_detachObservers(cx_class _this, cx_object object) {
                 observable = cx_class_getObservable(base, base->observers.buffer[i], object);
                 if (observable) {
                     /* Do not silence observers that listen for childs on non-scoped objects */
-                    if (cx_checkAttr(observable, DB_ATTR_OBSERVABLE) &&
-                            (!(base->observers.buffer[i]->mask & DB_ON_SCOPE) || cx_checkAttr(object, DB_ATTR_SCOPED))) {
+                    if (cx_checkAttr(observable, CX_ATTR_OBSERVABLE) &&
+                            (!(base->observers.buffer[i]->mask & CX_ON_SCOPE) || cx_checkAttr(object, CX_ATTR_SCOPED))) {
                         cx_silence(observable, base->observers.buffer[i], object);
                     }
                 }
@@ -295,14 +295,14 @@ void cx_class_detachObservers(cx_class _this, cx_object object) {
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::class::_construct(lang::class object) */
 cx_int16 cx_class__construct(cx_class object) {
 /* $begin(::cortex::lang::class::_construct) */
-	cx_int16 result;
+    cx_int16 result;
     cx_uint32 i;
 
     /* This will bind methods of potential base-class which is necessary before validating
      * whether this class correctly (fully) implements its interface. */
     result = cx_struct_construct(cx_struct(object));
 
-	/* Create interface vector */
+    /* Create interface vector */
     if (!result) {
         if (object->implements.length) {
             object->interfaceVector.length = object->implements.length;
@@ -323,7 +323,7 @@ cx_int16 cx_class__construct(cx_class object) {
         }
     }
 
-	return result;
+    return result;
 /* $end */
 }
 
@@ -335,7 +335,7 @@ cx_void cx_class__destruct(cx_class object) {
 
     /* Free attached observers */
     for(i=0; i<object->observers.length; i++) {
-    	cx_free_ext(object, object->observers.buffer[i], "Unbind observer from class");
+        cx_free_ext(object, object->observers.buffer[i], "Unbind observer from class");
     }
     cx_dealloc(object->observers.buffer);
     object->observers.buffer = NULL;
@@ -343,14 +343,14 @@ cx_void cx_class__destruct(cx_class object) {
 
     /* Free interfaceVector */
     for(i=0; i<object->interfaceVector.length; i++) {
-    	v = &object->interfaceVector.buffer[i];
-    	v->interface = NULL;
-    	for(j=0; j<v->vector.length; j++) {
-    		if (v->vector.buffer[j]) {
-				cx_free_ext(object, v->vector.buffer[j], "Unbind interface vector");
-				v->vector.buffer[j] = NULL;
-    		}
-    	}
+        v = &object->interfaceVector.buffer[i];
+        v->interface = NULL;
+        for(j=0; j<v->vector.length; j++) {
+            if (v->vector.buffer[j]) {
+                cx_free_ext(object, v->vector.buffer[j], "Unbind interface vector");
+                v->vector.buffer[j] = NULL;
+            }
+        }
     }
 
     /* Call type::destruct */
@@ -371,7 +371,7 @@ cx_uint32 cx_class_allocSize_v(cx_class _this) {
     }
 
     if ((observerCount = cx__class_observerCount(_this))) {
-    	size += sizeof(cx_vtable) + observerCount * sizeof(cx_observer);
+        size += sizeof(cx_vtable) + observerCount * sizeof(cx_observer);
     }
 
     return size;
@@ -384,14 +384,14 @@ cx_int16 cx_class_bindCallback(cx_class _this, cx_delegate delegate, cx_object o
     cx_vtable* vtable;
     cx_type targetType;
 
-    DB_UNUSED(_this);
+    CX_UNUSED(_this);
 
     /* Check if callback is compatible with delegate */
     cx_interface_checkProcedureCompatibility(cx_function(delegate), cx_function(method));
 
     targetType = cx_typeof(object)->real;
     if (targetType->size) {
-        vtable = (cx_vtable*)DB_OFFSET(object, targetType->size);
+        vtable = (cx_vtable*)CX_OFFSET(object, targetType->size);
         if (cx_vtableSet(vtable, delegate->id-1, cx_function(method))) {
             cx_keep_ext(object, method, "Keep callback");
         }
@@ -441,7 +441,7 @@ error:
 /* ::cortex::lang::class::bindMethod(lang::method method) */
 cx_int16 cx_class_bindMethod(cx_class _this, cx_method method) {
 /* $begin(::cortex::lang::class::bindMethod) */
-	return cx_interface_bindMethod_v(cx_interface(_this), method);
+    return cx_interface_bindMethod_v(cx_interface(_this), method);
 /* $end */
 }
 
@@ -484,11 +484,11 @@ cx_observer cx_class_findObserver(cx_class _this, cx_object observable, cx_strin
 cx_int16 cx_class_init(cx_class object) {
 /* $begin(::cortex::lang::class::init) */
     if (cx_struct_init(cx_struct(object))) {
-    	goto error;
+        goto error;
     }
 
     cx_type(object)->reference = TRUE;
-    cx_interface(object)->kind = DB_CLASS;
+    cx_interface(object)->kind = CX_CLASS;
 
     return 0;
 error:
@@ -505,9 +505,9 @@ cx_bool cx_class_instanceof(cx_class _this, cx_object object) {
     result = FALSE;
     t = cx_typeof(object)->real;
 
-    if (t->kind == DB_COMPOSITE) {
-        if (cx_interface(t)->kind == DB_CLASS) {
-        	cx_interface p;
+    if (t->kind == CX_COMPOSITE) {
+        if (cx_interface(t)->kind == CX_CLASS) {
+            cx_interface p;
             p = (cx_interface)t;
 
             while(p && !result) {
@@ -524,8 +524,8 @@ cx_bool cx_class_instanceof(cx_class _this, cx_object object) {
 /* ::cortex::lang::class::privateObserver(lang::object object,lang::observer observer) */
 cx_observer cx_class_privateObserver(cx_class _this, cx_object object, cx_observer observer) {
 /* $begin(::cortex::lang::class::privateObserver) */
-    DB_UNUSED(_this);
-    DB_UNUSED(object);
+    CX_UNUSED(_this);
+    CX_UNUSED(object);
     return observer; /* Workaround - this function can be removed */
 /* $end */
 }
@@ -537,14 +537,14 @@ cx_callback cx_class_resolveCallback(cx_class _this, cx_delegate delegate, cx_ob
     cx_vtable *vtable;
     cx_callback result;
 
-    DB_UNUSED(_this);
+    CX_UNUSED(_this);
 
     targetType = cx_typeof(target)->real;
 
     result = NULL;
     vtable = NULL;
 
-    if ((vtable = DB_OFFSET(target, targetType->size)) && vtable->buffer) {
+    if ((vtable = CX_OFFSET(target, targetType->size)) && vtable->buffer) {
         result = (cx_callback)vtable->buffer[delegate->id-1];
     }
 
@@ -553,7 +553,7 @@ cx_callback cx_class_resolveCallback(cx_class _this, cx_delegate delegate, cx_ob
         while(cx_interface(target)->base) {
             target = cx_interface(target)->base;
 
-            vtable = DB_OFFSET(target, targetType->size);
+            vtable = CX_OFFSET(target, targetType->size);
             if (vtable->buffer && (vtable->length >= delegate->id)) {
                 result = (cx_callback)vtable->buffer[delegate->id-1];
             }

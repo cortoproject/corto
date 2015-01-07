@@ -19,15 +19,15 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::UnaryExpr::construct(Fast::UnaryExpr object) */
 cx_int16 Fast_UnaryExpr_construct(Fast_UnaryExpr object) {
 /* $begin(::cortex::Fast::UnaryExpr::construct) */
-	cx_type lvalueType;
+    cx_type lvalueType;
 
-	lvalueType = Fast_Expression_getType(object->lvalue);
+    lvalueType = Fast_Expression_getType(object->lvalue);
     Fast_Node(object)->kind = FAST_Unary;
 
-    if (object->operator == DB_COND_NOT) {
-    	Fast_Expression(object)->type = Fast_Variable(Fast_Object__create(cx_bool_o));
+    if (object->operator == CX_COND_NOT) {
+        Fast_Expression(object)->type = Fast_Variable(Fast_Object__create(cx_bool_o));
     } else {
-    	Fast_Expression(object)->type = Fast_Variable(Fast_Object__create(lvalueType));
+        Fast_Expression(object)->type = Fast_Variable(Fast_Object__create(lvalueType));
     }
 
     return 0;
@@ -46,15 +46,15 @@ cx_bool Fast_UnaryExpr_hasSideEffects_v(Fast_UnaryExpr _this) {
 /* ::cortex::Fast::UnaryExpr::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
 cx_ic Fast_UnaryExpr_toIc_v(Fast_UnaryExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::UnaryExpr::toIc) */
-	cx_icStorage result;
-	cx_ic lvalue;
-	cx_icOp op;
-	DB_UNUSED(stored);
+    cx_icStorage result;
+    cx_ic lvalue;
+    cx_icOp op;
+    CX_UNUSED(stored);
 
     if (storage) {
-    	result = storage;
+        result = storage;
     } else {
-    	result = (cx_icStorage)cx_icProgram_accumulatorPush(
+        result = (cx_icStorage)cx_icProgram_accumulatorPush(
             program, 
             Fast_Node(_this)->line, 
             Fast_Expression_getType(Fast_Expression(_this)),
@@ -64,20 +64,20 @@ cx_ic Fast_UnaryExpr_toIc_v(Fast_UnaryExpr _this, cx_icProgram program, cx_icSto
     lvalue = Fast_Node_toIc(Fast_Node(_this->lvalue), program, result, TRUE);
 
     switch(_this->operator) {
-    case DB_INC:
-    case DB_DEC:
+    case CX_INC:
+    case CX_DEC:
         op = cx_icOp__create(program, Fast_Node(_this)->line, cx_icOpKindFromOperator(_this->operator), (cx_icValue)lvalue, NULL, NULL);
         cx_icProgram_addIc(program, (cx_ic)op);
         result = (cx_icStorage)lvalue;
-    	break;
+        break;
     default:
         op = cx_icOp__create(program, Fast_Node(_this)->line, cx_icOpKindFromOperator(_this->operator), (cx_icValue)result, (cx_icValue)lvalue, NULL);
         cx_icProgram_addIc(program, (cx_ic)op);
-    	break;
+        break;
     }
 
     if (!storage) {
-    	cx_icProgram_accumulatorPop(program, Fast_Node(_this)->line);
+        cx_icProgram_accumulatorPop(program, Fast_Node(_this)->line);
     }
 
     return (cx_ic)result;

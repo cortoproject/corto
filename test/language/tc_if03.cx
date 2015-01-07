@@ -1,8 +1,8 @@
 // Test comma-separated expression lists in if-statements
 bool result: true
 void fail(string msg):
-	"tc_if03: FAIL: $msg"
-	result = false
+    "tc_if03: FAIL: $msg"
+    result = false
 
 // Boolean comparisons
 bool a, b, c: true

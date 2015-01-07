@@ -12,7 +12,7 @@
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::uint::init(lang::uint object) */
 cx_int16 cx_uint_init(cx_uint object) {
 /* $begin(::cortex::lang::uint::init) */
-    cx_primitive(object)->kind = DB_UINTEGER;
+    cx_primitive(object)->kind = CX_UINTEGER;
     return cx_primitive_init((cx_primitive)object);
 /* $end */
 }

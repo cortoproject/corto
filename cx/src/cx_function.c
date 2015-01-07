@@ -12,35 +12,35 @@
 /* callback ::cortex::lang::procedure::bind(lang::object object) -> ::cortex::lang::function::bind(lang::function object) */
 cx_int16 cx_function_bind(cx_function object) {
 /* $begin(::cortex::lang::function::bind) */
-	/* Count the size based on the parameters and store parameters in slots */
-	if (!object->size) {
-	    cx_uint32 i;
-	    for(i=0; i<object->parameters.length; i++) {
-	    	cx_type paramType = object->parameters.buffer[i].type->real;
-	    	switch(paramType->kind) {
-	    	case DB_ANY:
-	    		object->size += sizeof(cx_any);
-	    		break;
-	    	case DB_PRIMITIVE:
-		    	object->size += cx_type_sizeof(paramType);
-	    		break;
-	    	default:
-	    		object->size += sizeof(void*);
-	    		break;
-	    	}
-	    }
+    /* Count the size based on the parameters and store parameters in slots */
+    if (!object->size) {
+        cx_uint32 i;
+        for(i=0; i<object->parameters.length; i++) {
+            cx_type paramType = object->parameters.buffer[i].type->real;
+            switch(paramType->kind) {
+            case CX_ANY:
+                object->size += sizeof(cx_any);
+                break;
+            case CX_PRIMITIVE:
+                object->size += cx_type_sizeof(paramType);
+                break;
+            default:
+                object->size += sizeof(void*);
+                break;
+            }
+        }
 
-	    /* Add size of this-pointer - this must be moved to impl of methods, delegates and callbacks. */
-		if (!(cx_typeof(object) == cx_typedef(cx_function_o))) {
-			if (cx_typeof(object) == cx_typedef(cx_metaprocedure_o)) {
-				object->size += sizeof(cx_any);
-			} else {
-				object->size += sizeof(cx_object);
-			}
-		}
-	}
+        /* Add size of this-pointer - this must be moved to impl of methods, delegates and callbacks. */
+        if (!(cx_typeof(object) == cx_typedef(cx_function_o))) {
+            if (cx_typeof(object) == cx_typedef(cx_metaprocedure_o)) {
+                object->size += sizeof(cx_any);
+            } else {
+                object->size += sizeof(cx_object);
+            }
+        }
+    }
 
-	return 0;
+    return 0;
 /* $end */
 }
 
@@ -52,76 +52,76 @@ static cx_int16 cx_function_parseArguments(cx_function object) {
 }
 
 typedef struct cx_functionLookup_t {
-	cx_function f;
-	cx_bool error;
-	cx_id name;
+    cx_function f;
+    cx_bool error;
+    cx_id name;
 }cx_functionLookup_t;
 
 static int cx_functionLookupWalk(cx_object o, void* userData) {
-	cx_functionLookup_t* data;
-	cx_int32 d;
+    cx_functionLookup_t* data;
+    cx_int32 d;
 
-	data = userData;
+    data = userData;
 
-	if (o != data->f) {
-		if ((cx_class_instanceof(cx_procedure_o, cx_typeof(o)))) {
-			if (cx_overload(o, cx_nameof(data->f), &d, FALSE)) {
-				data->error = TRUE;
-				goto finish;
-			}
+    if (o != data->f) {
+        if ((cx_class_instanceof(cx_procedure_o, cx_typeof(o)))) {
+            if (cx_overload(o, cx_nameof(data->f), &d, FALSE)) {
+                data->error = TRUE;
+                goto finish;
+            }
 
-			/* Check if function matches */
-			if (!d) {
-				cx_id id, id2;
-				cx_error("function '%s' conflicts with existing declaration '%s'", cx_fullname(data->f, id), cx_fullname(o, id2));
-				data->error = TRUE;
-				goto finish;
-			} else {
-				cx_id id;
+            /* Check if function matches */
+            if (!d) {
+                cx_id id, id2;
+                cx_error("function '%s' conflicts with existing declaration '%s'", cx_fullname(data->f, id), cx_fullname(o, id2));
+                data->error = TRUE;
+                goto finish;
+            } else {
+                cx_id id;
 
-				/* Get name of function */
-				cx_signatureName(cx_nameof(o), id);
+                /* Get name of function */
+                cx_signatureName(cx_nameof(o), id);
 
-				/* Set overloading flags if a function with same name is found. */
-				if (!strcmp(data->name, id)) {
-					cx_function(o)->overloaded = TRUE;
-					data->f->overloaded = TRUE;
-				}
-			}
-		}
-	}
+                /* Set overloading flags if a function with same name is found. */
+                if (!strcmp(data->name, id)) {
+                    cx_function(o)->overloaded = TRUE;
+                    data->f->overloaded = TRUE;
+                }
+            }
+        }
+    }
 
-	return 1;
+    return 1;
 finish:
-	return 0;
+    return 0;
 }
 /* $end */
 cx_int16 cx_function_init(cx_function object) {
 /* $begin(::cortex::lang::function::init) */
-	cx_functionLookup_t walkData;
+    cx_functionLookup_t walkData;
     cx_ll scope;
-	DB_UNUSED(object);
+    CX_UNUSED(object);
 
-	scope = cx_scopeClaim(cx_parentof(object));
+    scope = cx_scopeClaim(cx_parentof(object));
 
     walkData.f = object;
     walkData.error = FALSE;
     cx_signatureName(cx_nameof(object), walkData.name);
     cx_llWalk(scope, cx_functionLookupWalk, &walkData);
     if (walkData.error) {
-    	goto error;
+        goto error;
     }
 
     cx_scopeRelease(scope);
 
     /* Parse arguments */
     if (cx_function_parseArguments(object)) {
-    	goto error;
+        goto error;
     }
 
     return 0;
 error:
-	return -1;
+    return -1;
 /* $end */
 }
 
@@ -143,12 +143,11 @@ cx_parameterSeq cx_function_stringToParameterSeq(cx_string name, cx_object scope
     if (*ptr != ')') {
         cx_uint32 count, i;
         cx_id id;
-        cx_bool reference;
+        int flags = 0;
 
         /* Count number of parameters for function */
         count = cx_signatureParamCount(name);
         i = 0;
-        reference = FALSE;
 
         /* Allocate size for parameters */
         result.length = count;
@@ -157,18 +156,26 @@ cx_parameterSeq cx_function_stringToParameterSeq(cx_string name, cx_object scope
 
         /* Parse arguments */
         for(i=0; i<count; i++) {
-            if (cx_signatureParamType(name, i, id, &reference)) {
-                cx_error("error occurred while parsing type of argument '%s' for signature '%s'", name);
+            if (cx_signatureParamType(name, i, id, &flags)) {
+                cx_error("error occurred while parsing type of parameter '%d' for signature '%s'", i, name);
                 goto error;
             }
 
             /* Set reference */
-            result.buffer[i].passByReference = reference;
+            result.buffer[i].passByReference = (flags & CX_PARAMETER_REFERENCE) != 0;
 
             /* Assign type */
             result.buffer[i].type = cx_resolve_ext(NULL, scope, id, FALSE, "Resolve parameter-type for function");
             if (!result.buffer[i].type) {
-                cx_error("type '%s' of argument %d in signature %s not found", id, i, name);
+                cx_error("type '%s' of parameter %d in signature %s not found", id, i, name);
+                goto error;
+            }
+
+            /* Validate whether reference is not redundantly applied */
+            if (result.buffer[i].passByReference && result.buffer[i].type->real->reference) {
+                cx_id id;
+                cx_error("redundant '&' qualifier for parameter %d, type '%s' is already a reference",
+                    i, cx_fullname(result.buffer[i].type, id));
                 goto error;
             }
 
@@ -187,7 +194,6 @@ error:
     cx_dealloc(result.buffer);
     result.buffer = NULL;
     return result;
-
 /* $end */
 }
 

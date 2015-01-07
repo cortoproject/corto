@@ -17,22 +17,22 @@
 /* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::constant::init(constant& object) */
 cx_int16 cx_constant_init(cx_constant *object) {
 /* $begin(::cortex::lang::constant::init) */
-	cx_object parent;
+    cx_object parent;
 
-	parent = cx_parentof(object);
+    parent = cx_parentof(object);
 
-	/* Parent must be an enum */
-	if (cx_typeof(parent) == cx_typedef(cx_enum_o)) {
-		cx__enum_bindConstant(parent, object);
-	} else if (cx_typeof(parent) == cx_typedef(cx_bitmask_o)) {
-	    cx__bitmask_bindConstant(parent, object);
-	} else {
-		cx_id id;
-		cx_error("::constant::init: parent of constant '%s' is not an enum.", cx_fullname(object, id));
-		goto error;
-	}
+    /* Parent must be an enum */
+    if (cx_typeof(parent) == cx_typedef(cx_enum_o)) {
+        cx__enum_bindConstant(parent, object);
+    } else if (cx_typeof(parent) == cx_typedef(cx_bitmask_o)) {
+        cx__bitmask_bindConstant(parent, object);
+    } else {
+        cx_id id;
+        cx_error("::constant::init: parent of constant '%s' is not an enum.", cx_fullname(object, id));
+        goto error;
+    }
 
-	return 0;
+    return 0;
 error:
-	return -1;/* $end */
+    return -1;/* $end */
 }

@@ -1,15 +1,15 @@
 bool result: true
 
 void fail(string msg):
-	"tc_cast02: FAIL: $msg"
-	result = false
-	
+    "tc_cast02: FAIL: $msg"
+    result = false
+    
 class Point::
-	x, y: uint32
-	
+    x, y: uint32
+    
 class Point3D : Point::
-	z : uint32
-	
+    z : uint32
+    
 var object o = Point{10,20}
 Point3D p3d : 10,20,30
 

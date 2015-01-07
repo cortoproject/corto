@@ -1,13 +1,13 @@
 // Test assignments of complex values
 bool result: true
 void fail(string msg):
-	"tc_assign02: FAIL: $msg"
-	result = false
+    "tc_assign02: FAIL: $msg"
+    result = false
 
 
 // Assign complex type
 struct Point::
-	x, y: uint32
+    x, y: uint32
 
 Point p, q
 

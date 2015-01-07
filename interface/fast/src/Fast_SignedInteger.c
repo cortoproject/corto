@@ -28,31 +28,31 @@ cx_int16 Fast_SignedInteger_init(Fast_SignedInteger object) {
 /* ::cortex::Fast::SignedInteger::serialize(lang::type dstType,lang::word dst) */
 cx_int16 Fast_SignedInteger_serialize(Fast_SignedInteger _this, cx_type dstType, cx_word dst) {
 /* $begin(::cortex::Fast::SignedInteger::serialize) */
-	Fast_valueKind kind;
+    Fast_valueKind kind;
 
-	kind = Fast_valueKindFromType(dstType);
+    kind = Fast_valueKindFromType(dstType);
     
-	memset((void*)dst, 0, cx_type_sizeof(dstType));
+    memset((void*)dst, 0, cx_type_sizeof(dstType));
 
-	switch(kind) {
-	case FAST_Boolean:
-		*(cx_bool*)dst = _this->value ? TRUE : FALSE;
-		break;
-	case FAST_Integer:
-	case FAST_SignedInteger:
-	case FAST_Enumerated:
-	case FAST_String:
-		cx_convert(cx_primitive(cx_int64_o), &_this->value, cx_primitive(dstType), (void*)dst);
-		break;
-	default: {
+    switch(kind) {
+    case FAST_Boolean:
+        *(cx_bool*)dst = _this->value ? TRUE : FALSE;
+        break;
+    case FAST_Integer:
+    case FAST_SignedInteger:
+    case FAST_Enumerated:
+    case FAST_String:
+        cx_convert(cx_primitive(cx_int64_o), &_this->value, cx_primitive(dstType), (void*)dst);
+        break;
+    default: {
         cx_id id;
         Fast_Parser_error(yparser(), "cannot serialize signed integer value to storage of type '%s'", cx_fullname(dstType, id));
         goto error;
-		break;
-	}
-	}
+        break;
+    }
+    }
 
-	return 0;
+    return 0;
 error:
     return -1;
 /* $end */
@@ -61,15 +61,15 @@ error:
 /* ::cortex::Fast::SignedInteger::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
 cx_ic Fast_SignedInteger_toIc_v(Fast_SignedInteger _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::SignedInteger::toIc) */
-	cx_ic result;
-	cx_value v;
-	DB_UNUSED(storage);
-	DB_UNUSED(stored);
+    cx_ic result;
+    cx_value v;
+    CX_UNUSED(storage);
+    CX_UNUSED(stored);
 
-	cx_valueLiteralInit(&v, DB_LITERAL_INTEGER, &_this->value);
-	result = (cx_ic)cx_icLiteral__create(
-			program, Fast_Node(_this)->line, v, Fast_Expression_getType(Fast_Expression(_this)));
+    cx_valueLiteralInit(&v, CX_LITERAL_INTEGER, &_this->value);
+    result = (cx_ic)cx_icLiteral__create(
+            program, Fast_Node(_this)->line, v, Fast_Expression_getType(Fast_Expression(_this)));
 
-	return result;
+    return result;
 /* $end */
 }

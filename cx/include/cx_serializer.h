@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB_SERIALIZER_H_
-#define DB_SERIALIZER_H_
+#ifndef CX_SERIALIZER_H_
+#define CX_SERIALIZER_H_
 
 #include "cx__type.h"
 #include "cx_value.h"
@@ -15,19 +15,19 @@
 extern "C" {
 #endif
 
-DB_CLASS(cx_serializer);
+CX_CLASS(cx_serializer);
 
 typedef cx_int16(*cx_serializerCallback)(cx_serializer _this, cx_value *v, void* userData);
 typedef cx_int16(*cx_serializerConstruct)(cx_serializer _this, cx_value *v, void* userData);
 typedef cx_int16(*cx_serializerDestruct)(cx_serializer _this, void* userData);
 
 typedef enum cx_serializerTraceKind {
-    DB_SERIALIZER_TRACE_ALWAYS,
-    DB_SERIALIZER_TRACE_ON_FAIL,
-    DB_SERIALIZER_TRACE_NEVER
+    CX_SERIALIZER_TRACE_ALWAYS,
+    CX_SERIALIZER_TRACE_ON_FAIL,
+    CX_SERIALIZER_TRACE_NEVER
 }cx_serializerTraceKind;
 
-DB_CLASS_DEF(cx_serializer) {
+CX_CLASS_DEF(cx_serializer) {
     cx_bool initialized;
     cx_bool constructed;
     cx_modifier access;
@@ -35,8 +35,8 @@ DB_CLASS_DEF(cx_serializer) {
     cx_serializerTraceKind traceKind;
     cx_serializerConstruct construct;
     cx_serializerDestruct destruct;
-    cx_serializerCallback program[DB_COLLECTION+1];
-    cx_serializerCallback metaprogram[DB_CONSTANT+1];
+    cx_serializerCallback program[CX_COLLECTION+1];
+    cx_serializerCallback metaprogram[CX_CONSTANT+1];
     cx_serializerCallback reference;
 };
 
@@ -52,4 +52,4 @@ cx_int16 cx_serializeValue(cx_serializer _this, cx_value* info, void* userData);
 }
 #endif
 
-#endif /* DB_SERIALIZER_H_ */
+#endif /* CX_SERIALIZER_H_ */

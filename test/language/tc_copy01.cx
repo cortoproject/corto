@@ -1,9 +1,9 @@
 // Copy primitive literals
 bool result: true
 void fail(string msg):
-	"tc_copy01: FAIL: $msg"
-	result = false
-	
+    "tc_copy01: FAIL: $msg"
+    result = false
+    
 bool a: false
 a.copy(true)
 if a != true: fail("a != true ($a)")

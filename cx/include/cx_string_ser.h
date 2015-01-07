@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB_STRING_SER_H_
-#define DB_STRING_SER_H_
+#ifndef CX_STRING_SER_H_
+#define CX_STRING_SER_H_
 
 #include "cx_serializer.h"
 
@@ -21,6 +21,7 @@ typedef struct cx_string_ser_t {
     unsigned int length;
     unsigned int maxlength;
     cx_bool prefixType;
+    cx_bool enableColors;
 
     /* Private */
     char* ptr;
@@ -35,4 +36,4 @@ struct cx_serializer_s cx_string_ser(cx_modifier access, cx_operatorKind accessK
 }
 #endif
 
-#endif /* DB_STRING_SER_H_ */
+#endif /* CX_STRING_SER_H_ */

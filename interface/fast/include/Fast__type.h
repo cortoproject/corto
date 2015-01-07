@@ -27,6 +27,7 @@ extern "C" {
 #define Fast_Character(o) ((Fast_Character)o)
 #define Fast_CommaExpr(o) ((Fast_CommaExpr)o)
 #define Fast_Define(o) ((Fast_Define)o)
+#define Fast_DelegateCall(o) ((Fast_DelegateCall)o)
 #define Fast_DynamicInitializer(o) ((Fast_DynamicInitializer)o)
 #define Fast_ElementExpr(o) ((Fast_ElementExpr)o)
 #define Fast_Expression(o) ((Fast_Expression)o)
@@ -46,6 +47,7 @@ extern "C" {
 #define Fast_Parser(o) ((Fast_Parser)o)
 #define Fast_PostfixExpr(o) ((Fast_PostfixExpr)o)
 #define Fast_SignedInteger(o) ((Fast_SignedInteger)o)
+#define Fast_StaticCall(o) ((Fast_StaticCall)o)
 #define Fast_StaticInitializer(o) ((Fast_StaticInitializer)o)
 #define Fast_String(o) ((Fast_String)o)
 #define Fast_Template(o) ((Fast_Template)o)
@@ -83,41 +85,41 @@ typedef enum Fast_nodeKind {
 } Fast_nodeKind;
 
 /*  ::cortex::Fast::Node */
-DB_CLASS(Fast_Node);
+CX_CLASS(Fast_Node);
 
-DB_CLASS_DEF(Fast_Node) {
+CX_CLASS_DEF(Fast_Node) {
     Fast_nodeKind kind;
     cx_uint32 line;
     cx_uint32 column;
 };
 
 /*  ::cortex::Fast::Variable */
-DB_CLASS(Fast_Variable);
+CX_CLASS(Fast_Variable);
 
 /*  ::cortex::Fast::Expression */
-DB_CLASS(Fast_Expression);
+CX_CLASS(Fast_Expression);
 
-DB_CLASS_DEF(Fast_Expression) {
-    DB_EXTEND(Fast_Node);
+CX_CLASS_DEF(Fast_Expression) {
+    CX_EXTEND(Fast_Node);
     Fast_Variable type;
     cx_bool isReference;
     cx_bool forceReference;
 };
 
 /*  ::cortex::Fast::BinaryExpr */
-DB_CLASS(Fast_BinaryExpr);
+CX_CLASS(Fast_BinaryExpr);
 
-DB_CLASS_DEF(Fast_BinaryExpr) {
-    DB_EXTEND(Fast_Expression);
+CX_CLASS_DEF(Fast_BinaryExpr) {
+    CX_EXTEND(Fast_Expression);
     Fast_Expression lvalue;
     Fast_Expression rvalue;
     cx_operatorKind operator;
 };
 
 /*  ::cortex::Fast::Block */
-DB_CLASS(Fast_Block);
+CX_CLASS(Fast_Block);
 
-DB_LIST(Fast_Node_list);
+CX_LIST(Fast_Node_list);
 
 /* ::cortex::Fast::variableKind */
 typedef enum Fast_variableKind {
@@ -126,8 +128,8 @@ typedef enum Fast_variableKind {
     FAST_Object = 2
 } Fast_variableKind;
 
-DB_CLASS_DEF(Fast_Variable) {
-    DB_EXTEND(Fast_Expression);
+CX_CLASS_DEF(Fast_Variable) {
+    CX_EXTEND(Fast_Expression);
     Fast_variableKind kind;
 };
 
@@ -139,30 +141,30 @@ typedef enum Fast_LocalKind {
 } Fast_LocalKind;
 
 /*  ::cortex::Fast::Local */
-DB_CLASS(Fast_Local);
+CX_CLASS(Fast_Local);
 
-DB_CLASS_DEF(Fast_Local) {
-    DB_EXTEND(Fast_Variable);
+CX_CLASS_DEF(Fast_Local) {
+    CX_EXTEND(Fast_Variable);
     cx_string name;
     Fast_Variable type;
     Fast_LocalKind kind;
     cx_bool isReference;
 };
 
-DB_LIST(Fast_Local_list);
+CX_LIST(Fast_Local_list);
 
 /*  ::cortex::Fast::While */
-DB_CLASS(Fast_While);
+CX_CLASS(Fast_While);
 
-DB_CLASS_DEF(Fast_While) {
-    DB_EXTEND(Fast_Node);
+CX_CLASS_DEF(Fast_While) {
+    CX_EXTEND(Fast_Node);
     Fast_Expression condition;
     Fast_Block trueBranch;
     cx_bool isUntil;
 };
 
-DB_CLASS_DEF(Fast_Block) {
-    DB_EXTEND(Fast_Node);
+CX_CLASS_DEF(Fast_Block) {
+    CX_EXTEND(Fast_Node);
     Fast_Block parent;
     Fast_Node_list statements;
     Fast_Local_list locals;
@@ -192,65 +194,92 @@ typedef enum Fast_valueKind {
 } Fast_valueKind;
 
 /*  ::cortex::Fast::Literal */
-DB_CLASS(Fast_Literal);
+CX_CLASS(Fast_Literal);
 
-DB_CLASS_DEF(Fast_Literal) {
-    DB_EXTEND(Fast_Expression);
+CX_CLASS_DEF(Fast_Literal) {
+    CX_EXTEND(Fast_Expression);
     Fast_valueKind kind;
 };
 
 /*  ::cortex::Fast::Boolean */
-DB_CLASS(Fast_Boolean);
+CX_CLASS(Fast_Boolean);
 
-DB_CLASS_DEF(Fast_Boolean) {
-    DB_EXTEND(Fast_Literal);
+CX_CLASS_DEF(Fast_Boolean) {
+    CX_EXTEND(Fast_Literal);
     cx_bool value;
 };
 
-/*  ::cortex::Fast::Call */
-DB_CLASS(Fast_Call);
+CX_SEQUENCE(cx_parameter_seq, cx_parameter,);
 
-DB_CLASS_DEF(Fast_Call) {
-    DB_EXTEND(Fast_Expression);
-    Fast_Expression function;
+/*  ::cortex::Fast::Call */
+CX_CLASS(Fast_Call);
+
+CX_CLASS_DEF(Fast_Call) {
+    CX_EXTEND(Fast_Expression);
+    Fast_Expression instanceExpr;
     Fast_Expression arguments;
+    Fast_Expression functionExpr;
+    cx_bool instanceIsAny;
+    cx_type returnType;
+    cx_bool returnsReference;
+    cx_parameter_seq parameters;
+    cx_bool overloaded;
+};
+
+/*  ::cortex::Fast::CallBuilder */
+typedef struct Fast_CallBuilder Fast_CallBuilder;
+
+struct Fast_CallBuilder {
+    cx_string name;
+    Fast_Expression arguments;
+    Fast_Expression instance;
+    cx_object scope;
+    Fast_Block block;
+    cx_bool overloaded;
     cx_string signature;
-    cx_function actualFunction;
 };
 
 /*  ::cortex::Fast::CastExpr */
-DB_CLASS(Fast_CastExpr);
+CX_CLASS(Fast_CastExpr);
 
-DB_CLASS_DEF(Fast_CastExpr) {
-    DB_EXTEND(Fast_Expression);
+CX_CLASS_DEF(Fast_CastExpr) {
+    CX_EXTEND(Fast_Expression);
     Fast_Expression lvalue;
     Fast_Expression rvalue;
 };
 
 /*  ::cortex::Fast::Character */
-DB_CLASS(Fast_Character);
+CX_CLASS(Fast_Character);
 
-DB_CLASS_DEF(Fast_Character) {
-    DB_EXTEND(Fast_Literal);
+CX_CLASS_DEF(Fast_Character) {
+    CX_EXTEND(Fast_Literal);
     cx_char value;
 };
 
-DB_LIST(Fast_Expression_list);
+CX_LIST(Fast_Expression_list);
 
 /*  ::cortex::Fast::CommaExpr */
-DB_CLASS(Fast_CommaExpr);
+CX_CLASS(Fast_CommaExpr);
 
-DB_CLASS_DEF(Fast_CommaExpr) {
-    DB_EXTEND(Fast_Expression);
+CX_CLASS_DEF(Fast_CommaExpr) {
+    CX_EXTEND(Fast_Expression);
     Fast_Expression_list expressions;
 };
 
 /*  ::cortex::Fast::Define */
-DB_CLASS(Fast_Define);
+CX_CLASS(Fast_Define);
 
-DB_CLASS_DEF(Fast_Define) {
-    DB_EXTEND(Fast_Node);
+CX_CLASS_DEF(Fast_Define) {
+    CX_EXTEND(Fast_Node);
     Fast_Expression object;
+};
+
+/*  ::cortex::Fast::DelegateCall */
+CX_CLASS(Fast_DelegateCall);
+
+CX_CLASS_DEF(Fast_DelegateCall) {
+    CX_EXTEND(Fast_Call);
+    Fast_Expression expr;
 };
 
 /*  ::cortex::Fast::InitializerVariable */
@@ -277,10 +306,10 @@ struct Fast_InitializerFrame {
 typedef Fast_InitializerFrame Fast_InitializerFrame_array64[64];
 
 /*  ::cortex::Fast::Initializer */
-DB_CLASS(Fast_Initializer);
+CX_CLASS(Fast_Initializer);
 
-DB_CLASS_DEF(Fast_Initializer) {
-    DB_EXTEND(Fast_Expression);
+CX_CLASS_DEF(Fast_Initializer) {
+    CX_EXTEND(Fast_Expression);
     Fast_InitializerVariable_array64 variables;
     cx_uint8 variableCount;
     Fast_InitializerFrame_array64 frames;
@@ -290,10 +319,10 @@ DB_CLASS_DEF(Fast_Initializer) {
 typedef Fast_Expression Fast_Expression_array64[64];
 
 /*  ::cortex::Fast::Integer */
-DB_CLASS(Fast_Integer);
+CX_CLASS(Fast_Integer);
 
-DB_CLASS_DEF(Fast_Integer) {
-    DB_EXTEND(Fast_Literal);
+CX_CLASS_DEF(Fast_Integer) {
+    CX_EXTEND(Fast_Literal);
     cx_uint64 value;
 };
 
@@ -309,36 +338,36 @@ struct Fast_DynamicInitializerFrame {
 typedef Fast_DynamicInitializerFrame Fast_DynamicInitializerFrame_array64[64];
 
 /*  ::cortex::Fast::DynamicInitializer */
-DB_CLASS(Fast_DynamicInitializer);
+CX_CLASS(Fast_DynamicInitializer);
 
-DB_CLASS_DEF(Fast_DynamicInitializer) {
-    DB_EXTEND(Fast_Initializer);
+CX_CLASS_DEF(Fast_DynamicInitializer) {
+    CX_EXTEND(Fast_Initializer);
     cx_bool assignValue;
     Fast_DynamicInitializerFrame_array64 frames;
 };
 
 /*  ::cortex::Fast::ElementExpr */
-DB_CLASS(Fast_ElementExpr);
+CX_CLASS(Fast_ElementExpr);
 
-DB_CLASS_DEF(Fast_ElementExpr) {
-    DB_EXTEND(Fast_Expression);
+CX_CLASS_DEF(Fast_ElementExpr) {
+    CX_EXTEND(Fast_Expression);
     Fast_Expression lvalue;
     Fast_Expression rvalue;
 };
 
 /*  ::cortex::Fast::FloatingPoint */
-DB_CLASS(Fast_FloatingPoint);
+CX_CLASS(Fast_FloatingPoint);
 
-DB_CLASS_DEF(Fast_FloatingPoint) {
-    DB_EXTEND(Fast_Literal);
+CX_CLASS_DEF(Fast_FloatingPoint) {
+    CX_EXTEND(Fast_Literal);
     cx_float64 value;
 };
 
 /*  ::cortex::Fast::If */
-DB_CLASS(Fast_If);
+CX_CLASS(Fast_If);
 
-DB_CLASS_DEF(Fast_If) {
-    DB_EXTEND(Fast_Node);
+CX_CLASS_DEF(Fast_If) {
+    CX_EXTEND(Fast_Node);
     Fast_Expression condition;
     Fast_Block trueBranch;
     Fast_If falseBranch;
@@ -363,13 +392,13 @@ struct Fast_InitOper {
     cx_string name;
 };
 
-DB_LIST(Fast_InitOper_list);
+CX_LIST(Fast_InitOper_list);
 
 /*  ::cortex::Fast::InitializerExpr */
-DB_CLASS(Fast_InitializerExpr);
+CX_CLASS(Fast_InitializerExpr);
 
-DB_CLASS_DEF(Fast_InitializerExpr) {
-    DB_EXTEND(Fast_Initializer);
+CX_CLASS_DEF(Fast_InitializerExpr) {
+    CX_EXTEND(Fast_Initializer);
     cx_bool assignValue;
     Fast_InitOper_list operations;
 };
@@ -390,10 +419,10 @@ struct Fast_Lvalue {
 };
 
 /*  ::cortex::Fast::MemberExpr */
-DB_CLASS(Fast_MemberExpr);
+CX_CLASS(Fast_MemberExpr);
 
-DB_CLASS_DEF(Fast_MemberExpr) {
-    DB_EXTEND(Fast_Expression);
+CX_CLASS_DEF(Fast_MemberExpr) {
+    CX_EXTEND(Fast_Expression);
     Fast_Expression lvalue;
     Fast_Expression rvalue;
     cx_bool superMember;
@@ -401,41 +430,41 @@ DB_CLASS_DEF(Fast_MemberExpr) {
 };
 
 /*  ::cortex::Fast::NewExpr */
-DB_CLASS(Fast_NewExpr);
+CX_CLASS(Fast_NewExpr);
 
-DB_CLASS_DEF(Fast_NewExpr) {
-    DB_EXTEND(Fast_Expression);
+CX_CLASS_DEF(Fast_NewExpr) {
+    CX_EXTEND(Fast_Expression);
     Fast_Expression type;
     Fast_Expression attributes;
 };
 
 /*  ::cortex::Fast::Null */
-DB_CLASS(Fast_Null);
+CX_CLASS(Fast_Null);
 
-DB_CLASS_DEF(Fast_Null) {
-    DB_EXTEND(Fast_Literal);
+CX_CLASS_DEF(Fast_Null) {
+    CX_EXTEND(Fast_Literal);
 };
 
 /*  ::cortex::Fast::ObjectBase */
-DB_CLASS(Fast_ObjectBase);
+CX_CLASS(Fast_ObjectBase);
 
-DB_CLASS_DEF(Fast_ObjectBase) {
-    DB_EXTEND(Fast_Variable);
+CX_CLASS_DEF(Fast_ObjectBase) {
+    CX_EXTEND(Fast_Variable);
     cx_object value;
 };
 
 /*  ::cortex::Fast::Object */
-DB_CLASS(Fast_Object);
+CX_CLASS(Fast_Object);
 
-DB_CLASS_DEF(Fast_Object) {
-    DB_EXTEND(Fast_ObjectBase);
+CX_CLASS_DEF(Fast_Object) {
+    CX_EXTEND(Fast_ObjectBase);
 };
 
-DB_LIST(Fast_Binding_list);
+CX_LIST(Fast_Binding_list);
 
-DB_LIST(cx_word_list);
+CX_LIST(cx_word_list);
 
-DB_LIST(Fast_Object_list);
+CX_LIST(Fast_Object_list);
 
 typedef Fast_Variable Fast_Variable_array64[64];
 
@@ -458,12 +487,13 @@ typedef Fast_Lvalue Fast_Lvalue_array64[64];
 typedef cx_type cx_type_array64[64];
 
 /*  ::cortex::Fast::Parser */
-DB_CLASS(Fast_Parser);
+CX_CLASS(Fast_Parser);
 
-DB_CLASS_DEF(Fast_Parser) {
+CX_CLASS_DEF(Fast_Parser) {
     cx_string source;
     cx_string preprocessed;
     cx_string filename;
+    cx_uint32 repl;
     cx_uint32 line;
     cx_uint32 column;
     cx_string token;
@@ -508,7 +538,7 @@ struct Fast_ParserDeclaration {
     Fast_Variable variable;
 };
 
-DB_SEQUENCE(Fast_ParserDeclaration_seq256, Fast_ParserDeclaration,);
+CX_SEQUENCE(Fast_ParserDeclaration_seq256, Fast_ParserDeclaration,);
 
 typedef Fast_ParserDeclaration_seq256 Fast_ParserDeclarationSeq;
 /*  ::cortex::Fast::ParserNew */
@@ -522,20 +552,28 @@ struct Fast_ParserNew {
 };
 
 /*  ::cortex::Fast::PostfixExpr */
-DB_CLASS(Fast_PostfixExpr);
+CX_CLASS(Fast_PostfixExpr);
 
-DB_CLASS_DEF(Fast_PostfixExpr) {
-    DB_EXTEND(Fast_Expression);
+CX_CLASS_DEF(Fast_PostfixExpr) {
+    CX_EXTEND(Fast_Expression);
     Fast_Expression lvalue;
     cx_operatorKind operator;
 };
 
 /*  ::cortex::Fast::SignedInteger */
-DB_CLASS(Fast_SignedInteger);
+CX_CLASS(Fast_SignedInteger);
 
-DB_CLASS_DEF(Fast_SignedInteger) {
-    DB_EXTEND(Fast_Literal);
+CX_CLASS_DEF(Fast_SignedInteger) {
+    CX_EXTEND(Fast_Literal);
     cx_int64 value;
+};
+
+/*  ::cortex::Fast::StaticCall */
+CX_CLASS(Fast_StaticCall);
+
+CX_CLASS_DEF(Fast_StaticCall) {
+    CX_EXTEND(Fast_Call);
+    cx_function function;
 };
 
 typedef cx_word cx_word_array64[64];
@@ -551,18 +589,18 @@ struct Fast_StaticInitializerFrame {
 typedef Fast_StaticInitializerFrame Fast_StaticInitializerFrame_array64[64];
 
 /*  ::cortex::Fast::StaticInitializer */
-DB_CLASS(Fast_StaticInitializer);
+CX_CLASS(Fast_StaticInitializer);
 
-DB_CLASS_DEF(Fast_StaticInitializer) {
-    DB_EXTEND(Fast_Initializer);
+CX_CLASS_DEF(Fast_StaticInitializer) {
+    CX_EXTEND(Fast_Initializer);
     Fast_StaticInitializerFrame_array64 frames;
 };
 
 /*  ::cortex::Fast::String */
-DB_CLASS(Fast_String);
+CX_CLASS(Fast_String);
 
-DB_CLASS_DEF(Fast_String) {
-    DB_EXTEND(Fast_Literal);
+CX_CLASS_DEF(Fast_String) {
+    CX_EXTEND(Fast_Literal);
     cx_string value;
     Fast_Expression_list elements;
     Fast_Block block;
@@ -570,17 +608,17 @@ DB_CLASS_DEF(Fast_String) {
 };
 
 /*  ::cortex::Fast::Template */
-DB_CLASS(Fast_Template);
+CX_CLASS(Fast_Template);
 
-DB_CLASS_DEF(Fast_Template) {
-    DB_EXTEND(Fast_Local);
+CX_CLASS_DEF(Fast_Template) {
+    CX_EXTEND(Fast_Local);
 };
 
 /*  ::cortex::Fast::TernaryExpr */
-DB_CLASS(Fast_TernaryExpr);
+CX_CLASS(Fast_TernaryExpr);
 
-DB_CLASS_DEF(Fast_TernaryExpr) {
-    DB_EXTEND(Fast_Expression);
+CX_CLASS_DEF(Fast_TernaryExpr) {
+    CX_EXTEND(Fast_Expression);
     Fast_Expression condition;
     Fast_Expression ifTrue;
     Fast_Expression ifFalse;
@@ -591,29 +629,29 @@ DB_CLASS_DEF(Fast_TernaryExpr) {
 };
 
 /*  ::cortex::Fast::UnaryExpr */
-DB_CLASS(Fast_UnaryExpr);
+CX_CLASS(Fast_UnaryExpr);
 
-DB_CLASS_DEF(Fast_UnaryExpr) {
-    DB_EXTEND(Fast_Expression);
+CX_CLASS_DEF(Fast_UnaryExpr) {
+    CX_EXTEND(Fast_Expression);
     Fast_Expression lvalue;
     cx_operatorKind operator;
 };
 
 /*  ::cortex::Fast::Update */
-DB_CLASS(Fast_Update);
+CX_CLASS(Fast_Update);
 
-DB_CLASS_DEF(Fast_Update) {
-    DB_EXTEND(Fast_Node);
+CX_CLASS_DEF(Fast_Update) {
+    CX_EXTEND(Fast_Node);
     Fast_Expression_list exprList;
     Fast_Block block;
     Fast_Expression from;
 };
 
 /*  ::cortex::Fast::Wait */
-DB_CLASS(Fast_Wait);
+CX_CLASS(Fast_Wait);
 
-DB_CLASS_DEF(Fast_Wait) {
-    DB_EXTEND(Fast_Expression);
+CX_CLASS_DEF(Fast_Wait) {
+    CX_EXTEND(Fast_Expression);
     Fast_Expression_list exprList;
     Fast_Expression timeout;
 };

@@ -1,8 +1,8 @@
 // Test metaprocedures of type class and cortex scope
 bool result: true
 void fail(string msg):
-	"tc_metaprocedure01: FAIL: $msg"
-	result = false
+    "tc_metaprocedure01: FAIL: $msg"
+    result = false
 
 // Create a class using only metaprocedures
 var object cl = @::.declare("Point", class)

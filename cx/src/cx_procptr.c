@@ -13,9 +13,9 @@
 cx_bool cx_procptr_compatible_v(cx_procptr _this, cx_type type) {
 /* $begin(::cortex::lang::procptr::compatible) */
     cx_bool result = FALSE;
-    DB_UNUSED(_this);
+    CX_UNUSED(_this);
 
-    if((type->kind == DB_COMPOSITE) && (cx_interface(type)->kind == DB_PROCPTR)) {
+    if((type->kind == CX_COMPOSITE) && (cx_interface(type)->kind == CX_PROCPTR)) {
         cx_uint32 i;
         result = TRUE;
 
@@ -56,7 +56,7 @@ cx_int16 cx_procptr_init(cx_procptr object) {
         goto error;
     }
 
-    cx_interface(object)->kind = DB_PROCPTR;
+    cx_interface(object)->kind = CX_PROCPTR;
 
     return 0;
 error:

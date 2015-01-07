@@ -1,12 +1,12 @@
 bool result : true
 
 class Foo::
-	member m : object
-	
+    member m : object
+    
 void fail(string msg):
-	"tc_addressing05: FAIL: $msg"
-	result = false	
-	
+    "tc_addressing05: FAIL: $msg"
+    result = false    
+    
 uint32 nonref_o : 10
 Foo o : null
 

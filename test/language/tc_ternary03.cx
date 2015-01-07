@@ -2,12 +2,12 @@
 bool result: true
 
 void fail(string msg):
-	"tc_ternary03: FAIL: $msg"
-	result = false
+    "tc_ternary03: FAIL: $msg"
+    result = false
 
 struct Point::
-	x, y: uint32
-	
+    x, y: uint32
+    
 bool test: true
 
 var Point p = test ? {10,20} : {30,40}

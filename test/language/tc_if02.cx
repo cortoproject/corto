@@ -1,7 +1,7 @@
 bool result : true
 void fail(string msg):
-	"tc_if02: FAIL: $msg"
-	result = false
+    "tc_if02: FAIL: $msg"
+    result = false
 
 int32 a : 30
 
@@ -9,4 +9,4 @@ if a > 20: 0 // This is actually a signed vs. unsigned test
 else: fail("error in comparison")
 
 if result: "tc_if02: OK"
-	
+    

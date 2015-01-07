@@ -18,8 +18,13 @@
 extern "C" {
 #endif
 
-/* ::cortex::Fast::Expression::cast(lang::type type) */
-Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type);
+/* $header() */
+cx_type Fast_Expression_narrowType(Fast_Expression expr);
+Fast_Expression Fast_Expression_narrow(Fast_Expression expr, cx_type target);
+/* $end */
+
+/* ::cortex::Fast::Expression::cast(lang::type type,lang::bool isReference) */
+Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_bool isReference);
 
 /* ::cortex::Fast::Expression::cleanList(list{Expression} list) */
 void Fast_Expression_cleanList(Fast_Expression_list list);

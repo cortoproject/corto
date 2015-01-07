@@ -18,28 +18,28 @@ typedef void*(*dlproc)(void);
 
 /* Link dynamic library */
 cx_dl cx_dlOpen(const char* file) {
-	cx_dl dl;
+    cx_dl dl;
 
-	dl = (cx_dl)dlopen(file, RTLD_NOW);
+    dl = (cx_dl)dlopen(file, RTLD_NOW);
 
-	return dl;
+    return dl;
 }
 
 /* Close dynamic library */
 void cx_dlClose(cx_dl dl) {
-	dlclose(dl);
+    dlclose(dl);
 }
 
 /* Lookup symbol in dynamic library */
 void* cx_dlSym(cx_dl dl, const char* sym) {
-	return dlsym(dl, sym);
+    return dlsym(dl, sym);
 }
 
 /* Lookup procedure in dynamic library */
 void*(*cx_dlProc(cx_dl dl, const char* proc))(void) {
-	return (dlproc)(intptr_t)dlsym(dl, proc);
+    return (dlproc)(intptr_t)dlsym(dl, proc);
 }
 
 const char* cx_dlError(void) {
-	return dlerror();
+    return dlerror();
 }

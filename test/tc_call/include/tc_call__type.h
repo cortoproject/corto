@@ -28,8 +28,8 @@ typedef enum tc_AnimalKind {
 } tc_AnimalKind;
 
 /*  ::tc_call::Animal */
-DB_CLASS(tc_Animal);
-DB_CLASS_DEF(tc_Animal) {
+CX_CLASS(tc_Animal);
+CX_CLASS_DEF(tc_Animal) {
     tc_AnimalKind kind;
 };
 /* ::tc_call::HabitatKind */
@@ -55,9 +55,9 @@ struct tc_MammalProps {
 };
 
 /*  ::tc_call::Mammal */
-DB_CLASS(tc_Mammal);
-DB_CLASS_DEF(tc_Mammal) {
-    DB_EXTEND(tc_Animal);
+CX_CLASS(tc_Mammal);
+CX_CLASS_DEF(tc_Mammal) {
+    CX_EXTEND(tc_Animal);
     tc_MammalKind kind;
     tc_MammalProps props;
 };

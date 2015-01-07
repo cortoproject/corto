@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB_GENERATORDEPWALK_H_
-#define DB_GENERATORDEPWALK_H_
+#ifndef CX_GENERATORDEPWALK_H_
+#define CX_GENERATORDEPWALK_H_
 
 #include "cx_generator.h"
 
@@ -20,4 +20,4 @@ int cx_genTypeDepWalk(cx_generator g, g_walkAction onDeclare, g_walkAction onDef
 }
 #endif
 
-#endif /* DB_GENERATORDEPWALK_H_ */
+#endif /* CX_GENERATORDEPWALK_H_ */

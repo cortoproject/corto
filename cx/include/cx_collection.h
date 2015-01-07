@@ -24,6 +24,12 @@ cx_bool cx_collection_castable(cx_collection _this, cx_type type);
 /* ::cortex::lang::collection::castable(lang::type type) */
 cx_bool cx_collection_castable_v(cx_collection _this, cx_type type);
 
+/* virtual ::cortex::lang::collection::compatible(lang::type type) */
+cx_bool cx_collection_compatible(cx_collection _this, cx_type type);
+
+/* ::cortex::lang::collection::compatible(lang::type type) */
+cx_bool cx_collection_compatible_v(cx_collection _this, cx_type type);
+
 /* ::cortex::lang::collection::elementRequiresAlloc() */
 cx_bool cx_collection_elementRequiresAlloc(cx_collection _this);
 

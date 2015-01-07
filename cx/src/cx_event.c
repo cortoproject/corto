@@ -16,17 +16,17 @@ static int cx_maxEventId = 16; /* kind 0 - 15 are reserved for internal usage */
 /* ::cortex::lang::event::processed() */
 cx_void cx_event_processed(cx_event _this) {
 /* $begin(::cortex::lang::event::processed) */
-	_this->handled = TRUE;
+    _this->handled = TRUE;
 /* $end */
 }
 
 /* ::cortex::lang::event::uniqueKind() */
 cx_int16 cx_event_uniqueKind(void) {
 /* $begin(::cortex::lang::event::uniqueKind) */
-	int result = cx_ainc(&cx_maxEventId)-1;
-	if (result == 65535) {
-		cx_critical("event-kinds exhausted (>=65536)!");
-	}
-	return result;
+    int result = cx_ainc(&cx_maxEventId)-1;
+    if (result == 65535) {
+        cx_critical("event-kinds exhausted (>=65536)!");
+    }
+    return result;
 /* $end */
 }

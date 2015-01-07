@@ -79,7 +79,7 @@ cx_uint16 cx_type_alignmentof(cx_type _this) {
     cx_uint16 alignment;
 
     if (_this->reference) {
-        alignment = DB_ALIGNMENT(cx_object);
+        alignment = CX_ALIGNMENT(cx_object);
     } else {
         alignment = _this->alignment;
     }
@@ -99,7 +99,7 @@ cx_bool cx_type_castable_v(cx_type _this, cx_type type) {
 /* $begin(::cortex::lang::type::castable) */
     cx_bool result = FALSE;
 
-    if (_this->kind == DB_VOID) { /* A void reference can be casted to any reference type */
+    if (_this->kind == CX_VOID) { /* A void reference can be casted to any reference type */
         if (_this->reference && type->reference) {
             return TRUE;
         }
@@ -137,7 +137,7 @@ cx_equalityKind cx_type_compare(cx_any _this, cx_any value) {
     cx_valueValueInit(&v1, NULL, cx_typedef(_this.type), _this.value);
     cx_valueValueInit(&data.value, NULL, cx_typedef(value.type), value.value);
     
-    s = cx_compare_ser(DB_PRIVATE, DB_NOT, DB_SERIALIZER_TRACE_NEVER);
+    s = cx_compare_ser(CX_PRIVATE, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
 
     cx_serializeValue(&s, &v1, &data);
 
@@ -153,11 +153,11 @@ cx_bool cx_type_compatible_v(cx_type _this, cx_type type) {
     result = FALSE;
 
     if (_this != type) {
-        if (_this->kind == DB_ANY) {
+        if (_this->kind == CX_ANY) {
             result = TRUE;
         } else if (_this->reference == type->reference) {
             if (type->reference) {
-                if (_this->kind == DB_VOID) {
+                if (_this->kind == CX_VOID) {
                     result = TRUE;
                 }
             }
@@ -174,7 +174,7 @@ cx_bool cx_type_compatible_v(cx_type _this, cx_type type) {
 cx_int16 cx_type_construct(cx_type object) {
 /* $begin(::cortex::lang::type::construct) */
     switch(object->kind) {
-    case DB_ANY:
+    case CX_ANY:
         object->size = sizeof(cx_any);
         break;
     default:
@@ -191,11 +191,16 @@ cx_int16 cx_type_copy(cx_any _this, cx_any value) {
     struct cx_serializer_s s;
     cx_value v1;
     cx_int16 result;
+
+    if (_this.type->reference || value.type->reference) {
+        cx_valueObjectInit(&data.value, _this.value);
+        cx_valueObjectInit(&v1, value.value);       
+    } else {
+        cx_valueValueInit(&data.value, NULL, cx_typedef(_this.type), _this.value);
+        cx_valueValueInit(&v1, NULL, cx_typedef(value.type), value.value);
+    }
     
-    cx_valueValueInit(&data.value, NULL, cx_typedef(_this.type), _this.value);
-    cx_valueValueInit(&v1, NULL, cx_typedef(value.type), value.value);
-    
-    s = cx_copy_ser(DB_PRIVATE, DB_NOT, DB_SERIALIZER_TRACE_ON_FAIL);
+    s = cx_copy_ser(CX_PRIVATE, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
     
     result = cx_serializeValue(&s, &v1, &data);
 
@@ -292,7 +297,7 @@ cx_object cx_type_parentof(cx_any _this) {
 /* $begin(::cortex::lang::type::parentof) */
     cx_string result = NULL;
 
-   if (cx_checkAttr(_this.value, DB_ATTR_SCOPED)) {
+   if (cx_checkAttr(_this.value, CX_ATTR_SCOPED)) {
        result = cx_parentof(_this.value);
    } else {
        cx_id id;

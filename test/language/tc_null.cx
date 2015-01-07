@@ -1,11 +1,11 @@
 bool result : true
 void fail(string msg):
-	"tc_null: FAIL: $msg"
-	result = false
+    "tc_null: FAIL: $msg"
+    result = false
 
 struct Thing::
-	member x : object
-	
+    member x : object
+    
 Thing o : null
 string s : null
 var object lo = null

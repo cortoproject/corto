@@ -21,8 +21,8 @@ extern "C" {
 
 
 /*  ::tc_event::Point */
-DB_CLASS(tc_Point);
-DB_CLASS_DEF(tc_Point) {
+CX_CLASS(tc_Point);
+CX_CLASS_DEF(tc_Point) {
     cx_uint32 x;
     cx_uint32 y;
 };

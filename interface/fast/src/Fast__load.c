@@ -1,5 +1,5 @@
 /** 
- * This file is fully generated. Do not modify!
+ * This file is generated. Only insert code in appropriate places
  */
 
 #include "Fast__meta.h"
@@ -17,15 +17,12 @@ cx_threadKey FAST_PARSER_KEY;
 int fast_cortexRun(cx_string file, void* udata) {
     cx_char* source;
     Fast_Parser p;
-    DB_UNUSED(udata);
+    CX_UNUSED(udata);
 
     source = cx_fileLoad(file);
     if (source) {
         /* Create parser */
         p = Fast_Parser__create(source, file);
-
-        /* Set parser in local storage of thread (enables multithreaded parsers) */
-        cx_threadTlsSet(FAST_PARSER_KEY, p);
 
         /* Parse script */
         Fast_Parser_parse(p);
@@ -43,8 +40,10 @@ error:
 
 /* This function is the entrypoint for the library and * loads definitions of the 'Fast' scope */
 int cortexmain(int argc, char* argv[]) {
-    DB_UNUSED(argc);
-    DB_UNUSED(argv);
+    CX_UNUSED(argc);
+    CX_UNUSED(argv);
+    
+    int result = Fast_load();
     
     /* $begin(cortexmain) */
     /* Obtain thread local storage key for parser */
@@ -56,6 +55,6 @@ int cortexmain(int argc, char* argv[]) {
     cx_loaderRegister("cx", fast_cortexRun, NULL);
     /* $end */
 
-    return Fast_load();
+    return result;
 }
 

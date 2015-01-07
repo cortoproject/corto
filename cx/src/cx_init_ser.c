@@ -12,47 +12,47 @@
 #include "cx_err.h"
 
 cx_int16 cx_ser_initCollection(cx_serializer s, cx_value* v, void* userData) {
-	cx_type t;
-	void* o;
+    cx_type t;
+    void* o;
     
-	t = cx_valueType(v)->real;
-	o = cx_valueValue(v);
+    t = cx_valueType(v)->real;
+    o = cx_valueValue(v);
     
-	switch(cx_collection(t)->kind) {
-        case DB_ARRAY:
+    switch(cx_collection(t)->kind) {
+        case CX_ARRAY:
             /* Serialize elements */
             if (cx_serializeElements(s, v, userData)) {
                 goto error;
             }
             break;
-        case DB_SEQUENCE:
+        case CX_SEQUENCE:
             break;
-        case DB_LIST:
+        case CX_LIST:
             *(cx_ll*)o = cx_llNew();
             break;
-        case DB_MAP:
+        case CX_MAP:
             /**(cx_rbtree*)o = cx_rbtreeNew(t);*/
             break;
         default:
             cx_error("invalid collection object!");
             goto error;
             break;
-	}
+    }
     
-	return 0;
+    return 0;
 error:
-	return -1;
+    return -1;
 }
 
 
 struct cx_serializer_s cx_ser_init(cx_modifier access, cx_operatorKind accessKind, cx_serializerTraceKind trace) {
-	struct cx_serializer_s s;
+    struct cx_serializer_s s;
     
-	cx_serializerInit(&s);
+    cx_serializerInit(&s);
     
-	s.access = access;
-	s.accessKind = accessKind;
-	s.traceKind = trace;
-	s.program[DB_COLLECTION] = cx_ser_initCollection;
-	return s;
+    s.access = access;
+    s.accessKind = accessKind;
+    s.traceKind = trace;
+    s.program[CX_COLLECTION] = cx_ser_initCollection;
+    return s;
 }

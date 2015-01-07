@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef DB_COMPARE_SER_H_
-#define DB_COMPARE_SER_H_
+#ifndef CX_COMPARE_SER_H_
+#define CX_COMPARE_SER_H_
 
 #include "cx_serializer.h"
 
@@ -30,4 +30,4 @@ struct cx_serializer_s cx_compare_ser(cx_modifier access, cx_operatorKind access
 }
 #endif
 
-#endif /* DB_COMPARE_SER_H_ */
+#endif /* CX_COMPARE_SER_H_ */

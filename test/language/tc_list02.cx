@@ -2,8 +2,8 @@
 bool result: true
 
 void fail(string msg):
-	"tc_list02: FAIL: $msg"
-	result = false
+    "tc_list02: FAIL: $msg"
+    result = false
 
 var list{uint32} a = {1, 2, 3}
 var list{uint64} b = {1, 2, 3}

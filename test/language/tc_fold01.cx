@@ -1,7 +1,7 @@
 bool result: true
 void fail(string msg):
-	"tc_fold01: FAIL: $msg"
-	result = false
+    "tc_fold01: FAIL: $msg"
+    result = false
 
 // Test folding of literal expressions - use variable in evaluation so it happens at runtime
 var bool boolResult

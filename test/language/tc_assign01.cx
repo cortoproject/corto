@@ -2,8 +2,8 @@
 bool result: true
 
 void fail(string msg):
-	"tc_assign01: FAIL: $msg"
-	result = false
+    "tc_assign01: FAIL: $msg"
+    result = false
 
 uint32 o, p
 var uint32 v

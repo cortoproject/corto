@@ -1,5 +1,5 @@
 
-TARGET =	fast
+TARGET =	Fast
 
 LEX		=	fast.l
 YACC	= 	fast.y
@@ -8,5 +8,6 @@ INCLUDE = 	$(CORTEX_HOME)/dev/include
 
 LIBS	=	lang cortexdev fl
 
-include $(CORTEX_HOME)/build/lexyacc.makefile
+MAKEFILE = lexyacc
 
+include $(CORTEX_HOME)/build/package.makefile

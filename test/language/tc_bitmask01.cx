@@ -1,7 +1,7 @@
 bool result: true
 void fail(string msg):
-	"tc_bitmask01: FAIL: $msg"
-	result = false
+    "tc_bitmask01: FAIL: $msg"
+    result = false
 
 bitmask options:: SeatHeating, AutomaticWindows, SpareWheel
 

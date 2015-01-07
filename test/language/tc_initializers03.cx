@@ -4,15 +4,15 @@ uint32 a : 10
 uint32 b : 20
 
 class Point::
-	member x, y: uint32
+    member x, y: uint32
 
 void fail(string msg):
-	"tc_initializers03: FAIL: $msg"
-	result = false
-	
+    "tc_initializers03: FAIL: $msg"
+    result = false
+    
 void test(Point p, int32 x, int32 y, string msg):
-	if p.x != x: fail("$msg.x (${p.x})")
-	if p.y != y: fail("$msg.y (${p.y})")
+    if p.x != x: fail("$msg.x (${p.x})")
+    if p.y != y: fail("$msg.y (${p.y})")
 
 // Do some calculations at runtime. This will verify that the initializer is evaluated
 // at runtime.

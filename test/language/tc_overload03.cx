@@ -1,8 +1,8 @@
 // Test overloading with null arguments
 bool result: true
 void fail(string msg):
-	"tc_overload03: FAIL: $msg"
-	result = false
+    "tc_overload03: FAIL: $msg"
+    result = false
 
 class Point:: x, y: uint32
 
@@ -10,8 +10,8 @@ uint32 called : 0
 
 // Test with a string parameter
 string foo(string a): 
-	foo = a
-	called++
+    foo = a
+    called++
 
 uint32 foo(uint32 a) = a
 
@@ -30,9 +30,9 @@ if called != 3: fail("called != 3 ($called)")
 // Test with a reference type parameter
 called = 0
 Point bar(Point a):
-	bar = a
-	called++
-	
+    bar = a
+    called++
+    
 uint32 bar(uint32 a) = a
 
 // Sanity check

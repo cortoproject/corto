@@ -36,9 +36,9 @@ void cpp_closeScope(g_file file);
 cx_char* cpp_topath(cx_object o, cx_id id);
 
 typedef enum cpp_metaIdKind {
-	CPP_DEFAULT,
-	CPP_HANDLE,
-	CPP_OBJECT
+    CPP_DEFAULT,
+    CPP_HANDLE,
+    CPP_OBJECT
 }cpp_metaIdKind;
 
 /* Get meta-object identifier */
