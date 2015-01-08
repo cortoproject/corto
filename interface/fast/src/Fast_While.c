@@ -19,7 +19,7 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::While::construct(While object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::While::construct(While object) */
 cx_int16 Fast_While_construct(Fast_While object) {
 /* $begin(::cortex::Fast::While::construct) */
     cx_type conditionType;
@@ -44,7 +44,7 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::While::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::While::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_While_toIc_v(Fast_While _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::While::toIc) */
     cx_icStorage accumulator;

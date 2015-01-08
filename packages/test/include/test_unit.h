@@ -17,10 +17,10 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::test::unit::construct(::cortex::test::unit object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::test::unit::construct(unit object) */
 cx_int16 test_unit_construct(test_unit object);
 
-/* ::cortex::test::unit::fail(::cortex::lang::string msg) */
+/* ::cortex::test::unit::fail(string msg) */
 cx_void test_unit_fail(test_unit _this, cx_string msg);
 
 #ifdef __cplusplus

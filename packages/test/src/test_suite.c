@@ -9,9 +9,9 @@
 #include "test.h"
 #include "test__meta.h"
 
-/* ::cortex::test::suite::assert(::cortex::lang::any v1,::cortex::lang::any v2,::cortex::lang::string msg) */
-cx_void test_suite_assert__cortex_lang_any__cortex_lang_any__cortex_lang_string(test_suite _this, cx_any v1, cx_any v2, cx_string msg) {
-/* $begin(::cortex::test::suite::assert(::cortex::lang::any v1,::cortex::lang::any v2,::cortex::lang::string msg)) */
+/* ::cortex::test::suite::assert(any v1,any v2,string msg) */
+cx_void test_suite_assert_any_any_string(test_suite _this, cx_any v1, cx_any v2, cx_string msg) {
+/* $begin(::cortex::test::suite::assert(any v1,any v2,string msg)) */
 
     if (cx_type_compare(v1, v2) != CX_EQ) {
         test_suite_fail(_this, msg);
@@ -20,16 +20,18 @@ cx_void test_suite_assert__cortex_lang_any__cortex_lang_any__cortex_lang_string(
 /* $end */
 }
 
-/* ::cortex::test::suite::assert(::cortex::lang::bool cond,::cortex::lang::string msg) */
-cx_void test_suite_assert__cortex_lang_bool__cortex_lang_string(test_suite _this, cx_bool cond, cx_string msg) {
-/* $begin(::cortex::test::suite::assert(::cortex::lang::bool cond,::cortex::lang::string msg)) */
+/* ::cortex::test::suite::assert(bool cond,string msg) */
+cx_void test_suite_assert_bool_string(test_suite _this, cx_bool cond, cx_string msg) {
+/* $begin(::cortex::test::suite::assert(bool cond,string msg)) */
+
     if (!cond) {
         test_suite_fail(_this, msg);
     }
+
 /* $end */
 }
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::test::suite::construct(::cortex::test::suite object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::test::suite::construct(suite object) */
 /* $header(::cortex::test::suite::construct) */
 int test_suite_walk(cx_object o, void *userData) {
     test_suite _this = userData;
@@ -86,7 +88,7 @@ error:
 /* $end */
 }
 
-/* ::cortex::test::suite::fail(::cortex::lang::string msg) */
+/* ::cortex::test::suite::fail(string msg) */
 cx_void test_suite_fail(test_suite _this, cx_string msg) {
 /* $begin(::cortex::test::suite::fail) */
 

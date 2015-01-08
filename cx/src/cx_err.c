@@ -184,8 +184,12 @@ cx_err cx_logv(cx_err kind, unsigned int level, char* fmt, va_list arg, FILE* f)
         strcat(alloc, "\n");
         msg = alloc;
     } else {
-        strcat(buff, "\n");
+        char *ptr = buff;
+        strcpy(buff, cx_logKind[kind]);
+        vsprintf(ptr, fmt, arg);
+        strcat(ptr, "\n");
     }
+    n = strlen(msg);
 
     cx_setLasterror(msg);
 

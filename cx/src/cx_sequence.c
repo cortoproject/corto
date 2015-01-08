@@ -27,7 +27,7 @@ int cx_sequence_alloc(cx_collection _this, cx_void* collection, cx_uint32 elemen
 }
 /* $end */
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::sequence::construct(lang::sequence object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::sequence::construct(sequence object) */
 cx_int16 cx_sequence_construct(cx_sequence object) {
 /* $begin(::cortex::lang::sequence::construct) */
     cx_type(object)->hasResources = TRUE;
@@ -37,7 +37,7 @@ cx_int16 cx_sequence_construct(cx_sequence object) {
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::sequence::init(lang::sequence object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::sequence::init(sequence object) */
 cx_int16 cx_sequence_init(cx_sequence object) {
 /* $begin(::cortex::lang::sequence::init) */
     cx_collection(object)->kind = CX_SEQUENCE;
@@ -45,7 +45,7 @@ cx_int16 cx_sequence_init(cx_sequence object) {
 /* $end */
 }
 
-/* ::cortex::lang::sequence::size(lang::uint32 size) */
+/* ::cortex::lang::sequence::size(uint32 size) */
 cx_void cx_sequence_size(cx_any _this, cx_uint32 size) {
 /* $begin(::cortex::lang::sequence::size) */
     cx_uint32 oldSize, elementSize;

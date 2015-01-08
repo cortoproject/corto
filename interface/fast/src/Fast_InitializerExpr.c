@@ -14,7 +14,7 @@
 #include "Fast_DynamicInitializer.h"
 /* $end */
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::InitializerExpr::construct(InitializerExpr object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::InitializerExpr::construct(InitializerExpr object) */
 cx_int16 Fast_InitializerExpr_construct(Fast_InitializerExpr object) {
 /* $begin(::cortex::Fast::InitializerExpr::construct) */
     cx_int16 result = 0;
@@ -96,7 +96,7 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::InitializerExpr::member(lang::string name) */
+/* ::cortex::Fast::InitializerExpr::member(string name) */
 cx_int32 Fast_InitializerExpr_member(Fast_InitializerExpr _this, cx_string name) {
 /* $begin(::cortex::Fast::InitializerExpr::member) */
     Fast_InitOper *elem = Fast_InitOper_list__append(_this->operations);

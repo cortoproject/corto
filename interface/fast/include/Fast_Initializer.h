@@ -18,7 +18,7 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Initializer::construct(Initializer object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::Initializer::construct(Initializer object) */
 cx_int16 Fast_Initializer_construct(Fast_Initializer object);
 
 /* ::cortex::Fast::Initializer::currentType() */
@@ -33,10 +33,10 @@ cx_int16 Fast_Initializer_define_v(Fast_Initializer _this);
 /* ::cortex::Fast::Initializer::initFrame() */
 cx_uint16 Fast_Initializer_initFrame(Fast_Initializer _this);
 
-/* virtual ::cortex::Fast::Initializer::member(lang::string name) */
+/* virtual ::cortex::Fast::Initializer::member(string name) */
 cx_int32 Fast_Initializer_member(Fast_Initializer _this, cx_string name);
 
-/* ::cortex::Fast::Initializer::member(lang::string name) */
+/* ::cortex::Fast::Initializer::member(string name) */
 cx_int32 Fast_Initializer_member_v(Fast_Initializer _this, cx_string name);
 
 /* virtual ::cortex::Fast::Initializer::next() */

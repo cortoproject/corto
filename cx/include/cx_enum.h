@@ -18,16 +18,16 @@
 extern "C" {
 #endif
 
-/* ::cortex::lang::enum::constant(lang::int32 value) */
+/* ::cortex::lang::enum::constant(int32 value) */
 cx_object cx_enum_constant(cx_enum _this, cx_int32 value);
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::enum::construct(lang::enum object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::enum::construct(enum object) */
 cx_int16 cx_enum_construct(cx_enum object);
 
-/* callback ::cortex::lang::class::destruct(lang::object object) -> ::cortex::lang::enum::destruct(lang::enum object) */
+/* callback ::cortex::lang::class::destruct(object object) -> ::cortex::lang::enum::destruct(enum object) */
 cx_void cx_enum_destruct(cx_enum object);
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::enum::init(lang::enum object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::enum::init(enum object) */
 cx_int16 cx_enum_init(cx_enum object);
 
 #ifdef __cplusplus

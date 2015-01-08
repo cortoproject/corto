@@ -1033,7 +1033,7 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::Parser::argumentToString(Fast::Variable type,lang::string id,lang::bool reference) */
+/* ::cortex::Fast::Parser::argumentToString(Fast::Variable type,string id,bool reference) */
 cx_string Fast_Parser_argumentToString(Fast_Parser _this, Fast_Variable type, cx_string id, cx_bool reference) {
 /* $begin(::cortex::Fast::Parser::argumentToString) */
     cx_string str;
@@ -1061,7 +1061,11 @@ cx_string Fast_Parser_argumentToString(Fast_Parser _this, Fast_Variable type, cx
 
     if (cx_checkAttr(type_o, CX_ATTR_SCOPED)) {
         cx_id id;
-        str = strdup(Fast_Parser_id(type_o, id));
+        if ((cx_parentof(type_o) == cortex_o) || (cx_parentof(cx_type_o) == cortex_lang_o)) {
+            str = strdup(cx_nameof(type_o));
+        } else {
+            str = strdup(Fast_Parser_id(type_o, id));
+        }
     } else {
         struct cx_serializer_s s;
         cx_string_ser_t walkData;
@@ -1095,7 +1099,7 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::Parser::binaryExpr(Fast::Expression lvalues,Fast::Expression rvalues,lang::operatorKind operator) */
+/* ::cortex::Fast::Parser::binaryExpr(Fast::Expression lvalues,Fast::Expression rvalues,operatorKind operator) */
 Fast_Expression Fast_Parser_binaryExpr(Fast_Parser _this, Fast_Expression lvalues, Fast_Expression rvalues, cx_operatorKind operator) {
 /* $begin(::cortex::Fast::Parser::binaryExpr) */
     Fast_Expression result = NULL;
@@ -1207,7 +1211,7 @@ void Fast_Parser_blockPop(Fast_Parser _this) {
 /* $end */
 }
 
-/* ::cortex::Fast::Parser::blockPush(lang::bool presetBlock) */
+/* ::cortex::Fast::Parser::blockPush(bool presetBlock) */
 Fast_Block Fast_Parser_blockPush(Fast_Parser _this, cx_bool presetBlock) {
 /* $begin(::cortex::Fast::Parser::blockPush) */
     FAST_CHECK_ERRSET(_this);
@@ -1334,7 +1338,7 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::Parser::collect(lang::object o) */
+/* ::cortex::Fast::Parser::collect(object o) */
 cx_void Fast_Parser_collect(Fast_Parser _this, cx_object o) {
 /* $begin(::cortex::Fast::Parser::collect) */
     /* 1st pass & 2nd pass are equal */
@@ -1357,7 +1361,7 @@ cx_void Fast_Parser_collectHeap(Fast_Parser _this, cx_word addr) {
 /* $end */
 }
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Parser::construct(Parser object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::Parser::construct(Parser object) */
 cx_int16 Fast_Parser_construct(Fast_Parser object) {
 /* $begin(::cortex::Fast::Parser::construct) */
     CX_UNUSED(object);
@@ -1367,7 +1371,7 @@ cx_int16 Fast_Parser_construct(Fast_Parser object) {
 /* $end */
 }
 
-/* ::cortex::Fast::Parser::declaration(Variable type,lang::string id,lang::bool isReference) */
+/* ::cortex::Fast::Parser::declaration(Variable type,string id,bool isReference) */
 Fast_Variable Fast_Parser_declaration(Fast_Parser _this, Fast_Variable type, cx_string id, cx_bool isReference) {
 /* $begin(::cortex::Fast::Parser::declaration) */
     Fast_Variable result = NULL;
@@ -1433,7 +1437,7 @@ Fast_Variable Fast_Parser_declaration(Fast_Parser _this, Fast_Variable type, cx_
                 goto error;  
             }
         } else {
-            o = cx_resolve_ext(_this, parent, id, FALSE, "Resolve object in 2nd pass");
+            o = cx_lookup_ext(_this, parent, id, "Resolve object in 2nd pass");
             cx_assert(o != NULL, "object disappeared in 2nd pass");
             cx_free_ext(_this, o, "Free object from resolve (2nd run)");
         }
@@ -1452,7 +1456,7 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::Parser::declareFunction(Variable returnType,lang::string id,lang::type kind,bool returnsReference) */
+/* ::cortex::Fast::Parser::declareFunction(Variable returnType,string id,type kind,bool returnsReference) */
 Fast_Variable Fast_Parser_declareFunction(Fast_Parser _this, Fast_Variable returnType, cx_string id, cx_type kind, cx_bool returnsReference) {
 /* $begin(::cortex::Fast::Parser::declareFunction) */
     cx_function function;
@@ -1717,7 +1721,7 @@ error:
 /* $end */
 }
 
-/* callback ::cortex::lang::class::destruct(lang::object object) -> ::cortex::Fast::Parser::destruct(Parser object) */
+/* callback ::cortex::lang::class::destruct(object object) -> ::cortex::Fast::Parser::destruct(Parser object) */
 void Fast_Parser_destruct(Fast_Parser object) {
 /* $begin(::cortex::Fast::Parser::destruct) */
     cx_iter iter;
@@ -1769,7 +1773,7 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::Parser::foreach(lang::string loopId,Fast::Expression collection) */
+/* ::cortex::Fast::Parser::foreach(string loopId,Fast::Expression collection) */
 cx_int16 Fast_Parser_foreach(Fast_Parser _this, cx_string loopId, Fast_Expression collection) {
 /* $begin(::cortex::Fast::Parser::foreach) */
     if (_this->pass) {
@@ -1823,7 +1827,7 @@ cx_type Fast_Parser_getComplexType(Fast_Parser _this) {
 /* $end */
 }
 
-/* ::cortex::Fast::Parser::getLvalue(lang::bool assignment) */
+/* ::cortex::Fast::Parser::getLvalue(bool assignment) */
 Fast_Expression Fast_Parser_getLvalue(Fast_Parser _this, cx_bool assignment) {
 /* $begin(::cortex::Fast::Parser::getLvalue) */
     Fast_Expression result = NULL;
@@ -1841,7 +1845,7 @@ Fast_Expression Fast_Parser_getLvalue(Fast_Parser _this, cx_bool assignment) {
 /* $end */
 }
 
-/* ::cortex::Fast::Parser::getLvalueType(lang::bool assignment) */
+/* ::cortex::Fast::Parser::getLvalueType(bool assignment) */
 cx_type Fast_Parser_getLvalueType(Fast_Parser _this, cx_bool assignment) {
 /* $begin(::cortex::Fast::Parser::getLvalueType) */
     cx_type result = NULL;
@@ -1991,7 +1995,7 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::Parser::initMember(lang::string member) */
+/* ::cortex::Fast::Parser::initMember(string member) */
 cx_int16 Fast_Parser_initMember(Fast_Parser _this, cx_string member) {
 /* $begin(::cortex::Fast::Parser::initMember) */
     FAST_CHECK_ERRSET(_this);
@@ -2198,7 +2202,7 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::Parser::initStage(lang::string id,bool found) */
+/* ::cortex::Fast::Parser::initStage(string id,bool found) */
 void Fast_Parser_initStage(Fast_Parser _this, cx_string id, cx_bool found) {
 /* $begin(::cortex::Fast::Parser::initStage) */
     
@@ -2250,7 +2254,7 @@ cx_bool Fast_Parser_isErrSet(Fast_Parser _this) {
 /* $end */
 }
 
-/* ::cortex::Fast::Parser::lookup(lang::string id,lang::object source) */
+/* ::cortex::Fast::Parser::lookup(string id,object source) */
 Fast_Expression Fast_Parser_lookup(Fast_Parser _this, cx_string id, cx_object source) {
 /* $begin(::cortex::Fast::Parser::lookup) */
     Fast_Expression result = NULL;
@@ -2322,7 +2326,7 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::Parser::observerDeclaration(lang::string id,Fast::Expression object,lang::eventMask mask,Fast::Object dispatcher) */
+/* ::cortex::Fast::Parser::observerDeclaration(string id,Fast::Expression object,eventMask mask,Fast::Object dispatcher) */
 Fast_Variable Fast_Parser_observerDeclaration(Fast_Parser _this, cx_string id, Fast_Expression object, cx_eventMask mask, Fast_Object dispatcher) {
 /* $begin(::cortex::Fast::Parser::observerDeclaration) */
     CX_UNUSED(object);
@@ -2475,7 +2479,7 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::Parser::parseExpression(lang::string expr,Fast::Block block,Fast::Variable scope,uint32 line,uint32 column) */
+/* ::cortex::Fast::Parser::parseExpression(string expr,Fast::Block block,Fast::Variable scope,uint32 line,uint32 column) */
 Fast_Expression Fast_Parser_parseExpression(Fast_Parser _this, cx_string expr, Fast_Block block, Fast_Variable scope, cx_uint32 line, cx_uint32 column) {
 /* $begin(::cortex::Fast::Parser::parseExpression) */
     Fast_Expression result = NULL;
@@ -2539,7 +2543,7 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::Parser::parseLine(lang::string expr,lang::object scope,lang::alias{"cx_value*"} value) */
+/* ::cortex::Fast::Parser::parseLine(string expr,object scope,alias{"cx_value*"} value) */
 cx_int16 Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_value* value) {
 /* $begin(::cortex::Fast::Parser::parseLine) */
     Fast_Parser parser = Fast_Parser__create(expr, NULL);
@@ -2689,7 +2693,7 @@ void Fast_Parser_popScope(Fast_Parser _this, Fast_Variable previous) {
 /* $end */
 }
 
-/* ::cortex::Fast::Parser::postfixExpr(Fast::Expression lvalue,lang::operatorKind operator) */
+/* ::cortex::Fast::Parser::postfixExpr(Fast::Expression lvalue,operatorKind operator) */
 Fast_Expression Fast_Parser_postfixExpr(Fast_Parser _this, Fast_Expression lvalue, cx_operatorKind operator) {
 /* $begin(::cortex::Fast::Parser::postfixExpr) */
     Fast_Expression result = NULL;
@@ -2725,7 +2729,7 @@ void Fast_Parser_pushComplexType(Fast_Parser _this, Fast_Expression lvalue) {
 /* $end */
 }
 
-/* ::cortex::Fast::Parser::pushLvalue(Fast::Expression lvalue,lang::bool isAssignment) */
+/* ::cortex::Fast::Parser::pushLvalue(Fast::Expression lvalue,bool isAssignment) */
 void Fast_Parser_pushLvalue(Fast_Parser _this, Fast_Expression lvalue, cx_bool isAssignment) {
 /* $begin(::cortex::Fast::Parser::pushLvalue) */
 
@@ -2736,7 +2740,7 @@ void Fast_Parser_pushLvalue(Fast_Parser _this, Fast_Expression lvalue, cx_bool i
 /* $end */
 }
 
-/* ::cortex::Fast::Parser::pushReturnAsLvalue(lang::function function) */
+/* ::cortex::Fast::Parser::pushReturnAsLvalue(function function) */
 void Fast_Parser_pushReturnAsLvalue(Fast_Parser _this, cx_function function) {
 /* $begin(::cortex::Fast::Parser::pushReturnAsLvalue) */
     Fast_Expression result = NULL;
@@ -2838,7 +2842,7 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::Parser::unaryExpr(Fast::Expression lvalue,lang::operatorKind operator) */
+/* ::cortex::Fast::Parser::unaryExpr(Fast::Expression lvalue,operatorKind operator) */
 Fast_Expression Fast_Parser_unaryExpr(Fast_Parser _this, Fast_Expression lvalue, cx_operatorKind operator) {
 /* $begin(::cortex::Fast::Parser::unaryExpr) */
     Fast_Expression result = NULL;
@@ -3013,7 +3017,7 @@ Fast_Expression Fast_Parser_waitExpr(Fast_Parser _this, Fast_Expression_list exp
 /* $end */
 }
 
-/* ::cortex::Fast::Parser::whileStatement(Fast::Expression condition,Fast::Block trueBranch,lang::bool isUntil) */
+/* ::cortex::Fast::Parser::whileStatement(Fast::Expression condition,Fast::Block trueBranch,bool isUntil) */
 Fast_Node Fast_Parser_whileStatement(Fast_Parser _this, Fast_Expression condition, Fast_Block trueBranch, cx_bool isUntil) {
 /* $begin(::cortex::Fast::Parser::whileStatement) */
     Fast_Node result = NULL;

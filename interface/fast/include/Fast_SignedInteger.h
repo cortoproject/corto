@@ -18,16 +18,16 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::SignedInteger::init(SignedInteger object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::Fast::SignedInteger::init(SignedInteger object) */
 cx_int16 Fast_SignedInteger_init(Fast_SignedInteger object);
 
-/* ::cortex::Fast::SignedInteger::serialize(lang::type dstType,lang::word dst) */
+/* ::cortex::Fast::SignedInteger::serialize(type dstType,word dst) */
 cx_int16 Fast_SignedInteger_serialize(Fast_SignedInteger _this, cx_type dstType, cx_word dst);
 
-/* virtual ::cortex::Fast::SignedInteger::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::SignedInteger::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_SignedInteger_toIc(Fast_SignedInteger _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);
 
-/* ::cortex::Fast::SignedInteger::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::SignedInteger::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_SignedInteger_toIc_v(Fast_SignedInteger _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);
 
 #ifdef __cplusplus

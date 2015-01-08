@@ -9,7 +9,7 @@
 #include "cx.h"
 #include "cx__meta.h"
 
-/* ::cortex::lang::dispatcher::getEvent(lang::observer observer,lang::object me,lang::object observable,lang::object src) */
+/* ::cortex::lang::dispatcher::getEvent(observer observer,object me,object observable,object src) */
 cx_observableEvent cx_dispatcher_getEvent_v(cx_dispatcher _this, cx_observer observer, cx_object me, cx_object observable, cx_object src) {
 /* $begin(::cortex::lang::dispatcher::getEvent) */
 
@@ -23,7 +23,7 @@ cx_observableEvent cx_dispatcher_getEvent_v(cx_dispatcher _this, cx_observer obs
 /* $end */
 }
 
-/* ::cortex::lang::dispatcher::post(lang::event event) */
+/* ::cortex::lang::dispatcher::post(event event) */
 cx_void cx_dispatcher_post_v(cx_dispatcher _this, cx_event event) {
 /* $begin(::cortex::lang::dispatcher::post) */
 

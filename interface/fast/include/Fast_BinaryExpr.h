@@ -18,7 +18,7 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::BinaryExpr::construct(Fast::BinaryExpr object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::BinaryExpr::construct(Fast::BinaryExpr object) */
 cx_int16 Fast_BinaryExpr_construct(Fast_BinaryExpr object);
 
 /* ::cortex::Fast::BinaryExpr::fold() */
@@ -30,13 +30,13 @@ cx_bool Fast_BinaryExpr_hasSideEffects(Fast_BinaryExpr _this);
 /* ::cortex::Fast::BinaryExpr::hasSideEffects() */
 cx_bool Fast_BinaryExpr_hasSideEffects_v(Fast_BinaryExpr _this);
 
-/* ::cortex::Fast::BinaryExpr::setOperator(lang::operatorKind kind) */
+/* ::cortex::Fast::BinaryExpr::setOperator(operatorKind kind) */
 cx_void Fast_BinaryExpr_setOperator(Fast_BinaryExpr _this, cx_operatorKind kind);
 
-/* virtual ::cortex::Fast::BinaryExpr::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::BinaryExpr::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_BinaryExpr_toIc(Fast_BinaryExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);
 
-/* ::cortex::Fast::BinaryExpr::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::BinaryExpr::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_BinaryExpr_toIc_v(Fast_BinaryExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);
 
 #ifdef __cplusplus

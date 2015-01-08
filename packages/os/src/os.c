@@ -9,7 +9,7 @@
 #include "os.h"
 #include "os__meta.h"
 
-/* ::cortex::os::exit(::cortex::lang::bool success) */
+/* ::cortex::os::exit(bool success) */
 cx_void os_exit(cx_bool success) {
 /* $begin(::cortex::os::exit) */
 
@@ -18,7 +18,7 @@ cx_void os_exit(cx_bool success) {
 /* $end */
 }
 
-/* ::cortex::os::loadavg(::cortex::os::loadAvgKind kind) */
+/* ::cortex::os::loadavg(loadAvgKind kind) */
 cx_float64 os_loadavg(os_loadAvgKind kind) {
 /* $begin(::cortex::os::loadavg) */
     double result[3];
@@ -48,7 +48,7 @@ cx_float64 os_loadavg(os_loadAvgKind kind) {
 /* $end */
 }
 
-/* ::cortex::os::sleep(::cortex::lang::uint32 sec,::cortex::lang::uint32 nsec) */
+/* ::cortex::os::sleep(uint32 sec,uint32 nsec) */
 cx_void os_sleep(cx_uint32 sec, cx_uint32 nsec) {
 /* $begin(::cortex::os::sleep) */
 
@@ -57,7 +57,7 @@ cx_void os_sleep(cx_uint32 sec, cx_uint32 nsec) {
 /* $end */
 }
 
-/* ::cortex::os::system(::cortex::lang::string cmd) */
+/* ::cortex::os::system(string cmd) */
 cx_void os_system(cx_string cmd) {
 /* $begin(::cortex::os::system) */
 

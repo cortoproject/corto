@@ -18,13 +18,13 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::array::construct(lang::array object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::array::construct(array object) */
 cx_int16 cx_array_construct(cx_array object);
 
-/* callback ::cortex::lang::class::destruct(lang::object object) -> ::cortex::lang::array::destruct(lang::array object) */
+/* callback ::cortex::lang::class::destruct(object object) -> ::cortex::lang::array::destruct(array object) */
 cx_void cx_array_destruct(cx_array object);
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::array::init(lang::array object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::array::init(array object) */
 cx_int16 cx_array_init(cx_array object);
 
 #ifdef __cplusplus

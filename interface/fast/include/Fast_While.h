@@ -18,13 +18,13 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::While::construct(While object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::While::construct(While object) */
 cx_int16 Fast_While_construct(Fast_While object);
 
-/* virtual ::cortex::Fast::While::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::While::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_While_toIc(Fast_While _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);
 
-/* ::cortex::Fast::While::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::While::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_While_toIc_v(Fast_While _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);
 
 #ifdef __cplusplus

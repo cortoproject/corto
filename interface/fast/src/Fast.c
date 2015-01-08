@@ -108,7 +108,7 @@ error:
 }
 /* $end */
 
-/* ::cortex::Fast::report(lang::string kind,lang::string filename,lang::uint32 line,lang::uint32 column,lang::string error,lang::string token) */
+/* ::cortex::Fast::report(string kind,string filename,uint32 line,uint32 column,string error,string token) */
 void Fast_report(cx_string kind, cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token) {
 /* $begin(::cortex::Fast::report) */
     CX_UNUSED(token);
@@ -122,7 +122,7 @@ void Fast_report(cx_string kind, cx_string filename, cx_uint32 line, cx_uint32 c
 /* $end */
 }
 
-/* ::cortex::Fast::reportError(lang::string filename,lang::uint32 line,lang::uint32 column,lang::string error,lang::string token) */
+/* ::cortex::Fast::reportError(string filename,uint32 line,uint32 column,string error,string token) */
 void Fast_reportError(cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token) {
 /* $begin(::cortex::Fast::reportError) */
     
@@ -131,7 +131,7 @@ void Fast_reportError(cx_string filename, cx_uint32 line, cx_uint32 column, cx_s
 /* $end */
 }
 
-/* ::cortex::Fast::reportWarning(lang::string filename,lang::uint32 line,lang::uint32 column,lang::string error,lang::string token) */
+/* ::cortex::Fast::reportWarning(string filename,uint32 line,uint32 column,string error,string token) */
 void Fast_reportWarning(cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token) {
 /* $begin(::cortex::Fast::reportWarning) */
 
@@ -140,7 +140,7 @@ void Fast_reportWarning(cx_string filename, cx_uint32 line, cx_uint32 column, cx
 /* $end */
 }
 
-/* ::cortex::Fast::valueKindFromType(lang::type type) */
+/* ::cortex::Fast::valueKindFromType(type type) */
 Fast_valueKind Fast_valueKindFromType(cx_type type) {
 /* $begin(::cortex::Fast::valueKindFromType) */
     Fast_valueKind result = FAST_Null;

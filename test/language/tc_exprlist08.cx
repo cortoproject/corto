@@ -4,14 +4,14 @@ void fail(string msg):
     "tc_exprlist08: FAIL: $msg"
     result = false
     
-struct Int::
+struct MyInt::
     v: uint32
     uint32 inc() = v++
     
-struct Ints::
-    a,b,c,d : Int
+struct MyInts::
+    a,b,c,d : MyInt
     
-Ints o:
+MyInts o:
 
 o[a,b,c,d].inc()
 if o[a,b,c,d].v != 1: fail("o[a,b,c,d].v != 1 ($o)")

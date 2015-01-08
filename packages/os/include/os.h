@@ -17,16 +17,16 @@
 extern "C" {
 #endif
 
-/* ::cortex::os::exit(::cortex::lang::bool success) */
+/* ::cortex::os::exit(bool success) */
 cx_void os_exit(cx_bool success);
 
-/* ::cortex::os::loadavg(::cortex::os::loadAvgKind kind) */
+/* ::cortex::os::loadavg(loadAvgKind kind) */
 cx_float64 os_loadavg(os_loadAvgKind kind);
 
-/* ::cortex::os::sleep(::cortex::lang::uint32 sec,::cortex::lang::uint32 nsec) */
+/* ::cortex::os::sleep(uint32 sec,uint32 nsec) */
 cx_void os_sleep(cx_uint32 sec, cx_uint32 nsec);
 
-/* ::cortex::os::system(::cortex::lang::string cmd) */
+/* ::cortex::os::system(string cmd) */
 cx_void os_system(cx_string cmd);
 
 #ifdef __cplusplus

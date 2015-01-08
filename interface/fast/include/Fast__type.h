@@ -464,7 +464,7 @@ CX_LIST(Fast_Binding_list);
 
 CX_LIST(cx_word_list);
 
-CX_LIST(Fast_Object_list);
+CX_LIST(cx_object_list);
 
 typedef Fast_Variable Fast_Variable_array64[64];
 
@@ -507,7 +507,7 @@ CX_CLASS_DEF(Fast_Parser) {
     Fast_Binding_list bindings;
     cx_uint32 pass;
     cx_word_list heapCollected;
-    Fast_Object_list collected;
+    cx_object_list collected;
     cx_bool blockPreset;
     cx_bool isLocal;
     cx_bool parseSingleExpr;

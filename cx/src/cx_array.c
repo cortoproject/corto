@@ -9,7 +9,7 @@
 #include "cx.h"
 #include "cx__meta.h"
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::array::construct(lang::array object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::array::construct(array object) */
 cx_int16 cx_array_construct(cx_array object) {
 /* $begin(::cortex::lang::array::construct) */
     cx_uint32 elementTypeSize;
@@ -65,7 +65,7 @@ error:
 /* $end */
 }
 
-/* callback ::cortex::lang::class::destruct(lang::object object) -> ::cortex::lang::array::destruct(lang::array object) */
+/* callback ::cortex::lang::class::destruct(object object) -> ::cortex::lang::array::destruct(array object) */
 cx_void cx_array_destruct(cx_array object) {
 /* $begin(::cortex::lang::array::destruct) */
     cx_free_ext(object, object->elementType, "elementType");
@@ -76,7 +76,7 @@ cx_void cx_array_destruct(cx_array object) {
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::array::init(lang::array object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::array::init(array object) */
 cx_int16 cx_array_init(cx_array object) {
 /* $begin(::cortex::lang::array::init) */
     cx_collection(object)->kind = CX_ARRAY;

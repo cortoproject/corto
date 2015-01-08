@@ -17,15 +17,15 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::Character::init(Character object) */
-cx_int16 Fast_Character_init(Fast_Character object) {
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::Fast::Character::init(Character object) */
+cx_int16 Fast_Character_init(cx_character object) {
 /* $begin(::cortex::Fast::Character::init) */
     Fast_Literal(object)->kind = FAST_Character;
     return Fast_Literal_init(Fast_Literal(object));
 /* $end */
 }
 
-/* ::cortex::Fast::Character::serialize(lang::type dstType,lang::word dst) */
+/* ::cortex::Fast::Character::serialize(type dstType,word dst) */
 cx_int16 Fast_Character_serialize(Fast_Character _this, cx_type dstType, cx_word dst) {
 /* $begin(::cortex::Fast::Character::serialize) */
     Fast_valueKind kind;
@@ -56,7 +56,7 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::Character::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Character::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_Character_toIc_v(Fast_Character _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Character::toIc) */
     cx_ic result;

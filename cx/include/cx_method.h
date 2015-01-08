@@ -17,10 +17,10 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::procedure::bind(lang::object object) -> ::cortex::lang::method::bind(lang::method object) */
+/* callback ::cortex::lang::procedure::bind(object object) -> ::cortex::lang::method::bind(method object) */
 cx_int16 cx_method_bind(cx_method object);
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::method::init(lang::method object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::method::init(method object) */
 cx_int16 cx_method_init(cx_method object);
 
 #ifdef __cplusplus

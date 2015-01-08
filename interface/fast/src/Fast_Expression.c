@@ -235,7 +235,7 @@ Fast_Expression Fast_Expression_narrow(Fast_Expression expr, cx_type target) {
 
 /* $end */
 
-/* ::cortex::Fast::Expression::cast(lang::type type,lang::bool isReference) */
+/* ::cortex::Fast::Expression::cast(type type,bool isReference) */
 Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_bool isReference) {
 /* $begin(::cortex::Fast::Expression::cast) */
     cx_type exprType, refType;
@@ -504,7 +504,7 @@ cx_type Fast_Expression_getType_expr(Fast_Expression _this, Fast_Expression targ
 /* $end */
 }
 
-/* ::cortex::Fast::Expression::getType_type(lang::type target) */
+/* ::cortex::Fast::Expression::getType_type(type target) */
 cx_type Fast_Expression_getType_type(Fast_Expression _this, cx_type target) {
 /* $begin(::cortex::Fast::Expression::getType_type) */
     cx_type result=Fast_Expression_getType(_this);
@@ -553,14 +553,14 @@ cx_bool Fast_Expression_hasSideEffects_v(Fast_Expression _this) {
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::Expression::init(Expression object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::Fast::Expression::init(Expression object) */
 cx_int16 Fast_Expression_init(Fast_Expression object) {
 /* $begin(::cortex::Fast::Expression::init) */
     return Fast_Node_init((Fast_Node)object);
 /* $end */
 }
 
-/* ::cortex::Fast::Expression::serialize(lang::type dstType,lang::word dst) */
+/* ::cortex::Fast::Expression::serialize(type dstType,word dst) */
 cx_int16 Fast_Expression_serialize_v(Fast_Expression _this, cx_type dstType, cx_word dst) {
 /* $begin(::cortex::Fast::Expression::serialize) */
     CX_UNUSED(_this);

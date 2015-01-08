@@ -9,7 +9,7 @@
 #include "cx.h"
 #include "cx__meta.h"
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::map::construct(lang::map object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::map::construct(map object) */
 cx_int16 cx_map_construct(cx_map object) {
 /* $begin(::cortex::lang::map::construct) */
     cx_type(object)->hasResources = TRUE;
@@ -22,7 +22,7 @@ cx_int16 cx_map_construct(cx_map object) {
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::map::init(lang::map object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::map::init(map object) */
 cx_int16 cx_map_init(cx_map object) {
 /* $begin(::cortex::lang::map::init) */
     cx_collection(object)->kind = CX_MAP;

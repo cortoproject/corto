@@ -67,7 +67,7 @@ error:
 
 /* $end */
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Call::construct(Fast::Call object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::Call::construct(Fast::Call object) */
 cx_int16 Fast_Call_construct(Fast_Call object) {
 /* $begin(::cortex::Fast::Call::construct) */
     Fast_Expression returnTypeExpr;
@@ -100,7 +100,7 @@ cx_bool Fast_Call_hasSideEffects_v(Fast_Call _this) {
 /* $end */
 }
 
-/* ::cortex::Fast::Call::setParameters(lang::function function) */
+/* ::cortex::Fast::Call::setParameters(function function) */
 void Fast_Call_setParameters(Fast_Call _this, cx_function function) {
 /* $begin(::cortex::Fast::Call::setParameters) */
     cx_uint32 i;
@@ -118,7 +118,7 @@ void Fast_Call_setParameters(Fast_Call _this, cx_function function) {
 /* $end */
 }
 
-/* ::cortex::Fast::Call::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Call::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_Call_toIc_v(Fast_Call _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Call::toIc) */
     cx_icStorage result = NULL;

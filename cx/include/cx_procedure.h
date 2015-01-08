@@ -18,16 +18,16 @@
 extern "C" {
 #endif
 
-/* delegate ::cortex::lang::procedure::bind(lang::object object), obtain callback */
+/* delegate ::cortex::lang::procedure::bind(object object), obtain callback */
 cx_bool cx_procedure_bind_hasCallback(cx_procedure _this);
 
-/* ::cortex::lang::procedure::bind(lang::object object) */
+/* ::cortex::lang::procedure::bind(object object) */
 cx_int16 cx_procedure_bind(cx_procedure _this, cx_object object);
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::procedure::init(lang::procedure object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::procedure::init(procedure object) */
 cx_int16 cx_procedure_init(cx_procedure object);
 
-/* ::cortex::lang::procedure::unbind(lang::object object) */
+/* ::cortex::lang::procedure::unbind(object object) */
 cx_void cx_procedure_unbind(cx_procedure _this, cx_object object);
 
 #ifdef __cplusplus

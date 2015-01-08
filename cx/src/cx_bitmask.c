@@ -28,7 +28,7 @@ cx_int16 cx__bitmask_bindConstant(cx_bitmask _this, cx_constant* c) {
 }
 /* $end */
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::bitmask::init(lang::bitmask object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::bitmask::init(bitmask object) */
 cx_int16 cx_bitmask_init(cx_bitmask object) {
 /* $begin(::cortex::lang::bitmask::init) */
     cx_primitive(object)->kind = CX_BITMASK;

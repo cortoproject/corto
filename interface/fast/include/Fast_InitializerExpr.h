@@ -18,7 +18,7 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::InitializerExpr::construct(InitializerExpr object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::InitializerExpr::construct(InitializerExpr object) */
 cx_int16 Fast_InitializerExpr_construct(Fast_InitializerExpr object);
 
 /* ::cortex::Fast::InitializerExpr::define() */
@@ -27,7 +27,7 @@ cx_int16 Fast_InitializerExpr_define(Fast_InitializerExpr _this);
 /* ::cortex::Fast::InitializerExpr::insert(Expression variable) */
 cx_int16 Fast_InitializerExpr_insert(Fast_InitializerExpr _this, Fast_Expression variable);
 
-/* ::cortex::Fast::InitializerExpr::member(lang::string name) */
+/* ::cortex::Fast::InitializerExpr::member(string name) */
 cx_int32 Fast_InitializerExpr_member(Fast_InitializerExpr _this, cx_string name);
 
 /* ::cortex::Fast::InitializerExpr::pop() */

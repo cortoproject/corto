@@ -292,7 +292,7 @@ void cx_class_detachObservers(cx_class _this, cx_object object) {
 
 /* $end */
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::class::_construct(lang::class object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::class::_construct(class object) */
 cx_int16 cx_class__construct(cx_class object) {
 /* $begin(::cortex::lang::class::_construct) */
     cx_int16 result;
@@ -327,7 +327,7 @@ cx_int16 cx_class__construct(cx_class object) {
 /* $end */
 }
 
-/* callback ::cortex::lang::class::destruct(lang::object object) -> ::cortex::lang::class::_destruct(lang::class object) */
+/* callback ::cortex::lang::class::destruct(object object) -> ::cortex::lang::class::_destruct(class object) */
 cx_void cx_class__destruct(cx_class object) {
 /* $begin(::cortex::lang::class::_destruct) */
     cx_uint32 i,j;
@@ -378,7 +378,7 @@ cx_uint32 cx_class_allocSize_v(cx_class _this) {
 /* $end */
 }
 
-/* ::cortex::lang::class::bindCallback(lang::delegate delegate,lang::object object,lang::callback method) */
+/* ::cortex::lang::class::bindCallback(delegate delegate,object object,callback method) */
 cx_int16 cx_class_bindCallback(cx_class _this, cx_delegate delegate, cx_object object, cx_callback method) {
 /* $begin(::cortex::lang::class::bindCallback) */
     cx_vtable* vtable;
@@ -407,7 +407,7 @@ error:
 /* $end */
 }
 
-/* ::cortex::lang::class::bindDelegate(lang::delegate delegate) */
+/* ::cortex::lang::class::bindDelegate(delegate delegate) */
 cx_int16 cx_class_bindDelegate(cx_class _this, cx_delegate delegate) {
 /* $begin(::cortex::lang::class::bindDelegate) */
     cx_delegate* found;
@@ -438,14 +438,14 @@ error:
 /* $end */
 }
 
-/* ::cortex::lang::class::bindMethod(lang::method method) */
+/* ::cortex::lang::class::bindMethod(method method) */
 cx_int16 cx_class_bindMethod(cx_class _this, cx_method method) {
 /* $begin(::cortex::lang::class::bindMethod) */
     return cx_interface_bindMethod_v(cx_interface(_this), method);
 /* $end */
 }
 
-/* ::cortex::lang::class::bindObserver(lang::observer observer) */
+/* ::cortex::lang::class::bindObserver(observer observer) */
 cx_void cx_class_bindObserver(cx_class _this, cx_observer observer) {
 /* $begin(::cortex::lang::class::bindObserver) */
     _this->observers.buffer = cx_realloc(_this->observers.buffer, (_this->observers.length + 1) * sizeof(cx_observer));
@@ -456,7 +456,7 @@ cx_void cx_class_bindObserver(cx_class _this, cx_observer observer) {
 /* $end */
 }
 
-/* ::cortex::lang::class::findObserver(lang::object observable,string expr) */
+/* ::cortex::lang::class::findObserver(object observable,string expr) */
 cx_observer cx_class_findObserver(cx_class _this, cx_object observable, cx_string expr) {
 /* $begin(::cortex::lang::class::findObserver) */
     cx_uint32 i;
@@ -480,7 +480,7 @@ cx_observer cx_class_findObserver(cx_class _this, cx_object observable, cx_strin
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::class::init(lang::class object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::class::init(class object) */
 cx_int16 cx_class_init(cx_class object) {
 /* $begin(::cortex::lang::class::init) */
     if (cx_struct_init(cx_struct(object))) {
@@ -496,7 +496,7 @@ error:
 /* $end */
 }
 
-/* ::cortex::lang::class::instanceof(lang::object object) */
+/* ::cortex::lang::class::instanceof(object object) */
 cx_bool cx_class_instanceof(cx_class _this, cx_object object) {
 /* $begin(::cortex::lang::class::instanceof) */
     cx_type t;
@@ -521,7 +521,7 @@ cx_bool cx_class_instanceof(cx_class _this, cx_object object) {
 /* $end */
 }
 
-/* ::cortex::lang::class::privateObserver(lang::object object,lang::observer observer) */
+/* ::cortex::lang::class::privateObserver(object object,observer observer) */
 cx_observer cx_class_privateObserver(cx_class _this, cx_object object, cx_observer observer) {
 /* $begin(::cortex::lang::class::privateObserver) */
     CX_UNUSED(_this);
@@ -530,7 +530,7 @@ cx_observer cx_class_privateObserver(cx_class _this, cx_object object, cx_observ
 /* $end */
 }
 
-/* ::cortex::lang::class::resolveCallback(lang::delegate delegate,lang::object target) */
+/* ::cortex::lang::class::resolveCallback(delegate delegate,object target) */
 cx_callback cx_class_resolveCallback(cx_class _this, cx_delegate delegate, cx_object target) {
 /* $begin(::cortex::lang::class::resolveCallback) */
     cx_type targetType;
@@ -568,7 +568,7 @@ cx_callback cx_class_resolveCallback(cx_class _this, cx_delegate delegate, cx_ob
 /* $end */
 }
 
-/* ::cortex::lang::class::resolveDelegate(lang::string name) */
+/* ::cortex::lang::class::resolveDelegate(string name) */
 cx_delegate cx_class_resolveDelegate(cx_class _this, cx_string name) {
 /* $begin(::cortex::lang::class::resolveDelegate) */
     cx_delegate result;
@@ -589,7 +589,7 @@ cx_delegate cx_class_resolveDelegate(cx_class _this, cx_string name) {
 /* $end */
 }
 
-/* ::cortex::lang::class::resolveInterfaceMethod(lang::interface interface,lang::uint32 method) */
+/* ::cortex::lang::class::resolveInterfaceMethod(interface interface,uint32 method) */
 cx_method cx_class_resolveInterfaceMethod(cx_class _this, cx_interface interface, cx_uint32 method) {
 /* $begin(::cortex::lang::class::resolveInterfaceMethod) */
     cx_uint32 i;
