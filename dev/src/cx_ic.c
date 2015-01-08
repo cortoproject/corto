@@ -110,8 +110,6 @@ static cx_string cx_opKind_toString(cx_icOpKind kind) {
     case CX_IC_NOT: return "not";
     case CX_IC_SHIFT_LEFT: return "shiftleft";
     case CX_IC_SHIFT_RIGHT: return "shiftright";
-    case CX_IC_STAGE1: return "stage1";
-    case CX_IC_STAGE2: return "stage2";
     case CX_IC_COND_OR: return "cor";
     case CX_IC_COND_AND: return "cand";
     case CX_IC_COND_NOT: return "cnot";
@@ -373,8 +371,6 @@ static cx_bool cx_icValidate(cx_icOp op) {
         case CX_IC_NOT: result = cx_ic_validateUnary(op); break;
         case CX_IC_SHIFT_LEFT: result = cx_ic_validateBinary(op); break;
         case CX_IC_SHIFT_RIGHT: result = cx_ic_validateBinary(op); break;
-        case CX_IC_STAGE1: result = TRUE; break;
-        case CX_IC_STAGE2: result = TRUE; break;
         case CX_IC_COND_OR: result = cx_ic_validateBinary(op); break;
         case CX_IC_COND_AND: result = cx_ic_validateBinary(op); break;
         case CX_IC_COND_NOT: result = cx_ic_validateUnary

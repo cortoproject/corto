@@ -86,12 +86,11 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData
     }
 
     if (kind == CX_CHARACTER || (kind == CX_TEXT && (*(cx_string *)value))) {
-        cx_string t;
-        cx_string escapedValueString = cx_malloc(stresclen(valueString));
-        stresc(valueString, escapedValueString, 0);
-        t = valueString;
+        size_t length;
+        cx_string escapedValueString = cx_malloc((length = stresc(NULL, 0, valueString)) + 1);
+        stresc(escapedValueString, length, valueString);
+        cx_dealloc(valueString);
         valueString = escapedValueString;
-        cx_dealloc(t);
     }
 
     switch (cx_primitive(type->real)->kind) {
