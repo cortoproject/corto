@@ -85,7 +85,7 @@ error:
 
 static int html_printScopeItemScriptWalk(cx_object o, void *userData) {
     g_file file = userData;
-    g_fileWrite(file, "<script src=\"./%s/data.js\"></script>", cx_nameof(o));
+    g_fileWrite(file, "<script src=\"./%s/data.js\"></script>\n", cx_nameof(o));
     return 1;
 }
 
@@ -155,7 +155,7 @@ static int html_printHtml(cx_html_gen_t *data, cx_object o, g_file file) {
     g_fileDedent(file);
     g_fileWrite(file, "</body>\n");
     g_fileDedent(file);
-    g_fileWrite(file, "</html>");
+    g_fileWrite(file, "</html>\n");
 
     return 0;
 error:
