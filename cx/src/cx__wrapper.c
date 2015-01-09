@@ -1,4 +1,4 @@
-/* lang__wrapper.c
+/* cx__wrapper.c
  *
  * This file contains wrapper functions for ::cortex::lang.
  */
@@ -622,10 +622,24 @@ void __cx_interface_resolveMethodId(cx_function f, void *result, void *args) {
         *(cx_string*)((intptr_t)args + sizeof(cx_interface)));
 }
 
+void __cx_iterator_advance(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    CX_UNUSED(args);
+    *(cx_any*)result = cx_iterator_advance(
+        *(cx_any*)args);
+}
+
 void __cx_iterator_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_int16*)result = cx_iterator_init(
         *(cx_iterator*)args);
+}
+
+void __cx_iterator_retrieve(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    CX_UNUSED(args);
+    *(cx_any*)result = cx_iterator_retrieve(
+        *(cx_any*)args);
 }
 
 void __cx_list_append_(cx_function f, void *result, void *args) {

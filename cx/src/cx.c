@@ -401,6 +401,8 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     /* iterator */\
     SSO_OP_OBJ(op, iterator_elementType);\
     SSO_OP_OBJ(op, iterator_init);\
+    SSO_OP_OBJ(op, iterator_advance);\
+    SSO_OP_OBJ(op, iterator_retrieve);\
     /* list */\
     SSO_OP_OBJ(op, list_insert);\
     SSO_OP_OBJ(op, list_insert_);\
@@ -745,7 +747,7 @@ int cx_start(void) {
     cx_assert(((cx_delegate)SSO_OBJECT(class_construct))->id == 2, "class::construct did not receive expected delegateId.");
     cx_assert(((cx_delegate)SSO_OBJECT(class_destruct))->id == 3, "class::destruct did not receive expected delegateId.");
     cx_assert(((cx_delegate)SSO_OBJECT(procedure_bind))->id == 2, "procedure::bind did not receive expected delegateId.");
- 
+
     /* Construct objects */
     SSO_OP_OBJECT_2ND(cx_defineObject);
     SSO_OP_OBJECT(cx_defineObject);
@@ -769,7 +771,7 @@ int cx_start(void) {
         id = cx_callRegisterBinding(cx_call_vm, NULL, NULL, (cx_callDestructHandler)cx_callDestruct_vm);
         cx_assert(id == 2, "Vm-binding did not receive binding-id 2.");
     }
-   
+
     /* Always randomize seed */
     srand (time(NULL));
 
@@ -877,4 +879,3 @@ void cx_stop(void) {
     /* Workaround for dlopen-leakage - with this statement the valgrind memory-logging is clean. */
     /*pthread_exit(NULL);*/
 }
-
