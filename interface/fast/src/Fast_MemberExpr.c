@@ -35,7 +35,7 @@ cx_int16 Fast_MemberExpr_resolveMember(Fast_MemberExpr object, cx_type type, cx_
             o = cx_type_resolveProcedure(type, member);
             if (!o) {
                 cx_id id;
-                Fast_Parser_error(yparser(), "unresolved member '%s' for type '%s'\n", member, cx_fullname(type, id));
+                Fast_Parser_error(yparser(), "unresolved member '%s' for type '%s'", member, cx_fullname(type, id));
                 goto error;
             }
             Fast_Expression(object)->type = Fast_Variable(Fast_Object__create(cx_function(o)->returnType->real));

@@ -19,7 +19,7 @@ static int cx_iterator_advance_array(cx_collection collection, cx_void *array, v
         cx_uint32 length = collection->max;
         void *element = *elementPtr;
         if (element < CX_OFFSET(array, elementSize * length)) {
-            elementPtr = CX_OFFSET(array, elementSize);
+            *elementPtr = CX_OFFSET(array, elementSize);
             result = 0;
         }
     }
@@ -46,7 +46,11 @@ cx_any cx_iterator_advance(cx_any _this) {
         default:
             break;
     }
-    return _this;
+    cx_any result;
+    result.type = iterator->type->elementType->real;
+    result.value = iterator->element;
+    result.owner = FALSE;
+    return result;
 /* $end */
 }
 

@@ -205,10 +205,10 @@ finished:
 static cx_int16 cx_ser_complex(cx_serializer s, cx_value* v, void* userData) {
     cx_json_ser_t *data = userData;
     cx_type type = cx_valueType(v)->real;
-    cx_bool useCurlyBraces = FALSE;
+    cx_bool useCurlyBraces = TRUE;
 
-    if (type->kind == CX_COMPOSITE || cx_collection(type)->kind == CX_MAP) {
-        useCurlyBraces = TRUE;
+    if (type->kind == CX_COLLECTION && cx_collection(type)->kind != CX_MAP) {
+        useCurlyBraces = FALSE;
     }
 
     if (!cx_ser_appendstr(data, (useCurlyBraces ? "{" : "["))) {
@@ -305,7 +305,7 @@ static cx_int16 cx_ser_meta(cx_serializer s, cx_value* v, void* userData) {
     CX_UNUSED(s);
     cx_json_ser_t *data = userData;
     cx_object object = cx_valueValue(v);
-    
+
     if (!data->serializeMeta) {
         goto error;
     }
