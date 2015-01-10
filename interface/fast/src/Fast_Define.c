@@ -9,7 +9,7 @@
 #include "Fast.h"
 #include "Fast__meta.h"
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Define::construct(Fast::Define object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::Define::construct(Fast::Define object) */
 cx_int16 Fast_Define_construct(Fast_Define object) {
 /* $begin(::cortex::Fast::Define::construct) */
 
@@ -19,7 +19,7 @@ cx_int16 Fast_Define_construct(Fast_Define object) {
 /* $end */
 }
 
-/* ::cortex::Fast::Define::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Define::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_Define_toIc_v(Fast_Define _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Define::toIc) */
     cx_ic object;

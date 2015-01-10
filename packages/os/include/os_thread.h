@@ -17,10 +17,10 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::os::thread::construct(::cortex::os::thread object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::os::thread::construct(thread object) */
 cx_int16 os_thread_construct(os_thread object);
 
-/* callback ::cortex::lang::class::destruct(lang::object object) -> ::cortex::os::thread::destruct(::cortex::os::thread object) */
+/* callback ::cortex::lang::class::destruct(object object) -> ::cortex::os::thread::destruct(thread object) */
 cx_void os_thread_destruct(os_thread object);
 
 /* ::cortex::os::thread::join() */

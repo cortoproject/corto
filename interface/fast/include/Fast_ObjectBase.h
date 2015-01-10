@@ -18,7 +18,7 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::ObjectBase::construct(ObjectBase object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::ObjectBase::construct(ObjectBase object) */
 cx_int16 Fast_ObjectBase_construct(Fast_ObjectBase object);
 
 #ifdef __cplusplus

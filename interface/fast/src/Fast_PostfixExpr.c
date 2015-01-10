@@ -17,7 +17,7 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::PostfixExpr::construct(Fast::PostfixExpr object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::PostfixExpr::construct(Fast::PostfixExpr object) */
 cx_int16 Fast_PostfixExpr_construct(Fast_PostfixExpr object) {
 /* $begin(::cortex::Fast::PostfixExpr::construct) */
     cx_type lvalueType;
@@ -30,7 +30,7 @@ cx_int16 Fast_PostfixExpr_construct(Fast_PostfixExpr object) {
 /* $end */
 }
 
-/* ::cortex::Fast::PostfixExpr::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::PostfixExpr::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_PostfixExpr_toIc_v(Fast_PostfixExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::PostfixExpr::toIc) */
     cx_icStorage result;

@@ -17,7 +17,7 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::CastExpr::construct(Fast::CastExpr object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::CastExpr::construct(Fast::CastExpr object) */
 cx_int16 Fast_CastExpr_construct(Fast_CastExpr object) {
 /* $begin(::cortex::Fast::CastExpr::construct) */
 
@@ -67,7 +67,7 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::CastExpr::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::CastExpr::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_CastExpr_toIc_v(Fast_CastExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::CastExpr::toIc) */
     cx_ic lvalue, rvalue, result;
@@ -89,7 +89,8 @@ cx_ic Fast_CastExpr_toIc_v(Fast_CastExpr _this, cx_icProgram program, cx_icStora
     rvalue = Fast_Node_toIc(Fast_Node(_this->rvalue), program, (cx_icStorage)NULL, TRUE);
 
     op = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_CAST, (cx_icValue)result, (cx_icValue)rvalue, (cx_icValue)lvalue);
-    if (_this->rvalue->forceReference) {
+
+    if (_this->rvalue->forceReference || _thisType->reference) {
         op->s2Deref = CX_IC_DEREF_ADDRESS;
     }
     cx_icProgram_addIc(program, (cx_ic)op);

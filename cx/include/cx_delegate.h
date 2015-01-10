@@ -17,7 +17,7 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::delegate::init(lang::delegate object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::delegate::init(delegate object) */
 cx_int16 cx_delegate_init(cx_delegate object);
 
 #ifdef __cplusplus

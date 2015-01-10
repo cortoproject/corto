@@ -267,7 +267,7 @@ typedef enum cx_vmOpKind {
     CX_VM_CALLVOID,                   /* Call function with void returnvalue */
     VM_OPERAND_PQR(CALLVM,L,),        /* Call vm function with returnvalue */
     CX_VM_CALLVMVOID,                 /* Call vm function with void returnvalue */
-    VM_OPERAND_PQR(CALLPTR,L,),       /* Call a delegate */
+    VM_2OP_W(CALLPTR,PQRV),           /* Call a delegate */
     VM_1OP(RET),                      /* Return value smaller than 8 bytes */
     VM_OPERAND_PQR(RETCPY,L,),        /* Return value larger than 8 bytes */
 

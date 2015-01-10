@@ -51,7 +51,7 @@ Fast_Expression Fast_CommaExpr_addOrCreate(Fast_Expression list, Fast_Expression
 /* $end */
 }
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::CommaExpr::construct(CommaExpr object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::CommaExpr::construct(CommaExpr object) */
 cx_int16 Fast_CommaExpr_construct(Fast_CommaExpr object) {
 /* $begin(::cortex::Fast::CommaExpr::construct) */
     if (object->expressions) {
@@ -84,7 +84,7 @@ cx_bool Fast_CommaExpr_hasSideEffects_v(Fast_CommaExpr _this) {
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::CommaExpr::init(CommaExpr object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::Fast::CommaExpr::init(CommaExpr object) */
 cx_int16 Fast_CommaExpr_init(Fast_CommaExpr object) {
 /* $begin(::cortex::Fast::CommaExpr::init) */
 
@@ -95,7 +95,7 @@ cx_int16 Fast_CommaExpr_init(Fast_CommaExpr object) {
 /* $end */
 }
 
-/* ::cortex::Fast::CommaExpr::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::CommaExpr::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_CommaExpr_toIc_v(Fast_CommaExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::CommaExpr::toIc) */
     cx_iter iter;

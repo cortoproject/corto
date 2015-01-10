@@ -19,7 +19,7 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 void Fast_Parser_warning(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::If::construct(If object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::If::construct(If object) */
 cx_int16 Fast_If_construct(Fast_If object) {
 /* $begin(::cortex::Fast::If::construct) */
     cx_type conditionType;
@@ -52,7 +52,7 @@ void Fast_If_noWarnUnreachable(Fast_If _this) {
 /* $end */
 }
 
-/* ::cortex::Fast::If::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::If::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_If_toIc_v(Fast_If _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::If::toIc) */
     cx_icStorage accumulator;

@@ -18,7 +18,7 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Template::construct(Template object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::Template::construct(Template object) */
 cx_int16 Fast_Template_construct(Fast_Template object);
 
 #ifdef __cplusplus

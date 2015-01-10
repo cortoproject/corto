@@ -47,7 +47,7 @@ cx_uint8 cx__primitive_convertId(cx_primitiveKind kind, cx_width width) {
 }
 /* $end */
 
-/* ::cortex::lang::primitive::castable(lang::type type) */
+/* ::cortex::lang::primitive::castable(type type) */
 cx_bool cx_primitive_castable_v(cx_primitive _this, cx_type type) {
 /* $begin(::cortex::lang::primitive::castable) */
     cx_bool result;
@@ -172,7 +172,7 @@ cx_bool cx_primitive_castable_v(cx_primitive _this, cx_type type) {
 /* $end */
 }
 
-/* ::cortex::lang::primitive::compatible(lang::type type) */
+/* ::cortex::lang::primitive::compatible(type type) */
 cx_bool cx_primitive_compatible_v(cx_primitive _this, cx_type type) {
 /* $begin(::cortex::lang::primitive::compatible) */
     cx_bool result;
@@ -231,7 +231,7 @@ cx_bool cx_primitive_compatible_v(cx_primitive _this, cx_type type) {
 /* $end */
 }
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::primitive::construct(lang::primitive object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::primitive::construct(primitive object) */
 cx_int16 cx_primitive_construct(cx_primitive object) {
 /* $begin(::cortex::lang::primitive::construct) */
 
@@ -265,7 +265,7 @@ cx_int16 cx_primitive_construct(cx_primitive object) {
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::primitive::init(lang::primitive object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::primitive::init(primitive object) */
 cx_int16 cx_primitive_init(cx_primitive object) {
 /* $begin(::cortex::lang::primitive::init) */
     cx_type(object)->kind = CX_PRIMITIVE;

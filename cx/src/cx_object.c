@@ -1753,6 +1753,8 @@ cx_object cx_resolve_ext(cx_object src, cx_object _scope, cx_string str, cx_bool
     cx_id buffer;
     cx_char ch;
     cx_bool overload;
+    cx_bool fullyQualified = FALSE;
+    int step = 2;
 
     if (!*str) {
         return NULL;
@@ -1762,18 +1764,19 @@ cx_object cx_resolve_ext(cx_object src, cx_object _scope, cx_string str, cx_bool
         return cx_resolveAddress(str);
     }
 
-    _scope_start = _scope;
+    _scope_start = cortex_lang_o;
     scope = _scope_start;
 
-    /* If no scope is provided, start from root */
-    if (!scope) {
-        scope = root_o;
+    if (!_scope) {
+        _scope = root_o;
     }
 
     /* If expression starts with scope operator, start from root */
     if (*(cx_uint16*)str == CX_SCOPE_HEX) {
         str += 2;
+        _scope_start = root_o;
         scope = root_o;
+        fullyQualified = TRUE;
     }
 
 repeat:
@@ -1857,12 +1860,23 @@ repeat:
             }
         }
         if (o) break;
-    }while((scope = cx_parentof(scope)));
+    }while(!step && (scope = cx_parentof(scope)));
 
-    /* Do implicit lookup in ::cortex::lang */
-    if (!o && (_scope_start != cortex_lang_o)) {
-        scope = cortex_lang_o;
-        _scope_start = cortex_lang_o;
+    /* Do lookup in cortex first, then in actual scope */
+    if (!o && step && !fullyQualified) {
+        switch(--step) {
+        case 0:
+            if ((_scope == cortex_o) || (_scope == cortex_lang_o)) {
+                _scope_start = scope = root_o;
+            } else {
+                _scope_start = scope = _scope;
+            }
+            break;
+        case 1:
+            _scope_start = scope = cortex_o;
+            break;    
+        }
+
         goto repeat; /* Do this instead of a recursive call. Besides saving (a little bit of) performance,
                         this also preserves the original searchscope, which is needed in anonymous type lookups, which
                         uses the stringserializer. In a serialized string references to other objects may be relatively
@@ -2706,7 +2720,7 @@ cx_int16 cx_expr(cx_object scope, cx_string expr, cx_value *value) {
 
     /* Load parser */
     if (!cx_load("Fast")) {
-        cx_function parseLine = cx_resolve(NULL, "::Fast::Parser::parseLine");
+        cx_function parseLine = cx_resolve(NULL, "::cortex::Fast::Parser::parseLine");
         if (!parseLine) {
             cx_error("function ::Fast::Parser::parseLine could not be resolved");
             goto error;
@@ -3383,7 +3397,13 @@ cx_string cx_signatureAdd(cx_string sig, cx_typedef type, int flags) {
     cx_bool wildcard = flags & CX_PARAMETER_WILDCARD;
     
     if (type) {
-        cx_fullname(type, id);
+        if (!cx_checkAttr(type, CX_ATTR_SCOPED) || 
+           ((cx_parentof(type) != cortex_o) &&
+           (cx_parentof(type) != cortex_lang_o))) {
+            cx_fullname(type, id);
+        } else {
+            strcpy(id, cx_nameof(type));
+        }
     } else if (wildcard) {
         strcpy(id, "?");
     } else {

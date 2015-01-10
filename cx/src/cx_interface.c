@@ -337,7 +337,6 @@ static cx_bool cx_interface_checkProcedureParameters(cx_function o1, cx_function
                         }
                     }
                 } else if (!cx_type_castable(p1, p2)) { /* This virtual function can only be called after the bootstrap is complete. */
-                    printf("p1=%s, p2=%s\n", cx_nameof(p1), cx_nameof(p2));
                     cx_error("type of parameter %s of function '%s' is incompatible with function '%s'",
                             cx_nameof(o2->parameters.buffer[i].type),
                             cx_fullname(o2, id1),
@@ -416,7 +415,7 @@ cx_bool cx_interface_checkProcedureCompatibility(cx_function o1, cx_function o2)
 
 /* $end */
 
-/* ::cortex::lang::interface::baseof(lang::interface type) */
+/* ::cortex::lang::interface::baseof(interface type) */
 cx_int16 cx_interface_baseof(cx_interface _this, cx_interface type) {
 /* $begin(::cortex::lang::interface::baseof) */
     cx_interface ptr = _this->base;
@@ -434,7 +433,7 @@ cx_int16 cx_interface_baseof(cx_interface _this, cx_interface type) {
 /* $end */
 }
 
-/* ::cortex::lang::interface::bindMethod(lang::method method) */
+/* ::cortex::lang::interface::bindMethod(method method) */
 cx_int16 cx_interface_bindMethod_v(cx_interface _this, cx_method method) {
 /* $begin(::cortex::lang::interface::bindMethod) */
     cx_method* virtual;
@@ -497,7 +496,7 @@ error:
 /* $end */
 }
 
-/* ::cortex::lang::interface::compatible(lang::type type) */
+/* ::cortex::lang::interface::compatible(type type) */
 cx_bool cx_interface_compatible_v(cx_interface _this, cx_type type) {
 /* $begin(::cortex::lang::interface::compatible) */
     cx_bool result;
@@ -521,7 +520,7 @@ cx_bool cx_interface_compatible_v(cx_interface _this, cx_type type) {
 /* $end */
 }
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::interface::construct(lang::interface object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::interface::construct(interface object) */
 cx_int16 cx_interface_construct(cx_interface object) {
 /* $begin(::cortex::lang::interface::construct) */
     cx_vtable *superTable, ownTable;
@@ -563,7 +562,7 @@ error:
 /* $end */
 }
 
-/* callback ::cortex::lang::class::destruct(lang::object object) -> ::cortex::lang::interface::destruct(lang::interface object) */
+/* callback ::cortex::lang::class::destruct(object object) -> ::cortex::lang::interface::destruct(interface object) */
 cx_void cx_interface_destruct(cx_interface object) {
 /* $begin(::cortex::lang::interface::destruct) */
     cx_uint32 i;
@@ -592,7 +591,7 @@ cx_void cx_interface_destruct(cx_interface object) {
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::interface::init(lang::interface object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::interface::init(interface object) */
 cx_int16 cx_interface_init(cx_interface object) {
 /* $begin(::cortex::lang::interface::init) */
     cx_type(object)->reference = TRUE;
@@ -603,7 +602,7 @@ cx_int16 cx_interface_init(cx_interface object) {
 /* $end */
 }
 
-/* ::cortex::lang::interface::resolveMember(lang::string name) */
+/* ::cortex::lang::interface::resolveMember(string name) */
 cx_member cx_interface_resolveMember_v(cx_interface _this, cx_string name) {
 /* $begin(::cortex::lang::interface::resolveMember) */
     cx_uint32 i;
@@ -622,7 +621,7 @@ cx_member cx_interface_resolveMember_v(cx_interface _this, cx_string name) {
 /* $end */
 }
 
-/* ::cortex::lang::interface::resolveMethod(lang::string name) */
+/* ::cortex::lang::interface::resolveMethod(string name) */
 cx_method cx_interface_resolveMethod(cx_interface _this, cx_string name) {
 /* $begin(::cortex::lang::interface::resolveMethod) */
     cx_method result;
@@ -639,7 +638,7 @@ cx_method cx_interface_resolveMethod(cx_interface _this, cx_string name) {
 /* $end */
 }
 
-/* ::cortex::lang::interface::resolveMethodById(lang::uint32 id) */
+/* ::cortex::lang::interface::resolveMethodById(uint32 id) */
 cx_method cx_interface_resolveMethodById(cx_interface _this, cx_uint32 id) {
 /* $begin(::cortex::lang::interface::resolveMethodById) */
     cx_method result;
@@ -666,7 +665,7 @@ cx_method cx_interface_resolveMethodById(cx_interface _this, cx_uint32 id) {
 /* $end */
 }
 
-/* ::cortex::lang::interface::resolveMethodId(lang::string name) */
+/* ::cortex::lang::interface::resolveMethodId(string name) */
 cx_uint32 cx_interface_resolveMethodId(cx_interface _this, cx_string name) {
 /* $begin(::cortex::lang::interface::resolveMethodId) */
     cx_int32 result;

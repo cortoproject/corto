@@ -17,7 +17,7 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::ElementExpr::construct(Fast::MemberExpr object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::ElementExpr::construct(Fast::MemberExpr object) */
 cx_int16 Fast_ElementExpr_construct(Fast_MemberExpr object) {
 /* $begin(::cortex::Fast::ElementExpr::construct) */
     cx_type lvalueType, rvalueType;
@@ -68,7 +68,7 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::ElementExpr::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::ElementExpr::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_ElementExpr_toIc_v(Fast_ElementExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::ElementExpr::toIc) */
     cx_icElement result;

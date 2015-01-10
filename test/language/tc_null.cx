@@ -40,6 +40,6 @@ if "test" != bar("test"): fail("\"test\" != bar(\"test\")")
 // Pass null as argument
 if foo(null) != null: fail("foo(null) != null")
 if bar(null) != null: fail("bar(null) != null")
-//if intValue(null) != 10: fail("intValue(null) != 10")
+if intValue(null) != 10: fail("intValue(null) != 10")
 
 if result: "tc_null: OK"

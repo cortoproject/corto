@@ -9,14 +9,14 @@
 #include "io.h"
 #include "io__meta.h"
 
-/* ::cortex::io::print(::cortex::lang::string str) */
+/* ::cortex::io::print(string str) */
 cx_void io_print(cx_string str) {
 /* $begin(::cortex::io::print) */
     printf("%s", str);
 /* $end */
 }
 
-/* ::cortex::io::println(::cortex::lang::string str) */
+/* ::cortex::io::println(string str) */
 cx_void io_println(cx_string str) {
 /* $begin(::cortex::io::println) */
     printf("%s\n", str);

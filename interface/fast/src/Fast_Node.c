@@ -71,7 +71,7 @@ error:
 
 /* $end */
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::Node::init(Node object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::Fast::Node::init(Node object) */
 cx_int16 Fast_Node_init(Fast_Node object) {
 /* $begin(::cortex::Fast::Node::init) */
     object->line = yparser()->line;
@@ -80,7 +80,7 @@ cx_int16 Fast_Node_init(Fast_Node object) {
 /* $end */
 }
 
-/* ::cortex::Fast::Node::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Node::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_Node_toIc_v(Fast_Node _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Node::toIc) */
     CX_UNUSED(_this);
