@@ -747,9 +747,8 @@ CX_CLASS_O(collection, type, CX_LOCAL | CX_READONLY, CX_SEQUENCE_EMPTY_V(interfa
 CX_CLASS_O(iterator, type, CX_LOCAL | CX_READONLY, CX_SEQUENCE_EMPTY_V(interface), NULL, CX_DECLARED | CX_DEFINED);
     CX_REFERENCE_O(iterator, elementType, typedef, CX_GLOBAL, CX_DECLARED, FALSE);
     CX_CALLBACK_O(iterator, init, "(lang::iterator object)", type_init, int16, cx_iterator_init);
-    CX_METAPROCEDURE_O(iterator, retrieve, "()", any, FALSE, cx_collection_size);
-    CX_METAPROCEDURE_O(iterator, advance, "()", any, FALSE, cx_collection_size);
-
+    CX_METAPROCEDURE_O(iterator, next, "()", any, FALSE, cx_collection_size);
+    CX_METAPROCEDURE_O(iterator, hasNext, "()", any, FALSE, cx_collection_size);
 
 /* ::cortex::lang::binary */
 CX_CLASS_O(binary, primitive, CX_GLOBAL, CX_SEQUENCE_EMPTY_V(interface), NULL, CX_DECLARED | CX_DEFINED);
