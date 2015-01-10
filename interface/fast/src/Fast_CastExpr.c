@@ -90,7 +90,7 @@ cx_ic Fast_CastExpr_toIc_v(Fast_CastExpr _this, cx_icProgram program, cx_icStora
 
     op = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_CAST, (cx_icValue)result, (cx_icValue)rvalue, (cx_icValue)lvalue);
 
-    if (_this->rvalue->forceReference) {
+    if (_this->rvalue->forceReference || _thisType->reference) {
         op->s2Deref = CX_IC_DEREF_ADDRESS;
     }
     cx_icProgram_addIc(program, (cx_ic)op);

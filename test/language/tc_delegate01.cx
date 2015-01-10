@@ -19,7 +19,7 @@ class Foo::
 // Instance of class
 Foo obj: 100
 
-// Create delegate and ssign function
+// Create delegate and assign function
 binaryOperation op:
 op = add
 if op(10, 20) != 30: fail("op(10, 20) != 30")

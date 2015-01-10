@@ -103,6 +103,7 @@ cx_icDerefMode Fast_Expression_getDerefMode(Fast_Expression _this, Fast_Expressi
                cx_nameof(cx_typeof(rvalue)),
                result == CX_IC_DEREF_VALUE, check?*check:0);
     }*/
+
     return result;
 }
 

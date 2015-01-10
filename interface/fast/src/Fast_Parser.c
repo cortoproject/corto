@@ -343,8 +343,7 @@ Fast_Expression Fast_Parser_binaryCollectionExpr(Fast_Parser _this, Fast_Express
         case CX_COND_LTEQ:
         case CX_COND_GTEQ:
         default:
-            Fast_Parser_error(_this, "invalid operator %s for collection-operand",
-                              cx_nameof(cx_enum_constant(cx_operatorKind_o, operator)));
+            Fast_Parser_error(_this, "operator invalid for collection value");
             goto error;
             break;
     }

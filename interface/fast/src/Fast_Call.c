@@ -32,7 +32,7 @@ cx_int16 Fast_Call_insertCasts(Fast_Call _this) {
             argumentType = Fast_Expression_getType(argument);
 
             if (_this->parameters.buffer[i].passByReference) {
-                if (!argument->isReference) {
+                if (argumentType && !argument->isReference) {
                     Fast_Parser_error(yparser(), "cannot pass non-reference value as reference");
                     goto error;
                 }
