@@ -625,7 +625,7 @@ void __cx_interface_resolveMethodId(cx_function f, void *result, void *args) {
 void __cx_iterator_hasNext(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     CX_UNUSED(args);
-    *(cx_any*)result = cx_iterator_hasNext(
+    *(cx_bool*)result = cx_iterator_hasNext(
         *(cx_any*)args);
 }
 
