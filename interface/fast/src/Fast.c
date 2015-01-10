@@ -75,6 +75,12 @@ Fast_Call Fast_createCallFromExpr(Fast_Expression f, Fast_Expression arguments) 
         instance = Fast_MemberExpr(f)->lvalue;
         strcpy(name, Fast_String(Fast_MemberExpr(f)->rvalue)->value);
         break;
+
+    /* Element - Must be a list of delegates */
+    case FAST_Element:
+        result = Fast_Call(Fast_DelegateCall__create(NULL, arguments, f));
+        break;
+
     case FAST_Variable:
         switch(Fast_Variable(f)->kind) {
         case FAST_Object: {
@@ -98,9 +104,11 @@ Fast_Call Fast_createCallFromExpr(Fast_Expression f, Fast_Expression arguments) 
     }
 
     /* Initialize builder */
-    Fast_CallBuilder__init(&builder, name, arguments, instance, scope, yparser()->block);
-    result = Fast_CallBuilder_build(&builder);
-    Fast_CallBuilder__deinit(&builder);
+    if (!result) {
+        Fast_CallBuilder__init(&builder, name, arguments, instance, scope, yparser()->block);
+        result = Fast_CallBuilder_build(&builder);
+        Fast_CallBuilder__deinit(&builder);
+    }
 
     return result;
 error:
