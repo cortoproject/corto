@@ -28,8 +28,8 @@
  *
  *   - Struct (base = Interface)
  *      The struct class is derived from interface, and has non-reference semantics. The struct-class
- *      introduces the ability to apply a modifier (PRIVATE,LOCAL,READONLY,..) to its base. 
- * 
+ *      introduces the ability to apply a modifier (PRIVATE,LOCAL,READONLY,..) to its base.
+ *
  *   - Class (base = Struct)
  *      Classes inherit the behavior from struct but are of a reference type. They add the capability to
  *      define a constructor, destructor and template observables.
@@ -375,7 +375,7 @@ CX_STATIC_SCOPED_OBJECT(constant);
 #define CX_METAPROCEDURE_NAME_O(parent, name, actualName, args, returnType, referenceOnly, impl) \
         void __##impl(void *f, void *r, void *a); \
         sso_metaprocedure parent##_##name##__o = {CX_SSO_PO_V(parent, #actualName args, metaprocedure), {{(cx_typedef)&returnType##__o.v, FALSE, FALSE, CX_PROCEDURE_CDECL, (cx_word)__##impl, (cx_word)impl, NULL, 0, {0,NULL},0}, referenceOnly}, VTABLE_V}
-    
+
 /* member object */
 #define CX_MEMBER_O(parent, name, type, access) sso_member parent##_##name##__o = {CX_SSO_PO_V(parent, #name, member), CX_MEMBER_V(type, access, CX_DECLARED | CX_DEFINED, FALSE), VTABLE_V}
 
@@ -389,6 +389,7 @@ CX_FWDECL(class, template);
 CX_FWDECL(class, primitive);
 CX_FWDECL(class, interface);
 CX_FWDECL(class, collection);
+CX_FWDECL(class, iterator);
 CX_FWDECL(class, procedure);
 CX_FWDECL(class, binary);
 CX_FWDECL(class, boolean);
@@ -536,6 +537,7 @@ CX_ENUM_O(typeKind);
     CX_CONSTANT_O(typeKind, PRIMITIVE);
     CX_CONSTANT_O(typeKind, COMPOSITE);
     CX_CONSTANT_O(typeKind, COLLECTION);
+    CX_CONSTANT_O(typeKind, ITERATOR);
 
 CX_ENUM_O(primitiveKind);
     CX_CONSTANT_O(primitiveKind, BINARY);
@@ -741,6 +743,13 @@ CX_CLASS_O(collection, type, CX_LOCAL | CX_READONLY, CX_SEQUENCE_EMPTY_V(interfa
     CX_CALLBACK_O(collection, init, "(collection object)", type_init, int16, cx_collection_init);
     CX_METAPROCEDURE_O(collection, size, "()", uint32, FALSE, cx_collection_size);
 
+/* ::cortex::lang::iterator */
+CX_CLASS_O(iterator, type, CX_LOCAL | CX_READONLY, CX_SEQUENCE_EMPTY_V(interface), NULL, CX_DECLARED | CX_DEFINED);
+    CX_REFERENCE_O(iterator, elementType, typedef, CX_GLOBAL, CX_DECLARED, FALSE);
+    CX_CALLBACK_O(iterator, init, "(lang::iterator object)", type_init, int16, cx_iterator_init);
+    CX_METAPROCEDURE_O(iterator, next, "()", any, FALSE, cx_iterator_next);
+    CX_METAPROCEDURE_O(iterator, hasNext, "()", bool, FALSE, cx_collection_size);
+
 /* ::cortex::lang::binary */
 CX_CLASS_O(binary, primitive, CX_GLOBAL, CX_SEQUENCE_EMPTY_V(interface), NULL, CX_DECLARED | CX_DEFINED);
     CX_CALLBACK_O(binary, init, "(binary object)", type_init, int16, cx_binary_init);
@@ -929,7 +938,7 @@ CX_PROCEDURE_O(method, CX_METHOD, function, CX_GLOBAL, CX_SSO_TYPE_ID(interface)
 
 CX_PROCEDURE_O(virtual, CX_METHOD, method, CX_GLOBAL, CX_SSO_TYPE_ID(interface), CX_DECLARED);
     CX_CALLBACK_O(virtual, init, "(virtual object)", type_init, int16, cx_virtual_init);
-    
+
 /* ::cortex::lang::delegate */
 CX_PROCEDURE_O(delegate, CX_DELEGATE, function, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED);
     CX_MEMBER_O(delegate, id, uint32, CX_LOCAL);

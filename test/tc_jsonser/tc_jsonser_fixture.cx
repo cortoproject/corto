@@ -99,8 +99,11 @@ object tc_jsonser_fixture::
     Dog dog2: DogBreed::Pug, "Lolly", 4
     Dog dog3: DogBreed::Chihuahua, "I'm annoying", 3, dog2
 
-    array ints: uint32, 4
-    ints myarray: 26, 47, 6, 39
+    array intarray: int32, 4
+    intarray intarray1: 26, 47, 6, 39
+    list stringlist: string
+    stringlist stringlist1: "Alpha", "Beta", "Gamma"
+
 
     void v0::
         Dog dog1: Pug, "MyPug", 55

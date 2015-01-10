@@ -61,7 +61,7 @@ cx_int16 Fast_MemberExpr_construct(Fast_MemberExpr object) {
     cx_type exprType;
 
     Fast_Node(object)->kind = FAST_Member;
-    
+
     if (!(object->lvalue && object->rvalue)) {
         goto error;
     }

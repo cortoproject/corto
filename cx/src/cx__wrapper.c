@@ -622,6 +622,26 @@ void __cx_interface_resolveMethodId(cx_function f, void *result, void *args) {
         *(cx_string*)((intptr_t)args + sizeof(cx_interface)));
 }
 
+void __cx_iterator_hasNext(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    CX_UNUSED(args);
+    *(cx_bool*)result = cx_iterator_hasNext(
+        *(cx_any*)args);
+}
+
+void __cx_iterator_init(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    *(cx_int16*)result = cx_iterator_init(
+        *(cx_iterator*)args);
+}
+
+void __cx_iterator_next(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    CX_UNUSED(args);
+    *(cx_any*)result = cx_iterator_next(
+        *(cx_any*)args);
+}
+
 void __cx_list_append_(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     CX_UNUSED(args);
