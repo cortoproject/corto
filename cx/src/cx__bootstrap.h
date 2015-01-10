@@ -843,6 +843,7 @@ CX_CLASS_O(procptr, struct, CX_READONLY, CX_SEQUENCE_EMPTY_V(interface), NULL, C
     CX_MEMBER_O(procptr, returnsReference, bool, CX_GLOBAL);
     CX_MEMBER_O(procptr, parameters, parameterSeq, CX_GLOBAL);
     CX_METHOD_O(procptr, compatible, "(type type)", bool, TRUE, cx_procptr_compatible_v);
+    CX_METHOD_O(procptr, castable, "(type type)", bool, TRUE, cx_procptr_compatible_v);
 
 /* ::cortex::lang::procedure */
 CX_CLASS_O(procedure, struct, CX_GLOBAL, CX_SEQUENCE_EMPTY_V(interface), NULL, CX_DECLARED | CX_DEFINED);

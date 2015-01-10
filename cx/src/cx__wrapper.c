@@ -879,6 +879,37 @@ void __cx_procedure_unbind(cx_function f, void *result, void *args) {
         *(cx_object*)((intptr_t)args + sizeof(cx_procedure)));
 }
 
+/* virtual ::cortex::lang::procptr::castable(type type) */
+cx_bool cx_procptr_castable(cx_procptr _this, cx_type type) {
+    static cx_uint32 _methodId;
+    cx_method _method;
+    cx_bool _result;
+    cx_interface _abstract;
+
+    _abstract = cx_interface(cx_typeof(_this));
+
+    /* Determine methodId once, then cache it for subsequent calls. */
+    if (!_methodId) {
+        _methodId = cx_interface_resolveMethodId(_abstract, "castable(type type)");
+    }
+    cx_assert(_methodId, "virtual method 'castable(type type)' not found in abstract '%s'", cx_nameof(_abstract));
+
+    /* Lookup method-object. */
+    _method = cx_interface_resolveMethodById(_abstract, _methodId);
+    cx_assert(_method != NULL, "unresolved method '%s::castable(type type)@%d'", cx_nameof(_this), _methodId);
+
+    cx_call(cx_function(_method), &_result, _this, type);
+    
+    return _result;
+}
+
+void __cx_procptr_castable_v(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    *(cx_bool*)result = cx_procptr_castable_v(
+        *(cx_procptr*)args,
+        *(cx_type*)((intptr_t)args + sizeof(cx_procptr)));
+}
+
 /* virtual ::cortex::lang::procptr::compatible(type type) */
 cx_bool cx_procptr_compatible(cx_procptr _this, cx_type type) {
     static cx_uint32 _methodId;

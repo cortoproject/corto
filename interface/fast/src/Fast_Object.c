@@ -54,14 +54,36 @@ cx_int16 Fast_Object_serialize(Fast_Object _this, cx_type dstType, cx_word dst) 
     Fast_valueKind kind;
 
     if (!dstType->reference) {
-        if (cx_instanceof((cx_typedef)dstType, Fast_ObjectBase(_this)->value)) {
+        cx_bool srcIsDelegate = FALSE, dstIsDelegate = FALSE;
+        cx_object obj = Fast_ObjectBase(_this)->value;
+        cx_type srcType = cx_typeof(obj);
+
+        /* Handle delegates */
+        if ((srcType->kind == CX_COMPOSITE) && (cx_interface(srcType)->kind == CX_PROCPTR)) {
+            srcIsDelegate = TRUE;
+        }
+        if ((dstType->kind == CX_COMPOSITE) && (cx_interface(dstType)->kind == CX_PROCPTR)) {
+            dstIsDelegate = TRUE;
+        }
+
+        if (dstIsDelegate) {
+            if (srcIsDelegate) {
+                cx_copy((cx_object)dst, Fast_ObjectBase(_this)->value);
+            } else if ((srcType->kind == CX_COMPOSITE) && (cx_interface(srcType)->kind == CX_PROCEDURE)) {
+                cx_set(&((cx_procptrdata *)dst)->procedure, Fast_ObjectBase(_this)->value);
+                cx_set(&((cx_procptrdata *)dst)->instance, NULL);
+            }
+
+        } else if (cx_instanceof((cx_typedef)dstType, Fast_ObjectBase(_this)->value)) {
             /* If object is not of a reference type and object is of dstType, copy value */
-            memcpy((void*)dst, Fast_ObjectBase(_this)->value, cx_type_sizeof(dstType));
+            cx_copy((cx_object)dst, Fast_ObjectBase(_this)->value);
+
         } else {
             cx_id id, id2;
             Fast_Parser_error(yparser(), "type '%s' of object does not match destinationtype '%s'",
                     cx_fullname(cx_typeof(Fast_ObjectBase(_this)->value), id),
                     cx_fullname(dstType, id2));
+            goto error;
         }
     } else {
         if (Fast_Expression(_this)->isReference) {

@@ -140,7 +140,7 @@ void Fast_reportWarning(cx_string filename, cx_uint32 line, cx_uint32 column, cx
 /* $end */
 }
 
-/* ::cortex::Fast::valueKindFromType(type type) */
+/* ::cortex::Fast::valueKindFromType(lang::type type) */
 Fast_valueKind Fast_valueKindFromType(cx_type type) {
 /* $begin(::cortex::Fast::valueKindFromType) */
     Fast_valueKind result = FAST_Null;

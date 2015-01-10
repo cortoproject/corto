@@ -441,7 +441,7 @@ typedef union Di2f_t {
 #define CALLPTR(type,code)\
     CALLPTR_##code: {\
         fetchOp2(CALLPTR,code);\
-        cx_procptrdata *ptr = (cx_procptrdata*)op2_##code;\
+        cx_procptrdata *ptr = (cx_procptrdata*)&op2_##code;\
         void *stackptr = c.stack;\
         if (!ptr->instance) {\
             stackptr = ((cx_word*)stackptr) + 1;\
@@ -1274,7 +1274,7 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
                 TOJMP_OPERAND_PQR(CALLVM,L,);
                 case CX_VM_CALLVOID: p[i].op = toJump(CALLVOID); break;
                 case CX_VM_CALLVMVOID: p[i].op = toJump(CALLVMVOID); break;
-                TOJMP_OP2_W(CALLPTR,PQRV)
+                TOJMP_OP2_W(CALLPTR,PQR)
                 TOJMP_OP1(RET);
                 TOJMP_OPERAND_PQR(RETCPY,L,);
 
@@ -1449,7 +1449,7 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
     OPERAND_PQR(CALLVM,L,);
     CALLVOID();
     CALLVMVOID();
-    OP2_W(CALLPTR,PQRV)
+    OP2_W(CALLPTR,PQR)
     OP1(RET);
     OPERAND_PQR(RETCPY,L,);
 
@@ -1650,7 +1650,7 @@ char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
                 TOSTR_OPERAND_PQR(CALLVM,L,);
                 case CX_VM_CALLVOID: result = strappend(result, "CX_VM_CALLVOID %u\n", p[i].hi.w); break;
                 case CX_VM_CALLVMVOID: result = strappend(result, "CX_VM_CALLVMVOID %u\n", p[i].hi.w); break;
-                TOSTR_OP2_W(CALLPTR,PQRV);
+                TOSTR_OP2_W(CALLPTR,PQR);
                 TOSTR_OP1(RET);
                 TOSTR_OPERAND_PQR(RETCPY,L,);
 

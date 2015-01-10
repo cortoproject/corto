@@ -2506,7 +2506,6 @@ static void cx_ic_getVmOp(cx_ic_vmProgram *program, cx_icOp op) {
             op1 = op->s1;
             op2 = op->s2;
             opDeref1 = op->s1Deref;
-            opDeref2 = CX_IC_DEREF_ADDRESS;
             storage = NULL;
         } else {
             op1 = op->s1;
@@ -2611,15 +2610,17 @@ static cx_int16 cx_icOp_toVm(cx_icOp op, cx_ic_vmProgram *program) {
          * yet defined, setting the stack-size is in this case delayed until all functions
          * are assembled.
          */
-        f = ((cx_icObject)op->s2)->ptr;
-        if (f->kind == CX_PROCEDURE_VM) {
-            if (cx_checkState(f, CX_DEFINED)) {
-                cx_vmProgram inlineProgram = (cx_vmProgram)f->implData;
-                if (inlineProgram->storage > program->maxStackSize) {
-                    program->maxStackSize = inlineProgram->storage;
+        if (((cx_icStorage)op->s2)->kind == CX_STORAGE_OBJECT) {
+            f = ((cx_icObject)op->s2)->ptr;
+            if (f->kind == CX_PROCEDURE_VM) {
+                if (cx_checkState(f, CX_DEFINED)) {
+                    cx_vmProgram inlineProgram = (cx_vmProgram)f->implData;
+                    if (inlineProgram->storage > program->maxStackSize) {
+                        program->maxStackSize = inlineProgram->storage;
+                    }
+                } else {
+                    cx_ic_vmInlineFunctionMark(program, program->program, f);
                 }
-            } else {
-                cx_ic_vmInlineFunctionMark(program, program->program, f);
             }
         }
 
