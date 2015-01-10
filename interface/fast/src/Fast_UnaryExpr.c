@@ -16,7 +16,7 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::UnaryExpr::construct(Fast::UnaryExpr object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::UnaryExpr::construct(Fast::UnaryExpr object) */
 cx_int16 Fast_UnaryExpr_construct(Fast_UnaryExpr object) {
 /* $begin(::cortex::Fast::UnaryExpr::construct) */
     cx_type lvalueType;
@@ -43,7 +43,7 @@ cx_bool Fast_UnaryExpr_hasSideEffects_v(Fast_UnaryExpr _this) {
 /* $end */
 }
 
-/* ::cortex::Fast::UnaryExpr::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::UnaryExpr::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_UnaryExpr_toIc_v(Fast_UnaryExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::UnaryExpr::toIc) */
     cx_icStorage result;

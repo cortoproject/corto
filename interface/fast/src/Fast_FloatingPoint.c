@@ -17,7 +17,7 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::FloatingPoint::init(FloatingPoint object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::Fast::FloatingPoint::init(FloatingPoint object) */
 cx_int16 Fast_FloatingPoint_init(Fast_FloatingPoint object) {
 /* $begin(::cortex::Fast::FloatingPoint::init) */
     Fast_Literal(object)->kind = FAST_FloatingPoint;
@@ -25,7 +25,7 @@ cx_int16 Fast_FloatingPoint_init(Fast_FloatingPoint object) {
 /* $end */
 }
 
-/* ::cortex::Fast::FloatingPoint::serialize(lang::type dstType,lang::word dst) */
+/* ::cortex::Fast::FloatingPoint::serialize(type dstType,word dst) */
 cx_int16 Fast_FloatingPoint_serialize(Fast_FloatingPoint _this, cx_type dstType, cx_word dst) {
 /* $begin(::cortex::Fast::FloatingPoint::serialize) */
     Fast_valueKind kind;
@@ -57,7 +57,7 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::FloatingPoint::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::FloatingPoint::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_FloatingPoint_toIc_v(Fast_FloatingPoint _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::FloatingPoint::toIc) */
     cx_ic result;

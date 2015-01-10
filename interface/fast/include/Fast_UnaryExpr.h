@@ -18,7 +18,7 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::UnaryExpr::construct(Fast::UnaryExpr object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::UnaryExpr::construct(Fast::UnaryExpr object) */
 cx_int16 Fast_UnaryExpr_construct(Fast_UnaryExpr object);
 
 /* virtual ::cortex::Fast::UnaryExpr::hasSideEffects() */
@@ -27,10 +27,10 @@ cx_bool Fast_UnaryExpr_hasSideEffects(Fast_UnaryExpr _this);
 /* ::cortex::Fast::UnaryExpr::hasSideEffects() */
 cx_bool Fast_UnaryExpr_hasSideEffects_v(Fast_UnaryExpr _this);
 
-/* virtual ::cortex::Fast::UnaryExpr::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::UnaryExpr::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_UnaryExpr_toIc(Fast_UnaryExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);
 
-/* ::cortex::Fast::UnaryExpr::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::UnaryExpr::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_UnaryExpr_toIc_v(Fast_UnaryExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);
 
 #ifdef __cplusplus

@@ -18,16 +18,16 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::Character::init(Character object) */
-cx_int16 Fast_Character_init(Fast_Character object);
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::Fast::Character::init(Character object) */
+cx_int16 Fast_Character_init(cx_character object);
 
-/* ::cortex::Fast::Character::serialize(lang::type dstType,lang::word dst) */
+/* ::cortex::Fast::Character::serialize(type dstType,word dst) */
 cx_int16 Fast_Character_serialize(Fast_Character _this, cx_type dstType, cx_word dst);
 
-/* virtual ::cortex::Fast::Character::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* virtual ::cortex::Fast::Character::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_Character_toIc(Fast_Character _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);
 
-/* ::cortex::Fast::Character::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Character::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_Character_toIc_v(Fast_Character _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);
 
 #ifdef __cplusplus

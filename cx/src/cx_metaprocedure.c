@@ -13,7 +13,7 @@
 cx_int16 cx_type_bindMetaprocedure(cx_type _this, cx_metaprocedure procedure);
 /* $end */
 
-/* callback ::cortex::lang::procedure::bind(lang::object object) -> ::cortex::lang::metaprocedure::bind(lang::metaprocedure object) */
+/* callback ::cortex::lang::procedure::bind(object object) -> ::cortex::lang::metaprocedure::bind(metaprocedure object) */
 cx_int16 cx_metaprocedure_bind(cx_metaprocedure object) {
 /* $begin(::cortex::lang::metaprocedure::bind) */
     cx_object parent;

@@ -17,10 +17,10 @@
 extern "C" {
 #endif
 
-/* ::cortex::io::print(::cortex::lang::string str) */
+/* ::cortex::io::print(string str) */
 cx_void io_print(cx_string str);
 
-/* ::cortex::io::println(::cortex::lang::string str) */
+/* ::cortex::io::println(string str) */
 cx_void io_println(cx_string str);
 
 /* ::cortex::io::readln() */

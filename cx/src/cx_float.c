@@ -9,7 +9,7 @@
 #include "cx.h"
 #include "cx__meta.h"
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::float::init(lang::float object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::float::init(float object) */
 cx_int16 cx_float_init(cx_float object) {
 /* $begin(::cortex::lang::float::init) */
     cx_primitive(object)->kind = CX_FLOAT;

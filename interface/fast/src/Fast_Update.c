@@ -19,7 +19,7 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Update::construct(Update object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::Update::construct(Update object) */
 cx_int16 Fast_Update_construct(Fast_Update object) {
 /* $begin(::cortex::Fast::Update::construct) */
     cx_type t;
@@ -46,7 +46,7 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::Update::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Update::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_Update_toIc_v(Fast_Update _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Update::toIc) */
     cx_ic expr, from = NULL;

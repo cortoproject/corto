@@ -1696,6 +1696,7 @@ CX_IC_GETOP1_W(PUSHANY,PQRV)
 CX_IC_GETOP1_ANY(PUSHANYX)
 CX_IC_GETOP1_L(CALL,PQR)
 CX_IC_GETOP1_L(CALLVM,PQR)
+CX_IC_GETOP2_W(CALLPTR,,PQRV)
 CX_IC_GETOP1(RET,PQR)
 CX_IC_GETOP1_L(RETCPY,PQR)
 
@@ -2022,31 +2023,39 @@ static cx_vmOpKind cx_ic_getVmSet(
     return result;
 }
 
+static cx_bool cx_ic_operandIsComposite(cx_icStorage s, cx_compositeKind kind) {
+    cx_bool result = FALSE;
+    if (s->type->kind == CX_COMPOSITE) {
+        if (cx_interface(s->type)->kind == kind) {
+            result = TRUE;
+        }
+    }
+    return result;
+}
+
 /* Return correct CALL instruction. Selects between 
  * normal, VM and delegate calls */
-static cx_vmOpKind cx_ic_getVmCall(cx_icOp op, cx_ic_vmOperand op1) {
+static cx_vmOpKind cx_ic_getVmCall(cx_icOp op, cx_ic_vmOperand op1, cx_ic_vmOperand op2) {
     cx_vmOpKind result = CX_VM_STOP;
     cx_icStorage icFunction = ((cx_icStorage)op->s2);
 
-    if (icFunction->type->kind == CX_COMPOSITE) {
-        if (cx_interface(icFunction->type)->kind == CX_PROCPTR) {
-            /* Delegate instruction selection goes here */
-        } else if (cx_interface(icFunction->type)->kind == CX_PROCEDURE) {
-            cx_function f = ((cx_icObject)op->s2)->ptr;
-            if (f->kind == CX_PROCEDURE_VM) {
-                if ((f->returnType->real->kind == CX_VOID) && 
-                    (!f->returnType->real->reference)) {
-                    result = CX_VM_CALLVMVOID;
-                } else {
-                    result = cx_ic_getVmCALLVM(CX_IC_VMTYPE_L, op1);
-                }
+    if (cx_ic_operandIsComposite(icFunction, CX_PROCPTR)) {
+        result = cx_ic_getVmCALLPTR(CX_IC_VMTYPE_W, op1, op2);
+    } else if (cx_ic_operandIsComposite(icFunction, CX_PROCEDURE)) {
+        cx_function f = ((cx_icObject)op->s2)->ptr;
+        if (f->kind == CX_PROCEDURE_VM) {
+            if ((f->returnType->real->kind == CX_VOID) && 
+                (!f->returnType->real->reference)) {
+                result = CX_VM_CALLVMVOID;
             } else {
-                if ((f->returnType->real->kind == CX_VOID) && 
-                    (!f->returnType->real->reference)) {
-                    result = CX_VM_CALLVOID;
-                } else {
-                    result = cx_ic_getVmCALL(CX_IC_VMTYPE_L, op1);
-                }
+                result = cx_ic_getVmCALLVM(CX_IC_VMTYPE_L, op1);
+            }
+        } else {
+            if ((f->returnType->real->kind == CX_VOID) && 
+                (!f->returnType->real->reference)) {
+                result = CX_VM_CALLVOID;
+            } else {
+                result = cx_ic_getVmCALL(CX_IC_VMTYPE_L, op1);
             }
         }
     }
@@ -2140,7 +2149,7 @@ static cx_vmOpKind cx_ic_getVmOpKind(cx_ic_vmProgram *program, cx_icOp op, cx_ic
     }
 
     case CX_IC_CALL: {
-        result = cx_ic_getVmCall(op, op1);
+        result = cx_ic_getVmCall(op, op1, op2);
         break;
     }
 
@@ -2493,10 +2502,19 @@ static void cx_ic_getVmOp(cx_ic_vmProgram *program, cx_icOp op) {
 
     /* Call sets function address */
     case CX_IC_CALL:
-        op1 = op->s1;
-        storage = NULL;
-        vmOp->hi.w = (cx_word)((cx_icObject)op->s2)->ptr;
-        opDeref1 = op->s1Deref;
+        if (cx_ic_operandIsComposite((cx_icStorage)op->s2, CX_PROCPTR)) {
+            op1 = op->s1;
+            op2 = op->s2;
+            opDeref1 = op->s1Deref;
+            opDeref2 = CX_IC_DEREF_ADDRESS;
+            storage = NULL;
+        } else {
+            op1 = op->s1;
+            storage = NULL;
+            vmOp->hi.w = (cx_word)((cx_icObject)op->s2)->ptr;
+            opDeref1 = op->s1Deref;            
+        }
+
         break;
 
     /* Cast */

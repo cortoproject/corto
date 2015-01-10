@@ -9,7 +9,7 @@
 #include "cx.h"
 #include "cx__meta.h"
 
-/* callback ::cortex::lang::procedure::bind(lang::object object) -> ::cortex::lang::method::bind(lang::method object) */
+/* callback ::cortex::lang::procedure::bind(object object) -> ::cortex::lang::method::bind(method object) */
 cx_int16 cx_method_bind(cx_method object) {
 /* $begin(::cortex::lang::method::bind) */
     cx_object parent;
@@ -33,7 +33,7 @@ error:
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::method::init(lang::method object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::method::init(method object) */
 cx_int16 cx_method_init(cx_method object) {
 /* $begin(::cortex::lang::method::init) */
     cx_object parent;

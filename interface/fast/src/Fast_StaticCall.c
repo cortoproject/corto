@@ -9,7 +9,7 @@
 #include "Fast.h"
 #include "Fast__meta.h"
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::StaticCall::construct(Fast::StaticCall object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::StaticCall::construct(Fast::StaticCall object) */
 cx_int16 Fast_StaticCall_construct(Fast_StaticCall object) {
 /* $begin(::cortex::Fast::StaticCall::construct) */
     Fast_Object fExpr;

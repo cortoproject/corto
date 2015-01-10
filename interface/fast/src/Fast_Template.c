@@ -9,7 +9,7 @@
 #include "Fast.h"
 #include "Fast__meta.h"
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Template::construct(Template object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::Template::construct(Template object) */
 cx_int16 Fast_Template_construct(Fast_Template object) {
 /* $begin(::cortex::Fast::Template::construct) */
 

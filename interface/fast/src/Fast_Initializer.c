@@ -159,7 +159,7 @@ cx_type Fast_Parser_initGetType(Fast_Initializer _this, cx_member *m_out) {
 
 /* $end */
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Initializer::construct(Initializer object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::Initializer::construct(Initializer object) */
 cx_int16 Fast_Initializer_construct(Fast_Initializer object) {
 /* $begin(::cortex::Fast::Initializer::construct) */
     cx_uint32 variable;
@@ -265,7 +265,7 @@ cx_uint16 Fast_Initializer_initFrame(Fast_Initializer _this) {
 /* $end */
 }
 
-/* ::cortex::Fast::Initializer::member(lang::string name) */
+/* ::cortex::Fast::Initializer::member(string name) */
 cx_int32 Fast_Initializer_member_v(Fast_Initializer _this, cx_string name) {
 /* $begin(::cortex::Fast::Initializer::member) */
     struct cx_serializer_s s;

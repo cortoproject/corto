@@ -1,0 +1,23 @@
+bool result: true
+void fail(string msg):
+    "tc_resolve01: FAIL: $msg"
+    result = false
+
+// Test which class is resolved first
+void class
+var object t = @::.resolve("class")
+if t != ::cortex::lang::class: fail("t != ::cortex::lang::class #1")
+
+t = @::.resolve("lang::class")
+if t != ::cortex::lang::class: fail("t != ::cortex::lang::class #2")
+
+t = @::.resolve("cortex::lang::class")
+if t != ::cortex::lang::class: fail("t != ::cortex::lang::class #3")
+
+t = @::.resolve("::cortex::lang::class")
+if t != ::cortex::lang::class: fail("t != ::cortex::lang::class #4")
+
+t = @::.resolve("::class")
+if t != ::class: fail("t != ::class")
+
+if result: "tc_resolve01: OK"

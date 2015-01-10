@@ -31,7 +31,7 @@ cx_word Fast_Literal_getValue_v(Fast_Literal _this) {
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::Literal::init(Literal object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::Fast::Literal::init(Literal object) */
 cx_int16 Fast_Literal_init(Fast_Literal object) {
 /* $begin(::cortex::Fast::Literal::init) */
     if (!Fast_Expression(object)->type) {

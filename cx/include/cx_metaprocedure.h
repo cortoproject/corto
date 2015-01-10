@@ -17,7 +17,7 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::procedure::bind(lang::object object) -> ::cortex::lang::metaprocedure::bind(lang::metaprocedure object) */
+/* callback ::cortex::lang::procedure::bind(object object) -> ::cortex::lang::metaprocedure::bind(metaprocedure object) */
 cx_int16 cx_metaprocedure_bind(cx_metaprocedure object);
 
 #ifdef __cplusplus

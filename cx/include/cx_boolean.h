@@ -18,7 +18,7 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::boolean::init(lang::boolean object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::boolean::init(boolean object) */
 cx_int16 cx_boolean_init(cx_boolean object);
 
 #ifdef __cplusplus

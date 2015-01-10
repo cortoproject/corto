@@ -142,21 +142,21 @@ void __cx_class_bindObserver(cx_function f, void *result, void *args) {
         *(cx_observer*)((intptr_t)args + sizeof(cx_class)));
 }
 
-/* delegate ::cortex::lang::class::construct(lang::object object) */
+/* delegate ::cortex::lang::class::construct(object object) */
 cx_int16 cx_class_construct(cx_class _this, cx_object object) {
     cx_callback _callback;
     cx_int16 _result;
     /* Lookup callback-object. */
     _callback = cx_class_resolveCallback(cx_class(cx_typeof(_this)), cx_class_construct_o, _this);
 
-    cx_assert(_callback != NULL, "no callback 'construct(lang::object object)' for object of type 'cx_class' (call 'cx_class_construct_checkCallback' first)");
+    cx_assert(_callback != NULL, "no callback 'construct(object object)' for object of type 'cx_class' (call 'cx_class_construct_checkCallback' first)");
 
     cx_call(cx_function(_callback), &_result, object);
     
     return _result;
 }
 
-/* delegate ::cortex::lang::class::construct(lang::object object), obtain callback */
+/* delegate ::cortex::lang::class::construct(object object), obtain callback */
 cx_bool cx_class_construct_hasCallback(cx_class _this) {
     /* Lookup callback-object. */
     return cx_class_resolveCallback(cx_class(cx_typeof(_this)), cx_class_construct_o, _this) != NULL;
@@ -169,18 +169,18 @@ void __cx_class_construct(cx_function f, void *result, void *args) {
         *(cx_object*)((intptr_t)args + sizeof(cx_class)));
 }
 
-/* delegate ::cortex::lang::class::destruct(lang::object object) */
+/* delegate ::cortex::lang::class::destruct(object object) */
 void cx_class_destruct(cx_class _this, cx_object object) {
     cx_callback _callback;
     /* Lookup callback-object. */
     _callback = cx_class_resolveCallback(cx_class(cx_typeof(_this)), cx_class_destruct_o, _this);
 
-    cx_assert(_callback != NULL, "no callback 'destruct(lang::object object)' for object of type 'cx_class' (call 'cx_class_destruct_checkCallback' first)");
+    cx_assert(_callback != NULL, "no callback 'destruct(object object)' for object of type 'cx_class' (call 'cx_class_destruct_checkCallback' first)");
 
     cx_call(cx_function(_callback), NULL, object);
 }
 
-/* delegate ::cortex::lang::class::destruct(lang::object object), obtain callback */
+/* delegate ::cortex::lang::class::destruct(object object), obtain callback */
 cx_bool cx_class_destruct_hasCallback(cx_class _this) {
     /* Lookup callback-object. */
     return cx_class_resolveCallback(cx_class(cx_typeof(_this)), cx_class_destruct_o, _this) != NULL;
@@ -246,7 +246,7 @@ void __cx_class_resolveInterfaceMethod(cx_function f, void *result, void *args) 
         *(cx_uint32*)((intptr_t)args + sizeof(cx_class) + sizeof(cx_interface)));
 }
 
-/* virtual ::cortex::lang::collection::castable(lang::type type) */
+/* virtual ::cortex::lang::collection::castable(type type) */
 cx_bool cx_collection_castable(cx_collection _this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -257,13 +257,13 @@ cx_bool cx_collection_castable(cx_collection _this, cx_type type) {
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = cx_interface_resolveMethodId(_abstract, "castable(lang::type type)");
+        _methodId = cx_interface_resolveMethodId(_abstract, "castable(type type)");
     }
-    cx_assert(_methodId, "virtual method 'castable(lang::type type)' not found in abstract '%s'", cx_nameof(_abstract));
+    cx_assert(_methodId, "virtual method 'castable(type type)' not found in abstract '%s'", cx_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = cx_interface_resolveMethodById(_abstract, _methodId);
-    cx_assert(_method != NULL, "unresolved method '%s::castable(lang::type type)@%d'", cx_nameof(_this), _methodId);
+    cx_assert(_method != NULL, "unresolved method '%s::castable(type type)@%d'", cx_nameof(_this), _methodId);
 
     cx_call(cx_function(_method), &_result, _this, type);
     
@@ -277,7 +277,7 @@ void __cx_collection_castable_v(cx_function f, void *result, void *args) {
         *(cx_type*)((intptr_t)args + sizeof(cx_collection)));
 }
 
-/* virtual ::cortex::lang::collection::compatible(lang::type type) */
+/* virtual ::cortex::lang::collection::compatible(type type) */
 cx_bool cx_collection_compatible(cx_collection _this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -288,13 +288,13 @@ cx_bool cx_collection_compatible(cx_collection _this, cx_type type) {
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = cx_interface_resolveMethodId(_abstract, "compatible(lang::type type)");
+        _methodId = cx_interface_resolveMethodId(_abstract, "compatible(type type)");
     }
-    cx_assert(_methodId, "virtual method 'compatible(lang::type type)' not found in abstract '%s'", cx_nameof(_abstract));
+    cx_assert(_methodId, "virtual method 'compatible(type type)' not found in abstract '%s'", cx_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = cx_interface_resolveMethodById(_abstract, _methodId);
-    cx_assert(_method != NULL, "unresolved method '%s::compatible(lang::type type)@%d'", cx_nameof(_this), _methodId);
+    cx_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", cx_nameof(_this), _methodId);
 
     cx_call(cx_function(_method), &_result, _this, type);
     
@@ -340,7 +340,7 @@ void __cx_delegate_init(cx_function f, void *result, void *args) {
         *(cx_delegate*)args);
 }
 
-/* virtual ::cortex::lang::dispatcher::getEvent(lang::observer observer,lang::object me,lang::object observable,lang::object src) */
+/* virtual ::cortex::lang::dispatcher::getEvent(observer observer,object me,object observable,object src) */
 cx_observableEvent cx_dispatcher_getEvent(cx_dispatcher _this, cx_observer observer, cx_object me, cx_object observable, cx_object src) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -351,13 +351,13 @@ cx_observableEvent cx_dispatcher_getEvent(cx_dispatcher _this, cx_observer obser
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = cx_interface_resolveMethodId(_abstract, "getEvent(lang::observer observer,lang::object me,lang::object observable,lang::object src)");
+        _methodId = cx_interface_resolveMethodId(_abstract, "getEvent(observer observer,object me,object observable,object src)");
     }
-    cx_assert(_methodId, "virtual method 'getEvent(lang::observer observer,lang::object me,lang::object observable,lang::object src)' not found in abstract '%s'", cx_nameof(_abstract));
+    cx_assert(_methodId, "virtual method 'getEvent(observer observer,object me,object observable,object src)' not found in abstract '%s'", cx_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = cx_interface_resolveMethodById(_abstract, _methodId);
-    cx_assert(_method != NULL, "unresolved method '%s::getEvent(lang::observer observer,lang::object me,lang::object observable,lang::object src)@%d'", cx_nameof(_this), _methodId);
+    cx_assert(_method != NULL, "unresolved method '%s::getEvent(observer observer,object me,object observable,object src)@%d'", cx_nameof(_this), _methodId);
 
     cx_call(cx_function(_method), &_result, _this, observer, me, observable, src);
     
@@ -374,7 +374,7 @@ void __cx_dispatcher_getEvent_v(cx_function f, void *result, void *args) {
         *(cx_object*)((intptr_t)args + sizeof(cx_dispatcher) + sizeof(cx_observer) + sizeof(cx_object) + sizeof(cx_object)));
 }
 
-/* virtual ::cortex::lang::dispatcher::post(lang::event event) */
+/* virtual ::cortex::lang::dispatcher::post(event event) */
 void cx_dispatcher_post(cx_dispatcher _this, cx_event event) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -384,13 +384,13 @@ void cx_dispatcher_post(cx_dispatcher _this, cx_event event) {
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = cx_interface_resolveMethodId(_abstract, "post(lang::event event)");
+        _methodId = cx_interface_resolveMethodId(_abstract, "post(event event)");
     }
-    cx_assert(_methodId, "virtual method 'post(lang::event event)' not found in abstract '%s'", cx_nameof(_abstract));
+    cx_assert(_methodId, "virtual method 'post(event event)' not found in abstract '%s'", cx_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = cx_interface_resolveMethodById(_abstract, _methodId);
-    cx_assert(_method != NULL, "unresolved method '%s::post(lang::event event)@%d'", cx_nameof(_this), _methodId);
+    cx_assert(_method != NULL, "unresolved method '%s::post(event event)@%d'", cx_nameof(_this), _methodId);
 
     cx_call(cx_function(_method), NULL, _this, event);
 }
@@ -489,7 +489,7 @@ void __cx_interface_baseof(cx_function f, void *result, void *args) {
         *(cx_interface*)((intptr_t)args + sizeof(cx_interface)));
 }
 
-/* virtual ::cortex::lang::interface::bindMethod(lang::method method) */
+/* virtual ::cortex::lang::interface::bindMethod(method method) */
 cx_int16 cx_interface_bindMethod(cx_interface _this, cx_method method) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -500,13 +500,13 @@ cx_int16 cx_interface_bindMethod(cx_interface _this, cx_method method) {
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = cx_interface_resolveMethodId(_abstract, "bindMethod(lang::method method)");
+        _methodId = cx_interface_resolveMethodId(_abstract, "bindMethod(method method)");
     }
-    cx_assert(_methodId, "virtual method 'bindMethod(lang::method method)' not found in abstract '%s'", cx_nameof(_abstract));
+    cx_assert(_methodId, "virtual method 'bindMethod(method method)' not found in abstract '%s'", cx_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = cx_interface_resolveMethodById(_abstract, _methodId);
-    cx_assert(_method != NULL, "unresolved method '%s::bindMethod(lang::method method)@%d'", cx_nameof(_this), _methodId);
+    cx_assert(_method != NULL, "unresolved method '%s::bindMethod(method method)@%d'", cx_nameof(_this), _methodId);
 
     cx_call(cx_function(_method), &_result, _this, method);
     
@@ -520,7 +520,7 @@ void __cx_interface_bindMethod_v(cx_function f, void *result, void *args) {
         *(cx_method*)((intptr_t)args + sizeof(cx_interface)));
 }
 
-/* virtual ::cortex::lang::interface::compatible(lang::type type) */
+/* virtual ::cortex::lang::interface::compatible(type type) */
 cx_bool cx_interface_compatible(cx_interface _this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -531,13 +531,13 @@ cx_bool cx_interface_compatible(cx_interface _this, cx_type type) {
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = cx_interface_resolveMethodId(_abstract, "compatible(lang::type type)");
+        _methodId = cx_interface_resolveMethodId(_abstract, "compatible(type type)");
     }
-    cx_assert(_methodId, "virtual method 'compatible(lang::type type)' not found in abstract '%s'", cx_nameof(_abstract));
+    cx_assert(_methodId, "virtual method 'compatible(type type)' not found in abstract '%s'", cx_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = cx_interface_resolveMethodById(_abstract, _methodId);
-    cx_assert(_method != NULL, "unresolved method '%s::compatible(lang::type type)@%d'", cx_nameof(_this), _methodId);
+    cx_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", cx_nameof(_this), _methodId);
 
     cx_call(cx_function(_method), &_result, _this, type);
     
@@ -570,7 +570,7 @@ void __cx_interface_init(cx_function f, void *result, void *args) {
         *(cx_interface*)args);
 }
 
-/* virtual ::cortex::lang::interface::resolveMember(lang::string name) */
+/* virtual ::cortex::lang::interface::resolveMember(string name) */
 cx_member cx_interface_resolveMember(cx_interface _this, cx_string name) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -581,13 +581,13 @@ cx_member cx_interface_resolveMember(cx_interface _this, cx_string name) {
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = cx_interface_resolveMethodId(_abstract, "resolveMember(lang::string name)");
+        _methodId = cx_interface_resolveMethodId(_abstract, "resolveMember(string name)");
     }
-    cx_assert(_methodId, "virtual method 'resolveMember(lang::string name)' not found in abstract '%s'", cx_nameof(_abstract));
+    cx_assert(_methodId, "virtual method 'resolveMember(string name)' not found in abstract '%s'", cx_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = cx_interface_resolveMethodById(_abstract, _methodId);
-    cx_assert(_method != NULL, "unresolved method '%s::resolveMember(lang::string name)@%d'", cx_nameof(_this), _methodId);
+    cx_assert(_method != NULL, "unresolved method '%s::resolveMember(string name)@%d'", cx_nameof(_this), _methodId);
 
     cx_call(cx_function(_method), &_result, _this, name);
     
@@ -629,10 +629,10 @@ void __cx_list_append_(cx_function f, void *result, void *args) {
         *(cx_any*)args);
 }
 
-void __cx_list_append_lang_any(cx_function f, void *result, void *args) {
+void __cx_list_append_any(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     CX_UNUSED(result);
-    cx_list_append_lang_any(
+    cx_list_append_any(
         *(cx_any*)args,
         *(cx_any*)((intptr_t)args + sizeof(cx_any)));
 }
@@ -664,10 +664,10 @@ void __cx_list_insert_(cx_function f, void *result, void *args) {
         *(cx_any*)args);
 }
 
-void __cx_list_insert_lang_any(cx_function f, void *result, void *args) {
+void __cx_list_insert_any(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     CX_UNUSED(result);
-    cx_list_insert_lang_any(
+    cx_list_insert_any(
         *(cx_any*)args,
         *(cx_any*)((intptr_t)args + sizeof(cx_any)));
 }
@@ -764,7 +764,7 @@ void __cx_observer_unbind(cx_function f, void *result, void *args) {
         *(cx_observer*)args);
 }
 
-/* virtual ::cortex::lang::primitive::castable(lang::type type) */
+/* virtual ::cortex::lang::primitive::castable(type type) */
 cx_bool cx_primitive_castable(cx_primitive _this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -775,13 +775,13 @@ cx_bool cx_primitive_castable(cx_primitive _this, cx_type type) {
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = cx_interface_resolveMethodId(_abstract, "castable(lang::type type)");
+        _methodId = cx_interface_resolveMethodId(_abstract, "castable(type type)");
     }
-    cx_assert(_methodId, "virtual method 'castable(lang::type type)' not found in abstract '%s'", cx_nameof(_abstract));
+    cx_assert(_methodId, "virtual method 'castable(type type)' not found in abstract '%s'", cx_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = cx_interface_resolveMethodById(_abstract, _methodId);
-    cx_assert(_method != NULL, "unresolved method '%s::castable(lang::type type)@%d'", cx_nameof(_this), _methodId);
+    cx_assert(_method != NULL, "unresolved method '%s::castable(type type)@%d'", cx_nameof(_this), _methodId);
 
     cx_call(cx_function(_method), &_result, _this, type);
     
@@ -795,7 +795,7 @@ void __cx_primitive_castable_v(cx_function f, void *result, void *args) {
         *(cx_type*)((intptr_t)args + sizeof(cx_primitive)));
 }
 
-/* virtual ::cortex::lang::primitive::compatible(lang::type type) */
+/* virtual ::cortex::lang::primitive::compatible(type type) */
 cx_bool cx_primitive_compatible(cx_primitive _this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -806,13 +806,13 @@ cx_bool cx_primitive_compatible(cx_primitive _this, cx_type type) {
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = cx_interface_resolveMethodId(_abstract, "compatible(lang::type type)");
+        _methodId = cx_interface_resolveMethodId(_abstract, "compatible(type type)");
     }
-    cx_assert(_methodId, "virtual method 'compatible(lang::type type)' not found in abstract '%s'", cx_nameof(_abstract));
+    cx_assert(_methodId, "virtual method 'compatible(type type)' not found in abstract '%s'", cx_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = cx_interface_resolveMethodById(_abstract, _methodId);
-    cx_assert(_method != NULL, "unresolved method '%s::compatible(lang::type type)@%d'", cx_nameof(_this), _methodId);
+    cx_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", cx_nameof(_this), _methodId);
 
     cx_call(cx_function(_method), &_result, _this, type);
     
@@ -838,21 +838,21 @@ void __cx_primitive_init(cx_function f, void *result, void *args) {
         *(cx_primitive*)args);
 }
 
-/* delegate ::cortex::lang::procedure::bind(lang::object object) */
+/* delegate ::cortex::lang::procedure::bind(object object) */
 cx_int16 cx_procedure_bind(cx_procedure _this, cx_object object) {
     cx_callback _callback;
     cx_int16 _result;
     /* Lookup callback-object. */
     _callback = cx_class_resolveCallback(cx_class(cx_typeof(_this)), cx_procedure_bind_o, _this);
 
-    cx_assert(_callback != NULL, "no callback 'bind(lang::object object)' for object of type 'cx_procedure' (call 'cx_procedure_bind_checkCallback' first)");
+    cx_assert(_callback != NULL, "no callback 'bind(object object)' for object of type 'cx_procedure' (call 'cx_procedure_bind_checkCallback' first)");
 
     cx_call(cx_function(_callback), &_result, object);
     
     return _result;
 }
 
-/* delegate ::cortex::lang::procedure::bind(lang::object object), obtain callback */
+/* delegate ::cortex::lang::procedure::bind(object object), obtain callback */
 cx_bool cx_procedure_bind_hasCallback(cx_procedure _this) {
     /* Lookup callback-object. */
     return cx_class_resolveCallback(cx_class(cx_typeof(_this)), cx_procedure_bind_o, _this) != NULL;
@@ -879,7 +879,7 @@ void __cx_procedure_unbind(cx_function f, void *result, void *args) {
         *(cx_object*)((intptr_t)args + sizeof(cx_procedure)));
 }
 
-/* virtual ::cortex::lang::procptr::compatible(lang::type type) */
+/* virtual ::cortex::lang::procptr::compatible(type type) */
 cx_bool cx_procptr_compatible(cx_procptr _this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -890,13 +890,13 @@ cx_bool cx_procptr_compatible(cx_procptr _this, cx_type type) {
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = cx_interface_resolveMethodId(_abstract, "compatible(lang::type type)");
+        _methodId = cx_interface_resolveMethodId(_abstract, "compatible(type type)");
     }
-    cx_assert(_methodId, "virtual method 'compatible(lang::type type)' not found in abstract '%s'", cx_nameof(_abstract));
+    cx_assert(_methodId, "virtual method 'compatible(type type)' not found in abstract '%s'", cx_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = cx_interface_resolveMethodById(_abstract, _methodId);
-    cx_assert(_method != NULL, "unresolved method '%s::compatible(lang::type type)@%d'", cx_nameof(_this), _methodId);
+    cx_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", cx_nameof(_this), _methodId);
 
     cx_call(cx_function(_method), &_result, _this, type);
     
@@ -936,7 +936,7 @@ void __cx_sequence_size(cx_function f, void *result, void *args) {
         *(cx_uint32*)((intptr_t)args + sizeof(cx_any)));
 }
 
-/* virtual ::cortex::lang::struct::castable(lang::type type) */
+/* virtual ::cortex::lang::struct::castable(type type) */
 cx_bool cx_struct_castable(cx_struct _this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -947,13 +947,13 @@ cx_bool cx_struct_castable(cx_struct _this, cx_type type) {
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = cx_interface_resolveMethodId(_abstract, "castable(lang::type type)");
+        _methodId = cx_interface_resolveMethodId(_abstract, "castable(type type)");
     }
-    cx_assert(_methodId, "virtual method 'castable(lang::type type)' not found in abstract '%s'", cx_nameof(_abstract));
+    cx_assert(_methodId, "virtual method 'castable(type type)' not found in abstract '%s'", cx_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = cx_interface_resolveMethodById(_abstract, _methodId);
-    cx_assert(_method != NULL, "unresolved method '%s::castable(lang::type type)@%d'", cx_nameof(_this), _methodId);
+    cx_assert(_method != NULL, "unresolved method '%s::castable(type type)@%d'", cx_nameof(_this), _methodId);
 
     cx_call(cx_function(_method), &_result, _this, type);
     
@@ -967,7 +967,7 @@ void __cx_struct_castable_v(cx_function f, void *result, void *args) {
         *(cx_type*)((intptr_t)args + sizeof(cx_struct)));
 }
 
-/* virtual ::cortex::lang::struct::compatible(lang::type type) */
+/* virtual ::cortex::lang::struct::compatible(type type) */
 cx_bool cx_struct_compatible(cx_struct _this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -978,13 +978,13 @@ cx_bool cx_struct_compatible(cx_struct _this, cx_type type) {
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = cx_interface_resolveMethodId(_abstract, "compatible(lang::type type)");
+        _methodId = cx_interface_resolveMethodId(_abstract, "compatible(type type)");
     }
-    cx_assert(_methodId, "virtual method 'compatible(lang::type type)' not found in abstract '%s'", cx_nameof(_abstract));
+    cx_assert(_methodId, "virtual method 'compatible(type type)' not found in abstract '%s'", cx_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = cx_interface_resolveMethodById(_abstract, _methodId);
-    cx_assert(_method != NULL, "unresolved method '%s::compatible(lang::type type)@%d'", cx_nameof(_this), _methodId);
+    cx_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", cx_nameof(_this), _methodId);
 
     cx_call(cx_function(_method), &_result, _this, type);
     
@@ -1010,7 +1010,7 @@ void __cx_struct_init(cx_function f, void *result, void *args) {
         *(cx_struct*)args);
 }
 
-/* virtual ::cortex::lang::struct::resolveMember(lang::string name) */
+/* virtual ::cortex::lang::struct::resolveMember(string name) */
 cx_member cx_struct_resolveMember(cx_struct _this, cx_string name) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -1021,13 +1021,13 @@ cx_member cx_struct_resolveMember(cx_struct _this, cx_string name) {
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = cx_interface_resolveMethodId(_abstract, "resolveMember(lang::string name)");
+        _methodId = cx_interface_resolveMethodId(_abstract, "resolveMember(string name)");
     }
-    cx_assert(_methodId, "virtual method 'resolveMember(lang::string name)' not found in abstract '%s'", cx_nameof(_abstract));
+    cx_assert(_methodId, "virtual method 'resolveMember(string name)' not found in abstract '%s'", cx_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = cx_interface_resolveMethodById(_abstract, _methodId);
-    cx_assert(_method != NULL, "unresolved method '%s::resolveMember(lang::string name)@%d'", cx_nameof(_this), _methodId);
+    cx_assert(_method != NULL, "unresolved method '%s::resolveMember(string name)@%d'", cx_nameof(_this), _methodId);
 
     cx_call(cx_function(_method), &_result, _this, name);
     
@@ -1098,7 +1098,7 @@ void __cx_type_allocSize_v(cx_function f, void *result, void *args) {
         *(cx_type*)args);
 }
 
-/* virtual ::cortex::lang::type::castable(lang::type type) */
+/* virtual ::cortex::lang::type::castable(type type) */
 cx_bool cx_type_castable(cx_type _this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -1109,13 +1109,13 @@ cx_bool cx_type_castable(cx_type _this, cx_type type) {
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = cx_interface_resolveMethodId(_abstract, "castable(lang::type type)");
+        _methodId = cx_interface_resolveMethodId(_abstract, "castable(type type)");
     }
-    cx_assert(_methodId, "virtual method 'castable(lang::type type)' not found in abstract '%s'", cx_nameof(_abstract));
+    cx_assert(_methodId, "virtual method 'castable(type type)' not found in abstract '%s'", cx_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = cx_interface_resolveMethodById(_abstract, _methodId);
-    cx_assert(_method != NULL, "unresolved method '%s::castable(lang::type type)@%d'", cx_nameof(_this), _methodId);
+    cx_assert(_method != NULL, "unresolved method '%s::castable(type type)@%d'", cx_nameof(_this), _methodId);
 
     cx_call(cx_function(_method), &_result, _this, type);
     
@@ -1150,7 +1150,7 @@ void __cx_type_compare(cx_function f, void *result, void *args) {
         *(cx_any*)((intptr_t)args + sizeof(cx_any)));
 }
 
-/* virtual ::cortex::lang::type::compatible(lang::type type) */
+/* virtual ::cortex::lang::type::compatible(type type) */
 cx_bool cx_type_compatible(cx_type _this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -1161,13 +1161,13 @@ cx_bool cx_type_compatible(cx_type _this, cx_type type) {
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = cx_interface_resolveMethodId(_abstract, "compatible(lang::type type)");
+        _methodId = cx_interface_resolveMethodId(_abstract, "compatible(type type)");
     }
-    cx_assert(_methodId, "virtual method 'compatible(lang::type type)' not found in abstract '%s'", cx_nameof(_abstract));
+    cx_assert(_methodId, "virtual method 'compatible(type type)' not found in abstract '%s'", cx_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = cx_interface_resolveMethodById(_abstract, _methodId);
-    cx_assert(_method != NULL, "unresolved method '%s::compatible(lang::type type)@%d'", cx_nameof(_this), _methodId);
+    cx_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", cx_nameof(_this), _methodId);
 
     cx_call(cx_function(_method), &_result, _this, type);
     
@@ -1224,21 +1224,21 @@ void __cx_type_fullname(cx_function f, void *result, void *args) {
         *(cx_any*)args);
 }
 
-/* delegate ::cortex::lang::type::init(lang::object object) */
+/* delegate ::cortex::lang::type::init(object object) */
 cx_int16 cx_type_init(cx_type _this, cx_object object) {
     cx_callback _callback;
     cx_int16 _result;
     /* Lookup callback-object. */
     _callback = cx_class_resolveCallback(cx_class(cx_typeof(_this)), cx_type_init_o, _this);
 
-    cx_assert(_callback != NULL, "no callback 'init(lang::object object)' for object of type 'cx_type' (call 'cx_type_init_checkCallback' first)");
+    cx_assert(_callback != NULL, "no callback 'init(object object)' for object of type 'cx_type' (call 'cx_type_init_checkCallback' first)");
 
     cx_call(cx_function(_callback), &_result, object);
     
     return _result;
 }
 
-/* delegate ::cortex::lang::type::init(lang::object object), obtain callback */
+/* delegate ::cortex::lang::type::init(object object), obtain callback */
 cx_bool cx_type_init_hasCallback(cx_type _this) {
     /* Lookup callback-object. */
     return cx_class_resolveCallback(cx_class(cx_typeof(_this)), cx_type_init_o, _this) != NULL;

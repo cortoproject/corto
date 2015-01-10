@@ -16,7 +16,7 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::NewExpr::construct(Fast::NewExpr object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::NewExpr::construct(Fast::NewExpr object) */
 cx_int16 Fast_NewExpr_construct(Fast_NewExpr object) {
 /* $begin(::cortex::Fast::NewExpr::construct) */
 
@@ -36,7 +36,7 @@ cx_bool Fast_NewExpr_hasSideEffects_v(Fast_NewExpr _this) {
 /* $end */
 }
 
-/* ::cortex::Fast::NewExpr::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::NewExpr::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_NewExpr_toIc_v(Fast_NewExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::NewExpr::toIc) */
     cx_ic type, attrs, result;
