@@ -206,4 +206,3 @@ cx_void cx_list_reverse(cx_any _this) {
     cx_llReverse(*(cx_ll*)_this.value);
 /* $end */
 }
-

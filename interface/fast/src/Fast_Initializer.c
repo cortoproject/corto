@@ -187,7 +187,7 @@ cx_int16 Fast_Initializer_construct(Fast_Initializer object) {
 #endif
     
     /* If type of initializer is either a composite or a collection type, do an initial push */
-    if (((t->kind == CX_COMPOSITE) || (t->kind == CX_COLLECTION))) {
+    if ((((t->kind == CX_COMPOSITE) && (cx_interface(t)->kind != CX_PROCPTR)) || (t->kind == CX_COLLECTION))) {
         if (Fast_Initializer_push(object)) {
             goto error;
         }

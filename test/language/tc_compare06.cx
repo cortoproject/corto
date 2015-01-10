@@ -1,5 +1,4 @@
 // Comparisons of struct and collection types
-
 bool result : true
 void fail(string msg):
     "tc_compare06: FAIL: $msg"

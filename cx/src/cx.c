@@ -474,6 +474,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     /* procptr */\
     SSO_OP_OBJ(op, procptr_init);\
     SSO_OP_OBJ(op, procptr_compatible);\
+    SSO_OP_OBJ(op, procptr_castable);\
     SSO_OP_OBJ(op, procptr_returnType);\
     SSO_OP_OBJ(op, procptr_returnsReference);\
     SSO_OP_OBJ(op, procptr_parameters);\

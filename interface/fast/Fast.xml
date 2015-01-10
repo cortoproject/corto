@@ -17,7 +17,7 @@
 				</meta:scope>
 			</enum>
 			
-			<function name="valueKindFromType(type type)" returnType="valueKind"/>
+			<function name="valueKindFromType(lang::type type)" returnType="valueKind"/>
 			<function name="report(string kind,string filename,uint32 line,uint32 column,string error,string token)"/>
 			<function name="reportError(string filename,uint32 line,uint32 column,string error,string token)"/>
 			<function name="reportWarning(string filename,uint32 line,uint32 column,string error,string token)"/>

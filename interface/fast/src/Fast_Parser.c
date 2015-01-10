@@ -548,6 +548,7 @@ Fast_Expression Fast_Parser_delegateAssignment(Fast_Parser _this, Fast_Expressio
     /* If procedure is compatible with delegate type, do a complex assignment */
     cx_set_ext(NULL, &variables[0].object, lvalue, "keep object for initializer variable array");
     result = Fast_InitializerExpr__create(variables, 1, TRUE);
+    Fast_InitializerExpr_push(result);
     if (instance) {
         Fast_InitializerExpr_member(result, "instance");
         Fast_InitializerExpr_value(result, instance);

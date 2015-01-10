@@ -35,7 +35,7 @@ void Fast_reportError(cx_string filename, cx_uint32 line, cx_uint32 column, cx_s
 /* ::cortex::Fast::reportWarning(string filename,uint32 line,uint32 column,string error,string token) */
 void Fast_reportWarning(cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token);
 
-/* ::cortex::Fast::valueKindFromType(type type) */
+/* ::cortex::Fast::valueKindFromType(lang::type type) */
 Fast_valueKind Fast_valueKindFromType(cx_type type);
 
 #ifdef __cplusplus

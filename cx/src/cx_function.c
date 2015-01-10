@@ -48,7 +48,7 @@ cx_int16 cx_function_bind(cx_function object) {
 /* $header(::cortex::lang::function::init) */
 static cx_int16 cx_function_parseArguments(cx_function object) {
     object->parameters = cx_function_stringToParameterSeq(cx_nameof(object), cx_parentof(object));
-    return 0;
+    return object->parameters.length == (cx_uint32)-1;
 }
 
 typedef struct cx_functionLookup_t {
@@ -121,6 +121,7 @@ cx_int16 cx_function_init(cx_function object) {
 
     return 0;
 error:
+    object->parameters.length = 0;
     return -1;
 /* $end */
 }
