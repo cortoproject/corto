@@ -289,7 +289,6 @@ function_declaration
         cx_id id;
         cx_type kind = cx_resolve(NULL, $5);
         sprintf(id, "%s(%s)", $3, $4); 
-        cx_dealloc($3); 
         $$ = Fast_Parser_declareFunction(yparser(), $1, id, kind, TRUE); fast_op; 
         cx_free(kind);
     }

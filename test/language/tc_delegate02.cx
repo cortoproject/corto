@@ -1,3 +1,4 @@
+// Test delegates in composite types
 bool result: true
 void fail(string msg):
     "tc_delegate02: FAIL: $msg"

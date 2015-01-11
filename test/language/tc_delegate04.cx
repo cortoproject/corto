@@ -1,0 +1,51 @@
+// Test various types of delegates
+bool result: true
+void fail(string msg):
+    "tc_delegate04: FAIL: $msg"
+    result = false
+
+// Delegate type with references
+int32& refDelegate(int32& a, int32 b) procptr
+
+// Function
+int32& add(int32& a, int32 b):
+    &add = a
+    add = a + b
+
+// Delegate
+refDelegate dRef: add 
+
+int32 a: 10
+var int32& b = dRef(a, 20)
+
+if a != 30: fail("a != 30")
+if b != 30: fail("b != 30")
+if &b != a: fail("&b != a")
+
+a++
+if b != 31: fail("b != 31") // Is b really assigned with reference to a?
+
+
+// Delegate type with base class
+class Animal::
+    legs: uint32
+
+class Dog : Animal::
+    int16 construct(Dog object):
+        object.legs = 4
+
+int32 baseDelegate(Dog a) procptr
+
+int32 returnLegs(Animal a) = a.legs
+int32 returnDogLegs(Dog d) = d.legs
+
+// Assign procedure with base-type of argument
+baseDelegate dBase: returnLegs
+Dog gijs:
+if dBase(gijs) != 4: fail("dBase(d) != 4")
+
+// Assign procedure with actual type of argument
+dBase = returnDogLegs
+if dBase(gijs) != 4: fail("dBase(d) != 4")
+
+if result: "tc_delegate04: OK"

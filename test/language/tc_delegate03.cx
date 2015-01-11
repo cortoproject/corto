@@ -1,3 +1,4 @@
+// Test delegates in collections
 bool result: true
 void fail(string msg):
     "tc_delegate03: FAIL: $msg"
