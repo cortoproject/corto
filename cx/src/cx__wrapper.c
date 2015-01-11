@@ -879,6 +879,12 @@ void __cx_procedure_unbind(cx_function f, void *result, void *args) {
         *(cx_object*)((intptr_t)args + sizeof(cx_procedure)));
 }
 
+void __cx_procptr_bind(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    *(cx_int16*)result = cx_procptr_bind(
+        *(cx_function*)args);
+}
+
 /* virtual ::cortex::lang::procptr::castable(type type) */
 cx_bool cx_procptr_castable(cx_procptr _this, cx_type type) {
     static cx_uint32 _methodId;
@@ -945,6 +951,13 @@ void __cx_procptr_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_int16*)result = cx_procptr_init(
         *(cx_procptr*)args);
+}
+
+void __cx_procptr_instanceof(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    *(cx_bool*)result = cx_procptr_instanceof(
+        *(cx_procptr*)args,
+        *(cx_object*)((intptr_t)args + sizeof(cx_procptr)));
 }
 
 void __cx_sequence_construct(cx_function f, void *result, void *args) {

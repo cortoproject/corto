@@ -844,6 +844,8 @@ CX_CLASS_O(procptr, struct, CX_READONLY, CX_SEQUENCE_EMPTY_V(interface), NULL, C
     CX_MEMBER_O(procptr, parameters, parameterSeq, CX_GLOBAL);
     CX_METHOD_O(procptr, compatible, "(type type)", bool, TRUE, cx_procptr_compatible_v);
     CX_METHOD_O(procptr, castable, "(type type)", bool, TRUE, cx_procptr_compatible_v);
+    CX_METHOD_O(procptr, instanceof, "(object object)", bool, FALSE, cx_procptr_instanceof);
+    CX_FUNCTION_O(procptr, bind, "(function object)", int16, cx_procptr_bind);
 
 /* ::cortex::lang::procedure */
 CX_CLASS_O(procedure, struct, CX_GLOBAL, CX_SEQUENCE_EMPTY_V(interface), NULL, CX_DECLARED | CX_DEFINED);
@@ -922,7 +924,7 @@ CX_CLASS_O(observableEvent, event, CX_GLOBAL, CX_SEQUENCE_EMPTY_V(interface), NU
     CX_REFERENCE_O(observableEvent, observable, object, CX_GLOBAL, CX_DEFINED | CX_DECLARED, FALSE);
 
 /* ::cortex::lang::method */
-CX_PROCEDURE_O(method, CX_METHOD, function, CX_GLOBAL, CX_SSO_TYPE_ID(interface), CX_DECLARED);
+CX_PROCEDURE_O(method, CX_METHOD, function, CX_GLOBAL, NULL, CX_DECLARED);
     CX_MEMBER_O(method, virtual, bool, CX_GLOBAL);
     CX_CALLBACK_O(method, init, "(method object)", type_init, int16, cx_method_init);
     CX_CALLBACK_O(method, bind, "(method object)", procedure_bind, int16, cx_method_bind);

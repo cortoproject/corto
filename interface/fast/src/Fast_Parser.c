@@ -587,9 +587,15 @@ cx_object Fast_Parser_expandBinaryExpr(Fast_Parser _this, Fast_Expression lvalue
         isReference = forceReference || (tleft && tleft->reference) || (tright && tright->reference);
     }
 
+
     if (tleft && (tleft->kind == CX_COMPOSITE) && (cx_interface(tleft)->kind == CX_PROCPTR)) {
-        rvalue = Fast_Parser_delegateAssignment(_this, lvalue, rvalue);
-        if(!rvalue) {
+        if (*(cx_operatorKind*)userData == CX_ASSIGN) {
+            rvalue = Fast_Parser_delegateAssignment(_this, lvalue, rvalue);
+            if(!rvalue) {
+                goto error;
+            }
+        } else {
+            Fast_Parser_error(_this, "operators other than assign not valid for delegates");
             goto error;
         }
     }
@@ -1244,7 +1250,7 @@ Fast_Expression Fast_Parser_callExpr(Fast_Parser _this, Fast_Expression function
     
     _this->stagingAllowed = FALSE;
 
-    if (_this->pass) {
+    if (function && _this->pass) {
         cx_object o = NULL;
         Fast_Expression_list functions = Fast_Expression_toList(function);
 
@@ -1607,14 +1613,26 @@ Fast_Block Fast_Parser_declareFunctionParams(Fast_Parser _this, Fast_Variable fu
 
         /* If function is a method, include 'this' pointer */
         if (cx_instanceof(cx_typedef(cx_method_o), function_o)) {
-            cx_interface parent;
+            cx_object parent;
 
-            typeVariable = Fast_Object__create(cx_parentof(function_o));
+            if (!cx_instanceof(cx_typedef(cx_interface_o), cx_parentof(function_o))) {
+                parent = cx_typeof(cx_parentof(function_o));
+            } else {
+                parent = cx_parentof(function_o);
+            }
+
+            if (!cx_instanceof(cx_typedef(cx_interface_o), parent)) {
+                cx_id id;
+                Fast_Parser_error(_this, "parent of '%s' is not an interface nor of an interface type",
+                    cx_fullname(function_o, id));
+                goto error;
+            }
+
+            typeVariable = Fast_Object__create(parent);
             Fast_Block_declare(result, "this", Fast_Variable(typeVariable), TRUE, FALSE);
             Fast_Parser_collect(_this, typeVariable);
 
-            /* If parent of method has a base, include super */
-            parent = cx_parentof(function_o);
+            /* If this-type of method has a base, include super */            
             if (cx_interface(parent)->base) {
                 Fast_Object superType = Fast_Object__create(cx_interface(parent)->base);
                 Fast_Parser_collect(_this, superType);
@@ -1625,7 +1643,7 @@ Fast_Block Fast_Parser_declareFunctionParams(Fast_Parser _this, Fast_Variable fu
         for(i=0; i<function_o->parameters.length; i++) {
             param = &function_o->parameters.buffer[i];
 
-            typeVariable = Fast_Object__create(param->type);
+            typeVariable = Fast_Object__create(param->type->real);
             Fast_Block_declare(result, param->name, Fast_Variable(typeVariable), TRUE, param->passByReference);
             Fast_Parser_collect(_this, typeVariable);
         }
@@ -1637,6 +1655,8 @@ Fast_Block Fast_Parser_declareFunctionParams(Fast_Parser _this, Fast_Variable fu
     }
 
     return result;
+error:
+    return NULL;
 /* $end */
 }
 

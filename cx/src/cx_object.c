@@ -1026,12 +1026,16 @@ cx_bool cx_instanceof(cx_typedef type, cx_object o) {
         if (t->kind == type->real->kind) {
             switch(type->real->kind) {
             case CX_COMPOSITE: {
-                cx_interface p;
-                p = (cx_interface)t;
+                if (cx_interface(type->real)->kind == CX_PROCPTR) {
+                    /*result = cx_procptr_instanceof(cx_procptr(type), o);*/
+                } else {
+                    cx_interface p;
+                    p = (cx_interface)t;
 
-                while(p && !result) {
-                    result = (p == (cx_interface)type->real);
-                    p = p->base;
+                    while(p && !result) {
+                        result = (p == (cx_interface)type->real);
+                        p = p->base;
+                    }
                 }
                 break;
             }

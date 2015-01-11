@@ -19,7 +19,8 @@ cx_int16 Fast_Local_construct(Fast_Local object) {
 
     Fast_Node(object)->kind = FAST_Variable;
     Fast_Variable(object)->kind = FAST_Local;
-    Fast_Expression(object)->type = Fast_Variable(Fast_Object__create(cx_typedef(Fast_ObjectBase(object->type)->value)->real));
+    Fast_Expression(object)->type = 
+        Fast_Variable(Fast_Object__create(cx_typedef(Fast_ObjectBase(object->type)->value)->real));
     object->isReference |= Fast_Expression_getType(Fast_Expression(object))->reference;
     Fast_Expression(object)->isReference = object->isReference;
 

@@ -40,7 +40,14 @@ cx_int16 cx_function_bind(cx_function object) {
         }
     }
 
+    /* Bind with interface if possible */
+    if (cx_procptr_bind(object)) {
+        goto error;
+    }
+
     return 0;
+error:
+    return -1;
 /* $end */
 }
 
