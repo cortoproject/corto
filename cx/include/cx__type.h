@@ -28,7 +28,7 @@ typedef int32_t cx_int32;
 typedef int64_t cx_int64;
 typedef float cx_float32;
 typedef double cx_float64;
-typedef char* cx_string;
+typedef char *cx_string;
 typedef cx_int32 cx_constant;
 typedef uintptr_t cx_word;
 
@@ -39,6 +39,7 @@ CX_CLASS(cx_template);
 CX_CLASS(cx_primitive);
 CX_CLASS(cx_interface);
 CX_CLASS(cx_collection);
+CX_CLASS(cx_iterator);
 CX_CLASS(cx_binary);
 CX_CLASS(cx_boolean);
 CX_CLASS(cx_character);
@@ -117,7 +118,7 @@ CX_ANY(cx_any);
 typedef void cx_void;
 
 /* Object */
-typedef void* cx_object;
+typedef void *cx_object;
 
 /* Enumeration declarations */
 typedef enum cx_width {
@@ -133,7 +134,8 @@ typedef enum cx_typeKind {
     CX_ANY,
     CX_PRIMITIVE,
     CX_COMPOSITE,
-    CX_COLLECTION
+    CX_COLLECTION,
+    CX_ITERATOR
 }cx_typeKind;
 
 typedef enum cx_primitiveKind {
@@ -229,7 +231,7 @@ CX_BITMASK(cx_eventMask);
     /* defined in cx_object.h */
 
 CX_BITMASK(cx_modifier);
-    #define CX_GLOBAL      (0) /* Member is global and public (no restrictions) */
+    #define CX_GLOBAL     (0) /* Member is global and public (no restrictions) */
     #define CX_LOCAL      (1) /* Member has local validity */
     #define CX_PRIVATE    (2) /* Member is not exposed for extern entities */
     #define CX_READONLY   (4) /* Member access is restricted to reading only */
@@ -361,6 +363,12 @@ CX_CLASS_DEF(cx_collection) {
     cx_collectionKind kind;
     cx_typedef elementType;
     cx_uint32 max;
+};
+
+/* ::cortex::lang::iterator */
+CX_CLASS_DEF(cx_iterator) {
+    CX_EXTEND(cx_type);
+    cx_typedef elementType;
 };
 
 /* ::cortex::lang::binary */

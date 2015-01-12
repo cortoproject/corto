@@ -27,7 +27,8 @@ cx_int16 test_ser_collection_value(void) {
     struct cx_serializer_s serializer = 
         cx_json_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
 
-    _test_ser_collection_value(myarray, "{26,47,6,39}");
+    _test_ser_collection_value(intarray1, "[26,47,6,39]");
+    _test_ser_collection_value(stringlist1, "[\"Alpha\",\"Beta\",\"Gamma\"]")
 
     return result;
 }

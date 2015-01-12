@@ -48,7 +48,7 @@ CX_CLASS_DEF(tc_jsonser_fixture_Dog) {
     tc_jsonser_fixture_Dog lover;
 };
 
-typedef cx_uint32 tc_jsonser_fixture_ints[4];
+typedef cx_int32 tc_jsonser_fixture_intarray[4];
 
 /*  ::tc_jsonser_fixture::point2D */
 typedef struct tc_jsonser_fixture_point2D tc_jsonser_fixture_point2D;
@@ -57,6 +57,8 @@ struct tc_jsonser_fixture_point2D {
     cx_int32 x;
     cx_int32 y;
 };
+
+CX_LIST(tc_jsonser_fixture_stringlist);
 
 #ifdef __cplusplus
 }

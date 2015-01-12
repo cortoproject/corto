@@ -30,7 +30,7 @@ cx_int16 cx__enum_bindConstant(cx_enum _this, cx_constant* c) {
 }
 /* $end */
 
-/* ::cortex::lang::enum::constant(lang::int32 value) */
+/* ::cortex::lang::enum::constant(int32 value) */
 /* $header(::cortex::lang::enum::constant) */
 struct cx_enum_findConstant_t {
     cx_int32 value;
@@ -64,7 +64,7 @@ cx_object cx_enum_constant(cx_enum _this, cx_int32 value) {
 /* $end */
 }
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::enum::construct(lang::enum object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::enum::construct(enum object) */
 cx_int16 cx_enum_construct(cx_enum object) {
 /* $begin(::cortex::lang::enum::construct) */
     cx_uint32 i;
@@ -78,7 +78,7 @@ cx_int16 cx_enum_construct(cx_enum object) {
 /* $end */
 }
 
-/* callback ::cortex::lang::class::destruct(lang::object object) -> ::cortex::lang::enum::destruct(lang::enum object) */
+/* callback ::cortex::lang::class::destruct(object object) -> ::cortex::lang::enum::destruct(enum object) */
 cx_void cx_enum_destruct(cx_enum object) {
 /* $begin(::cortex::lang::enum::destruct) */
     cx_clear(cx_collection(cx_objectSeq_o), &object->constants);
@@ -86,7 +86,7 @@ cx_void cx_enum_destruct(cx_enum object) {
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::enum::init(lang::enum object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::enum::init(enum object) */
 cx_int16 cx_enum_init(cx_enum object) {
 /* $begin(::cortex::lang::enum::init) */
     cx_primitive(object)->kind = CX_ENUM;

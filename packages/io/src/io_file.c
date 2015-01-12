@@ -13,7 +13,7 @@
 #include "stdio.h"
 /* $end */
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::io::file::construct(::cortex::io::file object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::io::file::construct(file object) */
 cx_int16 io_file_construct(io_file object) {
 /* $begin(::cortex::io::file::construct) */
     if (object->name) {\
@@ -60,7 +60,7 @@ error:
 /* $end */
 }
 
-/* callback ::cortex::lang::class::destruct(lang::object object) -> ::cortex::io::file::destruct(::cortex::io::file object) */
+/* callback ::cortex::lang::class::destruct(object object) -> ::cortex::io::file::destruct(file object) */
 cx_void io_file_destruct(io_file object) {
 /* $begin(::cortex::io::file::destruct) */
     if (object->handle) {
@@ -76,7 +76,7 @@ cx_void io_file_flush(io_file _this) {
 /* $end */
 }
 
-/* ::cortex::io::file::read(::cortex::lang::uint32 bytes) */
+/* ::cortex::io::file::read(uint32 bytes) */
 cx_octet_seq io_file_read(io_file _this, cx_uint32 bytes) {
 /* $begin(::cortex::io::file::read) */
     cx_octet_seq result;
@@ -138,7 +138,7 @@ cx_uint32 io_file_write(io_file _this, cx_octet_seq data) {
 /* $end */
 }
 
-/* ::cortex::io::file::writeText(::cortex::lang::string txt) */
+/* ::cortex::io::file::writeText(string txt) */
 cx_uint32 io_file_writeText(io_file _this, cx_string txt) {
 /* $begin(::cortex::io::file::writeText) */
     return fwrite(txt, strlen(txt), 1, (FILE*)_this->handle);

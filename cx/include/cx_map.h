@@ -18,10 +18,10 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::map::construct(lang::map object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::map::construct(map object) */
 cx_int16 cx_map_construct(cx_map object);
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::map::init(lang::map object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::map::init(map object) */
 cx_int16 cx_map_init(cx_map object);
 
 #ifdef __cplusplus

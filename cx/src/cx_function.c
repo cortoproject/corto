@@ -9,7 +9,7 @@
 #include "cx.h"
 #include "cx__meta.h"
 
-/* callback ::cortex::lang::procedure::bind(lang::object object) -> ::cortex::lang::function::bind(lang::function object) */
+/* callback ::cortex::lang::procedure::bind(object object) -> ::cortex::lang::function::bind(function object) */
 cx_int16 cx_function_bind(cx_function object) {
 /* $begin(::cortex::lang::function::bind) */
     /* Count the size based on the parameters and store parameters in slots */
@@ -44,11 +44,11 @@ cx_int16 cx_function_bind(cx_function object) {
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::function::init(lang::function object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::function::init(function object) */
 /* $header(::cortex::lang::function::init) */
 static cx_int16 cx_function_parseArguments(cx_function object) {
     object->parameters = cx_function_stringToParameterSeq(cx_nameof(object), cx_parentof(object));
-    return 0;
+    return object->parameters.length == (cx_uint32)-1;
 }
 
 typedef struct cx_functionLookup_t {
@@ -121,11 +121,12 @@ cx_int16 cx_function_init(cx_function object) {
 
     return 0;
 error:
+    object->parameters.length = 0;
     return -1;
 /* $end */
 }
 
-/* ::cortex::lang::function::stringToParameterSeq(lang::string name,lang::object scope) */
+/* ::cortex::lang::function::stringToParameterSeq(string name,object scope) */
 cx_parameterSeq cx_function_stringToParameterSeq(cx_string name, cx_object scope) {
 /* $begin(::cortex::lang::function::stringToParameterSeq) */
     cx_parameterSeq result = {0, NULL};
@@ -197,7 +198,7 @@ error:
 /* $end */
 }
 
-/* ::cortex::lang::function::unbind(lang::function object) */
+/* ::cortex::lang::function::unbind(function object) */
 cx_void cx_function_unbind(cx_function object) {
 /* $begin(::cortex::lang::function::unbind) */
     cx_uint32 i;

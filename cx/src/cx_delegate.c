@@ -9,7 +9,7 @@
 #include "cx.h"
 #include "cx__meta.h"
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::delegate::init(lang::delegate object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::delegate::init(delegate object) */
 cx_int16 cx_delegate_init(cx_delegate object) {
 /* $begin(::cortex::lang::delegate::init) */
     cx_object parent;

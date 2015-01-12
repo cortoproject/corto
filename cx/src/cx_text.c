@@ -9,7 +9,7 @@
 #include "cx.h"
 #include "cx__meta.h"
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::text::init(lang::text object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::text::init(text object) */
 cx_int16 cx_text_init(cx_text object) {
 /* $begin(::cortex::lang::text::init) */
     cx_type(object)->hasResources = TRUE;

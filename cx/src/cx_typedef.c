@@ -9,7 +9,7 @@
 #include "cx.h"
 #include "cx__meta.h"
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::typedef::construct(lang::typedef object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::typedef::construct(typedef object) */
 cx_int16 cx_typedef_construct(cx_typedef object) {
 /* $begin(::cortex::lang::typedef::construct) */
     cx_typedef real;
@@ -48,7 +48,7 @@ error:
 /* $end */
 }
 
-/* callback ::cortex::lang::class::destruct(lang::object object) -> ::cortex::lang::typedef::destruct(lang::typedef object) */
+/* callback ::cortex::lang::class::destruct(object object) -> ::cortex::lang::typedef::destruct(typedef object) */
 cx_void cx_typedef_destruct(cx_typedef object) {
 /* $begin(::cortex::lang::typedef::destruct) */
     cx_free_ext(object, object->real, "Free real member");
@@ -56,7 +56,7 @@ cx_void cx_typedef_destruct(cx_typedef object) {
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::typedef::init(lang::typedef object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::typedef::init(typedef object) */
 cx_int16 cx_typedef_init(cx_typedef object) {
 /* $begin(::cortex::lang::typedef::init) */
     CX_UNUSED(object);

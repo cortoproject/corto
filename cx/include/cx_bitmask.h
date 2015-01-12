@@ -18,7 +18,7 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::bitmask::init(lang::bitmask object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::bitmask::init(bitmask object) */
 cx_int16 cx_bitmask_init(cx_bitmask object);
 
 #ifdef __cplusplus

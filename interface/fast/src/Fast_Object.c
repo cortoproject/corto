@@ -17,8 +17,8 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Object::construct(Object object) */
-cx_int16 Fast_Object_construct(Fast_Object object) {
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::Object::construct(Object object) */
+cx_int16 Fast_Object_construct(cx_object object) {
 /* $begin(::cortex::Fast::Object::construct) */
     cx_type t = cx_typeof(Fast_ObjectBase(object)->value)->real;
 
@@ -48,20 +48,48 @@ cx_word Fast_Object_getValue(Fast_Object _this) {
 /* $end */
 }
 
-/* ::cortex::Fast::Object::serialize(lang::type dstType,lang::word dst) */
+/* ::cortex::Fast::Object::serialize(type dstType,word dst) */
 cx_int16 Fast_Object_serialize(Fast_Object _this, cx_type dstType, cx_word dst) {
 /* $begin(::cortex::Fast::Object::serialize) */
     Fast_valueKind kind;
 
     if (!dstType->reference) {
-        if (cx_instanceof((cx_typedef)dstType, Fast_ObjectBase(_this)->value)) {
+        cx_bool srcIsDelegate = FALSE, dstIsDelegate = FALSE;
+        cx_object obj = Fast_ObjectBase(_this)->value;
+        cx_type srcType = cx_typeof(obj)->real;
+
+        /* Handle delegates */
+        if ((srcType->kind == CX_COMPOSITE) && (cx_interface(srcType)->kind == CX_PROCPTR)) {
+            srcIsDelegate = TRUE;
+        }
+        if ((dstType->kind == CX_COMPOSITE) && (cx_interface(dstType)->kind == CX_PROCPTR)) {
+            dstIsDelegate = TRUE;
+        }
+
+        if (dstIsDelegate) {
+            if (srcIsDelegate) {
+                cx_value vDst, vSrc;
+                cx_valueValueInit(&vDst, NULL, cx_typedef(dstType), (void *)dst);
+                cx_valueValueInit(&vSrc, NULL, cx_typedef(srcType), Fast_ObjectBase(_this)->value);
+                cx_valueCopy(&vDst, &vSrc);
+            } else if ((srcType->kind == CX_COMPOSITE) && (cx_interface(srcType)->kind == CX_PROCEDURE)) {
+                cx_set(&((cx_procptrdata *)dst)->procedure, Fast_ObjectBase(_this)->value);
+                cx_set(&((cx_procptrdata *)dst)->instance, NULL);
+            }
+
+        } else if (cx_instanceof((cx_typedef)dstType, Fast_ObjectBase(_this)->value)) {
             /* If object is not of a reference type and object is of dstType, copy value */
-            memcpy((void*)dst, Fast_ObjectBase(_this)->value, cx_type_sizeof(dstType));
+            cx_value vDst, vSrc;
+            cx_valueValueInit(&vDst, NULL, cx_typedef(dstType), (void *)dst);
+            cx_valueValueInit(&vSrc, NULL, cx_typedef(srcType), obj);
+            cx_valueCopy(&vDst, &vSrc);
+
         } else {
             cx_id id, id2;
             Fast_Parser_error(yparser(), "type '%s' of object does not match destinationtype '%s'",
                     cx_fullname(cx_typeof(Fast_ObjectBase(_this)->value), id),
                     cx_fullname(dstType, id2));
+            goto error;
         }
     } else {
         if (Fast_Expression(_this)->isReference) {
@@ -104,7 +132,7 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::Object::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Object::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_Object_toIc_v(Fast_Object _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Object::toIc) */
     cx_ic result;

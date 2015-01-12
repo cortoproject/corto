@@ -1,25 +1,47 @@
+bool result: true
+void fail(string msg):
+    "tc_delegate01: FAIL: $msg"
+    result = false
 
 // The delegate type
 uint32 binaryOperation(uint32 a, uint32 b) procptr:
 
-// A function that matches the delegate signature
+// Ordinary functions
 uint32 add(uint32 a, uint32 b) = a + b
+uint32 sub(uint32 a, uint32 b) = a - b
 
-// Assign function to delegate
-binaryOperation op:
-op = add
-
+// Class with method
 class Foo::
     i: uint32
-    uint32 adding(uint32 a, uint32 b):
-        adding = i = a + b
+    uint32 add(uint32 a, uint32 b):
+        add = a + b + i
    
-Foo obj:
-op = obj.adding
+// Instance of class
+Foo obj: 100
+
+// Create delegate and initialize with a function
+binaryOperation op: add
+
+if op(10, 20) != 30: fail("op(10, 20) != 30")
+
+// Assign a delegate to a function
+op = sub
+if op(20, 10) != 10: fail("op(20, 10) != 10")
+
+// Call the delegate on the instance
+op = obj.add
+if op(10, 20) != 130: fail("op(10, 20) != 130")
 
 
-// Call the delegate
-op(10, 20)
+// Create delegate variable
+var binaryOperation varOp = add
 
-//"tc_delegate01: FAIL: not implemented"
+if varOp(10, 20) != 30: fail("varOp(10, 20) != 30")
 
+varOp = sub
+if varOp(20, 10) != 10: fail("varOp(20, 10) != 10")
+
+varOp = obj.add
+if varOp(10, 20) != 130: fail("varOp(10, 20) != 130")
+
+if result: "tc_delegate01: OK"

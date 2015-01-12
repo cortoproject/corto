@@ -56,6 +56,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_CLASS(op, primitive);\
     SSO_OP_CLASS(op, interface);\
     SSO_OP_CLASS(op, collection);\
+    SSO_OP_CLASS(op, iterator);\
     SSO_OP_CLASS(op, struct);\
     SSO_OP_CLASS(op, procedure);\
     SSO_OP_CLASS(op, event);\
@@ -220,6 +221,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, typeKind_PRIMITIVE);\
     SSO_OP_OBJ(op, typeKind_COMPOSITE);\
     SSO_OP_OBJ(op, typeKind_COLLECTION);\
+    SSO_OP_OBJ(op, typeKind_ITERATOR);\
     /* primitiveKind */\
     SSO_OP_OBJ(op, primitiveKind_BINARY);\
     SSO_OP_OBJ(op, primitiveKind_BOOLEAN);\
@@ -396,6 +398,11 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, collection_elementRequiresAlloc);\
     SSO_OP_OBJ(op, collection_init);\
     SSO_OP_OBJ(op, collection_size);\
+    /* iterator */\
+    SSO_OP_OBJ(op, iterator_elementType);\
+    SSO_OP_OBJ(op, iterator_init);\
+    SSO_OP_OBJ(op, iterator_next);\
+    SSO_OP_OBJ(op, iterator_hasNext);\
     /* list */\
     SSO_OP_OBJ(op, list_insert);\
     SSO_OP_OBJ(op, list_insert_);\
@@ -474,6 +481,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     /* procptr */\
     SSO_OP_OBJ(op, procptr_init);\
     SSO_OP_OBJ(op, procptr_compatible);\
+    SSO_OP_OBJ(op, procptr_castable);\
     SSO_OP_OBJ(op, procptr_returnType);\
     SSO_OP_OBJ(op, procptr_returnsReference);\
     SSO_OP_OBJ(op, procptr_parameters);\
@@ -740,7 +748,7 @@ int cx_start(void) {
     cx_assert(((cx_delegate)SSO_OBJECT(class_construct))->id == 2, "class::construct did not receive expected delegateId.");
     cx_assert(((cx_delegate)SSO_OBJECT(class_destruct))->id == 3, "class::destruct did not receive expected delegateId.");
     cx_assert(((cx_delegate)SSO_OBJECT(procedure_bind))->id == 2, "procedure::bind did not receive expected delegateId.");
- 
+
     /* Construct objects */
     SSO_OP_OBJECT_2ND(cx_defineObject);
     SSO_OP_OBJECT(cx_defineObject);
@@ -764,7 +772,7 @@ int cx_start(void) {
         id = cx_callRegisterBinding(cx_call_vm, NULL, NULL, (cx_callDestructHandler)cx_callDestruct_vm);
         cx_assert(id == 2, "Vm-binding did not receive binding-id 2.");
     }
-   
+
     /* Always randomize seed */
     srand (time(NULL));
 
@@ -872,4 +880,3 @@ void cx_stop(void) {
     /* Workaround for dlopen-leakage - with this statement the valgrind memory-logging is clean. */
     /*pthread_exit(NULL);*/
 }
-

@@ -21,9 +21,12 @@ extern "C" {
 /* $header() */
 cx_type Fast_Expression_narrowType(Fast_Expression expr);
 Fast_Expression Fast_Expression_narrow(Fast_Expression expr, cx_type target);
+cx_int8 Fast_Expression_getTypeScore(cx_primitive t);
+cx_int8 Fast_Expression_getCastScore(cx_primitive t);
+cx_icDerefMode Fast_Expression_getDerefMode(Fast_Expression _this, Fast_Expression rvalue, cx_int32 *check);
 /* $end */
 
-/* ::cortex::Fast::Expression::cast(lang::type type,lang::bool isReference) */
+/* ::cortex::Fast::Expression::cast(type type,bool isReference) */
 Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_bool isReference);
 
 /* ::cortex::Fast::Expression::cleanList(list{Expression} list) */
@@ -44,7 +47,7 @@ cx_type Fast_Expression_getType(Fast_Expression _this);
 /* ::cortex::Fast::Expression::getType_expr(Expression target) */
 cx_type Fast_Expression_getType_expr(Fast_Expression _this, Fast_Expression target);
 
-/* ::cortex::Fast::Expression::getType_type(lang::type target) */
+/* ::cortex::Fast::Expression::getType_type(type target) */
 cx_type Fast_Expression_getType_type(Fast_Expression _this, cx_type target);
 
 /* virtual ::cortex::Fast::Expression::getValue() */
@@ -59,13 +62,13 @@ cx_bool Fast_Expression_hasSideEffects(Fast_Expression _this);
 /* ::cortex::Fast::Expression::hasSideEffects() */
 cx_bool Fast_Expression_hasSideEffects_v(Fast_Expression _this);
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::Expression::init(Expression object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::Fast::Expression::init(Expression object) */
 cx_int16 Fast_Expression_init(Fast_Expression object);
 
-/* virtual ::cortex::Fast::Expression::serialize(lang::type dstType,lang::word dst) */
+/* virtual ::cortex::Fast::Expression::serialize(type dstType,word dst) */
 cx_int16 Fast_Expression_serialize(Fast_Expression _this, cx_type dstType, cx_word dst);
 
-/* ::cortex::Fast::Expression::serialize(lang::type dstType,lang::word dst) */
+/* ::cortex::Fast::Expression::serialize(type dstType,word dst) */
 cx_int16 Fast_Expression_serialize_v(Fast_Expression _this, cx_type dstType, cx_word dst);
 
 /* virtual ::cortex::Fast::Expression::toList() */

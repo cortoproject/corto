@@ -9,7 +9,15 @@
 #include "cx.h"
 #include "cx__meta.h"
 
-/* ::cortex::lang::procptr::compatible(lang::type type) */
+/* ::cortex::lang::procptr::castable(type type) */
+cx_bool cx_procptr_castable_v(cx_procptr _this, cx_type type) {
+/* $begin(::cortex::lang::procptr::castable) */
+    printf("procptr::castable\n");
+    return cx_procptr_compatible_v(_this, type);
+/* $end */
+}
+
+/* ::cortex::lang::procptr::compatible(type type) */
 cx_bool cx_procptr_compatible_v(cx_procptr _this, cx_type type) {
 /* $begin(::cortex::lang::procptr::compatible) */
     cx_bool result = FALSE;
@@ -38,13 +46,15 @@ cx_bool cx_procptr_compatible_v(cx_procptr _this, cx_type type) {
                 result = FALSE;
             }
         }   
+    } else if ((type->kind == CX_COMPOSITE) && (cx_interface(type)->kind == CX_PROCEDURE)) {
+        result = TRUE;
     }
 
     return result;
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::procptr::init(lang::procptr object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::procptr::init(procptr object) */
 cx_int16 cx_procptr_init(cx_procptr object) {
 /* $begin(::cortex::lang::procptr::init) */
     cx_int16 result;

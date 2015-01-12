@@ -9,7 +9,7 @@
 #include "Fast.h"
 #include "Fast__meta.h"
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::ObjectBase::construct(ObjectBase object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::ObjectBase::construct(ObjectBase object) */
 cx_int16 Fast_ObjectBase_construct(Fast_ObjectBase object) {
 /* $begin(::cortex::Fast::ObjectBase::construct) */
 

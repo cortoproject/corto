@@ -44,7 +44,7 @@ cx_int8 Fast_Expression_getTypeScore(cx_primitive t) {
 }
 
 /* Categorize types on castability - if equal no cast is required when width is equal */
-cx_int16 Fast_Expression_getCastScore(cx_primitive t) {
+cx_int8 Fast_Expression_getCastScore(cx_primitive t) {
     cx_int8 result = 0;
     switch(t->kind) {
         case CX_BOOLEAN:
@@ -76,13 +76,13 @@ cx_icDerefMode Fast_Expression_getDerefMode(Fast_Expression _this, Fast_Expressi
         cx_type t = Fast_Expression_getType(_this);
         
         if (rvalue->forceReference || (t && t->reference)) {
-            if (Fast_Node(_this)->kind == FAST_Variable) {
+            if (_this->isReference && rvalue->forceReference) {
+                result = CX_IC_DEREF_ADDRESS;
+            } else if (Fast_Node(_this)->kind == FAST_Variable) {
                 if (Fast_Variable(_this)->kind == FAST_Object) {
                     result = CX_IC_DEREF_ADDRESS;
                 } else if ((Fast_Variable(_this)->kind == FAST_Local) && (*Fast_Local(_this)->name == '<') && Fast_Local(_this)->isReference) {
                     result = CX_IC_DEREF_ADDRESS; /* Anonymous locals are treated as objects */
-                } else if (_this->isReference && !(t && t->reference)) {
-                    result = CX_IC_DEREF_ADDRESS;
                 } else {
                     if (check) *check = -1;
                 }
@@ -103,6 +103,7 @@ cx_icDerefMode Fast_Expression_getDerefMode(Fast_Expression _this, Fast_Expressi
                cx_nameof(cx_typeof(rvalue)),
                result == CX_IC_DEREF_VALUE, check?*check:0);
     }*/
+
     return result;
 }
 
@@ -235,7 +236,7 @@ Fast_Expression Fast_Expression_narrow(Fast_Expression expr, cx_type target) {
 
 /* $end */
 
-/* ::cortex::Fast::Expression::cast(lang::type type,lang::bool isReference) */
+/* ::cortex::Fast::Expression::cast(type type,bool isReference) */
 Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_bool isReference) {
 /* $begin(::cortex::Fast::Expression::cast) */
     cx_type exprType, refType;
@@ -504,7 +505,7 @@ cx_type Fast_Expression_getType_expr(Fast_Expression _this, Fast_Expression targ
 /* $end */
 }
 
-/* ::cortex::Fast::Expression::getType_type(lang::type target) */
+/* ::cortex::Fast::Expression::getType_type(type target) */
 cx_type Fast_Expression_getType_type(Fast_Expression _this, cx_type target) {
 /* $begin(::cortex::Fast::Expression::getType_type) */
     cx_type result=Fast_Expression_getType(_this);
@@ -553,14 +554,14 @@ cx_bool Fast_Expression_hasSideEffects_v(Fast_Expression _this) {
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::Expression::init(Expression object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::Fast::Expression::init(Expression object) */
 cx_int16 Fast_Expression_init(Fast_Expression object) {
 /* $begin(::cortex::Fast::Expression::init) */
     return Fast_Node_init((Fast_Node)object);
 /* $end */
 }
 
-/* ::cortex::Fast::Expression::serialize(lang::type dstType,lang::word dst) */
+/* ::cortex::Fast::Expression::serialize(type dstType,word dst) */
 cx_int16 Fast_Expression_serialize_v(Fast_Expression _this, cx_type dstType, cx_word dst) {
 /* $begin(::cortex::Fast::Expression::serialize) */
     CX_UNUSED(_this);

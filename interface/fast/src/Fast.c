@@ -75,6 +75,12 @@ Fast_Call Fast_createCallFromExpr(Fast_Expression f, Fast_Expression arguments) 
         instance = Fast_MemberExpr(f)->lvalue;
         strcpy(name, Fast_String(Fast_MemberExpr(f)->rvalue)->value);
         break;
+
+    /* Element - Must be a list of delegates */
+    case FAST_Element:
+        result = Fast_Call(Fast_DelegateCall__create(NULL, arguments, f));
+        break;
+
     case FAST_Variable:
         switch(Fast_Variable(f)->kind) {
         case FAST_Object: {
@@ -98,9 +104,11 @@ Fast_Call Fast_createCallFromExpr(Fast_Expression f, Fast_Expression arguments) 
     }
 
     /* Initialize builder */
-    Fast_CallBuilder__init(&builder, name, arguments, instance, scope, yparser()->block);
-    result = Fast_CallBuilder_build(&builder);
-    Fast_CallBuilder__deinit(&builder);
+    if (!result) {
+        Fast_CallBuilder__init(&builder, name, arguments, instance, scope, yparser()->block);
+        result = Fast_CallBuilder_build(&builder);
+        Fast_CallBuilder__deinit(&builder);
+    }
 
     return result;
 error:
@@ -108,7 +116,7 @@ error:
 }
 /* $end */
 
-/* ::cortex::Fast::report(lang::string kind,lang::string filename,lang::uint32 line,lang::uint32 column,lang::string error,lang::string token) */
+/* ::cortex::Fast::report(string kind,string filename,uint32 line,uint32 column,string error,string token) */
 void Fast_report(cx_string kind, cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token) {
 /* $begin(::cortex::Fast::report) */
     CX_UNUSED(token);
@@ -122,7 +130,7 @@ void Fast_report(cx_string kind, cx_string filename, cx_uint32 line, cx_uint32 c
 /* $end */
 }
 
-/* ::cortex::Fast::reportError(lang::string filename,lang::uint32 line,lang::uint32 column,lang::string error,lang::string token) */
+/* ::cortex::Fast::reportError(string filename,uint32 line,uint32 column,string error,string token) */
 void Fast_reportError(cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token) {
 /* $begin(::cortex::Fast::reportError) */
     
@@ -131,7 +139,7 @@ void Fast_reportError(cx_string filename, cx_uint32 line, cx_uint32 column, cx_s
 /* $end */
 }
 
-/* ::cortex::Fast::reportWarning(lang::string filename,lang::uint32 line,lang::uint32 column,lang::string error,lang::string token) */
+/* ::cortex::Fast::reportWarning(string filename,uint32 line,uint32 column,string error,string token) */
 void Fast_reportWarning(cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token) {
 /* $begin(::cortex::Fast::reportWarning) */
 

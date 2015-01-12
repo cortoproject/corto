@@ -177,13 +177,19 @@ cx_err cx_logv(cx_err kind, unsigned int level, char* fmt, va_list arg, FILE* f)
 
     CX_UNUSED(level);
 
-    if ((n = (vsnprintf(buff, CX_MAX_LOG, fmt, arg) + (l = strlen(cx_logKind[kind])))) > CX_MAX_LOG) {
+    if ((n = (vsnprintf(buff, CX_MAX_LOG, fmt, arg) + 1 + (l = strlen(cx_logKind[kind])))) > CX_MAX_LOG) {
         alloc = cx_malloc(n + 2);
         strcpy(alloc, cx_logKind[kind]);
         vsnprintf(alloc + l, n - l, fmt, arg);
         strcat(alloc, "\n");
         msg = alloc;
+    } else {
+        char *ptr = buff;
+        strcpy(buff, cx_logKind[kind]);
+        vsprintf(ptr, fmt, arg);
+        strcat(ptr, "\n");
     }
+    n = strlen(msg);
 
     cx_setLasterror(msg);
 

@@ -18,7 +18,7 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::DynamicInitializer::construct(DynamicInitializer object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::DynamicInitializer::construct(DynamicInitializer object) */
 cx_int16 Fast_DynamicInitializer_construct(Fast_DynamicInitializer object);
 
 /* ::cortex::Fast::DynamicInitializer::define() */

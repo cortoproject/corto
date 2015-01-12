@@ -17,7 +17,7 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::Integer::init(Integer object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::Fast::Integer::init(Integer object) */
 cx_int16 Fast_Integer_init(Fast_Integer object) {
 /* $begin(::cortex::Fast::Integer::init) */
     Fast_Literal(object)->kind = FAST_Integer;
@@ -25,7 +25,7 @@ cx_int16 Fast_Integer_init(Fast_Integer object) {
 /* $end */
 }
 
-/* ::cortex::Fast::Integer::serialize(lang::type dstType,lang::word dst) */
+/* ::cortex::Fast::Integer::serialize(type dstType,word dst) */
 cx_int16 Fast_Integer_serialize(Fast_Integer _this, cx_type dstType, cx_word dst) {
 /* $begin(::cortex::Fast::Integer::serialize) */
     Fast_valueKind kind;
@@ -58,7 +58,7 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::Integer::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Integer::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_Integer_toIc_v(Fast_Integer _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Integer::toIc) */
     cx_ic result;

@@ -632,9 +632,7 @@ int main(int argc, char* argv[]) {
 
     /* Parse arguments */
     for(i=1; i<argc; i++) {
-        if ( cx_load(argv[i]) ) {
-            printf("%s\n", cx_lasterror());
-        }
+        cx_load(argv[i]);
     }
 
     /* Assign scope to root */

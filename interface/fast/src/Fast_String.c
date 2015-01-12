@@ -159,7 +159,7 @@ error:
 
 /* $end */
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::String::construct(String object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::String::construct(Fast::String object) */
 cx_int16 Fast_String_construct(Fast_String object) {
 /* $begin(::cortex::Fast::String::construct) */
     
@@ -205,7 +205,7 @@ cx_word Fast_String_getValue(Fast_String _this) {
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::Fast::String::init(String object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::Fast::String::init(Fast::String object) */
 cx_int16 Fast_String_init(Fast_String object) {
 /* $begin(::cortex::Fast::String::init) */
     Fast_Literal(object)->kind = FAST_String;
@@ -213,7 +213,7 @@ cx_int16 Fast_String_init(Fast_String object) {
 /* $end */
 }
 
-/* ::cortex::Fast::String::serialize(lang::type dstType,lang::word dst) */
+/* ::cortex::Fast::String::serialize(type dstType,word dst) */
 cx_int16 Fast_String_serialize(Fast_String _this, cx_type dstType, cx_word dst) {
 /* $begin(::cortex::Fast::String::serialize) */
     Fast_valueKind kind;
@@ -246,7 +246,7 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::String::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::String::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_String_toIc_v(Fast_String _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::String::toIc) */
     cx_ic result = NULL;

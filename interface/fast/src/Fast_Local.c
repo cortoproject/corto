@@ -13,7 +13,7 @@
 #include "Fast__api.h"
 /* $end */
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::Fast::Local::construct(Local object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::Local::construct(Local object) */
 cx_int16 Fast_Local_construct(Fast_Local object) {
 /* $begin(::cortex::Fast::Local::construct) */
 
@@ -31,7 +31,7 @@ cx_int16 Fast_Local_construct(Fast_Local object) {
 /* $end */
 }
 
-/* ::cortex::Fast::Local::toIc(lang::alias{"cx_icProgram"} program,lang::alias{"cx_icStorage"} storage,lang::bool stored) */
+/* ::cortex::Fast::Local::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_Local_toIc_v(Fast_Local _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Local::toIc) */
     cx_ic result;

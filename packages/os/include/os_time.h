@@ -17,13 +17,13 @@
 extern "C" {
 #endif
 
-/* ::cortex::os::time::add(::cortex::os::time t) */
+/* ::cortex::os::time::add(time t) */
 cx_void os_time_add(os_time _this, os_time t);
 
 /* ::cortex::os::time::get() */
 cx_void os_time_get(os_time _this);
 
-/* ::cortex::os::time::sub(::cortex::os::time t) */
+/* ::cortex::os::time::sub(time t) */
 cx_void os_time_sub(os_time _this, os_time t);
 
 /* ::cortex::os::time::toFloat() */

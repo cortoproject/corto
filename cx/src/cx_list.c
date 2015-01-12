@@ -45,7 +45,7 @@ int cx_list_appendWalk(void* o, void* userData) {
     src.value = o;
     src.type = cx_collection(dest->type)->elementType->real;
     src.owner = FALSE;
-    cx_list_append_lang_any(*dest, src);
+    cx_list_append_any(*dest, src);
     return 1;
 }
 
@@ -146,9 +146,9 @@ cx_any cx_list_append_(cx_any _this) {
 /* $end */
 }
 
-/* ::cortex::lang::list::append(lang::any element) */
-cx_void cx_list_append_lang_any(cx_any _this, cx_any element) {
-/* $begin(::cortex::lang::list::append(lang::any element)) */
+/* ::cortex::lang::list::append(any element) */
+cx_void cx_list_append_any(cx_any _this, cx_any element) {
+/* $begin(::cortex::lang::list::append(any element)) */
     cx_list_do(_this, element, FALSE, cx_list_appendAction, NULL);
 /* $end */
 }
@@ -164,7 +164,7 @@ cx_void cx_list_clear(cx_any _this) {
 /* $end */
 }
 
-/* callback ::cortex::lang::class::construct(lang::object object) -> ::cortex::lang::list::construct(lang::list object) */
+/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::list::construct(list object) */
 cx_int16 cx_list_construct(cx_list object) {
 /* $begin(::cortex::lang::list::construct) */
     cx_type(object)->hasResources = TRUE;
@@ -174,7 +174,7 @@ cx_int16 cx_list_construct(cx_list object) {
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(lang::object object) -> ::cortex::lang::list::init(lang::list object) */
+/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::list::init(list object) */
 cx_int16 cx_list_init(cx_list object) {
 /* $begin(::cortex::lang::list::init) */
     cx_collection(object)->kind = CX_LIST;
@@ -193,9 +193,9 @@ cx_any cx_list_insert_(cx_any _this) {
 /* $end */
 }
 
-/* ::cortex::lang::list::insert(lang::any element) */
-cx_void cx_list_insert_lang_any(cx_any _this, cx_any element) {
-/* $begin(::cortex::lang::list::insert(lang::any element)) */
+/* ::cortex::lang::list::insert(any element) */
+cx_void cx_list_insert_any(cx_any _this, cx_any element) {
+/* $begin(::cortex::lang::list::insert(any element)) */
     cx_list_do(_this, element, TRUE, cx_list_insertAction, NULL);
 /* $end */
 }
