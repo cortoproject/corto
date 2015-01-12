@@ -13,7 +13,6 @@
 cx_int16 cx_procptr_bind(cx_function object) {
 /* $begin(::cortex::lang::procptr::bind) */
     cx_object parent = cx_parentof(object);
-    cx_bool mustBind = FALSE;
 
     if (cx_class_instanceof(cx_interface_o, cx_typeof(parent))) {
         cx_interface type = cx_interface(cx_typeof(parent)->real);

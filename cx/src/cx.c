@@ -83,8 +83,6 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_CLASS(op, function);\
     SSO_OP_CLASS(op, method);\
     SSO_OP_CLASS(op, virtual);\
-    SSO_OP_CLASS(op, delegate);\
-    SSO_OP_CLASS(op, callback);\
     SSO_OP_CLASS(op, observer);\
     SSO_OP_CLASS(op, metaprocedure);
 
@@ -132,6 +130,8 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_PRIM(op, parameter);\
     SSO_OP_PRIM(op, procptrdata);\
     SSO_OP_VOID(op, dispatcher);\
+    SSO_OP_PRIM(op, callbackInit);\
+    SSO_OP_PRIM(op, callbackDestruct);\
     SSO_OP_PROCEDURETYPE(op);\
     SSO_OP_CLASSTYPE(op);
 
@@ -142,13 +142,12 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
 #define SSO_OP_OBJECT(op)\
     SSO_OP_OBJ(op, cortex_new);\
     SSO_OP_OBJ(op, cortex__new);\
-    SSO_OP_OBJ(op, type_init);\
-    SSO_OP_OBJ(op, class_construct);\
-    SSO_OP_OBJ(op, class_destruct);\
+    SSO_OP_OBJ(op, class_construct_);\
+    SSO_OP_OBJ(op, class_destruct_);\
     SSO_OP_OBJ(op, procedure_bind);\
-    SSO_OP_OBJ(op, procedure_unbind);\
+    SSO_OP_OBJ(op, procedure_unbind_);\
     /* constant */\
-    SSO_OP_OBJ(op, constant_init);\
+    SSO_OP_OBJ(op, constant_init_);\
     /* function */\
     SSO_OP_OBJ(op, function_returnType);\
     SSO_OP_OBJ(op, function_returnsReference);\
@@ -160,23 +159,16 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, function_size);\
     SSO_OP_OBJ(op, function_parameters);\
     SSO_OP_OBJ(op, function_nextParameterId);\
-    SSO_OP_OBJ(op, function_init);\
-    SSO_OP_OBJ(op, function_bind);\
+    SSO_OP_OBJ(op, function_init_);\
+    SSO_OP_OBJ(op, function_bind_);\
     SSO_OP_OBJ(op, function_unbind);\
     SSO_OP_OBJ(op, function_stringToParameterSeq);\
     /* method */\
     SSO_OP_OBJ(op, method_virtual);\
-    SSO_OP_OBJ(op, method_init);\
-    SSO_OP_OBJ(op, method_bind);\
+    SSO_OP_OBJ(op, method_init_);\
+    SSO_OP_OBJ(op, method_bind_);\
     /* virtual */\
-    SSO_OP_OBJ(op, virtual_init);\
-    /* delegate */\
-    SSO_OP_OBJ(op, delegate_id);\
-    SSO_OP_OBJ(op, delegate_init);\
-    /* callback */\
-    SSO_OP_OBJ(op, callback_delegate);\
-    SSO_OP_OBJ(op, callback_init);\
-    SSO_OP_OBJ(op, callback_bind);\
+    SSO_OP_OBJ(op, virtual_init_);\
     /* observer */\
     SSO_OP_OBJ(op, observer_observable);\
     SSO_OP_OBJ(op, observer_mask);\
@@ -186,22 +178,22 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, observer_me);\
     SSO_OP_OBJ(op, observer_observing);\
     SSO_OP_OBJ(op, observer_delayedBinder);\
-    SSO_OP_OBJ(op, observer_init);\
-    SSO_OP_OBJ(op, observer_bind);\
+    SSO_OP_OBJ(op, observer_init_);\
+    SSO_OP_OBJ(op, observer_bind_);\
     SSO_OP_OBJ(op, observer_unbind);\
-    SSO_OP_OBJ(op, observer_listen);\
-    SSO_OP_OBJ(op, observer_silence);\
-    SSO_OP_OBJ(op, observer_setDispatcher);\
+    SSO_OP_OBJ(op, observer_listen_);\
+    SSO_OP_OBJ(op, observer_silence_);\
+    SSO_OP_OBJ(op, observer_setDispatcher_);\
     /* metaprocedure */\
     SSO_OP_OBJ(op, metaprocedure_referenceOnly);\
-    SSO_OP_OBJ(op, metaprocedure_bind);\
+    SSO_OP_OBJ(op, metaprocedure_bind_);\
     /* dispatcher */\
     SSO_OP_OBJ(op, dispatcher_post);\
     SSO_OP_OBJ(op, dispatcher_getEvent);\
     /* event */\
     SSO_OP_OBJ(op, event_kind);\
     SSO_OP_OBJ(op, event_handled);\
-    SSO_OP_OBJ(op, event_processed);\
+    SSO_OP_OBJ(op, event_processed_);\
     SSO_OP_OBJ(op, event_uniqueKind);\
     /* observableEvent */\
     SSO_OP_OBJ(op, observableEvent_observer);\
@@ -245,8 +237,6 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     /* procedureKind */\
     SSO_OP_OBJ(op, procedureKind_FUNCTION);\
     SSO_OP_OBJ(op, procedureKind_METHOD);\
-    SSO_OP_OBJ(op, procedureKind_DELEGATE);\
-    SSO_OP_OBJ(op, procedureKind_CALLBACK);\
     SSO_OP_OBJ(op, procedureKind_OBSERVER);\
     SSO_OP_OBJ(op, procedureKind_METAPROCEDURE);\
     /* equalityKind */\
@@ -320,10 +310,10 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     /* typedef */\
     SSO_OP_OBJ(op, typedef_type);\
     SSO_OP_OBJ(op, typedef_real);\
-    SSO_OP_OBJ(op, typedef_realType);\
-    SSO_OP_OBJ(op, typedef_init);\
-    SSO_OP_OBJ(op, typedef_construct);\
-    SSO_OP_OBJ(op, typedef_destruct);\
+    SSO_OP_OBJ(op, typedef_realType_);\
+    SSO_OP_OBJ(op, typedef_init_);\
+    SSO_OP_OBJ(op, typedef_construct_);\
+    SSO_OP_OBJ(op, typedef_destruct_);\
     /* type */\
     SSO_OP_OBJ(op, type_kind);\
     SSO_OP_OBJ(op, type_reference);\
@@ -335,21 +325,19 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, type_parentType);\
     SSO_OP_OBJ(op, type_parentState);\
     SSO_OP_OBJ(op, type_metaprocedures);\
-    SSO_OP_OBJ(op, type_sizeof);\
-    SSO_OP_OBJ(op, type_alignmentof);\
-    SSO_OP_OBJ(op, type_allocSize);\
-    SSO_OP_OBJ(op, type_compatible);\
-    SSO_OP_OBJ(op, type_resolveProcedure);\
-    SSO_OP_OBJ(op, type_castable);\
-    /* The extra '_' disambiguates between the type::init delegate and this callback */\
-    SSO_OP_OBJ(op, type__init);\
-    SSO_OP_OBJ(op, type_construct);\
-    /* The extra '_' disambiguates between the type::destruct metaprocedure and this callback */\
-    SSO_OP_OBJ(op, type__destruct);\
+    SSO_OP_OBJ(op, type_init);\
+    SSO_OP_OBJ(op, type_sizeof_);\
+    SSO_OP_OBJ(op, type_alignmentof_);\
+    SSO_OP_OBJ(op, type_allocSize_);\
+    SSO_OP_OBJ(op, type_compatible_);\
+    SSO_OP_OBJ(op, type_resolveProcedure_);\
+    SSO_OP_OBJ(op, type_castable_);\
+    SSO_OP_OBJ(op, type_init_);\
+    SSO_OP_OBJ(op, type_construct_);\
+    SSO_OP_OBJ(op, type_destruct_);\
     SSO_OP_OBJ(op, type_parentof);\
     SSO_OP_OBJ(op, type_nameof);\
     SSO_OP_OBJ(op, type_declare);\
-    SSO_OP_OBJ(op, type_destruct);\
     SSO_OP_OBJ(op, type_define);\
     SSO_OP_OBJ(op, type_invalidate);\
     SSO_OP_OBJ(op, type_resolve);\
@@ -367,34 +355,34 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, primitive_kind);\
     SSO_OP_OBJ(op, primitive_width);\
     SSO_OP_OBJ(op, primitive_convertId);\
-    SSO_OP_OBJ(op, primitive_init);\
-    SSO_OP_OBJ(op, primitive_construct);\
-    SSO_OP_OBJ(op, primitive_compatible);\
-    SSO_OP_OBJ(op, primitive_castable);\
+    SSO_OP_OBJ(op, primitive_init_);\
+    SSO_OP_OBJ(op, primitive_construct_);\
+    SSO_OP_OBJ(op, primitive_compatible_);\
+    SSO_OP_OBJ(op, primitive_castable_);\
     /* interface */\
     SSO_OP_OBJ(op, interface_kind);\
     SSO_OP_OBJ(op, interface_nextMemberId);\
     SSO_OP_OBJ(op, interface_members);\
     SSO_OP_OBJ(op, interface_methods);\
     SSO_OP_OBJ(op, interface_base);\
-    SSO_OP_OBJ(op, interface_init);\
-    SSO_OP_OBJ(op, interface_construct);\
-    SSO_OP_OBJ(op, interface_destruct);\
-    SSO_OP_OBJ(op, interface_resolveMember);\
-    SSO_OP_OBJ(op, interface_compatible);\
-    SSO_OP_OBJ(op, interface_resolveMethod);\
-    SSO_OP_OBJ(op, interface_resolveMethodId);\
-    SSO_OP_OBJ(op, interface_resolveMethodById);\
-    SSO_OP_OBJ(op, interface_bindMethod);\
-    SSO_OP_OBJ(op, interface_baseof);\
+    SSO_OP_OBJ(op, interface_init_);\
+    SSO_OP_OBJ(op, interface_construct_);\
+    SSO_OP_OBJ(op, interface_destruct_);\
+    SSO_OP_OBJ(op, interface_resolveMember_);\
+    SSO_OP_OBJ(op, interface_compatible_);\
+    SSO_OP_OBJ(op, interface_resolveMethod_);\
+    SSO_OP_OBJ(op, interface_resolveMethodId_);\
+    SSO_OP_OBJ(op, interface_resolveMethodById_);\
+    SSO_OP_OBJ(op, interface_bindMethod_);\
+    SSO_OP_OBJ(op, interface_baseof_);\
     /* collection */\
     SSO_OP_OBJ(op, collection_kind);\
     SSO_OP_OBJ(op, collection_elementType);\
     SSO_OP_OBJ(op, collection_max);\
-    SSO_OP_OBJ(op, collection_castable);\
-    SSO_OP_OBJ(op, collection_compatible);\
-    SSO_OP_OBJ(op, collection_elementRequiresAlloc);\
-    SSO_OP_OBJ(op, collection_init);\
+    SSO_OP_OBJ(op, collection_castable_);\
+    SSO_OP_OBJ(op, collection_compatible_);\
+    SSO_OP_OBJ(op, collection_elementRequiresAlloc_);\
+    SSO_OP_OBJ(op, collection_init_);\
     SSO_OP_OBJ(op, collection_size);\
     /* list */\
     SSO_OP_OBJ(op, list_insert);\
@@ -404,49 +392,48 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, list_reverse);\
     SSO_OP_OBJ(op, list_clear);\
     /* binary */\
-    SSO_OP_OBJ(op, binary_init);\
+    SSO_OP_OBJ(op, binary_init_);\
     /* boolean */\
-    SSO_OP_OBJ(op, boolean_init);\
+    SSO_OP_OBJ(op, boolean_init_);\
     /* char */\
-    SSO_OP_OBJ(op, character_init);\
+    SSO_OP_OBJ(op, character_init_);\
     /* int */\
     SSO_OP_OBJ(op, int_min);\
     SSO_OP_OBJ(op, int_max);\
-    SSO_OP_OBJ(op, int_init);\
+    SSO_OP_OBJ(op, int_init_);\
     /* uint */\
     SSO_OP_OBJ(op, uint_min);\
     SSO_OP_OBJ(op, uint_max);\
-    SSO_OP_OBJ(op, uint_init);\
+    SSO_OP_OBJ(op, uint_init_);\
     /* float */\
     SSO_OP_OBJ(op, float_min);\
     SSO_OP_OBJ(op, float_max);\
-    SSO_OP_OBJ(op, float_init);\
+    SSO_OP_OBJ(op, float_init_);\
     /* text */\
     SSO_OP_OBJ(op, text_charWidth);\
     SSO_OP_OBJ(op, text_length);\
-    SSO_OP_OBJ(op, text_init);\
+    SSO_OP_OBJ(op, text_init_);\
     /* enum */\
     SSO_OP_OBJ(op, enum_constants);\
-    SSO_OP_OBJ(op, enum_constant);\
-    SSO_OP_OBJ(op, enum_init);\
-    SSO_OP_OBJ(op, enum_construct);\
-    SSO_OP_OBJ(op, enum_destruct);\
+    SSO_OP_OBJ(op, enum_constant_);\
+    SSO_OP_OBJ(op, enum_init_);\
+    SSO_OP_OBJ(op, enum_construct_);\
+    SSO_OP_OBJ(op, enum_destruct_);\
     /* bitmask */\
-    SSO_OP_OBJ(op, bitmask_init);\
+    SSO_OP_OBJ(op, bitmask_init_);\
     /* alias */\
-    SSO_OP_OBJ(op, alias_init);\
+    SSO_OP_OBJ(op, alias_init_);\
     SSO_OP_OBJ(op, alias_typeName);\
     /* struct */\
-    SSO_OP_OBJ(op, struct_init);\
-    SSO_OP_OBJ(op, struct_construct);\
     SSO_OP_OBJ(op, struct_baseAccess);\
-    SSO_OP_OBJ(op, struct_delegateCount);\
-    SSO_OP_OBJ(op, struct_compatible);\
-    SSO_OP_OBJ(op, struct_castable);\
-    SSO_OP_OBJ(op, struct_resolveMember);\
+    SSO_OP_OBJ(op, struct_init_);\
+    SSO_OP_OBJ(op, struct_construct_);\
+    SSO_OP_OBJ(op, struct_compatible_);\
+    SSO_OP_OBJ(op, struct_castable_);\
+    SSO_OP_OBJ(op, struct_resolveMember_);\
     /* procedure */\
     SSO_OP_OBJ(op, procedure_kind);\
-    SSO_OP_OBJ(op, procedure_init);\
+    SSO_OP_OBJ(op, procedure_init_);\
     /* interfaceVector */\
     SSO_OP_OBJ(op, interfaceVector_interface);\
     SSO_OP_OBJ(op, interfaceVector_vector);\
@@ -454,50 +441,46 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, class_implements);\
     SSO_OP_OBJ(op, class_interfaceVector);\
     SSO_OP_OBJ(op, class_observers);\
-    SSO_OP_OBJ(op, class__construct);\
-    SSO_OP_OBJ(op, class__destruct);\
-    SSO_OP_OBJ(op, class_bindMethod);\
-    SSO_OP_OBJ(op, class_allocSize);\
-    SSO_OP_OBJ(op, class_init);\
-    SSO_OP_OBJ(op, class_instanceof);\
-    SSO_OP_OBJ(op, class_privateObserver);\
-    SSO_OP_OBJ(op, class_resolveDelegate);\
-    SSO_OP_OBJ(op, class_resolveInterfaceMethod);\
-    SSO_OP_OBJ(op, class_resolveCallback);\
-    SSO_OP_OBJ(op, class_bindCallback);\
-    SSO_OP_OBJ(op, class_bindDelegate);\
-    SSO_OP_OBJ(op, class_bindObserver);\
-    SSO_OP_OBJ(op, class_findObserver);\
+    SSO_OP_OBJ(op, class_construct);\
+    SSO_OP_OBJ(op, class_destruct);\
+    SSO_OP_OBJ(op, class_bindMethod_);\
+    SSO_OP_OBJ(op, class_allocSize_);\
+    SSO_OP_OBJ(op, class_init_);\
+    SSO_OP_OBJ(op, class_instanceof_);\
+    SSO_OP_OBJ(op, class_privateObserver_);\
+    SSO_OP_OBJ(op, class_resolveInterfaceMethod_);\
+    SSO_OP_OBJ(op, class_bindObserver_);\
+    SSO_OP_OBJ(op, class_findObserver_);\
     /* procptrdata */\
     SSO_OP_OBJ(op, procptrdata_instance);\
     SSO_OP_OBJ(op, procptrdata_procedure);\
     /* procptr */\
-    SSO_OP_OBJ(op, procptr_init);\
-    SSO_OP_OBJ(op, procptr_compatible);\
-    SSO_OP_OBJ(op, procptr_castable);\
-    SSO_OP_OBJ(op, procptr_instanceof);\
-    SSO_OP_OBJ(op, procptr_bind);\
     SSO_OP_OBJ(op, procptr_returnType);\
     SSO_OP_OBJ(op, procptr_returnsReference);\
     SSO_OP_OBJ(op, procptr_parameters);\
+    SSO_OP_OBJ(op, procptr_init_);\
+    SSO_OP_OBJ(op, procptr_compatible_);\
+    SSO_OP_OBJ(op, procptr_castable_);\
+    SSO_OP_OBJ(op, procptr_instanceof_);\
+    SSO_OP_OBJ(op, procptr_bind);\
     /* array */\
     SSO_OP_OBJ(op, array_elementType);\
-    SSO_OP_OBJ(op, array_init);\
-    SSO_OP_OBJ(op, array_construct);\
-    SSO_OP_OBJ(op, array_destruct);\
+    SSO_OP_OBJ(op, array_init_);\
+    SSO_OP_OBJ(op, array_construct_);\
+    SSO_OP_OBJ(op, array_destruct_);\
     /* sequence */\
-    SSO_OP_OBJ(op, sequence_init);\
-    SSO_OP_OBJ(op, sequence_construct);\
+    SSO_OP_OBJ(op, sequence_init_);\
+    SSO_OP_OBJ(op, sequence_construct_);\
     SSO_OP_OBJ(op, sequence_size);\
     /* list */\
-    SSO_OP_OBJ(op, list_init);\
-    SSO_OP_OBJ(op, list_construct);\
+    SSO_OP_OBJ(op, list_init_);\
+    SSO_OP_OBJ(op, list_construct_);\
     /* map */\
     SSO_OP_OBJ(op, map_elementType);\
     SSO_OP_OBJ(op, map_keyType);\
     SSO_OP_OBJ(op, map_max);\
-    SSO_OP_OBJ(op, map_init);\
-    SSO_OP_OBJ(op, map_construct);\
+    SSO_OP_OBJ(op, map_init_);\
+    SSO_OP_OBJ(op, map_construct_);\
     /* member */\
     SSO_OP_OBJ(op, member_type);\
     SSO_OP_OBJ(op, member_modifiers);\
@@ -505,8 +488,8 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, member_weak);\
     SSO_OP_OBJ(op, member_id);\
     SSO_OP_OBJ(op, member_offset);\
-    SSO_OP_OBJ(op, member_init);\
-    SSO_OP_OBJ(op, member_construct);\
+    SSO_OP_OBJ(op, member_init_);\
+    SSO_OP_OBJ(op, member_construct_);\
     /* parameter */\
     SSO_OP_OBJ(op, parameter_name);\
     SSO_OP_OBJ(op, parameter_type);\
@@ -528,12 +511,16 @@ static void cx_freeType(cx_object o, cx_uint32 size) {
     cx_freeObject(o);
 }
 
+void cx_delegateDestruct(cx_type t, cx_object o);
+cx_int16 cx_delegateInit(cx_type t, cx_object o);
+cx_int16 cx_delegateConstruct(cx_type t, cx_object o);
+
 /* Initialization of objects */
 static void cx_initObject(cx_object o) {
     cx_newObject(o);
-    if(cx_type_init_hasCallback(cx_typeof(o)->real)) {
-        cx_type_init(cx_typeof(o)->real, o);
-    }
+
+    cx_delegateInit(cx_typeof(o)->real, o);
+    
     if (cx_typeof(o)->real->kind == CX_VOID) {
         cx__setState(o, CX_DEFINED);
     }
@@ -565,40 +552,17 @@ static void cx_defineType(cx_object o, cx_uint32 size) {
 
 /* Destruct object */
 static void cx_destructObject(cx_object o) {
-    cx_vtable* vtable;
-
     cx__destructor(o);
-
-    /* Free callback-vtable */
-    if ((vtable = cx_class_getCallbackVtable(o))) {
-        cx_uint32 i;
-        for(i=0; i<vtable->length; i++) {
-            if (vtable->buffer && vtable->buffer[i]) {
-                cx_free_ext(o, vtable->buffer[i], "Free callback from builtin-object.");
-            }
-        }
-    }
 }
 
 /* Destruct type */
 static void cx_destructType(cx_object o, cx_uint32 size) {
-    cx_vtable* vtable;
     CX_UNUSED(size);
 
     cx__destructor(o);
 
     /* Restore 'real' pointer */
     cx_typedef(o)->real = o;
-
-    /* Free callback-vtable */
-    if ((vtable = cx_class_getCallbackVtable(o))) {
-        cx_uint32 i;
-        for(i=0; i<vtable->length; i++) {
-            if (vtable->buffer && vtable->buffer[i]) {
-                cx_free_ext(o, vtable->buffer[i], "Free callback from builtin-object.");
-            }
-        }
-    }
 }
 
 /* Update references */
@@ -627,73 +591,6 @@ static void cx_decreaseRefType(cx_object o, cx_uint32 size) {
     cx_decreaseRef(o);
 }
 
-void cx_bindMethods(void) {
-    /* Bind init delegate. This delegate object will be used to invoke the type-specific initializer callbacks. */
-    cx_class_bindDelegate(cx_type_o, SSO_OBJECT(type_init));
-
-    /* typedef, type, primitive, interface */
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_typedef_o), SSO_OBJECT(typedef_init));
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_type_o), SSO_OBJECT(type__init));
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_primitive_o), SSO_OBJECT(primitive_init));
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_interface_o), SSO_OBJECT(interface_init));
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_collection_o), SSO_OBJECT(collection_init));
-
-    /* binary, boolean, character, int, uint, float, text, enum, bitmask, alias */
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_binary_o), SSO_OBJECT(binary_init));
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_boolean_o), SSO_OBJECT(boolean_init));
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_character_o), SSO_OBJECT(character_init));
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_int_o), SSO_OBJECT(int_init));
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_uint_o), SSO_OBJECT(uint_init));
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_float_o), SSO_OBJECT(float_init));
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_text_o), SSO_OBJECT(text_init));
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_enum_o), SSO_OBJECT(enum_init));
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_bitmask_o), SSO_OBJECT(bitmask_init));
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_alias_o), SSO_OBJECT(alias_init));
-
-    /* interface, struct, class, procedure */
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_struct_o), SSO_OBJECT(struct_init));
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_interface_o), SSO_OBJECT(interface_init));
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_class_o), SSO_OBJECT(class_init));
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_procedure_o), SSO_OBJECT(procedure_init));
-
-    /* array, sequence, list, map */
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_array_o), SSO_OBJECT(array_init));
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_sequence_o), SSO_OBJECT(sequence_init));
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_list_o), SSO_OBJECT(list_init));
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_map_o), SSO_OBJECT(map_init));
-
-    /* method, delegate, callback, parameter */
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_function_o), SSO_OBJECT(function_init));
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_method_o), SSO_OBJECT(method_init));
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_delegate_o), SSO_OBJECT(delegate_init));
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_callback_o), SSO_OBJECT(callback_init));
-
-    /* member */
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_member_o), SSO_OBJECT(member_init));
-
-    /* constant */
-    cx_class_bindCallback(cx_type_o, SSO_OBJECT(type_init), cx_type(cx_constant_o), SSO_OBJECT(constant_init));
-
-    /* class::construct and class::destruct are assigned hard-coded delegateId's so constructor and destructor
-     * callbacks can be binded. We can't actually bind these objects yet, as this would prematurely create a
-     * vtable on the class object, which would contain only a subset of the methods in his inheritance hierarchy.
-     * This in effect would make it impossible for 'class' to correctly resolve all of it's (virtual) methods.
-     *
-     * The values below can be deduced from the fact that in the whole inheritance tree of a class only 'type'
-     * has delegatee ('init') which has obtained id 1. These numbers are asserted on later in the
-     * bootstrap, so if at a later time additional delegates are added, the bootstrap will fail, which is a good thing.
-     *
-     * The same goes for the procedure::bind function, which fulfills the same purpose for procedure objects
-     * as the class::construct does for class objects.
-     */
-    ((cx_delegate)SSO_OBJECT(class_construct))->id = 2;
-    ((cx_delegate)SSO_OBJECT(class_destruct))->id = 3;
-    ((cx_delegate)SSO_OBJECT(procedure_bind))->id = 2;
-
-    /* ::function */
-    cx_class_bindCallback(cx_procedure_o, SSO_OBJECT(procedure_bind), cx_type(cx_function_o), SSO_OBJECT(function_bind));
-}
-
 int cx_start(void) {
 
     /* Initialize threadkeys */
@@ -702,19 +599,6 @@ int cx_start(void) {
 
     /* Init admin-lock */
     cx_adminLock = cx_mutexNew();
-
-    /* Bootstrap sizes. This is necessary because otherwise the callback-vtables which
-     * are located after the object's value won't be accessible. */
-    cx_type(cx_type_o)->size = sizeof(struct cx_type_s);
-    cx_type(cx_procedure_o)->size = sizeof(struct cx_procedure_s);
-    cx_type(cx_class_o)->size = sizeof(struct cx_class_s);
-    cx_type(cx_binary_o)->size = sizeof(struct cx_binary_s);
-    cx_type(cx_boolean_o)->size = sizeof(struct cx_boolean_s);
-    cx_type(cx_character_o)->size = sizeof(struct cx_character_s);
-    cx_type(cx_int_o)->size = sizeof(struct cx_int_s);
-    cx_type(cx_uint_o)->size = sizeof(struct cx_uint_s);
-    cx_type(cx_float_o)->size = sizeof(struct cx_float_s);
-    cx_type(cx_text_o)->size = sizeof(struct cx_text_s);
 
     /* Bootstrap sizes of types used in parameters, these are used to determine
      * argument-stack sizes for functions during function::bind. */
@@ -725,10 +609,6 @@ int cx_start(void) {
     cx_type(cx_state_o)->size = sizeof(cx_state);
     cx_type(cx_attr_o)->size = sizeof(cx_attr);
 
-    /* We need to bind the methods required for initialization now because the next
-     * bootstrap step will use them. */
-    cx_bindMethods();
-
     /* Initialize builtin scopes */
     cx_initObject(root_o);
     cx_initObject(cortex_o);
@@ -738,11 +618,6 @@ int cx_start(void) {
     SSO_OP_TYPE(cx_initType);
     SSO_OP_OBJECT(cx_initObject);
     SSO_OP_OBJECT_2ND(cx_initObject);
-
-    /* Validate that class::construct, class::destruct and procedure::bind received correct delegateId's */
-    cx_assert(((cx_delegate)SSO_OBJECT(class_construct))->id == 2, "class::construct did not receive expected delegateId.");
-    cx_assert(((cx_delegate)SSO_OBJECT(class_destruct))->id == 3, "class::destruct did not receive expected delegateId.");
-    cx_assert(((cx_delegate)SSO_OBJECT(procedure_bind))->id == 2, "procedure::bind did not receive expected delegateId.");
  
     /* Construct objects */
     SSO_OP_OBJECT_2ND(cx_defineObject);

@@ -65,7 +65,7 @@ cx_void cx_type__destruct(cx_type object) {
 }
 
 /* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::type::_init(type object) */
-cx_int16 cx_type__init(cx_type object) {
+cx_int16 cx_type_init(cx_type object) {
 /* $begin(::cortex::lang::type::_init) */
     cx_keep_ext(object, object, "Keep self for type-member");
     cx_typedef(object)->type = (cx_typedef)object;

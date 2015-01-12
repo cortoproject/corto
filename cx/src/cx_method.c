@@ -12,8 +12,7 @@
 /* callback ::cortex::lang::procedure::bind(object object) -> ::cortex::lang::method::bind(method object) */
 cx_int16 cx_method_bind(cx_method object) {
 /* $begin(::cortex::lang::method::bind) */
-    cx_object parent = cx_parentof(object);
-
+    
     /* Bind function */
     if (cx_function_bind(cx_function(object))) {
         goto error;

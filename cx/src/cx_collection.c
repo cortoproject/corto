@@ -239,7 +239,8 @@ cx_bool cx_collection_elementRequiresAlloc(cx_collection _this) {
 cx_int16 cx_collection_init(cx_collection object) {
 /* $begin(::cortex::lang::collection::init) */
     cx_type(object)->kind = CX_COLLECTION;
-    return cx_type__init(cx_type(object));/* $end */
+    return cx_type_init(cx_type(object));
+/* $end */
 }
 
 /* ::cortex::lang::collection::size() */

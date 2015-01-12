@@ -22,7 +22,7 @@ extern "C" {
 cx_void cx_type__destruct(cx_type object);
 
 /* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::type::_init(type object) */
-cx_int16 cx_type__init(cx_type object);
+cx_int16 cx_type_init(cx_type object);
 
 /* ::cortex::lang::type::alignmentof() */
 cx_uint16 cx_type_alignmentof(cx_type _this);
@@ -71,12 +71,6 @@ cx_void cx_type_destruct(cx_any _this);
 
 /* ::cortex::lang::type::fullname() */
 cx_string cx_type_fullname(cx_any _this);
-
-/* delegate ::cortex::lang::type::init(object object), obtain callback */
-cx_bool cx_type_init_hasCallback(cx_type _this);
-
-/* ::cortex::lang::type::init(object object) */
-cx_int16 cx_type_init(cx_type _this, cx_object object);
 
 /* ::cortex::lang::type::instanceof(typedef type) */
 cx_bool cx_type_instanceof(cx_any _this, cx_typedef type);

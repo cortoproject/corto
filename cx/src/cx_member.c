@@ -43,6 +43,7 @@ cx_int16 cx_member_init(cx_member object) {
             if (cx__interface_bindMember(parent, object)) {
                 goto error;
             }
+
             /* Set default member-modifiers - not during bootstrap */
             if (cx_checkState(cx_type_o, CX_DEFINED)) {
                 object->modifiers = CX_GLOBAL;

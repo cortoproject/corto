@@ -269,6 +269,6 @@ cx_int16 cx_primitive_construct(cx_primitive object) {
 cx_int16 cx_primitive_init(cx_primitive object) {
 /* $begin(::cortex::lang::primitive::init) */
     cx_type(object)->kind = CX_PRIMITIVE;
-    return cx_type__init((cx_type)object);
+    return cx_type_init((cx_type)object);
 /* $end */
 }

@@ -93,18 +93,14 @@ CX_META_OBJECT(sequence, memberSeq);
 CX_META_OBJECT(sequence, parameterSeq);
 CX_META_OBJECT(sequence, interfaceVectorSeq);
 
+CX_META_OBJECT(procptr, callbackInit);
+CX_META_OBJECT(procptr, callbackDestruct);
+
 CX_META_OBJECT(procedure, function);
 CX_META_OBJECT(procedure, method);
 CX_META_OBJECT(procedure, virtual);
-CX_META_OBJECT(procedure, delegate);
-CX_META_OBJECT(procedure, callback);
 CX_META_OBJECT(procedure, observer);
 CX_META_OBJECT(procedure, metaprocedure);
-
-CX_META_OBJECT(delegate, type_init);
-CX_META_OBJECT(delegate, class_construct);
-CX_META_OBJECT(delegate, class_destruct);
-CX_META_OBJECT(delegate, procedure_bind);
 
 #ifdef __cplusplus
 }

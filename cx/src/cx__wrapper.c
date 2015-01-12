@@ -49,18 +49,6 @@ void __cx_boolean_init(cx_function f, void *result, void *args) {
         *(cx_boolean*)args);
 }
 
-void __cx_callback_bind(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    *(cx_int16*)result = cx_callback_bind(
-        *(cx_callback*)args);
-}
-
-void __cx_callback_init(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    *(cx_int16*)result = cx_callback_init(
-        *(cx_callback*)args);
-}
-
 void __cx_character_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_int16*)result = cx_character_init(
@@ -111,22 +99,6 @@ void __cx_class_allocSize_v(cx_function f, void *result, void *args) {
         *(cx_class*)args);
 }
 
-void __cx_class_bindCallback(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    *(cx_int16*)result = cx_class_bindCallback(
-        *(cx_class*)args,
-        *(cx_delegate*)((intptr_t)args + sizeof(cx_class)),
-        *(cx_object*)((intptr_t)args + sizeof(cx_class) + sizeof(cx_delegate)),
-        *(cx_callback*)((intptr_t)args + sizeof(cx_class) + sizeof(cx_delegate) + sizeof(cx_object)));
-}
-
-void __cx_class_bindDelegate(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    *(cx_int16*)result = cx_class_bindDelegate(
-        *(cx_class*)args,
-        *(cx_delegate*)((intptr_t)args + sizeof(cx_class)));
-}
-
 void __cx_class_bindMethod(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_int16*)result = cx_class_bindMethod(
@@ -140,58 +112,6 @@ void __cx_class_bindObserver(cx_function f, void *result, void *args) {
     cx_class_bindObserver(
         *(cx_class*)args,
         *(cx_observer*)((intptr_t)args + sizeof(cx_class)));
-}
-
-/* delegate ::cortex::lang::class::construct(object object) */
-cx_int16 cx_class_construct(cx_class _this, cx_object object) {
-    cx_callback _callback;
-    cx_int16 _result;
-    /* Lookup callback-object. */
-    _callback = cx_class_resolveCallback(cx_class(cx_typeof(_this)), cx_class_construct_o, _this);
-
-    cx_assert(_callback != NULL, "no callback 'construct(object object)' for object of type 'cx_class' (call 'cx_class_construct_checkCallback' first)");
-
-    cx_call(cx_function(_callback), &_result, object);
-    
-    return _result;
-}
-
-/* delegate ::cortex::lang::class::construct(object object), obtain callback */
-cx_bool cx_class_construct_hasCallback(cx_class _this) {
-    /* Lookup callback-object. */
-    return cx_class_resolveCallback(cx_class(cx_typeof(_this)), cx_class_construct_o, _this) != NULL;
-}
-
-void __cx_class_construct(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    *(cx_int16*)result = cx_class_construct(
-        *(cx_class*)args,
-        *(cx_object*)((intptr_t)args + sizeof(cx_class)));
-}
-
-/* delegate ::cortex::lang::class::destruct(object object) */
-void cx_class_destruct(cx_class _this, cx_object object) {
-    cx_callback _callback;
-    /* Lookup callback-object. */
-    _callback = cx_class_resolveCallback(cx_class(cx_typeof(_this)), cx_class_destruct_o, _this);
-
-    cx_assert(_callback != NULL, "no callback 'destruct(object object)' for object of type 'cx_class' (call 'cx_class_destruct_checkCallback' first)");
-
-    cx_call(cx_function(_callback), NULL, object);
-}
-
-/* delegate ::cortex::lang::class::destruct(object object), obtain callback */
-cx_bool cx_class_destruct_hasCallback(cx_class _this) {
-    /* Lookup callback-object. */
-    return cx_class_resolveCallback(cx_class(cx_typeof(_this)), cx_class_destruct_o, _this) != NULL;
-}
-
-void __cx_class_destruct(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    CX_UNUSED(result);
-    cx_class_destruct(
-        *(cx_class*)args,
-        *(cx_object*)((intptr_t)args + sizeof(cx_class)));
 }
 
 void __cx_class_findObserver(cx_function f, void *result, void *args) {
@@ -221,21 +141,6 @@ void __cx_class_privateObserver(cx_function f, void *result, void *args) {
         *(cx_class*)args,
         *(cx_object*)((intptr_t)args + sizeof(cx_class)),
         *(cx_observer*)((intptr_t)args + sizeof(cx_class) + sizeof(cx_object)));
-}
-
-void __cx_class_resolveCallback(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    *(cx_callback*)result = cx_class_resolveCallback(
-        *(cx_class*)args,
-        *(cx_delegate*)((intptr_t)args + sizeof(cx_class)),
-        *(cx_object*)((intptr_t)args + sizeof(cx_class) + sizeof(cx_delegate)));
-}
-
-void __cx_class_resolveDelegate(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    *(cx_delegate*)result = cx_class_resolveDelegate(
-        *(cx_class*)args,
-        *(cx_string*)((intptr_t)args + sizeof(cx_class)));
 }
 
 void __cx_class_resolveInterfaceMethod(cx_function f, void *result, void *args) {
@@ -332,12 +237,6 @@ void __cx_constant_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_int16*)result = cx_constant_init(
         *(void**)args);
-}
-
-void __cx_delegate_init(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    *(cx_int16*)result = cx_delegate_init(
-        *(cx_delegate*)args);
 }
 
 /* virtual ::cortex::lang::dispatcher::getEvent(observer observer,object me,object observable,object src) */
@@ -838,33 +737,6 @@ void __cx_primitive_init(cx_function f, void *result, void *args) {
         *(cx_primitive*)args);
 }
 
-/* delegate ::cortex::lang::procedure::bind(object object) */
-cx_int16 cx_procedure_bind(cx_procedure _this, cx_object object) {
-    cx_callback _callback;
-    cx_int16 _result;
-    /* Lookup callback-object. */
-    _callback = cx_class_resolveCallback(cx_class(cx_typeof(_this)), cx_procedure_bind_o, _this);
-
-    cx_assert(_callback != NULL, "no callback 'bind(object object)' for object of type 'cx_procedure' (call 'cx_procedure_bind_checkCallback' first)");
-
-    cx_call(cx_function(_callback), &_result, object);
-    
-    return _result;
-}
-
-/* delegate ::cortex::lang::procedure::bind(object object), obtain callback */
-cx_bool cx_procedure_bind_hasCallback(cx_procedure _this) {
-    /* Lookup callback-object. */
-    return cx_class_resolveCallback(cx_class(cx_typeof(_this)), cx_procedure_bind_o, _this) != NULL;
-}
-
-void __cx_procedure_bind(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    *(cx_int16*)result = cx_procedure_bind(
-        *(cx_procedure*)args,
-        *(cx_object*)((intptr_t)args + sizeof(cx_procedure)));
-}
-
 void __cx_procedure_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_int16*)result = cx_procedure_init(
@@ -1098,9 +970,9 @@ void __cx_type__destruct(cx_function f, void *result, void *args) {
         *(cx_type*)args);
 }
 
-void __cx_type__init(cx_function f, void *result, void *args) {
+void __cx_type_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
-    *(cx_int16*)result = cx_type__init(
+    *(cx_int16*)result = cx_type_init(
         *(cx_type*)args);
 }
 
@@ -1266,33 +1138,6 @@ void __cx_type_fullname(cx_function f, void *result, void *args) {
     CX_UNUSED(args);
     *(cx_string*)result = cx_type_fullname(
         *(cx_any*)args);
-}
-
-/* delegate ::cortex::lang::type::init(object object) */
-cx_int16 cx_type_init(cx_type _this, cx_object object) {
-    cx_callback _callback;
-    cx_int16 _result;
-    /* Lookup callback-object. */
-    _callback = cx_class_resolveCallback(cx_class(cx_typeof(_this)), cx_type_init_o, _this);
-
-    cx_assert(_callback != NULL, "no callback 'init(object object)' for object of type 'cx_type' (call 'cx_type_init_checkCallback' first)");
-
-    cx_call(cx_function(_callback), &_result, object);
-    
-    return _result;
-}
-
-/* delegate ::cortex::lang::type::init(object object), obtain callback */
-cx_bool cx_type_init_hasCallback(cx_type _this) {
-    /* Lookup callback-object. */
-    return cx_class_resolveCallback(cx_class(cx_typeof(_this)), cx_type_init_o, _this) != NULL;
-}
-
-void __cx_type_init(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    *(cx_int16*)result = cx_type_init(
-        *(cx_type*)args,
-        *(cx_object*)((intptr_t)args + sizeof(cx_type)));
 }
 
 void __cx_type_instanceof(cx_function f, void *result, void *args) {

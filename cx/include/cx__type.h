@@ -67,11 +67,11 @@ CX_INTERFACE(cx_dispatcher);
 CX_STRUCT(cx_parameter);
 CX_STRUCT(cx_procptrdata);
 CX_STRUCT(cx_interfaceVector);
+CX_STRUCT(cx_callbackInit);
+CX_STRUCT(cx_callbackDestruct);
 
 CX_PROCEDURE(cx_function);
 CX_PROCEDURE(cx_method);
-CX_PROCEDURE(cx_delegate);
-CX_PROCEDURE(cx_callback);
 CX_PROCEDURE(cx_observer);
 CX_PROCEDURE(cx_metaprocedure);
 
@@ -108,9 +108,7 @@ CX_ANY(cx_any);
 #define cx_function(t) ((cx_function)t)
 #define cx_method(t) ((cx_method)t)
 #define cx_virtual(t) ((cx_virtual)t)
-#define cx_callback(t) ((cx_callback)t)
 #define cx_observer(t) ((cx_observer)t)
-#define cx_delegate(t) ((cx_delegate)t)
 #define cx_metaprocedure(t) ((cx_metaprocedure)t)
 
 /* Void object */
@@ -167,8 +165,6 @@ typedef enum cx_collectionKind {
 typedef enum cx_procedureKind {
     CX_FUNCTION,
     CX_METHOD,
-    CX_DELEGATE,
-    CX_CALLBACK,
     CX_OBSERVER,
     CX_METAPROCEDURE
 }cx_procedureKind;
@@ -249,11 +245,27 @@ CX_SEQUENCE(cx_interfaceVectorSeq, cx_interfaceVector,);
 
 typedef cx_rbtree cx_scope;
 
-/* ::cortex::lang::parameter */
+/* parameter */
 CX_STRUCT_DEF(cx_parameter) {
     cx_string name;
     cx_typedef type;
     cx_bool passByReference;
+};
+
+/* procptrdata */
+CX_STRUCT_DEF(cx_procptrdata) {
+    cx_object instance;
+    cx_function procedure;
+};
+
+/* callbackInit */
+CX_STRUCT_DEF(cx_callbackInit) {
+    cx_procptrdata _parent;
+};
+
+/* callbackDestruct */
+CX_STRUCT_DEF(cx_callbackDestruct) {
+    cx_procptrdata _parent;
 };
 
 /* function */
@@ -279,18 +291,6 @@ CX_PROCEDURE_DEF(cx_method) {
 /* virtual */
 CX_PROCEDURE_DEF(cx_virtual) {
     CX_EXTEND(cx_method);
-};
-
-/* delegate */
-CX_PROCEDURE_DEF(cx_delegate) {
-    CX_EXTEND(cx_function);
-    cx_uint32 id;
-};
-
-/* callback */
-CX_PROCEDURE_DEF(cx_callback) {
-    CX_EXTEND(cx_function);
-    cx_delegate delegate;
 };
 
 CX_PROCEDURE_DEF(cx_metaprocedure) {
@@ -330,6 +330,7 @@ CX_CLASS_DEF(cx_type) {
     cx_typedef parentType;      /* The mandatory parentType (if not set parentType can be anything) */
     cx_state parentState;       /* The mandatory parentState */
     cx_vtable metaprocedures;   /* Metaprocedures of type */
+    cx_callbackInit init;       /* Init delegate */
 };
 
 /* ::cortex::lang::template */
@@ -427,7 +428,6 @@ CX_CLASS_DEF(cx_alias) {
 CX_CLASS_DEF(cx_struct) {
     CX_EXTEND(cx_interface);
     cx_modifier baseAccess;
-    cx_uint16 delegateCount;
 };
 
 CX_STRUCT_DEF(cx_interfaceVector) {
@@ -441,12 +441,8 @@ CX_CLASS_DEF(cx_class) {
     cx_interfaceSeq implements;
     cx_interfaceVectorSeq interfaceVector;
     cx_observerSeq observers;
-};
-
-/* ::cortex::lang::procptrdata */
-CX_STRUCT_DEF(cx_procptrdata) {
-    cx_object instance;
-    cx_function procedure;
+    cx_callbackInit construct;
+    cx_callbackDestruct destruct;
 };
 
 /* ::cortex::lang::procptr */
@@ -461,6 +457,7 @@ CX_CLASS_DEF(cx_procptr) {
 CX_CLASS_DEF(cx_procedure) {
     CX_EXTEND(cx_struct);
     cx_procedureKind kind;
+    cx_callbackInit bind;
 };
 
 /* ::cortex::lang::array */
