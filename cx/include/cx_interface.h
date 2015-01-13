@@ -21,11 +21,8 @@ extern "C" {
 /* ::cortex::lang::interface::baseof(interface type) */
 cx_int16 cx_interface_baseof(cx_interface _this, cx_interface type);
 
-/* virtual ::cortex::lang::interface::bindMethod(method method) */
-cx_int16 cx_interface_bindMethod(cx_interface _this, cx_method method);
-
 /* ::cortex::lang::interface::bindMethod(method method) */
-cx_int16 cx_interface_bindMethod_v(cx_interface _this, cx_method method);
+cx_int16 cx_interface_bindMethod(cx_interface _this, cx_method method);
 
 /* virtual ::cortex::lang::interface::compatible(type type) */
 cx_bool cx_interface_compatible(cx_interface _this, cx_type type);

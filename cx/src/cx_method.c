@@ -28,7 +28,7 @@ error:
 cx_int16 cx_method_init(cx_method object) {
 /* $begin(::cortex::lang::method::init) */
     cx_object parent;
-
+    
     /* Locate parent class object */
     parent = cx_parentof(object);
 
@@ -36,15 +36,15 @@ cx_int16 cx_method_init(cx_method object) {
     if (cx_class_instanceof(cx_interface_o, parent)) {
         /* Can't use the cx_interface_bindMethod here, since that would introduce a bootstrap issue. */
         if (cx_typeof(parent) == cx_typedef(cx_interface_o)) {
-            if (cx_interface_bindMethod_v(cx_interface(parent), object)) {
+            if (cx_interface_bindMethod(cx_interface(parent), object)) {
                 goto error;
             }
         } else if (cx_typeof(parent) == cx_typedef(cx_struct_o)) {
-            if (cx_interface_bindMethod_v(cx_interface(parent), object)) {
+            if (cx_interface_bindMethod(cx_interface(parent), object)) {
                 goto error;
             }
         } else if (cx_typeof(parent) == cx_typedef(cx_class_o)) {
-            if (cx_class_bindMethod(cx_class(parent), object)) {
+            if (cx_interface_bindMethod(cx_interface(parent), object)) {
                 goto error;
             }
         }

@@ -141,7 +141,7 @@ int cx_interface_walkScope(cx_object o, void* userData) {
 
     if (cx_class_instanceof(cx_procedure_o, cx_typeof(o)) && ((cx_procedure(cx_typeof(o))->kind == CX_METHOD))) {
         if (!cx_checkState(o, CX_DEFINED)) {
-            if (cx_interface_bindMethod_v(_this, o)) {
+            if (cx_interface_bindMethod(_this, o)) {
                 goto error;
             }
         }
@@ -392,7 +392,7 @@ cx_int16 cx_interface_baseof(cx_interface _this, cx_interface type) {
 }
 
 /* ::cortex::lang::interface::bindMethod(method method) */
-cx_int16 cx_interface_bindMethod_v(cx_interface _this, cx_method method) {
+cx_int16 cx_interface_bindMethod(cx_interface _this, cx_method method) {
 /* $begin(::cortex::lang::interface::bindMethod) */
     cx_method* virtual;
     cx_int32 i;
@@ -496,7 +496,7 @@ cx_int16 cx_interface_construct(cx_interface object) {
         if (ownTable.length) {
             for(i=0; i<ownTable.length; i++) {
                 if (cx_instanceof(cx_typedef(cx_method_o), ownTable.buffer[i])) {
-                    cx_interface_bindMethod_v(object, cx_method(ownTable.buffer[i]));
+                    cx_interface_bindMethod(object, cx_method(ownTable.buffer[i]));
                 } 
                 cx_free_ext(object, ownTable.buffer[i], "Free method from temporary vtable.");
             }

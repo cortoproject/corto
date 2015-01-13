@@ -558,6 +558,7 @@ static int c_typeDeclare(cx_object o, void* userData) {
         switch(t->kind) {
         case CX_COMPOSITE:
             switch(cx_interface(t)->kind) {
+            case CX_PROCPTR:
             case CX_STRUCT:
                 g_fileWrite(data->header, "typedef struct %s %s;\n\n", g_fullOid(data->g, t, id), g_fullOid(data->g, t, id));
                 break;

@@ -30,9 +30,6 @@ cx_uint32 cx_class_allocSize(cx_class _this);
 /* ::cortex::lang::class::allocSize() */
 cx_uint32 cx_class_allocSize_v(cx_class _this);
 
-/* ::cortex::lang::class::bindMethod(method method) */
-cx_int16 cx_class_bindMethod(cx_class _this, cx_method method);
-
 /* ::cortex::lang::class::bindObserver(observer observer) */
 cx_void cx_class_bindObserver(cx_class _this, cx_observer observer);
 

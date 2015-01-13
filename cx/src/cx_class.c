@@ -290,13 +290,6 @@ cx_uint32 cx_class_allocSize_v(cx_class _this) {
 /* $end */
 }
 
-/* ::cortex::lang::class::bindMethod(method method) */
-cx_int16 cx_class_bindMethod(cx_class _this, cx_method method) {
-/* $begin(::cortex::lang::class::bindMethod) */
-    return cx_interface_bindMethod_v(cx_interface(_this), method);
-/* $end */
-}
-
 /* ::cortex::lang::class::bindObserver(observer observer) */
 cx_void cx_class_bindObserver(cx_class _this, cx_observer observer) {
 /* $begin(::cortex::lang::class::bindObserver) */

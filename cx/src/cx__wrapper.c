@@ -99,13 +99,6 @@ void __cx_class_allocSize_v(cx_function f, void *result, void *args) {
         *(cx_class*)args);
 }
 
-void __cx_class_bindMethod(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    *(cx_int16*)result = cx_class_bindMethod(
-        *(cx_class*)args,
-        *(cx_method*)((intptr_t)args + sizeof(cx_class)));
-}
-
 void __cx_class_bindObserver(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     CX_UNUSED(result);
@@ -388,33 +381,9 @@ void __cx_interface_baseof(cx_function f, void *result, void *args) {
         *(cx_interface*)((intptr_t)args + sizeof(cx_interface)));
 }
 
-/* virtual ::cortex::lang::interface::bindMethod(method method) */
-cx_int16 cx_interface_bindMethod(cx_interface _this, cx_method method) {
-    static cx_uint32 _methodId;
-    cx_method _method;
-    cx_int16 _result;
-    cx_interface _abstract;
-
-    _abstract = cx_interface(cx_typeof(_this));
-
-    /* Determine methodId once, then cache it for subsequent calls. */
-    if (!_methodId) {
-        _methodId = cx_interface_resolveMethodId(_abstract, "bindMethod(method method)");
-    }
-    cx_assert(_methodId, "virtual method 'bindMethod(method method)' not found in abstract '%s'", cx_nameof(_abstract));
-
-    /* Lookup method-object. */
-    _method = cx_interface_resolveMethodById(_abstract, _methodId);
-    cx_assert(_method != NULL, "unresolved method '%s::bindMethod(method method)@%d'", cx_nameof(_this), _methodId);
-
-    cx_call(cx_function(_method), &_result, _this, method);
-    
-    return _result;
-}
-
-void __cx_interface_bindMethod_v(cx_function f, void *result, void *args) {
+void __cx_interface_bindMethod(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
-    *(cx_int16*)result = cx_interface_bindMethod_v(
+    *(cx_int16*)result = cx_interface_bindMethod(
         *(cx_interface*)args,
         *(cx_method*)((intptr_t)args + sizeof(cx_interface)));
 }

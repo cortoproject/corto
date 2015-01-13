@@ -386,8 +386,8 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, collection_size);\
     /* list */\
     SSO_OP_OBJ(op, list_insert);\
-    SSO_OP_OBJ(op, list_insert_);\
     SSO_OP_OBJ(op, list_append);\
+    SSO_OP_OBJ(op, list_insert_);\
     SSO_OP_OBJ(op, list_append_);\
     SSO_OP_OBJ(op, list_reverse);\
     SSO_OP_OBJ(op, list_clear);\
@@ -443,7 +443,6 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, class_observers);\
     SSO_OP_OBJ(op, class_construct);\
     SSO_OP_OBJ(op, class_destruct);\
-    SSO_OP_OBJ(op, class_bindMethod_);\
     SSO_OP_OBJ(op, class_allocSize_);\
     SSO_OP_OBJ(op, class_init_);\
     SSO_OP_OBJ(op, class_instanceof_);\

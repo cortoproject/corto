@@ -725,7 +725,7 @@ err_parent_mutex:
 }
 
 
-/* Find the right constructor to call */
+/* Find the right initializer to call */
 cx_int16 cx_delegateInit(cx_type t, cx_object o) {
     cx_function delegate = NULL;
     cx_int16 result = 0;
@@ -733,16 +733,10 @@ cx_int16 cx_delegateInit(cx_type t, cx_object o) {
     delegate = t->init._parent.procedure;
 
     if (t->kind == CX_COMPOSITE) {
-        if (cx_interface(t)->kind == CX_CLASS) {
+        if ((cx_interface(t)->kind == CX_CLASS) || ((cx_interface(t)->kind == CX_PROCEDURE))) {
             cx_interface i = cx_interface(t)->base;
             while(i && !delegate) {
-                delegate = t->init._parent.procedure;
-                i = i->base;
-            }
-        } else if (cx_interface(t)->kind == CX_PROCEDURE) {
-            cx_interface i = cx_interface(t)->base;
-            while (i && !delegate) {
-                delegate = t->init._parent.procedure;
+                delegate = cx_type(i)->init._parent.procedure;
                 i = i->base;
             }
         }
