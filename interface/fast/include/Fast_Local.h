@@ -18,8 +18,8 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::Local::construct(Local object) */
-cx_int16 Fast_Local_construct(Fast_Local object);
+/* ::cortex::Fast::Local::construct() */
+cx_int16 Fast_Local_construct(Fast_Local _this);
 
 /* virtual ::cortex::Fast::Local::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_Local_toIc(Fast_Local _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);

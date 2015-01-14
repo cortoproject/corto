@@ -14,21 +14,21 @@
 #include "cx__bitmask.h"
 /* $end */
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::constant::init(constant& object) */
-cx_int16 cx_constant_init(cx_constant *object) {
+/* ::cortex::lang::constant::init() */
+cx_int16 cx_constant_init(cx_constant *_this) {
 /* $begin(::cortex::lang::constant::init) */
     cx_object parent;
 
-    parent = cx_parentof(object);
+    parent = cx_parentof(_this);
 
     /* Parent must be an enum */
     if (cx_typeof(parent) == cx_typedef(cx_enum_o)) {
-        cx__enum_bindConstant(parent, object);
+        cx__enum_bindConstant(parent, _this);
     } else if (cx_typeof(parent) == cx_typedef(cx_bitmask_o)) {
-        cx__bitmask_bindConstant(parent, object);
+        cx__bitmask_bindConstant(parent, _this);
     } else {
         cx_id id;
-        cx_error("::constant::init: parent of constant '%s' is not an enum.", cx_fullname(object, id));
+        cx_error("::constant::init: parent of constant '%s' is not an enum.", cx_fullname(_this, id));
         goto error;
     }
 

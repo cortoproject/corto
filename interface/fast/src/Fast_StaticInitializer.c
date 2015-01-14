@@ -115,8 +115,8 @@ error:
 }
 /* $end */
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::StaticInitializer::construct(StaticInitializer object) */
-cx_int16 Fast_StaticInitializer_construct(Fast_StaticInitializer object) {
+/* ::cortex::Fast::StaticInitializer::construct() */
+cx_int16 Fast_StaticInitializer_construct(Fast_StaticInitializer _this) {
 /* $begin(::cortex::Fast::StaticInitializer::construct) */
     cx_int8 variable;
     

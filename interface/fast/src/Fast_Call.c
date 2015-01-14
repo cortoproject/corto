@@ -67,8 +67,8 @@ error:
 
 /* $end */
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::Call::construct(Fast::Call object) */
-cx_int16 Fast_Call_construct(Fast_Call object) {
+/* ::cortex::Fast::Call::construct() */
+cx_int16 Fast_Call_construct(Fast_Call _this) {
 /* $begin(::cortex::Fast::Call::construct) */
     Fast_Expression returnTypeExpr;
 
@@ -101,7 +101,7 @@ cx_bool Fast_Call_hasSideEffects_v(Fast_Call _this) {
 }
 
 /* ::cortex::Fast::Call::setParameters(function function) */
-void Fast_Call_setParameters(Fast_Call _this, cx_function function) {
+cx_void Fast_Call_setParameters(Fast_Call _this, cx_function function) {
 /* $begin(::cortex::Fast::Call::setParameters) */
     cx_uint32 i;
 

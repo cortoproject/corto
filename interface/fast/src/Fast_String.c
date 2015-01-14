@@ -159,8 +159,8 @@ error:
 
 /* $end */
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::String::construct(Fast::String object) */
-cx_int16 Fast_String_construct(Fast_String object) {
+/* ::cortex::Fast::String::construct() */
+cx_int16 Fast_String_construct(Fast_String _this) {
 /* $begin(::cortex::Fast::String::construct) */
     
     if (!yparser()->block || !yparser()->scope) {
@@ -205,8 +205,8 @@ cx_word Fast_String_getValue(Fast_String _this) {
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::Fast::String::init(Fast::String object) */
-cx_int16 Fast_String_init(Fast_String object) {
+/* ::cortex::Fast::String::init() */
+cx_int16 Fast_String_init(Fast_String _this) {
 /* $begin(::cortex::Fast::String::init) */
     Fast_Literal(object)->kind = FAST_String;
     return Fast_Literal_init((Fast_Literal)object);

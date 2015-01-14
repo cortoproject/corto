@@ -71,8 +71,8 @@ error:
 
 /* $end */
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::Fast::Node::init(Node object) */
-cx_int16 Fast_Node_init(Fast_Node object) {
+/* ::cortex::Fast::Node::init() */
+cx_int16 Fast_Node_init(Fast_Node _this) {
 /* $begin(::cortex::Fast::Node::init) */
     object->line = yparser()->line;
     object->column = yparser()->column;

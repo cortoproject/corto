@@ -17,11 +17,11 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::procedure::bind(object object) -> ::cortex::lang::observer::bind(observer object) */
-cx_int16 cx_observer_bind(cx_observer object);
+/* ::cortex::lang::observer::bind() */
+cx_int16 cx_observer_bind(cx_observer _this);
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::observer::init(observer object) */
-cx_int16 cx_observer_init(cx_observer object);
+/* ::cortex::lang::observer::init() */
+cx_int16 cx_observer_init(cx_observer _this);
 
 /* ::cortex::lang::observer::listen(object observable,object me) */
 cx_int16 cx_observer_listen(cx_observer _this, cx_object observable, cx_object me);

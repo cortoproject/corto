@@ -231,44 +231,44 @@ cx_bool cx_primitive_compatible_v(cx_primitive _this, cx_type type) {
 /* $end */
 }
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::primitive::construct(primitive object) */
-cx_int16 cx_primitive_construct(cx_primitive object) {
+/* ::cortex::lang::primitive::construct() */
+cx_int16 cx_primitive_construct(cx_primitive _this) {
 /* $begin(::cortex::lang::primitive::construct) */
 
-    switch(object->width) {
+    switch(_this->width) {
     case CX_WIDTH_8:
-        cx_type(object)->size = 1;
-        cx_type(object)->alignment = CX_ALIGNMENT(cx_char);
+        cx_type(_this)->size = 1;
+        cx_type(_this)->alignment = CX_ALIGNMENT(cx_char);
         break;
     case CX_WIDTH_16:
-        cx_type(object)->size = 2;
-        cx_type(object)->alignment = CX_ALIGNMENT(cx_int16);
+        cx_type(_this)->size = 2;
+        cx_type(_this)->alignment = CX_ALIGNMENT(cx_int16);
         break;
     case CX_WIDTH_32:
-        cx_type(object)->size = 4;
-        cx_type(object)->alignment = CX_ALIGNMENT(cx_int32);
+        cx_type(_this)->size = 4;
+        cx_type(_this)->alignment = CX_ALIGNMENT(cx_int32);
         break;
     case CX_WIDTH_64:
-        cx_type(object)->size = 8;
-        cx_type(object)->alignment = CX_ALIGNMENT(cx_int64);
+        cx_type(_this)->size = 8;
+        cx_type(_this)->alignment = CX_ALIGNMENT(cx_int64);
         break;
     case CX_WIDTH_WORD:
-        cx_type(object)->size = sizeof(void*);
-        cx_type(object)->alignment = CX_ALIGNMENT(cx_word);
+        cx_type(_this)->size = sizeof(void*);
+        cx_type(_this)->alignment = CX_ALIGNMENT(cx_word);
         break;
     }
 
     /* Assign convertId which enables quick lookups of implicit primitive conversions. */
-    object->convertId = cx__primitive_convertId(object->kind, object->width);
+    _this->convertId = cx__primitive_convertId(_this->kind, _this->width);
 
-    return cx_type_construct(cx_type(object));
+    return cx_type_construct(cx_type(_this));
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::primitive::init(primitive object) */
-cx_int16 cx_primitive_init(cx_primitive object) {
+/* ::cortex::lang::primitive::init() */
+cx_int16 cx_primitive_init(cx_primitive _this) {
 /* $begin(::cortex::lang::primitive::init) */
-    cx_type(object)->kind = CX_PRIMITIVE;
-    return cx_type_init((cx_type)object);
+    cx_type(_this)->kind = CX_PRIMITIVE;
+    return cx_type_init((cx_type)_this);
 /* $end */
 }

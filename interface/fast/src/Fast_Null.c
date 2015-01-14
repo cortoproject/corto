@@ -17,8 +17,8 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::Fast::Null::init(Null object) */
-cx_int16 Fast_Null_init(Fast_Null object) {
+/* ::cortex::Fast::Null::init() */
+cx_int16 Fast_Null_init(Fast_Null _this) {
 /* $begin(::cortex::Fast::Null::init) */
     Fast_Literal(object)->kind = FAST_Null;
     Fast_Expression(object)->type = NULL;

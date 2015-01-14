@@ -707,7 +707,7 @@ CX_CLASS_O(type, typedef, CX_LOCAL | CX_READONLY, NULL, CX_DECLARED | CX_DEFINED
     CX_METHOD_O(type, resolveProcedure, "(string name)", function, FALSE, cx_type_resolveProcedure);
     CX_METHOD_O(type, init, "()", int16, FALSE, cx_type_init);
     CX_METHOD_O(type, construct, "()", int16, FALSE, cx_type_construct);
-    CX_METHOD_O(type, destruct, "()", void, FALSE, cx_type__destruct);
+    CX_METHOD_O(type, destruct, "()", void, FALSE, cx_type_destruct);
     CX_METAPROCEDURE_O(type, parentof, "()", object, TRUE, cx_type_parentof);
     CX_METAPROCEDURE_O(type, nameof, "()", string, TRUE, cx_type_nameof);
     CX_METAPROCEDURE_O(type, fullname, "()", string, TRUE, cx_type_fullname);
@@ -814,20 +814,20 @@ CX_CLASS_O(text, primitive, CX_LOCAL, NULL, CX_DECLARED | CX_DEFINED, CX_I);
 CX_FW_ICD(enum);
 CX_CLASS_O(enum, primitive, CX_LOCAL | CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, CX_ICD);
     CX_MEMBER_O(enum, constants, objectSeq, CX_LOCAL | CX_PRIVATE);
-    CX_METHOD_O(enum, init, "(enum object)", int16, FALSE, cx_enum_init);
-    CX_METHOD_O(enum, construct, "(enum object)", int16, FALSE, cx_enum_construct);
-    CX_METHOD_O(enum, destruct, "(enum object)", void, FALSE, cx_enum_destruct);
+    CX_METHOD_O(enum, init, "()", int16, FALSE, cx_enum_init);
+    CX_METHOD_O(enum, construct, "()", int16, FALSE, cx_enum_construct);
+    CX_METHOD_O(enum, destruct, "()", void, FALSE, cx_enum_destruct);
     CX_METHOD_O(enum, constant, "(int32 value)", object, FALSE, cx_enum_constant);
 
 /* ::cortex::lang::bitmask */
 CX_FW_I(bitmask);
 CX_CLASS_O(bitmask, enum, CX_LOCAL | CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, CX_I);
-    CX_METHOD_O(bitmask, init, "(bitmask object)", int16, FALSE, cx_bitmask_init);
+    CX_METHOD_O(bitmask, init, "()", int16, FALSE, cx_bitmask_init);
 
 /* ::cortex::lang::alias */
 CX_FW_I(alias);
 CX_CLASS_O(alias, primitive, CX_LOCAL | CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, CX_I);
-    CX_METHOD_O(alias, init, "(alias object)", int16, FALSE, cx_alias_init);
+    CX_METHOD_O(alias, init, "()", int16, FALSE, cx_alias_init);
     CX_MEMBER_O(alias, typeName, string, CX_GLOBAL);
 
 /* ::cortex::lang::struct */
@@ -837,8 +837,8 @@ CX_CLASS_O(struct, interface, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_IC);
     CX_METHOD_O(struct, compatible, "(type type)", bool, TRUE, cx_struct_compatible_v);
     CX_METHOD_O(struct, castable, "(type type)", bool, TRUE, cx_struct_castable_v);
     CX_METHOD_O(struct, resolveMember, "(string name)", member, TRUE, cx_struct_resolveMember_v);
-    CX_METHOD_O(struct, init, "(struct object)", int16, FALSE, cx_struct_init);
-    CX_METHOD_O(struct, construct, "(struct object)", int16, FALSE, cx_struct_construct);
+    CX_METHOD_O(struct, init, "()", int16, FALSE, cx_struct_init);
+    CX_METHOD_O(struct, construct, "()", int16, FALSE, cx_struct_construct);
 
 /* ::cortex::lang::interfaceVector */
 CX_STRUCT_O(interfaceVector, NULL, CX_DECLARED | CX_DEFINED);
@@ -854,8 +854,8 @@ CX_CLASS_O(class, struct, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_ICD);
     CX_MEMBER_O(class, construct, callbackInit, CX_LOCAL|CX_PRIVATE);
     CX_MEMBER_O(class, destruct, callbackDestruct, CX_LOCAL|CX_PRIVATE);
     CX_METHOD_O(class, init, "()", int16, FALSE, cx_class_init);
-    CX_METHOD_O(class, construct, "()", int16, FALSE, cx_class__construct);
-    CX_METHOD_O(class, destruct, "()", void, FALSE, cx_class__destruct);
+    CX_METHOD_O(class, construct, "()", int16, FALSE, cx_class_construct);
+    CX_METHOD_O(class, destruct, "()", void, FALSE, cx_class_destruct);
     CX_METHOD_O(class, allocSize, "()", uint32, TRUE, cx_class_allocSize_v);
     CX_METHOD_O(class, instanceof, "(object object)", bool, FALSE, cx_class_instanceof);
     CX_METHOD_O(class, privateObserver, "(object object,observer observer)", observer, FALSE, cx_class_privateObserver);
@@ -886,7 +886,7 @@ CX_CLASS_O(procedure, struct, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_I);
     CX_MEMBER_O(procedure, kind, procedureKind, CX_READONLY);
     CX_MEMBER_O(procedure, bind, callbackInit, CX_LOCAL|CX_READONLY);
     CX_METHOD_O(procedure, init, "()", int16, FALSE, cx_procedure_init);
-    CX_METHOD_O(procedure, unbind, "(object object)", void, FALSE, cx_procedure_unbind);
+    CX_METHOD_O(procedure, unbind, "(function object)", void, FALSE, cx_procedure_unbind);
 
 /* ::cortex::lang::array */
 CX_FW_ICD(array);
@@ -899,8 +899,8 @@ CX_CLASS_O(array, collection, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_ICD)
 /* ::cortex::lang::sequence */
 CX_FW_IC(sequence);
 CX_CLASS_O(sequence, collection, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_IC);
-    CX_METHOD_O(sequence, init, "(sequence object)", int16, FALSE, cx_sequence_init);
-    CX_METHOD_O(sequence, construct, "(sequence object)", int16, FALSE, cx_sequence_construct);
+    CX_METHOD_O(sequence, init, "()", int16, FALSE, cx_sequence_init);
+    CX_METHOD_O(sequence, construct, "()", int16, FALSE, cx_sequence_construct);
     CX_METAPROCEDURE_O(sequence, size, "(uint32 size)", void, FALSE, cx_sequence_size);
 
 /* ::cortex::lang::list */

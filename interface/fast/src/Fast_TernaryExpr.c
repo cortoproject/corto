@@ -55,8 +55,8 @@ Fast_If Fast_TernaryExpr_createIf(Fast_Expression condition, Fast_Node ifTrue, F
 
 /* $end */
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::TernaryExpr::construct(Fast::TernaryExpr object) */
-cx_int16 Fast_TernaryExpr_construct(Fast_TernaryExpr object) {
+/* ::cortex::Fast::TernaryExpr::construct() */
+cx_int16 Fast_TernaryExpr_construct(Fast_TernaryExpr _this) {
 /* $begin(::cortex::Fast::TernaryExpr::construct) */
     Fast_Node trueBranch=NULL, falseBranch=NULL;
     Fast_Expression trueExpr, falseExpr;

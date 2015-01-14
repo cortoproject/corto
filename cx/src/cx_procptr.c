@@ -91,19 +91,19 @@ cx_bool cx_procptr_compatible_v(cx_procptr _this, cx_type type) {
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::procptr::init(procptr object) */
-cx_int16 cx_procptr_init(cx_procptr object) {
+/* ::cortex::lang::procptr::init() */
+cx_int16 cx_procptr_init(cx_procptr _this) {
 /* $begin(::cortex::lang::procptr::init) */
     cx_int16 result;
 
-    cx_interface(object)->base = cx_interface(cx_procptrdata_o);
+    cx_interface(_this)->base = cx_interface(cx_procptrdata_o);
 
-    result = cx_struct_init(cx_struct(object));
+    result = cx_struct_init(cx_struct(_this));
     if(result) {
         goto error;
     }
 
-    cx_interface(object)->kind = CX_PROCPTR;
+    cx_interface(_this)->kind = CX_PROCPTR;
 
     return 0;
 error:

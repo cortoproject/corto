@@ -101,19 +101,19 @@ static void c_interfaceParamThis(cx_type parentType, c_typeWalk_t* data, cx_bool
     cx_id classId;
 
     g_fullOid(data->g, parentType, classId);
-    if ((parentType->kind == CX_COMPOSITE) && !parentType->reference) {
-        if (toSource) {
-            g_fileWrite(data->source, "%s *_this", classId);
-        }
-        if (toHeader) {
-            g_fileWrite(data->header, "%s *_this", classId);
-        }
-    } else {
+    if (parentType->reference) {
         if (toSource) {
             g_fileWrite(data->source, "%s _this", classId);
         }
         if (toHeader) {
             g_fileWrite(data->header, "%s _this", classId);
+        }
+    } else {
+        if (toSource) {
+            g_fileWrite(data->source, "%s *_this", classId);
+        }
+        if (toHeader) {
+            g_fileWrite(data->header, "%s *_this", classId);
         }
     }
 }
@@ -294,13 +294,11 @@ static int c_interfaceClassProcedureWrapper(cx_function o, c_typeWalk_t *data) {
 
     /* Add this */
     if (c_procedureHasThis(o)) {
-        cx_type parentType;
         if(cx_procedure(cx_typeof(o))->kind != CX_METAPROCEDURE) {
-            parentType = cx_parentof(o);
+            c_procedureAddToSizeExpr(cx_parentof(o), TRUE, data);
         }else {
-            parentType = cx_type(cx_any_o);
+            c_procedureAddToSizeExpr(cx_type(cx_any_o), FALSE, data);
         }
-        c_procedureAddToSizeExpr(parentType, FALSE, data);
         data->firstComma = TRUE;
     }
 
@@ -414,14 +412,13 @@ static int c_interfaceClassProcedure(cx_object o, void* userData) {
 
         /* Add 'this' parameter to methods */
         if (c_procedureHasThis(o)) {
-            cx_type thisType;
             if(cx_procedure(cx_typeof(o))->kind != CX_METAPROCEDURE) {
-                thisType = cx_parentof(o);
+                c_interfaceParamThis(cx_parentof(o), data, TRUE, TRUE);
             }else {
-                thisType = cx_any_o;
+                g_fileWrite(data->source, "cx_any _this");
+                g_fileWrite(data->header, "cx_any _this");
             }
-            c_interfaceParamThis(thisType, data, FALSE, TRUE);
-            c_interfaceParamThis(thisType, data, TRUE, FALSE);
+
             data->firstComma = 1;
         } else {
             data->firstComma = 0;

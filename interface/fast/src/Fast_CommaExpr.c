@@ -51,8 +51,8 @@ Fast_Expression Fast_CommaExpr_addOrCreate(Fast_Expression list, Fast_Expression
 /* $end */
 }
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::CommaExpr::construct(CommaExpr object) */
-cx_int16 Fast_CommaExpr_construct(Fast_CommaExpr object) {
+/* ::cortex::Fast::CommaExpr::construct() */
+cx_int16 Fast_CommaExpr_construct(Fast_CommaExpr _this) {
 /* $begin(::cortex::Fast::CommaExpr::construct) */
     if (object->expressions) {
         Fast_Expression firstExpr = cx_llGet(object->expressions, 0);
@@ -84,8 +84,8 @@ cx_bool Fast_CommaExpr_hasSideEffects_v(Fast_CommaExpr _this) {
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::Fast::CommaExpr::init(CommaExpr object) */
-cx_int16 Fast_CommaExpr_init(Fast_CommaExpr object) {
+/* ::cortex::Fast::CommaExpr::init() */
+cx_int16 Fast_CommaExpr_init(Fast_CommaExpr _this) {
 /* $begin(::cortex::Fast::CommaExpr::init) */
 
     Fast_Node(object)->kind = FAST_CommaExpr;

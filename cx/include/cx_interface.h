@@ -30,14 +30,14 @@ cx_bool cx_interface_compatible(cx_interface _this, cx_type type);
 /* ::cortex::lang::interface::compatible(type type) */
 cx_bool cx_interface_compatible_v(cx_interface _this, cx_type type);
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::interface::construct(interface object) */
-cx_int16 cx_interface_construct(cx_interface object);
+/* ::cortex::lang::interface::construct() */
+cx_int16 cx_interface_construct(cx_interface _this);
 
-/* callback ::cortex::lang::class::destruct(object object) -> ::cortex::lang::interface::destruct(interface object) */
-cx_void cx_interface_destruct(cx_interface object);
+/* ::cortex::lang::interface::destruct() */
+cx_void cx_interface_destruct(cx_interface _this);
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::interface::init(interface object) */
-cx_int16 cx_interface_init(cx_interface object);
+/* ::cortex::lang::interface::init() */
+cx_int16 cx_interface_init(cx_interface _this);
 
 /* virtual ::cortex::lang::interface::resolveMember(string name) */
 cx_member cx_interface_resolveMember(cx_interface _this, cx_string name);

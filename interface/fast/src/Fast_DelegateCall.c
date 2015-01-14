@@ -9,8 +9,8 @@
 #include "Fast.h"
 #include "Fast__meta.h"
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::DelegateCall::construct(Fast::DelegateCall object) */
-cx_int16 Fast_DelegateCall_construct(Fast_DelegateCall object) {
+/* ::cortex::Fast::DelegateCall::construct() */
+cx_int16 Fast_DelegateCall_construct(Fast_DelegateCall _this) {
 /* $begin(::cortex::Fast::DelegateCall::construct) */
     if (!object->expr) {
         Fast_Parser_error(yparser(), "no expression provided for delegate call");

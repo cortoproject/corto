@@ -33,8 +33,8 @@ cx_bool cx_collection_compatible_v(cx_collection _this, cx_type type);
 /* ::cortex::lang::collection::elementRequiresAlloc() */
 cx_bool cx_collection_elementRequiresAlloc(cx_collection _this);
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::collection::init(collection object) */
-cx_int16 cx_collection_init(cx_collection object);
+/* ::cortex::lang::collection::init() */
+cx_int16 cx_collection_init(cx_collection _this);
 
 /* ::cortex::lang::collection::size() */
 cx_uint32 cx_collection_size(cx_any _this);

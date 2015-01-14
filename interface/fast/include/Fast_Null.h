@@ -18,8 +18,8 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::Fast::Null::init(Null object) */
-cx_int16 Fast_Null_init(Fast_Null object);
+/* ::cortex::Fast::Null::init() */
+cx_int16 Fast_Null_init(Fast_Null _this);
 
 /* ::cortex::Fast::Null::serialize(type dstType,word dst) */
 cx_int16 Fast_Null_serialize(Fast_Null _this, cx_type dstType, cx_word dst);

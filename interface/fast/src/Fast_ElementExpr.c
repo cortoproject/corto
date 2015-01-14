@@ -17,8 +17,8 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::ElementExpr::construct(Fast::MemberExpr object) */
-cx_int16 Fast_ElementExpr_construct(Fast_MemberExpr object) {
+/* ::cortex::Fast::ElementExpr::construct() */
+cx_int16 Fast_ElementExpr_construct(Fast_ElementExpr _this) {
 /* $begin(::cortex::Fast::ElementExpr::construct) */
     cx_type lvalueType, rvalueType;
 

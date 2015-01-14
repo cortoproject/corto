@@ -13,8 +13,8 @@
 #include "Fast__api.h"
 /* $end */
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::Local::construct(Local object) */
-cx_int16 Fast_Local_construct(Fast_Local object) {
+/* ::cortex::Fast::Local::construct() */
+cx_int16 Fast_Local_construct(Fast_Local _this) {
 /* $begin(::cortex::Fast::Local::construct) */
 
     Fast_Node(object)->kind = FAST_Variable;

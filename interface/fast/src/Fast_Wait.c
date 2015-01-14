@@ -60,8 +60,8 @@ cx_interface Fast_findCommonAncestor(cx_interface t1, cx_interface t2) {
 
 /* $end */
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::Wait::construct(Wait object) */
-cx_int16 Fast_Wait_construct(Fast_Wait object) {
+/* ::cortex::Fast::Wait::construct() */
+cx_int16 Fast_Wait_construct(Fast_Wait _this) {
 /* $begin(::cortex::Fast::Wait::construct) */
     cx_iter exprIter;
     Fast_Expression expr, timeoutExpr;

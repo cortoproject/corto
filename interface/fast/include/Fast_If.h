@@ -18,11 +18,11 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::If::construct(If object) */
-cx_int16 Fast_If_construct(Fast_If object);
+/* ::cortex::Fast::If::construct() */
+cx_int16 Fast_If_construct(Fast_If _this);
 
 /* ::cortex::Fast::If::noWarnUnreachable() */
-void Fast_If_noWarnUnreachable(Fast_If _this);
+cx_void Fast_If_noWarnUnreachable(Fast_If _this);
 
 /* virtual ::cortex::Fast::If::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_If_toIc(Fast_If _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);

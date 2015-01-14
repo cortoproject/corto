@@ -17,14 +17,14 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::typedef::construct(typedef object) */
-cx_int16 cx_typedef_construct(cx_typedef object);
+/* ::cortex::lang::typedef::construct() */
+cx_int16 cx_typedef_construct(cx_typedef _this);
 
-/* callback ::cortex::lang::class::destruct(object object) -> ::cortex::lang::typedef::destruct(typedef object) */
-cx_void cx_typedef_destruct(cx_typedef object);
+/* ::cortex::lang::typedef::destruct() */
+cx_void cx_typedef_destruct(cx_typedef _this);
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::typedef::init(typedef object) */
-cx_int16 cx_typedef_init(cx_typedef object);
+/* ::cortex::lang::typedef::init() */
+cx_int16 cx_typedef_init(cx_typedef _this);
 
 /* ::cortex::lang::typedef::realType() */
 cx_type cx_typedef_realType(cx_typedef _this);

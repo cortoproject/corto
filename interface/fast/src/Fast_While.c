@@ -19,8 +19,8 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::While::construct(While object) */
-cx_int16 Fast_While_construct(Fast_While object) {
+/* ::cortex::Fast::While::construct() */
+cx_int16 Fast_While_construct(Fast_While _this) {
 /* $begin(::cortex::Fast::While::construct) */
     cx_type conditionType;
 

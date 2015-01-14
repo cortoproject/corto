@@ -19,8 +19,8 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 void Fast_Parser_warning(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::If::construct(If object) */
-cx_int16 Fast_If_construct(Fast_If object) {
+/* ::cortex::Fast::If::construct() */
+cx_int16 Fast_If_construct(Fast_If _this) {
 /* $begin(::cortex::Fast::If::construct) */
     cx_type conditionType;
 
@@ -46,7 +46,7 @@ error:
 }
 
 /* ::cortex::Fast::If::noWarnUnreachable() */
-void Fast_If_noWarnUnreachable(Fast_If _this) {
+cx_void Fast_If_noWarnUnreachable(Fast_If _this) {
 /* $begin(::cortex::Fast::If::noWarnUnreachable) */
     _this->warnUnreachable = FALSE;
 /* $end */

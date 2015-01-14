@@ -164,21 +164,21 @@ cx_void cx_list_clear(cx_any _this) {
 /* $end */
 }
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::list::construct(list object) */
-cx_int16 cx_list_construct(cx_list object) {
+/* ::cortex::lang::list::construct() */
+cx_int16 cx_list_construct(cx_list _this) {
 /* $begin(::cortex::lang::list::construct) */
-    cx_type(object)->hasResources = TRUE;
-    cx_type(object)->size = sizeof(cx_ll);
-    cx_type(object)->alignment = CX_ALIGNMENT(cx_ll);
-    return cx_type_construct(cx_type(object));
+    cx_type(_this)->hasResources = TRUE;
+    cx_type(_this)->size = sizeof(cx_ll);
+    cx_type(_this)->alignment = CX_ALIGNMENT(cx_ll);
+    return cx_type_construct(cx_type(_this));
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::list::init(list object) */
-cx_int16 cx_list_init(cx_list object) {
+/* ::cortex::lang::list::init() */
+cx_int16 cx_list_init(cx_list _this) {
 /* $begin(::cortex::lang::list::init) */
-    cx_collection(object)->kind = CX_LIST;
-    return cx_collection_init(cx_collection(object));
+    cx_collection(_this)->kind = CX_LIST;
+    return cx_collection_init(cx_collection(_this));
 /* $end */
 }
 

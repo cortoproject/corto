@@ -243,8 +243,8 @@ void Fast_BinaryExpr_toIc_strOp(
 
 /* $end */
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::BinaryExpr::construct(Fast::BinaryExpr object) */
-cx_int16 Fast_BinaryExpr_construct(Fast_BinaryExpr object) {
+/* ::cortex::Fast::BinaryExpr::construct() */
+cx_int16 Fast_BinaryExpr_construct(Fast_BinaryExpr _this) {
 /* $begin(::cortex::Fast::BinaryExpr::construct) */
     cx_type lvalueType, rvalueType;
     cx_int32 checkReferences=0;

@@ -115,8 +115,8 @@ error:
 
 /* $end */
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::DynamicInitializer::construct(DynamicInitializer object) */
-cx_int16 Fast_DynamicInitializer_construct(Fast_DynamicInitializer object) {
+/* ::cortex::Fast::DynamicInitializer::construct() */
+cx_int16 Fast_DynamicInitializer_construct(Fast_DynamicInitializer _this) {
 /* $begin(::cortex::Fast::DynamicInitializer::construct) */
     cx_int8 variable;
     

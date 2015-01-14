@@ -993,7 +993,7 @@ error:
 /* $end */
 
 /* ::cortex::Fast::Parser::addStatement(Fast::Node statement) */
-void Fast_Parser_addStatement(Fast_Parser _this, Fast_Node statement) {
+cx_void Fast_Parser_addStatement(Fast_Parser _this, Fast_Node statement) {
 /* $begin(::cortex::Fast::Parser::addStatement) */
     FAST_CHECK_ERRSET(_this);
     
@@ -1198,7 +1198,7 @@ error:
 }
 
 /* ::cortex::Fast::Parser::blockPop() */
-void Fast_Parser_blockPop(Fast_Parser _this) {
+cx_void Fast_Parser_blockPop(Fast_Parser _this) {
 /* $begin(::cortex::Fast::Parser::blockPop) */
     FAST_CHECK_ERRSET(_this);
 
@@ -1367,8 +1367,8 @@ cx_void Fast_Parser_collectHeap(Fast_Parser _this, cx_word addr) {
 /* $end */
 }
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::Parser::construct(Parser object) */
-cx_int16 Fast_Parser_construct(Fast_Parser object) {
+/* ::cortex::Fast::Parser::construct() */
+cx_int16 Fast_Parser_construct(Fast_Parser _this) {
 /* $begin(::cortex::Fast::Parser::construct) */
     CX_UNUSED(object);
     Fast_Parser_reset(object);
@@ -1741,8 +1741,8 @@ error:
 /* $end */
 }
 
-/* callback ::cortex::lang::class::destruct(object object) -> ::cortex::Fast::Parser::destruct(Parser object) */
-void Fast_Parser_destruct(Fast_Parser object) {
+/* ::cortex::Fast::Parser::destruct() */
+cx_void Fast_Parser_destruct(Fast_Parser _this) {
 /* $begin(::cortex::Fast::Parser::destruct) */
     cx_iter iter;
 
@@ -1913,7 +1913,7 @@ error:
 }
 
 /* ::cortex::Fast::Parser::initDeclareStaged(Fast::Expression expr) */
-void Fast_Parser_initDeclareStaged(Fast_Parser _this, Fast_Expression expr) {
+cx_void Fast_Parser_initDeclareStaged(Fast_Parser _this, Fast_Expression expr) {
 /* $begin(::cortex::Fast::Parser::initDeclareStaged) */
     cx_uint32 i;
 
@@ -2223,7 +2223,7 @@ error:
 }
 
 /* ::cortex::Fast::Parser::initStage(string id,bool found) */
-void Fast_Parser_initStage(Fast_Parser _this, cx_string id, cx_bool found) {
+cx_void Fast_Parser_initStage(Fast_Parser _this, cx_string id, cx_bool found) {
 /* $begin(::cortex::Fast::Parser::initStage) */
     
     if (!_this->repl) {
@@ -2436,7 +2436,7 @@ error:
 }
 
 /* ::cortex::Fast::Parser::observerPop() */
-void Fast_Parser_observerPop(Fast_Parser _this) {
+cx_void Fast_Parser_observerPop(Fast_Parser _this) {
 /* $begin(::cortex::Fast::Parser::observerPop) */
     FAST_CHECK_ERRSET(_this);
 
@@ -2446,7 +2446,7 @@ void Fast_Parser_observerPop(Fast_Parser _this) {
 }
 
 /* ::cortex::Fast::Parser::observerPush() */
-void Fast_Parser_observerPush(Fast_Parser _this) {
+cx_void Fast_Parser_observerPush(Fast_Parser _this) {
 /* $begin(::cortex::Fast::Parser::observerPush) */
     FAST_CHECK_ERRSET(_this);
 
@@ -2678,7 +2678,7 @@ error:
 }
 
 /* ::cortex::Fast::Parser::popComplexType() */
-void Fast_Parser_popComplexType(Fast_Parser _this) {
+cx_void Fast_Parser_popComplexType(Fast_Parser _this) {
 /* $begin(::cortex::Fast::Parser::popComplexType) */
 
     _this->complexTypeSp--;
@@ -2691,7 +2691,7 @@ void Fast_Parser_popComplexType(Fast_Parser _this) {
 }
 
 /* ::cortex::Fast::Parser::popLvalue() */
-void Fast_Parser_popLvalue(Fast_Parser _this) {
+cx_void Fast_Parser_popLvalue(Fast_Parser _this) {
 /* $begin(::cortex::Fast::Parser::popLvalue) */
 
     _this->lvalueSp--;
@@ -2704,7 +2704,7 @@ void Fast_Parser_popLvalue(Fast_Parser _this) {
 }
 
 /* ::cortex::Fast::Parser::popScope(Fast::Variable previous) */
-void Fast_Parser_popScope(Fast_Parser _this, Fast_Variable previous) {
+cx_void Fast_Parser_popScope(Fast_Parser _this, Fast_Variable previous) {
 /* $begin(::cortex::Fast::Parser::popScope) */
     FAST_CHECK_ERRSET(_this);
 
@@ -2736,7 +2736,7 @@ error:
 }
 
 /* ::cortex::Fast::Parser::pushComplexType(Fast::Expression lvalue) */
-void Fast_Parser_pushComplexType(Fast_Parser _this, Fast_Expression lvalue) {
+cx_void Fast_Parser_pushComplexType(Fast_Parser _this, Fast_Expression lvalue) {
 /* $begin(::cortex::Fast::Parser::pushComplexType) */
 
     if (lvalue) {
@@ -2750,7 +2750,7 @@ void Fast_Parser_pushComplexType(Fast_Parser _this, Fast_Expression lvalue) {
 }
 
 /* ::cortex::Fast::Parser::pushLvalue(Fast::Expression lvalue,bool isAssignment) */
-void Fast_Parser_pushLvalue(Fast_Parser _this, Fast_Expression lvalue, cx_bool isAssignment) {
+cx_void Fast_Parser_pushLvalue(Fast_Parser _this, Fast_Expression lvalue, cx_bool isAssignment) {
 /* $begin(::cortex::Fast::Parser::pushLvalue) */
 
     cx_set_ext(_this, &_this->lvalue[_this->lvalueSp].expr, lvalue, ".lvalue[_this->lvalueSp]");
@@ -2761,7 +2761,7 @@ void Fast_Parser_pushLvalue(Fast_Parser _this, Fast_Expression lvalue, cx_bool i
 }
 
 /* ::cortex::Fast::Parser::pushReturnAsLvalue(function function) */
-void Fast_Parser_pushReturnAsLvalue(Fast_Parser _this, cx_function function) {
+cx_void Fast_Parser_pushReturnAsLvalue(Fast_Parser _this, cx_function function) {
 /* $begin(::cortex::Fast::Parser::pushReturnAsLvalue) */
     Fast_Expression result = NULL;
 
@@ -2809,7 +2809,7 @@ error:
 }
 
 /* ::cortex::Fast::Parser::reset() */
-void Fast_Parser_reset(Fast_Parser _this) {
+cx_void Fast_Parser_reset(Fast_Parser _this) {
 /* $begin(::cortex::Fast::Parser::reset) */
     cx_uint32 i;
 

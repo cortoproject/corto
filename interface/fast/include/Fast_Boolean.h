@@ -18,8 +18,8 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::Fast::Boolean::init(Boolean object) */
-cx_int16 Fast_Boolean_init(cx_boolean object);
+/* ::cortex::Fast::Boolean::init() */
+cx_int16 Fast_Boolean_init(Fast_Boolean _this);
 
 /* ::cortex::Fast::Boolean::serialize(type dstType,word dst) */
 cx_int16 Fast_Boolean_serialize(Fast_Boolean _this, cx_type dstType, cx_word dst);

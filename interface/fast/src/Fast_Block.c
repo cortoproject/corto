@@ -19,7 +19,7 @@ Fast_Parser yparser(void);
 /* $end */
 
 /* ::cortex::Fast::Block::addStatement(Fast::Node statement) */
-void Fast_Block_addStatement(Fast_Block _this, Fast_Node statement) {
+cx_void Fast_Block_addStatement(Fast_Block _this, Fast_Node statement) {
 /* $begin(::cortex::Fast::Block::addStatement) */
     if (statement) {
         cx_assert(_this->statements != NULL, "initialization failed");
@@ -238,7 +238,7 @@ Fast_Local Fast_Block_resolveLocal(Fast_Block _this, cx_string id) {
 }
 
 /* ::cortex::Fast::Block::setFunction(function function */
-void Fast_Block_setFunction(Fast_Block _this, cx_function function) {
+cx_void Fast_Block_setFunction(Fast_Block _this, cx_function function) {
 /* $begin(::cortex::Fast::Block::setFunction) */
     _this->function = function;
     cx_keep_ext(_this, function, "Set function for block");

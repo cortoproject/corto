@@ -50,8 +50,8 @@ cx_bool cx_struct_compatible_v(cx_struct _this, cx_type type) {
 /* $end */
 }
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::struct::construct(struct object) */
-cx_int16 cx_struct_construct(cx_struct object) {
+/* ::cortex::lang::struct::construct() */
+cx_int16 cx_struct_construct(cx_struct _this) {
 /* $begin(::cortex::lang::struct::construct) */
     cx_struct base;
     cx_uint16 alignment;
@@ -60,21 +60,21 @@ cx_int16 cx_struct_construct(cx_struct object) {
     size = 0;
 
     /* Insert members */
-    if (cx__interface_insertMembers(cx_interface(object))) {
+    if (cx__interface_insertMembers(cx_interface(_this))) {
         goto error;
     }
 
     /* Calculate alignment of self */
-    alignment = cx__interface_calculateAlignment(cx_interface(object));
+    alignment = cx__interface_calculateAlignment(cx_interface(_this));
 
     /* Check if struct inherits from another struct */
-    base = (cx_struct)cx_interface(object)->base;
+    base = (cx_struct)cx_interface(_this)->base;
 
     /* Get maximum alignment from self and base-class and copy template parameters */
     if (base) {
         if (!cx_instanceof(cx_typedef(cx_struct_o), base)) {
             cx_id id, id2;
-            cx_error("struct '%s' inherits from non-struct type '%s'", cx_fullname(object, id), cx_fullname(base, id2));
+            cx_error("struct '%s' inherits from non-struct type '%s'", cx_fullname(_this, id), cx_fullname(base, id2));
             goto error;
         }
 
@@ -86,49 +86,49 @@ cx_int16 cx_struct_construct(cx_struct object) {
     }
 
     /* Set alignment of self */
-    cx_type(object)->alignment = alignment;
+    cx_type(_this)->alignment = alignment;
 
     /* Get size of base-class */
     if (base) {
         size = cx_type(base)->size;
 
         if (cx_type(base)->hasResources) {
-            cx_type(object)->hasResources = TRUE;
+            cx_type(_this)->hasResources = TRUE;
         }
     }
 
     /* Calculate size of self */
-    size = cx__interface_calculateSize(cx_interface(object), size);
+    size = cx__interface_calculateSize(cx_interface(_this), size);
 
     /* If a class has no members and no base-class, the class will have the size of one word. */
     if (!size) {
-        cx_assert(cx_interface(object)->members.length == 0, "struct can't have members and be of size zero.");
+        cx_assert(cx_interface(_this)->members.length == 0, "struct can't have members and be of size zero.");
         /*size = sizeof(cx_word);*/
     }
 
     /* Set size of self */
-    cx_type(object)->size = size;
+    cx_type(_this)->size = size;
 
-    return cx_interface_construct(cx_interface(object));
+    return cx_interface_construct(cx_interface(_this));
 error:
     return -1;
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::struct::init(struct object) */
-cx_int16 cx_struct_init(cx_struct object) {
+/* ::cortex::lang::struct::init() */
+cx_int16 cx_struct_init(cx_struct _this) {
 /* $begin(::cortex::lang::struct::init) */
     /* If not bootstrapping, set baseAccess to GLOBAL | PUBLIC */
     if (cx_checkState(cx_type_o, CX_DEFINED)) {
-        object->baseAccess = CX_GLOBAL;
+        _this->baseAccess = CX_GLOBAL;
     }
 
-    if (cx_interface_init(cx_interface(object))) {
+    if (cx_interface_init(cx_interface(_this))) {
         goto error;
     }
 
-    cx_interface(object)->kind = CX_STRUCT;
-    cx_type(object)->reference = FALSE;
+    cx_interface(_this)->kind = CX_STRUCT;
+    cx_type(_this)->reference = FALSE;
 
     return 0;
 error:

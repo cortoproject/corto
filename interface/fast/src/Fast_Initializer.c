@@ -159,8 +159,8 @@ cx_type Fast_Parser_initGetType(Fast_Initializer _this, cx_member *m_out) {
 
 /* $end */
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::Initializer::construct(Initializer object) */
-cx_int16 Fast_Initializer_construct(Fast_Initializer object) {
+/* ::cortex::Fast::Initializer::construct() */
+cx_int16 Fast_Initializer_construct(Fast_Initializer _this) {
 /* $begin(::cortex::Fast::Initializer::construct) */
     cx_uint32 variable;
     cx_type t = Fast_Expression_getType(object->variables[0].object);

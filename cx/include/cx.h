@@ -3,6 +3,8 @@
 #include "cx_binary.h"
 #include "cx_bitmask.h"
 #include "cx_boolean.h"
+#include "cx_callbackDestruct.h"
+#include "cx_callbackInit.h"
 #include "cx_character.h"
 #include "cx_class.h"
 #include "cx_collection.h"

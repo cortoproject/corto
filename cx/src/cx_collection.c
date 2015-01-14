@@ -235,11 +235,11 @@ cx_bool cx_collection_elementRequiresAlloc(cx_collection _this) {
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::collection::init(collection object) */
-cx_int16 cx_collection_init(cx_collection object) {
+/* ::cortex::lang::collection::init() */
+cx_int16 cx_collection_init(cx_collection _this) {
 /* $begin(::cortex::lang::collection::init) */
-    cx_type(object)->kind = CX_COLLECTION;
-    return cx_type_init(cx_type(object));
+    cx_type(_this)->kind = CX_COLLECTION;
+    return cx_type_init(cx_type(_this));
 /* $end */
 }
 

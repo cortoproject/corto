@@ -422,7 +422,7 @@ error:
 }
 
 /* ::cortex::Fast::Expression::cleanList(list{Expression} list) */
-void Fast_Expression_cleanList(Fast_Expression_list list) {
+cx_void Fast_Expression_cleanList(Fast_Expression_list list) {
 /* $begin(::cortex::Fast::Expression::cleanList) */
     if (list) {
         cx_iter iter = cx_llIter(list);
@@ -554,8 +554,8 @@ cx_bool Fast_Expression_hasSideEffects_v(Fast_Expression _this) {
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::Fast::Expression::init(Expression object) */
-cx_int16 Fast_Expression_init(Fast_Expression object) {
+/* ::cortex::Fast::Expression::init() */
+cx_int16 Fast_Expression_init(Fast_Expression _this) {
 /* $begin(::cortex::Fast::Expression::init) */
     return Fast_Node_init((Fast_Node)object);
 /* $end */

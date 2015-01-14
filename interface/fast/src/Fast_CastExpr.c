@@ -17,8 +17,8 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::CastExpr::construct(Fast::CastExpr object) */
-cx_int16 Fast_CastExpr_construct(Fast_CastExpr object) {
+/* ::cortex::Fast::CastExpr::construct() */
+cx_int16 Fast_CastExpr_construct(Fast_CastExpr _this) {
 /* $begin(::cortex::Fast::CastExpr::construct) */
 
     Fast_Node(object)->kind = FAST_Call;

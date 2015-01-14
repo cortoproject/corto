@@ -17,8 +17,8 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::Fast::FloatingPoint::init(FloatingPoint object) */
-cx_int16 Fast_FloatingPoint_init(Fast_FloatingPoint object) {
+/* ::cortex::Fast::FloatingPoint::init() */
+cx_int16 Fast_FloatingPoint_init(Fast_FloatingPoint _this) {
 /* $begin(::cortex::Fast::FloatingPoint::init) */
     Fast_Literal(object)->kind = FAST_FloatingPoint;
     return Fast_Literal_init(Fast_Literal(object));

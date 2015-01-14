@@ -9,39 +9,44 @@
 #include "cx.h"
 #include "cx__meta.h"
 
-/* callback ::cortex::lang::procedure::bind(object object) -> ::cortex::lang::function::bind(function object) */
-cx_int16 cx_function_bind(cx_function object) {
+/* ::cortex::lang::function::bind() */
+cx_int16 cx_function_bind(cx_function _this) {
 /* $begin(::cortex::lang::function::bind) */
     /* Count the size based on the parameters and store parameters in slots */
-    if (!object->size) {
+    if (!_this->size) {
         cx_uint32 i;
-        for(i=0; i<object->parameters.length; i++) {
-            cx_type paramType = object->parameters.buffer[i].type->real;
+        for(i=0; i<_this->parameters.length; i++) {
+            cx_type paramType = _this->parameters.buffer[i].type->real;
             switch(paramType->kind) {
             case CX_ANY:
-                object->size += sizeof(cx_any);
+                _this->size += sizeof(cx_any);
                 break;
             case CX_PRIMITIVE:
-                object->size += cx_type_sizeof(paramType);
+                _this->size += cx_type_sizeof(paramType);
                 break;
             default:
-                object->size += sizeof(void*);
+                _this->size += sizeof(void*);
                 break;
             }
         }
 
         /* Add size of this-pointer - this must be moved to impl of methods, delegates and callbacks. */
-        if (!(cx_typeof(object) == cx_typedef(cx_function_o))) {
-            if (cx_typeof(object) == cx_typedef(cx_metaprocedure_o)) {
-                object->size += sizeof(cx_any);
+        if (!(cx_typeof(_this) == cx_typedef(cx_function_o))) {
+            if (cx_typeof(_this) == cx_typedef(cx_metaprocedure_o)) {
+                _this->size += sizeof(cx_any);
             } else {
-                object->size += sizeof(cx_object);
+                _this->size += sizeof(cx_object);
             }
         }
     }
 
+    /* If no returntype is set, make it void */
+    if (!_this->returnType) {
+        cx_set(&_this->returnType, cx_void_o);
+    }
+
     /* Bind with interface if possible */
-    if (cx_procptr_bind(object)) {
+    if (cx_procptr_bind(_this)) {
         goto error;
     }
 
@@ -51,7 +56,7 @@ error:
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::function::init(function object) */
+/* ::cortex::lang::function::init() */
 /* $header(::cortex::lang::function::init) */
 static cx_int16 cx_function_parseArguments(cx_function object) {
     object->parameters = cx_function_stringToParameterSeq(cx_nameof(object), cx_parentof(object));
@@ -103,17 +108,16 @@ finish:
     return 0;
 }
 /* $end */
-cx_int16 cx_function_init(cx_function object) {
+cx_int16 cx_function_init(cx_function _this) {
 /* $begin(::cortex::lang::function::init) */
     cx_functionLookup_t walkData;
     cx_ll scope;
-    CX_UNUSED(object);
 
-    scope = cx_scopeClaim(cx_parentof(object));
+    scope = cx_scopeClaim(cx_parentof(_this));
 
-    walkData.f = object;
+    walkData.f = _this;
     walkData.error = FALSE;
-    cx_signatureName(cx_nameof(object), walkData.name);
+    cx_signatureName(cx_nameof(_this), walkData.name);
     cx_llWalk(scope, cx_functionLookupWalk, &walkData);
     if (walkData.error) {
         goto error;
@@ -122,13 +126,13 @@ cx_int16 cx_function_init(cx_function object) {
     cx_scopeRelease(scope);
 
     /* Parse arguments */
-    if (cx_function_parseArguments(object)) {
+    if (cx_function_parseArguments(_this)) {
         goto error;
     }
 
     return 0;
 error:
-    object->parameters.length = 0;
+    _this->parameters.length = 0;
     return -1;
 /* $end */
 }

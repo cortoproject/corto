@@ -30,7 +30,7 @@ cx_icDerefMode Fast_Expression_getDerefMode(Fast_Expression _this, Fast_Expressi
 Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_bool isReference);
 
 /* ::cortex::Fast::Expression::cleanList(list{Expression} list) */
-void Fast_Expression_cleanList(Fast_Expression_list list);
+cx_void Fast_Expression_cleanList(Fast_Expression_list list);
 
 /* virtual ::cortex::Fast::Expression::fold() */
 Fast_Expression Fast_Expression_fold(Fast_Expression _this);
@@ -62,8 +62,8 @@ cx_bool Fast_Expression_hasSideEffects(Fast_Expression _this);
 /* ::cortex::Fast::Expression::hasSideEffects() */
 cx_bool Fast_Expression_hasSideEffects_v(Fast_Expression _this);
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::Fast::Expression::init(Expression object) */
-cx_int16 Fast_Expression_init(Fast_Expression object);
+/* ::cortex::Fast::Expression::init() */
+cx_int16 Fast_Expression_init(Fast_Expression _this);
 
 /* virtual ::cortex::Fast::Expression::serialize(type dstType,word dst) */
 cx_int16 Fast_Expression_serialize(Fast_Expression _this, cx_type dstType, cx_word dst);
