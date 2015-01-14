@@ -60,23 +60,23 @@ cx_int16 Fast_MemberExpr_construct(Fast_MemberExpr _this) {
     cx_type lvalueType;
     cx_type exprType;
 
-    Fast_Node(object)->kind = FAST_Member;
+    Fast_Node(_this)->kind = FAST_Member;
     
-    if (!(object->lvalue && object->rvalue)) {
+    if (!(_this->lvalue && _this->rvalue)) {
         goto error;
     }
 
-    /* If member-object can be determined at compile-time, resolve it */
-    lvalueType = Fast_Expression_getType(object->lvalue);
-    if (lvalueType) { /* Type must be a known object at compile-time */
-        if (Fast_Node(object->rvalue)->kind == FAST_Literal) { /* Member-expression must be a literal */
-            switch(Fast_Literal(object->rvalue)->kind) {
+    /* If member-_this can be determined at compile-time, resolve it */
+    lvalueType = Fast_Expression_getType(_this->lvalue);
+    if (lvalueType) { /* Type must be a known _this at compile-time */
+        if (Fast_Node(_this->rvalue)->kind == FAST_Literal) { /* Member-expression must be a literal */
+            switch(Fast_Literal(_this->rvalue)->kind) {
             case FAST_Integer: /* Resolve the nth member of a type */
                 Fast_Parser_error(yparser(), "resolving members by index not yet supported");
                 goto error;
                 break;
             case FAST_String: /* Resolve member by name */
-                if (Fast_MemberExpr_resolveMember(object, lvalueType, Fast_String(object->rvalue)->value)) {
+                if (Fast_MemberExpr_resolveMember(_this, lvalueType, Fast_String(_this->rvalue)->value)) {
                     goto error;
                 }
                 break;
@@ -88,8 +88,8 @@ cx_int16 Fast_MemberExpr_construct(Fast_MemberExpr _this) {
         }
     }
 
-    if ((exprType = Fast_Expression_getType(Fast_Expression(object))) && exprType->reference) {
-        Fast_Expression(object)->forceReference = TRUE;
+    if ((exprType = Fast_Expression_getType(Fast_Expression(_this))) && exprType->reference) {
+        Fast_Expression(_this)->forceReference = TRUE;
     }
 
     return 0;

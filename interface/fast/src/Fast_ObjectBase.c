@@ -13,8 +13,8 @@
 cx_int16 Fast_ObjectBase_construct(Fast_ObjectBase _this) {
 /* $begin(::cortex::Fast::ObjectBase::construct) */
 
-    Fast_Variable(object)->kind = FAST_Object;
+    Fast_Variable(_this)->kind = FAST_Object;
 
-    return Fast_Variable_construct(Fast_Variable(object));
+    return Fast_Variable_construct(Fast_Variable(_this));
 /* $end */
 }

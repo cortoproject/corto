@@ -121,16 +121,16 @@ cx_int16 Fast_StaticInitializer_construct(Fast_StaticInitializer _this) {
     cx_int8 variable;
     
     /* Copy offsets of variables into frames */
-    for(variable=0; variable<Fast_Initializer(object)->variableCount; variable++) {
-         object->frames[0].ptr[variable] =
-                (cx_word)Fast_ObjectBase(Fast_Initializer(object)->variables[variable].object)->value;
-        if (!object->frames[0].ptr[variable]) {
+    for(variable=0; variable<Fast_Initializer(_this)->variableCount; variable++) {
+         _this->frames[0].ptr[variable] =
+                (cx_word)Fast_ObjectBase(Fast_Initializer(_this)->variables[variable].object)->value;
+        if (!_this->frames[0].ptr[variable]) {
             Fast_Parser_error(yparser(), "non-static variable in static initializer");
             goto error;
         }
     }
     
-    return Fast_Initializer_construct(Fast_Initializer(object));
+    return Fast_Initializer_construct(Fast_Initializer(_this));
 error:
     return -1;
 /* $end */

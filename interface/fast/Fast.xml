@@ -74,7 +74,6 @@
 			<!-- Base expression node -->
 			<class name="Expression" base="Node">
 				<meta:scope>
-					<method name="init()" returnType="int16"/>
 					<member name="type" type="Fast::Variable" modifiers="readonly"/>
 					<member name="isReference" type="bool" modifiers="readonly"/>
 					<member name="forceReference" type="bool" modifiers="readonly"/> <!-- Force treating value as reference -->

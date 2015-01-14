@@ -26,9 +26,9 @@ cx_int16 Fast_Update_construct(Fast_Update _this) {
     cx_iter exprIter;
     Fast_Expression expr;
 
-    Fast_Node(object)->kind = FAST_Update;
+    Fast_Node(_this)->kind = FAST_Update;
 
-    exprIter = cx_llIter(object->exprList);
+    exprIter = cx_llIter(_this->exprList);
     while(cx_iterHasNext(&exprIter)) {
         expr = cx_iterNext(&exprIter);
         t = Fast_Expression_getType(expr);

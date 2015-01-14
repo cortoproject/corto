@@ -121,12 +121,12 @@ cx_int16 Fast_DynamicInitializer_construct(Fast_DynamicInitializer _this) {
     cx_int8 variable;
     
     /* Copy offsets of variables into frames */
-    for(variable=0; variable<Fast_Initializer(object)->variableCount; variable++) {
-        Fast_Expression var = Fast_Initializer(object)->variables[variable].object;
-        cx_set_ext(object, &object->frames[0].expr[variable], var, ".frames[0].expr[variable]");
+    for(variable=0; variable<Fast_Initializer(_this)->variableCount; variable++) {
+        Fast_Expression var = Fast_Initializer(_this)->variables[variable].object;
+        cx_set_ext(_this, &_this->frames[0].expr[variable], var, ".frames[0].expr[variable]");
     }
     
-    return Fast_Initializer_construct(Fast_Initializer(object));
+    return Fast_Initializer_construct(Fast_Initializer(_this));
 /* $end */
 }
 

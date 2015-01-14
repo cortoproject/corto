@@ -4,7 +4,7 @@ object cortex::
         class unit::
             success: bool, readonly
             failmsg: string, readonly
-            int16 construct(unit object)
+            int16 construct()
             void fail(string msg)
             // When delegates are implemented, unit should contain a delegate to the function being tested
 
@@ -16,7 +16,7 @@ object cortex::
             result: object, private|local // Container for test results
 
             // Constructor
-            int16 construct(suite object)
+            int16 construct()
 
             // Failures and assertions
             void fail(string msg)

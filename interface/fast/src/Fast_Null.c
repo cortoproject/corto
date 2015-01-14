@@ -20,9 +20,9 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* ::cortex::Fast::Null::init() */
 cx_int16 Fast_Null_init(Fast_Null _this) {
 /* $begin(::cortex::Fast::Null::init) */
-    Fast_Literal(object)->kind = FAST_Null;
-    Fast_Expression(object)->type = NULL;
-    return Fast_Literal_init(Fast_Literal(object));
+    Fast_Literal(_this)->kind = FAST_Null;
+    Fast_Expression(_this)->type = NULL;
+    return Fast_Literal_init(Fast_Literal(_this));
 /* $end */
 }
 

@@ -20,8 +20,8 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* ::cortex::Fast::Integer::init() */
 cx_int16 Fast_Integer_init(Fast_Integer _this) {
 /* $begin(::cortex::Fast::Integer::init) */
-    Fast_Literal(object)->kind = FAST_Integer;
-    return Fast_Literal_init((Fast_Literal)object);
+    Fast_Literal(_this)->kind = FAST_Integer;
+    return Fast_Literal_init((Fast_Literal)_this);
 /* $end */
 }
 

@@ -67,18 +67,18 @@ cx_int16 Fast_Wait_construct(Fast_Wait _this) {
     Fast_Expression expr, timeoutExpr;
     cx_type exprType, resultType = NULL;
 
-    Fast_Node(object)->kind = FAST_Wait;
+    Fast_Node(_this)->kind = FAST_Wait;
 
-    /* Walk types of waitlist, check if all expressions evaluate to objects or reference values. Compare types in
+    /* Walk types of waitlist, check if all expressions evaluate to _thiss or reference values. Compare types in
      * waitlist to determine type of wait expression by taking the highest common ancestor. If no common ancestor
-     * is found the type of the wait expression is a generic object. */
-    exprIter = cx_llIter(object->exprList);
+     * is found the type of the wait expression is a generic _this. */
+    exprIter = cx_llIter(_this->exprList);
     while(cx_iterHasNext(&exprIter) && (resultType != cx_object_o)) {
         expr = cx_iterNext(&exprIter);
         exprType = Fast_Expression_getType(expr);
 
         if (!(exprType->reference || expr->isReference)) {
-            Fast_Parser_error(yparser(), "one or more expressions in the waitlist do not evaluate to an object");
+            Fast_Parser_error(yparser(), "one or more expressions in the waitlist do not evaluate to an _this");
             goto error;
         }
 
@@ -102,18 +102,18 @@ cx_int16 Fast_Wait_construct(Fast_Wait _this) {
         }
     }
 
-    if (object->timeout) {
-        timeoutExpr = Fast_Expression_cast(object->timeout, cx_type(cx_float32_o), FALSE);
+    if (_this->timeout) {
+        timeoutExpr = Fast_Expression_cast(_this->timeout, cx_type(cx_float32_o), FALSE);
         if (timeoutExpr) {
-            cx_set(&object->timeout, timeoutExpr);
+            cx_set(&_this->timeout, timeoutExpr);
         }
     } else {
-        object->timeout = Fast_Expression(Fast_FloatingPoint__create(0));
+        _this->timeout = Fast_Expression(Fast_FloatingPoint__create(0));
     }
 
     /* Set type of expression */
-    Fast_Expression(object)->type = Fast_Variable(Fast_Object__create(resultType));
-    Fast_Expression(object)->isReference = TRUE; /* Result is always an object */
+    Fast_Expression(_this)->type = Fast_Variable(Fast_Object__create(resultType));
+    Fast_Expression(_this)->isReference = TRUE; /* Result is always an _this */
 
     return 0;
 error:

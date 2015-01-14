@@ -62,9 +62,6 @@ cx_bool Fast_Expression_hasSideEffects(Fast_Expression _this);
 /* ::cortex::Fast::Expression::hasSideEffects() */
 cx_bool Fast_Expression_hasSideEffects_v(Fast_Expression _this);
 
-/* ::cortex::Fast::Expression::init() */
-cx_int16 Fast_Expression_init(Fast_Expression _this);
-
 /* virtual ::cortex::Fast::Expression::serialize(type dstType,word dst) */
 cx_int16 Fast_Expression_serialize(Fast_Expression _this, cx_type dstType, cx_word dst);
 

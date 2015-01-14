@@ -554,13 +554,6 @@ cx_bool Fast_Expression_hasSideEffects_v(Fast_Expression _this) {
 /* $end */
 }
 
-/* ::cortex::Fast::Expression::init() */
-cx_int16 Fast_Expression_init(Fast_Expression _this) {
-/* $begin(::cortex::Fast::Expression::init) */
-    return Fast_Node_init((Fast_Node)object);
-/* $end */
-}
-
 /* ::cortex::Fast::Expression::serialize(type dstType,word dst) */
 cx_int16 Fast_Expression_serialize_v(Fast_Expression _this, cx_type dstType, cx_word dst) {
 /* $begin(::cortex::Fast::Expression::serialize) */

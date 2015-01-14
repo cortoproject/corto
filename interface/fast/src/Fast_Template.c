@@ -13,13 +13,13 @@
 cx_int16 Fast_Template_construct(Fast_Template _this) {
 /* $begin(::cortex::Fast::Template::construct) */
 
-    if (Fast_Local_construct(Fast_Local(object))) {
+    if (Fast_Local_construct(Fast_Local(_this))) {
         goto error;
     } else {
-        Fast_Variable(object)->kind = FAST_Template;
+        Fast_Variable(_this)->kind = FAST_Template;
     }
 
-    return Fast_Variable_construct(Fast_Variable(object));
+    return Fast_Variable_construct(Fast_Variable(_this));
 error:
     return -1;
 /* $end */

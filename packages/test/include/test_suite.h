@@ -23,8 +23,8 @@ cx_void test_suite_assert_any_any_string(test_suite _this, cx_any v1, cx_any v2,
 /* ::cortex::test::suite::assert(bool cond,string msg) */
 cx_void test_suite_assert_bool_string(test_suite _this, cx_bool cond, cx_string msg);
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::test::suite::construct(suite object) */
-cx_int16 test_suite_construct(test_suite object);
+/* ::cortex::test::suite::construct() */
+cx_int16 test_suite_construct(test_suite _this);
 
 /* ::cortex::test::suite::fail(string msg) */
 cx_void test_suite_fail(test_suite _this, cx_string msg);

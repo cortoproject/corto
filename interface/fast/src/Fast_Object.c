@@ -20,16 +20,16 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* ::cortex::Fast::Object::construct() */
 cx_int16 Fast_Object_construct(Fast_Object _this) {
 /* $begin(::cortex::Fast::Object::construct) */
-    cx_type t = cx_typeof(Fast_ObjectBase(object)->value)->real;
+    cx_type t = cx_typeof(Fast_ObjectBase(_this)->value)->real;
 
     if(t == cx_type(cx_constant_o)) {
-        t = cx_parentof(Fast_ObjectBase(object)->value);
+        t = cx_parentof(Fast_ObjectBase(_this)->value);
     }
 
-    Fast_Expression(object)->type = Fast_Variable(Fast_ObjectBase__create(t));
-    Fast_Expression(object)->isReference = TRUE;
+    Fast_Expression(_this)->type = Fast_Variable(Fast_ObjectBase__create(t));
+    Fast_Expression(_this)->isReference = TRUE;
 
-    return Fast_ObjectBase_construct(Fast_ObjectBase(object));
+    return Fast_ObjectBase_construct(Fast_ObjectBase(_this));
 /* $end */
 }
 

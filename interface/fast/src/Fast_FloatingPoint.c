@@ -20,8 +20,8 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* ::cortex::Fast::FloatingPoint::init() */
 cx_int16 Fast_FloatingPoint_init(Fast_FloatingPoint _this) {
 /* $begin(::cortex::Fast::FloatingPoint::init) */
-    Fast_Literal(object)->kind = FAST_FloatingPoint;
-    return Fast_Literal_init(Fast_Literal(object));
+    Fast_Literal(_this)->kind = FAST_FloatingPoint;
+    return Fast_Literal_init(Fast_Literal(_this));
 /* $end */
 }
 

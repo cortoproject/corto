@@ -74,8 +74,8 @@ error:
 /* ::cortex::Fast::Node::init() */
 cx_int16 Fast_Node_init(Fast_Node _this) {
 /* $begin(::cortex::Fast::Node::init) */
-    object->line = yparser()->line;
-    object->column = yparser()->column;
+    _this->line = yparser()->line;
+    _this->column = yparser()->column;
     return 0;
 /* $end */
 }

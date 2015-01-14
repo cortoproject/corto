@@ -13,7 +13,7 @@
 cx_int16 Fast_Variable_construct(Fast_Variable _this) {
 /* $begin(::cortex::Fast::Variable::construct) */
 
-    Fast_Node(object)->kind = FAST_Variable;
+    Fast_Node(_this)->kind = FAST_Variable;
 
     return 0;
 /* $end */

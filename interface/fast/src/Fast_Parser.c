@@ -1370,9 +1370,9 @@ cx_void Fast_Parser_collectHeap(Fast_Parser _this, cx_word addr) {
 /* ::cortex::Fast::Parser::construct() */
 cx_int16 Fast_Parser_construct(Fast_Parser _this) {
 /* $begin(::cortex::Fast::Parser::construct) */
-    CX_UNUSED(object);
-    Fast_Parser_reset(object);
-    cx_threadTlsSet(FAST_PARSER_KEY, object);
+    CX_UNUSED(_this);
+    Fast_Parser_reset(_this);
+    cx_threadTlsSet(FAST_PARSER_KEY, _this);
     return 0;
 /* $end */
 }
@@ -1475,7 +1475,6 @@ Fast_Variable Fast_Parser_declareFunction(Fast_Parser _this, Fast_Variable retur
 
     if (!_this->pass) {
         cx_id functionName;
-        cx_delegate delegate = NULL;
 
         if (!returnType) {
             if (_this->lastFailedResolve) {
@@ -1505,14 +1504,7 @@ Fast_Variable Fast_Parser_declareFunction(Fast_Parser _this, Fast_Variable retur
         if (!((function = cx_lookupFunction(Fast_ObjectBase(_this->scope)->value, id, FALSE, &distance)) && !distance)) {
             if (!functionType) {
                 if (cx_class_instanceof(cx_interface_o, Fast_ObjectBase(_this->scope)->value)) {
-                    if (cx_class_instanceof(cx_class_o, Fast_ObjectBase(_this->scope)->value)) {
-                        if ((delegate = cx_class_resolveDelegate(cx_class_o, functionName))) {
-                            functionType = cx_typedef(cx_callback_o);
-                        }
-                    }
-                    if (!functionType) {
-                        functionType = cx_typedef(cx_method_o);
-                    }
+                    functionType = cx_typedef(cx_method_o);
                 } else {
                     functionType = cx_typedef(cx_function_o);
                 }
@@ -1545,11 +1537,6 @@ Fast_Variable Fast_Parser_declareFunction(Fast_Parser _this, Fast_Variable retur
                 function->returnType = cx_typedef(returnType_o);
                 function->returnsReference = returnsReference;
                 cx_keep_ext(function, returnType_o, "Keep returntype for function");
-
-                if (delegate) {
-                    cx_callback(function)->delegate = delegate;
-                    cx_keep_ext(function, delegate, "Keep delegate for callback");
-                }
             }
         } else {
             cx_free(function);
@@ -1746,18 +1733,18 @@ cx_void Fast_Parser_destruct(Fast_Parser _this) {
 /* $begin(::cortex::Fast::Parser::destruct) */
     cx_iter iter;
 
-    if (object->heapCollected) {
-        iter = cx_llIter(object->heapCollected);
+    if (_this->heapCollected) {
+        iter = cx_llIter(_this->heapCollected);
         while(cx_iterHasNext(&iter)) {
             cx_dealloc(cx_iterNext(&iter));
         }
-        cx_llFree(object->heapCollected);
+        cx_llFree(_this->heapCollected);
     }
 
-    object->heapCollected = NULL;
-    object->scope = NULL;
+    _this->heapCollected = NULL;
+    _this->scope = NULL;
 
-    memset(object->variables, 0, sizeof(object->variables));
+    memset(_this->variables, 0, sizeof(_this->variables));
 /* $end */
 }
 

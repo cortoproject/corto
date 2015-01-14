@@ -31,7 +31,7 @@ cx_void test_suite_assert_bool_string(test_suite _this, cx_bool cond, cx_string 
 /* $end */
 }
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::test::suite::construct(suite object) */
+/* ::cortex::test::suite::construct() */
 /* $header(::cortex::test::suite::construct) */
 int test_suite_walk(cx_object o, void *userData) {
     test_suite _this = userData;
@@ -66,21 +66,21 @@ cx_object test_suite_createResultTree(test_suite _this, cx_object object) {
 }
 
 /* $end */
-cx_int16 test_suite_construct(test_suite object) {
+cx_int16 test_suite_construct(test_suite _this) {
 /* $begin(::cortex::test::suite::construct) */
 
-    if (!object->package) {
+    if (!_this->package) {
         cx_error("no package provided for testsuite");
         goto error;
     }
 
-    object->success = TRUE;
+    _this->success = TRUE;
 
     /* Recursively recreate scope of package in results root */
-    cx_set(&object->result, test_suite_createResultTree(object, object->package));
+    cx_set(&_this->result, test_suite_createResultTree(_this, _this->package));
 
     /* Walk scope of suite */
-    cx_scopeWalk(object, test_suite_walk, object);
+    cx_scopeWalk(_this, test_suite_walk, _this);
 
     return 0;
 error:

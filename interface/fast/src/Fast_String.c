@@ -167,8 +167,8 @@ cx_int16 Fast_String_construct(Fast_String _this) {
         goto error;
     }
 
-    object->block = yparser()->block; cx_keep_ext(object, object->block, "object->block (keep block for string-expression)");
-    object->scope = yparser()->scope; cx_keep_ext(object, object->scope, "object->scope (keep scope for string-expression)");
+    _this->block = yparser()->block; cx_keep_ext(_this, _this->block, "_this->block (keep block for string-expression)");
+    _this->scope = yparser()->scope; cx_keep_ext(_this, _this->scope, "_this->scope (keep scope for string-expression)");
     
     return 0;
 error:
@@ -208,8 +208,8 @@ cx_word Fast_String_getValue(Fast_String _this) {
 /* ::cortex::Fast::String::init() */
 cx_int16 Fast_String_init(Fast_String _this) {
 /* $begin(::cortex::Fast::String::init) */
-    Fast_Literal(object)->kind = FAST_String;
-    return Fast_Literal_init((Fast_Literal)object);
+    Fast_Literal(_this)->kind = FAST_String;
+    return Fast_Literal_init((Fast_Literal)_this);
 /* $end */
 }
 

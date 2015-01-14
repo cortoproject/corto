@@ -2763,7 +2763,7 @@ cx_int16 cx_expr(cx_object scope, cx_string expr, cx_value *value) {
 
     /* Load parser */
     if (!cx_load("Fast")) {
-        cx_function parseLine = cx_resolve(NULL, "::cortex::Fast::Parser::parseLine");
+        cx_function parseLine = cx_resolve(NULL, "::cortex::Fast::Parser::parseLine(string,object,alias)");
         if (!parseLine) {
             cx_error("function ::Fast::Parser::parseLine could not be resolved");
             goto error;
