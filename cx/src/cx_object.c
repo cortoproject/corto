@@ -1078,7 +1078,7 @@ cx_bool cx_instanceof(cx_typedef type, cx_object o) {
         if (t->kind == type->real->kind) {
             switch(type->real->kind) {
             case CX_COMPOSITE: {
-                if (cx_interface(type->real)->kind == CX_PROCPTR) {
+                if (cx_interface(type->real)->kind == CX_DELEGATE) {
                     /*result = cx_delegate_instanceof(cx_delegate(type), o);*/
                 } else {
                     cx_interface p;
@@ -3190,7 +3190,7 @@ cx_int16 cx_signature(cx_object object, cx_id buffer) {
     }
 
     switch(cx_interface(t)->kind) {
-    case CX_PROCPTR:
+    case CX_DELEGATE:
         cx_signatureFromDelegate(object, buffer);
         break;
     case CX_PROCEDURE:
@@ -3332,7 +3332,7 @@ int cx_lookupFunctionWalk(cx_object o, void* userData) {
     /* If current object is a function, match it */
     if ((cx_typeof(o)->real->kind == CX_COMPOSITE) && 
         ((cx_interface(cx_typeof(o))->kind == CX_PROCEDURE) || 
-        (cx_interface(cx_typeof(o))->kind == CX_PROCPTR))) {
+        (cx_interface(cx_typeof(o))->kind == CX_DELEGATE))) {
         if (cx_overload(o, data->request, &d, data->castableOverloading)) {
             data->error = TRUE;
             goto found;

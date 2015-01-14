@@ -293,7 +293,7 @@ static int cx_genTypeDependencies(cx_object o, cx_bool allowDeclared, cx_bool* r
             case CX_STRUCT:
             case CX_INTERFACE:
             case CX_CLASS:
-            case CX_PROCPTR:
+            case CX_DELEGATE:
             case CX_PROCEDURE:
                 if (cx_genTypeInterfaceDependencies(cx_interface(o), allowDeclared, recursion, data)) {
                     goto error;

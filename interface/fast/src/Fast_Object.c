@@ -59,10 +59,10 @@ cx_int16 Fast_Object_serialize(Fast_Object _this, cx_type dstType, cx_word dst) 
         cx_type srcType = cx_typeof(obj)->real;
 
         /* Handle delegates */
-        if ((srcType->kind == CX_COMPOSITE) && (cx_interface(srcType)->kind == CX_PROCPTR)) {
+        if ((srcType->kind == CX_COMPOSITE) && (cx_interface(srcType)->kind == CX_DELEGATE)) {
             srcIsDelegate = TRUE;
         }
-        if ((dstType->kind == CX_COMPOSITE) && (cx_interface(dstType)->kind == CX_PROCPTR)) {
+        if ((dstType->kind == CX_COMPOSITE) && (cx_interface(dstType)->kind == CX_DELEGATE)) {
             dstIsDelegate = TRUE;
         }
 

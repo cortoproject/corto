@@ -22,7 +22,7 @@ cx_int16 cx_delegate_bind(cx_function object) {
         /* Get function name, lookup delegate, assign function */
         cx_signatureName(cx_nameof(object), functionName);
         if (cx_checkState(cx_type_o, CX_DEFINED) && (m = cx_interface_resolveMember(type, functionName)) &&
-            (m->type->real->kind == CX_COMPOSITE) && (cx_interface(m->type->real)->kind == CX_PROCPTR)) {
+            (m->type->real->kind == CX_COMPOSITE) && (cx_interface(m->type->real)->kind == CX_DELEGATE)) {
             if (cx_delegate_instanceof(cx_delegate(m->type), object)) {
                 /* Bind instance of function is a method */
                 if (cx_procedure(cx_typeof(object))->kind == CX_METHOD) {
@@ -60,7 +60,7 @@ cx_bool cx_delegate_compatible_v(cx_delegate _this, cx_type type) {
     cx_bool result = FALSE;
     CX_UNUSED(_this);
 
-    if((type->kind == CX_COMPOSITE) && (cx_interface(type)->kind == CX_PROCPTR)) {
+    if((type->kind == CX_COMPOSITE) && (cx_interface(type)->kind == CX_DELEGATE)) {
         cx_uint32 i;
         result = TRUE;
 
@@ -103,7 +103,7 @@ cx_int16 cx_delegate_init(cx_delegate _this) {
         goto error;
     }
 
-    cx_interface(_this)->kind = CX_PROCPTR;
+    cx_interface(_this)->kind = CX_DELEGATE;
 
     return 0;
 error:

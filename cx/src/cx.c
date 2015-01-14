@@ -227,7 +227,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, compositeKind_INTERFACE);\
     SSO_OP_OBJ(op, compositeKind_STRUCT);\
     SSO_OP_OBJ(op, compositeKind_CLASS);\
-    SSO_OP_OBJ(op, compositeKind_PROCPTR);\
+    SSO_OP_OBJ(op, compositeKind_DELEGATE);\
     SSO_OP_OBJ(op, compositeKind_PROCEDURE);\
     /* collectionKind */\
     SSO_OP_OBJ(op, collectionKind_ARRAY);\

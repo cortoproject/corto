@@ -2039,7 +2039,7 @@ static cx_vmOpKind cx_ic_getVmCall(cx_icOp op, cx_ic_vmOperand op1, cx_ic_vmOper
     cx_vmOpKind result = CX_VM_STOP;
     cx_icStorage icFunction = ((cx_icStorage)op->s2);
 
-    if (cx_ic_operandIsComposite(icFunction, CX_PROCPTR)) {
+    if (cx_ic_operandIsComposite(icFunction, CX_DELEGATE)) {
         result = cx_ic_getVmCALLPTR(CX_IC_VMTYPE_W, op1, op2);
     } else if (cx_ic_operandIsComposite(icFunction, CX_PROCEDURE)) {
         cx_function f = ((cx_icObject)op->s2)->ptr;
@@ -2502,7 +2502,7 @@ static void cx_ic_getVmOp(cx_ic_vmProgram *program, cx_icOp op) {
 
     /* Call sets function address */
     case CX_IC_CALL:
-        if (cx_ic_operandIsComposite((cx_icStorage)op->s2, CX_PROCPTR)) {
+        if (cx_ic_operandIsComposite((cx_icStorage)op->s2, CX_DELEGATE)) {
             op1 = op->s1;
             op2 = op->s2;
             opDeref1 = op->s1Deref;
