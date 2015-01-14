@@ -73,8 +73,8 @@ cx_int16 Fast_Object_serialize(Fast_Object _this, cx_type dstType, cx_word dst) 
                 cx_valueValueInit(&vSrc, NULL, cx_typedef(srcType), Fast_ObjectBase(_this)->value);
                 cx_valueCopy(&vDst, &vSrc);
             } else if ((srcType->kind == CX_COMPOSITE) && (cx_interface(srcType)->kind == CX_PROCEDURE)) {
-                cx_set(&((cx_procptrdata *)dst)->procedure, Fast_ObjectBase(_this)->value);
-                cx_set(&((cx_procptrdata *)dst)->instance, NULL);
+                cx_set(&((cx_delegatedata *)dst)->procedure, Fast_ObjectBase(_this)->value);
+                cx_set(&((cx_delegatedata *)dst)->instance, NULL);
             }
 
         } else if (cx_instanceof((cx_typedef)dstType, Fast_ObjectBase(_this)->value)) {

@@ -1,10 +1,10 @@
-/* cx_procptrdata.h
+/* cx_delegatedata.h
  *
  * This file contains generated code. Do not modify!
  */
 
-#ifndef cx_procptrdata_H
-#define cx_procptrdata_H
+#ifndef cx_delegatedata_H
+#define cx_delegatedata_H
 
 #include "cortex.h"
 #include "cx__type.h"

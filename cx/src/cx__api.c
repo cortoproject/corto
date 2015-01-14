@@ -690,24 +690,24 @@ cx_procedure cx_procedure__create(cx_interface base, cx_modifier baseAccess) {
     return _this;
 }
 
-cx_procptr cx_procptr__new(void) {
-    return cx_new(cx_typedef(cx_procptr_o));
+cx_delegate cx_delegate__new(void) {
+    return cx_new(cx_typedef(cx_delegate_o));
 }
 
-cx_procptr cx_procptr__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_typedef(cx_procptr_o));
+cx_delegate cx_delegate__declare(cx_object _parent, cx_string _name) {
+    return cx_declare(_parent, _name, cx_typedef(cx_delegate_o));
 }
 
-int cx_procptr__define(cx_procptr _this, cx_typedef returnType, cx_bool returnsReference, cx_parameterSeq parameters) {
+int cx_delegate__define(cx_delegate _this, cx_typedef returnType, cx_bool returnsReference, cx_parameterSeq parameters) {
     returnType ? cx_keep_ext(_this, returnType, "element <0x85cb990>.returnType") : 0; _this->returnType = returnType;
     _this->returnsReference = returnsReference;
     _this->parameters = parameters;
     return cx_define(_this);
 }
 
-cx_procptr cx_procptr__create(cx_typedef returnType, cx_bool returnsReference, cx_parameterSeq parameters) {
-    cx_procptr _this;
-    _this = cx_new(cx_typedef(cx_procptr_o));
+cx_delegate cx_delegate__create(cx_typedef returnType, cx_bool returnsReference, cx_parameterSeq parameters) {
+    cx_delegate _this;
+    _this = cx_new(cx_typedef(cx_delegate_o));
     returnType ? cx_keep_ext(_this, returnType, "element <0x85cbb20>.returnType") : 0; _this->returnType = returnType;
     _this->returnsReference = returnsReference;
     _this->parameters = parameters;
@@ -718,18 +718,18 @@ cx_procptr cx_procptr__create(cx_typedef returnType, cx_bool returnsReference, c
     return _this;
 }
 
-void cx_procptrdata__init(cx_procptrdata *_this, cx_object instance, cx_function procedure) {
+void cx_delegatedata__init(cx_delegatedata *_this, cx_object instance, cx_function procedure) {
     cx_value v;
     memset(_this, 0, sizeof(*_this));
-    cx_valueValueInit(&v, NULL, cx_typedef(cx_procptrdata_o), _this);
+    cx_valueValueInit(&v, NULL, cx_typedef(cx_delegatedata_o), _this);
     cx_initValue(&v);
     instance ? cx_keep_ext(_this, instance, "element <0x85cb748>.instance") : 0; _this->instance = instance;
     procedure ? cx_keep_ext(_this, procedure, "element <0x85cb748>.procedure") : 0; _this->procedure = procedure;
 }
 
-void cx_procptrdata__deinit(cx_procptrdata *_this) {
+void cx_delegatedata__deinit(cx_delegatedata *_this) {
     cx_value v;
-    cx_valueValueInit(&v, NULL, cx_typedef(cx_procptrdata_o), _this);
+    cx_valueValueInit(&v, NULL, cx_typedef(cx_delegatedata_o), _this);
     cx_deinitValue(&v);
 }
 

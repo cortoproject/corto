@@ -1,4 +1,4 @@
-/* cx_procptr.c
+/* cx_delegate.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -9,9 +9,9 @@
 #include "cx.h"
 #include "cx__meta.h"
 
-/* ::cortex::lang::procptr::bind(function object) */
-cx_int16 cx_procptr_bind(cx_function object) {
-/* $begin(::cortex::lang::procptr::bind) */
+/* ::cortex::lang::delegate::bind(function object) */
+cx_int16 cx_delegate_bind(cx_function object) {
+/* $begin(::cortex::lang::delegate::bind) */
     cx_object parent = cx_parentof(object);
 
     if (cx_class_instanceof(cx_interface_o, cx_typeof(parent))) {
@@ -23,13 +23,13 @@ cx_int16 cx_procptr_bind(cx_function object) {
         cx_signatureName(cx_nameof(object), functionName);
         if (cx_checkState(cx_type_o, CX_DEFINED) && (m = cx_interface_resolveMember(type, functionName)) &&
             (m->type->real->kind == CX_COMPOSITE) && (cx_interface(m->type->real)->kind == CX_PROCPTR)) {
-            if (cx_procptr_instanceof(cx_procptr(m->type), object)) {
+            if (cx_delegate_instanceof(cx_delegate(m->type), object)) {
                 /* Bind instance of function is a method */
                 if (cx_procedure(cx_typeof(object))->kind == CX_METHOD) {
-                    cx_set(&((cx_procptrdata *) CX_OFFSET(parent, m->offset))->instance, parent);
+                    cx_set(&((cx_delegatedata *) CX_OFFSET(parent, m->offset))->instance, parent);
                 }
                 /* Bind procedure */
-                cx_set(&((cx_procptrdata *) CX_OFFSET(parent, m->offset))->procedure, object);    
+                cx_set(&((cx_delegatedata *) CX_OFFSET(parent, m->offset))->procedure, object);    
             } else {
                 /* If there is a member that corresponds to a delegate but has a non matching
                  * signature, always report error */
@@ -47,16 +47,16 @@ error:
 /* $end */
 }
 
-/* ::cortex::lang::procptr::castable(type type) */
-cx_bool cx_procptr_castable_v(cx_procptr _this, cx_type type) {
-/* $begin(::cortex::lang::procptr::castable) */
-    return cx_procptr_compatible_v(_this, type);
+/* ::cortex::lang::delegate::castable(type type) */
+cx_bool cx_delegate_castable_v(cx_delegate _this, cx_type type) {
+/* $begin(::cortex::lang::delegate::castable) */
+    return cx_delegate_compatible_v(_this, type);
 /* $end */
 }
 
-/* ::cortex::lang::procptr::compatible(type type) */
-cx_bool cx_procptr_compatible_v(cx_procptr _this, cx_type type) {
-/* $begin(::cortex::lang::procptr::compatible) */
+/* ::cortex::lang::delegate::compatible(type type) */
+cx_bool cx_delegate_compatible_v(cx_delegate _this, cx_type type) {
+/* $begin(::cortex::lang::delegate::compatible) */
     cx_bool result = FALSE;
     CX_UNUSED(_this);
 
@@ -65,21 +65,21 @@ cx_bool cx_procptr_compatible_v(cx_procptr _this, cx_type type) {
         result = TRUE;
 
         /* Validate returntype */
-        if((_this->returnType != cx_procptr(type)->returnType) || (_this->returnsReference != cx_procptr(type)->returnsReference)) {
+        if((_this->returnType != cx_delegate(type)->returnType) || (_this->returnsReference != cx_delegate(type)->returnsReference)) {
             result = FALSE;
         }
 
         /* Validate number of parameters */
-        if(_this->parameters.length != cx_procptr(type)->parameters.length) {
+        if(_this->parameters.length != cx_delegate(type)->parameters.length) {
             result = FALSE;
         }
 
         /* Validate parameters */
         for(i = 0; !result && (i < _this->parameters.length); i++) {
-            if(_this->parameters.buffer[i].type != cx_procptr(type)->parameters.buffer[i].type) {
+            if(_this->parameters.buffer[i].type != cx_delegate(type)->parameters.buffer[i].type) {
                 result = FALSE;
             }
-            if(_this->parameters.buffer[i].passByReference != cx_procptr(type)->parameters.buffer[i].passByReference) {
+            if(_this->parameters.buffer[i].passByReference != cx_delegate(type)->parameters.buffer[i].passByReference) {
                 result = FALSE;
             }
         }   
@@ -91,12 +91,12 @@ cx_bool cx_procptr_compatible_v(cx_procptr _this, cx_type type) {
 /* $end */
 }
 
-/* ::cortex::lang::procptr::init() */
-cx_int16 cx_procptr_init(cx_procptr _this) {
-/* $begin(::cortex::lang::procptr::init) */
+/* ::cortex::lang::delegate::init() */
+cx_int16 cx_delegate_init(cx_delegate _this) {
+/* $begin(::cortex::lang::delegate::init) */
     cx_int16 result;
 
-    cx_interface(_this)->base = cx_interface(cx_procptrdata_o);
+    cx_interface(_this)->base = cx_interface(cx_delegatedata_o);
 
     result = cx_struct_init(cx_struct(_this));
     if(result) {
@@ -111,9 +111,9 @@ error:
 /* $end */
 }
 
-/* ::cortex::lang::procptr::instanceof(object object) */
-/* $header(::cortex::lang::procptr::instanceof) */
-cx_bool cx_procptr_matchParameter(
+/* ::cortex::lang::delegate::instanceof(object object) */
+/* $header(::cortex::lang::delegate::instanceof) */
+cx_bool cx_delegate_matchParameter(
     cx_type t1, 
     cx_bool isRef1, 
     cx_type t2, 
@@ -126,8 +126,8 @@ cx_bool cx_procptr_matchParameter(
     }
 }
 /* $end */
-cx_bool cx_procptr_instanceof(cx_procptr _this, cx_object object) {
-/* $begin(::cortex::lang::procptr::instanceof) */
+cx_bool cx_delegate_instanceof(cx_delegate _this, cx_object object) {
+/* $begin(::cortex::lang::delegate::instanceof) */
     cx_type t = cx_typeof(object)->real;
     cx_bool result = TRUE;
 
@@ -136,7 +136,7 @@ cx_bool cx_procptr_instanceof(cx_procptr _this, cx_object object) {
         cx_uint32 i;
 
         /* Validate returntype */
-        if (!cx_procptr_matchParameter(
+        if (!cx_delegate_matchParameter(
             _this->returnType->real,
             _this->returnsReference,
             call->returnType->real,
@@ -155,7 +155,7 @@ cx_bool cx_procptr_instanceof(cx_procptr _this, cx_object object) {
             p1 = &_this->parameters.buffer[i];
             p2 = &call->parameters.buffer[i];
             
-            if (!cx_procptr_matchParameter(
+            if (!cx_delegate_matchParameter(
                 p1->type->real,
                 p1->passByReference,
                 p2->type->real,

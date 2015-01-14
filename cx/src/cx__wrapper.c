@@ -757,14 +757,14 @@ void __cx_procedure_unbind(cx_function f, void *result, void *args) {
         *(cx_function*)((intptr_t)args + sizeof(void*)));
 }
 
-void __cx_procptr_bind(cx_function f, void *result, void *args) {
+void __cx_delegate_bind(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
-    *(cx_int16*)result = cx_procptr_bind(
+    *(cx_int16*)result = cx_delegate_bind(
         *(cx_function*)args);
 }
 
-/* virtual ::cortex::lang::procptr::castable(type type) */
-cx_bool cx_procptr_castable(cx_procptr _this, cx_type type) {
+/* virtual ::cortex::lang::delegate::castable(type type) */
+cx_bool cx_delegate_castable(cx_delegate _this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
     cx_bool _result;
@@ -787,15 +787,15 @@ cx_bool cx_procptr_castable(cx_procptr _this, cx_type type) {
     return _result;
 }
 
-void __cx_procptr_castable_v(cx_function f, void *result, void *args) {
+void __cx_delegate_castable_v(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
-    *(cx_bool*)result = cx_procptr_castable_v(
+    *(cx_bool*)result = cx_delegate_castable_v(
         *(void**)args,
         *(cx_type*)((intptr_t)args + sizeof(void*)));
 }
 
-/* virtual ::cortex::lang::procptr::compatible(type type) */
-cx_bool cx_procptr_compatible(cx_procptr _this, cx_type type) {
+/* virtual ::cortex::lang::delegate::compatible(type type) */
+cx_bool cx_delegate_compatible(cx_delegate _this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
     cx_bool _result;
@@ -818,23 +818,23 @@ cx_bool cx_procptr_compatible(cx_procptr _this, cx_type type) {
     return _result;
 }
 
-void __cx_procptr_compatible_v(cx_function f, void *result, void *args) {
+void __cx_delegate_compatible_v(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
-    *(cx_bool*)result = cx_procptr_compatible_v(
+    *(cx_bool*)result = cx_delegate_compatible_v(
         *(void**)args,
         *(cx_type*)((intptr_t)args + sizeof(void*)));
 }
 
-void __cx_procptr_init(cx_function f, void *result, void *args) {
+void __cx_delegate_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     CX_UNUSED(args);
-    *(cx_int16*)result = cx_procptr_init(
+    *(cx_int16*)result = cx_delegate_init(
         *(void**)args);
 }
 
-void __cx_procptr_instanceof(cx_function f, void *result, void *args) {
+void __cx_delegate_instanceof(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
-    *(cx_bool*)result = cx_procptr_instanceof(
+    *(cx_bool*)result = cx_delegate_instanceof(
         *(void**)args,
         *(cx_object*)((intptr_t)args + sizeof(void*)));
 }

@@ -441,7 +441,7 @@ typedef union Di2f_t {
 #define CALLPTR(type,code)\
     CALLPTR_##code: {\
         fetchOp2(CALLPTR,code);\
-        cx_procptrdata *ptr = (cx_procptrdata*)&op2_##code;\
+        cx_delegatedata *ptr = (cx_delegatedata*)&op2_##code;\
         void *stackptr = c.stack;\
         if (!ptr->instance) {\
             stackptr = ((cx_word*)stackptr) + 1;\

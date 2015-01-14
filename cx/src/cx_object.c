@@ -1079,7 +1079,7 @@ cx_bool cx_instanceof(cx_typedef type, cx_object o) {
             switch(type->real->kind) {
             case CX_COMPOSITE: {
                 if (cx_interface(type->real)->kind == CX_PROCPTR) {
-                    /*result = cx_procptr_instanceof(cx_procptr(type), o);*/
+                    /*result = cx_delegate_instanceof(cx_delegate(type), o);*/
                 } else {
                     cx_interface p;
                     p = (cx_interface)t;
@@ -3041,7 +3041,7 @@ cx_uint32 cx_overloadParamCount(cx_object o) {
     if (cx_interface(cx_typeof(o)->real)->kind == CX_PROCEDURE) {
         result = cx_function(o)->parameters.length;
     } else {
-        result = cx_procptr(cx_typeof(o))->parameters.length;
+        result = cx_delegate(cx_typeof(o))->parameters.length;
     }
     return result;
 }
@@ -3165,7 +3165,7 @@ nomatch:
 
 /* Create signature from delegate */
 static void cx_signatureFromDelegate(cx_object o, cx_id buffer) {
-    cx_procptr type = cx_procptr(cx_typeof(o)->real);
+    cx_delegate type = cx_delegate(cx_typeof(o)->real);
     cx_uint32 i;
 
     /* Construct signature */

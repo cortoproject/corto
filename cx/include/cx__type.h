@@ -51,7 +51,7 @@ CX_CLASS(cx_bitmask);
 CX_CLASS(cx_alias);
 CX_CLASS(cx_struct);
 CX_CLASS(cx_class);
-CX_CLASS(cx_procptr);
+CX_CLASS(cx_delegate);
 CX_CLASS(cx_procedure);
 CX_CLASS(cx_array);
 CX_CLASS(cx_sequence);
@@ -65,7 +65,7 @@ CX_CLASS(cx_observableEvent);
 CX_INTERFACE(cx_dispatcher);
 
 CX_STRUCT(cx_parameter);
-CX_STRUCT(cx_procptrdata);
+CX_STRUCT(cx_delegatedata);
 CX_STRUCT(cx_interfaceVector);
 CX_STRUCT(cx_callbackInit);
 CX_STRUCT(cx_callbackDestruct);
@@ -95,7 +95,7 @@ CX_ANY(cx_any);
 #define cx_alias(t) ((cx_alias)t)
 #define cx_struct(t) ((cx_struct)t)
 #define cx_class(t) ((cx_class)t)
-#define cx_procptr(t) ((cx_procptr)t)
+#define cx_delegate(t) ((cx_delegate)t)
 #define cx_array(t) ((cx_array)t)
 #define cx_sequence(t) ((cx_sequence)t)
 #define cx_list(t) ((cx_list)t)
@@ -151,7 +151,7 @@ typedef enum cx_compositeKind {
     CX_INTERFACE,
     CX_STRUCT,
     CX_CLASS,
-    CX_PROCPTR,
+    CX_DELEGATE,
     CX_PROCEDURE,
 }cx_compositeKind;
 
@@ -252,20 +252,20 @@ CX_STRUCT_DEF(cx_parameter) {
     cx_bool passByReference;
 };
 
-/* procptrdata */
-CX_STRUCT_DEF(cx_procptrdata) {
+/* delegatedata */
+CX_STRUCT_DEF(cx_delegatedata) {
     cx_object instance;
     cx_function procedure;
 };
 
 /* callbackInit */
 CX_STRUCT_DEF(cx_callbackInit) {
-    cx_procptrdata _parent;
+    cx_delegatedata _parent;
 };
 
 /* callbackDestruct */
 CX_STRUCT_DEF(cx_callbackDestruct) {
-    cx_procptrdata _parent;
+    cx_delegatedata _parent;
 };
 
 /* function */
@@ -445,8 +445,8 @@ CX_CLASS_DEF(cx_class) {
     cx_callbackDestruct destruct;
 };
 
-/* ::cortex::lang::procptr */
-CX_CLASS_DEF(cx_procptr) {
+/* ::cortex::lang::delegate */
+CX_CLASS_DEF(cx_delegate) {
     CX_EXTEND(cx_struct);
     cx_typedef returnType;
     cx_bool returnsReference;

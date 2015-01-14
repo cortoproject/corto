@@ -46,7 +46,7 @@ cx_int16 cx_function_bind(cx_function _this) {
     }
 
     /* Bind with interface if possible */
-    if (cx_procptr_bind(_this)) {
+    if (cx_delegate_bind(_this)) {
         goto error;
     }
 

@@ -457,7 +457,7 @@ Fast_Expression Fast_Parser_delegateAssignment(Fast_Parser _this, Fast_Expressio
     cx_id functionName;
     Fast_InitializerExpr result = NULL;
     cx_string signature = NULL;
-    cx_procptr type = NULL;
+    cx_delegate type = NULL;
     Fast_InitializerVariable_array64 variables;
     Fast_CallBuilder builder;
     Fast_Call tempCall = NULL;
@@ -475,7 +475,7 @@ Fast_Expression Fast_Parser_delegateAssignment(Fast_Parser _this, Fast_Expressio
         goto error;
     }
 
-    type = cx_procptr(Fast_Expression_getType(lvalue));
+    type = cx_delegate(Fast_Expression_getType(lvalue));
 
     /* Build request-signature */
     signature = cx_signatureOpen(functionName);
@@ -965,7 +965,7 @@ error:
 
 /* Declare a delegate type */
 Fast_Variable Fast_Parser_declareDelegate(Fast_Parser _this, cx_type returnType, cx_string id, cx_bool returnsReference) {
-    cx_procptr delegate;
+    cx_delegate delegate;
     cx_parameterSeq parameters;
     cx_id name;
 
@@ -976,12 +976,12 @@ Fast_Variable Fast_Parser_declareDelegate(Fast_Parser _this, cx_type returnType,
     cx_signatureName(id, name);
 
     /* Declare and define delegate */
-    delegate = cx_procptr__declare(Fast_ObjectBase(_this->scope)->value, name);
+    delegate = cx_delegate__declare(Fast_ObjectBase(_this->scope)->value, name);
     if(!delegate) {
         goto error;
     }
 
-    if(cx_procptr__define(delegate, cx_typedef(returnType), returnsReference, parameters)) {
+    if(cx_delegate__define(delegate, cx_typedef(returnType), returnsReference, parameters)) {
         goto error;
     }
 
@@ -1518,7 +1518,7 @@ Fast_Variable Fast_Parser_declareFunction(Fast_Parser _this, Fast_Variable retur
                 }
             } else {
                 /* Check whether declaration is a delegate */
-                if(cx_interface_baseof(cx_interface(kind), cx_interface(cx_procptr_o))) {
+                if(cx_interface_baseof(cx_interface(kind), cx_interface(cx_delegate_o))) {
                     result = Fast_Parser_declareDelegate(
                         _this, 
                         returnType ? Fast_ObjectBase(returnType)->value : NULL, 

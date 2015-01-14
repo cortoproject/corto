@@ -1,10 +1,10 @@
-/* cx_procptr.h
+/* cx_delegate.h
  *
  * This file contains generated code. Do not modify!
  */
 
-#ifndef cx_procptr_H
-#define cx_procptr_H
+#ifndef cx_delegate_H
+#define cx_delegate_H
 
 #include "cortex.h"
 #include "cx_struct.h"
@@ -18,26 +18,26 @@
 extern "C" {
 #endif
 
-/* ::cortex::lang::procptr::bind(function object) */
-cx_int16 cx_procptr_bind(cx_function object);
+/* ::cortex::lang::delegate::bind(function object) */
+cx_int16 cx_delegate_bind(cx_function object);
 
-/* virtual ::cortex::lang::procptr::castable(type type) */
-cx_bool cx_procptr_castable(cx_procptr _this, cx_type type);
+/* virtual ::cortex::lang::delegate::castable(type type) */
+cx_bool cx_delegate_castable(cx_delegate _this, cx_type type);
 
-/* ::cortex::lang::procptr::castable(type type) */
-cx_bool cx_procptr_castable_v(cx_procptr _this, cx_type type);
+/* ::cortex::lang::delegate::castable(type type) */
+cx_bool cx_delegate_castable_v(cx_delegate _this, cx_type type);
 
-/* virtual ::cortex::lang::procptr::compatible(type type) */
-cx_bool cx_procptr_compatible(cx_procptr _this, cx_type type);
+/* virtual ::cortex::lang::delegate::compatible(type type) */
+cx_bool cx_delegate_compatible(cx_delegate _this, cx_type type);
 
-/* ::cortex::lang::procptr::compatible(type type) */
-cx_bool cx_procptr_compatible_v(cx_procptr _this, cx_type type);
+/* ::cortex::lang::delegate::compatible(type type) */
+cx_bool cx_delegate_compatible_v(cx_delegate _this, cx_type type);
 
-/* ::cortex::lang::procptr::init() */
-cx_int16 cx_procptr_init(cx_procptr _this);
+/* ::cortex::lang::delegate::init() */
+cx_int16 cx_delegate_init(cx_delegate _this);
 
-/* ::cortex::lang::procptr::instanceof(object object) */
-cx_bool cx_procptr_instanceof(cx_procptr _this, cx_object object);
+/* ::cortex::lang::delegate::instanceof(object object) */
+cx_bool cx_delegate_instanceof(cx_delegate _this, cx_object object);
 
 #ifdef __cplusplus
 }

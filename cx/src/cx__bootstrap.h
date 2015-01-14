@@ -184,7 +184,7 @@ typedef struct cx_SSOO_object {
     cx_SSOO o;
 }cx_SSOO_object;
 
-CX_STATIC_SCOPED_REFOBJECT(procptr);
+CX_STATIC_SCOPED_REFOBJECT(delegate);
 CX_STATIC_SCOPED_REFOBJECT(typedef);
 CX_STATIC_SCOPED_REFOBJECT(type);
 CX_STATIC_SCOPED_REFOBJECT(primitive);
@@ -408,8 +408,8 @@ CX_STATIC_SCOPED_OBJECT(constant);
 #define CX_REFERENCE_O(parent, name, type, access, state, weak) sso_member parent##_##name##__o = {CX_SSO_PO_V(parent, #name, member), CX_MEMBER_V(type, access, state, weak), VTABLE_V}
 
 /* Delegate type */
-#define CX_PROCPTR_O(name, returnType) sso_procptr name##__o = \
-    {CX_SSO_V(cortex_lang, #name, procptr), {CX_STRUCT_NOBASE_V(name, CX_PROCPTR, FALSE, NULL, CX_DECLARED|CX_DEFINED, CX_NODELEGATE), (cx_typedef)&returnType##__o.v, FALSE, CX_SEQUENCE_EMPTY_V(parameter)}, VTABLE_V}
+#define CX_DELEGATE_O(name, returnType) sso_delegate name##__o = \
+    {CX_SSO_V(cortex_lang, #name, delegate), {CX_STRUCT_NOBASE_V(name, CX_DELEGATE, FALSE, NULL, CX_DECLARED|CX_DEFINED, CX_NODELEGATE), (cx_typedef)&returnType##__o.v, FALSE, CX_SEQUENCE_EMPTY_V(parameter)}, VTABLE_V}
 
 /* Forward declarations of classes */
 CX_FWDECL(class, typedef);
@@ -431,7 +431,7 @@ CX_FWDECL(class, bitmask);
 CX_FWDECL(class, alias);
 CX_FWDECL(class, struct);
 CX_FWDECL(class, class);
-CX_FWDECL(class, procptr);
+CX_FWDECL(class, delegate);
 CX_FWDECL(class, array);
 CX_FWDECL(class, sequence);
 CX_FWDECL(class, list);
@@ -442,7 +442,7 @@ CX_FWDECL(class, event);
 CX_FWDECL(class, observableEvent);
 CX_FWDECL(struct, interfaceVector);
 CX_FWDECL(struct, parameter);
-CX_FWDECL(struct, procptrdata);
+CX_FWDECL(struct, delegatedata);
 
 /* Abstract classes */
 CX_FWDECL(interface, dispatcher);
@@ -496,8 +496,8 @@ CX_FWDECL(sequence, observerSeq);
 CX_FWDECL(sequence, vtable);
 CX_FWDECL(sequence, interfaceVectorSeq);
 
-CX_FWDECL(procptr, callbackInit);
-CX_FWDECL(procptr, callbackDestruct);
+CX_FWDECL(delegate, callbackInit);
+CX_FWDECL(delegate, callbackDestruct);
 
 /* database root */
 cx_SSOO_object root__o = {CX_ROOT_V()};
@@ -573,7 +573,7 @@ CX_ENUM_O(compositeKind);
     CX_CONSTANT_O(compositeKind, STRUCT);
     CX_CONSTANT_O(compositeKind, INTERFACE);
     CX_CONSTANT_O(compositeKind, CLASS);
-    CX_CONSTANT_O(compositeKind, PROCPTR);
+    CX_CONSTANT_O(compositeKind, DELEGATE);
     CX_CONSTANT_O(compositeKind, PROCEDURE);
 
 CX_ENUM_O(collectionKind);
@@ -672,8 +672,8 @@ CX_SEQUENCE_O(vtable, function, 0);
 CX_SEQUENCE_O(interfaceVectorSeq, interfaceVector, 0);
 
 /* Delegate types */
-CX_PROCPTR_O(callbackInit, int16);
-CX_PROCPTR_O(callbackDestruct, void);
+CX_DELEGATE_O(callbackInit, int16);
+CX_DELEGATE_O(callbackDestruct, void);
 
 /* ::cortex::typedef */
 CX_FW_ICD(typedef);
@@ -863,22 +863,22 @@ CX_CLASS_O(class, struct, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_ICD);
     CX_METHOD_O(class, bindObserver, "(observer observer)", void, FALSE, cx_class_bindObserver);
     CX_METHOD_O(class, findObserver, "(object observable,string expr)", observer, FALSE, cx_class_findObserver);
 
-/* ::cortex::lang::procptrdata */
-CX_STRUCT_O(procptrdata, NULL, CX_DECLARED | CX_DEFINED);
-    CX_MEMBER_O(procptrdata, instance, object, CX_GLOBAL);
-    CX_MEMBER_O(procptrdata, procedure, function, CX_GLOBAL);
+/* ::cortex::lang::delegatedata */
+CX_STRUCT_O(delegatedata, NULL, CX_DECLARED | CX_DEFINED);
+    CX_MEMBER_O(delegatedata, instance, object, CX_GLOBAL);
+    CX_MEMBER_O(delegatedata, procedure, function, CX_GLOBAL);
 
-/* ::cortex::lang::procptr */
-CX_FW_I(procptr);
-CX_CLASS_O(procptr, struct, CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, CX_I);
-    CX_METHOD_O(procptr, init, "()", int16, FALSE, cx_procptr_init);
-    CX_REFERENCE_O(procptr, returnType, typedef, CX_GLOBAL, CX_DEFINED | CX_DECLARED, FALSE);
-    CX_MEMBER_O(procptr, returnsReference, bool, CX_GLOBAL);
-    CX_MEMBER_O(procptr, parameters, parameterSeq, CX_GLOBAL);
-    CX_METHOD_O(procptr, compatible, "(type type)", bool, TRUE, cx_procptr_compatible_v);
-    CX_METHOD_O(procptr, castable, "(type type)", bool, TRUE, cx_procptr_compatible_v);
-    CX_METHOD_O(procptr, instanceof, "(object object)", bool, FALSE, cx_procptr_instanceof);
-    CX_FUNCTION_O(procptr, bind, "(function object)", int16, cx_procptr_bind);
+/* ::cortex::lang::delegate */
+CX_FW_I(delegate);
+CX_CLASS_O(delegate, struct, CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, CX_I);
+    CX_METHOD_O(delegate, init, "()", int16, FALSE, cx_delegate_init);
+    CX_REFERENCE_O(delegate, returnType, typedef, CX_GLOBAL, CX_DEFINED | CX_DECLARED, FALSE);
+    CX_MEMBER_O(delegate, returnsReference, bool, CX_GLOBAL);
+    CX_MEMBER_O(delegate, parameters, parameterSeq, CX_GLOBAL);
+    CX_METHOD_O(delegate, compatible, "(type type)", bool, TRUE, cx_delegate_compatible_v);
+    CX_METHOD_O(delegate, castable, "(type type)", bool, TRUE, cx_delegate_compatible_v);
+    CX_METHOD_O(delegate, instanceof, "(object object)", bool, FALSE, cx_delegate_instanceof);
+    CX_FUNCTION_O(delegate, bind, "(function object)", int16, cx_delegate_bind);
 
 /* ::cortex::lang::procedure */
 CX_FW_I(procedure);

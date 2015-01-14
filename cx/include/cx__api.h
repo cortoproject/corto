@@ -173,15 +173,15 @@ cx_procedure cx_procedure__declare(cx_object _parent, cx_string _name);
 int cx_procedure__define(cx_procedure _this, cx_interface base, cx_modifier baseAccess);
 cx_procedure cx_procedure__create(cx_interface base, cx_modifier baseAccess);
 
-/* ::cortex::lang::procptr */
-cx_procptr cx_procptr__new(void);
-cx_procptr cx_procptr__declare(cx_object _parent, cx_string _name);
-int cx_procptr__define(cx_procptr _this, cx_typedef returnType, cx_bool returnsReference, cx_parameterSeq parameters);
-cx_procptr cx_procptr__create(cx_typedef returnType, cx_bool returnsReference, cx_parameterSeq parameters);
+/* ::cortex::lang::delegate */
+cx_delegate cx_delegate__new(void);
+cx_delegate cx_delegate__declare(cx_object _parent, cx_string _name);
+int cx_delegate__define(cx_delegate _this, cx_typedef returnType, cx_bool returnsReference, cx_parameterSeq parameters);
+cx_delegate cx_delegate__create(cx_typedef returnType, cx_bool returnsReference, cx_parameterSeq parameters);
 
-/* ::cortex::lang::procptrdata */
-void cx_procptrdata__init(cx_procptrdata *_this, cx_object instance, cx_function procedure);
-void cx_procptrdata__deinit(cx_procptrdata *_this);
+/* ::cortex::lang::delegatedata */
+void cx_delegatedata__init(cx_delegatedata *_this, cx_object instance, cx_function procedure);
+void cx_delegatedata__deinit(cx_delegatedata *_this);
 
 /* ::cortex::lang::sequence */
 cx_sequence cx_sequence__new(void);

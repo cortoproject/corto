@@ -17,7 +17,7 @@ cx_int16 Fast_DelegateCall_construct(Fast_DelegateCall _this) {
         goto error;
     } else {
         cx_uint32 i;
-        cx_procptr type = cx_procptr(Fast_Expression_getType(object->expr));
+        cx_delegate type = cx_delegate(Fast_Expression_getType(object->expr));
 
         /* Create expression to obtain pointer to the instance */
         Fast_String instanceString = Fast_String__create("instance");

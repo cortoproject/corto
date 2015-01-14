@@ -76,7 +76,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_CLASS(op, map);\
     SSO_OP_CLASS(op, member);\
     SSO_OP_CLASS(op, class);\
-    SSO_OP_CLASS(op, procptr);
+    SSO_OP_CLASS(op, delegate);
 
 /* Procedures */
 #define SSO_OP_PROCEDURETYPE(op)\
@@ -128,7 +128,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_PRIM(op, interfaceVectorSeq);\
     SSO_OP_PRIM(op, interfaceVector);\
     SSO_OP_PRIM(op, parameter);\
-    SSO_OP_PRIM(op, procptrdata);\
+    SSO_OP_PRIM(op, delegatedata);\
     SSO_OP_VOID(op, dispatcher);\
     SSO_OP_PRIM(op, callbackInit);\
     SSO_OP_PRIM(op, callbackDestruct);\
@@ -450,18 +450,18 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, class_resolveInterfaceMethod_);\
     SSO_OP_OBJ(op, class_bindObserver_);\
     SSO_OP_OBJ(op, class_findObserver_);\
-    /* procptrdata */\
-    SSO_OP_OBJ(op, procptrdata_instance);\
-    SSO_OP_OBJ(op, procptrdata_procedure);\
-    /* procptr */\
-    SSO_OP_OBJ(op, procptr_returnType);\
-    SSO_OP_OBJ(op, procptr_returnsReference);\
-    SSO_OP_OBJ(op, procptr_parameters);\
-    SSO_OP_OBJ(op, procptr_init_);\
-    SSO_OP_OBJ(op, procptr_compatible_);\
-    SSO_OP_OBJ(op, procptr_castable_);\
-    SSO_OP_OBJ(op, procptr_instanceof_);\
-    SSO_OP_OBJ(op, procptr_bind);\
+    /* delegatedata */\
+    SSO_OP_OBJ(op, delegatedata_instance);\
+    SSO_OP_OBJ(op, delegatedata_procedure);\
+    /* delegate */\
+    SSO_OP_OBJ(op, delegate_returnType);\
+    SSO_OP_OBJ(op, delegate_returnsReference);\
+    SSO_OP_OBJ(op, delegate_parameters);\
+    SSO_OP_OBJ(op, delegate_init_);\
+    SSO_OP_OBJ(op, delegate_compatible_);\
+    SSO_OP_OBJ(op, delegate_castable_);\
+    SSO_OP_OBJ(op, delegate_instanceof_);\
+    SSO_OP_OBJ(op, delegate_bind);\
     /* array */\
     SSO_OP_OBJ(op, array_elementType);\
     SSO_OP_OBJ(op, array_init_);\
