@@ -1,0 +1,6 @@
+object tc_iterator::
+    array intArray: int32, 3
+    intArray array1: 1, 2, 3
+    iterator intIterator: int32
+
+    bool testArray()
