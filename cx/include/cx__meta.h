@@ -44,6 +44,7 @@ CX_META_OBJECT(class, array);
 CX_META_OBJECT(class, sequence);
 CX_META_OBJECT(class, list);
 CX_META_OBJECT(class, map);
+CX_META_OBJECT(class, iterator);
 CX_META_OBJECT(class, member);
 CX_META_OBJECT(class, event);
 CX_META_OBJECT(class, observableEvent);

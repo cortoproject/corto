@@ -70,7 +70,7 @@ typedef struct cx_ll_s* cx_ll;
 
 #define CX_LIST(type) typedef cx_ll type
 
-#define CX_ITERATOR(__type) typedef struct __type {cx_collection type; void *value; void *element;} __type;
+#define CX_ITERATOR(__type) typedef struct __type {cx_collection type; void *value; void *element;} __type
 
 #define CX_STRUCT_DEF(type) struct type
 #define CX_CLASS_DEF(type) struct type##_s
