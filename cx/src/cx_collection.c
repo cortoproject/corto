@@ -143,7 +143,7 @@ cx_bool cx_collection_castable_v(cx_collection _this, cx_type type) {
     cx_bool result = FALSE;
     if (type->kind == CX_COLLECTION) {
         cx_collection t = cx_collection(type);
-        
+
         /* Arrays are only castable when they match exactly in size */
         if (!(_this->kind == CX_ARRAY) || ((t->kind == CX_ARRAY) && (_this->max == t->max))) {
             if (_this->elementType != t->elementType) {
@@ -155,7 +155,7 @@ cx_bool cx_collection_castable_v(cx_collection _this, cx_type type) {
             }
         }
     }
-    
+
     return result;
 /* $end */
 }
@@ -224,6 +224,9 @@ cx_bool cx_collection_elementRequiresAlloc(cx_collection _this) {
                 result = FALSE; /* Lists and maps fit in an address */
                 break;
             }
+            break;
+        case CX_ITERATOR:
+            /* Iterators are wider than an address */
             break;
         case CX_COMPOSITE:
             /* If type is composite and not a reference an alloc is required. */

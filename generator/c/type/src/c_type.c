@@ -410,6 +410,25 @@ error:
     return -1;
 }
 
+/* Iterator object */
+static cx_int16 c_typeIterator(cx_serializer s, cx_value* v, void* userData) {
+    cx_type t;
+
+    CX_UNUSED(s);
+    CX_UNUSED(v);
+    
+    c_typeWalk_t* data;
+    cx_id id, postfix;
+
+    data = userData;
+    t = cx_valueType(v)->real;
+    c_specifierId(data->g, cx_typedef(t), id, NULL, postfix);
+    g_fileWrite(data->header, "CX_ITERATOR(%s);\n\n",
+            id);
+
+    return 0;
+}
+
 /* Type object */
 static cx_int16 c_typeObject(cx_serializer s, cx_value* v, void* userData) {
     c_typeWalk_t* data;
@@ -438,6 +457,9 @@ static cx_int16 c_typeObject(cx_serializer s, cx_value* v, void* userData) {
         break;
     case CX_COLLECTION:
         result = c_typeCollection(s, v, userData);
+        break;
+    case CX_ITERATOR:
+        result = c_typeIterator(s, v, userData);
         break;
     default:
         cx_error("c_typeObject: typeKind '%s' not handled by code-generator.", cx_nameof(cx_enum_constant(cx_typeKind_o, t->kind)));

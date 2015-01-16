@@ -1,0 +1,1 @@
+cc -O0  -g -Wall -Wextra -Wno-gnu-label-as-value -Wno-unknown-pragmas -Wstrict-prototypes -pedantic -std=c99 -fPIC -D_GNU_SOURCE -D_XOPEN_SOURCE=500 -D_POSIX_C_SOURCE=199506 -I"include" -I"/home/johnny/Cortex/cx/include" src/tc_iterator.c -c -o obj/tc_iterator.o

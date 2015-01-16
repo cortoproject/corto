@@ -101,6 +101,7 @@ CX_ANY(cx_any);
 #define cx_sequence(t) ((cx_sequence)t)
 #define cx_list(t) ((cx_list)t)
 #define cx_map(t) ((cx_map)t)
+#define cx_iterator(t) ((cx_iterator)t)
 #define cx_member(t) ((cx_member)t)
 #define cx_reference(t) ((cx_reference)t)
 #define cx_event(t) ((cx_event)t)
