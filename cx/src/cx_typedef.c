@@ -9,27 +9,27 @@
 #include "cx.h"
 #include "cx__meta.h"
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::typedef::construct(typedef object) */
-cx_int16 cx_typedef_construct(cx_typedef object) {
+/* ::cortex::lang::typedef::construct() */
+cx_int16 cx_typedef_construct(cx_typedef _this) {
 /* $begin(::cortex::lang::typedef::construct) */
     cx_typedef real;
 
-    real = cx_typedef(object)->type;
+    real = cx_typedef(_this)->type;
     if (!real) {
         cx_id id;
-        cx_error("typedef::construct: typedef '%s' points to nothing", cx_fullname(object, id));
+        cx_error("typedef::construct: typedef '%s' points to nothing", cx_fullname(_this, id));
         goto error;
     }
 
     while(real != real->type) {
         if (!cx_checkState(real, CX_VALID)) {
             cx_id id, id2;
-            cx_error("typedef::construct: typedef '%s' points to object '%s' which is not valid", cx_fullname(object, id), cx_fullname(real, id2));
+            cx_error("typedef::construct: typedef '%s' points to object '%s' which is not valid", cx_fullname(_this, id), cx_fullname(real, id2));
             goto error;
         }
         if (!cx_checkState(real, CX_DEFINED)) {
             cx_id id, id2;
-            cx_error("typedef::construct: typedef '%s' points to object '%s' which is not defined", cx_fullname(object, id), cx_fullname(real, id2));
+            cx_error("typedef::construct: typedef '%s' points to object '%s' which is not defined", cx_fullname(_this, id), cx_fullname(real, id2));
             goto error;
         }
         if (!real->type) {
@@ -38,9 +38,9 @@ cx_int16 cx_typedef_construct(cx_typedef object) {
         real = real->type;
     }
 
-    cx_assert(real != NULL, "typedef '%s' points to nothing", cx_nameof(object));
+    cx_assert(real != NULL, "typedef '%s' points to nothing", cx_nameof(_this));
 
-    cx_set_ext(object, &cx_typedef(object)->real, real, "Set real-member");
+    cx_set_ext(_this, &cx_typedef(_this)->real, real, "Set real-member");
 
     return 0;
 error:
@@ -48,23 +48,23 @@ error:
 /* $end */
 }
 
-/* callback ::cortex::lang::class::destruct(object object) -> ::cortex::lang::typedef::destruct(typedef object) */
-cx_void cx_typedef_destruct(cx_typedef object) {
+/* ::cortex::lang::typedef::destruct() */
+cx_void cx_typedef_destruct(cx_typedef _this) {
 /* $begin(::cortex::lang::typedef::destruct) */
-    cx_free_ext(object, object->real, "Free real member");
-    object->real = NULL;
+    cx_free_ext(_this, _this->real, "Free real member");
+    _this->real = NULL;
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::typedef::init(typedef object) */
-cx_int16 cx_typedef_init(cx_typedef object) {
+/* ::cortex::lang::typedef::init() */
+cx_int16 cx_typedef_init(cx_typedef _this) {
 /* $begin(::cortex::lang::typedef::init) */
-    CX_UNUSED(object);
+    CX_UNUSED(_this);
 
-    if (object->type) {
-        cx_typedef_construct(object);
-        if (cx_checkAttr(object, CX_ATTR_SCOPED) && (cx_parentof(object) == cortex_lang_o)) {
-            cx_keep_ext(object, object->real, "Keep self for real member");
+    if (_this->type) {
+        cx_typedef_construct(_this);
+        if (cx_checkAttr(_this, CX_ATTR_SCOPED) && (cx_parentof(_this) == cortex_lang_o)) {
+            cx_keep_ext(_this, _this->real, "Keep self for real member");
         }
 
     }

@@ -18,8 +18,8 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::DelegateCall::construct(Fast::DelegateCall object) */
-cx_int16 Fast_DelegateCall_construct(Fast_DelegateCall object);
+/* ::cortex::Fast::DelegateCall::construct() */
+cx_int16 Fast_DelegateCall_construct(Fast_DelegateCall _this);
 
 #ifdef __cplusplus
 }

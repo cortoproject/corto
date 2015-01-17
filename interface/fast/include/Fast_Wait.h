@@ -18,8 +18,8 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::Wait::construct(Wait object) */
-cx_int16 Fast_Wait_construct(Fast_Wait object);
+/* ::cortex::Fast::Wait::construct() */
+cx_int16 Fast_Wait_construct(Fast_Wait _this);
 
 /* virtual ::cortex::Fast::Wait::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_Wait_toIc(Fast_Wait _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);

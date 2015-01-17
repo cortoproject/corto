@@ -18,7 +18,7 @@ static int cx_iterator_next_array(cx_collection collection, cx_void *array, void
 cx_int16 cx_iterator_init(cx_iterator object) {
     /* $begin(::cortex::lang::iterator::init) */
     cx_type(object)->kind = CX_ITERATOR;
-    return cx_type__init(cx_type(object));
+    return cx_type_init(cx_type(object));
     /* $end */
 }
 

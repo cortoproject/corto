@@ -18,8 +18,8 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::TernaryExpr::construct(Fast::TernaryExpr object) */
-cx_int16 Fast_TernaryExpr_construct(Fast_TernaryExpr object);
+/* ::cortex::Fast::TernaryExpr::construct() */
+cx_int16 Fast_TernaryExpr_construct(Fast_TernaryExpr _this);
 
 /* virtual ::cortex::Fast::TernaryExpr::hasSideEffects() */
 cx_bool Fast_TernaryExpr_hasSideEffects(Fast_TernaryExpr _this);

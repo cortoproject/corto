@@ -159,11 +159,11 @@ cx_type Fast_Parser_initGetType(Fast_Initializer _this, cx_member *m_out) {
 
 /* $end */
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::Initializer::construct(Initializer object) */
-cx_int16 Fast_Initializer_construct(Fast_Initializer object) {
+/* ::cortex::Fast::Initializer::construct() */
+cx_int16 Fast_Initializer_construct(Fast_Initializer _this) {
 /* $begin(::cortex::Fast::Initializer::construct) */
     cx_uint32 variable;
-    cx_type t = Fast_Expression_getType(object->variables[0].object);
+    cx_type t = Fast_Expression_getType(_this->variables[0].object);
     
     if (!t) {
         Fast_Parser_error(yparser(), "parser error: invalid object in initializer"); abort();
@@ -171,30 +171,30 @@ cx_int16 Fast_Initializer_construct(Fast_Initializer object) {
     }
 
     /* Initialize first frame with type */
-    for(variable=0; variable<object->variableCount; variable++) {
-        cx_set(&object->frames[variable].type, t);
+    for(variable=0; variable<_this->variableCount; variable++) {
+        cx_set(&_this->frames[variable].type, t);
         /* cx_set(&_this->rvalueType, t); */
-        object->frames[variable].location = 0;
+        _this->frames[variable].location = 0;
     }
-    object->fp = 0;
+    _this->fp = 0;
 
 #ifdef CX_INIT_DEBUG
     {
         cx_id id, id2;
-        printf("%*s%d[%s %p]: construct (type=%s)\n", indent, " ", yparser()->line, cx_fullname(cx_typeof(object), id), object, cx_fullname(t, id2));
+        printf("%*s%d[%s %p]: construct (type=%s)\n", indent, " ", yparser()->line, cx_fullname(cx_typeof(_this), id), _this, cx_fullname(t, id2));
         indent++;
     }
 #endif
     
     /* If type of initializer is either a composite or a collection type, do an initial push */
-    if ((((t->kind == CX_COMPOSITE) && (cx_interface(t)->kind != CX_PROCPTR)) || (t->kind == CX_COLLECTION))) {
-        if (Fast_Initializer_push(object)) {
+    if ((((t->kind == CX_COMPOSITE) && (cx_interface(t)->kind != CX_DELEGATE)) || (t->kind == CX_COLLECTION))) {
+        if (Fast_Initializer_push(_this)) {
             goto error;
         }
     }
     
-    Fast_Node(object)->kind = FAST_Initializer;
-    Fast_Expression(object)->type = Fast_Variable(Fast_Object__create(t));
+    Fast_Node(_this)->kind = FAST_Initializer;
+    Fast_Expression(_this)->type = Fast_Variable(Fast_Object__create(t));
     
     return 0;
 error:

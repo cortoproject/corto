@@ -18,7 +18,7 @@ extern "C" {
 #endif
 
 /* ::cortex::Fast::Parser::addStatement(Fast::Node statement) */
-void Fast_Parser_addStatement(Fast_Parser _this, Fast_Node statement);
+cx_void Fast_Parser_addStatement(Fast_Parser _this, Fast_Node statement);
 
 /* ::cortex::Fast::Parser::argumentToString(Fast::Variable type,string id,bool reference) */
 cx_string Fast_Parser_argumentToString(Fast_Parser _this, Fast_Variable type, cx_string id, cx_bool reference);
@@ -33,7 +33,7 @@ cx_int16 Fast_Parser_bind(Fast_Parser _this, Fast_Variable function, Fast_Block 
 cx_int16 Fast_Parser_bindOneliner(Fast_Parser _this, Fast_Variable function, Fast_Block block, Fast_Expression expr);
 
 /* ::cortex::Fast::Parser::blockPop() */
-void Fast_Parser_blockPop(Fast_Parser _this);
+cx_void Fast_Parser_blockPop(Fast_Parser _this);
 
 /* ::cortex::Fast::Parser::blockPush(bool presetBlock) */
 Fast_Block Fast_Parser_blockPush(Fast_Parser _this, cx_bool presetBlock);
@@ -50,8 +50,8 @@ cx_void Fast_Parser_collect(Fast_Parser _this, cx_object o);
 /* ::cortex::Fast::Parser::collectHeap(word addr) */
 cx_void Fast_Parser_collectHeap(Fast_Parser _this, cx_word addr);
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::Parser::construct(Parser object) */
-cx_int16 Fast_Parser_construct(Fast_Parser object);
+/* ::cortex::Fast::Parser::construct() */
+cx_int16 Fast_Parser_construct(Fast_Parser _this);
 
 /* ::cortex::Fast::Parser::declaration(Variable type,string id,bool isReference) */
 Fast_Variable Fast_Parser_declaration(Fast_Parser _this, Fast_Variable type, cx_string id, cx_bool isReference);
@@ -71,8 +71,8 @@ cx_int16 Fast_Parser_defineScope(Fast_Parser _this);
 /* ::cortex::Fast::Parser::defineVariable(Variable object) */
 cx_int16 Fast_Parser_defineVariable(Fast_Parser _this, Fast_Variable object);
 
-/* callback ::cortex::lang::class::destruct(object object) -> ::cortex::Fast::Parser::destruct(Parser object) */
-void Fast_Parser_destruct(Fast_Parser object);
+/* ::cortex::Fast::Parser::destruct() */
+cx_void Fast_Parser_destruct(Fast_Parser _this);
 
 /* ::cortex::Fast::Parser::elementExpr(Fast::Expression lvalue,Fast::Expression rvalue) */
 Fast_Expression Fast_Parser_elementExpr(Fast_Parser _this, Fast_Expression lvalue, Fast_Expression rvalue);
@@ -93,7 +93,7 @@ cx_type Fast_Parser_getLvalueType(Fast_Parser _this, cx_bool assignment);
 Fast_Node Fast_Parser_ifStatement(Fast_Parser _this, Fast_Expression condition, Fast_Block trueBranch, Fast_If falseBranch);
 
 /* ::cortex::Fast::Parser::initDeclareStaged(Fast::Expression expr) */
-void Fast_Parser_initDeclareStaged(Fast_Parser _this, Fast_Expression expr);
+cx_void Fast_Parser_initDeclareStaged(Fast_Parser _this, Fast_Expression expr);
 
 /* ::cortex::Fast::Parser::initKeyValuePop() */
 cx_int16 Fast_Parser_initKeyValuePop(Fast_Parser _this);
@@ -123,7 +123,7 @@ Fast_Expression Fast_Parser_initPushIdentifier(Fast_Parser _this, Fast_Expressio
 cx_int16 Fast_Parser_initPushStatic(Fast_Parser _this);
 
 /* ::cortex::Fast::Parser::initStage(string id,bool found) */
-void Fast_Parser_initStage(Fast_Parser _this, cx_string id, cx_bool found);
+cx_void Fast_Parser_initStage(Fast_Parser _this, cx_string id, cx_bool found);
 
 /* ::cortex::Fast::Parser::initValue(Expression expr) */
 cx_int16 Fast_Parser_initValue(Fast_Parser _this, Fast_Expression expr);
@@ -144,10 +144,10 @@ Fast_Expression Fast_Parser_memberExpr(Fast_Parser _this, Fast_Expression lvalue
 Fast_Variable Fast_Parser_observerDeclaration(Fast_Parser _this, cx_string id, Fast_Expression object, cx_eventMask mask, Fast_Object dispatcher);
 
 /* ::cortex::Fast::Parser::observerPop() */
-void Fast_Parser_observerPop(Fast_Parser _this);
+cx_void Fast_Parser_observerPop(Fast_Parser _this);
 
 /* ::cortex::Fast::Parser::observerPush() */
-void Fast_Parser_observerPush(Fast_Parser _this);
+cx_void Fast_Parser_observerPush(Fast_Parser _this);
 
 /* ::cortex::Fast::Parser::parse() */
 cx_uint32 Fast_Parser_parse(Fast_Parser _this);
@@ -159,31 +159,31 @@ Fast_Expression Fast_Parser_parseExpression(Fast_Parser _this, cx_string expr, F
 cx_int16 Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_value* value);
 
 /* ::cortex::Fast::Parser::popComplexType() */
-void Fast_Parser_popComplexType(Fast_Parser _this);
+cx_void Fast_Parser_popComplexType(Fast_Parser _this);
 
 /* ::cortex::Fast::Parser::popLvalue() */
-void Fast_Parser_popLvalue(Fast_Parser _this);
+cx_void Fast_Parser_popLvalue(Fast_Parser _this);
 
 /* ::cortex::Fast::Parser::popScope(Fast::Variable previous) */
-void Fast_Parser_popScope(Fast_Parser _this, Fast_Variable previous);
+cx_void Fast_Parser_popScope(Fast_Parser _this, Fast_Variable previous);
 
 /* ::cortex::Fast::Parser::postfixExpr(Fast::Expression lvalue,operatorKind operator) */
 Fast_Expression Fast_Parser_postfixExpr(Fast_Parser _this, Fast_Expression lvalue, cx_operatorKind operator);
 
 /* ::cortex::Fast::Parser::pushComplexType(Fast::Expression lvalue) */
-void Fast_Parser_pushComplexType(Fast_Parser _this, Fast_Expression lvalue);
+cx_void Fast_Parser_pushComplexType(Fast_Parser _this, Fast_Expression lvalue);
 
 /* ::cortex::Fast::Parser::pushLvalue(Fast::Expression lvalue,bool isAssignment) */
-void Fast_Parser_pushLvalue(Fast_Parser _this, Fast_Expression lvalue, cx_bool isAssignment);
+cx_void Fast_Parser_pushLvalue(Fast_Parser _this, Fast_Expression lvalue, cx_bool isAssignment);
 
 /* ::cortex::Fast::Parser::pushReturnAsLvalue(function function) */
-void Fast_Parser_pushReturnAsLvalue(Fast_Parser _this, cx_function function);
+cx_void Fast_Parser_pushReturnAsLvalue(Fast_Parser _this, cx_function function);
 
 /* ::cortex::Fast::Parser::pushScope() */
 Fast_Variable Fast_Parser_pushScope(Fast_Parser _this);
 
 /* ::cortex::Fast::Parser::reset() */
-void Fast_Parser_reset(Fast_Parser _this);
+cx_void Fast_Parser_reset(Fast_Parser _this);
 
 /* ::cortex::Fast::Parser::ternaryExpr(Fast::Expression cond,Fast::Expression iftrue,Fast::Expression iffalse) */
 Fast_Expression Fast_Parser_ternaryExpr(Fast_Parser _this, Fast_Expression cond, Fast_Expression iftrue, Fast_Expression iffalse);

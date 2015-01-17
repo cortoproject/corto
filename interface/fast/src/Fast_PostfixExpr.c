@@ -17,14 +17,14 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::PostfixExpr::construct(Fast::PostfixExpr object) */
-cx_int16 Fast_PostfixExpr_construct(Fast_PostfixExpr object) {
+/* ::cortex::Fast::PostfixExpr::construct() */
+cx_int16 Fast_PostfixExpr_construct(Fast_PostfixExpr _this) {
 /* $begin(::cortex::Fast::PostfixExpr::construct) */
     cx_type lvalueType;
 
-    Fast_Node(object)->kind = FAST_Postfix;
-    lvalueType = Fast_Expression_getType(object->lvalue);
-    Fast_Expression(object)->type = Fast_Variable(Fast_Object__create(lvalueType));
+    Fast_Node(_this)->kind = FAST_Postfix;
+    lvalueType = Fast_Expression_getType(_this->lvalue);
+    Fast_Expression(_this)->type = Fast_Variable(Fast_Object__create(lvalueType));
 
     return 0;
 /* $end */

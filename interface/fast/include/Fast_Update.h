@@ -18,8 +18,8 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::Update::construct(Update object) */
-cx_int16 Fast_Update_construct(Fast_Update object);
+/* ::cortex::Fast::Update::construct() */
+cx_int16 Fast_Update_construct(Fast_Update _this);
 
 /* virtual ::cortex::Fast::Update::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_Update_toIc(Fast_Update _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);

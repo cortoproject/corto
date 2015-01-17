@@ -9,22 +9,22 @@
 #include "os.h"
 #include "os__meta.h"
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::os::thread::construct(thread object) */
-cx_int16 os_thread_construct(os_thread object) {
+/* ::cortex::os::thread::construct() */
+cx_int16 os_thread_construct(os_thread _this) {
 /* $begin(::cortex::os::thread::construct) */
-    CX_UNUSED(object);
+    CX_UNUSED(_this);
 
     return 0;
 /* $end */
 }
 
-/* callback ::cortex::lang::class::destruct(object object) -> ::cortex::os::thread::destruct(thread object) */
-cx_void os_thread_destruct(os_thread object) {
+/* ::cortex::os::thread::destruct() */
+cx_void os_thread_destruct(os_thread _this) {
 /* $begin(::cortex::os::thread::destruct) */
 
-    if (object->handle) {
-        cx_threadJoin(object->handle, NULL);
-        cx_threadDetach(object->handle);
+    if (_this->handle) {
+        cx_threadJoin(_this->handle, NULL);
+        cx_threadDetach(_this->handle);
     }
 /* $end */
 }

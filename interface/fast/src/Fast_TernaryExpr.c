@@ -55,34 +55,34 @@ Fast_If Fast_TernaryExpr_createIf(Fast_Expression condition, Fast_Node ifTrue, F
 
 /* $end */
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::TernaryExpr::construct(Fast::TernaryExpr object) */
-cx_int16 Fast_TernaryExpr_construct(Fast_TernaryExpr object) {
+/* ::cortex::Fast::TernaryExpr::construct() */
+cx_int16 Fast_TernaryExpr_construct(Fast_TernaryExpr _this) {
 /* $begin(::cortex::Fast::TernaryExpr::construct) */
     Fast_Node trueBranch=NULL, falseBranch=NULL;
     Fast_Expression trueExpr, falseExpr;
-    cx_type resultType = Fast_Expression_getType(object->result);
+    cx_type resultType = Fast_Expression_getType(_this->result);
 
-    Fast_Node(object)->kind = FAST_Ternary;
+    Fast_Node(_this)->kind = FAST_Ternary;
     
     /* Create true statement */
     trueBranch = Fast_Node(Fast_Parser_blockPush(yparser(), FALSE));
-    trueExpr = Fast_Expression(Fast_Parser_binaryExpr(yparser(), object->result, object->ifTrue, CX_ASSIGN));
+    trueExpr = Fast_Expression(Fast_Parser_binaryExpr(yparser(), _this->result, _this->ifTrue, CX_ASSIGN));
     Fast_Block_addStatement(Fast_Block(trueBranch), Fast_Node(trueExpr));
     Fast_Parser_blockPop(yparser());
     
     /* Create false statement */
     falseBranch = Fast_Node(Fast_Parser_blockPush(yparser(), FALSE));
-    falseExpr = Fast_Expression(Fast_Parser_binaryExpr(yparser(), object->result, object->ifFalse, CX_ASSIGN));
+    falseExpr = Fast_Expression(Fast_Parser_binaryExpr(yparser(), _this->result, _this->ifFalse, CX_ASSIGN));
     Fast_Block_addStatement(Fast_Block(falseBranch), Fast_Node(falseExpr));
     Fast_Parser_blockPop(yparser());
 
-    /* Store both expressions in object */
-    cx_set(&object->ifTrueExpr, trueExpr);
-    cx_set(&object->ifFalseExpr, falseExpr);
+    /* Store both expressions in _this */
+    cx_set(&_this->ifTrueExpr, trueExpr);
+    cx_set(&_this->ifFalseExpr, falseExpr);
     
     /* Create condition */
-    object->ifstmt = Fast_TernaryExpr_createIf(object->condition, trueBranch, falseBranch);
-    Fast_Expression(object)->type = Fast_Variable(Fast_Object__create(resultType));
+    _this->ifstmt = Fast_TernaryExpr_createIf(_this->condition, trueBranch, falseBranch);
+    Fast_Expression(_this)->type = Fast_Variable(Fast_Object__create(resultType));
 
     return 0;
 /* $end */

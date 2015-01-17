@@ -31,34 +31,34 @@ cx_word Fast_Literal_getValue_v(Fast_Literal _this) {
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::Fast::Literal::init(Literal object) */
-cx_int16 Fast_Literal_init(Fast_Literal object) {
+/* ::cortex::Fast::Literal::init() */
+cx_int16 Fast_Literal_init(Fast_Literal _this) {
 /* $begin(::cortex::Fast::Literal::init) */
-    if (!Fast_Expression(object)->type) {
-        switch(object->kind) {
+    if (!Fast_Expression(_this)->type) {
+        switch(_this->kind) {
         case FAST_Boolean:
-            Fast_Expression(object)->type = (Fast_Variable)Fast_Object__create(cx_bool_o);
+            Fast_Expression(_this)->type = (Fast_Variable)Fast_Object__create(cx_bool_o);
             break;
         case FAST_Character:
-            Fast_Expression(object)->type = (Fast_Variable)Fast_Object__create(cx_char_o);
+            Fast_Expression(_this)->type = (Fast_Variable)Fast_Object__create(cx_char_o);
             break;
         case FAST_Integer:
-            Fast_Expression(object)->type = (Fast_Variable)Fast_Object__create(cx_uint64_o);
+            Fast_Expression(_this)->type = (Fast_Variable)Fast_Object__create(cx_uint64_o);
             break;
         case FAST_SignedInteger:
-            Fast_Expression(object)->type = (Fast_Variable)Fast_Object__create(cx_int64_o);
+            Fast_Expression(_this)->type = (Fast_Variable)Fast_Object__create(cx_int64_o);
             break;
         case FAST_FloatingPoint:
-            Fast_Expression(object)->type = (Fast_Variable)Fast_Object__create(cx_float64_o);
+            Fast_Expression(_this)->type = (Fast_Variable)Fast_Object__create(cx_float64_o);
             break;
         case FAST_String:
-            Fast_Expression(object)->type = (Fast_Variable)Fast_Object__create(cx_string_o);
+            Fast_Expression(_this)->type = (Fast_Variable)Fast_Object__create(cx_string_o);
             break;
         case FAST_Enumerated:
-            Fast_Expression(object)->type = (Fast_Variable)Fast_Object__create(cx_uint32_o);
+            Fast_Expression(_this)->type = (Fast_Variable)Fast_Object__create(cx_uint32_o);
             break;
         case FAST_Reference:
-            Fast_Expression(object)->type = (Fast_Variable)Fast_Object__create(cx_object_o);
+            Fast_Expression(_this)->type = (Fast_Variable)Fast_Object__create(cx_object_o);
             break;
         case FAST_Null:
             /* No type. */
@@ -66,8 +66,8 @@ cx_int16 Fast_Literal_init(Fast_Literal object) {
         }
     }
 
-    Fast_Node(object)->kind = FAST_Literal;
+    Fast_Node(_this)->kind = FAST_Literal;
 
-    return Fast_Expression_init(Fast_Expression(object));
+    return Fast_Node_init(Fast_Node(_this));
 /* $end */
 }

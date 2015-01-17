@@ -18,8 +18,8 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::PostfixExpr::construct(Fast::PostfixExpr object) */
-cx_int16 Fast_PostfixExpr_construct(Fast_PostfixExpr object);
+/* ::cortex::Fast::PostfixExpr::construct() */
+cx_int16 Fast_PostfixExpr_construct(Fast_PostfixExpr _this);
 
 /* virtual ::cortex::Fast::PostfixExpr::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_PostfixExpr_toIc(Fast_PostfixExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);

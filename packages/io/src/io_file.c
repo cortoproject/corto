@@ -13,40 +13,40 @@
 #include "stdio.h"
 /* $end */
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::io::file::construct(file object) */
-cx_int16 io_file_construct(io_file object) {
+/* ::cortex::io::file::construct() */
+cx_int16 io_file_construct(io_file _this) {
 /* $begin(::cortex::io::file::construct) */
-    if (object->name) {\
+    if (_this->name) {\
         /* Special directive, for opening stdout, stdin and stderr */
-        if (*object->name == '#') {
-            if (!strcmp(object->name, "#out")) {
-                object->handle = (cx_word)stdout;
-            } else if (!strcmp(object->name, "#in")) {
-                object->handle = (cx_word)stdin;
-            } else if (!strcmp(object->name, "#err")) {
-                object->handle = (cx_word)stderr;
+        if (*_this->name == '#') {
+            if (!strcmp(_this->name, "#out")) {
+                _this->handle = (cx_word)stdout;
+            } else if (!strcmp(_this->name, "#in")) {
+                _this->handle = (cx_word)stdin;
+            } else if (!strcmp(_this->name, "#err")) {
+                _this->handle = (cx_word)stderr;
             } else {
-                cx_error("unknown file-directive '%s'", object->name);
+                cx_error("unknown file-directive '%s'", _this->name);
                 goto error;
             }
         } else {
-            if (!object->binary) {
-                switch(object->mode) {
-                case IO_Read:   object->handle = (cx_word)fopen(object->name, "r"); break;
-                case IO_Write:  object->handle = (cx_word)fopen(object->name, "w"); break;
-                case IO_Append: object->handle = (cx_word)fopen(object->name, "a"); break;
+            if (!_this->binary) {
+                switch(_this->mode) {
+                case IO_Read:   _this->handle = (cx_word)fopen(_this->name, "r"); break;
+                case IO_Write:  _this->handle = (cx_word)fopen(_this->name, "w"); break;
+                case IO_Append: _this->handle = (cx_word)fopen(_this->name, "a"); break;
                 default: cx_error("invalid filemode specified."); break;
                 }
             } else {
-                switch(object->mode) {
-                case IO_Read:   object->handle = (cx_word)fopen(object->name, "rb"); break;
-                case IO_Write:  object->handle = (cx_word)fopen(object->name, "wb"); break;
-                case IO_Append: object->handle = (cx_word)fopen(object->name, "ab"); break;
+                switch(_this->mode) {
+                case IO_Read:   _this->handle = (cx_word)fopen(_this->name, "rb"); break;
+                case IO_Write:  _this->handle = (cx_word)fopen(_this->name, "wb"); break;
+                case IO_Append: _this->handle = (cx_word)fopen(_this->name, "ab"); break;
                 default: cx_error("invalid filemode specified."); break;
                 }
             }
-            if (!object->handle) {
-                cx_error("failed to open file '%s'", object->name);
+            if (!_this->handle) {
+                cx_error("failed to open file '%s'", _this->name);
             }
         }
     } else {
@@ -60,11 +60,11 @@ error:
 /* $end */
 }
 
-/* callback ::cortex::lang::class::destruct(object object) -> ::cortex::io::file::destruct(file object) */
-cx_void io_file_destruct(io_file object) {
+/* ::cortex::io::file::destruct() */
+cx_void io_file_destruct(io_file _this) {
 /* $begin(::cortex::io::file::destruct) */
-    if (object->handle) {
-        fclose((FILE*)object->handle);
+    if (_this->handle) {
+        fclose((FILE*)_this->handle);
     }
 /* $end */
 }

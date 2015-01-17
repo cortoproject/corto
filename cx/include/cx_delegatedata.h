@@ -1,13 +1,12 @@
-/* cx_int.h
+/* cx_delegatedata.h
  *
  * This file contains generated code. Do not modify!
  */
 
-#ifndef cx_int_H
-#define cx_int_H
+#ifndef cx_delegatedata_H
+#define cx_delegatedata_H
 
 #include "cortex.h"
-#include "cx_primitive.h"
 #include "cx__type.h"
 
 #include "cx__api.h"
@@ -17,9 +16,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/* ::cortex::lang::int::init() */
-cx_int16 cx_int_init(cx_int _this);
 
 #ifdef __cplusplus
 }

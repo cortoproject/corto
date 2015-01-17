@@ -22,7 +22,7 @@ Fast_Call Fast_CallBuilder_buildMethod(Fast_CallBuilder *_this) {
         if (m) {
             Fast_String nameExpr = Fast_String__create(_this->name);
             Fast_Parser_collect(yparser(), nameExpr);
-            if ((m->type->real->kind == CX_COMPOSITE) && (cx_interface(m->type->real)->kind == CX_PROCPTR)) {
+            if ((m->type->real->kind == CX_COMPOSITE) && (cx_interface(m->type->real)->kind == CX_DELEGATE)) {
                 Fast_Expression fExpr = Fast_Expression(Fast_MemberExpr__create(_this->instance, Fast_Expression(nameExpr)));
                 if (!fExpr) {
                     goto error;
@@ -84,7 +84,7 @@ Fast_Call Fast_CallBuilder_build(Fast_CallBuilder *_this) {
             if (l) {
                 cx_type t = cx_typedef(Fast_ObjectBase(l->type)->value)->real;
                 /* Check if l is of a delegate type */
-                if ((t->kind == CX_COMPOSITE) && (cx_interface(t)->kind == CX_PROCPTR)) {
+                if ((t->kind == CX_COMPOSITE) && (cx_interface(t)->kind == CX_DELEGATE)) {
                     result = Fast_Call(Fast_DelegateCall__create(NULL, _this->arguments, Fast_Expression(l)));
                     if (!result) {
                         goto error;
@@ -112,7 +112,7 @@ Fast_Call Fast_CallBuilder_build(Fast_CallBuilder *_this) {
                     cx_fullname(_this->scope, id));
                 goto error;
             }
-            if ((cx_typeof(f)->real->kind == CX_COMPOSITE) && (cx_interface(cx_typeof(f)->real)->kind == CX_PROCPTR)) {
+            if ((cx_typeof(f)->real->kind == CX_COMPOSITE) && (cx_interface(cx_typeof(f)->real)->kind == CX_DELEGATE)) {
                 Fast_Expression fExpr = Fast_Expression(Fast_Object__create(f));
                 result = Fast_Call(Fast_DelegateCall__create(NULL, _this->arguments, fExpr));   
             } else {

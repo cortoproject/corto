@@ -1,0 +1,38 @@
+// Test auto-assignment of child procedures to delegate members 
+bool result: true
+void fail(string msg):
+    "tc_delegate05: FAIL: $msg"
+    result = false
+
+string translator(string in) delegate
+
+class Dictionary::
+    author: string
+    hello: translator
+    world: translator
+    getAuthor: delegate{string}
+    helloWorld: delegate{string}
+
+Dictionary dutch: "Gijs"::
+    string hello(string in) = "hallo"
+    string world(string in) = "wereld"
+    string getAuthor() method = this.author
+    string helloWorld() method = "${this.hello()} ${this.world()}"
+
+Dictionary english: "Sander"::
+    string hello(string in) = "hello"
+    string world(string in) = "world"
+    string getAuthor() method = author
+    string helloWorld() method = "${this.hello()} ${this.world()}"
+
+if dutch.hello() != "hallo": fail("dutch.hello()")
+if dutch.world() != "wereld": fail("dutch.wereld()")
+if dutch.getAuthor() != "Gijs": fail("dutch.getAuthor()")
+if dutch.helloWorld() != "hallo wereld": fail("dutch.helloWorld()")
+
+if english.hello() != "hello": fail("english.hello()")
+if english.world() != "world": fail("english.wereld()")
+if english.getAuthor() != "Sander": fail("english.getAuthor()")
+if english.helloWorld() != "hello world": fail("english.helloWorld()")
+
+if result: "tc_delegate05: OK"

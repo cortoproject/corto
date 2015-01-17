@@ -27,6 +27,8 @@
 #include "cx_time.h"
 #include "cx_loader.h"
 
+#include <limits.h>
+
 static int cx_adopt(cx_object parent, cx_object child);
 static cx_int32 cx_notify(cx__observable *_o, cx_object observable, cx_object _this, cx_uint32 mask);
 
@@ -416,7 +418,9 @@ void cx__freeSSO(cx_object sso) {
 
     if (scope->scope) {
         if (cx_rbtreeSize(scope->scope)) {
-            cx_error("cx__freeSSO: scope of object '%s' is not empty", cx_nameof(sso));
+            cx_error("cx__freeSSO: scope of object '%s' is not empty (%d left)", 
+                cx_nameof(sso),
+                cx_rbtreeSize(scope->scope));
         }
         cx_rbtreeFree(scope->scope);
         scope->scope = NULL;
@@ -454,6 +458,29 @@ int cx__adoptSSO(cx_object sso) {
     return cx_adopt(parent, sso);
 }
 
+/* Find the right constructor to call */
+void cx_delegateDestruct(cx_type t, cx_object o) {
+    cx_function delegate = NULL;
+
+    if (t->kind == CX_COMPOSITE) {
+        if (cx_interface(t)->kind == CX_CLASS) {
+            cx_interface i = cx_interface(t);
+            do {
+                delegate = cx_class(i)->destruct._parent.procedure;
+                i = i->base;
+            } while(i && !delegate);
+        }
+    }
+
+    if (delegate) {
+        if(delegate->kind == CX_PROCEDURE_CDECL) {
+            ((void(*)(cx_function f, void *result, void *args))delegate->impl)(delegate, NULL, &o);
+        } else {
+            cx_call(delegate, NULL, o);
+        }
+    }
+}
+
 /* Destruct object */
 int cx__destructor(cx_object o) {
     cx_type t;
@@ -467,9 +494,7 @@ int cx__destructor(cx_object o) {
             cx_class_detachObservers(cx_class(t), o);
 
             /* Call destructor */
-            if(cx_class_destruct_hasCallback(cx_class(cx_typeof(o)))) {
-                cx_class_destruct(cx_class(cx_typeof(o)), o);
-            }
+            cx_delegateDestruct(cx_typeof(o)->real, o);
         } else if (cx_class_instanceof(cx_procedure_o, t)) {
             /* Call unbind */
             cx_procedure_unbind(cx_procedure(cx_typeof(o)), o);
@@ -496,30 +521,8 @@ void cx__setState(cx_object o, cx_uint8 state) {
 }
 
 static cx_equalityKind cx_objectCompare(cx_type _this, const void* o1, const void* o2) {
-    cx_char *argList1, *argList2;
     int r;
     CX_UNUSED(_this);
-
-    /* Added support for overloaded functions. When resolving overloaded functions and not specifying
-     * an argumentlist in the lookup-expression, don't take it into account but just resolve the
-     * name before the argumentlist. This can result in ambiguous lookups however, so
-     * anyone doing the resolve must check afterwards if that is the only object that is matching.
-     */
-    if ((argList1 = strchr(o1, '('))) { /* Object has an argumentlist */
-        if ((argList2 = strchr(o2, '('))) {
-            /* This results in an exact compare of the names - default behavior */
-        } else {
-            cx_id id;
-            /* This results in comparing with the source(o1) from which the argumentlist
-             * is stripped.
-             */
-            strncpy(id, o1, argList1 - (cx_char*)o1);
-            id[argList1 - (cx_char*)o1] = '\0';
-
-            return ((r = stricmp(id, o2)) < 0) ? CX_LT : (r > 0) ? CX_GT : CX_EQ;
-        }
-    }
-
     return ((r = stricmp(o1, o2)) < 0) ? CX_LT : (r > 0) ? CX_GT : CX_EQ;
 }
 
@@ -723,6 +726,35 @@ err_parent_mutex:
     cx_error("cx__orphan: lock operation of scopeLock of parent failed");
 }
 
+
+/* Find the right initializer to call */
+cx_int16 cx_delegateInit(cx_type t, cx_object o) {
+    cx_function delegate = NULL;
+    cx_int16 result = 0;
+
+    delegate = t->init._parent.procedure;
+
+    if (t->kind == CX_COMPOSITE) {
+        if ((cx_interface(t)->kind == CX_CLASS) || ((cx_interface(t)->kind == CX_PROCEDURE))) {
+            cx_interface i = cx_interface(t)->base;
+            while(i && !delegate) {
+                delegate = cx_type(i)->init._parent.procedure;
+                i = i->base;
+            }
+        }
+    }
+
+    if (delegate) {
+        if(delegate->kind == CX_PROCEDURE_CDECL) {
+            ((void(*)(cx_function f, void *result, void *args))delegate->impl)(delegate, &result, &o);
+        } else {
+            cx_call(delegate, &result, o);
+        }
+    }
+
+    return result;
+}
+
 /* Create new object with attributes */
 cx_object cx_new_ext(cx_object src, cx_typedef type, cx_uint8 attrs, cx_string context) {
     cx_uint32 size, headerSize;
@@ -787,13 +819,6 @@ cx_object cx_new_ext(cx_object src, cx_typedef type, cx_uint8 attrs, cx_string c
             o->attrs.state |= CX_DEFINED;
         }
 
-        /* If object is of a classType, set the number of delegates in callback-vtable */
-        if (cx_class_instanceof(cx_class_o, type)) {
-            if (cx__class_delegateCount(cx_class(type->real))) {
-                *(cx_uint32*)CX_OFFSET(o, sizeof(cx__object) + type->real->size) = cx__class_delegateCount(cx_class(type->real));
-            }
-        }
-
         cx_keep_ext(CX_OFFSET(o, sizeof(cx__object)), type, "Keep type of object");
 
         if (!(attrs & CX_ATTR_SCOPED)) {
@@ -801,8 +826,7 @@ cx_object cx_new_ext(cx_object src, cx_typedef type, cx_uint8 attrs, cx_string c
             cx_init(CX_OFFSET(o, sizeof(cx__object)));
             
             /* Call initializer */
-            if (cx_type_init_hasCallback(type->real) &&  
-                cx_type_init(type->real, CX_OFFSET(o, sizeof(cx__object)))) {
+            if (cx_delegateInit(type->real, CX_OFFSET(o, sizeof(cx__object)))) {
                 goto error;
             }
             /* Add object to anonymous cache */
@@ -888,7 +912,7 @@ cx_object cx_declare(cx_object parent, cx_string name, cx_typedef type) {
                 cx_init(o);
 
                 /* Init object value */
-                if (cx_type_init_hasCallback(cx_typeof(o)->real) && cx_type_init(cx_typeof(o)->real, o)) {
+                if (cx_delegateInit(cx_typeof(o)->real, o)) {
                     cx_invalidate(o);
                     goto error;
                 }
@@ -905,6 +929,38 @@ cx_object cx_declare(cx_object parent, cx_string name, cx_typedef type) {
     return o;
 error:
     return NULL;
+}
+
+/* Find the right constructor to call */
+cx_int16 cx_delegateConstruct(cx_type t, cx_object o) {
+    cx_function delegate = NULL;
+    cx_int16 result = 0;
+
+    if (t->kind == CX_COMPOSITE) {
+        if (cx_interface(t)->kind == CX_CLASS) {
+            cx_interface i = cx_interface(t);
+            do {
+                delegate = cx_class(i)->construct._parent.procedure;
+                i = i->base;
+            } while(i && !delegate);
+        } else if (cx_interface(t)->kind == CX_PROCEDURE) {
+            cx_interface i = cx_interface(t);
+            do {
+                delegate = cx_procedure(i)->bind._parent.procedure;
+                i = i->base;
+            } while(i && !delegate);
+        }
+    }
+
+    if (delegate) {
+        if(delegate->kind == CX_PROCEDURE_CDECL) {
+            ((cx_int16(*)(cx_function f, void *result, void *args))delegate->impl)(delegate, &result, &o);
+        } else {
+            cx_call(delegate, &result, o);
+        }
+    }
+
+    return result;
 }
 
 /* Define object */
@@ -924,14 +980,12 @@ cx_int16 cx_define(cx_object o) {
         if (cx_class_instanceof(cx_class_o, t)) {
             /* Attach observers to object */
             cx_class_attachObservers(cx_class(t), o);
-            /* Call constructor */
-            if(cx_class_construct_hasCallback(cx_class(t))) {
-                result = cx_class_construct(cx_class(t), o);
-            }
+            /* Call constructor */    
+            result = cx_delegateConstruct(t, o);
             /* Start listening with attached observers */
             cx_class_listenObservers(cx_class(t), o);
         } else if (cx_class_instanceof(cx_procedure_o, t)) {
-            result = cx_procedure_bind(cx_procedure(t), o);
+            result = cx_delegateConstruct(t, o);
         }
 
         if (!result) {
@@ -1026,12 +1080,16 @@ cx_bool cx_instanceof(cx_typedef type, cx_object o) {
         if (t->kind == type->real->kind) {
             switch(type->real->kind) {
             case CX_COMPOSITE: {
-                cx_interface p;
-                p = (cx_interface)t;
+                if (cx_interface(type->real)->kind == CX_DELEGATE) {
+                    /*result = cx_delegate_instanceof(cx_delegate(type), o);*/
+                } else {
+                    cx_interface p;
+                    p = (cx_interface)t;
 
-                while(p && !result) {
-                    result = (p == (cx_interface)type->real);
-                    p = p->base;
+                    while(p && !result) {
+                        result = (p == (cx_interface)type->real);
+                        p = p->base;
+                    }
                 }
                 break;
             }
@@ -1291,9 +1349,8 @@ cx_uint16 cx__destruct(cx_object o) {
 
     /* Only the following steps if the object is valid. */
     if (!cx_checkState(o, CX_DESTRUCTED)) {
-        cx_vtable *ct, *ot;
+        cx_vtable *ot;
 
-        ct = cx_class_getCallbackVtable(o);
         ot = cx_class_getObserverVtable(o);
 
         /* Prevents from calling destructor nested */
@@ -1325,18 +1382,6 @@ cx_uint16 cx__destruct(cx_object o) {
         }
 
         cx_deinit(o);
-
-        /* If object is of a classType, free callbacks */
-        if (ct && ct->buffer) {
-            cx_uint32 i;
-            for(i=0; i<ct->length; i++) {
-                if (ct->buffer[i]) {
-                    cx_free_ext(o, ct->buffer[i], "Free callback.");
-                }
-            }
-            ct->buffer = NULL;
-            ct->length = 0;
-        }
 
         /* Deinit observable */
         if (cx_checkAttr(o, CX_ATTR_OBSERVABLE)) {
@@ -1811,7 +1856,11 @@ repeat:
             /* Lookup object */
             if (cx_scopeof(o)) {
                 if (!overload) {
+                    cx_object prev = o;
                     o = cx_lookup_ext(src, o, buffer, context);
+                    if (!o) {
+                        o = cx_lookupFunction_ext(src, prev, buffer, allowCastableOverloading, NULL, context);
+                    }
                     if (lookup) {
                         cx_free_ext(src, lookup, "Free intermediate reference for resolve"); /* Free reference */
                     }
@@ -2998,7 +3047,7 @@ cx_uint32 cx_overloadParamCount(cx_object o) {
     if (cx_interface(cx_typeof(o)->real)->kind == CX_PROCEDURE) {
         result = cx_function(o)->parameters.length;
     } else {
-        result = cx_procptr(cx_typeof(o))->parameters.length;
+        result = cx_delegate(cx_typeof(o))->parameters.length;
     }
     return result;
 }
@@ -3122,7 +3171,7 @@ nomatch:
 
 /* Create signature from delegate */
 static void cx_signatureFromDelegate(cx_object o, cx_id buffer) {
-    cx_procptr type = cx_procptr(cx_typeof(o)->real);
+    cx_delegate type = cx_delegate(cx_typeof(o)->real);
     cx_uint32 i;
 
     /* Construct signature */
@@ -3147,7 +3196,7 @@ cx_int16 cx_signature(cx_object object, cx_id buffer) {
     }
 
     switch(cx_interface(t)->kind) {
-    case CX_PROCPTR:
+    case CX_DELEGATE:
         cx_signatureFromDelegate(object, buffer);
         break;
     case CX_PROCEDURE:
@@ -3281,7 +3330,7 @@ typedef struct cx_lookupFunction_t {
 
 /* Lookup function in scope */
 int cx_lookupFunctionWalk(cx_object o, void* userData) {
-    cx_int32 d;
+    cx_int32 d = -1;
     cx_lookupFunction_t* data;
 
     data = userData;
@@ -3289,10 +3338,18 @@ int cx_lookupFunctionWalk(cx_object o, void* userData) {
     /* If current object is a function, match it */
     if ((cx_typeof(o)->real->kind == CX_COMPOSITE) && 
         ((cx_interface(cx_typeof(o))->kind == CX_PROCEDURE) || 
-        (cx_interface(cx_typeof(o))->kind == CX_PROCPTR))) {
-        if (cx_overload(o, data->request, &d, data->castableOverloading)) {
-            data->error = TRUE;
-            goto found;
+        (cx_interface(cx_typeof(o))->kind == CX_DELEGATE))) {
+        if (strchr(data->request, '(')) {
+            if (cx_overload(o, data->request, &d, data->castableOverloading)) {
+                data->error = TRUE;
+                goto found;
+            }
+        } else {
+            cx_id name;
+            cx_signatureName(cx_nameof(o), name); /* Obtain function name */
+            if (!strcmp(name, data->request)) {
+                d = INT_MAX-1;
+            }
         }
 
         if (d != -1) {
@@ -3353,7 +3410,7 @@ cx_function cx_lookupFunction_ext(cx_object src, cx_object scope, cx_string requ
     walkData.result = NULL;
     walkData.error = FALSE;
     walkData.castableOverloading = allowCastableOverloading;
-    walkData.d = 0x7FFFFFFF;
+    walkData.d = INT_MAX;
     cx_llWalk(scopeContents, cx_lookupFunctionWalk, &walkData);
 
     if (walkData.error) {

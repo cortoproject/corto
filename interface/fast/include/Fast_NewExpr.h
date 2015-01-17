@@ -18,8 +18,8 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::NewExpr::construct(Fast::NewExpr object) */
-cx_int16 Fast_NewExpr_construct(Fast_NewExpr object);
+/* ::cortex::Fast::NewExpr::construct() */
+cx_int16 Fast_NewExpr_construct(Fast_NewExpr _this);
 
 /* virtual ::cortex::Fast::NewExpr::hasSideEffects() */
 cx_bool Fast_NewExpr_hasSideEffects(Fast_NewExpr _this);

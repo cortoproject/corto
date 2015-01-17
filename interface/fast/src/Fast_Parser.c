@@ -457,7 +457,7 @@ Fast_Expression Fast_Parser_delegateAssignment(Fast_Parser _this, Fast_Expressio
     cx_id functionName;
     Fast_InitializerExpr result = NULL;
     cx_string signature = NULL;
-    cx_procptr type = NULL;
+    cx_delegate type = NULL;
     Fast_InitializerVariable_array64 variables;
     Fast_CallBuilder builder;
     Fast_Call tempCall = NULL;
@@ -475,7 +475,7 @@ Fast_Expression Fast_Parser_delegateAssignment(Fast_Parser _this, Fast_Expressio
         goto error;
     }
 
-    type = cx_procptr(Fast_Expression_getType(lvalue));
+    type = cx_delegate(Fast_Expression_getType(lvalue));
 
     /* Build request-signature */
     signature = cx_signatureOpen(functionName);
@@ -587,9 +587,15 @@ cx_object Fast_Parser_expandBinaryExpr(Fast_Parser _this, Fast_Expression lvalue
         isReference = forceReference || (tleft && tleft->reference) || (tright && tright->reference);
     }
 
-    if (tleft && (tleft->kind == CX_COMPOSITE) && (cx_interface(tleft)->kind == CX_PROCPTR)) {
-        rvalue = Fast_Parser_delegateAssignment(_this, lvalue, rvalue);
-        if(!rvalue) {
+
+    if (tleft && (tleft->kind == CX_COMPOSITE) && (cx_interface(tleft)->kind == CX_DELEGATE)) {
+        if (*(cx_operatorKind*)userData == CX_ASSIGN) {
+            rvalue = Fast_Parser_delegateAssignment(_this, lvalue, rvalue);
+            if(!rvalue) {
+                goto error;
+            }
+        } else {
+            Fast_Parser_error(_this, "operators other than assign not valid for delegates");
             goto error;
         }
     }
@@ -959,7 +965,7 @@ error:
 
 /* Declare a delegate type */
 Fast_Variable Fast_Parser_declareDelegate(Fast_Parser _this, cx_type returnType, cx_string id, cx_bool returnsReference) {
-    cx_procptr delegate;
+    cx_delegate delegate;
     cx_parameterSeq parameters;
     cx_id name;
 
@@ -970,12 +976,12 @@ Fast_Variable Fast_Parser_declareDelegate(Fast_Parser _this, cx_type returnType,
     cx_signatureName(id, name);
 
     /* Declare and define delegate */
-    delegate = cx_procptr__declare(Fast_ObjectBase(_this->scope)->value, name);
+    delegate = cx_delegate__declare(Fast_ObjectBase(_this->scope)->value, name);
     if(!delegate) {
         goto error;
     }
 
-    if(cx_procptr__define(delegate, cx_typedef(returnType), returnsReference, parameters)) {
+    if(cx_delegate__define(delegate, cx_typedef(returnType), returnsReference, parameters)) {
         goto error;
     }
 
@@ -987,7 +993,7 @@ error:
 /* $end */
 
 /* ::cortex::Fast::Parser::addStatement(Fast::Node statement) */
-void Fast_Parser_addStatement(Fast_Parser _this, Fast_Node statement) {
+cx_void Fast_Parser_addStatement(Fast_Parser _this, Fast_Node statement) {
 /* $begin(::cortex::Fast::Parser::addStatement) */
     FAST_CHECK_ERRSET(_this);
     
@@ -1014,7 +1020,7 @@ void Fast_Parser_addStatement(Fast_Parser _this, Fast_Node statement) {
             } else if (_this->pass) {
                 /* If statement is a string, insert println function */
                 if (!_this->repl) {
-                    Fast_Expression println = Fast_Parser_lookup(_this, "io::println", NULL);
+                    Fast_Expression println = Fast_Parser_lookup(_this, "io::println(string)", NULL);
                     Fast_CommaExpr args = Fast_CommaExpr__create();
                     Fast_CommaExpr_addExpression(args, Fast_Expression(statement));
                     Fast_Expression callExpr = Fast_Parser_callExpr(_this, println, Fast_Expression(args));
@@ -1192,7 +1198,7 @@ error:
 }
 
 /* ::cortex::Fast::Parser::blockPop() */
-void Fast_Parser_blockPop(Fast_Parser _this) {
+cx_void Fast_Parser_blockPop(Fast_Parser _this) {
 /* $begin(::cortex::Fast::Parser::blockPop) */
     FAST_CHECK_ERRSET(_this);
 
@@ -1244,7 +1250,7 @@ Fast_Expression Fast_Parser_callExpr(Fast_Parser _this, Fast_Expression function
     
     _this->stagingAllowed = FALSE;
 
-    if (_this->pass) {
+    if (function && _this->pass) {
         cx_object o = NULL;
         Fast_Expression_list functions = Fast_Expression_toList(function);
 
@@ -1361,12 +1367,12 @@ cx_void Fast_Parser_collectHeap(Fast_Parser _this, cx_word addr) {
 /* $end */
 }
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::Parser::construct(Parser object) */
-cx_int16 Fast_Parser_construct(Fast_Parser object) {
+/* ::cortex::Fast::Parser::construct() */
+cx_int16 Fast_Parser_construct(Fast_Parser _this) {
 /* $begin(::cortex::Fast::Parser::construct) */
-    CX_UNUSED(object);
-    Fast_Parser_reset(object);
-    cx_threadTlsSet(FAST_PARSER_KEY, object);
+    CX_UNUSED(_this);
+    Fast_Parser_reset(_this);
+    cx_threadTlsSet(FAST_PARSER_KEY, _this);
     return 0;
 /* $end */
 }
@@ -1469,7 +1475,6 @@ Fast_Variable Fast_Parser_declareFunction(Fast_Parser _this, Fast_Variable retur
 
     if (!_this->pass) {
         cx_id functionName;
-        cx_delegate delegate = NULL;
 
         if (!returnType) {
             if (_this->lastFailedResolve) {
@@ -1499,20 +1504,13 @@ Fast_Variable Fast_Parser_declareFunction(Fast_Parser _this, Fast_Variable retur
         if (!((function = cx_lookupFunction(Fast_ObjectBase(_this->scope)->value, id, FALSE, &distance)) && !distance)) {
             if (!functionType) {
                 if (cx_class_instanceof(cx_interface_o, Fast_ObjectBase(_this->scope)->value)) {
-                    if (cx_class_instanceof(cx_class_o, Fast_ObjectBase(_this->scope)->value)) {
-                        if ((delegate = cx_class_resolveDelegate(cx_class_o, functionName))) {
-                            functionType = cx_typedef(cx_callback_o);
-                        }
-                    }
-                    if (!functionType) {
-                        functionType = cx_typedef(cx_method_o);
-                    }
+                    functionType = cx_typedef(cx_method_o);
                 } else {
                     functionType = cx_typedef(cx_function_o);
                 }
             } else {
                 /* Check whether declaration is a delegate */
-                if(cx_interface_baseof(cx_interface(kind), cx_interface(cx_procptr_o))) {
+                if(cx_interface_baseof(cx_interface(kind), cx_interface(cx_delegate_o))) {
                     result = Fast_Parser_declareDelegate(
                         _this, 
                         returnType ? Fast_ObjectBase(returnType)->value : NULL, 
@@ -1539,11 +1537,6 @@ Fast_Variable Fast_Parser_declareFunction(Fast_Parser _this, Fast_Variable retur
                 function->returnType = cx_typedef(returnType_o);
                 function->returnsReference = returnsReference;
                 cx_keep_ext(function, returnType_o, "Keep returntype for function");
-
-                if (delegate) {
-                    cx_callback(function)->delegate = delegate;
-                    cx_keep_ext(function, delegate, "Keep delegate for callback");
-                }
             }
         } else {
             cx_free(function);
@@ -1607,14 +1600,26 @@ Fast_Block Fast_Parser_declareFunctionParams(Fast_Parser _this, Fast_Variable fu
 
         /* If function is a method, include 'this' pointer */
         if (cx_instanceof(cx_typedef(cx_method_o), function_o)) {
-            cx_interface parent;
+            cx_object parent;
 
-            typeVariable = Fast_Object__create(cx_parentof(function_o));
+            if (!cx_instanceof(cx_typedef(cx_interface_o), cx_parentof(function_o))) {
+                parent = cx_typeof(cx_parentof(function_o));
+            } else {
+                parent = cx_parentof(function_o);
+            }
+
+            if (!cx_instanceof(cx_typedef(cx_interface_o), parent)) {
+                cx_id id;
+                Fast_Parser_error(_this, "parent of '%s' is not an interface nor of an interface type",
+                    cx_fullname(function_o, id));
+                goto error;
+            }
+
+            typeVariable = Fast_Object__create(parent);
             Fast_Block_declare(result, "this", Fast_Variable(typeVariable), TRUE, FALSE);
             Fast_Parser_collect(_this, typeVariable);
 
-            /* If parent of method has a base, include super */
-            parent = cx_parentof(function_o);
+            /* If this-type of method has a base, include super */            
             if (cx_interface(parent)->base) {
                 Fast_Object superType = Fast_Object__create(cx_interface(parent)->base);
                 Fast_Parser_collect(_this, superType);
@@ -1625,7 +1630,7 @@ Fast_Block Fast_Parser_declareFunctionParams(Fast_Parser _this, Fast_Variable fu
         for(i=0; i<function_o->parameters.length; i++) {
             param = &function_o->parameters.buffer[i];
 
-            typeVariable = Fast_Object__create(param->type);
+            typeVariable = Fast_Object__create(param->type->real);
             Fast_Block_declare(result, param->name, Fast_Variable(typeVariable), TRUE, param->passByReference);
             Fast_Parser_collect(_this, typeVariable);
         }
@@ -1637,6 +1642,8 @@ Fast_Block Fast_Parser_declareFunctionParams(Fast_Parser _this, Fast_Variable fu
     }
 
     return result;
+error:
+    return NULL;
 /* $end */
 }
 
@@ -1721,23 +1728,23 @@ error:
 /* $end */
 }
 
-/* callback ::cortex::lang::class::destruct(object object) -> ::cortex::Fast::Parser::destruct(Parser object) */
-void Fast_Parser_destruct(Fast_Parser object) {
+/* ::cortex::Fast::Parser::destruct() */
+cx_void Fast_Parser_destruct(Fast_Parser _this) {
 /* $begin(::cortex::Fast::Parser::destruct) */
     cx_iter iter;
 
-    if (object->heapCollected) {
-        iter = cx_llIter(object->heapCollected);
+    if (_this->heapCollected) {
+        iter = cx_llIter(_this->heapCollected);
         while(cx_iterHasNext(&iter)) {
             cx_dealloc(cx_iterNext(&iter));
         }
-        cx_llFree(object->heapCollected);
+        cx_llFree(_this->heapCollected);
     }
 
-    object->heapCollected = NULL;
-    object->scope = NULL;
+    _this->heapCollected = NULL;
+    _this->scope = NULL;
 
-    memset(object->variables, 0, sizeof(object->variables));
+    memset(_this->variables, 0, sizeof(_this->variables));
 /* $end */
 }
 
@@ -1893,7 +1900,7 @@ error:
 }
 
 /* ::cortex::Fast::Parser::initDeclareStaged(Fast::Expression expr) */
-void Fast_Parser_initDeclareStaged(Fast_Parser _this, Fast_Expression expr) {
+cx_void Fast_Parser_initDeclareStaged(Fast_Parser _this, Fast_Expression expr) {
 /* $begin(::cortex::Fast::Parser::initDeclareStaged) */
     cx_uint32 i;
 
@@ -2203,7 +2210,7 @@ error:
 }
 
 /* ::cortex::Fast::Parser::initStage(string id,bool found) */
-void Fast_Parser_initStage(Fast_Parser _this, cx_string id, cx_bool found) {
+cx_void Fast_Parser_initStage(Fast_Parser _this, cx_string id, cx_bool found) {
 /* $begin(::cortex::Fast::Parser::initStage) */
     
     if (!_this->repl) {
@@ -2416,7 +2423,7 @@ error:
 }
 
 /* ::cortex::Fast::Parser::observerPop() */
-void Fast_Parser_observerPop(Fast_Parser _this) {
+cx_void Fast_Parser_observerPop(Fast_Parser _this) {
 /* $begin(::cortex::Fast::Parser::observerPop) */
     FAST_CHECK_ERRSET(_this);
 
@@ -2426,7 +2433,7 @@ void Fast_Parser_observerPop(Fast_Parser _this) {
 }
 
 /* ::cortex::Fast::Parser::observerPush() */
-void Fast_Parser_observerPush(Fast_Parser _this) {
+cx_void Fast_Parser_observerPush(Fast_Parser _this) {
 /* $begin(::cortex::Fast::Parser::observerPush) */
     FAST_CHECK_ERRSET(_this);
 
@@ -2618,8 +2625,12 @@ cx_int16 Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_value* value)
     }
     cx_icProgram_addIc(program, ret);
 
+    /*printf("=====\n%s\n\n", cx_icProgram_toString(program));*/
+
     /* Translate program to vm code */
     vmProgram = cx_icProgram_toVm(program);
+
+    /*printf("=====\n%s\n\n", cx_vmProgram_toString(vmProgram, NULL));*/
 
     /* Run vm program */
     if (vmProgram) {
@@ -2658,7 +2669,7 @@ error:
 }
 
 /* ::cortex::Fast::Parser::popComplexType() */
-void Fast_Parser_popComplexType(Fast_Parser _this) {
+cx_void Fast_Parser_popComplexType(Fast_Parser _this) {
 /* $begin(::cortex::Fast::Parser::popComplexType) */
 
     _this->complexTypeSp--;
@@ -2671,7 +2682,7 @@ void Fast_Parser_popComplexType(Fast_Parser _this) {
 }
 
 /* ::cortex::Fast::Parser::popLvalue() */
-void Fast_Parser_popLvalue(Fast_Parser _this) {
+cx_void Fast_Parser_popLvalue(Fast_Parser _this) {
 /* $begin(::cortex::Fast::Parser::popLvalue) */
 
     _this->lvalueSp--;
@@ -2684,7 +2695,7 @@ void Fast_Parser_popLvalue(Fast_Parser _this) {
 }
 
 /* ::cortex::Fast::Parser::popScope(Fast::Variable previous) */
-void Fast_Parser_popScope(Fast_Parser _this, Fast_Variable previous) {
+cx_void Fast_Parser_popScope(Fast_Parser _this, Fast_Variable previous) {
 /* $begin(::cortex::Fast::Parser::popScope) */
     FAST_CHECK_ERRSET(_this);
 
@@ -2716,7 +2727,7 @@ error:
 }
 
 /* ::cortex::Fast::Parser::pushComplexType(Fast::Expression lvalue) */
-void Fast_Parser_pushComplexType(Fast_Parser _this, Fast_Expression lvalue) {
+cx_void Fast_Parser_pushComplexType(Fast_Parser _this, Fast_Expression lvalue) {
 /* $begin(::cortex::Fast::Parser::pushComplexType) */
 
     if (lvalue) {
@@ -2730,7 +2741,7 @@ void Fast_Parser_pushComplexType(Fast_Parser _this, Fast_Expression lvalue) {
 }
 
 /* ::cortex::Fast::Parser::pushLvalue(Fast::Expression lvalue,bool isAssignment) */
-void Fast_Parser_pushLvalue(Fast_Parser _this, Fast_Expression lvalue, cx_bool isAssignment) {
+cx_void Fast_Parser_pushLvalue(Fast_Parser _this, Fast_Expression lvalue, cx_bool isAssignment) {
 /* $begin(::cortex::Fast::Parser::pushLvalue) */
 
     cx_set_ext(_this, &_this->lvalue[_this->lvalueSp].expr, lvalue, ".lvalue[_this->lvalueSp]");
@@ -2741,7 +2752,7 @@ void Fast_Parser_pushLvalue(Fast_Parser _this, Fast_Expression lvalue, cx_bool i
 }
 
 /* ::cortex::Fast::Parser::pushReturnAsLvalue(function function) */
-void Fast_Parser_pushReturnAsLvalue(Fast_Parser _this, cx_function function) {
+cx_void Fast_Parser_pushReturnAsLvalue(Fast_Parser _this, cx_function function) {
 /* $begin(::cortex::Fast::Parser::pushReturnAsLvalue) */
     Fast_Expression result = NULL;
 
@@ -2789,7 +2800,7 @@ error:
 }
 
 /* ::cortex::Fast::Parser::reset() */
-void Fast_Parser_reset(Fast_Parser _this) {
+cx_void Fast_Parser_reset(Fast_Parser _this) {
 /* $begin(::cortex::Fast::Parser::reset) */
     cx_uint32 i;
 

@@ -8,76 +8,59 @@
 
 void __cx_alias_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_alias_init(
-        *(cx_alias*)args);
+        *(void**)args);
 }
 
 void __cx_array_construct(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_array_construct(
-        *(cx_array*)args);
+        *(void**)args);
 }
 
 void __cx_array_destruct(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     CX_UNUSED(result);
     cx_array_destruct(
-        *(cx_array*)args);
+        *(void**)args);
 }
 
 void __cx_array_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_array_init(
-        *(cx_array*)args);
+        *(void**)args);
 }
 
 void __cx_binary_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_binary_init(
-        *(cx_binary*)args);
+        *(void**)args);
 }
 
 void __cx_bitmask_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_bitmask_init(
-        *(cx_bitmask*)args);
+        *(void**)args);
 }
 
 void __cx_boolean_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_boolean_init(
-        *(cx_boolean*)args);
-}
-
-void __cx_callback_bind(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    *(cx_int16*)result = cx_callback_bind(
-        *(cx_callback*)args);
-}
-
-void __cx_callback_init(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    *(cx_int16*)result = cx_callback_init(
-        *(cx_callback*)args);
+        *(void**)args);
 }
 
 void __cx_character_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_character_init(
-        *(cx_character*)args);
-}
-
-void __cx_class__construct(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    *(cx_int16*)result = cx_class__construct(
-        *(cx_class*)args);
-}
-
-void __cx_class__destruct(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    CX_UNUSED(result);
-    cx_class__destruct(
-        *(cx_class*)args);
+        *(void**)args);
 }
 
 /* virtual ::cortex::lang::class::allocSize() */
@@ -108,142 +91,68 @@ void __cx_class_allocSize_v(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     CX_UNUSED(args);
     *(cx_uint32*)result = cx_class_allocSize_v(
-        *(cx_class*)args);
-}
-
-void __cx_class_bindCallback(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    *(cx_int16*)result = cx_class_bindCallback(
-        *(cx_class*)args,
-        *(cx_delegate*)((intptr_t)args + sizeof(cx_class)),
-        *(cx_object*)((intptr_t)args + sizeof(cx_class) + sizeof(cx_delegate)),
-        *(cx_callback*)((intptr_t)args + sizeof(cx_class) + sizeof(cx_delegate) + sizeof(cx_object)));
-}
-
-void __cx_class_bindDelegate(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    *(cx_int16*)result = cx_class_bindDelegate(
-        *(cx_class*)args,
-        *(cx_delegate*)((intptr_t)args + sizeof(cx_class)));
-}
-
-void __cx_class_bindMethod(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    *(cx_int16*)result = cx_class_bindMethod(
-        *(cx_class*)args,
-        *(cx_method*)((intptr_t)args + sizeof(cx_class)));
+        *(void**)args);
 }
 
 void __cx_class_bindObserver(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     CX_UNUSED(result);
     cx_class_bindObserver(
-        *(cx_class*)args,
-        *(cx_observer*)((intptr_t)args + sizeof(cx_class)));
-}
-
-/* delegate ::cortex::lang::class::construct(object object) */
-cx_int16 cx_class_construct(cx_class _this, cx_object object) {
-    cx_callback _callback;
-    cx_int16 _result;
-    /* Lookup callback-object. */
-    _callback = cx_class_resolveCallback(cx_class(cx_typeof(_this)), cx_class_construct_o, _this);
-
-    cx_assert(_callback != NULL, "no callback 'construct(object object)' for object of type 'cx_class' (call 'cx_class_construct_checkCallback' first)");
-
-    cx_call(cx_function(_callback), &_result, object);
-    
-    return _result;
-}
-
-/* delegate ::cortex::lang::class::construct(object object), obtain callback */
-cx_bool cx_class_construct_hasCallback(cx_class _this) {
-    /* Lookup callback-object. */
-    return cx_class_resolveCallback(cx_class(cx_typeof(_this)), cx_class_construct_o, _this) != NULL;
+        *(void**)args,
+        *(cx_observer*)((intptr_t)args + sizeof(void*)));
 }
 
 void __cx_class_construct(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_class_construct(
-        *(cx_class*)args,
-        *(cx_object*)((intptr_t)args + sizeof(cx_class)));
-}
-
-/* delegate ::cortex::lang::class::destruct(object object) */
-void cx_class_destruct(cx_class _this, cx_object object) {
-    cx_callback _callback;
-    /* Lookup callback-object. */
-    _callback = cx_class_resolveCallback(cx_class(cx_typeof(_this)), cx_class_destruct_o, _this);
-
-    cx_assert(_callback != NULL, "no callback 'destruct(object object)' for object of type 'cx_class' (call 'cx_class_destruct_checkCallback' first)");
-
-    cx_call(cx_function(_callback), NULL, object);
-}
-
-/* delegate ::cortex::lang::class::destruct(object object), obtain callback */
-cx_bool cx_class_destruct_hasCallback(cx_class _this) {
-    /* Lookup callback-object. */
-    return cx_class_resolveCallback(cx_class(cx_typeof(_this)), cx_class_destruct_o, _this) != NULL;
+        *(void**)args);
 }
 
 void __cx_class_destruct(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     CX_UNUSED(result);
     cx_class_destruct(
-        *(cx_class*)args,
-        *(cx_object*)((intptr_t)args + sizeof(cx_class)));
+        *(void**)args);
 }
 
 void __cx_class_findObserver(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_observer*)result = cx_class_findObserver(
-        *(cx_class*)args,
-        *(cx_object*)((intptr_t)args + sizeof(cx_class)),
-        *(cx_string*)((intptr_t)args + sizeof(cx_class) + sizeof(cx_object)));
+        *(void**)args,
+        *(cx_object*)((intptr_t)args + sizeof(void*)),
+        *(cx_string*)((intptr_t)args + sizeof(void*) + sizeof(cx_object)));
 }
 
 void __cx_class_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_class_init(
-        *(cx_class*)args);
+        *(void**)args);
 }
 
 void __cx_class_instanceof(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_bool*)result = cx_class_instanceof(
-        *(cx_class*)args,
-        *(cx_object*)((intptr_t)args + sizeof(cx_class)));
+        *(void**)args,
+        *(cx_object*)((intptr_t)args + sizeof(void*)));
 }
 
 void __cx_class_privateObserver(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_observer*)result = cx_class_privateObserver(
-        *(cx_class*)args,
-        *(cx_object*)((intptr_t)args + sizeof(cx_class)),
-        *(cx_observer*)((intptr_t)args + sizeof(cx_class) + sizeof(cx_object)));
-}
-
-void __cx_class_resolveCallback(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    *(cx_callback*)result = cx_class_resolveCallback(
-        *(cx_class*)args,
-        *(cx_delegate*)((intptr_t)args + sizeof(cx_class)),
-        *(cx_object*)((intptr_t)args + sizeof(cx_class) + sizeof(cx_delegate)));
-}
-
-void __cx_class_resolveDelegate(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    *(cx_delegate*)result = cx_class_resolveDelegate(
-        *(cx_class*)args,
-        *(cx_string*)((intptr_t)args + sizeof(cx_class)));
+        *(void**)args,
+        *(cx_object*)((intptr_t)args + sizeof(void*)),
+        *(cx_observer*)((intptr_t)args + sizeof(void*) + sizeof(cx_object)));
 }
 
 void __cx_class_resolveInterfaceMethod(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_method*)result = cx_class_resolveInterfaceMethod(
-        *(cx_class*)args,
-        *(cx_interface*)((intptr_t)args + sizeof(cx_class)),
-        *(cx_uint32*)((intptr_t)args + sizeof(cx_class) + sizeof(cx_interface)));
+        *(void**)args,
+        *(cx_interface*)((intptr_t)args + sizeof(void*)),
+        *(cx_uint32*)((intptr_t)args + sizeof(void*) + sizeof(cx_interface)));
 }
 
 /* virtual ::cortex::lang::collection::castable(type type) */
@@ -273,8 +182,8 @@ cx_bool cx_collection_castable(cx_collection _this, cx_type type) {
 void __cx_collection_castable_v(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_bool*)result = cx_collection_castable_v(
-        *(cx_collection*)args,
-        *(cx_type*)((intptr_t)args + sizeof(cx_collection)));
+        *(void**)args,
+        *(cx_type*)((intptr_t)args + sizeof(void*)));
 }
 
 /* virtual ::cortex::lang::collection::compatible(type type) */
@@ -304,21 +213,22 @@ cx_bool cx_collection_compatible(cx_collection _this, cx_type type) {
 void __cx_collection_compatible_v(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_bool*)result = cx_collection_compatible_v(
-        *(cx_collection*)args,
-        *(cx_type*)((intptr_t)args + sizeof(cx_collection)));
+        *(void**)args,
+        *(cx_type*)((intptr_t)args + sizeof(void*)));
 }
 
 void __cx_collection_elementRequiresAlloc(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     CX_UNUSED(args);
     *(cx_bool*)result = cx_collection_elementRequiresAlloc(
-        *(cx_collection*)args);
+        *(void**)args);
 }
 
 void __cx_collection_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_collection_init(
-        *(cx_collection*)args);
+        *(void**)args);
 }
 
 void __cx_collection_size(cx_function f, void *result, void *args) {
@@ -330,14 +240,9 @@ void __cx_collection_size(cx_function f, void *result, void *args) {
 
 void __cx_constant_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_constant_init(
         *(void**)args);
-}
-
-void __cx_delegate_init(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    *(cx_int16*)result = cx_delegate_init(
-        *(cx_delegate*)args);
 }
 
 /* virtual ::cortex::lang::dispatcher::getEvent(observer observer,object me,object observable,object src) */
@@ -367,11 +272,11 @@ cx_observableEvent cx_dispatcher_getEvent(cx_dispatcher _this, cx_observer obser
 void __cx_dispatcher_getEvent_v(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_observableEvent*)result = cx_dispatcher_getEvent_v(
-        *(cx_dispatcher*)args,
-        *(cx_observer*)((intptr_t)args + sizeof(cx_dispatcher)),
-        *(cx_object*)((intptr_t)args + sizeof(cx_dispatcher) + sizeof(cx_observer)),
-        *(cx_object*)((intptr_t)args + sizeof(cx_dispatcher) + sizeof(cx_observer) + sizeof(cx_object)),
-        *(cx_object*)((intptr_t)args + sizeof(cx_dispatcher) + sizeof(cx_observer) + sizeof(cx_object) + sizeof(cx_object)));
+        *(void**)args,
+        *(cx_observer*)((intptr_t)args + sizeof(void*)),
+        *(cx_object*)((intptr_t)args + sizeof(void*) + sizeof(cx_observer)),
+        *(cx_object*)((intptr_t)args + sizeof(void*) + sizeof(cx_observer) + sizeof(cx_object)),
+        *(cx_object*)((intptr_t)args + sizeof(void*) + sizeof(cx_observer) + sizeof(cx_object) + sizeof(cx_object)));
 }
 
 /* virtual ::cortex::lang::dispatcher::post(event event) */
@@ -399,34 +304,37 @@ void __cx_dispatcher_post_v(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     CX_UNUSED(result);
     cx_dispatcher_post_v(
-        *(cx_dispatcher*)args,
-        *(cx_event*)((intptr_t)args + sizeof(cx_dispatcher)));
+        *(void**)args,
+        *(cx_event*)((intptr_t)args + sizeof(void*)));
 }
 
 void __cx_enum_constant(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_object*)result = cx_enum_constant(
-        *(cx_enum*)args,
-        *(cx_int32*)((intptr_t)args + sizeof(cx_enum)));
+        *(void**)args,
+        *(cx_int32*)((intptr_t)args + sizeof(void*)));
 }
 
 void __cx_enum_construct(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_enum_construct(
-        *(cx_enum*)args);
+        *(void**)args);
 }
 
 void __cx_enum_destruct(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     CX_UNUSED(result);
     cx_enum_destruct(
-        *(cx_enum*)args);
+        *(void**)args);
 }
 
 void __cx_enum_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_enum_init(
-        *(cx_enum*)args);
+        *(void**)args);
 }
 
 void __cx_event_processed(cx_function f, void *result, void *args) {
@@ -434,7 +342,7 @@ void __cx_event_processed(cx_function f, void *result, void *args) {
     CX_UNUSED(args);
     CX_UNUSED(result);
     cx_event_processed(
-        *(cx_event*)args);
+        *(void**)args);
 }
 
 void __cx_event_uniqueKind(cx_function f, void *result, void *args) {
@@ -446,20 +354,23 @@ void __cx_event_uniqueKind(cx_function f, void *result, void *args) {
 
 void __cx_float_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_float_init(
-        *(cx_float*)args);
+        *(void**)args);
 }
 
 void __cx_function_bind(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_function_bind(
-        *(cx_function*)args);
+        *(void**)args);
 }
 
 void __cx_function_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_function_init(
-        *(cx_function*)args);
+        *(void**)args);
 }
 
 void __cx_function_stringToParameterSeq(cx_function f, void *result, void *args) {
@@ -478,46 +389,23 @@ void __cx_function_unbind(cx_function f, void *result, void *args) {
 
 void __cx_int_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_int_init(
-        *(cx_int*)args);
+        *(void**)args);
 }
 
 void __cx_interface_baseof(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_int16*)result = cx_interface_baseof(
-        *(cx_interface*)args,
-        *(cx_interface*)((intptr_t)args + sizeof(cx_interface)));
+        *(void**)args,
+        *(cx_interface*)((intptr_t)args + sizeof(void*)));
 }
 
-/* virtual ::cortex::lang::interface::bindMethod(method method) */
-cx_int16 cx_interface_bindMethod(cx_interface _this, cx_method method) {
-    static cx_uint32 _methodId;
-    cx_method _method;
-    cx_int16 _result;
-    cx_interface _abstract;
-
-    _abstract = cx_interface(cx_typeof(_this));
-
-    /* Determine methodId once, then cache it for subsequent calls. */
-    if (!_methodId) {
-        _methodId = cx_interface_resolveMethodId(_abstract, "bindMethod(method method)");
-    }
-    cx_assert(_methodId, "virtual method 'bindMethod(method method)' not found in abstract '%s'", cx_nameof(_abstract));
-
-    /* Lookup method-object. */
-    _method = cx_interface_resolveMethodById(_abstract, _methodId);
-    cx_assert(_method != NULL, "unresolved method '%s::bindMethod(method method)@%d'", cx_nameof(_this), _methodId);
-
-    cx_call(cx_function(_method), &_result, _this, method);
-    
-    return _result;
-}
-
-void __cx_interface_bindMethod_v(cx_function f, void *result, void *args) {
+void __cx_interface_bindMethod(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
-    *(cx_int16*)result = cx_interface_bindMethod_v(
-        *(cx_interface*)args,
-        *(cx_method*)((intptr_t)args + sizeof(cx_interface)));
+    *(cx_int16*)result = cx_interface_bindMethod(
+        *(void**)args,
+        *(cx_method*)((intptr_t)args + sizeof(void*)));
 }
 
 /* virtual ::cortex::lang::interface::compatible(type type) */
@@ -547,27 +435,30 @@ cx_bool cx_interface_compatible(cx_interface _this, cx_type type) {
 void __cx_interface_compatible_v(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_bool*)result = cx_interface_compatible_v(
-        *(cx_interface*)args,
-        *(cx_type*)((intptr_t)args + sizeof(cx_interface)));
+        *(void**)args,
+        *(cx_type*)((intptr_t)args + sizeof(void*)));
 }
 
 void __cx_interface_construct(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_interface_construct(
-        *(cx_interface*)args);
+        *(void**)args);
 }
 
 void __cx_interface_destruct(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     CX_UNUSED(result);
     cx_interface_destruct(
-        *(cx_interface*)args);
+        *(void**)args);
 }
 
 void __cx_interface_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_interface_init(
-        *(cx_interface*)args);
+        *(void**)args);
 }
 
 /* virtual ::cortex::lang::interface::resolveMember(string name) */
@@ -597,29 +488,29 @@ cx_member cx_interface_resolveMember(cx_interface _this, cx_string name) {
 void __cx_interface_resolveMember_v(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_member*)result = cx_interface_resolveMember_v(
-        *(cx_interface*)args,
-        *(cx_string*)((intptr_t)args + sizeof(cx_interface)));
+        *(void**)args,
+        *(cx_string*)((intptr_t)args + sizeof(void*)));
 }
 
 void __cx_interface_resolveMethod(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_method*)result = cx_interface_resolveMethod(
-        *(cx_interface*)args,
-        *(cx_string*)((intptr_t)args + sizeof(cx_interface)));
+        *(void**)args,
+        *(cx_string*)((intptr_t)args + sizeof(void*)));
 }
 
 void __cx_interface_resolveMethodById(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_method*)result = cx_interface_resolveMethodById(
-        *(cx_interface*)args,
-        *(cx_uint32*)((intptr_t)args + sizeof(cx_interface)));
+        *(void**)args,
+        *(cx_uint32*)((intptr_t)args + sizeof(void*)));
 }
 
 void __cx_interface_resolveMethodId(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_uint32*)result = cx_interface_resolveMethodId(
-        *(cx_interface*)args,
-        *(cx_string*)((intptr_t)args + sizeof(cx_interface)));
+        *(void**)args,
+        *(cx_string*)((intptr_t)args + sizeof(void*)));
 }
 
 void __cx_iterator_hasNext(cx_function f, void *result, void *args) {
@@ -667,14 +558,16 @@ void __cx_list_clear(cx_function f, void *result, void *args) {
 
 void __cx_list_construct(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_list_construct(
-        *(cx_list*)args);
+        *(void**)args);
 }
 
 void __cx_list_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_list_init(
-        *(cx_list*)args);
+        *(void**)args);
 }
 
 void __cx_list_insert_(cx_function f, void *result, void *args) {
@@ -702,79 +595,88 @@ void __cx_list_reverse(cx_function f, void *result, void *args) {
 
 void __cx_map_construct(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_map_construct(
-        *(cx_map*)args);
+        *(void**)args);
 }
 
 void __cx_map_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_map_init(
-        *(cx_map*)args);
+        *(void**)args);
 }
 
 void __cx_member_construct(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_member_construct(
-        *(cx_member*)args);
+        *(void**)args);
 }
 
 void __cx_member_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_member_init(
-        *(cx_member*)args);
+        *(void**)args);
 }
 
 void __cx_metaprocedure_bind(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_metaprocedure_bind(
-        *(cx_metaprocedure*)args);
+        *(void**)args);
 }
 
 void __cx_method_bind(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_method_bind(
-        *(cx_method*)args);
+        *(void**)args);
 }
 
 void __cx_method_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_method_init(
-        *(cx_method*)args);
+        *(void**)args);
 }
 
 void __cx_observer_bind(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_observer_bind(
-        *(cx_observer*)args);
+        *(void**)args);
 }
 
 void __cx_observer_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_observer_init(
-        *(cx_observer*)args);
+        *(void**)args);
 }
 
 void __cx_observer_listen(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_int16*)result = cx_observer_listen(
-        *(cx_observer*)args,
-        *(cx_object*)((intptr_t)args + sizeof(cx_observer)),
-        *(cx_object*)((intptr_t)args + sizeof(cx_observer) + sizeof(cx_object)));
+        *(void**)args,
+        *(cx_object*)((intptr_t)args + sizeof(void*)),
+        *(cx_object*)((intptr_t)args + sizeof(void*) + sizeof(cx_object)));
 }
 
 void __cx_observer_setDispatcher(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     CX_UNUSED(result);
     cx_observer_setDispatcher(
-        *(cx_observer*)args,
-        *(cx_dispatcher*)((intptr_t)args + sizeof(cx_observer)));
+        *(void**)args,
+        *(cx_dispatcher*)((intptr_t)args + sizeof(void*)));
 }
 
 void __cx_observer_silence(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_int16*)result = cx_observer_silence(
-        *(cx_observer*)args,
-        *(cx_object*)((intptr_t)args + sizeof(cx_observer)));
+        *(void**)args,
+        *(cx_object*)((intptr_t)args + sizeof(void*)));
 }
 
 void __cx_observer_unbind(cx_function f, void *result, void *args) {
@@ -811,8 +713,8 @@ cx_bool cx_primitive_castable(cx_primitive _this, cx_type type) {
 void __cx_primitive_castable_v(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_bool*)result = cx_primitive_castable_v(
-        *(cx_primitive*)args,
-        *(cx_type*)((intptr_t)args + sizeof(cx_primitive)));
+        *(void**)args,
+        *(cx_type*)((intptr_t)args + sizeof(void*)));
 }
 
 /* virtual ::cortex::lang::primitive::compatible(type type) */
@@ -842,65 +744,47 @@ cx_bool cx_primitive_compatible(cx_primitive _this, cx_type type) {
 void __cx_primitive_compatible_v(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_bool*)result = cx_primitive_compatible_v(
-        *(cx_primitive*)args,
-        *(cx_type*)((intptr_t)args + sizeof(cx_primitive)));
+        *(void**)args,
+        *(cx_type*)((intptr_t)args + sizeof(void*)));
 }
 
 void __cx_primitive_construct(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_primitive_construct(
-        *(cx_primitive*)args);
+        *(void**)args);
 }
 
 void __cx_primitive_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_primitive_init(
-        *(cx_primitive*)args);
-}
-
-/* delegate ::cortex::lang::procedure::bind(object object) */
-cx_int16 cx_procedure_bind(cx_procedure _this, cx_object object) {
-    cx_callback _callback;
-    cx_int16 _result;
-    /* Lookup callback-object. */
-    _callback = cx_class_resolveCallback(cx_class(cx_typeof(_this)), cx_procedure_bind_o, _this);
-
-    cx_assert(_callback != NULL, "no callback 'bind(object object)' for object of type 'cx_procedure' (call 'cx_procedure_bind_checkCallback' first)");
-
-    cx_call(cx_function(_callback), &_result, object);
-    
-    return _result;
-}
-
-/* delegate ::cortex::lang::procedure::bind(object object), obtain callback */
-cx_bool cx_procedure_bind_hasCallback(cx_procedure _this) {
-    /* Lookup callback-object. */
-    return cx_class_resolveCallback(cx_class(cx_typeof(_this)), cx_procedure_bind_o, _this) != NULL;
-}
-
-void __cx_procedure_bind(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    *(cx_int16*)result = cx_procedure_bind(
-        *(cx_procedure*)args,
-        *(cx_object*)((intptr_t)args + sizeof(cx_procedure)));
+        *(void**)args);
 }
 
 void __cx_procedure_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_procedure_init(
-        *(cx_procedure*)args);
+        *(void**)args);
 }
 
 void __cx_procedure_unbind(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     CX_UNUSED(result);
     cx_procedure_unbind(
-        *(cx_procedure*)args,
-        *(cx_object*)((intptr_t)args + sizeof(cx_procedure)));
+        *(void**)args,
+        *(cx_function*)((intptr_t)args + sizeof(void*)));
 }
 
-/* virtual ::cortex::lang::procptr::castable(type type) */
-cx_bool cx_procptr_castable(cx_procptr _this, cx_type type) {
+void __cx_delegate_bind(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    *(cx_int16*)result = cx_delegate_bind(
+        *(cx_function*)args);
+}
+
+/* virtual ::cortex::lang::delegate::castable(type type) */
+cx_bool cx_delegate_castable(cx_delegate _this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
     cx_bool _result;
@@ -923,15 +807,15 @@ cx_bool cx_procptr_castable(cx_procptr _this, cx_type type) {
     return _result;
 }
 
-void __cx_procptr_castable_v(cx_function f, void *result, void *args) {
+void __cx_delegate_castable_v(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
-    *(cx_bool*)result = cx_procptr_castable_v(
-        *(cx_procptr*)args,
-        *(cx_type*)((intptr_t)args + sizeof(cx_procptr)));
+    *(cx_bool*)result = cx_delegate_castable_v(
+        *(void**)args,
+        *(cx_type*)((intptr_t)args + sizeof(void*)));
 }
 
-/* virtual ::cortex::lang::procptr::compatible(type type) */
-cx_bool cx_procptr_compatible(cx_procptr _this, cx_type type) {
+/* virtual ::cortex::lang::delegate::compatible(type type) */
+cx_bool cx_delegate_compatible(cx_delegate _this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
     cx_bool _result;
@@ -954,29 +838,39 @@ cx_bool cx_procptr_compatible(cx_procptr _this, cx_type type) {
     return _result;
 }
 
-void __cx_procptr_compatible_v(cx_function f, void *result, void *args) {
+void __cx_delegate_compatible_v(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
-    *(cx_bool*)result = cx_procptr_compatible_v(
-        *(cx_procptr*)args,
-        *(cx_type*)((intptr_t)args + sizeof(cx_procptr)));
+    *(cx_bool*)result = cx_delegate_compatible_v(
+        *(void**)args,
+        *(cx_type*)((intptr_t)args + sizeof(void*)));
 }
 
-void __cx_procptr_init(cx_function f, void *result, void *args) {
+void __cx_delegate_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
-    *(cx_int16*)result = cx_procptr_init(
-        *(cx_procptr*)args);
+    CX_UNUSED(args);
+    *(cx_int16*)result = cx_delegate_init(
+        *(void**)args);
+}
+
+void __cx_delegate_instanceof(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    *(cx_bool*)result = cx_delegate_instanceof(
+        *(void**)args,
+        *(cx_object*)((intptr_t)args + sizeof(void*)));
 }
 
 void __cx_sequence_construct(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_sequence_construct(
-        *(cx_sequence*)args);
+        *(void**)args);
 }
 
 void __cx_sequence_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_sequence_init(
-        *(cx_sequence*)args);
+        *(void**)args);
 }
 
 void __cx_sequence_size(cx_function f, void *result, void *args) {
@@ -1014,8 +908,8 @@ cx_bool cx_struct_castable(cx_struct _this, cx_type type) {
 void __cx_struct_castable_v(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_bool*)result = cx_struct_castable_v(
-        *(cx_struct*)args,
-        *(cx_type*)((intptr_t)args + sizeof(cx_struct)));
+        *(void**)args,
+        *(cx_type*)((intptr_t)args + sizeof(void*)));
 }
 
 /* virtual ::cortex::lang::struct::compatible(type type) */
@@ -1045,20 +939,22 @@ cx_bool cx_struct_compatible(cx_struct _this, cx_type type) {
 void __cx_struct_compatible_v(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_bool*)result = cx_struct_compatible_v(
-        *(cx_struct*)args,
-        *(cx_type*)((intptr_t)args + sizeof(cx_struct)));
+        *(void**)args,
+        *(cx_type*)((intptr_t)args + sizeof(void*)));
 }
 
 void __cx_struct_construct(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_struct_construct(
-        *(cx_struct*)args);
+        *(void**)args);
 }
 
 void __cx_struct_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_struct_init(
-        *(cx_struct*)args);
+        *(void**)args);
 }
 
 /* virtual ::cortex::lang::struct::resolveMember(string name) */
@@ -1088,34 +984,22 @@ cx_member cx_struct_resolveMember(cx_struct _this, cx_string name) {
 void __cx_struct_resolveMember_v(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_member*)result = cx_struct_resolveMember_v(
-        *(cx_struct*)args,
-        *(cx_string*)((intptr_t)args + sizeof(cx_struct)));
+        *(void**)args,
+        *(cx_string*)((intptr_t)args + sizeof(void*)));
 }
 
 void __cx_text_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_text_init(
-        *(cx_text*)args);
-}
-
-void __cx_type__destruct(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    CX_UNUSED(result);
-    cx_type__destruct(
-        *(cx_type*)args);
-}
-
-void __cx_type__init(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    *(cx_int16*)result = cx_type__init(
-        *(cx_type*)args);
+        *(void**)args);
 }
 
 void __cx_type_alignmentof(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     CX_UNUSED(args);
     *(cx_uint16*)result = cx_type_alignmentof(
-        *(cx_type*)args);
+        *(void**)args);
 }
 
 /* virtual ::cortex::lang::type::allocSize() */
@@ -1146,7 +1030,7 @@ void __cx_type_allocSize_v(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     CX_UNUSED(args);
     *(cx_uint32*)result = cx_type_allocSize_v(
-        *(cx_type*)args);
+        *(void**)args);
 }
 
 /* virtual ::cortex::lang::type::castable(type type) */
@@ -1176,8 +1060,8 @@ cx_bool cx_type_castable(cx_type _this, cx_type type) {
 void __cx_type_castable_v(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_bool*)result = cx_type_castable_v(
-        *(cx_type*)args,
-        *(cx_type*)((intptr_t)args + sizeof(cx_type)));
+        *(void**)args,
+        *(cx_type*)((intptr_t)args + sizeof(void*)));
 }
 
 void __cx_type_checkAttr(cx_function f, void *result, void *args) {
@@ -1228,14 +1112,15 @@ cx_bool cx_type_compatible(cx_type _this, cx_type type) {
 void __cx_type_compatible_v(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_bool*)result = cx_type_compatible_v(
-        *(cx_type*)args,
-        *(cx_type*)((intptr_t)args + sizeof(cx_type)));
+        *(void**)args,
+        *(cx_type*)((intptr_t)args + sizeof(void*)));
 }
 
 void __cx_type_construct(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_type_construct(
-        *(cx_type*)args);
+        *(void**)args);
 }
 
 void __cx_type_copy(cx_function f, void *result, void *args) {
@@ -1265,7 +1150,7 @@ void __cx_type_destruct(cx_function f, void *result, void *args) {
     CX_UNUSED(args);
     CX_UNUSED(result);
     cx_type_destruct(
-        *(cx_any*)args);
+        *(void**)args);
 }
 
 void __cx_type_fullname(cx_function f, void *result, void *args) {
@@ -1275,31 +1160,11 @@ void __cx_type_fullname(cx_function f, void *result, void *args) {
         *(cx_any*)args);
 }
 
-/* delegate ::cortex::lang::type::init(object object) */
-cx_int16 cx_type_init(cx_type _this, cx_object object) {
-    cx_callback _callback;
-    cx_int16 _result;
-    /* Lookup callback-object. */
-    _callback = cx_class_resolveCallback(cx_class(cx_typeof(_this)), cx_type_init_o, _this);
-
-    cx_assert(_callback != NULL, "no callback 'init(object object)' for object of type 'cx_type' (call 'cx_type_init_checkCallback' first)");
-
-    cx_call(cx_function(_callback), &_result, object);
-    
-    return _result;
-}
-
-/* delegate ::cortex::lang::type::init(object object), obtain callback */
-cx_bool cx_type_init_hasCallback(cx_type _this) {
-    /* Lookup callback-object. */
-    return cx_class_resolveCallback(cx_class(cx_typeof(_this)), cx_type_init_o, _this) != NULL;
-}
-
 void __cx_type_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_type_init(
-        *(cx_type*)args,
-        *(cx_object*)((intptr_t)args + sizeof(cx_type)));
+        *(void**)args);
 }
 
 void __cx_type_instanceof(cx_function f, void *result, void *args) {
@@ -1355,15 +1220,15 @@ void __cx_type_resolve(cx_function f, void *result, void *args) {
 void __cx_type_resolveProcedure(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_function*)result = cx_type_resolveProcedure(
-        *(cx_type*)args,
-        *(cx_string*)((intptr_t)args + sizeof(cx_type)));
+        *(void**)args,
+        *(cx_string*)((intptr_t)args + sizeof(void*)));
 }
 
 void __cx_type_sizeof(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     CX_UNUSED(args);
     *(cx_uint32*)result = cx_type_sizeof(
-        *(cx_type*)args);
+        *(void**)args);
 }
 
 void __cx_type_toString(cx_function f, void *result, void *args) {
@@ -1382,38 +1247,43 @@ void __cx_type_typeof(cx_function f, void *result, void *args) {
 
 void __cx_typedef_construct(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_typedef_construct(
-        *(cx_typedef*)args);
+        *(void**)args);
 }
 
 void __cx_typedef_destruct(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     CX_UNUSED(result);
     cx_typedef_destruct(
-        *(cx_typedef*)args);
+        *(void**)args);
 }
 
 void __cx_typedef_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_typedef_init(
-        *(cx_typedef*)args);
+        *(void**)args);
 }
 
 void __cx_typedef_realType(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     CX_UNUSED(args);
     *(cx_type*)result = cx_typedef_realType(
-        *(cx_typedef*)args);
+        *(void**)args);
 }
 
 void __cx_uint_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_uint_init(
-        *(cx_uint*)args);
+        *(void**)args);
 }
 
 void __cx_virtual_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
+    CX_UNUSED(args);
     *(cx_int16*)result = cx_virtual_init(
-        *(cx_virtual*)args);
+        *(void**)args);
 }

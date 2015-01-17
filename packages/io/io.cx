@@ -24,8 +24,8 @@ object cortex::
             member handle : word,LOCAL
             
             // Methods and callbacks
-            int16 construct(File object)
-            void destruct(File object)
+            int16 construct()
+            void destruct()
             
             // Flush file
             void flush()

@@ -18,8 +18,8 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::ElementExpr::construct(Fast::MemberExpr object) */
-cx_int16 Fast_ElementExpr_construct(Fast_MemberExpr object);
+/* ::cortex::Fast::ElementExpr::construct() */
+cx_int16 Fast_ElementExpr_construct(Fast_ElementExpr _this);
 
 /* virtual ::cortex::Fast::ElementExpr::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_ElementExpr_toIc(Fast_ElementExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);

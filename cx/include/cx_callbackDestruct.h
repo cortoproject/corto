@@ -1,10 +1,10 @@
-/* cx_procptrdata.h
+/* cx_callbackDestruct.h
  *
  * This file contains generated code. Do not modify!
  */
 
-#ifndef cx_procptrdata_H
-#define cx_procptrdata_H
+#ifndef cx_callbackDestruct_H
+#define cx_callbackDestruct_H
 
 #include "cortex.h"
 #include "cx__type.h"

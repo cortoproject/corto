@@ -117,7 +117,7 @@ error:
 /* $end */
 
 /* ::cortex::Fast::report(string kind,string filename,uint32 line,uint32 column,string error,string token) */
-void Fast_report(cx_string kind, cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token) {
+cx_void Fast_report(cx_string kind, cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token) {
 /* $begin(::cortex::Fast::report) */
     CX_UNUSED(token);
     
@@ -131,7 +131,7 @@ void Fast_report(cx_string kind, cx_string filename, cx_uint32 line, cx_uint32 c
 }
 
 /* ::cortex::Fast::reportError(string filename,uint32 line,uint32 column,string error,string token) */
-void Fast_reportError(cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token) {
+cx_void Fast_reportError(cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token) {
 /* $begin(::cortex::Fast::reportError) */
     
     Fast_report("error", filename, line, column, error, token);
@@ -140,7 +140,7 @@ void Fast_reportError(cx_string filename, cx_uint32 line, cx_uint32 column, cx_s
 }
 
 /* ::cortex::Fast::reportWarning(string filename,uint32 line,uint32 column,string error,string token) */
-void Fast_reportWarning(cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token) {
+cx_void Fast_reportWarning(cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token) {
 /* $begin(::cortex::Fast::reportWarning) */
 
     Fast_report("warning", filename, line, column, error, token);

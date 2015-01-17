@@ -18,8 +18,8 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::BinaryExpr::construct(Fast::BinaryExpr object) */
-cx_int16 Fast_BinaryExpr_construct(Fast_BinaryExpr object);
+/* ::cortex::Fast::BinaryExpr::construct() */
+cx_int16 Fast_BinaryExpr_construct(Fast_BinaryExpr _this);
 
 /* ::cortex::Fast::BinaryExpr::fold() */
 Fast_Expression Fast_BinaryExpr_fold(Fast_BinaryExpr _this);

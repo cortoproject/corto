@@ -9,11 +9,11 @@
 #include "test.h"
 #include "test__meta.h"
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::test::unit::construct(unit object) */
-cx_int16 test_unit_construct(test_unit object) {
+/* ::cortex::test::unit::construct() */
+cx_int16 test_unit_construct(test_unit _this) {
 /* $begin(::cortex::test::unit::construct) */
 
-    object->success = TRUE;
+    _this->success = TRUE;
 
     return 0;
 /* $end */
