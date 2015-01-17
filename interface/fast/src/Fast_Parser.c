@@ -2612,9 +2612,8 @@ cx_int16 Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_value* value)
     }
 
     returnValue = cx_icScope_lookupStorage(icScope, "<<result>>", TRUE);
-    if (0) {
+    if (returnValue) {
         ret = (cx_ic)cx_icOp__create(program, parser->line, CX_IC_RET, (cx_icValue)returnValue, NULL, NULL);
-        printf("result->isReference = %d\n", result->isReference);
         if (result->isReference) {
             ((cx_icStorage)returnValue)->isReference = TRUE;
             ((cx_icOp)ret)->s1Deref = CX_IC_DEREF_ADDRESS;
@@ -2626,12 +2625,12 @@ cx_int16 Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_value* value)
     }
     cx_icProgram_addIc(program, ret);
 
-    printf("=====\n%s\n\n", cx_icProgram_toString(program));
+    /*printf("=====\n%s\n\n", cx_icProgram_toString(program));*/
 
     /* Translate program to vm code */
     vmProgram = cx_icProgram_toVm(program);
 
-    printf("=====\n%s\n\n", cx_vmProgram_toString(vmProgram, NULL));
+    /*printf("=====\n%s\n\n", cx_vmProgram_toString(vmProgram, NULL));*/
 
     /* Run vm program */
     if (vmProgram) {

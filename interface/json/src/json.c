@@ -205,7 +205,13 @@ finished:
 static cx_int16 cx_ser_complex(cx_serializer s, cx_value* v, void* userData) {
     cx_json_ser_t *data = userData;
     cx_type type = cx_valueType(v)->real;
-    if (!cx_ser_appendstr(data, "{")) {
+    cx_bool useCurlyBraces = TRUE;
+
+    if (type->kind == CX_COLLECTION && cx_collection(type)->kind != CX_MAP) {
+        useCurlyBraces = FALSE;
+    }
+
+    if (!cx_ser_appendstr(data, (useCurlyBraces ? "{" : "["))) {
         goto finished;
     }
     if (type->kind == CX_COMPOSITE) {
@@ -219,7 +225,8 @@ static cx_int16 cx_ser_complex(cx_serializer s, cx_value* v, void* userData) {
     } else {
         goto error;
     }
-    if (!cx_ser_appendstr(data, "}")) {
+
+    if (!cx_ser_appendstr(data, (useCurlyBraces ? "}" : "]"))) {
         goto finished;
     }
     return 0;
@@ -298,7 +305,7 @@ static cx_int16 cx_ser_meta(cx_serializer s, cx_value* v, void* userData) {
     CX_UNUSED(s);
     cx_json_ser_t *data = userData;
     cx_object object = cx_valueValue(v);
-    
+
     if (!data->serializeMeta) {
         goto error;
     }
@@ -431,16 +438,18 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
     }
 
     if (data->serializeValue) {
-        if (c && !cx_ser_appendstr(data, ",")) {
-            goto finished;
-        }
-        if (!cx_ser_appendstr(data, "\"value\":")) {
-            goto finished;
-        }
-        if (cx_serializeValue(s, v, userData)) {
-            goto error;
-        }
-        c += 1;
+        if (cx_valueType(v)->real->kind != CX_VOID) {
+            if (c && !cx_ser_appendstr(data, ",")) {
+                goto finished;
+            }
+            if (!cx_ser_appendstr(data, "\"value\":")) {
+                goto finished;
+            }
+            if (cx_serializeValue(s, v, userData)) {
+                goto error;
+            }
+            c += 1;
+         }
     }
 
     if (data->serializeScope) {

@@ -56,6 +56,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_CLASS(op, primitive);\
     SSO_OP_CLASS(op, interface);\
     SSO_OP_CLASS(op, collection);\
+    SSO_OP_CLASS(op, iterator);\
     SSO_OP_CLASS(op, struct);\
     SSO_OP_CLASS(op, procedure);\
     SSO_OP_CLASS(op, event);\
@@ -212,6 +213,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, typeKind_PRIMITIVE);\
     SSO_OP_OBJ(op, typeKind_COMPOSITE);\
     SSO_OP_OBJ(op, typeKind_COLLECTION);\
+    SSO_OP_OBJ(op, typeKind_ITERATOR);\
     /* primitiveKind */\
     SSO_OP_OBJ(op, primitiveKind_BINARY);\
     SSO_OP_OBJ(op, primitiveKind_BOOLEAN);\
@@ -384,6 +386,11 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, collection_elementRequiresAlloc_);\
     SSO_OP_OBJ(op, collection_init_);\
     SSO_OP_OBJ(op, collection_size);\
+    /* iterator */\
+    SSO_OP_OBJ(op, iterator_elementType);\
+    SSO_OP_OBJ(op, iterator_init_);\
+    SSO_OP_OBJ(op, iterator_next);\
+    SSO_OP_OBJ(op, iterator_hasNext);\
     /* list */\
     SSO_OP_OBJ(op, list_insert);\
     SSO_OP_OBJ(op, list_append);\
@@ -617,7 +624,7 @@ int cx_start(void) {
     SSO_OP_TYPE(cx_initType);
     SSO_OP_OBJECT(cx_initObject);
     SSO_OP_OBJECT_2ND(cx_initObject);
- 
+
     /* Construct objects */
     SSO_OP_OBJECT_2ND(cx_defineObject);
     SSO_OP_OBJECT(cx_defineObject);
@@ -641,7 +648,7 @@ int cx_start(void) {
         id = cx_callRegisterBinding(cx_call_vm, NULL, NULL, (cx_callDestructHandler)cx_callDestruct_vm);
         cx_assert(id == 2, "Vm-binding did not receive binding-id 2.");
     }
-   
+
     /* Always randomize seed */
     srand (time(NULL));
 
@@ -749,4 +756,3 @@ void cx_stop(void) {
     /* Workaround for dlopen-leakage - with this statement the valgrind memory-logging is clean. */
     /*pthread_exit(NULL);*/
 }
-
