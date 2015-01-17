@@ -4,13 +4,13 @@ bool result : true
 class Point::
     member x,y : int32
     uint32 constructed:0
-    int16 construct(Point object):
+    int16 construct():
         constructed++
     
 class Point3D : Point::
     member z : int32
     uint32 constructed:0
-    int16 construct(Point3D object):
+    int16 construct():
         constructed++
     
 class Line::

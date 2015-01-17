@@ -27,6 +27,8 @@
 #include "cx_time.h"
 #include "cx_loader.h"
 
+#include <limits.h>
+
 static int cx_adopt(cx_object parent, cx_object child);
 static cx_int32 cx_notify(cx__observable *_o, cx_object observable, cx_object _this, cx_uint32 mask);
 
@@ -1854,7 +1856,11 @@ repeat:
             /* Lookup object */
             if (cx_scopeof(o)) {
                 if (!overload) {
+                    cx_object prev = o;
                     o = cx_lookup_ext(src, o, buffer, context);
+                    if (!o) {
+                        o = cx_lookupFunction_ext(src, prev, buffer, allowCastableOverloading, NULL, context);
+                    }
                     if (lookup) {
                         cx_free_ext(src, lookup, "Free intermediate reference for resolve"); /* Free reference */
                     }
@@ -2763,7 +2769,7 @@ cx_int16 cx_expr(cx_object scope, cx_string expr, cx_value *value) {
 
     /* Load parser */
     if (!cx_load("Fast")) {
-        cx_function parseLine = cx_resolve(NULL, "::cortex::Fast::Parser::parseLine(string,object,alias)");
+        cx_function parseLine = cx_resolve(NULL, "::cortex::Fast::Parser::parseLine");
         if (!parseLine) {
             cx_error("function ::Fast::Parser::parseLine could not be resolved");
             goto error;
@@ -3324,7 +3330,7 @@ typedef struct cx_lookupFunction_t {
 
 /* Lookup function in scope */
 int cx_lookupFunctionWalk(cx_object o, void* userData) {
-    cx_int32 d;
+    cx_int32 d = -1;
     cx_lookupFunction_t* data;
 
     data = userData;
@@ -3333,9 +3339,17 @@ int cx_lookupFunctionWalk(cx_object o, void* userData) {
     if ((cx_typeof(o)->real->kind == CX_COMPOSITE) && 
         ((cx_interface(cx_typeof(o))->kind == CX_PROCEDURE) || 
         (cx_interface(cx_typeof(o))->kind == CX_DELEGATE))) {
-        if (cx_overload(o, data->request, &d, data->castableOverloading)) {
-            data->error = TRUE;
-            goto found;
+        if (strchr(data->request, '(')) {
+            if (cx_overload(o, data->request, &d, data->castableOverloading)) {
+                data->error = TRUE;
+                goto found;
+            }
+        } else {
+            cx_id name;
+            cx_signatureName(cx_nameof(o), name); /* Obtain function name */
+            if (!strcmp(name, data->request)) {
+                d = INT_MAX-1;
+            }
         }
 
         if (d != -1) {
@@ -3396,7 +3410,7 @@ cx_function cx_lookupFunction_ext(cx_object src, cx_object scope, cx_string requ
     walkData.result = NULL;
     walkData.error = FALSE;
     walkData.castableOverloading = allowCastableOverloading;
-    walkData.d = 0x7FFFFFFF;
+    walkData.d = INT_MAX;
     cx_llWalk(scopeContents, cx_lookupFunctionWalk, &walkData);
 
     if (walkData.error) {

@@ -8,11 +8,11 @@ void fail(string msg):
 
 class Foo::
     member result : int16
-    int16 construct(Foo object):
+    int16 construct():
         constructed++
-        construct = object.result
+        construct = this.result
         
-    void destruct(Foo object):
+    void destruct():
         destructed++
 
 // Make objects var so they are destructed before program is finished

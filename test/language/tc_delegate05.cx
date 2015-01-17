@@ -4,15 +4,14 @@ void fail(string msg):
     "tc_delegate05: FAIL: $msg"
     result = false
 
-string translator(string in) procptr
-string returnText() procptr
+string translator(string in) delegate
 
 class Dictionary::
     author: string
     hello: translator
     world: translator
-    getAuthor: returnText
-    helloWorld: returnText
+    getAuthor: delegate{string}
+    helloWorld: delegate{string}
 
 Dictionary dutch: "Gijs"::
     string hello(string in) = "hallo"

@@ -1020,7 +1020,7 @@ cx_void Fast_Parser_addStatement(Fast_Parser _this, Fast_Node statement) {
             } else if (_this->pass) {
                 /* If statement is a string, insert println function */
                 if (!_this->repl) {
-                    Fast_Expression println = Fast_Parser_lookup(_this, "io::println", NULL);
+                    Fast_Expression println = Fast_Parser_lookup(_this, "io::println(string)", NULL);
                     Fast_CommaExpr args = Fast_CommaExpr__create();
                     Fast_CommaExpr_addExpression(args, Fast_Expression(statement));
                     Fast_Expression callExpr = Fast_Parser_callExpr(_this, println, Fast_Expression(args));
@@ -2612,8 +2612,9 @@ cx_int16 Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_value* value)
     }
 
     returnValue = cx_icScope_lookupStorage(icScope, "<<result>>", TRUE);
-    if (returnValue) {
+    if (0) {
         ret = (cx_ic)cx_icOp__create(program, parser->line, CX_IC_RET, (cx_icValue)returnValue, NULL, NULL);
+        printf("result->isReference = %d\n", result->isReference);
         if (result->isReference) {
             ((cx_icStorage)returnValue)->isReference = TRUE;
             ((cx_icOp)ret)->s1Deref = CX_IC_DEREF_ADDRESS;
@@ -2625,8 +2626,12 @@ cx_int16 Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_value* value)
     }
     cx_icProgram_addIc(program, ret);
 
+    printf("=====\n%s\n\n", cx_icProgram_toString(program));
+
     /* Translate program to vm code */
     vmProgram = cx_icProgram_toVm(program);
+
+    printf("=====\n%s\n\n", cx_vmProgram_toString(vmProgram, NULL));
 
     /* Run vm program */
     if (vmProgram) {

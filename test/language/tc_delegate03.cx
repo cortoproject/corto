@@ -5,7 +5,7 @@ void fail(string msg):
     result = false
 
 // The delegate type
-int32 binaryOperation(int32 a, int32 b) procptr:
+int32 binaryOperation(int32 a, int32 b) delegate:
 
 // Ordinary functions
 int32 add(int32 a, int32 b) = a + b

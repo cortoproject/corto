@@ -5,7 +5,7 @@ void fail(string msg):
     result = false
 
 // Delegate type with references
-int32& refDelegate(int32& a, int32 b) procptr
+int32& refDelegate(int32& a, int32 b) delegate
 
 // Function
 int32& add(int32& a, int32 b):
@@ -31,10 +31,10 @@ class Animal::
     legs: uint32
 
 class Dog : Animal::
-    int16 construct(Dog object):
-        object.legs = 4
+    int16 construct():
+        legs = 4
 
-int32 baseDelegate(Dog a) procptr
+int32 baseDelegate(Dog a) delegate
 
 int32 returnLegs(Animal a) = a.legs
 int32 returnDogLegs(Dog d) = d.legs

@@ -482,10 +482,15 @@ typedef union Di2f_t {
         next();\
 
 #define PCAST(type,code)\
-    PCAST_##code:\
+    PCAST_##code: {\
         fetchOp2(PCAST,code)\
-        cx_convert(cx_primitive(stage1_W), &op2_##code, cx_primitive(stage2_W), &op1_##code);\
-        next();
+        cx_type fromType = cx_type(stage1_W);\
+        if (fromType->reference) {\
+            fromType = cx_type(cx_word_o);\
+        }\
+        cx_convert(cx_primitive(fromType), &op2_##code, cx_primitive(stage2_W), &op1_##code);\
+        next();\
+    }
 
 #define STRCAT(type,code)\
     STRCAT_##code:\
