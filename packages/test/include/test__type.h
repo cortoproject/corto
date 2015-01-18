@@ -15,6 +15,7 @@ extern "C" {
 
 /* Casting macro's for classes */
 #define test_suite(o) ((test_suite)o)
+#define test_test(o) ((test_test)o)
 #define test_unit(o) ((test_unit)o)
 
 /* Type definitions */

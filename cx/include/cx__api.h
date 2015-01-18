@@ -69,6 +69,16 @@ cx_collection cx_collection__declare(cx_object _parent, cx_string _name);
 int cx_collection__define(cx_collection _this, cx_typedef elementType, cx_uint32 max);
 cx_collection cx_collection__create(cx_typedef elementType, cx_uint32 max);
 
+/* ::cortex::lang::delegate */
+cx_delegate cx_delegate__new(void);
+cx_delegate cx_delegate__declare(cx_object _parent, cx_string _name);
+int cx_delegate__define(cx_delegate _this, cx_typedef returnType, cx_bool returnsReference, cx_parameterSeq parameters);
+cx_delegate cx_delegate__create(cx_typedef returnType, cx_bool returnsReference, cx_parameterSeq parameters);
+
+/* ::cortex::lang::delegatedata */
+void cx_delegatedata__init(cx_delegatedata *_this, cx_object instance, cx_function procedure);
+void cx_delegatedata__deinit(cx_delegatedata *_this);
+
 /* ::cortex::lang::dispatcher */
 cx_dispatcher cx_dispatcher__new(void);
 cx_dispatcher cx_dispatcher__declare(cx_object _parent, cx_string _name);
@@ -114,6 +124,12 @@ cx_interface cx_interface__create(cx_interface base);
 /* ::cortex::lang::interfaceVector */
 void cx_interfaceVector__init(cx_interfaceVector *_this, cx_interface interface, cx_vtable vector);
 void cx_interfaceVector__deinit(cx_interfaceVector *_this);
+
+/* ::cortex::lang::iterator */
+cx_iterator cx_iterator__new(void);
+cx_iterator cx_iterator__declare(cx_object _parent, cx_string _name);
+int cx_iterator__define(cx_iterator _this, cx_typedef elementType);
+cx_iterator cx_iterator__create(cx_typedef elementType);
 
 /* ::cortex::lang::list */
 cx_list cx_list__new(void);
@@ -172,16 +188,6 @@ cx_procedure cx_procedure__new(void);
 cx_procedure cx_procedure__declare(cx_object _parent, cx_string _name);
 int cx_procedure__define(cx_procedure _this, cx_interface base, cx_modifier baseAccess);
 cx_procedure cx_procedure__create(cx_interface base, cx_modifier baseAccess);
-
-/* ::cortex::lang::delegate */
-cx_delegate cx_delegate__new(void);
-cx_delegate cx_delegate__declare(cx_object _parent, cx_string _name);
-int cx_delegate__define(cx_delegate _this, cx_typedef returnType, cx_bool returnsReference, cx_parameterSeq parameters);
-cx_delegate cx_delegate__create(cx_typedef returnType, cx_bool returnsReference, cx_parameterSeq parameters);
-
-/* ::cortex::lang::delegatedata */
-void cx_delegatedata__init(cx_delegatedata *_this, cx_object instance, cx_function procedure);
-void cx_delegatedata__deinit(cx_delegatedata *_this);
 
 /* ::cortex::lang::sequence */
 cx_sequence cx_sequence__new(void);
