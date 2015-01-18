@@ -5,13 +5,7 @@
  *      Author: sander
  */
 
-#include "cx_string_ser.h"
-#include "cx_convert.h"
-#include "cx__meta.h"
-#include "cx_err.h"
-#include "cx_util.h"
-#include "cx_mem.h"
-#include "cx_object.h"
+#include "cortex.h"
 #include "stdarg.h"
 
 #define BLACK  "\033[1;30m"

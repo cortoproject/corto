@@ -18,6 +18,10 @@
   anyone who has modified the code through
   a header comment, such as this one.
 */
+
+#include "cx_object.h"
+#include "cx_type.h"
+
 #ifdef __cplusplus
 #include <cstddef>
 
@@ -27,8 +31,6 @@ extern "C" {
 #else
 #include <stddef.h>
 #endif
-
-#include "cx__type.h"
 
 #ifndef HEIGHT_LIMIT
 #define HEIGHT_LIMIT 64 /* Tallest allowable tree */

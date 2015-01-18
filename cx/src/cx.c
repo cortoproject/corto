@@ -145,7 +145,6 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, cortex__new);\
     SSO_OP_OBJ(op, class_construct_);\
     SSO_OP_OBJ(op, class_destruct_);\
-    SSO_OP_OBJ(op, procedure_bind);\
     SSO_OP_OBJ(op, procedure_unbind_);\
     /* constant */\
     SSO_OP_OBJ(op, constant_init_);\
@@ -289,6 +288,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, state_VALID);\
     SSO_OP_OBJ(op, state_DECLARED);\
     SSO_OP_OBJ(op, state_DEFINED);\
+    SSO_OP_OBJ(op, state_DESTRUCTED);\
     /* attr */\
     SSO_OP_OBJ(op, attr_ATTR_SCOPED);\
     SSO_OP_OBJ(op, attr_ATTR_WRITABLE);\
@@ -440,6 +440,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, struct_resolveMember_);\
     /* procedure */\
     SSO_OP_OBJ(op, procedure_kind);\
+    SSO_OP_OBJ(op, procedure_bind);\
     SSO_OP_OBJ(op, procedure_init_);\
     /* interfaceVector */\
     SSO_OP_OBJ(op, interfaceVector_interface);\

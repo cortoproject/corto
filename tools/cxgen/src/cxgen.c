@@ -103,10 +103,12 @@ int cx_arg_language(char* arg, int argc, char* argv[]) {
             cx_llAppend(attributes, "h=include");
 
             lang = "c";
+
         } else if (!strcmp(argv[1], "cpp")) {
             cx_llAppend(generators, "cpp_type");
             cx_llAppend(generators, "cpp_class");
             cx_llAppend(generators, "cpp_load");
+
         } else {
             cx_error("unknown language '%s'.", argv[1]);
             goto error;
@@ -120,6 +122,28 @@ error:
     return 0;
 }
 
+int cx_arg_core(char* arg, int argc, char* argv[]) {
+    CX_UNUSED(arg);
+    CX_UNUSED(argc);
+    CX_UNUSED(argv);
+
+    if (!generators) generators = cx_llNew();
+    if (!scopes) scopes = cx_llNew();
+    if (!attributes) attributes = cx_llNew();
+    cx_llAppend(generators, "c_interface");
+    cx_llAppend(generators, "c_api");
+    cx_llAppend(generators, "c_type");
+    cx_llAppend(scopes, "::cortex::lang");
+    cx_llAppend(attributes, "stubs=false");
+    cx_llAppend(attributes, "c=src");
+    cx_llAppend(attributes, "h=include");
+    cx_llAppend(attributes, "bootstrap=true");
+    prefix = "cx";
+    name = "cx";
+
+    return 1;
+}
+
 
 /* Parse arguments */
 static int cx_parseArguments(int argc, char* argv[]) {
@@ -130,6 +154,8 @@ static int cx_parseArguments(int argc, char* argv[]) {
     cx_argSet("g", cx_arg_generator, 0, -1);
     cx_argSet("scope", cx_arg_scope, 0, -1);
     cx_argSet("lang", cx_arg_language, 0, 1);
+    cx_argSet("l", cx_arg_language, 0, 1);
+    cx_argSet("core", cx_arg_core, 0, 1);
     cx_argSet(NULL, cx_arg_include, 0, -1);
 
     /* Parse commandline */

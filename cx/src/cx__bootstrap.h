@@ -640,6 +640,7 @@ CX_BITMASK_O(state);
     CX_CONSTANT_O(state, VALID);
     CX_CONSTANT_O(state, DECLARED);
     CX_CONSTANT_O(state, DEFINED);
+    CX_CONSTANT_O(state, DESTRUCTED);
 
 CX_BITMASK_O(attr);
     CX_CONSTANT_O(attr, ATTR_SCOPED);

@@ -760,6 +760,10 @@ error:
 int cortex_genMain(cx_generator g) {
     c_typeWalk_t walkData;
 
+    /* Create source and include directories */
+    cx_mkdir("src");
+    cx_mkdir("include");
+
     /* Default prefixes for cortex namespaces */
     gen_parse(g, cortex_o, FALSE, FALSE, "");
     gen_parse(g, cortex_lang_o, FALSE, FALSE, "cx");
