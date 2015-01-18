@@ -43,11 +43,13 @@ cx_boolean cx_boolean__declare(cx_object _parent, cx_string _name);
 int cx_boolean__define(cx_boolean _this);
 cx_boolean cx_boolean__create(void);
 
-/* ::cortex::lang::callback */
-cx_callback cx_callback__new(void);
-cx_callback cx_callback__declare(cx_object _parent, cx_string _name);
-int cx_callback__define(cx_callback _this, cx_typedef returnType, cx_bool returnsReference, cx_delegate delegate);
-cx_callback cx_callback__create(cx_typedef returnType, cx_bool returnsReference, cx_delegate delegate);
+/* ::cortex::lang::callbackDestruct */
+void cx_callbackDestruct__init(cx_callbackDestruct *_this);
+void cx_callbackDestruct__deinit(cx_callbackDestruct *_this);
+
+/* ::cortex::lang::callbackInit */
+void cx_callbackInit__init(cx_callbackInit *_this);
+void cx_callbackInit__deinit(cx_callbackInit *_this);
 
 /* ::cortex::lang::character */
 cx_character cx_character__new(void);
@@ -70,8 +72,12 @@ cx_collection cx_collection__create(cx_typedef elementType, cx_uint32 max);
 /* ::cortex::lang::delegate */
 cx_delegate cx_delegate__new(void);
 cx_delegate cx_delegate__declare(cx_object _parent, cx_string _name);
-int cx_delegate__define(cx_delegate _this, cx_typedef returnType, cx_bool returnsReference);
-cx_delegate cx_delegate__create(cx_typedef returnType, cx_bool returnsReference);
+int cx_delegate__define(cx_delegate _this, cx_typedef returnType, cx_bool returnsReference, cx_parameterSeq parameters);
+cx_delegate cx_delegate__create(cx_typedef returnType, cx_bool returnsReference, cx_parameterSeq parameters);
+
+/* ::cortex::lang::delegatedata */
+void cx_delegatedata__init(cx_delegatedata *_this, cx_object instance, cx_function procedure);
+void cx_delegatedata__deinit(cx_delegatedata *_this);
 
 /* ::cortex::lang::dispatcher */
 cx_dispatcher cx_dispatcher__new(void);
@@ -118,6 +124,12 @@ cx_interface cx_interface__create(cx_interface base);
 /* ::cortex::lang::interfaceVector */
 void cx_interfaceVector__init(cx_interfaceVector *_this, cx_interface interface, cx_vtable vector);
 void cx_interfaceVector__deinit(cx_interfaceVector *_this);
+
+/* ::cortex::lang::iterator */
+cx_iterator cx_iterator__new(void);
+cx_iterator cx_iterator__declare(cx_object _parent, cx_string _name);
+int cx_iterator__define(cx_iterator _this, cx_typedef elementType);
+cx_iterator cx_iterator__create(cx_typedef elementType);
 
 /* ::cortex::lang::list */
 cx_list cx_list__new(void);
@@ -176,16 +188,6 @@ cx_procedure cx_procedure__new(void);
 cx_procedure cx_procedure__declare(cx_object _parent, cx_string _name);
 int cx_procedure__define(cx_procedure _this, cx_interface base, cx_modifier baseAccess);
 cx_procedure cx_procedure__create(cx_interface base, cx_modifier baseAccess);
-
-/* ::cortex::lang::procptr */
-cx_procptr cx_procptr__new(void);
-cx_procptr cx_procptr__declare(cx_object _parent, cx_string _name);
-int cx_procptr__define(cx_procptr _this, cx_typedef returnType, cx_bool returnsReference, cx_parameterSeq parameters);
-cx_procptr cx_procptr__create(cx_typedef returnType, cx_bool returnsReference, cx_parameterSeq parameters);
-
-/* ::cortex::lang::procptrdata */
-void cx_procptrdata__init(cx_procptrdata *_this, cx_object instance, cx_function procedure);
-void cx_procptrdata__deinit(cx_procptrdata *_this);
 
 /* ::cortex::lang::sequence */
 cx_sequence cx_sequence__new(void);

@@ -13,23 +13,23 @@
 cx_int16 cx_type_bindMetaprocedure(cx_type _this, cx_metaprocedure procedure);
 /* $end */
 
-/* callback ::cortex::lang::procedure::bind(object object) -> ::cortex::lang::metaprocedure::bind(metaprocedure object) */
-cx_int16 cx_metaprocedure_bind(cx_metaprocedure object) {
+/* ::cortex::lang::metaprocedure::bind() */
+cx_int16 cx_metaprocedure_bind(cx_metaprocedure _this) {
 /* $begin(::cortex::lang::metaprocedure::bind) */
     cx_object parent;
 
-    parent = cx_parentof(object);
+    parent = cx_parentof(_this);
     if (cx_instanceof(cx_typedef(cx_type_o), parent)) {
-        if (cx_type_bindMetaprocedure(cx_type(parent), object)) {
+        if (cx_type_bindMetaprocedure(cx_type(parent), _this)) {
             goto error;
         }
     } else {
         cx_id id, id2;
-        cx_error("metaoperation '%s' not defined in scope of '%s' which is not a type", cx_fullname(object, id), cx_fullname(parent, id2));
+        cx_error("metaoperation '%s' not defined in scope of '%s' which is not a type", cx_fullname(_this, id), cx_fullname(parent, id2));
         goto error;
     }
 
-    return cx_function_bind(cx_function(object));
+    return cx_function_bind(cx_function(_this));
 error:
     return -1;
 /* $end */

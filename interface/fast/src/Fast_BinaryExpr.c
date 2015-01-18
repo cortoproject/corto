@@ -243,15 +243,15 @@ void Fast_BinaryExpr_toIc_strOp(
 
 /* $end */
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::BinaryExpr::construct(Fast::BinaryExpr object) */
-cx_int16 Fast_BinaryExpr_construct(Fast_BinaryExpr object) {
+/* ::cortex::Fast::BinaryExpr::construct() */
+cx_int16 Fast_BinaryExpr_construct(Fast_BinaryExpr _this) {
 /* $begin(::cortex::Fast::BinaryExpr::construct) */
     cx_type lvalueType, rvalueType;
     cx_int32 checkReferences=0;
 
-    Fast_Node(object)->kind = FAST_Binary;
-    lvalueType = Fast_Expression_getType_expr(object->lvalue, object->rvalue);
-    rvalueType = Fast_Expression_getType_expr(object->rvalue, object->lvalue);
+    Fast_Node(_this)->kind = FAST_Binary;
+    lvalueType = Fast_Expression_getType_expr(_this->lvalue, _this->rvalue);
+    rvalueType = Fast_Expression_getType_expr(_this->rvalue, _this->lvalue);
 
     if (lvalueType && rvalueType) {
         if (!cx_type_castable(lvalueType, rvalueType)) {
@@ -262,12 +262,12 @@ cx_int16 Fast_BinaryExpr_construct(Fast_BinaryExpr object) {
         }
 
         /* Re-obtain lvalueType & rvalueType as they may have changed during the cast */
-        lvalueType = Fast_Expression_getType_expr(object->lvalue, object->rvalue);
-        rvalueType = Fast_Expression_getType_expr(object->rvalue, object->lvalue);
+        lvalueType = Fast_Expression_getType_expr(_this->lvalue, _this->rvalue);
+        rvalueType = Fast_Expression_getType_expr(_this->rvalue, _this->lvalue);
 
         /* Check for consistent usage of references */
-        Fast_Expression_getDerefMode(object->lvalue, object->rvalue, &checkReferences);
-        Fast_Expression_getDerefMode(object->rvalue, object->lvalue, &checkReferences);
+        Fast_Expression_getDerefMode(_this->lvalue, _this->rvalue, &checkReferences);
+        Fast_Expression_getDerefMode(_this->rvalue, _this->lvalue, &checkReferences);
         if (checkReferences) {
             Fast_Parser_error(yparser(), "inconsistent usage of references in binary expression");
             goto error;
@@ -276,7 +276,7 @@ cx_int16 Fast_BinaryExpr_construct(Fast_BinaryExpr object) {
     }
 
     /* Set operator */
-    Fast_BinaryExpr_setOperator(object, object->operator);
+    Fast_BinaryExpr_setOperator(_this, _this->operator);
 
     return 0;
 error:

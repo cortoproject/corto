@@ -1,10 +1,11 @@
+// Test delegates in collections
 bool result: true
 void fail(string msg):
     "tc_delegate03: FAIL: $msg"
     result = false
 
 // The delegate type
-int32 binaryOperation(int32 a, int32 b) procptr:
+int32 binaryOperation(int32 a, int32 b) delegate:
 
 // Ordinary functions
 int32 add(int32 a, int32 b) = a + b

@@ -18,8 +18,8 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::Fast::FloatingPoint::init(FloatingPoint object) */
-cx_int16 Fast_FloatingPoint_init(Fast_FloatingPoint object);
+/* ::cortex::Fast::FloatingPoint::init() */
+cx_int16 Fast_FloatingPoint_init(Fast_FloatingPoint _this);
 
 /* ::cortex::Fast::FloatingPoint::serialize(type dstType,word dst) */
 cx_int16 Fast_FloatingPoint_serialize(Fast_FloatingPoint _this, cx_type dstType, cx_word dst);

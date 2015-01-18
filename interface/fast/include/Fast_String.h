@@ -18,14 +18,14 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::String::construct(Fast::String object) */
-cx_int16 Fast_String_construct(Fast_String object);
+/* ::cortex::Fast::String::construct() */
+cx_int16 Fast_String_construct(Fast_String _this);
 
 /* ::cortex::Fast::String::getValue() */
 cx_word Fast_String_getValue(Fast_String _this);
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::Fast::String::init(Fast::String object) */
-cx_int16 Fast_String_init(Fast_String object);
+/* ::cortex::Fast::String::init() */
+cx_int16 Fast_String_init(Fast_String _this);
 
 /* ::cortex::Fast::String::serialize(type dstType,word dst) */
 cx_int16 Fast_String_serialize(Fast_String _this, cx_type dstType, cx_word dst);

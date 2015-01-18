@@ -38,17 +38,18 @@ CX_META_OBJECT(class, enum);
 CX_META_OBJECT(class, bitmask);
 CX_META_OBJECT(class, struct);
 CX_META_OBJECT(class, class);
-CX_META_OBJECT(class, procptr);
+CX_META_OBJECT(class, delegate);
 CX_META_OBJECT(class, procedure);
 CX_META_OBJECT(class, array);
 CX_META_OBJECT(class, sequence);
 CX_META_OBJECT(class, list);
 CX_META_OBJECT(class, map);
+CX_META_OBJECT(class, iterator);
 CX_META_OBJECT(class, member);
 CX_META_OBJECT(class, event);
 CX_META_OBJECT(class, observableEvent);
 CX_META_OBJECT(struct, parameter);
-CX_META_OBJECT(struct, procptrdata);
+CX_META_OBJECT(struct, delegatedata);
 CX_META_OBJECT(struct, interfaceVector);
 CX_META_OBJECT(interface, dispatcher);
 
@@ -93,18 +94,14 @@ CX_META_OBJECT(sequence, memberSeq);
 CX_META_OBJECT(sequence, parameterSeq);
 CX_META_OBJECT(sequence, interfaceVectorSeq);
 
+CX_META_OBJECT(delegate, callbackInit);
+CX_META_OBJECT(delegate, callbackDestruct);
+
 CX_META_OBJECT(procedure, function);
 CX_META_OBJECT(procedure, method);
 CX_META_OBJECT(procedure, virtual);
-CX_META_OBJECT(procedure, delegate);
-CX_META_OBJECT(procedure, callback);
 CX_META_OBJECT(procedure, observer);
 CX_META_OBJECT(procedure, metaprocedure);
-
-CX_META_OBJECT(delegate, type_init);
-CX_META_OBJECT(delegate, class_construct);
-CX_META_OBJECT(delegate, class_destruct);
-CX_META_OBJECT(delegate, procedure_bind);
 
 #ifdef __cplusplus
 }

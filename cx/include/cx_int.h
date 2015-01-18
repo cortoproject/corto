@@ -18,8 +18,8 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::int::init(int object) */
-cx_int16 cx_int_init(cx_int object);
+/* ::cortex::lang::int::init() */
+cx_int16 cx_int_init(cx_int _this);
 
 #ifdef __cplusplus
 }

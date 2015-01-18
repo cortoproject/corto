@@ -9,10 +9,10 @@
 #include "cx.h"
 #include "cx__meta.h"
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::virtual::init(virtual object) */
-cx_int16 cx_virtual_init(cx_virtual object) {
+/* ::cortex::lang::virtual::init() */
+cx_int16 cx_virtual_init(cx_virtual _this) {
 /* $begin(::cortex::lang::virtual::init) */
-    cx_method(object)->virtual = TRUE;
-    return cx_method_init(cx_method(object));
+    cx_method(_this)->virtual = TRUE;
+    return cx_method_init(cx_method(_this));
 /* $end */
 }

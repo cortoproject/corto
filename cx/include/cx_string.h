@@ -30,6 +30,10 @@ char *chresc(char *out, char in, char delimiter);
  */
 size_t stresc(char *out, size_t n, const char *in);
 
+/* Count the number of characters in a string that do not match a provided
+ * mask. */
+size_t strmask(char *str, char *mask);
+
 #ifdef __cplusplus
 }
 #endif

@@ -19,25 +19,25 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 void Fast_Parser_warning(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::If::construct(If object) */
-cx_int16 Fast_If_construct(Fast_If object) {
+/* ::cortex::Fast::If::construct() */
+cx_int16 Fast_If_construct(Fast_If _this) {
 /* $begin(::cortex::Fast::If::construct) */
     cx_type conditionType;
 
-    Fast_Node(object)->kind = FAST_If;
+    Fast_Node(_this)->kind = FAST_If;
 
-    if (object->condition) {
-        conditionType = Fast_Expression_getType(object->condition);
+    if (_this->condition) {
+        conditionType = Fast_Expression_getType(_this->condition);
         if (conditionType) {
             /* Check if condition can evaluate to a boolean value */
-            if (!object->condition->forceReference && !conditionType->reference && (conditionType->kind != CX_PRIMITIVE)) {
+            if (!_this->condition->forceReference && !conditionType->reference && (conditionType->kind != CX_PRIMITIVE)) {
                 Fast_Parser_error(yparser(), "expression does not evaluate to condition");
                 goto error;
             }
         }
     }
     
-    object->warnUnreachable = TRUE;
+    _this->warnUnreachable = TRUE;
 
     return 0;
 error:
@@ -46,7 +46,7 @@ error:
 }
 
 /* ::cortex::Fast::If::noWarnUnreachable() */
-void Fast_If_noWarnUnreachable(Fast_If _this) {
+cx_void Fast_If_noWarnUnreachable(Fast_If _this) {
 /* $begin(::cortex::Fast::If::noWarnUnreachable) */
     _this->warnUnreachable = FALSE;
 /* $end */

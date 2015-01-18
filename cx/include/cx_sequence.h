@@ -18,11 +18,11 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::sequence::construct(sequence object) */
-cx_int16 cx_sequence_construct(cx_sequence object);
+/* ::cortex::lang::sequence::construct() */
+cx_int16 cx_sequence_construct(cx_sequence _this);
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::sequence::init(sequence object) */
-cx_int16 cx_sequence_init(cx_sequence object);
+/* ::cortex::lang::sequence::init() */
+cx_int16 cx_sequence_init(cx_sequence _this);
 
 /* ::cortex::lang::sequence::size(uint32 size) */
 cx_void cx_sequence_size(cx_any _this, cx_uint32 size);

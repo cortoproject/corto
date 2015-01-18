@@ -20,19 +20,19 @@ class Types::
     l : bool
     m : char
     
-    int16 construct(Types object):
-        object.a = 255
-        object.c = 255
-        object.d = 65535
-        object.e = 4294967295
-        object.f = 18446744073709551615
-        object.g = 127
-        object.h = 32767
-        object.i = 2147483647
-        object.j = 9223372036854775807
-        object.k = YELLOW
-        object.l = true
-        object.m = 'x'
+    int16 construct():
+        a = 255
+        c = 255
+        d = 65535
+        e = 4294967295
+        f = 18446744073709551615
+        g = 127
+        h = 32767
+        i = 2147483647
+        j = 9223372036854775807
+        k = YELLOW
+        l = true
+        m = 'x'
         construct = 0
     
     // Refer arguments from 'this' 

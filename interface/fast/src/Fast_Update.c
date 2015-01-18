@@ -19,16 +19,16 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::Update::construct(Update object) */
-cx_int16 Fast_Update_construct(Fast_Update object) {
+/* ::cortex::Fast::Update::construct() */
+cx_int16 Fast_Update_construct(Fast_Update _this) {
 /* $begin(::cortex::Fast::Update::construct) */
     cx_type t;
     cx_iter exprIter;
     Fast_Expression expr;
 
-    Fast_Node(object)->kind = FAST_Update;
+    Fast_Node(_this)->kind = FAST_Update;
 
-    exprIter = cx_llIter(object->exprList);
+    exprIter = cx_llIter(_this->exprList);
     while(cx_iterHasNext(&exprIter)) {
         expr = cx_iterNext(&exprIter);
         t = Fast_Expression_getType(expr);

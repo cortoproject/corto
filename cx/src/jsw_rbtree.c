@@ -7,7 +7,6 @@
 #include "jsw_rbtree.h"
 #include "cx_util.h"
 #include "cx_err.h"
-#include "cx_object.h"
 
 #ifdef __cplusplus
 #include <cstdlib>

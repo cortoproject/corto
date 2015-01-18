@@ -1,14 +1,14 @@
-/* tc_MammalProps.h
+/* tc_iterator__api.h
  *
- *  Generated on Feb  5 2014
+ *    API convenience functions for C-language.
  *    This file contains generated code. Do not modify!
  */
 
-#ifndef tc_MammalProps_H
-#define tc_MammalProps_H
+#ifndef tc_iterator__API_H
+#define tc_iterator__API_H
 
+#include "tc_iterator__type.h"
 #include "cortex.h"
-#include "tc_call__type.h"
 
 #ifdef __cplusplus
 extern "C" {

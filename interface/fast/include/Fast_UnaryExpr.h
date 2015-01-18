@@ -18,8 +18,8 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::UnaryExpr::construct(Fast::UnaryExpr object) */
-cx_int16 Fast_UnaryExpr_construct(Fast_UnaryExpr object);
+/* ::cortex::Fast::UnaryExpr::construct() */
+cx_int16 Fast_UnaryExpr_construct(Fast_UnaryExpr _this);
 
 /* virtual ::cortex::Fast::UnaryExpr::hasSideEffects() */
 cx_bool Fast_UnaryExpr_hasSideEffects(Fast_UnaryExpr _this);

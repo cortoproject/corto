@@ -9,11 +9,11 @@
 #include "Fast.h"
 #include "Fast__meta.h"
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::Define::construct(Fast::Define object) */
-cx_int16 Fast_Define_construct(Fast_Define object) {
+/* ::cortex::Fast::Define::construct() */
+cx_int16 Fast_Define_construct(Fast_Define _this) {
 /* $begin(::cortex::Fast::Define::construct) */
 
-    Fast_Node(object)->kind = FAST_Define;
+    Fast_Node(_this)->kind = FAST_Define;
 
     return 0;
 /* $end */

@@ -28,12 +28,12 @@ cx_int16 cx__bitmask_bindConstant(cx_bitmask _this, cx_constant* c) {
 }
 /* $end */
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::bitmask::init(bitmask object) */
-cx_int16 cx_bitmask_init(cx_bitmask object) {
+/* ::cortex::lang::bitmask::init() */
+cx_int16 cx_bitmask_init(cx_bitmask _this) {
 /* $begin(::cortex::lang::bitmask::init) */
-    cx_primitive(object)->kind = CX_BITMASK;
-    cx_primitive(object)->width = CX_WIDTH_32;
-    cx_set(&cx_type(object)->defaultType, cx_constant_o);
-    return cx_primitive_init((cx_primitive)object);
+    cx_primitive(_this)->kind = CX_BITMASK;
+    cx_primitive(_this)->width = CX_WIDTH_32;
+    cx_set(&cx_type(_this)->defaultType, cx_constant_o);
+    return cx_primitive_init((cx_primitive)_this);
 /* $end */
 }

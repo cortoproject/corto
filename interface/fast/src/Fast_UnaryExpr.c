@@ -16,18 +16,18 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::UnaryExpr::construct(Fast::UnaryExpr object) */
-cx_int16 Fast_UnaryExpr_construct(Fast_UnaryExpr object) {
+/* ::cortex::Fast::UnaryExpr::construct() */
+cx_int16 Fast_UnaryExpr_construct(Fast_UnaryExpr _this) {
 /* $begin(::cortex::Fast::UnaryExpr::construct) */
     cx_type lvalueType;
 
-    lvalueType = Fast_Expression_getType(object->lvalue);
-    Fast_Node(object)->kind = FAST_Unary;
+    lvalueType = Fast_Expression_getType(_this->lvalue);
+    Fast_Node(_this)->kind = FAST_Unary;
 
-    if (object->operator == CX_COND_NOT) {
-        Fast_Expression(object)->type = Fast_Variable(Fast_Object__create(cx_bool_o));
+    if (_this->operator == CX_COND_NOT) {
+        Fast_Expression(_this)->type = Fast_Variable(Fast_Object__create(cx_bool_o));
     } else {
-        Fast_Expression(object)->type = Fast_Variable(Fast_Object__create(lvalueType));
+        Fast_Expression(_this)->type = Fast_Variable(Fast_Object__create(lvalueType));
     }
 
     return 0;

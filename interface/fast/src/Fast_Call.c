@@ -67,24 +67,24 @@ error:
 
 /* $end */
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::Call::construct(Fast::Call object) */
-cx_int16 Fast_Call_construct(Fast_Call object) {
+/* ::cortex::Fast::Call::construct() */
+cx_int16 Fast_Call_construct(Fast_Call _this) {
 /* $begin(::cortex::Fast::Call::construct) */
     Fast_Expression returnTypeExpr;
 
-    Fast_Node(object)->kind = FAST_Call;
+    Fast_Node(_this)->kind = FAST_Call;
 
     /* Insert casts based on expression list and arguments */
-    if (Fast_Call_insertCasts(object)) {
+    if (Fast_Call_insertCasts(_this)) {
         goto error;
     }
 
-    returnTypeExpr = Fast_Expression(Fast_Object__create(object->returnType));
+    returnTypeExpr = Fast_Expression(Fast_Object__create(_this->returnType));
     Fast_Parser_collect(yparser(), returnTypeExpr);
 
-    cx_set(&Fast_Expression(object)->type, returnTypeExpr);
-    Fast_Expression(object)->isReference = 
-        object->returnsReference || object->returnType->reference;
+    cx_set(&Fast_Expression(_this)->type, returnTypeExpr);
+    Fast_Expression(_this)->isReference = 
+        _this->returnsReference || _this->returnType->reference;
 
     return 0;
 error:
@@ -101,7 +101,7 @@ cx_bool Fast_Call_hasSideEffects_v(Fast_Call _this) {
 }
 
 /* ::cortex::Fast::Call::setParameters(function function) */
-void Fast_Call_setParameters(Fast_Call _this, cx_function function) {
+cx_void Fast_Call_setParameters(Fast_Call _this, cx_function function) {
 /* $begin(::cortex::Fast::Call::setParameters) */
     cx_uint32 i;
 

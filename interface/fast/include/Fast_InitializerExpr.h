@@ -18,8 +18,8 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::InitializerExpr::construct(InitializerExpr object) */
-cx_int16 Fast_InitializerExpr_construct(Fast_InitializerExpr object);
+/* ::cortex::Fast::InitializerExpr::construct() */
+cx_int16 Fast_InitializerExpr_construct(Fast_InitializerExpr _this);
 
 /* ::cortex::Fast::InitializerExpr::define() */
 cx_int16 Fast_InitializerExpr_define(Fast_InitializerExpr _this);

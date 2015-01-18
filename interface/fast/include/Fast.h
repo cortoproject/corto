@@ -27,13 +27,13 @@ void Fast_Parser_warning(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
 /* ::cortex::Fast::report(string kind,string filename,uint32 line,uint32 column,string error,string token) */
-void Fast_report(cx_string kind, cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token);
+cx_void Fast_report(cx_string kind, cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token);
 
 /* ::cortex::Fast::reportError(string filename,uint32 line,uint32 column,string error,string token) */
-void Fast_reportError(cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token);
+cx_void Fast_reportError(cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token);
 
 /* ::cortex::Fast::reportWarning(string filename,uint32 line,uint32 column,string error,string token) */
-void Fast_reportWarning(cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token);
+cx_void Fast_reportWarning(cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token);
 
 /* ::cortex::Fast::valueKindFromType(lang::type type) */
 Fast_valueKind Fast_valueKindFromType(cx_type type);

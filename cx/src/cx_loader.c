@@ -5,13 +5,7 @@
  *      Author: sander
  */
 
-#include "cx_dl.h"
-#include "cx_err.h"
-#include "cx_files.h"
-#include "cx_ll.h"
-#include "cx_loader.h"
-#include "cx_mem.h"
-#include "cx_util.h"
+#include "cortex.h"
 #include "stdlib.h"
 #include "string.h"
 
@@ -166,15 +160,21 @@ loaded:
 
 /* Load library */
 int cx_libraryLoader(cx_string _file, void* udata) {
-    cx_dl dl;
+    cx_dl dl = NULL;
     cx_string filename = NULL, file = NULL;
     int (*proc)(int argc, char* argv[]);
     int length;
     cx_char path[256];
-    cx_char str[256];
-    cx_string cortexHome = getenv("CORTEX_HOME");
+    cx_string str = NULL;
+    cx_string cortexHomeVar = getenv("CORTEX_HOME");
 
     CX_UNUSED(udata);
+
+    /* Validate that the environment variable contains a valid cortex path. */
+    if (strmask(cortexHomeVar, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_/ ")) {
+        cx_error("Environment variable CORTEX_HOME does not contain a valid path");
+        goto error;
+    }
 
     /* Convert scoped name to filename */
     if (strchr(_file, ':')) {
@@ -208,7 +208,14 @@ int cx_libraryLoader(cx_string _file, void* udata) {
     length = (cx_word)filename - (cx_word)file;
     memcpy(path, file, length);
     path[length]='\0';
-    sprintf(str, "%s/bin/%slib%s.so", cortexHome, path, filename);
+    
+    length = snprintf(NULL, 0, "%s/bin/%slib%s.so", cortexHomeVar, path, filename);
+    if (length < 0) {
+        cx_error("snprintf failed");
+        goto error;
+    }
+    str = cx_malloc(length + 1);
+    snprintf(str, length+1, "%s/bin/%slib%s.so", cortexHomeVar, path, filename);
 
     if (!(dl = cx_dlOpen(str))) {
         cx_error("%s: %s", _file, cx_dlError());
@@ -234,15 +241,15 @@ int cx_libraryLoader(cx_string _file, void* udata) {
     }
     cx_llInsert(libraries, dl);
 
-    if (file) {
-        cx_dealloc(file);
-    }
+    if (file) cx_dealloc(file);
+    if (str) cx_dealloc(str);
 
     return 0;
 error:
-    if (file) {
-        cx_dealloc(file);
-    }
+    if (file) cx_dealloc(file);
+    if (str) cx_dealloc(str);
+    if (dl) cx_dlClose(dl);
+
     return -1;
 }
 

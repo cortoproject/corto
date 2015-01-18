@@ -8,8 +8,6 @@
 #ifndef CX_LL_H_
 #define CX_LL_H_
 
-#include "cx__type.h"
-#include "cx_collection.h"
 #include "cx_def.h"
 
 #ifdef __cplusplus
@@ -58,7 +56,7 @@ void* cx_llGetPtr(cx_ll list, int index);
 void* cx_llFind(cx_ll list, cx_compareAction callback, void* o);
 
 /* Check if object is in list - simple compare on address */
-cx_uint32 cx_llHasObject(cx_ll list, void* o);
+unsigned int cx_llHasObject(cx_ll list, void* o);
 
 /* Last element */
 void* cx_llLast(cx_ll list);

@@ -18,8 +18,8 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::Object::construct(Object object) */
-cx_int16 Fast_Object_construct(cx_object object);
+/* ::cortex::Fast::Object::construct() */
+cx_int16 Fast_Object_construct(Fast_Object _this);
 
 /* ::cortex::Fast::Object::getValue() */
 cx_word Fast_Object_getValue(Fast_Object _this);

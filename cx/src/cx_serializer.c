@@ -261,19 +261,13 @@ int cx_serializeElement(void* e, void* userData) {
     struct cx_serializeElement_t* data;
     cx_serializer _this;
     cx_value* info;
-    cx_type t;
 
     data = userData;
     _this = data->_this;
     info = data->info;
-    t = cx_valueType(info->parent)->real;
 
     /* Set element value */
-    if ((cx_collection(t)->kind == CX_ARRAY) || (cx_collection(t)->kind == CX_SEQUENCE)) {
-        info->is.element.v = e;
-    } else {
-        info->is.element.v = e;
-    }
+    info->is.element.v = e;
 
     /* Forward element to serializer callback */
     if (data->cb(_this, info, data->userData)) {

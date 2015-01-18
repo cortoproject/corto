@@ -17,19 +17,19 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::Object::construct(Object object) */
-cx_int16 Fast_Object_construct(cx_object object) {
+/* ::cortex::Fast::Object::construct() */
+cx_int16 Fast_Object_construct(Fast_Object _this) {
 /* $begin(::cortex::Fast::Object::construct) */
-    cx_type t = cx_typeof(Fast_ObjectBase(object)->value)->real;
+    cx_type t = cx_typeof(Fast_ObjectBase(_this)->value)->real;
 
     if(t == cx_type(cx_constant_o)) {
-        t = cx_parentof(Fast_ObjectBase(object)->value);
+        t = cx_parentof(Fast_ObjectBase(_this)->value);
     }
 
-    Fast_Expression(object)->type = Fast_Variable(Fast_ObjectBase__create(t));
-    Fast_Expression(object)->isReference = TRUE;
+    Fast_Expression(_this)->type = Fast_Variable(Fast_ObjectBase__create(t));
+    Fast_Expression(_this)->isReference = TRUE;
 
-    return Fast_ObjectBase_construct(Fast_ObjectBase(object));
+    return Fast_ObjectBase_construct(Fast_ObjectBase(_this));
 /* $end */
 }
 
@@ -59,10 +59,10 @@ cx_int16 Fast_Object_serialize(Fast_Object _this, cx_type dstType, cx_word dst) 
         cx_type srcType = cx_typeof(obj)->real;
 
         /* Handle delegates */
-        if ((srcType->kind == CX_COMPOSITE) && (cx_interface(srcType)->kind == CX_PROCPTR)) {
+        if ((srcType->kind == CX_COMPOSITE) && (cx_interface(srcType)->kind == CX_DELEGATE)) {
             srcIsDelegate = TRUE;
         }
-        if ((dstType->kind == CX_COMPOSITE) && (cx_interface(dstType)->kind == CX_PROCPTR)) {
+        if ((dstType->kind == CX_COMPOSITE) && (cx_interface(dstType)->kind == CX_DELEGATE)) {
             dstIsDelegate = TRUE;
         }
 
@@ -73,8 +73,8 @@ cx_int16 Fast_Object_serialize(Fast_Object _this, cx_type dstType, cx_word dst) 
                 cx_valueValueInit(&vSrc, NULL, cx_typedef(srcType), Fast_ObjectBase(_this)->value);
                 cx_valueCopy(&vDst, &vSrc);
             } else if ((srcType->kind == CX_COMPOSITE) && (cx_interface(srcType)->kind == CX_PROCEDURE)) {
-                cx_set(&((cx_procptrdata *)dst)->procedure, Fast_ObjectBase(_this)->value);
-                cx_set(&((cx_procptrdata *)dst)->instance, NULL);
+                cx_set(&((cx_delegatedata *)dst)->procedure, Fast_ObjectBase(_this)->value);
+                cx_set(&((cx_delegatedata *)dst)->instance, NULL);
             }
 
         } else if (cx_instanceof((cx_typedef)dstType, Fast_ObjectBase(_this)->value)) {

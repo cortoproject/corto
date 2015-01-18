@@ -139,9 +139,9 @@ int cx_interface_walkScope(cx_object o, void* userData) {
     cx_interface _this;
     _this = userData;
 
-    if (cx_class_instanceof(cx_procedure_o, cx_typeof(o)) && ((cx_procedure(cx_typeof(o))->kind == CX_METHOD) || (cx_procedure(cx_typeof(o))->kind == CX_DELEGATE))) {
+    if (cx_class_instanceof(cx_procedure_o, cx_typeof(o)) && ((cx_procedure(cx_typeof(o))->kind == CX_METHOD))) {
         if (!cx_checkState(o, CX_DEFINED)) {
-            if (cx_interface_bindMethod_v(_this, o)) {
+            if (cx_interface_bindMethod(_this, o)) {
                 goto error;
             }
         }
@@ -150,38 +150,6 @@ int cx_interface_walkScope(cx_object o, void* userData) {
     return 1;
 error:
     return 0;
-}
-
-/* private class::bindDelegate
- *   Same as cx__class_bindDelegate, but does not generate a new delegateId.
- *   When a class is defined, it's vtable will be merged with it's super-class. In this process,
- *   all it's own methods and delegates will be re-binded to the new vtable. This should not
- *   generate new delegateId's as this would make the callback vtable's of objects unneccesary
- *   large.
- */
-static cx_int16 cx__interface_bindDelegate_noId(cx_interface _this, cx_delegate delegate) {
-    cx_delegate* found;
-
-    /* Check if a method with the same name is already in the vtable */
-    found = (cx_delegate*)cx_vtableLookup(&_this->methods, cx_nameof(delegate), NULL, NULL);
-
-    if (found) {
-        /* Function is reentrant */
-        if (*found != delegate) {
-            cx_id id;
-            cx_critical("class::bindDelegate: cannot override method '%s': delegates can't be overridden", cx_fullname(delegate, id));
-            goto error;
-        }
-    } else {
-        /* Insert delegate */
-        if (cx_vtableInsert(&_this->methods, cx_function(delegate))) {
-            cx_keep_ext(_this, delegate, "Bind delegate.");
-        }
-    }
-
-    return 0;
-error:
-    return -1;
 }
 
 cx_int16 cx__interface_bindMember(cx_interface _this, cx_member o) {
@@ -262,6 +230,7 @@ static int cx_interface_insertMemberAction(void* o, void* userData) {
             cx_error("member '%s' has no type", cx_fullname(m, id));
             goto error;
         }
+
         cx_keep_ext((cx_object)userData, o, "Keep member.");
         cx_interface(userData)->members.buffer[cx_member(o)->id] = o;
         cx_interface(userData)->members.length++;
@@ -364,12 +333,11 @@ static cx_bool cx_interface_checkProcedureParameters(cx_function o1, cx_function
 
 /* Check whether two procedure objects are compatible */
 cx_bool cx_interface_checkProcedureCompatibility(cx_function o1, cx_function o2) {
-    cx_type t1, t2;
+    cx_type t1;
     cx_bool result;
     cx_typedef returnType1, returnType2;
 
     t1 = cx_typeof(o1)->real;
-    t2 = cx_typeof(o2)->real;
 
     result = TRUE;
 
@@ -392,16 +360,6 @@ cx_bool cx_interface_checkProcedureCompatibility(cx_function o1, cx_function o2)
             break;
         case CX_METHOD:
             result = cx_interface_checkProcedureParameters(o1, o2);
-            break;
-        case CX_DELEGATE:
-            if (cx_procedure(t2)->kind != CX_CALLBACK) {
-                result = FALSE;
-            } else {
-                result = cx_interface_checkProcedureParameters(o1, o2);
-            }
-            break;
-        case CX_CALLBACK:
-            result = FALSE; /* Callbacks will never be compared to eachother */
             break;
         case CX_OBSERVER:
             result = FALSE; /* Observers are not overridable and thus never need to be compared. */
@@ -434,7 +392,7 @@ cx_int16 cx_interface_baseof(cx_interface _this, cx_interface type) {
 }
 
 /* ::cortex::lang::interface::bindMethod(method method) */
-cx_int16 cx_interface_bindMethod_v(cx_interface _this, cx_method method) {
+cx_int16 cx_interface_bindMethod(cx_interface _this, cx_method method) {
 /* $begin(::cortex::lang::interface::bindMethod) */
     cx_method* virtual;
     cx_int32 i;
@@ -520,8 +478,8 @@ cx_bool cx_interface_compatible_v(cx_interface _this, cx_type type) {
 /* $end */
 }
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::interface::construct(interface object) */
-cx_int16 cx_interface_construct(cx_interface object) {
+/* ::cortex::lang::interface::construct() */
+cx_int16 cx_interface_construct(cx_interface _this) {
 /* $begin(::cortex::lang::interface::construct) */
     cx_vtable *superTable, ownTable;
     cx_uint32 i;
@@ -529,22 +487,18 @@ cx_int16 cx_interface_construct(cx_interface object) {
     superTable = NULL;
 
     /* If a vtable exists on a super-class, merge it with my own. */
-    superTable = cx_interface_vtableFromBase(object);
+    superTable = cx_interface_vtableFromBase(_this);
     if (superTable) {
-        ownTable = object->methods;
-        object->methods = *superTable;
+        ownTable = _this->methods;
+        _this->methods = *superTable;
 
-        /* re-bind methods and delegates */
+        /* re-bind methods */
         if (ownTable.length) {
             for(i=0; i<ownTable.length; i++) {
                 if (cx_instanceof(cx_typedef(cx_method_o), ownTable.buffer[i])) {
-                    cx_interface_bindMethod_v(object, cx_method(ownTable.buffer[i]));
-                } else {
-                    cx_assert(cx_instanceof(cx_typedef(cx_delegate_o), ownTable.buffer[i]),
-                            "only methods and delegates are allowed in a class-vtable (found '%s' of type %s).", cx_nameof(ownTable.buffer[i]), cx_nameof(cx_typeof(ownTable.buffer[i])));
-                    cx__interface_bindDelegate_noId(object, cx_delegate(ownTable.buffer[i]));
-                }
-                cx_free_ext(object, ownTable.buffer[i], "Free method from temporary vtable.");
+                    cx_interface_bindMethod(_this, cx_method(ownTable.buffer[i]));
+                } 
+                cx_free_ext(_this, ownTable.buffer[i], "Free method from temporary vtable.");
             }
 
             cx_dealloc(ownTable.buffer);
@@ -552,53 +506,53 @@ cx_int16 cx_interface_construct(cx_interface object) {
         cx_dealloc(superTable);
     }
 
-    if (!cx_scopeWalk(object, cx_interface_walkScope, object)) {
+    if (!cx_scopeWalk(_this, cx_interface_walkScope, _this)) {
         goto error;
     }
 
-    return cx_type_construct(cx_type(object));
+    return cx_type_construct(cx_type(_this));
 error:
     return -1;
 /* $end */
 }
 
-/* callback ::cortex::lang::class::destruct(object object) -> ::cortex::lang::interface::destruct(interface object) */
-cx_void cx_interface_destruct(cx_interface object) {
+/* ::cortex::lang::interface::destruct() */
+cx_void cx_interface_destruct(cx_interface _this) {
 /* $begin(::cortex::lang::interface::destruct) */
     cx_uint32 i;
 
     /* Free members */
-    for(i=0; i<object->members.length; i++) {
-        cx_free_ext(object, object->members.buffer[i], "Free member for interface");
+    for(i=0; i<_this->members.length; i++) {
+        cx_free_ext(_this, _this->members.buffer[i], "Free member for interface");
     }
 
-    if (object->members.buffer) {
-        cx_dealloc(object->members.buffer);
-        object->members.buffer = NULL;
+    if (_this->members.buffer) {
+        cx_dealloc(_this->members.buffer);
+        _this->members.buffer = NULL;
     }
 
     /* Free methods */
-    for(i=0; i<object->methods.length; i++) {
-        cx_free_ext(object, object->methods.buffer[i], "Remove method from vtable.");
+    for(i=0; i<_this->methods.length; i++) {
+        cx_free_ext(_this, _this->methods.buffer[i], "Remove method from vtable.");
     }
 
-    if (object->methods.buffer) {
-        cx_dealloc(object->methods.buffer);
-        object->methods.buffer = NULL;
+    if (_this->methods.buffer) {
+        cx_dealloc(_this->methods.buffer);
+        _this->methods.buffer = NULL;
     }
 
-    cx_type__destruct(cx_type(object));
+    cx_type_destruct(cx_type(_this));
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::interface::init(interface object) */
-cx_int16 cx_interface_init(cx_interface object) {
+/* ::cortex::lang::interface::init() */
+cx_int16 cx_interface_init(cx_interface _this) {
 /* $begin(::cortex::lang::interface::init) */
-    cx_type(object)->reference = TRUE;
-    cx_type(object)->kind = CX_COMPOSITE;
-    cx_set(&cx_type(object)->defaultType, cx_member_o);
-    object->kind = CX_INTERFACE;
-    return cx_type__init(cx_type(object));
+    cx_type(_this)->reference = TRUE;
+    cx_type(_this)->kind = CX_COMPOSITE;
+    cx_set(&cx_type(_this)->defaultType, cx_member_o);
+    _this->kind = CX_INTERFACE;
+    return cx_type_init(cx_type(_this));
 /* $end */
 }
 

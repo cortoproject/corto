@@ -1,10 +1,11 @@
+// Test delegates in composite types
 bool result: true
 void fail(string msg):
     "tc_delegate02: FAIL: $msg"
     result = false
 
 // The delegate type
-uint32 binaryOperation(uint32 a, uint32 b) procptr:
+uint32 binaryOperation(uint32 a, uint32 b) delegate:
 
 // Ordinary functions
 uint32 add(uint32 a, uint32 b) = a + b

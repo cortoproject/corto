@@ -19,11 +19,13 @@ Fast_Parser yparser(void);
 /* $end */
 
 /* ::cortex::Fast::Block::addStatement(Fast::Node statement) */
-void Fast_Block_addStatement(Fast_Block _this, Fast_Node statement) {
+cx_void Fast_Block_addStatement(Fast_Block _this, Fast_Node statement) {
 /* $begin(::cortex::Fast::Block::addStatement) */
-    cx_assert(_this->statements != NULL, "initialization failed");
-    cx_llAppend(_this->statements, statement);
-    cx_keep_ext(_this, statement, "Add statement to block");
+    if (statement) {
+        cx_assert(_this->statements != NULL, "initialization failed");
+        cx_llAppend(_this->statements, statement);
+        cx_keep_ext(_this, statement, "Add statement to block");
+    }
 /* $end */
 }
 
@@ -108,9 +110,10 @@ Fast_Expression Fast_Block_lookup(Fast_Block _this, cx_string id) {
     if (!result) {
         if (_this->function) {
             if ((cx_procedure(cx_typeof(_this->function))->kind == CX_METHOD) ||
-                ((cx_procedure(cx_typeof(_this->function))->kind == CX_OBSERVER) && cx_observer(_this->function)->template)) {
+               ((cx_procedure(cx_typeof(_this->function))->kind == CX_OBSERVER) && 
+               cx_observer(_this->function)->template)) {
                 if (strcmp(id, "this")) {
-                    cx_interface parent;
+                    cx_object parent;
                     cx_member m;
                     Fast_Expression thisLocal;
 
@@ -126,7 +129,25 @@ Fast_Expression Fast_Block_lookup(Fast_Block _this, cx_string id) {
                     } else {
                         parent = Fast_ObjectBase(yparser()->scope)->value;
                     }
-                    m = cx_interface_resolveMember(parent, id);
+
+                    /* If parent is not of an interface type, this could be a
+                     * delegate member implementation. Get type of the parent
+                     * instead. */
+                    if (!cx_instanceof(cx_typedef(cx_interface_o), parent)) {
+                        parent = cx_typeof(parent);
+                    }
+
+                    /* If parent is still not of an interface type, resolving
+                     * a 'this' from either a method or observer is illegal */
+                    if (!cx_instanceof(cx_typedef(cx_interface_o), parent)) {
+                        cx_id id;
+                        Fast_Parser_error(yparser(), 
+                            "'this' illegal in procedure '%s'", 
+                            cx_fullname(_this->function, id));
+                        goto error;
+                    }                    
+
+                    m = cx_interface_resolveMember(cx_interface(parent), id);
 
                     /* If 'this' is not yet declared, lookup is used while declaring
                      * function parameters. */
@@ -142,7 +163,7 @@ Fast_Expression Fast_Block_lookup(Fast_Block _this, cx_string id) {
                         } else {
                             cx_method m;
                             /* If no member is found, lookup method */
-                            m = cx_interface_resolveMethod(parent, id);
+                            m = cx_interface_resolveMethod(cx_interface(parent), id);
                             if (m) {
                                 Fast_String memberIdExpr;
                                 memberIdExpr = Fast_String__create(id);
@@ -159,6 +180,8 @@ Fast_Expression Fast_Block_lookup(Fast_Block _this, cx_string id) {
     }
 
     return result;
+error:
+    return NULL;
 /* $end */
 }
 
@@ -215,7 +238,7 @@ Fast_Local Fast_Block_resolveLocal(Fast_Block _this, cx_string id) {
 }
 
 /* ::cortex::Fast::Block::setFunction(function function */
-void Fast_Block_setFunction(Fast_Block _this, cx_function function) {
+cx_void Fast_Block_setFunction(Fast_Block _this, cx_function function) {
 /* $begin(::cortex::Fast::Block::setFunction) */
     _this->function = function;
     cx_keep_ext(_this, function, "Set function for block");

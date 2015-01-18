@@ -18,8 +18,8 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::CastExpr::construct(Fast::CastExpr object) */
-cx_int16 Fast_CastExpr_construct(Fast_CastExpr object);
+/* ::cortex::Fast::CastExpr::construct() */
+cx_int16 Fast_CastExpr_construct(Fast_CastExpr _this);
 
 /* virtual ::cortex::Fast::CastExpr::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_CastExpr_toIc(Fast_CastExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);

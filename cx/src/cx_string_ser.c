@@ -5,13 +5,7 @@
  *      Author: sander
  */
 
-#include "cx_string_ser.h"
-#include "cx_convert.h"
-#include "cx__meta.h"
-#include "cx_err.h"
-#include "cx_util.h"
-#include "cx_mem.h"
-#include "cx_object.h"
+#include "cortex.h"
 #include "stdarg.h"
 
 #define BLACK  "\033[1;30m"
@@ -404,8 +398,14 @@ static cx_int16 cx_ser_construct(cx_serializer s, cx_value *info, void* userData
     data->anonymousObjects = NULL;
     if (data->buffer) {
         *(data->buffer) = '\0';
+        if (!data->length) {
+            cx_error("buffer set without a length in string serializer");
+            goto error;
+        }
     }
     return 0;
+error:
+    return -1;
 }
 
 cx_int16 cx_ser_destruct(cx_serializer s, void* userData) {

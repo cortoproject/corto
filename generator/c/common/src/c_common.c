@@ -342,7 +342,6 @@ cx_bool c_procedureHasThis(cx_function o) {
     cx_bool result;
     if (cx_typeof(o) != cx_typedef(cx_observer_o)) {
         result = (cx_instanceof(cx_typedef(cx_method_o), o) || 
-                  cx_instanceof(cx_typedef(cx_delegate_o), o) ||
                   cx_instanceof(cx_typedef(cx_metaprocedure_o), o));
     } else {
         result = cx_class_instanceof(cx_class_o, cx_parentof(o));

@@ -8,7 +8,7 @@
 #ifndef CX_RBTREE_H_
 #define CX_RBTREE_H_
 
-#include "cx__type.h"
+#include "cx_object.h"
 #include "cx_collection.h"
 
 #ifdef __cplusplus

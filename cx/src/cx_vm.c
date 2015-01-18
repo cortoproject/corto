@@ -343,7 +343,7 @@ typedef union Di2f_t {
     CNEQSTR_##code:\
         fetchOp1(CNEQSTR,code);\
         if (stage1_W && stage2_W) {\
-            op_##code = strcmp((cx_string)stage1_W, (cx_string)stage2_W);\
+            op_##code = strcmp((cx_string)stage1_W, (cx_string)stage2_W) != 0;\
         } else {\
             op_##code = stage1_W != stage2_W;\
         }\
@@ -441,7 +441,7 @@ typedef union Di2f_t {
 #define CALLPTR(type,code)\
     CALLPTR_##code: {\
         fetchOp2(CALLPTR,code);\
-        cx_procptrdata *ptr = (cx_procptrdata*)&op2_##code;\
+        cx_delegatedata *ptr = (cx_delegatedata*)&op2_##code;\
         void *stackptr = c.stack;\
         if (!ptr->instance) {\
             stackptr = ((cx_word*)stackptr) + 1;\
@@ -482,10 +482,15 @@ typedef union Di2f_t {
         next();\
 
 #define PCAST(type,code)\
-    PCAST_##code:\
+    PCAST_##code: {\
         fetchOp2(PCAST,code)\
-        cx_convert(cx_primitive(stage1_W), &op2_##code, cx_primitive(stage2_W), &op1_##code);\
-        next();
+        cx_type fromType = cx_type(stage1_W);\
+        if (fromType->reference) {\
+            fromType = cx_type(cx_word_o);\
+        }\
+        cx_convert(cx_primitive(fromType), &op2_##code, cx_primitive(stage2_W), &op1_##code);\
+        next();\
+    }
 
 #define STRCAT(type,code)\
     STRCAT_##code:\
@@ -1162,7 +1167,7 @@ static void cx_vm_popSignalHandler(void) {
     if (signal(SIGABRT, prevAbortHandler) == SIG_ERR) {
         cx_error("failed to uninstall signal handler for SIGABRT");
     } else {
-        prevSegfaultHandler = NULL;
+        prevAbortHandler = NULL;
     }
     
     cx_vm_popCurrentProgram();

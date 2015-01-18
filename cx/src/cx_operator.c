@@ -44,7 +44,7 @@ static void CX_NAME_BINARYOP(string,cond_eq)(void* op1, void* op2, void* result)
     *(cx_bool*)result = !strcmp((cx_string)op1, (cx_string)op2);
 }
 static void CX_NAME_BINARYOP(string,cond_neq)(void* op1, void* op2, void* result) {
-    *(cx_bool*)result = strcmp((cx_string)op1, (cx_string)op2);
+    *(cx_bool*)result = strcmp((cx_string)op1, (cx_string)op2) != 0;
 }
 
 #define CX_INTEGER_UNARY_OPS(type) \

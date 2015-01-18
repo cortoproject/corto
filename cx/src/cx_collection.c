@@ -143,7 +143,7 @@ cx_bool cx_collection_castable_v(cx_collection _this, cx_type type) {
     cx_bool result = FALSE;
     if (type->kind == CX_COLLECTION) {
         cx_collection t = cx_collection(type);
-        
+
         /* Arrays are only castable when they match exactly in size */
         if (!(_this->kind == CX_ARRAY) || ((t->kind == CX_ARRAY) && (_this->max == t->max))) {
             if (_this->elementType != t->elementType) {
@@ -155,7 +155,7 @@ cx_bool cx_collection_castable_v(cx_collection _this, cx_type type) {
             }
         }
     }
-    
+
     return result;
 /* $end */
 }
@@ -196,7 +196,8 @@ cx_bool cx_collection_elementRequiresAlloc(cx_collection _this) {
             cx_assert(0, "non reference void type cannot be an elementtype");
             break;
         case CX_ANY:
-            /* Any values don't fit in an address */
+        case CX_ITERATOR:
+            /* Any and iterator values don't fit in an address */
             break;
         case CX_PRIMITIVE:
             switch(cx_primitive(elementType)->width) {
@@ -235,11 +236,12 @@ cx_bool cx_collection_elementRequiresAlloc(cx_collection _this) {
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::collection::init(collection object) */
-cx_int16 cx_collection_init(cx_collection object) {
+/* ::cortex::lang::collection::init() */
+cx_int16 cx_collection_init(cx_collection _this) {
 /* $begin(::cortex::lang::collection::init) */
-    cx_type(object)->kind = CX_COLLECTION;
-    return cx_type__init(cx_type(object));/* $end */
+    cx_type(_this)->kind = CX_COLLECTION;
+    return cx_type_init(cx_type(_this));
+/* $end */
 }
 
 /* ::cortex::lang::collection::size() */

@@ -24,7 +24,6 @@ void cx_list_insertListAction(cx_ll list, void *value, void *userData) {
     cx_list_insertWalk_t *data = userData;
     CX_UNUSED(list);
     cx_iterInsert(&data->iter, value);
-    cx_iterHasNext(&data->iter);
     cx_iterNext(&data->iter);
 }
 
@@ -84,11 +83,7 @@ static void cx_list_do(cx_any object, cx_any element, cx_bool insert, cx_list_ac
     
     if (doCopy) {
         cx_valueCopy(&dst, &src);
-        if (insert) {
-            action(list, value, userData);
-        } else {
-            action(list, value, userData);
-        }
+        action(list, value, userData);
     }
 }
 
@@ -164,21 +159,21 @@ cx_void cx_list_clear(cx_any _this) {
 /* $end */
 }
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::list::construct(list object) */
-cx_int16 cx_list_construct(cx_list object) {
+/* ::cortex::lang::list::construct() */
+cx_int16 cx_list_construct(cx_list _this) {
 /* $begin(::cortex::lang::list::construct) */
-    cx_type(object)->hasResources = TRUE;
-    cx_type(object)->size = sizeof(cx_ll);
-    cx_type(object)->alignment = CX_ALIGNMENT(cx_ll);
-    return cx_type_construct(cx_type(object));
+    cx_type(_this)->hasResources = TRUE;
+    cx_type(_this)->size = sizeof(cx_ll);
+    cx_type(_this)->alignment = CX_ALIGNMENT(cx_ll);
+    return cx_type_construct(cx_type(_this));
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::list::init(list object) */
-cx_int16 cx_list_init(cx_list object) {
+/* ::cortex::lang::list::init() */
+cx_int16 cx_list_init(cx_list _this) {
 /* $begin(::cortex::lang::list::init) */
-    cx_collection(object)->kind = CX_LIST;
-    return cx_collection_init(cx_collection(object));
+    cx_collection(_this)->kind = CX_LIST;
+    return cx_collection_init(cx_collection(_this));
 /* $end */
 }
 
