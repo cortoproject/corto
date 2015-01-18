@@ -59,7 +59,7 @@ typedef struct cx_ll_s* cx_ll;
 
 /* C language binding type definition macro's */
 #define CX_ANY(__type) typedef struct __type {cx_type type; void *value; cx_bool owner;} __type
-#define CX_ITERATOR(__type) typedef struct __type {cx_collection type; void *value; void *element;} __type;
+#define CX_ITERATOR(__type) typedef struct __type {cx_collection type; void *value; void *element;} __type
 #define CX_BITMASK(type) typedef uint32_t type
 
 #define CX_STRUCT(type) typedef struct type type

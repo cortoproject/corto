@@ -256,6 +256,20 @@ error:
     return -1;
 }
 
+/* Resolve iterator dependencies */
+static int cx_genTypeIteratorDependencies(cx_iterator t, cx_bool allowDeclared, cx_bool* recursion, cx_genTypeWalk_t* data) {
+    CX_UNUSED(allowDeclared);
+
+    /* Serialize elementType */
+    if (cx_genTypeParse(t->elementType, TRUE, recursion, data)) {
+        goto error;
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
 /* Resolve typedef dependencies */
 static int cx_genTypeTypedefDependencies(cx_typedef t, cx_bool allowDeclared, cx_bool* recursion, cx_genTypeWalk_t* data) {
     return cx_genTypeParse(t->type, allowDeclared, recursion, data);
@@ -318,6 +332,11 @@ static int cx_genTypeDependencies(cx_object o, cx_bool allowDeclared, cx_bool* r
                     goto error;
                 }
                 break;
+            }
+            break;
+        case CX_ITERATOR:
+            if (cx_genTypeIteratorDependencies(cx_iterator(o), allowDeclared, recursion, data)) {
+                goto error;
             }
             break;
         default:

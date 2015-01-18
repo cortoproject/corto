@@ -1,5 +1,4 @@
-
-TARGET = ../test/bin/tc_stringser
+TARGET = ../test/bin/tc_iterator
 
 LIBS = lang
 
