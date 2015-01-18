@@ -146,3 +146,31 @@ size_t stresc(char *out, size_t n, const char *in) {
     return written;
 }
 
+/* Count the number of characters in a string that do not match a provided
+ * mask. */
+size_t strmask(char *str, char *mask) {
+    char maskbuff[256];
+    memset(maskbuff, 0, sizeof(maskbuff));
+    char ch, *ptr;
+    size_t result = 0;
+
+    /* Set mask */
+    ptr = mask;
+    while ((ch = *ptr)) {
+        maskbuff[(int)ch] = 1;
+        ptr++;
+    }
+
+    /* Loop string, count mismatches */
+    ptr = str;
+    while ((ch = *ptr)) {
+        if (!maskbuff[(int)ch]) {
+            result++;
+        }
+        ptr++;
+    }
+
+    return result;
+}
+
+

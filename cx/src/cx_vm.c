@@ -343,7 +343,7 @@ typedef union Di2f_t {
     CNEQSTR_##code:\
         fetchOp1(CNEQSTR,code);\
         if (stage1_W && stage2_W) {\
-            op_##code = strcmp((cx_string)stage1_W, (cx_string)stage2_W);\
+            op_##code = strcmp((cx_string)stage1_W, (cx_string)stage2_W) != 0;\
         } else {\
             op_##code = stage1_W != stage2_W;\
         }\
@@ -1167,7 +1167,7 @@ static void cx_vm_popSignalHandler(void) {
     if (signal(SIGABRT, prevAbortHandler) == SIG_ERR) {
         cx_error("failed to uninstall signal handler for SIGABRT");
     } else {
-        prevSegfaultHandler = NULL;
+        prevAbortHandler = NULL;
     }
     
     cx_vm_popCurrentProgram();

@@ -153,14 +153,16 @@ cx_parameterSeq cx_function_stringToParameterSeq(cx_string name, cx_object scope
 
     /* Check if function has arguments */
     if (*ptr != ')') {
-        cx_uint32 count, i;
+        cx_int32 count = 0, i = 0;
         cx_id id;
         int flags = 0;
 
         /* Count number of parameters for function */
         count = cx_signatureParamCount(name);
-        i = 0;
-
+        if (count == -1) {
+            goto error;
+        }
+        
         /* Allocate size for parameters */
         result.length = count;
         result.buffer = cx_malloc(sizeof(cx_parameter) * count);

@@ -24,7 +24,6 @@ void cx_list_insertListAction(cx_ll list, void *value, void *userData) {
     cx_list_insertWalk_t *data = userData;
     CX_UNUSED(list);
     cx_iterInsert(&data->iter, value);
-    cx_iterHasNext(&data->iter);
     cx_iterNext(&data->iter);
 }
 
@@ -84,11 +83,7 @@ static void cx_list_do(cx_any object, cx_any element, cx_bool insert, cx_list_ac
     
     if (doCopy) {
         cx_valueCopy(&dst, &src);
-        if (insert) {
-            action(list, value, userData);
-        } else {
-            action(list, value, userData);
-        }
+        action(list, value, userData);
     }
 }
 

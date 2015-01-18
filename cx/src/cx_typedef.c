@@ -21,7 +21,7 @@ cx_int16 cx_typedef_construct(cx_typedef _this) {
         goto error;
     }
 
-    while(real != real->type) {
+    while(real && (real != real->type)) {
         if (!cx_checkState(real, CX_VALID)) {
             cx_id id, id2;
             cx_error("typedef::construct: typedef '%s' points to object '%s' which is not valid", cx_fullname(_this, id), cx_fullname(real, id2));
@@ -31,9 +31,6 @@ cx_int16 cx_typedef_construct(cx_typedef _this) {
             cx_id id, id2;
             cx_error("typedef::construct: typedef '%s' points to object '%s' which is not defined", cx_fullname(_this, id), cx_fullname(real, id2));
             goto error;
-        }
-        if (!real->type) {
-
         }
         real = real->type;
     }
