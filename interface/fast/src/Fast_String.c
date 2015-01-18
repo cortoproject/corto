@@ -183,14 +183,16 @@ cx_word Fast_String_getValue(Fast_String _this) {
     cx_word result;
 
     /* Determine whether string has embedded expressions */
-    ptr = _this->value;
-    while((ch = *ptr) && ch && (ch != '$')) {
-        switch((cx_uint8)ch) {
-        case '\\':
+    if (_this->value) {
+        ptr = _this->value;
+        while((ch = *ptr) && ch && (ch != '$')) {
+            switch((cx_uint8)ch) {
+            case '\\':
+                ptr++;
+                break;
+            }
             ptr++;
-            break;
         }
-        ptr++;
     }
 
     /* If string contains embedded expressions it does not have a compile-time

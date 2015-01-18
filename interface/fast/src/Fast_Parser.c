@@ -114,7 +114,7 @@ cx_int16 Fast_Parser_toIc(Fast_Parser _this) {
     cx_iter bindingIter;
     cx_icScope scope;
     cx_icStorage returnValue = NULL;
-    cx_vmProgram vmProgram;
+    cx_vmProgram vmProgram = NULL;
 
     /* Parse root-block */
     Fast_Block_toIc(_this->block, program, NULL    , FALSE);
@@ -184,6 +184,8 @@ cx_int16 Fast_Parser_toIc(Fast_Parser _this) {
 
     return 0;
 error:
+    cx_icProgram__free(program);
+    cx_vmProgram_free(vmProgram);
     return -1;
 }
 
@@ -1783,38 +1785,10 @@ error:
 /* ::cortex::Fast::Parser::foreach(string loopId,Fast::Expression collection) */
 cx_int16 Fast_Parser_foreach(Fast_Parser _this, cx_string loopId, Fast_Expression collection) {
 /* $begin(::cortex::Fast::Parser::foreach) */
-    if (_this->pass) {
-        Fast_Block block;
-        cx_object type;
-        cx_typedef elementType;
-        Fast_Variable elementTypeVar;
-        FAST_CHECK_ERRSET(_this);
-
-        if (collection->type->kind == FAST_Object) {
-            type = Fast_ObjectBase(collection->type)->value;
-        } else {
-            /* TODO: what if type is local */
-            type = NULL;
-        }
-
-        if (cx_typedef(type)->real->kind != CX_COLLECTION) {
-            Fast_Parser_error(_this, "expression does not resolve to a collection");
-            goto error;
-        }
-
-        elementType = cx_collection(cx_typedef(type)->real)->elementType;
-        elementTypeVar = Fast_Variable(Fast_Object__create(elementType));
-        Fast_Parser_collect(_this, elementTypeVar);
-
-        /* Push block, declare loop variable */
-        block = Fast_Parser_blockPush(_this, TRUE);
-        Fast_Block_declare(block, loopId, elementTypeVar, TRUE, FALSE);
-    }
-
+    CX_UNUSED(_this);
+    CX_UNUSED(loopId);
+    CX_UNUSED(collection);
     return 0;
-error:
-    fast_err;
-    return -1;
 /* $end */
 }
 
@@ -2555,7 +2529,7 @@ cx_int16 Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_value* value)
 /* $begin(::cortex::Fast::Parser::parseLine) */
     Fast_Parser parser = Fast_Parser__create(expr, NULL);
     cx_icProgram program = cx_icProgram__create(parser->filename);
-    cx_vmProgram vmProgram;
+    cx_vmProgram vmProgram = NULL;
     Fast_Expression result = NULL; /* Resulting ast-expression of 'exr' */
     cx_icScope icScope; /* Parsed intermediate-code program */
     cx_icStorage returnValue = NULL; /* Intermediate representation of return value */
@@ -2653,17 +2627,18 @@ cx_int16 Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_value* value)
             cx_vm_run(vmProgram, NULL);
             cx_valueValueInit(value, NULL, cx_typedef(cx_void_o), NULL);
         }
+        cx_vmProgram_free(vmProgram);
     }
     
     /* Free program */
     cx_icProgram__free(program);
-    cx_vmProgram_free(vmProgram);
 
     /* Free parser */
     cx_free(parser);
 
     return 0;
 error:
+    cx_icProgram__free(program);
     return -1;
 /* $end */
 }

@@ -68,7 +68,6 @@ error:
 void cx_serializerInit(cx_serializer _this) {
     memset(_this, 0, sizeof(struct cx_serializer_s));
     _this->program[CX_ANY] = cx_serializeAny;
-    _this->program[CX_BASE] = cx_serializeValue;
     _this->program[CX_COMPOSITE] = cx_serializeMembers;
     _this->program[CX_COLLECTION] = cx_serializeElements;
     _this->initialized = TRUE;

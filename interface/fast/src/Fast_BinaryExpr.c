@@ -506,7 +506,7 @@ cx_ic Fast_BinaryExpr_toIc_v(Fast_BinaryExpr _this, cx_icProgram program, cx_icS
             Fast_BinaryExpr_toIc_strOp(_this, program, (cx_icStorage)result, (cx_icValue)lvalue, (cx_icValue)rvalue);
         } else {
             /* Add instruction to program. */
-            op = cx_icOp__create(program, Fast_Node(_this)->line, cx_icOpKindFromOperator(_this->operator), stored ? (cx_icValue)result : NULL, (cx_icValue)lvalue, (cx_icValue)rvalue);
+            op = cx_icOp__create(program, Fast_Node(_this)->line, cx_icOpKindFromOperator(_this->operator), (cx_icValue)result, (cx_icValue)lvalue, (cx_icValue)rvalue);
             cx_icProgram_addIc(program, (cx_ic)op);
         }
 

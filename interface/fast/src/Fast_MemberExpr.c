@@ -76,6 +76,12 @@ cx_int16 Fast_MemberExpr_construct(Fast_MemberExpr _this) {
                 goto error;
                 break;
             case FAST_String: /* Resolve member by name */
+                /* Validate that string does not exceed 512 characters */
+                if (strlen(Fast_String(_this->rvalue)->value) >= 512) {
+                    Fast_Parser_error(yparser(), "identifiers longer than 511 characters are not supported");
+                    goto error;
+                }
+
                 if (Fast_MemberExpr_resolveMember(_this, lvalueType, Fast_String(_this->rvalue)->value)) {
                     goto error;
                 }

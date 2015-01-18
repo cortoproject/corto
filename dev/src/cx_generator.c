@@ -119,7 +119,12 @@ void gen_parse(cx_generator g, cx_object object, cx_bool parseSelf, cx_bool pars
         o->parseScope = parseScope;
 
         if (prefix) {
-            o->prefix = strdup(prefix);
+            if (strlen(prefix) >= sizeof(cx_id)) {
+                cx_error("prefix cannot be longer than %d characters", sizeof(cx_id));
+                o->prefix = NULL;
+            } else {
+                o->prefix = strdup(prefix);
+            }
         } else {
             o->prefix = NULL;
         }
@@ -576,13 +581,17 @@ static cx_char* g_oidTransform(cx_generator g, cx_object o, cx_id _id, g_idKind 
              * the argument-names. This results in a string with only the types, which is enough to
              * generate unique names in languages which do not support overloading. */
             cx_id tmp, buff;
-            cx_uint32 count, i;
+            cx_int32 count, i;
             strcpy(tmp, _id);
 
             cx_signatureName(tmp, _id);
             strcat(_id, "(");
 
             count = cx_signatureParamCount(tmp);
+            if (count == -1) {
+                cx_error("invalid signature '%s'", tmp);
+                goto error;
+            }
 
             /* strcat is not the most efficient function here, but it is the easiest, and this
              * part of the code is not performance-critical. */
@@ -635,6 +644,8 @@ static cx_char* g_oidTransform(cx_generator g, cx_object o, cx_id _id, g_idKind 
     }
 
     return _id;
+error:
+    return NULL;
 }
 
 /* Translate object-id */
@@ -805,6 +816,13 @@ cx_int16 g_loadExisting(cx_generator g, cx_string name, cx_string option, cx_ll 
 
                     /* Copy identifier string */
                     *endptr = '\0';
+
+                    if (strlen(ptr) >= sizeof(cx_id)) {
+                        cx_error(
+                            "%s: identifier of code-snippet exceeds %d characters", sizeof(cx_id));
+                        goto error;
+                    }
+
                     strcpy(identifier, ptr + 1);
                     ptr = endptr + 1;
 
@@ -824,6 +842,7 @@ cx_int16 g_loadExisting(cx_generator g, cx_string name, cx_string option, cx_ll 
                         if(strstr(src, "$begin")) {
                             cx_error("%s: code-snippet '%s(%s)' contains nested $begin (did you forget an $end?)",
                                 name, option, identifier);
+                            cx_dealloc(src);
                             goto error;
                         }
 

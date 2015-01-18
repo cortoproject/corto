@@ -165,7 +165,7 @@ cx_bool cx_ic_storageMustAllocate(cx_ic_vmProgram *program, cx_ic_vmStorage *acc
         if (kind == CX_STORAGE_ACCUMULATOR) {
             result = TRUE;
         } else {
-            if ((kind == CX_STORAGE_MEMBER) || (kind == CX_STORAGE_ELEMENT)) {
+            if (accumulator->base && ((kind == CX_STORAGE_MEMBER) || (kind == CX_STORAGE_ELEMENT))) {
                 cx_bool collapse = FALSE;
                 cx_icStorage base = accumulator->base->accumulator;
 
@@ -772,10 +772,17 @@ cx_ic_vmOperand cx_ic_getVmOperand(cx_ic_vmProgram *program, cx_icDerefMode dere
 static cx_int16 cx_icLabel_toVm(cx_icLabel label, cx_ic_vmProgram *program) {
     cx_ic_vmLabel *lbl;
 
-    lbl = cx_ic_vmLabelGet(program, label->id);
-    lbl->pc = program->program->size;
+    if (program->program) {
+        lbl = cx_ic_vmLabelGet(program, label->id);
+        lbl->pc = program->program->size;
+    } else {
+        cx_error("cannot add label to non-existing program");
+        goto error;
+    }
 
     return 0;
+error:
+    return -1;
 }
 
 cx_void *cx_ic_valueValue(cx_ic_vmProgram *program, cx_icValue s) {
@@ -2264,7 +2271,7 @@ static cx_vmOp* cx_vmGetTypeAndAssemble(
     /* If storage is any, set hi to storage-type. However, don't set the type when the
      * operand is a literal and the value is 64 bit. In that case there is no space
      * for the type, and the assembler will select an instruction that hard-codes the type. */
-    if (op->s1Any && !((((cx_ic)op1)->kind == CX_IC_LITERAL) &&
+    if (op1 && op->s1Any && !((((cx_ic)op1)->kind == CX_IC_LITERAL) &&
                        (*opKind1 == CX_IC_VMOPERAND_V) &&
                        (((*t)->kind == CX_PRIMITIVE) &&
                        (cx_primitive(*t)->width == CX_WIDTH_64)))) {
@@ -2775,7 +2782,7 @@ static cx_int16 cx_icScope_toVm(cx_icScope scope, cx_ic_vmProgram *program) {
     cx_ic_vmProgram_setScopeSize(program, size);
 
     programIter = cx_llIter(scope->program);
-    while(cx_iterHasNext(&programIter)) {
+    while(!result && cx_iterHasNext(&programIter)) {
         ic = cx_iterNext(&programIter);
         switch(ic->kind) {
         case CX_IC_FUNCTION:

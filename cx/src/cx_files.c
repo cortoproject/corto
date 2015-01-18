@@ -74,7 +74,7 @@ error:
 }
 
 int cx_cp(const char *sourcePath, const char *destinationPath) {
-    int _errno;
+    int _errno = 0;
     char msg[PATH_MAX];
     FILE *destinationFile;
     FILE *sourceFile;

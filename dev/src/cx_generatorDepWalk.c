@@ -320,7 +320,7 @@ struct cx_serializer_s cx_genDepSerializer(void) {
 static int cx_genDepBuildProc(g_item item, g_itemWalk_t data) {
     cx_id typeBuff;
     cx_function f;
-    cx_uint32 count, i;
+    cx_int32 count, i;
     cx_typedef t;
     g_item tItem;
 
@@ -329,6 +329,10 @@ static int cx_genDepBuildProc(g_item item, g_itemWalk_t data) {
 
     if (cx_procedure(cx_typeof(f))->kind != CX_OBSERVER) {
         count = cx_signatureParamCount(cx_nameof(f));
+        if (count == -1) {
+            cx_error("invalid parameter list in function %s", cx_nameof(f));
+            goto error;
+        }
         for(i=0; i<count; i++) {
             cx_signatureParamType(cx_nameof(f), i, typeBuff, NULL);
             t = cx_resolve_ext(NULL, cx_parentof(f), typeBuff, FALSE, "Resolve type for parameter in dependency builder");

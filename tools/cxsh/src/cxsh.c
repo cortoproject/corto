@@ -96,9 +96,9 @@ static cx_string cxsh_findPreferredBreak(cx_string str) {
     return breakpt;
 }
 
-static cx_string cxsh_printColumnValue(cx_string str, int width){
+static cx_string cxsh_printColumnValue(cx_string str, unsigned int width){
     cx_string result = NULL;
-    if ((int)strlen(str) < (width - 2)) {
+    if (strlen(str) < (width - 2)) {
         printf("%s%*s", str, (int)(width - strlen(str)), " ");
     } else {
         cx_id buffer;
@@ -552,7 +552,7 @@ static int cxsh_doCmd(char* cmd) {
     } else {
         cx_char *lastErr;
         if ((lastErr = cx_lasterror())) {
-            int location = 0;
+            unsigned int location = 0;
             cxsh_color(ERROR_COLOR);
 
             /* If lastError starts with a line:column: indication, print an arrow */
