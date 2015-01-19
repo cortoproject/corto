@@ -31,12 +31,6 @@ typedef struct cx_ll_s {
     cx_llNode lastFreed;
 }cx_ll_s;
 
-typedef struct cx_llNode_s {
-    void* data;
-    cx_llNode next;
-    cx_llNode prev;
-}cx_llNode_s;
-
 /* New list */
 cx_ll cx_llNew() {
     cx_ll result = (cx_ll)malloc(sizeof(cx_ll_s));

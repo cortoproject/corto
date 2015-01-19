@@ -23,6 +23,7 @@ static cx_bool cx_iterator_hasNext_array(cx_collection collection, cx_void *arra
     return result;
 }
 
+/* Returns 0 on succes */
 static int cx_iterator_next_array(cx_collection collection, cx_void *array, void **elementPtr) {
     cx_assert(array != NULL, "array corrupt");
     int result;
@@ -39,18 +40,50 @@ static int cx_iterator_next_array(cx_collection collection, cx_void *array, void
 }
 
 static cx_bool cx_iterator_hasNext_list(cx_collection collection, cx_ll list, cx_llNode node) {
+    CX_UNUSED(collection);
+    CX_UNUSED(list);
+    CX_UNUSED(node);
+
     cx_assert(list != NULL, "list corrupt");
+
     cx_bool result = FALSE;
+
+    if (node->next) {
+        result = TRUE;
+    }
+
     return result;
 }
 
-static cx_bool cx_iterator_next_list(cx_collection collection, cx_ll list, cx_llNode node) {
+/* Returns 0 on success */
+static int cx_iterator_next_list(cx_collection collection, cx_ll list, cx_llNode *node) {
+    CX_UNUSED(collection);
+    CX_UNUSED(list);
+    CX_UNUSED(node);
+
     cx_assert(list != NULL, "list corrupt");
-    cx_bool result = FALSE;
+
+    int result = 1;
+
+    if ((*node)->next) {
+        *node = (*node)->next;
+        result = 0;
+    }
+
     return result;
 }
 
 /* $end */
+
+/* ::cortex::lang::iterator::init() */
+cx_int16 cx_iterator_init(cx_iterator _this) {
+/* $begin(::cortex::lang::iterator::init) */
+    cx_type(_this)->kind = CX_ITERATOR;
+    CX_ITERATOR(iteratorType);
+    cx_type(_this)->size = sizeof(iteratorType);
+    return cx_type_init(cx_type(_this));
+    /* $end */
+}
 
 /* ::cortex::lang::iterator::hasNext() */
 cx_bool cx_iterator_hasNext(cx_any _this) {
@@ -65,6 +98,7 @@ cx_bool cx_iterator_hasNext(cx_any _this) {
         case CX_SEQUENCE:
             break;
         case CX_LIST:
+            cx_iterator_hasNext_list(iterator->type, iterator->value, iterator->element);
             break;
         case CX_MAP:
             break;
@@ -73,16 +107,6 @@ cx_bool cx_iterator_hasNext(cx_any _this) {
     }
     return result;
 /* $end */
-}
-
-/* ::cortex::lang::iterator::init() */
-cx_int16 cx_iterator_init(cx_iterator _this) {
-/* $begin(::cortex::lang::iterator::init) */
-    cx_type(_this)->kind = CX_ITERATOR;
-    CX_ITERATOR(iteratorType);
-    cx_type(_this)->size = sizeof(iteratorType);
-    return cx_type_init(cx_type(_this));
-    /* $end */
 }
 
 /* ::cortex::lang::iterator::next() */
@@ -98,6 +122,7 @@ cx_any cx_iterator_next(cx_any _this) {
         case CX_SEQUENCE:
             break;
         case CX_LIST:
+            cx_iterator_next_list(iterator->type, iterator->value, iterator->element);
             break;
         case CX_MAP:
             break;
@@ -105,7 +130,7 @@ cx_any cx_iterator_next(cx_any _this) {
             break;
     }
     if (error) {
-        cx_critical("reached end of collection while attempting to retrieve next");
+        cx_critical("failed to retrieve next element");
     }
     cx_any result;
     result.type = iterator->type->elementType->real;
