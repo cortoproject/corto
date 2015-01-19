@@ -195,7 +195,7 @@ cx_err cx_logv(cx_err kind, unsigned int level, char* fmt, va_list arg, FILE* f)
 
     if (cx_getEcho() || ((kind == CX_CRITICAL) || (kind == CX_ASSERT))){
         if ((written = fwrite(msg, 1, n, f)) != n) {
-            fprintf(f, "Error in cx_logv: number of bytes written (%u) does not match length of message (%u).\n", written, n);
+            fprintf(f, "Error in cx_logv: number of bytes written (%u) does not match length of message (%zu).\n", written, n);
         }
     }
 

@@ -96,7 +96,7 @@ Fast_Call Fast_CallBuilder_build(Fast_CallBuilder *_this) {
                 cx_type t = cx_typedef(Fast_ObjectBase(l->type)->value)->real;
                 if (cx_type_resolveProcedure(t, _this->signature)) {
                     /* Set instance to 'this' */
-                    cx_set(_this->instance, l);
+                    cx_set(&_this->instance, l);
                     result = Fast_CallBuilder_buildMethod(_this);
                 }           
             }

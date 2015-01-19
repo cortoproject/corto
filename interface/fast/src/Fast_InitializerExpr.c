@@ -20,18 +20,8 @@ cx_int16 Fast_InitializerExpr_construct(Fast_InitializerExpr _this) {
     cx_int16 result = 0;
 
     Fast_Node(_this)->kind = FAST_Initializer;
-    if (!result) {
-        
-        /* The construct could have created an initial push for composite objects. Since this push will
-         * be recreated when creating the actual initializer, remove it from the list. */
-        Fast_InitOper_list__clear(_this->operations);
-    } else {
-        goto error;
-    }
 
     return result;
-error:
-    return -1;
 /* $end */
 }
 

@@ -491,7 +491,7 @@ cx_type Fast_Expression_getType_expr(Fast_Expression _this, Fast_Expression targ
     result = Fast_Expression_getType(_this);
     type = Fast_Expression_getType(target);
 
-    if (!result && target) {
+    if (!result) {
         if (type) {
             result = Fast_Expression_getType_type(_this, type);
         } else {
