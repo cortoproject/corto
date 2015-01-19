@@ -2,12 +2,6 @@
 #include <stdio.h>
 #include <sys/stat.h>
 
-#if __linux__
-#include <linux/limits.h>
-#else
-#include <limits.h>
-#endif
-
 #include "cx_files.h"
 #include "cx_generator.h"
 #include "cx_object.h"
@@ -26,22 +20,28 @@
  */
 static int html_folderWalk(cx_object o, void *userData) {
     cx_html_gen_t *data = userData;
-    char folderPath[PATH_MAX];
+    char *folderPath;
+    int length;
 
-    if (sprintf(folderPath, "%s/%s", data->path, cx_nameof(o)) < 0) {
-        cx_error("Cannot create path for object \"%s\" in path:\"%s\".",
+    length = snprintf(NULL, 0, "%s/%s", data->path, cx_nameof(o));
+    if (length < 0) {
+        cx_error("cannot create path for object \"%s\" in path:\"%s\"",
             cx_nameof(o), data->path);
         goto error;
     }
+    folderPath = cx_malloc(length + 1);
+    sprintf(folderPath, "%s/%s", data->path, cx_nameof(o));
 
     if (cx_mkdir(folderPath)) {
-        goto error;
+        goto error1;
     }
 
     cx_html_gen_t scopeData = *data;
     scopeData.path = folderPath;
 
     return cx_scopeWalk(o, html_folderWalk, &scopeData);
+error1:
+    cx_dealloc(folderPath);
 error:
     return 0;
 }
@@ -54,19 +54,30 @@ static cx_int32 html_jsonWalk(cx_object o, void *userData) {
     cx_json_ser_t jsonData = {NULL, NULL, 0, 0, 0, TRUE, TRUE, FALSE};
     cx_html_gen_t *htmlData;
     struct cx_serializer_s serializer;
-    char folderPath[PATH_MAX];
-    char filepath[PATH_MAX];
+    char *folderPath;
+    char *filepath;
     g_file file;
     cx_id fullname;
+    int length;
+    cx_int32 result;
 
     htmlData = userData;
 
-    if (sprintf(folderPath, "%s/%s", htmlData->path, cx_nameof(o)) < 0) {
+    length = snprintf(NULL, 0, "%s/%s", htmlData->path, cx_nameof(o));
+    if (length < 0) {
+        cx_error("snprintf failed for folder path");
         goto error;
     }
-    if (sprintf(filepath, "%s/data.js", folderPath) < 0) {
-        goto error;
+    folderPath = cx_malloc(length + 1);
+    sprintf(folderPath, "%s/%s", htmlData->path, cx_nameof(o));
+
+    length = snprintf(NULL, 0, "%s/data.js", folderPath);
+    if (length < 0) {
+        cx_error("snprintf failed for the data.js file path");
+        goto error1;
     }
+    filepath = cx_malloc(length + 1);
+    sprintf(filepath, "%s/data.js", folderPath);
 
     serializer = cx_json_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
     cx_serialize(&serializer, o, &jsonData);
@@ -78,7 +89,13 @@ static cx_int32 html_jsonWalk(cx_object o, void *userData) {
     cx_html_gen_t scopeData = *htmlData;
     scopeData.path = folderPath;
 
-    return cx_scopeWalk(o, html_jsonWalk, &scopeData);
+    cx_dealloc(filepath);
+    result = cx_scopeWalk(o, html_jsonWalk, &scopeData);
+    cx_dealloc(folderPath);
+    return result;
+
+error1:
+    cx_dealloc(folderPath);
 error:
     return 0;
 }
@@ -164,78 +181,159 @@ error:
 
 static int html_HtmlWalk(cx_object o, void *userData) {
     static cx_id rootFullname = "";
-    cx_html_gen_t *htmlData = userData;
-    char folderPath[PATH_MAX];
-    char filepath[PATH_MAX];
-    g_file file;
 
-    if (sprintf(folderPath, "%s/%s", htmlData->path, cx_nameof(o)) < 0) {
+    cx_html_gen_t *htmlData;
+    char *folderPath;
+    char *filepath;
+    g_file file;
+    int length;
+    int result;
+
+    htmlData = userData;
+
+    length = snprintf(NULL, 0, "%s/%s", htmlData->path, cx_nameof(o));
+    if (length < 0) {
+        cx_error("snprintf failed");
         goto error;
     }
-    if (sprintf(filepath, "%s/index.html", folderPath) < 0) {
-        goto error;
+    folderPath = cx_malloc(length + 1);
+    sprintf(folderPath, "%s/%s", htmlData->path, cx_nameof(o));
+
+    length = snprintf(NULL, 0, "%s/index.html", folderPath);
+    if (length < 0) {
+        cx_error("snprintf failed");
+        goto error1;
     }
+    filepath = cx_malloc(length + 1);
+    sprintf(filepath, "%s/index.html", folderPath);
 
     file = g_fileOpen(htmlData->generator, filepath);
-    
+    cx_dealloc(filepath);
     if (htmlData->level == 1) {
         cx_fullname(o, rootFullname);
         htmlData->rootFullname = rootFullname;
     }
 
     if (html_printHtml(htmlData, o, file)) {
-        goto error;
+        goto error2;
     }
 
     cx_html_gen_t childHtmlData = {folderPath, htmlData->level + 1,
         rootFullname, htmlData->generator};
 
-    return cx_scopeWalk(o, html_HtmlWalk, &childHtmlData);
-
+    result = cx_scopeWalk(o, html_HtmlWalk, &childHtmlData);
+    cx_dealloc(folderPath);
+    return result;
+error2:
+    cx_dealloc(filepath);
+error1:
+    cx_dealloc(folderPath);
 error:
     return 0;
 }
 
 
 static cx_int16 html_copyJQueryFile(const char *path) {
-    char sourcePath[PATH_MAX];
-    char destinationPath[PATH_MAX];
+    const char jqueryFilename[] = "jquery-1.11.2.min.js";
     char *cortexHome = getenv("CORTEX_HOME");
-    char parserFilename[] = "jquery-1.11.2.min.js";
-    sprintf(sourcePath, "%s/generator/html/%s", cortexHome, parserFilename);
-    sprintf(destinationPath, "%s/%s", path, parserFilename);
-    if (cx_cp(sourcePath, destinationPath)) {
+
+    char *sourcePath;
+    char *destinationPath;
+    int length;
+
+    length = snprintf(NULL, 0, "%s/generator/html/%s", cortexHome, jqueryFilename);
+    if (length < 0) {
+        cx_error("snprintf failed for parser filename");
         goto error;
     }
+    sourcePath = cx_malloc(length + 1);
+    sprintf(sourcePath, "%s/generator/html/%s", cortexHome, jqueryFilename);
+
+    length = snprintf(NULL, 0, "%s/%s", path, jqueryFilename);
+    if (length < 0) {
+        cx_error("snprintf failed for ");
+        goto error1;
+    }
+    destinationPath = cx_malloc(length + 1);
+    sprintf(destinationPath, "%s/%s", path, jqueryFilename);
+
+    if (cx_cp(sourcePath, destinationPath)) {
+        goto error1;
+    }
     return 0;
+
+error1:
+    cx_dealloc(sourcePath);
 error:
     return -1;
 }
 
 
 static cx_int16 html_copyJsonParserFile(const char *path) {
-    char sourcePath[PATH_MAX];
-    char destinationPath[PATH_MAX];
+    const char parserFilename[] = "objectparse.js";
     char *cortexHome = getenv("CORTEX_HOME");
-    char parserFilename[] = "objectparse.js";
-    sprintf(sourcePath, "%s/generator/html/%s", cortexHome, parserFilename);
-    sprintf(destinationPath, "%s/%s", path, parserFilename);
-    if (cx_cp(sourcePath, destinationPath)) {
-        goto error;
+
+    char *sourcePath;
+    char *destinationPath;
+    int length;
+    
+    length = snprintf(NULL, 0, "%s/generator/html/%s", cortexHome, parserFilename);
+    if (length < 0) {
+        cx_error("snprintf failed");
+        goto error1;
     }
+    sourcePath = cx_malloc(length + 1);
+    sprintf(sourcePath, "%s/generator/html/%s", cortexHome, parserFilename);
+
+    length = snprintf(NULL, 0, "%s/%s", path, parserFilename);
+    if (length < 0) {
+        cx_error("snprintf failed");
+        goto error2;
+    }
+    destinationPath = cx_malloc(length + 1);
+    sprintf(destinationPath, "%s/%s", path, parserFilename);
+
+    if (cx_cp(sourcePath, destinationPath)) {
+        goto error3;
+    }
+
+    cx_dealloc(destinationPath);
+    cx_dealloc(sourcePath);
     return 0;
-error:
+
+error3:
+    cx_dealloc(destinationPath);
+error2:
+    cx_dealloc(sourcePath);
+error1:
     return -1;
 }
 
 
 static cx_int16 html_copyStyleSheetFile(const char* path) {
-    char sourcePath[PATH_MAX];
-    char destinationPath[PATH_MAX];
+    const char stylesheetFilename[] = "object.css";
     char *cortexHome = getenv("CORTEX_HOME");
-    char stylesheetFilename[] = "object.css";
+
+    char *sourcePath;
+    char *destinationPath;
+    int length;
+    
+    length = snprintf(NULL, 0, "%s/generator/html/%s", cortexHome, stylesheetFilename);
+    if (length < 0) {
+        cx_error("snprintf failed");
+        goto error;
+    }
+    sourcePath = cx_malloc(length + 1);
     sprintf(sourcePath, "%s/generator/html/%s", cortexHome, stylesheetFilename);
+
+    length = snprintf(NULL, 0, "%s/%s", path, stylesheetFilename);
+    if (length < 0) {
+        cx_error("snprintf failed");
+        goto error;
+    }
+    destinationPath = cx_malloc(length + 1);
     sprintf(destinationPath, "%s/%s", path, stylesheetFilename);
+
     if (cx_cp(sourcePath, destinationPath)) {
         goto error;
     }
