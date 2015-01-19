@@ -196,8 +196,7 @@ cx_bool cx_collection_elementRequiresAlloc(cx_collection _this) {
             cx_assert(0, "non reference void type cannot be an elementtype");
             break;
         case CX_ANY:
-        case CX_ITERATOR:
-            /* Any and iterator values don't fit in an address */
+            /* Any values don't fit in an address */
             break;
         case CX_PRIMITIVE:
             switch(cx_primitive(elementType)->width) {
