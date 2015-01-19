@@ -17,23 +17,23 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::CastExpr::construct(Fast::CastExpr object) */
-cx_int16 Fast_CastExpr_construct(Fast_CastExpr object) {
+/* ::cortex::Fast::CastExpr::construct() */
+cx_int16 Fast_CastExpr_construct(Fast_CastExpr _this) {
 /* $begin(::cortex::Fast::CastExpr::construct) */
 
-    Fast_Node(object)->kind = FAST_Call;
+    Fast_Node(_this)->kind = FAST_Call;
 
-    if (Fast_Node(object->lvalue)->kind == FAST_Variable) {
-        if (Fast_Variable(object->lvalue)->kind == FAST_Object) {
-            cx_object lvalue = Fast_ObjectBase(object->lvalue)->value;
+    if (Fast_Node(_this->lvalue)->kind == FAST_Variable) {
+        if (Fast_Variable(_this->lvalue)->kind == FAST_Object) {
+            cx_object lvalue = Fast_ObjectBase(_this->lvalue)->value;
             if (cx_class_instanceof(cx_type_o, lvalue)) {
                 cx_type rvalueType;
-                rvalueType = Fast_Expression_getType(object->rvalue);
+                rvalueType = Fast_Expression_getType(_this->rvalue);
                 if (rvalueType) {
                     if (cx_type_castable(cx_type(lvalue), rvalueType) || cx_type_castable(rvalueType, cx_type(lvalue))) {
                         /* TODO: cx_assert(!cx_type_compatible(rvalueType, cx_type(lvalue)), "%d: redundant cast inserted", yparser()->line); */
-                        Fast_Expression(object)->type = (Fast_Variable)object->lvalue;
-                        Fast_Expression(object)->isReference = cx_type(lvalue)->reference;
+                        Fast_Expression(_this)->type = (Fast_Variable)_this->lvalue;
+                        Fast_Expression(_this)->isReference = cx_type(lvalue)->reference;
                     } else {
                         cx_id id1, id2;
                         Fast_Parser_error(yparser(), "cannot cast from type '%s' to '%s'",
@@ -43,7 +43,7 @@ cx_int16 Fast_CastExpr_construct(Fast_CastExpr object) {
                 } else {
                     /* If type of rvalue is unknown, cast is performed at runtime. Set type even though to introduce the
                      * type barrier for code using this expression. */
-                    Fast_Expression(object)->type = (Fast_Variable)object->lvalue;
+                    Fast_Expression(_this)->type = (Fast_Variable)_this->lvalue;
                 }
             } else {
                 Fast_Parser_error(yparser(), "left-side of cast-expression is not a type");
@@ -59,7 +59,7 @@ cx_int16 Fast_CastExpr_construct(Fast_CastExpr object) {
     }
 
     /* Keep type */
-    cx_keep_ext(object, object->lvalue, "type");
+    cx_keep_ext(_this, _this->lvalue, "type");
 
     return 0;
 error:

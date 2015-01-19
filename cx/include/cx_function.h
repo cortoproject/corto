@@ -17,11 +17,11 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::procedure::bind(object object) -> ::cortex::lang::function::bind(function object) */
-cx_int16 cx_function_bind(cx_function object);
+/* ::cortex::lang::function::bind() */
+cx_int16 cx_function_bind(cx_function _this);
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::function::init(function object) */
-cx_int16 cx_function_init(cx_function object);
+/* ::cortex::lang::function::init() */
+cx_int16 cx_function_init(cx_function _this);
 
 /* ::cortex::lang::function::stringToParameterSeq(string name,object scope) */
 cx_parameterSeq cx_function_stringToParameterSeq(cx_string name, cx_object scope);

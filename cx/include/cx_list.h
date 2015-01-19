@@ -27,11 +27,11 @@ cx_void cx_list_append_any(cx_any _this, cx_any element);
 /* ::cortex::lang::list::clear() */
 cx_void cx_list_clear(cx_any _this);
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::list::construct(list object) */
-cx_int16 cx_list_construct(cx_list object);
+/* ::cortex::lang::list::construct() */
+cx_int16 cx_list_construct(cx_list _this);
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::list::init(list object) */
-cx_int16 cx_list_init(cx_list object);
+/* ::cortex::lang::list::init() */
+cx_int16 cx_list_init(cx_list _this);
 
 /* ::cortex::lang::list::insert() */
 cx_any cx_list_insert_(cx_any _this);

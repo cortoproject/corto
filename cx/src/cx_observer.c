@@ -13,59 +13,59 @@
 #include "cx__class.h"
 /* $end */
 
-/* callback ::cortex::lang::procedure::bind(object object) -> ::cortex::lang::observer::bind(observer object) */
-cx_int16 cx_observer_bind(cx_observer object) {
+/* ::cortex::lang::observer::bind() */
+cx_int16 cx_observer_bind(cx_observer _this) {
 /* $begin(::cortex::lang::observer::bind) */
     cx_parameter *p;
 
     /* If this is a scoped observer, automatically bind with parent if it's a class. */
-    if (cx_checkAttr(object, CX_ATTR_SCOPED)) {
-        if (cx_class_instanceof(cx_class_o, cx_parentof(object))) {
-            cx_class_bindObserver(cx_parentof(object), object);
+    if (cx_checkAttr(_this, CX_ATTR_SCOPED)) {
+        if (cx_class_instanceof(cx_class_o, cx_parentof(_this))) {
+            cx_class_bindObserver(cx_parentof(_this), _this);
         }
     }
 
-    cx_function(object)->size = sizeof(cx_object) * 2;
-    if (object->me || object->template) {
-        cx_function(object)->size += sizeof(cx_object); /* Add space for this-object */
+    cx_function(_this)->size = sizeof(cx_object) * 2;
+    if (_this->me || _this->template) {
+        cx_function(_this)->size += sizeof(cx_object); /* Add space for this-object */
     }
 
     /* Set parameters of observer: (observable, source) */
-    cx_function(object)->parameters.buffer = cx_malloc(sizeof(cx_parameter) * 2);
-    cx_function(object)->parameters.length = 2;
+    cx_function(_this)->parameters.buffer = cx_malloc(sizeof(cx_parameter) * 2);
+    cx_function(_this)->parameters.length = 2;
 
     /* Parameter observable */
-    p = &cx_function(object)->parameters.buffer[0];
+    p = &cx_function(_this)->parameters.buffer[0];
     p->name = cx_strdup("observable");
     p->passByReference = TRUE;
-    if (object->observable && (!(object->mask & CX_ON_SCOPE) && !(object->mask & CX_ON_DECLARE))) {
-        p->type = cx_typeof(object->observable);
-        cx_keep_ext(object, cx_typeof(object->observable), "Keep parameter type");
+    if (_this->observable && (!(_this->mask & CX_ON_SCOPE) && !(_this->mask & CX_ON_DECLARE))) {
+        p->type = cx_typeof(_this->observable);
+        cx_keep_ext(_this, cx_typeof(_this->observable), "Keep parameter type");
     } else {
         p->type = cx_typedef(cx_object_o);
-        cx_keep_ext(object, cx_object_o, "Keep type of observable parameter for observer");
+        cx_keep_ext(_this, cx_object_o, "Keep type of observable parameter for observer");
     }
 
     /* Parameter source */
-    p = &cx_function(object)->parameters.buffer[1];
+    p = &cx_function(_this)->parameters.buffer[1];
     p->name = cx_strdup("source");
     p->passByReference = TRUE;
     p->type = cx_typedef(cx_object_o);
-    cx_keep_ext(object, cx_object_o, "Keep type of source parameter for observer");
+    cx_keep_ext(_this, cx_object_o, "Keep type of source parameter for observer");
 
     /* Check if mask specifies either SELF or CHILDS, if not enable SELF */
-    if (!((object->mask & CX_ON_SELF) || (object->mask & CX_ON_SCOPE))) {
-        object->mask |= CX_ON_SELF;
+    if (!((_this->mask & CX_ON_SELF) || (_this->mask & CX_ON_SCOPE))) {
+        _this->mask |= CX_ON_SELF;
     }
 
     /* Check if mask specifies either VALUE or METAVALUE, if not enable VALUE */
-    if (!((object->mask & CX_ON_VALUE) || (object->mask & CX_ON_METAVALUE))) {
-        object->mask |= CX_ON_VALUE;
+    if (!((_this->mask & CX_ON_VALUE) || (_this->mask & CX_ON_METAVALUE))) {
+        _this->mask |= CX_ON_VALUE;
     }
 
     /* Listen to observable */
-    if (!object->template) {
-        if (cx_observer_listen(object, object->observable, object->me)) {
+    if (!_this->template) {
+        if (cx_observer_listen(_this, _this->observable, _this->me)) {
             goto error;
         }
     }
@@ -76,11 +76,11 @@ error:
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::observer::init(observer object) */
-cx_int16 cx_observer_init(cx_observer object) {
+/* ::cortex::lang::observer::init() */
+cx_int16 cx_observer_init(cx_observer _this) {
 /* $begin(::cortex::lang::observer::init) */
-    cx_function(object)->returnType = cx_typedef(cx_void_o); cx_keep_ext(object, cx_void_o, "Keep void-type of observer object.");
-    cx_function(object)->size = sizeof(cx_object) * 2;
+    cx_function(_this)->returnType = cx_typedef(cx_void_o); cx_keep_ext(_this, cx_void_o, "Keep void-type of observer object.");
+    cx_function(_this)->size = sizeof(cx_object) * 2;
 
     return 0; /* Don't call function::init, observers do not have parseable parameters, which is currently the only thing a function initializer does. */
 /* $end */

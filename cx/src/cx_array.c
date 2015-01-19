@@ -9,22 +9,22 @@
 #include "cx.h"
 #include "cx__meta.h"
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::array::construct(array object) */
-cx_int16 cx_array_construct(cx_array object) {
+/* ::cortex::lang::array::construct() */
+cx_int16 cx_array_construct(cx_array _this) {
 /* $begin(::cortex::lang::array::construct) */
     cx_uint32 elementTypeSize;
     cx_type elementType;
   
     /* Copy array::elementType to collection::elementType, transfer ownership of reference. */
-    if (object->elementType) {
-        if (!cx_collection(object)->elementType) {
-            cx_keep_ext(object, object->elementType, "Keep elementType for array");
-            cx_collection(object)->elementType = object->elementType;
+    if (_this->elementType) {
+        if (!cx_collection(_this)->elementType) {
+            cx_keep_ext(_this, _this->elementType, "Keep elementType for array");
+            cx_collection(_this)->elementType = _this->elementType;
         }
-    } else if (cx_collection(object)->elementType) {
-        if (!object->elementType) {
-            cx_keep_ext(object, cx_collection(object)->elementType, "Keep elementType for array");
-            object->elementType = cx_collection(object)->elementType;
+    } else if (cx_collection(_this)->elementType) {
+        if (!_this->elementType) {
+            cx_keep_ext(_this, cx_collection(_this)->elementType, "Keep elementType for array");
+            _this->elementType = cx_collection(_this)->elementType;
         }
     } else {
         cx_error("array::construct: no elementType provided for array");
@@ -32,54 +32,54 @@ cx_int16 cx_array_construct(cx_array object) {
     }
 
     /* Arrays can only be defined when their elementType is also defined. */
-   if (!cx_checkState((cx_collection(object)->elementType), CX_DEFINED)) {
-       if (!(cx_instanceof(cx_typedef(cx_type_o), cx_collection(object)->elementType) && cx_type(cx_collection(object)->elementType)->reference)) {
+   if (!cx_checkState((cx_collection(_this)->elementType), CX_DEFINED)) {
+       if (!(cx_instanceof(cx_typedef(cx_type_o), cx_collection(_this)->elementType) && cx_type(cx_collection(_this)->elementType)->reference)) {
             cx_id id;
-            cx_error("array::construct: elementType '%s' is not defined.", cx_fullname(cx_collection(object)->elementType, id));
+            cx_error("array::construct: elementType '%s' is not defined.", cx_fullname(cx_collection(_this)->elementType, id));
             goto error;
        }
    }
 
-   elementType = cx_collection(object)->elementType->real;
+   elementType = cx_collection(_this)->elementType->real;
 
    /* Calculate the size of the array */
     elementTypeSize = cx_type_sizeof(elementType);
     if (elementTypeSize) {
-        if (cx_collection(object)->max) {
-            cx_type(object)->size = elementTypeSize * cx_collection(object)->max;
-            cx_type(object)->alignment = cx_type_alignmentof(elementType);
+        if (cx_collection(_this)->max) {
+            cx_type(_this)->size = elementTypeSize * cx_collection(_this)->max;
+            cx_type(_this)->alignment = cx_type_alignmentof(elementType);
         } else {
             cx_id id;
-            cx_error("array::construct: invalid array '%s' with size '0'.", cx_fullname(object, id));
+            cx_error("array::construct: invalid array '%s' with size '0'.", cx_fullname(_this, id));
             goto error;
         }
     } else {
         cx_id id1, id2;
-        cx_error("array::construct: elementType '%s' of arraytype '%s' has size 0", cx_fullname(elementType, id1), cx_fullname(object, id2));
+        cx_error("array::construct: elementType '%s' of arraytype '%s' has size 0", cx_fullname(elementType, id1), cx_fullname(_this, id2));
         goto error;
     }
 
-    return cx_type_construct(cx_type(object));
+    return cx_type_construct(cx_type(_this));
 error:
     return -1;
 /* $end */
 }
 
-/* callback ::cortex::lang::class::destruct(object object) -> ::cortex::lang::array::destruct(array object) */
-cx_void cx_array_destruct(cx_array object) {
+/* ::cortex::lang::array::destruct() */
+cx_void cx_array_destruct(cx_array _this) {
 /* $begin(::cortex::lang::array::destruct) */
-    cx_free_ext(object, object->elementType, "elementType");
-    object->elementType = NULL;
-    cx_free_ext(object, cx_collection(object)->elementType, "super.elementType");
-    cx_collection(object)->elementType = NULL;
-    cx_type__destruct(cx_type(object));
+    cx_free_ext(_this, _this->elementType, "elementType");
+    _this->elementType = NULL;
+    cx_free_ext(_this, cx_collection(_this)->elementType, "super.elementType");
+    cx_collection(_this)->elementType = NULL;
+    cx_type_destruct(cx_type(_this));
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::array::init(array object) */
-cx_int16 cx_array_init(cx_array object) {
+/* ::cortex::lang::array::init() */
+cx_int16 cx_array_init(cx_array _this) {
 /* $begin(::cortex::lang::array::init) */
-    cx_collection(object)->kind = CX_ARRAY;
-    return cx_collection_init(cx_collection(object));
+    cx_collection(_this)->kind = CX_ARRAY;
+    return cx_collection_init(cx_collection(_this));
 /* $end */
 }

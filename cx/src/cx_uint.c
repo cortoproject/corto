@@ -9,10 +9,10 @@
 #include "cx.h"
 #include "cx__meta.h"
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::uint::init(uint object) */
-cx_int16 cx_uint_init(cx_uint object) {
+/* ::cortex::lang::uint::init() */
+cx_int16 cx_uint_init(cx_uint _this) {
 /* $begin(::cortex::lang::uint::init) */
-    cx_primitive(object)->kind = CX_UINTEGER;
-    return cx_primitive_init((cx_primitive)object);
+    cx_primitive(_this)->kind = CX_UINTEGER;
+    return cx_primitive_init((cx_primitive)_this);
 /* $end */
 }

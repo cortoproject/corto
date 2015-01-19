@@ -17,8 +17,8 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::test::unit::construct(unit object) */
-cx_int16 test_unit_construct(test_unit object);
+/* ::cortex::test::unit::construct() */
+cx_int16 test_unit_construct(test_unit _this);
 
 /* ::cortex::test::unit::fail(string msg) */
 cx_void test_unit_fail(test_unit _this, cx_string msg);

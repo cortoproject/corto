@@ -165,8 +165,9 @@ static int cx_genTypeAnyDependencies(cx_type t, cx_genTypeWalk_t* data) {
     }
 
     if (!decl->printed) {
+        cx_bool recursion = FALSE;
         /* Print forward declaration */
-        if (data->onDefine(cx_bool_o, data->userData)) {
+        if (cx_genTypeParse(t, FALSE, &recursion, data)) {
             goto error;
         }
         decl->printed = TRUE;
@@ -307,6 +308,7 @@ static int cx_genTypeDependencies(cx_object o, cx_bool allowDeclared, cx_bool* r
             case CX_STRUCT:
             case CX_INTERFACE:
             case CX_CLASS:
+            case CX_DELEGATE:
             case CX_PROCEDURE:
                 if (cx_genTypeInterfaceDependencies(cx_interface(o), allowDeclared, recursion, data)) {
                     goto error;

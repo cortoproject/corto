@@ -56,34 +56,29 @@ typedef struct cx_ll_s* cx_ll;
 #define CX_PROCEDURE_STUB (0)
 #define CX_PROCEDURE_CDECL (1)
 #define CX_PROCEDURE_VM    (2)
-#define _(txt)
+
+/* C language binding type definition macro's */
+#define CX_ANY(__type) typedef struct __type {cx_type type; void *value; cx_bool owner;} __type
+#define CX_ITERATOR(__type) typedef struct __type {cx_collection type; void *value; void *element;} __type
+#define CX_BITMASK(type) typedef uint32_t type
 
 #define CX_STRUCT(type) typedef struct type type
 #define CX_INTERFACE(type) typedef void *type
 #define CX_CLASS(type) typedef struct type##_s *type
 #define CX_PROCEDURE(type) typedef struct type##_s* type
-#define CX_BITMASK(type) typedef uint32_t type
-
-/* The _() prevents expansion by class casting-macro's */
-#define CX_SEQUENCE(type, subtype, postexpr) typedef struct type {uint32_t length; subtype _()(*buffer) postexpr;} type
-#define CX_SEQUENCE_ANONYMOUS(subtype, postexpr) struct {uint32_t length; subtype _()(*buffer) postexpr;}
-
-#define CX_LIST(type) typedef cx_ll type
-
-#define CX_ITERATOR(__type) typedef struct __type {cx_collection type; void *value; void *element;} __type
 
 #define CX_STRUCT_DEF(type) struct type
 #define CX_CLASS_DEF(type) struct type##_s
 #define CX_PROCEDURE_DEF(type) struct type##_s
-
 #define CX_EXTEND(type) struct type##_s _parent
 
-#define CX_ANY(__type) typedef struct __type {cx_type type; void *value; cx_bool owner;} __type
+#define _(txt) /* This macro prevents expansion of type-casting macro's */
+#define CX_SEQUENCE(type, subtype, postexpr) typedef struct type {uint32_t length; subtype _()(*buffer) postexpr;} type
+#define CX_SEQUENCE_ANONYMOUS(subtype, postexpr) struct {uint32_t length; subtype _()(*buffer) postexpr;}
+#define CX_LIST(type) typedef cx_ll type
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* CX_DEF_H_ */
-
-

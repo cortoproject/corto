@@ -18,8 +18,8 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::Fast::SignedInteger::init(SignedInteger object) */
-cx_int16 Fast_SignedInteger_init(Fast_SignedInteger object);
+/* ::cortex::Fast::SignedInteger::init() */
+cx_int16 Fast_SignedInteger_init(Fast_SignedInteger _this);
 
 /* ::cortex::Fast::SignedInteger::serialize(type dstType,word dst) */
 cx_int16 Fast_SignedInteger_serialize(Fast_SignedInteger _this, cx_type dstType, cx_word dst);

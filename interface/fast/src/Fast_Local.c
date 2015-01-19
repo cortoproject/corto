@@ -13,18 +13,19 @@
 #include "Fast__api.h"
 /* $end */
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::Local::construct(Local object) */
-cx_int16 Fast_Local_construct(Fast_Local object) {
+/* ::cortex::Fast::Local::construct() */
+cx_int16 Fast_Local_construct(Fast_Local _this) {
 /* $begin(::cortex::Fast::Local::construct) */
 
-    Fast_Node(object)->kind = FAST_Variable;
-    Fast_Variable(object)->kind = FAST_Local;
-    Fast_Expression(object)->type = Fast_Variable(Fast_Object__create(cx_typedef(Fast_ObjectBase(object->type)->value)->real));
-    object->isReference |= Fast_Expression_getType(Fast_Expression(object))->reference;
-    Fast_Expression(object)->isReference = object->isReference;
+    Fast_Node(_this)->kind = FAST_Variable;
+    Fast_Variable(_this)->kind = FAST_Local;
+    Fast_Expression(_this)->type = 
+        Fast_Variable(Fast_Object__create(cx_typedef(Fast_ObjectBase(_this->type)->value)->real));
+    _this->isReference |= Fast_Expression_getType(Fast_Expression(_this))->reference;
+    Fast_Expression(_this)->isReference = _this->isReference;
 
-    if (Fast_Expression_getType(Fast_Expression(object))->reference) {
-        Fast_Expression(object)->forceReference = TRUE;
+    if (Fast_Expression_getType(Fast_Expression(_this))->reference) {
+        Fast_Expression(_this)->forceReference = TRUE;
     }
 
     return 0;

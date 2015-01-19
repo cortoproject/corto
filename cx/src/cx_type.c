@@ -42,37 +42,6 @@ error:
 }
 /* $end */
 
-/* callback ::cortex::lang::class::destruct(object object) -> ::cortex::lang::type::_destruct(type object) */
-cx_void cx_type__destruct(cx_type object) {
-/* $begin(::cortex::lang::type::_destruct) */
-    cx_uint32 i;
-
-    object->_parent.type = NULL;
-    cx_free_ext(object, object, "Free self for type-member");
-
-    /* Free methods */
-    for(i=0; i<object->metaprocedures.length; i++) {
-        cx_free_ext(object, object->metaprocedures.buffer[i], "Remove method from vtable.");
-    }
-
-    if (object->metaprocedures.buffer) {
-        cx_dealloc(object->metaprocedures.buffer);
-        object->metaprocedures.buffer = NULL;
-    }
-
-    cx_typedef_destruct(cx_typedef(object));
-/* $end */
-}
-
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::type::_init(type object) */
-cx_int16 cx_type__init(cx_type object) {
-/* $begin(::cortex::lang::type::_init) */
-    cx_keep_ext(object, object, "Keep self for type-member");
-    cx_typedef(object)->type = (cx_typedef)object;
-    return cx_typedef_init(cx_typedef(object));
-/* $end */
-}
-
 /* ::cortex::lang::type::alignmentof() */
 cx_uint16 cx_type_alignmentof(cx_type _this) {
 /* $begin(::cortex::lang::type::alignmentof) */
@@ -170,17 +139,17 @@ cx_bool cx_type_compatible_v(cx_type _this, cx_type type) {
 /* $end */
 }
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::type::construct(type object) */
-cx_int16 cx_type_construct(cx_type object) {
+/* ::cortex::lang::type::construct() */
+cx_int16 cx_type_construct(cx_type _this) {
 /* $begin(::cortex::lang::type::construct) */
-    switch(object->kind) {
+    switch(_this->kind) {
     case CX_ANY:
-        object->size = sizeof(cx_any);
+        _this->size = sizeof(cx_any);
         break;
     default:
         break;
     }
-    return cx_typedef_construct(cx_typedef(object));
+    return cx_typedef_construct(cx_typedef(_this));
 /* $end */
 }
 
@@ -231,9 +200,24 @@ cx_int16 cx_type_define(cx_any _this) {
 }
 
 /* ::cortex::lang::type::destruct() */
-cx_void cx_type_destruct(cx_any _this) {
+cx_void cx_type_destruct(cx_type _this) {
 /* $begin(::cortex::lang::type::destruct) */
-    cx_destruct(_this.value);
+    cx_uint32 i;
+
+    _this->_parent.type = NULL;
+    cx_free_ext(_this, _this, "Free self for type-member");
+
+    /* Free methods */
+    for(i=0; i<_this->metaprocedures.length; i++) {
+        cx_free_ext(_this, _this->metaprocedures.buffer[i], "Remove method from vtable.");
+    }
+
+    if (_this->metaprocedures.buffer) {
+        cx_dealloc(_this->metaprocedures.buffer);
+        _this->metaprocedures.buffer = NULL;
+    }
+
+    cx_typedef_destruct(cx_typedef(_this));
 /* $end */
 }
 
@@ -250,6 +234,15 @@ cx_string cx_type_fullname(cx_any _this) {
     }
 
     return result;
+/* $end */
+}
+
+/* ::cortex::lang::type::init() */
+cx_int16 cx_type_init(cx_type _this) {
+/* $begin(::cortex::lang::type::init) */
+    cx_keep_ext(_this, _this, "Keep self for type-member");
+    cx_typedef(_this)->type = (cx_typedef)_this;
+    return cx_typedef_init(cx_typedef(_this));
 /* $end */
 }
 

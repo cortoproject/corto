@@ -36,8 +36,8 @@ object cortex::
     
         // Thread
         class thread::
-            int16 construct(Thread object)
-            void destruct(Thread object)
+            int16 construct()
+            void destruct()
             
             // Start thread
             void start()

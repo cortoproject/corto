@@ -21,14 +21,14 @@ extern "C" {
 /* ::cortex::lang::enum::constant(int32 value) */
 cx_object cx_enum_constant(cx_enum _this, cx_int32 value);
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::enum::construct(enum object) */
-cx_int16 cx_enum_construct(cx_enum object);
+/* ::cortex::lang::enum::construct() */
+cx_int16 cx_enum_construct(cx_enum _this);
 
-/* callback ::cortex::lang::class::destruct(object object) -> ::cortex::lang::enum::destruct(enum object) */
-cx_void cx_enum_destruct(cx_enum object);
+/* ::cortex::lang::enum::destruct() */
+cx_void cx_enum_destruct(cx_enum _this);
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::enum::init(enum object) */
-cx_int16 cx_enum_init(cx_enum object);
+/* ::cortex::lang::enum::init() */
+cx_int16 cx_enum_init(cx_enum _this);
 
 #ifdef __cplusplus
 }

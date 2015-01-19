@@ -19,7 +19,7 @@ extern "C" {
 #endif
 
 /* ::cortex::Fast::Block::addStatement(Fast::Node statement) */
-void Fast_Block_addStatement(Fast_Block _this, Fast_Node statement);
+cx_void Fast_Block_addStatement(Fast_Block _this, Fast_Node statement);
 
 /* ::cortex::Fast::Block::declare(string id,Fast::Variable type,bool isParameter,bool isReference) */
 Fast_Local Fast_Block_declare(Fast_Block _this, cx_string id, Fast_Variable type, cx_bool isParameter, cx_bool isReference);
@@ -43,7 +43,7 @@ Fast_Expression Fast_Block_resolve(Fast_Block _this, cx_string id);
 Fast_Local Fast_Block_resolveLocal(Fast_Block _this, cx_string id);
 
 /* ::cortex::Fast::Block::setFunction(function function */
-void Fast_Block_setFunction(Fast_Block _this, cx_function function);
+cx_void Fast_Block_setFunction(Fast_Block _this, cx_function function);
 
 /* virtual ::cortex::Fast::Block::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_Block_toIc(Fast_Block _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);

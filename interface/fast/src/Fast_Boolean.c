@@ -17,11 +17,11 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::Fast::Boolean::init(Boolean object) */
-cx_int16 Fast_Boolean_init(cx_boolean object) {
+/* ::cortex::Fast::Boolean::init() */
+cx_int16 Fast_Boolean_init(Fast_Boolean _this) {
 /* $begin(::cortex::Fast::Boolean::init) */
-    Fast_Literal(object)->kind = FAST_Boolean;
-    return Fast_Literal_init(Fast_Literal(object));
+    Fast_Literal(_this)->kind = FAST_Boolean;
+    return Fast_Literal_init(Fast_Literal(_this));
 /* $end */
 }
 

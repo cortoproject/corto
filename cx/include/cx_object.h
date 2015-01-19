@@ -11,7 +11,6 @@
 #include "cx__type.h"
 #include "cx_ll.h"
 #include "cx_value.h"
-#include "cx_rbtree.h"
 #include "cx_async.h"
 
 #ifdef __cplusplus
@@ -23,28 +22,7 @@ typedef char cx_id[512];
 
 /* Action-signature for scopeWalk */
 typedef int (*cx_scopeWalkAction)(cx_object o, void* userData);
-
-/* Object attribute flags */
-#define CX_ATTR_SCOPED      (1)
-#define CX_ATTR_WRITABLE    (2)
-#define CX_ATTR_OBSERVABLE  (4)
-
-/* Object state flags */
-#define CX_VALID      (1)
-#define CX_DECLARED   (2)
-#define CX_DEFINED    (4)
-#define CX_DESTRUCTED (8)
-
-/* Object event flags */
-#define CX_ON_DECLARE    (1)
-#define CX_ON_DEFINE     (2)
-#define CX_ON_DESTRUCT   (4)
-#define CX_ON_INVALIDATE (8)
-#define CX_ON_UPDATE     (16)
-#define CX_ON_SELF       (32)
-#define CX_ON_SCOPE      (64)
-#define CX_ON_VALUE      (128)
-#define CX_ON_METAVALUE  (256)
+typedef cx_equalityKind (*cx_equalsAction)(cx_type _this, const void* o1, const void* o2);
 
 /* Event-kinds */
 #define CX_EVENT_NONE       (0)

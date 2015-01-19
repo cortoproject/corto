@@ -21,8 +21,8 @@ extern "C" {
 Fast_Expression Fast_Node_optimizeCondition(Fast_Expression condition, cx_bool *result, cx_bool *inverse);
 /* $end */
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::Fast::Node::init(Node object) */
-cx_int16 Fast_Node_init(Fast_Node object);
+/* ::cortex::Fast::Node::init() */
+cx_int16 Fast_Node_init(Fast_Node _this);
 
 /* virtual ::cortex::Fast::Node::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_Node_toIc(Fast_Node _this, cx_icProgram program, cx_icStorage storage, cx_bool stored);

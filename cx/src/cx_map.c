@@ -9,23 +9,23 @@
 #include "cx.h"
 #include "cx__meta.h"
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::map::construct(map object) */
-cx_int16 cx_map_construct(cx_map object) {
+/* ::cortex::lang::map::construct() */
+cx_int16 cx_map_construct(cx_map _this) {
 /* $begin(::cortex::lang::map::construct) */
-    cx_type(object)->hasResources = TRUE;
-    cx_type(object)->size = sizeof(cx_map);
-    cx_type(object)->alignment = CX_ALIGNMENT(cx_map);
-    cx_collection(object)->elementType = object->elementType;
-    cx_keep_ext(object, object->elementType, "keep object for elementType");
-    cx_collection(object)->max = object->max;
-    return cx_type_construct(cx_type(object));
+    cx_type(_this)->hasResources = TRUE;
+    cx_type(_this)->size = sizeof(cx_map);
+    cx_type(_this)->alignment = CX_ALIGNMENT(cx_map);
+    cx_collection(_this)->elementType = _this->elementType;
+    cx_keep_ext(_this, _this->elementType, "keep _this for elementType");
+    cx_collection(_this)->max = _this->max;
+    return cx_type_construct(cx_type(_this));
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::map::init(map object) */
-cx_int16 cx_map_init(cx_map object) {
+/* ::cortex::lang::map::init() */
+cx_int16 cx_map_init(cx_map _this) {
 /* $begin(::cortex::lang::map::init) */
-    cx_collection(object)->kind = CX_MAP;
-    return cx_collection_init(cx_collection(object));
+    cx_collection(_this)->kind = CX_MAP;
+    return cx_collection_init(cx_collection(_this));
 /* $end */
 }

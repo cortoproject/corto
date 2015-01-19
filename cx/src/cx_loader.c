@@ -5,13 +5,7 @@
  *      Author: sander
  */
 
-#include "cx_dl.h"
-#include "cx_err.h"
-#include "cx_files.h"
-#include "cx_ll.h"
-#include "cx_loader.h"
-#include "cx_mem.h"
-#include "cx_util.h"
+#include "cortex.h"
 #include "stdlib.h"
 #include "string.h"
 

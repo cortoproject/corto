@@ -17,18 +17,18 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::Fast::ElementExpr::construct(Fast::MemberExpr object) */
-cx_int16 Fast_ElementExpr_construct(Fast_MemberExpr object) {
+/* ::cortex::Fast::ElementExpr::construct() */
+cx_int16 Fast_ElementExpr_construct(Fast_ElementExpr _this) {
 /* $begin(::cortex::Fast::ElementExpr::construct) */
     cx_type lvalueType, rvalueType;
 
-    Fast_Node(object)->kind = FAST_Element;
+    Fast_Node(_this)->kind = FAST_Element;
 
-    lvalueType = Fast_Expression_getType(object->lvalue);
+    lvalueType = Fast_Expression_getType(_this->lvalue);
 
     if (lvalueType) {
         if (lvalueType->kind == CX_COLLECTION) {
-            rvalueType = Fast_Expression_getType(object->rvalue);
+            rvalueType = Fast_Expression_getType(_this->rvalue);
             if (rvalueType) {
                 if (cx_collection(lvalueType)->kind != CX_MAP) {
                     if (!cx_type_castable(cx_type(cx_uint32_o), rvalueType)) {
@@ -46,10 +46,10 @@ cx_int16 Fast_ElementExpr_construct(Fast_MemberExpr object) {
                 }
             }
             /* Set type of expression */
-            Fast_Expression(object)->type = Fast_Variable(Fast_Object__create(cx_collection(lvalueType)->elementType->real));
+            Fast_Expression(_this)->type = Fast_Variable(Fast_Object__create(cx_collection(lvalueType)->elementType->real));
         } else {
             cx_id id;
-            Fast_Parser_error(yparser(), "cannot obtain element from object of non-collection type '%s'", cx_fullname(lvalueType, id));
+            Fast_Parser_error(yparser(), "cannot obtain element from _this of non-collection type '%s'", cx_fullname(lvalueType, id));
             goto error;
         }
     } else {
@@ -57,9 +57,9 @@ cx_int16 Fast_ElementExpr_construct(Fast_MemberExpr object) {
         goto error;
     }
     
-    if (Fast_Expression_getType(Fast_Expression(object))->reference) {
-        Fast_Expression(object)->forceReference = TRUE;
-        Fast_Expression(object)->isReference = TRUE;
+    if (Fast_Expression_getType(Fast_Expression(_this))->reference) {
+        Fast_Expression(_this)->forceReference = TRUE;
+        Fast_Expression(_this)->isReference = TRUE;
     }
 
     return 0;

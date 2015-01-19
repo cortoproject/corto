@@ -17,11 +17,11 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::io::file::construct(file object) */
-cx_int16 io_file_construct(io_file object);
+/* ::cortex::io::file::construct() */
+cx_int16 io_file_construct(io_file _this);
 
-/* callback ::cortex::lang::class::destruct(object object) -> ::cortex::io::file::destruct(file object) */
-cx_void io_file_destruct(io_file object);
+/* ::cortex::io::file::destruct() */
+cx_void io_file_destruct(io_file _this);
 
 /* ::cortex::io::file::flush() */
 cx_void io_file_flush(io_file _this);

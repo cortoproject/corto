@@ -18,12 +18,6 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::destruct(object object) -> ::cortex::lang::type::_destruct(type object) */
-cx_void cx_type__destruct(cx_type object);
-
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::type::_init(type object) */
-cx_int16 cx_type__init(cx_type object);
-
 /* ::cortex::lang::type::alignmentof() */
 cx_uint16 cx_type_alignmentof(cx_type _this);
 
@@ -54,8 +48,8 @@ cx_bool cx_type_compatible(cx_type _this, cx_type type);
 /* ::cortex::lang::type::compatible(type type) */
 cx_bool cx_type_compatible_v(cx_type _this, cx_type type);
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::type::construct(type object) */
-cx_int16 cx_type_construct(cx_type object);
+/* ::cortex::lang::type::construct() */
+cx_int16 cx_type_construct(cx_type _this);
 
 /* ::cortex::lang::type::copy(any value) */
 cx_int16 cx_type_copy(cx_any _this, cx_any value);
@@ -67,16 +61,13 @@ cx_object cx_type_declare(cx_any _this, cx_string name, cx_typedef type);
 cx_int16 cx_type_define(cx_any _this);
 
 /* ::cortex::lang::type::destruct() */
-cx_void cx_type_destruct(cx_any _this);
+cx_void cx_type_destruct(cx_type _this);
 
 /* ::cortex::lang::type::fullname() */
 cx_string cx_type_fullname(cx_any _this);
 
-/* delegate ::cortex::lang::type::init(object object), obtain callback */
-cx_bool cx_type_init_hasCallback(cx_type _this);
-
-/* ::cortex::lang::type::init(object object) */
-cx_int16 cx_type_init(cx_type _this, cx_object object);
+/* ::cortex::lang::type::init() */
+cx_int16 cx_type_init(cx_type _this);
 
 /* ::cortex::lang::type::instanceof(typedef type) */
 cx_bool cx_type_instanceof(cx_any _this, cx_typedef type);

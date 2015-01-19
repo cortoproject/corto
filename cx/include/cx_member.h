@@ -17,11 +17,11 @@
 extern "C" {
 #endif
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::member::construct(member object) */
-cx_int16 cx_member_construct(cx_member object);
+/* ::cortex::lang::member::construct() */
+cx_int16 cx_member_construct(cx_member _this);
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::member::init(member object) */
-cx_int16 cx_member_init(cx_member object);
+/* ::cortex::lang::member::init() */
+cx_int16 cx_member_init(cx_member _this);
 
 #ifdef __cplusplus
 }

@@ -145,7 +145,7 @@ static cx_int16 c_typeVoid(cx_serializer s, cx_value* v, void* userData) {
 
     g_fileWrite(data->header, "/* %s */\n", cx_fullname(t, id));
     if (t->reference) {
-        g_fileWrite(data->header, "typedef cx_object %s;\n", g_fullOid(data->g, t, id));
+        g_fileWrite(data->header, "typedef void *%s;\n", g_fullOid(data->g, t, id));
     } else {
         g_fileWrite(data->header, "typedef void %s;\n", g_fullOid(data->g, t, id));
     }
@@ -166,7 +166,7 @@ static cx_int16 c_typeAny(cx_serializer s, cx_value* v, void* userData) {
     data = userData;
 
     g_fileWrite(data->header, "/* %s */\n", cx_fullname(t, id));
-    g_fileWrite(data->header, "typedef cx_any %s;\n\n", g_fullOid(data->g, t, id));
+    g_fileWrite(data->header, "CX_ANY(%s);\n\n", g_fullOid(data->g, t, id));
 
     return 0;
 }
@@ -229,10 +229,15 @@ static cx_int16 c_typeStruct(cx_serializer s, cx_value* v, void* userData) {
 
     /* Open struct */
     g_fileWrite(data->header, "struct %s {\n", g_fullOid(data->g, t, id));
-
-
+    
     /* Serialize members */
     g_fileIndent(data->header);
+
+    /* Write base */
+    if (cx_interface(t)->base && cx_type(cx_interface(t)->base)->alignment) {
+        g_fileWrite(data->header, "%s _parent;\n", g_fullOid(data->g, cx_interface(t)->base, id));
+    }
+
     if (cx_serializeMembers(s, v, userData)) {
         goto error;
     }
@@ -296,6 +301,7 @@ static cx_int16 c_typeComposite(cx_serializer s, cx_value* v, void* userData) {
 
     t = cx_valueType(v)->real;
     switch(cx_interface(t)->kind) {
+    case CX_DELEGATE:
     case CX_STRUCT:
         if (c_typeStruct(s, v, userData)) {
             goto error;
@@ -311,8 +317,6 @@ static cx_int16 c_typeComposite(cx_serializer s, cx_value* v, void* userData) {
         if (c_typeClass(s, v, userData)) {
             goto error;
         }
-        break;
-    default:
         break;
     }
 
@@ -496,7 +500,7 @@ static int c_typeClassCastWalk(cx_object o, void* userData) {
 
     data = userData;
 
-    if (cx_class_instanceof(cx_class_o, o)) {
+    if (cx_class_instanceof(cx_interface_o, o) && cx_type(o)->reference) {
         g_fileWrite(data->header, "#define %s(o) ((%s)o)\n",
                 g_fullOid(data->g, o, id),
                 g_fullOid(data->g, o, id));
@@ -513,6 +517,7 @@ static g_file c_typeHeaderFileOpen(cx_generator g) {
     cx_iter importIter;
     cx_object import;
     cx_string headerSnippet;
+    cx_string bootstrap = gen_getAttribute(g, "bootstrap");
 
     /* Create file */
     sprintf(headerFileName, "%s__type.h", g_getName(g));
@@ -529,7 +534,13 @@ static g_file c_typeHeaderFileOpen(cx_generator g) {
     g_fileWrite(result, " */\n\n");
     g_fileWrite(result, "#ifndef %s__type_H\n", g_getName(g));
     g_fileWrite(result, "#define %s__type_H\n\n", g_getName(g));
-    g_fileWrite(result, "#include \"cortex.h\"\n\n");
+
+    /* Don't include this file when generating for the bootstrap */
+    if (!bootstrap || strcmp(bootstrap, "true")) {
+        g_fileWrite(result, "#include \"cortex.h\"\n\n");
+    } else {
+        g_fileWrite(result, "#include \"cx_def.h\"\n\n");
+    }
 
     /* Include imports */
     if (g->imports) {
@@ -580,6 +591,7 @@ static int c_typeDeclare(cx_object o, void* userData) {
         switch(t->kind) {
         case CX_COMPOSITE:
             switch(cx_interface(t)->kind) {
+            case CX_DELEGATE:
             case CX_STRUCT:
                 g_fileWrite(data->header, "typedef struct %s %s;\n\n", g_fullOid(data->g, t, id), g_fullOid(data->g, t, id));
                 break;

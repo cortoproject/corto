@@ -64,34 +64,34 @@ cx_object cx_enum_constant(cx_enum _this, cx_int32 value) {
 /* $end */
 }
 
-/* callback ::cortex::lang::class::construct(object object) -> ::cortex::lang::enum::construct(enum object) */
-cx_int16 cx_enum_construct(cx_enum object) {
+/* ::cortex::lang::enum::construct() */
+cx_int16 cx_enum_construct(cx_enum _this) {
 /* $begin(::cortex::lang::enum::construct) */
     cx_uint32 i;
 
     /* Define constants */
-    for(i=0; i<object->constants.length; i++) {
-        cx_define(object->constants.buffer[i]);
+    for(i=0; i<_this->constants.length; i++) {
+        cx_define(_this->constants.buffer[i]);
     }
 
-    return cx_primitive_construct(cx_primitive(object));
+    return cx_primitive_construct(cx_primitive(_this));
 /* $end */
 }
 
-/* callback ::cortex::lang::class::destruct(object object) -> ::cortex::lang::enum::destruct(enum object) */
-cx_void cx_enum_destruct(cx_enum object) {
+/* ::cortex::lang::enum::destruct() */
+cx_void cx_enum_destruct(cx_enum _this) {
 /* $begin(::cortex::lang::enum::destruct) */
-    cx_clear(cx_collection(cx_objectSeq_o), &object->constants);
-    cx_type__destruct(cx_type(object));
+    cx_clear(cx_collection(cx_objectSeq_o), &_this->constants);
+    cx_type_destruct(cx_type(_this));
 /* $end */
 }
 
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::enum::init(enum object) */
-cx_int16 cx_enum_init(cx_enum object) {
+/* ::cortex::lang::enum::init() */
+cx_int16 cx_enum_init(cx_enum _this) {
 /* $begin(::cortex::lang::enum::init) */
-    cx_primitive(object)->kind = CX_ENUM;
-    cx_primitive(object)->width = CX_WIDTH_32;
-    cx_set(&cx_type(object)->defaultType, cx_constant_o);
-    return cx_primitive_init((cx_primitive)object);
+    cx_primitive(_this)->kind = CX_ENUM;
+    cx_primitive(_this)->width = CX_WIDTH_32;
+    cx_set(&cx_type(_this)->defaultType, cx_constant_o);
+    return cx_primitive_init((cx_primitive)_this);
 /* $end */
 }
