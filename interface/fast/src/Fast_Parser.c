@@ -87,7 +87,7 @@ void Fast_Parser_warning(Fast_Parser _this, char* fmt, ... ) {
 }
 
 /* Generate user-friendly id's for both scoped and unscoped objects */
-static cx_string Fast_Parser_id(cx_object o, cx_id buffer) {
+cx_string Fast_Parser_id(cx_object o, cx_id buffer) {
     if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
         cx_fullname(o, buffer);
     } else {
@@ -110,10 +110,6 @@ static cx_string Fast_Parser_id(cx_object o, cx_id buffer) {
 /* Translate result of parser to cortex intermediate bytecode */
 cx_int16 Fast_Parser_toIc(Fast_Parser _this) {
     cx_icProgram program = cx_icProgram__create(_this->filename);
-    Fast_Binding *binding;
-    cx_iter bindingIter;
-    cx_icScope scope;
-    cx_icStorage returnValue = NULL;
     cx_vmProgram vmProgram = NULL;
 
     /* Parse root-block */
@@ -122,41 +118,9 @@ cx_int16 Fast_Parser_toIc(Fast_Parser _this) {
         goto error;
     }
 
-    /* Parse functions */
-    if (_this->bindings) {
-        bindingIter = cx_llIter(_this->bindings);
-        while(cx_iterHasNext(&bindingIter)) {
-            cx_ic ret;
-            binding = cx_iterNext(&bindingIter);
-            cx_icProgram_functionPush(program, Fast_Node(binding->impl)->line, binding->function);
-            scope = (cx_icScope)Fast_Block_toIc(binding->impl, program, NULL, FALSE);
-            if (_this->errors) {
-                goto error;
-            }
-            if (binding->function->returnType && ((binding->function->returnType->real->kind != CX_VOID) || (binding->function->returnType->real->reference))) {
-                cx_id name;
-                cx_signatureName(cx_nameof(binding->function), name);
-                returnValue = cx_icScope_lookupStorage(scope, name, TRUE);
-                ret = (cx_ic)cx_icOp__create(program, _this->line, CX_IC_RET, (cx_icValue)returnValue, NULL, NULL);
-                if (binding->function->returnsReference) {
-                    ((cx_icStorage)returnValue)->isReference = TRUE;
-                    ((cx_icOp)ret)->s1Deref = CX_IC_DEREF_ADDRESS;
-                }else {
-                    ((cx_icOp)ret)->s1Deref = CX_IC_DEREF_VALUE;
-                }
-            } else {
-                ret = (cx_ic)cx_icOp__create(program, _this->line, CX_IC_STOP, NULL, NULL, NULL);
-            }
-
-            cx_icScope_addIc(scope, ret);
-            cx_icProgram_scopePop(program, _this->line);
-
-            cx_free_ext(_this, binding->function, "Free binding for function");
-            cx_free_ext(_this, binding->impl, "Free binding for function (impl)");
-            cx_dealloc(binding);
-        }
-        cx_llFree(_this->bindings);
-        _this->bindings = NULL;
+    /* Bind function implementations to function objects */
+    if (Fast_Parser_finalize(_this, program)) {
+        goto error;
     }
 
     /* Print program */
@@ -1782,6 +1746,57 @@ error:
 /* $end */
 }
 
+/* ::cortex::Fast::Parser::finalize(alias{"cx_icProgram"} program) */
+cx_int16 Fast_Parser_finalize(Fast_Parser _this, cx_icProgram program) {
+/* $begin(::cortex::Fast::Parser::finalize) */
+    cx_icScope scope = NULL;
+    cx_icStorage returnValue = NULL;
+    Fast_Binding *binding;
+    cx_iter bindingIter;
+
+    /* Parse functions */
+    if (_this->bindings) {
+        bindingIter = cx_llIter(_this->bindings);
+        while(cx_iterHasNext(&bindingIter)) {
+            cx_ic ret;
+            binding = cx_iterNext(&bindingIter);
+            cx_icProgram_functionPush(program, Fast_Node(binding->impl)->line, binding->function);
+            scope = (cx_icScope)Fast_Block_toIc(binding->impl, program, NULL, FALSE);
+            if (_this->errors) {
+                goto error;
+            }
+            if (binding->function->returnType && ((binding->function->returnType->real->kind != CX_VOID) || (binding->function->returnType->real->reference))) {
+                cx_id name;
+                cx_signatureName(cx_nameof(binding->function), name);
+                returnValue = cx_icScope_lookupStorage(scope, name, TRUE);
+                ret = (cx_ic)cx_icOp__create(program, _this->line, CX_IC_RET, (cx_icValue)returnValue, NULL, NULL);
+                if (binding->function->returnsReference) {
+                    ((cx_icStorage)returnValue)->isReference = TRUE;
+                    ((cx_icOp)ret)->s1Deref = CX_IC_DEREF_ADDRESS;
+                }else {
+                    ((cx_icOp)ret)->s1Deref = CX_IC_DEREF_VALUE;
+                }
+            } else {
+                ret = (cx_ic)cx_icOp__create(program, _this->line, CX_IC_STOP, NULL, NULL, NULL);
+            }
+
+            cx_icScope_addIc(scope, ret);
+            cx_icProgram_scopePop(program, _this->line);
+
+            cx_free_ext(_this, binding->function, "Free binding for function");
+            cx_free_ext(_this, binding->impl, "Free binding for function (impl)");
+            cx_dealloc(binding);
+        }
+        cx_llFree(_this->bindings);
+        _this->bindings = NULL;
+    }
+
+    return 0;
+error:
+    return -1;
+/* $end */
+}
+
 /* ::cortex::Fast::Parser::foreach(string loopId,Fast::Expression collection) */
 cx_int16 Fast_Parser_foreach(Fast_Parser _this, cx_string loopId, Fast_Expression collection) {
 /* $begin(::cortex::Fast::Parser::foreach) */
@@ -2569,12 +2584,18 @@ cx_int16 Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_value* value)
                 Fast_Local resultLocal;
                 Fast_BinaryExpr assignment;
                 result = Fast_Expression(lastNode);
-                returnType = cx_typedef(Fast_Expression_getType(Fast_Expression(lastNode)));
-                resultLocal = Fast_Block_declare(parser->block, "<<result>>", result->type, FALSE, result->isReference);
-                resultLocal->kind = FAST_LocalReturn;
-                result->forceReference = result->isReference;
-                assignment = Fast_BinaryExpr__create(Fast_Expression(resultLocal), result, CX_ASSIGN);
-                cx_llReplace(parser->block->statements, lastNode, assignment);
+
+                if (result->type) {
+                    returnType = cx_typedef(Fast_Expression_getType(Fast_Expression(lastNode)));
+                    resultLocal = Fast_Block_declare(parser->block, "<<result>>", result->type, FALSE, result->isReference);
+                    resultLocal->kind = FAST_LocalReturn;
+                    result->forceReference = result->isReference;
+                    assignment = Fast_BinaryExpr__create(Fast_Expression(resultLocal), result, CX_ASSIGN);
+                    cx_llReplace(parser->block->statements, lastNode, assignment);
+                } else {
+                    Fast_Parser_error(parser, "invalid expression");
+                    goto error;
+                }
             }
         }
     }
@@ -2582,6 +2603,11 @@ cx_int16 Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_value* value)
     /* Parse root-block */
     icScope = (cx_icScope)Fast_Block_toIc(parser->block, program, NULL, FALSE);
     if (parser->errors) {
+        goto error;
+    }
+
+    /* Finalize functions */
+    if (Fast_Parser_finalize(parser, program)) {
         goto error;
     }
 

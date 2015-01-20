@@ -375,7 +375,7 @@ cx_int16 Fast_Initializer_push_v(Fast_Initializer _this) {
 #endif
     } else {
         cx_id id;
-        Fast_Parser_error(yparser(), "unexpected initializer scope for value of referencetype '%s'", cx_fullname(t, id));
+        Fast_Parser_error(yparser(), "unexpected initializer scope for value of reference type '%s'", cx_fullname(t, id));
         goto error;
     }
     

@@ -502,12 +502,9 @@ static cx_int16 c_initReference(cx_serializer s, cx_value* v, void* userData) {
 
 /* c_initElement */
 static cx_int16 c_initElement(cx_serializer s, cx_value* v, void* userData) {
-    cx_collection t;
-    c_typeWalk_t* data;
-
-    /* Get collectionType */
-    t = cx_collection(cx_valueType(v->parent)->real);
-    data = userData;
+    c_typeWalk_t* data = userData;
+    cx_collection t = cx_collection(cx_valueType(v->parent)->real);
+    cx_bool requiresAlloc = cx_collection_elementRequiresAlloc(t);
 
     /* Allocate space for element */
     switch(t->kind) {
@@ -516,7 +513,7 @@ static cx_int16 c_initElement(cx_serializer s, cx_value* v, void* userData) {
         cx_id elementId, specifier, postfix;
         g_fileWrite(data->source, "\n");
 
-        if (cx_collection_elementRequiresAlloc(t)) {
+        if (requiresAlloc) {
             c_specifierId(data->g, t->elementType, specifier, NULL, postfix);
             g_fileWrite(data->source, "%s = cx_malloc(sizeof(%s%s));\n", c_loadElementId(v, elementId, 0), specifier, postfix);
         }
@@ -534,9 +531,9 @@ static cx_int16 c_initElement(cx_serializer s, cx_value* v, void* userData) {
     switch(t->kind) {
     case CX_LIST: {
         cx_id parentId, elementId;
-        g_fileWrite(data->source, "cx_llAppend(%s, %s);\n",
+        g_fileWrite(data->source, "cx_llAppend(%s, %s%s);\n",
                 c_loadMemberId(data, v->parent, parentId, FALSE),
-                c_loadElementId(v, elementId, 0));
+                requiresAlloc ? "" : "(void*)", c_loadElementId(v, elementId, 0));
         break;
     }
     case CX_MAP: /*{

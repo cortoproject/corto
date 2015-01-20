@@ -77,6 +77,9 @@ cx_void Fast_Parser_destruct(Fast_Parser _this);
 /* ::cortex::Fast::Parser::elementExpr(Fast::Expression lvalue,Fast::Expression rvalue) */
 Fast_Expression Fast_Parser_elementExpr(Fast_Parser _this, Fast_Expression lvalue, Fast_Expression rvalue);
 
+/* ::cortex::Fast::Parser::finalize(alias{"cx_icProgram"} program) */
+cx_int16 Fast_Parser_finalize(Fast_Parser _this, cx_icProgram program);
+
 /* ::cortex::Fast::Parser::foreach(string loopId,Fast::Expression collection) */
 cx_int16 Fast_Parser_foreach(Fast_Parser _this, cx_string loopId, Fast_Expression collection);
 

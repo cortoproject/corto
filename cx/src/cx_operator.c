@@ -41,11 +41,20 @@ static void CX_NAME_BINARYOP(type,name)(void* op1, void* op2, void* result) {\
 }
 
 static void CX_NAME_BINARYOP(string,cond_eq)(void* op1, void* op2, void* result) {
-    *(cx_bool*)result = !strcmp((cx_string)op1, (cx_string)op2);
+    *(cx_bool*)result = !strcmp(*(cx_string*)op1, *(cx_string*)op2);
 }
 static void CX_NAME_BINARYOP(string,cond_neq)(void* op1, void* op2, void* result) {
-    *(cx_bool*)result = strcmp((cx_string)op1, (cx_string)op2) != 0;
+    *(cx_bool*)result = strcmp(*(cx_string*)op1, *(cx_string*)op2) != 0;
 }
+static void CX_NAME_BINARYOP(string,add)(void* op1, void* op2, void* result) {
+    cx_uint32 len = strlen(*(cx_string*)op1) + strlen(*(cx_string*)op2);
+    if (*(cx_string*)result) {
+        cx_dealloc(*(cx_string*)result);
+    }
+    *(cx_string*)result = cx_malloc(len + 1);
+    sprintf(*(cx_string*)result, "%s%s", *(cx_string*)op1, *(cx_string*)op2);
+}
+
 
 #define CX_INTEGER_UNARY_OPS(type) \
 CX_NUMERIC_UNARY_OP(type, ++, inc)\
@@ -218,6 +227,8 @@ CX_FLOAT_BINARY_OPS_INIT(typeKind, typeWidth, type)
 #define CX_STRING_OPS_INIT()\
 CX_STRING_OP_INIT(CX_COND_EQ, cond_eq)\
 CX_STRING_OP_INIT(CX_COND_NEQ, cond_neq)\
+CX_STRING_OP_INIT(CX_ADD, add)
+
 
 void cx_operatorInit(void) {
     CX_UNARY_OP_INIT(CX_BOOLEAN, CX_WIDTH_8, CX_COND_NOT, bool, cond_not);

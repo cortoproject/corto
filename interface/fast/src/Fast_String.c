@@ -200,7 +200,7 @@ cx_word Fast_String_getValue(Fast_String _this) {
     if (ch == '$') {
         result = 0;
     } else {
-        result = (cx_word)_this->value;
+        result = (cx_word)&_this->value;
     }
 
     return result;

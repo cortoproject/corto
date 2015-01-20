@@ -724,6 +724,9 @@
 					<!-- Bind function to implementation -->
 					<method name="bind(Fast::Variable function,Fast::Block block)" returnType="int16"/>
 					<method name="bindOneliner(Fast::Variable function,Fast::Block block,Fast::Expression expr)" returnType="int16"/>
+
+					<!-- Finalize bound functions -->
+					<method name="finalize(alias{&quot;cx_icProgram&quot;} program)" returnType="int16"/>
                     
                     <method name="initStage(string id,bool found)"/>
                     <method name="initDeclareStaged(Fast::Expression expr)"/>

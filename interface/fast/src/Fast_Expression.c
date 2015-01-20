@@ -269,14 +269,9 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_boo
             }
         } else if (cx_type_castable(type, refType)) {
             void *value = NULL;
-            void *valueAddr = NULL;
 
             /* If expression is a literal or constant create new literal of right type */
             value = (void*)Fast_Expression_getValue(_this);
-            if (value && (exprType->kind == CX_PRIMITIVE) && (cx_primitive(exprType)->kind == CX_TEXT)) {
-                valueAddr = value;
-                value = &valueAddr;
-            }
             if (value) {
                 if (type->reference && (Fast_Node(_this)->kind == FAST_Literal)) {
                     /* If destination type is a reference and the literal is a string this results

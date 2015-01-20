@@ -181,17 +181,19 @@ cx_err cx_logv(cx_err kind, unsigned int level, char* fmt, va_list arg, FILE* f)
         alloc = cx_malloc(n + 2);
         strcpy(alloc, cx_logKind[kind]);
         vsnprintf(alloc + l, n - l, fmt, arg);
-        strcat(alloc, "\n");
         msg = alloc;
     } else {
         char *ptr = buff;
         strcpy(buff, cx_logKind[kind]);
         vsprintf(ptr, fmt, arg);
-        strcat(ptr, "\n");
     }
     n = strlen(msg);
 
+    /* Set last error without \n */
     cx_setLasterror(msg);
+
+    strcat(msg, "\n");
+    n++;
 
     if (cx_getEcho() || ((kind == CX_CRITICAL) || (kind == CX_ASSERT))){
         if ((written = fwrite(msg, 1, n, f)) != n) {
