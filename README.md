@@ -17,7 +17,7 @@ sh test/language/run.sh
 ```
 Create a new C package called `HelloWorld`:
 ```
-cxgen --lang c --package HelloWorld
+cxgen --package --lang c HelloWorld
 make -C HelloWorld
 ```
 Load and inspect a package with the shell:
