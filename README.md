@@ -11,7 +11,7 @@ Download and unpack Cortex on your machine. Run the following commands to build 
 source configure
 make clean all
 ```
-Validate your build by running the test cases:
+Verify your build by running the the test suite:
 ```
 sh test/language/run.sh
 ```
@@ -20,7 +20,7 @@ Create a new C package called `HelloWorld`:
 cxgen --package --lang c HelloWorld
 make -C HelloWorld
 ```
-Load and inspect a package with the shell:
+Load and inspect the empty package with the shell:
 ```
 cxsh ::HelloWorld
 ```
