@@ -17,38 +17,39 @@ static cx_bool cx_iterator_hasNext_array(cx_collection collection, cx_void *arra
     cx_type elementType = collection->elementType->real;
     cx_uint32 elementSize = cx_type_sizeof(elementType);
     cx_uint32 length = collection->max;
-    if (element  < CX_OFFSET(array, elementSize * length)) {
+    void *lastElement = CX_OFFSET(array, elementSize * length);
+    cx_assert(element <= lastElement, "array element out of bounds");
+    if (element < lastElement) {
         result = TRUE;
     }
     return result;
 }
 
 /* Returns 0 on succes */
-static int cx_iterator_next_array(cx_collection collection, cx_void *array, void **elementPtr) {
+static int cx_iterator_next_array(cx_collection collection, cx_void *array, void *element, void **next) {
     cx_assert(array != NULL, "array corrupt");
-    int result;
-    result = 1;
+    int result = 1;
     cx_type elementType = collection->elementType->real;
     cx_uint32 elementSize = cx_type_sizeof(elementType);
     cx_uint32 length = collection->max;
-    void *element = *elementPtr;
-    if (element < CX_OFFSET(array, elementSize * length)) {
-        *elementPtr = CX_OFFSET(element, elementSize);
+    void *lastElement = CX_OFFSET(array, elementSize * length);
+    cx_assert(element <= lastElement, "array element out of bounds");
+    if (element < lastElement) {
+        *next = CX_OFFSET(element, elementSize);
         result = 0;
     }
     return result;
 }
 
-static cx_bool cx_iterator_hasNext_list(cx_collection collection, cx_ll list, cx_llNode node) {
+static cx_bool cx_iterator_hasNext_list(cx_collection collection, cx_ll list, cx_iter *iter) {
     CX_UNUSED(collection);
     CX_UNUSED(list);
-    CX_UNUSED(node);
 
     cx_assert(list != NULL, "list corrupt");
 
     cx_bool result = FALSE;
 
-    if (node->next) {
+    if (cx_iterHasNext(iter)) {
         result = TRUE;
     }
 
@@ -56,18 +57,18 @@ static cx_bool cx_iterator_hasNext_list(cx_collection collection, cx_ll list, cx
 }
 
 /* Returns 0 on success */
-static int cx_iterator_next_list(cx_collection collection, cx_ll list, cx_llNode *node) {
+static int cx_iterator_next_list(cx_collection collection, cx_ll list, cx_iter *iter, void **next) {
     CX_UNUSED(collection);
     CX_UNUSED(list);
-    CX_UNUSED(node);
 
     cx_assert(list != NULL, "list corrupt");
 
     int result = 1;
 
-    if ((*node)->next) {
-        *node = (*node)->next;
-        result = 0;
+    if (cx_iterHasNext(iter)) {
+        *next = cx_iterNext(iter);
+    } else {
+        cx_critical("illegal use of next when iterator doesn't have next");
     }
 
     return result;
@@ -114,15 +115,24 @@ cx_any cx_iterator_next(cx_any _this) {
 /* $begin(::cortex::lang::iterator::next) */
     CX_ITERATOR(iteratorType);
     iteratorType *iterator = _this.value;
-    int error = 0;
+    int error;
+    cx_any result;
+
+    error = 0;
+    result.type = iterator->type->elementType->real;
+    result.owner = FALSE;
+
     switch (iterator->type->kind) {
         case CX_ARRAY:
-            error = cx_iterator_next_array(iterator->type, iterator->value, &(iterator->element));
+            error = cx_iterator_next_array(iterator->type, iterator->value, iterator->element, &result.value);
+            if (!error) {
+                result.value = iterator->element;
+            }
             break;
         case CX_SEQUENCE:
             break;
         case CX_LIST:
-            cx_iterator_next_list(iterator->type, iterator->value, iterator->element);
+            cx_iterator_next_list(iterator->type, iterator->value, iterator->element, &result.value);
             break;
         case CX_MAP:
             break;
@@ -132,10 +142,7 @@ cx_any cx_iterator_next(cx_any _this) {
     if (error) {
         cx_critical("failed to retrieve next element");
     }
-    cx_any result;
-    result.type = iterator->type->elementType->real;
-    result.value = iterator->element;
-    result.owner = FALSE;
+
     return result;
 /* $end */
 }
