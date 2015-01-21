@@ -6,12 +6,13 @@ Cortex is a feature-rich playground designed for fast-paced, technology-heavy en
 Currently Cortex is in alpha. It is expected to reach v1.0 status by the end of 2015.
 
 ### Getting started
+Cortex is currently only provided for 32/64 bit Linux. 
 Download and unpack Cortex on your machine. Run the following commands to build it:
 ```
 source configure
 make clean all
 ```
-Verify your build by running the the test suite:
+Verify your build by running the test suite:
 ```
 sh test/language/run.sh
 ```
