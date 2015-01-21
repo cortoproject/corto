@@ -15,13 +15,10 @@ Validate your build by running the test cases:
 ```
 sh test/language/run.sh
 ```
-Create a new Cortex package called `HelloWorld`:
+Create a new C package called `HelloWorld`:
 ```
-mkdir HelloWorld
-cd HelloWorld
-touch HelloWorld.cx
-cxgen HelloWorld --lang c
-make
+cxgen --lang c --package HelloWorld
+make -C HelloWorld
 ```
 Load and inspect a package with the shell:
 ```
