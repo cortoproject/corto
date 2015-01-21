@@ -15,10 +15,6 @@ Validate your build by running the test cases:
 ```
 sh test/language/run.sh
 ```
-Start the interactive REPL shell:
-```
-cxsh
-```
 Create a new Cortex package called `HelloWorld`:
 ```
 mkdir HelloWorld
