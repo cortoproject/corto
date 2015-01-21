@@ -1,5 +1,5 @@
 ### The Cortex way [![Build Status](https://travis-ci.org/Seldomberry/Cortex.svg?branch=master)](https://travis-ci.org/Seldomberry/Cortex) [![Coverity](https://scan.coverity.com/projects/3807/badge.svg)](https://scan.coverity.com/projects/3807)
-Fail often. Fail fast. Fail cheap. Innovation is achieved through iterations.
+Fail often. Fail fast. Fail cheap. Innovation is achieved through iteration.
 
 Cortex is a feature-rich playground designed for fast-paced, technology-heavy environments with rapidly evolving requirements and short delivery timescales. With code generation, document generation, a test framework, profiling, visualization tools and package management, the platform gives entrepreneurs a definitive competitive edge in getting that next big thing out of the door. Oh, and it's free.
 
@@ -20,7 +20,7 @@ Create a new C package called `HelloWorld`:
 cxgen --package --lang c HelloWorld
 make -C HelloWorld
 ```
-Load and inspect the empty package with the shell:
+Load and inspect the empty package with the REPL shell:
 ```
 cxsh ::HelloWorld
 ```
