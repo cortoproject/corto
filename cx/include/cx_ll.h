@@ -16,13 +16,6 @@ extern "C" {
 
 typedef struct cx_llNode_s* cx_llNode;
 
-typedef struct cx_llNode_s {
-    void* data;
-    cx_llNode next;
-    cx_llNode prev;
-} cx_llNode_s;
-
-
 typedef struct cx_iter {
     cx_llNode next;
     cx_llNode cur;
