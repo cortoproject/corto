@@ -20,6 +20,8 @@ typedef cx_int32 tc_iterator_intArray[3];
 
 CX_ITERATOR(tc_iterator_intIterator);
 
+CX_LIST(tc_iterator_intList);
+
 #ifdef __cplusplus
 }
 #endif

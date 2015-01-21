@@ -29,10 +29,6 @@ int cortexmain(int argc, char* argv[]) {
     result += !tc_iterator_testArray();
     /* $end */
 
-    if (result == 0) {
-        cx_print("tc_iterator: OK\n");
-    }
-
     return result;
 }
 

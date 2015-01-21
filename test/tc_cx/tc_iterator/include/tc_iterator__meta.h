@@ -27,8 +27,17 @@ extern cx_array tc_iterator_intArray_o;
 /* ::tc_iterator::intIterator */
 extern cx_iterator tc_iterator_intIterator_o;
 
+/* ::tc_iterator::intList */
+extern cx_list tc_iterator_intList_o;
+
+/* ::tc_iterator::list1 */
+extern tc_iterator_intList (*tc_iterator_list1_o);
+
 /* ::tc_iterator::testArray() */
 extern cx_function tc_iterator_testArray_o;
+
+/* ::tc_iterator::testList() */
+extern cx_function tc_iterator_testList_o;
 
 int tc_iterator_load(void);
 #ifdef __cplusplus

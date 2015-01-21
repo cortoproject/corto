@@ -12,3 +12,10 @@ void __tc_iterator_testArray(cx_function f, void *result, void *args) {
     *(cx_bool*)result = tc_iterator_testArray(
         );
 }
+
+void __tc_iterator_testList(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    CX_UNUSED(args);
+    *(cx_bool*)result = tc_iterator_testList(
+        );
+}

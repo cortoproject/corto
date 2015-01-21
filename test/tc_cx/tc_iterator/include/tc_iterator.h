@@ -20,6 +20,9 @@ extern "C" {
 /* ::tc_iterator::testArray() */
 cx_bool tc_iterator_testArray(void);
 
+/* ::tc_iterator::testList() */
+cx_bool tc_iterator_testList(void);
+
 #ifdef __cplusplus
 }
 #endif

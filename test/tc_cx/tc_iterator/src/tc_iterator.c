@@ -53,3 +53,44 @@ cx_bool tc_iterator_testArray(void) {
 
 /* $end */
 }
+
+/* ::tc_iterator::testList() */
+cx_bool tc_iterator_testList(void) {
+/* $begin(::tc_iterator::testList) */
+
+    cx_bool result = TRUE;
+    cx_iter iter = cx_llIter(*tc_iterator_list1_o);
+    tc_iterator_intIterator iterator = {
+        cx_collection(tc_iterator_intList_o),
+        tc_iterator_list1_o,
+        &iter
+    };
+    cx_any anyIterator = {cx_type(tc_iterator_intIterator_o), &iterator, FALSE};
+
+    if (!cx_iterator_hasNext(anyIterator)) {
+        cx_error("hasNext did not return TRUE for unfinished array");
+        result = FALSE;
+    }
+
+    cx_iterator_next(anyIterator);
+    if (!cx_iterator_hasNext(anyIterator)) {
+        cx_error("hasNext did not return TRUE for unfinished array");
+        result = FALSE;
+    }
+
+    cx_iterator_next(anyIterator);
+    if (!cx_iterator_hasNext(anyIterator)) {
+        cx_error("hasNext did not return TRUE for unfinished array");
+        result = FALSE;
+    }
+
+    cx_iterator_next(anyIterator);
+    if (cx_iterator_hasNext(anyIterator)) {
+        cx_error("hasNext did not return FALSE for last element");
+        result = FALSE;
+    }
+
+    return result;
+
+/* $end */
+}
