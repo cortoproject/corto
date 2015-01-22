@@ -35,5 +35,5 @@ Nowadays we churn out new APIs at incredulous rates. Pretty much anything that b
 
 If only all of these APIs would follow a limited set of patterns and paradigms. That would make things a lot more manageable. But what would that look like? Can this even be done? We happen to believe so.
 
-To figure out this puzzle, we borrowed a paradigm that is already commonplace in defense and industrial IT systems. The paradigm is build upon the premise that information is at the heart of everything and if we capture the essence of it really well, then that is all we will ever need. This paradigm is called information centricity.
+To figure out this puzzle, we borrowed a paradigm that is already commonplace in defense and industrial IT systems. The paradigm is built upon the premise that information is at the heart of everything and if we capture the essence of it really well, then that is all we will ever need. This paradigm is called information centricity.
 
