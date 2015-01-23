@@ -15,7 +15,7 @@ Verify your build by running the test suite:
 ```
 sh test/language/run.sh
 ```
-Create a new C package called `HelloWorld`:
+Create your first C package, named `HelloWorld`:
 ```
 cxgen --package --lang c HelloWorld
 make -C HelloWorld
