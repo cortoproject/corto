@@ -3,10 +3,9 @@ Fail often. Fail fast. Fail cheap. Innovation is achieved through iteration.
 
 Cortex is a feature-rich playground designed for fast-paced, technology-heavy environments with rapidly evolving requirements and short delivery timescales. With code generation, document generation, a test framework, profiling, visualization tools and package management, the platform gives entrepreneurs a definitive competitive edge in getting that next big thing out of the door. Oh, and it's free.
 
-Currently Cortex is in alpha. It is expected to reach v1.0 status by the end of 2015.
+Currently Cortex is in alpha. It is expected to reach v1.0 status by the end of 2015. The current release supports only 32/64 bit Linux.
 
 ### Getting started
-Cortex is currently only provided for 32/64 bit Linux. 
 Download and unpack Cortex on your machine. Run the following commands to build it:
 ```
 source configure
