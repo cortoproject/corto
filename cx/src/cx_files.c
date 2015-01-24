@@ -39,9 +39,7 @@ static void printError(int e, const char *msg) {
 }
 
 int cx_fileTest(const char* file) {
-    FILE* exists;
-
-    exists = NULL;
+    FILE* exists = NULL;
 
     if (file) {
         exists = fopen(file, "rb");
@@ -51,6 +49,23 @@ int cx_fileTest(const char* file) {
     }
 
     return (exists != 0);
+}
+
+int cx_touch(const char *file) {
+    FILE* touch = NULL;
+
+    if (file) {
+        touch = fopen(file, "ab");
+        if (touch) {
+            fclose(touch);
+        }
+    }
+
+    return touch ? 0 : -1;    
+}
+
+int cx_chdir(const char *name) {
+    return chdir(name);
 }
 
 int cx_mkdir(const char *name) {

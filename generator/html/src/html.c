@@ -48,18 +48,27 @@ error:
 
 
 /*
+ * Add parents in root to object order
+ */
+static void html_parentWalk(cx_object o, g_file file) {
+    if (cx_parentof(o) && (cx_parentof(o) != root_o)) {
+        html_parentWalk(cx_parentof(o), file);
+    }
+    g_fileWrite(file, "o = o.declare('%s');\n", cx_nameof(o));
+}
+
+/*
  * Prints the resulting json into a "data.json" file.
  */
 static cx_int32 html_jsonWalk(cx_object o, void *userData) {
-    cx_json_ser_t jsonData = {NULL, NULL, 0, 0, 0, TRUE, TRUE, FALSE};
-    cx_html_gen_t *htmlData;
+    cx_json_ser_t jsonData = {NULL, NULL, 0, 0, 0, FALSE, FALSE, FALSE};
+    cx_html_gen_t *htmlData = userData;
     struct cx_serializer_s serializer;
     char folderPath[PATH_MAX];
     char filepath[PATH_MAX];
     g_file file;
-    cx_id fullname;
 
-    htmlData = userData;
+    serializer = cx_json_ser(CX_PRIVATE, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
 
     if (sprintf(folderPath, "%s/%s", htmlData->path, cx_nameof(o)) < 0) {
         goto error;
@@ -68,12 +77,30 @@ static cx_int32 html_jsonWalk(cx_object o, void *userData) {
         goto error;
     }
 
-    serializer = cx_json_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
-    cx_serialize(&serializer, o, &jsonData);
-    
     file = g_fileOpen(htmlData->generator, filepath);
-    cx_fullname(o, fullname);
-    g_fileWrite(file, "objects[\"%s\"] = %s;", fullname, jsonData.buffer);
+
+    g_fileWrite(file, "new function() {\n");
+    g_fileIndent(file);
+
+    g_fileWrite(file, "var o = cx.root;\n");
+    html_parentWalk(o, file);
+
+    if (cx_typeof(o)->real->kind != CX_VOID) {
+        jsonData.serializeValue = TRUE;
+        cx_serialize(&serializer, o, &jsonData);
+        g_fileWrite(file, "o.value = %s;\n", jsonData.buffer);
+        cx_dealloc(jsonData.buffer);
+        memset(&jsonData, 0, sizeof(jsonData));
+    }
+
+    jsonData.serializeValue = FALSE;
+    jsonData.serializeMeta = TRUE;
+    cx_serialize(&serializer, o, &jsonData);
+    g_fileWrite(file, "o.meta = %s;\n", jsonData.buffer);
+    cx_dealloc(jsonData.buffer);
+
+    g_fileDedent(file);
+    g_fileWrite(file, "}();\n");
 
     cx_html_gen_t scopeData = *htmlData;
     scopeData.path = folderPath;
@@ -95,7 +122,7 @@ static int html_printScopeItemScriptWalk(cx_object o, void *userData) {
  */
 static int html_printHtml(cx_html_gen_t *data, cx_object o, g_file file) {
     unsigned int level;
-    cx_id fullname;
+    cx_id name;
     
     /* http://www.w3.org/TR/html5/syntax.html#writing */
     g_fileWrite(file, "<!DOCTYPE html>\n");
@@ -117,14 +144,19 @@ static int html_printHtml(cx_html_gen_t *data, cx_object o, g_file file) {
     for (level = 0; level < data->level; level++) {
         g_fileWrite(file, "../");
     }
-    g_fileWrite(file, "objectparse.js\"></script>\n");
+    g_fileWrite(file, "cortex.js\"></script>\n");
 
     /* This object */
-    g_fileWrite(file, "<script src=\"./data.js\"></script>\n");
+    g_fileWrite(file, "<script src=\"data.js\"></script>\n");
 
     /* Parent object */
     if (data->level > 1) {
         g_fileWrite(file, "<script src=\"../data.js\"></script>\n");
+    }
+
+    /* Parent object */
+    if (data->level > 1) {
+        g_fileWrite(file, "<script>cx.setMe('%s');</script>\n", cx_fullname(o, name));
     }
 
     /* Child objects */
@@ -133,25 +165,22 @@ static int html_printHtml(cx_html_gen_t *data, cx_object o, g_file file) {
         goto error;
     }
 
-    g_fileWrite(file, "<script>rootName = \"%s\";</script>\n", data->rootFullname);
-
-    /* This object name */
-    cx_fullname(o, fullname);
-    g_fileWrite(file, "<script>thisName = \"%s\";</script>\n", fullname);
-
     /* CSS */
     g_fileWrite(file, "<link href=\"../");
     for (level = 1; level < data->level; level++) {
         g_fileWrite(file, "../");
     }
-    g_fileWrite(file, "object.css\" rel=\"stylesheet\">\n");
+    g_fileWrite(file, "cortex.css\" rel=\"stylesheet\">\n");
 
     g_fileDedent(file);
     g_fileWrite(file, "</head>\n");
     g_fileWrite(file, "<body>\n");
     g_fileIndent(file);
-    g_fileWrite(file, "<main>\n");
-    g_fileWrite(file, "</main>\n");
+    g_fileWrite(file, "<div id='header'>%s</div>\n", cx_fullname(o, name));
+    g_fileWrite(file, "<div id='meta'></div>\n");
+    g_fileWrite(file, "<div id='value'></div>\n");
+    g_fileWrite(file, "<script>$('#meta').append(cx.resolve('%s').metaToHtml());</script>\n", cx_fullname(o, name));
+    g_fileWrite(file, "<script>$('#value').append(cx.resolve('%s').toHtml());</script>\n", cx_fullname(o, name));
     g_fileDedent(file);
     g_fileWrite(file, "</body>\n");
     g_fileDedent(file);
@@ -162,7 +191,7 @@ error:
     return -1;
 }
 
-static int html_HtmlWalk(cx_object o, void *userData) {
+static int html_htmlWalk(cx_object o, void *userData) {
     static cx_id rootFullname = "";
     cx_html_gen_t *htmlData = userData;
     char folderPath[PATH_MAX];
@@ -190,52 +219,18 @@ static int html_HtmlWalk(cx_object o, void *userData) {
     cx_html_gen_t childHtmlData = {folderPath, htmlData->level + 1,
         rootFullname, htmlData->generator};
 
-    return cx_scopeWalk(o, html_HtmlWalk, &childHtmlData);
+    return cx_scopeWalk(o, html_htmlWalk, &childHtmlData);
 
 error:
     return 0;
 }
 
-
-static cx_int16 html_copyJQueryFile(const char *path) {
+static cx_int16 html_copy(const char* path, const char *name) {
     char sourcePath[PATH_MAX];
     char destinationPath[PATH_MAX];
     char *cortexHome = getenv("CORTEX_HOME");
-    char parserFilename[] = "jquery-1.11.2.min.js";
-    sprintf(sourcePath, "%s/generator/html/%s", cortexHome, parserFilename);
-    sprintf(destinationPath, "%s/%s", path, parserFilename);
-    if (cx_cp(sourcePath, destinationPath)) {
-        goto error;
-    }
-    return 0;
-error:
-    return -1;
-}
-
-
-static cx_int16 html_copyJsonParserFile(const char *path) {
-    char sourcePath[PATH_MAX];
-    char destinationPath[PATH_MAX];
-    char *cortexHome = getenv("CORTEX_HOME");
-    char parserFilename[] = "objectparse.js";
-    sprintf(sourcePath, "%s/generator/html/%s", cortexHome, parserFilename);
-    sprintf(destinationPath, "%s/%s", path, parserFilename);
-    if (cx_cp(sourcePath, destinationPath)) {
-        goto error;
-    }
-    return 0;
-error:
-    return -1;
-}
-
-
-static cx_int16 html_copyStyleSheetFile(const char* path) {
-    char sourcePath[PATH_MAX];
-    char destinationPath[PATH_MAX];
-    char *cortexHome = getenv("CORTEX_HOME");
-    char stylesheetFilename[] = "object.css";
-    sprintf(sourcePath, "%s/generator/html/%s", cortexHome, stylesheetFilename);
-    sprintf(destinationPath, "%s/%s", path, stylesheetFilename);
+    sprintf(sourcePath, "%s/generator/html/%s", cortexHome, name);
+    sprintf(destinationPath, "%s/%s", path, name);
     if (cx_cp(sourcePath, destinationPath)) {
         goto error;
     }
@@ -256,23 +251,23 @@ cx_int16 cortex_genMain(cx_generator g) {
         cx_error("Error creating folders.");
     }
 
-    if (success && !(success = !html_copyJQueryFile(data.path))) {
+    if (success && !(success = !html_copy(data.path, "jquery-1.11.2.min.js"))) {
         cx_error("Cannot copy \"jQuery\".");
     }
 
-    if (success && !(success = !html_copyJsonParserFile(data.path))) {
-        cx_error("Cannot copy \"objectparse.js\".");
+    if (success && !(success = !html_copy(data.path, "cortex.js"))) {
+        cx_error("Cannot copy \"cortex.js\".");
     }
 
-    if (success && !(success = !html_copyStyleSheetFile(data.path))) {
-        cx_error("Cannot copy \"object.css\".");
+    if (success && !(success = !html_copy(data.path, "cortex.css"))) {
+        cx_error("Cannot copy \"cortex.css\".");
     }
     
     if (success && !(success = g_walkNoScope(g, html_jsonWalk, &data))) {
         cx_error("Error creating js files.");
     }
     
-    if (success && !(success = g_walkNoScope(g, html_HtmlWalk, &data))) {
+    if (success && !(success = g_walkNoScope(g, html_htmlWalk, &data))) {
         cx_error("Error creating html files.");
     }
 

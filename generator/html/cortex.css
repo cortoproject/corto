@@ -1,0 +1,101 @@
+
+body {
+    background-color: #222222;
+}
+
+#header {
+    background-color: #00cf92;   
+    color: #FFFFFF;
+    font-family: futura, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    font-style: italic;
+    padding: 5px;
+    margin: 5px;
+    border-radius: 5px;
+}
+
+table.meta {
+    text-align: left;
+    font-weight: normal;
+    border-spacing: 0px;
+    margin: 5px;
+    padding: 3px;
+    background-color: #CC8855;
+    border-radius: 5px;
+    font-family: sans-serif;
+    font-size: 14px;
+}
+
+table.meta td {
+    padding: 4px;
+    background-color: #FFFFFF;
+    color: #000000;
+    font-size: 14px;
+}
+
+table.meta th {
+    padding: 4px;
+    font-weight: normal;
+    color: #FFFFFF;
+}
+
+table.value {
+    text-align: left;
+    font-weight: normal;
+    border-spacing: 0px;
+    margin: 5px;
+    padding: 3px;
+    background-color: #00cf92;
+    border-radius: 5px;
+    font-family: sans-serif;
+    font-size: 14px;
+}
+
+table.value td {
+    padding: 4px;
+    background-color: #FFFFFF;
+    color: #000000;
+    font-size: 14px;
+}
+
+table.value th {
+    padding: 4px;
+    font-weight: normal;
+    color: #FFFFFF;
+}
+
+code.number {
+    color: #0000FF;
+}
+
+code.normal {
+    color: #000000;
+}
+
+code.boolean {
+    color: #0000FF;
+}
+
+a {
+    color: #CC8855;
+    text-decoration: none;
+}
+a:visited {
+    color: #CC8855;
+    text-decoration: none;
+}
+
+code.reference {
+    color: #CC8855;
+    text-decoration: none;
+}
+
+code.enum {
+    color: #AA55CC;
+}
+
+code.bitmask {
+    color: #AA55CC;
+}
+

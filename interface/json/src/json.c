@@ -203,32 +203,38 @@ finished:
 }
 
 static cx_int16 cx_ser_complex(cx_serializer s, cx_value* v, void* userData) {
-    cx_json_ser_t *data = userData;
+    cx_json_ser_t data = *(cx_json_ser_t*)userData;
     cx_type type = cx_valueType(v)->real;
     cx_bool useCurlyBraces = TRUE;
+
+    data.itemCount = 0;
 
     if (type->kind == CX_COLLECTION && cx_collection(type)->kind != CX_MAP) {
         useCurlyBraces = FALSE;
     }
 
-    if (!cx_ser_appendstr(data, (useCurlyBraces ? "{" : "["))) {
+    if (!cx_ser_appendstr(&data, (useCurlyBraces ? "{" : "["))) {
         goto finished;
     }
     if (type->kind == CX_COMPOSITE) {
-        if (cx_serializeMembers(s, v, userData)) {
+        if (cx_serializeMembers(s, v, &data)) {
             goto error;
         }
     } else if (type->kind == CX_COLLECTION) {
-        if (cx_serializeElements(s, v, userData)) {
+        if (cx_serializeElements(s, v, &data)) {
             goto error;
         }
     } else {
         goto error;
     }
 
-    if (!cx_ser_appendstr(data, (useCurlyBraces ? "}" : "]"))) {
+    if (!cx_ser_appendstr(&data, (useCurlyBraces ? "}" : "]"))) {
         goto finished;
     }
+
+    ((cx_json_ser_t*)userData)->buffer = data.buffer;
+    ((cx_json_ser_t*)userData)->ptr = data.ptr;
+
     return 0;
 error:
     return -1;
@@ -320,7 +326,11 @@ static cx_int16 cx_ser_meta(cx_serializer s, cx_value* v, void* userData) {
     }
 
     cx_id type_fullname;
-    cx_fullname(cx_typeof(object), type_fullname);
+    if (cx_parentof(cx_typeof(object)) != cortex_lang_o) {
+        cx_fullname(cx_typeof(object), type_fullname);
+    } else {
+        strcpy(type_fullname, cx_nameof(cx_typeof(object)));
+    }
     if (!cx_ser_appendstr(data, "\"type\":\"%s\",", type_fullname)) {
         goto finished;
     }
@@ -371,7 +381,11 @@ static int cx_walkScopeAction_ser_meta(cx_object o, void* userData) {
     }
 
     cx_id type_fullname;
-    cx_fullname(cx_typeof(o), type_fullname);
+    if (cx_parentof(cx_typeof(o)) != cortex_lang_o) {
+        cx_fullname(cx_typeof(o), type_fullname);
+    } else {
+        strcpy(type_fullname, cx_nameof(cx_typeof(o)));
+    }
     if (!cx_ser_appendstr(userData, "\"type\":\"%s\",", type_fullname)) {
         goto finished;
     }
@@ -422,14 +436,22 @@ static cx_int16 cx_ser_scope_meta(cx_serializer s, cx_value* v, void* userData) 
 static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
     cx_json_ser_t *data = userData;
     cx_uint8 c = 0;
+    cx_uint32 options = data->serializeMeta + data->serializeValue + data->serializeScope;
 
-    if (!cx_ser_appendstr(data, "{")) {
-        goto finished;
+    /* If more than one option is provided, prefix with 
+     * 'meta', 'value' and 'scope' */
+
+    if (options > 1) {
+        if (!cx_ser_appendstr(data, "{")) {
+            goto finished;
+        }
     }
 
     if (data->serializeMeta) {
-        if (!cx_ser_appendstr(data, "\"meta\":")) {
-            goto finished;
+        if (options > 1) {
+            if (!cx_ser_appendstr(data, "\"meta\":")) {
+                goto finished;
+            }
         }
         if (cx_ser_meta(s, v, userData)) {
             goto error;
@@ -439,11 +461,13 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
 
     if (data->serializeValue) {
         if (cx_valueType(v)->real->kind != CX_VOID) {
-            if (c && !cx_ser_appendstr(data, ",")) {
-                goto finished;
-            }
-            if (!cx_ser_appendstr(data, "\"value\":")) {
-                goto finished;
+            if (options > 1) {
+                if (c && !cx_ser_appendstr(data, ",")) {
+                    goto finished;
+                }
+                if (!cx_ser_appendstr(data, "\"value\":")) {
+                    goto finished;
+                }
             }
             if (cx_serializeValue(s, v, userData)) {
                 goto error;
@@ -453,10 +477,15 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
     }
 
     if (data->serializeScope) {
-        if (c && !cx_ser_appendstr(data, ",")) {
-            goto finished;
+        if (options > 1) {
+            if (c && !cx_ser_appendstr(data, ",")) {
+                goto finished;
+            }
+            if (!cx_ser_appendstr(data, "\"scope\":")) {
+                goto finished;
+            }
         }
-        if (!cx_ser_appendstr(data, "\"scope\":[")) {
+        if (!cx_ser_appendstr(data, "[")) {
             goto finished;
         }
         if (!cx_ser_scope_meta(s, v, data)) {
@@ -467,8 +496,10 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
         }
     }
 
-    if (!cx_ser_appendstr(data, "}")) {
-        goto finished;
+    if (options > 1) {
+        if (!cx_ser_appendstr(data, "}")) {
+            goto finished;
+        }
     }
 
     return 0;

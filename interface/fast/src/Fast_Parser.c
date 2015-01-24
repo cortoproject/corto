@@ -1639,6 +1639,10 @@ cx_int16 Fast_Parser_defineScope(Fast_Parser _this) {
     FAST_CHECK_ERRSET(_this);
 
     if (!_this->pass) {
+        if (!_this->scope) {
+            Fast_Parser_error(_this, "invalid scope expression");
+            goto error;
+        }
         if (Fast_Variable(_this->scope)->kind == FAST_Object) {
             cx_object o = Fast_ObjectBase(_this->scope)->value;
             if (cx_instanceof(cx_typedef(cx_type_o), o)) {

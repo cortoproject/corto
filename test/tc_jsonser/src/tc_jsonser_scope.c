@@ -12,12 +12,12 @@
 {\
     cx_json_ser_t userData = {NULL, NULL, 0, 0, 0, FALSE, FALSE, TRUE};\
     cx_serialize(&serializer, tc_jsonser_fixture_##object##_o, &userData);\
-    if (strcmp(userData.buffer, "{\"scope\":"expected"}")) {\
+    if (strcmp(userData.buffer, expected)) {\
         result = -1;\
         fprintf(\
             stderr,\
             "tc_jsonser_scope: FAIL:\nexpected:\n%s\nserialized:\n%s\n",\
-            "{\"scope\":"expected"}", userData.buffer);\
+            expected, userData.buffer);\
     }\
 }
 
@@ -29,12 +29,12 @@ cx_int16 test_ser_scope(void) {
 
     _test_ser_scope(namesp, 
         "[{\"name\":\"a\","
-            "\"type\":\"::cortex::lang::int16\",\""
+            "\"type\":\"int16\",\""
             "states\":\"V|DCL|DEF\",\""
             "attributes\":\"S|W|O\",\""
             "childCount\":0},"
         "{\"name\":\"b\",\""
-            "type\":\"::cortex::lang::string\","
+            "type\":\"string\","
             "\"states\":\"V|DCL|DEF\",\""
             "attributes\":\"S|W|O\","
             "\"childCount\":0}]"
@@ -42,10 +42,10 @@ cx_int16 test_ser_scope(void) {
 
     _test_ser_scope(Dog,
         "["
-        "{\"name\":\"age\",\"type\":\"::cortex::lang::member\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"childCount\":0},"
-        "{\"name\":\"breed\",\"type\":\"::cortex::lang::member\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"childCount\":0},"
-        "{\"name\":\"lover\",\"type\":\"::cortex::lang::member\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"childCount\":0},"
-        "{\"name\":\"name\",\"type\":\"::cortex::lang::member\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"childCount\":0}"
+        "{\"name\":\"age\",\"type\":\"member\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"childCount\":0},"
+        "{\"name\":\"breed\",\"type\":\"member\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"childCount\":0},"
+        "{\"name\":\"lover\",\"type\":\"member\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"childCount\":0},"
+        "{\"name\":\"name\",\"type\":\"member\",\"states\":\"V|DCL|DEF\",\"attributes\":\"S|W|O\",\"childCount\":0}"
         "]"
     );
 
