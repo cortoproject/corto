@@ -326,11 +326,7 @@ static cx_int16 cx_ser_meta(cx_serializer s, cx_value* v, void* userData) {
     }
 
     cx_id type_fullname;
-    if (cx_parentof(cx_typeof(object)) != cortex_lang_o) {
-        cx_fullname(cx_typeof(object), type_fullname);
-    } else {
-        strcpy(type_fullname, cx_nameof(cx_typeof(object)));
-    }
+    cx_fullname(cx_typeof(object), type_fullname);
     if (!cx_ser_appendstr(data, "\"type\":\"%s\",", type_fullname)) {
         goto finished;
     }
@@ -381,11 +377,7 @@ static int cx_walkScopeAction_ser_meta(cx_object o, void* userData) {
     }
 
     cx_id type_fullname;
-    if (cx_parentof(cx_typeof(o)) != cortex_lang_o) {
-        cx_fullname(cx_typeof(o), type_fullname);
-    } else {
-        strcpy(type_fullname, cx_nameof(cx_typeof(o)));
-    }
+    cx_fullname(cx_typeof(o), type_fullname);
     if (!cx_ser_appendstr(userData, "\"type\":\"%s\",", type_fullname)) {
         goto finished;
     }

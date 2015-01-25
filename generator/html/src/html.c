@@ -155,9 +155,7 @@ static int html_printHtml(cx_html_gen_t *data, cx_object o, g_file file) {
     }
 
     /* Parent object */
-    if (data->level > 1) {
-        g_fileWrite(file, "<script>cx.setMe('%s');</script>\n", cx_fullname(o, name));
-    }
+    g_fileWrite(file, "<script>cx.setMe('%s');</script>\n", cx_fullname(o, name));
 
     /* Child objects */
     if (!cx_scopeWalk(o, html_printScopeItemScriptWalk, file)) {
@@ -176,11 +174,23 @@ static int html_printHtml(cx_html_gen_t *data, cx_object o, g_file file) {
     g_fileWrite(file, "</head>\n");
     g_fileWrite(file, "<body>\n");
     g_fileIndent(file);
-    g_fileWrite(file, "<div id='header'>%s</div>\n", cx_fullname(o, name));
+    g_fileWrite(file, "<div id='header'></div>\n", cx_fullname(o, name));
+    g_fileWrite(file, "<div id='scope'></div>\n");
+    g_fileWrite(file, "<div id='container'>\n");
+    g_fileIndent(file);
     g_fileWrite(file, "<div id='meta'></div>\n");
     g_fileWrite(file, "<div id='value'></div>\n");
-    g_fileWrite(file, "<script>$('#meta').append(cx.resolve('%s').metaToHtml());</script>\n", cx_fullname(o, name));
-    g_fileWrite(file, "<script>$('#value').append(cx.resolve('%s').toHtml());</script>\n", cx_fullname(o, name));
+    g_fileDedent(file);
+    g_fileWrite(file, "</div>\n");
+    g_fileWrite(file, "<script>\n");
+    g_fileIndent(file);
+    g_fileWrite(file, "var _o = cx.resolve('%s');\n", cx_fullname(o, name));
+    g_fileWrite(file, "$('#header').append(cx.toLink('%s', 'header'));\n");
+    g_fileWrite(file, "$('#scope').append(_o.scopeToHtml());\n");
+    g_fileWrite(file, "$('#meta').append(_o.metaToHtml());\n");
+    g_fileWrite(file, "$('#value').append(_o.toHtml());\n");
+    g_fileDedent(file);
+    g_fileWrite(file, "</script>\n");
     g_fileDedent(file);
     g_fileWrite(file, "</body>\n");
     g_fileDedent(file);
