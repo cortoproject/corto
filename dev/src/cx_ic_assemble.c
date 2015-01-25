@@ -448,7 +448,7 @@ static cx_ic_vmStorage *cx_ic_vmStorageNew(cx_ic_vmProgram *program, cx_icStorag
             if (element->index->_parent.kind == CX_IC_LITERAL) {
                 if (element->collectionType->kind == CX_ARRAY) {
                     cx_uint32 index = ((cx_icLiteral)element->index)->value.is.literal.v._unsigned_integer;
-                    result->offset = index * cx_type_sizeof(element->collectionType->elementType->real);
+                    result->offset = index * cx_type_sizeof(element->collectionType->elementType);
                     result->dynamic = FALSE;
                 } else {
                     result->dynamic = TRUE;
@@ -1741,7 +1741,7 @@ static cx_vmOp *cx_ic_vmStorageAssembleElement(cx_icStorage storage, cx_ic_vmPro
     indexKind = cx_ic_getVmOperand(program, CX_IC_DEREF_VALUE, ((cx_icElement)storage)->index);
 
     /* Create value for elementSize */
-    elementSize = cx_type_sizeof(type->elementType->real);
+    elementSize = cx_type_sizeof(type->elementType);
     cx_valueLiteralInit(&elementSizeValue, CX_LITERAL_UNSIGNED_INTEGER, &elementSize);
     icElementSize = (cx_icValue)cx_icLiteral__create(program->icProgram, ((cx_ic)storage)->line, elementSizeValue, (cx_type)cx_uint32_o);
 
@@ -1961,7 +1961,7 @@ static cx_vmOpKind cx_ic_getVmCast(cx_ic_vmProgram *program, cx_icOp op, cx_type
             result = cx_ic_getVmPCAST(typeKind, storage, op1);
         } else {
             if (srcType->reference) {
-                result = cx_ic_getVmCAST(CX_IC_VMTYPE_W, storage, CX_IC_VMOPERAND_P);
+                result = cx_ic_getVmCAST(CX_IC_VMTYPE_W, storage, CX_IC_VMOPERAND_V);
             } else {
                 /* No cast for non-reference types */
             }
@@ -1972,7 +1972,7 @@ static cx_vmOpKind cx_ic_getVmCast(cx_ic_vmProgram *program, cx_icOp op, cx_type
             result = cx_ic_getVmPCAST(typeKind, storage, op1);
         }
     } else if ((srcType->kind == CX_VOID) && srcType->reference) {
-        result = cx_ic_getVmCAST(CX_IC_VMTYPE_W, storage, CX_IC_VMOPERAND_P);
+        result = cx_ic_getVmCAST(CX_IC_VMTYPE_W, storage, CX_IC_VMOPERAND_V);
     }
 
     cx_assert(result != CX_VM_STOP, "no cast-instruction found from type '%s' to '%s'", cx_nameof(srcType), cx_nameof(dstType));
@@ -2051,15 +2051,15 @@ static cx_vmOpKind cx_ic_getVmCall(cx_icOp op, cx_ic_vmOperand op1, cx_ic_vmOper
     } else if (cx_ic_operandIsComposite(icFunction, CX_PROCEDURE)) {
         cx_function f = ((cx_icObject)op->s2)->ptr;
         if (f->kind == CX_PROCEDURE_VM) {
-            if ((f->returnType->real->kind == CX_VOID) && 
-                (!f->returnType->real->reference)) {
+            if ((f->returnType->kind == CX_VOID) && 
+                (!f->returnType->reference)) {
                 result = CX_VM_CALLVMVOID;
             } else {
                 result = cx_ic_getVmCALLVM(CX_IC_VMTYPE_L, op1);
             }
         } else {
-            if ((f->returnType->real->kind == CX_VOID) && 
-                (!f->returnType->real->reference)) {
+            if ((f->returnType->kind == CX_VOID) && 
+                (!f->returnType->reference)) {
                 result = CX_VM_CALLVOID;
             } else {
                 result = cx_ic_getVmCALL(CX_IC_VMTYPE_L, op1);

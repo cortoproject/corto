@@ -371,7 +371,7 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_boo
                     }
 
                 /* Interface-downcasting doesn't require an explicit cast */
-                } else if (!cx_instanceof(cx_typedef(cx_interface_o), type)) {
+                } else if (!cx_instanceof(cx_type(cx_interface_o), type)) {
                     Fast_Object dstTypeObject = Fast_Object__create(type);
                     result = Fast_Expression(Fast_CastExpr__create(Fast_Expression(dstTypeObject), _this));
                     Fast_Parser_collect(yparser(), dstTypeObject);

@@ -58,6 +58,7 @@ cx_ic Fast_NewExpr_toIc_v(Fast_NewExpr _this, cx_icProgram program, cx_icStorage
 
     op = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_NEW, (cx_icValue)result, (cx_icValue)type, (cx_icValue)attrs);
     op->s1Deref = CX_IC_DEREF_ADDRESS;
+    op->s2Deref = CX_IC_DEREF_ADDRESS;
     cx_icProgram_addIc(program, (cx_ic)op);
 
     return result;

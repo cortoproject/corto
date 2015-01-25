@@ -86,7 +86,7 @@ cx_vtable* cx_class_getObserverVtable(cx_object o) {
     cx_type type;
     cx_uint32 observerCount;
 
-    type = cx_typeof(o)->real;
+    type = cx_typeof(o);
     result = NULL;
 
     /* Obtain vtable. */
@@ -348,7 +348,7 @@ cx_bool cx_class_instanceof(cx_class _this, cx_object object) {
     cx_bool result;
 
     result = FALSE;
-    t = cx_typeof(object)->real;
+    t = cx_typeof(object);
 
     if (t->kind == CX_COMPOSITE) {
         if (cx_interface(t)->kind == CX_CLASS) {

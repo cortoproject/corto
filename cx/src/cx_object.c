@@ -485,7 +485,7 @@ int cx__destructor(cx_object o) {
     cx_type t;
     cx__object* _o;
 
-    t = cx_typeof(o)->real;
+    t = cx_typeof(o);
     if (cx_checkState(o, CX_DEFINED)) {
         _o = CX_OFFSET(o, -sizeof(cx__object));
         if (cx_class_instanceof(cx_class_o, t)) {
@@ -493,7 +493,7 @@ int cx__destructor(cx_object o) {
             cx_class_detachObservers(cx_class(t), o);
 
             /* Call destructor */
-            cx_delegateDestruct(cx_typeof(o)->real, o);
+            cx_delegateDestruct(cx_typeof(o), o);
         } else if (cx_class_instanceof(cx_procedure_o, t)) {
             /* Call unbind */
             cx_procedure_unbind(cx_procedure(cx_typeof(o)), o);
@@ -550,12 +550,12 @@ static cx_bool cx__checkStateXOR(cx_object o, cx_uint8 state) {
 static int cx_adopt(cx_object parent, cx_object child) {
     cx__object *_parent, *_child;
     cx__scope *p_scope, *c_scope;
-    cx_typedef parentType;
+    cx_type parentType;
     cx_type childType;
 
     _parent = CX_OFFSET(parent, -sizeof(cx__object));
     _child = CX_OFFSET(child, -sizeof(cx__object));
-    childType = cx_typeof(child)->real;
+    childType = cx_typeof(child);
 
     /* Parent must be a valid object */
     if (!cx_checkState(parent, CX_VALID)) {
@@ -755,7 +755,7 @@ cx_int16 cx_delegateInit(cx_type t, cx_object o) {
 }
 
 /* Create new object with attributes */
-cx_object cx_new_ext(cx_object src, cx_typedef type, cx_uint8 attrs, cx_string context) {
+cx_object cx_new_ext(cx_object src, cx_type type, cx_uint8 attrs, cx_string context) {
     cx_uint32 size, headerSize;
     cx__object* o;
     
@@ -765,7 +765,7 @@ cx_object cx_new_ext(cx_object src, cx_typedef type, cx_uint8 attrs, cx_string c
     headerSize = sizeof(cx__object);
 
     /* Get size of type */
-    size = cx_type_allocSize(type->real);
+    size = cx_type_allocSize(type);
 
     /* Calculate size of attributes */
     if (attrs & CX_ATTR_SCOPED) {
@@ -798,8 +798,8 @@ cx_object cx_new_ext(cx_object src, cx_typedef type, cx_uint8 attrs, cx_string c
             o->attrs.scope = TRUE;
         }
         if (attrs & CX_ATTR_WRITABLE) {
-            if (type->real->kind == CX_VOID) {
-                if (!type->real->reference) {
+            if (type->kind == CX_VOID) {
+                if (!type->reference) {
                     cx_warning("cx_new_ext: writable void object created.");
                 }
             }
@@ -814,7 +814,7 @@ cx_object cx_new_ext(cx_object src, cx_typedef type, cx_uint8 attrs, cx_string c
         o->attrs.state = CX_VALID | CX_DECLARED;
 
         /* void objects, primitives and references are instantly defined because they have no value. */
-        if ((type->real->kind == CX_VOID) || (type->real->kind == CX_PRIMITIVE)) {
+        if ((type->kind == CX_VOID) || (type->kind == CX_PRIMITIVE)) {
             o->attrs.state |= CX_DEFINED;
         }
 
@@ -825,7 +825,7 @@ cx_object cx_new_ext(cx_object src, cx_typedef type, cx_uint8 attrs, cx_string c
             cx_init(CX_OFFSET(o, sizeof(cx__object)));
             
             /* Call initializer */
-            if (cx_delegateInit(type->real, CX_OFFSET(o, sizeof(cx__object)))) {
+            if (cx_delegateInit(type, CX_OFFSET(o, sizeof(cx__object)))) {
                 goto error;
             }
             /* Add object to anonymous cache */
@@ -842,10 +842,10 @@ error:
 }
 
 /* Create new object */
-cx_object cx_new(cx_typedef type) {
+cx_object cx_new(cx_type type) {
     int attr;
 
-    if (type->real->kind == CX_VOID) {
+    if (type->kind == CX_VOID) {
         attr = CX_ATTR_OBSERVABLE;
     } else {
         attr = CX_ATTR_WRITABLE | CX_ATTR_OBSERVABLE;
@@ -855,7 +855,7 @@ cx_object cx_new(cx_typedef type) {
 }
 
 /* Declare object */
-cx_object cx_declare(cx_object parent, cx_string name, cx_typedef type) {
+cx_object cx_declare(cx_object parent, cx_string name, cx_type type) {
     cx_object o;
     cx_uint8 state;
 
@@ -871,14 +871,14 @@ cx_object cx_declare(cx_object parent, cx_string name, cx_typedef type) {
     }
 
     /* Pointer must be of type-class */
-    if (!cx_class_instanceof(cx_typedef_o, type)) {
+    if (!cx_class_instanceof(cx_type_o, type)) {
         cx_id pid, tid;
         cx_error("failed to declare object '%s' in scope '%s': object '%s' is not- or does not refer a type", name, cx_fullname(parent, pid), cx_fullname(type, tid));
         goto error;
     }
 
     /* When the object is of a void-type, it should not be writable. */
-    if (type->real->kind != CX_VOID) {
+    if (type->kind != CX_VOID) {
         state = CX_ATTR_SCOPED | CX_ATTR_WRITABLE | CX_ATTR_OBSERVABLE;
     } else {
         state = CX_ATTR_SCOPED | CX_ATTR_OBSERVABLE;
@@ -911,7 +911,7 @@ cx_object cx_declare(cx_object parent, cx_string name, cx_typedef type) {
                 cx_init(o);
 
                 /* Init object value */
-                if (cx_delegateInit(cx_typeof(o)->real, o)) {
+                if (cx_delegateInit(cx_typeof(o), o)) {
                     cx_invalidate(o);
                     goto error;
                 }
@@ -970,7 +970,7 @@ cx_int16 cx_define(cx_object o) {
 
     result = 0;
     _o = CX_OFFSET(o, -sizeof(cx__object));
-    t = cx_typeof(o)->real;
+    t = cx_typeof(o);
 
     /* Only define valid, undefined objects */
     if (cx_checkState(o, CX_VALID | CX_DECLARED) && !cx_checkState(o, CX_DEFINED)) {
@@ -1027,7 +1027,7 @@ void cx_invalidate(cx_object o) {
 }
 
 /* Get type */
-cx_typedef cx_typeof(cx_object o) {
+cx_type cx_typeof(cx_object o) {
     cx__object* _o = CX_OFFSET(o, -sizeof(cx__object));
     return _o->type;
 }
@@ -1066,34 +1066,34 @@ cx_bool cx_checkAttr(cx_object o, cx_int8 attr) {
     return result;
 }
 
-cx_bool cx_instanceof(cx_typedef type, cx_object o) {
-    cx_typedef objectType = cx_typeof(o);
+cx_bool cx_instanceof(cx_type type, cx_object o) {
+    cx_type objectType = cx_typeof(o);
     cx_bool result = TRUE;
 
-    if (type->real != objectType->real) {
+    if (type != objectType) {
         cx_type t;
 
         result = FALSE;
-        t = cx_typeof(o)->real;
+        t = cx_typeof(o);
 
-        if (t->kind == type->real->kind) {
-            switch(type->real->kind) {
+        if (t->kind == type->kind) {
+            switch(type->kind) {
             case CX_COMPOSITE: {
-                if (cx_interface(type->real)->kind == CX_DELEGATE) {
+                if (cx_interface(type)->kind == CX_DELEGATE) {
                     /*result = cx_delegate_instanceof(cx_delegate(type), o);*/
                 } else {
                     cx_interface p;
                     p = (cx_interface)t;
 
                     while(p && !result) {
-                        result = (p == (cx_interface)type->real);
+                        result = (p == (cx_interface)type);
                         p = p->base;
                     }
                 }
                 break;
             }
             case CX_PRIMITIVE:
-                switch(cx_primitive(type->real)->kind) {
+                switch(cx_primitive(type)->kind) {
                 case CX_ENUM:
                 case CX_BITMASK:
                     if (cx_parentof(o) == type) {
@@ -1766,7 +1766,7 @@ static cx_char* cx_resolveAnonymous(cx_object src, cx_object scope, cx_object o,
     cx_object result;
     cx_string_deser_t data;
 
-    result = cx_new_ext(NULL, cx_typedef(o), (cx_typedef(o)->real->kind == CX_VOID) ? CX_ATTR_WRITABLE : 0, "Create anonymous object");
+    result = cx_new_ext(NULL, cx_type(o), (cx_type(o)->kind == CX_VOID) ? CX_ATTR_WRITABLE : 0, "Create anonymous object");
     data.out = result;
     data.scope = scope;
     data.type = NULL;
@@ -2717,7 +2717,7 @@ cx_int32 cx_waitfor(cx_object observable) {
         waitAdmin->semaphore = cx_semNew(0);
 
         /* Create observer */
-        observer = cx_new(cx_typedef(cx_observer_o));
+        observer = cx_new(cx_type(cx_observer_o));
         cx_function(observer)->impl = (cx_word)__cx_waitObserver;
         cx_function(observer)->implData = (cx_word)cx_waitObserver;
         cx_function(observer)->kind = CX_PROCEDURE_CDECL;
@@ -3043,7 +3043,7 @@ error:
 /* Helper functions for overloading */
 cx_uint32 cx_overloadParamCount(cx_object o) {
     cx_uint32 result;
-    if (cx_interface(cx_typeof(o)->real)->kind == CX_PROCEDURE) {
+    if (cx_interface(cx_typeof(o))->kind == CX_PROCEDURE) {
         result = cx_function(o)->parameters.length;
     } else {
         result = cx_delegate(cx_typeof(o))->parameters.length;
@@ -3071,7 +3071,7 @@ cx_type cx_overloadParamType(cx_object object, cx_int32 i, cx_bool *reference) {
         if (reference) *reference = FALSE;
     }
 
-    return cx_typedef(cx_resolve(object, buffer))->real;
+    return cx_type(cx_resolve(object, buffer));
 error:
     cx_error("failed to obtain parameter %d from signature %s", i, signature);
     return NULL;
@@ -3170,7 +3170,7 @@ nomatch:
 
 /* Create signature from delegate */
 static void cx_signatureFromDelegate(cx_object o, cx_id buffer) {
-    cx_delegate type = cx_delegate(cx_typeof(o)->real);
+    cx_delegate type = cx_delegate(cx_typeof(o));
     cx_uint32 i;
 
     /* Construct signature */
@@ -3188,7 +3188,7 @@ static void cx_signatureFromDelegate(cx_object o, cx_id buffer) {
 
 /* Obtain signature from object */
 cx_int16 cx_signature(cx_object object, cx_id buffer) {
-    cx_type t = cx_typeof(object)->real;
+    cx_type t = cx_typeof(object);
 
     if (t->kind != CX_COMPOSITE) {
         goto error;
@@ -3280,7 +3280,7 @@ cx_int16 cx_overload(cx_object object, cx_string requested, cx_int32* distance, 
             } else {
                 r_type = cx_resolve(object, r_typeName);
                 if (r_type) {
-                    r_type = cx_typedef(r_type)->real;
+                    r_type = cx_type(r_type);
                 }
             }
 
@@ -3335,7 +3335,7 @@ int cx_lookupFunctionWalk(cx_object o, void* userData) {
     data = userData;
 
     /* If current object is a function, match it */
-    if ((cx_typeof(o)->real->kind == CX_COMPOSITE) && 
+    if ((cx_typeof(o)->kind == CX_COMPOSITE) && 
         ((cx_interface(cx_typeof(o))->kind == CX_PROCEDURE) || 
         (cx_interface(cx_typeof(o))->kind == CX_DELEGATE))) {
         if (strchr(data->request, '(')) {
@@ -3444,7 +3444,7 @@ cx_string cx_signatureOpen(cx_string name) {
     return result;
 }
 
-cx_string cx_signatureAdd(cx_string sig, cx_typedef type, int flags) {
+cx_string cx_signatureAdd(cx_string sig, cx_type type, int flags) {
     cx_uint32 len;
     cx_string result;
     cx_id id;
@@ -3577,12 +3577,12 @@ cx_object cx_fromString(cx_string string) {
 }
 
 /* Deserialize object from string */
-void *cx_valueFromString(cx_string string, void* out, cx_typedef type) {
+void *cx_valueFromString(cx_string string, void* out, cx_type type) {
     cx_string_deser_t serData;
 
     serData.out = out;
     serData.scope = NULL;
-    serData.type = type->real;
+    serData.type = type;
     if (!cx_string_deser(string, &serData)) {
         cx_assert(!serData.out, "deserializer failed but out is set");
     }
@@ -3594,10 +3594,10 @@ void *cx_valueFromString(cx_string string, void* out, cx_typedef type) {
 cx_equalityKind cx_compare(cx_object o1, cx_object o2) {
     cx_any a1, a2;
     a1.value = o1;
-    a1.type = cx_typeof(o1)->real;
+    a1.type = cx_typeof(o1);
     a1.owner = FALSE;
     a2.value = o2;
-    a2.type = cx_typeof(o2)->real;
+    a2.type = cx_typeof(o2);
     a2.owner = FALSE;
     return cx_type_compare(a1, a2);
 }
@@ -3610,8 +3610,8 @@ cx_equalityKind cx_valueCompare(cx_value *value1, cx_value *value2) {
 
     v1 = cx_valueValue(value1);
     v2 = cx_valueValue(value2);
-    t1 = cx_valueType(value1)->real;
-    t2 = cx_valueType(value2)->real;
+    t1 = cx_valueType(value1);
+    t2 = cx_valueType(value2);
 
     a1.value = v1;
     a1.type = t1;
@@ -3624,7 +3624,7 @@ cx_equalityKind cx_valueCompare(cx_value *value1, cx_value *value2) {
 
 /* Init object */
 cx_int16 cx_init(cx_object o) {
-    cx_typeKind kind = cx_typeof(o)->real->kind;
+    cx_typeKind kind = cx_typeof(o)->kind;
     switch(kind) {
         case CX_COMPOSITE:
         case CX_COLLECTION: {
@@ -3646,7 +3646,7 @@ cx_int16 cx_initValue(cx_value *v) {
 
 /* Deinit object */
 cx_int16 cx_deinit(cx_object o) {
-    cx_typeKind kind = cx_typeof(o)->real->kind;
+    cx_typeKind kind = cx_typeof(o)->kind;
     switch(kind) {
         case CX_COMPOSITE:
         case CX_COLLECTION: {
@@ -3686,23 +3686,23 @@ cx_int16 cx_valueCopy(cx_value *dst, cx_value *src) {
     return result;
 }
 
-cx_object cx_cortex_new(cx_typedef type) {
+cx_object cx_cortex_new(cx_type type) {
     return cx_new(type);
 }
 
-cx_object cx_cortex__new(cx_typedef type, cx_attr attributes) {
+cx_object cx_cortex__new(cx_type type, cx_attr attributes) {
     return cx_new_ext(NULL, type, attributes, NULL);
 }
 
 void __cx_cortex_new(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
-    *(cx_object*)result = cx_cortex_new(*(cx_typedef*)args);
+    *(cx_object*)result = cx_cortex_new(*(cx_type*)args);
 }
 
 void __cx_cortex__new(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_object*)result = cx_cortex__new(
-        *(cx_typedef*)args,
-        *(cx_attr*)((intptr_t)args + sizeof(cx_typedef)));
+        *(cx_type*)args,
+        *(cx_attr*)((intptr_t)args + sizeof(cx_type)));
 }
 

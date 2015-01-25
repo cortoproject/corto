@@ -14,7 +14,7 @@
 static cx_bool cx_iterator_hasNext_array(cx_collection collection, cx_void *array, void *element) {
     cx_assert(array != NULL, "array corrupt");
     int result = 0;
-    cx_type elementType = collection->elementType->real;
+    cx_type elementType = collection->elementType;
     cx_uint32 elementSize = cx_type_sizeof(elementType);
     cx_uint32 length = collection->max;
     if (element  < CX_OFFSET(array, elementSize * length)) {
@@ -27,7 +27,7 @@ static int cx_iterator_next_array(cx_collection collection, cx_void *array, void
     cx_assert(array != NULL, "array corrupt");
     int result;
     result = 1;
-    cx_type elementType = collection->elementType->real;
+    cx_type elementType = collection->elementType;
     cx_uint32 elementSize = cx_type_sizeof(elementType);
     cx_uint32 length = collection->max;
     void *element = *elementPtr;
@@ -95,7 +95,7 @@ cx_any cx_iterator_next(cx_any _this) {
         cx_critical("reached end of collection while attempting to retrieve next");
     }
     cx_any result;
-    result.type = iterator->type->elementType->real;
+    result.type = iterator->type->elementType;
     result.value = iterator->element;
     result.owner = FALSE;
     return result;

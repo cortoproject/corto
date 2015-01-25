@@ -15,7 +15,7 @@ cx_int16 cx_ser_initCollection(cx_serializer s, cx_value* v, void* userData) {
     cx_type t;
     void* o;
     
-    t = cx_valueType(v)->real;
+    t = cx_valueType(v);
     o = cx_valueValue(v);
     
     switch(cx_collection(t)->kind) {

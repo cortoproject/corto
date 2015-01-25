@@ -22,8 +22,8 @@
 
 #include "string.h"
 
-cx_typedef cx_valueType(cx_value* val) {
-    cx_typedef result;
+cx_type cx_valueType(cx_value* val) {
+    cx_type result;
 
     switch(val->kind) {
     case CX_OBJECT:
@@ -38,22 +38,22 @@ cx_typedef cx_valueType(cx_value* val) {
     case CX_LITERAL:
         switch(val->is.literal.kind) {
         case CX_LITERAL_BOOLEAN:
-            result = cx_typedef(cx_bool_o);
+            result = cx_type(cx_bool_o);
             break;
         case CX_LITERAL_CHARACTER:
-            result = cx_typedef(cx_char_o);
+            result = cx_type(cx_char_o);
             break;
         case CX_LITERAL_INTEGER:
-            result = cx_typedef(cx_int64_o);
+            result = cx_type(cx_int64_o);
             break;
         case CX_LITERAL_UNSIGNED_INTEGER:
-            result = cx_typedef(cx_uint64_o);
+            result = cx_type(cx_uint64_o);
             break;
         case CX_LITERAL_FLOATING_POINT:
-            result = cx_typedef(cx_float64_o);
+            result = cx_type(cx_float64_o);
             break;
         case CX_LITERAL_STRING:
-            result = cx_typedef(cx_string_o);
+            result = cx_type(cx_string_o);
             break;
         default:
             cx_critical("cx_valueType: invalid cx_literalKind(%d)", val->is.literal.kind);
@@ -357,14 +357,14 @@ void cx_valueObjectInit(cx_value* val, cx_object o) {
     val->is.o = o;
 }
 
-void cx_valueBaseInit(cx_value* val, cx_void *v, cx_typedef t) {
+void cx_valueBaseInit(cx_value* val, cx_void *v, cx_type t) {
     val->kind = CX_BASE;
     val->parent = NULL;
     val->is.base.v = v;
     val->is.base.t = t;
 }
 
-void cx_valueValueInit(cx_value* val, cx_object o, cx_typedef t, cx_void* v) {
+void cx_valueValueInit(cx_value* val, cx_object o, cx_type t, cx_void* v) {
     val->kind = CX_VALUE;
     val->parent = NULL;
     val->is.value.o = o;
@@ -391,7 +391,7 @@ void cx_valueConstantInit(cx_value* val, cx_object o, cx_constant* t, cx_void* v
     val->is.constant.t = t;
     val->is.constant.v = v;
 }
-void cx_valueElementInit(cx_value* val, cx_object o, cx_typedef t, cx_uint32 index, cx_void* v) {
+void cx_valueElementInit(cx_value* val, cx_object o, cx_type t, cx_uint32 index, cx_void* v) {
     val->kind = CX_ELEMENT;
     val->parent = NULL;
     val->is.element.o = o;
@@ -400,7 +400,7 @@ void cx_valueElementInit(cx_value* val, cx_object o, cx_typedef t, cx_uint32 ind
     val->is.element.v = v;
 }
 
-void cx_valueMapElementInit(cx_value* val, cx_object o, cx_typedef t, cx_typedef keyType, cx_void *key, cx_void* v) {
+void cx_valueMapElementInit(cx_value* val, cx_object o, cx_type t, cx_type keyType, cx_void *key, cx_void* v) {
     val->kind = CX_MAP_ELEMENT;
     val->parent = NULL;
     val->is.mapElement.o = o;

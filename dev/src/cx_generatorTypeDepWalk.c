@@ -186,7 +186,7 @@ static int cx_genTypeInterfaceDependencies(cx_interface t, cx_bool allowDeclared
 
     /* Serialize base */
     if (cx_interface(t)->base)  {
-        if (cx_genTypeParse(cx_typedef(cx_interface(t)->base), FALSE, recursion, data)) {
+        if (cx_genTypeParse(cx_type(cx_interface(t)->base), FALSE, recursion, data)) {
             goto error;
         }
 
@@ -199,7 +199,7 @@ static int cx_genTypeInterfaceDependencies(cx_interface t, cx_bool allowDeclared
     /* Walk members of composite type */
     for(i=0; i<t->members.length; i++) {
         m = t->members.buffer[i];
-        declAllowed = m->type->real->reference ? TRUE : allowDeclared;
+        declAllowed = m->type->reference ? TRUE : allowDeclared;
         if (cx_genTypeParse(m->type, declAllowed, recursion, data)) {
             goto error;
         }
@@ -270,80 +270,68 @@ error:
     return -1;
 }
 
-/* Resolve typedef dependencies */
-static int cx_genTypeTypedefDependencies(cx_typedef t, cx_bool allowDeclared, cx_bool* recursion, cx_genTypeWalk_t* data) {
-    return cx_genTypeParse(t->type, allowDeclared, recursion, data);
-}
-
 /* Serialize dependencies of a type */
 static int cx_genTypeDependencies(cx_object o, cx_bool allowDeclared, cx_bool* recursion, cx_genTypeWalk_t* data) {
-    cx_typedef t;
+    cx_type t;
 
-    t = cx_typedef(o);
+    t = cx_type(o);
 
-    if (t != cx_typedef(t->real)) {
-        /* Dependencies of typedef */
-        if (cx_genTypeTypedefDependencies(t, allowDeclared, recursion, data)) {
+    switch(cx_type(t)->kind) {
+    case CX_VOID:
+        /* Void types can't have dependencies */
+        break;
+
+    case CX_ANY:
+        if (cx_genTypeAnyDependencies(cx_type(o), data)) {
             goto error;
         }
-    } else {
-        switch(cx_type(t)->kind) {
-        case CX_VOID:
-            /* Void types can't have dependencies */
-            break;
+        break;
 
-        case CX_ANY:
-            if (cx_genTypeAnyDependencies(cx_type(o), data)) {
+    /* Primitives can't have dependencies */
+    case CX_PRIMITIVE:
+        break;
+
+    /* Serialize dependencies of composite type */
+    case CX_COMPOSITE:
+        switch(cx_interface(o)->kind) {
+        case CX_STRUCT:
+        case CX_INTERFACE:
+        case CX_CLASS:
+        case CX_DELEGATE:
+        case CX_PROCEDURE:
+            if (cx_genTypeInterfaceDependencies(cx_interface(o), allowDeclared, recursion, data)) {
                 goto error;
             }
             break;
+        }
+        break;
 
-        /* Primitives can't have dependencies */
-        case CX_PRIMITIVE:
-            break;
-
-        /* Serialize dependencies of composite type */
-        case CX_COMPOSITE:
-            switch(cx_interface(o)->kind) {
-            case CX_STRUCT:
-            case CX_INTERFACE:
-            case CX_CLASS:
-            case CX_DELEGATE:
-            case CX_PROCEDURE:
-                if (cx_genTypeInterfaceDependencies(cx_interface(o), allowDeclared, recursion, data)) {
-                    goto error;
-                }
-                break;
-            }
-            break;
-
-        /* Serialize dependencies of collection type */
-        case CX_COLLECTION:
-            switch(cx_collection(o)->kind) {
-            case CX_ARRAY:
-            case CX_SEQUENCE:
-            case CX_LIST:
-                if (cx_genTypeCollectionDependencies(cx_collection(o), allowDeclared, recursion, data)) {
-                    goto error;
-                }
-                break;
-            case CX_MAP:
-                if (cx_genTypeMapDependencies(cx_map(o), allowDeclared, recursion, data)) {
-                    goto error;
-                }
-                break;
-            }
-            break;
-        case CX_ITERATOR:
-            if (cx_genTypeIteratorDependencies(cx_iterator(o), allowDeclared, recursion, data)) {
+    /* Serialize dependencies of collection type */
+    case CX_COLLECTION:
+        switch(cx_collection(o)->kind) {
+        case CX_ARRAY:
+        case CX_SEQUENCE:
+        case CX_LIST:
+            if (cx_genTypeCollectionDependencies(cx_collection(o), allowDeclared, recursion, data)) {
                 goto error;
             }
             break;
-        default:
-            cx_error("cx_genTypeDependencies: typeKind '%s' not handled by code-generator.", cx_nameof(cx_enum_constant(cx_typeKind_o, cx_type(t)->kind)));
-            goto error;
+        case CX_MAP:
+            if (cx_genTypeMapDependencies(cx_map(o), allowDeclared, recursion, data)) {
+                goto error;
+            }
             break;
         }
+        break;
+    case CX_ITERATOR:
+        if (cx_genTypeIteratorDependencies(cx_iterator(o), allowDeclared, recursion, data)) {
+            goto error;
+        }
+        break;
+    default:
+        cx_error("cx_genTypeDependencies: typeKind '%s' not handled by code-generator.", cx_nameof(cx_enum_constant(cx_typeKind_o, cx_type(t)->kind)));
+        goto error;
+        break;
     }
 
     return 0;
@@ -408,7 +396,7 @@ static int cx_genTypeParse(cx_object o, cx_bool allowDeclared, cx_bool* recursio
     /* Only parse if type has not yet been parsed. */
     if (g_mustParse(data->g, o) && !cx_genTypeIsParsed(o, data)) {
         /* Only generate code for types */
-        if (cx_class_instanceof(cx_typedef_o, o)) {
+        if (cx_class_instanceof(cx_type_o, o)) {
             struct cx_genTypeDeclaration* decl;
 
             /* Detect cycles */
@@ -456,10 +444,10 @@ static int cx_genTypeParse(cx_object o, cx_bool allowDeclared, cx_bool* recursio
 
                     /* If an typedef object equals it's real pointer, than it's the type itself. Otherwise it
                      * is a typedef. */
-                    if (cx_typedef(o)->real != o) {
+                    if (cx_type(o) != o) {
                         if (data->onDefine(o, data->userData)) goto error;
                     } else {
-                        switch(cx_typedef(o)->real->kind) {
+                        switch(cx_type(o)->kind) {
                         case CX_COMPOSITE:
                             /* Composite types must be forward-declared */
                             if (!decl->printed) {

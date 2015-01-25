@@ -44,22 +44,10 @@ extern "C" {
 #define cx_struct(o) ((cx_struct)o)
 #define cx_text(o) ((cx_text)o)
 #define cx_type(o) ((cx_type)o)
-#define cx_typedef(o) ((cx_typedef)o)
 #define cx_uint(o) ((cx_uint)o)
 #define cx_virtual(o) ((cx_virtual)o)
 
 /* Type definitions */
-/*  ::cortex::lang::typedef */
-CX_CLASS(cx_typedef);
-
-/*  ::cortex::lang::type */
-CX_CLASS(cx_type);
-
-CX_CLASS_DEF(cx_typedef) {
-    cx_typedef type;
-    cx_type real;
-};
-
 /* ::cortex::lang::typeKind */
 typedef enum cx_typeKind {
     CX_VOID = 0,
@@ -78,6 +66,9 @@ typedef uint32_t cx_uint32;
 
 /* ::cortex::lang::uint16 */
 typedef uint16_t cx_uint16;
+
+/*  ::cortex::lang::type */
+CX_CLASS(cx_type);
 
 /* ::cortex::lang::state */
 CX_BITMASK(cx_state);
@@ -103,7 +94,7 @@ typedef struct cx_parameter cx_parameter;
 
 struct cx_parameter {
     cx_string name;
-    cx_typedef type;
+    cx_type type;
     cx_bool passByReference;
 };
 
@@ -113,7 +104,7 @@ CX_SEQUENCE(cx_parameterSeq, cx_parameter,);
 CX_CLASS(cx_function);
 
 CX_CLASS_DEF(cx_function) {
-    cx_typedef returnType;
+    cx_type returnType;
     cx_bool returnsReference;
     cx_bool overloaded;
     cx_uint32 kind;
@@ -143,15 +134,14 @@ struct cx_callbackInit {
 };
 
 CX_CLASS_DEF(cx_type) {
-    CX_EXTEND(cx_typedef);
     cx_typeKind kind;
     cx_bool reference;
     cx_bool hasResources;
     cx_uint32 templateId;
     cx_uint32 size;
     cx_uint16 alignment;
-    cx_typedef defaultType;
-    cx_typedef parentType;
+    cx_type defaultType;
+    cx_type parentType;
     cx_state parentState;
     cx_vtable metaprocedures;
     cx_callbackInit init;
@@ -218,7 +208,7 @@ CX_CLASS(cx_collection);
 CX_CLASS_DEF(cx_collection) {
     CX_EXTEND(cx_type);
     cx_collectionKind kind;
-    cx_typedef elementType;
+    cx_type elementType;
     cx_uint32 max;
 };
 
@@ -227,7 +217,7 @@ CX_CLASS(cx_array);
 
 CX_CLASS_DEF(cx_array) {
     CX_EXTEND(cx_collection);
-    cx_typedef elementType;
+    cx_type elementType;
 };
 
 /* ::cortex::lang::attr */
@@ -305,7 +295,7 @@ CX_BITMASK(cx_modifier);
 CX_CLASS(cx_member);
 
 CX_CLASS_DEF(cx_member) {
-    cx_typedef type;
+    cx_type type;
     cx_modifier modifiers;
     cx_state state;
     cx_bool weak;
@@ -399,7 +389,7 @@ CX_CLASS(cx_delegate);
 
 CX_CLASS_DEF(cx_delegate) {
     CX_EXTEND(cx_struct);
-    cx_typedef returnType;
+    cx_type returnType;
     cx_bool returnsReference;
     cx_parameterSeq parameters;
 };
@@ -458,7 +448,7 @@ CX_CLASS(cx_iterator);
 
 CX_CLASS_DEF(cx_iterator) {
     CX_EXTEND(cx_type);
-    cx_typedef elementType;
+    cx_type elementType;
 };
 
 /*  ::cortex::lang::list */
@@ -473,8 +463,8 @@ CX_CLASS(cx_map);
 
 CX_CLASS_DEF(cx_map) {
     CX_EXTEND(cx_collection);
-    cx_typedef elementType;
-    cx_typedef keyType;
+    cx_type elementType;
+    cx_type keyType;
     cx_uint32 max;
 };
 

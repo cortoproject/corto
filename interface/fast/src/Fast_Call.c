@@ -28,7 +28,7 @@ cx_int16 Fast_Call_insertCasts(Fast_Call _this) {
         argumentIter = cx_llIter(arguments);
         while(cx_iterHasNext(&argumentIter)) {
             argument = cx_iterNext(&argumentIter);
-            parameterType = _this->parameters.buffer[i].type->real;
+            parameterType = _this->parameters.buffer[i].type;
             argumentType = Fast_Expression_getType(argument);
 
             if (_this->parameters.buffer[i].passByReference) {
@@ -194,7 +194,7 @@ cx_ic Fast_Call_toIc_v(Fast_Call _this, cx_icProgram program, cx_icStorage stora
             argumentId++;
 
             /* If parameterType is any and argument is not, push value as any */
-            paramType = _this->parameters.buffer[i].type->real;
+            paramType = _this->parameters.buffer[i].type;
             exprType = Fast_Expression_getType(argument);
 
             if (paramType->kind == CX_ANY) {

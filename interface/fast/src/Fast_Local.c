@@ -20,7 +20,7 @@ cx_int16 Fast_Local_construct(Fast_Local _this) {
     Fast_Node(_this)->kind = FAST_Variable;
     Fast_Variable(_this)->kind = FAST_Local;
     Fast_Expression(_this)->type = 
-        Fast_Variable(Fast_Object__create(cx_typedef(Fast_ObjectBase(_this->type)->value)->real));
+        Fast_Variable(Fast_Object__create(cx_type(Fast_ObjectBase(_this->type)->value)));
     _this->isReference |= Fast_Expression_getType(Fast_Expression(_this))->reference;
     Fast_Expression(_this)->isReference = _this->isReference;
 

@@ -527,7 +527,7 @@ cx_icObject cx_icObject__create(cx_icProgram program, cx_uint32 line, cx_object 
         cx_type t;
         result = cx_calloc(sizeof(cx_icObject_s));
         if (ptr) {
-            t = cx_typeof(ptr)->real;
+            t = cx_typeof(ptr);
         } else {
             t = cx_object_o;
         }
@@ -574,7 +574,7 @@ cx_icMember cx_icMember__create(cx_icProgram program, cx_uint32 line, cx_icStora
 
     if (!(result = (cx_icMember)cx_icProgram_lookupStorage(program, name, TRUE))) {
         result = cx_calloc(sizeof(cx_icMember_s));
-        cx_icStorage_init((cx_icStorage)result, program, line, CX_STORAGE_MEMBER, name, member->type->real);
+        cx_icStorage_init((cx_icStorage)result, program, line, CX_STORAGE_MEMBER, name, member->type);
         result->base = base;
         result->member = member;
         cx_llAppend(program->scope->storages, result);

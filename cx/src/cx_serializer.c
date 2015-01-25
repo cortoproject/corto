@@ -28,7 +28,7 @@ cx_int16 cx_serializeValue(cx_serializer _this, cx_value* info, void* userData) 
     cx_int16 result;
     cx_serializerCallback cb;
 
-    t = cx_valueType(info)->real;
+    t = cx_valueType(info);
 
     cb = NULL;
 
@@ -162,7 +162,7 @@ cx_int16 cx_serializeAny(cx_serializer _this, cx_value* info, void* userData) {
 
     any = cx_valueValue(info);
     v.parent = info;
-    cx_valueValueInit(&v, cx_valueObject(info), (cx_typedef)any->type, any->value);
+    cx_valueValueInit(&v, cx_valueObject(info), (cx_type)any->type, any->value);
 
     return cx_serializeValue(_this, &v, userData);
 }
@@ -177,7 +177,7 @@ cx_int16 cx_serializeMembers(cx_serializer _this, cx_value* info, void* userData
     cx_serializerCallback cb;
     cx_object o;
 
-    t = cx_interface(cx_valueType(info)->real);
+    t = cx_interface(cx_valueType(info));
     v = cx_valueValue(info);
     o = cx_valueObject(info);
 
@@ -195,7 +195,7 @@ cx_int16 cx_serializeMembers(cx_serializer _this, cx_value* info, void* userData
             base.kind = CX_BASE;
             base.parent = info;
             base.is.base.v = v;
-            base.is.base.t = cx_typedef(cx_interface(t)->base);
+            base.is.base.t = cx_type(cx_interface(t)->base);
             base.is.base.o = o;
 #ifdef CX_SERIALIZER_TRACING
             {
@@ -288,7 +288,7 @@ cx_int16 cx_serializeElements(cx_serializer _this, cx_value* info, void* userDat
     cx_void* v;
     cx_value elementInfo;
 
-    t = cx_collection(cx_valueType(info)->real);
+    t = cx_collection(cx_valueType(info));
     v = cx_valueValue(info);
 
     /* Value object for element */

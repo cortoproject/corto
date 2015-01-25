@@ -1,6 +1,5 @@
 /* tc_event__type.h
  *
- *  Generated on Feb  5 2014
  *    Type-definitions for C-language.
  *    This file contains generated code. Do not modify!
  */
@@ -10,26 +9,12 @@
 
 #include "cortex.h"
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* Casting macro's for classes */
-#define tc_Point(o) ((tc_Point)o)
+#define tc_event_Point(o) ((tc_event_Point)o)
 
 /* Type definitions */
-
-
-/*  ::tc_event::Point */
-CX_CLASS(tc_Point);
-CX_CLASS_DEF(tc_Point) {
-    cx_uint32 x;
-    cx_uint32 y;
-};
-typedef cx_uint32 tc_value;
-
-#ifdef __cplusplus
-}
-#endif
-#endif
-

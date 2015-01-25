@@ -22,9 +22,9 @@ cx_int16 cx_constant_init(cx_constant *_this) {
     parent = cx_parentof(_this);
 
     /* Parent must be an enum */
-    if (cx_typeof(parent) == cx_typedef(cx_enum_o)) {
+    if (cx_typeof(parent) == cx_type(cx_enum_o)) {
         cx__enum_bindConstant(parent, _this);
-    } else if (cx_typeof(parent) == cx_typedef(cx_bitmask_o)) {
+    } else if (cx_typeof(parent) == cx_type(cx_bitmask_o)) {
         cx__bitmask_bindConstant(parent, _this);
     } else {
         cx_id id;

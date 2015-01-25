@@ -31,7 +31,7 @@ int cx_list_insertWalk(void* o, void* userData) {
     cx_list_insertWalk_t *data = userData;
     cx_any src;
     src.value = o;
-    src.type = cx_collection(data->dest->type)->elementType->real;
+    src.type = cx_collection(data->dest->type)->elementType;
     src.owner = FALSE;
     cx_list_do(*data->dest, src, TRUE, cx_list_insertListAction, data);
     return 1;
@@ -42,7 +42,7 @@ int cx_list_appendWalk(void* o, void* userData) {
     cx_any *dest = userData;
     cx_any src;
     src.value = o;
-    src.type = cx_collection(dest->type)->elementType->real;
+    src.type = cx_collection(dest->type)->elementType;
     src.owner = FALSE;
     cx_list_append_any(*dest, src);
     return 1;
@@ -65,11 +65,10 @@ static void cx_list_do(cx_any object, cx_any element, cx_bool insert, cx_list_ac
             walkData.iter = cx_llIter(list);
             walkData.dest = &object;
             cx_llWalk(*(cx_ll*)element.value, cx_list_insertWalk, &walkData);
-            doCopy = FALSE;
-            
+            doCopy = FALSE;        
         }
     } else if (cx_collection_elementRequiresAlloc(cx_collection(object.type))) {
-        cx_uint32 size = cx_type_sizeof(cx_collection(object.type)->elementType->real);
+        cx_uint32 size = cx_type_sizeof(cx_collection(object.type)->elementType);
         value = cx_calloc(size);
         cx_valueValueInit(&dst, NULL, cx_collection(object.type)->elementType, value);
         cx_initValue(&dst);
@@ -78,7 +77,11 @@ static void cx_list_do(cx_any object, cx_any element, cx_bool insert, cx_list_ac
         value = NULL;
         cx_valueValueInit(&dst, NULL, cx_collection(object.type)->elementType, &value);
         cx_initValue(&dst);
-        cx_valueValueInit(&src, NULL, cx_collection(object.type)->elementType, element.value);
+        if (element.type->reference) {
+            cx_valueValueInit(&src, NULL, cx_collection(object.type)->elementType, &element.value);
+        } else {
+            cx_valueValueInit(&src, NULL, cx_collection(object.type)->elementType, element.value);
+        }
     }
     
     if (doCopy) {
@@ -103,7 +106,7 @@ static void* cx_list_do_(cx_any object, cx_bool insert) {
     cx_value dst;
     
     if (cx_collection_elementRequiresAlloc(cx_collection(object.type))) {
-        cx_uint32 size = cx_type_sizeof(cx_collection(object.type)->elementType->real);
+        cx_uint32 size = cx_type_sizeof(cx_collection(object.type)->elementType);
         value = cx_calloc(size);
         cx_valueValueInit(&dst, NULL, cx_collection(object.type)->elementType, value);
         cx_initValue(&dst);
@@ -134,7 +137,7 @@ static int cx_clearFreeValues(void* o, void* udata) {
 cx_any cx_list_append_(cx_any _this) {
 /* $begin(::cortex::lang::list::append()) */
     cx_any result;
-    result.type = cx_collection(_this.type)->elementType->real;
+    result.type = cx_collection(_this.type)->elementType;
     result.value = cx_list_do_(_this, FALSE);
     result.owner = FALSE;
     return result;
@@ -181,7 +184,7 @@ cx_int16 cx_list_init(cx_list _this) {
 cx_any cx_list_insert_(cx_any _this) {
 /* $begin(::cortex::lang::list::insert()) */
     cx_any result;
-    result.type = cx_collection(_this.type)->elementType->real;
+    result.type = cx_collection(_this.type)->elementType;
     result.value = cx_list_do_(_this, TRUE);
     result.owner = FALSE;
     return result;

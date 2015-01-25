@@ -136,7 +136,7 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value* v, void* userData) {
     result = NULL;
 
     data = (cx_string_ser_t*)userData;
-    t = cx_valueType(v)->real;
+    t = cx_valueType(v);
     o = cx_valueValue(v);
 
     /* If src is string and value is null, put NULL in result. */
@@ -278,7 +278,7 @@ static cx_int16 cx_ser_scope(cx_serializer s, cx_value* v, void* userData) {
     cx_type t;
 
     data = userData;
-    t = cx_valueType(v)->real;
+    t = cx_valueType(v);
     result = 0;
 
     /* Nested data has private itemCount, which prevents superfluous ',' to be added to the result. */
@@ -360,7 +360,7 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
         o = cx_valueObject(v);
         cx_fullname(cx_typeof(o), id);
 
-        if (cx_typeof(o)->real->kind != CX_PRIMITIVE) {
+        if (cx_typeof(o)->kind != CX_PRIMITIVE) {
             if (data->buffer) {
                 result = cx_malloc(strlen(data->buffer) + strlen(id) + 1);
                 sprintf(result, "%s%s", id, data->buffer);

@@ -46,7 +46,7 @@ static int c_interfaceMethodParameter(cx_parameter* o, void* userData) {
     if (data->generateSource) g_fileWrite(data->source, "%s ", specifier);
     if (data->generateHeader) g_fileWrite(data->header, "%s ", specifier);
 
-    if (o->passByReference || ((o->type->real->kind == CX_COMPOSITE) && !o->type->real->reference)) {
+    if (o->passByReference || ((o->type->kind == CX_COMPOSITE) && !o->type->reference)) {
         if (data->generateSource) g_fileWrite(data->source, "*");
         if (data->generateHeader) g_fileWrite(data->header, "*");
     }
@@ -129,7 +129,7 @@ static int c_interfaceGenerateVirtual(cx_method o, c_typeWalk_t* data) {
      * This file will be restored at the end of the function */
     data->source = data->wrapper;
 
-    if (((cx_function)o)->returnType && (cx_function(o)->returnType->real->kind != CX_VOID)) {
+    if (((cx_function)o)->returnType && (cx_function(o)->returnType->kind != CX_VOID)) {
         returnsValue = TRUE;
         c_specifierId(data->g, cx_function(o)->returnType, returnTypeId, NULL, returnPostfix);
     } else {
@@ -215,7 +215,7 @@ error:
 
 static char* c_functionName(cx_function o, cx_id id, c_typeWalk_t *data) {
     g_fullOid(data->g, o, id);
-    if(cx_instanceof(cx_typedef(cx_method_o), o)) {
+    if(cx_instanceof(cx_type(cx_method_o), o)) {
         if(cx_method(o)->virtual) {
             strcat(id, "_v");
         }
@@ -227,7 +227,7 @@ static char* c_functionName(cx_function o, cx_id id, c_typeWalk_t *data) {
 void c_procedureAddToSizeExpr(cx_type t, cx_bool isReference, c_typeWalk_t *data) {
     cx_id id, postfix;
 
-    c_specifierId(data->g, cx_typedef(t), id, NULL, postfix);
+    c_specifierId(data->g, cx_type(t), id, NULL, postfix);
     if (isReference || ((t->kind == CX_COMPOSITE) && !t->reference)) {
         strcpy(id, "void*");
     }
@@ -256,7 +256,7 @@ int c_procedureWrapperParam(cx_parameter* o, void* userData) {
     }
 
     /* Add type to size expression and add argument*/
-    c_procedureAddToSizeExpr(o->type->real, o->passByReference, data);
+    c_procedureAddToSizeExpr(o->type, o->passByReference, data);
 
     return 1;
 }
@@ -264,7 +264,7 @@ int c_procedureWrapperParam(cx_parameter* o, void* userData) {
 /* Generate a wrapper for a procedure */
 static int c_interfaceClassProcedureWrapper(cx_function o, c_typeWalk_t *data) {
     cx_id id, actualFunction;
-    cx_typedef returnType;
+    cx_type returnType;
     cx_id returnSpec, returnPostfix;
 
     *(data->sizeExpr) = '\0';
@@ -281,7 +281,7 @@ static int c_interfaceClassProcedureWrapper(cx_function o, c_typeWalk_t *data) {
         g_fileWrite(data->wrapper, "CX_UNUSED(args);\n");
     }
     returnType = ((cx_function)o)->returnType;
-    if (returnType && cx_type_sizeof(returnType->real)) {
+    if (returnType && cx_type_sizeof(returnType)) {
         c_specifierId(data->g, returnType, returnSpec, NULL, returnPostfix);
         g_fileWrite(data->wrapper, "*(%s%s*)result = ", returnSpec, returnPostfix);
     }else {
@@ -325,7 +325,7 @@ static int c_interfaceClassProcedure(cx_object o, void* userData) {
         cx_id id, returnSpec, returnPostfix;
         cx_string snippet, header;
         cx_procedureKind kind;
-        cx_typedef returnType;
+        cx_type returnType;
         cx_string doStubs = gen_getAttribute(data->g, "stubs");
 
         kind = cx_procedure(cx_typeof(o))->kind;
@@ -477,7 +477,7 @@ static int c_interfaceClassProcedure(cx_object o, void* userData) {
 
             g_fileWrite(data->source, " */\n");
 
-            if ((returnType->real->kind != CX_VOID) || (returnType->real->reference)) {
+            if ((returnType->kind != CX_VOID) || (returnType->reference)) {
                 cx_id specifier;
                 g_fullOid(data->g, returnType, specifier);
                 g_fileWrite(data->source, "%s _result;\n", specifier);
@@ -527,7 +527,7 @@ static int c_interfaceCheckProcedures(void* o, void* udata) {
     CX_UNUSED(udata);
 
     /* If the type of the type of the object is a procedure, return 0. */
-    if (cx_class_instanceof(cx_procedure_o, cx_typeof(o)->real)) {
+    if (cx_class_instanceof(cx_procedure_o, cx_typeof(o))) {
         return 0;
     }
     return 1;

@@ -91,7 +91,7 @@ cx_type Fast_Parser_initGetType(Fast_Initializer _this, cx_member *m_out) {
     if (_this->fp > 0) {
         t = _this->frames[_this->fp-1].type;
         if (_this->frames[_this->fp].isKey) {
-            result = cx_map(t)->keyType->real;
+            result = cx_map(t)->keyType;
         } else {
             switch(t->kind) {
             case CX_COMPOSITE: {
@@ -106,7 +106,7 @@ cx_type Fast_Parser_initGetType(Fast_Initializer _this, cx_member *m_out) {
                 walkData.current = 0;
                 cx_metaWalk(&s, t, &walkData);
                 if (walkData.m) {
-                    result = walkData.m->type->real;
+                    result = walkData.m->type;
                     if (m_out) {
                         *m_out = walkData.m;
                     }
@@ -120,7 +120,7 @@ cx_type Fast_Parser_initGetType(Fast_Initializer _this, cx_member *m_out) {
                 break;
             }
             case CX_COLLECTION:
-                result = cx_collection(t)->elementType->real;
+                result = cx_collection(t)->elementType;
                 break;
             default: {
                 /* If value is a non-composite type it can only have one initializer value. If there are more
@@ -248,8 +248,8 @@ cx_uint16 Fast_Initializer_initFrame(Fast_Initializer _this) {
         if (walkData.m) {
             _this->frames[_this->fp].location = walkData.id;
             cx_set(&_this->frames[_this->fp].member, walkData.m);
-            cx_set(&_this->frames[_this->fp].type, walkData.m->type->real);
-            /*cx_set(&yparser()->rvalueType, walkData.m->type->real);*/
+            cx_set(&_this->frames[_this->fp].type, walkData.m->type);
+            /*cx_set(&yparser()->rvalueType, walkData.m->type);*/
         } else {
             cx_set(&_this->frames[_this->fp].member, NULL);
             if (t->kind == CX_COLLECTION) {
@@ -287,8 +287,8 @@ cx_int32 Fast_Initializer_member_v(Fast_Initializer _this, cx_string name) {
     if (walkData.m) {
         _this->frames[_this->fp].location = walkData.id;
         cx_set(&_this->frames[_this->fp].member, walkData.m);
-        cx_set(&_this->frames[_this->fp].type, walkData.m->type->real);
-        /*cx_set(&yparser()->rvalueType, walkData.m->type->real);*/
+        cx_set(&_this->frames[_this->fp].type, walkData.m->type);
+        /*cx_set(&yparser()->rvalueType, walkData.m->type);*/
     } else {
         cx_id id;
         Fast_Parser_error(yparser(), "member '%s' invalid for type '%s'", name, cx_fullname(t, id));

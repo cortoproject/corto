@@ -8,10 +8,10 @@ void fail(string msg):
 struct Point::
     member x,y : int32
 
-typedef PointsArray : array{Point,3}
-typedef PointsSeq : sequence{Point,3}
-typedef PointsList : list{Point}
-typedef PointsMap : map{Point,string}
+array PointsArray : Point,3
+sequence PointsSeq : Point,3
+list PointsList : Point
+map PointsMap : Point,string
 
 // Validation of results
 PointsArray ints_aCheck : {10,20},{30,40},{50,60}

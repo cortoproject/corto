@@ -85,7 +85,7 @@ static cx_int32 html_jsonWalk(cx_object o, void *userData) {
     g_fileWrite(file, "var o = cx.root;\n");
     html_parentWalk(o, file);
 
-    if (cx_typeof(o)->real->kind != CX_VOID) {
+    if (cx_typeof(o)->kind != CX_VOID) {
         jsonData.serializeValue = TRUE;
         cx_serialize(&serializer, o, &jsonData);
         g_fileWrite(file, "o.value = %s;\n", jsonData.buffer);

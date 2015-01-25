@@ -398,11 +398,13 @@ empty:
 static cx_string cxsh_multiline(cx_string expr, cx_uint32 indent) {
     char cmd[CXSH_CMD_MAX];
     unsigned int len = strlen(expr);
+    unsigned int multiline = 0;
 
     if (expr[len-1] == ':') {
         unsigned int cmdLen = 0;
         cx_id prompt;
         cxsh_prompt(scope, FALSE, prompt);
+        multiline = 1;
 
         do {
             cx_uint32 i;
@@ -440,7 +442,7 @@ static cx_string cxsh_multiline(cx_string expr, cx_uint32 indent) {
         } while (cmdLen);
     }
 
-    if (indent == 1) {
+    if (multiline && (indent == 1)) {
         expr = cx_realloc(expr, len + 1 + 1);
         strcat(expr, "\n");
     }

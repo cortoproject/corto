@@ -1136,7 +1136,7 @@ void __cx_type_declare(cx_function f, void *result, void *args) {
     *(cx_object*)result = cx_type_declare(
         *(cx_any*)args,
         *(cx_string*)((intptr_t)args + sizeof(cx_any)),
-        *(cx_typedef*)((intptr_t)args + sizeof(cx_any) + sizeof(cx_string)));
+        *(cx_type*)((intptr_t)args + sizeof(cx_any) + sizeof(cx_string)));
 }
 
 void __cx_type_define(cx_function f, void *result, void *args) {
@@ -1172,7 +1172,7 @@ void __cx_type_instanceof(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_bool*)result = cx_type_instanceof(
         *(cx_any*)args,
-        *(cx_typedef*)((intptr_t)args + sizeof(cx_any)));
+        *(cx_type*)((intptr_t)args + sizeof(cx_any)));
 }
 
 void __cx_type_invalidate(cx_function f, void *result, void *args) {
@@ -1244,35 +1244,6 @@ void __cx_type_typeof(cx_function f, void *result, void *args) {
     CX_UNUSED(args);
     *(cx_type*)result = cx_type_typeof(
         *(cx_any*)args);
-}
-
-void __cx_typedef_construct(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    CX_UNUSED(args);
-    *(cx_int16*)result = cx_typedef_construct(
-        *(void**)args);
-}
-
-void __cx_typedef_destruct(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    CX_UNUSED(args);
-    CX_UNUSED(result);
-    cx_typedef_destruct(
-        *(void**)args);
-}
-
-void __cx_typedef_init(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    CX_UNUSED(args);
-    *(cx_int16*)result = cx_typedef_init(
-        *(void**)args);
-}
-
-void __cx_typedef_realType(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    CX_UNUSED(args);
-    *(cx_type*)result = cx_typedef_realType(
-        *(void**)args);
 }
 
 void __cx_uint_init(cx_function f, void *result, void *args) {

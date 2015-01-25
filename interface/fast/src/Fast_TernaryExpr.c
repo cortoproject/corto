@@ -27,7 +27,7 @@ Fast_If Fast_TernaryExpr_createIf(Fast_Expression condition, Fast_Node ifTrue, F
     Fast_If falseIf;
     Fast_If result;
     
-    if (cx_instanceof(cx_typedef(Fast_Block_o), ifTrue)) {
+    if (cx_instanceof(cx_type(Fast_Block_o), ifTrue)) {
         trueBlock = Fast_Block__create(yparser()->block);
         falseBlock = Fast_Block__create(yparser()->block);
         Fast_Block_addStatement(trueBlock, Fast_Node(ifTrue));
@@ -101,10 +101,10 @@ cx_bool Fast_TernaryExpr_hasSideEffects_v(Fast_TernaryExpr _this) {
 cx_void Fast_TernaryExpr_setOperator(Fast_TernaryExpr _this, cx_operatorKind kind) {
 /* $begin(::cortex::Fast::TernaryExpr::setOperator) */
 
-    if (_this->ifTrueExpr && cx_instanceof(cx_typedef(Fast_BinaryExpr_o), _this->ifTrueExpr)) {
+    if (_this->ifTrueExpr && cx_instanceof(cx_type(Fast_BinaryExpr_o), _this->ifTrueExpr)) {
         Fast_BinaryExpr_setOperator(Fast_BinaryExpr(_this->ifTrueExpr), kind);
     }
-    if (_this->ifFalseExpr && cx_instanceof(cx_typedef(Fast_BinaryExpr_o), _this->ifFalseExpr)) {
+    if (_this->ifFalseExpr && cx_instanceof(cx_type(Fast_BinaryExpr_o), _this->ifFalseExpr)) {
         Fast_BinaryExpr_setOperator(Fast_BinaryExpr(_this->ifFalseExpr), kind);
     }
 

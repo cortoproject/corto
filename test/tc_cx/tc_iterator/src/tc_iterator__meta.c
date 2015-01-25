@@ -19,7 +19,7 @@ int tc_iterator_load(void) {
     _a_ = NULL;
 
     /* Declare ::tc_iterator */
-    tc_iterator_o = cx_declare(root_o, "tc_iterator", cx_typedef(cx_object_o));
+    tc_iterator_o = cx_declare(root_o, "tc_iterator", cx_type(cx_object_o));
     if (!tc_iterator_o) {
         cx_error("tc_iterator_load: failed to declare object '::tc_iterator'.");
         goto error;
@@ -34,7 +34,7 @@ int tc_iterator_load(void) {
     }
 
     /* Declare ::tc_iterator::intArray */
-    tc_iterator_intArray_o = cx_declare(tc_iterator_o, "intArray", cx_typedef(cx_array_o));
+    tc_iterator_intArray_o = cx_declare(tc_iterator_o, "intArray", cx_type(cx_array_o));
     if (!tc_iterator_intArray_o) {
         cx_error("tc_iterator_load: failed to declare object '::tc_iterator::intArray'.");
         goto error;
@@ -56,7 +56,7 @@ int tc_iterator_load(void) {
     }
 
     /* Declare ::tc_iterator::array1 */
-    tc_iterator_array1_o = cx_declare(tc_iterator_o, "array1", cx_typedef(tc_iterator_intArray_o));
+    tc_iterator_array1_o = cx_declare(tc_iterator_o, "array1", cx_type(tc_iterator_intArray_o));
     if (!tc_iterator_array1_o) {
         cx_error("tc_iterator_load: failed to declare object '::tc_iterator::array1'.");
         goto error;
@@ -74,7 +74,7 @@ int tc_iterator_load(void) {
     }
 
     /* Declare ::tc_iterator::intIterator */
-    tc_iterator_intIterator_o = cx_declare(tc_iterator_o, "intIterator", cx_typedef(cx_iterator_o));
+    tc_iterator_intIterator_o = cx_declare(tc_iterator_o, "intIterator", cx_type(cx_iterator_o));
     if (!tc_iterator_intIterator_o) {
         cx_error("tc_iterator_load: failed to declare object '::tc_iterator::intIterator'.");
         goto error;
@@ -94,7 +94,7 @@ int tc_iterator_load(void) {
     }
 
     /* Declare ::tc_iterator::testArray() */
-    tc_iterator_testArray_o = cx_declare(tc_iterator_o, "testArray()", cx_typedef(cx_function_o));
+    tc_iterator_testArray_o = cx_declare(tc_iterator_o, "testArray()", cx_type(cx_function_o));
     if (!tc_iterator_testArray_o) {
         cx_error("tc_iterator_load: failed to declare object '::tc_iterator::testArray()'.");
         goto error;

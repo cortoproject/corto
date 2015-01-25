@@ -70,7 +70,7 @@ static cx_bool cx_ser_appendstr(cx_json_ser_t* data, cx_string fmt, ...) {
 
 static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData) {
     CX_UNUSED(s);
-    cx_typedef type;
+    cx_type type;
     cx_void *value;
     cx_string valueString = NULL;
     cx_json_ser_t *data = userData;
@@ -78,7 +78,7 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData
 
     type = cx_valueType(info);
     value = cx_valueValue(info);
-    cx_primitiveKind kind = cx_primitive(type->real)->kind;
+    cx_primitiveKind kind = cx_primitive(type)->kind;
 
     result = cx_convert(cx_primitive(type), value, cx_primitive(cx_string_o), &valueString);
     if (result) {
@@ -93,7 +93,7 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData
         valueString = escapedValueString;
     }
 
-    switch (cx_primitive(type->real)->kind) {
+    switch (cx_primitive(type)->kind) {
         case CX_BINARY:
             if (!cx_ser_appendstr(data, "\"@B %s\"", valueString)) {
                 goto finished;
@@ -204,7 +204,7 @@ finished:
 
 static cx_int16 cx_ser_complex(cx_serializer s, cx_value* v, void* userData) {
     cx_json_ser_t data = *(cx_json_ser_t*)userData;
-    cx_type type = cx_valueType(v)->real;
+    cx_type type = cx_valueType(v);
     cx_bool useCurlyBraces = TRUE;
 
     data.itemCount = 0;
@@ -452,7 +452,7 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
     }
 
     if (data->serializeValue) {
-        if (cx_valueType(v)->real->kind != CX_VOID) {
+        if (cx_valueType(v)->kind != CX_VOID) {
             if (options > 1) {
                 if (c && !cx_ser_appendstr(data, ",")) {
                     goto finished;

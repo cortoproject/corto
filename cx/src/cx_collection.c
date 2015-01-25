@@ -24,7 +24,7 @@ static int cx_arrayWalk(cx_collection _this, cx_void* array, cx_uint32 length, c
     result = 1;
 
     if (array) {
-        elementType = _this->elementType->real;
+        elementType = _this->elementType;
         elementSize = cx_type_sizeof(elementType);
         v = array;
 
@@ -95,7 +95,7 @@ static int cx_clearFreeValues(void* o, void* udata) {
 void cx_clear(cx_collection _this, cx_void* collection) {
    cx_type elementType;
 
-   elementType = _this->elementType->real;
+   elementType = _this->elementType;
 
    /* If type is a reference type, do free's on all elements */
    if (elementType->reference) {
@@ -147,8 +147,8 @@ cx_bool cx_collection_castable_v(cx_collection _this, cx_type type) {
         /* Arrays are only castable when they match exactly in size */
         if (!(_this->kind == CX_ARRAY) || ((t->kind == CX_ARRAY) && (_this->max == t->max))) {
             if (_this->elementType != t->elementType) {
-                if (_this->elementType->real->kind == CX_COLLECTION) {
-                    result = cx_collection_castable(cx_collection(_this->elementType->real), t->elementType->real);
+                if (_this->elementType->kind == CX_COLLECTION) {
+                    result = cx_collection_castable(cx_collection(_this->elementType), t->elementType);
                 }
             } else {
                 result = TRUE;
@@ -186,7 +186,7 @@ cx_bool cx_collection_compatible_v(cx_collection _this, cx_type type) {
 cx_bool cx_collection_elementRequiresAlloc(cx_collection _this) {
 /* $begin(::cortex::lang::collection::elementRequiresAlloc) */
     cx_bool result = TRUE;
-    cx_type elementType = _this->elementType->real;
+    cx_type elementType = _this->elementType;
 
     if (elementType->reference) {
         result = FALSE;

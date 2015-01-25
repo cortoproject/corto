@@ -42,7 +42,7 @@ cx_int16 cx_observer_bind(cx_observer _this) {
         p->type = cx_typeof(_this->observable);
         cx_keep_ext(_this, cx_typeof(_this->observable), "Keep parameter type");
     } else {
-        p->type = cx_typedef(cx_object_o);
+        p->type = cx_type(cx_object_o);
         cx_keep_ext(_this, cx_object_o, "Keep type of observable parameter for observer");
     }
 
@@ -50,7 +50,7 @@ cx_int16 cx_observer_bind(cx_observer _this) {
     p = &cx_function(_this)->parameters.buffer[1];
     p->name = cx_strdup("source");
     p->passByReference = TRUE;
-    p->type = cx_typedef(cx_object_o);
+    p->type = cx_type(cx_object_o);
     cx_keep_ext(_this, cx_object_o, "Keep type of source parameter for observer");
 
     /* Check if mask specifies either SELF or CHILDS, if not enable SELF */
@@ -79,7 +79,7 @@ error:
 /* ::cortex::lang::observer::init() */
 cx_int16 cx_observer_init(cx_observer _this) {
 /* $begin(::cortex::lang::observer::init) */
-    cx_function(_this)->returnType = cx_typedef(cx_void_o); cx_keep_ext(_this, cx_void_o, "Keep void-type of observer object.");
+    cx_function(_this)->returnType = cx_type(cx_void_o); cx_keep_ext(_this, cx_void_o, "Keep void-type of observer object.");
     cx_function(_this)->size = sizeof(cx_object) * 2;
 
     return 0; /* Don't call function::init, observers do not have parseable parameters, which is currently the only thing a function initializer does. */
@@ -120,7 +120,7 @@ cx_int16 cx_observer_listen(cx_observer _this, cx_object observable, cx_object m
                     goto error;
                 }
             }
-        } else if (cx_instanceof((cx_typedef)cx_class_o, cx_typeof(me))) {
+        } else if (cx_instanceof((cx_type)cx_class_o, cx_typeof(me))) {
             cx_class_setObservable(cx_class(cx_typeof(me)), _this, me, observable);
         }
     }

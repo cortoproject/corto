@@ -472,7 +472,7 @@ typedef union Di2f_t {
             abort();\
             goto STOP;\
         }\
-        if (!cx_instanceof((cx_typedef)op2_##code, (cx_object)op1_##code)) {\
+        if (!cx_instanceof((cx_type)op2_##code, (cx_object)op1_##code)) {\
             cx_id id1,id2;\
             printf("Exception: invalid cast from type '%s' to '%s'\n", \
                 cx_fullname((cx_object)op2_##code, id1), \
@@ -538,9 +538,8 @@ typedef union Di2f_t {
 
 #define NEW(type,code)\
     NEW_##code:\
-        fetchOp1(NEW,code);\
         fetchOp2(NEW,code);\
-        op1_##code = (cx_word)cx_new((cx_typedef)op2_##code);\
+        op1_##code = (cx_word)cx_new((cx_type)op2_##code);\
         next();\
 
 #define DEALLOC(type,code)\
@@ -1364,7 +1363,7 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
         fetch1_WRV;
         fetch2_WRV;
         cx_value v;
-        cx_valueValueInit(&v, NULL, (cx_typedef)op2_WRV, &op1_WRV);
+        cx_valueValueInit(&v, NULL, (cx_type)op2_WRV, &op1_WRV);
         cx_initValue(&v);
         next();
     }

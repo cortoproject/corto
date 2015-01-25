@@ -4,9 +4,9 @@ void fail(string msg):
     "tc_compare05: FAIL: $msg"
     result = false
     
-typedef arrayInt : array{uint32,3}
-typedef seqInt : sequence{uint32}
-typedef listInt : list{uint32}
+array arrayInt : uint32,3
+sequence seqInt : uint32
+list listInt : uint32
 
 array{uint32,3} a1: 1, 2, 3
 arrayInt a2: 1, 2, 4

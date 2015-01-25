@@ -382,7 +382,7 @@ cx_int16 g_serializeImportsReference(cx_serializer s, cx_value *v, void* userDat
                 }
                 if (!parent) {
                     parent = o;
-                    while(parent && (cx_typeof(parent)->real->kind != CX_VOID)) {
+                    while(parent && (cx_typeof(parent)->kind != CX_VOID)) {
                         parent = cx_parentof(parent);
                     }
                     if (!g->imports) {
@@ -616,7 +616,7 @@ static cx_char* g_oidTransform(cx_generator g, cx_object o, cx_id _id, g_idKind 
             while((ptr > _id) && (*ptr != ':')) {
                 ptr--;
             }
-            if ((cx_class_instanceof(cx_interface_o, i) && cx_typedef(i)->real->reference) || (i == cx_typedef(cx_object_o))) {
+            if ((cx_class_instanceof(cx_interface_o, i) && cx_type(i)->reference) || (i == cx_type(cx_object_o))) {
                 cx_char *start;
                 if (*ptr == ':') {
                     start = ptr + 1;

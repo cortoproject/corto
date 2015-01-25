@@ -140,7 +140,7 @@ static cx_int16 c_typeVoid(cx_serializer s, cx_value* v, void* userData) {
 
     CX_UNUSED(s);
 
-    t = cx_valueType(v)->real;
+    t = cx_valueType(v);
     data = userData;
 
     g_fileWrite(data->header, "/* %s */\n", cx_fullname(t, id));
@@ -162,7 +162,7 @@ static cx_int16 c_typeAny(cx_serializer s, cx_value* v, void* userData) {
 
     CX_UNUSED(s);
 
-    t = cx_valueType(v)->real;
+    t = cx_valueType(v);
     data = userData;
 
     g_fileWrite(data->header, "/* %s */\n", cx_fullname(t, id));
@@ -181,7 +181,7 @@ static cx_int16 c_typePrimitive(cx_serializer s, cx_value* v, void* userData) {
     CX_UNUSED(s);
 
     data = userData;
-    t = cx_valueType(v)->real;
+    t = cx_valueType(v);
 
     /* Obtain platform type-name for primitive */
     switch(cx_primitive(t)->kind) {
@@ -225,7 +225,7 @@ static cx_int16 c_typeStruct(cx_serializer s, cx_value* v, void* userData) {
     cx_type t;
 
     data = userData;
-    t = cx_valueType(v)->real;
+    t = cx_valueType(v);
 
     /* Open struct */
     g_fileWrite(data->header, "struct %s {\n", g_fullOid(data->g, t, id));
@@ -268,7 +268,7 @@ static cx_int16 c_typeClass(cx_serializer s, cx_value* v, void* userData) {
     cx_type t;
 
     data = userData;
-    t = cx_valueType(v)->real;
+    t = cx_valueType(v);
 
     /* Open class */
     if (t->alignment) {
@@ -299,7 +299,7 @@ error:
 static cx_int16 c_typeComposite(cx_serializer s, cx_value* v, void* userData) {
     cx_type t;
 
-    t = cx_valueType(v)->real;
+    t = cx_valueType(v);
     switch(cx_interface(t)->kind) {
     case CX_DELEGATE:
     case CX_STRUCT:
@@ -335,9 +335,9 @@ static cx_int16 c_typeArray(cx_serializer s, cx_value* v, void* userData) {
     CX_UNUSED(v);
 
     data = userData;
-    t = cx_valueType(v)->real;
-    c_specifierId(data->g, cx_typedef(t), id, NULL, postfix);
-    c_specifierId(data->g, cx_typedef(cx_collection(t)->elementType), id3, NULL, postfix2);
+    t = cx_valueType(v);
+    c_specifierId(data->g, cx_type(t), id, NULL, postfix);
+    c_specifierId(data->g, cx_type(cx_collection(t)->elementType), id3, NULL, postfix2);
     g_fileWrite(data->header, "typedef %s %s[%d];\n\n",
             id3,
             id,
@@ -356,9 +356,9 @@ static cx_int16 c_typeSequence(cx_serializer s, cx_value* v, void* userData) {
     CX_UNUSED(v);
 
     data = userData;
-    t = cx_valueType(v)->real;
-    c_specifierId(data->g, cx_typedef(t), id, NULL, postfix);
-    c_specifierId(data->g, cx_typedef(cx_collection(t)->elementType), id3, NULL, postfix2);
+    t = cx_valueType(v);
+    c_specifierId(data->g, cx_type(t), id, NULL, postfix);
+    c_specifierId(data->g, cx_type(cx_collection(t)->elementType), id3, NULL, postfix2);
     g_fileWrite(data->header, "CX_SEQUENCE(%s, %s,);\n\n",
             id,
             id3);
@@ -376,8 +376,8 @@ static cx_int16 c_typeList(cx_serializer s, cx_value* v, void* userData) {
     CX_UNUSED(v);
 
     data = userData;
-    t = cx_valueType(v)->real;
-    c_specifierId(data->g, cx_typedef(t), id, NULL, postfix);
+    t = cx_valueType(v);
+    c_specifierId(data->g, cx_type(t), id, NULL, postfix);
     g_fileWrite(data->header, "CX_LIST(%s);\n\n",
             id);
 
@@ -388,7 +388,7 @@ static cx_int16 c_typeList(cx_serializer s, cx_value* v, void* userData) {
 static cx_int16 c_typeCollection(cx_serializer s, cx_value* v, void* userData) {
     cx_type t;
 
-    t = cx_valueType(v)->real;
+    t = cx_valueType(v);
     switch(cx_collection(t)->kind) {
     case CX_ARRAY:
         if (c_typeArray(s, v, userData)) {
@@ -425,8 +425,8 @@ static cx_int16 c_typeIterator(cx_serializer s, cx_value* v, void* userData) {
     cx_id id, postfix;
 
     data = userData;
-    t = cx_valueType(v)->real;
-    c_specifierId(data->g, cx_typedef(t), id, NULL, postfix);
+    t = cx_valueType(v);
+    c_specifierId(data->g, cx_type(t), id, NULL, postfix);
     g_fileWrite(data->header, "CX_ITERATOR(%s);\n\n",
             id);
 
@@ -623,33 +623,12 @@ static int c_typeDefine(cx_object o, void* userData) {
     int result;
 
     result = 0;
+    
+    /* Get type-serializer */
+    s = c_typeSerializer();
 
-    /* Serialize typedef */
-    if (cx_typedef(o)->real != o) {
-        c_typeWalk_t* data;
-        cx_typedef t;
-
-        data = userData;
-        t = o;
-
-        /* Serialize a typedef */
-        cx_id spec, postfix, id2;
-
-        c_specifierId(data->g, t->type, spec, NULL, postfix);
-
-        /* Serialize typedef */
-        g_fileWrite(data->header, "typedef %s %s%s;\n", spec, g_fullOid(data->g, t, id2), postfix);
-
-    /* Serialize type */
-    } else {
-
-        /* Get type-serializer */
-        s = c_typeSerializer();
-
-        /* Do metawalk on type */
-        result = cx_metaWalk(&s, cx_type(o), userData);
-    }
-
+    /* Do metawalk on type */
+    result = cx_metaWalk(&s, cx_type(o), userData);
 
     return result;
 }

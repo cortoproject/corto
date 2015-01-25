@@ -41,7 +41,7 @@ cx_int16 cx_ser_freePrimitive(cx_serializer s, cx_value* v, void* udata) {
     CX_UNUSED(s);
     CX_UNUSED(udata);
 
-    t = cx_valueType(v)->real;
+    t = cx_valueType(v);
     o = cx_valueValue(v);
 
     /* Free strings */
@@ -70,7 +70,7 @@ cx_int16 cx_ser_freeCollection(cx_serializer s, cx_value* v, void* userData) {
     cx_type t;
     void* o;
 
-    t = cx_valueType(v)->real;
+    t = cx_valueType(v);
     o = cx_valueValue(v);
 
     /* Serialize elements */

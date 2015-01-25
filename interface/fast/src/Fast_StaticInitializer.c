@@ -48,14 +48,14 @@ cx_word Fast_Initializer_offset(Fast_StaticInitializer _this, cx_uint32 variable
         break;
     case CX_COLLECTION: {
         if (fp) {
-            cx_uint32 elementSize = cx_type_sizeof(cx_collection(frame->type)->elementType->real);
+            cx_uint32 elementSize = cx_type_sizeof(cx_collection(frame->type)->elementType);
             switch(cx_collection(frame->type)->kind) {
             case CX_SEQUENCE:
                 ((cx_objectSeq*)base)->length++;
                 ((cx_objectSeq*)base)->buffer = cx_realloc(((cx_objectSeq*)base)->buffer, ((cx_objectSeq*)base)->length * elementSize);
                 base = (cx_word)((cx_objectSeq*)base)->buffer;
             case CX_ARRAY:
-                result = base + thisFrame->location * cx_type_sizeof(cx_collection(frame->type)->elementType->real);
+                result = base + thisFrame->location * cx_type_sizeof(cx_collection(frame->type)->elementType);
                 memset((void*)result, 0, elementSize);
                 break;
             case CX_LIST: {
@@ -72,7 +72,7 @@ cx_word Fast_Initializer_offset(Fast_StaticInitializer _this, cx_uint32 variable
                 break;
             }
             case CX_MAP: {
-                cx_type keyType = cx_map(frame->type)->keyType->real;
+                cx_type keyType = cx_map(frame->type)->keyType;
                 if (!thisFrame->isKey) {
                     if (cx_collection_elementRequiresAlloc(cx_collection(frame->type))) {
                         result = (cx_word)cx_calloc(elementSize);
@@ -149,8 +149,8 @@ cx_int16 Fast_StaticInitializer_define(Fast_StaticInitializer _this) {
      */
     for(variable=0; variable<Fast_Initializer(_this)->variableCount; variable++) {
         o = (cx_object)Fast_ObjectBase(Fast_Initializer(_this)->variables[variable].object)->value;
-        if (cx_instanceof(cx_typedef(cx_typedef_o), o)
-                || (cx_checkAttr(o, CX_ATTR_SCOPED) && cx_instanceof(cx_typedef(cx_typedef_o), cx_parentof(o)))) {
+        if (cx_instanceof(cx_type(cx_type_o), o)
+                || (cx_checkAttr(o, CX_ATTR_SCOPED) && cx_instanceof(cx_type(cx_type_o), cx_parentof(o)))) {
             if (cx_define(o)) {
                 cx_id id1, id2;
                 Fast_Parser_error(yparser(), "define of variable '%s' of type '%s' failed",
@@ -161,7 +161,7 @@ cx_int16 Fast_StaticInitializer_define(Fast_StaticInitializer _this) {
         } else {
             /* Only composite types can have constructors. All other objects are instantaneously
              * defined. */
-            if (cx_typeof(o)->real->kind == CX_COMPOSITE) {
+            if (cx_typeof(o)->kind == CX_COMPOSITE) {
                 Fast_Expression refVar = Fast_Expression(Fast_Object__create(o));
                 refVar->isReference = TRUE; /* Always treat object as reference */
                 Fast_Define defineStmt = Fast_Define__create(refVar);
