@@ -16,6 +16,23 @@ body {
     border-radius: 0px;
 }
 
+.toggle {
+    cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+span.collapse {
+    font-size: 10px;
+}
+span.expand {
+    font-size: 10px;
+}
+
 a.header {
     color: #FFFFFF;
     text-decoration: none;
@@ -25,30 +42,26 @@ a.header:hover {
     color: #ffcd68;
 }
 
-table.scope {
-    text-align: left;
-    font-weight: normal;
-    border-spacing: 0px;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    margin: 0px;
+#scopeTable {
+    margin: 5px;
+    margin-top: 0px;
+    margin-left: 0px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
     width: 250px;
-    float: left;
-    padding: 4px;
-    background-color: #00cf92;
-    font-family: sans-serif;
-    font-size: 14px;
-    color: #000000;
+    float: left;    
 }
 
-tr.parent td {
-    padding: 5px;
-    background-color: #FFFFFF;
+#valueTable {
+    margin: 5px;
+    margin-left: 255px;
+    width: 400px; 
 }
 
-tr.child td {
-    padding: 5px;
-    background-color: #FFFFFF;
+#metaTable {
+    margin: 5px;
+    margin-left: 255px;
+    width: 400px;   
 }
 
 tr.separator td {
@@ -62,44 +75,16 @@ tr.separator td {
     background-color: #FFFFFF;
 }
 
-table.meta {
-    text-align: left;
-    font-weight: normal;
-    border-spacing: 0px;
-    margin: 5px;
-    margin-left: 255px;
-    padding: 4px;
-    background-color: #CC8855;
-    border-radius: 5px;
-    font-family: sans-serif;
-    font-size: 14px;
-}
-
-table.meta td {
-    padding: 4px;
-    background-color: #FFFFFF;
-    color: #000000;
-    font-size: 14px;
-}
-
-table.meta th {
-    padding: 4px;
-    font-weight: normal;
-    color: #FFFFFF;
-}
-
 table.value {
     text-align: left;
     font-weight: normal;
     border-spacing: 0px;
-    margin: 5px;
-    margin-left: 255px;
     padding: 4px;
     background-color: #00cf92;
     border-radius: 5px;
     font-family: sans-serif;
     font-size: 14px;
-    width: 400px;
+    table-layout:fixed;
 }
 
 table.nested {
@@ -118,6 +103,9 @@ table.value th {
     padding: 2px;
     padding-right: 10px;
     font-weight: normal;
+    font-family: futura, sans-serif;
+    font-size: 15px;
+    width: 100px;
     color: #FFFFFF;
 }
 
@@ -127,7 +115,30 @@ tbody.value td {
     background-color: #FFFFFF;
     color: #000000;
     font-size: 14px;
-    width: 100%;
+    white-space: nowrap;
+    overflow: scroll;
+}
+
+tbody.value td.complex {
+    background-color: #e0f6ef;
+}
+tbody.value td.dummy {
+    background-color: #e0f6ef;
+}
+
+tbody.value td.base {
+    font-family: futura, sans-serif;
+    background-color: #eeeeee;
+    color: #aaaaaa;
+}
+
+thead.value tr:first-child td:last-child {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+tbody.value tr:last-child td:last-child {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
 
 thead.value td {
@@ -135,6 +146,7 @@ thead.value td {
     padding-right: 10px;
     font-weight: bold;
     font-style: italic;
+    font-family: futura, sans-serif;
     font-size: 18px;
     text-align: right;
     background-color: #FFFFFF;
@@ -174,4 +186,9 @@ code.enum {
 code.bitmask {
     color: #AA55CC;
 }
+
+code.string {
+    color: #DD4444;
+}
+
 

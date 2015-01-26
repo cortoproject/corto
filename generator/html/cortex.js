@@ -8,13 +8,14 @@ cx = {
         this.meta = {};
     },
 
-    serializer: function(object, composite, collection, primitive, member, element) {
+    serializer: function(object, composite, collection, primitive, member, element, base) {
         this.serializeObject = object;
         this.serializeComposite = composite;
         this.serializeCollection = collection;
         this.serializePrimitive = primitive;
         this.serializeMember = member;
         this.serializeElement = element;
+        this.serializeBase = base;
     },
 
     setMe: function(name) {
@@ -73,6 +74,84 @@ cx = {
         result += "<a class='" + style + "' href='" + prefix + "index.html'>" + name + "</a>";
 
         return result;        
+    },
+
+    primitiveToString: function(v) {
+        function getValueClass(valueKind) {
+            if (valueKind === 'E') {
+                return 'enum';
+            } else if (valueKind === 'R') {
+                return 'reference';
+            } else if (valueKind === 'B') {
+                return 'binary';
+            } else if (valueKind === 'M') {
+                return 'bitmask';
+            }
+        }
+
+        var valueClass = "";
+        var valueString = v;
+
+        valueClass = typeof v;
+
+        if ((valueClass === 'string') && (v[0] === '@')) {
+            if (v[1] === '@') {
+                valueString = v.substr(1, valueString.length - 1);
+            } else {
+                valueString = v.substr(3, valueString.length - 3);
+                valueClass = getValueClass(v.substr(1, 1));
+                if (valueClass == 'reference') {
+                    valueClass = 'normal';
+                    valueString = cx.toLink(valueString);
+                }
+            }
+        }
+
+        if (valueClass === 'string') {
+            valueString = "\"" + valueString + "\"";
+        }
+
+        return "<code class=" + valueClass + ">" + valueString + "</code>";
+    },
+
+    toString: function(v) {
+        function primitive(s, v) {
+            return cx.primitiveToString(v);
+        }
+
+        function composite(s, v) {
+            s.count = 0;
+            return "{" + s.serializeMembers(v) + "}";
+        }
+
+        function collection(s, v) {
+            s.count = 0;
+            return "{" + s.serializeElements(v) + "}";
+        }
+
+        function member(s, v) {
+            var result = "";
+            if (s.count > 0) {
+                result = "&nbsp;";
+            }
+            s.count++;
+            return result + s.info + "=" + s.serializeValue(v);
+        }
+
+        function element(s, v) {
+            var result = "";
+            if (s.count > 0) {
+                result = ",&nbsp;";
+            }
+            s.count++;
+            return result + s.serializeValue(v);
+        }
+
+        var s = new cx.serializer(
+            undefined, composite, collection, primitive, member, element
+        )
+        s.count = 0;
+        return "<code>" + s.serialize(v) + "</code>";   
     }
 }
 
@@ -92,11 +171,12 @@ cx.serializer.prototype = {
     serializeMembers: function(o) {
         var result = "";
         for (var k in o) {
-            if (k != '@base') {
+            if (k[0] != '@') {
                 this.info = k;
                 result += this.serializeMember(this, o[k]);
             } else {
-                result += this.serializeValue(o[k]);
+                this.info = k.slice(1, k.length);
+                result += this.serializeBase(this, o[k]);
             }
         }
         return result;
@@ -124,6 +204,12 @@ cx.serializer.prototype = {
         }
         if (this.serializeElement === undefined) {
             this.serializeElement = function(s, o) {return s.serializeValue(o)};
+        }
+        if (this.serializeObject === undefined) {
+            this.serializeObject = function(s, o) {return s.serializeValue(o)};
+        }
+        if (this.serializeBase === undefined) {
+            this.serializeBase = function(s, o) {return s.serializeValue(o)};
         }
         return this.serializeObject(this, o);
     }
@@ -194,18 +280,22 @@ cx.object.prototype = {
         var links = [];
         var size = 0;
 
+        result = "<table id='scopeTable' class='value'>";
+        result += "<thead class='value'><tr><td colspan='2'>Scope</td></tr></thead>";
+        result += "<tbody class='value'>";
+
         for (o in this.scope) { size++; }
         if (size) {
-            result = "<table class='scope'><tr class='separator'>";
-            result += "<tr class='separator'><td colspan='2'>Scope</td></tr>"
             for (o in this.scope) {
-                result += "<tr class='child'>" + 
+                result += "<tr>" + 
                     "<td><code>" + cx.toLink(this.scope[o].id()) + "</code></td>" +
                     "<td><code>" + cx.toLink(this.scope[o].meta.type) + "</code></td>" +
                     "</tr>";
             }
-            result += "</table>";
+        } else {
+            result += "<tr><td colspan='2'><code>empty</code></td></tr>"
         }
+        result += "<tr><td colspan='2'></td></tr></tbody>";
 
         return result;
     },
@@ -229,7 +319,7 @@ cx.object.prototype = {
         }
 
         var result = "";
-        result += "<table class='value'>";
+        result += "<table id='metaTable' class='value'>";
         result += "<thead class='value'><tr><th></th><td>Metadata</td></tr></thead><tbody class='value'>"
         result += "<tr><th>type</th>" + 
                       "<td><code>" + cx.toLink(this.meta.type) + "</code></td>";
@@ -239,222 +329,162 @@ cx.object.prototype = {
                       "<td><code class='bitmask'>" + parseStates(this.meta.states) + "</code></td></tr>";
         result += "<tr><th>attributes</th>" +
                       "<td><code class='bitmask'>" + parseAttr(this.meta.attributes) + "</code></td></tr>";
-        result += "</tbody></table>"
+        result += "</tbody></table>";
         return result;
     },
 
     // Convert object value to HTML
     toHtml: function() {
+        // Initialize table
+        $( document ).ready( function() {
+           $("#valueTable tr[data-depth!=1]").hide();
+           $("#valueTable tr[data-depth=1]").find('span.collapse').hide();
+           $("#valueTable tr[data-depth!=1]").find('span.collapse').hide();
+           $("#valueTable td.dummy").hide();
+        })
 
-        function getValueClass(valueKind) {
-            if (valueKind === 'E') {
-                return 'enum';
-            } else if (valueKind === 'R') {
-                return 'reference';
-            } else if (valueKind === 'B') {
-                return 'binary';
-            } else if (valueKind === 'M') {
-                return 'bitmask';
-            }
-        }
+        $(function() {
+            $('#valueTable').on('click', '.toggle', function () {
+                //Gets all <tr>'s  of greater depth below element in the table
+                var findChildren = function (tr) {
+                    var depth = tr.data('depth');
+                    return tr.nextUntil($('tr').filter(function () {
+                        return $(this).data('depth') <= depth;
+                    }));
+                };
+
+                var el = $(this);
+                var tr = el.closest('tr'); //Get <tr> parent of toggle button
+                var children = findChildren(tr);
+
+                //Remove already collapsed nodes from children so that we don't
+                //make them visible. 
+                var subnodes = children.filter('.expand');
+                subnodes.each(function () {
+                    var subnode = $(this);
+                    var subnodeChildren = findChildren(subnode);
+                    children = children.not(subnodeChildren);
+                });
+
+                //Change icon and hide/show children
+                if (tr.hasClass('collapse')) {
+                    tr.removeClass('collapse').addClass('expand');
+                    tr.find('span.collapse').hide();
+                    tr.find('span.expand').show();
+                    tr.find('td.complex').show();
+                    tr.find('td.dummy').hide();
+                    children.hide();
+                } else {
+                    tr.find('span.collapse').show();
+                    tr.find('span.expand').hide();
+                    tr.find('td.complex').hide();
+                    tr.find('td.dummy').show();
+                    tr.removeClass('expand').addClass('collapse');
+                    children.show();
+                }
+                return children;
+            });
+        });
 
         function primitive(s, v) {
-            var valueClass = "";
-            var valueString = v;
+            return cx.primitiveToString(v);
+        }
 
-            valueClass = typeof v;
-
-            if ((valueClass === 'string') && (v[0] === '@')) {
-                if (v[1] === '@') {
-                    valueString = v.substr(1, valueString.length - 1);
-                } else {
-                    valueString = v.substr(3, valueString.length - 3);
-                    valueClass = getValueClass(v.substr(1, 1));
-                    if (valueClass == 'reference') {
-                        valueClass = 'normal';
-                        valueString = cx.toLink(valueString);
-                    }
-                }
+        function indent(level) {
+            var result = "";
+            for(var i = 0; i < (level-1) * 2; i++) {
+                result += "&nbsp;";
             }
+            return "<code>" + result + "</code>";
+        }
 
-            var result = "<code class=" + valueClass + ">" + valueString + "</code>";
-            if (!s.complex) {
-                result = "<td>" + result + "</td>"
+        function arrow() {
+            return "<span class='expand'>&#9654</span><span class='collapse'>&#9660;</span>"
+        }
+
+        function memberString(level, name, isObject) {
+            var result = "";
+            if (isObject) {
+                result = indent(level) + arrow() + "&nbsp;" + name;
+            } else {
+                result = indent(level) + name;
             }
             return result;
         }
 
         function member(s, v) {
             var result = "";
-            var oldComplex = s.complex;
 
-            if (s.vertical) {
-                if (!(v instanceof Object)) {
-                    result = "<td>" + s.serializeValue(v) + "</td>";
-                } else {
-                    result = s.serializeValue(v);
-                }
+            if (v instanceof Object) {
+                collapse = "class='expand toggle'";
+                result = "<tr " + collapse + " data-depth='" + s.level + "'><th>" + 
+                    memberString(s.level, s.info, true) + "</th><td class='dummy'><code></code></td><td class='complex'>" + 
+                    cx.toString(v) +
+                    "</td></tr>";
+                s.level++;
+                result += s.serializeValue(v);
+                s.level--;
             } else {
-                if (v instanceof Object) {
-                    if (!s.complex) {
-                        s.complex = 1;
-                        result = "<tr><th>" + s.info + "</th><td>" + 
-                            "<table style='margin:0px; padding:0px; border-spacing:0px'>" + 
-                            s.serializeValue(v) + "</table></td></tr>";
-                        s.complex = oldComplex;
-                    } else {
-                        result = "<td><table class='nested'><tr><th>" + 
-                            s.info + "</th><td>" + 
-                            "<table style='margin:0px; padding:0px; border-spacing:0px'>" + 
-                            s.serializeValue(v) + "</table></td></tr></table></td>";                  
-                    }
-                } else {
-                    if (s.complex) {
-                        result = "<td><table class='nested'><th>" + 
-                            s.info + "</th><td>" + s.serializeValue(v) + "</td></tr></table></td>";
-                    } else {
-                        // Normal case
-                        result = "<tr><th>" + s.info + "</th>" + s.serializeValue(v) + "</tr>";
-                    }
-                }
+                collapse = "class='expand'";
+                result = "<tr " + collapse + " data-depth='" + s.level + "'><th>" + 
+                    memberString(s.level, s.info, false) + "</th><td>" + s.serializeValue(v) + "</td></tr>";
             }
-
+            
             return result;
         }
 
-        function element(s, v) {
+        function base(s, v) {
             var result = "";
-            var oldComplex = s.complex;
-     
-            s.complex = 1;      
+            s.baseArray.push(s.info);
             result = s.serializeValue(v);
-            if (s.vertical) {
-                result = "<tr>" + result + "</tr>";
-            } else {
-                if (s.info) {
-                    result = ",&nbsp;" + result;
-                }
-            }
-            s.complex = oldComplex;
-            return result;
-        }
-
-        function composite(s, v) {
-            var result = "";
-            result += s.serializeMembers(v);
-            if (!s.vertical && s.complex) {
-                result = "<tr>" + result + "</tr>";
-            }
-            return result;
-        }
-
-        // Collect complex members for a collection header */
-        function collectMembers (elem, members, depth) {
-            var count = 0;
-            var totalColumns = 0;
-            var totalDepth = depth;
-
-            if (elem instanceof Object) {
-                if (!members[depth]) {
-                    members[depth] = [];
-                }
-                for (var m in elem) {
-                    span = collectMembers(elem[m], members, depth + 1);
-                    totalColumns += span[1];
-                    if (span[0] > totalDepth) { totalDepth = span[0]; }
-                    count++;
-
-                    members[depth].push({
-                        "member":m, 
-                        "span":span});
-                }
-            } else {
-                totalDepth--;
-                totalColumns = 1;
+            if (!s.baseAdded) {
+                result = "<tr data-depth='1'><th></th><td class='base'>" + 
+                    s.baseArray[s.baseArray.length - 1] + "</td></tr>" + result;
+                s.baseArray.pop();
             }
 
-            return [totalDepth, totalColumns];
-        }
+            result = result + "<tr data-depth='1'><th></th><td class='base'>" + 
+                s.baseArray[s.baseArray.length - 1] + "</td></tr>";
+            s.baseArray.pop();
 
-        // Create collection header
-        function createHeader(members) {
-            var result = "";
-            for (var depth = members.length - 1; depth >= 0; depth--) {
-                var row = "";
-                for (var m = 0; m < members[depth].length; m++) {
-                    var colstr = "";
-                    var rowstr = "";
-                    var rowspan = members.length - members[depth][m].span[0];
-                    var colspan = members[depth][m].span[1];
-                    if (colspan > 1) { colstr = " colspan='" + colspan + "'";}
-                    if (rowspan > 1) { rowstr = " rowspan='" + rowspan + "'";}
-                    row += "<th align='center' valign='bottom'" + colstr + rowstr + ">" + members[depth][m].member + "</th>";
-                }
-                result = "<tr>" + row + "</tr>" + result;
-            }
-            return "<thead>" + result + "</thead>";
-        }
-
-        function collection(s, v) {
-            var oldVertical = s.vertical;
-            var result = "";
-            var oldVertical = s.vertical;      
-
-            if (v.length) {
-                if (v[0] instanceof Object) {
-                    var members = [];
-                    s.vertical = true;
-                    collectMembers(v[0], members, 0);
-                    result += "<td><table class='nested'>" + createHeader(members);
-                    result += "<tbody>" + s.serializeElements(v) + "</tbody>";
-                    result += "</table></td>";
-                    if (!s.complex) {
-                        result = "<th></th>" + result;
-                    }
-                } else {
-                    s.vertical = false;
-                    if (!s.complex) {
-                        result = "<tr><th></th><td>" + s.serializeElements(v) + "</td></tr>"
-                    } else {
-                        result += "<tr>" + s.serializeElements(v) + "</tr>";
-                    }
-                }
-            } else {
-                result += "<td><code>empty</code></td>";
-            }
-
-            s.vertical = oldVertical;
+            s.baseAdded++;
 
             return result;
         }
 
         function object(s, v) {
-            var buffer = "";
+            var result = "";
             var size = 0;
+
+            s.level = 1;
+            s.baseArray = [ s.me.meta.type ];
+            s.baseAdded = 0;
+
             if (typeof v == 'object') {
                 for (k in v) {size ++;}
             } else {
                 size = 1;
             }
 
-            buffer += "<table class='value'>";
-            buffer += "<thead class='value'><tr><th></th><td>Value</td></tr></thead><tbody class='value'>";
+            result += "<table id='valueTable' class='value'>";
+            result += "<thead class='value'><tr data-depth='1'><th></th><td>Value</td></tr></thead><tbody class='value'>";
             if (size) {
+                var value = s.serializeValue(v);
                 if (!(v instanceof Object)) {
-                    buffer += "<th class='value'></th>";
+                    value = "<tr data-depth='1'><th class='value'></th>" + "<td>" + value + "</td></tr>";
                 }
-                buffer += s.serializeValue(v);
+                result += value;
             } else {
-                buffer += "<tr><th></th><td><code>empty</code></td></tr>";
+                result += "<tr data-depth='1'><th></th><td><code>empty</code></td></tr>";
             }
-            buffer += "</tbody></table>";
-            return buffer;
+            result += "</tbody></table>";
+            return result;
         }
 
         var s = new cx.serializer(
-            object, composite, collection, primitive, member, element
+            object, undefined, undefined, primitive, member, member, base
         )
-        s.complex = 0;
+        s.me = this;
         return s.serialize(this.value);
     }
 }

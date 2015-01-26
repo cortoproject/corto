@@ -244,7 +244,8 @@ finished:
 
 static cx_int16 cx_ser_base(cx_serializer s, cx_value* v, void* userData) {
     cx_json_ser_t *data = userData;
-    if (!cx_ser_appendstr(data, "\"@base\":{")) {
+    cx_id id;
+    if (!cx_ser_appendstr(data, "\"@%s\":{", cx_fullname(cx_valueType(v), id))) {
         goto finished;
     }
     if (cx_serializeMembers(s, v, userData)) {
