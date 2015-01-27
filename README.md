@@ -30,9 +30,9 @@ APIs are the things through which us developers have been accustomed to interfac
 
 Because we like APIs so much, we tend to APIfy everything. We even create APIs on top of APIs. Good developers have achieved mastery of one or more APIs. And that was fine... for a while.
 
-Nowadays we churn out new APIs at incredulous rates. Pretty much anything that bears the prefix "smart" has an API. We cannot possibly master all of them. But we don't want to miss out on the smart's either.
+Nowadays we churn out new APIs at incredulous rates. Pretty much anything that bears the prefix "smart" has an API. We cannot possibly master all of them. But we don't want to miss out on all of those smart things either.
 
-If only all of these APIs would follow a limited set of patterns and paradigms. That would make things a lot more manageable. But what would that look like? Can this even be done? We happen to believe so.
+If only all of these APIs would follow a limited set of patterns and paradigms. That would make things a lot more manageable. But what would that look like? Can this even be done?
 
-To figure out this puzzle, we borrowed a paradigm that is already commonplace in defense and industrial IT systems. The paradigm is built upon the premise that information is at the heart of everything and if we capture the essence of it really well, then that is all we will ever need. This paradigm is called information centricity.
+To figure out this puzzle, we borrowed a paradigm that is already commonplace in defense and industrial IT systems. The paradigm is built upon the premise that information is at the heart of every system. If we could capture the fundamental properties of this information really well, then that should be all we will ever need. In a way, the information *becomes* the API. This paradigm is called information centricity.
 
