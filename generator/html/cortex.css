@@ -55,13 +55,13 @@ a.header:hover {
 #valueTable {
     margin: 5px;
     margin-left: 255px;
-    width: 400px; 
+    width: 450px; 
 }
 
 #metaTable {
     margin: 5px;
     margin-left: 255px;
-    width: 400px;   
+    width: 450px;   
 }
 
 tr.separator td {
@@ -120,16 +120,16 @@ tbody.value td {
 }
 
 tbody.value td.complex {
-    background-color: #e0f6ef;
+    background-color: #EEEEEE;
 }
 tbody.value td.dummy {
-    background-color: #e0f6ef;
+    background-color: #EEEEEE;
 }
 
 tbody.value td.base {
     font-family: futura, sans-serif;
-    background-color: #eeeeee;
-    color: #aaaaaa;
+    background-color: #EEEEEE;
+    color: #444444;
 }
 
 thead.value tr:first-child td:last-child {

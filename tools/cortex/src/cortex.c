@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
             }
         } else {
             if (cx_load(argv[i])) {
-                cx_error("failed to load file '%s'", argv[i]);
+                cx_error("cortex: failed to load file '%s'", argv[i]);
                 goto error;
             }
         }

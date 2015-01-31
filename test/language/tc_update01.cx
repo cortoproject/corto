@@ -22,11 +22,11 @@ void test(Counter c, uint32 count, uint32 triggered):
     if c.count != count:         fail("${c.fullname()}.count != $count")
     if c.triggered != triggered: fail("${c.fullname()}.triggered != $triggered")
     
-Counter a:
+Counter a:;
 Counter b:::
-    Counter c:
+    Counter c:;
     Counter d:::
-        Counter e:
+        Counter e:;
 
 // Let object notify others
 a.trigger()

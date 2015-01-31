@@ -272,6 +272,11 @@ cx_int32 Fast_Initializer_member_v(Fast_Initializer _this, cx_string name) {
     cx_type t;
     Fast_Initializer_findMember_t walkData;
 
+    if (!_this->fp) {
+        Fast_Parser_error(yparser(), "unexpected member '%s' in initializer", name);
+        goto error;
+    }
+
     t = _this->frames[_this->fp-1].type;
     s = Fast_findMemberSerializer();
     

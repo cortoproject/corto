@@ -218,7 +218,7 @@ int cx_libraryLoader(cx_string _file, void* udata) {
     snprintf(str, length+1, "%s/bin/%slib%s.so", cortexHomeVar, path, filename);
 
     if (!(dl = cx_dlOpen(str))) {
-        cx_error("%s: %s", _file, cx_dlError());
+        cx_error("%s", cx_dlError());
         goto error;
     }
 

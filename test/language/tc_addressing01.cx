@@ -15,7 +15,7 @@ void testref(int32 &value, int32 testval, string msg):
 void testobject(object o, string name, string msg):
     if o.nameof() != name: fail(msg)
 
-int32 x, x1:
+int32 x, x1
 
 x = 10
 if x != 10: fail("Value non-ref object")

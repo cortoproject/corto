@@ -35,7 +35,7 @@ struct Square::
 enum Color:: RED, ORANGE, YELLOW, GREEN, BLUE, VIOLET
 
 // Implicit object-type, default initializer
-enum Tree:: OAK, MAPLE, PALM:    
+enum Tree:: OAK, MAPLE, PALM 
     
 // Test types (initializer validation happens in tc_initializer* testcases)
 Point p:     10,20

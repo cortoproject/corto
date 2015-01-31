@@ -418,7 +418,7 @@ cx.object.prototype = {
             if (v instanceof Object) {
                 collapse = "class='expand toggle'";
                 result = "<tr " + collapse + " data-depth='" + s.level + "'><th>" + 
-                    memberString(s.level, s.info, true) + "</th><td class='dummy'><code></code></td><td class='complex'>" + 
+                    memberString(s.level, s.info, true) + "</th><td class='dummy'></td><td class='complex'>" + 
                     cx.toString(v) +
                     "</td></tr>";
                 s.level++;
@@ -438,12 +438,12 @@ cx.object.prototype = {
             s.baseArray.push(s.info);
             result = s.serializeValue(v);
             if (!s.baseAdded) {
-                result = "<tr data-depth='1'><th></th><td class='base'>" + 
+                result = "<tr data-depth='1'><th class='base'></th><td class='base'>" + 
                     s.baseArray[s.baseArray.length - 1] + "</td></tr>" + result;
                 s.baseArray.pop();
             }
 
-            result = result + "<tr data-depth='1'><th></th><td class='base'>" + 
+            result = result + "<tr data-depth='1'><th class='base'></th><td class='base'>" + 
                 s.baseArray[s.baseArray.length - 1] + "</td></tr>";
             s.baseArray.pop();
 

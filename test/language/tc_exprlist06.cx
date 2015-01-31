@@ -10,7 +10,7 @@ struct Point::
 struct Line::
     start, stop: Point
     
-Line a, b:
+Line a, b:;
 
 a[start,stop].x = 10
 a[start,stop].y = 20

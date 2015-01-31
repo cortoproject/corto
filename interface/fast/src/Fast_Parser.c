@@ -2816,7 +2816,6 @@ cx_void Fast_Parser_reset(Fast_Parser _this) {
     _this->complexTypeSp = 0;
     _this->initializerCount = -1;
     _this->stagingAllowed = TRUE;
-    _this->token = NULL;
     
     if (_this->pass) {
         for(i=0; i<_this->stagedCount; i++) {

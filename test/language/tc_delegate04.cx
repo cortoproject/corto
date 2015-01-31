@@ -41,7 +41,7 @@ int32 returnDogLegs(Dog d) = d.legs
 
 // Assign procedure with base-type of argument
 baseDelegate dBase: returnLegs
-Dog gijs:
+Dog gijs:;
 if dBase(gijs) != 4: fail("dBase(d) != 4")
 
 // Assign procedure with actual type of argument
