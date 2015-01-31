@@ -37,13 +37,10 @@ static int cx_iterator_next_array(cx_collection collection, cx_void *array, void
     }
     return result;
 }
-/* $end */
 
-/* ::cortex::lang::iterator::hasNext() */
-cx_bool cx_iterator_hasNext(cx_any _this) {
-/* $begin(::cortex::lang::iterator::hasNext) */
+cx_bool cx_iterator_hasNext(void *_this) {
     CX_ITERATOR(iteratorType);
-    iteratorType *iterator = _this.value;
+    iteratorType *iterator = _this;
     cx_bool result = FALSE;
     switch (iterator->type->kind) {
         case CX_ARRAY:
@@ -59,25 +56,13 @@ cx_bool cx_iterator_hasNext(cx_any _this) {
             break;
     }
     return result;
-/* $end */
 }
 
-/* ::cortex::lang::iterator::init() */
-cx_int16 cx_iterator_init(cx_iterator _this) {
-/* $begin(::cortex::lang::iterator::init) */
-    cx_type(_this)->kind = CX_ITERATOR;
+void *cx_iterator_next(void *_this) {
     CX_ITERATOR(iteratorType);
-    cx_type(_this)->size = sizeof(iteratorType);
-    return cx_type_init(cx_type(_this));
-    /* $end */
-}
-
-/* ::cortex::lang::iterator::next() */
-cx_any cx_iterator_next(cx_any _this) {
-/* $begin(::cortex::lang::iterator::next) */
-    CX_ITERATOR(iteratorType);
-    iteratorType *iterator = _this.value;
+    iteratorType *iterator = _this;
     int error = 0;
+    void* result;
     switch (iterator->type->kind) {
         case CX_ARRAY:
             error = cx_iterator_next_array(iterator->type, iterator->value, &(iterator->element));
@@ -94,10 +79,18 @@ cx_any cx_iterator_next(cx_any _this) {
     if (error) {
         cx_critical("reached end of collection while attempting to retrieve next");
     }
-    cx_any result;
-    result.type = iterator->type->elementType;
-    result.value = iterator->element;
-    result.owner = FALSE;
+    result = iterator->element;
     return result;
+}
+
 /* $end */
+
+/* ::cortex::lang::iterator::init() */
+cx_int16 cx_iterator_init(cx_iterator _this) {
+/* $begin(::cortex::lang::iterator::init) */
+    cx_type(_this)->kind = CX_ITERATOR;
+    CX_ITERATOR(iteratorType);
+    cx_type(_this)->size = sizeof(iteratorType);
+    return cx_type_init(cx_type(_this));
+    /* $end */
 }

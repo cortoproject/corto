@@ -760,8 +760,6 @@ CX_FW_I(iterator);
 CX_CLASS_O(iterator, type, CX_LOCAL | CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, CX_I);
     CX_REFERENCE_O(iterator, elementType, type, CX_GLOBAL, CX_DECLARED, FALSE);
     CX_METHOD_O(iterator, init, "()", int16, FALSE, cx_iterator_init);
-    CX_METAPROCEDURE_O(iterator, next, "()", any, FALSE, cx_iterator_next);
-    CX_METAPROCEDURE_O(iterator, hasNext, "()", bool, FALSE, cx_iterator_hasNext);
 
 /* ::cortex::lang::binary */
 CX_FW_I(binary);

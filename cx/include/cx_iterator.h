@@ -18,14 +18,8 @@
 extern "C" {
 #endif
 
-/* ::cortex::lang::iterator::hasNext() */
-cx_bool cx_iterator_hasNext(cx_any _this);
-
 /* ::cortex::lang::iterator::init() */
 cx_int16 cx_iterator_init(cx_iterator _this);
-
-/* ::cortex::lang::iterator::next() */
-cx_any cx_iterator_next(cx_any _this);
 
 #ifdef __cplusplus
 }
