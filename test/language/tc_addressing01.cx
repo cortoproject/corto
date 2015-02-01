@@ -1,7 +1,8 @@
 bool result : true
 
+// Comment
 string testname : "tc_addressing01"
-void fail(string msg): 
+void fail(string msg):
     "$testname: FAIL: $msg"
     result = false
 

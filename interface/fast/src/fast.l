@@ -61,9 +61,14 @@ static int fast_blockOperator(void) {
     return FALSE;
 }
 
-static int fast_isBlankLine(char *txt) {
+static int fast_isBlankLine(char *txt, int *isComment) {
     char *ptr = txt, ch;
     while ((ch = *ptr)) {
+        if (ch == '/') {
+            if (ptr[1] == '/') {
+                *isComment = TRUE;
+            }
+        }
         if ((ch != ' ') && (ch != '\t') && (ch != '\n') && (ch != 13)) {
             return FALSE;
         }
@@ -161,9 +166,10 @@ gid ("::"*{id})+
 
 ^[ ]*[^ \n]+                    {
                                     /* Filter out empty lines */
-                                    if (!fast_isBlankLine(yytext)) {
+                                    int isComment = FALSE;
+                                    if (!fast_isBlankLine(yytext, &isComment)) {
                                         int last = yyleng - 1;
-                                        int indent = process_indent(yytext);
+                                        int indent = isComment ? 0 : process_indent(yytext);
                                         while ((last >= 0) && (yytext[last] != ' ')) {
                                             unput(yytext[last]);
                                             last--;
@@ -208,8 +214,8 @@ gid ("::"*{id})+
 true                            TOKEN; yylval.Boolean =  TRUE; return BOOLEAN;
 false                           TOKEN; yylval.Boolean = FALSE; return BOOLEAN;
 
-"//"                            NEWLINE; comment();
-"#"                             TOKEN; comment();
+"//"                            comment();
+"#"                             comment();
 
 "#i"                            TOKEN; return INDENT;
 "#d"                            TOKEN; return DEDENT;

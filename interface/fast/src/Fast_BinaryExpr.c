@@ -349,6 +349,10 @@ Fast_Expression Fast_BinaryExpr_fold(Fast_BinaryExpr _this) {
                     goto error;
                     break;
                 }
+                if ((cx_primitive(type)->kind == CX_BITMASK) || (cx_primitive(type)->kind == CX_ENUM)) {
+                    Fast_Object typeVar = Fast_Object__create(type);
+                    cx_set(&Fast_Expression(result)->type, typeVar);
+                }
             }
 
             /* Collect new expression */

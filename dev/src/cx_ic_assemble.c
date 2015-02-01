@@ -2618,15 +2618,19 @@ static cx_int16 cx_icOp_toVm(cx_icOp op, cx_ic_vmProgram *program) {
          * are assembled.
          */
         if (((cx_icStorage)op->s2)->kind == CX_STORAGE_OBJECT) {
-            f = ((cx_icObject)op->s2)->ptr;
-            if (f->kind == CX_PROCEDURE_VM) {
-                if (cx_checkState(f, CX_DEFINED)) {
-                    cx_vmProgram inlineProgram = (cx_vmProgram)f->implData;
-                    if (inlineProgram->storage > program->maxStackSize) {
-                        program->maxStackSize = inlineProgram->storage;
+            cx_object o = ((cx_icObject)op->s2)->ptr;
+            cx_type t = cx_typeof(o);
+            if ((t->kind == CX_COMPOSITE) && (cx_interface(t)->kind == CX_PROCEDURE)) {
+                f = o;
+                if (f->kind == CX_PROCEDURE_VM) {
+                    if (cx_checkState(f, CX_DEFINED)) {
+                        cx_vmProgram inlineProgram = (cx_vmProgram)f->implData;
+                        if (inlineProgram->storage > program->maxStackSize) {
+                            program->maxStackSize = inlineProgram->storage;
+                        }
+                    } else {
+                        cx_ic_vmInlineFunctionMark(program, program->program, f);
                     }
-                } else {
-                    cx_ic_vmInlineFunctionMark(program, program->program, f);
                 }
             }
         }

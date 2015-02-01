@@ -922,7 +922,6 @@ Fast_Variable Fast_Parser_observerCreate(Fast_Parser _this, cx_string id, Fast_E
     result = (Fast_Variable)Fast_Object__create(observer);
     Fast_Parser_collect(_this, result);
 
-
     return result;
 error:
     fast_err;

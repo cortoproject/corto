@@ -94,6 +94,13 @@ cx_bool cx_primitive_castable_v(cx_primitive _this, cx_type type) {
                         }
                         break;
                     case CX_INTEGER:
+                        switch(kind) {
+                        case CX_ENUM:
+                            result = TRUE;
+                            break;
+                        default:
+                            break;
+                        }
                     case CX_UINTEGER:
                         switch(kind) {
                         case CX_BINARY:
@@ -103,7 +110,6 @@ cx_bool cx_primitive_castable_v(cx_primitive _this, cx_type type) {
                         case CX_UINTEGER:
                         case CX_FLOAT:
                         case CX_TEXT:
-                        case CX_ENUM:
                         case CX_BITMASK:
                             result = TRUE;
                         default:
