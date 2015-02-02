@@ -1,3 +1,6 @@
+.PHONY: all
+.PHONY: clean
+.PHONY: gcov
 
 all:
 	@make -C c
@@ -7,6 +10,3 @@ clean:
 	
 gcov:
 	@make gcov -C c
-	
-splint:
-	@make splint -C c

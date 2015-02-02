@@ -1,3 +1,6 @@
+.PHONY: all
+.PHONY: clean
+.PHONY: gcov
 
 all:
 	@make -C cx
@@ -8,7 +11,7 @@ all:
 	@make -C generator/html
 	@make -C packages
 	@make -C test
-	
+
 clean:
 	@make clean -C cx
 	@make clean -C dev
@@ -29,15 +32,3 @@ gcov:
 	@make gcov -C generator/html
 	@make gcov -C packages
 	@make gcov -C test
-	
-splint:
-	@make splint -C cx
-	@make splint -C dev
-	@make splint -C tools
-	@make splint -C generator
-	@make splint -C interface
-	@make splint -C generator/html
-	@make splint -C packages
-	@make splint -C test
-	
-

@@ -24,28 +24,41 @@
  * Make a data.json file inside
  * Call recursively for every object in this scope
  */
+static void html_pathToRoot(cx_object o, char* buffer, cx_uint32 *level) {
+    if (cx_parentof(o) && (cx_parentof(o) != root_o)) {
+        html_pathToRoot(cx_parentof(o), buffer, level);
+    }
+    if (cx_nameof(o)) {
+        strcat(buffer, "/");
+        strcat(buffer, cx_nameof(o));
+        if (level) {
+            (*level)++;
+        }
+    }
+}
+
+static void html_getPath(cx_object o, char *buffer, cx_html_gen_t *data, cx_uint32 *level) {
+    strcpy(buffer, data->path);
+    if (cx_nameof(o)) {
+        html_pathToRoot(cx_parentof(o), buffer, level);
+        strcat(buffer, "/");
+        strcat(buffer, cx_nameof(o));
+    }
+}
+
 static int html_folderWalk(cx_object o, void *userData) {
     cx_html_gen_t *data = userData;
     char folderPath[PATH_MAX];
 
-    if (sprintf(folderPath, "%s/%s", data->path, cx_nameof(o)) < 0) {
-        cx_error("Cannot create path for object \"%s\" in path:\"%s\".",
-            cx_nameof(o), data->path);
-        goto error;
-    }
-
+    html_getPath(o, folderPath, data, NULL);
     if (cx_mkdir(folderPath)) {
         goto error;
     }
 
-    cx_html_gen_t scopeData = *data;
-    scopeData.path = folderPath;
-
-    return cx_scopeWalk(o, html_folderWalk, &scopeData);
+    return cx_scopeWalk(o, html_folderWalk, data);
 error:
     return 0;
 }
-
 
 /*
  * Add parents in root to object order
@@ -64,20 +77,18 @@ static cx_int32 html_jsonWalk(cx_object o, void *userData) {
     cx_json_ser_t jsonData = {NULL, NULL, 0, 0, 0, FALSE, FALSE, FALSE};
     cx_html_gen_t *htmlData = userData;
     struct cx_serializer_s serializer;
-    char folderPath[PATH_MAX];
-    char filepath[PATH_MAX];
+    char filePath[PATH_MAX];
     g_file file;
 
     serializer = cx_json_ser(CX_PRIVATE, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
 
-    if (sprintf(folderPath, "%s/%s", htmlData->path, cx_nameof(o)) < 0) {
+    /* Get path starting from root */
+    html_getPath(o, filePath, htmlData, NULL);
+    strcat(filePath, "/data.js");
+    file = g_fileOpen(htmlData->generator, filePath);
+    if (!file) {
         goto error;
     }
-    if (sprintf(filepath, "%s/data.js", folderPath) < 0) {
-        goto error;
-    }
-
-    file = g_fileOpen(htmlData->generator, filepath);
 
     g_fileWrite(file, "new function() {\n");
     g_fileIndent(file);
@@ -102,10 +113,7 @@ static cx_int32 html_jsonWalk(cx_object o, void *userData) {
     g_fileDedent(file);
     g_fileWrite(file, "}();\n");
 
-    cx_html_gen_t scopeData = *htmlData;
-    scopeData.path = folderPath;
-
-    return cx_scopeWalk(o, html_jsonWalk, &scopeData);
+    return cx_scopeWalk(o, html_jsonWalk, htmlData);
 error:
     return 0;
 }
@@ -120,9 +128,9 @@ static int html_printScopeItemScriptWalk(cx_object o, void *userData) {
  * Assumes that the file is already opened.
  * Returns 0 on success, -1 otherwise.
  */
-static int html_printHtml(cx_html_gen_t *data, cx_object o, g_file file) {
-    unsigned int level;
+static int html_printHtml(cx_object o, g_file file, cx_uint32 level) {
     cx_id name;
+    cx_uint32 i;
     
     /* http://www.w3.org/TR/html5/syntax.html#writing */
     g_fileWrite(file, "<!DOCTYPE html>\n");
@@ -134,14 +142,14 @@ static int html_printHtml(cx_html_gen_t *data, cx_object o, g_file file) {
 
     /* jQuery */
     g_fileWrite(file, "<script src=\"");
-    for (level = 0; level < data->level; level++) {
+    for (i = 0; i < level; i++) {
         g_fileWrite(file, "../");
     }
     g_fileWrite(file, "jquery-1.11.2.min.js\"></script>\n");
 
     /* Parsing script */
     g_fileWrite(file, "<script src=\"");
-    for (level = 0; level < data->level; level++) {
+    for (i = 0; i < level; i++) {
         g_fileWrite(file, "../");
     }
     g_fileWrite(file, "cortex.js\"></script>\n");
@@ -150,7 +158,7 @@ static int html_printHtml(cx_html_gen_t *data, cx_object o, g_file file) {
     g_fileWrite(file, "<script src=\"data.js\"></script>\n");
 
     /* Parent object */
-    if (data->level > 1) {
+    if (level > 1) {
         g_fileWrite(file, "<script src=\"../data.js\"></script>\n");
     }
 
@@ -165,7 +173,7 @@ static int html_printHtml(cx_html_gen_t *data, cx_object o, g_file file) {
 
     /* CSS */
     g_fileWrite(file, "<link href=\"../");
-    for (level = 1; level < data->level; level++) {
+    for (i = 1; i < level; i++) {
         g_fileWrite(file, "../");
     }
     g_fileWrite(file, "cortex.css\" rel=\"stylesheet\">\n");
@@ -185,7 +193,7 @@ static int html_printHtml(cx_html_gen_t *data, cx_object o, g_file file) {
     g_fileWrite(file, "<script>\n");
     g_fileIndent(file);
     g_fileWrite(file, "var _o = cx.resolve('%s');\n", cx_fullname(o, name));
-    g_fileWrite(file, "$('#header').append(cx.toLink('%s', 'header'));\n");
+    g_fileWrite(file, "$('#header').append(cx.toLink('%s', 'header', true));\n", name);
     g_fileWrite(file, "$('#scope').append(_o.scopeToHtml());\n");
     g_fileWrite(file, "$('#meta').append(_o.metaToHtml());\n");
     g_fileWrite(file, "$('#value').append(_o.toHtml());\n");
@@ -202,35 +210,25 @@ error:
 }
 
 static int html_htmlWalk(cx_object o, void *userData) {
-    static cx_id rootFullname = "";
     cx_html_gen_t *htmlData = userData;
-    char folderPath[PATH_MAX];
-    char filepath[PATH_MAX];
+    char filePath[PATH_MAX];
     g_file file;
+    cx_uint32 level = 1; /* Root is at 0 */
 
-    if (sprintf(folderPath, "%s/%s", htmlData->path, cx_nameof(o)) < 0) {
-        goto error;
-    }
-    if (sprintf(filepath, "%s/index.html", folderPath) < 0) {
-        goto error;
-    }
-
-    file = g_fileOpen(htmlData->generator, filepath);
-    
-    if (htmlData->level == 1) {
-        cx_fullname(o, rootFullname);
-        htmlData->rootFullname = rootFullname;
-    }
-
-    if (html_printHtml(htmlData, o, file)) {
+    html_getPath(o, filePath, htmlData, &level);
+    strcat(filePath, "/index.html");
+    file = g_fileOpen(htmlData->generator, filePath);
+    if (!file) {
         goto error;
     }
 
-    cx_html_gen_t childHtmlData = {folderPath, htmlData->level + 1,
-        rootFullname, htmlData->generator};
+    if (html_printHtml(o, file, level)) {
+        goto error;
+    }
 
-    return cx_scopeWalk(o, html_htmlWalk, &childHtmlData);
+    g_fileClose(file);
 
+    return cx_scopeWalk(o, html_htmlWalk, htmlData);
 error:
     return 0;
 }
@@ -253,7 +251,7 @@ error:
 cx_int16 cortex_genMain(cx_generator g) {
     const char docs_filename[] = "docs";
     int success;
-    
+
     cx_mkdir(docs_filename);
     cx_html_gen_t data = {docs_filename, 1, "", g};
     

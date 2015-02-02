@@ -51,12 +51,14 @@ static cx_bool cx_ser_appendstr(cx_json_ser_t* data, cx_string fmt, ...) {
     cx_uint32 result = TRUE;
 
     if (data) {
+        va_list argcpy;
+        va_copy(argcpy, args);
         va_start(args, fmt);
         memRequired = vsnprintf(buff, 1024, fmt, args);
         if (memRequired >= 1024) {
             buff = cx_malloc(memRequired + 1);
+            vsprintf(buff, fmt, argcpy);
         }
-        vsprintf(buff, fmt, args);
         va_end(args);
         result = cx_ser_appendstrbuff(data, buff);
         if (buff != alloc) {
@@ -66,7 +68,6 @@ static cx_bool cx_ser_appendstr(cx_json_ser_t* data, cx_string fmt, ...) {
 
     return result;
 }
-
 
 static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData) {
     CX_UNUSED(s);

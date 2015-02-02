@@ -1,0 +1,194 @@
+
+body {
+    background-color: #222222;
+    margin: 0px;
+}
+
+#header {
+    background-color: #00cf92;   
+    color: #FFFFFF;
+    font-family: futura, sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    font-style: italic;
+    padding: 5px;
+    margin: 0px;
+    border-radius: 0px;
+}
+
+.toggle {
+    cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+span.collapse {
+    font-size: 10px;
+}
+span.expand {
+    font-size: 10px;
+}
+
+a.header {
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+a.header:hover {
+    color: #ffcd68;
+}
+
+#scopeTable {
+    margin: 5px;
+    margin-top: 0px;
+    margin-left: 0px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    width: 250px;
+    float: left;    
+}
+
+#valueTable {
+    margin: 5px;
+    margin-left: 255px;
+    width: 450px; 
+}
+
+#metaTable {
+    margin: 5px;
+    margin-left: 255px;
+    width: 450px;   
+}
+
+tr.separator td {
+    padding: 4px;
+    padding: 4px;
+    padding-right: 10px;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 18px;
+    color: #00cf92;
+    background-color: #FFFFFF;
+}
+
+table.value {
+    text-align: left;
+    font-weight: normal;
+    border-spacing: 0px;
+    padding: 4px;
+    background-color: #00cf92;
+    border-radius: 5px;
+    font-family: sans-serif;
+    font-size: 14px;
+    table-layout:fixed;
+}
+
+table.nested {
+    text-align: left;
+    font-weight: normal;
+    border-spacing: 0px;
+    margin: 0px;
+    padding: 2px;
+    background-color: #00cf92;
+    border-radius: 5px;
+    font-family: sans-serif;
+    font-size: 14px;
+}
+
+table.value th {
+    padding: 2px;
+    padding-right: 10px;
+    font-weight: normal;
+    font-family: futura, sans-serif;
+    font-size: 15px;
+    width: 100px;
+    color: #FFFFFF;
+}
+
+tbody.value td {
+    padding: 3px;
+    padding-right: 4px;
+    background-color: #FFFFFF;
+    color: #000000;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: scroll;
+}
+
+tbody.value td.complex {
+    background-color: #EEEEEE;
+}
+tbody.value td.dummy {
+    background-color: #EEEEEE;
+}
+
+tbody.value td.base {
+    font-family: futura, sans-serif;
+    background-color: #EEEEEE;
+    color: #444444;
+}
+
+thead.value tr:first-child td:last-child {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+tbody.value tr:last-child td:last-child {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+thead.value td {
+    padding: 2px;
+    padding-right: 10px;
+    font-weight: bold;
+    font-style: italic;
+    font-family: futura, sans-serif;
+    font-size: 18px;
+    text-align: right;
+    background-color: #FFFFFF;
+    color: #00cf92;
+}
+
+code.number {
+    color: #0000FF;
+}
+
+code.normal {
+    color: #000000;
+}
+
+code.boolean {
+    color: #0000FF;
+}
+
+a.reference {
+    color: #CC8855;
+    text-decoration: none;
+}
+a.reference:visited {
+    color: #CC8855;
+    text-decoration: none;
+}
+
+code.reference {
+    color: #CC8855;
+    text-decoration: none;
+}
+
+code.enum {
+    color: #AA55CC;
+}
+
+code.bitmask {
+    color: #AA55CC;
+}
+
+code.string {
+    color: #DD4444;
+}
+
+

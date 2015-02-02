@@ -23,7 +23,7 @@ cx = {
     },
 
     // Convert reference string to a link
-    toLink: function(link, style, fullLink) {
+    toLink: function(link, style) {
         var p = cx.me;
         var prefix = "";
         var result = "";
@@ -32,19 +32,16 @@ cx = {
             p = p.parent;
             prefix += "../";
         }
+        var langlen = "::cortex::lang".length;
+        if ((link.length > langlen) && (link.slice(0, langlen) == "::cortex::lang")) {
+            prefix += "cortex/lang/";
+            link = link.slice(langlen + 2, link.length);
+        }
 
-        if (!fullLink) {
-            var langlen = "::cortex::lang".length;
-            if ((link.length > langlen) && (link.slice(0, langlen) == "::cortex::lang")) {
-                prefix += "cortex/lang/";
-                link = link.slice(langlen + 2, link.length);
-            }
-
-            var melen = cx.me.id().length;
-            if ((link.length > melen) && (link.slice(0, melen) === cx.me.id())) {
-                prefix += cx.me.id().slice(2, melen).replace("::", "/") + "/";
-                link = link.slice(melen + 2, link.length);
-            }
+        var melen = cx.me.id().length;
+        if ((link.length > melen) && (link.slice(0, melen) === cx.me.id())) {
+            prefix += cx.me.id().slice(2, melen).replace("::", "/") + "/";
+            link = link.slice(melen + 2, link.length);
         }
 
         if (style === undefined) {
@@ -395,7 +392,7 @@ cx.object.prototype = {
 
         function indent(level) {
             var result = "";
-            for(var i = 0; i < (level-1); i++) {
+            for(var i = 0; i < (level-1) * 2; i++) {
                 result += "&nbsp;";
             }
             return "<code>" + result + "</code>";

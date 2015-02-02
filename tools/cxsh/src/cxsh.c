@@ -104,7 +104,7 @@ static cx_string cxsh_printColumnValue(cx_string str, unsigned int width){
         cx_id buffer;
         snprintf(buffer, width - 2, "%s", str);
         (*cxsh_findPreferredBreak(buffer)) = '\0';
-        printf("%s%*s", buffer, width - strlen(buffer), " ");
+        printf("%s%*s", buffer, width - (unsigned int)strlen(buffer), " ");
         result = str + strlen(buffer);
         if (*result == ' ') {
             result++;
@@ -410,7 +410,7 @@ static cx_string cxsh_multiline(cx_string expr, cx_uint32 indent) {
             cx_uint32 i;
             /* Print indent */
             cxsh_color(SHELL_COLOR);
-            printf("%*s >", strlen(prompt) - 2, "");
+            printf("%*s >", (unsigned int)strlen(prompt) - 2, "");
             cxsh_color(BLUE);
             for(i = 0; i < (indent * 4 - 1); i++) {
                 printf(".");
@@ -636,7 +636,7 @@ static int cxsh_doCmd(char* cmd) {
             if ((location = cxsh_getErrorLocation(lastErr))) {
                 cx_id prompt;
                 cxsh_prompt(scope, FALSE, prompt);
-                printf("%*s^\n", location - 1 + strlen(prompt), "");
+                printf("%*s^\n", location - 1 + (unsigned int)strlen(prompt), "");
             }
 
             do {

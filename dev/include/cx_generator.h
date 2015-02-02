@@ -149,6 +149,9 @@ cx_bool g_mustParse(cx_generator g, cx_object o);
 /* Open a file for writing. */
 g_file g_fileOpen(cx_generator generator, cx_string name);
 
+/* Close a file. */
+void g_fileClose(g_file file);
+
 /* Return contents of a file. */
 cx_string g_fileRead(cx_generator generator, cx_string name);
 

@@ -27,9 +27,8 @@ obj/%.o: src/%.c
 gcov/%.c.gcov: %.c.gcov
 	mv $< $@
 
+.PHONY: all
 all: $(TARGET_OBJECT)
 
+.PHONY: gcov
 gcov: $(GCOV)
-
-splint: $(SPLINT)
-	clang $(INCLUDES) $<
