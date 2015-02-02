@@ -113,7 +113,7 @@ cx_int16 Fast_Parser_toIc(Fast_Parser _this) {
     cx_vmProgram vmProgram = NULL;
 
     /* Parse root-block */
-    Fast_Block_toIc(_this->block, program, NULL    , FALSE);
+    Fast_Block_toIc(_this->block, program, NULL, FALSE);
     if (_this->errors) {
         goto error;
     }
@@ -127,8 +127,7 @@ cx_int16 Fast_Parser_toIc(Fast_Parser _this) {
 #ifdef CX_IC_TRACING
     extern cx_bool CX_DEBUG_ENABLED;
     if (CX_DEBUG_ENABLED) {
-        cx_string programStr;
-        programStr = cx_icProgram_toString(program);
+        cx_string programStr = cx_icProgram_toString(program);
         cx_print("%s", programStr);
         cx_dealloc(programStr);
     }

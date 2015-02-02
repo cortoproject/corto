@@ -16,17 +16,21 @@ cx_int16 cx_function_bind(cx_function _this) {
     if (!_this->size) {
         cx_uint32 i;
         for(i=0; i<_this->parameters.length; i++) {
-            cx_type paramType = _this->parameters.buffer[i].type;
-            switch(paramType->kind) {
-            case CX_ANY:
-                _this->size += sizeof(cx_any);
-                break;
-            case CX_PRIMITIVE:
-                _this->size += cx_type_sizeof(paramType);
-                break;
-            default:
-                _this->size += sizeof(void*);
-                break;
+            if (_this->parameters.buffer[i].passByReference) {
+                _this->size += sizeof(cx_word);
+            } else {
+                cx_type paramType = _this->parameters.buffer[i].type;
+                switch(paramType->kind) {
+                case CX_ANY:
+                    _this->size += sizeof(cx_any);
+                    break;
+                case CX_PRIMITIVE:
+                    _this->size += cx_type_sizeof(paramType);
+                    break;
+                default:
+                    _this->size += sizeof(void*);
+                    break;
+                }
             }
         }
 

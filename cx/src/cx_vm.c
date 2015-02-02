@@ -444,7 +444,7 @@ typedef union Di2f_t {
         cx_delegatedata *ptr = (cx_delegatedata*)&op2_##code;\
         void *stackptr = c.stack;\
         if (!ptr->instance) {\
-            stackptr = ((cx_word*)stackptr) + 1;\
+            stackptr = CX_OFFSET(stackptr, sizeof(cx_word));\
         }\
         cx_callb((cx_function)ptr->procedure, &op1_##code, stackptr);\
         c.sp = c.stack; /* Reset stack pointer */ \
@@ -672,7 +672,7 @@ typedef union Di2f_t {
 #define ELEMA(type,code)\
     ELEMA_##code:\
         fetchOp3(ELEMA,code##V);\
-        op1_##code##V += op2_##code##V * op3_##code##V;\
+        op1_##code##V += (L_t)op2_##code##V * op3_##code##V;\
         next();\
 
 #define ELEMS(type,code)\
@@ -681,7 +681,7 @@ typedef union Di2f_t {
         {\
             cx_objectSeq* seq = (cx_objectSeq*)op1_##code##V;\
             CHECK_BOUNDS(seq->length, op2_##code##V);\
-            op1_##code##V = (W_t)CX_OFFSET(seq->buffer,op2_##code##V * op3_##code##V);\
+            op1_##code##V = (W_t)CX_OFFSET(seq->buffer, (L_t)op2_##code##V * op3_##code##V);\
         }\
         next();\
 

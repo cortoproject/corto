@@ -2428,9 +2428,14 @@ static void cx_vmOp2Cast(cx_ic_vmProgram *program, cx_vmOp *vmOp, cx_icOp op, cx
         if (sizeof(intptr_t) == 4) {
             vmOp->op = CX_VM_STAGE2_LVV;
         } else if (sizeof(intptr_t) == 8) {
-            vmOp->op = CX_VM_STAGE2_DPP;
+            vmOp->op = CX_VM_STAGE2_DVV;
         }
-        vmOp->lo.w = (cx_word)sourceType;
+
+        if (op->s2Deref == CX_IC_DEREF_ADDRESS) {
+            vmOp->lo.w = (cx_word)cx_object_o;
+        } else {
+            vmOp->lo.w = (cx_word)sourceType;
+        }
         vmOp->hi.w = (cx_word)destinationType;
         
         vmStoredOp = cx_vmProgram_addOp(program->program, ((cx_ic)op)->line);
