@@ -28,22 +28,30 @@ cx = {
         var prefix = "";
         var result = "";
         var name = "";
+        var nesting = 0;
+        var i = 0;
+        var itsMe = (cx.me.id() === link)
+
         while (p.parent) {
             p = p.parent;
             prefix += "../";
         }
 
         if (!fullLink) {
-            var langlen = "::cortex::lang".length;
-            if ((link.length > langlen) && (link.slice(0, langlen) == "::cortex::lang")) {
-                prefix += "cortex/lang/";
-                link = link.slice(langlen + 2, link.length);
-            }
-
             var melen = cx.me.id().length;
             if ((link.length > melen) && (link.slice(0, melen) === cx.me.id())) {
-                prefix += cx.me.id().slice(2, melen).replace("::", "/") + "/";
-                link = link.slice(melen + 2, link.length);
+                if (cx.me.id() != "::") {
+                    prefix += cx.me.id().slice(2, melen).replace(new RegExp("\:\:", 'g'), "/") + "/";
+                    link = link.slice(melen + 2, link.length);
+                } else {
+                    link = link.slice(melen, link.length);
+                }
+            } else {
+                var langlen = "::cortex::lang".length;
+                if ((link.length > langlen) && (link.slice(0, langlen) == "::cortex::lang")) {
+                    prefix += "cortex/lang/";
+                    link = link.slice(langlen + 2, link.length);
+                }
             }
         }
 
@@ -51,9 +59,9 @@ cx = {
             style = 'reference';
         }
 
-        for (var i = 0, start = 0; i < link.length; i++) {
+        for (i = 0, start = 0; i < link.length; i++) {
             var ch = link[i];
-            if (ch === ':') {
+            if (!nesting && (ch === ':')) {
                 if (i === 0) {
                     result = "<a class='" + style + "' href='" + prefix + "index.html'>::</a>";
                 } else {
@@ -66,6 +74,10 @@ cx = {
                 }
                 i++;
                 start = i + 1;
+            } else if ((ch === '(') || (ch === '{')) {
+                nesting++;
+            } else if ((ch === ')') || (ch === '}')) {
+                nesting--;
             }
         }
 
@@ -74,7 +86,12 @@ cx = {
         if (start > 2) {
             result += "::";
         }
-        result += "<a class='" + style + "' href='" + prefix + "index.html'>" + name + "</a>";
+
+        if (itsMe && fullLink) {
+            result += "<span class='me'>" + name + "</span>";
+        } else {
+            result += "<a class='" + style + "' href='" + prefix + "index.html'>" + name + "</a>";
+        }
 
         return result;        
     },
@@ -233,6 +250,9 @@ cx.object.prototype = {
             }
             p = p.parent;
         }
+        if (!result) {
+            result = "::";
+        }
         return result;
     },
 
@@ -240,27 +260,33 @@ cx.object.prototype = {
     resolve: function(fullname) {
         var scope = this;
         var o = undefined;
-        for (var i = 0, start = 0; i < fullname.length; i++) {
-            var ch = fullname[i];
-            if (ch === ':') {
-                if (i === 0) {
-                    scope = cx.root;
-                } else {
-                    var name = fullname.slice(start, i);
-                    scope = scope.scope[name];
-                    if (scope === undefined) {
-                        break;
+
+        if (fullname == "::") {
+            o = cx.root;
+        } else {
+
+            for (var i = 0, start = 0; i < fullname.length; i++) {
+                var ch = fullname[i];
+                if (ch === ':') {
+                    if (i === 0) {
+                        scope = cx.root;
+                    } else {
+                        var name = fullname.slice(start, i);
+                        scope = scope.scope[name];
+                        if (scope === undefined) {
+                            break;
+                        }
                     }
+                    i++;
+                    start = i + 1;
                 }
-                i++;
-                start = i + 1;
             }
-        }
 
-        o = scope.scope[fullname.slice(start, i)];
+            o = scope.scope[fullname.slice(start, i)];
 
-        if ((o === undefined) && (scope.parent !== undefined)) {
-            o = scope.parent.resolve(fullname);
+            if ((o === undefined) && (scope.parent !== undefined)) {
+                o = scope.parent.resolve(fullname);
+            }
         }
 
         return o;
@@ -284,21 +310,28 @@ cx.object.prototype = {
         var size = 0;
 
         result = "<table id='scopeTable' class='value'>";
-        result += "<thead class='value'><tr><td colspan='2'>Scope</td></tr></thead>";
+        result += "<thead class='value'><tr><td>Scope<img id='scopeIcon'></img></td></tr></thead>";
         result += "<tbody class='value'>";
+        result += "<tr><td><div id='scopeContent'><table>";
+
+        if (this.parent) {
+            result += "<tr>" + 
+                    "<td><code><img id='upIcon'></img><a class='reference' href='../index.html'>..</a></code></td>" +
+                    "</tr>";
+        }
 
         for (o in this.scope) { size++; }
         if (size) {
             for (o in this.scope) {
                 result += "<tr>" + 
-                    "<td><code>" + cx.toLink(this.scope[o].id()) + "</code></td>" +
-                    "<td><code>" + cx.toLink(this.scope[o].meta.type) + "</code></td>" +
+                    "<td><code> <img id='objectIcon'></img>" + cx.toLink(this.scope[o].id()) + "</code></td>" +
                     "</tr>";
             }
         } else {
-            result += "<tr><td colspan='2'><code>empty</code></td></tr>"
+            result += "<tr><td></td></tr>";
         }
-        result += "<tr><td colspan='2'></td></tr></tbody>";
+        result += "</table></div></td></tr>";
+        result += "<tr><td></td></tr></tbody>";
 
         return result;
     },
@@ -323,11 +356,13 @@ cx.object.prototype = {
 
         var result = "";
         result += "<table id='metaTable' class='value'>";
-        result += "<thead class='value'><tr><th></th><td>Metadata</td></tr></thead><tbody class='value'>"
+        result += "<thead class='value'><tr><th></th><td>Metadata<img id='metaIcon'></img></td></tr></thead><tbody class='value'>"
         result += "<tr><th>type</th>" + 
                       "<td><code>" + cx.toLink(this.meta.type) + "</code></td>";
-        result += "<tr><th>parent</th>" +
+        if (this.meta.parent) {
+            result += "<tr><th>parent</th>" +
                       "<td><code>" + cx.toLink(this.meta.parent) + "</code></td>";
+        }
         result += "<tr><th>state</th>" +
                       "<td><code class='bitmask'>" + parseStates(this.meta.states) + "</code></td></tr>";
         result += "<tr><th>attributes</th>" +
@@ -470,7 +505,7 @@ cx.object.prototype = {
             }
 
             result += "<table id='valueTable' class='value'>";
-            result += "<thead class='value'><tr data-depth='1'><th></th><td>Value</td></tr></thead><tbody class='value'>";
+            result += "<thead class='value'><tr data-depth='1'><th></th><td>Value<img id='valueIcon'></img></td></tr></thead><tbody class='value'>";
             if (size) {
                 var value = s.serializeValue(v);
                 if (!(v instanceof Object)) {
@@ -494,7 +529,7 @@ cx.object.prototype = {
 
 // Create the root object
 cx.root = new cx.object(undefined, "");
-cx.root.meta.type = "::cortex::lang::void";
+cx.root.meta.type = "::cortex::lang::object";
 
 // Create a resolve in cx that resolves from root
 cx.resolve = function(name) { return cx.root.resolve(name);}

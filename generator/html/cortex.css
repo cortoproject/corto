@@ -1,19 +1,25 @@
 
 body {
-    background-color: #222222;
+    background-color: #FFFFFF;
     margin: 0px;
 }
 
 #header {
-    background-color: #00cf92;   
-    color: #FFFFFF;
+    background-color: #EEEEEE;   
+    color: #515151;
     font-family: futura, sans-serif;
     font-size: 20px;
-    font-weight: bold;
     font-style: italic;
     padding: 5px;
     margin: 0px;
-    border-radius: 0px;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #CCCCCC;
+}
+
+.me {
+    font-weight: bold;
+    font-size: 21px;
 }
 
 .toggle {
@@ -34,38 +40,85 @@ span.expand {
 }
 
 a.header {
-    color: #FFFFFF;
+    color: #515151;
     text-decoration: none;
 }
 
 a.header:hover {
-    color: #ffcd68;
+    color: #CC8855;
+}
+
+#scope {
+    margin: 10px;
+    width: 250px;
+    float: left;
 }
 
 #scopeTable {
-    margin: 5px;
     margin-top: 0px;
     margin-left: 0px;
-    border-top-left-radius: 0px;
-    border-top-right-radius: 0px;
-    width: 250px;
-    float: left;    
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    width: 100%;
+}
+
+#scopeContent {
+    margin: 0px;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    height: calc(100vh - 130px);
 }
 
 #valueTable {
-    margin: 5px;
-    margin-left: 255px;
-    width: 450px; 
+    margin: 10px;
+    margin-left: 260px;
+    width: 400px;
 }
 
 #metaTable {
-    margin: 5px;
-    margin-left: 255px;
-    width: 450px;   
+    margin: 10px;
+    margin-left: 260px;
+    width: 400px;   
 }
 
+#scopeIcon {
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+    content: url("scope_icon.png");
+}
+
+#valueIcon {
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+    content: url("value_icon.png");
+}
+
+#metaIcon {
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+    content: url("meta_icon.png");
+}
+
+#objectIcon {
+    width: 10px;
+    height: 10px;
+    margin-right: 10px;
+    content: url("object_icon.png");
+}
+
+#upIcon {
+    width: 10px;
+    height: 10px;
+    margin-right: 10px;
+    content: url("up_icon.png");
+}
+
+
 tr.separator td {
-    padding: 4px;
     padding: 4px;
     padding-right: 10px;
     font-weight: bold;
@@ -79,34 +132,27 @@ table.value {
     text-align: left;
     font-weight: normal;
     border-spacing: 0px;
-    padding: 4px;
-    background-color: #00cf92;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #CCCCCC;
+    padding: 1px;
+    background-color: #CCCCCC;
     border-radius: 5px;
     font-family: sans-serif;
     font-size: 14px;
     table-layout:fixed;
 }
 
-table.nested {
-    text-align: left;
-    font-weight: normal;
-    border-spacing: 0px;
-    margin: 0px;
-    padding: 2px;
-    background-color: #00cf92;
-    border-radius: 5px;
-    font-family: sans-serif;
-    font-size: 14px;
-}
-
 table.value th {
     padding: 2px;
     padding-right: 10px;
+    padding-left: 5px;
+    background-color: #EEEEEE;
     font-weight: normal;
     font-family: futura, sans-serif;
     font-size: 15px;
     width: 100px;
-    color: #FFFFFF;
+    color: #515151;
 }
 
 tbody.value td {
@@ -120,25 +166,20 @@ tbody.value td {
 }
 
 tbody.value td.complex {
-    background-color: #EEEEEE;
+    background-color: #F8F8F8;
 }
 tbody.value td.dummy {
-    background-color: #EEEEEE;
+    background-color: #FFFFFF;
 }
 
 tbody.value td.base {
     font-family: futura, sans-serif;
-    background-color: #EEEEEE;
-    color: #444444;
+    background-color: #F8F8F8;
+    color: #515151;
 }
 
 thead.value tr:first-child td:last-child {
-    border-top-left-radius: 5px;
     border-top-right-radius: 5px;
-}
-tbody.value tr:last-child td:last-child {
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
 }
 
 thead.value td {
@@ -147,10 +188,10 @@ thead.value td {
     font-weight: bold;
     font-style: italic;
     font-family: futura, sans-serif;
-    font-size: 18px;
+    font-size: 22px;
     text-align: right;
     background-color: #FFFFFF;
-    color: #00cf92;
+    color: #515151;
 }
 
 code.number {

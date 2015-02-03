@@ -25,15 +25,15 @@
  * Call recursively for every object in this scope
  */
 static void html_pathToRoot(cx_object o, char* buffer, cx_uint32 *level) {
-    if (cx_parentof(o) && (cx_parentof(o) != root_o)) {
+    if (cx_parentof(o)) {
         html_pathToRoot(cx_parentof(o), buffer, level);
     }
     if (cx_nameof(o)) {
         strcat(buffer, "/");
         strcat(buffer, cx_nameof(o));
-        if (level) {
-            (*level)++;
-        }
+    }
+    if (level) {
+        (*level)++;
     }
 }
 
@@ -67,7 +67,9 @@ static void html_parentWalk(cx_object o, g_file file) {
     if (cx_parentof(o) && (cx_parentof(o) != root_o)) {
         html_parentWalk(cx_parentof(o), file);
     }
-    g_fileWrite(file, "o = o.declare('%s');\n", cx_nameof(o));
+    if (cx_nameof(o)) {
+        g_fileWrite(file, "o = o.declare('%s');\n", cx_nameof(o));
+    }
 }
 
 /*
@@ -172,8 +174,8 @@ static int html_printHtml(cx_object o, g_file file, cx_uint32 level) {
     }
 
     /* CSS */
-    g_fileWrite(file, "<link href=\"../");
-    for (i = 1; i < level; i++) {
+    g_fileWrite(file, "<link href=\"");
+    for (i = 0; i < level; i++) {
         g_fileWrite(file, "../");
     }
     g_fileWrite(file, "cortex.css\" rel=\"stylesheet\">\n");
@@ -213,9 +215,10 @@ static int html_htmlWalk(cx_object o, void *userData) {
     cx_html_gen_t *htmlData = userData;
     char filePath[PATH_MAX];
     g_file file;
-    cx_uint32 level = 1; /* Root is at 0 */
+    cx_uint32 level = 0; /* Root is at 0 */
 
     html_getPath(o, filePath, htmlData, &level);
+
     strcat(filePath, "/index.html");
     file = g_fileOpen(htmlData->generator, filePath);
     if (!file) {
@@ -269,6 +272,26 @@ cx_int16 cortex_genMain(cx_generator g) {
 
     if (success && !(success = !html_copy(data.path, "cortex.css"))) {
         cx_error("Cannot copy \"cortex.css\".");
+    }
+
+    if (success && !(success = !html_copy(data.path, "scope_icon.png"))) {
+        cx_error("Cannot copy \"scope_icon.png\".");
+    }
+
+    if (success && !(success = !html_copy(data.path, "value_icon.png"))) {
+        cx_error("Cannot copy \"value_icon.png\".");
+    }
+
+    if (success && !(success = !html_copy(data.path, "meta_icon.png"))) {
+        cx_error("Cannot copy \"meta_icon.png\".");
+    }
+
+    if (success && !(success = !html_copy(data.path, "object_icon.png"))) {
+        cx_error("Cannot copy \"object_icon.png\".");
+    }
+
+    if (success && !(success = !html_copy(data.path, "up_icon.png"))) {
+        cx_error("Cannot copy \"up_icon.png\".");
     }
     
     if (success && !(success = g_walkNoScope(g, html_jsonWalk, &data))) {
