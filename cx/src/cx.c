@@ -76,7 +76,8 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_CLASS(op, map);\
     SSO_OP_CLASS(op, member);\
     SSO_OP_CLASS(op, class);\
-    SSO_OP_CLASS(op, delegate);
+    SSO_OP_CLASS(op, delegate);\
+    SSO_OP_CLASS(op, package);
 
 /* Procedures */
 #define SSO_OP_PROCEDURETYPE(op)\
@@ -491,6 +492,8 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, parameter_name);\
     SSO_OP_OBJ(op, parameter_type);\
     SSO_OP_OBJ(op, parameter_passByReference);\
+    /* package */\
+    SSO_OP_OBJ(op, package_url);
 
 /* 2nd degree objects (function parameters) */
 #define SSO_OP_OBJECT_2ND(op) \

@@ -27,7 +27,7 @@ static int process_indent(char* line);
     yparser()->column += strlen(yytext);\
     yparser()->token = yytext;\
     trailing = fast_trailingOperator();\
-    block = fast_blockOperator();\
+    block = fast_blockOperator();
 
 void lex_collect(void *o) {
     Fast_Parser_collectHeap(yparser(), (cx_word)o);
@@ -214,6 +214,7 @@ gid ("::"*{id})+
 true                            TOKEN; yylval.Boolean =  TRUE; return BOOLEAN;
 false                           TOKEN; yylval.Boolean = FALSE; return BOOLEAN;
 
+"#package"                      TOKEN; return PACKAGE;
 "//"                            comment();
 "#"                             comment();
 

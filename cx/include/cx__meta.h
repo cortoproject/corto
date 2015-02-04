@@ -48,6 +48,7 @@ CX_META_OBJECT(class, iterator);
 CX_META_OBJECT(class, member);
 CX_META_OBJECT(class, event);
 CX_META_OBJECT(class, observableEvent);
+CX_META_OBJECT(class, package);
 CX_META_OBJECT(struct, parameter);
 CX_META_OBJECT(struct, delegatedata);
 CX_META_OBJECT(struct, interfaceVector);

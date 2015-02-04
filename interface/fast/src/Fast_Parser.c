@@ -2457,6 +2457,7 @@ cx_uint32 Fast_Parser_parse(Fast_Parser _this) {
 
     /* Reset parser-state so 2nd pass starts clean */
     Fast_Parser_reset(_this);
+    _this->scope = NULL;
     
     _this->pass = 1;
     if ( fast_yparse(_this, 1, 1)) {
