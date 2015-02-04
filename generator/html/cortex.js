@@ -312,21 +312,22 @@ cx.object.prototype = {
         }
 
         result = "<table id='scopeTable' class='value'>";
-        result += "<thead class='value'><tr><td>Scope<img id='scopeIcon'></td></tr></thead>";
+        result += "<thead class='value'><tr><td>Scope<span class='sectionIcon' id='scopeIcon'></span></td></tr></thead>";
         result += "<tbody class='value'>";
         result += "<tr><td><div id='scopeContent'><ul>";
 
         if (this.parent) {
             result += "<li>" + 
-                    "<code><img id='upIcon'><a class='reference' href='../index.html'>..</a></code>" +
+                    "<code><span class='smallIcon' id='upIcon'></span><a class='reference' href='../index.html'>..</a></code>" +
                     "</li>";
         }
 
         for (t in types) {
-            result += "<li><code><span class=''>" + cx.toLink(t, "scopeType") + "</code><ul>";
+            result += "<li><code>" + cx.toLink(t, "scopeType") + "</code><ul>";
             for (i = 0; i < types[t].length; i++) {
                 o = types[t][i];
-                result += "<li><code><img id='objectIcon'>" + cx.toLink(this.scope[o].id()) + "</code></li>";
+                result += "<li><code><span class='smallIcon objectIcon'></span>" + cx.toLink(this.scope[o].id()) + "</code></li>";
+                // result += "<li><code>" + cx.toLink(this.scope[o].id()) + "</code></li>";
             }
             result += "</ul></li>";
         }
@@ -357,7 +358,7 @@ cx.object.prototype = {
 
         var result = "";
         result += "<table id='metaTable' class='value'>";
-        result += "<thead class='value'><tr><th></th><td>Metadata<img id='metaIcon'></img></td></tr></thead><tbody class='value'>"
+        result += "<thead class='value'><tr><th></th><td>Metadata<span class='sectionIcon' id='metaIcon'></span></td></tr></thead><tbody class='value'>"
         result += "<tr><th>type</th>" + 
                       "<td><code>" + cx.toLink(this.meta.type, "reference", true) + "</code></td>";
         if (this.meta.parent) {
@@ -506,7 +507,7 @@ cx.object.prototype = {
             }
 
             result += "<table id='valueTable' class='value'>";
-            result += "<thead class='value'><tr data-depth='1'><th></th><td>Value<img id='valueIcon'></img></td></tr></thead><tbody class='value'>";
+            result += "<thead class='value'><tr data-depth='1'><th></th><td>Value<span class='sectionIcon' id='valueIcon'></span></td></tr></thead><tbody class='value'>";
             if (size) {
                 var value = s.serializeValue(v);
                 if (!(v instanceof Object)) {

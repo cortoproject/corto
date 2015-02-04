@@ -29,7 +29,7 @@ body {
     -khtml-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
-    user-select: none;
+    /*user-select: none;*/
 }
 
 span.collapse {
@@ -82,39 +82,40 @@ a.header:hover {
     width: 400px;   
 }
 
-#scopeIcon {
+.sectionIcon {
+    display: inline-block;
     width: 30px;
     height: 30px;
     margin-left: 10px;
-    content: url("scope_icon.png");
+    background-size: contain;
+}
+
+.smallIcon {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 10px;
+    background-size: contain;
+}
+
+#scopeIcon {
+    background-image: url("scope_icon.png");
 }
 
 #valueIcon {
-    width: 30px;
-    height: 30px;
-    margin-left: 10px;
-    content: url("value_icon.png");
+    background-image: url("value_icon.png");
 }
 
 #metaIcon {
-    width: 30px;
-    height: 30px;
-    margin-left: 10px;
-    content: url("meta_icon.png");
+    background-image: url("meta_icon.png");
 }
 
-#objectIcon {
-    width: 10px;
-    height: 10px;
-    margin-right: 10px;
-    content: url("object_icon.png");
+.objectIcon {
+    background-image: url("object_icon.png");
 }
 
 #upIcon {
-    width: 10px;
-    height: 10px;
-    margin-right: 10px;
-    content: url("up_icon.png");
+    background-image: url("up_icon.png");
 }
 
 
@@ -214,26 +215,17 @@ a.reference:visited {
     color: #CC8855;
     text-decoration: none;
 }
-
-span.scopeType {
-    font-size: 10px;
-    color: #515151;
-}
-span.scopeType:visited {
-    font-size: 10px;
-    color: #515151;
-}
 a.scopeType {
-    font-size: 10px;
+    font-size: 20px;
     color: #515151;
     text-decoration: none;
+
 }
 a.scopeType:visited {
-    font-size: 10px;
+    font-size: 20px;
     color: #515151;
     text-decoration: none;
 }
-
 
 code.reference {
     color: #CC8855;
@@ -256,3 +248,13 @@ code.string {
     list-style-type: none; 
     padding-left: 0;
 }
+
+#scopeContent li {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+#scopeContent > ul > li {
+    margin-top: 20px;
+}
+
