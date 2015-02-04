@@ -704,6 +704,7 @@
 					<!-- Scope management -->
 					<method name="pushScope()" returnType="Fast::Variable"/>
 					<method name="popScope(Fast::Variable previous)"/>
+					<method name="pushPackage(string name)" returnType="int16"/>
 					
 					<!-- Lookup -->
 					<method name="lookup(string id,object source)" returnType="Fast::Expression"/>

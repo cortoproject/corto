@@ -324,16 +324,8 @@ function_argument
 /* ======================================================================== */
 
 package_declaration
-    : PACKAGE ID {
-        Fast_Variable type = Fast_Variable(Fast_Object__create(cx_package_o));
-        Fast_ParserDeclarationSeq seq = {0, NULL};
-        Fast_ParserDeclaration decl;
-        decl.name = $2;
-        Fast_declarationSeqInsert(&seq, &decl);
-        Fast_declarationSeqDo(type, &seq, FALSE); fast_op;
-        Fast_Parser_pushScope(yparser()); fast_op;
-        Fast_Parser_defineScope(yparser()); fast_op;
-        $$ = NULL;
+    : PACKAGE GID {
+        Fast_Parser_pushPackage(yparser(), $2);
     }
     ;
 
