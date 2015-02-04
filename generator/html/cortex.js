@@ -300,34 +300,39 @@ cx.object.prototype = {
         var link = "";
         var links = [];
         var size = 0;
+        var types = {};
+        var i, o, t;
+
+        for (o in this.scope) {
+            t = this.scope[o].meta.type;
+            if (!types.hasOwnProperty(t)) {
+                types[t] = [];
+            }
+            types[t].push(o);
+        }
 
         result = "<table id='scopeTable' class='value'>";
-        result += "<thead class='value'><tr><td>Scope<img id='scopeIcon'></img></td></tr></thead>";
+        result += "<thead class='value'><tr><td>Scope<img id='scopeIcon'></td></tr></thead>";
         result += "<tbody class='value'>";
-        result += "<tr><td><div id='scopeContent'><table>";
+        result += "<tr><td><div id='scopeContent'><ul>";
 
         if (this.parent) {
-            result += "<tr>" + 
-                    "<td><code><img id='upIcon'></img><a class='reference' href='../index.html'>..</a></code></td>" +
-                    "</tr>";
+            result += "<li>" + 
+                    "<code><img id='upIcon'><a class='reference' href='../index.html'>..</a></code>" +
+                    "</li>";
         }
 
-        for (o in this.scope) { size++; }
-        if (size) {
-            for (o in this.scope) {
-                result += "<tr>" + 
-                    "<td><code> <img id='objectIcon'></img>" + 
-                    cx.toLink(this.scope[o].id()) + 
-                    "<span class='scopeType'>&nbsp;&#8226;&nbsp;" + 
-                    cx.toLink(this.scope[o].meta.type, "scopeType") + 
-                    "</span></code></td>" +
-                    "</tr>";
+        for (t in types) {
+            result += "<li><code><span class=''>" + cx.toLink(t, "scopeType") + "</code><ul>";
+            for (i = 0; i < types[t].length; i++) {
+                o = types[t][i];
+                result += "<li><code><img id='objectIcon'>" + cx.toLink(this.scope[o].id()) + "</code></li>";
             }
-        } else {
-            result += "<tr><td></td></tr>";
+            result += "</ul></li>";
         }
-        result += "</table></div></td></tr>";
-        result += "<tr><td></td></tr></tbody>";
+
+        result += "</ul></div></td></tr>";
+        result += "</tbody></table>";
 
         return result;
     },
