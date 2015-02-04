@@ -37,21 +37,13 @@ cx = {
             prefix += "../";
         }
 
-        if (!fullLink) {
-            var melen = cx.me.id().length;
-            if ((link.length > melen) && (link.slice(0, melen) === cx.me.id())) {
-                if (cx.me.id() != "::") {
-                    prefix += cx.me.id().slice(2, melen).replace(new RegExp("\:\:", 'g'), "/") + "/";
-                    link = link.slice(melen + 2, link.length);
-                } else {
-                    link = link.slice(melen, link.length);
+        if (!fullLink && !(link === "::")) {
+            var index = link.lastIndexOf("::");
+            if (index >= 0) {
+                if (index) {
+                    prefix += link.slice(2, index).replace(new RegExp("\:\:", 'g'), "/") + "/";
                 }
-            } else {
-                var langlen = "::cortex::lang".length;
-                if ((link.length > langlen) && (link.slice(0, langlen) == "::cortex::lang")) {
-                    prefix += "cortex/lang/";
-                    link = link.slice(langlen + 2, link.length);
-                }
+                link = link.slice(index + 2, link.length);
             }
         }
 
@@ -122,7 +114,7 @@ cx = {
                 valueClass = getValueClass(v.substr(1, 1));
                 if (valueClass == 'reference') {
                     valueClass = 'normal';
-                    valueString = cx.toLink(valueString);
+                    valueString = cx.toLink(valueString, "reference", true);
                 }
             }
         }
@@ -324,7 +316,11 @@ cx.object.prototype = {
         if (size) {
             for (o in this.scope) {
                 result += "<tr>" + 
-                    "<td><code> <img id='objectIcon'></img>" + cx.toLink(this.scope[o].id()) + "</code></td>" +
+                    "<td><code> <img id='objectIcon'></img>" + 
+                    cx.toLink(this.scope[o].id()) + 
+                    "<span class='scopeType'>&nbsp;&#8226;&nbsp;" + 
+                    cx.toLink(this.scope[o].meta.type, "scopeType") + 
+                    "</span></code></td>" +
                     "</tr>";
             }
         } else {
@@ -358,7 +354,7 @@ cx.object.prototype = {
         result += "<table id='metaTable' class='value'>";
         result += "<thead class='value'><tr><th></th><td>Metadata<img id='metaIcon'></img></td></tr></thead><tbody class='value'>"
         result += "<tr><th>type</th>" + 
-                      "<td><code>" + cx.toLink(this.meta.type) + "</code></td>";
+                      "<td><code>" + cx.toLink(this.meta.type, "reference", true) + "</code></td>";
         if (this.meta.parent) {
             result += "<tr><th>parent</th>" +
                       "<td><code>" + cx.toLink(this.meta.parent) + "</code></td>";

@@ -215,6 +215,26 @@ a.reference:visited {
     text-decoration: none;
 }
 
+span.scopeType {
+    font-size: 10px;
+    color: #515151;
+}
+span.scopeType:visited {
+    font-size: 10px;
+    color: #515151;
+}
+a.scopeType {
+    font-size: 10px;
+    color: #515151;
+    text-decoration: none;
+}
+a.scopeType:visited {
+    font-size: 10px;
+    color: #515151;
+    text-decoration: none;
+}
+
+
 code.reference {
     color: #CC8855;
     text-decoration: none;
