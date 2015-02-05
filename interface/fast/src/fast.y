@@ -104,7 +104,7 @@ Fast_Expression Fast_declarationSeqDo(Fast_Variable type, Fast_ParserDeclaration
 %token BOOLEAN CHARACTER INTEGER SIGNEDINTEGER FLOATINGPOINT STRING NUL
 
 /* Identifiers */
-%token ID GID
+%token ID GID PACKAGE
 
 /* Operators */
 %token MUL_ASSIGN DIV_ASSIGN ADD_ASSIGN SUB_ASSIGN OR_ASSIGN AND_ASSIGN LOR
@@ -168,7 +168,7 @@ Fast_Expression Fast_declarationSeqDo(Fast_Variable type, Fast_ParserDeclaration
     block block_start
     initializer initializer_expr initializer_braces init_key
     if_start if_statement switch_statement case_statement observer_statement observer_declaration update_statement
-    while_statement while_until
+    while_statement while_until package_declaration
 
 /* Operators */
 %type <Operator>
@@ -214,17 +214,18 @@ statements
     ;
 
 statement
-    : expr ENDL                    {Fast_Parser_addStatement(yparser(), $1); fast_op; Fast_Parser_define(yparser()); fast_op;}
+    : expr ENDL                 {Fast_Parser_addStatement(yparser(), $1); fast_op; Fast_Parser_define(yparser()); fast_op;}
     | if_statement              {Fast_Parser_addStatement(yparser(), $1); fast_op;}
     | while_statement           {Fast_Parser_addStatement(yparser(), $1); fast_op;}
     | switch_statement          {Fast_Parser_addStatement(yparser(), $1); fast_op;}
-    | declaration ENDL           {$$=NULL;}
+    | declaration ENDL          {$$=NULL;}
     | scope_statement           {$<Variable>$ = Fast_Parser_pushScope(yparser()); Fast_Parser_pushLvalue(yparser(),NULL, FALSE); fast_op;} scope {Fast_Parser_popScope(yparser(),$<Variable>2); fast_op;}
-    | function_declaration ENDL  {$$=NULL;}
+    | function_declaration ENDL {$$=NULL;}
     | function_implementation   {$$=NULL;}
     | observer_statement        {$$=NULL;}
     | update_statement          {Fast_Parser_addStatement(yparser(), $1); fast_op;}
     | block                     {Fast_Parser_addStatement(yparser(), $1); fast_op;}
+    | package_declaration ENDL
     | ENDL                      {$$=NULL;}
     ;
 
@@ -233,7 +234,7 @@ statement
 /* ======================================================================== */
 scope
     : SCOPE INDENT statements DEDENT {Fast_Parser_defineScope(yparser()); fast_op;}
-    | SCOPE statement                 {Fast_Parser_defineScope(yparser()); fast_op;}
+    | SCOPE statement                {Fast_Parser_defineScope(yparser()); fast_op;}
     | SCOPEPRE {Fast_Parser_defineScope(yparser()); fast_op;} INDENT statements DEDENT
     | SCOPEPRE {Fast_Parser_defineScope(yparser()); fast_op;} statement
     ;
@@ -321,6 +322,13 @@ function_argument
 /* ======================================================================== */
 /* Declarations */
 /* ======================================================================== */
+
+package_declaration
+    : PACKAGE GID {
+        Fast_Parser_pushPackage(yparser(), $2);
+    }
+    ;
+
 declaration
     : identifier declaration_list                               {$$=Fast_declarationSeqDo($1, &$2, FALSE); fast_op; $$=NULL;}
     | KW_LOCAL {yparser()->isLocal = TRUE;} declaration_ref     {$$=$3;}

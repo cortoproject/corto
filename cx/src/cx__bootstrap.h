@@ -436,6 +436,7 @@ CX_FWDECL(class, member);
 CX_FWDECL(class, reference);
 CX_FWDECL(class, event);
 CX_FWDECL(class, observableEvent);
+CX_FWDECL(class, package);
 CX_FWDECL(struct, interfaceVector);
 CX_FWDECL(struct, parameter);
 CX_FWDECL(struct, delegatedata);
@@ -537,6 +538,10 @@ CX_TYPE_O(void, CX_VOID, FALSE);
 
 /* Object type */
 CX_TYPE_O(object, CX_VOID, TRUE);
+
+/* Package type */
+CX_CLASS_NOBASE_O(package, NULL, CX_DECLARED | CX_DEFINED, CX_NODELEGATE);
+    CX_MEMBER_O(package, url, string, CX_GLOBAL);
 
 /* Enumerations */
 CX_ENUM_O(width);

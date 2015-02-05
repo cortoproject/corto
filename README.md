@@ -1,6 +1,4 @@
-### The Cortex way [![Build Status](https://travis-ci.org/Seldomberry/cortex.svg?branch=master)](https://travis-ci.org/Seldomberry/cortex) [![Coverity](https://scan.coverity.com/projects/3807/badge.svg)](https://scan.coverity.com/projects/3807)
-Fail often. Fail fast. Fail cheap. Innovation is achieved through iteration.
-
+### The Cortex platform [![Build Status](https://travis-ci.org/Seldomberry/cortex.svg?branch=master)](https://travis-ci.org/Seldomberry/cortex) [![Coverity](https://scan.coverity.com/projects/3807/badge.svg)](https://scan.coverity.com/projects/3807)
 Cortex is a feature-rich, information centric playground designed for fast-paced, technology-heavy environments with rapidly evolving requirements and short delivery timescales. With code generation, document generation, a test framework, profiling, visualization tools and package management, the platform gives entrepreneurs a definitive competitive edge in getting that next big thing out of the door. Oh, and it's free.
 
 Currently Cortex is in alpha. It is expected to reach v1.0 status by the end of 2015. The current release supports only 32/64 bit Linux.

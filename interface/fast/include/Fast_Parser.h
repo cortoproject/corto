@@ -179,6 +179,9 @@ cx_void Fast_Parser_pushComplexType(Fast_Parser _this, Fast_Expression lvalue);
 /* ::cortex::Fast::Parser::pushLvalue(Fast::Expression lvalue,bool isAssignment) */
 cx_void Fast_Parser_pushLvalue(Fast_Parser _this, Fast_Expression lvalue, cx_bool isAssignment);
 
+/* ::cortex::Fast::Parser::pushPackage(string name) */
+cx_int16 Fast_Parser_pushPackage(Fast_Parser _this, cx_string name);
+
 /* ::cortex::Fast::Parser::pushReturnAsLvalue(function function) */
 cx_void Fast_Parser_pushReturnAsLvalue(Fast_Parser _this, cx_function function);
 

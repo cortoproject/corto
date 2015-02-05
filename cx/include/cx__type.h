@@ -100,6 +100,11 @@ struct cx_parameter {
 
 CX_SEQUENCE(cx_parameterSeq, cx_parameter,);
 
+CX_CLASS(cx_package);
+CX_CLASS_DEF(cx_package) {
+    cx_string url;
+};
+
 /*  ::cortex::lang::function */
 CX_CLASS(cx_function);
 
