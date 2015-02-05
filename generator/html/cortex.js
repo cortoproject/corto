@@ -301,14 +301,21 @@ cx.object.prototype = {
         var links = [];
         var size = 0;
         var types = {};
-        var i, o, t;
+        var sortedTypes = [];
+        var i, j, o, t;
 
         for (o in this.scope) {
             t = this.scope[o].meta.type;
             if (!types.hasOwnProperty(t)) {
                 types[t] = [];
+                sortedTypes.push(t);
             }
             types[t].push(o);
+        }
+
+        sortedTypes.sort();
+        for (t in types) {
+            types[t].sort();
         }
 
         result = "<table id='scopeTable' class='value'>";
@@ -322,7 +329,8 @@ cx.object.prototype = {
                     "</li>";
         }
 
-        for (t in types) {
+        for (j = 0; j < sortedTypes.length; j++) {
+            t = sortedTypes[j];
             result += "<li><code>" + cx.toLink(t, "scopeType") + "</code><ul>";
             for (i = 0; i < types[t].length; i++) {
                 o = types[t][i];
