@@ -28,5 +28,5 @@ Nowadays we churn out new APIs at incredulous rates. Pretty much anything that b
 
 If only all of these APIs would follow a limited set of patterns and paradigms. That would decrease learning curves and would make it much easier to integrate everything. Yet if done wrong such an abstraction can easily hide much of the expressiveness of todays technologies. 
 
-To find the right balance between expressiveness and uniformity a paradigm was borrowed that is already commonplace in defense and industrial IT systems. It builds upon the notion that information is the beating heart of each system. With the right language to describe this information, there should be no additional needs for APIs. In a way, the information *becomes* the API. This paradigm is called information centricity.
+To find the right balance between expressiveness and uniformity a paradigm was borrowed that is already commonplace in defense and industrial IT systems. It builds upon the notion that information is the beating heart of all systems. With the right language to describe this information, there should be no additional needs for APIs. In a way, the information *becomes* the API. This paradigm is called information centricity.
 
