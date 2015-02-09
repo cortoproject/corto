@@ -1820,6 +1820,10 @@ cx_object cx_resolve_ext(cx_object src, cx_object _scope, cx_string str, cx_bool
         str += 2;
         scope = root_o;
         fullyQualified = TRUE;
+    } else if (*str == '/') {
+        str += 1;
+        scope = root_o;
+        fullyQualified = TRUE;
     }
 
 repeat:
@@ -1836,7 +1840,7 @@ repeat:
             overload = FALSE;
             /* Parse name */
             bptr = buffer;
-            while((ch = *ptr) && (ch != ':') && (ch != '{')) {
+            while((ch = *ptr) && (ch != ':') && (ch != '{') && (ch != '/')) {
                 *bptr = ch;
                 bptr++;
                 ptr++;
@@ -1896,9 +1900,10 @@ repeat:
                     }
                     cx_free_ext(src, prev, "Free type of anonymous identifier");
                     break;
-                } else
-                if (*(cx_uint16*)ptr == CX_SCOPE_HEX) {
+                } else if (*(cx_uint16*)ptr == CX_SCOPE_HEX) {
                     ptr += 2;
+                } else if (ch == '/') {
+                    ptr += 1;
                 } else {
                     cx_error("cx_resolve: invalid ':' in expression '%s'", str);
                     o = NULL;

@@ -10,7 +10,7 @@
 
 #define _test_ser_reference_value(object, expected) \
 {\
-    cx_json_ser_t userData = {NULL, NULL, 0, 0, 0, FALSE, TRUE, FALSE};\
+    cx_json_ser_t userData = {NULL, NULL, 0, 0, 0, FALSE, TRUE, FALSE, FALSE};\
     cx_serialize(&serializer, tc_jsonser_fixture_##object##_o, &userData);\
     if (strcmp(userData.buffer, expected)) {\
         result = -1;\

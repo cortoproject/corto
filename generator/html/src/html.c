@@ -76,7 +76,7 @@ static void html_parentWalk(cx_object o, g_file file) {
  * Prints the resulting json into a "data.json" file.
  */
 static cx_int32 html_jsonWalk(cx_object o, void *userData) {
-    cx_json_ser_t jsonData = {NULL, NULL, 0, 0, 0, FALSE, FALSE, FALSE};
+    cx_json_ser_t jsonData = {NULL, NULL, 0, 0, 0, FALSE, FALSE, FALSE, FALSE};
     cx_html_gen_t *htmlData = userData;
     struct cx_serializer_s serializer;
     char filePath[PATH_MAX];

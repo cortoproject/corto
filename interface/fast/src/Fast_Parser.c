@@ -2770,6 +2770,9 @@ cx_int16 Fast_Parser_pushPackage(Fast_Parser _this, cx_string name) {
     _this->scope = Fast_Variable(Fast_Object__create(root_o));
     if (!memcmp(name, "::", 2)) {
         name += 2;
+    } else {
+        Fast_Parser_error(_this, "packages must be specified using fully qualified names");
+        goto error;
     }
 
     /* Check for package nesting */

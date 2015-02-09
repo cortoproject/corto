@@ -325,7 +325,7 @@ function_argument
 
 package_declaration
     : PACKAGE GID {
-        Fast_Parser_pushPackage(yparser(), $2);
+        Fast_Parser_pushPackage(yparser(), $2); fast_op;
     }
     ;
 

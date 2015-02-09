@@ -309,49 +309,73 @@ static char* dbsh_attrStr(cx_object o, char* buff) {
     return buff;
 }
 
+static int cx_appendStringAttr(cx_string key, cx_string value, void* userData) {
+    size_t length;
+    
+    /* Escape value */
+    cx_string escapedValue = cx_malloc((length = stresc(NULL, 0, value)) + 1);
+    stresc(escapedValue, length, value);
+
+    if (!cx_ser_appendstr(userData, "\"%s\":\"%s\",", key, escapedValue)) {
+        goto finished;
+    }
+
+    cx_dealloc(escapedValue);
+    return 1;
+finished:
+    cx_dealloc(escapedValue);
+    return 0;
+}
+
 static cx_int16 cx_ser_meta(cx_serializer s, cx_value* v, void* userData) {
     CX_UNUSED(s);
     cx_json_ser_t *data = userData;
-    cx_object object = cx_valueValue(v);
+    cx_object o = cx_valueValue(v);
 
     if (!data->serializeMeta) {
         goto error;
     }
 
-    if (!cx_ser_appendstr(data, "{")) {
+    if (!cx_ser_appendstr(userData, "{")) {
         goto finished;
     }
 
-    cx_string name = cx_nameof(object);
-    if (!cx_ser_appendstr(data, "\"name\":\"%s\",", name)) {
-        goto finished;
+    cx_string name = cx_nameof(o);
+    if (name) {
+        if (!cx_appendStringAttr("name", name, userData)) {
+            goto finished;
+        }
+    } else {
+        if (!cx_ser_appendstr(userData, "\"name\":\"::\",")) {
+            goto finished;
+        }        
     }
 
     cx_id type_fullname;
-    cx_fullname(cx_typeof(object), type_fullname);
-    if (!cx_ser_appendstr(data, "\"type\":\"%s\",", type_fullname)) {
+    cx_fullname(cx_typeof(o), type_fullname);
+    if (!cx_appendStringAttr("type", type_fullname, userData)) {
         goto finished;
     }
 
     char states[sizeof("V|DCL|DEF")];
-    dbsh_stateStr(object, states);
+    dbsh_stateStr(o, states);
     if (!cx_ser_appendstr(data, "\"states\":\"%s\",", states)) {
         goto finished;
     }
 
     char attributes[sizeof("S|W|O")];
-    dbsh_attrStr(object, attributes);
+    dbsh_attrStr(o, attributes);
     if (!cx_ser_appendstr(data, "\"attributes\":\"%s\",", attributes)) {
         goto finished;
     }
 
     cx_id parent_fullname;
-    cx_fullname(cx_parentof(object), parent_fullname);
+    cx_fullname(cx_parentof(o), parent_fullname);
     if (!cx_ser_appendstr(data, "\"parent\":\"%s\",", parent_fullname)) {
         goto finished;
     }
 
-    cx_uint32 scopeSize = cx_scopeSize(object);
+    cx_uint32 scopeSize = cx_scopeSize(o);
     if (!cx_ser_appendstr(data, "\"childCount\":%"PRId32"", scopeSize)) {
         goto finished;
     }
@@ -374,13 +398,19 @@ static int cx_walkScopeAction_ser_meta(cx_object o, void* userData) {
     }
 
     cx_string name = cx_nameof(o);
-    if (!cx_ser_appendstr(userData, "\"name\":\"%s\",", name)) {
-        goto finished;
+    if (name) {
+        if (!cx_appendStringAttr("name", name, userData)) {
+            goto finished;
+        }
+    } else {
+        if (!cx_ser_appendstr(userData, "\"name\":\"::\",")) {
+            goto finished;
+        }        
     }
 
     cx_id type_fullname;
     cx_fullname(cx_typeof(o), type_fullname);
-    if (!cx_ser_appendstr(userData, "\"type\":\"%s\",", type_fullname)) {
+    if (!cx_appendStringAttr("type", type_fullname, userData)) {
         goto finished;
     }
 
@@ -435,14 +465,14 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
     /* If more than one option is provided, prefix with 
      * 'meta', 'value' and 'scope' */
 
-    if (options > 1) {
+    if (data->alwaysIncludeHeaders || (options > 1)) {
         if (!cx_ser_appendstr(data, "{")) {
             goto finished;
         }
     }
 
     if (data->serializeMeta) {
-        if (options > 1) {
+        if (data->alwaysIncludeHeaders || (options > 1)) {
             if (!cx_ser_appendstr(data, "\"meta\":")) {
                 goto finished;
             }
@@ -455,7 +485,7 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
 
     if (data->serializeValue) {
         if (cx_valueType(v)->kind != CX_VOID) {
-            if (options > 1) {
+            if (data->alwaysIncludeHeaders || (options > 1)) {
                 if (c && !cx_ser_appendstr(data, ",")) {
                     goto finished;
                 }
@@ -471,7 +501,7 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
     }
 
     if (data->serializeScope) {
-        if (options > 1) {
+        if (data->alwaysIncludeHeaders || (options > 1)) {
             if (c && !cx_ser_appendstr(data, ",")) {
                 goto finished;
             }
@@ -490,7 +520,7 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
         }
     }
 
-    if (options > 1) {
+    if (data->alwaysIncludeHeaders || (options > 1)) {
         if (!cx_ser_appendstr(data, "}")) {
             goto finished;
         }
