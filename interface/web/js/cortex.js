@@ -1,5 +1,6 @@
 // Define cx object
 cx = {
+    // Initialize object
     object: function(parent, name) {
         this.parent = parent;
         this.name = name;
@@ -8,6 +9,7 @@ cx = {
         this.meta = {};
     },
 
+    // Initialize serializer
     serializer: function(object, composite, collection, primitive, member, element, base) {
         this.serializeObject = object;
         this.serializeComposite = composite;
@@ -18,7 +20,8 @@ cx = {
         this.serializeBase = base;
     },
 
-    store: function(data) {
+    // Store an object in the cx cache
+    save: function(data) {
         var o = undefined;
 
         // Store object, figure out whether it is root or not
@@ -48,15 +51,18 @@ cx = {
         return o;      
     },
 
+    // Refresh content of page. This function is typically called when a
+    // reply from the server is received.
     refresh: function(data) {
         var o
 
         for (var i in data) {
-            o = cx.store(data[i]); // Store data in JS cache
+            o = cx.save(data[i]); // Store data in JS cache
         }
 
         cx.me = o;
 
+        // Update UI elements
         if (cx.headerId) {
             $('#' + cx.headerId).text("");
             $('#' + cx.headerId).append(cx.toLink(o.id(), "header", true, undefined, "/"));
@@ -81,10 +87,18 @@ cx = {
        $("#valueTable td.dummy").hide();
     },
 
-    load: function(resource, success) {
-        $.get(resource + "?value=true&meta=true&scope=true", success);
+    // Request data from the server
+    requestObject: function(resource, success) {
+        $.get("/_/" + resource + "?value=true&meta=true&scope=true", success);
     },
 
+    // Request data from server, add entry to the browsers history
+    request: function(resource, success) {
+        window.history.pushState({}, "", window.location.origin + "/" + resource);
+        cx.requestObject(resource, success);
+    },
+
+    // Initialize cx
     init: function(me, active, headerId, scopeId, metaId, valueId) {
         this.active = active;
         this.headerId = headerId;
@@ -92,23 +106,30 @@ cx = {
         this.metaId = metaId;
         this.valueId = valueId;
 
+        // Add listener for 'back' button
+        window.addEventListener("popstate", function(e) {
+            cx.requestObject(window.location.pathname.slice(1, window.location.pathname.length), cx.refresh);
+        });
+
         if (active) {
-            cx.load("/" + me, cx.refresh);
+            cx.request(window.location.pathname.slice(1, window.location.pathname.length), cx.refresh);
         }
     },
 
+    // Generate a link for a dynamic page
     activeLink: function(url, name, style) {
         if (url.length) {
             url = url.slice(0, url.length - 1); // Remove trailing '/'
-        } else {
-            url = "/::";
         }
 
-        return "<a class='" + style + 
-            "' onClick='cx.load(\"" + 
-                url.replace(/\"/g, "\"") + "\", cx.refresh)'>" + name + "</a>";
+        var result = "<a class='" + style + 
+            "' onClick='cx.request(\"" + 
+                url.replace(/\"/g, "\\\"") + "\", cx.refresh)'>" + name.replace(/\"/g, "\\\"") + "</a>";
+
+        return result;
     },
 
+    // Generate a link for a static page
     staticLink: function(url, name, style) {
         return "<a class='" + style + 
                 "href='" + url + "index.html'>" + 
@@ -201,6 +222,7 @@ cx = {
         return result;        
     },
 
+    // Generate either a static or dynamic link depending on cx settings
     toLink: function(link, style, fullLink, name, separator) {
         if (cx.active) {
             return cx.toLinkIntern(link, style, fullLink, name, separator, cx.activeLink);
@@ -209,6 +231,7 @@ cx = {
         }
     },
 
+    // Convert a primitive value to a string
     primitiveToString: function(v) {
         function getValueClass(valueKind) {
             if (valueKind === 'E') {
@@ -247,6 +270,7 @@ cx = {
         return "<code class=" + valueClass + ">" + valueString + "</code>";
     },
 
+    // Convert a JSON object to a cortex string
     toString: function(v) {
         function primitive(s, v) {
             return cx.primitiveToString(v);
@@ -367,9 +391,9 @@ cx.object.prototype = {
     },
 
     // Resolve object
-    // This method must be used with caution. The JS cache is not a complete
+    // This method must be used with caution. The cx cache is not a complete
     // copy of the cortex store. Resolve will only work for objects currently
-    // present in the store.
+    // present in the cx cache.
     resolve: function(fullname) {
         var scope = this;
         var o = undefined;
@@ -424,13 +448,14 @@ cx.object.prototype = {
         var size = 0;
 
         result = "<table id='scopeTable' class='value'>";
-        result += "<thead class='value'><tr><td><h3>Scope<img id='scopeIcon'></img></h3></td></tr></thead>";
+        result += "<thead class='value'><tr><td><h3>Scope" + 
+                  "<img src='/images/scope_icon.png' class='valueIcon'></img></h3></td></tr></thead>";
         result += "<tbody class='value'>";
         result += "<tr><td><div id='scopeContent'><table>";
 
         if (this.parent) {
             result += "<tr>" + 
-                    "<td><img id='upIcon'>" + 
+                    "<td><img src='/images/up_icon.png' class='objectIcon'>" + 
                     cx.toLink(this.parent.id(), "reference", false, "..") + 
                     "</td>" +
                     "</tr>";
@@ -440,7 +465,7 @@ cx.object.prototype = {
         if (size) {
             for (o in this.scope) {
                 result += "<tr>" + 
-                    "<td><img id='objectIcon'></img>" + 
+                    "<td><img src='/images/object_icon.png' class='objectIcon'></img>" + 
                     cx.toLink(this.scope[o].id()) + 
                     "<span class='scopeType'>&nbsp;&#8226;&nbsp;" + 
                     cx.toLink(this.scope[o].meta.type, "scopeType") + 
@@ -476,7 +501,8 @@ cx.object.prototype = {
 
         var result = "";
         result += "<table id='metaTable' class='value'>";
-        result += "<thead class='value'><tr><th></th><td><h3>Metadata<img id='metaIcon'></img></h3></td></tr></thead><tbody class='value'>"
+        result += "<thead class='value'><tr><th></th><td><h3>Metadata" +
+                  "<img src='/images/meta_icon.png' class='valueIcon'></img></h3></td></tr></thead><tbody class='value'>"
         result += "<tr><th>type</th>" + 
                       "<td><code>" + cx.toLink(this.meta.type, "reference", true) + "</code></td>";
         if (this.meta.parent) {
@@ -577,7 +603,9 @@ cx.object.prototype = {
 
             result += "<table id='valueTable' class='value'>";
             result += "<thead class='value'><tr data-depth='1'>" + 
-                      "<th></th><td><h3>Value<img id='valueIcon'></img></h3></td></tr></thead><tbody class='value'>";
+                      "<th></th><td><h3>Value" + 
+                      "<img src='/images/value_icon.png' class='valueIcon'></img>" + 
+                      "</h3></td></tr></thead><tbody class='value'>";
             if (size) {
                 var value = s.serializeValue(v);
                 if (!(v instanceof Object)) {
@@ -589,47 +617,47 @@ cx.object.prototype = {
             }
             result += "</tbody></table>";
             result += "\
-<script> \
-$(function() { \
-    $('#valueTable').on('click', '.toggle', function () { \
-        console.log('click event!');\
-        var findChildren = function (tr) { \
-            var depth = tr.data('depth'); \
-            return tr.nextUntil($('tr').filter(function () { \
-                return $(this).data('depth') <= depth; \
-            })); \
-        }; \
-\
-        var el = $(this); \
-        var tr = el.closest('tr'); \
-        var children = findChildren(tr); \
-\
-        var subnodes = children.filter('.expanding'); \
-        subnodes.each(function () { \
-            var subnode = $(this); \
-            var subnodeChildren = findChildren(subnode); \
-            children = children.not(subnodeChildren); \
-        }); \
-\
-        if (tr.hasClass('collapsing')) { \
-            tr.removeClass('collapsing').addClass('expanding'); \
-            tr.find('span.collapsing').hide(); \
-            tr.find('span.expanding').show(); \
-            tr.find('td.complex').show(); \
-            tr.find('td.dummy').hide(); \
-            children.hide(); \
-        } else { \
-            tr.find('span.collapsing').show(); \
-            tr.find('span.expanding').hide(); \
-            tr.find('td.complex').hide(); \
-            tr.find('td.dummy').show(); \
-            tr.removeClass('expanding').addClass('collapsing'); \
-            children.show(); \
-        } \
-        return children; \
-    }); \
-});\
-</script>"
+                <script> \
+                $(function() { \
+                    $('#valueTable').on('click', '.toggle', function () { \
+                        console.log('click event!');\
+                        var findChildren = function (tr) { \
+                            var depth = tr.data('depth'); \
+                            return tr.nextUntil($('tr').filter(function () { \
+                                return $(this).data('depth') <= depth; \
+                            })); \
+                        }; \
+                \
+                        var el = $(this); \
+                        var tr = el.closest('tr'); \
+                        var children = findChildren(tr); \
+                \
+                        var subnodes = children.filter('.expanding'); \
+                        subnodes.each(function () { \
+                            var subnode = $(this); \
+                            var subnodeChildren = findChildren(subnode); \
+                            children = children.not(subnodeChildren); \
+                        }); \
+                \
+                        if (tr.hasClass('collapsing')) { \
+                            tr.removeClass('collapsing').addClass('expanding'); \
+                            tr.find('span.collapsing').hide(); \
+                            tr.find('span.expanding').show(); \
+                            tr.find('td.complex').show(); \
+                            tr.find('td.dummy').hide(); \
+                            children.hide(); \
+                        } else { \
+                            tr.find('span.collapsing').show(); \
+                            tr.find('span.expanding').hide(); \
+                            tr.find('td.complex').hide(); \
+                            tr.find('td.dummy').show(); \
+                            tr.removeClass('expanding').addClass('collapsing'); \
+                            children.show(); \
+                        } \
+                        return children; \
+                    }); \
+                });\
+                </script>"
 
             return result;
         }
@@ -648,7 +676,4 @@ cx.root.meta.type = "::cortex::lang::object";
 
 // Create a resolve in cx that resolves from root
 cx.resolve = function(name) { return cx.root.resolve(name);}
-
-
-
 

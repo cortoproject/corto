@@ -159,12 +159,19 @@ static cx_int16 cx_ser_reference(cx_serializer s, cx_value *v, void *userData) {
 
     if (object) {
         if (cx_checkAttr(object, CX_ATTR_SCOPED) || (cx_valueObject(v) == object)) {
+            cx_uint32 length;
             cx_fullname(object, id);
-            if (!cx_ser_appendstr(data, "\"@R %s\"", id)) {
+            
+            /* Escape value */
+            cx_string escapedValue = cx_malloc((length = stresc(NULL, 0, id)) + 1);
+            stresc(escapedValue, length, id);
+            if (!cx_ser_appendstr(data, "\"@R %s\"", escapedValue)) {
+                cx_dealloc(escapedValue);
                 goto finished;
             }
+            cx_dealloc(escapedValue);
         } else {
-            // TODO anonymous
+            cx_ser_appendstr(data, "\"anonymous\"");
         }
     } else {
         if (!cx_ser_appendstrbuff(data, "null")) {

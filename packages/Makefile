@@ -1,21 +1,20 @@
-.PHONY: all
-.PHONY: clean
-.PHONY: gcov
+SUBDIRS := $(wildcard */.)  # e.g. "foo/. bar/."
+TARGETS := all clean  # whatever else, but must not contain '/'
 
-all:
-	@make -C test
-	@make -C io
-	@make -C os
-	@make -C math
+# foo/.all bar/.all foo/.clean bar/.clean
+SUBDIRS_TARGETS := \
+	$(foreach t,$(TARGETS),$(addsuffix $t,$(SUBDIRS)))
 
-clean:
-	@make clean -C test
-	@make clean -C io
-	@make clean -C os
-	@make clean -C math
-	
-gcov:
-	@make gcov -C test
-	@make gcov -C io
-	@make gcov -C os
-	@make gcov -C math
+.PHONY : $(TARGETS) $(SUBDIRS_TARGETS)
+
+# static pattern rule, expands into:
+# all clean : % : foo/.% bar/.%
+$(TARGETS) : % : $(addsuffix %,$(SUBDIRS))
+	@echo 'Done "$*" target'
+
+# here, for foo/.all:
+#   $(@D) is foo
+#   $(@F) is .all, with leading period
+#   $(@F:.%=%) is just all
+$(SUBDIRS_TARGETS) :
+	$(MAKE) -C $(@D) $(@F:.%=%)

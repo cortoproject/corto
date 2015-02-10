@@ -24,45 +24,21 @@
 @media (min-width: 767px){
     #scopeContent {
         margin: 0px;
-        overflow-y: scroll;
-        height: calc(100vh - 210px);
+        overflow-y: auto;
+        height: calc(100vh - 220px);
     }
 }
 
-
-#scopeIcon {
+img.valueIcon {
     width: 20px;
     height: 20px;
     margin-left: 10px;
-    content: url("../images/scope_icon.png");
 }
 
-#valueIcon {
-    width: 20px;
-    height: 20px;
-    margin-left: 10px;
-    content: url("../images/value_icon.png");
-}
-
-#metaIcon {
-    width: 20px;
-    height: 20px;
-    margin-left: 10px;
-    content: url("../images/meta_icon.png");
-}
-
-#objectIcon {
+img.objectIcon {
     width: 10px;
     height: 10px;
     margin-right: 10px;
-    content: url("../images/object_icon.png");
-}
-
-#upIcon {
-    width: 10px;
-    height: 10px;
-    margin-right: 10px;
-    content: url("../images/up_icon.png");
 }
 
 body {
@@ -81,10 +57,10 @@ body {
 }
 
 span.collapsing {
-    font-size: 10px;
+    font-size: 7px;
 }
 span.expanding {
-    font-size: 10px;
+    font-size: 7px;
 }
 
 a.header {
@@ -200,4 +176,5 @@ code.string {
     color: #DD4444;
 }
 
+.container { width: auto; }
 
