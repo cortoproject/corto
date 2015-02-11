@@ -107,7 +107,7 @@ extern cx_observer tc_update_onRootSelf_o;
 extern cx_observer tc_update_onSelf_o;
 
 /* ::tc_event::value */
-extern cx_typedef tc_value_o;
+extern cx_type tc_value_o;
 
 int tc_event_load(void);
 #ifdef __cplusplus

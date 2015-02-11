@@ -38,7 +38,7 @@ cx_observer tc_update_onChild_o;
 cx_observer tc_update_onRootChilds_o;
 cx_observer tc_update_onRootSelf_o;
 cx_observer tc_update_onSelf_o;
-cx_typedef tc_value_o;
+cx_type tc_value_o;
 
 /* Load objects in database */
 int tc_event_load(void) {
@@ -46,7 +46,7 @@ int tc_event_load(void) {
     _a_ = NULL;
 
     /* Declare ::tc_event */
-    tc_o = cx_declare(root_o, "tc_event", cx_typedef(cx_object_o));
+    tc_o = cx_declare(root_o, "tc_event", cx_type(cx_object_o));
     if (!tc_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event'.");
         goto error;
@@ -60,21 +60,21 @@ int tc_event_load(void) {
         }
     }
     /* Declare ::tc_event::construct_onBoth */
-    tc_construct_onBoth_o = cx_declare(tc_o, "construct_onBoth", cx_typedef(cx_observer_o));
+    tc_construct_onBoth_o = cx_declare(tc_o, "construct_onBoth", cx_type(cx_observer_o));
     if (!tc_construct_onBoth_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::construct_onBoth'.");
         goto error;
     }
 
     /* Declare ::tc_event::construct_onChild */
-    tc_construct_onChild_o = cx_declare(tc_o, "construct_onChild", cx_typedef(cx_observer_o));
+    tc_construct_onChild_o = cx_declare(tc_o, "construct_onChild", cx_type(cx_observer_o));
     if (!tc_construct_onChild_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::construct_onChild'.");
         goto error;
     }
 
     /* Declare ::tc_event::construct_onRootChilds */
-    tc_construct_onRootChilds_o = cx_declare(tc_o, "construct_onRootChilds", cx_typedef(cx_observer_o));
+    tc_construct_onRootChilds_o = cx_declare(tc_o, "construct_onRootChilds", cx_type(cx_observer_o));
     if (!tc_construct_onRootChilds_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::construct_onRootChilds'.");
         goto error;
@@ -99,7 +99,7 @@ int tc_event_load(void) {
         }
     }
     /* Declare ::tc_event::construct_onRootSelf */
-    tc_construct_onRootSelf_o = cx_declare(tc_o, "construct_onRootSelf", cx_typedef(cx_observer_o));
+    tc_construct_onRootSelf_o = cx_declare(tc_o, "construct_onRootSelf", cx_type(cx_observer_o));
     if (!tc_construct_onRootSelf_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::construct_onRootSelf'.");
         goto error;
@@ -124,28 +124,28 @@ int tc_event_load(void) {
         }
     }
     /* Declare ::tc_event::construct_onSelf */
-    tc_construct_onSelf_o = cx_declare(tc_o, "construct_onSelf", cx_typedef(cx_observer_o));
+    tc_construct_onSelf_o = cx_declare(tc_o, "construct_onSelf", cx_type(cx_observer_o));
     if (!tc_construct_onSelf_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::construct_onSelf'.");
         goto error;
     }
 
     /* Declare ::tc_event::destruct_onBoth */
-    tc_destruct_onBoth_o = cx_declare(tc_o, "destruct_onBoth", cx_typedef(cx_observer_o));
+    tc_destruct_onBoth_o = cx_declare(tc_o, "destruct_onBoth", cx_type(cx_observer_o));
     if (!tc_destruct_onBoth_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::destruct_onBoth'.");
         goto error;
     }
 
     /* Declare ::tc_event::destruct_onChild */
-    tc_destruct_onChild_o = cx_declare(tc_o, "destruct_onChild", cx_typedef(cx_observer_o));
+    tc_destruct_onChild_o = cx_declare(tc_o, "destruct_onChild", cx_type(cx_observer_o));
     if (!tc_destruct_onChild_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::destruct_onChild'.");
         goto error;
     }
 
     /* Declare ::tc_event::destruct_onRootChilds */
-    tc_destruct_onRootChilds_o = cx_declare(tc_o, "destruct_onRootChilds", cx_typedef(cx_observer_o));
+    tc_destruct_onRootChilds_o = cx_declare(tc_o, "destruct_onRootChilds", cx_type(cx_observer_o));
     if (!tc_destruct_onRootChilds_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::destruct_onRootChilds'.");
         goto error;
@@ -170,7 +170,7 @@ int tc_event_load(void) {
         }
     }
     /* Declare ::tc_event::destruct_onRootSelf */
-    tc_destruct_onRootSelf_o = cx_declare(tc_o, "destruct_onRootSelf", cx_typedef(cx_observer_o));
+    tc_destruct_onRootSelf_o = cx_declare(tc_o, "destruct_onRootSelf", cx_type(cx_observer_o));
     if (!tc_destruct_onRootSelf_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::destruct_onRootSelf'.");
         goto error;
@@ -195,28 +195,28 @@ int tc_event_load(void) {
         }
     }
     /* Declare ::tc_event::destruct_onSelf */
-    tc_destruct_onSelf_o = cx_declare(tc_o, "destruct_onSelf", cx_typedef(cx_observer_o));
+    tc_destruct_onSelf_o = cx_declare(tc_o, "destruct_onSelf", cx_type(cx_observer_o));
     if (!tc_destruct_onSelf_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::destruct_onSelf'.");
         goto error;
     }
 
     /* Declare ::tc_event::new_onBoth */
-    tc_new_onBoth_o = cx_declare(tc_o, "new_onBoth", cx_typedef(cx_observer_o));
+    tc_new_onBoth_o = cx_declare(tc_o, "new_onBoth", cx_type(cx_observer_o));
     if (!tc_new_onBoth_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::new_onBoth'.");
         goto error;
     }
 
     /* Declare ::tc_event::new_onChild */
-    tc_new_onChild_o = cx_declare(tc_o, "new_onChild", cx_typedef(cx_observer_o));
+    tc_new_onChild_o = cx_declare(tc_o, "new_onChild", cx_type(cx_observer_o));
     if (!tc_new_onChild_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::new_onChild'.");
         goto error;
     }
 
     /* Declare ::tc_event::new_onRootChilds */
-    tc_new_onRootChilds_o = cx_declare(tc_o, "new_onRootChilds", cx_typedef(cx_observer_o));
+    tc_new_onRootChilds_o = cx_declare(tc_o, "new_onRootChilds", cx_type(cx_observer_o));
     if (!tc_new_onRootChilds_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::new_onRootChilds'.");
         goto error;
@@ -241,7 +241,7 @@ int tc_event_load(void) {
         }
     }
     /* Declare ::tc_event::new_onRootSelf */
-    tc_new_onRootSelf_o = cx_declare(tc_o, "new_onRootSelf", cx_typedef(cx_observer_o));
+    tc_new_onRootSelf_o = cx_declare(tc_o, "new_onRootSelf", cx_type(cx_observer_o));
     if (!tc_new_onRootSelf_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::new_onRootSelf'.");
         goto error;
@@ -266,21 +266,21 @@ int tc_event_load(void) {
         }
     }
     /* Declare ::tc_event::new_onSelf */
-    tc_new_onSelf_o = cx_declare(tc_o, "new_onSelf", cx_typedef(cx_observer_o));
+    tc_new_onSelf_o = cx_declare(tc_o, "new_onSelf", cx_type(cx_observer_o));
     if (!tc_new_onSelf_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::new_onSelf'.");
         goto error;
     }
 
     /* Declare ::tc_event::Point */
-    tc_Point_o = cx_declare(tc_o, "Point", cx_typedef(cx_class_o));
+    tc_Point_o = cx_declare(tc_o, "Point", cx_type(cx_class_o));
     if (!tc_Point_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::Point'.");
         goto error;
     }
 
     /* Declare ::tc_event::Point::construct_onThis */
-    tc_Point_construct_onThis_o = cx_declare(tc_Point_o, "construct_onThis", cx_typedef(cx_observer_o));
+    tc_Point_construct_onThis_o = cx_declare(tc_Point_o, "construct_onThis", cx_type(cx_observer_o));
     if (!tc_Point_construct_onThis_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::Point::construct_onThis'.");
         goto error;
@@ -305,7 +305,7 @@ int tc_event_load(void) {
         }
     }
     /* Declare ::tc_event::Point::destruct_onThis */
-    tc_Point_destruct_onThis_o = cx_declare(tc_Point_o, "destruct_onThis", cx_typedef(cx_observer_o));
+    tc_Point_destruct_onThis_o = cx_declare(tc_Point_o, "destruct_onThis", cx_type(cx_observer_o));
     if (!tc_Point_destruct_onThis_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::Point::destruct_onThis'.");
         goto error;
@@ -330,7 +330,7 @@ int tc_event_load(void) {
         }
     }
     /* Declare ::tc_event::Point::new_onThis */
-    tc_Point_new_onThis_o = cx_declare(tc_Point_o, "new_onThis", cx_typedef(cx_observer_o));
+    tc_Point_new_onThis_o = cx_declare(tc_Point_o, "new_onThis", cx_type(cx_observer_o));
     if (!tc_Point_new_onThis_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::Point::new_onThis'.");
         goto error;
@@ -355,7 +355,7 @@ int tc_event_load(void) {
         }
     }
     /* Declare ::tc_event::Point::update_onThis */
-    tc_Point_update_onThis_o = cx_declare(tc_Point_o, "update_onThis", cx_typedef(cx_observer_o));
+    tc_Point_update_onThis_o = cx_declare(tc_Point_o, "update_onThis", cx_type(cx_observer_o));
     if (!tc_Point_update_onThis_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::Point::update_onThis'.");
         goto error;
@@ -380,7 +380,7 @@ int tc_event_load(void) {
         }
     }
     /* Declare ::tc_event::Point::x */
-    tc_Point_x_o = cx_declare(tc_Point_o, "x", cx_typedef(cx_member_o));
+    tc_Point_x_o = cx_declare(tc_Point_o, "x", cx_type(cx_member_o));
     if (!tc_Point_x_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::Point::x'.");
         goto error;
@@ -399,7 +399,7 @@ int tc_event_load(void) {
         }
     }
     /* Declare ::tc_event::Point::y */
-    tc_Point_y_o = cx_declare(tc_Point_o, "y", cx_typedef(cx_member_o));
+    tc_Point_y_o = cx_declare(tc_Point_o, "y", cx_type(cx_member_o));
     if (!tc_Point_y_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::Point::y'.");
         goto error;
@@ -431,7 +431,7 @@ int tc_event_load(void) {
         }
     }
     /* Declare ::tc_event::parent */
-    tc_parent_o = cx_declare(tc_o, "parent", cx_typedef(tc_Point_o));
+    tc_parent_o = cx_declare(tc_o, "parent", cx_type(tc_Point_o));
     if (!tc_parent_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::parent'.");
         goto error;
@@ -609,7 +609,7 @@ int tc_event_load(void) {
         }
     }
     /* Declare ::tc_event::update_onBoth */
-    tc_update_onBoth_o = cx_declare(tc_o, "update_onBoth", cx_typedef(cx_observer_o));
+    tc_update_onBoth_o = cx_declare(tc_o, "update_onBoth", cx_type(cx_observer_o));
     if (!tc_update_onBoth_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::update_onBoth'.");
         goto error;
@@ -634,7 +634,7 @@ int tc_event_load(void) {
         }
     }
     /* Declare ::tc_event::update_onChild */
-    tc_update_onChild_o = cx_declare(tc_o, "update_onChild", cx_typedef(cx_observer_o));
+    tc_update_onChild_o = cx_declare(tc_o, "update_onChild", cx_type(cx_observer_o));
     if (!tc_update_onChild_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::update_onChild'.");
         goto error;
@@ -659,7 +659,7 @@ int tc_event_load(void) {
         }
     }
     /* Declare ::tc_event::update_onSelf */
-    tc_update_onSelf_o = cx_declare(tc_o, "update_onSelf", cx_typedef(cx_observer_o));
+    tc_update_onSelf_o = cx_declare(tc_o, "update_onSelf", cx_type(cx_observer_o));
     if (!tc_update_onSelf_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::update_onSelf'.");
         goto error;
@@ -684,7 +684,7 @@ int tc_event_load(void) {
         }
     }
     /* Declare ::tc_event::parent::child */
-    tc_parent_child_o = cx_declare(tc_parent_o, "child", cx_typedef(tc_Point_o));
+    tc_parent_child_o = cx_declare(tc_parent_o, "child", cx_type(tc_Point_o));
     if (!tc_parent_child_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::parent::child'.");
         goto error;
@@ -700,7 +700,7 @@ int tc_event_load(void) {
         }
     }
     /* Declare ::tc_event::update_onRootChilds */
-    tc_update_onRootChilds_o = cx_declare(tc_o, "update_onRootChilds", cx_typedef(cx_observer_o));
+    tc_update_onRootChilds_o = cx_declare(tc_o, "update_onRootChilds", cx_type(cx_observer_o));
     if (!tc_update_onRootChilds_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::update_onRootChilds'.");
         goto error;
@@ -725,7 +725,7 @@ int tc_event_load(void) {
         }
     }
     /* Declare ::tc_event::update_onRootSelf */
-    tc_update_onRootSelf_o = cx_declare(tc_o, "update_onRootSelf", cx_typedef(cx_observer_o));
+    tc_update_onRootSelf_o = cx_declare(tc_o, "update_onRootSelf", cx_type(cx_observer_o));
     if (!tc_update_onRootSelf_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::update_onRootSelf'.");
         goto error;
@@ -750,7 +750,7 @@ int tc_event_load(void) {
         }
     }
     /* Declare ::tc_event::value */
-    tc_value_o = cx_declare(tc_o, "value", cx_typedef(cx_typedef_o));
+    tc_value_o = cx_declare(tc_o, "value", cx_type(cx_type_o));
     if (!tc_value_o) {
         cx_error("tc_event_load: failed to declare object '::tc_event::value'.");
         goto error;

@@ -93,6 +93,7 @@ cx_ic Fast_CastExpr_toIc_v(Fast_CastExpr _this, cx_icProgram program, cx_icStora
     if (_this->rvalue->forceReference || _thisType->reference) {
         op->s2Deref = CX_IC_DEREF_ADDRESS;
     }
+    op->s3Deref = CX_IC_DEREF_ADDRESS;
     cx_icProgram_addIc(program, (cx_ic)op);
 
     return result;

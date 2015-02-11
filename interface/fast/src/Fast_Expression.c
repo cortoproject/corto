@@ -269,14 +269,9 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_boo
             }
         } else if (cx_type_castable(type, refType)) {
             void *value = NULL;
-            void *valueAddr = NULL;
 
             /* If expression is a literal or constant create new literal of right type */
             value = (void*)Fast_Expression_getValue(_this);
-            if (value && (exprType->kind == CX_PRIMITIVE) && (cx_primitive(exprType)->kind == CX_TEXT)) {
-                valueAddr = value;
-                value = &valueAddr;
-            }
             if (value) {
                 if (type->reference && (Fast_Node(_this)->kind == FAST_Literal)) {
                     /* If destination type is a reference and the literal is a string this results
@@ -376,7 +371,7 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_boo
                     }
 
                 /* Interface-downcasting doesn't require an explicit cast */
-                } else if (!cx_instanceof(cx_typedef(cx_interface_o), type)) {
+                } else if (!cx_instanceof(cx_type(cx_interface_o), type)) {
                     Fast_Object dstTypeObject = Fast_Object__create(type);
                     result = Fast_Expression(Fast_CastExpr__create(Fast_Expression(dstTypeObject), _this));
                     Fast_Parser_collect(yparser(), dstTypeObject);
@@ -491,7 +486,7 @@ cx_type Fast_Expression_getType_expr(Fast_Expression _this, Fast_Expression targ
     result = Fast_Expression_getType(_this);
     type = Fast_Expression_getType(target);
 
-    if (!result && target) {
+    if (!result) {
         if (type) {
             result = Fast_Expression_getType_type(_this, type);
         } else {

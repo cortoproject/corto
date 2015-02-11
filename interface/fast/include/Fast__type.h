@@ -538,9 +538,8 @@ struct Fast_ParserDeclaration {
     Fast_Variable variable;
 };
 
-CX_SEQUENCE(Fast_ParserDeclaration_seq256, Fast_ParserDeclaration,);
+CX_SEQUENCE(Fast_ParserDeclarationSeq, Fast_ParserDeclaration,);
 
-typedef Fast_ParserDeclaration_seq256 Fast_ParserDeclarationSeq;
 /*  ::cortex::Fast::ParserNew */
 typedef struct Fast_ParserNew Fast_ParserNew;
 

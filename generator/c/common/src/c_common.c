@@ -227,7 +227,7 @@ cx_char* c_constantId(cx_generator g, cx_constant* c, cx_char* buffer) {
 }
 
 /* Parse type into C-specifier */
-cx_int16 c_specifierId(cx_generator g, cx_typedef t, cx_char* specifier, cx_bool* prefix, cx_char* postfix) {
+cx_int16 c_specifierId(cx_generator g, cx_type t, cx_char* specifier, cx_bool* prefix, cx_char* postfix) {
 
     if (postfix) {
         *postfix = '\0';
@@ -236,7 +236,7 @@ cx_int16 c_specifierId(cx_generator g, cx_typedef t, cx_char* specifier, cx_bool
     /* If type is not a reference, objects that are defined with it need to add a prefix. This
      * won't be used for members or nested type-specifiers. */
     if (prefix) {
-        if (t->real->reference) {
+        if (t->reference) {
             *prefix = FALSE;
         } else {
             *prefix = TRUE;
@@ -247,7 +247,7 @@ cx_int16 c_specifierId(cx_generator g, cx_typedef t, cx_char* specifier, cx_bool
     if (cx_checkAttr(t, CX_ATTR_SCOPED)) {
         g_fullOid(g, t, specifier);
     } else {
-        if (t != cx_typedef(t->real)) {
+        if (t != cx_type(t)) {
             cx_error("c_type: anonymous typedefs are not allowed.");
             goto error;
         }
@@ -258,7 +258,7 @@ cx_int16 c_specifierId(cx_generator g, cx_typedef t, cx_char* specifier, cx_bool
             break;
         case CX_COLLECTION: {
             cx_id _specifier, _postfix;
-            cx_type elementType = cx_collection(t)->elementType->real;
+            cx_type elementType = cx_collection(t)->elementType;
             switch(cx_collection(t)->kind) {
             case CX_ARRAY:
                 /* Get specifier of elementType */
@@ -340,9 +340,9 @@ cx_char* c_escapeString(cx_string str, cx_id id) {
 
 cx_bool c_procedureHasThis(cx_function o) {
     cx_bool result;
-    if (cx_typeof(o) != cx_typedef(cx_observer_o)) {
-        result = (cx_instanceof(cx_typedef(cx_method_o), o) || 
-                  cx_instanceof(cx_typedef(cx_metaprocedure_o), o));
+    if (cx_typeof(o) != cx_type(cx_observer_o)) {
+        result = (cx_instanceof(cx_type(cx_method_o), o) || 
+                  cx_instanceof(cx_type(cx_metaprocedure_o), o));
     } else {
         result = cx_class_instanceof(cx_class_o, cx_parentof(o));
     }

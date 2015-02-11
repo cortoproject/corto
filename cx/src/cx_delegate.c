@@ -15,14 +15,14 @@ cx_int16 cx_delegate_bind(cx_function object) {
     cx_object parent = cx_parentof(object);
 
     if (cx_class_instanceof(cx_interface_o, cx_typeof(parent))) {
-        cx_interface type = cx_interface(cx_typeof(parent)->real);
+        cx_interface type = cx_interface(cx_typeof(parent));
         cx_id functionName;
         cx_member m = NULL;
 
         /* Get function name, lookup delegate, assign function */
         cx_signatureName(cx_nameof(object), functionName);
         if (cx_checkState(cx_type_o, CX_DEFINED) && (m = cx_interface_resolveMember(type, functionName)) &&
-            (m->type->real->kind == CX_COMPOSITE) && (cx_interface(m->type->real)->kind == CX_DELEGATE)) {
+            (m->type->kind == CX_COMPOSITE) && (cx_interface(m->type)->kind == CX_DELEGATE)) {
             if (cx_delegate_instanceof(cx_delegate(m->type), object)) {
                 /* Bind instance of function is a method */
                 if (cx_procedure(cx_typeof(object))->kind == CX_METHOD) {
@@ -128,7 +128,7 @@ cx_bool cx_delegate_matchParameter(
 /* $end */
 cx_bool cx_delegate_instanceof(cx_delegate _this, cx_object object) {
 /* $begin(::cortex::lang::delegate::instanceof) */
-    cx_type t = cx_typeof(object)->real;
+    cx_type t = cx_typeof(object);
     cx_bool result = TRUE;
 
     if ((t->kind == CX_COMPOSITE) && (cx_interface(t)->kind == CX_PROCEDURE)) {
@@ -137,9 +137,9 @@ cx_bool cx_delegate_instanceof(cx_delegate _this, cx_object object) {
 
         /* Validate returntype */
         if (!cx_delegate_matchParameter(
-            _this->returnType->real,
+            _this->returnType,
             _this->returnsReference,
-            call->returnType->real,
+            call->returnType,
             call->returnsReference)) {
             result = FALSE;
         }
@@ -156,9 +156,9 @@ cx_bool cx_delegate_instanceof(cx_delegate _this, cx_object object) {
             p2 = &call->parameters.buffer[i];
             
             if (!cx_delegate_matchParameter(
-                p1->type->real,
+                p1->type,
                 p1->passByReference,
-                p2->type->real,
+                p2->type,
                 p2->passByReference)) {
                 result = FALSE;
             }

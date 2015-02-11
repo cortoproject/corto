@@ -6,10 +6,16 @@
 extern "C" {
 #endif
 
-/* Returns zero if OK, -1 if failed */
+/* Create a directory. Returns zero if OK, -1 if failed */
 int cx_mkdir(const char *name);
 
-/* Returns zero if OK, -1 if failed */
+/* Creates a file. Returns zero if OK, -1 if failed */
+int cx_touch(const char *name);
+
+/* Change working directory. Returns zero if OK, -1 if failed */
+int cx_chdir(const char *name);
+
+/* Copy a file. Returns zero if OK, -1 if failed */
 int cx_cp(const char *source, const char *destination);
 
 /* Test whether a file exists */

@@ -118,7 +118,7 @@ static cx_char* c_loadMemberId(c_typeWalk_t* data, cx_value* v, cx_char* out, cx
     cx_uint32 count;
     cx_value *ptr;
     cx_object o;
-    cx_typedef thisType;
+    cx_type thisType;
     cx_bool objectIsArray, derefMemberOperator;
 
     *out = '\0';
@@ -138,8 +138,8 @@ static cx_char* c_loadMemberId(c_typeWalk_t* data, cx_value* v, cx_char* out, cx
 
     /* If object is a collection or primtive, dereference object pointer */
     objectIsArray = 
-        (cx_typeof(o)->real->kind == CX_PRIMITIVE) || 
-        (cx_typeof(o)->real->kind == CX_COLLECTION);
+        (cx_typeof(o)->kind == CX_PRIMITIVE) || 
+        (cx_typeof(o)->kind == CX_COLLECTION);
 
     /* Use '->' operator whenever possible */
     if (!objectIsArray) {
@@ -156,7 +156,7 @@ static cx_char* c_loadMemberId(c_typeWalk_t* data, cx_value* v, cx_char* out, cx
     /* If the first found object-value in the value-stack is not of the type of the object,
      * cast it. This happens when using inheritance. */
     thisType = cx_valueType(ptr);
-    if (cx_typedef(thisType) != cx_typeof(o)) {
+    if (cx_type(thisType) != cx_typeof(o)) {
         cx_id id, parentId, objectId;
         sprintf(id, "%s(%s)",
                 g_fullOid(data->g, thisType, parentId),
@@ -197,7 +197,7 @@ static cx_char* c_loadMemberId(c_typeWalk_t* data, cx_value* v, cx_char* out, cx
             cx_collection t;
             cx_char arrayIndex[24];
 
-            t = cx_collection(cx_valueType(stack[count+1])->real);
+            t = cx_collection(cx_valueType(stack[count+1]));
 
             switch(t->kind) {
 
@@ -222,7 +222,7 @@ static cx_char* c_loadMemberId(c_typeWalk_t* data, cx_value* v, cx_char* out, cx
             default: {
                 cx_char elementId[9]; /* One-million nested collections should be adequate in most cases. */
 
-                if ((cx_valueType(stack[count])->real->kind == CX_COLLECTION) && (cx_collection(cx_valueType(stack[count])->real)->kind == CX_ARRAY)) {
+                if ((cx_valueType(stack[count])->kind == CX_COLLECTION) && (cx_collection(cx_valueType(stack[count]))->kind == CX_ARRAY)) {
                     sprintf(out, "(*%s)", c_loadElementId(stack[count], elementId, 0));
                 } else {
                     sprintf(out, "%s", c_loadElementId(stack[count], elementId, 0));
@@ -256,7 +256,7 @@ static cx_char* c_loadMemberId(c_typeWalk_t* data, cx_value* v, cx_char* out, cx
 static int c_loadDeclareWalk(cx_object o, void* userData) {
     c_typeWalk_t* data;
     cx_id specifier, postfix, objectId;
-    cx_typedef t;
+    cx_type t;
     cx_bool prefix;
     cx_object parent;
 
@@ -384,7 +384,7 @@ static void c_varPrintStart(cx_value* v, c_typeWalk_t* data) {
     cx_id memberId;
     cx_type t;
 
-    t = cx_valueType(v)->real;
+    t = cx_valueType(v);
 
     /* Only write an identifier if the object is a primitive type, or a reference. */
     if ((t->kind == CX_PRIMITIVE) || (t->reference && !(v->kind == CX_OBJECT))) {
@@ -399,7 +399,7 @@ static void c_varPrintEnd(cx_value* v, c_typeWalk_t* data) {
     cx_type t;
 
     /* Get member object */
-    t = cx_valueType(v)->real;
+    t = cx_valueType(v);
     if ((t->kind == CX_PRIMITIVE) || (t->reference && !(v->kind == CX_OBJECT))) {
         /* Print end of member-assignment */
         g_fileWrite(data->source, ";\n");
@@ -415,7 +415,7 @@ static cx_int16 c_initPrimitive(cx_serializer s, cx_value* v, void* userData) {
     CX_UNUSED(s);
 
     ptr = cx_valueValue(v);
-    t = cx_valueType(v)->real;
+    t = cx_valueType(v);
     data = userData;
     str = NULL;
 
@@ -502,12 +502,9 @@ static cx_int16 c_initReference(cx_serializer s, cx_value* v, void* userData) {
 
 /* c_initElement */
 static cx_int16 c_initElement(cx_serializer s, cx_value* v, void* userData) {
-    cx_collection t;
-    c_typeWalk_t* data;
-
-    /* Get collectionType */
-    t = cx_collection(cx_valueType(v->parent)->real);
-    data = userData;
+    c_typeWalk_t* data = userData;
+    cx_collection t = cx_collection(cx_valueType(v->parent));
+    cx_bool requiresAlloc = cx_collection_elementRequiresAlloc(t);
 
     /* Allocate space for element */
     switch(t->kind) {
@@ -516,7 +513,7 @@ static cx_int16 c_initElement(cx_serializer s, cx_value* v, void* userData) {
         cx_id elementId, specifier, postfix;
         g_fileWrite(data->source, "\n");
 
-        if (cx_collection_elementRequiresAlloc(t)) {
+        if (requiresAlloc) {
             c_specifierId(data->g, t->elementType, specifier, NULL, postfix);
             g_fileWrite(data->source, "%s = cx_malloc(sizeof(%s%s));\n", c_loadElementId(v, elementId, 0), specifier, postfix);
         }
@@ -534,9 +531,9 @@ static cx_int16 c_initElement(cx_serializer s, cx_value* v, void* userData) {
     switch(t->kind) {
     case CX_LIST: {
         cx_id parentId, elementId;
-        g_fileWrite(data->source, "cx_llAppend(%s, %s);\n",
+        g_fileWrite(data->source, "cx_llAppend(%s, %s%s);\n",
                 c_loadMemberId(data, v->parent, parentId, FALSE),
-                c_loadElementId(v, elementId, 0));
+                requiresAlloc ? "" : "(void*)", c_loadElementId(v, elementId, 0));
         break;
     }
     case CX_MAP: /*{
@@ -566,7 +563,7 @@ static cx_int16 c_initCollection(cx_serializer s, cx_value* v, void* userData) {
 
     ptr = cx_valueValue(v);
 
-    t = cx_collection(cx_valueType(v)->real);
+    t = cx_collection(cx_valueType(v));
     data = userData;
 
     switch(t->kind) {
@@ -676,7 +673,7 @@ static int c_loadCFunction(cx_function o, c_typeWalk_t* data, cx_id name) {
     /* Print name */
     g_fullOid(data->g, o, name);
     if (c_procedureHasThis(o)) {
-        if (cx_instanceof(cx_typedef(cx_method_o), o) && cx_method(o)->virtual) {
+        if (cx_instanceof(cx_type(cx_method_o), o) && cx_method(o)->virtual) {
             strcat(name, "_v");
         }
     }
@@ -717,13 +714,13 @@ static int c_loadDeclare(cx_object o, void* userData) {
         g_fileWrite(data->source, "/* Declare %s */\n", cx_fullname(o, id));
 
         if (!cx_checkAttr(cx_typeof(o), CX_ATTR_SCOPED)) {
-            g_fileWrite(data->source, "%s = cx_declare(%s, \"%s\", (_a_ ? cx_free(_a_) : 0, _a_ = cx_typedef(%s)));\n",
+            g_fileWrite(data->source, "%s = cx_declare(%s, \"%s\", (_a_ ? cx_free(_a_) : 0, _a_ = cx_type(%s)));\n",
                     c_loadVarId(data->g, o, id),
                     c_loadVarId(data->g, cx_parentof(o), parentId),
                     escapedName,
                     c_loadVarId(data->g, cx_typeof(o), typeId));
         } else {
-            g_fileWrite(data->source, "%s = cx_declare(%s, \"%s\", cx_typedef(%s));\n",
+            g_fileWrite(data->source, "%s = cx_declare(%s, \"%s\", cx_type(%s));\n",
                     c_loadVarId(data->g, o, id),
                     c_loadVarId(data->g, cx_parentof(o), parentId),
                     escapedName,
@@ -741,7 +738,7 @@ static int c_loadDeclare(cx_object o, void* userData) {
         g_fileDedent(data->source);
 
         /* Serialize object if object is a primitive */
-        if(cx_typeof(o)->real->kind == CX_PRIMITIVE) {
+        if(cx_typeof(o)->kind == CX_PRIMITIVE) {
             g_fileWrite(data->source, "} else {\n");
             g_fileIndent(data->source);
             s = c_initSerializer();
@@ -758,7 +755,7 @@ static int c_loadDeclare(cx_object o, void* userData) {
 static int c_loadDefine(cx_object o, void* userData) {
     struct cx_serializer_s s;
 
-    if (cx_checkAttr(o, CX_ATTR_SCOPED) && (cx_typeof(o)->real->kind != CX_PRIMITIVE)) {
+    if (cx_checkAttr(o, CX_ATTR_SCOPED) && (cx_typeof(o)->kind != CX_PRIMITIVE)) {
         c_typeWalk_t* data;
         cx_id escapedId, fullname, varId, typeId;
 
@@ -773,7 +770,7 @@ static int c_loadDefine(cx_object o, void* userData) {
         g_fileIndent(data->source);
 
         /* Serialize object if object is not a primitive */
-        if(cx_typeof(o)->real->kind != CX_PRIMITIVE) {
+        if(cx_typeof(o)->kind != CX_PRIMITIVE) {
             s = c_initSerializer();
             cx_serialize(&s, o, userData);
         }
@@ -804,7 +801,7 @@ static int c_loadDefine(cx_object o, void* userData) {
         g_fileWrite(data->source, "}\n\n");
 
         /* Do size validation - this makes porting to other platforms easier */
-        if (cx_instanceof(cx_typedef(cx_type_o), o)) {
+        if (cx_instanceof(cx_type(cx_type_o), o)) {
             if (cx_type(o)->reference) {
                 g_fileWrite(data->source, "if (cx_type(%s)->size != sizeof(struct %s_s)) {\n", 
                     varId,

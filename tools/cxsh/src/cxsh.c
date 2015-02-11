@@ -96,9 +96,9 @@ static cx_string cxsh_findPreferredBreak(cx_string str) {
     return breakpt;
 }
 
-static cx_string cxsh_printColumnValue(cx_string str, int width){
+static cx_string cxsh_printColumnValue(cx_string str, unsigned int width){
     cx_string result = NULL;
-    if ((int)strlen(str) < (width - 2)) {
+    if (strlen(str) < (width - 2)) {
         printf("%s%*s", str, (int)(width - strlen(str)), " ");
     } else {
         cx_id buffer;
@@ -378,7 +378,79 @@ static void cxsh_cd(char* arg) {
     cx_free(oldScope);
 }
 
-/* Show object */
+cx_bool cxsh_readline(cx_string cmd) {
+    char* read = 0;
+    cmd[0] = '\0';
+
+    /* Read command */
+    if ((read = fgets(cmd, CXSH_CMD_MAX, stdin)) == 0) {
+        goto empty;
+    }
+
+    /* Strip '\n' */
+    cmd[strlen(cmd) - 1] = '\0';
+
+    return read != NULL;
+empty:
+    return 0;
+}
+
+static cx_string cxsh_multiline(cx_string expr, cx_uint32 indent) {
+    char cmd[CXSH_CMD_MAX];
+    unsigned int len = strlen(expr);
+    unsigned int multiline = 0;
+
+    if (expr[len-1] == ':') {
+        unsigned int cmdLen = 0;
+        cx_id prompt;
+        cxsh_prompt(scope, FALSE, prompt);
+        multiline = 1;
+
+        do {
+            cx_uint32 i;
+            /* Print indent */
+            cxsh_color(SHELL_COLOR);
+            printf("%*s >", strlen(prompt) - 2, "");
+            cxsh_color(BLUE);
+            for(i = 0; i < (indent * 4 - 1); i++) {
+                printf(".");
+            }
+            cxsh_color(NORMAL);
+            printf(" ");
+
+            cxsh_readline(cmd);
+            cmdLen = strlen(cmd);
+
+            if (!cmdLen) break;
+
+            /* Append command */
+            expr = cx_realloc(expr, len + cmdLen + 1 + 1 + (indent * 4));
+            strcat(expr, "\n");
+
+            /* Insert indent */
+            {
+                char indentStr[CXSH_CMD_MAX];
+                memset(indentStr, ' ', indent * 4);
+                indentStr[indent * 4] = '\0';
+                strcat(expr, indentStr);
+            }
+            strcat(expr, cmd);
+
+            /*  cmd can be a nested multiline expression */
+            expr = cxsh_multiline(expr, indent + 1);
+            len = strlen(expr);
+        } while (cmdLen);
+    }
+
+    if (multiline && (indent == 1)) {
+        expr = cx_realloc(expr, len + 1 + 1);
+        strcat(expr, "\n");
+    }
+
+    return expr;
+}
+
+/* Show expression */
 static int cxsh_show(char* object) {
     cx_id id;
     char state[sizeof("valid | declared | defined")];
@@ -386,12 +458,16 @@ static int cxsh_show(char* object) {
     struct cx_serializer_s s;
     cx_string_ser_t sdata;
     cx_value result;
+    char *expr = object;
 
     memset(&result, 0, sizeof(cx_value));
 
     cx_toggleEcho(FALSE);
 
-    if (!cx_expr(scope, object, &result)) {
+    /* Check whether this is a multiline expression */
+    expr = cxsh_multiline(cx_strdup(object), 1);
+
+    if (!cx_expr(scope, expr, &result)) {
         cx_object o = NULL;
         if (result.kind == CX_OBJECT) {
             o = cx_valueObject(&result);
@@ -439,10 +515,11 @@ static int cxsh_show(char* object) {
             }
             printf("\n");
         }
-
+        cx_dealloc(expr);
         cx_toggleEcho(TRUE);
         return 0;
     } else {
+        cx_dealloc(expr);
         cx_toggleEcho(TRUE);
         return -1;
     }
@@ -552,7 +629,7 @@ static int cxsh_doCmd(char* cmd) {
     } else {
         cx_char *lastErr;
         if ((lastErr = cx_lasterror())) {
-            int location = 0;
+            unsigned int location = 0;
             cxsh_color(ERROR_COLOR);
 
             /* If lastError starts with a line:column: indication, print an arrow */
@@ -592,15 +669,9 @@ static void cxsh_shell(void) {
         cxsh_prompt(scope, TRUE, prompt);
         printf("%s", prompt);
 
-        cmd[0] = '\0';
-
-        /* Read command */
-        if (fgets(cmd, 256, stdin) == 0) {
+        if (!cxsh_readline(cmd)) {
             continue;
         }
-
-        /* Strip '\n' */
-        cmd[strlen(cmd) - 1] = '\0';
 
         /* Forward commands */
         if (strlen(cmd)) {

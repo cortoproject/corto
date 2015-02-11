@@ -51,7 +51,6 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
 
 /* Classes */
 #define SSO_OP_CLASSTYPE(op)\
-    SSO_OP_CLASS(op, typedef);\
     SSO_OP_CLASS(op, type);\
     SSO_OP_CLASS(op, primitive);\
     SSO_OP_CLASS(op, interface);\
@@ -309,13 +308,6 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, modifier_PRIVATE);\
     SSO_OP_OBJ(op, modifier_READONLY);\
     SSO_OP_OBJ(op, modifier_CONST);\
-    /* typedef */\
-    SSO_OP_OBJ(op, typedef_type);\
-    SSO_OP_OBJ(op, typedef_real);\
-    SSO_OP_OBJ(op, typedef_realType_);\
-    SSO_OP_OBJ(op, typedef_init_);\
-    SSO_OP_OBJ(op, typedef_construct_);\
-    SSO_OP_OBJ(op, typedef_destruct_);\
     /* type */\
     SSO_OP_OBJ(op, type_kind);\
     SSO_OP_OBJ(op, type_reference);\
@@ -389,8 +381,8 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     /* iterator */\
     SSO_OP_OBJ(op, iterator_elementType);\
     SSO_OP_OBJ(op, iterator_init_);\
-    SSO_OP_OBJ(op, iterator_next);\
-    SSO_OP_OBJ(op, iterator_hasNext);\
+    SSO_OP_OBJ(op, iterator_compatible_);\
+    SSO_OP_OBJ(op, iterator_castable_);\
     /* list */\
     SSO_OP_OBJ(op, list_insert);\
     SSO_OP_OBJ(op, list_append);\
@@ -526,9 +518,9 @@ cx_int16 cx_delegateConstruct(cx_type t, cx_object o);
 static void cx_initObject(cx_object o) {
     cx_newObject(o);
 
-    cx_delegateInit(cx_typeof(o)->real, o);
+    cx_delegateInit(cx_typeof(o), o);
     
-    if (cx_typeof(o)->real->kind == CX_VOID) {
+    if (cx_typeof(o)->kind == CX_VOID) {
         cx__setState(o, CX_DEFINED);
     }
 }
@@ -565,11 +557,7 @@ static void cx_destructObject(cx_object o) {
 /* Destruct type */
 static void cx_destructType(cx_object o, cx_uint32 size) {
     CX_UNUSED(size);
-
     cx__destructor(o);
-
-    /* Restore 'real' pointer */
-    cx_typedef(o)->real = o;
 }
 
 /* Update references */

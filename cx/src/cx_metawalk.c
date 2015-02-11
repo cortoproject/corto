@@ -21,7 +21,7 @@ cx_int16 cx_metaWalk(cx_serializer s, cx_type type, void* userData) {
     /* Instantiate dummy-object */
     o = cx_malloc(sizeof(cx__object) + type->size); /* alloca is dangerous here because objects can get large, causing stack overflows. */
     memset(o, 0, sizeof(cx__object) + type->size);
-    o->type = cx_typedef(type);
+    o->type = cx_type(type);
     o->refcount = 1;
 
     result = cx_serialize(s, CX_OFFSET(o, sizeof(cx__object)), userData);
@@ -35,7 +35,7 @@ cx_int16 cx_serializeConstants(cx_serializer s, cx_value* v, void* userData) {
     cx_enum t;
     cx_uint32 i;
 
-    t = cx_enum(cx_valueType(v)->real);
+    t = cx_enum(cx_valueType(v));
 
     /* If there is a callback for constants, serialize them */
     if (s->metaprogram[CX_CONSTANT]) {

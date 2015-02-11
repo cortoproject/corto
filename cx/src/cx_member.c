@@ -36,7 +36,7 @@ cx_int16 cx_member_init(cx_member _this) {
 
     if (cx_checkAttr(_this, CX_ATTR_SCOPED)) {
         parent = cx_parentof(_this);
-        parentType = cx_typeof(parent)->real;
+        parentType = cx_typeof(parent);
 
         if (parentType->kind == CX_COMPOSITE) {
             /* Bind member with composite object */

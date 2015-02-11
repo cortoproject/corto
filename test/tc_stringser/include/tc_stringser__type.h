@@ -1,6 +1,5 @@
 /* tc_stringser__type.h
  *
- *  Generated on Feb  5 2014
  *    Type-definitions for C-language.
  *    This file contains generated code. Do not modify!
  */
@@ -9,134 +8,139 @@
 #define tc_stringser__type_H
 
 #include "cortex.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* Casting macro's for classes */
-#define tc_classCompositeCollection(o) ((tc_classCompositeCollection)o)
-#define tc_classInherit(o) ((tc_classInherit)o)
-#define tc_classNested(o) ((tc_classNested)o)
-#define tc_classPrimitives(o) ((tc_classPrimitives)o)
+#define tc_stringser_classCompositeCollection(o) ((tc_stringser_classCompositeCollection)o)
+#define tc_stringser_classInherit(o) ((tc_stringser_classInherit)o)
+#define tc_stringser_classNested(o) ((tc_stringser_classNested)o)
+#define tc_stringser_classPrimitives(o) ((tc_stringser_classPrimitives)o)
 
 /* Type definitions */
+typedef cx_bool tc_stringser_arrayOfBool[3];
 
-typedef cx_bool cx_bool_array3[3];
-typedef cx_bool_array3 tc_arrayOfBool;
-typedef cx_char cx_char_array3[3];
-typedef cx_char_array3 tc_arrayOfChar;
+typedef cx_char tc_stringser_arrayOfChar[3];
+
 /* ::tc_stringser::color */
-typedef enum tc_color {
-    TC_RED = 0,
-    TC_YELLOW = 1,
-    TC_BLUE = 2
-} tc_color;
+typedef enum tc_stringser_color {
+    TC_STRINGSER_RED = 0,
+    TC_STRINGSER_YELLOW = 1,
+    TC_STRINGSER_BLUE = 2
+} tc_stringser_color;
+
 /* ::tc_stringser::moveMode */
-CX_BITMASK(tc_moveMode);
-#define TC_WALK (0x1)
-#define TC_SWIM (0x2)
-#define TC_FLY (0x4)
+CX_BITMASK(tc_stringser_moveMode);
+    #define TC_STRINGSER_WALK (0x1)
+    #define TC_STRINGSER_SWIM (0x2)
+    #define TC_STRINGSER_FLY (0x4)
 
 /*  ::tc_stringser::classPrimitives */
-CX_CLASS(tc_classPrimitives);
-CX_CLASS_DEF(tc_classPrimitives) {
+CX_CLASS(tc_stringser_classPrimitives);
+
+CX_CLASS_DEF(tc_stringser_classPrimitives) {
     cx_bool a;
     cx_char b;
     cx_int32 c;
     cx_float32 d;
     cx_string e;
-    tc_color f;
-    tc_moveMode g;
+    tc_stringser_color f;
+    tc_stringser_moveMode g;
 };
 
 /*  ::tc_stringser::classInherit */
-CX_CLASS(tc_classInherit);
-CX_CLASS_DEF(tc_classInherit) {
-    CX_EXTEND(tc_classPrimitives);
+CX_CLASS(tc_stringser_classInherit);
+
+CX_CLASS_DEF(tc_stringser_classInherit) {
+    CX_EXTEND(tc_stringser_classPrimitives);
     cx_bool a;
     cx_char b;
     cx_int32 c;
     cx_float32 d;
     cx_string e;
-    tc_color f;
-    tc_moveMode g;
+    tc_stringser_color f;
+    tc_stringser_moveMode g;
 };
-typedef tc_classInherit tc_classInherit_array3[3];
-typedef tc_classInherit_array3 tc_arrayOfClassInherit;
-typedef cx_int32 cx_int32_array3[3];
-typedef cx_int32_array3 tc_arrayOfInt;
-CX_SEQUENCE(cx_int32_seq3, cx_int32,);
-typedef cx_int32_seq3 tc_sequenceOfInt;
-CX_LIST(cx_int32_list3);
-typedef cx_int32_list3 tc_listOfInt;
+
+typedef tc_stringser_classInherit tc_stringser_arrayOfClassInherit[3];
+
+typedef cx_int32 tc_stringser_arrayOfInt[3];
+
+CX_SEQUENCE(tc_stringser_sequenceOfInt, cx_int32,);
+
+CX_LIST(tc_stringser_listOfInt);
 
 /*  ::tc_stringser::classNested */
-CX_CLASS(tc_classNested);
-CX_CLASS_DEF(tc_classNested) {
-    tc_classPrimitives a;
-    tc_classInherit b;
-    tc_arrayOfInt c;
-    tc_sequenceOfInt d;
-    tc_listOfInt e;
+CX_CLASS(tc_stringser_classNested);
+
+CX_CLASS_DEF(tc_stringser_classNested) {
+    tc_stringser_classPrimitives a;
+    tc_stringser_classInherit b;
+    tc_stringser_arrayOfInt c;
+    tc_stringser_sequenceOfInt d;
+    tc_stringser_listOfInt e;
 };
-typedef tc_classNested tc_classNested_array3[3];
-typedef tc_classNested_array3 tc_arrayOfClassNested;
-typedef tc_classPrimitives tc_classPrimitives_array3[3];
-typedef tc_classPrimitives_array3 tc_arrayOfClassPrimitives;
-typedef tc_color tc_color_array3[3];
-typedef tc_color_array3 tc_arrayOfColor;
-typedef cx_float32 cx_float32_array3[3];
-typedef cx_float32_array3 tc_arrayOfFloat;
-typedef tc_moveMode tc_moveMode_array3[3];
-typedef tc_moveMode_array3 tc_arrayOfMoveMode;
-typedef cx_string cx_string_array3[3];
-typedef cx_string_array3 tc_arrayOfString;
-CX_SEQUENCE(tc_classInherit_seq3, tc_classInherit,);
-typedef tc_classInherit_seq3 tc_sequenceOfClassInherit;
-CX_LIST(tc_classNested_list3);
-typedef tc_classNested_list3 tc_listOfClassNested;
-CX_LIST(tc_classInherit_list3);
-typedef tc_classInherit_list3 tc_listOfClassInherit;
+
+typedef tc_stringser_classNested tc_stringser_arrayOfClassNested[3];
+
+typedef tc_stringser_classPrimitives tc_stringser_arrayOfClassPrimitives[3];
+
+typedef tc_stringser_color tc_stringser_arrayOfColor[3];
+
+typedef cx_float32 tc_stringser_arrayOfFloat[3];
+
+typedef tc_stringser_moveMode tc_stringser_arrayOfMoveMode[3];
+
+typedef cx_string tc_stringser_arrayOfString[3];
+
+CX_SEQUENCE(tc_stringser_sequenceOfClassInherit, tc_stringser_classInherit,);
+
+CX_LIST(tc_stringser_listOfClassNested);
+
+CX_LIST(tc_stringser_listOfClassInherit);
 
 /*  ::tc_stringser::classCompositeCollection */
-CX_CLASS(tc_classCompositeCollection);
-CX_CLASS_DEF(tc_classCompositeCollection) {
-    tc_arrayOfClassInherit a;
-    tc_arrayOfClassNested b;
-    tc_sequenceOfClassInherit c;
-    tc_listOfClassNested d;
-    tc_listOfClassInherit e;
+CX_CLASS(tc_stringser_classCompositeCollection);
+
+CX_CLASS_DEF(tc_stringser_classCompositeCollection) {
+    tc_stringser_arrayOfClassInherit a;
+    tc_stringser_arrayOfClassNested b;
+    tc_stringser_sequenceOfClassInherit c;
+    tc_stringser_listOfClassNested d;
+    tc_stringser_listOfClassInherit e;
 };
-CX_LIST(cx_bool_list3);
-typedef cx_bool_list3 tc_listOfBool;
-CX_LIST(cx_char_list3);
-typedef cx_char_list3 tc_listOfChar;
-CX_LIST(tc_classPrimitives_list3);
-typedef tc_classPrimitives_list3 tc_listOfClassPrimitives;
-CX_LIST(tc_color_list3);
-typedef tc_color_list3 tc_listOfColor;
-CX_LIST(cx_float32_list3);
-typedef cx_float32_list3 tc_listOfFloat;
-CX_LIST(tc_moveMode_list3);
-typedef tc_moveMode_list3 tc_listOfMoveMode;
-CX_LIST(cx_string_list3);
-typedef cx_string_list3 tc_listOfString;
-CX_SEQUENCE(cx_bool_seq3, cx_bool,);
-typedef cx_bool_seq3 tc_sequenceOfBool;
-CX_SEQUENCE(cx_char_seq3, cx_char,);
-typedef cx_char_seq3 tc_sequenceOfChar;
-CX_SEQUENCE(tc_classNested_seq3, tc_classNested,);
-typedef tc_classNested_seq3 tc_sequenceOfClassNested;
-CX_SEQUENCE(tc_classPrimitives_seq3, tc_classPrimitives,);
-typedef tc_classPrimitives_seq3 tc_sequenceOfClassPrimitives;
-CX_SEQUENCE(tc_color_seq3, tc_color,);
-typedef tc_color_seq3 tc_sequenceOfColor;
-CX_SEQUENCE(cx_float32_seq3, cx_float32,);
-typedef cx_float32_seq3 tc_sequenceOfFloat;
-CX_SEQUENCE(tc_moveMode_seq3, tc_moveMode,);
-typedef tc_moveMode_seq3 tc_sequenceOfMoveMode;
-CX_SEQUENCE(cx_string_seq3, cx_string,);
-typedef cx_string_seq3 tc_sequenceOfString;
+
+CX_LIST(tc_stringser_listOfBool);
+
+CX_LIST(tc_stringser_listOfChar);
+
+CX_LIST(tc_stringser_listOfClassPrimitives);
+
+CX_LIST(tc_stringser_listOfColor);
+
+CX_LIST(tc_stringser_listOfFloat);
+
+CX_LIST(tc_stringser_listOfMoveMode);
+
+CX_LIST(tc_stringser_listOfString);
+
+CX_SEQUENCE(tc_stringser_sequenceOfBool, cx_bool,);
+
+CX_SEQUENCE(tc_stringser_sequenceOfChar, cx_char,);
+
+CX_SEQUENCE(tc_stringser_sequenceOfClassNested, tc_stringser_classNested,);
+
+CX_SEQUENCE(tc_stringser_sequenceOfClassPrimitives, tc_stringser_classPrimitives,);
+
+CX_SEQUENCE(tc_stringser_sequenceOfColor, tc_stringser_color,);
+
+CX_SEQUENCE(tc_stringser_sequenceOfFloat, cx_float32,);
+
+CX_SEQUENCE(tc_stringser_sequenceOfMoveMode, tc_stringser_moveMode,);
+
+CX_SEQUENCE(tc_stringser_sequenceOfString, cx_string,);
 
 #ifdef __cplusplus
 }

@@ -37,7 +37,7 @@ int test_suite_walk(cx_object o, void *userData) {
     test_suite _this = userData;
 
     /* Run procedures in scope of suite */
-    if (cx_instanceof(cx_typedef(test_test_o), o)) {
+    if (cx_instanceof(cx_type(test_test_o), o)) {
         cx_id id;
 
         /* Create unit for procedure */
@@ -59,8 +59,8 @@ cx_object test_suite_createResultTree(test_suite _this, cx_object object) {
         result = test_suite_createResultTree(_this, cx_parentof(object));
         result = cx_declare(result, cx_nameof(object), cx_typeof(cx_void_o));
     } else {
-        result = cx_declare(NULL, "test", cx_typedef(cx_void_o));
-        result = cx_declare(result, cx_nameof(object), cx_typedef(cx_void_o));
+        result = cx_declare(NULL, "test", cx_type(cx_void_o));
+        result = cx_declare(result, cx_nameof(object), cx_type(cx_void_o));
     }
     return result;
 }

@@ -31,7 +31,7 @@ void* cx_rbtreePrev(cx_rbtree tree, void* key, void** key_out);
 cx_uint32 cx_rbtreeSize(cx_rbtree tree);
 int cx_rbtreeWalk(cx_rbtree tree, cx_walkAction callback, void* userData);
 int cx_rbtreeWalkPtr(cx_rbtree tree, cx_walkAction callback, void* userData);
-cx_typedef cx_rbtreeKeyType(cx_rbtree tree);
+cx_type cx_rbtreeKeyType(cx_rbtree tree);
 
 #ifdef __cplusplus
 }

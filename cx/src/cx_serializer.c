@@ -28,7 +28,7 @@ cx_int16 cx_serializeValue(cx_serializer _this, cx_value* info, void* userData) 
     cx_int16 result;
     cx_serializerCallback cb;
 
-    t = cx_valueType(info)->real;
+    t = cx_valueType(info);
 
     cb = NULL;
 
@@ -68,7 +68,6 @@ error:
 void cx_serializerInit(cx_serializer _this) {
     memset(_this, 0, sizeof(struct cx_serializer_s));
     _this->program[CX_ANY] = cx_serializeAny;
-    _this->program[CX_BASE] = cx_serializeValue;
     _this->program[CX_COMPOSITE] = cx_serializeMembers;
     _this->program[CX_COLLECTION] = cx_serializeElements;
     _this->initialized = TRUE;
@@ -163,7 +162,7 @@ cx_int16 cx_serializeAny(cx_serializer _this, cx_value* info, void* userData) {
 
     any = cx_valueValue(info);
     v.parent = info;
-    cx_valueValueInit(&v, cx_valueObject(info), (cx_typedef)any->type, any->value);
+    cx_valueValueInit(&v, cx_valueObject(info), (cx_type)any->type, any->value);
 
     return cx_serializeValue(_this, &v, userData);
 }
@@ -178,7 +177,7 @@ cx_int16 cx_serializeMembers(cx_serializer _this, cx_value* info, void* userData
     cx_serializerCallback cb;
     cx_object o;
 
-    t = cx_interface(cx_valueType(info)->real);
+    t = cx_interface(cx_valueType(info));
     v = cx_valueValue(info);
     o = cx_valueObject(info);
 
@@ -196,7 +195,7 @@ cx_int16 cx_serializeMembers(cx_serializer _this, cx_value* info, void* userData
             base.kind = CX_BASE;
             base.parent = info;
             base.is.base.v = v;
-            base.is.base.t = cx_typedef(cx_interface(t)->base);
+            base.is.base.t = cx_type(cx_interface(t)->base);
             base.is.base.o = o;
 #ifdef CX_SERIALIZER_TRACING
             {
@@ -261,19 +260,13 @@ int cx_serializeElement(void* e, void* userData) {
     struct cx_serializeElement_t* data;
     cx_serializer _this;
     cx_value* info;
-    cx_type t;
 
     data = userData;
     _this = data->_this;
     info = data->info;
-    t = cx_valueType(info->parent)->real;
 
     /* Set element value */
-    if ((cx_collection(t)->kind == CX_ARRAY) || (cx_collection(t)->kind == CX_SEQUENCE)) {
-        info->is.element.v = e;
-    } else {
-        info->is.element.v = e;
-    }
+    info->is.element.v = e;
 
     /* Forward element to serializer callback */
     if (data->cb(_this, info, data->userData)) {
@@ -295,7 +288,7 @@ cx_int16 cx_serializeElements(cx_serializer _this, cx_value* info, void* userDat
     cx_void* v;
     cx_value elementInfo;
 
-    t = cx_collection(cx_valueType(info)->real);
+    t = cx_collection(cx_valueType(info));
     v = cx_valueValue(info);
 
     /* Value object for element */

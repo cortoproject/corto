@@ -55,7 +55,7 @@ g_item g_itemNew(cx_object o, g_itemWalk_t data) {
     g_item result;
 
     result = cx_malloc(sizeof(struct g_item));
-    result->o = o;
+    result->o = o; cx_keep(o);
     result->declared = FALSE;
     result->defined = FALSE;
     result->declareCount = 0;
@@ -92,6 +92,8 @@ void g_itemFree(g_item item) {
         }
         cx_llFree(item->onDefined);
     }
+
+    cx_free(item->o);
 
     cx_dealloc(item);
 }
@@ -226,7 +228,7 @@ static void g_itemDeclare(g_item item, g_itemWalk_t data) {
 static void g_itemDefine(g_item item, g_itemWalk_t data) {
 
     /* VOID objects are defined at the moment of declaration. */
-    if ((cx_typeof(item->o)->real->kind != CX_VOID) || (cx_typeof(item->o)->real->reference)) {
+    if ((cx_typeof(item->o)->kind != CX_VOID) || (cx_typeof(item->o)->reference)) {
         if (data->onDefine) {
             data->onDefine(item->o, data->userData);
         }
@@ -287,7 +289,7 @@ cx_int16 cx_genDepReference(cx_serializer s, cx_value* info, void* userData) {
 
         if (info->kind == CX_MEMBER) {
             m = info->is.member.t;
-            if (!m->type->real->reference) {
+            if (!m->type->reference) {
                 m = NULL;
             }
         }
@@ -320,8 +322,8 @@ struct cx_serializer_s cx_genDepSerializer(void) {
 static int cx_genDepBuildProc(g_item item, g_itemWalk_t data) {
     cx_id typeBuff;
     cx_function f;
-    cx_uint32 count, i;
-    cx_typedef t;
+    cx_int32 count, i;
+    cx_type t;
     g_item tItem;
 
     /* Walk through parameter types, add them as dependencies */
@@ -329,6 +331,10 @@ static int cx_genDepBuildProc(g_item item, g_itemWalk_t data) {
 
     if (cx_procedure(cx_typeof(f))->kind != CX_OBSERVER) {
         count = cx_signatureParamCount(cx_nameof(f));
+        if (count == -1) {
+            cx_error("invalid parameter list in function %s", cx_nameof(f));
+            goto error;
+        }
         for(i=0; i<count; i++) {
             cx_signatureParamType(cx_nameof(f), i, typeBuff, NULL);
             t = cx_resolve_ext(NULL, cx_parentof(f), typeBuff, FALSE, "Resolve type for parameter in dependency builder");
@@ -376,7 +382,7 @@ int cx_genDepBuildAction(cx_object o, void* userData) {
 
         if (cx_class_instanceof(cx_procedure_o, cx_typeof(o))) {
             /* Insert base-dependency: methods may only be declared after the base of a class has been defined. */
-            if (cx_typeof(o) != cx_typedef(cx_function_o)) {
+            if (cx_typeof(o) != cx_type(cx_function_o)) {
                 if (cx_class_instanceof(cx_class_o, cx_parentof(o)) && cx_interface(cx_parentof(o))->base) {
                     if (g_mustParse(data->g, cx_interface(cx_parentof(o))->base)) {
                         g_item base = g_itemLookup(cx_interface(cx_parentof(o))->base, data);
@@ -395,7 +401,7 @@ int cx_genDepBuildAction(cx_object o, void* userData) {
         if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
             parent = g_itemLookup(cx_parentof(o), data);
             if (parent && (parent->o != root_o)) { /* Root is always available */
-                switch(cx_typedef(cx_typeof(o))->real->parentState) {
+                switch(cx_type(cx_typeof(o))->parentState) {
                 case 0:
                 case CX_DECLARED | CX_DEFINED:
                     /* If it doesn't matter whether the parent is declared or defined, mark
@@ -571,7 +577,7 @@ static int cx_genDeclareAction(cx_object o, void* userData) {
 static int cx_genDefineAction(cx_object o, void* userData) {
     g_itemWalk_t data;
     data = userData;
-    if (cx_typeof(o)->real->kind != CX_VOID) {
+    if (cx_typeof(o)->kind != CX_VOID) {
         if (data->onDefine) {
             data->onDefine(o, data->userData);
         }

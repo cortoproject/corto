@@ -72,7 +72,7 @@ cx_int16 cx_struct_construct(cx_struct _this) {
 
     /* Get maximum alignment from self and base-class and copy template parameters */
     if (base) {
-        if (!cx_instanceof(cx_typedef(cx_struct_o), base)) {
+        if (!cx_instanceof(cx_type(cx_struct_o), base)) {
             cx_id id, id2;
             cx_error("struct '%s' inherits from non-struct type '%s'", cx_fullname(_this, id), cx_fullname(base, id2));
             goto error;

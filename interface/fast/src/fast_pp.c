@@ -181,7 +181,7 @@ void fast_ppList(cx_string code) {
 /* Preprocess code */
 cx_string fast_pp(cx_string filename, cx_string code) {
     cx_uint32 size,checkSize;
-    cx_string result;
+    cx_string result = NULL;
     cx_bool appendNewline = FALSE;
 
     size = 0;
@@ -214,5 +214,8 @@ cx_string fast_pp(cx_string filename, cx_string code) {
 
     return result;
 error:
+    if (result) {
+        cx_dealloc(result);
+    }
     return NULL;
 }

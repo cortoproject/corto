@@ -17,7 +17,7 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 cx_int16 Fast_MemberExpr_resolveMember(Fast_MemberExpr object, cx_type type, cx_string member) {
     cx_object o = NULL;
 
-    if (cx_instanceof(cx_typedef(cx_interface_o), type) && !strcmp(member, "super")) {
+    if (cx_instanceof(cx_type(cx_interface_o), type) && !strcmp(member, "super")) {
         if (cx_interface(type)->base) {
             object->member = NULL;
             Fast_Expression(object)->type = Fast_Variable(Fast_Object__create(cx_interface(type)->base));
@@ -27,7 +27,7 @@ cx_int16 Fast_MemberExpr_resolveMember(Fast_MemberExpr object, cx_type type, cx_
             goto error;
         }
     } else {
-        if (cx_instanceof(cx_typedef(cx_interface_o), type)) {
+        if (cx_instanceof(cx_type(cx_interface_o), type)) {
             o = cx_interface_resolveMember(cx_interface(type), member);
         }
         if (!o) {
@@ -38,9 +38,9 @@ cx_int16 Fast_MemberExpr_resolveMember(Fast_MemberExpr object, cx_type type, cx_
                 Fast_Parser_error(yparser(), "unresolved member '%s' for type '%s'", member, cx_fullname(type, id));
                 goto error;
             }
-            Fast_Expression(object)->type = Fast_Variable(Fast_Object__create(cx_function(o)->returnType->real));
+            Fast_Expression(object)->type = Fast_Variable(Fast_Object__create(cx_function(o)->returnType));
         } else {
-            Fast_Expression(object)->type = Fast_Variable(Fast_Object__create(cx_member(o)->type->real));
+            Fast_Expression(object)->type = Fast_Variable(Fast_Object__create(cx_member(o)->type));
         }
         object->member = o; cx_keep_ext(object, o, "Keep object for member-expression");
     }
@@ -76,6 +76,12 @@ cx_int16 Fast_MemberExpr_construct(Fast_MemberExpr _this) {
                 goto error;
                 break;
             case FAST_String: /* Resolve member by name */
+                /* Validate that string does not exceed 512 characters */
+                if (strlen(Fast_String(_this->rvalue)->value) >= 512) {
+                    Fast_Parser_error(yparser(), "identifiers longer than 511 characters are not supported");
+                    goto error;
+                }
+
                 if (Fast_MemberExpr_resolveMember(_this, lvalueType, Fast_String(_this->rvalue)->value)) {
                     goto error;
                 }
@@ -120,7 +126,7 @@ cx_ic Fast_MemberExpr_toIc_v(Fast_MemberExpr _this, cx_icProgram program, cx_icS
     if (Fast_Node(_this->rvalue)->kind == FAST_Literal) {
         if (Fast_Literal(_this->rvalue)->kind == FAST_String) {
             cx_type t = Fast_Expression_getType(_this->lvalue);
-            if (cx_instanceof(cx_typedef(cx_interface_o), t)) {
+            if (cx_instanceof(cx_type(cx_interface_o), t)) {
                 cx_interface baseType = cx_interface(t);
                 member = cx_interface_resolveMember(baseType, Fast_String(_this->rvalue)->value);
             } else {

@@ -33,14 +33,14 @@ cx_int16 cx_array_construct(cx_array _this) {
 
     /* Arrays can only be defined when their elementType is also defined. */
    if (!cx_checkState((cx_collection(_this)->elementType), CX_DEFINED)) {
-       if (!(cx_instanceof(cx_typedef(cx_type_o), cx_collection(_this)->elementType) && cx_type(cx_collection(_this)->elementType)->reference)) {
+       if (!(cx_instanceof(cx_type(cx_type_o), cx_collection(_this)->elementType) && cx_type(cx_collection(_this)->elementType)->reference)) {
             cx_id id;
             cx_error("array::construct: elementType '%s' is not defined.", cx_fullname(cx_collection(_this)->elementType, id));
             goto error;
        }
    }
 
-   elementType = cx_collection(_this)->elementType->real;
+   elementType = cx_collection(_this)->elementType;
 
    /* Calculate the size of the array */
     elementTypeSize = cx_type_sizeof(elementType);

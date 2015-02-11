@@ -16,7 +16,7 @@ cx_int16 cx_function_bind(cx_function _this) {
     if (!_this->size) {
         cx_uint32 i;
         for(i=0; i<_this->parameters.length; i++) {
-            cx_type paramType = _this->parameters.buffer[i].type->real;
+            cx_type paramType = _this->parameters.buffer[i].type;
             switch(paramType->kind) {
             case CX_ANY:
                 _this->size += sizeof(cx_any);
@@ -31,8 +31,8 @@ cx_int16 cx_function_bind(cx_function _this) {
         }
 
         /* Add size of this-pointer - this must be moved to impl of methods, delegates and callbacks. */
-        if (!(cx_typeof(_this) == cx_typedef(cx_function_o))) {
-            if (cx_typeof(_this) == cx_typedef(cx_metaprocedure_o)) {
+        if (!(cx_typeof(_this) == cx_type(cx_function_o))) {
+            if (cx_typeof(_this) == cx_type(cx_metaprocedure_o)) {
                 _this->size += sizeof(cx_any);
             } else {
                 _this->size += sizeof(cx_object);
@@ -153,14 +153,16 @@ cx_parameterSeq cx_function_stringToParameterSeq(cx_string name, cx_object scope
 
     /* Check if function has arguments */
     if (*ptr != ')') {
-        cx_uint32 count, i;
+        cx_int32 count = 0, i = 0;
         cx_id id;
         int flags = 0;
 
         /* Count number of parameters for function */
         count = cx_signatureParamCount(name);
-        i = 0;
-
+        if (count == -1) {
+            goto error;
+        }
+        
         /* Allocate size for parameters */
         result.length = count;
         result.buffer = cx_malloc(sizeof(cx_parameter) * count);
@@ -184,7 +186,7 @@ cx_parameterSeq cx_function_stringToParameterSeq(cx_string name, cx_object scope
             }
 
             /* Validate whether reference is not redundantly applied */
-            if (result.buffer[i].passByReference && result.buffer[i].type->real->reference) {
+            if (result.buffer[i].passByReference && result.buffer[i].type->reference) {
                 cx_id id;
                 cx_error("redundant '&' qualifier for parameter %d, type '%s' is already a reference",
                     i, cx_fullname(result.buffer[i].type, id));

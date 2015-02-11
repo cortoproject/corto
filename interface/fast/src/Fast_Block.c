@@ -133,13 +133,13 @@ Fast_Expression Fast_Block_lookup(Fast_Block _this, cx_string id) {
                     /* If parent is not of an interface type, this could be a
                      * delegate member implementation. Get type of the parent
                      * instead. */
-                    if (!cx_instanceof(cx_typedef(cx_interface_o), parent)) {
+                    if (!cx_instanceof(cx_type(cx_interface_o), parent)) {
                         parent = cx_typeof(parent);
                     }
 
                     /* If parent is still not of an interface type, resolving
                      * a 'this' from either a method or observer is illegal */
-                    if (!cx_instanceof(cx_typedef(cx_interface_o), parent)) {
+                    if (!cx_instanceof(cx_type(cx_interface_o), parent)) {
                         cx_id id;
                         Fast_Parser_error(yparser(), 
                             "'this' illegal in procedure '%s'", 

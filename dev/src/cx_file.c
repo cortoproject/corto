@@ -11,12 +11,13 @@
 #include "stdlib.h"
 #include "string.h"
 #include "cx_ll.h"
+#include "cx_mem.h"
 
 /* Load all contents from file, close file afterwards, return contents */
 char* cx_fileLoad(const char* filename) {
     FILE* file;
     char* content;
-    unsigned int size;
+    int size;
 
     /* Open file for reading */
     file = fopen(filename, "r");
@@ -27,12 +28,16 @@ char* cx_fileLoad(const char* filename) {
     /* Determine file size */
     fseek (file, 0 , SEEK_END);
     size = ftell (file);
+    if (size == -1) {
+        goto error;
+    }
     rewind(file);
 
     /* Load contents in memory */
     content = malloc (size * sizeof(char) + 1);
-    if (fread(content, 1, size, file) != size) {
-        content = 0;
+    if (fread(content, 1, size, file) != (unsigned int)size) {
+        cx_dealloc(content);
+        content = NULL;
     } else {
         content[size] = '\0';
     }
@@ -40,6 +45,8 @@ char* cx_fileLoad(const char* filename) {
     fclose(file);
 
     return content;
+error:
+    return NULL;
 }
 
 /* Open file */
@@ -84,6 +91,8 @@ int fileSearchWalk(const char* location, fileSearchWalk_t* userData) {
         return 0;
     }
 
+    cx_dealloc(filename);
+
     return 1;
 }
 
@@ -118,7 +127,7 @@ unsigned int cx_fileTell(cx_file file) {
 
 /* Read line from file */
 char* cx_fileReadLine(cx_file file, char* buf, unsigned int length) {
-    char c;
+    int c;
     char* ptr;
 
     if (!file) {

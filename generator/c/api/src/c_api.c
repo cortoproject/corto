@@ -38,7 +38,7 @@ static cx_int16 c_apiAssignMember(cx_serializer s, cx_value* v, void* userData) 
         g_id(data->g, cx_nameof(m), memberId);
 
         /* Keep references */
-        if (m->type->real->reference) {
+        if (m->type->reference) {
             if (!m->weak) {
                 cx_id id;
                 g_fileWrite(data->source, "%s ? cx_keep_ext(_this, %s, \"%s\") : 0; ", memberParamId, memberParamId, cx_valueString(v,id, 256));
@@ -46,7 +46,7 @@ static cx_int16 c_apiAssignMember(cx_serializer s, cx_value* v, void* userData) 
         }
 
         /* If member is of array-type, use memcpy */
-        if ((m->type->real->kind == CX_COLLECTION) && (cx_collection(m->type->real)->kind == CX_ARRAY)) {
+        if ((m->type->kind == CX_COLLECTION) && (cx_collection(m->type)->kind == CX_ARRAY)) {
             cx_id typeId, postfix;
             /* Get typespecifier */
             if (c_specifierId(data->g, m->type, typeId, NULL, postfix)) {
@@ -77,7 +77,7 @@ static cx_int16 c_apiAssignMember(cx_serializer s, cx_value* v, void* userData) 
             }
 
             /* Strdup strings */
-            if ((m->type->real->kind == CX_PRIMITIVE) && (cx_primitive(m->type->real)->kind == CX_TEXT)) {
+            if ((m->type->kind == CX_PRIMITIVE) && (cx_primitive(m->type)->kind == CX_TEXT)) {
                 g_fileWrite(data->source, "(%s ? cx_strdup(%s) : NULL);\n", memberParamId, memberParamId);
             } else {
                 g_fileWrite(data->source, "%s;\n", memberParamId);
@@ -161,7 +161,7 @@ static cx_int16 c_apiReferenceTypeNew(cx_interface o, c_apiWalk_t* data) {
     /* Function implementation */
     g_fileWrite(data->source, "%s %s__new(void) {\n", id, id);
     g_fileIndent(data->source);
-    g_fileWrite(data->source, "return cx_new(cx_typedef(%s_o));\n", id);
+    g_fileWrite(data->source, "return cx_new(cx_type(%s_o));\n", id);
     g_fileDedent(data->source);
     g_fileWrite(data->source, "}\n\n");
 
@@ -180,7 +180,7 @@ static cx_int16 c_apiReferenceTypeDeclare(cx_interface o, c_apiWalk_t* data) {
     /* Function implementation */
     g_fileWrite(data->source, "%s %s__declare(cx_object _parent, cx_string _name) {\n", id, id);
     g_fileIndent(data->source);
-    g_fileWrite(data->source, "return cx_declare(_parent, _name, cx_typedef(%s_o));\n", id);
+    g_fileWrite(data->source, "return cx_declare(_parent, _name, cx_type(%s_o));\n", id);
     g_fileDedent(data->source);
     g_fileWrite(data->source, "}\n\n");
 
@@ -247,7 +247,7 @@ static cx_int16 c_apiTypeInit(cx_interface o, c_apiWalk_t* data) {
     /* Initialize value */
     g_fileWrite(data->source, "cx_value v;\n");
     g_fileWrite(data->source, "memset(_this, 0, sizeof(*_this));\n");
-    g_fileWrite(data->source, "cx_valueValueInit(&v, NULL, cx_typedef(%s_o), _this);\n", id);
+    g_fileWrite(data->source, "cx_valueValueInit(&v, NULL, cx_type(%s_o), _this);\n", id);
     g_fileWrite(data->source, "cx_initValue(&v);\n");
 
     /* Member assignments */
@@ -274,7 +274,7 @@ static cx_int16 c_apiTypeDeinit(cx_interface o, c_apiWalk_t* data) {
     g_fileIndent(data->source);
 
     g_fileWrite(data->source, "cx_value v;\n");
-    g_fileWrite(data->source, "cx_valueValueInit(&v, NULL, cx_typedef(%s_o), _this);\n", id);
+    g_fileWrite(data->source, "cx_valueValueInit(&v, NULL, cx_type(%s_o), _this);\n", id);
     g_fileWrite(data->source, "cx_deinitValue(&v);\n");
 
     g_fileDedent(data->source);
@@ -313,7 +313,7 @@ static cx_int16 c_apiReferenceTypeCreate(cx_interface o, c_apiWalk_t* data) {
 
     g_fileIndent(data->source);
     g_fileWrite(data->source, "%s _this;\n", id);
-    g_fileWrite(data->source, "_this = cx_new(cx_typedef(%s_o));\n", id);
+    g_fileWrite(data->source, "_this = cx_new(cx_type(%s_o));\n", id);
 
     /* Member assignments */
     s = c_apiAssignSerializer();
@@ -413,13 +413,13 @@ static cx_bool c_apiElementRequiresInit(cx_type elementType) {
 
     return result;
 }
-void cx_valueValueInit(cx_value* val, cx_object o, cx_typedef t, cx_void* v);
+void cx_valueValueInit(cx_value* val, cx_object o, cx_type t, cx_void* v);
 /* Initialize or deinitialize element */
 static cx_int16 c_apiElementInit(cx_string elementType, cx_string element, cx_bool isInit, c_apiWalk_t* data) {
     g_fileWrite(data->source, "{\n");
     g_fileIndent(data->source);
     g_fileWrite(data->source, "cx_value v;\n");
-    g_fileWrite(data->source, "cx_valueValueInit(&v, NULL, cx_typedef(%s_o), %s);\n", elementType, element);
+    g_fileWrite(data->source, "cx_valueValueInit(&v, NULL, cx_type(%s_o), %s);\n", elementType, element);
     if (isInit) {
         g_fileWrite(data->source, "cx_initValue(&v);\n");
     } else {
@@ -435,10 +435,10 @@ static cx_int16 c_apiElementInit(cx_string elementType, cx_string element, cx_bo
 static cx_int16 c_apiSequenceTypeForeach(cx_sequence o, c_apiWalk_t* data) {
     cx_id id, elementId;
     cx_bool prefix;
-    cx_type elementType = cx_collection(o)->elementType->real;
+    cx_type elementType = cx_collection(o)->elementType;
     
-    c_specifierId(data->g, cx_typedef(o), id, NULL, NULL);
-    c_specifierId(data->g, cx_typedef(elementType), elementId, &prefix, NULL);
+    c_specifierId(data->g, cx_type(o), id, NULL, NULL);
+    c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
     
     /* Macro */
     g_fileWrite(data->header, "#define %s__foreach(seq, elem) \\\n", id);
@@ -459,10 +459,10 @@ static cx_int16 c_apiSequenceTypeForeach(cx_sequence o, c_apiWalk_t* data) {
 static cx_int16 c_apiSequenceTypeAppend(cx_sequence o, c_apiWalk_t* data) {
     cx_id id, elementId;
     cx_bool prefix;
-    cx_type elementType = cx_collection(o)->elementType->real;
+    cx_type elementType = cx_collection(o)->elementType;
     
-    c_specifierId(data->g, cx_typedef(o), id, NULL, NULL);
-    c_specifierId(data->g, cx_typedef(elementType), elementId, &prefix, NULL);
+    c_specifierId(data->g, cx_type(o), id, NULL, NULL);
+    c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
 
     /* Function declaration */
     g_fileWrite(data->header, "%s%s %s__append(%s *seq);\n", elementId, prefix?"*":"", id, id);
@@ -493,10 +493,10 @@ static cx_int16 c_apiSequenceTypeAppend(cx_sequence o, c_apiWalk_t* data) {
 static cx_int16 c_apiSequenceTypeSize(cx_sequence o, c_apiWalk_t* data) {
     cx_id id, elementId;
     cx_bool prefix;
-    cx_type elementType = cx_collection(o)->elementType->real;
+    cx_type elementType = cx_collection(o)->elementType;
     
-    c_specifierId(data->g, cx_typedef(o), id, NULL, NULL);
-    c_specifierId(data->g, cx_typedef(elementType), elementId, &prefix, NULL);
+    c_specifierId(data->g, cx_type(o), id, NULL, NULL);
+    c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
     g_fileWrite(data->header, "void %s__size(%s *seq, cx_uint32 length);\n", id, id);
@@ -552,10 +552,10 @@ static cx_int16 c_apiSequenceTypeSize(cx_sequence o, c_apiWalk_t* data) {
 static cx_int16 c_apiSequenceTypeClear(cx_sequence o, c_apiWalk_t* data) {
     cx_id id, elementId;
     cx_bool prefix;
-    cx_type elementType = cx_collection(o)->elementType->real;
+    cx_type elementType = cx_collection(o)->elementType;
     
-    c_specifierId(data->g, cx_typedef(o), id, NULL, NULL);
-    c_specifierId(data->g, cx_typedef(elementType), elementId, &prefix, NULL);
+    c_specifierId(data->g, cx_type(o), id, NULL, NULL);
+    c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
     g_fileWrite(data->header, "void %s__clear(%s *seq);\n", id, id);
@@ -607,10 +607,10 @@ error:
 static cx_int16 c_apiListTypeForeach(cx_list o, c_apiWalk_t* data) {
     cx_id id, elementId;
     cx_bool prefix;
-    cx_type elementType = cx_collection(o)->elementType->real;
+    cx_type elementType = cx_collection(o)->elementType;
     
-    c_specifierId(data->g, cx_typedef(o), id, NULL, NULL);
-    c_specifierId(data->g, cx_typedef(elementType), elementId, &prefix, NULL);
+    c_specifierId(data->g, cx_type(o), id, NULL, NULL);
+    c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
 
     /* Macro */
     g_fileWrite(data->header, "#define %s__foreach(list, elem) \\\n", id);
@@ -637,10 +637,10 @@ static cx_string cx_operationToApi(cx_string operation, cx_id id) {
 static cx_int16 c_apiListTypeInsertAlloc(cx_list o, cx_string operation, c_apiWalk_t* data) {
     cx_id id, elementId, api;
     cx_bool prefix;
-    cx_type elementType = cx_collection(o)->elementType->real;
+    cx_type elementType = cx_collection(o)->elementType;
     
-    c_specifierId(data->g, cx_typedef(o), id, NULL, NULL);
-    c_specifierId(data->g, cx_typedef(elementType), elementId, &prefix, NULL);
+    c_specifierId(data->g, cx_type(o), id, NULL, NULL);
+    c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
     g_fileWrite(data->header, "%s* %s__%s(%s list);\n", elementId, id, operation, id);
@@ -670,10 +670,10 @@ static cx_int16 c_apiListTypeInsertAlloc(cx_list o, cx_string operation, c_apiWa
 static cx_int16 c_apiListTypeInsertNoAlloc(cx_list o, cx_string operation, c_apiWalk_t* data) {
     cx_id id, elementId, api;
     cx_bool prefix;
-    cx_type elementType = cx_collection(o)->elementType->real;
+    cx_type elementType = cx_collection(o)->elementType;
     
-    c_specifierId(data->g, cx_typedef(o), id, NULL, NULL);
-    c_specifierId(data->g, cx_typedef(elementType), elementId, &prefix, NULL);
+    c_specifierId(data->g, cx_type(o), id, NULL, NULL);
+    c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
     g_fileWrite(data->header, "void %s__%s(%s list, %s element);\n", id, operation, id, elementId);
@@ -709,11 +709,11 @@ static cx_int16 c_apiListTypeInsert(cx_list o, cx_string operation, c_apiWalk_t*
 static cx_int16 c_apiListTypeTake(cx_list o, cx_string operation, c_apiWalk_t* data) {
     cx_id id, elementId, api;
     cx_bool prefix;
-    cx_type elementType = cx_collection(o)->elementType->real;
+    cx_type elementType = cx_collection(o)->elementType;
     cx_bool allocRequired = cx_collection_elementRequiresAlloc(cx_collection(o));
     
-    c_specifierId(data->g, cx_typedef(o), id, NULL, NULL);
-    c_specifierId(data->g, cx_typedef(elementType), elementId, &prefix, NULL);
+    c_specifierId(data->g, cx_type(o), id, NULL, NULL);
+    c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
     g_fileWrite(data->header, "%s%s %s__%s(%s list);\n", elementId, allocRequired?"*":"", id, operation, id);
@@ -735,11 +735,11 @@ static cx_int16 c_apiListTypeTake(cx_list o, cx_string operation, c_apiWalk_t* d
 static cx_int16 c_apiListTypeClear(cx_list o, c_apiWalk_t* data) {
     cx_id id, elementId;
     cx_bool prefix;
-    cx_type elementType = cx_collection(o)->elementType->real;
+    cx_type elementType = cx_collection(o)->elementType;
     cx_bool allocRequired = cx_collection_elementRequiresAlloc(cx_collection(o));
     
-    c_specifierId(data->g, cx_typedef(o), id, NULL, NULL);
-    c_specifierId(data->g, cx_typedef(elementType), elementId, &prefix, NULL);
+    c_specifierId(data->g, cx_type(o), id, NULL, NULL);
+    c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
     g_fileWrite(data->header, "void %s__clear(%s list);\n", id, id);
@@ -769,11 +769,11 @@ static cx_int16 c_apiListTypeClear(cx_list o, c_apiWalk_t* data) {
 static cx_int16 c_apiListTypeGet(cx_list o, c_apiWalk_t* data) {
     cx_id id, elementId;
     cx_bool prefix;
-    cx_type elementType = cx_collection(o)->elementType->real;
+    cx_type elementType = cx_collection(o)->elementType;
     cx_bool allocRequired = cx_collection_elementRequiresAlloc(cx_collection(o));
     
-    c_specifierId(data->g, cx_typedef(o), id, NULL, NULL);
-    c_specifierId(data->g, cx_typedef(elementType), elementId, &prefix, NULL);
+    c_specifierId(data->g, cx_type(o), id, NULL, NULL);
+    c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
     g_fileWrite(data->header, "%s%s %s__get(%s list, cx_uint32 index);\n", elementId, allocRequired?"*":"", id, id);
@@ -795,10 +795,10 @@ static cx_int16 c_apiListTypeGet(cx_list o, c_apiWalk_t* data) {
 static cx_int16 c_apiListTypeSize(cx_list o, c_apiWalk_t* data) {
     cx_id id, elementId;
     cx_bool prefix;
-    cx_type elementType = cx_collection(o)->elementType->real;
+    cx_type elementType = cx_collection(o)->elementType;
     
-    c_specifierId(data->g, cx_typedef(o), id, NULL, NULL);
-    c_specifierId(data->g, cx_typedef(elementType), elementId, &prefix, NULL);
+    c_specifierId(data->g, cx_type(o), id, NULL, NULL);
+    c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
     g_fileWrite(data->header, "cx_uint32 %s__size(%s list);\n", id, id);
@@ -1005,7 +1005,7 @@ static int c_apiCheckDuplicates(void* o, void* userData) {
 static int c_apiFindCollections(cx_object o, void* userData) {
     c_apiWalk_t* data = userData;
     
-    if (cx_instanceof(cx_typedef(cx_collection_o), o)) {
+    if (cx_instanceof(cx_type(cx_collection_o), o)) {
         if (!cx_llSize(data->collections) || cx_llWalk(data->collections, c_apiCheckDuplicates, o)) {
             cx_llAppend(data->collections, o);
         }

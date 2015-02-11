@@ -1,6 +1,5 @@
 
 object tc_event::
-	typedef value : uint32
 	class Point::
 		member x : uint32
 		member y : uint32
@@ -12,26 +11,26 @@ object tc_event::
 	Point parent : 0,0::
 		Point child : 0,0
 	
-	observer update_onRootChilds : "::",ON_UPDATE|ON_CHILDS
-	observer update_onRootSelf : "::",ON_UPDATE|ON_SELF
+	observer update_onRootChilds : @::,ON_UPDATE|ON_SCOPE
+	observer update_onRootSelf : @::,ON_UPDATE|ON_SELF
 	observer update_onSelf : parent,ON_UPDATE|ON_SELF
-	observer update_onChild : parent,ON_UPDATE|ON_CHILDS
-	observer update_onBoth : parent,ON_UPDATE|ON_SELF|ON_CHILDS
+	observer update_onChild : parent,ON_UPDATE|ON_SCOPE
+	observer update_onBoth : parent,ON_UPDATE|ON_SELF|ON_SCOPE
 		
-	observer new_onRootChilds : "::",ON_DECLARE|ON_CHILDS
-	observer new_onRootSelf : "::",ON_DECLARE|ON_SELF
+	observer new_onRootChilds : @::,ON_DECLARE|ON_SCOPE
+	observer new_onRootSelf : @::,ON_DECLARE|ON_SELF
 	observer new_onSelf : parent,ON_DECLARE|ON_SELF
-	observer new_onChild : parent,ON_DECLARE|ON_CHILDS
-	observer new_onBoth : parent,ON_DECLARE|ON_SELF|ON_CHILDS
+	observer new_onChild : parent,ON_DECLARE|ON_SCOPE
+	observer new_onBoth : parent,ON_DECLARE|ON_SELF|ON_SCOPE
 	
-	observer construct_onRootChilds : "::",ON_DEFINE|ON_CHILDS
-	observer construct_onRootSelf : "::",ON_DEFINE|ON_SELF
+	observer construct_onRootChilds : @::,ON_DEFINE|ON_SCOPE
+	observer construct_onRootSelf : @::,ON_DEFINE|ON_SELF
 	observer construct_onSelf : parent,ON_DEFINE|ON_SELF
-	observer construct_onChild : parent,ON_DEFINE|ON_CHILDS
-	observer construct_onBoth : parent,ON_DEFINE|ON_SELF|ON_CHILDS
+	observer construct_onChild : parent,ON_DEFINE|ON_SCOPE
+	observer construct_onBoth : parent,ON_DEFINE|ON_SELF|ON_SCOPE
 	
-	observer destruct_onRootChilds : "::",ON_DESTRUCT|ON_CHILDS
-	observer destruct_onRootSelf : "::",ON_DESTRUCT|ON_SELF
+	observer destruct_onRootChilds : @::,ON_DESTRUCT|ON_SCOPE
+	observer destruct_onRootSelf : @::,ON_DESTRUCT|ON_SELF
 	observer destruct_onSelf : parent,ON_DESTRUCT|ON_SELF
-	observer destruct_onChild : parent,ON_DESTRUCT|ON_CHILDS
-	observer destruct_onBoth : parent,ON_DESTRUCT|ON_SELF|ON_CHILDS	
+	observer destruct_onChild : parent,ON_DESTRUCT|ON_SCOPE
+	observer destruct_onBoth : parent,ON_DESTRUCT|ON_SELF|ON_SCOPE	

@@ -343,7 +343,7 @@ typedef union Di2f_t {
     CNEQSTR_##code:\
         fetchOp1(CNEQSTR,code);\
         if (stage1_W && stage2_W) {\
-            op_##code = strcmp((cx_string)stage1_W, (cx_string)stage2_W);\
+            op_##code = strcmp((cx_string)stage1_W, (cx_string)stage2_W) != 0;\
         } else {\
             op_##code = stage1_W != stage2_W;\
         }\
@@ -472,7 +472,7 @@ typedef union Di2f_t {
             abort();\
             goto STOP;\
         }\
-        if (!cx_instanceof((cx_typedef)op2_##code, (cx_object)op1_##code)) {\
+        if (!cx_instanceof((cx_type)op2_##code, (cx_object)op1_##code)) {\
             cx_id id1,id2;\
             printf("Exception: invalid cast from type '%s' to '%s'\n", \
                 cx_fullname((cx_object)op2_##code, id1), \
@@ -538,9 +538,8 @@ typedef union Di2f_t {
 
 #define NEW(type,code)\
     NEW_##code:\
-        fetchOp1(NEW,code);\
         fetchOp2(NEW,code);\
-        op1_##code = (cx_word)cx_new((cx_typedef)op2_##code);\
+        op1_##code = (cx_word)cx_new((cx_type)op2_##code);\
         next();\
 
 #define DEALLOC(type,code)\
@@ -708,9 +707,15 @@ typedef union Di2f_t {
 
 #define ELEMMX(type,code)\
     ELEMMX_##code:\
-    fetchOp2(ELEMMX, code);\
-    op1_##code = (W_t)cx_rbtreeGetPtr(*(cx_rbtree*)op1_##code, (void*)&op2_##code);\
-    next();\
+        fetchOp2(ELEMMX, code);\
+        op1_##code = (W_t)cx_rbtreeGetPtr(*(cx_rbtree*)op1_##code, (void*)&op2_##code);\
+        next();\
+
+#define ITER_SET(type,code)\
+    ITER_SET_##code:\
+        fetchOp3(ITER_SET, code##V);\
+        cx_iterator_set((void *)&op1_##code##V, (void *)&op2_##code##V, (void *)op3_##code##V);\
+        next();
 
 /* Instruction implementation expansions */
 #define OPERAND_PQRV(op,type,lvalue)\
@@ -1167,7 +1172,7 @@ static void cx_vm_popSignalHandler(void) {
     if (signal(SIGABRT, prevAbortHandler) == SIG_ERR) {
         cx_error("failed to uninstall signal handler for SIGABRT");
     } else {
-        prevSegfaultHandler = NULL;
+        prevAbortHandler = NULL;
     }
     
     cx_vm_popCurrentProgram();
@@ -1269,6 +1274,7 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
                 TOJMP_OPERAND_PQRV(ELEMLX,W,R);
                 TOJMP_OPERAND_PQRV(ELEMM,W,R);
                 TOJMP_OPERAND_PQRV(ELEMMX,W,R);
+                TOJMP_OP2_W(ITER_SET,PQRV);
 
                 TOJMP_OP1_PQRV(PUSH);
                 TOJMP_OP1(PUSHX);
@@ -1364,7 +1370,7 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
         fetch1_WRV;
         fetch2_WRV;
         cx_value v;
-        cx_valueValueInit(&v, NULL, (cx_typedef)op2_WRV, &op1_WRV);
+        cx_valueValueInit(&v, NULL, (cx_type)op2_WRV, &op1_WRV);
         cx_initValue(&v);
         next();
     }
@@ -1443,6 +1449,8 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
     OPERAND_PQRV(ELEMLX,W,R);
     OPERAND_PQRV(ELEMM,W,R);
     OPERAND_PQRV(ELEMMX,W,R);
+
+    OP2_W(ITER_SET,PQRV);
 
     OP1_PQRV(PUSH);
     OP1(PUSHX);
@@ -1645,6 +1653,8 @@ char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
                 TOSTR_OPERAND_PQRV(ELEMLX,W,R);
                 TOSTR_OPERAND_PQRV(ELEMM,W,R);
                 TOSTR_OPERAND_PQRV(ELEMMX,W,R);
+
+                TOSTR_OP2_W(ITER_SET, PQRV);
                     
                 TOSTR_OP1_PQRV(PUSH);
                 TOSTR_OP1(PUSHX);

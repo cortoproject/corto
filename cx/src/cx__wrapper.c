@@ -595,11 +595,66 @@ void __cx_interface_resolveMethodId(cx_function f, void *result, void *args) {
         *(cx_string*)((intptr_t)args + sizeof(void*)));
 }
 
-void __cx_iterator_hasNext(cx_function f, void *result, void *args) {
+/* virtual ::cortex::lang::iterator::castable(type type) */
+cx_bool cx_iterator_castable(cx_iterator _this, cx_type type) {
+    static cx_uint32 _methodId;
+    cx_method _method;
+    cx_bool _result;
+    cx_interface _abstract;
+
+    _abstract = cx_interface(cx_typeof(_this));
+
+    /* Determine methodId once, then cache it for subsequent calls. */
+    if (!_methodId) {
+        _methodId = cx_interface_resolveMethodId(_abstract, "castable(type type)");
+    }
+    cx_assert(_methodId, "virtual method 'castable(type type)' not found in abstract '%s'", cx_nameof(_abstract));
+
+    /* Lookup method-object. */
+    _method = cx_interface_resolveMethodById(_abstract, _methodId);
+    cx_assert(_method != NULL, "unresolved method '%s::castable(type type)@%d'", cx_nameof(_this), _methodId);
+
+    cx_call(cx_function(_method), &_result, _this, type);
+    
+    return _result;
+}
+
+void __cx_iterator_castable_v(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
-    CX_UNUSED(args);
-    *(cx_bool*)result = cx_iterator_hasNext(
-        *(cx_any*)args);
+    *(cx_bool*)result = cx_iterator_castable_v(
+        *(void**)args,
+        *(cx_type*)((intptr_t)args + sizeof(void*)));
+}
+
+/* virtual ::cortex::lang::iterator::compatible(type type) */
+cx_bool cx_iterator_compatible(cx_iterator _this, cx_type type) {
+    static cx_uint32 _methodId;
+    cx_method _method;
+    cx_bool _result;
+    cx_interface _abstract;
+
+    _abstract = cx_interface(cx_typeof(_this));
+
+    /* Determine methodId once, then cache it for subsequent calls. */
+    if (!_methodId) {
+        _methodId = cx_interface_resolveMethodId(_abstract, "compatible(type type)");
+    }
+    cx_assert(_methodId, "virtual method 'compatible(type type)' not found in abstract '%s'", cx_nameof(_abstract));
+
+    /* Lookup method-object. */
+    _method = cx_interface_resolveMethodById(_abstract, _methodId);
+    cx_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", cx_nameof(_this), _methodId);
+
+    cx_call(cx_function(_method), &_result, _this, type);
+    
+    return _result;
+}
+
+void __cx_iterator_compatible_v(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    *(cx_bool*)result = cx_iterator_compatible_v(
+        *(void**)args,
+        *(cx_type*)((intptr_t)args + sizeof(void*)));
 }
 
 void __cx_iterator_init(cx_function f, void *result, void *args) {
@@ -607,13 +662,6 @@ void __cx_iterator_init(cx_function f, void *result, void *args) {
     CX_UNUSED(args);
     *(cx_int16*)result = cx_iterator_init(
         *(void**)args);
-}
-
-void __cx_iterator_next(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    CX_UNUSED(args);
-    *(cx_any*)result = cx_iterator_next(
-        *(cx_any*)args);
 }
 
 void __cx_list_append_(cx_function f, void *result, void *args) {
@@ -1136,7 +1184,7 @@ void __cx_type_declare(cx_function f, void *result, void *args) {
     *(cx_object*)result = cx_type_declare(
         *(cx_any*)args,
         *(cx_string*)((intptr_t)args + sizeof(cx_any)),
-        *(cx_typedef*)((intptr_t)args + sizeof(cx_any) + sizeof(cx_string)));
+        *(cx_type*)((intptr_t)args + sizeof(cx_any) + sizeof(cx_string)));
 }
 
 void __cx_type_define(cx_function f, void *result, void *args) {
@@ -1172,7 +1220,7 @@ void __cx_type_instanceof(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_bool*)result = cx_type_instanceof(
         *(cx_any*)args,
-        *(cx_typedef*)((intptr_t)args + sizeof(cx_any)));
+        *(cx_type*)((intptr_t)args + sizeof(cx_any)));
 }
 
 void __cx_type_invalidate(cx_function f, void *result, void *args) {
@@ -1244,35 +1292,6 @@ void __cx_type_typeof(cx_function f, void *result, void *args) {
     CX_UNUSED(args);
     *(cx_type*)result = cx_type_typeof(
         *(cx_any*)args);
-}
-
-void __cx_typedef_construct(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    CX_UNUSED(args);
-    *(cx_int16*)result = cx_typedef_construct(
-        *(void**)args);
-}
-
-void __cx_typedef_destruct(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    CX_UNUSED(args);
-    CX_UNUSED(result);
-    cx_typedef_destruct(
-        *(void**)args);
-}
-
-void __cx_typedef_init(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    CX_UNUSED(args);
-    *(cx_int16*)result = cx_typedef_init(
-        *(void**)args);
-}
-
-void __cx_typedef_realType(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    CX_UNUSED(args);
-    *(cx_type*)result = cx_typedef_realType(
-        *(void**)args);
 }
 
 void __cx_uint_init(cx_function f, void *result, void *args) {

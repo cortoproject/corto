@@ -34,6 +34,5 @@
 #include "cx_struct.h"
 #include "cx_text.h"
 #include "cx_type.h"
-#include "cx_typedef.h"
 #include "cx_uint.h"
 #include "cx_virtual.h"

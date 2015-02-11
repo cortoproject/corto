@@ -160,7 +160,9 @@ cx_int16 Fast_BinaryExpr_cast(Fast_BinaryExpr _this, cx_type *returnType) {
             if (cx_type_castable(lvalueType, cx_object_o)) {
                 castType = lvalueType;
             }
-        }  else {
+        } else if (lvalueType->kind == CX_ITERATOR) {
+            castType = NULL;
+        } else {
             cx_id id1, id2;
             Fast_Parser_error(yparser(), "no cast between '%s' and '%s'",
                     cx_fullname(lvalueType, id1), cx_fullname(rvalueType, id2));
@@ -210,7 +212,7 @@ error:
     return -1;
 }
 
-void Fast_BinaryExpr_toIc_strOp(
+cx_int16 Fast_BinaryExpr_toIc_strOp(
         Fast_BinaryExpr _this,
         cx_icProgram program,
         cx_icStorage storage,
@@ -234,11 +236,19 @@ void Fast_BinaryExpr_toIc_strOp(
         cx_icProgram_addIc(program, (cx_ic)op);
         break;
 
-    default:
+    case CX_ASSIGN:
         op = cx_icOp__create(program, Fast_Node(_this)->line, cx_icOpKindFromOperator(_this->operator), (cx_icValue)storage, (cx_icValue)lvalue, (cx_icValue)rvalue);
         cx_icProgram_addIc(program, (cx_ic)op);
         break;
+    default:
+        Fast_Parser_error(yparser(), "operator '%s' invalid for strings", 
+            cx_nameof(cx_enum_constant(cx_operatorKind_o, _this->operator)));
+        goto error;
     }
+
+    return 0;
+error:
+    return -1;
 }
 
 /* $end */
@@ -350,7 +360,11 @@ Fast_Expression Fast_BinaryExpr_fold(Fast_BinaryExpr _this) {
             resultPtr = (void*)Fast_Literal_getValue(Fast_Literal(result));
 
             /* Perform operation */
-            cx_binaryOperator(type, _this->operator, lptr, rptr, resultPtr);
+            if (cx_binaryOperator(type, _this->operator, lptr, rptr, resultPtr)) {
+                cx_id id;
+                Fast_Parser_error(yparser(), "folding of binary %s operation failed", cx_fullname(type, id));
+                goto error;
+            }
         } else {
             /* Expressions of non-primitive type are not folded. */
         }
@@ -503,10 +517,12 @@ cx_ic Fast_BinaryExpr_toIc_v(Fast_BinaryExpr _this, cx_icProgram program, cx_icS
 
         /* If operation is a string, insert string-specific operations */
         if ((_thisType->kind == CX_PRIMITIVE) && (cx_primitive(_thisType)->kind == CX_TEXT)) {
-            Fast_BinaryExpr_toIc_strOp(_this, program, (cx_icStorage)result, (cx_icValue)lvalue, (cx_icValue)rvalue);
+            if (Fast_BinaryExpr_toIc_strOp(_this, program, (cx_icStorage)result, (cx_icValue)lvalue, (cx_icValue)rvalue)) {
+                goto error;
+            }
         } else {
             /* Add instruction to program. */
-            op = cx_icOp__create(program, Fast_Node(_this)->line, cx_icOpKindFromOperator(_this->operator), stored ? (cx_icValue)result : NULL, (cx_icValue)lvalue, (cx_icValue)rvalue);
+            op = cx_icOp__create(program, Fast_Node(_this)->line, cx_icOpKindFromOperator(_this->operator), (cx_icValue)result, (cx_icValue)lvalue, (cx_icValue)rvalue);
             cx_icProgram_addIc(program, (cx_ic)op);
         }
 
@@ -530,5 +546,7 @@ cx_ic Fast_BinaryExpr_toIc_v(Fast_BinaryExpr _this, cx_icProgram program, cx_icS
     }
 
     return returnsResult;
+error:
+    return NULL;
 /* $end */
 }

@@ -70,7 +70,7 @@ static cx_bool cx_ser_appendstr(cx_json_ser_t* data, cx_string fmt, ...) {
 
 static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData) {
     CX_UNUSED(s);
-    cx_typedef type;
+    cx_type type;
     cx_void *value;
     cx_string valueString = NULL;
     cx_json_ser_t *data = userData;
@@ -78,7 +78,7 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData
 
     type = cx_valueType(info);
     value = cx_valueValue(info);
-    cx_primitiveKind kind = cx_primitive(type->real)->kind;
+    cx_primitiveKind kind = cx_primitive(type)->kind;
 
     result = cx_convert(cx_primitive(type), value, cx_primitive(cx_string_o), &valueString);
     if (result) {
@@ -93,7 +93,7 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData
         valueString = escapedValueString;
     }
 
-    switch (cx_primitive(type->real)->kind) {
+    switch (cx_primitive(type)->kind) {
         case CX_BINARY:
             if (!cx_ser_appendstr(data, "\"@B %s\"", valueString)) {
                 goto finished;
@@ -203,32 +203,38 @@ finished:
 }
 
 static cx_int16 cx_ser_complex(cx_serializer s, cx_value* v, void* userData) {
-    cx_json_ser_t *data = userData;
-    cx_type type = cx_valueType(v)->real;
+    cx_json_ser_t data = *(cx_json_ser_t*)userData;
+    cx_type type = cx_valueType(v);
     cx_bool useCurlyBraces = TRUE;
+
+    data.itemCount = 0;
 
     if (type->kind == CX_COLLECTION && cx_collection(type)->kind != CX_MAP) {
         useCurlyBraces = FALSE;
     }
 
-    if (!cx_ser_appendstr(data, (useCurlyBraces ? "{" : "["))) {
+    if (!cx_ser_appendstr(&data, (useCurlyBraces ? "{" : "["))) {
         goto finished;
     }
     if (type->kind == CX_COMPOSITE) {
-        if (cx_serializeMembers(s, v, userData)) {
+        if (cx_serializeMembers(s, v, &data)) {
             goto error;
         }
     } else if (type->kind == CX_COLLECTION) {
-        if (cx_serializeElements(s, v, userData)) {
+        if (cx_serializeElements(s, v, &data)) {
             goto error;
         }
     } else {
         goto error;
     }
 
-    if (!cx_ser_appendstr(data, (useCurlyBraces ? "}" : "]"))) {
+    if (!cx_ser_appendstr(&data, (useCurlyBraces ? "}" : "]"))) {
         goto finished;
     }
+
+    ((cx_json_ser_t*)userData)->buffer = data.buffer;
+    ((cx_json_ser_t*)userData)->ptr = data.ptr;
+
     return 0;
 error:
     return -1;
@@ -238,7 +244,8 @@ finished:
 
 static cx_int16 cx_ser_base(cx_serializer s, cx_value* v, void* userData) {
     cx_json_ser_t *data = userData;
-    if (!cx_ser_appendstr(data, "\"@base\":{")) {
+    cx_id id;
+    if (!cx_ser_appendstr(data, "\"@%s\":{", cx_fullname(cx_valueType(v), id))) {
         goto finished;
     }
     if (cx_serializeMembers(s, v, userData)) {
@@ -422,14 +429,22 @@ static cx_int16 cx_ser_scope_meta(cx_serializer s, cx_value* v, void* userData) 
 static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
     cx_json_ser_t *data = userData;
     cx_uint8 c = 0;
+    cx_uint32 options = data->serializeMeta + data->serializeValue + data->serializeScope;
 
-    if (!cx_ser_appendstr(data, "{")) {
-        goto finished;
+    /* If more than one option is provided, prefix with 
+     * 'meta', 'value' and 'scope' */
+
+    if (options > 1) {
+        if (!cx_ser_appendstr(data, "{")) {
+            goto finished;
+        }
     }
 
     if (data->serializeMeta) {
-        if (!cx_ser_appendstr(data, "\"meta\":")) {
-            goto finished;
+        if (options > 1) {
+            if (!cx_ser_appendstr(data, "\"meta\":")) {
+                goto finished;
+            }
         }
         if (cx_ser_meta(s, v, userData)) {
             goto error;
@@ -438,12 +453,14 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
     }
 
     if (data->serializeValue) {
-        if (cx_valueType(v)->real->kind != CX_VOID) {
-            if (c && !cx_ser_appendstr(data, ",")) {
-                goto finished;
-            }
-            if (!cx_ser_appendstr(data, "\"value\":")) {
-                goto finished;
+        if (cx_valueType(v)->kind != CX_VOID) {
+            if (options > 1) {
+                if (c && !cx_ser_appendstr(data, ",")) {
+                    goto finished;
+                }
+                if (!cx_ser_appendstr(data, "\"value\":")) {
+                    goto finished;
+                }
             }
             if (cx_serializeValue(s, v, userData)) {
                 goto error;
@@ -453,10 +470,15 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
     }
 
     if (data->serializeScope) {
-        if (c && !cx_ser_appendstr(data, ",")) {
-            goto finished;
+        if (options > 1) {
+            if (c && !cx_ser_appendstr(data, ",")) {
+                goto finished;
+            }
+            if (!cx_ser_appendstr(data, "\"scope\":")) {
+                goto finished;
+            }
         }
-        if (!cx_ser_appendstr(data, "\"scope\":[")) {
+        if (!cx_ser_appendstr(data, "[")) {
             goto finished;
         }
         if (!cx_ser_scope_meta(s, v, data)) {
@@ -467,8 +489,10 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
         }
     }
 
-    if (!cx_ser_appendstr(data, "}")) {
-        goto finished;
+    if (options > 1) {
+        if (!cx_ser_appendstr(data, "}")) {
+            goto finished;
+        }
     }
 
     return 0;

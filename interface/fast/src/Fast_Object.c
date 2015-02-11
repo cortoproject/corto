@@ -20,7 +20,7 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* ::cortex::Fast::Object::construct() */
 cx_int16 Fast_Object_construct(Fast_Object _this) {
 /* $begin(::cortex::Fast::Object::construct) */
-    cx_type t = cx_typeof(Fast_ObjectBase(_this)->value)->real;
+    cx_type t = cx_typeof(Fast_ObjectBase(_this)->value);
 
     if(t == cx_type(cx_constant_o)) {
         t = cx_parentof(Fast_ObjectBase(_this)->value);
@@ -40,7 +40,7 @@ cx_word Fast_Object_getValue(Fast_Object _this) {
 
     /* Value of objects can only be used at compiletime when object is of
      * type constant. */
-    if (cx_instanceof(cx_typedef(cx_constant_o), Fast_ObjectBase(_this)->value)) {
+    if (cx_instanceof(cx_type(cx_constant_o), Fast_ObjectBase(_this)->value)) {
         result = (cx_word)Fast_ObjectBase(_this)->value;
     }
 
@@ -56,7 +56,7 @@ cx_int16 Fast_Object_serialize(Fast_Object _this, cx_type dstType, cx_word dst) 
     if (!dstType->reference) {
         cx_bool srcIsDelegate = FALSE, dstIsDelegate = FALSE;
         cx_object obj = Fast_ObjectBase(_this)->value;
-        cx_type srcType = cx_typeof(obj)->real;
+        cx_type srcType = cx_typeof(obj);
 
         /* Handle delegates */
         if ((srcType->kind == CX_COMPOSITE) && (cx_interface(srcType)->kind == CX_DELEGATE)) {
@@ -69,19 +69,19 @@ cx_int16 Fast_Object_serialize(Fast_Object _this, cx_type dstType, cx_word dst) 
         if (dstIsDelegate) {
             if (srcIsDelegate) {
                 cx_value vDst, vSrc;
-                cx_valueValueInit(&vDst, NULL, cx_typedef(dstType), (void *)dst);
-                cx_valueValueInit(&vSrc, NULL, cx_typedef(srcType), Fast_ObjectBase(_this)->value);
+                cx_valueValueInit(&vDst, NULL, cx_type(dstType), (void *)dst);
+                cx_valueValueInit(&vSrc, NULL, cx_type(srcType), Fast_ObjectBase(_this)->value);
                 cx_valueCopy(&vDst, &vSrc);
             } else if ((srcType->kind == CX_COMPOSITE) && (cx_interface(srcType)->kind == CX_PROCEDURE)) {
                 cx_set(&((cx_delegatedata *)dst)->procedure, Fast_ObjectBase(_this)->value);
                 cx_set(&((cx_delegatedata *)dst)->instance, NULL);
             }
 
-        } else if (cx_instanceof((cx_typedef)dstType, Fast_ObjectBase(_this)->value)) {
+        } else if (cx_instanceof((cx_type)dstType, Fast_ObjectBase(_this)->value)) {
             /* If object is not of a reference type and object is of dstType, copy value */
             cx_value vDst, vSrc;
-            cx_valueValueInit(&vDst, NULL, cx_typedef(dstType), (void *)dst);
-            cx_valueValueInit(&vSrc, NULL, cx_typedef(srcType), obj);
+            cx_valueValueInit(&vDst, NULL, cx_type(dstType), (void *)dst);
+            cx_valueValueInit(&vSrc, NULL, cx_type(srcType), obj);
             cx_valueCopy(&vDst, &vSrc);
 
         } else {

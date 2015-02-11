@@ -18,6 +18,7 @@ static cx_ll generators = NULL;
 static cx_ll scopes = NULL;
 static cx_ll includes = NULL;
 static cx_ll attributes = NULL;
+static int package = 0;
 
 int cx_arg_attributes(char* arg, int argc, char* argv[]) {
     if (argc) {
@@ -86,7 +87,7 @@ int cx_arg_include(char* arg, int argc, char* argv[]) {
 }
 
 int cx_arg_language(char* arg, int argc, char* argv[]) {
-    if (argc == 2) {
+    if (argc >= 2) {
         if (!generators) {
             generators = cx_llNew();
         }
@@ -114,12 +115,12 @@ int cx_arg_language(char* arg, int argc, char* argv[]) {
             goto error;
         }
     } else {
-        cx_error("invalid number of argument for '%s'.", arg);
+        cx_error("invalid number of argument for '%s' (%d).", arg, argc);
         goto error;
     }
     return 1;
 error:
-    return 0;
+    return -1;
 }
 
 int cx_arg_core(char* arg, int argc, char* argv[]) {
@@ -141,9 +142,16 @@ int cx_arg_core(char* arg, int argc, char* argv[]) {
     prefix = "cx";
     name = "cx";
 
-    return 1;
+    return 0;
 }
 
+int cx_arg_package(char* arg, int argc, char* argv[]) {
+    CX_UNUSED(arg);
+    CX_UNUSED(argc);
+    CX_UNUSED(argv);
+    package = TRUE;
+    return 0;
+}
 
 /* Parse arguments */
 static int cx_parseArguments(int argc, char* argv[]) {
@@ -156,6 +164,7 @@ static int cx_parseArguments(int argc, char* argv[]) {
     cx_argSet("lang", cx_arg_language, 0, 1);
     cx_argSet("l", cx_arg_language, 0, 1);
     cx_argSet("core", cx_arg_core, 0, 1);
+    cx_argSet("package", cx_arg_package, 0, 1);
     cx_argSet(NULL, cx_arg_include, 0, -1);
 
     /* Parse commandline */
@@ -185,12 +194,59 @@ void printUsage(void) {
     printf("\n");
 }
 
+static int cx_newPackage(cx_string include) {
+    cx_id id;
+    FILE *cx;
+
+    if (snprintf(id, sizeof(id), "%s/%s.cx", include, include) >= (int)sizeof(id)) {
+        cx_error("cxgen: package name too long");
+        return -1;
+    }
+
+    if (cx_fileTest(id)) {
+        cx_error("cxgen: package '%s' already exists", id);
+        return -1;
+    }
+
+    printf("cxgen: create package '%s'\n", include);
+    if (cx_mkdir(include)) {
+        cx_error("cxgen: failed to create directory for package");
+        return -1;
+    }
+
+    cx = fopen(id, "w");
+    if (cx) {
+        fprintf(cx, "void %s::\n    // Insert implementation\n", include);
+        fclose(cx);
+    } else {
+        cx_error("failed to open file '%s'", id);
+        return -1;
+    }
+
+    if (cx_load(id)) {
+        cx_error("failed to load '%s'", id);
+        return -1;
+    } else {
+        scopes = cx_llNew();
+        cx_llInsert(scopes, include);
+        prefix = include;
+    }
+
+    /* Change working directory */
+    cx_chdir(include);
+
+    printf("cxgen: done\n");
+
+    return 0;
+}
+
 int main(int argc, char* argv[]) {
     cx_generator g;
     cx_string lib, include;
     cx_iter iter;
     cx_string scope, attr;
     cx_object o;
+    cx_bool newPackage = FALSE;
 
     if (cx_parseArguments(argc, argv)) {
         cx_error("invalid commandline specified.");
@@ -211,8 +267,19 @@ int main(int argc, char* argv[]) {
         iter = cx_llIter(includes);
         while(cx_iterHasNext(&iter)) {
             include = cx_iterNext(&iter);
-            if (cx_load(include)) {
-                cx_error("cxgen: error(s) occurred while loading file '%s', abort generation.", include);
+            if (package) {
+                if (newPackage) {
+                    cx_error("cxgen: cannot create multiple packages with a single command");
+                    return -1;
+                }
+
+                if (cx_newPackage(include)) {
+                    return -1;
+                }
+
+                newPackage = TRUE;
+            } else if (cx_load(include)) {
+                cx_error("cxgen: cannot load '%s'", include);
                 return -1;
             } else {
                 /* Add name to scope list if none provided */
