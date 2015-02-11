@@ -1065,12 +1065,16 @@ struct cx_vm_context {
     cx_vmParameter stage2;
     void *stack, *sp;
     cx_stringConcatCache *strcache;
+
+    /* Reserved space for interrupt program in case of SIGINT */
+    cx_vmOp interrupt[2]; 
 };
 
 #ifdef CX_VM_DEBUG
 typedef void(*sigfunc)(int);
 static sigfunc prevSegfaultHandler;
 static sigfunc prevAbortHandler;
+static sigfunc prevInterruptHandler;
 
 /* The VM signal handler */
 static void cx_vm_sig(int sig) {
@@ -1082,6 +1086,15 @@ static void cx_vm_sig(int sig) {
     }
     if (sig == SIGABRT) {
         printf("Abort\n");
+    }
+    if (sig == SIGINT) {
+        for(sp = programData->sp-1; sp>=0; sp--) {
+            cx_vmProgram program = programData->stack[sp];
+            programData->c[sp]->interrupt[0].op = program->program[program->size-1].op;
+            programData->c[sp]->interrupt[1].op = program->program[program->size-1].op;
+            programData->c[sp]->pc = programData->c[sp]->interrupt;
+        }
+        return;
     }
 
     /* Walk the stack, print frames */
@@ -1145,13 +1158,21 @@ static void cx_vm_pushSignalHandler(cx_vmProgram program, cx_vm_context *c) {
     } else {
         prevSegfaultHandler = result;
     }
+
     result = signal(SIGABRT, cx_vm_sig);
     if (result == SIG_ERR) {
         cx_error("failed to install signal handler for SIGABRT");
     } else {
         prevAbortHandler = result;
     }
-    
+
+    result = signal(SIGINT, cx_vm_sig);
+    if (result == SIG_ERR) {
+        cx_error("failed to install signal handler for SIGINT");
+    } else {
+        prevInterruptHandler = result;
+    }    
+
     /* Store current program in TLS */
     cx_vm_pushCurrentProgram(program, c);
 }
@@ -1167,6 +1188,11 @@ static void cx_vm_popSignalHandler(void) {
         cx_error("failed to uninstall signal handler for SIGABRT");
     } else {
         prevAbortHandler = NULL;
+    }
+    if (signal(SIGINT, prevInterruptHandler) == SIG_ERR) {
+        cx_error("failed to uninstall signal handler for SIGINT");
+    } else {
+        prevInterruptHandler = NULL;
     }
     
     cx_vm_popCurrentProgram();

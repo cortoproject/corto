@@ -21,7 +21,7 @@
     }
 }
 
-@media (min-width: 767px){
+@media (min-width: 991px){
     #scopeContent {
         margin: 0px;
         overflow-y: auto;

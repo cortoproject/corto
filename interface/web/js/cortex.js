@@ -1,5 +1,11 @@
 // Define cx object
 cx = {
+    throttleInterval: 100,
+    valueInitialized: false,
+    metaInitialized: false,
+    scopeInitialized: false,
+    received: 0,
+
     // Initialize object
     object: function(parent, name) {
         this.parent = parent;
@@ -54,48 +60,92 @@ cx = {
     // Refresh content of page. This function is typically called when a
     // reply from the server is received.
     refresh: function(data) {
-        var o
+        var o;
+        var value = !this.valueInitialized;
+        var meta = !this.metaInitialized;
+        var scope = !this.scopeInitialized;
+        var selfId = window.location.pathname.replace(/\//g, "::");
 
         for (var i in data) {
             o = cx.save(data[i]); // Store data in JS cache
+            if (o && (o.id() === selfId)) {
+                cx.me = o;
+                if (data[i].value) {
+                    value = true;
+                }
+                if(data[i].scope) {
+                    scope = true;
+                }
+            } else {
+                if (data[i].meta) {
+                    scope = true;
+                }
+            }
         }
 
-        cx.me = o;
+        if (cx.me) {
+            // Update UI elements
+            if (cx.headerId && meta) {
+                $('#' + cx.headerId).text("");
+                $('#' + cx.headerId).append(cx.toLink(cx.me.id(), "header", true, undefined, "/"));
+            }
+            if (cx.metaId && meta) {
+                $('#' + cx.metaId).text("");
+                $('#' + cx.metaId).append(cx.me.metaToHtml());     
+                this.metaInitialized = true;       
+            }
+            if (cx.valueId && value) {
+                $('#' + cx.valueId).text("");
+                $('#' + cx.valueId).append(cx.me.toHtml());  
+                this.valueInitialized = true;           
+            }
+            if (cx.scopeId && scope) {
+                $('#' + cx.scopeId).text("");
+                $('#' + cx.scopeId).append(cx.me.scopeToHtml());  
+                this.scopeInitialized = true;           
+            }
 
-        // Update UI elements
-        if (cx.headerId) {
-            $('#' + cx.headerId).text("");
-            $('#' + cx.headerId).append(cx.toLink(o.id(), "header", true, undefined, "/"));
+            // Initialize table
+            $("#valueTable tr[data-depth!=1]").hide();
+            $("#valueTable tr[data-depth=1]").find('span.collapsing').hide();
+            $("#valueTable tr[data-depth!=1]").find('span.collapsing').hide();
+            $("#valueTable td.dummy").hide();
         }
-        if (cx.metaId) {
-            $('#' + cx.metaId).text("");
-            $('#' + cx.metaId).append(o.metaToHtml());            
-        }
-        if (cx.valueId) {
-            $('#' + cx.valueId).text("");
-            $('#' + cx.valueId).append(o.toHtml());             
-        }
-        if (cx.scopeId) {
-            $('#' + cx.scopeId).text("");
-            $('#' + cx.scopeId).append(o.scopeToHtml());             
-        }
-
-        // Initialize table
-       $("#valueTable tr[data-depth!=1]").hide();
-       $("#valueTable tr[data-depth=1]").find('span.collapsing').hide();
-       $("#valueTable tr[data-depth!=1]").find('span.collapsing').hide();
-       $("#valueTable td.dummy").hide();
     },
 
     // Request data from the server
     requestObject: function(resource, success) {
-        $.get("/_/" + resource + "?value=true&meta=true&scope=true", success);
+        this.valueInitialized = false;
+        this.metaInitialized = false;
+        this.scopeInitialized = false;
+        cx.me = undefined;
+
+        if (this.ws) {
+            this.ws.send("L update|self|scope /" + resource);
+        } else {
+            $.get("/_/" + resource + "?value=true&meta=true&scope=true", success);
+        }
     },
 
     // Request data from server, add entry to the browsers history
     request: function(resource, success) {
         window.history.pushState({}, "", window.location.origin + "/" + resource);
         cx.requestObject(resource, success);
+    },
+
+    // Upon websocket connection, subscribe for current object
+    subscribeUponConnect: function(ev) {
+        this.ws.send("L update|self|scope " + window.location.pathname);
+    },
+
+    throttle: function() {
+        cx.received++;
+        if (cx.received % cx.throttleInterval) {
+            // Send throttle message, gently asking the server to reduce the
+            // stream of data when the number of packets send is larger
+            // than the number of packages received.
+            this.ws.send("T " + cx.received);
+        }
     },
 
     // Initialize cx
@@ -106,13 +156,30 @@ cx = {
         this.metaId = metaId;
         this.valueId = valueId;
 
-        // Add listener for 'back' button
-        window.addEventListener("popstate", function(e) {
-            cx.requestObject(window.location.pathname.slice(1, window.location.pathname.length), cx.refresh);
-        });
-
+        // Setup framework for dynamic usage
         if (active) {
-            cx.request(window.location.pathname.slice(1, window.location.pathname.length), cx.refresh);
+            // Add listener for 'back' button
+            window.addEventListener("popstate", function(e) {
+                cx.requestObject(window.location.pathname.slice(1, window.location.pathname.length), cx.refresh);
+            });
+
+            // Setup a websocket connection
+            this.ws = new WebSocket('ws://' + window.location.host + '/ws');
+            this.ws.onopen = function(ev) { cx.subscribeUponConnect(ev); };
+            this.ws.onerror = function(ev) {console.log("websocket error"); console.log(ev);};
+            this.ws.onclose = function(ev) {console.log("websocket connection closed"); console.log(ev);};
+            this.ws.onmessage = function(ev) { 
+                var parsed = JSON.parse(ev.data);
+                if (parsed) {
+                    cx.refresh(parsed.observable);
+
+                    // Throttle connection when necessary
+                    cx.throttle();
+                }
+            };
+
+            // Request initial object 
+            // cx.request(window.location.pathname.slice(1, window.location.pathname.length), cx.refresh);
         }
     },
 
@@ -672,6 +739,7 @@ cx.object.prototype = {
 
 // Create the root object
 cx.root = new cx.object(undefined, "");
+cx.root.meta.name = "::";
 cx.root.meta.type = "::cortex::lang::object";
 
 // Create a resolve in cx that resolves from root

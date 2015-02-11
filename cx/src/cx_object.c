@@ -2213,9 +2213,9 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
      * conditions that need to be evaluated in the notifyObserver function. */
     if (cx_function(observer)->kind == CX_PROCEDURE_CDECL) {
         if (_this) {
-            _observerData->notify = cx_notifyObserverThisCdecl;
+            _observerData->notify = cx_notifyObserverThis;
         } else {
-            _observerData->notify = cx_notifyObserverCdecl;
+            _observerData->notify = cx_notifyObserver;
         }
     } else {
         if (_this) {
@@ -2290,9 +2290,14 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
     if (!added) {
         cx_dealloc(_observerData);
     } else {
-        /* If observer is subscribed to new events, align observer with existing */
+        /* If observer is subscribed to declare events, align observer with existing */
         if (observer->mask & CX_ON_DECLARE) {
             cx_observerAlign(observable, _observerData);
+        }
+        
+        /* If observer is subscribed to define events, align observer with object if defined */
+        if ((observer->mask & CX_ON_DEFINE) && cx_checkState(observable, CX_DEFINED)) {
+            cx_notifyObserver(_observerData, observable, observable, CX_ON_DEFINE);   
         }
     }
 
@@ -3049,7 +3054,11 @@ error:
 cx_uint32 cx_overloadParamCount(cx_object o) {
     cx_uint32 result;
     if (cx_interface(cx_typeof(o))->kind == CX_PROCEDURE) {
-        result = cx_function(o)->parameters.length;
+        if (cx_procedure(cx_typeof(o))->kind != CX_OBSERVER) {
+            result = cx_function(o)->parameters.length;
+        } else {
+            result = 0;
+        }
     } else {
         result = cx_delegate(cx_typeof(o))->parameters.length;
     }
