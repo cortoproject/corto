@@ -1,0 +1,39 @@
+bool result : true
+void fail(string msg):
+    "tc_update03: FAIL: $msg"
+    result = false
+
+bool aUpdated, bUpdated, cUpdated
+    
+// Test updating a primtive
+int32 a: 10
+update a = 20
+on update a:
+    aUpdated = true 
+    if a != 20: 
+        fail("a != 20")
+
+// Test updating a composite object
+struct Point::
+    x, y: int32
+
+Point b: 10, 20
+update b = {30, 40}
+on update b: 
+    bUpdated = true
+    if b[x, y] != (30, 40): 
+        fail("b[x, y] != (30, 40)")
+
+// Test updating a collection object
+list{int32} c{}
+update c = {1, 2, 3}
+on update c:
+    cUpdated = true
+    if c[0, 1, 2] != (1, 2, 3):
+        fail("c[0, 1, 2] != (1, 2, 3)")
+
+if !aUpdated: fail("!aUpdated")
+if !bUpdated: fail("!bUpdated")
+if !bUpdated: fail("!bUpdated")
+
+if result: "tc_update03: OK"

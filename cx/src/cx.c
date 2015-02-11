@@ -266,6 +266,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, operatorKind_ASSIGN_XOR);\
     SSO_OP_OBJ(op, operatorKind_ASSIGN_OR);\
     SSO_OP_OBJ(op, operatorKind_ASSIGN_AND);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_UPDATE);\
     SSO_OP_OBJ(op, operatorKind_COND_OR);\
     SSO_OP_OBJ(op, operatorKind_COND_AND);\
     SSO_OP_OBJ(op, operatorKind_COND_NOT);\

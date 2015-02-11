@@ -617,6 +617,7 @@ CX_ENUM_O(operatorKind);
     CX_CONSTANT_O(operatorKind, ASSIGN_XOR);
     CX_CONSTANT_O(operatorKind, ASSIGN_OR);
     CX_CONSTANT_O(operatorKind, ASSIGN_AND);
+    CX_CONSTANT_O(operatorKind, ASSIGN_UPDATE);
     CX_CONSTANT_O(operatorKind, COND_OR);
     CX_CONSTANT_O(operatorKind, COND_AND);
     CX_CONSTANT_O(operatorKind, COND_NOT);

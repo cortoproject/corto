@@ -267,6 +267,7 @@ L?\"(\\.|[^\\"])*\"             TOKEN; yylval.String = malloc(strlen(yytext) + 1
 "-="                            TOKEN; return SUB_ASSIGN;
 "|="                            TOKEN; return OR_ASSIGN;
 "&="                            TOKEN; return AND_ASSIGN;
+":="                            TOKEN; return UPDATE_ASSIGN;
 "::"                            TOKEN; return SCOPE;
 ":::"                           TOKEN; return SCOPEPRE;
 "->"                            TOKEN; return ARROW_RIGHT;

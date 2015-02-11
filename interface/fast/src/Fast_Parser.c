@@ -1080,6 +1080,17 @@ Fast_Expression Fast_Parser_binaryExpr(Fast_Parser _this, Fast_Expression lvalue
     if (lvalues && rvalues && (_this->pass || ((_this->initializerCount >= 0) && _this->initializers[_this->initializerCount]))) {
         Fast_ExpandAction combine = Fast_Parser_combineCommaExpr;
         switch(operator) {
+        case CX_ASSIGN_UPDATE:
+            if (!(result = Fast_Expression(Fast_Parser_binaryExpr(_this, lvalues, rvalues, CX_ASSIGN)))) {
+                goto error;
+            }
+            Fast_Parser_collect(_this, result);
+
+            cx_ll exprList = Fast_Expression_toList(result);
+            result = Fast_Expression(Fast_Update__create(exprList, NULL, NULL));
+            Fast_Parser_collect(_this, result);
+
+            break;
         case CX_COND_EQ:
         case CX_COND_NEQ:
         case CX_COND_AND:
@@ -1089,13 +1100,13 @@ Fast_Expression Fast_Parser_binaryExpr(Fast_Parser _this, Fast_Expression lvalue
         case CX_COND_GTEQ:
         case CX_COND_LTEQ:
             combine = Fast_Parser_combineConditionalExpr;
-            break;
+        /* fallthrough */
         default:
+            if (!(result = Fast_Parser_expandCommaExpr(_this, lvalues, rvalues, Fast_Parser_expandBinaryExpr, combine, &operator))) {
+                goto error;
+            }    
             break;
         }
-        if (!(result = Fast_Parser_expandCommaExpr(_this, lvalues, rvalues, Fast_Parser_expandBinaryExpr, combine, &operator))) {
-            goto error;
-        }    
     }
     
     return result;
