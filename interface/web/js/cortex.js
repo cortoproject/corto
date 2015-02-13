@@ -15,6 +15,10 @@ cx = {
         this.meta = {};
     },
 
+    clear: function() {
+        cx.root.scope = [];
+    },
+
     // Initialize serializer
     serializer: function(object, composite, collection, primitive, member, element, base) {
         this.serializeObject = object;
@@ -61,7 +65,7 @@ cx = {
     // reply from the server is received.
     refresh: function(data) {
         var o;
-        var value = !this.valueInitialized;
+        var value = false;
         var meta = !this.metaInitialized;
         var scope = !this.scopeInitialized;
         var selfId = window.location.pathname.replace(/\//g, "::");
@@ -86,18 +90,27 @@ cx = {
         if (cx.me) {
             // Update UI elements
             if (cx.headerId && meta) {
-                $('#' + cx.headerId).text("");
-                $('#' + cx.headerId).append(cx.toLink(cx.me.id(), "header", true, undefined, "/"));
+                $('#' + cx.headerId).html(cx.toLink(cx.me.id(), "header", true, undefined, "/"));
             }
             if (cx.metaId && meta) {
-                $('#' + cx.metaId).text("");
-                $('#' + cx.metaId).append(cx.me.metaToHtml());     
+                $('#' + cx.metaId).html(cx.me.metaToHtml());     
                 this.metaInitialized = true;       
             }
-            if (cx.valueId && value) {
-                $('#' + cx.valueId).text("");
-                $('#' + cx.valueId).append(cx.me.toHtml());  
+            if (cx.valueId && (value != undefined)) {
+                if (!this.valueInitialized) {
+                    $('#' + cx.valueId).show();
+                }
+                if (!this.valueInitialized) {
+                    $('#' + cx.valueId).html(cx.me.toHtml(false));
+                } else {
+                    $('#' + cx.valueId + "Content").html(cx.me.toHtml(true));
+                }
                 this.valueInitialized = true;           
+            } else {
+                if (!this.valueInitialized) {
+                    $('#' + cx.valueId).hide();
+                }
+                this.valueInitialized = true;
             }
             if (cx.scopeId && scope) {
                 $('#' + cx.scopeId).text("");
@@ -138,13 +151,35 @@ cx = {
         this.ws.send("L update|self|scope " + window.location.pathname);
     },
 
-    throttle: function() {
-        cx.received++;
-        if (cx.received % cx.throttleInterval) {
-            // Send throttle message, gently asking the server to reduce the
-            // stream of data when the number of packets send is larger
-            // than the number of packages received.
-            this.ws.send("T " + cx.received);
+    connect: function() {
+        if (!this.ws || (this.ws.readyState == 3) /* CLOSED */) {
+            $('#connected').html('connecting...');
+
+            // Setup a websocket connection
+            this.ws = new WebSocket('ws://' + window.location.host + '/ws');
+            this.ws.onopen = function(ev) {
+                cx.received = 0;
+                valueInitialized: false;
+                metaInitialized: false;
+                scopeInitialized: false;
+                $('#connected').html('connected <span class="glyphicon glyphicon-ok-circle"></span>');
+                cx.subscribeUponConnect(ev); 
+            };
+            this.ws.onerror = function(ev) {
+                $('#connected').html('connection error <span class="glyphicon glyphicon-remove-circle"></span>');
+                console.log(ev);
+            };
+            this.ws.onclose = function(ev) {
+                $('#connected').html('disconnected <span class="glyphicon glyphicon-remove-circle"></span>');
+                console.log(ev);
+                cx.clear(); // Clear cache
+            };
+            this.ws.onmessage = function(ev) { 
+                var parsed = JSON.parse(ev.data);
+                if (parsed) {
+                    cx.refresh([parsed.o]);
+                }
+            };
         }
     },
 
@@ -163,20 +198,8 @@ cx = {
                 cx.requestObject(window.location.pathname.slice(1, window.location.pathname.length), cx.refresh);
             });
 
-            // Setup a websocket connection
-            this.ws = new WebSocket('ws://' + window.location.host + '/ws');
-            this.ws.onopen = function(ev) { cx.subscribeUponConnect(ev); };
-            this.ws.onerror = function(ev) {console.log("websocket error"); console.log(ev);};
-            this.ws.onclose = function(ev) {console.log("websocket connection closed"); console.log(ev);};
-            this.ws.onmessage = function(ev) { 
-                var parsed = JSON.parse(ev.data);
-                if (parsed) {
-                    cx.refresh(parsed.observable);
-
-                    // Throttle connection when necessary
-                    cx.throttle();
-                }
-            };
+            // Connect with websocket
+            cx.connect();
 
             // Request initial object 
             // cx.request(window.location.pathname.slice(1, window.location.pathname.length), cx.refresh);
@@ -585,7 +608,7 @@ cx.object.prototype = {
     },
 
     // Convert object value to HTML
-    toHtml: function() {
+    toHtml: function(contentOnly) {
 
         function primitive(s, v) {
             return cx.primitiveToString(v);
@@ -668,11 +691,13 @@ cx.object.prototype = {
                 size = 1;
             }
 
-            result += "<table id='valueTable' class='value'>";
-            result += "<thead class='value'><tr data-depth='1'>" + 
-                      "<th></th><td><h3>Value" + 
-                      "<img src='/images/value_icon.png' class='valueIcon'></img>" + 
-                      "</h3></td></tr></thead><tbody class='value'>";
+            if (!s.contentOnly) {
+                result += "<table id='valueTable' class='value'>";
+                result += "<thead class='value'><tr data-depth='1'>" + 
+                          "<th></th><td><h3>Value" + 
+                          "<img src='/images/value_icon.png' class='valueIcon'></img>" + 
+                          "</h3></td></tr></thead><tbody id='valueContent' class='value'>";
+            }
             if (size) {
                 var value = s.serializeValue(v);
                 if (!(v instanceof Object)) {
@@ -682,49 +707,51 @@ cx.object.prototype = {
             } else {
                 result += "<tr data-depth='1'><th></th><td><code>empty</code></td></tr>";
             }
-            result += "</tbody></table>";
-            result += "\
-                <script> \
-                $(function() { \
-                    $('#valueTable').on('click', '.toggle', function () { \
-                        console.log('click event!');\
-                        var findChildren = function (tr) { \
-                            var depth = tr.data('depth'); \
-                            return tr.nextUntil($('tr').filter(function () { \
-                                return $(this).data('depth') <= depth; \
-                            })); \
-                        }; \
-                \
-                        var el = $(this); \
-                        var tr = el.closest('tr'); \
-                        var children = findChildren(tr); \
-                \
-                        var subnodes = children.filter('.expanding'); \
-                        subnodes.each(function () { \
-                            var subnode = $(this); \
-                            var subnodeChildren = findChildren(subnode); \
-                            children = children.not(subnodeChildren); \
+            if (!s.contentOnly) {
+                result += "</tbody></table>";
+                result += "\
+                    <script> \
+                    $(function() { \
+                        $('#valueTable').on('click', '.toggle', function () { \
+                            console.log('click event!');\
+                            var findChildren = function (tr) { \
+                                var depth = tr.data('depth'); \
+                                return tr.nextUntil($('tr').filter(function () { \
+                                    return $(this).data('depth') <= depth; \
+                                })); \
+                            }; \
+                    \
+                            var el = $(this); \
+                            var tr = el.closest('tr'); \
+                            var children = findChildren(tr); \
+                    \
+                            var subnodes = children.filter('.expanding'); \
+                            subnodes.each(function () { \
+                                var subnode = $(this); \
+                                var subnodeChildren = findChildren(subnode); \
+                                children = children.not(subnodeChildren); \
+                            }); \
+                    \
+                            if (tr.hasClass('collapsing')) { \
+                                tr.removeClass('collapsing').addClass('expanding'); \
+                                tr.find('span.collapsing').hide(); \
+                                tr.find('span.expanding').show(); \
+                                tr.find('td.complex').show(); \
+                                tr.find('td.dummy').hide(); \
+                                children.hide(); \
+                            } else { \
+                                tr.find('span.collapsing').show(); \
+                                tr.find('span.expanding').hide(); \
+                                tr.find('td.complex').hide(); \
+                                tr.find('td.dummy').show(); \
+                                tr.removeClass('expanding').addClass('collapsing'); \
+                                children.show(); \
+                            } \
+                            return children; \
                         }); \
-                \
-                        if (tr.hasClass('collapsing')) { \
-                            tr.removeClass('collapsing').addClass('expanding'); \
-                            tr.find('span.collapsing').hide(); \
-                            tr.find('span.expanding').show(); \
-                            tr.find('td.complex').show(); \
-                            tr.find('td.dummy').hide(); \
-                            children.hide(); \
-                        } else { \
-                            tr.find('span.collapsing').show(); \
-                            tr.find('span.expanding').hide(); \
-                            tr.find('td.complex').hide(); \
-                            tr.find('td.dummy').show(); \
-                            tr.removeClass('expanding').addClass('collapsing'); \
-                            children.show(); \
-                        } \
-                        return children; \
-                    }); \
-                });\
-                </script>"
+                    });\
+                    </script>"
+            }
 
             return result;
         }
@@ -733,6 +760,7 @@ cx.object.prototype = {
             object, undefined, undefined, primitive, member, member, base
         )
         s.me = this;
+        s.contentOnly = contentOnly
         return s.serialize(this.value);
     }
 }

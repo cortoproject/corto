@@ -32,7 +32,7 @@ struct cx_exitHandler {
     void* userData;
 };
 
-static cx_mutex_s cx_adminLock;
+cx_mutex_s cx_adminLock;
 static cx_ll cx_exitHandlers = NULL;
 static cx_ll cx_unloadHandlers = NULL;
 
@@ -189,17 +189,17 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, metaprocedure_bind_);\
     /* dispatcher */\
     SSO_OP_OBJ(op, dispatcher_post);\
-    SSO_OP_OBJ(op, dispatcher_getEvent);\
     /* event */\
     SSO_OP_OBJ(op, event_kind);\
     SSO_OP_OBJ(op, event_handled);\
-    SSO_OP_OBJ(op, event_processed_);\
+    SSO_OP_OBJ(op, event_handle_);\
     SSO_OP_OBJ(op, event_uniqueKind);\
     /* observableEvent */\
     SSO_OP_OBJ(op, observableEvent_observer);\
     SSO_OP_OBJ(op, observableEvent_me);\
     SSO_OP_OBJ(op, observableEvent_source);\
     SSO_OP_OBJ(op, observableEvent_observable);\
+    SSO_OP_OBJ(op, observableEvent_handle_);\
     /* width */\
     SSO_OP_OBJ(op, width_WIDTH_8);\
     SSO_OP_OBJ(op, width_WIDTH_16);\

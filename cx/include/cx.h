@@ -27,6 +27,7 @@
 #include "cx_method.h"
 #include "cx_observableEvent.h"
 #include "cx_observer.h"
+#include "cx_package.h"
 #include "cx_parameter.h"
 #include "cx_primitive.h"
 #include "cx_procedure.h"

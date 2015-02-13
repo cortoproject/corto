@@ -18,6 +18,12 @@
 extern "C" {
 #endif
 
+/* virtual ::cortex::lang::observableEvent::handle() */
+void cx_observableEvent_handle(cx_observableEvent _this);
+
+/* ::cortex::lang::observableEvent::handle() */
+cx_void cx_observableEvent_handle_v(cx_observableEvent _this);
+
 #ifdef __cplusplus
 }
 #endif

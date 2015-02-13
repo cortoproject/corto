@@ -17,17 +17,11 @@
 extern "C" {
 #endif
 
-/* virtual ::cortex::lang::dispatcher::getEvent(observer observer,object me,object observable,object src) */
-cx_observableEvent cx_dispatcher_getEvent(cx_dispatcher _this, cx_observer observer, cx_object me, cx_object observable, cx_object src);
+/* virtual ::cortex::lang::dispatcher::post(event e) */
+void cx_dispatcher_post(cx_dispatcher _this, cx_event e);
 
-/* ::cortex::lang::dispatcher::getEvent(observer observer,object me,object observable,object src) */
-cx_observableEvent cx_dispatcher_getEvent_v(cx_dispatcher _this, cx_observer observer, cx_object me, cx_object observable, cx_object src);
-
-/* virtual ::cortex::lang::dispatcher::post(event event) */
-void cx_dispatcher_post(cx_dispatcher _this, cx_event event);
-
-/* ::cortex::lang::dispatcher::post(event event) */
-cx_void cx_dispatcher_post_v(cx_dispatcher _this, cx_event event);
+/* ::cortex::lang::dispatcher::post(event e) */
+cx_void cx_dispatcher_post_v(cx_dispatcher _this, cx_event e);
 
 #ifdef __cplusplus
 }

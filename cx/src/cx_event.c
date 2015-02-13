@@ -13,9 +13,9 @@
 static int cx_maxEventId = 16; /* kind 0 - 15 are reserved for internal usage */
 /* $end */
 
-/* ::cortex::lang::event::processed() */
-cx_void cx_event_processed(cx_event _this) {
-/* $begin(::cortex::lang::event::processed) */
+/* ::cortex::lang::event::handle() */
+cx_void cx_event_handle_v(cx_event _this) {
+/* $begin(::cortex::lang::event::handle) */
     _this->handled = TRUE;
 /* $end */
 }

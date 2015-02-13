@@ -38,6 +38,7 @@ extern "C" {
 #define cx_method(o) ((cx_method)o)
 #define cx_observableEvent(o) ((cx_observableEvent)o)
 #define cx_observer(o) ((cx_observer)o)
+#define cx_package(o) ((cx_package)o)
 #define cx_primitive(o) ((cx_primitive)o)
 #define cx_procedure(o) ((cx_procedure)o)
 #define cx_sequence(o) ((cx_sequence)o)
@@ -99,11 +100,6 @@ struct cx_parameter {
 };
 
 CX_SEQUENCE(cx_parameterSeq, cx_parameter,);
-
-CX_CLASS(cx_package);
-CX_CLASS_DEF(cx_package) {
-    cx_string url;
-};
 
 /*  ::cortex::lang::function */
 CX_CLASS(cx_function);
@@ -545,6 +541,13 @@ typedef enum cx_operatorKind {
     CX_BRACKET_OPEN = 37,
     CX_BRACKET_CLOSE = 38
 } cx_operatorKind;
+
+/*  ::cortex::lang::package */
+CX_CLASS(cx_package);
+
+CX_CLASS_DEF(cx_package) {
+    cx_string url;
+};
 
 /* ::cortex::lang::procedureKind */
 typedef enum cx_procedureKind {

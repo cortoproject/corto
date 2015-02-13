@@ -945,14 +945,13 @@ CX_PROCEDURE_NOBASE_O(function, CX_FUNCTION, NULL, CX_DECLARED | CX_DEFINED, CX_
 
 /* ::cortex::lang::dispatcher */
 CX_INTERFACE_O(dispatcher);
-    CX_IMETHOD_O(dispatcher, post, "(event event)", void, FALSE);
-    CX_IMETHOD_O(dispatcher, getEvent, "(observer observer,object me,object observable,object src)", observableEvent, FALSE);
+    CX_IMETHOD_O(dispatcher, post, "(event e)", void, FALSE);
 
 /* ::cortex::lang::event */
 CX_CLASS_NOBASE_O(event, NULL, CX_DECLARED | CX_DEFINED, CX_NODELEGATE);
     CX_MEMBER_O(event, kind, uint16, CX_GLOBAL);
     CX_MEMBER_O(event, handled, bool, CX_LOCAL | CX_READONLY);
-    CX_METHOD_O(event, processed, "()", void, FALSE, cx_event_processed);
+    CX_METHOD_O(event, handle, "()", void, TRUE, cx_event_handle_v);
     CX_FUNCTION_O(event, uniqueKind, "()", int16, cx_event_uniqueKind);
 
 /* ::cortex::lang::observableEvent */
@@ -961,6 +960,7 @@ CX_CLASS_O(observableEvent, event, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX
     CX_REFERENCE_O(observableEvent, me, object, CX_GLOBAL, CX_DEFINED | CX_DECLARED, FALSE);
     CX_REFERENCE_O(observableEvent, source, object, CX_GLOBAL, CX_DEFINED | CX_DECLARED, FALSE);
     CX_REFERENCE_O(observableEvent, observable, object, CX_GLOBAL, CX_DEFINED | CX_DECLARED, FALSE);
+    CX_METHOD_O(observableEvent, handle, "()", void, TRUE, cx_observableEvent_handle_v);
 
 /* ::cortex::lang::method */
 CX_FW_IB(method);

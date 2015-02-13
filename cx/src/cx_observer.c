@@ -25,9 +25,7 @@ cx_int16 cx_observer_bind(cx_observer _this) {
     }
 
     cx_function(_this)->size = sizeof(cx_object) * 2;
-    if (_this->me || _this->template) {
-        cx_function(_this)->size += sizeof(cx_object); /* Add space for this-object */
-    }
+    cx_function(_this)->size += sizeof(cx_object); /* Add space for this-object */
 
     /* Check if mask specifies either SELF or CHILDS, if not enable SELF */
     if (!((_this->mask & CX_ON_SELF) || (_this->mask & CX_ON_SCOPE))) {

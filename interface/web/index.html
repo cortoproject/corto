@@ -9,11 +9,29 @@
         <title>Cortex Browser</title>
     </head>
     <body>
-        <nav class='navbar navbar-default'>
-            <div class='navbar-header'>
-                <a class="navbar-brand" href="#">Cortex</a>
-            </div>
-        </nav>
+    
+    <nav class="navbar navbar-default">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Cortex</a>
+          </div>
+          <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+              <li>
+                <a href="#" onclick="cx.connect()" id="connected">
+                    connecting...
+                </a>
+              </li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
 
         <div class='container'>
             <div class='col-md-10' id='header'></div>

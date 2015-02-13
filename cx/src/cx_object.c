@@ -29,6 +29,8 @@
 
 #include <limits.h>
 
+extern cx_mutex_s cx_adminLock;
+
 static int cx_adopt(cx_object parent, cx_object child);
 static cx_int32 cx_notify(cx__observable *_o, cx_object observable, cx_object _this, cx_uint32 mask);
 
@@ -829,10 +831,12 @@ cx_object cx_new_ext(cx_object src, cx_type type, cx_uint8 attrs, cx_string cont
                 goto error;
             }
             /* Add object to anonymous cache */
+            cx_mutexLock(&cx_adminLock);
             if (!cx_anonymousObjects) {
                 cx_anonymousObjects = cx_llNew();
             }
             cx_llInsert(cx_anonymousObjects, CX_OFFSET(o, sizeof(cx__object)));
+            cx_mutexUnlock(&cx_adminLock);
         }
     }
 
@@ -1400,7 +1404,9 @@ cx_uint16 cx__destruct(cx_object o) {
             cx__deinitScope(o);
         } else {
             /* Remove from anonymous cache */
+            cx_mutexLock(&cx_adminLock);
             cx_llRemove(cx_anonymousObjects, o);
+            cx_mutexUnlock(&cx_adminLock);
         }
 
         /* Reset template observable table */
@@ -2101,13 +2107,18 @@ static void cx_notifyObserver(cx__observer *data, cx_object observable, cx_objec
 }
 indent++;
 #endif
+
         if (!observer->dispatcher) {
             data->notify(data, data->_this, observable, source, mask);
         } else {
             if (!data->_this || (data->_this != source)) {
-                cx_observableEvent event;
+                cx_observableEvent event = cx_new_ext(NULL, cx_type(cx_observableEvent_o), 0, NULL);
                 cx_dispatcher dispatcher = observer->dispatcher;
-                event = (cx_observableEvent)cx_dispatcher_getEvent(dispatcher, observer, data->_this, observable, source);
+
+                cx_set(&event->observer, observer);
+                cx_set(&event->me, data->_this);
+                cx_set(&event->observable, observable);
+                cx_set(&event->source, source);
 
                 /* Destruct events must always be send synchronous because otherwise the object's value might no longer
                  * be valid when it is received by the observer (object destruction will continue after notification). */
@@ -2215,7 +2226,7 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
         if (_this) {
             _observerData->notify = cx_notifyObserverThis;
         } else {
-            _observerData->notify = cx_notifyObserver;
+            _observerData->notify = cx_notifyObserverDefault;
         }
     } else {
         if (_this) {
@@ -2454,14 +2465,14 @@ static void cx_notifyObserverDefault(cx__observer* data, cx_object _this, cx_obj
     cx_function f = cx_function(data->observer);
     CX_UNUSED(_this);
     CX_UNUSED(mask);
-    cx_call(f, NULL, observable, source);
+    cx_call(f, NULL, NULL, observable, source);
 }
 
 static void cx_notifyObserverCdecl(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask) {
     cx_function f = cx_function(data->observer);
     CX_UNUSED(_this);
     CX_UNUSED(mask);
-    ((void(*)(cx_object,cx_object))f->implData)(observable, source);
+    ((void(*)(cx_object,cx_object,cx_object))f->implData)(NULL, observable, source);
 }
 
 static void cx_notifyObserverThis(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask) {
@@ -2820,6 +2831,26 @@ error:
 }
 
 cx_int32 cx_readEnd(cx_object object) {
+    return cx_unlock(object);
+}
+
+/* Thread-safe writing */
+cx_int32 cx_lock(cx_object object) {
+    if (cx_checkAttr(object, CX_ATTR_WRITABLE)) {
+        cx__writable* _o;
+
+        _o = cx__objectWritable(CX_OFFSET(object, -sizeof(cx__object)));
+        if (cx_rwmutexWrite(&_o->lock)) {
+            goto error;
+        }
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
+cx_int32 cx_unlock(cx_object object) {
     if (cx_checkAttr(object, CX_ATTR_WRITABLE)) {
         cx__writable* _o;
 
@@ -2833,6 +2864,7 @@ cx_int32 cx_readEnd(cx_object object) {
 error:
     return -1;
 }
+
 
 /* Obtain function name from signature */
 cx_int32 cx_signatureName(cx_string signature, cx_id buffer) {
