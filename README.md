@@ -9,6 +9,12 @@ Download and unpack Cortex on your machine. Run the following commands to build 
 source configure
 make clean all
 ```
+#### Dependencies
+Cortex depends on the following packages - make sure to have them installed:
+ * flex
+ * bison
+ * libxml2-dev (only required for building)
+ 
 ## Quick start
 Put the following code snippets in file called `foo.cx`. Execute the code with `cortex foo.cx`.
 #### Hello World
