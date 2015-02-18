@@ -124,9 +124,9 @@ In the `StarWars_SpaceShip_attack` method, add the following code:
 /* $end */
 ```
 
-That's it! Run `make -C StarWars` again. You can now use this package in scripts! An example:
+That's it! Run `make -C StarWars` again. You can now use this package in scripts!
 
-In a new file called `epicbattle.cx`, add the following (historically incorrect) lines:
+Try it out with a new file called `epicbattle.cx`, add the following (historically incorrect) lines:
 ```
 StarWars::SpaceShip Luke: XWing
 StarWars::SpaceShip DarthVader: Destroyer
