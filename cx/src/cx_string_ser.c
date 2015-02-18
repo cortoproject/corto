@@ -432,6 +432,7 @@ struct cx_serializer_s cx_string_ser(cx_modifier access, cx_operatorKind accessK
     s.program[CX_PRIMITIVE] = cx_ser_primitive;
     s.program[CX_COMPOSITE] = cx_ser_scope;
     s.program[CX_COLLECTION] = cx_ser_scope;
+    
     s.metaprogram[CX_MEMBER] = cx_ser_item;
     s.metaprogram[CX_BASE] = cx_serializeMembers;   /* Skip the scope-callback by directly calling serializeMembers. This will cause the extra
                                                      * '{ }' not to appear, which is required by this string format. */

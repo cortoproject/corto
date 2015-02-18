@@ -35,7 +35,7 @@ CX_CLASS_DEF(cx_serializer) {
     cx_serializerTraceKind traceKind;
     cx_serializerConstruct construct;
     cx_serializerDestruct destruct;
-    cx_serializerCallback program[CX_COLLECTION+1];
+    cx_serializerCallback program[CX_ITERATOR+1];
     cx_serializerCallback metaprogram[CX_CONSTANT+1];
     cx_serializerCallback reference;
 };
