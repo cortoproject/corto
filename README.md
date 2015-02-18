@@ -9,12 +9,6 @@ Download and unpack Cortex on your machine. Run the following commands to build 
 source configure
 make clean all
 ```
-Create your first C package, named `HelloWorld`:
-
-Inspect the empty package with the REPL shell:
-```
-cxsh ::HelloWorld
-```
 ### Quick start
 Put the following code snippets in a `foo.cx` file. Execute the code with `cortex foo.cx`.
 #### Hello World
