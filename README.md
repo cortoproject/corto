@@ -137,7 +137,7 @@ DarthVader: Taking some serious damage...
 DarthVader: May the force be with me
 Luke: I have defeated DarthVader!
 ```
-You can also run the above script in `cxsh`, our interactive interpreter. Just run `cxsh` and start entering code!
+You can also run the above script in our interactive interpreter. Just run `cxsh` and start entering code!
 
 
 
