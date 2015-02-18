@@ -10,7 +10,7 @@ source configure
 make clean all
 ```
 ### Quick start
-Put the following code snippets in a `foo.cx` file. Execute the code with `cortex foo.cx`.
+Put the following code snippets in file called `foo.cx`. Execute the code with `cortex foo.cx`.
 #### Hello World
 ```
 "Hi Cortex!"
