@@ -3,13 +3,13 @@ A light weight, collaborative playground designed for fast-paced, technology-hea
 
 Currently Cortex is in alpha. It is expected to reach v1.0 status by the end of 2015. The current release only supports 32/64 bit Linux.
 
-### Building Cortex
+## Building Cortex
 Download and unpack Cortex on your machine. Run the following commands to build it:
 ```
 source configure
 make clean all
 ```
-### Quick start
+## Quick start
 Put the following code snippets in file called `foo.cx`. Execute the code with `cortex foo.cx`.
 #### Hello World
 ```
@@ -26,7 +26,7 @@ Point imHere: 1, 2  // Create an object
 "$imHere"           // Print object value
 ```
 prints: `{1,2}`
-### Create and implement a package from scratch
+## Create and implement a package from scratch
 Run the following commands to create a new C package called `StarWars`
 ```
 cxgen --package --lang c StarWars
