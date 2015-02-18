@@ -15,6 +15,7 @@ Put the following code snippets in file called `foo.cx`. Execute the code with `
 ```
 "Hi Cortex!"
 ```
+prints: `Hi Cortex!`
 #### A simple object
 ```
 struct Point::      // Create a new composite type
@@ -24,6 +25,7 @@ Point imHere: 1, 2  // Create an object
 
 "$imHere"           // Print object value
 ```
+prints: `{1,2}`
 ### Create and implement a package from scratch
 Run the following commands to create a new C package called `StarWars`
 ```
