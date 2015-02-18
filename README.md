@@ -56,7 +56,7 @@ enum SpaceShipKind:: XWing, MilleniumFalcon, Destroyer, DeathStar
 class SpaceShip::
     kind: SpaceShipKind
     hp: int32, readonly
-    strenght: int32, readonly
+    strength: int32, readonly
     int16 construct()
     bool attack(SpaceShip target)
 ```
@@ -77,7 +77,7 @@ In `StarWars_SpaceShip.c`, add the following code to the `StarWars_SpaceShip_con
        _this->hp = 100;
        _this->strength = 500;
        break;
-    case StarWars_MillenumFalcon:
+    case StarWars_MilleniumFalcon:
        _this->hp = 500;
        _this->strength = 1000;
        break;
