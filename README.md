@@ -20,6 +20,7 @@ prints: `Hi Cortex!`
 ```
 struct Point::      // Create a new composite type
    x, y: int32
+
 Point imHere: 1, 2  // Create an object
 "$imHere"           // Print object value
 ```
