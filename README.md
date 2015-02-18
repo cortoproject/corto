@@ -107,9 +107,9 @@ In the `StarWars_SpaceShip_attack` method, add the following code:
     if (!target->hp) {
         printf("%s: I have defeated %s!\n", cx_nameof(_this), cx_nameof(target));
     } else {
-        if (_this->hp <= 500) {
+        if (target->hp <= 500) {
             printf("%s: May the force be with me\n", cx_nameof(target));
-        } else if (_this->hp <= 1000) {
+        } else if (target->hp <= 1000) {
             printf("%s: Taking some serious damage...\n", cx_nameof(target));
         } else {
             printf("%s: It's just a flesh wound\n", cx_nameof(target));
