@@ -2445,9 +2445,14 @@ static void cx_vmOp2Cast(cx_ic_vmProgram *program, cx_vmOp *vmOp, cx_icOp op, cx
         if (sizeof(intptr_t) == 4) {
             vmOp->op = CX_VM_STAGE2_LVV;
         } else if (sizeof(intptr_t) == 8) {
-            vmOp->op = CX_VM_STAGE2_DPP;
+            vmOp->op = CX_VM_STAGE2_DVV;
         }
-        vmOp->lo.w = (cx_word)sourceType;
+
+        if (op->s2Deref == CX_IC_DEREF_ADDRESS) {
+            vmOp->lo.w = (cx_word)cx_object_o;
+        } else {
+            vmOp->lo.w = (cx_word)sourceType;
+        }
         vmOp->hi.w = (cx_word)destinationType;
         
         vmStoredOp = cx_vmProgram_addOp(program->program, ((cx_ic)op)->line);
@@ -2658,15 +2663,19 @@ static cx_int16 cx_icOp_toVm(cx_icOp op, cx_ic_vmProgram *program) {
          * are assembled.
          */
         if (((cx_icStorage)op->s2)->kind == CX_STORAGE_OBJECT) {
-            f = ((cx_icObject)op->s2)->ptr;
-            if (f->kind == CX_PROCEDURE_VM) {
-                if (cx_checkState(f, CX_DEFINED)) {
-                    cx_vmProgram inlineProgram = (cx_vmProgram)f->implData;
-                    if (inlineProgram->storage > program->maxStackSize) {
-                        program->maxStackSize = inlineProgram->storage;
+            cx_object o = ((cx_icObject)op->s2)->ptr;
+            cx_type t = cx_typeof(o);
+            if ((t->kind == CX_COMPOSITE) && (cx_interface(t)->kind == CX_PROCEDURE)) {
+                f = o;
+                if (f->kind == CX_PROCEDURE_VM) {
+                    if (cx_checkState(f, CX_DEFINED)) {
+                        cx_vmProgram inlineProgram = (cx_vmProgram)f->implData;
+                        if (inlineProgram->storage > program->maxStackSize) {
+                            program->maxStackSize = inlineProgram->storage;
+                        }
+                    } else {
+                        cx_ic_vmInlineFunctionMark(program, program->program, f);
                     }
-                } else {
-                    cx_ic_vmInlineFunctionMark(program, program->program, f);
                 }
             }
         }

@@ -444,7 +444,7 @@ typedef union Di2f_t {
         cx_delegatedata *ptr = (cx_delegatedata*)&op2_##code;\
         void *stackptr = c.stack;\
         if (!ptr->instance) {\
-            stackptr = ((cx_word*)stackptr) + 1;\
+            stackptr = CX_OFFSET(stackptr, sizeof(cx_word));\
         }\
         cx_callb((cx_function)ptr->procedure, &op1_##code, stackptr);\
         c.sp = c.stack; /* Reset stack pointer */ \
@@ -672,7 +672,7 @@ typedef union Di2f_t {
 #define ELEMA(type,code)\
     ELEMA_##code:\
         fetchOp3(ELEMA,code##V);\
-        op1_##code##V += op2_##code##V * op3_##code##V;\
+        op1_##code##V += (L_t)op2_##code##V * op3_##code##V;\
         next();\
 
 #define ELEMS(type,code)\
@@ -681,7 +681,7 @@ typedef union Di2f_t {
         {\
             cx_objectSeq* seq = (cx_objectSeq*)op1_##code##V;\
             CHECK_BOUNDS(seq->length, op2_##code##V);\
-            op1_##code##V = (W_t)CX_OFFSET(seq->buffer,op2_##code##V * op3_##code##V);\
+            op1_##code##V = (W_t)CX_OFFSET(seq->buffer, (L_t)op2_##code##V * op3_##code##V);\
         }\
         next();\
 
@@ -1071,12 +1071,16 @@ struct cx_vm_context {
     cx_vmParameter stage2;
     void *stack, *sp;
     cx_stringConcatCache *strcache;
+
+    /* Reserved space for interrupt program in case of SIGINT */
+    cx_vmOp interrupt[2]; 
 };
 
 #ifdef CX_VM_DEBUG
 typedef void(*sigfunc)(int);
 static sigfunc prevSegfaultHandler;
 static sigfunc prevAbortHandler;
+static sigfunc prevInterruptHandler;
 
 /* The VM signal handler */
 static void cx_vm_sig(int sig) {
@@ -1088,6 +1092,15 @@ static void cx_vm_sig(int sig) {
     }
     if (sig == SIGABRT) {
         printf("Abort\n");
+    }
+    if (sig == SIGINT) {
+        for(sp = programData->sp-1; sp>=0; sp--) {
+            cx_vmProgram program = programData->stack[sp];
+            programData->c[sp]->interrupt[0].op = program->program[program->size-1].op;
+            programData->c[sp]->interrupt[1].op = program->program[program->size-1].op;
+            programData->c[sp]->pc = programData->c[sp]->interrupt;
+        }
+        return;
     }
 
     /* Walk the stack, print frames */
@@ -1151,13 +1164,21 @@ static void cx_vm_pushSignalHandler(cx_vmProgram program, cx_vm_context *c) {
     } else {
         prevSegfaultHandler = result;
     }
+
     result = signal(SIGABRT, cx_vm_sig);
     if (result == SIG_ERR) {
         cx_error("failed to install signal handler for SIGABRT");
     } else {
         prevAbortHandler = result;
     }
-    
+
+    result = signal(SIGINT, cx_vm_sig);
+    if (result == SIG_ERR) {
+        cx_error("failed to install signal handler for SIGINT");
+    } else {
+        prevInterruptHandler = result;
+    }    
+
     /* Store current program in TLS */
     cx_vm_pushCurrentProgram(program, c);
 }
@@ -1173,6 +1194,11 @@ static void cx_vm_popSignalHandler(void) {
         cx_error("failed to uninstall signal handler for SIGABRT");
     } else {
         prevAbortHandler = NULL;
+    }
+    if (signal(SIGINT, prevInterruptHandler) == SIG_ERR) {
+        cx_error("failed to uninstall signal handler for SIGINT");
+    } else {
+        prevInterruptHandler = NULL;
     }
     
     cx_vm_popCurrentProgram();

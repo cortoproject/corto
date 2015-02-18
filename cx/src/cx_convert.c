@@ -475,7 +475,6 @@ void cx_convertInit(void) {
     CX_CONVERT_INIT_NUM(CX_UINTEGER, CX_WIDTH_64, CX_BITMASK, CX_WIDTH_32, int64, enum);
     CX_CONVERT_INIT_NUM(CX_BITMASK, CX_WIDTH_32, CX_BOOLEAN, CX_WIDTH_8, int32, bool);
 
-
     /* string to character */
     CX_CONVERT_INIT_NUM(CX_TEXT, CX_WIDTH_WORD, CX_CHARACTER, CX_WIDTH_8, string, char8);
 

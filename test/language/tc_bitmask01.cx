@@ -33,7 +33,7 @@ if "$v3" != "0": fail("\"$v3\" != \"0\" ($v3)")
 
 // Test bitmask objects
 
-options o : AutomaticWindows | SeatHeating
+options o: AutomaticWindows | SeatHeating
 if !(o & SeatHeating): fail("!(o & SeatHeating) ($o)")
 if o & SpareWheel: fail("o & SpareWheel")
 if !(o & AutomaticWindows): fail("!(o & AutomaticWindows)")
@@ -46,7 +46,7 @@ if !(o2 & AutomaticWindows): fail("!(o2 & AutomaticWindows)")
 if !(o2 & SeatHeating): fail("!(o2 & SeatHeating)")
 if !(o2 & SpareWheel and o2 & AutomaticWindows and o2 & SeatHeating):
     fail("!(o2 & SpareWheel and o2 & AutomaticWindows and o2 & SeatHeating)")
-if "$o2" != "": fail("\"$o3\" != \"0\" ($o3)"):
+if "$o2" != "SeatHeating|AutomaticWindows|SpareWheel":
     fail("\"$o2\" != \"SeatHeating|AutomaticWindows|SpareWheel\" ($o2)")
 
 options o3

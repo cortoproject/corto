@@ -21,23 +21,25 @@ Fast_Expression Fast_Parser_getAnonymousLocal(Fast_Parser _this, Fast_Variable t
 cx_int8 Fast_Expression_getTypeScore(cx_primitive t) {
     cx_int8 result = 0;
     switch(t->kind) {
+    case CX_ENUM:
+    case CX_BITMASK:
+        result = 1;
+        break;
     case CX_BOOLEAN:
     case CX_BINARY:
     case CX_INTEGER:
     case CX_UINTEGER:
     case CX_ALIAS:
-        result = 1;
-        break;
-    case CX_ENUM:
-    case CX_BITMASK:
-    case CX_CHARACTER:
         result = 2;
         break;
-    case CX_FLOAT:
+    case CX_CHARACTER:
         result = 3;
         break;
-    case CX_TEXT:
+    case CX_FLOAT:
         result = 4;
+        break;
+    case CX_TEXT:
+        result = 5;
         break;
     }
     return result;
@@ -47,21 +49,23 @@ cx_int8 Fast_Expression_getTypeScore(cx_primitive t) {
 cx_int8 Fast_Expression_getCastScore(cx_primitive t) {
     cx_int8 result = 0;
     switch(t->kind) {
+        case CX_ENUM:
+        case CX_BITMASK:
+            result = 1;
+            break;
         case CX_BOOLEAN:
         case CX_BINARY:
         case CX_INTEGER:
         case CX_UINTEGER:
         case CX_ALIAS:
-        case CX_ENUM:
-        case CX_BITMASK:
         case CX_CHARACTER:
-            result = 1;
-            break;
-        case CX_FLOAT:
             result = 2;
             break;
-        case CX_TEXT:
+        case CX_FLOAT:
             result = 3;
+            break;
+        case CX_TEXT:
+            result = 4;
             break;
     }
     return result;

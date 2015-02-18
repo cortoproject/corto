@@ -1,3 +1,6 @@
+.PHONY: all
+.PHONY: clean
+.PHONY: gcov
 
 all:
 	@make -C common
@@ -22,13 +25,3 @@ gcov:
 	@make gcov -C interface
 	@make gcov -C api
 	@make gcov -C project
-	
-splint:
-	@make splint -C common
-	@make splint -C type
-	@make splint -C load
-	@make splint -C interface
-	@make splint -C api
-	@make splint -C project
-	
-

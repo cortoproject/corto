@@ -23,7 +23,7 @@
 
 #define BLACK  "\033[1;30m"
 #define RED    "\033[1;31m"
-#define GREEN  "\033[1;32m"
+#define GREEN  "\033[0;32m"
 #define YELLOW "\033[0;33m"
 #define BLUE   "\033[1;34m"
 #define MAGENTA "\033[1;35m"
@@ -104,7 +104,7 @@ static cx_string cxsh_printColumnValue(cx_string str, unsigned int width){
         cx_id buffer;
         snprintf(buffer, width - 2, "%s", str);
         (*cxsh_findPreferredBreak(buffer)) = '\0';
-        printf("%s%*s", buffer, width - strlen(buffer), " ");
+        printf("%s%*s", buffer, width - (unsigned int)strlen(buffer), " ");
         result = str + strlen(buffer);
         if (*result == ' ') {
             result++;
@@ -410,7 +410,7 @@ static cx_string cxsh_multiline(cx_string expr, cx_uint32 indent) {
             cx_uint32 i;
             /* Print indent */
             cxsh_color(SHELL_COLOR);
-            printf("%*s >", strlen(prompt) - 2, "");
+            printf("%*s >", (unsigned int)strlen(prompt) - 2, "");
             cxsh_color(BLUE);
             for(i = 0; i < (indent * 4 - 1); i++) {
                 printf(".");
@@ -596,12 +596,12 @@ static int cxsh_doCmd(char* cmd) {
     arg[0] = '\0';
 
     /* ls */
-    if (!memcmp(cmd, "ls", strlen("ls"))) {
-        sscanf(cmd, "ls  %s", arg);
+    if (!memcmp(cmd, "ls ", strlen("ls "))) {
+        sscanf(cmd, "ls %s", arg);
         cxsh_ls(arg);
     } else
     /* tree */
-    if (!memcmp(cmd, "tree", strlen("tree"))) {
+    if (!memcmp(cmd, "tree ", strlen("tree "))) {
         sscanf(cmd, "tree %s", arg);
         cxsh_tree(arg);
     } else
@@ -610,16 +610,16 @@ static int cxsh_doCmd(char* cmd) {
         goto quit;
     } else
     /* cd */
-    if (!memcmp(cmd, "cd", strlen("cd"))) {
+    if (!memcmp(cmd, "cd ", strlen("cd "))) {
         sscanf(cmd, "cd %s", arg);
         cxsh_cd(arg);
     } else
     /* import */
-    if (!memcmp(cmd, "import", strlen("import"))) {
+    if (!memcmp(cmd, "import ", strlen("import "))) {
         sscanf(cmd, "import %s", arg);
         cxsh_import(arg);
     } else/* drop */
-    if (!memcmp(cmd, "drop", strlen("drop"))) {
+    if (!memcmp(cmd, "drop ", strlen("drop "))) {
         sscanf(cmd, "drop %s", arg);
         cxsh_drop(arg);
     } else if (!memcmp(cmd, "clear", strlen("clear"))) {
@@ -636,7 +636,7 @@ static int cxsh_doCmd(char* cmd) {
             if ((location = cxsh_getErrorLocation(lastErr))) {
                 cx_id prompt;
                 cxsh_prompt(scope, FALSE, prompt);
-                printf("%*s^\n", location - 1 + strlen(prompt), "");
+                printf("%*s^\n", location - 1 + (unsigned int)strlen(prompt), "");
             }
 
             do {

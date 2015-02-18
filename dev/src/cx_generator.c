@@ -266,19 +266,7 @@ static int g_closeFile(void* o, void* udata) {
 
     file = o;
 
-    /* Free snippets */
-    if (file->snippets) {
-        cx_llWalk(file->snippets, g_freeSnippet, file);
-        cx_llFree(file->snippets);
-    }
-    if (file->headers) {
-        cx_llWalk(file->headers, g_freeSnippet, file);
-        cx_llFree(file->headers);
-    }
-
-    cx_fileClose(file->file);
-    cx_dealloc(file->name);
-    cx_dealloc(file);
+    g_fileClose(file);
 
     return 1;
 }
@@ -877,6 +865,25 @@ error:
         cx_dealloc(code);
     }
     return -1;
+}
+
+void g_fileClose(g_file file) {
+    /* Remove file from generator administration */
+    cx_llRemove(file->generator->files, file);
+
+    /* Free snippets */
+    if (file->snippets) {
+        cx_llWalk(file->snippets, g_freeSnippet, file);
+        cx_llFree(file->snippets);
+    }
+    if (file->headers) {
+        cx_llWalk(file->headers, g_freeSnippet, file);
+        cx_llFree(file->headers);
+    }
+
+    cx_fileClose(file->file);
+    cx_dealloc(file->name);
+    cx_dealloc(file);
 }
 
 /* Open file */

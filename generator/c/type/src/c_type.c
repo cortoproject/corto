@@ -271,24 +271,22 @@ static cx_int16 c_typeClass(cx_serializer s, cx_value* v, void* userData) {
     t = cx_valueType(v);
 
     /* Open class */
-    if (t->alignment) {
-        g_fileWrite(data->header, "CX_CLASS_DEF(%s) {\n", g_fullOid(data->g, t, id));
-        g_fileIndent(data->header);
+    g_fileWrite(data->header, "CX_CLASS_DEF(%s) {\n", g_fullOid(data->g, t, id));
+    g_fileIndent(data->header);
 
-        /* Write base */
-        if (cx_interface(t)->base && cx_type(cx_interface(t)->base)->alignment) {
-            g_fileWrite(data->header, "CX_EXTEND(%s);\n", g_fullOid(data->g, cx_interface(t)->base, id));
-        }
-
-        /* Serialize members */
-        if (cx_serializeMembers(s, v, userData)) {
-            goto error;
-        }
-        g_fileDedent(data->header);
-
-        /* Close class */
-        g_fileWrite(data->header, "};\n\n");
+    /* Write base */
+    if (cx_interface(t)->base) {
+        g_fileWrite(data->header, "CX_EXTEND(%s);\n", g_fullOid(data->g, cx_interface(t)->base, id));
     }
+
+    /* Serialize members */
+    if (cx_serializeMembers(s, v, userData)) {
+        goto error;
+    }
+    g_fileDedent(data->header);
+
+    /* Close class */
+    g_fileWrite(data->header, "};\n\n");
 
     return 0;
 error:

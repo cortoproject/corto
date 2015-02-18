@@ -1,3 +1,6 @@
+.PHONY: all
+.PHONY: clean
+.PHONY: gcov
 
 all:
 	@make -C xml
@@ -13,10 +16,3 @@ gcov:
 	@make gcov -C xml
 	@make gcov -C json
 	@make gcov -C fast
-	
-splint:
-	@make splint -C xml
-	@make splint -C json
-	@make splint -C fast
-	
-

@@ -38,6 +38,7 @@ extern "C" {
 #define cx_method(o) ((cx_method)o)
 #define cx_observableEvent(o) ((cx_observableEvent)o)
 #define cx_observer(o) ((cx_observer)o)
+#define cx_package(o) ((cx_package)o)
 #define cx_primitive(o) ((cx_primitive)o)
 #define cx_procedure(o) ((cx_procedure)o)
 #define cx_sequence(o) ((cx_sequence)o)
@@ -520,25 +521,33 @@ typedef enum cx_operatorKind {
     CX_ASSIGN_XOR = 17,
     CX_ASSIGN_OR = 18,
     CX_ASSIGN_AND = 19,
-    CX_COND_OR = 20,
-    CX_COND_AND = 21,
-    CX_COND_NOT = 22,
-    CX_COND_EQ = 23,
-    CX_COND_NEQ = 24,
-    CX_COND_GT = 25,
-    CX_COND_LT = 26,
-    CX_COND_GTEQ = 27,
-    CX_COND_LTEQ = 28,
-    CX_SHIFT_LEFT = 29,
-    CX_SHIFT_RIGHT = 30,
-    CX_COMMA = 31,
-    CX_REF = 32,
-    CX_MEMBER_RESOLVE = 33,
-    CX_ELEMENT_OPEN = 34,
-    CX_ELEMENT_CLOSE = 35,
-    CX_BRACKET_OPEN = 36,
-    CX_BRACKET_CLOSE = 37
+    CX_ASSIGN_UPDATE = 20,
+    CX_COND_OR = 21,
+    CX_COND_AND = 22,
+    CX_COND_NOT = 23,
+    CX_COND_EQ = 24,
+    CX_COND_NEQ = 25,
+    CX_COND_GT = 26,
+    CX_COND_LT = 27,
+    CX_COND_GTEQ = 28,
+    CX_COND_LTEQ = 29,
+    CX_SHIFT_LEFT = 30,
+    CX_SHIFT_RIGHT = 31,
+    CX_COMMA = 32,
+    CX_REF = 33,
+    CX_MEMBER_RESOLVE = 34,
+    CX_ELEMENT_OPEN = 35,
+    CX_ELEMENT_CLOSE = 36,
+    CX_BRACKET_OPEN = 37,
+    CX_BRACKET_CLOSE = 38
 } cx_operatorKind;
+
+/*  ::cortex::lang::package */
+CX_CLASS(cx_package);
+
+CX_CLASS_DEF(cx_package) {
+    cx_string url;
+};
 
 /* ::cortex::lang::procedureKind */
 typedef enum cx_procedureKind {

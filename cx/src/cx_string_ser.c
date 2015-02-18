@@ -10,7 +10,7 @@
 
 #define BLACK  "\033[1;30m"
 #define RED    "\033[1;31m"
-#define GREEN  "\033[1;32m"
+#define GREEN  "\033[0;32m"
 #define YELLOW "\033[0;33m"
 #define BLUE   "\033[1;34m"
 #define MAGENTA "\033[1;35m"
@@ -432,6 +432,7 @@ struct cx_serializer_s cx_string_ser(cx_modifier access, cx_operatorKind accessK
     s.program[CX_PRIMITIVE] = cx_ser_primitive;
     s.program[CX_COMPOSITE] = cx_ser_scope;
     s.program[CX_COLLECTION] = cx_ser_scope;
+    
     s.metaprogram[CX_MEMBER] = cx_ser_item;
     s.metaprogram[CX_BASE] = cx_serializeMembers;   /* Skip the scope-callback by directly calling serializeMembers. This will cause the extra
                                                      * '{ }' not to appear, which is required by this string format. */

@@ -36,7 +36,7 @@ if Spaceship::turn.typeof() != method: fail("Spaceship::turn.typeof != method ($
 if Spaceship::engines.typeof() != function: fail("Spaceship::engines.typeof() != method (${Spaceship::engines.typeof().nameof()})")
 
 // Call methods and function
-Spaceship MilleniumFalcon:
+Spaceship MilleniumFalcon:;
 
 MilleniumFalcon.move(10,20)
 MilleniumFalcon.turn(90)

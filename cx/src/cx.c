@@ -32,7 +32,7 @@ struct cx_exitHandler {
     void* userData;
 };
 
-static cx_mutex_s cx_adminLock;
+cx_mutex_s cx_adminLock;
 static cx_ll cx_exitHandlers = NULL;
 static cx_ll cx_unloadHandlers = NULL;
 
@@ -76,7 +76,8 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_CLASS(op, map);\
     SSO_OP_CLASS(op, member);\
     SSO_OP_CLASS(op, class);\
-    SSO_OP_CLASS(op, delegate);
+    SSO_OP_CLASS(op, delegate);\
+    SSO_OP_CLASS(op, package);
 
 /* Procedures */
 #define SSO_OP_PROCEDURETYPE(op)\
@@ -188,17 +189,17 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, metaprocedure_bind_);\
     /* dispatcher */\
     SSO_OP_OBJ(op, dispatcher_post);\
-    SSO_OP_OBJ(op, dispatcher_getEvent);\
     /* event */\
     SSO_OP_OBJ(op, event_kind);\
     SSO_OP_OBJ(op, event_handled);\
-    SSO_OP_OBJ(op, event_processed_);\
+    SSO_OP_OBJ(op, event_handle_);\
     SSO_OP_OBJ(op, event_uniqueKind);\
     /* observableEvent */\
     SSO_OP_OBJ(op, observableEvent_observer);\
     SSO_OP_OBJ(op, observableEvent_me);\
     SSO_OP_OBJ(op, observableEvent_source);\
     SSO_OP_OBJ(op, observableEvent_observable);\
+    SSO_OP_OBJ(op, observableEvent_handle_);\
     /* width */\
     SSO_OP_OBJ(op, width_WIDTH_8);\
     SSO_OP_OBJ(op, width_WIDTH_16);\
@@ -265,6 +266,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, operatorKind_ASSIGN_XOR);\
     SSO_OP_OBJ(op, operatorKind_ASSIGN_OR);\
     SSO_OP_OBJ(op, operatorKind_ASSIGN_AND);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_UPDATE);\
     SSO_OP_OBJ(op, operatorKind_COND_OR);\
     SSO_OP_OBJ(op, operatorKind_COND_AND);\
     SSO_OP_OBJ(op, operatorKind_COND_NOT);\
@@ -493,6 +495,8 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, parameter_name);\
     SSO_OP_OBJ(op, parameter_type);\
     SSO_OP_OBJ(op, parameter_passByReference);\
+    /* package */\
+    SSO_OP_OBJ(op, package_url);
 
 /* 2nd degree objects (function parameters) */
 #define SSO_OP_OBJECT_2ND(op) \

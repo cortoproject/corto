@@ -203,11 +203,15 @@ cx_uint32 cx__interface_calculateSize(cx_interface _this, cx_uint32 base) {
         memberSize = cx_type_sizeof(memberType);
         if (!memberSize) {
             cx_id id1, id2;
-            cx_warning("type '%s' has a member of type '%s' which has size 0.", cx_fullname(_this, id1), cx_fullname(memberType, id2));
+            cx_error("member '%s' of type '%s' is of invalid type '%s'", cx_nameof(m), cx_fullname(_this, id1), cx_fullname(memberType, id2));
+            goto error;
         }
 
         /* Align size */
         alignment = cx_type_alignmentof(memberType);
+        if (!alignment) {
+            goto error;
+        }
         size = CX_ALIGN(size, alignment);
 
         if (m->type->hasResources || m->type->reference) {
@@ -219,6 +223,8 @@ cx_uint32 cx__interface_calculateSize(cx_interface _this, cx_uint32 base) {
     }
 
     return interfaceAlignment ? CX_ALIGN(size, interfaceAlignment) : 0;
+error:
+    return 0;
 }
 
 static int cx_interface_insertMemberAction(void* o, void* userData) {

@@ -173,6 +173,12 @@ cx_observer cx_observer__declare(cx_object _parent, cx_string _name);
 int cx_observer__define(cx_observer _this, cx_object observable, cx_eventMask mask, cx_string expression, cx_uint32 template, cx_dispatcher dispatcher, cx_object me);
 cx_observer cx_observer__create(cx_object observable, cx_eventMask mask, cx_string expression, cx_uint32 template, cx_dispatcher dispatcher, cx_object me);
 
+/* ::cortex::lang::package */
+cx_package cx_package__new(void);
+cx_package cx_package__declare(cx_object _parent, cx_string _name);
+int cx_package__define(cx_package _this, cx_string url);
+cx_package cx_package__create(cx_string url);
+
 /* ::cortex::lang::parameter */
 void cx_parameter__init(cx_parameter *_this, cx_string name, cx_type type, cx_bool passByReference);
 void cx_parameter__deinit(cx_parameter *_this);

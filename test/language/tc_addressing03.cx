@@ -17,7 +17,7 @@ void testref(Point value, int32 x, int32 y, string msg):
     if value.y != y: fail("$msg (y = ${value.y})")
     test(value, x, y, "$msg (passthrough)")
 
-Point p1, p2:
+Point p1, p2:;
 
 p1.x = 10
 p1.y = 20

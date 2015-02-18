@@ -1,7 +1,8 @@
 bool result : true
 
+// Comment
 string testname : "tc_addressing01"
-void fail(string msg): 
+void fail(string msg):
     "$testname: FAIL: $msg"
     result = false
 
@@ -15,7 +16,7 @@ void testref(int32 &value, int32 testval, string msg):
 void testobject(object o, string name, string msg):
     if o.nameof() != name: fail(msg)
 
-int32 x, x1:
+int32 x, x1
 
 x = 10
 if x != 10: fail("Value non-ref object")

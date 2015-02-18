@@ -100,6 +100,10 @@ cx_int16 cx_expr(cx_object scope, cx_string expr, cx_value *value);
 cx_int32 cx_readBegin(cx_object object);
 cx_int32 cx_readEnd(cx_object object);
 
+/* Locking */
+cx_int32 cx_lock(cx_object object);
+cx_int32 cx_unlock(cx_object object);
+
 /* Set reference field */
 void cx_set(void* ptr, cx_object value);
 void cx_set_ext(cx_object source, void* ptr, cx_object value, cx_string context);

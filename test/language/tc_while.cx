@@ -11,11 +11,11 @@ while i:
 if i: fail("while (1)")
 
 i=10
-while i--:
+while i--:;
 if i: fail("while (2)")
 
 i=0
-while i<10:
+while i < 10:
     i++
 if i != 10: fail("while (3)")
 

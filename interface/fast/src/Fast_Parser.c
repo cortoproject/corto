@@ -113,7 +113,7 @@ cx_int16 Fast_Parser_toIc(Fast_Parser _this) {
     cx_vmProgram vmProgram = NULL;
 
     /* Parse root-block */
-    Fast_Block_toIc(_this->block, program, NULL    , FALSE);
+    Fast_Block_toIc(_this->block, program, NULL, FALSE);
     if (_this->errors) {
         goto error;
     }
@@ -127,8 +127,7 @@ cx_int16 Fast_Parser_toIc(Fast_Parser _this) {
 #ifdef CX_IC_TRACING
     extern cx_bool CX_DEBUG_ENABLED;
     if (CX_DEBUG_ENABLED) {
-        cx_string programStr;
-        programStr = cx_icProgram_toString(program);
+        cx_string programStr = cx_icProgram_toString(program);
         cx_print("%s", programStr);
         cx_dealloc(programStr);
     }
@@ -926,7 +925,6 @@ Fast_Variable Fast_Parser_observerCreate(Fast_Parser _this, cx_string id, Fast_E
     result = (Fast_Variable)Fast_Object__create(observer);
     Fast_Parser_collect(_this, result);
 
-
     return result;
 error:
     fast_err;
@@ -1086,6 +1084,17 @@ Fast_Expression Fast_Parser_binaryExpr(Fast_Parser _this, Fast_Expression lvalue
     if (lvalues && rvalues && (_this->pass || ((_this->initializerCount >= 0) && _this->initializers[_this->initializerCount]))) {
         Fast_ExpandAction combine = Fast_Parser_combineCommaExpr;
         switch(operator) {
+        case CX_ASSIGN_UPDATE:
+            if (!(result = Fast_Expression(Fast_Parser_binaryExpr(_this, lvalues, rvalues, CX_ASSIGN)))) {
+                goto error;
+            }
+            Fast_Parser_collect(_this, result);
+
+            cx_ll exprList = Fast_Expression_toList(result);
+            result = Fast_Expression(Fast_Update__create(exprList, NULL, NULL));
+            Fast_Parser_collect(_this, result);
+
+            break;
         case CX_COND_EQ:
         case CX_COND_NEQ:
         case CX_COND_AND:
@@ -1095,13 +1104,13 @@ Fast_Expression Fast_Parser_binaryExpr(Fast_Parser _this, Fast_Expression lvalue
         case CX_COND_GTEQ:
         case CX_COND_LTEQ:
             combine = Fast_Parser_combineConditionalExpr;
-            break;
+        /* fallthrough */
         default:
+            if (!(result = Fast_Parser_expandCommaExpr(_this, lvalues, rvalues, Fast_Parser_expandBinaryExpr, combine, &operator))) {
+                goto error;
+            }    
             break;
         }
-        if (!(result = Fast_Parser_expandCommaExpr(_this, lvalues, rvalues, Fast_Parser_expandBinaryExpr, combine, &operator))) {
-            goto error;
-        }    
     }
     
     return result;
@@ -2463,6 +2472,7 @@ cx_uint32 Fast_Parser_parse(Fast_Parser _this) {
 
     /* Reset parser-state so 2nd pass starts clean */
     Fast_Parser_reset(_this);
+    _this->scope = NULL;
     
     _this->pass = 1;
     if ( fast_yparse(_this, 1, 1)) {
@@ -2760,6 +2770,76 @@ cx_void Fast_Parser_pushLvalue(Fast_Parser _this, Fast_Expression lvalue, cx_boo
 /* $end */
 }
 
+/* ::cortex::Fast::Parser::pushPackage(string name) */
+cx_int16 Fast_Parser_pushPackage(Fast_Parser _this, cx_string name) {
+/* $begin(::cortex::Fast::Parser::pushPackage) */
+    Fast_Variable type = Fast_Variable(Fast_Object__create(cx_package_o));
+    char ch, *ptr, *bptr;
+    cx_id buffer;
+
+    if (Fast_ObjectBase(_this->scope)->value != root_o) {
+        Fast_Parser_error(_this, "#package may only be used in the root scope");
+        goto error;
+    }
+
+    _this->scope = Fast_Variable(Fast_Object__create(root_o));
+    if (!memcmp(name, "::", 2)) {
+        name += 2;
+    } else {
+        Fast_Parser_error(_this, "packages must be specified using fully qualified names");
+        goto error;
+    }
+
+    /* Check for package nesting */
+    ptr = name;
+    bptr = buffer;
+    while ((ch = *ptr)) {
+        if (ch == ':') {
+            if (ptr[1] == ':') {
+                *bptr = '\0';
+                ptr++;
+                cx_object o = cx_resolve(Fast_ObjectBase(_this->scope)->value, buffer);
+                if (!o) {
+                    /* Declare package */
+                    Fast_Parser_declaration(_this, type, buffer, FALSE); 
+
+                    /* Push package as scope */
+                    Fast_Parser_pushScope(_this);
+
+                    /* Define package */
+                    Fast_Parser_defineScope(_this);                   
+                } else {
+                    _this->scope = Fast_Variable(Fast_Object__create(o));
+                    cx_free(o);
+                }
+                bptr = buffer;
+            } else {
+                Fast_Parser_error(_this, "invalid package name '%s'", name);
+                goto error;
+            }
+        } else {
+            *bptr = ch;
+            bptr++;
+        }
+        ptr++;
+    }
+    *bptr = '\0';
+
+    /* Declare package */
+    Fast_Parser_declaration(_this, type, buffer, FALSE);
+
+    /* Push package as scope */
+    Fast_Parser_pushScope(_this);
+
+    /* Define package */
+    Fast_Parser_defineScope(_this);
+
+    return 0;
+error:
+    return -1;
+/* $end */
+}
+
 /* ::cortex::Fast::Parser::pushReturnAsLvalue(function function) */
 cx_void Fast_Parser_pushReturnAsLvalue(Fast_Parser _this, cx_function function) {
 /* $begin(::cortex::Fast::Parser::pushReturnAsLvalue) */
@@ -2820,7 +2900,6 @@ cx_void Fast_Parser_reset(Fast_Parser _this) {
     _this->complexTypeSp = 0;
     _this->initializerCount = -1;
     _this->stagingAllowed = TRUE;
-    _this->token = NULL;
     
     if (_this->pass) {
         for(i=0; i<_this->stagedCount; i++) {

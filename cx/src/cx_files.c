@@ -35,7 +35,7 @@ static void printError(int e, const char *msg) {
         default: sprintf(errorrepr, "unknown code"); break;
     }
     
-    cx_error("(%s): %s.", errorrepr, msg);
+    cx_error("(%s): %s", errorrepr, msg);
 }
 
 int cx_fileTest(const char* file) {
@@ -74,6 +74,33 @@ int cx_mkdir(const char *name) {
 
     if (mkdir(name, 0700)) {
         _errno = errno;
+
+        /* If error is ENOENT an element in the prefix of the name 
+         * doesn't exist. Recursively create pathname, and retry. */
+        if (errno == ENOENT) {
+            /* Allocate so as to not run out of stackspace in recursive call */
+            char *prefix = cx_strdup(name);
+            char *ptr = &prefix[strlen(prefix)-1], ch;
+            while ((ch = *ptr) && (ptr >= prefix)) {
+                if (ch == '/') {
+                    *ptr = '\0';
+                    break;
+                }
+                ptr--;
+            }
+            if (ch == '/') {
+                if (!cx_mkdir(prefix)) {
+                    /* Retry current directory */
+                    mkdir(name, 0700);
+                } else {
+                    goto error;
+                }
+            } else {
+                goto error; /* If no prefix is found, report error */
+            }
+            cx_dealloc(prefix);
+        }
+
         /* Post condition for function is that directory exists so don't
          * report an error if it already did. */
         if (errno != EEXIST) {
@@ -83,7 +110,7 @@ int cx_mkdir(const char *name) {
 
     return 0;
 error:
-    sprintf(msg, "could not create directory %s", name);
+    sprintf(msg, "could not create directory '%s'", name);
     printError(_errno, msg);
     return -1;
 }

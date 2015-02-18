@@ -29,6 +29,8 @@
 
 #include <limits.h>
 
+extern cx_mutex_s cx_adminLock;
+
 static int cx_adopt(cx_object parent, cx_object child);
 static cx_int32 cx_notify(cx__observable *_o, cx_object observable, cx_object _this, cx_uint32 mask);
 
@@ -829,10 +831,12 @@ cx_object cx_new_ext(cx_object src, cx_type type, cx_uint8 attrs, cx_string cont
                 goto error;
             }
             /* Add object to anonymous cache */
+            cx_mutexLock(&cx_adminLock);
             if (!cx_anonymousObjects) {
                 cx_anonymousObjects = cx_llNew();
             }
             cx_llInsert(cx_anonymousObjects, CX_OFFSET(o, sizeof(cx__object)));
+            cx_mutexUnlock(&cx_adminLock);
         }
     }
 
@@ -1400,7 +1404,9 @@ cx_uint16 cx__destruct(cx_object o) {
             cx__deinitScope(o);
         } else {
             /* Remove from anonymous cache */
+            cx_mutexLock(&cx_adminLock);
             cx_llRemove(cx_anonymousObjects, o);
+            cx_mutexUnlock(&cx_adminLock);
         }
 
         /* Reset template observable table */
@@ -1820,6 +1826,10 @@ cx_object cx_resolve_ext(cx_object src, cx_object _scope, cx_string str, cx_bool
         str += 2;
         scope = root_o;
         fullyQualified = TRUE;
+    } else if (*str == '/') {
+        str += 1;
+        scope = root_o;
+        fullyQualified = TRUE;
     }
 
 repeat:
@@ -1836,7 +1846,7 @@ repeat:
             overload = FALSE;
             /* Parse name */
             bptr = buffer;
-            while((ch = *ptr) && (ch != ':') && (ch != '{')) {
+            while((ch = *ptr) && (ch != ':') && (ch != '{') && (ch != '/')) {
                 *bptr = ch;
                 bptr++;
                 ptr++;
@@ -1896,9 +1906,10 @@ repeat:
                     }
                     cx_free_ext(src, prev, "Free type of anonymous identifier");
                     break;
-                } else
-                if (*(cx_uint16*)ptr == CX_SCOPE_HEX) {
+                } else if (*(cx_uint16*)ptr == CX_SCOPE_HEX) {
                     ptr += 2;
+                } else if (ch == '/') {
+                    ptr += 1;
                 } else {
                     cx_error("cx_resolve: invalid ':' in expression '%s'", str);
                     o = NULL;
@@ -2096,13 +2107,18 @@ static void cx_notifyObserver(cx__observer *data, cx_object observable, cx_objec
 }
 indent++;
 #endif
+
         if (!observer->dispatcher) {
             data->notify(data, data->_this, observable, source, mask);
         } else {
             if (!data->_this || (data->_this != source)) {
-                cx_observableEvent event;
+                cx_observableEvent event = cx_new_ext(NULL, cx_type(cx_observableEvent_o), 0, NULL);
                 cx_dispatcher dispatcher = observer->dispatcher;
-                event = (cx_observableEvent)cx_dispatcher_getEvent(dispatcher, observer, data->_this, observable, source);
+
+                cx_set(&event->observer, observer);
+                cx_set(&event->me, data->_this);
+                cx_set(&event->observable, observable);
+                cx_set(&event->source, source);
 
                 /* Destruct events must always be send synchronous because otherwise the object's value might no longer
                  * be valid when it is received by the observer (object destruction will continue after notification). */
@@ -2208,9 +2224,9 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
      * conditions that need to be evaluated in the notifyObserver function. */
     if (cx_function(observer)->kind == CX_PROCEDURE_CDECL) {
         if (_this) {
-            _observerData->notify = cx_notifyObserverThisCdecl;
+            _observerData->notify = cx_notifyObserverThis;
         } else {
-            _observerData->notify = cx_notifyObserverCdecl;
+            _observerData->notify = cx_notifyObserverDefault;
         }
     } else {
         if (_this) {
@@ -2285,9 +2301,14 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
     if (!added) {
         cx_dealloc(_observerData);
     } else {
-        /* If observer is subscribed to new events, align observer with existing */
+        /* If observer is subscribed to declare events, align observer with existing */
         if (observer->mask & CX_ON_DECLARE) {
             cx_observerAlign(observable, _observerData);
+        }
+        
+        /* If observer is subscribed to define events, align observer with object if defined */
+        if ((observer->mask & CX_ON_DEFINE) && cx_checkState(observable, CX_DEFINED)) {
+            cx_notifyObserver(_observerData, observable, observable, CX_ON_DEFINE);   
         }
     }
 
@@ -2444,14 +2465,14 @@ static void cx_notifyObserverDefault(cx__observer* data, cx_object _this, cx_obj
     cx_function f = cx_function(data->observer);
     CX_UNUSED(_this);
     CX_UNUSED(mask);
-    cx_call(f, NULL, observable, source);
+    cx_call(f, NULL, NULL, observable, source);
 }
 
 static void cx_notifyObserverCdecl(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask) {
     cx_function f = cx_function(data->observer);
     CX_UNUSED(_this);
     CX_UNUSED(mask);
-    ((void(*)(cx_object,cx_object))f->implData)(observable, source);
+    ((void(*)(cx_object,cx_object,cx_object))f->implData)(NULL, observable, source);
 }
 
 static void cx_notifyObserverThis(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask) {
@@ -2810,6 +2831,26 @@ error:
 }
 
 cx_int32 cx_readEnd(cx_object object) {
+    return cx_unlock(object);
+}
+
+/* Thread-safe writing */
+cx_int32 cx_lock(cx_object object) {
+    if (cx_checkAttr(object, CX_ATTR_WRITABLE)) {
+        cx__writable* _o;
+
+        _o = cx__objectWritable(CX_OFFSET(object, -sizeof(cx__object)));
+        if (cx_rwmutexWrite(&_o->lock)) {
+            goto error;
+        }
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
+cx_int32 cx_unlock(cx_object object) {
     if (cx_checkAttr(object, CX_ATTR_WRITABLE)) {
         cx__writable* _o;
 
@@ -2823,6 +2864,7 @@ cx_int32 cx_readEnd(cx_object object) {
 error:
     return -1;
 }
+
 
 /* Obtain function name from signature */
 cx_int32 cx_signatureName(cx_string signature, cx_id buffer) {
@@ -3044,7 +3086,11 @@ error:
 cx_uint32 cx_overloadParamCount(cx_object o) {
     cx_uint32 result;
     if (cx_interface(cx_typeof(o))->kind == CX_PROCEDURE) {
-        result = cx_function(o)->parameters.length;
+        if (cx_procedure(cx_typeof(o))->kind != CX_OBSERVER) {
+            result = cx_function(o)->parameters.length;
+        } else {
+            result = 0;
+        }
     } else {
         result = cx_delegate(cx_typeof(o))->parameters.length;
     }

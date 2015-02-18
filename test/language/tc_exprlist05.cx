@@ -7,7 +7,7 @@ void fail(string msg):
 struct Point::
     x, y: uint32
     
-Point p,q:
+Point p,q:;
 
 // Multiple lvalues
 (p,q).x = 1
