@@ -20,12 +20,16 @@ prints: `Hi Cortex!`
 ```
 struct Point::      // Create a new composite type
    x, y: int32
-   
 Point imHere: 1, 2  // Create an object
-
 "$imHere"           // Print object value
 ```
 prints: `{1,2}`
+#### Basic events
+```
+int32 a                       // A primitive object
+a := 10                       // Assign 10 & trigger an event
+on update a: "A triggered!"   // Observer of a
+```
 ## Create and implement a package from scratch
 Run the following commands to create a new C package called `StarWars`
 ```
