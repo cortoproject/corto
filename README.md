@@ -86,19 +86,19 @@ In `StarWars_SpaceShip.c`, add the following code to the `StarWars_SpaceShip_con
 ```c
 /* $begin(::StarWars::SpaceShip::construct) */
     switch(_this->kind) {
-    case STARWARS_XWing:
+    case StarWars_XWing:
        _this->hp = 100;
        _this->strength = 500;
        break;
-    case STARWARS_MilleniumFalcon:
+    case StarWars_MilleniumFalcon:
        _this->hp = 500;
        _this->strength = 1000;
        break;
-    case STARWARS_Destroyer:
+    case StarWars_Destroyer:
        _this->hp = 3000;
        _this->strength = 5000;
        break;
-    case STARWARS_DeathStar:
+    case StarWars_DeathStar:
        _this->hp = 2000000000;
        _this->strength = 2000000000;
        break;
@@ -110,7 +110,7 @@ In `StarWars_SpaceShip.c`, add the following code to the `StarWars_SpaceShip_con
 In the `StarWars_SpaceShip_attack` method, add the following code:
 ```c
 /* $begin(::StarWars::SpaceShip::attack) */
-    if ((_this->kind == STARWARS_MilleniumFalcon) && (target->kind == STARWARS_DeathStar)) {
+    if ((_this->kind == StarWars_MilleniumFalcon) && (target->kind == StarWars_DeathStar)) {
         target->hp = 0;
     } else if (_this->strength > target->hp) {
         target->hp = 0;
