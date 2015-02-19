@@ -37,7 +37,8 @@ int32 a                       // A primitive object
 a := 10                       // Assign 10 & trigger an event
 on update a: "A triggered!"   // Observer of a
 ```
-## Create and implement a package from scratch
+## Implement a package Star Wars package
+#### Create the package
 Run the following commands to create a new C package called `StarWars`
 ```
 cxgen --package --lang c StarWars
@@ -60,6 +61,7 @@ When inspecting the `StarWars.cx` file, you'll find:
 ```
 #package ::StarWars
 ```
+#### Add a SpaceShip class
 Add the following lines to this file:
 ```
 enum SpaceShipKind:: XWing, MilleniumFalcon, Destroyer, DeathStar 
@@ -79,7 +81,7 @@ StarWars/
 └── include/
     └── StarWars_SpaceShip.h
 ```
-
+#### Implement the SpaceShip class
 In `StarWars_SpaceShip.c`, add the following code to the `StarWars_SpaceShip_construct` method between the `$begin` and `$end` markers:
 ```c
 /* $begin(::StarWars::SpaceShip::construct) */
@@ -129,7 +131,7 @@ In the `StarWars_SpaceShip_attack` method, add the following code:
     return target->hp == 0;
 /* $end */
 ```
-
+#### Run it!
 That's it! Run `make -C StarWars` again. You can now use this package in scripts!
 
 Try it out with a new file called `epicbattle.cx`, add the following (historically incorrect) lines:
