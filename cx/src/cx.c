@@ -247,6 +247,15 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, equalityKind_NEQ);\
     /* operatorKind */\
     SSO_OP_OBJ(op, operatorKind_ASSIGN);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_ADD);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_SUB);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_MUL);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_DIV);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_MOD);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_XOR);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_OR);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_AND);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_UPDATE);\
     SSO_OP_OBJ(op, operatorKind_ADD);\
     SSO_OP_OBJ(op, operatorKind_SUB);\
     SSO_OP_OBJ(op, operatorKind_MUL);\
@@ -258,15 +267,6 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, operatorKind_OR);\
     SSO_OP_OBJ(op, operatorKind_AND);\
     SSO_OP_OBJ(op, operatorKind_NOT);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_ADD);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_SUB);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_MUL);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_DIV);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_MOD);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_XOR);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_OR);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_AND);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_UPDATE);\
     SSO_OP_OBJ(op, operatorKind_COND_OR);\
     SSO_OP_OBJ(op, operatorKind_COND_AND);\
     SSO_OP_OBJ(op, operatorKind_COND_NOT);\
@@ -278,13 +278,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, operatorKind_COND_LTEQ);\
     SSO_OP_OBJ(op, operatorKind_SHIFT_LEFT);\
     SSO_OP_OBJ(op, operatorKind_SHIFT_RIGHT);\
-    SSO_OP_OBJ(op, operatorKind_COMMA);\
     SSO_OP_OBJ(op, operatorKind_REF);\
-    SSO_OP_OBJ(op, operatorKind_MEMBER_RESOLVE);\
-    SSO_OP_OBJ(op, operatorKind_ELEMENT_OPEN);\
-    SSO_OP_OBJ(op, operatorKind_ELEMENT_CLOSE);\
-    SSO_OP_OBJ(op, operatorKind_BRACKET_OPEN);\
-    SSO_OP_OBJ(op, operatorKind_BRACKET_CLOSE);\
     /* state */\
     SSO_OP_OBJ(op, state_VALID);\
     SSO_OP_OBJ(op, state_DECLARED);\
@@ -383,8 +377,6 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     /* iterator */\
     SSO_OP_OBJ(op, iterator_elementType);\
     SSO_OP_OBJ(op, iterator_init_);\
-    SSO_OP_OBJ(op, iterator_compatible_);\
-    SSO_OP_OBJ(op, iterator_castable_);\
     /* list */\
     SSO_OP_OBJ(op, list_insert);\
     SSO_OP_OBJ(op, list_append);\
@@ -644,37 +636,6 @@ int cx_start(void) {
 
     /* Always randomize seed */
     srand (time(NULL));
-
-    /* TEST TODO DELETE */
-    {
-        cx_array sarray_o = cx_array__create(cx_type(cx_string_o), 2);
-        cx_string *myarray = cx_new(cx_type(sarray_o));
-        cx_iterator siter_o = cx_iterator__create(cx_type(cx_string_o));
-        CX_ITERATOR(IteratorType);
-        IteratorType *iterator = cx_new(cx_type(siter_o));
-        
-        cx_string a;
-        cx_string b;
-
-        cx_vmOp program[5];
-        program[0].op = CX_VM_ITER_SET_WPP;
-        program[0].ic.w = (cx_word)iterator;
-        program[0].lo.w = (cx_word)myarray;
-        program[0].hi.w = (cx_word)sarray_o;
-        program[1].op = CX_VM_ITER_NEXT_WPV;
-        program[1].lo.w = &a;
-        program[1].hi.w = iterator;
-        program[2].op = CX_VM_ITER_NEXT_WPV;
-        program[2].lo.w = &b;
-        program[2].hi.w = iterator;
-        program[4].op = CX_VM_STOP;
-
-        cx_vmProgram p;
-        p = cx_vmProgram_new("filename", NULL);
-        p->program = program;
-        p->size = 4;
-        cx_vm_run(p, NULL);
-    }
 
     return 0;
 }
