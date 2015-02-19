@@ -62,7 +62,7 @@ When inspecting the `StarWars.cx` file, you'll find:
 #package ::StarWars
 ```
 #### Add a SpaceShip class
-Add the following lines to this file:
+Add the following lines to this `StarWars.cx`:
 ```
 enum SpaceShipKind:: XWing, MilleniumFalcon, Destroyer, DeathStar 
 
