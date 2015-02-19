@@ -645,6 +645,37 @@ int cx_start(void) {
     /* Always randomize seed */
     srand (time(NULL));
 
+    /* TEST TODO DELETE */
+    {
+        cx_array sarray_o = cx_array__create(cx_type(cx_string_o), 2);
+        cx_string *myarray = cx_new(cx_type(sarray_o));
+        cx_iterator siter_o = cx_iterator__create(cx_type(cx_string_o));
+        CX_ITERATOR(IteratorType);
+        IteratorType *iterator = cx_new(cx_type(siter_o));
+        
+        cx_string a;
+        cx_string b;
+
+        cx_vmOp program[5];
+        program[0].op = CX_VM_ITER_SET_WPP;
+        program[0].ic.w = (cx_word)iterator;
+        program[0].lo.w = (cx_word)myarray;
+        program[0].hi.w = (cx_word)sarray_o;
+        program[1].op = CX_VM_ITER_NEXT_WPV;
+        program[1].lo.w = &a;
+        program[1].hi.w = iterator;
+        program[2].op = CX_VM_ITER_NEXT_WPV;
+        program[2].lo.w = &b;
+        program[2].hi.w = iterator;
+        program[4].op = CX_VM_STOP;
+
+        cx_vmProgram p;
+        p = cx_vmProgram_new("filename", NULL);
+        p->program = program;
+        p->size = 4;
+        cx_vm_run(p, NULL);
+    }
+
     return 0;
 }
 

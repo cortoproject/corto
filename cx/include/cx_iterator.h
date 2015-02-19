@@ -37,6 +37,8 @@ cx_bool cx_iterator_compatible_v(cx_iterator _this, cx_type type);
 /* ::cortex::lang::iterator::init() */
 cx_int16 cx_iterator_init(cx_iterator _this);
 
+cx_bool cx_iterator_hasNext(void *_this);
+void *cx_iterator_next(void *_this);
 
 #ifdef __cplusplus
 }

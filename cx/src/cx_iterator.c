@@ -15,9 +15,22 @@ cx_int16 cx_iterator_set(void *_this, void *collection, cx_collection collection
     CX_UNUSED(_this);
     CX_UNUSED(collection);
     CX_UNUSED(collectionType);
-    printf("%s\n", cx_nameof(collectionType));
-    printf("%s\n", cx_nameof(collection));
-    printf("%s\n", cx_nameof(_this));
+
+    CX_ITERATOR(IteratorType);
+    IteratorType *iteratorType = _this;
+    iteratorType->type = collectionType;
+
+    switch (collectionType->kind) {
+        case CX_ARRAY:
+        case CX_SEQUENCE:
+            iteratorType->is.array.array = collection;
+            iteratorType->is.array.element = collection;
+            break;
+        case CX_LIST:
+            break;
+        case CX_MAP:
+            break;
+    }
     return 0;
 }
 
@@ -54,9 +67,12 @@ cx_bool cx_iterator_hasNext(void *_this) {
     cx_bool result = FALSE;
     switch (iterator->type->kind) {
         case CX_ARRAY:
-            result = cx_iterator_hasNext_array(iterator->type, iterator->value, iterator->element);
-            break;
         case CX_SEQUENCE:
+            result = cx_iterator_hasNext_array(
+                iterator->type,
+                iterator->is.array.array,
+                iterator->is.array.element);
+            break;
             break;
         case CX_LIST:
             break;
@@ -68,16 +84,19 @@ cx_bool cx_iterator_hasNext(void *_this) {
     return result;
 }
 
-void *cx_iterator_next(void *_this) {
+void* cx_iterator_next(void* _this) {
     CX_ITERATOR(iteratorType);
     iteratorType *iterator = _this;
     int error = 0;
     void* result;
     switch (iterator->type->kind) {
         case CX_ARRAY:
-            error = cx_iterator_next_array(iterator->type, iterator->value, &(iterator->element));
-            break;
         case CX_SEQUENCE:
+            error = cx_iterator_next_array(
+                iterator->type,
+                iterator->is.array.array,
+                &(iterator->is.array.element));
+            break;
             break;
         case CX_LIST:
             break;
@@ -89,7 +108,7 @@ void *cx_iterator_next(void *_this) {
     if (error) {
         cx_critical("reached end of collection while attempting to retrieve next");
     }
-    result = iterator->element;
+    result = iterator->is.array.element;
     return result;
 }
 

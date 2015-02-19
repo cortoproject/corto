@@ -258,6 +258,7 @@ typedef enum cx_vmOpKind {
     VM_OPERAND_PQRV(ELEMMX,W,R), /* Takes register(1) and index variable(2) - obtains pointer to mapnode */
 
     VM_2OP_W(ITER_SET,PQRV),     /* Assign iterator */
+    VM_2OP_W(ITER_NEXT,PQRV),
 
     
     /* Calls */
