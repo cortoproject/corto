@@ -1,4 +1,4 @@
-/* Fast_CommaExpr.c
+/* Fast_Comma.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -15,9 +15,9 @@
 Fast_Parser yparser(void);
 /* $end */
 
-/* ::cortex::Fast::CommaExpr::addExpression(Expression expr) */
-cx_int16 Fast_CommaExpr_addExpression(Fast_CommaExpr _this, Fast_Expression expr) {
-/* $begin(::cortex::Fast::CommaExpr::addExpression) */
+/* ::cortex::Fast::Comma::addExpression(Expression expr) */
+cx_int16 Fast_Comma_addExpression(Fast_Comma _this, Fast_Expression expr) {
+/* $begin(::cortex::Fast::Comma::addExpression) */
     if (expr) {
         cx_assert(_this->expressions != NULL, "initialization failed");
         cx_llAppend(_this->expressions, expr); cx_keep(expr);
@@ -30,20 +30,20 @@ cx_int16 Fast_CommaExpr_addExpression(Fast_CommaExpr _this, Fast_Expression expr
 /* $end */
 }
 
-/* ::cortex::Fast::CommaExpr::addOrCreate(Expression list,Expression expr) */
-Fast_Expression Fast_CommaExpr_addOrCreate(Fast_Expression list, Fast_Expression expr) {
-/* $begin(::cortex::Fast::CommaExpr::addOrCreate) */
+/* ::cortex::Fast::Comma::addOrCreate(Expression list,Expression expr) */
+Fast_Expression Fast_Comma_addOrCreate(Fast_Expression list, Fast_Expression expr) {
+/* $begin(::cortex::Fast::Comma::addOrCreate) */
     Fast_Expression result;
     
     if (!list) {
         result = expr;
-    } else if (Fast_Node(list)->kind == FAST_CommaExpr) {
-        Fast_CommaExpr_addExpression(Fast_CommaExpr(list), expr);
+    } else if (Fast_Node(list)->kind == Fast_CommaExpr) {
+        Fast_Comma_addExpression(Fast_Comma(list), expr);
         result = list;
     } else {
-        result = Fast_Expression(Fast_CommaExpr__create());
-        Fast_CommaExpr_addExpression(Fast_CommaExpr(result), list);
-        Fast_CommaExpr_addExpression(Fast_CommaExpr(result), expr);
+        result = Fast_Expression(Fast_Comma__create());
+        Fast_Comma_addExpression(Fast_Comma(result), list);
+        Fast_Comma_addExpression(Fast_Comma(result), expr);
         Fast_Parser_collect(yparser(), result);
     }
     
@@ -51,9 +51,9 @@ Fast_Expression Fast_CommaExpr_addOrCreate(Fast_Expression list, Fast_Expression
 /* $end */
 }
 
-/* ::cortex::Fast::CommaExpr::construct() */
-cx_int16 Fast_CommaExpr_construct(Fast_CommaExpr _this) {
-/* $begin(::cortex::Fast::CommaExpr::construct) */
+/* ::cortex::Fast::Comma::construct() */
+cx_int16 Fast_Comma_construct(Fast_Comma _this) {
+/* $begin(::cortex::Fast::Comma::construct) */
     if (_this->expressions) {
         Fast_Expression firstExpr = cx_llGet(_this->expressions, 0);
 
@@ -68,9 +68,9 @@ cx_int16 Fast_CommaExpr_construct(Fast_CommaExpr _this) {
 /* $end */
 }
 
-/* ::cortex::Fast::CommaExpr::hasSideEffects() */
-cx_bool Fast_CommaExpr_hasSideEffects_v(Fast_CommaExpr _this) {
-/* $begin(::cortex::Fast::CommaExpr::hasSideEffects) */
+/* ::cortex::Fast::Comma::hasSideEffects() */
+cx_bool Fast_Comma_hasSideEffects_v(Fast_Comma _this) {
+/* $begin(::cortex::Fast::Comma::hasSideEffects) */
     cx_bool result = FALSE;
     
     Fast_Expression_list__foreach(_this->expressions, elem)
@@ -84,20 +84,20 @@ cx_bool Fast_CommaExpr_hasSideEffects_v(Fast_CommaExpr _this) {
 /* $end */
 }
 
-/* ::cortex::Fast::CommaExpr::init() */
-cx_int16 Fast_CommaExpr_init(Fast_CommaExpr _this) {
-/* $begin(::cortex::Fast::CommaExpr::init) */
+/* ::cortex::Fast::Comma::init() */
+cx_int16 Fast_Comma_init(Fast_Comma _this) {
+/* $begin(::cortex::Fast::Comma::init) */
 
-    Fast_Node(_this)->kind = FAST_CommaExpr;
+    Fast_Node(_this)->kind = Fast_CommaExpr;
     Fast_Expression(_this)->type = NULL;
 
     return Fast_Node_init(Fast_Node(_this));
 /* $end */
 }
 
-/* ::cortex::Fast::CommaExpr::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
-cx_ic Fast_CommaExpr_toIc_v(Fast_CommaExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
-/* $begin(::cortex::Fast::CommaExpr::toIc) */
+/* ::cortex::Fast::Comma::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
+cx_ic Fast_Comma_toIc_v(Fast_Comma _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
+/* $begin(::cortex::Fast::Comma::toIc) */
     cx_iter iter;
     Fast_Node expr;
     
@@ -111,9 +111,9 @@ cx_ic Fast_CommaExpr_toIc_v(Fast_CommaExpr _this, cx_icProgram program, cx_icSto
 /* $end */
 }
 
-/* ::cortex::Fast::CommaExpr::toList() */
-Fast_Node_list Fast_CommaExpr_toList(Fast_CommaExpr _this) {
-/* $begin(::cortex::Fast::CommaExpr::toList) */
+/* ::cortex::Fast::Comma::toList() */
+Fast_Node_list Fast_Comma_toList(Fast_Comma _this) {
+/* $begin(::cortex::Fast::Comma::toList) */
     Fast_Node node;
     cx_iter iter;
     Fast_Node_list result = cx_llNew();

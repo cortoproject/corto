@@ -6,11 +6,13 @@
  */
 
 #include "c_common.h"
+#include "stdio.h"
+#include "ctype.h"
 
 /* Escape language keywords */
 static int c_typeKeywordEscape(cx_string inputName, cx_string buffer) {
 
-    if ( !strcmp(inputName, "auto") ||
+    if (!strcmp(inputName, "auto") ||
         !strcmp(inputName, "break") ||
         !strcmp(inputName, "case") ||
         !strcmp(inputName, "char") ||
@@ -198,10 +200,7 @@ static cx_string c_typeToUpper(cx_string str, cx_id buffer) {
     ptr = str;
     bptr = buffer;
     while((ch = *ptr)) {
-        if (ch >= 97) {
-            ch -= 32;
-        }
-        *bptr = ch;
+        *bptr = toupper(ch);
         bptr++;
         ptr++;
     }
@@ -212,16 +211,26 @@ static cx_string c_typeToUpper(cx_string str, cx_id buffer) {
 
 /* Translate constant to C-language id */
 cx_char* c_constantId(cx_generator g, cx_constant* c, cx_char* buffer) {
-    cx_string prefix;
-    cx_id prefixUpper;
+    cx_string prefixOrig;
+    cx_string name = cx_nameof(c);
+    cx_id prefix;
 
-    prefix = g_getPrefix(g, c);
-    if (prefix) {
-        sprintf(buffer, "%s_%s", c_typeToUpper(prefix, prefixUpper), cx_nameof(c));
-    } else {
-        c_typeToUpper(cx_nameof(g_getCurrent(g)), prefixUpper);
-        sprintf(buffer, "%s_%s", prefixUpper, cx_nameof(c));
+    prefixOrig = g_getPrefix(g, c);
+    if (!prefixOrig) {
+        prefixOrig = cx_nameof(g_getCurrent(g));
     }
+
+    strcpy(prefix, prefixOrig);
+
+    if (isupper(name[0])) {
+        if (isupper(name[1])) { /* All caps */
+            c_typeToUpper(prefixOrig, prefix);
+        } else { /* Initial caps */
+            prefix[0] = toupper(prefix[0]);
+        }
+    }
+
+    sprintf(buffer, "%s_%s", prefix, name);
 
     return buffer;
 }

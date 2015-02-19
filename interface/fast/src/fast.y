@@ -23,11 +23,11 @@ int yy_scan_string(const char* str);
 #define POPCOMPLEX() Fast_Parser_popComplexType(yparser()); fast_op;
 
 /* Thread local storage key for parser */
-extern cx_threadKey FAST_PARSER_KEY;
+extern cx_threadKey Fast_PARSER_KEY;
 
 /* Obtain parser */
 Fast_Parser yparser(void) {
-    return (Fast_Parser)cx_threadTlsGet(FAST_PARSER_KEY);
+    return (Fast_Parser)cx_threadTlsGet(Fast_PARSER_KEY);
 }
 
 #define fast_err(...) _fast_err(__VA_ARGS__); YYERROR;
@@ -58,7 +58,7 @@ void Fast_declarationSeqInsert( Fast_ParserDeclarationSeq *seq, Fast_ParserDecla
 Fast_Expression Fast_declarationSeqDo(Fast_Variable type, Fast_ParserDeclarationSeq *declarations, cx_bool isReference)
 {
     unsigned int i;
-    Fast_CommaExpr result = Fast_CommaExpr__create();
+    Fast_Comma result = Fast_Comma__create();
     Fast_Expression expr = NULL;
     
     Fast_Parser_collect(yparser(), result);
@@ -81,7 +81,7 @@ Fast_Expression Fast_declarationSeqDo(Fast_Variable type, Fast_ParserDeclaration
             Fast_Parser_collect(yparser(), expr);
         }
         
-        Fast_CommaExpr_addExpression(result, expr);
+        Fast_Comma_addExpression(result, expr);
     }
     cx_dealloc(declarations->buffer);
     declarations->buffer = NULL;
@@ -522,12 +522,12 @@ comma_expr
     : conditional_expr
     | comma_expr ',' conditional_expr {
         if ($1) {
-            if (Fast_Node($1)->kind != FAST_CommaExpr) {
-                $$ = Fast_CommaExpr__create(); fast_op;
-                Fast_CommaExpr_addExpression($$, $1); fast_op;
+            if (Fast_Node($1)->kind != Fast_CommaExpr) {
+                $$ = Fast_Comma__create(); fast_op;
+                Fast_Comma_addExpression($$, $1); fast_op;
                 Fast_Parser_collect(yparser(), $$); fast_op;
             }
-            Fast_CommaExpr_addExpression($$, $3); fast_op;
+            Fast_Comma_addExpression($$, $3); fast_op;
         }
     }
     ;
@@ -740,8 +740,8 @@ event_childflag
 /* Update statement */
 /* ======================================================================== */
 update_statement
-    : KW_UPDATE wait_expr ENDL    {$$ = Fast_Parser_updateStatement(yparser(), $2, NULL); fast_op;}
-    | KW_UPDATE wait_expr block  {$$ = Fast_Parser_updateStatement(yparser(), $2, $3); fast_op;}
+    : KW_UPDATE postfix_expr ENDL    {$$ = Fast_Parser_updateStatement(yparser(), $2, NULL); fast_op;}
+    | KW_UPDATE postfix_expr block  {$$ = Fast_Parser_updateStatement(yparser(), $2, $3); fast_op;}
     ;
 
 

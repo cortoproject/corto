@@ -19,11 +19,11 @@ extern "C" {
 /* Type definitions */
 /* ::cortex::io::fileMode */
 typedef enum io_fileMode {
-    IO_Read = 0,
-    IO_Write = 1,
-    IO_Append = 2,
-    IO_ReadWrite = 3,
-    IO_ReadAppend = 4
+    Io_Read = 0,
+    Io_Write = 1,
+    Io_Append = 2,
+    Io_ReadWrite = 3,
+    Io_ReadAppend = 4
 } io_fileMode;
 
 /*  ::cortex::io::file */

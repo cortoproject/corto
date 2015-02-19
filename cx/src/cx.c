@@ -247,6 +247,15 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, equalityKind_NEQ);\
     /* operatorKind */\
     SSO_OP_OBJ(op, operatorKind_ASSIGN);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_ADD);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_SUB);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_MUL);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_DIV);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_MOD);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_XOR);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_OR);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_AND);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_UPDATE);\
     SSO_OP_OBJ(op, operatorKind_ADD);\
     SSO_OP_OBJ(op, operatorKind_SUB);\
     SSO_OP_OBJ(op, operatorKind_MUL);\
@@ -258,15 +267,6 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, operatorKind_OR);\
     SSO_OP_OBJ(op, operatorKind_AND);\
     SSO_OP_OBJ(op, operatorKind_NOT);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_ADD);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_SUB);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_MUL);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_DIV);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_MOD);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_XOR);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_OR);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_AND);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_UPDATE);\
     SSO_OP_OBJ(op, operatorKind_COND_OR);\
     SSO_OP_OBJ(op, operatorKind_COND_AND);\
     SSO_OP_OBJ(op, operatorKind_COND_NOT);\
@@ -278,13 +278,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, operatorKind_COND_LTEQ);\
     SSO_OP_OBJ(op, operatorKind_SHIFT_LEFT);\
     SSO_OP_OBJ(op, operatorKind_SHIFT_RIGHT);\
-    SSO_OP_OBJ(op, operatorKind_COMMA);\
     SSO_OP_OBJ(op, operatorKind_REF);\
-    SSO_OP_OBJ(op, operatorKind_MEMBER_RESOLVE);\
-    SSO_OP_OBJ(op, operatorKind_ELEMENT_OPEN);\
-    SSO_OP_OBJ(op, operatorKind_ELEMENT_CLOSE);\
-    SSO_OP_OBJ(op, operatorKind_BRACKET_OPEN);\
-    SSO_OP_OBJ(op, operatorKind_BRACKET_CLOSE);\
     /* state */\
     SSO_OP_OBJ(op, state_VALID);\
     SSO_OP_OBJ(op, state_DECLARED);\

@@ -49,13 +49,13 @@ struct cx_value {
             cx_object o;
             cx_type t;
             cx_void *v;
-        }base;
+        } base;
         struct {
             cx_object o;
             cx_type t;
             cx_void* v;
             cx_uint64 storage; /* Optional storage for a value. */
-        }value;
+        } value;
         struct {
             cx_literalKind kind;
             union {
@@ -66,21 +66,21 @@ struct cx_value {
                 cx_float64 _floating_point;
                 cx_string _string;
             }v;
-        }literal;
+        } literal;
         struct {
             cx_object o;
             cx_member t;
             cx_void* v;
-        }member;
+        } member;
         struct {
             cx_object o;
             cx_function t;
-        }call;
+        } call;
         struct {
             cx_object o;
             cx_constant* t;
             cx_void* v;
-        }constant;
+        } constant;
         struct {
             cx_object o;
             struct {
@@ -88,7 +88,7 @@ struct cx_value {
                 cx_uint32 index;
             } t;
             cx_void* v;
-        }element;
+        } element;
         struct {
             cx_object o;
             struct {
@@ -97,7 +97,7 @@ struct cx_value {
                 cx_void *key;
             }t;
             cx_void* v;
-        }mapElement;
+        } mapElement;
     } is;
 };
 

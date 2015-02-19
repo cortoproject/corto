@@ -3,11 +3,11 @@ void fail(string msg):
     "tc_update03: FAIL: $msg"
     result = false
 
-bool aUpdated, bUpdated, cUpdated
+bool aUpdated, bUpdated, cUpdated, dUpdated, eUpdated
     
 // Test updating a primtive
 int32 a: 10
-update a = 20
+a := 20
 on update a:
     aUpdated = true 
     if a != 20: 
@@ -18,22 +18,38 @@ struct Point::
     x, y: int32
 
 Point b: 10, 20
-update b = {30, 40}
+b := {30, 40}
 on update b: 
     bUpdated = true
     if b[x, y] != (30, 40): 
         fail("b[x, y] != (30, 40)")
 
-// Test updating a collection object
-list{int32} c{}
-update c = {1, 2, 3}
+Point c: 10, 20
+c.x := 30
 on update c:
     cUpdated = true
-    if c[0, 1, 2] != (1, 2, 3):
-        fail("c[0, 1, 2] != (1, 2, 3)")
+    if c[x, y] != (30, 20):
+        fail("c[x, y] != (30, 40)")
+
+// Test updating a collection object
+list{int32} d{}
+d := {1, 2, 3}
+on update d:
+    dUpdated = true
+    if d[0, 1, 2] != (1, 2, 3):
+        fail("d[0, 1, 2] != (1, 2, 3)")
+
+list{int32} e{1, 2, 3}
+e[1] := 4
+on update e:
+    eUpdated = true
+    if e[0, 1, 2] != (1, 4, 3):
+        fail("e[0, 1, 2] != (1, 4, 3)")
 
 if !aUpdated: fail("!aUpdated")
 if !bUpdated: fail("!bUpdated")
-if !bUpdated: fail("!bUpdated")
+if !cUpdated: fail("!cUpdated")
+if !dUpdated: fail("!dUpdated")
+if !eUpdated: fail("!eUpdated")
 
 if result: "tc_update03: OK"

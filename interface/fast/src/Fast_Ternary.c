@@ -1,4 +1,4 @@
-/* Fast_TernaryExpr.c
+/* Fast_Ternary.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -14,14 +14,14 @@
 #include "Fast_Block.h"
 #include "Fast_Parser.h"
 #include "Fast_If.h"
-#include "Fast_BinaryExpr.h"
+#include "Fast_Binary.h"
 
 Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 void Fast_Parser_warning(Fast_Parser _this, char* fmt, ...);
 
 /* Create if statement based on ternary operator expressions */
-Fast_If Fast_TernaryExpr_createIf(Fast_Expression condition, Fast_Node ifTrue, Fast_Node ifFalse) {
+Fast_If Fast_Ternary_createIf(Fast_Expression condition, Fast_Node ifTrue, Fast_Node ifFalse) {
     Fast_Block trueBlock;
     Fast_Block falseBlock;
     Fast_If falseIf;
@@ -55,14 +55,14 @@ Fast_If Fast_TernaryExpr_createIf(Fast_Expression condition, Fast_Node ifTrue, F
 
 /* $end */
 
-/* ::cortex::Fast::TernaryExpr::construct() */
-cx_int16 Fast_TernaryExpr_construct(Fast_TernaryExpr _this) {
-/* $begin(::cortex::Fast::TernaryExpr::construct) */
+/* ::cortex::Fast::Ternary::construct() */
+cx_int16 Fast_Ternary_construct(Fast_Ternary _this) {
+/* $begin(::cortex::Fast::Ternary::construct) */
     Fast_Node trueBranch=NULL, falseBranch=NULL;
     Fast_Expression trueExpr, falseExpr;
     cx_type resultType = Fast_Expression_getType(_this->result);
 
-    Fast_Node(_this)->kind = FAST_Ternary;
+    Fast_Node(_this)->kind = Fast_TernaryExpr;
     
     /* Create true statement */
     trueBranch = Fast_Node(Fast_Parser_blockPush(yparser(), FALSE));
@@ -81,39 +81,39 @@ cx_int16 Fast_TernaryExpr_construct(Fast_TernaryExpr _this) {
     cx_set(&_this->ifFalseExpr, falseExpr);
     
     /* Create condition */
-    _this->ifstmt = Fast_TernaryExpr_createIf(_this->condition, trueBranch, falseBranch);
+    _this->ifstmt = Fast_Ternary_createIf(_this->condition, trueBranch, falseBranch);
     Fast_Expression(_this)->type = Fast_Variable(Fast_Object__create(resultType));
 
     return 0;
 /* $end */
 }
 
-/* ::cortex::Fast::TernaryExpr::hasSideEffects() */
-cx_bool Fast_TernaryExpr_hasSideEffects_v(Fast_TernaryExpr _this) {
-/* $begin(::cortex::Fast::TernaryExpr::hasSideEffects) */
+/* ::cortex::Fast::Ternary::hasSideEffects() */
+cx_bool Fast_Ternary_hasSideEffects_v(Fast_Ternary _this) {
+/* $begin(::cortex::Fast::Ternary::hasSideEffects) */
     return Fast_Expression_hasSideEffects(_this->condition) ||
            Fast_Expression_hasSideEffects(_this->ifTrue) ||
            Fast_Expression_hasSideEffects(_this->ifFalse);
 /* $end */
 }
 
-/* ::cortex::Fast::TernaryExpr::setOperator(operatorKind kind) */
-cx_void Fast_TernaryExpr_setOperator(Fast_TernaryExpr _this, cx_operatorKind kind) {
-/* $begin(::cortex::Fast::TernaryExpr::setOperator) */
+/* ::cortex::Fast::Ternary::setOperator(operatorKind kind) */
+cx_void Fast_Ternary_setOperator(Fast_Ternary _this, cx_operatorKind kind) {
+/* $begin(::cortex::Fast::Ternary::setOperator) */
 
-    if (_this->ifTrueExpr && cx_instanceof(cx_type(Fast_BinaryExpr_o), _this->ifTrueExpr)) {
-        Fast_BinaryExpr_setOperator(Fast_BinaryExpr(_this->ifTrueExpr), kind);
+    if (_this->ifTrueExpr && cx_instanceof(cx_type(Fast_Binary_o), _this->ifTrueExpr)) {
+        Fast_Binary_setOperator(Fast_Binary(_this->ifTrueExpr), kind);
     }
-    if (_this->ifFalseExpr && cx_instanceof(cx_type(Fast_BinaryExpr_o), _this->ifFalseExpr)) {
-        Fast_BinaryExpr_setOperator(Fast_BinaryExpr(_this->ifFalseExpr), kind);
+    if (_this->ifFalseExpr && cx_instanceof(cx_type(Fast_Binary_o), _this->ifFalseExpr)) {
+        Fast_Binary_setOperator(Fast_Binary(_this->ifFalseExpr), kind);
     }
 
 /* $end */
 }
 
-/* ::cortex::Fast::TernaryExpr::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
-cx_ic Fast_TernaryExpr_toIc_v(Fast_TernaryExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
-/* $begin(::cortex::Fast::TernaryExpr::toIc) */
+/* ::cortex::Fast::Ternary::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
+cx_ic Fast_Ternary_toIc_v(Fast_Ternary _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
+/* $begin(::cortex::Fast::Ternary::toIc) */
     Fast_If_toIc(_this->ifstmt, program, storage, stored);
     return Fast_Node_toIc(Fast_Node(_this->result), program, storage, stored);
 /* $end */

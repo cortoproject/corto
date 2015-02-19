@@ -5,15 +5,15 @@
 			<!-- Enumeration representing the values that can be represented in hyve -->
 			<enum name="valueKind">
 				<meta:scope>
-					<constant name="Boolean"/>
-					<constant name="Character"/>
-					<constant name="Integer"/>
-					<constant name="SignedInteger"/>
-					<constant name="FloatingPoint"/>
-					<constant name="String"/>
-					<constant name="Enumerated"/>
-					<constant name="Reference"/>
-					<constant name="Null"/>
+					<constant name="Bool"/>
+					<constant name="Char"/>
+					<constant name="Int"/>
+					<constant name="SignedInt"/>
+					<constant name="Float"/>
+					<constant name="Text"/>
+					<constant name="Enum"/>
+					<constant name="Ref"/>
+					<constant name="Nothing"/>
 				</meta:scope>
 			</enum>
 			
@@ -25,36 +25,36 @@
 			<!-- Enumeration representing the different treenode kinds -->
 			<enum name="nodeKind">
 				<meta:scope>
-					<constant name="Binary"/>
-                    <constant name="Call"/>
-					<constant name="Cast"/>
+					<constant name="BinaryExpr"/>
+                    <constant name="CallExpr"/>
+					<constant name="CastExpr"/>
                     <constant name="CommaExpr"/>
-                    <constant name="Declaration"/>
-					<constant name="Declare"/>
-					<constant name="Define"/>
-					<constant name="Element"/>
-					<constant name="If"/>
-                    <constant name="Initializer"/>
-					<constant name="Literal"/>
-					<constant name="Member"/>
-					<constant name="Method"/>
-					<constant name="New"/>
-					<constant name="Postfix"/>
-                    <constant name="Ternary"/>
-					<constant name="Unary"/>
-                    <constant name="Update"/>
-                    <constant name="Variable"/>
-                    <constant name="Wait"/>
-                    <constant name="While"/>
+                    <constant name="DeclarationExpr"/>
+					<constant name="DeclareExpr"/>
+					<constant name="DefineExpr"/>
+					<constant name="ElementExpr"/>
+					<constant name="IfExpr"/>
+                    <constant name="InitializerExpr"/>
+					<constant name="LiteralExpr"/>
+					<constant name="MemberExpr"/>
+					<constant name="MethodExpr"/>
+					<constant name="NewExpr"/>
+					<constant name="PostfixExpr"/>
+                    <constant name="TernaryExpr"/>
+					<constant name="UnaryExpr"/>
+                    <constant name="UpdateExpr"/>
+                    <constant name="VariableExpr"/>
+                    <constant name="WaitExpr"/>
+                    <constant name="WhileExpr"/>
 				</meta:scope>
 			</enum>
 			
 			<!-- Enumeration representing the different variable kinds -->
 			<enum name="variableKind">
 				<meta:scope>
-					<constant name="Local"/>
-					<constant name="Template"/>
-					<constant name="Object"/>
+					<constant name="LocalExpr"/>
+					<constant name="TemplateExpr"/>
+					<constant name="ObjectExpr"/>
 				</meta:scope>
 			</enum>
 
@@ -92,7 +92,7 @@
 			</class>
             
             <!-- Comma expression node -->
-            <class name="CommaExpr" base="Expression" baseAccess="readonly">
+            <class name="Comma" base="Expression" baseAccess="readonly">
                 <meta:scope>
                     <method name="init()" returnType="int16"/>
                     <method name="construct()" returnType="int16"/>
@@ -254,7 +254,7 @@
 			</class>
 			
 			<!-- Member expression -->
-			<class name="MemberExpr" base="Expression" baseAccess="readonly">
+			<class name="Member" base="Expression" baseAccess="readonly">
 				<meta:scope>
 					<method name="construct()" returnType="int16"/>
 					<member name="lvalue" type="Fast::Expression"/>
@@ -267,7 +267,7 @@
 			</class>
 			
 			<!-- Element expression -->
-			<class name="ElementExpr" base="Expression" baseAccess="readonly">
+			<class name="Element" base="Expression" baseAccess="readonly">
 				<meta:scope>
 					<method name="construct()" returnType="int16"/>
 					<member name="lvalue" type="Fast::Expression"/>
@@ -329,7 +329,7 @@
 			</struct>
 
 			<!-- Cast expression -->
-			<class name="CastExpr" base="Expression" baseAccess="readonly">
+			<class name="Cast" base="Expression" baseAccess="readonly">
 				<meta:scope>
 					<method name="construct()" returnType="int16"/>
 					<member name="lvalue" type="Fast::Expression"/>
@@ -339,7 +339,7 @@
 			</class>
 			
 			<!-- Postfix expression -->
-			<class name="PostfixExpr" base="Expression" baseAccess="readonly">
+			<class name="PostFix" base="Expression" baseAccess="readonly">
 				<meta:scope>
 					<method name="construct()" returnType="int16"/>
 					<member name="lvalue" type="Fast::Expression"/>
@@ -349,7 +349,7 @@
 			</class>
 			
 			<!-- Unary expression -->
-			<class name="UnaryExpr" base="Expression" baseAccess="readonly">
+			<class name="Unary" base="Expression" baseAccess="readonly">
 				<meta:scope>
 					<method name="construct()" returnType="int16"/>
 					<member name="lvalue" type="Fast::Expression"/>
@@ -360,7 +360,7 @@
 			</class>
 						
 			<!-- Binary expression -->
-			<class name="BinaryExpr" base="Expression" baseAccess="readonly">
+			<class name="Binary" base="Expression" baseAccess="readonly">
 				<meta:scope>
 					<method name="construct()" returnType="int16"/>
 					<member name="lvalue" type="Fast::Expression"/>
@@ -376,7 +376,7 @@
             <meta:object name="If" type="class"/>
             
             <!-- Ternary expression -->
-            <class name="TernaryExpr" base="Expression" baseAccess="readonly">
+            <class name="Ternary" base="Expression" baseAccess="readonly">
                 <meta:scope>
                     <method name="construct()" returnType="int16"/>
                     <member name="condition" type="Fast::Expression"/>
@@ -393,7 +393,7 @@
             </class>
 									
 			<!-- New expression -->
-			<class name="NewExpr" base="Expression" baseAccess="readonly">
+			<class name="New" base="Expression" baseAccess="readonly">
 				<meta:scope>
 					<method name="construct()" returnType="int16"/>
 					<member name="type" type="Fast::Expression"/>
@@ -452,12 +452,20 @@
 			</class>
 			
 			<!-- Update statement -->
+			<enum name="UpdateKind">
+				<meta:scope>
+					<constant name="UpdateDefault"/>
+					<constant name="UpdateBegin"/>
+					<constant name="UpdateEnd"/>
+				</meta:scope>
+			</enum>
 			<class name="Update" base="Node" baseAccess="readonly">
 				<meta:scope>
 					<method name="construct()" returnType="int16"/>
 					<member name="exprList" type="list{Fast::Expression}"/>
 					<member name="block" type="Fast::Block"/>
 					<member name="from" type="Fast::Expression"/>
+					<member name="kind" type="Fast::UpdateKind"/>
 					<virtual name="toIc(alias{&quot;cx_icProgram&quot;} program,alias{&quot;cx_icStorage&quot;} storage,bool stored)" returnType="alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
 			</class>
@@ -580,7 +588,7 @@
             </struct>
             
             <!-- Record initializer for later evaluation -->
-            <class name="InitializerExpr" base="Initializer">
+            <class name="InitializerExpression" base="Initializer">
                 <meta:scope>
                     <method name="construct()" returnType="int16"/>
                     <member name="assignValue" type="bool"/>

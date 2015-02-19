@@ -23,7 +23,7 @@ Fast_Call Fast_CallBuilder_buildMethod(Fast_CallBuilder *_this) {
             Fast_String nameExpr = Fast_String__create(_this->name);
             Fast_Parser_collect(yparser(), nameExpr);
             if ((m->type->kind == CX_COMPOSITE) && (cx_interface(m->type)->kind == CX_DELEGATE)) {
-                Fast_Expression fExpr = Fast_Expression(Fast_MemberExpr__create(_this->instance, Fast_Expression(nameExpr)));
+                Fast_Expression fExpr = Fast_Expression(Fast_Member__create(_this->instance, Fast_Expression(nameExpr)));
                 if (!fExpr) {
                     goto error;
                 }
@@ -157,7 +157,7 @@ cx_int16 Fast_CallBuilder_buildSignature(Fast_CallBuilder *_this) {
                 argumentType = Fast_Expression_narrowType(argument);
 
                 /* If there is no type and the argument is an initializer, insert a wildcard */
-                if (!argumentType && (Fast_Node(argument)->kind == FAST_Initializer)) {
+                if (!argumentType && (Fast_Node(argument)->kind == Fast_InitializerExpr)) {
                     flags |= CX_PARAMETER_WILDCARD;
                 }
                 flags |= argument->isReference ? CX_PARAMETER_REFERENCE : 0;

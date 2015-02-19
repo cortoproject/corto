@@ -24,7 +24,7 @@ cx_int16 Fast_While_construct(Fast_While _this) {
 /* $begin(::cortex::Fast::While::construct) */
     cx_type conditionType;
 
-    Fast_Node(_this)->kind = FAST_While;
+    Fast_Node(_this)->kind = Fast_WhileExpr;
 
     conditionType = Fast_Expression_getType(_this->condition);
     if (conditionType) {

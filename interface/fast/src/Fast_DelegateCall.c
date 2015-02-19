@@ -21,7 +21,7 @@ cx_int16 Fast_DelegateCall_construct(Fast_DelegateCall _this) {
 
         /* Create expression to obtain pointer to the instance */
         Fast_String instanceString = Fast_String__create("instance");
-        Fast_MemberExpr iExpr = Fast_MemberExpr__create(_this->expr, Fast_Expression(instanceString));
+        Fast_Member iExpr = Fast_Member__create(_this->expr, Fast_Expression(instanceString));
         cx_set(&Fast_Call(_this)->instanceExpr, iExpr);
         Fast_Parser_collect(yparser(), iExpr);
         Fast_Parser_collect(yparser(), instanceString);

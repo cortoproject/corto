@@ -67,7 +67,7 @@ cx_int16 Fast_Wait_construct(Fast_Wait _this) {
     Fast_Expression expr, timeoutExpr;
     cx_type exprType, resultType = NULL;
 
-    Fast_Node(_this)->kind = FAST_Wait;
+    Fast_Node(_this)->kind = Fast_WaitExpr;
 
     /* Walk types of waitlist, check if all expressions evaluate to _thiss or reference values. Compare types in
      * waitlist to determine type of wait expression by taking the highest common ancestor. If no common ancestor

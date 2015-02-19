@@ -21,7 +21,7 @@ void Fast_Parser_warning(Fast_Parser _this, char* fmt, ...);
 cx_int16 Fast_Initializer_assign(Fast_DynamicInitializer _this, Fast_Expression lvalue, Fast_Expression rvalue) {
     CX_UNUSED(_this);
     if (rvalue) {
-        Fast_BinaryExpr expr = Fast_BinaryExpr__create(lvalue, rvalue, CX_ASSIGN);
+        Fast_Binary expr = Fast_Binary__create(lvalue, rvalue, CX_ASSIGN);
         Fast_Parser_addStatement(yparser(), Fast_Node(expr));
         Fast_Parser_collect(yparser(), expr);
     }
@@ -52,7 +52,7 @@ Fast_Expression Fast_Initializer_expr(Fast_DynamicInitializer _this, cx_uint8 va
         case CX_COMPOSITE:
             if (fp) {
                 Fast_String memberString = Fast_String__create(cx_nameof(thisFrame->member));
-                result = Fast_Expression(Fast_MemberExpr__create(base, Fast_Expression(memberString)));
+                result = Fast_Expression(Fast_Member__create(base, Fast_Expression(memberString)));
                 Fast_Parser_collect(yparser(), result);
                 Fast_Parser_collect(yparser(), memberString);
             } else {
@@ -73,7 +73,7 @@ Fast_Expression Fast_Initializer_expr(Fast_DynamicInitializer _this, cx_uint8 va
                 case CX_SEQUENCE:
                 case CX_ARRAY: {
                     Fast_Integer index = Fast_Integer__create(thisFrame->location);
-                    result = Fast_Expression(Fast_ElementExpr__create(base, Fast_Expression(index)));
+                    result = Fast_Expression(Fast_Element__create(base, Fast_Expression(index)));
                     Fast_Parser_collect(yparser(), result);
                     Fast_Parser_collect(yparser(), index);
                     if (cx_collection(frame->type)->kind != CX_LIST) {
@@ -83,7 +83,7 @@ Fast_Expression Fast_Initializer_expr(Fast_DynamicInitializer _this, cx_uint8 va
                 }
                 case CX_MAP:
                     if (!thisFrame->isKey) {
-                        result = Fast_Expression(Fast_ElementExpr__create(base, Fast_Expression(_this->frames[fp].keyExpr[variable])));
+                        result = Fast_Expression(Fast_Element__create(base, Fast_Expression(_this->frames[fp].keyExpr[variable])));
                         Fast_Parser_collect(yparser(), result);
                         thisFrame->isKey = FALSE;
                         Fast_Initializer_assign(_this, result, v);
@@ -171,7 +171,7 @@ cx_int16 Fast_DynamicInitializer_push(Fast_DynamicInitializer _this) {
     cx_uint8 fp = Fast_Initializer(_this)->fp;
     Fast_Node expr = Fast_Node(_this->frames[fp].expr[0]);
     cx_bool isAnonymousLocal = expr && 
-        (expr->kind == FAST_Variable) && (Fast_Variable(expr)->kind == FAST_Local) && (*Fast_Local(expr)->name == '<');
+        (expr->kind == Fast_VariableExpr) && (Fast_Variable(expr)->kind == Fast_LocalExpr) && (*Fast_Local(expr)->name == '<');
     
     /* Check if push is allowed */
     if (!(!fp && _this->assignValue) && (t->reference && !isAnonymousLocal)) {

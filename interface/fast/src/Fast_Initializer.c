@@ -193,7 +193,7 @@ cx_int16 Fast_Initializer_construct(Fast_Initializer _this) {
         }
     }
     
-    Fast_Node(_this)->kind = FAST_Initializer;
+    Fast_Node(_this)->kind = Fast_InitializerExpr;
     Fast_Expression(_this)->type = Fast_Variable(Fast_Object__create(t));
     
     return 0;

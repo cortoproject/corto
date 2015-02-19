@@ -596,13 +596,11 @@ static int cxsh_doCmd(char* cmd) {
     arg[0] = '\0';
 
     /* ls */
-    if (!memcmp(cmd, "ls ", strlen("ls "))) {
-        sscanf(cmd, "ls %s", arg);
+    if (((sscanf(cmd, "ls %s", arg) == 1) && (cmd[2] == ' ')) || !strcmp(cmd, "ls")) {
         cxsh_ls(arg);
     } else
     /* tree */
-    if (!memcmp(cmd, "tree ", strlen("tree "))) {
-        sscanf(cmd, "tree %s", arg);
+    if (((sscanf(cmd, "tree %s", arg) == 1) && (cmd[4] == ' ')) || !strcmp(cmd, "tree")) {
         cxsh_tree(arg);
     } else
     /* exit */
@@ -610,8 +608,7 @@ static int cxsh_doCmd(char* cmd) {
         goto quit;
     } else
     /* cd */
-    if (!memcmp(cmd, "cd ", strlen("cd "))) {
-        sscanf(cmd, "cd %s", arg);
+    if (((sscanf(cmd, "cd %s", arg) == 1) && (cmd[2] == ' ')) || !strcmp(cmd, "cd")) {
         cxsh_cd(arg);
     } else
     /* import */

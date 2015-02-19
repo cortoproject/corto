@@ -1,4 +1,4 @@
-/* Fast_CastExpr.c
+/* Fast_Cast.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -17,14 +17,14 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* ::cortex::Fast::CastExpr::construct() */
-cx_int16 Fast_CastExpr_construct(Fast_CastExpr _this) {
-/* $begin(::cortex::Fast::CastExpr::construct) */
+/* ::cortex::Fast::Cast::construct() */
+cx_int16 Fast_Cast_construct(Fast_Cast _this) {
+/* $begin(::cortex::Fast::Cast::construct) */
 
-    Fast_Node(_this)->kind = FAST_Call;
+    Fast_Node(_this)->kind = Fast_CallExpr;
 
-    if (Fast_Node(_this->lvalue)->kind == FAST_Variable) {
-        if (Fast_Variable(_this->lvalue)->kind == FAST_Object) {
+    if (Fast_Node(_this->lvalue)->kind == Fast_VariableExpr) {
+        if (Fast_Variable(_this->lvalue)->kind == Fast_ObjectExpr) {
             cx_object lvalue = Fast_ObjectBase(_this->lvalue)->value;
             if (cx_class_instanceof(cx_type_o, lvalue)) {
                 cx_type rvalueType;
@@ -67,9 +67,9 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::CastExpr::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
-cx_ic Fast_CastExpr_toIc_v(Fast_CastExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
-/* $begin(::cortex::Fast::CastExpr::toIc) */
+/* ::cortex::Fast::Cast::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
+cx_ic Fast_Cast_toIc_v(Fast_Cast _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
+/* $begin(::cortex::Fast::Cast::toIc) */
     cx_ic lvalue, rvalue, result;
     cx_icOp op;
     cx_type _thisType = Fast_Expression_getType(Fast_Expression(_this));

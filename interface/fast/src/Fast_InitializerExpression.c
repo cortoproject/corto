@@ -1,4 +1,4 @@
-/* Fast_InitializerExpr.c
+/* Fast_InitializerExpression.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -14,29 +14,29 @@
 #include "Fast_DynamicInitializer.h"
 /* $end */
 
-/* ::cortex::Fast::InitializerExpr::construct() */
-cx_int16 Fast_InitializerExpr_construct(Fast_InitializerExpr _this) {
-/* $begin(::cortex::Fast::InitializerExpr::construct) */
+/* ::cortex::Fast::InitializerExpression::construct() */
+cx_int16 Fast_InitializerExpression_construct(Fast_InitializerExpression _this) {
+/* $begin(::cortex::Fast::InitializerExpression::construct) */
     cx_int16 result = 0;
 
-    Fast_Node(_this)->kind = FAST_Initializer;
+    Fast_Node(_this)->kind = Fast_InitializerExpr;
 
     return result;
 /* $end */
 }
 
-/* ::cortex::Fast::InitializerExpr::define() */
-cx_int16 Fast_InitializerExpr_define(Fast_InitializerExpr _this) {
-/* $begin(::cortex::Fast::InitializerExpr::define) */
+/* ::cortex::Fast::InitializerExpression::define() */
+cx_int16 Fast_InitializerExpression_define(Fast_InitializerExpression _this) {
+/* $begin(::cortex::Fast::InitializerExpression::define) */
     Fast_InitOper *elem = Fast_InitOper_list__append(_this->operations);
-    elem->kind = FAST_InitDefine;
+    elem->kind = Fast_InitDefine;
     return 0;
 /* $end */
 }
 
-/* ::cortex::Fast::InitializerExpr::insert(Expression variable) */
-cx_int16 Fast_InitializerExpr_insert(Fast_InitializerExpr _this, Fast_Expression variable) {
-/* $begin(::cortex::Fast::InitializerExpr::insert) */
+/* ::cortex::Fast::InitializerExpression::insert(Expression variable) */
+cx_int16 Fast_InitializerExpression_insert(Fast_InitializerExpression _this, Fast_Expression variable) {
+/* $begin(::cortex::Fast::InitializerExpression::insert) */
     Fast_DynamicInitializer initializer;
 
     cx_set_ext(_this, &Fast_Initializer(_this)->variables[0].object, variable, ".variables[0].object");
@@ -50,27 +50,27 @@ cx_int16 Fast_InitializerExpr_insert(Fast_InitializerExpr _this, Fast_Expression
     /* Walk operations */
     Fast_InitOper_list__foreach(_this->operations, elem)
         switch(elem->kind) {
-        case FAST_InitPush:
+        case Fast_InitPush:
             if (Fast_DynamicInitializer_push(initializer)) {
                 goto error;
             }
             break;
-        case FAST_InitPop:
+        case Fast_InitPop:
             if (Fast_DynamicInitializer_pop(initializer)) {
                 goto error;
             }
             break;
-        case FAST_InitDefine:
+        case Fast_InitDefine:
             if (Fast_DynamicInitializer_define(initializer)) {
                 goto error;
             }
             break;
-        case FAST_InitValue:
+        case Fast_InitValue:
             if (Fast_DynamicInitializer_value(initializer, elem->expr)) {
                 goto error;
             }
             break;
-        case FAST_InitMember:
+        case Fast_InitMember:
             if (Fast_Initializer_member(Fast_Initializer(initializer), elem->name)) {
                 goto error;
             }
@@ -86,39 +86,39 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::InitializerExpr::member(string name) */
-cx_int32 Fast_InitializerExpr_member(Fast_InitializerExpr _this, cx_string name) {
-/* $begin(::cortex::Fast::InitializerExpr::member) */
+/* ::cortex::Fast::InitializerExpression::member(string name) */
+cx_int32 Fast_InitializerExpression_member(Fast_InitializerExpression _this, cx_string name) {
+/* $begin(::cortex::Fast::InitializerExpression::member) */
     Fast_InitOper *elem = Fast_InitOper_list__append(_this->operations);
-    elem->kind = FAST_InitMember;
+    elem->kind = Fast_InitMember;
     elem->name = cx_strdup(name);
     return 0;
 /* $end */
 }
 
-/* ::cortex::Fast::InitializerExpr::pop() */
-cx_int16 Fast_InitializerExpr_pop(Fast_InitializerExpr _this) {
-/* $begin(::cortex::Fast::InitializerExpr::pop) */
+/* ::cortex::Fast::InitializerExpression::pop() */
+cx_int16 Fast_InitializerExpression_pop(Fast_InitializerExpression _this) {
+/* $begin(::cortex::Fast::InitializerExpression::pop) */
     Fast_InitOper *elem = Fast_InitOper_list__append(_this->operations);
-    elem->kind = FAST_InitPop;
+    elem->kind = Fast_InitPop;
     return 0;
 /* $end */
 }
 
-/* ::cortex::Fast::InitializerExpr::push() */
-cx_int16 Fast_InitializerExpr_push(Fast_InitializerExpr _this) {
-/* $begin(::cortex::Fast::InitializerExpr::push) */
+/* ::cortex::Fast::InitializerExpression::push() */
+cx_int16 Fast_InitializerExpression_push(Fast_InitializerExpression _this) {
+/* $begin(::cortex::Fast::InitializerExpression::push) */
     Fast_InitOper *elem = Fast_InitOper_list__append(_this->operations);
-    elem->kind = FAST_InitPush;
+    elem->kind = Fast_InitPush;
     return 0;
 /* $end */
 }
 
-/* ::cortex::Fast::InitializerExpr::value(Expression v) */
-cx_int16 Fast_InitializerExpr_value(Fast_InitializerExpr _this, Fast_Expression v) {
-/* $begin(::cortex::Fast::InitializerExpr::value) */
+/* ::cortex::Fast::InitializerExpression::value(Expression v) */
+cx_int16 Fast_InitializerExpression_value(Fast_InitializerExpression _this, Fast_Expression v) {
+/* $begin(::cortex::Fast::InitializerExpression::value) */
     Fast_InitOper *elem = Fast_InitOper_list__append(_this->operations);
-    elem->kind = FAST_InitValue;
+    elem->kind = Fast_InitValue;
     cx_set(&elem->expr, v);
     return 0;
 /* $end */

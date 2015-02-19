@@ -12,7 +12,7 @@
 /* $header() */
 #include "Fast_Parser.h"
 #include "Fast_Call.h"
-#include "Fast_CommaExpr.h"
+#include "Fast_Comma.h"
 #include "Fast__api.h"
 #include "cx.h"
 
@@ -43,10 +43,10 @@ Fast_Call Fast_createCall(Fast_Expression instance, cx_string function, cx_uint3
     /* Create comma-expression if there is more than one argument */
     va_start(arglist, numArgs);
     if (numArgs > 1) {
-        args = Fast_Expression(Fast_CommaExpr__create());
+        args = Fast_Expression(Fast_Comma__create());
         for(i=0; i<numArgs; i++) {
             arg = va_arg(arglist, Fast_Expression);
-            Fast_CommaExpr_addExpression(Fast_CommaExpr(args), arg);
+            Fast_Comma_addExpression(Fast_Comma(args), arg);
         }
     } else if (numArgs) {
         args = va_arg(arglist, Fast_Expression);
@@ -71,25 +71,25 @@ Fast_Call Fast_createCallFromExpr(Fast_Expression f, Fast_Expression arguments) 
     switch(Fast_Node(f)->kind) {
 
     /* Member expression */
-    case FAST_Member:
-        instance = Fast_MemberExpr(f)->lvalue;
-        strcpy(name, Fast_String(Fast_MemberExpr(f)->rvalue)->value);
+    case Fast_MemberExpr:
+        instance = Fast_Member(f)->lvalue;
+        strcpy(name, Fast_String(Fast_Member(f)->rvalue)->value);
         break;
 
     /* Element - Must be a list of delegates */
-    case FAST_Element:
+    case Fast_ElementExpr:
         result = Fast_Call(Fast_DelegateCall__create(NULL, arguments, f));
         break;
 
-    case FAST_Variable:
+    case Fast_VariableExpr:
         switch(Fast_Variable(f)->kind) {
-        case FAST_Object: {
+        case Fast_ObjectExpr: {
             cx_object o = Fast_ObjectBase(f)->value;
             cx_signatureName(cx_nameof(o), name);
             scope = cx_parentof(o);
             break;
         }
-        case FAST_Local:
+        case Fast_LocalExpr:
             strcpy(name, Fast_Local(f)->name);
             break;
         default:
@@ -151,10 +151,10 @@ cx_void Fast_reportWarning(cx_string filename, cx_uint32 line, cx_uint32 column,
 /* ::cortex::Fast::valueKindFromType(lang::type type) */
 Fast_valueKind Fast_valueKindFromType(cx_type type) {
 /* $begin(::cortex::Fast::valueKindFromType) */
-    Fast_valueKind result = FAST_Null;
+    Fast_valueKind result = Fast_Nothing;
 
     if (type->reference) {
-        result = FAST_Reference;
+        result = Fast_Ref;
     } else {
         if (type->kind != CX_PRIMITIVE) {
             /* Exception to common error-reporting pattern: calling functions need to throw an error. The
@@ -165,36 +165,36 @@ Fast_valueKind Fast_valueKindFromType(cx_type type) {
 
         switch(cx_primitive(type)->kind) {
         case CX_BOOLEAN:
-            result = FAST_Boolean;
+            result = Fast_Bool;
             break;
         case CX_CHARACTER:
-            result = FAST_Character;
+            result = Fast_Char;
             break;
         case CX_INTEGER:
-            result = FAST_SignedInteger;
+            result = Fast_SignedInt;
             break;
         case CX_BINARY:
         case CX_UINTEGER:
-            result = FAST_Integer;
+            result = Fast_Int;
             break;
         case CX_FLOAT:
-            result = FAST_FloatingPoint;
+            result = Fast_Float;
             break;
         case CX_TEXT:
-            result = FAST_String;
+            result = Fast_Text;
             break;
         case CX_ENUM:
         case CX_BITMASK:
-            result = FAST_Enumerated;
+            result = Fast_Enum;
             break;
         case CX_ALIAS:
-            result = FAST_Integer;
+            result = Fast_Int;
             break;
         }
     }
 
     return result;
 error:
-    return FAST_Null;
+    return Fast_Nothing;
 /* $end */
 }

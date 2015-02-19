@@ -19,40 +19,40 @@ extern "C" {
 #endif
 
 /* Casting macro's for classes */
-#define Fast_BinaryExpr(o) ((Fast_BinaryExpr)o)
+#define Fast_Binary(o) ((Fast_Binary)o)
 #define Fast_Block(o) ((Fast_Block)o)
 #define Fast_Boolean(o) ((Fast_Boolean)o)
 #define Fast_Call(o) ((Fast_Call)o)
-#define Fast_CastExpr(o) ((Fast_CastExpr)o)
+#define Fast_Cast(o) ((Fast_Cast)o)
 #define Fast_Character(o) ((Fast_Character)o)
-#define Fast_CommaExpr(o) ((Fast_CommaExpr)o)
+#define Fast_Comma(o) ((Fast_Comma)o)
 #define Fast_Define(o) ((Fast_Define)o)
 #define Fast_DelegateCall(o) ((Fast_DelegateCall)o)
 #define Fast_DynamicInitializer(o) ((Fast_DynamicInitializer)o)
-#define Fast_ElementExpr(o) ((Fast_ElementExpr)o)
+#define Fast_Element(o) ((Fast_Element)o)
 #define Fast_Expression(o) ((Fast_Expression)o)
 #define Fast_FloatingPoint(o) ((Fast_FloatingPoint)o)
 #define Fast_If(o) ((Fast_If)o)
 #define Fast_Initializer(o) ((Fast_Initializer)o)
-#define Fast_InitializerExpr(o) ((Fast_InitializerExpr)o)
+#define Fast_InitializerExpression(o) ((Fast_InitializerExpression)o)
 #define Fast_Integer(o) ((Fast_Integer)o)
 #define Fast_Literal(o) ((Fast_Literal)o)
 #define Fast_Local(o) ((Fast_Local)o)
-#define Fast_MemberExpr(o) ((Fast_MemberExpr)o)
-#define Fast_NewExpr(o) ((Fast_NewExpr)o)
+#define Fast_Member(o) ((Fast_Member)o)
+#define Fast_New(o) ((Fast_New)o)
 #define Fast_Node(o) ((Fast_Node)o)
 #define Fast_Null(o) ((Fast_Null)o)
 #define Fast_Object(o) ((Fast_Object)o)
 #define Fast_ObjectBase(o) ((Fast_ObjectBase)o)
 #define Fast_Parser(o) ((Fast_Parser)o)
-#define Fast_PostfixExpr(o) ((Fast_PostfixExpr)o)
+#define Fast_PostFix(o) ((Fast_PostFix)o)
 #define Fast_SignedInteger(o) ((Fast_SignedInteger)o)
 #define Fast_StaticCall(o) ((Fast_StaticCall)o)
 #define Fast_StaticInitializer(o) ((Fast_StaticInitializer)o)
 #define Fast_String(o) ((Fast_String)o)
 #define Fast_Template(o) ((Fast_Template)o)
-#define Fast_TernaryExpr(o) ((Fast_TernaryExpr)o)
-#define Fast_UnaryExpr(o) ((Fast_UnaryExpr)o)
+#define Fast_Ternary(o) ((Fast_Ternary)o)
+#define Fast_Unary(o) ((Fast_Unary)o)
 #define Fast_Update(o) ((Fast_Update)o)
 #define Fast_Variable(o) ((Fast_Variable)o)
 #define Fast_Wait(o) ((Fast_Wait)o)
@@ -61,27 +61,27 @@ extern "C" {
 /* Type definitions */
 /* ::cortex::Fast::nodeKind */
 typedef enum Fast_nodeKind {
-    FAST_Binary = 0,
-    FAST_Call = 1,
-    FAST_Cast = 2,
-    FAST_CommaExpr = 3,
-    FAST_Declaration = 4,
-    FAST_Declare = 5,
-    FAST_Define = 6,
-    FAST_Element = 7,
-    FAST_If = 8,
-    FAST_Initializer = 9,
-    FAST_Literal = 10,
-    FAST_Member = 11,
-    FAST_Method = 12,
-    FAST_New = 13,
-    FAST_Postfix = 14,
-    FAST_Ternary = 15,
-    FAST_Unary = 16,
-    FAST_Update = 17,
-    FAST_Variable = 18,
-    FAST_Wait = 19,
-    FAST_While = 20
+    Fast_BinaryExpr = 0,
+    Fast_CallExpr = 1,
+    Fast_CastExpr = 2,
+    Fast_CommaExpr = 3,
+    Fast_DeclarationExpr = 4,
+    Fast_DeclareExpr = 5,
+    Fast_DefineExpr = 6,
+    Fast_ElementExpr = 7,
+    Fast_IfExpr = 8,
+    Fast_InitializerExpr = 9,
+    Fast_LiteralExpr = 10,
+    Fast_MemberExpr = 11,
+    Fast_MethodExpr = 12,
+    Fast_NewExpr = 13,
+    Fast_PostfixExpr = 14,
+    Fast_TernaryExpr = 15,
+    Fast_UnaryExpr = 16,
+    Fast_UpdateExpr = 17,
+    Fast_VariableExpr = 18,
+    Fast_WaitExpr = 19,
+    Fast_WhileExpr = 20
 } Fast_nodeKind;
 
 /*  ::cortex::Fast::Node */
@@ -106,10 +106,10 @@ CX_CLASS_DEF(Fast_Expression) {
     cx_bool forceReference;
 };
 
-/*  ::cortex::Fast::BinaryExpr */
-CX_CLASS(Fast_BinaryExpr);
+/*  ::cortex::Fast::Binary */
+CX_CLASS(Fast_Binary);
 
-CX_CLASS_DEF(Fast_BinaryExpr) {
+CX_CLASS_DEF(Fast_Binary) {
     CX_EXTEND(Fast_Expression);
     Fast_Expression lvalue;
     Fast_Expression rvalue;
@@ -123,9 +123,9 @@ CX_LIST(Fast_Node_list);
 
 /* ::cortex::Fast::variableKind */
 typedef enum Fast_variableKind {
-    FAST_Local = 0,
-    FAST_Template = 1,
-    FAST_Object = 2
+    Fast_LocalExpr = 0,
+    Fast_TemplateExpr = 1,
+    Fast_ObjectExpr = 2
 } Fast_variableKind;
 
 CX_CLASS_DEF(Fast_Variable) {
@@ -135,9 +135,9 @@ CX_CLASS_DEF(Fast_Variable) {
 
 /* ::cortex::Fast::LocalKind */
 typedef enum Fast_LocalKind {
-    FAST_LocalDefault = 0,
-    FAST_LocalParameter = 1,
-    FAST_LocalReturn = 2
+    Fast_LocalDefault = 0,
+    Fast_LocalParameter = 1,
+    Fast_LocalReturn = 2
 } Fast_LocalKind;
 
 /*  ::cortex::Fast::Local */
@@ -182,15 +182,15 @@ struct Fast_Binding {
 
 /* ::cortex::Fast::valueKind */
 typedef enum Fast_valueKind {
-    FAST_Boolean = 0,
-    FAST_Character = 1,
-    FAST_Integer = 2,
-    FAST_SignedInteger = 3,
-    FAST_FloatingPoint = 4,
-    FAST_String = 5,
-    FAST_Enumerated = 6,
-    FAST_Reference = 7,
-    FAST_Null = 8
+    Fast_Bool = 0,
+    Fast_Char = 1,
+    Fast_Int = 2,
+    Fast_SignedInt = 3,
+    Fast_Float = 4,
+    Fast_Text = 5,
+    Fast_Enum = 6,
+    Fast_Ref = 7,
+    Fast_Nothing = 8
 } Fast_valueKind;
 
 /*  ::cortex::Fast::Literal */
@@ -239,10 +239,10 @@ struct Fast_CallBuilder {
     cx_string signature;
 };
 
-/*  ::cortex::Fast::CastExpr */
-CX_CLASS(Fast_CastExpr);
+/*  ::cortex::Fast::Cast */
+CX_CLASS(Fast_Cast);
 
-CX_CLASS_DEF(Fast_CastExpr) {
+CX_CLASS_DEF(Fast_Cast) {
     CX_EXTEND(Fast_Expression);
     Fast_Expression lvalue;
     Fast_Expression rvalue;
@@ -258,10 +258,10 @@ CX_CLASS_DEF(Fast_Character) {
 
 CX_LIST(Fast_Expression_list);
 
-/*  ::cortex::Fast::CommaExpr */
-CX_CLASS(Fast_CommaExpr);
+/*  ::cortex::Fast::Comma */
+CX_CLASS(Fast_Comma);
 
-CX_CLASS_DEF(Fast_CommaExpr) {
+CX_CLASS_DEF(Fast_Comma) {
     CX_EXTEND(Fast_Expression);
     Fast_Expression_list expressions;
 };
@@ -346,10 +346,10 @@ CX_CLASS_DEF(Fast_DynamicInitializer) {
     Fast_DynamicInitializerFrame_array64 frames;
 };
 
-/*  ::cortex::Fast::ElementExpr */
-CX_CLASS(Fast_ElementExpr);
+/*  ::cortex::Fast::Element */
+CX_CLASS(Fast_Element);
 
-CX_CLASS_DEF(Fast_ElementExpr) {
+CX_CLASS_DEF(Fast_Element) {
     CX_EXTEND(Fast_Expression);
     Fast_Expression lvalue;
     Fast_Expression rvalue;
@@ -376,11 +376,11 @@ CX_CLASS_DEF(Fast_If) {
 
 /* ::cortex::Fast::InitOperKind */
 typedef enum Fast_InitOperKind {
-    FAST_InitPush = 0,
-    FAST_InitPop = 1,
-    FAST_InitDefine = 2,
-    FAST_InitValue = 3,
-    FAST_InitMember = 4
+    Fast_InitPush = 0,
+    Fast_InitPop = 1,
+    Fast_InitDefine = 2,
+    Fast_InitValue = 3,
+    Fast_InitMember = 4
 } Fast_InitOperKind;
 
 /*  ::cortex::Fast::InitOper */
@@ -394,10 +394,10 @@ struct Fast_InitOper {
 
 CX_LIST(Fast_InitOper_list);
 
-/*  ::cortex::Fast::InitializerExpr */
-CX_CLASS(Fast_InitializerExpr);
+/*  ::cortex::Fast::InitializerExpression */
+CX_CLASS(Fast_InitializerExpression);
 
-CX_CLASS_DEF(Fast_InitializerExpr) {
+CX_CLASS_DEF(Fast_InitializerExpression) {
     CX_EXTEND(Fast_Initializer);
     cx_bool assignValue;
     Fast_InitOper_list operations;
@@ -405,9 +405,9 @@ CX_CLASS_DEF(Fast_InitializerExpr) {
 
 /* ::cortex::Fast::InitializerKind */
 typedef enum Fast_InitializerKind {
-    FAST_InitStatic = 0,
-    FAST_InitDynamic = 1,
-    FAST_InitExpression = 2
+    Fast_InitStatic = 0,
+    Fast_InitDynamic = 1,
+    Fast_InitExpression = 2
 } Fast_InitializerKind;
 
 /*  ::cortex::Fast::Lvalue */
@@ -418,10 +418,10 @@ struct Fast_Lvalue {
     cx_bool isAssignment;
 };
 
-/*  ::cortex::Fast::MemberExpr */
-CX_CLASS(Fast_MemberExpr);
+/*  ::cortex::Fast::Member */
+CX_CLASS(Fast_Member);
 
-CX_CLASS_DEF(Fast_MemberExpr) {
+CX_CLASS_DEF(Fast_Member) {
     CX_EXTEND(Fast_Expression);
     Fast_Expression lvalue;
     Fast_Expression rvalue;
@@ -429,10 +429,10 @@ CX_CLASS_DEF(Fast_MemberExpr) {
     cx_object member;
 };
 
-/*  ::cortex::Fast::NewExpr */
-CX_CLASS(Fast_NewExpr);
+/*  ::cortex::Fast::New */
+CX_CLASS(Fast_New);
 
-CX_CLASS_DEF(Fast_NewExpr) {
+CX_CLASS_DEF(Fast_New) {
     CX_EXTEND(Fast_Expression);
     Fast_Expression type;
     Fast_Expression attributes;
@@ -550,10 +550,10 @@ struct Fast_ParserNew {
     Fast_Expression attr;
 };
 
-/*  ::cortex::Fast::PostfixExpr */
-CX_CLASS(Fast_PostfixExpr);
+/*  ::cortex::Fast::PostFix */
+CX_CLASS(Fast_PostFix);
 
-CX_CLASS_DEF(Fast_PostfixExpr) {
+CX_CLASS_DEF(Fast_PostFix) {
     CX_EXTEND(Fast_Expression);
     Fast_Expression lvalue;
     cx_operatorKind operator;
@@ -613,10 +613,10 @@ CX_CLASS_DEF(Fast_Template) {
     CX_EXTEND(Fast_Local);
 };
 
-/*  ::cortex::Fast::TernaryExpr */
-CX_CLASS(Fast_TernaryExpr);
+/*  ::cortex::Fast::Ternary */
+CX_CLASS(Fast_Ternary);
 
-CX_CLASS_DEF(Fast_TernaryExpr) {
+CX_CLASS_DEF(Fast_Ternary) {
     CX_EXTEND(Fast_Expression);
     Fast_Expression condition;
     Fast_Expression ifTrue;
@@ -627,14 +627,21 @@ CX_CLASS_DEF(Fast_TernaryExpr) {
     Fast_If ifstmt;
 };
 
-/*  ::cortex::Fast::UnaryExpr */
-CX_CLASS(Fast_UnaryExpr);
+/*  ::cortex::Fast::Unary */
+CX_CLASS(Fast_Unary);
 
-CX_CLASS_DEF(Fast_UnaryExpr) {
+CX_CLASS_DEF(Fast_Unary) {
     CX_EXTEND(Fast_Expression);
     Fast_Expression lvalue;
     cx_operatorKind operator;
 };
+
+/* ::cortex::Fast::UpdateKind */
+typedef enum Fast_UpdateKind {
+    Fast_UpdateDefault = 0,
+    Fast_UpdateBegin = 1,
+    Fast_UpdateEnd = 2
+} Fast_UpdateKind;
 
 /*  ::cortex::Fast::Update */
 CX_CLASS(Fast_Update);
@@ -644,6 +651,7 @@ CX_CLASS_DEF(Fast_Update) {
     Fast_Expression_list exprList;
     Fast_Block block;
     Fast_Expression from;
+    Fast_UpdateKind kind;
 };
 
 /*  ::cortex::Fast::Wait */

@@ -1,4 +1,4 @@
-/* Fast_BinaryExpr.c
+/* Fast_Binary.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -16,7 +16,7 @@
 #include "cx_operator.h"
 
 /* Determine whether expression is an assignment */
-cx_bool Fast_BinaryExpr_isAssignment(Fast_BinaryExpr expr) {
+cx_bool Fast_Binary_isAssignment(Fast_Binary expr) {
     cx_bool result;
     switch(expr->operator) {
     case CX_ASSIGN:
@@ -37,7 +37,7 @@ cx_bool Fast_BinaryExpr_isAssignment(Fast_BinaryExpr expr) {
 }
 
 /* Determine whether expression is an assignment */
-cx_bool Fast_BinaryExpr_isConditional(Fast_BinaryExpr expr) {
+cx_bool Fast_Binary_isConditional(Fast_Binary expr) {
     cx_bool result;
     switch(expr->operator) {
     case CX_COND_EQ:
@@ -59,10 +59,11 @@ cx_bool Fast_BinaryExpr_isConditional(Fast_BinaryExpr expr) {
 }
 
 /* If types of a binary expression don't match, figure out which casts are required */
-cx_int16 Fast_BinaryExpr_cast(Fast_BinaryExpr _this, cx_type *returnType) {
+cx_int16 Fast_Binary_cast(Fast_Binary _this, cx_type *returnType) {
     cx_type lvalueType, rvalueType, castType = NULL;
     Fast_Expression lvalue, rvalue;
     cx_bool referenceMismatch = FALSE;
+    cx_bool equal = FALSE;
 
     /* Get lvalueType and rvalueType */
     lvalue = _this->lvalue;
@@ -90,15 +91,24 @@ cx_int16 Fast_BinaryExpr_cast(Fast_BinaryExpr _this, cx_type *returnType) {
         lvalueType = rvalueType;
     }
 
+    /* If objects are not scoped, verify whether they're equal */
+    if (!cx_checkAttr(lvalueType, CX_ATTR_SCOPED) && !cx_checkAttr(rvalueType, CX_ATTR_SCOPED)) {
+        if (cx_compare(lvalueType, rvalueType) == CX_EQ) {
+            equal = TRUE;
+        }
+    } else {
+        equal = lvalueType == rvalueType;
+    }
+
     if (_this->operator == CX_DIV) {
         castType = cx_type(cx_float64_o);
-    } else if (lvalueType != rvalueType) {
+    } else if (!equal) {
         Fast_nodeKind lKind = Fast_Node(_this->lvalue)->kind;
         Fast_nodeKind rKind = Fast_Node(_this->rvalue)->kind;
         
         /* If one of the operands is a literal, always cast to the type of the non-literal */
-        if ((lKind == FAST_Literal) ^ (rKind == FAST_Literal)) {
-            if (lKind == FAST_Literal) {
+        if ((lKind == Fast_LiteralExpr) ^ (rKind == Fast_LiteralExpr)) {
+            if (lKind == Fast_LiteralExpr) {
                 castType = rvalueType;
             } else {
                 castType = lvalueType;
@@ -119,7 +129,7 @@ cx_int16 Fast_BinaryExpr_cast(Fast_BinaryExpr _this, cx_type *returnType) {
             /* If expression is an assignment, always take type of lvalue. Otherwise determine based on
              * expressibility score which type to cast to.
              */
-            if (Fast_BinaryExpr_isAssignment(_this)) {
+            if (Fast_Binary_isAssignment(_this)) {
                 if (lCastScore == rCastScore) {
                     if (ltype->width != rtype->width) {
                         castType = lvalueType;
@@ -156,11 +166,14 @@ cx_int16 Fast_BinaryExpr_cast(Fast_BinaryExpr _this, cx_type *returnType) {
             }
         } else if (lvalueType->reference && rvalueType->reference) {
             castType = NULL;
+        /* Check if types are compatible */
+
+
         } else if ((rvalueType->reference || _this->rvalue->forceReference) && !lvalueType->reference) {
             if (cx_type_castable(lvalueType, cx_object_o)) {
                 castType = lvalueType;
             }
-        }  else {
+        } else {
             cx_id id1, id2;
             Fast_Parser_error(yparser(), "no cast between '%s' and '%s'",
                     cx_fullname(lvalueType, id1), cx_fullname(rvalueType, id2));
@@ -210,8 +223,8 @@ error:
     return -1;
 }
 
-cx_int16 Fast_BinaryExpr_toIc_strOp(
-        Fast_BinaryExpr _this,
+cx_int16 Fast_Binary_toIc_strOp(
+        Fast_Binary _this,
         cx_icProgram program,
         cx_icStorage storage,
         cx_icValue lvalue,
@@ -251,13 +264,13 @@ error:
 
 /* $end */
 
-/* ::cortex::Fast::BinaryExpr::construct() */
-cx_int16 Fast_BinaryExpr_construct(Fast_BinaryExpr _this) {
-/* $begin(::cortex::Fast::BinaryExpr::construct) */
+/* ::cortex::Fast::Binary::construct() */
+cx_int16 Fast_Binary_construct(Fast_Binary _this) {
+/* $begin(::cortex::Fast::Binary::construct) */
     cx_type lvalueType, rvalueType;
     cx_int32 checkReferences=0;
 
-    Fast_Node(_this)->kind = FAST_Binary;
+    Fast_Node(_this)->kind = Fast_BinaryExpr;
     lvalueType = Fast_Expression_getType_expr(_this->lvalue, _this->rvalue);
     rvalueType = Fast_Expression_getType_expr(_this->rvalue, _this->lvalue);
 
@@ -280,11 +293,10 @@ cx_int16 Fast_BinaryExpr_construct(Fast_BinaryExpr _this) {
             Fast_Parser_error(yparser(), "inconsistent usage of references in binary expression");
             goto error;
         }
-
     }
 
     /* Set operator */
-    Fast_BinaryExpr_setOperator(_this, _this->operator);
+    Fast_Binary_setOperator(_this, _this->operator);
 
     return 0;
 error:
@@ -292,9 +304,9 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::BinaryExpr::fold() */
-Fast_Expression Fast_BinaryExpr_fold(Fast_BinaryExpr _this) {
-/* $begin(::cortex::Fast::BinaryExpr::fold) */
+/* ::cortex::Fast::Binary::fold() */
+Fast_Expression Fast_Binary_fold(Fast_Binary _this) {
+/* $begin(::cortex::Fast::Binary::fold) */
     Fast_Expression result = Fast_Expression(_this);
     void *lptr, *rptr, *resultPtr;
     cx_type type, rtype;
@@ -314,9 +326,9 @@ Fast_Expression Fast_BinaryExpr_fold(Fast_BinaryExpr _this) {
         /* If either lvalue or rvalue do not have a compile-time defined value,
          * expression cannot be folded.
          * Only exception is null-literal of which the value is 0 */
-        if ((Fast_Node(_this->lvalue)->kind == FAST_Literal) &&
-           (Fast_Node(_this->rvalue)->kind == FAST_Literal)) {
-                if (Fast_BinaryExpr_isConditional(_this)) {
+        if ((Fast_Node(_this->lvalue)->kind == Fast_LiteralExpr) &&
+           (Fast_Node(_this->rvalue)->kind == Fast_LiteralExpr)) {
+                if (Fast_Binary_isConditional(_this)) {
                     result = Fast_Expression(Fast_Boolean__create(FALSE));
                     resultPtr = (void*)Fast_Literal_getValue(Fast_Literal(result));
                     cx_binaryOperator(cx_object_o, _this->operator, &lptr, &rptr, resultPtr);
@@ -332,7 +344,7 @@ Fast_Expression Fast_BinaryExpr_fold(Fast_BinaryExpr _this) {
 
         /* Create result-expression */
         if (type->kind == CX_PRIMITIVE) {
-            if (Fast_BinaryExpr_isConditional(_this)) {
+            if (Fast_Binary_isConditional(_this)) {
                 result = Fast_Expression(Fast_Boolean__create(FALSE));
             } else {
                 switch(cx_primitive(type)->kind) {
@@ -379,9 +391,9 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::BinaryExpr::hasSideEffects() */
-cx_bool Fast_BinaryExpr_hasSideEffects_v(Fast_BinaryExpr _this) {
-/* $begin(::cortex::Fast::BinaryExpr::hasSideEffects) */
+/* ::cortex::Fast::Binary::hasSideEffects() */
+cx_bool Fast_Binary_hasSideEffects_v(Fast_Binary _this) {
+/* $begin(::cortex::Fast::Binary::hasSideEffects) */
     cx_bool result = FALSE;
     
     switch(_this->operator) {
@@ -403,10 +415,10 @@ cx_bool Fast_BinaryExpr_hasSideEffects_v(Fast_BinaryExpr _this) {
 /* $end */
 }
 
-/* ::cortex::Fast::BinaryExpr::setOperator(operatorKind kind) */
-cx_void Fast_BinaryExpr_setOperator(Fast_BinaryExpr _this, cx_operatorKind kind) {
-/* $begin(::cortex::Fast::BinaryExpr::setOperator) */
-    Fast_BinaryExpr compoundExpr = NULL;
+/* ::cortex::Fast::Binary::setOperator(operatorKind kind) */
+cx_void Fast_Binary_setOperator(Fast_Binary _this, cx_operatorKind kind) {
+/* $begin(::cortex::Fast::Binary::setOperator) */
+    Fast_Binary compoundExpr = NULL;
     cx_type exprType = NULL;
 
     exprType = Fast_Expression_getType_expr(_this->lvalue, _this->rvalue);
@@ -416,13 +428,13 @@ cx_void Fast_BinaryExpr_setOperator(Fast_BinaryExpr _this, cx_operatorKind kind)
 
     /* If operator is a compound operator (assign_*), split up in two binary expressions */
     switch(_this->operator) {
-    case CX_ASSIGN_ADD: compoundExpr = Fast_BinaryExpr__create(_this->lvalue, _this->rvalue, CX_ADD); break;
-    case CX_ASSIGN_SUB: compoundExpr = Fast_BinaryExpr__create(_this->lvalue, _this->rvalue, CX_SUB); break;
-    case CX_ASSIGN_DIV: compoundExpr = Fast_BinaryExpr__create(_this->lvalue, _this->rvalue, CX_DIV); break;
-    case CX_ASSIGN_MUL: compoundExpr = Fast_BinaryExpr__create(_this->lvalue, _this->rvalue, CX_MUL); break;
-    case CX_ASSIGN_MOD: compoundExpr = Fast_BinaryExpr__create(_this->lvalue, _this->rvalue, CX_MOD); break;
-    case CX_ASSIGN_OR:  compoundExpr = Fast_BinaryExpr__create(_this->lvalue, _this->rvalue, CX_OR); break;
-    case CX_ASSIGN_AND: compoundExpr = Fast_BinaryExpr__create(_this->lvalue, _this->rvalue, CX_AND); break;
+    case CX_ASSIGN_ADD: compoundExpr = Fast_Binary__create(_this->lvalue, _this->rvalue, CX_ADD); break;
+    case CX_ASSIGN_SUB: compoundExpr = Fast_Binary__create(_this->lvalue, _this->rvalue, CX_SUB); break;
+    case CX_ASSIGN_DIV: compoundExpr = Fast_Binary__create(_this->lvalue, _this->rvalue, CX_DIV); break;
+    case CX_ASSIGN_MUL: compoundExpr = Fast_Binary__create(_this->lvalue, _this->rvalue, CX_MUL); break;
+    case CX_ASSIGN_MOD: compoundExpr = Fast_Binary__create(_this->lvalue, _this->rvalue, CX_MOD); break;
+    case CX_ASSIGN_OR:  compoundExpr = Fast_Binary__create(_this->lvalue, _this->rvalue, CX_OR); break;
+    case CX_ASSIGN_AND: compoundExpr = Fast_Binary__create(_this->lvalue, _this->rvalue, CX_AND); break;
         break;
     default:
         break;
@@ -436,7 +448,7 @@ cx_void Fast_BinaryExpr_setOperator(Fast_BinaryExpr _this, cx_operatorKind kind)
 
     /* Apply casting on operands if necessary */
     if (exprType) {
-        if (Fast_BinaryExpr_cast(_this, &exprType)) {
+        if (Fast_Binary_cast(_this, &exprType)) {
             goto error;
         }
     }
@@ -464,13 +476,13 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::BinaryExpr::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
-cx_ic Fast_BinaryExpr_toIc_v(Fast_BinaryExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
-/* $begin(::cortex::Fast::BinaryExpr::toIc) */
+/* ::cortex::Fast::Binary::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
+cx_ic Fast_Binary_toIc_v(Fast_Binary _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
+/* $begin(::cortex::Fast::Binary::toIc) */
     cx_ic lvalue, rvalue, result, returnsResult, conditionLvalue, conditionRvalue = NULL;
     cx_icOp op = NULL;
     cx_type _thisType = Fast_Expression_getType(Fast_Expression(_this));
-    cx_bool condition = Fast_BinaryExpr_isConditional(_this);
+    cx_bool condition = Fast_Binary_isConditional(_this);
     cx_bool isReference = _this->lvalue->forceReference || _this->rvalue->forceReference;
 
     if (storage && (storage->type == _thisType)) {
@@ -506,7 +518,7 @@ cx_ic Fast_BinaryExpr_toIc_v(Fast_BinaryExpr _this, cx_icProgram program, cx_icS
             op->s3Deref = Fast_Expression_getDerefMode(_this->rvalue, _this->lvalue, NULL);
 
             /* If lvalue is an object, never use address in assignments */
-            if ((Fast_Node(_this->lvalue)->kind == FAST_Variable) && (Fast_Variable(_this->lvalue)->kind == FAST_Object)) {
+            if ((Fast_Node(_this->lvalue)->kind == Fast_VariableExpr) && (Fast_Variable(_this->lvalue)->kind == Fast_ObjectExpr)) {
                 op->s2Deref = CX_IC_DEREF_VALUE;
                 op->s3Deref = CX_IC_DEREF_VALUE;
             }
@@ -519,7 +531,7 @@ cx_ic Fast_BinaryExpr_toIc_v(Fast_BinaryExpr _this, cx_icProgram program, cx_icS
 
         /* If operation is a string, insert string-specific operations */
         if ((_thisType->kind == CX_PRIMITIVE) && (cx_primitive(_thisType)->kind == CX_TEXT)) {
-            if (Fast_BinaryExpr_toIc_strOp(_this, program, (cx_icStorage)result, (cx_icValue)lvalue, (cx_icValue)rvalue)) {
+            if (Fast_Binary_toIc_strOp(_this, program, (cx_icStorage)result, (cx_icValue)lvalue, (cx_icValue)rvalue)) {
                 goto error;
             }
         } else {
