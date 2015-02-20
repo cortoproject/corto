@@ -72,7 +72,7 @@ cx_int16 Fast_Call_construct(Fast_Call _this) {
 /* $begin(::cortex::Fast::Call::construct) */
     Fast_Expression returnTypeExpr;
 
-    Fast_Node(_this)->kind = FAST_Call;
+    Fast_Node(_this)->kind = Fast_CallExpr;
 
     /* Insert casts based on expression list and arguments */
     if (Fast_Call_insertCasts(_this)) {

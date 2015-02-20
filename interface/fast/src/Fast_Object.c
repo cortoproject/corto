@@ -93,16 +93,16 @@ cx_int16 Fast_Object_serialize(Fast_Object _this, cx_type dstType, cx_word dst) 
         }
     } else {
         if (Fast_Expression(_this)->isReference) {
-            kind = FAST_Reference;
+            kind = Fast_Ref;
         } else {
             kind = Fast_valueKindFromType(dstType);
         }
 
         switch(kind) {
-        case FAST_Boolean:
+        case Fast_Bool:
             *(cx_bool*)dst = Fast_ObjectBase(_this)->value ? TRUE : FALSE;
             break;
-        case FAST_String: {
+        case Fast_Text: {
             cx_id id;
             if (*(cx_string*)dst) {
                 cx_dealloc(*(cx_string*)dst);
@@ -110,7 +110,7 @@ cx_int16 Fast_Object_serialize(Fast_Object _this, cx_type dstType, cx_word dst) 
             *(cx_string*)dst = cx_strdup(cx_fullname(Fast_ObjectBase(_this)->value, id));
             break;
         }
-        case FAST_Reference:
+        case Fast_Ref:
             if (*(cx_object*)dst) {
                 cx_free(*(cx_object*)dst);
             }

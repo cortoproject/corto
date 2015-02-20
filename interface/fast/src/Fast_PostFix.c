@@ -1,4 +1,4 @@
-/* Fast_PostfixExpr.c
+/* Fast_PostFix.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -18,9 +18,9 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 cx_string Fast_Parser_id(cx_object o, cx_id buffer);
 /* $end */
 
-/* ::cortex::Fast::PostfixExpr::construct() */
-cx_int16 Fast_PostfixExpr_construct(Fast_PostfixExpr _this) {
-/* $begin(::cortex::Fast::PostfixExpr::construct) */
+/* ::cortex::Fast::PostFix::construct() */
+cx_int16 Fast_PostFix_construct(Fast_PostFix _this) {
+/* $begin(::cortex::Fast::PostFix::construct) */
     cx_type lvalueType = Fast_Expression_getType(_this->lvalue);
 
     /* Validate whether operation is allowed */
@@ -56,7 +56,7 @@ cx_int16 Fast_PostfixExpr_construct(Fast_PostfixExpr _this) {
     }
 
 
-    Fast_Node(_this)->kind = FAST_Postfix;
+    Fast_Node(_this)->kind = Fast_PostfixExpr;
     Fast_Expression(_this)->type = Fast_Variable(Fast_Object__create(lvalueType));
 
     return 0;
@@ -65,9 +65,9 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::PostfixExpr::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
-cx_ic Fast_PostfixExpr_toIc_v(Fast_PostfixExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
-/* $begin(::cortex::Fast::PostfixExpr::toIc) */
+/* ::cortex::Fast::PostFix::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
+cx_ic Fast_PostFix_toIc_v(Fast_PostFix _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
+/* $begin(::cortex::Fast::PostFix::toIc) */
     cx_icStorage result;
     cx_ic lvalue;
     cx_icOp op;

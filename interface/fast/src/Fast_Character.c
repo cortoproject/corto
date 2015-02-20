@@ -20,7 +20,7 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* ::cortex::Fast::Character::init() */
 cx_int16 Fast_Character_init(Fast_Character _this) {
 /* $begin(::cortex::Fast::Character::init) */
-    Fast_Literal(_this)->kind = FAST_Character;
+    Fast_Literal(_this)->kind = Fast_Char;
     return Fast_Literal_init(Fast_Literal(_this));
 /* $end */
 }
@@ -33,13 +33,13 @@ cx_int16 Fast_Character_serialize(Fast_Character _this, cx_type dstType, cx_word
     kind = Fast_valueKindFromType(dstType);
 
     switch(kind) {
-    case FAST_Boolean:
+    case Fast_Bool:
         *(cx_bool*)dst = _this->value ? TRUE : FALSE;
         break;
-    case FAST_Character:
-    case FAST_Integer:
-    case FAST_SignedInteger:
-    case FAST_String:
+    case Fast_Char:
+    case Fast_Int:
+    case Fast_SignedInt:
+    case Fast_Text:
         cx_convert(cx_primitive(cx_char_o), &_this->value, cx_primitive(dstType), (void*)dst);
         break;
     default: {

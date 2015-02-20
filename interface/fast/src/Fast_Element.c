@@ -1,4 +1,4 @@
-/* Fast_ElementExpr.c
+/* Fast_Element.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -17,12 +17,12 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* ::cortex::Fast::ElementExpr::construct() */
-cx_int16 Fast_ElementExpr_construct(Fast_ElementExpr _this) {
-/* $begin(::cortex::Fast::ElementExpr::construct) */
+/* ::cortex::Fast::Element::construct() */
+cx_int16 Fast_Element_construct(Fast_Element _this) {
+/* $begin(::cortex::Fast::Element::construct) */
     cx_type lvalueType, rvalueType;
 
-    Fast_Node(_this)->kind = FAST_Element;
+    Fast_Node(_this)->kind = Fast_ElementExpr;
 
     lvalueType = Fast_Expression_getType(_this->lvalue);
 
@@ -68,9 +68,9 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::ElementExpr::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
-cx_ic Fast_ElementExpr_toIc_v(Fast_ElementExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
-/* $begin(::cortex::Fast::ElementExpr::toIc) */
+/* ::cortex::Fast::Element::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
+cx_ic Fast_Element_toIc_v(Fast_Element _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
+/* $begin(::cortex::Fast::Element::toIc) */
     cx_icElement result;
     cx_ic lvalue, rvalue;
     CX_UNUSED(stored);

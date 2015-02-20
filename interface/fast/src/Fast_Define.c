@@ -13,7 +13,7 @@
 cx_int16 Fast_Define_construct(Fast_Define _this) {
 /* $begin(::cortex::Fast::Define::construct) */
 
-    Fast_Node(_this)->kind = FAST_Define;
+    Fast_Node(_this)->kind = Fast_DefineExpr;
 
     return 0;
 /* $end */

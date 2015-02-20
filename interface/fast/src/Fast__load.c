@@ -11,7 +11,7 @@
 #include "cx_file.h"
 #include "cx_mm.h"
 
-cx_threadKey FAST_PARSER_KEY;
+cx_threadKey Fast_PARSER_KEY;
 
 /* Run a cortex file */
 int fast_cortexRun(cx_string file, void* udata) {
@@ -47,7 +47,7 @@ int cortexmain(int argc, char* argv[]) {
     
     /* $begin(cortexmain) */
     /* Obtain thread local storage key for parser */
-    if (cx_threadTlsKey(&FAST_PARSER_KEY, NULL)) {
+    if (cx_threadTlsKey(&Fast_PARSER_KEY, NULL)) {
         return -1;
     }
 

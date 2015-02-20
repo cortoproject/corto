@@ -1,4 +1,4 @@
-/* Fast_MemberExpr.c
+/* Fast_Member.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -14,7 +14,7 @@
 Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 
-cx_int16 Fast_MemberExpr_resolveMember(Fast_MemberExpr object, cx_type type, cx_string member) {
+cx_int16 Fast_Member_resolveMember(Fast_Member object, cx_type type, cx_string member) {
     cx_object o = NULL;
 
     if (cx_instanceof(cx_type(cx_interface_o), type) && !strcmp(member, "super")) {
@@ -54,13 +54,13 @@ error:
 
 /* $end */
 
-/* ::cortex::Fast::MemberExpr::construct() */
-cx_int16 Fast_MemberExpr_construct(Fast_MemberExpr _this) {
-/* $begin(::cortex::Fast::MemberExpr::construct) */
+/* ::cortex::Fast::Member::construct() */
+cx_int16 Fast_Member_construct(Fast_Member _this) {
+/* $begin(::cortex::Fast::Member::construct) */
     cx_type lvalueType;
     cx_type exprType;
 
-    Fast_Node(_this)->kind = FAST_Member;
+    Fast_Node(_this)->kind = Fast_MemberExpr;
     
     if (!(_this->lvalue && _this->rvalue)) {
         goto error;
@@ -69,20 +69,20 @@ cx_int16 Fast_MemberExpr_construct(Fast_MemberExpr _this) {
     /* If member-_this can be determined at compile-time, resolve it */
     lvalueType = Fast_Expression_getType(_this->lvalue);
     if (lvalueType) { /* Type must be a known _this at compile-time */
-        if (Fast_Node(_this->rvalue)->kind == FAST_Literal) { /* Member-expression must be a literal */
+        if (Fast_Node(_this->rvalue)->kind == Fast_LiteralExpr) { /* Member-expression must be a literal */
             switch(Fast_Literal(_this->rvalue)->kind) {
-            case FAST_Integer: /* Resolve the nth member of a type */
+            case Fast_Int: /* Resolve the nth member of a type */
                 Fast_Parser_error(yparser(), "resolving members by index not yet supported");
                 goto error;
                 break;
-            case FAST_String: /* Resolve member by name */
+            case Fast_Text: /* Resolve member by name */
                 /* Validate that string does not exceed 512 characters */
                 if (strlen(Fast_String(_this->rvalue)->value) >= 512) {
                     Fast_Parser_error(yparser(), "identifiers longer than 511 characters are not supported");
                     goto error;
                 }
 
-                if (Fast_MemberExpr_resolveMember(_this, lvalueType, Fast_String(_this->rvalue)->value)) {
+                if (Fast_Member_resolveMember(_this, lvalueType, Fast_String(_this->rvalue)->value)) {
                     goto error;
                 }
                 break;
@@ -104,16 +104,16 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::MemberExpr::hasSideEffects() */
-cx_bool Fast_MemberExpr_hasSideEffects_v(Fast_MemberExpr _this) {
-/* $begin(::cortex::Fast::MemberExpr::hasSideEffects) */
+/* ::cortex::Fast::Member::hasSideEffects() */
+cx_bool Fast_Member_hasSideEffects_v(Fast_Member _this) {
+/* $begin(::cortex::Fast::Member::hasSideEffects) */
     return Fast_Expression_hasSideEffects(_this->lvalue);
 /* $end */
 }
 
-/* ::cortex::Fast::MemberExpr::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
-cx_ic Fast_MemberExpr_toIc_v(Fast_MemberExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
-/* $begin(::cortex::Fast::MemberExpr::toIc) */
+/* ::cortex::Fast::Member::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
+cx_ic Fast_Member_toIc_v(Fast_Member _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
+/* $begin(::cortex::Fast::Member::toIc) */
     cx_icMember result;
     cx_member member;
     cx_ic lvalue;
@@ -123,8 +123,8 @@ cx_ic Fast_MemberExpr_toIc_v(Fast_MemberExpr _this, cx_icProgram program, cx_icS
     /* Get lvalue & rvalue */
     lvalue = Fast_Node_toIc(Fast_Node(_this->lvalue), program, NULL, FALSE);
 
-    if (Fast_Node(_this->rvalue)->kind == FAST_Literal) {
-        if (Fast_Literal(_this->rvalue)->kind == FAST_String) {
+    if (Fast_Node(_this->rvalue)->kind == Fast_LiteralExpr) {
+        if (Fast_Literal(_this->rvalue)->kind == Fast_Text) {
             cx_type t = Fast_Expression_getType(_this->lvalue);
             if (cx_instanceof(cx_type(cx_interface_o), t)) {
                 cx_interface baseType = cx_interface(t);

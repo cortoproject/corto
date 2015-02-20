@@ -216,7 +216,7 @@ static int cx_newPackage(cx_string include) {
 
     cx = fopen(id, "w");
     if (cx) {
-        fprintf(cx, "#package ::%s\n// Insert implementation\n", include);
+        fprintf(cx, "#package ::%s\n\n", include);
         fclose(cx);
     } else {
         cx_error("failed to open file '%s'", id);

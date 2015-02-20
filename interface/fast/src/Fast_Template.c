@@ -16,7 +16,7 @@ cx_int16 Fast_Template_construct(Fast_Template _this) {
     if (Fast_Local_construct(Fast_Local(_this))) {
         goto error;
     } else {
-        Fast_Variable(_this)->kind = FAST_Template;
+        Fast_Variable(_this)->kind = Fast_TemplateExpr;
     }
 
     return Fast_Variable_construct(Fast_Variable(_this));

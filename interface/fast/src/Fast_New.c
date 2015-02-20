@@ -1,4 +1,4 @@
-/* Fast_NewExpr.c
+/* Fast_New.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -16,29 +16,29 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* ::cortex::Fast::NewExpr::construct() */
-cx_int16 Fast_NewExpr_construct(Fast_NewExpr _this) {
-/* $begin(::cortex::Fast::NewExpr::construct) */
+/* ::cortex::Fast::New::construct() */
+cx_int16 Fast_New_construct(Fast_New _this) {
+/* $begin(::cortex::Fast::New::construct) */
 
-    Fast_Node(_this)->kind = FAST_New;
+    Fast_Node(_this)->kind = Fast_NewExpr;
     Fast_Expression(_this)->type = Fast_Variable(_this->type);
-    cx_keep_ext(_this, _this->type, "Set type of Fast::NewExpr");
+    cx_keep_ext(_this, _this->type, "Set type of Fast::New");
 
     return 0;
 /* $end */
 }
 
-/* ::cortex::Fast::NewExpr::hasSideEffects() */
-cx_bool Fast_NewExpr_hasSideEffects_v(Fast_NewExpr _this) {
-/* $begin(::cortex::Fast::NewExpr::hasSideEffects) */
+/* ::cortex::Fast::New::hasSideEffects() */
+cx_bool Fast_New_hasSideEffects_v(Fast_New _this) {
+/* $begin(::cortex::Fast::New::hasSideEffects) */
     CX_UNUSED(_this);
     return TRUE;
 /* $end */
 }
 
-/* ::cortex::Fast::NewExpr::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
-cx_ic Fast_NewExpr_toIc_v(Fast_NewExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
-/* $begin(::cortex::Fast::NewExpr::toIc) */
+/* ::cortex::Fast::New::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
+cx_ic Fast_New_toIc_v(Fast_New _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
+/* $begin(::cortex::Fast::New::toIc) */
     cx_ic type, attrs, result;
     cx_icOp op;
     CX_UNUSED(stored);

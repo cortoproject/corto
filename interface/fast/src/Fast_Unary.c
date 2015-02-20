@@ -1,4 +1,4 @@
-/* Fast_UnaryExpr.c
+/* Fast_Unary.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -16,13 +16,13 @@ Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
-/* ::cortex::Fast::UnaryExpr::construct() */
-cx_int16 Fast_UnaryExpr_construct(Fast_UnaryExpr _this) {
-/* $begin(::cortex::Fast::UnaryExpr::construct) */
+/* ::cortex::Fast::Unary::construct() */
+cx_int16 Fast_Unary_construct(Fast_Unary _this) {
+/* $begin(::cortex::Fast::Unary::construct) */
     cx_type lvalueType;
 
     lvalueType = Fast_Expression_getType(_this->lvalue);
-    Fast_Node(_this)->kind = FAST_Unary;
+    Fast_Node(_this)->kind = Fast_UnaryExpr;
 
     if (_this->operator == CX_COND_NOT) {
         Fast_Expression(_this)->type = Fast_Variable(Fast_Object__create(cx_bool_o));
@@ -34,18 +34,18 @@ cx_int16 Fast_UnaryExpr_construct(Fast_UnaryExpr _this) {
 /* $end */
 }
 
-/* ::cortex::Fast::UnaryExpr::hasSideEffects() */
-cx_bool Fast_UnaryExpr_hasSideEffects_v(Fast_UnaryExpr _this) {
-/* $begin(::cortex::Fast::UnaryExpr::hasSideEffects) */
+/* ::cortex::Fast::Unary::hasSideEffects() */
+cx_bool Fast_Unary_hasSideEffects_v(Fast_Unary _this) {
+/* $begin(::cortex::Fast::Unary::hasSideEffects) */
 
     return Fast_Expression_hasSideEffects(_this->lvalue);
 
 /* $end */
 }
 
-/* ::cortex::Fast::UnaryExpr::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
-cx_ic Fast_UnaryExpr_toIc_v(Fast_UnaryExpr _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
-/* $begin(::cortex::Fast::UnaryExpr::toIc) */
+/* ::cortex::Fast::Unary::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
+cx_ic Fast_Unary_toIc_v(Fast_Unary _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
+/* $begin(::cortex::Fast::Unary::toIc) */
     cx_icStorage result;
     cx_ic lvalue;
     cx_icOp op;

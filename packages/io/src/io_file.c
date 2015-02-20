@@ -32,16 +32,16 @@ cx_int16 io_file_construct(io_file _this) {
         } else {
             if (!_this->binary) {
                 switch(_this->mode) {
-                case IO_Read:   _this->handle = (cx_word)fopen(_this->name, "r"); break;
-                case IO_Write:  _this->handle = (cx_word)fopen(_this->name, "w"); break;
-                case IO_Append: _this->handle = (cx_word)fopen(_this->name, "a"); break;
+                case Io_Read:   _this->handle = (cx_word)fopen(_this->name, "r"); break;
+                case Io_Write:  _this->handle = (cx_word)fopen(_this->name, "w"); break;
+                case Io_Append: _this->handle = (cx_word)fopen(_this->name, "a"); break;
                 default: cx_error("invalid filemode specified."); break;
                 }
             } else {
                 switch(_this->mode) {
-                case IO_Read:   _this->handle = (cx_word)fopen(_this->name, "rb"); break;
-                case IO_Write:  _this->handle = (cx_word)fopen(_this->name, "wb"); break;
-                case IO_Append: _this->handle = (cx_word)fopen(_this->name, "ab"); break;
+                case Io_Read:   _this->handle = (cx_word)fopen(_this->name, "rb"); break;
+                case Io_Write:  _this->handle = (cx_word)fopen(_this->name, "wb"); break;
+                case Io_Append: _this->handle = (cx_word)fopen(_this->name, "ab"); break;
                 default: cx_error("invalid filemode specified."); break;
                 }
             }
