@@ -37,7 +37,7 @@ int32 a                       // A primitive object
 a := 10                       // Assign 10 & trigger an event
 on update a: "A triggered!"   // Observer of a
 ```
-## Implement a package Star Wars package
+## Implement a Star Wars package
 #### Create the package
 Run the following commands to create a new C package called `StarWars`
 ```
