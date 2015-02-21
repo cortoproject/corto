@@ -66,7 +66,11 @@ typedef struct cx_ll_s* cx_ll;
             void *array;\
             void *element;\
         } array;\
-    } is ;\
+        struct {\
+        	cx_ll *ll;\
+        	cx_iter iter;\
+        } ll;\
+    } is;\
 } __type
 #define CX_BITMASK(type) typedef uint32_t type
 
