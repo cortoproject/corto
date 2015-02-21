@@ -85,7 +85,7 @@ static cx_bool cx_iterator_hasNext_ll(void* iterator) {
 static int cx_iterator_next_ll(void* iterator, void** nextElement) {
     CX_ITERATOR(IteratorType);
     IteratorType *iter = iterator;
-    *nextElement = cx_iterNext(iter->is.ll.iter);
+    *nextElement = cx_iterNext(&iter->is.ll.iter);
     return 0;
 }
 
