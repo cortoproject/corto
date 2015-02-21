@@ -73,7 +73,7 @@ class SpaceShip::
     int16 construct()
     bool attack(SpaceShip target)
 ```
-Run `make -C StarWars` to re-generate and make the package. Notice that there are two additional files:
+Run `make -C StarWars` to re-generate and make the package. Notice that there are now two additional files:
 ```
 StarWars/
 ├── src/
