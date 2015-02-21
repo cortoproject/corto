@@ -34,6 +34,8 @@ size_t stresc(char *out, size_t n, const char *in);
  * mask. */
 size_t strmask(char *str, char *mask);
 
+char* cx_strdup(const char* str);
+
 #ifdef __cplusplus
 }
 #endif

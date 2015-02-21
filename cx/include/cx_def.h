@@ -8,7 +8,11 @@
 #ifndef CX_DEF_H_
 #define CX_DEF_H_
 
-#include "stdint.h"
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <alloca.h>
 
 #ifdef __cplusplus
 extern "C" {

@@ -179,7 +179,7 @@ error:
 /* ::cortex::Fast::String::getValue() */
 cx_word Fast_String_getValue(Fast_String _this) {
 /* $begin(::cortex::Fast::String::getValue) */
-    cx_char *ptr, ch;
+    cx_char *ptr, ch = '\0';
     cx_word result;
 
     /* Determine whether string has embedded expressions */

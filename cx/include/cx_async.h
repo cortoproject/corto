@@ -37,7 +37,7 @@ void* cx_threadTlsGet(cx_threadKey key);
 /* Mutex */
 typedef struct cx_mutex_s* cx_mutex;
 
-struct cx_mutex_s cx_mutexNew(void);
+void cx_mutexNew(struct cx_mutex_s *m);
 int cx_mutexLock(cx_mutex mutex);
 int cx_mutexUnlock(cx_mutex mutex);
 int cx_mutexFree(cx_mutex mutex);
@@ -46,7 +46,7 @@ int cx_mutexTry(cx_mutex mutex);
 /* Read-write mutex */
 typedef struct cx_rwmutex_s* cx_rwmutex;
 
-struct cx_rwmutex_s cx_rwmutexNew(void);
+void cx_rwmutexNew(struct cx_rwmutex_s *m);
 int cx_rwmutexRead(cx_rwmutex mutex);
 int cx_rwmutexWrite(cx_rwmutex mutex);
 int cx_rwmutexTryRead(cx_rwmutex mutex);

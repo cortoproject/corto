@@ -589,7 +589,7 @@ int cx_start(void) {
     cx_threadTlsKey(&CX_KEY_WAIT_ADMIN, NULL);
 
     /* Init admin-lock */
-    cx_adminLock = cx_mutexNew();
+    cx_mutexNew(&cx_adminLock);
 
     /* Bootstrap sizes of types used in parameters, these are used to determine
      * argument-stack sizes for functions during function::bind. */

@@ -5,11 +5,11 @@
  *      Author: sander
  */
 
-#include <ctype.h>
-
 #include "cortex.h"
 #include "cx_generator.h"
+#include "ctype.h"
 #include "stdarg.h"
+#include "stdio.h"
 
 /* Generator functions */
 cx_generator gen_new(cx_string name, cx_string language) {
@@ -31,15 +31,15 @@ cx_generator gen_new(cx_string name, cx_string language) {
 
     /* Set name */
     if (name) {
-        result->name = strdup(name);
+        result->name = cx_strdup(name);
     } else {
         result->name = NULL;
     }
 
     if (language) {
-        result->language = strdup(language);
+        result->language = cx_strdup(language);
     } else {
-        result->language = strdup("c"); /* Take 'c' as default language */
+        result->language = cx_strdup("c"); /* Take 'c' as default language */
     }
 
     /* Set id-generation to default */
@@ -123,7 +123,7 @@ void gen_parse(cx_generator g, cx_object object, cx_bool parseSelf, cx_bool pars
                 cx_error("prefix cannot be longer than %d characters", sizeof(cx_id));
                 o->prefix = NULL;
             } else {
-                o->prefix = strdup(prefix);
+                o->prefix = cx_strdup(prefix);
             }
         } else {
             o->prefix = NULL;
@@ -821,7 +821,7 @@ cx_int16 g_loadExisting(cx_generator g, cx_string name, cx_string option, cx_ll 
                         cx_string src;
 
                         *endptr = '\0';
-                        src = strdup(ptr);
+                        src = cx_strdup(ptr);
 
                         if (!*list) {
                             *list = cx_llNew();
@@ -835,8 +835,8 @@ cx_int16 g_loadExisting(cx_generator g, cx_string name, cx_string option, cx_ll 
                         }
 
                         existing = cx_malloc(sizeof(g_fileSnippet));
-                        existing->option = strdup(option);
-                        existing->id = strdup(identifier);
+                        existing->option = cx_strdup(option);
+                        existing->id = cx_strdup(identifier);
                         existing->src = src;
                         existing->used = FALSE;
                         cx_llInsert(*list, existing);

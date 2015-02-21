@@ -114,7 +114,7 @@ cx_bool Fast_Member_hasSideEffects_v(Fast_Member _this) {
 /* ::cortex::Fast::Member::toIc(alias{"cx_icProgram"} program,alias{"cx_icStorage"} storage,bool stored) */
 cx_ic Fast_Member_toIc_v(Fast_Member _this, cx_icProgram program, cx_icStorage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Member::toIc) */
-    cx_icMember result;
+    cx_icMember result = NULL;
     cx_member member;
     cx_ic lvalue;
     CX_UNUSED(stored);

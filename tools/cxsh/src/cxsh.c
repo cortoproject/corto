@@ -199,7 +199,7 @@ static int cxsh_scopeWalk(cx_object o, void* udata) {
     CX_UNUSED(udata);
 
     /* Get name of type */
-    if(cx_parentof(cx_typeof(o)) == cortex_lang_o) {
+    if(cx_checkAttr(cx_typeof(o), CX_ATTR_SCOPED) && (cx_parentof(cx_typeof(o)) == cortex_lang_o)) {
         strcpy(typeName, cx_nameof(cx_typeof(o)));
     } else {
         cx_fullname(cx_typeof(o), typeName);

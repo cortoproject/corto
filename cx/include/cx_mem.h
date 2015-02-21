@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "cx_err.h"
+#include "cx_string.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -20,7 +21,6 @@ extern "C" {
 #define cx_malloc(n) malloc(n);
 #define cx_dealloc free
 #define cx_realloc realloc
-#define cx_strdup strdup
 
 #ifdef __cplusplus
 }
