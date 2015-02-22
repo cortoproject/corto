@@ -23,19 +23,19 @@
 #define insert(iter, data) cx_iterInsert(&iter, data)
 #define set(iter) cx_iterSet(&iter)
 
+typedef struct cx_llNode_s {
+    void* data;
+    cx_llNode next;
+    cx_llNode prev;
+} cx_llNode_s;
+
 typedef struct cx_ll_s {
     cx_llNode first;
     cx_llNode last;
     unsigned int maximum;
     unsigned int size;
     cx_llNode lastFreed;
-}cx_ll_s;
-
-typedef struct cx_llNode_s {
-    void* data;
-    cx_llNode next;
-    cx_llNode prev;
-}cx_llNode_s;
+} cx_ll_s;
 
 /* New list */
 cx_ll cx_llNew() {

@@ -1175,4 +1175,3 @@ void cx_vtable__size(cx_vtable *seq, cx_uint32 length) {
 void cx_vtable__clear(cx_vtable *seq) {
     cx_vtable__size(seq, 0);
 }
-

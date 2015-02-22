@@ -1697,6 +1697,8 @@ CX_IC_GETOP2_W(ELEMLX,R,PQRV)
 CX_IC_GETOP2_W(ELEMM,R,PQRV)
 CX_IC_GETOP2_W(ELEMMX,R,PQRV)
 
+CX_IC_GETOP2_W(ITER_SET,,PQRV)
+
 CX_IC_GETOP1(PUSH,PQRV)
 CX_IC_GETOP1(PUSHX,PQR)
 CX_IC_GETOP1_W(PUSHANY,PQRV)
@@ -2021,6 +2023,8 @@ static cx_vmOpKind cx_ic_getVmSet(
         } else {
             if ((type->kind == CX_PRIMITIVE) && (cx_primitive(type)->kind == CX_TEXT)) {
                 result = cx_ic_getVmSETSTRDUP(CX_IC_VMTYPE_W, opKind1, opKind2);
+            } else if (type->kind == CX_ITERATOR) {
+                result = cx_ic_getVmITER_SET(CX_IC_VMTYPE_W, opKind1, opKind2);
             } else {
                 result = cx_ic_getVmSET(typeKind, opKind1, opKind2);
             }
@@ -2341,6 +2345,19 @@ static void cx_vmOp2(cx_ic_vmProgram *program, cx_vmOp *vmOp, cx_icOp op, cx_icV
     cx_ic_vmSetOp2Addr(program, vmOp, type, opKind1, opKind2, op1, op2);
 }
 
+/* Instruction with two operands */
+static void cx_vmOp3(cx_ic_vmProgram *program, cx_vmOp *vmOp, cx_icOp op, cx_icValue op1, cx_icValue op2, cx_icValue op3, cx_icDerefMode opDeref1, cx_icDerefMode opDeref2, cx_icDerefMode opDeref3) {
+    cx_type t;
+    cx_ic_vmType type;
+    cx_ic_vmOperand opKind1, opKind2;
+    CX_UNUSED(opDeref3);
+    
+    vmOp = cx_vmGetTypeAndAssemble(program, vmOp, op, FALSE, NULL, op1, op2, 0, opDeref1, opDeref2,  &t, &type, NULL, &opKind1, &opKind2);
+
+    vmOp->op = cx_ic_getVmOpKind(program, op, op1, t, type, opKind1, opKind2, opDeref1, opDeref2);
+    cx_ic_vmSetOp3Addr(program, vmOp, type, opKind1, opKind2, CX_IC_VMOPERAND_V, op1, op2, op3);
+}
+
 /* Instruction with two operands and a storage
  * Create extra operation. This will contain the actual operation while vmOp (it is first)
  * will contain the set. The result of these two ops will look like:
@@ -2445,8 +2462,8 @@ static void cx_vmOp2Cast(cx_ic_vmProgram *program, cx_vmOp *vmOp, cx_icOp op, cx
 }
 
 static void cx_ic_getVmOp(cx_ic_vmProgram *program, cx_icOp op) {
-    cx_icDerefMode opDeref1=0, opDeref2=0, storageDeref=0;
-    cx_icValue op1 = NULL, op2 = NULL, storage = NULL;
+    cx_icDerefMode opDeref1 = 0, opDeref2 = 0, opDeref3 = 0, storageDeref = 0;
+    cx_icValue op1 = NULL, op2 = NULL, op3 = NULL, storage = NULL;
     cx_vmOp *vmOp;
     cx_bool stageOperands = FALSE;
     cx_bool castOperands = FALSE;
@@ -2512,6 +2529,26 @@ static void cx_ic_getVmOp(cx_ic_vmProgram *program, cx_icOp op) {
         break;
     }
 
+    case CX_IC_SET:
+        if (((cx_icStorage)(op->s2))->type->kind == CX_ITERATOR) {
+            cx_icValue op3value;
+            op1 = op->s2;
+            op2 = op->s3;
+            op3value = (cx_icValue)cx_icObject__create(op->_parent.program, 0, ((cx_icStorage)(op->s3))->type);
+            op3 = op3value;
+            opDeref1 = op->s2Deref;
+            opDeref2 = op->s3Deref;
+            opDeref3 = CX_IC_DEREF_ADDRESS;
+        } else {
+            op1 = op->s2;
+            op2 = op->s3;
+            storage = op->s1;
+            opDeref1 = op->s2Deref;
+            opDeref2 = op->s3Deref;
+            storageDeref = op->s1Deref;
+        }
+        break;
+
     /* Call sets function address */
     case CX_IC_CALL:
         if (cx_ic_operandIsComposite((cx_icStorage)op->s2, CX_DELEGATE)) {
@@ -2559,11 +2596,14 @@ static void cx_ic_getVmOp(cx_ic_vmProgram *program, cx_icOp op) {
     if (op1) {
         /* Operation has two operands */
         if (op2) {
-            /* If operation has a storage-operand, insert set-operation */
-            if (storage && (storage != op1)) {
+
+            if (op3) {
+                cx_vmOp3(program, vmOp, op, op1, op2, op3, opDeref1, opDeref2, opDeref3);
+            } else if (storage && (storage != op1)) {
+                /* If operation has a storage-operand, insert set-operation */
                 if (op->kind == CX_IC_SET) {
                     cx_vmOp2Set(program, vmOp, op, storage, op1, op2, storageDeref, opDeref1, opDeref2);
-                } else{
+                } else {
                     if (!stageOperands) {
                         if (castOperands) {
                             cx_vmOp2Cast(program, vmOp, op, storage, op1, op2, storageDeref, opDeref1, opDeref2);

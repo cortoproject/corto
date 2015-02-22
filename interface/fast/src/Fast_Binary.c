@@ -87,7 +87,7 @@ cx_int16 Fast_Binary_cast(Fast_Binary _this, cx_type *returnType) {
         rvalueType = Fast_Expression_getType_expr(_this->rvalue, _this->lvalue);
     }
 
-    if(!lvalueType) {
+    if (!lvalueType) {
         lvalueType = rvalueType;
     }
 
@@ -447,7 +447,7 @@ cx_void Fast_Binary_setOperator(Fast_Binary _this, cx_operatorKind kind) {
     }
 
     /* Apply casting on operands if necessary */
-    if (exprType) {
+    if (exprType && (exprType->kind != CX_ITERATOR)) {
         if (Fast_Binary_cast(_this, &exprType)) {
             goto error;
         }

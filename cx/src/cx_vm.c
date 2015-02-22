@@ -707,9 +707,21 @@ typedef union Di2f_t {
 
 #define ELEMMX(type,code)\
     ELEMMX_##code:\
-    fetchOp2(ELEMMX, code);\
-    op1_##code = (W_t)cx_rbtreeGetPtr(*(cx_rbtree*)op1_##code, (void*)&op2_##code);\
-    next();\
+        fetchOp2(ELEMMX, code);\
+        op1_##code = (W_t)cx_rbtreeGetPtr(*(cx_rbtree*)op1_##code, (void*)&op2_##code);\
+        next();\
+
+#define ITER_SET(type,code)\
+    ITER_SET_##code:\
+        fetchOp3(ITER_SET, code##V);\
+        cx_iterator_set((void*)&op1_##code##V, (void*)&op2_##code##V, (void*)op3_##code##V);\
+        next();\
+
+#define ITER_NEXT(type,code)\
+    ITER_NEXT_##code:\
+        fetchOp2(ITER_NEXT, code);\
+        op1_##code = (W_t)cx_iterator_next((void*)op2_##code);\
+        next();\
 
 /* Instruction implementation expansions */
 #define OPERAND_PQRV(op,type,lvalue)\
@@ -1294,6 +1306,8 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
                 TOJMP_OPERAND_PQRV(ELEMLX,W,R);
                 TOJMP_OPERAND_PQRV(ELEMM,W,R);
                 TOJMP_OPERAND_PQRV(ELEMMX,W,R);
+                TOJMP_OP2_W(ITER_SET,PQRV);
+                TOJMP_OP2_W(ITER_NEXT,PQRV);
 
                 TOJMP_OP1_PQRV(PUSH);
                 TOJMP_OP1(PUSHX);
@@ -1469,6 +1483,9 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
     OPERAND_PQRV(ELEMM,W,R);
     OPERAND_PQRV(ELEMMX,W,R);
 
+    OP2_W(ITER_SET,PQRV);
+    OP2_W(ITER_NEXT,PQRV);
+
     OP1_PQRV(PUSH);
     OP1(PUSHX);
     OPERAND_PQRV(PUSHANY,W,);
@@ -1533,11 +1550,11 @@ static void cx_stringConcatCacheCreate(void) {
 
 /* Execute a program */
 int32_t cx_vm_run(cx_vmProgram program, void *result) {
-    void *storage;
-
-    storage = alloca(program->storage);
+    void *storage = NULL;
+    if (program->storage) {
+        storage = alloca(program->storage);
+    }
     cx_stringConcatCacheCreate();
-
     return cx_vm_run_w_storage(program, storage, result);
 }
 
@@ -1670,6 +1687,9 @@ char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
                 TOSTR_OPERAND_PQRV(ELEMLX,W,R);
                 TOSTR_OPERAND_PQRV(ELEMM,W,R);
                 TOSTR_OPERAND_PQRV(ELEMMX,W,R);
+
+                TOSTR_OP2_W(ITER_SET,PQRV);
+                TOSTR_OP2_W(ITER_NEXT,PQRV);
                     
                 TOSTR_OP1_PQRV(PUSH);
                 TOSTR_OP1(PUSHX);

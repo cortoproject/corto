@@ -18,8 +18,27 @@
 extern "C" {
 #endif
 
+/* $header() */
+cx_int16 cx_iterator_set(void *_this, void *collection, cx_collection collectionType);
+/* $end */
+
+/* virtual ::cortex::lang::iterator::castable(type type) */
+cx_bool cx_iterator_castable(cx_iterator _this, cx_type type);
+
+/* ::cortex::lang::iterator::castable(type type) */
+cx_bool cx_iterator_castable_v(cx_iterator _this, cx_type type);
+
+/* virtual ::cortex::lang::iterator::compatible(type type) */
+cx_bool cx_iterator_compatible(cx_iterator _this, cx_type type);
+
+/* ::cortex::lang::iterator::compatible(type type) */
+cx_bool cx_iterator_compatible_v(cx_iterator _this, cx_type type);
+
 /* ::cortex::lang::iterator::init() */
 cx_int16 cx_iterator_init(cx_iterator _this);
+
+cx_bool cx_iterator_hasNext(void *_this);
+void *cx_iterator_next(void *_this);
 
 #ifdef __cplusplus
 }
