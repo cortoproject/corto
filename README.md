@@ -18,7 +18,7 @@ Cortex depends on the following packages - make sure to have them installed:
  * libxml2-dev (only required for building)
  
 ## Quick start
-Put the following code snippets in file called `foo.cx`. Execute the code with `cortex foo.cx`.
+Put the following code snippets in file with the extension `cx`. Execute the code with `cortex foo.cx`.
 #### Hello World
 ```
 "Hi Cortex!"
