@@ -585,6 +585,10 @@ cx_object Fast_Parser_expandBinary(Fast_Parser _this, Fast_Expression lvalue, Fa
     } else if (!isReference && ((tleft && (tleft->kind == CX_COMPOSITE)) && (tright && (tright->kind == CX_COMPOSITE)))) {
         result = Fast_Parser_binaryCompositeExpr(_this, lvalue, rvalue, *(cx_operatorKind*)userData);
 
+    /* Binary expression with iterator value on the left-hand side */
+    } else if (tleft && tleft->kind == CX_ITERATOR) {
+        result = Fast_Expression(Fast_Binary__create(lvalue, rvalue, *(cx_operatorKind*)userData));
+
     /* Binary expression with non-reference collection values */
     } else if (!forceReference && ((tleft && (tleft->kind == CX_COLLECTION)) || (tright && (tright->kind == CX_COLLECTION)))) {
         result = Fast_Parser_binaryCollectionExpr(_this, lvalue, rvalue, *(cx_operatorKind*)userData);
@@ -1473,6 +1477,7 @@ Fast_Variable Fast_Parser_declareFunction(Fast_Parser _this, Fast_Variable retur
         if ((o = cx_lookup(Fast_ObjectBase(_this->scope)->value, functionName))) {
             if (!cx_instanceof(cx_type(cx_function_o), o)) {
                 cx_id id2;
+                // todo changed here
                 Fast_Parser_error(_this, "cannot redeclare '%s' of type '%s' as function",
                     id, Fast_Parser_id(cx_typeof(o), id2));
                 goto error;

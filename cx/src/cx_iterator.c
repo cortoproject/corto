@@ -61,7 +61,7 @@ static int cx_iterator_next_array(void* iterator, void** nextElement) {
 
     error = 1;
     iter = iterator;
-    collection  = iter->type;
+    collection = iter->type;
     array = iter->is.array.array;
     element = iter->is.array.element;
     elementType = collection->elementType;
@@ -89,6 +89,21 @@ static int cx_iterator_next_ll(void* iterator, void** nextElement) {
     return 0;
 }
 
+static cx_bool cx_iterator_hasNext_map(void* iterator) {
+    // CX_ITERATOR(IteratorType);
+    CX_UNUSED(iterator);
+    // TODO implement
+    return 0;
+}
+
+static int cx_iterator_next_map(void* iterator, void** nextElement) {
+    // CX_ITERATOR(IteratorType);
+    CX_UNUSED(iterator);
+    CX_UNUSED(nextElement);
+    // TODO implement
+    return 1;
+}
+
 cx_bool cx_iterator_hasNext(void* _this) {
     CX_ITERATOR(iteratorType);
     iteratorType *iterator = _this;
@@ -102,6 +117,7 @@ cx_bool cx_iterator_hasNext(void* _this) {
             result = cx_iterator_hasNext_ll(iterator);
             break;
         case CX_MAP:
+            result = cx_iterator_hasNext_map(iterator);
             break;
         default:
             break;
@@ -111,12 +127,9 @@ cx_bool cx_iterator_hasNext(void* _this) {
 
 void* cx_iterator_next(void* _this) {
     CX_ITERATOR(iteratorType);
-    iteratorType *iterator;
-    int error;
-    void *result;
-
-    iterator = _this;
-    error = 0;
+    iteratorType *iterator = _this;
+    int error = 0;
+    void *result = NULL;
 
     switch (iterator->type->kind) {
         case CX_ARRAY:
@@ -128,12 +141,13 @@ void* cx_iterator_next(void* _this) {
             error = cx_iterator_next_ll(iterator, &result);
             break;
         case CX_MAP:
+            error = cx_iterator_next_map(iterator, &result);
             break;
         default:
             break;
     }
-    if (error) {
-        cx_critical("reached end of collection while attempting to retrieve next");
+    if (error || result == NULL) {
+        cx_critical("error retrieving next element from collection");
     }
     return result;
 }

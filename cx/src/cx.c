@@ -377,6 +377,8 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     /* iterator */\
     SSO_OP_OBJ(op, iterator_elementType);\
     SSO_OP_OBJ(op, iterator_init_);\
+    SSO_OP_OBJ(op, iterator_castable_);\
+    SSO_OP_OBJ(op, iterator_compatible_);\
     /* list */\
     SSO_OP_OBJ(op, list_insert);\
     SSO_OP_OBJ(op, list_append);\
