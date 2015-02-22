@@ -1,9 +1,25 @@
 
 #include "stdarg.h"
 #include "cx_mem.h"
+#include "ctype.h"
 
 int stricmp(const char *str1, const char *str2) {
-    return strcasecmp(str1, str2);
+    const char *ptr1, *ptr2;
+    char ch1, ch2;
+    ptr1 = str1;
+    ptr2 = str2;
+    
+    while((ch1 = *ptr1) && (ch2 = *ptr2)) {
+        ch1 = tolower(ch1);
+        ch2 = tolower(ch2);
+        if (ch1 != ch2) {
+            return ch1 - ch2;
+        }
+        ptr1++;
+        ptr2++;
+    }
+
+    return tolower(*ptr1) - tolower(*ptr2);
 }
 
 char *strappend(char *src, char *fmt, ...) {
@@ -173,4 +189,10 @@ size_t strmask(char *str, char *mask) {
     return result;
 }
 
+/* strdup is not a standard C function, so provide own implementation. */
+char* cx_strdup(const char* str) {
+    char *result = cx_malloc(strlen(str) + 1);
+    strcpy(result, str);
+    return result;
+}
 

@@ -5,6 +5,7 @@
  *      Author: Sander
  */
 #include "time.h"
+#include <sys/time.h>
 #include "cx_time.h"
 #include "math.h"
 #include "limits.h"
@@ -13,6 +14,11 @@
 #include "cx_err.h"
 #include "cx_util.h"
 #include "cx__type.h"
+
+#ifdef __MACH__
+#include <mach/clock.h>
+#include <mach/mach.h>
+#endif
 
 /* Sleep */
 void cx_sleep(unsigned int sec, unsigned int nanosec) {
@@ -26,8 +32,17 @@ void cx_sleep(unsigned int sec, unsigned int nanosec) {
 }
 
 void cx_timeGet(cx_time* time) {
-
-    clock_gettime(CLOCK_REALTIME, (struct timespec*)time);
+#ifdef __MACH__ // OS X does not have clock_gettime, use clock_get_time
+    clock_serv_t cclock;
+    mach_timespec_t mts;
+    host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &cclock);
+    clock_get_time(cclock, &mts);
+    mach_port_deallocate(mach_task_self(), cclock);
+    time->tv_sec = mts.tv_sec;
+    time->tv_nsec = mts.tv_nsec;
+#else
+    clock_gettime(CLOCK_REALTIME, (struct timespec*)&time);
+#endif
 }
 
 cx_time cx_timeAdd(cx_time t1, cx_time t2) {

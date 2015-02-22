@@ -100,22 +100,15 @@ void* cx_threadTlsGet(cx_threadKey key) {
     return pthread_getspecific(key);
 }
 
-struct cx_mutex_s cx_mutexNew() {
-    struct cx_mutex_s mutex;
+void cx_mutexNew(struct cx_mutex_s *m) {
+    pthread_mutex_init (&m->mutex, NULL);
 
 #if DETECT_CONTENTION
     void* buff[DEPTH];
+    m->contention = 0;
+    m->c_entries = backtrace(buff, DEPTH);
+    m->c_symbols = backtrace_symbols(buff, DEPTH);
 #endif
-
-    pthread_mutex_init (&mutex.mutex, NULL);
-
-#if DETECT_CONTENTION
-    mutex->contention = 0;
-    mutex->c_entries = backtrace(buff, DEPTH);
-    mutex->c_symbols = backtrace_symbols(buff, DEPTH);
-#endif
-
-    return mutex;
 }
 
 int cx_mutexLock(cx_mutex mutex) {
@@ -171,20 +164,17 @@ cx_sem cx_semNew(unsigned int initValue) {
 }
 
 /* Create read-write mutex */
-struct cx_rwmutex_s cx_rwmutexNew() {
-    struct cx_rwmutex_s result;
-
-    if (pthread_rwlock_init(&result.mutex, NULL)) {
+void cx_rwmutexNew(struct cx_rwmutex_s *m) {
+    if (pthread_rwlock_init(&m->mutex, NULL)) {
         cx_critical("pthread_rwlock_init failed.");
     }
-
-    return result;
 }
 
 /* Free read-write mutex */
-int cx_rwmutexFree(cx_rwmutex mutex) {
-    if (pthread_rwlock_destroy(&mutex->mutex)) {
-        cx_error("pthread_rwlock_destroy failed.");
+int cx_rwmutexFree(cx_rwmutex m) {
+    int result = 0;
+    if ((result = pthread_rwlock_destroy(&m->mutex))) {
+        cx_critical("pthread_rwlock_destroy failed (%s)", strerror(result));
     }
     return 0;
 }

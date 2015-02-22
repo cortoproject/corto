@@ -10,6 +10,7 @@
 #include "cx_err.h"
 #include "cx_util.h"
 #include "cx_mem.h"
+#include "alloca.h"
 
 typedef struct bindingHandler {
     cx_callHandler function;

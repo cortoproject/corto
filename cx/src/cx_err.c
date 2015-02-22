@@ -10,12 +10,12 @@
 #include "cx_async.h"
 #include "cx_mem.h"
 
-#include <stdio.h>
-#include <time.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <execinfo.h>
-#include <string.h>
+#include "stdio.h"
+#include "time.h"
+#include "stdarg.h"
+#include "stdlib.h"
+#include "execinfo.h"
+#include "string.h"
 
 // static char* cx_logKind[] = {"", "debug:    ", "trace:    ", "warning:  ", "error:    ", "critical: ", "assert:  "};
 static cx_threadKey cx_errKey = 0;

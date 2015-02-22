@@ -19,15 +19,17 @@ extern "C" {
 #elif INTPTR_MAX == INT64_MAX
 #define CX_CPU_X64
 #else
-#error "cortex is not supported on platforms which are neither 32- nor 64-bit."
+#warning "cortex is not supported on platforms which are neither 32- nor 64-bit."
 #endif
 
 #if defined(WIN32) || defined(WIN64)
 #define CX_OS_WINDOWS
 #elif defined(__linux__)
 #define CX_OS_LINUX
+#elif defined(__APPLE__) && defined(__MACH__)
+#define CX_OS_OSX
 #else
-#error "cortex is not supported on non-linux or windows operating systems."
+#warning "cortex is not supported on non-linux or windows operating systems."
 #endif
 
 #ifdef CX_CPU_X86
@@ -38,8 +40,11 @@ extern "C" {
 
 #ifdef CX_OS_WINDOWS
 #define CX_OS_STRING "windows"
-#else
-#define CX_OS_STRING "linux2.6"
+#elif defined(CX_OS_LINUX)
+#define CX_OS_STRING "linux"
+#define CX_DLL_CONSTRUCT void __attribute__ ((constructor)) DllMain(void)
+#elif defined(CX_OS_OSX)
+#define CX_OS_STRING "darwin"
 #define CX_DLL_CONSTRUCT void __attribute__ ((constructor)) DllMain(void)
 #endif
 

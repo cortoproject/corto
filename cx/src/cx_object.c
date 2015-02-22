@@ -35,9 +35,7 @@ static int cx_adopt(cx_object parent, cx_object child);
 static cx_int32 cx_notify(cx__observable *_o, cx_object observable, cx_object _this, cx_uint32 mask);
 
 static void cx_notifyObserverDefault(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask);
-static void cx_notifyObserverCdecl(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask);
 static void cx_notifyObserverThis(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask);
-static void cx_notifyObserverThisCdecl(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask);
 
 /* Thread local storage key that keeps track of the objects that are prepared to wait for. */
 extern cx_threadKey CX_KEY_WAIT_ADMIN;
@@ -216,7 +214,7 @@ static cx_int16 cx__initScope(cx_object o, cx_string name, cx_object parent) {
     cx_assert(scope != NULL, "cx__initScope: created scoped object, but cx__objectScope returned NULL.");
 
     scope->name = cx_strdup(name);
-    scope->scopeLock = cx_rwmutexNew();
+    cx_rwmutexNew(&scope->scopeLock);
 
     /* Add object to the scope of the parent-object */
     if (cx_adopt(parent, o)) {
@@ -264,7 +262,7 @@ static void cx__initWritable(cx_object o) {
     writable = cx__objectWritable(_o);
     cx_assert(writable != NULL, "cx__initWritable: created writable object, but cx__objectWritable returned NULL.");
 
-    writable->lock = cx_rwmutexNew();
+    cx_rwmutexNew(&writable->lock);
 }
 
 static void cx__deinitWritable(cx_object o) {
@@ -288,10 +286,10 @@ static void cx__initObservable(cx_object o) {
     observable = cx__objectObservable(_o);
     cx_assert(observable != NULL, "cx__initObservable: created observable object, but cx__objectObservable returned NULL.");
 
-    observable->selfLock = cx_rwmutexNew();
+    cx_rwmutexNew(&observable->selfLock);
 
     if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
-        observable->childLock = cx_rwmutexNew();
+        cx_rwmutexNew(&observable->childLock);
     }
 
     observable->onSelf = NULL;
@@ -303,27 +301,29 @@ static void cx__initObservable(cx_object o) {
     observable->lockRequired = FALSE;
     observable->childLockRequired = FALSE;
 
-    parent = o;
-    while((parent = cx_parentof(parent))) {
-        if ((parentObservable = cx__objectObservable(CX_OFFSET(parent, -sizeof(cx__object))))) {
-            cx_rwmutexRead(&parentObservable->childLock);
+    if (cx_checkState(o, CX_ATTR_SCOPED)) {
+        parent = o;
+        while((parent = cx_parentof(parent))) {
+            if ((parentObservable = cx__objectObservable(CX_OFFSET(parent, -sizeof(cx__object))))) {
+                cx_rwmutexRead(&parentObservable->childLock);
 
-            /* Inherit childLockRequired from first observable parent */
-            if (parentObservable->childLockRequired) {
-                observable->lockRequired = TRUE;
-            }
-
-            if (!observable->parent) {
-                if (parentObservable->onChild) {
-                    observable->parent = parentObservable;
-                } else {
-                    observable->parent = parentObservable->parent;
+                /* Inherit childLockRequired from first observable parent */
+                if (parentObservable->childLockRequired) {
+                    observable->lockRequired = TRUE;
                 }
-            }
-            cx_rwmutexUnlock(&parentObservable->childLock);
 
-            if (observable->childLockRequired) {
-                break;
+                if (!observable->parent) {
+                    if (parentObservable->onChild) {
+                        observable->parent = parentObservable;
+                    } else {
+                        observable->parent = parentObservable->parent;
+                    }
+                }
+                cx_rwmutexUnlock(&parentObservable->childLock);
+
+                if (observable->childLockRequired) {
+                    break;
+                }
             }
         }
     }
@@ -377,7 +377,9 @@ static void cx__deinitObservable(cx_object o) {
     }
 
     cx_rwmutexFree(&observable->selfLock);
-    cx_rwmutexFree(&observable->childLock);
+    if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
+        cx_rwmutexFree(&observable->childLock);
+    }
 }
 
 /* Initialize static scoped object */
@@ -389,7 +391,7 @@ void cx__newSSO(cx_object sso) {
     scope = cx__objectScope(o);
 
     /* Don't call initScope because name is already set. */
-    scope->scopeLock = cx_rwmutexNew();
+    cx_rwmutexNew(&scope->scopeLock);
     if (scope->parent) {
         cx__adoptSSO(sso);
     }
@@ -810,6 +812,7 @@ cx_object cx_new_ext(cx_object src, cx_type type, cx_uint8 attrs, cx_string cont
         }
         if (attrs & CX_ATTR_OBSERVABLE) {
             o->attrs.observable = TRUE;
+            cx__initObservable(CX_OFFSET(o, sizeof(cx__object)));
         }
 
         /* Initially, an object is valid and declared */
@@ -906,10 +909,6 @@ cx_object cx_declare(cx_object parent, cx_string name, cx_type type) {
         if (o) {
             /* Initialize object parameters. */
             if (!cx__initScope(o, name, parent)) {
-                if (state & CX_ATTR_WRITABLE) {
-                    cx__initWritable(o);
-                }
-                cx__initObservable(o);
                 
                 /* Call framework initializer */
                 cx_init(o);
@@ -2468,26 +2467,12 @@ static void cx_notifyObserverDefault(cx__observer* data, cx_object _this, cx_obj
     cx_call(f, NULL, NULL, observable, source);
 }
 
-static void cx_notifyObserverCdecl(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask) {
-    cx_function f = cx_function(data->observer);
-    CX_UNUSED(_this);
-    CX_UNUSED(mask);
-    ((void(*)(cx_object,cx_object,cx_object))f->implData)(NULL, observable, source);
-}
-
 static void cx_notifyObserverThis(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask) {
     CX_UNUSED(mask);
 
     if (!_this || (_this != source)) {
         cx_function f = cx_function(data->observer);
         cx_call(f, NULL, _this, observable, source);
-    }
-}
-static void cx_notifyObserverThisCdecl(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask) {
-    CX_UNUSED(mask);
-    if (!_this || (_this != source)) {
-        cx_function f = cx_function(data->observer);
-        ((void(*)(cx_object,cx_object,cx_object))f->implData)(_this, observable, source);
     }
 }
 

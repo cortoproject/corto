@@ -552,7 +552,6 @@ cx_object Fast_Parser_expandBinary(Fast_Parser _this, Fast_Expression lvalue, Fa
         isReference = forceReference || (tleft && tleft->reference) || (tright && tright->reference);
     }
 
-
     if (tleft && (tleft->kind == CX_COMPOSITE) && (cx_interface(tleft)->kind == CX_DELEGATE)) {
         if (*(cx_operatorKind*)userData == CX_ASSIGN) {
             rvalue = Fast_Parser_delegateAssignment(_this, lvalue, rvalue);
