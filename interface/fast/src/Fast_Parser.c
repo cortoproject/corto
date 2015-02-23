@@ -1916,10 +1916,6 @@ error:
 cx_void Fast_Parser_initDeclareStaged(Fast_Parser _this, Fast_Expression expr) {
 /* $begin(::cortex::Fast::Parser::initDeclareStaged) */
     cx_uint32 i;
-
-    if (_this->repl) {
-        return; /* No declaration of staged variables in repl mode */
-    }
     
     _this->variableCount = 0;
 
@@ -2226,13 +2222,11 @@ error:
 cx_void Fast_Parser_initStage(Fast_Parser _this, cx_string id, cx_bool found) {
 /* $begin(::cortex::Fast::Parser::initStage) */
     
-    if (!_this->repl) {
-        _this->staged[_this->stagedCount].name = cx_strdup(id);
-        _this->staged[_this->stagedCount].line = _this->line;
-        _this->staged[_this->stagedCount].column = _this->column;
-        _this->staged[_this->stagedCount].found = found;
-        _this->stagedCount++;
-    }
+    _this->staged[_this->stagedCount].name = cx_strdup(id);
+    _this->staged[_this->stagedCount].line = _this->line;
+    _this->staged[_this->stagedCount].column = _this->column;
+    _this->staged[_this->stagedCount].found = found;
+    _this->stagedCount++;
 
 /* $end */
 }

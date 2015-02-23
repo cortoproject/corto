@@ -563,11 +563,13 @@ declaration_expr
         Fast_Parser_initPushStatic(yparser()); fast_op;
     } initializer {
         Fast_Parser_initPop(yparser()); fast_op;
+        $$ = NULL;
     }
     | wait_expr ':' {
         Fast_Parser_initDeclareStaged(yparser(), NULL); fast_op;
         Fast_Parser_initPushStatic(yparser()); fast_op;
         Fast_Parser_initPop(yparser()); fast_op;
+        $$ = NULL;
     }
     | declaration ':' {Fast_Parser_initPushStatic(yparser()); fast_op;} initializer {Fast_Parser_initPop(yparser()); fast_op;}
     | declaration '{' {Fast_Parser_initPushStatic(yparser()); fast_op;} initializer {Fast_Parser_initPop(yparser()); fast_op;} '}'

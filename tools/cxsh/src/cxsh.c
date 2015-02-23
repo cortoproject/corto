@@ -625,26 +625,34 @@ static int cxsh_doCmd(char* cmd) {
         cxsh_help();
     } else {
         cx_char *lastErr;
-        if ((lastErr = cx_lasterror())) {
-            unsigned int location = 0;
-            cxsh_color(ERROR_COLOR);
 
-            /* If lastError starts with a line:column: indication, print an arrow */
-            if ((location = cxsh_getErrorLocation(lastErr))) {
-                cx_id prompt;
-                cxsh_prompt(scope, FALSE, prompt);
-                printf("%*s^\n", location - 1 + (unsigned int)strlen(prompt), "");
+        if (*cmd == '/') {
+            cmd++;
+        }
+
+        if (cxsh_show(cmd)) {
+
+            if ((lastErr = cx_lasterror())) {
+                unsigned int location = 0;
+                cxsh_color(ERROR_COLOR);
+
+                /* If lastError starts with a line:column: indication, print an arrow */
+                if ((location = cxsh_getErrorLocation(lastErr))) {
+                    cx_id prompt;
+                    cxsh_prompt(scope, FALSE, prompt);
+                    printf("%*s^\n", location - 1 + (unsigned int)strlen(prompt), "");
+                }
+
+                do {
+                    cx_print("%s", lastErr);
+                } while ((lastErr = cx_lasterror()));
+
+                cxsh_color(NORMAL);
+            } else {
+                cxsh_color(ERROR_COLOR);
+                cx_print("expression '%s' did not resolve to a valid expression or command", cmd);
+                cxsh_color(NORMAL);
             }
-
-            do {
-                cx_print("%s", lastErr);
-            } while ((lastErr = cx_lasterror()));
-
-            cxsh_color(NORMAL);
-        } else {
-            cxsh_color(ERROR_COLOR);
-            cx_print("expression '%s' did not resolve to a valid expression or command", cmd);
-            cxsh_color(NORMAL);
         }
     }
 
@@ -672,16 +680,8 @@ static void cxsh_shell(void) {
 
         /* Forward commands */
         if (strlen(cmd)) {
-            if (cmd[0] == '/') {
-                if (cxsh_doCmd(cmd+1)) {
-                    quit = TRUE;
-                }
-            } else {
-                if (cxsh_show(cmd)) {
-                    if (cxsh_doCmd(cmd)) {
-                        quit = TRUE;
-                    }
-                }
+            if (cxsh_doCmd(cmd)) {
+                quit = TRUE;
             }
         }
     }
