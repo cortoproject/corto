@@ -267,9 +267,9 @@ typedef enum cx_vmOpKind {
     VM_OPERAND_PQRV(PUSHANY,W,),      /* Push value as any */
     VM_1OP_ANY(PUSHANYX),             /* Push address of value as any */
 
-    VM_OPERAND_PQR(CALL,L,),          /* Call function with returnvalue */
+    VM_OPERAND_PQR(CALL,W,),          /* Call function with returnvalue */
     CX_VM_CALLVOID,                   /* Call function with void returnvalue */
-    VM_OPERAND_PQR(CALLVM,L,),        /* Call vm function with returnvalue */
+    VM_OPERAND_PQR(CALLVM,W,),        /* Call vm function with returnvalue */
     CX_VM_CALLVMVOID,                 /* Call vm function with void returnvalue */
     VM_2OP_W(CALLPTR,PQRV),           /* Call a delegate */
     VM_1OP(RET),                      /* Return value smaller than 8 bytes */
