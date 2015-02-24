@@ -198,7 +198,7 @@
 					<member name="name" type="string"/>
 					<member name="type" type="Fast::Variable"/>
 					<member name="kind" type="Fast::LocalKind"/>
-					<member name="isReference" type="bool"/>
+					<member name="reference" type="bool"/>
 					<virtual name="toIc(alias{&quot;cx_icProgram&quot;} program,alias{&quot;cx_icStorage&quot;} storage,bool stored)" returnType="alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
 			</class>

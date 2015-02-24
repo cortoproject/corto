@@ -23,7 +23,7 @@ cx_int16 Fast_Member_resolveMember(Fast_Member object, cx_type type, cx_string m
             Fast_Expression(object)->type = Fast_Variable(Fast_Object__create(cx_interface(type)->base));
         } else {
             cx_id id;
-            Fast_Parser_error(yparser(), "type '%s' has no base", cx_fullname(type, id));
+            Fast_Parser_error(yparser(), "type '%s' has no base", Fast_Parser_id(type, id));
             goto error;
         }
     } else {
@@ -35,7 +35,7 @@ cx_int16 Fast_Member_resolveMember(Fast_Member object, cx_type type, cx_string m
             o = cx_type_resolveProcedure(type, member);
             if (!o) {
                 cx_id id;
-                Fast_Parser_error(yparser(), "unresolved member '%s' for type '%s'", member, cx_fullname(type, id));
+                Fast_Parser_error(yparser(), "unresolved member '%s' for type '%s'", member, Fast_Parser_id(type, id));
                 goto error;
             }
             Fast_Expression(object)->type = Fast_Variable(Fast_Object__create(cx_function(o)->returnType));
@@ -131,7 +131,7 @@ cx_ic Fast_Member_toIc_v(Fast_Member _this, cx_icProgram program, cx_icStorage s
                 member = cx_interface_resolveMember(baseType, Fast_String(_this->rvalue)->value);
             } else {
                 cx_id id;
-                Fast_Parser_error(yparser(), "cannot resolve members on non-interface type '%s'", cx_fullname(t, id));
+                Fast_Parser_error(yparser(), "cannot resolve members on non-interface type '%s'", Fast_Parser_id(t, id));
                 goto error;
             }
         } else {

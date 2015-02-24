@@ -37,7 +37,7 @@ cx_int16 Fast_Cast_construct(Fast_Cast _this) {
                     } else {
                         cx_id id1, id2;
                         Fast_Parser_error(yparser(), "cannot cast from type '%s' to '%s'",
-                                cx_fullname(rvalueType, id1), cx_fullname(lvalue, id2));
+                                Fast_Parser_id(rvalueType, id1), Fast_Parser_id(lvalue, id2));
                         goto error;
                     }
                 } else {

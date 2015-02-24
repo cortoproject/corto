@@ -5,7 +5,7 @@ void fail(string msg):
 
 uint32 fib(uint32 n) = n < 2 ? 1 : fib(n - 2) + fib(n - 1)
 
-var uint32 n = fib(30)
-if n != 1346269: fail("fib(30) != 1346269 ($n)")
+var uint32 n = fib(20)
+if n != 10946: fail("fib(30) != 1346269 ($n)")
 
 if result: "tc_fibo: OK"

@@ -148,7 +148,7 @@ CX_CLASS_DEF(Fast_Local) {
     cx_string name;
     Fast_Variable type;
     Fast_LocalKind kind;
-    cx_bool isReference;
+    cx_bool reference;
 };
 
 CX_LIST(Fast_Local_list);

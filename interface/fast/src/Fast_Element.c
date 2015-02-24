@@ -33,14 +33,14 @@ cx_int16 Fast_Element_construct(Fast_Element _this) {
                 if (cx_collection(lvalueType)->kind != CX_MAP) {
                     if (!cx_type_castable(cx_type(cx_uint32_o), rvalueType)) {
                         cx_id id;
-                        Fast_Parser_error(yparser(), "expected integer expression for index, got '%s'", cx_fullname(rvalueType, id));
+                        Fast_Parser_error(yparser(), "expected integer expression for index, got '%s'", Fast_Parser_id(rvalueType, id));
                         goto error;
                     }
                 } else {
                     if (!cx_type_castable(cx_map(lvalueType)->keyType, rvalueType)) {
                         cx_id id, id2;
                         Fast_Parser_error(yparser(), "expected expression of type '%s' for key, got '%s'",
-                                cx_fullname(cx_map(lvalueType)->keyType, id), cx_fullname(rvalueType, id2));
+                                Fast_Parser_id(cx_map(lvalueType)->keyType, id), Fast_Parser_id(rvalueType, id2));
                         goto error;
                     }
                 }
@@ -49,7 +49,7 @@ cx_int16 Fast_Element_construct(Fast_Element _this) {
             Fast_Expression(_this)->type = Fast_Variable(Fast_Object__create(cx_collection(lvalueType)->elementType));
         } else {
             cx_id id;
-            Fast_Parser_error(yparser(), "cannot obtain element from _this of non-collection type '%s'", cx_fullname(lvalueType, id));
+            Fast_Parser_error(yparser(), "cannot obtain element from _this of non-collection type '%s'", Fast_Parser_id(lvalueType, id));
             goto error;
         }
     } else {

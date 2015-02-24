@@ -46,7 +46,7 @@ cx_int16 Fast_Integer_serialize(Fast_Integer _this, cx_type dstType, cx_word dst
         break;
     default: {
         cx_id id;
-        Fast_Parser_error(yparser(), "cannot serialize integer value to storage of type '%s'", cx_fullname(dstType, id));
+        Fast_Parser_error(yparser(), "cannot serialize integer value to storage of type '%s'", Fast_Parser_id(dstType, id));
         goto error;
         break;
     }

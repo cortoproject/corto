@@ -38,7 +38,7 @@ cx_string io_file_readLn(io_file _this);
 /* ::cortex::io::file::readText() */
 cx_string io_file_readText(io_file _this);
 
-/* ::cortex::io::file::write(::cortex::lang::sequence{::cortex::lang::octet,0} data) */
+/* ::cortex::io::file::write(sequence{octet,0} data) */
 cx_uint32 io_file_write(io_file _this, cx_octet_seq data);
 
 /* ::cortex::io::file::writeText(string txt) */
