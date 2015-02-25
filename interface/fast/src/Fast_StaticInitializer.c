@@ -104,7 +104,7 @@ cx_word Fast_Initializer_offset(Fast_StaticInitializer _this, cx_uint32 variable
     }
     default: {
         cx_id id;
-        Fast_Parser_error(yparser(), "invalid initializer type '%s'", cx_fullname(frame->type, id));
+        Fast_Parser_error(yparser(), "invalid initializer type '%s'", Fast_Parser_id(frame->type, id));
         break;
     }
     }
@@ -154,8 +154,8 @@ cx_int16 Fast_StaticInitializer_define(Fast_StaticInitializer _this) {
             if (cx_define(o)) {
                 cx_id id1, id2;
                 Fast_Parser_error(yparser(), "define of variable '%s' of type '%s' failed",
-                        cx_fullname(o, id1),
-                        cx_fullname(cx_typeof(o), id2));
+                        Fast_Parser_id(o, id1),
+                        Fast_Parser_id(cx_typeof(o), id2));
                 goto error;
             }
         } else {
@@ -207,7 +207,7 @@ cx_int16 Fast_StaticInitializer_value(Fast_StaticInitializer _this, Fast_Express
     if (!type) {
         cx_id id;
         Fast_Parser_error(yparser(), "excess elements in initializer of type '%s'", 
-            cx_fullname(Fast_ObjectBase(Fast_Expression(_this)->type)->value, id));
+            Fast_Parser_id(Fast_ObjectBase(Fast_Expression(_this)->type)->value, id));
         goto error;
     }
 
@@ -215,7 +215,7 @@ cx_int16 Fast_StaticInitializer_value(Fast_StaticInitializer _this, Fast_Express
     if (!cx_type_castable(type, Fast_Expression_getType_type(v, type))) {
         cx_id id, id2;
         Fast_Parser_error(yparser(), "type '%s' invalid here (expected '%s')", 
-            cx_fullname(Fast_Expression_getType(v), id), cx_fullname(type, id2));
+            Fast_Parser_id(Fast_Expression_getType(v), id), Fast_Parser_id(type, id2));
         goto error;
     }
 

@@ -100,7 +100,7 @@ Fast_Expression Fast_Initializer_expr(Fast_DynamicInitializer _this, cx_uint8 va
                 result = base;
             } else {
                 cx_id id;
-                Fast_Parser_error(yparser(), "invalid initializer type '%s'", cx_fullname(frame->type, id));
+                Fast_Parser_error(yparser(), "invalid initializer type '%s'", Fast_Parser_id(frame->type, id));
                 abort();
             }
             break;
@@ -176,7 +176,7 @@ cx_int16 Fast_DynamicInitializer_push(Fast_DynamicInitializer _this) {
     /* Check if push is allowed */
     if (!(!fp && _this->assignValue) && (t->reference && !isAnonymousLocal)) {
         cx_id id;
-        Fast_Parser_error(yparser(), "unexpected initializer scope for value of referencetype '%s'", cx_fullname(t, id));
+        Fast_Parser_error(yparser(), "unexpected initializer scope for value of referencetype '%s'", Fast_Parser_id(t, id));
         goto error;
     }
 
@@ -239,7 +239,7 @@ cx_int16 Fast_DynamicInitializer_value(Fast_DynamicInitializer _this, Fast_Expre
     if (!type) {
         cx_id id;
         Fast_Parser_error(yparser(), "excess elements in initializer of type '%s'",
-            cx_fullname(Fast_ObjectBase(Fast_Expression(_this)->type)->value, id));
+            Fast_Parser_id(Fast_ObjectBase(Fast_Expression(_this)->type)->value, id));
         goto error;
     }
 
@@ -247,7 +247,7 @@ cx_int16 Fast_DynamicInitializer_value(Fast_DynamicInitializer _this, Fast_Expre
     if (!cx_type_compatible(type, Fast_Expression_getType_type(v, type))) {
         cx_id id, id2;
         Fast_Parser_error(yparser(), "type '%s' invalid here (expected '%s')", 
-            cx_fullname(Fast_Expression_getType(v), id), cx_fullname(type, id2));
+            Fast_Parser_id(Fast_Expression_getType(v), id), Fast_Parser_id(type, id2));
         goto error;
     }
     

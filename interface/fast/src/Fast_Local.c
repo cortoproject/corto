@@ -16,13 +16,15 @@
 /* ::cortex::Fast::Local::construct() */
 cx_int16 Fast_Local_construct(Fast_Local _this) {
 /* $begin(::cortex::Fast::Local::construct) */
+    cx_type t = NULL;
 
     Fast_Node(_this)->kind = Fast_VariableExpr;
     Fast_Variable(_this)->kind = Fast_LocalExpr;
     Fast_Expression(_this)->type = 
         Fast_Variable(Fast_Object__create(cx_type(Fast_ObjectBase(_this->type)->value)));
-    _this->isReference |= Fast_Expression_getType(Fast_Expression(_this))->reference;
-    Fast_Expression(_this)->isReference = _this->isReference;
+    t = Fast_Expression_getType(Fast_Expression(_this));
+
+    Fast_Expression(_this)->isReference = _this->reference | t->reference;
 
     if (Fast_Expression_getType(Fast_Expression(_this))->reference) {
         Fast_Expression(_this)->forceReference = TRUE;
@@ -48,7 +50,7 @@ cx_ic Fast_Local_toIc_v(Fast_Local _this, cx_icProgram program, cx_icStorage sto
                _this->kind == Fast_LocalReturn,
                FALSE);
 
-    if (_this->isReference) {
+    if (Fast_Expression(_this)->isReference) {
         ((cx_icStorage)result)->isReference = TRUE;
     }
 

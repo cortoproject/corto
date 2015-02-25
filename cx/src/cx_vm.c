@@ -1314,8 +1314,8 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
                 TOJMP_OPERAND_PQRV(PUSHANY,W,);
                 TOJMP_OP1_ANY(PUSHANYX);
 
-                TOJMP_OPERAND_PQR(CALL,L,);
-                TOJMP_OPERAND_PQR(CALLVM,L,);
+                TOJMP_OPERAND_PQR(CALL,W,);
+                TOJMP_OPERAND_PQR(CALLVM,W,);
                 case CX_VM_CALLVOID: p[i].op = toJump(CALLVOID); break;
                 case CX_VM_CALLVMVOID: p[i].op = toJump(CALLVMVOID); break;
                 TOJMP_OP2_W(CALLPTR,PQR)
@@ -1492,8 +1492,8 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
     OP1_ANY(PUSHANYX);
     OP1_ANYV(PUSHANYX);
 
-    OPERAND_PQR(CALL,L,);
-    OPERAND_PQR(CALLVM,L,);
+    OPERAND_PQR(CALL,W,);
+    OPERAND_PQR(CALLVM,W,);
     CALLVOID();
     CALLVMVOID();
     OP2_W(CALLPTR,PQR)
@@ -1696,8 +1696,8 @@ char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
                 TOSTR_OPERAND_PQRV(PUSHANY,W,);
                 TOSTR_OP1_ANY(PUSHANYX);
 
-                TOSTR_OPERAND_PQR(CALL,L,);
-                TOSTR_OPERAND_PQR(CALLVM,L,);
+                TOSTR_OPERAND_PQR(CALL,W,);
+                TOSTR_OPERAND_PQR(CALLVM,W,);
                 case CX_VM_CALLVOID: result = strappend(result, "CX_VM_CALLVOID %u\n", p[i].hi.w); break;
                 case CX_VM_CALLVMVOID: result = strappend(result, "CX_VM_CALLVMVOID %u\n", p[i].hi.w); break;
                 TOSTR_OP2_W(CALLPTR,PQR);

@@ -217,7 +217,12 @@ static cx_int16 cx_ser_reference(cx_serializer s, cx_value* v, void* userData) {
     if (object) {
         cx_ser_appendColor(data, REFERENCE);
         if (cx_checkAttr(object, CX_ATTR_SCOPED) || (cx_valueObject(v) == object)) {
-            str = (char*)cx_fullname(object, id);
+            if (cx_parentof(object) == cortex_lang_o) {
+                strcpy(id, cx_nameof(object));
+                str = id;
+            } else {
+                str = (char*)cx_fullname(object, id);
+            }
         } else {
             cx_string_ser_t walkData;
             int index = 0;
@@ -359,7 +364,11 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
         cx_string result = NULL;
 
         o = cx_valueObject(v);
-        cx_fullname(cx_typeof(o), id);
+        if (cx_checkAttr(cx_typeof(o), CX_ATTR_SCOPED) && cx_parentof(cx_typeof(o)) == cortex_lang_o) {
+            strcpy(id, cx_nameof(cx_typeof(o)));
+        } else {
+            cx_fullname(cx_typeof(o), id);
+        }
 
         if (cx_typeof(o)->kind != CX_PRIMITIVE) {
             if (data->buffer) {

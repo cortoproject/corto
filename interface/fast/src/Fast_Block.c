@@ -47,7 +47,11 @@ Fast_Local Fast_Block_declare(Fast_Block _this, cx_string id, Fast_Variable type
     /* If variable did not exist, declare it in this block */
     kind = isParameter ? Fast_LocalParameter : Fast_LocalDefault;
     result = Fast_Local__create(id, type, kind, isReference);
-    cx_llAppend(_this->locals, result);
+    if (result) {
+        cx_llAppend(_this->locals, result);
+    } else {
+        goto error;
+    }
 
     return result;
 error:
@@ -71,7 +75,9 @@ Fast_Local Fast_Block_declareReturnVariable(Fast_Block _this, cx_function functi
     type = Fast_Object__create(function->returnType);
     Fast_Parser_collect(yparser(), type);
     result = Fast_Local__create(id, Fast_Variable(type), Fast_LocalReturn, function->returnsReference);
-    cx_llAppend(_this->locals, result);
+    if (result) {
+        cx_llAppend(_this->locals, result);
+    }
 
     return result;
 /* $end */
@@ -92,7 +98,9 @@ Fast_Template Fast_Block_declareTemplate(Fast_Block _this, cx_string id, Fast_Va
 
     /* If variable did not exist, declare it in this block */
     result = Fast_Template__create(id, type, isParameter, isReference);
-    cx_llInsert(_this->locals, result);
+    if (result) {
+        cx_llInsert(_this->locals, result);
+    }
 
     return result;
 error:
@@ -143,7 +151,7 @@ Fast_Expression Fast_Block_lookup(Fast_Block _this, cx_string id) {
                         cx_id id;
                         Fast_Parser_error(yparser(), 
                             "'this' illegal in procedure '%s'", 
-                            cx_fullname(_this->function, id));
+                            Fast_Parser_id(_this->function, id));
                         goto error;
                     }                    
 

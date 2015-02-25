@@ -40,7 +40,7 @@ Fast_Call Fast_CallBuilder_buildMethod(Fast_CallBuilder *_this) {
                 cx_id id;
                 Fast_Parser_error(yparser(), "no procedure with signature '%s' found in type '%s'",
                     _this->signature,
-                    cx_fullname(t, id));
+                    Fast_Parser_id(t, id));
                 goto error;
             }
         }
@@ -109,7 +109,7 @@ Fast_Call Fast_CallBuilder_build(Fast_CallBuilder *_this) {
                 cx_id id;
                 Fast_Parser_error(yparser(), "no procedure found with signature '%s' in scope '%s'", 
                     _this->signature,
-                    cx_fullname(_this->scope, id));
+                    Fast_Parser_id(_this->scope, id));
                 goto error;
             }
             if ((cx_typeof(f)->kind == CX_COMPOSITE) && (cx_interface(cx_typeof(f))->kind == CX_DELEGATE)) {

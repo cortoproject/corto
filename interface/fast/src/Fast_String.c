@@ -236,7 +236,7 @@ cx_int16 Fast_String_serialize(Fast_String _this, cx_type dstType, cx_word dst) 
     }
     default: {
         cx_id id;
-        Fast_Parser_error(yparser(), "cannot serialize string value to storage of type '%s'", cx_fullname(dstType, id));
+        Fast_Parser_error(yparser(), "cannot serialize string value to storage of type '%s'", Fast_Parser_id(dstType, id));
         goto error;
         break;
     }

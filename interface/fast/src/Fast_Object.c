@@ -87,8 +87,8 @@ cx_int16 Fast_Object_serialize(Fast_Object _this, cx_type dstType, cx_word dst) 
         } else {
             cx_id id, id2;
             Fast_Parser_error(yparser(), "type '%s' of object does not match destinationtype '%s'",
-                    cx_fullname(cx_typeof(Fast_ObjectBase(_this)->value), id),
-                    cx_fullname(dstType, id2));
+                    Fast_Parser_id(cx_typeof(Fast_ObjectBase(_this)->value), id),
+                    Fast_Parser_id(dstType, id2));
             goto error;
         }
     } else {
@@ -107,7 +107,7 @@ cx_int16 Fast_Object_serialize(Fast_Object _this, cx_type dstType, cx_word dst) 
             if (*(cx_string*)dst) {
                 cx_dealloc(*(cx_string*)dst);
             }
-            *(cx_string*)dst = cx_strdup(cx_fullname(Fast_ObjectBase(_this)->value, id));
+            *(cx_string*)dst = cx_strdup(Fast_Parser_id(Fast_ObjectBase(_this)->value, id));
             break;
         }
         case Fast_Ref:
@@ -119,7 +119,7 @@ cx_int16 Fast_Object_serialize(Fast_Object _this, cx_type dstType, cx_word dst) 
             break;
         default: {
             cx_id id;
-            Fast_Parser_error(yparser(), "cannot serialize object value to storage of type '%s'", cx_fullname(dstType, id));
+            Fast_Parser_error(yparser(), "cannot serialize object value to storage of type '%s'", Fast_Parser_id(dstType, id));
             goto error;
             break;
         }

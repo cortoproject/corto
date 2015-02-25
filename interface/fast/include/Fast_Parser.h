@@ -17,6 +17,10 @@
 extern "C" {
 #endif
 
+/* $header() */
+cx_string Fast_Parser_id(cx_object o, cx_id buffer);
+/* $end */
+
 /* ::cortex::Fast::Parser::addStatement(Fast::Node statement) */
 cx_void Fast_Parser_addStatement(Fast_Parser _this, Fast_Node statement);
 
