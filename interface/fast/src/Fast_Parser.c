@@ -2134,6 +2134,7 @@ Fast_Expression Fast_Parser_initPushExpression(Fast_Parser _this) {
 /* ::cortex::Fast::Parser::initPushIdentifier(Expression type) */
 Fast_Expression Fast_Parser_initPushIdentifier(Fast_Parser _this, Fast_Expression type) {
 /* $begin(::cortex::Fast::Parser::initPushIdentifier) */
+    cx_object o;
     cx_type t;
     cx_bool isDynamic = TRUE;
     cx_bool forceStatic = FALSE;
@@ -2144,11 +2145,23 @@ Fast_Expression Fast_Parser_initPushIdentifier(Fast_Parser _this, Fast_Expressio
     CX_UNUSED(type);
     
     if (!type) {
-        Fast_Parser_error(_this, "unresolved identifier '%s'", _this->lastFailedResolve);
-        goto error;
+        if (_this->lastFailedResolve) {
+            Fast_Parser_error(_this, "unresolved identifier '%s'", _this->lastFailedResolve);
+            goto error;
+        } else {
+            Fast_Parser_error(_this, "invalid expression");
+            goto error;            
+        }
     }
     
-    t = cx_type(Fast_ObjectBase(type)->value);
+    o = cx_type(Fast_ObjectBase(type)->value);
+    if (!cx_instanceof(cx_type(cx_type_o), o)) {
+        cx_id id;
+        Fast_Parser_error(_this, "invalid expression, '%s' is not a type", Fast_Parser_id(o, id));
+        goto error;
+    }
+
+    t = o;
     
     if (_this->initializerCount >= 0) {
         Fast_Initializer initializer = _this->initializers[_this->initializerCount];

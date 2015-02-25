@@ -168,7 +168,13 @@ cx_int16 cx_list_construct(cx_list _this) {
     cx_type(_this)->hasResources = TRUE;
     cx_type(_this)->size = sizeof(cx_ll);
     cx_type(_this)->alignment = CX_ALIGNMENT(cx_ll);
+    if (!cx_collection(_this)->elementType) {
+        cx_error("no elementtype provided for list");
+        goto error;
+    }
     return cx_type_construct(cx_type(_this));
+error:
+    return -1;
 /* $end */
 }
 
