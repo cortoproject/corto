@@ -1433,7 +1433,11 @@ Fast_Variable Fast_Parser_declaration(Fast_Parser _this, Fast_Variable type, cx_
             cx_free_ext(_this, o, "Free object from resolve (2nd run)");
         }
         if (o) {
-            result = Fast_Variable( Fast_Object__create(o));
+            if (cx_type(Fast_ObjectBase(type)->value)->kind == CX_ITERATOR) {
+                result = Fast_Variable(Fast_IteratorObject__create(o));
+            } else {
+                result = Fast_Variable(Fast_Object__create(o));
+            }
             Fast_Parser_collect(_this, result);
             _this->variables[_this->variableCount] = result;
             _this->variableCount++;

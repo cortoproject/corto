@@ -18,3 +18,11 @@ cx_int16 Fast_Variable_construct(Fast_Variable _this) {
     return 0;
 /* $end */
 }
+
+/* ::cortex::Fast::Variable::getBuddy() */
+Fast_Local Fast_Variable_getBuddy_v(Fast_Variable _this) {
+/* $begin(::cortex::Fast::Variable::getBuddy) */
+    CX_UNUSED(_this);
+    return NULL;
+/* $end */
+}
