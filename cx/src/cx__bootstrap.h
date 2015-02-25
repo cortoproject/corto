@@ -925,7 +925,7 @@ CX_CLASS_O(map, collection, CX_LOCAL, NULL, CX_DECLARED | CX_DEFINED, CX_IC);
 /* ::cortex::lang::function */
 CX_FW_IB(function);
 CX_PROCEDURE_NOBASE_O(function, CX_FUNCTION, NULL, CX_DECLARED | CX_DEFINED, CX_IC);
-    CX_REFERENCE_O(function, returnType, type, CX_GLOBAL, CX_DEFINED | CX_DECLARED, FALSE);
+    CX_REFERENCE_O(function, returnType, type, CX_GLOBAL, CX_DECLARED, FALSE);
     CX_MEMBER_O(function, returnsReference, bool, CX_GLOBAL);
     CX_MEMBER_O(function, overloaded, bool, CX_LOCAL | CX_READONLY);
     CX_MEMBER_O(function, kind, uint32, CX_LOCAL | CX_PRIVATE);
