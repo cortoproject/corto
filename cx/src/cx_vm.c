@@ -717,10 +717,13 @@ typedef union Di2f_t {
         cx_iterator_set((void*)&op1_##code##V, (void*)&op2_##code##V, (void*)op3_##code##V);\
         next();\
 
+/* op1 is hasNext, op2 is the result of next and op3 is the iterator */
 #define ITER_NEXT(type,code)\
     ITER_NEXT_##code:\
-        fetchOp2(ITER_NEXT, code);\
-        op1_##code = (W_t)cx_iterator_next((void*)op2_##code);\
+        fetchOp3(ITER_NEXT, code);\
+        if ((op1_##code = (W_t)cx_iterator_hasNext((void*)op3_##code))) {\
+            op2_##code = (W_t)cx_iterator_next((void*)op3_##code);\
+        }\
         next();\
 
 /* Instruction implementation expansions */

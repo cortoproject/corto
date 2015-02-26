@@ -153,6 +153,8 @@ extern "C" {
     VM_OPERAND_##postfix(op,W,V),\
     VM_LVALUE(op,W,postfix)
 
+// #define VM_3OP_W(op)\ // TODO
+
 typedef enum cx_vmOpKind {
 
     /* Copy a value to a variable/object */
