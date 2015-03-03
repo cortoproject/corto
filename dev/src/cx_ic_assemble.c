@@ -1976,8 +1976,10 @@ static cx_vmOpKind cx_ic_getVmCast(cx_ic_vmProgram *program, cx_icOp op, cx_type
     } else if ((srcType->kind == CX_VOID) && srcType->reference) {
         result = cx_ic_getVmCAST(CX_IC_VMTYPE_W, storage, CX_IC_VMOPERAND_V);
     }
-
-    cx_assert(result != CX_VM_STOP, "no cast-instruction found from type '%s' to '%s'", cx_nameof(srcType), cx_nameof(dstType));
+    {
+        cx_id id1, id2;
+        cx_assert(result != CX_VM_STOP, "no cast-instruction found from type '%s' to '%s'", cx_fullname(srcType, id1), cx_fullname(dstType, id2));
+    }
 
     return result;
 }

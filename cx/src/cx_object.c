@@ -301,7 +301,7 @@ static void cx__initObservable(cx_object o) {
     observable->lockRequired = FALSE;
     observable->childLockRequired = FALSE;
 
-    if (cx_checkState(o, CX_ATTR_SCOPED)) {
+    if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
         parent = o;
         while((parent = cx_parentof(parent))) {
             if ((parentObservable = cx__objectObservable(CX_OFFSET(parent, -sizeof(cx__object))))) {
@@ -812,20 +812,23 @@ cx_object cx_new_ext(cx_object src, cx_type type, cx_uint8 attrs, cx_string cont
         }
         if (attrs & CX_ATTR_OBSERVABLE) {
             o->attrs.observable = TRUE;
-            cx__initObservable(CX_OFFSET(o, sizeof(cx__object)));
         }
 
         /* Initially, an object is valid and declared */
         o->attrs.state = CX_VALID | CX_DECLARED;
 
-        /* void objects, primitives and references are instantly defined because they have no value. */
-        if ((type->kind == CX_VOID) || (type->kind == CX_PRIMITIVE)) {
+        /* void objects are instantly defined because they have no value. */
+        if (type->kind == CX_VOID) {
             o->attrs.state |= CX_DEFINED;
         }
 
         cx_keep_ext(CX_OFFSET(o, sizeof(cx__object)), type, "Keep type of object");
 
         if (!(attrs & CX_ATTR_SCOPED)) {
+            if (attrs & CX_ATTR_OBSERVABLE) {
+                cx__initObservable(CX_OFFSET(o, sizeof(cx__object)));
+            }
+
             /* Call framework initializer */
             cx_init(CX_OFFSET(o, sizeof(cx__object)));
             
@@ -909,6 +912,11 @@ cx_object cx_declare(cx_object parent, cx_string name, cx_type type) {
         if (o) {
             /* Initialize object parameters. */
             if (!cx__initScope(o, name, parent)) {
+
+                /* Observable administration needs to be initialized after the
+                 * scope administration because it needs to setup the correct 
+                 * chain of parents to notify on an event. */
+                cx__initObservable(o);
                 
                 /* Call framework initializer */
                 cx_init(o);
@@ -2146,34 +2154,48 @@ indent++;
 typedef struct cx_observerAlignData {
     cx__observer *observer;
     cx_object observable;
+    int mask;
+    int depth;
 }cx_observerAlignData;
 
 int cx_observerAlignScope(cx_object o, void *userData) {
-    cx_observerAlignData *data;
+    cx_observerAlignData *data = userData;
 
-    data = userData;
-    cx_notifyObserver(data->observer, data->observable, o, CX_ON_DECLARE);
+    if (((data->mask & CX_ON_DECLARE) && (data->mask & CX_ON_SELF) && !data->depth) ||
+        ((data->mask & CX_ON_DECLARE) && (data->mask & CX_ON_SCOPE) && data->depth)) {
+        cx_notifyObserver(data->observer, data->observable, o, CX_ON_DECLARE);
+    }
+
+    if ((data->mask & CX_ON_DEFINE) && (data->mask & CX_ON_SCOPE) && cx_checkState(data->observable, CX_DEFINED)) {
+        cx_notifyObserver(data->observer, o, o, CX_ON_DEFINE);
+    }
 
     if (data->observer->observer->mask & CX_ON_SCOPE) {
-        return cx_scopeWalk(o, cx_observerAlignScope, userData);
+        int result;
+        data->depth++;
+        result = cx_scopeWalk(o, cx_observerAlignScope, userData);
+        data->depth--;
+        return result;
     } else {
         return 1;
     }
 }
 
-void cx_observerAlign(cx_object observable, cx__observer *observer) {
+void cx_observerAlign(cx_object observable, cx__observer *observer, int mask) {
     cx_observerAlignData walkData;
 
     /* Do recursive walk over scope */
     walkData.observable = observable;
     walkData.observer = observer;
+    walkData.mask = mask;
+    walkData.depth = 0;
+
+    if ((mask & CX_ON_DEFINE) && (mask & CX_ON_SELF) && cx_checkState(observable, CX_DEFINED)) {
+        cx_notifyObserver(observer, observable, observable, mask);
+    }
 
     cx_scopeWalk(observable, cx_observerAlignScope, &walkData);
 }
-
-#ifdef CX_TRACE_NOTIFICATIONS
-static int indent=0;
-#endif
 
 /* Add observer to observable */
 cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) {
@@ -2204,11 +2226,16 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
 #ifdef CX_TRACE_NOTIFICATIONS
     {
         cx_id id1, id2, id3;
-        printf("%*s [listen] observable '%s' observer '%s' me '%s'\n",
+        printf("%*s [listen] observable '%s' observer '%s' me '%s' %s %s %s %s %s\n",
                 indent * 3, "",
                 cx_fullname(observable, id1),
                 cx_fullname(observer, id2),
-                cx_fullname(_this, id3));
+                cx_fullname(_this, id3),
+                observer->mask & CX_ON_SELF ? "self" : "",
+                observer->mask & CX_ON_SCOPE ? "scope" : "",
+                observer->mask & CX_ON_DECLARE ? "declare" : "",
+                observer->mask & CX_ON_DEFINE ? "define" : "",
+                observer->mask & CX_ON_UPDATE ? "update" : "");
     }
 #endif
 
@@ -2270,6 +2297,7 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
                 _o->onChild = cx_llNew();
                 firstChildObserver = TRUE;
             }
+
             cx_llAppend(_o->onChild, _observerData);
             _observerData->count++;
             added = TRUE;
@@ -2301,13 +2329,8 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
         cx_dealloc(_observerData);
     } else {
         /* If observer is subscribed to declare events, align observer with existing */
-        if (observer->mask & CX_ON_DECLARE) {
-            cx_observerAlign(observable, _observerData);
-        }
-        
-        /* If observer is subscribed to define events, align observer with object if defined */
-        if ((observer->mask & CX_ON_DEFINE) && cx_checkState(observable, CX_DEFINED)) {
-            cx_notifyObserver(_observerData, observable, observable, CX_ON_DEFINE);   
+        if ((observer->mask & CX_ON_DECLARE) || (observer->mask & CX_ON_DEFINE)) {
+            cx_observerAlign(observable, _observerData, observer->mask);
         }
     }
 
@@ -2479,6 +2502,7 @@ static void cx_notifyObserverThis(cx__observer* data, cx_object _this, cx_object
 static void cx_notifyObservers(cx__observer** observers, cx_object observable, cx_object source, cx_uint32 mask) {
     cx__observer* data;
     cx_uint32 i = 0;
+
     if (!observers) {
         return;
     }
@@ -2498,6 +2522,7 @@ static cx_int32 cx_notify(cx__observable* _o, cx_object observable, cx_object _t
 
     /* Notify direct observers */
     if (_o) {
+
         /* Notify observers of observable */
         observers = cx_observersPush(&_o->onSelfArray);
         cx_notifyObservers(observers, observable, _this, mask);
@@ -3182,12 +3207,19 @@ static cx_uint32 cx_overloadParamCompare(
                 d++;
             }
         /* If the requested type is a (forced) reference check if treating it as a generic
-         * reference would result in a match - this is for example useful when casting form
+         * reference would result in a match - this is for example useful when casting from
          * references to a boolean or string type */
         } else if (r_forceReference && !cx_type_compatible(o_type, cx_object_o)) {
             d++;
+        /* If types are not compatible, they won't match */
         } else if (!cx_type_compatible(o_type, r_type)) {
-            goto nomatch; /* If not an interface or generic reference, types don't match */
+            goto nomatch; 
+        /* Types are compatible. Increase d by one if types are of a different primitive
+         * kind. */
+        } else if ((o_type->kind == CX_PRIMITIVE) && (r_type->kind == CX_PRIMITIVE)) {
+            if (cx_primitive(o_type)->kind != cx_primitive(r_type)->kind) {
+                d++;
+            }
         }
     } else if (o_type != r_type) {
         goto nomatch;

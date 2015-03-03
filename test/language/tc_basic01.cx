@@ -8,7 +8,5 @@ void fail(string msg):
 10
 (10)
 10.5
-10, 20, 30
-'a', 10, (10), 10.5
 
 if result: "tc_basic01: OK"

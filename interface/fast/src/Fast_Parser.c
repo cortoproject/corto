@@ -893,7 +893,6 @@ Fast_Variable Fast_Parser_observerCreate(Fast_Parser _this, cx_string id, Fast_E
      * the observer be identified?
      */
 
-
     parent = Fast_ObjectBase(_this->scope)->value;
     if (!cx_class_instanceof(cx_type_o, parent)) {
         parent = NULL;
@@ -926,10 +925,18 @@ Fast_Variable Fast_Parser_observerCreate(Fast_Parser _this, cx_string id, Fast_E
 
     /* Create observer */
     if (!id) {
-        observer = cx_observer__create(observable, mask, expr, FALSE, dispatcher, NULL);
+        observer = cx_observer__new();
         if (!observer) {
             goto error;
         }
+
+        /* Set values of observer - but don't yet define it. It will be defined when
+         * the observer is bound to the implementation */
+        cx_set(&observer->observable, observable);
+        observer->mask = mask;
+        observer->expression = expr ? cx_strdup(expr) : NULL;
+        cx_set(&observer->dispatcher, dispatcher);
+
         cx_attach(Fast_ObjectBase(_this->scope)->value, observer);
 
         /* If observer is a template observer, manually attach */
@@ -995,6 +1002,22 @@ cx_void Fast_Parser_addStatement(Fast_Parser _this, Fast_Node statement) {
         if (_this->stagingAllowed) {
             Fast_Parser_initDeclareStaged(_this, NULL);
         }
+    }
+
+    /* If this is the first pass and a comma expression is encountered, report error. Comma expressions
+     * shouldn't be used by themselves. */
+    if (!_this->pass && statement) {
+        if (statement->kind == Fast_CommaExpr) {
+            Fast_Parser_error(_this, "invalid usage of comma expression");
+            goto error;
+        }
+    /* If a comma expression is encountered in the second pass it could be the result of an expanded
+     * comma expression. Only add if the expression has side effects. If it doesn't have side effects
+     * it is likely the result of a staged declaration */
+    } else if (_this->pass && statement && 
+              (statement->kind == Fast_CommaExpr) && 
+              (!Fast_Expression_hasSideEffects(Fast_Expression(statement)))) {
+        return;
     }
 
     if (statement) {
@@ -1622,7 +1645,7 @@ Fast_Block Fast_Parser_declareFunctionParams(Fast_Parser _this, Fast_Variable fu
         Fast_Block_setFunction(result, function_o);
 
         /* If function is a method, include 'this' pointer */
-        if (cx_instanceof(cx_type(cx_method_o), function_o)) {
+        if (cx_procedure(cx_typeof(function_o))->kind == CX_METHOD) {
             cx_object parent;
 
             if (!cx_instanceof(cx_type(cx_interface_o), cx_parentof(function_o))) {
@@ -2402,7 +2425,7 @@ Fast_Variable Fast_Parser_observerDeclaration(Fast_Parser _this, cx_string id, F
     Fast_Variable result = NULL;
     cx_bool isTemplate = cx_class_instanceof(cx_type_o, Fast_ObjectBase(_this->scope)->value);
     cx_string expr = NULL;
-    
+
     if (!(mask & CX_ON_SCOPE)) {
         mask |= CX_ON_SELF;
     }
@@ -2459,6 +2482,13 @@ Fast_Variable Fast_Parser_observerDeclaration(Fast_Parser _this, cx_string id, F
             observer = Fast_ObjectBase(result)->value;
         }
 
+        /* Declare this */
+        if (!Fast_Block_resolve(block, "this")) {
+            typeVar = Fast_Variable(Fast_Object__create(cx_object_o));
+            Fast_Block_declare(block, "this", typeVar, TRUE, FALSE);
+            Fast_Parser_collect(_this, typeVar); 
+        }
+
         /* Loop parameters of observable, insert locals */
         for(i=0; i<cx_function(observer)->parameters.length; i++) {
             cx_parameter *p = &cx_function(observer)->parameters.buffer[i];
@@ -2476,16 +2506,6 @@ Fast_Variable Fast_Parser_observerDeclaration(Fast_Parser _this, cx_string id, F
 error:
     fast_err;
     return NULL;
-/* $end */
-}
-
-/* ::cortex::Fast::Parser::observerPop() */
-cx_void Fast_Parser_observerPop(Fast_Parser _this) {
-/* $begin(::cortex::Fast::Parser::observerPop) */
-    Fast_CHECK_ERRSET(_this);
-
-    /* Deprecated */
-
 /* $end */
 }
 
@@ -2649,22 +2669,24 @@ cx_int16 Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_value* value)
             Fast_Node lastNode = cx_llLast(parser->block->statements);
 
             /* If node is an expression, store expression in variable so it can be resolved later */
-            if (cx_instanceof(cx_type(Fast_Expression_o), lastNode)) {
+            if (cx_instanceof(cx_type(Fast_Expression_o), lastNode) && (lastNode->kind != Fast_CommaExpr)) {
                 Fast_Local resultLocal;
                 Fast_Binary assignment;
                 result = Fast_Expression(lastNode);
 
                 if (result->type) {
                     returnType = cx_type(Fast_Expression_getType(result));
-                    resultLocal = Fast_Block_declare(parser->block, "<result>", result->type, FALSE, 
-                        returnType->reference ? FALSE : result->isReference);
-                    if (!resultLocal) {
-                        goto error;
+                    if ((returnType->kind != CX_VOID) || result->isReference) {
+                        resultLocal = Fast_Block_declare(parser->block, "<result>", result->type, FALSE, 
+                            returnType->reference ? FALSE : result->isReference);
+                        if (!resultLocal) {
+                            goto error;
+                        }
+                        resultLocal->kind = Fast_LocalReturn;
+                        result->forceReference = result->isReference;
+                        assignment = Fast_Binary__create(Fast_Expression(resultLocal), result, CX_ASSIGN);
+                        cx_llReplace(parser->block->statements, lastNode, assignment);
                     }
-                    resultLocal->kind = Fast_LocalReturn;
-                    result->forceReference = result->isReference;
-                    assignment = Fast_Binary__create(Fast_Expression(resultLocal), result, CX_ASSIGN);
-                    cx_llReplace(parser->block->statements, lastNode, assignment);
                 } else {
                     Fast_Parser_error(parser, "invalid expression");
                     goto error;
@@ -2698,12 +2720,21 @@ cx_int16 Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_value* value)
     }
     cx_icProgram_addIc(program, ret);
 
-    /*printf("=====\n%s\n\n", cx_icProgram_toString(program));*/
+#ifdef CX_IC_TRACING
+    extern cx_bool CX_DEBUG_ENABLED;
+    if (CX_DEBUG_ENABLED) {
+        printf("=====\n%s\n\n", cx_icProgram_toString(program));
+    }
+#endif
 
     /* Translate program to vm code */
     vmProgram = cx_icProgram_toVm(program);
 
-    /*printf("=====\n%s\n\n", cx_vmProgram_toString(vmProgram, NULL));*/
+#ifdef CX_IC_TRACING
+    if (CX_DEBUG_ENABLED) {
+        printf("=====\n%s\n\n", cx_vmProgram_toString(vmProgram, NULL));
+    }
+#endif
 
     /* Run vm program */
     if (vmProgram) {

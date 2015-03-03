@@ -150,9 +150,6 @@ Fast_Expression Fast_Parser_memberExpr(Fast_Parser _this, Fast_Expression lvalue
 /* ::cortex::Fast::Parser::observerDeclaration(string id,Fast::Expression object,eventMask mask,Fast::Object dispatcher) */
 Fast_Variable Fast_Parser_observerDeclaration(Fast_Parser _this, cx_string id, Fast_Expression object, cx_eventMask mask, Fast_Object dispatcher);
 
-/* ::cortex::Fast::Parser::observerPop() */
-cx_void Fast_Parser_observerPop(Fast_Parser _this);
-
 /* ::cortex::Fast::Parser::observerPush() */
 cx_void Fast_Parser_observerPush(Fast_Parser _this);
 
