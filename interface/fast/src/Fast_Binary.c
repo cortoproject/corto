@@ -36,6 +36,27 @@ cx_bool Fast_Binary_isAssignment(Fast_Binary expr) {
     return result;
 }
 
+/* Determine whether the expression is an arithmic operation */
+cx_bool Fast_Binary_isArithmic(Fast_Binary expr) {
+    cx_bool result;
+    switch(expr->operator) {
+    case CX_ADD:
+    case CX_SUB:
+    case CX_MUL:
+    case CX_DIV:
+    case CX_MOD:
+    case CX_AND:
+    case CX_OR:
+    case CX_XOR:
+        result = TRUE;
+        break;
+    default:
+        result = FALSE;
+        break;
+    }
+    return result;   
+}
+
 /* Determine whether expression is an assignment */
 cx_bool Fast_Binary_isConditional(Fast_Binary expr) {
     cx_bool result;
@@ -286,6 +307,15 @@ cx_int16 Fast_Binary_construct(Fast_Binary _this) {
     }
     if (!(rvalueType = Fast_Expression_getType_expr(_this->rvalue, _this->lvalue))) {
         goto error;
+    }
+
+    /* Check if operands are valid in case of arithmic operation */
+    if (Fast_Binary_isArithmic(_this)) {
+        if ((lvalueType->kind != CX_PRIMITIVE) || (rvalueType->kind != CX_PRIMITIVE) ||
+            (_this->lvalue->forceReference || _this->rvalue->forceReference)) {
+            Fast_Parser_error(yparser(), "invalid operands for arithmic operation");
+            goto error;
+        }
     }
 
     /* Check if lvalue is valid in case of assignment */

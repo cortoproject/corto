@@ -702,7 +702,6 @@ static struct cx_serializer_s c_initSerializer(void) {
 static int c_loadDeclare(cx_object o, void* userData) {
     c_typeWalk_t* data;
     cx_id id, parentId, typeId, escapedName;
-    struct cx_serializer_s s;
 
     data = userData;
 
@@ -737,14 +736,6 @@ static int c_loadDeclare(cx_object o, void* userData) {
         g_fileWrite(data->source, "goto error;\n");
         g_fileDedent(data->source);
 
-        /* Serialize object if object is a primitive */
-        if(cx_typeof(o)->kind == CX_PRIMITIVE) {
-            g_fileWrite(data->source, "} else {\n");
-            g_fileIndent(data->source);
-            s = c_initSerializer();
-            cx_serialize(&s, o, userData);        
-            g_fileDedent(data->source);
-        }
         g_fileWrite(data->source, "}\n\n");
     }
 
@@ -755,7 +746,7 @@ static int c_loadDeclare(cx_object o, void* userData) {
 static int c_loadDefine(cx_object o, void* userData) {
     struct cx_serializer_s s;
 
-    if (cx_checkAttr(o, CX_ATTR_SCOPED) && (cx_typeof(o)->kind != CX_PRIMITIVE)) {
+    if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
         c_typeWalk_t* data;
         cx_id escapedId, fullname, varId, typeId;
 

@@ -44,7 +44,9 @@ if r != o: fail("r != q #2")
 
 var object n = new(uint32)
 if !n: fail("!n")
-if !n.checkState(state::DEFINED): fail("!n.checkState(state::DEFINED)") // primitives are instantly defined
+if n.checkState(state::DEFINED): fail("n.checkState(state::DEFINED)")
+if n.define(): fail("failed to define int")
+if !n.checkState(state::DEFINED): fail("!n.checkState(state::DEFINED)")
 if !n.instanceof(uint32): fail("!n.instanceof(uint32)")
 if !n.checkState(state::VALID): fail("!n.checkState(state::VALID")
 n.invalidate()

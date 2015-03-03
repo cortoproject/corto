@@ -134,10 +134,9 @@ cx_int16 Fast_DynamicInitializer_construct(Fast_DynamicInitializer _this) {
 cx_int16 Fast_DynamicInitializer_define(Fast_DynamicInitializer _this) {
 /* $begin(::cortex::Fast::DynamicInitializer::define) */
     cx_int8 variable;
-    cx_type t = Fast_Initializer_type(Fast_Initializer(_this));
     
-    /* Copy offsets of variables into frames */
-    if (!_this->assignValue && (t->kind == CX_COMPOSITE)) {
+    /* Insert define operations */
+    if (!_this->assignValue) {
         for(variable=0; variable<Fast_Initializer(_this)->variableCount; variable++) {
             Fast_Define defineExpr = Fast_Define__create(_this->frames[0].expr[variable]);
             Fast_Parser_addStatement(yparser(), Fast_Node(defineExpr));
