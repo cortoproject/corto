@@ -2166,8 +2166,10 @@ int cx_observerAlignScope(cx_object o, void *userData) {
         cx_notifyObserver(data->observer, data->observable, o, CX_ON_DECLARE);
     }
 
-    if ((data->mask & CX_ON_DEFINE) && (data->mask & CX_ON_SCOPE) && cx_checkState(data->observable, CX_DEFINED)) {
-        cx_notifyObserver(data->observer, o, o, CX_ON_DEFINE);
+    if (cx_checkAttr(o, CX_ATTR_OBSERVABLE)) {
+        if ((data->mask & CX_ON_DEFINE) && (data->mask & CX_ON_SCOPE) && cx_checkState(o, CX_DEFINED)) {
+            cx_notifyObserver(data->observer, o, o, CX_ON_DEFINE);
+        }
     }
 
     if (data->observer->observer->mask & CX_ON_SCOPE) {
