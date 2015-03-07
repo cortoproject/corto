@@ -153,7 +153,10 @@ extern "C" {
     VM_OPERAND_##postfix(op,W,V),\
     VM_LVALUE(op,W,postfix)
 
-// #define VM_3OP_W(op)\ // TODO
+#define VM_3OP_W(op, postfix)\
+    VM_LVALUE(op, WP, postfix),\
+    VM_LVALUE(op, WQ, postfix),\
+    VM_LVALUE(op, WR, postfix)
 
 typedef enum cx_vmOpKind {
 
@@ -260,7 +263,7 @@ typedef enum cx_vmOpKind {
     VM_OPERAND_PQRV(ELEMMX,W,R), /* Takes register(1) and index variable(2) - obtains pointer to mapnode */
 
     VM_2OP_W(ITER_SET,PQRV),     /* Assign iterator */
-    VM_2OP_W(ITER_NEXT,PQRV),
+    VM_3OP_W(ITER_NEXT,PQRV),    /* Combined next and hasNext */
 
     
     /* Calls */

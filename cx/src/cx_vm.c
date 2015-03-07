@@ -832,6 +832,11 @@ typedef union Di2f_t {
     OPERAND_##postfix(op, W, V)\
     OP_LVALUE(op, W, postfix)\
 
+#define OP3_W(op, postfix)\
+    OP_LVALUE(op, WP, postfix)\
+    OP_LVALUE(op, WQ, postfix)\
+    OP_LVALUE(op, WR, postfix)\
+
 /* Translation from opcode-id to address */
 #define TOJMP_OPERAND(_op,type,lvalue,rvalue)\
     case CX_VM_##_op##_##type##lvalue##rvalue: p[i].op = toJump(_op##_##type##lvalue##rvalue); break;\
@@ -945,6 +950,11 @@ typedef union Di2f_t {
 #define TOJMP_OP2V_W(op,postfix)\
     TOJMP_OPERAND_##postfix(op,W,V)\
     TOJMP_LVALUE(op,W,postfix)
+
+#define TOJMP_OP3_W(op, postfix)\
+    TOJMP_LVALUE(op,WP,postfix)\
+    TOJMP_LVALUE(op,WQ,postfix)\
+    TOJMP_LVALUE(op,WR,postfix)\
 
 /* Translation from opcode-id to string */
 #define TOSTR_OPERAND(_op,type,lvalue,rvalue)\
@@ -1068,6 +1078,11 @@ typedef union Di2f_t {
 #define TOSTR_OP2V_W(op,postfix)\
     TOSTR_LVALUE(op,W,postfix)\
     TOSTR_OPERAND_##postfix(op,W,V)
+
+#define TOSTR_OP3_W(op,postfix)\
+    TOSTR_LVALUE(op,WP,postfix)\
+    TOSTR_LVALUE(op,WQ,postfix)\
+    TOSTR_LVALUE(op,WR,postfix)\
 
 struct cx_vm_context {
     cx_vmOp *pc; /* Instruction counter */
@@ -1310,7 +1325,7 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
                 TOJMP_OPERAND_PQRV(ELEMM,W,R);
                 TOJMP_OPERAND_PQRV(ELEMMX,W,R);
                 TOJMP_OP2_W(ITER_SET,PQRV);
-                TOJMP_OP2_W(ITER_NEXT,PQRV);
+                TOJMP_OP3_W(ITER_NEXT,PQRV);
 
                 TOJMP_OP1_PQRV(PUSH);
                 TOJMP_OP1(PUSHX);
@@ -1487,7 +1502,7 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
     OPERAND_PQRV(ELEMMX,W,R);
 
     OP2_W(ITER_SET,PQRV);
-    OP2_W(ITER_NEXT,PQRV);
+    OP3_W(ITER_NEXT,PQRV);
 
     OP1_PQRV(PUSH);
     OP1(PUSHX);
@@ -1692,7 +1707,7 @@ char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
                 TOSTR_OPERAND_PQRV(ELEMMX,W,R);
 
                 TOSTR_OP2_W(ITER_SET,PQRV);
-                TOSTR_OP2_W(ITER_NEXT,PQRV);
+                TOSTR_OP3_W(ITER_NEXT,PQRV);
                     
                 TOSTR_OP1_PQRV(PUSH);
                 TOSTR_OP1(PUSHX);
