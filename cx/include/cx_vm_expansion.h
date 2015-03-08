@@ -1,3 +1,6 @@
+
+#include "cx_vm_def.h"
+
 /* ---- Fallthrough macro's */
 #define _OP1_(macro, arg, type, op1modes, op2modes, op3modes)\
     macro(type, arg)
@@ -13,6 +16,9 @@
 #define _OP1_R(macro, arg, type, op2modes, op3modes)\
     _OP2_##op2modes(macro, arg, type, R, op3modes)
 
+#define _OP1_V(macro, arg, type, op2modes, op3modes)\
+    _OP2_##op2modes(macro, arg, type, V, op3modes)
+
 #define _OP1_PQR(macro, arg, type, op2modes, op3modes)\
     _OP2_##op2modes(macro, arg, type, P, op3modes)\
     _OP2_##op2modes(macro, arg, type, Q, op3modes)\
@@ -24,6 +30,12 @@
 /* ---- */
 
 /* ---- OP2 expansion macro's */
+#define _OP2_R(macro, arg, type, op1, op3modes)\
+    _OP3_##op3modes(macro, arg, type, op1, R)
+
+#define _OP2_V(macro, arg, type, op1, op3modes)\
+    _OP3_##op3modes(macro, arg, type, op1, V)
+
 #define _OP2_PQR(macro, arg, type, op1, op3modes)\
     _OP3_##op3modes(macro, arg, type, op1, P)\
     _OP3_##op3modes(macro, arg, type, op1, Q)\
@@ -46,31 +58,34 @@
 #define _TYPE_B(macro, arg, op1modes, op2modes, op3modes)\
     _OP1_##op1modes(macro, arg, B, op2modes, op3modes)
 
-#define _TYPE_W(macro, arg, op1modes, op2modes, op3modes)\
-    _OP1_##op1modes(macro, arg, W, op2modes, op3modes)
-
 #define _TYPE_L(macro, arg, op1modes, op2modes, op3modes)\
     _OP1_##op1modes(macro, arg, L, op2modes, op3modes)
 
 #define _TYPE_D(macro, arg, op1modes, op2modes, op3modes)\
     _OP1_##op1modes(macro, arg, D, op2modes, op3modes)
 
+#define _TYPE_W(macro, arg, op1modes, op2modes, op3modes)\
+    _OP1_##op1modes(macro, arg, W, op2modes, op3modes)
+
 #define _TYPE_LD(macro, arg, op1modes, op2modes, op3modes)\
     _OP1_##op1modes(macro, arg, L, op2modes, op3modes)\
     _OP1_##op1modes(macro, arg, D, op2modes, op3modes)
-
-#define _TYPE_BSLD(macro, arg, op1modes, op2modes, op3modes)\
-    _OP1_##op1modes(macro, arg, B, op2modes, op3modes)\
-    _OP1_##op1modes(macro, arg, S, op2modes, op3modes)\
-    _TYPE_LD(macro, arg, op1modes, op2modes, op3modes)
 
 #define _TYPE_BSL(macro, arg, op1modes, op2modes, op3modes)\
     _OP1_##op1modes(macro, arg, B, op2modes, op3modes)\
     _OP1_##op1modes(macro, arg, S, op2modes, op3modes)\
     _OP1_##op1modes(macro, arg, L, op2modes, op3modes)
+
+#define _TYPE_BSLD(macro, arg, op1modes, op2modes, op3modes)\
+    _OP1_##op1modes(macro, arg, B, op2modes, op3modes)\
+    _OP1_##op1modes(macro, arg, S, op2modes, op3modes)\
+    _TYPE_LD(macro, arg, op1modes, op2modes, op3modes)
 /* ---- */
 
 /* --- Top level expansion macro's */
+#define OP0_EXP(macro, arg)\
+    macro(arg)
+
 #define OP1_EXP(macro, arg, types, op1modes)\
     _TYPE_##types(macro, arg, op1modes, /* op2modes */, /* op3modes */)
 

@@ -68,19 +68,6 @@ typedef struct cx_stringConcatCache {
 #define fetchHi() c.hi = c.pc->hi
 #define fetchDbl() c.dbl = *(cx_int64*)&c.pc->lo
 
-/** Instruction postfixes
- * B    byte   (8 byte)
- * S    short  (16 bit)
- * L    long   (word)
- * D    double (64 bit)
- *
- * V    value
- * R    register (addressed by 8 bit operand)
- * P    pointer  (word)
- * Q    pointer  (stored in registry, addressed by 8 bit operand)
- * L    label     (only used in jump-instructions)
- */
-
 /* Instruction implementation templates */
 #define fetchOp1(op,code)\
         fetch_##code;\
@@ -96,28 +83,30 @@ typedef struct cx_stringConcatCache {
         fetch2_##code;\
         fetch3_##code;\
 
+
+/* ---- Instruction implementations */
 /* Set */
-#define SET(type,code)\
+#define SET(type, code)\
     SET_##code:\
         fetchOp2(SET,code);\
         op1_##code = op2_##code;\
-        next();\
+        next();
 
-#define SETREF(type,code)\
+#define SETREF(type, code)\
     SETREF_##code:{\
         fetchOp2(SETREF,code);\
         cx_set((cx_object*)&op1_##code, (cx_object)op2_##code);\
     }\
-    next();\
+    next();
 
-#define SETSTR(type,code)\
+#define SETSTR(type, code)\
     SETSTR_##code:\
         fetchOp2(SETSTR,code);\
         if (op1_##code) cx_dealloc((cx_string)op1_##code);\
         op1_##code = op2_##code;\
-        next();\
+        next();
 
-#define SETSTRDUP(type,code)\
+#define SETSTRDUP(type, code)\
     SETSTRDUP_##code:\
         fetchOp2(SETSTRDUP,code);\
         if (op1_##code) cx_dealloc((cx_string)op1_##code);\
@@ -126,7 +115,28 @@ typedef struct cx_stringConcatCache {
         } else {\
             op1_##code = 0;\
         }\
+        next();
+
+#define SETX(type, code)\
+    SETX_##code:\
+        fetchOp2(SETX, code)\
+        op1_##code = (W_t)&op2_##code;\
+        next();
+
+#define ZERO(type, code)\
+    ZERO_##code:\
+        fetchOp2(ZERO, code)\
+        memset(&op1_WRV,0,op2_WRV);\
+        next();
+
+#define INIT(type, code)\
+    INIT_##code: {\
+        fetchOp2(INIT, code)\
+        cx_value v;\
+        cx_valueValueInit(&v, NULL, (cx_type)op2_##code, &op1_##code);\
+        cx_initValue(&v);\
         next();\
+    }
 
 /* Inc & dec */
 #define INC(type,code)\
@@ -248,22 +258,24 @@ typedef union Di2f_t {
         op_##code = ~op_##code;\
         next();\
 
+#define SHIFT_LEFT(type, code)\
+    SHIFT_LEFT_##code:\
+        fetchOp2(SHIFT_LEFT, code);\
+        op1_##code << op2_##code;\
+        next();\
+
+#define SHIFT_RIGHT(type, code)\
+    SHIFT_RIGHT_##code:\
+        fetchOp2(SHIFT_RIGHT, code);\
+        op1_##code >> op2_##code;\
+        next();\
+
 /* Staging */
 #define STAGE1(type,code)\
     STAGE1_##code:\
         fetchOp1(STAGE1,code);\
         stage1_##type = op_##code;\
         next();\
-
-/* Staging */
-#define STAGE12(type,code)\
-    STAGE12_##code: {\
-        uint64_t tmp = c.dbl;\
-        fetchOp1(STAGE12,code);\
-        stage2_##type = op_##code;\
-        c.dbl = tmp;\
-        next();\
-    }\
 
 #define STAGE2(type,code)\
     STAGE2_##code: {\
@@ -384,7 +396,7 @@ typedef union Di2f_t {
         next();\
 
 #define _PUSHANY(opx,_type,code,postfix,deref,typearg,_pc,v)\
-    PUSHANY##opx##_##code##postfix:\
+    PUSHANY##opx##postfix##_##code:\
     fetchOp1(PUSHANY,code);\
     fetchHi();\
     ((cx_any*)c.sp)->type = (cx_type)typearg;\
@@ -393,20 +405,17 @@ typedef union Di2f_t {
     c.sp = CX_OFFSET(c.sp, sizeof(cx_any));\
     next();\
 
-#define PUSHANYX(_type,code)    _PUSHANY(X,_type,code,,&,c.hi.w,,)
-#define PUSHANYX_U(_type,code)  _PUSHANY(X,_type,code,U,&,cx_uint64_o,,)
-#define PUSHANYX_I(_type,code)  _PUSHANY(X,_type,code,I,&,cx_int64_o,,)
-#define PUSHANYX_F(_type,code)  _PUSHANY(X,_type,code,F,&,cx_float64_o,,)
+#define PUSHANYX(_type,code)   _PUSHANY(X,_type,code,,&,c.hi.w,,)
 
-#define PUSHANYX_V(_type,code)  _PUSHANY(X,_type,code,,&,c.hi.w,c.pc->,x)
-#define PUSHANYX_VU(_type,code) _PUSHANY(X,_type,code,U,&,cx_uint64_o,c.pc->,x)
-#define PUSHANYX_VI(_type,code) _PUSHANY(X,_type,code,I,&,cx_int64_o,c.pc->,x)
-#define PUSHANYX_VF(_type,code) _PUSHANY(X,_type,code,F,&,cx_float64_o,c.pc->,x)
+#define PUSHANYXO(_type,code)  _PUSHANY(XO,_type,code,,&,c.hi.w,c.pc->,x)
+#define PUSHANYXOU(_type,code) _PUSHANY(XO,_type,code,U,&,cx_uint64_o,c.pc->,x)
+#define PUSHANYXOI(_type,code) _PUSHANY(XO,_type,code,I,&,cx_int64_o,c.pc->,x)
+#define PUSHANYXOF(_type,code) _PUSHANY(XO,_type,code,F,&,cx_float64_o,c.pc->,x)
 
-#define PUSHANY(_type,code)     _PUSHANY(,_type,code,,(cx_word),c.hi.w,,)
-#define PUSHANY_U(_type,code)   _PUSHANY(,_type,code,U,(cx_word),cx_uint64_o,,)
-#define PUSHANY_I(_type,code)   _PUSHANY(,_type,code,I,(cx_word),cx_int64_o,,)
-#define PUSHANY_F(_type,code)   _PUSHANY(,_type,code,F,(cx_word),cx_float64_o,,)
+#define PUSHANY(_type,code)    _PUSHANY(,_type,code,,(cx_word),c.hi.w,,)
+#define PUSHANYU(_type,code)   _PUSHANY(,_type,code,U,(cx_word),cx_uint64_o,,)
+#define PUSHANYI(_type,code)   _PUSHANY(,_type,code,I,(cx_word),cx_int64_o,,)
+#define PUSHANYF(_type,code)   _PUSHANY(,_type,code,F,(cx_word),cx_float64_o,,)
 
 #define CALL(type,code)\
     CALL_##code:\
@@ -726,116 +735,54 @@ typedef union Di2f_t {
         }\
         next();\
 
-/* Instruction implementation expansions */
-#define OPERAND_PQRV(op,type,lvalue)\
-    op(type,type##lvalue##V)\
-    op(type,type##lvalue##R)\
-    op(type,type##lvalue##P)\
-    op(type,type##lvalue##Q)
+#define JUMP()\
+    JUMP:\
+        fetchLo();\
+        jump(c.lo.w);
 
-#define OPERAND_PQR(op,type,lvalue)\
-    op(type,type##lvalue##R)\
-    op(type,type##lvalue##P)\
-    op(type,type##lvalue##Q)
+#define MEMBER()\
+    MEMBER:\
+        fetch_LRR;\
+        fetch1_LRR;\
+        fetch2_LRR;\
+        fetchLo();\
+        if (!op2_LRR) {\
+            printf("Error: dereferencing null\n");\
+            goto STOP;\
+        }\
+        op1_WRR = op2_WRR + c.lo.w;\
+        next();
 
-#define OP_LVALUE(op,type,postfix)\
-    OPERAND_##postfix(op,type,P)\
-    OPERAND_##postfix(op,type,R)\
-    OPERAND_##postfix(op,type,Q)
+#define STOP()\
+    STOP:\
+        cx_vm_popSignalHandler();\
+        return 0;\
 
-#define OP_LVALUE_V(op,type,postfix)\
-    OP_LVALUE(op,type,postfix)\
-    OPERAND_##postfix(op,type,V)
+/* ---- */
 
-#define OP_LVALUE_FLOAT(op,type,postfix)\
-    OPERAND_##postfix(op,type,P)\
-    OPERAND_##postfix(op,type,R)\
-    OPERAND_##postfix(op,type,Q)
 
-#define OP_LVALUE_FLOAT_V(op,type,postfix)\
-    OP_LVALUE_FLOAT(op,type,postfix)\
-    op(type,type##VR)\
-    op(type,type##VP)\
-    op(type,type##VQ)\
+#define INSTR0(arg)\
+    arg()
 
-#define OP1(op)\
-    OPERAND_PQR(op,B,)\
-    OPERAND_PQR(op,S,)\
-    OPERAND_PQR(op,L,)\
-    OPERAND_PQR(op,D,)
+#define INSTR1(type, arg, op1)\
+    arg(type, type##op1)
 
-#define OP1_COND(op)\
-    OPERAND_PQR(op,B,)
+#define INSTR1_COND(type, arg, op1)\
+    arg(type, type##op1)
 
-#define OP1_PQRV(op)\
-    OPERAND_PQRV(op,B,)\
-    OPERAND_PQRV(op,S,)\
-    OPERAND_PQRV(op,L,)\
-    OPERAND_PQRV(op,D,)\
+#define INSTR1_COND_LD(type, arg, op1)\
+    arg(type, type##op1)
 
-#define OP1_ANYV(op)\
-    op##_V(L,LV)\
-    op##_VU(D,DV)\
-    op##_VI(D,DV)\
-    op##_VF(D,DV)\
+#define INSTR1_ANY(type, arg, op1)\
+    arg##U(type, type##op1)\
+    arg##I(type, type##op1)\
+    arg##F(type, type##op1)
 
-#define OP1_ANY(op)\
-    OPERAND_PQR(op,L,)\
-    OPERAND_PQR(op,D,)\
+#define INSTR2(type, arg, op1, op2)\
+    arg(type, type##op1##op2)
 
-#define OP2(op, postfix)\
-    OP_LVALUE(op,B, postfix)\
-    OP_LVALUE(op,S, postfix)\
-    OP_LVALUE(op,L, postfix)\
-    OP_LVALUE_FLOAT(op,D, postfix)\
-
-#define OP2_V(op, postfix)\
-    OP_LVALUE_V(op,B, postfix)\
-    OP_LVALUE_V(op,S, postfix)\
-    OP_LVALUE_V(op,L, postfix)\
-    OP_LVALUE_FLOAT_V(op,D, postfix)\
-
-#define OP2_SLD(op, postfix)\
-    OP_LVALUE(op,S, postfix)\
-    OP_LVALUE(op,L, postfix)\
-    OP_LVALUE_FLOAT(op,D, postfix)\
-
-#define OP2_BLD(op, postfix)\
-    OP_LVALUE(op,B, postfix)\
-    OP_LVALUE(op,L, postfix)\
-    OP_LVALUE_FLOAT(op,D, postfix)\
-
-#define OP2_BSD(op, postfix)\
-    OP_LVALUE(op,B, postfix)\
-    OP_LVALUE(op,S, postfix)\
-    OP_LVALUE_FLOAT(op,D, postfix)\
-
-#define OP2_BSL(op, postfix)\
-    OP_LVALUE(op, B, postfix)\
-    OP_LVALUE(op, S, postfix)\
-    OP_LVALUE(op, L, postfix)\
-
-#define OP2_LD(op, postfix)\
-    OP_LVALUE(op, L, postfix)\
-    OP_LVALUE_FLOAT(op, D, postfix)
-
-#define OP2_L(op, postfix)\
-    OP_LVALUE(op, L, postfix)
-
-#define OP2_W(op, postfix)\
-    OP_LVALUE(op, W, postfix)
-
-#define OP2_D(op, postfix)\
-    OP_LVALUE(op, D, postfix)
-
-#define OP2V_W(op, postfix)\
-    OPERAND_##postfix(op, W, V)\
-    OP_LVALUE(op, W, postfix)\
-
-#define OP3_W(op, postfix)\
-    OP_LVALUE(op, WP, postfix)\
-    OP_LVALUE(op, WQ, postfix)\
-    OP_LVALUE(op, WR, postfix)\
+#define INSTR3(type, arg, op1, op2, op3)\
+    arg(type, type##op1##op2##op3)
 
 /* Translation from opcode-id to address */
 #define TOJMP_OPERAND(_op,type,lvalue,rvalue)\
@@ -897,10 +844,10 @@ typedef union Di2f_t {
 #define TOJMP_OP1_ANY(_op)\
     TOJMP_OPERAND_PQR(_op,L,)\
     TOJMP_OPERAND_PQR(_op,D,)\
-    TOJMP_OPERAND(_op,L,V,)\
-    TOJMP_OPERAND(_op,D,VU,)\
-    TOJMP_OPERAND(_op,D,VI,)\
-    TOJMP_OPERAND(_op,D,VF,)\
+    TOJMP_OPERAND(_op##O,L,V,)\
+    TOJMP_OPERAND(_op##OU,D,V,)\
+    TOJMP_OPERAND(_op##OI,D,V,)\
+    TOJMP_OPERAND(_op##OF,D,V,)\
 
 #define TOJMP_OP2(op,postfix)\
     TOJMP_LVALUE(op,B,postfix)\
@@ -1025,10 +972,10 @@ typedef union Di2f_t {
 #define TOSTR_OP1_ANY(op)\
     TOSTR_OPERAND_PQR(op,L,)\
     TOSTR_OPERAND_PQR(op,D,)\
-    TOSTR_OPERAND(op,L,,V)\
-    TOSTR_OPERAND(op,D,,VU)\
-    TOSTR_OPERAND(op,D,,VI)\
-    TOSTR_OPERAND(op,D,,VF)\
+    TOSTR_OPERAND(op##O,L,,V)\
+    TOSTR_OPERAND(op##OU,D,,V)\
+    TOSTR_OPERAND(op##OI,D,,V)\
+    TOSTR_OPERAND(op##OF,D,,V)\
 
 #define TOSTR_OP2(op,postfix)\
     TOSTR_LVALUE(op,B,postfix)\
@@ -1256,12 +1203,12 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
 #endif
             switch(p[i].op) {
                 TOJMP_OP2(SET,PQRV);
-                case CX_VM_SET_WRX: p[i].op = toJump(SET_WRX); break;
+                case CX_VM_SETX_WRR: p[i].op = toJump(SETX_WRR); break;
                 TOJMP_OP2_W(SETREF,PQRV);
                 TOJMP_OP2_W(SETSTR,PQRV);
                 TOJMP_OP2_W(SETSTRDUP,PQRV);
-                case CX_VM_ZERO: p[i].op = toJump(ZERO); break;
-                case CX_VM_INIT: p[i].op = toJump(INIT); break;
+                case CX_VM_ZERO_WRV: p[i].op = toJump(ZERO_WRV); break;
+                case CX_VM_INIT_WRV: p[i].op = toJump(INIT_WRV); break;
 
                 TOJMP_OP1(INC);
                 TOJMP_OP1(DEC);
@@ -1283,8 +1230,6 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
                 TOJMP_OP1(NOT);
 
                 TOJMP_OP1_PQRV(STAGE1);
-                case CX_VM_STAGE12_DP: p[i].op = toJump(STAGE12_DP); break;
-                case CX_VM_STAGE12_DV: p[i].op = toJump(STAGE12_DV); break;
                 TOJMP_OP2_V(STAGE2,PQRV);
                 case CX_VM_STAGE2_DVV: p[i].op = toJump(STAGE2_DVV); break;
 
@@ -1380,169 +1325,8 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
     /* Run program */
     go();
 
-    /* Instruction implementations
-     * Most of these lines are macro's which are expanded into the appropriate
-     * actual instructions. For example, OP1(FOO) expands into:
-     *  - CX_VM_FOO_BP <- byte operations (8 bit)
-     *  - CX_VM_FOO_BR
-     *  - CX_VM_FOO_BQ
-     *  - CX_VM_FOO_SP <- short operations (16 bit)
-     *  - CX_VM_FOO_SR
-     *  - CX_VM_FOO_SQ
-     *  - CX_VM_FOO_LP <- long operations (32 bit)
-     *  - CX_VM_FOO_LR
-     *  - CX_VM_FOO_LQ
-     *  - CX_VM_FOO_DP <- double operations (64 bit)
-     *  - CX_VM_FOO_DR
-     *  - CX_VM_FOO_DQ
-     */
-    OP2(SET,PQRV);
-    
-    OP2_W(SETREF,PQRV);
-    OP2_W(SETSTR,PQRV);
-    OP2_W(SETSTRDUP,PQRV);
-
-    SET_WRX:
-        fetch_WRR;
-        fetch1_WRR;
-        fetch2_WRR;
-        op1_WRR = (W_t)&op2_WRR;
-        next();
-
-    ZERO:
-        fetch_WRV;
-        fetch1_WRV;
-        fetch2_WRV;
-        memset(&op1_WRV,0,op2_WRV);
-        next();
-    
-    INIT: {
-        fetch_WRV;
-        fetch1_WRV;
-        fetch2_WRV;
-        cx_value v;
-        cx_valueValueInit(&v, NULL, (cx_type)op2_WRV, &op1_WRV);
-        cx_initValue(&v);
-        next();
-    }
-
-    OP1(INC);
-    OP1(DEC);
-
-    OP2(ADDI,PQRV);
-    OP2(SUBI,PQRV);
-    OP2(MULI,PQRV);
-    OP2(DIVI,PQRV);
-    OP2(MODI,PQRV);
-
-    OP2_LD(ADDF,PQRV);
-    OP2_LD(SUBF,PQRV);
-    OP2_LD(MULF,PQRV);
-    OP2_LD(DIVF,PQRV);
-
-    OP2(AND,PQRV);
-    OP2(XOR,PQRV);
-    OP2(OR,PQRV);
-    OP1(NOT);
-
-    OP1_PQRV(STAGE1);
-    STAGE12(D,DP);
-    STAGE12(D,DV);
-    OP2_V(STAGE2,PQRV)
-    STAGE2(D, DVV);
-
-    OP1_COND(CAND);
-    OP1_COND(COR);
-    OP1_COND(CNOT);
-    OP1_COND(CEQ);
-    OP1_COND(CNEQ);
-
-    OP1_COND(CGTI);
-    OP1_COND(CLTI);
-    OP1_COND(CGTEQI);
-    OP1_COND(CLTEQI);
-
-    OP1_COND(CGTU);
-    OP1_COND(CLTU);
-    OP1_COND(CGTEQU);
-    OP1_COND(CLTEQU);
-
-    OP1_COND(CGTF);
-    OP1_COND(CLTF);
-    OP1_COND(CGTEQF);
-    OP1_COND(CLTEQF);
-
-    OPERAND_PQR(CEQSTR,B,);
-    OPERAND_PQR(CNEQSTR,B,);
-    
-    OP1(JEQ);
-    OP1(JNEQ);
-
-    JUMP:
-        fetchLo();
-        jump(c.lo.w);
-
-    MEMBER:
-        fetch_LRR;
-        fetch1_LRR;
-        fetch2_LRR;
-        fetchLo();
-        if (!op2_LRR) {
-            printf("Error: dereferencing null\n");
-            goto STOP;
-        }
-        op1_WRR = op2_WRR + c.lo.w;
-        next();
-
-    OPERAND_PQRV(ELEMA,W,R);
-    OPERAND_PQRV(ELEMS,W,R);
-    OPERAND_PQRV(ELEML,W,R);
-    OPERAND_PQRV(ELEMLX,W,R);
-    OPERAND_PQRV(ELEMM,W,R);
-    OPERAND_PQRV(ELEMMX,W,R);
-
-    OP2_W(ITER_SET,PQRV);
-    OP3_W(ITER_NEXT,PQRV);
-
-    OP1_PQRV(PUSH);
-    OP1(PUSHX);
-    OPERAND_PQRV(PUSHANY,W,);
-    OP1_ANY(PUSHANYX);
-    OP1_ANYV(PUSHANYX);
-
-    OPERAND_PQR(CALL,W,);
-    OPERAND_PQR(CALLVM,W,);
-    CALLVOID();
-    CALLVMVOID();
-    OP2_W(CALLPTR,PQR)
-    OP1(RET);
-    OPERAND_PQR(RETCPY,L,);
-
-    OP2_W(CAST,PQRV);
-    OP2(PCAST,PQR);
-    OP2V_W(STRCAT,PQRV);
-    OP2_W(STRCPY,PQRV);
-
-    OP_LVALUE(NEW,W,PQRV);
-    OPERAND_PQRV(DEALLOC,W,);
-    OPERAND_PQRV(KEEP,W,);
-    OPERAND_PQRV(FREE,W,);
-
-    OPERAND_PQRV(DEFINE,W,);
-
-    OPERAND_PQRV(UPDATE,W,);
-    OPERAND_PQRV(UPDATEBEGIN,W,);
-    OPERAND_PQRV(UPDATEEND,W,);
-    OP2_W(UPDATEFROM,PQR);
-    OP2_W(UPDATEENDFROM,PQR);
-    OPERAND_PQRV(UPDATECANCEL,W,);
-
-    OPERAND_PQRV(WAITFOR,W,);
-    OP2_W(WAIT,PQRV);
-
-STOP:
-    cx_vm_popSignalHandler();
-    return 0;
+    /* ---- Expand instruction macro's */
+    OPS_EXP(INSTR);
 }
 
 /* Delete a string concatenation cache (cleanup function for thread
@@ -1641,9 +1425,9 @@ char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
                 TOSTR_OP2_W(SETREF,PQRV);
                 TOSTR_OP2_W(SETSTR,PQRV);
                 TOSTR_OP2_W(SETSTRDUP,PQRV);
-                case CX_VM_SET_WRX: result = strappend(result, "SET_WRX %u %u\n", p[i].ic.b._1, p[i].ic.b._2); break;
-                case CX_VM_ZERO: result = strappend(result, "ZERO %u %u\n", p[i].ic.b._1, p[i].lo.w); break;
-                case CX_VM_INIT: result = strappend(result, "INIT %u %u\n", p[i].ic.b._1, p[i].lo.w); break;
+                case CX_VM_SETX_WRR: result = strappend(result, "SETX_WRR %u %u\n", p[i].ic.b._1, p[i].ic.b._2); break;
+                case CX_VM_ZERO_WRV: result = strappend(result, "ZERO_WRV %u %u\n", p[i].ic.b._1, p[i].lo.w); break;
+                case CX_VM_INIT_WRV: result = strappend(result, "INIT_WRV %u %u\n", p[i].ic.b._1, p[i].lo.w); break;
 
                 TOSTR_OP1(INC);
                 TOSTR_OP1(DEC);
@@ -1665,8 +1449,6 @@ char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
                 TOSTR_OP1(NOT);
 
                 TOSTR_OP1_DV(STAGE1);
-                case CX_VM_STAGE12_DP: result = strappend(result, "STAGE12_DP %u\n", p[i].lo.w); break;
-                case CX_VM_STAGE12_DV: result = strappend(result, "STAGE12_DV %u\n", *(D_t*)&p[i].lo.w); break;
                 TOSTR_OP2_V(STAGE2,PQRV);
                 case CX_VM_STAGE2_DVV: result = strappend(result, "STAGE2_DVV %u %u\n", p[i].lo.w, p[i].hi.w); break;
 

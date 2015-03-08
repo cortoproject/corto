@@ -1229,15 +1229,20 @@ static void cx_ic_vmInlineFunctionMark(cx_ic_vmProgram *program, cx_vmProgram vm
         }\
         break;\
 
-#define CX_IC_OP1_LVALUE_ANY(op, type, lvalue)\
+#define CX_IC_OP1_LVALUE_ANYV(op, type, lvalue)\
         case CX_IC_VMOPERAND_##lvalue:\
             if (cx_primitive(t)->kind == CX_UINTEGER) {\
-                result = CX_VM_##op##_##type##lvalue##U;\
+                result = CX_VM_##op##OU_##type##lvalue;\
             } else if (cx_primitive(t)->kind == CX_INTEGER) {\
-                result = CX_VM_##op##_##type##lvalue##I;\
+                result = CX_VM_##op##OI_##type##lvalue;\
             } else if (cx_primitive(t)->kind == CX_FLOAT) {\
-                result = CX_VM_##op##_##type##lvalue##F;\
+                result = CX_VM_##op##OF_##type##lvalue;\
             }\
+            break;\
+
+#define CX_IC_OP1_LVALUE_ANY(op, type, lvalue)\
+        case CX_IC_VMOPERAND_##lvalue:\
+            result = CX_VM_##op##O_##type##lvalue;\
             break;\
 
 #define CX_IC_OP2_(op,type,postfix)\
@@ -1269,6 +1274,19 @@ case CX_IC_VMTYPE_##type:\
 case CX_IC_VMTYPE_##type:\
     switch(op1) {\
         CX_IC_OP2_##postfix(op,type, R)\
+        default:\
+            cx_assert(0, "operand %s not valid for lvalue of " #op " operation of type " #type, cx_ic_vmOperandStr(op1));\
+            break;\
+    }\
+    break;\
+
+#define CX_IC_OP1_ANYV(op, type)\
+case CX_IC_VMTYPE_##type:\
+    switch(op1) {\
+        CX_IC_OP1_LVALUE_ANYV(op,type,V)\
+        CX_IC_OPERAND(op,type##R,R)\
+        CX_IC_OPERAND(op,type##P,P)\
+        CX_IC_OPERAND(op,type##Q,Q)\
         default:\
             cx_assert(0, "operand %s not valid for lvalue of " #op " operation of type " #type, cx_ic_vmOperandStr(op1));\
             break;\
@@ -1611,8 +1629,8 @@ static cx_vmOpKind cx_ic_getVm##op(cx_type t, cx_ic_vmType type, cx_ic_vmOperand
         }\
     }\
     switch(type) {\
-        CX_IC_OP1_PQRV(op,L)\
-        CX_IC_OP1_ANY(op,D)\
+        CX_IC_OP1_ANY(op,L)\
+        CX_IC_OP1_ANYV(op,D)\
         default:\
             cx_assert(0, "B or S not applicable for instruction " #op);\
             break;\
@@ -1705,7 +1723,7 @@ CX_IC_GETOP1_W(PUSHANY,PQRV)
 CX_IC_GETOP1_ANY(PUSHANYX)
 CX_IC_GETOP1_W(CALL,PQR)
 CX_IC_GETOP1_W(CALLVM,PQR)
-CX_IC_GETOP2_W(CALLPTR,,PQRV)
+CX_IC_GETOP2_W(CALLPTR,,PQR)
 CX_IC_GETOP1(RET,PQR)
 CX_IC_GETOP1_L(RETCPY,PQR)
 
@@ -1848,7 +1866,7 @@ static cx_vmOp *cx_ic_vmStorageAssembleNested(cx_icStorage icStorage, cx_ic_vmPr
                 /* If the base is a local store the address of the local in the accumulator */
                 } else if (base->kind == CX_STORAGE_LOCAL) {
                     if (!cx_ic_isReference(storage->base->accumulator)) {
-                        vmOp->op = CX_VM_SET_WRX;
+                        vmOp->op = CX_VM_SETX_WRR;
                         cx_ic_vmStorageAddReferee(program, topLevelStorage, &vmOp->ic.b._1);
                         vmOp->ic.b._2 = storage->base->addr;
                         if (storage->offset) {
@@ -2741,7 +2759,7 @@ static void cx_icZeroLocal(cx_ic_vmProgram *program, cx_uint16 initStart, cx_uin
         vmOp->lo.w = 0;
         break;
     default:
-        vmOp->op = CX_VM_ZERO;
+        vmOp->op = CX_VM_ZERO_WRV;
         vmOp->ic.b._1 = initStart;
         vmOp->lo.w = size;
         break;
@@ -2753,7 +2771,7 @@ static void cx_icInitLocal(cx_ic_vmProgram *program, cx_uint16 localAddr, cx_typ
     
     vmOp = cx_vmProgram_addOp(program->program, 0);
 
-    vmOp->op = CX_VM_INIT;
+    vmOp->op = CX_VM_INIT_WRV;
     vmOp->ic.b._1 = localAddr;
     vmOp->lo.w = (cx_word)type;
 }
