@@ -10,6 +10,7 @@
 
 #include "stdint.h"
 #include "cx_object.h"
+#include "cx_vm_expansion.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,139 +41,40 @@ extern "C" {
  * M    map
  */
 
-#define VM_OPERAND(op,code)\
-    CX_VM_##op##_##code\
+#define CONST1(type, arg, op1)\
+    CX_VM_##arg##_##type##op1,
 
-#define VM_OPERAND_PQRV(op,type,lvalue)\
-    VM_OPERAND(op, type##lvalue##V),\
-    VM_OPERAND(op, type##lvalue##R),\
-    VM_OPERAND(op ,type##lvalue##P),\
-    VM_OPERAND(op, type##lvalue##Q)
+#define CONST1_COND(type, arg, op1)\
+    CX_VM_##arg##B##_##type##op1,\
+    CX_VM_##arg##S##_##type##op1,\
+    CX_VM_##arg##L##_##type##op1,\
+    CX_VM_##arg##D##_##type##op1,
 
-#define VM_OPERAND_PQR(op,type,lvalue)\
-    VM_OPERAND(op, type##lvalue##R),\
-    VM_OPERAND(op ,type##lvalue##P),\
-    VM_OPERAND(op, type##lvalue##Q)
+#define CONST1_COND_LD(type, arg, op1)\
+    CX_VM_##arg##L##_##type##op1,\
+    CX_VM_##arg##D##_##type##op1,    
 
-#define VM_1OP_PQRV(op)\
-    VM_OPERAND_PQR(op,B,),\
-    VM_OPERAND_PQR(op,S,),\
-    VM_OPERAND_PQR(op,L,),\
-    VM_OPERAND_PQR(op,D,),\
-    VM_OPERAND(op,BV),\
-    VM_OPERAND(op,SV),\
-    VM_OPERAND(op,LV),\
-    VM_OPERAND(op,DV)
+#define CONST2(type, arg, op1, op2)\
+    CX_VM_##arg##_##type##op1##op2,
 
-#define VM_1OP_ANY(op)\
-    VM_OPERAND_PQR(op,B,),\
-    VM_OPERAND_PQR(op,S,),\
-    VM_OPERAND_PQR(op,L,),\
-    VM_OPERAND_PQR(op,D,),\
-    VM_OPERAND(op,BV),\
-    VM_OPERAND(op,SV),\
-    VM_OPERAND(op,LV),\
-    /* Double values cannot be encoded together with a type for the any. Therefore the only three \
-     * types that can occur with DV are hard-encoded in the following three instructions. */\
-    VM_OPERAND(op,DVU),\
-    VM_OPERAND(op,DVI),\
-    VM_OPERAND(op,DVF)
-
-#define VM_1OP(op)\
-    VM_OPERAND_PQR(op,B,),\
-    VM_OPERAND_PQR(op,S,),\
-    VM_OPERAND_PQR(op,L,),\
-    VM_OPERAND_PQR(op,D,)
-
-/* Expand operations for every type to match staged values */
-#define VM_1OP_COND(op)\
-    VM_OPERAND_PQR(op##B,B,),\
-    VM_OPERAND_PQR(op##S,B,),\
-    VM_OPERAND_PQR(op##L,B,),\
-    VM_OPERAND_PQR(op##D,B,)
-
-#define VM_1OP_COND_LD(op)\
-    VM_OPERAND_PQR(op##L,B,),\
-    VM_OPERAND_PQR(op##D,B,)
-
-#define VM_LVALUE(op,type,postfix)\
-    VM_OPERAND_##postfix(op,type,R),\
-    VM_OPERAND_##postfix(op,type,P),\
-    VM_OPERAND_##postfix(op,type,Q)
-
-#define VM_LVALUE_V(op,type,postfix)\
-    VM_LVALUE(op,type,postfix),\
-    VM_OPERAND_##postfix(op,type,V)
-
-#define VM_2OP(op,postfix)\
-    VM_LVALUE(op,B,postfix),\
-    VM_LVALUE(op,S,postfix),\
-    VM_LVALUE(op,L,postfix),\
-    VM_LVALUE(op,D,postfix)
-
-#define VM_2OP_V(op,postfix)\
-    VM_LVALUE_V(op,B,postfix),\
-    VM_LVALUE_V(op,S,postfix),\
-    VM_LVALUE_V(op,L,postfix),\
-    VM_LVALUE_V(op,D,postfix)
-
-#define VM_2OP_SLD(op,postfix)\
-    VM_LVALUE(op,S,postfix),\
-    VM_LVALUE(op,L,postfix),\
-    VM_LVALUE(op,D,postfix)
-
-#define VM_2OP_BLD(op,postfix)\
-    VM_LVALUE(op,B,postfix),\
-    VM_LVALUE(op,L,postfix),\
-    VM_LVALUE(op,D,postfix)
-
-#define VM_2OP_BSD(op,postfix)\
-    VM_LVALUE(op,B,postfix),\
-    VM_LVALUE(op,S,postfix),\
-    VM_LVALUE(op,D,postfix)
-
-#define VM_2OP_BSL(op,postfix)\
-    VM_LVALUE(op,B,postfix),\
-    VM_LVALUE(op,S,postfix),\
-    VM_LVALUE(op,L,postfix)
-
-#define VM_2OP_LD(op,postfix)\
-    VM_LVALUE(op,L,postfix),\
-    VM_LVALUE(op,D,postfix)
-
-#define VM_2OP_L(op,postfix)\
-    VM_LVALUE(op,L,postfix)
-
-#define VM_2OP_W(op,postfix)\
-    VM_LVALUE(op,W,postfix)
-
-#define VM_2OP_D(op,postfix)\
-    VM_LVALUE(op,D,postfix)
-
-#define VM_2OPV_W(op,postfix)\
-    VM_OPERAND_##postfix(op,W,V),\
-    VM_LVALUE(op,W,postfix)
-
-#define VM_3OP_W(op, postfix)\
-    VM_LVALUE(op, WP, postfix),\
-    VM_LVALUE(op, WQ, postfix),\
-    VM_LVALUE(op, WR, postfix)
+#define CONST3(type, arg, op1, op2, op3)\
+    CX_VM_##arg##_##type##op1##op2##op3,
 
 typedef enum cx_vmOpKind {
 
     /* Copy a value to a variable/object */
-    VM_2OP(SET,PQRV),
+    OP2_EXP(CONST2, SET, BSLD, PQR, PQRV)
 
     /* Special set instruction that takes the address of a register so calculations can be performed on it.
      * This is useful when calculating dynamic offsets, for example when using arrays i.c.w. a variable index. */
     CX_VM_SET_WRX,
 
     /* Specialized SET for references */
-    VM_2OP_W(SETREF,PQRV),
+    OP2_EXP(CONST2, SETREF, W, PQR, PQRV)
 
     /* Specialized SET for strings */
-    VM_2OP_W(SETSTR,PQRV),
-    VM_2OP_W(SETSTRDUP,PQRV),
+    OP2_EXP(CONST2, SETSTR, W, PQR, PQRV)
+    OP2_EXP(CONST2, SETSTRDUP, W, PQR, PQRV)
 
     /* Initialize register-memory to zero */
     CX_VM_ZERO,
@@ -181,148 +83,153 @@ typedef enum cx_vmOpKind {
     CX_VM_INIT,
 
     /* Inc & dec */
-    VM_1OP(INC),
-    VM_1OP(DEC),
+    OP1_EXP(CONST1, INC, BSLD, PQR)
+    OP1_EXP(CONST1, DEC, BSLD, PQR)
 
     /* Integer operations */
-    VM_2OP(ADDI,PQRV),
-    VM_2OP(SUBI,PQRV),
-    VM_2OP(MULI,PQRV),
-    VM_2OP(DIVI,PQRV),
-    VM_2OP(MODI,PQRV),
+    OP2_EXP(CONST2, ADDI, BSLD, PQR, PQRV)
+    OP2_EXP(CONST2, SUBI, BSLD, PQR, PQRV)
+    OP2_EXP(CONST2, MULI, BSLD, PQR, PQRV)
+    OP2_EXP(CONST2, DIVI, BSLD, PQR, PQRV)
+    OP2_EXP(CONST2, MODI, BSLD, PQR, PQRV)
 
     /* Float operations */
-    VM_2OP_LD(ADDF,PQRV),
-    VM_2OP_LD(SUBF,PQRV),
-    VM_2OP_LD(MULF,PQRV),
-    VM_2OP_LD(DIVF,PQRV),
+    OP2_EXP(CONST2, ADDF, LD, PQR, PQRV)
+    OP2_EXP(CONST2, SUBF, LD, PQR, PQRV)
+    OP2_EXP(CONST2, MULF, LD, PQR, PQRV)
+    OP2_EXP(CONST2, DIVF, LD, PQR, PQRV)
 
     /* Logical operators */
-    VM_2OP(AND,PQRV),
-    VM_2OP(XOR,PQRV),
-    VM_2OP(OR,PQRV),
-    VM_1OP(NOT),
+    OP2_EXP(CONST2, AND, BSLD, PQR, PQRV)
+    OP2_EXP(CONST2, XOR, BSLD, PQR, PQRV)
+    OP2_EXP(CONST2, OR, BSLD, PQR, PQRV)
+    OP1_EXP(CONST1, NOT, BSLD, PQR)
 
     /* Shift operators */
-    VM_2OP(SHIFT_LEFT,PQRV),
-    VM_2OP(SHIFT_RIGHT,PQRV),
+    OP2_EXP(CONST2, SHIFT_LEFT, BSLD, PQR, PQRV)
+    OP2_EXP(CONST2, SHIFT_RIGHT, BSLD, PQR, PQRV)
 
     /* Stage 1 operand */
-    VM_1OP_PQRV(STAGE1),
+    OP1_EXP(CONST1, STAGE1, BSLD, PQRV)
 
     /* Stage 2 operands */
-    VM_2OP_V(STAGE2,PQRV),
+    OP2_EXP(CONST2, STAGE2, BSLD, PQRV, PQRV)
     
     /* Stage 1 double operand in stage variable 2 */
     CX_VM_STAGE12_DP,
     CX_VM_STAGE12_DV,
     
-    /* Comparisons */
-    VM_1OP_COND(CAND),
-    VM_1OP_COND(COR),
-    VM_1OP_COND(CNOT),
-    VM_1OP_COND(CEQ),
-    VM_1OP_COND(CNEQ),
+    /* Comparisons (uses staged operands) */
+    OP1_EXP(CONST1_COND, CAND, B, PQR)
+    OP1_EXP(CONST1_COND, COR, B, PQR)
+    OP1_EXP(CONST1_COND, CNOT, B, PQR)
+    OP1_EXP(CONST1_COND, CEQ, B, PQR)
+    OP1_EXP(CONST1_COND, CNEQ, B, PQR)
 
-    /* Signed comparisons */
-    VM_1OP_COND(CGTI),
-    VM_1OP_COND(CLTI),
-    VM_1OP_COND(CGTEQI),
-    VM_1OP_COND(CLTEQI),
+    /* Unsigned comparisons (uses staged operands) */
+    OP1_EXP(CONST1_COND, CGTU, B, PQR)
+    OP1_EXP(CONST1_COND, CLTU, B, PQR)
+    OP1_EXP(CONST1_COND, CGTEQU, B, PQR)
+    OP1_EXP(CONST1_COND, CLTEQU, B, PQR)
 
-    /* Unsigned comparisons */
-    VM_1OP_COND(CGTU),
-    VM_1OP_COND(CLTU),
-    VM_1OP_COND(CGTEQU),
-    VM_1OP_COND(CLTEQU),
+    /* Signed comparisons (uses staged operands) */
+    OP1_EXP(CONST1_COND, CGTI, B, PQR)
+    OP1_EXP(CONST1_COND, CLTI, B, PQR)
+    OP1_EXP(CONST1_COND, CGTEQI, B, PQR)
+    OP1_EXP(CONST1_COND, CLTEQI, B, PQR)
 
-    /* Float comparisons */
-    VM_1OP_COND_LD(CGTF),
-    VM_1OP_COND_LD(CLTF),
-    VM_1OP_COND_LD(CGTEQF),
-    VM_1OP_COND_LD(CLTEQF),
+    /* Float comparisons (uses staged operands) */
+    OP1_EXP(CONST1_COND_LD, CGTF, B, PQR)
+    OP1_EXP(CONST1_COND_LD, CLTF, B, PQR)
+    OP1_EXP(CONST1_COND_LD, CGTEQF, B, PQR)
+    OP1_EXP(CONST1_COND_LD, CLTEQF, B, PQR)
 
-    /* String comparisons */
-    VM_OPERAND_PQR(CEQSTR,B,),
-    VM_OPERAND_PQR(CNEQSTR,B,),
+    /* String comparisons (uses staged operands) */
+    OP1_EXP(CONST1, CEQSTR, B, PQR)
+    OP1_EXP(CONST1, CNEQSTR, B, PQR)
 
     /* Program control */
-    VM_1OP(JEQ),
-    VM_1OP(JNEQ),
+    OP1_EXP(CONST1, JEQ, BSLD, PQR)
+    OP1_EXP(CONST1, JNEQ, BSLD, PQR)
     CX_VM_JUMP,
 
     /* Calculate member-address from register base */
-    CX_VM_MEMBER, /* Takes destination register, base register and offset */
+    CX_VM_MEMBER, /* destination(1), base(2), offset(3) */
 
     /* Collections */
-    VM_OPERAND_PQRV(ELEMA,W,R),  /* Takes register(1), elementsize(3) and index variable(2) */
-    VM_OPERAND_PQRV(ELEMS,W,R),  /* Takes register(1), elementsize(3) and index variable(2) */
-    VM_OPERAND_PQRV(ELEML,W,R),  /* Takes register(1) and index variable(2) */
-    VM_OPERAND_PQRV(ELEMLX,W,R), /* Takes register(1) and index variable(2) - obtains pointer to listnode */
-    VM_OPERAND_PQRV(ELEMM,W,R),  /* Takes register(1) and index variable(2) */
-    VM_OPERAND_PQRV(ELEMMX,W,R), /* Takes register(1) and index variable(2) - obtains pointer to mapnode */
+    OP2_EXP(CONST2, ELEMA, W, R, PQRV)   /* Takes register(1), elementsize(3) and index variable(2) */
+    OP2_EXP(CONST2, ELEMS, W, R, PQRV)   /* Takes register(1), elementsize(3) and index variable(2) */
+    OP2_EXP(CONST2, ELEML, W, R, PQRV)   /* Takes register(1) and index variable(2) */
+    OP2_EXP(CONST2, ELEMLX, W, R, PQRV)  /* Takes register(1) and index variable(2) - obtains pointer to listnode */
+    OP2_EXP(CONST2, ELEMM, W, R, PQRV)   /* Takes register(1) and index variable(2) */
+    OP2_EXP(CONST2, ELEMMX, W, R, PQRV)  /* Takes register(1) and index variable(2) - obtains pointer to mapnode */
 
-    VM_2OP_W(ITER_SET,PQRV),     /* Assign iterator */
-    VM_3OP_W(ITER_NEXT,PQRV),    /* Combined next and hasNext */
-
+    OP2_EXP(CONST2, ITER_SET, W, PQR, PQRV)        /* Iter set:  iterator(1), collection(2) */
+    OP3_EXP(CONST3, ITER_NEXT, W, PQR, PQR, PQRV)  /* Iter next: hasNext(1), next(2), iterator(3)*/
     
-    /* Calls */
-    VM_1OP_PQRV(PUSH),
-    VM_1OP(PUSHX),                    /* Push address of value */
-    VM_OPERAND_PQRV(PUSHANY,W,),      /* Push value as any */
-    VM_1OP_ANY(PUSHANYX),             /* Push address of value as any */
+    /* Push data on stack */
+    OP1_EXP(CONST1, PUSH, BSLD, PQRV) /* Push value */
+    OP1_EXP(CONST1, PUSHX, BSLD, PQR) /* Push address of register: TODO - do we need P and Q? */
+    OP1_EXP(CONST1, PUSHANY, W, PQRV)
+    OP1_EXP(CONST1, PUSHANYX, BSL, PQRV)
+    OP1_EXP(CONST1, PUSHANYX, D, PQR)
+    CX_VM_PUSHANYX_DVI,
+    CX_VM_PUSHANYX_DVU,
+    CX_VM_PUSHANYX_DVF,
 
-    VM_OPERAND_PQR(CALL,W,),          /* Call function with returnvalue */
+    /* Call function */
+    OP1_EXP(CONST1, CALL, W, PQR)     /* Call function with returnvalue */   
     CX_VM_CALLVOID,                   /* Call function with void returnvalue */
-    VM_OPERAND_PQR(CALLVM,W,),        /* Call vm function with returnvalue */
+    OP1_EXP(CONST1, CALLVM, W, PQR)   /* Call vm function with returnvalue */
     CX_VM_CALLVMVOID,                 /* Call vm function with void returnvalue */
-    VM_2OP_W(CALLPTR,PQRV),           /* Call a delegate */
-    VM_1OP(RET),                      /* Return value smaller than 8 bytes */
-    VM_OPERAND_PQR(RETCPY,L,),        /* Return value larger than 8 bytes */
+    OP2_EXP(CONST2, CALLPTR, W, PQR, PQRV)   /* Call a delegate */
+    OP1_EXP(CONST1, RET, BSLD, PQR)   /* Return value smaller or equal than 8 bytes */
+    OP1_EXP(CONST1, RETCPY, L, PQR)   /* Return value larger than 8 bytes */
 
     /* Casts */
-    VM_2OP(I2FL,PQRV),
-    VM_2OP(I2FD,PQRV),
-    VM_2OP_LD(F2IB,PQRV),
-    VM_2OP_LD(F2IS,PQRV),
-    VM_2OP_LD(F2IL,PQRV),
-    VM_2OP_LD(F2ID,PQRV),
-    VM_2OP(I2S,PQRV),
-    VM_2OP(U2S,PQRV),
-    VM_2OP_LD(F2S,PQRV),
+    OP2_EXP(CONST2, I2FL, BSLD, PQR, PQRV)
+    OP2_EXP(CONST2, I2FD, BSLD, PQR, PQRV)
+    OP2_EXP(CONST2, F2IB, LD, PQR, PQRV)
+    OP2_EXP(CONST2, F2IS, LD, PQR, PQRV)
+    OP2_EXP(CONST2, F2IL, LD, PQR, PQRV)
+    OP2_EXP(CONST2, F2ID, LD, PQR, PQRV)
+
+    OP2_EXP(CONST2, I2S, BSLD, PQR, PQRV)
+    OP2_EXP(CONST2, U2S, BSLD, PQR, PQRV)
+    OP2_EXP(CONST2, F2S, LD, PQR, PQRV)
     
     /* Primitive casts */
-    VM_2OP(PCAST,PQR),
+    OP2_EXP(CONST2, PCAST, BSLD, PQR, PQR)
 
     /* Reference casting */
-    VM_2OP_W(CAST,PQRV),
+    OP2_EXP(CONST2, CAST, W, PQR, PQRV)
 
     /* String manipulations */
-    VM_2OPV_W(STRCAT,PQRV),
-    VM_2OP_W(STRCPY,PQRV),
+    OP2_EXP(CONST2, STRCAT, W, PQRV, PQRV)
+    OP2_EXP(CONST2, STRCPY, W, PQR, PQRV)
 
     /* Memory management */
-    VM_LVALUE(NEW,W,PQRV),
-    VM_OPERAND_PQRV(DEALLOC,W,),
-    VM_OPERAND_PQRV(KEEP,W,),
-    VM_OPERAND_PQRV(FREE,W,),
+    OP2_EXP(CONST2, NEW, W, PQR, PQRV)
+    OP1_EXP(CONST1, DEALLOC, W, PQRV)
+    OP1_EXP(CONST1, KEEP, W, PQRV)
+    OP1_EXP(CONST1, FREE, W, PQRV)
 
     /* Object state */
-    VM_OPERAND_PQRV(DEFINE,W,),
+    OP1_EXP(CONST1, DEFINE, W, PQRV)
 
     /* Notifications */
-    VM_OPERAND_PQRV(UPDATE,W,),
-    VM_OPERAND_PQRV(UPDATEBEGIN,W,),
-    VM_OPERAND_PQRV(UPDATEEND,W,),
-    VM_2OP_W(UPDATEFROM,PQR),
-    VM_2OP_W(UPDATEENDFROM,PQR),
-    VM_OPERAND_PQRV(UPDATECANCEL,W,),
+    OP1_EXP(CONST1, UPDATE, W, PQRV)
+    OP1_EXP(CONST1, UPDATEBEGIN, W, PQRV)
+    OP1_EXP(CONST1, UPDATEEND, W, PQRV)
+    OP2_EXP(CONST2, UPDATEFROM, W, PQR, PQRV)
+    OP2_EXP(CONST2, UPDATEENDFROM, W, PQR, PQRV)
+    OP1_EXP(CONST1, UPDATECANCEL, W, PQRV)
 
     /* Waiting */
-    VM_OPERAND_PQRV(WAITFOR,W,), /* Add objects to wait-queue */
-    VM_2OP_W(WAIT,PQRV), /* Do the actual wait */
+    OP1_EXP(CONST1, WAITFOR, W, PQRV)    /* Add objects to wait-queue */
+    OP2_EXP(CONST2, WAIT, W, PQR, PQRV)  /* Do the wait */
 
-    CX_VM_STOP /* Stop the current program (or function) */
+    CX_VM_STOP /* Stop the current program */
 } cx_vmOpKind;
 
 typedef union cx_vmParameter16 {
