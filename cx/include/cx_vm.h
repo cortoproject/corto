@@ -24,10 +24,10 @@ extern "C" {
     CX_VM_##arg##_##type##op1,
 
 #define CONST1_COND(type, arg, op1)\
-    CX_VM_##arg##B##_##type##op1,\
-    CX_VM_##arg##S##_##type##op1,\
-    CX_VM_##arg##L##_##type##op1,\
-    CX_VM_##arg##D##_##type##op1,
+    CX_VM_##arg##B_##type##op1,\
+    CX_VM_##arg##S_##type##op1,\
+    CX_VM_##arg##L_##type##op1,\
+    CX_VM_##arg##D_##type##op1,
 
 #define CONST1_COND_LD(type, arg, op1)\
     CX_VM_##arg##L##_##type##op1,\

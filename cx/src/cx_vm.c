@@ -760,7 +760,7 @@ typedef union Di2f_t {
 
 /* ---- */
 
-
+/* ---- Instruction expansion macro's */
 #define INSTR0(arg)\
     arg()
 
@@ -783,253 +783,65 @@ typedef union Di2f_t {
 
 #define INSTR3(type, arg, op1, op2, op3)\
     arg(type, type##op1##op2##op3)
+/* ---- */
 
-/* Translation from opcode-id to address */
-#define TOJMP_OPERAND(_op,type,lvalue,rvalue)\
-    case CX_VM_##_op##_##type##lvalue##rvalue: p[i].op = toJump(_op##_##type##lvalue##rvalue); break;\
+/* ---- Jump expansion macro's */
+#define JUMP0(arg)\
+    case CX_VM_##arg: p[i].op = toJump(arg); break;
 
-#define TOJMP_OPERAND_PQRV(_op,type,lvalue)\
-    TOJMP_OPERAND(_op,type,lvalue,V)\
-    TOJMP_OPERAND(_op,type,lvalue,R)\
-    TOJMP_OPERAND(_op,type,lvalue,P)\
-    TOJMP_OPERAND(_op,type,lvalue,Q)\
+#define JUMP1(type, arg, op1)\
+    case CX_VM_##arg##_##type##op1: p[i].op = toJump(arg##_##type##op1); break;
 
-#define TOJMP_OPERAND_PQR(_op,type,lvalue)\
-    TOJMP_OPERAND(_op,type,lvalue,R)\
-    TOJMP_OPERAND(_op,type,lvalue,P)\
-    TOJMP_OPERAND(_op,type,lvalue,Q)\
+#define JUMP1_COND(type, arg, op1)\
+    case CX_VM_##arg##B_##type##op1: p[i].op = toJump(arg##B_##type##op1); break;\
+    case CX_VM_##arg##S_##type##op1: p[i].op = toJump(arg##S_##type##op1); break;\
+    case CX_VM_##arg##L_##type##op1: p[i].op = toJump(arg##L_##type##op1); break;\
+    case CX_VM_##arg##D_##type##op1: p[i].op = toJump(arg##D_##type##op1); break;
 
-#define TOJMP_LVALUE(op,type,postfix)\
-    TOJMP_OPERAND_##postfix(op,type,P)\
-    TOJMP_OPERAND_##postfix(op,type,R)\
-    TOJMP_OPERAND_##postfix(op,type,Q)\
+#define JUMP1_COND_LD(type, arg, op1)\
+    case CX_VM_##arg##L_##type##op1: p[i].op = toJump(arg##L_##type##op1); break;\
+    case CX_VM_##arg##D_##type##op1: p[i].op = toJump(arg##D_##type##op1); break;
 
-#define TOJMP_LVALUE_V(op,type,postfix)\
-    TOJMP_LVALUE(op,type,postfix)\
-    TOJMP_OPERAND_##postfix(op,type,V)\
+#define JUMP1_ANY(type, arg, op1)\
+    case CX_VM_##arg##U_##type##op1: p[i].op = toJump(arg##U_##type##op1); break;\
+    case CX_VM_##arg##I_##type##op1: p[i].op = toJump(arg##I_##type##op1); break;\
+    case CX_VM_##arg##F_##type##op1: p[i].op = toJump(arg##F_##type##op1); break;
 
-#define TOJMP_LVALUE_FLOAT(_op,type,postfix)\
-    TOJMP_OPERAND_##postfix(_op,type,P);\
-    TOJMP_OPERAND_##postfix(_op,type,R);\
-    TOJMP_OPERAND_##postfix(_op,type,Q);\
+#define JUMP2(type, arg, op1, op2)\
+    case CX_VM_##arg##_##type##op1##op2: p[i].op = toJump(arg##_##type##op1##op2); break;
 
-#define TOJMP_LVALUE_FLOAT_V(_op,type,postfix)\
-    TOJMP_LVALUE_FLOAT(_op,type,postfix)\
-    TOJMP_OPERAND(_op,type,V,R)\
-    TOJMP_OPERAND(_op,type,V,P)\
-    TOJMP_OPERAND(_op,type,V,Q)\
+#define JUMP3(type, arg, op1, op2, op3)\
+    case CX_VM_##arg##_##type##op1##op2##op3: p[i].op = toJump(arg##_##type##op1##op2##op3); break;
+/* ---- */
 
-#define TOJMP_OP1(op)\
-    TOJMP_OPERAND_PQR(op,B,)\
-    TOJMP_OPERAND_PQR(op,S,)\
-    TOJMP_OPERAND_PQR(op,L,)\
-    TOJMP_OPERAND_PQR(op,D,)\
+/* ---- Jump expansion macro's */
+#define STRING0(arg)\
+    case CX_VM_##arg: result = cx_vmOp_toString(result, &p[i], #arg, "", "", "", ""); break;\
 
-#define TOJMP_OP1_COND(op)\
-    TOJMP_OPERAND_PQR(op##B,B,)\
-    TOJMP_OPERAND_PQR(op##S,B,)\
-    TOJMP_OPERAND_PQR(op##L,B,)\
-    TOJMP_OPERAND_PQR(op##D,B,)
+#define STRING1(type, arg, op1)\
+    case CX_VM_##arg##_##type##op1: result = cx_vmOp_toString(result, &p[i], #arg, #type, #op1, "", ""); break;\
 
-#define TOJMP_OP1_COND_LD(op)\
-    TOJMP_OPERAND_PQR(op##L,B,)\
-    TOJMP_OPERAND_PQR(op##D,B,)
+#define STRING1_COND(type, arg, op1)\
+    case CX_VM_##arg##B_##type##op1: result = cx_vmOp_toString(result, &p[i], #arg "B", #type, #op1, "", ""); break;\
+    case CX_VM_##arg##S_##type##op1: result = cx_vmOp_toString(result, &p[i], #arg "S", #type, #op1, "", ""); break;\
+    case CX_VM_##arg##L_##type##op1: result = cx_vmOp_toString(result, &p[i], #arg "L", #type, #op1, "", ""); break;\
+    case CX_VM_##arg##D_##type##op1: result = cx_vmOp_toString(result, &p[i], #arg "D", #type, #op1, "", ""); break;\
 
-#define TOJMP_OP1_PQRV(_op)\
-    TOJMP_OPERAND_PQRV(_op,B,)\
-    TOJMP_OPERAND_PQRV(_op,S,)\
-    TOJMP_OPERAND_PQRV(_op,L,)\
-    TOJMP_OPERAND_PQRV(_op,D,)\
+#define STRING1_COND_LD(type, arg, op1)\
+    case CX_VM_##arg##L_##type##op1: result = cx_vmOp_toString(result, &p[i], #arg "L", #type, #op1, "", ""); break;\
+    case CX_VM_##arg##D_##type##op1: result = cx_vmOp_toString(result, &p[i], #arg "D", #type, #op1, "", ""); break;\
 
-#define TOJMP_OP1_ANY(_op)\
-    TOJMP_OPERAND_PQR(_op,L,)\
-    TOJMP_OPERAND_PQR(_op,D,)\
-    TOJMP_OPERAND(_op##O,L,V,)\
-    TOJMP_OPERAND(_op##OU,D,V,)\
-    TOJMP_OPERAND(_op##OI,D,V,)\
-    TOJMP_OPERAND(_op##OF,D,V,)\
+#define STRING1_ANY(type, arg, op1)\
+    case CX_VM_##arg##U_##type##op1: result = cx_vmOp_toString(result, &p[i], #arg "U", #type, #op1, "", ""); break;\
+    case CX_VM_##arg##I_##type##op1: result = cx_vmOp_toString(result, &p[i], #arg "I", #type, #op1, "", ""); break;\
+    case CX_VM_##arg##F_##type##op1: result = cx_vmOp_toString(result, &p[i], #arg "F", #type, #op1, "", ""); break;\
 
-#define TOJMP_OP2(op,postfix)\
-    TOJMP_LVALUE(op,B,postfix)\
-    TOJMP_LVALUE(op,S,postfix)\
-    TOJMP_LVALUE(op,L,postfix)\
-    TOJMP_LVALUE(op,D,postfix)\
+#define STRING2(type, arg, op1, op2)\
+    case CX_VM_##arg##_##type##op1##op2: result = cx_vmOp_toString(result, &p[i], #arg, #type, #op1, #op2, ""); break;\
 
-#define TOJMP_OP2_V(op,postfix)\
-    TOJMP_LVALUE_V(op,B,postfix)\
-    TOJMP_LVALUE_V(op,S,postfix)\
-    TOJMP_LVALUE_V(op,L,postfix)\
-    TOJMP_LVALUE_FLOAT_V(op,D,postfix)\
-
-#define TOJMP_OP2_SLD(op,postfix)\
-    TOJMP_LVALUE(op,S,postfix)\
-    TOJMP_LVALUE(op,L,postfix)\
-    TOJMP_LVALUE_FLOAT(op,D,postfix)\
-
-#define TOJMP_OP2_BLD(op,postfix)\
-    TOJMP_LVALUE(op,B,postfix)\
-    TOJMP_LVALUE(op,L,postfix)\
-    TOJMP_LVALUE_FLOAT(op,D,postfix)\
-
-#define TOJMP_OP2_BSD(op,postfix)\
-    TOJMP_LVALUE(op,B,postfix)\
-    TOJMP_LVALUE(op,S,postfix)\
-    TOJMP_LVALUE_FLOAT(op,D,postfix)\
-
-#define TOJMP_OP2_BSL(op,postfix)\
-    TOJMP_LVALUE(op,B,postfix)\
-    TOJMP_LVALUE(op,S,postfix)\
-    TOJMP_LVALUE(op,L,postfix)\
-
-#define TOJMP_OP2_LD(op,postfix)\
-    TOJMP_LVALUE(op,L,postfix)\
-    TOJMP_LVALUE_FLOAT(op,D,postfix)\
-
-#define TOJMP_OP2_L(op,postfix)\
-    TOJMP_LVALUE(op,L,postfix)
-
-#define TOJMP_OP2_W(op,postfix)\
-    TOJMP_LVALUE(op,W,postfix)
-
-#define TOJMP_OP2_D(op,postfix)\
-    TOJMP_LVALUE(op,D,postfix)
-
-#define TOJMP_OP2V_W(op,postfix)\
-    TOJMP_OPERAND_##postfix(op,W,V)\
-    TOJMP_LVALUE(op,W,postfix)
-
-#define TOJMP_OP3_W(op, postfix)\
-    TOJMP_LVALUE(op,WP,postfix)\
-    TOJMP_LVALUE(op,WQ,postfix)\
-    TOJMP_LVALUE(op,WR,postfix)\
-
-/* Translation from opcode-id to string */
-#define TOSTR_OPERAND(_op,type,lvalue,rvalue)\
-    case CX_VM_##_op##_##type##lvalue##rvalue: result = cx_vmOp_toString(result, &p[i], #_op, #type, #lvalue, #rvalue, ""); break;\
-
-#define TOSTR_OPERAND_PQRV(_op,type,lvalue)\
-    TOSTR_OPERAND(_op,type,lvalue,V)\
-    TOSTR_OPERAND(_op,type,lvalue,R)\
-    TOSTR_OPERAND(_op,type,lvalue,P)\
-    TOSTR_OPERAND(_op,type,lvalue,Q)\
-
-#define TOSTR_OPERAND_PQR(_op,type,lvalue)\
-    TOSTR_OPERAND(_op,type,lvalue,R)\
-    TOSTR_OPERAND(_op,type,lvalue,P)\
-    TOSTR_OPERAND(_op,type,lvalue,Q)\
-
-#define TOSTR_LVALUE(op,type,postfix)\
-    TOSTR_OPERAND_##postfix(op,type,P)\
-    TOSTR_OPERAND_##postfix(op,type,R)\
-    TOSTR_OPERAND_##postfix(op,type,Q)\
-
-#define TOSTR_LVALUE_V(op,type,postfix)\
-    TOSTR_LVALUE(op,type,postfix)\
-    TOSTR_OPERAND_##postfix(op,type,V)\
-
-#define TOSTR_LVALUE_FLOAT(_op,type,postfix)\
-    TOSTR_OPERAND(_op,type,P,R);\
-    TOSTR_OPERAND(_op,type,P,P);\
-    TOSTR_OPERAND(_op,type,P,Q);\
-    TOSTR_OPERAND_##postfix(_op,type,R);\
-    TOSTR_OPERAND_##postfix(_op,type,Q);\
-
-#define TOSTR_LVALUE_FLOAT_V(_op,type,postfix)\
-    TOSTR_LVALUE_FLOAT(_op,type,postfix)\
-    TOSTR_OPERAND(_op,type,V,R);\
-    TOSTR_OPERAND(_op,type,V,P);\
-    TOSTR_OPERAND(_op,type,V,Q);\
-
-#define TOSTR_OP1(op)\
-    TOSTR_OPERAND_PQR(op,B,)\
-    TOSTR_OPERAND_PQR(op,S,)\
-    TOSTR_OPERAND_PQR(op,L,)\
-    TOSTR_OPERAND_PQR(op,D,)\
-
-#define TOSTR_OP1_DV(op)\
-    TOSTR_OPERAND_PQR(op,B,)\
-    TOSTR_OPERAND_PQR(op,S,)\
-    TOSTR_OPERAND_PQR(op,L,)\
-    TOSTR_OPERAND_PQR(op,D,)\
-    TOSTR_OPERAND(op,D,V,)\
-
-#define TOSTR_OP1_COND(op)\
-    TOSTR_OPERAND_PQR(op##B,B,)\
-    TOSTR_OPERAND_PQR(op##S,B,)\
-    TOSTR_OPERAND_PQR(op##L,B,)\
-    TOSTR_OPERAND_PQR(op##D,B,)\
-
-#define TOSTR_OP1_COND_LD(op)\
-    TOSTR_OPERAND_PQR(op##L,B,)\
-    TOSTR_OPERAND_PQR(op##D,B,)\
-
-#define TOSTR_OP1_PQRV(op)\
-    TOSTR_OPERAND_PQRV(op,B,)\
-    TOSTR_OPERAND_PQRV(op,S,)\
-    TOSTR_OPERAND_PQRV(op,L,)\
-    TOSTR_OPERAND_PQRV(op,D,)\
-
-#define TOSTR_OP1_ANY(op)\
-    TOSTR_OPERAND_PQR(op,L,)\
-    TOSTR_OPERAND_PQR(op,D,)\
-    TOSTR_OPERAND(op##O,L,,V)\
-    TOSTR_OPERAND(op##OU,D,,V)\
-    TOSTR_OPERAND(op##OI,D,,V)\
-    TOSTR_OPERAND(op##OF,D,,V)\
-
-#define TOSTR_OP2(op,postfix)\
-    TOSTR_LVALUE(op,B,postfix)\
-    TOSTR_LVALUE(op,S,postfix)\
-    TOSTR_LVALUE(op,L,postfix)\
-    TOSTR_LVALUE(op,D,postfix)\
-
-#define TOSTR_OP2_V(op,postfix)\
-    TOSTR_LVALUE_V(op,B,postfix)\
-    TOSTR_LVALUE_V(op,S,postfix)\
-    TOSTR_LVALUE_V(op,L,postfix)\
-    TOSTR_LVALUE_FLOAT_V(op,D,postfix)\
-
-#define TOSTR_OP2_SLD(op,postfix)\
-    TOSTR_LVALUE(op,S,postfix)\
-    TOSTR_LVALUE(op,L,postfix)\
-    TOSTR_LVALUE_FLOAT(op,D,postfix)\
-
-#define TOSTR_OP2_BLD(op,postfix)\
-    TOSTR_LVALUE(op,B,postfix)\
-    TOSTR_LVALUE(op,L,postfix)\
-    TOSTR_LVALUE_FLOAT(op,D,postfix)\
-
-#define TOSTR_OP2_BSD(op,postfix)\
-    TOSTR_LVALUE(op,B,postfix)\
-    TOSTR_LVALUE(op,S,postfix)\
-    TOSTR_LVALUE_FLOAT(op,D,postfix)\
-
-#define TOSTR_OP2_BSL(op,postfix)\
-    TOSTR_LVALUE(op,B,postfix)\
-    TOSTR_LVALUE(op,S,postfix)\
-    TOSTR_LVALUE(op,L,postfix)\
-
-#define TOSTR_OP2_LD(op,postfix)\
-    TOSTR_LVALUE(op,L,postfix)\
-    TOSTR_LVALUE_FLOAT(op,D,postfix)\
-
-#define TOSTR_OP2_L(op,postfix)\
-    TOSTR_LVALUE(op,L,postfix)\
-
-#define TOSTR_OP2_W(op,postfix)\
-    TOSTR_LVALUE(op,W,postfix)\
-
-#define TOSTR_OP2_D(op,postfix)\
-    TOSTR_LVALUE(op,D,postfix)\
-
-#define TOSTR_OP2V_W(op,postfix)\
-    TOSTR_LVALUE(op,W,postfix)\
-    TOSTR_OPERAND_##postfix(op,W,V)
-
-#define TOSTR_OP3_W(op,postfix)\
-    TOSTR_LVALUE(op,WP,postfix)\
-    TOSTR_LVALUE(op,WQ,postfix)\
-    TOSTR_LVALUE(op,WR,postfix)\
+#define STRING3(type, arg, op1, op2, op3)\
+    case CX_VM_##arg##_##type##op1##op2##op3: result = cx_vmOp_toString(result, &p[i], #arg, #type, #op1, #op2, #op3); break;\
+/* ---- */
 
 struct cx_vm_context {
     cx_vmOp *pc; /* Instruction counter */
@@ -1202,113 +1014,8 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
             p[i].opKind = p[i].op; /* Cache actual opKind for debugging purposes */
 #endif
             switch(p[i].op) {
-                TOJMP_OP2(SET,PQRV);
-                case CX_VM_SETX_WRR: p[i].op = toJump(SETX_WRR); break;
-                TOJMP_OP2_W(SETREF,PQRV);
-                TOJMP_OP2_W(SETSTR,PQRV);
-                TOJMP_OP2_W(SETSTRDUP,PQRV);
-                case CX_VM_ZERO_WRV: p[i].op = toJump(ZERO_WRV); break;
-                case CX_VM_INIT_WRV: p[i].op = toJump(INIT_WRV); break;
-
-                TOJMP_OP1(INC);
-                TOJMP_OP1(DEC);
-
-                TOJMP_OP2(ADDI,PQRV);
-                TOJMP_OP2(SUBI,PQRV);
-                TOJMP_OP2(MULI,PQRV);
-                TOJMP_OP2(DIVI,PQRV);
-                TOJMP_OP2(MODI,PQRV);
-
-                TOJMP_OP2_LD(ADDF,PQRV);
-                TOJMP_OP2_LD(SUBF,PQRV);
-                TOJMP_OP2_LD(MULF,PQRV);
-                TOJMP_OP2_LD(DIVF,PQRV);
-
-                TOJMP_OP2(AND,PQRV);
-                TOJMP_OP2(XOR,PQRV);
-                TOJMP_OP2(OR,PQRV);
-                TOJMP_OP1(NOT);
-
-                TOJMP_OP1_PQRV(STAGE1);
-                TOJMP_OP2_V(STAGE2,PQRV);
-                case CX_VM_STAGE2_DVV: p[i].op = toJump(STAGE2_DVV); break;
-
-                TOJMP_OP1_COND(CAND);
-                TOJMP_OP1_COND(COR);
-                TOJMP_OP1_COND(CNOT);
-                TOJMP_OP1_COND(CEQ);
-                TOJMP_OP1_COND(CNEQ);
-
-                TOJMP_OP1_COND(CGTI);
-                TOJMP_OP1_COND(CLTI);
-                TOJMP_OP1_COND(CGTEQI);
-                TOJMP_OP1_COND(CLTEQI);
-
-                TOJMP_OP1_COND(CGTU);
-                TOJMP_OP1_COND(CLTU);
-                TOJMP_OP1_COND(CGTEQU);
-                TOJMP_OP1_COND(CLTEQU);
-
-                TOJMP_OP1_COND_LD(CGTF);
-                TOJMP_OP1_COND_LD(CLTF);
-                TOJMP_OP1_COND_LD(CGTEQF);
-                TOJMP_OP1_COND_LD(CLTEQF);
-
-                TOJMP_OPERAND_PQR(CEQSTR,B,);
-                TOJMP_OPERAND_PQR(CNEQSTR,B,);
-
-                TOJMP_OP1(JEQ);
-                TOJMP_OP1(JNEQ);
-                case CX_VM_JUMP: p[i].op = toJump(JUMP); break;
-
-                case CX_VM_MEMBER: p[i].op = toJump(MEMBER); break;
-
-                TOJMP_OPERAND_PQRV(ELEMA,W,R);
-                TOJMP_OPERAND_PQRV(ELEMS,W,R);
-                TOJMP_OPERAND_PQRV(ELEML,W,R);
-                TOJMP_OPERAND_PQRV(ELEMLX,W,R);
-                TOJMP_OPERAND_PQRV(ELEMM,W,R);
-                TOJMP_OPERAND_PQRV(ELEMMX,W,R);
-                TOJMP_OP2_W(ITER_SET,PQRV);
-                TOJMP_OP3_W(ITER_NEXT,PQRV);
-
-                TOJMP_OP1_PQRV(PUSH);
-                TOJMP_OP1(PUSHX);
-                TOJMP_OPERAND_PQRV(PUSHANY,W,);
-                TOJMP_OP1_ANY(PUSHANYX);
-
-                TOJMP_OPERAND_PQR(CALL,W,);
-                TOJMP_OPERAND_PQR(CALLVM,W,);
-                case CX_VM_CALLVOID: p[i].op = toJump(CALLVOID); break;
-                case CX_VM_CALLVMVOID: p[i].op = toJump(CALLVMVOID); break;
-                TOJMP_OP2_W(CALLPTR,PQR)
-                TOJMP_OP1(RET);
-                TOJMP_OPERAND_PQR(RETCPY,L,);
-
-                TOJMP_OP2_W(CAST,PQRV);
-                TOJMP_OP2(PCAST,PQR);
-
-                TOJMP_OP2V_W(STRCAT,PQRV);
-                TOJMP_OP2_W(STRCPY,PQRV);
-
-                TOJMP_LVALUE(NEW,W,PQRV);
-                TOJMP_OPERAND_PQRV(DEALLOC,W,);
-                TOJMP_OPERAND_PQRV(KEEP,W,);
-                TOJMP_OPERAND_PQRV(FREE,W,);
-
-                TOJMP_OPERAND_PQRV(DEFINE,W,);
-
-                TOJMP_OPERAND_PQRV(UPDATE,W,);
-                TOJMP_OPERAND_PQRV(UPDATEBEGIN,W,);
-                TOJMP_OPERAND_PQRV(UPDATEEND,W,);
-                TOJMP_OP2_W(UPDATEFROM,PQR);
-                TOJMP_OP2_W(UPDATEENDFROM,PQR);
-                TOJMP_OPERAND_PQRV(UPDATECANCEL,W,);
-
-                TOJMP_OPERAND_PQRV(WAITFOR,W,);
-                TOJMP_OP2_W(WAIT,PQRV);
-
-                case CX_VM_STOP: p[i].op = toJump(STOP); break;
+                /* ---- Expand jump macro's */
+                OPS_EXP(JUMP)
                 default:
                     cx_assert(0, "invalid instruction in sequence %d @ %d", p[i].op, i);
                     break;
@@ -1393,10 +1100,12 @@ char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
         abort();
     }
 #endif
+    /* Prefix '...' to string if the code section is not at the start */
     if (addr && ((addr - p) > shown)) {
         result = strappend(result, "  ...\n");
     }
     
+    /* Loop instructions, prefix address */
     for(i=0; i<program->size;i++) {
         cx_int32 diff = addr - &p[i];
         if (!addr || ((diff <= shown) && (diff >= -shown))) {
@@ -1421,118 +1130,15 @@ char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
             kind = p[i].op;
     #endif
             switch(kind) {
-                TOSTR_OP2(SET,PQRV);
-                TOSTR_OP2_W(SETREF,PQRV);
-                TOSTR_OP2_W(SETSTR,PQRV);
-                TOSTR_OP2_W(SETSTRDUP,PQRV);
-                case CX_VM_SETX_WRR: result = strappend(result, "SETX_WRR %u %u\n", p[i].ic.b._1, p[i].ic.b._2); break;
-                case CX_VM_ZERO_WRV: result = strappend(result, "ZERO_WRV %u %u\n", p[i].ic.b._1, p[i].lo.w); break;
-                case CX_VM_INIT_WRV: result = strappend(result, "INIT_WRV %u %u\n", p[i].ic.b._1, p[i].lo.w); break;
-
-                TOSTR_OP1(INC);
-                TOSTR_OP1(DEC);
-
-                TOSTR_OP2(ADDI,PQRV);
-                TOSTR_OP2(SUBI,PQRV);
-                TOSTR_OP2(MULI,PQRV);
-                TOSTR_OP2(DIVI,PQRV);
-                TOSTR_OP2(MODI,PQRV);
-
-                TOSTR_OP2_LD(ADDF,PQRV);
-                TOSTR_OP2_LD(SUBF,PQRV);
-                TOSTR_OP2_LD(MULF,PQRV);
-                TOSTR_OP2_LD(DIVF,PQRV);
-
-                TOSTR_OP2(AND,PQRV);
-                TOSTR_OP2(XOR,PQRV);
-                TOSTR_OP2(OR,PQRV);
-                TOSTR_OP1(NOT);
-
-                TOSTR_OP1_DV(STAGE1);
-                TOSTR_OP2_V(STAGE2,PQRV);
-                case CX_VM_STAGE2_DVV: result = strappend(result, "STAGE2_DVV %u %u\n", p[i].lo.w, p[i].hi.w); break;
-
-                TOSTR_OP1_COND(CAND);
-                TOSTR_OP1_COND(COR);
-                TOSTR_OP1_COND(CNOT);
-                TOSTR_OP1_COND(CEQ);
-                TOSTR_OP1_COND(CNEQ);
-
-                TOSTR_OP1_COND(CGTI);
-                TOSTR_OP1_COND(CLTI);
-                TOSTR_OP1_COND(CGTEQI);
-                TOSTR_OP1_COND(CLTEQI);
-
-                TOSTR_OP1_COND(CGTU);
-                TOSTR_OP1_COND(CLTU);
-                TOSTR_OP1_COND(CGTEQU);
-                TOSTR_OP1_COND(CLTEQU);
-
-                TOSTR_OP1_COND_LD(CGTF);
-                TOSTR_OP1_COND_LD(CLTF);
-                TOSTR_OP1_COND_LD(CGTEQF);
-                TOSTR_OP1_COND_LD(CLTEQF);
-
-                TOSTR_OPERAND_PQR(CEQSTR,B,);
-                TOSTR_OPERAND_PQR(CNEQSTR,B,);
-
-                TOSTR_OP1(JEQ);
-                TOSTR_OP1(JNEQ);
-                case CX_VM_JUMP: result = strappend(result, "JUMP %u\n", p[i].lo.w); break;
-
-                case CX_VM_MEMBER: result = strappend(result, "MEMBER %u %u %u\n", p[i].ic.b._1, p[i].ic.b._2, p[i].lo.w); break;
-                TOSTR_OPERAND_PQRV(ELEMA,W,R);
-                TOSTR_OPERAND_PQRV(ELEMS,W,R);
-                TOSTR_OPERAND_PQRV(ELEML,W,R);
-                TOSTR_OPERAND_PQRV(ELEMLX,W,R);
-                TOSTR_OPERAND_PQRV(ELEMM,W,R);
-                TOSTR_OPERAND_PQRV(ELEMMX,W,R);
-
-                TOSTR_OP2_W(ITER_SET,PQRV);
-                TOSTR_OP3_W(ITER_NEXT,PQRV);
-                    
-                TOSTR_OP1_PQRV(PUSH);
-                TOSTR_OP1(PUSHX);
-                TOSTR_OPERAND_PQRV(PUSHANY,W,);
-                TOSTR_OP1_ANY(PUSHANYX);
-
-                TOSTR_OPERAND_PQR(CALL,W,);
-                TOSTR_OPERAND_PQR(CALLVM,W,);
-                case CX_VM_CALLVOID: result = strappend(result, "CX_VM_CALLVOID %u\n", p[i].hi.w); break;
-                case CX_VM_CALLVMVOID: result = strappend(result, "CX_VM_CALLVMVOID %u\n", p[i].hi.w); break;
-                TOSTR_OP2_W(CALLPTR,PQR);
-                TOSTR_OP1(RET);
-                TOSTR_OPERAND_PQR(RETCPY,L,);
-
-                TOSTR_OP2_W(CAST,PQRV);
-                TOSTR_OP2(PCAST,PQR);
-                TOSTR_OP2V_W(STRCAT,PQRV);
-                TOSTR_OP2_W(STRCPY,PQRV);
-
-                TOSTR_LVALUE(NEW,W,PQRV);
-                TOSTR_OPERAND_PQR(DEALLOC,W,);
-                TOSTR_OPERAND_PQR(KEEP,W,);
-                TOSTR_OPERAND_PQR(FREE,W,);
-
-                TOSTR_OPERAND_PQRV(DEFINE,W,);
-
-                TOSTR_OPERAND_PQRV(UPDATE,W,);
-                TOSTR_OPERAND_PQRV(UPDATEBEGIN,W,);
-                TOSTR_OPERAND_PQRV(UPDATEEND,W,);
-                TOSTR_OP2_W(UPDATEFROM,PQR);
-                TOSTR_OP2_W(UPDATEENDFROM,PQR);
-                TOSTR_OPERAND_PQRV(UPDATECANCEL,W,);
-
-                TOSTR_OPERAND_PQRV(WAITFOR,W,);
-                TOSTR_OP2_W(WAIT,PQRV);
-
-                case CX_VM_STOP: result = strappend(result, "STOP\n"); break;
+                /* ---- Expand string conversion macro's */
+                OPS_EXP(STRING)
                 default:
                     cx_assert(0, "invalid instruction %d in sequence @ %d", p[i].op, i);
                     break;
             }
         }
     }
+    /* Append '...' to string if the code section is not at the end */
     if (addr && ((&p[program->size-1] - addr) > 5)) {
         result = strappend(result, "  ...\n");
     }
@@ -1591,7 +1197,7 @@ cx_vmOp *cx_vmProgram_addOp(cx_vmProgram program, uint32_t line) {
     memset(&program->debugInfo[program->size-1], 0, sizeof(cx_vmDebugInfo));
     program->debugInfo[program->size-1].line = line;
     
-    /* Return potentially realloc'd program */
+    /* Return potentially reallocd program */
     return &program->program[program->size-1];
 }
 
@@ -1620,4 +1226,3 @@ void cx_call_vm(cx_function f, cx_void* result, void* args) {
 void cx_callDestruct_vm(cx_function f) {
     cx_vmProgram_free((cx_vmProgram)f->implData);
 }
-
