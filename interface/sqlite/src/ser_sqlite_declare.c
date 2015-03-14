@@ -1,4 +1,3 @@
-
 #include <inttypes.h>
 #include <stdio.h>
 #include <string.h>
@@ -77,11 +76,11 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
     CX_UNUSED(s);
     cx_object *o = cx_valueObject(v);
     cx_sqlite_ser_t *data = userData;
-    cx_string name = cx_nameof(o);
-    int parentId = NULL;
+    // cx_string name = cx_nameof(o);
+    int parentId = 0; /* todo obtain parent id */
     cx_string parentIdStr;
     {
-        if (parentId != NULL) {
+        if (parentId != 0) {
             size_t length;
             length = snprintf(NULL, 0, "%d", parentId);
             if (length < 1) {

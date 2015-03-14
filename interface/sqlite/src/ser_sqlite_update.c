@@ -1,4 +1,3 @@
-
 #include <inttypes.h>
 #include <stdio.h>
 #include <string.h>
@@ -160,9 +159,6 @@ static cx_int16 cx_ser_reference(cx_serializer s, cx_value *v, void *userData) {
     CX_UNUSED(v);
     CX_UNUSED(userData);
     return 0;
-finished:
-    return 1;
-
 }
 
 static cx_int16 cx_ser_item(cx_serializer s, cx_value *v, void *userData) {
@@ -170,10 +166,6 @@ static cx_int16 cx_ser_item(cx_serializer s, cx_value *v, void *userData) {
     CX_UNUSED(v);
     CX_UNUSED(userData);
     return 0;
-error:
-    return -1;
-finished:
-    return 1;
 }
 
 static cx_int16 cx_ser_composite(cx_serializer s, cx_value* v, void* userData) {
@@ -198,8 +190,6 @@ static cx_int16 cx_ser_composite(cx_serializer s, cx_value* v, void* userData) {
     return 0;
 error:
     return -1;
-finished:
-    return 1;
 }
 
 static cx_int16 cx_ser_base(cx_serializer s, cx_value* v, void* userData) {
@@ -207,10 +197,6 @@ static cx_int16 cx_ser_base(cx_serializer s, cx_value* v, void* userData) {
     CX_UNUSED(v);
     CX_UNUSED(userData);
     return 0;
-error:
-    return -1;
-finished:
-    return 1;
 }
 
 /*
@@ -228,8 +214,6 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
         goto finished;
     }
     return 0;
-error:
-    return -1;
 finished:
     return 1;
 }

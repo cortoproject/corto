@@ -1,9 +1,10 @@
 #include "cx_string.h"
 
 /*
- * Writes at most `n` - 1 bytes from `in` into `out`.
+ * Writes at most `n` - 1 bytes from `in` into `out`, plus a null character.
  * Returns the total length that should have been written without the null character.
- * Escapes all single quotes as double quotes.
+ * Escapes all single quotes as two single quotes.
+ * https://www.sqlite.org/lang_expr.html
  */
 size_t escsqlstr(char *out, size_t n, const char *in) {
     size_t len = 0;

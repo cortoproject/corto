@@ -84,7 +84,11 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData
     value = cx_valueValue(info);
     cx_primitiveKind kind = cx_primitive(type)->kind;
 
-    if (!cx_ser_appendstr(data, "(\"Value\") VALUES (")) {
+    if (!cx_ser_appendstr(data, "(\"ObjectId\", \"Value\") VALUES (")) {
+        goto finished;
+    }
+
+    if (!cx_ser_appendstr(data, "NULL, ")) {
         goto finished;
     }
 
@@ -103,43 +107,52 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData
 
     switch (cx_primitive(type)->kind) {
         case CX_BINARY:
-            if (!cx_ser_appendstr(data, "\"@B %s\"", valueString)) {
+            if (!cx_ser_appendstr(data, "%s", "0")) {
                 goto finished;
             }
             break;
         case CX_BITMASK:
-            if (!cx_ser_appendstr(data, "\"@M %s\"", valueString)) {
+            if (!cx_ser_appendstr(data, "%s", "0")) {
                 goto finished;
             }
             break;
         case CX_ENUM:
-            if (!cx_ser_appendstr(data, "\"@E %s\"", valueString)) {
+            if (!cx_ser_appendstr(data, "%s", "0")) {
                 goto finished;
             }
             break;
         case CX_CHARACTER:
         case CX_TEXT:
-            // TODO escape @'s and other characters
             if (!*(cx_string *)value) {
-                if (!cx_ser_appendstr(data, "null")) {
+                if (!cx_ser_appendstr(data, "NULL")) {
                     goto finished;
                 }
             } else {
-                if (!cx_ser_appendstr(data, "\"")) {
+                if (!cx_ser_appendstr(data, "'")) {
                     goto finished;
                 }
-                if (*valueString == '@' && !cx_ser_appendstr(data, "@")) {
+                size_t length = escsqlstr(NULL, 0, valueString);
+                char *escapedString = cx_malloc(length + 1);
+                escsqlstr(escapedString, length, valueString);
+                if (!cx_ser_appendstr(data, escapedString)) {
                     goto finished;
                 }
-                if (!cx_ser_appendstr(data, "%s\"", valueString)) {
+                cx_dealloc(escapedString);
+                if (!cx_ser_appendstr(data, "'")) {
                     goto finished;
                 }
             }
             break;
-        default:
+        case CX_INTEGER:
+        case CX_FLOAT:
+        case CX_BOOLEAN:
+        case CX_UINTEGER:
             if (!cx_ser_appendstr(data, valueString)) {
                 goto finished;
             }
+            break;
+        case CX_ALIAS:
+            cx_critical("Cannot serialize alias");
             break;
     }
     cx_dealloc(valueString);
@@ -159,9 +172,6 @@ static cx_int16 cx_ser_reference(cx_serializer s, cx_value *v, void *userData) {
     CX_UNUSED(v);
     CX_UNUSED(userData);
     return 0;
-finished:
-    return 1;
-
 }
 
 static cx_int16 cx_ser_item(cx_serializer s, cx_value *v, void *userData) {
@@ -169,10 +179,6 @@ static cx_int16 cx_ser_item(cx_serializer s, cx_value *v, void *userData) {
     CX_UNUSED(v);
     CX_UNUSED(userData);
     return 0;
-error:
-    return -1;
-finished:
-    return 1;
 }
 
 static cx_int16 cx_ser_composite(cx_serializer s, cx_value* v, void* userData) {
@@ -196,8 +202,6 @@ static cx_int16 cx_ser_composite(cx_serializer s, cx_value* v, void* userData) {
     return 0;
 error:
     return -1;
-finished:
-    return 1;
 }
 
 static cx_int16 cx_ser_base(cx_serializer s, cx_value* v, void* userData) {
@@ -205,10 +209,6 @@ static cx_int16 cx_ser_base(cx_serializer s, cx_value* v, void* userData) {
     CX_UNUSED(v);
     CX_UNUSED(userData);
     return 0;
-error:
-    return -1;
-finished:
-    return 1;
 }
 
 /*
@@ -217,6 +217,8 @@ finished:
  */
 static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
     cx_sqlite_ser_t *data = userData;
+    cx_object *o = cx_valueObject(v);
+    // TODO think about what to do with types... will we define types
     if (!cx_ser_appendstr(data, "INSERT INTO \"%s\"",
             cx_nameof(cx_valueType(v)))) {
         goto finished;
@@ -225,9 +227,10 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
     if (!cx_ser_appendstr(data, ";")) {
         goto finished;
     }
+    if (cx_instanceof(cx_typeof(cx_type_o), o)) {
+        
+    }
     return 0;
-error:
-    return -1;
 finished:
     return 1;
 }
