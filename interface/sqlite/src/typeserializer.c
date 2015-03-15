@@ -149,7 +149,7 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
     cx_sqlite_ser_t *data = userData;
     cx_type type = cx_valueType(v);
     // TODO put fully scoped name with underscores
-    if (!cx_ser_appendstr(data, "CREATE TABLE \"%s\" (",
+    if (!cx_ser_appendstr(data, "CREATE TABLE IF NOT EXISTS \"%s\" (",
             cx_nameof(cx_valueType(v)))) {
         goto finished;
     }
