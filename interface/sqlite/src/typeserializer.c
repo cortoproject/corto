@@ -89,52 +89,95 @@ static cx_int16 cx_ser_item(cx_serializer s, cx_value *v, void *userData) {
         }
     }
     cx_string memberName = cx_nameof(v->is.member.t);
+    if (!cx_ser_appendstr(data, "\"%s\"", memberName)) {
+        goto finished;
+    }
+    if (type->kind != CX_VOID) {
+        if (!cx_ser_appendstr(data, " ")) {
+            goto finished;
+        }
+    }
     switch (type->kind) {
         case CX_PRIMITIVE:
             switch (cx_primitive(type)->kind) {
                 case CX_CHARACTER:
+                    if (!cx_ser_appendstr(data, "CHAR")) {
+                        goto finished;
+                    }
+                    break;
                 case CX_TEXT:
-                    if (!cx_ser_appendstr(data, "\"%s\" TEXT", memberName)) {
+                    if (!cx_ser_appendstr(data, "TEXT")) {
+                        goto finished;
+                    }
+                    break;
+                case CX_BOOLEAN:
+                    if (!cx_ser_appendstr(data, "BOOL")) {
+                        goto finished;
+                    }
+                    break;
+                case CX_BITMASK:
+                    if (!cx_ser_appendstr(data, "BITMASK_INT")) {
                         goto finished;
                     }
                     break;
                 case CX_BINARY:
-                case CX_BITMASK:
-                case CX_BOOLEAN:
+                    if (!cx_ser_appendstr(data, "BINARY_INT")) {
+                        goto finished;
+                    }
+                    break;
                 case CX_INTEGER:
+                    if (!cx_ser_appendstr(data, "INT")) {
+                        goto finished;
+                    }
+                    break;
                 case CX_UINTEGER:
-                    if (!cx_ser_appendstr(data, "\"%s\" INTEGER", memberName)) {
+                    if (!cx_ser_appendstr(data, "UINT")) {
                         goto finished;
                     }
                     break;
                 case CX_FLOAT:
-                    if (!cx_ser_appendstr(data, "\"%s\" REAL", memberName)) {
+                    if (!cx_ser_appendstr(data, "FLOAT")) {
                         goto finished;
                     }
                     break;
                 case CX_ENUM:
-                    if (!cx_ser_appendstr(data, "\"%s\" INTEGER REFERENCES \"%sConstant\"",
-                            memberName, memberName)) {
+                    /* if (!cx_ser_appendstr(data, "\"%s\" INTEGER REFERENCES \"%sConstant\"", */
+                    if (!cx_ser_appendstr(data, "ENUM_INT")) {
                         goto finished;
                     }
                     break;
                 case CX_ALIAS:
-                    cx_critical("CX_ALIAS not supported");
+                    if (!cx_ser_appendstr(data, "ALIAS")) {
+                        goto finished;
+                    }
+                    cx_warning("-- CX_ALIAS not supported");
                     break;
             }
             break;
         case CX_COMPOSITE:
-            cx_serializeValue(s, v, userData);
+            if (!cx_ser_appendstr(data, "COMPOSITE")) {
+                goto finished;
+            }
+            // cx_serializeValue(s, v, userData);
             break;
         case CX_COLLECTION:
+            if (!cx_ser_appendstr(data, "COLLECTION")) {
+                goto finished;
+            }
             break;
         case CX_VOID:
             break;
         case CX_ITERATOR:
-            cx_warning("CX_ITERATOR not serializable");
+            if (!cx_ser_appendstr(data, "ITERATOR")) {
+                goto finished;
+            }
+            cx_warning("-- CX_ITERATOR should not be serialized");
             break;
         case CX_ANY:
-            cx_critical("CX_ANY not serializable");
+            if (!cx_ser_appendstr(data, "ANY")) {
+                goto finished;
+            }
+            cx_critical("-- CX_ANY should not be serialized");
             break;
     }
     data->itemCount++;
@@ -144,25 +187,29 @@ finished:
 }
 
 
-
 static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
     cx_sqlite_ser_t *data = userData;
     cx_type type = cx_valueType(v);
     // TODO put fully scoped name with underscores
-    if (!cx_ser_appendstr(data, "CREATE TABLE IF NOT EXISTS \"%s\" (",
-            cx_nameof(cx_valueType(v)))) {
+    cx_id fullname;
+    cx_fullname(cx_valueType(v), fullname);
+    // printf("*** %s ***\n", fullname);
+    if (!cx_ser_appendstr(data, "CREATE TABLE IF NOT EXISTS \"%s\""
+            " (\"ObjectId\" INTEGER",
+            fullname)) {
+            // cx_nameof(cx_valueType(v)))) {
         goto finished;
     }
     switch (type->kind) {
         case CX_PRIMITIVE:
             switch (cx_primitive(type)->kind) {
                 case CX_ENUM:
-                    if (!cx_ser_appendstr(data, "\"Value\" INTEGER")) {
+                    if (!cx_ser_appendstr(data, ", \"Value\" INTEGER")) {
                         goto finished;
                     }
                     break;
                 case CX_BITMASK:
-                    if (!cx_ser_appendstr(data, "\"Value\" INTEGER")) {
+                    if (!cx_ser_appendstr(data, ", \"Value\" INTEGER")) {
                         goto finished;
                     }
                     break;
@@ -171,17 +218,20 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
             }
             break;
         case CX_COMPOSITE:
+            if (!cx_ser_appendstr(data, ", ")) {
+                goto finished;
+            }
             cx_serializeValue(s, v, data);
             break;
         case CX_COLLECTION:
-            cx_warning("collection serialization not yet supported");
+            cx_warning("-- collection serialization not yet supported");
             break;
         case CX_VOID:
             break;
         case CX_ANY:
             break;
         case CX_ITERATOR:
-            cx_critical("CX_ITERATOR not serializable");
+            cx_critical("-- CX_ITERATOR not serializable");
             break;
     }
     if (!cx_ser_appendstr(data, ");")) {

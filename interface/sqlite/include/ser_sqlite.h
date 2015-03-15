@@ -19,3 +19,5 @@ struct cx_serializer_s cx_sqlite_update_ser(cx_modifier access, cx_operatorKind 
 struct cx_serializer_s cx_type_ser(cx_modifier access, cx_operatorKind accessKind, cx_serializerTraceKind trace);
 
 size_t escsqlstr(char *out, size_t n, const char *in);
+
+// int cx_sqlite_solveName(cx_object o, cx_id out);
