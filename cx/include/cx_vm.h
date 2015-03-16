@@ -10,7 +10,7 @@
 
 #include "stdint.h"
 #include "cx_object.h"
-#include "cx_vm_expansion.h"
+#include "cx_vm_def.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -47,7 +47,7 @@ extern "C" {
 
 /* ---- Enumeration containing all instruction constants */
 typedef enum cx_vmOpKind {
-    OPS_EXP(CONST)
+    OPS_EXP(CONST) /* See cx_vm_def.h */
 } cx_vmOpKind;
 
 

@@ -142,13 +142,13 @@ typedef struct cx_stringConcatCache {
 #define INC(type,code)\
     INC_##code:\
         fetchOp1(INC,code);\
-        ++ op_##code;\
+        ++ op1_##code;\
         next();\
 
 #define DEC(type,code)\
     DEC_##code:\
         fetchOp1(DEC,code);\
-        -- op_##code;\
+        -- op1_##code;\
         next();\
 
 /* Integer arithmetic */
@@ -255,7 +255,7 @@ typedef union Di2f_t {
 #define NOT(type,code)\
     NOT_##code:\
         fetchOp1(NOT,code);\
-        op_##code = ~op_##code;\
+        op1_##code = ~op1_##code;\
         next();\
 
 #define SHIFT_LEFT(type, code)\
@@ -274,7 +274,7 @@ typedef union Di2f_t {
 #define STAGE1(type,code)\
     STAGE1_##code:\
         fetchOp1(STAGE1,code);\
-        stage1_##type = op_##code;\
+        stage1_##type = op1_##code;\
         next();\
 
 #define STAGE2(type,code)\
@@ -291,7 +291,7 @@ typedef union Di2f_t {
 #define COND_OP_STAGETYPE(op, type, code, stageType, operator, cast)\
     op##_##code: \
         fetchOp1(op,code);\
-        op_##code = (cast)stage1_##stageType operator (cast)stage2_##stageType;\
+        op1_##code = (cast)stage1_##stageType operator (cast)stage2_##stageType;\
         next();\
 
 #define COND_OP_LD(op,type,code,operator,sign)\
@@ -307,7 +307,7 @@ typedef union Di2f_t {
 #define COND_OP1_STAGETYPE(op, type, code, stageType, operator)\
     op##_##code:\
         fetchOp1(op,code);\
-        op_##code = operator stage1_##stageType;\
+        op1_##code = operator stage1_##stageType;\
         next();\
 
 #define COND_OP1(op,type,code,operator)\
@@ -345,9 +345,9 @@ typedef union Di2f_t {
     CEQSTR_##code:\
         fetchOp1(CEQSTR,code);\
         if (stage1_W && stage2_W) {\
-            op_##code = !strcmp((cx_string)stage1_W, (cx_string)stage2_W);\
+            op1_##code = !strcmp((cx_string)stage1_W, (cx_string)stage2_W);\
         } else {\
-            op_##code = stage1_W == stage2_W;\
+            op1_##code = stage1_W == stage2_W;\
         }\
         next();
 
@@ -355,43 +355,43 @@ typedef union Di2f_t {
     CNEQSTR_##code:\
         fetchOp1(CNEQSTR,code);\
         if (stage1_W && stage2_W) {\
-            op_##code = strcmp((cx_string)stage1_W, (cx_string)stage2_W) != 0;\
+            op1_##code = strcmp((cx_string)stage1_W, (cx_string)stage2_W) != 0;\
         } else {\
-            op_##code = stage1_W != stage2_W;\
+            op1_##code = stage1_W != stage2_W;\
         }\
         next();
 
 #define JEQ(type,code)\
     JEQ_##code:\
-        fetch_##code##L;\
-        fetch1_##code##L;\
-        if (op1_##code##L) {\
-            fetch2_##code##L;\
-            jump(op2_##code##L);\
+        fetch_##code;\
+        fetch1_##code;\
+        if (op1_##code) {\
+            fetch2_##code;\
+            jump(op2_##code);\
         }\
         next();\
 
 #define JNEQ(type,code)\
     JNEQ_##code:\
-        fetch_##code##L;\
-        fetch1_##code##L;\
-        if (op1_##code##L) {\
+        fetch_##code;\
+        fetch1_##code;\
+        if (op1_##code) {\
             next();\
         }\
-        fetch2_##code##L;\
-        jump(op2_##code##L);\
+        fetch2_##code;\
+        jump(op2_##code);\
 
 #define PUSH(type,code)\
     PUSH_##code:\
         fetchOp1(PUSH,code);\
-        *(type##_t*)c.sp = op_##code;\
+        *(type##_t*)c.sp = op1_##code;\
         c.sp = CX_OFFSET(c.sp, sizeof(type##_t));\
         next();\
 
 #define PUSHX(type,code)\
     PUSHX_##code:\
         fetchOp1(PUSHX,code);\
-        *(cx_word*)c.sp = (cx_word)&op_##code;\
+        *(cx_word*)c.sp = (cx_word)&op1_##code;\
         c.sp = CX_OFFSET(c.sp, sizeof(cx_word));\
         next();\
 
@@ -400,17 +400,18 @@ typedef union Di2f_t {
     fetchOp1(PUSHANY,code);\
     fetchHi();\
     ((cx_any*)c.sp)->type = (cx_type)typearg;\
-    ((cx_any*)c.sp)->value = (void*)deref _pc op##v##_##code;\
+    ((cx_any*)c.sp)->value = (void*)deref _pc op1##v##_##code;\
     ((cx_any*)c.sp)->owner = FALSE;\
     c.sp = CX_OFFSET(c.sp, sizeof(cx_any));\
     next();\
 
 #define PUSHANYX(_type,code)   _PUSHANY(X,_type,code,,&,c.hi.w,,)
 
-#define PUSHANYXO(_type,code)  _PUSHANY(XO,_type,code,,&,c.hi.w,c.pc->,x)
-#define PUSHANYXOU(_type,code) _PUSHANY(XO,_type,code,U,&,cx_uint64_o,c.pc->,x)
-#define PUSHANYXOI(_type,code) _PUSHANY(XO,_type,code,I,&,cx_int64_o,c.pc->,x)
-#define PUSHANYXOF(_type,code) _PUSHANY(XO,_type,code,F,&,cx_float64_o,c.pc->,x)
+#define PUSHANYV(_type,code)  _PUSHANY(V,_type,code,,&,c.hi.w,c.pc->,x)
+
+#define PUSHANYVTU(_type,code) _PUSHANY(VT,_type,code,U,&,cx_uint64_o,c.pc->,x)
+#define PUSHANYVTI(_type,code) _PUSHANY(VT,_type,code,I,&,cx_int64_o,c.pc->,x)
+#define PUSHANYVTF(_type,code) _PUSHANY(VT,_type,code,F,&,cx_float64_o,c.pc->,x)
 
 #define PUSHANY(_type,code)    _PUSHANY(,_type,code,,(cx_word),c.hi.w,,)
 #define PUSHANYU(_type,code)   _PUSHANY(,_type,code,U,(cx_word),cx_uint64_o,,)
@@ -421,7 +422,7 @@ typedef union Di2f_t {
     CALL_##code:\
         fetchOp1(CALL,code);\
         fetchHi();\
-        cx_callb((cx_function)c.hi.w, &op_##code, c.stack);\
+        cx_callb((cx_function)c.hi.w, &op1_##code, c.stack);\
         c.sp = c.stack; /* Reset stack pointer */\
         next();\
 
@@ -429,7 +430,7 @@ typedef union Di2f_t {
     CALLVM_##code:\
         fetchOp1(CALLVM,code);\
         fetchHi();\
-        cx_vm_run_w_storage((cx_vmProgram)((cx_function)c.hi.w)->implData, c.stack, &op_##code);\
+        cx_vm_run_w_storage((cx_vmProgram)((cx_function)c.hi.w)->implData, c.stack, &op1_##code);\
         c.sp = c.stack; /* Reset stack pointer */\
         next();\
 
@@ -463,14 +464,14 @@ typedef union Di2f_t {
 #define RET(type,code)\
     RET_##code:\
         fetchOp1(RET,code);\
-        *(type##_t*)result = op_##code;\
+        *(type##_t*)result = op1_##code;\
         goto STOP;
 
 #define RETCPY(type,code)\
     RETCPY_##code:\
         fetchOp1(RETCPY,code);\
         fetchHi();\
-        memcpy((type##_t*)result, &op_##code, c.hi.w);\
+        memcpy((type##_t*)result, &op1_##code, c.hi.w);\
         goto STOP;
 
 #define CAST(type,code)\
@@ -554,67 +555,67 @@ typedef union Di2f_t {
 #define DEALLOC(type,code)\
     DEALLOC_##code:\
         fetchOp1(DEALLOC,code);\
-        cx_dealloc((void*)op_##code);\
+        cx_dealloc((void*)op1_##code);\
         next();\
 
 #define KEEP(type,code)\
     KEEP_##code:\
         fetchOp1(KEEP,code);\
-        if (op_##code) {\
-            cx_keep_ext(NULL, (cx_object)op_##code, "KEEP(vm)");\
+        if (op1_##code) {\
+            cx_keep_ext(NULL, (cx_object)op1_##code, "KEEP(vm)");\
         }\
         next();\
 
 #define FREE(type,code)\
     FREE_##code:\
         fetchOp1(FREE,code);\
-        if (op_##code) {\
-            cx_free_ext(NULL, (cx_object)op_##code, "FREE(vm)");\
+        if (op1_##code) {\
+            cx_free_ext(NULL, (cx_object)op1_##code, "FREE(vm)");\
         }\
         next();\
 
 #define DEFINE(type,code)\
     DEFINE_##code:\
         fetchOp1(DEFINE,code);\
-        if (!op_##code) {\
+        if (!op1_##code) {\
             printf("Exception: null dereference in define\n");\
             abort();\
             goto STOP;\
         }\
-        cx_define((cx_object)op_##code);\
+        cx_define((cx_object)op1_##code);\
         next();\
 
 #define UPDATE(type,code)\
     UPDATE_##code:\
         fetchOp1(UPDATE,code);\
-        if (!op_##code) {\
+        if (!op1_##code) {\
             printf("Exception: null dereference in updateFrom\n");\
             abort();\
             goto STOP;\
         }\
-        cx_updateFrom((cx_object)op_##code,NULL);\
+        cx_updateFrom((cx_object)op1_##code,NULL);\
         next();\
 
 #define UPDATEBEGIN(type,code)\
     UPDATEBEGIN_##code:\
         fetchOp1(UPDATEBEGIN,code);\
-        if (!op_##code) {\
+        if (!op1_##code) {\
             printf("Exception: null dereference in updateBegin\n");\
             abort();\
             goto STOP;\
         }\
-        cx_updateBegin((cx_object)op_##code);\
+        cx_updateBegin((cx_object)op1_##code);\
         next();\
 
 #define UPDATEEND(type,code)\
     UPDATEEND_##code:\
         fetchOp1(UPDATEEND,code);\
-        if (!op_##code) {\
+        if (!op1_##code) {\
             printf("Exception: null dereference in updateEnd\n");\
             abort();\
             goto STOP;\
         }\
-        cx_updateEndFrom((cx_object)op_##code,NULL);\
+        cx_updateEndFrom((cx_object)op1_##code,NULL);\
         next();\
 
 #define UPDATEFROM(type,code)\
@@ -642,23 +643,23 @@ typedef union Di2f_t {
 #define UPDATECANCEL(type,code)\
     UPDATECANCEL_##code:\
         fetchOp1(UPDATECANCEL,code);\
-        if (!op_##code) {\
+        if (!op1_##code) {\
             printf("Exception: null dereference in updateCancel\n");\
             abort();\
             goto STOP;\
         }\
-        cx_updateCancel((cx_object)op_##code);\
+        cx_updateCancel((cx_object)op1_##code);\
         next();\
 
 #define WAITFOR(type, code)\
     WAITFOR_##code:\
         fetchOp1(WAITFOR,code);\
-        if (!op_##code) {\
+        if (!op1_##code) {\
             printf("Exception: null dereference in waitfor");\
             abort();\
             goto STOP;\
         }\
-        cx_waitfor((cx_object)op_##code);\
+        cx_waitfor((cx_object)op1_##code);\
         next();\
 
 #define WAIT(type,code)\
@@ -735,10 +736,10 @@ typedef union Di2f_t {
         }\
         next();\
 
-#define JUMP()\
-    JUMP:\
-        fetchLo();\
-        jump(c.lo.w);
+#define JUMP(type, code)\
+    JUMP_##code:\
+        fetchOp1(JUMP, code);\
+        jump(op1_##code);
 
 #define MEMBER()\
     MEMBER:\
@@ -845,7 +846,7 @@ typedef union Di2f_t {
 
 struct cx_vm_context {
     cx_vmOp *pc; /* Instruction counter */
-    cx_vmParameter16 ic;    /* First (16-bit) parameter */
+    cx_vmParameter16 ic; /* First parameter */
     cx_vmParameter lo; /* Lo parameter */
     cx_vmParameter hi; /* Hi parameter */
     cx_uint64 dbl; /* Double parameter */
@@ -856,7 +857,7 @@ struct cx_vm_context {
     cx_stringConcatCache *strcache;
 
     /* Reserved space for interrupt program in case of SIGINT */
-    cx_vmOp interrupt[2]; 
+    cx_vmOp interrupt[2];
 };
 
 #ifdef CX_VM_DEBUG
