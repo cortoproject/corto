@@ -36,6 +36,8 @@ extern "C" {
 #define Fast_Initializer(o) ((Fast_Initializer)o)
 #define Fast_InitializerExpression(o) ((Fast_InitializerExpression)o)
 #define Fast_Integer(o) ((Fast_Integer)o)
+#define Fast_IteratorLocal(o) ((Fast_IteratorLocal)o)
+#define Fast_IteratorObject(o) ((Fast_IteratorObject)o)
 #define Fast_Literal(o) ((Fast_Literal)o)
 #define Fast_Local(o) ((Fast_Local)o)
 #define Fast_Member(o) ((Fast_Member)o)
@@ -410,6 +412,37 @@ typedef enum Fast_InitializerKind {
     Fast_InitExpression = 2
 } Fast_InitializerKind;
 
+/*  ::cortex::Fast::IteratorLocal */
+CX_CLASS(Fast_IteratorLocal);
+
+CX_CLASS_DEF(Fast_IteratorLocal) {
+    CX_EXTEND(Fast_Local);
+    Fast_Local buddy;
+};
+
+/*  ::cortex::Fast::ObjectBase */
+CX_CLASS(Fast_ObjectBase);
+
+CX_CLASS_DEF(Fast_ObjectBase) {
+    CX_EXTEND(Fast_Variable);
+    cx_object value;
+};
+
+/*  ::cortex::Fast::Object */
+CX_CLASS(Fast_Object);
+
+CX_CLASS_DEF(Fast_Object) {
+    CX_EXTEND(Fast_ObjectBase);
+};
+
+/*  ::cortex::Fast::IteratorObject */
+CX_CLASS(Fast_IteratorObject);
+
+CX_CLASS_DEF(Fast_IteratorObject) {
+    CX_EXTEND(Fast_Object);
+    Fast_Local buddy;
+};
+
 /*  ::cortex::Fast::Lvalue */
 typedef struct Fast_Lvalue Fast_Lvalue;
 
@@ -443,21 +476,6 @@ CX_CLASS(Fast_Null);
 
 CX_CLASS_DEF(Fast_Null) {
     CX_EXTEND(Fast_Literal);
-};
-
-/*  ::cortex::Fast::ObjectBase */
-CX_CLASS(Fast_ObjectBase);
-
-CX_CLASS_DEF(Fast_ObjectBase) {
-    CX_EXTEND(Fast_Variable);
-    cx_object value;
-};
-
-/*  ::cortex::Fast::Object */
-CX_CLASS(Fast_Object);
-
-CX_CLASS_DEF(Fast_Object) {
-    CX_EXTEND(Fast_ObjectBase);
 };
 
 CX_LIST(Fast_Binding_list);

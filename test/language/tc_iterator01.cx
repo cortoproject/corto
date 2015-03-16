@@ -1,0 +1,17 @@
+// Iterator assignments
+
+bool result : true
+void fail(string msg):
+    "tc_iterator01: FAIL: $msg"
+    result = false
+
+array sarray: string, 1
+sarray array1: "a"
+
+iterator siter: string
+siter iter1
+iter1 = array1
+
+iter1++
+
+if result: "$testname: OK"
