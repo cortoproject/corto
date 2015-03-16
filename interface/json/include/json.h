@@ -3,7 +3,7 @@
 #include "cortex.h"
 #include "cx_serializer.h"
 
-/* String serializer data */
+/* JSON serializer data */
 typedef struct cx_json_ser_t {
     /* Public */
     cx_string buffer;
