@@ -498,6 +498,19 @@ cx_icProgram cx_icProgram__create(cx_string filename) {
     return result;
 }
 
+cx_icLocal cx_icBuddy__create(cx_icProgram program, cx_icStorage storage) {
+    /* Insert buddy storage in correct scope so that lifecycle is equal to storage */
+    if (storage->kind == CX_STORAGE_OBJECT) {
+
+    } else if (storage->kind == CX_STORAGE_LOCAL) {
+
+    } else if (storage->kind == CX_STORAGE_MEMBER) {
+
+    } else if (storage->kind == CX_STORAGE_ELEMENT) {
+
+    }
+}
+
 void cx_icStorage_init(
         cx_icStorage storage,
         cx_icProgram program,
@@ -515,6 +528,10 @@ void cx_icStorage_init(
     storage->type = type;
     storage->isReference = type->reference;
     storage->holdsReturn = FALSE;
+
+    if (type->kind == CX_ITERATOR) {
+        storage->buddy = cx_icBuddy__create(storage);
+    }
 }
 
 cx_icObject cx_icObject__create(cx_icProgram program, cx_uint32 line, cx_object ptr) {

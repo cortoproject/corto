@@ -181,7 +181,6 @@
 				<meta:scope>
 					<method name="construct()" returnType="int16"/>
 					<member name="kind" type="variableKind"/>
-					<virtual name="getBuddy()" returnType="Local"/>
 				</meta:scope>
 			</class>
 			
@@ -204,13 +203,6 @@
 					<member name="kind" type="Fast::LocalKind"/>
 					<member name="reference" type="bool"/>
 					<virtual name="toIc(alias{&quot;cx_icProgram&quot;} program,alias{&quot;cx_icStorage&quot;} storage,bool stored)" returnType="alias{&quot;cx_ic&quot;}"/>
-				</meta:scope>
-			</class>
-
-			<class name="IteratorLocal" base="Local">
-				<meta:scope>
-					<member name="buddy" type="Local" modifiers="private"/>
-					<method name="getBuddy()" returnType="Local"/>
 				</meta:scope>
 			</class>
 			
@@ -236,13 +228,6 @@
 					<method name="serialize(type dstType,word dst)" returnType="int16"/>
 					<virtual name="toIc(alias{&quot;cx_icProgram&quot;} program,alias{&quot;cx_icStorage&quot;} storage,bool stored)" returnType="alias{&quot;cx_ic&quot;}"/>
 					<method name="getValue()" returnType="word"/>
-				</meta:scope>
-			</class>
-
-			<class name="IteratorObject" base="Fast::Object">
-				<meta:scope>
-					<member name="buddy" type="Local" modifiers="private"/>
-					<method name="getBuddy()" returnType="Local"/>
 				</meta:scope>
 			</class>
 

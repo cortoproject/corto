@@ -21,12 +21,6 @@ extern "C" {
 /* ::cortex::Fast::Variable::construct() */
 cx_int16 Fast_Variable_construct(Fast_Variable _this);
 
-/* virtual ::cortex::Fast::Variable::getBuddy() */
-Fast_Local Fast_Variable_getBuddy(Fast_Variable _this);
-
-/* ::cortex::Fast::Variable::getBuddy() */
-Fast_Local Fast_Variable_getBuddy_v(Fast_Variable _this);
-
 #ifdef __cplusplus
 }
 #endif

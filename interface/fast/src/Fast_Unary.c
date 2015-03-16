@@ -24,13 +24,25 @@ cx_int16 Fast_Unary_construct(Fast_Unary _this) {
     lvalueType = Fast_Expression_getType(_this->lvalue);
     Fast_Node(_this)->kind = Fast_UnaryExpr;
 
-    if (_this->operator == CX_COND_NOT) {
-        Fast_Expression(_this)->type = Fast_Variable(Fast_Object__create(cx_bool_o));
+    if (lvalueType->kind != CX_ITERATOR) {
+        if (_this->operator == CX_COND_NOT) {
+            Fast_Expression(_this)->type = Fast_Variable(Fast_Object__create(cx_bool_o));
+        } else {
+            Fast_Expression(_this)->type = Fast_Variable(Fast_Object__create(lvalueType));
+        }
     } else {
-        Fast_Expression(_this)->type = Fast_Variable(Fast_Object__create(lvalueType));
+        if (_this->operator == CX_MUL) {
+            cx_type iterType = cx_iterator(lvalueType)->elementType;
+            Fast_Expression(_this)->type = Fast_Variable(Fast_Object__create(iterType));
+        } else {
+            Fast_Parser_error(yparser(), "invalid operator for iterator");
+            goto error;
+        }
     }
 
     return 0;
+error:
+    return -1;
 /* $end */
 }
 

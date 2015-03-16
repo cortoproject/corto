@@ -161,7 +161,7 @@ Fast_Expression Fast_declarationSeqDo(Fast_Variable type, Fast_ParserDeclaration
 /* Syntax tree nodes */
 %type <Fast>
     statement statements
-    expr literal_expr primary_expr postfix_expr unary_expr multiplicative_expr additive_expr shift_expr
+    expr literal_expr primary_expr iter_expr postfix_expr unary_expr multiplicative_expr additive_expr shift_expr
     boolean_expr equality_expr and_expr xor_expr or_expr logical_and_expr logical_or_expr assignment_expr
     comma_expr bracket_expr conditional_expr wait_expr declaration declaration_expr declaration_ref
     function_declaration
@@ -405,16 +405,21 @@ bracket_expr
 
 primary_expr
     : bracket_expr
-    | literal_expr            {$$=$1;}
-    | identifier            {$$=$1;}
+    | literal_expr          {$$ = $1;}
+    | identifier            {$$ = $1;}
+    ;
+
+iter_expr
+    : primary_expr
+    | '*' iter_expr {$$ = Fast_Parser_unaryExpr(yparser(), $2, CX_MUL); fast_op;}
     ;
 
 postfix_expr
-    : primary_expr
+    : iter_expr
     | postfix_expr {PUSHCOMPLEX($1)} '[' expr ']' {$$ = Fast_Parser_elementExpr(yparser(), $1, $4); fast_op; POPCOMPLEX()}
-    | postfix_expr '(' ')'                         {$$ = Fast_Parser_callExpr(yparser(), $1, NULL); fast_op;}
-    | postfix_expr bracket_expr                 {$$ = Fast_Parser_callExpr(yparser(), $1, $2); fast_op;}
-    | postfix_expr '.' any_id                   {Fast_String str = Fast_String__create($3); if (!str) {YYERROR;} $$ = Fast_Parser_memberExpr(yparser(), $1, Fast_Expression(str)); cx_free(str); fast_op;}
+    | postfix_expr '(' ')'                        {$$ = Fast_Parser_callExpr(yparser(), $1, NULL); fast_op;}
+    | postfix_expr bracket_expr                   {$$ = Fast_Parser_callExpr(yparser(), $1, $2); fast_op;}
+    | postfix_expr '.' any_id                     {Fast_String str = Fast_String__create($3); if (!str) {YYERROR;} $$ = Fast_Parser_memberExpr(yparser(), $1, Fast_Expression(str)); cx_free(str); fast_op;}
     | postfix_expr INC                            {$$ = Fast_Parser_postfixExpr(yparser(), $1, CX_INC); fast_op}
     | postfix_expr DEC                            {$$ = Fast_Parser_postfixExpr(yparser(), $1, CX_DEC); fast_op}
     ;
