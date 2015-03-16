@@ -10,7 +10,6 @@ SUBDIRS_TARGETS := \
 # static pattern rule, expands into:
 # all clean : % : foo/.% bar/.%
 $(TARGETS) : % : $(addsuffix %,$(SUBDIRS))
-	@echo 'Done "$*" target'
 
 # here, for foo/.all:
 #   $(@D) is foo

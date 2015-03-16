@@ -687,6 +687,7 @@ static void cxsh_shell(void) {
     }
 }
 
+extern cx_bool CX_DEBUG_ENABLED;
 
 int main(int argc, char* argv[]) {
     int i;
@@ -700,7 +701,11 @@ int main(int argc, char* argv[]) {
 
     /* Parse arguments */
     for(i=1; i<argc; i++) {
-        cx_load(argv[i]);
+        if (!strcmp(argv[i], "-d")) {
+            CX_DEBUG_ENABLED = TRUE;
+        } else {
+            cx_load(argv[i]);
+        }
     }
 
     /* Assign scope to root */

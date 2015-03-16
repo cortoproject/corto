@@ -526,7 +526,7 @@ conditional_expr
 comma_expr
     : conditional_expr
     | comma_expr ',' conditional_expr {
-        if ($1) {
+        if ($1 && $3) {
             if (Fast_Node($1)->kind != Fast_CommaExpr) {
                 $$ = Fast_Comma__create(); fast_op;
                 Fast_Comma_addExpression($$, $1); fast_op;
@@ -707,12 +707,12 @@ case_label
 /* Observer statement */
 /* ======================================================================== */
 observer_statement
-    : observer_declaration block    {Fast_Parser_observerPop(yparser()); fast_op;}
-    | observer_declaration ENDL      {Fast_Parser_observerPop(yparser()); fast_op;}
+    : observer_declaration block
+    | observer_declaration ENDL
     ;
 
 observer_declaration
-    : observer_dispatch event_mask assignment_expr          {$$=NULL; Fast_Parser_observerDeclaration(yparser(), NULL, $3, $2, $1); fast_op;}
+    : observer_dispatch event_mask assignment_expr  {$$=NULL; Fast_Parser_observerDeclaration(yparser(), NULL, $3, $2, $1); fast_op;}
     ;
 
 observer_dispatch

@@ -24,8 +24,7 @@ cx_int16 cx_observer_bind(cx_observer _this) {
         }
     }
 
-    cx_function(_this)->size = sizeof(cx_object) * 2;
-    cx_function(_this)->size += sizeof(cx_object); /* Add space for this-object */
+    cx_function(_this)->size = sizeof(cx_object) * 3;
 
     /* Check if mask specifies either SELF or CHILDS, if not enable SELF */
     if (!((_this->mask & CX_ON_SELF) || (_this->mask & CX_ON_SCOPE))) {
@@ -57,9 +56,10 @@ cx_int16 cx_observer_init(cx_observer _this) {
     
     cx_set( &cx_function(_this)->returnType, cx_void_o);
 
-    /* Set parameters of observer: (observable, source) */
+    /* Set parameters of observer: (this, observable, source) */
     cx_function(_this)->parameters.buffer = cx_malloc(sizeof(cx_parameter) * 2);
     cx_function(_this)->parameters.length = 2;
+ 
 
     /* Parameter observable */
     p = &cx_function(_this)->parameters.buffer[0];

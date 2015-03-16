@@ -771,7 +771,6 @@
 
 					<!-- Observer -->
 					<method name="observerPush()"/>
-					<method name="observerPop()"/>
 					<method name="observerDeclaration(string id,Fast::Expression object,eventMask mask,Fast::Object dispatcher)" returnType="Variable"/>
 					
 					<!-- Foreach -->

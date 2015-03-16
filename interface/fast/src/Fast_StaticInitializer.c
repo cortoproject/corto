@@ -159,18 +159,12 @@ cx_int16 Fast_StaticInitializer_define(Fast_StaticInitializer _this) {
                 goto error;
             }
         } else {
-            /* Only composite types can have constructors. All other objects are instantaneously
-             * defined. */
-            if (cx_typeof(o)->kind == CX_COMPOSITE) {
-                Fast_Expression refVar = Fast_Expression(Fast_Object__create(o));
-                refVar->isReference = TRUE; /* Always treat object as reference */
-                Fast_Define defineStmt = Fast_Define__create(refVar);
-                Fast_Parser_addStatement(yparser(), Fast_Node(defineStmt));
-                Fast_Parser_collect(yparser(), defineStmt);
-                Fast_Parser_collect(yparser(), refVar);
-            } else {
-                cx_define(o);
-            }
+            Fast_Expression refVar = Fast_Expression(Fast_Object__create(o));
+            refVar->isReference = TRUE; /* Always treat object as reference */
+            Fast_Define defineStmt = Fast_Define__create(refVar);
+            Fast_Parser_addStatement(yparser(), Fast_Node(defineStmt));
+            Fast_Parser_collect(yparser(), defineStmt);
+            Fast_Parser_collect(yparser(), refVar);
         }
     }
     
@@ -204,6 +198,8 @@ cx_int16 Fast_StaticInitializer_value(Fast_StaticInitializer _this, Fast_Express
     cx_uint32 variable;
     cx_uint32 fp = Fast_Initializer(_this)->fp;
     cx_type type = Fast_Initializer_currentType(Fast_Initializer(_this));
+    cx_type vType = Fast_Expression_getType_type(v, type);
+    
     if (!type) {
         cx_id id;
         Fast_Parser_error(yparser(), "excess elements in initializer of type '%s'", 
@@ -211,11 +207,15 @@ cx_int16 Fast_StaticInitializer_value(Fast_StaticInitializer _this, Fast_Express
         goto error;
     }
 
+    if (!vType) {
+        goto error;
+    }
+
     /* Validate whether expression type matches current type of initializer */
-    if (!cx_type_castable(type, Fast_Expression_getType_type(v, type))) {
+    if (vType && !cx_type_castable(type, vType)) {
         cx_id id, id2;
         Fast_Parser_error(yparser(), "type '%s' invalid here (expected '%s')", 
-            Fast_Parser_id(Fast_Expression_getType(v), id), Fast_Parser_id(type, id2));
+            Fast_Parser_id(vType, id), Fast_Parser_id(type, id2));
         goto error;
     }
 

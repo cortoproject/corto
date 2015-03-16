@@ -33,7 +33,13 @@ cx_int16 cx_sequence_construct(cx_sequence _this) {
     cx_type(_this)->hasResources = TRUE;
     cx_type(_this)->size = sizeof(__dummySeq);
     cx_type(_this)->alignment = CX_ALIGNMENT(__dummySeq);
+    if (!cx_collection(_this)->elementType) {
+        cx_error("no elementtype provided for sequence");
+        goto error;
+    }
     return cx_type_construct(cx_type(_this));
+error:
+    return -1;
 /* $end */
 }
 

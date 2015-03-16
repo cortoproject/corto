@@ -1,0 +1,11 @@
+bool result: true
+void fail(string msg):
+    "tc_overload08: FAIL: $msg"
+    result = false
+
+// Test overloading w/implicit conversions from int to float
+if int32(math::pow(10, 2)) != 100:
+    fail("int32(math::pow(10, 2)) != 100")
+
+
+if result: "tc_overload08: OK"
