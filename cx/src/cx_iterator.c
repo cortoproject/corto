@@ -13,33 +13,6 @@
 CX_ITERATOR(iteratorType);
 CX_SEQUENCE(seqType, cx_object, );
 
-cx_int16 cx_iterator_set(void* _this, void* collection, cx_collection collectionType) {
-    iteratorType *iter = _this;
-    iter->type = collectionType;
-
-    switch (collectionType->kind) {
-        case CX_ARRAY:
-            iter->is.array.array = collection;
-            iter->is.array.elementSize = cx_type_sizeof(collectionType->elementType);
-            iter->is.array.max = CX_OFFSET(iter->is.array.array, collectionType->max * iter->is.array.elementSize);
-            iter->current = CX_OFFSET(collection, -iter->is.array.elementSize);
-            break;
-        case CX_SEQUENCE:
-            iter->is.array.array = ((seqType*)collection)->buffer;
-            iter->is.array.elementSize = cx_type_sizeof(collectionType->elementType);
-            iter->is.array.max = CX_OFFSET(iter->is.array.array, ((seqType*)collection)->length * iter->is.array.elementSize);
-            iter->current = CX_OFFSET(iter->is.array.array, -iter->is.array.elementSize);
-            break;
-        case CX_LIST:
-            iter->is.ll.ll = collection;
-            iter->is.ll.iter = cx_llIter(collection);
-            break;
-        case CX_MAP:
-            break;
-    }
-    return 0;
-}
-
 /* Combined hasNext and next */
 static cx_bool cx_iterator_next_array(void* iterator) {
     iteratorType *iter = iterator;
@@ -54,7 +27,17 @@ static cx_bool cx_iterator_next_array(void* iterator) {
     return result;
 }
 
-static cx_bool cx_iterator_next_ll(void* iterator) {
+static cx_bool cx_iterator_next_listPtr(void* iterator) {
+    iteratorType *iter = iterator;
+    cx_bool result = FALSE;
+    if ((result = cx_iterHasNext(&iter->is.ll.iter))) {
+        iter->current = cx_iterNextPtr(&iter->is.ll.iter);
+        result = TRUE;
+    }
+    return result;
+}
+
+static cx_bool cx_iterator_next_list(void* iterator) {
     iteratorType *iter = iterator;
     cx_bool result = FALSE;
     if ((result = cx_iterHasNext(&iter->is.ll.iter))) {
@@ -75,22 +58,44 @@ cx_bool cx_iterator_next(void* _this) {
     iteratorType *iterator = _this;
     cx_bool result = FALSE;
 
-    switch (iterator->type->kind) {
-        case CX_ARRAY:
-        case CX_SEQUENCE:
-            result = cx_iterator_next_array(iterator);
-            break;
-        case CX_LIST:
-            result = cx_iterator_next_ll(iterator);
-            break;
-        case CX_MAP:
-            result = cx_iterator_next_map(iterator);
-            break;
-        default:
-            break;
-    }
+    result = iterator->next(iterator);
 
     return result;
+}
+
+cx_int16 cx_iterator_set(void* _this, void* collection, cx_collection collectionType) {
+    iteratorType *iter = _this;
+    iter->type = collectionType;
+
+    switch (collectionType->kind) {
+        case CX_ARRAY:
+            iter->is.array.array = collection;
+            iter->is.array.elementSize = cx_type_sizeof(collectionType->elementType);
+            iter->is.array.max = CX_OFFSET(iter->is.array.array, collectionType->max * iter->is.array.elementSize);
+            iter->current = CX_OFFSET(collection, -iter->is.array.elementSize);
+            iter->next = cx_iterator_next_array;
+            break;
+        case CX_SEQUENCE:
+            iter->is.array.array = ((seqType*)collection)->buffer;
+            iter->is.array.elementSize = cx_type_sizeof(collectionType->elementType);
+            iter->is.array.max = CX_OFFSET(iter->is.array.array, ((seqType*)collection)->length * iter->is.array.elementSize);
+            iter->current = CX_OFFSET(iter->is.array.array, -iter->is.array.elementSize);
+            iter->next = cx_iterator_next_array;
+            break;
+        case CX_LIST:
+            iter->is.ll.iter = cx_llIter(*(cx_ll*)collection);
+            if (cx_collection_elementRequiresAlloc(collectionType)) {
+                iter->next = cx_iterator_next_list;
+            } else {
+                iter->next = cx_iterator_next_listPtr;
+            }
+
+            break;
+        case CX_MAP:
+            iter->next = cx_iterator_next_map;
+            break;
+    }
+    return 0;
 }
 
 /* $end */

@@ -66,6 +66,7 @@ typedef struct cx_ll_s* cx_ll;
 #define CX_ITERATOR(__type) typedef struct __type {\
     void *current;\
     cx_collection type;\
+    cx_bool (*next)(void* iterator);\
     union {\
         struct { /* CX_ARRAY and CX_SEQUENCE */\
             void *array;\
@@ -73,7 +74,6 @@ typedef struct cx_ll_s* cx_ll;
             void* max;\
         } array;\
         struct {\
-        	cx_ll *ll;\
         	cx_iter iter;\
         } ll;\
     } is;\
