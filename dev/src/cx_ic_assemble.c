@@ -1570,6 +1570,16 @@ static cx_vmOpKind cx_ic_getVmPush(cx_icOp op, cx_type t, cx_ic_vmType typeKind,
     }\
 }
 
+static cx_vmOpKind cx_ic_getVmInc(cx_icOp op, cx_type t, cx_ic_vmType typeKind, cx_ic_vmOperand op1, cx_ic_vmOperand op2) {
+    cx_vmOpKind result = CX_VM_STOP;
+
+    if (((cx_icStorage)op->s1)->type->kind == CX_ITERATOR) {
+        result = cx_ic_getVmITER_NEXT(t, CX_IC_VMTYPE_W, op2, op1, 0);
+    } else {
+        result = cx_ic_getVmINC(t, typeKind, op1, 0, 0);
+    }
+    return result;
+}
 
 static cx_vmOpKind cx_ic_getVmOpKind(cx_ic_vmProgram *program, cx_icOp op, cx_icValue storage, cx_type t, cx_ic_vmType typeKind, cx_ic_vmOperand op1, cx_ic_vmOperand op2, cx_icDerefMode deref1, cx_icDerefMode deref2) {
     cx_vmOpKind result = CX_VM_STOP;
@@ -1592,7 +1602,7 @@ static cx_vmOpKind cx_ic_getVmOpKind(cx_ic_vmProgram *program, cx_icOp op, cx_ic
     case CX_IC_MUL: cx_ic_getVmArith(MUL, t, typeKind, op1, op2); break;
     case CX_IC_DIV: cx_ic_getVmArith(DIV, t, typeKind, op1, op2); break;
     case CX_IC_MOD: result = cx_ic_getVmMODI(t, typeKind, op1, op2, 0); break;
-    case CX_IC_INC: result = cx_ic_getVmINC(t, typeKind, op1, 0, 0); break;
+    case CX_IC_INC: result = cx_ic_getVmInc(op, t, typeKind, op1, op2); break;
     case CX_IC_DEC: result = cx_ic_getVmDEC(t, typeKind, op1, 0, 0); break;
     case CX_IC_XOR: result = cx_ic_getVmXOR(t, typeKind, op1, op2, 0); break;
     case CX_IC_OR: result = cx_ic_getVmOR(t, typeKind, op1, op2, 0); break;
@@ -1941,8 +1951,18 @@ static void cx_ic_getVmOp(cx_ic_vmProgram *program, cx_icOp op) {
             opDeref2 = op->s2Deref;
         }
         /* no break */
+    case CX_IC_INC: {
+        cx_type t = ((cx_icStorage)op->s1)->type;
+        if (t->kind == CX_ITERATOR) {
+            op2 = op->s2;
+            op1 = op->s1;
+            opDeref2 = op->s2Deref;
+            opDeref1 = CX_IC_DEREF_ADDRESS;
+            storage = NULL;
+            break;
+        }
+    }
     case CX_IC_DEFINE:
-    case CX_IC_INC:
     case CX_IC_DEC:
     case CX_IC_RET:
     case CX_IC_FREE:
@@ -2020,7 +2040,7 @@ static void cx_ic_getVmOp(cx_ic_vmProgram *program, cx_icOp op) {
             op1 = op->s1;
             storage = NULL;
             vmOp->hi.w = (cx_word)((cx_icObject)op->s2)->ptr;
-            opDeref1 = op->s1Deref;            
+            opDeref1 = op->s1Deref;        
         }
 
         break;
@@ -2056,7 +2076,6 @@ static void cx_ic_getVmOp(cx_ic_vmProgram *program, cx_icOp op) {
     if (op1) {
         /* Operation has two operands */
         if (op2) {
-
             if (op3) {
                 cx_vmOp3(program, vmOp, op, op1, op2, op3, opDeref1, opDeref2, opDeref3);
             } else if (storage && (storage != op1)) {

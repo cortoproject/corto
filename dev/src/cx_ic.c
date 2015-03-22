@@ -498,19 +498,6 @@ cx_icProgram cx_icProgram__create(cx_string filename) {
     return result;
 }
 
-cx_icLocal cx_icBuddy__create(cx_icProgram program, cx_icStorage storage) {
-    /* Insert buddy storage in correct scope so that lifecycle is equal to storage */
-    if (storage->kind == CX_STORAGE_OBJECT) {
-
-    } else if (storage->kind == CX_STORAGE_LOCAL) {
-
-    } else if (storage->kind == CX_STORAGE_MEMBER) {
-
-    } else if (storage->kind == CX_STORAGE_ELEMENT) {
-
-    }
-}
-
 void cx_icStorage_init(
         cx_icStorage storage,
         cx_icProgram program,
@@ -528,10 +515,6 @@ void cx_icStorage_init(
     storage->type = type;
     storage->isReference = type->reference;
     storage->holdsReturn = FALSE;
-
-    if (type->kind == CX_ITERATOR) {
-        storage->buddy = cx_icBuddy__create(storage);
-    }
 }
 
 cx_icObject cx_icObject__create(cx_icProgram program, cx_uint32 line, cx_object ptr) {
@@ -556,7 +539,8 @@ cx_icObject cx_icObject__create(cx_icProgram program, cx_uint32 line, cx_object 
     return result;
 }
 
-cx_icLocal cx_icLocal__create(cx_icProgram program, cx_uint32 line, cx_string name, cx_type type, cx_bool isParameter, cx_bool isReturn, cx_bool declare) {
+cx_icLocal cx_icLocal__create(
+    cx_icProgram program, cx_uint32 line, cx_string name, cx_type type, cx_bool isParameter, cx_bool isReturn, cx_bool declare) {
     cx_icLocal result;
 
     if (!(result = (cx_icLocal)cx_icProgram_lookupStorage(program, name, !declare))) {
@@ -786,7 +770,8 @@ void cx_icProgram__free(cx_icProgram _this) {
 }
 
 cx_icAccumulator cx_icProgram_accumulatorPush(cx_icProgram _this, cx_uint32 line, cx_type type, cx_bool isReference) {
-    _this->accumulatorStack[_this->accumulatorId] = cx_icAccumulator__create(_this, line, type ? type : cx_void_o, _this->accumulatorId);
+    _this->accumulatorStack[_this->accumulatorId] = 
+        cx_icAccumulator__create(_this, line, type ? type : cx_void_o, _this->accumulatorId);
     ((cx_icStorage)_this->accumulatorStack[_this->accumulatorId])->isReference = isReference;
     _this->accumulatorId++;
     return _this->accumulatorStack[_this->accumulatorId-1];

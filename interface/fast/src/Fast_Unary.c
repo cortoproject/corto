@@ -34,6 +34,7 @@ cx_int16 Fast_Unary_construct(Fast_Unary _this) {
         if (_this->operator == CX_MUL) {
             cx_type iterType = cx_iterator(lvalueType)->elementType;
             Fast_Expression(_this)->type = Fast_Variable(Fast_Object__create(iterType));
+            Fast_Expression(_this)->isReference = TRUE;
         } else {
             Fast_Parser_error(yparser(), "invalid operator for iterator");
             goto error;
@@ -78,12 +79,24 @@ cx_ic Fast_Unary_toIc_v(Fast_Unary _this, cx_icProgram program, cx_icStorage sto
     switch(_this->operator) {
     case CX_INC:
     case CX_DEC:
-        op = cx_icOp__create(program, Fast_Node(_this)->line, cx_icOpKindFromOperator(_this->operator), (cx_icValue)lvalue, NULL, NULL);
+        op = cx_icOp__create(
+            program, Fast_Node(_this)->line, cx_icOpKindFromOperator(_this->operator),
+            (cx_icValue)lvalue, NULL, NULL);
         cx_icProgram_addIc(program, (cx_ic)op);
         result = (cx_icStorage)lvalue;
         break;
+    case CX_MUL:
+        op = cx_icOp__create(
+            program, Fast_Node(_this)->line, CX_IC_SET, 
+            NULL, (cx_icValue)result, (cx_icValue)lvalue);
+        cx_icProgram_addIc(program, (cx_ic)op);
+        op->s2Deref = CX_IC_DEREF_ADDRESS;
+        ((cx_icStorage)result)->isReference = TRUE;
+        break;
     default:
-        op = cx_icOp__create(program, Fast_Node(_this)->line, cx_icOpKindFromOperator(_this->operator), (cx_icValue)result, (cx_icValue)lvalue, NULL);
+        op = cx_icOp__create(
+            program, Fast_Node(_this)->line, cx_icOpKindFromOperator(_this->operator), 
+            (cx_icValue)result, (cx_icValue)lvalue, NULL);
         cx_icProgram_addIc(program, (cx_ic)op);
         break;
     }

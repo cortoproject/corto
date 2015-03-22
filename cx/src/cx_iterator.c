@@ -10,17 +10,25 @@
 #include "cx__meta.h"
 
 /* $header() */
+CX_ITERATOR(iteratorType);
+CX_SEQUENCE(seqType, cx_object, );
 
 cx_int16 cx_iterator_set(void* _this, void* collection, cx_collection collectionType) {
-    CX_ITERATOR(IteratorType);
-    IteratorType *iter = _this;
+    iteratorType *iter = _this;
     iter->type = collectionType;
 
     switch (collectionType->kind) {
         case CX_ARRAY:
-        case CX_SEQUENCE:
             iter->is.array.array = collection;
-            iter->is.array.element = collection;
+            iter->is.array.elementSize = cx_type_sizeof(collectionType->elementType);
+            iter->is.array.max = CX_OFFSET(iter->is.array.array, collectionType->max * iter->is.array.elementSize);
+            iter->current = CX_OFFSET(collection, -iter->is.array.elementSize);
+            break;
+        case CX_SEQUENCE:
+            iter->is.array.array = ((seqType*)collection)->buffer;
+            iter->is.array.elementSize = cx_type_sizeof(collectionType->elementType);
+            iter->is.array.max = CX_OFFSET(iter->is.array.array, ((seqType*)collection)->length * iter->is.array.elementSize);
+            iter->current = CX_OFFSET(iter->is.array.array, -iter->is.array.elementSize);
             break;
         case CX_LIST:
             iter->is.ll.ll = collection;
@@ -32,123 +40,56 @@ cx_int16 cx_iterator_set(void* _this, void* collection, cx_collection collection
     return 0;
 }
 
-static cx_bool cx_iterator_hasNext_array(void* iterator) {
-    CX_ITERATOR(IteratorType);
-    IteratorType *iter = iterator;
-    cx_collection collection = iter->type;
-    cx_void *array = iter->is.array.array;
-    void *element = iter->is.array.element;
-    cx_bool hasNext = FALSE;
-    cx_type elementType = collection->elementType;
-    cx_uint32 elementSize = cx_type_sizeof(elementType);
-    cx_uint32 length = collection->max;
-    if (element  < CX_OFFSET(array, elementSize * length)) {
-        hasNext = TRUE;
+/* Combined hasNext and next */
+static cx_bool cx_iterator_next_array(void* iterator) {
+    iteratorType *iter = iterator;
+    cx_uint32 elementSize = iter->is.array.elementSize;
+    void *current = iter->current;
+    cx_bool result = FALSE;
+    current = CX_OFFSET(current, elementSize);
+    if (current  < iter->is.array.max) {
+        iter->current = current;
+        result = TRUE;
     }
-    return hasNext;
-}
-
-static int cx_iterator_next_array(void* iterator, void** nextElement) {
-    CX_ITERATOR(IteratorType);
-    IteratorType *iter;
-    cx_collection collection;
-    cx_void *array;
-    void *element;
-    cx_type elementType;
-    cx_uint32 elementSize;
-    cx_uint32 length;
-    int error;
-
-    error = 1;
-    iter = iterator;
-    collection = iter->type;
-    array = iter->is.array.array;
-    element = iter->is.array.element;
-    elementType = collection->elementType;
-    elementSize = cx_type_sizeof(elementType);
-    length = collection->max;
-    if (element < CX_OFFSET(array, elementSize * length)) {
-        *nextElement = CX_OFFSET(element, elementSize);
-        iter->is.array.element = *nextElement;
-        error = 0;
-    }
-    return error;
-}
-
-static cx_bool cx_iterator_hasNext_ll(void* iterator) {
-    CX_ITERATOR(IteratorType);
-    IteratorType *iter = iterator;
-    cx_bool result = cx_iterHasNext(&(iter->is.ll.iter));
     return result;
 }
 
-static int cx_iterator_next_ll(void* iterator, void** nextElement) {
-    CX_ITERATOR(IteratorType);
-    IteratorType *iter = iterator;
-    *nextElement = cx_iterNext(&iter->is.ll.iter);
-    return 0;
+static cx_bool cx_iterator_next_ll(void* iterator) {
+    iteratorType *iter = iterator;
+    cx_bool result = FALSE;
+    if ((result = cx_iterHasNext(&iter->is.ll.iter))) {
+        iter->current = cx_iterNext(&iter->is.ll.iter);
+        result = TRUE;
+    }
+    return result;
 }
 
-static cx_bool cx_iterator_hasNext_map(void* iterator) {
-    // CX_ITERATOR(IteratorType);
+static cx_bool cx_iterator_next_map(void* iterator) {
     CX_UNUSED(iterator);
-    // TODO implement
-    return 0;
-}
-
-static int cx_iterator_next_map(void* iterator, void** nextElement) {
-    // CX_ITERATOR(IteratorType);
-    CX_UNUSED(iterator);
-    CX_UNUSED(nextElement);
     // TODO implement
     return 1;
 }
 
-cx_bool cx_iterator_hasNext(void* _this) {
+cx_bool cx_iterator_next(void* _this) {
     CX_ITERATOR(iteratorType);
     iteratorType *iterator = _this;
     cx_bool result = FALSE;
-    switch (iterator->type->kind) {
-        case CX_ARRAY:
-        case CX_SEQUENCE:
-            result = cx_iterator_hasNext_array(iterator);
-            break;
-        case CX_LIST:
-            result = cx_iterator_hasNext_ll(iterator);
-            break;
-        case CX_MAP:
-            result = cx_iterator_hasNext_map(iterator);
-            break;
-        default:
-            break;
-    }
-    return result;
-}
-
-void* cx_iterator_next(void* _this) {
-    CX_ITERATOR(iteratorType);
-    iteratorType *iterator = _this;
-    int error = 0;
-    void *result = NULL;
 
     switch (iterator->type->kind) {
         case CX_ARRAY:
         case CX_SEQUENCE:
-            error = cx_iterator_next_array(iterator, &result);
-            break;
+            result = cx_iterator_next_array(iterator);
             break;
         case CX_LIST:
-            error = cx_iterator_next_ll(iterator, &result);
+            result = cx_iterator_next_ll(iterator);
             break;
         case CX_MAP:
-            error = cx_iterator_next_map(iterator, &result);
+            result = cx_iterator_next_map(iterator);
             break;
         default:
             break;
     }
-    if (error || result == NULL) {
-        cx_critical("error retrieving next element from collection");
-    }
+
     return result;
 }
 

@@ -137,7 +137,6 @@ typedef struct cx_icStorage_s {
     cx_bool isReference; /* Is the storage a reference */
     cx_uint32 used; /* Count how many times value is used in program */
     cx_bool holdsReturn; /* If accumulator holds returnvalue, it potentially holds resources */
-    cx_icLocal buddy; /* A register that is bound in lifecycle with the storage */
 }cx_icStorage_s;
 
 typedef struct cx_icObject_s {
