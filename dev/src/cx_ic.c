@@ -570,12 +570,14 @@ cx_icAccumulator cx_icAccumulator__create(cx_icProgram program, cx_uint32 line, 
 cx_icMember cx_icMember__create(cx_icProgram program, cx_uint32 line, cx_icStorage base, cx_member member) {
     cx_icMember result;
     cx_id name;
+    cx_type t;
 
     sprintf(name, "%s.%s", base->name, cx_nameof(member));
+    t = member->type;
 
     if (!(result = (cx_icMember)cx_icProgram_lookupStorage(program, name, TRUE))) {
         result = cx_calloc(sizeof(cx_icMember_s));
-        cx_icStorage_init((cx_icStorage)result, program, line, CX_STORAGE_MEMBER, name, member->type);
+        cx_icStorage_init((cx_icStorage)result, program, line, CX_STORAGE_MEMBER, name, t);
         result->base = base;
         result->member = member;
         cx_llAppend(program->scope->storages, result);
@@ -589,9 +591,13 @@ cx_icElement cx_icElement__create(cx_icProgram program, cx_uint32 line, cx_type 
     cx_id name;
     cx_string elemStr;
 
-    elemStr = cx_icValue_toString(index, NULL);
-    sprintf(name, "%s[%s]", base->name, elemStr);
-    cx_dealloc(elemStr);
+    if (index) {
+        elemStr = cx_icValue_toString(index, NULL);
+        sprintf(name, "%s[%s]", base->name, elemStr);
+        cx_dealloc(elemStr);
+    } else {
+        sprintf(name, "*%s", base->name);
+    }
 
     if (!(result = (cx_icElement)cx_icProgram_lookupStorage(program, name, TRUE))) {
         result = cx_calloc(sizeof(cx_icElement_s));
@@ -599,7 +605,7 @@ cx_icElement cx_icElement__create(cx_icProgram program, cx_uint32 line, cx_type 
         result->base = base;
         result->index = index;
         result->collectionType = (cx_collection)base->type;
-        result->dynamic = !(index->_parent.kind == CX_IC_LITERAL);
+        result->dynamic = !index || !(index->_parent.kind == CX_IC_LITERAL);
         cx_llAppend(program->scope->storages, result);
     }
 

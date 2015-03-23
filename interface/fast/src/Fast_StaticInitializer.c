@@ -46,6 +46,9 @@ cx_word Fast_Initializer_offset(Fast_StaticInitializer _this, cx_uint32 variable
             result = base;
         }
         break;
+    case CX_ITERATOR:
+        result = base;
+        break;
     case CX_COLLECTION: {
         if (fp) {
             cx_uint32 elementSize = cx_type_sizeof(cx_collection(frame->type)->elementType);

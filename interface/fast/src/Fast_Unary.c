@@ -62,6 +62,7 @@ cx_ic Fast_Unary_toIc_v(Fast_Unary _this, cx_icProgram program, cx_icStorage sto
     cx_icStorage result;
     cx_ic lvalue;
     cx_icOp op;
+    cx_type lvalueType = Fast_Expression_getType(_this->lvalue);
     CX_UNUSED(stored);
 
     if (storage) {
@@ -85,14 +86,13 @@ cx_ic Fast_Unary_toIc_v(Fast_Unary _this, cx_icProgram program, cx_icStorage sto
         cx_icProgram_addIc(program, (cx_ic)op);
         result = (cx_icStorage)lvalue;
         break;
-    case CX_MUL:
-        op = cx_icOp__create(
-            program, Fast_Node(_this)->line, CX_IC_SET, 
-            NULL, (cx_icValue)result, (cx_icValue)lvalue);
-        cx_icProgram_addIc(program, (cx_ic)op);
-        op->s2Deref = CX_IC_DEREF_ADDRESS;
-        ((cx_icStorage)result)->isReference = TRUE;
+    case CX_MUL: {
+        /* Create an element with the iterator as base */
+        result = 
+            (cx_icStorage)cx_icElement__create(
+                program, Fast_Node(_this)->line, cx_iterator(lvalueType)->elementType, (cx_icStorage)lvalue, NULL);
         break;
+    }
     default:
         op = cx_icOp__create(
             program, Fast_Node(_this)->line, cx_icOpKindFromOperator(_this->operator), 

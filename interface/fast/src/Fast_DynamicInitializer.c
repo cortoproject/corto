@@ -49,6 +49,9 @@ Fast_Expression Fast_Initializer_expr(Fast_DynamicInitializer _this, cx_uint8 va
         case CX_PRIMITIVE:
             result = base;
             break;
+        case CX_ITERATOR:
+            result = base;
+            break;
         case CX_COMPOSITE:
             if (fp) {
                 Fast_String memberString = Fast_String__create(cx_nameof(thisFrame->member));
