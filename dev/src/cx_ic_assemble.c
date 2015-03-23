@@ -444,8 +444,13 @@ static cx_ic_vmStorage *cx_ic_vmStorageNew(cx_ic_vmProgram *program, cx_icStorag
         if (element->base) {
             result->base = cx_ic_vmStorageGet(program, element->base);
 
+            /* Iterator elements are a special case throuhg which access to the current member
+             * is granted */
+            if (element->base->type->kind == CX_ITERATOR) {
+                result->dynamic = TRUE;
+
             /* If element is an array and index-expression is a literal, offset is determined at compile-time. */
-            if (element->index->_parent.kind == CX_IC_LITERAL) {
+            } else if (element->index->_parent.kind == CX_IC_LITERAL) {
                 if (element->collectionType->kind == CX_ARRAY) {
                     cx_uint32 index = ((cx_icLiteral)element->index)->value.is.literal.v._unsigned_integer;
                     result->offset = index * cx_type_sizeof(element->collectionType->elementType);
@@ -464,7 +469,7 @@ static cx_ic_vmStorage *cx_ic_vmStorageNew(cx_ic_vmProgram *program, cx_icStorag
             
             result->offset += result->base->offset;
 
-             if (!result->base->dynamic && result->base->base) {
+            if (!result->base->dynamic && result->base->base) {
                 result->base = result->base->base;
             }
         }
@@ -1154,45 +1159,53 @@ OPS_EXP_EXT(GETOP, TYPE,)
 
 
 static cx_vmOp *cx_ic_vmStorageAssembleElement(cx_icStorage storage, cx_ic_vmProgram *program, cx_vmOp *vmOp, cx_icStorage topLevelStorage) {
-    cx_ic_vmOperand indexKind;
-    cx_icValue icElementSize;
-    cx_collection type = cx_collection(((cx_icElement)storage)->base->type); /* Obtain collectiontype */
-    cx_value elementSizeValue;
-    cx_uint64 elementSize;
+    cx_type type = ((cx_icElement)storage)->base->type;
 
     /* Obtain kind for index */
-    indexKind = cx_ic_getVmOperand(program, CX_IC_DEREF_VALUE, ((cx_icElement)storage)->index);
+    if (type->kind == CX_ITERATOR) {
+        cx_ic_vmOperand baseKind = cx_ic_getVmOperand(program, CX_IC_DEREF_VALUE, (cx_icValue)((cx_icElement)storage)->base);
+        vmOp->op = cx_ic_getVmSET(type, CX_IC_VMTYPE_D, CX_IC_VMOPERAND_R, baseKind, 0);
+        cx_ic_vmSetOp2Addr(program, vmOp, CX_IC_VMTYPE_W, CX_IC_VMOPERAND_R, baseKind, 
+            (cx_icValue)topLevelStorage, (cx_icValue)((cx_icElement)storage)->base);
 
-    /* Create value for elementSize */
-    elementSize = cx_type_sizeof(type->elementType);
-    cx_valueLiteralInit(&elementSizeValue, CX_LITERAL_UNSIGNED_INTEGER, &elementSize);
-    icElementSize = (cx_icValue)cx_icLiteral__create(program->icProgram, ((cx_ic)storage)->line, elementSizeValue, (cx_type)cx_uint32_o);
+    }else if (type->kind == CX_COLLECTION) {
+        cx_icValue icElementSize;
+        cx_value elementSizeValue;
+        cx_uint64 elementSize;
+        cx_collection collection = cx_collection(type);
+        cx_ic_vmOperand indexKind = cx_ic_getVmOperand(program, CX_IC_DEREF_VALUE, ((cx_icElement)storage)->index);
 
-    switch(type->kind) {
-    case CX_ARRAY:
-        vmOp->op = cx_ic_getVmELEMA(cx_type(type), CX_IC_VMTYPE_W, CX_IC_VMOPERAND_R, indexKind, 0);
-        cx_ic_vmSetOp3Addr(program, vmOp, CX_IC_VMTYPE_W, CX_IC_VMOPERAND_R, indexKind, CX_IC_VMOPERAND_V, (cx_icValue)topLevelStorage, ((cx_icElement)storage)->index, icElementSize);
-        break;
-    case CX_SEQUENCE:
-        vmOp->op = cx_ic_getVmELEMS(cx_type(type), CX_IC_VMTYPE_W, CX_IC_VMOPERAND_R, indexKind, 0);
-        cx_ic_vmSetOp3Addr(program, vmOp, CX_IC_VMTYPE_W, CX_IC_VMOPERAND_R, indexKind, CX_IC_VMOPERAND_V, (cx_icValue)topLevelStorage, ((cx_icElement)storage)->index, icElementSize);
-        break;
-    case CX_LIST:
-        if (cx_collection_elementRequiresAlloc(type)) {
-            vmOp->op = cx_ic_getVmELEML(cx_type(type), CX_IC_VMTYPE_W, CX_IC_VMOPERAND_R, indexKind, 0);
-        } else {
-            vmOp->op = cx_ic_getVmELEMLX(cx_type(type), CX_IC_VMTYPE_W, CX_IC_VMOPERAND_R, indexKind, 0);
+        /* Create value for elementSize */
+        elementSize = cx_type_sizeof(collection->elementType);
+        cx_valueLiteralInit(&elementSizeValue, CX_LITERAL_UNSIGNED_INTEGER, &elementSize);
+        icElementSize = (cx_icValue)cx_icLiteral__create(program->icProgram, ((cx_ic)storage)->line, elementSizeValue, (cx_type)cx_uint32_o);
+
+        switch(collection->kind) {
+        case CX_ARRAY:
+            vmOp->op = cx_ic_getVmELEMA(type, CX_IC_VMTYPE_W, CX_IC_VMOPERAND_R, indexKind, 0);
+            cx_ic_vmSetOp3Addr(program, vmOp, CX_IC_VMTYPE_W, CX_IC_VMOPERAND_R, indexKind, CX_IC_VMOPERAND_V, (cx_icValue)topLevelStorage, ((cx_icElement)storage)->index, icElementSize);
+            break;
+        case CX_SEQUENCE:
+            vmOp->op = cx_ic_getVmELEMS(type, CX_IC_VMTYPE_W, CX_IC_VMOPERAND_R, indexKind, 0);
+            cx_ic_vmSetOp3Addr(program, vmOp, CX_IC_VMTYPE_W, CX_IC_VMOPERAND_R, indexKind, CX_IC_VMOPERAND_V, (cx_icValue)topLevelStorage, ((cx_icElement)storage)->index, icElementSize);
+            break;
+        case CX_LIST:
+            if (cx_collection_elementRequiresAlloc(collection)) {
+                vmOp->op = cx_ic_getVmELEML(type, CX_IC_VMTYPE_W, CX_IC_VMOPERAND_R, indexKind, 0);
+            } else {
+                vmOp->op = cx_ic_getVmELEMLX(type, CX_IC_VMTYPE_W, CX_IC_VMOPERAND_R, indexKind, 0);
+            }
+            cx_ic_vmSetOp2Addr(program, vmOp, CX_IC_VMTYPE_W, CX_IC_VMOPERAND_R, indexKind, (cx_icValue)topLevelStorage, ((cx_icElement)storage)->index);
+            break;
+        case CX_MAP:
+            if (cx_collection_elementRequiresAlloc(collection)) {
+                vmOp->op = cx_ic_getVmELEMM(type, CX_IC_VMTYPE_W, CX_IC_VMOPERAND_R, indexKind, 0);
+            } else {
+                vmOp->op = cx_ic_getVmELEMMX(type, CX_IC_VMTYPE_W, CX_IC_VMOPERAND_R, indexKind, 0);
+            }
+            cx_ic_vmSetOp2Addr(program, vmOp, CX_IC_VMTYPE_W, CX_IC_VMOPERAND_R, indexKind, (cx_icValue)topLevelStorage, ((cx_icElement)storage)->index);
+            break;
         }
-        cx_ic_vmSetOp2Addr(program, vmOp, CX_IC_VMTYPE_W, CX_IC_VMOPERAND_R, indexKind, (cx_icValue)topLevelStorage, ((cx_icElement)storage)->index);
-        break;
-    case CX_MAP:
-        if (cx_collection_elementRequiresAlloc(type)) {
-            vmOp->op = cx_ic_getVmELEMM(cx_type(type), CX_IC_VMTYPE_W, CX_IC_VMOPERAND_R, indexKind, 0);
-        } else {
-            vmOp->op = cx_ic_getVmELEMMX(cx_type(type), CX_IC_VMTYPE_W, CX_IC_VMOPERAND_R, indexKind, 0);
-        }
-        cx_ic_vmSetOp2Addr(program, vmOp, CX_IC_VMTYPE_W, CX_IC_VMOPERAND_R, indexKind, (cx_icValue)topLevelStorage, ((cx_icElement)storage)->index);
-        break;
     }
 
     return cx_vmProgram_addOp(program->program, ((cx_ic)storage)->line);
@@ -1257,30 +1270,32 @@ static cx_vmOp *cx_ic_vmStorageAssembleNested(cx_icStorage icStorage, cx_ic_vmPr
              * is dynamic the address will be calculated at runtime. */
             if (storage->dynamic || cx_ic_isReference(storage->base->accumulator)) {
                 /* If the base is an object store the address in the accumulator */
-                if (base->kind == CX_STORAGE_OBJECT) {
-                    vmOp->op = sizeof(intptr_t) == 4 ? CX_VM_SET_LRV : CX_VM_SET_DRV;
-                    cx_ic_vmStorageAddReferee(program, topLevelStorage, &vmOp->ic.b._1);
-                    vmOp->lo.w = (intptr_t)((cx_icObject)base)->ptr;
-                    if (storage->offset) {
-                        vmOp->lo.w += storage->offset;
-                    }
-                    vmOp = cx_vmProgram_addOp(program->program, ((cx_ic)icStorage)->line);
-
-                /* If the base is a local store the address of the local in the accumulator */
-                } else if (base->kind == CX_STORAGE_LOCAL) {
-                    if (!cx_ic_isReference(storage->base->accumulator)) {
-                        vmOp->op = cx_ic_getVmSETX(NULL, CX_IC_VMTYPE_W, CX_IC_VMOPERAND_R, CX_IC_VMOPERAND_R, 0);
+                if (base->type->kind != CX_ITERATOR) {
+                    if (base->kind == CX_STORAGE_OBJECT) {
+                        vmOp->op = sizeof(intptr_t) == 4 ? CX_VM_SET_LRV : CX_VM_SET_DRV;
                         cx_ic_vmStorageAddReferee(program, topLevelStorage, &vmOp->ic.b._1);
-                        vmOp->ic.b._2 = storage->base->addr;
+                        vmOp->lo.w = (intptr_t)((cx_icObject)base)->ptr;
                         if (storage->offset) {
-                            vmOp->ic.b._2 += storage->offset;
+                            vmOp->lo.w += storage->offset;
                         }
                         vmOp = cx_vmProgram_addOp(program->program, ((cx_ic)icStorage)->line);
-                    } else {
-                        vmOp->op = sizeof(intptr_t) == 4 ? CX_VM_SET_LRR : CX_VM_SET_DRR;
-                        cx_ic_vmStorageAddReferee(program, topLevelStorage, &vmOp->ic.b._1);
-                        vmOp->ic.b._2 = storage->base->addr;
-                        vmOp = cx_vmProgram_addOp(program->program, ((cx_ic)icStorage)->line);
+
+                    /* If the base is a local store the address of the local in the accumulator */
+                    } else if (base->kind == CX_STORAGE_LOCAL) {
+                        if (!cx_ic_isReference(storage->base->accumulator)) {
+                            vmOp->op = cx_ic_getVmSETX(NULL, CX_IC_VMTYPE_W, CX_IC_VMOPERAND_R, CX_IC_VMOPERAND_R, 0);
+                            cx_ic_vmStorageAddReferee(program, topLevelStorage, &vmOp->ic.b._1);
+                            vmOp->ic.b._2 = storage->base->addr;
+                            if (storage->offset) {
+                                vmOp->ic.b._2 += storage->offset;
+                            }
+                            vmOp = cx_vmProgram_addOp(program->program, ((cx_ic)icStorage)->line);
+                        } else {
+                            vmOp->op = sizeof(intptr_t) == 4 ? CX_VM_SET_LRR : CX_VM_SET_DRR;
+                            cx_ic_vmStorageAddReferee(program, topLevelStorage, &vmOp->ic.b._1);
+                            vmOp->ic.b._2 = storage->base->addr;
+                            vmOp = cx_vmProgram_addOp(program->program, ((cx_ic)icStorage)->line);
+                        }
                     }
                 }
 
@@ -1570,6 +1585,16 @@ static cx_vmOpKind cx_ic_getVmPush(cx_icOp op, cx_type t, cx_ic_vmType typeKind,
     }\
 }
 
+static cx_vmOpKind cx_ic_getVmInc(cx_icOp op, cx_type t, cx_ic_vmType typeKind, cx_ic_vmOperand op1, cx_ic_vmOperand op2) {
+    cx_vmOpKind result = CX_VM_STOP;
+
+    if (((cx_icStorage)op->s1)->type->kind == CX_ITERATOR) {
+        result = cx_ic_getVmITER_NEXT(t, CX_IC_VMTYPE_W, op2, op1, 0);
+    } else {
+        result = cx_ic_getVmINC(t, typeKind, op1, 0, 0);
+    }
+    return result;
+}
 
 static cx_vmOpKind cx_ic_getVmOpKind(cx_ic_vmProgram *program, cx_icOp op, cx_icValue storage, cx_type t, cx_ic_vmType typeKind, cx_ic_vmOperand op1, cx_ic_vmOperand op2, cx_icDerefMode deref1, cx_icDerefMode deref2) {
     cx_vmOpKind result = CX_VM_STOP;
@@ -1592,7 +1617,7 @@ static cx_vmOpKind cx_ic_getVmOpKind(cx_ic_vmProgram *program, cx_icOp op, cx_ic
     case CX_IC_MUL: cx_ic_getVmArith(MUL, t, typeKind, op1, op2); break;
     case CX_IC_DIV: cx_ic_getVmArith(DIV, t, typeKind, op1, op2); break;
     case CX_IC_MOD: result = cx_ic_getVmMODI(t, typeKind, op1, op2, 0); break;
-    case CX_IC_INC: result = cx_ic_getVmINC(t, typeKind, op1, 0, 0); break;
+    case CX_IC_INC: result = cx_ic_getVmInc(op, t, typeKind, op1, op2); break;
     case CX_IC_DEC: result = cx_ic_getVmDEC(t, typeKind, op1, 0, 0); break;
     case CX_IC_XOR: result = cx_ic_getVmXOR(t, typeKind, op1, op2, 0); break;
     case CX_IC_OR: result = cx_ic_getVmOR(t, typeKind, op1, op2, 0); break;
@@ -1941,8 +1966,18 @@ static void cx_ic_getVmOp(cx_ic_vmProgram *program, cx_icOp op) {
             opDeref2 = op->s2Deref;
         }
         /* no break */
+    case CX_IC_INC: {
+        cx_type t = ((cx_icStorage)op->s1)->type;
+        if (t->kind == CX_ITERATOR) {
+            op2 = op->s2;
+            op1 = op->s1;
+            opDeref2 = op->s2Deref;
+            opDeref1 = CX_IC_DEREF_ADDRESS;
+            storage = NULL;
+            break;
+        }
+    }
     case CX_IC_DEFINE:
-    case CX_IC_INC:
     case CX_IC_DEC:
     case CX_IC_RET:
     case CX_IC_FREE:
@@ -2020,7 +2055,7 @@ static void cx_ic_getVmOp(cx_ic_vmProgram *program, cx_icOp op) {
             op1 = op->s1;
             storage = NULL;
             vmOp->hi.w = (cx_word)((cx_icObject)op->s2)->ptr;
-            opDeref1 = op->s1Deref;            
+            opDeref1 = op->s1Deref;        
         }
 
         break;
@@ -2056,7 +2091,6 @@ static void cx_ic_getVmOp(cx_ic_vmProgram *program, cx_icOp op) {
     if (op1) {
         /* Operation has two operands */
         if (op2) {
-
             if (op3) {
                 cx_vmOp3(program, vmOp, op, op1, op2, op3, opDeref1, opDeref2, opDeref3);
             } else if (storage && (storage != op1)) {

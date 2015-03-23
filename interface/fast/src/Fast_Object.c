@@ -66,7 +66,10 @@ cx_int16 Fast_Object_serialize(Fast_Object _this, cx_type dstType, cx_word dst) 
             dstIsDelegate = TRUE;
         }
 
-        if (dstIsDelegate) {
+        /* Handle iterators */
+        if ((dstType->kind == CX_ITERATOR) && (srcType->kind == CX_COLLECTION)) {
+            cx_iterator_set((void*)dst, obj, cx_collection(srcType));
+        } else if (dstIsDelegate) {
             if (srcIsDelegate) {
                 cx_value vDst, vSrc;
                 cx_valueValueInit(&vDst, NULL, cx_type(dstType), (void *)dst);

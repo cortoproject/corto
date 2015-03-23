@@ -64,14 +64,16 @@ typedef struct cx_ll_s* cx_ll;
 /* C language binding type definition macro's */
 #define CX_ANY(__type) typedef struct __type {cx_type type; void *value; cx_bool owner;} __type
 #define CX_ITERATOR(__type) typedef struct __type {\
+    void *current;\
     cx_collection type;\
+    cx_bool (*next)(void* iterator);\
     union {\
         struct { /* CX_ARRAY and CX_SEQUENCE */\
             void *array;\
-            void *element;\
+            int32_t elementSize;\
+            void* max;\
         } array;\
         struct {\
-        	cx_ll *ll;\
         	cx_iter iter;\
         } ll;\
     } is;\

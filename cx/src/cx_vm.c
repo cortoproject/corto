@@ -730,10 +730,8 @@ typedef union Di2f_t {
 /* op1 is hasNext, op2 is the result of next and op3 is the iterator */
 #define ITER_NEXT(type,code)\
     ITER_NEXT_##code:\
-        fetchOp3(ITER_NEXT, code);\
-        if ((op1_##code = (W_t)cx_iterator_hasNext((void*)op3_##code))) {\
-            op2_##code = (W_t)cx_iterator_next((void*)op3_##code);\
-        }\
+        fetchOp2(ITER_NEXT, code);\
+        op1_##code = (W_t)cx_iterator_next((void*)op2_##code);\
         next();\
 
 #define JUMP(type, code)\
@@ -1070,13 +1068,20 @@ int32_t cx_vm_run(cx_vmProgram program, void *result) {
 
 /* This function converts a single instruction to a string */
 #ifdef CX_IC_TRACING
-char * cx_vmOp_toString(char * string, cx_vmOp *instr, const char *op, const char *type, const char *lvalue, const char *rvalue, const char* fetch) {
+char * cx_vmOp_toString(
+    char * string, cx_vmOp *instr, const char *op, const char *type, const char *lvalue, const char *rvalue, const char* fetch) {
     char *result = string;
 
     if (fetch && strlen(fetch)) {
-        result = strappend(result, "%s_%s%s%s_%s %u %u %u %u\n", op, type, lvalue, rvalue, fetch, instr->ic.b._1, instr->ic.b._2, instr->lo.w, instr->hi.w);
+        result = strappend(
+            result, 
+            "%s_%s%s%s_%s %u %u %u %u\n", 
+            op, type, lvalue, rvalue, fetch, instr->ic.b._1, instr->ic.b._2, instr->lo.w, instr->hi.w);
     } else {
-        result = strappend(result, "%s_%s%s%s %hu %hu %u %u\n", op, type, lvalue, rvalue, instr->ic.b._1, instr->ic.b._2, instr->lo.w, instr->hi.w);
+        result = strappend(
+            result, 
+            "%s_%s%s%s %hu %hu %u %u\n", 
+            op, type, lvalue, rvalue, instr->ic.b._1, instr->ic.b._2, instr->lo.w, instr->hi.w);
     }
 
     return result;

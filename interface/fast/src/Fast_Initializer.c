@@ -130,7 +130,8 @@ cx_type Fast_Parser_initGetType(Fast_Initializer _this, cx_member *m_out) {
                 } else {
                     if (m_out) {
                         cx_id id;
-                        Fast_Parser_error(yparser(), "too many elements for non-composite\\collection type '%s'", Fast_Parser_id(t, id));
+                        Fast_Parser_error(yparser(), 
+                            "too many elements for non-composite\\collection type '%s'", Fast_Parser_id(t, id));
                         result = NULL;
                     }
                 }
@@ -181,7 +182,8 @@ cx_int16 Fast_Initializer_construct(Fast_Initializer _this) {
 #ifdef CX_INIT_DEBUG
     {
         cx_id id, id2;
-        printf("%*s%d[%s %p]: construct (type=%s)\n", indent, " ", yparser()->line, Fast_Parser_id(cx_typeof(_this), id), _this, Fast_Parser_id(t, id2));
+        printf("%*s%d[%s %p]: construct (type=%s)\n", 
+            indent, " ", yparser()->line, Fast_Parser_id(cx_typeof(_this), id), _this, Fast_Parser_id(t, id2));
         indent++;
     }
 #endif
@@ -319,7 +321,8 @@ cx_int16 Fast_Initializer_next_v(Fast_Initializer _this) {
     {
         cx_id id, id2;
         printf("%*s%d[%s %p]: next(fp=%d, location=%d, type=%s, member=%s)\n",
-               indent, " ", yparser()->line, Fast_Parser_id(cx_typeof(_this), id), _this, _this->fp, _this->frames[_this->fp].location,
+               indent, " ", yparser()->line, Fast_Parser_id(cx_typeof(_this), id), _this, _this->fp, 
+               _this->frames[_this->fp].location,
                _this->frames[_this->fp].type?Fast_Parser_id(_this->frames[_this->fp].type, id2):NULL,
                _this->frames[_this->fp].member?cx_nameof(_this->frames[_this->fp].member):NULL);
     }
@@ -340,7 +343,9 @@ cx_int8 Fast_Initializer_pop_v(Fast_Initializer _this) {
     {
         cx_id id;
         indent--;
-        printf("%*s%d[%s %p]: pop(fp=%d, location=%d)\n", indent, " ", yparser()->line, Fast_Parser_id(cx_typeof(_this), id), _this, _this->fp, _this->frames[_this->fp].location);
+        printf("%*s%d[%s %p]: pop(fp=%d, location=%d)\n", 
+            indent, " ", yparser()->line, 
+            Fast_Parser_id(cx_typeof(_this), id), _this, _this->fp, _this->frames[_this->fp].location);
     }
 #endif
         Fast_Initializer_next(_this);
@@ -373,7 +378,8 @@ cx_int16 Fast_Initializer_push_v(Fast_Initializer _this) {
             cx_id id, id2;
             printf("%*s%d[%s %p]: push(fp=%d, location=%d, type=%s, member=%s)\n",
                    indent, " ", yparser()->line, Fast_Parser_id(cx_typeof(_this), id), _this, _this->fp,
-                   _this->frames[_this->fp].location, _this->frames[_this->fp].type?Fast_Parser_id(_this->frames[_this->fp].type, id2):NULL,
+                   _this->frames[_this->fp].location, 
+                   _this->frames[_this->fp].type ? Fast_Parser_id(_this->frames[_this->fp].type, id2) : NULL,
                    _this->frames[_this->fp].member?cx_nameof(_this->frames[_this->fp].member):NULL);
             indent++;
         }

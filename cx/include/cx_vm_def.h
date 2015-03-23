@@ -94,7 +94,7 @@ extern "C" {
     OP2_EXP(expand##2, ELEMM, W, R, PQRV, typeAction, opAction)\
     OP2_EXP(expand##2, ELEMMX, W, R, PQRV, typeAction, opAction)\
     OP2_EXP(expand##2, ITER_SET, W, PQR, PQRV, typeAction, opAction)\
-    OP3_EXP(expand##3, ITER_NEXT, W, PQR, PQR, PQRV, typeAction, opAction)\
+    OP2_EXP(expand##2, ITER_NEXT, W, PQR, PQRV, typeAction, opAction)\
     OP1_EXP(expand##1, PUSH, BSLD, PQRV, typeAction, opAction) /* Regular push */\
     OP1_EXP(expand##1, PUSHX, BSLD, R, typeAction, opAction) /* Push address of a register */\
     OP1_EXP(expand##1, PUSHANY, W, PQRV, typeAction, opAction) /* Push any value */\

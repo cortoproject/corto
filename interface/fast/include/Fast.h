@@ -66,8 +66,6 @@ Fast_valueKind Fast_valueKindFromType(cx_type type);
 #include "Fast_InitializerVariable.h"
 #include "Fast_InitOper.h"
 #include "Fast_Integer.h"
-#include "Fast_IteratorLocal.h"
-#include "Fast_IteratorObject.h"
 #include "Fast_Literal.h"
 #include "Fast_Local.h"
 #include "Fast_Lvalue.h"

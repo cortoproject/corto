@@ -380,6 +380,7 @@ int cx_genDepBuildAction(cx_object o, void* userData) {
             g_itemDepend(dependee, CX_DECLARED, type, CX_DEFINED);
         }
 
+        /* TODO: this is not nice */
         if (cx_class_instanceof(cx_procedure_o, cx_typeof(o))) {
             /* Insert base-dependency: methods may only be declared after the base of a class has been defined. */
             if (cx_typeof(o) != cx_type(cx_function_o)) {
@@ -412,7 +413,7 @@ int cx_genDepBuildAction(cx_object o, void* userData) {
                     g_itemDepend(dependee, CX_DECLARED, parent, CX_DECLARED);
 
                     /* If child must be declared when parent is declared, parent may only be defined after
-                     * all such childs are defined. */
+                     * all such children are defined. */
                     g_itemDepend(parent, CX_DEFINED, dependee, CX_DEFINED);
                     break;
                 case CX_DEFINED:

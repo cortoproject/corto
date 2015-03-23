@@ -70,7 +70,7 @@ int cx_ainc(int* count);
 int cx_adec(int* count);
 
 /* use GNU atomic compare and swap */
-#define cx_cas(ptr,old,new) __sync_bool_compare_and_swap(ptr,old,new)
+#define cx_cas(ptr, old, new) __sync_bool_compare_and_swap(ptr, old, new)
 
 #ifdef __cplusplus
 }
