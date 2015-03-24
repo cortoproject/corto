@@ -252,7 +252,7 @@ error:
 
 
 cx_int16 cortex_genMain(cx_generator g) {
-    const char docs_filename[] = "docs";
+    const char docs_filename[] = "doc";
     int success;
 
     cx_mkdir(docs_filename);

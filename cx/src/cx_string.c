@@ -147,7 +147,6 @@ size_t stresc(char *out, size_t n, const char *in) {
     const char *ptr = in;
     char ch, *bptr = out, buff[3];
     size_t written = 0;
-
     while ((ch = *ptr++)) {
         if ((written += (chresc(buff, ch, '"') - buff)) <= n) {
             *bptr++ = buff[0];
@@ -156,9 +155,9 @@ size_t stresc(char *out, size_t n, const char *in) {
             }
         }
     }
-
-    if (bptr) *bptr = '\0';
-
+    if (bptr) {
+        *bptr = '\0';
+    }
     return written;
 }
 
