@@ -1236,17 +1236,19 @@ cx_void Fast_Parser_blockPop(Fast_Parser _this) {
 /* $begin(::cortex::Fast::Parser::blockPop) */
     Fast_CHECK_ERRSET(_this);
 
+    _this->blockCount--;
+
     /* Blocks are parsed only in 2nd pass */
     if (_this->pass) {
         if (_this->block) {
             cx_set_ext(_this, &_this->block, _this->block->parent, "pop block");
-            _this->blockPreset = FALSE;
         } else {
             /* Got confused by earlier errors */
             Fast_Parser_error(_this, "unable to continue parsing due to previous errors");
             _this->abort = TRUE;
         }
     }
+    _this->blockPreset = FALSE;
 
 /* $end */
 }
@@ -1255,6 +1257,10 @@ cx_void Fast_Parser_blockPop(Fast_Parser _this) {
 Fast_Block Fast_Parser_blockPush(Fast_Parser _this, cx_bool presetBlock) {
 /* $begin(::cortex::Fast::Parser::blockPush) */
     Fast_CHECK_ERRSET(_this);
+
+    if (!_this->blockPreset || presetBlock) {
+        _this->blockCount++;        
+    }
 
     /* Blocks are parsed only in 2nd pass */
     if (_this->pass) {
@@ -1269,9 +1275,9 @@ Fast_Block Fast_Parser_blockPush(Fast_Parser _this, cx_bool presetBlock) {
         }
 
         _this->blockPreset = presetBlock;
-
         return newBlock;
     } else {
+        _this->blockPreset = presetBlock;
         return NULL;
     }
 /* $end */
@@ -1424,7 +1430,7 @@ Fast_Variable Fast_Parser_declaration(Fast_Parser _this, Fast_Variable type, cx_
     _this->stagingAllowed = FALSE;
 
     /* If block is not root or local-keyword is used, declare local */
-    if (_this->block->parent || _this->isLocal) {
+    if (_this->blockCount || _this->isLocal) {
         if (_this->pass) {
             cx_type t;
             if (!type) {

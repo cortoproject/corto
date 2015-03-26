@@ -498,6 +498,7 @@ CX_CLASS_DEF(Fast_Parser) {
     cx_uint32 column;
     cx_string token;
     Fast_Block block;
+    cx_uint32 blockCount;
     Fast_Variable scope;
     cx_uint32 errors;
     cx_uint32 warnings;

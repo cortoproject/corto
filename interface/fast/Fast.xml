@@ -654,6 +654,8 @@
 					<member name="column" type="uint32" modifiers="readonly"/>
 					<member name="token" type="string" modifiers="readonly"/>
 					<member name="block" type="Fast::Block" modifiers="readonly"/>
+					<!-- Keep track of block-nesting in 1st pass -->
+					<member name="blockCount" type="uint32" modifiers="readonly"/>
 					<member name="scope" type="Fast::Variable" modifiers="readonly"/>
 					<member name="errors" type="uint32" modifiers="readonly"/>
 					<member name="warnings" type="uint32" modifiers="readonly"/>

@@ -260,7 +260,13 @@ block
 /* Function declarations */
 /* ======================================================================== */
 function_implementation
-    : function_declaration {$<Fast>$ = Fast_Parser_declareFunctionParams(yparser(),$1); fast_op;} block {Fast_Parser_bind(yparser(), $1, $<Fast>2); fast_op;}
+    : function_declaration {
+        $<Fast>$ = Fast_Parser_declareFunctionParams(yparser(),$1); fast_op;
+    } block {
+        if ($<Fast>2) {
+            Fast_Parser_bind(yparser(), $1, $<Fast>2); fast_op;
+        }
+    }
     | function_declaration {
         $<Fast>$ = Fast_Parser_declareFunctionParams(yparser(),$1); fast_op;
         Fast_Parser_blockPush(yparser(), FALSE); fast_op;
@@ -330,7 +336,7 @@ package_declaration
     ;
 
 declaration
-    : identifier declaration_list                               {$$=Fast_declarationSeqDo($1, &$2, FALSE); fast_op; $$=NULL;}
+    : identifier declaration_list { $$=Fast_declarationSeqDo($1, &$2, FALSE); fast_op; $$=NULL; }
     | KW_LOCAL {yparser()->isLocal = TRUE;} declaration_ref     {$$=$3;}
     ;
 
@@ -581,7 +587,7 @@ declaration_expr
     | declaration '{' {Fast_Parser_initPushStatic(yparser()); fast_op; Fast_Parser_initPop(yparser()); fast_op;} '}'
     | declaration ':' {Fast_Parser_initPushStatic(yparser()); fast_op; Fast_Parser_initPop(yparser()); fast_op;}
     | declaration '=' {
-        if (!yparser()->isLocal) {
+        if (!yparser()->isLocal && !yparser()->blockCount) {
             _fast_err("invalid usage of assignment operator, initialize objects with ':'");
             YYERROR;
         }
@@ -707,8 +713,8 @@ case_label
 /* Observer statement */
 /* ======================================================================== */
 observer_statement
-    : observer_declaration block
-    | observer_declaration ENDL
+    : observer_declaration block {}
+    | observer_declaration ENDL {yparser()->blockCount--;}
     ;
 
 observer_declaration
@@ -782,6 +788,8 @@ int fast_yparse(Fast_Parser parser, cx_uint32 line, cx_uint32 column) {
     /* Start parsing */
     parser->line = line;
     parser->column = column;
+
+    yparser()->blockCount = 0;
 
     if (!parser->block) {
         parser->block = Fast_Block__create(NULL);
