@@ -41,29 +41,35 @@ git clone https://github.com/Seldomberry/Cortex.git
 ## Building
 
 Setup the environment for building and running Cortex:
+
 ```
 source configure
 ```
 
 From the Cortex root directory, run the command:
+
 ```
 make
 ```
 
 Now you can use the cortex interpreter to run a cortex script:
+
 ```
 cortex filename.cortex
 ```
 
 You can also start the cortex shell which allows exploring the object store:
+
 ```
 cx.h
 ```
 
 To validate that your build is sound run the testsuite with the following command:
+
 ```
 test/language/run.sh
 ```
+
 You should get `OK` or `FAIL: not implemented` for all test cases.
 
 ## Making changes
@@ -78,6 +84,7 @@ Please ensure:
  - Follow the coding style of the file you're changing. If you really want to change it, do so consistently in the whole project. And have a good reason for it (aesthetics is not a good reason :-).
 
 ## Committing changes
+
 Before committing your changes:
  - Verify that the code compiles without warnings.
  - Run testcases to ensure that you didn't break anything.
@@ -86,11 +93,13 @@ Before committing your changes:
  - Use your own judgement to decide whether a review is required for other changes.
 
 Commit titles and descriptions:
+
 - Titles should not exceed 50 characters.
 - Avoid dots (.) at the end of titles.
 - Use full grammar and spelling and punctuation for descriptions.
 
 ## Submitting issues
+
 - Use concise but precise titles
 - Avoid dots (.) at the end of titles.
 - Use full grammar and spelling and punctuation for descriptions.
