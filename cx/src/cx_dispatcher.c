@@ -9,26 +9,12 @@
 #include "cx.h"
 #include "cx__meta.h"
 
-/* ::cortex::lang::dispatcher::getEvent(observer observer,object me,object observable,object src) */
-cx_observableEvent cx_dispatcher_getEvent_v(cx_dispatcher _this, cx_observer observer, cx_object me, cx_object observable, cx_object src) {
-/* $begin(::cortex::lang::dispatcher::getEvent) */
-
-    CX_UNUSED(_this);
-    CX_UNUSED(observer);
-    CX_UNUSED(me);
-    CX_UNUSED(observable);
-    CX_UNUSED(src);
-    return NULL;
-
-/* $end */
-}
-
-/* ::cortex::lang::dispatcher::post(event event) */
-cx_void cx_dispatcher_post_v(cx_dispatcher _this, cx_event event) {
+/* ::cortex::lang::dispatcher::post(event e) */
+cx_void cx_dispatcher_post_v(cx_dispatcher _this, cx_event e) {
 /* $begin(::cortex::lang::dispatcher::post) */
 
     CX_UNUSED(_this);
-    CX_UNUSED(event);
+    CX_UNUSED(e);
 
 /* $end */
 }

@@ -20,7 +20,7 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* ::cortex::Fast::FloatingPoint::init() */
 cx_int16 Fast_FloatingPoint_init(Fast_FloatingPoint _this) {
 /* $begin(::cortex::Fast::FloatingPoint::init) */
-    Fast_Literal(_this)->kind = FAST_FloatingPoint;
+    Fast_Literal(_this)->kind = Fast_Float;
     return Fast_Literal_init(Fast_Literal(_this));
 /* $end */
 }
@@ -34,18 +34,18 @@ cx_int16 Fast_FloatingPoint_serialize(Fast_FloatingPoint _this, cx_type dstType,
     memset((void*)dst, 0, cx_type_sizeof(dstType));
 
     switch(kind) {
-    case FAST_Boolean:
+    case Fast_Bool:
         *(cx_bool*)dst = _this->value ? TRUE : FALSE;
         break;
-    case FAST_Integer:
-    case FAST_SignedInteger:
-    case FAST_FloatingPoint:
-    case FAST_String:
+    case Fast_Int:
+    case Fast_SignedInt:
+    case Fast_Float:
+    case Fast_Text:
         cx_convert(cx_primitive(cx_float64_o), &_this->value, cx_primitive(dstType), (void*)dst);
         break;
     default: {
         cx_id id;
-        Fast_Parser_error(yparser(), "cannot serialize floating point value to storage of type '%s'", cx_fullname(dstType, id));
+        Fast_Parser_error(yparser(), "cannot serialize floating point value to storage of type '%s'", Fast_Parser_id(dstType, id));
         goto error;
         break;
     }

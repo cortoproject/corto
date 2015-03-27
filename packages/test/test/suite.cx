@@ -2,8 +2,8 @@
 void Animals::
     class Dog::
         bark: string
-        int16 construct(Dog object):
-            object.bark = "woof"
+        int16 construct():
+            this.bark = "woof"
 
 // Test suite testing a phony package
 test::suite tc_animals: package=Animals::

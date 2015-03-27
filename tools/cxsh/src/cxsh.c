@@ -23,7 +23,7 @@
 
 #define BLACK  "\033[1;30m"
 #define RED    "\033[1;31m"
-#define GREEN  "\033[1;32m"
+#define GREEN  "\033[0;32m"
 #define YELLOW "\033[0;33m"
 #define BLUE   "\033[1;34m"
 #define MAGENTA "\033[1;35m"
@@ -96,15 +96,15 @@ static cx_string cxsh_findPreferredBreak(cx_string str) {
     return breakpt;
 }
 
-static cx_string cxsh_printColumnValue(cx_string str, int width){
+static cx_string cxsh_printColumnValue(cx_string str, unsigned int width){
     cx_string result = NULL;
-    if ((int)strlen(str) < (width - 2)) {
+    if (strlen(str) < (width - 2)) {
         printf("%s%*s", str, (int)(width - strlen(str)), " ");
     } else {
         cx_id buffer;
         snprintf(buffer, width - 2, "%s", str);
         (*cxsh_findPreferredBreak(buffer)) = '\0';
-        printf("%s%*s", buffer, width - strlen(buffer), " ");
+        printf("%s%*s", buffer, width - (unsigned int)strlen(buffer), " ");
         result = str + strlen(buffer);
         if (*result == ' ') {
             result++;
@@ -199,7 +199,7 @@ static int cxsh_scopeWalk(cx_object o, void* udata) {
     CX_UNUSED(udata);
 
     /* Get name of type */
-    if(cx_parentof(cx_typeof(o)) == cortex_lang_o) {
+    if(cx_checkAttr(cx_typeof(o), CX_ATTR_SCOPED) && (cx_parentof(cx_typeof(o)) == cortex_lang_o)) {
         strcpy(typeName, cx_nameof(cx_typeof(o)));
     } else {
         cx_fullname(cx_typeof(o), typeName);
@@ -378,7 +378,79 @@ static void cxsh_cd(char* arg) {
     cx_free(oldScope);
 }
 
-/* Show object */
+cx_bool cxsh_readline(cx_string cmd) {
+    char* read = 0;
+    cmd[0] = '\0';
+
+    /* Read command */
+    if ((read = fgets(cmd, CXSH_CMD_MAX, stdin)) == 0) {
+        goto empty;
+    }
+
+    /* Strip '\n' */
+    cmd[strlen(cmd) - 1] = '\0';
+
+    return read != NULL;
+empty:
+    return 0;
+}
+
+static cx_string cxsh_multiline(cx_string expr, cx_uint32 indent) {
+    char cmd[CXSH_CMD_MAX];
+    unsigned int len = strlen(expr);
+    unsigned int multiline = 0;
+
+    if (expr[len-1] == ':') {
+        unsigned int cmdLen = 0;
+        cx_id prompt;
+        cxsh_prompt(scope, FALSE, prompt);
+        multiline = 1;
+
+        do {
+            cx_uint32 i;
+            /* Print indent */
+            cxsh_color(SHELL_COLOR);
+            printf("%*s >", (unsigned int)strlen(prompt) - 2, "");
+            cxsh_color(BLUE);
+            for(i = 0; i < (indent * 4 - 1); i++) {
+                printf(".");
+            }
+            cxsh_color(NORMAL);
+            printf(" ");
+
+            cxsh_readline(cmd);
+            cmdLen = strlen(cmd);
+
+            if (!cmdLen) break;
+
+            /* Append command */
+            expr = cx_realloc(expr, len + cmdLen + 1 + 1 + (indent * 4));
+            strcat(expr, "\n");
+
+            /* Insert indent */
+            {
+                char indentStr[CXSH_CMD_MAX];
+                memset(indentStr, ' ', indent * 4);
+                indentStr[indent * 4] = '\0';
+                strcat(expr, indentStr);
+            }
+            strcat(expr, cmd);
+
+            /*  cmd can be a nested multiline expression */
+            expr = cxsh_multiline(expr, indent + 1);
+            len = strlen(expr);
+        } while (cmdLen);
+    }
+
+    if (multiline && (indent == 1)) {
+        expr = cx_realloc(expr, len + 1 + 1);
+        strcat(expr, "\n");
+    }
+
+    return expr;
+}
+
+/* Show expression */
 static int cxsh_show(char* object) {
     cx_id id;
     char state[sizeof("valid | declared | defined")];
@@ -386,12 +458,16 @@ static int cxsh_show(char* object) {
     struct cx_serializer_s s;
     cx_string_ser_t sdata;
     cx_value result;
+    char *expr = object;
 
     memset(&result, 0, sizeof(cx_value));
 
     cx_toggleEcho(FALSE);
 
-    if (!cx_expr(scope, object, &result)) {
+    /* Check whether this is a multiline expression */
+    expr = cxsh_multiline(cx_strdup(object), 1);
+
+    if (!cx_expr(scope, expr, &result)) {
         cx_object o = NULL;
         if (result.kind == CX_OBJECT) {
             o = cx_valueObject(&result);
@@ -439,10 +515,11 @@ static int cxsh_show(char* object) {
             }
             printf("\n");
         }
-
+        cx_dealloc(expr);
         cx_toggleEcho(TRUE);
         return 0;
     } else {
+        cx_dealloc(expr);
         cx_toggleEcho(TRUE);
         return -1;
     }
@@ -519,13 +596,11 @@ static int cxsh_doCmd(char* cmd) {
     arg[0] = '\0';
 
     /* ls */
-    if (!memcmp(cmd, "ls", strlen("ls"))) {
-        sscanf(cmd, "ls  %s", arg);
+    if (((sscanf(cmd, "ls %s", arg) == 1) && (cmd[2] == ' ')) || !strcmp(cmd, "ls")) {
         cxsh_ls(arg);
     } else
     /* tree */
-    if (!memcmp(cmd, "tree", strlen("tree"))) {
-        sscanf(cmd, "tree %s", arg);
+    if (((sscanf(cmd, "tree %s", arg) == 1) && (cmd[4] == ' ')) || !strcmp(cmd, "tree")) {
         cxsh_tree(arg);
     } else
     /* exit */
@@ -533,16 +608,15 @@ static int cxsh_doCmd(char* cmd) {
         goto quit;
     } else
     /* cd */
-    if (!memcmp(cmd, "cd", strlen("cd"))) {
-        sscanf(cmd, "cd %s", arg);
+    if (((sscanf(cmd, "cd %s", arg) == 1) && (cmd[2] == ' ')) || !strcmp(cmd, "cd")) {
         cxsh_cd(arg);
     } else
     /* import */
-    if (!memcmp(cmd, "import", strlen("import"))) {
+    if (!memcmp(cmd, "import ", strlen("import "))) {
         sscanf(cmd, "import %s", arg);
         cxsh_import(arg);
     } else/* drop */
-    if (!memcmp(cmd, "drop", strlen("drop"))) {
+    if (!memcmp(cmd, "drop ", strlen("drop "))) {
         sscanf(cmd, "drop %s", arg);
         cxsh_drop(arg);
     } else if (!memcmp(cmd, "clear", strlen("clear"))) {
@@ -551,26 +625,34 @@ static int cxsh_doCmd(char* cmd) {
         cxsh_help();
     } else {
         cx_char *lastErr;
-        if ((lastErr = cx_lasterror())) {
-            int location = 0;
-            cxsh_color(ERROR_COLOR);
 
-            /* If lastError starts with a line:column: indication, print an arrow */
-            if ((location = cxsh_getErrorLocation(lastErr))) {
-                cx_id prompt;
-                cxsh_prompt(scope, FALSE, prompt);
-                printf("%*s^\n", location - 1 + strlen(prompt), "");
+        if (*cmd == '/') {
+            cmd++;
+        }
+
+        if (cxsh_show(cmd)) {
+
+            if ((lastErr = cx_lasterror())) {
+                unsigned int location = 0;
+                cxsh_color(ERROR_COLOR);
+
+                /* If lastError starts with a line:column: indication, print an arrow */
+                if ((location = cxsh_getErrorLocation(lastErr))) {
+                    cx_id prompt;
+                    cxsh_prompt(scope, FALSE, prompt);
+                    printf("%*s^\n", location - 1 + (unsigned int)strlen(prompt), "");
+                }
+
+                do {
+                    cx_print("%s", lastErr);
+                } while ((lastErr = cx_lasterror()));
+
+                cxsh_color(NORMAL);
+            } else {
+                cxsh_color(ERROR_COLOR);
+                cx_print("expression '%s' did not resolve to a valid expression or command", cmd);
+                cxsh_color(NORMAL);
             }
-
-            do {
-                cx_print("%s", lastErr);
-            } while ((lastErr = cx_lasterror()));
-
-            cxsh_color(NORMAL);
-        } else {
-            cxsh_color(ERROR_COLOR);
-            cx_print("expression '%s' did not resolve to a valid expression or command", cmd);
-            cxsh_color(NORMAL);
         }
     }
 
@@ -592,33 +674,20 @@ static void cxsh_shell(void) {
         cxsh_prompt(scope, TRUE, prompt);
         printf("%s", prompt);
 
-        cmd[0] = '\0';
-
-        /* Read command */
-        if (fgets(cmd, 256, stdin) == 0) {
+        if (!cxsh_readline(cmd)) {
             continue;
         }
 
-        /* Strip '\n' */
-        cmd[strlen(cmd) - 1] = '\0';
-
         /* Forward commands */
         if (strlen(cmd)) {
-            if (cmd[0] == '/') {
-                if (cxsh_doCmd(cmd+1)) {
-                    quit = TRUE;
-                }
-            } else {
-                if (cxsh_show(cmd)) {
-                    if (cxsh_doCmd(cmd)) {
-                        quit = TRUE;
-                    }
-                }
+            if (cxsh_doCmd(cmd)) {
+                quit = TRUE;
             }
         }
     }
 }
 
+extern cx_bool CX_DEBUG_ENABLED;
 
 int main(int argc, char* argv[]) {
     int i;
@@ -632,7 +701,11 @@ int main(int argc, char* argv[]) {
 
     /* Parse arguments */
     for(i=1; i<argc; i++) {
-        cx_load(argv[i]);
+        if (!strcmp(argv[i], "-d")) {
+            CX_DEBUG_ENABLED = TRUE;
+        } else {
+            cx_load(argv[i]);
+        }
     }
 
     /* Assign scope to root */

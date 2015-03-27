@@ -20,9 +20,6 @@ extern "C" {
 /* ::cortex::os::exit(bool success) */
 cx_void os_exit(cx_bool success);
 
-/* ::cortex::os::loadavg(loadAvgKind kind) */
-cx_float64 os_loadavg(os_loadAvgKind kind);
-
 /* ::cortex::os::sleep(uint32 sec,uint32 nsec) */
 cx_void os_sleep(cx_uint32 sec, cx_uint32 nsec);
 

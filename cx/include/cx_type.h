@@ -7,7 +7,6 @@
 #define cx_type_H
 
 #include "cortex.h"
-#include "cx_typedef.h"
 #include "cx__type.h"
 
 #include "cx__api.h"
@@ -54,8 +53,8 @@ cx_int16 cx_type_construct(cx_type _this);
 /* ::cortex::lang::type::copy(any value) */
 cx_int16 cx_type_copy(cx_any _this, cx_any value);
 
-/* ::cortex::lang::type::declare(string name,typedef type) */
-cx_object cx_type_declare(cx_any _this, cx_string name, cx_typedef type);
+/* ::cortex::lang::type::declare(string name,type type) */
+cx_object cx_type_declare(cx_any _this, cx_string name, cx_type type);
 
 /* ::cortex::lang::type::define() */
 cx_int16 cx_type_define(cx_any _this);
@@ -69,8 +68,8 @@ cx_string cx_type_fullname(cx_any _this);
 /* ::cortex::lang::type::init() */
 cx_int16 cx_type_init(cx_type _this);
 
-/* ::cortex::lang::type::instanceof(typedef type) */
-cx_bool cx_type_instanceof(cx_any _this, cx_typedef type);
+/* ::cortex::lang::type::instanceof(type type) */
+cx_bool cx_type_instanceof(cx_any _this, cx_type type);
 
 /* ::cortex::lang::type::invalidate() */
 cx_void cx_type_invalidate(cx_any _this);

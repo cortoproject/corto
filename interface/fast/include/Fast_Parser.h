@@ -17,6 +17,10 @@
 extern "C" {
 #endif
 
+/* $header() */
+cx_string Fast_Parser_id(cx_object o, cx_id buffer);
+/* $end */
+
 /* ::cortex::Fast::Parser::addStatement(Fast::Node statement) */
 cx_void Fast_Parser_addStatement(Fast_Parser _this, Fast_Node statement);
 
@@ -76,6 +80,9 @@ cx_void Fast_Parser_destruct(Fast_Parser _this);
 
 /* ::cortex::Fast::Parser::elementExpr(Fast::Expression lvalue,Fast::Expression rvalue) */
 Fast_Expression Fast_Parser_elementExpr(Fast_Parser _this, Fast_Expression lvalue, Fast_Expression rvalue);
+
+/* ::cortex::Fast::Parser::finalize(alias{"cx_icProgram"} program) */
+cx_int16 Fast_Parser_finalize(Fast_Parser _this, cx_icProgram program);
 
 /* ::cortex::Fast::Parser::foreach(string loopId,Fast::Expression collection) */
 cx_int16 Fast_Parser_foreach(Fast_Parser _this, cx_string loopId, Fast_Expression collection);
@@ -143,9 +150,6 @@ Fast_Expression Fast_Parser_memberExpr(Fast_Parser _this, Fast_Expression lvalue
 /* ::cortex::Fast::Parser::observerDeclaration(string id,Fast::Expression object,eventMask mask,Fast::Object dispatcher) */
 Fast_Variable Fast_Parser_observerDeclaration(Fast_Parser _this, cx_string id, Fast_Expression object, cx_eventMask mask, Fast_Object dispatcher);
 
-/* ::cortex::Fast::Parser::observerPop() */
-cx_void Fast_Parser_observerPop(Fast_Parser _this);
-
 /* ::cortex::Fast::Parser::observerPush() */
 cx_void Fast_Parser_observerPush(Fast_Parser _this);
 
@@ -175,6 +179,9 @@ cx_void Fast_Parser_pushComplexType(Fast_Parser _this, Fast_Expression lvalue);
 
 /* ::cortex::Fast::Parser::pushLvalue(Fast::Expression lvalue,bool isAssignment) */
 cx_void Fast_Parser_pushLvalue(Fast_Parser _this, Fast_Expression lvalue, cx_bool isAssignment);
+
+/* ::cortex::Fast::Parser::pushPackage(string name) */
+cx_int16 Fast_Parser_pushPackage(Fast_Parser _this, cx_string name);
 
 /* ::cortex::Fast::Parser::pushReturnAsLvalue(function function) */
 cx_void Fast_Parser_pushReturnAsLvalue(Fast_Parser _this, cx_function function);

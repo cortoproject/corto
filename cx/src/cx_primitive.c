@@ -94,6 +94,13 @@ cx_bool cx_primitive_castable_v(cx_primitive _this, cx_type type) {
                         }
                         break;
                     case CX_INTEGER:
+                        switch(kind) {
+                        case CX_ENUM:
+                            result = TRUE;
+                            break;
+                        default:
+                            break;
+                        }
                     case CX_UINTEGER:
                         switch(kind) {
                         case CX_BINARY:
@@ -103,7 +110,6 @@ cx_bool cx_primitive_castable_v(cx_primitive _this, cx_type type) {
                         case CX_UINTEGER:
                         case CX_FLOAT:
                         case CX_TEXT:
-                        case CX_ENUM:
                         case CX_BITMASK:
                             result = TRUE;
                         default:
@@ -197,23 +203,26 @@ cx_bool cx_primitive_compatible_v(cx_primitive _this, cx_type type) {
                    break;
                }
             } else { /* Integer types are interchangable */
-                   switch(_this->kind) {
-                   case CX_BINARY:
-                   case CX_UINTEGER:
-                   case CX_INTEGER:
-                       switch(cx_primitive(type)->kind) {
-                       case CX_BINARY:
-                       case CX_UINTEGER:
-                       case CX_INTEGER:
-                           result = TRUE;
-                           break;
-                       default:
-                           break;
-                       }
-                       break;
-                   default:
-                       break;
-                   }
+                switch(_this->kind) {
+                case CX_BINARY:
+                case CX_UINTEGER:
+                case CX_INTEGER:
+                    switch(cx_primitive(type)->kind) {
+                    case CX_BINARY:
+                    case CX_UINTEGER:
+                    case CX_INTEGER:
+                        result = TRUE;
+                        break;
+                    default:
+                        break;
+                    }
+                    break;
+                case CX_FLOAT:
+                    result = TRUE;
+                    break;
+                default:
+                    break;
+                }
 
             }
         } else {

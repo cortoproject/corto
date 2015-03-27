@@ -5,10 +5,10 @@ void fail(string msg):
     "tc_element01: FAIL: $msg"
     result = false
 
-typedef IntsArray : array{uint32,3}
-typedef IntsSeq : sequence{uint32,3}
-typedef IntsList : list{uint32}
-typedef IntsMap : map{uint32,string}
+array IntsArray : uint32,3
+sequence IntsSeq : uint32,3
+list IntsList : uint32
+map IntsMap : uint32,string
 
 // Validation of results
 IntsArray ints_aCheck : 10,20,30

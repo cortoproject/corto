@@ -22,7 +22,7 @@ cx_string cortex_genId(cx_string str, cx_id id);
 cx_char* c_primitiveId(cx_primitive t, cx_char* buff);
 
 /* Parse type into C-specifier */
-cx_int16 c_specifierId(cx_generator g, cx_typedef t, cx_char* specifier, cx_bool* prefix, cx_char* postfix);
+cx_int16 c_specifierId(cx_generator g, cx_type t, cx_char* specifier, cx_bool* prefix, cx_char* postfix);
 
 /* Translate constant to C-language id */
 cx_char* c_constantId(cx_generator g, cx_constant* c, cx_char* buffer);

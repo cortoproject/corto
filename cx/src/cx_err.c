@@ -10,14 +10,14 @@
 #include "cx_async.h"
 #include "cx_mem.h"
 
-#include <stdio.h>
-#include <time.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <execinfo.h>
-#include <string.h>
+#include "stdio.h"
+#include "time.h"
+#include "stdarg.h"
+#include "stdlib.h"
+#include "execinfo.h"
+#include "string.h"
 
-static char* cx_logKind[] = {"", "debug:    ", "trace:    ", "warning:  ", "error:    ", "critical: ", "assert:  "};
+// static char* cx_logKind[] = {"", "debug:    ", "trace:    ", "warning:  ", "error:    ", "critical: ", "assert:  "};
 static cx_threadKey cx_errKey = 0;
 
 typedef struct cx_errThreadData {
@@ -89,7 +89,7 @@ static void cx_setLasterror(char* err) {
 
     data = cx_getThreadData();
     if (!data->echo) {
-        if (data->lastError) {
+        if (data->lastError[data->count]) {
             cx_dealloc(data->lastError[data->count]);
         }
         data->lastError[data->count] = cx_strdup(err);
@@ -171,31 +171,34 @@ char* cx_backtraceString(void) {
 cx_err cx_logv(cx_err kind, unsigned int level, char* fmt, va_list arg, FILE* f) {
     char buff[CX_MAX_LOG + 1];
     unsigned int written;
-    size_t n = 0, l = 0;
+    size_t n = 0;
     cx_string alloc = NULL;
     cx_string msg = buff;
+    va_list argcpy;
+    va_copy(argcpy, arg); /* Make copy of arglist in 
+                           * case vsnprintf needs to be called twice */
 
     CX_UNUSED(level);
 
-    if ((n = (vsnprintf(buff, CX_MAX_LOG, fmt, arg) + 1 + (l = strlen(cx_logKind[kind])))) > CX_MAX_LOG) {
+    if ((n = (vsnprintf(buff, CX_MAX_LOG, fmt, arg) + 1)) > CX_MAX_LOG) {
         alloc = cx_malloc(n + 2);
-        strcpy(alloc, cx_logKind[kind]);
-        vsnprintf(alloc + l, n - l, fmt, arg);
-        strcat(alloc, "\n");
+        vsnprintf(alloc, n, fmt, argcpy);
         msg = alloc;
-    } else {
-        char *ptr = buff;
-        strcpy(buff, cx_logKind[kind]);
-        vsprintf(ptr, fmt, arg);
-        strcat(ptr, "\n");
     }
+
     n = strlen(msg);
 
+    /* Set last error without \n */
     cx_setLasterror(msg);
+
+    strcat(msg, "\n");
+    n++;
 
     if (cx_getEcho() || ((kind == CX_CRITICAL) || (kind == CX_ASSERT))){
         if ((written = fwrite(msg, 1, n, f)) != n) {
-            fprintf(f, "Error in cx_logv: number of bytes written (%d) does not match length of message (%d).\n", written, n);
+            fprintf(f, 
+                "Error in cx_logv: number of bytes written (%u)"\
+                " does not match length of message (%zu).\n", written, n);
         }
     }
 

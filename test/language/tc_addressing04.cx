@@ -17,7 +17,7 @@ void test(Foo value, Foo x, Foo y, string msg):
     testparam(value.x, x, msg)
     testparam(value.y, y, msg)
 
-Foo p1, p2:
+Foo p1, p2:;
 
 p1.x = p1
 p1.y = p2

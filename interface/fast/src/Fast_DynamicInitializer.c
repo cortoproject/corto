@@ -21,7 +21,7 @@ void Fast_Parser_warning(Fast_Parser _this, char* fmt, ...);
 cx_int16 Fast_Initializer_assign(Fast_DynamicInitializer _this, Fast_Expression lvalue, Fast_Expression rvalue) {
     CX_UNUSED(_this);
     if (rvalue) {
-        Fast_BinaryExpr expr = Fast_BinaryExpr__create(lvalue, rvalue, CX_ASSIGN);
+        Fast_Binary expr = Fast_Binary__create(lvalue, rvalue, CX_ASSIGN);
         Fast_Parser_addStatement(yparser(), Fast_Node(expr));
         Fast_Parser_collect(yparser(), expr);
     }
@@ -49,10 +49,13 @@ Fast_Expression Fast_Initializer_expr(Fast_DynamicInitializer _this, cx_uint8 va
         case CX_PRIMITIVE:
             result = base;
             break;
+        case CX_ITERATOR:
+            result = base;
+            break;
         case CX_COMPOSITE:
             if (fp) {
                 Fast_String memberString = Fast_String__create(cx_nameof(thisFrame->member));
-                result = Fast_Expression(Fast_MemberExpr__create(base, Fast_Expression(memberString)));
+                result = Fast_Expression(Fast_Member__create(base, Fast_Expression(memberString)));
                 Fast_Parser_collect(yparser(), result);
                 Fast_Parser_collect(yparser(), memberString);
             } else {
@@ -73,7 +76,7 @@ Fast_Expression Fast_Initializer_expr(Fast_DynamicInitializer _this, cx_uint8 va
                 case CX_SEQUENCE:
                 case CX_ARRAY: {
                     Fast_Integer index = Fast_Integer__create(thisFrame->location);
-                    result = Fast_Expression(Fast_ElementExpr__create(base, Fast_Expression(index)));
+                    result = Fast_Expression(Fast_Element__create(base, Fast_Expression(index)));
                     Fast_Parser_collect(yparser(), result);
                     Fast_Parser_collect(yparser(), index);
                     if (cx_collection(frame->type)->kind != CX_LIST) {
@@ -83,7 +86,7 @@ Fast_Expression Fast_Initializer_expr(Fast_DynamicInitializer _this, cx_uint8 va
                 }
                 case CX_MAP:
                     if (!thisFrame->isKey) {
-                        result = Fast_Expression(Fast_ElementExpr__create(base, Fast_Expression(_this->frames[fp].keyExpr[variable])));
+                        result = Fast_Expression(Fast_Element__create(base, Fast_Expression(_this->frames[fp].keyExpr[variable])));
                         Fast_Parser_collect(yparser(), result);
                         thisFrame->isKey = FALSE;
                         Fast_Initializer_assign(_this, result, v);
@@ -100,7 +103,7 @@ Fast_Expression Fast_Initializer_expr(Fast_DynamicInitializer _this, cx_uint8 va
                 result = base;
             } else {
                 cx_id id;
-                Fast_Parser_error(yparser(), "invalid initializer type '%s'", cx_fullname(frame->type, id));
+                Fast_Parser_error(yparser(), "invalid initializer type '%s'", Fast_Parser_id(frame->type, id));
                 abort();
             }
             break;
@@ -134,10 +137,9 @@ cx_int16 Fast_DynamicInitializer_construct(Fast_DynamicInitializer _this) {
 cx_int16 Fast_DynamicInitializer_define(Fast_DynamicInitializer _this) {
 /* $begin(::cortex::Fast::DynamicInitializer::define) */
     cx_int8 variable;
-    cx_type t = Fast_Initializer_type(Fast_Initializer(_this));
     
-    /* Copy offsets of variables into frames */
-    if (!_this->assignValue && (t->kind == CX_COMPOSITE)) {
+    /* Insert define operations */
+    if (!_this->assignValue) {
         for(variable=0; variable<Fast_Initializer(_this)->variableCount; variable++) {
             Fast_Define defineExpr = Fast_Define__create(_this->frames[0].expr[variable]);
             Fast_Parser_addStatement(yparser(), Fast_Node(defineExpr));
@@ -171,12 +173,12 @@ cx_int16 Fast_DynamicInitializer_push(Fast_DynamicInitializer _this) {
     cx_uint8 fp = Fast_Initializer(_this)->fp;
     Fast_Node expr = Fast_Node(_this->frames[fp].expr[0]);
     cx_bool isAnonymousLocal = expr && 
-        (expr->kind == FAST_Variable) && (Fast_Variable(expr)->kind == FAST_Local) && (*Fast_Local(expr)->name == '<');
+        (expr->kind == Fast_VariableExpr) && (Fast_Variable(expr)->kind == Fast_LocalExpr) && (*Fast_Local(expr)->name == '<');
     
     /* Check if push is allowed */
     if (!(!fp && _this->assignValue) && (t->reference && !isAnonymousLocal)) {
         cx_id id;
-        Fast_Parser_error(yparser(), "unexpected initializer scope for value of referencetype '%s'", cx_fullname(t, id));
+        Fast_Parser_error(yparser(), "unexpected initializer scope for value of referencetype '%s'", Fast_Parser_id(t, id));
         goto error;
     }
 
@@ -239,7 +241,7 @@ cx_int16 Fast_DynamicInitializer_value(Fast_DynamicInitializer _this, Fast_Expre
     if (!type) {
         cx_id id;
         Fast_Parser_error(yparser(), "excess elements in initializer of type '%s'",
-            cx_fullname(Fast_ObjectBase(Fast_Expression(_this)->type)->value, id));
+            Fast_Parser_id(Fast_ObjectBase(Fast_Expression(_this)->type)->value, id));
         goto error;
     }
 
@@ -247,7 +249,7 @@ cx_int16 Fast_DynamicInitializer_value(Fast_DynamicInitializer _this, Fast_Expre
     if (!cx_type_compatible(type, Fast_Expression_getType_type(v, type))) {
         cx_id id, id2;
         Fast_Parser_error(yparser(), "type '%s' invalid here (expected '%s')", 
-            cx_fullname(Fast_Expression_getType(v), id), cx_fullname(type, id2));
+            Fast_Parser_id(Fast_Expression_getType(v), id), Fast_Parser_id(type, id2));
         goto error;
     }
     

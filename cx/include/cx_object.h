@@ -11,7 +11,6 @@
 #include "cx__type.h"
 #include "cx_ll.h"
 #include "cx_value.h"
-#include "cx_rbtree.h"
 #include "cx_async.h"
 
 #ifdef __cplusplus
@@ -23,28 +22,7 @@ typedef char cx_id[512];
 
 /* Action-signature for scopeWalk */
 typedef int (*cx_scopeWalkAction)(cx_object o, void* userData);
-
-/* Object attribute flags */
-#define CX_ATTR_SCOPED      (1)
-#define CX_ATTR_WRITABLE    (2)
-#define CX_ATTR_OBSERVABLE  (4)
-
-/* Object state flags */
-#define CX_VALID      (1)
-#define CX_DECLARED   (2)
-#define CX_DEFINED    (4)
-#define CX_DESTRUCTED (8)
-
-/* Object event flags */
-#define CX_ON_DECLARE    (1)
-#define CX_ON_DEFINE     (2)
-#define CX_ON_DESTRUCT   (4)
-#define CX_ON_INVALIDATE (8)
-#define CX_ON_UPDATE     (16)
-#define CX_ON_SELF       (32)
-#define CX_ON_SCOPE      (64)
-#define CX_ON_VALUE      (128)
-#define CX_ON_METAVALUE  (256)
+typedef cx_equalityKind (*cx_equalsAction)(cx_type _this, const void* o1, const void* o2);
 
 /* Event-kinds */
 #define CX_EVENT_NONE       (0)
@@ -57,9 +35,9 @@ typedef int (*cx_scopeWalkAction)(cx_object o, void* userData);
 #define CX_PARAMETER_NULL               (8)
 
 /* Object lifecycle */
-cx_object cx_new(cx_typedef type);
-cx_object cx_new_ext(cx_object src, cx_typedef type, cx_uint8 attrs, cx_string context);
-cx_object cx_declare(cx_object parent, cx_string name, cx_typedef type);
+cx_object cx_new(cx_type type);
+cx_object cx_new_ext(cx_object src, cx_type type, cx_uint8 attrs, cx_string context);
+cx_object cx_declare(cx_object parent, cx_string name, cx_type type);
 cx_int16 cx_define(cx_object o);
 void cx_destruct(cx_object o);
 void cx_attach(cx_object parent, cx_object child); /* Attach lifecycle of unscoped object to scoped object */
@@ -67,11 +45,11 @@ void cx_detach(cx_object parent, cx_object child); /* Detach lifecycle of unscop
 void cx_invalidate(cx_object o);
 
 /* Object-data */
-cx_typedef cx_typeof(cx_object o);
+cx_type cx_typeof(cx_object o);
 cx_int32 cx_countof(cx_object o);
 cx_bool cx_checkState(cx_object o, cx_int8 state);
 cx_bool cx_checkAttr(cx_object o, cx_int8 attr);
-cx_bool cx_instanceof(cx_typedef type, cx_object o);
+cx_bool cx_instanceof(cx_type type, cx_object o);
 
 /* Scoped object-data */
 cx_string cx_nameof(cx_object o);
@@ -122,6 +100,10 @@ cx_int16 cx_expr(cx_object scope, cx_string expr, cx_value *value);
 cx_int32 cx_readBegin(cx_object object);
 cx_int32 cx_readEnd(cx_object object);
 
+/* Locking */
+cx_int32 cx_lock(cx_object object);
+cx_int32 cx_unlock(cx_object object);
+
 /* Set reference field */
 void cx_set(void* ptr, cx_object value);
 void cx_set_ext(cx_object source, void* ptr, cx_object value, cx_string context);
@@ -144,7 +126,7 @@ cx_int32 cx_signatureParamType(cx_string signature, cx_uint32 id, cx_id buffer, 
 
 /* Create request signature */
 cx_string cx_signatureOpen(cx_string name);
-cx_string cx_signatureAdd(cx_string sig, cx_typedef type, int flags);
+cx_string cx_signatureAdd(cx_string sig, cx_type type, int flags);
 cx_string cx_signatureAddWildcard(cx_string sig, cx_bool isReference);
 cx_string cx_signatureClose(cx_string sig);
 
@@ -164,7 +146,7 @@ cx_object cx_fromString(cx_string string);
 cx_string cx_valueToString(cx_value* v, cx_uint32 maxLength);
 
 /* Deserialize value from string */
-void *cx_valueFromString(cx_string string, void* out, cx_typedef type);
+void *cx_valueFromString(cx_string string, void* out, cx_type type);
 
 /* Compare objects */
 cx_equalityKind cx_compare(cx_object o1, cx_object o2);

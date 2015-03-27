@@ -5,11 +5,11 @@
  *      Author: sander
  */
 
-#include <ctype.h>
-
 #include "cortex.h"
 #include "cx_generator.h"
+#include "ctype.h"
 #include "stdarg.h"
+#include "stdio.h"
 
 /* Generator functions */
 cx_generator gen_new(cx_string name, cx_string language) {
@@ -31,15 +31,15 @@ cx_generator gen_new(cx_string name, cx_string language) {
 
     /* Set name */
     if (name) {
-        result->name = strdup(name);
+        result->name = cx_strdup(name);
     } else {
         result->name = NULL;
     }
 
     if (language) {
-        result->language = strdup(language);
+        result->language = cx_strdup(language);
     } else {
-        result->language = strdup("c"); /* Take 'c' as default language */
+        result->language = cx_strdup("c"); /* Take 'c' as default language */
     }
 
     /* Set id-generation to default */
@@ -119,7 +119,12 @@ void gen_parse(cx_generator g, cx_object object, cx_bool parseSelf, cx_bool pars
         o->parseScope = parseScope;
 
         if (prefix) {
-            o->prefix = strdup(prefix);
+            if (strlen(prefix) >= sizeof(cx_id)) {
+                cx_error("prefix cannot be longer than %d characters", sizeof(cx_id));
+                o->prefix = NULL;
+            } else {
+                o->prefix = cx_strdup(prefix);
+            }
         } else {
             o->prefix = NULL;
         }
@@ -261,19 +266,7 @@ static int g_closeFile(void* o, void* udata) {
 
     file = o;
 
-    /* Free snippets */
-    if (file->snippets) {
-        cx_llWalk(file->snippets, g_freeSnippet, file);
-        cx_llFree(file->snippets);
-    }
-    if (file->headers) {
-        cx_llWalk(file->headers, g_freeSnippet, file);
-        cx_llFree(file->headers);
-    }
-
-    cx_fileClose(file->file);
-    cx_dealloc(file->name);
-    cx_dealloc(file);
+    g_fileClose(file);
 
     return 1;
 }
@@ -377,7 +370,7 @@ cx_int16 g_serializeImportsReference(cx_serializer s, cx_value *v, void* userDat
                 }
                 if (!parent) {
                     parent = o;
-                    while(parent && (cx_typeof(parent)->real->kind != CX_VOID)) {
+                    while(parent && (cx_typeof(parent)->kind != CX_VOID)) {
                         parent = cx_parentof(parent);
                     }
                     if (!g->imports) {
@@ -576,13 +569,17 @@ static cx_char* g_oidTransform(cx_generator g, cx_object o, cx_id _id, g_idKind 
              * the argument-names. This results in a string with only the types, which is enough to
              * generate unique names in languages which do not support overloading. */
             cx_id tmp, buff;
-            cx_uint32 count, i;
+            cx_int32 count, i;
             strcpy(tmp, _id);
 
             cx_signatureName(tmp, _id);
             strcat(_id, "(");
 
             count = cx_signatureParamCount(tmp);
+            if (count == -1) {
+                cx_error("invalid signature '%s'", tmp);
+                goto error;
+            }
 
             /* strcat is not the most efficient function here, but it is the easiest, and this
              * part of the code is not performance-critical. */
@@ -607,7 +604,7 @@ static cx_char* g_oidTransform(cx_generator g, cx_object o, cx_id _id, g_idKind 
             while((ptr > _id) && (*ptr != ':')) {
                 ptr--;
             }
-            if ((cx_class_instanceof(cx_interface_o, i) && cx_typedef(i)->real->reference) || (i == cx_typedef(cx_object_o))) {
+            if ((cx_class_instanceof(cx_interface_o, i) && cx_type(i)->reference) || (i == cx_type(cx_object_o))) {
                 cx_char *start;
                 if (*ptr == ':') {
                     start = ptr + 1;
@@ -635,6 +632,8 @@ static cx_char* g_oidTransform(cx_generator g, cx_object o, cx_id _id, g_idKind 
     }
 
     return _id;
+error:
+    return NULL;
 }
 
 /* Translate object-id */
@@ -805,6 +804,13 @@ cx_int16 g_loadExisting(cx_generator g, cx_string name, cx_string option, cx_ll 
 
                     /* Copy identifier string */
                     *endptr = '\0';
+
+                    if (strlen(ptr) >= sizeof(cx_id)) {
+                        cx_error(
+                            "%s: identifier of code-snippet exceeds %d characters", sizeof(cx_id));
+                        goto error;
+                    }
+
                     strcpy(identifier, ptr + 1);
                     ptr = endptr + 1;
 
@@ -815,7 +821,7 @@ cx_int16 g_loadExisting(cx_generator g, cx_string name, cx_string option, cx_ll 
                         cx_string src;
 
                         *endptr = '\0';
-                        src = strdup(ptr);
+                        src = cx_strdup(ptr);
 
                         if (!*list) {
                             *list = cx_llNew();
@@ -824,12 +830,13 @@ cx_int16 g_loadExisting(cx_generator g, cx_string name, cx_string option, cx_ll 
                         if(strstr(src, "$begin")) {
                             cx_error("%s: code-snippet '%s(%s)' contains nested $begin (did you forget an $end?)",
                                 name, option, identifier);
+                            cx_dealloc(src);
                             goto error;
                         }
 
                         existing = cx_malloc(sizeof(g_fileSnippet));
-                        existing->option = strdup(option);
-                        existing->id = strdup(identifier);
+                        existing->option = cx_strdup(option);
+                        existing->id = cx_strdup(identifier);
                         existing->src = src;
                         existing->used = FALSE;
                         cx_llInsert(*list, existing);
@@ -858,6 +865,25 @@ error:
         cx_dealloc(code);
     }
     return -1;
+}
+
+void g_fileClose(g_file file) {
+    /* Remove file from generator administration */
+    cx_llRemove(file->generator->files, file);
+
+    /* Free snippets */
+    if (file->snippets) {
+        cx_llWalk(file->snippets, g_freeSnippet, file);
+        cx_llFree(file->snippets);
+    }
+    if (file->headers) {
+        cx_llWalk(file->headers, g_freeSnippet, file);
+        cx_llFree(file->headers);
+    }
+
+    cx_fileClose(file->file);
+    cx_dealloc(file->name);
+    cx_dealloc(file);
 }
 
 /* Open file */

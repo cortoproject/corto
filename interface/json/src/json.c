@@ -51,12 +51,14 @@ static cx_bool cx_ser_appendstr(cx_json_ser_t* data, cx_string fmt, ...) {
     cx_uint32 result = TRUE;
 
     if (data) {
+        va_list argcpy;
+        va_copy(argcpy, args);
         va_start(args, fmt);
         memRequired = vsnprintf(buff, 1024, fmt, args);
         if (memRequired >= 1024) {
             buff = cx_malloc(memRequired + 1);
+            vsprintf(buff, fmt, argcpy);
         }
-        vsprintf(buff, fmt, args);
         va_end(args);
         result = cx_ser_appendstrbuff(data, buff);
         if (buff != alloc) {
@@ -67,74 +69,137 @@ static cx_bool cx_ser_appendstr(cx_json_ser_t* data, cx_string fmt, ...) {
     return result;
 }
 
+static cx_int16 serializeNumber(cx_value *value, cx_string *out) {
+    cx_type t = cx_valueType(value);
+    cx_void  *v = cx_valueValue(value);
+    cx_int16 result = cx_convert(cx_primitive(t), v, cx_primitive(cx_string_o), out);
+    return result;
+}
 
-static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData) {
-    CX_UNUSED(s);
-    cx_typedef type;
-    cx_void *value;
-    cx_string valueString = NULL;
-    cx_json_ser_t *data = userData;
-    cx_int16 result;
-
-    type = cx_valueType(info);
-    value = cx_valueValue(info);
-    cx_primitiveKind kind = cx_primitive(type->real)->kind;
-
-    result = cx_convert(cx_primitive(type), value, cx_primitive(cx_string_o), &valueString);
-    if (result) {
+static cx_int16 serializeNumericWithPrefix(cx_value *value, cx_string *out, const char *prefix) {
+    cx_string raw;
+    cx_void *v = cx_valueValue(value);
+    if (cx_convert(cx_primitive(cx_bool_o), v, cx_primitive(cx_string_o), &raw)) {
         goto error;
     }
-
-    if (kind == CX_CHARACTER || (kind == CX_TEXT && (*(cx_string *)value))) {
-        size_t length;
-        cx_string escapedValueString = cx_malloc((length = stresc(NULL, 0, valueString)) + 1);
-        stresc(escapedValueString, length, valueString);
-        cx_dealloc(valueString);
-        valueString = escapedValueString;
+    int length = snprintf(NULL, 0, "\"%s\" %s", prefix, raw);
+    if (length < 0) {
+        goto error;
     }
+    *out = cx_malloc(length + 1);
+    if (sprintf(*out, "\"%s %s\"", prefix, raw) < 0) {
+        goto error;
+    }
+    cx_dealloc(raw);
+    return 0;
+error:
+    cx_dealloc(raw);
+    return -1;
+}
 
-    switch (cx_primitive(type->real)->kind) {
+static cx_int16 serializeBinary(cx_value *value, cx_string *out) {
+    return serializeNumericWithPrefix(value, out, "@B");
+}
+
+static cx_int16 serializeBitmask(cx_value *value, cx_string *out) {
+    return serializeNumericWithPrefix(value, out, "@M");
+}
+
+static cx_int16 serializeEnum(cx_value *value, cx_string *out) {
+    return serializeNumericWithPrefix(value, out, "@E");
+}
+
+static cx_int16 serializeBoolean(cx_value *value, cx_string *out) {
+    cx_bool b = *(cx_bool *)cx_valueValue(value);
+    if (b) {
+        *out = cx_malloc(sizeof("true"));
+        strcpy(*out, "true");
+    } else {
+        *out = cx_malloc(sizeof("false"));
+        strcpy(*out, "false");
+    }
+    return 0;
+}
+
+static cx_int16 serializeText(cx_value *value, cx_string *out) {
+    cx_type type = cx_valueType(value);
+    cx_void *v = cx_valueValue(value);
+    cx_primitiveKind kind = cx_primitive(type)->kind;
+    if (kind == CX_CHARACTER || (kind == CX_TEXT && (*(cx_string *)v))) {
+        cx_string raw;
+        size_t length;
+        int needEscape = 0;
+        if (cx_convert(cx_primitive(type), v, cx_primitive(cx_string_o), &raw)) {
+            goto error;
+        }
+        if (*raw == '@') {
+            needEscape = 1;
+        }
+        length = stresc(NULL, 0, raw);
+        *out = cx_malloc(length + 3 + needEscape);
+        (*out)[0] = '"';
+        (*out)[1] = '@';
+        stresc(*out + 1 + needEscape, length, raw);
+        (*out)[length + needEscape + 1] = '"';
+        (*out)[length + needEscape + 2] = '\0';
+        cx_dealloc(raw);
+    } else {
+        *out = cx_malloc(sizeof("null"));
+        strcpy(*out, "null");
+    }
+    return 0;
+error:
+    return -1;
+}
+
+static cx_int16 serializeAlias(cx_value *value, cx_string *out) {
+    CX_UNUSED(value);
+    *out = cx_malloc(sizeof("null"));
+    strcpy(*out, "null");
+    return 0;
+}
+
+
+
+static cx_int16 serializePrimitive(cx_serializer s, cx_value *v, void *userData) {
+    CX_UNUSED(s);
+    cx_type type = cx_valueType(v);
+    cx_json_ser_t *data = userData;
+    cx_int16 result;
+    cx_string valueString;
+
+    switch (cx_primitive(type)->kind) {
         case CX_BINARY:
-            if (!cx_ser_appendstr(data, "\"@B %s\"", valueString)) {
-                goto finished;
-            }
+            result = serializeBinary(v, &valueString);
             break;
         case CX_BITMASK:
-            if (!cx_ser_appendstr(data, "\"@M %s\"", valueString)) {
-                goto finished;
-            }
+            result = serializeBitmask(v, &valueString);
+            break;
+        case CX_BOOLEAN:
+            result = serializeBoolean(v, &valueString);
             break;
         case CX_ENUM:
-            if (!cx_ser_appendstr(data, "\"@E %s\"", valueString)) {
-                goto finished;
-            }
+            result = serializeEnum(v, &valueString);
             break;
         case CX_CHARACTER:
         case CX_TEXT:
-            // TODO escape @'s and other characters
-            if (!*(cx_string *)value) {
-                if (!cx_ser_appendstr(data, "null")) {
-                    goto finished;
-                }
-            } else {
-                if (!cx_ser_appendstr(data, "\"")) {
-                    goto finished;
-                }
-                if (*valueString == '@' && !cx_ser_appendstr(data, "@")) {
-                    goto finished;
-                }
-                if (!cx_ser_appendstr(data, "%s\"", valueString)) {
-                    goto finished;
-                }
-            }
+            result = serializeText(v, &valueString);
             break;
-        default:
-            if (!cx_ser_appendstr(data, valueString)) {
-                goto finished;
-            }
+        case CX_UINTEGER:
+        case CX_INTEGER:
+        case CX_FLOAT:
+            result = serializeNumber(v, &valueString);
+            break;
+        case CX_ALIAS:
+            result = serializeAlias(v, &valueString);
             break;
     }
-
+    if (result) {
+        goto error;
+    }
+    if (!cx_ser_appendstr(data, "%s", valueString)) {
+        goto finished;
+    }
     cx_dealloc(valueString);
     return 0;
 finished:
@@ -144,7 +209,7 @@ error:
     return -1;
 }
 
-static cx_int16 cx_ser_reference(cx_serializer s, cx_value *v, void *userData) {
+static cx_int16 serializeReference(cx_serializer s, cx_value *v, void *userData) {
     CX_UNUSED(s);
 
     cx_json_ser_t *data;
@@ -158,12 +223,19 @@ static cx_int16 cx_ser_reference(cx_serializer s, cx_value *v, void *userData) {
 
     if (object) {
         if (cx_checkAttr(object, CX_ATTR_SCOPED) || (cx_valueObject(v) == object)) {
+            cx_uint32 length;
             cx_fullname(object, id);
-            if (!cx_ser_appendstr(data, "\"@R %s\"", id)) {
+            
+            /* Escape value */
+            cx_string escapedValue = cx_malloc((length = stresc(NULL, 0, id)) + 1);
+            stresc(escapedValue, length, id);
+            if (!cx_ser_appendstr(data, "\"@R %s\"", escapedValue)) {
+                cx_dealloc(escapedValue);
                 goto finished;
             }
+            cx_dealloc(escapedValue);
         } else {
-            // TODO anonymous
+            cx_ser_appendstr(data, "\"anonymous\"");
         }
     } else {
         if (!cx_ser_appendstrbuff(data, "null")) {
@@ -176,7 +248,7 @@ finished:
 
 }
 
-static cx_int16 cx_ser_item(cx_serializer s, cx_value *info, void *userData) {
+static cx_int16 serializeItem(cx_serializer s, cx_value *info, void *userData) {
     cx_json_ser_t *data = userData;
     cx_member member = info->is.member.t;
     cx_string name = cx_nameof(member);
@@ -202,33 +274,39 @@ finished:
     return 1;
 }
 
-static cx_int16 cx_ser_complex(cx_serializer s, cx_value* v, void* userData) {
-    cx_json_ser_t *data = userData;
-    cx_type type = cx_valueType(v)->real;
+static cx_int16 serializeComplex(cx_serializer s, cx_value* v, void* userData) {
+    cx_json_ser_t data = *(cx_json_ser_t*)userData;
+    cx_type type = cx_valueType(v);
     cx_bool useCurlyBraces = TRUE;
+
+    data.itemCount = 0;
 
     if (type->kind == CX_COLLECTION && cx_collection(type)->kind != CX_MAP) {
         useCurlyBraces = FALSE;
     }
 
-    if (!cx_ser_appendstr(data, (useCurlyBraces ? "{" : "["))) {
+    if (!cx_ser_appendstr(&data, (useCurlyBraces ? "{" : "["))) {
         goto finished;
     }
     if (type->kind == CX_COMPOSITE) {
-        if (cx_serializeMembers(s, v, userData)) {
+        if (cx_serializeMembers(s, v, &data)) {
             goto error;
         }
     } else if (type->kind == CX_COLLECTION) {
-        if (cx_serializeElements(s, v, userData)) {
+        if (cx_serializeElements(s, v, &data)) {
             goto error;
         }
     } else {
         goto error;
     }
 
-    if (!cx_ser_appendstr(data, (useCurlyBraces ? "}" : "]"))) {
+    if (!cx_ser_appendstr(&data, (useCurlyBraces ? "}" : "]"))) {
         goto finished;
     }
+
+    ((cx_json_ser_t*)userData)->buffer = data.buffer;
+    ((cx_json_ser_t*)userData)->ptr = data.ptr;
+
     return 0;
 error:
     return -1;
@@ -236,16 +314,14 @@ finished:
     return 1;
 }
 
-static cx_int16 cx_ser_base(cx_serializer s, cx_value* v, void* userData) {
+static cx_int16 serializeBase(cx_serializer s, cx_value* v, void* userData) {
     cx_json_ser_t *data = userData;
-    if (!cx_ser_appendstr(data, "\"@base\":{")) {
+    cx_id id;
+    if (!cx_ser_appendstr(data, "\"@%s\":", cx_fullname(cx_valueType(v), id))) {
         goto finished;
     }
-    if (cx_serializeMembers(s, v, userData)) {
+    if (cx_serializeValue(s, v, userData)) {
         goto error;
-    }
-    if (!cx_ser_appendstr(data, "}")) {
-        goto finished;
     }
     data->itemCount += 1;
     return 0;
@@ -301,49 +377,73 @@ static char* dbsh_attrStr(cx_object o, char* buff) {
     return buff;
 }
 
-static cx_int16 cx_ser_meta(cx_serializer s, cx_value* v, void* userData) {
+static int cx_appendStringAttr(cx_string key, cx_string value, void* userData) {
+    size_t length;
+    
+    /* Escape value */
+    cx_string escapedValue = cx_malloc((length = stresc(NULL, 0, value)) + 1);
+    stresc(escapedValue, length, value);
+
+    if (!cx_ser_appendstr(userData, "\"%s\":\"%s\",", key, escapedValue)) {
+        goto finished;
+    }
+
+    cx_dealloc(escapedValue);
+    return 1;
+finished:
+    cx_dealloc(escapedValue);
+    return 0;
+}
+
+static cx_int16 serializeMeta(cx_serializer s, cx_value* v, void* userData) {
     CX_UNUSED(s);
     cx_json_ser_t *data = userData;
-    cx_object object = cx_valueValue(v);
+    cx_object o = cx_valueValue(v);
 
     if (!data->serializeMeta) {
         goto error;
     }
 
-    if (!cx_ser_appendstr(data, "{")) {
+    if (!cx_ser_appendstr(userData, "{")) {
         goto finished;
     }
 
-    cx_string name = cx_nameof(object);
-    if (!cx_ser_appendstr(data, "\"name\":\"%s\",", name)) {
-        goto finished;
+    cx_string name = cx_nameof(o);
+    if (name) {
+        if (!cx_appendStringAttr("name", name, userData)) {
+            goto finished;
+        }
+    } else {
+        if (!cx_ser_appendstr(userData, "\"name\":\"::\",")) {
+            goto finished;
+        }        
     }
 
     cx_id type_fullname;
-    cx_fullname(cx_typeof(object), type_fullname);
-    if (!cx_ser_appendstr(data, "\"type\":\"%s\",", type_fullname)) {
+    cx_fullname(cx_typeof(o), type_fullname);
+    if (!cx_appendStringAttr("type", type_fullname, userData)) {
         goto finished;
     }
 
     char states[sizeof("V|DCL|DEF")];
-    dbsh_stateStr(object, states);
+    dbsh_stateStr(o, states);
     if (!cx_ser_appendstr(data, "\"states\":\"%s\",", states)) {
         goto finished;
     }
 
     char attributes[sizeof("S|W|O")];
-    dbsh_attrStr(object, attributes);
+    dbsh_attrStr(o, attributes);
     if (!cx_ser_appendstr(data, "\"attributes\":\"%s\",", attributes)) {
         goto finished;
     }
 
     cx_id parent_fullname;
-    cx_fullname(cx_parentof(object), parent_fullname);
+    cx_fullname(cx_parentof(o), parent_fullname);
     if (!cx_ser_appendstr(data, "\"parent\":\"%s\",", parent_fullname)) {
         goto finished;
     }
 
-    cx_uint32 scopeSize = cx_scopeSize(object);
+    cx_uint32 scopeSize = cx_scopeSize(o);
     if (!cx_ser_appendstr(data, "\"childCount\":%"PRId32"", scopeSize)) {
         goto finished;
     }
@@ -360,19 +460,25 @@ finished:
     return 1;
 }
 
-static int cx_walkScopeAction_ser_meta(cx_object o, void* userData) {
+static int serializeMetaWalkScopeAction(cx_object o, void* userData) {
     if (!cx_ser_appendstr(userData, "{")) {
         goto finished;
     }
 
     cx_string name = cx_nameof(o);
-    if (!cx_ser_appendstr(userData, "\"name\":\"%s\",", name)) {
-        goto finished;
+    if (name) {
+        if (!cx_appendStringAttr("name", name, userData)) {
+            goto finished;
+        }
+    } else {
+        if (!cx_ser_appendstr(userData, "\"name\":\"::\",")) {
+            goto finished;
+        }        
     }
 
     cx_id type_fullname;
     cx_fullname(cx_typeof(o), type_fullname);
-    if (!cx_ser_appendstr(userData, "\"type\":\"%s\",", type_fullname)) {
+    if (!cx_appendStringAttr("type", type_fullname, userData)) {
         goto finished;
     }
 
@@ -402,14 +508,14 @@ finished:
     return 0;
 }
 
-static cx_int16 cx_ser_scope_meta(cx_serializer s, cx_value* v, void* userData) {
+static cx_int16 serializeScopeMeta(cx_serializer s, cx_value* v, void* userData) {
     CX_UNUSED(s); /* should we receive s for scalability or should we dismiss it? */
     int last;
     size_t sizeBefore, sizeAfter;
     cx_json_ser_t *data = userData;
     sizeBefore = strlen(data->buffer);
     cx_object object = cx_valueValue(v);
-    last = cx_scopeWalk(object, cx_walkScopeAction_ser_meta, userData);
+    last = cx_scopeWalk(object, serializeMetaWalkScopeAction, userData);
     sizeAfter = strlen(data->buffer);
     if (sizeAfter && sizeBefore < sizeAfter) {
         data->buffer[sizeAfter - 1] = '\0';
@@ -419,31 +525,41 @@ static cx_int16 cx_ser_scope_meta(cx_serializer s, cx_value* v, void* userData) 
 
 
 
-static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
+static cx_int16 serializeObject(cx_serializer s, cx_value* v, void* userData) {
     cx_json_ser_t *data = userData;
     cx_uint8 c = 0;
+    cx_uint32 options = data->serializeMeta + data->serializeValue + data->serializeScope;
 
-    if (!cx_ser_appendstr(data, "{")) {
-        goto finished;
+    /* If more than one option is provided, prefix with 
+     * 'meta', 'value' and 'scope' */
+
+    if (data->alwaysIncludeHeaders || (options > 1)) {
+        if (!cx_ser_appendstr(data, "{")) {
+            goto finished;
+        }
     }
 
     if (data->serializeMeta) {
-        if (!cx_ser_appendstr(data, "\"meta\":")) {
-            goto finished;
+        if (data->alwaysIncludeHeaders || (options > 1)) {
+            if (!cx_ser_appendstr(data, "\"meta\":")) {
+                goto finished;
+            }
         }
-        if (cx_ser_meta(s, v, userData)) {
+        if (serializeMeta(s, v, userData)) {
             goto error;
         }
         c += 1;
     }
 
     if (data->serializeValue) {
-        if (cx_valueType(v)->real->kind != CX_VOID) {
-            if (c && !cx_ser_appendstr(data, ",")) {
-                goto finished;
-            }
-            if (!cx_ser_appendstr(data, "\"value\":")) {
-                goto finished;
+        if (cx_valueType(v)->kind != CX_VOID) {
+            if (data->alwaysIncludeHeaders || (options > 1)) {
+                if (c && !cx_ser_appendstr(data, ",")) {
+                    goto finished;
+                }
+                if (!cx_ser_appendstr(data, "\"value\":")) {
+                    goto finished;
+                }
             }
             if (cx_serializeValue(s, v, userData)) {
                 goto error;
@@ -453,13 +569,18 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
     }
 
     if (data->serializeScope) {
-        if (c && !cx_ser_appendstr(data, ",")) {
+        if (data->alwaysIncludeHeaders || (options > 1)) {
+            if (c && !cx_ser_appendstr(data, ",")) {
+                goto finished;
+            }
+            if (!cx_ser_appendstr(data, "\"scope\":")) {
+                goto finished;
+            }
+        }
+        if (!cx_ser_appendstr(data, "[")) {
             goto finished;
         }
-        if (!cx_ser_appendstr(data, "\"scope\":[")) {
-            goto finished;
-        }
-        if (!cx_ser_scope_meta(s, v, data)) {
+        if (!serializeScopeMeta(s, v, data)) {
             goto error;
         }
         if (!cx_ser_appendstr(data, "]")) {
@@ -467,8 +588,10 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
         }
     }
 
-    if (!cx_ser_appendstr(data, "}")) {
-        goto finished;
+    if (data->alwaysIncludeHeaders || (options > 1)) {
+        if (!cx_ser_appendstr(data, "}")) {
+            goto finished;
+        }
     }
 
     return 0;
@@ -486,13 +609,13 @@ struct cx_serializer_s cx_json_ser(cx_modifier access, cx_operatorKind accessKin
     s.access = access;
     s.accessKind = accessKind;
     s.traceKind = trace;
-    s.program[CX_PRIMITIVE] = cx_ser_primitive;
-    s.reference = cx_ser_reference;
-    s.program[CX_COMPOSITE] = cx_ser_complex;
-    s.program[CX_COLLECTION] = cx_ser_complex;
-    s.metaprogram[CX_ELEMENT] = cx_ser_item;
-    s.metaprogram[CX_MEMBER] = cx_ser_item;
-    s.metaprogram[CX_BASE] = cx_ser_base;
-    s.metaprogram[CX_OBJECT] = cx_ser_object;
+    s.program[CX_PRIMITIVE] = serializePrimitive;
+    s.reference = serializeReference;
+    s.program[CX_COMPOSITE] = serializeComplex;
+    s.program[CX_COLLECTION] = serializeComplex;
+    s.metaprogram[CX_ELEMENT] = serializeItem;
+    s.metaprogram[CX_MEMBER] = serializeItem;
+    s.metaprogram[CX_BASE] = serializeBase;
+    s.metaprogram[CX_OBJECT] = serializeObject;
     return s;
 }

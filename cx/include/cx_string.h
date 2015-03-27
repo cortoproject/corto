@@ -24,11 +24,15 @@ char *chresc(char *out, char in, char delimiter);
  * Does not include surrounding double quotes.
  * The maximum number of characters to be printed is `n` including the null
  * character, but it may be less if the following character requires escaping.
- * The recommended length to allocate for the buffer can be obtained with
- * `stresclen`, adding 2 if you surrounding double quotes.
  * The resulting string is null terminated.
  */
 size_t stresc(char *out, size_t n, const char *in);
+
+/* Count the number of characters in a string that do not match a provided
+ * mask. */
+size_t strmask(char *str, char *mask);
+
+char* cx_strdup(const char* str);
 
 #ifdef __cplusplus
 }

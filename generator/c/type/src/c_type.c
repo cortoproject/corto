@@ -140,12 +140,12 @@ static cx_int16 c_typeVoid(cx_serializer s, cx_value* v, void* userData) {
 
     CX_UNUSED(s);
 
-    t = cx_valueType(v)->real;
+    t = cx_valueType(v);
     data = userData;
 
     g_fileWrite(data->header, "/* %s */\n", cx_fullname(t, id));
     if (t->reference) {
-        g_fileWrite(data->header, "typedef cx_object %s;\n", g_fullOid(data->g, t, id));
+        g_fileWrite(data->header, "typedef void *%s;\n", g_fullOid(data->g, t, id));
     } else {
         g_fileWrite(data->header, "typedef void %s;\n", g_fullOid(data->g, t, id));
     }
@@ -162,11 +162,11 @@ static cx_int16 c_typeAny(cx_serializer s, cx_value* v, void* userData) {
 
     CX_UNUSED(s);
 
-    t = cx_valueType(v)->real;
+    t = cx_valueType(v);
     data = userData;
 
     g_fileWrite(data->header, "/* %s */\n", cx_fullname(t, id));
-    g_fileWrite(data->header, "typedef cx_any %s;\n\n", g_fullOid(data->g, t, id));
+    g_fileWrite(data->header, "CX_ANY(%s);\n\n", g_fullOid(data->g, t, id));
 
     return 0;
 }
@@ -181,7 +181,7 @@ static cx_int16 c_typePrimitive(cx_serializer s, cx_value* v, void* userData) {
     CX_UNUSED(s);
 
     data = userData;
-    t = cx_valueType(v)->real;
+    t = cx_valueType(v);
 
     /* Obtain platform type-name for primitive */
     switch(cx_primitive(t)->kind) {
@@ -225,14 +225,19 @@ static cx_int16 c_typeStruct(cx_serializer s, cx_value* v, void* userData) {
     cx_type t;
 
     data = userData;
-    t = cx_valueType(v)->real;
+    t = cx_valueType(v);
 
     /* Open struct */
     g_fileWrite(data->header, "struct %s {\n", g_fullOid(data->g, t, id));
-
-
+    
     /* Serialize members */
     g_fileIndent(data->header);
+
+    /* Write base */
+    if (cx_interface(t)->base && cx_type(cx_interface(t)->base)->alignment) {
+        g_fileWrite(data->header, "%s _parent;\n", g_fullOid(data->g, cx_interface(t)->base, id));
+    }
+
     if (cx_serializeMembers(s, v, userData)) {
         goto error;
     }
@@ -263,27 +268,25 @@ static cx_int16 c_typeClass(cx_serializer s, cx_value* v, void* userData) {
     cx_type t;
 
     data = userData;
-    t = cx_valueType(v)->real;
+    t = cx_valueType(v);
 
     /* Open class */
-    if (t->alignment) {
-        g_fileWrite(data->header, "CX_CLASS_DEF(%s) {\n", g_fullOid(data->g, t, id));
-        g_fileIndent(data->header);
+    g_fileWrite(data->header, "CX_CLASS_DEF(%s) {\n", g_fullOid(data->g, t, id));
+    g_fileIndent(data->header);
 
-        /* Write base */
-        if (cx_interface(t)->base && cx_type(cx_interface(t)->base)->alignment) {
-            g_fileWrite(data->header, "CX_EXTEND(%s);\n", g_fullOid(data->g, cx_interface(t)->base, id));
-        }
-
-        /* Serialize members */
-        if (cx_serializeMembers(s, v, userData)) {
-            goto error;
-        }
-        g_fileDedent(data->header);
-
-        /* Close class */
-        g_fileWrite(data->header, "};\n\n");
+    /* Write base */
+    if (cx_interface(t)->base) {
+        g_fileWrite(data->header, "CX_EXTEND(%s);\n", g_fullOid(data->g, cx_interface(t)->base, id));
     }
+
+    /* Serialize members */
+    if (cx_serializeMembers(s, v, userData)) {
+        goto error;
+    }
+    g_fileDedent(data->header);
+
+    /* Close class */
+    g_fileWrite(data->header, "};\n\n");
 
     return 0;
 error:
@@ -294,8 +297,9 @@ error:
 static cx_int16 c_typeComposite(cx_serializer s, cx_value* v, void* userData) {
     cx_type t;
 
-    t = cx_valueType(v)->real;
+    t = cx_valueType(v);
     switch(cx_interface(t)->kind) {
+    case CX_DELEGATE:
     case CX_STRUCT:
         if (c_typeStruct(s, v, userData)) {
             goto error;
@@ -311,8 +315,6 @@ static cx_int16 c_typeComposite(cx_serializer s, cx_value* v, void* userData) {
         if (c_typeClass(s, v, userData)) {
             goto error;
         }
-        break;
-    default:
         break;
     }
 
@@ -331,9 +333,9 @@ static cx_int16 c_typeArray(cx_serializer s, cx_value* v, void* userData) {
     CX_UNUSED(v);
 
     data = userData;
-    t = cx_valueType(v)->real;
-    c_specifierId(data->g, cx_typedef(t), id, NULL, postfix);
-    c_specifierId(data->g, cx_typedef(cx_collection(t)->elementType), id3, NULL, postfix2);
+    t = cx_valueType(v);
+    c_specifierId(data->g, cx_type(t), id, NULL, postfix);
+    c_specifierId(data->g, cx_type(cx_collection(t)->elementType), id3, NULL, postfix2);
     g_fileWrite(data->header, "typedef %s %s[%d];\n\n",
             id3,
             id,
@@ -352,9 +354,9 @@ static cx_int16 c_typeSequence(cx_serializer s, cx_value* v, void* userData) {
     CX_UNUSED(v);
 
     data = userData;
-    t = cx_valueType(v)->real;
-    c_specifierId(data->g, cx_typedef(t), id, NULL, postfix);
-    c_specifierId(data->g, cx_typedef(cx_collection(t)->elementType), id3, NULL, postfix2);
+    t = cx_valueType(v);
+    c_specifierId(data->g, cx_type(t), id, NULL, postfix);
+    c_specifierId(data->g, cx_type(cx_collection(t)->elementType), id3, NULL, postfix2);
     g_fileWrite(data->header, "CX_SEQUENCE(%s, %s,);\n\n",
             id,
             id3);
@@ -372,8 +374,8 @@ static cx_int16 c_typeList(cx_serializer s, cx_value* v, void* userData) {
     CX_UNUSED(v);
 
     data = userData;
-    t = cx_valueType(v)->real;
-    c_specifierId(data->g, cx_typedef(t), id, NULL, postfix);
+    t = cx_valueType(v);
+    c_specifierId(data->g, cx_type(t), id, NULL, postfix);
     g_fileWrite(data->header, "CX_LIST(%s);\n\n",
             id);
 
@@ -384,7 +386,7 @@ static cx_int16 c_typeList(cx_serializer s, cx_value* v, void* userData) {
 static cx_int16 c_typeCollection(cx_serializer s, cx_value* v, void* userData) {
     cx_type t;
 
-    t = cx_valueType(v)->real;
+    t = cx_valueType(v);
     switch(cx_collection(t)->kind) {
     case CX_ARRAY:
         if (c_typeArray(s, v, userData)) {
@@ -408,6 +410,25 @@ static cx_int16 c_typeCollection(cx_serializer s, cx_value* v, void* userData) {
     return 0;
 error:
     return -1;
+}
+
+/* Iterator object */
+static cx_int16 c_typeIterator(cx_serializer s, cx_value* v, void* userData) {
+    cx_type t;
+
+    CX_UNUSED(s);
+    CX_UNUSED(v);
+    
+    c_typeWalk_t* data;
+    cx_id id, postfix;
+
+    data = userData;
+    t = cx_valueType(v);
+    c_specifierId(data->g, cx_type(t), id, NULL, postfix);
+    g_fileWrite(data->header, "CX_ITERATOR(%s);\n\n",
+            id);
+
+    return 0;
 }
 
 /* Type object */
@@ -438,6 +459,9 @@ static cx_int16 c_typeObject(cx_serializer s, cx_value* v, void* userData) {
         break;
     case CX_COLLECTION:
         result = c_typeCollection(s, v, userData);
+        break;
+    case CX_ITERATOR:
+        result = c_typeIterator(s, v, userData);
         break;
     default:
         cx_error("c_typeObject: typeKind '%s' not handled by code-generator.", cx_nameof(cx_enum_constant(cx_typeKind_o, t->kind)));
@@ -474,7 +498,7 @@ static int c_typeClassCastWalk(cx_object o, void* userData) {
 
     data = userData;
 
-    if (cx_class_instanceof(cx_class_o, o)) {
+    if (cx_class_instanceof(cx_interface_o, o) && cx_type(o)->reference) {
         g_fileWrite(data->header, "#define %s(o) ((%s)o)\n",
                 g_fullOid(data->g, o, id),
                 g_fullOid(data->g, o, id));
@@ -491,6 +515,7 @@ static g_file c_typeHeaderFileOpen(cx_generator g) {
     cx_iter importIter;
     cx_object import;
     cx_string headerSnippet;
+    cx_string bootstrap = gen_getAttribute(g, "bootstrap");
 
     /* Create file */
     sprintf(headerFileName, "%s__type.h", g_getName(g));
@@ -507,7 +532,13 @@ static g_file c_typeHeaderFileOpen(cx_generator g) {
     g_fileWrite(result, " */\n\n");
     g_fileWrite(result, "#ifndef %s__type_H\n", g_getName(g));
     g_fileWrite(result, "#define %s__type_H\n\n", g_getName(g));
-    g_fileWrite(result, "#include \"cortex.h\"\n\n");
+
+    /* Don't include this file when generating for the bootstrap */
+    if (!bootstrap || strcmp(bootstrap, "true")) {
+        g_fileWrite(result, "#include \"cortex.h\"\n\n");
+    } else {
+        g_fileWrite(result, "#include \"cx_def.h\"\n\n");
+    }
 
     /* Include imports */
     if (g->imports) {
@@ -590,33 +621,12 @@ static int c_typeDefine(cx_object o, void* userData) {
     int result;
 
     result = 0;
+    
+    /* Get type-serializer */
+    s = c_typeSerializer();
 
-    /* Serialize typedef */
-    if (cx_typedef(o)->real != o) {
-        c_typeWalk_t* data;
-        cx_typedef t;
-
-        data = userData;
-        t = o;
-
-        /* Serialize a typedef */
-        cx_id spec, postfix, id2;
-
-        c_specifierId(data->g, t->type, spec, NULL, postfix);
-
-        /* Serialize typedef */
-        g_fileWrite(data->header, "typedef %s %s%s;\n", spec, g_fullOid(data->g, t, id2), postfix);
-
-    /* Serialize type */
-    } else {
-
-        /* Get type-serializer */
-        s = c_typeSerializer();
-
-        /* Do metawalk on type */
-        result = cx_metaWalk(&s, cx_type(o), userData);
-    }
-
+    /* Do metawalk on type */
+    result = cx_metaWalk(&s, cx_type(o), userData);
 
     return result;
 }

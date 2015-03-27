@@ -12,7 +12,7 @@
 /* $header() */
 #include "Fast__api.h"
 #include "Fast_Parser.h"
-#include "Fast_InitializerExpr.h"
+#include "Fast_InitializerExpression.h"
 Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 Fast_Expression Fast_Parser_getAnonymousLocal(Fast_Parser _this, Fast_Variable type, cx_bool isReference);
@@ -21,23 +21,25 @@ Fast_Expression Fast_Parser_getAnonymousLocal(Fast_Parser _this, Fast_Variable t
 cx_int8 Fast_Expression_getTypeScore(cx_primitive t) {
     cx_int8 result = 0;
     switch(t->kind) {
+    case CX_ENUM:
+    case CX_BITMASK:
+        result = 1;
+        break;
     case CX_BOOLEAN:
     case CX_BINARY:
     case CX_INTEGER:
     case CX_UINTEGER:
     case CX_ALIAS:
-        result = 1;
-        break;
-    case CX_ENUM:
-    case CX_BITMASK:
-    case CX_CHARACTER:
         result = 2;
         break;
-    case CX_FLOAT:
+    case CX_CHARACTER:
         result = 3;
         break;
-    case CX_TEXT:
+    case CX_FLOAT:
         result = 4;
+        break;
+    case CX_TEXT:
+        result = 5;
         break;
     }
     return result;
@@ -47,21 +49,23 @@ cx_int8 Fast_Expression_getTypeScore(cx_primitive t) {
 cx_int8 Fast_Expression_getCastScore(cx_primitive t) {
     cx_int8 result = 0;
     switch(t->kind) {
+        case CX_ENUM:
+        case CX_BITMASK:
+            result = 1;
+            break;
         case CX_BOOLEAN:
         case CX_BINARY:
         case CX_INTEGER:
         case CX_UINTEGER:
         case CX_ALIAS:
-        case CX_ENUM:
-        case CX_BITMASK:
         case CX_CHARACTER:
-            result = 1;
-            break;
-        case CX_FLOAT:
             result = 2;
             break;
-        case CX_TEXT:
+        case CX_FLOAT:
             result = 3;
+            break;
+        case CX_TEXT:
+            result = 4;
             break;
     }
     return result;
@@ -78,10 +82,10 @@ cx_icDerefMode Fast_Expression_getDerefMode(Fast_Expression _this, Fast_Expressi
         if (rvalue->forceReference || (t && t->reference)) {
             if (_this->isReference && rvalue->forceReference) {
                 result = CX_IC_DEREF_ADDRESS;
-            } else if (Fast_Node(_this)->kind == FAST_Variable) {
-                if (Fast_Variable(_this)->kind == FAST_Object) {
+            } else if (Fast_Node(_this)->kind == Fast_VariableExpr) {
+                if (Fast_Variable(_this)->kind == Fast_ObjectExpr) {
                     result = CX_IC_DEREF_ADDRESS;
-                } else if ((Fast_Variable(_this)->kind == FAST_Local) && (*Fast_Local(_this)->name == '<') && Fast_Local(_this)->isReference) {
+                } else if ((Fast_Variable(_this)->kind == Fast_LocalExpr) && (*Fast_Local(_this)->name == '<') && _this->isReference) {
                     result = CX_IC_DEREF_ADDRESS; /* Anonymous locals are treated as objects */
                 } else {
                     if (check) *check = -1;
@@ -97,9 +101,9 @@ cx_icDerefMode Fast_Expression_getDerefMode(Fast_Expression _this, Fast_Expressi
         cx_type l = Fast_Expression_getType(_this);
         cx_type r = Fast_Expression_getType(rvalue);
         printf("%d[pass=%d]: l->forceRef/isRef=%d/%d(%s,%s), r->forceRef/isRef=%d/%d(%s,%s), isValue=%d, check=%d\n",
-           yparser()->line, yparser()->pass, _this->forceReference, _this->isReference, cx_fullname(l,id),
+           yparser()->line, yparser()->pass, _this->forceReference, _this->isReference, Fast_Parser_id(l,id),
                   cx_nameof(cx_typeof(_this)),
-               rvalue->forceReference, rvalue->isReference, cx_fullname(r,id2), 
+               rvalue->forceReference, rvalue->isReference, Fast_Parser_id(r,id2), 
                cx_nameof(cx_typeof(rvalue)),
                result == CX_IC_DEREF_VALUE, check?*check:0);
     }*/
@@ -144,7 +148,7 @@ cx_type Fast_Expression_getIntTypeFromValue(cx_int64 v, cx_primitive t) {
 cx_type Fast_Expression_narrowType(Fast_Expression expr) {
     cx_int64 v;
     cx_type t = Fast_Expression_getType(expr);
-    if (Fast_Node(expr)->kind == FAST_Literal) {
+    if (Fast_Node(expr)->kind == Fast_LiteralExpr) {
         if (t && (t->kind == CX_PRIMITIVE)) {
             switch(cx_primitive(t)->kind) {
             case CX_INTEGER:
@@ -164,7 +168,7 @@ cx_type Fast_Expression_narrowType(Fast_Expression expr) {
 /* Check if expression is integer literal that is eligible to changing type, if this is the case do the cast */
 Fast_Expression Fast_Expression_narrow(Fast_Expression expr, cx_type target) {
 
-    if (Fast_Node(expr)->kind == FAST_Literal) {
+    if (Fast_Node(expr)->kind == Fast_LiteralExpr) {
         if (!target) {
             target = Fast_Expression_narrowType(expr);
         }
@@ -257,10 +261,10 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_boo
         if (!exprType) {
             /* If expression is an untyped initializer, create an anonymous variable of the destination type 
              * and assign it to the initializer. */
-            if(Fast_Node(_this)->kind == FAST_Initializer) {
+            if(Fast_Node(_this)->kind == Fast_InitializerExpr) {
                 Fast_Variable typeVar = Fast_Variable(Fast_Object__create(type));
                 Fast_Expression local = Fast_Parser_getAnonymousLocal(yparser(), typeVar, FALSE);
-                Fast_InitializerExpr_insert(Fast_InitializerExpr(_this), local);
+                Fast_InitializerExpression_insert(Fast_InitializerExpression(_this), local);
                 Fast_Parser_collect(yparser(), typeVar);
                 result = local;
                 castRequired = TRUE;
@@ -269,28 +273,23 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_boo
             }
         } else if (cx_type_castable(type, refType)) {
             void *value = NULL;
-            void *valueAddr = NULL;
 
             /* If expression is a literal or constant create new literal of right type */
             value = (void*)Fast_Expression_getValue(_this);
-            if (value && (exprType->kind == CX_PRIMITIVE) && (cx_primitive(exprType)->kind == CX_TEXT)) {
-                valueAddr = value;
-                value = &valueAddr;
-            }
             if (value) {
-                if (type->reference && (Fast_Node(_this)->kind == FAST_Literal)) {
+                if (type->reference && (Fast_Node(_this)->kind == Fast_LiteralExpr)) {
                     /* If destination type is a reference and the literal is a string this results
                      * in a resolve at run-time. */
                     switch(Fast_Literal(_this)->kind) {
-                    case FAST_String:
+                    case Fast_Text:
                         break;
-                    case FAST_Null:
+                    case Fast_Nothing:
                         /* No cast required */
                         break;
                     default: {
                         cx_id id1, id2;
                         /* Invalid cast */
-                        Fast_Parser_error(yparser(), "cannot cast from '%s' to '%s'", cx_fullname(exprType, id1), cx_fullname(type, id2));
+                        Fast_Parser_error(yparser(), "cannot cast from '%s' to '%s'", Fast_Parser_id(exprType, id1), Fast_Parser_id(type, id2));
                         break;
                     }
                     }
@@ -368,7 +367,7 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_boo
                    (exprCastScore == castCastScore)) {
                     if (cx_primitive(exprType)->width != cx_primitive(type)->width) {
                         Fast_Object dstTypeObject = Fast_Object__create(type);
-                        result = Fast_Expression(Fast_CastExpr__create(Fast_Expression(dstTypeObject), _this));
+                        result = Fast_Expression(Fast_Cast__create(Fast_Expression(dstTypeObject), _this));
                         Fast_Parser_collect(yparser(), dstTypeObject);
                     } else {
                         /* Types have the same width, so no cast required */
@@ -376,9 +375,9 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_boo
                     }
 
                 /* Interface-downcasting doesn't require an explicit cast */
-                } else if (!cx_instanceof(cx_typedef(cx_interface_o), type)) {
+                } else if (!cx_instanceof(cx_type(cx_interface_o), type)) {
                     Fast_Object dstTypeObject = Fast_Object__create(type);
-                    result = Fast_Expression(Fast_CastExpr__create(Fast_Expression(dstTypeObject), _this));
+                    result = Fast_Expression(Fast_Cast__create(Fast_Expression(dstTypeObject), _this));
                     Fast_Parser_collect(yparser(), dstTypeObject);
                 } else {
                     castRequired = FALSE;
@@ -410,8 +409,8 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_boo
         if (castRequired) {
             cx_id id1, id2;
                 Fast_Parser_error(yparser(), "no conversion from '%s' to '%s'",
-                        cx_fullname(exprType, id1),
-                        cx_fullname(type, id2));
+                        Fast_Parser_id(exprType, id1),
+                        Fast_Parser_id(type, id2));
         }
     }
 
@@ -456,14 +455,14 @@ Fast_Expression Fast_Expression_fromList(Fast_Expression_list list) {
             cx_iter iter;
             Fast_Expression expr;
             
-            result = Fast_Expression(Fast_CommaExpr__create());
+            result = Fast_Expression(Fast_Comma__create());
 
             iter = cx_llIter(list);
             while(cx_iterHasNext(&iter)) {
                 expr = cx_iterNext(&iter);
                 cx_llAppend(toList, expr); cx_keep_ext(result, expr, "add expression from list to comma-expression");
             }
-            Fast_CommaExpr(result)->expressions = toList;
+            Fast_Comma(result)->expressions = toList;
             Fast_Parser_collect(yparser(), result);
         }
     }
@@ -476,7 +475,7 @@ Fast_Expression Fast_Expression_fromList(Fast_Expression_list list) {
 cx_type Fast_Expression_getType(Fast_Expression _this) {
 /* $begin(::cortex::Fast::Expression::getType) */
     cx_type result = NULL;
-    if (_this->type && (_this->type->kind == FAST_Object)) {
+    if (_this->type && (_this->type->kind == Fast_ObjectExpr)) {
         result = Fast_ObjectBase(_this->type)->value;
     }
     return result;
@@ -484,45 +483,31 @@ cx_type Fast_Expression_getType(Fast_Expression _this) {
 }
 
 /* ::cortex::Fast::Expression::getType_expr(Expression target) */
-cx_type Fast_Expression_getType_expr(Fast_Expression _this, Fast_Expression target) {
-/* $begin(::cortex::Fast::Expression::getType_expr) */
-    cx_type type,result;
-
-    result = Fast_Expression_getType(_this);
-    type = Fast_Expression_getType(target);
-
-    if (!result && target) {
-        if (type) {
-            result = Fast_Expression_getType_type(_this, type);
-        } else {
-            result = cx_void_o;
-        }
-    } else {
-        result = Fast_Expression_getType_type(_this, type);
-    }
-
-    return result;
-/* $end */
-}
-
-/* ::cortex::Fast::Expression::getType_type(type target) */
-cx_type Fast_Expression_getType_type(Fast_Expression _this, cx_type target) {
-/* $begin(::cortex::Fast::Expression::getType_type) */
-    cx_type result=Fast_Expression_getType(_this);
+/* $header(::cortex::Fast::Expression::getType_expr) */
+cx_type Fast_Expression_getType_intern(Fast_Expression _this, cx_type target, Fast_Expression targetExpr) {
+    cx_type result = Fast_Expression_getType(_this);
 
     if (!result) {
-        if (Fast_Node(_this)->kind == FAST_Literal) {
-            if (Fast_Literal(_this)->kind == FAST_Null) {
-                if (target) {
-                    if (target->reference) {
+        if ((Fast_Node(_this)->kind == Fast_LiteralExpr) && (Fast_Literal(_this)->kind == Fast_Nothing)) {
+            if (target) {
+                if (target->reference) {
+                    result = target;
+                } else if ((target->kind == CX_PRIMITIVE) && (cx_primitive(target)->kind == CX_TEXT)) {
+                    result = cx_type(cx_string_o);
+                } else {
+                    if (targetExpr && targetExpr->forceReference) {
                         result = target;
-                    } else if ((target->kind == CX_PRIMITIVE) && (cx_primitive(target)->kind == CX_TEXT)){
-                        result = cx_type(cx_string_o);
                     } else {
-                        result = target;
+                        goto error;
                     }
                 }
+            } else {
+                goto error;
             }
+        } else if (Fast_Node(_this)->kind == Fast_InitializerExpr) {
+            result = target;
+        } else {
+            goto error;
         }
     } else {
         if (!result->reference) {
@@ -535,6 +520,40 @@ cx_type Fast_Expression_getType_type(Fast_Expression _this, cx_type target) {
     }
 
     return result;
+error: 
+    {
+        cx_id id;
+        Fast_Parser_error(yparser(), "invalid usage of null in expression with type '%s'",
+            Fast_Parser_id(target, id));
+    }
+    return NULL;  
+}
+/* $end */
+cx_type Fast_Expression_getType_expr(Fast_Expression _this, Fast_Expression target) {
+/* $begin(::cortex::Fast::Expression::getType_expr) */
+    cx_type type,result;
+
+    result = Fast_Expression_getType(_this);
+    type = Fast_Expression_getType(target);
+
+    if (!result) {
+        if (type) {
+            result = Fast_Expression_getType_intern(_this, type, target);
+        } else {
+            result = cx_void_o;
+        }
+    } else {
+        result = Fast_Expression_getType_intern(_this, type, target);
+    }
+
+    return result;
+/* $end */
+}
+
+/* ::cortex::Fast::Expression::getType_type(type target) */
+cx_type Fast_Expression_getType_type(Fast_Expression _this, cx_type target) {
+/* $begin(::cortex::Fast::Expression::getType_type) */
+    return Fast_Expression_getType_intern(_this, target, NULL);
 /* $end */
 }
 

@@ -10,7 +10,7 @@ class Dictionary::
     author: string
     hello: translator
     world: translator
-    getAuthor: delegate{string}
+    getAuthor: delegate{string} // Anonymous delegate type
     helloWorld: delegate{string}
 
 Dictionary dutch: "Gijs"::

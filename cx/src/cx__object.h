@@ -30,7 +30,7 @@ struct cx__object;
 typedef struct cx__object {
     cx__attr attrs;
     cx_int32 refcount;
-    cx_typedef type;
+    cx_type type;
 
     /* Used by garbage collector to mark and unmark objects. */
     struct cx_mmNode mm;

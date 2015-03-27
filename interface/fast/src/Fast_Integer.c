@@ -20,7 +20,7 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* ::cortex::Fast::Integer::init() */
 cx_int16 Fast_Integer_init(Fast_Integer _this) {
 /* $begin(::cortex::Fast::Integer::init) */
-    Fast_Literal(_this)->kind = FAST_Integer;
+    Fast_Literal(_this)->kind = Fast_Int;
     return Fast_Literal_init((Fast_Literal)_this);
 /* $end */
 }
@@ -34,19 +34,19 @@ cx_int16 Fast_Integer_serialize(Fast_Integer _this, cx_type dstType, cx_word dst
     memset((void*)dst, 0, cx_type_sizeof(dstType));
 
     switch(kind) {
-    case FAST_Boolean:
+    case Fast_Bool:
         *(cx_bool*)dst = _this->value ? TRUE : FALSE;
         break;
-    case FAST_Integer:
-    case FAST_SignedInteger:
-    case FAST_FloatingPoint:
-    case FAST_Enumerated:
-    case FAST_String:
+    case Fast_Int:
+    case Fast_SignedInt:
+    case Fast_Float:
+    case Fast_Enum:
+    case Fast_Text:
         cx_convert(cx_primitive(cx_uint64_o), &_this->value, cx_primitive(dstType), (void*)dst);
         break;
     default: {
         cx_id id;
-        Fast_Parser_error(yparser(), "cannot serialize integer value to storage of type '%s'", cx_fullname(dstType, id));
+        Fast_Parser_error(yparser(), "cannot serialize integer value to storage of type '%s'", Fast_Parser_id(dstType, id));
         goto error;
         break;
     }

@@ -103,8 +103,8 @@ cx_equalityKind cx_type_compare(cx_any _this, cx_any value) {
     struct cx_serializer_s s;
     cx_value v1;
     
-    cx_valueValueInit(&v1, NULL, cx_typedef(_this.type), _this.value);
-    cx_valueValueInit(&data.value, NULL, cx_typedef(value.type), value.value);
+    cx_valueValueInit(&v1, NULL, cx_type(_this.type), _this.value);
+    cx_valueValueInit(&data.value, NULL, cx_type(value.type), value.value);
     
     s = cx_compare_ser(CX_PRIVATE, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
 
@@ -149,7 +149,7 @@ cx_int16 cx_type_construct(cx_type _this) {
     default:
         break;
     }
-    return cx_typedef_construct(cx_typedef(_this));
+    return 0;
 /* $end */
 }
 
@@ -165,8 +165,8 @@ cx_int16 cx_type_copy(cx_any _this, cx_any value) {
         cx_valueObjectInit(&data.value, _this.value);
         cx_valueObjectInit(&v1, value.value);       
     } else {
-        cx_valueValueInit(&data.value, NULL, cx_typedef(_this.type), _this.value);
-        cx_valueValueInit(&v1, NULL, cx_typedef(value.type), value.value);
+        cx_valueValueInit(&data.value, NULL, cx_type(_this.type), _this.value);
+        cx_valueValueInit(&v1, NULL, cx_type(value.type), value.value);
     }
     
     s = cx_copy_ser(CX_PRIVATE, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
@@ -183,8 +183,8 @@ cx_int16 cx_type_copy(cx_any _this, cx_any value) {
 /* $end */
 }
 
-/* ::cortex::lang::type::declare(string name,typedef type) */
-cx_object cx_type_declare(cx_any _this, cx_string name, cx_typedef type) {
+/* ::cortex::lang::type::declare(string name,type type) */
+cx_object cx_type_declare(cx_any _this, cx_string name, cx_type type) {
 /* $begin(::cortex::lang::type::declare) */
     cx_object result = cx_declare(_this.value, name, type);
     cx_keep(result);
@@ -204,9 +204,6 @@ cx_void cx_type_destruct(cx_type _this) {
 /* $begin(::cortex::lang::type::destruct) */
     cx_uint32 i;
 
-    _this->_parent.type = NULL;
-    cx_free_ext(_this, _this, "Free self for type-member");
-
     /* Free methods */
     for(i=0; i<_this->metaprocedures.length; i++) {
         cx_free_ext(_this, _this->metaprocedures.buffer[i], "Remove method from vtable.");
@@ -216,8 +213,6 @@ cx_void cx_type_destruct(cx_type _this) {
         cx_dealloc(_this->metaprocedures.buffer);
         _this->metaprocedures.buffer = NULL;
     }
-
-    cx_typedef_destruct(cx_typedef(_this));
 /* $end */
 }
 
@@ -240,14 +235,13 @@ cx_string cx_type_fullname(cx_any _this) {
 /* ::cortex::lang::type::init() */
 cx_int16 cx_type_init(cx_type _this) {
 /* $begin(::cortex::lang::type::init) */
-    cx_keep_ext(_this, _this, "Keep self for type-member");
-    cx_typedef(_this)->type = (cx_typedef)_this;
-    return cx_typedef_init(cx_typedef(_this));
+    CX_UNUSED(_this);
+    return 0;
 /* $end */
 }
 
-/* ::cortex::lang::type::instanceof(typedef type) */
-cx_bool cx_type_instanceof(cx_any _this, cx_typedef type) {
+/* ::cortex::lang::type::instanceof(type type) */
+cx_bool cx_type_instanceof(cx_any _this, cx_type type) {
 /* $begin(::cortex::lang::type::instanceof) */
     return cx_instanceof(type, _this.value);
 /* $end */
@@ -334,7 +328,7 @@ cx_function cx_type_resolveProcedure(cx_type _this, cx_string name) {
     cx_function result = NULL;
 
     /* If type is an interface, try first to resolve a method on the interface */
-    if (cx_instanceof((cx_typedef)cx_interface_o, _this)) {
+    if (cx_instanceof((cx_type)cx_interface_o, _this)) {
         result = (cx_function)cx_interface_resolveMethod(cx_interface(_this), name);
     }
 
@@ -342,7 +336,7 @@ cx_function cx_type_resolveProcedure(cx_type _this, cx_string name) {
     if (!result) {
         cx_function *f;
         cx_int32 d = 0, prevD = 9999;
-        cx_class metaclass = cx_class(cx_typeof(_this)->real);
+        cx_class metaclass = cx_class(cx_typeof(_this));
 
         /* Walk inheritance of metaclass to find metaprocedure */
         do {
@@ -383,7 +377,7 @@ cx_string cx_type_toString(cx_any _this) {
         if (_this.type->reference) {
             cx_valueObjectInit(&value, _this.value);
         } else {
-            cx_valueValueInit(&value, NULL, cx_typedef(_this.type), _this.value);
+            cx_valueValueInit(&value, NULL, _this.type, _this.value);
         }
         result = cx_valueToString(&value, 0);
     } else {

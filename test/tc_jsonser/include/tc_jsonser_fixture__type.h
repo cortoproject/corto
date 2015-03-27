@@ -19,23 +19,23 @@ extern "C" {
 /* Type definitions */
 /* ::tc_jsonser_fixture::color */
 CX_BITMASK(tc_jsonser_fixture_color);
-    #define TC_JSONSER_FIXTURE_red (0x1)
-    #define TC_JSONSER_FIXTURE_green (0x2)
-    #define TC_JSONSER_FIXTURE_blue (0x4)
+    #define tc_jsonser_fixture_red (0x1)
+    #define tc_jsonser_fixture_green (0x2)
+    #define tc_jsonser_fixture_blue (0x4)
 
 /* ::tc_jsonser_fixture::Djinn */
 typedef enum tc_jsonser_fixture_Djinn {
-    TC_JSONSER_FIXTURE_Mercury = 0,
-    TC_JSONSER_FIXTURE_Venus = 1,
-    TC_JSONSER_FIXTURE_Mars = 2,
-    TC_JSONSER_FIXTURE_Jupiter = 3
+    Tc_jsonser_fixture_Mercury = 0,
+    Tc_jsonser_fixture_Venus = 1,
+    Tc_jsonser_fixture_Mars = 2,
+    Tc_jsonser_fixture_Jupiter = 3
 } tc_jsonser_fixture_Djinn;
 
 /* ::tc_jsonser_fixture::DogBreed */
 typedef enum tc_jsonser_fixture_DogBreed {
-    TC_JSONSER_FIXTURE_GoldenRetriever = 0,
-    TC_JSONSER_FIXTURE_Pug = 1,
-    TC_JSONSER_FIXTURE_Chihuahua = 2
+    Tc_jsonser_fixture_GoldenRetriever = 0,
+    Tc_jsonser_fixture_Pug = 1,
+    Tc_jsonser_fixture_Chihuahua = 2
 } tc_jsonser_fixture_DogBreed;
 
 /*  ::tc_jsonser_fixture::Dog */

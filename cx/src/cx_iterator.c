@@ -9,96 +9,123 @@
 #include "cx.h"
 #include "cx__meta.h"
 
-#include "cx_err.h"
+/* $header() */
+CX_ITERATOR(iteratorType);
+CX_SEQUENCE(seqType, cx_object, );
 
-static cx_bool cx_iterator_hasNext_array(cx_collection collection, cx_void *array, void *element);
-static int cx_iterator_next_array(cx_collection collection, cx_void *array, void **elementPtr);
-
-/* callback ::cortex::lang::type::init(object object) -> ::cortex::lang::iterator::init(lang::iterator object) */
-cx_int16 cx_iterator_init(cx_iterator object) {
-    /* $begin(::cortex::lang::iterator::init) */
-    cx_type(object)->kind = CX_ITERATOR;
-    return cx_type_init(cx_type(object));
-    /* $end */
-}
-
-/* ::cortex::lang::iterator::hasNext() */
-cx_bool cx_iterator_hasNext(cx_any _this) {
-/* $begin(::cortex::lang::iterator::hasNext) */
-    CX_ITERATOR(iteratorType);
-    iteratorType *iterator = _this.value;
+/* Combined hasNext and next */
+static cx_bool cx_iterator_next_array(void* iterator) {
+    iteratorType *iter = iterator;
+    cx_uint32 elementSize = iter->is.array.elementSize;
+    void *current = iter->current;
     cx_bool result = FALSE;
-    switch (iterator->type->kind) {
-        case CX_ARRAY:
-            result = cx_iterator_hasNext_array(iterator->type, iterator->value, &(iterator->element));
-            break;
-        case CX_SEQUENCE:
-            break;
-        case CX_LIST:
-            break;
-        case CX_MAP:
-            break;
-        default:
-            break;
+    current = CX_OFFSET(current, elementSize);
+    if (current  < iter->is.array.max) {
+        iter->current = current;
+        result = TRUE;
     }
     return result;
-/* $end */
 }
 
-/* ::cortex::lang::iterator::next() */
-cx_any cx_iterator_next(cx_any _this) {
-/* $begin(::cortex::lang::iterator::next) */
+static cx_bool cx_iterator_next_listPtr(void* iterator) {
+    iteratorType *iter = iterator;
+    cx_bool result = FALSE;
+    if ((result = cx_iterHasNext(&iter->is.ll.iter))) {
+        iter->current = cx_iterNextPtr(&iter->is.ll.iter);
+        result = TRUE;
+    }
+    return result;
+}
+
+static cx_bool cx_iterator_next_list(void* iterator) {
+    iteratorType *iter = iterator;
+    cx_bool result = FALSE;
+    if ((result = cx_iterHasNext(&iter->is.ll.iter))) {
+        iter->current = cx_iterNext(&iter->is.ll.iter);
+        result = TRUE;
+    }
+    return result;
+}
+
+static cx_bool cx_iterator_next_map(void* iterator) {
+    CX_UNUSED(iterator);
+    // TODO implement
+    return 1;
+}
+
+cx_bool cx_iterator_next(void* _this) {
     CX_ITERATOR(iteratorType);
-    iteratorType *iterator = _this.value;
-    int error = 0;
-    switch (iterator->type->kind) {
+    iteratorType *iterator = _this;
+    cx_bool result = FALSE;
+
+    result = iterator->next(iterator);
+
+    return result;
+}
+
+cx_int16 cx_iterator_set(void* _this, void* collection, cx_collection collectionType) {
+    iteratorType *iter = _this;
+    iter->type = collectionType;
+
+    switch (collectionType->kind) {
         case CX_ARRAY:
-            error = cx_iterator_next_array(iterator->type, iterator->value, &(iterator->element));
+            iter->is.array.array = collection;
+            iter->is.array.elementSize = cx_type_sizeof(collectionType->elementType);
+            iter->is.array.max = CX_OFFSET(iter->is.array.array, collectionType->max * iter->is.array.elementSize);
+            iter->current = CX_OFFSET(collection, -iter->is.array.elementSize);
+            iter->next = cx_iterator_next_array;
             break;
         case CX_SEQUENCE:
+            iter->is.array.array = ((seqType*)collection)->buffer;
+            iter->is.array.elementSize = cx_type_sizeof(collectionType->elementType);
+            iter->is.array.max = CX_OFFSET(iter->is.array.array, ((seqType*)collection)->length * iter->is.array.elementSize);
+            iter->current = CX_OFFSET(iter->is.array.array, -iter->is.array.elementSize);
+            iter->next = cx_iterator_next_array;
             break;
         case CX_LIST:
+            iter->is.ll.iter = cx_llIter(*(cx_ll*)collection);
+            if (cx_collection_elementRequiresAlloc(collectionType)) {
+                iter->next = cx_iterator_next_list;
+            } else {
+                iter->next = cx_iterator_next_listPtr;
+            }
+
             break;
         case CX_MAP:
-            break;
-        default:
+            iter->next = cx_iterator_next_map;
             break;
     }
-    if (error) {
-        cx_critical("reached end of collection while attempting to retrieve next");
+    return 0;
+}
+
+/* $end */
+
+/* ::cortex::lang::iterator::castable(type type) */
+cx_bool cx_iterator_castable_v(cx_iterator _this, cx_type type) {
+/* $begin(::cortex::lang::iterator::castable) */
+    return cx_iterator_compatible_v(_this, type);
+/* $end */
+}
+
+/* ::cortex::lang::iterator::compatible(type type) */
+cx_bool cx_iterator_compatible_v(cx_iterator _this, cx_type type) {
+/* $begin(::cortex::lang::iterator::compatible) */
+    cx_bool result = FALSE;
+    if (type->kind == CX_COLLECTION) {
+        if (cx_collection(type)->elementType == _this->elementType) {
+            result = TRUE;
+        }
     }
-    cx_any result;
-    result.type = iterator->type->elementType->real;
-    result.value = iterator->element;
-    result.owner = FALSE;
     return result;
 /* $end */
 }
 
-
-static cx_bool cx_iterator_hasNext_array(cx_collection collection, cx_void *array, void *element) {
-    cx_assert(array != NULL, "array corrupt");
-    int result = 1;
-    cx_type elementType = collection->elementType->real;
-    cx_uint32 elementSize = cx_type_sizeof(elementType);
-    cx_uint32 length = collection->max;
-    if (element < CX_OFFSET(array, elementSize * length)) {
-        result = 0;
-    }
-    return result;
-}
-
-static int cx_iterator_next_array(cx_collection collection, cx_void *array, void **elementPtr) {
-    cx_assert(array != NULL, "array corrupt");
-    int result;
-    result = 1;
-    cx_type elementType = collection->elementType->real;
-    cx_uint32 elementSize = cx_type_sizeof(elementType);
-    cx_uint32 length = collection->max;
-    void *element = *elementPtr;
-    if (element < CX_OFFSET(array, elementSize * length)) {
-        *elementPtr = CX_OFFSET(array, elementSize);
-        result = 0;
-    }
-    return result;
+/* ::cortex::lang::iterator::init() */
+cx_int16 cx_iterator_init(cx_iterator _this) {
+/* $begin(::cortex::lang::iterator::init) */
+    cx_type(_this)->kind = CX_ITERATOR;
+    CX_ITERATOR(iteratorType);
+    cx_type(_this)->size = sizeof(iteratorType);
+    return cx_type_init(cx_type(_this));
+/* $end */
 }

@@ -115,7 +115,7 @@ static cx_int16 cx_string_deserBuildIndexPrimitive(cx_serializer s, cx_value* v,
     /* Create new info-object */
     newInfo = cx_malloc(sizeof(struct cx_string_deserIndexInfo));
     newInfo->m = m;
-    newInfo->type = m->type->real;
+    newInfo->type = m->type;
     newInfo->parsed = FALSE;
 
     /* Insert indexInfo into index */
@@ -174,7 +174,7 @@ static cx_string cx_string_deserParseScope(cx_string str, struct cx_string_deser
     /* Open scope of type */
     if (!info) {
         if (!data->type) {
-            rootInfo.type = cx_typeof(data->out)->real;
+            rootInfo.type = cx_typeof(data->out);
         } else {
             rootInfo.type = data->type;
         }
@@ -207,7 +207,7 @@ static cx_string cx_string_deserParseScope(cx_string str, struct cx_string_deser
         elementNode = cx_malloc(sizeof(struct cx_string_deserIndexInfo));
         elementNode->m = NULL;
         elementNode->parsed = FALSE;
-        elementNode->type = cx_collection(info->type)->elementType->real;
+        elementNode->type = cx_collection(info->type)->elementType;
 
         /* Insert indexInfo into index */
         cx_string_deserIndexInsert(&privateData, elementNode);
@@ -546,8 +546,8 @@ cx_string cx_string_deser(cx_string str, cx_string_deser_t* data) {
             /* If no out is provided create an object of the specified type */
             type = cx_resolve(NULL, buffer);
             if (type) {
-                if (cx_instanceof(cx_typedef(cx_typedef_o), type)) {
-                    data->out = cx_new(cx_typedef(type));
+                if (cx_instanceof(cx_type(cx_type_o), type)) {
+                    data->out = cx_new(cx_type(type));
                 } else {
                     cx_error("cx_string_deser: specified type-identifier '%s' is not a type", buffer);
                     cx_free(type);

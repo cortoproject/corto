@@ -83,7 +83,7 @@ class Types::
         if l!=t.l: fail("bool error (this.l = $l)")    
         if m!=t.m: fail("char error (this.m = $m)")
     
-Types n, o:
+Types n, o:;
 n.validate()    
 
 // Refer arguments as members
@@ -118,7 +118,7 @@ if o.k != YELLOW: fail("enum error (o.k = ${o.k})")
 if !o.l: fail("bool error (o.l = ${o.l})")
 if o.m != 'x': fail("char error (this.m = ${o.m})")
 
-//n.validate(o)
-//o.validate(n)
+n.validate(o)
+o.validate(n)
 
 if result: "tc_types02: OK"

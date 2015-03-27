@@ -26,31 +26,31 @@ object tc_stringser::
 		member g : moveMode
 		
 	// Arrays of primitive types
-	typedef arrayOfBool : array{bool,3}
-	typedef arrayOfChar : array{char,3}
-	typedef arrayOfInt : array{int32,3}
-	typedef arrayOfFloat : array{float32,3}
-	typedef arrayOfString : array{string,3}
-	typedef arrayOfColor : array{color,3}
-	typedef arrayOfMoveMode : array{moveMode,3}
+	array arrayOfBool : bool, 3
+	array arrayOfChar : char, 3
+	array arrayOfInt : int32, 3
+	array arrayOfFloat : float32, 3
+	array arrayOfString : string, 3
+	array arrayOfColor : color, 3
+	array arrayOfMoveMode : moveMode, 3
 	
 	// Sequences of primitive types
-	typedef sequenceOfBool : sequence{bool,3}
-	typedef sequenceOfChar : sequence{char,3}
-	typedef sequenceOfInt : sequence{int32,3}
-	typedef sequenceOfFloat : sequence{float32,3}
-	typedef sequenceOfString : sequence{string,3}
-	typedef sequenceOfColor : sequence{color,3}
-	typedef sequenceOfMoveMode : sequence{moveMode,3}
+	sequence sequenceOfBool : bool, 3
+	sequence sequenceOfChar : char, 3
+	sequence sequenceOfInt : int32, 3
+	sequence sequenceOfFloat : float32, 3
+	sequence sequenceOfString : string, 3
+	sequence sequenceOfColor : color, 3
+	sequence sequenceOfMoveMode : moveMode, 3
 
 	// Lists of primitive types
-	typedef listOfBool : list{bool,3}
-	typedef listOfChar : list{char,3}
-	typedef listOfInt : list{int32,3}
-	typedef listOfFloat : list{float32,3}
-	typedef listOfString : list{string,3}
-	typedef listOfColor : list{color,3}
-	typedef listOfMoveMode : list{moveMode,3}
+	list listOfBool : bool, 3
+	list listOfChar : char, 3
+	list listOfInt : int32, 3
+	list listOfFloat : float32, 3
+	list listOfString : string, 3
+	list listOfColor : color, 3
+	list listOfMoveMode : moveMode, 3
 	
 	// Composite type with nested classs and collections of primitive types
 	class classNested::
@@ -61,19 +61,19 @@ object tc_stringser::
 		member e : listOfInt
 		
 	// Collections of classPrimitives type
-	typedef arrayOfClassPrimitives : array{classPrimitives,3}
-	typedef sequenceOfClassPrimitives : sequence{classPrimitives,3}
-	typedef listOfClassPrimitives : list{classPrimitives,3}
+	array arrayOfClassPrimitives : classPrimitives, 3
+	sequence sequenceOfClassPrimitives : classPrimitives, 3
+	list listOfClassPrimitives : classPrimitives, 3
 		
 	// Collections of classInherit type
-	typedef arrayOfClassInherit: array{classInherit,3}
-	typedef sequenceOfClassInherit : sequence{classInherit,3}
-	typedef listOfClassInherit : list{classInherit,3}
+	array arrayOfClassInherit: classInherit, 3
+	sequence sequenceOfClassInherit : classInherit, 3
+	list listOfClassInherit : classInherit, 3
 
 	// Collections of classNested type
-	typedef arrayOfClassNested: array{classNested,3}
-	typedef sequenceOfClassNested : sequence{classNested,3}
-	typedef listOfClassNested : list{classNested,3}	
+	array arrayOfClassNested: classNested, 3
+	sequence sequenceOfClassNested : classNested, 3
+	list listOfClassNested : classNested, 3
 		
 	// Composite type with collections of complex types
 	class classCompositeCollection::

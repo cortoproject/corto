@@ -1,0 +1,27 @@
+bool result : true
+void fail(string msg):
+    "tc_variable01: FAIL: $msg"
+    result = false
+
+uint32 a: 10
+uint32 b: 20
+
+:
+    var uint32 a = 20
+    if a != 20: fail("a != 20")
+    if ::a != 10: fail("a != 10");
+
+// Test whether funcions don't throw off block administration
+uint32 add(uint32 a, uint32 b) = a + b
+
+uint32 mul(uint32 a, uint32 b):
+     mul = a + b
+
+// Test whether observables don't throw off block administration
+on update a:
+    uint32 b = 40
+
+// Test whether object can be declared at this point
+uint32 c: 30
+
+if result: "tc_variable01: OK"

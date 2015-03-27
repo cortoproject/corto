@@ -47,15 +47,15 @@ struct cx_value {
         cx_object o;
         struct {
             cx_object o;
-            cx_typedef t;
+            cx_type t;
             cx_void *v;
-        }base;
+        } base;
         struct {
             cx_object o;
-            cx_typedef t;
+            cx_type t;
             cx_void* v;
             cx_uint64 storage; /* Optional storage for a value. */
-        }value;
+        } value;
         struct {
             cx_literalKind kind;
             union {
@@ -66,44 +66,44 @@ struct cx_value {
                 cx_float64 _floating_point;
                 cx_string _string;
             }v;
-        }literal;
+        } literal;
         struct {
             cx_object o;
             cx_member t;
             cx_void* v;
-        }member;
+        } member;
         struct {
             cx_object o;
             cx_function t;
-        }call;
+        } call;
         struct {
             cx_object o;
             cx_constant* t;
             cx_void* v;
-        }constant;
+        } constant;
         struct {
             cx_object o;
             struct {
-                cx_typedef type;
+                cx_type type;
                 cx_uint32 index;
             } t;
             cx_void* v;
-        }element;
+        } element;
         struct {
             cx_object o;
             struct {
-                cx_typedef type;
-                cx_typedef keyType;
+                cx_type type;
+                cx_type keyType;
                 cx_void *key;
             }t;
             cx_void* v;
-        }mapElement;
+        } mapElement;
     } is;
 };
 
 typedef cx_value cx_valueStack[64];
 
-cx_typedef cx_valueType(cx_value* val);
+cx_type cx_valueType(cx_value* val);
 cx_void* cx_valueValue(cx_value* val);
 cx_object cx_valueObject(cx_value* val);
 cx_uint32 cx_valueIndex(cx_value* val);
@@ -116,13 +116,13 @@ void cx_valueStackFree(cx_value* valueStack, cx_uint32 count);
 
 /* Initializers */
 void cx_valueObjectInit(cx_value* val, cx_object o);
-void cx_valueBaseInit(cx_value* val, cx_void *v, cx_typedef t);
-void cx_valueValueInit(cx_value* val, cx_object o, cx_typedef t, cx_void* v);
+void cx_valueBaseInit(cx_value* val, cx_void *v, cx_type t);
+void cx_valueValueInit(cx_value* val, cx_object o, cx_type t, cx_void* v);
 void cx_valueMemberInit(cx_value* val, cx_object o, cx_member t, cx_void* v);
 void cx_valueCallInit(cx_value* val, cx_object o, cx_function t);
 void cx_valueConstantInit(cx_value* val, cx_object o, cx_constant* c, cx_void* v);
-void cx_valueElementInit(cx_value* val, cx_object o, cx_typedef t, cx_uint32 index, cx_void* v);
-void cx_valueMapElementInit(cx_value* val, cx_object o, cx_typedef t, cx_typedef keyType, cx_void *key, cx_void* v);
+void cx_valueElementInit(cx_value* val, cx_object o, cx_type t, cx_uint32 index, cx_void* v);
+void cx_valueMapElementInit(cx_value* val, cx_object o, cx_type t, cx_type keyType, cx_void *key, cx_void* v);
 void cx_valueLiteralInit(cx_value* val, cx_literalKind kind, cx_void* value);
 
 /* Helpers */

@@ -17,8 +17,8 @@ class Foo::
 
 // Make objects var so they are destructed before program is finished
 :
-    var Foo object1 = Foo{0} // Succesful object creation
-    var Foo object2 = Foo{1} // Object creation fails, thus there will be no destruct event (object was never constructed)
+    Foo object1 = Foo{0} // Succesful object creation
+    Foo object2 = Foo{1} // Object creation fails, thus there will be no destruct event (object was never constructed)
     // Scope ends, thus objects are destructed
 
 if constructed != 2: fail("number of constructs doesn't match")

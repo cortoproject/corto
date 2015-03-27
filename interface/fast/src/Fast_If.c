@@ -24,7 +24,7 @@ cx_int16 Fast_If_construct(Fast_If _this) {
 /* $begin(::cortex::Fast::If::construct) */
     cx_type conditionType;
 
-    Fast_Node(_this)->kind = FAST_If;
+    Fast_Node(_this)->kind = Fast_IfExpr;
 
     if (_this->condition) {
         conditionType = Fast_Expression_getType(_this->condition);

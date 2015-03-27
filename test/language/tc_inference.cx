@@ -20,6 +20,7 @@ float32 k : 0
 float64 l : 0
 string m : "foo"
 Color n : GREEN
+int32 o : 0
 
 var lang::type t
 
@@ -239,11 +240,13 @@ if t != lang::string: fail("uint32+string inference failed (${t.nameof()})")
 
 
 // Inference between integer and enumeration
-t = (e=n).typeof() 
-if t != lang::uint32: fail("uint32=enum inference failed (${t.nameof()})")
+t = (o=n).typeof() 
+if t != int32: fail("int32=enum inference failed (${t.nameof()})")
 
-t = (e+n).typeof() 
-if t != Color: fail("uint32+enum inference failed (${t.nameof()})")
+t = (n=o).typeof() 
+if t != Color: fail("enum=int32 inference failed (${t.nameof()})")
 
+t = (o+n).typeof()
+if t != int32: fail("int32+enum inference failed (${t.nameof()})")
 
 if result: "tc_inference: OK"

@@ -35,15 +35,15 @@ cx_int16 cx_method_init(cx_method _this) {
     /* Parent of method must be an interface type */
     if (cx_class_instanceof(cx_interface_o, parent)) {
         /* Can't use the cx_interface_bindMethod here, since that would introduce a bootstrap issue. */
-        if (cx_typeof(parent) == cx_typedef(cx_interface_o)) {
+        if (cx_typeof(parent) == cx_type(cx_interface_o)) {
             if (cx_interface_bindMethod(cx_interface(parent), _this)) {
                 goto error;
             }
-        } else if (cx_typeof(parent) == cx_typedef(cx_struct_o)) {
+        } else if (cx_typeof(parent) == cx_type(cx_struct_o)) {
             if (cx_interface_bindMethod(cx_interface(parent), _this)) {
                 goto error;
             }
-        } else if (cx_typeof(parent) == cx_typedef(cx_class_o)) {
+        } else if (cx_typeof(parent) == cx_type(cx_class_o)) {
             if (cx_interface_bindMethod(cx_interface(parent), _this)) {
                 goto error;
             }

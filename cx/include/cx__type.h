@@ -1,12 +1,11 @@
-/*
- * cx.h
+/* cx__type.h
  *
- *  Created on: Aug 2, 2012
- *      Author: sander
+ *    Type-definitions for C-language.
+ *    This file contains generated code. Do not modify!
  */
 
-#ifndef CX_H_
-#define CX_H_
+#ifndef cx__type_H
+#define cx__type_H
 
 #include "cx_def.h"
 
@@ -14,333 +13,170 @@
 extern "C" {
 #endif
 
-/* Primitive declarations */
-typedef char cx_octet;
+/* Casting macro's for classes */
+#define cx_alias(o) ((cx_alias)o)
+#define cx_array(o) ((cx_array)o)
+#define cx_binary(o) ((cx_binary)o)
+#define cx_bitmask(o) ((cx_bitmask)o)
+#define cx_boolean(o) ((cx_boolean)o)
+#define cx_character(o) ((cx_character)o)
+#define cx_class(o) ((cx_class)o)
+#define cx_collection(o) ((cx_collection)o)
+#define cx_delegate(o) ((cx_delegate)o)
+#define cx_dispatcher(o) ((cx_dispatcher)o)
+#define cx_enum(o) ((cx_enum)o)
+#define cx_event(o) ((cx_event)o)
+#define cx_float(o) ((cx_float)o)
+#define cx_function(o) ((cx_function)o)
+#define cx_int(o) ((cx_int)o)
+#define cx_interface(o) ((cx_interface)o)
+#define cx_iterator(o) ((cx_iterator)o)
+#define cx_list(o) ((cx_list)o)
+#define cx_map(o) ((cx_map)o)
+#define cx_member(o) ((cx_member)o)
+#define cx_metaprocedure(o) ((cx_metaprocedure)o)
+#define cx_method(o) ((cx_method)o)
+#define cx_observableEvent(o) ((cx_observableEvent)o)
+#define cx_observer(o) ((cx_observer)o)
+#define cx_package(o) ((cx_package)o)
+#define cx_primitive(o) ((cx_primitive)o)
+#define cx_procedure(o) ((cx_procedure)o)
+#define cx_sequence(o) ((cx_sequence)o)
+#define cx_struct(o) ((cx_struct)o)
+#define cx_text(o) ((cx_text)o)
+#define cx_type(o) ((cx_type)o)
+#define cx_uint(o) ((cx_uint)o)
+#define cx_virtual(o) ((cx_virtual)o)
+
+/* Type definitions */
+/* ::cortex::lang::typeKind */
+typedef enum cx_typeKind {
+    CX_VOID = 0,
+    CX_ANY = 1,
+    CX_PRIMITIVE = 2,
+    CX_COMPOSITE = 3,
+    CX_COLLECTION = 4,
+    CX_ITERATOR = 5
+} cx_typeKind;
+
+/* ::cortex::lang::bool */
 typedef char cx_bool;
-typedef char cx_char;
-typedef uint8_t cx_uint8;
-typedef uint16_t cx_uint16;
+
+/* ::cortex::lang::uint32 */
 typedef uint32_t cx_uint32;
-typedef uint64_t cx_uint64;
-typedef int8_t cx_int8;
-typedef int16_t cx_int16;
-typedef int32_t cx_int32;
-typedef int64_t cx_int64;
-typedef float cx_float32;
-typedef double cx_float64;
-typedef char *cx_string;
-typedef cx_int32 cx_constant;
+
+/* ::cortex::lang::uint16 */
+typedef uint16_t cx_uint16;
+
+/*  ::cortex::lang::type */
+CX_CLASS(cx_type);
+
+/* ::cortex::lang::state */
+CX_BITMASK(cx_state);
+    #define CX_VALID (0x1)
+    #define CX_DECLARED (0x2)
+    #define CX_DEFINED (0x4)
+    #define CX_DESTRUCTED (0x8)
+
+/* ::cortex::lang::word */
 typedef uintptr_t cx_word;
 
-/* Class declarations */
-CX_CLASS(cx_typedef);
-CX_CLASS(cx_type);
-CX_CLASS(cx_template);
-CX_CLASS(cx_primitive);
-CX_CLASS(cx_interface);
-CX_CLASS(cx_collection);
-CX_CLASS(cx_iterator);
-CX_CLASS(cx_binary);
-CX_CLASS(cx_boolean);
-CX_CLASS(cx_character);
-CX_CLASS(cx_int);
-CX_CLASS(cx_uint);
-CX_CLASS(cx_float);
-CX_CLASS(cx_text);
-CX_CLASS(cx_enum);
-CX_CLASS(cx_bitmask);
-CX_CLASS(cx_alias);
-CX_CLASS(cx_struct);
-CX_CLASS(cx_class);
-CX_CLASS(cx_delegate);
-CX_CLASS(cx_procedure);
-CX_CLASS(cx_array);
-CX_CLASS(cx_sequence);
-CX_CLASS(cx_list);
-CX_CLASS(cx_map);
-CX_CLASS(cx_virtual);
-CX_CLASS(cx_member);
-CX_CLASS(cx_event);
-CX_CLASS(cx_observableEvent);
-
-CX_INTERFACE(cx_dispatcher);
-
-CX_STRUCT(cx_parameter);
-CX_STRUCT(cx_delegatedata);
-CX_STRUCT(cx_interfaceVector);
-CX_STRUCT(cx_callbackInit);
-CX_STRUCT(cx_callbackDestruct);
-
-CX_PROCEDURE(cx_function);
-CX_PROCEDURE(cx_method);
-CX_PROCEDURE(cx_observer);
-CX_PROCEDURE(cx_metaprocedure);
-
-/* any */
-CX_ANY(cx_any);
-
-/* Class convenience macro's */
-#define cx_typedef(t) ((cx_typedef)t)
-#define cx_type(t) ((cx_type)t)
-#define cx_template(t) ((cx_template)t)
-#define cx_primitive(t) ((cx_primitive)t)
-#define cx_interface(t) ((cx_interface)t)
-#define cx_collection(t) ((cx_collection)t)
-#define cx_procedure(t) ((cx_procedure)t)
-#define cx_int(t) ((cx_int)t)
-#define cx_uint(t) ((cx_uint)t)
-#define cx_float(t) ((cx_float)t)
-#define cx_text(t) ((cx_text)t)
-#define cx_enum(t) ((cx_enum)t)
-#define cx_bitmask(t) ((cx_bitmask)t)
-#define cx_alias(t) ((cx_alias)t)
-#define cx_struct(t) ((cx_struct)t)
-#define cx_class(t) ((cx_class)t)
-#define cx_delegate(t) ((cx_delegate)t)
-#define cx_array(t) ((cx_array)t)
-#define cx_sequence(t) ((cx_sequence)t)
-#define cx_list(t) ((cx_list)t)
-#define cx_map(t) ((cx_map)t)
-#define cx_member(t) ((cx_member)t)
-#define cx_reference(t) ((cx_reference)t)
-#define cx_event(t) ((cx_event)t)
-#define cx_observableEvent(t) ((cx_observableEvent)t)
-
-#define cx_function(t) ((cx_function)t)
-#define cx_method(t) ((cx_method)t)
-#define cx_virtual(t) ((cx_virtual)t)
-#define cx_observer(t) ((cx_observer)t)
-#define cx_metaprocedure(t) ((cx_metaprocedure)t)
-
-/* Void object */
-typedef void cx_void;
-
-/* Object */
+/* ::cortex::lang::object */
 typedef void *cx_object;
 
-/* Enumeration declarations */
-typedef enum cx_width {
-    CX_WIDTH_8,
-    CX_WIDTH_16,
-    CX_WIDTH_32,
-    CX_WIDTH_64,
-    CX_WIDTH_WORD
-}cx_width;
+/* ::cortex::lang::int16 */
+typedef int16_t cx_int16;
 
-typedef enum cx_typeKind {
-    CX_VOID,
-    CX_ANY,
-    CX_PRIMITIVE,
-    CX_COMPOSITE,
-    CX_COLLECTION,
-    CX_ITERATOR
-}cx_typeKind;
+/* ::cortex::lang::string */
+typedef char* cx_string;
 
-typedef enum cx_primitiveKind {
-    CX_BINARY,
-    CX_BOOLEAN,
-    CX_CHARACTER,
-    CX_INTEGER,
-    CX_UINTEGER,
-    CX_FLOAT,
-    CX_TEXT,
-    CX_ENUM,
-    CX_BITMASK,
-    CX_ALIAS
-}cx_primitiveKind;
+/*  ::cortex::lang::parameter */
+typedef struct cx_parameter cx_parameter;
 
-typedef enum cx_compositeKind {
-    CX_INTERFACE,
-    CX_STRUCT,
-    CX_CLASS,
-    CX_DELEGATE,
-    CX_PROCEDURE,
-}cx_compositeKind;
-
-typedef enum cx_collectionKind {
-    CX_ARRAY,
-    CX_SEQUENCE,
-    CX_LIST,
-    CX_MAP
-}cx_collectionKind;
-
-typedef enum cx_procedureKind {
-    CX_FUNCTION,
-    CX_METHOD,
-    CX_OBSERVER,
-    CX_METAPROCEDURE
-}cx_procedureKind;
-
-typedef enum cx_equalityKind {
-    CX_EQ = 0,
-    CX_LT = -1,
-    CX_GT = 1,
-    CX_NEQ = 2
-}cx_equalityKind;
-
-typedef enum cx_operatorKind {
-    CX_ASSIGN,
-    CX_ADD,
-    CX_SUB,
-    CX_MUL,
-    CX_DIV,
-    CX_MOD,
-    CX_INC,
-    CX_DEC,
-    CX_XOR,
-    CX_OR,
-    CX_AND,
-    CX_NOT,
-    CX_ASSIGN_ADD,
-    CX_ASSIGN_SUB,
-    CX_ASSIGN_MUL,
-    CX_ASSIGN_DIV,
-    CX_ASSIGN_MOD,
-    CX_ASSIGN_XOR,
-    CX_ASSIGN_OR,
-    CX_ASSIGN_AND,
-    CX_COND_OR,
-    CX_COND_AND,
-    CX_COND_NOT,
-    CX_COND_EQ,
-    CX_COND_NEQ,
-    CX_COND_GT,
-    CX_COND_LT,
-    CX_COND_GTEQ,
-    CX_COND_LTEQ,
-    CX_SHIFT_LEFT,
-    CX_SHIFT_RIGHT,
-    CX_COMMA,
-    CX_REF,
-    CX_MEMBER_RESOLVE,
-    CX_ELEMENT_OPEN,
-    CX_ELEMENT_CLOSE,
-    CX_BRACKET_OPEN,
-    CX_BRACKET_CLOSE /* Must be last */
-} cx_operatorKind;
-
-CX_BITMASK(cx_state);
-    /* defined in cx_object.h */
-CX_BITMASK(cx_attr);
-    /* defined in cx_object.h */
-CX_BITMASK(cx_eventMask);
-    /* defined in cx_object.h */
-
-CX_BITMASK(cx_modifier);
-    #define CX_GLOBAL     (0) /* Member is global and public (no restrictions) */
-    #define CX_LOCAL      (1) /* Member has local validity */
-    #define CX_PRIVATE    (2) /* Member is not exposed for extern entities */
-    #define CX_READONLY   (4) /* Member access is restricted to reading only */
-    #define CX_CONST      (8) /* Member assignment is restricted to DECLARED objects only */
-
-/* Function types */
-typedef cx_equalityKind (*cx_equalsAction)(cx_type _this, const void* o1, const void* o2);
-
-/* Collections */
-CX_SEQUENCE(cx_objectSeq, cx_object,);
-CX_SEQUENCE(cx_interfaceSeq, cx_interface,);
-CX_SEQUENCE(cx_memberSeq, cx_member,);
-CX_SEQUENCE(cx_parameterSeq, cx_parameter,);
-CX_SEQUENCE(cx_observerSeq, cx_observer,);
-CX_SEQUENCE(cx_vtable, cx_function,);
-CX_SEQUENCE(cx_interfaceVectorSeq, cx_interfaceVector,);
-
-typedef cx_rbtree cx_scope;
-
-/* parameter */
-CX_STRUCT_DEF(cx_parameter) {
+struct cx_parameter {
     cx_string name;
-    cx_typedef type;
+    cx_type type;
     cx_bool passByReference;
 };
 
-/* delegatedata */
-CX_STRUCT_DEF(cx_delegatedata) {
-    cx_object instance;
-    cx_function procedure;
-};
+CX_SEQUENCE(cx_parameterSeq, cx_parameter,);
 
-/* callbackInit */
-CX_STRUCT_DEF(cx_callbackInit) {
-    cx_delegatedata _parent;
-};
+/*  ::cortex::lang::function */
+CX_CLASS(cx_function);
 
-/* callbackDestruct */
-CX_STRUCT_DEF(cx_callbackDestruct) {
-    cx_delegatedata _parent;
-};
-
-/* function */
-CX_PROCEDURE_DEF(cx_function) {
-    cx_typedef returnType;
+CX_CLASS_DEF(cx_function) {
+    cx_type returnType;
     cx_bool returnsReference;
     cx_bool overloaded;
     cx_uint32 kind;
-    cx_word impl;       /* The language-binding specific call that is executed upon calling this function. */
-    cx_word implData;   /* Userdata for the language binding (usually a pointer to the function implemntation) */
+    cx_word impl;
+    cx_word implData;
     cx_object resource;
-    cx_uint16 size;
+    cx_int16 size;
     cx_parameterSeq parameters;
     cx_uint32 nextParameterId;
 };
 
-/* method */
-CX_PROCEDURE_DEF(cx_method) {
-    CX_EXTEND(cx_function);
-    cx_bool virtual;
+CX_SEQUENCE(cx_vtable, cx_function,);
+
+/*  ::cortex::lang::delegatedata */
+typedef struct cx_delegatedata cx_delegatedata;
+
+struct cx_delegatedata {
+    cx_object instance;
+    cx_function procedure;
 };
 
-/* virtual */
-CX_PROCEDURE_DEF(cx_virtual) {
-    CX_EXTEND(cx_method);
+/*  ::cortex::lang::callbackInit */
+typedef struct cx_callbackInit cx_callbackInit;
+
+struct cx_callbackInit {
+    cx_delegatedata _parent;
 };
 
-CX_PROCEDURE_DEF(cx_metaprocedure) {
-    CX_EXTEND(cx_function);
-    cx_bool referenceOnly;
-};
-
-/* observer */
-CX_PROCEDURE_DEF(cx_observer) {
-    CX_EXTEND(cx_function);
-    cx_object observable;       /* The object being observed */
-    cx_uint32 mask;             /* The interest mask */
-    cx_string expression;       /* Expression (must either resolve to an object or boolean) */
-    cx_uint32 template;         /* If nonzero, this observer is a class-template which is instantiated for all class-instances */
-    cx_dispatcher dispatcher;   /* If set, events for this observer are send through this dispatcher */
-    cx_object me;               /* Set to 'this' if observer is an instantiated class observer. Prevents loopback of events. */
-    cx_object observing;
-    cx_observer delayedBinder;
-};
-
-/* ::cortex::lang::typedef */
-CX_CLASS_DEF(cx_typedef) {
-    cx_typedef type;
-    cx_type real;
-};
-
-/* ::cortex::lang::type */
 CX_CLASS_DEF(cx_type) {
-    CX_EXTEND(cx_typedef);
-    cx_typeKind kind;           /* Is type a void, any, primitive, composite or collection */
-    cx_bool reference;          /* Is type a reference-type (meaning that an instance is always an object) */
-    cx_bool hasResources;       /* Optimization: does the type have allocated resources */
-    cx_uint32 templateId;       /* Optimization: enables quick lookups for type conversions */
-    cx_uint32 size;             /* The allocated size of a type */
-    cx_uint16 alignment;        /* The alignment of a type */
-    cx_typedef defaultType;     /* The default type for objects that are declared in scope of instances of this type */
-    cx_typedef parentType;      /* The mandatory parentType (if not set parentType can be anything) */
-    cx_state parentState;       /* The mandatory parentState */
-    cx_vtable metaprocedures;   /* Metaprocedures of type */
-    cx_callbackInit init;       /* Init delegate */
+    cx_typeKind kind;
+    cx_bool reference;
+    cx_bool hasResources;
+    cx_uint32 templateId;
+    cx_uint32 size;
+    cx_uint16 alignment;
+    cx_type defaultType;
+    cx_type parentType;
+    cx_state parentState;
+    cx_vtable metaprocedures;
+    cx_callbackInit init;
 };
 
-/* ::cortex::lang::template */
-CX_CLASS_DEF(cx_template) {
-    CX_EXTEND(cx_type);
-};
+/* ::cortex::lang::primitiveKind */
+typedef enum cx_primitiveKind {
+    CX_BINARY = 0,
+    CX_BOOLEAN = 1,
+    CX_CHARACTER = 2,
+    CX_INTEGER = 3,
+    CX_UINTEGER = 4,
+    CX_FLOAT = 5,
+    CX_TEXT = 6,
+    CX_ENUM = 7,
+    CX_BITMASK = 8,
+    CX_ALIAS = 9
+} cx_primitiveKind;
 
-/* ::cortex::lang::primitive */
+/* ::cortex::lang::width */
+typedef enum cx_width {
+    CX_WIDTH_8 = 0,
+    CX_WIDTH_16 = 1,
+    CX_WIDTH_32 = 2,
+    CX_WIDTH_64 = 3,
+    CX_WIDTH_WORD = 4
+} cx_width;
+
+/* ::cortex::lang::uint8 */
+typedef uint8_t cx_uint8;
+
+/*  ::cortex::lang::primitive */
+CX_CLASS(cx_primitive);
+
 CX_CLASS_DEF(cx_primitive) {
     CX_EXTEND(cx_type);
     cx_primitiveKind kind;
@@ -348,7 +184,131 @@ CX_CLASS_DEF(cx_primitive) {
     cx_uint8 convertId;
 };
 
-/* ::cortex::lang::interface */
+/*  ::cortex::lang::alias */
+CX_CLASS(cx_alias);
+
+CX_CLASS_DEF(cx_alias) {
+    CX_EXTEND(cx_primitive);
+    cx_string typeName;
+};
+
+/* ::cortex::lang::any */
+CX_ANY(cx_any);
+
+/* ::cortex::lang::collectionKind */
+typedef enum cx_collectionKind {
+    CX_ARRAY = 0,
+    CX_SEQUENCE = 1,
+    CX_LIST = 2,
+    CX_MAP = 3
+} cx_collectionKind;
+
+/*  ::cortex::lang::collection */
+CX_CLASS(cx_collection);
+
+CX_CLASS_DEF(cx_collection) {
+    CX_EXTEND(cx_type);
+    cx_collectionKind kind;
+    cx_type elementType;
+    cx_uint32 max;
+};
+
+/*  ::cortex::lang::array */
+CX_CLASS(cx_array);
+
+CX_CLASS_DEF(cx_array) {
+    CX_EXTEND(cx_collection);
+    cx_type elementType;
+};
+
+/* ::cortex::lang::attr */
+CX_BITMASK(cx_attr);
+    #define CX_ATTR_SCOPED (0x1)
+    #define CX_ATTR_WRITABLE (0x2)
+    #define CX_ATTR_OBSERVABLE (0x4)
+
+/*  ::cortex::lang::binary */
+CX_CLASS(cx_binary);
+
+CX_CLASS_DEF(cx_binary) {
+    CX_EXTEND(cx_primitive);
+};
+
+CX_SEQUENCE(cx_objectSeq, cx_object,);
+
+/*  ::cortex::lang::enum */
+CX_CLASS(cx_enum);
+
+CX_CLASS_DEF(cx_enum) {
+    CX_EXTEND(cx_primitive);
+    cx_objectSeq constants;
+};
+
+/*  ::cortex::lang::bitmask */
+CX_CLASS(cx_bitmask);
+
+CX_CLASS_DEF(cx_bitmask) {
+    CX_EXTEND(cx_enum);
+};
+
+/*  ::cortex::lang::boolean */
+CX_CLASS(cx_boolean);
+
+CX_CLASS_DEF(cx_boolean) {
+    CX_EXTEND(cx_primitive);
+};
+
+/*  ::cortex::lang::callbackDestruct */
+typedef struct cx_callbackDestruct cx_callbackDestruct;
+
+struct cx_callbackDestruct {
+    cx_delegatedata _parent;
+};
+
+/* ::cortex::lang::char */
+typedef char cx_char;
+
+/*  ::cortex::lang::character */
+CX_CLASS(cx_character);
+
+CX_CLASS_DEF(cx_character) {
+    CX_EXTEND(cx_primitive);
+};
+
+/* ::cortex::lang::compositeKind */
+typedef enum cx_compositeKind {
+    CX_INTERFACE = 0,
+    CX_STRUCT = 1,
+    CX_CLASS = 2,
+    CX_DELEGATE = 3,
+    CX_PROCEDURE = 4
+} cx_compositeKind;
+
+/* ::cortex::lang::modifier */
+CX_BITMASK(cx_modifier);
+    #define CX_GLOBAL (0x0)
+    #define CX_LOCAL (0x1)
+    #define CX_PRIVATE (0x2)
+    #define CX_READONLY (0x4)
+    #define CX_CONST (0x8)
+
+/*  ::cortex::lang::member */
+CX_CLASS(cx_member);
+
+CX_CLASS_DEF(cx_member) {
+    cx_type type;
+    cx_modifier modifiers;
+    cx_state state;
+    cx_bool weak;
+    cx_uint32 id;
+    cx_uint32 offset;
+};
+
+CX_SEQUENCE(cx_memberSeq, cx_member,);
+
+/*  ::cortex::lang::interface */
+CX_CLASS(cx_interface);
+
 CX_CLASS_DEF(cx_interface) {
     CX_EXTEND(cx_type);
     cx_compositeKind kind;
@@ -358,92 +318,61 @@ CX_CLASS_DEF(cx_interface) {
     cx_interface base;
 };
 
-/* ::cortex::lang::collection */
-CX_CLASS_DEF(cx_collection) {
-    CX_EXTEND(cx_type);
-    cx_collectionKind kind;
-    cx_typedef elementType;
-    cx_uint32 max;
-};
+/*  ::cortex::lang::struct */
+CX_CLASS(cx_struct);
 
-/* ::cortex::lang::iterator */
-CX_CLASS_DEF(cx_iterator) {
-    CX_EXTEND(cx_type);
-    cx_typedef elementType;
-};
-
-/* ::cortex::lang::binary */
-CX_CLASS_DEF(cx_binary) {
-    CX_EXTEND(cx_primitive);
-};
-
-/* ::cortex::lang::boolean */
-CX_CLASS_DEF(cx_boolean) {
-    CX_EXTEND(cx_primitive);
-};
-
-/* ::cortex::lang::character */
-CX_CLASS_DEF(cx_character) {
-    CX_EXTEND(cx_primitive);
-};
-
-/* ::cortex::lang::int */
-CX_CLASS_DEF(cx_int) {
-    CX_EXTEND(cx_primitive);
-    cx_int64 min;
-    cx_int64 max;
-};
-
-/* ::cortex::lang::uint */
-CX_CLASS_DEF(cx_uint) {
-    CX_EXTEND(cx_primitive);
-    cx_uint64 min;
-    cx_uint64 max;
-};
-
-/* ::cortex::lang::float */
-CX_CLASS_DEF(cx_float) {
-    CX_EXTEND(cx_primitive);
-    cx_float64 min;
-    cx_float64 max;
-};
-
-/* ::cortex::lang::text */
-CX_CLASS_DEF(cx_text) {
-    CX_EXTEND(cx_primitive);
-    cx_width charWidth;
-    cx_uint64 length;
-};
-
-/* ::cortex::lang::enum */
-CX_CLASS_DEF(cx_enum) {
-    CX_EXTEND(cx_primitive);
-    cx_objectSeq constants;
-};
-
-/* ::cortex::lang::bitmask */
-CX_CLASS_DEF(cx_bitmask) {
-    CX_EXTEND(cx_enum);
-};
-
-/* ::cortex::lang::alias */
-CX_CLASS_DEF(cx_alias) {
-    CX_EXTEND(cx_primitive);
-    cx_string typeName;
-};
-
-/* ::cortex::lang::struct */
 CX_CLASS_DEF(cx_struct) {
     CX_EXTEND(cx_interface);
     cx_modifier baseAccess;
 };
 
-CX_STRUCT_DEF(cx_interfaceVector) {
+CX_SEQUENCE(cx_interfaceSeq, cx_interface,);
+
+/*  ::cortex::lang::interfaceVector */
+typedef struct cx_interfaceVector cx_interfaceVector;
+
+struct cx_interfaceVector {
     cx_interface interface;
     cx_vtable vector;
 };
 
-/* ::cortex::lang::class */
+CX_SEQUENCE(cx_interfaceVectorSeq, cx_interfaceVector,);
+
+/* ::cortex::lang::eventMask */
+CX_BITMASK(cx_eventMask);
+    #define CX_ON_DECLARE (0x1)
+    #define CX_ON_DEFINE (0x2)
+    #define CX_ON_DESTRUCT (0x4)
+    #define CX_ON_INVALIDATE (0x8)
+    #define CX_ON_UPDATE (0x10)
+    #define CX_ON_SELF (0x20)
+    #define CX_ON_SCOPE (0x40)
+    #define CX_ON_VALUE (0x80)
+    #define CX_ON_METAVALUE (0x100)
+
+/*  ::cortex::lang::dispatcher */
+CX_INTERFACE(cx_dispatcher);
+
+/*  ::cortex::lang::observer */
+CX_CLASS(cx_observer);
+
+CX_CLASS_DEF(cx_observer) {
+    CX_EXTEND(cx_function);
+    cx_object observable;
+    cx_eventMask mask;
+    cx_string expression;
+    cx_uint32 template;
+    cx_dispatcher dispatcher;
+    cx_object me;
+    cx_object observing;
+    cx_observer delayedBinder;
+};
+
+CX_SEQUENCE(cx_observerSeq, cx_observer,);
+
+/*  ::cortex::lang::class */
+CX_CLASS(cx_class);
+
 CX_CLASS_DEF(cx_class) {
     CX_EXTEND(cx_struct);
     cx_interfaceSeq implements;
@@ -453,62 +382,112 @@ CX_CLASS_DEF(cx_class) {
     cx_callbackDestruct destruct;
 };
 
-/* ::cortex::lang::delegate */
+/* ::cortex::lang::constant */
+typedef int32_t cx_constant;
+
+/*  ::cortex::lang::delegate */
+CX_CLASS(cx_delegate);
+
 CX_CLASS_DEF(cx_delegate) {
     CX_EXTEND(cx_struct);
-    cx_typedef returnType;
+    cx_type returnType;
     cx_bool returnsReference;
     cx_parameterSeq parameters;
 };
 
-/* ::cortex::lang::procedure */
-CX_CLASS_DEF(cx_procedure) {
-    CX_EXTEND(cx_struct);
-    cx_procedureKind kind;
-    cx_callbackInit bind;
-};
+/* ::cortex::lang::equalityKind */
+typedef enum cx_equalityKind {
+    CX_EQ = 0,
+    CX_LT = -1,
+    CX_GT = 1,
+    CX_NEQ = 2
+} cx_equalityKind;
 
-/* ::cortex::lang::array */
-CX_CLASS_DEF(cx_array) {
-    CX_EXTEND(cx_collection);
-    cx_typedef elementType;
-};
+/*  ::cortex::lang::event */
+CX_CLASS(cx_event);
 
-/* ::cortex::lang::sequence */
-CX_CLASS_DEF(cx_sequence) {
-    CX_EXTEND(cx_collection);
-};
-
-/* ::cortex::lang::list */
-CX_CLASS_DEF(cx_list) {
-  CX_EXTEND(cx_collection);
-};
-
-/* ::cortex::lang::map */
-CX_CLASS_DEF(cx_map) {
-    CX_EXTEND(cx_collection);
-    cx_typedef elementType;
-    cx_typedef keyType;
-    cx_uint32 max;
-};
-
-/* ::cortex::lang::member */
-CX_CLASS_DEF(cx_member) {
-    cx_typedef type;
-    cx_modifier modifiers;
-    cx_state state;
-    cx_bool weak;
-    cx_uint32 id;
-    cx_uint32 offset;
-};
-
-/* ::cortex::lang::event */
 CX_CLASS_DEF(cx_event) {
     cx_uint16 kind;
     cx_bool handled;
 };
 
-/* ::cortex::lang::observableEvent */
+/* ::cortex::lang::float64 */
+typedef double cx_float64;
+
+/*  ::cortex::lang::float */
+CX_CLASS(cx_float);
+
+CX_CLASS_DEF(cx_float) {
+    CX_EXTEND(cx_primitive);
+    cx_float64 min;
+    cx_float64 max;
+};
+
+/* ::cortex::lang::float32 */
+typedef float cx_float32;
+
+/* ::cortex::lang::int64 */
+typedef int64_t cx_int64;
+
+/*  ::cortex::lang::int */
+CX_CLASS(cx_int);
+
+CX_CLASS_DEF(cx_int) {
+    CX_EXTEND(cx_primitive);
+    cx_int64 min;
+    cx_int64 max;
+};
+
+/* ::cortex::lang::int32 */
+typedef int32_t cx_int32;
+
+/* ::cortex::lang::int8 */
+typedef int8_t cx_int8;
+
+/*  ::cortex::lang::iterator */
+CX_CLASS(cx_iterator);
+
+CX_CLASS_DEF(cx_iterator) {
+    CX_EXTEND(cx_type);
+    cx_type elementType;
+};
+
+/*  ::cortex::lang::list */
+CX_CLASS(cx_list);
+
+CX_CLASS_DEF(cx_list) {
+    CX_EXTEND(cx_collection);
+};
+
+/*  ::cortex::lang::map */
+CX_CLASS(cx_map);
+
+CX_CLASS_DEF(cx_map) {
+    CX_EXTEND(cx_collection);
+    cx_type elementType;
+    cx_type keyType;
+    cx_uint32 max;
+};
+
+/*  ::cortex::lang::metaprocedure */
+CX_CLASS(cx_metaprocedure);
+
+CX_CLASS_DEF(cx_metaprocedure) {
+    CX_EXTEND(cx_function);
+    cx_bool referenceOnly;
+};
+
+/*  ::cortex::lang::method */
+CX_CLASS(cx_method);
+
+CX_CLASS_DEF(cx_method) {
+    CX_EXTEND(cx_function);
+    cx_bool virtual;
+};
+
+/*  ::cortex::lang::observableEvent */
+CX_CLASS(cx_observableEvent);
+
 CX_CLASS_DEF(cx_observableEvent) {
     CX_EXTEND(cx_event);
     cx_observer observer;
@@ -517,8 +496,110 @@ CX_CLASS_DEF(cx_observableEvent) {
     cx_object observable;
 };
 
+/* ::cortex::lang::octet */
+typedef uint8_t cx_octet;
+
+/* ::cortex::lang::operatorKind */
+typedef enum cx_operatorKind {
+    CX_ASSIGN = 0,
+    CX_ASSIGN_ADD = 1,
+    CX_ASSIGN_SUB = 2,
+    CX_ASSIGN_MUL = 3,
+    CX_ASSIGN_DIV = 4,
+    CX_ASSIGN_MOD = 5,
+    CX_ASSIGN_XOR = 6,
+    CX_ASSIGN_OR = 7,
+    CX_ASSIGN_AND = 8,
+    CX_ASSIGN_UPDATE = 9,
+    CX_ADD = 10,
+    CX_SUB = 11,
+    CX_MUL = 12,
+    CX_DIV = 13,
+    CX_MOD = 14,
+    CX_INC = 15,
+    CX_DEC = 16,
+    CX_XOR = 17,
+    CX_OR = 18,
+    CX_AND = 19,
+    CX_NOT = 20,
+    CX_COND_OR = 21,
+    CX_COND_AND = 22,
+    CX_COND_NOT = 23,
+    CX_COND_EQ = 24,
+    CX_COND_NEQ = 25,
+    CX_COND_GT = 26,
+    CX_COND_LT = 27,
+    CX_COND_GTEQ = 28,
+    CX_COND_LTEQ = 29,
+    CX_SHIFT_LEFT = 30,
+    CX_SHIFT_RIGHT = 31,
+    CX_REF = 32
+} cx_operatorKind;
+
+/*  ::cortex::lang::package */
+CX_CLASS(cx_package);
+
+CX_CLASS_DEF(cx_package) {
+    cx_string url;
+};
+
+/* ::cortex::lang::procedureKind */
+typedef enum cx_procedureKind {
+    CX_FUNCTION = 0,
+    CX_METHOD = 1,
+    CX_OBSERVER = 2,
+    CX_METAPROCEDURE = 3
+} cx_procedureKind;
+
+/*  ::cortex::lang::procedure */
+CX_CLASS(cx_procedure);
+
+CX_CLASS_DEF(cx_procedure) {
+    CX_EXTEND(cx_struct);
+    cx_procedureKind kind;
+    cx_callbackInit bind;
+};
+
+/*  ::cortex::lang::sequence */
+CX_CLASS(cx_sequence);
+
+CX_CLASS_DEF(cx_sequence) {
+    CX_EXTEND(cx_collection);
+};
+
+/* ::cortex::lang::uint64 */
+typedef uint64_t cx_uint64;
+
+/*  ::cortex::lang::text */
+CX_CLASS(cx_text);
+
+CX_CLASS_DEF(cx_text) {
+    CX_EXTEND(cx_primitive);
+    cx_width charWidth;
+    cx_uint64 length;
+};
+
+/*  ::cortex::lang::uint */
+CX_CLASS(cx_uint);
+
+CX_CLASS_DEF(cx_uint) {
+    CX_EXTEND(cx_primitive);
+    cx_uint64 min;
+    cx_uint64 max;
+};
+
+/*  ::cortex::lang::virtual */
+CX_CLASS(cx_virtual);
+
+CX_CLASS_DEF(cx_virtual) {
+    CX_EXTEND(cx_method);
+};
+
+/* ::cortex::lang::void */
+typedef void cx_void;
+
 #ifdef __cplusplus
 }
 #endif
+#endif
 
-#endif /* CX_H_ */

@@ -179,18 +179,20 @@ error:
 /* ::cortex::Fast::String::getValue() */
 cx_word Fast_String_getValue(Fast_String _this) {
 /* $begin(::cortex::Fast::String::getValue) */
-    cx_char *ptr, ch;
+    cx_char *ptr, ch = '\0';
     cx_word result;
 
     /* Determine whether string has embedded expressions */
-    ptr = _this->value;
-    while((ch = *ptr) && ch && (ch != '$')) {
-        switch((cx_uint8)ch) {
-        case '\\':
+    if (_this->value) {
+        ptr = _this->value;
+        while((ch = *ptr) && ch && (ch != '$')) {
+            switch((cx_uint8)ch) {
+            case '\\':
+                ptr++;
+                break;
+            }
             ptr++;
-            break;
         }
-        ptr++;
     }
 
     /* If string contains embedded expressions it does not have a compile-time
@@ -198,7 +200,7 @@ cx_word Fast_String_getValue(Fast_String _this) {
     if (ch == '$') {
         result = 0;
     } else {
-        result = (cx_word)_this->value;
+        result = (cx_word)&_this->value;
     }
 
     return result;
@@ -208,7 +210,7 @@ cx_word Fast_String_getValue(Fast_String _this) {
 /* ::cortex::Fast::String::init() */
 cx_int16 Fast_String_init(Fast_String _this) {
 /* $begin(::cortex::Fast::String::init) */
-    Fast_Literal(_this)->kind = FAST_String;
+    Fast_Literal(_this)->kind = Fast_Text;
     return Fast_Literal_init((Fast_Literal)_this);
 /* $end */
 }
@@ -221,20 +223,20 @@ cx_int16 Fast_String_serialize(Fast_String _this, cx_type dstType, cx_word dst) 
     kind = Fast_valueKindFromType(dstType);
 
     switch(kind) {
-    case FAST_Boolean:
-    case FAST_Integer:
-    case FAST_SignedInteger:
-    case FAST_String:
+    case Fast_Bool:
+    case Fast_Int:
+    case Fast_SignedInt:
+    case Fast_Text:
         cx_convert(cx_primitive(cx_string_o), &_this->value, cx_primitive(dstType), (void*)dst);
         break;
-    case FAST_Reference: {
+    case Fast_Ref: {
         cx_object o = cx_resolve_ext(NULL, NULL, _this->value, FALSE, "Serialize reference from string");
         cx_set_ext(NULL, &dst, o, "serialize string to reference");
         break;
     }
     default: {
         cx_id id;
-        Fast_Parser_error(yparser(), "cannot serialize string value to storage of type '%s'", cx_fullname(dstType, id));
+        Fast_Parser_error(yparser(), "cannot serialize string value to storage of type '%s'", Fast_Parser_id(dstType, id));
         goto error;
         break;
     }

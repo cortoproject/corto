@@ -11,10 +11,10 @@ Foo a: 10
 Foo b: 20
 Foo c: 30
 
-typedef FooArray : array{Foo,3}
-typedef FooSeq : sequence{Foo,3}
-typedef FooList : list{Foo}
-typedef FooMap : map{Foo,string}
+array FooArray : Foo,3
+sequence FooSeq : Foo,3
+list FooList : Foo
+map FooMap : Foo,string
 
 // Validation of results
 FooArray Foo_aCheck : a,b,c

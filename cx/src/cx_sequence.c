@@ -19,7 +19,7 @@ typedef struct __dummySeq {
 int cx_sequence_alloc(cx_collection _this, cx_void* collection, cx_uint32 elements) {
     cx_uint32 elementSize;
 
-    elementSize = cx_type_sizeof(_this->elementType->real);
+    elementSize = cx_type_sizeof(_this->elementType);
 
     ((__dummySeq*)collection)->buffer = cx_malloc(elementSize * elements);
 
@@ -33,7 +33,13 @@ cx_int16 cx_sequence_construct(cx_sequence _this) {
     cx_type(_this)->hasResources = TRUE;
     cx_type(_this)->size = sizeof(__dummySeq);
     cx_type(_this)->alignment = CX_ALIGNMENT(__dummySeq);
+    if (!cx_collection(_this)->elementType) {
+        cx_error("no elementtype provided for sequence");
+        goto error;
+    }
     return cx_type_construct(cx_type(_this));
+error:
+    return -1;
 /* $end */
 }
 
@@ -51,7 +57,7 @@ cx_void cx_sequence_size(cx_any _this, cx_uint32 size) {
     cx_uint32 oldSize, elementSize;
 
     oldSize = ((cx_objectSeq*)_this.value)->length;
-    elementSize = cx_type_sizeof(cx_collection(_this.type)->elementType->real);
+    elementSize = cx_type_sizeof(cx_collection(_this.type)->elementType);
 
     ((cx_objectSeq*)_this.value)->buffer = cx_realloc(((cx_objectSeq*)_this.value)->buffer, size * elementSize);
     memset(CX_OFFSET(((cx_objectSeq*)_this.value)->buffer, oldSize * elementSize), 0, elementSize * (size - oldSize));

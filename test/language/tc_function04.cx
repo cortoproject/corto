@@ -7,7 +7,7 @@ void fail(string msg):
 struct Point::
     x, y: uint32
 
-Point p:
+Point p:;
 Point q: 10,20
 Point r: 30,40
 var Point s = {50, 60}

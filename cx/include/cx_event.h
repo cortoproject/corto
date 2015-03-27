@@ -17,8 +17,11 @@
 extern "C" {
 #endif
 
-/* ::cortex::lang::event::processed() */
-cx_void cx_event_processed(cx_event _this);
+/* virtual ::cortex::lang::event::handle() */
+void cx_event_handle(cx_event _this);
+
+/* ::cortex::lang::event::handle() */
+cx_void cx_event_handle_v(cx_event _this);
 
 /* ::cortex::lang::event::uniqueKind() */
 cx_int16 cx_event_uniqueKind(void);

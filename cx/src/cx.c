@@ -32,7 +32,7 @@ struct cx_exitHandler {
     void* userData;
 };
 
-static cx_mutex_s cx_adminLock;
+cx_mutex_s cx_adminLock;
 static cx_ll cx_exitHandlers = NULL;
 static cx_ll cx_unloadHandlers = NULL;
 
@@ -51,7 +51,6 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
 
 /* Classes */
 #define SSO_OP_CLASSTYPE(op)\
-    SSO_OP_CLASS(op, typedef);\
     SSO_OP_CLASS(op, type);\
     SSO_OP_CLASS(op, primitive);\
     SSO_OP_CLASS(op, interface);\
@@ -77,7 +76,8 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_CLASS(op, map);\
     SSO_OP_CLASS(op, member);\
     SSO_OP_CLASS(op, class);\
-    SSO_OP_CLASS(op, delegate);
+    SSO_OP_CLASS(op, delegate);\
+    SSO_OP_CLASS(op, package);
 
 /* Procedures */
 #define SSO_OP_PROCEDURETYPE(op)\
@@ -145,7 +145,6 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, cortex__new);\
     SSO_OP_OBJ(op, class_construct_);\
     SSO_OP_OBJ(op, class_destruct_);\
-    SSO_OP_OBJ(op, procedure_bind);\
     SSO_OP_OBJ(op, procedure_unbind_);\
     /* constant */\
     SSO_OP_OBJ(op, constant_init_);\
@@ -190,17 +189,17 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, metaprocedure_bind_);\
     /* dispatcher */\
     SSO_OP_OBJ(op, dispatcher_post);\
-    SSO_OP_OBJ(op, dispatcher_getEvent);\
     /* event */\
     SSO_OP_OBJ(op, event_kind);\
     SSO_OP_OBJ(op, event_handled);\
-    SSO_OP_OBJ(op, event_processed_);\
+    SSO_OP_OBJ(op, event_handle_);\
     SSO_OP_OBJ(op, event_uniqueKind);\
     /* observableEvent */\
     SSO_OP_OBJ(op, observableEvent_observer);\
     SSO_OP_OBJ(op, observableEvent_me);\
     SSO_OP_OBJ(op, observableEvent_source);\
     SSO_OP_OBJ(op, observableEvent_observable);\
+    SSO_OP_OBJ(op, observableEvent_handle_);\
     /* width */\
     SSO_OP_OBJ(op, width_WIDTH_8);\
     SSO_OP_OBJ(op, width_WIDTH_16);\
@@ -248,6 +247,15 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, equalityKind_NEQ);\
     /* operatorKind */\
     SSO_OP_OBJ(op, operatorKind_ASSIGN);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_ADD);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_SUB);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_MUL);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_DIV);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_MOD);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_XOR);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_OR);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_AND);\
+    SSO_OP_OBJ(op, operatorKind_ASSIGN_UPDATE);\
     SSO_OP_OBJ(op, operatorKind_ADD);\
     SSO_OP_OBJ(op, operatorKind_SUB);\
     SSO_OP_OBJ(op, operatorKind_MUL);\
@@ -259,14 +267,6 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, operatorKind_OR);\
     SSO_OP_OBJ(op, operatorKind_AND);\
     SSO_OP_OBJ(op, operatorKind_NOT);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_ADD);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_SUB);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_MUL);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_DIV);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_MOD);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_XOR);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_OR);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_AND);\
     SSO_OP_OBJ(op, operatorKind_COND_OR);\
     SSO_OP_OBJ(op, operatorKind_COND_AND);\
     SSO_OP_OBJ(op, operatorKind_COND_NOT);\
@@ -278,17 +278,12 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, operatorKind_COND_LTEQ);\
     SSO_OP_OBJ(op, operatorKind_SHIFT_LEFT);\
     SSO_OP_OBJ(op, operatorKind_SHIFT_RIGHT);\
-    SSO_OP_OBJ(op, operatorKind_COMMA);\
     SSO_OP_OBJ(op, operatorKind_REF);\
-    SSO_OP_OBJ(op, operatorKind_MEMBER_RESOLVE);\
-    SSO_OP_OBJ(op, operatorKind_ELEMENT_OPEN);\
-    SSO_OP_OBJ(op, operatorKind_ELEMENT_CLOSE);\
-    SSO_OP_OBJ(op, operatorKind_BRACKET_OPEN);\
-    SSO_OP_OBJ(op, operatorKind_BRACKET_CLOSE);\
     /* state */\
     SSO_OP_OBJ(op, state_VALID);\
     SSO_OP_OBJ(op, state_DECLARED);\
     SSO_OP_OBJ(op, state_DEFINED);\
+    SSO_OP_OBJ(op, state_DESTRUCTED);\
     /* attr */\
     SSO_OP_OBJ(op, attr_ATTR_SCOPED);\
     SSO_OP_OBJ(op, attr_ATTR_WRITABLE);\
@@ -309,13 +304,6 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, modifier_PRIVATE);\
     SSO_OP_OBJ(op, modifier_READONLY);\
     SSO_OP_OBJ(op, modifier_CONST);\
-    /* typedef */\
-    SSO_OP_OBJ(op, typedef_type);\
-    SSO_OP_OBJ(op, typedef_real);\
-    SSO_OP_OBJ(op, typedef_realType_);\
-    SSO_OP_OBJ(op, typedef_init_);\
-    SSO_OP_OBJ(op, typedef_construct_);\
-    SSO_OP_OBJ(op, typedef_destruct_);\
     /* type */\
     SSO_OP_OBJ(op, type_kind);\
     SSO_OP_OBJ(op, type_reference);\
@@ -389,8 +377,8 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     /* iterator */\
     SSO_OP_OBJ(op, iterator_elementType);\
     SSO_OP_OBJ(op, iterator_init_);\
-    SSO_OP_OBJ(op, iterator_next);\
-    SSO_OP_OBJ(op, iterator_hasNext);\
+    SSO_OP_OBJ(op, iterator_castable_);\
+    SSO_OP_OBJ(op, iterator_compatible_);\
     /* list */\
     SSO_OP_OBJ(op, list_insert);\
     SSO_OP_OBJ(op, list_append);\
@@ -440,6 +428,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, struct_resolveMember_);\
     /* procedure */\
     SSO_OP_OBJ(op, procedure_kind);\
+    SSO_OP_OBJ(op, procedure_bind);\
     SSO_OP_OBJ(op, procedure_init_);\
     /* interfaceVector */\
     SSO_OP_OBJ(op, interfaceVector_interface);\
@@ -500,6 +489,8 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, parameter_name);\
     SSO_OP_OBJ(op, parameter_type);\
     SSO_OP_OBJ(op, parameter_passByReference);\
+    /* package */\
+    SSO_OP_OBJ(op, package_url);
 
 /* 2nd degree objects (function parameters) */
 #define SSO_OP_OBJECT_2ND(op) \
@@ -525,9 +516,9 @@ cx_int16 cx_delegateConstruct(cx_type t, cx_object o);
 static void cx_initObject(cx_object o) {
     cx_newObject(o);
 
-    cx_delegateInit(cx_typeof(o)->real, o);
+    cx_delegateInit(cx_typeof(o), o);
     
-    if (cx_typeof(o)->real->kind == CX_VOID) {
+    if (cx_typeof(o)->kind == CX_VOID) {
         cx__setState(o, CX_DEFINED);
     }
 }
@@ -564,11 +555,7 @@ static void cx_destructObject(cx_object o) {
 /* Destruct type */
 static void cx_destructType(cx_object o, cx_uint32 size) {
     CX_UNUSED(size);
-
     cx__destructor(o);
-
-    /* Restore 'real' pointer */
-    cx_typedef(o)->real = o;
 }
 
 /* Update references */
@@ -604,7 +591,7 @@ int cx_start(void) {
     cx_threadTlsKey(&CX_KEY_WAIT_ADMIN, NULL);
 
     /* Init admin-lock */
-    cx_adminLock = cx_mutexNew();
+    cx_mutexNew(&cx_adminLock);
 
     /* Bootstrap sizes of types used in parameters, these are used to determine
      * argument-stack sizes for functions during function::bind. */

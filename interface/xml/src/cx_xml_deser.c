@@ -38,8 +38,8 @@ typedef enum cx_deserXmlScope {
 #define XML_NODE(nodePtr, data) (data)->line = cx_xmlnodeLine(nodePtr); (data)->node = nodePtr;
 
 int cx_deserXmlMeta(cx_xmlnode node, cx_deserXmlScope scope, deser_xmldata data);
-int cx_deserXmlMetaExt(cx_xmlnode node, cx_deserXmlScope scope, cx_typedef t, void* o, deser_xmldata data);
-int cx_deserXmlValue(cx_xmlnode node, cx_deserXmlScope scope, cx_typedef t, void* o, deser_xmldata data);
+int cx_deserXmlMetaExt(cx_xmlnode node, cx_deserXmlScope scope, cx_type t, void* o, deser_xmldata data);
+int cx_deserXmlValue(cx_xmlnode node, cx_deserXmlScope scope, cx_type t, void* o, deser_xmldata data);
 int cx_deserXmlNode(cx_xmlnode node, deser_xmldata data);
 
 /* Set parsed attribute */
@@ -121,7 +121,7 @@ void cx_deserXmlDataFree(deser_xmldata data) {
 }
 
 /* (Forward) declare object */
-cx_object cx_deserXmlDeclare(deser_xmldata data, cx_string name, cx_typedef t) {
+cx_object cx_deserXmlDeclare(deser_xmldata data, cx_string name, cx_type t) {
     cx_object o;
 
     /* Find or create object */
@@ -135,7 +135,7 @@ cx_object cx_deserXmlDeclare(deser_xmldata data, cx_string name, cx_typedef t) {
 }
 
 /* Deserialize reference */
-int cx_deserXmlReference(const char* str, cx_typedef t, void* o, deser_xmldata data) {
+int cx_deserXmlReference(const char* str, cx_type t, void* o, deser_xmldata data) {
     if (!strcmp(str, "<null>")) {
         *(cx_void**)o = 0;
     } else {
@@ -147,7 +147,7 @@ int cx_deserXmlReference(const char* str, cx_typedef t, void* o, deser_xmldata d
         ref = cx_resolve(data->scope, (cx_string)str);
         if (ref) {
             /* Check if resolved object has the right type */
-            if ((cx_typeof(ref)->real == t->real) || (cx_class_instanceof(cx_class_o, t) && cx_class_instanceof(cx_class(t), ref)) || (t->real->kind == CX_VOID)) {
+            if ((cx_typeof(ref) == t) || (cx_class_instanceof(cx_class_o, t) && cx_class_instanceof(cx_class(t), ref)) || (t->kind == CX_VOID)) {
                 *(cx_void**)o = ref;
             } else {
                 xml_error(data, "reference to object '%s' of type '%s' does not match reference type '%s'.",
@@ -166,7 +166,7 @@ error:
 }
 
 /* Deserialize primitive */
-int cx_deserXmlPrimitive(const char* str, cx_typedef t, void* o, deser_xmldata data) {
+int cx_deserXmlPrimitive(const char* str, cx_type t, void* o, deser_xmldata data) {
     cx_void* toValue;
     cx_type type;
 
@@ -175,23 +175,23 @@ int cx_deserXmlPrimitive(const char* str, cx_typedef t, void* o, deser_xmldata d
         xml_error(data, "invalid value for primitive of type '%s'.", cx_fullname(t, fullname));
         goto error;
     }
-    type = t->real;
+    type = t;
 
     /* Parse reference string, take into account scoping */
     if (strlen(str)) {
         if (type->reference) {
-            if (cx_deserXmlReference(str, (cx_typedef)type, o, data)) {
+            if (cx_deserXmlReference(str, (cx_type)type, o, data)) {
                 goto error;
             }
         } else {
             /* Transform string to value using database transformations */
-            if (cx_convert(cx_primitive(cx_string_o), (char**)&str, cx_primitive(t->real), &toValue)) {
+            if (cx_convert(cx_primitive(cx_string_o), (char**)&str, cx_primitive(t), &toValue)) {
                 cx_id fullname;
                 xml_error(data, "transformation from string to primitive type '%s' failed.", cx_fullname(t, fullname));
                 goto error;
             } else {
                 /* Copy new value */
-                memcpy(o, &toValue, t->real->size);
+                memcpy(o, &toValue, t->size);
             }
         }
     }
@@ -202,10 +202,10 @@ error:
 }
 
 /* Create new collection */
-int cx_deserXmlCollectionNew(cx_typedef t, void* o) {
+int cx_deserXmlCollectionNew(cx_type t, void* o) {
     cx_collection ctype;
 
-    ctype = (cx_collection)t->real;
+    ctype = (cx_collection)t;
 
     switch(ctype->kind) {
     case CX_ARRAY:
@@ -218,7 +218,7 @@ int cx_deserXmlCollectionNew(cx_typedef t, void* o) {
         *((cx_ll*)o) = cx_llNew();
         break;
     case CX_MAP:
-        *((cx_rbtree*)o) = cx_rbtreeNew(((cx_map)ctype)->keyType->real);
+        *((cx_rbtree*)o) = cx_rbtreeNew(((cx_map)ctype)->keyType);
         break;
     default:
         cx_error("parser error: not a valid collection kind for 'cx_deserXmlCollectionNew'.");
@@ -232,7 +232,7 @@ error:
 
 typedef struct deser_xmlElementData {
     void* collection;
-    cx_typedef t;
+    cx_type t;
     deser_xmldata data;
     cx_uint32 count;
     cx_bool othersAllowed;
@@ -245,8 +245,8 @@ void* cx_deserXmlCollectionNewElement(deser_xmlElementData* data) {
     cx_uint32 elementSize;
     void* result;
 
-    ctype = (cx_collection)data->t->real;
-    elementSize = cx_type_sizeof(ctype->elementType->real);
+    ctype = (cx_collection)data->t;
+    elementSize = cx_type_sizeof(ctype->elementType);
     result = 0;
 
     cx_assert(elementSize, "collection has elementType of size 0.");
@@ -286,7 +286,7 @@ void* cx_deserXmlCollectionNewElement(deser_xmlElementData* data) {
 int cx_deserXmlCollectionInsertElement(cx_xmlnode node, void* o, deser_xmlElementData* data) {
     cx_collection ctype;
 
-    ctype = (cx_collection)data->t->real;
+    ctype = (cx_collection)data->t;
 
     switch(ctype->kind) {
     case CX_ARRAY:
@@ -306,7 +306,7 @@ int cx_deserXmlCollectionInsertElement(cx_xmlnode node, void* o, deser_xmlElemen
             key = cx_xmlnodeAttrStr(node, "key");
 
             /* Cast string to key value */
-            if (cx_convert(cx_primitive(cx_string_o), &key, cx_primitive(cx_rbtreeKeyType(*(cx_rbtree*)data->collection)->real), &toValue)) {
+            if (cx_convert(cx_primitive(cx_string_o), &key, cx_primitive(cx_rbtreeKeyType(*(cx_rbtree*)data->collection)), &toValue)) {
                 cx_id fullname;
                 xml_error(data->data, "transformation from string to primitive map keytype '%s' failed.",
                         cx_fullname(cx_rbtreeKeyType(*(cx_rbtree*)data->collection), fullname));
@@ -330,12 +330,12 @@ error:
 /* Deserialize elements */
 int cx_deserXmlElement(cx_xmlnode node, deser_xmlElementData* userData) {
     cx_collection ctype;
-    cx_typedef subtype;
+    cx_type subtype;
     void* o;
 
     XML_NODE(node, userData->data);
 
-    ctype = (cx_collection)userData->t->real;
+    ctype = (cx_collection)userData->t;
     subtype = ((cx_collection)ctype)->elementType;
 
     /* Check if element belongs to collection */
@@ -375,7 +375,7 @@ int cx_deserXmlElement(cx_xmlnode node, deser_xmlElementData* userData) {
         }
 
         /* If collection is a map, mark the 'key' attribute as processed so it won't be read as member */
-        if (cx_collection(userData->t->real)->kind == CX_MAP) {
+        if (cx_collection(userData->t)->kind == CX_MAP) {
             cx_deserXmlMemberSet("key", &privateData);
         }
         if (cx_deserXmlValue(node, XML_ELEMENT, subtype, o, &privateData)) {
@@ -408,7 +408,7 @@ error:
 }
 
 /* Deserialize collection - using regular notation */
-int cx_deserXmlCollection(cx_xmlnode node, cx_typedef t, void* o, cx_bool othersAllowed, deser_xmldata data) {
+int cx_deserXmlCollection(cx_xmlnode node, cx_type t, void* o, cx_bool othersAllowed, deser_xmldata data) {
     deser_xmlElementData walkData;
     deser_xmldata_s privateData;
 
@@ -439,7 +439,7 @@ error:
 
 typedef struct deser_xmlMemberData_s* deser_xmlMemberData;
 typedef struct deser_xmlMemberData_s {
-    cx_typedef t;
+    cx_type t;
     void* o;
     deser_xmldata data;
 }deser_xmlMemberData_s;
@@ -456,9 +456,9 @@ static int cx_deserXmlAttrWalk(cx_string ns, cx_string attr, cx_string content, 
     }
 
     /* Lookup member */
-    member = cx_interface_resolveMember(cx_interface(userData->t->real), attr);
+    member = cx_interface_resolveMember(cx_interface(userData->t), attr);
     if (member) {
-        t = member->type->real;
+        t = member->type;
         /* Check if member is of a primitive type */
         if ((t->kind == CX_PRIMITIVE) || t->reference) {
             if (cx_deserXmlPrimitive(content, member->type, CX_OFFSET(userData->o, member->offset), userData->data)) {
@@ -486,20 +486,20 @@ error:
 /* Check if node is element of inlined collection */
 cx_string cx_deserXmlIsInlinedElement(cx_string type, deser_xmlMemberData userData) {
     cx_interface s;
-    cx_typedef subtype;
+    cx_type subtype;
     cx_uint32 i;
     cx_string result;
     cx_member m;
 
 
-    s = cx_interface(userData->t->real);
+    s = cx_interface(userData->t);
     result = 0;
 
     /* Look for collections that can be used inlined */
     for(i=0; i<s->members.length; i++) {
         m = s->members.buffer[i];
-        if (m->type->real->kind == CX_COLLECTION) {
-            subtype = ((cx_collection)m->type->real)->elementType;
+        if (m->type->kind == CX_COLLECTION) {
+            subtype = ((cx_collection)m->type)->elementType;
             if (cx_checkAttr(subtype, CX_ATTR_SCOPED) && !strcmp(cx_nameof(subtype), type)) {
                 result = cx_nameof(s->members.buffer[i]);
                 break;
@@ -537,7 +537,7 @@ int cx_deserXmlInlinedMember(cx_xmlnode node, cx_string name, deser_xmlMemberDat
         if (!cx_deserXmlMemberCheck(memberName, userData->data)) {
 
             /* Lookup member */
-            member = cx_resolve(userData->t->real, memberName);
+            member = cx_resolve(userData->t, memberName);
             if (member) {
 
                 /* Deserialize collection */
@@ -575,7 +575,7 @@ static int cx_deserXmlMemberWalk(cx_xmlnode node, deser_xmlMemberData userData) 
     } else {
 
         /* Lookup member */
-        member = cx_interface_resolveMember(cx_interface(userData->t->real), (cx_string)cx_xmlnodeName(node));
+        member = cx_interface_resolveMember(cx_interface(userData->t), (cx_string)cx_xmlnodeName(node));
         if (member) {
             deser_xmldata_s privateData = *userData->data;
 
@@ -599,7 +599,7 @@ error:
 }
 
 /* Deserialize complex type */
-int cx_deserXmlComplex(cx_xmlnode node, cx_typedef t, void* o, deser_xmldata data) {
+int cx_deserXmlComplex(cx_xmlnode node, cx_type t, void* o, deser_xmldata data) {
     deser_xmlMemberData_s walkData;
 
     walkData.o = o;
@@ -622,10 +622,10 @@ error:
 }
 
 /* Deserialize xml value */
-int cx_deserXmlValue(cx_xmlnode node, cx_deserXmlScope scope, cx_typedef type, void* o, deser_xmldata data) {
+int cx_deserXmlValue(cx_xmlnode node, cx_deserXmlScope scope, cx_type type, void* o, deser_xmldata data) {
     cx_type t;
 
-    t = type->real;
+    t = type;
 
     /* Deserialize primitive */
     if ((t->kind == CX_PRIMITIVE) || (t->reference && (scope != XML_OBJECT))) {
@@ -657,14 +657,14 @@ error:
 
 /* Deserialize object */
 int cx_deserXmlObject(cx_xmlnode node, cx_string name, cx_string type, deser_xmldata data) {
-    cx_typedef t;
+    cx_type t;
     cx_object o;
 
     /* Lookup type */
     t = cx_deserXmlNsResolve(NULL, type, data);
     if (!t) {
         xml_error(data, "unknown type '%s'.", type); goto error;
-    } else if (!cx_instanceof(cx_typedef(cx_typedef_o), t)) {
+    } else if (!cx_instanceof(cx_type(cx_type_o), t)) {
         cx_id id;
         xml_error(data, "object '%s' is not a type", cx_fullname(t, id)); goto error;
     }
@@ -698,7 +698,7 @@ int cx_deserXmlMeta(cx_xmlnode node, cx_deserXmlScope scope, deser_xmldata data)
 }
 
 /* Deserialize meta-directive */
-int cx_deserXmlMetaExt(cx_xmlnode node, cx_deserXmlScope scope, cx_typedef t, void* o, deser_xmldata data) {
+int cx_deserXmlMetaExt(cx_xmlnode node, cx_deserXmlScope scope, cx_type t, void* o, deser_xmldata data) {
     cx_string oper;
     cx_string type;
     cx_string name;
@@ -744,7 +744,7 @@ int cx_deserXmlMetaExt(cx_xmlnode node, cx_deserXmlScope scope, cx_typedef t, vo
             }
         } else {
             if (scope == XML_OBJECT) {
-                cx_typedef t;
+                cx_type t;
                 /* Forward declaration */
                 name = cx_xmlnodeAttrStr(node, "name");
                 t = cx_deserXmlNsResolve(NULL, type, data);
@@ -795,7 +795,7 @@ int cx_deserXmlMetaExt(cx_xmlnode node, cx_deserXmlScope scope, cx_typedef t, vo
             /* first try to resolve scope */
             s = cx_lookup(data->scope, name);
             if (!s) {
-                s = cx_declare(data->scope, name, (cx_typedef)cx_void_o);
+                s = cx_declare(data->scope, name, (cx_type)cx_void_o);
                 cx_keep(s);
             }
 
@@ -828,11 +828,11 @@ int cx_deserXmlMetaExt(cx_xmlnode node, cx_deserXmlScope scope, cx_typedef t, vo
     /* meta:super */
     } else if (!strcmp(oper, "super")) {
         /* Check if type supports inheritance */
-        if (!cx_class_instanceof(cx_class_o, cx_typeof(t)->real)) {
-            cx_typedef extend;
+        if (!cx_class_instanceof(cx_class_o, cx_typeof(t))) {
+            cx_type extend;
 
             /* Check if type inherits */
-            if ((extend = (cx_typedef)cx_interface(t->real)->base)) {
+            if ((extend = (cx_type)cx_interface(t)->base)) {
                 deser_xmldata_s privateData;
 
                 privateData = cx_deserXmlDataClone(data);

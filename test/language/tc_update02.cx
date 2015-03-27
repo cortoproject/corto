@@ -11,7 +11,7 @@ class Foo::
     on update this:
         count++
 
-Foo a:
+Foo a:;
 Foo b:a,{a}
 
 update a

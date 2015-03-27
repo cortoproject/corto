@@ -169,14 +169,14 @@ cx_uint16 cx__interface_calculateAlignment(cx_interface _this) {
     for(i=0; i<_this->members.length; i++) {
         cx_uint16 memberAlignment;
         member = _this->members.buffer[i];
-        memberAlignment = cx_type_alignmentof(member->type->real);
+        memberAlignment = cx_type_alignmentof(member->type);
         if (memberAlignment) {
             if (memberAlignment > alignment) {
                 alignment = memberAlignment;
             }
         } else {
             cx_id id, id2;
-            cx_error("member '%s' has type '%s' with zero-alignment.", cx_fullname(member, id), cx_fullname(member->type->real, id2));
+            cx_error("member '%s' has type '%s' with zero-alignment.", cx_fullname(member, id), cx_fullname(member->type, id2));
             goto error;
         }
     }
@@ -198,19 +198,23 @@ cx_uint32 cx__interface_calculateSize(cx_interface _this, cx_uint32 base) {
     size = base;
     for(i=0; i<_this->members.length; i++) {
         m = _this->members.buffer[i];
-        memberType = m->type->real;
+        memberType = m->type;
 
         memberSize = cx_type_sizeof(memberType);
         if (!memberSize) {
             cx_id id1, id2;
-            cx_warning("type '%s' has a member of type '%s' which has size 0.", cx_fullname(_this, id1), cx_fullname(memberType, id2));
+            cx_error("member '%s' of type '%s' is of invalid type '%s'", cx_nameof(m), cx_fullname(_this, id1), cx_fullname(memberType, id2));
+            goto error;
         }
 
         /* Align size */
         alignment = cx_type_alignmentof(memberType);
+        if (!alignment) {
+            goto error;
+        }
         size = CX_ALIGN(size, alignment);
 
-        if (m->type->real->hasResources || m->type->real->reference) {
+        if (m->type->hasResources || m->type->reference) {
             cx_type(_this)->hasResources = TRUE;
         }
 
@@ -219,6 +223,8 @@ cx_uint32 cx__interface_calculateSize(cx_interface _this, cx_uint32 base) {
     }
 
     return interfaceAlignment ? CX_ALIGN(size, interfaceAlignment) : 0;
+error:
+    return 0;
 }
 
 static int cx_interface_insertMemberAction(void* o, void* userData) {
@@ -291,8 +297,8 @@ static cx_bool cx_interface_checkProcedureParameters(cx_function o1, cx_function
             }
 
             /* Check if types of parameters are compatible */
-            p1 = o1->parameters.buffer[i].type->real;
-            p2 = o2->parameters.buffer[i].type->real;
+            p1 = o1->parameters.buffer[i].type;
+            p2 = o2->parameters.buffer[i].type;
             if (p1 != p2) {
                 /* Perform a stricter check during bootstrap. This is because the cx_type_compatible method
                  * is not yet available during bootstrap, because the vtable of type is not yet final, resulting
@@ -335,16 +341,16 @@ static cx_bool cx_interface_checkProcedureParameters(cx_function o1, cx_function
 cx_bool cx_interface_checkProcedureCompatibility(cx_function o1, cx_function o2) {
     cx_type t1;
     cx_bool result;
-    cx_typedef returnType1, returnType2;
+    cx_type returnType1, returnType2;
 
-    t1 = cx_typeof(o1)->real;
+    t1 = cx_typeof(o1);
 
     result = TRUE;
 
-    returnType1 = o1->returnType ? o1->returnType : (cx_typedef)cx_void_o;
-    returnType2 = o2->returnType ? o1->returnType : (cx_typedef)cx_void_o;
+    returnType1 = o1->returnType ? o1->returnType : (cx_type)cx_void_o;
+    returnType2 = o2->returnType ? o1->returnType : (cx_type)cx_void_o;
 
-    if (returnType1->real != returnType2->real) {
+    if (returnType1 != returnType2) {
         cx_id id1, id2, id3, id4;
         cx_error("function '%s' and '%s' have conflicting returntypes (%s vs %s).",
                 cx_fullname(o1, id1),
@@ -495,7 +501,7 @@ cx_int16 cx_interface_construct(cx_interface _this) {
         /* re-bind methods */
         if (ownTable.length) {
             for(i=0; i<ownTable.length; i++) {
-                if (cx_instanceof(cx_typedef(cx_method_o), ownTable.buffer[i])) {
+                if (cx_instanceof(cx_type(cx_method_o), ownTable.buffer[i])) {
                     cx_interface_bindMethod(_this, cx_method(ownTable.buffer[i]));
                 } 
                 cx_free_ext(_this, ownTable.buffer[i], "Free method from temporary vtable.");

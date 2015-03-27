@@ -326,7 +326,7 @@ int cx_argParse(int argc, char* argv[]) {
 
                     /* Execute argument */
                     next = cx_argExec(arg, argc-i, &argv[i]);
-                    if (next > 0) {
+                    if (next >= 0) {
                         i += next + 1;
 
                         /* Add argument to parsed list */

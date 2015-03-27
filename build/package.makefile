@@ -35,6 +35,7 @@ objects: $(DEFINITION_FILE) $(PACKAGE_SOURCES)
 include/$(TARGET)__meta.h: $(DEFINITION_FILE)
 	cxgen $(TARGET) $(PREFIX_ARG) --lang c
 
+.PHONY: clean
 clean:
 	@make -f $(CORTEX_HOME)/build/component.makefile clean
 	@rm -rf $(GENERATED_FILES)

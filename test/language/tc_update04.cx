@@ -1,0 +1,82 @@
+bool result : true
+void fail(string msg):
+    "tc_update04: FAIL: $msg"
+    result = false
+
+bool aUpdated, bUpdated, cUpdated, dUpdated, eUpdated, fUpdated, gUpdated
+    
+// Test updating a primtive
+int32 a_o: 10
+var int32& a = a_o
+a := 20
+on update a_o:
+    aUpdated = true 
+    if a_o != 20: 
+        fail("a_o != 20")
+
+// Test updating a composite object
+struct Point::
+    x, y: int32
+
+Point b_o: 10, 20
+var Point& b = b_o
+b := {30, 40}
+on update b_o: 
+    bUpdated = true
+    if b_o[x, y] != (30, 40): 
+        fail("b_o[x, y] != (30, 40)")
+
+Point c_o: 10, 20
+var Point& c = c_o
+c.x := 30
+on update c_o:
+    cUpdated = true
+    if c_o[x, y] != (30, 20):
+        fail("c_o[x, y] != (30, 40)")
+
+// Test updating a nested composite object
+struct Line::
+    start, stop: Point
+
+Line d_o: {10, 20}, {30, 40}
+var Line& d = d_o
+d.start := {50, 60}
+on update d_o:
+    dUpdated = true
+    if d_o[start, stop][x, y] !=  (50, 60, 30, 40):
+        fail("d_o[start, stop][x, y] !=  (50, 60, 30, 40)")
+
+Line e_o: {10, 20}, {30, 40}
+var Line& e = e_o
+e.start.y := 50
+on update e_o:
+    eUpdated = true
+    if e_o[start, stop][x, y] !=  (10, 50, 30, 40):
+        fail("e_o[start, stop][x, y] !=  (50, 60, 30, 40)")
+
+// Test updating a collection object
+list{int32} f_o{}
+var list{int32}& f = f_o
+f_o := {1, 2, 3}
+on update f_o:
+    fUpdated = true
+    if f_o[0, 1, 2] != (1, 2, 3):
+        fail("f_o[0, 1, 2] != (1, 2, 3)")
+
+list{int32} g_o{1, 2, 3}
+var list{int32}& g = g_o
+g[1] := 4
+on update g_o:
+    gUpdated = true
+    if g_o[0, 1, 2] != (1, 4, 3):
+        fail("g_o[0, 1, 2] != (1, 4, 3)")
+
+if !aUpdated: fail("!aUpdated")
+if !bUpdated: fail("!bUpdated")
+if !cUpdated: fail("!cUpdated")
+if !dUpdated: fail("!dUpdated")
+if !eUpdated: fail("!eUpdated")
+if !fUpdated: fail("!fUpdated")
+if !gUpdated: fail("!gUpdated")
+
+if result: "tc_update04: OK"

@@ -46,16 +46,19 @@ cx_word Fast_Initializer_offset(Fast_StaticInitializer _this, cx_uint32 variable
             result = base;
         }
         break;
+    case CX_ITERATOR:
+        result = base;
+        break;
     case CX_COLLECTION: {
         if (fp) {
-            cx_uint32 elementSize = cx_type_sizeof(cx_collection(frame->type)->elementType->real);
+            cx_uint32 elementSize = cx_type_sizeof(cx_collection(frame->type)->elementType);
             switch(cx_collection(frame->type)->kind) {
             case CX_SEQUENCE:
                 ((cx_objectSeq*)base)->length++;
                 ((cx_objectSeq*)base)->buffer = cx_realloc(((cx_objectSeq*)base)->buffer, ((cx_objectSeq*)base)->length * elementSize);
                 base = (cx_word)((cx_objectSeq*)base)->buffer;
             case CX_ARRAY:
-                result = base + thisFrame->location * cx_type_sizeof(cx_collection(frame->type)->elementType->real);
+                result = base + thisFrame->location * cx_type_sizeof(cx_collection(frame->type)->elementType);
                 memset((void*)result, 0, elementSize);
                 break;
             case CX_LIST: {
@@ -72,7 +75,7 @@ cx_word Fast_Initializer_offset(Fast_StaticInitializer _this, cx_uint32 variable
                 break;
             }
             case CX_MAP: {
-                cx_type keyType = cx_map(frame->type)->keyType->real;
+                cx_type keyType = cx_map(frame->type)->keyType;
                 if (!thisFrame->isKey) {
                     if (cx_collection_elementRequiresAlloc(cx_collection(frame->type))) {
                         result = (cx_word)cx_calloc(elementSize);
@@ -104,7 +107,7 @@ cx_word Fast_Initializer_offset(Fast_StaticInitializer _this, cx_uint32 variable
     }
     default: {
         cx_id id;
-        Fast_Parser_error(yparser(), "invalid initializer type '%s'", cx_fullname(frame->type, id));
+        Fast_Parser_error(yparser(), "invalid initializer type '%s'", Fast_Parser_id(frame->type, id));
         break;
     }
     }
@@ -149,28 +152,22 @@ cx_int16 Fast_StaticInitializer_define(Fast_StaticInitializer _this) {
      */
     for(variable=0; variable<Fast_Initializer(_this)->variableCount; variable++) {
         o = (cx_object)Fast_ObjectBase(Fast_Initializer(_this)->variables[variable].object)->value;
-        if (cx_instanceof(cx_typedef(cx_typedef_o), o)
-                || (cx_checkAttr(o, CX_ATTR_SCOPED) && cx_instanceof(cx_typedef(cx_typedef_o), cx_parentof(o)))) {
+        if (cx_instanceof(cx_type(cx_type_o), o)
+                || (cx_checkAttr(o, CX_ATTR_SCOPED) && cx_instanceof(cx_type(cx_type_o), cx_parentof(o)))) {
             if (cx_define(o)) {
                 cx_id id1, id2;
                 Fast_Parser_error(yparser(), "define of variable '%s' of type '%s' failed",
-                        cx_fullname(o, id1),
-                        cx_fullname(cx_typeof(o), id2));
+                        Fast_Parser_id(o, id1),
+                        Fast_Parser_id(cx_typeof(o), id2));
                 goto error;
             }
         } else {
-            /* Only composite types can have constructors. All other objects are instantaneously
-             * defined. */
-            if (cx_typeof(o)->real->kind == CX_COMPOSITE) {
-                Fast_Expression refVar = Fast_Expression(Fast_Object__create(o));
-                refVar->isReference = TRUE; /* Always treat object as reference */
-                Fast_Define defineStmt = Fast_Define__create(refVar);
-                Fast_Parser_addStatement(yparser(), Fast_Node(defineStmt));
-                Fast_Parser_collect(yparser(), defineStmt);
-                Fast_Parser_collect(yparser(), refVar);
-            } else {
-                cx_define(o);
-            }
+            Fast_Expression refVar = Fast_Expression(Fast_Object__create(o));
+            refVar->isReference = TRUE; /* Always treat object as reference */
+            Fast_Define defineStmt = Fast_Define__create(refVar);
+            Fast_Parser_addStatement(yparser(), Fast_Node(defineStmt));
+            Fast_Parser_collect(yparser(), defineStmt);
+            Fast_Parser_collect(yparser(), refVar);
         }
     }
     
@@ -204,18 +201,24 @@ cx_int16 Fast_StaticInitializer_value(Fast_StaticInitializer _this, Fast_Express
     cx_uint32 variable;
     cx_uint32 fp = Fast_Initializer(_this)->fp;
     cx_type type = Fast_Initializer_currentType(Fast_Initializer(_this));
+    cx_type vType = Fast_Expression_getType_type(v, type);
+    
     if (!type) {
         cx_id id;
         Fast_Parser_error(yparser(), "excess elements in initializer of type '%s'", 
-            cx_fullname(Fast_ObjectBase(Fast_Expression(_this)->type)->value, id));
+            Fast_Parser_id(Fast_ObjectBase(Fast_Expression(_this)->type)->value, id));
+        goto error;
+    }
+
+    if (!vType) {
         goto error;
     }
 
     /* Validate whether expression type matches current type of initializer */
-    if (!cx_type_castable(type, Fast_Expression_getType_type(v, type))) {
+    if (vType && !cx_type_castable(type, vType)) {
         cx_id id, id2;
         Fast_Parser_error(yparser(), "type '%s' invalid here (expected '%s')", 
-            cx_fullname(Fast_Expression_getType(v), id), cx_fullname(type, id2));
+            Fast_Parser_id(vType, id), Fast_Parser_id(type, id2));
         goto error;
     }
 

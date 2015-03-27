@@ -20,7 +20,7 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* ::cortex::Fast::Object::construct() */
 cx_int16 Fast_Object_construct(Fast_Object _this) {
 /* $begin(::cortex::Fast::Object::construct) */
-    cx_type t = cx_typeof(Fast_ObjectBase(_this)->value)->real;
+    cx_type t = cx_typeof(Fast_ObjectBase(_this)->value);
 
     if(t == cx_type(cx_constant_o)) {
         t = cx_parentof(Fast_ObjectBase(_this)->value);
@@ -40,7 +40,7 @@ cx_word Fast_Object_getValue(Fast_Object _this) {
 
     /* Value of objects can only be used at compiletime when object is of
      * type constant. */
-    if (cx_instanceof(cx_typedef(cx_constant_o), Fast_ObjectBase(_this)->value)) {
+    if (cx_instanceof(cx_type(cx_constant_o), Fast_ObjectBase(_this)->value)) {
         result = (cx_word)Fast_ObjectBase(_this)->value;
     }
 
@@ -56,7 +56,7 @@ cx_int16 Fast_Object_serialize(Fast_Object _this, cx_type dstType, cx_word dst) 
     if (!dstType->reference) {
         cx_bool srcIsDelegate = FALSE, dstIsDelegate = FALSE;
         cx_object obj = Fast_ObjectBase(_this)->value;
-        cx_type srcType = cx_typeof(obj)->real;
+        cx_type srcType = cx_typeof(obj);
 
         /* Handle delegates */
         if ((srcType->kind == CX_COMPOSITE) && (cx_interface(srcType)->kind == CX_DELEGATE)) {
@@ -66,51 +66,54 @@ cx_int16 Fast_Object_serialize(Fast_Object _this, cx_type dstType, cx_word dst) 
             dstIsDelegate = TRUE;
         }
 
-        if (dstIsDelegate) {
+        /* Handle iterators */
+        if ((dstType->kind == CX_ITERATOR) && (srcType->kind == CX_COLLECTION)) {
+            cx_iterator_set((void*)dst, obj, cx_collection(srcType));
+        } else if (dstIsDelegate) {
             if (srcIsDelegate) {
                 cx_value vDst, vSrc;
-                cx_valueValueInit(&vDst, NULL, cx_typedef(dstType), (void *)dst);
-                cx_valueValueInit(&vSrc, NULL, cx_typedef(srcType), Fast_ObjectBase(_this)->value);
+                cx_valueValueInit(&vDst, NULL, cx_type(dstType), (void *)dst);
+                cx_valueValueInit(&vSrc, NULL, cx_type(srcType), Fast_ObjectBase(_this)->value);
                 cx_valueCopy(&vDst, &vSrc);
             } else if ((srcType->kind == CX_COMPOSITE) && (cx_interface(srcType)->kind == CX_PROCEDURE)) {
                 cx_set(&((cx_delegatedata *)dst)->procedure, Fast_ObjectBase(_this)->value);
                 cx_set(&((cx_delegatedata *)dst)->instance, NULL);
             }
 
-        } else if (cx_instanceof((cx_typedef)dstType, Fast_ObjectBase(_this)->value)) {
+        } else if (cx_instanceof((cx_type)dstType, Fast_ObjectBase(_this)->value)) {
             /* If object is not of a reference type and object is of dstType, copy value */
             cx_value vDst, vSrc;
-            cx_valueValueInit(&vDst, NULL, cx_typedef(dstType), (void *)dst);
-            cx_valueValueInit(&vSrc, NULL, cx_typedef(srcType), obj);
+            cx_valueValueInit(&vDst, NULL, cx_type(dstType), (void *)dst);
+            cx_valueValueInit(&vSrc, NULL, cx_type(srcType), obj);
             cx_valueCopy(&vDst, &vSrc);
 
         } else {
             cx_id id, id2;
             Fast_Parser_error(yparser(), "type '%s' of object does not match destinationtype '%s'",
-                    cx_fullname(cx_typeof(Fast_ObjectBase(_this)->value), id),
-                    cx_fullname(dstType, id2));
+                    Fast_Parser_id(cx_typeof(Fast_ObjectBase(_this)->value), id),
+                    Fast_Parser_id(dstType, id2));
             goto error;
         }
     } else {
         if (Fast_Expression(_this)->isReference) {
-            kind = FAST_Reference;
+            kind = Fast_Ref;
         } else {
             kind = Fast_valueKindFromType(dstType);
         }
 
         switch(kind) {
-        case FAST_Boolean:
+        case Fast_Bool:
             *(cx_bool*)dst = Fast_ObjectBase(_this)->value ? TRUE : FALSE;
             break;
-        case FAST_String: {
+        case Fast_Text: {
             cx_id id;
             if (*(cx_string*)dst) {
                 cx_dealloc(*(cx_string*)dst);
             }
-            *(cx_string*)dst = cx_strdup(cx_fullname(Fast_ObjectBase(_this)->value, id));
+            *(cx_string*)dst = cx_strdup(Fast_Parser_id(Fast_ObjectBase(_this)->value, id));
             break;
         }
-        case FAST_Reference:
+        case Fast_Ref:
             if (*(cx_object*)dst) {
                 cx_free(*(cx_object*)dst);
             }
@@ -119,7 +122,7 @@ cx_int16 Fast_Object_serialize(Fast_Object _this, cx_type dstType, cx_word dst) 
             break;
         default: {
             cx_id id;
-            Fast_Parser_error(yparser(), "cannot serialize object value to storage of type '%s'", cx_fullname(dstType, id));
+            Fast_Parser_error(yparser(), "cannot serialize object value to storage of type '%s'", Fast_Parser_id(dstType, id));
             goto error;
             break;
         }

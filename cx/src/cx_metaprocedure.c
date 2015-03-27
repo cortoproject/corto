@@ -19,7 +19,7 @@ cx_int16 cx_metaprocedure_bind(cx_metaprocedure _this) {
     cx_object parent;
 
     parent = cx_parentof(_this);
-    if (cx_instanceof(cx_typedef(cx_type_o), parent)) {
+    if (cx_instanceof(cx_type(cx_type_o), parent)) {
         if (cx_type_bindMetaprocedure(cx_type(parent), _this)) {
             goto error;
         }

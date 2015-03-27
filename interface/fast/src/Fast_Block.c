@@ -45,9 +45,13 @@ Fast_Local Fast_Block_declare(Fast_Block _this, cx_string id, Fast_Variable type
     }
 
     /* If variable did not exist, declare it in this block */
-    kind = isParameter ? FAST_LocalParameter : FAST_LocalDefault;
+    kind = isParameter ? Fast_LocalParameter : Fast_LocalDefault;
     result = Fast_Local__create(id, type, kind, isReference);
-    cx_llAppend(_this->locals, result);
+    if (result) {
+        cx_llAppend(_this->locals, result);
+    } else {
+        goto error;
+    }
 
     return result;
 error:
@@ -70,8 +74,10 @@ Fast_Local Fast_Block_declareReturnVariable(Fast_Block _this, cx_function functi
     /* If variable did not exist, declare it in this block */
     type = Fast_Object__create(function->returnType);
     Fast_Parser_collect(yparser(), type);
-    result = Fast_Local__create(id, Fast_Variable(type), FAST_LocalReturn, function->returnsReference);
-    cx_llAppend(_this->locals, result);
+    result = Fast_Local__create(id, Fast_Variable(type), Fast_LocalReturn, function->returnsReference);
+    if (result) {
+        cx_llAppend(_this->locals, result);
+    }
 
     return result;
 /* $end */
@@ -92,7 +98,9 @@ Fast_Template Fast_Block_declareTemplate(Fast_Block _this, cx_string id, Fast_Va
 
     /* If variable did not exist, declare it in this block */
     result = Fast_Template__create(id, type, isParameter, isReference);
-    cx_llInsert(_this->locals, result);
+    if (result) {
+        cx_llInsert(_this->locals, result);
+    }
 
     return result;
 error:
@@ -133,17 +141,17 @@ Fast_Expression Fast_Block_lookup(Fast_Block _this, cx_string id) {
                     /* If parent is not of an interface type, this could be a
                      * delegate member implementation. Get type of the parent
                      * instead. */
-                    if (!cx_instanceof(cx_typedef(cx_interface_o), parent)) {
+                    if (!cx_instanceof(cx_type(cx_interface_o), parent)) {
                         parent = cx_typeof(parent);
                     }
 
                     /* If parent is still not of an interface type, resolving
                      * a 'this' from either a method or observer is illegal */
-                    if (!cx_instanceof(cx_typedef(cx_interface_o), parent)) {
+                    if (!cx_instanceof(cx_type(cx_interface_o), parent)) {
                         cx_id id;
                         Fast_Parser_error(yparser(), 
                             "'this' illegal in procedure '%s'", 
-                            cx_fullname(_this->function, id));
+                            Fast_Parser_id(_this->function, id));
                         goto error;
                     }                    
 
@@ -156,7 +164,7 @@ Fast_Expression Fast_Block_lookup(Fast_Block _this, cx_string id) {
                         if (m) {
                             Fast_String memberIdExpr;
                             memberIdExpr = Fast_String__create(id);
-                            result = Fast_Expression(Fast_MemberExpr__create(
+                            result = Fast_Expression(Fast_Member__create(
                                      thisLocal, Fast_Expression(memberIdExpr)));
                             Fast_Parser_collect(yparser(), memberIdExpr);
                             Fast_Parser_collect(yparser(), result);
@@ -167,7 +175,7 @@ Fast_Expression Fast_Block_lookup(Fast_Block _this, cx_string id) {
                             if (m) {
                                 Fast_String memberIdExpr;
                                 memberIdExpr = Fast_String__create(id);
-                                result = Fast_Expression(Fast_MemberExpr__create(
+                                result = Fast_Expression(Fast_Member__create(
                                          thisLocal, Fast_Expression(memberIdExpr)));
                                 Fast_Parser_collect(yparser(), memberIdExpr);
                                 Fast_Parser_collect(yparser(), result);
@@ -286,8 +294,8 @@ cx_ic Fast_Block_toIcBody_v(Fast_Block _this, cx_icProgram program, cx_icStorage
                     Fast_Node(_this)->line,
                     local->name,
                     Fast_Expression_getType(Fast_Expression(local)),
-                    local->kind == FAST_LocalParameter,
-                    local->kind == FAST_LocalReturn,
+                    local->kind == Fast_LocalParameter,
+                    local->kind == Fast_LocalReturn,
                     TRUE);
         }
     }

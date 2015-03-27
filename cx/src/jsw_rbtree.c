@@ -7,7 +7,6 @@
 #include "jsw_rbtree.h"
 #include "cx_util.h"
 #include "cx_err.h"
-#include "cx_object.h"
 
 #ifdef __cplusplus
 #include <cstdlib>
@@ -121,7 +120,7 @@ static jsw_rbnode_t *new_node ( jsw_rbtree_t *tree, void* key, void *data )
 /* Marshall between intern comparefunction and cortex::type::equals */
 static cx_equalityKind cx_rbtreeGenericCompare(cx_type t, const void* v1, const void* v2) {
     cx_any any1, any2;
-    cx_type keyType = cx_map(t)->keyType->real;
+    cx_type keyType = cx_map(t)->keyType;
     any1.type = keyType;
     any1.value = (void*)v1;
     any2.type = keyType;
@@ -169,7 +168,7 @@ cx_type jsw_rbtype( jsw_rbtree_t *tree) {
 void jsw_keyFree( jsw_rbtree_t *tree, void *key )
 {
     if (tree->type) {
-        cx_type keyType = cx_map(tree->type)->keyType->real;
+        cx_type keyType = cx_map(tree->type)->keyType;
 
         if (keyType->reference) {
             cx_free(*(cx_object*)key);

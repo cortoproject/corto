@@ -1,9 +1,25 @@
 
 #include "stdarg.h"
 #include "cx_mem.h"
+#include "ctype.h"
 
 int stricmp(const char *str1, const char *str2) {
-    return strcasecmp(str1, str2);
+    const char *ptr1, *ptr2;
+    char ch1, ch2;
+    ptr1 = str1;
+    ptr2 = str2;
+    
+    while((ch1 = *ptr1) && (ch2 = *ptr2)) {
+        ch1 = tolower(ch1);
+        ch2 = tolower(ch2);
+        if (ch1 != ch2) {
+            return ch1 - ch2;
+        }
+        ptr1++;
+        ptr2++;
+    }
+
+    return tolower(*ptr1) - tolower(*ptr2);
 }
 
 char *strappend(char *src, char *fmt, ...) {
@@ -131,7 +147,6 @@ size_t stresc(char *out, size_t n, const char *in) {
     const char *ptr = in;
     char ch, *bptr = out, buff[3];
     size_t written = 0;
-
     while ((ch = *ptr++)) {
         if ((written += (chresc(buff, ch, '"') - buff)) <= n) {
             *bptr++ = buff[0];
@@ -140,9 +155,43 @@ size_t stresc(char *out, size_t n, const char *in) {
             }
         }
     }
-
-    if (bptr) *bptr = '\0';
-
+    if (bptr) {
+        *bptr = '\0';
+    }
     return written;
+}
+
+/* Count the number of characters in a string that do not match a provided
+ * mask. */
+size_t strmask(char *str, char *mask) {
+    char maskbuff[256];
+    memset(maskbuff, 0, sizeof(maskbuff));
+    char ch, *ptr;
+    size_t result = 0;
+
+    /* Set mask */
+    ptr = mask;
+    while ((ch = *ptr)) {
+        maskbuff[(int)ch] = 1;
+        ptr++;
+    }
+
+    /* Loop string, count mismatches */
+    ptr = str;
+    while ((ch = *ptr)) {
+        if (!maskbuff[(int)ch]) {
+            result++;
+        }
+        ptr++;
+    }
+
+    return result;
+}
+
+/* strdup is not a standard C function, so provide own implementation. */
+char* cx_strdup(const char* str) {
+    char *result = cx_malloc(strlen(str) + 1);
+    strcpy(result, str);
+    return result;
 }
 

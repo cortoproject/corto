@@ -18,12 +18,12 @@ refDelegate dRef: add
 int32 a: 10
 var int32& b = dRef(a, 20)
 
-if a != 30: fail("a != 30")
-if b != 30: fail("b != 30")
-if &b != a: fail("&b != a")
+if a != 30: fail("a != 30 ($a)")
+if b != 30: fail("b != 30 ($a)")
+if &b != a: fail("&b != a ($b)")
 
 a++
-if b != 31: fail("b != 31") // Is b really assigned with reference to a?
+if b != 31: fail("b != 31 ($b)") // Is b really assigned with reference to a?
 
 
 // Delegate type with base class
@@ -41,7 +41,7 @@ int32 returnDogLegs(Dog d) = d.legs
 
 // Assign procedure with base-type of argument
 baseDelegate dBase: returnLegs
-Dog gijs:
+Dog gijs:;
 if dBase(gijs) != 4: fail("dBase(d) != 4")
 
 // Assign procedure with actual type of argument

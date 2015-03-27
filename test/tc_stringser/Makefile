@@ -1,6 +1,6 @@
 
-TARGET =	../test/bin/tc_stringser
+TARGET = ../test/bin/tc_stringser
 
-LIBS	= lang
+LIBS = lang
 
 include $(CORTEX_HOME)/build/executable.makefile

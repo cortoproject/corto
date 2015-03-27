@@ -35,13 +35,11 @@ static void printError(int e, const char *msg) {
         default: sprintf(errorrepr, "unknown code"); break;
     }
     
-    cx_error("(%s): %s.", errorrepr, msg);
+    cx_error("(%s): %s", errorrepr, msg);
 }
 
 int cx_fileTest(const char* file) {
-    FILE* exists;
-
-    exists = NULL;
+    FILE* exists = NULL;
 
     if (file) {
         exists = fopen(file, "rb");
@@ -53,72 +51,126 @@ int cx_fileTest(const char* file) {
     return (exists != 0);
 }
 
+int cx_touch(const char *file) {
+    FILE* touch = NULL;
+
+    if (file) {
+        touch = fopen(file, "ab");
+        if (touch) {
+            fclose(touch);
+        }
+    }
+
+    return touch ? 0 : -1;    
+}
+
+int cx_chdir(const char *name) {
+    return chdir(name);
+}
+
 int cx_mkdir(const char *name) {
-    struct stat st = {0};
     int _errno;
     char msg[PATH_MAX];
 
-    if (stat(name, &st) == -1) {
-        if (mkdir(name, 0700)) {
-            _errno = errno;
+    if (mkdir(name, 0700)) {
+        _errno = errno;
+
+        /* If error is ENOENT an element in the prefix of the name 
+         * doesn't exist. Recursively create pathname, and retry. */
+        if (errno == ENOENT) {
+            /* Allocate so as to not run out of stackspace in recursive call */
+            char *prefix = cx_strdup(name);
+            char *ptr = &prefix[strlen(prefix)-1], ch;
+            while ((ch = *ptr) && (ptr >= prefix)) {
+                if (ch == '/') {
+                    *ptr = '\0';
+                    break;
+                }
+                ptr--;
+            }
+            if (ch == '/') {
+                if (!cx_mkdir(prefix)) {
+                    /* Retry current directory */
+                    mkdir(name, 0700);
+                } else {
+                    goto error;
+                }
+            } else {
+                goto error; /* If no prefix is found, report error */
+            }
+            cx_dealloc(prefix);
+        }
+
+        /* Post condition for function is that directory exists so don't
+         * report an error if it already did. */
+        if (errno != EEXIST) {
             goto error;
         }
     }
 
     return 0;
 error:
-    sprintf(msg, "Could not create directory %s", name);
+    sprintf(msg, "could not create directory '%s'", name);
     printError(_errno, msg);
     return -1;
 }
 
 int cx_cp(const char *sourcePath, const char *destinationPath) {
-    int _errno;
+    int _errno = 0;
     char msg[PATH_MAX];
     FILE *destinationFile;
     FILE *sourceFile;
 
     if (!(sourceFile = fopen(sourcePath, "rb"))) {
         _errno = errno;
-        sprintf(msg, "Could not open source file %s", sourcePath);
+        sprintf(msg, "could not open source file %s", sourcePath);
         goto error;
     }
     
     if (!(destinationFile = fopen(destinationPath, "wb"))) {
         _errno = errno;
-        sprintf(msg, "Could not open destination file %s", sourcePath);
+        sprintf(msg, "could not open destination file %s", sourcePath);
         fclose(sourceFile);
         goto error;
     }
 
-    // "no real standard portability"
-    // http://www.cplusplus.com/reference/cstdio/fseek/
+    /* "no real standard portability"
+     * http://www.cplusplus.com/reference/cstdio/fseek/ */
     if (fseek(sourceFile, 0, SEEK_END)) {
         _errno = errno;
-        sprintf(msg, "Could not traverse source file %s", sourcePath);
+        sprintf(msg, "could not traverse source file %s", sourcePath);
         goto error_CloseFiles;
     }
     
+    long fileSizeResult;
     size_t fileSize;
-    fileSize = (size_t)ftell(sourceFile);
+    fileSizeResult = ftell(sourceFile);
+    if (fileSizeResult == -1) {
+        sprintf(msg, "could not obtain filesize from file %s", sourcePath);
+        goto error_CloseFiles;
+    }
+    /* Now we can be sure that fileSizeResult doesn't contain a 
+     * negative value */
+    fileSize = fileSizeResult;
+
     rewind(sourceFile);
 
     char *buffer = cx_malloc(fileSize);
     if (!buffer) {
         _errno = 0;
-        sprintf(msg, "Cannot allocate buffer for copying files");
+        sprintf(msg, "cannot allocate buffer for copying files");
         goto error_CloseFiles;
     }
 
     if (fread(buffer, 1, fileSize, sourceFile) != fileSize) {
         _errno = 0;
-        sprintf(msg, "Could not read the file %s", sourcePath);
+        sprintf(msg, "could not read the file %s", sourcePath);
         goto error_CloseFiles_FreeBuffer;
     }
     
     if (fwrite(buffer, 1, fileSize, destinationFile) != fileSize) {
         _errno = 0;
-        sprintf(msg, "Could not write to the file %s", destinationPath);
+        sprintf(msg, "could not write to the file %s", destinationPath);
         goto error_CloseFiles_FreeBuffer;
     }
 

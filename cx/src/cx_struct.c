@@ -58,6 +58,7 @@ cx_int16 cx_struct_construct(cx_struct _this) {
     cx_uint32 size;
 
     size = 0;
+    alignment = 0;
 
     /* Insert members */
     if (cx__interface_insertMembers(cx_interface(_this))) {
@@ -65,14 +66,21 @@ cx_int16 cx_struct_construct(cx_struct _this) {
     }
 
     /* Calculate alignment of self */
-    alignment = cx__interface_calculateAlignment(cx_interface(_this));
+    if (cx_interface(_this)->members.length) {
+        alignment = cx__interface_calculateAlignment(cx_interface(_this));
+        if (!alignment) {
+            cx_id id;
+            cx_error("error in definition of '%s'", cx_fullname(_this, id));
+            goto error;            
+        }
+    }
 
     /* Check if struct inherits from another struct */
     base = (cx_struct)cx_interface(_this)->base;
 
     /* Get maximum alignment from self and base-class and copy template parameters */
     if (base) {
-        if (!cx_instanceof(cx_typedef(cx_struct_o), base)) {
+        if (!cx_instanceof(cx_type(cx_struct_o), base)) {
             cx_id id, id2;
             cx_error("struct '%s' inherits from non-struct type '%s'", cx_fullname(_this, id), cx_fullname(base, id2));
             goto error;
@@ -98,12 +106,13 @@ cx_int16 cx_struct_construct(cx_struct _this) {
     }
 
     /* Calculate size of self */
-    size = cx__interface_calculateSize(cx_interface(_this), size);
-
-    /* If a class has no members and no base-class, the class will have the size of one word. */
-    if (!size) {
-        cx_assert(cx_interface(_this)->members.length == 0, "struct can't have members and be of size zero.");
-        /*size = sizeof(cx_word);*/
+    if (cx_interface(_this)->members.length) {
+        size = cx__interface_calculateSize(cx_interface(_this), size);
+        if (!size) {
+            cx_id id;
+            cx_error("error in definition of '%s'", cx_fullname(_this, id));
+            goto error;
+        }
     }
 
     /* Set size of self */

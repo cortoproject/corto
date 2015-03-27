@@ -5,18 +5,13 @@
  *      Author: sander
  */
 
-#include "cx_string_ser.h"
-#include "cx_convert.h"
-#include "cx__meta.h"
-#include "cx_err.h"
-#include "cx_util.h"
-#include "cx_mem.h"
-#include "cx_object.h"
+#include "cx_string.h"
+#include "cortex.h"
 #include "stdarg.h"
 
 #define BLACK  "\033[1;30m"
 #define RED    "\033[1;31m"
-#define GREEN  "\033[1;32m"
+#define GREEN  "\033[0;32m"
 #define YELLOW "\033[0;33m"
 #define BLUE   "\033[1;34m"
 #define MAGENTA "\033[1;35m"
@@ -40,7 +35,7 @@ static cx_bool cx_ser_appendstrbuff(cx_string_ser_t* data, char* str) {
         data->ptr = data->buffer;
     }
     if (!data->ptr) {
-        data->buffer = strdup(str);
+        data->buffer = cx_strdup(str);
         data->ptr = data->buffer;
     } else {
         cx_uint32 length, bufferLength;
@@ -142,7 +137,7 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value* v, void* userData) {
     result = NULL;
 
     data = (cx_string_ser_t*)userData;
-    t = cx_valueType(v)->real;
+    t = cx_valueType(v);
     o = cx_valueValue(v);
 
     /* If src is string and value is null, put NULL in result. */
@@ -222,7 +217,12 @@ static cx_int16 cx_ser_reference(cx_serializer s, cx_value* v, void* userData) {
     if (object) {
         cx_ser_appendColor(data, REFERENCE);
         if (cx_checkAttr(object, CX_ATTR_SCOPED) || (cx_valueObject(v) == object)) {
-            str = (char*)cx_fullname(object, id);
+            if (cx_parentof(object) == cortex_lang_o) {
+                strcpy(id, cx_nameof(object));
+                str = id;
+            } else {
+                str = (char*)cx_fullname(object, id);
+            }
         } else {
             cx_string_ser_t walkData;
             int index = 0;
@@ -284,7 +284,7 @@ static cx_int16 cx_ser_scope(cx_serializer s, cx_value* v, void* userData) {
     cx_type t;
 
     data = userData;
-    t = cx_valueType(v)->real;
+    t = cx_valueType(v);
     result = 0;
 
     /* Nested data has private itemCount, which prevents superfluous ',' to be added to the result. */
@@ -364,9 +364,13 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
         cx_string result = NULL;
 
         o = cx_valueObject(v);
-        cx_fullname(cx_typeof(o), id);
+        if (cx_checkAttr(cx_typeof(o), CX_ATTR_SCOPED) && cx_parentof(cx_typeof(o)) == cortex_lang_o) {
+            strcpy(id, cx_nameof(cx_typeof(o)));
+        } else {
+            cx_fullname(cx_typeof(o), id);
+        }
 
-        if (cx_typeof(o)->real->kind != CX_PRIMITIVE) {
+        if (cx_typeof(o)->kind != CX_PRIMITIVE) {
             if (data->buffer) {
                 result = cx_malloc(strlen(data->buffer) + strlen(id) + 1);
                 sprintf(result, "%s%s", id, data->buffer);
@@ -404,8 +408,14 @@ static cx_int16 cx_ser_construct(cx_serializer s, cx_value *info, void* userData
     data->anonymousObjects = NULL;
     if (data->buffer) {
         *(data->buffer) = '\0';
+        if (!data->length) {
+            cx_error("buffer set without a length in string serializer");
+            goto error;
+        }
     }
     return 0;
+error:
+    return -1;
 }
 
 cx_int16 cx_ser_destruct(cx_serializer s, void* userData) {
@@ -432,6 +442,7 @@ struct cx_serializer_s cx_string_ser(cx_modifier access, cx_operatorKind accessK
     s.program[CX_PRIMITIVE] = cx_ser_primitive;
     s.program[CX_COMPOSITE] = cx_ser_scope;
     s.program[CX_COLLECTION] = cx_ser_scope;
+    
     s.metaprogram[CX_MEMBER] = cx_ser_item;
     s.metaprogram[CX_BASE] = cx_serializeMembers;   /* Skip the scope-callback by directly calling serializeMembers. This will cause the extra
                                                      * '{ }' not to appear, which is required by this string format. */

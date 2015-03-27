@@ -23,11 +23,11 @@ int yy_scan_string(const char* str);
 #define POPCOMPLEX() Fast_Parser_popComplexType(yparser()); fast_op;
 
 /* Thread local storage key for parser */
-extern cx_threadKey FAST_PARSER_KEY;
+extern cx_threadKey Fast_PARSER_KEY;
 
 /* Obtain parser */
 Fast_Parser yparser(void) {
-    return (Fast_Parser)cx_threadTlsGet(FAST_PARSER_KEY);
+    return (Fast_Parser)cx_threadTlsGet(Fast_PARSER_KEY);
 }
 
 #define fast_err(...) _fast_err(__VA_ARGS__); YYERROR;
@@ -58,7 +58,7 @@ void Fast_declarationSeqInsert( Fast_ParserDeclarationSeq *seq, Fast_ParserDecla
 Fast_Expression Fast_declarationSeqDo(Fast_Variable type, Fast_ParserDeclarationSeq *declarations, cx_bool isReference)
 {
     unsigned int i;
-    Fast_CommaExpr result = Fast_CommaExpr__create();
+    Fast_Comma result = Fast_Comma__create();
     Fast_Expression expr = NULL;
     
     Fast_Parser_collect(yparser(), result);
@@ -81,7 +81,7 @@ Fast_Expression Fast_declarationSeqDo(Fast_Variable type, Fast_ParserDeclaration
             Fast_Parser_collect(yparser(), expr);
         }
         
-        Fast_CommaExpr_addExpression(result, expr);
+        Fast_Comma_addExpression(result, expr);
     }
     cx_dealloc(declarations->buffer);
     declarations->buffer = NULL;
@@ -104,12 +104,12 @@ Fast_Expression Fast_declarationSeqDo(Fast_Variable type, Fast_ParserDeclaration
 %token BOOLEAN CHARACTER INTEGER SIGNEDINTEGER FLOATINGPOINT STRING NUL
 
 /* Identifiers */
-%token ID GID
+%token ID GID PACKAGE
 
 /* Operators */
-%token MUL_ASSIGN DIV_ASSIGN ADD_ASSIGN SUB_ASSIGN OR_ASSIGN AND_ASSIGN LOR
-%token LAND LNOT LEQ GEQ EQ NEQ INC DEC SCOPE SCOPEPRE SHIFT_LEFT SHIFT_RIGHT
-%token ARROW_LEFT ARROW_RIGHT ENDL
+%token MUL_ASSIGN DIV_ASSIGN ADD_ASSIGN SUB_ASSIGN OR_ASSIGN AND_ASSIGN 
+%token UPDATE_ASSIGN LOR LAND LNOT LEQ GEQ EQ NEQ INC DEC SCOPE SCOPEPRE
+%token SHIFT_LEFT SHIFT_RIGHT ARROW_LEFT ARROW_RIGHT ENDL
 
 /* Indentation */
 %token INDENT DEDENT
@@ -161,14 +161,14 @@ Fast_Expression Fast_declarationSeqDo(Fast_Variable type, Fast_ParserDeclaration
 /* Syntax tree nodes */
 %type <Fast>
     statement statements
-    expr literal_expr primary_expr postfix_expr unary_expr multiplicative_expr additive_expr shift_expr
+    expr literal_expr primary_expr iter_expr postfix_expr unary_expr multiplicative_expr additive_expr shift_expr
     boolean_expr equality_expr and_expr xor_expr or_expr logical_and_expr logical_or_expr assignment_expr
     comma_expr bracket_expr conditional_expr wait_expr declaration declaration_expr declaration_ref
     function_declaration
     block block_start
     initializer initializer_expr initializer_braces init_key
     if_start if_statement switch_statement case_statement observer_statement observer_declaration update_statement
-    while_statement while_until
+    while_statement while_until package_declaration
 
 /* Operators */
 %type <Operator>
@@ -214,17 +214,18 @@ statements
     ;
 
 statement
-    : expr ENDL                    {Fast_Parser_addStatement(yparser(), $1); fast_op; Fast_Parser_define(yparser()); fast_op;}
+    : expr ENDL                 {Fast_Parser_addStatement(yparser(), $1); fast_op; Fast_Parser_define(yparser()); fast_op;}
     | if_statement              {Fast_Parser_addStatement(yparser(), $1); fast_op;}
     | while_statement           {Fast_Parser_addStatement(yparser(), $1); fast_op;}
     | switch_statement          {Fast_Parser_addStatement(yparser(), $1); fast_op;}
-    | declaration ENDL           {$$=NULL;}
+    | declaration ENDL          {$$=NULL;}
     | scope_statement           {$<Variable>$ = Fast_Parser_pushScope(yparser()); Fast_Parser_pushLvalue(yparser(),NULL, FALSE); fast_op;} scope {Fast_Parser_popScope(yparser(),$<Variable>2); fast_op;}
-    | function_declaration ENDL  {$$=NULL;}
+    | function_declaration ENDL {$$=NULL;}
     | function_implementation   {$$=NULL;}
     | observer_statement        {$$=NULL;}
     | update_statement          {Fast_Parser_addStatement(yparser(), $1); fast_op;}
     | block                     {Fast_Parser_addStatement(yparser(), $1); fast_op;}
+    | package_declaration ENDL
     | ENDL                      {$$=NULL;}
     ;
 
@@ -233,7 +234,7 @@ statement
 /* ======================================================================== */
 scope
     : SCOPE INDENT statements DEDENT {Fast_Parser_defineScope(yparser()); fast_op;}
-    | SCOPE statement                 {Fast_Parser_defineScope(yparser()); fast_op;}
+    | SCOPE statement                {Fast_Parser_defineScope(yparser()); fast_op;}
     | SCOPEPRE {Fast_Parser_defineScope(yparser()); fast_op;} INDENT statements DEDENT
     | SCOPEPRE {Fast_Parser_defineScope(yparser()); fast_op;} statement
     ;
@@ -259,7 +260,13 @@ block
 /* Function declarations */
 /* ======================================================================== */
 function_implementation
-    : function_declaration {$<Fast>$ = Fast_Parser_declareFunctionParams(yparser(),$1); fast_op;} block {Fast_Parser_bind(yparser(), $1, $<Fast>2); fast_op;}
+    : function_declaration {
+        $<Fast>$ = Fast_Parser_declareFunctionParams(yparser(),$1); fast_op;
+    } block {
+        if ($<Fast>2) {
+            Fast_Parser_bind(yparser(), $1, $<Fast>2); fast_op;
+        }
+    }
     | function_declaration {
         $<Fast>$ = Fast_Parser_declareFunctionParams(yparser(),$1); fast_op;
         Fast_Parser_blockPush(yparser(), FALSE); fast_op;
@@ -321,8 +328,15 @@ function_argument
 /* ======================================================================== */
 /* Declarations */
 /* ======================================================================== */
+
+package_declaration
+    : PACKAGE GID {
+        Fast_Parser_pushPackage(yparser(), $2); fast_op;
+    }
+    ;
+
 declaration
-    : identifier declaration_list                               {$$=Fast_declarationSeqDo($1, &$2, FALSE); fast_op; $$=NULL;}
+    : identifier declaration_list { $$=Fast_declarationSeqDo($1, &$2, FALSE); fast_op; $$=NULL; }
     | KW_LOCAL {yparser()->isLocal = TRUE;} declaration_ref     {$$=$3;}
     ;
 
@@ -356,16 +370,11 @@ init_list_value
 init_value
     : initializer_braces
     | logical_or_expr           {if ($1) Fast_Parser_initValue(yparser(), $1); fast_op}
-    | init_value_indent
     ;
 
 initializer_braces
     : '{' {Fast_Parser_initPush(yparser()); fast_op;} initializer {Fast_Parser_initPop(yparser()); fast_op;} '}' {$$=$3;}
     | '{' '}' {Fast_Parser_initPush(yparser()); fast_op; Fast_Parser_initPop(yparser()); fast_op; $$=NULL;}
-    ;
-
-init_value_indent
-    : INDENT initializer DEDENT
     ;
 
 init_list_colon
@@ -387,13 +396,13 @@ init_key
 /* Expressions */
 /* ======================================================================== */
 literal_expr
-    : BOOLEAN                 {$$=Fast_Boolean__create($1); Fast_Parser_collect(yparser(), $$);}
+    : BOOLEAN               {$$=Fast_Boolean__create($1); Fast_Parser_collect(yparser(), $$);}
     | CHARACTER             {$$=Fast_Character__create($1); Fast_Parser_collect(yparser(), $$);}
-    | INTEGER                 {$$=Fast_Integer__create($1); Fast_Parser_collect(yparser(), $$);}
+    | INTEGER               {$$=Fast_Integer__create($1); Fast_Parser_collect(yparser(), $$);}
     | SIGNEDINTEGER         {$$=Fast_SignedInteger__create($1); Fast_Parser_collect(yparser(), $$);}
     | FLOATINGPOINT         {$$=Fast_FloatingPoint__create($1); Fast_Parser_collect(yparser(), $$);}
     | STRING                {$$=Fast_String__create($1); Fast_Parser_collect(yparser(), $$);}
-    | NUL                     {$$=Fast_Null__create(); Fast_Parser_collect(yparser(), $$);}
+    | NUL                   {$$=Fast_Null__create(); Fast_Parser_collect(yparser(), $$);}
     ;
 
 bracket_expr
@@ -402,16 +411,21 @@ bracket_expr
 
 primary_expr
     : bracket_expr
-    | literal_expr            {$$=$1;}
-    | identifier            {$$=$1;}
+    | literal_expr          {$$ = $1;}
+    | identifier            {$$ = $1;}
+    ;
+
+iter_expr
+    : primary_expr
+    | '*' iter_expr {$$ = Fast_Parser_unaryExpr(yparser(), $2, CX_MUL); fast_op;}
     ;
 
 postfix_expr
-    : primary_expr
+    : iter_expr
     | postfix_expr {PUSHCOMPLEX($1)} '[' expr ']' {$$ = Fast_Parser_elementExpr(yparser(), $1, $4); fast_op; POPCOMPLEX()}
-    | postfix_expr '(' ')'                         {$$ = Fast_Parser_callExpr(yparser(), $1, NULL); fast_op;}
-    | postfix_expr bracket_expr                 {$$ = Fast_Parser_callExpr(yparser(), $1, $2); fast_op;}
-    | postfix_expr '.' any_id                   {Fast_String str = Fast_String__create($3); if (!str) {YYERROR;} $$ = Fast_Parser_memberExpr(yparser(), $1, Fast_Expression(str)); cx_free(str); fast_op;}
+    | postfix_expr '(' ')'                        {$$ = Fast_Parser_callExpr(yparser(), $1, NULL); fast_op;}
+    | postfix_expr bracket_expr                   {$$ = Fast_Parser_callExpr(yparser(), $1, $2); fast_op;}
+    | postfix_expr '.' any_id                     {Fast_String str = Fast_String__create($3); if (!str) {YYERROR;} $$ = Fast_Parser_memberExpr(yparser(), $1, Fast_Expression(str)); cx_free(str); fast_op;}
     | postfix_expr INC                            {$$ = Fast_Parser_postfixExpr(yparser(), $1, CX_INC); fast_op}
     | postfix_expr DEC                            {$$ = Fast_Parser_postfixExpr(yparser(), $1, CX_DEC); fast_op}
     ;
@@ -518,13 +532,13 @@ conditional_expr
 comma_expr
     : conditional_expr
     | comma_expr ',' conditional_expr {
-        if ($1) {
-            if (Fast_Node($1)->kind != FAST_CommaExpr) {
-                $$ = Fast_CommaExpr__create(); fast_op;
-                Fast_CommaExpr_addExpression($$, $1); fast_op;
+        if ($1 && $3) {
+            if (Fast_Node($1)->kind != Fast_CommaExpr) {
+                $$ = Fast_Comma__create(); fast_op;
+                Fast_Comma_addExpression($$, $1); fast_op;
                 Fast_Parser_collect(yparser(), $$); fast_op;
             }
-            Fast_CommaExpr_addExpression($$, $3); fast_op;
+            Fast_Comma_addExpression($$, $3); fast_op;
         }
     }
     ;
@@ -544,6 +558,7 @@ assignment_operator
     | DIV_ASSIGN {$$ = CX_ASSIGN_DIV;}
     | AND_ASSIGN {$$ = CX_ASSIGN_AND;}
     | OR_ASSIGN  {$$ = CX_ASSIGN_OR;}
+    | UPDATE_ASSIGN {$$ = CX_ASSIGN_UPDATE;}
     ;
 
 wait_expr
@@ -559,16 +574,20 @@ declaration_expr
         Fast_Parser_initPushStatic(yparser()); fast_op;
     } initializer {
         Fast_Parser_initPop(yparser()); fast_op;
+        $$ = NULL;
     }
     | wait_expr ':' {
         Fast_Parser_initDeclareStaged(yparser(), NULL); fast_op;
         Fast_Parser_initPushStatic(yparser()); fast_op;
         Fast_Parser_initPop(yparser()); fast_op;
+        $$ = NULL;
     }
     | declaration ':' {Fast_Parser_initPushStatic(yparser()); fast_op;} initializer {Fast_Parser_initPop(yparser()); fast_op;}
+    | declaration '{' {Fast_Parser_initPushStatic(yparser()); fast_op;} initializer {Fast_Parser_initPop(yparser()); fast_op;} '}'
+    | declaration '{' {Fast_Parser_initPushStatic(yparser()); fast_op; Fast_Parser_initPop(yparser()); fast_op;} '}'
     | declaration ':' {Fast_Parser_initPushStatic(yparser()); fast_op; Fast_Parser_initPop(yparser()); fast_op;}
     | declaration '=' {
-        if (!yparser()->isLocal) {
+        if (!yparser()->isLocal && !yparser()->blockCount) {
             _fast_err("invalid usage of assignment operator, initialize objects with ':'");
             YYERROR;
         }
@@ -694,12 +713,12 @@ case_label
 /* Observer statement */
 /* ======================================================================== */
 observer_statement
-    : observer_declaration block    {Fast_Parser_observerPop(yparser()); fast_op;}
-    | observer_declaration ENDL      {Fast_Parser_observerPop(yparser()); fast_op;}
+    : observer_declaration block {}
+    | observer_declaration ENDL {yparser()->blockCount--;}
     ;
 
 observer_declaration
-    : observer_dispatch event_mask assignment_expr          {$$=NULL; Fast_Parser_observerDeclaration(yparser(), NULL, $3, $2, $1); fast_op;}
+    : observer_dispatch event_mask assignment_expr  {$$=NULL; Fast_Parser_observerDeclaration(yparser(), NULL, $3, $2, $1); fast_op;}
     ;
 
 observer_dispatch
@@ -734,8 +753,8 @@ event_childflag
 /* Update statement */
 /* ======================================================================== */
 update_statement
-    : KW_UPDATE wait_expr ENDL    {$$ = Fast_Parser_updateStatement(yparser(), $2, NULL); fast_op;}
-    | KW_UPDATE wait_expr block  {$$ = Fast_Parser_updateStatement(yparser(), $2, $3); fast_op;}
+    : KW_UPDATE postfix_expr ENDL    {$$ = Fast_Parser_updateStatement(yparser(), $2, NULL); fast_op;}
+    | KW_UPDATE postfix_expr block  {$$ = Fast_Parser_updateStatement(yparser(), $2, $3); fast_op;}
     ;
 
 
@@ -754,24 +773,23 @@ void yyerror(const char *str)
 
 /* Parse sourcecode */
 int fast_yparse(Fast_Parser parser, cx_uint32 line, cx_uint32 column) {
-    cx_char *preprocessed;
+    int len = strlen(parser->source);
 
-    /* Preprocess code */
-    preprocessed = fast_pp(parser->filename, parser->source);
-    if (parser->preprocessed) {
-        cx_dealloc(parser->preprocessed);
-    }
-    parser->preprocessed = preprocessed;
-    
-    /* List code */
-    /* fast_ppList(preprocessed);*/
-    
+    /* Prepend and append the source with a newline */ 
+    char *sourceWithNewline = cx_malloc(len + 3);
+    sourceWithNewline[0] = '\n';
+    strcpy(sourceWithNewline + 1, parser->source);    
+    sourceWithNewline[len + 1] = '\n';
+    sourceWithNewline[len + 2] = '\0';
+
     /* Set pointer to source */
-    yy_scan_string((char *) preprocessed);
+    yy_scan_string((char *) sourceWithNewline);
     
     /* Start parsing */
     parser->line = line;
     parser->column = column;
+
+    yparser()->blockCount = 0;
 
     if (!parser->block) {
         parser->block = Fast_Block__create(NULL);
@@ -781,6 +799,8 @@ int fast_yparse(Fast_Parser parser, cx_uint32 line, cx_uint32 column) {
         parser->scope = Fast_Variable(Fast_Object__create(root_o));
     }
     
+    /* Compensate for insertion of the extra \n */
+    parser->line--;
     yyparse();
     
     /* Destroy lexer resources */
@@ -788,6 +808,7 @@ int fast_yparse(Fast_Parser parser, cx_uint32 line, cx_uint32 column) {
     
     /* Set token to NULL - it points to lexer-memory */
     yparser()->token = NULL;
+    cx_dealloc(sourceWithNewline);
 
     return yparser()->errors;
 }

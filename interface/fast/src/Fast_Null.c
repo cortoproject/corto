@@ -20,7 +20,7 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 /* ::cortex::Fast::Null::init() */
 cx_int16 Fast_Null_init(Fast_Null _this) {
 /* $begin(::cortex::Fast::Null::init) */
-    Fast_Literal(_this)->kind = FAST_Null;
+    Fast_Literal(_this)->kind = Fast_Nothing;
     Fast_Expression(_this)->type = NULL;
     return Fast_Literal_init(Fast_Literal(_this));
 /* $end */
@@ -35,16 +35,16 @@ cx_int16 Fast_Null_serialize(Fast_Null _this, cx_type dstType, cx_word dst) {
     kind = Fast_valueKindFromType(dstType);
     
     switch(kind) {
-    case FAST_Boolean:
+    case Fast_Bool:
         *(cx_bool*)dst = FALSE;
         break;
-    case FAST_String:
+    case Fast_Text:
         if (*(cx_string*)dst) {
             cx_dealloc(*(cx_string*)dst);
         }
         *(cx_string*)dst = NULL;
         break;
-    case FAST_Reference:
+    case Fast_Ref:
         if (*(cx_object*)dst) {
             cx_free(*(cx_object*)dst);
         }
@@ -52,7 +52,7 @@ cx_int16 Fast_Null_serialize(Fast_Null _this, cx_type dstType, cx_word dst) {
         break;
     default: {
         cx_id id;
-        Fast_Parser_error(yparser(), "cannot serialize null value to storage of type '%s'", cx_fullname(dstType, id));
+        Fast_Parser_error(yparser(), "cannot serialize null value to storage of type '%s'", Fast_Parser_id(dstType, id));
         goto error;
         break;
     }
