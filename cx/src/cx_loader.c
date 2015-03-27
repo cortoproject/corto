@@ -170,12 +170,6 @@ int cx_libraryLoader(cx_string _file, void* udata) {
 
     CX_UNUSED(udata);
 
-    /* Validate that the environment variable contains a valid cortex path. */
-    if (strmask(cortexHomeVar, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_/ ")) {
-        cx_error("Environment variable CORTEX_HOME does not contain a valid path");
-        goto error;
-    }
-
     /* Convert scoped name to filename */
     if (strchr(_file, ':')) {
         cx_char ch, *ptr, *bptr;
