@@ -1,0 +1,22 @@
+//
+// Control flow examples
+
+int32 a: 10
+
+// While loop
+while a:
+    a--
+
+// If statement
+if !a: 
+    "a is zero!"
+else:
+    "a is not zero :("
+
+// Do while loop
+:
+    a++
+    while a < 10
+
+if a == 10: "a is 10!"
+else: "a is not 10 :("
