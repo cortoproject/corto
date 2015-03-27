@@ -975,39 +975,39 @@ cx_int16 cx_delegateConstruct(cx_type t, cx_object o) {
 
 /* Define object */
 cx_int16 cx_define(cx_object o) {
-    cx_type t;
-    cx_int16 result;
-    cx__object *_o;
-
-    result = 0;
-    _o = CX_OFFSET(o, -sizeof(cx__object));
-    t = cx_typeof(o);
+    cx_int16 result = 0;
 
     /* Only define valid, undefined objects */
-    if (cx_checkState(o, CX_VALID | CX_DECLARED) && !cx_checkState(o, CX_DEFINED)) {
+    if (cx_checkState(o, CX_VALID | CX_DECLARED)) {
+        cx__object *_o = CX_OFFSET(o, -sizeof(cx__object));
+        if (!cx_checkState(o, CX_DEFINED)) {
+            cx_type t = cx_typeof(o);
+            /* If object is instance of a class, call the constructor */
+            if (cx_class_instanceof(cx_class_o, t)) {
+                /* Attach observers to object */
+                cx_class_attachObservers(cx_class(t), o);
+                /* Call constructor */    
+                result = cx_delegateConstruct(t, o);
+                /* Start listening with attached observers */
+                cx_class_listenObservers(cx_class(t), o);
+            } else if (cx_class_instanceof(cx_procedure_o, t)) {
+                result = cx_delegateConstruct(t, o);
+            }
 
-        /* If object is instance of a class, call the constructor */
-        if (cx_class_instanceof(cx_class_o, t)) {
-            /* Attach observers to object */
-            cx_class_attachObservers(cx_class(t), o);
-            /* Call constructor */    
-            result = cx_delegateConstruct(t, o);
-            /* Start listening with attached observers */
-            cx_class_listenObservers(cx_class(t), o);
-        } else if (cx_class_instanceof(cx_procedure_o, t)) {
-            result = cx_delegateConstruct(t, o);
-        }
+            if (!result) {
+                _o->attrs.state |= CX_DEFINED;
 
-        if (!result) {
-            _o->attrs.state |= CX_DEFINED;
+                /* Notify observers of defined object */
+                cx_notify(cx__objectObservable(_o), o, o, CX_ON_DEFINE);
 
-            /* Notify observers of defined object */
-            cx_notify(cx__objectObservable(CX_OFFSET(o,-sizeof(cx__object))), o, o, CX_ON_DEFINE);
-
+            } else {
+                /* Remove valid state */
+                cx_invalidate(o);
+            }
         } else {
-            /* Remove valid state */
-            cx_invalidate(o);
-        }
+            /* Notify observers of redefined object */
+            cx_notify(cx__objectObservable(_o), o, o, CX_ON_UPDATE);
+        }     
     }
 
     return result;

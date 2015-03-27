@@ -1,0 +1,16 @@
+bool result: true
+void fail(string msg):
+    "tc_update06: FAIL: $msg"
+    result = false
+
+int32 defined, updated: 0
+int32 a: 10
+int32 a: 40
+
+on define a: defined++
+on update a: updated++
+
+if defined != 1: fail("defined == 1");
+if updated != 1: fail("updated != 1")
+
+if result: "tc_update06: OK"
