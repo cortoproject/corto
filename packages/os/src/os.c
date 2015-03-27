@@ -18,36 +18,6 @@ cx_void os_exit(cx_bool success) {
 /* $end */
 }
 
-/* ::cortex::os::loadavg(loadAvgKind kind) */
-cx_float64 os_loadavg(os_loadAvgKind kind) {
-/* $begin(::cortex::os::loadavg) */
-    double result[3];
-    unsigned int c;
-
-    if (getloadavg(result, 3) == -1) {
-        cx_error("os::loadavg failed!");
-    }
-
-    switch(kind) {
-    case OS_MIN_1:
-        c = 0;
-        break;
-    case OS_MIN_5:
-        c = 1;
-        break;
-    case OS_MIN_15:
-        c = 2;
-        break;
-    default:
-        cx_error("os::loadavg: invalid kind!");
-        c = 0;
-        break;
-    }
-
-    return result[c];
-/* $end */
-}
-
 /* ::cortex::os::sleep(uint32 sec,uint32 nsec) */
 cx_void os_sleep(cx_uint32 sec, cx_uint32 nsec) {
 /* $begin(::cortex::os::sleep) */

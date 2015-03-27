@@ -9,15 +9,6 @@ void system(string cmd)
 // exit
 void exit(bool success)
 
-// loadAvgKind
-enum loadAvgKind::
-    constant MIN_1
-    constant MIN_5
-    constant MIN_15
-
-// loadavg
-float64 loadavg(loadAvgKind kind)
-
 // Time
 class time::
     member seconds : int32

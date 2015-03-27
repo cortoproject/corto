@@ -19,13 +19,6 @@ extern "C" {
 #define os_timer(o) ((os_timer)o)
 
 /* Type definitions */
-/* ::cortex::os::loadAvgKind */
-typedef enum os_loadAvgKind {
-    OS_MIN_1 = 0,
-    OS_MIN_5 = 1,
-    OS_MIN_15 = 2
-} os_loadAvgKind;
-
 /*  ::cortex::os::thread */
 CX_CLASS(os_thread);
 

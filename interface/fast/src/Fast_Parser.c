@@ -2250,7 +2250,6 @@ cx_int16 Fast_Parser_initPushStatic(Fast_Parser _this) {
     Fast_InitializerVariable_array64 variables;
     Fast_Initializer initializer;
     cx_uint32 i;
-    cx_type t = NULL;
     
     _this->initializerCount++;
     
@@ -2279,8 +2278,6 @@ cx_int16 Fast_Parser_initPushStatic(Fast_Parser _this) {
         variables[i].key = 0;
         variables[i].offset = 0;
     }
-
-    t = Fast_Expression_getType(variables[0]);
 
     if (!_this->pass) {
         /* Create initializer */
