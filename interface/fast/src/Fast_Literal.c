@@ -37,28 +37,28 @@ cx_int16 Fast_Literal_init(Fast_Literal _this) {
     if (!Fast_Expression(_this)->type) {
         switch(_this->kind) {
         case Fast_Bool:
-            Fast_Expression(_this)->type = (Fast_Variable)Fast_Object__create(cx_bool_o);
+            cx_set(&Fast_Expression(_this)->type, cx_bool_o);
             break;
         case Fast_Char:
-            Fast_Expression(_this)->type = (Fast_Variable)Fast_Object__create(cx_char_o);
+            cx_set(&Fast_Expression(_this)->type, cx_char_o);
             break;
         case Fast_Int:
-            Fast_Expression(_this)->type = (Fast_Variable)Fast_Object__create(cx_uint64_o);
+            cx_set(&Fast_Expression(_this)->type, cx_uint64_o);
             break;
         case Fast_SignedInt:
-            Fast_Expression(_this)->type = (Fast_Variable)Fast_Object__create(cx_int64_o);
+            cx_set(&Fast_Expression(_this)->type, cx_int64_o);
             break;
         case Fast_Float:
-            Fast_Expression(_this)->type = (Fast_Variable)Fast_Object__create(cx_float64_o);
+            cx_set(&Fast_Expression(_this)->type, cx_float64_o);
             break;
         case Fast_Text:
-            Fast_Expression(_this)->type = (Fast_Variable)Fast_Object__create(cx_string_o);
+            cx_set(&Fast_Expression(_this)->type, cx_string_o);
             break;
         case Fast_Enum:
-            Fast_Expression(_this)->type = (Fast_Variable)Fast_Object__create(cx_uint32_o);
+            cx_set(&Fast_Expression(_this)->type, cx_uint32_o);
             break;
         case Fast_Ref:
-            Fast_Expression(_this)->type = (Fast_Variable)Fast_Object__create(cx_object_o);
+            cx_set(&Fast_Expression(_this)->type, cx_object_o);
             break;
         case Fast_Nothing:
             /* No type. */

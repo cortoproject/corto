@@ -82,7 +82,7 @@ Fast_Call Fast_CallBuilder_build(Fast_CallBuilder *_this) {
         if (_this->block) {
             Fast_Local l = Fast_Block_resolveLocal(_this->block, _this->name);
             if (l) {
-                cx_type t = cx_type(Fast_ObjectBase(l->type)->value);
+                cx_type t = cx_type(Fast_Object(l->type)->value);
                 /* Check if l is of a delegate type */
                 if ((t->kind == CX_COMPOSITE) && (cx_interface(t)->kind == CX_DELEGATE)) {
                     result = Fast_Call(Fast_DelegateCall__create(NULL, _this->arguments, Fast_Expression(l)));
@@ -93,7 +93,7 @@ Fast_Call Fast_CallBuilder_build(Fast_CallBuilder *_this) {
 
             /* If no local is found and block has this-local, try the corresponding interface */
             } else if ((l = Fast_Block_resolveLocal(_this->block, "this"))) {
-                cx_type t = cx_type(Fast_ObjectBase(l->type)->value);
+                cx_type t = cx_type(Fast_Object(l->type)->value);
                 if (cx_type_resolveProcedure(t, _this->signature)) {
                     /* Set instance to 'this' */
                     cx_set(&_this->instance, l);
@@ -161,7 +161,7 @@ cx_int16 Fast_CallBuilder_buildSignature(Fast_CallBuilder *_this) {
                     flags |= CX_PARAMETER_WILDCARD;
                 }
                 flags |= argument->isReference ? CX_PARAMETER_REFERENCE : 0;
-                flags |= argument->forceReference ? CX_PARAMETER_FORCEREFERENCE : 0;
+                flags |= (argument->deref == Fast_ByReference) ? CX_PARAMETER_FORCEREFERENCE : 0;
                 signature = cx_signatureAdd(signature, cx_type(argumentType), flags);
             }
             Fast_Expression_cleanList(arguments);

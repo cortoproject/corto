@@ -32,29 +32,18 @@
                     <constant name="DeclarationExpr"/>
 					<constant name="DeclareExpr"/>
 					<constant name="DefineExpr"/>
-					<constant name="ElementExpr"/>
 					<constant name="IfExpr"/>
                     <constant name="InitializerExpr"/>
 					<constant name="LiteralExpr"/>
-					<constant name="MemberExpr"/>
 					<constant name="MethodExpr"/>
 					<constant name="NewExpr"/>
 					<constant name="PostfixExpr"/>
                     <constant name="TernaryExpr"/>
 					<constant name="UnaryExpr"/>
                     <constant name="UpdateExpr"/>
-                    <constant name="VariableExpr"/>
+                    <constant name="StorageExpr"/>
                     <constant name="WaitExpr"/>
                     <constant name="WhileExpr"/>
-				</meta:scope>
-			</enum>
-			
-			<!-- Enumeration representing the different variable kinds -->
-			<enum name="variableKind">
-				<meta:scope>
-					<constant name="LocalExpr"/>
-					<constant name="TemplateExpr"/>
-					<constant name="ObjectExpr"/>
 				</meta:scope>
 			</enum>
 
@@ -69,14 +58,21 @@
 				</meta:scope>
 			</class>
 			
-			<meta:object name="Variable" type="class"/>
+			<meta:object name="Storage" type="class"/>
+
+			<enum name="derefKind">
+				<meta:scope>
+					<constant name="ByValue"/>
+					<constant name="ByReference"/>
+				</meta:scope>
+			</enum>
 			
 			<!-- Base expression node -->
 			<class name="Expression" base="Node">
 				<meta:scope>
-					<member name="type" type="Fast::Variable" modifiers="readonly"/>
+					<member name="type" type="type" modifiers="readonly"/>
 					<member name="isReference" type="bool" modifiers="readonly"/>
-					<member name="forceReference" type="bool" modifiers="readonly"/> <!-- Force treating value as reference -->
+					<member name="deref" type="derefKind" modifiers="readonly"/>
 					<method name="getType()" returnType="type"/>
 					<method name="getType_expr(Expression target)" returnType="type"/>
 					<method name="getType_type(type target)" returnType="type"/>
@@ -173,14 +169,22 @@
 				</meta:scope>
 			</class>
 			
+			<!-- Enumeration representing the different variable kinds -->
+			<enum name="storageKind">
+				<meta:scope>
+					<constant name="LocalStorage"/>
+					<constant name="ObjectStorage"/>
+					<constant name="MemberStorage"/>
+					<constant name="ElementStorage"/>
+					<constant name="TemplateStorage"/>
+				</meta:scope>
+			</enum>
+
 			<!-- Base variable node -->
-
-			<meta:object name="Local" type="class"/>
-
-			<class name="Variable" base="Expression" baseAccess="readonly">
+			<class name="Storage" base="Expression" baseAccess="readonly">
 				<meta:scope>
 					<method name="construct()" returnType="int16"/>
-					<member name="kind" type="variableKind"/>
+					<member name="kind" type="storageKind"/>
 				</meta:scope>
 			</class>
 			
@@ -195,11 +199,11 @@
 			</enum>
 
 			<!-- Local variable node -->
-			<class name="Local" base="Variable" baseAccess="readonly">
+			<class name="Local" base="Storage" baseAccess="readonly">
 				<meta:scope>
 					<method name="construct()" returnType="int16"/>
 					<member name="name" type="string"/>
-					<member name="type" type="Fast::Variable"/>
+					<member name="type" type="type"/>
 					<member name="kind" type="Fast::LocalKind"/>
 					<member name="reference" type="bool"/>
 					<virtual name="toIc(alias{&quot;cx_icProgram&quot;} program,alias{&quot;cx_icStorage&quot;} storage,bool stored)" returnType="alias{&quot;cx_ic&quot;}"/>
@@ -212,22 +216,15 @@
 					<method name="construct()" returnType="int16"/>
 				</meta:scope>
 			</class>
-			
-			<!-- Object variable node used as type for Object nodes (so no recursion occurs) -->
-			<class name="ObjectBase" base="Variable" baseAccess="readonly">
-				<meta:scope>
-					<method name="construct()" returnType="int16"/>
-					<member name="value" type="object"/>
-				</meta:scope>
-			</class>
-			
+
 			<!-- Object variable node -->
-			<class name="Object" base="ObjectBase">
+			<class name="Object" base="Storage" baseAccess="readonly">
 				<meta:scope>
 					<method name="construct()" returnType="int16"/>
 					<method name="serialize(type dstType,word dst)" returnType="int16"/>
 					<virtual name="toIc(alias{&quot;cx_icProgram&quot;} program,alias{&quot;cx_icStorage&quot;} storage,bool stored)" returnType="alias{&quot;cx_ic&quot;}"/>
 					<method name="getValue()" returnType="word"/>
+					<member name="value" type="object"/>
 				</meta:scope>
 			</class>
 
@@ -243,8 +240,8 @@
 					<member name="function" type="function" modifiers="readonly"/>
                     <member name="while" type="Fast::While" modifiers="readonly"/>
 					<method name="setFunction(function function"/>
-					<method name="declare(string id,Fast::Variable type,bool isParameter,bool isReference)" returnType="Fast::Local"/>
-					<method name="declareTemplate(string id,Fast::Variable type,bool isParameter,bool isReference)" returnType="Fast::Template"/>
+					<method name="declare(string id,type type,bool isParameter,bool isReference)" returnType="Fast::Local"/>
+					<method name="declareTemplate(string id,type type,bool isParameter,bool isReference)" returnType="Fast::Template"/>
 					<method name="declareReturnVariable(function function)" returnType="Fast::Local"/>
 					<method name="lookup(string id)" returnType="Fast::Expression"/>
 					<method name="lookupLocal(string id)" returnType="Fast::Local"/> <!-- Only search for locals -->
@@ -335,7 +332,7 @@
 			<class name="Cast" base="Expression" baseAccess="readonly">
 				<meta:scope>
 					<method name="construct()" returnType="int16"/>
-					<member name="lvalue" type="Fast::Expression"/>
+					<member name="lvalue" type="type"/>
 					<member name="rvalue" type="Fast::Expression"/>
 					<virtual name="toIc(alias{&quot;cx_icProgram&quot;} program,alias{&quot;cx_icStorage&quot;} storage,bool stored)" returnType="alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
@@ -424,7 +421,7 @@
 					<member name="value" type="string"/>
 					<member name="elements" type="list{Fast::Expression}" modifiers="readonly"/>
 					<member name="block" type="Fast::Block" modifiers="readonly"/>
-					<member name="scope" type="Fast::Variable" modifiers="readonly"/>
+					<member name="scope" type="object" modifiers="readonly"/>
 					<method name="getValue()" returnType="word"/>
 					<virtual name="toIc(alias{&quot;cx_icProgram&quot;} program,alias{&quot;cx_icStorage&quot;} storage,bool stored)" returnType="alias{&quot;cx_ic&quot;}"/>
 				</meta:scope>
@@ -609,7 +606,7 @@
 			<struct name="ParserDeclaration">
 				<meta:scope>
 					<member name="name" type="string"/>
-					<member name="variable" type="Fast::Variable"/>
+					<member name="storage" type="Fast::Storage"/>
 				</meta:scope>
 			</struct>
 			
@@ -656,7 +653,7 @@
 					<member name="block" type="Fast::Block" modifiers="readonly"/>
 					<!-- Keep track of block-nesting in 1st pass -->
 					<member name="blockCount" type="uint32" modifiers="readonly"/>
-					<member name="scope" type="Fast::Variable" modifiers="readonly"/>
+					<member name="scope" type="object" modifiers="readonly"/>
 					<member name="errors" type="uint32" modifiers="readonly"/>
 					<member name="warnings" type="uint32" modifiers="readonly"/>
 					<member name="errSet" type="bool" modifiers="readonly|private"/> <!-- If set the last operation on the parser returned an error -->
@@ -676,7 +673,7 @@
 					<member name="lastFailedResolve" type="string" modifiers="private|local"/>
 					
 					<!-- Variables prepared for initializer (maximum of 64 variables can be initialized simultaneously) -->
-					<member name="variables" type="array{Fast::Variable,64}" modifiers="private|readonly"/>
+					<member name="variables" type="array{Fast::Storage,64}" modifiers="private|readonly"/>
 					<member name="variableCount" type="uint32" modifiers="private|readonly"/>
 					<!-- Have variables been initialized? (required for deciding whether to define or not) -->
 					<member name="variablesInitialized" type="bool" modifiers="private|readonly"/>
@@ -707,16 +704,16 @@
 					<!-- Parser framework functions -->
 					<method name="parse()" returnType="uint32"/>
 					<function name="parseLine(string expr,object scope,alias{&quot;cx_value*&quot;} value)" returnType="int16"/> <!--  Parse a single line -->
-					<method name="parseExpression(string expr,Fast::Block block,Fast::Variable scope,uint32 line,uint32 column)" returnType="Fast::Expression"/>
+					<method name="parseExpression(string expr,Fast::Block block,object scope,uint32 line,uint32 column)" returnType="Fast::Expression"/>
 					<method name="isErrSet()" returnType="bool"/>
 					<method name="isAbortSet()" returnType="bool"/>
 					<method name="collect(object o)" returnType="void"/>
 					<method name="reset()"/>
-					<method name="argumentToString(Fast::Variable type,string id,bool reference)" returnType="string"/> <!-- Convert function argument to string -->	
+					<method name="argumentToString(type type,string id,bool reference)" returnType="string"/> <!-- Convert function argument to string -->	
 
 					<!-- Scope management -->
-					<method name="pushScope()" returnType="Fast::Variable"/>
-					<method name="popScope(Fast::Variable previous)"/>
+					<method name="pushScope()" returnType="object"/>
+					<method name="popScope(object previous)"/>
 					<method name="pushPackage(string name)" returnType="int16"/>
 					
 					<!-- Lookup -->
@@ -728,16 +725,16 @@
 					<method name="addStatement(Fast::Node statement)"/>
 					
 					<!-- Declaration -->
-					<method name="declaration(Variable type,string id,bool isReference)" returnType="Variable"/>
-					<method name="declareFunction(Variable returnType,string id,type kind,bool returnsReference)" returnType="Variable"/>
-					<method name="declareFunctionParams(Variable function)" returnType="Fast::Block"/>
+					<method name="declaration(type type,string id,bool isReference)" returnType="Storage"/>
+					<method name="declareFunction(type returnType,string id,type kind,bool returnsReference)" returnType="Storage"/>
+					<method name="declareFunctionParams(Storage function)" returnType="Fast::Block"/>
 					<method name="define()" returnType="int16"/>
 					<method name="defineScope()" returnType="int16"/>
-					<method name="defineVariable(Variable object)" returnType="int16"/>
+					<method name="defineVariable(Storage object)" returnType="int16"/>
 					
 					<!-- Bind function to implementation -->
-					<method name="bind(Fast::Variable function,Fast::Block block)" returnType="int16"/>
-					<method name="bindOneliner(Fast::Variable function,Fast::Block block,Fast::Expression expr)" returnType="int16"/>
+					<method name="bind(Fast::Storage function,Fast::Block block)" returnType="int16"/>
+					<method name="bindOneliner(Fast::Storage function,Fast::Block block,Fast::Expression expr)" returnType="int16"/>
 
 					<!-- Finalize bound functions -->
 					<method name="finalize(alias{&quot;cx_icProgram&quot;} program)" returnType="int16"/>
@@ -773,7 +770,7 @@
 
 					<!-- Observer -->
 					<method name="observerPush()"/>
-					<method name="observerDeclaration(string id,Fast::Expression object,eventMask mask,Fast::Object dispatcher)" returnType="Variable"/>
+					<method name="observerDeclaration(string id,Fast::Expression object,eventMask mask,Fast::Object dispatcher)" returnType="Storage"/>
 					
 					<!-- Foreach -->
 					<method name="foreach(string loopId,Fast::Expression collection)" returnType="int16"/>
@@ -782,7 +779,7 @@
 					<method name="callExpr(Fast::Expression function,Fast::Expression arguments)" returnType="Fast::Expression"/>
 					<method name="memberExpr(Fast::Expression lvalue,Fast::Expression rvalue)" returnType="Fast::Expression"/>
 					<method name="elementExpr(Fast::Expression lvalue,Fast::Expression rvalue)" returnType="Fast::Expression"/>
-					<method name="castExpr(Fast::Expression lvalue,Fast::Expression rvalue)" returnType="Fast::Expression"/>
+					<method name="castExpr(type lvalue,Fast::Expression rvalue)" returnType="Fast::Expression"/>
 					
 					<!-- Arithmic expressions -->
 					<method name="postfixExpr(Fast::Expression lvalue,operatorKind operator)" returnType="Fast::Expression"/>

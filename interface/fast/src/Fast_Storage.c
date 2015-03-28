@@ -1,4 +1,4 @@
-/* Fast_Variable.c
+/* Fast_Storage.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -9,11 +9,11 @@
 #include "Fast.h"
 #include "Fast__meta.h"
 
-/* ::cortex::Fast::Variable::construct() */
-cx_int16 Fast_Variable_construct(Fast_Variable _this) {
-/* $begin(::cortex::Fast::Variable::construct) */
+/* ::cortex::Fast::Storage::construct() */
+cx_int16 Fast_Storage_construct(Fast_Storage _this) {
+/* $begin(::cortex::Fast::Storage::construct) */
 
-    Fast_Node(_this)->kind = Fast_VariableExpr;
+    Fast_Node(_this)->kind = Fast_StorageExpr;
 
     return 0;
 /* $end */

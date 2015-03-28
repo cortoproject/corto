@@ -22,7 +22,8 @@ cx_int16 Fast_Element_construct(Fast_Element _this) {
 /* $begin(::cortex::Fast::Element::construct) */
     cx_type lvalueType, rvalueType;
 
-    Fast_Node(_this)->kind = Fast_ElementExpr;
+    Fast_Node(_this)->kind = Fast_StorageExpr;
+    Fast_Storage(_this)->kind = Fast_ElementStorage;
 
     lvalueType = Fast_Expression_getType(_this->lvalue);
 
@@ -46,7 +47,7 @@ cx_int16 Fast_Element_construct(Fast_Element _this) {
                 }
             }
             /* Set type of expression */
-            Fast_Expression(_this)->type = Fast_Variable(Fast_Object__create(cx_collection(lvalueType)->elementType));
+            cx_set(&Fast_Expression(_this)->type, cx_collection(lvalueType)->elementType);
         } else {
             cx_id id;
             Fast_Parser_error(yparser(), "cannot obtain element from _this of non-collection type '%s'", Fast_Parser_id(lvalueType, id));
@@ -58,7 +59,6 @@ cx_int16 Fast_Element_construct(Fast_Element _this) {
     }
     
     if (Fast_Expression_getType(Fast_Expression(_this))->reference) {
-        Fast_Expression(_this)->forceReference = TRUE;
         Fast_Expression(_this)->isReference = TRUE;
     }
 

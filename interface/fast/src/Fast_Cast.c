@@ -23,43 +23,24 @@ cx_int16 Fast_Cast_construct(Fast_Cast _this) {
 
     Fast_Node(_this)->kind = Fast_CallExpr;
 
-    if (Fast_Node(_this->lvalue)->kind == Fast_VariableExpr) {
-        if (Fast_Variable(_this->lvalue)->kind == Fast_ObjectExpr) {
-            cx_object lvalue = Fast_ObjectBase(_this->lvalue)->value;
-            if (cx_class_instanceof(cx_type_o, lvalue)) {
-                cx_type rvalueType;
-                rvalueType = Fast_Expression_getType(_this->rvalue);
-                if (rvalueType) {
-                    if (cx_type_castable(cx_type(lvalue), rvalueType) || cx_type_castable(rvalueType, cx_type(lvalue))) {
-                        /* TODO: cx_assert(!cx_type_compatible(rvalueType, cx_type(lvalue)), "%d: redundant cast inserted", yparser()->line); */
-                        Fast_Expression(_this)->type = (Fast_Variable)_this->lvalue;
-                        Fast_Expression(_this)->isReference = cx_type(lvalue)->reference;
-                    } else {
-                        cx_id id1, id2;
-                        Fast_Parser_error(yparser(), "cannot cast from type '%s' to '%s'",
-                                Fast_Parser_id(rvalueType, id1), Fast_Parser_id(lvalue, id2));
-                        goto error;
-                    }
-                } else {
-                    /* If type of rvalue is unknown, cast is performed at runtime. Set type even though to introduce the
-                     * type barrier for code using this expression. */
-                    Fast_Expression(_this)->type = (Fast_Variable)_this->lvalue;
-                }
-            } else {
-                Fast_Parser_error(yparser(), "left-side of cast-expression is not a type");
-                goto error;
-            }
+    cx_type rvalueType;
+    rvalueType = Fast_Expression_getType(_this->rvalue);
+    if (rvalueType) {
+        if (cx_type_castable(_this->lvalue, rvalueType) || cx_type_castable(rvalueType, _this->lvalue)) {
+            /* TODO: cx_assert(!cx_type_compatible(rvalueType, cx_type(lvalue)), "%d: redundant cast inserted", yparser()->line); */
+            cx_set(&Fast_Expression(_this)->type, _this->lvalue);
+            Fast_Expression(_this)->isReference = _this->lvalue->reference;
         } else {
-            Fast_Parser_error(yparser(), "dynamic expressions in cast-expression not supported");
+            cx_id id1, id2;
+            Fast_Parser_error(yparser(), "cannot cast from type '%s' to '%s'",
+                    Fast_Parser_id(rvalueType, id1), Fast_Parser_id(_this->lvalue, id2));
             goto error;
         }
     } else {
-        Fast_Parser_error(yparser(), "dynamic expressions in cast-expression not supported");
-        goto error;
+        /* If type of rvalue is unknown, cast is performed at runtime. Set type even though to introduce the
+         * type barrier for code using this expression. */
+        cx_set(&Fast_Expression(_this)->type, _this->lvalue);
     }
-
-    /* Keep type */
-    cx_keep_ext(_this, _this->lvalue, "type");
 
     return 0;
 error:
@@ -90,7 +71,7 @@ cx_ic Fast_Cast_toIc_v(Fast_Cast _this, cx_icProgram program, cx_icStorage stora
 
     op = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_CAST, (cx_icValue)result, (cx_icValue)rvalue, (cx_icValue)lvalue);
 
-    if (_this->rvalue->forceReference || _thisType->reference) {
+    if ((_this->rvalue->deref == Fast_ByReference) || _thisType->reference) {
         op->s2Deref = CX_IC_DEREF_ADDRESS;
     }
     op->s3Deref = CX_IC_DEREF_ADDRESS;

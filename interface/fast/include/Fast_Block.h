@@ -21,14 +21,14 @@ extern "C" {
 /* ::cortex::Fast::Block::addStatement(Fast::Node statement) */
 cx_void Fast_Block_addStatement(Fast_Block _this, Fast_Node statement);
 
-/* ::cortex::Fast::Block::declare(string id,Fast::Variable type,bool isParameter,bool isReference) */
-Fast_Local Fast_Block_declare(Fast_Block _this, cx_string id, Fast_Variable type, cx_bool isParameter, cx_bool isReference);
+/* ::cortex::Fast::Block::declare(string id,type type,bool isParameter,bool isReference) */
+Fast_Local Fast_Block_declare(Fast_Block _this, cx_string id, cx_type type, cx_bool isParameter, cx_bool isReference);
 
 /* ::cortex::Fast::Block::declareReturnVariable(function function) */
 Fast_Local Fast_Block_declareReturnVariable(Fast_Block _this, cx_function function);
 
-/* ::cortex::Fast::Block::declareTemplate(string id,Fast::Variable type,bool isParameter,bool isReference) */
-Fast_Template Fast_Block_declareTemplate(Fast_Block _this, cx_string id, Fast_Variable type, cx_bool isParameter, cx_bool isReference);
+/* ::cortex::Fast::Block::declareTemplate(string id,type type,bool isParameter,bool isReference) */
+Fast_Template Fast_Block_declareTemplate(Fast_Block _this, cx_string id, cx_type type, cx_bool isParameter, cx_bool isReference);
 
 /* ::cortex::Fast::Block::lookup(string id) */
 Fast_Expression Fast_Block_lookup(Fast_Block _this, cx_string id);

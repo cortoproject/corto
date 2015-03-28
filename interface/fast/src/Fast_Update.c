@@ -21,17 +21,24 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 static Fast_Expression Fast_Update_getNestedObject(Fast_Node expr) {
     Fast_Expression result = NULL;
 
-    if (expr->kind == Fast_MemberExpr) {
-        result = Fast_Member(expr)->lvalue;
-    } else if (expr->kind == Fast_ElementExpr) {
-        result = Fast_Element(expr)->lvalue;
+    if (expr->kind == Fast_StorageExpr) {
+        if (Fast_Storage(expr)->kind == Fast_MemberStorage) {
+            result = Fast_Member(expr)->lvalue;
+        } else if (Fast_Storage(expr)->kind == Fast_ElementStorage) {
+            result = Fast_Element(expr)->lvalue;
+        } else {
+            Fast_Parser_error(yparser(), "invalid %s expression for update statement", 
+                cx_nameof(cx_typeof(expr)));
+            goto error;
+        }
     } else {
         Fast_Parser_error(yparser(), "invalid %s expression for update statement", 
             cx_nameof(cx_typeof(expr)));
         goto error;
     }
 
-    if (Fast_Node(result)->kind != Fast_VariableExpr) {
+
+    if (Fast_Node(result)->kind != Fast_StorageExpr) {
         result = Fast_Update_getNestedObject(Fast_Node(result));
     }
 
@@ -43,7 +50,7 @@ error:
 static Fast_Expression Fast_Update_getObject(Fast_Update _this, Fast_Node expr) {
     Fast_Expression result = NULL;
 
-    if ((expr->kind == Fast_VariableExpr) || 
+    if ((expr->kind == Fast_StorageExpr) || 
        ((Fast_Expression(expr)->isReference && (_this->kind == Fast_UpdateDefault)))) {
         result = Fast_Expression(expr);
     } else {
@@ -74,7 +81,7 @@ static Fast_Expression Fast_Update_getObject(Fast_Update _this, Fast_Node expr) 
             goto error;
         }
 
-        if (Fast_Node(result)->kind != Fast_VariableExpr) {
+        if (Fast_Node(result)->kind != Fast_StorageExpr) {
             result = Fast_Update_getNestedObject(Fast_Node(result));
         }
     }

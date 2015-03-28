@@ -126,7 +126,7 @@ cx_int16 Fast_StaticInitializer_construct(Fast_StaticInitializer _this) {
     /* Copy offsets of variables into frames */
     for(variable=0; variable<Fast_Initializer(_this)->variableCount; variable++) {
          _this->frames[0].ptr[variable] =
-                (cx_word)Fast_ObjectBase(Fast_Initializer(_this)->variables[variable].object)->value;
+                (cx_word)Fast_Object(Fast_Initializer(_this)->variables[variable].object)->value;
         if (!_this->frames[0].ptr[variable]) {
             Fast_Parser_error(yparser(), "non-static variable in static initializer");
             goto error;
@@ -151,7 +151,7 @@ cx_int16 Fast_StaticInitializer_define(Fast_StaticInitializer _this) {
      * would cause object creation\destruction without calling the appropriate constructors\destructors.
      */
     for(variable=0; variable<Fast_Initializer(_this)->variableCount; variable++) {
-        o = (cx_object)Fast_ObjectBase(Fast_Initializer(_this)->variables[variable].object)->value;
+        o = (cx_object)Fast_Object(Fast_Initializer(_this)->variables[variable].object)->value;
         if (cx_instanceof(cx_type(cx_type_o), o)
                 || (cx_checkAttr(o, CX_ATTR_SCOPED) && cx_instanceof(cx_type(cx_type_o), cx_parentof(o)))) {
             if (cx_define(o)) {
@@ -206,7 +206,7 @@ cx_int16 Fast_StaticInitializer_value(Fast_StaticInitializer _this, Fast_Express
     if (!type) {
         cx_id id;
         Fast_Parser_error(yparser(), "excess elements in initializer of type '%s'", 
-            Fast_Parser_id(Fast_ObjectBase(Fast_Expression(_this)->type)->value, id));
+            Fast_Parser_id(Fast_Object(Fast_Expression(_this)->type)->value, id));
         goto error;
     }
 

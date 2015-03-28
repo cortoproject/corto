@@ -26,7 +26,7 @@ Fast_Call Fast_createCallWithArguments(Fast_Expression instance, cx_string funct
         function, 
         arguments, 
         instance, 
-        Fast_ObjectBase(yparser()->scope)->value, 
+        Fast_Object(yparser()->scope)->value, 
         yparser()->block);
     result = Fast_CallBuilder_build(&builder);
     Fast_CallBuilder__deinit(&builder);
@@ -64,46 +64,39 @@ Fast_Call Fast_createCallFromExpr(Fast_Expression f, Fast_Expression arguments) 
     Fast_Call result = NULL;
     Fast_Expression instance = NULL;
     cx_id name;
-    cx_object scope = Fast_ObjectBase(yparser()->scope)->value;
+    cx_object scope = Fast_Object(yparser()->scope)->value;
     Fast_CallBuilder builder;
 
-    /* Extract information from expressions */
-    switch(Fast_Node(f)->kind) {
+    if (Fast_Node(f)->kind == Fast_StorageExpr) {
+        switch(Fast_Storage(f)->kind) {
 
-    /* Member expression */
-    case Fast_MemberExpr:
-        instance = Fast_Member(f)->lvalue;
-        strcpy(name, Fast_String(Fast_Member(f)->rvalue)->value);
-        break;
-
-    /* Element - Must be a list of delegates */
-    case Fast_ElementExpr:
-        result = Fast_Call(Fast_DelegateCall__create(NULL, arguments, f));
-        break;
-
-    case Fast_VariableExpr:
-        switch(Fast_Variable(f)->kind) {
-        case Fast_ObjectExpr: {
-            cx_object o = Fast_ObjectBase(f)->value;
+        case Fast_ObjectStorage: {
+            cx_object o = Fast_Object(f)->value;
             cx_signatureName(cx_nameof(o), name);
             scope = cx_parentof(o);
             break;
         }
-        case Fast_LocalExpr:
+
+        case Fast_LocalStorage:
             strcpy(name, Fast_Local(f)->name);
             break;
+
+        case Fast_MemberStorage:
+            instance = Fast_Member(f)->lvalue;
+            strcpy(name, Fast_String(Fast_Member(f)->rvalue)->value);
+            break;
+
+        case Fast_ElementStorage:
+            result = Fast_Call(Fast_DelegateCall__create(NULL, arguments, f));
+            break;
+
         default:
-            Fast_Parser_error(yparser(), "variable expression %s is not callable",
-                cx_nameof(cx_enum_constant(Fast_variableKind_o, Fast_Variable(f)->kind)));
+            Fast_Parser_error(yparser(), "'%s' expression is not callable",
+                cx_nameof(cx_enum_constant(Fast_storageKind_o, Fast_Storage(f)->kind)));
             goto error;
         }
-        break;
-    default:
-        Fast_Parser_error(yparser(), "expression is not callable");
-        goto error;
     }
 
-    /* Initialize builder */
     if (!result) {
         Fast_CallBuilder__init(&builder, name, arguments, instance, scope, yparser()->block);
         result = Fast_CallBuilder_build(&builder);

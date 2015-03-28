@@ -82,7 +82,7 @@ cx_int16 Fast_Ternary_construct(Fast_Ternary _this) {
     
     /* Create condition */
     _this->ifstmt = Fast_Ternary_createIf(_this->condition, trueBranch, falseBranch);
-    Fast_Expression(_this)->type = Fast_Variable(Fast_Object__create(resultType));
+    cx_set(&Fast_Expression(_this)->type, resultType);
 
     return 0;
 /* $end */

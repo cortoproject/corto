@@ -16,10 +16,10 @@ cx_int16 Fast_Template_construct(Fast_Template _this) {
     if (Fast_Local_construct(Fast_Local(_this))) {
         goto error;
     } else {
-        Fast_Variable(_this)->kind = Fast_TemplateExpr;
+        Fast_Storage(_this)->kind = Fast_TemplateStorage;
     }
 
-    return Fast_Variable_construct(Fast_Variable(_this));
+    return Fast_Storage_construct(Fast_Storage(_this));
 error:
     return -1;
 /* $end */

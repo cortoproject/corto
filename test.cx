@@ -1,0 +1,17 @@
+object tc_jsonser_fixture::
+
+
+    bitmask color:: red, green, blue
+
+
+    enum Djinn:: Mercury, Venus, Mars, Jupiter
+
+
+    struct point2D::
+        x, y: int32
+
+    point2d p: 3, 4
+
+    void namesp::
+        int16 a: 9
+        string b: "b"
