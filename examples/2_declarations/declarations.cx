@@ -5,7 +5,7 @@
 // Declare an object
 int32 a: 10
 
-// Declare an object using '{ }' which is useful for multiline declarations
+// Declare an object using '{ }' equivalent to line 6, but allows for multiline (complex) assignments
 int32 b {10}
 
 // Create an anonymous object (will be deleted immediately if not referenced)
