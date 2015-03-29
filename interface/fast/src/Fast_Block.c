@@ -132,7 +132,7 @@ Fast_Expression Fast_Block_lookup(Fast_Block _this, cx_string id) {
                     if (cx_checkAttr(_this->function, CX_ATTR_SCOPED)) {
                         parent = cx_parentof(_this->function);
                     } else {
-                        parent = Fast_Object(yparser()->scope)->value;
+                        parent = yparser()->scope;
                     }
 
                     /* If parent is not of an interface type, this could be a

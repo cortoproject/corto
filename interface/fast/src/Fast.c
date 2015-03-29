@@ -26,7 +26,7 @@ Fast_Call Fast_createCallWithArguments(Fast_Expression instance, cx_string funct
         function, 
         arguments, 
         instance, 
-        Fast_Object(yparser()->scope)->value, 
+        yparser()->scope, 
         yparser()->block);
     result = Fast_CallBuilder_build(&builder);
     Fast_CallBuilder__deinit(&builder);
@@ -64,7 +64,7 @@ Fast_Call Fast_createCallFromExpr(Fast_Expression f, Fast_Expression arguments) 
     Fast_Call result = NULL;
     Fast_Expression instance = NULL;
     cx_id name;
-    cx_object scope = Fast_Object(yparser()->scope)->value;
+    cx_object scope = yparser()->scope;
     Fast_CallBuilder builder;
 
     if (Fast_Node(f)->kind == Fast_StorageExpr) {

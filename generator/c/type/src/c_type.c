@@ -499,7 +499,8 @@ static int c_typeClassCastWalk(cx_object o, void* userData) {
     data = userData;
 
     if (cx_class_instanceof(cx_interface_o, o) && cx_type(o)->reference) {
-        g_fileWrite(data->header, "#define %s(o) ((%s)o)\n",
+        g_fileWrite(data->header, "#define %s(o) ((%s)cx_assertType((cx_type)%s_o, o))\n",
+                g_fullOid(data->g, o, id),
                 g_fullOid(data->g, o, id),
                 g_fullOid(data->g, o, id));
     }

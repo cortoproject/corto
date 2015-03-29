@@ -254,7 +254,7 @@
 			</class>
 			
 			<!-- Member expression -->
-			<class name="Member" base="Expression" baseAccess="readonly">
+			<class name="Member" base="Storage" baseAccess="readonly">
 				<meta:scope>
 					<method name="construct()" returnType="int16"/>
 					<member name="lvalue" type="Fast::Expression"/>
@@ -267,7 +267,7 @@
 			</class>
 			
 			<!-- Element expression -->
-			<class name="Element" base="Expression" baseAccess="readonly">
+			<class name="Element" base="Storage" baseAccess="readonly">
 				<meta:scope>
 					<method name="construct()" returnType="int16"/>
 					<member name="lvalue" type="Fast::Expression"/>

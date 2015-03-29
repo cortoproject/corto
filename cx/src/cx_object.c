@@ -1077,6 +1077,18 @@ cx_bool cx_checkAttr(cx_object o, cx_int8 attr) {
     return result;
 }
 
+cx_object cx_assertType(cx_type type, cx_object o) {
+    if (o) {
+        if(!cx_instanceof(type, o)) {
+            cx_id id1, id2;
+            cx_critical("object '%s' is not of type '%s'",
+                cx_fullname(o, id1),
+                cx_fullname(type, id2));
+        }
+    }
+    return o;
+}
+
 cx_bool cx_instanceof(cx_type type, cx_object o) {
     cx_type objectType = cx_typeof(o);
     cx_bool result = TRUE;

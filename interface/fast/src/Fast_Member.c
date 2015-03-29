@@ -58,7 +58,7 @@ error:
 cx_int16 Fast_Member_construct(Fast_Member _this) {
 /* $begin(::cortex::Fast::Member::construct) */
 
-    Fast_Storage(_this)->kind = Fast_ElementStorage;
+    Fast_Storage(_this)->kind = Fast_MemberStorage;
     
     if (!(_this->lvalue && _this->rvalue)) {
         goto error;

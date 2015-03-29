@@ -49,6 +49,7 @@ cx_type cx_typeof(cx_object o);
 cx_int32 cx_countof(cx_object o);
 cx_bool cx_checkState(cx_object o, cx_int8 state);
 cx_bool cx_checkAttr(cx_object o, cx_int8 attr);
+cx_object cx_assertType(cx_type type, cx_object o);
 cx_bool cx_instanceof(cx_type type, cx_object o);
 
 /* Scoped object-data */

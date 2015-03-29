@@ -261,13 +261,13 @@ typedef union Di2f_t {
 #define SHIFT_LEFT(type, code)\
     SHIFT_LEFT_##code:\
         fetchOp2(SHIFT_LEFT, code);\
-        op1_##code << op2_##code;\
+        op1_##code <<= op2_##code;\
         next();\
 
 #define SHIFT_RIGHT(type, code)\
     SHIFT_RIGHT_##code:\
         fetchOp2(SHIFT_RIGHT, code);\
-        op1_##code >> op2_##code;\
+        op1_##code >>= op2_##code;\
         next();\
 
 /* Staging */

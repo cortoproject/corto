@@ -82,9 +82,8 @@ Fast_Call Fast_CallBuilder_build(Fast_CallBuilder *_this) {
         if (_this->block) {
             Fast_Local l = Fast_Block_resolveLocal(_this->block, _this->name);
             if (l) {
-                cx_type t = cx_type(Fast_Object(l->type)->value);
                 /* Check if l is of a delegate type */
-                if ((t->kind == CX_COMPOSITE) && (cx_interface(t)->kind == CX_DELEGATE)) {
+                if ((l->type->kind == CX_COMPOSITE) && (cx_interface(l->type)->kind == CX_DELEGATE)) {
                     result = Fast_Call(Fast_DelegateCall__create(NULL, _this->arguments, Fast_Expression(l)));
                     if (!result) {
                         goto error;
@@ -93,8 +92,7 @@ Fast_Call Fast_CallBuilder_build(Fast_CallBuilder *_this) {
 
             /* If no local is found and block has this-local, try the corresponding interface */
             } else if ((l = Fast_Block_resolveLocal(_this->block, "this"))) {
-                cx_type t = cx_type(Fast_Object(l->type)->value);
-                if (cx_type_resolveProcedure(t, _this->signature)) {
+                if (cx_type_resolveProcedure(l->type, _this->signature)) {
                     /* Set instance to 'this' */
                     cx_set(&_this->instance, l);
                     result = Fast_CallBuilder_buildMethod(_this);

@@ -14,9 +14,9 @@ extern "C" {
 #endif
 
 /* Casting macro's for classes */
-#define os_thread(o) ((os_thread)o)
-#define os_time(o) ((os_time)o)
-#define os_timer(o) ((os_timer)o)
+#define os_thread(o) ((os_thread)cx_assertType((cx_type)os_thread_o, o))
+#define os_time(o) ((os_time)cx_assertType((cx_type)os_time_o, o))
+#define os_timer(o) ((os_timer)cx_assertType((cx_type)os_timer_o, o))
 
 /* Type definitions */
 /*  ::cortex::os::thread */

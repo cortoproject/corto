@@ -19,43 +19,43 @@ extern "C" {
 #endif
 
 /* Casting macro's for classes */
-#define Fast_Binary(o) ((Fast_Binary)o)
-#define Fast_Block(o) ((Fast_Block)o)
-#define Fast_Boolean(o) ((Fast_Boolean)o)
-#define Fast_Call(o) ((Fast_Call)o)
-#define Fast_Cast(o) ((Fast_Cast)o)
-#define Fast_Character(o) ((Fast_Character)o)
-#define Fast_Comma(o) ((Fast_Comma)o)
-#define Fast_Define(o) ((Fast_Define)o)
-#define Fast_DelegateCall(o) ((Fast_DelegateCall)o)
-#define Fast_DynamicInitializer(o) ((Fast_DynamicInitializer)o)
-#define Fast_Element(o) ((Fast_Element)o)
-#define Fast_Expression(o) ((Fast_Expression)o)
-#define Fast_FloatingPoint(o) ((Fast_FloatingPoint)o)
-#define Fast_If(o) ((Fast_If)o)
-#define Fast_Initializer(o) ((Fast_Initializer)o)
-#define Fast_InitializerExpression(o) ((Fast_InitializerExpression)o)
-#define Fast_Integer(o) ((Fast_Integer)o)
-#define Fast_Literal(o) ((Fast_Literal)o)
-#define Fast_Local(o) ((Fast_Local)o)
-#define Fast_Member(o) ((Fast_Member)o)
-#define Fast_New(o) ((Fast_New)o)
-#define Fast_Node(o) ((Fast_Node)o)
-#define Fast_Null(o) ((Fast_Null)o)
-#define Fast_Object(o) ((Fast_Object)o)
-#define Fast_Parser(o) ((Fast_Parser)o)
-#define Fast_PostFix(o) ((Fast_PostFix)o)
-#define Fast_SignedInteger(o) ((Fast_SignedInteger)o)
-#define Fast_StaticCall(o) ((Fast_StaticCall)o)
-#define Fast_StaticInitializer(o) ((Fast_StaticInitializer)o)
-#define Fast_Storage(o) ((Fast_Storage)o)
-#define Fast_String(o) ((Fast_String)o)
-#define Fast_Template(o) ((Fast_Template)o)
-#define Fast_Ternary(o) ((Fast_Ternary)o)
-#define Fast_Unary(o) ((Fast_Unary)o)
-#define Fast_Update(o) ((Fast_Update)o)
-#define Fast_Wait(o) ((Fast_Wait)o)
-#define Fast_While(o) ((Fast_While)o)
+#define Fast_Binary(o) ((Fast_Binary)cx_assertType((cx_type)Fast_Binary_o, o))
+#define Fast_Block(o) ((Fast_Block)cx_assertType((cx_type)Fast_Block_o, o))
+#define Fast_Boolean(o) ((Fast_Boolean)cx_assertType((cx_type)Fast_Boolean_o, o))
+#define Fast_Call(o) ((Fast_Call)cx_assertType((cx_type)Fast_Call_o, o))
+#define Fast_Cast(o) ((Fast_Cast)cx_assertType((cx_type)Fast_Cast_o, o))
+#define Fast_Character(o) ((Fast_Character)cx_assertType((cx_type)Fast_Character_o, o))
+#define Fast_Comma(o) ((Fast_Comma)cx_assertType((cx_type)Fast_Comma_o, o))
+#define Fast_Define(o) ((Fast_Define)cx_assertType((cx_type)Fast_Define_o, o))
+#define Fast_DelegateCall(o) ((Fast_DelegateCall)cx_assertType((cx_type)Fast_DelegateCall_o, o))
+#define Fast_DynamicInitializer(o) ((Fast_DynamicInitializer)cx_assertType((cx_type)Fast_DynamicInitializer_o, o))
+#define Fast_Element(o) ((Fast_Element)cx_assertType((cx_type)Fast_Element_o, o))
+#define Fast_Expression(o) ((Fast_Expression)cx_assertType((cx_type)Fast_Expression_o, o))
+#define Fast_FloatingPoint(o) ((Fast_FloatingPoint)cx_assertType((cx_type)Fast_FloatingPoint_o, o))
+#define Fast_If(o) ((Fast_If)cx_assertType((cx_type)Fast_If_o, o))
+#define Fast_Initializer(o) ((Fast_Initializer)cx_assertType((cx_type)Fast_Initializer_o, o))
+#define Fast_InitializerExpression(o) ((Fast_InitializerExpression)cx_assertType((cx_type)Fast_InitializerExpression_o, o))
+#define Fast_Integer(o) ((Fast_Integer)cx_assertType((cx_type)Fast_Integer_o, o))
+#define Fast_Literal(o) ((Fast_Literal)cx_assertType((cx_type)Fast_Literal_o, o))
+#define Fast_Local(o) ((Fast_Local)cx_assertType((cx_type)Fast_Local_o, o))
+#define Fast_Member(o) ((Fast_Member)cx_assertType((cx_type)Fast_Member_o, o))
+#define Fast_New(o) ((Fast_New)cx_assertType((cx_type)Fast_New_o, o))
+#define Fast_Node(o) ((Fast_Node)cx_assertType((cx_type)Fast_Node_o, o))
+#define Fast_Null(o) ((Fast_Null)cx_assertType((cx_type)Fast_Null_o, o))
+#define Fast_Object(o) ((Fast_Object)cx_assertType((cx_type)Fast_Object_o, o))
+#define Fast_Parser(o) ((Fast_Parser)cx_assertType((cx_type)Fast_Parser_o, o))
+#define Fast_PostFix(o) ((Fast_PostFix)cx_assertType((cx_type)Fast_PostFix_o, o))
+#define Fast_SignedInteger(o) ((Fast_SignedInteger)cx_assertType((cx_type)Fast_SignedInteger_o, o))
+#define Fast_StaticCall(o) ((Fast_StaticCall)cx_assertType((cx_type)Fast_StaticCall_o, o))
+#define Fast_StaticInitializer(o) ((Fast_StaticInitializer)cx_assertType((cx_type)Fast_StaticInitializer_o, o))
+#define Fast_Storage(o) ((Fast_Storage)cx_assertType((cx_type)Fast_Storage_o, o))
+#define Fast_String(o) ((Fast_String)cx_assertType((cx_type)Fast_String_o, o))
+#define Fast_Template(o) ((Fast_Template)cx_assertType((cx_type)Fast_Template_o, o))
+#define Fast_Ternary(o) ((Fast_Ternary)cx_assertType((cx_type)Fast_Ternary_o, o))
+#define Fast_Unary(o) ((Fast_Unary)cx_assertType((cx_type)Fast_Unary_o, o))
+#define Fast_Update(o) ((Fast_Update)cx_assertType((cx_type)Fast_Update_o, o))
+#define Fast_Wait(o) ((Fast_Wait)cx_assertType((cx_type)Fast_Wait_o, o))
+#define Fast_While(o) ((Fast_While)cx_assertType((cx_type)Fast_While_o, o))
 
 /* Type definitions */
 /* ::cortex::Fast::nodeKind */
@@ -355,7 +355,7 @@ CX_CLASS_DEF(Fast_DynamicInitializer) {
 CX_CLASS(Fast_Element);
 
 CX_CLASS_DEF(Fast_Element) {
-    CX_EXTEND(Fast_Expression);
+    CX_EXTEND(Fast_Storage);
     Fast_Expression lvalue;
     Fast_Expression rvalue;
 };
@@ -427,7 +427,7 @@ struct Fast_Lvalue {
 CX_CLASS(Fast_Member);
 
 CX_CLASS_DEF(Fast_Member) {
-    CX_EXTEND(Fast_Expression);
+    CX_EXTEND(Fast_Storage);
     Fast_Expression lvalue;
     Fast_Expression rvalue;
     cx_bool superMember;

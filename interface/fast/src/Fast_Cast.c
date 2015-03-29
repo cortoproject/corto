@@ -66,7 +66,7 @@ cx_ic Fast_Cast_toIc_v(Fast_Cast _this, cx_icProgram program, cx_icStorage stora
             Fast_Expression(_this)->isReference);
     }
 
-    lvalue = Fast_Node_toIc(Fast_Node(_this->lvalue), program, NULL, TRUE);
+    lvalue = (cx_ic)cx_icObject__create(program, Fast_Node(_this)->line, _this->lvalue);
     rvalue = Fast_Node_toIc(Fast_Node(_this->rvalue), program, (cx_icStorage)NULL, TRUE);
 
     op = cx_icOp__create(program, Fast_Node(_this)->line, CX_IC_CAST, (cx_icValue)result, (cx_icValue)rvalue, (cx_icValue)lvalue);
