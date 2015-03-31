@@ -254,7 +254,7 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    if (!generators) {
+    if (!generators && !package) {
         cx_error("cxgen: no generators provided");
         return -1;
     }
@@ -296,67 +296,69 @@ int main(int argc, char* argv[]) {
     }
 
     /* Load library */
-    while((lib = cx_llTakeFirst(generators))) {
+    if (generators) {
+        while((lib = cx_llTakeFirst(generators))) {
 
-        /* Create generator for each provided generator library */
-        g = gen_new(name, language);
+            /* Create generator for each provided generator library */
+            g = gen_new(name, language);
 
-        /* Load interface */
-        if (gen_load(g, lib)) {
-            cx_error("cxgen: cannot load generator '%s'.", lib);
-            return -1;
-        }
+            /* Load interface */
+            if (gen_load(g, lib)) {
+                cx_error("cxgen: cannot load generator '%s'.", lib);
+                return -1;
+            }
 
-        /* Generate for all scopes */
-        iter = cx_llIter(scopes);
-        while(cx_iterHasNext(&iter)) {
-            scope = cx_iterNext(&iter);
+            /* Generate for all scopes */
+            iter = cx_llIter(scopes);
+            while(cx_iterHasNext(&iter)) {
+                scope = cx_iterNext(&iter);
 
-            /* Resolve object */
-            o = cx_resolve(NULL, scope);
-            if (!o) {
+                /* Resolve object */
                 o = cx_resolve(NULL, scope);
                 if (!o) {
-                    cx_error("cxgen: unresolved scope '%s' .", scope);
-                    return -1;
+                    o = cx_resolve(NULL, scope);
+                    if (!o) {
+                        cx_error("cxgen: unresolved scope '%s' .", scope);
+                        return -1;
+                    }
+                }
+                cx_free(o);
+
+                /* Parse object as scope, with provided prefix */
+                gen_parse(g, o, TRUE, TRUE, prefix);
+            }
+
+            /* Add output directories */
+            if (attributes) {
+                iter = cx_llIter(attributes);
+                while(cx_iterHasNext(&iter)) {
+                    cx_string ptr;
+
+                    attr = cx_strdup(cx_iterNext(&iter));
+
+                    ptr = strchr(attr, '=');
+                    if (ptr) {
+                        *ptr = '\0';
+                        gen_setAttribute(g, attr, ptr+1);
+                    }
+                    *ptr = '=';
+                    cx_dealloc(attr);
                 }
             }
-            cx_free(o);
 
-            /* Parse object as scope, with provided prefix */
-            gen_parse(g, o, TRUE, TRUE, prefix);
-        }
-
-        /* Add output directories */
-        if (attributes) {
-            iter = cx_llIter(attributes);
-            while(cx_iterHasNext(&iter)) {
-                cx_string ptr;
-
-                attr = cx_strdup(cx_iterNext(&iter));
-
-                ptr = strchr(attr, '=');
-                if (ptr) {
-                    *ptr = '\0';
-                    gen_setAttribute(g, attr, ptr+1);
-                }
-                *ptr = '=';
-                cx_dealloc(attr);
+            /* Start generator */
+            if (gen_start(g)) {
+                cx_error("cxgen: error(s) occurred while running generator '%s', abort generation.", lib);
+                gen_free(g);
+                break;
             }
-        }
 
-        /* Start generator */
-        if (gen_start(g)) {
-            cx_error("cxgen: error(s) occurred while running generator '%s', abort generation.", lib);
+            /* Free generator */
             gen_free(g);
-            break;
+            g = NULL;
         }
-
-        /* Free generator */
-        gen_free(g);
-        g = NULL;
     }
-
+    
     /* Cleanup application resources */
     cx_argClear();
 
