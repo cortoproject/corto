@@ -2549,7 +2549,7 @@ cx_uint32 Fast_Parser_parse(Fast_Parser _this) {
 
     /* Reset parser-state so 2nd pass starts clean */
     Fast_Parser_reset(_this);
-    _this->scope = NULL;
+    cx_set(&_this->scope, NULL);
     
     _this->pass = 1;
     if ( fast_yparse(_this, 1, 1)) {
@@ -2821,7 +2821,7 @@ cx_void Fast_Parser_popScope(Fast_Parser _this, Fast_Variable previous) {
     Fast_CHECK_ERRSET(_this);
 
     /* Restore scope */
-    _this->scope = previous;
+    cx_set(&_this->scope, previous);
 /* $end */
 }
 
@@ -2980,7 +2980,7 @@ Fast_Variable Fast_Parser_pushScope(Fast_Parser _this) {
         goto error;
     }
 
-    _this->scope = _this->variables[0];
+    cx_set(&_this->scope, _this->variables[0]);
     Fast_Parser_reset(_this);
 
     return oldScope;
