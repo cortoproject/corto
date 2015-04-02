@@ -6,28 +6,22 @@ This document describes the steps to get started with Cortex development as well
 
 As of now, Cortex can only be built in 32-bit or 64-bit Linux. It is recommended to use an Ubuntu virtual machine. The examples hereby are provided for `apt-get`.
 
-Install the GNU C++ compiler (required to build the C++ language binding).
-
-```
-apt-get install g++
-```
-
 Install the libxml2 development headers (required for building the XML front end).
 
 ```
-apt-get install libxml2-dev
+sudo apt-get install libxml2-dev
 ```
 
 Install Flex (the lexer used by the language interpreter).
 
 ```
-apt-get install flex
+sudo apt-get install flex
 ```
 
 Install Bison (the parser used by the language interpreter).
 
 ```
-apt-get install bison
+sudo apt-get install bison
 ```
 
 ## Download the project from GitHub.
@@ -35,7 +29,7 @@ apt-get install bison
 You can use the GitHub desktop application, or type:
 
 ```
-git clone https://github.com/Seldomberry/Cortex.git
+sudo git clone https://github.com/Seldomberry/Cortex.git
 ```
 
 ## Building
