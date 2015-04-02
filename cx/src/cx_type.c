@@ -235,7 +235,9 @@ cx_string cx_type_fullname(cx_any _this) {
 /* ::cortex::lang::type::init() */
 cx_int16 cx_type_init(cx_type _this) {
 /* $begin(::cortex::lang::type::init) */
-    CX_UNUSED(_this);
+    if (!_this->parentState) {
+        _this->parentState = CX_DECLARED | CX_DEFINED;
+    }
     return 0;
 /* $end */
 }

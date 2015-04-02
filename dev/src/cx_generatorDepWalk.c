@@ -141,23 +141,11 @@ int cx_genDepBuildAction(cx_object o, void* userData) {
         /* Insert dependency on parent */
         if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
             if (parent != root_o) { /* Root is always available */
-                switch(cx_type(cx_typeof(o))->parentState) {
-                case 0:
-                case CX_DECLARED | CX_DEFINED:
-                    /* If it doesn't matter whether the parent is declared or defined, mark
-                     * the dependency as DECLARED, which ensures it is resolved as soon as possible. */
-                    cx_depresolver_depend(data->resolver, o, CX_DECLARED, parent, CX_DECLARED);
-                    break;
-                case CX_DECLARED:
-                    cx_depresolver_depend(data->resolver, o, CX_DECLARED, parent, CX_DECLARED);
+                cx_int8 parentState = cx_type(cx_typeof(o))->parentState;
 
-                    /* If child must be declared when parent is declared, parent may only be defined after
-                     * all such children are defined. */
+                cx_depresolver_depend(data->resolver, o, CX_DECLARED, parent, parentState);
+                if (parentState == CX_DECLARED) {
                     cx_depresolver_depend(data->resolver, parent, CX_DEFINED, o, CX_DEFINED);
-                    break;
-                case CX_DEFINED:
-                    cx_depresolver_depend(data->resolver, o, CX_DECLARED, parent, CX_DEFINED);
-                    break;
                 }
             }
         }
