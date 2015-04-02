@@ -793,6 +793,7 @@ int fast_yparse(Fast_Parser parser, cx_uint32 line, cx_uint32 column) {
 
     if (!parser->block) {
         parser->block = Fast_Block__create(NULL);
+        parser->block->isRoot = TRUE;
     }
     
     if (!parser->scope) {
