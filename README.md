@@ -73,7 +73,7 @@ class SpaceShip::
     hp: int32, readonly
     strength: int32, readonly
     int16 construct()
-    bool attack(SpaceShip target)
+    void attack(SpaceShip target)
 ```
 Run `make -C StarWars` to re-generate and make the package. Notice that there are now two additional files:
 ```
@@ -130,7 +130,6 @@ In the `StarWars_SpaceShip_attack` method, add the following code:
             printf("%s: It's just a flesh wound\n", cx_nameof(target));
         }
     }
-    return target->hp == 0;
 /* $end */
 ```
 #### 4. Run it!
@@ -141,7 +140,7 @@ Try it out with a new file called `epicbattle.cx`, add the following (historical
 StarWars::SpaceShip Luke: XWing
 StarWars::SpaceShip DarthVader: Destroyer
 
-while !Luke.attack(DarthVader)
+while DarthVader.hp: Luke.attack(DarthVader)
 ```
 Run the script with `cortex epicbattle.cx`. Your output should look like:
 ```
