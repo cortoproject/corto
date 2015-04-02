@@ -796,7 +796,8 @@ int fast_yparse(Fast_Parser parser, cx_uint32 line, cx_uint32 column) {
     }
     
     if (!parser->scope) {
-        parser->scope = Fast_Variable(Fast_Object__create(root_o));
+        cx_set(&parser->scope, Fast_Variable(Fast_Object__create(root_o)));
+        Fast_Parser_collect(yparser(), parser->scope);
     }
     
     /* Compensate for insertion of the extra \n */
