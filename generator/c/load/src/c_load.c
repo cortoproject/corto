@@ -761,10 +761,8 @@ static int c_loadDefine(cx_object o, void* userData) {
         g_fileIndent(data->source);
 
         /* Serialize object if object is not a primitive */
-        if(cx_typeof(o)->kind != CX_PRIMITIVE) {
-            s = c_initSerializer();
-            cx_serialize(&s, o, userData);
-        }
+        s = c_initSerializer();
+        cx_serialize(&s, o, userData);
 
         /* If object is a procedure, set function implementation */
         if (cx_class_instanceof(cx_procedure_o, cx_typeof(o))) {
