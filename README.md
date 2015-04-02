@@ -55,9 +55,9 @@ StarWars/
 │   ├── StarWars__load.c
 │   └── StarWars__meta.c
 └── include/
-    ├── StarWars__api.c
-    ├── StarWars__meta.c
-    └── StarWars__type.c
+    ├── StarWars__api.h
+    ├── StarWars__meta.h
+    └── StarWars__type.h
 ```
 When inspecting the `StarWars.cx` file, you'll find:
 ```
