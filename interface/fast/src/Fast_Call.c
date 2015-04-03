@@ -81,6 +81,8 @@ cx_int16 Fast_Call_construct(Fast_Call _this) {
     Fast_Expression(_this)->isReference = 
         _this->returnsReference || _this->returnType->reference;
 
+    Fast_Expression(_this)->deref = _this->returnType->reference ? Fast_ByReference : Fast_ByValue;
+
     return 0;
 error:
     return -1;

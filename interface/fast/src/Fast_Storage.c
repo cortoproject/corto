@@ -14,6 +14,7 @@ cx_int16 Fast_Storage_construct(Fast_Storage _this) {
 /* $begin(::cortex::Fast::Storage::construct) */
 
     Fast_Node(_this)->kind = Fast_StorageExpr;
+    Fast_Expression(_this)->deref = Fast_Expression(_this)->type->reference ? Fast_ByReference : Fast_ByValue;
 
     return 0;
 /* $end */

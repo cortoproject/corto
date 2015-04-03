@@ -109,6 +109,29 @@ error:
 }
 /* $end */
 
+/* ::cortex::Fast::isOperatorAssignment(operatorKind operator) */
+cx_bool Fast_isOperatorAssignment(cx_operatorKind operator) {
+/* $begin(::cortex::Fast::isOperatorAssignment) */
+    cx_bool result;
+    switch(operator) {
+    case CX_ASSIGN:
+    case CX_ASSIGN_ADD:
+    case CX_ASSIGN_SUB:
+    case CX_ASSIGN_DIV:
+    case CX_ASSIGN_MUL:
+    case CX_ASSIGN_MOD:
+    case CX_ASSIGN_OR:
+    case CX_ASSIGN_AND:
+        result = TRUE;
+        break;
+    default:
+        result = FALSE;
+        break;
+    }
+    return result;
+/* $end */
+}
+
 /* ::cortex::Fast::report(string kind,string filename,uint32 line,uint32 column,string error,string token) */
 cx_void Fast_report(cx_string kind, cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token) {
 /* $begin(::cortex::Fast::report) */

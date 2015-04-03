@@ -22,6 +22,7 @@ cx_int16 Fast_New_construct(Fast_New _this) {
 
     Fast_Node(_this)->kind = Fast_NewExpr;
     cx_set(&Fast_Expression(_this)->type, _this->type);
+    Fast_Expression(_this)->isReference = TRUE;
 
     return 0;
 /* $end */
@@ -48,7 +49,7 @@ cx_ic Fast_New_toIc_v(Fast_New _this, cx_icProgram program, cx_icStorage storage
         result = (cx_ic)cx_icProgram_accumulatorPush(program, Fast_Node(_this)->line, Fast_Expression_getType(Fast_Expression(_this)), TRUE);
     }
 
-    type = Fast_Node_toIc(Fast_Node(_this->type), program, NULL, TRUE);
+    type = (cx_ic)cx_icObject__create(program, Fast_Node(_this)->line, Fast_Expression(_this)->type);
     if (_this->attributes) {
         attrs = Fast_Node_toIc(Fast_Node(_this->attributes), program, NULL, TRUE);
     } else {

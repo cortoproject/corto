@@ -168,10 +168,10 @@ cx_int16 cx_deinit(cx_object o);
 cx_int16 cx_deinitValue(cx_value *v);
     
 /* Copy object */
-cx_int16 cx_copy(cx_object from, cx_object to);
+cx_int16 cx_copy(cx_object *dst, cx_object src);
  
 /* Copy value */
-cx_int16 cx_valueCopy(cx_value *from, cx_value *to);
+cx_int16 cx_valueCopy(cx_value *dst, cx_value *src);
 
 #ifdef __cplusplus
 }

@@ -136,33 +136,45 @@ static cx_string cx_opKind_toString(cx_icOpKind kind) {
     return "???";
 }
 
-static cx_string cx_icOp_derefToString(cx_string string, cx_icDerefMode mode) {
-    if (mode == CX_IC_DEREF_VALUE) {
-        string = strappend(string, " ");
-    } else if (mode == CX_IC_DEREF_ADDRESS) {
-        string = strappend(string, " &");
+static cx_string cx_icOp_derefToString(cx_string string, cx_icValue s, cx_icDerefMode mode) {
+    if (((cx_ic)s)->kind == CX_IC_STORAGE) {
+        cx_type t = ((cx_icStorage)s)->type;
+        if (t->reference) {
+            if (mode == CX_IC_DEREF_VALUE) {
+                string = strappend(string, " *");
+            } else {
+                string = strappend(string, " ");
+            }
+        } else {
+            if (mode == CX_IC_DEREF_ADDRESS) {
+                string = strappend(string, " &");
+            } else {
+                string = strappend(string, " ");
+            }
+        }
     } else {
         string = strappend(string, " ");
     }
+
     return string;
 }
 
-static cx_string cx_icOp_toString(cx_icOp _this, cx_string string)  {
+cx_string cx_icOp_toString(cx_icOp _this, cx_string string)  {
     string = strappend(string, "\t%s", cx_opKind_toString(_this->kind));
     if (_this->s1) {
-        string = cx_icOp_derefToString(string, _this->s1Deref);
+        string = cx_icOp_derefToString(string, _this->s1, _this->s1Deref);
         string = cx_icValue_toString(_this->s1, string);
     } else if (_this->s2 || _this->s3) {
         string = strappend(string, " .");
     }
     if (_this->s2) {
-        string = cx_icOp_derefToString(string, _this->s2Deref);
+        string = cx_icOp_derefToString(string, _this->s2, _this->s2Deref);
         string = cx_icValue_toString(_this->s2, string);
     } else if (_this->s3) {
         string = strappend(string, " .");
     }
     if (_this->s3) {
-        string = cx_icOp_derefToString(string, _this->s3Deref);
+        string = cx_icOp_derefToString(string, _this->s3, _this->s3Deref);
         string = cx_icValue_toString(_this->s3, string);
     }
     return string;

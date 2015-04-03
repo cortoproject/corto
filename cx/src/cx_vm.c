@@ -494,11 +494,11 @@ typedef union Di2f_t {
 #define PCAST(type,code)\
     PCAST_##code: {\
         fetchOp2(PCAST,code)\
-        cx_type fromType = cx_type(stage1_W);\
+        cx_type fromType = (cx_type)stage1_W;\
         if (fromType->reference) {\
-            fromType = cx_type(cx_word_o);\
+            fromType = (cx_type)cx_word_o;\
         }\
-        cx_convert(cx_primitive(fromType), &op2_##code, cx_primitive(stage2_W), &op1_##code);\
+        cx_convert((cx_primitive)fromType, &op2_##code, (cx_primitive)stage2_W, &op1_##code);\
         next();\
     }
 

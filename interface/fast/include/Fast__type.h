@@ -114,6 +114,7 @@ CX_CLASS_DEF(Fast_Binary) {
     Fast_Expression lvalue;
     Fast_Expression rvalue;
     cx_operatorKind operator;
+    Fast_derefKind deref;
 };
 
 /*  ::cortex::Fast::Block */
@@ -439,7 +440,7 @@ CX_CLASS(Fast_New);
 
 CX_CLASS_DEF(Fast_New) {
     CX_EXTEND(Fast_Expression);
-    Fast_Expression type;
+    cx_type type;
     Fast_Expression attributes;
 };
 

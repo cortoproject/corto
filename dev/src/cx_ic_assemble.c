@@ -177,13 +177,15 @@ cx_bool cx_ic_storageMustAllocate(cx_ic_vmProgram *program, cx_ic_vmStorage *acc
                     if (kind == CX_STORAGE_MEMBER) {
                         collapse = TRUE;
                     } else {
-                        cx_collection type = cx_collection(accumulator->accumulator->type);
-                        switch(type->kind) {
-                        case CX_ARRAY:
-                            collapse = TRUE;
-                            break;
-                        default:
-                            break;
+                        if (accumulator->base->accumulator->type->kind == CX_COLLECTION) {
+                            cx_collection type = cx_collection(accumulator->base->accumulator->type);
+                            switch(type->kind) {
+                            case CX_ARRAY:
+                                collapse = TRUE;
+                                break;
+                            default:
+                                break;
+                            }
                         }
                     }
                 }
@@ -1694,6 +1696,11 @@ static cx_vmOpKind cx_ic_getVmOpKind(cx_ic_vmProgram *program, cx_icOp op, cx_ic
     default:
         cx_assert(0, "invalid intermediate op-code");
         break;
+    }
+
+    if ((result == CX_VM_STOP) && (op->kind != CX_IC_STOP)) {
+        cx_error("%s:%d: invalid instruction generated => %s", 
+            program->icProgram->filename, ((cx_ic)op)->line, cx_icOp_toString(op, NULL));
     }
 
     return result;

@@ -21,6 +21,7 @@
 			<function name="report(string kind,string filename,uint32 line,uint32 column,string error,string token)"/>
 			<function name="reportError(string filename,uint32 line,uint32 column,string error,string token)"/>
 			<function name="reportWarning(string filename,uint32 line,uint32 column,string error,string token)"/>
+			<function name="isOperatorAssignment(operatorKind operator)" returnType="bool"/>
 			
 			<!-- Enumeration representing the different treenode kinds -->
 			<enum name="nodeKind">
@@ -366,6 +367,7 @@
 					<member name="lvalue" type="Fast::Expression"/>
 					<member name="rvalue" type="Fast::Expression"/>
 					<member name="operator" type="operatorKind"/>
+					<member name="deref" type="Fast::derefKind" modifiers="local|private"/>
 					<method name="fold()" returnType="Fast::Expression"/>
 					<method name="setOperator(operatorKind kind)" returnType="void"/>
                     <virtual name="hasSideEffects()" returnType="bool"/>
@@ -396,7 +398,7 @@
 			<class name="New" base="Expression" baseAccess="readonly">
 				<meta:scope>
 					<method name="construct()" returnType="int16"/>
-					<member name="type" type="Fast::Expression"/>
+					<member name="type" type="type"/>
 					<member name="attributes" type="Fast::Expression"/>
                     <virtual name="hasSideEffects()" returnType="bool"/>
 					<virtual name="toIc(alias{&quot;cx_icProgram&quot;} program,alias{&quot;cx_icStorage&quot;} storage,bool stored)" returnType="alias{&quot;cx_ic&quot;}"/>
@@ -784,7 +786,7 @@
 					<!-- Arithmic expressions -->
 					<method name="postfixExpr(Fast::Expression lvalue,operatorKind operator)" returnType="Fast::Expression"/>
 					<method name="unaryExpr(Fast::Expression lvalue,operatorKind operator)" returnType="Fast::Expression"/>
-					<method name="binaryExpr(Fast::Expression lvalues,Fast::Expression rvalues,operatorKind operator)" returnType="Fast::Expression"/>
+					<method name="binaryExpr(Fast::Expression lvalues,Fast::Expression rvalues,operatorKind operator)" returnType="Fast::Node"/>
                     <method name="ternaryExpr(Fast::Expression cond,Fast::Expression iftrue,Fast::Expression iffalse)" returnType="Fast::Expression"/>
 					
 					<!-- Wait expression -->

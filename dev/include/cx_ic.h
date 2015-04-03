@@ -232,6 +232,7 @@ cx_icScope cx_icProgram_scopePush(cx_icProgram _this, cx_uint32 line);
 cx_icScope cx_icProgram_functionPush(cx_icProgram _this, cx_uint32 line, cx_function function);
 void cx_icProgram_scopePop(cx_icProgram _this, cx_uint32 line);
 cx_string cx_icProgram_toString(cx_icProgram program);
+cx_string cx_icOp_toString(cx_icOp _this, cx_string string);
 cx_vmProgram cx_icProgram_toVm(cx_icProgram program);
 
 /* Storages */

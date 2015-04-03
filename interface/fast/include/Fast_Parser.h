@@ -28,7 +28,7 @@ cx_void Fast_Parser_addStatement(Fast_Parser _this, Fast_Node statement);
 cx_string Fast_Parser_argumentToString(Fast_Parser _this, cx_type type, cx_string id, cx_bool reference);
 
 /* ::cortex::Fast::Parser::binaryExpr(Fast::Expression lvalues,Fast::Expression rvalues,operatorKind operator) */
-Fast_Expression Fast_Parser_binaryExpr(Fast_Parser _this, Fast_Expression lvalues, Fast_Expression rvalues, cx_operatorKind operator);
+Fast_Node Fast_Parser_binaryExpr(Fast_Parser _this, Fast_Expression lvalues, Fast_Expression rvalues, cx_operatorKind operator);
 
 /* ::cortex::Fast::Parser::bind(Fast::Storage function,Fast::Block block) */
 cx_int16 Fast_Parser_bind(Fast_Parser _this, Fast_Storage function, Fast_Block block);

@@ -56,9 +56,9 @@ if z2 != 30: fail("Assignment of reflocal failed (z2)")
 
 // Assign reference local to reference local of reference type
 var object a = x
-if a != x: fail("Assignment of local of type 'object' failed")
+if a != &x: fail("Assignment of local of type 'object' failed")
 a = x1
-if a != x1: fail("Reassignment of local of type 'object' failed")
+if a != &x1: fail("Reassignment of local of type 'object' failed")
 
 testobject(x, "x", "Pass integer object as parameter of type 'object'")
 testobject(z, "x1", "Pass integer reference local as parameter of type 'object'")

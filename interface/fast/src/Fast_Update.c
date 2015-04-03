@@ -18,78 +18,32 @@
 Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 
-static Fast_Expression Fast_Update_getNestedObject(Fast_Node expr) {
-    Fast_Expression result = NULL;
+static Fast_Expression Fast_Update_getFirstReference(Fast_Expression expr) {
+    Fast_Expression result = expr;
 
-    if (expr->kind == Fast_StorageExpr) {
-        if (Fast_Storage(expr)->kind == Fast_MemberStorage) {
-            result = Fast_Member(expr)->lvalue;
-        } else if (Fast_Storage(expr)->kind == Fast_ElementStorage) {
-            result = Fast_Element(expr)->lvalue;
-        } else {
-            Fast_Parser_error(yparser(), "invalid %s expression for update statement", 
-                cx_nameof(cx_typeof(expr)));
-            goto error;
-        }
-    } else {
-        Fast_Parser_error(yparser(), "invalid %s expression for update statement", 
-            cx_nameof(cx_typeof(expr)));
+    if (Fast_Node(expr)->kind != Fast_StorageExpr) {
         goto error;
     }
 
-
-    if (Fast_Node(result)->kind != Fast_StorageExpr) {
-        result = Fast_Update_getNestedObject(Fast_Node(result));
-    }
-
-    return result;
-error:
-    return NULL;
-}
-
-static Fast_Expression Fast_Update_getObject(Fast_Update _this, Fast_Node expr) {
-    Fast_Expression result = NULL;
-
-    if ((expr->kind == Fast_StorageExpr) || 
-       ((Fast_Expression(expr)->isReference && (_this->kind == Fast_UpdateDefault)))) {
-        result = Fast_Expression(expr);
-    } else {
-        if (expr->kind == Fast_BinaryExpr) {
-            Fast_Binary e = Fast_Binary(expr);
-
-            switch(e->operator) {
-            case CX_ASSIGN:
-            case CX_ASSIGN_ADD:
-            case CX_ASSIGN_SUB:
-            case CX_ASSIGN_MUL:
-            case CX_ASSIGN_DIV:
-            case CX_ASSIGN_AND:
-            case CX_ASSIGN_OR:
-            case CX_ASSIGN_MOD:
-            case CX_ASSIGN_XOR:
-                result = e->lvalue;
-                break;
-            default:
-                Fast_Parser_error(yparser(), "operator invalid for update statement");
-                goto error;
-            }
-        } else if (_this->kind != Fast_UpdateDefault) {
-            result = Fast_Expression(expr);
-        } else {
-            Fast_Parser_error(yparser(), "invalid %s expression for update statement", 
-                cx_nameof(cx_typeof(expr)));
+    while (!result->isReference) {
+        switch(Fast_Storage(expr)->kind) {
+        case Fast_MemberStorage:
+            result = Fast_Member(result)->lvalue;
+            break;
+        case Fast_ElementStorage:
+            result = Fast_Element(result)->lvalue;
+            break;
+        default:
             goto error;
         }
-
-        if (Fast_Node(result)->kind != Fast_StorageExpr) {
-            result = Fast_Update_getNestedObject(Fast_Node(result));
-        }
     }
 
     return result;
 error:
+    Fast_Parser_error(yparser(), "invalid argument for update expression");
     return NULL;
 }
+
 /* $end */
 
 /* ::cortex::Fast::Update::construct() */
@@ -104,13 +58,12 @@ cx_int16 Fast_Update_construct(Fast_Update _this) {
     while(cx_iterHasNext(&exprIter)) {
         expr = cx_iterNext(&exprIter);
 
-        if (!(expr = Fast_Update_getObject(_this, Fast_Node(expr)))) {
-            goto error;
-        }
+        expr = Fast_Update_getFirstReference(expr);
 
         if (!expr->isReference) {
             Fast_Parser_error(yparser(), 
-                "one or more expressions in the update statement are a reference");
+                "one or more expressions in the update statement are not references (%s)",
+                cx_nameof(cx_typeof(expr)));
             goto error;            
         }
     }
@@ -154,28 +107,15 @@ cx_ic Fast_Update_toIc_v(Fast_Update _this, cx_icProgram program, cx_icStorage s
     /* Add update statement for each expression in exprList */
     exprIter = cx_llIter(_this->exprList);
     while(cx_iterHasNext(&exprIter)) {
-        Fast_Expression fastExpr = cx_iterNext(&exprIter);
+        Fast_Expression fastExpr = Fast_Update_getFirstReference(cx_iterNext(&exprIter));
 
         /* Run binary expression between updatebegin and updateend */
-        if ((Fast_Node(fastExpr)->kind == Fast_BinaryExpr) || (_this->kind != Fast_UpdateDefault)) {
-            Fast_Expression fastObjExpr = Fast_Update_getObject(_this, Fast_Node(fastExpr));
-            if (!fastObjExpr) {
-                goto error;
-            }
+        if (_this->kind != Fast_UpdateDefault) {
+            cx_ic objExpr = Fast_Node_toIc(Fast_Node(fastExpr), program, NULL, TRUE);
 
-            cx_ic objExpr = Fast_Node_toIc(Fast_Node(fastObjExpr), program, NULL, TRUE);
-
-            /* Begin update */
-            if ((_this->kind == Fast_UpdateDefault) || (_this->kind == Fast_UpdateBegin)) {
+            if (_this->kind == Fast_UpdateBegin) {
                 Fast_Update_begin(_this, program, objExpr);
-            }
-
-            if (_this->kind == Fast_UpdateDefault) {
-                Fast_Node_toIc(Fast_Node(fastExpr), program, NULL, FALSE); /* Execute binary expression */
-            }
-
-            /* End update */
-            if ((_this->kind == Fast_UpdateDefault) || (_this->kind == Fast_UpdateEnd)) {
+            } else if (_this->kind == Fast_UpdateEnd) {
                 Fast_Update_end(_this, program, objExpr, from);
             }
         } else {
@@ -201,7 +141,6 @@ cx_ic Fast_Update_toIc_v(Fast_Update _this, cx_icProgram program, cx_icStorage s
         }
     }
 
-error:
     return NULL;
 /* $end */
 }

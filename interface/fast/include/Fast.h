@@ -26,6 +26,9 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 void Fast_Parser_warning(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
+/* ::cortex::Fast::isOperatorAssignment(operatorKind operator) */
+cx_bool Fast_isOperatorAssignment(cx_operatorKind operator);
+
 /* ::cortex::Fast::report(string kind,string filename,uint32 line,uint32 column,string error,string token) */
 cx_void Fast_report(cx_string kind, cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token);
 

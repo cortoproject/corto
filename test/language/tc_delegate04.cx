@@ -20,7 +20,7 @@ var int32& b = dRef(a, 20)
 
 if a != 30: fail("a != 30 ($a)")
 if b != 30: fail("b != 30 ($a)")
-if &b != a: fail("&b != a ($b)")
+if &b != &a: fail("&b != a ($b)")
 
 a++
 if b != 31: fail("b != 31 ($b)") // Is b really assigned with reference to a?

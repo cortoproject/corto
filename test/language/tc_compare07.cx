@@ -27,4 +27,4 @@ if r > s: fail("r > s")
 if !(r < s): fail("!(r < s)")
 if !(r <= s): fail("r <= s")
 
-if result: "tc_compare067: OK"
+if result: "tc_compare07: OK"

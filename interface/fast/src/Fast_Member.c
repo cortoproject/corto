@@ -14,13 +14,13 @@
 Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 
-cx_int16 Fast_Member_resolveMember(Fast_Member object, cx_type type, cx_string member) {
+cx_int16 Fast_Member_resolveMember(Fast_Member _this, cx_type type, cx_string member) {
     cx_object o = NULL;
 
     if (cx_instanceof(cx_type(cx_interface_o), type) && !strcmp(member, "super")) {
         if (cx_interface(type)->base) {
-            object->member = NULL;
-            cx_set(&Fast_Expression(object)->type, cx_interface(type)->base);
+            _this->member = NULL;
+            cx_set(&Fast_Expression(_this)->type, cx_interface(type)->base);
         } else {
             cx_id id;
             Fast_Parser_error(yparser(), "type '%s' has no base", Fast_Parser_id(type, id));
@@ -38,14 +38,12 @@ cx_int16 Fast_Member_resolveMember(Fast_Member object, cx_type type, cx_string m
                 Fast_Parser_error(yparser(), "unresolved member '%s' for type '%s'", member, Fast_Parser_id(type, id));
                 goto error;
             }
-            cx_set(&Fast_Expression(object)->type, cx_function(o)->returnType);
+            cx_set(&Fast_Expression(_this)->type, cx_function(o)->returnType);
         } else {
-            cx_set(&Fast_Expression(object)->type, cx_member(o)->type);
+            cx_set(&Fast_Expression(_this)->type, cx_member(o)->type);
         }
-        object->member = o; cx_keep_ext(object, o, "Keep object for member-expression");
+        _this->member = o; cx_keep_ext(_this, o, "Keep object for member-expression");
     }
-
-    Fast_Expression(object)->isReference = Fast_Expression_getType(Fast_Expression(object))->reference;
 
     return 0;
 error:
@@ -90,6 +88,8 @@ cx_int16 Fast_Member_construct(Fast_Member _this) {
             }
         }
     }
+
+    Fast_Expression(_this)->isReference = Fast_Expression(_this)->type->reference;
 
     return Fast_Storage_construct(Fast_Storage(_this));
 error:
