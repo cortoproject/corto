@@ -31,12 +31,7 @@ extern "C" {
 
 #define CONST1_COND_LD(type, arg, op1)\
     CX_VM_##arg##L##_##type##op1,\
-    CX_VM_##arg##D##_##type##op1,    
-
-#define CONST1_ANY(type, arg, op1)\
-    CX_VM_##arg##U##_##type##op1,\
-    CX_VM_##arg##I##_##type##op1,\
-    CX_VM_##arg##F##_##type##op1,    
+    CX_VM_##arg##D##_##type##op1,     
 
 #define CONST2(type, arg, op1, op2)\
     CX_VM_##arg##_##type##op1##op2,

@@ -332,6 +332,7 @@ cx_string cx_icKind_toString(cx_icKind kind) {
         case CX_IC_STORAGE: return "storage";
         case CX_IC_LITERAL: return "literal";
         case CX_IC_LABEL: return "label";
+        case CX_IC_ADDRESS: return "address";
         case CX_IC_FUNCTION: return "function";
         case CX_IC_OP: return "op";
         case CX_IC_SCOPE: return "scope";
@@ -527,6 +528,15 @@ void cx_icStorage_init(
     storage->type = type;
     storage->isReference = type->reference;
     storage->holdsReturn = FALSE;
+}
+
+cx_icAddress cx_icAddress__create(cx_icProgram program, cx_uint32 line, void* address) {
+    cx_icAddress result = cx_malloc(sizeof(cx_icAddress_s));
+    ((cx_ic)result)->line = line;
+    ((cx_ic)result)->kind = CX_IC_ADDRESS;
+    result->address = address;
+    cx_llAppend(program->labels, result);
+    return result;
 }
 
 cx_icObject cx_icObject__create(cx_icProgram program, cx_uint32 line, cx_object ptr) {

@@ -1,7 +1,7 @@
 // Test reversing of lists
 bool result: true
 void fail(string msg):
-    "tc_list10: FAIL: $msg"
+    "tc_list8: FAIL: $msg"
     result = false
 
 // Reverse lists
@@ -37,4 +37,4 @@ if b[0] != 0: fail("b[0] != 0 ($b)")
 
 if c[0,1] != (1,0): fail("c[0,1] != (1,0) ($c)")
 
-if result: "tc_list10: OK"
+if result: "tc_list8: OK"

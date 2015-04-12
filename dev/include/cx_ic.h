@@ -85,6 +85,7 @@ typedef enum cx_icKind {
     CX_IC_STORAGE,
     CX_IC_LITERAL,
     CX_IC_LABEL,
+    CX_IC_ADDRESS,
     CX_IC_FUNCTION,
     CX_IC_OP,
     CX_IC_SCOPE
@@ -102,6 +103,7 @@ typedef struct cx_ic_s *cx_ic;
 typedef struct cx_icValue_s *cx_icValue;
 typedef struct cx_icStorage_s *cx_icStorage;
 typedef struct cx_icObject_s *cx_icObject;
+typedef struct cx_icAddress_s *cx_icAddress;
 typedef struct cx_icLocal_s *cx_icLocal;
 typedef struct cx_icMember_s *cx_icMember;
 typedef struct cx_icElement_s *cx_icElement;
@@ -128,6 +130,11 @@ typedef enum cx_icDerefMode {
     CX_IC_DEREF_ADDRESS,
     CX_IC_DEREF_PUSH
 }cx_icDerefMode;
+
+typedef struct cx_icAddress_s {
+    cx_icValue_s _parent;
+    void *address;
+} cx_icAddress_s;
 
 typedef struct cx_icStorage_s {
     cx_icValue_s _parent;
@@ -243,6 +250,7 @@ void cx_icStorage_init(
         cx_icStorageKind kind,
         cx_string name,
         cx_type type);
+cx_icAddress cx_icAddress__create(cx_icProgram program, cx_uint32 line, void* address);
 cx_icObject cx_icObject__create(cx_icProgram program, cx_uint32 line, cx_object object);
 cx_icLocal cx_icLocal__create(cx_icProgram program, cx_uint32 line, cx_string name, cx_type type, cx_bool isParameter, cx_bool isReturn, cx_bool declare);
 cx_icAccumulator cx_icAccumulator__create(cx_icProgram program, cx_uint32 line, cx_type type, cx_uint32 accumulatorId);
