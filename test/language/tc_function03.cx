@@ -15,7 +15,7 @@ if foo(p) != p: fail("foo(p) != p")
 uint32& bar(uint32& a) = &a
 
 uint32 i: 10
-if &bar(i) != i: fail("&bar(i) != i")
+if &bar(i) != &i: fail("&bar(i) != i")
 if bar(i) != 10: fail("bar(i) != 10")
 if bar(i) != i: fail("bar(i) != i")
 

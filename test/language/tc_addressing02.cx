@@ -42,7 +42,7 @@ if p3.y != 20: fail("Value non-ref var (y)")
 test(p3, 10, 20, "Push non-ref var as value")
 
 var Point& p4 = p1
-if &p4 != p1: fail("Assignment of refvar with non-ref type failed (p1)")
+if &p4 != &p1: fail("Assignment of refvar with non-ref type failed (p1)")
 if p4.x != 10: fail("Value refvar with non-ref type (x)")
 if p4.y != 20: fail("Value refvar with non-ref type (y)")
 test(p4, 10, 20, "Push refvar with non-ref type as value")

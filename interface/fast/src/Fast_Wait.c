@@ -112,7 +112,7 @@ cx_int16 Fast_Wait_construct(Fast_Wait _this) {
     }
 
     /* Set type of expression */
-    Fast_Expression(_this)->type = Fast_Variable(Fast_Object__create(resultType));
+    cx_set(&Fast_Expression(_this)->type, resultType);
     Fast_Expression(_this)->isReference = TRUE; /* Result is always an _this */
 
     return 0;

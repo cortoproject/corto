@@ -528,8 +528,9 @@ typedef int64_t    Ds_t;
 #define fetch_BVA
 #define fetch1_BVA    fetchIc()
 #define fetch2_BVA    fetchLo()
-#define op1_BVA        c.ic.b._1
-#define op2_BVA        (void*)c.lo.w
+#define op1x_BVA      ic.b._1 
+#define op1_BVA       (B_t)c.op1x_BVA
+#define op2_BVA       (void*)c.lo.w
 
 #define fetch_BRA
 #define fetch1_BRA  fetchIc()
@@ -552,7 +553,8 @@ typedef int64_t    Ds_t;
 #define fetch_SVA
 #define fetch1_SVA  fetchIc()
 #define fetch2_SVA  fetchLo()
-#define op1_SVA        c.ic.b._1
+#define op1x_SVA       ic.b._1
+#define op1_SVA        (S_t)c.op1x_SVA
 #define op2_SVA        (void*)c.lo.w
 
 #define fetch_SRA
@@ -576,7 +578,8 @@ typedef int64_t    Ds_t;
 #define fetch_LVA
 #define fetch1_LVA  fetchLo()
 #define fetch2_LVA  fetchHi()
-#define op1_LVA        c.lo.w
+#define op1x_LVA       lo.w
+#define op1_LVA        (L_t)c.op1x_LVA
 #define op2_LVA        (void*)c.hi.w
 
 #define fetch_LRA
@@ -621,11 +624,12 @@ typedef int64_t    Ds_t;
 #define op1_WQA        *(W_t*)*(void**)CX_OFFSET(reg,c.ic.b._1)
 #define op2_WQA        (void*)c.lo.w
 
-#define fetch_DVA    /* This instruction cannot be encoded and has to be split up */
-#define fetch1_DVA
-#define fetch2_DVA
-#define op1_DVA        c.lo.w
-#define op2_DVA        c.lo.w
+#define fetch_DVA    
+#define fetch1_DVA  fetchDbl(); fetchLo()
+#define fetch2_DVA  fetchIc();
+#define op1x_DVA       lo.w
+#define op1_DVA        c.dbl
+#define op2_DVA        (void*)c.ic.w
 
 #define fetch_DRA
 #define fetch1_DRA  fetchIc()

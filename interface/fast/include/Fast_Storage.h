@@ -1,13 +1,13 @@
-/* Fast_ObjectBase.h
+/* Fast_Storage.h
  *
  * This file contains generated code. Do not modify!
  */
 
-#ifndef Fast_ObjectBase_H
-#define Fast_ObjectBase_H
+#ifndef Fast_Storage_H
+#define Fast_Storage_H
 
 #include "cortex.h"
-#include "Fast_Variable.h"
+#include "Fast_Expression.h"
 #include "Fast__type.h"
 
 #include "Fast__api.h"
@@ -18,8 +18,8 @@
 extern "C" {
 #endif
 
-/* ::cortex::Fast::ObjectBase::construct() */
-cx_int16 Fast_ObjectBase_construct(Fast_ObjectBase _this);
+/* ::cortex::Fast::Storage::construct() */
+cx_int16 Fast_Storage_construct(Fast_Storage _this);
 
 #ifdef __cplusplus
 }

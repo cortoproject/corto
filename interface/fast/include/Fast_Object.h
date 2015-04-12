@@ -7,7 +7,7 @@
 #define Fast_Object_H
 
 #include "cortex.h"
-#include "Fast_ObjectBase.h"
+#include "Fast_Storage.h"
 #include "Fast__type.h"
 
 #include "Fast__api.h"

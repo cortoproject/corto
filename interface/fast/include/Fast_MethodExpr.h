@@ -19,10 +19,10 @@ extern "C" {
 cx_int16 Fast_MethodExpr_construct(Fast_MethodExpr object);
 
 /* virtual ::cortex::Fast::MethodExpr::getType() */
-Fast_Variable Fast_MethodExpr_getType(Fast_MethodExpr _this);
+Fast_Storage Fast_MethodExpr_getType(Fast_MethodExpr _this);
 
 /* ::cortex::Fast::MethodExpr::getType() */
-Fast_Variable Fast_MethodExpr_getType_v(Fast_MethodExpr _this);
+Fast_Storage Fast_MethodExpr_getType_v(Fast_MethodExpr _this);
 
 #ifdef __cplusplus
 }

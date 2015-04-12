@@ -136,33 +136,45 @@ static cx_string cx_opKind_toString(cx_icOpKind kind) {
     return "???";
 }
 
-static cx_string cx_icOp_derefToString(cx_string string, cx_icDerefMode mode) {
-    if (mode == CX_IC_DEREF_VALUE) {
-        string = strappend(string, " ");
-    } else if (mode == CX_IC_DEREF_ADDRESS) {
-        string = strappend(string, " &");
+static cx_string cx_icOp_derefToString(cx_string string, cx_icValue s, cx_icDerefMode mode) {
+    if (((cx_ic)s)->kind == CX_IC_STORAGE) {
+        cx_type t = ((cx_icStorage)s)->type;
+        if (t->reference) {
+            if (mode == CX_IC_DEREF_VALUE) {
+                string = strappend(string, " *");
+            } else {
+                string = strappend(string, " ");
+            }
+        } else {
+            if (mode == CX_IC_DEREF_ADDRESS) {
+                string = strappend(string, " &");
+            } else {
+                string = strappend(string, " ");
+            }
+        }
     } else {
         string = strappend(string, " ");
     }
+
     return string;
 }
 
-static cx_string cx_icOp_toString(cx_icOp _this, cx_string string)  {
+cx_string cx_icOp_toString(cx_icOp _this, cx_string string)  {
     string = strappend(string, "\t%s", cx_opKind_toString(_this->kind));
     if (_this->s1) {
-        string = cx_icOp_derefToString(string, _this->s1Deref);
+        string = cx_icOp_derefToString(string, _this->s1, _this->s1Deref);
         string = cx_icValue_toString(_this->s1, string);
     } else if (_this->s2 || _this->s3) {
         string = strappend(string, " .");
     }
     if (_this->s2) {
-        string = cx_icOp_derefToString(string, _this->s2Deref);
+        string = cx_icOp_derefToString(string, _this->s2, _this->s2Deref);
         string = cx_icValue_toString(_this->s2, string);
     } else if (_this->s3) {
         string = strappend(string, " .");
     }
     if (_this->s3) {
-        string = cx_icOp_derefToString(string, _this->s3Deref);
+        string = cx_icOp_derefToString(string, _this->s3, _this->s3Deref);
         string = cx_icValue_toString(_this->s3, string);
     }
     return string;
@@ -320,6 +332,7 @@ cx_string cx_icKind_toString(cx_icKind kind) {
         case CX_IC_STORAGE: return "storage";
         case CX_IC_LITERAL: return "literal";
         case CX_IC_LABEL: return "label";
+        case CX_IC_ADDRESS: return "address";
         case CX_IC_FUNCTION: return "function";
         case CX_IC_OP: return "op";
         case CX_IC_SCOPE: return "scope";
@@ -515,6 +528,15 @@ void cx_icStorage_init(
     storage->type = type;
     storage->isReference = type->reference;
     storage->holdsReturn = FALSE;
+}
+
+cx_icAddress cx_icAddress__create(cx_icProgram program, cx_uint32 line, void* address) {
+    cx_icAddress result = cx_malloc(sizeof(cx_icAddress_s));
+    ((cx_ic)result)->line = line;
+    ((cx_ic)result)->kind = CX_IC_ADDRESS;
+    result->address = address;
+    cx_llAppend(program->labels, result);
+    return result;
 }
 
 cx_icObject cx_icObject__create(cx_icProgram program, cx_uint32 line, cx_object ptr) {

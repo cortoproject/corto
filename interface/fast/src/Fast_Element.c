@@ -22,7 +22,7 @@ cx_int16 Fast_Element_construct(Fast_Element _this) {
 /* $begin(::cortex::Fast::Element::construct) */
     cx_type lvalueType, rvalueType;
 
-    Fast_Node(_this)->kind = Fast_ElementExpr;
+    Fast_Storage(_this)->kind = Fast_ElementStorage;
 
     lvalueType = Fast_Expression_getType(_this->lvalue);
 
@@ -46,7 +46,7 @@ cx_int16 Fast_Element_construct(Fast_Element _this) {
                 }
             }
             /* Set type of expression */
-            Fast_Expression(_this)->type = Fast_Variable(Fast_Object__create(cx_collection(lvalueType)->elementType));
+            cx_set(&Fast_Expression(_this)->type, cx_collection(lvalueType)->elementType);
         } else {
             cx_id id;
             Fast_Parser_error(yparser(), "cannot obtain element from _this of non-collection type '%s'", Fast_Parser_id(lvalueType, id));
@@ -56,13 +56,10 @@ cx_int16 Fast_Element_construct(Fast_Element _this) {
         Fast_Parser_error(yparser(), "dynamic expressions are not yet supported");
         goto error;
     }
-    
-    if (Fast_Expression_getType(Fast_Expression(_this))->reference) {
-        Fast_Expression(_this)->forceReference = TRUE;
-        Fast_Expression(_this)->isReference = TRUE;
-    }
 
-    return 0;
+    Fast_Expression(_this)->isReference = cx_collection(lvalueType)->elementType->reference;
+
+    return Fast_Storage_construct(Fast_Storage(_this));
 error:
     return -1;
 /* $end */

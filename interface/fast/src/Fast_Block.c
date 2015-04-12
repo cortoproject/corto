@@ -29,8 +29,8 @@ cx_void Fast_Block_addStatement(Fast_Block _this, Fast_Node statement) {
 /* $end */
 }
 
-/* ::cortex::Fast::Block::declare(string id,Fast::Variable type,bool isParameter,bool isReference) */
-Fast_Local Fast_Block_declare(Fast_Block _this, cx_string id, Fast_Variable type, cx_bool isParameter, cx_bool isReference) {
+/* ::cortex::Fast::Block::declare(string id,type type,bool isParameter,bool isReference) */
+Fast_Local Fast_Block_declare(Fast_Block _this, cx_string id, cx_type type, cx_bool isParameter, cx_bool isReference) {
 /* $begin(::cortex::Fast::Block::declare) */
     Fast_Local result;
     Fast_LocalKind kind = 0;
@@ -63,7 +63,6 @@ error:
 Fast_Local Fast_Block_declareReturnVariable(Fast_Block _this, cx_function function) {
 /* $begin(::cortex::Fast::Block::declareReturnVariable) */
     Fast_Local result;
-    Fast_Object type;
     cx_id id;
 
     /* Get name of function from signature */
@@ -72,9 +71,7 @@ Fast_Local Fast_Block_declareReturnVariable(Fast_Block _this, cx_function functi
     cx_assert(_this->locals != NULL, "initialization failed");
 
     /* If variable did not exist, declare it in this block */
-    type = Fast_Object__create(function->returnType);
-    Fast_Parser_collect(yparser(), type);
-    result = Fast_Local__create(id, Fast_Variable(type), Fast_LocalReturn, function->returnsReference);
+    result = Fast_Local__create(id, function->returnType, Fast_LocalReturn, function->returnsReference);
     if (result) {
         cx_llAppend(_this->locals, result);
     }
@@ -83,8 +80,8 @@ Fast_Local Fast_Block_declareReturnVariable(Fast_Block _this, cx_function functi
 /* $end */
 }
 
-/* ::cortex::Fast::Block::declareTemplate(string id,Fast::Variable type,bool isParameter,bool isReference) */
-Fast_Template Fast_Block_declareTemplate(Fast_Block _this, cx_string id, Fast_Variable type, cx_bool isParameter, cx_bool isReference) {
+/* ::cortex::Fast::Block::declareTemplate(string id,type type,bool isParameter,bool isReference) */
+Fast_Template Fast_Block_declareTemplate(Fast_Block _this, cx_string id, cx_type type, cx_bool isParameter, cx_bool isReference) {
 /* $begin(::cortex::Fast::Block::declareTemplate) */
     Fast_Template result;
 
@@ -135,7 +132,7 @@ Fast_Expression Fast_Block_lookup(Fast_Block _this, cx_string id) {
                     if (cx_checkAttr(_this->function, CX_ATTR_SCOPED)) {
                         parent = cx_parentof(_this->function);
                     } else {
-                        parent = Fast_ObjectBase(yparser()->scope)->value;
+                        parent = yparser()->scope;
                     }
 
                     /* If parent is not of an interface type, this could be a

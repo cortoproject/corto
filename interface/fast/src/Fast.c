@@ -26,7 +26,7 @@ Fast_Call Fast_createCallWithArguments(Fast_Expression instance, cx_string funct
         function, 
         arguments, 
         instance, 
-        Fast_ObjectBase(yparser()->scope)->value, 
+        yparser()->scope, 
         yparser()->block);
     result = Fast_CallBuilder_build(&builder);
     Fast_CallBuilder__deinit(&builder);
@@ -64,46 +64,39 @@ Fast_Call Fast_createCallFromExpr(Fast_Expression f, Fast_Expression arguments) 
     Fast_Call result = NULL;
     Fast_Expression instance = NULL;
     cx_id name;
-    cx_object scope = Fast_ObjectBase(yparser()->scope)->value;
+    cx_object scope = yparser()->scope;
     Fast_CallBuilder builder;
 
-    /* Extract information from expressions */
-    switch(Fast_Node(f)->kind) {
+    if (Fast_Node(f)->kind == Fast_StorageExpr) {
+        switch(Fast_Storage(f)->kind) {
 
-    /* Member expression */
-    case Fast_MemberExpr:
-        instance = Fast_Member(f)->lvalue;
-        strcpy(name, Fast_String(Fast_Member(f)->rvalue)->value);
-        break;
-
-    /* Element - Must be a list of delegates */
-    case Fast_ElementExpr:
-        result = Fast_Call(Fast_DelegateCall__create(NULL, arguments, f));
-        break;
-
-    case Fast_VariableExpr:
-        switch(Fast_Variable(f)->kind) {
-        case Fast_ObjectExpr: {
-            cx_object o = Fast_ObjectBase(f)->value;
+        case Fast_ObjectStorage: {
+            cx_object o = Fast_Object(f)->value;
             cx_signatureName(cx_nameof(o), name);
             scope = cx_parentof(o);
             break;
         }
-        case Fast_LocalExpr:
+
+        case Fast_LocalStorage:
             strcpy(name, Fast_Local(f)->name);
             break;
+
+        case Fast_MemberStorage:
+            instance = Fast_Member(f)->lvalue;
+            strcpy(name, Fast_String(Fast_Member(f)->rvalue)->value);
+            break;
+
+        case Fast_ElementStorage:
+            result = Fast_Call(Fast_DelegateCall__create(NULL, arguments, f));
+            break;
+
         default:
-            Fast_Parser_error(yparser(), "variable expression %s is not callable",
-                cx_nameof(cx_enum_constant(Fast_variableKind_o, Fast_Variable(f)->kind)));
+            Fast_Parser_error(yparser(), "'%s' expression is not callable",
+                cx_nameof(cx_enum_constant(Fast_storageKind_o, Fast_Storage(f)->kind)));
             goto error;
         }
-        break;
-    default:
-        Fast_Parser_error(yparser(), "expression is not callable");
-        goto error;
     }
 
-    /* Initialize builder */
     if (!result) {
         Fast_CallBuilder__init(&builder, name, arguments, instance, scope, yparser()->block);
         result = Fast_CallBuilder_build(&builder);
@@ -115,6 +108,29 @@ error:
     return NULL;
 }
 /* $end */
+
+/* ::cortex::Fast::isOperatorAssignment(operatorKind operator) */
+cx_bool Fast_isOperatorAssignment(cx_operatorKind operator) {
+/* $begin(::cortex::Fast::isOperatorAssignment) */
+    cx_bool result;
+    switch(operator) {
+    case CX_ASSIGN:
+    case CX_ASSIGN_ADD:
+    case CX_ASSIGN_SUB:
+    case CX_ASSIGN_DIV:
+    case CX_ASSIGN_MUL:
+    case CX_ASSIGN_MOD:
+    case CX_ASSIGN_OR:
+    case CX_ASSIGN_AND:
+        result = TRUE;
+        break;
+    default:
+        result = FALSE;
+        break;
+    }
+    return result;
+/* $end */
+}
 
 /* ::cortex::Fast::report(string kind,string filename,uint32 line,uint32 column,string error,string token) */
 cx_void Fast_report(cx_string kind, cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token) {

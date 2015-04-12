@@ -395,28 +395,18 @@ typedef union Di2f_t {
         c.sp = CX_OFFSET(c.sp, sizeof(cx_word));\
         next();\
 
-#define _PUSHANY(opx,_type,code,postfix,deref,typearg,_pc,v)\
-    PUSHANY##opx##postfix##_##code:\
-    fetchOp1(PUSHANY,code);\
-    fetchHi();\
-    ((cx_any*)c.sp)->type = (cx_type)typearg;\
+#define _PUSHANY(opx,_type,code,deref,_pc,v)\
+    PUSHANY##opx##_##code:\
+    fetchOp2(PUSHANY,code);\
+    ((cx_any*)c.sp)->type = (cx_type)op2_##code;\
     ((cx_any*)c.sp)->value = (void*)deref _pc op1##v##_##code;\
     ((cx_any*)c.sp)->owner = FALSE;\
     c.sp = CX_OFFSET(c.sp, sizeof(cx_any));\
     next();\
 
-#define PUSHANYX(_type,code)   _PUSHANY(X,_type,code,,&,c.hi.w,,)
-
-#define PUSHANYV(_type,code)  _PUSHANY(V,_type,code,,&,c.hi.w,c.pc->,x)
-
-#define PUSHANYVTU(_type,code) _PUSHANY(VT,_type,code,U,&,cx_uint64_o,c.pc->,x)
-#define PUSHANYVTI(_type,code) _PUSHANY(VT,_type,code,I,&,cx_int64_o,c.pc->,x)
-#define PUSHANYVTF(_type,code) _PUSHANY(VT,_type,code,F,&,cx_float64_o,c.pc->,x)
-
-#define PUSHANY(_type,code)    _PUSHANY(,_type,code,,(cx_word),c.hi.w,,)
-#define PUSHANYU(_type,code)   _PUSHANY(,_type,code,U,(cx_word),cx_uint64_o,,)
-#define PUSHANYI(_type,code)   _PUSHANY(,_type,code,I,(cx_word),cx_int64_o,,)
-#define PUSHANYF(_type,code)   _PUSHANY(,_type,code,F,(cx_word),cx_float64_o,,)
+#define PUSHANYX(_type,code)  _PUSHANY(X,_type,code,&,,)
+#define PUSHANYV(_type,code)  _PUSHANY(V,_type,code,&,c.pc->,x)
+#define PUSHANY(_type,code)   _PUSHANY(,_type,code,(cx_word),,)
 
 #define CALL(type,code)\
     CALL_##code:\
@@ -494,11 +484,11 @@ typedef union Di2f_t {
 #define PCAST(type,code)\
     PCAST_##code: {\
         fetchOp2(PCAST,code)\
-        cx_type fromType = cx_type(stage1_W);\
+        cx_type fromType = (cx_type)stage1_W;\
         if (fromType->reference) {\
-            fromType = cx_type(cx_word_o);\
+            fromType = (cx_type)cx_word_o;\
         }\
-        cx_convert(cx_primitive(fromType), &op2_##code, cx_primitive(stage2_W), &op1_##code);\
+        cx_convert((cx_primitive)fromType, &op2_##code, (cx_primitive)stage2_W, &op1_##code);\
         next();\
     }
 
@@ -772,11 +762,6 @@ typedef union Di2f_t {
 #define INSTR1_COND_LD(type, arg, op1)\
     arg(type, type##op1)
 
-#define INSTR1_ANY(type, arg, op1)\
-    arg##U(type, type##op1)\
-    arg##I(type, type##op1)\
-    arg##F(type, type##op1)
-
 #define INSTR2(type, arg, op1, op2)\
     arg(type, type##op1##op2)
 
@@ -801,11 +786,6 @@ typedef union Di2f_t {
     case CX_VM_##arg##L_##type##op1: p[i].op = toJump(arg##L_##type##op1); break;\
     case CX_VM_##arg##D_##type##op1: p[i].op = toJump(arg##D_##type##op1); break;
 
-#define JUMP1_ANY(type, arg, op1)\
-    case CX_VM_##arg##U_##type##op1: p[i].op = toJump(arg##U_##type##op1); break;\
-    case CX_VM_##arg##I_##type##op1: p[i].op = toJump(arg##I_##type##op1); break;\
-    case CX_VM_##arg##F_##type##op1: p[i].op = toJump(arg##F_##type##op1); break;
-
 #define JUMP2(type, arg, op1, op2)\
     case CX_VM_##arg##_##type##op1##op2: p[i].op = toJump(arg##_##type##op1##op2); break;
 
@@ -829,11 +809,6 @@ typedef union Di2f_t {
 #define STRING1_COND_LD(type, arg, op1)\
     case CX_VM_##arg##L_##type##op1: result = cx_vmOp_toString(result, &p[i], #arg "L", #type, #op1, "", ""); break;\
     case CX_VM_##arg##D_##type##op1: result = cx_vmOp_toString(result, &p[i], #arg "D", #type, #op1, "", ""); break;\
-
-#define STRING1_ANY(type, arg, op1)\
-    case CX_VM_##arg##U_##type##op1: result = cx_vmOp_toString(result, &p[i], #arg "U", #type, #op1, "", ""); break;\
-    case CX_VM_##arg##I_##type##op1: result = cx_vmOp_toString(result, &p[i], #arg "I", #type, #op1, "", ""); break;\
-    case CX_VM_##arg##F_##type##op1: result = cx_vmOp_toString(result, &p[i], #arg "F", #type, #op1, "", ""); break;\
 
 #define STRING2(type, arg, op1, op2)\
     case CX_VM_##arg##_##type##op1##op2: result = cx_vmOp_toString(result, &p[i], #arg, #type, #op1, #op2, ""); break;\

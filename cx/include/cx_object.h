@@ -49,6 +49,7 @@ cx_type cx_typeof(cx_object o);
 cx_int32 cx_countof(cx_object o);
 cx_bool cx_checkState(cx_object o, cx_int8 state);
 cx_bool cx_checkAttr(cx_object o, cx_int8 attr);
+cx_object cx_assertType(cx_type type, cx_object o);
 cx_bool cx_instanceof(cx_type type, cx_object o);
 
 /* Scoped object-data */
@@ -167,10 +168,10 @@ cx_int16 cx_deinit(cx_object o);
 cx_int16 cx_deinitValue(cx_value *v);
     
 /* Copy object */
-cx_int16 cx_copy(cx_object from, cx_object to);
+cx_int16 cx_copy(cx_object *dst, cx_object src);
  
 /* Copy value */
-cx_int16 cx_valueCopy(cx_value *from, cx_value *to);
+cx_int16 cx_valueCopy(cx_value *dst, cx_value *src);
 
 #ifdef __cplusplus
 }

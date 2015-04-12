@@ -97,10 +97,9 @@ extern "C" {
     OP2_EXP(expand##2, ITER_NEXT, W, PQR, PQRV, typeAction, opAction)\
     OP1_EXP(expand##1, PUSH, BSLD, PQRV, typeAction, opAction) /* Regular push */\
     OP1_EXP(expand##1, PUSHX, BSLD, R, typeAction, opAction) /* Push address of a register */\
-    OP1_EXP(expand##1, PUSHANY, W, PQRV, typeAction, opAction) /* Push any value */\
-    OP1_EXP(expand##1, PUSHANYX, BSLD, R, typeAction, opAction) /* Push address of a register as any */\
-    OP1_EXP(expand##1, PUSHANYV, BSL, V, typeAction, opAction) /* Push literal as any */\
-    OP1_EXP(expand##1_ANY, PUSHANYVT, D, V, typeAction, opAction) /* Push 64-bit literal as any */\
+    OP2_EXP(expand##2, PUSHANY, W, PQRV, A, typeAction, opAction) /* Push any value */\
+    OP2_EXP(expand##2, PUSHANYX, BSLD, R, A, typeAction, opAction) /* Push address of a register as any */\
+    OP2_EXP(expand##2, PUSHANYV, BSLD, V, A, typeAction, opAction) /* Push value as any */\
     OP1_EXP(expand##1, CALL, W, PQR, typeAction, opAction)\
     OP0_EXP(expand##0, CALLVOID)\
     OP1_EXP(expand##1, CALLVM, W, PQR, typeAction, opAction)\

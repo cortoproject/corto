@@ -80,7 +80,13 @@ static cx_int16 c_apiAssignMember(cx_serializer s, cx_value* v, void* userData) 
             if ((m->type->kind == CX_PRIMITIVE) && (cx_primitive(m->type)->kind == CX_TEXT)) {
                 g_fileWrite(data->source, "(%s ? cx_strdup(%s) : NULL);\n", memberParamId, memberParamId);
             } else {
-                g_fileWrite(data->source, "%s;\n", memberParamId);
+                /* If a non-void reference type, cast parameter */
+                if (m->type->reference && !(m->type->kind == CX_VOID)) {
+                    cx_id id;
+                    g_fileWrite(data->source, "%s(%s);\n", g_fullOid(data->g, m->type, id), memberParamId);
+                } else {
+                    g_fileWrite(data->source, "%s;\n", memberParamId);
+                }
             }
         }
 

@@ -270,7 +270,7 @@ CX_STATIC_SCOPED_OBJECT(constant);
 
 /* interface */
 #define CX_COMPOSITE_V(name, kind, base, reference, scopeType, scopeStateKind, DELEGATE) \
-  {CX_TYPE_V(name, CX_COMPOSITE, reference, scopeType, scopeStateKind, DELEGATE), kind, 0, {0, NULL}, {0,NULL}, cx_interface(&base##__o.v)}
+  {CX_TYPE_V(name, CX_COMPOSITE, reference, scopeType, scopeStateKind, DELEGATE), kind, 0, {0, NULL}, {0,NULL}, (cx_interface)&base##__o.v}
 
 /* interface */
 #define CX_COMPOSITE_NOBASE_V(name, kind, reference, scopeType, scopeStateKind, DELEGATE) \

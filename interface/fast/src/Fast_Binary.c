@@ -15,27 +15,6 @@
 #include "Fast_Literal.h"
 #include "cx_operator.h"
 
-/* Determine whether expression is an assignment */
-cx_bool Fast_Binary_isAssignment(Fast_Binary expr) {
-    cx_bool result;
-    switch(expr->operator) {
-    case CX_ASSIGN:
-    case CX_ASSIGN_ADD:
-    case CX_ASSIGN_SUB:
-    case CX_ASSIGN_DIV:
-    case CX_ASSIGN_MUL:
-    case CX_ASSIGN_MOD:
-    case CX_ASSIGN_OR:
-    case CX_ASSIGN_AND:
-        result = TRUE;
-        break;
-    default:
-        result = FALSE;
-        break;
-    }
-    return result;
-}
-
 /* Determine whether the expression is an arithmic operation */
 cx_bool Fast_Binary_isArithmic(Fast_Binary expr) {
     cx_bool result;
@@ -77,6 +56,58 @@ cx_bool Fast_Binary_isConditional(Fast_Binary expr) {
         break;
     }
     return result;
+}
+
+cx_bool Fast_isNull(Fast_Expression e) {
+    return (Fast_Node(e)->kind == Fast_LiteralExpr) && (Fast_Literal(e)->kind == Fast_Nothing);
+}
+
+/* Get deref mode for expression */
+cx_int16 Fast_Binary_getDerefKind(Fast_Binary _this, cx_type lvalueType, cx_type rvalueType) {
+
+    if ((_this->lvalue->deref == Fast_ByReference) && Fast_isNull(_this->rvalue)) {
+        _this->deref = Fast_ByReference;
+    } else if ((_this->rvalue->deref == Fast_ByReference) && Fast_isNull(_this->lvalue)) {
+        _this->deref = Fast_ByReference;
+    } else if (!Fast_isOperatorAssignment(_this->operator)) {
+        if (_this->lvalue->deref != _this->rvalue->deref) {
+            if (lvalueType->kind == CX_VOID) {
+                if (_this->rvalue->isReference) {
+                    _this->deref = Fast_ByReference;
+                } else {
+                    Fast_Parser_error(yparser(), "cannot access rvalue by reference");
+                    goto error;
+                }
+            } else if (rvalueType->kind == CX_VOID) {
+                if (_this->lvalue->isReference) {
+                    _this->deref = Fast_ByReference;
+                } else {
+                    Fast_Parser_error(yparser(), "cannot access lvalue by reference");
+                    goto error;
+                }
+            } else {
+                Fast_Parser_error(yparser(), "inconsistent usage of references (left = %s, right = %s)",
+                    _this->lvalue->deref == Fast_ByReference ? "by address" : "by value",
+                    _this->rvalue->deref == Fast_ByReference ? "by address" : "by value");
+                goto error;
+            }
+        } else {
+            _this->deref = _this->lvalue->deref;
+        }
+    } else {
+        if ((_this->lvalue->deref == Fast_ByReference) && (!_this->rvalue->isReference)) {
+            cx_id id;
+            Fast_Parser_error(yparser(), "cannot access rvalue by reference (type = '%s', kind = '%s')",
+                Fast_Parser_id(rvalueType, id), 
+                    cx_nameof(cx_enum_constant(Fast_nodeKind_o, Fast_Node(_this->rvalue)->kind)));
+            goto error;
+        }
+        _this->deref = _this->lvalue->deref;
+    }
+
+    return 0;
+error:
+    return -1;
 }
 
 /* If types of a binary expression don't match, figure out which casts are required */
@@ -160,7 +191,7 @@ cx_int16 Fast_Binary_cast(Fast_Binary _this, cx_type *returnType) {
             /* If expression is an assignment, always take type of lvalue. Otherwise determine based on
              * expressibility score which type to cast to.
              */
-            if (Fast_Binary_isAssignment(_this)) {
+            if (Fast_isOperatorAssignment(_this->operator)) {
                 if (lCastScore == rCastScore) {
                     if (ltype->width != rtype->width) {
                         castType = lvalueType;
@@ -200,7 +231,8 @@ cx_int16 Fast_Binary_cast(Fast_Binary _this, cx_type *returnType) {
         /* Check if types are compatible */
 
 
-        } else if ((rvalueType->reference || _this->rvalue->forceReference) && !lvalueType->reference) {
+        } else if ((rvalueType->reference || (_this->rvalue->deref == Fast_ByReference)) && !lvalueType->reference) {
+            /* Enable casting references to boolean values */
             if (cx_type_castable(lvalueType, cx_object_o)) {
                 castType = lvalueType;
             }
@@ -210,7 +242,7 @@ cx_int16 Fast_Binary_cast(Fast_Binary _this, cx_type *returnType) {
                     Fast_Parser_id(lvalueType, id1), Fast_Parser_id(rvalueType, id2));
             goto error;
         }
-    } else if ((rvalueType->reference || _this->rvalue->forceReference) && !lvalueType->reference) {
+    } else if ((rvalueType->reference || (_this->rvalue->deref == Fast_ByReference)) && !lvalueType->reference) {
         if (cx_type_castable(lvalueType, cx_object_o)) {
             castType = lvalueType;
             referenceMismatch = TRUE;
@@ -220,7 +252,7 @@ cx_int16 Fast_Binary_cast(Fast_Binary _this, cx_type *returnType) {
     /* Cast-score indicates whether a cast is required */
     if (rvalueType && castType && ((rvalueType != castType) || referenceMismatch)) {
         Fast_Expression oldRvalue = _this->rvalue;
-        _this->rvalue = Fast_Expression_cast(_this->rvalue, castType, _this->lvalue->forceReference);
+        _this->rvalue = Fast_Expression_cast(_this->rvalue, castType, _this->lvalue->deref == Fast_ByReference);
         if (_this->rvalue) {
             cx_keep(_this->rvalue);
             cx_free(oldRvalue);
@@ -233,7 +265,7 @@ cx_int16 Fast_Binary_cast(Fast_Binary _this, cx_type *returnType) {
     }
     if (lvalueType && castType && (lvalueType != castType)) {
         Fast_Expression oldLvalue = _this->lvalue;
-        _this->lvalue = Fast_Expression_cast(_this->lvalue, castType, _this->rvalue->forceReference);
+        _this->lvalue = Fast_Expression_cast(_this->lvalue, castType, _this->rvalue->deref == Fast_ByReference);
         if (_this->lvalue) {
             cx_keep(_this->lvalue);
             cx_free(oldLvalue);
@@ -299,7 +331,6 @@ error:
 cx_int16 Fast_Binary_construct(Fast_Binary _this) {
 /* $begin(::cortex::Fast::Binary::construct) */
     cx_type lvalueType, rvalueType;
-    cx_int32 checkReferences=0;
 
     Fast_Node(_this)->kind = Fast_BinaryExpr;
     if (!(lvalueType = Fast_Expression_getType_expr(_this->lvalue, _this->rvalue))) {
@@ -312,46 +343,28 @@ cx_int16 Fast_Binary_construct(Fast_Binary _this) {
     /* Check if operands are valid in case of arithmic operation */
     if (Fast_Binary_isArithmic(_this)) {
         if ((lvalueType->kind != CX_PRIMITIVE) || (rvalueType->kind != CX_PRIMITIVE) ||
-            (_this->lvalue->forceReference || _this->rvalue->forceReference)) {
+            ((_this->lvalue->deref == Fast_ByReference) || (_this->lvalue->deref == Fast_ByReference))) {
             Fast_Parser_error(yparser(), "invalid operands for arithmic operation");
             goto error;
         }
     }
 
     /* Check if lvalue is valid in case of assignment */
-    if (Fast_Binary_isAssignment(_this)) {
-        switch(Fast_Node(_this->lvalue)->kind) {
-        case Fast_VariableExpr:
-        case Fast_MemberExpr:
-        case Fast_ElementExpr:
-            break;
-        default:
-            Fast_Parser_error(yparser(), "left-hand side of assignment is not a storage");
-            goto error;
-        }        
+    if (Fast_isOperatorAssignment(_this->operator) && (Fast_Node(_this->lvalue)->kind != Fast_StorageExpr)) {
+        Fast_Parser_error(yparser(), "left-hand side of assignment is not a storage");
+        goto error;       
     }
 
     if (lvalueType && rvalueType) {
         if (!cx_type_castable(lvalueType, rvalueType)) {
             cx_id id, id2;
+            printf("rvalue = %s\n", cx_nameof(cx_typeof(_this->rvalue)));
             Fast_Parser_error(yparser(), "cannot convert '%s' to '%s'",
                     Fast_Parser_id(rvalueType, id), Fast_Parser_id(lvalueType, id2));
             goto error;
         }
 
-        /* Re-obtain lvalueType & rvalueType as they may have changed during the cast */
-        if (!(lvalueType = Fast_Expression_getType_expr(_this->lvalue, _this->rvalue))) {
-            goto error;
-        }
-        if (!(rvalueType = Fast_Expression_getType_expr(_this->rvalue, _this->lvalue))) {
-            goto error;
-        }
-
-        /* Check for consistent usage of references */
-        Fast_Expression_getDerefMode(_this->lvalue, _this->rvalue, &checkReferences);
-        Fast_Expression_getDerefMode(_this->rvalue, _this->lvalue, &checkReferences);
-        if (checkReferences) {
-            Fast_Parser_error(yparser(), "inconsistent usage of references in binary expression");
+        if (Fast_Binary_getDerefKind(_this, lvalueType, rvalueType)) {
             goto error;
         }
     }
@@ -423,8 +436,7 @@ Fast_Expression Fast_Binary_fold(Fast_Binary _this) {
                     break;
                 }
                 if ((cx_primitive(type)->kind == CX_BITMASK) || (cx_primitive(type)->kind == CX_ENUM)) {
-                    Fast_Object typeVar = Fast_Object__create(type);
-                    cx_set(&Fast_Expression(result)->type, typeVar);
+                    cx_set(&Fast_Expression(result)->type, type);
                 }
             }
 
@@ -472,7 +484,7 @@ cx_bool Fast_Binary_hasSideEffects_v(Fast_Binary _this) {
             break;
     }
     
-    return Fast_Expression_hasSideEffects(_this->lvalue) || Fast_Expression_hasSideEffects(_this->rvalue) || result;
+    return result || Fast_Expression_hasSideEffects(_this->lvalue) || Fast_Expression_hasSideEffects(_this->rvalue);
 /* $end */
 }
 
@@ -524,10 +536,10 @@ cx_void Fast_Binary_setOperator(Fast_Binary _this, cx_operatorKind kind) {
     case CX_COND_GTEQ:
     case CX_COND_AND:
     case CX_COND_OR:
-        cx_set(&Fast_Expression(_this)->type, Fast_Variable(Fast_Object__create(cx_bool_o)));
+        cx_set(&Fast_Expression(_this)->type, cx_bool_o);
         break;
     default:
-        cx_set(&Fast_Expression(_this)->type, Fast_Variable(Fast_Object__create(exprType)));
+        cx_set(&Fast_Expression(_this)->type, exprType);
         break;
     }
 
@@ -544,7 +556,7 @@ cx_ic Fast_Binary_toIc_v(Fast_Binary _this, cx_icProgram program, cx_icStorage s
     cx_icOp op = NULL;
     cx_type _thisType = Fast_Expression_getType(Fast_Expression(_this));
     cx_bool condition = Fast_Binary_isConditional(_this);
-    cx_bool isReference = _this->lvalue->forceReference || _this->rvalue->forceReference;
+    cx_bool isReference = (_this->lvalue->deref == Fast_ByReference) || (_this->rvalue->deref == Fast_ByReference);
 
     if (storage && (storage->type == _thisType)) {
         result = (cx_ic)storage;
@@ -575,14 +587,8 @@ cx_ic Fast_Binary_toIc_v(Fast_Binary _this, cx_icProgram program, cx_icStorage s
             op = cx_icOp__create(program, Fast_Node(_this)->line, cx_icOpKindFromOperator(CX_ASSIGN), stored ? (cx_icValue)result : NULL, (cx_icValue)lvalue, (cx_icValue)rvalue);
             cx_icProgram_addIc(program, (cx_ic)op);
 
-            op->s2Deref = Fast_Expression_getDerefMode(_this->lvalue, _this->rvalue, NULL);
-            op->s3Deref = Fast_Expression_getDerefMode(_this->rvalue, _this->lvalue, NULL);
-
-            /* If lvalue is an object, never use address in assignments */
-            if ((Fast_Node(_this->lvalue)->kind == Fast_VariableExpr) && (Fast_Variable(_this->lvalue)->kind == Fast_ObjectExpr)) {
-                op->s2Deref = CX_IC_DEREF_VALUE;
-                op->s3Deref = CX_IC_DEREF_VALUE;
-            }
+            op->s2Deref = op->s3Deref = 
+                _this->deref == Fast_ByReference ? CX_IC_DEREF_ADDRESS : CX_IC_DEREF_VALUE;
         } else {
             returnsResult = rvalue;
         }
@@ -602,8 +608,8 @@ cx_ic Fast_Binary_toIc_v(Fast_Binary _this, cx_icProgram program, cx_icStorage s
         }
 
         if (op) {
-            op->s2Deref = Fast_Expression_getDerefMode(_this->lvalue, _this->rvalue, NULL);
-            op->s3Deref = Fast_Expression_getDerefMode(_this->rvalue, _this->lvalue, NULL);
+            op->s2Deref = op->s3Deref = 
+                _this->deref == Fast_ByReference ? CX_IC_DEREF_ADDRESS : CX_IC_DEREF_VALUE;
         }
     } else {
         if (Fast_Expression_hasSideEffects(_this->rvalue)) {

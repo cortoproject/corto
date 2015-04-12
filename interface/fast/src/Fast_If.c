@@ -30,7 +30,7 @@ cx_int16 Fast_If_construct(Fast_If _this) {
         conditionType = Fast_Expression_getType(_this->condition);
         if (conditionType) {
             /* Check if condition can evaluate to a boolean value */
-            if (!_this->condition->forceReference && !conditionType->reference && (conditionType->kind != CX_PRIMITIVE)) {
+            if ((!_this->condition->deref == Fast_ByReference) && !conditionType->reference && (conditionType->kind != CX_PRIMITIVE)) {
                 Fast_Parser_error(yparser(), "expression does not evaluate to condition");
                 goto error;
             }
@@ -113,7 +113,7 @@ cx_ic Fast_If_toIc_v(Fast_If _this, cx_icProgram program, cx_icStorage storage, 
                 cx_icProgram_addIc(program, (cx_ic)eval);
             }
 
-            if (condition->forceReference) {
+            if (condition->deref == Fast_ByReference) {
                 eval->s1Deref = CX_IC_DEREF_ADDRESS;
             }
 

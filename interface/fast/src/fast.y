@@ -55,7 +55,7 @@ void Fast_declarationSeqInsert( Fast_ParserDeclarationSeq *seq, Fast_ParserDecla
     seq->buffer[seq->length-1].name = cx_strdup(seq->buffer[seq->length-1].name);
 }
 
-Fast_Expression Fast_declarationSeqDo(Fast_Variable type, Fast_ParserDeclarationSeq *declarations, cx_bool isReference)
+Fast_Expression Fast_declarationSeqDo(Fast_Storage type, Fast_ParserDeclarationSeq *declarations, cx_bool isReference)
 {
     unsigned int i;
     Fast_Comma result = Fast_Comma__create();
@@ -65,15 +65,15 @@ Fast_Expression Fast_declarationSeqDo(Fast_Variable type, Fast_ParserDeclaration
     yparser()->variableCount = 0;
     for(i=0; i<declarations->length; i++)
     {
-        if (!(declarations->buffer[i].variable = Fast_Parser_declaration(
+        if (!(declarations->buffer[i].storage = Fast_Parser_declaration(
             yparser(),
-            type,
+            type ? Fast_Object(type)->value : NULL,
             declarations->buffer[i].name,
             isReference))) {
                 return NULL;
         }
         cx_dealloc(declarations->buffer[i].name);
-        expr = Fast_Expression(declarations->buffer[i].variable);
+        expr = Fast_Expression(declarations->buffer[i].storage);
         
         /* In a declaration of locals assignment is always a reference-assignment. */
         if (isReference) {
@@ -145,7 +145,7 @@ Fast_Expression Fast_declarationSeqDo(Fast_Variable type, Fast_ParserDeclaration
     Fast_ParserDeclaration Declaration;
     Fast_ParserDeclarationSeq Declarations;
     Fast_ParserNew New;
-    Fast_Variable Variable;
+    Fast_Storage Variable;
 }
 
 /* Valuetoken-types */
@@ -279,7 +279,7 @@ function_implementation
     ;
 
 function_declaration
-    : identifier any_id function_argumentList    {cx_id id; sprintf(id, "%s(%s)", $2, $3); cx_dealloc($3); $$ = Fast_Parser_declareFunction(yparser(), $1, id, NULL, FALSE); fast_op; }
+    : identifier any_id function_argumentList    {cx_id id; sprintf(id, "%s(%s)", $2, $3); cx_dealloc($3); $$ = Fast_Parser_declareFunction(yparser(), $1 ? Fast_Object($1)->value : NULL, id, NULL, FALSE); fast_op; }
     | identifier any_id function_argumentList identifier_string  {
         cx_id id;
         cx_type kind = cx_resolve(NULL, $4);
@@ -289,13 +289,13 @@ function_declaration
         }
         sprintf(id, "%s(%s)", $2, $3); 
         cx_dealloc($3); 
-        $$ = Fast_Parser_declareFunction(yparser(), $1, id, kind, FALSE); fast_op; 
+        $$ = Fast_Parser_declareFunction(yparser(), $1 ? Fast_Object($1)->value : NULL, id, kind, FALSE); fast_op; 
         cx_free(kind);
     }
-    | identifier GID function_argumentList  {cx_id id; sprintf(id, "%s(%s)", $2, $3); cx_dealloc($3); $$ = Fast_Parser_declareFunction(yparser(), $1, id, NULL, FALSE); fast_op; }
+    | identifier GID function_argumentList  {cx_id id; sprintf(id, "%s(%s)", $2, $3); cx_dealloc($3); $$ = Fast_Parser_declareFunction(yparser(), $1 ? Fast_Object($1)->value : NULL, id, NULL, FALSE); fast_op; }
 
     /* Reference returnvalue */
-    | identifier '&' any_id function_argumentList   {cx_id id; sprintf(id, "%s(%s)", $3, $4); cx_dealloc($4); $$ = Fast_Parser_declareFunction(yparser(), $1, id, NULL, TRUE); fast_op; }
+    | identifier '&' any_id function_argumentList   {cx_id id; sprintf(id, "%s(%s)", $3, $4); cx_dealloc($4); $$ = Fast_Parser_declareFunction(yparser(), $1 ? Fast_Object($1)->value : NULL, id, NULL, TRUE); fast_op; }
     | identifier '&' any_id function_argumentList identifier_string  {
         cx_id id;
         cx_type kind = cx_resolve(NULL, $5);
@@ -304,10 +304,10 @@ function_declaration
             YYERROR;
         }
         sprintf(id, "%s(%s)", $3, $4); 
-        $$ = Fast_Parser_declareFunction(yparser(), $1, id, kind, TRUE); fast_op; 
+        $$ = Fast_Parser_declareFunction(yparser(), $1 ? Fast_Object($1)->value : NULL, id, kind, TRUE); fast_op; 
         cx_free(kind);
     }
-    | identifier '&' GID function_argumentList  {cx_id id; sprintf(id, "%s(%s)", $3, $4); cx_dealloc($4); $$ = Fast_Parser_declareFunction(yparser(), $1, id, NULL, TRUE); fast_op; }
+    | identifier '&' GID function_argumentList  {cx_id id; sprintf(id, "%s(%s)", $3, $4); cx_dealloc($4); $$ = Fast_Parser_declareFunction(yparser(), $1 ? Fast_Object($1)->value : NULL, id, NULL, TRUE); fast_op; }
     ;
 
 function_argumentList
@@ -321,8 +321,12 @@ function_arguments
     ;
 
 function_argument
-    : identifier any_id                    {$$=Fast_Parser_argumentToString(yparser(), $1, $2, FALSE); fast_op;}
-    | identifier '&' any_id                {$$=Fast_Parser_argumentToString(yparser(), $1, $3, TRUE); fast_op;}
+    : identifier any_id                    {
+        $$=Fast_Parser_argumentToString(yparser(), $1 ? Fast_Object($1)->value : NULL, $2, FALSE); fast_op;
+    }
+    | identifier '&' any_id                {
+        $$=Fast_Parser_argumentToString(yparser(), $1 ? Fast_Object($1)->value : NULL, $3, TRUE); fast_op;
+    }
     ;
 
 /* ======================================================================== */
@@ -608,7 +612,7 @@ expr
 identifier
     : identifier_id
     | identifier {
-        $<Variable>$ = Fast_Variable(Fast_Parser_initPushIdentifier(yparser(), (Fast_Expression)$1)); fast_op
+        $<Variable>$ = Fast_Storage(Fast_Parser_initPushIdentifier(yparser(), (Fast_Expression)$1)); fast_op
     } initializer_braces {
         Fast_Parser_define(yparser()); fast_op;
         $$ = $<Variable>2;
@@ -797,8 +801,7 @@ int fast_yparse(Fast_Parser parser, cx_uint32 line, cx_uint32 column) {
     }
     
     if (!parser->scope) {
-        cx_set(&parser->scope, Fast_Variable(Fast_Object__create(root_o)));
-        Fast_Parser_collect(yparser(), parser->scope);
+        cx_set(&parser->scope, root_o);
     }
     
     /* Compensate for insertion of the extra \n */

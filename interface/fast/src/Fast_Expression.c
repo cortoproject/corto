@@ -15,7 +15,7 @@
 #include "Fast_InitializerExpression.h"
 Fast_Parser yparser(void);
 void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
-Fast_Expression Fast_Parser_getAnonymousLocal(Fast_Parser _this, Fast_Variable type, cx_bool isReference);
+Fast_Expression Fast_Parser_getAnonymousLocal(Fast_Parser _this, cx_type type, cx_bool isReference);
 
 /* Rate types based on expressibility */
 cx_int8 Fast_Expression_getTypeScore(cx_primitive t) {
@@ -68,46 +68,6 @@ cx_int8 Fast_Expression_getCastScore(cx_primitive t) {
             result = 4;
             break;
     }
-    return result;
-}
-
-cx_icDerefMode Fast_Expression_getDerefMode(Fast_Expression _this, Fast_Expression rvalue, cx_int32 *check) {
-    cx_icDerefMode result = CX_IC_DEREF_VALUE;
-    
-    if (_this->forceReference) {
-        result = CX_IC_DEREF_ADDRESS;
-    } else {
-        cx_type t = Fast_Expression_getType(_this);
-        
-        if (rvalue->forceReference || (t && t->reference)) {
-            if (_this->isReference && rvalue->forceReference) {
-                result = CX_IC_DEREF_ADDRESS;
-            } else if (Fast_Node(_this)->kind == Fast_VariableExpr) {
-                if (Fast_Variable(_this)->kind == Fast_ObjectExpr) {
-                    result = CX_IC_DEREF_ADDRESS;
-                } else if ((Fast_Variable(_this)->kind == Fast_LocalExpr) && (*Fast_Local(_this)->name == '<') && _this->isReference) {
-                    result = CX_IC_DEREF_ADDRESS; /* Anonymous locals are treated as objects */
-                } else {
-                    if (check) *check = -1;
-                }
-            } else if (t && !t->reference) {
-                if (check) *check = -1;
-            }
-        }
-    }
-    
-    /*{
-        cx_id id,id2;
-        cx_type l = Fast_Expression_getType(_this);
-        cx_type r = Fast_Expression_getType(rvalue);
-        printf("%d[pass=%d]: l->forceRef/isRef=%d/%d(%s,%s), r->forceRef/isRef=%d/%d(%s,%s), isValue=%d, check=%d\n",
-           yparser()->line, yparser()->pass, _this->forceReference, _this->isReference, Fast_Parser_id(l,id),
-                  cx_nameof(cx_typeof(_this)),
-               rvalue->forceReference, rvalue->isReference, Fast_Parser_id(r,id2), 
-               cx_nameof(cx_typeof(rvalue)),
-               result == CX_IC_DEREF_VALUE, check?*check:0);
-    }*/
-
     return result;
 }
 
@@ -177,8 +137,6 @@ Fast_Expression Fast_Expression_narrow(Fast_Expression expr, cx_type target) {
            (target->kind == CX_PRIMITIVE) &&
            (cx_primitive(target)->kind == cx_primitive(t)->kind)) {
             cx_width width = cx_primitive(target)->width;
-            Fast_Variable targetVar = Fast_Variable(Fast_Object__create(target));
-            Fast_Parser_collect(yparser(), targetVar);
 
             if (t->kind == CX_PRIMITIVE) {
                 switch(cx_primitive(t)->kind) {
@@ -187,17 +145,17 @@ Fast_Expression Fast_Expression_narrow(Fast_Expression expr, cx_type target) {
                     switch(width) {
                     case CX_WIDTH_8:
                         if ((v <= 127) && (v >= -128)) {
-                            cx_set(&expr->type, targetVar);
+                            cx_set(&expr->type, target);
                         }
                         break;
                     case CX_WIDTH_16:
                         if ((v <= 32767) && (v >= -32768)) {
-                            cx_set(&expr->type, targetVar);
+                            cx_set(&expr->type, target);
                         }
                         break;
                     case CX_WIDTH_32:
                         if ((v <= 2147483647) && (v >= -2147483648)) {
-                            cx_set(&expr->type, targetVar);
+                            cx_set(&expr->type, target);
                         }
                         break;
                     default:
@@ -210,17 +168,17 @@ Fast_Expression Fast_Expression_narrow(Fast_Expression expr, cx_type target) {
                     switch(width) {
                     case CX_WIDTH_8:
                         if (v <= 255) {
-                            cx_set(&expr->type, targetVar);
+                            cx_set(&expr->type, target);
                         }
                         break;
                     case CX_WIDTH_16:
                         if (v <= 65535) {
-                            cx_set(&expr->type, targetVar);
+                            cx_set(&expr->type, target);
                         }
                         break;
                     case CX_WIDTH_32:
                         if (v <= 4294967295) {
-                            cx_set(&expr->type, targetVar);
+                            cx_set(&expr->type, target);
                         }
                         break;
                     default:
@@ -250,7 +208,7 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_boo
     cx_assert(type != NULL, "cannot cast to unknown type NULL");
 
     exprType = Fast_Expression_getType(_this);
-    if(_this->forceReference && !isReference && !exprType->reference) {
+    if((_this->deref == Fast_ByReference) && !isReference && !exprType->reference) {
         refType = cx_object_o;
     } else {
         refType = exprType;
@@ -262,10 +220,8 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_boo
             /* If expression is an untyped initializer, create an anonymous variable of the destination type 
              * and assign it to the initializer. */
             if(Fast_Node(_this)->kind == Fast_InitializerExpr) {
-                Fast_Variable typeVar = Fast_Variable(Fast_Object__create(type));
-                Fast_Expression local = Fast_Parser_getAnonymousLocal(yparser(), typeVar, FALSE);
+                Fast_Expression local = Fast_Parser_getAnonymousLocal(yparser(), type, FALSE);
                 Fast_InitializerExpression_insert(Fast_InitializerExpression(_this), local);
-                Fast_Parser_collect(yparser(), typeVar);
                 result = local;
                 castRequired = TRUE;
             }else {
@@ -350,25 +306,20 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_boo
                 }
 
                 if (result){
-                    Fast_Variable typeVar = Fast_Variable(Fast_Object__create(type));
-                    cx_set_ext(result, &Fast_Expression(result)->type, typeVar, "Set correct type after cast");
-                    cx_free(typeVar);
+                    cx_set_ext(result, &Fast_Expression(result)->type, type, "Set correct type after cast");
                 }
             } else {
                 /* TODO: This functionality must be pushed down to the assembler. For all this function is concerned a cast
                  should only be required when a type is a) castable and b) not compatible. */
-                cx_int8 exprCastScore = Fast_Expression_getCastScore(cx_primitive(refType));
-                cx_int8 castCastScore = Fast_Expression_getCastScore(cx_primitive(type));
 
                 /* If both types are primitive make sure that no cast is inserted for primitives
                  * of the same kind or 'score' to the same width */
-                if ((exprType->kind == CX_PRIMITIVE) &&
+                if ((refType->kind == CX_PRIMITIVE) &&
                    (type->kind == CX_PRIMITIVE) &&
-                   (exprCastScore == castCastScore)) {
+                   (Fast_Expression_getCastScore(cx_primitive(refType)) == 
+                    Fast_Expression_getCastScore(cx_primitive(type)))) {
                     if (cx_primitive(exprType)->width != cx_primitive(type)->width) {
-                        Fast_Object dstTypeObject = Fast_Object__create(type);
-                        result = Fast_Expression(Fast_Cast__create(Fast_Expression(dstTypeObject), _this));
-                        Fast_Parser_collect(yparser(), dstTypeObject);
+                        result = Fast_Expression(Fast_Cast__create(type, _this));
                     } else {
                         /* Types have the same width, so no cast required */
                         castRequired = FALSE;
@@ -376,9 +327,7 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_boo
 
                 /* Interface-downcasting doesn't require an explicit cast */
                 } else if (!cx_instanceof(cx_type(cx_interface_o), type)) {
-                    Fast_Object dstTypeObject = Fast_Object__create(type);
-                    result = Fast_Expression(Fast_Cast__create(Fast_Expression(dstTypeObject), _this));
-                    Fast_Parser_collect(yparser(), dstTypeObject);
+                    result = Fast_Expression(Fast_Cast__create(type, _this));
                 } else {
                     castRequired = FALSE;
                 }
@@ -474,11 +423,7 @@ Fast_Expression Fast_Expression_fromList(Fast_Expression_list list) {
 /* ::cortex::Fast::Expression::getType() */
 cx_type Fast_Expression_getType(Fast_Expression _this) {
 /* $begin(::cortex::Fast::Expression::getType) */
-    cx_type result = NULL;
-    if (_this->type && (_this->type->kind == Fast_ObjectExpr)) {
-        result = Fast_ObjectBase(_this->type)->value;
-    }
-    return result;
+    return _this->type;
 /* $end */
 }
 
@@ -495,7 +440,7 @@ cx_type Fast_Expression_getType_intern(Fast_Expression _this, cx_type target, Fa
                 } else if ((target->kind == CX_PRIMITIVE) && (cx_primitive(target)->kind == CX_TEXT)) {
                     result = cx_type(cx_string_o);
                 } else {
-                    if (targetExpr && targetExpr->forceReference) {
+                    if (targetExpr && targetExpr->isReference) {
                         result = target;
                     } else {
                         goto error;
@@ -509,23 +454,13 @@ cx_type Fast_Expression_getType_intern(Fast_Expression _this, cx_type target, Fa
         } else {
             goto error;
         }
-    } else {
-        if (!result->reference) {
-            if (target && target->kind == CX_VOID) {
-                if (_this->isReference) {
-                    result = cx_object_o;
-                }
-            }
-        }
+    } else if ((target && (target->kind == CX_VOID) && target->reference)) {
+        result = cx_object_o;
     }
 
     return result;
 error: 
-    {
-        cx_id id;
-        Fast_Parser_error(yparser(), "invalid usage of null in expression with type '%s'",
-            Fast_Parser_id(target, id));
-    }
+    Fast_Parser_error(yparser(), "inconsistent usage of references");
     return NULL;  
 }
 /* $end */

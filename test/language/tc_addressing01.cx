@@ -29,7 +29,7 @@ test(y, 20, "Push non-ref local as value")
 
 // Assign object to reference local
 var uint32& z = x
-if &z != x: fail("Assignment of reflocal failed (x)")
+if &z != &x: fail("Assignment of reflocal failed (x)")
 if z != 10: fail("Value reflocal with non-ref type ($z)")
 test(z, 10, "Push reflocal with non-ref type as value")
 testref(z, 10, "Push reflocal with non-ref type as ref")
@@ -45,7 +45,7 @@ if &z: fail("Reassignment of reflocal failed (null)")
 // Reassign object to reference local
 x1 = 30
 &z = x1
-if &z != x1: fail("Reassignment of reflocal failed (x1)")
+if &z != &x1: fail("Reassignment of reflocal failed (x1)")
 if z != 30: fail("Value reassigned reflocal with non-ref type")
 test(z, 30, "Push reassigned reflocal with non-ref type")
 testref(z, 30, "Push reassigned reflocal with non-ref type as ref")
@@ -56,9 +56,9 @@ if z2 != 30: fail("Assignment of reflocal failed (z2)")
 
 // Assign reference local to reference local of reference type
 var object a = x
-if a != x: fail("Assignment of local of type 'object' failed")
+if a != &x: fail("Assignment of local of type 'object' failed")
 a = x1
-if a != x1: fail("Reassignment of local of type 'object' failed")
+if a != &x1: fail("Reassignment of local of type 'object' failed")
 
 testobject(x, "x", "Pass integer object as parameter of type 'object'")
 testobject(z, "x1", "Pass integer reference local as parameter of type 'object'")

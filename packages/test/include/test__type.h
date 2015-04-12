@@ -14,9 +14,9 @@ extern "C" {
 #endif
 
 /* Casting macro's for classes */
-#define test_suite(o) ((test_suite)o)
-#define test_test(o) ((test_test)o)
-#define test_unit(o) ((test_unit)o)
+#define test_suite(o) ((test_suite)cx_assertType((cx_type)test_suite_o, o))
+#define test_test(o) ((test_test)cx_assertType((cx_type)test_test_o, o))
+#define test_unit(o) ((test_unit)cx_assertType((cx_type)test_unit_o, o))
 
 /* Type definitions */
 /*  ::cortex::test::unit */

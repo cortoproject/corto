@@ -1077,6 +1077,18 @@ cx_bool cx_checkAttr(cx_object o, cx_int8 attr) {
     return result;
 }
 
+cx_object cx_assertType(cx_type type, cx_object o) {
+    if (o && (o != type)) {
+        if(!cx_instanceof(type, o)) {
+            cx_id id1, id2;
+            cx_critical("object '%s' is not of type '%s'",
+                cx_fullname(o, id1),
+                cx_fullname(type, id2));
+        }
+    }
+    return o;
+}
+
 cx_bool cx_instanceof(cx_type type, cx_object o) {
     cx_type objectType = cx_typeof(o);
     cx_bool result = TRUE;
@@ -3732,12 +3744,24 @@ cx_int16 cx_deinitValue(cx_value *v) {
 }
 
 /* Copy object */
-cx_int16 cx_copy(cx_object dst, cx_object src) {
+cx_int16 cx_copy(cx_object *dst, cx_object src) {
     struct cx_serializer_s s = cx_copy_ser(CX_PRIVATE, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
     cx_copy_ser_t data;
     cx_int16 result;
-    cx_valueObjectInit(&data.value, dst);
+    cx_bool newObject = FALSE;
+
+    if (!*dst) {
+        *dst = cx_new(cx_typeof(src));
+        newObject = TRUE;
+    }
+
+    cx_valueObjectInit(&data.value, *dst);
     result = cx_serialize(&s, src, &data);
+
+    if (newObject) {
+        cx_define(*dst);
+    }
+
     return result;
 }
 

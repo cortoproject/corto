@@ -1,0 +1,30 @@
+// Test comparisons for complex values using operators
+bool result : true
+void fail(string msg):
+    "tc_compare07: FAIL: $msg"
+    result = false
+
+// Test composite comparisons
+struct Point::
+    x, y: int32
+
+Point p: 10, 20
+Point q: 10, 21 // q is larger
+
+if p == q: fail("p == q")
+if p >= q: fail("p >= q")
+if p > q: fail("p > q")
+if !(p < q): fail("!(p < q)")
+if !(p <= q): fail("p <= q")
+
+// Test collection comparisons
+array{uint32,3} r: 0, 1, 2
+array{uint32,3} s: 1, 2, 3
+
+if r == s: fail("r == s")
+if r >= s: fail("r >= s")
+if r > s: fail("r > s")
+if !(r < s): fail("!(r < s)")
+if !(r <= s): fail("r <= s")
+
+if result: "tc_compare07: OK"

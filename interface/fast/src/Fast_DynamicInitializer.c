@@ -173,7 +173,8 @@ cx_int16 Fast_DynamicInitializer_push(Fast_DynamicInitializer _this) {
     cx_uint8 fp = Fast_Initializer(_this)->fp;
     Fast_Node expr = Fast_Node(_this->frames[fp].expr[0]);
     cx_bool isAnonymousLocal = expr && 
-        (expr->kind == Fast_VariableExpr) && (Fast_Variable(expr)->kind == Fast_LocalExpr) && (*Fast_Local(expr)->name == '<');
+        (expr->kind == Fast_StorageExpr) && (Fast_Storage(expr)->kind == Fast_LocalStorage) && 
+        (*Fast_Local(expr)->name == '<');
     
     /* Check if push is allowed */
     if (!(!fp && _this->assignValue) && (t->reference && !isAnonymousLocal)) {
@@ -241,7 +242,7 @@ cx_int16 Fast_DynamicInitializer_value(Fast_DynamicInitializer _this, Fast_Expre
     if (!type) {
         cx_id id;
         Fast_Parser_error(yparser(), "excess elements in initializer of type '%s'",
-            Fast_Parser_id(Fast_ObjectBase(Fast_Expression(_this)->type)->value, id));
+            Fast_Parser_id(Fast_Object(Fast_Expression(_this)->type)->value, id));
         goto error;
     }
 

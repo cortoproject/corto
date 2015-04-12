@@ -14,7 +14,7 @@ extern "C" {
 #endif
 
 /* Casting macro's for classes */
-#define tc_jsonser_fixture_Dog(o) ((tc_jsonser_fixture_Dog)o)
+#define tc_jsonser_fixture_Dog(o) ((tc_jsonser_fixture_Dog)cx_assertType((cx_type)tc_jsonser_fixture_Dog_o, o))
 
 /* Type definitions */
 /* ::tc_jsonser_fixture::color */

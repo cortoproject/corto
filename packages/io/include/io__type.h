@@ -14,7 +14,7 @@ extern "C" {
 #endif
 
 /* Casting macro's for classes */
-#define io_file(o) ((io_file)o)
+#define io_file(o) ((io_file)cx_assertType((cx_type)io_file_o, o))
 
 /* Type definitions */
 /* ::cortex::io::fileMode */

@@ -26,6 +26,9 @@ void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
 void Fast_Parser_warning(Fast_Parser _this, char* fmt, ...);
 /* $end */
 
+/* ::cortex::Fast::isOperatorAssignment(operatorKind operator) */
+cx_bool Fast_isOperatorAssignment(cx_operatorKind operator);
+
 /* ::cortex::Fast::report(string kind,string filename,uint32 line,uint32 column,string error,string token) */
 cx_void Fast_report(cx_string kind, cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token);
 
@@ -74,7 +77,6 @@ Fast_valueKind Fast_valueKindFromType(cx_type type);
 #include "Fast_Node.h"
 #include "Fast_Null.h"
 #include "Fast_Object.h"
-#include "Fast_ObjectBase.h"
 #include "Fast_Parser.h"
 #include "Fast_Parser_stagedId.h"
 #include "Fast_ParserDeclaration.h"
@@ -84,11 +86,11 @@ Fast_valueKind Fast_valueKindFromType(cx_type type);
 #include "Fast_StaticCall.h"
 #include "Fast_StaticInitializer.h"
 #include "Fast_StaticInitializerFrame.h"
+#include "Fast_Storage.h"
 #include "Fast_String.h"
 #include "Fast_Template.h"
 #include "Fast_Ternary.h"
 #include "Fast_Unary.h"
 #include "Fast_Update.h"
-#include "Fast_Variable.h"
 #include "Fast_Wait.h"
 #include "Fast_While.h"

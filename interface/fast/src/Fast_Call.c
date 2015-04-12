@@ -39,7 +39,7 @@ cx_int16 Fast_Call_insertCasts(Fast_Call _this) {
             }
             
             /* If both types are not equal, insert cast */
-            if ((parameterType != argumentType) || (argument->forceReference && !argumentType->reference)) {
+            if ((parameterType != argumentType) || ((argument->deref == Fast_ByReference) && !argumentType->reference)) {
                 Fast_Expression expr;
 
                 /* Any types are handled in the translation to the target representation. It is often
@@ -70,8 +70,6 @@ error:
 /* ::cortex::Fast::Call::construct() */
 cx_int16 Fast_Call_construct(Fast_Call _this) {
 /* $begin(::cortex::Fast::Call::construct) */
-    Fast_Expression returnTypeExpr;
-
     Fast_Node(_this)->kind = Fast_CallExpr;
 
     /* Insert casts based on expression list and arguments */
@@ -79,12 +77,11 @@ cx_int16 Fast_Call_construct(Fast_Call _this) {
         goto error;
     }
 
-    returnTypeExpr = Fast_Expression(Fast_Object__create(_this->returnType));
-    Fast_Parser_collect(yparser(), returnTypeExpr);
-
-    cx_set(&Fast_Expression(_this)->type, returnTypeExpr);
+    cx_set(&Fast_Expression(_this)->type, _this->returnType);
     Fast_Expression(_this)->isReference = 
         _this->returnsReference || _this->returnType->reference;
+
+    Fast_Expression(_this)->deref = _this->returnType->reference ? Fast_ByReference : Fast_ByValue;
 
     return 0;
 error:
@@ -113,7 +110,7 @@ cx_void Fast_Call_setParameters(Fast_Call _this, cx_function function) {
 
     for (i = 0; i < function->parameters.length; i++) {
         cx_set(&_this->parameters.buffer[i].type, function->parameters.buffer[i].type);
-        _this->parameters.buffer[i].passByReference= function->parameters.buffer[i].passByReference;
+        _this->parameters.buffer[i].passByReference = function->parameters.buffer[i].passByReference;
     }
 /* $end */
 }

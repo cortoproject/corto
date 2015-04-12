@@ -7,7 +7,7 @@
 #define Fast_Local_H
 
 #include "cortex.h"
-#include "Fast_Variable.h"
+#include "Fast_Storage.h"
 #include "Fast__type.h"
 
 #include "Fast__api.h"
