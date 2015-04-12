@@ -65,11 +65,12 @@ cx_ic Fast_While_toIc_v(Fast_While _this, cx_icProgram program, cx_icStorage sto
 
     /* Optimize condition - take into account literals, unwind condition for NOT-operator */
     condition = Fast_Node_optimizeCondition(_this->condition, &condResult, &inverse);
-    if (condition) {
-        expr = Fast_Node_toIc(Fast_Node(condition), program, accumulator, TRUE);
-    }
-    
+
     if (!_this->isUntil) {
+        if (condition) {
+            expr = Fast_Node_toIc(Fast_Node(condition), program, accumulator, TRUE);
+        }
+
         /* Create label to jump to when condition evaluates false */
         labelNeq = cx_icLabel__create(program, Fast_Node(_this)->line);
         

@@ -90,11 +90,11 @@ cx = {
         if (cx.me) {
             // Update UI elements
             if (cx.headerId && meta) {
-                $('#' + cx.headerId).html(cx.toLink(cx.me.id(), "header", true, undefined, "/"));
+                $('#' + cx.headerId).html(cx.toLink(cx.me.id(), "reference", true, undefined, "/"));
             }
             if (cx.metaId && meta) {
                 $('#' + cx.metaId).html(cx.me.metaToHtml());     
-                this.metaInitialized = true;       
+                this.metaInitialized = true;
             }
             if (cx.valueId && (value != undefined)) {
                 if (!this.valueInitialized) {
@@ -538,14 +538,14 @@ cx.object.prototype = {
         var size = 0;
 
         result = "<table id='scopeTable' class='value'>";
-        result += "<thead class='value'><tr><td><h3>Scope" + 
-                  "<img src='/images/scope_icon.png' class='valueIcon'></img></h3></td></tr></thead>";
+        result += "<thead class='value'><tr><td><h2>scope" + 
+                  "<span class='glyphicon glyphicon-tree-deciduous cardicon'></span></h2></thead>";
         result += "<tbody class='value'>";
         result += "<tr><td><div id='scopeContent'><table>";
 
         if (this.parent) {
             result += "<tr>" + 
-                    "<td><img src='/images/up_icon.png' class='objectIcon'>" + 
+                    "<td><span class='itemicon octicon octicon-chevron-up'></span>" + 
                     cx.toLink(this.parent.id(), "reference", false, "..") + 
                     "</td>" +
                     "</tr>";
@@ -555,10 +555,10 @@ cx.object.prototype = {
         if (size) {
             for (o in this.scope) {
                 result += "<tr>" + 
-                    "<td><img src='/images/object_icon.png' class='objectIcon'></img>" + 
+                    "<td><span class='itemicon octicon octicon-chevron-right'></span>" + 
                     cx.toLink(this.scope[o].id()) + 
-                    "<span class='scopeType'>&nbsp;&#8226;&nbsp;" + 
-                    cx.toLink(this.scope[o].meta.type, "scopeType") + 
+                    "<span>&nbsp;&#8226;&nbsp;" + 
+                    cx.toLink(this.scope[o].meta.type) + 
                     "</span></td>" +
                     "</tr>";
             }
@@ -591,8 +591,8 @@ cx.object.prototype = {
 
         var result = "";
         result += "<table id='metaTable' class='value'>";
-        result += "<thead class='value'><tr><th></th><td><h3>Metadata" +
-                  "<img src='/images/meta_icon.png' class='valueIcon'></img></h3></td></tr></thead><tbody class='value'>"
+        result += "<thead class='value'><tr><th></th><td><h2>metavalue" +
+                  "<span class='cardicon glyphicon glyphicon-leaf'></span></h2></td></tr></thead><tbody class='value'>"
         result += "<tr><th>type</th>" + 
                       "<td><code>" + cx.toLink(this.meta.type, "reference", true) + "</code></td>";
         if (this.meta.parent) {
@@ -694,9 +694,9 @@ cx.object.prototype = {
             if (!s.contentOnly) {
                 result += "<table id='valueTable' class='value'>";
                 result += "<thead class='value'><tr data-depth='1'>" + 
-                          "<th></th><td><h3>Value" + 
-                          "<img src='/images/value_icon.png' class='valueIcon'></img>" + 
-                          "</h3></td></tr></thead><tbody id='valueContent' class='value'>";
+                          "<th></th><td><h2>value" + 
+                          "<span class='cardicon glyphicon glyphicon-apple'></span>" + 
+                          "</h2></td></tr></thead><tbody id='valueContent' class='value'>";
             }
             if (size) {
                 var value = s.serializeValue(v);

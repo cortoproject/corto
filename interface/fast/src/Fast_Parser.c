@@ -3185,6 +3185,10 @@ Fast_Node Fast_Parser_whileStatement(Fast_Parser _this, Fast_Expression conditio
     _this->stagingAllowed = FALSE;
 
     if (_this->pass) {
+        if (isUntil && _this->block->isRoot) {
+            Fast_Parser_error(yparser(), "invalid do-while in root block");
+            goto error;
+        }
         result = Fast_Node(Fast_While__create(condition, trueBranch, isUntil));
         if (!result) {
             goto error;

@@ -172,6 +172,7 @@ CX_CLASS_DEF(Fast_While) {
 CX_CLASS_DEF(Fast_Block) {
     CX_EXTEND(Fast_Node);
     Fast_Block parent;
+    cx_bool isRoot;
     Fast_Node_list statements;
     Fast_Local_list locals;
     cx_function function;

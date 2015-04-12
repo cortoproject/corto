@@ -236,6 +236,7 @@
 			<class name="Block" base="Node" baseAccess="readonly">
 				<meta:scope>
 					<member name="parent" type="Fast::Block"/>
+					<member name="isRoot" type="bool" modifiers="readonly"/>
 					<member name="statements" type="list{Fast::Node}" modifiers="private|local"/>
 					<member name="locals" type="list{Fast::Local}" modifiers="private|local"/>
 					<member name="function" type="function" modifiers="readonly"/>

@@ -1,5 +1,5 @@
 ### Cortex [![Build Status](https://travis-ci.org/cortexlang/cortex.svg?branch=master)](https://travis-ci.org/Seldomberry/cortex) [![Coverity](https://scan.coverity.com/projects/3807/badge.svg)](https://scan.coverity.com/projects/3807)
-A light weight, collaborative playground designed for fast-paced, technology-heavy environments with rapidly evolving requirements and short delivery timescales. 
+A next-gen programming language that enables massive collaborative development.
 
 Currently Cortex is in alpha. It is expected to reach v1.0 status by the end of 2015. The project has been validated on the following platforms:
  * Ubuntu 14.04 (32/64 bit)
@@ -55,9 +55,9 @@ StarWars/
 │   ├── StarWars__load.c
 │   └── StarWars__meta.c
 └── include/
-    ├── StarWars__api.c
-    ├── StarWars__meta.c
-    └── StarWars__type.c
+    ├── StarWars__api.h
+    ├── StarWars__meta.h
+    └── StarWars__type.h
 ```
 When inspecting the `StarWars.cx` file, you'll find:
 ```
@@ -73,7 +73,7 @@ class SpaceShip::
     hp: int32, readonly
     strength: int32, readonly
     int16 construct()
-    bool attack(SpaceShip target)
+    void attack(SpaceShip target)
 ```
 Run `make -C StarWars` to re-generate and make the package. Notice that there are now two additional files:
 ```
@@ -130,7 +130,6 @@ In the `StarWars_SpaceShip_attack` method, add the following code:
             printf("%s: It's just a flesh wound\n", cx_nameof(target));
         }
     }
-    return target->hp == 0;
 /* $end */
 ```
 #### 4. Run it!
@@ -141,7 +140,7 @@ Try it out with a new file called `epicbattle.cx`, add the following (historical
 StarWars::SpaceShip Luke: XWing
 StarWars::SpaceShip DarthVader: Destroyer
 
-while !Luke.attack(DarthVader)
+while DarthVader.hp: Luke.attack(DarthVader)
 ```
 Run the script with `cortex epicbattle.cx`. Your output should look like:
 ```

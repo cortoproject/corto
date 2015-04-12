@@ -1,0 +1,53 @@
+//
+// Showcase different ways of declaring objects
+//   Important: types use the same syntax as regular objects
+
+// Declare an object
+int32 a: 10
+
+// Declare an object using '{ }' equivalent to line 6, but allows for multiline (complex) assignments
+int32 b {10}
+
+// Create an anonymous object (will be deleted immediately if not referenced)
+int32{10}
+
+// Declare a small hierarchy of objects
+int32 parent{10}::
+    int32 child_1{20} // child_1 is in the 'scope' of parent
+    int32 child_2{30}
+
+// Assign value of child_2 (30) to parent using the scope operator
+parent = parent::child_2    
+
+
+// Declare a simple composite type
+struct Point::
+    member x, y: int32 // Declare two member objects in scope of Point
+
+// Declare objects of Point type
+Point p: 10, 20
+Point q: x=10 y=20
+
+// Nested composite type
+struct Line::
+    start, stop: Point // Declare two members using default scope type
+
+// Declare objects of Line type
+Line l: start={10, 20} stop={30, 40}
+Line m {
+    {10, 20},
+    {30, 40}
+}
+
+
+// Collection of primitive type
+list{int32} ints: 0, 1, 2, 3
+
+// Collection of complex types
+list{Point} points: {10, 20}, {30, 40}
+
+// Collection of nested complex types
+list{Line} lines {
+    {start={10, 20} stop={30, 40}},
+    {start={50, 60} stop={70, 80}}
+}

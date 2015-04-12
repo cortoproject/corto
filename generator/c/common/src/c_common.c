@@ -212,7 +212,8 @@ static cx_string c_typeToUpper(cx_string str, cx_id buffer) {
 /* Translate constant to C-language id */
 cx_char* c_constantId(cx_generator g, cx_constant* c, cx_char* buffer) {
     cx_string prefixOrig;
-    cx_string name = cx_nameof(c);
+    cx_enum e = cx_parentof(c);
+    cx_string name = cx_nameof(e->constants.buffer[0]);
     cx_id prefix;
 
     prefixOrig = g_getPrefix(g, c);
@@ -223,14 +224,14 @@ cx_char* c_constantId(cx_generator g, cx_constant* c, cx_char* buffer) {
     strcpy(prefix, prefixOrig);
 
     if (isupper(name[0])) {
-        if (isupper(name[1])) { /* All caps */
+        if (isupper(name[strlen(name)-1])) { /* All caps */
             c_typeToUpper(prefixOrig, prefix);
         } else { /* Initial caps */
             prefix[0] = toupper(prefix[0]);
         }
     }
 
-    sprintf(buffer, "%s_%s", prefix, name);
+    sprintf(buffer, "%s_%s", prefix, cx_nameof(c));
 
     return buffer;
 }

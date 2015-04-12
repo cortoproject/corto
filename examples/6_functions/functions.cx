@@ -1,0 +1,26 @@
+//
+// Show functions
+
+// One-line function
+int32 add(int32 a, int32 b) = a + b
+
+// Multiline function
+int32 sub(int32 a, int32 b):
+    sub = a - b // 'sub' is the return variable
+
+// Recursive function
+uint32 fib(uint32 n):
+    fib = n < 2 ? 1 : fib(n - 2) + fib(n - 1) // Note that the meaning of 'fib' is context sensitive
+
+// Overloading
+int32 add(int32 a, int32 b, int32 c) = a + b + c
+
+// Methods
+struct Point::
+    x, y: int32
+    void add(Point p):
+        this[x, y] += p[x, y]
+
+Point p: 10, 20
+Point q: 20, 30
+p.add(q)

@@ -9,12 +9,13 @@
 #define CX_GENERATORDEPWALK_H_
 
 #include "cx_generator.h"
+#include "cx_depresolver.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-int cx_genDepWalk(cx_generator g, g_walkAction onDeclare, g_walkAction onDefine, void* userData);
+int cx_genDepWalk(cx_generator g, cx_depresolver_action onDeclare, cx_depresolver_action onDefine, void* userData);
 
 #ifdef __cplusplus
 }
