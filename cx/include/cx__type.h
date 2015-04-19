@@ -226,6 +226,7 @@ CX_BITMASK(cx_attr);
     #define CX_ATTR_SCOPED (0x1)
     #define CX_ATTR_WRITABLE (0x2)
     #define CX_ATTR_OBSERVABLE (0x4)
+    #define CX_ATTR_PERSISTENT (0x8)
 
 /*  ::cortex::lang::binary */
 CX_CLASS(cx_binary);

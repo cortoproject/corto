@@ -79,7 +79,7 @@ static cx_int16 serializeNumber(cx_value *value, cx_string *out) {
 static cx_int16 serializeNumericWithPrefix(cx_value *value, cx_string *out, const char *prefix) {
     cx_string raw;
     cx_void *v = cx_valueValue(value);
-    if (cx_convert(cx_primitive(cx_bool_o), v, cx_primitive(cx_string_o), &raw)) {
+    if (cx_convert(cx_primitive(cx_valueType(value)), v, cx_primitive(cx_string_o), &raw)) {
         goto error;
     }
     int length = snprintf(NULL, 0, "\"%s\" %s", prefix, raw);
@@ -372,6 +372,14 @@ static char* dbsh_attrStr(cx_object o, char* buff) {
             strcat(buff, "|O");
         } else {
             strcat(buff, "O");
+            first = FALSE;
+        }
+    }
+    if (cx_checkAttr(o, CX_ATTR_PERSISTENT)) {
+        if (!first) {
+            strcat(buff, "|P");
+        } else {
+            strcat(buff, "P");
         }
     }
     return buff;
@@ -425,13 +433,20 @@ static cx_int16 serializeMeta(cx_serializer s, cx_value* v, void* userData) {
         goto finished;
     }
 
+    if (cx_checkAttr(o, CX_ATTR_PERSISTENT)) {
+        cx_time t = cx_timestampof(o);
+        if (!cx_ser_appendstr(data, "\"timestamp\":\"%d.%.9d\",", t.tv_sec, t.tv_nsec)) {
+            goto finished;
+        }        
+    }
+
     char states[sizeof("V|DCL|DEF")];
     dbsh_stateStr(o, states);
     if (!cx_ser_appendstr(data, "\"states\":\"%s\",", states)) {
         goto finished;
     }
 
-    char attributes[sizeof("S|W|O")];
+    char attributes[sizeof("S|W|O|P")];
     dbsh_attrStr(o, attributes);
     if (!cx_ser_appendstr(data, "\"attributes\":\"%s\",", attributes)) {
         goto finished;
@@ -488,7 +503,7 @@ static int serializeMetaWalkScopeAction(cx_object o, void* userData) {
         goto finished;
     }
 
-    char attributes[sizeof("S|W|O")];
+    char attributes[sizeof("S|W|O|P")];
     dbsh_attrStr(o, attributes);
     if (!cx_ser_appendstr(userData, "\"attributes\":\"%s\",", attributes)) {
         goto finished;

@@ -12,6 +12,7 @@
 #include "cx_ll.h"
 #include "cx_value.h"
 #include "cx_async.h"
+#include "cx_time.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -62,6 +63,9 @@ void cx_scopeRelease(cx_ll scope);
 cx_int32 cx_scopeWalk(cx_object o, cx_scopeWalkAction action, void* userData); /* Safe object-walk */
 cx_string cx_fullname(cx_object o, cx_id buffer);
 cx_string cx_relname(cx_object from, cx_object o, cx_id buffer);
+
+/* Persistent object data */
+cx_time cx_timestampof(cx_object o);
 
 /* Resource management */
 cx_int32 cx_keep(cx_object o);

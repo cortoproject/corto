@@ -23,6 +23,7 @@ typedef struct cx__attr {
     unsigned scope:1;
     unsigned write:1;
     unsigned observable:1;
+    unsigned persistent:1;
     unsigned state:4;
 }cx__attr;
 
@@ -97,6 +98,11 @@ struct cx__observable {
     /* Pointer to first parent that has observers. If there are no observers
      * on any parent-object, this member is NULL. */
     cx__observable *parent;
+};
+
+typedef struct cx__persistent cx__persistent;
+struct cx__persistent {
+    cx_time timestamp;
 };
 
 /* Initialize static scoped object */

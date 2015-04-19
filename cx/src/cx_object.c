@@ -188,6 +188,30 @@ static cx__observable* cx__objectObservable(cx__object* o) {
     return result;
 }
 
+static cx__persistent* cx__objectPersistent(cx__object* o) {
+    cx__persistent* result = (void*)o;
+
+    if (o->attrs.scope) {
+        result = CX_OFFSET(result, -sizeof(cx__scope));
+    }
+    if (o->attrs.write) {
+        result = CX_OFFSET(result, -sizeof(cx__writable));
+    }
+    if (result && o->attrs.observable) {
+        result = CX_OFFSET(result, -sizeof(cx__observable));
+
+        if (o->attrs.persistent) {
+            result = CX_OFFSET(result, -sizeof(cx__persistent));
+        } else {
+            result = NULL;
+        }
+    } else {
+        result = NULL;
+    }
+
+    return result; 
+}
+
 static void* cx__objectStartAddr(cx__object* o) {
     void* result;
     result = o;
@@ -197,9 +221,11 @@ static void* cx__objectStartAddr(cx__object* o) {
     if (o->attrs.write) {
         result = CX_OFFSET(result, -sizeof(cx__writable));
     }
-
     if (o->attrs.observable) {
         result = CX_OFFSET(result, -sizeof(cx__observable));
+    }
+    if (o->attrs.persistent) {
+        result  = CX_OFFSET(result, -sizeof(cx__persistent));
     }
     return result;
 }
@@ -380,6 +406,15 @@ static void cx__deinitObservable(cx_object o) {
     if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
         cx_rwmutexFree(&observable->childLock);
     }
+}
+
+static void cx__initPersistent(cx_object o) {
+    cx__object* _o;
+    cx__persistent* persistent;
+
+    _o = CX_OFFSET(o, -sizeof(cx__object));
+    persistent = cx__objectPersistent(_o);
+    cx_timeGet(&persistent->timestamp);
 }
 
 /* Initialize static scoped object */
@@ -781,6 +816,9 @@ cx_object cx_new_ext(cx_object src, cx_type type, cx_uint8 attrs, cx_string cont
     if (attrs & CX_ATTR_OBSERVABLE) {
         headerSize += sizeof(cx__observable);
     }
+    if (attrs & CX_ATTR_PERSISTENT) {
+        headerSize += sizeof(cx__persistent);
+    }
 
     size += headerSize;
 
@@ -813,6 +851,9 @@ cx_object cx_new_ext(cx_object src, cx_type type, cx_uint8 attrs, cx_string cont
         if (attrs & CX_ATTR_OBSERVABLE) {
             o->attrs.observable = TRUE;
         }
+        if (attrs & CX_ATTR_PERSISTENT) {
+            o->attrs.persistent = TRUE;
+        }
 
         /* Initially, an object is valid and declared */
         o->attrs.state = CX_VALID | CX_DECLARED;
@@ -827,6 +868,9 @@ cx_object cx_new_ext(cx_object src, cx_type type, cx_uint8 attrs, cx_string cont
         if (!(attrs & CX_ATTR_SCOPED)) {
             if (attrs & CX_ATTR_OBSERVABLE) {
                 cx__initObservable(CX_OFFSET(o, sizeof(cx__object)));
+            }
+            if (attrs & CX_ATTR_PERSISTENT) {
+                cx__initPersistent(CX_OFFSET(o, sizeof(cx__object)));
             }
 
             /* Call framework initializer */
@@ -858,7 +902,7 @@ cx_object cx_new(cx_type type) {
     if (type->kind == CX_VOID) {
         attr = CX_ATTR_OBSERVABLE;
     } else {
-        attr = CX_ATTR_WRITABLE | CX_ATTR_OBSERVABLE;
+        attr = CX_ATTR_WRITABLE | CX_ATTR_OBSERVABLE | CX_ATTR_PERSISTENT;
     }
 
     return cx_new_ext(NULL, type, attr, NULL);
@@ -889,7 +933,7 @@ cx_object cx_declare(cx_object parent, cx_string name, cx_type type) {
 
     /* When the object is of a void-type, it should not be writable. */
     if (type->kind != CX_VOID) {
-        state = CX_ATTR_SCOPED | CX_ATTR_WRITABLE | CX_ATTR_OBSERVABLE;
+        state = CX_ATTR_SCOPED | CX_ATTR_WRITABLE | CX_ATTR_OBSERVABLE | CX_ATTR_PERSISTENT;
     } else {
         state = CX_ATTR_SCOPED | CX_ATTR_OBSERVABLE;
     }
@@ -995,6 +1039,10 @@ cx_int16 cx_define(cx_object o) {
             }
 
             if (!result) {
+                cx__persistent* _ps = cx__objectPersistent(CX_OFFSET(o, -sizeof(cx__object)));
+                if (_ps) {
+                    cx_timeGet(&_ps->timestamp);
+                }
                 _o->attrs.state |= CX_DEFINED;
 
                 /* Notify observers of defined object */
@@ -1006,6 +1054,10 @@ cx_int16 cx_define(cx_object o) {
             }
         } else {
             /* Notify observers of redefined object */
+            cx__persistent* _ps = cx__objectPersistent(CX_OFFSET(o, -sizeof(cx__object)));
+            if (_ps) {
+                cx_timeGet(&_ps->timestamp);
+            }
             cx_notify(cx__objectObservable(_o), o, o, CX_ON_UPDATE);
         }     
     }
@@ -1073,6 +1125,9 @@ cx_bool cx_checkAttr(cx_object o, cx_int8 attr) {
     }
     if (attr & CX_ATTR_OBSERVABLE) {
         if (!_o->attrs.observable) result = FALSE;
+    }
+    if (attr & CX_ATTR_PERSISTENT) {
+        if (!_o->attrs.persistent) result = FALSE;
     }
     return result;
 }
@@ -1360,6 +1415,26 @@ cx_string cx_relname(cx_object from, cx_object o, cx_id buffer) {
         *ptr = '\0';
     }
     return buffer;
+}
+
+/* Get timestamp (requires persistent object) */
+cx_time cx_timestampof(cx_object o) {
+    cx__object* _o;
+    cx__persistent* persistent;
+    cx_time result = {0, 0};
+
+    _o = CX_OFFSET(o, -sizeof(cx__object));
+    persistent = cx__objectPersistent(_o);
+    if (persistent) {
+        result = persistent->timestamp;
+    } else {
+        goto err_not_persistent;
+    }
+
+    return result;
+err_not_persistent:
+    cx_critical("cx_timestampof: object %p is not persistent.", o);
+    return result;
 }
 
 /* Destruct object. */
@@ -2178,7 +2253,7 @@ int cx_observerAlignScope(cx_object o, void *userData) {
         cx_notifyObserver(data->observer, data->observable, o, CX_ON_DECLARE);
     }
 
-    if (cx_checkAttr(o, CX_ATTR_OBSERVABLE)) {
+    if (cx_checkAttr(o, CX_ATTR_OBSERVABLE) && cx_checkAttr(o, CX_ATTR_PERSISTENT)) {
         if ((data->mask & CX_ON_DEFINE) && (data->mask & CX_ON_SCOPE) && cx_checkState(o, CX_DEFINED)) {
             cx_notifyObserver(data->observer, o, o, CX_ON_DEFINE);
         }
@@ -2563,10 +2638,15 @@ static cx_int32 cx_notify(cx__observable* _o, cx_object observable, cx_object _t
 cx_int32 cx_update(cx_object observable) {
     cx__observable *_o;
     cx__writable* _wr;
+    cx__persistent* _ps;
 
     _o = cx__objectObservable(CX_OFFSET(observable, -sizeof(cx__object)));
     if (_o->lockRequired) {
         _wr = cx__objectWritable(CX_OFFSET(observable, -sizeof(cx__object)));
+        _ps = cx__objectPersistent(CX_OFFSET(observable, -sizeof(cx__object)));
+        if (_ps) {
+            cx_timeGet(&_ps->timestamp);
+        }
         cx_rwmutexRead(&_wr->lock);
         if (cx_notify(_o, observable, observable, CX_ON_UPDATE)) {
             goto error;
@@ -2587,10 +2667,15 @@ error:
 cx_int32 cx_updateFrom(cx_object observable, cx_object _this) {
     cx__observable *_o;
     cx__writable* _wr;
+    cx__persistent* _ps;
 
     _o = cx__objectObservable(CX_OFFSET(observable, -sizeof(cx__object)));
     if (_o->lockRequired) {
         _wr = cx__objectWritable(CX_OFFSET(observable, -sizeof(cx__object)));
+        _ps = cx__objectPersistent(CX_OFFSET(observable, -sizeof(cx__object)));
+        if (_ps) {
+            cx_timeGet(&_ps->timestamp);
+        }
         cx_rwmutexRead(&_wr->lock);
         if (cx_notify(_o, observable, _this, CX_ON_UPDATE)) {
             goto error;
@@ -2653,8 +2738,13 @@ busy:
 cx_int32 cx_updateEnd(cx_object observable) {
     cx__writable* _wr;
     cx__observable *_o;
+    cx__persistent* _ps;
 
     _o = cx__objectObservable(CX_OFFSET(observable, -sizeof(cx__object)));
+    _ps = cx__objectPersistent(CX_OFFSET(observable, -sizeof(cx__object)));
+    if (_ps) {
+        cx_timeGet(&_ps->timestamp);
+    }
 
     if (cx_notify(_o, observable, observable, CX_ON_UPDATE)) {
         goto error;
@@ -2676,8 +2766,13 @@ cx_int32 cx_updateEndFrom(cx_object observable, cx_object _this) {
     if (cx_checkAttr(observable, CX_ATTR_OBSERVABLE)) {
         cx__writable* _wr;
         cx__observable *_o;
+        cx__persistent* _ps;
 
         _o = cx__objectObservable(CX_OFFSET(observable, -sizeof(cx__object)));
+        _ps = cx__objectPersistent(CX_OFFSET(observable, -sizeof(cx__object)));
+        if (_ps) {
+            cx_timeGet(&_ps->timestamp);
+        }
 
         if (cx_notify(_o, observable, _this, CX_ON_UPDATE)) {
             goto error;

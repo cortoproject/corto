@@ -219,6 +219,12 @@ code.enum {
 code.bitmask {
     color: #AA55CC;
 }
+code.boolean {
+    color: #4444DD;
+}
+code.number {
+    color: #4444DD;
+}
 code.string {
     color: #DD4444;
 }

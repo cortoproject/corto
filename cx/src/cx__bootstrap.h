@@ -218,9 +218,9 @@ CX_STATIC_SCOPED_OBJECT(constant);
 #define CX_FWDECL(type, name) CX_FWDECL_SSO(type, name); cx_##type cx_##name##_o = &name##__o.v
 
 /* SSO */
-#define CX_ATTR_SSOO {1,0,1,CX_VALID | CX_DECLARED}
-#define CX_ATTR_SSO {1,0,0,CX_VALID | CX_DECLARED}
-#define CX_ATTR_SO {0,0,0,CX_VALID | CX_DECLARED}
+#define CX_ATTR_SSOO {1, 0, 1, 0, CX_VALID | CX_DECLARED}
+#define CX_ATTR_SSO {1, 0, 0, 0, CX_VALID | CX_DECLARED}
+#define CX_ATTR_SO {0, 0, 0, 0, CX_VALID | CX_DECLARED}
 #define CX_ROOT_V() {{NULL,NULL,CX_RWMUTEX_INITIALIZER,CX_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE,FALSE,NULL},{NULL, NULL, _(scope)NULL, _(scopeLock)CX_RWMUTEX_INITIALIZER, _(attached)NULL, _(orphaned)0},{CX_ATTR_SSOO, 2, (cx_type)&object__o.v, CX_MMNODE_INIT}}
 #define CX_OBJECT_V(parent, name) {{NULL,NULL,CX_RWMUTEX_INITIALIZER,CX_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE,FALSE,NULL},{CX_OFFSET(&parent##__o, sizeof(cx_SSOO)), name, _(scope)NULL, _(scopeLock)CX_RWMUTEX_INITIALIZER, _(attached)NULL, _(orphaned)0},{CX_ATTR_SSOO, 2, (cx_type)&object__o.v, CX_MMNODE_INIT}}
 #define CX_SSO_V(parent, name, type) {{CX_OFFSET(&parent##__o, sizeof(cx_SSOO)), name, _(scope)NULL, _(scopeLock)CX_RWMUTEX_INITIALIZER, _(attached)NULL, _(orphaned)0},{CX_ATTR_SSO, 2, (cx_type)&type##__o.v, CX_MMNODE_INIT}}
@@ -642,6 +642,7 @@ CX_BITMASK_O(attr);
     CX_CONSTANT_O(attr, ATTR_SCOPED);
     CX_CONSTANT_O(attr, ATTR_WRITABLE);
     CX_CONSTANT_O(attr, ATTR_OBSERVABLE);
+    CX_CONSTANT_O(attr, ATTR_PERSISTENT);
 
 CX_BITMASK_O(eventMask);
     CX_CONSTANT_O(eventMask, ON_DECLARE);

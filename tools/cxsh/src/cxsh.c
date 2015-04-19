@@ -185,8 +185,17 @@ static char* cxsh_attrStr(cx_object o, char* buff) {
             strcat(buff, "|O");
         } else {
             strcat(buff, "O");
+            first = FALSE;
         }
     }
+    if (cx_checkAttr(o, CX_ATTR_PERSISTENT)) {
+        if (!first) {
+            strcat(buff, "|P");
+        } else {
+            strcat(buff, "P");
+        }
+    }
+
     return buff;
 }
 
@@ -454,7 +463,7 @@ static cx_string cxsh_multiline(cx_string expr, cx_uint32 indent) {
 static int cxsh_show(char* object) {
     cx_id id;
     char state[sizeof("valid | declared | defined")];
-    char attr[sizeof("scope | writable | observable")];
+    char attr[sizeof("scope | writable | observable | persistent")];
     struct cx_serializer_s s;
     cx_string_ser_t sdata;
     cx_value result;
@@ -483,7 +492,11 @@ static int cxsh_show(char* object) {
             if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
                 printf("%sname:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, OBJECT_COLOR, cx_fullname(o, id), NORMAL);
                 printf("%sparent:       %s%s%s\n", INTERFACE_COLOR, OBJECT_COLOR, cx_fullname(cx_parentof(o), id), NORMAL);
-            }            
+            }
+            if (cx_checkAttr(o, CX_ATTR_PERSISTENT)) {
+                cx_time t = cx_timestampof(o);
+                printf("%stimestamp:%s    %d.%.9d%s\n", INTERFACE_COLOR, GREEN, t.tv_sec, t.tv_nsec, NORMAL);
+            } 
             printf("%sstate:%s        %s%s%s\n", INTERFACE_COLOR, NORMAL, META_COLOR, cxsh_stateStr(o, state), NORMAL);
             printf("%sattributes:%s   %s%s%s\n", INTERFACE_COLOR, NORMAL, META_COLOR, cxsh_attrStr(o, attr), NORMAL);
             printf("%stype:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, OBJECT_COLOR, cx_fullname(cx_valueType(&result), id), NORMAL);

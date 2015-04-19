@@ -41,7 +41,10 @@ void cx_timeGet(cx_time* time) {
     time->tv_sec = mts.tv_sec;
     time->tv_nsec = mts.tv_nsec;
 #else
-    clock_gettime(CLOCK_REALTIME, (struct timespec*)&time);
+    struct timespec t;
+    clock_gettime(CLOCK_REALTIME, &t);
+    time->tv_sec = t.tv_sec;
+    time->tv_nsec = t.tv_nsec;
 #endif
 }
 
