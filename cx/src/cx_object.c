@@ -1102,6 +1102,14 @@ cx_int32 cx_countof(cx_object o) {
     return _o->refcount;
 }
 
+/* Get state */
+cx_int8 cx_getState(cx_object o) {
+    cx__object* _o;
+    _o = CX_OFFSET(o, -sizeof(cx__object));
+    cx_int8 state = _o->attrs.state;
+    return state;
+}
+
 /* Check for a state */
 cx_bool cx_checkState(cx_object o, cx_int8 state) {
     cx__object* _o;
