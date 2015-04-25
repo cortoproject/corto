@@ -10,7 +10,7 @@
 
 #include "cx_object.h"
 #include "cx__type.h"
-#include "stdarg.h"
+#include <stdarg.h>
 
 #ifdef __cplusplus
 extern "C" {

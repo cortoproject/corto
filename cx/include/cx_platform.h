@@ -8,7 +8,7 @@
 #ifndef CX_PLATFORM_H_
 #define CX_PLATFORM_H_
 
-#include "stdint.h"
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {

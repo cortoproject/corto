@@ -8,8 +8,8 @@
 #ifndef CORE_ERR_H_
 #define CORE_ERR_H_
 
-#include "stdio.h"
-#include "stdarg.h"
+#include <stdio.h>
+#include <stdarg.h>
 
 #ifdef __cplusplus
 extern "C" {

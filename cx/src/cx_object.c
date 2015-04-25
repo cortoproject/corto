@@ -1103,7 +1103,7 @@ cx_int32 cx_countof(cx_object o) {
 }
 
 /* Get state */
-cx_int8 cx_getState(cx_object o) {
+cx_int8 cx_stateof(cx_object o) {
     cx__object* _o;
     _o = CX_OFFSET(o, -sizeof(cx__object));
     cx_int8 state = _o->attrs.state;
