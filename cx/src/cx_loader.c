@@ -101,9 +101,97 @@ error:
     return -1;
 }
 
+/* Convert package identifier to filename */
+cx_string cx_packageToFile(cx_string package) {
+    cx_char ch, *ptr, *bptr;
+    cx_string fileName, path, start;
+    cx_string cortexHome = getenv("CORTEX_HOME");
+    int fileNameLength;
+
+    ptr = package;
+    path = malloc(strlen(package) * 2 + strlen(cortexHome) + strlen("/packages/bin//lib.so") + 1);
+    sprintf(path, "%s/packages/", cortexHome);
+    bptr = path + strlen(path);
+    start = bptr;
+    fileName = bptr;
+
+    while((ch = *ptr)) {
+        switch(ch) {
+        case ':':
+            ptr++;
+        case '/':
+            if (bptr != start) {
+                *bptr = '/';
+                bptr++;
+            }
+            fileName = bptr;
+            break;
+        default:
+            *bptr = ch;
+            bptr++;
+            break;
+        }
+        ptr++;
+    }
+    *bptr = '\0';
+
+    fileNameLength = strlen(fileName);
+    memcpy(fileName + fileNameLength, "/bin/lib", 8);
+    memcpy(fileName + fileNameLength + 8, fileName, fileNameLength);
+    memcpy(fileName + fileNameLength * 2 + 8, ".so\0", 4);
+
+    return path;
+}
+
+/* Load a cortex library */
+int cx_loadLibrary(cx_string fileName) {
+    cx_dl dl = NULL;
+    int (*proc)(int argc, char* argv[]);
+
+    if (!(dl = cx_dlOpen(fileName))) {
+        cx_error("%s", cx_dlError());
+        goto error;
+    }
+
+    /* Lookup main function */
+    proc = (int(*)(int,char*[]))cx_dlProc(dl, "cortexmain");
+    if (!proc) {
+        cx_error("%s: unresolved 'cortexmain'", fileName);
+        goto error;
+    }
+
+    /* Call main */
+    if (proc(0, NULL)) {
+        cx_error("%s: cortexmain failed", fileName);
+        goto error;
+    }
+
+    /* Add library to libraries list */
+    if (!libraries) {
+        libraries = cx_llNew();
+    }
+    cx_llInsert(libraries, dl);
+
+    return 0;
+error:
+    if (dl) cx_dlClose(dl);
+    return -1;  
+}
+
 static cx_ll filesLoaded = NULL;
 
-/* Load known filetypes */
+/* Load xml interface */
+int cx_loadXml(void) {
+    cx_string cortexHome = getenv("CORTEX_HOME");
+    int result;
+    cx_string path = cx_malloc(strlen(cortexHome) + strlen("/bin/libxml.so") + 1);
+    sprintf(path, "%s/bin/libxml.so", cortexHome);
+    result = cx_loadLibrary(path);
+    cx_dealloc(path);
+    return result;
+}
+
+/* Load a package */
 int cx_load(cx_string str){
     cx_char ext[16];
     struct cx_fileHandler* h;
@@ -134,7 +222,7 @@ int cx_load(cx_string str){
     if (!strcmp(ext, "cx")) {
         cx_load("Fast");
     } else if (!strcmp(ext, "xml")) {
-        cx_load("xml");
+        cx_loadXml();
     }
 
     /* Lookup extension */
@@ -158,123 +246,46 @@ loaded:
     return 0;
 }
 
-/* Load library */
-int cx_libraryLoader(cx_string _file, void* udata) {
-    cx_dl dl = NULL;
-    cx_string filename = NULL, file = NULL;
-    int (*proc)(int argc, char* argv[]);
-    int length;
-    cx_char path[256];
-    cx_string str = NULL;
-    cx_string cortexHomeVar = getenv("CORTEX_HOME");
+/* Load package */
+int cx_packageLoader(cx_string file) {
+    cx_string fileName;
+    int result;
 
-    CX_UNUSED(udata);
-
-    /* Convert scoped name to filename */
-    if (strchr(_file, ':')) {
-        cx_char ch, *ptr, *bptr;
-        ptr = _file;
-        file = malloc(strlen(_file)+1);
-        filename = file;
-        ptr = _file;
-        bptr = file;
-        while((ch=*ptr)) {
-            switch(ch) {
-            case ':':
-                *bptr = '/';
-                bptr++;
-                ptr++;
-                filename = bptr;
-                break;
-            default:
-                *bptr = ch;
-                bptr++;
-                break;
-            }
-            ptr++;
-        }
-        *bptr = '\0';
-    } else {
-        file = cx_strdup(_file);
-        filename = file;
+    fileName = cx_packageToFile(file);
+    if (!fileName) {
+        return -1;
     }
 
-    length = (cx_word)filename - (cx_word)file;
-    memcpy(path, file, length);
-    path[length]='\0';
-    
-    length = snprintf(NULL, 0, "%s/bin/%slib%s.so", cortexHomeVar, path, filename);
-    if (length < 0) {
-        cx_error("snprintf failed");
-        goto error;
-    }
-    str = cx_malloc(length + 1);
-    snprintf(str, length+1, "%s/bin/%slib%s.so", cortexHomeVar, path, filename);
+    result = cx_loadLibrary(fileName);
+    cx_dealloc(fileName);
 
-    if (!(dl = cx_dlOpen(str))) {
-        cx_error("%s", cx_dlError());
-        goto error;
-    }
-
-    /* Lookup main function */
-    proc = (int(*)(int,char*[]))cx_dlProc(dl, "cortexmain");
-    if (!proc) {
-        cx_error("%s: unresolved 'cortexmain' in library '%s'", _file, str);
-        goto error;
-    }
-
-    /* Call main */
-    if (proc(0, NULL)) {
-        cx_error("%s: cortexmain failed", _file);
-        goto error;
-    }
-
-    /* Add library to libraries list */
-    if (!libraries) {
-        libraries = cx_llNew();
-    }
-    cx_llInsert(libraries, dl);
-
-    if (file) cx_dealloc(file);
-    if (str) cx_dealloc(str);
-
-    return 0;
-error:
-    if (file) cx_dealloc(file);
-    if (str) cx_dealloc(str);
-    if (dl) cx_dlClose(dl);
-
-    return -1;
+    return result;
 }
 
 /* Load file with unspecified extension */
 int cx_fileLoader(cx_string file, void* udata) {
     CX_UNUSED(udata);
     cx_id testName;
-
-    /* If filename is a scoped name, always load library */
-    if (strchr(file, ':')) {
-        return cx_libraryLoader(file, udata);
-    }
-
-    /* Test whether a file with extension .xml is available in current directory */
+    
     sprintf(testName, "%s.xml", file);
     if (cx_fileTest(testName)) {
-        if (!cx_load("xml")) {
+        if (!cx_loadXml()) {
             return cx_load(testName);
         }
     }
 
-    /* Test whether a file with extension .cx is available in current directory */
     sprintf(testName, "%s.cx", file);
     if (cx_fileTest(testName)) {
-        if (!cx_load("Fast")) {
+        if (!cx_load("cortex/Fast")) {
             return cx_load(testName);
         }
     }
 
-    /* When no .xml or .cx are available, try to load package */
-    return cx_libraryLoader(file, NULL);
+    if (!cx_packageLoader(file)) {
+        return 0;
+    }
+
+    return -1;
 }
 
 void cx_loaderOnExit(void* udata) {
@@ -324,8 +335,6 @@ CX_DLL_CONSTRUCT {
 
     /* Register library-binding */
     cx_loaderRegister("", cx_fileLoader, NULL);
-    cx_loaderRegister("so", cx_libraryLoader, NULL);
-    cx_loaderRegister("dll", cx_libraryLoader, NULL);
 }
 
 

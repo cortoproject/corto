@@ -180,9 +180,10 @@ typedef struct cx_SSOO {
 }cx_SSOO;
 
 /* Static Scoped Observable Object (used for scopes) */
-typedef struct cx_SSOO_object {
+typedef struct cx_ssoo_package {
     cx_SSOO o;
-}cx_SSOO_object;
+    struct cx_package_s v;\
+}cx_ssoo_package;
 
 CX_STATIC_SCOPED_REFOBJECT(delegate);
 CX_STATIC_SCOPED_REFOBJECT(type);
@@ -221,8 +222,8 @@ CX_STATIC_SCOPED_OBJECT(constant);
 #define CX_ATTR_SSOO {1,0,1,CX_VALID | CX_DECLARED}
 #define CX_ATTR_SSO {1,0,0,CX_VALID | CX_DECLARED}
 #define CX_ATTR_SO {0,0,0,CX_VALID | CX_DECLARED}
-#define CX_ROOT_V() {{NULL,NULL,CX_RWMUTEX_INITIALIZER,CX_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE,FALSE,NULL},{NULL, NULL, _(scope)NULL, _(scopeLock)CX_RWMUTEX_INITIALIZER, _(attached)NULL, _(orphaned)0},{CX_ATTR_SSOO, 2, (cx_type)&object__o.v, CX_MMNODE_INIT}}
-#define CX_OBJECT_V(parent, name) {{NULL,NULL,CX_RWMUTEX_INITIALIZER,CX_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE,FALSE,NULL},{CX_OFFSET(&parent##__o, sizeof(cx_SSOO)), name, _(scope)NULL, _(scopeLock)CX_RWMUTEX_INITIALIZER, _(attached)NULL, _(orphaned)0},{CX_ATTR_SSOO, 2, (cx_type)&object__o.v, CX_MMNODE_INIT}}
+#define CX_ROOT_V() {{NULL,NULL,CX_RWMUTEX_INITIALIZER,CX_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE,FALSE,NULL},{NULL, NULL, _(scope)NULL, _(scopeLock)CX_RWMUTEX_INITIALIZER, _(attached)NULL, _(orphaned)0},{CX_ATTR_SSOO, 2, (cx_type)&package__o.v, CX_MMNODE_INIT}}
+#define CX_PACKAGE_V(parent, name, uri) {{NULL,NULL,CX_RWMUTEX_INITIALIZER,CX_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE,FALSE,NULL},{CX_OFFSET(&parent##__o, sizeof(cx_SSOO)), name, _(scope)NULL, _(scopeLock)CX_RWMUTEX_INITIALIZER, _(attached)NULL, _(orphaned)0},{CX_ATTR_SSOO, 2, (cx_type)&package__o.v, CX_MMNODE_INIT}}, {uri}
 #define CX_SSO_V(parent, name, type) {{CX_OFFSET(&parent##__o, sizeof(cx_SSOO)), name, _(scope)NULL, _(scopeLock)CX_RWMUTEX_INITIALIZER, _(attached)NULL, _(orphaned)0},{CX_ATTR_SSO, 2, (cx_type)&type##__o.v, CX_MMNODE_INIT}}
 #define CX_SSO_PO_V(parent, name, type) {{CX_OFFSET(&parent##__o, sizeof(cx_SSO)), name, _(scope)NULL, _(scopeLock)CX_RWMUTEX_INITIALIZER, _(attached)NULL, _(orphaned)0},{CX_ATTR_SSO, 2, (cx_type)&type##__o.v, CX_MMNODE_INIT}}
 
@@ -294,8 +295,8 @@ CX_STATIC_SCOPED_OBJECT(constant);
 #define CX_MEMBER_V(type, access, state, weak) {(cx_type)&type##__o.v, access, state, weak, 0, 0}
 
 /* object */
-#define CX_OBJECT_O(name) cx_SSOO_object name##__o = {CX_OBJECT_V(root, #name)}
-#define CX_OBJECT_O_SCOPE(parent, name) cx_SSOO_object parent##_##name##__o = {CX_OBJECT_V(parent, #name)}
+#define CX_PACKAGE_O(name, uri) cx_ssoo_package name##__o = {CX_PACKAGE_V(root, #name, uri)}
+#define CX_PACKAGE_O_SCOPE(parent, name, uri) cx_ssoo_package parent##_##name##__o = {CX_PACKAGE_V(parent, #name, uri)}
 
 /* type object */
 #define CX_TYPE_O(name, kind, reference) static sso_type name##__o = {CX_SSO_V(cortex_lang, #name, type), CX_TYPE_V(name, kind, reference, NULL, CX_DECLARED | CX_DEFINED, CX_NODELEGATE), VTABLE_V}
@@ -497,18 +498,18 @@ CX_FWDECL(delegate, callbackInit);
 CX_FWDECL(delegate, callbackDestruct);
 
 /* database root */
-cx_SSOO_object root__o = {CX_ROOT_V()};
-cx_object root_o = CX_OFFSET(&root__o.o.o, sizeof(cx__object));
+cx_ssoo_package root__o = {CX_ROOT_V(), {"http://cortexlang.com/"}};
+cx_package root_o = CX_OFFSET(&root__o.o.o, sizeof(cx__object));
 
 /* ::cortex, ::cortex::lang and ::cortex::serialization */
-CX_OBJECT_O(cortex);
-CX_OBJECT_O_SCOPE(cortex, lang);
+CX_PACKAGE_O(cortex, "http://cortexlang.com/");
+CX_PACKAGE_O_SCOPE(cortex, lang, "http://cortexlang.com/");
 
-cx_object cortex_o = CX_OFFSET(&cortex__o.o.o, sizeof(cx__object));
+cx_package cortex_o = CX_OFFSET(&cortex__o.o.o, sizeof(cx__object));
     CX_FUNCTION_OO_O(cortex, new, "(type type)", object, cx_cortex_new);
     CX_FUNCTION_OVERLOAD_OO_O(cortex, _new, "new(type type,attr attributes)", object, cx_cortex__new);
 
-cx_object cortex_lang_o = CX_OFFSET(&cortex_lang__o.o.o, sizeof(cx__object));
+cx_package cortex_lang_o = CX_OFFSET(&cortex_lang__o.o.o, sizeof(cx__object));
 
 /* Primitives */
 CX_BINARY_O(octet, CX_WIDTH_8);
