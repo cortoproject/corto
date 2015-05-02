@@ -579,8 +579,8 @@ static g_file c_interfaceHeaderFileOpen(cx_generator g, cx_object o, c_typeWalk_
         g_fileWrite(result, "#include \"%s.h\"\n", g_fullOid(g, cx_interface(o)->base, baseId));
     }
 
-    g_fileWrite(result, "#include \"%s__type.h\"\n\n", g_getName(g));
-    g_fileWrite(result, "#include \"%s__api.h\"\n\n", g_getName(g));
+    g_fileWrite(result, "#include \"%s__type.h\"\n", g_getName(g));
+    g_fileWrite(result, "#include \"%s__api.h\"\n", g_getName(g));
     g_fileWrite(result, "#include \"%s__meta.h\"\n\n", g_getName(g));
     g_fileWrite(result, "#ifdef __cplusplus\n");
     g_fileWrite(result, "extern \"C\" {\n");

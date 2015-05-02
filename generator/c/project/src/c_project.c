@@ -85,10 +85,27 @@ error:
     return -1;
 }
 
+typedef struct c_projectCleanInclude_t {
+    cx_generator g;
+    g_file file;
+} c_projectCleanInclude_t;
+
+static int c_projectCleanInclude(cx_object o, void *userData) {
+    c_projectCleanInclude_t *data = userData;
+
+    if (cx_instanceof(cx_type(cx_interface_o), o) || cx_instanceof(cx_type(cx_package_o), o)) {
+        cx_id id;
+        g_fileWrite(data->file, "CLOBBER.include(\"include/%s.h\")\n", g_fullOid(data->g, o, id));
+    }
+
+    return 1;
+}
+
 /* Generate dependency makefile for project */
 static cx_int16 c_projectGenerateDepMakefile(cx_generator g) {
     g_file file;
     cx_iter iter;
+    c_projectCleanInclude_t walkData;
 
     file = g_fileOpen(g, "dep.rb");
     if(!file) {
@@ -96,12 +113,15 @@ static cx_int16 c_projectGenerateDepMakefile(cx_generator g) {
     }
 
     g_fileWrite(file, "\n");
-    g_fileWrite(file, "# include paths for dependent packages\n");
+    g_fileWrite(file, "require 'rake/clean'\n");
 
-    /* Add include path for dependent packages */
     g_resolveImports(g);
     if (g->imports) {
+        g_fileWrite(file, "# Include paths and libraries of dependent packages\n");
         iter = cx_llIter(g->imports);
+        g_fileWrite(file, "INCLUDE ||= []\n");
+        g_fileWrite(file, "LIBPATH ||= []\n");
+        g_fileWrite(file, "CORTEX_LIB ||= []\n");
         while (cx_iterHasNext(&iter)) {
             cx_object import;
             cx_id toRoot, path;
@@ -116,8 +136,14 @@ static cx_int16 c_projectGenerateDepMakefile(cx_generator g) {
             g_fileWrite(file, "INCLUDE << \"%spackages/%s/include\"\n", toRoot, path, cx_nameof(import));
             g_fileWrite(file, "LIBPATH << \"%spackages/%s/bin\"\n", toRoot, path, cx_nameof(import));
             g_fileWrite(file, "CORTEX_LIB << \"%s\"\n", cx_nameof(import));
+
         }
     }
+
+    walkData.file = file;
+    walkData.g = g;
+    g_walkRecursive(g, c_projectCleanInclude, &walkData);
+    g_fileWrite(file, "CLOBBER.include(\"dep.rb\")\n");
 
     return 0;
 error:

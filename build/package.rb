@@ -16,7 +16,6 @@ CLEAN.include(GENERATED_SOURCES)
 CLEAN.include("include/#{TARGET}__api.h")
 CLEAN.include("include/#{TARGET}__meta.h")
 CLEAN.include("include/#{TARGET}__type.h")
-CLEAN.include("dep.rb")
 CLOBBER.include("bin")
 
 file "include/#{TARGET}__type.h" => GENFILE do
@@ -26,4 +25,10 @@ end
 
 task :generate => "include/#{TARGET}__type.h" do
     require "./dep"
+end
+
+task :clobber do
+    if File.exists?("dep.rb")
+        sh "rake clobber -f dep.rb" 
+    end
 end
