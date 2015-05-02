@@ -1,0 +1,3 @@
+TARGET = :cortex
+    
+require "#{ENV['CORTEX_HOME']}/build/tool"

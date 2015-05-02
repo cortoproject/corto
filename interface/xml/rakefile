@@ -1,0 +1,6 @@
+TARGET = :xml
+
+INCLUDE = ["/usr/include/libxml2"]
+CORTEX_LIB = ["xml2"]
+
+require "#{ENV['CORTEX_HOME']}/build/component"

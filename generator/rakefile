@@ -1,0 +1,5 @@
+
+COMPONENTS = [] << 
+    :c
+    
+require "#{ENV['CORTEX_HOME']}/build/forward"

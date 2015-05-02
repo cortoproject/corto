@@ -1,0 +1,6 @@
+TARGET = :cxgen
+
+INCLUDE = ["#{ENV['CORTEX_HOME']}/dev/include"]
+CORTEX_LIB = ['cortexdev']
+    
+require "#{ENV['CORTEX_HOME']}/build/tool"

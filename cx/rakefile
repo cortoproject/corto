@@ -1,0 +1,5 @@
+TARGET = :cortex
+
+LIB = ['rt', 'dl', 'm']
+
+require "#{ENV['CORTEX_HOME']}/build/library"
