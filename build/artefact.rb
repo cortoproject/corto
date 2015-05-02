@@ -41,8 +41,9 @@ task :binary => "#{TARGETDIR}/#{ARTEFACT}"
 
 file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     verbose(false)
+    sh "mkdir -p #{TARGETDIR}"
     sh "cc #{OBJECTS.to_a.uniq.join(' ')} #{LIBPATH_LIST} #{LIBRARY_LIST} #{CFLAGS_LIST} #{LFLAGS_LIST} -o #{TARGETDIR}/#{ARTEFACT}"
-    sh "echo '\033[1;30m[ \033[0;32m#{ARTEFACT}\033[1;30m ]\033[0;49m'"
+    sh "echo '\033[1;30m[ \033[1;34m#{ARTEFACT}\033[1;30m ]\033[0;49m'"
 end
 
 task :generate
@@ -51,7 +52,7 @@ rule '.o' => ->(t){t.pathmap("src/%f").ext(".c")} do |task|
     verbose(false)
     sh "mkdir -p obj"
     sh "echo '#{task.source}'"
-    sh "cc -c #{CFLAGS_LIST} #{INCLUDE_LIST} #{task.source} -o #{task.name}"
+    sh "cc -c #{CFLAGS_LIST} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{task.source} -o #{task.name}"
 end
 
 task :default => [:generate, :binary]
