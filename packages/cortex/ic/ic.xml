@@ -1,0 +1,216 @@
+<meta xmlns:meta="http://cortexlang.com/meta">
+    <meta:package name="cortex" url="http://cortexlang.com/cortex">
+        <meta:package name="ic" url="http://cortexlang.com/cortex/ic">
+
+            <enum name="kind">
+                <meta:scope>
+                    <constant name="STORAGE"/>
+                    <constant name="LITERAL"/>
+                    <constant name="LABEL"/>
+                    <constant name="ADDRESS"/>
+                    <constant name="FUNCTION"/>
+                    <constant name="OP"/>
+                    <constant name="SCOPE"/>
+                </meta:scope>
+            </enum>
+
+            <enum name="opKind">
+                <meta:scope>
+                    <constant name="set"/>
+                    <constant name="cast"/>
+                    <constant name="strcat"/>
+                    <constant name="strcpy"/>
+                    <constant name="new"/>
+                    <constant name="define"/>
+                    <constant name="free"/>
+                    <constant name="keep"/>
+                    <constant name="update"/>
+                    <constant name="updatebegin"/>
+                    <constant name="updateend"/>
+                    <constant name="updatecancel"/>
+                    <constant name="waitfor"/>
+                    <constant name="wait"/>
+                    <constant name="add"/>
+                    <constant name="sub"/>
+                    <constant name="mul"/>
+                    <constant name="div"/>
+                    <constant name="mod"/>
+                    <constant name="inc"/>
+                    <constant name="dec"/>
+                    <constant name="xor"/>
+                    <constant name="or"/>
+                    <constant name="and"/>
+                    <constant name="not"/>
+                    <constant name="shift_left"/>
+                    <constant name="shift_right"/>
+                    <constant name="cond_or"/>
+                    <constant name="cond_and"/>
+                    <constant name="cond_not"/>
+                    <constant name="cond_eq"/>
+                    <constant name="cond_neq"/>
+                    <constant name="cond_gt"/>
+                    <constant name="cond_lt"/>
+                    <constant name="cond_gteq"/>
+                    <constant name="cond_lteq"/>
+                    <constant name="jump"/>
+                    <constant name="jeq"/>
+                    <constant name="jneq"/>
+                    <constant name="stop"/>
+                    <constant name="push"/>
+                    <constant name="call"/>
+                    <constant name="ret"/>
+                </meta:scope>
+            </enum>
+
+            <enum name="storageKind">
+                <meta:scope>
+                    <constant name="OBJECT"/>
+                    <constant name="VARIABLE"/>
+                    <constant name="ACCUMULATOR"/>
+                    <constant name="MEMBER"/>
+                    <constant name="ELEMENT"/>
+                </meta:scope>
+            </enum>
+
+            <enum name="derefKind">
+                <meta:scope>
+                    <constant name="DEREF_VALUE"/>
+                    <constant name="DEREF_ADDRESS"/>
+                    <constant name="DEREF_ARGUMENT"/>
+                </meta:scope>
+            </enum>
+
+            <meta:object name="program" type="class"/>
+
+            <class name="node">
+                <meta:scope>
+                    <member name="kind" type="ic::kind" modifiers="readonly"/>
+                    <virtual name="str(string in)" returnType="string"/>
+                </meta:scope>
+            </class>
+
+            <class name="address" base="node">
+                <meta:scope>
+                    <member name="value" type="word"/>
+                </meta:scope>
+            </class>
+
+            <class name="storage" base="node">
+                <meta:scope>
+                    <member name="kind" type="storageKind" modifiers="readonly"/>
+                    <member name="base" type="storage"/>
+                    <member name="name" type="string"/>
+                    <member name="type" type="type"/>
+                    <member name="isReference" type="bool"/>
+                    <member name="used" type="uint32" modifiers="readonly"/>
+                    <member name="holdsReturn" type="bool"/>
+                    <method name="free(program program)"/>
+                    <method name="str(string in)" returnType="string"/>
+                </meta:scope>
+            </class>
+
+            <class name="object" base="storage" baseAccess="readonly">
+                <meta:scope>
+                    <member name="ptr" type="object"/>
+                </meta:scope>
+            </class>
+
+            <class name="variable" base="storage">
+                <meta:scope>
+                    <member name="isParameter" type="bool"/>
+                    <member name="isReturn" type="bool"/>
+                </meta:scope>
+            </class>
+
+            <class name="member" base="storage" baseAccess="readonly">
+                <meta:scope>
+                    <member name="member" type="member"/>
+                </meta:scope>
+            </class>
+
+            <class name="element" base="storage" baseAccess="readonly">
+                <meta:scope>
+                    <member name="index" type="node"/>
+                    <member name="collectionType" type="collection"/>
+                    <member name="variableIndex" type="bool" modifiers="readonly"/>
+                </meta:scope>
+            </class>
+
+            <class name="accumulator" base="storage">
+            </class>
+
+            <class name="literal" base="node" baseAccess="readonly">
+                <meta:scope>
+                    <member name="value" type="any"/>
+                    <method name="str(string in)" returnType="string"/>
+                </meta:scope>
+            </class>
+
+            <class name="label" base="node" baseAccess="readonly">
+                <meta:scope>
+                    <member name="id" type="uint32"/>
+                </meta:scope>
+            </class>
+
+            <class name="function" base="node" baseAccess="readonly">
+                <meta:scope>
+                    <member name="function" type="function"/>
+                </meta:scope>
+            </class>
+
+            <class name="op" base="node">
+                <meta:scope>
+                    <member name="line" type="uint32"/>
+                    <member name="kind" type="opKind"/>
+                    <member name="s1" type="node"/>
+                    <member name="s2" type="node"/>
+                    <member name="s3" type="node"/>
+                    <member name="s1Deref" type="derefKind"/>
+                    <member name="s2Deref" type="derefKind"/>
+                    <member name="s3Deref" type="derefKind"/>
+                    <member name="s1Any" type="bool"/>
+                    <method name="validate(program program)" returnType="bool"/>
+                    <method name="str(string in)" returnType="string"/>
+                </meta:scope>
+            </class>
+
+            <class name="scope" base="node">
+                <meta:scope>
+                    <member name="parent" type="scope"/>
+                    <member name="isFunction" type="bool"/>
+                    <member name="storages" type="list{storage}" modifiers="readonly"/>
+                    <member name="program" type="list{node}" modifiers="readonly"/>
+                </meta:scope>
+            </class>
+
+            <class name="program">
+                <meta:scope>
+                    <member name="filename" type="string"/>
+                    <member name="storages" type="list{storage}" modifiers="readonly"/>
+                    <member name="scopes" type="list{scope}" modifiers="readonly"/>
+                    <member name="labels" type="list{label}" modifiers="readonly"/>
+                    <member name="functions" type="list{function}" modifiers="readonly"/>
+                    <member name="literals" type="list{literal}" modifiers="readonly"/>
+                    <member name="ops" type="list{op}" modifiers="readonly"/>
+                    <member name="labelCount" type="uint32" modifiers="readonly"/>
+                    <member name="accumulatorSp" type="uint32" modifiers="readonly"/>
+                    <member name="accumulatorStack" type="array{accumulator, 256}" modifiers="readonly"/>
+                    <member name="autoAccId" type="uint32" modifiers="readonly"/>
+                    <member name="scope" type="ic::scope" modifiers="readonly"/>
+                    <member name="errors" type="uint32" modifiers="readonly"/>
+                    <method name="add(node n)"/>
+                    <method name="pushAccumulator(type type,bool isReference,bool holdsReturn)" returnType="accumulator"/>
+                    <method name="popAccumulator()"/>
+                    <method name="pushScope()" returnType="ic::scope"/>
+                    <method name="pushFunction(function function)" returnType="ic::scope"/>
+                    <method name="popScope()"/>
+                    <method name="assemble()" returnType="int16"/>
+                </meta:scope>
+            </class>
+
+            <function name="opKindFromOperator(operatorKind operator)" returnType="opKind"/>
+
+        </meta:package>
+    </meta:package>
+</meta>
+
