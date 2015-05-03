@@ -6,7 +6,7 @@
  */
 
 #include "cx_vm.h"
-#include "cx__vm_operands.h"
+#include "cx_vm_operands.h"
 #include "cx_convert.h"
 #include "cx_err.h"
 #include "cx_string.h"
