@@ -908,8 +908,12 @@ cx_object cx_new(cx_type type) {
     return cx_new_ext(NULL, type, attr, NULL);
 }
 
-/* Declare object */
 cx_object cx_declare(cx_object parent, cx_string name, cx_type type) {
+    return cx_declareFrom(parent, name, type, NULL);
+}
+
+/* Declare object */
+cx_object cx_declareFrom(cx_object parent, cx_string name, cx_type type, cx_object source) {
     cx_object o;
     cx_uint8 state;
 
@@ -946,7 +950,7 @@ cx_object cx_declare(cx_object parent, cx_string name, cx_type type) {
             if (parent != root_o) {
                 cx_error("cannot declare '%s %s::%s', it is already declared as an object of a different type '%s'", cx_fullname(type, tid), cx_fullname(parent, pid), name, cx_fullname(cx_typeof(o), tid2));
             } else {
-                   cx_error("cannot declare '%s ::%s', it is already declared as an object of a different type '%s'", cx_fullname(type, tid), name, cx_fullname(cx_typeof(o), tid2));
+                cx_error("cannot declare '%s ::%s', it is already declared as an object of a different type '%s'", cx_fullname(type, tid), name, cx_fullname(cx_typeof(o), tid2));
             }
             goto error;
         }
@@ -976,7 +980,7 @@ cx_object cx_declare(cx_object parent, cx_string name, cx_type type) {
             }
 
             /* Notify parent of new object */
-            cx_notify(cx__objectObservable(CX_OFFSET(parent,-sizeof(cx__object))), parent, o, CX_ON_DECLARE);
+            cx_notify(cx__objectObservable(CX_OFFSET(parent,-sizeof(cx__object))), o, source, CX_ON_DECLARE);
         }
     }
 
@@ -1017,8 +1021,12 @@ cx_int16 cx_delegateConstruct(cx_type t, cx_object o) {
     return result;
 }
 
-/* Define object */
 cx_int16 cx_define(cx_object o) {
+    return cx_defineFrom(o, NULL);
+}
+
+/* Define object */
+cx_int16 cx_defineFrom(cx_object o, cx_object source) {
     cx_int16 result = 0;
 
     /* Only define valid, undefined objects */
@@ -1046,7 +1054,7 @@ cx_int16 cx_define(cx_object o) {
                 _o->attrs.state |= CX_DEFINED;
 
                 /* Notify observers of defined object */
-                cx_notify(cx__objectObservable(_o), o, o, CX_ON_DEFINE);
+                cx_notify(cx__objectObservable(_o), o, source, CX_ON_DEFINE);
 
             } else {
                 /* Remove valid state */
@@ -1058,7 +1066,7 @@ cx_int16 cx_define(cx_object o) {
             if (_ps) {
                 cx_timeGet(&_ps->timestamp);
             }
-            cx_notify(cx__objectObservable(_o), o, o, CX_ON_UPDATE);
+            cx_notify(cx__objectObservable(_o), o, source, CX_ON_UPDATE);
         }     
     }
 

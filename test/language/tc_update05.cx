@@ -27,7 +27,7 @@ on declare self|scope a:
 uint32 onDefineA: 0
 on define a:
     if observable != &a: fail("observable != &a #2")
-    if source != &a: fail("source != &a #2")
+    if source != null: fail("source != NULL #2")
     onDefineA++
 
 uint32 onDefineScopeA: 0
