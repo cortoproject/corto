@@ -291,7 +291,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     /* eventKind */\
     SSO_OP_OBJ(op, eventMask_ON_DECLARE);\
     SSO_OP_OBJ(op, eventMask_ON_DEFINE);\
-    SSO_OP_OBJ(op, eventMask_ON_DESTRUCT);\
+    SSO_OP_OBJ(op, eventMask_ON_DELETE);\
     SSO_OP_OBJ(op, eventMask_ON_INVALIDATE);\
     SSO_OP_OBJ(op, eventMask_ON_UPDATE);\
     SSO_OP_OBJ(op, eventMask_ON_SELF);\
