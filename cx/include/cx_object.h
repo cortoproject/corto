@@ -39,7 +39,9 @@ typedef cx_equalityKind (*cx_equalsAction)(cx_type _this, const void* o1, const 
 cx_object cx_new(cx_type type);
 cx_object cx_new_ext(cx_object src, cx_type type, cx_uint8 attrs, cx_string context);
 cx_object cx_declare(cx_object parent, cx_string name, cx_type type);
+cx_object cx_declareFrom(cx_object parent, cx_string name, cx_type type, cx_object source);
 cx_int16 cx_define(cx_object o);
+cx_int16 cx_defineFrom(cx_object o, cx_object source);
 void cx_destruct(cx_object o);
 void cx_attach(cx_object parent, cx_object child); /* Attach lifecycle of unscoped object to scoped object */
 void cx_detach(cx_object parent, cx_object child); /* Detach lifecycle of unscoped object from scoped object */
