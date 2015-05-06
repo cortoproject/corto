@@ -1,5 +1,6 @@
 export TARGET
 export SOURCES
+export LIBPATH
 export INCLUDE
 export LIBS
 export LEX
