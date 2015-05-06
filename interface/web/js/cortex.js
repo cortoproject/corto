@@ -586,6 +586,7 @@ cx.object.prototype = {
             buffer = attributes.replace(/S/, "scoped");
             buffer = buffer.replace(/W/, "writable");
             buffer = buffer.replace(/O/, "observable");
+            buffer = buffer.replace(/P/, "persistent");
             return buffer;
         }
 
