@@ -201,8 +201,8 @@ Fast_Expression Fast_Parser_unaryExpr(Fast_Parser _this, Fast_Expression lvalue,
 /* ::cortex::Fast::Parser::updateStatement(Fast::Expression expr,Fast::Block block) */
 Fast_Node Fast_Parser_updateStatement(Fast_Parser _this, Fast_Expression expr, Fast_Block block);
 
-/* ::cortex::Fast::Parser::waitExpr(list{Fast::Expression} exprList,Fast::Expression timeout) */
-Fast_Expression Fast_Parser_waitExpr(Fast_Parser _this, Fast_Expression_list exprList, Fast_Expression timeout);
+/* ::cortex::Fast::Parser::waitExpr(Fast::Expression expr,Fast::Expression timeout) */
+Fast_Expression Fast_Parser_waitExpr(Fast_Parser _this, Fast_Expression expr, Fast_Expression timeout);
 
 /* ::cortex::Fast::Parser::whileStatement(Fast::Expression condition,Fast::Block trueBranch,bool isUntil) */
 Fast_Node Fast_Parser_whileStatement(Fast_Parser _this, Fast_Expression condition, Fast_Block trueBranch, cx_bool isUntil);
