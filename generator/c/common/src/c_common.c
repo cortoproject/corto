@@ -209,12 +209,30 @@ static cx_string c_typeToUpper(cx_string str, cx_id buffer) {
     return buffer;
 }
 
+static cx_char c_lastLetter(cx_string str) {
+    char *ptr, ch = '\0';
+
+    ptr = str + (strlen(str) - 1);
+
+    while ((ptr >= str) && (ch = *ptr)) {
+        if ((ch >= 'a') && (ch <= 'z')) {
+            break;
+        } else if ((ch >= 'A') && (ch <= 'Z')) {
+            break;
+        }
+        ptr --;
+    }
+
+    return ptr >= str ? ch : '\0';
+}
+
 /* Translate constant to C-language id */
 cx_char* c_constantId(cx_generator g, cx_constant* c, cx_char* buffer) {
     cx_string prefixOrig;
     cx_enum e = cx_parentof(c);
     cx_string name = cx_nameof(e->constants.buffer[0]);
     cx_id prefix;
+    cx_char ch;
 
     prefixOrig = g_getPrefix(g, c);
     if (!prefixOrig) {
@@ -223,8 +241,11 @@ cx_char* c_constantId(cx_generator g, cx_constant* c, cx_char* buffer) {
 
     strcpy(prefix, prefixOrig);
 
+    /* Find last letter */
+    ch = c_lastLetter(name);
+
     if (isupper(name[0])) {
-        if (isupper(name[strlen(name)-1])) { /* All caps */
+        if (isupper(ch)) { /* All caps */
             c_typeToUpper(prefixOrig, prefix);
         } else { /* Initial caps */
             prefix[0] = toupper(prefix[0]);
