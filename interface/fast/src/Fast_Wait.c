@@ -69,7 +69,7 @@ cx_int16 Fast_Wait_construct(Fast_Wait _this) {
 
     Fast_Node(_this)->kind = Fast_WaitExpr;
 
-    /* Walk types of waitlist, check if all expressions evaluate to _thiss or reference values. Compare types in
+    /* Walk types of waitlist, check if all expressions evaluate to _this or reference values. Compare types in
      * waitlist to determine type of wait expression by taking the highest common ancestor. If no common ancestor
      * is found the type of the wait expression is a generic _this. */
     exprIter = cx_llIter(_this->exprList);

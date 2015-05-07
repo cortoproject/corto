@@ -744,7 +744,7 @@ event_baseflag
     : KW_UPDATE         {$$ = CX_ON_UPDATE;}
     | KW_DECLARE        {$$ = CX_ON_DECLARE;}
     | KW_DEFINE         {$$ = CX_ON_DEFINE;}
-    | KW_DESTRUCT       {$$ = CX_ON_DESTRUCT;}
+    | KW_DESTRUCT       {$$ = CX_ON_DELETE;}
     ;
 
 event_childflag

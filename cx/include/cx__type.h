@@ -343,7 +343,7 @@ CX_SEQUENCE(cx_interfaceVectorSeq, cx_interfaceVector,);
 CX_BITMASK(cx_eventMask);
     #define CX_ON_DECLARE (0x1)
     #define CX_ON_DEFINE (0x2)
-    #define CX_ON_DESTRUCT (0x4)
+    #define CX_ON_DELETE (0x4)
     #define CX_ON_INVALIDATE (0x8)
     #define CX_ON_UPDATE (0x10)
     #define CX_ON_SELF (0x20)

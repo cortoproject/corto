@@ -647,7 +647,7 @@ CX_BITMASK_O(attr);
 CX_BITMASK_O(eventMask);
     CX_CONSTANT_O(eventMask, ON_DECLARE);
     CX_CONSTANT_O(eventMask, ON_DEFINE);
-    CX_CONSTANT_O(eventMask, ON_DESTRUCT);
+    CX_CONSTANT_O(eventMask, ON_DELETE);
     CX_CONSTANT_O(eventMask, ON_INVALIDATE);
     CX_CONSTANT_O(eventMask, ON_UPDATE);
     CX_CONSTANT_O(eventMask, ON_SELF);

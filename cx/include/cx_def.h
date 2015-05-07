@@ -95,6 +95,21 @@ typedef struct cx_ll_s* cx_ll;
 #define CX_SEQUENCE_ANONYMOUS(subtype, postexpr) struct {uint32_t length; subtype _()(*buffer) postexpr;}
 #define CX_LIST(type) typedef cx_ll type
 
+#define CX_OBSERVER_DEF(name)\
+    void name(cx_object, cx_object, cx_object);\
+    void __##name(cx_function f, void *result, void *args) {\
+        CX_UNUSED(f);\
+        CX_UNUSED(result);\
+        name(\
+            *(void**)args,\
+            *(void**)((intptr_t)args + sizeof(void*)),\
+            *(void**)((intptr_t)args + sizeof(void*) + sizeof(void*)));\
+    }\
+    void name
+
+#define CX_OBSERVER_SET_CALLBACK(observer, func)\
+    cx_function(observer)->impl = (cx_word)__##func;
+
 #ifdef __cplusplus
 }
 #endif

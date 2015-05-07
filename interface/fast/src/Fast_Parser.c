@@ -3142,35 +3142,18 @@ error:
 /* $end */
 }
 
-/* ::cortex::Fast::Parser::waitExpr(list{Fast::Expression} exprList,Fast::Expression timeout) */
-Fast_Expression Fast_Parser_waitExpr(Fast_Parser _this, Fast_Expression_list exprList, Fast_Expression timeout) {
+/* ::cortex::Fast::Parser::waitExpr(Fast::Expression expr,Fast::Expression timeout) */
+Fast_Expression Fast_Parser_waitExpr(Fast_Parser _this, Fast_Expression expr, Fast_Expression timeout) {
 /* $begin(::cortex::Fast::Parser::waitExpr) */
     Fast_Expression result = NULL;
     
     _this->stagingAllowed = FALSE;
 
     if (_this->pass) {
-        Fast_Expression expr;
-        cx_iter exprIter;
-
-        /* Keep argument expressions */
-        if (exprList) {
-            exprIter = cx_llIter(exprList);
-            while(cx_iterHasNext(&exprIter)) {
-                expr = cx_iterNext(&exprIter);
-                if (expr) {
-                    cx_keep_ext(result, expr, "Keep expression for waitlist");
-                }
-            }
-        }
+        cx_ll exprList = Fast_Expression_toList(expr);
 
         result = Fast_Expression(Fast_Wait__create(exprList, timeout));
-
         Fast_Parser_collect(_this, result);
-    } else {
-        if (exprList) {
-            cx_llFree(exprList);
-        }
     }
 
     return result;

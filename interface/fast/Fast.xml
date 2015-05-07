@@ -791,7 +791,7 @@
                     <method name="ternaryExpr(Fast::Expression cond,Fast::Expression iftrue,Fast::Expression iffalse)" returnType="Fast::Expression"/>
 					
 					<!-- Wait expression -->
-					<method name="waitExpr(list{Fast::Expression} exprList,Fast::Expression timeout)" returnType="Fast::Expression"/>
+					<method name="waitExpr(Fast::Expression expr,Fast::Expression timeout)" returnType="Fast::Expression"/>
 					
 					<!-- Loops and conditional statements -->
 					<method name="ifStatement(Fast::Expression condition,Fast::Block trueBranch,Fast::If falseBranch)" returnType="Fast::Node"/>
