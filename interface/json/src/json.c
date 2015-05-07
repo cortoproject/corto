@@ -15,7 +15,7 @@ static cx_bool cx_ser_appendstrbuff(cx_json_ser_t* data, char* str) {
         data->ptr = data->buffer;
     }
     if (!data->ptr) {
-        data->buffer = strdup(str);
+        data->buffer = cx_strdup(str);
         data->ptr = data->buffer;
     } else {
         cx_uint32 length, bufferLength;
