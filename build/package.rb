@@ -1,12 +1,13 @@
 require 'rake/clean'
 
-GENERATED_SOURCES = [] <<
+GENERATED_SOURCES ||= []
+
+GENERATED_SOURCES <<
     "src/#{TARGET}__api.c" <<
     "src/#{TARGET}__wrapper.c" <<
-    "src/#{TARGET}__meta.c" <<
-    "src/#{TARGET}__load.c"
+    "src/#{TARGET}__meta.c" 
 
-TARGETDIR = "./bin"
+TARGETDIR = "#{Dir.pwd}/#{File.dirname(Rake.application.rakefile)}/bin"
 
 require "#{ENV['CORTEX_HOME']}/build/component"
 
@@ -17,13 +18,14 @@ CLEAN.include("include/#{TARGET}__api.h")
 CLEAN.include("include/#{TARGET}__meta.h")
 CLEAN.include("include/#{TARGET}__type.h")
 CLOBBER.include("bin")
+CLOBBER.include("#{ENV['CORTEX_HOME']}/packages/lib/#{ARTEFACT}")
 
 file "include/#{TARGET}__type.h" => GENFILE do
     verbose(true)
     sh "cxgen #{TARGET} --lang c"
 end
 
-task :generate => "include/#{TARGET}__type.h" do
+task :prebuild => "include/#{TARGET}__type.h" do
     require "./dep"
 end
 

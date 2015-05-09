@@ -16,9 +16,9 @@ extern "C" {
 
 #define CX_META_OBJECT(type, name) extern cx_##type cx_##name##_o
 
-extern cx_object root_o;
-extern cx_object cortex_o;
-extern cx_object cortex_lang_o;
+extern cx_package root_o;
+extern cx_package cortex_o;
+extern cx_package cortex_lang_o;
 
 /* Forward declarations of classes */
 CX_META_OBJECT(class, typedef);

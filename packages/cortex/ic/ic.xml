@@ -98,11 +98,11 @@
             <class name="storage" base="node">
                 <meta:scope>
                     <member name="kind" type="storageKind" modifiers="readonly"/>
-                    <member name="base" type="storage"/>
+                    <member name="base" type="storage" modifiers="readonly"/>
+                    <member name="used" type="uint32" modifiers="readonly"/>
                     <member name="name" type="string"/>
                     <member name="type" type="type"/>
                     <member name="isReference" type="bool"/>
-                    <member name="used" type="uint32" modifiers="readonly"/>
                     <member name="holdsReturn" type="bool"/>
                     <method name="free(program program)"/>
                     <method name="str(string in)" returnType="string"/>
@@ -124,14 +124,16 @@
 
             <class name="member" base="storage" baseAccess="readonly">
                 <meta:scope>
+                    <member name="base" type="storage"/>
                     <member name="member" type="member"/>
                 </meta:scope>
             </class>
 
             <class name="element" base="storage" baseAccess="readonly">
                 <meta:scope>
+                    <member name="base" type="storage"/>
                     <member name="index" type="node"/>
-                    <member name="collectionType" type="collection"/>
+                    <member name="collectionType" type="collection" modifiers="readonly"/>
                     <member name="variableIndex" type="bool" modifiers="readonly"/>
                 </meta:scope>
             </class>
@@ -148,7 +150,7 @@
 
             <class name="label" base="node" baseAccess="readonly">
                 <meta:scope>
-                    <member name="id" type="uint32"/>
+                    <member name="id" type="uint32" modifiers="readonly"/>
                 </meta:scope>
             </class>
 
@@ -180,6 +182,8 @@
                     <member name="isFunction" type="bool"/>
                     <member name="storages" type="list{storage}" modifiers="readonly"/>
                     <member name="program" type="list{node}" modifiers="readonly"/>
+                    <method name="lookupStorage(string name,bool recursive)" returnType="storage"/>
+                    <method name="add(node n)"/>
                 </meta:scope>
             </class>
 
@@ -198,6 +202,7 @@
                     <member name="autoAccId" type="uint32" modifiers="readonly"/>
                     <member name="scope" type="ic::scope" modifiers="readonly"/>
                     <member name="errors" type="uint32" modifiers="readonly"/>
+                    <member name="vmprogram" type="word" modifiers="readonly"/>
                     <method name="add(node n)"/>
                     <method name="pushAccumulator(type type,bool isReference,bool holdsReturn)" returnType="accumulator"/>
                     <method name="popAccumulator()"/>
@@ -205,6 +210,7 @@
                     <method name="pushFunction(function function)" returnType="ic::scope"/>
                     <method name="popScope()"/>
                     <method name="assemble()" returnType="int16"/>
+                    <method name="run(word result)" returnType="int16"/>
                 </meta:scope>
             </class>
 

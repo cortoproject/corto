@@ -2621,18 +2621,18 @@ cx_object cx_wait(cx_int32 timeout_sec, cx_int32 timeout_nanosec) {
 /* REPL functionality */
 cx_int16 cx_expr(cx_object scope, cx_string expr, cx_value *value) {
     cx_int16 result = 0;
+    static cx_function parseLine = NULL;
+    static cx_bool searchedForParser = FALSE;
+
+    if (!parseLine && !searchedForParser) {
+        parseLine = cx_resolve(NULL, "::cortex::Fast::Parser::parseLine");
+        searchedForParser = TRUE;
+    }
 
     /* Load parser */
-    if (!cx_load("Fast")) {
-        cx_function parseLine = cx_resolve(NULL, "::cortex::Fast::Parser::parseLine");
-        if (!parseLine) {
-            cx_error("function ::Fast::Parser::parseLine could not be resolved");
-            goto error;
-        }
-
+    if (parseLine) {
         /* Parse expression */
         cx_call(parseLine, &result, expr, scope, value);
-
     /* Parser cannot be loaded, revert to plain object resolving */
     } else {
         cx_object o = cx_resolve(scope, expr);

@@ -26,8 +26,8 @@ end
 module LibMapping
 
     @@libmap = {
-        'Linux' =>   {'dl'=>'dl', 'm'=>'m', 'rt'=>'rt'},
-        'Mac' =>     {'dl'=>'dl', 'm'=>'m'},
+        'Linux' =>   {'dl'=>'dl', 'm'=>'m', 'rt'=>'rt', 'xml2' => 'xml2'},
+        'Mac' =>     {'dl'=>'dl', 'm'=>'m', 'xml2' => 'xml2'},
         'Windows' => {}
     }
 

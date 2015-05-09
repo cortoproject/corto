@@ -1,7 +1,6 @@
 COMPONENTS = [] << 
     :cx <<
     :interface <<
-    :dev <<
     :generator <<
     :tools <<
     :packages

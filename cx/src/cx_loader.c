@@ -220,7 +220,7 @@ int cx_load(cx_string str){
 
     /* Handle known extensions */
     if (!strcmp(ext, "cx")) {
-        cx_load("Fast");
+        cx_load("cortex::Fast");
     } else if (!strcmp(ext, "xml")) {
         cx_loadXml();
     }

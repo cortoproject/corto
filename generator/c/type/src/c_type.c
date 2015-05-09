@@ -512,7 +512,6 @@ static int c_typeClassCastWalk(cx_object o, void* userData) {
 static g_file c_typeHeaderFileOpen(cx_generator g) {
     g_file result;
     cx_id headerFileName;
-    cx_id path;
     cx_iter importIter;
     cx_object import;
     cx_string headerSnippet;
@@ -546,8 +545,7 @@ static g_file c_typeHeaderFileOpen(cx_generator g) {
         importIter = cx_llIter(g->imports);
         while(cx_iterHasNext(&importIter)) {
             import = cx_iterNext(&importIter);
-            c_topath(import, path);
-            g_fileWrite(result, "#include \"%s/%s__type.h\"\n", path, cx_nameof(import));
+            g_fileWrite(result, "#include \"%s__type.h\"\n", cx_nameof(import));
         }
         g_fileWrite(result, "\n");
     }

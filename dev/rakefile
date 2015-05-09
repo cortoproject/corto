@@ -1,6 +1,0 @@
-TARGET = :cortexdev
-
-LIB = ['dl']
-INCLUDE = ["#{ENV['CORTEX_HOME']}/cx/src"]
-
-require "#{ENV['CORTEX_HOME']}/build/component"

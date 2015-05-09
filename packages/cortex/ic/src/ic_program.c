@@ -29,10 +29,9 @@ cx_void ic_program_add(ic_program _this, ic_node n) {
 /* ::cortex::ic::program::assemble() */
 cx_int16 ic_program_assemble(ic_program _this) {
 /* $begin(::cortex::ic::program::assemble) */
-    cx_vmProgram program;
 
-    program = ic_vmAssemble(_this);
-    if (program) {
+    _this->vmprogram = (cx_word)ic_vmAssemble(_this);
+    if (!_this->vmprogram) {
         goto error;
     }
 
@@ -87,7 +86,7 @@ ic_accumulator ic_program_pushAccumulator(ic_program _this, cx_type type, cx_boo
     _this->autoAccId++;
 
     _this->accumulatorStack[_this->accumulatorSp] = 
-        ic_accumulator__create(NULL, name, type ? type : cx_void_o, isReference, holdsReturn);
+        ic_accumulator__create(name, type ? type : cx_void_o, isReference, holdsReturn);
 
     _this->accumulatorSp++;
     return _this->accumulatorStack[_this->accumulatorSp-1];
@@ -122,5 +121,16 @@ ic_scope ic_program_pushScope(ic_program _this) {
     }
 
     return _this->scope;
+/* $end */
+}
+
+/* ::cortex::ic::program::run(word result) */
+cx_int16 ic_program_run(ic_program _this, cx_word result) {
+/* $begin(::cortex::ic::program::run) */
+    cx_vmProgram program = (cx_vmProgram)_this->vmprogram;
+
+    cx_vm_run(program, (void*)result);
+
+    return 0;
 /* $end */
 }

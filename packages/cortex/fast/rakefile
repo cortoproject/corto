@@ -1,3 +1,7 @@
 TARGET = :Fast
 
+YACC = "fast.y"
+LEX = "fast.l"
+
+require "#{ENV['CORTEX_HOME']}/build/lexyacc"
 require "#{ENV['CORTEX_HOME']}/build/package"

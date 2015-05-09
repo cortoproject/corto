@@ -112,16 +112,18 @@ static cx_int16 c_projectGenerateDepMakefile(cx_generator g) {
         goto error;
     }
 
-    g_fileWrite(file, "\n");
     g_fileWrite(file, "require 'rake/clean'\n");
+    g_fileWrite(file, "\n");
 
     g_resolveImports(g);
     if (g->imports) {
+        cx_string env = getenv("CORTEX_HOME");
         g_fileWrite(file, "# Include paths and libraries of dependent packages\n");
         iter = cx_llIter(g->imports);
         g_fileWrite(file, "INCLUDE ||= []\n");
         g_fileWrite(file, "LIBPATH ||= []\n");
         g_fileWrite(file, "CORTEX_LIB ||= []\n");
+        g_fileWrite(file, "LFLAGS ||= []\n");
         while (cx_iterHasNext(&iter)) {
             cx_object import;
             cx_id toRoot, path;
@@ -133,15 +135,15 @@ static cx_int16 c_projectGenerateDepMakefile(cx_generator g) {
             }
             import = cx_iterNext(&iter);
             c_topath(import, path);
-            g_fileWrite(file, "INCLUDE << \"%spackages/%s/include\"\n", toRoot, path, cx_nameof(import));
-            g_fileWrite(file, "LIBPATH << \"%spackages/%s/bin\"\n", toRoot, path, cx_nameof(import));
-            g_fileWrite(file, "CORTEX_LIB << \"%s\"\n", cx_nameof(import));
-
+            g_fileWrite(file, "# %s\n", cx_nameof(import));
+            g_fileWrite(file, "INCLUDE << \"%s/packages/%s/include\"\n", env, path, cx_nameof(import));
+            g_fileWrite(file, "LFLAGS << \"%s/packages/%s/bin/lib%s.so\"\n", env, path, cx_nameof(import), cx_nameof(import));
         }
     }
 
     walkData.file = file;
     walkData.g = g;
+    g_fileWrite(file, "\n");
     g_walkRecursive(g, c_projectCleanInclude, &walkData);
     g_fileWrite(file, "CLOBBER.include(\"dep.rb\")\n");
 

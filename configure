@@ -1,5 +1,3 @@
 export CORTEX_HOME=`echo $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )`
-export LD_LIBRARY_PATH=$CORTEX_HOME/bin:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=$CORTEX_HOME/generator/bin:$LD_LIBRARY_PATH
 export PATH=$CORTEX_HOME/bin:$PATH
 export PATH=$CORTEX_HOME/scripts:$PATH

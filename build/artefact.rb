@@ -32,27 +32,24 @@ CFLAGS << "-g" << "-Wall" << "-Wextra" << "-Wno-gnu-label-as-value" << "-Wno-unk
 SOURCES = Rake::FileList["src/*.c"] + GENERATED_SOURCES
 OBJECTS = SOURCES.ext(".o").pathmap("obj/%f")
 INCLUDE_LIST = INCLUDE.map {|i| "-I" + i}.join(" ")
-LIBPATH_LIST = LIBPATH.map {|i| "-L" + i}.join(" ")
-LIBRARY_LIST = (LibMapping.mapLibs(LIB) + CORTEX_LIB).map {|i| "-l" + i}.join(" ")
-CFLAGS_LIST = CFLAGS.join(" ")
-LFLAGS_LIST = LFLAGS.join(" ")
 
 task :binary => "#{TARGETDIR}/#{ARTEFACT}"
 
 file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
-    verbose(false)
+    verbose(true)
     sh "mkdir -p #{TARGETDIR}"
-    sh "cc #{OBJECTS.to_a.uniq.join(' ')} #{LIBPATH_LIST} #{LIBRARY_LIST} #{CFLAGS_LIST} #{LFLAGS_LIST} -o #{TARGETDIR}/#{ARTEFACT}"
+    sh "cc #{OBJECTS.to_a.uniq.join(' ')} #{CFLAGS.join(" ")} #{CORTEX_LIB.map {|i| ENV['CORTEX_HOME'] + "/bin/lib" + i + ".so"}.join(" ")} #{LIBPATH.map {|i| "-L" + i}.join(" ")} #{(LibMapping.mapLibs(LIB)).map {|i| "-l" + i}.join(" ")} #{LFLAGS.join(" ")} -o #{TARGETDIR}/#{ARTEFACT}"
     sh "echo '\033[1;30m[ \033[1;34m#{ARTEFACT}\033[1;30m ]\033[0;49m'"
 end
 
-task :generate
+task :prebuild
+task :postbuild
 
 rule '.o' => ->(t){t.pathmap("src/%f").ext(".c")} do |task|
     verbose(false)
     sh "mkdir -p obj"
     sh "echo '#{task.source}'"
-    sh "cc -c #{CFLAGS_LIST} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{task.source} -o #{task.name}"
+    sh "cc -c #{CFLAGS.join(" ")} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{task.source} -o #{task.name}"
 end
 
-task :default => [:generate, :binary]
+task :default => [:prebuild, :binary, :postbuild]
