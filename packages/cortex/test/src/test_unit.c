@@ -7,7 +7,6 @@
  */
 
 #include "test.h"
-#include "test__meta.h"
 
 /* ::cortex::test::unit::construct() */
 cx_int16 test_unit_construct(test_unit _this) {

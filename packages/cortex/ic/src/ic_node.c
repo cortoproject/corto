@@ -8,12 +8,19 @@
 
 #include "ic.h"
 
+/* ::cortex::ic::node::construct() */
+cx_int16 ic_node_construct(ic_node _this) {
+/* $begin(::cortex::ic::node::construct) */
+    CX_UNUSED(_this);
+    return 0;
+/* $end */
+}
+
 /* ::cortex::ic::node::str(string in) */
 cx_string ic_node_str_v(ic_node _this, cx_string in) {
 /* $begin(::cortex::ic::node::str) */
     CX_UNUSED(_this);
-
-    return strappend(in, "?<node>");
-
+    CX_UNUSED(in);
+    return 0;
 /* $end */
 }

@@ -7,7 +7,6 @@
  */
 
 #include "mth.h"
-#include "math__meta.h"
 
 /* $header() */
 #include "math.h"

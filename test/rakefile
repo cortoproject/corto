@@ -1,10 +1,5 @@
 
 COMPONENTS = [] << 
-    :ic <<
-    :fast <<
-    :io <<
-    :os <<
-    :math <<
-    :test
+    :tc_jsonser
     
 require "#{ENV['CORTEX_HOME']}/build/forward"

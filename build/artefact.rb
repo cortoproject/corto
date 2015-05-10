@@ -29,14 +29,14 @@ INCLUDE << "include"
 CFLAGS << "-g" << "-Wall" << "-Wextra" << "-Wno-gnu-label-as-value" << "-Wno-unknown-pragmas" <<
            "-Wstrict-prototypes" << "-pedantic" << "-std=c99" << "-fPIC" << "-D_XOPEN_SOURCE=600"
 
-SOURCES = Rake::FileList["src/*.c"] + GENERATED_SOURCES
+SOURCES = (Rake::FileList["src/*.c"] + GENERATED_SOURCES)
 OBJECTS = SOURCES.ext(".o").pathmap("obj/%f")
 INCLUDE_LIST = INCLUDE.map {|i| "-I" + i}.join(" ")
 
 task :binary => "#{TARGETDIR}/#{ARTEFACT}"
 
 file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
-    verbose(true)
+    verbose(false)
     sh "mkdir -p #{TARGETDIR}"
     sh "cc #{OBJECTS.to_a.uniq.join(' ')} #{CFLAGS.join(" ")} #{CORTEX_LIB.map {|i| ENV['CORTEX_HOME'] + "/bin/lib" + i + ".so"}.join(" ")} #{LIBPATH.map {|i| "-L" + i}.join(" ")} #{(LibMapping.mapLibs(LIB)).map {|i| "-l" + i}.join(" ")} #{LFLAGS.join(" ")} -o #{TARGETDIR}/#{ARTEFACT}"
     sh "echo '\033[1;30m[ \033[1;34m#{ARTEFACT}\033[1;30m ]\033[0;49m'"

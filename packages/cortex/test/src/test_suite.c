@@ -7,7 +7,6 @@
  */
 
 #include "test.h"
-#include "test__meta.h"
 
 /* ::cortex::test::suite::assert(any v1,any v2,string msg) */
 cx_void test_suite_assert_any_any_string(test_suite _this, cx_any v1, cx_any v2, cx_string msg) {

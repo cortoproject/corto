@@ -1,0 +1,6 @@
+TARGET = :tc_jsonser_fixture
+
+CORTEX_LIB = ["json"]
+INCLUDE = ["#{ENV['CORTEX_HOME']}/interface/json/include"]
+
+require "#{ENV['CORTEX_HOME']}/build/package"

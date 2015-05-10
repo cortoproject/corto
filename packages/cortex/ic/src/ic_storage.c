@@ -8,6 +8,14 @@
 
 #include "ic.h"
 
+/* ::cortex::ic::storage::construct() */
+cx_int16 ic_storage_construct(ic_storage _this) {
+/* $begin(::cortex::ic::storage::construct) */
+    ic_node(_this)->kind = IC_STORAGE;
+    return ic_node_construct(ic_node(_this));
+/* $end */
+}
+
 /* ::cortex::ic::storage::free(program program) */
 cx_void ic_storage_free(ic_storage _this, ic_program program) {
 /* $begin(::cortex::ic::storage::free) */

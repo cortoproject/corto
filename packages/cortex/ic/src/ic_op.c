@@ -77,10 +77,18 @@ static cx_string ic_op_derefToString(cx_string string, ic_node s, ic_derefKind m
 
 /* $end */
 
+/* ::cortex::ic::op::construct() */
+cx_int16 ic_op_construct(ic_op _this) {
+/* $begin(::cortex::ic::op::construct) */
+    ic_node(_this)->kind = IC_OP;
+    return ic_node_construct(ic_node(_this));
+/* $end */
+}
+
 /* ::cortex::ic::op::str(string in) */
 cx_string ic_op_str(ic_op _this, cx_string in) {
 /* $begin(::cortex::ic::op::str) */
-    in = strappend(in, "\t%s", ic_opKind__str(_this->kind));
+    in = strappend(in, "  %s", ic_opKind__str(_this->kind));
     if (_this->s1) {
         in = ic_op_derefToString(in, _this->s1, _this->s1Deref);
         in = ic_node_str(_this->s1, in);

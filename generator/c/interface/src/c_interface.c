@@ -655,7 +655,6 @@ static g_file c_interfaceSourceFileOpen(cx_generator g, cx_string name) {
     g_fileWrite(result, " *    code in interface functions isn't replaced when code is re-generated.\n");
     g_fileWrite(result, " */\n\n");
     g_fileWrite(result, "#include \"%s.h\"\n", g_fullOid(g, g_getCurrent(g), topLevelName));
-    g_fileWrite(result, "#include \"%s__meta.h\"\n", g_getName(g));
 
     return result;
 error:
@@ -778,6 +777,16 @@ int cortex_genMain(cx_generator g) {
     /* Walk objects, generate procedures and class members */
     if (!g_walkNoScope(g, c_interfaceWalk, &walkData)) {
         goto error;
+    }
+
+    /* Add header files for dependent packages */
+    g_resolveImports(g);
+    if (g->imports) {
+        cx_iter iter = cx_llIter(g->imports);
+        while (cx_iterHasNext(&iter)) {
+            cx_object o = cx_iterNext(&iter);
+            g_fileWrite(walkData.mainHeader, "#include \"%s.h\"\n", cx_nameof(o));
+        }
     }
 
     return 0;

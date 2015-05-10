@@ -9,6 +9,8 @@ GENERATED_SOURCES <<
 
 TARGETDIR = "#{Dir.pwd}/#{File.dirname(Rake.application.rakefile)}/bin"
 
+PREFIX ||= TARGET
+
 require "#{ENV['CORTEX_HOME']}/build/component"
 
 GENFILE = Rake::FileList["#{TARGET}.*"][0]
@@ -18,11 +20,10 @@ CLEAN.include("include/#{TARGET}__api.h")
 CLEAN.include("include/#{TARGET}__meta.h")
 CLEAN.include("include/#{TARGET}__type.h")
 CLOBBER.include("bin")
-CLOBBER.include("#{ENV['CORTEX_HOME']}/packages/lib/#{ARTEFACT}")
 
 file "include/#{TARGET}__type.h" => GENFILE do
     verbose(true)
-    sh "cxgen #{TARGET} --lang c"
+    sh "cxgen #{TARGET} --prefix #{PREFIX} --lang c"
 end
 
 task :prebuild => "include/#{TARGET}__type.h" do

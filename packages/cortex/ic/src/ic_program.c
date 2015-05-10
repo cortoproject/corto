@@ -29,10 +29,27 @@ cx_void ic_program_add(ic_program _this, ic_node n) {
 /* ::cortex::ic::program::assemble() */
 cx_int16 ic_program_assemble(ic_program _this) {
 /* $begin(::cortex::ic::program::assemble) */
+    extern cx_bool CX_DEBUG_ENABLED;
+
+    if (CX_DEBUG_ENABLED) {
+        cx_string str = ic_program_str(_this);
+        if (str) {
+            printf("%s\n", str);
+            cx_dealloc(str);
+        }
+    }
 
     _this->vmprogram = (cx_word)ic_vmAssemble(_this);
     if (!_this->vmprogram) {
         goto error;
+    }
+
+    if (CX_DEBUG_ENABLED) {
+        cx_string str = cx_vmProgram_toString((cx_vmProgram)_this->vmprogram, NULL);
+        if (str) {
+            printf("%s\n", str);
+            cx_dealloc(str);
+        }
     }
 
     return 0;
@@ -132,5 +149,37 @@ cx_int16 ic_program_run(ic_program _this, cx_word result) {
     cx_vm_run(program, (void*)result);
 
     return 0;
+/* $end */
+}
+
+/* ::cortex::ic::program::str() */
+cx_string ic_program_str(ic_program _this) {
+/* $begin(::cortex::ic::program::str) */
+    cx_string result = NULL;
+
+#ifdef CX_IC_TRACING
+    cx_iter storageIter;
+    ic_storage storage;
+
+    result = strappend(result, "%%file %s\n", _this->filename);
+
+    /* Print storages */
+    storageIter = cx_llIter(_this->storages);
+    while(cx_iterHasNext(&storageIter)) {
+        storage = cx_iterNext(&storageIter);
+        if (storage->kind == IC_OBJECT) {
+            cx_object o;
+            o = ic_object(storage)->ptr;
+            if (o) {
+                cx_string objectValue = cx_toString(o, 0);
+                result = strappend(result, "%%object %s %s\n", storage->name, objectValue);
+                cx_dealloc(objectValue);
+            }
+        }
+    }
+
+    result = ic_scope_str(_this->scope, result);
+#endif
+    return result;
 /* $end */
 }

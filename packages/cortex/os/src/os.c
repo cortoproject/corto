@@ -7,7 +7,6 @@
  */
 
 #include "os.h"
-#include "os__meta.h"
 
 /* ::cortex::os::exit(bool success) */
 cx_void os_exit(cx_bool success) {

@@ -7,7 +7,6 @@
  */
 
 #include "os.h"
-#include "os__meta.h"
 
 /* $header() */
 #include "cx_time.h"

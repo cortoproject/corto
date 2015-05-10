@@ -7,7 +7,6 @@
  */
 
 #include "os.h"
-#include "os__meta.h"
 
 /* ::cortex::os::thread::construct() */
 cx_int16 os_thread_construct(os_thread _this) {

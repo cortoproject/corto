@@ -7,7 +7,6 @@
  */
 
 #include "io.h"
-#include "io__meta.h"
 
 /* ::cortex::io::print(string str) */
 cx_void io_print(cx_string str) {

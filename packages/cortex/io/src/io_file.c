@@ -7,7 +7,6 @@
  */
 
 #include "io.h"
-#include "io__meta.h"
 
 /* $header() */
 #include "stdio.h"
