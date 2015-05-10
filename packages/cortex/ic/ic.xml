@@ -93,6 +93,7 @@
             <class name="address" base="node">
                 <meta:scope>
                     <member name="value" type="word"/>
+                    <method name="construct()" returnType="int16"/>
                 </meta:scope>
             </class>
 
@@ -145,6 +146,9 @@
             </class>
 
             <class name="accumulator" base="storage">
+                <meta:scope>
+                    <method name="construct()" returnType="int16"/>
+                </meta:scope>
             </class>
 
             <class name="literal" base="node" baseAccess="readonly">
@@ -159,6 +163,7 @@
                 <meta:scope>
                     <member name="id" type="uint32" modifiers="readonly"/>
                     <method name="str(string in)" returnType="string"/>
+                    <method name="construct()" returnType="int16"/>
                 </meta:scope>
             </class>
 
@@ -166,6 +171,7 @@
                 <meta:scope>
                     <member name="function" type="function"/>
                     <method name="str(string in)" returnType="string"/>
+                    <method name="construct()" returnType="int16"/>
                 </meta:scope>
             </class>
 
