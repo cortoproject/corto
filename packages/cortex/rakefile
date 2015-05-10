@@ -1,7 +1,7 @@
 
 COMPONENTS = [] << 
     :ic <<
-    :fast <<
+    :Fast <<
     :io <<
     :os <<
     :math <<
