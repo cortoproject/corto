@@ -21,7 +21,12 @@ cx_void ic_program_add(ic_program _this, ic_node n) {
             _this->errors++;
         }
     }
-    ic_node_list__append(_this->scope->program, n);
+
+    if (cx_instanceof(cx_type(ic_storage_o), n)) {
+        ic_node_list__append(_this->scope->storages, n);
+    } else {
+        ic_node_list__append(_this->scope->program, n);
+    }
 
 /* $end */
 }
@@ -145,9 +150,7 @@ ic_scope ic_program_pushScope(ic_program _this) {
 cx_int16 ic_program_run(ic_program _this, cx_word result) {
 /* $begin(::cortex::ic::program::run) */
     cx_vmProgram program = (cx_vmProgram)_this->vmprogram;
-
     cx_vm_run(program, (void*)result);
-
     return 0;
 /* $end */
 }
