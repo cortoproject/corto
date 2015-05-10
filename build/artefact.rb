@@ -39,7 +39,7 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     verbose(false)
     sh "mkdir -p #{TARGETDIR}"
     sh "cc #{OBJECTS.to_a.uniq.join(' ')} #{CFLAGS.join(" ")} #{CORTEX_LIB.map {|i| ENV['CORTEX_HOME'] + "/bin/lib" + i + ".so"}.join(" ")} #{LIBPATH.map {|i| "-L" + i}.join(" ")} #{(LibMapping.mapLibs(LIB)).map {|i| "-l" + i}.join(" ")} #{LFLAGS.join(" ")} -o #{TARGETDIR}/#{ARTEFACT}"
-    sh "echo '\033[1;30m[ \033[1;34m#{ARTEFACT}\033[1;30m ]\033[0;49m'"
+    sh "echo '\033[1;49m[ \033[1;34m#{ARTEFACT}\033[0;49m\033[1;49m ]\033[0;49m'"
 end
 
 task :prebuild
