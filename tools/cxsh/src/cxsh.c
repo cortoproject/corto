@@ -30,7 +30,7 @@
 #define CYAN   "\033[1;36m"
 #define WHITE  "\033[1;37m"
 #define NORMAL "\033[0;49m"
-#define BOLD   "\033[1;30m"
+#define BOLD   "\033[1;49m"
 #define GREY  "\033[0;37m"
 
 #define SHELL_COLOR (BOLD)
@@ -114,7 +114,7 @@ static cx_string cxsh_printColumnValue(cx_string str, unsigned int width){
 }
 
 static void cxsh_printColumnBar(int width) {
-    while(width) {
+    while (width) {
         printf("=");
         width--;
     }
@@ -199,7 +199,7 @@ static int cxsh_scopeWalk(cx_object o, void* udata) {
     CX_UNUSED(udata);
 
     /* Get name of type */
-    if(cx_checkAttr(cx_typeof(o), CX_ATTR_SCOPED) && (cx_parentof(cx_typeof(o)) == cortex_lang_o)) {
+    if (cx_checkAttr(cx_typeof(o), CX_ATTR_SCOPED) && (cx_parentof(cx_typeof(o)) == cortex_lang_o)) {
         strcpy(typeName, cx_nameof(cx_typeof(o)));
     } else {
         cx_fullname(cx_typeof(o), typeName);
@@ -669,7 +669,7 @@ static void cxsh_shell(void) {
 
     quit = FALSE;
 
-    while(!quit) {
+    while (!quit) {
         /* Print prompt */
         cxsh_prompt(scope, TRUE, prompt);
         printf("%s", prompt);
