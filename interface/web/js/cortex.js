@@ -201,7 +201,6 @@ cx = {
             };
             this.ws.onmessage = function(ev) { 
                 var parsed = JSON.parse(ev.data);
-                console.log(">> msg: " + ev.data);
                 if (parsed) {
                     cx.refresh([parsed]);
                 }
@@ -234,13 +233,21 @@ cx = {
 
     // Generate a link for a dynamic page
     activeLink: function(url, name, style) {
+        truncated = name;
+
         if (url.length) {
             url = url.slice(0, url.length - 1); // Remove trailing '/'
         }
 
-        var result = "<a class='" + style + 
+        // Truncate name to a max of 16 characters
+        if (name.length > 12) {
+            truncated = name.substring(name, 12);
+            truncated += "...";
+        }
+
+        var result = "<a title ='" + name + "' class='" + style + 
             "' onClick='cx.request(\"" + 
-                url.replace(/\"/g, "\\\"") + "\", cx.refresh)'>" + name.replace(/\"/g, "\\\"") + "</a>";
+                url.replace(/\"/g, "\\\"") + "\", cx.refresh)'>" + truncated.replace(/\"/g, "\\\"") + "</a>";
 
         return result;
     },
