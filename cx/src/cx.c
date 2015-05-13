@@ -288,6 +288,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, attr_ATTR_SCOPED);\
     SSO_OP_OBJ(op, attr_ATTR_WRITABLE);\
     SSO_OP_OBJ(op, attr_ATTR_OBSERVABLE);\
+    SSO_OP_OBJ(op, attr_ATTR_PERSISTENT);\
     /* eventKind */\
     SSO_OP_OBJ(op, eventMask_ON_DECLARE);\
     SSO_OP_OBJ(op, eventMask_ON_DEFINE);\
@@ -329,6 +330,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, type_nameof);\
     SSO_OP_OBJ(op, type_declare);\
     SSO_OP_OBJ(op, type_define);\
+    SSO_OP_OBJ(op, type_delete);\
     SSO_OP_OBJ(op, type_invalidate);\
     SSO_OP_OBJ(op, type_resolve);\
     SSO_OP_OBJ(op, type_lookup);\
@@ -742,4 +744,20 @@ void cx_stop(void) {
 
     /* Workaround for dlopen-leakage - with this statement the valgrind memory-logging is clean. */
     /*pthread_exit(NULL);*/
+}
+
+#define CX_CHECKBUILTIN(builtinobj)\
+    if (o == builtinobj) return TRUE;
+
+#define CX_CHECKBUILTIN_ARG(builtinobj, n)\
+    if (o == builtinobj) return TRUE;
+
+cx_bool cx_isbuiltin(cx_object o) {
+    if (o == root_o) return TRUE;
+    if (o == cortex_o) return TRUE;
+    if (o == cortex_lang_o) return TRUE;
+    SSO_OP_TYPE(CX_CHECKBUILTIN_ARG);
+    SSO_OP_OBJECT(CX_CHECKBUILTIN);
+    SSO_OP_OBJECT_2ND(CX_CHECKBUILTIN);
+    return FALSE;
 }

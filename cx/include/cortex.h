@@ -35,6 +35,7 @@ extern "C" {
 
 int cx_start(void);
 void cx_stop(void); /* Must be last statement of application. */
+cx_bool cx_isbuiltin(cx_object o);
 void cx_onunload(void(*handler)(void*), void* userData);
 void cx_onexit(void(*handler)(void*), void* userData);
 

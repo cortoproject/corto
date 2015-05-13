@@ -1210,6 +1210,14 @@ void __cx_type_define(cx_function f, void *result, void *args) {
         *(cx_any*)args);
 }
 
+void __cx_type_delete(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    CX_UNUSED(args);
+    CX_UNUSED(result);
+    cx_type_delete(
+        *(cx_any*)args);
+}
+
 void __cx_type_destruct(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     CX_UNUSED(args);

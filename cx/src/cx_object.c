@@ -1082,8 +1082,14 @@ void cx_destruct(cx_object o) {
     scope = cx__objectScope(_o);
 
     if (cx_ainc(&scope->orphaned) == 1) {
-        /* Orphan object */
+        cx_bool builtin = cx_isbuiltin(o);
+        if (!builtin) {
+            cx__destruct(o);
+        }
         cx__orphan(o);
+        if (!builtin) {
+            cx__deinitScope(o);
+        }
         cx_free_ext(cx_parentof(o), o, "destroy scope reference");
     }
 }
@@ -1485,7 +1491,7 @@ cx_uint16 cx__destruct(cx_object o) {
             /* Notify destruct */
             cx_notify(cx__objectObservable(CX_OFFSET(o,-sizeof(cx__object))), o, o, CX_ON_DELETE);
 
-            /* Call object-destructor */
+            /* Call object destructor */
             if (cx__destructor(o)) {
                 return -1;
             }
@@ -1509,10 +1515,8 @@ cx_uint16 cx__destruct(cx_object o) {
             cx__deinitWritable(o);
         }
 
-        /* Deinit scope */
-        if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
-            cx__deinitScope(o);
-        } else {
+        /* Remove from anonymous cache */
+        if (!cx_checkAttr(o, CX_ATTR_SCOPED)) {
             /* Remove from anonymous cache */
             cx_mutexLock(&cx_adminLock);
             cx_llRemove(cx_anonymousObjects, o);

@@ -704,6 +704,7 @@ CX_CLASS_NOBASE_O(type, NULL, CX_DECLARED | CX_DEFINED, CX_ICD);
     CX_METAPROCEDURE_O(type, relname, "(object from)", string, TRUE, cx_type_relname);
     CX_METAPROCEDURE_O(type, declare, "(string name,type type)", object, TRUE, cx_type_declare);
     CX_METAPROCEDURE_O(type, define, "()", int16, TRUE, cx_type_define);
+    CX_METAPROCEDURE_O(type, delete, "()", void, TRUE, cx_type_delete);
     CX_METAPROCEDURE_O(type, invalidate, "()", void, TRUE, cx_type_invalidate);
     CX_METAPROCEDURE_O(type, resolve, "(string name)", object, TRUE, cx_type_resolve);
     CX_METAPROCEDURE_O(type, lookup, "(string name)", object, TRUE, cx_type_lookup);

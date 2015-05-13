@@ -39,7 +39,7 @@ cx = {
             cx.root.meta = data.meta;
             o = cx.root;
         } else {
-            parent = cx.resolve(data.meta.parent); // Assume parent is available
+            parent = cx.resolve(data.meta.parent);
             if (!parent) {
                 console.log("parent '" + data.meta.parent + "' not found!");
             } else {
@@ -61,6 +61,20 @@ cx = {
         return o;      
     },
 
+    // Remove an object from the cx cache
+    delete: function(data) {
+        if (!data.meta.parent || !data.meta.parent.length) {
+            o = cx.root;
+        } else {
+            parent = cx.resolve(data.meta.parent);
+        }
+        if (!parent) {
+            console.log("parent '" + data.meta.parent + "' not found!");
+        } else {
+            o = parent.delete(data.meta.name);
+        }
+    },
+
     // Refresh content of page. This function is typically called when a
     // reply from the server is received.
     refresh: function(data) {
@@ -71,17 +85,27 @@ cx = {
         var selfId = window.location.pathname.replace(/\//g, "::");
 
         for (var i in data) {
-            o = cx.save(data[i]); // Store data in JS cache
+            if (data[i].t === "u") {
+                o = cx.save(data[i].o); // Store data in JS cache
+            } else if (data[i].t == "d") {
+                scope = true;
+                o = cx.delete(data[i].o);
+                if (o && (o.id() == selfId)) {
+                    cx.me = cx.me.parent;
+                    value = true;
+                    meta = true;
+                }
+            }
             if (o && (o.id() === selfId)) {
                 cx.me = o;
-                if (data[i].value) {
+                if (data[i].o.value) {
                     value = true;
                 }
-                if(data[i].scope) {
+                if(data[i].o.scope) {
                     scope = true;
                 }
             } else {
-                if (data[i].meta) {
+                if (data[i].o.meta) {
                     scope = true;
                 }
             }
@@ -113,6 +137,7 @@ cx = {
                 this.valueInitialized = true;
             }
             if (cx.scopeId && scope) {
+                console.log("refresh scope");
                 $('#' + cx.scopeId).text("");
                 $('#' + cx.scopeId).append(cx.me.scopeToHtml());  
                 this.scopeInitialized = true;           
@@ -176,8 +201,9 @@ cx = {
             };
             this.ws.onmessage = function(ev) { 
                 var parsed = JSON.parse(ev.data);
+                console.log(">> msg: " + ev.data);
                 if (parsed) {
-                    cx.refresh([parsed.o]);
+                    cx.refresh([parsed]);
                 }
             };
         }
@@ -530,6 +556,13 @@ cx.object.prototype = {
         return o;
     },
 
+    // Delete an object
+    delete: function(name) {
+        var o = this.scope[name];
+        delete this.scope[name];
+        return o;
+    },
+
     // Convert scope to HTML
     scopeToHtml: function() {
         var result = "";
@@ -770,6 +803,7 @@ cx.object.prototype = {
 cx.root = new cx.object(undefined, "");
 cx.root.meta.name = "::";
 cx.root.meta.type = "::cortex::lang::object";
+cx.root.scope = [];
 
 // Create a resolve in cx that resolves from root
 cx.resolve = function(name) { return cx.root.resolve(name);}

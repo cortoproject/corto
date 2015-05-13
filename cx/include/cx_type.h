@@ -59,6 +59,9 @@ cx_object cx_type_declare(cx_any _this, cx_string name, cx_type type);
 /* ::cortex::lang::type::define() */
 cx_int16 cx_type_define(cx_any _this);
 
+/* ::cortex::lang::type::delete() */
+cx_void cx_type_delete(cx_any _this);
+
 /* ::cortex::lang::type::destruct() */
 cx_void cx_type_destruct(cx_type _this);
 

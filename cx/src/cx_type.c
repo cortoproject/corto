@@ -199,6 +199,13 @@ cx_int16 cx_type_define(cx_any _this) {
 /* $end */
 }
 
+/* ::cortex::lang::type::delete() */
+cx_void cx_type_delete(cx_any _this) {
+/* $begin(::cortex::lang::type::delete) */
+    cx_destruct(_this.value);
+/* $end */
+}
+
 /* ::cortex::lang::type::destruct() */
 cx_void cx_type_destruct(cx_type _this) {
 /* $begin(::cortex::lang::type::destruct) */
