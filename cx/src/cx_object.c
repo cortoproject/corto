@@ -2229,18 +2229,7 @@ indent++;
                 cx_set(&event->observable, observable);
                 cx_set(&event->source, source);
 
-                /* Destruct events must always be send synchronous because otherwise the object's value might no longer
-                 * be valid when it is received by the observer (object destruction will continue after notification). */
-                if (mask & CX_ON_DELETE) {
-                    cx_keep_ext(NULL, event, "Temporarily keep destruct event");
-                    cx_dispatcher_post(dispatcher, cx_event(event));
-                    while(!event->_parent.handled) {
-                        cx_sleep(0,10000000);
-                    }
-                    cx_free_ext(NULL, event, "Free destruct event");
-                } else {
-                    cx_dispatcher_post(dispatcher, cx_event(event));
-                }
+                cx_dispatcher_post(dispatcher, cx_event(event));
             }
         }
 #ifdef CX_TRACE_NOTIFICATIONS
