@@ -1,5 +1,4 @@
 require 'rake/clean'
-require 'set'
 require "#{ENV['CORTEX_HOME']}/build/libmapping"
 
 Dir.chdir(File.dirname(Rake.application.rakefile))
