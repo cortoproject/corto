@@ -7,7 +7,6 @@
  */
 
 #include "cx.h"
-#include "cx__meta.h"
 
 /* ::cortex::lang::method::bind() */
 cx_int16 cx_method_bind(cx_method _this) {

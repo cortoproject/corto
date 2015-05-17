@@ -7,7 +7,6 @@
  */
 
 #include "cx.h"
-#include "cx__meta.h"
 
 /* $header() */
 cx_int16 cx_type_bindMetaprocedure(cx_type _this, cx_metaprocedure procedure);

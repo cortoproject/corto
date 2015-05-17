@@ -7,7 +7,6 @@
  */
 
 #include "cx.h"
-#include "cx__meta.h"
 
 /* $header() */
 CX_ITERATOR(iteratorType);

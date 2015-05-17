@@ -7,7 +7,6 @@
  */
 
 #include "cx.h"
-#include "cx__meta.h"
 
 /* ::cortex::lang::observableEvent::handle() */
 cx_void cx_observableEvent_handle_v(cx_observableEvent _this) {

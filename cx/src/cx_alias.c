@@ -7,7 +7,6 @@
  */
 
 #include "cx.h"
-#include "cx__meta.h"
 
 /* ::cortex::lang::alias::init() */
 cx_int16 cx_alias_init(cx_alias _this) {

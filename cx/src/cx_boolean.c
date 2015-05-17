@@ -7,7 +7,6 @@
  */
 
 #include "cx.h"
-#include "cx__meta.h"
 
 /* ::cortex::lang::boolean::init() */
 cx_int16 cx_boolean_init(cx_boolean _this) {
