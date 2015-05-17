@@ -12,8 +12,8 @@
 #include "math.h"
 /* $end */
 
-/* ::cortex::math::abs(uint64 x) */
-cx_uint64 mth_abs(cx_uint64 x) {
+/* ::cortex::math::abs(int64 x) */
+cx_uint64 mth_abs(cx_int64 x) {
 /* $begin(::cortex::math::abs) */
 
     return llabs(x);

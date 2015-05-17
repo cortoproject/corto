@@ -109,8 +109,8 @@ cx_string ic_op_str(ic_op _this, cx_string in) {
 /* $end */
 }
 
-/* ::cortex::ic::op::validate(program program) */
-cx_bool ic_op_validate(ic_op _this, ic_program program) {
+/* ::cortex::ic::op::validate() */
+cx_bool ic_op_validate(ic_op _this) {
 /* $begin(::cortex::ic::op::validate) */
     cx_bool result = TRUE;
 
@@ -164,7 +164,7 @@ cx_bool ic_op_validate(ic_op _this, ic_program program) {
 #ifdef IC_TRACING
     if (!result) {
         printf("%s:%d: invalid operands for '%s' (%s, %s, %s)\n",
-               program->filename,
+               ic_program_get()->filename,
                _this->line, ic_opKind__str(_this->kind),
                _this->s1 ? ic_kind__str(ic_node(_this->s1)->kind) : "<none>",
                _this->s2 ? ic_kind__str(ic_node(_this->s2)->kind) : "<none>",
@@ -173,7 +173,7 @@ cx_bool ic_op_validate(ic_op _this, ic_program program) {
 #else
     if (!result) {
     printf("%s:%d: invalid operands (build with IC_TRACING to get more information)\n",
-           program->filename,
+           ic_program_get()->filename,
            _this->line);
     }
 #endif    

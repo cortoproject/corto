@@ -1,0 +1,20 @@
+bool result : true
+
+void fail(string msg):
+    "tc_storage05: FAIL: $msg"
+    result = false
+
+struct Point::
+    x, y: int32
+
+Point a : 10, 20
+if a.x != 10: fail("a.x != 10")
+if a.y != 20: fail("a.y != 20")
+if "$a" != "{10,20}": fail("\"a\" != \"{10,20}\"")
+
+a = {30, 40}
+if a.x != 30: fail("a.x != 30")
+if a.y != 40: fail("a.y != 40")
+if "$a" != "{30,40}": fail("\"$a\" != \"{30,40}\"")
+
+if result: "tc_storage05: OK"

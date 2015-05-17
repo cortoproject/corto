@@ -14,6 +14,7 @@ cx_int16 Fast_Temporary_construct(Fast_Temporary _this) {
 
     Fast_Storage(_this)->kind = Fast_TemporaryStorage;
     cx_set(&Fast_Expression(_this)->type, _this->type);
+    Fast_Expression(_this)->isReference = _this->reference;
 
     return Fast_Storage_construct(Fast_Storage(_this));
 /* $end */

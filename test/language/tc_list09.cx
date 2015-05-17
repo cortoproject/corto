@@ -1,0 +1,17 @@
+bool result: true
+void fail(string msg):
+    "tc_list09: FAIL: $msg"
+    result = false
+
+class Point::
+    x, y: int32
+
+list{Point} points: Point{10, 20}, Point{30, 40}
+
+points[1] = Point{33, 44}
+if points[1][x, y] != (33, 44): fail("points[1][x, y] != (33, 44)")
+
+points[1].x = 22
+if points[1].x != 22: fail("points[1].x != 22")
+
+if result: "tc_list09: OK"

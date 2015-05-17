@@ -46,7 +46,6 @@ int cortexmain(int argc, char* argv[]) {
     int result = Fast_load();
     
     /* $begin(cortexmain) */
-    /* Obtain thread local storage key for parser */
     if (cx_threadTlsKey(&Fast_PARSER_KEY, NULL)) {
         return -1;
     }

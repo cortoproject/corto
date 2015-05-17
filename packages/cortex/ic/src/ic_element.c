@@ -12,10 +12,11 @@
 cx_int16 ic_element_construct(ic_element _this) {
 /* $begin(::cortex::ic::element::construct) */
     cx_id name;
+    cx_collection type = cx_collection(_this->base->type);
 
-    cx_set(&ic_storage(_this)->type, _this->collectionType->elementType);
+    cx_set(&ic_storage(_this)->type, type->elementType);
     cx_set(&ic_storage(_this)->base, _this->base);
-    ic_storage(_this)->isReference = _this->collectionType->elementType->reference;
+    ic_storage(_this)->isReference = type->elementType->reference;
 
     if (_this->index) {
         cx_string elemStr = ic_node_str(_this->index, NULL);

@@ -12,6 +12,7 @@
 cx_int16 ic_label_construct(ic_label _this) {
 /* $begin(::cortex::ic::label::construct) */
     ic_node(_this)->kind = IC_LABEL;
+    _this->id = ic_program_getLabel(ic_program_get());
     return ic_node_construct(ic_node(_this));
 /* $end */
 }
@@ -19,7 +20,7 @@ cx_int16 ic_label_construct(ic_label _this) {
 /* ::cortex::ic::label::str(string in) */
 cx_string ic_label_str(ic_label _this, cx_string in) {
 /* $begin(::cortex::ic::label::str) */
-    in = strappend(in, "%%label %d", _this->id);
+    in = strappend(in, "%%L%d", _this->id);
     return in;
 /* $end */
 }

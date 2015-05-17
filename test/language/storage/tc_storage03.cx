@@ -1,0 +1,30 @@
+bool result : true
+
+void fail(string msg):
+    "tc_storage03: FAIL: $msg"
+    result = false
+
+var uint32& a = uint32{10}
+var uint32& b = a
+if a != 10: fail("a != 10")
+if "$a" != "10": fail("\"$a\" != \"10\"");
+if b != 10: fail("b != 10")
+if "$b" != "10": fail("\"$b\" != \"10\"");
+
+a = 20
+if a != 20: fail("a != 20")
+if "$a" != "20": fail("\"a\" != \"20\"");
+if b != 20: fail("b != 20")
+if "$b" != "20": fail("\"b\" != \"20\"");
+
+&a = uint32{30}
+if a != 30: fail("a != 30")
+if "$a" != "30": fail("\"a\" != \"30\"");
+if b != 20: fail("b != 20")
+if "$b" != "20": fail("\"b\" != \"20\"");
+
+&a = null
+if &a != null: fail("&a != null")
+if &b == null: fail("&b == null")
+
+if result: "tc_storage03: OK"

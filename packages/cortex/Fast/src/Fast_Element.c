@@ -72,7 +72,7 @@ ic_node Fast_Element_toIc_v(Fast_Element _this, ic_program program, ic_storage s
     lvalue = Fast_Node_toIc(Fast_Node(_this->lvalue), program, NULL, TRUE);
     rvalue = Fast_Node_toIc(Fast_Node(_this->rvalue), program, NULL, TRUE);
 
-    result = ic_element__create(ic_storage(lvalue), rvalue);
+    result = ic_program_getElement(program, ic_storage(lvalue), rvalue);
 
     return (ic_node)result;
 /* $end */

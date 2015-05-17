@@ -139,6 +139,6 @@ ic_node Fast_Object_toIc_v(Fast_Object _this, ic_program program, ic_storage sto
     CX_UNUSED(storage);
     CX_UNUSED(stored);
 
-    return ic_node(ic_object__create(_this->value));;
+    return ic_node(ic_program_getObject(program, _this->value));;
 /* $end */
 }

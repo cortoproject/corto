@@ -5,7 +5,7 @@
 #include "ic__meta.h"
 
 /* $header() */
-/* Insert user-includes here */
+cx_threadKey IC_PROGRAM_KEY;
 /* $end */
 
 /* This function is the entrypoint for the library and * loads definitions of the 'ic' scope */
@@ -16,7 +16,9 @@ int cortexmain(int argc, char* argv[]) {
     int result = ic_load();
     
     /* $begin(cortexmain) */
-    /* Insert user-code here */
+    if (cx_threadTlsKey(&IC_PROGRAM_KEY, NULL)) {
+        return -1;
+    }
     /* $end */
 
     return result;

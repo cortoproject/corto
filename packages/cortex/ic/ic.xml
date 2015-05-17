@@ -80,8 +80,6 @@
                 </meta:scope>
             </enum>
 
-            <meta:object name="program" type="class"/>
-
             <class name="node">
                 <meta:scope>
                     <member name="kind" type="ic::kind" modifiers="readonly"/>
@@ -97,16 +95,19 @@
                 </meta:scope>
             </class>
 
+            <meta:object name="scope" type="class"/>
+
             <class name="storage" base="node">
                 <meta:scope>
-                    <member name="kind" type="storageKind" modifiers="readonly"/>
-                    <member name="base" type="storage" modifiers="readonly"/>
-                    <member name="used" type="uint32" modifiers="readonly"/>
                     <member name="name" type="string"/>
                     <member name="type" type="type"/>
                     <member name="isReference" type="bool"/>
                     <member name="holdsReturn" type="bool"/>
-                    <method name="free(program program)"/>
+                    <member name="kind" type="storageKind" modifiers="readonly"/>
+                    <member name="base" type="storage" modifiers="readonly"/>
+                    <member name="used" type="uint32" modifiers="readonly"/>
+                    <member name="scope" type="ic::scope" modifiers="readonly"/>
+                    <method name="free()"/>
                     <method name="str(string in)" returnType="string"/>
                     <method name="construct()" returnType="int16"/>
                 </meta:scope>
@@ -139,7 +140,6 @@
                 <meta:scope>
                     <member name="base" type="storage"/>
                     <member name="index" type="node"/>
-                    <member name="collectionType" type="collection" modifiers="readonly"/>
                     <member name="variableIndex" type="bool" modifiers="readonly"/>
                     <method name="construct()" returnType="int16"/>
                 </meta:scope>
@@ -186,7 +186,7 @@
                     <member name="s2Deref" type="derefKind"/>
                     <member name="s3Deref" type="derefKind"/>
                     <member name="s1Any" type="bool"/>
-                    <method name="validate(program program)" returnType="bool"/>
+                    <method name="validate()" returnType="bool"/>
                     <method name="str(string in)" returnType="string"/>
                     <method name="construct()" returnType="int16"/>
                 </meta:scope>
@@ -200,6 +200,7 @@
                     <member name="program" type="list{node}" modifiers="readonly"/>
                     <method name="lookupStorage(string name,bool recursive)" returnType="storage"/>
                     <method name="add(node n)"/>
+                    <method name="addStorage(storage s)"/>
                     <method name="str(string in)" returnType="string"/>
                     <method name="construct()" returnType="int16"/>
                 </meta:scope>
@@ -220,7 +221,9 @@
                     <member name="autoAccId" type="uint32" modifiers="readonly"/>
                     <member name="scope" type="ic::scope" modifiers="readonly"/>
                     <member name="errors" type="uint32" modifiers="readonly"/>
+                    <member name="labelCount" type="uint32" modifiers="local|private"/>
                     <member name="vmprogram" type="word" modifiers="readonly"/>
+                    <method name="construct()" returnType="int16"/>
                     <method name="add(node n)"/>
                     <method name="pushAccumulator(type type,bool isReference,bool holdsReturn)" returnType="accumulator"/>
                     <method name="popAccumulator()"/>
@@ -230,6 +233,14 @@
                     <method name="assemble()" returnType="int16"/>
                     <method name="run(word result)" returnType="int16"/>
                     <method name="str()" returnType="string"/>
+                    <method name="getLabel()" returnType="uint32"/>
+                    <method name="getAccId()" returnType="uint32"/>
+                    <method name="getObject(object o)" returnType="ic::object"/>
+                    <method name="getVariable(string name)" returnType="ic::variable"/>
+                    <method name="declareVariable(string name,type type,bool isReference,bool holdsReturn,bool isParameter,bool isReturn)" returnType="ic::variable"/>
+                    <method name="getMember(storage base,member m)" returnType="ic::member"/>
+                    <method name="getElement(storage base,node index)" returnType="ic::element"/>
+                    <function name="get()" returnType="program"/>
                 </meta:scope>
             </class>
 

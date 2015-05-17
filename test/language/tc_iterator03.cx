@@ -1,6 +1,6 @@
 bool result: true
 void fail(string msg):
-    "tc_iterator02: FAIL: $msg"
+    "tc_iterator03: FAIL: $msg"
     result = false
 
 struct Point:: x, y: int32
@@ -31,4 +31,4 @@ total = {0, 0}
 while a++: total[x, y] += *a[x, y]
 if total[x, y] != (15, 18): fail("total[x, y] != (15, 18) (sequence #2)")
 
-if result: "tc_iterator02: OK"
+if result: "tc_iterator03: OK"

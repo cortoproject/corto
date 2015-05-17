@@ -280,13 +280,14 @@ ic_node Fast_Block_toIcBody_v(Fast_Block _this, ic_program program, ic_storage s
         localIter = cx_llIter(_this->locals);
         while(cx_iterHasNext(&localIter)) {
             local = cx_iterNext(&localIter);
-            ic_program_add(program, ic_node(ic_variable__create(
+            ic_program_declareVariable(
+                    program,
                     local->name,
                     Fast_Expression_getType(Fast_Expression(local)),
-                    local->reference,
+                    Fast_Expression(local)->isReference,
                     FALSE,
                     local->kind == Fast_LocalParameter,
-                    local->kind == Fast_LocalReturn)));
+                    local->kind == Fast_LocalReturn);
         }
     }
     

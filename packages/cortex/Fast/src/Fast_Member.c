@@ -134,7 +134,7 @@ ic_node Fast_Member_toIc_v(Fast_Member _this, ic_program program, ic_storage sto
     }
 
     if (member) {
-        result = ic_member__create(ic_storage(lvalue), member);
+        result = ic_program_getMember(program, ic_storage(lvalue), member);
     }
 
     return (ic_node)result;

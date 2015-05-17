@@ -6,7 +6,7 @@ float64 rand() // Generate random number
 void seed(uint32 seed)
 
 // abs
-uint64 abs(uint64 x)
+uint64 abs(int64 x)
 
 // cos, sin, tan
 float64 cos(float64 x)
