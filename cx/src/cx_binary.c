@@ -7,7 +7,6 @@
  */
 
 #include "cx.h"
-#include "cx__meta.h"
 
 /* ::cortex::lang::binary::init() */
 cx_int16 cx_binary_init(cx_binary _this) {

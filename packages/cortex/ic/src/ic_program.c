@@ -17,7 +17,7 @@ cx_void ic_program_add(ic_program _this, ic_node n) {
 /* $begin(::cortex::ic::program::add) */
 
     if (n->kind == IC_OP) {
-        if (!ic_op_validate(ic_op(n), _this)) {
+        if (!ic_op_validate(ic_op(n))) {
             _this->errors++;
         }
     }
@@ -63,6 +63,109 @@ error:
 /* $end */
 }
 
+/* ::cortex::ic::program::construct() */
+cx_int16 ic_program_construct(ic_program _this) {
+/* $begin(::cortex::ic::program::construct) */
+    extern cx_threadKey IC_PROGRAM_KEY;
+    cx_threadTlsSet(IC_PROGRAM_KEY, _this);
+    return 0;
+/* $end */
+}
+
+/* ::cortex::ic::program::declareVariable(string name,type type,bool isReference,bool holdsReturn,bool isParameter,bool isReturn) */
+ic_variable ic_program_declareVariable(ic_program _this, cx_string name, cx_type type, cx_bool isReference, cx_bool holdsReturn, cx_bool isParameter, cx_bool isReturn) {
+/* $begin(::cortex::ic::program::declareVariable) */
+    ic_variable result = ic_variable(ic_scope_lookupStorage(_this->scope, name, FALSE));
+    if (!result) {
+        result = ic_variable__create(name, type, isReference, holdsReturn, isParameter, isReturn);
+        ic_scope_addStorage(_this->scope, ic_storage(result));
+    }
+    return result;
+/* $end */
+}
+
+/* ::cortex::ic::program::get() */
+ic_program ic_program_get(void) {
+/* $begin(::cortex::ic::program::get) */
+    extern cx_threadKey IC_PROGRAM_KEY;
+    return (ic_program)cx_threadTlsGet(IC_PROGRAM_KEY);
+/* $end */
+}
+
+/* ::cortex::ic::program::getAccId() */
+cx_uint32 ic_program_getAccId(ic_program _this) {
+/* $begin(::cortex::ic::program::getAccId) */
+    return ++_this->autoAccId;
+/* $end */
+}
+
+/* ::cortex::ic::program::getElement(storage base,node index) */
+ic_element ic_program_getElement(ic_program _this, ic_storage base, ic_node index) {
+/* $begin(::cortex::ic::program::getElement) */
+    cx_id name;
+    ic_element result;
+    if (index) {
+        cx_string elemStr = ic_node_str(index, NULL);
+        sprintf(name, "%s[%s]", base->name, elemStr);
+        cx_dealloc(elemStr);
+    } else {
+        sprintf(name, "*%s", base->name);
+    }
+    result = ic_element(ic_scope_lookupStorage(base->scope, name, FALSE));
+    if (!result) {
+        result = ic_element__create(base, index);
+        ic_scope_addStorage(_this->scope, ic_storage(result));
+    }
+    return result;
+/* $end */
+}
+
+/* ::cortex::ic::program::getLabel() */
+cx_uint32 ic_program_getLabel(ic_program _this) {
+/* $begin(::cortex::ic::program::getLabel) */
+    return ++_this->labelCount;
+/* $end */
+}
+
+/* ::cortex::ic::program::getMember(storage base,member m) */
+ic_member ic_program_getMember(ic_program _this, ic_storage base, cx_member m) {
+/* $begin(::cortex::ic::program::getMember) */
+    cx_id name;
+    ic_member result;
+    sprintf(name, "%s.%s", base->name, cx_nameof(m));
+    result = ic_member(ic_scope_lookupStorage(base->scope, name, FALSE));
+    if (!result) {
+        result = ic_member__create(base, m);
+        ic_scope_addStorage(_this->scope, ic_storage(result));
+    }
+    return result;
+/* $end */
+}
+
+/* ::cortex::ic::program::getObject(object o) */
+ic_object ic_program_getObject(ic_program _this, cx_object o) {
+/* $begin(::cortex::ic::program::getObject) */
+    ic_scope root = _this->scope;
+    ic_object result = NULL;
+    while(root->parent) {
+        root = root->parent;
+    }
+    result = ic_object(ic_scope_lookupStorage(root, cx_nameof(o), FALSE));
+    if (!result) {
+        result = ic_object__create(o);
+        ic_scope_addStorage(root, ic_storage(result));
+    }
+    return result;
+/* $end */
+}
+
+/* ::cortex::ic::program::getVariable(string name) */
+ic_variable ic_program_getVariable(ic_program _this, cx_string name) {
+/* $begin(::cortex::ic::program::getVariable) */
+    return ic_variable(ic_scope_lookupStorage(_this->scope, name, TRUE));
+/* $end */
+}
+
 /* ::cortex::ic::program::popAccumulator() */
 cx_void ic_program_popAccumulator(ic_program _this) {
 /* $begin(::cortex::ic::program::popAccumulator) */
@@ -72,7 +175,7 @@ cx_void ic_program_popAccumulator(ic_program _this) {
     acc = ic_storage(_this->accumulatorStack[_this->accumulatorSp]);
     
     if (acc->holdsReturn) {
-        ic_storage_free(acc, _this);
+        ic_storage_free(acc);
     }
 /* $end */
 }
@@ -88,7 +191,7 @@ cx_void ic_program_popScope(ic_program _this) {
         while(cx_iterHasNext(&storageIter)) {
             storage = cx_iterNext(&storageIter);
             if ((storage->kind == IC_VARIABLE) && !((ic_variable)storage)->isReturn && !((ic_variable)storage)->isParameter) {
-                ic_storage_free(storage, _this);
+                ic_storage_free(storage);
             }
         }
     }
@@ -161,26 +264,7 @@ cx_string ic_program_str(ic_program _this) {
     cx_string result = NULL;
 
 #ifdef CX_IC_TRACING
-    cx_iter storageIter;
-    ic_storage storage;
-
     result = strappend(result, "%%file %s\n", _this->filename);
-
-    /* Print storages */
-    storageIter = cx_llIter(_this->storages);
-    while(cx_iterHasNext(&storageIter)) {
-        storage = cx_iterNext(&storageIter);
-        if (storage->kind == IC_OBJECT) {
-            cx_object o;
-            o = ic_object(storage)->ptr;
-            if (o) {
-                cx_string objectValue = cx_toString(o, 0);
-                result = strappend(result, "%%object %s %s\n", storage->name, objectValue);
-                cx_dealloc(objectValue);
-            }
-        }
-    }
-
     result = ic_scope_str(_this->scope, result);
 #endif
     return result;

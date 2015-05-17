@@ -11,9 +11,15 @@
 /* ::cortex::ic::scope::add(node n) */
 cx_void ic_scope_add(ic_scope _this, ic_node n) {
 /* $begin(::cortex::ic::scope::add) */
-
     cx_llAppend(_this->program, n);
+/* $end */
+}
 
+/* ::cortex::ic::scope::addStorage(storage s) */
+cx_void ic_scope_addStorage(ic_scope _this, ic_storage s) {
+/* $begin(::cortex::ic::scope::addStorage) */
+    cx_llAppend(_this->storages, s);
+    cx_set(&s->scope, _this);
 /* $end */
 }
 

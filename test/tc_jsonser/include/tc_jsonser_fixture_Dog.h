@@ -8,9 +8,7 @@
 
 #include "cortex.h"
 #include "tc_jsonser_fixture__type.h"
-
 #include "tc_jsonser_fixture__api.h"
-
 #include "tc_jsonser_fixture__meta.h"
 
 #ifdef __cplusplus

@@ -7,7 +7,6 @@
  */
 
 #include "cx.h"
-#include "cx__meta.h"
 
 /* ::cortex::lang::dispatcher::post(event e) */
 cx_void cx_dispatcher_post_v(cx_dispatcher _this, cx_event e) {

@@ -7,7 +7,6 @@
  */
 
 #include "cx.h"
-#include "cx__meta.h"
 
 /* ::cortex::lang::map::construct() */
 cx_int16 cx_map_construct(cx_map _this) {

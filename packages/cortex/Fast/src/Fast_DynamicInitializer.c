@@ -41,6 +41,7 @@ Fast_Expression Fast_Initializer_expr(Fast_DynamicInitializer _this, cx_uint8 va
     switch(frame->type->kind) {
         case CX_PRIMITIVE:
             result = base;
+            Fast_Initializer_assign(_this, result, v);
             break;
         case CX_ITERATOR:
             result = base;

@@ -7,7 +7,6 @@
  */
 
 #include "cx.h"
-#include "cx__meta.h"
 
 /* ::cortex::lang::delegate::bind(function object) */
 cx_int16 cx_delegate_bind(cx_function object) {

@@ -21,9 +21,19 @@ cx_string ic_literal_str(ic_literal _this, cx_string in) {
 /* $begin(::cortex::ic::literal::str) */
     cx_string result = NULL;
 
-    cx_convert(cx_primitive(_this->value.type), _this->value.value, cx_primitive(cx_string_o), &result);
-    in = strappend(in, result);
-    cx_dealloc(result);
+    if (_this->value.value) {
+        if (cx_primitive(_this->value.type)->kind == CX_TEXT) {
+            in = strappend(in, "\"");
+        }
+        cx_convert(cx_primitive(_this->value.type), _this->value.value, cx_primitive(cx_string_o), &result);
+        in = strappend(in, result);
+        cx_dealloc(result);
+        if (cx_primitive(_this->value.type)->kind == CX_TEXT) {
+            in = strappend(in, "\"");
+        }
+    } else {
+        in = strappend(in, "(null)");
+    }
 
     return in;
 /* $end */

@@ -47,7 +47,7 @@ error:
 ic_node Fast_Cast_toIc_v(Fast_Cast _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Cast::toIc) */
     ic_node lvalue, rvalue, result;
-    cx_bool deref2 = IC_DEREF_ADDRESS;
+    cx_bool deref2 = IC_DEREF_VALUE;
     cx_type _thisType = Fast_Expression_getType(Fast_Expression(_this));
     CX_UNUSED(stored);
 
@@ -69,7 +69,7 @@ ic_node Fast_Cast_toIc_v(Fast_Cast _this, ic_program program, ic_storage storage
     }
 
     IC_3(program, Fast_Node(_this)->line, ic_cast, result, rvalue, lvalue, 
-        IC_DEREF_ADDRESS, deref2, IC_DEREF_ADDRESS);
+        IC_DEREF_VALUE, deref2, IC_DEREF_ADDRESS);
 
     return result;
 /* $end */

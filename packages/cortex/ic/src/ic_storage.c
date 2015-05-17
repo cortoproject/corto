@@ -16,8 +16,8 @@ cx_int16 ic_storage_construct(ic_storage _this) {
 /* $end */
 }
 
-/* ::cortex::ic::storage::free(program program) */
-cx_void ic_storage_free(ic_storage _this, ic_program program) {
+/* ::cortex::ic::storage::free() */
+cx_void ic_storage_free(ic_storage _this) {
 /* $begin(::cortex::ic::storage::free) */
     cx_type type = _this->type;
     if (_this->isReference || ((type->kind == CX_PRIMITIVE) && (cx_primitive(type)->kind == CX_TEXT))) {
@@ -28,7 +28,7 @@ cx_void ic_storage_free(ic_storage _this, ic_program program) {
         if (_this->isReference) {
             freeIc->s1Deref = IC_DEREF_ADDRESS;
         }
-        ic_program_add(program, ic_node(freeIc));
+        ic_program_add(ic_program_get(), ic_node(freeIc));
     }
 /* $end */
 }

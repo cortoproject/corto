@@ -33,13 +33,9 @@ ic_node Fast_Local_toIc_v(Fast_Local _this, ic_program program, ic_storage stora
     CX_UNUSED(stored);
     CX_UNUSED(program);
 
-    result = (ic_node)ic_variable__create(
-                _this->name,
-                Fast_Expression_getType(Fast_Expression(_this)),
-                Fast_Expression(_this)->isReference,
-                FALSE,
-               _this->kind == Fast_LocalParameter,
-               _this->kind == Fast_LocalReturn);
+    result = (ic_node)ic_program_getVariable(
+                program,
+                _this->name);
 
     return result;
 /* $end */
