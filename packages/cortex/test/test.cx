@@ -1,6 +1,6 @@
 #package ::cortex::test
 
-procedure test: method
+procedure test: base=method, kind=procedureKind::METHOD
 
 struct TestResult::
     member success: bool, readonly
