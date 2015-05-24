@@ -1,76 +1,10 @@
 #include "ic_node.h"
 #include "cortex.h"
 #include "cx_vm_operands.h"
+#include "ic_vmProgram.h"
+#include "ic_vmStorage.h"
 
-typedef struct ic_vmLabel {
-    cx_uint32 id;
-    cx_uint32 pc;
-    void *referees[256]; /* The jumps to this label. At assemble-time, the exact address of the label is not yet known
-                          * so this information is filled in after the program is assembled for each referee */
-    cx_uint32 refereeCount;
-}ic_vmLabel;
-
-typedef struct ic_vmStorage ic_vmStorage;
-struct ic_vmStorage {
-    ic_storage ic;
-    cx_uint32 firstUsed;
-    cx_uint32 lastUsed;
-    void *referees[256]; /* The jumps to this accumulator. At assemble-time, the exact address of the accumulator is not yet known
-                          * so this information is filled in after the program is assembled for each referee */
-    cx_uint32 refereeCount;
-    cx_uint16 addr;
-
-    /* Member & element accumulators have a base and offset */
-    cx_uint16 offset;
-    ic_vmStorage *base;
-    cx_bool assembled; /* Offsets of multiple member-operations are accumulated into one register so that
-                        * instead of calculating multiple offsets at runtime, only one operation is required. This
-                        * variable remains FALSE until the storage is used after which an operation is inserted
-                        * to calculate the accumulated offset.
-                        * This is only applicable for access to dynamically allocated objects or storages with dynamic
-                        * components (elements with variable indexes). By default this value is TRUE. */
-    cx_bool reusable;  /* A non-reusable storage needs to be assembled each time it is evaluated because the storage depends
-                        * on the value of other storages, for example the index-expression of an element storage. */
-    cx_bool allocated; /* Does the storage occupy space */
-};
-
-typedef struct ic_vmInlineFunction {
-    cx_vmProgram program;
-    cx_function function;
-}ic_vmInlineFunction;
-
-typedef struct ic_vmProgram {
-    ic_program icProgram;
-    cx_vmProgram main; /* Keep track of what is the main-module of a program (where the program starts) */
-    cx_vmProgram program;
-    ic_function function;
-    cx_ll labels;
-    cx_ll storages;
-    cx_ll inlineFunctions;
-    cx_uint16 scopeSize[256];
-    cx_uint32 scope;
-    cx_uint32 maxScopeSize; /* The maximum scope-size is where accumulators are allocated (thus after the locals) */
-    cx_uint32 stackSize;
-    cx_uint32 maxStackSize; /* The maximum stack-size is the maximum amount of space a call needs for its arguments */
-}ic_vmProgram;
-
-typedef enum ic_vmType {
-    IC_VMTYPE_B,
-    IC_VMTYPE_S,
-    IC_VMTYPE_L,
-    IC_VMTYPE_W,
-    IC_VMTYPE_D
-}ic_vmType;
-
-typedef enum ic_vmOperand {
-    IC_VMOPERAND_NONE,
-    IC_VMOPERAND_V,
-    IC_VMOPERAND_R,
-    IC_VMOPERAND_P,
-    IC_VMOPERAND_Q,
-    IC_VMOPERAND_X,
-    IC_VMOPERAND_A
-}ic_vmOperand;
+extern cx_bool CX_DEBUG_ENABLED;
 
 cx_string ic_vmOperandStr(ic_vmOperand op) {
     switch(op) {
@@ -84,40 +18,6 @@ cx_string ic_vmOperandStr(ic_vmOperand op) {
     };
     return "<?>";
 }
-
-static ic_vmStorage *ic_vmStorageGet(ic_vmProgram *program, ic_storage ic_accumulator);
-
-static void ic_vmProgram_fillInLabels(ic_vmProgram *program) {
-    cx_iter labelIter;
-    ic_vmLabel *label;
-    cx_uint32 referee;
-
-    if (program->labels) {
-        labelIter = cx_llIter(program->labels);
-        while(cx_iterHasNext(&labelIter)) {
-            label = cx_iterNext(&labelIter);
-            for(referee=0; referee < label->refereeCount; referee++) {
-                *(void**)CX_OFFSET(label->referees[referee], program->program->program) = &program->program->program[label->pc];
-            }
-
-            /* Free label */
-            cx_dealloc(label);
-        }
-
-        /* Free label list */
-        cx_llFree(program->labels);
-        program->labels = NULL;
-    }
-}
-
-/* Administration that keeps track of claims accumulators have on the register */
-typedef struct ic_registerClaim {
-    ic_vmStorage *storage;
-    cx_uint16 addr;
-    cx_uint16 size;
-    cx_uint32 start;
-    cx_uint32 end;
-}ic_registerClaim;
 
 /* Determine whether storage is of a reference type or passed by reference. */
 cx_bool ic_isReference(ic_storage storage) {
@@ -137,177 +37,6 @@ cx_bool ic_isReference(ic_storage storage) {
     }
 
     return result;
-}
-
-static cx_bool ic_storageMustAllocate(ic_vmProgram *program, ic_vmStorage *storage) {
-    cx_bool result = FALSE;
-
-    if (storage->refereeCount && (!storage->reusable || (storage->ic->kind == IC_ACCUMULATOR) || (storage->base->ic->kind == IC_ACCUMULATOR))) {
-        result = TRUE;
-
-        if ((storage->ic->kind == IC_MEMBER) || (storage->ic->kind == IC_ELEMENT)) {
-            ic_storageKind baseKind = storage->base->ic->kind;
-            cx_bool firstMember = ((baseKind != IC_MEMBER) && (baseKind != IC_ELEMENT)) || !storage->base->offset;
-            if  (!storage->offset || (storage->base->ic->isReference && !firstMember)) {
-                cx_uint32 referee;
-                result = FALSE;
-                for(referee=0; referee < storage->refereeCount; referee++) {
-                    *(cx_uint16*)CX_OFFSET(storage->referees[referee], program->program->program) = storage->base->addr;
-                }
-            }
-        }
-    }
-
-    storage->allocated = result;
-
-    return result;
-}
-
-static void ic_vmProgram_allocateAccumulators(ic_vmProgram *program) {
-    cx_iter accumulatorIter;
-    ic_vmStorage *storage;
-    cx_uint16 offset;
-    ic_registerClaim claims[256];
-    ic_registerClaim *claim;
-    cx_uint32 i, referee;
-    cx_bool overlap;
-
-    memset(claims, 0, sizeof(claims));
-    offset = program->maxScopeSize;
-
-    if (program->storages) {
-        accumulatorIter = cx_llIter(program->storages);
-        while(cx_iterHasNext(&accumulatorIter)) {
-            storage = cx_iterNext(&accumulatorIter);
-
-            if (ic_storageMustAllocate(program, storage)) {
-
-                /* Find lfree claim */
-                claim = claims;
-                while(claim->storage) {
-                    if (claim->end < storage->firstUsed) { /* Accumulators are chronologically ordered, so this is valid */
-                        break;
-                    }
-                    claim++;
-                }
-
-                claim->storage = storage;
-                claim->start = storage->firstUsed;
-                claim->end = storage->lastUsed;
-                claim->addr = offset;
-                
-                /* If storage has to be allocated and it has a base, storage represents a member address */
-                if (storage->base || storage->ic->isReference) {
-                    claim->size = sizeof(cx_word);
-                } else {
-                    claim->size = cx_type_sizeof(storage->ic->type);
-                }
-                /* Find free register */
-                do {
-                    overlap = FALSE;
-                    for(i=0; i<256; i++) {
-                        /* If claim has expired, remove from list */
-                        if (claims[i].end < claim->start) {
-                            claims[i].end = 0;
-                            continue;
-                        }
-
-                        /* Check if claim overlaps with this claim */
-                        if ( (claim != &claims[i]) && ((claims[i].end >= claim->start) || (claims[i].start <= claim->end)) ) {
-                            /* Check if claim overlaps address */
-                            if ( ((claims[i].addr + claims[i].size) > claim->addr) && (claims[i].addr < (claim->addr + claim->size)) ) {
-                                /* Choose new address and try again */
-                                claim->addr = claims[i].addr + claims[i].size;
-                                overlap = TRUE;
-                                break;
-                            }
-                        }
-                    }
-                } while (overlap);
-
-                if ((claim->addr + claim->size) > program->maxScopeSize) {
-                    program->maxScopeSize = claim->addr + claim->size;
-                }
-
-                for(referee=0; referee < storage->refereeCount; referee++) {
-                    *(cx_uint16*)CX_OFFSET(storage->referees[referee], program->program->program) = claim->addr;
-                }
-                storage->addr = claim->addr;
-                printf("%s addr = %d\n", storage->ic->name, storage->addr);
-            }
-        }
-
-        /* Free resources */
-        accumulatorIter = cx_llIter(program->storages);
-        while(cx_iterHasNext(&accumulatorIter)) {
-            storage = cx_iterNext(&accumulatorIter);
-            cx_dealloc(storage);
-        }
-        cx_llFree(program->storages);
-        program->storages = NULL;
-    }
-}
-
-void ic_vmProgram_clean(ic_vmProgram *vmProgram) {
-    /* Reset values */
-    vmProgram->scope = 0;
-    vmProgram->maxScopeSize = 0;
-    vmProgram->stackSize = 0;
-    vmProgram->maxStackSize = 0;
-    vmProgram->program = NULL;
-}
-
-extern cx_bool CX_DEBUG_ENABLED;
-
-void ic_vmProgram_finalize(ic_vmProgram *vmProgram) {
-    cx_vmOp  *stop;
-
-    /* Add STOP instruction if this is the main-module */
-    if (vmProgram->main == vmProgram->program) {
-        stop = cx_vmProgram_addOp(vmProgram->program, 0);
-        stop->op = CX_VM_STOP;
-    }
-
-    /* Fill in labels */
-    ic_vmProgram_fillInLabels(vmProgram);
-
-    /* Allocate and fill in accumulators */
-    ic_vmProgram_allocateAccumulators(vmProgram);
-
-    /* Set size of program */
-    vmProgram->program->storage = vmProgram->maxScopeSize;
-    vmProgram->program->stack = vmProgram->maxStackSize;
-
-    /* If program is a function, set the function-implementation to the program */
-    if (vmProgram->function) {
-        cx_function function = vmProgram->function->function;
-        function->impl = (cx_word)cx_call_vm;
-        function->implData = (cx_word)vmProgram->program;
-        cx_define(function);
-
-#ifdef IC_TRACING
-        if (CX_DEBUG_ENABLED)
-        {
-            cx_id id;
-            cx_string programStr = cx_vmProgram_toString(vmProgram->program, NULL);
-            printf("%s %s\n%s\n", cx_nameof(cx_typeof(function)), cx_fullname(function, id), programStr);
-            cx_dealloc(programStr);
-        }
-#endif
-    }
-
-#ifdef IC_TRACING
-    if (CX_DEBUG_ENABLED) {
-        if (vmProgram->main == vmProgram->program) {
-            cx_string programStr = cx_vmProgram_toString(vmProgram->program, NULL);
-            printf("main\n%s\n", programStr);
-            cx_dealloc(programStr);
-        }
-    }
-#endif
-
-    /* Clean resources */
-    ic_vmProgram_clean(vmProgram);
 }
 
 static ic_vmLabel *ic_vmLabelNew(cx_uint32 id) {
@@ -352,89 +81,6 @@ static void ic_vmLabelAddReferee(ic_vmProgram *program, ic_vmLabel *label, void 
     label->referees[label->refereeCount] = CX_OFFSET(referee, -(intptr_t)program->program->program);;
     cx_assert(label->refereeCount < 256, "unsupported number of references to one label (max is 256)");
     label->refereeCount++;
-}
-
-static ic_vmStorage *ic_vmStorageNew(ic_vmProgram *program, ic_storage acc, cx_uint32 firstUsed) {
-    ic_vmStorage *result;
-
-    result = cx_calloc(sizeof(ic_vmStorage));
-    result->ic = acc;
-    result->firstUsed = firstUsed;
-    result->allocated = FALSE;
-
-    if (!acc->base) { /* Never overwrite storages which have no base */
-        result->reusable = TRUE;
-        result->assembled = TRUE;
-    } else {
-        result->base = ic_vmStorageGet(program, acc->base);
-        ic_vmStorage *firstReusableBase = result->base;
-        if (result->base->base && !result->base->ic->isReference) {
-            firstReusableBase = result->base->base;
-        }
-
-        if (acc->kind == IC_MEMBER) {
-            result->offset = ic_member(acc)->member->offset + result->base->offset;
-
-            if (!firstReusableBase->ic->isReference || (firstReusableBase->ic->kind == IC_OBJECT)) {
-                result->reusable = TRUE;
-                result->assembled = TRUE;
-            } else if (firstReusableBase->ic->kind == IC_ACCUMULATOR) {
-                result->reusable = TRUE;
-            }
-        } else if (!((ic_element)acc)->variableIndex && 
-            acc->type->kind == CX_COLLECTION && (cx_collection(acc->type)->kind == CX_ARRAY)) {
-            cx_collection type = cx_collection(acc->type);
-            cx_uint32 index = *(cx_uint32*)ic_literal(((ic_element)acc)->index)->value.value;
-            result->offset = cx_type_sizeof(type->elementType) * index + result->base->offset;
-            if (!result->base->ic->isReference) {
-                result->reusable = TRUE;
-                result->assembled = TRUE;
-            }
-        }
-
-        result->base = firstReusableBase;
-    }
-
-    return result;
-}
-
-static void ic_vmStorageAddReferee(ic_vmProgram *program, ic_vmStorage *accumulator, void *referee) {
-    accumulator->referees[accumulator->refereeCount] = CX_OFFSET(referee, -(intptr_t)program->program->program);
-    cx_assert(accumulator->refereeCount < 256, "unsupported number of references to one accumulator (max is 256)");
-    accumulator->refereeCount++;
-}
-
-static ic_vmStorage *ic_vmStorageGet(ic_vmProgram *program, ic_storage icAccumulator) {
-    cx_iter accumulatorIter;
-    ic_vmStorage *accumulator = NULL;
-
-    if (program->storages) {
-        accumulatorIter = cx_llIter(program->storages);
-        while(cx_iterHasNext(&accumulatorIter)) {
-            accumulator = cx_iterNext(&accumulatorIter);
-            if (accumulator->ic == icAccumulator) {
-                break;
-            } else {
-                accumulator = NULL;
-            }
-        }
-    }
-
-    if (!accumulator) {
-        if (!program->program) {
-            program->program = cx_vmProgram_new(program->icProgram->filename, program->function->function);
-        }
-        accumulator = ic_vmStorageNew(program, icAccumulator, program->program->size);
-        if (!program->storages) {
-            program->storages = cx_llNew();
-        }
-        cx_llAppend(program->storages, accumulator);
-    }
-
-    /* Keep track of where an accumulator is last used */
-    accumulator->lastUsed = program->program->size;
-
-    return accumulator;
 }
 
 cx_type ic_valueType(ic_node s) {
@@ -515,7 +161,7 @@ cx_void *ic_valueValue_width(ic_vmProgram *program, ic_node s, void* truncated, 
             break;
         case IC_MEMBER:
             if (((ic_storage)s)->base->kind == IC_OBJECT) {
-                ic_vmStorage *vmStorage = ic_vmStorageGet(program, (ic_storage)s);
+                ic_vmStorage *vmStorage = ic_vmProgram_getStorage(program, (ic_storage)s);
                 cx_object obj = ((ic_object)vmStorage->base->ic)->ptr;
                 *(void**)truncated = CX_OFFSET(obj, ((ic_member)s)->member->offset);
                 result = truncated;
@@ -525,7 +171,7 @@ cx_void *ic_valueValue_width(ic_vmProgram *program, ic_node s, void* truncated, 
             break;
         case IC_ELEMENT:
             if (!((ic_element)s)->variableIndex) {
-                ic_vmStorage *vmStorage = ic_vmStorageGet(program, (ic_storage)s);
+                ic_vmStorage *vmStorage = ic_vmProgram_getStorage(program, (ic_storage)s);
                 cx_object obj = ((ic_object)vmStorage->base->ic)->ptr;
                 *(void**)truncated = CX_OFFSET(obj, vmStorage->offset);
                 result = truncated;
@@ -611,7 +257,7 @@ ic_vmOperand ic_getVmOperand(ic_vmProgram *program, ic_derefKind deref, ic_node 
         break;
     case IC_STORAGE: {
         ic_storage s = ic_storage(node);
-        ic_vmStorage *vmS = ic_vmStorageGet(program, s);
+        ic_vmStorage *vmS = ic_vmProgram_getStorage(program, s);
         ic_storage base = vmS->base ? vmS->base->ic : NULL;
 
         switch(deref) {
@@ -678,22 +324,6 @@ ic_vmOperand ic_getVmOperand(ic_vmProgram *program, ic_derefKind deref, ic_node 
     }
 
     return result;
-}
-
-static cx_int16 ic_label_toVm(ic_label label, ic_vmProgram *program) {
-    ic_vmLabel *lbl;
-
-    if (program->program) {
-        lbl = ic_vmLabelGet(program, label->id);
-        lbl->pc = program->program->size;
-    } else {
-        cx_error("cannot add label to non-existing program");
-        goto error;
-    }
-
-    return 0;
-error:
-    return -1;
 }
 
 cx_void *ic_valueValue(ic_vmProgram *program, ic_node s) {
@@ -832,7 +462,7 @@ static void ic_vmSetOp(
         } else {
             cx_object ptr;
             ic_vmStorage *acc;
-            acc = ic_vmStorageGet(program, (ic_storage)v);
+            acc = ic_vmProgram_getStorage(program, (ic_storage)v);
             ptr = ((ic_object)acc->base->ic)->ptr;
             *(cx_object*)addr = CX_OFFSET(ptr, acc->offset);
         }
@@ -843,15 +473,15 @@ static void ic_vmSetOp(
         if (v->kind == IC_STORAGE) {
             if (((ic_storage)v)->kind == IC_VARIABLE) {
                 ic_vmStorage *local;
-                local = ic_vmStorageGet(program, (ic_storage)v);
+                local = ic_vmProgram_getStorage(program, (ic_storage)v);
                 *(cx_uint16*)addr = local->addr;
             } else if (((ic_storage)v)->kind == IC_ACCUMULATOR){
                 ic_vmStorage *accumulator;
-                accumulator = ic_vmStorageGet(program, (ic_storage)v);
-                ic_vmStorageAddReferee(program, accumulator, addr);
+                accumulator = ic_vmProgram_getStorage(program, (ic_storage)v);
+                ic_vmStorageAddReferee(accumulator, program, addr);
             } else if ((((ic_storage)v)->kind == IC_MEMBER) || (((ic_storage)v)->kind == IC_ELEMENT)){
                 ic_vmStorage *accumulator;
-                accumulator = ic_vmStorageGet(program, (ic_storage)v);
+                accumulator = ic_vmProgram_getStorage(program, (ic_storage)v);
                 switch(accumulator->base->ic->kind) {
                 case IC_VARIABLE:
                     if (accumulator->reusable && !ic_isReference(accumulator->base->ic)) {
@@ -863,7 +493,7 @@ static void ic_vmSetOp(
                 case IC_ELEMENT:
                 case IC_ACCUMULATOR:
                 default:
-                    ic_vmStorageAddReferee(program, accumulator, addr);
+                    ic_vmStorageAddReferee(accumulator, program, addr);
                     break;
                 }
             }
@@ -910,7 +540,7 @@ static void ic_vmSetOp1Addr(ic_vmProgram *program, cx_vmOp *op, ic_vmType typeKi
 }
 
 /* Set operands for 2 operand instructions */
-static void ic_vmSetOp2Addr(ic_vmProgram *program, cx_vmOp *op, ic_vmType typeKind, ic_vmOperand op1Kind, ic_vmOperand op2Kind, ic_node v1, ic_node v2) {
+void ic_vmSetOp2Addr(ic_vmProgram *program, cx_vmOp *op, ic_vmType typeKind, ic_vmOperand op1Kind, ic_vmOperand op2Kind, ic_node v1, ic_node v2) {
     ic_dummyEnv c = ic_getDummyEnv();
     cx_uint32 *reg = NULL;
     cx_word marker = 0;
@@ -925,7 +555,7 @@ static void ic_vmSetOp2Addr(ic_vmProgram *program, cx_vmOp *op, ic_vmType typeKi
 }
 
 /* Set operands for 3 operand instructions */
-static void ic_vmSetOp3Addr(ic_vmProgram *program, cx_vmOp *op, ic_vmType typeKind, ic_vmOperand op1Kind, ic_vmOperand op2Kind, ic_vmOperand op3Kind, ic_node v1, ic_node v2, ic_node v3) {
+void ic_vmSetOp3Addr(ic_vmProgram *program, cx_vmOp *op, ic_vmType typeKind, ic_vmOperand op1Kind, ic_vmOperand op2Kind, ic_vmOperand op3Kind, ic_node v1, ic_node v2, ic_node v3) {
     ic_dummyEnv c = ic_getDummyEnv();
     cx_uint32 *reg = NULL;
     cx_word marker = 0;
@@ -980,7 +610,7 @@ static void ic_vmInlineFunctionMark(ic_vmProgram *program, cx_vmProgram vmProgra
 
 /* --- GETOP pre & post actions */
 #define TYPE_PRE(macro, arg, type, op1modes, op2modes, op3modes, n)\
-static cx_vmOpKind ic_getVm##arg(cx_type t, ic_vmType typeKind, ic_vmOperand op1, ic_vmOperand op2, ic_vmOperand op3) {\
+cx_vmOpKind ic_getVm##arg(cx_type t, ic_vmType typeKind, ic_vmOperand op1, ic_vmOperand op2, ic_vmOperand op3) {\
     cx_vmOpKind result = CX_VM_STOP;\
     CX_UNUSED(t);\
     CX_UNUSED(typeKind);\
@@ -995,7 +625,7 @@ static cx_vmOpKind ic_getVm##arg(cx_type t, ic_vmType typeKind, ic_vmOperand op1
 
 /* ---- GETOP instruction selection expansions */
 #define GETOP0(arg)\
-static cx_vmOpKind ic_getVm##arg(cx_type t, ic_vmType typeKind, ic_vmOperand op1, ic_vmOperand op2, ic_vmOperand op3) {\
+cx_vmOpKind ic_getVm##arg(cx_type t, ic_vmType typeKind, ic_vmOperand op1, ic_vmOperand op2, ic_vmOperand op3) {\
     CX_UNUSED(t);\
     CX_UNUSED(typeKind);\
     CX_UNUSED(op1);\
@@ -1045,158 +675,6 @@ static cx_vmOpKind ic_getVm##arg(cx_type t, ic_vmType typeKind, ic_vmOperand op1
 
 /* ---- Expand instruction selection functions */
 OPS_EXP_EXT(GETOP, TYPE,)
-
-
-static cx_vmOp *ic_vmStorageAssembleElement(ic_storage storage, ic_vmProgram *program, cx_vmOp *vmOp, cx_bool topLevel) {
-    cx_type type = storage->base->type;
-
-    /* Obtain kind for index */
-    if (type->kind == CX_ITERATOR) {
-        ic_vmOperand baseKind = ic_getVmOperand(program, IC_DEREF_VALUE, ic_node(storage->base));
-        vmOp->op = ic_getVmSET(type, IC_VMTYPE_D, IC_VMOPERAND_R, baseKind, 0);
-        ic_vmSetOp2Addr(program, vmOp, IC_VMTYPE_W, IC_VMOPERAND_R, baseKind, 
-            ic_node(storage), ic_node(storage->base));
-
-    }else if (type->kind == CX_COLLECTION) {
-        ic_node ic_elementSize;
-        cx_uint64 elementSize;
-        cx_collection collection = cx_collection(type);
-        ic_vmOperand indexKind = ic_getVmOperand(program, IC_DEREF_VALUE, ((ic_element)storage)->index);
-
-        /* Create value for elementSize */
-        elementSize = cx_type_sizeof(collection->elementType);
-        ic_elementSize = (ic_node)ic_literal__create((cx_any){cx_type(cx_uint32_o), &elementSize, FALSE});
-
-        switch(collection->kind) {
-        case CX_ARRAY:
-            vmOp->op = ic_getVmELEMA(type, IC_VMTYPE_W, IC_VMOPERAND_R, indexKind, 0);
-            ic_vmSetOp3Addr(program, vmOp, IC_VMTYPE_W, IC_VMOPERAND_R, indexKind, IC_VMOPERAND_V, ic_node(storage), ((ic_element)storage)->index, ic_elementSize);
-            break;
-        case CX_SEQUENCE:
-            vmOp->op = ic_getVmELEMS(type, IC_VMTYPE_W, IC_VMOPERAND_R, indexKind, 0);
-            ic_vmSetOp3Addr(program, vmOp, IC_VMTYPE_W, IC_VMOPERAND_R, indexKind, IC_VMOPERAND_V, ic_node(storage), ((ic_element)storage)->index, ic_elementSize);
-            break;
-        case CX_LIST:
-            if (cx_collection_elementRequiresAlloc(collection) || !topLevel) {
-                vmOp->op = ic_getVmELEML(type, IC_VMTYPE_W, IC_VMOPERAND_R, indexKind, 0);
-            } else {
-                vmOp->op = ic_getVmELEMLX(type, IC_VMTYPE_W, IC_VMOPERAND_R, indexKind, 0);
-            }
-            ic_vmSetOp2Addr(program, vmOp, IC_VMTYPE_W, IC_VMOPERAND_R, indexKind, ic_node(storage), ((ic_element)storage)->index);
-            break;
-        case CX_MAP:
-            if (cx_collection_elementRequiresAlloc(collection) || !topLevel) {
-                vmOp->op = ic_getVmELEMM(type, IC_VMTYPE_W, IC_VMOPERAND_R, indexKind, 0);
-            } else {
-                vmOp->op = ic_getVmELEMMX(type, IC_VMTYPE_W, IC_VMOPERAND_R, indexKind, 0);
-            }
-            ic_vmSetOp2Addr(program, vmOp, IC_VMTYPE_W, IC_VMOPERAND_R, indexKind, ic_node(storage), ((ic_element)storage)->index);
-            break;
-        }
-    }
-
-    return cx_vmProgram_addOp(program->program, 0);
-}
-
-static cx_vmOp *ic_vmStorageAssembleNested(ic_storage icStorage, ic_vmProgram *program, cx_vmOp *vmOp, cx_bool topLevel) {
-    ic_vmStorage *storage = ic_vmStorageGet(program, icStorage);
-
-    if (!storage->assembled || !storage->reusable) {
-        if (storage->ic->kind == IC_MEMBER) {
-            ic_storage base = storage->base->ic;
-            cx_uint32 offset = storage->offset;
-            ic_vmStorage *vmBase = ic_vmStorageGet(program, base);
-
-            printf("assemble %s -> base %s assembled = %d, reusable = %d\n",
-                icStorage->name,
-                icStorage->base->name,
-                vmBase->assembled,
-                vmBase->reusable);
-
-            /* Assemble base */
-            vmOp = ic_vmStorageAssembleNested(base, program, vmOp, FALSE);
-
-            if (storage->offset) {
-                
-                if (vmBase->reusable) {
-                    vmOp->op = ic_getVmMEMBER(NULL, 0, 0, 0, 0); /* Member instruction takes a destination, base and offset */
-                    ic_vmStorageAddReferee(program, storage, &vmOp->ic.b._1);
-                    if (base->kind == IC_VARIABLE) {
-                        vmOp->ic.b._2 = storage->base->addr;
-                    } else {
-                        ic_vmStorageAddReferee(program, storage->base, &vmOp->ic.b._2);
-                    }
-                    vmOp->lo.w = offset;
-
-                    /* todo : does the storage have to be reassembled */
-                } else {
-                    
-                    /* Calculate address at runtime by adding the offset to the base-address */
-                    vmOp->op = CX_VM_ADDI_LRV;
-                    if (storage->base->ic->kind == IC_VARIABLE) {
-                        vmOp->ic.b._1 = storage->base->addr;
-                    } else {
-                        ic_vmStorageAddReferee(program, storage->base, &vmOp->ic.b._1);
-                    }
-
-                    vmOp->lo.w = offset;
-                }
-
-                /* Give new operation to assembler */
-                vmOp = cx_vmProgram_addOp(program->program, 0);
-            }
-        } else if (storage->ic->kind == IC_ELEMENT) {
-            ic_storage base = storage->base->ic;
-            ic_vmStorage *vmStorage = ic_vmStorageGet(program, icStorage);
-
-            /* Assemble base */
-            vmOp = ic_vmStorageAssembleNested(base, program, vmOp, FALSE);
-
-            /* If element is reusable the address can be determined at compile-time. When the element
-             * is not reusable the address will be calculated at runtime. */
-            if (!storage->reusable || ic_isReference(storage->base->ic)) {
-                /* If the base is an object store the address in the accumulator */
-                if (base->type->kind != CX_ITERATOR) {
-                    if (base->kind == IC_OBJECT) {
-                        vmOp->op = sizeof(intptr_t) == 4 ? CX_VM_SET_LRV : CX_VM_SET_DRV;
-                        ic_vmStorageAddReferee(program, vmStorage, &vmOp->ic.b._1);
-                        vmOp->lo.w = (intptr_t)((ic_object)base)->ptr;
-                        if (storage->offset) {
-                            vmOp->lo.w += storage->offset;
-                        }
-                        vmOp = cx_vmProgram_addOp(program->program, 0);
-
-                    /* If the base is a local store the address of the local in the accumulator */
-                    } else if (base->kind == IC_VARIABLE) {
-                        if (!ic_isReference(storage->base->ic)) {
-                            vmOp->op = ic_getVmSETX(NULL, IC_VMTYPE_W, IC_VMOPERAND_R, IC_VMOPERAND_R, 0);
-                            ic_vmStorageAddReferee(program, vmStorage, &vmOp->ic.b._1);
-                            vmOp->ic.b._2 = storage->base->addr;
-                            if (storage->offset) {
-                                vmOp->ic.b._2 += storage->offset;
-                            }
-                            vmOp = cx_vmProgram_addOp(program->program, 0);
-                        } else {
-                            vmOp->op = sizeof(intptr_t) == 4 ? CX_VM_SET_LRR : CX_VM_SET_DRR;
-                            ic_vmStorageAddReferee(program, vmStorage, &vmOp->ic.b._1);
-                            vmOp->ic.b._2 = storage->base->addr;
-                            vmOp = cx_vmProgram_addOp(program->program, 0);
-                        }
-                    }
-                }
-
-                /* Insert element-instruction */
-                vmOp = ic_vmStorageAssembleElement(icStorage, program, vmOp, topLevel);
-            }
-        }
-    }
-
-    return vmOp;
-}
-
-static cx_vmOp *ic_vmStorageAssemble(ic_storage icStorage, ic_vmProgram *program, cx_vmOp *vmOp) {
-    return ic_vmStorageAssembleNested(icStorage, program, vmOp, TRUE);
-}
 
 /* Returns which operations have support for the W-operand type */
 static cx_bool ic_supportsVmWordType(ic_opKind kind) {
@@ -1623,13 +1101,13 @@ static cx_vmOp* cx_vmGetTypeAndAssemble(
             *type = IC_VMTYPE_W;
         }
         if (((ic_node)op1)->kind == IC_STORAGE) {
-            vmOp = ic_vmStorageAssemble((ic_storage)op1, program, vmOp);
+            vmOp = ic_vmStorage_assemble((ic_storage)op1, program, vmOp);
         }
     }
     if (op2) {
         if (((ic_node)op2)->kind == IC_STORAGE) {
             if (op2 != op1) {
-                vmOp = ic_vmStorageAssemble((ic_storage)op2, program, vmOp);
+                vmOp = ic_vmStorage_assemble((ic_storage)op2, program, vmOp);
             }
         }
         *opKind2 = ic_getVmOperand(program, opDeref2, op2);
@@ -1637,7 +1115,7 @@ static cx_vmOp* cx_vmGetTypeAndAssemble(
     if (storage) {
         if (((ic_node)storage)->kind == IC_STORAGE) {
             if ((storage != op1) && (storage != op2))
-                vmOp = ic_vmStorageAssemble((ic_storage)storage, program, vmOp);
+                vmOp = ic_vmStorage_assemble((ic_storage)storage, program, vmOp);
         }
         *storageKind = ic_getVmOperand(program, storageDeref, storage);
     }
@@ -2061,30 +1539,6 @@ static cx_int16 ic_op_toVm(ic_op op, ic_vmProgram *program) {
     return 0;
 }
 
-static cx_uint16 ic_vmProgram_push(ic_vmProgram *program) {
-    cx_uint16 result = 0;
-
-    if (program->scope) {
-        result = program->scopeSize[program->scope - 1];
-    }
-
-    program->scope++;
-    program->scopeSize[program->scope-1] = 0;
-
-    return result;
-}
-
-static void ic_vmProgram_setScopeSize(ic_vmProgram *program, cx_uint16 size) {
-    program->scopeSize[program->scope-1] = size;
-    if (size > program->maxScopeSize) {
-        program->maxScopeSize = size;
-    }
-}
-
-static void ic_vmProgram_pop(ic_vmProgram *program) {
-    program->scope--;
-}
-
 static void icZeroLocal(ic_vmProgram *program, cx_uint16 initStart, cx_uint16 size) {
     cx_vmOp *vmOp;
 
@@ -2129,7 +1583,23 @@ static void icInitLocal(ic_vmProgram *program, cx_uint16 localAddr, cx_type type
     vmOp->lo.w = (cx_word)type;
 }
 
-static cx_int16 ic_scope_toVm(ic_scope scope, ic_vmProgram *program) {
+static cx_int16 ic_label_toVm(ic_label label, ic_vmProgram *program) {
+    ic_vmLabel *lbl;
+
+    if (program->program) {
+        lbl = ic_vmLabelGet(program, label->id);
+        lbl->pc = program->program->size;
+    } else {
+        cx_error("cannot add label to non-existing program");
+        goto error;
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
+cx_int16 ic_vmProgram_scopeToVm(ic_vmProgram *program, ic_scope scope) {
     cx_iter programIter, localIter;
     ic_node ic;
     cx_int16 result = 0;
@@ -2152,7 +1622,7 @@ static cx_int16 ic_scope_toVm(ic_scope scope, ic_vmProgram *program) {
             local = storage;
 
             /* Lookup local in program */
-            vmLocal = ic_vmStorageGet(program, local);
+            vmLocal = ic_vmProgram_getStorage(program, local);
 
             /* The 'super' local is actually an alias for the 'this' local
              * with a different type. As such it doesn't need extra space and
@@ -2218,7 +1688,7 @@ static cx_int16 ic_scope_toVm(ic_scope scope, ic_vmProgram *program) {
             result = ic_label_toVm((ic_label)ic, program);
             break;
         case IC_SCOPE:
-            result = ic_scope_toVm((ic_scope)ic, program);
+            result = ic_vmProgram_scopeToVm(program, (ic_scope)ic);
             break;
         case IC_OP:
             result = ic_op_toVm((ic_op)ic, program);
@@ -2262,7 +1732,7 @@ cx_vmProgram ic_vmAssemble(ic_program program) {
         }
 
         /* Start assembling */
-        if (ic_scope_toVm(program->scope, &vmProgram)) {
+        if (ic_vmProgram_scopeToVm(&vmProgram, program->scope)) {
             goto error;
         }
 

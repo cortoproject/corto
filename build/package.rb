@@ -23,6 +23,7 @@ CLOBBER.include("bin")
 
 file "include/#{TARGET}__type.h" => GENFILE do
     verbose(true)
+    sh "touch src/#{TARGET}__wrapper.c"
     sh "cxgen #{TARGET} --prefix #{PREFIX} --lang c"
 end
 
