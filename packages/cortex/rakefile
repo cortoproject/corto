@@ -6,5 +6,5 @@ COMPONENTS = [] <<
     :os <<
     :math <<
     :test
-    
+
 require "#{ENV['CORTEX_HOME']}/build/forward"

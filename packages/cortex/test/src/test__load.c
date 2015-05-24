@@ -4,7 +4,9 @@
 
 #include "test__meta.h"
 
-/* $header() *//* Insert user-includes here *//* $end */
+/* $header() */
+/* Insert user-includes here */
+/* $end */
 
 /* This function is the entrypoint for the library and * loads definitions of the 'test' scope */
 int cortexmain(int argc, char* argv[]) {

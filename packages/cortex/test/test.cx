@@ -1,24 +1,22 @@
 #package ::cortex::test
 
-procedure test: base=function
-class unit::
-    success: bool, readonly
-    failmsg: string, readonly
-    int16 construct()
-    void fail(string msg)
-    // When delegates are implemented, unit should contain a delegate to the function being tested
+procedure test: base=method, kind=procedureKind::METHOD
 
-class suite::
-    package: object // The package being tested
-    silent: bool // Whether to silence fail messages to the console
-    success: bool, readonly
-    unit: test::unit, private|local // The unit under test
-    result: object, private|local // Container for test results
+struct TestResult::
+    member success: bool, readonly
+    member assertmsg: string
+    member errmsg: string
 
-    // Constructor
+class TestCase::
+    member test: ::cortex::test::test
+    member result: TestResult
+
     int16 construct()
 
-    // Failures and assertions
-    void fail(string msg)
-    void assert(bool cond, string msg)
-    void assert(any v1, any v2, string msg)
+    void setUp() virtual
+    void tearDown() virtual
+
+    void assert(bool b)
+    void assert(bool b, string errmsg)
+    void assertEqual(any a, any b)
+    void assertEqual(any a, any b, string errmsg)

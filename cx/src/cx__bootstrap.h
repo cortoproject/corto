@@ -881,7 +881,7 @@ CX_CLASS_O(delegate, struct, CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, CX_I);
 /* ::cortex::lang::procedure */
 CX_FW_I(procedure);
 CX_CLASS_O(procedure, struct, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_I);
-    CX_MEMBER_O(procedure, kind, procedureKind, CX_READONLY);
+    CX_MEMBER_O(procedure, kind, procedureKind, CX_GLOBAL);
     CX_MEMBER_O(procedure, bind, callbackInit, CX_LOCAL|CX_READONLY);
     CX_METHOD_O(procedure, init, "()", int16, FALSE, cx_procedure_init);
     CX_METHOD_O(procedure, unbind, "(function object)", void, FALSE, cx_procedure_unbind);

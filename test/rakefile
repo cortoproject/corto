@@ -1,5 +1,4 @@
 
-COMPONENTS = [] << 
-    :tc_jsonser
+COMPONENTS = []
     
 require "#{ENV['CORTEX_HOME']}/build/forward"
