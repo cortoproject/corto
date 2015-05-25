@@ -244,6 +244,7 @@ static cx_int16 cx_ser_reference(cx_serializer s, cx_value* v, void* userData) {
                 walkData.ptr = NULL;
                 walkData.prefixType = TRUE;
                 walkData.anonymousObjects = data->anonymousObjects;
+                walkData.enableColors = data->enableColors;
 
                 cx_llAppend(data->anonymousObjects, object);
                 cx_ser_appendstr(userData, "<%d>", cx_llSize(data->anonymousObjects));
