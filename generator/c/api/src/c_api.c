@@ -19,7 +19,7 @@ typedef struct c_apiWalk_t {
     cx_uint32 parameterCount;
     cx_ll memberCache;
     cx_ll collections;
-}c_apiWalk_t;
+} c_apiWalk_t;
 
 /* Translate members to function parameters. */
 static cx_int16 c_apiAssignMember(cx_serializer s, cx_value* v, void* userData) {
@@ -41,7 +41,7 @@ static cx_int16 c_apiAssignMember(cx_serializer s, cx_value* v, void* userData) 
         if (m->type->reference) {
             if (!m->weak) {
                 cx_id id;
-                g_fileWrite(data->source, "%s ? cx_keep_ext(_this, %s, \"%s\") : 0; ", memberParamId, memberParamId, cx_valueString(v,id, 256));
+                g_fileWrite(data->source, "%s ? cx_keep_ext(_this, %s, \"%s\") : 0;\n", memberParamId, memberParamId, cx_valueString(v,id, 256));
             }
         }
 
@@ -1021,6 +1021,7 @@ static void c_apiHeaderClose(g_file file) {
 static g_file c_apiSourceOpen(cx_generator g) {
     g_file result;
     cx_id headerFileName;
+    cx_id topLevelName;
 
     /* Create file */
     sprintf(headerFileName, "%s__api.c", g_getName(g));
@@ -1032,8 +1033,7 @@ static g_file c_apiSourceOpen(cx_generator g) {
     g_fileWrite(result, " *    API convenience functions for C-language.\n");
     g_fileWrite(result, " *    This file contains generated code. Do not modify!\n");
     g_fileWrite(result, " */\n\n");
-    g_fileWrite(result, "#include \"%s__meta.h\"\n", g_getName(g));
-    g_fileWrite(result, "#include \"%s__api.h\"\n\n", g_getName(g));
+    g_fileWrite(result, "#include \"%s.h\"\n\n", g_fullOid(g, g_getCurrent(g), topLevelName));
 
     return result;
 }

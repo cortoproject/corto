@@ -104,7 +104,7 @@ static cx_char* c_loadElementId(cx_value* v, cx_char* out, cx_int32 offset) {
         if (ptr->kind == CX_ELEMENT) {
             i++;
         }
-    }while((ptr = ptr->parent));
+    } while((ptr = ptr->parent));
 
     sprintf(out, "_e%d_", i + offset);
 
@@ -126,7 +126,7 @@ static cx_char* c_loadMemberId(c_typeWalk_t* data, cx_value* v, cx_char* out, cx
     /* Build serializer-stack */
     ptr = v;
     count = 0;
-    while((ptr->kind != CX_OBJECT) && (ptr->kind != CX_BASE)) {
+    while ((ptr->kind != CX_OBJECT) && (ptr->kind != CX_BASE)) {
         stack[count] = ptr;
         ptr = ptr->parent;
         count++;
@@ -173,10 +173,10 @@ static cx_char* c_loadMemberId(c_typeWalk_t* data, cx_value* v, cx_char* out, cx
     }
 
     /* Walk serializer stack */
-    while(count) {
+    while (count) {
         count--;
 
-        switch(stack[count]->kind) {
+        switch (stack[count]->kind) {
 
         /* Member */
         case CX_MEMBER:
@@ -199,7 +199,7 @@ static cx_char* c_loadMemberId(c_typeWalk_t* data, cx_value* v, cx_char* out, cx
 
             t = cx_collection(cx_valueType(stack[count+1]));
 
-            switch(t->kind) {
+            switch (t->kind) {
 
             /* Array element, use array operator. */
             case CX_ARRAY:
@@ -332,6 +332,7 @@ static void c_loadHeaderFileClose(cx_generator g, g_file file) {
 static g_file c_loadSourceFileOpen(cx_generator g) {
     g_file result;
     cx_id headerFileName;
+    cx_id topLevelName;
 
     /* Create file */
     sprintf(headerFileName, "%s__meta.c", g_getName(g));
@@ -343,7 +344,7 @@ static g_file c_loadSourceFileOpen(cx_generator g) {
     g_fileWrite(result, " * Loads objects in database.\n");
     g_fileWrite(result, " * This file contains generated code. Do not modify!\n");
     g_fileWrite(result, " */\n\n");
-    g_fileWrite(result, "#include \"%s__type.h\"\n\n", g_getName(g));
+    g_fileWrite(result, "#include \"%s.h\"\n\n", g_fullOid(g, g_getCurrent(g), topLevelName));
 
     return result;
 }
@@ -507,7 +508,7 @@ static cx_int16 c_initElement(cx_serializer s, cx_value* v, void* userData) {
     cx_bool requiresAlloc = cx_collection_elementRequiresAlloc(t);
 
     /* Allocate space for element */
-    switch(t->kind) {
+    switch (t->kind) {
     case CX_LIST:
     case CX_MAP: {
         cx_id elementId, specifier, postfix;
@@ -528,7 +529,7 @@ static cx_int16 c_initElement(cx_serializer s, cx_value* v, void* userData) {
         goto error;
     }
 
-    switch(t->kind) {
+    switch (t->kind) {
     case CX_LIST: {
         cx_id parentId, elementId;
         g_fileWrite(data->source, "cx_llAppend(%s, %s%s);\n",
@@ -566,7 +567,7 @@ static cx_int16 c_initCollection(cx_serializer s, cx_value* v, void* userData) {
     t = cx_collection(cx_valueType(v));
     data = userData;
 
-    switch(t->kind) {
+    switch (t->kind) {
     case CX_ARRAY:
         size = t->max;
         break;
@@ -627,7 +628,7 @@ static cx_int16 c_initCollection(cx_serializer s, cx_value* v, void* userData) {
 
     /* For the non-array types, allocate a member variable, if size of collection is not zero. */
     if (size) {
-        switch(t->kind) {
+        switch (t->kind) {
         case CX_LIST:
         case CX_MAP: {
             cx_id elementId, elementTypeId;
@@ -652,7 +653,7 @@ static cx_int16 c_initCollection(cx_serializer s, cx_value* v, void* userData) {
     result = cx_serializeElements(s, v, userData);
 
     if (size) {
-        switch(t->kind) {
+        switch (t->kind) {
         case CX_LIST:
         case CX_MAP: {
             g_fileDedent(data->source);
