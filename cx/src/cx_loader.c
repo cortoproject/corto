@@ -23,7 +23,7 @@ struct cx_fileHandler {
 };
 
 /* Lookup file handler action */
-int cx_lookupExtWalk(struct cx_fileHandler* h, struct cx_fileHandler** data) {
+static int cx_lookupExtWalk(struct cx_fileHandler* h, struct cx_fileHandler** data) {
     if (!strcmp(h->ext, (*data)->ext)) {
         *data = h;
         return 0;
@@ -58,13 +58,13 @@ static void cx_fileExt(cx_char* buffer, cx_string file) {
     bptr = buffer;
 
     ptr = file + strlen(file);
-    while(ptr >= file) {
+    while (ptr >= file) {
         if (*ptr == '.') break;
         ptr--;
     }
     if (ptr >= file) {
         ptr++;
-        while((ch = *ptr)) {
+        while ((ch = *ptr)) {
             *bptr = ch;
             ptr++;
             bptr++;
@@ -102,7 +102,7 @@ error:
 }
 
 /* Convert package identifier to filename */
-cx_string cx_packageToFile(cx_string package) {
+static cx_string cx_packageToFile(cx_string package) {
     cx_char ch, *ptr, *bptr;
     cx_string fileName, path, start;
     cx_string cortexHome = getenv("CORTEX_HOME");
@@ -115,8 +115,8 @@ cx_string cx_packageToFile(cx_string package) {
     start = bptr;
     fileName = bptr;
 
-    while((ch = *ptr)) {
-        switch(ch) {
+    while ((ch = *ptr)) {
+        switch (ch) {
         case ':':
             ptr++;
         case '/':
@@ -143,8 +143,11 @@ cx_string cx_packageToFile(cx_string package) {
     return path;
 }
 
-/* Load a cortex library */
-int cx_loadLibrary(cx_string fileName) {
+/*
+ * Load a Cortex library
+ * Receives the absolute path to the lib<name>.so file.
+ */
+static int cx_loadLibrary(cx_string fileName) {
     cx_dl dl = NULL;
     int (*proc)(int argc, char* argv[]);
 
@@ -178,10 +181,18 @@ error:
     return -1;  
 }
 
+/*
+ * An adapter on top of cx_loadLibrary to fit the cx_loadAction signature.
+ */
+static int cx_loadLibraryAction(cx_string file, void *data) {
+    CX_UNUSED(data);
+    return cx_loadLibrary(file);
+}
+
 static cx_ll filesLoaded = NULL;
 
 /* Load xml interface */
-int cx_loadXml(void) {
+static int cx_loadXml(void) {
     cx_string cortexHome = getenv("CORTEX_HOME");
     int result;
     cx_string path = cx_malloc(strlen(cortexHome) + strlen("/bin/libxml.so") + 1);
@@ -192,7 +203,7 @@ int cx_loadXml(void) {
 }
 
 /* Load a package */
-int cx_load(cx_string str){
+int cx_load(cx_string str) {
     cx_char ext[16];
     struct cx_fileHandler* h;
     int result = -1;
@@ -205,7 +216,7 @@ int cx_load(cx_string str){
 
         /* Lookup whether a file is already loaded */
         iter = cx_llIter(filesLoaded);
-        while(cx_iterHasNext(&iter)) {
+        while (cx_iterHasNext(&iter)) {
             loaded = cx_iterNext(&iter);
             if (!strcmp(loaded, str)) {
                 /* File is already loaded! */
@@ -247,7 +258,7 @@ loaded:
 }
 
 /* Load package */
-int cx_packageLoader(cx_string file) {
+static int cx_packageLoader(cx_string file) {
     cx_string fileName;
     int result;
 
@@ -263,7 +274,7 @@ int cx_packageLoader(cx_string file) {
 }
 
 /* Load file with unspecified extension */
-int cx_fileLoader(cx_string file, void* udata) {
+static int cx_fileLoader(cx_string file, void* udata) {
     CX_UNUSED(udata);
     cx_id testName;
     
@@ -288,7 +299,7 @@ int cx_fileLoader(cx_string file, void* udata) {
     return -1;
 }
 
-void cx_loaderOnExit(void* udata) {
+static void cx_loaderOnExit(void* udata) {
     struct cx_fileHandler* h;
     cx_dl dl;
     void (*proc)(int code);
@@ -309,14 +320,14 @@ void cx_loaderOnExit(void* udata) {
     }
 
     /* Free handlers */
-    while((h = cx_llTakeFirst(fileHandlers))) {
+    while ((h = cx_llTakeFirst(fileHandlers))) {
         cx_dealloc(h);
     }
     cx_llFree(fileHandlers);
 
     /* Free libraries */
     if (libraries) {
-        while((dl = cx_llTakeFirst(libraries))) {
+        while ((dl = cx_llTakeFirst(libraries))) {
             /* Lookup exit function */
             proc = (void(*)(int))cx_dlProc(dl, "exit");
             if (proc) {
@@ -334,10 +345,6 @@ CX_DLL_CONSTRUCT {
     cx_onexit(cx_loaderOnExit, NULL);
 
     /* Register library-binding */
+    cx_loaderRegister("so", cx_loadLibraryAction, NULL);
     cx_loaderRegister("", cx_fileLoader, NULL);
 }
-
-
-
-
-
