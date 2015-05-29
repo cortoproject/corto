@@ -13,7 +13,11 @@
 static cx_void test_TestCase_test(test_TestCase _this, cx_bool b, cx_string assertmsg, cx_string errmsg) {
     if (!b) {
         _this->result.assertmsg = cx_strdup(assertmsg);
-        _this->result.errmsg = cx_strdup(errmsg);
+        if (errmsg) {
+            _this->result.errmsg = cx_strdup(errmsg);
+        } else {
+            _this->result.errmsg = NULL;
+        }
         _this->result.success = FALSE;
     }
 }
