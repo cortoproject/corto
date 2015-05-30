@@ -37,7 +37,14 @@ task :binary => "#{TARGETDIR}/#{ARTEFACT}"
 file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     verbose(false)
     sh "mkdir -p #{TARGETDIR}"
-    sh "cc #{OBJECTS.to_a.uniq.join(' ')} #{CFLAGS.join(" ")} #{CORTEX_LIB.map {|i| ENV['CORTEX_HOME'] + "/bin/lib" + i + ".so"}.join(" ")} #{LIBPATH.map {|i| "-L" + i}.join(" ")} #{(LibMapping.mapLibs(LIB)).map {|i| "-l" + i}.join(" ")} #{LFLAGS.join(" ")} -o #{TARGETDIR}/#{ARTEFACT}"
+    objects  = "#{OBJECTS.to_a.uniq.join(' ')}"
+    cflags = "#{CFLAGS.join(" ")}"
+    cortex_lib = "#{CORTEX_LIB.map {|i| ENV['CORTEX_HOME'] + "/bin/lib" + i + ".so"}.join(" ")}"
+    libpath = "#{LIBPATH.map {|i| "-L" + i}.join(" ")}"
+    libmapping = "#{(LibMapping.mapLibs(LIB)).map {|i| "-l" + i}.join(" ")}"
+    lflags = "#{LFLAGS.join(" ")} -o #{TARGETDIR}/#{ARTEFACT}"
+    cc_command = "cc #{objects} #{cflags} #{cortex_lib} #{libpath} #{libmapping} #{lflags}"
+    sh cc_command
     sh "echo '\033[1;49m[ \033[1;34m#{ARTEFACT}\033[0;49m\033[1;49m ]\033[0;49m'"
 end
 
