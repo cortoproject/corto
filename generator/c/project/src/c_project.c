@@ -17,8 +17,10 @@ static cx_int16 c_projectGenerateMainFile(cx_generator g) {
     if(!file) {
         goto error;
     }
-    g_fileWrite(file, "/** \n");
-    g_fileWrite(file, " * This file is generated. Only insert code in appropriate places\n");
+
+    g_fileWrite(file, "/* %s\n", filename);
+    g_fileWrite(file, " *\n");
+    g_fileWrite(file, " * This file is generated. Only insert code in appropriate places.\n");
     g_fileWrite(file, " */\n\n");
 
     g_fileWrite(file, "#include \"%s__meta.h\"\n\n", g_getName(g));

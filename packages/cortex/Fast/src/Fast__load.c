@@ -1,5 +1,6 @@
-/** 
- * This file is generated. Only insert code in appropriate places
+/* Fast__load.c
+ *
+ * This file is generated. Only insert code in appropriate places.
  */
 
 #include "Fast__meta.h"

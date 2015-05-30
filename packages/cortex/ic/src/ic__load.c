@@ -1,5 +1,6 @@
-/** 
- * This file is generated. Only insert code in appropriate places
+/* ic__load.c
+ *
+ * This file is generated. Only insert code in appropriate places.
  */
 
 #include "ic__meta.h"

@@ -651,8 +651,8 @@ static g_file c_interfaceSourceFileOpen(cx_generator g, cx_string name) {
     g_fileWrite(result, " *\n");
     g_fileWrite(result, " * This file contains the implementation for the generated interface.\n");
     g_fileWrite(result, " *\n");
-    g_fileWrite(result, " *    Don't mess with the begin and end tags, since these will ensure that modified\n");
-    g_fileWrite(result, " *    code in interface functions isn't replaced when code is re-generated.\n");
+    g_fileWrite(result, " * Don't mess with the begin and end tags, since these will ensure that modified\n");
+    g_fileWrite(result, " * code in interface functions isn't replaced when code is re-generated.\n");
     g_fileWrite(result, " */\n\n");
     g_fileWrite(result, "#include \"%s.h\"\n", g_fullOid(g, g_getCurrent(g), topLevelName));
 

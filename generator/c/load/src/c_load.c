@@ -301,7 +301,7 @@ static g_file c_loadHeaderFileOpen(cx_generator g) {
     /* Print standard comments and includes */
     g_fileWrite(result, "/* %s\n", headerFileName);
     g_fileWrite(result, " *\n");
-    g_fileWrite(result, " * Loads objects in database.\n");
+    g_fileWrite(result, " * Loads objects in object store.\n");
     g_fileWrite(result, " * This file contains generated code. Do not modify!\n");
     g_fileWrite(result, " */\n\n");
     g_fileWrite(result, "#ifndef %s_META_H\n", g_getName(g));
@@ -341,7 +341,7 @@ static g_file c_loadSourceFileOpen(cx_generator g) {
     /* Print standard comments and includes */
     g_fileWrite(result, "/* %s\n", headerFileName);
     g_fileWrite(result, " *\n");
-    g_fileWrite(result, " * Loads objects in database.\n");
+    g_fileWrite(result, " * Loads objects in object store.\n");
     g_fileWrite(result, " * This file contains generated code. Do not modify!\n");
     g_fileWrite(result, " */\n\n");
     g_fileWrite(result, "#include \"%s.h\"\n\n", g_fullOid(g, g_getCurrent(g), topLevelName));
@@ -357,7 +357,7 @@ static void c_sourceWriteVarDefStart(g_file file) {
 /* Write start of load-routine */
 static void c_sourceWriteLoadStart(cx_generator g, g_file file) {
     g_fileWrite(file, "\n");
-    g_fileWrite(file, "/* Load objects in database */\n");
+    g_fileWrite(file, "/* Load objects in object store. */\n");
     g_fileWrite(file, "int %s_load(void) {\n", g_getName(g));
     g_fileIndent(file);
     g_fileWrite(file, "cx_object _a_; /* Used for resolving anonymous objects */\n");

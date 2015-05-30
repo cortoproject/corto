@@ -1,5 +1,6 @@
-/** 
- * This file is generated. Only insert code in appropriate places
+/* math__load.c
+ *
+ * This file is generated. Only insert code in appropriate places.
  */
 
 #include "math__meta.h"
