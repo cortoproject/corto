@@ -10,6 +10,7 @@ static cx_int16 c_projectGenerateMainFile(cx_generator g) {
     cx_id filename;
     g_file file;
     cx_string snippet;
+    cx_id topLevelName;
 
     sprintf(filename, "%s__load.c", g_getName(g));
 
@@ -23,7 +24,7 @@ static cx_int16 c_projectGenerateMainFile(cx_generator g) {
     g_fileWrite(file, " * This file is generated. Only insert code in appropriate places.\n");
     g_fileWrite(file, " */\n\n");
 
-    g_fileWrite(file, "#include \"%s__meta.h\"\n\n", g_getName(g));
+    g_fileWrite(file, "#include \"%s.h\"\n\n", g_fullOid(g, g_getCurrent(g), topLevelName));
 
     if ((snippet = g_fileLookupHeader(file, ""))) {
         g_fileWrite(file, "/* $header()");
