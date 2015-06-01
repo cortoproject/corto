@@ -3,7 +3,7 @@
  * This file is generated. Only insert code in appropriate places.
  */
 
-#include "test__meta.h"
+#include "test.h"
 
 /* $header() */
 /* Insert user-includes here */

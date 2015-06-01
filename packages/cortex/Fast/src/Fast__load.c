@@ -3,7 +3,7 @@
  * This file is generated. Only insert code in appropriate places.
  */
 
-#include "Fast__meta.h"
+#include "Fast.h"
 
 /* $header() */
 #include "Fast.h"

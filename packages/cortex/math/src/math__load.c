@@ -3,7 +3,7 @@
  * This file is generated. Only insert code in appropriate places.
  */
 
-#include "math__meta.h"
+#include "mth.h"
 
 /* $header() *//* Insert user-includes here *//* $end */
 

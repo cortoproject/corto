@@ -3,7 +3,7 @@
  * This file is generated. Only insert code in appropriate places.
  */
 
-#include "ic__meta.h"
+#include "ic.h"
 
 /* $header() */
 cx_threadKey IC_PROGRAM_KEY;
