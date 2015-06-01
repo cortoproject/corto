@@ -9,14 +9,16 @@ struct TestResult::
 
 class TestCase::
     member test: ::cortex::test::test
-    member result: TestResult
+    member result: TestResult, readonly
 
     int16 construct()
 
-    void setUp() virtual
-    void tearDown() virtual
+    void setUp()
+    void tearDown()
+    void rSetUp(object type)
+    void rTearDown(object type)
 
-    void assert(bool b)
-    void assert(bool b, string errmsg)
-    void assertEqual(any a, any b)
-    void assertEqual(any a, any b, string errmsg)
+    bool assert(bool b)
+    bool assert(bool b, string errmsg)
+    bool assertEqual(any a, any b)
+    bool assertEqual(any a, any b, string errmsg)

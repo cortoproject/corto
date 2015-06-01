@@ -1,0 +1,25 @@
+#package ::testjson
+
+void primitives::
+    void ints::
+        int8 a: 127
+        int8 b: -5
+        int16 c: 8
+        int16 d: 6
+
+class BaseTestJson: ::cortex::test::TestCase::
+    member serializer: word, private|local
+    member jsonData: word, private|local
+    void setUp()
+    void tearDown()
+    void testJson(string fullname, string expected)
+
+// class JsonTests: BaseTestJson::
+
+
+class TestJsonValueOnly: BaseTestJson ::
+    void setUp()
+    void tearDown()
+    void testPositiveInt8() test::test
+    void testZeroInt8() test::test
+    void testNegativeInt8() test::test
