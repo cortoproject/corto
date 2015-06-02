@@ -87,7 +87,7 @@ cx_int16 test_TestCase_construct(test_TestCase _this) {
     } else {
         _this->result.success = FALSE;
     }
-    return !_this->result.success;
+    return 0;
 /* $end */
 }
 

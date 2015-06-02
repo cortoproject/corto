@@ -25,9 +25,7 @@ cx_void testjson_TestJsonValueOnly_setUp(testjson_TestJsonValueOnly _this) {
 /* ::testjson::TestJsonValueOnly::tearDown() */
 cx_void testjson_TestJsonValueOnly_tearDown(testjson_TestJsonValueOnly _this) {
 /* $begin(::testjson::TestJsonValueOnly::tearDown) */
-
     CX_UNUSED(_this);
-
 /* $end */
 }
 

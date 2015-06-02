@@ -14,8 +14,6 @@ class BaseTestJson: ::cortex::test::TestCase::
     void tearDown()
     void testJson(string fullname, string expected)
 
-// class JsonTests: BaseTestJson::
-
 
 class TestJsonValueOnly: BaseTestJson ::
     void setUp()

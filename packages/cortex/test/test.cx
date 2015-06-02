@@ -22,3 +22,11 @@ class TestCase::
     bool assert(bool b, string errmsg)
     bool assertEqual(any a, any b)
     bool assertEqual(any a, any b, string errmsg)
+
+class TestRunner::
+    member successes: list{TestCase}
+    member failures: list{TestCase}
+    int16 construct()
+    void destruct()
+    void runTest() observer
+    void printTestRun(TestCase t) virtual

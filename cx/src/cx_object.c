@@ -963,7 +963,7 @@ cx_int16 cx_delegateConstruct(cx_type t, cx_object o) {
     }
 
     if (delegate) {
-        if(delegate->kind == CX_PROCEDURE_CDECL) {
+        if (delegate->kind == CX_PROCEDURE_CDECL) {
             ((cx_int16(*)(cx_function f, void *result, void *args))delegate->impl)(delegate, &result, &o);
         } else {
             cx_call(delegate, &result, o);
@@ -1079,7 +1079,7 @@ cx_bool cx_checkAttr(cx_object o, cx_int8 attr) {
 
 cx_object cx_assertType(cx_type type, cx_object o) {
     if (o && (o != type)) {
-        if(!cx_instanceof(type, o)) {
+        if (!cx_instanceof(type, o)) {
             cx_id id1, id2;
             cx_critical("object '%s' is not of type '%s'",
                 cx_fullname(o, id1),
