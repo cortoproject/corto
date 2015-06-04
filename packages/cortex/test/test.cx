@@ -1,15 +1,15 @@
 #package ::cortex::test
 
-procedure test: base=method, kind=procedureKind::METHOD
+procedure Case: base=method, kind=procedureKind::METHOD
 
-struct TestResult::
+struct Result::
     member success: bool, readonly
     member assertmsg: string
     member errmsg: string
 
-class TestCase::
-    member test: ::cortex::test::test
-    member result: TestResult, readonly
+class Suite::
+    member test: test::Case
+    member result: test::Result, readonly
 
     int16 construct()
 
@@ -23,10 +23,10 @@ class TestCase::
     bool assertEqual(any a, any b)
     bool assertEqual(any a, any b, string errmsg)
 
-class TestRunner::
-    member successes: list{TestCase}
-    member failures: list{TestCase}
+class Runner::
+    member successes: list{Suite}
+    member failures: list{Suite}
     int16 construct()
     void destruct()
     void runTest() observer
-    void printTestRun(TestCase t) virtual
+    void printTestRun(Suite t) virtual
