@@ -49,14 +49,14 @@ cx_void testjson_BaseTestJson_testJson(testjson_BaseTestJson _this, cx_string fu
     }
     errmsg = cx_malloc(length + 1);
     sprintf(errmsg, "Cannot find %s", fullname);
-    if (test_TestCase_assert_bool_string(test_TestCase(_this), o != NULL, errmsg)) {
+    if (test_Suite_assert_bool_string(test_Suite(_this), o != NULL, errmsg)) {
         goto finished;
     }
     cx_serialize(serializer, o, jsonData);
     cx_string actual = jsonData->buffer;
     cx_any _expected = {cx_type(cx_string_o), &expected, FALSE};
     cx_any _actual = {cx_type(cx_string_o), &actual, FALSE};
-    if (test_TestCase_assertEqual_any_any(test_TestCase(_this), _expected, _actual)) {
+    if (test_Suite_assertEqual_any_any(test_Suite(_this), _expected, _actual)) {
         goto finished;
     }
 finished:
