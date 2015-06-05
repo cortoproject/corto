@@ -1,6 +1,8 @@
 #package ::cortex::test
 
 procedure Case: base=method, kind=procedureKind::METHOD
+procedure SetUp: base=method, kind=procedureKind::METHOD
+procedure TearDown: base=method, kind=procedureKind::METHOD
 
 struct Result::
     member success: bool, readonly
@@ -13,8 +15,6 @@ class Suite::
 
     int16 construct()
 
-    void setUp()
-    void tearDown()
     void rSetUp(object type)
     void rTearDown(object type)
 

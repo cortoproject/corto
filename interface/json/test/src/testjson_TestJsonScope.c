@@ -1,4 +1,4 @@
-/* testjson_TestJsonValue.c
+/* testjson_TestJsonScope.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -12,19 +12,12 @@
 #include "json.h"
 /* $end */
 
-/* ::testjson::TestJsonValue::setSerializerData() */
-cx_void testjson_TestJsonValue_setSerializerData(testjson_TestJsonValue _this) {
-/* $begin(::testjson::TestJsonValue::setSerializerData) */
+/* ::testjson::TestJsonScope::setSerializerData() */
+cx_void testjson_TestJsonScope_setSerializerData(testjson_TestJsonScope _this) {
+/* $begin(::testjson::TestJsonScope::setSerializerData) */
     testjson_BaseTestJson __this = testjson_BaseTestJson(_this);
     __this->jsonData = (cx_word)cx_malloc(sizeof(struct cx_json_ser_t));
-    cx_json_ser_t jsonData = {NULL, NULL, 0, 0, 0, FALSE, TRUE, FALSE, TRUE};
+    cx_json_ser_t jsonData = {NULL, NULL, 0, 0, 0, FALSE, TRUE, TRUE, TRUE};
     *((cx_json_ser_t *)__this->jsonData) = jsonData;
-/* $end */
-}
-
-/* ::testjson::TestJsonValue::tearDown() */
-cx_void testjson_TestJsonValue_tearDown(testjson_TestJsonValue _this) {
-/* $begin(::testjson::TestJsonValue::tearDown) */
-    CX_UNUSED(_this);
 /* $end */
 }

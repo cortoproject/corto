@@ -31,7 +31,7 @@ cx_void testjson_TestJsonText_testEscaped(testjson_TestJsonText _this) {
 /* $begin(::testjson::TestJsonText::testEscaped) */
     testjson_BaseTestJson_testJson(testjson_BaseTestJson(_this),
         "::testjson::primitives::texts::escaped",
-        "{\"value\":\"Hello \\\"world\\\"\"}");
+        "{\"value\":\"Hello \\\\ \\\"world\\\"\"}");
 /* $end */
 }
 
@@ -49,6 +49,6 @@ cx_void testjson_TestJsonText_testPunctuation(testjson_TestJsonText _this) {
 /* $begin(::testjson::TestJsonText::testPunctuation) */
     testjson_BaseTestJson_testJson(testjson_BaseTestJson(_this),
         "::testjson::primitives::texts::punctuation",
-        "{\"value\":\"Hello \\\\ \\\"world\\\"\"}");
+        "{\"value\":\"Hello world!\"}");
 /* $end */
 }

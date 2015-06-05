@@ -26,6 +26,35 @@ static cx_bool test_Suite_test(test_Suite _this, cx_bool b, cx_string assertmsg,
     return !b;
 }
 
+typedef struct {
+    test_Suite o;
+    cx_procedure p; /* test_SetUp_o or test_TearDown_o */
+} test_Suite_fixtureDiscoveryScopeWalkData;
+
+/*
+ * Receives a test_Suite_fixtureDiscoveryScopeWalkData
+ */
+static int test_Suite_fixtureDiscoveryScopeWalk(cx_object o, void *data) {
+    test_Suite_fixtureDiscoveryScopeWalkData *_data = data;
+    cx_object _this = _data->o;
+    cx_procedure p = _data->p;
+    if (cx_instanceof(cx_type(p), o)) {
+        cx_call(o, NULL, _this);
+    }
+    return TRUE;
+}
+
+/*
+ * Code common to rSetUp and rTearDown
+ */
+static cx_void test_Suite_rFixture(test_Suite _this, cx_object type, const test_Suite_fixtureDiscoveryScopeWalkData *data) {
+    cx_interface i = cx_interface(type);
+    if (i->base) {
+        test_Suite_rFixture(_this, i->base, data);
+    }
+    cx_scopeWalk(type, test_Suite_fixtureDiscoveryScopeWalk, (void *)data);
+}
+
 /* $end */
 
 /* ::cortex::test::Suite::assert(bool b) */
@@ -94,41 +123,15 @@ cx_int16 test_Suite_construct(test_Suite _this) {
 /* ::cortex::test::Suite::rSetUp(object type) */
 cx_void test_Suite_rSetUp(test_Suite _this, cx_object type) {
 /* $begin(::cortex::test::Suite::rSetUp) */
-    cx_interface i = type;
-    if (i->base) {
-        test_Suite_rSetUp(_this, i->base);
-    }
-    cx_function setUp = cx_function(cx_resolve(type, "setUp"));
-    if (setUp) {
-        cx_call(setUp, NULL, _this);
-    }
+    test_Suite_fixtureDiscoveryScopeWalkData data = {_this, test_SetUp_o};
+    test_Suite_rFixture(_this, type, &data);
 /* $end */
 }
 
 /* ::cortex::test::Suite::rTearDown(object type) */
 cx_void test_Suite_rTearDown(test_Suite _this, cx_object type) {
 /* $begin(::cortex::test::Suite::rTearDown) */
-    cx_interface i = type;
-    if (i->base) {
-        test_Suite_rTearDown(_this, i->base);
-    }
-    cx_function tearDown = cx_function(cx_resolve(type, "tearDown"));
-    if (tearDown) {
-        cx_call(tearDown, NULL, _this);
-    }
-/* $end */
-}
-
-/* ::cortex::test::Suite::setUp() */
-cx_void test_Suite_setUp(test_Suite _this) {
-/* $begin(::cortex::test::Suite::setUp) */
-    CX_UNUSED(_this);
-/* $end */
-}
-
-/* ::cortex::test::Suite::tearDown() */
-cx_void test_Suite_tearDown(test_Suite _this) {
-/* $begin(::cortex::test::Suite::tearDown) */
-    CX_UNUSED(_this);
+    test_Suite_fixtureDiscoveryScopeWalkData data = {_this, test_TearDown_o};
+    test_Suite_rFixture(_this, type, &data);
 /* $end */
 }
