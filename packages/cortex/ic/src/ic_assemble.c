@@ -783,10 +783,11 @@ static cx_vmOpKind ic_getVmSet(
         *typeKind = cx_vmTranslateVmType(ic_set, *typeKind);
         result = ic_getVmSET(t, *typeKind, *op1, *op2, 0);
     } else {
-        /*printf("op1->isReference=%d, deref1==address=%d, deref2==address=%d, *typeKind=%d, *op1=%d, *op2=%d\n",
-               op1->isReference, deref1==IC_DEREF_ADDRESS, deref2==IC_DEREF_ADDRESS, *typeKind, *op1, *op2);*/
         if ((deref1 == IC_DEREF_ADDRESS) || (deref2 == IC_DEREF_ADDRESS)) {
             *typeKind = IC_VMTYPE_W;
+            if (*op1 == IC_VMOPERAND_V) {
+                *op1 = IC_VMOPERAND_P;
+            }
             result = ic_getVmSETREF(t, *typeKind, *op1, *op2, 0);
         } else {
             if ((t->kind == CX_PRIMITIVE) && (cx_primitive(t)->kind == CX_TEXT)) {

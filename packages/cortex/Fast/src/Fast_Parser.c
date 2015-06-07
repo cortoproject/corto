@@ -2143,7 +2143,8 @@ Fast_Expression Fast_Parser_initPushIdentifier(Fast_Parser _this, Fast_Expressio
     if (_this->initializerCount >= 0) {
         Fast_Initializer initializer = _this->initializers[_this->initializerCount];
         if (initializer) {
-            if (cx_instanceof(cx_type(Fast_StaticInitializer_o), initializer)) {
+            if (!cx_instanceof(cx_type(Fast_DynamicInitializer_o), initializer) && 
+                !cx_instanceof(cx_type(Fast_InitializerExpression_o), initializer)) {
                 isDynamic = FALSE; /* A previous initializer is static, so this initializer will be static as well */
             }
         } else if (_this->pass) {
@@ -2907,8 +2908,12 @@ cx_object Fast_Parser_pushScope(Fast_Parser _this) {
         goto error;
     }
 
-    cx_set(&_this->scope, Fast_Object(_this->variables[0])->value);
-    Fast_Parser_reset(_this);
+    if (_this->variables[0]) {
+        cx_set(&_this->scope, Fast_Object(_this->variables[0])->value);
+        Fast_Parser_reset(_this);
+    } else {
+        goto error;
+    }
 
     return oldScope;
 error:

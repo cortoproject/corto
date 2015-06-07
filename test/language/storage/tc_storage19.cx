@@ -1,0 +1,82 @@
+bool result : true
+
+void fail(string msg):
+    "tc_storage19: FAIL: $msg"
+    result = false
+
+struct Point::
+    x, y: int32
+
+struct Line::
+    start, stop: Point
+
+class TwoLines::
+    line1, line2: Line
+
+var TwoLines l = TwoLines{{{10, 20}, {30, 40}}, {{50, 60}, {70, 80}}}
+var TwoLines m = l
+if l.line1.start.x != 10: fail("l.line1.start.x != 10")
+if l.line1.start.y != 20: fail("l.line1.start.y != 20")
+if l.line1.stop.x != 30: fail("l.line1.stop.x != 30")
+if l.line1.stop.y != 40: fail("l.line1.stop.y != 40")
+if l.line2.start.x != 50: fail("l.line2.start.x != 50")
+if l.line2.start.y != 60: fail("l.line2.start.y != 60")
+if l.line2.stop.x != 70: fail("l.line2.stop.x != 70")
+if l.line2.stop.y != 80: fail("l.line2.stop.y != 80")
+if "$l" != "{{{10,20},{30,40}},{{50,60},{70,80}}}": fail("\"l\" != \"{{{10,20},{30,40}},{{50,60},{70,80}}}\"")
+
+if m.line1.start.x != 10: fail("m.line1.start.x != 10")
+if m.line1.start.y != 20: fail("m.line1.start.y != 20")
+if m.line1.stop.x != 30: fail("m.line1.stop.x != 30")
+if m.line1.stop.y != 40: fail("m.line1.stop.y != 40")
+if m.line2.start.x != 50: fail("m.line2.start.x != 50")
+if m.line2.start.y != 60: fail("m.line2.start.y != 60")
+if m.line2.stop.x != 70: fail("m.line2.stop.x != 70")
+if m.line2.stop.y != 80: fail("m.line2.stop.y != 80")
+if "$m" != "{{{10,20},{30,40}},{{50,60},{70,80}}}": fail("\"m\" != \"{{{10,20},{30,40}},{{50,60},{70,80}}}\"")
+
+
+l = {{{20, 30}, {40, 50}}, {{60, 70}, {80, 90}}}
+if l.line1.start.x != 20: fail("l.line1.start.x != 20")
+if l.line1.start.y != 30: fail("l.line1.start.y != 30")
+if l.line1.stop.x != 40: fail("l.line1.stop.x != 40")
+if l.line1.stop.y != 50: fail("l.line1.stop.y != 50")
+if l.line2.start.x != 60: fail("l.line2.start.x != 60")
+if l.line2.start.y != 70: fail("l.line2.start.y != 70")
+if l.line2.stop.x != 80: fail("l.line2.stop.x != 80")
+if l.line2.stop.y != 90: fail("l.line2.stop.y != 90")
+if "$l" != "{{{20,30},{40,50}},{{60,70},{80,90}}}": fail("\"l\" != \"{{{20,30},{40,50}},{{60,70},{80,90}}}\"")
+
+if m.line1.start.x != 20: fail("m.line1.start.x != 20")
+if m.line1.start.y != 30: fail("m.line1.start.y != 30")
+if m.line1.stop.x != 40: fail("m.line1.stop.x != 40")
+if m.line1.stop.y != 50: fail("m.line1.stop.y != 50")
+if m.line2.start.x != 60: fail("m.line2.start.x != 60")
+if m.line2.start.y != 70: fail("m.line2.start.y != 70")
+if m.line2.stop.x != 80: fail("m.line2.stop.x != 80")
+if m.line2.stop.y != 90: fail("m.line2.stop.y != 90")
+if "$m" != "{{{20,30},{40,50}},{{60,70},{80,90}}}": fail("\"m\" != \"{{{20,30},{40,50}},{{60,70},{80,90}}}\"")
+
+
+l = TwoLines{{{30, 40}, {50, 60}}, {{70, 80}, {90, 100}}}
+if l.line1.start.x != 30: fail("l.line1.start.x != 30")
+if l.line1.start.y != 40: fail("l.line1.start.y != 40")
+if l.line1.stop.x != 50: fail("l.line1.stop.x != 50")
+if l.line1.stop.y != 60: fail("l.line1.stop.y != 60")
+if l.line2.start.x != 70: fail("l.line2.start.x != 70")
+if l.line2.start.y != 80: fail("l.line2.start.y != 80")
+if l.line2.stop.x != 90: fail("l.line2.stop.x != 90")
+if l.line2.stop.y != 100: fail("l.line2.stop.y != 100")
+if "$l" != "{{{30,40},{50,60}},{{70,80},{90,100}}}": fail("\"l\" != \"{{{30,40},{50,60}},{{70,80},{90,100}}}\"")
+
+if m.line1.start.x != 20: fail("m.line1.start.x != 20")
+if m.line1.start.y != 30: fail("m.line1.start.y != 30")
+if m.line1.stop.x != 40: fail("m.line1.stop.x != 40")
+if m.line1.stop.y != 50: fail("m.line1.stop.y != 50")
+if m.line2.start.x != 60: fail("m.line2.start.x != 60")
+if m.line2.start.y != 70: fail("m.line2.start.y != 70")
+if m.line2.stop.x != 80: fail("m.line2.stop.x != 80")
+if m.line2.stop.y != 90: fail("m.line2.stop.y != 90")
+if "$m" != "{{{20,30},{40,50}},{{60,70},{80,90}}}": fail("\"m\" != \"{{{20,30},{40,50}},{{60,70},{80,90}}}\"")
+
+if result: "tc_storage19: OK"

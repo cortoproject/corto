@@ -1,0 +1,82 @@
+bool result : true
+
+void fail(string msg):
+    "tc_storage22: FAIL: $msg"
+    result = false
+
+class Point::
+    x, y: int32
+
+struct Line::
+    start, stop: Point
+
+class TwoLines::
+    line1, line2: Line
+
+var TwoLines l = TwoLines{{Point{1, 2}, Point{3, 4}}, {Point{5, 6}, Point{7, 8}}}
+var TwoLines m = l
+if l.line1.start.x != 1: fail("l.line1.start.x != 1")
+if l.line1.start.y != 2: fail("l.line1.start.y != 2")
+if l.line1.stop.x != 3: fail("l.line1.stop.x != 3")
+if l.line1.stop.y != 4: fail("l.line1.stop.y != 4")
+if l.line2.start.x != 5: fail("l.line2.start.x != 5")
+if l.line2.start.y != 6: fail("l.line2.start.y != 6")
+if l.line2.stop.x != 7: fail("l.line2.stop.x != 7")
+if l.line2.stop.y != 8: fail("l.line2.stop.y != 8")
+if "$l" != "{{<1>::Point{1,2},<2>::Point{3,4}},{<3>::Point{5,6},<4>::Point{7,8}}}": fail("\"l\" != \"{{<1>::Point{1,2},<2>::Point{3,4}},{<3>::Point{5,6},<4>::Point{7,8}}}\"")
+
+if m.line1.start.x != 1: fail("m.line1.start.x != 1")
+if m.line1.start.y != 2: fail("m.line1.start.y != 2")
+if m.line1.stop.x != 3: fail("m.line1.stop.x != 3")
+if m.line1.stop.y != 4: fail("m.line1.stop.y != 4")
+if m.line2.start.x != 5: fail("m.line2.start.x != 5")
+if m.line2.start.y != 6: fail("m.line2.start.y != 6")
+if m.line2.stop.x != 7: fail("m.line2.stop.x != 7")
+if m.line2.stop.y != 8: fail("m.line2.stop.y != 8")
+if "$m" != "{{<1>::Point{1,2},<2>::Point{3,4}},{<3>::Point{5,6},<4>::Point{7,8}}}": fail("\"m\" != \"{{<1>::Point{1,2},<2>::Point{3,4}},{<3>::Point{5,6},<4>::Point{7,8}}}\"")
+
+
+l = {{Point{2, 3}, Point{4, 5}}, {Point{6, 7}, Point{8, 9}}}
+if l.line1.start.x != 2: fail("l.line1.start.x != 2")
+if l.line1.start.y != 3: fail("l.line1.start.y != 3")
+if l.line1.stop.x != 4: fail("l.line1.stop.x != 4")
+if l.line1.stop.y != 5: fail("l.line1.stop.y != 5")
+if l.line2.start.x != 6: fail("l.line2.start.x != 6")
+if l.line2.start.y != 7: fail("l.line2.start.y != 7")
+if l.line2.stop.x != 8: fail("l.line2.stop.x != 8")
+if l.line2.stop.y != 9: fail("l.line2.stop.y != 9")
+if "$l" != "{{<1>::Point{2,3},<2>::Point{4,5}},{<3>::Point{6,7},<4>::Point{8,9}}}": fail("\"l\" != \"{{<1>::Point{2,3},<2>::Point{4,5}},{<3>::Point{6,7},<4>::Point{8,9}}}\"")
+
+if m.line1.start.x != 2: fail("m.line1.start.x != 2")
+if m.line1.start.y != 3: fail("m.line1.start.y != 3")
+if m.line1.stop.x != 4: fail("m.line1.stop.x != 4")
+if m.line1.stop.y != 5: fail("m.line1.stop.y != 5")
+if m.line2.start.x != 6: fail("m.line2.start.x != 6")
+if m.line2.start.y != 7: fail("m.line2.start.y != 7")
+if m.line2.stop.x != 8: fail("m.line2.stop.x != 8")
+if m.line2.stop.y != 9: fail("m.line2.stop.y != 9")
+if "$m" != "{{<1>::Point{2,3},<2>::Point{4,5}},{<3>::Point{6,7},<4>::Point{8,9}}}": fail("\"m\" != \"{{<1>::Point{2,3},<2>::Point{4,5}},{<3>::Point{6,7},<4>::Point{8,9}}}\"")
+
+
+l = TwoLines{{Point{3, 4}, Point{5, 6}}, {Point{7, 8}, Point{9, 10}}}
+if l.line1.start.x != 3: fail("l.line1.start.x != 3")
+if l.line1.start.y != 4: fail("l.line1.start.y != 4")
+if l.line1.stop.x != 5: fail("l.line1.stop.x != 5")
+if l.line1.stop.y != 6: fail("l.line1.stop.y != 6")
+if l.line2.start.x != 7: fail("l.line2.start.x != 7")
+if l.line2.start.y != 8: fail("l.line2.start.y != 8")
+if l.line2.stop.x != 9: fail("l.line2.stop.x != 9")
+if l.line2.stop.y != 10: fail("l.line2.stop.y != 10")
+if "$l" != "{{<1>::Point{3,4},<2>::Point{5,6}},{<3>::Point{7,8},<4>::Point{9,10}}}": fail("\"l\" != \"{{<1>::Point{3,4},<2>::Point{5,6}},{<3>::Point{7,8},<4>::Point{9,10}}}\"")
+
+if m.line1.start.x != 2: fail("m.line1.start.x != 2")
+if m.line1.start.y != 3: fail("m.line1.start.y != 3")
+if m.line1.stop.x != 4: fail("m.line1.stop.x != 4")
+if m.line1.stop.y != 5: fail("m.line1.stop.y != 5")
+if m.line2.start.x != 6: fail("m.line2.start.x != 6")
+if m.line2.start.y != 7: fail("m.line2.start.y != 7")
+if m.line2.stop.x != 8: fail("m.line2.stop.x != 8")
+if m.line2.stop.y != 9: fail("m.line2.stop.y != 9")
+if "$m" != "{{<1>::Point{2,3},<2>::Point{4,5}},{<3>::Point{6,7},<4>::Point{8,9}}}": fail("\"m\" != \"{{<1>::Point{2,3},<2>::Point{4,5}},{<3>::Point{6,7},<4>::Point{8,9}}}\"")
+
+if result: "tc_storage22: OK"

@@ -1,0 +1,38 @@
+bool result : true
+
+void fail(string msg):
+    "tc_storage23: FAIL: $msg"
+    result = false
+
+class Point::
+    x, y: int32
+
+class Line::
+    start, stop: Point
+
+struct TwoLines::
+    line1, line2: Line
+
+var TwoLines l = {Line{Point{1, 2}, Point{3, 4}}, Line{Point{5, 6}, Point{7, 8}}}
+if l.line1.start.x != 1: fail("l.line1.start.x != 1")
+if l.line1.start.y != 2: fail("l.line1.start.y != 2")
+if l.line1.stop.x != 3: fail("l.line1.stop.x != 3")
+if l.line1.stop.y != 4: fail("l.line1.stop.y != 4")
+if l.line2.start.x != 5: fail("l.line2.start.x != 5")
+if l.line2.start.y != 6: fail("l.line2.start.y != 6")
+if l.line2.stop.x != 7: fail("l.line2.stop.x != 7")
+if l.line2.stop.y != 8: fail("l.line2.stop.y != 8")
+if "$l" != "{<1>::Line{<2>::Point{1,2},<3>::Point{3,4}},<4>::Line{<5>::Point{5,6},<6>::Point{7,8}}}": fail("\"l\" != \"{<1>::Line{<2>::Point{1,2},<3>::Point{3,4}},<4>::Line{<5>::Point{5,6},<6>::Point{7,8}}}\"")
+
+l = {Line{Point{2, 3}, Point{4, 5}}, Line{Point{6, 7}, Point{8, 9}}}
+if l.line1.start.x != 2: fail("l.line1.start.x != 2")
+if l.line1.start.y != 3: fail("l.line1.start.y != 3")
+if l.line1.stop.x != 4: fail("l.line1.stop.x != 4")
+if l.line1.stop.y != 5: fail("l.line1.stop.y != 5")
+if l.line2.start.x != 6: fail("l.line2.start.x != 6")
+if l.line2.start.y != 7: fail("l.line2.start.y != 7")
+if l.line2.stop.x != 8: fail("l.line2.stop.x != 8")
+if l.line2.stop.y != 9: fail("l.line2.stop.y != 9")
+if "$l" != "{<1>::Line{<2>::Point{2,3},<3>::Point{4,5}},<4>::Line{<5>::Point{6,7},<6>::Point{8,9}}}": fail("\"l\" != \"{<1>::Line{<2>::Point{2,3},<3>::Point{4,5}},<4>::Line{<5>::Point{6,7},<6>::Point{8,9}}}\"")
+
+if result: "tc_storage23: OK"

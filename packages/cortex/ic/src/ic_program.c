@@ -145,12 +145,13 @@ ic_member ic_program_getMember(ic_program _this, ic_storage base, cx_member m) {
 /* ::cortex::ic::program::getObject(object o) */
 ic_object ic_program_getObject(ic_program _this, cx_object o) {
 /* $begin(::cortex::ic::program::getObject) */
+    cx_id id;
     ic_scope root = _this->scope;
     ic_object result = NULL;
     while(root->parent) {
         root = root->parent;
     }
-    result = ic_object(ic_scope_lookupStorage(root, cx_nameof(o), FALSE));
+    result = ic_object(ic_scope_lookupStorage(root, cx_fullname(o, id), FALSE));
     if (!result) {
         result = ic_object__create(o);
         ic_scope_addStorage(root, ic_storage(result));

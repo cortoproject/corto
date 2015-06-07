@@ -203,8 +203,9 @@ ic_node Fast_Call_toIc_v(Fast_Call _this, ic_program program, ic_storage storage
             }
 
             argumentIc = Fast_Node_toIc(Fast_Node(argument), program, argumentStorage, TRUE);
-            pushIcs[i] = IC_1_OP(Fast_Node(_this)->line, ic_push, argumentIc, deref, isAny);
+            pushIcs[argumentId] = IC_1_OP(Fast_Node(_this)->line, ic_push, argumentIc, deref, isAny);
             i++;
+            argumentId++;
         }
         Fast_Expression_cleanList(arguments);
     }
