@@ -737,7 +737,6 @@ typedef union Di2f_t {
         fetchLo();\
         if (!op2_LRR) {\
             printf("Error: dereferencing null\n");\
-            goto STOP;\
         }\
         op1_WRR = op2_WRR + c.lo.w;\
         next();

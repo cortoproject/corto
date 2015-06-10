@@ -17,6 +17,7 @@ static cx_vmOp *ic_vmStorageAssembleNested(
     ic_storage icStorage, ic_vmProgram *program, cx_vmOp *vmOp, cx_bool topLevel, ic_vmStorage *accIn, ic_vmStorage **accOut);
 
 void ic_vmStorageAddReferee(ic_vmStorage *accumulator, ic_vmProgram *program, void *referee) {
+    *(cx_word*)referee = accumulator->addr;
     accumulator->referees[accumulator->refereeCount] = CX_OFFSET(referee, -(intptr_t)program->program->program);
     cx_assert(accumulator->refereeCount < 256, "unsupported number of references to one accumulator (max is 256)");
     accumulator->refereeCount++;
@@ -225,14 +226,15 @@ static cx_vmOp *ic_vmStorageAssembleMember(
                 ic_vmStorageAddReferee(acc, program, &vmOp->ic.b._1);
                 vmOp->lo.w = storage->base->addr + storage->offset;
                 vmOp = cx_vmProgram_addOp(program->program, 0);
+                if (accOut) *accOut = acc;
             }
         }
     } else if (!topLevel) {
         if (storage->base->ic->kind == IC_OBJECT) {
             vmOp->op = ic_vmStorageGetSet(RP);
-            ic_vmStorageAddReferee(acc, program, &vmOp->ic.b._1);  
-            if (accOut) *accOut = acc;
+            ic_vmStorageAddReferee(acc, program, &vmOp->ic.b._1);
             vmOp->lo.w = storage->addr;
+            if (accOut) *accOut = acc;
         } else {
             vmOp->op = ic_vmStorageGetSet(RQ);
             if (storage->ic->kind == IC_VARIABLE) {
@@ -243,7 +245,7 @@ static cx_vmOp *ic_vmStorageAssembleMember(
                 if (accOut) *accOut = acc;                 
             }
 
-            if ((base->kind != IC_ACCUMULATOR) && storage->base->assembled && storage->base->reusable) {
+            if (base->kind == IC_VARIABLE) {
                 vmOp->ic.b._2 = storage->base->addr;
             } else {
                 ic_vmStorageAddReferee(baseAccOut, program, &vmOp->ic.b._2);
@@ -265,7 +267,7 @@ static cx_vmOp *ic_vmStorageAssembleNested(
 {
     ic_vmStorage *storage = ic_vmProgram_getStorage(program, icStorage);
 
-    if (!storage->assembled || !storage->reusable || storage->ic->isReference) {
+    if (!storage->assembled || !storage->reusable || (storage->base && storage->base->ic->isReference)) {
         if (storage->ic->kind == IC_MEMBER) {
             vmOp = ic_vmStorageAssembleMember(storage, program, vmOp, topLevel, accIn, accOut);
         } else if (storage->ic->kind == IC_ELEMENT) {

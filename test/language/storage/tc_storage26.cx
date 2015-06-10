@@ -1,7 +1,7 @@
 bool result : true
 
 void fail(string msg):
-    "tc_storage24: FAIL: $msg"
+    "tc_storage26: FAIL: $msg"
     result = false
 
 class Point::
@@ -79,4 +79,4 @@ if m.line2.stop.x != 8: fail("m.line2.stop.x != 8")
 if m.line2.stop.y != 9: fail("m.line2.stop.y != 9")
 if "$m" != "{<1>::Line{<2>::Point{2,3},<3>::Point{4,5}},<4>::Line{<5>::Point{6,7},<6>::Point{8,9}}}": fail("\"m\" != \"{<1>::Line{<2>::Point{2,3},<3>::Point{4,5}},<4>::Line{<5>::Point{6,7},<6>::Point{8,9}}}\"")
 
-if result: "tc_storage24: OK"
+if result: "tc_storage26: OK"
