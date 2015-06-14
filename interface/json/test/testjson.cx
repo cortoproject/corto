@@ -56,17 +56,17 @@ void primitives::
 class BaseTestJson: test::Suite::
     member serializer: word, private|local
     member jsonData: word, private|local
-    void setSerializer() test::SetUp
-    void tearDown()
+    void setUp() virtual
+    void tearDown() virtual
     void testJson(string fullname, string expected)
 
 
 class TestJsonValue: BaseTestJson::
-    void setSerializerData() test::SetUp
-    void tearDown()
+    void setUp() virtual
+    void tearDown() virtual
 
 
-class TestJsonInt: TestJsonValue::
+class TestJsonInt: TestJsonValue ::
     void testMaxInt8() test::Case
     void testPosInt8() test::Case
     void testZeroInt8() test::Case
@@ -119,5 +119,5 @@ class TestJsonText: TestJsonValue::
 
 
 class TestJsonScope: BaseTestJson::
-    void setSerializerData() test::SetUp
-    void tearDown
+    void setUp() virtual
+    void tearDown() virtual

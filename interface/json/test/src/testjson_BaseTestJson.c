@@ -12,9 +12,9 @@
 #include "json.h"
 /* $end */
 
-/* ::testjson::BaseTestJson::setSerializer() */
-cx_void testjson_BaseTestJson_setSerializer(testjson_BaseTestJson _this) {
-/* $begin(::testjson::BaseTestJson::setSerializer) */
+/* ::testjson::BaseTestJson::setUp() */
+cx_void testjson_BaseTestJson_setUp_v(testjson_BaseTestJson _this) {
+/* $begin(::testjson::BaseTestJson::setUp) */
     testjson_BaseTestJson(_this)->serializer = (cx_word)cx_malloc(sizeof(struct cx_serializer_s));
     struct cx_serializer_s *serializer = (void *)testjson_BaseTestJson(_this)->serializer;
     *serializer = cx_json_ser(CX_PRIVATE, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
@@ -22,7 +22,7 @@ cx_void testjson_BaseTestJson_setSerializer(testjson_BaseTestJson _this) {
 }
 
 /* ::testjson::BaseTestJson::tearDown() */
-cx_void testjson_BaseTestJson_tearDown(testjson_BaseTestJson _this) {
+cx_void testjson_BaseTestJson_tearDown_v(testjson_BaseTestJson _this) {
 /* $begin(::testjson::BaseTestJson::tearDown) */
     void *serializer = (void *)testjson_BaseTestJson(_this)->serializer;
     void *jsonData = (void *)testjson_BaseTestJson(_this)->jsonData;
