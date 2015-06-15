@@ -1,0 +1,27 @@
+bool result : true
+
+void fail(string msg):
+    "tc_storage05a: FAIL: $msg"
+    result = false
+
+struct Point::
+    x, y: int32
+
+class Line::
+    start, stop: Point
+
+Line l: {10, 20}, {30, 40}
+if l.start.x != 10: fail("l.start.x != 10")
+if l.start.y != 20: fail("l.start.y != 20")
+if l.stop.x != 30: fail("l.stop.x != 30")
+if l.stop.y != 40: fail("l.stop.y != 40")
+if "$l" != "{{10,20},{30,40}}": fail("\"l\" != \"{{10,20},{30,40}}\"")
+
+l = {{50, 60}, {70, 80}}
+if l.start.x != 50: fail("l.start.x != 50")
+if l.start.y != 60: fail("l.start.y != 60")
+if l.stop.x != 70: fail("l.stop.x != 70")
+if l.stop.y != 80: fail("l.stop.y != 80")
+if "$l" != "{{50,60},{70,80}}": fail("\"l\" != \"{{50,60},{70,80}}\"")
+
+if result: "tc_storage05a: OK"

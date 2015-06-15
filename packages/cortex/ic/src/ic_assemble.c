@@ -460,11 +460,9 @@ static void ic_vmSetOp(
         if (((ic_storage)v)->kind == IC_OBJECT) {
             *(cx_object*)addr = *(cx_object*)ic_valueValue(program, v);
         } else {
-            cx_object ptr;
             ic_vmStorage *acc;
-            acc = ic_vmProgram_getStorage(program, (ic_storage)v);
-            ptr = ((ic_object)acc->base->ic)->ptr;
-            *(cx_object*)addr = CX_OFFSET(ptr, acc->offset);
+            acc = ic_vmProgram_getStorage(program, ic_storage(v));
+            *(cx_object*)addr = (cx_object)acc->addr;
         }
         break;
     case IC_VMOPERAND_Q:

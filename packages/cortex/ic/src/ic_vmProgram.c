@@ -42,7 +42,7 @@ static void ic_vmProgram_allocateAccumulators(ic_vmProgram *program) {
         while(cx_iterHasNext(&accumulatorIter)) {
             storage = cx_iterNext(&accumulatorIter);
 
-            if (ic_vmStorage_mustAllocate(storage, program)) {
+            if (ic_vmStorage_mustAllocate(storage)) {
 
                 /* Find lfree claim */
                 claim = claims;

@@ -1,0 +1,44 @@
+bool result : true
+
+void fail(string msg):
+    "tc_storage16c: FAIL: $msg"
+    result = false
+
+struct Point::
+	x, y: int32
+
+var array{Point, 3}& ints = array{Point, 3}{{0, 1}, {2, 3}, {4, 5}}
+var array{Point, 3}& ints2 = ints
+if ints[0][x, y] != (0, 1): fail("ints[0][x, y] != (0, 1)")
+if ints[1][x, y] != (2, 3): fail("ints[1][x, y] != (2, 3)")
+if ints[2][x, y] != (4, 5): fail("ints[2][x, y] != (4, 5)")
+if "$ints" != "{{0,1},{2,3},{4,5}}": fail("ints != \"{{0,1},{2,3},{4,5}}\"")
+
+if ints2[0][x, y] != (0, 1): fail("ints2[0][x, y] != (0, 1)")
+if ints2[1][x, y] != (2, 3): fail("ints2[1][x, y] != (2, 3)")
+if ints2[2][x, y] != (4, 5): fail("ints2[2][x, y] != (4, 5)")
+if "$ints2" != "{{0,1},{2,3},{4,5}}": fail("ints2 != \"{{0,1},{2,3},{4,5}}\"")
+
+ints = {{1, 2}, {3, 4}, {5, 6}}
+if ints[0][x, y] != (1, 2): fail("ints[0][x, y] != (1, 2)")
+if ints[1][x, y] != (3, 4): fail("ints[1][x, y] != (3, 4)")
+if ints[2][x, y] != (5, 6): fail("ints[2][x, y] != (5, 6)")
+if "$ints" != "{{1,2},{3,4},{5,6}}": fail("ints != \"{{1,2},{3,4},{5,6}}\"")
+
+if ints2[0][x, y] != (1, 2): fail("ints2[0][x, y] != (1, 2)")
+if ints2[1][x, y] != (3, 4): fail("ints2[1][x, y] != (3, 4)")
+if ints2[2][x, y] != (5, 6): fail("ints2[2][x, y] != (5, 6)")
+if "$ints2" != "{{1,2},{3,4},{5,6}}": fail("ints2 != \"{{1,2},{3,4},{5,6}}\"")
+
+&ints = array{Point, 3}{{2, 3}, {4, 5}, {6, 7}}
+if ints[0][x, y] != (2, 3): fail("ints[0][x, y] != (2, 3)")
+if ints[1][x, y] != (4, 5): fail("ints[1][x, y] != (4, 5)")
+if ints[2][x, y] != (6, 7): fail("ints[2][x, y] != (6, 7)")
+if "$ints" != "{{2,3},{4,5},{6,7}}": fail("ints != \"{{2,3},{4,5},{6,7}}\"")
+
+if ints2[0][x, y] != (1, 2): fail("ints2[0][x, y] != (1, 2)")
+if ints2[1][x, y] != (3, 4): fail("ints2[1][x, y] != (3, 4)")
+if ints2[2][x, y] != (5, 6): fail("ints2[2][x, y] != (5, 6)")
+if "$ints2" != "{{1,2},{3,4},{5,6}}": fail("ints2 != \"{{1,2},{3,4},{5,6}}\"")
+
+if result: "tc_storage16c: OK"
