@@ -14,6 +14,7 @@ cx_int16 ic_element_construct(ic_element _this) {
     cx_id name;
     cx_collection type = cx_collection(_this->base->type);
 
+    ic_storage(_this)->kind = IC_ELEMENT;
     cx_set(&ic_storage(_this)->type, type->elementType);
     cx_set(&ic_storage(_this)->base, _this->base);
     ic_storage(_this)->isReference = type->elementType->reference;

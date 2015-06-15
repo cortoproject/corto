@@ -1,0 +1,38 @@
+bool result : true
+
+void fail(string msg):
+    "tc_storage08b: FAIL: $msg"
+    result = false
+
+struct Point::
+    x, y: int32
+
+struct Line::
+    start, stop: Point
+
+struct TwoLines::
+    line1, line2: Line
+
+var TwoLines l = {{{10, 20}, {30, 40}}, {{50, 60}, {70, 80}}}
+if l.line1.start.x != 10: fail("l.line1.start.x != 10")
+if l.line1.start.y != 20: fail("l.line1.start.y != 20")
+if l.line1.stop.x != 30: fail("l.line1.stop.x != 30")
+if l.line1.stop.y != 40: fail("l.line1.stop.y != 40")
+if l.line2.start.x != 50: fail("l.line2.start.x != 50")
+if l.line2.start.y != 60: fail("l.line2.start.y != 60")
+if l.line2.stop.x != 70: fail("l.line2.stop.x != 70")
+if l.line2.stop.y != 80: fail("l.line2.stop.y != 80")
+if "$l" != "{{{10,20},{30,40}},{{50,60},{70,80}}}": fail("\"l\" != \"{{{10,20},{30,40}},{{50,60},{70,80}}}\"")
+
+l = {{{20, 30}, {40, 50}}, {{60, 70}, {80, 90}}}
+if l.line1.start.x != 20: fail("l.line1.start.x != 20")
+if l.line1.start.y != 30: fail("l.line1.start.y != 30")
+if l.line1.stop.x != 40: fail("l.line1.stop.x != 40")
+if l.line1.stop.y != 50: fail("l.line1.stop.y != 50")
+if l.line2.start.x != 60: fail("l.line2.start.x != 60")
+if l.line2.start.y != 70: fail("l.line2.start.y != 70")
+if l.line2.stop.x != 80: fail("l.line2.stop.x != 80")
+if l.line2.stop.y != 90: fail("l.line2.stop.y != 90")
+if "$l" != "{{{20,30},{40,50}},{{60,70},{80,90}}}": fail("\"l\" != \"{{{20,30},{40,50}},{{60,70},{80,90}}}\"")
+
+if result: "tc_storage08b: OK"
