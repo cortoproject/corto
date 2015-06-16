@@ -7,7 +7,7 @@ void fail(string msg):
  class Point::
 	x, y: int32
 
-var array{array{Point, 3}, 3}& ints = {
+var array{array{Point, 3}, 3}& ints = array{array{Point, 3}, 3}{
 	{Point{0, 1}, Point{2, 3}, Point{4, 5}}, {Point{6, 7}, Point{8, 9}, Point{10, 11}}, {Point{12, 13}, Point{14, 15}, Point{16, 17}}
 }
 var array{array{Point, 3}, 3}& ints2 = ints
