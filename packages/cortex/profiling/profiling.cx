@@ -1,5 +1,10 @@
 #package ::profiling
 
-void start()
+void start(string name)
 
 void stop()
+
+struct Profile::
+    member seconds: uint64
+    member nanoseconds: uint64
+    member callCount: uint64

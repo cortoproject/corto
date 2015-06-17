@@ -10,19 +10,17 @@
 
 /* $header() */
 
-/* This key should always be read using profiling_key() */
-static cx_threadKey profiling__key = 0;
-
-cx_threadKey profiling_key() {
-    if (!profiling__key) {
-        if (cx_threadTlsKey(&profiling__key, (void(*)(void *))cx_llFree)) {
+static cx_threadKey profiling_key(void) {
+    static cx_threadKey key = 0;
+    if (!key) {
+        if (cx_threadTlsKey(&key, (void(*)(void *))cx_llFree)) {
             cx_error("Cannot create profiling key");
         }
     }
-    return profiling__key;
+    return key;
 }
 
-cx_ll profiling_stack() {
+static cx_ll profiling_stack(void) {
     cx_threadKey key = profiling_key();
     cx_ll ll = NULL;
     if (key) {
@@ -38,23 +36,68 @@ cx_ll profiling_stack() {
     return ll;
 }
 
+static cx_object profiling_profileRoot(void) {
+    return profiling_o;
+}
+
+static cx_object profiling__topProfile = NULL;
+
+/* TODO per thread */
+/*
+ * Returns the top of the profile stack, or if no profile has been yet declared,
+ * the profiling package object.
+ */
+static cx_object profiling_topProfile(void) {
+    if (!profiling__topProfile) {
+        profiling__topProfile = profiling_profileRoot();
+    }
+    return profiling__topProfile;
+}
+
+/*
+ * Declares the next profile and moves profiling__topProfile to match it.
+ * Doesn't fail on profiles previously declared.
+ */
+static void profiling_openProfile(cx_string name) {
+    profiling_Profile *next = cx_declare(profiling_topProfile(), name, cx_type(profiling_Profile_o));
+    profiling__topProfile = next;
+}
+
+/*
+ * Defines a profile (sets its members) and moves profiling__topProfile 
+ * the previous profile. If the profile previously existed, it will add
+ * the values.
+ */
+static void profiling_closeProfile(cx_time t) {
+    profiling_Profile *top = profiling_topProfile();
+    if (cx_checkState(top, CX_DEFINED)) {
+        top->seconds += t.tv_sec;
+        top->nanoseconds += t.tv_nsec;
+        top->callCount += 1;
+    } else {
+        top->seconds = t.tv_sec;
+        top->nanoseconds = t.tv_nsec;
+        top->callCount = 1;
+        cx_define(top);
+    }
+    profiling__topProfile = cx_parentof(top);
+}
+
 // cx_uint64 profiling_timeToNanoS(const cx_time* t) {
 //     cx_uint64 nanos = t->tv_sec * 1000000000 + t->tv_nsec;
 //     return nanos;
 // }
 
-
-
-
 /* $end */
 
-/* ::profiling::start() */
-cx_void profiling_start(void) {
+/* ::profiling::start(string name) */
+cx_void profiling_start(cx_string name) {
 /* $begin(::profiling::start) */
     cx_time *startTimePtr = cx_malloc(sizeof(cx_time));
     cx_timeGet(startTimePtr);
     cx_ll ll = profiling_stack();
     cx_llInsert(ll, startTimePtr);
+    CX_UNUSED(name);
 /* $end */
 }
 
@@ -69,6 +112,7 @@ cx_void profiling_stop(void) {
     ll = profiling_stack();
     startTimePtr = cx_llTakeFirst(ll);
     difference = cx_timeSub(stopTime, *startTimePtr);
+    printf("seconds: %d, nanos: %d\n", difference.tv_sec, difference.tv_nsec);
     cx_dealloc(startTimePtr);
 /* $end */
 }
