@@ -7,7 +7,6 @@
  */
 
 #include "cx.h"
-#include "cx__meta.h"
 
 /* ::cortex::lang::array::construct() */
 cx_int16 cx_array_construct(cx_array _this) {

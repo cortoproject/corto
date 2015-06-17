@@ -54,5 +54,6 @@ struct cx_serializer_s cx_ser_init(cx_modifier access, cx_operatorKind accessKin
     s.accessKind = accessKind;
     s.traceKind = trace;
     s.program[CX_COLLECTION] = cx_ser_initCollection;
+    s.program[CX_ANY] = NULL;
     return s;
 }

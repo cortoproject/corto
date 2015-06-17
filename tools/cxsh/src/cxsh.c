@@ -21,17 +21,17 @@
 #define CXSH_COL_ATTR     (8)
 #define CXSH_COL_TOTAL    (CXSH_COL_NAME + CXSH_COL_TYPE + CXSH_COL_STATE + CXSH_COL_ATTR)
 
-#define BLACK  "\033[1;30m"
-#define RED    "\033[1;31m"
-#define GREEN  "\033[0;32m"
-#define YELLOW "\033[0;33m"
-#define BLUE   "\033[1;34m"
+#define BLACK   "\033[1;30m"
+#define RED     "\033[1;31m"
+#define GREEN   "\033[0;32m"
+#define YELLOW  "\033[0;33m"
+#define BLUE    "\033[1;34m"
 #define MAGENTA "\033[1;35m"
-#define CYAN   "\033[1;36m"
-#define WHITE  "\033[1;37m"
-#define NORMAL "\033[0;49m"
-#define BOLD   "\033[1;30m"
-#define GREY  "\033[0;37m"
+#define CYAN    "\033[1;36m"
+#define WHITE   "\033[1;37m"
+#define GREY    "\033[0;37m"
+#define NORMAL  "\033[0;49m"
+#define BOLD    "\033[1;49m"
 
 #define SHELL_COLOR (BOLD)
 #define ERROR_COLOR (RED)
@@ -114,7 +114,7 @@ static cx_string cxsh_printColumnValue(cx_string str, unsigned int width){
 }
 
 static void cxsh_printColumnBar(int width) {
-    while(width) {
+    while (width) {
         printf("=");
         width--;
     }
@@ -199,7 +199,7 @@ static int cxsh_scopeWalk(cx_object o, void* udata) {
     CX_UNUSED(udata);
 
     /* Get name of type */
-    if(cx_checkAttr(cx_typeof(o), CX_ATTR_SCOPED) && (cx_parentof(cx_typeof(o)) == cortex_lang_o)) {
+    if (cx_checkAttr(cx_typeof(o), CX_ATTR_SCOPED) && (cx_parentof(cx_typeof(o)) == cortex_lang_o)) {
         strcpy(typeName, cx_nameof(cx_typeof(o)));
     } else {
         cx_fullname(cx_typeof(o), typeName);
@@ -436,7 +436,7 @@ static cx_string cxsh_multiline(cx_string expr, cx_uint32 indent) {
             }
             strcat(expr, cmd);
 
-            /*  cmd can be a nested multiline expression */
+            /* cmd can be a nested multiline expression */
             expr = cxsh_multiline(expr, indent + 1);
             len = strlen(expr);
         } while (cmdLen);
@@ -669,7 +669,7 @@ static void cxsh_shell(void) {
 
     quit = FALSE;
 
-    while(!quit) {
+    while (!quit) {
         /* Print prompt */
         cxsh_prompt(scope, TRUE, prompt);
         printf("%s", prompt);

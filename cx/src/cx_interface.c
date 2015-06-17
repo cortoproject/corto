@@ -7,7 +7,6 @@
  */
 
 #include "cx.h"
-#include "cx__meta.h"
 
 /* $header() */
 #include "cx__interface.h"
@@ -23,7 +22,7 @@ static cx_vtable *cx_interface_vtableFromBase(cx_interface _this) {
     /* Lookup first vtable in inheritance hierarchy */
     base = cx_interface(_this);
     baseTable = NULL;
-    while(!baseTable && (base = base->base)) {
+    while (!baseTable && (base = base->base)) {
         baseTable = (cx_vtable*)&(cx_interface(base)->methods);
     }
 
@@ -44,7 +43,7 @@ static cx_vtable *cx_interface_vtableFromBase(cx_interface _this) {
             memcpy(myTable->buffer, baseTable->buffer, size);
 
             /* Keep functions */
-            for(i=0; i<myTable->length; i++) {
+            for (i=0; i<myTable->length; i++) {
                 cx_keep_ext(_this, myTable->buffer[i], "Keep function from inherited vtable.");
             }
         } else {
@@ -67,7 +66,7 @@ cx_function* cx_vtableLookup(cx_vtable* vtable, cx_string member, cx_int32* i_ou
 
     /* Searching backwards will ensure that when the member-string contains no arguments and the
      * vtable has multiple matches, the most specific function is selected. */
-    for(i=vtable->length-1; i>=0 && d; i--) {
+    for (i=vtable->length-1; i>=0 && d; i--) {
         if (buffer[i]) {
             if (cx_overload(buffer[i], member, &d_t, FALSE)) {
                 goto error;
@@ -106,7 +105,7 @@ cx_bool cx_vtableInsert(cx_vtable* vtable, cx_function method) {
     cx_uint32 i;
 
     /* Check if function is not already in vtable */
-    for(i=0; i<vtable->length; i++) {
+    for (i=0; i<vtable->length; i++) {
         if (vtable->buffer[i] == method) {
             break;
         }
@@ -116,7 +115,7 @@ cx_bool cx_vtableInsert(cx_vtable* vtable, cx_function method) {
     }
 
     /* Find first empty spot in vtable */
-    for(i=0; i<vtable->length; i++) {
+    for (i=0; i<vtable->length; i++) {
         if (!vtable->buffer[i]) {
             break;
         }
@@ -166,7 +165,7 @@ cx_uint16 cx__interface_calculateAlignment(cx_interface _this) {
 
     alignment = 0;
 
-    for(i=0; i<_this->members.length; i++) {
+    for (i=0; i<_this->members.length; i++) {
         cx_uint16 memberAlignment;
         member = _this->members.buffer[i];
         memberAlignment = cx_type_alignmentof(member->type);
@@ -196,7 +195,7 @@ cx_uint32 cx__interface_calculateSize(cx_interface _this, cx_uint32 base) {
 
     /* Calculate size from members */
     size = base;
-    for(i=0; i<_this->members.length; i++) {
+    for (i=0; i<_this->members.length; i++) {
         m = _this->members.buffer[i];
         memberType = m->type;
 
@@ -284,7 +283,7 @@ static cx_bool cx_interface_checkProcedureParameters(cx_function o1, cx_function
         cx_uint32 i;
         cx_id id1, id2;
 
-        for(i=0; i<o1->parameters.length; i++) {
+        for (i=0; i<o1->parameters.length; i++) {
             cx_type p1, p2;
             /* Check if names of parameters are compatible */
             if (strcmp(o1->parameters.buffer[i].name, o2->parameters.buffer[i].name)) {
@@ -376,7 +375,6 @@ cx_bool cx_interface_checkProcedureCompatibility(cx_function o1, cx_function o2)
     return result;
 }
 
-
 /* $end */
 
 /* ::cortex::lang::interface::baseof(interface type) */
@@ -385,12 +383,9 @@ cx_int16 cx_interface_baseof(cx_interface _this, cx_interface type) {
     cx_interface ptr = _this->base;
     cx_bool result = _this == type;
     
-    while(ptr && !result) {
-        if (ptr == type) {
-            result = TRUE;
-        } else {
-            ptr = ptr->base;
-        }
+    while (ptr && !result) {
+        result = ptr == type;
+        ptr = ptr->base;
     }
     
     return result;
@@ -472,7 +467,7 @@ cx_bool cx_interface_compatible_v(cx_interface _this, cx_type type) {
          * an implement-relation could make it compatible. */
         if (cx_class_instanceof(cx_class_o, type)) {
             cx_uint32 i;
-            for(i=0; (i<cx_class(type)->implements.length) && !result; i++) {
+            for (i=0; (i<cx_class(type)->implements.length) && !result; i++) {
                 if (cx_class(type)->implements.buffer[i] == _this) {
                     result = TRUE;
                 }
@@ -500,7 +495,7 @@ cx_int16 cx_interface_construct(cx_interface _this) {
 
         /* re-bind methods */
         if (ownTable.length) {
-            for(i=0; i<ownTable.length; i++) {
+            for (i=0; i<ownTable.length; i++) {
                 if (cx_instanceof(cx_type(cx_method_o), ownTable.buffer[i])) {
                     cx_interface_bindMethod(_this, cx_method(ownTable.buffer[i]));
                 } 
@@ -528,7 +523,7 @@ cx_void cx_interface_destruct(cx_interface _this) {
     cx_uint32 i;
 
     /* Free members */
-    for(i=0; i<_this->members.length; i++) {
+    for (i=0; i<_this->members.length; i++) {
         cx_free_ext(_this, _this->members.buffer[i], "Free member for interface");
     }
 
@@ -538,7 +533,7 @@ cx_void cx_interface_destruct(cx_interface _this) {
     }
 
     /* Free methods */
-    for(i=0; i<_this->methods.length; i++) {
+    for (i=0; i<_this->methods.length; i++) {
         cx_free_ext(_this, _this->methods.buffer[i], "Remove method from vtable.");
     }
 
@@ -570,7 +565,7 @@ cx_member cx_interface_resolveMember_v(cx_interface _this, cx_string name) {
 
     result = NULL;
 
-    for(i=0; i<_this->members.length; i++) {
+    for (i=0; i<_this->members.length; i++) {
         if (!strcmp(cx_nameof(_this->members.buffer[i]), name)) {
             result = _this->members.buffer[i];
             break;
@@ -616,7 +611,7 @@ cx_method cx_interface_resolveMethodById(cx_interface _this, cx_uint32 id) {
         cx_uint32 i;
         cx_error("interface::resolveMethodById: invalid vtable-index %d for interface %s", id, cx_fullname(_this, _id));
         printf("%s.vtable:\n", cx_fullname(_this, _id));
-        for(i=0; i<vtable->length; i++) {
+        for (i=0; i<vtable->length; i++) {
             printf("   (%d) %s\n", i+1, cx_fullname(vtable->buffer[i], _id));
         }
     }

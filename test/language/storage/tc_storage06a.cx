@@ -1,0 +1,27 @@
+bool result : true
+
+void fail(string msg):
+    "tc_storage06a: FAIL: $msg"
+    result = false
+
+class Point::
+    x, y: int32
+
+class Line::
+    start, stop: Point
+
+Line l: Point{10, 20}, Point{30, 40}
+if l.start.x != 10: fail("l.start.x != 10")
+if l.start.y != 20: fail("l.start.y != 20")
+if l.stop.x != 30: fail("l.stop.x != 30")
+if l.stop.y != 40: fail("l.stop.y != 40")
+if "$l" != "{<1>::Point{10,20},<2>::Point{30,40}}": fail("\"l\" != \"{<1>::Point{10,20},<2>::Point{30,40}}\"")
+
+l = {Point{50, 60}, Point{70, 80}}
+if l.start.x != 50: fail("l.start.x != 50")
+if l.start.y != 60: fail("l.start.y != 60")
+if l.stop.x != 70: fail("l.stop.x != 70")
+if l.stop.y != 80: fail("l.stop.y != 80")
+if "$l" != "{<1>::Point{50,60},<2>::Point{70,80}}": fail("\"l\" != \"{<1>::Point{50,60},<2>::Point{70,80}}\"")
+
+if result: "tc_storage06a: OK"

@@ -29,7 +29,7 @@ extern "C" {
 #elif defined(__APPLE__) && defined(__MACH__)
 #define CX_OS_OSX
 #else
-#warning "cortex is not supported on non-linux or windows operating systems."
+#warning "cortex is not supported on non-unix or windows operating systems."
 #endif
 
 #ifdef CX_CPU_X86

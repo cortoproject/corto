@@ -512,7 +512,6 @@ static int c_typeClassCastWalk(cx_object o, void* userData) {
 static g_file c_typeHeaderFileOpen(cx_generator g) {
     g_file result;
     cx_id headerFileName;
-    cx_id path;
     cx_iter importIter;
     cx_object import;
     cx_string headerSnippet;
@@ -528,8 +527,8 @@ static g_file c_typeHeaderFileOpen(cx_generator g) {
     /* Print standard comments and includes */
     g_fileWrite(result, "/* %s\n", headerFileName);
     g_fileWrite(result, " *\n");
-    g_fileWrite(result, " *    Type-definitions for C-language.\n");
-    g_fileWrite(result, " *    This file contains generated code. Do not modify!\n");
+    g_fileWrite(result, " * Type definitions for C-language.\n");
+    g_fileWrite(result, " * This file contains generated code. Do not modify!\n");
     g_fileWrite(result, " */\n\n");
     g_fileWrite(result, "#ifndef %s__type_H\n", g_getName(g));
     g_fileWrite(result, "#define %s__type_H\n\n", g_getName(g));
@@ -546,8 +545,7 @@ static g_file c_typeHeaderFileOpen(cx_generator g) {
         importIter = cx_llIter(g->imports);
         while(cx_iterHasNext(&importIter)) {
             import = cx_iterNext(&importIter);
-            c_topath(import, path);
-            g_fileWrite(result, "#include \"%s/%s__type.h\"\n", path, cx_nameof(import));
+            g_fileWrite(result, "#include \"%s__type.h\"\n", cx_nameof(import));
         }
         g_fileWrite(result, "\n");
     }

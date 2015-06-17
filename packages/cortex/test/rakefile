@@ -1,0 +1,3 @@
+TARGET = 'test'
+
+require "#{ENV['CORTEX_HOME']}/build/package"

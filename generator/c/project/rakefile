@@ -1,0 +1,6 @@
+TARGET = :c_project
+
+INCLUDE = ['../common/include']
+CORTEX_LIB = ['c_common']
+
+require "#{ENV['CORTEX_HOME']}/build/generator"

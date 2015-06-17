@@ -19,7 +19,7 @@ typedef struct c_apiWalk_t {
     cx_uint32 parameterCount;
     cx_ll memberCache;
     cx_ll collections;
-}c_apiWalk_t;
+} c_apiWalk_t;
 
 /* Translate members to function parameters. */
 static cx_int16 c_apiAssignMember(cx_serializer s, cx_value* v, void* userData) {
@@ -41,7 +41,7 @@ static cx_int16 c_apiAssignMember(cx_serializer s, cx_value* v, void* userData) 
         if (m->type->reference) {
             if (!m->weak) {
                 cx_id id;
-                g_fileWrite(data->source, "%s ? cx_keep_ext(_this, %s, \"%s\") : 0; ", memberParamId, memberParamId, cx_valueString(v,id, 256));
+                g_fileWrite(data->source, "%s ? cx_keep_ext(_this, %s, \"%s\") : 0;\n", memberParamId, memberParamId, cx_valueString(v,id, 256));
             }
         }
 
@@ -57,11 +57,11 @@ static cx_int16 c_apiAssignMember(cx_serializer s, cx_value* v, void* userData) 
             /* Cast object to right type */
             if (data->current == cx_parentof(m)) {
                 g_fileWrite(data->source, "_this->%s",
-                        cx_nameof(m));
+                        memberId);
             } else {
                 cx_id typeId;
                 g_fileWrite(data->source, "%s(_this)->%s",
-                        g_fullOid(data->g, cx_parentof(m), typeId), cx_nameof(m));
+                        g_fullOid(data->g, cx_parentof(m), typeId), memberId);
             }
 
             g_fileWrite(data->source, ", %s, sizeof(%s%s));\n", memberParamId, typeId, postfix);
@@ -69,11 +69,11 @@ static cx_int16 c_apiAssignMember(cx_serializer s, cx_value* v, void* userData) 
             /* Cast object to right type */
             if (data->current == cx_parentof(m)) {
                 g_fileWrite(data->source, "_this->%s = ",
-                        cx_nameof(m));
+                        memberId);
             } else {
                 cx_id typeId;
                 g_fileWrite(data->source, "%s(_this)->%s = ",
-                        g_fullOid(data->g, cx_parentof(m), typeId), cx_nameof(m));
+                        g_fullOid(data->g, cx_parentof(m), typeId), memberId);
             }
 
             /* Strdup strings */
@@ -340,6 +340,35 @@ static cx_int16 c_apiReferenceTypeCreate(cx_interface o, c_apiWalk_t* data) {
     return 0;
 }
 
+static cx_int16 c_apiTypeStr(cx_type t, c_apiWalk_t* data) {
+    cx_id id;
+
+    g_fullOid(data->g, t, id);
+
+    /* Function declaration */
+    g_fileWrite(data->header, "cx_string %s__str(%s value);\n", id, id);
+
+    /* Function implementation */
+    g_fileWrite(data->source, "cx_string %s__str(%s value) {\n", id, id);
+
+    g_fileIndent(data->source);
+    g_fileWrite(data->source, "cx_string result;\n", id);
+
+    if (t->reference) {
+        g_fileWrite(data->source, "result = cx_toString(value, 0);\n");
+    } else {
+        g_fileWrite(data->source, "cx_value v;\n", id);
+        g_fileWrite(data->source, "cx_valueValueInit(&v, NULL, cx_type(%s_o), &value);\n", id);
+        g_fileWrite(data->source, "result = cx_valueToString(&v, 0);\n");
+    }
+
+    g_fileWrite(data->source, "return result;\n");
+    g_fileDedent(data->source);
+    g_fileWrite(data->source, "}\n\n");
+
+    return 0;
+}
+
 /* Walk reference interface */
 static cx_int16 c_apiWalkReferenceType(cx_interface o, c_apiWalk_t* data) {
     cx_id id;
@@ -373,6 +402,8 @@ static cx_int16 c_apiWalkReferenceType(cx_interface o, c_apiWalk_t* data) {
 
     cx_genMemberCacheClean(data->memberCache);
 
+    c_apiTypeStr(cx_type(o), data);
+
     g_fileWrite(data->header, "\n");
 
     return 0;
@@ -381,27 +412,46 @@ error:
 }
 
 /* Walk non-reference interface */
-static cx_int16 c_apiWalkType(cx_interface o, c_apiWalk_t* data) {
+static cx_int16 c_apiWalkValueType(cx_interface o, c_apiWalk_t* data) {
     cx_id id;
 
     g_fileWrite(data->header, "/* %s */\n", cx_fullname(o, id));
 
     data->current = o;
 
-    /* Build nameconflict cache */
     data->memberCache = cx_genMemberCacheBuild(o);
 
-    /* Generate _init function */
     if (c_apiTypeInit(o, data)) {
         goto error;
     }
 
-    /* Generate _deinit function */
     if (c_apiTypeDeinit(o, data)) {
         goto error;
     }
 
     cx_genMemberCacheClean(data->memberCache);
+
+    c_apiTypeStr(cx_type(o), data);
+
+    g_fileWrite(data->header, "\n");
+
+    return 0;
+error:
+    return -1;
+}
+
+/* Walk all types */
+static cx_int16 c_apiWalkType(cx_type o, c_apiWalk_t* data) {
+    cx_id id;
+
+    g_fileWrite(data->header, "/* %s */\n", cx_fullname(o, id));
+
+    data->current = o;
+
+    /* Generate _str function */
+    if (c_apiTypeStr(o, data)) {
+        goto error;
+    }
 
     g_fileWrite(data->header, "\n");
 
@@ -885,9 +935,13 @@ static int c_apiWalk(cx_object o, void* userData) {
                 goto error;
             }
         } else {
-            if (c_apiWalkType(cx_interface(o), userData)) {
+            if (c_apiWalkValueType(cx_interface(o), userData)) {
                 goto error;
             }
+        }
+    } else if (cx_class_instanceof(cx_type_o, o)) {
+        if (c_apiWalkType(cx_type(o), userData)) {
+            goto error;
         }
     }
 
@@ -938,8 +992,8 @@ static g_file c_apiHeaderOpen(cx_generator g) {
     /* Print standard comments and includes */
     g_fileWrite(result, "/* %s\n", headerFileName);
     g_fileWrite(result, " *\n");
-    g_fileWrite(result, " *    API convenience functions for C-language.\n");
-    g_fileWrite(result, " *    This file contains generated code. Do not modify!\n");
+    g_fileWrite(result, " * API convenience functions for C-language.\n");
+    g_fileWrite(result, " * This file contains generated code. Do not modify!\n");
     g_fileWrite(result, " */\n\n");
     g_fileWrite(result, "#ifndef %s__API_H\n", g_getName(g));
     g_fileWrite(result, "#define %s__API_H\n\n", g_getName(g));
@@ -967,6 +1021,7 @@ static void c_apiHeaderClose(g_file file) {
 static g_file c_apiSourceOpen(cx_generator g) {
     g_file result;
     cx_id headerFileName;
+    cx_id topLevelName;
 
     /* Create file */
     sprintf(headerFileName, "%s__api.c", g_getName(g));
@@ -975,11 +1030,10 @@ static g_file c_apiSourceOpen(cx_generator g) {
     /* Print standard comments and includes */
     g_fileWrite(result, "/* %s\n", headerFileName);
     g_fileWrite(result, " *\n");
-    g_fileWrite(result, " *    API convenience functions for C-language.\n");
-    g_fileWrite(result, " *    This file contains generated code. Do not modify!\n");
+    g_fileWrite(result, " * API convenience functions for C-language.\n");
+    g_fileWrite(result, " * This file contains generated code. Do not modify!\n");
     g_fileWrite(result, " */\n\n");
-    g_fileWrite(result, "#include \"%s__meta.h\"\n", g_getName(g));
-    g_fileWrite(result, "#include \"%s__api.h\"\n\n", g_getName(g));
+    g_fileWrite(result, "#include \"%s.h\"\n\n", g_fullOid(g, g_getCurrent(g), topLevelName));
 
     return result;
 }

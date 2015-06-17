@@ -64,7 +64,7 @@ void cx_llSetMax(cx_ll list, unsigned int maximum) {
 void cx_llFree(cx_ll list) {
     cx_llNode node, next;
     node = list->first;
-    while(node) {
+    while (node) {
         next = node->next;
         free(node);
         node = next;

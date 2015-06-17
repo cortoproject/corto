@@ -1,0 +1,3 @@
+TARGET = 'ic'
+
+require "#{ENV['CORTEX_HOME']}/build/package"

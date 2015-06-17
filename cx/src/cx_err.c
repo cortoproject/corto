@@ -20,8 +20,10 @@
 // static char* cx_logKind[] = {"", "debug:    ", "trace:    ", "warning:  ", "error:    ", "critical: ", "assert:  "};
 static cx_threadKey cx_errKey = 0;
 
+#define MAX_ERRORS (20)
+
 typedef struct cx_errThreadData {
-    cx_string lastError[64]; /* Retain 64 last errors */
+    cx_string lastError[MAX_ERRORS];
     int count;
     int consumed;
     int echo;
@@ -88,7 +90,7 @@ static void cx_setLasterror(char* err) {
     cx_errThreadData* data;
 
     data = cx_getThreadData();
-    if (!data->echo) {
+    if (!data->echo && (data->count < MAX_ERRORS)) {
         if (data->lastError[data->count]) {
             cx_dealloc(data->lastError[data->count]);
         }

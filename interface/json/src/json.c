@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "cx_generator.h"
 #include "cx_serializer.h"
 #include "cx_string.h"
 #include "cortex.h"

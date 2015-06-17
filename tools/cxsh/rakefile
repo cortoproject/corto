@@ -1,0 +1,3 @@
+TARGET = :cxsh
+    
+require "#{ENV['CORTEX_HOME']}/build/tool"

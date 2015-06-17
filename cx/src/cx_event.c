@@ -7,7 +7,6 @@
  */
 
 #include "cx.h"
-#include "cx__meta.h"
 
 /* $header() */
 static int cx_maxEventId = 16; /* kind 0 - 15 are reserved for internal usage */

@@ -7,7 +7,6 @@
  */
 
 #include "cx.h"
-#include "cx__meta.h"
 
 /* $header() */
 #include "cx__interface.h"
@@ -34,7 +33,7 @@ static cx_uint32 cx__class_observerCount(cx_class _this) {
 
     count = _this->observers.length;
     o = cx_interface(_this);
-    while(o->base) {
+    while (o->base) {
         o = o->base;
         count += cx_class(o)->observers.length;
     }
@@ -52,7 +51,7 @@ static cx_bool cx_class_checkInterfaceCompatibility(cx_class _this, cx_interface
 
     /* Walk vtable of interface */
     compatible = TRUE;
-    for(i=0; (i<interface->methods.length); i++) {
+    for (i=0; (i<interface->methods.length); i++) {
         m_interface = (cx_method)interface->methods.buffer[i];
 
         m_class = NULL;
@@ -141,11 +140,11 @@ void cx_class_attachObservers(cx_class _this, cx_object object) {
         base = _this;
 
         do {
-            for(i=0; i<base->observers.length; i++) {
+            for (i=0; i<base->observers.length; i++) {
                 observable = base->observers.buffer[i]->observable;
                 cx_class_setObservable(_this, base->observers.buffer[i], object, observable);
             }
-        }while((base = cx_class(cx_interface(base)->base)));
+        } while ((base = cx_class(cx_interface(base)->base)));
     }
 }
 
@@ -161,7 +160,7 @@ void cx_class_listenObservers(cx_class _this, cx_object object) {
         base = _this;
 
         do {
-            for(i=0; i<base->observers.length; i++) {
+            for (i=0; i<base->observers.length; i++) {
                 observable = observers->buffer[i];
                 if (!observable) {
                     observable = object;
@@ -174,7 +173,7 @@ void cx_class_listenObservers(cx_class _this, cx_object object) {
                     }
                 }
             }
-        }while((base = cx_class(cx_interface(base)->base)));
+        } while ((base = cx_class(cx_interface(base)->base)));
     }
 }
 
@@ -192,7 +191,7 @@ void cx_class_detachObservers(cx_class _this, cx_object object) {
         observers->length = id;
         base = _this;
         do {
-            for(i=0; i<base->observers.length; i++) {
+            for (i=0; i<base->observers.length; i++) {
                 observable = cx_class_getObservable(base, base->observers.buffer[i], object);
                 if (observable) {
                     /* Do not silence observers that listen for childs on non-scoped objects */
@@ -202,7 +201,7 @@ void cx_class_detachObservers(cx_class _this, cx_object object) {
                     }
                 }
             }
-        }while((base = cx_class(cx_interface(base)->base)));
+        } while ((base = cx_class(cx_interface(base)->base)));
     }
 }
 
@@ -253,7 +252,7 @@ cx_int16 cx_class_construct(cx_class _this) {
         }
 
         /* Validate that all interface interfaces are correctly implemented and generate interface tables. */
-        for(i=0; (i<_this->implements.length) && !result; i++) {
+        for (i=0; (i<_this->implements.length) && !result; i++) {
             cx_interface interface = _this->implements.buffer[i];
             _this->interfaceVector.buffer[i].interface = interface;
             _this->interfaceVector.buffer[i].vector.length  = interface->methods.length;
@@ -277,7 +276,7 @@ cx_void cx_class_destruct(cx_class _this) {
     cx_interfaceVector *v;
 
     /* Free attached observers */
-    for(i=0; i<_this->observers.length; i++) {
+    for (i=0; i<_this->observers.length; i++) {
         cx_free_ext(_this, _this->observers.buffer[i], "Unbind observer from class");
     }
     cx_dealloc(_this->observers.buffer);
@@ -285,10 +284,10 @@ cx_void cx_class_destruct(cx_class _this) {
     _this->observers.length = 0;
 
     /* Free interfaceVector */
-    for(i=0; i<_this->interfaceVector.length; i++) {
+    for (i=0; i<_this->interfaceVector.length; i++) {
         v = &_this->interfaceVector.buffer[i];
         v->interface = NULL;
-        for(j=0; j<v->vector.length; j++) {
+        for (j=0; j<v->vector.length; j++) {
             if (v->vector.buffer[j]) {
                 cx_free_ext(_this, v->vector.buffer[j], "Unbind interface vector");
                 v->vector.buffer[j] = NULL;
@@ -307,7 +306,7 @@ cx_observer cx_class_findObserver(cx_class _this, cx_object observable, cx_strin
     cx_uint32 i;
     cx_observer result = NULL;
 
-    for(i=0; i<_this->observers.length; i++) {
+    for (i=0; i<_this->observers.length; i++) {
         if (_this->observers.buffer[i]->observable == observable) {
             if (_this->observers.buffer[i]->expression && expr) {
                 if (!strcmp(_this->observers.buffer[i]->expression, expr)) {
@@ -355,7 +354,7 @@ cx_bool cx_class_instanceof(cx_class _this, cx_object object) {
             cx_interface p;
             p = (cx_interface)t;
 
-            while(p && !result) {
+            while (p && !result) {
                 result = (p == (cx_interface)_this);
                 p = p->base;
             }
@@ -382,7 +381,7 @@ cx_method cx_class_resolveInterfaceMethod(cx_class _this, cx_interface interface
     cx_interfaceVector *v;
 
     /* Lookup interface class */
-    for(i=0; i<_this->interfaceVector.length; i++) {
+    for (i=0; i<_this->interfaceVector.length; i++) {
         v = &_this->interfaceVector.buffer[i];
         if (v->interface == interface) {
             break;

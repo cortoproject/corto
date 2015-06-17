@@ -7,7 +7,6 @@
  */
 
 #include "cx.h"
-#include "cx__meta.h"
 
 /* $header() */
 cx_uint8 cx__primitive_convertId(cx_primitiveKind kind, cx_width width) {
