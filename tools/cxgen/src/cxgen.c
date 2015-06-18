@@ -297,7 +297,7 @@ int main(int argc, char* argv[]) {
 
     /* Load library */
     if (generators) {
-        while((lib = cx_llTakeFirst(generators))) {
+        while ((lib = cx_llTakeFirst(generators))) {
 
             /* Create generator for each provided generator library */
             g = gen_new(name, language);
