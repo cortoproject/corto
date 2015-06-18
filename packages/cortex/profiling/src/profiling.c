@@ -90,9 +90,9 @@ static void profiling_closeProfile(cx_time t) {
 
 /* $end */
 
-/* ::profiling::start(string name) */
+/* ::cortex::profiling::start(string name) */
 cx_void profiling_start(cx_string name) {
-/* $begin(::profiling::start) */
+/* $begin(::cortex::profiling::start) */
     cx_time *startTimePtr = cx_malloc(sizeof(cx_time));
     cx_timeGet(startTimePtr);
     cx_ll ll = profiling_stack();
@@ -101,9 +101,9 @@ cx_void profiling_start(cx_string name) {
 /* $end */
 }
 
-/* ::profiling::stop() */
+/* ::cortex::profiling::stop() */
 cx_void profiling_stop(void) {
-/* $begin(::profiling::stop) */
+/* $begin(::cortex::profiling::stop) */
     cx_time *startTimePtr;
     cx_time stopTime;
     cx_time difference;
