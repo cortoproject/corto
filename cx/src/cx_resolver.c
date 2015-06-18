@@ -77,20 +77,20 @@ repeat:
         if (!ch) {
             break;
         }
-        while(ch) {
+        while (ch) {
             overload = FALSE;
             if (scope == cortex_o) {
                 cortexSearched = TRUE;
             }
 
             bptr = buffer;
-            while((ch = *ptr) && (ch != ':') && (ch != '{') && (ch != '/')) {
+            while ((ch = *ptr) && (ch != ':') && (ch != '{') && (ch != '/')) {
                 *bptr = ch;
                 bptr++;
                 ptr++;
                 if (ch == '(') {
                     overload = TRUE;
-                    while((ch = *ptr) && (ch != ')')) {
+                    while ((ch = *ptr) && (ch != ')')) {
                         *bptr = ch;
                         bptr++;
                         ptr++;
@@ -174,7 +174,7 @@ repeat:
             }
         }
         if (o) break;
-    }while((step == 1) && (scope = cx_parentof(scope)));
+    } while((step == 1) && (scope = cx_parentof(scope)));
 
     /* Do lookup in actual scope first, then in cortex */
     if (!o && step && !fullyQualified) {
