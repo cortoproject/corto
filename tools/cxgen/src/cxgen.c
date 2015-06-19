@@ -310,7 +310,7 @@ int main(int argc, char* argv[]) {
 
             /* Generate for all scopes */
             iter = cx_llIter(scopes);
-            while(cx_iterHasNext(&iter)) {
+            while (cx_iterHasNext(&iter)) {
                 scope = cx_iterNext(&iter);
 
                 /* Resolve object */
@@ -318,7 +318,7 @@ int main(int argc, char* argv[]) {
                 if (!o) {
                     o = cx_resolve(NULL, scope);
                     if (!o) {
-                        cx_error("cxgen: unresolved scope '%s' .", scope);
+                        cx_error("cxgen: unresolved scope '%s'.", scope);
                         return -1;
                     }
                 }
