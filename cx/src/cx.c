@@ -18,6 +18,7 @@
 #include "cx_mm.h"
 #include "cx_call.h"
 #include "cx_vm.h"
+#include "cx_crc.h"
 
 #include "cx__object.h"
 #include "stdlib.h"
@@ -643,6 +644,9 @@ int cx_start(void) {
 
     /* Always randomize seed */
     srand (time(NULL));
+
+    /* Init CRC table */
+    cx_crcInit();
 
     return 0;
 }
