@@ -1,18 +1,18 @@
 bool result : true
 
 void fail(string msg):
-    "tc_storage20c: FAIL: $msg"
+    "tc_storage26c: FAIL: $msg"
     result = false
 
  class Point::
 	x, y: int32
 
-var array{array{Point, 3}, 3}& ints = array{array{Point, 3}, 3}{
+var sequence{sequence{Point, 3}, 3}& ints = sequence{sequence{Point, 3}, 3}{
 	{Point{0, 1}, Point{2, 3}, Point{4, 5}}, 
 	{Point{6, 7}, Point{8, 9}, Point{10, 11}}, 
 	{Point{12, 13}, Point{14, 15}, Point{16, 17}}
 }
-var array{array{Point, 3}, 3}& ints2 = ints
+var sequence{sequence{Point, 3}, 3}& ints2 = ints
 if ints[0][0, 1, 2][x, y] != (0, 1, 2, 3, 4, 5): fail("ints[0][0, 1, 2][x, y] != (0, 1, 2, 3, 4, 5)")
 if ints[1][0, 1, 2][x, y] != (6, 7, 8, 9, 10, 11): fail("ints[1][0, 1, 2][x, y] != (6, 7, 8, 9, 10, 11)")
 if ints[2][0, 1, 2][x, y] != (12, 13, 14, 15, 16, 17): fail("ints[2][0, 1, 2][x, y] != (12, 13, 14, 15, 16, 17)")
@@ -43,7 +43,7 @@ if "$ints2" != "{{<1>::Point{1,2},<2>::Point{3,4},<3>::Point{5,6}},{<4>::Point{7
 	fail("ints2 != \"{{<1>::Point{1,2},<2>::Point{3,4},<3>::Point{5,6}},{<4>::Point{7,8},<5>::Point{9,10},<6>::Point{11,12}},{<7>::Point{13,14},<8>::Point{15,16},<9>::Point{17,18}}}\"")
 
 
-&ints = array{array{Point, 3}, 3}{
+&ints = sequence{sequence{Point, 3}, 3}{
 	{Point{2, 3}, Point{4, 5}, Point{6, 7}}, 
 	{Point{8, 9}, Point{10, 11}, Point{12, 13}}, 
 	{Point{14, 15}, Point{16, 17}, Point{18, 19}}
@@ -60,4 +60,4 @@ if ints2[2][0, 1, 2][x, y] != (13, 14, 15, 16, 17, 18): fail("ints2[2][0, 1, 2][
 if "$ints2" != "{{<1>::Point{1,2},<2>::Point{3,4},<3>::Point{5,6}},{<4>::Point{7,8},<5>::Point{9,10},<6>::Point{11,12}},{<7>::Point{13,14},<8>::Point{15,16},<9>::Point{17,18}}}": 
 	fail("ints2 != \"{{<1>::Point{1,2},<2>::Point{3,4},<3>::Point{5,6}},{<4>::Point{7,8},<5>::Point{9,10},<6>::Point{11,12}},{<7>::Point{13,14},<8>::Point{15,16},<9>::Point{17,18}}}\"")
 
-if result: "tc_storage20c: OK"
+if result: "tc_storage26c: OK"
