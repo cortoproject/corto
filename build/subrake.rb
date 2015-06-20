@@ -1,7 +1,6 @@
 
-if not defined? COMPONENTS then
-    raise "COMPONENTS not specified\n"
-end
+
+COMPONENTS = [] if not defined? COMPONENTS
 
 task :default do
     COMPONENTS.each do |e|

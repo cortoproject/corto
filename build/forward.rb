@@ -5,4 +5,8 @@ end
 
 Dir.chdir(File.dirname(Rake.application.rakefile))
 
+if not defined? COMPONENTS then
+    raise "COMPONENTS not specified\n"
+end
+
 require "#{ENV['CORTEX_HOME']}/build/subrake"
