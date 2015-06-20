@@ -265,7 +265,7 @@ int main(int argc, char* argv[]) {
     /* Load includes */
     if (includes) {
         iter = cx_llIter(includes);
-        while(cx_iterHasNext(&iter)) {
+        while (cx_iterHasNext(&iter)) {
             include = cx_iterNext(&iter);
             if (package) {
                 if (newPackage) {
@@ -331,7 +331,7 @@ int main(int argc, char* argv[]) {
             /* Add output directories */
             if (attributes) {
                 iter = cx_llIter(attributes);
-                while(cx_iterHasNext(&iter)) {
+                while (cx_iterHasNext(&iter)) {
                     cx_string ptr;
 
                     attr = cx_strdup(cx_iterNext(&iter));

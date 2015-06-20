@@ -36,3 +36,5 @@ task :clobber do
         sh "rake clobber -f dep.rb" 
     end
 end
+
+require "#{ENV['CORTEX_HOME']}/build/subrake"

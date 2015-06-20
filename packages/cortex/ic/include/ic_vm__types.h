@@ -76,6 +76,7 @@ struct ic_vmStorage {
     cx_bool reusable;  /* A non-reusable storage needs to be assembled each time it is evaluated because the storage depends
                         * on the value of other storages, for example the index-expression of an element storage. */
     cx_bool allocated; /* Does the storage occupy space */
+    cx_bool alwaysCompute; /* Does the storage needs to be computed regardless of base */
 };
 
 /* Administration that keeps track of claims accumulators have on the register */

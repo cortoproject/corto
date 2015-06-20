@@ -833,16 +833,45 @@ struct cx_vm_context {
 };
 
 #ifdef CX_VM_DEBUG
-typedef void(*sigfunc)(int);
+typedef void (*sigfunc)(int sig);
 static sigfunc prevSegfaultHandler;
 static sigfunc prevAbortHandler;
 static sigfunc prevInterruptHandler;
 
+sigfunc safe_signal (int sig, sigfunc h) {
+    struct sigaction sa;
+    struct sigaction osa;
+    sa.sa_handler = h;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    if (sigaction(sig, &sa, &osa) < 0) {
+        return SIG_ERR;
+    }
+    return osa.sa_handler;
+}
+
+static void cx_vm_sigHardAbort(int sig) {
+    CX_UNUSED(sig);
+    exit(-1);
+}
+
 /* The VM signal handler */
 static void cx_vm_sig(int sig) {
     cx_int32 sp;
+
+    /* Unblock all signals */
+    sigset_t mask_set = 0, old_set = 0;
+    sigfillset(&mask_set);
+    sigprocmask(SIG_UNBLOCK, &mask_set, &old_set);
+
+    /* If any signal occurs again, do a hard abort */
+    int i;
+    for (i = 1; i < 35; i++) {
+        signal(i, cx_vm_sigHardAbort);
+    }
+
     cx_currentProgramData *programData = cx_threadTlsGet(cx_currentProgramKey);
-    
+
     if (sig == SIGSEGV) {
         printf("Access violation\n");
     }
@@ -863,7 +892,9 @@ static void cx_vm_sig(int sig) {
     for(sp = programData->sp-1; sp>=0; sp--) {
         cx_id id, file;
         cx_vmProgram program = programData->stack[sp];
+
         cx_uint32 line = program->debugInfo[((cx_word)programData->c[sp]->pc - (cx_word)program->program)/sizeof(cx_vmOp)].line;
+
         if (program->filename) {
             sprintf(file, "%s:", program->filename);
         } else {
@@ -884,6 +915,7 @@ static void cx_vm_sig(int sig) {
         }
 #endif
     }
+
     printf("\n");
     exit(-1);
 }
@@ -914,26 +946,26 @@ static void cx_vm_popCurrentProgram(void) {
 /* Push a program to the signal handler stack. This will allow backtracing the
  * stack when an error occurs. */
 static void cx_vm_pushSignalHandler(cx_vmProgram program, cx_vm_context *c) {
-    sigfunc result = signal(SIGSEGV, cx_vm_sig);
+    sigfunc result = safe_signal(SIGSEGV, cx_vm_sig);
     if (result == SIG_ERR) {
         cx_error("failed to install signal handler for SIGSEGV");
     } else {
         prevSegfaultHandler = result;
     }
 
-    result = signal(SIGABRT, cx_vm_sig);
+    result = safe_signal(SIGABRT, cx_vm_sig);
     if (result == SIG_ERR) {
         cx_error("failed to install signal handler for SIGABRT");
     } else {
         prevAbortHandler = result;
     }
 
-    result = signal(SIGINT, cx_vm_sig);
+    result = safe_signal(SIGINT, cx_vm_sig);
     if (result == SIG_ERR) {
         cx_error("failed to install signal handler for SIGINT");
     } else {
         prevInterruptHandler = result;
-    }    
+    }
 
     /* Store current program in TLS */
     cx_vm_pushCurrentProgram(program, c);
@@ -941,17 +973,17 @@ static void cx_vm_pushSignalHandler(cx_vmProgram program, cx_vm_context *c) {
 
 /* Pop a program from the signal handler stack */
 static void cx_vm_popSignalHandler(void) {
-    if (signal(SIGSEGV, prevSegfaultHandler) == SIG_ERR) {
+    if (safe_signal(SIGSEGV, prevSegfaultHandler) == SIG_ERR) {
         cx_error("failed to uninstall signal handler for SIGSEGV");
     } else {
         prevSegfaultHandler = NULL;
     }
-    if (signal(SIGABRT, prevAbortHandler) == SIG_ERR) {
+    if (safe_signal(SIGABRT, prevAbortHandler) == SIG_ERR) {
         cx_error("failed to uninstall signal handler for SIGABRT");
     } else {
         prevAbortHandler = NULL;
     }
-    if (signal(SIGINT, prevInterruptHandler) == SIG_ERR) {
+    if (safe_signal(SIGINT, prevInterruptHandler) == SIG_ERR) {
         cx_error("failed to uninstall signal handler for SIGINT");
     } else {
         prevInterruptHandler = NULL;

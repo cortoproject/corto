@@ -304,7 +304,9 @@ ic_vmOperand ic_getVmOperand(ic_vmProgram *program, ic_derefKind deref, ic_node 
                 break;
             case IC_MEMBER:
             case IC_ELEMENT:
-                if (base->kind == IC_OBJECT) {
+                if (vmS->alwaysCompute) {
+                    result = IC_VMOPERAND_Q;
+                } else if (base->kind == IC_OBJECT) {
                     result = IC_VMOPERAND_P;
                 } else if (base->isReference) {
                     result = IC_VMOPERAND_Q;

@@ -11,6 +11,7 @@
 #include "stdint.h"
 #include "cx_object.h"
 #include "cx_vm_def.h"
+#include "cx_crc.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -91,7 +92,7 @@ typedef struct cx_vmProgram_s {
     uint32_t storage;
     uint32_t stack;
     uint8_t translated;
-}cx_vmProgram_s;
+} cx_vmProgram_s;
 
 
 /* ---- Virtual machine API */

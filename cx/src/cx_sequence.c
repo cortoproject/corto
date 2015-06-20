@@ -59,7 +59,11 @@ cx_void cx_sequence_size(cx_any _this, cx_uint32 size) {
     elementSize = cx_type_sizeof(cx_collection(_this.type)->elementType);
 
     ((cx_objectSeq*)_this.value)->buffer = cx_realloc(((cx_objectSeq*)_this.value)->buffer, size * elementSize);
-    memset(CX_OFFSET(((cx_objectSeq*)_this.value)->buffer, oldSize * elementSize), 0, elementSize * (size - oldSize));
+    if (size > oldSize) {
+        memset(CX_OFFSET(((cx_objectSeq*)_this.value)->buffer, oldSize * elementSize), 0, elementSize * (size - oldSize));
+    } else {
+        memset(((cx_objectSeq*)_this.value)->buffer, 0, elementSize * size);
+    }
     ((cx_objectSeq*)_this.value)->length = size;
 /* $end */
 }
