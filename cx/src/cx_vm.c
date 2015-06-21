@@ -860,7 +860,7 @@ static void cx_vm_sig(int sig) {
     cx_int32 sp;
 
     /* Unblock all signals */
-    sigset_t mask_set = 0, old_set = 0;
+    sigset_t mask_set, old_set;
     sigfillset(&mask_set);
     sigprocmask(SIG_UNBLOCK, &mask_set, &old_set);
 

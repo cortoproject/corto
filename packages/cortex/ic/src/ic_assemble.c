@@ -259,70 +259,83 @@ ic_vmOperand ic_getVmOperand(ic_vmProgram *program, ic_derefKind deref, ic_node 
         ic_storage s = ic_storage(node);
         ic_vmStorage *vmS = ic_vmProgram_getStorage(program, s);
         ic_storage base = vmS->base ? vmS->base->ic : NULL;
+        cx_bool isPrimitive = s->type->kind == CX_PRIMITIVE;
 
-        switch(deref) {
-        case IC_DEREF_ADDRESS:
-            switch(s->kind) {
-            case IC_OBJECT:
-                result = IC_VMOPERAND_V; /* var uint32& v = &object */
-                break;
-            case IC_VARIABLE:
-            case IC_ACCUMULATOR:
-                if (s->isReference) {
-                    result = IC_VMOPERAND_R; /* var uint32& w = &v */
-                } else {
-                    result = IC_VMOPERAND_X;
+        if (vmS->alwaysCompute) {
+            printf("storage %s (%s) (%d == %d)\n", 
+                s->name, 
+                cx_nameof(cx_typeof(s->type)),
+                deref,
+                IC_DEREF_ARGUMENT);
+            if (!isPrimitive && (deref == IC_DEREF_ARGUMENT)) {
+                result = IC_VMOPERAND_R;
+            } else {
+                result = IC_VMOPERAND_Q;
+            }
+        } else {
+            switch(deref) {
+            case IC_DEREF_ADDRESS:
+                switch(s->kind) {
+                case IC_OBJECT:
+                    result = IC_VMOPERAND_V; /* var uint32& v = &object */
+                    break;
+                case IC_VARIABLE:
+                case IC_ACCUMULATOR:
+                    if (s->isReference) {
+                        result = IC_VMOPERAND_R; /* var uint32& w = &v */
+                    } else {
+                        result = IC_VMOPERAND_X;
+                    }
+                    break;
+                case IC_MEMBER:
+                case IC_ELEMENT:
+                    if (base->kind == IC_OBJECT) {
+                        result = IC_VMOPERAND_V;
+                    } else {
+                        if (base->isReference) {
+                            result = IC_VMOPERAND_Q;
+                        } else {
+                            result = IC_VMOPERAND_R;
+                        }
+                    }
+                    break;
                 }
                 break;
-            case IC_MEMBER:
-            case IC_ELEMENT:
-                if (base->kind == IC_OBJECT) {
-                    result = IC_VMOPERAND_V;
-                } else {
-                    if (base->isReference) {
+            case IC_DEREF_ARGUMENT:
+            case IC_DEREF_VALUE:
+                switch(s->kind) {
+                case IC_OBJECT: 
+                    result = IC_VMOPERAND_P; /* var uint32 v = object */
+                    break;
+                case IC_VARIABLE: 
+                case IC_ACCUMULATOR:
+                    if (s->isReference) {
+                        result = IC_VMOPERAND_Q; /* var uint32& v = ...; v = object */
+                    } else {
+                        result = IC_VMOPERAND_R; /* var uint32 v = 10 */
+                    }
+                    break;
+                case IC_MEMBER:
+                case IC_ELEMENT:
+                    if (base->kind == IC_OBJECT) {
+                        result = IC_VMOPERAND_P;
+                    } else if (base->isReference) {
                         result = IC_VMOPERAND_Q;
                     } else {
                         result = IC_VMOPERAND_R;
                     }
                 }
                 break;
-            }
-            break;
-        case IC_DEREF_ARGUMENT:
-        case IC_DEREF_VALUE:
-            switch(s->kind) {
-            case IC_OBJECT: 
-                result = IC_VMOPERAND_P; /* var uint32 v = object */
+            default:
                 break;
-            case IC_VARIABLE: 
-            case IC_ACCUMULATOR:
-                if (s->isReference) {
-                    result = IC_VMOPERAND_Q; /* var uint32& v = ...; v = object */
-                } else {
-                    result = IC_VMOPERAND_R; /* var uint32 v = 10 */
-                }
-                break;
-            case IC_MEMBER:
-            case IC_ELEMENT:
-                if (vmS->alwaysCompute) {
-                    result = IC_VMOPERAND_Q;
-                } else if (base->kind == IC_OBJECT) {
-                    result = IC_VMOPERAND_P;
-                } else if (base->isReference) {
-                    result = IC_VMOPERAND_Q;
-                } else {
-                    result = IC_VMOPERAND_R;
-                }
             }
-            break;
-        default:
-            break;
         }
         break;
-    }
-    default:
-        cx_assert(0, "invalid value-kind (%s)", ic_kind__str(node->kind));
-        break;
+        
+        default:
+            cx_assert(0, "invalid value-kind (%s)", ic_kind__str(node->kind));
+            break;
+        }
     }
 
     return result;
