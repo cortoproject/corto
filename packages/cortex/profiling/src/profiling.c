@@ -10,10 +10,9 @@
 
 /* $header() */
 
-typedef struct profiling_TlsValue {
-    cx_ll ll;
-    cx_object topProfile; 
-} profiling_TlsValue;
+#include "profiling__keyvalue.h"
+
+extern cx_threadKey profiling_key;
 
 /*
  * topProfile can be a profile, the per-thread scope, or the root-scope
@@ -22,25 +21,8 @@ static cx_object profiling_profileRoot(void) {
     return root_o;
 }
 
-static void profiling_clearTlsValue(void *data) {
-    profiling_TlsValue *value = data;
-    if (value->ll) {
-        cx_llFree(value->ll);
-    }
-}
-
-static cx_threadKey profiling_key(void) {
-    static cx_threadKey key = 0;
-    if (!key) {
-        if (cx_threadTlsKey(&key, profiling_clearTlsValue)) {
-            cx_error("Cannot create profiling key");
-        }
-    }
-    return key;
-}
-
 static profiling_TlsValue *profiling_value(void) {
-    cx_threadKey key = profiling_key();
+    cx_threadKey key = profiling_key;
     profiling_TlsValue *value = cx_threadTlsGet(key);
 
     if (!value) {
