@@ -108,7 +108,6 @@ static cx_vmOp *ic_vmStorageAssembleElement(
 {
     cx_type type = storage->ic->base->type;
 
-    /* Obtain kind for index */
     if (type->kind == CX_ITERATOR) {
         ic_vmOperand baseKind = ic_getVmOperand(program, IC_DEREF_VALUE, ic_node(storage->ic->base));
         vmOp->op = ic_getVmSET(type, IC_VMTYPE_D, IC_VMOPERAND_R, baseKind, 0);
@@ -129,7 +128,7 @@ static cx_vmOp *ic_vmStorageAssembleElement(
                 ic_vmSetOp2Addr(program, vmOp, IC_VMTYPE_W, IC_VMOPERAND_R, IC_VMOPERAND_P, ic_node(acc->ic), ic_node(accOut->ic));
                 vmOp = cx_vmProgram_addOp(program->program, 0);
             } else {
-                if (accOut->ic->isReference) {
+                if (accOut->ic->isReference || accOut->alwaysCompute) {
                     vmOp->op = ic_vmStorageGetSet(RR);
                     ic_vmSetOp2Addr(program, vmOp, IC_VMTYPE_W, IC_VMOPERAND_R, IC_VMOPERAND_R, ic_node(acc->ic), ic_node(accOut->ic));
                     vmOp = cx_vmProgram_addOp(program->program, 0);  

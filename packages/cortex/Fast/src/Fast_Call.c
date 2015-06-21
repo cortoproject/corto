@@ -147,7 +147,7 @@ ic_node Fast_Call_toIc_v(Fast_Call _this, ic_program program, ic_storage storage
         ic_node thisIc = Fast_Node_toIc(Fast_Node(_this->instanceExpr), program, NULL, TRUE);
         argumentCount += 1;
         pushIcs = alloca(argumentCount * sizeof(ic_op));
-        pushIcs[argumentId] = IC_1_OP(Fast_Node(_this)->line, ic_push, thisIc, IC_DEREF_ADDRESS, _this->instanceIsAny);
+        pushIcs[argumentId] = IC_1_OP(Fast_Node(_this)->line, ic_push, thisIc, IC_DEREF_ARGUMENT, _this->instanceIsAny);
         argumentId++;
     } else {
         if (_this->arguments) {
@@ -189,17 +189,17 @@ ic_node Fast_Call_toIc_v(Fast_Call _this, ic_program program, ic_storage storage
                 } else if (!exprType) {
                     isAny = TRUE;
                 }
-                deref = IC_DEREF_ADDRESS;
             } else {
                 if (!exprType) {
                     exprType = paramType;
                 }
-                if (_this->parameters.buffer[i].passByReference || 
-                   (paramType->reference && !exprType->reference)) {
-                    deref = IC_DEREF_ADDRESS;
-                } else {
-                    deref = IC_DEREF_ARGUMENT;
-                }
+            }
+
+            if (_this->parameters.buffer[i].passByReference || 
+               (paramType->reference && !exprType->reference)) {
+                deref = IC_DEREF_ADDRESS;
+            } else {
+                deref = IC_DEREF_ARGUMENT;
             }
 
             argumentIc = Fast_Node_toIc(Fast_Node(argument), program, argumentStorage, TRUE);
