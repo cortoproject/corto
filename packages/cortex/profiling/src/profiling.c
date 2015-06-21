@@ -10,14 +10,14 @@
 
 /* $header() */
 
-/*
- * topProfile can be a profile, the per-thread scope, or the root-scope
- */
 typedef struct profiling_TlsValue {
     cx_ll ll;
     cx_object topProfile; 
 } profiling_TlsValue;
 
+/*
+ * topProfile can be a profile, the per-thread scope, or the root-scope
+ */
 static cx_object profiling_profileRoot(void) {
     return root_o;
 }
