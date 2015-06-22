@@ -345,7 +345,9 @@ void cx_llReverse(cx_ll list) {
 
 /* Clear list */
 void cx_llClear(cx_ll list) {
-    while(cx_llTakeFirst(list));
+    while(list->size) {
+        cx_llTakeFirst(list);
+    }
 }
 
 /* Return list iterator */

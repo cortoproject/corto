@@ -154,20 +154,20 @@ static cx_vmOp *ic_vmStorageAssembleElement(
             ic_vmSetOp3Addr(program, vmOp, IC_VMTYPE_W, IC_VMOPERAND_R, indexKind, IC_VMOPERAND_V, ic_node(acc->ic), ic_element(storage->ic)->index, ic_elementSize);
             break;
         case CX_LIST:
-            if (cx_collection_elementRequiresAlloc(collection) || !topLevel) {
+            if (cx_collection_elementRequiresAlloc(collection)) {
                 vmOp->op = ic_getVmELEML(type, IC_VMTYPE_W, IC_VMOPERAND_R, indexKind, 0);
             } else {
                 vmOp->op = ic_getVmELEMLX(type, IC_VMTYPE_W, IC_VMOPERAND_R, indexKind, 0);
             }
-            ic_vmSetOp2Addr(program, vmOp, IC_VMTYPE_W, IC_VMOPERAND_R, indexKind, ic_node(storage->ic), ((ic_element)storage->ic)->index);
+            ic_vmSetOp2Addr(program, vmOp, IC_VMTYPE_W, IC_VMOPERAND_R, indexKind, ic_node(acc->ic), ((ic_element)storage->ic)->index);
             break;
         case CX_MAP:
-            if (cx_collection_elementRequiresAlloc(collection) || !topLevel) {
+            if (cx_collection_elementRequiresAlloc(collection)) {
                 vmOp->op = ic_getVmELEMM(type, IC_VMTYPE_W, IC_VMOPERAND_R, indexKind, 0);
             } else {
                 vmOp->op = ic_getVmELEMMX(type, IC_VMTYPE_W, IC_VMOPERAND_R, indexKind, 0);
             }
-            ic_vmSetOp2Addr(program, vmOp, IC_VMTYPE_W, IC_VMOPERAND_R, indexKind, ic_node(storage->ic), ((ic_element)storage->ic)->index);
+            ic_vmSetOp2Addr(program, vmOp, IC_VMTYPE_W, IC_VMOPERAND_R, indexKind, ic_node(acc->ic), ((ic_element)storage->ic)->index);
             break;
         }
     }
@@ -177,7 +177,7 @@ static cx_vmOp *ic_vmStorageAssembleElement(
 
 static cx_vmOp *ic_vmStorageAssembleMember(
     ic_vmStorage *storage, 
-    ic_vmProgram *program, 
+    ic_vmProgram *program,
     cx_vmOp *vmOp,
     ic_vmStorage *acc,
     ic_vmStorage *accOut) 

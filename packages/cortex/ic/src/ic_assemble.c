@@ -262,17 +262,17 @@ ic_vmOperand ic_getVmOperand(ic_vmProgram *program, ic_derefKind deref, ic_node 
         cx_bool isPrimitive = s->type->kind == CX_PRIMITIVE;
 
         if (vmS->alwaysCompute) {
-            printf("storage %s (%s) (%d == %d)\n", 
-                s->name, 
-                cx_nameof(cx_typeof(s->type)),
-                deref,
-                IC_DEREF_ARGUMENT);
             if (!isPrimitive && (deref == IC_DEREF_ARGUMENT)) {
                 result = IC_VMOPERAND_R;
             } else {
                 result = IC_VMOPERAND_Q;
             }
         } else {
+            if (deref == IC_DEREF_ARGUMENT) {
+                if (!isPrimitive || s->isReference) {
+                    deref = IC_DEREF_ADDRESS;
+                }
+            }
             switch(deref) {
             case IC_DEREF_ADDRESS:
                 switch(s->kind) {

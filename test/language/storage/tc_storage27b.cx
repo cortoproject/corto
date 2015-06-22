@@ -1,0 +1,19 @@
+bool result : true
+
+void fail(string msg):
+    "tc_storage27b: FAIL: $msg"
+    result = false
+
+var list{int32, 3} ints = {0, 1, 2}
+if ints[0] != 0: fail("ints[0] != 0")
+if ints[1] != 1: fail("ints[1] != 1")
+if ints[2] != 2: fail("ints[2] != 2")
+if "$ints" != "{0,1,2}": fail("\"$ints\" != \"{0,1,2}\"")
+
+ints = {1, 2, 3}
+if ints[0] != 1: fail("ints[0] != 1")
+if ints[1] != 2: fail("ints[1] != 2")
+if ints[2] != 3: fail("ints[2] != 3")
+if "$ints" != "{1,2,3}": fail("\"$ints\" != \"{1,2,3}\"")
+
+if result: "tc_storage27b: OK"
