@@ -1,7 +1,7 @@
 /* cx__type.h
  *
- *    Type-definitions for C-language.
- *    This file contains generated code. Do not modify!
+ * Type definitions for C-language.
+ * This file contains generated code. Do not modify!
  */
 
 #ifndef cx__type_H
@@ -19,10 +19,13 @@ extern "C" {
 #define cx_binary(o) ((cx_binary)cx_assertType((cx_type)cx_binary_o, o))
 #define cx_bitmask(o) ((cx_bitmask)cx_assertType((cx_type)cx_bitmask_o, o))
 #define cx_boolean(o) ((cx_boolean)cx_assertType((cx_type)cx_boolean_o, o))
+#define cx_callbackDestruct(o) ((cx_callbackDestruct *)cx_assertType((cx_type)cx_callbackDestruct_o, &o))
+#define cx_callbackInit(o) ((cx_callbackInit *)cx_assertType((cx_type)cx_callbackInit_o, &o))
 #define cx_character(o) ((cx_character)cx_assertType((cx_type)cx_character_o, o))
 #define cx_class(o) ((cx_class)cx_assertType((cx_type)cx_class_o, o))
 #define cx_collection(o) ((cx_collection)cx_assertType((cx_type)cx_collection_o, o))
 #define cx_delegate(o) ((cx_delegate)cx_assertType((cx_type)cx_delegate_o, o))
+#define cx_delegatedata(o) ((cx_delegatedata *)cx_assertType((cx_type)cx_delegatedata_o, &o))
 #define cx_dispatcher(o) ((cx_dispatcher)cx_assertType((cx_type)cx_dispatcher_o, o))
 #define cx_enum(o) ((cx_enum)cx_assertType((cx_type)cx_enum_o, o))
 #define cx_event(o) ((cx_event)cx_assertType((cx_type)cx_event_o, o))
@@ -30,6 +33,7 @@ extern "C" {
 #define cx_function(o) ((cx_function)cx_assertType((cx_type)cx_function_o, o))
 #define cx_int(o) ((cx_int)cx_assertType((cx_type)cx_int_o, o))
 #define cx_interface(o) ((cx_interface)cx_assertType((cx_type)cx_interface_o, o))
+#define cx_interfaceVector(o) ((cx_interfaceVector *)cx_assertType((cx_type)cx_interfaceVector_o, &o))
 #define cx_iterator(o) ((cx_iterator)cx_assertType((cx_type)cx_iterator_o, o))
 #define cx_list(o) ((cx_list)cx_assertType((cx_type)cx_list_o, o))
 #define cx_map(o) ((cx_map)cx_assertType((cx_type)cx_map_o, o))
@@ -39,6 +43,7 @@ extern "C" {
 #define cx_observableEvent(o) ((cx_observableEvent)cx_assertType((cx_type)cx_observableEvent_o, o))
 #define cx_observer(o) ((cx_observer)cx_assertType((cx_type)cx_observer_o, o))
 #define cx_package(o) ((cx_package)cx_assertType((cx_type)cx_package_o, o))
+#define cx_parameter(o) ((cx_parameter *)cx_assertType((cx_type)cx_parameter_o, &o))
 #define cx_primitive(o) ((cx_primitive)cx_assertType((cx_type)cx_primitive_o, o))
 #define cx_procedure(o) ((cx_procedure)cx_assertType((cx_type)cx_procedure_o, o))
 #define cx_sequence(o) ((cx_sequence)cx_assertType((cx_type)cx_sequence_o, o))
