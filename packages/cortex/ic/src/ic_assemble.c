@@ -142,7 +142,7 @@ cx_void *ic_valueValue_width(ic_vmProgram *program, ic_node s, void* truncated, 
         if (!result) {
             *(cx_word*)truncated = 0;
             result = truncated;
-        }        
+        }
         break;
     }
 
@@ -244,7 +244,7 @@ ic_vmType ic_getVmType(ic_node s, ic_derefKind deref) {
     return result;
 }
 
-ic_vmOperand ic_getVmOperand(ic_vmProgram *program, ic_derefKind deref, ic_node node) {
+ic_vmOperand ic_getVmOperand(ic_vmProgram *program, ic_derefKind deref, cx_bool isArgument, ic_node node) {
     ic_vmOperand result = IC_VMOPERAND_V;
 
     switch(node->kind) {
@@ -262,17 +262,12 @@ ic_vmOperand ic_getVmOperand(ic_vmProgram *program, ic_derefKind deref, ic_node 
         cx_bool isPrimitive = s->type->kind == CX_PRIMITIVE;
 
         if (vmS->alwaysCompute) {
-            if (!isPrimitive && (deref == IC_DEREF_ARGUMENT)) {
+            if (isArgument && !isPrimitive) {
                 result = IC_VMOPERAND_R;
             } else {
                 result = IC_VMOPERAND_Q;
             }
         } else {
-            if (deref == IC_DEREF_ARGUMENT) {
-                if (!isPrimitive || s->isReference) {
-                    deref = IC_DEREF_ADDRESS;
-                }
-            }
             switch(deref) {
             case IC_DEREF_ADDRESS:
                 switch(s->kind) {
@@ -301,13 +296,12 @@ ic_vmOperand ic_getVmOperand(ic_vmProgram *program, ic_derefKind deref, ic_node 
                     break;
                 }
                 break;
-            case IC_DEREF_ARGUMENT:
             case IC_DEREF_VALUE:
                 switch(s->kind) {
-                case IC_OBJECT: 
+                case IC_OBJECT:
                     result = IC_VMOPERAND_P; /* var uint32 v = object */
                     break;
-                case IC_VARIABLE: 
+                case IC_VARIABLE:
                 case IC_ACCUMULATOR:
                     if (s->isReference) {
                         result = IC_VMOPERAND_Q; /* var uint32& v = ...; v = object */
@@ -331,7 +325,7 @@ ic_vmOperand ic_getVmOperand(ic_vmProgram *program, ic_derefKind deref, ic_node 
             }
         }
         break;
-        
+
         default:
             cx_assert(0, "invalid value-kind (%s)", ic_kind__str(node->kind));
             break;
@@ -426,11 +420,11 @@ static ic_dummyEnv ic_getDummyEnv(void) {
 
 /* Set operand */
 static void ic_vmSetOp(
-    ic_vmProgram *program, 
-    cx_vmOp *op, 
-    cx_word marker, 
-    cx_uint32 size, 
-    ic_vmOperand opKind, 
+    ic_vmProgram *program,
+    cx_vmOp *op,
+    cx_word marker,
+    cx_uint32 size,
+    ic_vmOperand opKind,
     ic_node v) {
 
     void *addr = NULL;
@@ -534,7 +528,7 @@ cx_uint32 ic_vmOpSize(ic_vmType typeKind, ic_vmOperand operand) {
     case IC_VMOPERAND_Q: result = sizeof(cx_uint16); break;
     case IC_VMOPERAND_A: result = sizeof(void*); break;
     default:
-        break; 
+        break;
     }
 
     return result;
@@ -695,13 +689,13 @@ static cx_bool ic_supportsVmWordType(ic_opKind kind) {
     switch(kind) {
     case ic_strcat:
     case ic_strcpy:
-    case ic_new: 
+    case ic_new:
     case ic_free:
     case ic_keep:
     case ic_define:
     case ic_update:
     case ic_updateend:
-    case ic_updatebegin: 
+    case ic_updatebegin:
     case ic_updatecancel:
     case ic_waitfor:
     case ic_wait:
@@ -776,18 +770,18 @@ static cx_vmOpKind ic_getVmFree(ic_op op, cx_type t, ic_vmType typeKind, ic_vmOp
     return result;
 }
 
-/* Return correct SET instruction. Selects between 
+/* Return correct SET instruction. Selects between
  * normal, string and reference assignments. */
 static cx_vmOpKind ic_getVmSet(
-    cx_type t, 
-    ic_storage op, 
-    ic_vmType *typeKind, 
-    ic_vmOperand *op1, 
-    ic_vmOperand *op2, 
-    ic_derefKind deref1, 
+    cx_type t,
+    ic_storage op,
+    ic_vmType *typeKind,
+    ic_vmOperand *op1,
+    ic_vmOperand *op2,
+    ic_derefKind deref1,
     ic_derefKind deref2) {
     cx_vmOpKind result;
-    
+
     CX_UNUSED(deref2);
 
     /* Accummulators are only meant as temporary storage and therefore don't do resource management */
@@ -828,7 +822,7 @@ static cx_bool ic_operandIsComposite(ic_storage s, cx_compositeKind kind) {
     return result;
 }
 
-/* Return correct CALL instruction. Selects between 
+/* Return correct CALL instruction. Selects between
  * normal, VM and delegate calls */
 static cx_vmOpKind ic_getVmCall(ic_op op, ic_vmOperand op1, ic_vmOperand op2) {
     cx_vmOpKind result = CX_VM_STOP;
@@ -839,14 +833,14 @@ static cx_vmOpKind ic_getVmCall(ic_op op, ic_vmOperand op1, ic_vmOperand op2) {
     } else if (ic_operandIsComposite(ic_function, CX_PROCEDURE)) {
         cx_function f = ((ic_object)op->s2)->ptr;
         if (f->kind == CX_PROCEDURE_VM) {
-            if ((f->returnType->kind == CX_VOID) && 
+            if ((f->returnType->kind == CX_VOID) &&
                 (!f->returnType->reference)) {
                 result = ic_getVmCALLVMVOID(NULL, 0, 0, 0, 0);
             } else {
                 result = ic_getVmCALLVM(NULL, IC_VMTYPE_W, op1, 0, 0);
             }
         } else {
-            if ((f->returnType->kind == CX_VOID) && 
+            if ((f->returnType->kind == CX_VOID) &&
                 (!f->returnType->reference)) {
                 result = ic_getVmCALLVOID(NULL, 0, 0, 0, 0);
             } else {
@@ -855,7 +849,7 @@ static cx_vmOpKind ic_getVmCall(ic_op op, ic_vmOperand op1, ic_vmOperand op2) {
         }
     }
 
-    return result;   
+    return result;
 }
 
 static cx_vmOpKind ic_getVmPush(ic_op op, cx_type t, ic_vmType *typeKind, ic_vmOperand *op1, ic_vmOperand *op2) {
@@ -882,7 +876,7 @@ static cx_vmOpKind ic_getVmPush(ic_op op, cx_type t, ic_vmType *typeKind, ic_vmO
             result = ic_getVmPUSHX(t, *typeKind, *op1, 0, 0);
         }
     }
-    
+
     return result;
 }
 
@@ -972,8 +966,8 @@ static cx_vmOpKind ic_getVmOpKind(ic_vmProgram *program, ic_op op, ic_node stora
     case ic_set: result = ic_getVmSet(t, (ic_storage)storage, &typeKind, &op1, &op2, deref1, deref2); break;
     case ic_cast:
         result = ic_getVmCast(program, op, t, typeKind,
-                ic_getVmOperand(program, op->s1Deref, op->s1),
-                ic_getVmOperand(program, op->s2Deref, op->s2));
+                ic_getVmOperand(program, op->s1Deref, FALSE, op->s1),
+                ic_getVmOperand(program, op->s2Deref, FALSE, op->s2));
         break;
 
     case ic_strcat: result = ic_getVmSTRCAT(t, typeKind, op1, op2, 0); break;
@@ -1063,8 +1057,8 @@ static cx_vmOpKind ic_getVmOpKind(ic_vmProgram *program, ic_op op, ic_node stora
     }
 
     if ((result == CX_VM_STOP) && (op->kind != ic_stop)) {
-        cx_error("%s:%d: instruction lookup failed for => %s %s %s", 
-            program->icProgram->filename, op->line, 
+        cx_error("%s:%d: instruction lookup failed for => %s %s %s",
+            program->icProgram->filename, op->line,
             ic_opKind__str(op->kind),
             ic_derefKind__str(deref1),
             ic_derefKind__str(deref2));
@@ -1088,27 +1082,29 @@ static cx_vmOpKind ic_getVmOpKind(ic_vmProgram *program, ic_op op, ic_node stora
 static cx_vmOp* cx_vmGetTypeAndAssemble(
 
     /* In parameters */
-    ic_vmProgram *program, 
-    cx_vmOp *vmOp, 
-    cx_bool threeOperands, 
-    ic_node storage, 
-    ic_node op1, 
-    ic_node op2, 
-    ic_derefKind storageDeref, 
-    ic_derefKind opDeref1, 
+    ic_vmProgram *program,
+    ic_op op,
+    cx_vmOp *vmOp,
+    cx_bool threeOperands,
+    ic_node storage,
+    ic_node op1,
+    ic_node op2,
+    ic_derefKind storageDeref,
+    ic_derefKind opDeref1,
     ic_derefKind opDeref2,
 
     /* Out parameters */
-    cx_type *t, 
-    ic_vmType *type, 
-    ic_vmOperand *storageKind, 
-    ic_vmOperand *opKind1, 
+    cx_type *t,
+    ic_vmType *type,
+    ic_vmOperand *storageKind,
+    ic_vmOperand *opKind1,
     ic_vmOperand *opKind2) {
-    
+
     if (op1) {
-        *opKind1 = ic_getVmOperand(program, opDeref1, op1);
+        cx_bool isPush = op ? op->kind == ic_push ? TRUE : FALSE : FALSE;
+        *opKind1 = ic_getVmOperand(program, opDeref1, isPush, op1);
         *t = ic_valueType(op1);
-        
+
         if (!threeOperands) {
             *type = ic_getVmType(op1, opDeref1);
         } else {
@@ -1124,16 +1120,16 @@ static cx_vmOp* cx_vmGetTypeAndAssemble(
                 vmOp = ic_vmStorage_assemble((ic_storage)op2, program, vmOp);
             }
         }
-        *opKind2 = ic_getVmOperand(program, opDeref2, op2);
+        *opKind2 = ic_getVmOperand(program, opDeref2, FALSE, op2);
     }
     if (storage) {
         if (((ic_node)storage)->kind == IC_STORAGE) {
             if ((storage != op1) && (storage != op2))
                 vmOp = ic_vmStorage_assemble((ic_storage)storage, program, vmOp);
         }
-        *storageKind = ic_getVmOperand(program, storageDeref, storage);
+        *storageKind = ic_getVmOperand(program, storageDeref, FALSE, storage);
     }
-    
+
     return vmOp;
 }
 
@@ -1142,7 +1138,7 @@ static void cx_vmOp0(ic_vmProgram *program, cx_vmOp *vmOp, ic_op op, ic_node op1
     cx_type t;
     ic_vmType type;
     ic_vmOperand opKind1;
-    vmOp = cx_vmGetTypeAndAssemble(program, vmOp, FALSE, NULL, op1, NULL, 0, opDeref1, 0,  &t, &type, NULL, &opKind1, NULL);
+    vmOp = cx_vmGetTypeAndAssemble(program, op, vmOp, FALSE, NULL, op1, NULL, 0, opDeref1, 0,  &t, &type, NULL, &opKind1, NULL);
     vmOp->op = ic_getVmOpKind(program, op, op1, NULL, NULL, NULL, NULL, 0, 0);
 }
 
@@ -1151,10 +1147,10 @@ static void cx_vmOp1(ic_vmProgram *program, cx_vmOp *vmOp, ic_op op, ic_node op1
     cx_type t;
     ic_vmType type;
     ic_vmOperand opKind1;
-    vmOp = cx_vmGetTypeAndAssemble(program, vmOp, FALSE, NULL, op1, NULL, 0, opDeref1, 0,  &t, &type, NULL, &opKind1, NULL);
+    vmOp = cx_vmGetTypeAndAssemble(program, op, vmOp, FALSE, NULL, op1, NULL, 0, opDeref1, 0,  &t, &type, NULL, &opKind1, NULL);
     vmOp->op = ic_getVmOpKind(program, op, op1, t, &type, &opKind1, NULL, opDeref1, 0);
 
-    /* Set size of type in case return instruction needs to do a memcpy */ 
+    /* Set size of type in case return instruction needs to do a memcpy */
     if (op->kind == ic_ret) {
         vmOp->hi.w = cx_type_sizeof(t);
     }
@@ -1174,11 +1170,11 @@ static void cx_vmOp1Staged(ic_vmProgram *program, cx_vmOp *vmOp, ic_op op, ic_no
     ic_vmType type;
     ic_vmOperand opKind1, storageKind;
 
-    vmOp = cx_vmGetTypeAndAssemble(program, vmOp, FALSE, storage, op1, NULL, storageDeref, opDeref1, 0,  &t, &type, &storageKind, &opKind1, NULL);
+    vmOp = cx_vmGetTypeAndAssemble(program, op, vmOp, FALSE, storage, op1, NULL, storageDeref, opDeref1, 0,  &t, &type, &storageKind, &opKind1, NULL);
     type = cx_vmTranslateVmType(op->kind, type);
     vmOp->op = ic_getVmSTAGE1(t, type, opKind1, 0, 0);
     ic_vmSetOp1Addr(program, vmOp, type, opKind1, op1);
-    
+
     vmStoredOp = cx_vmProgram_addOp(program->program, op->line);
     vmStoredOp->op = ic_getVmOpKind(program, op, op1, t, &type, &storageKind, &opKind1, storageDeref, opDeref1);
     ic_vmSetOp1Addr(program, vmStoredOp, type, storageKind, storage);
@@ -1189,8 +1185,8 @@ static void cx_vmOp2(ic_vmProgram *program, cx_vmOp *vmOp, ic_op op, ic_node op1
     cx_type t;
     ic_vmType type;
     ic_vmOperand opKind1, opKind2;
-    
-    vmOp = cx_vmGetTypeAndAssemble(program, vmOp, FALSE, NULL, op1, op2, 0, opDeref1, opDeref2,  &t, &type, NULL, &opKind1, &opKind2);
+
+    vmOp = cx_vmGetTypeAndAssemble(program, op, vmOp, FALSE, NULL, op1, op2, 0, opDeref1, opDeref2,  &t, &type, NULL, &opKind1, &opKind2);
     vmOp->op = ic_getVmOpKind(program, op, op1, t, &type, &opKind1, &opKind2, opDeref1, opDeref2);
     ic_vmSetOp2Addr(program, vmOp, type, opKind1, opKind2, op1, op2);
 }
@@ -1201,8 +1197,8 @@ static void cx_vmOp3(ic_vmProgram *program, cx_vmOp *vmOp, ic_op op, ic_node op1
     ic_vmType type;
     ic_vmOperand opKind1, opKind2;
     CX_UNUSED(opDeref3);
-    
-    vmOp = cx_vmGetTypeAndAssemble(program, vmOp, FALSE, NULL, op1, op2, 0, opDeref1, opDeref2,  &t, &type, NULL, &opKind1, &opKind2);
+
+    vmOp = cx_vmGetTypeAndAssemble(program, op, vmOp, FALSE, NULL, op1, op2, 0, opDeref1, opDeref2,  &t, &type, NULL, &opKind1, &opKind2);
 
     vmOp->op = ic_getVmOpKind(program, op, op1, t, &type, &opKind1, &opKind2, opDeref1, opDeref2);
     ic_vmSetOp3Addr(program, vmOp, type, opKind1, opKind2, IC_VMOPERAND_V, op1, op2, op3);
@@ -1220,11 +1216,11 @@ static void cx_vmOp2Storage(ic_vmProgram *program, cx_vmOp *vmOp, ic_op op, ic_n
     cx_type t;
     ic_vmType type;
     ic_vmOperand opKind1, opKind2, storageKind;
-    
-    vmOp = cx_vmGetTypeAndAssemble(program, vmOp, FALSE, storage, op1, op2, storageDeref, opDeref1, opDeref2,  &t, &type, &storageKind, &opKind1, &opKind2);
+
+    vmOp = cx_vmGetTypeAndAssemble(program, op, vmOp, FALSE, storage, op1, op2, storageDeref, opDeref1, opDeref2,  &t, &type, &storageKind, &opKind1, &opKind2);
     vmOp->op = ic_getVmSet(t, (ic_storage)storage, &type, &storageKind, &opKind1, storageDeref, opDeref1);
     ic_vmSetOp2Addr(program, vmOp, type, storageKind, opKind1, storage, op1);
-    
+
     vmStoredOp = cx_vmProgram_addOp(program->program, op->line);
     vmStoredOp->op = ic_getVmOpKind(program, op, storage, t, &type, &storageKind, &opKind2, storageDeref, opDeref2);
     ic_vmSetOp2Addr(program, vmStoredOp, type, storageKind, opKind2, storage, op2);
@@ -1242,8 +1238,8 @@ static void cx_vmOp2Set(ic_vmProgram *program, cx_vmOp *vmOp, ic_op op, ic_node 
     cx_type t;
     ic_vmType type;
     ic_vmOperand opKind1, opKind2, storageKind;
-    
-    vmOp = cx_vmGetTypeAndAssemble(program, vmOp, FALSE, storage, op1, op2, storageDeref, opDeref1, opDeref2,  &t, &type, &storageKind, &opKind1, &opKind2);
+
+    vmOp = cx_vmGetTypeAndAssemble(program, op, vmOp, FALSE, storage, op1, op2, storageDeref, opDeref1, opDeref2,  &t, &type, &storageKind, &opKind1, &opKind2);
     vmOp->op = ic_getVmSet(t, (ic_storage)op1, &type, &opKind1, &opKind2, opDeref1, opDeref2);
     ic_vmSetOp2Addr(program, vmOp, type, opKind1, opKind2, op1, op2);
 
@@ -1263,13 +1259,13 @@ static void cx_vmOp2Staged(ic_vmProgram *program, cx_vmOp *vmOp, ic_op op, ic_no
     cx_type t;
     ic_vmType type;
     ic_vmOperand opKind1, opKind2, storageKind;
-    
-    vmOp = cx_vmGetTypeAndAssemble(program, vmOp, FALSE, storage, op1, op2, storageDeref, opDeref1, opDeref2,  &t, &type, &storageKind, &opKind1, &opKind2);
+
+    vmOp = cx_vmGetTypeAndAssemble(program, op, vmOp, FALSE, storage, op1, op2, storageDeref, opDeref1, opDeref2,  &t, &type, &storageKind, &opKind1, &opKind2);
     type = cx_vmTranslateVmType(op->kind, type);
 
     vmOp->op = ic_getVmSTAGE2(t, type, opKind1, opKind2, 0);
     ic_vmSetOp2Addr(program, vmOp, type, opKind1, opKind2, op1, op2);
-    
+
     vmStoredOp = cx_vmProgram_addOp(program->program, op->line);
     vmStoredOp->op = ic_getVmOpKind(program, op, storage, t, &type, &storageKind, &opKind1, storageDeref, opDeref1);
     ic_vmSetOp1Addr(program, vmStoredOp, type, storageKind, storage);
@@ -1281,15 +1277,15 @@ static void cx_vmOp2Cast(ic_vmProgram *program, cx_vmOp *vmOp, ic_op op, ic_node
     cx_type sourceType, destinationType;
     ic_vmType type;
     ic_vmOperand opKind1, opKind2, storageKind;
-    
+
     destinationType = ic_valueType(storage);
-    
+
     /* If destinationType is a reference, insert regular 2-operand instruction */
     if (destinationType->reference) {
         cx_vmOp2Storage(program, vmOp, op, storage, op1, op2, storageDeref, opDeref1, opDeref2);
     /* If destinationType is not a reference, stage types and insert primitive cast */
     } else {
-        vmOp = cx_vmGetTypeAndAssemble(program, vmOp, FALSE, storage, op1, op2, storageDeref, opDeref1, opDeref2,  &sourceType, &type, &storageKind, &opKind1, &opKind2);
+        vmOp = cx_vmGetTypeAndAssemble(program, op, vmOp, FALSE, storage, op1, op2, storageDeref, opDeref1, opDeref2,  &sourceType, &type, &storageKind, &opKind1, &opKind2);
         type = cx_vmTranslateVmType(op->kind, type);
 
         if (sizeof(intptr_t) == 4) {
@@ -1304,7 +1300,7 @@ static void cx_vmOp2Cast(ic_vmProgram *program, cx_vmOp *vmOp, ic_op op, ic_node
             vmOp->lo.w = (cx_word)sourceType;
         }
         vmOp->hi.w = (cx_word)destinationType;
-        
+
         vmStoredOp = cx_vmProgram_addOp(program->program, op->line);
         vmStoredOp->op = ic_getVmOpKind(program, op, storage, sourceType, &type, &storageKind, &opKind1, storageDeref, opDeref1);
         ic_vmSetOp2Addr(program, vmStoredOp, type, storageKind, opKind1, storage, op1);
@@ -1589,7 +1585,7 @@ static void icZeroLocal(ic_vmProgram *program, cx_uint16 initStart, cx_uint16 si
 
 static void icInitLocal(ic_vmProgram *program, cx_uint16 localAddr, cx_type type) {
     cx_vmOp *vmOp;
-    
+
     vmOp = cx_vmProgram_addOp(program->program, 0);
 
     vmOp->op = ic_getVmINIT(NULL, IC_VMTYPE_W, IC_VMOPERAND_R, IC_VMOPERAND_V, 0);;
@@ -1721,7 +1717,7 @@ cx_vmProgram ic_vmAssemble(ic_program program) {
     cx_function function;
     cx_iter inlineFunctionIter;
     ic_vmInlineFunction *inlineFunction;
-    
+
     if (!program->errors) {
         /* Parse main-program */
         vmProgram.icProgram = program;
@@ -1777,6 +1773,3 @@ cx_vmProgram ic_vmAssemble(ic_program program) {
 error:
     return NULL;
 }
-
-
-

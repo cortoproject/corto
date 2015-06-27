@@ -1,0 +1,4 @@
+
+on declare|scope @:: : "declare  ${source.fullname()}"
+on define|scope @:: :  "define   ${observable.fullname()}"
+

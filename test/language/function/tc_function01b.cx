@@ -1,0 +1,30 @@
+bool result : true
+
+void fail(string msg):
+    "tc_function01b: FAIL: $msg"
+    result = false
+
+void func_1(int32& a):
+    if a != 10: fail("a != 10")
+
+void func_2(int32& a):
+    if &a: fail("&a")
+
+int32 a: 10
+var int32& b = int32{10}
+var int32& c = a
+
+void func_3(int32& x):
+    if x != 10: fail("x != 10")
+    if &x != &a: fail("&x != &a")
+
+func_1(int32{10})
+func_1(int32{4 + 6})
+func_1(a)
+func_1(b)
+func_1(c)
+func_2(null)
+func_3(a)
+func_3(c)
+
+if result: "tc_function01b: OK"

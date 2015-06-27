@@ -88,7 +88,7 @@ typedef struct ic_registerClaim {
     cx_uint32 end;
 }ic_registerClaim;
 
-ic_vmOperand ic_getVmOperand(ic_vmProgram *program, ic_derefKind deref, ic_node node);
+ic_vmOperand ic_getVmOperand(ic_vmProgram *program, ic_derefKind deref, cx_bool isArgument, ic_node node);
 
 #ifdef __cplusplus
 }

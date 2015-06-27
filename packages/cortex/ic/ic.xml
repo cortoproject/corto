@@ -76,7 +76,6 @@
                 <meta:scope>
                     <constant name="DEREF_VALUE"/>
                     <constant name="DEREF_ADDRESS"/>
-                    <constant name="DEREF_ARGUMENT"/>
                 </meta:scope>
             </enum>
 
@@ -249,4 +248,3 @@
         </meta:package>
     </meta:package>
 </meta>
-

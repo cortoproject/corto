@@ -15,13 +15,13 @@
 					<constant name="Nothing"/>
 				</meta:scope>
 			</enum>
-			
+
 			<function name="valueKindFromType(type type)" returnType="valueKind"/>
 			<function name="report(string kind,string filename,uint32 line,uint32 column,string error,string token)"/>
 			<function name="reportError(string filename,uint32 line,uint32 column,string error,string token)"/>
 			<function name="reportWarning(string filename,uint32 line,uint32 column,string error,string token)"/>
 			<function name="isOperatorAssignment(operatorKind operator)" returnType="bool"/>
-			
+
 			<!-- Enumeration representing the different treenode kinds -->
 			<enum name="nodeKind">
 				<meta:scope>
@@ -57,7 +57,7 @@
 					<virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
 				</meta:scope>
 			</class>
-			
+
 			<meta:object name="Storage" type="class"/>
 
 			<enum name="derefKind">
@@ -66,7 +66,7 @@
 					<constant name="ByReference"/>
 				</meta:scope>
 			</enum>
-			
+
 			<!-- Base expression node -->
 			<class name="Expression" base="Node">
 				<meta:scope>
@@ -86,20 +86,20 @@
                     <function name="cleanList(list{Expression} list)"/>
 				</meta:scope>
 			</class>
-            
-            <!-- Comma expression node -->
-            <class name="Comma" base="Expression" baseAccess="readonly">
-                <meta:scope>
-                    <method name="init()" returnType="int16"/>
-                    <method name="construct()" returnType="int16"/>
-                    <member name="expressions" type="list{Expression}" modifiers="private"/>
-                    <method name="addExpression(Expression expr)" returnType="int16"/>
-                    <method name="toList()" returnType="list{Node}"/>
-                    <function name="addOrCreate(Expression list,Expression expr)" returnType="Expression"/>
-                    <virtual name="hasSideEffects()" returnType="bool"/>
-                    <virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
-                </meta:scope>
-            </class>
+
+      <!-- Comma expression node -->
+      <class name="Comma" base="Expression" baseAccess="readonly">
+          <meta:scope>
+              <method name="init()" returnType="int16"/>
+              <method name="construct()" returnType="int16"/>
+              <member name="expressions" type="list{Expression}" modifiers="private"/>
+              <method name="addExpression(Expression expr)" returnType="int16"/>
+              <method name="toList()" returnType="list{Node}"/>
+              <function name="addOrCreate(Expression list,Expression expr)" returnType="Expression"/>
+              <virtual name="hasSideEffects()" returnType="bool"/>
+              <virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
+          </meta:scope>
+      </class>
 
 			<!-- Base literal node -->
 			<class name="Literal" base="Expression" baseAccess="readonly">
@@ -109,7 +109,7 @@
 					<virtual name="getValue()" returnType="word"/>
 				</meta:scope>
 			</class>
-			
+
 			<!-- Boolean literal -->
 			<class name="Boolean" base="Literal" baseAccess="readonly">
 				<meta:scope>
@@ -119,7 +119,7 @@
 					<virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
 				</meta:scope>
 			</class>
-			
+
 			<!-- Character literal -->
 			<class name="Character" base="Literal" baseAccess="readonly">
 				<meta:scope>
@@ -129,7 +129,7 @@
 					<virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
 				</meta:scope>
 			</class>
-			
+
 			<!-- Integer literal -->
 			<class name="Integer" base="Literal" baseAccess="readonly">
 				<meta:scope>
@@ -139,7 +139,7 @@
 					<virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
 				</meta:scope>
 			</class>
-			
+
 			<!-- Signed integer literal -->
 			<class name="SignedInteger" base="Literal" baseAccess="readonly">
 				<meta:scope>
@@ -149,7 +149,7 @@
 					<virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
 				</meta:scope>
 			</class>
-			
+
 			<!-- Floating point literal -->
 			<class name="FloatingPoint" base="Literal" baseAccess="readonly">
 				<meta:scope>
@@ -159,7 +159,7 @@
 					<virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
 				</meta:scope>
 			</class>
-			
+
 			<!-- Null literal -->
 			<class name="Null" base="Literal" baseAccess="readonly">
 				<meta:scope>
@@ -168,7 +168,7 @@
 					<virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
 				</meta:scope>
 			</class>
-			
+
 			<!-- Enumeration representing the different variable kinds -->
 			<enum name="storageKind">
 				<meta:scope>
@@ -188,7 +188,7 @@
 					<member name="kind" type="storageKind"/>
 				</meta:scope>
 			</class>
-			
+
 
 			<!-- Different kinds of locals -->
 			<enum name="LocalKind">
@@ -221,7 +221,7 @@
 					<virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
 				</meta:scope>
 			</class>
-			
+
 			<!-- Observer template variable -->
 			<class name="Template" base="Local">
 				<meta:scope>
@@ -242,7 +242,7 @@
 
 			<!-- Forward declaration of while -->
             <meta:object name="While" type="class"/>
-			
+
 			<!-- Statement block -->
 			<class name="Block" base="Node" baseAccess="readonly">
 				<meta:scope>
@@ -265,7 +265,7 @@
                     <virtual name="toIcBody(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
 				</meta:scope>
 			</class>
-			
+
 			<!-- Member expression -->
 			<class name="Member" base="Storage" baseAccess="readonly">
 				<meta:scope>
@@ -278,7 +278,7 @@
 					<virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
 				</meta:scope>
 			</class>
-			
+
 			<!-- Element expression -->
 			<class name="Element" base="Storage" baseAccess="readonly">
 				<meta:scope>
@@ -288,7 +288,7 @@
 					<virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
 				</meta:scope>
 			</class>
-			
+
 			<!-- Call expression -->
 			<class name="Call" base="Expression" baseAccess="readonly">
 				<meta:scope>
@@ -303,7 +303,7 @@
 					<member name="returnsReference" type="bool" modifiers="readonly"/>
 					<member name="parameters" type="sequence{parameter}" modifiers="readonly"/>
 					<member name="overloaded" type="bool" modifiers="readonly"/>
-					
+
 					<method name="setParameters(function function)"/>
                     <virtual name="hasSideEffects()" returnType="bool"/>
 					<virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
@@ -350,7 +350,7 @@
 					<virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
 				</meta:scope>
 			</class>
-			
+
 			<!-- Postfix expression -->
 			<class name="PostFix" base="Expression" baseAccess="readonly">
 				<meta:scope>
@@ -360,7 +360,7 @@
 					<virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
 				</meta:scope>
 			</class>
-			
+
 			<!-- Unary expression -->
 			<class name="Unary" base="Expression" baseAccess="readonly">
 				<meta:scope>
@@ -371,7 +371,7 @@
 					<virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
 				</meta:scope>
 			</class>
-						
+
 			<!-- Binary expression -->
 			<class name="Binary" base="Expression" baseAccess="readonly">
 				<meta:scope>
@@ -386,9 +386,9 @@
 					<virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
 				</meta:scope>
 			</class>
-            
+
             <meta:object name="If" type="class"/>
-            
+
             <!-- Ternary expression -->
             <class name="Ternary" base="Expression" baseAccess="readonly">
                 <meta:scope>
@@ -416,7 +416,7 @@
 					<virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
 				</meta:scope>
 			</class>
-			
+
 			<!-- Define statement -->
 			<class name="Define" base="Node" baseAccess="readonly">
 				<meta:scope>
@@ -425,7 +425,7 @@
 					<virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
 				</meta:scope>
 			</class>
-			
+
 			<!-- Text literal -->
 			<class name="String" base="Literal" baseAccess="readonly">
 				<meta:scope>
@@ -440,7 +440,7 @@
 					<virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
 				</meta:scope>
 			</class>
-			
+
 			<!-- If statement -->
 			<class name="If" base="Node" baseAccess="readonly">
 				<meta:scope>
@@ -453,7 +453,7 @@
 					<virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
 				</meta:scope>
 			</class>
-			
+
 			<!-- While statement -->
 			<class name="While" base="Node" baseAccess="readonly">
 				<meta:scope>
@@ -464,7 +464,7 @@
 					<virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
 				</meta:scope>
 			</class>
-			
+
 			<!-- Update statement -->
 			<enum name="UpdateKind">
 				<meta:scope>
@@ -483,7 +483,7 @@
 					<virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
 				</meta:scope>
 			</class>
-			
+
 			<!-- Wait expression -->
 			<class name="Wait" base="Expression" baseAccess="readonly">
 				<meta:scope>
@@ -493,7 +493,7 @@
 					<virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
 				</meta:scope>
 			</class>
-            
+
             <!-- Initializer -->
             <enum name="InitializerKind">
                 <meta:scope>
@@ -502,7 +502,7 @@
                     <constant name="InitExpression"/>
                 </meta:scope>
             </enum>
-		
+
 			<!-- Initializer stack element -->
 			<struct name="InitializerVariable">
 				<meta:scope>
@@ -512,7 +512,7 @@
 					<member name="key" type="word"/>
 				</meta:scope>
 			</struct>
-			
+
 			<struct name="InitializerFrame">
 				<meta:scope>
 					<member name="location" type="uint32"/>
@@ -521,7 +521,7 @@
 					<member name="member" type="member"/>
 				</meta:scope>
 			</struct>
-			
+
 			<class name="Initializer" base="Expression" baseAccess="readonly">
 				<meta:scope>
 					<member name="variables" type="array{InitializerVariable,64}"/>
@@ -543,14 +543,14 @@
                     <method name="initFrame()" returnType="uint16"/>
 				</meta:scope>
 			</class>
-			
+
 			<struct name="StaticInitializerFrame">
 				<meta:scope>
 					<member name="ptr" type="array{word,64}"/>
                     <member name="keyPtr" type="array{word,64}"/>
 				</meta:scope>
 			</struct>
-			
+
             <!-- A static initializer represents an object that is initialized during compiletime -->
 			<class name="StaticInitializer" base="Initializer">
 				<meta:scope>
@@ -561,7 +561,7 @@
 					<method name="define()" returnType="int16"/>
 				</meta:scope>
 			</class>
-			
+
 			<struct name="DynamicInitializerFrame">
 				<meta:scope>
 					<member name="expr" type="array{Fast::Expression,64}"/>
@@ -569,7 +569,7 @@
                     <member name="sequenceSize" type="Fast::Integer"/>
 				</meta:scope>
 			</struct>
-			
+
             <!-- A dynamic initializer represents an object that is initialized during runtime -->
 			<class name="DynamicInitializer" base="Initializer">
 				<meta:scope>
@@ -582,7 +582,7 @@
 					<method name="define()" returnType="int16"/>
 				</meta:scope>
 			</class>
-            
+
             <!-- Recorded Initializer operation -->
             <enum name="InitOperKind">
                 <meta:scope>
@@ -600,7 +600,7 @@
                     <member name="name" type="string"/>
                 </meta:scope>
             </struct>
-            
+
             <!-- Record initializer for later evaluation -->
             <class name="InitializerExpression" base="Initializer">
                 <meta:scope>
@@ -615,7 +615,7 @@
                     <method name="insert(Expression variable)" returnType="int16"/>
                 </meta:scope>
             </class>
-			
+
 			<!-- ParseDeclaration is used to transfer declaration-information within the parser -->
 			<struct name="ParserDeclaration">
 				<meta:scope>
@@ -623,9 +623,9 @@
 					<member name="storage" type="Fast::Storage"/>
 				</meta:scope>
 			</struct>
-			
+
 			<sequence name="ParserDeclarationSeq" elementType="ParserDeclaration" max="256"/>
-			
+
 			<!-- ParserNew is used to transfer new-expression information within the parser -->
 			<struct name="ParserNew">
 				<meta:scope>
@@ -635,7 +635,7 @@
 					<member name="attr" type="Fast::Expression"/>
 				</meta:scope>
 			</struct>
-			
+
 			<!-- Binds function to an implementation -->
 			<struct name="Binding">
 				<meta:scope>
@@ -651,7 +651,7 @@
 					<member name="isAssignment" type="bool"/>
 				</meta:scope>
 			</struct>
-				
+
 			<!-- Parser object -->
 			<class name="Parser">
 				<meta:scope>
@@ -679,29 +679,29 @@
 					<member name="heapCollected" type="list{word}" modifiers="private|local"/>
 					<member name="collected" type="list{object}" modifiers="private|local"/>
 					<member name="blockPreset" type="bool" modifiers="private|local"/>
-					<member name="isLocal" type="bool" modifiers="private|local"/> <!-- If set, next declaration will result in local variable -->				
+					<member name="isLocal" type="bool" modifiers="private|local"/> <!-- If set, next declaration will result in local variable -->
 					<member name="parseSingleExpr" type="bool" modifiers="private|local"/> <!-- If set parser is parsing one instruction -->
 					<member name="singleExpr" type="Fast::Expression" modifiers="private|local"/>
 					<!-- Due to limitations in the parser sometimes failed resolves can't be immediately reported.
 						 This field keeps track of a failed resolve and will be used in a report if it causes issues. -->
 					<member name="lastFailedResolve" type="string" modifiers="private|local"/>
-					
+
 					<!-- Variables prepared for initializer (maximum of 64 variables can be initialized simultaneously) -->
 					<member name="variables" type="array{Fast::Storage,64}" modifiers="private|readonly"/>
 					<member name="variableCount" type="uint32" modifiers="private|readonly"/>
 					<!-- Have variables been initialized? (required for deciding whether to define or not) -->
 					<member name="variablesInitialized" type="bool" modifiers="private|readonly"/>
-					
+
 					<!-- If variablePushed is TRUE it means that an object was pushed on the initializer stack without a
 						 declaration (using parseInitPushVariable). The next parseInitPush doesn't have to push. -->
 					<member name="variablePushed" type="bool" modifiers="private|readonly"/>
-					
+
 					<!-- An initializer can have a maximum depth of 64 -->
 					<member name="initializers" type="array{Initializer,64}" modifiers="private|local"/>
 					<member name="initializerCount" type="int8" modifiers="private|local"/>
                     <member name="initAnonymousId" type="uint32" modifiers="private|local"/>
                     <member name="initDynamic" type="bool" modifiers="private|local"/>
-                    
+
                     <!-- Stage unresolved variables for implicit declaration -->
                     <struct name="stagedId">
                         <meta:scope>
@@ -714,7 +714,7 @@
                     <member name="staged" type="array{stagedId,64}" modifiers="private|local"/>
                     <member name="stagedCount" type="uint32" modifiers="private|local"/>
                     <member name="stagingAllowed" type="bool" modifiers="private|local"/>
-					
+
 					<!-- Parser framework functions -->
 					<method name="parse()" returnType="uint32"/>
 					<function name="parseLine(string expr,object scope,word value)" returnType="int16"/> <!--  Parse a single line -->
@@ -723,21 +723,21 @@
 					<method name="isAbortSet()" returnType="bool"/>
 					<method name="collect(object o)" returnType="void"/>
 					<method name="reset()"/>
-					<method name="argumentToString(type type,string id,bool reference)" returnType="string"/> <!-- Convert function argument to string -->	
+					<method name="argumentToString(type type,string id,bool reference)" returnType="string"/> <!-- Convert function argument to string -->
 
 					<!-- Scope management -->
 					<method name="pushScope()" returnType="object"/>
 					<method name="popScope(object previous)"/>
 					<method name="pushPackage(string name)" returnType="int16"/>
-					
+
 					<!-- Lookup -->
 					<method name="lookup(string id,object source)" returnType="Fast::Expression"/>
-					
+
 					<!-- Blocks management -->
 					<method name="blockPush(bool presetBlock)" returnType="Fast::Block"/>
 					<method name="blockPop()"/>
 					<method name="addStatement(Fast::Node statement)"/>
-					
+
 					<!-- Declaration -->
 					<method name="declaration(type type,string id,bool isReference)" returnType="Storage"/>
 					<method name="declareFunction(type returnType,string id,type kind,bool returnsReference)" returnType="Storage"/>
@@ -745,14 +745,14 @@
 					<method name="define()" returnType="int16"/>
 					<method name="defineScope()" returnType="int16"/>
 					<method name="defineVariable(Storage object)" returnType="int16"/>
-					
+
 					<!-- Bind function to implementation -->
 					<method name="bind(Fast::Storage function,Fast::Block block)" returnType="int16"/>
 					<method name="bindOneliner(Fast::Storage function,Fast::Block block,Fast::Expression expr)" returnType="int16"/>
 
 					<!-- Finalize bound functions -->
 					<method name="finalize(ic::program program)" returnType="int16"/>
-                    
+
                     <method name="initStage(string id,bool found)"/>
                     <method name="initDeclareStaged(Fast::Expression expr)"/>
                     <method name="initPushStatic()" returnType="int16"/>
@@ -765,7 +765,7 @@
 					<method name="initKeyValuePush()" returnType="int16"/>
 					<method name="initKeyValuePop()" returnType="int16"/>
 					<method name="initKeyValueSet(Fast::Expression expr)" returnType="int16"/>
-					
+
                     <!-- Set lvalue -->
                     <member name="lvalue" type="array{Fast::Lvalue,64}" modifiers="private|local"/>
                     <member name="lvalueSp" type="int32" modifiers="private|local"/>
@@ -785,31 +785,31 @@
 					<!-- Observer -->
 					<method name="observerPush()"/>
 					<method name="observerDeclaration(string id,Fast::Expression object,eventMask mask,Fast::Object dispatcher)" returnType="Storage"/>
-					
+
 					<!-- Foreach -->
 					<method name="foreach(string loopId,Fast::Expression collection)" returnType="int16"/>
-															
+
 					<!-- Postfix expressions -->
 					<method name="callExpr(Fast::Expression function,Fast::Expression arguments)" returnType="Fast::Expression"/>
 					<method name="memberExpr(Fast::Expression lvalue,Fast::Expression rvalue)" returnType="Fast::Expression"/>
 					<method name="elementExpr(Fast::Expression lvalue,Fast::Expression rvalue)" returnType="Fast::Expression"/>
 					<method name="castExpr(type lvalue,Fast::Expression rvalue)" returnType="Fast::Expression"/>
-					
+
 					<!-- Arithmic expressions -->
 					<method name="postfixExpr(Fast::Expression lvalue,operatorKind operator)" returnType="Fast::Expression"/>
 					<method name="unaryExpr(Fast::Expression lvalue,operatorKind operator)" returnType="Fast::Expression"/>
 					<method name="binaryExpr(Fast::Expression lvalues,Fast::Expression rvalues,operatorKind operator)" returnType="Fast::Node"/>
                     <method name="ternaryExpr(Fast::Expression cond,Fast::Expression iftrue,Fast::Expression iffalse)" returnType="Fast::Expression"/>
-					
+
 					<!-- Wait expression -->
 					<method name="waitExpr(list{Fast::Expression} exprList,Fast::Expression timeout)" returnType="Fast::Expression"/>
-					
+
 					<!-- Loops and conditional statements -->
 					<method name="ifStatement(Fast::Expression condition,Fast::Block trueBranch,Fast::If falseBranch)" returnType="Fast::Node"/>
-					<method name="whileStatement(Fast::Expression condition,Fast::Block trueBranch,bool isUntil)" returnType="Fast::Node"/>	
-					
+					<method name="whileStatement(Fast::Expression condition,Fast::Block trueBranch,bool isUntil)" returnType="Fast::Node"/>
+
 					<!-- Update -->
-					<method name="updateStatement(Fast::Expression expr,Fast::Block block)" returnType="Fast::Node"/>				
+					<method name="updateStatement(Fast::Expression expr,Fast::Block block)" returnType="Fast::Node"/>
 				</meta:scope>
 			</class>
 		</meta:package>

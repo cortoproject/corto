@@ -44,10 +44,13 @@ ic_vmStorage *ic_vmStorage__create(ic_vmProgram *program, ic_storage acc, cx_uin
 
         if (acc->kind == IC_MEMBER) {
             result->offset = ic_member(acc)->member->offset;
-        } else if (!((ic_element)acc)->variableIndex && 
-            acc->base->type->kind == CX_COLLECTION && (cx_collection(acc->base->type)->kind == CX_ARRAY)) {
+        } else if (!((ic_element)acc)->variableIndex &&
+            (acc->base->type->kind == CX_COLLECTION) &&
+            (cx_collection(acc->base->type)->kind == CX_ARRAY) &&
+            ((ic_element(acc))->index->kind == IC_LITERAL))
+        {
             cx_collection type = cx_collection(acc->base->type);
-            cx_uint32 index = *(cx_uint32*)ic_literal(((ic_element)acc)->index)->value.value;
+            cx_uint32 index = *(cx_uint32*)ic_literal((ic_element(acc))->index)->value.value;
             result->offset = cx_type_sizeof(type->elementType) * index;
         } else {
             result->alwaysCompute = TRUE;
@@ -73,7 +76,7 @@ ic_vmStorage *ic_vmStorage__create(ic_vmProgram *program, ic_storage acc, cx_uin
         }
 
         result->base = firstReusableBase;
-        
+
         /* Determine 'allocated' field */
         ic_vmStorage_mustAllocate(result);
     }
@@ -99,25 +102,25 @@ cx_bool ic_vmStorage_mustAllocate(ic_vmStorage *storage) {
 #define ic_vmStorageGetSet(kind) sizeof(cx_word) == 4 ? CX_VM_SET_L##kind : CX_VM_SET_D##kind
 
 static cx_vmOp *ic_vmStorageAssembleElement(
-    ic_vmStorage *storage, 
-    ic_vmProgram *program, 
-    cx_vmOp *vmOp, 
+    ic_vmStorage *storage,
+    ic_vmProgram *program,
+    cx_vmOp *vmOp,
     cx_bool topLevel,
     ic_vmStorage *acc,
-    ic_vmStorage *accOut) 
+    ic_vmStorage *accOut)
 {
     cx_type type = storage->ic->base->type;
 
     if (type->kind == CX_ITERATOR) {
-        ic_vmOperand baseKind = ic_getVmOperand(program, IC_DEREF_VALUE, ic_node(storage->ic->base));
+        ic_vmOperand baseKind = ic_getVmOperand(program, IC_DEREF_VALUE, FALSE, ic_node(storage->ic->base));
         vmOp->op = ic_getVmSET(type, IC_VMTYPE_D, IC_VMOPERAND_R, baseKind, 0);
-        ic_vmSetOp2Addr(program, vmOp, IC_VMTYPE_W, IC_VMOPERAND_R, baseKind, 
+        ic_vmSetOp2Addr(program, vmOp, IC_VMTYPE_W, IC_VMOPERAND_R, baseKind,
             ic_node(storage->ic), ic_node(storage->ic->base));
     } else if (type->kind == CX_COLLECTION) {
         ic_node ic_elementSize;
         cx_uint64 elementSize;
         cx_collection collection = cx_collection(type);
-        ic_vmOperand indexKind = ic_getVmOperand(program, IC_DEREF_VALUE, ic_element(storage->ic)->index);
+        ic_vmOperand indexKind = ic_getVmOperand(program, IC_DEREF_VALUE, FALSE, ic_element(storage->ic)->index);
 
         if ((storage->base->ic != storage->ic->base) && (storage->ic->base->kind == IC_ELEMENT)) {
             ic_vmStorage *vmBase = ic_vmProgram_getStorage(program, storage->ic->base);
@@ -131,11 +134,11 @@ static cx_vmOp *ic_vmStorageAssembleElement(
                 if (accOut->ic->isReference || accOut->alwaysCompute) {
                     vmOp->op = ic_vmStorageGetSet(RR);
                     ic_vmSetOp2Addr(program, vmOp, IC_VMTYPE_W, IC_VMOPERAND_R, IC_VMOPERAND_R, ic_node(acc->ic), ic_node(accOut->ic));
-                    vmOp = cx_vmProgram_addOp(program->program, 0);  
+                    vmOp = cx_vmProgram_addOp(program->program, 0);
                 } else {
                     vmOp->op = CX_VM_SETX_WRR;
                     ic_vmSetOp2Addr(program, vmOp, IC_VMTYPE_W, IC_VMOPERAND_R, IC_VMOPERAND_R, ic_node(acc->ic), ic_node(accOut->ic));
-                    vmOp = cx_vmProgram_addOp(program->program, 0);                      
+                    vmOp = cx_vmProgram_addOp(program->program, 0);
                 }
             }
         }
@@ -176,11 +179,11 @@ static cx_vmOp *ic_vmStorageAssembleElement(
 }
 
 static cx_vmOp *ic_vmStorageAssembleMember(
-    ic_vmStorage *storage, 
+    ic_vmStorage *storage,
     ic_vmProgram *program,
     cx_vmOp *vmOp,
     ic_vmStorage *acc,
-    ic_vmStorage *accOut) 
+    ic_vmStorage *accOut)
 {
     vmOp->op = ic_getVmMEMBER(NULL, 0, 0, 0, 0);
     ic_vmStorageAddReferee(acc, program, &vmOp->ic.b._1);
@@ -195,7 +198,7 @@ static cx_vmOp *ic_vmStorageAssembleNested(
     cx_vmOp *vmOp,              /* The entry point for the program */
     cx_bool topLevel,           /* Whether this is the first call or a recursive call */
     ic_vmStorage *accIn,        /* Override recursive storage with this storage if base is not assembled */
-    ic_vmStorage **accOut)        
+    ic_vmStorage **accOut)
 {
     ic_vmStorage *storage = ic_vmProgram_getStorage(program, icStorage);
 

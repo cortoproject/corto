@@ -22,7 +22,7 @@ cx_void ic_storage_free(ic_storage _this) {
     cx_type type = _this->type;
     if (_this->isReference || ((type->kind == CX_PRIMITIVE) && (cx_primitive(type)->kind == CX_TEXT))) {
         ic_op freeIc;
-        
+
         /* Insert free-instruction */
         freeIc = ic_op__create(0, ic_free, ic_node(_this), NULL, NULL, IC_DEREF_VALUE, 0, 0, FALSE);
         if (_this->isReference) {
