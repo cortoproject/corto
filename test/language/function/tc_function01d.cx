@@ -4,59 +4,32 @@ void fail(string msg):
     "tc_function01d: FAIL: $msg"
     result = false
 
-void func(int32& a, int32& b):
+void func_1(int32& a, int32& b):
     if a != 10: fail("a != 10")
     if b != 20: fail("b != 20")
 
+void func_2(int32& a, int32& b):
+    if &a: fail("&a")
+    if &b: fail("&b")
+
 int32 a1: 10
-var int32 b1 = 10
-uint32 c1: 10
-var uint32 d1 = 10
-int8 e1: 10
-var int8 f1 = 10
-int16 g1: 10
-var int16 h1 = 10
+var int32& b1 = int32{10}
+var int32& c1 = a1
 
-var int32& i1 = int32{10}
-var uint32& j1 = uint32{10}
-var int8& k1 = int8{10}
-var int16& l1 = int16{10}
+int32 a2: 20
+var int32& b2 = int32{20}
+var int32& c2 = a2
 
-int32 a2: 10
-var int32 b2 = 10
-uint32 c2: 10
-var uint32 d2 = 10
-int8 e2: 10
-var int8 f2 = 10
-int16 g2: 10
-var int16 h2 = 10
+void func_3(int32& x, int32& y):
+    if x != 10: fail("x != 10")
+    if &x != &a1: fail("&x != &a1")
+    if y != 20: fail("y != 20")
+    if &y != &a2: fail("&y != &a2")
 
-var int32& i2 = int32{10}
-var uint32& j2 = uint32{10}
-var int8& k2 = int8{10}
-var int16& l2 = int16{10}
-
-func(10, 20)
-func(4 + 6, 8 + 12)
-func(a1, a2)
-func(b1, b2)
-func(c1, c2)
-func(d1, d2)
-func(e1, e2)
-func(f1, f2)
-func(g1, g2)
-func(h1, h2)
-func(i1, i2)
-func(j1, j2)
-func(k1, k2)
-func(l1, l2)
-
-// Test variable width arguments
-func(e1, a2)
-func(a1, e2)
-func(g1, a2)
-func(a1, g2)
-func(e1, g2)
-func(g1, e2)
+func_1(a1, a2)
+func_1(b1, b2)
+func_1(c1, c2)
+func_2(null, null)
+func_3(a1, a2)
 
 if result: "tc_function01d: OK"
