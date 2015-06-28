@@ -5,8 +5,8 @@ void fail(string msg):
     result = false
 
 void func(int32& a, int32& b):
-	if a != 10: fail("a != 10")
-	if b != 20: fail("b != 20")
+    if a != 10: fail("a != 10")
+    if b != 20: fail("b != 20")
 
 int32 a1: 10
 var int32 b1 = 10

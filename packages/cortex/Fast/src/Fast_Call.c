@@ -175,7 +175,7 @@ ic_node Fast_Call_toIc_v(Fast_Call _this, ic_program program, ic_storage storage
                 argumentStorage = (ic_storage)ic_program_pushAccumulator(
                     program,
                     Fast_Expression_getType(argument),
-                    argument->isReference,
+                    argument->deref == Fast_ByReference,
                     FALSE);
                 argumentStorageCount++;
             }

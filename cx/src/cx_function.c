@@ -165,7 +165,7 @@ cx_parameterSeq cx_function_stringToParameterSeq(cx_string name, cx_object scope
         if (count == -1) {
             goto error;
         }
-        
+
         /* Allocate size for parameters */
         result.length = count;
         result.buffer = cx_malloc(sizeof(cx_parameter) * count);
@@ -201,6 +201,7 @@ cx_parameterSeq cx_function_stringToParameterSeq(cx_string name, cx_object scope
                 cx_error("error occurred while parsing name of argument '%s' for signature '%s'", name);
                 goto error;
             }
+
             result.buffer[i].name = cx_strdup(id);
         }
     }

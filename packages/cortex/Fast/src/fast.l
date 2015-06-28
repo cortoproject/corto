@@ -35,12 +35,12 @@ void lex_collect(void *o) {
 
 /* The following operators can be trailing */
 static char *operators[] = {
-    "=", "+", "-", "*", "/", "%", "&", "|", "^", 
+    "=", "+", "-", "*", "/", "%", "&", "|", "^",
     "==", "!=", ">", "<", ">=", "<=", "||", "&&", ","};
 static int fast_trailingOperator(void) {
     int length = sizeof(operators) / sizeof(char*);
     int i;
-    if (yparser()->token) {    
+    if (yparser()->token) {
         for(i = 0; i < length; i++) {
             if (!strcmp(operators[i], yparser()->token)) {
                 return TRUE;
@@ -52,7 +52,7 @@ static int fast_trailingOperator(void) {
 
 static int fast_blockOperator(void) {
     if (yparser()->token) {
-        if (!strcmp(yparser()->token, ":") || 
+        if (!strcmp(yparser()->token, ":") ||
             !strcmp(yparser()->token, "::") ||
             !strcmp(yparser()->token, ":::")) {
             return TRUE;
@@ -84,7 +84,7 @@ static char *fast_charesc(char *in, cx_char *out) {
         in++;
         switch(*in) {
         case 'a':
-            *out = '\a';                                                
+            *out = '\a';
             break;
         case 'b':
             *out = '\b';
@@ -127,7 +127,7 @@ static char *fast_charesc(char *in, cx_char *out) {
         break;
     default:
         *out = *in;
-        break;    
+        break;
     }
 
     return in + 1;
@@ -138,7 +138,7 @@ error:
 /* Escape string-token */
 static int fast_stresc(char* yptr, cx_string ptr) {
     char ch;
-    
+
     /* Do escape sequences */
     yptr = yytext+1;
     while((ch = *yptr) && (ch != '"')) {
@@ -149,7 +149,7 @@ static int fast_stresc(char* yptr, cx_string ptr) {
         ptr++;
     }
     *ptr = '\0';
-    
+
     return 0;
 error:
     return -1;
@@ -222,12 +222,12 @@ false                           TOKEN; yylval.Boolean = FALSE; return BOOLEAN;
 "#d"                            TOKEN; return DEDENT;
 
 L?'(\\.|[^\\'])+'               TOKEN; fast_charesc(yytext+1, &yylval.Character); return CHARACTER;
-0x[0-9a-fA-F]+                  TOKEN; sscanf(yytext, "%" PRIx64, &yylval.Integer); return INTEGER; 
+0x[0-9a-fA-F]+                  TOKEN; sscanf(yytext, "%" PRIx64, &yylval.Integer); return INTEGER;
 [0-9]+                          TOKEN; sscanf(yytext, "%" PRIu64, &yylval.Integer); return INTEGER;
 [0-9]+"."[0-9]+                 TOKEN; yylval.FloatingPoint = atof(yytext); return FLOATINGPOINT;
 "null"                          TOKEN; yylval.Null = NULL; return NUL;
 L?\"(\\.|[^\\"])*\"             TOKEN; yylval.String = malloc(strlen(yytext) + 1); lex_collect(yylval.String); return fast_stresc(yytext+1,yylval.String) ? ERROR : STRING;
-[\t]+                           TOKEN; yparser()->column+=3; /* Ignore tabs */
+[\t]+                           TOKEN; return TAB;
 ":"                             TOKEN; return ':';
 "\n"                            NEWLINE; if (!nesting && !trailing && !block) { return ENDL; }
 ";"                             NEWLINE; return ENDL;
@@ -277,7 +277,7 @@ L?\"(\\.|[^\\"])*\"             TOKEN; yylval.String = malloc(strlen(yytext) + 1
 "@"                             TOKEN; return '@';
 "`"                             TOKEN; return '`';
 
-{id}                            TOKEN; yylval.Identifier = strdup(yytext); lex_collect(yylval.Identifier); return ID;                        
+{id}                            TOKEN; yylval.Identifier = strdup(yytext); lex_collect(yylval.Identifier); return ID;
 {gid}                           TOKEN; yylval.Identifier = strdup(yytext); lex_collect(yylval.Identifier); return GID;
 
 " "                             yparser()->column += 1;
@@ -357,4 +357,3 @@ static void fast_doIndents(int indent) {
         }
     }
 }
-

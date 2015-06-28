@@ -872,8 +872,8 @@ static void cx_vm_sig(int sig) {
 
     cx_currentProgramData *programData = cx_threadTlsGet(cx_currentProgramKey);
 
-    if (sig == SIGSEGV) {
-        printf("Access violation\n");
+    if ((sig == SIGSEGV) || (sig == SIGBUS)) {
+        printf("Access violation (%d)\n", sig);
     }
     if (sig == SIGABRT) {
         printf("Abort\n");
@@ -905,7 +905,7 @@ static void cx_vm_sig(int sig) {
         } else {
             printf("[%d] <main> (%s%d)\n", sp+1, file, line);
         }
-        
+
         /* Print program with location of crash */
 #ifdef CX_IC_TRACING
         if(sp == (cx_int32)programData->sp-1) {
@@ -953,6 +953,13 @@ static void cx_vm_pushSignalHandler(cx_vmProgram program, cx_vm_context *c) {
         prevSegfaultHandler = result;
     }
 
+    result = safe_signal(SIGBUS, cx_vm_sig);
+    if (result == SIG_ERR) {
+        cx_error("failed to install signal handler for SIGSEGV");
+    } else {
+        prevSegfaultHandler = result;
+    }
+
     result = safe_signal(SIGABRT, cx_vm_sig);
     if (result == SIG_ERR) {
         cx_error("failed to install signal handler for SIGABRT");
@@ -988,7 +995,7 @@ static void cx_vm_popSignalHandler(void) {
     } else {
         prevInterruptHandler = NULL;
     }
-    
+
     cx_vm_popCurrentProgram();
 }
 #else
@@ -999,7 +1006,7 @@ static void cx_vm_popSignalHandler(void) {
 static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result) {
     cx_vm_context c;
     c.strcache = cx_threadTlsGet(cx_stringConcatCacheKey);
-    
+
     /* The signal handler will catch any exceptions and report when (and where)
      * an error is occurring */
     cx_vm_pushSignalHandler(program, &c);
@@ -1080,13 +1087,13 @@ char * cx_vmOp_toString(
 
     if (fetch && strlen(fetch)) {
         result = strappend(
-            result, 
-            "%s_%s%s%s_%s %u %u %u %u\n", 
+            result,
+            "%s_%s%s%s_%s %u %u %u %u\n",
             op, type, lvalue, rvalue, fetch, instr->ic.b._1, instr->ic.b._2, instr->lo.w, instr->hi.w);
     } else {
         result = strappend(
-            result, 
-            "%s_%s%s%s %hu %hu %u %u\n", 
+            result,
+            "%s_%s%s%s %hu %hu %u %u\n",
             op, type, lvalue, rvalue, instr->ic.b._1, instr->ic.b._2, instr->lo.w, instr->hi.w);
     }
 
@@ -1105,7 +1112,7 @@ char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
 #ifdef CX_IC_TRACING
     cx_vmOp *p = program->program;
     uint32_t i;
-    
+
 #ifndef CX_VM_DEBUG
     if (!program->translated) {
         printf("cannot convert active program to string with non-debug version\n");
@@ -1116,13 +1123,13 @@ char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
     if (addr && ((addr - p) > shown)) {
         result = strappend(result, "  ...\n");
     }
-    
+
     /* Loop instructions, prefix address */
     for(i=0; i<program->size;i++) {
         cx_int32 diff = addr - &p[i];
         if (!addr || ((diff <= shown) && (diff >= -shown))) {
             cx_vmOpKind kind;
-   
+
             if (addr) {
                 if (addr == &p[i]) {
                     result = strappend(result, "> %u: ", &p[i]);
@@ -1208,7 +1215,7 @@ cx_vmOp *cx_vmProgram_addOp(cx_vmProgram program, uint32_t line) {
     memset(&program->program[program->size-1], 0, sizeof(cx_vmOp));
     memset(&program->debugInfo[program->size-1], 0, sizeof(cx_vmDebugInfo));
     program->debugInfo[program->size-1].line = line;
-    
+
     /* Return potentially reallocd program */
     return &program->program[program->size-1];
 }
@@ -1221,8 +1228,8 @@ void cx_call_vm(cx_function f, cx_void* result, void* args) {
     /* Obtain instruction sequence */
     program = (cx_vmProgram)f->implData;
 
-    /* Allocate a storage for a program. This memory will 
-     * store all local variables, and space required to 
+    /* Allocate a storage for a program. This memory will
+     * store all local variables, and space required to
      * prepare a stack for calling functions */
     storage = alloca(program->storage);
     memcpy(storage, args, f->size); /* Copy parameters into storage */

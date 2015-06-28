@@ -123,7 +123,7 @@ cx_int16 Fast_Parser_toIc(Fast_Parser _this) {
 
     ic_program_assemble(program);
     ic_program_run(program, 0);
-    
+
     /* Free program */
     cx_free(program);
 
@@ -153,7 +153,7 @@ Fast_Expression Fast_Parser_binaryCompositeExpr(Fast_Parser _this, Fast_Expressi
                 }
             } else {
                 cx_id id1, id2;
-                Fast_Parser_error(_this, "cannot convert '%s' to '%s'", 
+                Fast_Parser_error(_this, "cannot convert '%s' to '%s'",
                     Fast_Parser_id(t2, id1),
                     Fast_Parser_id(t1, id2));
                 goto error;
@@ -176,15 +176,15 @@ Fast_Expression Fast_Parser_binaryCollectionExpr(Fast_Parser _this, Fast_Express
     cx_type tright = Fast_Expression_getType(operand2);
     cx_bool leftToRight = FALSE, rightToLeft = FALSE, equality = FALSE;
 
-    if (!tleft) { 
+    if (!tleft) {
         tleft = tright;
         leftToRight = TRUE;
         equality = TRUE;
-    } else if (!tright) { 
-        tright = tleft; 
+    } else if (!tright) {
+        tright = tleft;
         rightToLeft = TRUE;
         equality = TRUE;
-    } else { 
+    } else {
         /* Determine the direction of a collection expression */
         if (tleft->kind == CX_COLLECTION) {
             if (cx_type_castable(tleft, tright)) {
@@ -195,9 +195,9 @@ Fast_Expression Fast_Parser_binaryCollectionExpr(Fast_Parser _this, Fast_Express
                 rightToLeft = TRUE;
             }
         }
-    
+
         /* Both conditions can be true in case of recursive elementTypes, but rightToLeft takes precedence */
-        if (tright->kind == CX_COLLECTION) { 
+        if (tright->kind == CX_COLLECTION) {
             if (cx_type_castable(cx_collection(tright)->elementType, tleft)) {
                 leftToRight = TRUE;
             }
@@ -220,12 +220,12 @@ Fast_Expression Fast_Parser_binaryCollectionExpr(Fast_Parser _this, Fast_Express
         }
         goto error;
     }
-    
+
     Fast_Expression collection = rightToLeft ? operand1 : operand2;
     Fast_Expression operand = rightToLeft ? operand2 : operand1;
     Fast_Expression castedOperand = operand;
     cx_collection collectionType = cx_collection(Fast_Expression_getType(collection));
-    
+
     switch(operator) {
         case CX_ASSIGN:
             /* If operand is an initializer, insert initializer instructions. */
@@ -233,7 +233,7 @@ Fast_Expression Fast_Parser_binaryCollectionExpr(Fast_Parser _this, Fast_Express
                 if (Fast_InitializerExpression_insert(Fast_InitializerExpression(operand2), operand1)) {
                     goto error;
                 }
-                result = operand1; 
+                result = operand1;
                 break;
             }
 
@@ -250,7 +250,7 @@ Fast_Expression Fast_Parser_binaryCollectionExpr(Fast_Parser _this, Fast_Express
             }
         case CX_ASSIGN_ADD: {
             Fast_Expression localResult = NULL;
-            
+
             /* Cast operand to elementType */
             if (!equality && Fast_Expression_getType(operand) != collectionType->elementType) {
                 if (collectionType->elementType->reference || (collectionType->elementType->kind == CX_PRIMITIVE)) {
@@ -269,7 +269,7 @@ Fast_Expression Fast_Parser_binaryCollectionExpr(Fast_Parser _this, Fast_Express
                     castedOperand = operand;
                 }
             }
-            
+
             /* Create merge, insert or append */
             if (rightToLeft || (equality && (Fast_Node(operand)->kind != Fast_InitializerExpr))) {
                 if (!(localResult = Fast_Expression(Fast_createCall(collection, "append", 1, castedOperand)))) {
@@ -296,7 +296,7 @@ Fast_Expression Fast_Parser_binaryCollectionExpr(Fast_Parser _this, Fast_Express
             goto error;
             break;
     }
-    
+
     return result;
 error:
     return NULL;
@@ -318,7 +318,7 @@ cx_object Fast_Parser_combineConditionalExpr(Fast_Parser _this, Fast_Expression 
     cx_operatorKind oper = *(cx_operatorKind*)userData;
     cx_operatorKind combineOper;
     Fast_Expression result;
-    
+
     /* Default combine is AND, except the != operator, which inserts an OR */
     if (lvalue) {
         if (oper == CX_COND_NEQ) {
@@ -329,7 +329,7 @@ cx_object Fast_Parser_combineConditionalExpr(Fast_Parser _this, Fast_Expression 
 
         result = Fast_Expression(Fast_Binary__create(lvalue, rvalue, combineOper));
         Fast_Parser_collect(_this, result);
-        
+
         /* Fold expression where possible */
         result = Fast_Expression_fold(result);
         if (!result) {
@@ -338,7 +338,7 @@ cx_object Fast_Parser_combineConditionalExpr(Fast_Parser _this, Fast_Expression 
     } else {
         result = rvalue;
     }
-    
+
     return result;
 }
 
@@ -346,7 +346,7 @@ cx_object Fast_Parser_combineConditionalExpr(Fast_Parser _this, Fast_Expression 
 Fast_Expression Fast_Parser_createBinaryTernary(Fast_Parser _this, Fast_Expression lvalue, Fast_Expression rvalue, cx_operatorKind operator) {
     Fast_Expression result = NULL;
     CX_UNUSED(_this);
-    
+
     /* If the operation is an assignment, the ternary operator has already constructed the binary operation through an lvalue - see
      * the implementation of Fast_Parser_Ternary. If the operation is not an assignment, create the binary expression. */
     switch(operator) {
@@ -356,7 +356,7 @@ Fast_Expression Fast_Parser_createBinaryTernary(Fast_Parser _this, Fast_Expressi
     case CX_ASSIGN_MUL:
     case CX_ASSIGN_DIV:
     case CX_ASSIGN_MOD:
-    case CX_ASSIGN_OR: 
+    case CX_ASSIGN_OR:
     case CX_ASSIGN_AND:
         Fast_Ternary_setOperator(Fast_Ternary(rvalue), operator);
         cx_set_ext(NULL, &result, rvalue, "?? set rvalue to result value of function");
@@ -365,18 +365,18 @@ Fast_Expression Fast_Parser_createBinaryTernary(Fast_Parser _this, Fast_Expressi
         result = Fast_Expression(Fast_Binary__create(lvalue, rvalue, operator));
         Fast_Parser_collect(_this, result);
         break;
-    } 
-    
+    }
+
     return result;
 }
 
 /* Match parameter */
 cx_bool Fast_Parser_matchDelegateParameter(
     Fast_Parser _this,
-    cx_string name, 
-    cx_type t1, 
-    cx_bool isRef1, 
-    cx_type t2, 
+    cx_string name,
+    cx_type t1,
+    cx_bool isRef1,
+    cx_type t2,
     cx_bool isRef2) {
 
     if ((t1 != t2) || (isRef1 && !isRef2)) {
@@ -437,10 +437,10 @@ Fast_Expression Fast_Parser_delegateAssignment(Fast_Parser _this, Fast_Expressio
     /* Resolve function */
     Fast_CallBuilder__init(
         &builder,
-        signature, 
-        NULL, 
-        instance, 
-        _this->scope, 
+        signature,
+        NULL,
+        instance,
+        _this->scope,
         yparser()->block);
     tempCall = Fast_CallBuilder_build(&builder);
     Fast_CallBuilder__deinit(&builder);
@@ -451,7 +451,7 @@ Fast_Expression Fast_Parser_delegateAssignment(Fast_Parser _this, Fast_Expressio
 
     /* Call::resolveActual will resolve a method that matches the signature of the delegate. However,
      * the overloading algorithm takes into account type compatibility: a uint32 request will match a
-     * uint64 parameter. This algorithm assumes that the actual call will do an implicit conversion. 
+     * uint64 parameter. This algorithm assumes that the actual call will do an implicit conversion.
      * Delegates simply pass-through parameters and cannot perform this implicit casting. Therefore their
      * signatures have to match the parameter-types exactly. The only exception to this rule is inheritance.
      */
@@ -480,7 +480,7 @@ Fast_Expression Fast_Parser_delegateAssignment(Fast_Parser _this, Fast_Expressio
         cx_parameter *p1, *p2;
         p1 = &type->parameters.buffer[i];
         p2 = &tempCall->parameters.buffer[i];
-        
+
         if (!Fast_Parser_matchDelegateParameter(
             _this,
             p1->name,
@@ -540,7 +540,7 @@ cx_object Fast_Parser_expandBinary(Fast_Parser _this, Fast_Expression lvalue, Fa
         forceReference = (lvalue->deref == Fast_ByReference) && (rvalue->deref == Fast_ByReference);
     }
 
-    if ((Fast_Node(lvalue)->kind != Fast_StorageExpr) || 
+    if ((Fast_Node(lvalue)->kind != Fast_StorageExpr) ||
         (Fast_Storage(lvalue)->kind != Fast_ObjectStorage) ||
         (operator != CX_ASSIGN)) {
         isReference = forceReference || (tleft && tleft->reference) || (tright && tright->reference);
@@ -560,8 +560,8 @@ cx_object Fast_Parser_expandBinary(Fast_Parser _this, Fast_Expression lvalue, Fa
 
     /* The way in which following kinds of binary expressions are evaluated is important:
      *  - Ternary expressions takes precedence over anything since they introduce additional binary expressions
-     *    which in turn will be determined to be either primitive, composite or collection expressions. 
-     *  - A binary expression is only composite when both operands are of a composite type. Both of these 
+     *    which in turn will be determined to be either primitive, composite or collection expressions.
+     *  - A binary expression is only composite when both operands are of a composite type. Both of these
      *    types have to be compatible. This is partially to avoid amibiguity with collection expressions
      *    (collections with composite element types) and partially because there are no useful semantics
      *    (defined) for combining both composite and <insert other type> in one expression.
@@ -574,7 +574,7 @@ cx_object Fast_Parser_expandBinary(Fast_Parser _this, Fast_Expression lvalue, Fa
     /* Ternary expression */
     if (Fast_Node(rvalue)->kind == Fast_TernaryExpr) {
         result = Fast_Parser_createBinaryTernary(_this, lvalue, rvalue, operator);
-    
+
     /* Binary expression with non-reference composite values */
     } else if (!isReference && ((tleft && (tleft->kind == CX_COMPOSITE)) && (tright && (tright->kind == CX_COMPOSITE)))) {
         result = Fast_Parser_binaryCompositeExpr(_this, lvalue, rvalue, operator);
@@ -593,7 +593,7 @@ cx_object Fast_Parser_expandBinary(Fast_Parser _this, Fast_Expression lvalue, Fa
             if (Fast_InitializerExpression_insert(Fast_InitializerExpression(rvalue), lvalue)) {
                 goto error;
             }
-            result = lvalue;  
+            result = lvalue;
         } else {
             result = Fast_Expression(Fast_Binary__create(lvalue, rvalue, operator));
 
@@ -611,7 +611,7 @@ cx_object Fast_Parser_expandBinary(Fast_Parser _this, Fast_Expression lvalue, Fa
     if (!result) {
         goto error;
     }
-    
+
     return result;
 error:
     return NULL;
@@ -622,7 +622,7 @@ cx_object Fast_Parser_expandMember(Fast_Parser _this, Fast_Expression lvalue, Fa
     CX_UNUSED(userData);
     CX_UNUSED(_this);
     Fast_Expression result = NULL;
-    
+
     /* Create member expression */
     result = Fast_Expression(Fast_Member__create(lvalue, rvalue));
     if (!result) {
@@ -643,7 +643,7 @@ cx_object Fast_Parser_expandElement(Fast_Parser _this, Fast_Expression lvalue, F
     if (!result) {
         goto error;
     }
-    
+
     return result;
 error:
     return NULL;
@@ -655,7 +655,7 @@ Fast_Expression Fast_Parser_explodeComma(Fast_Parser _this, Fast_Expression lval
     Fast_Expression result = NULL;
     Fast_Expression var = NULL;
     cx_uint32 lvalueCount, rvalueCount;
-    
+
     lvalueList = Fast_Expression_toList(lvalues);
     rvalueList = Fast_Expression_toList(rvalues);
     lvalueCount = cx_llSize(lvalueList);
@@ -671,7 +671,7 @@ Fast_Expression Fast_Parser_explodeComma(Fast_Parser _this, Fast_Expression lval
             }
         }
     }
-    
+
     Fast_Expression_list__foreach(lvalueList, l)
         Fast_Expression_list__foreach(rvalueList, r)
             Fast_Expression e = action(_this, var ? var : l, r, userData);
@@ -686,7 +686,7 @@ Fast_Expression Fast_Parser_explodeComma(Fast_Parser _this, Fast_Expression lval
     /* Clean-up list */
     Fast_Expression_cleanList(lvalueList);
     Fast_Expression_cleanList(rvalueList);
-    
+
     return result;
 error:
     return NULL;
@@ -709,7 +709,7 @@ Fast_Expression Fast_Parser_expandComma(Fast_Parser _this, Fast_Expression lvalu
     rvalueList = Fast_Expression_toList(rvalues);
     lvalueCount = cx_llSize(lvalueList);
     rvalueCount = cx_llSize(rvalueList);
-    
+
     /* If there is more than one lvalue assign rvalue to temporary value first. This will assure that rvalue is evaluated
      * only once. */
     if ((lvalueCount > 1) && (rvalueCount == 1)) {
@@ -731,13 +731,13 @@ Fast_Expression Fast_Parser_expandComma(Fast_Parser _this, Fast_Expression lvalu
                           cx_llSize(lvalueList), cx_llSize(rvalueList));
         goto error;
     }
-    
+
     /* Loop through lvalues */
     lIter = cx_llIter(lvalueList);
     rIter = cx_llIter(rvalueList);
     Fast_Expression lvalue = lvalues;
     while((((expandMode == EXPAND_LEFT)||(expandMode == EXPAND_BOTH)) && cx_iterHasNext(&lIter)) || ((expandMode == EXPAND_RIGHT) && cx_iterHasNext(&rIter))) {
-        
+
         /* If rvalueList is greater than 1, loop through rvalues as well */
         switch(expandMode) {
             case EXPAND_BOTH:
@@ -749,7 +749,7 @@ Fast_Expression Fast_Parser_expandComma(Fast_Parser _this, Fast_Expression lvalu
                 rvalues = cx_iterNext(&rIter);
                 break;
         }
-        
+
         /* Instantiate lvalue and rvalue into action-specific object */
         localResult = action(_this, lvalue, rvalues, userData);
         if (!localResult) {
@@ -763,17 +763,17 @@ Fast_Expression Fast_Parser_expandComma(Fast_Parser _this, Fast_Expression lvalu
         if (!(tright = Fast_Expression_getType_expr(rvalues,lvalue))) {
             goto error;
         }
-        
+
         if (localResult) {
             localResult = Fast_Expression_fold(localResult);
             if (!localResult) {
                 Fast_Parser_error(_this, "folding failed for expression");
             }
         }
-        
+
         result = combine(_this, result, localResult, userData);
     }
-    
+
     /* Clean-up list */
     Fast_Expression_cleanList(lvalueList);
     Fast_Expression_cleanList(rvalueList);
@@ -963,7 +963,7 @@ error:
 cx_void Fast_Parser_addStatement(Fast_Parser _this, Fast_Node statement) {
 /* $begin(::cortex::Fast::Parser::addStatement) */
     Fast_CHECK_ERRSET(_this);
-    
+
     /* Process staged declarations that do not have initializers (for example, enum Color:: RED, YELLOW, GREEN, BLUE;) */
     if (!_this->pass && !statement) {
         if (_this->stagingAllowed) {
@@ -981,8 +981,8 @@ cx_void Fast_Parser_addStatement(Fast_Parser _this, Fast_Node statement) {
     /* If a comma expression is encountered in the second pass it could be the result of an expanded
      * comma expression. Only add if the expression has side effects. If it doesn't have side effects
      * it is likely the result of a staged declaration */
-    } else if (_this->pass && statement && 
-              (statement->kind == Fast_CommaExpr) && 
+    } else if (_this->pass && statement &&
+              (statement->kind == Fast_CommaExpr) &&
               (!Fast_Expression_hasSideEffects(Fast_Expression(statement)))) {
         return;
     }
@@ -1015,7 +1015,7 @@ cx_void Fast_Parser_addStatement(Fast_Parser _this, Fast_Node statement) {
             }
         }
     }
-    
+
     return;
 error:
     fast_err;
@@ -1032,7 +1032,7 @@ cx_string Fast_Parser_argumentToString(Fast_Parser _this, cx_type type, cx_strin
     /* 1st pass & 2nd pass are equal */
     if (!type) {
         if (_this->lastFailedResolve) {
-            Fast_Parser_error(_this, "unresolved type '%s'", _this->lastFailedResolve);  
+            Fast_Parser_error(_this, "unresolved type '%s'", _this->lastFailedResolve);
         } else {
             /* Cause is most likely an already reported error */
         }
@@ -1090,9 +1090,9 @@ Fast_Node Fast_Parser_binaryExpr(Fast_Parser _this, Fast_Expression lvalues, Fas
 /* $begin(::cortex::Fast::Parser::binaryExpr) */
     Fast_Node result = NULL;
     Fast_CHECK_ERRSET(_this);
-    
+
     _this->stagingAllowed = FALSE;
-    
+
     if (lvalues && rvalues && (_this->pass || ((_this->initializerCount >= 0) && _this->initializers[_this->initializerCount]))) {
         Fast_ExpandAction combine = Fast_Parser_combineComma;
 
@@ -1135,11 +1135,11 @@ Fast_Node Fast_Parser_binaryExpr(Fast_Parser _this, Fast_Expression lvalues, Fas
             if (!(result = Fast_Node(
                 Fast_Parser_expandComma(_this, lvalues, rvalues, Fast_Parser_expandBinary, combine, &operator)))) {
                 goto error;
-            }    
+            }
             break;
         }
     }
-   
+
     return result;
 error:
     fast_err;
@@ -1237,7 +1237,7 @@ Fast_Block Fast_Parser_blockPush(Fast_Parser _this, cx_bool presetBlock) {
     Fast_CHECK_ERRSET(_this);
 
     if (!_this->blockPreset || presetBlock) {
-        _this->blockCount++;        
+        _this->blockCount++;
     }
 
     /* Blocks are parsed only in 2nd pass */
@@ -1265,7 +1265,7 @@ Fast_Block Fast_Parser_blockPush(Fast_Parser _this, cx_bool presetBlock) {
 Fast_Expression Fast_Parser_callExpr(Fast_Parser _this, Fast_Expression function, Fast_Expression arguments) {
 /* $begin(::cortex::Fast::Parser::callExpr) */
     Fast_Expression result = NULL;
-    
+
     _this->stagingAllowed = FALSE;
 
     if (function && _this->pass) {
@@ -1273,7 +1273,7 @@ Fast_Expression Fast_Parser_callExpr(Fast_Parser _this, Fast_Expression function
         Fast_Expression_list functions = Fast_Expression_toList(function);
 
         Fast_Expression_list__foreach(functions, f)
-            Fast_Expression expr;    
+            Fast_Expression expr;
             if ((Fast_Node(f)->kind == Fast_StorageExpr) && (Fast_Storage(f)->kind == Fast_ObjectStorage)) {
                 o = Fast_Object(f)->value;
             }
@@ -1310,7 +1310,7 @@ error:
 Fast_Expression Fast_Parser_castExpr(Fast_Parser _this, cx_type lvalue, Fast_Expression rvalue) {
 /* $begin(::cortex::Fast::Parser::castExpr) */
     Fast_Expression result = NULL;
-    
+
     _this->stagingAllowed = FALSE;
 
     if (_this->pass) {
@@ -1458,7 +1458,7 @@ Fast_Storage Fast_Parser_declaration(Fast_Parser _this, cx_type type, cx_string 
                 Fast_Parser_error(_this, "declare of '%s' of type '%s' failed",
                         id,
                         Fast_Parser_id(type, id1));
-                goto error;  
+                goto error;
             }
         } else {
             o = cx_lookup_ext(_this, _this->scope, id, "Resolve object in 2nd pass");
@@ -1516,7 +1516,7 @@ Fast_Storage Fast_Parser_declareFunction(Fast_Parser _this, cx_type returnType, 
             }
             cx_free(o);
         }
-        
+
         /* This could be an implementation after a forward declaration so try to resolve
          * function first. */
         if (!((function = cx_lookupFunction(_this->scope, id, FALSE, &distance)) && !distance)) {
@@ -1530,9 +1530,9 @@ Fast_Storage Fast_Parser_declareFunction(Fast_Parser _this, cx_type returnType, 
                 /* Check whether declaration is a delegate */
                 if(cx_interface_baseof(cx_interface(kind), cx_interface(cx_delegate_o))) {
                     result = Fast_Parser_declareDelegate(
-                        _this, 
-                        returnType, 
-                        id, 
+                        _this,
+                        returnType,
+                        id,
                         returnsReference);
                 }
             }
@@ -1558,8 +1558,8 @@ Fast_Storage Fast_Parser_declareFunction(Fast_Parser _this, cx_type returnType, 
         } else {
             cx_free(function);
         }
-        
-        if (!result) {        
+
+        if (!result) {
             result = Fast_Storage(Fast_Object__create(function));
             Fast_Parser_collect(_this, result);
         }
@@ -1576,7 +1576,7 @@ Fast_Storage Fast_Parser_declareFunction(Fast_Parser _this, cx_type returnType, 
                 *bptr = ch;
                 if (ch == '&') {
                     bptr++;
-                    *bptr = '&'; /* && will enforce selection of a function that accepts a reference */                   
+                    *bptr = '&'; /* && will enforce selection of a function that accepts a reference */
                 }
                 bptr++;
                 ptr++;
@@ -1585,13 +1585,13 @@ Fast_Storage Fast_Parser_declareFunction(Fast_Parser _this, cx_type returnType, 
 
             cx_object function = cx_resolve_ext(_this, _this->scope, query, FALSE, "Resolve function in 2nd pass");
             cx_assert(function != NULL, "object should still be there in 2nd pass");
-            
+
             result = Fast_Storage(Fast_Object__create(function));
             Fast_Parser_collect(_this, result);
             cx_free_ext(_this, function, "Free function from resolve (2nd pass)");
         }
     }
-    
+
     return result;
 error:
     fast_err;
@@ -1633,7 +1633,7 @@ Fast_Block Fast_Parser_declareFunctionParams(Fast_Parser _this, Fast_Storage fun
 
             Fast_Block_declare(result, "this", parent, TRUE, FALSE);
 
-            /* If this-type of method has a base, include super */            
+            /* If this-type of method has a base, include super */
             if (cx_interface(parent)->base) {
                 Fast_Block_declare(result, "super", cx_type(cx_interface(parent)->base), TRUE, FALSE);
             }
@@ -1728,7 +1728,7 @@ cx_int16 Fast_Parser_defineVariable(Fast_Parser _this, Fast_Storage object) {
         Fast_Parser_collect(_this, defineStmt);
         Fast_Parser_addStatement(_this, Fast_Node(defineStmt));
     }
-    
+
     return result;
 error:
     fast_err;
@@ -1934,7 +1934,7 @@ error:
 cx_void Fast_Parser_initDeclareStaged(Fast_Parser _this, Fast_Expression expr) {
 /* $begin(::cortex::Fast::Parser::initDeclareStaged) */
     cx_uint32 i;
-    
+
     _this->variableCount = 0;
 
     if (expr) {
@@ -1945,12 +1945,12 @@ cx_void Fast_Parser_initDeclareStaged(Fast_Parser _this, Fast_Expression expr) {
             Fast_Parser_error(_this, "invalid declaration");
             goto error;
         }
-        
+
         while(cx_iterHasNext(&iter)) {
             _this->variables[_this->variableCount] = cx_iterNext(&iter);
             _this->variableCount++;
         }
-        
+
         Fast_Expression_cleanList(exprList);
     } else {
         for(i=0; i<_this->stagedCount; i++) {
@@ -1962,10 +1962,10 @@ cx_void Fast_Parser_initDeclareStaged(Fast_Parser _this, Fast_Expression expr) {
                 } else {
                     defaultType = cx_any_o;
                 }
-                
+
                 /* Add variable to parser-list for initialization */
                 Fast_Parser_declaration(_this, defaultType, _this->staged[i].name, FALSE);
-                
+
                 cx_dealloc(_this->staged[i].name);
                 _this->staged[i].name = NULL;
             }
@@ -1987,7 +1987,7 @@ cx_int16 Fast_Parser_initKeyValuePop(Fast_Parser _this) {
             goto error;
         }
     }
-    
+
     return 0;
 error:
     return -1;
@@ -2017,7 +2017,7 @@ cx_int16 Fast_Parser_initKeyValueSet(Fast_Parser _this, Fast_Expression expr) {
             goto error;
         }
     }
-    
+
     return 0;
 error:
     return -1;
@@ -2089,21 +2089,21 @@ error:
 Fast_Expression Fast_Parser_initPushExpression(Fast_Parser _this) {
 /* $begin(::cortex::Fast::Parser::initPushExpression) */
     Fast_Initializer initializer = NULL;
-    
+
     _this->initializerCount++;
-    
+
     if (_this->pass) {
         Fast_InitializerVariable_array64 variables;
-        
+
         memset(variables, 0, sizeof(variables));
-        
+
         /* Create initializer */
         initializer = Fast_Initializer(Fast_InitializerExpression__create(variables, 1, TRUE));
         cx_set_ext(_this, &_this->initializers[_this->initializerCount], initializer, ".initializers[.initializersCount]");
         Fast_Parser_collect(_this, initializer);
         _this->variablePushed = TRUE;
     }
-    
+
     return Fast_Expression(initializer);
 /* $end */
 }
@@ -2117,20 +2117,20 @@ Fast_Expression Fast_Parser_initPushIdentifier(Fast_Parser _this, Fast_Expressio
     cx_bool forceStatic = FALSE;
     Fast_InitializerVariable_array64 variables;
     memset(variables, 0, sizeof(variables));
-   
+
     CX_UNUSED(_this);
     CX_UNUSED(type);
-    
+
     if (!type) {
         if (_this->lastFailedResolve) {
             Fast_Parser_error(_this, "unresolved identifier '%s'", _this->lastFailedResolve);
             goto error;
         } else {
             Fast_Parser_error(_this, "invalid expression");
-            goto error;            
+            goto error;
         }
     }
-    
+
     o = cx_type(Fast_Object(type)->value);
     if (!cx_instanceof(cx_type(cx_type_o), o)) {
         cx_id id;
@@ -2139,11 +2139,11 @@ Fast_Expression Fast_Parser_initPushIdentifier(Fast_Parser _this, Fast_Expressio
     }
 
     t = o;
-    
+
     if (_this->initializerCount >= 0) {
         Fast_Initializer initializer = _this->initializers[_this->initializerCount];
         if (initializer) {
-            if (!cx_instanceof(cx_type(Fast_DynamicInitializer_o), initializer) && 
+            if (!cx_instanceof(cx_type(Fast_DynamicInitializer_o), initializer) &&
                 !cx_instanceof(cx_type(Fast_InitializerExpression_o), initializer)) {
                 isDynamic = FALSE; /* A previous initializer is static, so this initializer will be static as well */
             }
@@ -2151,7 +2151,7 @@ Fast_Expression Fast_Parser_initPushIdentifier(Fast_Parser _this, Fast_Expressio
             isDynamic = FALSE; /* If initializer is NULL and parser is in second pass initializer must be static */
         }
     }
-    
+
     _this->initializerCount++;
 
     /* The first pass will always create a static initializer when t is a type. This is required for declarations with anonymous
@@ -2160,7 +2160,7 @@ Fast_Expression Fast_Parser_initPushIdentifier(Fast_Parser _this, Fast_Expressio
     if (cx_instanceof(cx_type(cx_interface_o), t) && cx_interface_baseof(cx_interface(t), cx_interface(cx_type_o))) {
         forceStatic = TRUE;
     }
-    
+
     /* Static initializers are executed during first pass */
     if ((!_this->pass && !isDynamic) || forceStatic) {
         cx_object o;
@@ -2176,7 +2176,7 @@ Fast_Expression Fast_Parser_initPushIdentifier(Fast_Parser _this, Fast_Expressio
         assignExpr = Fast_Expression(Fast_Binary__create(var, newExpr, CX_ASSIGN));
         Fast_Parser_collect(_this, assignExpr);
         Fast_Parser_addStatement(_this, Fast_Node(assignExpr));
-        
+
         cx_set_ext(NULL, &variables[0].object, var, "keep object for initializer variable array");
         _this->initializers[_this->initializerCount] = Fast_Initializer(Fast_DynamicInitializer__create(variables, 1, FALSE));
         _this->variablePushed = TRUE;
@@ -2184,7 +2184,7 @@ Fast_Expression Fast_Parser_initPushIdentifier(Fast_Parser _this, Fast_Expressio
         cx_set_ext(_this, &_this->initializers[_this->initializerCount], NULL, ".initializers[.initializerCount]");
         _this->variablePushed = TRUE;
     }
-    
+
     return variables[0].object;
 error:
     fast_err;
@@ -2201,24 +2201,24 @@ cx_int16 Fast_Parser_initPushStatic(Fast_Parser _this) {
     cx_uint32 i;
 
     _this->initializerCount++;
-    
+
     if (!isLocal && _this->variableCount) {
         if (Fast_Storage(_this->variables[0])->kind != Fast_ObjectStorage) {
             isLocal = TRUE;
         }
     }
-    
+
     /* Initializers are invalid for local variables - use assignments for these. */
     if (isLocal) {
         Fast_Parser_error(_this, "usage of initializer invalid for local variables (use assignment instead)");
         goto error;
     }
-    
+
     if (!_this->variableCount) {
         Fast_Parser_error(_this, "invalid initializer");
         goto error;
     }
-    
+
     memset(variables, 0, sizeof(variables));
 
     /* Copy variables from parser to initializer structure */
@@ -2239,7 +2239,7 @@ cx_int16 Fast_Parser_initPushStatic(Fast_Parser _this) {
         cx_set_ext(_this, &_this->initializers[_this->initializerCount], initializer, ".initializers[.initializerCount]");
         Fast_Parser_collect(_this, initializer);
     }
-    
+
     return 0;
 error:
     return -1;
@@ -2249,7 +2249,7 @@ error:
 /* ::cortex::Fast::Parser::initStage(string id,bool found) */
 cx_void Fast_Parser_initStage(Fast_Parser _this, cx_string id, cx_bool found) {
 /* $begin(::cortex::Fast::Parser::initStage) */
-    
+
     _this->staged[_this->stagedCount].name = cx_strdup(id);
     _this->staged[_this->stagedCount].line = _this->line;
     _this->staged[_this->stagedCount].column = _this->column;
@@ -2317,18 +2317,18 @@ Fast_Expression Fast_Parser_lookup(Fast_Parser _this, cx_string id, cx_object so
     if (!result) {
         result = Fast_Parser_resolve(_this, id, source);
     }
-   
+
     /* If either doing a static initializer or parser is
      * doing the 2nd pass all variables should be resolvable */
     if (!result) {
-        if (_this->pass || 
+        if (_this->pass ||
             ((_this->initializerCount >= 0) &&
-             _this->initializers[_this->initializerCount] &&    
+             _this->initializers[_this->initializerCount] &&
             cx_instanceof(cx_type(Fast_StaticInitializer_o), _this->initializers[_this->initializerCount]))) {
             Fast_Parser_error(_this, "unresolved identifier '%s'", id);
             fast_err;
         }
-        
+
         if (_this->lastFailedResolve) {
             cx_dealloc(_this->lastFailedResolve);
         }
@@ -2344,7 +2344,7 @@ Fast_Expression Fast_Parser_lookup(Fast_Parser _this, cx_string id, cx_object so
 Fast_Expression Fast_Parser_memberExpr(Fast_Parser _this, Fast_Expression lvalue, Fast_Expression rvalue) {
 /* $begin(::cortex::Fast::Parser::memberExpr) */
     Fast_Expression result = NULL;
-    
+
     _this->stagingAllowed = FALSE;
 
     if (_this->pass) {
@@ -2372,9 +2372,9 @@ Fast_Storage Fast_Parser_observerDeclaration(Fast_Parser _this, cx_string id, Fa
     CX_UNUSED(object);
     CX_UNUSED(mask);
     Fast_CHECK_ERRSET(_this);
-    
+
     _this->stagingAllowed = FALSE;
-    
+
     Fast_Storage result = NULL;
     cx_bool isTemplate = cx_class_instanceof(cx_type_o, _this->scope);
     cx_string expr = NULL;
@@ -2488,7 +2488,7 @@ cx_uint32 Fast_Parser_parse(Fast_Parser _this) {
     /* Reset parser-state so 2nd pass starts clean */
     Fast_Parser_reset(_this);
     cx_set(&_this->scope, NULL);
-    
+
     _this->pass = 1;
     if ( fast_yparse(_this, 1, 1)) {
         cx_print("%s: parsed with errors (%d errors, %d warnings)", _this->filename, _this->errors, _this->warnings);
@@ -2524,11 +2524,11 @@ Fast_Expression Fast_Parser_parseExpression(Fast_Parser _this, cx_string expr, F
     sprintf(exprFinalized, "%s\n", expr);
 
     _this->source = exprFinalized;
-    
+
     cx_set_ext(_this, &_this->block, block, "Set rootblock for embedded expression");
     cx_set_ext(_this, &_this->scope, scope, "Set scope for embedded expression");
 
-    // Give expression its own block 
+    // Give expression its own block
     Fast_Parser_blockPush(_this, FALSE);
     if (fast_yparse(_this, line, column)) {
         cx_print("%s: expression '%s' parsed with errors", _this->filename, expr);
@@ -2619,7 +2619,7 @@ cx_int16 Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_word value) {
                 if (result->type) {
                     returnType = cx_type(Fast_Expression_getType(result));
                     if ((returnType->kind != CX_VOID) || (result->deref == Fast_ByReference)) {
-                        resultLocal = Fast_Block_declare(parser->block, "<result>", result->type, FALSE, 
+                        resultLocal = Fast_Block_declare(parser->block, "<result>", result->type, FALSE,
                             result->isReference);
                         Fast_Expression(resultLocal)->deref = result->isReference ? Fast_ByReference : Fast_ByValue;
                         if (!resultLocal) {
@@ -2696,7 +2696,7 @@ cx_int16 Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_word value) {
                     cx_valueValueInit(v, NULL, returnType, ptr);
                 } else {
                     v->is.value.storage = 0;
-                    cx_valueValueInit(v, NULL, cx_object_o, &v->is.value.storage);                        
+                    cx_valueValueInit(v, NULL, cx_object_o, &v->is.value.storage);
                 }
             }
         }
@@ -2704,7 +2704,7 @@ cx_int16 Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_word value) {
         ic_program_run(program, 0);
         cx_valueValueInit(v, NULL, cx_type(cx_void_o), NULL);
     }
-    
+
     /* Free program */
     cx_free(program);
 
@@ -2758,7 +2758,7 @@ cx_void Fast_Parser_popScope(Fast_Parser _this, cx_object previous) {
 Fast_Expression Fast_Parser_postfixExpr(Fast_Parser _this, Fast_Expression lvalue, cx_operatorKind operator) {
 /* $begin(::cortex::Fast::Parser::postfixExpr) */
     Fast_Expression result = NULL;
-    
+
     _this->stagingAllowed = FALSE;
 
     if (_this->pass) {
@@ -2831,13 +2831,13 @@ cx_int16 Fast_Parser_pushPackage(Fast_Parser _this, cx_string name) {
                 cx_object o = cx_resolve(_this->scope, buffer);
                 if (!o) {
                     /* Declare package */
-                    Fast_Parser_declaration(_this, cx_type(cx_package_o), buffer, FALSE); 
+                    Fast_Parser_declaration(_this, cx_type(cx_package_o), buffer, FALSE);
 
                     /* Push package as scope */
                     Fast_Parser_pushScope(_this);
 
                     /* Define package */
-                    Fast_Parser_defineScope(_this);                   
+                    Fast_Parser_defineScope(_this);
                 } else {
                     cx_set(&_this->scope, o);
                     cx_free(o);
@@ -2934,7 +2934,7 @@ cx_void Fast_Parser_reset(Fast_Parser _this) {
     _this->complexTypeSp = 0;
     _this->initializerCount = -1;
     _this->stagingAllowed = TRUE;
-    
+
     if (_this->pass) {
         for(i=0; i<_this->stagedCount; i++) {
             if (!_this->staged[i].found) {
@@ -2981,7 +2981,7 @@ Fast_Expression Fast_Parser_unaryExpr(Fast_Parser _this, Fast_Expression lvalue,
     Fast_Expression result = NULL;
 
     _this->stagingAllowed = FALSE;
-    
+
     if (lvalue) {
         if (operator == CX_SUB) {
             cx_type lvalueType = Fast_Expression_getType(lvalue);
@@ -3065,7 +3065,7 @@ error:
 Fast_Node Fast_Parser_updateStatement(Fast_Parser _this, Fast_Expression expr, Fast_Block block) {
 /* $begin(::cortex::Fast::Parser::updateStatement) */
     Fast_Node result = NULL;
-    
+
     _this->stagingAllowed = FALSE;
 
     if (_this->pass) {
@@ -3074,7 +3074,7 @@ Fast_Node Fast_Parser_updateStatement(Fast_Parser _this, Fast_Expression expr, F
         cx_function function;
         cx_procedureKind procedureKind;
         cx_ll exprList;
-        
+
         if (!expr) { /* Can only happen due to a previous error */
             goto error;
         }
@@ -3112,7 +3112,7 @@ error:
 Fast_Expression Fast_Parser_waitExpr(Fast_Parser _this, Fast_Expression_list exprList, Fast_Expression timeout) {
 /* $begin(::cortex::Fast::Parser::waitExpr) */
     Fast_Expression result = NULL;
-    
+
     _this->stagingAllowed = FALSE;
 
     if (_this->pass) {
@@ -3147,7 +3147,7 @@ Fast_Expression Fast_Parser_waitExpr(Fast_Parser _this, Fast_Expression_list exp
 Fast_Node Fast_Parser_whileStatement(Fast_Parser _this, Fast_Expression condition, Fast_Block trueBranch, cx_bool isUntil) {
 /* $begin(::cortex::Fast::Parser::whileStatement) */
     Fast_Node result = NULL;
-    
+
     _this->stagingAllowed = FALSE;
 
     if (_this->pass) {
@@ -3160,7 +3160,7 @@ Fast_Node Fast_Parser_whileStatement(Fast_Parser _this, Fast_Expression conditio
             goto error;
         }
         Fast_Parser_collect(_this, result);
-        
+
         if (isUntil) {
             cx_set_ext(_this->block, &_this->block->_while, result, "block->_while");
         }

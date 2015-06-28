@@ -32,13 +32,13 @@ Fast_Parser yparser(void) {
 void _fast_err(cx_string msg, ...) {
     va_list args;
     char msgbuff[1024];
-    
-    va_start(args, msg);    
-    vsprintf(msgbuff, msg, args);    
+
+    va_start(args, msg);
+    vsprintf(msgbuff, msg, args);
     va_end(args);
-    
+
     Fast_reportError(yparser()->filename, yparser()->line, yparser()->column, msgbuff, yparser()->token);
-    
+
     yparser()->errors++;
 }
 
@@ -55,7 +55,7 @@ Fast_Expression Fast_declarationSeqDo(Fast_Storage type, Fast_ParserDeclarationS
     unsigned int i;
     Fast_Comma result = Fast_Comma__create();
     Fast_Expression expr = NULL;
-    
+
     Fast_Parser_collect(yparser(), result);
     yparser()->variableCount = 0;
     for(i=0; i<declarations->length; i++)
@@ -69,13 +69,13 @@ Fast_Expression Fast_declarationSeqDo(Fast_Storage type, Fast_ParserDeclarationS
         }
         cx_dealloc(declarations->buffer[i].name);
         expr = Fast_Expression(declarations->buffer[i].storage);
-        
+
         /* In a declaration of locals assignment is always a reference-assignment. */
         if (isReference) {
             expr = Fast_Expression(Fast_Parser_unaryExpr(yparser(), expr, CX_AND));
             Fast_Parser_collect(yparser(), expr);
         }
-        
+
         Fast_Comma_addExpression(result, expr);
     }
     cx_dealloc(declarations->buffer);
@@ -102,9 +102,9 @@ Fast_Expression Fast_declarationSeqDo(Fast_Storage type, Fast_ParserDeclarationS
 %token ID GID PACKAGE
 
 /* Operators */
-%token MUL_ASSIGN DIV_ASSIGN ADD_ASSIGN SUB_ASSIGN OR_ASSIGN AND_ASSIGN 
+%token MUL_ASSIGN DIV_ASSIGN ADD_ASSIGN SUB_ASSIGN OR_ASSIGN AND_ASSIGN
 %token UPDATE_ASSIGN LOR LAND LNOT LEQ GEQ EQ NEQ INC DEC SCOPE SCOPEPRE
-%token SHIFT_LEFT SHIFT_RIGHT ARROW_LEFT ARROW_RIGHT ENDL
+%token SHIFT_LEFT SHIFT_RIGHT ARROW_LEFT ARROW_RIGHT ENDL TAB
 
 /* Indentation */
 %token INDENT DEDENT
@@ -190,7 +190,7 @@ Fast_Expression Fast_declarationSeqDo(Fast_Storage type, Fast_ParserDeclarationS
 %%
 
 /* ======================================================================== */
-/* Statements */ 
+/* Statements */
 /* ======================================================================== */
 code
     : statements
@@ -203,7 +203,7 @@ statements
     | error {
         $$=NULL;
         if(!yparser()->errors) {
-            printf("unreported error:%d: Fast_Parser.c:%d\n", yparser()->line, yparser()->errLine); 
+            printf("unreported error:%d: Fast_Parser.c:%d\n", yparser()->line, yparser()->errLine);
         }
     }
     ;
@@ -222,6 +222,7 @@ statement
     | block                     {Fast_Parser_addStatement(yparser(), $1); fast_op;}
     | package_declaration ENDL
     | ENDL                      {$$=NULL;}
+    | TAB                       {Fast_Parser_error(yparser(), "usage of tabs is not allowed");}
     ;
 
 /* ======================================================================== */
@@ -268,7 +269,7 @@ function_implementation
         Fast_Parser_pushReturnAsLvalue(yparser(), $1); fast_op; /* Set lvalue to return-variable of function */
     } '=' expr ENDL {
         Fast_Parser_popLvalue(yparser()); fast_op;
-        Fast_Parser_bindOneliner(yparser(), $1, $<Fast>2, $4); fast_op; 
+        Fast_Parser_bindOneliner(yparser(), $1, $<Fast>2, $4); fast_op;
         Fast_Parser_blockPop(yparser()); fast_op;
     }
     ;
@@ -282,9 +283,9 @@ function_declaration
             Fast_Parser_error(yparser(), "%s not found", $4);
             YYERROR;
         }
-        sprintf(id, "%s(%s)", $2, $3); 
-        cx_dealloc($3); 
-        $$ = Fast_Parser_declareFunction(yparser(), $1 ? Fast_Object($1)->value : NULL, id, kind, FALSE); fast_op; 
+        sprintf(id, "%s(%s)", $2, $3);
+        cx_dealloc($3);
+        $$ = Fast_Parser_declareFunction(yparser(), $1 ? Fast_Object($1)->value : NULL, id, kind, FALSE); fast_op;
         cx_free(kind);
     }
     | identifier GID function_argumentList  {cx_id id; sprintf(id, "%s(%s)", $2, $3); cx_dealloc($3); $$ = Fast_Parser_declareFunction(yparser(), $1 ? Fast_Object($1)->value : NULL, id, NULL, FALSE); fast_op; }
@@ -298,20 +299,20 @@ function_declaration
             Fast_Parser_error(yparser(), "%s not found", $4);
             YYERROR;
         }
-        sprintf(id, "%s(%s)", $3, $4); 
-        $$ = Fast_Parser_declareFunction(yparser(), $1 ? Fast_Object($1)->value : NULL, id, kind, TRUE); fast_op; 
+        sprintf(id, "%s(%s)", $3, $4);
+        $$ = Fast_Parser_declareFunction(yparser(), $1 ? Fast_Object($1)->value : NULL, id, kind, TRUE); fast_op;
         cx_free(kind);
     }
     | identifier '&' GID function_argumentList  {cx_id id; sprintf(id, "%s(%s)", $3, $4); cx_dealloc($4); $$ = Fast_Parser_declareFunction(yparser(), $1 ? Fast_Object($1)->value : NULL, id, NULL, TRUE); fast_op; }
     ;
 
 function_argumentList
-    : '(' ')'                         {$$ = cx_strdup("");}
+    : '(' ')'                       {$$ = cx_strdup("");}
     | '(' function_arguments ')'    {$$ = $2;}
     ;
 
 function_arguments
-    : function_argument                            {$$=cx_malloc(sizeof(cx_id));strcpy($$,$1); cx_dealloc($1);}
+    : function_argument                           {$$=cx_malloc(sizeof(cx_id));strcpy($$,$1); cx_dealloc($1);}
     | function_arguments ',' function_argument    {$$=$1; strcat($$,","); strcat($$,$3); cx_dealloc($3);}
     ;
 
@@ -433,7 +434,7 @@ unary_expr
     : postfix_expr
     | unary_operator postfix_expr     {$$ = Fast_Parser_unaryExpr(yparser(), $2, $1); fast_op;}
     ;
-    
+
 unary_operator
     : '-' {$$ = CX_SUB;}
     | '~' {$$ = CX_NOT;}
@@ -448,23 +449,23 @@ multiplicative_expr
     : unary_expr
     | multiplicative_expr {PUSHLVALUE($1)} multiplicative_operator unary_expr {POPLVALUE()} {$$ = Fast_Parser_binaryExpr(yparser(), $1, $4, $3); fast_op;}
     ;
-    
+
 multiplicative_operator
     : '*' {$$ = CX_MUL;}
     | '/' {$$ = CX_DIV;}
     | '%' {$$ = CX_MOD;}
     ;
-    
+
 additive_expr
     : multiplicative_expr
     | additive_expr {PUSHLVALUE($1)} additive_operator multiplicative_expr {POPLVALUE()} {$$ = Fast_Parser_binaryExpr(yparser(), $1, $4, $3); fast_op;}
     ;
-    
+
 additive_operator
     : '+' {$$ = CX_ADD;}
     | '-' {$$ = CX_SUB;}
     ;
-    
+
 shift_expr
     : additive_expr
     | shift_expr {PUSHLVALUE($1)} SHIFT_LEFT additive_expr  {POPLVALUE()} {$$ = Fast_Parser_binaryExpr(yparser(), $1, $4, CX_SHIFT_LEFT); fast_op;}
@@ -475,7 +476,7 @@ and_expr
     : shift_expr
     | and_expr {PUSHLVALUE($1)} '&' shift_expr {POPLVALUE()} {$$ = Fast_Parser_binaryExpr(yparser(), $1, $4, CX_AND); fast_op;}
     ;
-    
+
 xor_expr
     : and_expr
     | xor_expr {PUSHLVALUE($1)} '^' and_expr {POPLVALUE()} {$$ = Fast_Parser_binaryExpr(yparser(), $1, $4, CX_XOR); fast_op;}
@@ -512,7 +513,7 @@ logical_and_expr
     : equality_expr
     | logical_and_expr {PUSHLVALUE($1)} LAND equality_expr {POPLVALUE()} {$$ = Fast_Parser_binaryExpr(yparser(), $1, $4, CX_COND_AND); fast_op;}
     ;
-    
+
 logical_or_expr
     : logical_and_expr
     | logical_or_expr {PUSHLVALUE($1)} LOR logical_and_expr {POPLVALUE()} {$$ = Fast_Parser_binaryExpr(yparser(), $1, $4, CX_COND_OR); fast_op;}
@@ -545,7 +546,7 @@ comma_expr
 assignment_expr
     : comma_expr
     | assignment_expr {PUSHASSIGN($1)} assignment_operator comma_expr {POPLVALUE()} {
-        $$ = Fast_Parser_binaryExpr(yparser(), $1, $4, $3); fast_op; 
+        $$ = Fast_Parser_binaryExpr(yparser(), $1, $4, $3); fast_op;
     }
     ;
 
@@ -596,7 +597,7 @@ declaration_expr
         Fast_Parser_popLvalue(yparser());
     }
     ;
-    
+
 expr
     : declaration_expr
     ;
@@ -763,7 +764,7 @@ update_statement
 
 /* ======================================================================== */
 /* Parser */
-/* ======================================================================== */    
+/* ======================================================================== */
 
 void yyerror(const char *str)
 {
@@ -776,16 +777,16 @@ void yyerror(const char *str)
 int fast_yparse(Fast_Parser parser, cx_uint32 line, cx_uint32 column) {
     int len = strlen(parser->source);
 
-    /* Prepend and append the source with a newline */ 
+    /* Prepend and append the source with a newline */
     char *sourceWithNewline = cx_malloc(len + 3);
     sourceWithNewline[0] = '\n';
-    strcpy(sourceWithNewline + 1, parser->source);    
+    strcpy(sourceWithNewline + 1, parser->source);
     sourceWithNewline[len + 1] = '\n';
     sourceWithNewline[len + 2] = '\0';
 
     /* Set pointer to source */
     yy_scan_string((char *) sourceWithNewline);
-    
+
     /* Start parsing */
     parser->line = line;
     parser->column = column;
@@ -796,24 +797,21 @@ int fast_yparse(Fast_Parser parser, cx_uint32 line, cx_uint32 column) {
         parser->block = Fast_Block__create(NULL);
         parser->block->isRoot = TRUE;
     }
-    
+
     if (!parser->scope) {
         cx_set(&parser->scope, root_o);
     }
-    
+
     /* Compensate for insertion of the extra \n */
     parser->line--;
     yyparse();
-    
+
     /* Destroy lexer resources */
     /*yylex_destroy();*/
-    
+
     /* Set token to NULL - it points to lexer-memory */
     yparser()->token = NULL;
     cx_dealloc(sourceWithNewline);
 
     return yparser()->errors;
 }
-
-
-

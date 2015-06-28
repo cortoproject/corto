@@ -5,7 +5,7 @@ void fail(string msg):
     result = false
 
 void func(int32 a):
-	if a != 10: fail("a != 10")
+    if a != 10: fail("a != 10")
 
 int32 a: 10
 var int32 b = 10

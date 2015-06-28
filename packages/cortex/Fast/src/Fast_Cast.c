@@ -55,9 +55,9 @@ ic_node Fast_Cast_toIc_v(Fast_Cast _this, ic_program program, ic_storage storage
         result = (ic_node)storage;
     } else {
         result = (ic_node)ic_program_pushAccumulator(
-            program, 
+            program,
             Fast_Expression_getType(Fast_Expression(_this)),
-            Fast_Expression(_this)->isReference,
+            Fast_Expression(_this)->deref == Fast_ByReference,
             FALSE);
     }
 
@@ -68,7 +68,7 @@ ic_node Fast_Cast_toIc_v(Fast_Cast _this, ic_program program, ic_storage storage
         deref2 = IC_DEREF_ADDRESS;
     }
 
-    IC_3(program, Fast_Node(_this)->line, ic_cast, result, rvalue, lvalue, 
+    IC_3(program, Fast_Node(_this)->line, ic_cast, result, rvalue, lvalue,
         IC_DEREF_VALUE, deref2, IC_DEREF_ADDRESS);
 
     return result;
