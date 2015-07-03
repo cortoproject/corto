@@ -1,0 +1,31 @@
+bool result : true
+
+void fail(string msg):
+    "tc_function03a: FAIL: $msg"
+    result = false
+
+void func_hi(string a):
+    if a != "hi": fail("a != \"hi\"")
+
+void func_null(string a):
+    if a: fail("a")
+
+string a: "hi"
+var string b = "hi"
+var string& c = a
+var string& d = string{"hi"}
+
+func_hi("hi")
+func_hi(string{"hi"})
+func_hi(a)
+func_hi(b)
+func_hi(c)
+func_hi(d)
+
+var string e = null
+
+func_null(null)
+func_null(string{null})
+func_null(e)
+
+if result: "tc_function03a: OK"
