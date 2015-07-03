@@ -743,7 +743,11 @@ static cx_vmOpKind ic_getVmCast(ic_vmProgram *program, ic_op op, cx_type t, ic_v
 
     } else if ((dstType->kind == CX_PRIMITIVE) && (cx_primitive(dstType)->kind == CX_BOOLEAN)) {
         if (((ic_storage)op->s3)->isReference) {
-            result = ic_getVmPCAST(t, typeKind, storage, op1, 0);
+            if (!ic_storage(op->s1)->isReference) {
+                result = ic_getVmPCAST(t, typeKind, storage, op1, 0);
+            } else {
+                result = ic_getVmCAST(t, IC_VMTYPE_W, IC_VMOPERAND_R, IC_VMOPERAND_V, 0);
+            }
         }
     } else if ((srcType->kind == CX_VOID) && srcType->reference) {
         result = ic_getVmCAST(t, IC_VMTYPE_W, storage, IC_VMOPERAND_V, 0);
@@ -1281,7 +1285,7 @@ static void cx_vmOp2Cast(ic_vmProgram *program, cx_vmOp *vmOp, ic_op op, ic_node
     destinationType = ic_valueType(storage);
 
     /* If destinationType is a reference, insert regular 2-operand instruction */
-    if (destinationType->reference) {
+    if (ic_storage(storage)->isReference) {
         cx_vmOp2Storage(program, vmOp, op, storage, op1, op2, storageDeref, opDeref1, opDeref2);
     /* If destinationType is not a reference, stage types and insert primitive cast */
     } else {

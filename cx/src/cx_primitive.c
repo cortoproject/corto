@@ -201,23 +201,31 @@ cx_bool cx_primitive_compatible_v(cx_primitive _this, cx_type type) {
                default:
                    break;
                }
-            } else { /* Integer types are interchangable */
+            } else { 
                 switch(_this->kind) {
+                /* Numeric types and booleans are compatible */
                 case CX_BINARY:
+                    if (cx_primitive(type)->kind == CX_FLOAT) {
+                        break;
+                    }
+                case CX_BOOLEAN:
                 case CX_UINTEGER:
                 case CX_INTEGER:
+                case CX_FLOAT:
                     switch(cx_primitive(type)->kind) {
                     case CX_BINARY:
+                        if (_this->kind == CX_FLOAT) {
+                            break;
+                        }
+                    case CX_BOOLEAN:
                     case CX_UINTEGER:
                     case CX_INTEGER:
+                    case CX_FLOAT:
                         result = TRUE;
                         break;
                     default:
                         break;
                     }
-                    break;
-                case CX_FLOAT:
-                    result = TRUE;
                     break;
                 default:
                     break;

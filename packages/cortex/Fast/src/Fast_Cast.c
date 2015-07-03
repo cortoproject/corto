@@ -47,7 +47,7 @@ error:
 ic_node Fast_Cast_toIc_v(Fast_Cast _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Cast::toIc) */
     ic_node lvalue, rvalue, result;
-    cx_bool deref2 = IC_DEREF_VALUE;
+    cx_bool deref1 = IC_DEREF_VALUE, deref2 = IC_DEREF_VALUE;
     cx_type _thisType = Fast_Expression_getType(Fast_Expression(_this));
     CX_UNUSED(stored);
 
@@ -57,7 +57,7 @@ ic_node Fast_Cast_toIc_v(Fast_Cast _this, ic_program program, ic_storage storage
         result = (ic_node)ic_program_pushAccumulator(
             program,
             Fast_Expression_getType(Fast_Expression(_this)),
-            Fast_Expression(_this)->deref == Fast_ByReference,
+            (_this->rvalue->deref == Fast_ByReference) || _thisType->reference,
             FALSE);
     }
 
@@ -67,9 +67,12 @@ ic_node Fast_Cast_toIc_v(Fast_Cast _this, ic_program program, ic_storage storage
     if ((_this->rvalue->deref == Fast_ByReference) || _thisType->reference) {
         deref2 = IC_DEREF_ADDRESS;
     }
+    if (ic_storage(result)->isReference) {
+        deref1 = IC_DEREF_ADDRESS;
+    }
 
     IC_3(program, Fast_Node(_this)->line, ic_cast, result, rvalue, lvalue,
-        IC_DEREF_VALUE, deref2, IC_DEREF_ADDRESS);
+        deref1, deref2, IC_DEREF_ADDRESS);
 
     return result;
 /* $end */

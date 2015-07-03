@@ -2995,7 +2995,10 @@ static cx_uint32 cx_overloadParamCompare(
 
     /* Match null */
     if (r_null) {
-        if (!o_reference && 
+        if ((o_type->kind == CX_PRIMITIVE) && (cx_primitive(o_type)->kind == CX_BOOLEAN)) {
+            d++;
+            goto match;
+        } else if (!o_reference && 
             ((o_type->kind != CX_PRIMITIVE) || (cx_primitive(o_type)->kind != CX_TEXT))) {
             goto nomatch;
         } else {

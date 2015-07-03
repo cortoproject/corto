@@ -467,17 +467,14 @@ typedef union Di2f_t {
 #define CAST(type,code)\
     CAST_##code:\
         fetchOp2(CAST,code)\
-        if (!op1_##code) {\
-            printf("Exception: null dereference in cast\n");\
-            abort();\
-            goto STOP;\
-        }\
-        if (!cx_instanceof((cx_type)op2_##code, (cx_object)op1_##code)) {\
-            cx_id id1,id2;\
-            printf("Exception: invalid cast from type '%s' to '%s'\n", \
-                cx_fullname((cx_object)op2_##code, id1), \
-                cx_fullname(cx_typeof((cx_object)op1_##code), id2));\
-                goto STOP;\
+        if (op1_##code) {\
+            if (!cx_instanceof((cx_type)op2_##code, (cx_object)op1_##code)) {\
+                cx_id id1,id2;\
+                printf("Exception: invalid cast from type '%s' to '%s'\n", \
+                    cx_fullname((cx_object)op2_##code, id1), \
+                    cx_fullname(cx_typeof((cx_object)op1_##code), id2));\
+                    goto STOP;\
+            }\
         }\
         next();\
 

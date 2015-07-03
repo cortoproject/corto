@@ -5,24 +5,24 @@ void fail(string msg):
     result = false
 
 class Point::
-	x, y: int32
+    x, y: int32
 
 var sequence{sequence{Point, 3}, 3} ints = {
-	{Point{0, 1}, Point{2, 3}, Point{4, 5}}, {Point{6, 7}, Point{8, 9}, Point{10, 11}}, {Point{12, 13}, Point{14, 15}, Point{16, 17}}
+    {Point{0, 1}, Point{2, 3}, Point{4, 5}}, {Point{6, 7}, Point{8, 9}, Point{10, 11}}, {Point{12, 13}, Point{14, 15}, Point{16, 17}}
 }
 if ints[0][0, 1, 2][x, y] != (0, 1, 2, 3, 4, 5): fail("ints[0][0, 1, 2][x, y] != (0, 1, 2, 3, 4, 5)")
 if ints[1][0, 1, 2][x, y] != (6, 7, 8, 9, 10, 11): fail("ints[1][0, 1, 2][x, y] != (6, 7, 8, 9, 10, 11)")
 if ints[2][0, 1, 2][x, y] != (12, 13, 14, 15, 16, 17): fail("ints[2][0, 1, 2][x, y] != (12, 13, 14, 15, 16, 17)")
 if "$ints" != "{{<1>::Point{0,1},<2>::Point{2,3},<3>::Point{4,5}},{<4>::Point{6,7},<5>::Point{8,9},<6>::Point{10,11}},{<7>::Point{12,13},<8>::Point{14,15},<9>::Point{16,17}}}": 
-	fail("ints != \"{{<1>::Point{0,1},<2>::Point{2,3},<3>::Point{4,5}},{<4>::Point{6,7},<5>::Point{8,9},<6>::Point{10,11}},{<7>::Point{12,13},<8>::Point{14,15},<9>::Point{16,17}}}\"")
+    fail("ints != \"{{<1>::Point{0,1},<2>::Point{2,3},<3>::Point{4,5}},{<4>::Point{6,7},<5>::Point{8,9},<6>::Point{10,11}},{<7>::Point{12,13},<8>::Point{14,15},<9>::Point{16,17}}}\"")
 
 ints = {
-	{Point{1, 2}, Point{3, 4}, Point{5, 6}}, {Point{7, 8}, Point{9, 10}, Point{11, 12}}, {Point{13, 14}, Point{15, 16}, Point{17, 18}}
+    {Point{1, 2}, Point{3, 4}, Point{5, 6}}, {Point{7, 8}, Point{9, 10}, Point{11, 12}}, {Point{13, 14}, Point{15, 16}, Point{17, 18}}
 }
 if ints[0][0, 1, 2][x, y] != (1, 2, 3, 4, 5, 6): fail("ints[0][0, 1, 2][x, y] != (1, 2, 3, 4, 5, 6)")
 if ints[1][0, 1, 2][x, y] != (7, 8, 9, 10, 11, 12): fail("ints[1][0, 1, 2][x, y] != (7, 8, 9, 10, 11, 12)")
 if ints[2][0, 1, 2][x, y] != (13, 14, 15, 16, 17, 18): fail("ints[2][0, 1, 2][x, y] != (13, 14, 15, 16, 17, 18)")
 if "$ints" != "{{<1>::Point{1,2},<2>::Point{3,4},<3>::Point{5,6}},{<4>::Point{7,8},<5>::Point{9,10},<6>::Point{11,12}},{<7>::Point{13,14},<8>::Point{15,16},<9>::Point{17,18}}}": 
-	fail("ints != \"{{<1>::Point{1,2},<2>::Point{3,4},<3>::Point{5,6}},{<4>::Point{7,8},<5>::Point{9,10},<6>::Point{11,12}},{<7>::Point{13,14},<8>::Point{15,16},<9>::Point{17,18}}}\"")
+    fail("ints != \"{{<1>::Point{1,2},<2>::Point{3,4},<3>::Point{5,6}},{<4>::Point{7,8},<5>::Point{9,10},<6>::Point{11,12}},{<7>::Point{13,14},<8>::Point{15,16},<9>::Point{17,18}}}\"")
 
 if result: "tc_storage26b: OK"

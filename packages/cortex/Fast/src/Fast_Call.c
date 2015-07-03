@@ -105,6 +105,7 @@ cx_void Fast_Call_setParameters(Fast_Call _this, cx_function function) {
 
     for (i = 0; i < function->parameters.length; i++) {
         cx_set(&_this->parameters.buffer[i].type, function->parameters.buffer[i].type);
+        _this->parameters.buffer[i].name = cx_strdup(function->parameters.buffer[i].name);
         _this->parameters.buffer[i].passByReference = function->parameters.buffer[i].passByReference;
     }
 /* $end */
@@ -175,7 +176,7 @@ ic_node Fast_Call_toIc_v(Fast_Call _this, ic_program program, ic_storage storage
                 argumentStorage = (ic_storage)ic_program_pushAccumulator(
                     program,
                     Fast_Expression_getType(argument),
-                    argument->deref == Fast_ByReference,
+                    _this->parameters.buffer[i].passByReference || _this->parameters.buffer[i].type->reference,
                     FALSE);
                 argumentStorageCount++;
             }
@@ -196,8 +197,12 @@ ic_node Fast_Call_toIc_v(Fast_Call _this, ic_program program, ic_storage storage
             }
 
             if (!isAny && Fast_Expression(argument)->deref == Fast_ByValue) {
+                /* If argument is pass by value or argument is not a primitive, pass by value */
                 if (!_this->parameters.buffer[i].passByReference || (paramType->kind != CX_PRIMITIVE)) {
-                    deref = IC_DEREF_VALUE;
+                    /* Void references can't be passed as value */
+                    if (exprType->kind != CX_VOID) {
+                        deref = IC_DEREF_VALUE;
+                    }
                 }
             }
 

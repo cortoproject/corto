@@ -5,7 +5,7 @@ void fail(string msg):
     result = false
 
 struct Point::
-	x, y: int32
+    x, y: int32
 
 var list{Point, 3}& ints = list{Point, 3}{{0, 1}, {2, 3}, {4, 5}}
 var list{Point, 3}& ints2 = ints
