@@ -1,0 +1,17 @@
+bool result : true
+
+void fail(string msg):
+    "tc_function05a: FAIL: $msg"
+    result = false
+
+int32 a: 10
+
+void func(object o):
+    if o != a: fail("o != a")
+
+var int32& b = a
+
+func(a)
+func(b)
+
+if result: "tc_function05a: OK"

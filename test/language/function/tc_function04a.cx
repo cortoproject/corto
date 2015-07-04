@@ -15,7 +15,7 @@ var Color& c = a
 var Color& d = Color{Blue}
 
 func(Color::Blue)
-func(Blue)
+// func(Blue) Issue #278
 func(a)
 func(b)
 func(c)

@@ -200,7 +200,7 @@ ic_node Fast_Call_toIc_v(Fast_Call _this, ic_program program, ic_storage storage
                 /* If argument is pass by value or argument is not a primitive, pass by value */
                 if (!_this->parameters.buffer[i].passByReference || (paramType->kind != CX_PRIMITIVE)) {
                     /* Void references can't be passed as value */
-                    if (exprType->kind != CX_VOID) {
+                    if ((exprType->kind != CX_VOID) && (paramType->kind != CX_VOID)) {
                         deref = IC_DEREF_VALUE;
                     }
                 }
