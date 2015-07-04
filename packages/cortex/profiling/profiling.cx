@@ -1,4 +1,4 @@
-#package ::profiling
+#package ::cortex::profiling
 
 void start(string name)
 

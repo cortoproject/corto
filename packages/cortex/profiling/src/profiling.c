@@ -10,66 +10,54 @@
 
 /* $header() */
 
-static cx_threadKey profiling_key(void) {
-    static cx_threadKey key = 0;
-    if (!key) {
-        if (cx_threadTlsKey(&key, (void(*)(void *))cx_llFree)) {
-            cx_error("Cannot create profiling key");
-        }
-    }
-    return key;
-}
+#include "profiling__keyvalue.h"
 
-static cx_ll profiling_stack(void) {
-    cx_threadKey key = profiling_key();
-    cx_ll ll = NULL;
-    if (key) {
-        ll = cx_threadTlsGet(key);
-        if (!ll) {
-            ll = cx_llNew();
-            if (cx_threadTlsSet(key, ll)) {
-                cx_llFree(ll);
-                ll = NULL;
-            }
-        }
-    }
-    return ll;
-}
+extern cx_threadKey profiling_key;
 
+/*
+ * topProfile can be a profile, the per-thread scope, or the root-scope
+ */
 static cx_object profiling_profileRoot(void) {
-    return profiling_o;
+    return root_o;
 }
 
-static cx_object profiling__topProfile = NULL;
+static profiling_TlsValue *profiling_value(void) {
+    cx_threadKey key = profiling_key;
+    profiling_TlsValue *value = cx_threadTlsGet(key);
 
-/* TODO per thread */
-/*
- * Returns the top of the profile stack, or if no profile has been yet declared,
- * the profiling package object.
- */
-static cx_object profiling_topProfile(void) {
-    if (!profiling__topProfile) {
-        profiling__topProfile = profiling_profileRoot();
+    if (!value) {
+        cx_thread tid;
+        cx_id name;
+        cx_ll ll;
+        cx_object topProfile;
+        
+        tid = cx_threadSelf();
+        sprintf(name, "t%lu", cx_threadSelf());
+        ll = cx_llNew();
+        topProfile = cx_declare(profiling_profileRoot(), name, cx_void_o);
+        if (ll && topProfile) {
+            value = cx_malloc(sizeof(profiling_TlsValue));
+            value->ll = ll;
+            value->topProfile = topProfile;
+            cx_threadTlsSet(key, value);
+        } else if (!ll) {
+            cx_error("Could not create scope for Profile objects of thread %lu", tid);
+            cx_free(topProfile);
+        } else {
+            cx_error("Could not create cx_ll object for profiling start times");
+            cx_llFree(ll);
+        }
     }
-    return profiling__topProfile;
+    return value;
 }
 
-/*
- * Declares the next profile and moves profiling__topProfile to match it.
- * Doesn't fail on profiles previously declared.
- */
-static void profiling_openProfile(cx_string name) {
-    profiling_Profile *next = cx_declare(profiling_topProfile(), name, cx_type(profiling_Profile_o));
-    profiling__topProfile = next;
+static void profiling_openProfile(profiling_TlsValue *value, cx_string name) {
+    profiling_Profile *next = cx_declare(value->topProfile, name, cx_type(profiling_Profile_o));
+    value->topProfile = next;
 }
 
-/*
- * Defines a profile (sets its members) and moves profiling__topProfile 
- * the previous profile. If the profile previously existed, it will add
- * the values.
- */
-static void profiling_closeProfile(cx_time t) {
-    profiling_Profile *top = profiling_topProfile();
+static void profiling_closeProfile(profiling_TlsValue *value, cx_time t) {
+    profiling_Profile *top = value->topProfile;
     if (cx_checkState(top, CX_DEFINED)) {
         top->seconds += t.tv_sec;
         top->nanoseconds += t.tv_nsec;
@@ -80,39 +68,34 @@ static void profiling_closeProfile(cx_time t) {
         top->callCount = 1;
         cx_define(top);
     }
-    profiling__topProfile = cx_parentof(top);
+    value->topProfile = cx_parentof(top);
 }
-
-// cx_uint64 profiling_timeToNanoS(const cx_time* t) {
-//     cx_uint64 nanos = t->tv_sec * 1000000000 + t->tv_nsec;
-//     return nanos;
-// }
 
 /* $end */
 
-/* ::profiling::start(string name) */
+/* ::cortex::profiling::start(string name) */
 cx_void profiling_start(cx_string name) {
-/* $begin(::profiling::start) */
+/* $begin(::cortex::profiling::start) */
     cx_time *startTimePtr = cx_malloc(sizeof(cx_time));
+    profiling_TlsValue *value = profiling_value();
     cx_timeGet(startTimePtr);
-    cx_ll ll = profiling_stack();
-    cx_llInsert(ll, startTimePtr);
-    CX_UNUSED(name);
+    cx_llInsert(value->ll, startTimePtr);
+    profiling_openProfile(value, name);
 /* $end */
 }
 
-/* ::profiling::stop() */
+/* ::cortex::profiling::stop() */
 cx_void profiling_stop(void) {
-/* $begin(::profiling::stop) */
+/* $begin(::cortex::profiling::stop) */
     cx_time *startTimePtr;
     cx_time stopTime;
     cx_time difference;
-    cx_ll ll;
+    profiling_TlsValue *value;
+    value = profiling_value();
     cx_timeGet(&stopTime);
-    ll = profiling_stack();
-    startTimePtr = cx_llTakeFirst(ll);
+    startTimePtr = cx_llTakeFirst(value->ll);
     difference = cx_timeSub(stopTime, *startTimePtr);
-    printf("seconds: %d, nanos: %d\n", difference.tv_sec, difference.tv_nsec);
     cx_dealloc(startTimePtr);
+    profiling_closeProfile(value, difference);
 /* $end */
 }

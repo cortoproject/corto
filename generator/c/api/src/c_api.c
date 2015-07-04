@@ -341,31 +341,32 @@ static cx_int16 c_apiReferenceTypeCreate(cx_interface o, c_apiWalk_t* data) {
 }
 
 static cx_int16 c_apiTypeStr(cx_type t, c_apiWalk_t* data) {
-    cx_id id;
+    if (t->kind != CX_VOID) {
+        cx_id id;
 
-    g_fullOid(data->g, t, id);
+        g_fullOid(data->g, t, id);
 
-    /* Function declaration */
-    g_fileWrite(data->header, "cx_string %s__str(%s value);\n", id, id);
+        /* Function declaration */
+        g_fileWrite(data->header, "cx_string %s__str(%s value);\n", id, id);
 
-    /* Function implementation */
-    g_fileWrite(data->source, "cx_string %s__str(%s value) {\n", id, id);
+        /* Function implementation */
+        g_fileWrite(data->source, "cx_string %s__str(%s value) {\n", id, id);
 
-    g_fileIndent(data->source);
-    g_fileWrite(data->source, "cx_string result;\n", id);
+        g_fileIndent(data->source);
+        g_fileWrite(data->source, "cx_string result;\n", id);
 
-    if (t->reference) {
-        g_fileWrite(data->source, "result = cx_toString(value, 0);\n");
-    } else {
-        g_fileWrite(data->source, "cx_value v;\n", id);
-        g_fileWrite(data->source, "cx_valueValueInit(&v, NULL, cx_type(%s_o), &value);\n", id);
-        g_fileWrite(data->source, "result = cx_valueToString(&v, 0);\n");
+        if (t->reference) {
+            g_fileWrite(data->source, "result = cx_toString(value, 0);\n");
+        } else {
+            g_fileWrite(data->source, "cx_value v;\n", id);
+            g_fileWrite(data->source, "cx_valueValueInit(&v, NULL, cx_type(%s_o), &value);\n", id);
+            g_fileWrite(data->source, "result = cx_valueToString(&v, 0);\n");
+        }
+
+        g_fileWrite(data->source, "return result;\n");
+        g_fileDedent(data->source);
+        g_fileWrite(data->source, "}\n\n");
     }
-
-    g_fileWrite(data->source, "return result;\n");
-    g_fileDedent(data->source);
-    g_fileWrite(data->source, "}\n\n");
-
     return 0;
 }
 
