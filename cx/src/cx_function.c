@@ -2,12 +2,11 @@
  *
  * This file contains the implementation for the generated interface.
  *
- *    Don't mess with the begin and end tags, since these will ensure that modified
- *    code in interface functions isn't replaced when code is re-generated.
+ * Don't mess with the begin and end tags, since these will ensure that modified
+ * code in interface functions isn't replaced when code is re-generated.
  */
 
 #include "cx.h"
-#include "cx__meta.h"
 
 /* ::cortex::lang::function::bind() */
 cx_int16 cx_function_bind(cx_function _this) {
@@ -166,7 +165,7 @@ cx_parameterSeq cx_function_stringToParameterSeq(cx_string name, cx_object scope
         if (count == -1) {
             goto error;
         }
-        
+
         /* Allocate size for parameters */
         result.length = count;
         result.buffer = cx_malloc(sizeof(cx_parameter) * count);
@@ -202,6 +201,7 @@ cx_parameterSeq cx_function_stringToParameterSeq(cx_string name, cx_object scope
                 cx_error("error occurred while parsing name of argument '%s' for signature '%s'", name);
                 goto error;
             }
+
             result.buffer[i].name = cx_strdup(id);
         }
     }

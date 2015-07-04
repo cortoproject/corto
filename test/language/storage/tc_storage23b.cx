@@ -1,0 +1,22 @@
+bool result : true
+
+void fail(string msg):
+    "tc_storage23b: FAIL: $msg"
+    result = false
+
+class Point::
+    x, y: int32
+
+var sequence{Point, 3} ints = {Point{0, 1}, Point{2, 3}, Point{4, 5}}
+if ints[0][x, y] != (0, 1): fail("ints[0][x, y] != (0, 1)")
+if ints[1][x, y] != (2, 3): fail("ints[1][x, y] != (2, 3)")
+if ints[2][x, y] != (4, 5): fail("ints[2][x, y] != (4, 5)")
+if "$ints" != "{<1>::Point{0,1},<2>::Point{2,3},<3>::Point{4,5}}": fail("ints != \"{<1>::Point{0,1},<2>::Point{2,3},<3>::Point{4,5}}\"")
+
+ints = {Point{1, 2}, Point{3, 4}, Point{5, 6}}
+if ints[0][x, y] != (1, 2): fail("ints[0][x, y] != (1, 2)")
+if ints[1][x, y] != (3, 4): fail("ints[1][x, y] != (3, 4)")
+if ints[2][x, y] != (5, 6): fail("ints[2][x, y] != (5, 6)")
+if "$ints" != "{<1>::Point{1,2},<2>::Point{3,4},<3>::Point{5,6}}": fail("ints != \"{<1>::Point{1,2},<2>::Point{3,4},<3>::Point{5,6}}\"")
+
+if result: "tc_storage23b: OK"

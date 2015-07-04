@@ -8,9 +8,7 @@
 
 #include "cortex.h"
 #include "cx__type.h"
-
 #include "cx__api.h"
-
 #include "cx__meta.h"
 
 #ifdef __cplusplus

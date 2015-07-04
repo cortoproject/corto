@@ -1,0 +1,5 @@
+TARGET = 'math'
+PREFIX = 'mth'
+LIB = ['m']
+
+require "#{ENV['CORTEX_HOME']}/build/package"

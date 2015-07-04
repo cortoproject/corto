@@ -2,12 +2,11 @@
  *
  * This file contains the implementation for the generated interface.
  *
- *    Don't mess with the begin and end tags, since these will ensure that modified
- *    code in interface functions isn't replaced when code is re-generated.
+ * Don't mess with the begin and end tags, since these will ensure that modified
+ * code in interface functions isn't replaced when code is re-generated.
  */
 
 #include "cx.h"
-#include "cx__meta.h"
 
 /* $header() */
 cx_uint8 cx__primitive_convertId(cx_primitiveKind kind, cx_width width) {
@@ -202,23 +201,31 @@ cx_bool cx_primitive_compatible_v(cx_primitive _this, cx_type type) {
                default:
                    break;
                }
-            } else { /* Integer types are interchangable */
+            } else { 
                 switch(_this->kind) {
+                /* Numeric types and booleans are compatible */
                 case CX_BINARY:
+                    if (cx_primitive(type)->kind == CX_FLOAT) {
+                        break;
+                    }
+                case CX_BOOLEAN:
                 case CX_UINTEGER:
                 case CX_INTEGER:
+                case CX_FLOAT:
                     switch(cx_primitive(type)->kind) {
                     case CX_BINARY:
+                        if (_this->kind == CX_FLOAT) {
+                            break;
+                        }
+                    case CX_BOOLEAN:
                     case CX_UINTEGER:
                     case CX_INTEGER:
+                    case CX_FLOAT:
                         result = TRUE;
                         break;
                     default:
                         break;
                     }
-                    break;
-                case CX_FLOAT:
-                    result = TRUE;
                     break;
                 default:
                     break;

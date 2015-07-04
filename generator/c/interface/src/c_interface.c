@@ -12,7 +12,7 @@
 typedef struct c_interfaceExisting {
     cx_string id;
     cx_string src;
-}c_interfaceExisting;
+} c_interfaceExisting;
 
 typedef struct c_typeWalk_t {
     cx_generator g;
@@ -88,7 +88,7 @@ static int c_interfaceMethodParameterName(cx_parameter* o, void* userData) {
 static int c_interfaceParamWalk(cx_object _f, int(*action)(cx_parameter*, void*), void* userData) {
     cx_uint32 i;
     cx_function f = _f;
-    for(i=0; i<f->parameters.length; i++) {
+    for (i=0; i<f->parameters.length; i++) {
         if (!action(&(f->parameters.buffer[i]), userData)) {
             return 0;
         }
@@ -551,16 +551,16 @@ static g_file c_interfaceHeaderFileOpen(cx_generator g, cx_object o, c_typeWalk_
         cx_id mainHeader, topLevelName;
         if (o == topLevelObject) {
             data->mainHeader = result;
-        }else {
+        } else {
             sprintf(mainHeader, "%s.h", g_fullOid(g, topLevelObject, topLevelName));
             data->mainHeader = g_fileOpen(g, mainHeader);
-            if(!result) {
+            if (!result) {
                 goto error;
             }
         }
     }
 
-    if(o != topLevelObject) {
+    if (o != topLevelObject) {
         g_fileWrite(data->mainHeader, "#include \"%s\"\n", headerFileName);
     }
 
@@ -579,8 +579,8 @@ static g_file c_interfaceHeaderFileOpen(cx_generator g, cx_object o, c_typeWalk_
         g_fileWrite(result, "#include \"%s.h\"\n", g_fullOid(g, cx_interface(o)->base, baseId));
     }
 
-    g_fileWrite(result, "#include \"%s__type.h\"\n\n", g_getName(g));
-    g_fileWrite(result, "#include \"%s__api.h\"\n\n", g_getName(g));
+    g_fileWrite(result, "#include \"%s__type.h\"\n", g_getName(g));
+    g_fileWrite(result, "#include \"%s__api.h\"\n", g_getName(g));
     g_fileWrite(result, "#include \"%s__meta.h\"\n\n", g_getName(g));
     g_fileWrite(result, "#ifdef __cplusplus\n");
     g_fileWrite(result, "extern \"C\" {\n");
@@ -651,11 +651,10 @@ static g_file c_interfaceSourceFileOpen(cx_generator g, cx_string name) {
     g_fileWrite(result, " *\n");
     g_fileWrite(result, " * This file contains the implementation for the generated interface.\n");
     g_fileWrite(result, " *\n");
-    g_fileWrite(result, " *    Don't mess with the begin and end tags, since these will ensure that modified\n");
-    g_fileWrite(result, " *    code in interface functions isn't replaced when code is re-generated.\n");
+    g_fileWrite(result, " * Don't mess with the begin and end tags, since these will ensure that modified\n");
+    g_fileWrite(result, " * code in interface functions isn't replaced when code is re-generated.\n");
     g_fileWrite(result, " */\n\n");
     g_fileWrite(result, "#include \"%s.h\"\n", g_fullOid(g, g_getCurrent(g), topLevelName));
-    g_fileWrite(result, "#include \"%s__meta.h\"\n", g_getName(g));
 
     return result;
 error:
@@ -668,12 +667,14 @@ static cx_int16 c_interfaceObject(cx_object o, c_typeWalk_t* data) {
     cx_string snippet;
     int hasProcedures;
     cx_bool isInterface;
+    cx_bool isTopLevelObject;
 
     hasProcedures = !cx_scopeWalk(o, c_interfaceCheckProcedures, NULL);
     isInterface = cx_class_instanceof(cx_interface_o, o);
+    isTopLevelObject = o == g_getCurrent(data->g);
 
     /* Always generate header for interfaces */
-    if (hasProcedures || isInterface) {
+    if (hasProcedures || isInterface || isTopLevelObject) {
         data->header = c_interfaceHeaderFileOpen(data->g, o, data);
         if (!data->header) {
             goto error;
@@ -687,9 +688,9 @@ static cx_int16 c_interfaceObject(cx_object o, c_typeWalk_t* data) {
     if (hasProcedures) {
 
         /* Create a wrapper file if it was not already created */
-        if(!data->wrapper) {
+        if (!data->wrapper) {
             data->wrapper = c_interfaceWrapperFileOpen(data->g);
-            if(!data->wrapper) {
+            if (!data->wrapper) {
                 goto error;
             }
         }
@@ -726,7 +727,7 @@ static cx_int16 c_interfaceObject(cx_object o, c_typeWalk_t* data) {
     }
 
     /* Close */
-    if (hasProcedures || isInterface) {
+    if (hasProcedures || isInterface || isTopLevelObject) {
         c_interfaceHeaderFileClose(data->header);
     }
 
@@ -778,6 +779,16 @@ int cortex_genMain(cx_generator g) {
     /* Walk objects, generate procedures and class members */
     if (!g_walkNoScope(g, c_interfaceWalk, &walkData)) {
         goto error;
+    }
+
+    /* Add header files for dependent packages */
+    g_resolveImports(g);
+    if (g->imports) {
+        cx_iter iter = cx_llIter(g->imports);
+        while (cx_iterHasNext(&iter)) {
+            cx_object o = cx_iterNext(&iter);
+            g_fileWrite(walkData.mainHeader, "#include \"%s.h\"\n", cx_nameof(o));
+        }
     }
 
     return 0;

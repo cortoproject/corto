@@ -18,6 +18,7 @@
 #include "cx_mm.h"
 #include "cx_call.h"
 #include "cx_vm.h"
+#include "cx_crc.h"
 
 #include "cx__object.h"
 #include "stdlib.h"
@@ -609,6 +610,11 @@ int cx_start(void) {
     cx_initObject(cortex_o);
     cx_initObject(cortex_lang_o);
 
+    /* Define builtin scopes */
+    cx_defineObject(root_o);
+    cx_defineObject(cortex_o);
+    cx_defineObject(cortex_lang_o);
+
     /* Init objects */
     SSO_OP_TYPE(cx_initType);
     SSO_OP_OBJECT(cx_initObject);
@@ -640,6 +646,9 @@ int cx_start(void) {
 
     /* Always randomize seed */
     srand (time(NULL));
+
+    /* Init CRC table */
+    cx_crcInit();
 
     return 0;
 }

@@ -781,7 +781,7 @@ int cx_deserXmlMetaExt(cx_xmlnode node, cx_deserXmlScope scope, cx_type t, void*
         }
 
     /* meta:scope */
-    } else if (!strcmp(oper, "scope") || !strcmp(oper, "namespace")){
+    } else if (!strcmp(oper, "scope") || !strcmp(oper, "package")) {
         cx_object s;
         deser_xmldata_s privateData;
 
@@ -795,8 +795,15 @@ int cx_deserXmlMetaExt(cx_xmlnode node, cx_deserXmlScope scope, cx_type t, void*
             /* first try to resolve scope */
             s = cx_lookup(data->scope, name);
             if (!s) {
-                s = cx_declare(data->scope, name, (cx_type)cx_void_o);
-                cx_keep(s);
+                if (!strcmp(oper, "package")) {
+                    s = cx_declare(data->scope, name, (cx_type)cx_package_o);
+                    cx_keep(s);
+                    cx_package(s)->url = cx_xmlnodeAttrStr(node, "url");
+                    cx_define(s);
+                } else {
+                    s = cx_declare(data->scope, name, (cx_type)cx_void_o);
+                    cx_keep(s);
+                }
             }
 
             free(name);

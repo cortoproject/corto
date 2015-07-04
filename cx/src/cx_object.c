@@ -1011,7 +1011,7 @@ cx_int16 cx_delegateConstruct(cx_type t, cx_object o) {
     }
 
     if (delegate) {
-        if(delegate->kind == CX_PROCEDURE_CDECL) {
+        if (delegate->kind == CX_PROCEDURE_CDECL) {
             ((cx_int16(*)(cx_function f, void *result, void *args))delegate->impl)(delegate, &result, &o);
         } else {
             cx_call(delegate, &result, o);
@@ -1150,7 +1150,7 @@ cx_bool cx_checkAttr(cx_object o, cx_int8 attr) {
 
 cx_object cx_assertType(cx_type type, cx_object o) {
     if (o && (o != type)) {
-        if(!cx_instanceof(type, o)) {
+        if (!cx_instanceof(type, o)) {
             cx_id id1, id2;
             cx_critical("object '%s' is not of type '%s'",
                 cx_fullname(o, id1),
@@ -1875,196 +1875,7 @@ cx_object cx_lookup(cx_object o, cx_string name) {
     return cx_lookup_ext(NULL, o, name, NULL);
 }
 
-/* Resolve anonymous object */
-static cx_char* cx_resolveAnonymous(cx_object src, cx_object scope, cx_object o, cx_string str, cx_object* out) {
-    CX_UNUSED(src);
-    cx_object result;
-    cx_string_deser_t data;
-
-    result = cx_new_ext(NULL, cx_type(o), (cx_type(o)->kind == CX_VOID) ? CX_ATTR_WRITABLE : 0, "Create anonymous object");
-    data.out = result;
-    data.scope = scope;
-    data.type = NULL;
-    str = cx_string_deser(str, &data);
-    *out = result;
-
-    cx_define(result);
-
-    return str;
-}
-
-/* Resolve address-identifier */
-static cx_object cx_resolveAddress(cx_string str) {
-    cx_word addr;
-
-    addr = strtoul(str+1, NULL, 16);
-
-    cx_keep_ext(NULL, (cx_object)addr, "Resolve by address");
-
-    return (cx_object)addr;
-}
-
-/* Resolve fully scoped name */
-cx_object cx_resolve_ext(cx_object src, cx_object _scope, cx_string str, cx_bool allowCastableOverloading, cx_string context) {
-    cx_object scope, _scope_start, o, lookup;
-    const char* ptr;
-    char* bptr;
-    cx_id buffer;
-    cx_char ch;
-    cx_bool overload;
-    cx_bool fullyQualified = FALSE;
-    int step = 2;
-
-    if (!*str) {
-        return NULL;
-    }
-
-    if (*str == '<') {
-        return cx_resolveAddress(str);
-    }
-
-    _scope_start = cortex_lang_o;
-    scope = _scope_start;
-
-    if (!_scope) {
-        _scope = root_o;
-    }
-
-    /* If expression starts with scope operator, start from root */
-    if (*(cx_uint16*)str == CX_SCOPE_HEX) {
-        str += 2;
-        scope = root_o;
-        fullyQualified = TRUE;
-    } else if (*str == '/') {
-        str += 1;
-        scope = root_o;
-        fullyQualified = TRUE;
-    }
-
-repeat:
-    lookup = NULL;
-    do {
-        o = scope;
-
-        ptr = str;
-        ch = *ptr;
-        if (!ch) {
-            break;
-        }
-        while(ch) {
-            overload = FALSE;
-            /* Parse name */
-            bptr = buffer;
-            while((ch = *ptr) && (ch != ':') && (ch != '{') && (ch != '/')) {
-                *bptr = ch;
-                bptr++;
-                ptr++;
-                if (ch == '(') { /* Scope operators & initializers in argumentlists are ignored. */
-                    overload = TRUE;
-                    while((ch = *ptr) && (ch != ')')) {
-                        *bptr = ch;
-                        bptr++;
-                        ptr++;
-                    }
-                }
-            }
-            *bptr = '\0';
-
-            /* Lookup object */
-            if (cx_scopeof(o)) {
-                if (!overload) {
-                    cx_object prev = o;
-                    o = cx_lookup_ext(src, o, buffer, context);
-                    if (!o) {
-                        o = cx_lookupFunction_ext(src, prev, buffer, allowCastableOverloading, NULL, context);
-                    }
-                    if (lookup) {
-                        cx_free_ext(src, lookup, "Free intermediate reference for resolve"); /* Free reference */
-                    }
-                    lookup = o;
-                    if (!o) {
-                        break;
-                    }
-                } else {
-                    /* If argumentlist is provided, look for closest match */
-                    o = cx_lookupFunction_ext(src, o, buffer, allowCastableOverloading, NULL, context);
-                    if (lookup) {
-                        cx_free_ext(src, lookup, "Free intermediate procedure-reference for resolve");
-                    }
-                    lookup = o;
-                    if (!o) {
-                        break;
-                    }
-                }
-            } else {
-                o = NULL;
-                if (lookup) {
-                    cx_free_ext(src, lookup, "Free intermediate reference (object not found) for resolve");
-                    lookup = NULL;
-                }
-                break;
-            }
-
-            /* Expect scope or serializable string */
-            if (ch) {
-                if (ch == '{') {
-                    cx_object prev = o;
-                    ptr = lookup = cx_resolveAnonymous(src, _scope, o, (char*)ptr, &o);
-                    if (!ptr) {
-                        o = NULL;
-                    }
-                    cx_free_ext(src, prev, "Free type of anonymous identifier");
-                    break;
-                } else if (*(cx_uint16*)ptr == CX_SCOPE_HEX) {
-                    ptr += 2;
-                } else if (ch == '/') {
-                    ptr += 1;
-                } else {
-                    cx_error("cx_resolve: invalid ':' in expression '%s'", str);
-                    o = NULL;
-                    break;
-                }
-            }
-        }
-        if (o) break;
-    }while(!step && (scope = cx_parentof(scope)));
-
-    /* Do lookup in cortex first, then in actual scope */
-    if (!o && step && !fullyQualified) {
-        switch(--step) {
-        case 0:
-            if ((_scope == cortex_o) || (_scope == cortex_lang_o)) {
-                _scope_start = scope = root_o;
-            } else {
-                _scope_start = scope = _scope;
-            }
-            break;
-        case 1:
-            _scope_start = scope = cortex_o;
-            break;    
-        }
-
-        goto repeat; /* Do this instead of a recursive call. Besides saving (a little bit of) performance,
-                        this also preserves the original searchscope, which is needed in anonymous type lookups, which
-                        uses the stringserializer. In a serialized string references to other objects may be relatively
-                        scoped. For example: the string sequence{F} results in an anonymous sequence object with
-                        elementType 'F', which is looked up in scope '_scope_start'. */
-    }
-
-    /* If the current object is not obtained by a lookup, it is not yet keeped. */
-    if (!lookup && o) {
-        cx_keep_ext(src, o, context);
-    }
-
-    return o;
-}
-
-cx_object cx_resolve(cx_object _scope, cx_string str) {
-    return cx_resolve_ext(NULL, _scope, str, FALSE, NULL);
-}
-
 /* Event handling. */
-
 static cx__observer* cx_observerFind(cx_ll on, cx_observer observer, cx_object _this) {
     cx__observer* result;
     cx_iter iter;
@@ -2909,18 +2720,18 @@ cx_object cx_wait(cx_int32 timeout_sec, cx_int32 timeout_nanosec) {
 /* REPL functionality */
 cx_int16 cx_expr(cx_object scope, cx_string expr, cx_value *value) {
     cx_int16 result = 0;
+    static cx_function parseLine = NULL;
+    static cx_bool searchedForParser = FALSE;
+
+    if (!parseLine && !searchedForParser) {
+        parseLine = cx_resolve(NULL, "::cortex::Fast::Parser::parseLine");
+        searchedForParser = TRUE;
+    }
 
     /* Load parser */
-    if (!cx_load("Fast")) {
-        cx_function parseLine = cx_resolve(NULL, "::cortex::Fast::Parser::parseLine");
-        if (!parseLine) {
-            cx_error("function ::Fast::Parser::parseLine could not be resolved");
-            goto error;
-        }
-
+    if (parseLine) {
         /* Parse expression */
         cx_call(parseLine, &result, expr, scope, value);
-
     /* Parser cannot be loaded, revert to plain object resolving */
     } else {
         cx_object o = cx_resolve(scope, expr);
@@ -3283,7 +3094,10 @@ static cx_uint32 cx_overloadParamCompare(
 
     /* Match null */
     if (r_null) {
-        if (!o_reference && 
+        if ((o_type->kind == CX_PRIMITIVE) && (cx_primitive(o_type)->kind == CX_BOOLEAN)) {
+            d++;
+            goto match;
+        } else if (!o_reference && 
             ((o_type->kind != CX_PRIMITIVE) || (cx_primitive(o_type)->kind != CX_TEXT))) {
             goto nomatch;
         } else {

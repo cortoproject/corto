@@ -1,0 +1,47 @@
+bool result : true
+
+void fail(string msg):
+    "tc_function02a: FAIL: $msg"
+    result = false
+
+void func_true(bool a):
+    if !a: fail("!a")
+
+void func_false(bool a):
+    if a: fail("a")
+
+bool a: true
+var bool b = true
+int32 c: 10
+float32 d: 0.5
+var bool& e = bool{false}
+
+bool f: false
+var bool g = false
+int32 h: 0
+float32 i: 0
+var bool& j = bool{true}
+var bool& k = null
+
+var object l = a
+var object m = null
+
+func_true(true)
+func_true(a)
+func_true(b)
+func_true(c)
+func_true(d)
+func_true(&e)
+func_true(j)
+func_true(l)
+
+func_false(false)
+func_false(f)
+func_false(g)
+func_false(i)
+func_false(null)
+func_false(e)
+func_false(&k)
+func_false(m)
+
+if result: "tc_function02a: OK"

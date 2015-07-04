@@ -13,7 +13,7 @@ addons:
       description: "Build submitted via Travis CI"
     notification_email: sander.mertens8@gmail.com
     build_command_prepend: "source configure"
-    build_command:   "make"
+    build_command:   "rake"
     branch_pattern: coverity_scan
 
-script: source configure && make
+script: source configure && rake

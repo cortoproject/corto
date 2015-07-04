@@ -1,0 +1,3 @@
+TARGET = 'os'
+
+require "#{ENV['CORTEX_HOME']}/build/package"

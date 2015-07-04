@@ -1,0 +1,43 @@
+bool result : true
+
+void fail(string msg):
+    "tc_function03d: FAIL: $msg"
+    result = false
+
+void func_helloworld(string& a, string b):
+    if a != "hello": fail("a != \"hello\"")
+    if b != "world": fail("a != \"world\"")
+
+void func_null1(string& a, string b):
+    if &a: fail("a")
+    if b: fail("b")
+
+void func_null2(string a, string& b):
+    if a: fail("a")
+    if &b: fail("b")
+
+string a1: "hello"
+var string& c1 = a1
+var string& d1 = string{"hello"}
+
+string a2: "world"
+var string b2 = "world"
+var string& c2 = a2
+var string& d2 = string{"world"}
+
+func_helloworld(a1, a2)
+func_helloworld(a1, b2)
+func_helloworld(c1, c2)
+func_helloworld(d1, d2)
+
+func_null1(null, null)
+func_null1(null, null)
+func_null1(null, null)
+func_null1(null, null)
+
+func_null2(null, null)
+func_null2(null, null)
+func_null2(null, null)
+func_null2(null, null)
+
+if result: "tc_function03d: OK"

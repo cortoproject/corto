@@ -7,7 +7,7 @@ INCLUDE = include \
           $(CORTEX_HOME)/public/c/include \
           $(CORTEX_HOME)/interface/json/include
 
-LIBS    = lang cortexdev json
+LIBS    = cortex cortexdev json
 LIBPATH =
 
 include $(CORTEX_HOME)/build/generator.makefile

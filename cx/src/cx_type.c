@@ -2,12 +2,11 @@
  *
  * This file contains the implementation for the generated interface.
  *
- *    Don't mess with the begin and end tags, since these will ensure that modified
- *    code in interface functions isn't replaced when code is re-generated.
+ * Don't mess with the begin and end tags, since these will ensure that modified
+ * code in interface functions isn't replaced when code is re-generated.
  */
 
 #include "cx.h"
-#include "cx__meta.h"
 
 /* $header() */
 #include "cx_compare_ser.h"
@@ -145,6 +144,7 @@ cx_int16 cx_type_construct(cx_type _this) {
     switch(_this->kind) {
     case CX_ANY:
         _this->size = sizeof(cx_any);
+        _this->alignment = CX_ALIGNMENT(cx_any);
         break;
     default:
         break;

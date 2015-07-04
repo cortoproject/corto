@@ -2,12 +2,11 @@
  *
  * This file contains the implementation for the generated interface.
  *
- *    Don't mess with the begin and end tags, since these will ensure that modified
- *    code in interface functions isn't replaced when code is re-generated.
+ * Don't mess with the begin and end tags, since these will ensure that modified
+ * code in interface functions isn't replaced when code is re-generated.
  */
 
 #include "cx.h"
-#include "cx__meta.h"
 
 /* ::cortex::lang::alias::init() */
 cx_int16 cx_alias_init(cx_alias _this) {

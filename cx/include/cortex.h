@@ -21,6 +21,7 @@
 #include "cx_mem.h"
 #include "cx_metawalk.h"
 #include "cx_object.h"
+#include "cx_operator.h"
 #include "cx_rbtree.h"
 #include "cx_serializer.h"
 #include "cx_string_deser.h"
@@ -28,6 +29,7 @@
 #include "cx_string.h"
 #include "cx_time.h"
 #include "cx_util.h"
+#include "cx_vm.h"
 
 #ifdef __cplusplus
 extern "C" {

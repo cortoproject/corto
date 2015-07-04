@@ -265,7 +265,7 @@ int main(int argc, char* argv[]) {
     /* Load includes */
     if (includes) {
         iter = cx_llIter(includes);
-        while(cx_iterHasNext(&iter)) {
+        while (cx_iterHasNext(&iter)) {
             include = cx_iterNext(&iter);
             if (package) {
                 if (newPackage) {
@@ -297,7 +297,7 @@ int main(int argc, char* argv[]) {
 
     /* Load library */
     if (generators) {
-        while((lib = cx_llTakeFirst(generators))) {
+        while ((lib = cx_llTakeFirst(generators))) {
 
             /* Create generator for each provided generator library */
             g = gen_new(name, language);
@@ -310,7 +310,7 @@ int main(int argc, char* argv[]) {
 
             /* Generate for all scopes */
             iter = cx_llIter(scopes);
-            while(cx_iterHasNext(&iter)) {
+            while (cx_iterHasNext(&iter)) {
                 scope = cx_iterNext(&iter);
 
                 /* Resolve object */
@@ -318,7 +318,7 @@ int main(int argc, char* argv[]) {
                 if (!o) {
                     o = cx_resolve(NULL, scope);
                     if (!o) {
-                        cx_error("cxgen: unresolved scope '%s' .", scope);
+                        cx_error("cxgen: unresolved scope '%s'.", scope);
                         return -1;
                     }
                 }
@@ -331,7 +331,7 @@ int main(int argc, char* argv[]) {
             /* Add output directories */
             if (attributes) {
                 iter = cx_llIter(attributes);
-                while(cx_iterHasNext(&iter)) {
+                while (cx_iterHasNext(&iter)) {
                     cx_string ptr;
 
                     attr = cx_strdup(cx_iterNext(&iter));

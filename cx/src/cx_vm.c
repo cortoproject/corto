@@ -6,7 +6,7 @@
  */
 
 #include "cx_vm.h"
-#include "cx__vm_operands.h"
+#include "cx_vm_operands.h"
 #include "cx_convert.h"
 #include "cx_err.h"
 #include "cx_string.h"
@@ -467,17 +467,14 @@ typedef union Di2f_t {
 #define CAST(type,code)\
     CAST_##code:\
         fetchOp2(CAST,code)\
-        if (!op1_##code) {\
-            printf("Exception: null dereference in cast\n");\
-            abort();\
-            goto STOP;\
-        }\
-        if (!cx_instanceof((cx_type)op2_##code, (cx_object)op1_##code)) {\
-            cx_id id1,id2;\
-            printf("Exception: invalid cast from type '%s' to '%s'\n", \
-                cx_fullname((cx_object)op2_##code, id1), \
-                cx_fullname(cx_typeof((cx_object)op1_##code), id2));\
-                goto STOP;\
+        if (op1_##code) {\
+            if (!cx_instanceof((cx_type)op2_##code, (cx_object)op1_##code)) {\
+                cx_id id1,id2;\
+                printf("Exception: invalid cast from type '%s' to '%s'\n", \
+                    cx_fullname((cx_object)op2_##code, id1), \
+                    cx_fullname(cx_typeof((cx_object)op1_##code), id2));\
+                    goto STOP;\
+            }\
         }\
         next();\
 
@@ -737,7 +734,6 @@ typedef union Di2f_t {
         fetchLo();\
         if (!op2_LRR) {\
             printf("Error: dereferencing null\n");\
-            goto STOP;\
         }\
         op1_WRR = op2_WRR + c.lo.w;\
         next();
@@ -834,18 +830,47 @@ struct cx_vm_context {
 };
 
 #ifdef CX_VM_DEBUG
-typedef void(*sigfunc)(int);
+typedef void (*sigfunc)(int sig);
 static sigfunc prevSegfaultHandler;
 static sigfunc prevAbortHandler;
 static sigfunc prevInterruptHandler;
 
+sigfunc safe_signal (int sig, sigfunc h) {
+    struct sigaction sa;
+    struct sigaction osa;
+    sa.sa_handler = h;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    if (sigaction(sig, &sa, &osa) < 0) {
+        return SIG_ERR;
+    }
+    return osa.sa_handler;
+}
+
+static void cx_vm_sigHardAbort(int sig) {
+    CX_UNUSED(sig);
+    exit(-1);
+}
+
 /* The VM signal handler */
 static void cx_vm_sig(int sig) {
     cx_int32 sp;
+
+    /* Unblock all signals */
+    sigset_t mask_set, old_set;
+    sigfillset(&mask_set);
+    sigprocmask(SIG_UNBLOCK, &mask_set, &old_set);
+
+    /* If any signal occurs again, do a hard abort */
+    int i;
+    for (i = 1; i < 35; i++) {
+        signal(i, cx_vm_sigHardAbort);
+    }
+
     cx_currentProgramData *programData = cx_threadTlsGet(cx_currentProgramKey);
-    
-    if (sig == SIGSEGV) {
-        printf("Access violation\n");
+
+    if ((sig == SIGSEGV) || (sig == SIGBUS)) {
+        printf("Access violation (%d)\n", sig);
     }
     if (sig == SIGABRT) {
         printf("Abort\n");
@@ -864,7 +889,9 @@ static void cx_vm_sig(int sig) {
     for(sp = programData->sp-1; sp>=0; sp--) {
         cx_id id, file;
         cx_vmProgram program = programData->stack[sp];
+
         cx_uint32 line = program->debugInfo[((cx_word)programData->c[sp]->pc - (cx_word)program->program)/sizeof(cx_vmOp)].line;
+
         if (program->filename) {
             sprintf(file, "%s:", program->filename);
         } else {
@@ -875,7 +902,7 @@ static void cx_vm_sig(int sig) {
         } else {
             printf("[%d] <main> (%s%d)\n", sp+1, file, line);
         }
-        
+
         /* Print program with location of crash */
 #ifdef CX_IC_TRACING
         if(sp == (cx_int32)programData->sp-1) {
@@ -885,6 +912,7 @@ static void cx_vm_sig(int sig) {
         }
 #endif
     }
+
     printf("\n");
     exit(-1);
 }
@@ -915,26 +943,33 @@ static void cx_vm_popCurrentProgram(void) {
 /* Push a program to the signal handler stack. This will allow backtracing the
  * stack when an error occurs. */
 static void cx_vm_pushSignalHandler(cx_vmProgram program, cx_vm_context *c) {
-    sigfunc result = signal(SIGSEGV, cx_vm_sig);
+    sigfunc result = safe_signal(SIGSEGV, cx_vm_sig);
     if (result == SIG_ERR) {
         cx_error("failed to install signal handler for SIGSEGV");
     } else {
         prevSegfaultHandler = result;
     }
 
-    result = signal(SIGABRT, cx_vm_sig);
+    result = safe_signal(SIGBUS, cx_vm_sig);
+    if (result == SIG_ERR) {
+        cx_error("failed to install signal handler for SIGSEGV");
+    } else {
+        prevSegfaultHandler = result;
+    }
+
+    result = safe_signal(SIGABRT, cx_vm_sig);
     if (result == SIG_ERR) {
         cx_error("failed to install signal handler for SIGABRT");
     } else {
         prevAbortHandler = result;
     }
 
-    result = signal(SIGINT, cx_vm_sig);
+    result = safe_signal(SIGINT, cx_vm_sig);
     if (result == SIG_ERR) {
         cx_error("failed to install signal handler for SIGINT");
     } else {
         prevInterruptHandler = result;
-    }    
+    }
 
     /* Store current program in TLS */
     cx_vm_pushCurrentProgram(program, c);
@@ -942,22 +977,22 @@ static void cx_vm_pushSignalHandler(cx_vmProgram program, cx_vm_context *c) {
 
 /* Pop a program from the signal handler stack */
 static void cx_vm_popSignalHandler(void) {
-    if (signal(SIGSEGV, prevSegfaultHandler) == SIG_ERR) {
+    if (safe_signal(SIGSEGV, prevSegfaultHandler) == SIG_ERR) {
         cx_error("failed to uninstall signal handler for SIGSEGV");
     } else {
         prevSegfaultHandler = NULL;
     }
-    if (signal(SIGABRT, prevAbortHandler) == SIG_ERR) {
+    if (safe_signal(SIGABRT, prevAbortHandler) == SIG_ERR) {
         cx_error("failed to uninstall signal handler for SIGABRT");
     } else {
         prevAbortHandler = NULL;
     }
-    if (signal(SIGINT, prevInterruptHandler) == SIG_ERR) {
+    if (safe_signal(SIGINT, prevInterruptHandler) == SIG_ERR) {
         cx_error("failed to uninstall signal handler for SIGINT");
     } else {
         prevInterruptHandler = NULL;
     }
-    
+
     cx_vm_popCurrentProgram();
 }
 #else
@@ -968,7 +1003,7 @@ static void cx_vm_popSignalHandler(void) {
 static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result) {
     cx_vm_context c;
     c.strcache = cx_threadTlsGet(cx_stringConcatCacheKey);
-    
+
     /* The signal handler will catch any exceptions and report when (and where)
      * an error is occurring */
     cx_vm_pushSignalHandler(program, &c);
@@ -1049,13 +1084,13 @@ char * cx_vmOp_toString(
 
     if (fetch && strlen(fetch)) {
         result = strappend(
-            result, 
-            "%s_%s%s%s_%s %u %u %u %u\n", 
+            result,
+            "%s_%s%s%s_%s %u %u %u %u\n",
             op, type, lvalue, rvalue, fetch, instr->ic.b._1, instr->ic.b._2, instr->lo.w, instr->hi.w);
     } else {
         result = strappend(
-            result, 
-            "%s_%s%s%s %hu %hu %u %u\n", 
+            result,
+            "%s_%s%s%s %hu %hu %u %u\n",
             op, type, lvalue, rvalue, instr->ic.b._1, instr->ic.b._2, instr->lo.w, instr->hi.w);
     }
 
@@ -1074,7 +1109,7 @@ char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
 #ifdef CX_IC_TRACING
     cx_vmOp *p = program->program;
     uint32_t i;
-    
+
 #ifndef CX_VM_DEBUG
     if (!program->translated) {
         printf("cannot convert active program to string with non-debug version\n");
@@ -1085,13 +1120,13 @@ char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
     if (addr && ((addr - p) > shown)) {
         result = strappend(result, "  ...\n");
     }
-    
+
     /* Loop instructions, prefix address */
     for(i=0; i<program->size;i++) {
         cx_int32 diff = addr - &p[i];
         if (!addr || ((diff <= shown) && (diff >= -shown))) {
             cx_vmOpKind kind;
-   
+
             if (addr) {
                 if (addr == &p[i]) {
                     result = strappend(result, "> %u: ", &p[i]);
@@ -1177,7 +1212,7 @@ cx_vmOp *cx_vmProgram_addOp(cx_vmProgram program, uint32_t line) {
     memset(&program->program[program->size-1], 0, sizeof(cx_vmOp));
     memset(&program->debugInfo[program->size-1], 0, sizeof(cx_vmDebugInfo));
     program->debugInfo[program->size-1].line = line;
-    
+
     /* Return potentially reallocd program */
     return &program->program[program->size-1];
 }
@@ -1190,8 +1225,8 @@ void cx_call_vm(cx_function f, cx_void* result, void* args) {
     /* Obtain instruction sequence */
     program = (cx_vmProgram)f->implData;
 
-    /* Allocate a storage for a program. This memory will 
-     * store all local variables, and space required to 
+    /* Allocate a storage for a program. This memory will
+     * store all local variables, and space required to
      * prepare a stack for calling functions */
     storage = alloca(program->storage);
     memcpy(storage, args, f->size); /* Copy parameters into storage */
