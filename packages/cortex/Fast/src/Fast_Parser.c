@@ -1047,7 +1047,7 @@ cx_string Fast_Parser_argumentToString(Fast_Parser _this, cx_type type, cx_strin
 
     if (cx_checkAttr(type, CX_ATTR_SCOPED)) {
         cx_id id;
-        if ((cx_parentof(type) == cortex_o) || (cx_parentof(cx_type_o) == cortex_lang_o)) {
+        if ((cx_parentof(type) == cortex_o) || (cx_parentof(type) == cortex_lang_o)) {
             str = strdup(cx_nameof(type));
         } else {
             str = strdup(Fast_Parser_id(type, id));

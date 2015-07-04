@@ -4,8 +4,11 @@ void fail(string msg):
     "tc_function01a: FAIL: $msg"
     result = false
 
+uint32 func_called
+
 void func(int32 a):
     if a != 10: fail("a != 10")
+    func_called++
 
 int32 a: 10
 var int32 b = 10
@@ -35,5 +38,7 @@ func(i)
 func(j)
 func(k)
 func(l)
+
+if func_called != 14: fail("func_called != 14 ($func_called)")
 
 if result: "tc_function01a: OK"

@@ -12,7 +12,7 @@
 #include "cx_time.h"
 /* $end */
 
-/* ::cortex::os::time::add(time t) */
+/* ::cortex::os::time::add(::cortex::os::time t) */
 cx_void os_time_add(os_time _this, os_time t) {
 /* $begin(::cortex::os::time::add) */
     cx_time t1, t2;
@@ -41,7 +41,7 @@ cx_void os_time_get(os_time _this) {
 /* $end */
 }
 
-/* ::cortex::os::time::sub(time t) */
+/* ::cortex::os::time::sub(::cortex::os::time t) */
 cx_void os_time_sub(os_time _this, os_time t) {
 /* $begin(::cortex::os::time::sub) */
     cx_time t1, t2;

@@ -33,7 +33,7 @@ cx_void test_Runner_destruct(test_Runner _this) {
 /* $end */
 }
 
-/* ::cortex::test::Runner::printTestRun(Suite t) */
+/* ::cortex::test::Runner::printTestRun(::cortex::test::Suite t) */
 cx_void test_Runner_printTestRun_v(test_Runner _this, test_Suite t) {
 /* $begin(::cortex::test::Runner::printTestRun) */
     CX_UNUSED(_this);

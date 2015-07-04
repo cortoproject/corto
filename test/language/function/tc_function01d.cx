@@ -4,13 +4,17 @@ void fail(string msg):
     "tc_function01d: FAIL: $msg"
     result = false
 
+uint32 func_1_called, func_2_called, func_3_called
+
 void func_1(int32& a, int32& b):
     if a != 10: fail("a != 10")
     if b != 20: fail("b != 20")
+    func_1_called++
 
 void func_2(int32& a, int32& b):
     if &a: fail("&a")
     if &b: fail("&b")
+    func_2_called++
 
 int32 a1: 10
 var int32& b1 = int32{10}
@@ -25,11 +29,16 @@ void func_3(int32& x, int32& y):
     if &x != &a1: fail("&x != &a1")
     if y != 20: fail("y != 20")
     if &y != &a2: fail("&y != &a2")
+    func_3_called++
 
 func_1(a1, a2)
 func_1(b1, b2)
 func_1(c1, c2)
 func_2(null, null)
 func_3(a1, a2)
+
+if func_1_called != 3: fail("func_1_called != 3")
+if func_2_called != 1: fail("func_2_called != 1")
+if func_3_called != 1: fail("func_3_called != 1")
 
 if result: "tc_function01d: OK"
