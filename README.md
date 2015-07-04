@@ -1,6 +1,4 @@
-### Cortex [![Build Status](https://travis-ci.org/cortexlang/cortex.svg?branch=master)](https://travis-ci.org/Seldomberry/cortex) [![Coverity](https://scan.coverity.com/projects/3807/badge.svg)](https://scan.coverity.com/projects/3807)
-
-[![Join the chat at https://gitter.im/cortexlang/cortex](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/cortexlang/cortex?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+### Cortex [![Build Status](https://travis-ci.org/cortexlang/cortex.svg?branch=master)](https://travis-ci.org/Seldomberry/cortex) [![Coverity](https://scan.coverity.com/projects/3807/badge.svg)](https://scan.coverity.com/projects/3807) [![Join the chat at https://gitter.im/cortexlang/cortex](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/cortexlang/cortex?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 A next-gen programming language that enables massive collaborative development.
 
 Currently Cortex is in alpha. It is expected to reach v1.0 status by the end of 2015. The project has been validated on the following platforms:
