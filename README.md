@@ -7,7 +7,7 @@ Cortex is in alpha. It is expected to reach v1.0 status by the end of 2015. The 
  * OS X 10.10.2 (64 bit)
 
 ## Building Cortex
-Download and unpack Cortex on your machine. Run the following commands to build it:
+Download and unpack Cortex on your machine. Run the following command to build it:
 ```
 source configure; rake
 ```
