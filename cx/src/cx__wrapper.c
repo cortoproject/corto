@@ -121,8 +121,7 @@ void __cx_class_findObserver(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_observer*)result = cx_class_findObserver(
         *(void**)args,
-        *(cx_object*)((intptr_t)args + sizeof(void*)),
-        *(cx_string*)((intptr_t)args + sizeof(void*) + sizeof(cx_object)));
+        *(cx_object*)((intptr_t)args + sizeof(void*)));
 }
 
 void __cx_class_init(cx_function f, void *result, void *args) {

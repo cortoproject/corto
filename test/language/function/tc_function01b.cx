@@ -17,6 +17,9 @@ void func_2(int32& a):
 int32 a: 10
 var int32& b = int32{10}
 var int32& c = a
+var int32& d = null
+var object e = a
+var object f = null
 
 void func_3(int32& x):
     if x != 10: fail("x != 10")
@@ -28,9 +31,14 @@ func_1(int32{4 + 6})
 func_1(a)
 func_1(b)
 func_1(c)
+func_1(e)
 func_2(null)
+func_2(d)
+func_2(f)
+func_2(e)
 func_3(a)
 func_3(c)
+func_3(e)
 
 if func_1_called != 5: fail("func_1_called != 5")
 if func_2_called != 1: fail("func_2_called != 1")

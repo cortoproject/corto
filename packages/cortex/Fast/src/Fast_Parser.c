@@ -848,7 +848,7 @@ error:
 }
 
 /* Create an observer */
-Fast_Storage Fast_Parser_observerCreate(Fast_Parser _this, cx_string id, Fast_Expression object, cx_eventMask mask, cx_string expr, Fast_Object dispatcherVar) {
+Fast_Storage Fast_Parser_observerCreate(Fast_Parser _this, cx_string id, Fast_Expression object, cx_eventMask mask, Fast_Object dispatcherVar) {
     Fast_Storage result = NULL;
     cx_observer observer;
     cx_object observable = NULL;
@@ -873,10 +873,8 @@ Fast_Storage Fast_Parser_observerCreate(Fast_Parser _this, cx_string id, Fast_Ex
         switch(Fast_Storage(object)->kind) {
         case Fast_ObjectStorage:
             observable = Fast_Object(object)->value;
-            expr = NULL;
             break;
         case Fast_TemplateStorage:
-            expr = NULL;
             /* In case of template ('this') leave observable zero */
             break;
         default:
@@ -901,7 +899,6 @@ Fast_Storage Fast_Parser_observerCreate(Fast_Parser _this, cx_string id, Fast_Ex
          * the observer is bound to the implementation */
         cx_set(&observer->observable, observable);
         observer->mask = mask;
-        observer->expression = expr ? cx_strdup(expr) : NULL;
         cx_set(&observer->dispatcher, dispatcher);
 
         cx_attach(_this->scope, observer);
@@ -915,7 +912,8 @@ Fast_Storage Fast_Parser_observerCreate(Fast_Parser _this, cx_string id, Fast_Ex
         if (!observer) {
             goto error;
         }
-        if (cx_observer__define(observer, observable, mask, expr, FALSE, dispatcher, NULL)) {
+
+        if (cx_observer__define(observer, observable, mask, dispatcher, NULL)) {
             goto error;
         }
     }
@@ -1338,7 +1336,7 @@ Fast_Expression Fast_Parser_castExpr(Fast_Parser _this, cx_type lvalue, Fast_Exp
         }
 
         if (castRequired) {
-            result = Fast_Expression(Fast_Cast__create(lvalue, rvalue));
+            result = Fast_Expression(Fast_Cast__create(lvalue, rvalue, FALSE));
             if (!result) {
                 goto error;
             }
@@ -2377,7 +2375,6 @@ Fast_Storage Fast_Parser_observerDeclaration(Fast_Parser _this, cx_string id, Fa
 
     Fast_Storage result = NULL;
     cx_bool isTemplate = cx_class_instanceof(cx_type_o, _this->scope);
-    cx_string expr = NULL;
 
     if (!(mask & CX_ON_SCOPE)) {
         mask |= CX_ON_SELF;
@@ -2391,7 +2388,7 @@ Fast_Storage Fast_Parser_observerDeclaration(Fast_Parser _this, cx_string id, Fa
     if (!_this->pass) {
         /* If observer is a template observer (it is defined within the scope of a type) create it in the first pass */
         if (isTemplate) {
-            result = Fast_Parser_observerCreate(_this, id, object, mask, expr, dispatcher);
+            result = Fast_Parser_observerCreate(_this, id, object, mask, dispatcher);
             if (!result) {
                 Fast_Parser_error(_this, "failed to create template observer");
                 goto error;
@@ -2419,14 +2416,14 @@ Fast_Storage Fast_Parser_observerDeclaration(Fast_Parser _this, cx_string id, Fa
         if (isTemplate) {
             block = _this->block; /* If observer is a template the block has already been pushed by Parser::observerPush */
             /* Template observers have been created in the first pass. Look up the created observer */
-            observer = cx_class_findObserver(cx_class(_this->scope), observable, NULL);
+            observer = cx_class_findObserver(cx_class(_this->scope), observable);
             result = Fast_Storage(Fast_Object__create(observer));
             Fast_Parser_collect(_this, result);
         } else {
             block = Fast_Parser_blockPush(_this, TRUE); /* Push new block on stack */
 
             /* If observer is not a template it has not yet been created, so create it now */
-            result = Fast_Parser_observerCreate(_this, id, object, mask, expr, dispatcher);
+            result = Fast_Parser_observerCreate(_this, id, object, mask, dispatcher);
             if (!result) {
                 Fast_Parser_error(_this, "failed to create observer");
                 goto error;

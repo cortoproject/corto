@@ -9,9 +9,22 @@ int32 a: 10
 void func(object o):
     if o != a: fail("o != a")
 
+void func_null(object o):
+    if o: fail("o")
+
+void func_cast(object o):
+    var int32& a = o
+    if a != 10: fail("a != 10")
+
 var int32& b = a
+var int32& c = null
 
 func(a)
 func(b)
+func_null(null)
+func_null(c)
+func_cast(a)
+func_cast(b)
+func_cast(int32{10})
 
 if result: "tc_function05a: OK"

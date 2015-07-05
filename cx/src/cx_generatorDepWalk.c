@@ -218,11 +218,7 @@ int cx_genDepWalk(cx_generator g, cx_depresolver_action onDeclare, cx_depresolve
         }
     }
 
-    /* Walk dependencies */
-    cx_depresolver_walk(resolver);
-
-
-    return 0;
+    return cx_depresolver_walk(resolver);
 error:
     return -1;
 }

@@ -156,16 +156,16 @@ static struct cx_serializer_s c_apiAssignSerializer(void) {
 }
 
 /* Create new-function */
-static cx_int16 c_apiReferenceTypeNew(cx_interface o, c_apiWalk_t* data) {
+static cx_int16 c_apiTypeNew(cx_type o, c_apiWalk_t* data) {
     cx_id id;
 
     g_fullOid(data->g, o, id);
 
     /* Function declaration */
-    g_fileWrite(data->header, "%s %s__new(void);\n", id, id);
+    g_fileWrite(data->header, "%s%s %s__new(void);\n", id, o->reference ? "" : "*", id);
 
     /* Function implementation */
-    g_fileWrite(data->source, "%s %s__new(void) {\n", id, id);
+    g_fileWrite(data->source, "%s%s %s__new(void) {\n", id, o->reference ? "" : "*", id);
     g_fileIndent(data->source);
     g_fileWrite(data->source, "return cx_new(cx_type(%s_o));\n", id);
     g_fileDedent(data->source);
@@ -175,16 +175,19 @@ static cx_int16 c_apiReferenceTypeNew(cx_interface o, c_apiWalk_t* data) {
 }
 
 /* Create declare-function */
-static cx_int16 c_apiReferenceTypeDeclare(cx_interface o, c_apiWalk_t* data) {
+static cx_int16 c_apiTypeDeclare(cx_type o, c_apiWalk_t* data) {
     cx_id id;
 
     g_fullOid(data->g, o, id);
 
     /* Function declaration */
-    g_fileWrite(data->header, "%s %s__declare(cx_object _parent, cx_string _name);\n", id, id);
+    g_fileWrite(data->header, "%s%s %s__declare(cx_object _parent, cx_string _name);\n", 
+        id, o->reference ? "" : "*", id);
 
     /* Function implementation */
-    g_fileWrite(data->source, "%s %s__declare(cx_object _parent, cx_string _name) {\n", id, id);
+    g_fileWrite(data->source, "%s%s %s__declare(cx_object _parent, cx_string _name) {\n", 
+        id, o->reference ? "" : "*", id);
+
     g_fileIndent(data->source);
     g_fileWrite(data->source, "return cx_declare(_parent, _name, cx_type(%s_o));\n", id);
     g_fileDedent(data->source);
@@ -371,25 +374,10 @@ static cx_int16 c_apiTypeStr(cx_type t, c_apiWalk_t* data) {
 }
 
 /* Walk reference interface */
-static cx_int16 c_apiWalkReferenceType(cx_interface o, c_apiWalk_t* data) {
-    cx_id id;
-
-    g_fileWrite(data->header, "/* %s */\n", cx_fullname(o, id));
-
-    data->current = o;
+static cx_int16 c_apiWalkReferenceInterface(cx_interface o, c_apiWalk_t* data) {
 
     /* Build nameconflict cache */
     data->memberCache = cx_genMemberCacheBuild(o);
-
-    /* Generate _new function */
-    if (c_apiReferenceTypeNew(o, data)) {
-        goto error;
-    }
-
-    /* Generate _declare function */
-    if (c_apiReferenceTypeDeclare(o, data)) {
-        goto error;
-    }
 
     /* Generate _define function */
     if (c_apiReferenceTypeDefine(o, data)) {
@@ -403,22 +391,13 @@ static cx_int16 c_apiWalkReferenceType(cx_interface o, c_apiWalk_t* data) {
 
     cx_genMemberCacheClean(data->memberCache);
 
-    c_apiTypeStr(cx_type(o), data);
-
-    g_fileWrite(data->header, "\n");
-
     return 0;
 error:
     return -1;
 }
 
 /* Walk non-reference interface */
-static cx_int16 c_apiWalkValueType(cx_interface o, c_apiWalk_t* data) {
-    cx_id id;
-
-    g_fileWrite(data->header, "/* %s */\n", cx_fullname(o, id));
-
-    data->current = o;
+static cx_int16 c_apiWalkValueInterface(cx_interface o, c_apiWalk_t* data) {
 
     data->memberCache = cx_genMemberCacheBuild(o);
 
@@ -432,10 +411,6 @@ static cx_int16 c_apiWalkValueType(cx_interface o, c_apiWalk_t* data) {
 
     cx_genMemberCacheClean(data->memberCache);
 
-    c_apiTypeStr(cx_type(o), data);
-
-    g_fileWrite(data->header, "\n");
-
     return 0;
 error:
     return -1;
@@ -443,11 +418,16 @@ error:
 
 /* Walk all types */
 static cx_int16 c_apiWalkType(cx_type o, c_apiWalk_t* data) {
-    cx_id id;
 
-    g_fileWrite(data->header, "/* %s */\n", cx_fullname(o, id));
+    /* Generate _new function */
+    if (c_apiTypeNew(o, data)) {
+        goto error;
+    }
 
-    data->current = o;
+    /* Generate _declare function */
+    if (c_apiTypeDeclare(o, data)) {
+        goto error;
+    }
 
     /* Generate _str function */
     if (c_apiTypeStr(o, data)) {
@@ -928,19 +908,27 @@ error:
 
 /* Forward objects for which code will be generated. */
 static int c_apiWalk(cx_object o, void* userData) {
+    c_apiWalk_t* data = userData;
+    cx_id id;
 
-    /* Forward interfaces */
-    if (cx_class_instanceof(cx_interface_o, o)) {
-        if (cx_type(o)->reference) {
-            if (c_apiWalkReferenceType(cx_interface(o), userData)) {
-                goto error;
-            }
-        } else {
-            if (c_apiWalkValueType(cx_interface(o), userData)) {
-                goto error;
+    if (cx_class_instanceof(cx_type_o, o)) {
+        g_fileWrite(data->header, "/* %s */\n", cx_fullname(o, id));
+
+        data->current = o;
+
+        /* Forward interfaces */
+        if (cx_class_instanceof(cx_interface_o, o)) {
+            if (cx_type(o)->reference) {
+                if (c_apiWalkReferenceInterface(cx_interface(o), userData)) {
+                    goto error;
+                }
+            } else {
+                if (c_apiWalkValueInterface(cx_interface(o), userData)) {
+                    goto error;
+                }
             }
         }
-    } else if (cx_class_instanceof(cx_type_o, o)) {
+
         if (c_apiWalkType(cx_type(o), userData)) {
             goto error;
         }

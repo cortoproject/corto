@@ -861,7 +861,7 @@ CX_CLASS_O(class, struct, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_ICD);
     CX_METHOD_O(class, privateObserver, "(object object,observer observer)", observer, FALSE, cx_class_privateObserver);
     CX_METHOD_O(class, resolveInterfaceMethod, "(interface interface,uint32 method)", method, FALSE, cx_class_resolveInterfaceMethod);
     CX_METHOD_O(class, bindObserver, "(observer observer)", void, FALSE, cx_class_bindObserver);
-    CX_METHOD_O(class, findObserver, "(object observable,string expr)", observer, FALSE, cx_class_findObserver);
+    CX_METHOD_O(class, findObserver, "(object observable)", observer, FALSE, cx_class_findObserver);
 
 /* ::cortex::lang::delegatedata */
 CX_STRUCT_O(delegatedata, NULL, CX_DECLARED | CX_DEFINED);
@@ -978,8 +978,7 @@ CX_FW_IB(observer);
 CX_PROCEDURE_O(observer, CX_OBSERVER, function, CX_LOCAL | CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, CX_IC);
     CX_REFERENCE_O(observer, observable, object, CX_GLOBAL, CX_DEFINED | CX_DECLARED, FALSE);
     CX_MEMBER_O(observer, mask, eventMask, CX_GLOBAL);
-    CX_MEMBER_O(observer, expression, string, CX_GLOBAL);
-    CX_MEMBER_O(observer, template, uint32, CX_GLOBAL);
+    CX_MEMBER_O(observer, template, uint32, CX_GLOBAL|CX_READONLY);
     CX_REFERENCE_O(observer, dispatcher, dispatcher, CX_GLOBAL, CX_DEFINED | CX_DECLARED, FALSE);
     CX_REFERENCE_O(observer, me, object, CX_GLOBAL, CX_DEFINED | CX_DECLARED, FALSE);
     CX_REFERENCE_O(observer, observing, object, CX_LOCAL | CX_PRIVATE, CX_DEFINED | CX_DECLARED, FALSE);

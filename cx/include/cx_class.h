@@ -31,8 +31,8 @@ cx_int16 cx_class_construct(cx_class _this);
 /* ::cortex::lang::class::destruct() */
 cx_void cx_class_destruct(cx_class _this);
 
-/* ::cortex::lang::class::findObserver(object observable,string expr) */
-cx_observer cx_class_findObserver(cx_class _this, cx_object observable, cx_string expr);
+/* ::cortex::lang::class::findObserver(object observable) */
+cx_observer cx_class_findObserver(cx_class _this, cx_object observable);
 
 /* ::cortex::lang::class::init() */
 cx_int16 cx_class_init(cx_class _this);

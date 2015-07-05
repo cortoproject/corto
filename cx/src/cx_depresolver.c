@@ -406,6 +406,7 @@ void cx_depresolver_depend(cx_depresolver _this, void* o, cx_uint8 kind, void* d
 int cx_depresolver_walk(cx_depresolver _this) {
     cx_iter iter;
     g_item item;
+    cx_uint32 unresolved = 0;
 
     /* Print initial items */
     if (g_itemPrintItems(_this)) {
@@ -437,9 +438,13 @@ int cx_depresolver_walk(cx_depresolver _this) {
     while((item = cx_llTakeFirst(_this->items))) {
         if (!item->defined) {
             if (!item->declared) {
-                cx_warning("object '%p' has not been declared or defined.", item->o);
+                cx_id id;
+                cx_warning("not declared/defined: '%s'", cx_fullname(item->o, id));
+                unresolved++;
             } else if (!item->defined){
-                cx_warning("object '%p' has not been defined.", item->o);
+                cx_id id;
+                cx_warning("not defined: '%s'", cx_fullname(item->o, id));
+                unresolved++;
             }
         }
         g_itemFree(item);
@@ -451,6 +456,11 @@ int cx_depresolver_walk(cx_depresolver _this) {
 
     /* Free this */
     cx_dealloc(_this);
+
+    if (unresolved) {
+        cx_error("unsolvable dependecy cycles encountered");
+        goto error;
+    }
 
     return 0;
 error:

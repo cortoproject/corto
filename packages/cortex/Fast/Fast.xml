@@ -347,6 +347,7 @@
                     <method name="construct()" returnType="int16"/>
                     <member name="lvalue" type="type"/>
                     <member name="rvalue" type="Fast::Expression"/>
+                    <member name="isReference" type="bool"/>
                     <virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
                 </meta:scope>
             </class>

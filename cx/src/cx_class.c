@@ -300,23 +300,16 @@ cx_void cx_class_destruct(cx_class _this) {
 /* $end */
 }
 
-/* ::cortex::lang::class::findObserver(object observable,string expr) */
-cx_observer cx_class_findObserver(cx_class _this, cx_object observable, cx_string expr) {
+/* ::cortex::lang::class::findObserver(object observable) */
+cx_observer cx_class_findObserver(cx_class _this, cx_object observable) {
 /* $begin(::cortex::lang::class::findObserver) */
     cx_uint32 i;
     cx_observer result = NULL;
 
     for (i=0; i<_this->observers.length; i++) {
         if (_this->observers.buffer[i]->observable == observable) {
-            if (_this->observers.buffer[i]->expression && expr) {
-                if (!strcmp(_this->observers.buffer[i]->expression, expr)) {
-                    result = _this->observers.buffer[i];
-                    break;
-                }
-            } else {
-                result = _this->observers.buffer[i];
-                break;
-            }
+            result = _this->observers.buffer[i];
+            break;
         }
     }
 

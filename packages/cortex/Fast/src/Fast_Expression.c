@@ -313,7 +313,7 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_boo
                    (Fast_Expression_getCastScore(cx_primitive(refType)) == 
                     Fast_Expression_getCastScore(cx_primitive(type)))) {
                     if (cx_primitive(exprType)->width != cx_primitive(type)->width) {
-                        result = Fast_Expression(Fast_Cast__create(type, _this));
+                        result = Fast_Expression(Fast_Cast__create(type, _this, isReference));
                     } else {
                         /* Types have the same width, so no cast required */
                         castRequired = FALSE;
@@ -321,7 +321,7 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_boo
 
                 /* Interface-downcasting doesn't require an explicit cast */
                 } else if (!cx_instanceof(cx_type(cx_interface_o), type)) {
-                    result = Fast_Expression(Fast_Cast__create(type, _this));
+                    result = Fast_Expression(Fast_Cast__create(type, _this, isReference));
                 } else {
                     castRequired = FALSE;
                 }
@@ -340,6 +340,10 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_boo
             /* If type is of a generic reference type, accept any reference without cast */
             } else if (type->kind == CX_VOID && type->reference) {
                 castRequired = FALSE;
+
+            /* If assigning to a generic reference, insert cast */
+            } else if (exprType->kind == CX_VOID && exprType->reference && isReference) {
+                result = Fast_Expression(Fast_Cast__create(type, _this, isReference));    
             }
         }
     } else {

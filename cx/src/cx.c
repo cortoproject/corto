@@ -173,7 +173,6 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     /* observer */\
     SSO_OP_OBJ(op, observer_observable);\
     SSO_OP_OBJ(op, observer_mask);\
-    SSO_OP_OBJ(op, observer_expression);\
     SSO_OP_OBJ(op, observer_template);\
     SSO_OP_OBJ(op, observer_dispatcher);\
     SSO_OP_OBJ(op, observer_me);\
