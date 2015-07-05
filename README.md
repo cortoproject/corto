@@ -16,3 +16,4 @@ Cortex depends on the following packages - make sure to have them installed:
  * flex
  * bison
  * libxml2-dev (only required for building)
+ * rake
