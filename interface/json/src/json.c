@@ -224,7 +224,7 @@ static cx_int16 serializeReference(cx_serializer s, cx_value *v, void *userData)
         if (cx_checkAttr(object, CX_ATTR_SCOPED) || (cx_valueObject(v) == object)) {
             cx_uint32 length;
             cx_fullname(object, id);
-            
+
             /* Escape value */
             cx_string escapedValue = cx_malloc((length = stresc(NULL, 0, id)) + 1);
             stresc(escapedValue, length, id);
@@ -249,13 +249,13 @@ finished:
 
 static cx_int16 serializeItem(cx_serializer s, cx_value *info, void *userData) {
     cx_json_ser_t *data = userData;
-    cx_member member = info->is.member.t;
-    cx_string name = cx_nameof(member);
 
     if (data->itemCount && !cx_ser_appendstr(data, ",")) {
         goto finished;
     }
     if (info->kind == CX_MEMBER) {
+        cx_member member = info->is.member.t;
+        cx_string name = cx_nameof(member);
         if (!cx_ser_appendstr(data, "\"%s\":", name)) {
             goto finished;
         }
@@ -386,7 +386,7 @@ static char* dbsh_attrStr(cx_object o, char* buff) {
 
 static int cx_appendStringAttr(cx_string key, cx_string value, void* userData) {
     size_t length;
-    
+
     /* Escape value */
     cx_string escapedValue = cx_malloc((length = stresc(NULL, 0, value)) + 1);
     stresc(escapedValue, length, value);
@@ -423,7 +423,7 @@ static cx_int16 serializeMeta(cx_serializer s, cx_value* v, void* userData) {
     } else {
         if (!cx_ser_appendstr(userData, "\"name\":\"::\",")) {
             goto finished;
-        }        
+        }
     }
 
     cx_id type_fullname;
@@ -436,7 +436,7 @@ static cx_int16 serializeMeta(cx_serializer s, cx_value* v, void* userData) {
         cx_time t = cx_timestampof(o);
         if (!cx_ser_appendstr(data, "\"timestamp\":\"%d.%.9d\",", t.tv_sec, t.tv_nsec)) {
             goto finished;
-        }        
+        }
     }
 
     char states[sizeof("V|DCL|DEF")];
@@ -487,7 +487,7 @@ static int serializeMetaWalkScopeAction(cx_object o, void* userData) {
     } else {
         if (!cx_ser_appendstr(userData, "\"name\":\"::\",")) {
             goto finished;
-        }        
+        }
     }
 
     cx_id type_fullname;
@@ -544,7 +544,7 @@ static cx_int16 serializeObject(cx_serializer s, cx_value* v, void* userData) {
     cx_uint8 c = 0;
     cx_uint32 options = data->serializeMeta + data->serializeValue + data->serializeScope;
 
-    /* If more than one option is provided, prefix with 
+    /* If more than one option is provided, prefix with
      * 'meta', 'value' and 'scope' */
 
     if (data->alwaysIncludeHeaders || (options > 1)) {
