@@ -389,7 +389,7 @@ static int cx_appendStringAttr(cx_string key, cx_string value, void* userData) {
 
     /* Escape value */
     cx_string escapedValue = cx_malloc((length = stresc(NULL, 0, value)) + 1);
-    stresc(escapedValue, length, value);
+    stresc(escapedValue, length + 1, value);
 
     if (!cx_ser_appendstr(userData, "\"%s\":\"%s\",", key, escapedValue)) {
         goto finished;
@@ -498,7 +498,7 @@ static int serializeMetaWalkScopeAction(cx_object o, void* userData) {
 
     char states[sizeof("V|DCL|DEF")];
     dbsh_stateStr(o, states);
-    if (!cx_ser_appendstr(userData, "\"states\":\"%s\",", states)) {
+    if (!cx_appendStringAttr("states", states, userData)) {
         goto finished;
     }
 
