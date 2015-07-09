@@ -37,12 +37,13 @@ cx_void test_Runner_destruct(test_Runner _this) {
 cx_void test_Runner_printTestRun_v(test_Runner _this, test_Suite t) {
 /* $begin(::cortex::test::Runner::printTestRun) */
     CX_UNUSED(_this);
+    cx_string suiteName = cx_nameof(cx_typeof(t));
     cx_string testName = cx_nameof(t->test);
     if (t->result.success) {
-        cx_print("success: %s", testName);
+        cx_print("success: %s::%s", suiteName, testName);
     } else {
         cx_assert(t->result.assertmsg != NULL, "null assert message");
-        cx_error("failure: %s - %s", testName, t->result.assertmsg);
+        cx_error("failure: %s::%s - %s", suiteName, testName, t->result.assertmsg);
         if (t->result.errmsg && *(t->result.errmsg) != '\0') {
             cx_error("    message: %s", t->result.errmsg);
         }
@@ -58,14 +59,14 @@ cx_void test_Runner_runTest(test_Runner _this, cx_object *observable, cx_object 
         cx_type testClass = cx_parentof(observable);
         test_Suite suite = test_Suite(cx_new(cx_type(testClass)));
         cx_set(&suite->test, observable);
-        if (!cx_define(suite) && suite->result.success) {
+        if (!cx_defineFrom(suite, _this) && suite->result.success) {
             test_Suite_list__append(_this->failures, suite);
         } else {
             test_Suite_list__append(_this->failures, suite);
         }
         test_Runner_printTestRun(_this, suite);
         cx_free(suite);
-        
+
     }
 /* $end */
 }
