@@ -4,15 +4,26 @@
 #include "cortex.h"
 #include "json_primitives.h"
 
+static cx_object cx_json_checkRoot(const char* parent, const char* name, const char* type) {
+    cx_bool isRoot = !strcmp(parent, "");
+    isRoot = isRoot && !strcmp(name, "::");
+    isRoot = isRoot && !strcmp(type, cx_nameof(cx_typeof(root_o)));
+    return isRoot ? root_o : NULL;
+}
+
 static cx_object cx_json_declare(JSON_Object *meta) {
     const char *parentName = json_object_get_string(meta, "parent");
     const char *name = json_object_get_string(meta, "name");
     const char *typeName = json_object_get_string(meta, "type");
     cx_object object, parent, type;
     object = parent = type = NULL;
+
     if (!(name && parentName && typeName)) {
         cx_error("meta does not have name, parent, or type");
         goto error;
+    }
+    if ((object = cx_json_checkRoot(parentName, name, typeName))) {
+        goto finished;
     }
     parent = cx_resolve(NULL, (cx_string)parentName);
     if (!parent) {
@@ -24,6 +35,7 @@ static cx_object cx_json_declare(JSON_Object *meta) {
         cx_error("type %s could not be resolved", typeName);
     }
     object = cx_declare(parent, (cx_string)name, type);
+finished:
     return object;
 error:
     return NULL;
@@ -110,7 +122,9 @@ cx_object cx_json_deser(cx_string s) {
         goto error;
     }
 
-    o = cx_json_declare(meta);
+    if (!(o = cx_json_declare(meta))) {
+        goto error;
+    }
     cx_json_define(o, value);
 
 error:

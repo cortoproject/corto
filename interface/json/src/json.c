@@ -421,7 +421,7 @@ static cx_int16 serializeMeta(cx_serializer s, cx_value* v, void* userData) {
             goto finished;
         }
     } else {
-        if (!cx_ser_appendstr(userData, "\"name\":\"::\",")) {
+        if (!cx_ser_appendstr(userData, "\"name\":\"%s\",", CX_JSON_ROOT_NAME)) {
             goto finished;
         }
     }
@@ -465,7 +465,6 @@ static cx_int16 serializeMeta(cx_serializer s, cx_value* v, void* userData) {
     if (!cx_ser_appendstr(data, "}")) {
         goto finished;
     }
-
 
     return 0;
 error:
