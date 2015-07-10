@@ -128,6 +128,8 @@ cx_object cx_json_deser(cx_string s) {
     cx_json_define(o, value);
 
 error:
-    json_value_free(jsonValue);
+    if (jsonValue) {
+        json_value_free(jsonValue);
+    }
     return o;
 }

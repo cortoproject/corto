@@ -16,7 +16,7 @@ void json_deserNumber(cx_object o, JSON_Value *value) {
         goto error;
     }
     cx_float64 number = json_value_get_number(value);
-    cx_convert(cx_primitive(cx_float64_o), &number, cx_primitive(cx_typeof(o)), &o);
+    cx_convert(cx_primitive(cx_float64_o), &number, cx_primitive(cx_typeof(o)), o);
 error:;
 }
 

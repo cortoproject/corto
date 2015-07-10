@@ -17,7 +17,8 @@
 /* ::testjson::DeserializeJsonPrimitiveTest::setUp() */
 cx_void testjson_DeserializeJsonPrimitiveTest_setUp(testjson_DeserializeJsonPrimitiveTest _this) {
 /* $begin(::testjson::DeserializeJsonPrimitiveTest::setUp) */
-testjson_BaseDeserializeJsonTest(_this)->o = cx_json_deser("{ \"meta\": { \"name\": \"a\", \"parent\": \"::\", \"type\": \"int16\" }, \"value\": 78 }");
+    cx_object o = cx_json_deser("{ \"meta\": { \"name\": \"a\", \"parent\": \"::\", \"type\": \"int32\" }, \"value\": 78 }");
+    cx_set(&testjson_BaseDeserializeJsonTest(_this)->o, o);
 /* $end */
 }
 
