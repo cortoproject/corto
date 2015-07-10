@@ -26,7 +26,7 @@ cx_void testjson_DeserializeJsonPrimitiveTest_setUp(testjson_DeserializeJsonPrim
 cx_void testjson_DeserializeJsonPrimitiveTest_testUint8(testjson_DeserializeJsonPrimitiveTest _this) {
 /* $begin(::testjson::DeserializeJsonPrimitiveTest::testUint8) */
     testjson_BaseDeserializeJsonTest __this = testjson_BaseDeserializeJsonTest(_this);
-    if (testjson_BaseDeserializeJsonTest_testNameParentType(__this, "a", root_o, cx_type(cx_int8_o))) {
+    if (testjson_BaseDeserializeJsonTest_testNameParentType(__this, "a", root_o, cx_type(cx_int32_o))) {
         goto error;
     }
 error:;
