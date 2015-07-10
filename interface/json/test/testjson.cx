@@ -124,14 +124,14 @@ class TestJsonScope: BaseTestJson::
 
 class BaseDeserTest: test::Suite::
     o: object
-    bool testName(string name)
-    bool testParent(object parent)
-    bool testType(type type)
-    bool testNameParentType(string name, object parent, type type)
+    bool testName(object o, string name)
+    bool testParent(object o, object parent)
+    bool testType(object o, type type)
+    bool testNameParentType(object o, string name, object parent, type type)
 
 class BaseDeserPrimitiveTest: BaseDeserTest::
     void testValue()
 
 class DeserPrimitiveTest: BaseDeserPrimitiveTest::
-    void setUp()
     void testUint8() test::Case
+    void testSimpleString() test::Case

@@ -8,10 +8,10 @@
 
 #include "testjson.h"
 
-/* ::testjson::BaseDeserTest::testName(string name) */
-cx_bool testjson_BaseDeserTest_testName(testjson_BaseDeserTest _this, cx_string name) {
+/* ::testjson::BaseDeserTest::testName(object o,string name) */
+cx_bool testjson_BaseDeserTest_testName(testjson_BaseDeserTest _this, cx_object o, cx_string name) {
 /* $begin(::testjson::BaseDeserTest::testName) */
-    cx_string actual = cx_nameof(_this->o);
+    cx_string actual = cx_nameof(o);
     cx_any _actual = {cx_type(cx_string_o), &actual, FALSE};
     cx_any _expected = {cx_type(cx_string_o), &name, FALSE};
     if (test_Suite_assertEqual_any_any(test_Suite(_this), _expected, _actual)) {
@@ -23,20 +23,20 @@ error:
 /* $end */
 }
 
-/* ::testjson::BaseDeserTest::testNameParentType(string name,object parent,type type) */
-cx_bool testjson_BaseDeserTest_testNameParentType(testjson_BaseDeserTest _this, cx_string name, cx_object parent, cx_type type) {
+/* ::testjson::BaseDeserTest::testNameParentType(object o,string name,object parent,type type) */
+cx_bool testjson_BaseDeserTest_testNameParentType(testjson_BaseDeserTest _this, cx_object o, cx_string name, cx_object parent, cx_type type) {
 /* $begin(::testjson::BaseDeserTest::testNameParentType) */
-    if (!_this->o) {
+    if (!o) {
         // TODO fail
         goto error;
     }
-    if (testjson_BaseDeserTest_testName(_this, name)) {
+    if (testjson_BaseDeserTest_testName(_this, o, name)) {
         goto error;
     }
-    if (testjson_BaseDeserTest_testParent(_this, parent)) {
+    if (testjson_BaseDeserTest_testParent(_this, o, parent)) {
         goto error;
     }
-    if (testjson_BaseDeserTest_testType(_this, type)) {
+    if (testjson_BaseDeserTest_testType(_this, o, type)) {
         goto error;
     }
     return FALSE;
@@ -45,10 +45,10 @@ error:
 /* $end */
 }
 
-/* ::testjson::BaseDeserTest::testParent(object parent) */
-cx_bool testjson_BaseDeserTest_testParent(testjson_BaseDeserTest _this, cx_object parent) {
+/* ::testjson::BaseDeserTest::testParent(object o,object parent) */
+cx_bool testjson_BaseDeserTest_testParent(testjson_BaseDeserTest _this, cx_object o, cx_object parent) {
 /* $begin(::testjson::BaseDeserTest::testParent) */
-    cx_object actual = cx_parentof(_this->o);
+    cx_object actual = cx_parentof(o);
     cx_any _actual = {cx_typeof(actual), &actual, FALSE};
     cx_any _expected = {cx_typeof(parent), &parent, FALSE};
     if (test_Suite_assertEqual_any_any(test_Suite(_this), _expected, _actual)) {
@@ -60,10 +60,10 @@ error:
 /* $end */
 }
 
-/* ::testjson::BaseDeserTest::testType(type type) */
-cx_bool testjson_BaseDeserTest_testType(testjson_BaseDeserTest _this, cx_type type) {
+/* ::testjson::BaseDeserTest::testType(object o,type type) */
+cx_bool testjson_BaseDeserTest_testType(testjson_BaseDeserTest _this, cx_object o, cx_type type) {
 /* $begin(::testjson::BaseDeserTest::testType) */
-    cx_type actual = cx_typeof(_this->o);
+    cx_type actual = cx_typeof(o);
     cx_any _actual = {cx_type(cx_type_o), &actual, FALSE};
     cx_any _expected = {cx_type(cx_type_o), &type, FALSE};
     if (test_Suite_assertEqual_any_any(test_Suite(_this), _expected, _actual)) {
