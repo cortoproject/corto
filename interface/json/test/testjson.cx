@@ -122,16 +122,16 @@ class TestJsonScope: BaseTestJson::
     void setUp() virtual
     void tearDown() virtual
 
-class BaseDeserializeJsonTest: test::Suite::
+class BaseDeserTest: test::Suite::
     o: object
     bool testName(string name)
     bool testParent(object parent)
     bool testType(type type)
     bool testNameParentType(string name, object parent, type type)
 
-class BaseDeserializeJsonPrimitiveTest: BaseDeserializeJsonTest::
+class BaseDeserPrimitiveTest: BaseDeserTest::
     void testValue()
 
-class DeserializeJsonPrimitiveTest: BaseDeserializeJsonPrimitiveTest::
+class DeserPrimitiveTest: BaseDeserPrimitiveTest::
     void setUp()
     void testUint8() test::Case

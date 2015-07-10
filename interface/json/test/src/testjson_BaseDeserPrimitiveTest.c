@@ -1,4 +1,4 @@
-/* testjson_BaseDeserializeJsonPrimitiveTest.c
+/* testjson_BaseDeserPrimitiveTest.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -8,9 +8,9 @@
 
 #include "testjson.h"
 
-/* ::testjson::BaseDeserializeJsonPrimitiveTest::testValue() */
-cx_void testjson_BaseDeserializeJsonPrimitiveTest_testValue(testjson_BaseDeserializeJsonPrimitiveTest _this) {
-/* $begin(::testjson::BaseDeserializeJsonPrimitiveTest::testValue) */
+/* ::testjson::BaseDeserPrimitiveTest::testValue() */
+cx_void testjson_BaseDeserPrimitiveTest_testValue(testjson_BaseDeserPrimitiveTest _this) {
+/* $begin(::testjson::BaseDeserPrimitiveTest::testValue) */
     CX_UNUSED(_this);
 /* $end */
 }
