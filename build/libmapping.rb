@@ -27,15 +27,15 @@ module LibMapping
 
     @@libmap = {
         'Linux' =>   {'dl'=>'dl', 'm'=>'m', 'rt'=>'rt', 'xml2' => 'xml2'},
-        'Mac' =>     {'dl'=>'dl', 'm'=>'m', 'xml2' => 'xml2'},
+        'Mac' =>     {'dl'=>'dl', 'm'=>'m', 'xml2' => 'xml2', 'rt'=>nil},
         'Windows' => {}
     }
 
     def self.mapLibs(libs)
-        libs.select do |i|
-            @@libmap[Os.name][i]
-        end.map do |i|
-            @@libmap[Os.name][i]
+      libs.map do |i|
+        if @@libmap[Os.name].has_key?(i) then @@libmap[Os.name][i]
+        else i
         end
+      end.compact
     end
 end

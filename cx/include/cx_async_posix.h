@@ -10,7 +10,6 @@
 
 #include "pthread.h"
 #include "signal.h"
-#include "semaphore.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,6 +39,12 @@ typedef struct cx_mutex_s {
     char** l_symbols;
 #endif
 }cx_mutex_s;
+    
+typedef struct cx_sem_s {
+    pthread_mutex_t mutex;
+    pthread_cond_t cond;
+    int value;
+}cx_sem_s;
 
 #define CX_MUTEX_INITIALIZER {PTHREAD_MUTEX_INITIALIZER}
 #define CX_RWMUTEX_INITIALIZER {PTHREAD_RWLOCK_INITIALIZER}

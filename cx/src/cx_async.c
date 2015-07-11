@@ -18,13 +18,6 @@
 #include "cx_util.h"
 #include "cx_time.h"
 
-static int cx_posixError(char* func, int error) {
-    if (error) {
-        cx_warning("%s failed: %s.", func, strerror(errno));
-    }
-    return error;
-}
-
 cx_thread cx_threadNew(cx_threadFunc f, void* arg) {
     pthread_t thread;
     int r;
@@ -151,18 +144,6 @@ int cx_mutexTry(cx_mutex mutex) {
     return result;
 }
 
-cx_sem cx_semNew(unsigned int initValue) {
-    sem_t* semaphore;
-
-    semaphore = malloc (sizeof(sem_t));
-    memset(semaphore, 0, sizeof(sem_t));
-    if (semaphore) {
-        cx_posixError("sem_init", sem_init (semaphore, FALSE, initValue));
-    }
-
-    return (cx_sem)semaphore;
-}
-
 /* Create read-write mutex */
 void cx_rwmutexNew(struct cx_rwmutex_s *m) {
     if (pthread_rwlock_init(&m->mutex, NULL)) {
@@ -204,36 +185,67 @@ int cx_rwmutexUnlock(cx_rwmutex mutex) {
     return pthread_rwlock_unlock(&mutex->mutex);
 }
 
+cx_sem cx_semNew(unsigned int initValue) {
+    cx_sem semaphore;
+    
+    semaphore = malloc (sizeof(cx_sem_s));
+    memset(semaphore, 0, sizeof(cx_sem_s));
+    if (semaphore) {
+        pthread_mutex_init(&semaphore->mutex, NULL);
+        pthread_cond_init(&semaphore->cond, NULL);
+        semaphore->value = initValue;
+    }
+    
+    return (cx_sem)semaphore;
+}
+
 /* Post to semaphore */
 int cx_semPost(cx_sem semaphore) {
-    return cx_posixError("sem_post", sem_post((sem_t*)semaphore));
+    pthread_mutex_lock(&semaphore->mutex);
+    semaphore->value++;
+    if(semaphore->value > 0) {
+        pthread_cond_signal(&semaphore->cond);
+    }
+    pthread_mutex_unlock(&semaphore->mutex);
+    return 0;
 }
 
 /* Wait for semaphore */
 int cx_semWait(cx_sem semaphore) {
-    return cx_posixError("sem_wait", sem_wait ((sem_t*)semaphore));
+    pthread_mutex_lock(&semaphore->mutex);
+    while(semaphore->value <= 0) {
+        pthread_cond_wait(&semaphore->cond, &semaphore->mutex);
+    }
+    semaphore->value--;
+    pthread_mutex_unlock(&semaphore->mutex);    
+    return 0;
 }
 
 /* Trywait for semaphore */
 int cx_semTryWait(cx_sem semaphore) {
     int result;
-    result = sem_trywait((sem_t*)semaphore);
-    if (result && (errno != EAGAIN)) {
-        cx_posixError("sem_trywait", result);
+
+    pthread_mutex_lock(&semaphore->mutex);
+    if(semaphore->value > 0) {
+        semaphore->value--;
+        result = 0;
+    } else {
+        errno = EAGAIN;
+        result = -1;
     }
+    pthread_mutex_unlock(&semaphore->mutex);    
     return result;
 }
 
 /* Get value of semaphore */
 int cx_semValue(cx_sem semaphore) {
-    int value;
-    cx_posixError("sem_getvalue", sem_getvalue((sem_t*)semaphore, &value));
-    return value;
+    return semaphore->value;
 }
 
 /* Free semaphore */
 int cx_semFree(cx_sem semaphore) {
-    sem_destroy ((sem_t*)semaphore);
+    pthread_cond_destroy(&semaphore->cond);
+    pthread_mutex_destroy(&semaphore->mutex);
     free(semaphore);
     return 0;
 }
