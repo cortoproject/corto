@@ -2084,7 +2084,7 @@ int cx_observerAlignScope(cx_object o, void *userData) {
         while (result && cx_iterHasNext(&iter)) {
             result = cx_observerAlignScope(cx_iterNext(&iter), userData);
         }
-        cx_scopeRelease(o);
+        cx_scopeRelease(scope);
         data->depth--;
         return result;
     } else {
