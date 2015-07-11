@@ -96,7 +96,7 @@ static cx_primitiveKind json_primitiveKind(cx_object o) {
     return cx_primitive(cx_typeof(o))->kind;
 }
 
-void json_deserNumber(cx_object o, JSON_Value *value) {
+static void json_deserNumber(void* o, JSON_Value *value) {
     cx_primitiveKind primitiveKind = json_primitiveKind(o);
     cx_assert(primitiveKind == CX_INTEGER || primitiveKind == CX_UINTEGER
         || primitiveKind == CX_FLOAT, "not deserializing uint, int, or float");
@@ -109,7 +109,7 @@ void json_deserNumber(cx_object o, JSON_Value *value) {
 error:;
 }
 
-void json_deserText(cx_object o, JSON_Value *value) {
+static void json_deserText(void* o, JSON_Value *value) {
     cx_primitiveKind primitiveKind = json_primitiveKind(o);
     cx_assert(primitiveKind == CX_TEXT, "not deserializing text");
     if (json_value_get_type(value) != JSONString) {
@@ -118,4 +118,33 @@ void json_deserText(cx_object o, JSON_Value *value) {
     const char *s = json_value_get_string(value);
     *(cx_string *)o = strdup(s);
 error:;
+}
+
+cx_bool json_deserPrimitive(cx_object o, JSON_Value *value) {
+    cx_assert(cx_typeof(o)->kind == CX_PRIMITIVE, "not serializing a primitive");
+    cx_bool error = FALSE;
+    switch (cx_primitive(cx_typeof(o))->kind) {
+        case CX_BINARY:
+            break;
+        case CX_BOOLEAN:
+            break;
+        case CX_CHARACTER:
+            break;
+        case CX_INTEGER:
+        case CX_UINTEGER:
+        case CX_FLOAT:
+            json_deserNumber(o, value);
+            break;
+        case CX_TEXT:
+            json_deserText(o, value);
+            break;
+        case CX_ENUM:
+            break;
+        case CX_BITMASK:
+            break;
+        case CX_ALIAS:
+            cx_critical("alias type not supported");
+            break;
+    }
+    return error;
 }

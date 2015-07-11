@@ -1,7 +1,13 @@
+#ifndef json_primitives_H
+#define json_primitives_H
 
 #include "parson.h"
 
 #include "cortex.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 cx_int16 serializeNumber(cx_value *value, cx_string *out);
 cx_int16 serializeBinary(cx_value *value, cx_string *out);
@@ -11,6 +17,9 @@ cx_int16 serializeBoolean(cx_value *value, cx_string *out);
 cx_int16 serializeText(cx_value *value, cx_string *out);
 cx_int16 serializeAlias(cx_value *value, cx_string *out);
 
-void json_deserNumber(cx_object o, JSON_Value *value);
-void json_deserBinary(cx_object o, JSON_Value *value);
-void json_deserText(cx_object o, JSON_Value *value);
+cx_bool json_deserPrimitive(cx_object o, JSON_Value *value);
+
+#ifdef __cplusplus
+}
+#endif
+#endif

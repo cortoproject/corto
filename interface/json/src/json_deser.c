@@ -2,7 +2,9 @@
 #include "parson.h"
 
 #include "cortex.h"
+
 #include "json_primitives.h"
+#include "json_composites.h"
 
 static cx_object cx_json_checkRoot(const char* parent, const char* name, const char* type) {
     cx_bool isRoot = !strcmp(parent, "");
@@ -41,92 +43,61 @@ error:
     return NULL;
 }
 
-static void cx_json_define_primitive(cx_object o, JSON_Value *value) {
-    cx_assert(cx_typeof(o)->kind == CX_PRIMITIVE, "not serializing a primitive");
-    switch (cx_primitive(cx_typeof(o))->kind) {
-        case CX_BINARY:
-            break;
-        case CX_BOOLEAN:
-            break;
-        case CX_CHARACTER:
-            break;
-        case CX_INTEGER:
-        case CX_UINTEGER:
-        case CX_FLOAT:
-            json_deserNumber(o, value);
-            break;
-        case CX_TEXT:
-            json_deserText(o, value);
-            break;
-        case CX_ENUM:
-            break;
-        case CX_BITMASK:
-            break;
-        case CX_ALIAS:
-            cx_critical("alias type not supported");
-            break;
-    }
-}
-
-static void cx_json_define_composite(cx_object o, JSON_Value *value) {
-    cx_assert(cx_typeof(o)->kind == CX_COMPOSITE, "not serializing a composite");
-    CX_UNUSED(value);
-}
-
-static void cx_json_define_collection(cx_object o, JSON_Value *value) {
-    cx_assert(cx_typeof(o)->kind == CX_COLLECTION, "not serializing a collection");
-    CX_UNUSED(value);
-}
-
-
-static void cx_json_define(cx_object o, JSON_Value *value) {
-    switch (cx_typeof(o)->kind) {
+cx_bool json_deser_forward(void *v, cx_type t, JSON_Value* jsonV) {
+    cx_bool error = FALSE;
+    switch (t->kind) {
         case CX_VOID:
             break;
         case CX_ANY:
+            error = TRUE;
             cx_error("deserialization of JSON of \"any\" type not supported");
             break;
         case CX_PRIMITIVE:
-            cx_json_define_primitive(o, value);
+            error = json_deserPrimitive(v, jsonV);
             break;
         case CX_COMPOSITE:
-            cx_json_define_composite(o, value);
+            error = json_deserComposite(v, jsonV);
             break;
         case CX_COLLECTION:
-            cx_json_define_collection(o, value);
             break;
         case CX_ITERATOR:
             cx_error("deserialization of JSON of \"iterator\" type not supported");
             break;
     }
+    return error;
 }
 
 cx_object cx_json_deser(cx_string s) {
-    JSON_Value *jsonValue = json_parse_string(s);
     JSON_Object *jsonObject;
     JSON_Object *meta;
     JSON_Value *value;
     cx_object o = NULL;
-
+    cx_id fullname;
+    JSON_Value *jsonValue = json_parse_string(s);
     if (!jsonValue || json_value_get_type(jsonValue) != JSONObject) {
         cx_error("invalid top level JSON object");
         goto error;
     }
-
     jsonObject = json_value_get_object(jsonValue);
     meta = json_object_get_object(jsonObject, "meta");
     value = json_object_get_value(jsonObject, "value");
-
     if (!(meta && value)) {
         cx_error("did not find meta or value as objects");
         goto error;
     }
-
     if (!(o = cx_json_declare(meta))) {
+        cx_error("cannot not declare object");
         goto error;
     }
-    cx_json_define(o, value);
-
+    cx_fullname(o, fullname);
+    if (json_deser_forward(o, cx_typeof(o), value)) {
+        cx_error("cannot not set value of %s", fullname);
+        goto error;
+    }
+    if (cx_define(o)) {
+        cx_error("cannot not define %s", fullname);
+        goto error;
+    }
 error:
     if (jsonValue) {
         json_value_free(jsonValue);
