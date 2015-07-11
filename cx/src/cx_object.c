@@ -125,12 +125,12 @@ cx_bool cx_observersWaitForUnused(cx__observer** observers) {
                             inUse = TRUE; /* Array is found, so keep waiting */
                         }
                     }
-                    
+
                 /* Check whether the observer array is in use by my own thread */
                 } else {
                     freeArray = TRUE;
                     for(j=0; j<observerAdmin[i].sp; j++) {
-                        /* The array is in use by my own thread so I can't keep spinning. Notify the observing function to 
+                        /* The array is in use by my own thread so I can't keep spinning. Notify the observing function to
                          * free the array */
                         if (observerAdmin[i].stack[j].observers == observers) {
                             observerAdmin[i].stack[j].free = TRUE; /* Signal the notification routine to free the array */
@@ -209,7 +209,7 @@ static cx__persistent* cx__objectPersistent(cx__object* o) {
         result = NULL;
     }
 
-    return result; 
+    return result;
 }
 
 static void* cx__objectStartAddr(cx__object* o) {
@@ -456,7 +456,7 @@ void cx__freeSSO(cx_object sso) {
 
     if (scope->scope) {
         if (cx_rbtreeSize(scope->scope)) {
-            cx_error("cx__freeSSO: scope of object '%s' is not empty (%d left)", 
+            cx_error("cx__freeSSO: scope of object '%s' is not empty (%d left)",
                 cx_nameof(sso),
                 cx_rbtreeSize(scope->scope));
         }
@@ -797,7 +797,7 @@ cx_int16 cx_delegateInit(cx_type t, cx_object o) {
 cx_object cx_new_ext(cx_object src, cx_type type, cx_uint8 attrs, cx_string context) {
     cx_uint32 size, headerSize;
     cx__object* o;
-    
+
     CX_UNUSED(src);
     CX_UNUSED(context);
 
@@ -875,7 +875,7 @@ cx_object cx_new_ext(cx_object src, cx_type type, cx_uint8 attrs, cx_string cont
 
             /* Call framework initializer */
             cx_init(CX_OFFSET(o, sizeof(cx__object)));
-            
+
             /* Call initializer */
             if (cx_delegateInit(type, CX_OFFSET(o, sizeof(cx__object)))) {
                 goto error;
@@ -962,10 +962,10 @@ cx_object cx_declareFrom(cx_object parent, cx_string name, cx_type type, cx_obje
             if (!cx__initScope(o, name, parent)) {
 
                 /* Observable administration needs to be initialized after the
-                 * scope administration because it needs to setup the correct 
+                 * scope administration because it needs to setup the correct
                  * chain of parents to notify on an event. */
                 cx__initObservable(o);
-                
+
                 /* Call framework initializer */
                 cx_init(o);
 
@@ -1038,7 +1038,7 @@ cx_int16 cx_defineFrom(cx_object o, cx_object source) {
             if (cx_class_instanceof(cx_class_o, t)) {
                 /* Attach observers to object */
                 cx_class_attachObservers(cx_class(t), o);
-                /* Call constructor */    
+                /* Call constructor */
                 result = cx_delegateConstruct(t, o);
                 /* Start listening with attached observers */
                 cx_class_listenObservers(cx_class(t), o);
@@ -1067,7 +1067,7 @@ cx_int16 cx_defineFrom(cx_object o, cx_object source) {
                 cx_timeGet(&_ps->timestamp);
             }
             cx_notify(cx__objectObservable(_o), o, source, CX_ON_UPDATE);
-        }     
+        }
     }
 
     return result;
@@ -2058,7 +2058,7 @@ typedef struct cx_observerAlignData {
     cx_object observable;
     int mask;
     int depth;
-}cx_observerAlignData;
+} cx_observerAlignData;
 
 int cx_observerAlignScope(cx_object o, void *userData) {
     cx_observerAlignData *data = userData;
@@ -2075,9 +2075,16 @@ int cx_observerAlignScope(cx_object o, void *userData) {
     }
 
     if (data->observer->observer->mask & CX_ON_SCOPE) {
-        int result;
+        int result = 1;
+        cx_ll scope;
+        cx_iter iter;
         data->depth++;
-        result = cx_scopeWalk(o, cx_observerAlignScope, userData);
+        scope = cx_scopeClaim(o);
+        iter = cx_llIter(scope);
+        while (result && cx_iterHasNext(&iter)) {
+            result = cx_observerAlignScope(cx_iterNext(&iter), userData);
+        }
+        cx_scopeRelease(o);
         data->depth--;
         return result;
     } else {
@@ -2087,6 +2094,8 @@ int cx_observerAlignScope(cx_object o, void *userData) {
 
 void cx_observerAlign(cx_object observable, cx__observer *observer, int mask) {
     cx_observerAlignData walkData;
+    cx_ll scope;
+    cx_iter iter;
 
     /* Do recursive walk over scope */
     walkData.observable = observable;
@@ -2098,7 +2107,12 @@ void cx_observerAlign(cx_object observable, cx__observer *observer, int mask) {
         cx_notifyObserver(observer, observable, observable, mask);
     }
 
-    cx_scopeWalk(observable, cx_observerAlignScope, &walkData);
+    scope = cx_scopeClaim(observable);
+    iter = cx_llIter(scope);
+    while (cx_iterHasNext(&iter)) {
+        cx_observerAlignScope(cx_iterNext(&iter), &walkData);
+    }
+    cx_scopeRelease(scope);
 }
 
 /* Add observer to observable */
@@ -2116,7 +2130,7 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
                     cx_fullname(observable, id),
                     cx_fullname(observer, id2));
             goto error;
-        }               
+        }
     }
 
     if (!cx_checkAttr(observable, CX_ATTR_OBSERVABLE)) {
@@ -2240,7 +2254,7 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
 
     /* From this point onwards the old observer arrays are no longer accessible. However, since notifications can
      * still be in progress these arrays can't be deleted yet. Therefore wait until the arrays are no longer being
-     * used. 
+     * used.
      *
      * The administration where this information is stored is not protected by locking so that notifying objects can
      * remain lock-free. There is however a slight chance that a notification pushed the old array to the administration
@@ -3097,7 +3111,7 @@ static cx_uint32 cx_overloadParamCompare(
         if ((o_type->kind == CX_PRIMITIVE) && (cx_primitive(o_type)->kind == CX_BOOLEAN)) {
             d++;
             goto match;
-        } else if (!o_reference && 
+        } else if (!o_reference &&
             ((o_type->kind != CX_PRIMITIVE) || (cx_primitive(o_type)->kind != CX_TEXT))) {
             goto nomatch;
         } else {
@@ -3140,7 +3154,7 @@ static cx_uint32 cx_overloadParamCompare(
             d++;
         /* If types are not compatible, they won't match */
         } else if (!cx_type_compatible(o_type, r_type)) {
-            goto nomatch; 
+            goto nomatch;
         /* Types are compatible. Increase d by one if types are of a different primitive
          * kind. */
         } else if ((o_type->kind == CX_PRIMITIVE) && (r_type->kind == CX_PRIMITIVE)) {
@@ -3255,7 +3269,7 @@ cx_int16 cx_overload(cx_object object, cx_string requested, cx_int32* distance, 
     /* If request contains parameters, compare parameters of both */
     if (r_parameterCount == o_parameterCount) {
         for (i = 0; i < o_parameterCount; i++) {
-            cx_bool o_reference = FALSE, r_reference = FALSE; 
+            cx_bool o_reference = FALSE, r_reference = FALSE;
             cx_bool r_forceReference = FALSE, r_wildcard = FALSE, r_null = FALSE;
             cx_type o_type, r_type;
             cx_id r_typeName;
@@ -3283,12 +3297,12 @@ cx_int16 cx_overload(cx_object object, cx_string requested, cx_int32* distance, 
 
             /* Evaluate whether parameter types are compatible */
             paramDistance += cx_overloadParamCompare(
-                o_type, 
-                r_type, 
-                o_reference, 
-                r_reference, 
-                r_forceReference, 
-                r_wildcard, 
+                o_type,
+                r_type,
+                o_reference,
+                r_reference,
+                r_forceReference,
+                r_wildcard,
                 r_null);
 
             if (paramDistance == -1) {
@@ -3325,8 +3339,8 @@ int cx_lookupFunctionWalk(cx_object o, void* userData) {
     data = userData;
 
     /* If current object is a function, match it */
-    if ((cx_typeof(o)->kind == CX_COMPOSITE) && 
-        ((cx_interface(cx_typeof(o))->kind == CX_PROCEDURE) || 
+    if ((cx_typeof(o)->kind == CX_COMPOSITE) &&
+        ((cx_interface(cx_typeof(o))->kind == CX_PROCEDURE) ||
         (cx_interface(cx_typeof(o))->kind == CX_DELEGATE))) {
         if (strchr(data->request, '(')) {
             if (cx_overload(o, data->request, &d, data->castableOverloading)) {
@@ -3441,9 +3455,9 @@ cx_string cx_signatureAdd(cx_string sig, cx_type type, int flags) {
     cx_bool reference = flags & CX_PARAMETER_REFERENCE;
     cx_bool forceReference = flags & CX_PARAMETER_FORCEREFERENCE;
     cx_bool wildcard = flags & CX_PARAMETER_WILDCARD;
-    
+
     if (type) {
-        if (!cx_checkAttr(type, CX_ATTR_SCOPED) || 
+        if (!cx_checkAttr(type, CX_ATTR_SCOPED) ||
            ((cx_parentof(type) != cortex_o) &&
            (cx_parentof(type) != cortex_lang_o))) {
             cx_fullname(type, id);
@@ -3455,7 +3469,7 @@ cx_string cx_signatureAdd(cx_string sig, cx_type type, int flags) {
     } else {
         strcpy(id, "null");
     }
-    
+
     len = strlen(sig);
     if (sig[len-1] == '(') {
         result = cx_realloc(sig, len + strlen(id) + 1 + ((reference|forceReference) ? 2 : 0));
@@ -3476,7 +3490,7 @@ cx_string cx_signatureAdd(cx_string sig, cx_type type, int flags) {
 cx_string cx_signatureAddWildcard(cx_string sig, cx_bool isReference) {
     cx_uint32 len;
     cx_string result;
-    
+
     len = strlen(sig);
     if (sig[len-1] == '(') {
         result = cx_realloc(sig, len + 1 + 1 + (isReference ? 1 : 0));
@@ -3707,4 +3721,3 @@ void __cx_cortex__new(cx_function f, void *result, void *args) {
         *(cx_type*)args,
         *(cx_attr*)((intptr_t)args + sizeof(cx_type)));
 }
-
