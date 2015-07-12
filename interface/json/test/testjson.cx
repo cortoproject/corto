@@ -1,5 +1,7 @@
 #package ::testjson
 
+struct Point::
+    x, y: int32
 
 void primitives::
     void ints::
@@ -135,3 +137,4 @@ class BaseDeserPrimitiveTest: BaseDeserTest::
 class DeserPrimitiveTest: BaseDeserPrimitiveTest::
     void testUint8() test::Case
     void testSimpleString() test::Case
+    void testPoint() test::Case

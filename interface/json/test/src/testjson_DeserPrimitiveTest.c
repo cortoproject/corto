@@ -14,6 +14,26 @@
 
 /* $end */
 
+/* ::testjson::DeserPrimitiveTest::testPoint() */
+cx_void testjson_DeserPrimitiveTest_testPoint(testjson_DeserPrimitiveTest _this) {
+/* $begin(::testjson::DeserPrimitiveTest::testPoint) */
+    cx_object o = cx_json_deser(
+        "{\"meta\": {\"name\": \"c\", \"parent\": \"::\", \"type\": \"::testjson::Point\"},"
+        "\"value\": {\"x\": 45, \"y\": 2}}");
+    testjson_BaseDeserTest __this = testjson_BaseDeserTest(_this);
+    if (testjson_BaseDeserTest_testNameParentType(__this, o, "c", root_o, cx_type(testjson_Point_o))) {
+        goto error;
+    }
+    testjson_Point expected = {45, 3};
+    cx_any _actual = {cx_type(testjson_Point_o), o, FALSE};
+    cx_any _expected = {cx_type(testjson_Point_o), &expected, FALSE};
+    if (test_Suite_assertEqual_any_any(test_Suite(_this), _actual, _expected)) {
+        goto error;
+    }
+    error:;
+/* $end */
+}
+
 /* ::testjson::DeserPrimitiveTest::testSimpleString() */
 cx_void testjson_DeserPrimitiveTest_testSimpleString(testjson_DeserPrimitiveTest _this) {
 /* $begin(::testjson::DeserPrimitiveTest::testSimpleString) */

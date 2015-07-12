@@ -26,17 +26,16 @@ error:
 /* ::testjson::BaseDeserTest::testNameParentType(object o,string name,object parent,type type) */
 cx_bool testjson_BaseDeserTest_testNameParentType(testjson_BaseDeserTest _this, cx_object o, cx_string name, cx_object parent, cx_type type) {
 /* $begin(::testjson::BaseDeserTest::testNameParentType) */
-    if (!o) {
-        // TODO fail
+    if (test_Suite_assert_bool_string(test_Suite(_this), o != NULL, "object not initialized")) {
         goto error;
     }
-    if (testjson_BaseDeserTest_testName(_this, o, name)) {
+    if (name && testjson_BaseDeserTest_testName(_this, o, name)) {
         goto error;
     }
-    if (testjson_BaseDeserTest_testParent(_this, o, parent)) {
+    if (parent && testjson_BaseDeserTest_testParent(_this, o, parent)) {
         goto error;
     }
-    if (testjson_BaseDeserTest_testType(_this, o, type)) {
+    if (type && testjson_BaseDeserTest_testType(_this, o, type)) {
         goto error;
     }
     return FALSE;

@@ -91,39 +91,35 @@ cx_int16 serializeAlias(cx_value *value, cx_string *out) {
     return 0;
 }
 
-static cx_primitiveKind json_primitiveKind(cx_object o) {
-    cx_assert(cx_typeof(o)->kind == CX_PRIMITIVE, "not deserializing primitive kind");
-    return cx_primitive(cx_typeof(o))->kind;
-}
-
-static void json_deserNumber(void* o, JSON_Value *value) {
-    cx_primitiveKind primitiveKind = json_primitiveKind(o);
-    cx_assert(primitiveKind == CX_INTEGER || primitiveKind == CX_UINTEGER
-        || primitiveKind == CX_FLOAT, "not deserializing uint, int, or float");
+static void json_deserNumber(void* o, cx_type t, JSON_Value *value) {
+    cx_primitiveKind kind = cx_primitive(t)->kind;
+    cx_assert(kind == CX_INTEGER || kind == CX_UINTEGER
+        || kind == CX_FLOAT, "not deserializing uint, int, or float");
     if (json_value_get_type(value) != JSONNumber) {
         cx_error("not deserializing number");
         goto error;
     }
     cx_float64 number = json_value_get_number(value);
-    cx_convert(cx_primitive(cx_float64_o), &number, cx_primitive(cx_typeof(o)), o);
+    cx_convert(cx_primitive(cx_float64_o), &number, cx_primitive(t), o);
 error:;
 }
 
-static void json_deserText(void* o, JSON_Value *value) {
-    cx_primitiveKind primitiveKind = json_primitiveKind(o);
-    cx_assert(primitiveKind == CX_TEXT, "not deserializing text");
-    if (json_value_get_type(value) != JSONString) {
+static void json_deserText(void* p, cx_type t, JSON_Value *v) {
+    cx_primitiveKind kind = cx_primitive(t)->kind;
+    cx_assert(kind == CX_TEXT, "not deserializing text");
+    const char *s = json_value_get_string(v);
+    if (!s) {
+        cx_error("could not deserialize text");
         goto error;
     }
-    const char *s = json_value_get_string(value);
-    *(cx_string *)o = strdup(s);
+    *(cx_string *)p = strdup(s);
 error:;
 }
 
-cx_bool json_deserPrimitive(cx_object o, JSON_Value *value) {
-    cx_assert(cx_typeof(o)->kind == CX_PRIMITIVE, "not serializing a primitive");
+cx_bool json_deserPrimitive(void* p, cx_type t, JSON_Value* v) {
+    cx_assert(t->kind == CX_PRIMITIVE, "not deserializing primitive");
     cx_bool error = FALSE;
-    switch (cx_primitive(cx_typeof(o))->kind) {
+    switch (cx_primitive(t)->kind) {
         case CX_BINARY:
             break;
         case CX_BOOLEAN:
@@ -133,10 +129,10 @@ cx_bool json_deserPrimitive(cx_object o, JSON_Value *value) {
         case CX_INTEGER:
         case CX_UINTEGER:
         case CX_FLOAT:
-            json_deserNumber(o, value);
+            json_deserNumber(p, t, v);
             break;
         case CX_TEXT:
-            json_deserText(o, value);
+            json_deserText(p, t, v);
             break;
         case CX_ENUM:
             break;

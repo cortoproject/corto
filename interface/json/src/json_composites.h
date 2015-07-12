@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-cx_bool json_deserComposite(void* o, JSON_Value *value);
+cx_bool json_deserComposite(void* p, cx_type t, JSON_Value *v);
 
 #ifdef __cplusplus
 }

@@ -34,16 +34,20 @@ static cx_object cx_json_declare(JSON_Object *meta) {
     }
     type = cx_resolve(NULL, (cx_string)typeName);
     if (!type) {
+        cx_free(parent);
         cx_error("type %s could not be resolved", typeName);
+        goto error;
     }
     object = cx_declare(parent, (cx_string)name, type);
+    cx_free(parent);
+    cx_free(type);
 finished:
     return object;
 error:
     return NULL;
 }
 
-cx_bool json_deser_forward(void *v, cx_type t, JSON_Value* jsonV) {
+cx_bool json_deser_forward(void* p, cx_type t, JSON_Value* v) {
     cx_bool error = FALSE;
     switch (t->kind) {
         case CX_VOID:
@@ -53,10 +57,10 @@ cx_bool json_deser_forward(void *v, cx_type t, JSON_Value* jsonV) {
             cx_error("deserialization of JSON of \"any\" type not supported");
             break;
         case CX_PRIMITIVE:
-            error = json_deserPrimitive(v, jsonV);
+            error = json_deserPrimitive(p, t, v);
             break;
         case CX_COMPOSITE:
-            error = json_deserComposite(v, jsonV);
+            error = json_deserComposite(p, t, v);
             break;
         case CX_COLLECTION:
             break;
