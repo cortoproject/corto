@@ -21,10 +21,10 @@ cx_int16 Fast_Cast_construct(Fast_Cast _this) {
     cx_type rvalueType;
     rvalueType = Fast_Expression_getType(_this->rvalue);
     if (rvalueType) {
-        if (cx_type_castable(_this->lvalue, rvalueType) || cx_type_castable(rvalueType, _this->lvalue)) {
-            /* TODO: cx_assert(!cx_type_compatible(rvalueType, cx_type(lvalue)), "%d: redundant cast inserted", yparser()->line); */
+        if ((_this->isReference && rvalueType->reference && (rvalueType->kind == CX_VOID)) ||
+           (cx_type_castable(_this->lvalue, rvalueType) || cx_type_castable(rvalueType, _this->lvalue))) {
             cx_set(&Fast_Expression(_this)->type, _this->lvalue);
-            Fast_Expression(_this)->isReference = _this->lvalue->reference;
+            Fast_Expression(_this)->isReference = _this->lvalue->reference || _this->isReference;
         } else {
             cx_id id1, id2;
             Fast_Parser_error(yparser(), "cannot cast from type '%s' to '%s'",

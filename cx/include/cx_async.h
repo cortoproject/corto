@@ -55,8 +55,7 @@ int cx_rwmutexUnlock(cx_rwmutex mutex);
 int cx_rwmutexFree(cx_rwmutex mutex);
 
 /* Semaphore */
-typedef struct cx_sem_s cx_sem_s;
-typedef cx_sem_s* cx_sem;
+typedef struct cx_sem_s* cx_sem;
 
 cx_sem cx_semNew(unsigned int initValue);
 int cx_semPost(cx_sem);

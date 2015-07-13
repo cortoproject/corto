@@ -136,7 +136,7 @@ static cx_int16 serializeReference(cx_serializer s, cx_value *v, void *userData)
 
             /* Escape value */
             cx_string escapedValue = cx_malloc((length = stresc(NULL, 0, id)) + 1);
-            stresc(escapedValue, length, id);
+            stresc(escapedValue, length + 1, id);
             if (!cx_ser_appendstr(data, "\"@R %s\"", escapedValue)) {
                 cx_dealloc(escapedValue);
                 goto finished;

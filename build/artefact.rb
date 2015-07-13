@@ -18,6 +18,7 @@ CFLAGS ||= []
 LFLAGS ||= []
 TARGETDIR ||= ENV['CORTEX_HOME'] + "/bin"
 GENERATED_SOURCES ||= []
+USE ||= []
 
 CLEAN.include("obj/*.o")
 CLEAN.include("obj")
@@ -30,7 +31,7 @@ CFLAGS << "-g" << "-Wall" << "-Wextra" << "-Wno-gnu-label-as-value" << "-Wno-unk
 
 SOURCES = (Rake::FileList["src/*.c"] + GENERATED_SOURCES)
 OBJECTS = SOURCES.ext(".o").pathmap("obj/%f")
-INCLUDE_LIST = INCLUDE.map {|i| "-I" + i}.join(" ")
+USE_INCLUDE = USE.map{|i| "-I" + "#{ENV['CORTEX_HOME']}/packages/" + i.gsub("::", "/") + "/include"}.join(" ")
 
 task :binary => "#{TARGETDIR}/#{ARTEFACT}"
 
@@ -42,8 +43,12 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     cortex_lib = "#{CORTEX_LIB.map {|i| ENV['CORTEX_HOME'] + "/bin/lib" + i + ".so"}.join(" ")}"
     libpath = "#{LIBPATH.map {|i| "-L" + i}.join(" ")}"
     libmapping = "#{(LibMapping.mapLibs(LIB)).map {|i| "-l" + i}.join(" ")}"
+    libuse = USE.map do |i|
+        dirs = i.split("::")
+        "#{ENV['CORTEX_HOME']}/packages/" + dirs[0..dirs.length-2].join("/") + "/bin/lib" + dirs[dirs.length-1] + ".so"
+    end.join(" ")
     lflags = "#{LFLAGS.join(" ")} -o #{TARGETDIR}/#{ARTEFACT}"
-    cc_command = "cc #{objects} #{cflags} #{cortex_lib} #{libpath} #{libmapping} #{lflags}"
+    cc_command = "cc #{objects} #{cflags} #{cortex_lib} #{libpath} #{libmapping} #{libuse} #{lflags}"
     sh cc_command
     sh "echo '\033[1;49m[ \033[1;34m#{ARTEFACT}\033[0;49m\033[1;49m ]\033[0;49m'"
 end
@@ -55,7 +60,7 @@ rule '.o' => ->(t){t.pathmap("src/%f").ext(".c")} do |task|
     verbose(false)
     sh "mkdir -p obj"
     sh "echo '#{task.source}'"
-    sh "cc -c #{CFLAGS.join(" ")} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{task.source} -o #{task.name}"
+    sh "cc -c #{CFLAGS.join(" ")} #{USE_INCLUDE} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{task.source} -o #{task.name}"
 end
 
 task :default => [:prebuild, :binary, :postbuild]
