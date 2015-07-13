@@ -1,5 +1,5 @@
-#ifndef json_composites_H
-#define json_composites_H
+#ifndef json_primitives_H
+#define json_primitives_H
 
 #include "parson.h"
 
@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-cx_bool json_deserComposite(void* p, cx_type t, JSON_Value* v);
+cx_bool json_deserReference(void* p, cx_type t, JSON_Value* v);
 
 #ifdef __cplusplus
 }

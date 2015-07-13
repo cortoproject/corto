@@ -1,7 +1,6 @@
 #ifndef json_deser_H
 #define json_deser_H
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -1,6 +1,7 @@
 #include "json_composites.h"
 
 #include "json_deser.h"
+#include "json_references.h"
 
 static cx_bool json_deserComposite_isJsonBaseMember(const char* name) {
     return !strncmp(name, "@", 1);
@@ -93,13 +94,18 @@ cx_bool json_deserComposite(void* p, cx_type t, JSON_Value *v) {
         member = cx_lookup(t, (cx_string)memberName);
         if (!member) {
             cx_id typeFullname;
-            cx_fullname(cx_typeof(p), typeFullname);
+            cx_fullname(t, typeFullname);
             cx_error("cannot find member %s in type %s", memberName, typeFullname);
             goto error;
         }
         memberJsonValue = json_object_get_value(o, memberName);
         void *offset = CX_OFFSET(p, member->offset);
-        cx_bool error = json_deser_forward(offset, member->type, memberJsonValue);
+        cx_bool error;
+        if (member->type->reference) {
+            error = json_deserReference(offset, member->type, memberJsonValue);
+        } else {
+            error = json_deser_forward(offset, member->type, memberJsonValue);
+        }
         cx_free(member);
         if (error) {
             cx_error("cannot deserialize member %s", memberName);
