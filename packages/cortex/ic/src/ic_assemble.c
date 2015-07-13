@@ -303,10 +303,18 @@ ic_vmOperand ic_getVmOperand(ic_vmProgram *program, ic_derefKind deref, cx_bool 
                     break;
                 case IC_VARIABLE:
                 case IC_ACCUMULATOR:
-                    if (s->isReference) {
-                        result = IC_VMOPERAND_Q; /* var uint32& v = ...; v = object */
+                    if (!isArgument) {
+                        if (s->isReference) {
+                            result = IC_VMOPERAND_Q; /* var uint32& v = ...; v = object */
+                        } else {
+                            result = IC_VMOPERAND_R; /* var uint32 v = 10 */
+                        }
                     } else {
-                        result = IC_VMOPERAND_R; /* var uint32 v = 10 */
+                        if (s->isReference) {
+                            result = IC_VMOPERAND_R;
+                        } else {
+                            result = IC_VMOPERAND_X;
+                        }                        
                     }
                     break;
                 case IC_MEMBER:

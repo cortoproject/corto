@@ -1,4 +1,4 @@
-TARGET = 'math'
+PACKAGE = 'cortex::math'
 PREFIX = 'mth'
 LIB = ['m']
 

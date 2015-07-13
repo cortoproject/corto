@@ -1,13 +1,15 @@
 require 'rake/clean'
 
+PACKAGEDIR = "#{ENV['CORTEX_HOME']}/packages/" + PACKAGE.gsub("::", "/")
+TARGETDIR =  PACKAGEDIR + "/bin"
+TARGET = PACKAGE.split("::").last
+
 GENERATED_SOURCES ||= []
 
 GENERATED_SOURCES <<
     "src/#{TARGET}__api.c" <<
     "src/#{TARGET}__wrapper.c" <<
     "src/#{TARGET}__meta.c" 
-
-TARGETDIR = "#{Dir.pwd}/#{File.dirname(Rake.application.rakefile)}/bin"
 
 PREFIX ||= TARGET
 
@@ -22,9 +24,12 @@ CLEAN.include("include/#{TARGET}__type.h")
 CLOBBER.include("bin")
 
 file "include/#{TARGET}__type.h" => GENFILE do
-    verbose(true)
+    verbose(false)
     sh "touch src/#{TARGET}__wrapper.c"
     sh "cxgen #{TARGET} --prefix #{PREFIX} --lang c"
+    if not File.identical?(PACKAGEDIR, Dir.pwd) then
+        sh "cp -R include #{PACKAGEDIR}/include"
+    end
 end
 
 task :prebuild => "include/#{TARGET}__type.h" do

@@ -357,7 +357,7 @@ int cx_xmlnodeAttrBool(cx_xmlnode cnode, const char* attribute, unsigned int* ou
         result = 0;
         if (!strcmp("true", str) || !strcmp("TRUE", str) || !strcmp("True", str)) {
             *out = 1;
-        } else if (!strcmp("false", str) || !strcmp("FALSE", str) || !strcmp("False", str)){
+        } else if (!strcmp("false", str) || !strcmp("FALSE", str) || !strcmp("False", str)) {
             *out = 0;
         } else {
             result = -1;

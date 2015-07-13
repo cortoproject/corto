@@ -1,4 +1,4 @@
-TARGET = :Fast
+PACKAGE = 'cortex::Fast'
 
 YACC = "fast.y"
 LEX = "fast.l"

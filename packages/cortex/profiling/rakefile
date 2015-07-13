@@ -1,5 +1,0 @@
-
-TARGET = :profiling
-
-require "#{ENV['CORTEX_HOME']}/build/package"
-

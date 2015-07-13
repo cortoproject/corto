@@ -1,3 +1,3 @@
-TARGET = 'test'
+PACKAGE = 'cortex::test'
 
 require "#{ENV['CORTEX_HOME']}/build/package"

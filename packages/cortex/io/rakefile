@@ -1,3 +1,0 @@
-TARGET = 'io'
-
-require "#{ENV['CORTEX_HOME']}/build/package"
