@@ -28,6 +28,7 @@ file "include/#{TARGET}__type.h" => GENFILE do
     sh "touch src/#{TARGET}__wrapper.c"
     sh "cxgen #{TARGET} --prefix #{PREFIX} --lang c"
     if not File.identical?(PACKAGEDIR, Dir.pwd) then
+        sh "mkdir -p #{PACKAGEDIR}"
         sh "cp -R include #{PACKAGEDIR}/include"
     end
 end
