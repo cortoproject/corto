@@ -1,0 +1,4 @@
+PACKAGE = 'cortex::profiling'
+
+require "#{ENV['CORTEX_HOME']}/build/package"
+

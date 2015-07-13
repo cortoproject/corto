@@ -1,0 +1,3 @@
+PACKAGE = 'cortex::io'
+
+require "#{ENV['CORTEX_HOME']}/build/package"
