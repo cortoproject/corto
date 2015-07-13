@@ -138,7 +138,7 @@ static cx_int16 serializeText(cx_value *value, cx_string *out) {
         *out = cx_malloc(length + 3 + needEscape);
         (*out)[0] = '"';
         (*out)[1] = '@';
-        stresc(*out + 1 + needEscape, length, raw);
+        stresc(*out + 1 + needEscape, length + 1, raw);
         (*out)[length + needEscape + 1] = '"';
         (*out)[length + needEscape + 2] = '\0';
         cx_dealloc(raw);
@@ -227,7 +227,7 @@ static cx_int16 serializeReference(cx_serializer s, cx_value *v, void *userData)
             
             /* Escape value */
             cx_string escapedValue = cx_malloc((length = stresc(NULL, 0, id)) + 1);
-            stresc(escapedValue, length, id);
+            stresc(escapedValue, length + 1, id);
             if (!cx_ser_appendstr(data, "\"@R %s\"", escapedValue)) {
                 cx_dealloc(escapedValue);
                 goto finished;
@@ -389,7 +389,7 @@ static int cx_appendStringAttr(cx_string key, cx_string value, void* userData) {
     
     /* Escape value */
     cx_string escapedValue = cx_malloc((length = stresc(NULL, 0, value)) + 1);
-    stresc(escapedValue, length, value);
+    stresc(escapedValue, length + 1, value);
 
     if (!cx_ser_appendstr(userData, "\"%s\":\"%s\",", key, escapedValue)) {
         goto finished;
