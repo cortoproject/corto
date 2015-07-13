@@ -57,7 +57,7 @@ task :prebuild
 task :postbuild
 
 rule '.o' => ->(t){t.pathmap("src/%f").ext(".c")} do |task|
-    verbose(true)
+    verbose(false)
     sh "mkdir -p obj"
     sh "echo '#{task.source}'"
     sh "cc -c #{CFLAGS.join(" ")} #{USE_INCLUDE} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{task.source} -o #{task.name}"
