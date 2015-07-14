@@ -153,7 +153,6 @@ static cx_int16 serializeReference(cx_serializer s, cx_value *v, void *userData)
     return 0;
 finished:
     return 1;
-
 }
 
 static cx_int16 serializeItem(cx_serializer s, cx_value *info, void *userData) {

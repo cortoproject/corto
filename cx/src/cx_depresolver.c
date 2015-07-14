@@ -26,6 +26,7 @@ typedef struct g_dependency* g_dependency;
 struct g_dependency {
     cx_uint8 kind;
     g_item item;
+    g_item dependency;
     cx_bool weak; /* A weak dependency may be degraded to DECLARED if a cycle can otherwise not be broken. */
     cx_bool marked;
     cx_bool processed; /* When a cycles are broken, it can occur that a dependency is resolved twice, as
@@ -119,7 +120,7 @@ g_item g_itemLookup(cx_object o, cx_depresolver data) {
 }
 
 /* Resolve dependency, decrease refcount */
-int g_itemResolveDependency(void* o, void* userData) {
+static int g_itemResolveDependency(void* o, void* userData) {
     g_dependency dep;
     cx_depresolver data;
 
@@ -274,7 +275,7 @@ static void g_itemResolveDependencyCycles(g_dependency dep, struct cx_depresolve
 
             for(i=sp-1; i<data->sp; i++) {
                 /* Break first weak dependency */
-                if (data->stack[i]->weak) {
+                if (data->stack[i]->weak && data->stack[i]->dependency->declared) {
                     g_itemResolveDependency(data->stack[i], data);
 
                     /* This dependency is already weakened, it cannot be weakened again. */
@@ -360,6 +361,7 @@ void cx_depresolver_depend(cx_depresolver _this, void* o, cx_uint8 kind, void* d
         dep = cx_malloc(sizeof(struct g_dependency));
         dep->kind = kind;
         dep->item = dependent;
+        dep->dependency = dependency;
         dep->weak = FALSE;
         dep->marked = FALSE;
         dep->processed = FALSE;
