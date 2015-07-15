@@ -1,5 +1,5 @@
 
-TARGET = :testjson
+PACKAGE = '::testjson'
 
 INCLUDE = ["#{ENV['CORTEX_HOME']}/interface/json/include"]
 

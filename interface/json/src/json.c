@@ -7,6 +7,7 @@
 #include "cx_string.h"
 #include "cortex.h"
 #include "json.h"
+#include "json_primitives.h"
 
 /* agreed not to change anything except the first argument of the signature */
 static cx_bool cx_ser_appendstrbuff(cx_json_ser_t* data, char* str) {
@@ -67,98 +68,6 @@ static cx_bool cx_ser_appendstr(cx_json_ser_t* data, cx_string fmt, ...) {
 
     return result;
 }
-
-static cx_int16 serializeNumber(cx_value *value, cx_string *out) {
-    cx_type t = cx_valueType(value);
-    cx_void  *v = cx_valueValue(value);
-    cx_int16 result = cx_convert(cx_primitive(t), v, cx_primitive(cx_string_o), out);
-    return result;
-}
-
-static cx_int16 serializeNumericWithPrefix(cx_value *value, cx_string *out, const char *prefix) {
-    cx_string raw;
-    cx_void *v = cx_valueValue(value);
-    if (cx_convert(cx_primitive(cx_valueType(value)), v, cx_primitive(cx_string_o), &raw)) {
-        goto error;
-    }
-    int length = snprintf(NULL, 0, "\"%s\" %s", prefix, raw);
-    if (length < 0) {
-        goto error;
-    }
-    *out = cx_malloc(length + 1);
-    if (sprintf(*out, "\"%s %s\"", prefix, raw) < 0) {
-        goto error;
-    }
-    cx_dealloc(raw);
-    return 0;
-error:
-    cx_dealloc(raw);
-    return -1;
-}
-
-static cx_int16 serializeBinary(cx_value *value, cx_string *out) {
-    return serializeNumericWithPrefix(value, out, "@B");
-}
-
-static cx_int16 serializeBitmask(cx_value *value, cx_string *out) {
-    return serializeNumericWithPrefix(value, out, "@M");
-}
-
-static cx_int16 serializeEnum(cx_value *value, cx_string *out) {
-    return serializeNumericWithPrefix(value, out, "@E");
-}
-
-static cx_int16 serializeBoolean(cx_value *value, cx_string *out) {
-    cx_bool b = *(cx_bool *)cx_valueValue(value);
-    if (b) {
-        *out = cx_malloc(sizeof("true"));
-        strcpy(*out, "true");
-    } else {
-        *out = cx_malloc(sizeof("false"));
-        strcpy(*out, "false");
-    }
-    return 0;
-}
-
-static cx_int16 serializeText(cx_value *value, cx_string *out) {
-    cx_type type = cx_valueType(value);
-    cx_void *v = cx_valueValue(value);
-    cx_primitiveKind kind = cx_primitive(type)->kind;
-    if (kind == CX_CHARACTER || (kind == CX_TEXT && (*(cx_string *)v))) {
-        cx_string raw;
-        size_t length;
-        int needEscape = 0;
-        if (cx_convert(cx_primitive(type), v, cx_primitive(cx_string_o), &raw)) {
-            goto error;
-        }
-        if (*raw == '@') {
-            needEscape = 1;
-        }
-        length = stresc(NULL, 0, raw);
-        *out = cx_malloc(length + 3 + needEscape);
-        (*out)[0] = '"';
-        (*out)[1] = '@';
-        stresc(*out + 1 + needEscape, length + 1, raw);
-        (*out)[length + needEscape + 1] = '"';
-        (*out)[length + needEscape + 2] = '\0';
-        cx_dealloc(raw);
-    } else {
-        *out = cx_malloc(sizeof("null"));
-        strcpy(*out, "null");
-    }
-    return 0;
-error:
-    return -1;
-}
-
-static cx_int16 serializeAlias(cx_value *value, cx_string *out) {
-    CX_UNUSED(value);
-    *out = cx_malloc(sizeof("null"));
-    strcpy(*out, "null");
-    return 0;
-}
-
-
 
 static cx_int16 serializePrimitive(cx_serializer s, cx_value *v, void *userData) {
     CX_UNUSED(s);
@@ -224,7 +133,7 @@ static cx_int16 serializeReference(cx_serializer s, cx_value *v, void *userData)
         if (cx_checkAttr(object, CX_ATTR_SCOPED) || (cx_valueObject(v) == object)) {
             cx_uint32 length;
             cx_fullname(object, id);
-            
+
             /* Escape value */
             cx_string escapedValue = cx_malloc((length = stresc(NULL, 0, id)) + 1);
             stresc(escapedValue, length + 1, id);
@@ -248,13 +157,13 @@ finished:
 
 static cx_int16 serializeItem(cx_serializer s, cx_value *info, void *userData) {
     cx_json_ser_t *data = userData;
-    cx_member member = info->is.member.t;
-    cx_string name = cx_nameof(member);
 
     if (data->itemCount && !cx_ser_appendstr(data, ",")) {
         goto finished;
     }
     if (info->kind == CX_MEMBER) {
+        cx_member member = info->is.member.t;
+        cx_string name = cx_nameof(member);
         if (!cx_ser_appendstr(data, "\"%s\":", name)) {
             goto finished;
         }
@@ -385,7 +294,7 @@ static char* dbsh_attrStr(cx_object o, char* buff) {
 
 static int cx_appendStringAttr(cx_string key, cx_string value, void* userData) {
     size_t length;
-    
+
     /* Escape value */
     cx_string escapedValue = cx_malloc((length = stresc(NULL, 0, value)) + 1);
     stresc(escapedValue, length + 1, value);
@@ -420,9 +329,9 @@ static cx_int16 serializeMeta(cx_serializer s, cx_value* v, void* userData) {
             goto finished;
         }
     } else {
-        if (!cx_ser_appendstr(userData, "\"name\":\"::\",")) {
+        if (!cx_ser_appendstr(userData, "\"name\":\"%s\",", CX_JSON_ROOT_NAME)) {
             goto finished;
-        }        
+        }
     }
 
     cx_id type_fullname;
@@ -435,7 +344,7 @@ static cx_int16 serializeMeta(cx_serializer s, cx_value* v, void* userData) {
         cx_time t = cx_timestampof(o);
         if (!cx_ser_appendstr(data, "\"timestamp\":\"%d.%.9d\",", t.tv_sec, t.tv_nsec)) {
             goto finished;
-        }        
+        }
     }
 
     char states[sizeof("V|DCL|DEF")];
@@ -465,7 +374,6 @@ static cx_int16 serializeMeta(cx_serializer s, cx_value* v, void* userData) {
         goto finished;
     }
 
-
     return 0;
 error:
     return -1;
@@ -486,7 +394,7 @@ static int serializeMetaWalkScopeAction(cx_object o, void* userData) {
     } else {
         if (!cx_ser_appendstr(userData, "\"name\":\"::\",")) {
             goto finished;
-        }        
+        }
     }
 
     cx_id type_fullname;
@@ -497,7 +405,7 @@ static int serializeMetaWalkScopeAction(cx_object o, void* userData) {
 
     char states[sizeof("V|DCL|DEF")];
     dbsh_stateStr(o, states);
-    if (!cx_ser_appendstr(userData, "\"states\":\"%s\",", states)) {
+    if (!cx_appendStringAttr("states", states, userData)) {
         goto finished;
     }
 
@@ -543,7 +451,7 @@ static cx_int16 serializeObject(cx_serializer s, cx_value* v, void* userData) {
     cx_uint8 c = 0;
     cx_uint32 options = data->serializeMeta + data->serializeValue + data->serializeScope;
 
-    /* If more than one option is provided, prefix with 
+    /* If more than one option is provided, prefix with
      * 'meta', 'value' and 'scope' */
 
     if (data->alwaysIncludeHeaders || (options > 1)) {
