@@ -9,6 +9,7 @@ struct Point:: x, y: int32
 void func(Point p):
     if p.x != 10: fail("p.x != 10")
     if p.y != 20: fail("p.y != 20")
+    if "$p" != "{10,20}": fail("\"$p\" != \"{10,20}\"")
 
 Point a: 10, 20
 var Point b = {10, 20}

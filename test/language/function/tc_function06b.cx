@@ -1,0 +1,37 @@
+bool result : true
+
+void fail(string msg):
+    "tc_function06b: FAIL: $msg"
+    result = false
+
+struct Point:: x, y: int32
+
+void func(Point& p):
+    if p.x != 10: fail("p.x != 10")
+    if p.y != 20: fail("p.y != 20")
+    if "$p" != "{10,20}": fail("\"$p\" != \"{10,20}\"")
+
+void func_null(Point& p):
+    if &p: fail("&p")
+
+Point a: 10, 20
+
+void func_a(Point& a):
+    if &a != ::a: fail("&a != ::a")
+
+var Point& b = a
+var Point& c = Point{10, 20}
+var Point& d = null
+
+func(Point{10, 20})
+func(a)
+func(b)
+func(c)
+
+func_a(a)
+func_a(b)
+
+func_null(null)
+func_null(d)
+
+if result: "tc_function06b: OK"
