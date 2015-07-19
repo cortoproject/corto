@@ -26,7 +26,7 @@ cx_int16 cx_observer_bind(cx_observer _this) {
     cx_function(_this)->size = sizeof(cx_object) * 3;
 
     /* Check if mask specifies either SELF or CHILDS, if not enable SELF */
-    if (!((_this->mask & CX_ON_SELF) || (_this->mask & CX_ON_SCOPE))) {
+    if (!(_this->mask & (CX_ON_SELF|CX_ON_SCOPE|CX_ON_TREE))) {
         _this->mask |= CX_ON_SELF;
     }
 

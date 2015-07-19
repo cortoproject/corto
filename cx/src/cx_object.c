@@ -323,7 +323,6 @@ static void cx__initObservable(cx_object o) {
     observable->onSelfArray = NULL;
     observable->onChildArray = NULL;
     observable->used = FALSE;
-    observable->parent = NULL;
     observable->lockRequired = FALSE;
     observable->childLockRequired = FALSE;
 
@@ -338,13 +337,6 @@ static void cx__initObservable(cx_object o) {
                     observable->lockRequired = TRUE;
                 }
 
-                if (!observable->parent) {
-                    if (parentObservable->onChild) {
-                        observable->parent = parentObservable;
-                    } else {
-                        observable->parent = parentObservable->parent;
-                    }
-                }
                 cx_rwmutexUnlock(&parentObservable->childLock);
 
                 if (observable->childLockRequired) {
@@ -1944,40 +1936,6 @@ static void cx_observersArrayFree(cx__observer** array) {
     }
 }
 
-/* Walk childs recursively, set cx__observable.parent field to this observable only
- * when the current value is equal to the observableData's parent. If observable.parent does
- * not point to the observableData's parent there is an observable with childObservers between
- * the child and the observableData's observer.
- * PRE: childlock of observableData must be locked. */
-void cx_setChildParentObservers(cx_object observable, cx__observable *observableData) {
-    if (cx_checkAttr(observable, CX_ATTR_SCOPED)) {
-        cx_iter childIter;
-        cx_object child;
-        cx__observable *childObservable;
-        cx_ll scope = cx_scopeClaim(observable);
-
-        childIter = cx_llIter(scope);
-        while(cx_iterHasNext(&childIter)) {
-            cx_bool parentSet = FALSE;
-            child = cx_iterNext(&childIter);
-            if ((childObservable = cx__objectObservable(CX_OFFSET(child, -sizeof(cx__object))))) {
-                cx_rwmutexWrite(&childObservable->childLock);
-                if (childObservable->parent == observableData->parent) {
-                    childObservable->parent = observableData;
-                    parentSet = TRUE;
-                }
-                cx_rwmutexUnlock(&childObservable->childLock);
-
-                /* Process childs of child outside childLock to enhance concurrency of listen\sleep's. */
-                if (parentSet) {
-                    cx_setChildParentObservers(child, observableData);
-                }
-            }
-        }
-        cx_scopeRelease(scope);
-    }
-}
-
 /* Walk childs recursively, set whether a lock is required when updating a
  * child object because a parent has an observer interested in childs that
  * requires locking. */
@@ -2012,10 +1970,10 @@ static cx_uint32 indent = 0;
 #endif
 
 /* Notify one observer */
-static void cx_notifyObserver(cx__observer *data, cx_object observable, cx_object source, cx_uint32 mask) {
+static void cx_notifyObserver(cx__observer *data, cx_object observable, cx_object source, cx_uint32 mask, int depth) {
     cx_observer observer = data->observer;
 
-    if (mask & observer->mask) {
+    if ((mask & observer->mask) && (!depth || (observer->mask & CX_ON_TREE))) {
 #ifdef CX_TRACE_NOTIFICATIONS
 {
     cx_id id1, id2, id3;
@@ -2063,18 +2021,18 @@ typedef struct cx_observerAlignData {
 int cx_observerAlignScope(cx_object o, void *userData) {
     cx_observerAlignData *data = userData;
 
-    if (((data->mask & CX_ON_DECLARE) && (data->mask & CX_ON_SELF) && !data->depth) ||
-        ((data->mask & CX_ON_DECLARE) && (data->mask & CX_ON_SCOPE) && data->depth)) {
-        cx_notifyObserver(data->observer, data->observable, o, CX_ON_DECLARE);
+    if (((data->mask & CX_ON_DECLARE) && (data->mask & CX_ON_SELF)) ||
+        ((data->mask & CX_ON_DECLARE) && (data->mask & CX_ON_SCOPE))) {
+        cx_notifyObserver(data->observer, data->observable, o, CX_ON_DECLARE, data->depth);
     }
 
     if (cx_checkAttr(o, CX_ATTR_OBSERVABLE) && cx_checkAttr(o, CX_ATTR_PERSISTENT)) {
-        if ((data->mask & CX_ON_DEFINE) && (data->mask & CX_ON_SCOPE) && cx_checkState(o, CX_DEFINED)) {
-            cx_notifyObserver(data->observer, o, o, CX_ON_DEFINE);
+        if ((data->mask & CX_ON_DEFINE) && (data->mask & (CX_ON_SCOPE|CX_ON_TREE)) && cx_checkState(o, CX_DEFINED)) {
+            cx_notifyObserver(data->observer, o, o, CX_ON_DEFINE, data->depth);
         }
     }
 
-    if (data->observer->observer->mask & CX_ON_SCOPE) {
+    if (data->observer->observer->mask & CX_ON_TREE) {
         int result;
         data->depth++;
         result = cx_scopeWalk(o, cx_observerAlignScope, userData);
@@ -2095,7 +2053,7 @@ void cx_observerAlign(cx_object observable, cx__observer *observer, int mask) {
     walkData.depth = 0;
 
     if ((mask & CX_ON_DEFINE) && (mask & CX_ON_SELF) && cx_checkState(observable, CX_DEFINED)) {
-        cx_notifyObserver(observer, observable, observable, mask);
+        cx_notifyObserver(observer, observable, observable, mask, 0);
     }
 
     cx_scopeWalk(observable, cx_observerAlignScope, &walkData);
@@ -2109,7 +2067,7 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
     cx__observer **oldSelfArray = NULL, **oldChildArray = NULL;
 
     /* Test for error conditions before making changes */
-    if (observer->mask & CX_ON_SCOPE) {
+    if (observer->mask & (CX_ON_SCOPE|CX_ON_TREE)) {
         if (!cx_checkAttr(observable, CX_ATTR_SCOPED)) {
             cx_id id, id2;
             cx_error("cortex::listen: cannot listen to childs of non-scoped observable '%s' (observer %s)",
@@ -2193,13 +2151,11 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
     }
 
     /* If observer must trigger on updates of childs, add it to onChilds list */
-    if (observer->mask & CX_ON_SCOPE) {
-        cx_bool firstChildObserver = FALSE;
+    if (observer->mask & (CX_ON_SCOPE|CX_ON_TREE)) {
         cx_rwmutexWrite(&_o->childLock);
         if (!cx_observerFind(_o->onChild, observer, _this)) {
             if (!_o->onChild) {
                 _o->onChild = cx_llNew();
-                firstChildObserver = TRUE;
             }
 
             cx_llAppend(_o->onChild, _observerData);
@@ -2210,14 +2166,6 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
              * faster than walking a linked list. */
             oldChildArray = _o->onChildArray;
             _o->onChildArray = cx_observersArrayNew(_o->onChild);
-        }
-
-        /* If this is the first observer that subscribes on child-events let childs
-         * of this observable recursively know that it has interest. This is an optimization
-         * so that child objects do not need to walk the entire hierarchy upwards when there
-         * is no interest (or not on every parent). */
-        if (firstChildObserver) {
-            cx_setChildParentObservers(observable, _o);
         }
 
         if (observer->mask & CX_ON_VALUE) {
@@ -2301,7 +2249,7 @@ cx_int32 cx_silence(cx_object observable, cx_observer observer, cx_object _this)
         }
 
         /* If observer triggered on updates of childs, remove from onChilds list */
-        if (observer->mask & CX_ON_SCOPE) {
+        if (observer->mask & (CX_ON_SCOPE|CX_ON_TREE)) {
             if (cx_checkAttr(observable, CX_ATTR_SCOPED)) {
                 cx_rwmutexWrite(&_o->childLock);
                 observerData = cx_observerFind(_o->onChild, observer, _this);
@@ -2403,7 +2351,7 @@ static void cx_notifyObserverThis(cx__observer* data, cx_object _this, cx_object
     }
 }
 
-static void cx_notifyObservers(cx__observer** observers, cx_object observable, cx_object source, cx_uint32 mask) {
+static void cx_notifyObservers(cx__observer** observers, cx_object observable, cx_object source, cx_uint32 mask, int depth) {
     cx__observer* data;
     cx_uint32 i = 0;
 
@@ -2414,34 +2362,40 @@ static void cx_notifyObservers(cx__observer** observers, cx_object observable, c
     while((data = *observers)) {
         i++;
         if (data->enabled) {
-            cx_notifyObserver(data, observable, source, mask);
+            cx_notifyObserver(data, observable, source, mask, depth);
         }
         observers++;
     }
 }
 
 static cx_int32 cx_notify(cx__observable* _o, cx_object observable, cx_object _this, cx_uint32 mask) {
-    cx__observable *_parent;
+    cx_object *parent;
     cx__observer **observers;
+    int depth = 0;
 
     /* Notify direct observers */
     if (_o) {
 
         /* Notify observers of observable */
         observers = cx_observersPush(&_o->onSelfArray);
-        cx_notifyObservers(observers, observable, _this, mask);
+        cx_notifyObservers(observers, observable, _this, mask, 0);
         if (cx_observersPop()) {
             cx_observersArrayFree(observers);
         }
 
         /* Bubble event up in hierarchy */
-        _parent = _o;
-        while((_parent = _parent->parent)) {
-            /* Notify observers of parent */
-            observers = cx_observersPush(&_parent->onChildArray);
-            cx_notifyObservers(observers, observable, _this, mask);
-            if (cx_observersPop()) {
-                cx_observersArrayFree(observers);
+        if (cx_checkAttr(observable, CX_ATTR_SCOPED)) {
+            parent = observable;
+            while((parent = cx_parentof(parent))) {
+                cx__observable *_parent = cx__objectObservable(CX_OFFSET(parent, -sizeof(cx__object)));
+
+                /* Notify observers of parent */
+                observers = cx_observersPush(&_parent->onChildArray);
+                cx_notifyObservers(observers, observable, _this, mask, depth);
+                if (cx_observersPop()) {
+                    cx_observersArrayFree(observers);
+                }
+                depth++;
             }
         }
     }

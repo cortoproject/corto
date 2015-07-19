@@ -92,12 +92,9 @@ struct cx__observable {
      * value will only be set to TRUE when there are observers that subscribe on the object's value. */
     cx_bool lockRequired;
 
-    /* Optimization: childs only need to look at this value to know if they need to lock instead of walking the hierarchy checking for ON_CHILDS observables. */
+    /* Optimization: childs only need to look at this value to know if they need to lock instead of walking the
+     * hierarchy checking for ON_CHILDS observables. */
     cx_bool childLockRequired;
-
-    /* Pointer to first parent that has observers. If there are no observers
-     * on any parent-object, this member is NULL. */
-    cx__observable *parent;
 };
 
 typedef struct cx__persistent cx__persistent;

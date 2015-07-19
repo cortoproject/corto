@@ -222,8 +222,8 @@ CX_STATIC_SCOPED_OBJECT(constant);
 #define CX_ATTR_SSOO {1, 0, 1, 0, CX_VALID | CX_DECLARED}
 #define CX_ATTR_SSO {1, 0, 0, 0, CX_VALID | CX_DECLARED}
 #define CX_ATTR_SO {0, 0, 0, 0,C X_VALID | CX_DECLARED}
-#define CX_ROOT_V() {{NULL,NULL,CX_RWMUTEX_INITIALIZER,CX_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE,FALSE,NULL},{NULL, NULL, _(scope)NULL, _(scopeLock)CX_RWMUTEX_INITIALIZER, _(attached)NULL, _(orphaned)0},{CX_ATTR_SSOO, 2, (cx_type)&package__o.v, CX_MMNODE_INIT}}
-#define CX_PACKAGE_V(parent, name, uri) {{NULL,NULL,CX_RWMUTEX_INITIALIZER,CX_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE,FALSE,NULL},{CX_OFFSET(&parent##__o, sizeof(cx_SSOO)), name, _(scope)NULL, _(scopeLock)CX_RWMUTEX_INITIALIZER, _(attached)NULL, _(orphaned)0},{CX_ATTR_SSOO, 2, (cx_type)&package__o.v, CX_MMNODE_INIT}}, {uri}
+#define CX_ROOT_V() {{NULL,NULL,CX_RWMUTEX_INITIALIZER,CX_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE,FALSE},{NULL, NULL, _(scope)NULL, _(scopeLock)CX_RWMUTEX_INITIALIZER, _(attached)NULL, _(orphaned)0},{CX_ATTR_SSOO, 2, (cx_type)&package__o.v, CX_MMNODE_INIT}}
+#define CX_PACKAGE_V(parent, name, uri) {{NULL,NULL,CX_RWMUTEX_INITIALIZER,CX_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE,FALSE},{CX_OFFSET(&parent##__o, sizeof(cx_SSOO)), name, _(scope)NULL, _(scopeLock)CX_RWMUTEX_INITIALIZER, _(attached)NULL, _(orphaned)0},{CX_ATTR_SSOO, 2, (cx_type)&package__o.v, CX_MMNODE_INIT}}, {uri}
 #define CX_SSO_V(parent, name, type) {{CX_OFFSET(&parent##__o, sizeof(cx_SSOO)), name, _(scope)NULL, _(scopeLock)CX_RWMUTEX_INITIALIZER, _(attached)NULL, _(orphaned)0},{CX_ATTR_SSO, 2, (cx_type)&type##__o.v, CX_MMNODE_INIT}}
 #define CX_SSO_PO_V(parent, name, type) {{CX_OFFSET(&parent##__o, sizeof(cx_SSO)), name, _(scope)NULL, _(scopeLock)CX_RWMUTEX_INITIALIZER, _(attached)NULL, _(orphaned)0},{CX_ATTR_SSO, 2, (cx_type)&type##__o.v, CX_MMNODE_INIT}}
 
@@ -653,6 +653,7 @@ CX_BITMASK_O(eventMask);
     CX_CONSTANT_O(eventMask, ON_UPDATE);
     CX_CONSTANT_O(eventMask, ON_SELF);
     CX_CONSTANT_O(eventMask, ON_SCOPE);
+    CX_CONSTANT_O(eventMask, ON_TREE);
     CX_CONSTANT_O(eventMask, ON_VALUE);
     CX_CONSTANT_O(eventMask, ON_METAVALUE);
 

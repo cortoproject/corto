@@ -297,6 +297,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, eventMask_ON_UPDATE);\
     SSO_OP_OBJ(op, eventMask_ON_SELF);\
     SSO_OP_OBJ(op, eventMask_ON_SCOPE);\
+    SSO_OP_OBJ(op, eventMask_ON_TREE);\
     SSO_OP_OBJ(op, eventMask_ON_VALUE);\
     SSO_OP_OBJ(op, eventMask_ON_METAVALUE);\
     /* modifier */\

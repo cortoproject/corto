@@ -353,8 +353,9 @@ CX_BITMASK(cx_eventMask);
     #define CX_ON_UPDATE (0x10)
     #define CX_ON_SELF (0x20)
     #define CX_ON_SCOPE (0x40)
-    #define CX_ON_VALUE (0x80)
-    #define CX_ON_METAVALUE (0x100)
+    #define CX_ON_TREE (0x80)
+    #define CX_ON_VALUE (0x100)
+    #define CX_ON_METAVALUE (0x200)
 
 /*  ::cortex::lang::dispatcher */
 CX_INTERFACE(cx_dispatcher);
