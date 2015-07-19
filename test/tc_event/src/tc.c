@@ -242,7 +242,8 @@ cx_bool tc_construct(void) {
     tc_reset();
 
     /* Construct 10000 objects in child */
-    o = cx_resolve(NULL, "::tc_event::parent::child::9999"); cx_free(o);
+    o = cx_resolve(NULL, "::tc_event::parent::child::9999");
+    cx_free(o);
     scope = cx_scopeClaim(tc_parent_child_o);
     iter = cx_llIter(scope);
     while(cx_iterHasNext(&iter)) {

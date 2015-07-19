@@ -65,7 +65,7 @@ struct cx_value {
                 cx_uint64 _unsigned_integer;
                 cx_float64 _floating_point;
                 cx_string _string;
-            }v;
+            } v;
         } literal;
         struct {
             cx_object o;
