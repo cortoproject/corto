@@ -2,6 +2,8 @@
 #include "ic_vmStorage.h"
 #include "ic_vmProgram.h"
 
+extern cx_bool CX_DEBUG_ENABLED;
+
 static void ic_vmProgram_fillInLabels(ic_vmProgram *program) {
     cx_iter labelIter;
     ic_vmLabel *label;
@@ -91,10 +93,15 @@ static void ic_vmProgram_allocateAccumulators(ic_vmProgram *program) {
                     program->maxScopeSize = claim->addr + claim->size;
                 }
 
-                for(referee=0; referee < storage->refereeCount; referee++) {
-                    *(cx_uint16*)CX_OFFSET(storage->referees[referee], program->program->program) = claim->addr;
-                }
                 storage->addr = claim->addr;
+                for(referee=0; referee < storage->refereeCount; referee++) {
+                    *(cx_uint16*)CX_OFFSET(storage->referees[referee], program->program->program) = storage->addr;
+                }
+            } else if (storage->refereeCount && (storage->base && storage->base->ic->kind == IC_ACCUMULATOR)) {
+                storage->addr = storage->base->addr + storage->offset;
+                for(referee=0; referee < storage->refereeCount; referee++) {
+                    *(cx_uint16*)CX_OFFSET(storage->referees[referee], program->program->program) = storage->addr;
+                }
             }
         }
 
@@ -168,7 +175,7 @@ void ic_vmProgram_finalize(ic_vmProgram *vmProgram) {
         function->implData = (cx_word)vmProgram->program;
         cx_define(function);
 
-#ifdef IC_TRACING
+#ifdef CX_IC_TRACING
         if (CX_DEBUG_ENABLED)
         {
             cx_id id;
@@ -177,15 +184,13 @@ void ic_vmProgram_finalize(ic_vmProgram *vmProgram) {
             cx_dealloc(programStr);
         }
 #endif
-    }
+    } 
 
-#ifdef IC_TRACING
-    if (CX_DEBUG_ENABLED) {
-        if (vmProgram->main == vmProgram->program) {
-            cx_string programStr = cx_vmProgram_toString(vmProgram->program, NULL);
-            printf("main\n%s\n", programStr);
-            cx_dealloc(programStr);
-        }
+#ifdef CX_IC_TRACING
+    else if (CX_DEBUG_ENABLED) {
+        cx_string programStr = cx_vmProgram_toString(vmProgram->program, NULL);
+        printf("main\n%s\n", programStr);
+        cx_dealloc(programStr);
     }
 #endif
 

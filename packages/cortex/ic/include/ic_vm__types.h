@@ -59,7 +59,7 @@ struct ic_vmStorage {
     ic_storage ic;
     cx_uint32 firstUsed;
     cx_uint32 lastUsed;
-    void *referees[256]; /* The jumps to this accumulator. At assemble-time, the exact address of the accumulator is not yet known
+    void *referees[512]; /* The jumps to this accumulator. At assemble-time, the exact address of the accumulator is not yet known
                           * so this information is filled in after the program is assembled for each referee */
     cx_uint32 refereeCount;
     cx_word addr;

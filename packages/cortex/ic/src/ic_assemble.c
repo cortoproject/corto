@@ -21,15 +21,14 @@ cx_string ic_vmOperandStr(ic_vmOperand op) {
 
 /* Determine whether storage is of a reference type or passed by reference. */
 cx_bool ic_isReference(ic_storage storage) {
-    cx_type t = storage->type;
     cx_bool result = FALSE;
 
     if (storage->isReference) {
         result = TRUE;
     } else {
         if (storage->kind == IC_VARIABLE) {
-            if (((ic_variable)storage)->isParameter) {
-                if (t->kind != CX_PRIMITIVE) {
+            if (ic_variable(storage)->isParameter) {
+                if (storage->type->kind != CX_PRIMITIVE) {
                     result = TRUE;
                 }
             }
@@ -260,6 +259,8 @@ ic_vmOperand ic_getVmOperand(ic_vmProgram *program, ic_derefKind deref, cx_bool 
         ic_vmStorage *vmS = ic_vmProgram_getStorage(program, s);
         ic_storage base = vmS->base ? vmS->base->ic : NULL;
         cx_bool isPrimitive = s->type->kind == CX_PRIMITIVE;
+        cx_bool isParameter = (s->kind == IC_VARIABLE) && (ic_variable(s)->isParameter);
+        cx_bool baseIsParameter = base ? (base->kind == IC_VARIABLE) && (ic_variable(base)->isParameter) : FALSE;
 
         if (vmS->alwaysCompute) {
             if (isArgument && !isPrimitive) {
@@ -276,7 +277,7 @@ ic_vmOperand ic_getVmOperand(ic_vmProgram *program, ic_derefKind deref, cx_bool 
                     break;
                 case IC_VARIABLE:
                 case IC_ACCUMULATOR:
-                    if (s->isReference) {
+                    if (s->isReference || isParameter) {
                         result = IC_VMOPERAND_R; /* var uint32& w = &v */
                     } else {
                         result = IC_VMOPERAND_X;
@@ -299,7 +300,11 @@ ic_vmOperand ic_getVmOperand(ic_vmProgram *program, ic_derefKind deref, cx_bool 
             case IC_DEREF_VALUE:
                 switch(s->kind) {
                 case IC_OBJECT:
-                    result = IC_VMOPERAND_P; /* var uint32 v = object */
+                    if (!isArgument || isPrimitive) {
+                        result = IC_VMOPERAND_P; /* var uint32 v = object */
+                    } else {
+                        result = IC_VMOPERAND_V;
+                    }
                     break;
                 case IC_VARIABLE:
                 case IC_ACCUMULATOR:
@@ -310,10 +315,12 @@ ic_vmOperand ic_getVmOperand(ic_vmProgram *program, ic_derefKind deref, cx_bool 
                             result = IC_VMOPERAND_R; /* var uint32 v = 10 */
                         }
                     } else {
-                        if (s->isReference) {
-                            result = IC_VMOPERAND_R;
-                        } else {
+                        if (!s->isReference && !isPrimitive && !isParameter) {
                             result = IC_VMOPERAND_X;
+                        } else if (s->isReference && isPrimitive) {
+                            result = IC_VMOPERAND_Q;
+                        } else {
+                            result = IC_VMOPERAND_R;
                         }                        
                     }
                     break;
@@ -321,7 +328,7 @@ ic_vmOperand ic_getVmOperand(ic_vmProgram *program, ic_derefKind deref, cx_bool 
                 case IC_ELEMENT:
                     if (base->kind == IC_OBJECT) {
                         result = IC_VMOPERAND_P;
-                    } else if (base->isReference) {
+                    } else if (base->isReference || baseIsParameter) {
                         result = IC_VMOPERAND_Q;
                     } else {
                         result = IC_VMOPERAND_R;
@@ -504,9 +511,9 @@ static void ic_vmSetOp(
                         break;
                     }
 
+                case IC_ACCUMULATOR:
                 case IC_MEMBER:
                 case IC_ELEMENT:
-                case IC_ACCUMULATOR:
                 default:
                     ic_vmStorageAddReferee(accumulator, program, addr);
                     break;

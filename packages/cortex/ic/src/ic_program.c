@@ -49,14 +49,6 @@ cx_int16 ic_program_assemble(ic_program _this) {
         goto error;
     }
 
-    if (CX_DEBUG_ENABLED) {
-        cx_string str = cx_vmProgram_toString((cx_vmProgram)_this->vmprogram, NULL);
-        if (str) {
-            printf("%s\n", str);
-            cx_dealloc(str);
-        }
-    }
-
     return 0;
 error:
     return -1;
