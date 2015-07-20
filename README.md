@@ -12,8 +12,8 @@ Download and unpack Cortex on your machine. Run the following command to build i
 source configure; rake
 ```
 #### Dependencies
-Cortex depends on the following packages - make sure to have them installed:
+Building Cortex requires the following packages - make sure to have them installed:
  * flex
  * bison
- * libxml2-dev (only required for building)
+ * libxml2-dev
  * rake
