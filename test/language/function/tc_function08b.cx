@@ -1,0 +1,56 @@
+bool result : true
+
+void fail(string msg):
+    "tc_function08b: FAIL: $msg"
+    result = false
+
+struct Point:: x, y: int32
+struct Line:: start, stop: Point
+
+void func_point_nested(Point p, int32 x, int32 y):
+    if p.x != x: fail("p.x != $x")
+    if p.y != y: fail("p.y != $y")
+    if "$p" != "{$x,$y}": fail("\"$p\" != \"{$x,$y}\"")
+
+void func_point(Point p, int32 x, int32 y):
+    if p.x != x: fail("p.x != $x")
+    if p.y != y: fail("p.y != $y")
+    if "$p" != "{$x,$y}": fail("\"$p\" != \"{$x,$y}\"")
+    func_point_nested(p, x, y)
+
+void func_line_nested(Line& l, int32 x1, int32 y1, int32 x2, int32 y2):
+    if l.start.x != x1: fail("l.start.x != x1")
+    if l.start.y != y1: fail("l.start.y != y1")
+    if l.stop.x != x2: fail("l.stop.x != $x2")
+    if l.stop.y != y2: fail("l.stop.y != $y2")
+    if "$l" != "{{$x1,$y1},{$x2,y2}}": fail("\"$l\" != \"{{$x1,$y1},{$x2,y2}}\"")
+    func_point(l.start, x1, y1)
+    func_point(l.stop, x2, y2)
+
+void func_line(Line& l):
+    if l.start.x != 10: fail("l.start.x != 10")
+    if l.start.y != 20: fail("l.start.y != 20")
+    if l.stop.x != 30: fail("l.stop.x != 30")
+    if l.stop.y != 40: fail("l.stop.y != 40")
+    if "$l" != "{{10,20},{30,40}}": fail("\"$l\" != \"{{10,20}, {30,40}}\"")
+    func_line_nested(l, 10, 20, 30, 40)
+    func_point(l.start, 10, 20)
+    func_point(l.stop, 30, 40)
+
+Line l: {10, 20}, {30, 40}
+var Line& m = l
+var Line& n = Line{{10, 20}, {30, 40}}
+
+func_point(l.start, 10, 20)
+func_point(l.stop, 30, 40)
+func_point(m.start, 10, 20)
+func_point(m.stop, 30, 40)
+func_point(n.start, 10, 20)
+func_point(n.stop, 30, 40)
+
+func_line(Line{{10,20},{30,40}})
+func_line(l)
+func_line(m)
+func_line(n)
+
+if result: "tc_function08b: OK"

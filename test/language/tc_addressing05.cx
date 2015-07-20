@@ -5,7 +5,7 @@ class Foo::
     
 void fail(string msg):
     "tc_addressing05: FAIL: $msg"
-    result = false    
+    result = false
     
 uint32 nonref_o : 10
 Foo o : null

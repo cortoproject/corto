@@ -327,11 +327,23 @@ ic_vmOperand ic_getVmOperand(ic_vmProgram *program, ic_derefKind deref, cx_bool 
                 case IC_MEMBER:
                 case IC_ELEMENT:
                     if (base->kind == IC_OBJECT) {
-                        result = IC_VMOPERAND_P;
-                    } else if (base->isReference || baseIsParameter) {
-                        result = IC_VMOPERAND_Q;
+                        if (!isArgument || isPrimitive) {
+                            result = IC_VMOPERAND_P;
+                        } else {
+                            result = IC_VMOPERAND_V;
+                        }
+                    } else if (isArgument && !isPrimitive) {
+                        if (base->isReference || baseIsParameter) {
+                            result = IC_VMOPERAND_R;
+                        } else {
+                            result = IC_VMOPERAND_X;
+                        }
                     } else {
-                        result = IC_VMOPERAND_R;
+                        if (base->isReference || baseIsParameter) {
+                            result = IC_VMOPERAND_Q;
+                        } else {
+                            result = IC_VMOPERAND_R;
+                        }                        
                     }
                 }
                 break;

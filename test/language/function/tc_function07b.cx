@@ -6,6 +6,14 @@ void fail(string msg):
 
 class Point:: x, y: int32
 
+void func_nested(Point p, Point q):
+    if p.x != 10: fail("p.x != 10")
+    if p.y != 20: fail("p.y != 20")
+    if "$p" != "{10,20}": fail("\"$p\" != \"{10,20}\"")
+    if q.x != 30: fail("q.x != 30")
+    if q.y != 40: fail("q.y != 40")
+    if "$q" != "{30,40}": fail("\"$p\" != \"{30,40}\"")
+
 void func(Point p, Point q):
     if p.x != 10: fail("p.x != 10")
     if p.y != 20: fail("p.y != 20")
@@ -13,6 +21,7 @@ void func(Point p, Point q):
     if q.x != 30: fail("q.x != 30")
     if q.y != 40: fail("q.y != 40")
     if "$q" != "{30,40}": fail("\"$p\" != \"{30,40}\"")
+    func_nested(p, q)
 
 void func_null1(Point p, Point q):
     if p: fail("p")

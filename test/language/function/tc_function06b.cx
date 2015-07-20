@@ -6,10 +6,23 @@ void fail(string msg):
 
 struct Point:: x, y: int32
 
+void func_nested(Point p, int32 x, int32 y):
+    if p.x != x: fail("p.x != $x")
+    if p.y != y: fail("p.y != $y")
+    if "$p" != "{$x,$y}": fail("\"$p\" != \"{$x,$y}\"")
+
+void func_nested_ref(Point& p, int32 x, int32 y):
+    if p.x != x: fail("p.x != $x")
+    if p.y != y: fail("p.y != $y")
+    if "$p" != "{$x,$y}": fail("\"$p\" != \"{$x,$y}\"")
+    func_nested(p, x, y)
+
 void func(Point& p):
     if p.x != 10: fail("p.x != 10")
     if p.y != 20: fail("p.y != 20")
     if "$p" != "{10,20}": fail("\"$p\" != \"{10,20}\"")
+    func_nested(p, 10, 20)
+    func_nested_ref(p, 10, 20)
 
 void func_null(Point& p):
     if &p: fail("&p")
