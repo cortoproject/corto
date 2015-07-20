@@ -17,21 +17,25 @@ void func_null(Point& p):
 Point a: 10, 20
 
 void func_a(Point& a):
-    if &a != ::a: fail("&a != ::a")
+    if &a != &::a: fail("&a != ::a")
 
 var Point& b = a
 var Point& c = Point{10, 20}
 var Point& d = null
+var object e = Point{10, 20}
+var object f = null
 
 func(Point{10, 20})
 func(a)
 func(b)
 func(c)
+func(e)
 
 func_a(a)
 func_a(b)
 
 func_null(null)
 func_null(d)
+func_null(f)
 
 if result: "tc_function06b: OK"

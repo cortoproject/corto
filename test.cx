@@ -1,0 +1,6 @@
+
+struct Point:: x, y: int32
+
+void func(Point p): "$p"
+
+func({10, 20})

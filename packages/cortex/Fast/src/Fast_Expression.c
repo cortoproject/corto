@@ -342,7 +342,7 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_boo
                 castRequired = FALSE;
 
             /* If assigning to a generic reference, insert cast */
-            } else if (exprType->kind == CX_VOID && exprType->reference && isReference) {
+            } else if (exprType->kind == CX_VOID && (exprType->reference || isReference)) {
                 result = Fast_Expression(Fast_Cast__create(type, _this, isReference));    
             }
         }

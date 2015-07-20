@@ -1,0 +1,52 @@
+bool result : true
+
+void fail(string msg):
+    "tc_function06d: FAIL: $msg"
+    result = false
+
+struct Point:: x, y: int32
+
+void func(Point& p, Point& q):
+    if p.x != 10: fail("p.x != 10")
+    if p.y != 20: fail("p.y != 20")
+    if "$p" != "{10,20}": fail("\"$p\" != \"{10,20}\"")
+    if q.x != 30: fail("q.x != 30")
+    if q.y != 40: fail("q.y != 40")
+    if "$q" != "{30,40}": fail("\"$p\" != \"{30,40}\"")
+
+void func_null1(Point& p, Point &q):
+    if &p: fail("&p")
+    if &q != &a2: fail("&q != &a2")
+
+void func_null2(Point& p, Point &q):
+    if &p != &a1: fail("&p != &a1")
+    if &q: fail("&q")
+
+Point a1: 10, 20
+var Point& b1 = a1
+var Point& c1 = Point{10, 20}
+var object d1 = Point{10, 20}
+var Point& e = null
+var object f = null
+
+Point a2: 30, 40
+var Point& b2 = a2
+var Point& c2 = Point{30, 40}
+var object d2 = Point{30, 40}
+
+func(Point{10, 20}, Point{30, 40})
+func(a1, a2)
+func(b1, b2)
+func(c1, c2)
+func(d1, d2)
+
+func_null1(null, a2)
+func_null1(null, b2)
+func_null1(e, a2)
+func_null1(f, a2)
+func_null2(a1, null)
+func_null2(b1, null)
+func_null2(a1, e)
+func_null2(a1, f)
+
+if result: "tc_function06d: OK"
