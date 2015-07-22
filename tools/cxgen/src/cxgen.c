@@ -289,7 +289,7 @@ int main(int argc, char* argv[]) {
                 }
                 /* Add prefix to scope if none provided */
                 if (!prefix && (cx_llSize(includes) == 1) && !strchr(include, '.')) {
-                    prefix = include;                 
+                    prefix = include;
                 }
             }
         }
@@ -316,11 +316,8 @@ int main(int argc, char* argv[]) {
                 /* Resolve object */
                 o = cx_resolve(NULL, scope);
                 if (!o) {
-                    o = cx_resolve(NULL, scope);
-                    if (!o) {
-                        cx_error("cxgen: unresolved scope '%s'.", scope);
-                        return -1;
-                    }
+                    cx_error("cxgen: unresolved scope '%s'.", scope);
+                    return -1;
                 }
                 cx_free(o);
 
@@ -358,7 +355,7 @@ int main(int argc, char* argv[]) {
             g = NULL;
         }
     }
-    
+
     /* Cleanup application resources */
     cx_argClear();
 

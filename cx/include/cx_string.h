@@ -34,6 +34,8 @@ size_t strmask(char *str, char *mask);
 
 char* cx_strdup(const char* str);
 
+int cx_asprintf(char **str, const char *fmt, ...);
+
 #ifdef __cplusplus
 }
 #endif

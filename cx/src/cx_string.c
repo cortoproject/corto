@@ -1,14 +1,17 @@
 
 #include "stdarg.h"
-#include "cx_mem.h"
 #include "ctype.h"
+
+#include "asprintf.h"
+
+#include "cx_mem.h"
 
 int stricmp(const char *str1, const char *str2) {
     const char *ptr1, *ptr2;
     char ch1, ch2;
     ptr1 = str1;
     ptr2 = str2;
-    
+
     while((ch1 = *ptr1) && (ch2 = *ptr2)) {
         ch1 = tolower(ch1);
         ch2 = tolower(ch2);
@@ -156,7 +159,7 @@ size_t stresc(char *out, size_t n, const char *in) {
             }
         }
     }
-    
+
     if (bptr) {
         while (written < n) {
             *bptr = '\0';
@@ -201,3 +204,11 @@ char* cx_strdup(const char* str) {
     return result;
 }
 
+int cx_asprintf(char **str, const char *fmt, ...) {
+    int size = 0;
+    va_list args;
+    va_start(args, fmt);
+    size = asprintf(str, fmt, args);
+    va_end(args);
+    return size;
+}
