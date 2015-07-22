@@ -1,0 +1,20 @@
+bool result : true
+
+void fail(string msg):
+    "tc_function12b: FAIL: $msg"
+    result = false
+
+void func(array{int32, 3}& a):
+    if a[0, 1, 2] != (1, 2, 3): fail("a[0, 1, 2] != (1, 2, 3)")
+    if "$a" != "{1,2,3}": fail("\"$a\" != \"{1,2,3}\"")
+
+array{int32, 3} a: 1, 2, 3
+var array{int32, 3}& b = a
+var array{int32, 3}& c = array{int32, 3}{1, 2, 3}
+
+func(array{int32, 3}{1, 2, 3})
+func(a)
+func(b)
+func(c)
+
+if result: "tc_function12b: OK"

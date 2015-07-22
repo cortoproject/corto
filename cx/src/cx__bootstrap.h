@@ -936,7 +936,7 @@ CX_PROCEDURE_NOBASE_O(function, CX_FUNCTION, NULL, CX_DECLARED | CX_DEFINED, CX_
     CX_MEMBER_O(function, impl, word, CX_LOCAL|CX_PRIVATE);
     CX_MEMBER_O(function, implData, word, CX_LOCAL|CX_PRIVATE);
     CX_REFERENCE_O(function, resource, object, CX_LOCAL|CX_PRIVATE, CX_DEFINED | CX_DECLARED, FALSE);
-    CX_MEMBER_O(function, size, int16, CX_LOCAL|CX_PRIVATE);
+    CX_MEMBER_O(function, size, uint16, CX_LOCAL|CX_PRIVATE);
     CX_MEMBER_O(function, parameters, parameterSeq, CX_LOCAL | CX_READONLY);
     CX_MEMBER_O(function, nextParameterId, uint32, CX_LOCAL | CX_PRIVATE);
     CX_METHOD_O(function, init, "()", int16, FALSE, cx_function_init);

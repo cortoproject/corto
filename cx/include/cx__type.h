@@ -89,9 +89,6 @@ typedef uintptr_t cx_word;
 /* ::cortex::lang::object */
 typedef void *cx_object;
 
-/* ::cortex::lang::int16 */
-typedef int16_t cx_int16;
-
 /* ::cortex::lang::string */
 typedef char* cx_string;
 
@@ -117,7 +114,7 @@ CX_CLASS_DEF(cx_function) {
     cx_word impl;
     cx_word implData;
     cx_object resource;
-    cx_int16 size;
+    cx_uint16 size;
     cx_parameterSeq parameters;
     cx_uint32 nextParameterId;
 };
@@ -443,6 +440,9 @@ CX_CLASS_DEF(cx_int) {
     cx_int64 min;
     cx_int64 max;
 };
+
+/* ::cortex::lang::int16 */
+typedef int16_t cx_int16;
 
 /* ::cortex::lang::int32 */
 typedef int32_t cx_int32;

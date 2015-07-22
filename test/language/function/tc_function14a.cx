@@ -1,0 +1,25 @@
+bool result : true
+
+void fail(string msg):
+    "tc_function14a: FAIL: $msg"
+    result = false
+
+class Point:: x, y: int32
+
+void func(array{Point, 2} a):
+    if a[0, 1][x, y] != (10, 20, 30, 40): fail("a[0, 1] != (10, 20, 30, 40)")
+    if "$a" != "{<1>::Point{10,20},<2>::Point{30,40}}": fail("\"$a\" != \"{<1>::Point{10,20},<2>::Point{30,40}}\"")
+
+array{Point, 2} a: Point{10, 20}, Point{30, 40}
+var array{Point, 2} b = {Point{10, 20}, Point{30, 40}}
+var array{Point, 2}& c = a
+var array{Point, 2}& d = array{Point, 2}{Point{10, 20}, Point{30, 40}}
+
+func({Point{10, 20}, Point{30, 40}})
+func(array{Point, 2}{Point{10, 20}, Point{30, 40}})
+func(a)
+func(b)
+func(c)
+func(d)
+
+if result: "tc_function14a: OK"

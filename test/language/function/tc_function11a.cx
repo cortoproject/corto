@@ -32,14 +32,22 @@ void func_line(Line l):
     if l.start.y != 20: fail("l.start.y != 20")
     if l.stop.x != 30: fail("l.stop.x != 30")
     if l.stop.y != 40: fail("l.stop.y != 40")
-    if "$l" != "{<1>::Point{10,20},<2>::Point{30,40}}": fail("\"$l\" != \"{<1>::Point{10,20}, <2>::Point{30,40}}\"")
+    if "$l" != "{<1>::Point{10,20},<2>::Point{30,40}}": fail("\"$l\" != \"{<1>::Point{10,20},<2>::Point{30,40}}\"")
     func_line_nested(l, 10, 20, 30, 40)
     func_point(l.start, 10, 20)
     func_point(l.stop, 30, 40)
 
+void func_line_null(Line l):
+    if l.start: fail("l.start")
+    if l.stop[x, y] != (30, 40): fail("l.stop[x, y] != (30, 40)")
+
 Line l: Point{10, 20}, Point{30, 40}
 var Line m = l
 var Line n = Line{Point{10, 20}, Point{30, 40}}
+
+Line l0: null, Point{30, 40}
+var Line m0 = l0
+var Line n0 = Line{null, Point{30, 40}}
 
 func_point(l.start, 10, 20)
 func_point(l.stop, 30, 40)
@@ -48,9 +56,14 @@ func_point(m.stop, 30, 40)
 func_point(n.start, 10, 20)
 func_point(n.stop, 30, 40)
 
-func_line(Line{Point{10,20},Point{30,40}})
+func_line(Line{Point{10,20}, Point{30,40}})
 func_line(l)
 func_line(m)
 func_line(n)
+
+func_line_null(Line{null, Point{30,40}})
+func_line_null(l0)
+func_line_null(m0)
+func_line_null(n0)
 
 if result: "tc_function11a: OK"

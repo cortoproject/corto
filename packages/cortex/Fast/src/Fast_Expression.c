@@ -320,10 +320,16 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_boo
                     }
 
                 /* Interface-downcasting doesn't require an explicit cast */
-                } else if (!cx_instanceof(cx_type(cx_interface_o), type)) {
-                    result = Fast_Expression(Fast_Cast__create(type, _this, isReference));
-                } else {
+                } else if (cx_instanceof(cx_type(cx_interface_o), type)) {
                     castRequired = FALSE;
+
+                /* If collections are castable, they must be equivalent */
+                } else if (type->kind == CX_COLLECTION) {
+                    castRequired = FALSE;
+                    
+                /* For all other cases, insert cast */
+                } else {
+                    result = Fast_Expression(Fast_Cast__create(type, _this, isReference));
                 }
             }
         /* If object is a reference and targetType is string, insert toString operation */

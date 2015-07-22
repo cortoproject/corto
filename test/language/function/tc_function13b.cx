@@ -1,0 +1,22 @@
+bool result : true
+
+void fail(string msg):
+    "tc_function13b: FAIL: $msg"
+    result = false
+
+struct Point:: x, y: int32
+
+void func(array{Point, 2}& a):
+    if a[0, 1][x, y] != (10, 20, 30, 40): fail("a[0, 1] != (10, 20, 30, 40)")
+    if "$a" != "{{10,20},{30,40}}": fail("\"$a\" != \"{{10,20},{30,40}}\"")
+
+array{Point, 2} a: {10, 20}, {30, 40}
+var array{Point, 2}& b = a
+var array{Point, 2}& c = array{Point, 2}{{10, 20}, {30, 40}}
+
+func(array{Point, 2}{{10, 20}, {30, 40}})
+func(a)
+func(b)
+func(c)
+
+if result: "tc_function13b: OK"

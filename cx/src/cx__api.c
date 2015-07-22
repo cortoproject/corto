@@ -53,7 +53,7 @@ cx_string cx_any__str(cx_any value) {
 }
 
 int cx_array__define(cx_array _this, cx_type elementType, cx_uint32 max) {
-    elementType ? cx_keep_ext(_this, elementType, "element <0x7fccfbc0d3a8>.elementType") : 0;
+    elementType ? cx_keep_ext(_this, elementType, "element <0x9ae19f8>.elementType") : 0;
     cx_collection(_this)->elementType = cx_type(elementType);
     cx_collection(_this)->max = max;
     return cx_define(_this);
@@ -62,7 +62,7 @@ int cx_array__define(cx_array _this, cx_type elementType, cx_uint32 max) {
 cx_array cx_array__create(cx_type elementType, cx_uint32 max) {
     cx_array _this;
     _this = cx_new(cx_type(cx_array_o));
-    elementType ? cx_keep_ext(_this, elementType, "element <0x7fccfbc0bde8>.elementType") : 0;
+    elementType ? cx_keep_ext(_this, elementType, "element <0x9ae19f8>.elementType") : 0;
     cx_collection(_this)->elementType = cx_type(elementType);
     cx_collection(_this)->max = max;
     if (cx_define(_this)) {
@@ -309,7 +309,7 @@ cx_string cx_character__str(cx_character value) {
 }
 
 int cx_class__define(cx_class _this, cx_interface base, cx_modifier baseAccess, cx_interfaceSeq implements) {
-    base ? cx_keep_ext(_this, base, "element <0x7fccfbc0bdc8>.base") : 0;
+    base ? cx_keep_ext(_this, base, "element <0x9afaab0>.base") : 0;
     cx_interface(_this)->base = cx_interface(base);
     cx_struct(_this)->baseAccess = baseAccess;
     _this->implements = implements;
@@ -319,7 +319,7 @@ int cx_class__define(cx_class _this, cx_interface base, cx_modifier baseAccess, 
 cx_class cx_class__create(cx_interface base, cx_modifier baseAccess, cx_interfaceSeq implements) {
     cx_class _this;
     _this = cx_new(cx_type(cx_class_o));
-    base ? cx_keep_ext(_this, base, "element <0x7fccfbc0bef8>.base") : 0;
+    base ? cx_keep_ext(_this, base, "element <0x9af7468>.base") : 0;
     cx_interface(_this)->base = cx_interface(base);
     cx_struct(_this)->baseAccess = baseAccess;
     _this->implements = implements;
@@ -345,7 +345,7 @@ cx_string cx_class__str(cx_class value) {
 }
 
 int cx_collection__define(cx_collection _this, cx_type elementType, cx_uint32 max) {
-    elementType ? cx_keep_ext(_this, elementType, "element <0x7fccfbc0d3d8>.elementType") : 0;
+    elementType ? cx_keep_ext(_this, elementType, "element <0x9afe0f8>.elementType") : 0;
     _this->elementType = cx_type(elementType);
     _this->max = max;
     return cx_define(_this);
@@ -354,7 +354,7 @@ int cx_collection__define(cx_collection _this, cx_type elementType, cx_uint32 ma
 cx_collection cx_collection__create(cx_type elementType, cx_uint32 max) {
     cx_collection _this;
     _this = cx_new(cx_type(cx_collection_o));
-    elementType ? cx_keep_ext(_this, elementType, "element <0x7fccfbc0bdf8>.elementType") : 0;
+    elementType ? cx_keep_ext(_this, elementType, "element <0x9afe068>.elementType") : 0;
     _this->elementType = cx_type(elementType);
     _this->max = max;
     if (cx_define(_this)) {
@@ -427,7 +427,7 @@ cx_string cx_constant__str(cx_constant value) {
 }
 
 int cx_delegate__define(cx_delegate _this, cx_type returnType, cx_bool returnsReference, cx_parameterSeq parameters) {
-    returnType ? cx_keep_ext(_this, returnType, "element <0x7fccfbc0d3a8>.returnType") : 0;
+    returnType ? cx_keep_ext(_this, returnType, "element <0x9afe5e8>.returnType") : 0;
     _this->returnType = cx_type(returnType);
     _this->returnsReference = returnsReference;
     _this->parameters = parameters;
@@ -437,7 +437,7 @@ int cx_delegate__define(cx_delegate _this, cx_type returnType, cx_bool returnsRe
 cx_delegate cx_delegate__create(cx_type returnType, cx_bool returnsReference, cx_parameterSeq parameters) {
     cx_delegate _this;
     _this = cx_new(cx_type(cx_delegate_o));
-    returnType ? cx_keep_ext(_this, returnType, "element <0x7fccfbc0bf28>.returnType") : 0;
+    returnType ? cx_keep_ext(_this, returnType, "element <0x9af6bb8>.returnType") : 0;
     _this->returnType = cx_type(returnType);
     _this->returnsReference = returnsReference;
     _this->parameters = parameters;
@@ -467,9 +467,9 @@ void cx_delegatedata__init(cx_delegatedata *_this, cx_object instance, cx_functi
     memset(_this, 0, sizeof(*_this));
     cx_valueValueInit(&v, NULL, cx_type(cx_delegatedata_o), _this);
     cx_initValue(&v);
-    instance ? cx_keep_ext(_this, instance, "element <0x7fccfbc0d428>.instance") : 0;
+    instance ? cx_keep_ext(_this, instance, "element <0x9afa868>.instance") : 0;
     _this->instance = instance;
-    procedure ? cx_keep_ext(_this, procedure, "element <0x7fccfbc0d428>.procedure") : 0;
+    procedure ? cx_keep_ext(_this, procedure, "element <0x9afa868>.procedure") : 0;
     _this->procedure = cx_function(procedure);
 }
 
@@ -680,7 +680,7 @@ cx_string cx_float64__str(cx_float64 value) {
 }
 
 int cx_function__define(cx_function _this, cx_type returnType, cx_bool returnsReference) {
-    returnType ? cx_keep_ext(_this, returnType, "element <0x7fccfbc0d3a8>.returnType") : 0;
+    returnType ? cx_keep_ext(_this, returnType, "element <0x9aebc98>.returnType") : 0;
     _this->returnType = cx_type(returnType);
     _this->returnsReference = returnsReference;
     return cx_define(_this);
@@ -689,7 +689,7 @@ int cx_function__define(cx_function _this, cx_type returnType, cx_bool returnsRe
 cx_function cx_function__create(cx_type returnType, cx_bool returnsReference) {
     cx_function _this;
     _this = cx_new(cx_type(cx_function_o));
-    returnType ? cx_keep_ext(_this, returnType, "element <0x7fccfbc0bdc8>.returnType") : 0;
+    returnType ? cx_keep_ext(_this, returnType, "element <0x9aebc98>.returnType") : 0;
     _this->returnType = cx_type(returnType);
     _this->returnsReference = returnsReference;
     if (cx_define(_this)) {
@@ -812,7 +812,7 @@ cx_string cx_int8__str(cx_int8 value) {
 }
 
 int cx_interface__define(cx_interface _this, cx_interface base) {
-    base ? cx_keep_ext(_this, base, "element <0x7fccfbc0d3d8>.base") : 0;
+    base ? cx_keep_ext(_this, base, "element <0x9af6bb8>.base") : 0;
     _this->base = cx_interface(base);
     return cx_define(_this);
 }
@@ -820,7 +820,7 @@ int cx_interface__define(cx_interface _this, cx_interface base) {
 cx_interface cx_interface__create(cx_interface base) {
     cx_interface _this;
     _this = cx_new(cx_type(cx_interface_o));
-    base ? cx_keep_ext(_this, base, "element <0x7fccfbc0be78>.base") : 0;
+    base ? cx_keep_ext(_this, base, "element <0x9afe5e8>.base") : 0;
     _this->base = cx_interface(base);
     if (cx_define(_this)) {
         cx_free(_this);
@@ -864,7 +864,7 @@ void cx_interfaceVector__init(cx_interfaceVector *_this, cx_interface interface,
     memset(_this, 0, sizeof(*_this));
     cx_valueValueInit(&v, NULL, cx_type(cx_interfaceVector_o), _this);
     cx_initValue(&v);
-    interface ? cx_keep_ext(_this, interface, "element <0x7fccfbc0d428>.interface") : 0;
+    interface ? cx_keep_ext(_this, interface, "element <0x9afa868>.interface") : 0;
     _this->interface = cx_interface(interface);
     _this->vector = vector;
 }
@@ -908,7 +908,7 @@ cx_string cx_interfaceVectorSeq__str(cx_interfaceVectorSeq value) {
 }
 
 int cx_iterator__define(cx_iterator _this, cx_type elementType) {
-    elementType ? cx_keep_ext(_this, elementType, "element <0x7fccfbc0d3a8>.elementType") : 0;
+    elementType ? cx_keep_ext(_this, elementType, "element <0x9afe5e8>.elementType") : 0;
     _this->elementType = cx_type(elementType);
     return cx_define(_this);
 }
@@ -916,7 +916,7 @@ int cx_iterator__define(cx_iterator _this, cx_type elementType) {
 cx_iterator cx_iterator__create(cx_type elementType) {
     cx_iterator _this;
     _this = cx_new(cx_type(cx_iterator_o));
-    elementType ? cx_keep_ext(_this, elementType, "element <0x7fccfbc0bdc8>.elementType") : 0;
+    elementType ? cx_keep_ext(_this, elementType, "element <0x9afe068>.elementType") : 0;
     _this->elementType = cx_type(elementType);
     if (cx_define(_this)) {
         cx_free(_this);
@@ -940,7 +940,7 @@ cx_string cx_iterator__str(cx_iterator value) {
 }
 
 int cx_list__define(cx_list _this, cx_type elementType, cx_uint32 max) {
-    elementType ? cx_keep_ext(_this, elementType, "element <0x7fccfbc0d3a8>.elementType") : 0;
+    elementType ? cx_keep_ext(_this, elementType, "element <0x9afe5e8>.elementType") : 0;
     cx_collection(_this)->elementType = cx_type(elementType);
     cx_collection(_this)->max = max;
     return cx_define(_this);
@@ -949,7 +949,7 @@ int cx_list__define(cx_list _this, cx_type elementType, cx_uint32 max) {
 cx_list cx_list__create(cx_type elementType, cx_uint32 max) {
     cx_list _this;
     _this = cx_new(cx_type(cx_list_o));
-    elementType ? cx_keep_ext(_this, elementType, "element <0x7fccfbc0bdc8>.elementType") : 0;
+    elementType ? cx_keep_ext(_this, elementType, "element <0x9afe068>.elementType") : 0;
     cx_collection(_this)->elementType = cx_type(elementType);
     cx_collection(_this)->max = max;
     if (cx_define(_this)) {
@@ -974,9 +974,9 @@ cx_string cx_list__str(cx_list value) {
 }
 
 int cx_map__define(cx_map _this, cx_type elementType, cx_type keyType, cx_uint32 max) {
-    elementType ? cx_keep_ext(_this, elementType, "element <0x7fccfbc0d3a8>.elementType") : 0;
+    elementType ? cx_keep_ext(_this, elementType, "element <0x9afe5e8>.elementType") : 0;
     _this->elementType = cx_type(elementType);
-    keyType ? cx_keep_ext(_this, keyType, "element <0x7fccfbc0d3a8>.keyType") : 0;
+    keyType ? cx_keep_ext(_this, keyType, "element <0x9afe5e8>.keyType") : 0;
     _this->keyType = cx_type(keyType);
     _this->max = max;
     return cx_define(_this);
@@ -985,9 +985,9 @@ int cx_map__define(cx_map _this, cx_type elementType, cx_type keyType, cx_uint32
 cx_map cx_map__create(cx_type elementType, cx_type keyType, cx_uint32 max) {
     cx_map _this;
     _this = cx_new(cx_type(cx_map_o));
-    elementType ? cx_keep_ext(_this, elementType, "element <0x7fccfbc0be18>.elementType") : 0;
+    elementType ? cx_keep_ext(_this, elementType, "element <0x9af6bb8>.elementType") : 0;
     _this->elementType = cx_type(elementType);
-    keyType ? cx_keep_ext(_this, keyType, "element <0x7fccfbc0be18>.keyType") : 0;
+    keyType ? cx_keep_ext(_this, keyType, "element <0x9af6bb8>.keyType") : 0;
     _this->keyType = cx_type(keyType);
     _this->max = max;
     if (cx_define(_this)) {
@@ -1012,7 +1012,7 @@ cx_string cx_map__str(cx_map value) {
 }
 
 int cx_member__define(cx_member _this, cx_type type, cx_modifier modifiers, cx_state state, cx_bool weak) {
-    type ? cx_keep_ext(_this, type, "element <0x7fccfbc0d3a8>.type") : 0;
+    type ? cx_keep_ext(_this, type, "element <0x9afa838>.type") : 0;
     _this->type = cx_type(type);
     _this->modifiers = modifiers;
     _this->state = state;
@@ -1023,7 +1023,7 @@ int cx_member__define(cx_member _this, cx_type type, cx_modifier modifiers, cx_s
 cx_member cx_member__create(cx_type type, cx_modifier modifiers, cx_state state, cx_bool weak) {
     cx_member _this;
     _this = cx_new(cx_type(cx_member_o));
-    type ? cx_keep_ext(_this, type, "element <0x7fccfbc0d3a8>.type") : 0;
+    type ? cx_keep_ext(_this, type, "element <0x9afa838>.type") : 0;
     _this->type = cx_type(type);
     _this->modifiers = modifiers;
     _this->state = state;
@@ -1066,7 +1066,7 @@ cx_string cx_memberSeq__str(cx_memberSeq value) {
 }
 
 int cx_metaprocedure__define(cx_metaprocedure _this, cx_type returnType, cx_bool returnsReference, cx_bool referenceOnly) {
-    returnType ? cx_keep_ext(_this, returnType, "element <0x7fccfbc0d3d8>.returnType") : 0;
+    returnType ? cx_keep_ext(_this, returnType, "element <0x9aebc98>.returnType") : 0;
     cx_function(_this)->returnType = cx_type(returnType);
     cx_function(_this)->returnsReference = returnsReference;
     _this->referenceOnly = referenceOnly;
@@ -1076,7 +1076,7 @@ int cx_metaprocedure__define(cx_metaprocedure _this, cx_type returnType, cx_bool
 cx_metaprocedure cx_metaprocedure__create(cx_type returnType, cx_bool returnsReference, cx_bool referenceOnly) {
     cx_metaprocedure _this;
     _this = cx_new(cx_type(cx_metaprocedure_o));
-    returnType ? cx_keep_ext(_this, returnType, "element <0x7fccfbc0be18>.returnType") : 0;
+    returnType ? cx_keep_ext(_this, returnType, "element <0x9aebc98>.returnType") : 0;
     cx_function(_this)->returnType = cx_type(returnType);
     cx_function(_this)->returnsReference = returnsReference;
     _this->referenceOnly = referenceOnly;
@@ -1102,7 +1102,7 @@ cx_string cx_metaprocedure__str(cx_metaprocedure value) {
 }
 
 int cx_method__define(cx_method _this, cx_type returnType, cx_bool returnsReference, cx_bool virtual) {
-    returnType ? cx_keep_ext(_this, returnType, "element <0x7fccfbc0d3a8>.returnType") : 0;
+    returnType ? cx_keep_ext(_this, returnType, "element <0x9aebc98>.returnType") : 0;
     cx_function(_this)->returnType = cx_type(returnType);
     cx_function(_this)->returnsReference = returnsReference;
     _this->virtual = virtual;
@@ -1112,7 +1112,7 @@ int cx_method__define(cx_method _this, cx_type returnType, cx_bool returnsRefere
 cx_method cx_method__create(cx_type returnType, cx_bool returnsReference, cx_bool virtual) {
     cx_method _this;
     _this = cx_new(cx_type(cx_method_o));
-    returnType ? cx_keep_ext(_this, returnType, "element <0x7fccfbc0bde8>.returnType") : 0;
+    returnType ? cx_keep_ext(_this, returnType, "element <0x9aebc98>.returnType") : 0;
     cx_function(_this)->returnType = cx_type(returnType);
     cx_function(_this)->returnsReference = returnsReference;
     _this->virtual = virtual;
@@ -1179,13 +1179,13 @@ cx_string cx_objectSeq__str(cx_objectSeq value) {
 
 int cx_observableEvent__define(cx_observableEvent _this, cx_uint16 kind, cx_observer observer, cx_object me, cx_object source, cx_object observable) {
     cx_event(_this)->kind = kind;
-    observer ? cx_keep_ext(_this, observer, "element <0x7fccfbc0d3d8>.observer") : 0;
+    observer ? cx_keep_ext(_this, observer, "element <0x9afaa78>.observer") : 0;
     _this->observer = cx_observer(observer);
-    me ? cx_keep_ext(_this, me, "element <0x7fccfbc0d3d8>.me") : 0;
+    me ? cx_keep_ext(_this, me, "element <0x9afaa78>.me") : 0;
     _this->me = me;
-    source ? cx_keep_ext(_this, source, "element <0x7fccfbc0d3d8>.source") : 0;
+    source ? cx_keep_ext(_this, source, "element <0x9afaa78>.source") : 0;
     _this->source = source;
-    observable ? cx_keep_ext(_this, observable, "element <0x7fccfbc0d3d8>.observable") : 0;
+    observable ? cx_keep_ext(_this, observable, "element <0x9afaa78>.observable") : 0;
     _this->observable = observable;
     return cx_define(_this);
 }
@@ -1194,13 +1194,13 @@ cx_observableEvent cx_observableEvent__create(cx_uint16 kind, cx_observer observ
     cx_observableEvent _this;
     _this = cx_new(cx_type(cx_observableEvent_o));
     cx_event(_this)->kind = kind;
-    observer ? cx_keep_ext(_this, observer, "element <0x7fccfbc0be48>.observer") : 0;
+    observer ? cx_keep_ext(_this, observer, "element <0x9afaa78>.observer") : 0;
     _this->observer = cx_observer(observer);
-    me ? cx_keep_ext(_this, me, "element <0x7fccfbc0be48>.me") : 0;
+    me ? cx_keep_ext(_this, me, "element <0x9afaa78>.me") : 0;
     _this->me = me;
-    source ? cx_keep_ext(_this, source, "element <0x7fccfbc0be48>.source") : 0;
+    source ? cx_keep_ext(_this, source, "element <0x9afaa78>.source") : 0;
     _this->source = source;
-    observable ? cx_keep_ext(_this, observable, "element <0x7fccfbc0be48>.observable") : 0;
+    observable ? cx_keep_ext(_this, observable, "element <0x9afaa78>.observable") : 0;
     _this->observable = observable;
     if (cx_define(_this)) {
         cx_free(_this);
@@ -1224,12 +1224,12 @@ cx_string cx_observableEvent__str(cx_observableEvent value) {
 }
 
 int cx_observer__define(cx_observer _this, cx_object observable, cx_eventMask mask, cx_dispatcher dispatcher, cx_object me) {
-    observable ? cx_keep_ext(_this, observable, "element <0x7fccfbc0d3a8>.observable") : 0;
+    observable ? cx_keep_ext(_this, observable, "element <0x9af6bb8>.observable") : 0;
     _this->observable = observable;
     _this->mask = mask;
-    dispatcher ? cx_keep_ext(_this, dispatcher, "element <0x7fccfbc0d3a8>.dispatcher") : 0;
+    dispatcher ? cx_keep_ext(_this, dispatcher, "element <0x9af6bb8>.dispatcher") : 0;
     _this->dispatcher = cx_dispatcher(dispatcher);
-    me ? cx_keep_ext(_this, me, "element <0x7fccfbc0d3a8>.me") : 0;
+    me ? cx_keep_ext(_this, me, "element <0x9af6bb8>.me") : 0;
     _this->me = me;
     return cx_define(_this);
 }
@@ -1237,12 +1237,12 @@ int cx_observer__define(cx_observer _this, cx_object observable, cx_eventMask ma
 cx_observer cx_observer__create(cx_object observable, cx_eventMask mask, cx_dispatcher dispatcher, cx_object me) {
     cx_observer _this;
     _this = cx_new(cx_type(cx_observer_o));
-    observable ? cx_keep_ext(_this, observable, "element <0x7fccfbc0be68>.observable") : 0;
+    observable ? cx_keep_ext(_this, observable, "element <0x9afe068>.observable") : 0;
     _this->observable = observable;
     _this->mask = mask;
-    dispatcher ? cx_keep_ext(_this, dispatcher, "element <0x7fccfbc0be68>.dispatcher") : 0;
+    dispatcher ? cx_keep_ext(_this, dispatcher, "element <0x9afe068>.dispatcher") : 0;
     _this->dispatcher = cx_dispatcher(dispatcher);
-    me ? cx_keep_ext(_this, me, "element <0x7fccfbc0be68>.me") : 0;
+    me ? cx_keep_ext(_this, me, "element <0x9afe068>.me") : 0;
     _this->me = me;
     if (cx_define(_this)) {
         cx_free(_this);
@@ -1349,7 +1349,7 @@ void cx_parameter__init(cx_parameter *_this, cx_string name, cx_type type, cx_bo
     cx_valueValueInit(&v, NULL, cx_type(cx_parameter_o), _this);
     cx_initValue(&v);
     _this->name = (name ? cx_strdup(name) : NULL);
-    type ? cx_keep_ext(_this, type, "element <0x7fccfbc0d388>.type") : 0;
+    type ? cx_keep_ext(_this, type, "element <0x9afa868>.type") : 0;
     _this->type = cx_type(type);
     _this->passByReference = passByReference;
 }
@@ -1439,7 +1439,7 @@ cx_string cx_primitiveKind__str(cx_primitiveKind value) {
 }
 
 int cx_procedure__define(cx_procedure _this, cx_interface base, cx_modifier baseAccess, cx_procedureKind kind) {
-    base ? cx_keep_ext(_this, base, "element <0x7fccfbc0bdc8>.base") : 0;
+    base ? cx_keep_ext(_this, base, "element <0x9af6bb8>.base") : 0;
     cx_interface(_this)->base = cx_interface(base);
     cx_struct(_this)->baseAccess = baseAccess;
     _this->kind = kind;
@@ -1449,7 +1449,7 @@ int cx_procedure__define(cx_procedure _this, cx_interface base, cx_modifier base
 cx_procedure cx_procedure__create(cx_interface base, cx_modifier baseAccess, cx_procedureKind kind) {
     cx_procedure _this;
     _this = cx_new(cx_type(cx_procedure_o));
-    base ? cx_keep_ext(_this, base, "element <0x7fccfbc0bef8>.base") : 0;
+    base ? cx_keep_ext(_this, base, "element <0x9afe5e8>.base") : 0;
     cx_interface(_this)->base = cx_interface(base);
     cx_struct(_this)->baseAccess = baseAccess;
     _this->kind = kind;
@@ -1491,7 +1491,7 @@ cx_string cx_procedureKind__str(cx_procedureKind value) {
 }
 
 int cx_sequence__define(cx_sequence _this, cx_type elementType, cx_uint32 max) {
-    elementType ? cx_keep_ext(_this, elementType, "element <0x7fccfbc0d3a8>.elementType") : 0;
+    elementType ? cx_keep_ext(_this, elementType, "element <0x9afe068>.elementType") : 0;
     cx_collection(_this)->elementType = cx_type(elementType);
     cx_collection(_this)->max = max;
     return cx_define(_this);
@@ -1500,7 +1500,7 @@ int cx_sequence__define(cx_sequence _this, cx_type elementType, cx_uint32 max) {
 cx_sequence cx_sequence__create(cx_type elementType, cx_uint32 max) {
     cx_sequence _this;
     _this = cx_new(cx_type(cx_sequence_o));
-    elementType ? cx_keep_ext(_this, elementType, "element <0x7fccfbc0bdc8>.elementType") : 0;
+    elementType ? cx_keep_ext(_this, elementType, "element <0x9af6bb8>.elementType") : 0;
     cx_collection(_this)->elementType = cx_type(elementType);
     cx_collection(_this)->max = max;
     if (cx_define(_this)) {
@@ -1557,7 +1557,7 @@ cx_string cx_string__str(cx_string value) {
 }
 
 int cx_struct__define(cx_struct _this, cx_interface base, cx_modifier baseAccess) {
-    base ? cx_keep_ext(_this, base, "element <0x7fccfbc0d3a8>.base") : 0;
+    base ? cx_keep_ext(_this, base, "element <0x9af6bb8>.base") : 0;
     cx_interface(_this)->base = cx_interface(base);
     _this->baseAccess = baseAccess;
     return cx_define(_this);
@@ -1566,7 +1566,7 @@ int cx_struct__define(cx_struct _this, cx_interface base, cx_modifier baseAccess
 cx_struct cx_struct__create(cx_interface base, cx_modifier baseAccess) {
     cx_struct _this;
     _this = cx_new(cx_type(cx_struct_o));
-    base ? cx_keep_ext(_this, base, "element <0x7fccfbc0be78>.base") : 0;
+    base ? cx_keep_ext(_this, base, "element <0x9afe5e8>.base") : 0;
     cx_interface(_this)->base = cx_interface(base);
     _this->baseAccess = baseAccess;
     if (cx_define(_this)) {
@@ -1623,9 +1623,9 @@ cx_string cx_text__str(cx_text value) {
 }
 
 int cx_type__define(cx_type _this, cx_type defaultType, cx_type parentType, cx_state parentState) {
-    defaultType ? cx_keep_ext(_this, defaultType, "element <0x7fccfbc0d3a8>.defaultType") : 0;
+    defaultType ? cx_keep_ext(_this, defaultType, "element <0x9afe5e8>.defaultType") : 0;
     _this->defaultType = cx_type(defaultType);
-    parentType ? cx_keep_ext(_this, parentType, "element <0x7fccfbc0d3a8>.parentType") : 0;
+    parentType ? cx_keep_ext(_this, parentType, "element <0x9afe5e8>.parentType") : 0;
     _this->parentType = cx_type(parentType);
     _this->parentState = parentState;
     return cx_define(_this);
@@ -1634,9 +1634,9 @@ int cx_type__define(cx_type _this, cx_type defaultType, cx_type parentType, cx_s
 cx_type cx_type__create(cx_type defaultType, cx_type parentType, cx_state parentState) {
     cx_type _this;
     _this = cx_new(cx_type(cx_type_o));
-    defaultType ? cx_keep_ext(_this, defaultType, "element <0x7fccfbc0bde8>.defaultType") : 0;
+    defaultType ? cx_keep_ext(_this, defaultType, "element <0x9af6bb8>.defaultType") : 0;
     _this->defaultType = cx_type(defaultType);
-    parentType ? cx_keep_ext(_this, parentType, "element <0x7fccfbc0bde8>.parentType") : 0;
+    parentType ? cx_keep_ext(_this, parentType, "element <0x9af6bb8>.parentType") : 0;
     _this->parentType = cx_type(parentType);
     _this->parentState = parentState;
     if (cx_define(_this)) {
@@ -1775,7 +1775,7 @@ cx_string cx_uint8__str(cx_uint8 value) {
 }
 
 int cx_virtual__define(cx_virtual _this, cx_type returnType, cx_bool returnsReference, cx_bool virtual) {
-    returnType ? cx_keep_ext(_this, returnType, "element <0x7fccfbc0d3a8>.returnType") : 0;
+    returnType ? cx_keep_ext(_this, returnType, "element <0x9aebc98>.returnType") : 0;
     cx_function(_this)->returnType = cx_type(returnType);
     cx_function(_this)->returnsReference = returnsReference;
     cx_method(_this)->virtual = virtual;
@@ -1785,7 +1785,7 @@ int cx_virtual__define(cx_virtual _this, cx_type returnType, cx_bool returnsRefe
 cx_virtual cx_virtual__create(cx_type returnType, cx_bool returnsReference, cx_bool virtual) {
     cx_virtual _this;
     _this = cx_new(cx_type(cx_virtual_o));
-    returnType ? cx_keep_ext(_this, returnType, "element <0x7fccfbc0bde8>.returnType") : 0;
+    returnType ? cx_keep_ext(_this, returnType, "element <0x9aebc98>.returnType") : 0;
     cx_function(_this)->returnType = cx_type(returnType);
     cx_function(_this)->returnsReference = returnsReference;
     cx_method(_this)->virtual = virtual;

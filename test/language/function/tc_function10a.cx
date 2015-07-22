@@ -37,10 +37,19 @@ void func_line(Line l):
     func_point(l.start, 10, 20)
     func_point(l.stop, 30, 40)
 
+void func_line_null(Line l):
+    if l.start: fail("l.start")
+    if l.stop[x, y] != (30, 40): fail("l.stop[x, y] != (30, 40)")
+
 Line l: Point{10, 20}, Point{30, 40}
 var Line m = {Point{10, 20}, Point{30, 40}}
 var Line& n = l
 var Line& o = Line{Point{10, 20}, Point{30, 40}}
+
+Line l0: null, Point{30, 40}
+var Line m0 = {null, Point{30, 40}}
+var Line& n0 = l0
+var Line& o0 = Line{null, Point{30, 40}}
 
 func_point(l.start, 10, 20)
 func_point(l.stop, 30, 40)
@@ -51,11 +60,18 @@ func_point(n.stop, 30, 40)
 func_point(o.start, 10, 20)
 func_point(o.stop, 30, 40)
 
-func_line({Point{10,20},Point{30,40}})
-func_line(Line{Point{10,20},Point{30,40}})
+func_line({Point{10,20}, Point{30,40}})
+func_line(Line{Point{10,20}, Point{30,40}})
 func_line(l)
 func_line(m)
 func_line(n)
 func_line(o)
+
+func_line_null({null, Point{30,40}})
+func_line_null(Line{null, Point{30,40}})
+func_line_null(l0)
+func_line_null(m0)
+func_line_null(n0)
+func_line_null(o0)
 
 if result: "tc_function10a: OK"
