@@ -7,7 +7,7 @@ static cx_char* cx_resolveAnonymous(cx_object src, cx_object scope, cx_object o,
     cx_object result;
     cx_string_deser_t data;
 
-    result = cx_new_ext(NULL, cx_type(o), (cx_type(o)->kind == CX_VOID) ? CX_ATTR_WRITABLE : 0, "Create anonymous object");
+    result = cx_create_ext(NULL, cx_type(o), (cx_type(o)->kind == CX_VOID) ? CX_ATTR_WRITABLE : 0, "Create anonymous object");
     data.out = result;
     data.scope = scope;
     data.type = NULL;
@@ -25,7 +25,7 @@ static cx_object cx_resolveAddress(cx_string str) {
 
     addr = strtoul(str+1, NULL, 16);
 
-    cx_keep_ext(NULL, (cx_object)addr, "Resolve by address");
+    cx_claim_ext(NULL, (cx_object)addr, "Resolve by address");
 
     return (cx_object)addr;
 }
@@ -109,7 +109,7 @@ repeat:
                             o = cx_lookupFunction_ext(src, prev, buffer, allowCastableOverloading, NULL, context);
                         }
                         if (lookup) {
-                            cx_free_ext(src, lookup, "Free intermediate reference for resolve"); /* Free reference */
+                            cx_release_ext(src, lookup, "Free intermediate reference for resolve"); /* Free reference */
                         }
                         lookup = o;
 
@@ -136,7 +136,7 @@ repeat:
                     /* If argumentlist is provided, look for closest match */
                     o = cx_lookupFunction_ext(src, o, buffer, allowCastableOverloading, NULL, context);
                     if (lookup) {
-                        cx_free_ext(src, lookup, "Free intermediate procedure-reference for resolve");
+                        cx_release_ext(src, lookup, "Free intermediate procedure-reference for resolve");
                     }
                     lookup = o;
                     if (!o) {
@@ -146,7 +146,7 @@ repeat:
             } else {
                 o = NULL;
                 if (lookup) {
-                    cx_free_ext(src, lookup, "Free intermediate reference (object not found) for resolve");
+                    cx_release_ext(src, lookup, "Free intermediate reference (object not found) for resolve");
                     lookup = NULL;
                 }
                 break;
@@ -160,7 +160,7 @@ repeat:
                     if (!ptr) {
                         o = NULL;
                     }
-                    cx_free_ext(src, prev, "Free type of anonymous identifier");
+                    cx_release_ext(src, prev, "Free type of anonymous identifier");
                     break;
                 } else if (*(cx_uint16*)ptr == CX_SCOPE_HEX) {
                     ptr += 2;
@@ -204,7 +204,7 @@ repeat:
 
     /* If the current object is not obtained by a lookup, it is not yet keeped. */
     if (!lookup && o) {
-        cx_keep_ext(src, o, context);
+        cx_claim_ext(src, o, context);
     }
 
     return o;

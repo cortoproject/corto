@@ -41,7 +41,7 @@ cx_int16 Fast_Element_construct(Fast_Element _this) {
                 }
             }
             /* Set type of expression */
-            cx_set(&Fast_Expression(_this)->type, cx_collection(lvalueType)->elementType);
+            cx_setref(&Fast_Expression(_this)->type, cx_collection(lvalueType)->elementType);
         } else {
             cx_id id;
             Fast_Parser_error(yparser(), "cannot obtain element from _this of non-collection type '%s'", Fast_Parser_id(lvalueType, id));

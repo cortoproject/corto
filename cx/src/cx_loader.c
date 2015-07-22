@@ -84,7 +84,7 @@ int cx_loaderRegister(cx_string ext, cx_loadAction handler, void* userData) {
             goto error;
         }
     } else {
-        h = cx_malloc(sizeof(struct cx_fileHandler));
+        h = cx_alloc(sizeof(struct cx_fileHandler));
         h->ext = ext;
         h->load = handler;
         h->userData = userData;
@@ -195,7 +195,7 @@ static cx_ll filesLoaded = NULL;
 static int cx_loadXml(void) {
     cx_string cortexHome = getenv("CORTEX_HOME");
     int result;
-    cx_string path = cx_malloc(strlen(cortexHome) + strlen("/bin/libxml.so") + 1);
+    cx_string path = cx_alloc(strlen(cortexHome) + strlen("/bin/libxml.so") + 1);
     sprintf(path, "%s/bin/libxml.so", cortexHome);
     result = cx_loadLibrary(path);
     cx_dealloc(path);

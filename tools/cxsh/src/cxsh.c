@@ -250,7 +250,7 @@ static void cxsh_ls(char* arg) {
         }
     } else {
         o = scope;
-        cx_keep(o);
+        cx_claim(o);
     }
 
     /* Get scope */
@@ -272,7 +272,7 @@ static void cxsh_ls(char* arg) {
         printf("no objects.\n");
     }
 
-    cx_free(o);
+    cx_release(o);
 }
 
 typedef struct cxsh_treeWalk_t {
@@ -340,7 +340,7 @@ static void cxsh_tree(char* arg) {
         }
     } else {
         o = scope;
-        cx_keep(o);
+        cx_claim(o);
     }
 
     walkData.indent = 0;
@@ -349,7 +349,7 @@ static void cxsh_tree(char* arg) {
 
     printf("total: %d objects.\n", walkData.count);
 
-    cx_free(o);
+    cx_release(o);
 }
 
 /* Navigate scopes */
@@ -361,7 +361,7 @@ static void cxsh_cd(char* arg) {
 
     if (!strlen(arg)) {
         scope = root_o;
-        cx_keep(scope);
+        cx_claim(scope);
     } else if (!strcmp(arg, "..")) {
         if (cx_parentof(scope)) {
             scope = cx_parentof(scope);
@@ -371,7 +371,7 @@ static void cxsh_cd(char* arg) {
             cxsh_color(NORMAL);
             return;
         }
-        cx_keep(scope);
+        cx_claim(scope);
     } else {
         o = cx_resolve(scope, arg);
         if (o) {
@@ -384,7 +384,7 @@ static void cxsh_cd(char* arg) {
         }
     }
 
-    cx_free(oldScope);
+    cx_release(oldScope);
 }
 
 cx_bool cxsh_readline(cx_string cmd) {
@@ -550,7 +550,7 @@ static void cxsh_drop(char* name) {
     o = cx_resolve(scope, name);
     if (o) {
         cx_drop(o);
-        cx_free(o);
+        cx_release(o);
     } else {
         cxsh_color(ERROR_COLOR);
         cx_error("expression '%s' did not resolve to object.", scope);
@@ -723,11 +723,11 @@ int main(int argc, char* argv[]) {
 
     /* Assign scope to root */
     scope = root_o;
-    cx_keep(root_o); /* Keep scope */
+    cx_claim(root_o); /* Keep scope */
 
     cxsh_shell();
 
-    cx_free(scope); /* Free scope */
+    cx_release(scope); /* Free scope */
 
     /* Stop database */
     cx_stop();

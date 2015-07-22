@@ -80,7 +80,7 @@ cx_octet_seq io_file_read(io_file _this, cx_uint32 bytes) {
 /* $begin(::cortex::io::file::read) */
     cx_octet_seq result;
 
-    result.buffer = cx_malloc(bytes);
+    result.buffer = cx_alloc(bytes);
     result.length = fread(result.buffer, bytes, 1, (FILE*)_this->handle);
 
     return result;

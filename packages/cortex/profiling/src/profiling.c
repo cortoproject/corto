@@ -36,13 +36,13 @@ static profiling_TlsValue *profiling_value(void) {
         ll = cx_llNew();
         topProfile = cx_declare(profiling_profileRoot(), name, cx_void_o);
         if (ll && topProfile) {
-            value = cx_malloc(sizeof(profiling_TlsValue));
+            value = cx_alloc(sizeof(profiling_TlsValue));
             value->ll = ll;
             value->topProfile = topProfile;
             cx_threadTlsSet(key, value);
         } else if (!ll) {
             cx_error("Could not create scope for Profile objects of thread %lu", tid);
-            cx_free(topProfile);
+            cx_release(topProfile);
         } else {
             cx_error("Could not create cx_ll object for profiling start times");
             cx_llFree(ll);
@@ -76,7 +76,7 @@ static void profiling_closeProfile(profiling_TlsValue *value, cx_time t) {
 /* ::cortex::profiling::start(string name) */
 cx_void profiling_start(cx_string name) {
 /* $begin(::cortex::profiling::start) */
-    cx_time *startTimePtr = cx_malloc(sizeof(cx_time));
+    cx_time *startTimePtr = cx_alloc(sizeof(cx_time));
     profiling_TlsValue *value = profiling_value();
     cx_timeGet(startTimePtr);
     cx_llInsert(value->ll, startTimePtr);

@@ -50,7 +50,7 @@ static cx_errThreadData* cx_getThreadData(void){
     }
     result = cx_threadTlsGet(cx_errKey);
     if (!result) {
-        result = cx_malloc(sizeof(cx_errThreadData));
+        result = cx_alloc(sizeof(cx_errThreadData));
         memset(result, 0, sizeof(cx_errThreadData));
         result->echo = TRUE;
         cx_threadTlsSet(cx_errKey, result);
@@ -86,7 +86,7 @@ char* cx_lasterror(void) {
     }
 }
 
-static void cx_setLasterror(char* err) {
+static void cx_setrefLasterror(char* err) {
     cx_errThreadData* data;
 
     data = cx_getThreadData();
@@ -183,7 +183,7 @@ cx_err cx_logv(cx_err kind, unsigned int level, char* fmt, va_list arg, FILE* f)
     CX_UNUSED(level);
 
     if ((n = (vsnprintf(buff, CX_MAX_LOG, fmt, arg) + 1)) > CX_MAX_LOG) {
-        alloc = cx_malloc(n + 2);
+        alloc = cx_alloc(n + 2);
         vsnprintf(alloc, n, fmt, argcpy);
         msg = alloc;
     }
@@ -191,7 +191,7 @@ cx_err cx_logv(cx_err kind, unsigned int level, char* fmt, va_list arg, FILE* f)
     n = strlen(msg);
 
     /* Set last error without \n */
-    cx_setLasterror(msg);
+    cx_setrefLasterror(msg);
 
     strcat(msg, "\n");
     n++;

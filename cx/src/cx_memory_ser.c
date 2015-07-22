@@ -27,7 +27,7 @@ cx_int16 cx_ser_keepReference(cx_serializer s, cx_value* v, void* userData) {
             }
         }
         if (!weak) {
-            cx_keep_ext(cx_valueObject(v), o, NULL);
+            cx_claim_ext(cx_valueObject(v), o, NULL);
         }
     }
 
@@ -136,7 +136,7 @@ cx_int16 cx_ser_freeReference(cx_serializer s, cx_value* v, void* userData) {
         }
         if (!weak) {
             cx_id id;
-            cx_free_ext(cx_valueObject(v), o, cx_valueExpr(v, id, sizeof(id)));
+            cx_release_ext(cx_valueObject(v), o, cx_valueExpr(v, id, sizeof(id)));
         }
     }
 

@@ -155,7 +155,7 @@ int cx_cp(const char *sourcePath, const char *destinationPath) {
 
     rewind(sourceFile);
 
-    char *buffer = cx_malloc(fileSize);
+    char *buffer = cx_alloc(fileSize);
     if (!buffer) {
         _errno = 0;
         sprintf(msg, "cannot allocate buffer for copying files");

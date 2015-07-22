@@ -286,7 +286,7 @@ function_declaration
         sprintf(id, "%s(%s)", $2, $3);
         cx_dealloc($3);
         $$ = Fast_Parser_declareFunction(yparser(), $1 ? Fast_Object($1)->value : NULL, id, kind, FALSE); fast_op;
-        cx_free(kind);
+        cx_release(kind);
     }
     | identifier GID function_argumentList  {cx_id id; sprintf(id, "%s(%s)", $2, $3); cx_dealloc($3); $$ = Fast_Parser_declareFunction(yparser(), $1 ? Fast_Object($1)->value : NULL, id, NULL, FALSE); fast_op; }
 
@@ -301,7 +301,7 @@ function_declaration
         }
         sprintf(id, "%s(%s)", $3, $4);
         $$ = Fast_Parser_declareFunction(yparser(), $1 ? Fast_Object($1)->value : NULL, id, kind, TRUE); fast_op;
-        cx_free(kind);
+        cx_release(kind);
     }
     | identifier '&' GID function_argumentList  {cx_id id; sprintf(id, "%s(%s)", $3, $4); cx_dealloc($4); $$ = Fast_Parser_declareFunction(yparser(), $1 ? Fast_Object($1)->value : NULL, id, NULL, TRUE); fast_op; }
     ;
@@ -312,7 +312,7 @@ function_argumentList
     ;
 
 function_arguments
-    : function_argument                           {$$=cx_malloc(sizeof(cx_id));strcpy($$,$1); cx_dealloc($1);}
+    : function_argument                           {$$=cx_alloc(sizeof(cx_id));strcpy($$,$1); cx_dealloc($1);}
     | function_arguments ',' function_argument    {$$=$1; strcat($$,","); strcat($$,$3); cx_dealloc($3);}
     ;
 
@@ -425,8 +425,8 @@ postfix_expr
     | postfix_expr {PUSHCOMPLEX($1)} '[' expr ']' {$$ = Fast_Parser_elementExpr(yparser(), $1, $4); fast_op; POPCOMPLEX()}
     | postfix_expr '(' ')'                        {$$ = Fast_Parser_callExpr(yparser(), $1, NULL); fast_op;}
     | postfix_expr bracket_expr                   {$$ = Fast_Parser_callExpr(yparser(), $1, $2); fast_op;}
-    | postfix_expr '.' any_id                     {Fast_String str = Fast_String__create($3); if (!str) {YYERROR;} $$ = Fast_Parser_memberExpr(yparser(), $1, Fast_Expression(str)); cx_free(str); fast_op;}
-    | postfix_expr '.' KW_DESTRUCT                {Fast_String str = Fast_String__create("delete"); if (!str) {YYERROR;} $$ = Fast_Parser_memberExpr(yparser(), $1, Fast_Expression(str)); cx_free(str); fast_op;}
+    | postfix_expr '.' any_id                     {Fast_String str = Fast_String__create($3); if (!str) {YYERROR;} $$ = Fast_Parser_memberExpr(yparser(), $1, Fast_Expression(str)); cx_release(str); fast_op;}
+    | postfix_expr '.' KW_DESTRUCT                {Fast_String str = Fast_String__create("delete"); if (!str) {YYERROR;} $$ = Fast_Parser_memberExpr(yparser(), $1, Fast_Expression(str)); cx_release(str); fast_op;}
     | postfix_expr INC                            {$$ = Fast_Parser_postfixExpr(yparser(), $1, CX_INC); fast_op}
     | postfix_expr DEC                            {$$ = Fast_Parser_postfixExpr(yparser(), $1, CX_DEC); fast_op}
     ;
@@ -779,7 +779,7 @@ int fast_yparse(Fast_Parser parser, cx_uint32 line, cx_uint32 column) {
     int len = strlen(parser->source);
 
     /* Prepend and append the source with a newline */
-    char *sourceWithNewline = cx_malloc(len + 3);
+    char *sourceWithNewline = cx_alloc(len + 3);
     sourceWithNewline[0] = '\n';
     strcpy(sourceWithNewline + 1, parser->source);
     sourceWithNewline[len + 1] = '\n';
@@ -800,7 +800,7 @@ int fast_yparse(Fast_Parser parser, cx_uint32 line, cx_uint32 column) {
     }
 
     if (!parser->scope) {
-        cx_set(&parser->scope, root_o);
+        cx_setref(&parser->scope, root_o);
     }
 
     /* Compensate for insertion of the extra \n */

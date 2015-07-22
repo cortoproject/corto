@@ -25,10 +25,10 @@ cx_int16 cx_delegate_bind(cx_function object) {
             if (cx_delegate_instanceof(cx_delegate(m->type), object)) {
                 /* Bind instance of function is a method */
                 if (cx_procedure(cx_typeof(object))->kind == CX_METHOD) {
-                    cx_set(&((cx_delegatedata *) CX_OFFSET(parent, m->offset))->instance, parent);
+                    cx_setref(&((cx_delegatedata *) CX_OFFSET(parent, m->offset))->instance, parent);
                 }
                 /* Bind procedure */
-                cx_set(&((cx_delegatedata *) CX_OFFSET(parent, m->offset))->procedure, object);    
+                cx_setref(&((cx_delegatedata *) CX_OFFSET(parent, m->offset))->procedure, object);    
             } else {
                 /* If there is a member that corresponds to a delegate but has a non matching
                  * signature, always report error */

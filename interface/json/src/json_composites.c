@@ -106,7 +106,7 @@ cx_bool json_deserComposite(void* p, cx_type t, JSON_Value *v) {
         } else {
             error = json_deser_forward(offset, member->type, memberJsonValue);
         }
-        cx_free(member);
+        cx_release(member);
         if (error) {
             cx_error("cannot deserialize member %s", memberName);
             goto error;

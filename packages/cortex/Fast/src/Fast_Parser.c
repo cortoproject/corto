@@ -125,11 +125,11 @@ cx_int16 Fast_Parser_toIc(Fast_Parser _this) {
     ic_program_run(program, 0);
 
     /* Free program */
-    cx_free(program);
+    cx_release(program);
 
     return 0;
 error:
-    cx_free(program);
+    cx_release(program);
     return -1;
 }
 
@@ -359,7 +359,7 @@ Fast_Expression Fast_Parser_createBinaryTernary(Fast_Parser _this, Fast_Expressi
     case CX_ASSIGN_OR:
     case CX_ASSIGN_AND:
         Fast_Ternary_setOperator(Fast_Ternary(rvalue), operator);
-        cx_set_ext(NULL, &result, rvalue, "?? set rvalue to result value of function");
+        cx_setref_ext(NULL, &result, rvalue, "?? set rvalue to result value of function");
         break;
     default:
         result = Fast_Expression(Fast_Binary__create(lvalue, rvalue, operator));
@@ -495,7 +495,7 @@ Fast_Expression Fast_Parser_delegateAssignment(Fast_Parser _this, Fast_Expressio
     functionExpr = tempCall->functionExpr;
 
     /* If procedure is compatible with delegate type, do a complex assignment */
-    cx_set_ext(NULL, &variables[0].object, lvalue, "keep object for initializer variable array");
+    cx_setref_ext(NULL, &variables[0].object, lvalue, "keep object for initializer variable array");
     result = Fast_InitializerExpression__create(variables, 1, TRUE);
     Fast_InitializerExpression_push(result);
     if (instance) {
@@ -509,7 +509,7 @@ Fast_Expression Fast_Parser_delegateAssignment(Fast_Parser _this, Fast_Expressio
     Fast_Parser_collect(_this, result);
 
     cx_dealloc(signature);
-    cx_free(tempCall);
+    cx_release(tempCall);
 
     return Fast_Expression(result);
 error:
@@ -800,7 +800,7 @@ Fast_Expression Fast_Parser_resolve(Fast_Parser _this, cx_id id, cx_object sourc
             if (object){
                 result = Fast_Expression(Fast_Object__create(object));
                 Fast_Parser_collect(_this, result);
-                cx_free_ext(source, object, NULL);
+                cx_release_ext(source, object, NULL);
                 break;
             } else {
                 if (*ptr) {
@@ -836,7 +836,7 @@ Fast_Expression Fast_Parser_resolve(Fast_Parser _this, cx_id id, cx_object sourc
         if (object) {
             result = Fast_Expression(Fast_Object__create(object));
             Fast_Parser_collect(_this, result);
-            cx_free_ext(source, object, NULL);
+            cx_release_ext(source, object, NULL);
         }
     }
 
@@ -897,9 +897,9 @@ Fast_Storage Fast_Parser_observerCreate(Fast_Parser _this, cx_string id, Fast_Ex
 
         /* Set values of observer - but don't yet define it. It will be defined when
          * the observer is bound to the implementation */
-        cx_set(&observer->observable, observable);
+        cx_setref(&observer->observable, observable);
         observer->mask = mask;
-        cx_set(&observer->dispatcher, dispatcher);
+        cx_setref(&observer->dispatcher, dispatcher);
 
         cx_attach(_this->scope, observer);
 
@@ -1066,7 +1066,7 @@ cx_string Fast_Parser_argumentToString(Fast_Parser _this, cx_type type, cx_strin
         str = walkData.buffer;
     }
 
-    result = cx_malloc(strlen(str) + 1 + strlen(id) + 1 + 1);
+    result = cx_alloc(strlen(str) + 1 + strlen(id) + 1 + 1);
 
     if (reference) {
         sprintf(result, "%s& %s", str, id);
@@ -1154,8 +1154,8 @@ cx_int16 Fast_Parser_bind(Fast_Parser _this, Fast_Storage function, Fast_Block b
     if (_this->pass && function) {
         if (function->kind == Fast_ObjectStorage) {
             binding = cx_calloc(sizeof(Fast_Binding));
-            binding->function = Fast_Object(function)->value; cx_keep_ext(_this, binding->function, "Create binding for function");
-            binding->impl = block; cx_keep_ext(_this, block, "Create binding for function (impl)");
+            binding->function = Fast_Object(function)->value; cx_claim_ext(_this, binding->function, "Create binding for function");
+            binding->impl = block; cx_claim_ext(_this, block, "Create binding for function (impl)");
             cx_assert(_this->bindings != NULL, "initialization failed");
             cx_llAppend(_this->bindings, binding);
         }
@@ -1217,7 +1217,7 @@ cx_void Fast_Parser_blockPop(Fast_Parser _this) {
     /* Blocks are parsed only in 2nd pass */
     if (_this->pass) {
         if (_this->block) {
-            cx_set_ext(_this, &_this->block, _this->block->parent, "pop block");
+            cx_setref_ext(_this, &_this->block, _this->block->parent, "pop block");
         } else {
             /* Got confused by earlier errors */
             Fast_Parser_error(_this, "unable to continue parsing due to previous errors");
@@ -1247,7 +1247,7 @@ Fast_Block Fast_Parser_blockPush(Fast_Parser _this, cx_bool presetBlock) {
         if (!_this->blockPreset || presetBlock) {
             newBlock = Fast_Block__create(_this->block);
             Fast_Parser_collect(_this, newBlock);
-            cx_set_ext(_this, &_this->block, newBlock, "push block");
+            cx_setref_ext(_this, &_this->block, newBlock, "push block");
         }
 
         _this->blockPreset = presetBlock;
@@ -1416,7 +1416,7 @@ Fast_Storage Fast_Parser_declaration(Fast_Parser _this, cx_type type, cx_string 
                 cx_object o;
                 if ((o = cx_resolve(_this->scope, id))) {
                     Fast_Parser_error(_this, "object '%s' is redeclared as a variable", id);
-                    cx_free(o);
+                    cx_release(o);
                     goto error;
                 }
             }
@@ -1461,7 +1461,7 @@ Fast_Storage Fast_Parser_declaration(Fast_Parser _this, cx_type type, cx_string 
         } else {
             o = cx_lookup_ext(_this, _this->scope, id, "Resolve object in 2nd pass");
             cx_assert(o != NULL, "object disappeared in 2nd pass");
-            cx_free_ext(_this, o, "Free object from resolve (2nd run)");
+            cx_release_ext(_this, o, "Free object from resolve (2nd run)");
         }
         if (o) {
             result = Fast_Storage(Fast_Object__create(o));
@@ -1512,7 +1512,7 @@ Fast_Storage Fast_Parser_declareFunction(Fast_Parser _this, cx_type returnType, 
                     id, Fast_Parser_id(cx_typeof(o), id2));
                 goto error;
             }
-            cx_free(o);
+            cx_release(o);
         }
 
         /* This could be an implementation after a forward declaration so try to resolve
@@ -1551,10 +1551,10 @@ Fast_Storage Fast_Parser_declareFunction(Fast_Parser _this, cx_type returnType, 
 
                 function->returnType = returnType;
                 function->returnsReference = returnsReference;
-                cx_keep_ext(function, returnType, "Keep returntype for function");
+                cx_claim_ext(function, returnType, "Keep returntype for function");
             }
         } else {
-            cx_free(function);
+            cx_release(function);
         }
 
         if (!result) {
@@ -1586,7 +1586,7 @@ Fast_Storage Fast_Parser_declareFunction(Fast_Parser _this, cx_type returnType, 
 
             result = Fast_Storage(Fast_Object__create(function));
             Fast_Parser_collect(_this, result);
-            cx_free_ext(_this, function, "Free function from resolve (2nd pass)");
+            cx_release_ext(_this, function, "Free function from resolve (2nd pass)");
         }
     }
 
@@ -1663,7 +1663,7 @@ cx_int16 Fast_Parser_define(Fast_Parser _this) {
         if (Fast_Initializer_define(_this->initializers[_this->initializerCount])) {
             goto error;
         }
-        cx_set_ext(_this, &_this->initializers[_this->initializerCount], NULL, ".initializers[.initializerCount]");
+        cx_setref_ext(_this, &_this->initializers[_this->initializerCount], NULL, ".initializers[.initializerCount]");
         _this->initializerCount--;
     }
 
@@ -1748,7 +1748,7 @@ cx_void Fast_Parser_destruct(Fast_Parser _this) {
     }
 
     _this->heapCollected = NULL;
-    cx_set(&_this->scope, NULL);
+    cx_setref(&_this->scope, NULL);
 
     memset(_this->variables, 0, sizeof(_this->variables));
 /* $end */
@@ -1823,8 +1823,8 @@ cx_int16 Fast_Parser_finalize(Fast_Parser _this, ic_program program) {
             ic_scope_add(scope, ic_node(ret));
             ic_program_popScope(program);
 
-            cx_free_ext(_this, binding->function, "Free binding for function");
-            cx_free_ext(_this, binding->impl, "Free binding for function (impl)");
+            cx_release_ext(_this, binding->function, "Free binding for function");
+            cx_release_ext(_this, binding->impl, "Free binding for function (impl)");
             cx_dealloc(binding);
         }
         cx_llFree(_this->bindings);
@@ -2097,7 +2097,7 @@ Fast_Expression Fast_Parser_initPushExpression(Fast_Parser _this) {
 
         /* Create initializer */
         initializer = Fast_Initializer(Fast_InitializerExpression__create(variables, 1, TRUE));
-        cx_set_ext(_this, &_this->initializers[_this->initializerCount], initializer, ".initializers[.initializersCount]");
+        cx_setref_ext(_this, &_this->initializers[_this->initializerCount], initializer, ".initializers[.initializersCount]");
         Fast_Parser_collect(_this, initializer);
         _this->variablePushed = TRUE;
     }
@@ -2162,8 +2162,8 @@ Fast_Expression Fast_Parser_initPushIdentifier(Fast_Parser _this, Fast_Expressio
     /* Static initializers are executed during first pass */
     if ((!_this->pass && !isDynamic) || forceStatic) {
         cx_object o;
-        o = cx_new(t);
-        cx_set_ext(NULL, &variables[0].object, Fast_Expression(Fast_Object__create(o)), "keep object for initializer variable array");
+        o = cx_create(t);
+        cx_setref_ext(NULL, &variables[0].object, Fast_Expression(Fast_Object__create(o)), "keep object for initializer variable array");
         _this->initializers[_this->initializerCount] = Fast_Initializer(Fast_StaticInitializer__create(variables, 1));
         _this->variablePushed = TRUE;
     } else if (_this->pass && isDynamic && !forceStatic) {
@@ -2175,11 +2175,11 @@ Fast_Expression Fast_Parser_initPushIdentifier(Fast_Parser _this, Fast_Expressio
         Fast_Parser_collect(_this, assignExpr);
         Fast_Parser_addStatement(_this, Fast_Node(assignExpr));
 
-        cx_set_ext(NULL, &variables[0].object, var, "keep object for initializer variable array");
+        cx_setref_ext(NULL, &variables[0].object, var, "keep object for initializer variable array");
         _this->initializers[_this->initializerCount] = Fast_Initializer(Fast_DynamicInitializer__create(variables, 1, FALSE));
         _this->variablePushed = TRUE;
     } else {
-        cx_set_ext(_this, &_this->initializers[_this->initializerCount], NULL, ".initializers[.initializerCount]");
+        cx_setref_ext(_this, &_this->initializers[_this->initializerCount], NULL, ".initializers[.initializerCount]");
         _this->variablePushed = TRUE;
     }
 
@@ -2221,7 +2221,7 @@ cx_int16 Fast_Parser_initPushStatic(Fast_Parser _this) {
 
     /* Copy variables from parser to initializer structure */
     for(i=0; i<_this->variableCount; i++) {
-        cx_set_ext(_this, &variables[i].object, Fast_Expression(_this->variables[i]), ".initializers[.initializerCount]");
+        cx_setref_ext(_this, &variables[i].object, Fast_Expression(_this->variables[i]), ".initializers[.initializerCount]");
         variables[i].key = 0;
         variables[i].offset = 0;
     }
@@ -2229,12 +2229,12 @@ cx_int16 Fast_Parser_initPushStatic(Fast_Parser _this) {
     if (!_this->pass) {
         /* Create initializer */
         initializer = Fast_Initializer(Fast_StaticInitializer__create(variables, _this->variableCount));
-        cx_set_ext(_this, &_this->initializers[_this->initializerCount], initializer, ".initializers[.initializerCount]");
+        cx_setref_ext(_this, &_this->initializers[_this->initializerCount], initializer, ".initializers[.initializerCount]");
         Fast_Parser_collect(_this, initializer);
     } else {
         /* Create dummy initializer */
         initializer = Fast_Initializer__create(variables, _this->variableCount);
-        cx_set_ext(_this, &_this->initializers[_this->initializerCount], initializer, ".initializers[.initializerCount]");
+        cx_setref_ext(_this, &_this->initializers[_this->initializerCount], initializer, ".initializers[.initializerCount]");
         Fast_Parser_collect(_this, initializer);
     }
 
@@ -2484,7 +2484,7 @@ cx_uint32 Fast_Parser_parse(Fast_Parser _this) {
 
     /* Reset parser-state so 2nd pass starts clean */
     Fast_Parser_reset(_this);
-    cx_set(&_this->scope, NULL);
+    cx_setref(&_this->scope, NULL);
 
     _this->pass = 1;
     if ( fast_yparse(_this, 1, 1)) {
@@ -2517,13 +2517,13 @@ Fast_Expression Fast_Parser_parseExpression(Fast_Parser _this, cx_string expr, F
         cx_dealloc(_this->source);
     }
 
-    exprFinalized = cx_malloc(strlen(expr) + 2);
+    exprFinalized = cx_alloc(strlen(expr) + 2);
     sprintf(exprFinalized, "%s\n", expr);
 
     _this->source = exprFinalized;
 
-    cx_set_ext(_this, &_this->block, block, "Set rootblock for embedded expression");
-    cx_set_ext(_this, &_this->scope, scope, "Set scope for embedded expression");
+    cx_setref_ext(_this, &_this->block, block, "Set rootblock for embedded expression");
+    cx_setref_ext(_this, &_this->scope, scope, "Set scope for embedded expression");
 
     // Give expression its own block
     Fast_Parser_blockPush(_this, FALSE);
@@ -2584,7 +2584,7 @@ cx_int16 Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_word value) {
     parser->repl = TRUE;
 
     parser->pass = 0;
-    cx_set(&parser->scope, scope);
+    cx_setref(&parser->scope, scope);
     if ( fast_yparse(parser, 1, 1)) {
         goto error;
     }
@@ -2597,7 +2597,7 @@ cx_int16 Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_word value) {
     Fast_Parser_reset(parser);
 
     parser->pass = 1;
-    cx_set(&parser->scope, scope);
+    cx_setref(&parser->scope, scope);
     if (fast_yparse(parser, 1, 1)) {
         goto error;
     }
@@ -2687,7 +2687,7 @@ cx_int16 Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_word value) {
                 cx_valueValueInit(v, NULL, returnType, &v->is.value.storage);
                 ic_program_run(program, (cx_word)&v->is.value.storage);
             } else {
-                void *ptr = cx_malloc(cx_type_sizeof(returnType));
+                void *ptr = cx_alloc(cx_type_sizeof(returnType));
                 ic_program_run(program, (cx_word)&ptr);
                 if (ptr) {
                     cx_valueValueInit(v, NULL, returnType, ptr);
@@ -2703,14 +2703,14 @@ cx_int16 Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_word value) {
     }
 
     /* Free program */
-    cx_free(program);
+    cx_release(program);
 
     /* Free parser */
-    cx_free(parser);
+    cx_release(parser);
 
     return 0;
 error:
-    cx_free(program);
+    cx_release(program);
     return -1;
 /* $end */
 }
@@ -2747,7 +2747,7 @@ cx_void Fast_Parser_popScope(Fast_Parser _this, cx_object previous) {
     Fast_CHECK_ERRSET(_this);
 
     /* Restore scope */
-    cx_set(&_this->scope, previous);
+    cx_setref(&_this->scope, previous);
 /* $end */
 }
 
@@ -2778,9 +2778,9 @@ cx_void Fast_Parser_pushComplexType(Fast_Parser _this, Fast_Expression lvalue) {
 /* $begin(::cortex::Fast::Parser::pushComplexType) */
 
     if (lvalue) {
-        cx_set(&_this->complexType[_this->complexTypeSp], Fast_Expression_getType(lvalue));
+        cx_setref(&_this->complexType[_this->complexTypeSp], Fast_Expression_getType(lvalue));
     } else {
-        cx_set(&_this->complexType[_this->complexTypeSp], NULL);
+        cx_setref(&_this->complexType[_this->complexTypeSp], NULL);
     }
     _this->complexTypeSp++;
 
@@ -2791,7 +2791,7 @@ cx_void Fast_Parser_pushComplexType(Fast_Parser _this, Fast_Expression lvalue) {
 cx_void Fast_Parser_pushLvalue(Fast_Parser _this, Fast_Expression lvalue, cx_bool isAssignment) {
 /* $begin(::cortex::Fast::Parser::pushLvalue) */
 
-    cx_set_ext(_this, &_this->lvalue[_this->lvalueSp].expr, lvalue, ".lvalue[_this->lvalueSp]");
+    cx_setref_ext(_this, &_this->lvalue[_this->lvalueSp].expr, lvalue, ".lvalue[_this->lvalueSp]");
     _this->lvalue[_this->lvalueSp].isAssignment = isAssignment;
     _this->lvalueSp++;
 
@@ -2809,7 +2809,7 @@ cx_int16 Fast_Parser_pushPackage(Fast_Parser _this, cx_string name) {
         goto error;
     }
 
-    cx_set(&_this->scope, root_o);
+    cx_setref(&_this->scope, root_o);
     if (!memcmp(name, "::", 2)) {
         name += 2;
     } else {
@@ -2836,8 +2836,8 @@ cx_int16 Fast_Parser_pushPackage(Fast_Parser _this, cx_string name) {
                     /* Define package */
                     Fast_Parser_defineScope(_this);
                 } else {
-                    cx_set(&_this->scope, o);
-                    cx_free(o);
+                    cx_setref(&_this->scope, o);
+                    cx_release(o);
                 }
                 bptr = buffer;
             } else {
@@ -2906,7 +2906,7 @@ cx_object Fast_Parser_pushScope(Fast_Parser _this) {
     }
 
     if (_this->variables[0]) {
-        cx_set(&_this->scope, Fast_Object(_this->variables[0])->value);
+        cx_setref(&_this->scope, Fast_Object(_this->variables[0])->value);
         Fast_Parser_reset(_this);
     } else {
         goto error;
@@ -3142,7 +3142,7 @@ Fast_Node Fast_Parser_whileStatement(Fast_Parser _this, Fast_Expression conditio
         Fast_Parser_collect(_this, result);
 
         if (isUntil) {
-            cx_set_ext(_this->block, &_this->block->_while, result, "block->_while");
+            cx_setref_ext(_this->block, &_this->block->_while, result, "block->_while");
         }
     }
 

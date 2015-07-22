@@ -83,7 +83,7 @@ cx_char *Fast_String_parseEmbedded(Fast_String _this, cx_char *expr) {
     element = Fast_Parser_parseExpression(yparser(), expr, _this->block, _this->scope, Fast_Node(_this)->line, Fast_Node(_this)->column);
     if (element) {
         cx_llAppend(_this->elements, element);
-        cx_keep(element);
+        cx_claim(element);
     } else {
         goto error;
     }
@@ -162,8 +162,8 @@ cx_int16 Fast_String_construct(Fast_String _this) {
         goto error;
     }
 
-    _this->block = yparser()->block; cx_keep_ext(_this, _this->block, "_this->block (keep block for string-expression)");
-    _this->scope = yparser()->scope; cx_keep_ext(_this, _this->scope, "_this->scope (keep scope for string-expression)");
+    _this->block = yparser()->block; cx_claim_ext(_this, _this->block, "_this->block (keep block for string-expression)");
+    _this->scope = yparser()->scope; cx_claim_ext(_this, _this->scope, "_this->scope (keep scope for string-expression)");
     
     return 0;
 error:
@@ -226,7 +226,7 @@ cx_int16 Fast_String_serialize(Fast_String _this, cx_type dstType, cx_word dst) 
         break;
     case Fast_Ref: {
         cx_object o = cx_resolve_ext(NULL, NULL, _this->value, FALSE, "Serialize reference from string");
-        cx_set_ext(NULL, &dst, o, "serialize string to reference");
+        cx_setref_ext(NULL, &dst, o, "serialize string to reference");
         break;
     }
     default: {

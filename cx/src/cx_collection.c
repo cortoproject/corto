@@ -79,7 +79,7 @@ int cx_walk(cx_collection _this, cx_void* collection, cx_walkAction action, cx_v
 /* Free references in collection */
 static int cx_clearFreeReferences(void* o, void* udata) {
     CX_UNUSED(udata);
-    cx_free(*(cx_object*)o);
+    cx_release(*(cx_object*)o);
     return 1;
 }
 

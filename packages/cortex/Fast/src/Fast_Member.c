@@ -17,7 +17,7 @@ cx_int16 Fast_Member_resolveMember(Fast_Member _this, cx_type type, cx_string me
     if (cx_instanceof(cx_type(cx_interface_o), type) && !strcmp(member, "super")) {
         if (cx_interface(type)->base) {
             _this->member = NULL;
-            cx_set(&Fast_Expression(_this)->type, cx_interface(type)->base);
+            cx_setref(&Fast_Expression(_this)->type, cx_interface(type)->base);
         } else {
             cx_id id;
             Fast_Parser_error(yparser(), "type '%s' has no base", Fast_Parser_id(type, id));
@@ -35,11 +35,11 @@ cx_int16 Fast_Member_resolveMember(Fast_Member _this, cx_type type, cx_string me
                 Fast_Parser_error(yparser(), "unresolved member '%s' for type '%s'", member, Fast_Parser_id(type, id));
                 goto error;
             }
-            cx_set(&Fast_Expression(_this)->type, cx_function(o)->returnType);
+            cx_setref(&Fast_Expression(_this)->type, cx_function(o)->returnType);
         } else {
-            cx_set(&Fast_Expression(_this)->type, cx_member(o)->type);
+            cx_setref(&Fast_Expression(_this)->type, cx_member(o)->type);
         }
-        _this->member = o; cx_keep_ext(_this, o, "Keep object for member-expression");
+        _this->member = o; cx_claim_ext(_this, o, "Keep object for member-expression");
     }
 
     return 0;

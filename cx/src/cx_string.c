@@ -197,7 +197,7 @@ size_t strmask(char *str, char *mask) {
 
 /* strdup is not a standard C function, so provide own implementation. */
 char* cx_strdup(const char* str) {
-    char *result = cx_malloc(strlen(str) + 1);
+    char *result = cx_alloc(strlen(str) + 1);
     strcpy(result, str);
     return result;
 }

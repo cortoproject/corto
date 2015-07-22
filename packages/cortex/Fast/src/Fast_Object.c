@@ -23,7 +23,7 @@ cx_int16 Fast_Object_construct(Fast_Object _this) {
     }
 
     Fast_Storage(_this)->kind = Fast_ObjectStorage;
-    cx_set(&Fast_Expression(_this)->type, t);
+    cx_setref(&Fast_Expression(_this)->type, t);
     Fast_Expression(_this)->isReference = TRUE;
 
     return Fast_Storage_construct(Fast_Storage(_this));
@@ -73,8 +73,8 @@ cx_int16 Fast_Object_serialize(Fast_Object _this, cx_type dstType, cx_word dst) 
                 cx_valueValueInit(&vSrc, NULL, cx_type(srcType), Fast_Object(_this)->value);
                 cx_valueCopy(&vDst, &vSrc);
             } else if ((srcType->kind == CX_COMPOSITE) && (cx_interface(srcType)->kind == CX_PROCEDURE)) {
-                cx_set(&((cx_delegatedata *)dst)->procedure, Fast_Object(_this)->value);
-                cx_set(&((cx_delegatedata *)dst)->instance, NULL);
+                cx_setref(&((cx_delegatedata *)dst)->procedure, Fast_Object(_this)->value);
+                cx_setref(&((cx_delegatedata *)dst)->instance, NULL);
             }
 
         } else if (cx_instanceof((cx_type)dstType, Fast_Object(_this)->value)) {
@@ -112,10 +112,10 @@ cx_int16 Fast_Object_serialize(Fast_Object _this, cx_type dstType, cx_word dst) 
         }
         case Fast_Ref:
             if (*(cx_object*)dst) {
-                cx_free(*(cx_object*)dst);
+                cx_release(*(cx_object*)dst);
             }
             *(cx_object*)dst = Fast_Object(_this)->value;
-            cx_keep_ext(NULL, *(cx_object*)dst, "Serialize object value");
+            cx_claim_ext(NULL, *(cx_object*)dst, "Serialize object value");
             break;
         default: {
             cx_id id;

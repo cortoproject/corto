@@ -27,7 +27,7 @@ cx_string io_readln(void) {
 /* $begin(::cortex::io::readln) */
     size_t size=256;
     int read;
-    cx_string result = cx_malloc(size+1);
+    cx_string result = cx_alloc(size+1);
 
     if ((read = getline(&result, &size, stdin)) == -1) {
         cx_error("io::readln: read error\n");

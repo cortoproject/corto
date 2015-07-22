@@ -225,7 +225,7 @@ cx_bool tc_construct(void) {
     tc_reset();
 
     /* Construct 10000 objects in parent */
-    o = cx_resolve(NULL, "::tc_event::parent::9999"); cx_free(o);
+    o = cx_resolve(NULL, "::tc_event::parent::9999"); cx_release(o);
     scope = cx_scopeClaim(tc_parent_o);
     iter = cx_llIter(scope);
     while(cx_iterHasNext(&iter)) {
@@ -243,7 +243,7 @@ cx_bool tc_construct(void) {
 
     /* Construct 10000 objects in child */
     o = cx_resolve(NULL, "::tc_event::parent::child::9999");
-    cx_free(o);
+    cx_release(o);
     scope = cx_scopeClaim(tc_parent_child_o);
     iter = cx_llIter(scope);
     while(cx_iterHasNext(&iter)) {
@@ -260,7 +260,7 @@ cx_bool tc_construct(void) {
     tc_reset();
 
     /* Construct 10000 objects in root */
-    o = cx_resolve(NULL, "::9999"); cx_free(o);
+    o = cx_resolve(NULL, "::9999"); cx_release(o);
     scope = cx_scopeClaim(root_o);
     iter = cx_llIter(scope);
     while(cx_iterHasNext(&iter)) {
@@ -288,13 +288,13 @@ cx_bool tc_destruct(void) {
     tc_reset();
 
     /* Destruct 10000 objects in parent */
-    o = cx_resolve(NULL, "::tc_event::parent::9999"); cx_free(o);
+    o = cx_resolve(NULL, "::tc_event::parent::9999"); cx_release(o);
     scope = cx_scopeClaim(tc_parent_o);
     iter = cx_llIter(scope);
     while(cx_iterHasNext(&iter)) {
         p = cx_iterNext(&iter);
         if (cx_typeof(p) == cx_type(tc_value_o)) {
-            cx_destruct(p);
+            cx_delete(p);
         }
     }
     cx_scopeRelease(scope);
@@ -308,13 +308,13 @@ cx_bool tc_destruct(void) {
     tc_reset();
 
     /* Destruct 10000 objects in child */
-    o = cx_resolve(NULL, "::tc_event::parent::child::9999"); cx_free(o);
+    o = cx_resolve(NULL, "::tc_event::parent::child::9999"); cx_release(o);
     scope = cx_scopeClaim(tc_parent_child_o);
     iter = cx_llIter(scope);
     while(cx_iterHasNext(&iter)) {
         p = cx_iterNext(&iter);
         if (cx_typeof(p) == cx_type(tc_value_o)) {
-            cx_destruct(p);
+            cx_delete(p);
         }
     }
     cx_scopeRelease(scope);
@@ -328,13 +328,13 @@ cx_bool tc_destruct(void) {
     tc_reset();
 
     /* Destruct 10000 objects in root */
-    o = cx_resolve(NULL, "::9999"); cx_free(o);
+    o = cx_resolve(NULL, "::9999"); cx_release(o);
     scope = cx_scopeClaim(root_o);
     iter = cx_llIter(scope);
     while(cx_iterHasNext(&iter)) {
         p = cx_iterNext(&iter);
         if (cx_typeof(p) == cx_type(tc_value_o)) {
-            cx_destruct(p);
+            cx_delete(p);
         }
     }
     cx_scopeRelease(scope);

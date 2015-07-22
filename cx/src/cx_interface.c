@@ -31,20 +31,20 @@ static cx_vtable *cx_interface_vtableFromBase(cx_interface _this) {
         size = baseTable->length * sizeof(cx_method);
 
         /* Create own vtable. */
-        myTable = cx_malloc(sizeof(cx_vtable));
+        myTable = cx_alloc(sizeof(cx_vtable));
         myTable->length = 0;
         myTable->buffer = NULL;
 
         /* Copy from base vtable. */
         if (size) {
             cx_uint32 i;
-            myTable->buffer = cx_malloc(size);
+            myTable->buffer = cx_alloc(size);
             myTable->length = baseTable->length;
             memcpy(myTable->buffer, baseTable->buffer, size);
 
             /* Keep functions */
             for (i=0; i<myTable->length; i++) {
-                cx_keep_ext(_this, myTable->buffer[i], "Keep function from inherited vtable.");
+                cx_claim_ext(_this, myTable->buffer[i], "Keep function from inherited vtable.");
             }
         } else {
             myTable->buffer = NULL;
@@ -236,7 +236,7 @@ static int cx_interface_insertMemberAction(void* o, void* userData) {
             goto error;
         }
 
-        cx_keep_ext((cx_object)userData, o, "Keep member.");
+        cx_claim_ext((cx_object)userData, o, "Keep member.");
         cx_interface(userData)->members.buffer[cx_member(o)->id] = o;
         cx_interface(userData)->members.length++;
     }
@@ -420,8 +420,8 @@ cx_int16 cx_interface_bindMethod(cx_interface _this, cx_method method) {
                         goto error;
                     }
                 }
-                cx_keep_ext(_this, method, "Bind method to class after overriding old.");
-                cx_free_ext(_this, *virtual, "Free overridden method.");
+                cx_claim_ext(_this, method, "Bind method to class after overriding old.");
+                cx_release_ext(_this, *virtual, "Free overridden method.");
                 *virtual = method;
             } else {
                 cx_id id, id2;
@@ -441,7 +441,7 @@ cx_int16 cx_interface_bindMethod(cx_interface _this, cx_method method) {
         }
 
         if (cx_vtableInsert(&_this->methods, cx_function(method))) {
-            cx_keep_ext(_this, method, "Bind method to interface.");
+            cx_claim_ext(_this, method, "Bind method to interface.");
         }
     }
 
@@ -499,7 +499,7 @@ cx_int16 cx_interface_construct(cx_interface _this) {
                 if (cx_instanceof(cx_type(cx_method_o), ownTable.buffer[i])) {
                     cx_interface_bindMethod(_this, cx_method(ownTable.buffer[i]));
                 } 
-                cx_free_ext(_this, ownTable.buffer[i], "Free method from temporary vtable.");
+                cx_release_ext(_this, ownTable.buffer[i], "Free method from temporary vtable.");
             }
 
             cx_dealloc(ownTable.buffer);
@@ -524,7 +524,7 @@ cx_void cx_interface_destruct(cx_interface _this) {
 
     /* Free members */
     for (i=0; i<_this->members.length; i++) {
-        cx_free_ext(_this, _this->members.buffer[i], "Free member for interface");
+        cx_release_ext(_this, _this->members.buffer[i], "Free member for interface");
     }
 
     if (_this->members.buffer) {
@@ -534,7 +534,7 @@ cx_void cx_interface_destruct(cx_interface _this) {
 
     /* Free methods */
     for (i=0; i<_this->methods.length; i++) {
-        cx_free_ext(_this, _this->methods.buffer[i], "Remove method from vtable.");
+        cx_release_ext(_this, _this->methods.buffer[i], "Remove method from vtable.");
     }
 
     if (_this->methods.buffer) {
@@ -551,7 +551,7 @@ cx_int16 cx_interface_init(cx_interface _this) {
 /* $begin(::cortex::lang::interface::init) */
     cx_type(_this)->reference = TRUE;
     cx_type(_this)->kind = CX_COMPOSITE;
-    cx_set(&cx_type(_this)->defaultType, cx_member_o);
+    cx_setref(&cx_type(_this)->defaultType, cx_member_o);
     _this->kind = CX_INTERFACE;
     return cx_type_init(cx_type(_this));
 /* $end */

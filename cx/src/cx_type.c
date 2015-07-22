@@ -33,7 +33,7 @@ cx_int16 cx_type_bindMetaprocedure(cx_type _this, cx_metaprocedure procedure) {
     }
 
     if (cx_vtableInsert(&_this->metaprocedures, cx_function(procedure))) {
-        cx_keep_ext(_this, procedure, "Bind metaprocedure to type.");
+        cx_claim_ext(_this, procedure, "Bind metaprocedure to type.");
     }
     return 0;
 error:
@@ -187,7 +187,7 @@ cx_int16 cx_type_copy(cx_any _this, cx_any value) {
 cx_object cx_type_declare(cx_any _this, cx_string name, cx_type type) {
 /* $begin(::cortex::lang::type::declare) */
     cx_object result = cx_declare(_this.value, name, type);
-    cx_keep(result);
+    cx_claim(result);
     return result;
 /* $end */
 }
@@ -202,7 +202,7 @@ cx_int16 cx_type_define(cx_any _this) {
 /* ::cortex::lang::type::delete() */
 cx_void cx_type_delete(cx_any _this) {
 /* $begin(::cortex::lang::type::delete) */
-    cx_destruct(_this.value);
+    cx_delete(_this.value);
 /* $end */
 }
 
@@ -213,7 +213,7 @@ cx_void cx_type_destruct(cx_type _this) {
 
     /* Free methods */
     for(i=0; i<_this->metaprocedures.length; i++) {
-        cx_free_ext(_this, _this->metaprocedures.buffer[i], "Remove method from vtable.");
+        cx_release_ext(_this, _this->metaprocedures.buffer[i], "Remove method from vtable.");
     }
 
     if (_this->metaprocedures.buffer) {
@@ -301,7 +301,7 @@ cx_object cx_type_parentof(cx_any _this) {
    }
     
    if (result) {
-       cx_keep(result);
+       cx_claim(result);
    }
 
    return result;
@@ -405,7 +405,7 @@ cx_type cx_type_typeof(cx_any _this) {
     result = _this.type;
     
     if (result) {
-        cx_keep(result);
+        cx_claim(result);
     }
 
     return result;

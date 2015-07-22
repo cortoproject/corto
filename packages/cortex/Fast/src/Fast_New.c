@@ -17,7 +17,7 @@ cx_int16 Fast_New_construct(Fast_New _this) {
 /* $begin(::cortex::Fast::New::construct) */
 
     Fast_Node(_this)->kind = Fast_NewExpr;
-    cx_set(&Fast_Expression(_this)->type, _this->type);
+    cx_setref(&Fast_Expression(_this)->type, _this->type);
     Fast_Expression(_this)->isReference = TRUE;
 
     return 0;

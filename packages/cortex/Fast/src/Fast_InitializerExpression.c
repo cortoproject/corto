@@ -37,12 +37,12 @@ cx_int16 Fast_InitializerExpression_insert(Fast_InitializerExpression _this, Fas
 /* $begin(::cortex::Fast::InitializerExpression::insert) */
     Fast_DynamicInitializer initializer;
 
-    cx_set_ext(_this, &Fast_Initializer(_this)->variables[0].object, variable, ".variables[0].object");
-    cx_set_ext(_this, &Fast_Expression(_this)->type, variable->type, ".type");
+    cx_setref_ext(_this, &Fast_Initializer(_this)->variables[0].object, variable, ".variables[0].object");
+    cx_setref_ext(_this, &Fast_Expression(_this)->type, variable->type, ".type");
 
     /* Create initializer */
     /* Note that since I'm passing MY list of variables, I need to fix the reference count! */
-    cx_keep_ext(NULL, Fast_Initializer(_this)->variables[0].object, "keep object for dynamic initializer");
+    cx_claim_ext(NULL, Fast_Initializer(_this)->variables[0].object, "keep object for dynamic initializer");
     initializer = Fast_DynamicInitializer__create(Fast_Initializer(_this)->variables, 1, _this->assignValue);
     
     /* Walk operations */
@@ -76,7 +76,7 @@ cx_int16 Fast_InitializerExpression_insert(Fast_InitializerExpression _this, Fas
         }
     }
 
-    cx_free_ext(NULL, initializer, "free temporary initializer");
+    cx_release_ext(NULL, initializer, "free temporary initializer");
 
     return 0;
 error:
@@ -117,7 +117,7 @@ cx_int16 Fast_InitializerExpression_value(Fast_InitializerExpression _this, Fast
 /* $begin(::cortex::Fast::InitializerExpression::value) */
     Fast_InitOper *elem = Fast_InitOper_list__append(_this->operations);
     elem->kind = Fast_InitValue;
-    cx_set(&elem->expr, v);
+    cx_setref(&elem->expr, v);
     return 0;
 /* $end */
 }

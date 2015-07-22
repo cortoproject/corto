@@ -56,7 +56,7 @@ static cx_bool cx_ser_appendstr(cx_json_ser_t* data, cx_string fmt, ...) {
         va_start(args, fmt);
         memRequired = vsnprintf(buff, 1024, fmt, args);
         if (memRequired >= 1024) {
-            buff = cx_malloc(memRequired + 1);
+            buff = cx_alloc(memRequired + 1);
             vsprintf(buff, fmt, argcpy);
         }
         va_end(args);
@@ -135,7 +135,7 @@ static cx_int16 serializeReference(cx_serializer s, cx_value *v, void *userData)
             cx_fullname(object, id);
 
             /* Escape value */
-            cx_string escapedValue = cx_malloc((length = stresc(NULL, 0, id)) + 1);
+            cx_string escapedValue = cx_alloc((length = stresc(NULL, 0, id)) + 1);
             stresc(escapedValue, length + 1, id);
             if (!cx_ser_appendstr(data, "\"@R %s\"", escapedValue)) {
                 cx_dealloc(escapedValue);
@@ -296,7 +296,7 @@ static int cx_appendStringAttr(cx_string key, cx_string value, void* userData) {
     size_t length;
 
     /* Escape value */
-    cx_string escapedValue = cx_malloc((length = stresc(NULL, 0, value)) + 1);
+    cx_string escapedValue = cx_alloc((length = stresc(NULL, 0, value)) + 1);
     stresc(escapedValue, length + 1, value);
 
     if (!cx_ser_appendstr(userData, "\"%s\":\"%s\",", key, escapedValue)) {

@@ -132,15 +132,15 @@ cx_int16 Fast_Binary_cast(Fast_Binary _this, cx_type *returnType) {
     if (!isNull) {
         _this->lvalue = Fast_Expression_narrow(lvalue, rvalueType);
         if (_this->lvalue) {
-            cx_keep_ext(_this, _this->lvalue, "Keep narrow'd lvalue");
-            cx_free_ext(_this, lvalue, "Free old lvalue");
+            cx_claim_ext(_this, _this->lvalue, "Keep narrow'd lvalue");
+            cx_release_ext(_this, lvalue, "Free old lvalue");
             lvalueType = Fast_Expression_getType(_this->lvalue);
         }
 
         _this->rvalue = Fast_Expression_narrow(rvalue, lvalueType);
         if (_this->rvalue) {
-            cx_keep_ext(_this, _this->rvalue, "Keep narrow'd rvalue");
-            cx_free_ext(_this, rvalue, "Free old rvalue");
+            cx_claim_ext(_this, _this->rvalue, "Keep narrow'd rvalue");
+            cx_release_ext(_this, rvalue, "Free old rvalue");
             rvalueType = Fast_Expression_getType_expr(_this->rvalue, _this->lvalue);
         }
     }
@@ -250,8 +250,8 @@ cx_int16 Fast_Binary_cast(Fast_Binary _this, cx_type *returnType) {
         Fast_Expression oldRvalue = _this->rvalue;
         _this->rvalue = Fast_Expression_cast(_this->rvalue, castType, _this->lvalue->deref == Fast_ByReference);
         if (_this->rvalue) {
-            cx_keep(_this->rvalue);
-            cx_free(oldRvalue);
+            cx_claim(_this->rvalue);
+            cx_release(oldRvalue);
         } else {
             cx_id id, id2;
             Fast_Parser_error(yparser(), "failed to cast rvalue from '%s' to '%s'",
@@ -263,8 +263,8 @@ cx_int16 Fast_Binary_cast(Fast_Binary _this, cx_type *returnType) {
         Fast_Expression oldLvalue = _this->lvalue;
         _this->lvalue = Fast_Expression_cast(_this->lvalue, castType, _this->rvalue->deref == Fast_ByReference);
         if (_this->lvalue) {
-            cx_keep(_this->lvalue);
-            cx_free(oldLvalue);
+            cx_claim(_this->lvalue);
+            cx_release(oldLvalue);
         } else {
             cx_id id, id2;
             Fast_Parser_error(yparser(), "failed to cast lvalue from '%s' to '%s'",
@@ -423,7 +423,7 @@ Fast_Expression Fast_Binary_fold(Fast_Binary _this) {
                     break;
                 }
                 if ((cx_primitive(type)->kind == CX_BITMASK) || (cx_primitive(type)->kind == CX_ENUM)) {
-                    cx_set(&Fast_Expression(result)->type, type);
+                    cx_setref(&Fast_Expression(result)->type, type);
                 }
             }
 
@@ -502,7 +502,7 @@ cx_void Fast_Binary_setOperator(Fast_Binary _this, cx_operatorKind kind) {
 
     if (compoundExpr) {
         _this->operator = CX_ASSIGN;
-        cx_set(&_this->rvalue, compoundExpr);
+        cx_setref(&_this->rvalue, compoundExpr);
         Fast_Parser_collect(yparser(), compoundExpr);
     }
 
@@ -523,10 +523,10 @@ cx_void Fast_Binary_setOperator(Fast_Binary _this, cx_operatorKind kind) {
     case CX_COND_GTEQ:
     case CX_COND_AND:
     case CX_COND_OR:
-        cx_set(&Fast_Expression(_this)->type, cx_bool_o);
+        cx_setref(&Fast_Expression(_this)->type, cx_bool_o);
         break;
     default:
-        cx_set(&Fast_Expression(_this)->type, exprType);
+        cx_setref(&Fast_Expression(_this)->type, exprType);
         break;
     }
 

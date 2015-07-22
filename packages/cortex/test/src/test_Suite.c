@@ -67,7 +67,7 @@ cx_bool test_Suite_assertEqual_any_any_string(test_Suite _this, cx_any a, cx_any
     if (length < 0) {
         cx_critical("error in snprintf");
     }
-    assertmsg = cx_malloc(length + 1);
+    assertmsg = cx_alloc(length + 1);
     sprintf(assertmsg, "%s != %s", aS, bS);
     result = test_Suite_test(_this, eq == CX_EQ, assertmsg, errmsg);
     cx_dealloc(assertmsg);

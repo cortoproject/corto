@@ -113,7 +113,7 @@ static cx_int16 cx_string_deserBuildIndexPrimitive(cx_serializer s, cx_value* v,
     m = v->is.member.t;
 
     /* Create new info-object */
-    newInfo = cx_malloc(sizeof(struct cx_string_deserIndexInfo));
+    newInfo = cx_alloc(sizeof(struct cx_string_deserIndexInfo));
     newInfo->m = m;
     newInfo->type = m->type;
     newInfo->parsed = FALSE;
@@ -204,7 +204,7 @@ static cx_string cx_string_deserParseScope(cx_string str, struct cx_string_deser
     /* If type is a collection, build index with one node for element */
     } else {
         struct cx_string_deserIndexInfo *elementNode;
-        elementNode = cx_malloc(sizeof(struct cx_string_deserIndexInfo));
+        elementNode = cx_alloc(sizeof(struct cx_string_deserIndexInfo));
         elementNode->m = NULL;
         elementNode->parsed = FALSE;
         elementNode->type = cx_collection(info->type)->elementType;
@@ -277,8 +277,8 @@ static cx_int16 cx_string_deserParseValue(cx_string value, struct cx_string_dese
         }
 
         if (o) {
-            cx_set_ext(data->out, CX_OFFSET(data->ptr, info->m->offset), o, "Set object for anonymous object");
-            cx_free_ext(NULL, o, "Free object for anonymous object");
+            cx_setref_ext(data->out, CX_OFFSET(data->ptr, info->m->offset), o, "Set object for anonymous object");
+            cx_release_ext(NULL, o, "Free object for anonymous object");
         } else {
             cx_id id;
             cx_error("cx_string_deserParseValue: unresolved reference to '%s' for member '%s'", value, cx_fullname(info->m, id));
@@ -311,7 +311,7 @@ static cx_int16 cx_string_deserParseValue(cx_string value, struct cx_string_dese
 
             if (strcmp(value, "null")) {
                 length = strlen(value);
-                deserialized = cx_malloc(length+1);
+                deserialized = cx_alloc(length+1);
                 memcpy(deserialized, value, length);
                 deserialized[length] = '\0';
             } else {
@@ -547,13 +547,13 @@ cx_string cx_string_deser(cx_string str, cx_string_deser_t* data) {
             type = cx_resolve(NULL, buffer);
             if (type) {
                 if (cx_instanceof(cx_type(cx_type_o), type)) {
-                    data->out = cx_new(cx_type(type));
+                    data->out = cx_create(cx_type(type));
                 } else {
                     cx_error("cx_string_deser: specified type-identifier '%s' is not a type", buffer);
-                    cx_free(type);
+                    cx_release(type);
                     goto error;
                 }
-                cx_free(type);
+                cx_release(type);
             } else {
                 cx_error("cx_string_deser: cannot resolve specified type-identifier '%s'", buffer);
                 goto error;
@@ -579,7 +579,7 @@ cx_string cx_string_deser(cx_string str, cx_string_deser_t* data) {
 error:
     cx_error("failed to deserialize '%s'", str);
     if (data->out) {
-        cx_free(data->out);
+        cx_release(data->out);
         data->out = NULL;
     }
     return NULL;

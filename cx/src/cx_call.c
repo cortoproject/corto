@@ -45,7 +45,7 @@ cx_context cx_contextSwitch(cx_object object) {
     int i;
 
     /* Allocate context */
-    context = cx_malloc(sizeof(struct cx_context_s));
+    context = cx_alloc(sizeof(struct cx_context_s));
 
     /* Store object that effectuates the contextswitch in context */
     context->object = object;

@@ -15,7 +15,7 @@ cx_bool json_deserReference(void* p, cx_type t, JSON_Value* v) {
     if (!cx_instanceof(t, o)) {
         cx_error("%s is not an instance of %s", reference, cx_nameof(t));
     }
-    *(cx_object *)p = o; // TODO does this require cx_set?
+    *(cx_object *)p = o; // TODO does this require cx_setref?
     return FALSE;
 error:
     return TRUE;

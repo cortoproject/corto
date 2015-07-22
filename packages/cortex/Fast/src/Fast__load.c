@@ -27,7 +27,7 @@ int fast_cortexRun(cx_string file, void* udata) {
 
         /* Parse script */
         Fast_Parser_parse(p);
-        cx_free(p);
+        cx_release(p);
         cx_dealloc(source);
     } else {
         goto error;

@@ -23,7 +23,7 @@ cx_int16 cx__enum_bindConstant(cx_enum _this, cx_constant* c) {
     _this->constants.buffer[_this->constants.length] = c;
     _this->constants.length++;
     
-    cx_keep(c);
+    cx_claim(c);
 
     return 0;
 }
@@ -90,7 +90,7 @@ cx_int16 cx_enum_init(cx_enum _this) {
 /* $begin(::cortex::lang::enum::init) */
     cx_primitive(_this)->kind = CX_ENUM;
     cx_primitive(_this)->width = CX_WIDTH_32;
-    cx_set(&cx_type(_this)->defaultType, cx_constant_o);
+    cx_setref(&cx_type(_this)->defaultType, cx_constant_o);
     return cx_primitive_init((cx_primitive)_this);
 /* $end */
 }

@@ -57,15 +57,15 @@ cx_void test_Runner_runTest(test_Runner _this, cx_object *observable, cx_object 
     CX_UNUSED(source);
     if (cx_instanceof(cx_type(test_Case_o), observable)) {
         cx_type testClass = cx_parentof(observable);
-        test_Suite suite = test_Suite(cx_new(cx_type(testClass)));
-        cx_set(&suite->test, observable);
+        test_Suite suite = test_Suite(cx_create(cx_type(testClass)));
+        cx_setref(&suite->test, observable);
         if (!cx_defineFrom(suite, _this) && suite->result.success) {
             test_Suite_list__append(_this->failures, suite);
         } else {
             test_Suite_list__append(_this->failures, suite);
         }
         test_Runner_printTestRun(_this, suite);
-        cx_free(suite);
+        cx_release(suite);
 
     }
 /* $end */

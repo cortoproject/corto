@@ -95,7 +95,7 @@ typedef struct cx_stringConcatCache {
 #define SETREF(type, code)\
     SETREF_##code:{\
         fetchOp2(SETREF,code);\
-        cx_set((cx_object*)&op1_##code, (cx_object)op2_##code);\
+        cx_setref((cx_object*)&op1_##code, (cx_object)op2_##code);\
     }\
     next();
 
@@ -519,7 +519,7 @@ typedef union Di2f_t {
             c.strcache->staged[c.strcache->count].str = str;\
             c.strcache->count++;\
         }\
-        result = cx_malloc(c.strcache->length + 1);\
+        result = cx_alloc(c.strcache->length + 1);\
         ptr = result;\
         for(i=0; i<c.strcache->count; i++) {\
             length = c.strcache->staged[i].length;\
@@ -536,7 +536,7 @@ typedef union Di2f_t {
 #define NEW(type,code)\
     NEW_##code:\
         fetchOp2(NEW,code);\
-        op1_##code = (cx_word)cx_new((cx_type)op2_##code);\
+        op1_##code = (cx_word)cx_create((cx_type)op2_##code);\
         next();\
 
 #define DEALLOC(type,code)\
@@ -549,7 +549,7 @@ typedef union Di2f_t {
     KEEP_##code:\
         fetchOp1(KEEP,code);\
         if (op1_##code) {\
-            cx_keep_ext(NULL, (cx_object)op1_##code, "KEEP(vm)");\
+            cx_claim_ext(NULL, (cx_object)op1_##code, "KEEP(vm)");\
         }\
         next();\
 
@@ -557,7 +557,7 @@ typedef union Di2f_t {
     FREE_##code:\
         fetchOp1(FREE,code);\
         if (op1_##code) {\
-            cx_free_ext(NULL, (cx_object)op1_##code, "FREE(vm)");\
+            cx_release_ext(NULL, (cx_object)op1_##code, "FREE(vm)");\
         }\
         next();\
 
@@ -925,7 +925,7 @@ static void cx_vm_pushCurrentProgram(cx_vmProgram program, cx_vm_context *c) {
     }
     data = cx_threadTlsGet(cx_currentProgramKey);
     if (!data) {
-        data = cx_malloc(sizeof(cx_currentProgramData));
+        data = cx_alloc(sizeof(cx_currentProgramData));
         data->sp = 0;
         cx_threadTlsSet(cx_currentProgramKey, data);
     }
@@ -1060,7 +1060,7 @@ static void cx_stringConcatCacheCreate(void) {
 
     concatCache = cx_threadTlsGet(cx_stringConcatCacheKey);
     if (!concatCache) {
-        concatCache = cx_malloc(sizeof(cx_stringConcatCache));
+        concatCache = cx_alloc(sizeof(cx_stringConcatCache));
         memset(concatCache, 0, sizeof(cx_stringConcatCache));
         cx_threadTlsSet(cx_stringConcatCacheKey, concatCache);
     }
@@ -1168,7 +1168,7 @@ char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
 cx_vmProgram cx_vmProgram_new(char *filename, cx_object function) {
     cx_vmProgram result;
 
-    result = cx_malloc(sizeof(cx_vmProgram_s));
+    result = cx_alloc(sizeof(cx_vmProgram_s));
     result->program = NULL;
     result->debugInfo = NULL;
     result->filename = filename ? cx_strdup(filename) : NULL;

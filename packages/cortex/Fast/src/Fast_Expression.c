@@ -139,17 +139,17 @@ Fast_Expression Fast_Expression_narrow(Fast_Expression expr, cx_type target) {
                     switch(width) {
                     case CX_WIDTH_8:
                         if ((v <= 127) && (v >= -128)) {
-                            cx_set(&expr->type, target);
+                            cx_setref(&expr->type, target);
                         }
                         break;
                     case CX_WIDTH_16:
                         if ((v <= 32767) && (v >= -32768)) {
-                            cx_set(&expr->type, target);
+                            cx_setref(&expr->type, target);
                         }
                         break;
                     case CX_WIDTH_32:
                         if ((v <= 2147483647) && (v >= -2147483648)) {
-                            cx_set(&expr->type, target);
+                            cx_setref(&expr->type, target);
                         }
                         break;
                     default:
@@ -162,17 +162,17 @@ Fast_Expression Fast_Expression_narrow(Fast_Expression expr, cx_type target) {
                     switch(width) {
                     case CX_WIDTH_8:
                         if (v <= 255) {
-                            cx_set(&expr->type, target);
+                            cx_setref(&expr->type, target);
                         }
                         break;
                     case CX_WIDTH_16:
                         if (v <= 65535) {
-                            cx_set(&expr->type, target);
+                            cx_setref(&expr->type, target);
                         }
                         break;
                     case CX_WIDTH_32:
                         if (v <= 4294967295) {
-                            cx_set(&expr->type, target);
+                            cx_setref(&expr->type, target);
                         }
                         break;
                     default:
@@ -300,7 +300,7 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_boo
                 }
 
                 if (result){
-                    cx_set_ext(result, &Fast_Expression(result)->type, type, "Set correct type after cast");
+                    cx_setref_ext(result, &Fast_Expression(result)->type, type, "Set correct type after cast");
                 }
             } else {
                 /* TODO: This functionality must be pushed down to the assembler. For all this function is concerned a cast
@@ -341,7 +341,7 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_boo
                 if (!result) {
                     goto error;
                 }
-                cx_keep(result);
+                cx_claim(result);
 
             /* If type is of a generic reference type, accept any reference without cast */
             } else if (type->kind == CX_VOID && type->reference) {
@@ -379,7 +379,7 @@ cx_void Fast_Expression_cleanList(Fast_Expression_list list) {
     if (list) {
         cx_iter iter = cx_llIter(list);
         while(cx_iterHasNext(&iter)) {
-            cx_free_ext(NULL, cx_iterNext(&iter), "free expression from list");
+            cx_release_ext(NULL, cx_iterNext(&iter), "free expression from list");
         }
         cx_llFree(list);
     }
@@ -413,7 +413,7 @@ Fast_Expression Fast_Expression_fromList(Fast_Expression_list list) {
             iter = cx_llIter(list);
             while(cx_iterHasNext(&iter)) {
                 expr = cx_iterNext(&iter);
-                cx_llAppend(toList, expr); cx_keep_ext(result, expr, "add expression from list to comma-expression");
+                cx_llAppend(toList, expr); cx_claim_ext(result, expr, "add expression from list to comma-expression");
             }
             Fast_Comma(result)->expressions = toList;
             Fast_Parser_collect(yparser(), result);
@@ -530,7 +530,7 @@ Fast_Expression_list Fast_Expression_toList_v(Fast_Expression _this) {
     
     if (_this) {
         result = cx_llNew();
-        cx_llInsert(result, _this); cx_keep_ext(NULL, _this, "convert single expression to list");
+        cx_llInsert(result, _this); cx_claim_ext(NULL, _this, "convert single expression to list");
     }
     
     return result;

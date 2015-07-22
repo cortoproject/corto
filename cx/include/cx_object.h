@@ -36,16 +36,22 @@ typedef cx_equalityKind (*cx_equalsAction)(cx_type _this, const void* o1, const 
 #define CX_PARAMETER_NULL               (8)
 
 /* Object lifecycle */
-cx_object cx_new(cx_type type);
-cx_object cx_new_ext(cx_object src, cx_type type, cx_uint8 attrs, cx_string context);
+cx_object cx_create(cx_type type);
+cx_object cx_create_ext(cx_object src, cx_type type, cx_uint8 attrs, cx_string context);
 cx_object cx_declare(cx_object parent, cx_string name, cx_type type);
 cx_object cx_declareFrom(cx_object parent, cx_string name, cx_type type, cx_object source);
 cx_int16 cx_define(cx_object o);
 cx_int16 cx_defineFrom(cx_object o, cx_object source);
-void cx_destruct(cx_object o);
+cx_int32 cx_claim(cx_object o);
+cx_int32 cx_claim_ext(cx_object src, cx_object o, cx_string context);
+cx_int32 cx_release(cx_object o);
+cx_int32 cx_release_ext(cx_object src, cx_object o, cx_string context);
+void cx_delete(cx_object o);
+void cx_drop(cx_object o);
+void cx_invalidate(cx_object o);
+
 void cx_attach(cx_object parent, cx_object child); /* Attach lifecycle of unscoped object to scoped object */
 void cx_detach(cx_object parent, cx_object child); /* Detach lifecycle of unscoped object from scoped object */
-void cx_invalidate(cx_object o);
 
 /* Object-data */
 cx_type cx_typeof(cx_object o);
@@ -69,13 +75,6 @@ cx_string cx_relname(cx_object from, cx_object o, cx_id buffer);
 
 /* Persistent object data */
 cx_time cx_timestampof(cx_object o);
-
-/* Resource management */
-cx_int32 cx_keep(cx_object o);
-cx_int32 cx_free(cx_object o);
-cx_int32 cx_free_ext(cx_object src, cx_object o, cx_string context);
-cx_int32 cx_keep_ext(cx_object src, cx_object o, cx_string context);
-void cx_drop(cx_object o); /* Free all non-orphaned objects in scope. Object self is not free'd. */
 
 /* Lookup objects either using names or fully qualified names. */
 cx_object cx_lookup(cx_object scope, cx_string name);
@@ -113,8 +112,11 @@ cx_int32 cx_lock(cx_object object);
 cx_int32 cx_unlock(cx_object object);
 
 /* Set reference field */
-void cx_set(void* ptr, cx_object value);
-void cx_set_ext(cx_object source, void* ptr, cx_object value, cx_string context);
+void cx_setref(void* ptr, cx_object value);
+void cx_setref_ext(cx_object source, void* ptr, cx_object value, cx_string context);
+
+/* Set string field */
+void cx_setstr(void* ptr, cx_string value);
 
 /* Measure to what extend a function meets requested signature */
 cx_int16 cx_overload(cx_object object, cx_string name, cx_int32* distance, cx_bool allowCastable);

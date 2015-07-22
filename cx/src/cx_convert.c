@@ -63,7 +63,7 @@ typedef cx_bool bool_t;
 /* Conversions to string */
 #define CX_CONVERT_TO_STR(typeFrom, fmt) \
     CX_DECL_TRANSFORM(typeFrom,string) {\
-        char* str = cx_malloc(128);\
+        char* str = cx_alloc(128);\
         CX_UNUSED(fromType);\
         CX_UNUSED(toType);\
         sprintf(str, fmt, *(typeFrom##_t*)from);\
@@ -164,7 +164,7 @@ CX_DECL_TRANSFORM(string, enum) {
         goto error;
     } else {
         *(cx_int32*)to = *o;
-        cx_free(o);
+        cx_release(o);
     }
     return 0;
 error:
@@ -278,7 +278,7 @@ CX_DECL_TRANSFORM(string, bitmask) {
                 v |= *(cx_constant*)constant;
                 bptr = buffer;
 
-                cx_free(constant);
+                cx_release(constant);
 
                 break;
             default:

@@ -100,14 +100,14 @@ cx_int16 Fast_Wait_construct(Fast_Wait _this) {
     if (_this->timeout) {
         timeoutExpr = Fast_Expression_cast(_this->timeout, cx_type(cx_float32_o), FALSE);
         if (timeoutExpr) {
-            cx_set(&_this->timeout, timeoutExpr);
+            cx_setref(&_this->timeout, timeoutExpr);
         }
     } else {
         _this->timeout = Fast_Expression(Fast_FloatingPoint__create(0));
     }
 
     /* Set type of expression */
-    cx_set(&Fast_Expression(_this)->type, resultType);
+    cx_setref(&Fast_Expression(_this)->type, resultType);
     Fast_Expression(_this)->isReference = TRUE; /* Result is always an _this */
 
     return 0;

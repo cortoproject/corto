@@ -15,7 +15,7 @@
 cx_generator gen_new(cx_string name, cx_string language) {
     cx_generator result;
 
-    result = cx_malloc(sizeof(struct cx_generator_s));
+    result = cx_alloc(sizeof(struct cx_generator_s));
 
     /* List of output directories is initially empty */
     result->attributes = NULL;
@@ -112,8 +112,8 @@ void gen_parse(cx_generator g, cx_object object, cx_bool parseSelf, cx_bool pars
     }
 
     if (!o) {
-        o = cx_malloc(sizeof(g_object));
-        cx_keep(object);
+        o = cx_alloc(sizeof(g_object));
+        cx_claim(object);
         o->o = object;
         o->parseSelf = parseSelf;
         o->parseScope = parseScope;
@@ -168,7 +168,7 @@ void gen_setAttribute(cx_generator g, cx_string key, cx_string value) {
     }
 
     if(!attr) {
-        attr = cx_malloc(sizeof(g_attribute));
+        attr = cx_alloc(sizeof(g_attribute));
         attr->key = cx_strdup(key);
     }else {
         cx_dealloc(attr->value);
@@ -197,7 +197,7 @@ cx_int16 gen_load(cx_generator g, cx_string library) {
 
     /* Load library from generator path */
     cx_string home = getenv("CORTEX_HOME");
-    cx_string path = cx_malloc(1 + snprintf(NULL, 0, "%s/generator/bin/%s", home, library));
+    cx_string path = cx_alloc(1 + snprintf(NULL, 0, "%s/generator/bin/%s", home, library));
     sprintf(path, "%s/generator/bin/%s", home, library);
 
     g->library = cx_dlOpen(path);
@@ -230,7 +230,7 @@ static int g_freeObjects(void* _o, void* udata) {
     if (o->prefix) {
         cx_dealloc(o->prefix);
     }
-    cx_free(o->o);
+    cx_release(o->o);
     cx_dealloc(o);
 
     return 1;
@@ -835,7 +835,7 @@ cx_int16 g_loadExisting(cx_generator g, cx_string name, cx_string option, cx_ll 
                             goto error;
                         }
 
-                        existing = cx_malloc(sizeof(g_fileSnippet));
+                        existing = cx_alloc(sizeof(g_fileSnippet));
                         existing->option = cx_strdup(option);
                         existing->id = cx_strdup(identifier);
                         existing->src = src;
@@ -892,7 +892,7 @@ g_file g_fileOpen(cx_generator g, cx_string name) {
     g_file result;
     cx_char filepath[512];
 
-    result = cx_malloc(sizeof(struct g_file_s));
+    result = cx_alloc(sizeof(struct g_file_s));
     result->snippets = NULL;
     result->headers = NULL;
     result->scope = NULL;
@@ -1031,7 +1031,7 @@ void g_fileWrite(g_file file, char* fmt, ...) {
     va_end(args);
 
     if (len) {
-        buffer = cx_malloc(len + 1);
+        buffer = cx_alloc(len + 1);
 
         va_start(args, fmt);
         len = vsnprintf(buffer, len + 1, fmt, args);
@@ -1124,7 +1124,7 @@ static cx_int16 cx_genMemberCache_member(cx_serializer s, cx_value *info, void* 
         cx_genWalkMember_t *parameter;
         cx_member m = info->is.member.t;
 
-        parameter = cx_malloc(sizeof(cx_genWalkMember_t));
+        parameter = cx_alloc(sizeof(cx_genWalkMember_t));
         parameter->member = m;
         parameter->occurred = cx_genMemberCacheCount(cache, m);
         cx_llAppend(cache, parameter);

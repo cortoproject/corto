@@ -95,7 +95,7 @@ Fast_Call Fast_CallBuilder_build(Fast_CallBuilder *_this) {
             } else if ((l = Fast_Block_resolveLocal(_this->block, "this"))) {
                 if (cx_type_resolveProcedure(l->type, _this->signature)) {
                     /* Set instance to 'this' */
-                    cx_set(&_this->instance, l);
+                    cx_setref(&_this->instance, l);
                     result = Fast_CallBuilder_buildMethod(_this);
                 }           
             }
@@ -121,7 +121,7 @@ Fast_Call Fast_CallBuilder_build(Fast_CallBuilder *_this) {
                     if (Fast_CallBuilder_buildSignature(_this)) {
                         goto error;
                     }
-                    cx_free(f);
+                    cx_release(f);
                     f = cx_resolve(_this->scope, _this->signature);
                 }
                 result = Fast_Call(Fast_StaticCall__create(NULL, _this->arguments, f));

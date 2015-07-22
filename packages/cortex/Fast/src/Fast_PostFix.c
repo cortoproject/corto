@@ -41,13 +41,13 @@ cx_int16 Fast_PostFix_construct(Fast_PostFix _this) {
                 goto error;
                 break;       
             }
-            cx_set(&Fast_Expression(_this)->type, lvalueType);
+            cx_setref(&Fast_Expression(_this)->type, lvalueType);
             break;
 
         case CX_ITERATOR:
             if (_this->operator == CX_INC) {
                 /* The result of an expression that increments an iterator is a boolean */
-                cx_set(&Fast_Expression(_this)->type, cx_bool_o);
+                cx_setref(&Fast_Expression(_this)->type, cx_bool_o);
             } else {
                 Fast_Parser_error(yparser(), "invalid operator for iterator");
                 goto error;

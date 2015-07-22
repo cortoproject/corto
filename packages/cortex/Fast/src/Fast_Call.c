@@ -42,16 +42,16 @@ cx_int16 Fast_Call_insertCasts(Fast_Call _this) {
                 if (parameterType->kind != CX_ANY) {
                     expr = Fast_Expression_cast(argument, parameterType, _this->parameters.buffer[i].passByReference);
                     if (expr) {
-                        cx_keep_ext(_this, expr, "Keep cast-expression as argument");
+                        cx_claim_ext(_this, expr, "Keep cast-expression as argument");
                         cx_llReplace(arguments, argument, expr);
-                        cx_free_ext(_this, argument, "Free old (uncasted) expression from argumentlist");
+                        cx_release_ext(_this, argument, "Free old (uncasted) expression from argumentlist");
                     }
                 }
             }
 
             i++;
         }
-        cx_set(&_this->arguments, Fast_Expression_fromList(arguments));
+        cx_setref(&_this->arguments, Fast_Expression_fromList(arguments));
         Fast_Expression_cleanList(arguments);
     }
 
@@ -72,7 +72,7 @@ cx_int16 Fast_Call_construct(Fast_Call _this) {
         goto error;
     }
 
-    cx_set(&Fast_Expression(_this)->type, _this->returnType);
+    cx_setref(&Fast_Expression(_this)->type, _this->returnType);
     Fast_Expression(_this)->isReference =
         _this->returnsReference || _this->returnType->reference;
 
@@ -98,13 +98,13 @@ cx_void Fast_Call_setParameters(Fast_Call _this, cx_function function) {
     cx_uint32 i;
 
     /* Set parameters */
-    cx_set(&_this->returnType, function->returnType);
+    cx_setref(&_this->returnType, function->returnType);
     _this->returnsReference = function->returnsReference;
 
     cx_parameter_seq__size(&_this->parameters, function->parameters.length);
 
     for (i = 0; i < function->parameters.length; i++) {
-        cx_set(&_this->parameters.buffer[i].type, function->parameters.buffer[i].type);
+        cx_setref(&_this->parameters.buffer[i].type, function->parameters.buffer[i].type);
         _this->parameters.buffer[i].name = cx_strdup(function->parameters.buffer[i].name);
         _this->parameters.buffer[i].passByReference = function->parameters.buffer[i].passByReference;
     }

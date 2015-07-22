@@ -19,7 +19,7 @@ cx_void ic_scope_add(ic_scope _this, ic_node n) {
 cx_void ic_scope_addStorage(ic_scope _this, ic_storage s) {
 /* $begin(::cortex::ic::scope::addStorage) */
     cx_llAppend(_this->storages, s);
-    cx_set(&s->scope, _this);
+    cx_setref(&s->scope, _this);
 /* $end */
 }
 

@@ -72,7 +72,7 @@ void cx_deserXmlNsUse(cx_string ns, deser_xmldata data) {
         xml_error(data, "namespace '%s' unresolved.", ns);
     } else {
         cx_llAppend(data->using, o);
-        cx_free(o);
+        cx_release(o);
     }
 }
 
@@ -104,7 +104,7 @@ deser_xmldata_s cx_deserXmlDataClone(deser_xmldata data) {
     result = *data;
     result.attrParsed = 0;
     if (data->scope) {
-        cx_keep(data->scope);
+        cx_claim(data->scope);
     }
     return result;
 }
@@ -116,7 +116,7 @@ void cx_deserXmlDataFree(deser_xmldata data) {
         data->attrParsed = (void*)-1; /* Will crash if attempts are made to dereference it */
     }
     if (data->scope) {
-        cx_free(data->scope);
+        cx_release(data->scope);
     }
 }
 
@@ -128,7 +128,7 @@ cx_object cx_deserXmlDeclare(deser_xmldata data, cx_string name, cx_type t) {
     if (!(o = cx_lookup(data->scope, name))) {
         o = cx_declare(data->scope, name, t);
     } else {
-        cx_free(o);
+        cx_release(o);
     }
 
     return o;
@@ -264,7 +264,7 @@ void* cx_deserXmlCollectionNewElement(deser_xmlElementData* data) {
         break;
     case CX_LIST:
     case CX_MAP:
-        result = cx_malloc(elementSize);
+        result = cx_alloc(elementSize);
         break;
     default:
         {
@@ -516,7 +516,7 @@ cx_string cx_deserXmlIsInlinedElement(cx_string type, deser_xmlMemberData userDa
                         result = cx_nameof(s->members.buffer[i]);
                         break;
                     }
-                    cx_free(o);
+                    cx_release(o);
                 }
             }
         }
@@ -542,10 +542,10 @@ int cx_deserXmlInlinedMember(cx_xmlnode node, cx_string name, deser_xmlMemberDat
 
                 /* Deserialize collection */
                 if (cx_deserXmlCollection(cx_xmlnodeParent(node), member->type, CX_OFFSET(userData->o, member->offset), 1, userData->data)) {
-                    cx_free(member);
+                    cx_release(member);
                     goto error;
                 }
-                cx_free(member);
+                cx_release(member);
             }
         }
 
@@ -671,7 +671,7 @@ int cx_deserXmlObject(cx_xmlnode node, cx_string name, cx_string type, deser_xml
 
     /* Declare object */
     o = cx_deserXmlDeclare(data, name, t);
-    cx_free(t); /* Free reference to t obtained by resolve */
+    cx_release(t); /* Free reference to t obtained by resolve */
     if (!o) {
         xml_error(data, "failed to create object '%s : %s'.", name, type); goto error;
     }
@@ -752,7 +752,7 @@ int cx_deserXmlMetaExt(cx_xmlnode node, cx_deserXmlScope scope, cx_type t, void*
                     goto error;
                 }
                 free(name);
-                cx_free(t);
+                cx_release(t);
             } else {
                 xml_error(data, "missing value-element for meta:object element.");
                 goto error;
@@ -797,12 +797,12 @@ int cx_deserXmlMetaExt(cx_xmlnode node, cx_deserXmlScope scope, cx_type t, void*
             if (!s) {
                 if (!strcmp(oper, "package")) {
                     s = cx_declare(data->scope, name, (cx_type)cx_package_o);
-                    cx_keep(s);
+                    cx_claim(s);
                     cx_package(s)->url = cx_xmlnodeAttrStr(node, "url");
                     cx_define(s);
                 } else {
                     s = cx_declare(data->scope, name, (cx_type)cx_void_o);
-                    cx_keep(s);
+                    cx_claim(s);
                 }
             }
 
@@ -811,7 +811,7 @@ int cx_deserXmlMetaExt(cx_xmlnode node, cx_deserXmlScope scope, cx_type t, void*
         /* If the elementscope is a member, the current object will be the scope. */
         else if (scope == XML_MEMBER) {
             s = data->cur;
-            cx_keep(s);
+            cx_claim(s);
         } else {
             s = NULL;
             xml_error(data, "invalid use of meta:scope.");

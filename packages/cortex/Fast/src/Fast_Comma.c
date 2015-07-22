@@ -17,9 +17,9 @@ cx_int16 Fast_Comma_addExpression(Fast_Comma _this, Fast_Expression expr) {
 /* $begin(::cortex::Fast::Comma::addExpression) */
     if (expr) {
         cx_assert(_this->expressions != NULL, "initialization failed");
-        cx_llAppend(_this->expressions, expr); cx_keep(expr);
+        cx_llAppend(_this->expressions, expr); cx_claim(expr);
         if (cx_llSize(_this->expressions) == 1) {
-            cx_set(&Fast_Expression(_this)->type, expr->type);
+            cx_setref(&Fast_Expression(_this)->type, expr->type);
         }
     }
 
@@ -56,7 +56,7 @@ cx_int16 Fast_Comma_construct(Fast_Comma _this) {
 
         if (yparser()->line == 8) {
             if (firstExpr) {
-                cx_set(&Fast_Expression(_this)->type, firstExpr->type);
+                cx_setref(&Fast_Expression(_this)->type, firstExpr->type);
             }
         }
     }
@@ -117,7 +117,7 @@ Fast_Node_list Fast_Comma_toList(Fast_Comma _this) {
     iter = cx_llIter(_this->expressions);
     while(cx_iterHasNext(&iter)) {
         node = cx_iterNext(&iter);
-        cx_llAppend(result, node); cx_keep(node);
+        cx_llAppend(result, node); cx_claim(node);
     }
 
     return result;

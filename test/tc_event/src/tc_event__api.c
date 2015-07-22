@@ -9,7 +9,7 @@
 #include "tc_event__api.h"
 
 tc_Point tc_Point__new(void) {
-    return cx_new(cx_type(tc_Point_o));
+    return cx_create(cx_type(tc_Point_o));
 }
 
 tc_Point tc_Point__declare(cx_object _parent, cx_string _name) {
@@ -24,11 +24,11 @@ int tc_Point__define(tc_Point _this, cx_uint32 x, cx_uint32 y) {
 
 tc_Point tc_Point__create(cx_uint32 x, cx_uint32 y) {
     tc_Point _this;
-    _this = cx_new(cx_type(tc_Point_o));
+    _this = cx_create(cx_type(tc_Point_o));
     _this->x = x;
     _this->y = y;
     if (cx_define(_this)) {
-        cx_free(_this);
+        cx_release(_this);
         _this = NULL;
     }
     return _this;

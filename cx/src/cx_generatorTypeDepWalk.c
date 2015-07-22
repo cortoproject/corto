@@ -44,7 +44,7 @@ static cx_genTypeDeclaration* cx_genTypeDeclared(cx_object o, cx_genTypeWalk_t* 
     struct cx_genTypeDeclaration* decl;
 
     /* Insert declaration object */
-    decl = cx_malloc(sizeof(struct cx_genTypeDeclaration));
+    decl = cx_alloc(sizeof(struct cx_genTypeDeclaration));
     decl->o = o;
     decl->printed = FALSE;
     decl->parsing = FALSE;

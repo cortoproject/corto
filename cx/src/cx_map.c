@@ -15,7 +15,7 @@ cx_int16 cx_map_construct(cx_map _this) {
     cx_type(_this)->size = sizeof(cx_map);
     cx_type(_this)->alignment = CX_ALIGNMENT(cx_map);
     cx_collection(_this)->elementType = _this->elementType;
-    cx_keep_ext(_this, _this->elementType, "keep _this for elementType");
+    cx_claim_ext(_this, _this->elementType, "keep _this for elementType");
     cx_collection(_this)->max = _this->max;
     return cx_type_construct(cx_type(_this));
 /* $end */

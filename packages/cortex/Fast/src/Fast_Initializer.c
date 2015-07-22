@@ -167,8 +167,8 @@ cx_int16 Fast_Initializer_construct(Fast_Initializer _this) {
 
     /* Initialize first frame with type */
     for(variable=0; variable<_this->variableCount; variable++) {
-        cx_set(&_this->frames[variable].type, t);
-        /* cx_set(&_this->rvalueType, t); */
+        cx_setref(&_this->frames[variable].type, t);
+        /* cx_setref(&_this->rvalueType, t); */
         _this->frames[variable].location = 0;
     }
     _this->fp = 0;
@@ -190,7 +190,7 @@ cx_int16 Fast_Initializer_construct(Fast_Initializer _this) {
     }
     
     Fast_Node(_this)->kind = Fast_InitializerExpr;
-    cx_set(&Fast_Expression(_this)->type, t);
+    cx_setref(&Fast_Expression(_this)->type, t);
     
     return 0;
 error:
@@ -243,16 +243,16 @@ cx_uint16 Fast_Initializer_initFrame(Fast_Initializer _this) {
         }
         if (walkData.m) {
             _this->frames[_this->fp].location = walkData.id;
-            cx_set(&_this->frames[_this->fp].member, walkData.m);
-            cx_set(&_this->frames[_this->fp].type, walkData.m->type);
-            /*cx_set(&yparser()->rvalueType, walkData.m->type);*/
+            cx_setref(&_this->frames[_this->fp].member, walkData.m);
+            cx_setref(&_this->frames[_this->fp].type, walkData.m->type);
+            /*cx_setref(&yparser()->rvalueType, walkData.m->type);*/
         } else {
-            cx_set(&_this->frames[_this->fp].member, NULL);
+            cx_setref(&_this->frames[_this->fp].member, NULL);
             if (t->kind == CX_COLLECTION) {
-                cx_set(&_this->frames[_this->fp].type, cx_collection(t)->elementType);
-                /*cx_set(&yparser()->rvalueType, cx_collection(t)->elementType);*/
+                cx_setref(&_this->frames[_this->fp].type, cx_collection(t)->elementType);
+                /*cx_setref(&yparser()->rvalueType, cx_collection(t)->elementType);*/
             } else {
-                cx_set(&_this->frames[_this->fp].type, NULL);
+                cx_setref(&_this->frames[_this->fp].type, NULL);
             }
         }
     }
@@ -287,13 +287,13 @@ cx_int32 Fast_Initializer_member_v(Fast_Initializer _this, cx_string name) {
     }
     if (walkData.m) {
         _this->frames[_this->fp].location = walkData.id;
-        cx_set(&_this->frames[_this->fp].member, walkData.m);
-        cx_set(&_this->frames[_this->fp].type, walkData.m->type);
-        /*cx_set(&yparser()->rvalueType, walkData.m->type);*/
+        cx_setref(&_this->frames[_this->fp].member, walkData.m);
+        cx_setref(&_this->frames[_this->fp].type, walkData.m->type);
+        /*cx_setref(&yparser()->rvalueType, walkData.m->type);*/
     } else {
         cx_id id;
         Fast_Parser_error(yparser(), "member '%s' invalid for type '%s'", name, Fast_Parser_id(t, id));
-        cx_set(&_this->frames[_this->fp].type, NULL);
+        cx_setref(&_this->frames[_this->fp].type, NULL);
         goto error;
     }
 
@@ -364,7 +364,7 @@ cx_int16 Fast_Initializer_push_v(Fast_Initializer _this) {
     if (!_this->fp || (_this->fp && !t->reference)) {
         _this->fp++;
         _this->frames[_this->fp].location = 0;
-        cx_set(&_this->frames[_this->fp].type, t);
+        cx_setref(&_this->frames[_this->fp].type, t);
         Fast_Initializer_initFrame(_this);
         
 #ifdef CX_INIT_DEBUG

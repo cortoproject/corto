@@ -50,16 +50,16 @@ int tc__classPrimitives(void) {
     cx_dealloc(str2);
 
     /* Free objects */
-    cx_free(o1);
-    cx_free(o2);
+    cx_release(o1);
+    cx_release(o2);
 
     return result;
 ser2_err:
-    cx_free(o2);
+    cx_release(o2);
 deser_err:
     cx_dealloc(str1);
 ser1_err:
-    cx_free(o1);
+    cx_release(o1);
     return 1;
 }
 
@@ -105,16 +105,16 @@ int tc__classInherit(void) {
     cx_dealloc(str2);
 
     /* Free objects */
-    cx_free(o1);
-    cx_free(o2);
+    cx_release(o1);
+    cx_release(o2);
 
     return result;
 ser2_err:
-    cx_free(o2);
+    cx_release(o2);
 deser_err:
     cx_dealloc(str1);
 ser1_err:
-    cx_free(o1);
+    cx_release(o1);
     return 1;
 }
 

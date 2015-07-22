@@ -45,7 +45,7 @@ cx_int16 cx_function_bind(cx_function _this) {
 
     /* If no returntype is set, make it void */
     if (!_this->returnType) {
-        cx_set(&_this->returnType, cx_void_o);
+        cx_setref(&_this->returnType, cx_void_o);
     }
 
     /* Bind with interface if possible */
@@ -168,7 +168,7 @@ cx_parameterSeq cx_function_stringToParameterSeq(cx_string name, cx_object scope
 
         /* Allocate size for parameters */
         result.length = count;
-        result.buffer = cx_malloc(sizeof(cx_parameter) * count);
+        result.buffer = cx_alloc(sizeof(cx_parameter) * count);
         memset(result.buffer, 0, sizeof(cx_parameter) * count);
 
         /* Parse arguments */
@@ -226,7 +226,7 @@ cx_void cx_function_unbind(cx_function object) {
     for(i=0; i<object->parameters.length; i++) {
         cx_dealloc(object->parameters.buffer[i].name);
         object->parameters.buffer[i].name = NULL;
-        cx_free_ext(object, object->parameters.buffer[i].type, "Free function parameter-type.");
+        cx_release_ext(object, object->parameters.buffer[i].type, "Free function parameter-type.");
         object->parameters.buffer[i].type = NULL;
     }
 

@@ -274,7 +274,7 @@ static int cx_argValidate(cx_ll parsed) {
     return !cx_llWalk(cx_argList, (cx_walkAction)cx_argValidateWalk, parsed);
 }
 
-static int cx_freeParsedWalk(char* arg, void* udata) {
+static int cx_releaseParsedWalk(char* arg, void* udata) {
     CX_UNUSED(udata);
     free(arg);
     return 1;
@@ -346,7 +346,7 @@ int cx_argParse(int argc, char* argv[]) {
     }
 
     /* Free parsed */
-    cx_llWalk(parsed, (cx_walkAction)cx_freeParsedWalk, NULL);
+    cx_llWalk(parsed, (cx_walkAction)cx_releaseParsedWalk, NULL);
     cx_llFree(parsed);
 
     return result;

@@ -16,7 +16,7 @@
 cx_void testjson_TestJsonValue_setUp_v(testjson_TestJsonValue _this) {
 /* $begin(::testjson::TestJsonValue::setUp) */
     testjson_BaseTestJson __this = testjson_BaseTestJson(_this);
-    __this->jsonData = (cx_word)cx_malloc(sizeof(struct cx_json_ser_t));
+    __this->jsonData = (cx_word)cx_alloc(sizeof(struct cx_json_ser_t));
     cx_json_ser_t jsonData = {NULL, NULL, 0, 0, 0, FALSE, TRUE, FALSE, TRUE};
     *((cx_json_ser_t *)__this->jsonData) = jsonData;
 /* $end */

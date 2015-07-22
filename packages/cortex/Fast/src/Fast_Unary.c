@@ -22,14 +22,14 @@ cx_int16 Fast_Unary_construct(Fast_Unary _this) {
 
     if (lvalueType->kind != CX_ITERATOR) {
         if (_this->operator == CX_COND_NOT) {
-            cx_set(&Fast_Expression(_this)->type, cx_bool_o);
+            cx_setref(&Fast_Expression(_this)->type, cx_bool_o);
         } else {
-            cx_set(&Fast_Expression(_this)->type, lvalueType);
+            cx_setref(&Fast_Expression(_this)->type, lvalueType);
         }
     } else {
         if (_this->operator == CX_MUL) {
             cx_type iterType = cx_iterator(lvalueType)->elementType;
-            cx_set(&Fast_Expression(_this)->type, iterType);
+            cx_setref(&Fast_Expression(_this)->type, iterType);
             Fast_Expression(_this)->isReference = TRUE;
         } else {
             Fast_Parser_error(yparser(), "invalid operator for iterator");

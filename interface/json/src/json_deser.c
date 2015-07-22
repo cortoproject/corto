@@ -34,13 +34,13 @@ static cx_object cx_json_declare(JSON_Object *meta) {
     }
     type = cx_resolve(NULL, (cx_string)typeName);
     if (!type) {
-        cx_free(parent);
+        cx_release(parent);
         cx_error("type %s could not be resolved", typeName);
         goto error;
     }
     object = cx_declare(parent, (cx_string)name, type);
-    cx_free(parent);
-    cx_free(type);
+    cx_release(parent);
+    cx_release(type);
 finished:
     return object;
 error:

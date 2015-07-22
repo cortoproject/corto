@@ -171,7 +171,7 @@ void jsw_keyFree( jsw_rbtree_t *tree, void *key )
         cx_type keyType = cx_map(tree->type)->keyType;
 
         if (keyType->reference) {
-            cx_free(*(cx_object*)key);
+            cx_release(*(cx_object*)key);
         } else {
             if (keyType->kind == CX_PRIMITIVE) {
                 if (cx_primitive(keyType)->kind == CX_TEXT) {

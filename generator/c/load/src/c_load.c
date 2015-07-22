@@ -368,7 +368,7 @@ static void c_sourceWriteLoadStart(cx_generator g, g_file file) {
 static void c_sourceWriteLoadEnd(g_file file) {
     g_fileWrite(file, "if (_a_) {\n");
     g_fileIndent(file);
-    g_fileWrite(file, "cx_free(_a_);\n");
+    g_fileWrite(file, "cx_release(_a_);\n");
     g_fileDedent(file);
     g_fileWrite(file, "}\n\n");
     g_fileWrite(file, "return 0;\n");
@@ -436,7 +436,7 @@ static cx_int16 c_initPrimitive(cx_serializer s, cx_value* v, void* userData) {
         /* Convert constant-name to language id */
         str = cx_strdup(c_constantId(data->g, cx_enum_constant(cx_enum(t), *(cx_uint32*)ptr), enumId));
     } else if (cx_primitive(t)->kind == CX_BITMASK) {
-        str = cx_malloc(11);
+        str = cx_alloc(11);
         sprintf(str, "0x%x", *(cx_uint32*)ptr);
     } else if (cx_primitive(t)->kind == CX_TEXT) {
         cx_string v = *(cx_string*)ptr;
@@ -516,7 +516,7 @@ static cx_int16 c_initElement(cx_serializer s, cx_value* v, void* userData) {
 
         if (requiresAlloc) {
             c_specifierId(data->g, t->elementType, specifier, NULL, postfix);
-            g_fileWrite(data->source, "%s = cx_malloc(sizeof(%s%s));\n", c_loadElementId(v, elementId, 0), specifier, postfix);
+            g_fileWrite(data->source, "%s = cx_alloc(sizeof(%s%s));\n", c_loadElementId(v, elementId, 0), specifier, postfix);
         }
         break;
     }
@@ -591,11 +591,11 @@ static cx_int16 c_initCollection(cx_serializer s, cx_value* v, void* userData) {
             g_fileWrite(data->source, "%sbuffer = NULL;\n",
                     c_loadMemberId(data, v, memberId, TRUE));
         } else if (length == 1) {
-            g_fileWrite(data->source, "%sbuffer = cx_malloc(sizeof(%s%s));\n",
+            g_fileWrite(data->source, "%sbuffer = cx_alloc(sizeof(%s%s));\n",
                     c_loadMemberId(data, v, memberId, TRUE),
                     specifier, postfix);
         } else {
-            g_fileWrite(data->source, "%sbuffer = cx_malloc(sizeof(%s%s) * %d);\n",
+            g_fileWrite(data->source, "%sbuffer = cx_alloc(sizeof(%s%s) * %d);\n",
                     c_loadMemberId(data, v, memberId, TRUE),
                     specifier, postfix,
                     length);
@@ -714,7 +714,7 @@ static int c_loadDeclare(cx_object o, void* userData) {
         g_fileWrite(data->source, "/* Declare %s */\n", cx_fullname(o, id));
 
         if (!cx_checkAttr(cx_typeof(o), CX_ATTR_SCOPED)) {
-            g_fileWrite(data->source, "%s = cx_declare(%s, \"%s\", (_a_ ? cx_free(_a_) : 0, _a_ = cx_type(%s)));\n",
+            g_fileWrite(data->source, "%s = cx_declare(%s, \"%s\", (_a_ ? cx_release(_a_) : 0, _a_ = cx_type(%s)));\n",
                     c_loadVarId(data->g, o, id),
                     c_loadVarId(data->g, cx_parentof(o), parentId),
                     escapedName,

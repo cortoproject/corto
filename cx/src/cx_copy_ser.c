@@ -29,7 +29,7 @@ static cx_int16 cx_ser_reference(cx_serializer s, cx_value *info, void *userData
     void *value = (void*)((cx_word)cx_valueValue(&data->value) + ((cx_word)_this - (cx_word)data->base));
     CX_UNUSED(s);
  
-    cx_set(value, *(cx_object*)_this);
+    cx_setref(value, *(cx_object*)_this);
     
     return 0;
 }

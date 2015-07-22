@@ -19,7 +19,7 @@ cx_int16 Fast_StaticCall_construct(Fast_StaticCall _this) {
 
     fExpr = Fast_Object__create(_this->function);
     Fast_Parser_collect(yparser(), fExpr);
-    cx_set(&Fast_Call(_this)->functionExpr, fExpr);
+    cx_setref(&Fast_Call(_this)->functionExpr, fExpr);
 
     /* Set parameters */
     Fast_Call_setParameters(Fast_Call(_this), _this->function);

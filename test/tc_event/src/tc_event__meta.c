@@ -765,7 +765,7 @@ int tc_event_load(void) {
         }
     }
     if (_a_) {
-        cx_free(_a_);
+        cx_release(_a_);
     }
 
     return 0;

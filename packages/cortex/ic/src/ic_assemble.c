@@ -41,7 +41,7 @@ cx_bool ic_isReference(ic_storage storage) {
 static ic_vmLabel *ic_vmLabelNew(cx_uint32 id) {
     ic_vmLabel *result;
 
-    result = cx_malloc(sizeof(ic_vmLabel));
+    result = cx_alloc(sizeof(ic_vmLabel));
     result->id = id;
     result->pc = 0;
     result->refereeCount = 0;
@@ -611,7 +611,7 @@ void ic_vmSetOp3Addr(ic_vmProgram *program, cx_vmOp *op, ic_vmType typeKind, ic_
 static ic_vmInlineFunction *ic_vmInlineFunctionNew(cx_vmProgram program, cx_function function) {
     ic_vmInlineFunction *result;
 
-    result = cx_malloc(sizeof(ic_vmInlineFunction));
+    result = cx_alloc(sizeof(ic_vmInlineFunction));
     result->program = program;
     result->function = function;
 

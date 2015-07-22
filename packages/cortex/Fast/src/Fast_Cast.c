@@ -23,7 +23,7 @@ cx_int16 Fast_Cast_construct(Fast_Cast _this) {
     if (rvalueType) {
         if ((_this->isReference && rvalueType->reference && (rvalueType->kind == CX_VOID)) ||
            (cx_type_castable(_this->lvalue, rvalueType) || cx_type_castable(rvalueType, _this->lvalue))) {
-            cx_set(&Fast_Expression(_this)->type, _this->lvalue);
+            cx_setref(&Fast_Expression(_this)->type, _this->lvalue);
             Fast_Expression(_this)->isReference = _this->lvalue->reference || _this->isReference;
         } else {
             cx_id id1, id2;
@@ -34,7 +34,7 @@ cx_int16 Fast_Cast_construct(Fast_Cast _this) {
     } else {
         /* If type of rvalue is unknown, cast is performed at runtime. Set type even though to introduce the
          * type barrier for code using this expression. */
-        cx_set(&Fast_Expression(_this)->type, _this->lvalue);
+        cx_setref(&Fast_Expression(_this)->type, _this->lvalue);
     }
 
     return 0;

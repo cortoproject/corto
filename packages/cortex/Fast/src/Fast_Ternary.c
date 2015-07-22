@@ -72,12 +72,12 @@ cx_int16 Fast_Ternary_construct(Fast_Ternary _this) {
     Fast_Parser_blockPop(yparser());
 
     /* Store both expressions in _this */
-    cx_set(&_this->ifTrueExpr, trueExpr);
-    cx_set(&_this->ifFalseExpr, falseExpr);
+    cx_setref(&_this->ifTrueExpr, trueExpr);
+    cx_setref(&_this->ifFalseExpr, falseExpr);
     
     /* Create condition */
     _this->ifstmt = Fast_Ternary_createIf(_this->condition, trueBranch, falseBranch);
-    cx_set(&Fast_Expression(_this)->type, resultType);
+    cx_setref(&Fast_Expression(_this)->type, resultType);
 
     return 0;
 /* $end */

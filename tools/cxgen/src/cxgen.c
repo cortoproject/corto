@@ -194,7 +194,7 @@ void printUsage(void) {
     printf("\n");
 }
 
-static int cx_newPackage(cx_string include) {
+static int cx_createPackage(cx_string include) {
     cx_id id;
     FILE *cx;
 
@@ -273,7 +273,7 @@ int main(int argc, char* argv[]) {
                     return -1;
                 }
 
-                if (cx_newPackage(include)) {
+                if (cx_createPackage(include)) {
                     return -1;
                 }
 
@@ -319,7 +319,7 @@ int main(int argc, char* argv[]) {
                     cx_error("cxgen: unresolved scope '%s'.", scope);
                     return -1;
                 }
-                cx_free(o);
+                cx_release(o);
 
                 /* Parse object as scope, with provided prefix */
                 gen_parse(g, o, TRUE, TRUE, prefix);

@@ -14,8 +14,8 @@ cx_int16 ic_member_construct(ic_member _this) {
     cx_id name;
 
     ic_storage(_this)->kind = IC_MEMBER;
-    cx_set(&ic_storage(_this)->type, _this->member->type);
-    cx_set(&ic_storage(_this)->base, _this->base);
+    cx_setref(&ic_storage(_this)->type, _this->member->type);
+    cx_setref(&ic_storage(_this)->base, _this->base);
     ic_storage(_this)->isReference = _this->member->type->reference;
     sprintf(name, "%s.%s", _this->base->name, cx_nameof(_this->member));
     ic_storage(_this)->name = cx_strdup(name);

@@ -41,7 +41,7 @@ cx_int16 Fast_Null_serialize(Fast_Null _this, cx_type dstType, cx_word dst) {
         break;
     case Fast_Ref:
         if (*(cx_object*)dst) {
-            cx_free(*(cx_object*)dst);
+            cx_release(*(cx_object*)dst);
         }
         *(cx_object*)dst = NULL;
         break;

@@ -15,7 +15,7 @@
 /* ::testjson::BaseTestJson::setUp() */
 cx_void testjson_BaseTestJson_setUp_v(testjson_BaseTestJson _this) {
 /* $begin(::testjson::BaseTestJson::setUp) */
-    testjson_BaseTestJson(_this)->serializer = (cx_word)cx_malloc(sizeof(struct cx_serializer_s));
+    testjson_BaseTestJson(_this)->serializer = (cx_word)cx_alloc(sizeof(struct cx_serializer_s));
     struct cx_serializer_s *serializer = (void *)testjson_BaseTestJson(_this)->serializer;
     *serializer = cx_json_ser(CX_PRIVATE, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
 /* $end */
@@ -47,7 +47,7 @@ cx_void testjson_BaseTestJson_testJson(testjson_BaseTestJson _this, cx_string fu
     if (length < 0) {
         cx_critical("Failed snprintf");
     }
-    errmsg = cx_malloc(length + 1);
+    errmsg = cx_alloc(length + 1);
     sprintf(errmsg, "Cannot find %s", fullname);
     if (test_Suite_assert_bool_string(test_Suite(_this), o != NULL, errmsg)) {
         goto finished;

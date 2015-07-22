@@ -263,7 +263,7 @@ static void cx__deinitScope(cx_object o) {
     cx_assert(scope->attached == NULL, "cx__deinitScope: object has still objects attached");
 
     /* Free parent */
-    cx_free_ext(o, scope->parent, "Free parent of object");
+    cx_release_ext(o, scope->parent, "Free parent of object");
     scope->parent = NULL;
 
     /* We cannot actually remove the scope itself, since there might be childs which
@@ -429,7 +429,7 @@ void cx__newSSO(cx_object sso) {
     }
 
     /* Keep type */
-    cx_keep_ext(sso, cx_typeof(sso), "Keep type of object.");
+    cx_claim_ext(sso, cx_typeof(sso), "Keep type of object.");
 }
 
 /* Deinitialize static scoped object */
@@ -443,7 +443,7 @@ void cx__freeSSO(cx_object sso) {
     cx_assert(scope != NULL, "cx__freeSSO: static scoped object has no scope (very unlikely, cx__freeSSO called on non-static object?)")
 
     if (scope->parent) {
-        cx_free(scope->parent);
+        cx_release(scope->parent);
     }
 
     if (scope->scope) {
@@ -464,7 +464,7 @@ void cx__freeSSO(cx_object sso) {
     }
 
     /* Free type */
-    cx_free_ext(sso, cx_typeof(sso), "free type of builtin-object");
+    cx_release_ext(sso, cx_typeof(sso), "free type of builtin-object");
 }
 
 /* Adopt static scoped object */
@@ -649,7 +649,7 @@ static int cx_adopt(cx_object parent, cx_object child) {
             cx_rbtreeSet(p_scope->scope, c_scope->name, child);
 
             /* Parent must not be deleted before all childs are gone. */
-            cx_keep_ext(child, parent, "keep parent of object.");
+            cx_claim_ext(child, parent, "keep parent of object.");
             if (cx_rwmutexUnlock(&p_scope->scopeLock)) goto err_parent_mutex;
         } else {
             goto err_no_child_scope;
@@ -786,7 +786,7 @@ cx_int16 cx_delegateInit(cx_type t, cx_object o) {
 }
 
 /* Create new object with attributes */
-cx_object cx_new_ext(cx_object src, cx_type type, cx_uint8 attrs, cx_string context) {
+cx_object cx_create_ext(cx_object src, cx_type type, cx_uint8 attrs, cx_string context) {
     cx_uint32 size, headerSize;
     cx__object* o;
 
@@ -834,7 +834,7 @@ cx_object cx_new_ext(cx_object src, cx_type type, cx_uint8 attrs, cx_string cont
         if (attrs & CX_ATTR_WRITABLE) {
             if (type->kind == CX_VOID) {
                 if (!type->reference) {
-                    cx_warning("cx_new_ext: writable void object created.");
+                    cx_warning("cx_create_ext: writable void object created.");
                 }
             }
             o->attrs.write = TRUE;
@@ -855,7 +855,7 @@ cx_object cx_new_ext(cx_object src, cx_type type, cx_uint8 attrs, cx_string cont
             o->attrs.state |= CX_DEFINED;
         }
 
-        cx_keep_ext(CX_OFFSET(o, sizeof(cx__object)), type, "Keep type of object");
+        cx_claim_ext(CX_OFFSET(o, sizeof(cx__object)), type, "Keep type of object");
 
         if (!(attrs & CX_ATTR_SCOPED)) {
             if (attrs & CX_ATTR_OBSERVABLE) {
@@ -888,7 +888,7 @@ error:
 }
 
 /* Create new object */
-cx_object cx_new(cx_type type) {
+cx_object cx_create(cx_type type) {
     int attr;
 
     if (type->kind == CX_VOID) {
@@ -897,7 +897,7 @@ cx_object cx_new(cx_type type) {
         attr = CX_ATTR_WRITABLE | CX_ATTR_OBSERVABLE | CX_ATTR_PERSISTENT;
     }
 
-    return cx_new_ext(NULL, type, attr, NULL);
+    return cx_create_ext(NULL, type, attr, NULL);
 }
 
 cx_object cx_declare(cx_object parent, cx_string name, cx_type type) {
@@ -936,7 +936,7 @@ cx_object cx_declareFrom(cx_object parent, cx_string name, cx_type type, cx_obje
 
     /* Check if object already exists */
     if ((o = cx_lookup(parent, name))) {
-        cx_free(o);
+        cx_release(o);
         if (cx_typeof(o) != type) {
             cx_id tid, tid2, pid;
             if (parent != root_o) {
@@ -948,7 +948,7 @@ cx_object cx_declareFrom(cx_object parent, cx_string name, cx_type type, cx_obje
         }
     } else {
         /* Create new object */
-        o = cx_new_ext(parent, type, state, "Declare object in scope");
+        o = cx_create_ext(parent, type, state, "Declare object in scope");
         if (o) {
             /* Initialize object parameters. */
             if (!cx__initScope(o, name, parent)) {
@@ -1066,17 +1066,21 @@ cx_int16 cx_defineFrom(cx_object o, cx_object source) {
 }
 
 /* Destruct object */
-void cx_destruct(cx_object o) {
+void cx_delete(cx_object o) {
     cx__object* _o;
     cx__scope* scope;
 
-    _o = CX_OFFSET(o, -sizeof(cx__object));
-    scope = cx__objectScope(_o);
+    if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
+        _o = CX_OFFSET(o, -sizeof(cx__object));
+        scope = cx__objectScope(_o);
 
-    if (cx_ainc(&scope->orphaned) == 1) {
-        cx_notify(cx__objectObservable(_o), o, o, CX_ON_DELETE);
-        cx__orphan(o);
-        cx_free_ext(cx_parentof(o), o, "destroy scope reference");
+        if (cx_ainc(&scope->orphaned) == 1) {
+            cx_notify(cx__objectObservable(_o), o, o, CX_ON_DELETE);
+            cx__orphan(o);
+            cx_release_ext(cx_parentof(o), o, "destroy scope reference");
+        }
+    } else {
+        cx_release(o);
     }
 }
 
@@ -1480,7 +1484,7 @@ cx_uint16 cx__destruct(cx_object o) {
             }
         }
 
-        /* Notify destruct (scoped objects are destructed by cx_destruct) */
+        /* Notify destruct (scoped objects are destructed by cx_delete) */
         if (!cx_checkAttr(o, CX_ATTR_SCOPED)) {
             cx_notify(cx__objectObservable(CX_OFFSET(o,-sizeof(cx__object))), o, o, CX_ON_DELETE);
         }
@@ -1493,7 +1497,7 @@ cx_uint16 cx__destruct(cx_object o) {
         }
 
         /* Free type of object */
-        cx_free_ext(o, cx_typeof(o), "Free type of object");
+        cx_release_ext(o, cx_typeof(o), "Free type of object");
 
         /* Deinit writable */
         if (cx_checkAttr(o, CX_ATTR_WRITABLE)) {
@@ -1656,7 +1660,7 @@ cx_uint16 cx__destruct(cx_object o) {
 #ifdef CX_TRACE_DEBUG
 cx_object CX_TRACE_ADDR = NULL;
 #endif
-cx_int32 cx_keep_ext(cx_object src, cx_object o, cx_string context) {
+cx_int32 cx_claim_ext(cx_object src, cx_object o, cx_string context) {
     cx__object* _o;
     cx_uint32 i;
     CX_UNUSED(src);
@@ -1684,7 +1688,7 @@ cx_int32 cx_keep_ext(cx_object src, cx_object o, cx_string context) {
     return i;
 }
 
-cx_int32 cx_free_ext(cx_object src, cx_object o, cx_string context) {
+cx_int32 cx_release_ext(cx_object src, cx_object o, cx_string context) {
     cx_int32 i;
     cx__object* _o;
     CX_UNUSED(src);
@@ -1721,12 +1725,12 @@ cx_int32 cx_free_ext(cx_object src, cx_object o, cx_string context) {
     return i;
 }
 
-cx_int32 cx_keep(cx_object o) {
-    return cx_keep_ext(NULL, o, NULL);
+cx_int32 cx_claim(cx_object o) {
+    return cx_claim_ext(NULL, o, NULL);
 }
 
-cx_int32 cx_free(cx_object o) {
-    return cx_free_ext(NULL, o, NULL);
+cx_int32 cx_release(cx_object o) {
+    return cx_release_ext(NULL, o, NULL);
 }
 
 typedef struct cx_dropWalk_t {
@@ -1759,7 +1763,7 @@ static int cx_dropWalk(void* o, void* userData) {
 
     /* Prevent object from being deleted when scopeLock is released, which
      * would result in invalid reference in list. */
-    cx_keep_ext(NULL, o, "keep object in temporary drop-list");
+    cx_claim_ext(NULL, o, "keep object in temporary drop-list");
 
     /* Insert object in list */
     if (!data->objects) {
@@ -1803,12 +1807,12 @@ void cx_drop(cx_object o) {
             iter = cx_llIter(walkData.objects);
             while(cx_iterHasNext(&iter)) {
                 collected = cx_iterNext(&iter);
-                cx_free_ext(NULL, collected, "free from temporary drop-list");
+                cx_release_ext(NULL, collected, "free from temporary drop-list");
                 /* Double free - because cx_drop itself introduced a keep. */
                 if (cx_checkAttr(collected, CX_ATTR_SCOPED)) {
-                    cx_destruct(collected);
+                    cx_delete(collected);
                 } else {
-                    cx_free_ext(NULL, collected, "free attached object");
+                    cx_release_ext(NULL, collected, "free attached object");
                 }
             }
             cx_llFree(walkData.objects);
@@ -1834,7 +1838,7 @@ cx_object cx_lookup_ext(cx_object src, cx_object o, cx_string name, cx_string co
                 result = NULL;
             } else {
                 /* Keep object. If the refcount was zero, this object will be deleted soon, so prevent the object from being referenced again. */
-                if (cx_keep_ext(src, result, context) == 1) {
+                if (cx_claim_ext(src, result, context) == 1) {
                      /* Set the refcount to zero again. There can be no more objects that are looking up this object right now because
                       * we have the scopeLock of the parent. Additionally, the object will not yet have been free'd because the destruct
                       * function also needs the parent's scopelock to remove the object from the scope.
@@ -1919,7 +1923,7 @@ static void cx_observersFree(cx__observer** observers) {
 static cx__observer** cx_observersArrayNew(cx_ll list) {
     cx__observer** array;
 
-    array = cx_malloc((cx_llSize(list) + 1) * sizeof(cx__observer*));
+    array = cx_alloc((cx_llSize(list) + 1) * sizeof(cx__observer*));
     cx_observersCopyOut(list, array);
 
     /* Observers start from the second element */
@@ -1939,7 +1943,7 @@ static void cx_observersArrayFree(cx__observer** array) {
 /* Walk childs recursively, set whether a lock is required when updating a
  * child object because a parent has an observer interested in childs that
  * requires locking. */
-void cx_setChildLockRequired(cx_object observable) {
+void cx_setrefChildLockRequired(cx_object observable) {
     if (cx_checkAttr(observable, CX_ATTR_SCOPED)) {
         cx_iter childIter;
         cx_object child;
@@ -1954,7 +1958,7 @@ void cx_setChildLockRequired(cx_object observable) {
                 if (cx_checkAttr(child,CX_ATTR_WRITABLE)) {
                     childObservable->lockRequired = TRUE;
                 }
-                cx_setChildLockRequired(child);
+                cx_setrefChildLockRequired(child);
                 cx_rwmutexUnlock(&childObservable->childLock);
             }
         }
@@ -1990,13 +1994,13 @@ indent++;
             data->notify(data, data->_this, observable, source, mask);
         } else {
             if (!data->_this || (data->_this != source)) {
-                cx_observableEvent event = cx_new_ext(NULL, cx_type(cx_observableEvent_o), 0, NULL);
+                cx_observableEvent event = cx_create_ext(NULL, cx_type(cx_observableEvent_o), 0, NULL);
                 cx_dispatcher dispatcher = observer->dispatcher;
 
-                cx_set(&event->observer, observer);
-                cx_set(&event->me, data->_this);
-                cx_set(&event->observable, observable);
-                cx_set(&event->source, source);
+                cx_setref(&event->observer, observer);
+                cx_setref(&event->me, data->_this);
+                cx_setref(&event->observable, observable);
+                cx_setref(&event->source, source);
 
                 cx_dispatcher_post(dispatcher, cx_event(event));
             }
@@ -2116,7 +2120,7 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
 #endif
 
     /* Create observerData */
-    _observerData = cx_malloc(sizeof(cx__observer));
+    _observerData = cx_alloc(sizeof(cx__observer));
     _observerData->observer = observer;
     _observerData->_this = _this;
     _observerData->count = 0;
@@ -2185,7 +2189,7 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
         if (observer->mask & CX_ON_VALUE) {
             if (!_o->childLockRequired) {
                 _o->childLockRequired = TRUE;
-                cx_setChildLockRequired(observable);
+                cx_setrefChildLockRequired(observable);
             }
         }
         cx_rwmutexUnlock(&_o->childLock);
@@ -2635,12 +2639,12 @@ cx_int32 cx_waitfor(cx_object observable) {
         cx_observer observer;
 
         /* Create thread-specific waitadministration */
-        waitAdmin = cx_malloc(sizeof(cx_waitForObject));
+        waitAdmin = cx_alloc(sizeof(cx_waitForObject));
         memset(waitAdmin, 0, sizeof(cx_waitForObject));
         waitAdmin->semaphore = cx_semNew(0);
 
         /* Create observer */
-        observer = cx_new(cx_type(cx_observer_o));
+        observer = cx_create(cx_type(cx_observer_o));
         cx_function(observer)->impl = (cx_word)__cx_waitObserver;
         cx_function(observer)->implData = (cx_word)cx_waitObserver;
         cx_function(observer)->kind = CX_PROCEDURE_CDECL;
@@ -3329,14 +3333,14 @@ found:
 
 static int cx_scopeCollectWalk(cx_object o, void* userData) {
     cx_ll list = userData;
-    cx_keep_ext(NULL, o, "Collect objects in scope");
+    cx_claim_ext(NULL, o, "Collect objects in scope");
     cx_llAppend(list, o);
     return 1;
 }
 
 static int cx_scopeFreeWalk(cx_object o, void* userData) {
     CX_UNUSED(userData);
-    cx_free_ext(NULL, o, "Free collected objects in scope");
+    cx_release_ext(NULL, o, "Free collected objects in scope");
     return 1;
 }
 
@@ -3379,7 +3383,7 @@ cx_function cx_lookupFunction_ext(cx_object src, cx_object scope, cx_string requ
     }
 
     if (walkData.result) {
-        cx_keep_ext(src, walkData.result, context);
+        cx_claim_ext(src, walkData.result, context);
     }
 
     /* Free contents of scope */
@@ -3396,7 +3400,7 @@ cx_function cx_lookupFunction(cx_object scope, cx_string requested, cx_bool allo
 cx_string cx_signatureOpen(cx_string name) {
     cx_string result;
 
-    result = cx_malloc(strlen(name) + 1 + 1);
+    result = cx_alloc(strlen(name) + 1 + 1);
     sprintf(result, "%s(", name);
 
     return result;
@@ -3469,21 +3473,21 @@ cx_string cx_signatureClose(cx_string sig) {
 }
 
 /* Set reference field */
-void cx_set_ext(cx_object source, void* ptr, cx_object value, cx_string context) {
+void cx_setref_ext(cx_object source, void* ptr, cx_object value, cx_string context) {
     cx_object old;
     old = *(cx_object*)ptr;
     if (value) {
-        cx_keep_ext(source, value, context);
+        cx_claim_ext(source, value, context);
     }
     *(cx_object*)ptr = value;
     if (old) {
-        cx_free_ext(source, old, context);
+        cx_release_ext(source, old, context);
     }
 }
 
 /* Set reference field */
-void cx_set(void* ptr, cx_object value) {
-    cx_set_ext(NULL, ptr, value, NULL);
+void cx_setref(void* ptr, cx_object value) {
+    cx_setref_ext(NULL, ptr, value, NULL);
 }
 
 /* Convert object to string */
@@ -3632,7 +3636,7 @@ cx_int16 cx_copy(cx_object *dst, cx_object src) {
     cx_bool newObject = FALSE;
 
     if (!*dst) {
-        *dst = cx_new(cx_typeof(src));
+        *dst = cx_create(cx_typeof(src));
         newObject = TRUE;
     }
 
@@ -3657,11 +3661,11 @@ cx_int16 cx_valueCopy(cx_value *dst, cx_value *src) {
 }
 
 cx_object cx_cortex_new(cx_type type) {
-    return cx_new(type);
+    return cx_create(type);
 }
 
 cx_object cx_cortex__new(cx_type type, cx_attr attributes) {
-    return cx_new_ext(NULL, type, attributes, NULL);
+    return cx_create_ext(NULL, type, attributes, NULL);
 }
 
 void __cx_cortex_new(cx_function f, void *result, void *args) {

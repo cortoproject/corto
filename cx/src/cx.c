@@ -499,16 +499,16 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
 #define SSO_OP_OBJECT_2ND(op) \
 
 /* Creation and destruction of objects */
-static void cx_newObject(cx_object o) {
+static void cx_createObject(cx_object o) {
     cx__newSSO(o);
 }
-static void cx_freeObject(cx_object o) {
+static void cx_releaseObject(cx_object o) {
     cx__freeSSO(o);
 }
 
-static void cx_freeType(cx_object o, cx_uint32 size) {
+static void cx_releaseType(cx_object o, cx_uint32 size) {
     CX_UNUSED(size);
-    cx_freeObject(o);
+    cx_releaseObject(o);
 }
 
 void cx_delegateDestruct(cx_type t, cx_object o);
@@ -517,7 +517,7 @@ cx_int16 cx_delegateConstruct(cx_type t, cx_object o);
 
 /* Initialization of objects */
 static void cx_initObject(cx_object o) {
-    cx_newObject(o);
+    cx_createObject(o);
 
     cx_delegateInit(cx_typeof(o), o);
     
@@ -551,12 +551,12 @@ static void cx_defineType(cx_object o, cx_uint32 size) {
 }
 
 /* Destruct object */
-static void cx_destructObject(cx_object o) {
+static void cx_deleteObject(cx_object o) {
     cx__destructor(o);
 }
 
 /* Destruct type */
-static void cx_destructType(cx_object o, cx_uint32 size) {
+static void cx_deleteType(cx_object o, cx_uint32 size) {
     CX_UNUSED(size);
     cx__destructor(o);
 }
@@ -657,7 +657,7 @@ int cx_start(void) {
 void cx_onunload(void(*handler)(void*), void* userData) {
     struct cx_exitHandler* h;
 
-    h = cx_malloc(sizeof(struct cx_exitHandler));
+    h = cx_alloc(sizeof(struct cx_exitHandler));
     h->handler = handler;
     h->userData = userData;
 
@@ -673,7 +673,7 @@ void cx_onunload(void(*handler)(void*), void* userData) {
 void cx_onexit(void(*handler)(void*), void* userData) {
     struct cx_exitHandler* h;
 
-    h = cx_malloc(sizeof(struct cx_exitHandler));
+    h = cx_alloc(sizeof(struct cx_exitHandler));
     h->handler = handler;
     h->userData = userData;
 
@@ -722,7 +722,7 @@ void cx_stop(void) {
      * in removing the rootscope itself, but it will result in the
      * removal of all non-static objects. */
     cx_drop(root_o);
-    cx_free(root_o);
+    cx_release(root_o);
 
     /* Call exithandlers */
     cx_exit();
@@ -733,14 +733,14 @@ void cx_stop(void) {
     SSO_OP_OBJECT_2ND(cx_decreaseRef);
 
     /* Destruct objects */
-    SSO_OP_TYPE(cx_destructType);
-    SSO_OP_OBJECT(cx_destructObject);
-    SSO_OP_OBJECT_2ND(cx_destructObject);
+    SSO_OP_TYPE(cx_deleteType);
+    SSO_OP_OBJECT(cx_deleteObject);
+    SSO_OP_OBJECT_2ND(cx_deleteObject);
 
     /* Free objects */
-    SSO_OP_OBJECT_2ND(cx_freeObject);
-    SSO_OP_OBJECT(cx_freeObject);
-    SSO_OP_TYPE(cx_freeType);
+    SSO_OP_OBJECT_2ND(cx_releaseObject);
+    SSO_OP_OBJECT(cx_releaseObject);
+    SSO_OP_TYPE(cx_releaseType);
 
     /* Deinitialize root */
     cx__freeSSO(cortex_lang_o);

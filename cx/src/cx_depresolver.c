@@ -54,7 +54,7 @@ static int g_itemPrint(void* o, void* userData);
 g_item g_itemNew(cx_object o, cx_depresolver data) {
     g_item result;
 
-    result = cx_malloc(sizeof(struct g_item));
+    result = cx_alloc(sizeof(struct g_item));
     result->o = o;
     result->declared = FALSE;
     result->defined = FALSE;
@@ -331,7 +331,7 @@ static int g_itemResolveCycles(g_item item, struct cx_depresolver* data) {
 cx_depresolver cx_depresolver__create(cx_depresolver_action onDeclare, cx_depresolver_action onDefine, void* userData) {
     cx_depresolver result;
 
-    result = cx_malloc(sizeof(struct cx_depresolver));
+    result = cx_alloc(sizeof(struct cx_depresolver));
 
     result->items = cx_llNew();
     result->toPrint = cx_llNew();
@@ -358,7 +358,7 @@ void cx_depresolver_depend(cx_depresolver _this, void* o, cx_uint8 kind, void* d
     if (dependent->o != dependency->o) {
 
         /* Create dependency object */
-        dep = cx_malloc(sizeof(struct g_dependency));
+        dep = cx_alloc(sizeof(struct g_dependency));
         dep->kind = kind;
         dep->item = dependent;
         dep->dependency = dependency;

@@ -20,7 +20,7 @@ int cx_sequence_alloc(cx_collection _this, cx_void* collection, cx_uint32 elemen
 
     elementSize = cx_type_sizeof(_this->elementType);
 
-    ((__dummySeq*)collection)->buffer = cx_malloc(elementSize * elements);
+    ((__dummySeq*)collection)->buffer = cx_alloc(elementSize * elements);
 
     return (((__dummySeq*)collection)->buffer == NULL) * -1; /* Return -1 on failure */
 }

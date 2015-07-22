@@ -21,7 +21,7 @@ cx_int16 cx__bitmask_bindConstant(cx_bitmask _this, cx_constant* c) {
     cx_enum(_this)->constants.buffer[cx_enum(_this)->constants.length] = c;
     cx_enum(_this)->constants.length++;
     
-    cx_keep(c);
+    cx_claim(c);
 
     return 0;
 }
@@ -32,7 +32,7 @@ cx_int16 cx_bitmask_init(cx_bitmask _this) {
 /* $begin(::cortex::lang::bitmask::init) */
     cx_primitive(_this)->kind = CX_BITMASK;
     cx_primitive(_this)->width = CX_WIDTH_32;
-    cx_set(&cx_type(_this)->defaultType, cx_constant_o);
+    cx_setref(&cx_type(_this)->defaultType, cx_constant_o);
     return cx_primitive_init((cx_primitive)_this);
 /* $end */
 }

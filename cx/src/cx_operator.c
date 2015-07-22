@@ -51,7 +51,7 @@ static void CX_NAME_BINARYOP(string,add)(void* op1, void* op2, void* result) {
     if (*(cx_string*)result) {
         cx_dealloc(*(cx_string*)result);
     }
-    *(cx_string*)result = cx_malloc(len + 1);
+    *(cx_string*)result = cx_alloc(len + 1);
     sprintf(*(cx_string*)result, "%s%s", *(cx_string*)op1, *(cx_string*)op2);
 }
 

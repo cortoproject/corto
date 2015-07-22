@@ -41,7 +41,7 @@ static cx_int16 c_apiAssignMember(cx_serializer s, cx_value* v, void* userData) 
         if (m->type->reference) {
             if (!m->weak) {
                 cx_id id;
-                g_fileWrite(data->source, "%s ? cx_keep_ext(_this, %s, \"%s\") : 0;\n", memberParamId, memberParamId, cx_valueString(v,id, 256));
+                g_fileWrite(data->source, "%s ? cx_claim_ext(_this, %s, \"%s\") : 0;\n", memberParamId, memberParamId, cx_valueString(v,id, 256));
             }
         }
 
@@ -167,7 +167,7 @@ static cx_int16 c_apiTypeNew(cx_type o, c_apiWalk_t* data) {
     /* Function implementation */
     g_fileWrite(data->source, "%s%s %s__new(void) {\n", id, o->reference ? "" : "*", id);
     g_fileIndent(data->source);
-    g_fileWrite(data->source, "return cx_new(cx_type(%s_o));\n", id);
+    g_fileWrite(data->source, "return cx_create(cx_type(%s_o));\n", id);
     g_fileDedent(data->source);
     g_fileWrite(data->source, "}\n\n");
 
@@ -322,7 +322,7 @@ static cx_int16 c_apiReferenceTypeCreate(cx_interface o, c_apiWalk_t* data) {
 
     g_fileIndent(data->source);
     g_fileWrite(data->source, "%s _this;\n", id);
-    g_fileWrite(data->source, "_this = cx_new(cx_type(%s_o));\n", id);
+    g_fileWrite(data->source, "_this = cx_create(cx_type(%s_o));\n", id);
 
     /* Member assignments */
     s = c_apiAssignSerializer();
@@ -331,7 +331,7 @@ static cx_int16 c_apiReferenceTypeCreate(cx_interface o, c_apiWalk_t* data) {
     /* Define object */
     g_fileWrite(data->source, "if (cx_define(_this)) {\n");
     g_fileIndent(data->source);
-    g_fileWrite(data->source, "cx_free(_this);\n");
+    g_fileWrite(data->source, "cx_release(_this);\n");
     g_fileWrite(data->source, "_this = NULL;\n");
     g_fileDedent(data->source);
     g_fileWrite(data->source, "}\n");
@@ -791,7 +791,7 @@ static cx_int16 c_apiListTypeClear(cx_list o, c_apiWalk_t* data) {
         c_apiElementInit(elementId, "element", FALSE, data);
         g_fileWrite(data->source, "cx_dealloc(element);\n");
     } else if (elementType->reference) {
-        g_fileWrite(data->source, "cx_free(element);\n");
+        g_fileWrite(data->source, "cx_release(element);\n");
     }
     g_fileDedent(data->source);
     g_fileWrite(data->source, "}\n");

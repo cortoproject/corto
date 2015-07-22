@@ -73,7 +73,7 @@ static cx_bool cx_ser_appendstr(cx_string_ser_t* data, cx_string fmt, ...) {
         va_start(args, fmt);
         memRequired = vsnprintf(buff, 1024, fmt, args);
         if (memRequired >= 1024) {
-            buff = cx_malloc(memRequired + 1);
+            buff = cx_alloc(memRequired + 1);
             vsprintf(buff, fmt, args);
         }
         va_end(args);
@@ -373,14 +373,14 @@ static cx_int16 cx_ser_object(cx_serializer s, cx_value* v, void* userData) {
 
         if (cx_typeof(o)->kind != CX_PRIMITIVE) {
             if (data->buffer) {
-                result = cx_malloc(strlen(data->buffer) + strlen(id) + 1);
+                result = cx_alloc(strlen(data->buffer) + strlen(id) + 1);
                 sprintf(result, "%s%s", id, data->buffer);
             } else {
                 result = cx_strdup(id);
             }
         } else {
             if (data->buffer) {
-                result = cx_malloc(strlen(data->buffer) + strlen(id) + 2 + 1);
+                result = cx_alloc(strlen(data->buffer) + strlen(id) + 2 + 1);
                 sprintf(result, "%s{%s}", id, data->buffer);
             } else {
                 cx_critical("failed to serialize value to string");
