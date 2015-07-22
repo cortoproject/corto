@@ -1,9 +1,7 @@
 
-#include "stdarg.h"
 #include "ctype.h"
-
-#include "asprintf.h"
-
+#include <stdlib.h>
+#include <stdio.h>
 #include "cx_mem.h"
 
 int stricmp(const char *str1, const char *str2) {
@@ -204,11 +202,49 @@ char* cx_strdup(const char* str) {
     return result;
 }
 
-int cx_asprintf(char **str, const char *fmt, ...) {
+/**
+ * From:
+ * `asprintf.c' - asprintf
+ *
+ * copyright (c) 2014 joseph werle <joseph.werle@gmail.com>
+ */
+
+int cx_asprintf (char **str, const char *fmt, ...) {
     int size = 0;
     va_list args;
+
     va_start(args, fmt);
-    size = asprintf(str, fmt, args);
+
+    size = cx_vasprintf(str, fmt, args);
+
     va_end(args);
+
+    return size;
+}
+
+int cx_vasprintf (char **str, const char *fmt, va_list args) {
+    int size = 0;
+    va_list tmpa;
+
+    va_copy(tmpa, args);
+
+    size = vsnprintf(NULL, size, fmt, tmpa);
+
+    va_end(tmpa);
+
+    // return -1 to be compliant if
+    // size is less than 0
+    if (size < 0) { return -1; }
+
+    // alloc with size plus 1 for `\0'
+    *str = (char *) malloc(size + 1);
+
+    // return -1 to be compliant
+    // if pointer is `NULL'
+    if (NULL == *str) { return -1; }
+
+    // format string with original
+    // variadic arguments and set new size
+    size = vsprintf(*str, fmt, args);
     return size;
 }

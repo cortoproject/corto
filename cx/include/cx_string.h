@@ -2,6 +2,7 @@
 #define DB_STRING_H_
 
 #include "string.h"
+#include <stdarg.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -34,7 +35,9 @@ size_t strmask(char *str, char *mask);
 
 char* cx_strdup(const char* str);
 
-int cx_asprintf(char **str, const char *fmt, ...);
+int cx_asprintf (char **str, const char *fmt, ...);
+
+int cx_vasprintf (char **str, const char *fmt, va_list args);
 
 #ifdef __cplusplus
 }
