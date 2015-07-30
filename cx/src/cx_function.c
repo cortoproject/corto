@@ -182,7 +182,7 @@ cx_parameterSeq cx_function_stringToParameterSeq(cx_string name, cx_object scope
             result.buffer[i].passByReference = (flags & CX_PARAMETER_REFERENCE) != 0;
 
             /* Assign type */
-            result.buffer[i].type = cx_resolve_ext(NULL, scope, id, FALSE, "Resolve parameter-type for function");
+            result.buffer[i].type = cx_resolve(scope, id);
             if (!result.buffer[i].type) {
                 cx_error("type '%s' of parameter %d in signature %s not found", id, i, name);
                 goto error;
@@ -226,7 +226,7 @@ cx_void cx_function_unbind(cx_function object) {
     for(i=0; i<object->parameters.length; i++) {
         cx_dealloc(object->parameters.buffer[i].name);
         object->parameters.buffer[i].name = NULL;
-        cx_release_ext(object, object->parameters.buffer[i].type, "Free function parameter-type.");
+        cx_release(object->parameters.buffer[i].type);
         object->parameters.buffer[i].type = NULL;
     }
 

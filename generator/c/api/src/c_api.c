@@ -41,7 +41,7 @@ static cx_int16 c_apiAssignMember(cx_serializer s, cx_value* v, void* userData) 
         if (m->type->reference) {
             if (!m->weak) {
                 cx_id id;
-                g_fileWrite(data->source, "%s ? cx_claim_ext(_this, %s, \"%s\") : 0;\n", memberParamId, memberParamId, cx_valueString(v,id, 256));
+                g_fileWrite(data->source, "%s ? cx_claim(%s) : 0;\n", memberParamId, memberParamId, cx_valueString(v,id, 256));
             }
         }
 
@@ -721,6 +721,9 @@ static cx_int16 c_apiListTypeInsertNoAlloc(cx_list o, cx_string operation, c_api
     
     /* Insert element to list */
     g_fileWrite(data->source, "%s(list, (void*)element);\n", cx_operationToApi(operation, api));
+    if (elementType->reference) {
+        g_fileWrite(data->source, "cx_claim(element);\n");
+    }
     
     /* Return new element */
     g_fileDedent(data->source);
@@ -861,42 +864,34 @@ static cx_int16 c_apiWalkList(cx_list o, c_apiWalk_t* data) {
     
     data->current = o;
     
-    /* Generate foreach */
     if (c_apiListTypeForeach(o, data)) {
         goto error;
     }
     
-    /* Generate insert */
     if (c_apiListTypeInsert(o, "insert", data)) {
         goto error;
     }
     
-    /* Generate append */
     if (c_apiListTypeInsert(o, "append", data)) {
         goto error;
     }
-    
-    /* Generate take */
+
     if (c_apiListTypeTake(o, "takeFirst", data)) {
         goto error;
     }
     
-    /* Generate last */
     if (c_apiListTypeTake(o, "last", data)) {
         goto error;
     }
     
-    /* Generate clear */
     if (c_apiListTypeClear(o, data)) {
         goto error;
     }
     
-    /* Generate get */
     if (c_apiListTypeGet(o, data)) {
         goto error;
     }
     
-    /* Generate size */
     if (c_apiListTypeSize(o, data)) {
         goto error;
     }

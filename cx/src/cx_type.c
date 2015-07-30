@@ -33,7 +33,7 @@ cx_int16 cx_type_bindMetaprocedure(cx_type _this, cx_metaprocedure procedure) {
     }
 
     if (cx_vtableInsert(&_this->metaprocedures, cx_function(procedure))) {
-        cx_claim_ext(_this, procedure, "Bind metaprocedure to type.");
+        cx_claim(procedure);
     }
     return 0;
 error:
@@ -213,7 +213,7 @@ cx_void cx_type_destruct(cx_type _this) {
 
     /* Free methods */
     for(i=0; i<_this->metaprocedures.length; i++) {
-        cx_release_ext(_this, _this->metaprocedures.buffer[i], "Remove method from vtable.");
+        cx_release(_this->metaprocedures.buffer[i]);
     }
 
     if (_this->metaprocedures.buffer) {

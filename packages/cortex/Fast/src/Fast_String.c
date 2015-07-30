@@ -162,8 +162,8 @@ cx_int16 Fast_String_construct(Fast_String _this) {
         goto error;
     }
 
-    _this->block = yparser()->block; cx_claim_ext(_this, _this->block, "_this->block (keep block for string-expression)");
-    _this->scope = yparser()->scope; cx_claim_ext(_this, _this->scope, "_this->scope (keep scope for string-expression)");
+    cx_setref(&_this->block, yparser()->block);
+    cx_setref(&_this->scope, yparser()->scope);
     
     return 0;
 error:
@@ -225,8 +225,9 @@ cx_int16 Fast_String_serialize(Fast_String _this, cx_type dstType, cx_word dst) 
         cx_convert(cx_primitive(cx_string_o), &_this->value, cx_primitive(dstType), (void*)dst);
         break;
     case Fast_Ref: {
-        cx_object o = cx_resolve_ext(NULL, NULL, _this->value, FALSE, "Serialize reference from string");
-        cx_setref_ext(NULL, &dst, o, "serialize string to reference");
+        cx_object o = cx_resolve(NULL, _this->value);
+        cx_setref(&dst, o);
+        cx_release(o);
         break;
     }
     default: {

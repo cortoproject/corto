@@ -63,7 +63,7 @@ static cx_bool cx_class_checkInterfaceCompatibility(cx_class _this, cx_interface
         /* Check if procedures are compatible */
         if (m_class && !distance) {
             if ((compatible = cx_interface_checkProcedureCompatibility(cx_function(m_interface), cx_function(m_class)))) {
-                cx_setref_ext(_this, &vtable->buffer[i], m_class, "Set method in interface lookup table.");
+                cx_setref(&vtable->buffer[i], m_class);
             }
         } else {
             cx_id id, id2;
@@ -230,7 +230,7 @@ cx_void cx_class_bindObserver(cx_class _this, cx_observer observer) {
     _this->observers.buffer[_this->observers.length] = observer;
     _this->observers.length++;
     observer->template = _this->observers.length;
-    cx_claim_ext(_this, observer, "Bind observer to class");
+    cx_claim(observer);
 /* $end */
 }
 
@@ -277,7 +277,7 @@ cx_void cx_class_destruct(cx_class _this) {
 
     /* Free attached observers */
     for (i=0; i<_this->observers.length; i++) {
-        cx_release_ext(_this, _this->observers.buffer[i], "Unbind observer from class");
+        cx_release(_this->observers.buffer[i]);
     }
     cx_dealloc(_this->observers.buffer);
     _this->observers.buffer = NULL;
@@ -289,7 +289,7 @@ cx_void cx_class_destruct(cx_class _this) {
         v->interface = NULL;
         for (j=0; j<v->vector.length; j++) {
             if (v->vector.buffer[j]) {
-                cx_release_ext(_this, v->vector.buffer[j], "Unbind interface vector");
+                cx_release(v->vector.buffer[j]);
                 v->vector.buffer[j] = NULL;
             }
         }

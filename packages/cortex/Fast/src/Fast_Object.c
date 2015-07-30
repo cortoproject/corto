@@ -114,8 +114,7 @@ cx_int16 Fast_Object_serialize(Fast_Object _this, cx_type dstType, cx_word dst) 
             if (*(cx_object*)dst) {
                 cx_release(*(cx_object*)dst);
             }
-            *(cx_object*)dst = Fast_Object(_this)->value;
-            cx_claim_ext(NULL, *(cx_object*)dst, "Serialize object value");
+            cx_setref((cx_object*)dst, Fast_Object(_this)->value);
             break;
         default: {
             cx_id id;

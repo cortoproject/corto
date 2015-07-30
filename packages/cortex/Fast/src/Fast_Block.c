@@ -17,8 +17,7 @@ cx_void Fast_Block_addStatement(Fast_Block _this, Fast_Node statement) {
 /* $begin(::cortex::Fast::Block::addStatement) */
     if (statement) {
         cx_assert(_this->statements != NULL, "initialization failed");
-        cx_llAppend(_this->statements, statement);
-        cx_claim_ext(_this, statement, "Add statement to block");
+        Fast_Node_list__append(_this->statements, statement);
     }
 /* $end */
 }
@@ -239,8 +238,7 @@ Fast_Local Fast_Block_resolveLocal(Fast_Block _this, cx_string id) {
 /* ::cortex::Fast::Block::setFunction(function function */
 cx_void Fast_Block_setFunction(Fast_Block _this, cx_function function) {
 /* $begin(::cortex::Fast::Block::setFunction) */
-    _this->function = function;
-    cx_claim_ext(_this, function, "Set function for block");
+    cx_setref(&_this->function, function);
 /* $end */
 }
 

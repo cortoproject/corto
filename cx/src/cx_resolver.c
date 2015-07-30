@@ -2,12 +2,11 @@
 #include "cortex.h"
 
 /* Resolve anonymous object */
-static cx_char* cx_resolveAnonymous(cx_object src, cx_object scope, cx_object o, cx_string str, cx_object* out) {
-    CX_UNUSED(src);
+static cx_char* cx_resolveAnonymous(cx_object scope, cx_object o, cx_string str, cx_object* out) {
     cx_object result;
     cx_string_deser_t data;
 
-    result = cx_create_ext(NULL, cx_type(o), (cx_type(o)->kind == CX_VOID) ? CX_ATTR_WRITABLE : 0, "Create anonymous object");
+    result = cx_create_ext(cx_type(o), (cx_type(o)->kind != CX_VOID) ? CX_ATTR_WRITABLE : 0);
     data.out = result;
     data.scope = scope;
     data.type = NULL;
@@ -25,13 +24,13 @@ static cx_object cx_resolveAddress(cx_string str) {
 
     addr = strtoul(str+1, NULL, 16);
 
-    cx_claim_ext(NULL, (cx_object)addr, "Resolve by address");
+    cx_claim((cx_object)addr);
 
     return (cx_object)addr;
 }
 
 /* Resolve fully scoped name */
-cx_object cx_resolve_ext(cx_object src, cx_object _scope, cx_string str, cx_bool allowCastableOverloading, cx_string context) {
+cx_object cx_resolve(cx_object _scope, cx_string str) {
     cx_object scope, _scope_start, o, lookup;
     const char* ptr;
     char* bptr;
@@ -104,12 +103,12 @@ repeat:
                     cx_object prev = o;
                     int i;
                     for (i = 0; i < 2; i++) {
-                        o = cx_lookup_ext(src, o, buffer, context);
+                        o = cx_lookup(o, buffer);
                         if (!o) {
-                            o = cx_lookupFunction_ext(src, prev, buffer, allowCastableOverloading, NULL, context);
+                            o = cx_lookupFunction(prev, buffer, NULL);
                         }
                         if (lookup) {
-                            cx_release_ext(src, lookup, "Free intermediate reference for resolve"); /* Free reference */
+                            cx_release(lookup); /* Free reference */
                         }
                         lookup = o;
 
@@ -134,9 +133,9 @@ repeat:
                     }
                 } else {
                     /* If argumentlist is provided, look for closest match */
-                    o = cx_lookupFunction_ext(src, o, buffer, allowCastableOverloading, NULL, context);
+                    o = cx_lookupFunction(o, buffer, NULL);
                     if (lookup) {
-                        cx_release_ext(src, lookup, "Free intermediate procedure-reference for resolve");
+                        cx_release(lookup);
                     }
                     lookup = o;
                     if (!o) {
@@ -146,7 +145,7 @@ repeat:
             } else {
                 o = NULL;
                 if (lookup) {
-                    cx_release_ext(src, lookup, "Free intermediate reference (object not found) for resolve");
+                    cx_release(lookup);
                     lookup = NULL;
                 }
                 break;
@@ -156,11 +155,11 @@ repeat:
             if (ch) {
                 if (ch == '{') {
                     cx_object prev = o;
-                    ptr = lookup = cx_resolveAnonymous(src, _scope, o, (char*)ptr, &o);
+                    ptr = lookup = cx_resolveAnonymous(_scope, o, (char*)ptr, &o);
                     if (!ptr) {
                         o = NULL;
                     }
-                    cx_release_ext(src, prev, "Free type of anonymous identifier");
+                    cx_release(prev);
                     break;
                 } else if (*(cx_uint16*)ptr == CX_SCOPE_HEX) {
                     ptr += 2;
@@ -204,12 +203,8 @@ repeat:
 
     /* If the current object is not obtained by a lookup, it is not yet keeped. */
     if (!lookup && o) {
-        cx_claim_ext(src, o, context);
+        cx_claim(o);
     }
 
     return o;
-}
-
-cx_object cx_resolve(cx_object _scope, cx_string str) {
-    return cx_resolve_ext(NULL, _scope, str, FALSE, NULL);
 }

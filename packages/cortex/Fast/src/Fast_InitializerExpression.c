@@ -42,7 +42,7 @@ cx_int16 Fast_InitializerExpression_insert(Fast_InitializerExpression _this, Fas
 
     /* Create initializer */
     /* Note that since I'm passing MY list of variables, I need to fix the reference count! */
-    cx_claim_ext(NULL, Fast_Initializer(_this)->variables[0].object, "keep object for dynamic initializer");
+    cx_claim(Fast_Initializer(_this)->variables[0].object);
     initializer = Fast_DynamicInitializer__create(Fast_Initializer(_this)->variables, 1, _this->assignValue);
     
     /* Walk operations */
@@ -76,7 +76,7 @@ cx_int16 Fast_InitializerExpression_insert(Fast_InitializerExpression _this, Fas
         }
     }
 
-    cx_release_ext(NULL, initializer, "free temporary initializer");
+    cx_release(initializer);
 
     return 0;
 error:

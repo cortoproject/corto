@@ -56,7 +56,7 @@ cx_int16 cx_observer_init(cx_observer _this) {
     cx_setref( &cx_function(_this)->returnType, cx_void_o);
 
     /* Set parameters of observer: (this, observable, source) */
-    cx_function(_this)->parameters.buffer = cx_alloc(sizeof(cx_parameter) * 2);
+    cx_function(_this)->parameters.buffer = cx_calloc(sizeof(cx_parameter) * 2);
     cx_function(_this)->parameters.length = 2;
  
 
@@ -65,19 +65,16 @@ cx_int16 cx_observer_init(cx_observer _this) {
     p->name = cx_strdup("observable");
     p->passByReference = TRUE;
     if (_this->observable && (!(_this->mask & CX_ON_SCOPE) && !(_this->mask & CX_ON_DECLARE))) {
-        p->type = cx_typeof(_this->observable);
-        cx_claim_ext(_this, cx_typeof(_this->observable), "Keep parameter type");
+        cx_setref(&p->type, cx_typeof(_this->observable));
     } else {
-        p->type = cx_type(cx_object_o);
-        cx_claim_ext(_this, cx_object_o, "Keep type of observable parameter for observer");
+        cx_setref(&p->type, cx_type(cx_object_o));
     }
 
     /* Parameter source */
     p = &cx_function(_this)->parameters.buffer[1];
     p->name = cx_strdup("source");
     p->passByReference = TRUE;
-    p->type = cx_type(cx_object_o);
-    cx_claim_ext(_this, cx_object_o, "Keep type of source parameter for observer");
+    cx_setref(&p->type, cx_type(cx_object_o));
 
     return 0; /* Don't call function::init, observers do not have parseable parameters, which is currently the only thing a function initializer does. */
 /* $end */
@@ -92,11 +89,11 @@ cx_int16 cx_observer_listen(cx_observer _this, cx_object observable, cx_object m
     if (!_this->template) {
         if (_this->observing) {
             oldObservable = _this->observing;
-            cx_setref_ext(_this, &_this->observing, NULL, "unset observing member");
+            cx_setref(&_this->observing, NULL);
         } else {
             oldObservable = _this->observable;
         }
-        cx_setref_ext(_this, &_this->observable, observable, "unset observing member");
+        cx_setref(&_this->observable, observable);
     } else {
         oldObservable = cx_class_getObservable(cx_class(cx_typeof(me)), _this, me);
         cx_class_setObservable(cx_class(cx_typeof(me)), _this, me, observable);
@@ -132,7 +129,7 @@ error:
 cx_void cx_observer_setDispatcher(cx_observer _this, cx_dispatcher dispatcher) {
 /* $begin(::cortex::lang::observer::setDispatcher) */
     /* TODO: when observer is a template observer only set the dispatcher in observerData. */
-    cx_setref_ext(_this, &_this->dispatcher, dispatcher, "Set dispatcher member.");
+    cx_setref(&_this->dispatcher, dispatcher);
 /* $end */
 }
 
@@ -149,7 +146,7 @@ cx_int16 cx_observer_silence(cx_observer _this, cx_object me) {
         } else {
             oldObservable = _this->observable;
         }
-        cx_setref_ext(_this, &_this->observable, NULL, "unset observing member");
+        cx_setref(&_this->observable, NULL);
     } else {
         oldObservable = cx_class_getObservable(cx_class(cx_typeof(me)), me, _this);
         cx_class_setObservable(cx_class(cx_typeof(me)), me, _this, NULL);

@@ -379,7 +379,7 @@ cx_void Fast_Expression_cleanList(Fast_Expression_list list) {
     if (list) {
         cx_iter iter = cx_llIter(list);
         while(cx_iterHasNext(&iter)) {
-            cx_release_ext(NULL, cx_iterNext(&iter), "free expression from list");
+            cx_release(cx_iterNext(&iter));
         }
         cx_llFree(list);
     }
@@ -413,7 +413,7 @@ Fast_Expression Fast_Expression_fromList(Fast_Expression_list list) {
             iter = cx_llIter(list);
             while(cx_iterHasNext(&iter)) {
                 expr = cx_iterNext(&iter);
-                cx_llAppend(toList, expr); cx_claim_ext(result, expr, "add expression from list to comma-expression");
+                Fast_Expression_list__append(toList, expr);
             }
             Fast_Comma(result)->expressions = toList;
             Fast_Parser_collect(yparser(), result);
@@ -530,7 +530,7 @@ Fast_Expression_list Fast_Expression_toList_v(Fast_Expression _this) {
     
     if (_this) {
         result = cx_llNew();
-        cx_llInsert(result, _this); cx_claim_ext(NULL, _this, "convert single expression to list");
+        Fast_Expression_list__insert(result, _this);
     }
     
     return result;

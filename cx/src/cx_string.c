@@ -11,8 +11,12 @@ int stricmp(const char *str1, const char *str2) {
     ptr2 = str2;
 
     while((ch1 = *ptr1) && (ch2 = *ptr2)) {
-        ch1 = tolower(ch1);
-        ch2 = tolower(ch2);
+        if (ch1 == ch2) {
+            ptr1++; ptr2++;
+            continue;
+        }
+        if (ch1 < 97) ch1 = tolower(ch1);
+        if (ch2 < 97) ch2 = tolower(ch2);
         if (ch1 != ch2) {
             return ch1 - ch2;
         }

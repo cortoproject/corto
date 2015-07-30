@@ -130,17 +130,15 @@ cx_int16 Fast_Binary_cast(Fast_Binary _this, cx_type *returnType) {
 
     /* Narrow expressions where possible */
     if (!isNull) {
-        _this->lvalue = Fast_Expression_narrow(lvalue, rvalueType);
-        if (_this->lvalue) {
-            cx_claim_ext(_this, _this->lvalue, "Keep narrow'd lvalue");
-            cx_release_ext(_this, lvalue, "Free old lvalue");
+        lvalue = Fast_Expression_narrow(lvalue, rvalueType);
+        if (lvalue) {
+            cx_setref(&_this->lvalue, lvalue);
             lvalueType = Fast_Expression_getType(_this->lvalue);
         }
 
-        _this->rvalue = Fast_Expression_narrow(rvalue, lvalueType);
-        if (_this->rvalue) {
-            cx_claim_ext(_this, _this->rvalue, "Keep narrow'd rvalue");
-            cx_release_ext(_this, rvalue, "Free old rvalue");
+        rvalue = Fast_Expression_narrow(rvalue, lvalueType);
+        if (rvalue) {
+            cx_setref(&_this->rvalue, rvalue);
             rvalueType = Fast_Expression_getType_expr(_this->rvalue, _this->lvalue);
         }
     }

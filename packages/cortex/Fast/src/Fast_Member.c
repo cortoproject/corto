@@ -39,7 +39,7 @@ cx_int16 Fast_Member_resolveMember(Fast_Member _this, cx_type type, cx_string me
         } else {
             cx_setref(&Fast_Expression(_this)->type, cx_member(o)->type);
         }
-        _this->member = o; cx_claim_ext(_this, o, "Keep object for member-expression");
+        cx_setref(&_this->member, o);
     }
 
     return 0;

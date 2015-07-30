@@ -98,8 +98,8 @@ tc_stringser_classNested tc_stringser_classNested__declare(cx_object _parent, cx
 }
 
 int tc_stringser_classNested__define(tc_stringser_classNested _this, tc_stringser_classPrimitives a, tc_stringser_classInherit b, tc_stringser_arrayOfInt c, tc_stringser_sequenceOfInt d, tc_stringser_listOfInt e) {
-    a ? cx_claim_ext(_this, a, "element <0x8a24418>.a") : 0; _this->a = a;
-    b ? cx_claim_ext(_this, b, "element <0x8a24418>.b") : 0; _this->b = b;
+    a ? cx_claim(a, "element <0x8a24418>.a") : 0; _this->a = a;
+    b ? cx_claim(b, "element <0x8a24418>.b") : 0; _this->b = b;
     memcpy(_this->c, c, sizeof(tc_stringser_arrayOfInt));
     _this->d = d;
     _this->e = e;
@@ -109,8 +109,8 @@ int tc_stringser_classNested__define(tc_stringser_classNested _this, tc_stringse
 tc_stringser_classNested tc_stringser_classNested__create(tc_stringser_classPrimitives a, tc_stringser_classInherit b, tc_stringser_arrayOfInt c, tc_stringser_sequenceOfInt d, tc_stringser_listOfInt e) {
     tc_stringser_classNested _this;
     _this = cx_create(cx_type(tc_stringser_classNested_o));
-    a ? cx_claim_ext(_this, a, "element <0x8a24418>.a") : 0; _this->a = a;
-    b ? cx_claim_ext(_this, b, "element <0x8a24418>.b") : 0; _this->b = b;
+    a ? cx_claim(a, "element <0x8a24418>.a") : 0; _this->a = a;
+    b ? cx_claim(b, "element <0x8a24418>.b") : 0; _this->b = b;
     memcpy(_this->c, c, sizeof(tc_stringser_arrayOfInt));
     _this->d = d;
     _this->e = e;

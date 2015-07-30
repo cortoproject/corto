@@ -17,12 +17,12 @@ cx_int16 cx_array_construct(cx_array _this) {
     /* Copy array::elementType to collection::elementType, transfer ownership of reference. */
     if (_this->elementType) {
         if (!cx_collection(_this)->elementType) {
-            cx_claim_ext(_this, _this->elementType, "Keep elementType for array");
+            cx_claim(_this->elementType);
             cx_collection(_this)->elementType = _this->elementType;
         }
     } else if (cx_collection(_this)->elementType) {
         if (!_this->elementType) {
-            cx_claim_ext(_this, cx_collection(_this)->elementType, "Keep elementType for array");
+            cx_claim(cx_collection(_this)->elementType);
             _this->elementType = cx_collection(_this)->elementType;
         }
     } else {
@@ -67,9 +67,9 @@ error:
 /* ::cortex::lang::array::destruct() */
 cx_void cx_array_destruct(cx_array _this) {
 /* $begin(::cortex::lang::array::destruct) */
-    cx_release_ext(_this, _this->elementType, "elementType");
+    cx_release(_this->elementType);
     _this->elementType = NULL;
-    cx_release_ext(_this, cx_collection(_this)->elementType, "super.elementType");
+    cx_release(cx_collection(_this)->elementType);
     cx_collection(_this)->elementType = NULL;
     cx_type_destruct(cx_type(_this));
 /* $end */

@@ -549,7 +549,7 @@ typedef union Di2f_t {
     KEEP_##code:\
         fetchOp1(KEEP,code);\
         if (op1_##code) {\
-            cx_claim_ext(NULL, (cx_object)op1_##code, "KEEP(vm)");\
+            cx_claim((cx_object)op1_##code);\
         }\
         next();\
 
@@ -557,7 +557,7 @@ typedef union Di2f_t {
     FREE_##code:\
         fetchOp1(FREE,code);\
         if (op1_##code) {\
-            cx_release_ext(NULL, (cx_object)op1_##code, "FREE(vm)");\
+            cx_release((cx_object)op1_##code);\
         }\
         next();\
 

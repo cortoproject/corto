@@ -785,7 +785,7 @@ error:
     return NULL;
 }
 
-Fast_Expression Fast_Parser_resolve(Fast_Parser _this, cx_id id, cx_object source) {
+Fast_Expression Fast_Parser_resolve(Fast_Parser _this, cx_id id) {
     Fast_Expression result = NULL;
     cx_object object;
     cx_char *ptr, ch;
@@ -796,11 +796,11 @@ Fast_Expression Fast_Parser_resolve(Fast_Parser _this, cx_id id, cx_object sourc
         ptr = id;
         bptr = buffer;
         do {
-            object = cx_resolve_ext(source, _this->scope, id, FALSE, NULL);
+            object = cx_resolve(_this->scope, id);
             if (object){
                 result = Fast_Expression(Fast_Object__create(object));
                 Fast_Parser_collect(_this, result);
-                cx_release_ext(source, object, NULL);
+                cx_release(object);
                 break;
             } else {
                 if (*ptr) {
@@ -826,17 +826,17 @@ Fast_Expression Fast_Parser_resolve(Fast_Parser _this, cx_id id, cx_object sourc
             }
         }while(!object);
     } else {
-        object = cx_resolve_ext(source, _this->scope, id, FALSE, NULL);
+        object = cx_resolve(_this->scope, id);
         if (!object){
             cx_object rvalueType = Fast_Parser_getLvalueType(_this, FALSE);
             if (rvalueType && cx_checkAttr(rvalueType, CX_ATTR_SCOPED)) {
-                object = cx_resolve_ext(source, rvalueType, id, FALSE, NULL);
+                object = cx_resolve(rvalueType, id);
             }
         }
         if (object) {
             result = Fast_Expression(Fast_Object__create(object));
             Fast_Parser_collect(_this, result);
-            cx_release_ext(source, object, NULL);
+            cx_release(object);
         }
     }
 
@@ -1001,7 +1001,7 @@ cx_void Fast_Parser_addStatement(Fast_Parser _this, Fast_Node statement) {
             } else if (_this->pass) {
                 /* If statement is a string, insert println function */
                 if (!_this->repl) {
-                    Fast_Expression println = Fast_Parser_lookup(_this, "io::println(string)", NULL);
+                    Fast_Expression println = Fast_Parser_lookup(_this, "io::println(string)");
                     Fast_Comma args = Fast_Comma__create();
                     Fast_Comma_addExpression(args, Fast_Expression(statement));
                     Fast_Expression callExpr = Fast_Parser_callExpr(_this, println, Fast_Expression(args));
@@ -1154,8 +1154,8 @@ cx_int16 Fast_Parser_bind(Fast_Parser _this, Fast_Storage function, Fast_Block b
     if (_this->pass && function) {
         if (function->kind == Fast_ObjectStorage) {
             binding = cx_calloc(sizeof(Fast_Binding));
-            binding->function = Fast_Object(function)->value; cx_claim_ext(_this, binding->function, "Create binding for function");
-            binding->impl = block; cx_claim_ext(_this, block, "Create binding for function (impl)");
+            cx_setref(&binding->function, Fast_Object(function)->value);
+            cx_setref(&binding->impl, block);
             cx_assert(_this->bindings != NULL, "initialization failed");
             cx_llAppend(_this->bindings, binding);
         }
@@ -1459,9 +1459,9 @@ Fast_Storage Fast_Parser_declaration(Fast_Parser _this, cx_type type, cx_string 
                 goto error;
             }
         } else {
-            o = cx_lookup_ext(_this, _this->scope, id, "Resolve object in 2nd pass");
+            o = cx_lookup(_this->scope, id);
             cx_assert(o != NULL, "object disappeared in 2nd pass");
-            cx_release_ext(_this, o, "Free object from resolve (2nd run)");
+            cx_release(o);
         }
         if (o) {
             result = Fast_Storage(Fast_Object__create(o));
@@ -1517,7 +1517,7 @@ Fast_Storage Fast_Parser_declareFunction(Fast_Parser _this, cx_type returnType, 
 
         /* This could be an implementation after a forward declaration so try to resolve
          * function first. */
-        if (!((function = cx_lookupFunction(_this->scope, id, FALSE, &distance)) && !distance)) {
+        if (!((function = cx_lookupFunction(_this->scope, id, &distance)) && !distance)) {
             if (!functionType) {
                 if (cx_class_instanceof(cx_interface_o, _this->scope)) {
                     functionType = cx_type(cx_method_o);
@@ -1549,9 +1549,8 @@ Fast_Storage Fast_Parser_declareFunction(Fast_Parser _this, cx_type returnType, 
                     goto error;
                 }
 
-                function->returnType = returnType;
+                cx_setref(&function->returnType, returnType);
                 function->returnsReference = returnsReference;
-                cx_claim_ext(function, returnType, "Keep returntype for function");
             }
         } else {
             cx_release(function);
@@ -1581,12 +1580,12 @@ Fast_Storage Fast_Parser_declareFunction(Fast_Parser _this, cx_type returnType, 
             }
             *bptr = '\0';
 
-            cx_object function = cx_resolve_ext(_this, _this->scope, query, FALSE, "Resolve function in 2nd pass");
+            cx_object function = cx_resolve(_this->scope, query);
             cx_assert(function != NULL, "object should still be there in 2nd pass");
 
             result = Fast_Storage(Fast_Object__create(function));
             Fast_Parser_collect(_this, result);
-            cx_release_ext(_this, function, "Free function from resolve (2nd pass)");
+            cx_release(function);
         }
     }
 
@@ -1823,8 +1822,8 @@ cx_int16 Fast_Parser_finalize(Fast_Parser _this, ic_program program) {
             ic_scope_add(scope, ic_node(ret));
             ic_program_popScope(program);
 
-            cx_release_ext(_this, binding->function, "Free binding for function");
-            cx_release_ext(_this, binding->impl, "Free binding for function (impl)");
+            cx_release(binding->function);
+            cx_release(binding->impl);
             cx_dealloc(binding);
         }
         cx_llFree(_this->bindings);
@@ -2294,8 +2293,8 @@ cx_bool Fast_Parser_isErrSet(Fast_Parser _this) {
 /* $end */
 }
 
-/* ::cortex::Fast::Parser::lookup(string id,object source) */
-Fast_Expression Fast_Parser_lookup(Fast_Parser _this, cx_string id, cx_object source) {
+/* ::cortex::Fast::Parser::lookup(string id) */
+Fast_Expression Fast_Parser_lookup(Fast_Parser _this, cx_string id) {
 /* $begin(::cortex::Fast::Parser::lookup) */
     Fast_Expression result = NULL;
     Fast_CHECK_ERRSET(_this);
@@ -2313,7 +2312,7 @@ Fast_Expression Fast_Parser_lookup(Fast_Parser _this, cx_string id, cx_object so
         }
     }
     if (!result) {
-        result = Fast_Parser_resolve(_this, id, source);
+        result = Fast_Parser_resolve(_this, id);
     }
 
     /* If either doing a static initializer or parser is
@@ -3087,7 +3086,7 @@ Fast_Node Fast_Parser_updateStatement(Fast_Parser _this, Fast_Expression expr, F
             procedureKind = cx_procedure(cx_typeof(function))->kind;
             if (functionBlock) {
                 if ((procedureKind == CX_METHOD) || ((procedureKind == CX_OBSERVER) && cx_observer(function)->template)) {
-                    from = Fast_Parser_lookup(_this, "this", NULL);
+                    from = Fast_Parser_lookup(_this, "this");
                 }
             }
         }

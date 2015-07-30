@@ -732,7 +732,7 @@
                     <method name="pushPackage(string name)" returnType="int16"/>
 
                     <!-- Lookup -->
-                    <method name="lookup(string id,object source)" returnType="Fast::Expression"/>
+                    <method name="lookup(string id)" returnType="Fast::Expression"/>
 
                     <!-- Blocks management -->
                     <method name="blockPush(bool presetBlock)" returnType="Fast::Block"/>

@@ -42,9 +42,9 @@ cx_int16 Fast_Call_insertCasts(Fast_Call _this) {
                 if (parameterType->kind != CX_ANY) {
                     expr = Fast_Expression_cast(argument, parameterType, _this->parameters.buffer[i].passByReference);
                     if (expr) {
-                        cx_claim_ext(_this, expr, "Keep cast-expression as argument");
+                        cx_claim(expr);
                         cx_llReplace(arguments, argument, expr);
-                        cx_release_ext(_this, argument, "Free old (uncasted) expression from argumentlist");
+                        cx_release(argument);
                     }
                 }
             }

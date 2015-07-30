@@ -273,12 +273,12 @@ static cx_int16 cx_string_deserParseValue(cx_string value, struct cx_string_dese
 
         if (!o) {
             /* Resolve object */
-            o = cx_resolve_ext(NULL, data->scope, value, FALSE, "Resolve object for anonymous object");
+            o = cx_resolve(data->scope, value);
         }
 
         if (o) {
             cx_setref_ext(data->out, CX_OFFSET(data->ptr, info->m->offset), o, "Set object for anonymous object");
-            cx_release_ext(NULL, o, "Free object for anonymous object");
+            cx_release(o);
         } else {
             cx_id id;
             cx_error("cx_string_deserParseValue: unresolved reference to '%s' for member '%s'", value, cx_fullname(info->m, id));

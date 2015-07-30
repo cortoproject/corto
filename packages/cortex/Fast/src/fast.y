@@ -619,7 +619,7 @@ identifier
     ;
 
 identifier_id
-    : identifier_string {$$ = Fast_Parser_lookup(yparser(), $1, NULL); fast_op;}
+    : identifier_string {$$ = Fast_Parser_lookup(yparser(), $1); fast_op;}
     ;
 
 identifier_string

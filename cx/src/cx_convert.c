@@ -157,7 +157,7 @@ CX_DECL_TRANSFORM(enum, string) {
 CX_DECL_TRANSFORM(string, enum) {
     cx_constant* o;
     CX_UNUSED(fromType);
-    o = cx_resolve_ext(NULL, toType, *(cx_string*)from, FALSE, "Resolve enumeration");
+    o = cx_resolve(toType, *(cx_string*)from);
     if (!o) {
         cx_id fullname;
         cx_error("constant identifier '%s' is not valid for enumeration '%s'.", *(cx_string*)from, cx_fullname(toType, fullname));

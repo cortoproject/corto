@@ -263,7 +263,7 @@ static void cx__deinitScope(cx_object o) {
     cx_assert(scope->attached == NULL, "cx__deinitScope: object has still objects attached");
 
     /* Free parent */
-    cx_release_ext(o, scope->parent, "Free parent of object");
+    cx_release(scope->parent);
     scope->parent = NULL;
 
     /* We cannot actually remove the scope itself, since there might be childs which
@@ -429,7 +429,7 @@ void cx__newSSO(cx_object sso) {
     }
 
     /* Keep type */
-    cx_claim_ext(sso, cx_typeof(sso), "Keep type of object.");
+    cx_claim(cx_typeof(sso));
 }
 
 /* Deinitialize static scoped object */
@@ -464,7 +464,7 @@ void cx__freeSSO(cx_object sso) {
     }
 
     /* Free type */
-    cx_release_ext(sso, cx_typeof(sso), "free type of builtin-object");
+    cx_release(cx_typeof(sso));
 }
 
 /* Adopt static scoped object */
@@ -649,7 +649,7 @@ static int cx_adopt(cx_object parent, cx_object child) {
             cx_rbtreeSet(p_scope->scope, c_scope->name, child);
 
             /* Parent must not be deleted before all childs are gone. */
-            cx_claim_ext(child, parent, "keep parent of object.");
+            cx_claim(parent);
             if (cx_rwmutexUnlock(&p_scope->scopeLock)) goto err_parent_mutex;
         } else {
             goto err_no_child_scope;
@@ -786,12 +786,17 @@ cx_int16 cx_delegateInit(cx_type t, cx_object o) {
 }
 
 /* Create new object with attributes */
-cx_object cx_create_ext(cx_object src, cx_type type, cx_uint8 attrs, cx_string context) {
+cx_object cx_create_ext(cx_type type, cx_attr attrs) {
     cx_uint32 size, headerSize;
     cx__object* o;
 
-    CX_UNUSED(src);
-    CX_UNUSED(context);
+    if (attrs == CX_ATTR_DEFAULT) {
+        if (type->kind == CX_VOID) {
+            attrs = CX_ATTR_OBSERVABLE;
+        } else {
+            attrs = CX_ATTR_WRITABLE | CX_ATTR_OBSERVABLE | CX_ATTR_PERSISTENT;
+        }
+    }
 
     headerSize = sizeof(cx__object);
 
@@ -855,7 +860,7 @@ cx_object cx_create_ext(cx_object src, cx_type type, cx_uint8 attrs, cx_string c
             o->attrs.state |= CX_DEFINED;
         }
 
-        cx_claim_ext(CX_OFFSET(o, sizeof(cx__object)), type, "Keep type of object");
+        cx_claim(type);
 
         if (!(attrs & CX_ATTR_SCOPED)) {
             if (attrs & CX_ATTR_OBSERVABLE) {
@@ -889,15 +894,7 @@ error:
 
 /* Create new object */
 cx_object cx_create(cx_type type) {
-    int attr;
-
-    if (type->kind == CX_VOID) {
-        attr = CX_ATTR_OBSERVABLE;
-    } else {
-        attr = CX_ATTR_WRITABLE | CX_ATTR_OBSERVABLE | CX_ATTR_PERSISTENT;
-    }
-
-    return cx_create_ext(NULL, type, attr, NULL);
+    return cx_create_ext(type, CX_ATTR_DEFAULT);
 }
 
 cx_object cx_declare(cx_object parent, cx_string name, cx_type type) {
@@ -948,7 +945,7 @@ cx_object cx_declareFrom(cx_object parent, cx_string name, cx_type type, cx_obje
         }
     } else {
         /* Create new object */
-        o = cx_create_ext(parent, type, state, "Declare object in scope");
+        o = cx_create_ext(type, state);
         if (o) {
             /* Initialize object parameters. */
             if (!cx__initScope(o, name, parent)) {
@@ -1077,7 +1074,7 @@ void cx_delete(cx_object o) {
         if (cx_ainc(&scope->orphaned) == 1) {
             cx_notify(cx__objectObservable(_o), o, o, CX_ON_DELETE);
             cx__orphan(o);
-            cx_release_ext(cx_parentof(o), o, "destroy scope reference");
+            cx_release(o);
         }
     } else {
         cx_release(o);
@@ -1497,7 +1494,7 @@ cx_uint16 cx__destruct(cx_object o) {
         }
 
         /* Free type of object */
-        cx_release_ext(o, cx_typeof(o), "Free type of object");
+        cx_release(cx_typeof(o));
 
         /* Deinit writable */
         if (cx_checkAttr(o, CX_ATTR_WRITABLE)) {
@@ -1994,7 +1991,7 @@ indent++;
             data->notify(data, data->_this, observable, source, mask);
         } else {
             if (!data->_this || (data->_this != source)) {
-                cx_observableEvent event = cx_create_ext(NULL, cx_type(cx_observableEvent_o), 0, NULL);
+                cx_observableEvent event = cx_create_ext(cx_type(cx_observableEvent_o), 0);
                 cx_dispatcher dispatcher = observer->dispatcher;
 
                 cx_setref(&event->observer, observer);
@@ -3170,6 +3167,7 @@ cx_int16 cx_signature(cx_object object, cx_id buffer) {
     return 0;
 error:
     cx_error("cannot obtain signature from a non callable object");
+    abort();
     return -1;
 }
 
@@ -3392,8 +3390,8 @@ cx_function cx_lookupFunction_ext(cx_object src, cx_object scope, cx_string requ
     return walkData.result;
 }
 
-cx_function cx_lookupFunction(cx_object scope, cx_string requested, cx_bool allowCastableOverloading, cx_int32* d) {
-    return cx_lookupFunction_ext(NULL, scope, requested, allowCastableOverloading, d, NULL);
+cx_function cx_lookupFunction(cx_object scope, cx_string requested, cx_int32* d) {
+    return cx_lookupFunction_ext(NULL, scope, requested, FALSE, d, NULL);
 }
 
 /* Create request signature */
@@ -3488,6 +3486,14 @@ void cx_setref_ext(cx_object source, void* ptr, cx_object value, cx_string conte
 /* Set reference field */
 void cx_setref(void* ptr, cx_object value) {
     cx_setref_ext(NULL, ptr, value, NULL);
+}
+
+/* Set string field */
+void cx_setstr(cx_string* ptr, cx_string value) {
+    if (*ptr) {
+        cx_dealloc(*ptr);
+    }
+    *ptr = cx_strdup(value);
 }
 
 /* Convert object to string */
@@ -3665,7 +3671,7 @@ cx_object cx_cortex_new(cx_type type) {
 }
 
 cx_object cx_cortex__new(cx_type type, cx_attr attributes) {
-    return cx_create_ext(NULL, type, attributes, NULL);
+    return cx_create_ext(type, attributes);
 }
 
 void __cx_cortex_new(cx_function f, void *result, void *args) {

@@ -20,7 +20,7 @@ typedef struct c_typeWalk_t {
 /* Resolve object */
 static cx_char* c_loadResolve(cx_object o, cx_char* out, cx_char* src, cx_char* context) {
     if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
-        cx_id id, escaped, escapedContextStr;
+        cx_id id, escaped;
         cx_fullname(o, id);
 
         if (!(src || context)) {
@@ -32,7 +32,7 @@ static cx_char* c_loadResolve(cx_object o, cx_char* out, cx_char* src, cx_char* 
             if (!context) {
                 context = "NULL";
             }
-            sprintf(out, "cx_resolve_ext(%s, NULL, \"%s\", FALSE, \"%s\")", src, c_escapeString(id, escaped), c_escapeString(context, escapedContextStr));
+            sprintf(out, "cx_resolve(NULL, \"%s\")", c_escapeString(id, escaped));
         }
     } else {
         cx_id ostr, id, escapedId, escapedOstr, escapedContextStr;
@@ -67,7 +67,7 @@ static cx_char* c_loadResolve(cx_object o, cx_char* out, cx_char* src, cx_char* 
                 context = "NULL";
             }
             c_escapeString(context, escapedContextStr);
-            sprintf(out, "cx_resolve_ext(%s, NULL, \"%s%s\", FALSE, \"%s\")", src, escapedId, escapedOstr, escapedContextStr);
+            sprintf(out, "cx_resolve(NULL, \"%s%s\")", escapedId, escapedOstr);
         }
     }
 

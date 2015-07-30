@@ -37,15 +37,13 @@ typedef cx_equalityKind (*cx_equalsAction)(cx_type _this, const void* o1, const 
 
 /* Object lifecycle */
 cx_object cx_create(cx_type type);
-cx_object cx_create_ext(cx_object src, cx_type type, cx_uint8 attrs, cx_string context);
+cx_object cx_create_ext(cx_type, cx_attr attrs);
 cx_object cx_declare(cx_object parent, cx_string name, cx_type type);
 cx_object cx_declareFrom(cx_object parent, cx_string name, cx_type type, cx_object source);
 cx_int16 cx_define(cx_object o);
 cx_int16 cx_defineFrom(cx_object o, cx_object source);
 cx_int32 cx_claim(cx_object o);
-cx_int32 cx_claim_ext(cx_object src, cx_object o, cx_string context);
 cx_int32 cx_release(cx_object o);
-cx_int32 cx_release_ext(cx_object src, cx_object o, cx_string context);
 void cx_delete(cx_object o);
 void cx_drop(cx_object o);
 void cx_invalidate(cx_object o);
@@ -78,11 +76,8 @@ cx_time cx_timestampof(cx_object o);
 
 /* Lookup objects either using names or fully qualified names. */
 cx_object cx_lookup(cx_object scope, cx_string name);
-cx_object cx_lookup_ext(cx_object src, cx_object scope, cx_string name, cx_string context);
-cx_function cx_lookupFunction(cx_object scope, cx_string requested, cx_bool allowCastableOverloading, cx_int32 *d);
-cx_function cx_lookupFunction_ext(cx_object src, cx_object scope, cx_string requested, cx_bool allowCastableOverloading, cx_int32 *d, cx_string context);
+cx_function cx_lookupFunction(cx_object scope, cx_string requested, cx_int32 *d);
 cx_object cx_resolve(cx_object scope, cx_string expr);
-cx_object cx_resolve_ext(cx_object src, cx_object scope, cx_string expr, cx_bool allowCastableOverloading, cx_string context);
 
 /* Notifications */
 cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this);
@@ -116,7 +111,7 @@ void cx_setref(void* ptr, cx_object value);
 void cx_setref_ext(cx_object source, void* ptr, cx_object value, cx_string context);
 
 /* Set string field */
-void cx_setstr(void* ptr, cx_string value);
+void cx_setstr(cx_string* ptr, cx_string value);
 
 /* Measure to what extend a function meets requested signature */
 cx_int16 cx_overload(cx_object object, cx_string name, cx_int32* distance, cx_bool allowCastable);
