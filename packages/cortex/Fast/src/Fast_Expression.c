@@ -300,7 +300,7 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_boo
                 }
 
                 if (result){
-                    cx_setref_ext(result, &Fast_Expression(result)->type, type, "Set correct type after cast");
+                    cx_setref(&Fast_Expression(result)->type, type);
                 }
             } else {
                 /* TODO: This functionality must be pushed down to the assembler. For all this function is concerned a cast

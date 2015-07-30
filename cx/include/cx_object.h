@@ -39,9 +39,7 @@ typedef cx_equalityKind (*cx_equalsAction)(cx_type _this, const void* o1, const 
 cx_object cx_create(cx_type type);
 cx_object cx_create_ext(cx_type, cx_attr attrs);
 cx_object cx_declare(cx_object parent, cx_string name, cx_type type);
-cx_object cx_declareFrom(cx_object parent, cx_string name, cx_type type, cx_object source);
 cx_int16 cx_define(cx_object o);
-cx_int16 cx_defineFrom(cx_object o, cx_object source);
 cx_int32 cx_claim(cx_object o);
 cx_int32 cx_release(cx_object o);
 void cx_delete(cx_object o);
@@ -51,7 +49,7 @@ void cx_invalidate(cx_object o);
 void cx_attach(cx_object parent, cx_object child); /* Attach lifecycle of unscoped object to scoped object */
 void cx_detach(cx_object parent, cx_object child); /* Detach lifecycle of unscoped object from scoped object */
 
-/* Object-data */
+/* Generic object data */
 cx_type cx_typeof(cx_object o);
 cx_int32 cx_countof(cx_object o);
 cx_int8 cx_stateof(cx_object o);
@@ -60,7 +58,7 @@ cx_bool cx_checkAttr(cx_object o, cx_int8 attr);
 cx_object cx_assertType(cx_type type, cx_object o);
 cx_bool cx_instanceof(cx_type type, cx_object o);
 
-/* Scoped object-data */
+/* Scoped data */
 cx_string cx_nameof(cx_object o);
 cx_object cx_parentof(cx_object o);
 cx_uint32 cx_scopeSize(cx_object o); /* Returns number of objects (non-recursive) in scope */
@@ -70,7 +68,7 @@ cx_int32 cx_scopeWalk(cx_object o, cx_scopeWalkAction action, void* userData); /
 cx_string cx_fullname(cx_object o, cx_id buffer);
 cx_string cx_relname(cx_object from, cx_object o, cx_id buffer);
 
-/* Persistent object data */
+/* Persistent data */
 cx_time cx_timestampof(cx_object o);
 
 /* Lookup objects either using names or fully qualified names. */
@@ -79,15 +77,14 @@ cx_function cx_lookupFunction(cx_object scope, cx_string requested, cx_int32 *d)
 cx_object cx_resolve(cx_object scope, cx_string expr);
 
 /* Notifications */
+cx_object cx_setSource(cx_object source);
 cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this);
 cx_int32 cx_silence(cx_object observable, cx_observer observer, cx_object _this);
 cx_bool cx_listening(cx_object observable, cx_observer, cx_object _this);
 cx_int32 cx_update(cx_object observable);
-cx_int32 cx_updateFrom(cx_object observable, cx_object _this);
 cx_int32 cx_updateBegin(cx_object observable);
 cx_int32 cx_updateTry(cx_object observable);
 cx_int32 cx_updateEnd(cx_object observable);
-cx_int32 cx_updateEndFrom(cx_object observable, cx_object _this);
 cx_int32 cx_updateCancel(cx_object observable);
 
 /* Waiting */
@@ -97,7 +94,7 @@ cx_object cx_wait(cx_int32 timeout_sec, cx_int32 timeout_nanosec);
 /* REPL functionality */
 cx_int16 cx_expr(cx_object scope, cx_string expr, cx_value *value);
 
-/* Thread-safe reading (polling) */
+/* Thread-safe reading */
 cx_int32 cx_readBegin(cx_object object);
 cx_int32 cx_readEnd(cx_object object);
 
@@ -107,13 +104,12 @@ cx_int32 cx_unlock(cx_object object);
 
 /* Set reference field */
 void cx_setref(void* ptr, cx_object value);
-void cx_setref_ext(cx_object source, void* ptr, cx_object value, cx_string context);
 
 /* Set string field */
 void cx_setstr(cx_string* ptr, cx_string value);
 
-/* Measure to what extend a function meets requested signature */
-cx_int16 cx_overload(cx_object object, cx_string name, cx_int32* distance, cx_bool allowCastable);
+/* Calculate to what extent a function meets requested signature */
+cx_int16 cx_overload(cx_object object, cx_string name, cx_int32* distance);
 
 /* Obtain information from signature.
  *   Signatures can be of the following form:

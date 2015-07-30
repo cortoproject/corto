@@ -59,11 +59,13 @@ cx_void test_Runner_runTest(test_Runner _this, cx_object *observable, cx_object 
         cx_type testClass = cx_parentof(observable);
         test_Suite suite = test_Suite(cx_create(cx_type(testClass)));
         cx_setref(&suite->test, observable);
-        if (!cx_defineFrom(suite, _this) && suite->result.success) {
+        cx_object prev = cx_setSource(_this);
+        if (!cx_define(suite) && suite->result.success) {
             test_Suite_list__append(_this->failures, suite);
         } else {
             test_Suite_list__append(_this->failures, suite);
         }
+        cx_setSource(prev);
         test_Runner_printTestRun(_this, suite);
         cx_release(suite);
 

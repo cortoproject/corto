@@ -68,7 +68,7 @@ cx_function* cx_vtableLookup(cx_vtable* vtable, cx_string member, cx_int32* i_ou
      * vtable has multiple matches, the most specific function is selected. */
     for (i=vtable->length-1; i>=0 && d; i--) {
         if (buffer[i]) {
-            if (cx_overload(buffer[i], member, &d_t, FALSE)) {
+            if (cx_overload(buffer[i], member, &d_t)) {
                 goto error;
             }
 

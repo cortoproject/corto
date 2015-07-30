@@ -580,7 +580,7 @@ typedef union Di2f_t {
             abort();\
             goto STOP;\
         }\
-        cx_updateFrom((cx_object)op1_##code,NULL);\
+        cx_update((cx_object)op1_##code);\
         next();\
 
 #define UPDATEBEGIN(type,code)\
@@ -602,7 +602,7 @@ typedef union Di2f_t {
             abort();\
             goto STOP;\
         }\
-        cx_updateEndFrom((cx_object)op1_##code,NULL);\
+        cx_updateEnd((cx_object)op1_##code);\
         next();\
 
 #define UPDATEFROM(type,code)\
@@ -613,7 +613,11 @@ typedef union Di2f_t {
             abort();\
             goto STOP;\
         }\
-        cx_updateFrom((cx_object)op1_##code,(cx_object)op2_##code);\
+        {\
+            cx_object prev = cx_setSource((cx_object)op2_##code);\
+            cx_update((cx_object)op1_##code);\
+            cx_setSource(prev);\
+        }\
         next();\
 
 #define UPDATEENDFROM(type,code)\
@@ -624,7 +628,11 @@ typedef union Di2f_t {
             abort();\
             goto STOP;\
         }\
-        cx_updateEndFrom((cx_object)op1_##code,(cx_object)op2_##code);\
+        {\
+            cx_object prev = cx_setSource((cx_object)op2_##code);\
+            cx_updateEnd((cx_object)op1_##code);\
+            cx_setSource(prev);\
+        }\
         next();\
 
 #define UPDATECANCEL(type,code)\

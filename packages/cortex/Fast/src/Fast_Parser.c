@@ -359,7 +359,7 @@ Fast_Expression Fast_Parser_createBinaryTernary(Fast_Parser _this, Fast_Expressi
     case CX_ASSIGN_OR:
     case CX_ASSIGN_AND:
         Fast_Ternary_setOperator(Fast_Ternary(rvalue), operator);
-        cx_setref_ext(NULL, &result, rvalue, "?? set rvalue to result value of function");
+        cx_setref(&result, rvalue);
         break;
     default:
         result = Fast_Expression(Fast_Binary__create(lvalue, rvalue, operator));
@@ -495,7 +495,7 @@ Fast_Expression Fast_Parser_delegateAssignment(Fast_Parser _this, Fast_Expressio
     functionExpr = tempCall->functionExpr;
 
     /* If procedure is compatible with delegate type, do a complex assignment */
-    cx_setref_ext(NULL, &variables[0].object, lvalue, "keep object for initializer variable array");
+    cx_setref(&variables[0].object, lvalue);
     result = Fast_InitializerExpression__create(variables, 1, TRUE);
     Fast_InitializerExpression_push(result);
     if (instance) {
@@ -1217,7 +1217,7 @@ cx_void Fast_Parser_blockPop(Fast_Parser _this) {
     /* Blocks are parsed only in 2nd pass */
     if (_this->pass) {
         if (_this->block) {
-            cx_setref_ext(_this, &_this->block, _this->block->parent, "pop block");
+            cx_setref(&_this->block, _this->block->parent);
         } else {
             /* Got confused by earlier errors */
             Fast_Parser_error(_this, "unable to continue parsing due to previous errors");
@@ -1247,7 +1247,7 @@ Fast_Block Fast_Parser_blockPush(Fast_Parser _this, cx_bool presetBlock) {
         if (!_this->blockPreset || presetBlock) {
             newBlock = Fast_Block__create(_this->block);
             Fast_Parser_collect(_this, newBlock);
-            cx_setref_ext(_this, &_this->block, newBlock, "push block");
+            cx_setref(&_this->block, newBlock);
         }
 
         _this->blockPreset = presetBlock;
@@ -1662,7 +1662,7 @@ cx_int16 Fast_Parser_define(Fast_Parser _this) {
         if (Fast_Initializer_define(_this->initializers[_this->initializerCount])) {
             goto error;
         }
-        cx_setref_ext(_this, &_this->initializers[_this->initializerCount], NULL, ".initializers[.initializerCount]");
+        cx_setref(&_this->initializers[_this->initializerCount], NULL);
         _this->initializerCount--;
     }
 
@@ -2096,7 +2096,7 @@ Fast_Expression Fast_Parser_initPushExpression(Fast_Parser _this) {
 
         /* Create initializer */
         initializer = Fast_Initializer(Fast_InitializerExpression__create(variables, 1, TRUE));
-        cx_setref_ext(_this, &_this->initializers[_this->initializerCount], initializer, ".initializers[.initializersCount]");
+        cx_setref(&_this->initializers[_this->initializerCount], initializer);
         Fast_Parser_collect(_this, initializer);
         _this->variablePushed = TRUE;
     }
@@ -2162,7 +2162,7 @@ Fast_Expression Fast_Parser_initPushIdentifier(Fast_Parser _this, Fast_Expressio
     if ((!_this->pass && !isDynamic) || forceStatic) {
         cx_object o;
         o = cx_create(t);
-        cx_setref_ext(NULL, &variables[0].object, Fast_Expression(Fast_Object__create(o)), "keep object for initializer variable array");
+        cx_setref(&variables[0].object, Fast_Expression(Fast_Object__create(o)));
         _this->initializers[_this->initializerCount] = Fast_Initializer(Fast_StaticInitializer__create(variables, 1));
         _this->variablePushed = TRUE;
     } else if (_this->pass && isDynamic && !forceStatic) {
@@ -2174,11 +2174,11 @@ Fast_Expression Fast_Parser_initPushIdentifier(Fast_Parser _this, Fast_Expressio
         Fast_Parser_collect(_this, assignExpr);
         Fast_Parser_addStatement(_this, Fast_Node(assignExpr));
 
-        cx_setref_ext(NULL, &variables[0].object, var, "keep object for initializer variable array");
+        cx_setref(&variables[0].object, var);
         _this->initializers[_this->initializerCount] = Fast_Initializer(Fast_DynamicInitializer__create(variables, 1, FALSE));
         _this->variablePushed = TRUE;
     } else {
-        cx_setref_ext(_this, &_this->initializers[_this->initializerCount], NULL, ".initializers[.initializerCount]");
+        cx_setref(&_this->initializers[_this->initializerCount], NULL);
         _this->variablePushed = TRUE;
     }
 
@@ -2220,7 +2220,7 @@ cx_int16 Fast_Parser_initPushStatic(Fast_Parser _this) {
 
     /* Copy variables from parser to initializer structure */
     for(i=0; i<_this->variableCount; i++) {
-        cx_setref_ext(_this, &variables[i].object, Fast_Expression(_this->variables[i]), ".initializers[.initializerCount]");
+        cx_setref(&variables[i].object, Fast_Expression(_this->variables[i]));
         variables[i].key = 0;
         variables[i].offset = 0;
     }
@@ -2228,12 +2228,12 @@ cx_int16 Fast_Parser_initPushStatic(Fast_Parser _this) {
     if (!_this->pass) {
         /* Create initializer */
         initializer = Fast_Initializer(Fast_StaticInitializer__create(variables, _this->variableCount));
-        cx_setref_ext(_this, &_this->initializers[_this->initializerCount], initializer, ".initializers[.initializerCount]");
+        cx_setref(&_this->initializers[_this->initializerCount], initializer);
         Fast_Parser_collect(_this, initializer);
     } else {
         /* Create dummy initializer */
         initializer = Fast_Initializer__create(variables, _this->variableCount);
-        cx_setref_ext(_this, &_this->initializers[_this->initializerCount], initializer, ".initializers[.initializerCount]");
+        cx_setref(&_this->initializers[_this->initializerCount], initializer);
         Fast_Parser_collect(_this, initializer);
     }
 
@@ -2521,8 +2521,8 @@ Fast_Expression Fast_Parser_parseExpression(Fast_Parser _this, cx_string expr, F
 
     _this->source = exprFinalized;
 
-    cx_setref_ext(_this, &_this->block, block, "Set rootblock for embedded expression");
-    cx_setref_ext(_this, &_this->scope, scope, "Set scope for embedded expression");
+    cx_setref(&_this->block, block);
+    cx_setref(&_this->scope, scope);
 
     // Give expression its own block
     Fast_Parser_blockPush(_this, FALSE);
@@ -2790,7 +2790,7 @@ cx_void Fast_Parser_pushComplexType(Fast_Parser _this, Fast_Expression lvalue) {
 cx_void Fast_Parser_pushLvalue(Fast_Parser _this, Fast_Expression lvalue, cx_bool isAssignment) {
 /* $begin(::cortex::Fast::Parser::pushLvalue) */
 
-    cx_setref_ext(_this, &_this->lvalue[_this->lvalueSp].expr, lvalue, ".lvalue[_this->lvalueSp]");
+    cx_setref(&_this->lvalue[_this->lvalueSp].expr, lvalue);
     _this->lvalue[_this->lvalueSp].isAssignment = isAssignment;
     _this->lvalueSp++;
 
@@ -3141,7 +3141,7 @@ Fast_Node Fast_Parser_whileStatement(Fast_Parser _this, Fast_Expression conditio
         Fast_Parser_collect(_this, result);
 
         if (isUntil) {
-            cx_setref_ext(_this->block, &_this->block->_while, result, "block->_while");
+            cx_setref(&_this->block->_while, result);
         }
     }
 

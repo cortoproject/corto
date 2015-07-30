@@ -37,8 +37,8 @@ cx_int16 Fast_InitializerExpression_insert(Fast_InitializerExpression _this, Fas
 /* $begin(::cortex::Fast::InitializerExpression::insert) */
     Fast_DynamicInitializer initializer;
 
-    cx_setref_ext(_this, &Fast_Initializer(_this)->variables[0].object, variable, ".variables[0].object");
-    cx_setref_ext(_this, &Fast_Expression(_this)->type, variable->type, ".type");
+    cx_setref(&Fast_Initializer(_this)->variables[0].object, variable);
+    cx_setref(&Fast_Expression(_this)->type, variable->type);
 
     /* Create initializer */
     /* Note that since I'm passing MY list of variables, I need to fix the reference count! */

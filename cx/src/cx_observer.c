@@ -142,7 +142,7 @@ cx_int16 cx_observer_silence(cx_observer _this, cx_object me) {
     if (!_this->template) {
         if (_this->observing) {
             oldObservable = _this->observing;
-            cx_setref_ext(_this, &_this->observing, NULL, "unset observing member");
+            cx_setref(&_this->observing, NULL);
         } else {
             oldObservable = _this->observable;
         }

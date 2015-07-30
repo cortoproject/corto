@@ -80,7 +80,7 @@ static int cx_functionLookupWalk(cx_object o, void* userData) {
 
     if (o != data->f) {
         if ((cx_class_instanceof(cx_procedure_o, cx_typeof(o)))) {
-            if (cx_overload(o, cx_nameof(data->f), &d, FALSE)) {
+            if (cx_overload(o, cx_nameof(data->f), &d)) {
                 data->error = TRUE;
                 goto finish;
             }

@@ -120,7 +120,7 @@ cx_int16 Fast_DynamicInitializer_construct(Fast_DynamicInitializer _this) {
     /* Copy offsets of variables into frames */
     for(variable=0; variable<Fast_Initializer(_this)->variableCount; variable++) {
         Fast_Expression var = Fast_Initializer(_this)->variables[variable].object;
-        cx_setref_ext(_this, &_this->frames[0].expr[variable], var, ".frames[0].expr[variable]");
+        cx_setref(&_this->frames[0].expr[variable], var);
     }
     
     return Fast_Initializer_construct(Fast_Initializer(_this));
@@ -178,7 +178,7 @@ cx_int16 Fast_DynamicInitializer_push(Fast_DynamicInitializer _this) {
 
     /* Obtain expression for all variables being initialized */
     for(variable=0; variable<Fast_Initializer(_this)->variableCount; variable++) {
-        cx_setref_ext(_this, &_this->frames[fp].expr[variable], Fast_Initializer_expr(_this, variable, NULL), ".frames[fp].expr[variable]");
+        cx_setref(&_this->frames[fp].expr[variable], Fast_Initializer_expr(_this, variable, NULL));
     }
 
     if (Fast_Initializer_push_v(Fast_Initializer(_this))) {
@@ -195,7 +195,7 @@ cx_int16 Fast_DynamicInitializer_push(Fast_DynamicInitializer _this) {
         * of sequence::size(uint32). This way there is no need for keeping track of a size-expression per variable. Note: the
         * native type of a Fast::Integer is uint64. */
         size = Fast_Integer(Fast_Expression_cast(Fast_Expression(size), cx_type(cx_uint32_o), FALSE));
-        cx_setref_ext(_this, &_this->frames[fp].sequenceSize, size, ".frames[fp].sequenceSize");
+        cx_setref(&_this->frames[fp].sequenceSize, size);
         
         for(variable=0; variable<Fast_Initializer(_this)->variableCount; variable++) {
             Fast_Node statement;
@@ -216,7 +216,7 @@ cx_int16 Fast_DynamicInitializer_push(Fast_DynamicInitializer _this) {
             }
         }
     } else {
-        cx_setref_ext(_this, &_this->frames[fp].sequenceSize, NULL, ".frames[fp].sequenceSize");
+        cx_setref(&_this->frames[fp].sequenceSize, NULL);
     }
     
     return 0;
