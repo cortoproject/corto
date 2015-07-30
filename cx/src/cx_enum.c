@@ -13,11 +13,8 @@
 #include "cx__collection.h"
 
 cx_int16 cx__enum_bindConstant(cx_enum _this, cx_constant* c) {
-    cx_rbtree scope;
-
     if (cx_checkState(cx_type_o, CX_DEFINED)) {
-        scope = cx_scopeof(_this);
-        *c = cx_rbtreeSize(scope)-1;
+        *c = cx_scopeSize(_this)-1;
     }
     _this->constants.buffer = cx_realloc(_this->constants.buffer, (_this->constants.length+1) * sizeof(cx_constant*));
     _this->constants.buffer[_this->constants.length] = c;
@@ -36,7 +33,7 @@ struct cx_enum_findConstant_t {
     cx_constant* o;
 };
 
-static int cx_enum_findConstant(void* o, void* udata) {
+static int cx_enum_findConstant(cx_object o, void* udata) {
     struct cx_enum_findConstant_t* userData;
 
     userData = udata;
@@ -48,16 +45,12 @@ static int cx_enum_findConstant(void* o, void* udata) {
 /* $end */
 cx_object cx_enum_constant(cx_enum _this, cx_int32 value) {
 /* $begin(::cortex::lang::enum::constant) */
-    cx_rbtree scope;
     struct cx_enum_findConstant_t walkData;
-
-    /* Get scope */
-    scope = cx_scopeof(_this);
 
     /* Walk scope */
     walkData.value = value;
     walkData.o = NULL;
-    cx_rbtreeWalk(scope, cx_enum_findConstant, &walkData);
+    cx_scopeWalk(_this, cx_enum_findConstant, &walkData);
 
     return walkData.o;
 /* $end */

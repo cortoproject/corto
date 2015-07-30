@@ -237,8 +237,8 @@ static int cxsh_scopeWalk(cx_object o, void* udata) {
 
 /* List scope */
 static void cxsh_ls(char* arg) {
-    cx_rbtree _scope;
     cx_object o;
+    cx_uint32 scopeSize;
 
     if (arg && strlen(arg)) {
         o = cx_resolve(scope, arg);
@@ -253,20 +253,17 @@ static void cxsh_ls(char* arg) {
         cx_claim(o);
     }
 
-    /* Get scope */
-    _scope = cx_scopeof(o);
-
     /* Print column header */
     cxsh_printColumnHeader();
 
-    if (_scope && cx_rbtreeSize(_scope)) {
+    if ((scopeSize = cx_scopeSize(o))) {
         /* Walk scope, print contents */
-        cx_rbtreeWalk(_scope, cxsh_scopeWalk, NULL);
+        cx_scopeWalk(o, cxsh_scopeWalk, NULL);
 
-        if (cx_rbtreeSize(_scope) == 1) {
-            printf("total: %d object\n", cx_rbtreeSize(_scope));
+        if (scopeSize == 1) {
+            printf("total: %d object\n", scopeSize);
         } else {
-            printf("total: %d objects\n", cx_rbtreeSize(_scope));
+            printf("total: %d objects\n", scopeSize);
         }
     } else {
         printf("no objects.\n");
@@ -291,10 +288,7 @@ static int cxsh_treeWalk(cx_object o, void* userData) {
     /* Limit name-buffer to local scope */
     {
         cx_id id1;
-        cx_rbtree scope;
         cx_string name;
-
-        scope = cx_scopeof(o);
 
         /* Indentation */
         if (*(cx_uint8*)userData) {
@@ -310,7 +304,7 @@ static int cxsh_treeWalk(cx_object o, void* userData) {
         }
 
         /* Scope operator */
-        if (scope && cx_rbtreeSize(scope)) {
+        if (scope && cx_scopeSize(o)) {
             printf("%s::%s\n", BOLD, NORMAL);
         } else {
             printf("\n");

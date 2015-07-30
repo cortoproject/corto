@@ -98,7 +98,7 @@ repeat:
             }
             *bptr = '\0';
 
-            if (cx_scopeof(o)) {
+            if (cx_scopeSize(o)) {
                 if (!overload) {
                     cx_object prev = o;
                     int i;

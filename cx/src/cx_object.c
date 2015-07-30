@@ -70,6 +70,7 @@ typedef struct cx_observerAdmin {
     cx_thread id;
     cx_observerElement stack[CX_MAX_NOTIFY_DEPTH];
     cx_uint32 sp;
+    cx_object from;
 }cx_observerAdmin;
 static cx_observerAdmin observerAdmin[CX_MAX_THREADS];
 
@@ -1239,28 +1240,6 @@ cx_string cx_nameof(cx_object o) {
     return result;
 err_not_scoped:
     cx_critical("cx_nameof: object %p is not scoped.", o);
-    return NULL;
-}
-
-/* Get scope (requires scoped object) */
-cx_rbtree cx_scopeof(cx_object o) {
-    cx__object* _o;
-    cx__scope* scope;
-    cx_rbtree result;
-
-    result = NULL;
-
-    _o = CX_OFFSET(o, -sizeof(cx__object));
-    scope = cx__objectScope(_o);
-    if (scope) {
-        result = scope->scope;
-    } else {
-        goto err_not_scoped;
-    }
-
-    return result;
-err_not_scoped:
-    cx_error("cx_scopeof: object <%p> is not scoped", o);
     return NULL;
 }
 

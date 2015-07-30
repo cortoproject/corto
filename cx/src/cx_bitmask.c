@@ -11,11 +11,8 @@
 /* $header() */
 #include "cx__bitmask.h"
 cx_int16 cx__bitmask_bindConstant(cx_bitmask _this, cx_constant* c) {
-    cx_rbtree scope;
-
     if (cx_checkState(cx_type_o, CX_DEFINED)) {
-        scope = cx_scopeof(_this);
-        *c = 0x1 << (cx_rbtreeSize(scope)-1);
+        *c = 0x1 << (cx_scopeSize(_this)-1);
     }
     cx_enum(_this)->constants.buffer = cx_realloc(cx_enum(_this)->constants.buffer, (cx_enum(_this)->constants.length+1) * sizeof(cx_constant*));
     cx_enum(_this)->constants.buffer[cx_enum(_this)->constants.length] = c;

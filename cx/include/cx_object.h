@@ -63,7 +63,6 @@ cx_bool cx_instanceof(cx_type type, cx_object o);
 /* Scoped object-data */
 cx_string cx_nameof(cx_object o);
 cx_object cx_parentof(cx_object o);
-cx_rbtree cx_scopeof(cx_object o); /* Dangerous function, because it's not protected by locks */
 cx_uint32 cx_scopeSize(cx_object o); /* Returns number of objects (non-recursive) in scope */
 cx_ll cx_scopeClaim(cx_object o); /* Safe way to access scope contents */
 void cx_scopeRelease(cx_ll scope);

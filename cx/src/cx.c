@@ -289,6 +289,7 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
     SSO_OP_OBJ(op, attr_ATTR_WRITABLE);\
     SSO_OP_OBJ(op, attr_ATTR_OBSERVABLE);\
     SSO_OP_OBJ(op, attr_ATTR_PERSISTENT);\
+    SSO_OP_OBJ(op, attr_ATTR_DEFAULT);\
     /* eventKind */\
     SSO_OP_OBJ(op, eventMask_ON_DECLARE);\
     SSO_OP_OBJ(op, eventMask_ON_DEFINE);\
