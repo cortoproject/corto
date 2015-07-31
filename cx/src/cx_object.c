@@ -37,6 +37,8 @@ static cx_int32 cx_notify(cx__observable *_o, cx_object observable, cx_uint32 ma
 static void cx_notifyObserverDefault(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask);
 static void cx_notifyObserverThis(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask);
 
+extern cx_threadKey CX_KEY_ATTR;
+
 /* Thread local storage key that keeps track of the objects that are prepared to wait for. */
 extern cx_threadKey CX_KEY_WAIT_ADMIN;
 
@@ -796,16 +798,29 @@ cx_int16 cx_delegateInit(cx_type t, cx_object o) {
     return result;
 }
 
+cx_attr cx_setAttr(cx_attr attrs) {
+    void* oldAttr = cx_threadTlsGet(CX_KEY_ATTR);
+    cx_threadTlsSet(CX_KEY_ATTR, (void*)attrs);
+    return (cx_attr)oldAttr;
+}
+
+cx_attr cx_getAttr(void) {
+    return (cx_attr)cx_threadTlsGet(CX_KEY_ATTR);
+}
+
 /* Create new object with attributes */
-cx_object cx_create_ext(cx_type type, cx_attr attrs) {
+cx_object cx_create(cx_type type) {
     cx_uint32 size, headerSize;
     cx__object* o;
+    cx_attr attrs = (cx_attr)cx_threadTlsGet(CX_KEY_ATTR);
 
-    if (attrs == CX_ATTR_DEFAULT) {
-        if (type->kind == CX_VOID) {
-            attrs = CX_ATTR_OBSERVABLE;
-        } else {
-            attrs = CX_ATTR_WRITABLE | CX_ATTR_OBSERVABLE | CX_ATTR_PERSISTENT;
+    if (attrs & CX_ATTR_DEFAULT) {
+        attrs |= CX_ATTR_OBSERVABLE;
+        if (type->kind != CX_VOID) {
+            attrs |= CX_ATTR_WRITABLE;
+        }
+        if (attrs & CX_ATTR_SCOPED) {
+            attrs |= CX_ATTR_PERSISTENT;
         }
     }
 
@@ -903,15 +918,9 @@ error:
     return NULL;
 }
 
-/* Create new object */
-cx_object cx_create(cx_type type) {
-    return cx_create_ext(type, CX_ATTR_DEFAULT);
-}
-
 /* Declare object */
 cx_object cx_declare(cx_object parent, cx_string name, cx_type type) {
     cx_object o;
-    cx_uint8 state;
 
     if (!parent) {
         parent = root_o;
@@ -931,13 +940,6 @@ cx_object cx_declare(cx_object parent, cx_string name, cx_type type) {
         goto error;
     }
 
-    /* When the object is of a void-type, it should not be writable. */
-    if (type->kind != CX_VOID) {
-        state = CX_ATTR_SCOPED | CX_ATTR_WRITABLE | CX_ATTR_OBSERVABLE | CX_ATTR_PERSISTENT;
-    } else {
-        state = CX_ATTR_SCOPED | CX_ATTR_OBSERVABLE;
-    }
-
     /* Check if object already exists */
     if ((o = cx_lookup(parent, name))) {
         cx_release(o);
@@ -952,7 +954,10 @@ cx_object cx_declare(cx_object parent, cx_string name, cx_type type) {
         }
     } else {
         /* Create new object */
-        o = cx_create_ext(type, state);
+        cx_attr oldAttr = cx_setAttr(cx_getAttr()|CX_ATTR_SCOPED);
+        o = cx_create(type);
+        cx_setAttr(oldAttr);
+
         if (o) {
             /* Initialize object parameters. */
             if (!cx__initScope(o, name, parent)) {
@@ -1968,7 +1973,9 @@ indent++;
             data->notify(data, data->_this, observable, source, mask);
         } else {
             if (!data->_this || (data->_this != source)) {
-                cx_observableEvent event = cx_create_ext(cx_type(cx_observableEvent_o), 0);
+                cx_attr oldAttr = cx_setAttr(0);
+                cx_observableEvent event = cx_create(cx_type(cx_observableEvent_o));
+                cx_setAttr(oldAttr);
                 cx_dispatcher dispatcher = observer->dispatcher;
 
                 cx_setref(&event->observer, observer);
@@ -3575,24 +3582,4 @@ cx_int16 cx_valueCopy(cx_value *dst, cx_value *src) {
     data.value = *dst;
     result = cx_serializeValue(&s, src, &data);
     return result;
-}
-
-cx_object cx_cortex_new(cx_type type) {
-    return cx_create(type);
-}
-
-cx_object cx_cortex__new(cx_type type, cx_attr attributes) {
-    return cx_create_ext(type, attributes);
-}
-
-void __cx_cortex_new(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    *(cx_object*)result = cx_cortex_new(*(cx_type*)args);
-}
-
-void __cx_cortex__new(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    *(cx_object*)result = cx_cortex__new(
-        *(cx_type*)args,
-        *(cx_attr*)((intptr_t)args + sizeof(cx_type)));
 }

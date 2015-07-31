@@ -36,8 +36,9 @@ typedef cx_equalityKind (*cx_equalsAction)(cx_type _this, const void* o1, const 
 #define CX_PARAMETER_NULL               (8)
 
 /* Object lifecycle */
+cx_attr cx_setAttr(cx_attr attr);
+cx_attr cx_getAttr(void);
 cx_object cx_create(cx_type type);
-cx_object cx_create_ext(cx_type, cx_attr attrs);
 cx_object cx_declare(cx_object parent, cx_string name, cx_type type);
 cx_int16 cx_define(cx_object o);
 cx_int32 cx_claim(cx_object o);

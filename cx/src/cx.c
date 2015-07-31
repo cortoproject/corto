@@ -39,6 +39,7 @@ static cx_ll cx_unloadHandlers = NULL;
 
 cx_threadKey CX_KEY_OBSERVER_ADMIN;
 cx_threadKey CX_KEY_WAIT_ADMIN;
+cx_threadKey CX_KEY_ATTR;
 
 #define SSO_OP_VOID(op, type) op(cx_##type##_o, 0)
 #define SSO_OP_PRIM(op, type) op(cx_##type##_o, sizeof(cx_##type))
@@ -142,8 +143,6 @@ cx_threadKey CX_KEY_WAIT_ADMIN;
 
 /* 1st degree objects (members, methods and constants) */
 #define SSO_OP_OBJECT(op)\
-    SSO_OP_OBJ(op, cortex_new);\
-    SSO_OP_OBJ(op, cortex__new);\
     SSO_OP_OBJ(op, class_construct_);\
     SSO_OP_OBJ(op, class_destruct_);\
     SSO_OP_OBJ(op, procedure_unbind_);\
@@ -593,6 +592,7 @@ int cx_start(void) {
     /* Initialize threadkeys */
     cx_threadTlsKey(&CX_KEY_OBSERVER_ADMIN, NULL);
     cx_threadTlsKey(&CX_KEY_WAIT_ADMIN, NULL);
+    cx_threadTlsKey(&CX_KEY_ATTR, NULL);
 
     /* Init admin-lock */
     cx_mutexNew(&cx_adminLock);
@@ -650,6 +650,9 @@ int cx_start(void) {
 
     /* Init CRC table */
     cx_crcInit();
+
+    /* Set default object attribute */
+    cx_setAttr(CX_ATTR_DEFAULT);
 
     return 0;
 }

@@ -506,8 +506,6 @@ CX_PACKAGE_O(cortex, "http://cortexlang.com/");
 CX_PACKAGE_O_SCOPE(cortex, lang, "http://cortexlang.com/");
 
 cx_package cortex_o = CX_OFFSET(&cortex__o.o.o, sizeof(cx__object));
-    CX_FUNCTION_OO_O(cortex, new, "(type type)", object, cx_cortex_new);
-    CX_FUNCTION_OVERLOAD_OO_O(cortex, _new, "new(type type,attr attributes)", object, cx_cortex__new);
 
 cx_package cortex_lang_o = CX_OFFSET(&cortex_lang__o.o.o, sizeof(cx__object));
 
