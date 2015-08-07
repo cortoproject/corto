@@ -388,7 +388,7 @@ cx_string cx_type_toString(cx_any _this) {
         } else {
             cx_valueValueInit(&value, NULL, _this.type, _this.value);
         }
-        result = cx_valueToString(&value, 0);
+        result = cx_strv(&value, 0);
     } else {
         result = cx_strdup("null");
     }

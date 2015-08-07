@@ -134,7 +134,7 @@ typedef struct cx_stringConcatCache {
         fetchOp2(INIT, code)\
         cx_value v;\
         cx_valueValueInit(&v, NULL, (cx_type)op2_##code, &op1_##code);\
-        cx_initValue(&v);\
+        cx_initv(&v);\
         next();\
     }
 

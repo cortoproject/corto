@@ -435,7 +435,8 @@ Fast_Expression Fast_Parser_delegateAssignment(Fast_Parser _this, Fast_Expressio
     signature = cx_signatureClose(signature);
 
     /* Resolve function */
-    Fast_CallBuilder__init(
+    Fast_CallBuilder__init(&builder);
+    Fast_CallBuilder__set(
         &builder,
         signature,
         NULL,

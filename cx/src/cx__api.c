@@ -32,7 +32,7 @@ cx_alias cx_alias__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_alias__str(cx_alias value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -48,7 +48,7 @@ cx_string cx_any__str(cx_any value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_any_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -82,7 +82,7 @@ cx_array cx_array__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_array__str(cx_array value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -98,7 +98,7 @@ cx_string cx_attr__str(cx_attr value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_attr_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -128,7 +128,7 @@ cx_binary cx_binary__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_binary__str(cx_binary value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -156,7 +156,7 @@ cx_bitmask cx_bitmask__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_bitmask__str(cx_bitmask value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -172,7 +172,7 @@ cx_string cx_bool__str(cx_bool value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_bool_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -200,7 +200,7 @@ cx_boolean cx_boolean__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_boolean__str(cx_boolean value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -208,13 +208,13 @@ void cx_callbackDestruct__init(cx_callbackDestruct *_this) {
     cx_value v;
     memset(_this, 0, sizeof(*_this));
     cx_valueValueInit(&v, NULL, cx_type(cx_callbackDestruct_o), _this);
-    cx_initValue(&v);
+    cx_initv(&v);
 }
 
 void cx_callbackDestruct__deinit(cx_callbackDestruct *_this) {
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_callbackDestruct_o), _this);
-    cx_deinitValue(&v);
+    cx_deinitv(&v);
 }
 
 cx_callbackDestruct* cx_callbackDestruct__new(void) {
@@ -229,7 +229,7 @@ cx_string cx_callbackDestruct__str(cx_callbackDestruct value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_callbackDestruct_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -237,13 +237,13 @@ void cx_callbackInit__init(cx_callbackInit *_this) {
     cx_value v;
     memset(_this, 0, sizeof(*_this));
     cx_valueValueInit(&v, NULL, cx_type(cx_callbackInit_o), _this);
-    cx_initValue(&v);
+    cx_initv(&v);
 }
 
 void cx_callbackInit__deinit(cx_callbackInit *_this) {
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_callbackInit_o), _this);
-    cx_deinitValue(&v);
+    cx_deinitv(&v);
 }
 
 cx_callbackInit* cx_callbackInit__new(void) {
@@ -258,7 +258,7 @@ cx_string cx_callbackInit__str(cx_callbackInit value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_callbackInit_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -274,7 +274,7 @@ cx_string cx_char__str(cx_char value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_char_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -304,7 +304,7 @@ cx_character cx_character__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_character__str(cx_character value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -340,7 +340,7 @@ cx_class cx_class__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_class__str(cx_class value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -374,7 +374,7 @@ cx_collection cx_collection__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_collection__str(cx_collection value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -390,7 +390,7 @@ cx_string cx_collectionKind__str(cx_collectionKind value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_collectionKind_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -406,7 +406,7 @@ cx_string cx_compositeKind__str(cx_compositeKind value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_compositeKind_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -422,7 +422,7 @@ cx_string cx_constant__str(cx_constant value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_constant_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -458,7 +458,7 @@ cx_delegate cx_delegate__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_delegate__str(cx_delegate value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -466,7 +466,7 @@ void cx_delegatedata__init(cx_delegatedata *_this, cx_object instance, cx_functi
     cx_value v;
     memset(_this, 0, sizeof(*_this));
     cx_valueValueInit(&v, NULL, cx_type(cx_delegatedata_o), _this);
-    cx_initValue(&v);
+    cx_initv(&v);
     instance ? cx_claim(instance) : 0;
     _this->instance = instance;
     procedure ? cx_claim(procedure) : 0;
@@ -476,7 +476,7 @@ void cx_delegatedata__init(cx_delegatedata *_this, cx_object instance, cx_functi
 void cx_delegatedata__deinit(cx_delegatedata *_this) {
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_delegatedata_o), _this);
-    cx_deinitValue(&v);
+    cx_deinitv(&v);
 }
 
 cx_delegatedata* cx_delegatedata__new(void) {
@@ -491,7 +491,7 @@ cx_string cx_delegatedata__str(cx_delegatedata value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_delegatedata_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -519,7 +519,7 @@ cx_dispatcher cx_dispatcher__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_dispatcher__str(cx_dispatcher value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -547,7 +547,7 @@ cx_enum cx_enum__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_enum__str(cx_enum value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -563,7 +563,7 @@ cx_string cx_equalityKind__str(cx_equalityKind value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_equalityKind_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -593,7 +593,7 @@ cx_event cx_event__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_event__str(cx_event value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -609,7 +609,7 @@ cx_string cx_eventMask__str(cx_eventMask value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_eventMask_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -643,7 +643,7 @@ cx_float cx_float__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_float__str(cx_float value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -659,7 +659,7 @@ cx_string cx_float32__str(cx_float32 value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_float32_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -675,7 +675,7 @@ cx_string cx_float64__str(cx_float64 value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_float64_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -709,7 +709,7 @@ cx_function cx_function__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_function__str(cx_function value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -743,7 +743,7 @@ cx_int cx_int__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_int__str(cx_int value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -759,7 +759,7 @@ cx_string cx_int16__str(cx_int16 value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_int16_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -775,7 +775,7 @@ cx_string cx_int32__str(cx_int32 value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_int32_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -791,7 +791,7 @@ cx_string cx_int64__str(cx_int64 value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_int64_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -807,7 +807,7 @@ cx_string cx_int8__str(cx_int8 value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_int8_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -839,7 +839,7 @@ cx_interface cx_interface__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_interface__str(cx_interface value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -855,7 +855,7 @@ cx_string cx_interfaceSeq__str(cx_interfaceSeq value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_interfaceSeq_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -863,7 +863,7 @@ void cx_interfaceVector__init(cx_interfaceVector *_this, cx_interface interface,
     cx_value v;
     memset(_this, 0, sizeof(*_this));
     cx_valueValueInit(&v, NULL, cx_type(cx_interfaceVector_o), _this);
-    cx_initValue(&v);
+    cx_initv(&v);
     interface ? cx_claim(interface) : 0;
     _this->interface = cx_interface(interface);
     _this->vector = vector;
@@ -872,7 +872,7 @@ void cx_interfaceVector__init(cx_interfaceVector *_this, cx_interface interface,
 void cx_interfaceVector__deinit(cx_interfaceVector *_this) {
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_interfaceVector_o), _this);
-    cx_deinitValue(&v);
+    cx_deinitv(&v);
 }
 
 cx_interfaceVector* cx_interfaceVector__new(void) {
@@ -887,7 +887,7 @@ cx_string cx_interfaceVector__str(cx_interfaceVector value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_interfaceVector_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -903,7 +903,7 @@ cx_string cx_interfaceVectorSeq__str(cx_interfaceVectorSeq value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_interfaceVectorSeq_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -935,7 +935,7 @@ cx_iterator cx_iterator__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_iterator__str(cx_iterator value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -969,7 +969,7 @@ cx_list cx_list__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_list__str(cx_list value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -1007,7 +1007,7 @@ cx_map cx_map__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_map__str(cx_map value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -1045,7 +1045,7 @@ cx_member cx_member__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_member__str(cx_member value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -1061,7 +1061,7 @@ cx_string cx_memberSeq__str(cx_memberSeq value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_memberSeq_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -1097,7 +1097,7 @@ cx_metaprocedure cx_metaprocedure__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_metaprocedure__str(cx_metaprocedure value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -1133,7 +1133,7 @@ cx_method cx_method__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_method__str(cx_method value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -1149,7 +1149,7 @@ cx_string cx_modifier__str(cx_modifier value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_modifier_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -1173,7 +1173,7 @@ cx_string cx_objectSeq__str(cx_objectSeq value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_objectSeq_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -1219,7 +1219,7 @@ cx_observableEvent cx_observableEvent__declare(cx_object _parent, cx_string _nam
 
 cx_string cx_observableEvent__str(cx_observableEvent value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -1261,7 +1261,7 @@ cx_observer cx_observer__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_observer__str(cx_observer value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -1277,7 +1277,7 @@ cx_string cx_observerSeq__str(cx_observerSeq value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_observerSeq_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -1293,7 +1293,7 @@ cx_string cx_octet__str(cx_octet value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_octet_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -1309,7 +1309,7 @@ cx_string cx_operatorKind__str(cx_operatorKind value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_operatorKind_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -1339,7 +1339,7 @@ cx_package cx_package__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_package__str(cx_package value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -1347,7 +1347,7 @@ void cx_parameter__init(cx_parameter *_this, cx_string name, cx_type type, cx_bo
     cx_value v;
     memset(_this, 0, sizeof(*_this));
     cx_valueValueInit(&v, NULL, cx_type(cx_parameter_o), _this);
-    cx_initValue(&v);
+    cx_initv(&v);
     _this->name = (name ? cx_strdup(name) : NULL);
     type ? cx_claim(type) : 0;
     _this->type = cx_type(type);
@@ -1357,7 +1357,7 @@ void cx_parameter__init(cx_parameter *_this, cx_string name, cx_type type, cx_bo
 void cx_parameter__deinit(cx_parameter *_this) {
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_parameter_o), _this);
-    cx_deinitValue(&v);
+    cx_deinitv(&v);
 }
 
 cx_parameter* cx_parameter__new(void) {
@@ -1372,7 +1372,7 @@ cx_string cx_parameter__str(cx_parameter value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_parameter_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -1388,7 +1388,7 @@ cx_string cx_parameterSeq__str(cx_parameterSeq value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_parameterSeq_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -1418,7 +1418,7 @@ cx_primitive cx_primitive__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_primitive__str(cx_primitive value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -1434,7 +1434,7 @@ cx_string cx_primitiveKind__str(cx_primitiveKind value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_primitiveKind_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -1470,7 +1470,7 @@ cx_procedure cx_procedure__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_procedure__str(cx_procedure value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -1486,7 +1486,7 @@ cx_string cx_procedureKind__str(cx_procedureKind value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_procedureKind_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -1520,7 +1520,7 @@ cx_sequence cx_sequence__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_sequence__str(cx_sequence value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -1536,7 +1536,7 @@ cx_string cx_state__str(cx_state value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_state_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -1552,7 +1552,7 @@ cx_string cx_string__str(cx_string value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_string_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -1586,7 +1586,7 @@ cx_struct cx_struct__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_struct__str(cx_struct value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -1618,7 +1618,7 @@ cx_text cx_text__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_text__str(cx_text value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -1656,7 +1656,7 @@ cx_type cx_type__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_type__str(cx_type value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -1672,7 +1672,7 @@ cx_string cx_typeKind__str(cx_typeKind value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_typeKind_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -1706,7 +1706,7 @@ cx_uint cx_uint__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_uint__str(cx_uint value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -1722,7 +1722,7 @@ cx_string cx_uint16__str(cx_uint16 value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_uint16_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -1738,7 +1738,7 @@ cx_string cx_uint32__str(cx_uint32 value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_uint32_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -1754,7 +1754,7 @@ cx_string cx_uint64__str(cx_uint64 value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_uint64_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -1770,7 +1770,7 @@ cx_string cx_uint8__str(cx_uint8 value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_uint8_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -1806,7 +1806,7 @@ cx_virtual cx_virtual__declare(cx_object _parent, cx_string _name) {
 
 cx_string cx_virtual__str(cx_virtual value) {
     cx_string result;
-    result = cx_toString(value, 0);
+    result = cx_str(value, 0);
     return result;
 }
 
@@ -1830,7 +1830,7 @@ cx_string cx_vtable__str(cx_vtable value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_vtable_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -1846,7 +1846,7 @@ cx_string cx_width__str(cx_width value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_width_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -1862,7 +1862,7 @@ cx_string cx_word__str(cx_word value) {
     cx_string result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_word_o), &value);
-    result = cx_valueToString(&v, 0);
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -1884,7 +1884,7 @@ void cx_interfaceSeq__size(cx_interfaceSeq *seq, cx_uint32 length) {
             {
                 cx_value v;
                 cx_valueValueInit(&v, NULL, cx_type(cx_interface_o), &seq->buffer[i]);
-                cx_deinitValue(&v);
+                cx_deinitv(&v);
             }
         }
     }
@@ -1903,7 +1903,7 @@ cx_interfaceVector* cx_interfaceVectorSeq__append(cx_interfaceVectorSeq *seq) {
     {
         cx_value v;
         cx_valueValueInit(&v, NULL, cx_type(cx_interfaceVector_o), &seq->buffer[seq->length-1]);
-        cx_initValue(&v);
+        cx_initv(&v);
     }
     return &seq->buffer[seq->length-1];
 }
@@ -1916,7 +1916,7 @@ void cx_interfaceVectorSeq__size(cx_interfaceVectorSeq *seq, cx_uint32 length) {
             {
                 cx_value v;
                 cx_valueValueInit(&v, NULL, cx_type(cx_interfaceVector_o), &seq->buffer[i]);
-                cx_deinitValue(&v);
+                cx_deinitv(&v);
             }
         }
     }
@@ -1928,7 +1928,7 @@ void cx_interfaceVectorSeq__size(cx_interfaceVectorSeq *seq, cx_uint32 length) {
             {
                 cx_value v;
                 cx_valueValueInit(&v, NULL, cx_type(cx_interfaceVector_o), &seq->buffer[i]);
-                cx_deinitValue(&v);
+                cx_deinitv(&v);
             }
         }
     }
@@ -1957,7 +1957,7 @@ void cx_memberSeq__size(cx_memberSeq *seq, cx_uint32 length) {
             {
                 cx_value v;
                 cx_valueValueInit(&v, NULL, cx_type(cx_member_o), &seq->buffer[i]);
-                cx_deinitValue(&v);
+                cx_deinitv(&v);
             }
         }
     }
@@ -1986,7 +1986,7 @@ void cx_objectSeq__size(cx_objectSeq *seq, cx_uint32 length) {
             {
                 cx_value v;
                 cx_valueValueInit(&v, NULL, cx_type(cx_object_o), &seq->buffer[i]);
-                cx_deinitValue(&v);
+                cx_deinitv(&v);
             }
         }
     }
@@ -2015,7 +2015,7 @@ void cx_observerSeq__size(cx_observerSeq *seq, cx_uint32 length) {
             {
                 cx_value v;
                 cx_valueValueInit(&v, NULL, cx_type(cx_observer_o), &seq->buffer[i]);
-                cx_deinitValue(&v);
+                cx_deinitv(&v);
             }
         }
     }
@@ -2034,7 +2034,7 @@ cx_parameter* cx_parameterSeq__append(cx_parameterSeq *seq) {
     {
         cx_value v;
         cx_valueValueInit(&v, NULL, cx_type(cx_parameter_o), &seq->buffer[seq->length-1]);
-        cx_initValue(&v);
+        cx_initv(&v);
     }
     return &seq->buffer[seq->length-1];
 }
@@ -2047,7 +2047,7 @@ void cx_parameterSeq__size(cx_parameterSeq *seq, cx_uint32 length) {
             {
                 cx_value v;
                 cx_valueValueInit(&v, NULL, cx_type(cx_parameter_o), &seq->buffer[i]);
-                cx_deinitValue(&v);
+                cx_deinitv(&v);
             }
         }
     }
@@ -2059,7 +2059,7 @@ void cx_parameterSeq__size(cx_parameterSeq *seq, cx_uint32 length) {
             {
                 cx_value v;
                 cx_valueValueInit(&v, NULL, cx_type(cx_parameter_o), &seq->buffer[i]);
-                cx_deinitValue(&v);
+                cx_deinitv(&v);
             }
         }
     }
@@ -2088,7 +2088,7 @@ void cx_vtable__size(cx_vtable *seq, cx_uint32 length) {
             {
                 cx_value v;
                 cx_valueValueInit(&v, NULL, cx_type(cx_function_o), &seq->buffer[i]);
-                cx_deinitValue(&v);
+                cx_deinitv(&v);
             }
         }
     }

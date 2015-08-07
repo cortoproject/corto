@@ -223,7 +223,7 @@ cx_void *cx_valueThis(cx_value* val) {
 
 static char* cx_valueKindString[CX_CONSTANT+1] = {"object", "base", "member", "constant", "element"};
 
-char* cx_valueString(cx_value* v, char* buffer, unsigned int length) {
+char* cx_strving(cx_value* v, char* buffer, unsigned int length) {
     cx_id object_name;
     cx_member m;
     cx_value* parents[CX_MAX_TYPE_DEPTH];
@@ -231,7 +231,7 @@ char* cx_valueString(cx_value* v, char* buffer, unsigned int length) {
     cx_value* vptr;
 
     if (length < (strlen("ELEMENT") + 3)) {
-        cx_error("buffer passed to cx_valueString is too short.");
+        cx_error("buffer passed to cx_strving is too short.");
         goto error;
     }
 
@@ -241,7 +241,7 @@ char* cx_valueString(cx_value* v, char* buffer, unsigned int length) {
     /* Get name of object */
     cx_fullname(cx_valueObject(v), object_name);
     if ((strlen(buffer) + (strlen(object_name) + 2 + 1)) >= length) {
-        cx_error("buffer passed to cx_valueString is too short for object name.");
+        cx_error("buffer passed to cx_strving is too short for object name.");
         goto error;
     }
 
@@ -277,13 +277,13 @@ char* cx_valueString(cx_value* v, char* buffer, unsigned int length) {
             m = NULL;
             break;
         default:
-            cx_trace("cx_valueString: unhandled '%s'", cx_valueKindString[vptr->kind]);
+            cx_trace("cx_strving: unhandled '%s'", cx_valueKindString[vptr->kind]);
             m = NULL;
             break;
         }
         if (m) {
             if ((strlen(buffer) + strlen(cx_nameof(m)) + 1) >= length) {
-                cx_error("buffer passed to cx_valueString is too short for member name");
+                cx_error("buffer passed to cx_strving is too short for member name");
             } else {
                 strcat(buffer, ".");
                 strcat(buffer, cx_nameof(m));
@@ -338,7 +338,7 @@ char* cx_valueExpr(cx_value* v, char* buffer, unsigned int length) {
         }
         if (m) {
             if ((strlen(buffer) + strlen(cx_nameof(m)) + 1) >= length) {
-                cx_error("buffer passed to cx_valueString is too short for member name");
+                cx_error("buffer passed to cx_strving is too short for member name");
             } else {
                 strcat(buffer, ".");
                 strcat(buffer, cx_nameof(m));

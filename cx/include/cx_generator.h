@@ -8,7 +8,7 @@
 #ifndef CX_GEN_H_
 #define CX_GEN_H_
 
-#include "cx.h"
+#include "cx__type.h"
 #include "cx_file.h"
 #include "cx_dl.h"
 

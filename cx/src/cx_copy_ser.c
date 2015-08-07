@@ -42,7 +42,7 @@ void cx_collection_deinitElement(cx_collection t, void *ptr) {
     } else {
         cx_valueValueInit(&v, NULL, cx_type(t->elementType), &ptr);
     }
-    cx_deinitValue(&v);
+    cx_deinitv(&v);
 }
 
 static cx_int16 cx_collection_copyListToArray(cx_collection t, void *array, cx_uint32 elementSize, cx_ll list, cx_bool reverse) {

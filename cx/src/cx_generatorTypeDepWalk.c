@@ -5,14 +5,7 @@
  *      Author: sander
  */
 
-
-/*
- * cx_genType.c
- *
- *  Created on: Sep 17, 2012
- *      Author: sander
- */
-
+#include "cortex.h"
 #include "cx_generatorTypeDepWalk.h"
 
 typedef struct cx_genTypeWalk_t {

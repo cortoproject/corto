@@ -61,8 +61,8 @@ cx_bool test_Suite_assertEqual_any_any_string(test_Suite _this, cx_any a, cx_any
     eq = cx_type_compare(a, b);
     cx_valueValueInit(&aV, NULL, a.type, a.value);
     cx_valueValueInit(&bV, NULL, b.type, b.value);
-    aS = cx_valueToString(&aV, 0);
-    bS = cx_valueToString(&bV, 0);
+    aS = cx_strv(&aV, 0);
+    bS = cx_strv(&bV, 0);
     length = snprintf(NULL, 0, "%s != %s", aS, bS);
     if (length < 0) {
         cx_critical("error in snprintf");

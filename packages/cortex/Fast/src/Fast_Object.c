@@ -71,7 +71,7 @@ cx_int16 Fast_Object_serialize(Fast_Object _this, cx_type dstType, cx_word dst) 
                 cx_value vDst, vSrc;
                 cx_valueValueInit(&vDst, NULL, cx_type(dstType), (void *)dst);
                 cx_valueValueInit(&vSrc, NULL, cx_type(srcType), Fast_Object(_this)->value);
-                cx_valueCopy(&vDst, &vSrc);
+                cx_copyv(&vDst, &vSrc);
             } else if ((srcType->kind == CX_COMPOSITE) && (cx_interface(srcType)->kind == CX_PROCEDURE)) {
                 cx_setref(&((cx_delegatedata *)dst)->procedure, Fast_Object(_this)->value);
                 cx_setref(&((cx_delegatedata *)dst)->instance, NULL);
@@ -82,7 +82,7 @@ cx_int16 Fast_Object_serialize(Fast_Object _this, cx_type dstType, cx_word dst) 
             cx_value vDst, vSrc;
             cx_valueValueInit(&vDst, NULL, cx_type(dstType), (void *)dst);
             cx_valueValueInit(&vSrc, NULL, cx_type(srcType), obj);
-            cx_valueCopy(&vDst, &vSrc);
+            cx_copyv(&vDst, &vSrc);
 
         } else {
             cx_id id, id2;

@@ -490,7 +490,7 @@ static cx_int16 c_initReference(cx_serializer s, cx_value* v, void* userData) {
     if ((o = *optr)) {
         cx_id id, src, context;
         c_loadVarId(data->g, cx_valueObject(v), src);
-        cx_valueString(v, context, 256);
+        cx_strving(v, context, 256);
         g_fileWrite(data->source, "%s", c_loadResolve(o, id, src, context));
     } else {
         g_fileWrite(data->source, "NULL");

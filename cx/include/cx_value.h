@@ -109,7 +109,7 @@ cx_object cx_valueObject(cx_value* val);
 cx_uint32 cx_valueIndex(cx_value* val);
 cx_function cx_valueFunction(cx_value* val);
 cx_void *cx_valueThis(cx_value* val);
-char* cx_valueString(cx_value* val, char* buffer, unsigned int length);
+char* cx_strving(cx_value* val, char* buffer, unsigned int length);
 char* cx_valueExpr(cx_value* val, char* buffer, unsigned int length);
 void cx_valueFree(cx_value* val);
 void cx_valueStackFree(cx_value* valueStack, cx_uint32 count);

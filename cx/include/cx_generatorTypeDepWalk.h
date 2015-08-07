@@ -5,8 +5,8 @@
  *      Author: sander
  */
 
-#ifndef CX_GENERATORDEPWALK_H_
-#define CX_GENERATORDEPWALK_H_
+#ifndef CX_GENERATORTYPEDEPWALK_H_
+#define CX_GENERATORTYPEDEPWALK_H_
 
 #include "cx_generator.h"
 

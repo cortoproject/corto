@@ -70,12 +70,12 @@ static void cx_list_do(cx_any object, cx_any element, cx_bool insert, cx_list_ac
         cx_uint32 size = cx_type_sizeof(cx_collection(object.type)->elementType);
         value = cx_calloc(size);
         cx_valueValueInit(&dst, NULL, cx_collection(object.type)->elementType, value);
-        cx_initValue(&dst);
+        cx_initv(&dst);
         cx_valueValueInit(&src, NULL, cx_collection(object.type)->elementType, element.value);
     } else {
         value = NULL;
         cx_valueValueInit(&dst, NULL, cx_collection(object.type)->elementType, &value);
-        cx_initValue(&dst);
+        cx_initv(&dst);
         if (element.type->reference) {
             cx_valueValueInit(&src, NULL, cx_collection(object.type)->elementType, &element.value);
         } else {
@@ -84,7 +84,7 @@ static void cx_list_do(cx_any object, cx_any element, cx_bool insert, cx_list_ac
     }
     
     if (doCopy) {
-        cx_valueCopy(&dst, &src);
+        cx_copyv(&dst, &src);
         action(list, value, userData);
     }
 }
@@ -108,11 +108,11 @@ static void* cx_list_do_(cx_any object, cx_bool insert) {
         cx_uint32 size = cx_type_sizeof(cx_collection(object.type)->elementType);
         value = cx_calloc(size);
         cx_valueValueInit(&dst, NULL, cx_collection(object.type)->elementType, value);
-        cx_initValue(&dst);
+        cx_initv(&dst);
     } else {
         value = NULL;
         cx_valueValueInit(&dst, NULL, cx_collection(object.type)->elementType, &value);
-        cx_initValue(&dst);
+        cx_initv(&dst);
     }
 
     if (insert) {

@@ -19,19 +19,19 @@ int tc__classPrimitives(void) {
     o1 = tc_classPrimitives__create(TRUE,'a',11,1.1,"String with special characters ~`!@#$%^&*()_-+=\"{}[]|\\:;'<>,.?/",TC_BLUE,TC_WALK|TC_FLY);
 
     /* Serialize to string */
-    str1 = cx_toString(o1, 0);
+    str1 = cx_str(o1, 0);
     if (!str1) {
         goto ser1_err;
     }
 
     /* Serialize from string */
-    o2 = cx_fromString(str1);
+    o2 = cx_fromStr(str1);
     if (!o2) {
         goto deser_err;
     }
 
     /* Serialize back to string */
-    str2 = cx_toString(o2, 0);
+    str2 = cx_str(o2, 0);
     if (!str2) {
         goto ser2_err;
     }
@@ -74,19 +74,19 @@ int tc__classInherit(void) {
             FALSE,'b',22,2.2,"string with special Characters ~`!@#$%^&*()_-+=\"{}[]|\\:;'<>,.?/",TC_RED, TC_SWIM);
 
     /* Serialize to string */
-    str1 = cx_toString(o1, 0);
+    str1 = cx_str(o1, 0);
     if (!str1) {
         goto ser1_err;
     }
 
     /* Serialize from string */
-    o2 = cx_fromString(str1);
+    o2 = cx_fromStr(str1);
     if (!o2) {
         goto deser_err;
     }
 
     /* Serialize back to string */
-    str2 = cx_toString(o2, 0);
+    str2 = cx_str(o2, 0);
     if (!str2) {
         goto ser2_err;
     }
@@ -127,14 +127,14 @@ int tc__arrayOfBool(void) {
 
     /* Serialize array to string */
     cx_valueValueInit(&info1, NULL, cx_type(tc_arrayOfBool_o), array1);
-    str1 = cx_valueToString(&info1, 0);
+    str1 = cx_strv(&info1, 0);
 
     /* Serialize string to array */
-    cx_valueFromString(str1, array2, cx_type(tc_arrayOfBool_o));
+    cx_fromStrp(str1, array2, cx_type(tc_arrayOfBool_o));
 
     /* Serialize 2nd array back to string */
     cx_valueValueInit(&info2, NULL, cx_type(tc_arrayOfBool_o), array2);
-    str2 = cx_valueToString(&info2, 0);
+    str2 = cx_strv(&info2, 0);
 
     /* Compare the two strings */
     if (strcmp(str1, str2)) {
@@ -143,7 +143,7 @@ int tc__arrayOfBool(void) {
     }
 
     /* Compare objects */
-    result = cx_valueCompare(&info1, &info2) != CX_EQ ? 1 : result;
+    result = cx_comparev(&info1, &info2) != CX_EQ ? 1 : result;
 
     /* Free strings */
     cx_dealloc(str1);
@@ -161,14 +161,14 @@ int tc__arrayOfChar(void) {
 
     /* Serialize array to string */
     cx_valueValueInit(&info1, NULL, cx_type(tc_arrayOfChar_o), array1);
-    str1 = cx_valueToString(&info1, 0);
+    str1 = cx_strv(&info1, 0);
 
     /* Serialize string to array */
-    cx_valueFromString(str1, array2, cx_type(tc_arrayOfChar_o));
+    cx_fromStrp(str1, array2, cx_type(tc_arrayOfChar_o));
 
     /* Serialize 2nd array back to string */
     cx_valueValueInit(&info2, NULL, cx_type(tc_arrayOfChar_o), array2);
-    str2 = cx_valueToString(&info2, 0);
+    str2 = cx_strv(&info2, 0);
 
     /* Compare the two strings */
     if (strcmp(str1, str2)) {
@@ -177,7 +177,7 @@ int tc__arrayOfChar(void) {
     }
 
     /* Compare objects */
-    result = cx_valueCompare(&info1, &info2) != CX_EQ ? 1 : result;
+    result = cx_comparev(&info1, &info2) != CX_EQ ? 1 : result;
 
     /* Free strings */
     cx_dealloc(str1);
@@ -195,14 +195,14 @@ int tc__arrayOfInt(void) {
 
     /* Serialize array to string */
     cx_valueValueInit(&info1, NULL, cx_type(tc_arrayOfInt_o), array1);
-    str1 = cx_valueToString(&info1, 0);
+    str1 = cx_strv(&info1, 0);
 
     /* Serialize string to array */
-    cx_valueFromString(str1, array2, cx_type(tc_arrayOfInt_o));
+    cx_fromStrp(str1, array2, cx_type(tc_arrayOfInt_o));
 
     /* Serialize 2nd array back to string */
     cx_valueValueInit(&info2, NULL, cx_type(tc_arrayOfInt_o), array2);
-    str2 = cx_valueToString(&info2, 0);
+    str2 = cx_strv(&info2, 0);
 
     /* Compare the two strings */
     if (strcmp(str1, str2)) {
@@ -211,7 +211,7 @@ int tc__arrayOfInt(void) {
     }
 
     /* Compare objects */
-    result = cx_valueCompare(&info1, &info2) != CX_EQ ? 1 : result;
+    result = cx_comparev(&info1, &info2) != CX_EQ ? 1 : result;
 
     /* Free strings */
     cx_dealloc(str1);
@@ -229,14 +229,14 @@ int tc__arrayOfFloat(void) {
 
     /* Serialize array to string */
     cx_valueValueInit(&info1, NULL, cx_type(tc_arrayOfFloat_o), array1);
-    str1 = cx_valueToString(&info1, 0);
+    str1 = cx_strv(&info1, 0);
 
     /* Serialize string to array */
-    cx_valueFromString(str1, array2, cx_type(tc_arrayOfFloat_o));
+    cx_fromStrp(str1, array2, cx_type(tc_arrayOfFloat_o));
 
     /* Serialize 2nd array back to string */
     cx_valueValueInit(&info2, NULL, cx_type(tc_arrayOfFloat_o), array2);
-    str2 = cx_valueToString(&info2, 0);
+    str2 = cx_strv(&info2, 0);
 
     /* Compare the two strings */
     if (strcmp(str1, str2)) {
@@ -245,7 +245,7 @@ int tc__arrayOfFloat(void) {
     }
 
     /* Compare objects */
-    result = cx_valueCompare(&info1, &info2) != CX_EQ ? 1 : result;
+    result = cx_comparev(&info1, &info2) != CX_EQ ? 1 : result;
 
     /* Free strings */
     cx_dealloc(str1);
@@ -263,14 +263,14 @@ int tc__arrayOfString(void) {
 
     /* Serialize array to string */
     cx_valueValueInit(&info1, NULL, cx_type(tc_arrayOfString_o), array1);
-    str1 = cx_valueToString(&info1, 0);
+    str1 = cx_strv(&info1, 0);
 
     /* Serialize string to array */
-    cx_valueFromString(str1, array2, cx_type(tc_arrayOfString_o));
+    cx_fromStrp(str1, array2, cx_type(tc_arrayOfString_o));
 
     /* Serialize 2nd array back to string */
     cx_valueValueInit(&info2, NULL, cx_type(tc_arrayOfString_o), array2);
-    str2 = cx_valueToString(&info2, 0);
+    str2 = cx_strv(&info2, 0);
 
     /* Compare the two strings */
     if (strcmp(str1, str2)) {
@@ -279,7 +279,7 @@ int tc__arrayOfString(void) {
     }
 
     /* Compare objects */
-    result = cx_valueCompare(&info1, &info2) != CX_EQ ? 1 : result;
+    result = cx_comparev(&info1, &info2) != CX_EQ ? 1 : result;
 
     /* Free strings */
     cx_dealloc(str1);
@@ -299,14 +299,14 @@ int tc__arrayOfColor(void) {
 
     /* Serialize array to string */
     cx_valueValueInit(&info1, NULL, cx_type(tc_arrayOfColor_o), array1);
-    str1 = cx_valueToString(&info1, 0);
+    str1 = cx_strv(&info1, 0);
 
     /* Serialize string to array */
-    cx_valueFromString(str1, array2, cx_type(tc_arrayOfColor_o));
+    cx_fromStrp(str1, array2, cx_type(tc_arrayOfColor_o));
 
     /* Serialize 2nd array back to string */
     cx_valueValueInit(&info2, NULL, cx_type(tc_arrayOfColor_o), array2);
-    str2 = cx_valueToString(&info2, 0);
+    str2 = cx_strv(&info2, 0);
 
     /* Compare the two strings */
     if (strcmp(str1, str2)) {
@@ -315,7 +315,7 @@ int tc__arrayOfColor(void) {
     }
 
     /* Compare objects */
-    result = cx_valueCompare(&info1, &info2) != CX_EQ ? 1 : result;
+    result = cx_comparev(&info1, &info2) != CX_EQ ? 1 : result;
 
     /* Free strings */
     cx_dealloc(str1);
@@ -333,14 +333,14 @@ int tc__arrayOfMoveMode(void) {
 
     /* Serialize array to string */
     cx_valueValueInit(&info1, NULL, cx_type(tc_arrayOfMoveMode_o), array1);
-    str1 = cx_valueToString(&info1, 0);
+    str1 = cx_strv(&info1, 0);
 
     /* Serialize string to array */
-    cx_valueFromString(str1, array2, cx_type(tc_arrayOfMoveMode_o));
+    cx_fromStrp(str1, array2, cx_type(tc_arrayOfMoveMode_o));
 
     /* Serialize 2nd array back to string */
     cx_valueValueInit(&info2, NULL, cx_type(tc_arrayOfMoveMode_o), array2);
-    str2 = cx_valueToString(&info2, 0);
+    str2 = cx_strv(&info2, 0);
 
     /* Compare the two strings */
     if (strcmp(str1, str2)) {
@@ -349,7 +349,7 @@ int tc__arrayOfMoveMode(void) {
     }
 
     /* Compare objects */
-    result = cx_valueCompare(&info1, &info2) != CX_EQ ? 1 : result;
+    result = cx_comparev(&info1, &info2) != CX_EQ ? 1 : result;
 
     /* Free strings */
     cx_dealloc(str1);

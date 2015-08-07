@@ -295,6 +295,11 @@ int main(int argc, char* argv[]) {
         }
     }
 
+    if (!scopes) {
+        cx_error("cxgen: no package selected");
+        return -1;
+    }
+
     /* Load library */
     if (generators) {
         while ((lib = cx_llTakeFirst(generators))) {

@@ -207,7 +207,7 @@ void tc_stringser_sequenceOfClassInherit__size(tc_stringser_sequenceOfClassInher
             {
                 cx_value v;
                 cx_valueValueInit(&v, NULL, cx_type(tc_stringser_classInherit_o), &seq->buffer[i]);
-                cx_deinitValue(&v);
+                cx_deinitv(&v);
             }
         }
     }
@@ -268,7 +268,7 @@ void tc_stringser_sequenceOfClassNested__size(tc_stringser_sequenceOfClassNested
             {
                 cx_value v;
                 cx_valueValueInit(&v, NULL, cx_type(tc_stringser_classNested_o), &seq->buffer[i]);
-                cx_deinitValue(&v);
+                cx_deinitv(&v);
             }
         }
     }
@@ -329,7 +329,7 @@ void tc_stringser_sequenceOfClassPrimitives__size(tc_stringser_sequenceOfClassPr
             {
                 cx_value v;
                 cx_valueValueInit(&v, NULL, cx_type(tc_stringser_classPrimitives_o), &seq->buffer[i]);
-                cx_deinitValue(&v);
+                cx_deinitv(&v);
             }
         }
     }

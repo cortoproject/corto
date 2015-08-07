@@ -7,7 +7,7 @@
 
 #include "c_type.h"
 #include "c_common.h"
-#include "cx_generatorTypeDepWalk.h"
+#include "cortex.h"
 
 typedef struct c_typeWalk_t {
     cx_generator g;

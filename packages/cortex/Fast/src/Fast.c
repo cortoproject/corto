@@ -17,7 +17,8 @@ Fast_Call Fast_createCallWithArguments(Fast_Expression instance, cx_string funct
     Fast_CallBuilder builder;
 
     /* Initialize builder */
-    Fast_CallBuilder__init(&builder, 
+    Fast_CallBuilder__init(&builder);
+    Fast_CallBuilder__set(&builder, 
         function, 
         arguments, 
         instance, 
@@ -93,7 +94,8 @@ Fast_Call Fast_createCallFromExpr(Fast_Expression f, Fast_Expression arguments) 
     }
 
     if (!result) {
-        Fast_CallBuilder__init(&builder, name, arguments, instance, scope, yparser()->block);
+        Fast_CallBuilder__init(&builder);
+        Fast_CallBuilder__set(&builder, name, arguments, instance, scope, yparser()->block);
         result = Fast_CallBuilder_build(&builder);
         Fast_CallBuilder__deinit(&builder);
     }
