@@ -388,7 +388,7 @@ cx_int16 c_apiTypeFromStr(cx_type t, c_apiWalk_t *data) {
     g_fileWrite(data->source, "value = cx_create(cx_type(%s_o));\n", id);
     g_fileDedent(data->source);
     g_fileWrite(data->source, "}\n");
-    g_fileWrite(data->source, "cx_fromStrp(str, value, cx_type(%s_o));\n");
+    g_fileWrite(data->source, "cx_fromStrp(str, value, cx_type(%s_o));\n", id);
     g_fileWrite(data->source, "return value;\n");
     g_fileDedent(data->source);
     g_fileWrite(data->source, "}\n\n");

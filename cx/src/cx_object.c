@@ -801,19 +801,19 @@ cx_int16 cx_delegateInit(cx_type t, cx_object o) {
 
 cx_attr cx_setAttr(cx_attr attrs) {
     void* oldAttr = cx_threadTlsGet(CX_KEY_ATTR);
-    cx_threadTlsSet(CX_KEY_ATTR, (void*)attrs);
-    return (cx_attr)oldAttr;
+    cx_threadTlsSet(CX_KEY_ATTR, (void*)(cx_word)attrs);
+    return (cx_attr)(cx_word)oldAttr;
 }
 
 cx_attr cx_getAttr(void) {
-    return (cx_attr)cx_threadTlsGet(CX_KEY_ATTR);
+    return (cx_attr)(cx_word)cx_threadTlsGet(CX_KEY_ATTR);
 }
 
 /* Create new object with attributes */
 cx_object cx_create(cx_type type) {
     cx_uint32 size, headerSize;
     cx__object* o;
-    cx_attr attrs = (cx_attr)cx_threadTlsGet(CX_KEY_ATTR);
+    cx_attr attrs = (cx_attr)(cx_word)cx_threadTlsGet(CX_KEY_ATTR);
 
     if (attrs & CX_ATTR_DEFAULT) {
         attrs |= CX_ATTR_OBSERVABLE;
