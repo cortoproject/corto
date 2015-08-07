@@ -8,11 +8,11 @@
 #include "tc_stringser__api.h"
 
 tc_stringser_classCompositeCollection tc_stringser_classCompositeCollection__new(void) {
-    return cx_create(cx_type(tc_stringser_classCompositeCollection_o));
+    return cx_declare(cx_type(tc_stringser_classCompositeCollection_o));
 }
 
 tc_stringser_classCompositeCollection tc_stringser_classCompositeCollection__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(tc_stringser_classCompositeCollection_o));
+    return cx_declareChild(_parent, _name, cx_type(tc_stringser_classCompositeCollection_o));
 }
 
 int tc_stringser_classCompositeCollection__define(tc_stringser_classCompositeCollection _this, tc_stringser_arrayOfClassInherit a, tc_stringser_arrayOfClassNested b, tc_stringser_sequenceOfClassInherit c, tc_stringser_listOfClassNested d, tc_stringser_listOfClassInherit e) {
@@ -26,7 +26,7 @@ int tc_stringser_classCompositeCollection__define(tc_stringser_classCompositeCol
 
 tc_stringser_classCompositeCollection tc_stringser_classCompositeCollection__create(tc_stringser_arrayOfClassInherit a, tc_stringser_arrayOfClassNested b, tc_stringser_sequenceOfClassInherit c, tc_stringser_listOfClassNested d, tc_stringser_listOfClassInherit e) {
     tc_stringser_classCompositeCollection _this;
-    _this = cx_create(cx_type(tc_stringser_classCompositeCollection_o));
+    _this = cx_declare(cx_type(tc_stringser_classCompositeCollection_o));
     memcpy(_this->a, a, sizeof(tc_stringser_arrayOfClassInherit));
     memcpy(_this->b, b, sizeof(tc_stringser_arrayOfClassNested));
     _this->c = c;
@@ -40,11 +40,11 @@ tc_stringser_classCompositeCollection tc_stringser_classCompositeCollection__cre
 }
 
 tc_stringser_classInherit tc_stringser_classInherit__new(void) {
-    return cx_create(cx_type(tc_stringser_classInherit_o));
+    return cx_declare(cx_type(tc_stringser_classInherit_o));
 }
 
 tc_stringser_classInherit tc_stringser_classInherit__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(tc_stringser_classInherit_o));
+    return cx_declareChild(_parent, _name, cx_type(tc_stringser_classInherit_o));
 }
 
 int tc_stringser_classInherit__define(tc_stringser_classInherit _this, cx_bool a, cx_char b, cx_int32 c, cx_float32 d, cx_string e, tc_stringser_color f, tc_stringser_moveMode g, cx_bool a_1, cx_char b_1, cx_int32 c_1, cx_float32 d_1, cx_string e_1, tc_stringser_color f_1, tc_stringser_moveMode g_1) {
@@ -67,7 +67,7 @@ int tc_stringser_classInherit__define(tc_stringser_classInherit _this, cx_bool a
 
 tc_stringser_classInherit tc_stringser_classInherit__create(cx_bool a, cx_char b, cx_int32 c, cx_float32 d, cx_string e, tc_stringser_color f, tc_stringser_moveMode g, cx_bool a_1, cx_char b_1, cx_int32 c_1, cx_float32 d_1, cx_string e_1, tc_stringser_color f_1, tc_stringser_moveMode g_1) {
     tc_stringser_classInherit _this;
-    _this = cx_create(cx_type(tc_stringser_classInherit_o));
+    _this = cx_declare(cx_type(tc_stringser_classInherit_o));
     tc_stringser_classPrimitives(_this)->a = a;
     tc_stringser_classPrimitives(_this)->b = b;
     tc_stringser_classPrimitives(_this)->c = c;
@@ -90,11 +90,11 @@ tc_stringser_classInherit tc_stringser_classInherit__create(cx_bool a, cx_char b
 }
 
 tc_stringser_classNested tc_stringser_classNested__new(void) {
-    return cx_create(cx_type(tc_stringser_classNested_o));
+    return cx_declare(cx_type(tc_stringser_classNested_o));
 }
 
 tc_stringser_classNested tc_stringser_classNested__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(tc_stringser_classNested_o));
+    return cx_declareChild(_parent, _name, cx_type(tc_stringser_classNested_o));
 }
 
 int tc_stringser_classNested__define(tc_stringser_classNested _this, tc_stringser_classPrimitives a, tc_stringser_classInherit b, tc_stringser_arrayOfInt c, tc_stringser_sequenceOfInt d, tc_stringser_listOfInt e) {
@@ -108,7 +108,7 @@ int tc_stringser_classNested__define(tc_stringser_classNested _this, tc_stringse
 
 tc_stringser_classNested tc_stringser_classNested__create(tc_stringser_classPrimitives a, tc_stringser_classInherit b, tc_stringser_arrayOfInt c, tc_stringser_sequenceOfInt d, tc_stringser_listOfInt e) {
     tc_stringser_classNested _this;
-    _this = cx_create(cx_type(tc_stringser_classNested_o));
+    _this = cx_declare(cx_type(tc_stringser_classNested_o));
     a ? cx_claim(a, "element <0x8a24418>.a") : 0; _this->a = a;
     b ? cx_claim(b, "element <0x8a24418>.b") : 0; _this->b = b;
     memcpy(_this->c, c, sizeof(tc_stringser_arrayOfInt));
@@ -122,11 +122,11 @@ tc_stringser_classNested tc_stringser_classNested__create(tc_stringser_classPrim
 }
 
 tc_stringser_classPrimitives tc_stringser_classPrimitives__new(void) {
-    return cx_create(cx_type(tc_stringser_classPrimitives_o));
+    return cx_declare(cx_type(tc_stringser_classPrimitives_o));
 }
 
 tc_stringser_classPrimitives tc_stringser_classPrimitives__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(tc_stringser_classPrimitives_o));
+    return cx_declareChild(_parent, _name, cx_type(tc_stringser_classPrimitives_o));
 }
 
 int tc_stringser_classPrimitives__define(tc_stringser_classPrimitives _this, cx_bool a, cx_char b, cx_int32 c, cx_float32 d, cx_string e, tc_stringser_color f, tc_stringser_moveMode g) {
@@ -142,7 +142,7 @@ int tc_stringser_classPrimitives__define(tc_stringser_classPrimitives _this, cx_
 
 tc_stringser_classPrimitives tc_stringser_classPrimitives__create(cx_bool a, cx_char b, cx_int32 c, cx_float32 d, cx_string e, tc_stringser_color f, tc_stringser_moveMode g) {
     tc_stringser_classPrimitives _this;
-    _this = cx_create(cx_type(tc_stringser_classPrimitives_o));
+    _this = cx_declare(cx_type(tc_stringser_classPrimitives_o));
     _this->a = a;
     _this->b = b;
     _this->c = c;

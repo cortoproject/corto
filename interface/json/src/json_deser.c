@@ -38,7 +38,7 @@ static cx_object cx_json_declare(JSON_Object *meta) {
         cx_error("type %s could not be resolved", typeName);
         goto error;
     }
-    object = cx_declare(parent, (cx_string)name, type);
+    object = cx_declareChild(parent, (cx_string)name, type);
     cx_release(parent);
     cx_release(type);
 finished:

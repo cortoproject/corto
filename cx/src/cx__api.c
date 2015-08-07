@@ -13,7 +13,7 @@ int cx_alias__define(cx_alias _this, cx_string typeName) {
 
 cx_alias cx_alias__create(cx_string typeName) {
     cx_alias _this;
-    _this = cx_create(cx_type(cx_alias_o));
+    _this = cx_declare(cx_type(cx_alias_o));
     _this->typeName = (typeName ? cx_strdup(typeName) : NULL);
     if (cx_define(_this)) {
         cx_release(_this);
@@ -23,11 +23,11 @@ cx_alias cx_alias__create(cx_string typeName) {
 }
 
 cx_alias cx_alias__new(void) {
-    return cx_create(cx_type(cx_alias_o));
+    return cx_declare(cx_type(cx_alias_o));
 }
 
 cx_alias cx_alias__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_alias_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_alias_o));
 }
 
 cx_string cx_alias__str(cx_alias value) {
@@ -37,11 +37,11 @@ cx_string cx_alias__str(cx_alias value) {
 }
 
 cx_any* cx_any__new(void) {
-    return cx_create(cx_type(cx_any_o));
+    return cx_declare(cx_type(cx_any_o));
 }
 
 cx_any* cx_any__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_any_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_any_o));
 }
 
 cx_string cx_any__str(cx_any value) {
@@ -61,7 +61,7 @@ int cx_array__define(cx_array _this, cx_type elementType, cx_uint32 max) {
 
 cx_array cx_array__create(cx_type elementType, cx_uint32 max) {
     cx_array _this;
-    _this = cx_create(cx_type(cx_array_o));
+    _this = cx_declare(cx_type(cx_array_o));
     elementType ? cx_claim(elementType) : 0;
     cx_collection(_this)->elementType = cx_type(elementType);
     cx_collection(_this)->max = max;
@@ -73,11 +73,11 @@ cx_array cx_array__create(cx_type elementType, cx_uint32 max) {
 }
 
 cx_array cx_array__new(void) {
-    return cx_create(cx_type(cx_array_o));
+    return cx_declare(cx_type(cx_array_o));
 }
 
 cx_array cx_array__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_array_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_array_o));
 }
 
 cx_string cx_array__str(cx_array value) {
@@ -87,11 +87,11 @@ cx_string cx_array__str(cx_array value) {
 }
 
 cx_attr* cx_attr__new(void) {
-    return cx_create(cx_type(cx_attr_o));
+    return cx_declare(cx_type(cx_attr_o));
 }
 
 cx_attr* cx_attr__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_attr_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_attr_o));
 }
 
 cx_string cx_attr__str(cx_attr value) {
@@ -109,7 +109,7 @@ int cx_binary__define(cx_binary _this, cx_width width) {
 
 cx_binary cx_binary__create(cx_width width) {
     cx_binary _this;
-    _this = cx_create(cx_type(cx_binary_o));
+    _this = cx_declare(cx_type(cx_binary_o));
     cx_primitive(_this)->width = width;
     if (cx_define(_this)) {
         cx_release(_this);
@@ -119,11 +119,11 @@ cx_binary cx_binary__create(cx_width width) {
 }
 
 cx_binary cx_binary__new(void) {
-    return cx_create(cx_type(cx_binary_o));
+    return cx_declare(cx_type(cx_binary_o));
 }
 
 cx_binary cx_binary__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_binary_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_binary_o));
 }
 
 cx_string cx_binary__str(cx_binary value) {
@@ -138,7 +138,7 @@ int cx_bitmask__define(cx_bitmask _this) {
 
 cx_bitmask cx_bitmask__create(void) {
     cx_bitmask _this;
-    _this = cx_create(cx_type(cx_bitmask_o));
+    _this = cx_declare(cx_type(cx_bitmask_o));
     if (cx_define(_this)) {
         cx_release(_this);
         _this = NULL;
@@ -147,11 +147,11 @@ cx_bitmask cx_bitmask__create(void) {
 }
 
 cx_bitmask cx_bitmask__new(void) {
-    return cx_create(cx_type(cx_bitmask_o));
+    return cx_declare(cx_type(cx_bitmask_o));
 }
 
 cx_bitmask cx_bitmask__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_bitmask_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_bitmask_o));
 }
 
 cx_string cx_bitmask__str(cx_bitmask value) {
@@ -161,11 +161,11 @@ cx_string cx_bitmask__str(cx_bitmask value) {
 }
 
 cx_bool* cx_bool__new(void) {
-    return cx_create(cx_type(cx_bool_o));
+    return cx_declare(cx_type(cx_bool_o));
 }
 
 cx_bool* cx_bool__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_bool_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_bool_o));
 }
 
 cx_string cx_bool__str(cx_bool value) {
@@ -182,7 +182,7 @@ int cx_boolean__define(cx_boolean _this) {
 
 cx_boolean cx_boolean__create(void) {
     cx_boolean _this;
-    _this = cx_create(cx_type(cx_boolean_o));
+    _this = cx_declare(cx_type(cx_boolean_o));
     if (cx_define(_this)) {
         cx_release(_this);
         _this = NULL;
@@ -191,11 +191,11 @@ cx_boolean cx_boolean__create(void) {
 }
 
 cx_boolean cx_boolean__new(void) {
-    return cx_create(cx_type(cx_boolean_o));
+    return cx_declare(cx_type(cx_boolean_o));
 }
 
 cx_boolean cx_boolean__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_boolean_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_boolean_o));
 }
 
 cx_string cx_boolean__str(cx_boolean value) {
@@ -218,11 +218,11 @@ void cx_callbackDestruct__deinit(cx_callbackDestruct *_this) {
 }
 
 cx_callbackDestruct* cx_callbackDestruct__new(void) {
-    return cx_create(cx_type(cx_callbackDestruct_o));
+    return cx_declare(cx_type(cx_callbackDestruct_o));
 }
 
 cx_callbackDestruct* cx_callbackDestruct__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_callbackDestruct_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_callbackDestruct_o));
 }
 
 cx_string cx_callbackDestruct__str(cx_callbackDestruct value) {
@@ -247,11 +247,11 @@ void cx_callbackInit__deinit(cx_callbackInit *_this) {
 }
 
 cx_callbackInit* cx_callbackInit__new(void) {
-    return cx_create(cx_type(cx_callbackInit_o));
+    return cx_declare(cx_type(cx_callbackInit_o));
 }
 
 cx_callbackInit* cx_callbackInit__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_callbackInit_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_callbackInit_o));
 }
 
 cx_string cx_callbackInit__str(cx_callbackInit value) {
@@ -263,11 +263,11 @@ cx_string cx_callbackInit__str(cx_callbackInit value) {
 }
 
 cx_char* cx_char__new(void) {
-    return cx_create(cx_type(cx_char_o));
+    return cx_declare(cx_type(cx_char_o));
 }
 
 cx_char* cx_char__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_char_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_char_o));
 }
 
 cx_string cx_char__str(cx_char value) {
@@ -285,7 +285,7 @@ int cx_character__define(cx_character _this, cx_width width) {
 
 cx_character cx_character__create(cx_width width) {
     cx_character _this;
-    _this = cx_create(cx_type(cx_character_o));
+    _this = cx_declare(cx_type(cx_character_o));
     cx_primitive(_this)->width = width;
     if (cx_define(_this)) {
         cx_release(_this);
@@ -295,11 +295,11 @@ cx_character cx_character__create(cx_width width) {
 }
 
 cx_character cx_character__new(void) {
-    return cx_create(cx_type(cx_character_o));
+    return cx_declare(cx_type(cx_character_o));
 }
 
 cx_character cx_character__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_character_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_character_o));
 }
 
 cx_string cx_character__str(cx_character value) {
@@ -318,7 +318,7 @@ int cx_class__define(cx_class _this, cx_interface base, cx_modifier baseAccess, 
 
 cx_class cx_class__create(cx_interface base, cx_modifier baseAccess, cx_interfaceSeq implements) {
     cx_class _this;
-    _this = cx_create(cx_type(cx_class_o));
+    _this = cx_declare(cx_type(cx_class_o));
     base ? cx_claim(base) : 0;
     cx_interface(_this)->base = cx_interface(base);
     cx_struct(_this)->baseAccess = baseAccess;
@@ -331,11 +331,11 @@ cx_class cx_class__create(cx_interface base, cx_modifier baseAccess, cx_interfac
 }
 
 cx_class cx_class__new(void) {
-    return cx_create(cx_type(cx_class_o));
+    return cx_declare(cx_type(cx_class_o));
 }
 
 cx_class cx_class__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_class_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_class_o));
 }
 
 cx_string cx_class__str(cx_class value) {
@@ -353,7 +353,7 @@ int cx_collection__define(cx_collection _this, cx_type elementType, cx_uint32 ma
 
 cx_collection cx_collection__create(cx_type elementType, cx_uint32 max) {
     cx_collection _this;
-    _this = cx_create(cx_type(cx_collection_o));
+    _this = cx_declare(cx_type(cx_collection_o));
     elementType ? cx_claim(elementType) : 0;
     _this->elementType = cx_type(elementType);
     _this->max = max;
@@ -365,11 +365,11 @@ cx_collection cx_collection__create(cx_type elementType, cx_uint32 max) {
 }
 
 cx_collection cx_collection__new(void) {
-    return cx_create(cx_type(cx_collection_o));
+    return cx_declare(cx_type(cx_collection_o));
 }
 
 cx_collection cx_collection__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_collection_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_collection_o));
 }
 
 cx_string cx_collection__str(cx_collection value) {
@@ -379,11 +379,11 @@ cx_string cx_collection__str(cx_collection value) {
 }
 
 cx_collectionKind* cx_collectionKind__new(void) {
-    return cx_create(cx_type(cx_collectionKind_o));
+    return cx_declare(cx_type(cx_collectionKind_o));
 }
 
 cx_collectionKind* cx_collectionKind__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_collectionKind_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_collectionKind_o));
 }
 
 cx_string cx_collectionKind__str(cx_collectionKind value) {
@@ -395,11 +395,11 @@ cx_string cx_collectionKind__str(cx_collectionKind value) {
 }
 
 cx_compositeKind* cx_compositeKind__new(void) {
-    return cx_create(cx_type(cx_compositeKind_o));
+    return cx_declare(cx_type(cx_compositeKind_o));
 }
 
 cx_compositeKind* cx_compositeKind__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_compositeKind_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_compositeKind_o));
 }
 
 cx_string cx_compositeKind__str(cx_compositeKind value) {
@@ -411,11 +411,11 @@ cx_string cx_compositeKind__str(cx_compositeKind value) {
 }
 
 cx_constant* cx_constant__new(void) {
-    return cx_create(cx_type(cx_constant_o));
+    return cx_declare(cx_type(cx_constant_o));
 }
 
 cx_constant* cx_constant__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_constant_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_constant_o));
 }
 
 cx_string cx_constant__str(cx_constant value) {
@@ -436,7 +436,7 @@ int cx_delegate__define(cx_delegate _this, cx_type returnType, cx_bool returnsRe
 
 cx_delegate cx_delegate__create(cx_type returnType, cx_bool returnsReference, cx_parameterSeq parameters) {
     cx_delegate _this;
-    _this = cx_create(cx_type(cx_delegate_o));
+    _this = cx_declare(cx_type(cx_delegate_o));
     returnType ? cx_claim(returnType) : 0;
     _this->returnType = cx_type(returnType);
     _this->returnsReference = returnsReference;
@@ -449,11 +449,11 @@ cx_delegate cx_delegate__create(cx_type returnType, cx_bool returnsReference, cx
 }
 
 cx_delegate cx_delegate__new(void) {
-    return cx_create(cx_type(cx_delegate_o));
+    return cx_declare(cx_type(cx_delegate_o));
 }
 
 cx_delegate cx_delegate__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_delegate_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_delegate_o));
 }
 
 cx_string cx_delegate__str(cx_delegate value) {
@@ -480,11 +480,11 @@ void cx_delegatedata__deinit(cx_delegatedata *_this) {
 }
 
 cx_delegatedata* cx_delegatedata__new(void) {
-    return cx_create(cx_type(cx_delegatedata_o));
+    return cx_declare(cx_type(cx_delegatedata_o));
 }
 
 cx_delegatedata* cx_delegatedata__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_delegatedata_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_delegatedata_o));
 }
 
 cx_string cx_delegatedata__str(cx_delegatedata value) {
@@ -501,7 +501,7 @@ int cx_dispatcher__define(cx_dispatcher _this) {
 
 cx_dispatcher cx_dispatcher__create(void) {
     cx_dispatcher _this;
-    _this = cx_create(cx_type(cx_dispatcher_o));
+    _this = cx_declare(cx_type(cx_dispatcher_o));
     if (cx_define(_this)) {
         cx_release(_this);
         _this = NULL;
@@ -510,11 +510,11 @@ cx_dispatcher cx_dispatcher__create(void) {
 }
 
 cx_dispatcher cx_dispatcher__new(void) {
-    return cx_create(cx_type(cx_dispatcher_o));
+    return cx_declare(cx_type(cx_dispatcher_o));
 }
 
 cx_dispatcher cx_dispatcher__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_dispatcher_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_dispatcher_o));
 }
 
 cx_string cx_dispatcher__str(cx_dispatcher value) {
@@ -529,7 +529,7 @@ int cx_enum__define(cx_enum _this) {
 
 cx_enum cx_enum__create(void) {
     cx_enum _this;
-    _this = cx_create(cx_type(cx_enum_o));
+    _this = cx_declare(cx_type(cx_enum_o));
     if (cx_define(_this)) {
         cx_release(_this);
         _this = NULL;
@@ -538,11 +538,11 @@ cx_enum cx_enum__create(void) {
 }
 
 cx_enum cx_enum__new(void) {
-    return cx_create(cx_type(cx_enum_o));
+    return cx_declare(cx_type(cx_enum_o));
 }
 
 cx_enum cx_enum__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_enum_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_enum_o));
 }
 
 cx_string cx_enum__str(cx_enum value) {
@@ -552,11 +552,11 @@ cx_string cx_enum__str(cx_enum value) {
 }
 
 cx_equalityKind* cx_equalityKind__new(void) {
-    return cx_create(cx_type(cx_equalityKind_o));
+    return cx_declare(cx_type(cx_equalityKind_o));
 }
 
 cx_equalityKind* cx_equalityKind__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_equalityKind_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_equalityKind_o));
 }
 
 cx_string cx_equalityKind__str(cx_equalityKind value) {
@@ -574,7 +574,7 @@ int cx_event__define(cx_event _this, cx_uint16 kind) {
 
 cx_event cx_event__create(cx_uint16 kind) {
     cx_event _this;
-    _this = cx_create(cx_type(cx_event_o));
+    _this = cx_declare(cx_type(cx_event_o));
     _this->kind = kind;
     if (cx_define(_this)) {
         cx_release(_this);
@@ -584,11 +584,11 @@ cx_event cx_event__create(cx_uint16 kind) {
 }
 
 cx_event cx_event__new(void) {
-    return cx_create(cx_type(cx_event_o));
+    return cx_declare(cx_type(cx_event_o));
 }
 
 cx_event cx_event__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_event_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_event_o));
 }
 
 cx_string cx_event__str(cx_event value) {
@@ -598,11 +598,11 @@ cx_string cx_event__str(cx_event value) {
 }
 
 cx_eventMask* cx_eventMask__new(void) {
-    return cx_create(cx_type(cx_eventMask_o));
+    return cx_declare(cx_type(cx_eventMask_o));
 }
 
 cx_eventMask* cx_eventMask__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_eventMask_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_eventMask_o));
 }
 
 cx_string cx_eventMask__str(cx_eventMask value) {
@@ -622,7 +622,7 @@ int cx_float__define(cx_float _this, cx_width width, cx_float64 min, cx_float64 
 
 cx_float cx_float__create(cx_width width, cx_float64 min, cx_float64 max) {
     cx_float _this;
-    _this = cx_create(cx_type(cx_float_o));
+    _this = cx_declare(cx_type(cx_float_o));
     cx_primitive(_this)->width = width;
     _this->min = min;
     _this->max = max;
@@ -634,11 +634,11 @@ cx_float cx_float__create(cx_width width, cx_float64 min, cx_float64 max) {
 }
 
 cx_float cx_float__new(void) {
-    return cx_create(cx_type(cx_float_o));
+    return cx_declare(cx_type(cx_float_o));
 }
 
 cx_float cx_float__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_float_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_float_o));
 }
 
 cx_string cx_float__str(cx_float value) {
@@ -648,11 +648,11 @@ cx_string cx_float__str(cx_float value) {
 }
 
 cx_float32* cx_float32__new(void) {
-    return cx_create(cx_type(cx_float32_o));
+    return cx_declare(cx_type(cx_float32_o));
 }
 
 cx_float32* cx_float32__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_float32_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_float32_o));
 }
 
 cx_string cx_float32__str(cx_float32 value) {
@@ -664,11 +664,11 @@ cx_string cx_float32__str(cx_float32 value) {
 }
 
 cx_float64* cx_float64__new(void) {
-    return cx_create(cx_type(cx_float64_o));
+    return cx_declare(cx_type(cx_float64_o));
 }
 
 cx_float64* cx_float64__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_float64_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_float64_o));
 }
 
 cx_string cx_float64__str(cx_float64 value) {
@@ -688,7 +688,7 @@ int cx_function__define(cx_function _this, cx_type returnType, cx_bool returnsRe
 
 cx_function cx_function__create(cx_type returnType, cx_bool returnsReference) {
     cx_function _this;
-    _this = cx_create(cx_type(cx_function_o));
+    _this = cx_declare(cx_type(cx_function_o));
     returnType ? cx_claim(returnType) : 0;
     _this->returnType = cx_type(returnType);
     _this->returnsReference = returnsReference;
@@ -700,11 +700,11 @@ cx_function cx_function__create(cx_type returnType, cx_bool returnsReference) {
 }
 
 cx_function cx_function__new(void) {
-    return cx_create(cx_type(cx_function_o));
+    return cx_declare(cx_type(cx_function_o));
 }
 
 cx_function cx_function__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_function_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_function_o));
 }
 
 cx_string cx_function__str(cx_function value) {
@@ -722,7 +722,7 @@ int cx_int__define(cx_int _this, cx_width width, cx_int64 min, cx_int64 max) {
 
 cx_int cx_int__create(cx_width width, cx_int64 min, cx_int64 max) {
     cx_int _this;
-    _this = cx_create(cx_type(cx_int_o));
+    _this = cx_declare(cx_type(cx_int_o));
     cx_primitive(_this)->width = width;
     _this->min = min;
     _this->max = max;
@@ -734,11 +734,11 @@ cx_int cx_int__create(cx_width width, cx_int64 min, cx_int64 max) {
 }
 
 cx_int cx_int__new(void) {
-    return cx_create(cx_type(cx_int_o));
+    return cx_declare(cx_type(cx_int_o));
 }
 
 cx_int cx_int__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_int_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_int_o));
 }
 
 cx_string cx_int__str(cx_int value) {
@@ -748,11 +748,11 @@ cx_string cx_int__str(cx_int value) {
 }
 
 cx_int16* cx_int16__new(void) {
-    return cx_create(cx_type(cx_int16_o));
+    return cx_declare(cx_type(cx_int16_o));
 }
 
 cx_int16* cx_int16__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_int16_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_int16_o));
 }
 
 cx_string cx_int16__str(cx_int16 value) {
@@ -764,11 +764,11 @@ cx_string cx_int16__str(cx_int16 value) {
 }
 
 cx_int32* cx_int32__new(void) {
-    return cx_create(cx_type(cx_int32_o));
+    return cx_declare(cx_type(cx_int32_o));
 }
 
 cx_int32* cx_int32__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_int32_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_int32_o));
 }
 
 cx_string cx_int32__str(cx_int32 value) {
@@ -780,11 +780,11 @@ cx_string cx_int32__str(cx_int32 value) {
 }
 
 cx_int64* cx_int64__new(void) {
-    return cx_create(cx_type(cx_int64_o));
+    return cx_declare(cx_type(cx_int64_o));
 }
 
 cx_int64* cx_int64__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_int64_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_int64_o));
 }
 
 cx_string cx_int64__str(cx_int64 value) {
@@ -796,11 +796,11 @@ cx_string cx_int64__str(cx_int64 value) {
 }
 
 cx_int8* cx_int8__new(void) {
-    return cx_create(cx_type(cx_int8_o));
+    return cx_declare(cx_type(cx_int8_o));
 }
 
 cx_int8* cx_int8__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_int8_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_int8_o));
 }
 
 cx_string cx_int8__str(cx_int8 value) {
@@ -819,7 +819,7 @@ int cx_interface__define(cx_interface _this, cx_interface base) {
 
 cx_interface cx_interface__create(cx_interface base) {
     cx_interface _this;
-    _this = cx_create(cx_type(cx_interface_o));
+    _this = cx_declare(cx_type(cx_interface_o));
     base ? cx_claim(base) : 0;
     _this->base = cx_interface(base);
     if (cx_define(_this)) {
@@ -830,11 +830,11 @@ cx_interface cx_interface__create(cx_interface base) {
 }
 
 cx_interface cx_interface__new(void) {
-    return cx_create(cx_type(cx_interface_o));
+    return cx_declare(cx_type(cx_interface_o));
 }
 
 cx_interface cx_interface__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_interface_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_interface_o));
 }
 
 cx_string cx_interface__str(cx_interface value) {
@@ -844,11 +844,11 @@ cx_string cx_interface__str(cx_interface value) {
 }
 
 cx_interfaceSeq* cx_interfaceSeq__new(void) {
-    return cx_create(cx_type(cx_interfaceSeq_o));
+    return cx_declare(cx_type(cx_interfaceSeq_o));
 }
 
 cx_interfaceSeq* cx_interfaceSeq__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_interfaceSeq_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_interfaceSeq_o));
 }
 
 cx_string cx_interfaceSeq__str(cx_interfaceSeq value) {
@@ -876,11 +876,11 @@ void cx_interfaceVector__deinit(cx_interfaceVector *_this) {
 }
 
 cx_interfaceVector* cx_interfaceVector__new(void) {
-    return cx_create(cx_type(cx_interfaceVector_o));
+    return cx_declare(cx_type(cx_interfaceVector_o));
 }
 
 cx_interfaceVector* cx_interfaceVector__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_interfaceVector_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_interfaceVector_o));
 }
 
 cx_string cx_interfaceVector__str(cx_interfaceVector value) {
@@ -892,11 +892,11 @@ cx_string cx_interfaceVector__str(cx_interfaceVector value) {
 }
 
 cx_interfaceVectorSeq* cx_interfaceVectorSeq__new(void) {
-    return cx_create(cx_type(cx_interfaceVectorSeq_o));
+    return cx_declare(cx_type(cx_interfaceVectorSeq_o));
 }
 
 cx_interfaceVectorSeq* cx_interfaceVectorSeq__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_interfaceVectorSeq_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_interfaceVectorSeq_o));
 }
 
 cx_string cx_interfaceVectorSeq__str(cx_interfaceVectorSeq value) {
@@ -915,7 +915,7 @@ int cx_iterator__define(cx_iterator _this, cx_type elementType) {
 
 cx_iterator cx_iterator__create(cx_type elementType) {
     cx_iterator _this;
-    _this = cx_create(cx_type(cx_iterator_o));
+    _this = cx_declare(cx_type(cx_iterator_o));
     elementType ? cx_claim(elementType) : 0;
     _this->elementType = cx_type(elementType);
     if (cx_define(_this)) {
@@ -926,11 +926,11 @@ cx_iterator cx_iterator__create(cx_type elementType) {
 }
 
 cx_iterator cx_iterator__new(void) {
-    return cx_create(cx_type(cx_iterator_o));
+    return cx_declare(cx_type(cx_iterator_o));
 }
 
 cx_iterator cx_iterator__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_iterator_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_iterator_o));
 }
 
 cx_string cx_iterator__str(cx_iterator value) {
@@ -948,7 +948,7 @@ int cx_list__define(cx_list _this, cx_type elementType, cx_uint32 max) {
 
 cx_list cx_list__create(cx_type elementType, cx_uint32 max) {
     cx_list _this;
-    _this = cx_create(cx_type(cx_list_o));
+    _this = cx_declare(cx_type(cx_list_o));
     elementType ? cx_claim(elementType) : 0;
     cx_collection(_this)->elementType = cx_type(elementType);
     cx_collection(_this)->max = max;
@@ -960,11 +960,11 @@ cx_list cx_list__create(cx_type elementType, cx_uint32 max) {
 }
 
 cx_list cx_list__new(void) {
-    return cx_create(cx_type(cx_list_o));
+    return cx_declare(cx_type(cx_list_o));
 }
 
 cx_list cx_list__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_list_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_list_o));
 }
 
 cx_string cx_list__str(cx_list value) {
@@ -984,7 +984,7 @@ int cx_map__define(cx_map _this, cx_type elementType, cx_type keyType, cx_uint32
 
 cx_map cx_map__create(cx_type elementType, cx_type keyType, cx_uint32 max) {
     cx_map _this;
-    _this = cx_create(cx_type(cx_map_o));
+    _this = cx_declare(cx_type(cx_map_o));
     elementType ? cx_claim(elementType) : 0;
     _this->elementType = cx_type(elementType);
     keyType ? cx_claim(keyType) : 0;
@@ -998,11 +998,11 @@ cx_map cx_map__create(cx_type elementType, cx_type keyType, cx_uint32 max) {
 }
 
 cx_map cx_map__new(void) {
-    return cx_create(cx_type(cx_map_o));
+    return cx_declare(cx_type(cx_map_o));
 }
 
 cx_map cx_map__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_map_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_map_o));
 }
 
 cx_string cx_map__str(cx_map value) {
@@ -1022,7 +1022,7 @@ int cx_member__define(cx_member _this, cx_type type, cx_modifier modifiers, cx_s
 
 cx_member cx_member__create(cx_type type, cx_modifier modifiers, cx_state state, cx_bool weak) {
     cx_member _this;
-    _this = cx_create(cx_type(cx_member_o));
+    _this = cx_declare(cx_type(cx_member_o));
     type ? cx_claim(type) : 0;
     _this->type = cx_type(type);
     _this->modifiers = modifiers;
@@ -1036,11 +1036,11 @@ cx_member cx_member__create(cx_type type, cx_modifier modifiers, cx_state state,
 }
 
 cx_member cx_member__new(void) {
-    return cx_create(cx_type(cx_member_o));
+    return cx_declare(cx_type(cx_member_o));
 }
 
 cx_member cx_member__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_member_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_member_o));
 }
 
 cx_string cx_member__str(cx_member value) {
@@ -1050,11 +1050,11 @@ cx_string cx_member__str(cx_member value) {
 }
 
 cx_memberSeq* cx_memberSeq__new(void) {
-    return cx_create(cx_type(cx_memberSeq_o));
+    return cx_declare(cx_type(cx_memberSeq_o));
 }
 
 cx_memberSeq* cx_memberSeq__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_memberSeq_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_memberSeq_o));
 }
 
 cx_string cx_memberSeq__str(cx_memberSeq value) {
@@ -1075,7 +1075,7 @@ int cx_metaprocedure__define(cx_metaprocedure _this, cx_type returnType, cx_bool
 
 cx_metaprocedure cx_metaprocedure__create(cx_type returnType, cx_bool returnsReference, cx_bool referenceOnly) {
     cx_metaprocedure _this;
-    _this = cx_create(cx_type(cx_metaprocedure_o));
+    _this = cx_declare(cx_type(cx_metaprocedure_o));
     returnType ? cx_claim(returnType) : 0;
     cx_function(_this)->returnType = cx_type(returnType);
     cx_function(_this)->returnsReference = returnsReference;
@@ -1088,11 +1088,11 @@ cx_metaprocedure cx_metaprocedure__create(cx_type returnType, cx_bool returnsRef
 }
 
 cx_metaprocedure cx_metaprocedure__new(void) {
-    return cx_create(cx_type(cx_metaprocedure_o));
+    return cx_declare(cx_type(cx_metaprocedure_o));
 }
 
 cx_metaprocedure cx_metaprocedure__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_metaprocedure_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_metaprocedure_o));
 }
 
 cx_string cx_metaprocedure__str(cx_metaprocedure value) {
@@ -1111,7 +1111,7 @@ int cx_method__define(cx_method _this, cx_type returnType, cx_bool returnsRefere
 
 cx_method cx_method__create(cx_type returnType, cx_bool returnsReference, cx_bool virtual) {
     cx_method _this;
-    _this = cx_create(cx_type(cx_method_o));
+    _this = cx_declare(cx_type(cx_method_o));
     returnType ? cx_claim(returnType) : 0;
     cx_function(_this)->returnType = cx_type(returnType);
     cx_function(_this)->returnsReference = returnsReference;
@@ -1124,11 +1124,11 @@ cx_method cx_method__create(cx_type returnType, cx_bool returnsReference, cx_boo
 }
 
 cx_method cx_method__new(void) {
-    return cx_create(cx_type(cx_method_o));
+    return cx_declare(cx_type(cx_method_o));
 }
 
 cx_method cx_method__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_method_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_method_o));
 }
 
 cx_string cx_method__str(cx_method value) {
@@ -1138,11 +1138,11 @@ cx_string cx_method__str(cx_method value) {
 }
 
 cx_modifier* cx_modifier__new(void) {
-    return cx_create(cx_type(cx_modifier_o));
+    return cx_declare(cx_type(cx_modifier_o));
 }
 
 cx_modifier* cx_modifier__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_modifier_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_modifier_o));
 }
 
 cx_string cx_modifier__str(cx_modifier value) {
@@ -1154,19 +1154,19 @@ cx_string cx_modifier__str(cx_modifier value) {
 }
 
 cx_object cx_object__new(void) {
-    return cx_create(cx_type(cx_object_o));
+    return cx_declare(cx_type(cx_object_o));
 }
 
 cx_object cx_object__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_object_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_object_o));
 }
 
 cx_objectSeq* cx_objectSeq__new(void) {
-    return cx_create(cx_type(cx_objectSeq_o));
+    return cx_declare(cx_type(cx_objectSeq_o));
 }
 
 cx_objectSeq* cx_objectSeq__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_objectSeq_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_objectSeq_o));
 }
 
 cx_string cx_objectSeq__str(cx_objectSeq value) {
@@ -1192,7 +1192,7 @@ int cx_observableEvent__define(cx_observableEvent _this, cx_uint16 kind, cx_obse
 
 cx_observableEvent cx_observableEvent__create(cx_uint16 kind, cx_observer observer, cx_object me, cx_object source, cx_object observable) {
     cx_observableEvent _this;
-    _this = cx_create(cx_type(cx_observableEvent_o));
+    _this = cx_declare(cx_type(cx_observableEvent_o));
     cx_event(_this)->kind = kind;
     observer ? cx_claim(observer) : 0;
     _this->observer = cx_observer(observer);
@@ -1210,11 +1210,11 @@ cx_observableEvent cx_observableEvent__create(cx_uint16 kind, cx_observer observ
 }
 
 cx_observableEvent cx_observableEvent__new(void) {
-    return cx_create(cx_type(cx_observableEvent_o));
+    return cx_declare(cx_type(cx_observableEvent_o));
 }
 
 cx_observableEvent cx_observableEvent__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_observableEvent_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_observableEvent_o));
 }
 
 cx_string cx_observableEvent__str(cx_observableEvent value) {
@@ -1236,7 +1236,7 @@ int cx_observer__define(cx_observer _this, cx_object observable, cx_eventMask ma
 
 cx_observer cx_observer__create(cx_object observable, cx_eventMask mask, cx_dispatcher dispatcher, cx_object me) {
     cx_observer _this;
-    _this = cx_create(cx_type(cx_observer_o));
+    _this = cx_declare(cx_type(cx_observer_o));
     observable ? cx_claim(observable) : 0;
     _this->observable = observable;
     _this->mask = mask;
@@ -1252,11 +1252,11 @@ cx_observer cx_observer__create(cx_object observable, cx_eventMask mask, cx_disp
 }
 
 cx_observer cx_observer__new(void) {
-    return cx_create(cx_type(cx_observer_o));
+    return cx_declare(cx_type(cx_observer_o));
 }
 
 cx_observer cx_observer__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_observer_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_observer_o));
 }
 
 cx_string cx_observer__str(cx_observer value) {
@@ -1266,11 +1266,11 @@ cx_string cx_observer__str(cx_observer value) {
 }
 
 cx_observerSeq* cx_observerSeq__new(void) {
-    return cx_create(cx_type(cx_observerSeq_o));
+    return cx_declare(cx_type(cx_observerSeq_o));
 }
 
 cx_observerSeq* cx_observerSeq__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_observerSeq_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_observerSeq_o));
 }
 
 cx_string cx_observerSeq__str(cx_observerSeq value) {
@@ -1282,11 +1282,11 @@ cx_string cx_observerSeq__str(cx_observerSeq value) {
 }
 
 cx_octet* cx_octet__new(void) {
-    return cx_create(cx_type(cx_octet_o));
+    return cx_declare(cx_type(cx_octet_o));
 }
 
 cx_octet* cx_octet__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_octet_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_octet_o));
 }
 
 cx_string cx_octet__str(cx_octet value) {
@@ -1298,11 +1298,11 @@ cx_string cx_octet__str(cx_octet value) {
 }
 
 cx_operatorKind* cx_operatorKind__new(void) {
-    return cx_create(cx_type(cx_operatorKind_o));
+    return cx_declare(cx_type(cx_operatorKind_o));
 }
 
 cx_operatorKind* cx_operatorKind__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_operatorKind_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_operatorKind_o));
 }
 
 cx_string cx_operatorKind__str(cx_operatorKind value) {
@@ -1320,7 +1320,7 @@ int cx_package__define(cx_package _this, cx_string url) {
 
 cx_package cx_package__create(cx_string url) {
     cx_package _this;
-    _this = cx_create(cx_type(cx_package_o));
+    _this = cx_declare(cx_type(cx_package_o));
     _this->url = (url ? cx_strdup(url) : NULL);
     if (cx_define(_this)) {
         cx_release(_this);
@@ -1330,11 +1330,11 @@ cx_package cx_package__create(cx_string url) {
 }
 
 cx_package cx_package__new(void) {
-    return cx_create(cx_type(cx_package_o));
+    return cx_declare(cx_type(cx_package_o));
 }
 
 cx_package cx_package__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_package_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_package_o));
 }
 
 cx_string cx_package__str(cx_package value) {
@@ -1361,11 +1361,11 @@ void cx_parameter__deinit(cx_parameter *_this) {
 }
 
 cx_parameter* cx_parameter__new(void) {
-    return cx_create(cx_type(cx_parameter_o));
+    return cx_declare(cx_type(cx_parameter_o));
 }
 
 cx_parameter* cx_parameter__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_parameter_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_parameter_o));
 }
 
 cx_string cx_parameter__str(cx_parameter value) {
@@ -1377,11 +1377,11 @@ cx_string cx_parameter__str(cx_parameter value) {
 }
 
 cx_parameterSeq* cx_parameterSeq__new(void) {
-    return cx_create(cx_type(cx_parameterSeq_o));
+    return cx_declare(cx_type(cx_parameterSeq_o));
 }
 
 cx_parameterSeq* cx_parameterSeq__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_parameterSeq_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_parameterSeq_o));
 }
 
 cx_string cx_parameterSeq__str(cx_parameterSeq value) {
@@ -1399,7 +1399,7 @@ int cx_primitive__define(cx_primitive _this, cx_width width) {
 
 cx_primitive cx_primitive__create(cx_width width) {
     cx_primitive _this;
-    _this = cx_create(cx_type(cx_primitive_o));
+    _this = cx_declare(cx_type(cx_primitive_o));
     _this->width = width;
     if (cx_define(_this)) {
         cx_release(_this);
@@ -1409,11 +1409,11 @@ cx_primitive cx_primitive__create(cx_width width) {
 }
 
 cx_primitive cx_primitive__new(void) {
-    return cx_create(cx_type(cx_primitive_o));
+    return cx_declare(cx_type(cx_primitive_o));
 }
 
 cx_primitive cx_primitive__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_primitive_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_primitive_o));
 }
 
 cx_string cx_primitive__str(cx_primitive value) {
@@ -1423,11 +1423,11 @@ cx_string cx_primitive__str(cx_primitive value) {
 }
 
 cx_primitiveKind* cx_primitiveKind__new(void) {
-    return cx_create(cx_type(cx_primitiveKind_o));
+    return cx_declare(cx_type(cx_primitiveKind_o));
 }
 
 cx_primitiveKind* cx_primitiveKind__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_primitiveKind_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_primitiveKind_o));
 }
 
 cx_string cx_primitiveKind__str(cx_primitiveKind value) {
@@ -1448,7 +1448,7 @@ int cx_procedure__define(cx_procedure _this, cx_interface base, cx_modifier base
 
 cx_procedure cx_procedure__create(cx_interface base, cx_modifier baseAccess, cx_procedureKind kind) {
     cx_procedure _this;
-    _this = cx_create(cx_type(cx_procedure_o));
+    _this = cx_declare(cx_type(cx_procedure_o));
     base ? cx_claim(base) : 0;
     cx_interface(_this)->base = cx_interface(base);
     cx_struct(_this)->baseAccess = baseAccess;
@@ -1461,11 +1461,11 @@ cx_procedure cx_procedure__create(cx_interface base, cx_modifier baseAccess, cx_
 }
 
 cx_procedure cx_procedure__new(void) {
-    return cx_create(cx_type(cx_procedure_o));
+    return cx_declare(cx_type(cx_procedure_o));
 }
 
 cx_procedure cx_procedure__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_procedure_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_procedure_o));
 }
 
 cx_string cx_procedure__str(cx_procedure value) {
@@ -1475,11 +1475,11 @@ cx_string cx_procedure__str(cx_procedure value) {
 }
 
 cx_procedureKind* cx_procedureKind__new(void) {
-    return cx_create(cx_type(cx_procedureKind_o));
+    return cx_declare(cx_type(cx_procedureKind_o));
 }
 
 cx_procedureKind* cx_procedureKind__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_procedureKind_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_procedureKind_o));
 }
 
 cx_string cx_procedureKind__str(cx_procedureKind value) {
@@ -1499,7 +1499,7 @@ int cx_sequence__define(cx_sequence _this, cx_type elementType, cx_uint32 max) {
 
 cx_sequence cx_sequence__create(cx_type elementType, cx_uint32 max) {
     cx_sequence _this;
-    _this = cx_create(cx_type(cx_sequence_o));
+    _this = cx_declare(cx_type(cx_sequence_o));
     elementType ? cx_claim(elementType) : 0;
     cx_collection(_this)->elementType = cx_type(elementType);
     cx_collection(_this)->max = max;
@@ -1511,11 +1511,11 @@ cx_sequence cx_sequence__create(cx_type elementType, cx_uint32 max) {
 }
 
 cx_sequence cx_sequence__new(void) {
-    return cx_create(cx_type(cx_sequence_o));
+    return cx_declare(cx_type(cx_sequence_o));
 }
 
 cx_sequence cx_sequence__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_sequence_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_sequence_o));
 }
 
 cx_string cx_sequence__str(cx_sequence value) {
@@ -1525,11 +1525,11 @@ cx_string cx_sequence__str(cx_sequence value) {
 }
 
 cx_state* cx_state__new(void) {
-    return cx_create(cx_type(cx_state_o));
+    return cx_declare(cx_type(cx_state_o));
 }
 
 cx_state* cx_state__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_state_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_state_o));
 }
 
 cx_string cx_state__str(cx_state value) {
@@ -1541,11 +1541,11 @@ cx_string cx_state__str(cx_state value) {
 }
 
 cx_string* cx_string__new(void) {
-    return cx_create(cx_type(cx_string_o));
+    return cx_declare(cx_type(cx_string_o));
 }
 
 cx_string* cx_string__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_string_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_string_o));
 }
 
 cx_string cx_string__str(cx_string value) {
@@ -1565,7 +1565,7 @@ int cx_struct__define(cx_struct _this, cx_interface base, cx_modifier baseAccess
 
 cx_struct cx_struct__create(cx_interface base, cx_modifier baseAccess) {
     cx_struct _this;
-    _this = cx_create(cx_type(cx_struct_o));
+    _this = cx_declare(cx_type(cx_struct_o));
     base ? cx_claim(base) : 0;
     cx_interface(_this)->base = cx_interface(base);
     _this->baseAccess = baseAccess;
@@ -1577,11 +1577,11 @@ cx_struct cx_struct__create(cx_interface base, cx_modifier baseAccess) {
 }
 
 cx_struct cx_struct__new(void) {
-    return cx_create(cx_type(cx_struct_o));
+    return cx_declare(cx_type(cx_struct_o));
 }
 
 cx_struct cx_struct__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_struct_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_struct_o));
 }
 
 cx_string cx_struct__str(cx_struct value) {
@@ -1598,7 +1598,7 @@ int cx_text__define(cx_text _this, cx_width charWidth, cx_uint64 length) {
 
 cx_text cx_text__create(cx_width charWidth, cx_uint64 length) {
     cx_text _this;
-    _this = cx_create(cx_type(cx_text_o));
+    _this = cx_declare(cx_type(cx_text_o));
     _this->charWidth = charWidth;
     _this->length = length;
     if (cx_define(_this)) {
@@ -1609,11 +1609,11 @@ cx_text cx_text__create(cx_width charWidth, cx_uint64 length) {
 }
 
 cx_text cx_text__new(void) {
-    return cx_create(cx_type(cx_text_o));
+    return cx_declare(cx_type(cx_text_o));
 }
 
 cx_text cx_text__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_text_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_text_o));
 }
 
 cx_string cx_text__str(cx_text value) {
@@ -1633,7 +1633,7 @@ int cx_type__define(cx_type _this, cx_type defaultType, cx_type parentType, cx_s
 
 cx_type cx_type__create(cx_type defaultType, cx_type parentType, cx_state parentState) {
     cx_type _this;
-    _this = cx_create(cx_type(cx_type_o));
+    _this = cx_declare(cx_type(cx_type_o));
     defaultType ? cx_claim(defaultType) : 0;
     _this->defaultType = cx_type(defaultType);
     parentType ? cx_claim(parentType) : 0;
@@ -1647,11 +1647,11 @@ cx_type cx_type__create(cx_type defaultType, cx_type parentType, cx_state parent
 }
 
 cx_type cx_type__new(void) {
-    return cx_create(cx_type(cx_type_o));
+    return cx_declare(cx_type(cx_type_o));
 }
 
 cx_type cx_type__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_type_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_type_o));
 }
 
 cx_string cx_type__str(cx_type value) {
@@ -1661,11 +1661,11 @@ cx_string cx_type__str(cx_type value) {
 }
 
 cx_typeKind* cx_typeKind__new(void) {
-    return cx_create(cx_type(cx_typeKind_o));
+    return cx_declare(cx_type(cx_typeKind_o));
 }
 
 cx_typeKind* cx_typeKind__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_typeKind_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_typeKind_o));
 }
 
 cx_string cx_typeKind__str(cx_typeKind value) {
@@ -1685,7 +1685,7 @@ int cx_uint__define(cx_uint _this, cx_width width, cx_uint64 min, cx_uint64 max)
 
 cx_uint cx_uint__create(cx_width width, cx_uint64 min, cx_uint64 max) {
     cx_uint _this;
-    _this = cx_create(cx_type(cx_uint_o));
+    _this = cx_declare(cx_type(cx_uint_o));
     cx_primitive(_this)->width = width;
     _this->min = min;
     _this->max = max;
@@ -1697,11 +1697,11 @@ cx_uint cx_uint__create(cx_width width, cx_uint64 min, cx_uint64 max) {
 }
 
 cx_uint cx_uint__new(void) {
-    return cx_create(cx_type(cx_uint_o));
+    return cx_declare(cx_type(cx_uint_o));
 }
 
 cx_uint cx_uint__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_uint_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_uint_o));
 }
 
 cx_string cx_uint__str(cx_uint value) {
@@ -1711,11 +1711,11 @@ cx_string cx_uint__str(cx_uint value) {
 }
 
 cx_uint16* cx_uint16__new(void) {
-    return cx_create(cx_type(cx_uint16_o));
+    return cx_declare(cx_type(cx_uint16_o));
 }
 
 cx_uint16* cx_uint16__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_uint16_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_uint16_o));
 }
 
 cx_string cx_uint16__str(cx_uint16 value) {
@@ -1727,11 +1727,11 @@ cx_string cx_uint16__str(cx_uint16 value) {
 }
 
 cx_uint32* cx_uint32__new(void) {
-    return cx_create(cx_type(cx_uint32_o));
+    return cx_declare(cx_type(cx_uint32_o));
 }
 
 cx_uint32* cx_uint32__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_uint32_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_uint32_o));
 }
 
 cx_string cx_uint32__str(cx_uint32 value) {
@@ -1743,11 +1743,11 @@ cx_string cx_uint32__str(cx_uint32 value) {
 }
 
 cx_uint64* cx_uint64__new(void) {
-    return cx_create(cx_type(cx_uint64_o));
+    return cx_declare(cx_type(cx_uint64_o));
 }
 
 cx_uint64* cx_uint64__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_uint64_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_uint64_o));
 }
 
 cx_string cx_uint64__str(cx_uint64 value) {
@@ -1759,11 +1759,11 @@ cx_string cx_uint64__str(cx_uint64 value) {
 }
 
 cx_uint8* cx_uint8__new(void) {
-    return cx_create(cx_type(cx_uint8_o));
+    return cx_declare(cx_type(cx_uint8_o));
 }
 
 cx_uint8* cx_uint8__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_uint8_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_uint8_o));
 }
 
 cx_string cx_uint8__str(cx_uint8 value) {
@@ -1784,7 +1784,7 @@ int cx_virtual__define(cx_virtual _this, cx_type returnType, cx_bool returnsRefe
 
 cx_virtual cx_virtual__create(cx_type returnType, cx_bool returnsReference, cx_bool virtual) {
     cx_virtual _this;
-    _this = cx_create(cx_type(cx_virtual_o));
+    _this = cx_declare(cx_type(cx_virtual_o));
     returnType ? cx_claim(returnType) : 0;
     cx_function(_this)->returnType = cx_type(returnType);
     cx_function(_this)->returnsReference = returnsReference;
@@ -1797,11 +1797,11 @@ cx_virtual cx_virtual__create(cx_type returnType, cx_bool returnsReference, cx_b
 }
 
 cx_virtual cx_virtual__new(void) {
-    return cx_create(cx_type(cx_virtual_o));
+    return cx_declare(cx_type(cx_virtual_o));
 }
 
 cx_virtual cx_virtual__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_virtual_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_virtual_o));
 }
 
 cx_string cx_virtual__str(cx_virtual value) {
@@ -1811,19 +1811,19 @@ cx_string cx_virtual__str(cx_virtual value) {
 }
 
 cx_void* cx_void__new(void) {
-    return cx_create(cx_type(cx_void_o));
+    return cx_declare(cx_type(cx_void_o));
 }
 
 cx_void* cx_void__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_void_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_void_o));
 }
 
 cx_vtable* cx_vtable__new(void) {
-    return cx_create(cx_type(cx_vtable_o));
+    return cx_declare(cx_type(cx_vtable_o));
 }
 
 cx_vtable* cx_vtable__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_vtable_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_vtable_o));
 }
 
 cx_string cx_vtable__str(cx_vtable value) {
@@ -1835,11 +1835,11 @@ cx_string cx_vtable__str(cx_vtable value) {
 }
 
 cx_width* cx_width__new(void) {
-    return cx_create(cx_type(cx_width_o));
+    return cx_declare(cx_type(cx_width_o));
 }
 
 cx_width* cx_width__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_width_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_width_o));
 }
 
 cx_string cx_width__str(cx_width value) {
@@ -1851,11 +1851,11 @@ cx_string cx_width__str(cx_width value) {
 }
 
 cx_word* cx_word__new(void) {
-    return cx_create(cx_type(cx_word_o));
+    return cx_declare(cx_type(cx_word_o));
 }
 
 cx_word* cx_word__declare(cx_object _parent, cx_string _name) {
-    return cx_declare(_parent, _name, cx_type(cx_word_o));
+    return cx_declareChild(_parent, _name, cx_type(cx_word_o));
 }
 
 cx_string cx_word__str(cx_word value) {

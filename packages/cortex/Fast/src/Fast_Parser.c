@@ -1451,7 +1451,7 @@ Fast_Storage Fast_Parser_declaration(Fast_Parser _this, cx_type type, cx_string 
         cx_assert(_this->block != NULL, "no valid code-block set in parser context.");
 
         if (!_this->pass) {
-            o = cx_declare(_this->scope, id, type);
+            o = cx_declareChild(_this->scope, id, type);
             if (!o) {
                 cx_id id1;
                 Fast_Parser_error(_this, "declare of '%s' of type '%s' failed",
@@ -1543,7 +1543,7 @@ Fast_Storage Fast_Parser_declareFunction(Fast_Parser _this, cx_type returnType, 
                     goto error;
                 }
 
-                function = cx_declare(_this->scope, id, functionType);
+                function = cx_declareChild(_this->scope, id, functionType);
                 if (!function) {
                     Fast_Parser_error(_this, "declare of '%s' failed",
                                       functionName);
@@ -2162,7 +2162,7 @@ Fast_Expression Fast_Parser_initPushIdentifier(Fast_Parser _this, Fast_Expressio
     /* Static initializers are executed during first pass */
     if ((!_this->pass && !isDynamic) || forceStatic) {
         cx_object o;
-        o = cx_create(t);
+        o = cx_declare(t);
         cx_setref(&variables[0].object, Fast_Expression(Fast_Object__create(o)));
         _this->initializers[_this->initializerCount] = Fast_Initializer(Fast_StaticInitializer__create(variables, 1));
         _this->variablePushed = TRUE;

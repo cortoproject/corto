@@ -81,7 +81,7 @@ int tc_stringser_load(void) {
     _a_ = NULL;
 
     /* Declare ::tc_stringser */
-    tc_stringser_o = cx_declare(root_o, "tc_stringser", cx_type(cx_object_o));
+    tc_stringser_o = cx_declareChild(root_o, "tc_stringser", cx_type(cx_object_o));
     if (!tc_stringser_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser'.");
         goto error;
@@ -96,7 +96,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::arrayOfBool */
-    tc_stringser_arrayOfBool_o = cx_declare(tc_stringser_o, "arrayOfBool", cx_type(cx_array_o));
+    tc_stringser_arrayOfBool_o = cx_declareChild(tc_stringser_o, "arrayOfBool", cx_type(cx_array_o));
     if (!tc_stringser_arrayOfBool_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::arrayOfBool'.");
         goto error;
@@ -118,7 +118,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::arrayOfChar */
-    tc_stringser_arrayOfChar_o = cx_declare(tc_stringser_o, "arrayOfChar", cx_type(cx_array_o));
+    tc_stringser_arrayOfChar_o = cx_declareChild(tc_stringser_o, "arrayOfChar", cx_type(cx_array_o));
     if (!tc_stringser_arrayOfChar_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::arrayOfChar'.");
         goto error;
@@ -140,35 +140,35 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::arrayOfClassInherit */
-    tc_stringser_arrayOfClassInherit_o = cx_declare(tc_stringser_o, "arrayOfClassInherit", cx_type(cx_array_o));
+    tc_stringser_arrayOfClassInherit_o = cx_declareChild(tc_stringser_o, "arrayOfClassInherit", cx_type(cx_array_o));
     if (!tc_stringser_arrayOfClassInherit_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::arrayOfClassInherit'.");
         goto error;
     }
 
     /* Declare ::tc_stringser::arrayOfClassNested */
-    tc_stringser_arrayOfClassNested_o = cx_declare(tc_stringser_o, "arrayOfClassNested", cx_type(cx_array_o));
+    tc_stringser_arrayOfClassNested_o = cx_declareChild(tc_stringser_o, "arrayOfClassNested", cx_type(cx_array_o));
     if (!tc_stringser_arrayOfClassNested_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::arrayOfClassNested'.");
         goto error;
     }
 
     /* Declare ::tc_stringser::arrayOfClassPrimitives */
-    tc_stringser_arrayOfClassPrimitives_o = cx_declare(tc_stringser_o, "arrayOfClassPrimitives", cx_type(cx_array_o));
+    tc_stringser_arrayOfClassPrimitives_o = cx_declareChild(tc_stringser_o, "arrayOfClassPrimitives", cx_type(cx_array_o));
     if (!tc_stringser_arrayOfClassPrimitives_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::arrayOfClassPrimitives'.");
         goto error;
     }
 
     /* Declare ::tc_stringser::arrayOfColor */
-    tc_stringser_arrayOfColor_o = cx_declare(tc_stringser_o, "arrayOfColor", cx_type(cx_array_o));
+    tc_stringser_arrayOfColor_o = cx_declareChild(tc_stringser_o, "arrayOfColor", cx_type(cx_array_o));
     if (!tc_stringser_arrayOfColor_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::arrayOfColor'.");
         goto error;
     }
 
     /* Declare ::tc_stringser::arrayOfFloat */
-    tc_stringser_arrayOfFloat_o = cx_declare(tc_stringser_o, "arrayOfFloat", cx_type(cx_array_o));
+    tc_stringser_arrayOfFloat_o = cx_declareChild(tc_stringser_o, "arrayOfFloat", cx_type(cx_array_o));
     if (!tc_stringser_arrayOfFloat_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::arrayOfFloat'.");
         goto error;
@@ -190,7 +190,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::arrayOfInt */
-    tc_stringser_arrayOfInt_o = cx_declare(tc_stringser_o, "arrayOfInt", cx_type(cx_array_o));
+    tc_stringser_arrayOfInt_o = cx_declareChild(tc_stringser_o, "arrayOfInt", cx_type(cx_array_o));
     if (!tc_stringser_arrayOfInt_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::arrayOfInt'.");
         goto error;
@@ -212,14 +212,14 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::arrayOfMoveMode */
-    tc_stringser_arrayOfMoveMode_o = cx_declare(tc_stringser_o, "arrayOfMoveMode", cx_type(cx_array_o));
+    tc_stringser_arrayOfMoveMode_o = cx_declareChild(tc_stringser_o, "arrayOfMoveMode", cx_type(cx_array_o));
     if (!tc_stringser_arrayOfMoveMode_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::arrayOfMoveMode'.");
         goto error;
     }
 
     /* Declare ::tc_stringser::arrayOfString */
-    tc_stringser_arrayOfString_o = cx_declare(tc_stringser_o, "arrayOfString", cx_type(cx_array_o));
+    tc_stringser_arrayOfString_o = cx_declareChild(tc_stringser_o, "arrayOfString", cx_type(cx_array_o));
     if (!tc_stringser_arrayOfString_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::arrayOfString'.");
         goto error;
@@ -241,56 +241,56 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::classCompositeCollection */
-    tc_stringser_classCompositeCollection_o = cx_declare(tc_stringser_o, "classCompositeCollection", cx_type(cx_class_o));
+    tc_stringser_classCompositeCollection_o = cx_declareChild(tc_stringser_o, "classCompositeCollection", cx_type(cx_class_o));
     if (!tc_stringser_classCompositeCollection_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classCompositeCollection'.");
         goto error;
     }
 
     /* Declare ::tc_stringser::classCompositeCollection::a */
-    tc_stringser_classCompositeCollection_a_o = cx_declare(tc_stringser_classCompositeCollection_o, "a", cx_type(cx_member_o));
+    tc_stringser_classCompositeCollection_a_o = cx_declareChild(tc_stringser_classCompositeCollection_o, "a", cx_type(cx_member_o));
     if (!tc_stringser_classCompositeCollection_a_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classCompositeCollection::a'.");
         goto error;
     }
 
     /* Declare ::tc_stringser::classCompositeCollection::b */
-    tc_stringser_classCompositeCollection_b_o = cx_declare(tc_stringser_classCompositeCollection_o, "b", cx_type(cx_member_o));
+    tc_stringser_classCompositeCollection_b_o = cx_declareChild(tc_stringser_classCompositeCollection_o, "b", cx_type(cx_member_o));
     if (!tc_stringser_classCompositeCollection_b_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classCompositeCollection::b'.");
         goto error;
     }
 
     /* Declare ::tc_stringser::classCompositeCollection::c */
-    tc_stringser_classCompositeCollection_c_o = cx_declare(tc_stringser_classCompositeCollection_o, "c", cx_type(cx_member_o));
+    tc_stringser_classCompositeCollection_c_o = cx_declareChild(tc_stringser_classCompositeCollection_o, "c", cx_type(cx_member_o));
     if (!tc_stringser_classCompositeCollection_c_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classCompositeCollection::c'.");
         goto error;
     }
 
     /* Declare ::tc_stringser::classCompositeCollection::d */
-    tc_stringser_classCompositeCollection_d_o = cx_declare(tc_stringser_classCompositeCollection_o, "d", cx_type(cx_member_o));
+    tc_stringser_classCompositeCollection_d_o = cx_declareChild(tc_stringser_classCompositeCollection_o, "d", cx_type(cx_member_o));
     if (!tc_stringser_classCompositeCollection_d_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classCompositeCollection::d'.");
         goto error;
     }
 
     /* Declare ::tc_stringser::classCompositeCollection::e */
-    tc_stringser_classCompositeCollection_e_o = cx_declare(tc_stringser_classCompositeCollection_o, "e", cx_type(cx_member_o));
+    tc_stringser_classCompositeCollection_e_o = cx_declareChild(tc_stringser_classCompositeCollection_o, "e", cx_type(cx_member_o));
     if (!tc_stringser_classCompositeCollection_e_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classCompositeCollection::e'.");
         goto error;
     }
 
     /* Declare ::tc_stringser::classInherit */
-    tc_stringser_classInherit_o = cx_declare(tc_stringser_o, "classInherit", cx_type(cx_class_o));
+    tc_stringser_classInherit_o = cx_declareChild(tc_stringser_o, "classInherit", cx_type(cx_class_o));
     if (!tc_stringser_classInherit_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classInherit'.");
         goto error;
     }
 
     /* Declare ::tc_stringser::classInherit::a */
-    tc_stringser_classInherit_a_o = cx_declare(tc_stringser_classInherit_o, "a", cx_type(cx_member_o));
+    tc_stringser_classInherit_a_o = cx_declareChild(tc_stringser_classInherit_o, "a", cx_type(cx_member_o));
     if (!tc_stringser_classInherit_a_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classInherit::a'.");
         goto error;
@@ -310,7 +310,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::classInherit::b */
-    tc_stringser_classInherit_b_o = cx_declare(tc_stringser_classInherit_o, "b", cx_type(cx_member_o));
+    tc_stringser_classInherit_b_o = cx_declareChild(tc_stringser_classInherit_o, "b", cx_type(cx_member_o));
     if (!tc_stringser_classInherit_b_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classInherit::b'.");
         goto error;
@@ -330,7 +330,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::classInherit::c */
-    tc_stringser_classInherit_c_o = cx_declare(tc_stringser_classInherit_o, "c", cx_type(cx_member_o));
+    tc_stringser_classInherit_c_o = cx_declareChild(tc_stringser_classInherit_o, "c", cx_type(cx_member_o));
     if (!tc_stringser_classInherit_c_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classInherit::c'.");
         goto error;
@@ -350,7 +350,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::classInherit::d */
-    tc_stringser_classInherit_d_o = cx_declare(tc_stringser_classInherit_o, "d", cx_type(cx_member_o));
+    tc_stringser_classInherit_d_o = cx_declareChild(tc_stringser_classInherit_o, "d", cx_type(cx_member_o));
     if (!tc_stringser_classInherit_d_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classInherit::d'.");
         goto error;
@@ -370,7 +370,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::classInherit::e */
-    tc_stringser_classInherit_e_o = cx_declare(tc_stringser_classInherit_o, "e", cx_type(cx_member_o));
+    tc_stringser_classInherit_e_o = cx_declareChild(tc_stringser_classInherit_o, "e", cx_type(cx_member_o));
     if (!tc_stringser_classInherit_e_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classInherit::e'.");
         goto error;
@@ -390,21 +390,21 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::classInherit::f */
-    tc_stringser_classInherit_f_o = cx_declare(tc_stringser_classInherit_o, "f", cx_type(cx_member_o));
+    tc_stringser_classInherit_f_o = cx_declareChild(tc_stringser_classInherit_o, "f", cx_type(cx_member_o));
     if (!tc_stringser_classInherit_f_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classInherit::f'.");
         goto error;
     }
 
     /* Declare ::tc_stringser::classInherit::g */
-    tc_stringser_classInherit_g_o = cx_declare(tc_stringser_classInherit_o, "g", cx_type(cx_member_o));
+    tc_stringser_classInherit_g_o = cx_declareChild(tc_stringser_classInherit_o, "g", cx_type(cx_member_o));
     if (!tc_stringser_classInherit_g_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classInherit::g'.");
         goto error;
     }
 
     /* Declare ::tc_stringser::listOfClassInherit */
-    tc_stringser_listOfClassInherit_o = cx_declare(tc_stringser_o, "listOfClassInherit", cx_type(cx_list_o));
+    tc_stringser_listOfClassInherit_o = cx_declareChild(tc_stringser_o, "listOfClassInherit", cx_type(cx_list_o));
     if (!tc_stringser_listOfClassInherit_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::listOfClassInherit'.");
         goto error;
@@ -438,7 +438,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::sequenceOfClassInherit */
-    tc_stringser_sequenceOfClassInherit_o = cx_declare(tc_stringser_o, "sequenceOfClassInherit", cx_type(cx_sequence_o));
+    tc_stringser_sequenceOfClassInherit_o = cx_declareChild(tc_stringser_o, "sequenceOfClassInherit", cx_type(cx_sequence_o));
     if (!tc_stringser_sequenceOfClassInherit_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::sequenceOfClassInherit'.");
         goto error;
@@ -472,28 +472,28 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::classNested */
-    tc_stringser_classNested_o = cx_declare(tc_stringser_o, "classNested", cx_type(cx_class_o));
+    tc_stringser_classNested_o = cx_declareChild(tc_stringser_o, "classNested", cx_type(cx_class_o));
     if (!tc_stringser_classNested_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classNested'.");
         goto error;
     }
 
     /* Declare ::tc_stringser::classNested::a */
-    tc_stringser_classNested_a_o = cx_declare(tc_stringser_classNested_o, "a", cx_type(cx_member_o));
+    tc_stringser_classNested_a_o = cx_declareChild(tc_stringser_classNested_o, "a", cx_type(cx_member_o));
     if (!tc_stringser_classNested_a_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classNested::a'.");
         goto error;
     }
 
     /* Declare ::tc_stringser::classNested::b */
-    tc_stringser_classNested_b_o = cx_declare(tc_stringser_classNested_o, "b", cx_type(cx_member_o));
+    tc_stringser_classNested_b_o = cx_declareChild(tc_stringser_classNested_o, "b", cx_type(cx_member_o));
     if (!tc_stringser_classNested_b_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classNested::b'.");
         goto error;
     }
 
     /* Declare ::tc_stringser::classNested::c */
-    tc_stringser_classNested_c_o = cx_declare(tc_stringser_classNested_o, "c", cx_type(cx_member_o));
+    tc_stringser_classNested_c_o = cx_declareChild(tc_stringser_classNested_o, "c", cx_type(cx_member_o));
     if (!tc_stringser_classNested_c_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classNested::c'.");
         goto error;
@@ -513,21 +513,21 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::classNested::d */
-    tc_stringser_classNested_d_o = cx_declare(tc_stringser_classNested_o, "d", cx_type(cx_member_o));
+    tc_stringser_classNested_d_o = cx_declareChild(tc_stringser_classNested_o, "d", cx_type(cx_member_o));
     if (!tc_stringser_classNested_d_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classNested::d'.");
         goto error;
     }
 
     /* Declare ::tc_stringser::classNested::e */
-    tc_stringser_classNested_e_o = cx_declare(tc_stringser_classNested_o, "e", cx_type(cx_member_o));
+    tc_stringser_classNested_e_o = cx_declareChild(tc_stringser_classNested_o, "e", cx_type(cx_member_o));
     if (!tc_stringser_classNested_e_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classNested::e'.");
         goto error;
     }
 
     /* Declare ::tc_stringser::listOfClassNested */
-    tc_stringser_listOfClassNested_o = cx_declare(tc_stringser_o, "listOfClassNested", cx_type(cx_list_o));
+    tc_stringser_listOfClassNested_o = cx_declareChild(tc_stringser_o, "listOfClassNested", cx_type(cx_list_o));
     if (!tc_stringser_listOfClassNested_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::listOfClassNested'.");
         goto error;
@@ -561,7 +561,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::sequenceOfClassNested */
-    tc_stringser_sequenceOfClassNested_o = cx_declare(tc_stringser_o, "sequenceOfClassNested", cx_type(cx_sequence_o));
+    tc_stringser_sequenceOfClassNested_o = cx_declareChild(tc_stringser_o, "sequenceOfClassNested", cx_type(cx_sequence_o));
     if (!tc_stringser_sequenceOfClassNested_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::sequenceOfClassNested'.");
         goto error;
@@ -582,14 +582,14 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::classPrimitives */
-    tc_stringser_classPrimitives_o = cx_declare(tc_stringser_o, "classPrimitives", cx_type(cx_class_o));
+    tc_stringser_classPrimitives_o = cx_declareChild(tc_stringser_o, "classPrimitives", cx_type(cx_class_o));
     if (!tc_stringser_classPrimitives_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classPrimitives'.");
         goto error;
     }
 
     /* Declare ::tc_stringser::classPrimitives::a */
-    tc_stringser_classPrimitives_a_o = cx_declare(tc_stringser_classPrimitives_o, "a", cx_type(cx_member_o));
+    tc_stringser_classPrimitives_a_o = cx_declareChild(tc_stringser_classPrimitives_o, "a", cx_type(cx_member_o));
     if (!tc_stringser_classPrimitives_a_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classPrimitives::a'.");
         goto error;
@@ -609,7 +609,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::classPrimitives::b */
-    tc_stringser_classPrimitives_b_o = cx_declare(tc_stringser_classPrimitives_o, "b", cx_type(cx_member_o));
+    tc_stringser_classPrimitives_b_o = cx_declareChild(tc_stringser_classPrimitives_o, "b", cx_type(cx_member_o));
     if (!tc_stringser_classPrimitives_b_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classPrimitives::b'.");
         goto error;
@@ -629,7 +629,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::classPrimitives::c */
-    tc_stringser_classPrimitives_c_o = cx_declare(tc_stringser_classPrimitives_o, "c", cx_type(cx_member_o));
+    tc_stringser_classPrimitives_c_o = cx_declareChild(tc_stringser_classPrimitives_o, "c", cx_type(cx_member_o));
     if (!tc_stringser_classPrimitives_c_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classPrimitives::c'.");
         goto error;
@@ -649,7 +649,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::classPrimitives::d */
-    tc_stringser_classPrimitives_d_o = cx_declare(tc_stringser_classPrimitives_o, "d", cx_type(cx_member_o));
+    tc_stringser_classPrimitives_d_o = cx_declareChild(tc_stringser_classPrimitives_o, "d", cx_type(cx_member_o));
     if (!tc_stringser_classPrimitives_d_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classPrimitives::d'.");
         goto error;
@@ -669,7 +669,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::classPrimitives::e */
-    tc_stringser_classPrimitives_e_o = cx_declare(tc_stringser_classPrimitives_o, "e", cx_type(cx_member_o));
+    tc_stringser_classPrimitives_e_o = cx_declareChild(tc_stringser_classPrimitives_o, "e", cx_type(cx_member_o));
     if (!tc_stringser_classPrimitives_e_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classPrimitives::e'.");
         goto error;
@@ -689,21 +689,21 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::classPrimitives::f */
-    tc_stringser_classPrimitives_f_o = cx_declare(tc_stringser_classPrimitives_o, "f", cx_type(cx_member_o));
+    tc_stringser_classPrimitives_f_o = cx_declareChild(tc_stringser_classPrimitives_o, "f", cx_type(cx_member_o));
     if (!tc_stringser_classPrimitives_f_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classPrimitives::f'.");
         goto error;
     }
 
     /* Declare ::tc_stringser::classPrimitives::g */
-    tc_stringser_classPrimitives_g_o = cx_declare(tc_stringser_classPrimitives_o, "g", cx_type(cx_member_o));
+    tc_stringser_classPrimitives_g_o = cx_declareChild(tc_stringser_classPrimitives_o, "g", cx_type(cx_member_o));
     if (!tc_stringser_classPrimitives_g_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::classPrimitives::g'.");
         goto error;
     }
 
     /* Declare ::tc_stringser::listOfClassPrimitives */
-    tc_stringser_listOfClassPrimitives_o = cx_declare(tc_stringser_o, "listOfClassPrimitives", cx_type(cx_list_o));
+    tc_stringser_listOfClassPrimitives_o = cx_declareChild(tc_stringser_o, "listOfClassPrimitives", cx_type(cx_list_o));
     if (!tc_stringser_listOfClassPrimitives_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::listOfClassPrimitives'.");
         goto error;
@@ -724,7 +724,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::sequenceOfClassPrimitives */
-    tc_stringser_sequenceOfClassPrimitives_o = cx_declare(tc_stringser_o, "sequenceOfClassPrimitives", cx_type(cx_sequence_o));
+    tc_stringser_sequenceOfClassPrimitives_o = cx_declareChild(tc_stringser_o, "sequenceOfClassPrimitives", cx_type(cx_sequence_o));
     if (!tc_stringser_sequenceOfClassPrimitives_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::sequenceOfClassPrimitives'.");
         goto error;
@@ -745,14 +745,14 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::color */
-    tc_stringser_color_o = cx_declare(tc_stringser_o, "color", cx_type(cx_enum_o));
+    tc_stringser_color_o = cx_declareChild(tc_stringser_o, "color", cx_type(cx_enum_o));
     if (!tc_stringser_color_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::color'.");
         goto error;
     }
 
     /* Declare ::tc_stringser::color::BLUE */
-    tc_stringser_color_BLUE_o = cx_declare(tc_stringser_color_o, "BLUE", cx_type(cx_constant_o));
+    tc_stringser_color_BLUE_o = cx_declareChild(tc_stringser_color_o, "BLUE", cx_type(cx_constant_o));
     if (!tc_stringser_color_BLUE_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::color::BLUE'.");
         goto error;
@@ -761,7 +761,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::color::RED */
-    tc_stringser_color_RED_o = cx_declare(tc_stringser_color_o, "RED", cx_type(cx_constant_o));
+    tc_stringser_color_RED_o = cx_declareChild(tc_stringser_color_o, "RED", cx_type(cx_constant_o));
     if (!tc_stringser_color_RED_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::color::RED'.");
         goto error;
@@ -770,7 +770,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::color::YELLOW */
-    tc_stringser_color_YELLOW_o = cx_declare(tc_stringser_color_o, "YELLOW", cx_type(cx_constant_o));
+    tc_stringser_color_YELLOW_o = cx_declareChild(tc_stringser_color_o, "YELLOW", cx_type(cx_constant_o));
     if (!tc_stringser_color_YELLOW_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::color::YELLOW'.");
         goto error;
@@ -832,7 +832,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::listOfColor */
-    tc_stringser_listOfColor_o = cx_declare(tc_stringser_o, "listOfColor", cx_type(cx_list_o));
+    tc_stringser_listOfColor_o = cx_declareChild(tc_stringser_o, "listOfColor", cx_type(cx_list_o));
     if (!tc_stringser_listOfColor_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::listOfColor'.");
         goto error;
@@ -853,7 +853,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::sequenceOfColor */
-    tc_stringser_sequenceOfColor_o = cx_declare(tc_stringser_o, "sequenceOfColor", cx_type(cx_sequence_o));
+    tc_stringser_sequenceOfColor_o = cx_declareChild(tc_stringser_o, "sequenceOfColor", cx_type(cx_sequence_o));
     if (!tc_stringser_sequenceOfColor_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::sequenceOfColor'.");
         goto error;
@@ -874,7 +874,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::listOfBool */
-    tc_stringser_listOfBool_o = cx_declare(tc_stringser_o, "listOfBool", cx_type(cx_list_o));
+    tc_stringser_listOfBool_o = cx_declareChild(tc_stringser_o, "listOfBool", cx_type(cx_list_o));
     if (!tc_stringser_listOfBool_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::listOfBool'.");
         goto error;
@@ -895,7 +895,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::listOfChar */
-    tc_stringser_listOfChar_o = cx_declare(tc_stringser_o, "listOfChar", cx_type(cx_list_o));
+    tc_stringser_listOfChar_o = cx_declareChild(tc_stringser_o, "listOfChar", cx_type(cx_list_o));
     if (!tc_stringser_listOfChar_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::listOfChar'.");
         goto error;
@@ -916,7 +916,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::listOfFloat */
-    tc_stringser_listOfFloat_o = cx_declare(tc_stringser_o, "listOfFloat", cx_type(cx_list_o));
+    tc_stringser_listOfFloat_o = cx_declareChild(tc_stringser_o, "listOfFloat", cx_type(cx_list_o));
     if (!tc_stringser_listOfFloat_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::listOfFloat'.");
         goto error;
@@ -937,7 +937,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::listOfInt */
-    tc_stringser_listOfInt_o = cx_declare(tc_stringser_o, "listOfInt", cx_type(cx_list_o));
+    tc_stringser_listOfInt_o = cx_declareChild(tc_stringser_o, "listOfInt", cx_type(cx_list_o));
     if (!tc_stringser_listOfInt_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::listOfInt'.");
         goto error;
@@ -971,14 +971,14 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::listOfMoveMode */
-    tc_stringser_listOfMoveMode_o = cx_declare(tc_stringser_o, "listOfMoveMode", cx_type(cx_list_o));
+    tc_stringser_listOfMoveMode_o = cx_declareChild(tc_stringser_o, "listOfMoveMode", cx_type(cx_list_o));
     if (!tc_stringser_listOfMoveMode_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::listOfMoveMode'.");
         goto error;
     }
 
     /* Declare ::tc_stringser::listOfString */
-    tc_stringser_listOfString_o = cx_declare(tc_stringser_o, "listOfString", cx_type(cx_list_o));
+    tc_stringser_listOfString_o = cx_declareChild(tc_stringser_o, "listOfString", cx_type(cx_list_o));
     if (!tc_stringser_listOfString_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::listOfString'.");
         goto error;
@@ -999,7 +999,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::moveMode */
-    tc_stringser_moveMode_o = cx_declare(tc_stringser_o, "moveMode", cx_type(cx_bitmask_o));
+    tc_stringser_moveMode_o = cx_declareChild(tc_stringser_o, "moveMode", cx_type(cx_bitmask_o));
     if (!tc_stringser_moveMode_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::moveMode'.");
         goto error;
@@ -1020,7 +1020,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::moveMode::FLY */
-    tc_stringser_moveMode_FLY_o = cx_declare(tc_stringser_moveMode_o, "FLY", cx_type(cx_constant_o));
+    tc_stringser_moveMode_FLY_o = cx_declareChild(tc_stringser_moveMode_o, "FLY", cx_type(cx_constant_o));
     if (!tc_stringser_moveMode_FLY_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::moveMode::FLY'.");
         goto error;
@@ -1029,7 +1029,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::moveMode::SWIM */
-    tc_stringser_moveMode_SWIM_o = cx_declare(tc_stringser_moveMode_o, "SWIM", cx_type(cx_constant_o));
+    tc_stringser_moveMode_SWIM_o = cx_declareChild(tc_stringser_moveMode_o, "SWIM", cx_type(cx_constant_o));
     if (!tc_stringser_moveMode_SWIM_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::moveMode::SWIM'.");
         goto error;
@@ -1038,7 +1038,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::moveMode::WALK */
-    tc_stringser_moveMode_WALK_o = cx_declare(tc_stringser_moveMode_o, "WALK", cx_type(cx_constant_o));
+    tc_stringser_moveMode_WALK_o = cx_declareChild(tc_stringser_moveMode_o, "WALK", cx_type(cx_constant_o));
     if (!tc_stringser_moveMode_WALK_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::moveMode::WALK'.");
         goto error;
@@ -1207,7 +1207,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::sequenceOfMoveMode */
-    tc_stringser_sequenceOfMoveMode_o = cx_declare(tc_stringser_o, "sequenceOfMoveMode", cx_type(cx_sequence_o));
+    tc_stringser_sequenceOfMoveMode_o = cx_declareChild(tc_stringser_o, "sequenceOfMoveMode", cx_type(cx_sequence_o));
     if (!tc_stringser_sequenceOfMoveMode_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::sequenceOfMoveMode'.");
         goto error;
@@ -1228,7 +1228,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::sequenceOfBool */
-    tc_stringser_sequenceOfBool_o = cx_declare(tc_stringser_o, "sequenceOfBool", cx_type(cx_sequence_o));
+    tc_stringser_sequenceOfBool_o = cx_declareChild(tc_stringser_o, "sequenceOfBool", cx_type(cx_sequence_o));
     if (!tc_stringser_sequenceOfBool_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::sequenceOfBool'.");
         goto error;
@@ -1249,7 +1249,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::sequenceOfChar */
-    tc_stringser_sequenceOfChar_o = cx_declare(tc_stringser_o, "sequenceOfChar", cx_type(cx_sequence_o));
+    tc_stringser_sequenceOfChar_o = cx_declareChild(tc_stringser_o, "sequenceOfChar", cx_type(cx_sequence_o));
     if (!tc_stringser_sequenceOfChar_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::sequenceOfChar'.");
         goto error;
@@ -1270,7 +1270,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::sequenceOfFloat */
-    tc_stringser_sequenceOfFloat_o = cx_declare(tc_stringser_o, "sequenceOfFloat", cx_type(cx_sequence_o));
+    tc_stringser_sequenceOfFloat_o = cx_declareChild(tc_stringser_o, "sequenceOfFloat", cx_type(cx_sequence_o));
     if (!tc_stringser_sequenceOfFloat_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::sequenceOfFloat'.");
         goto error;
@@ -1291,7 +1291,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::sequenceOfInt */
-    tc_stringser_sequenceOfInt_o = cx_declare(tc_stringser_o, "sequenceOfInt", cx_type(cx_sequence_o));
+    tc_stringser_sequenceOfInt_o = cx_declareChild(tc_stringser_o, "sequenceOfInt", cx_type(cx_sequence_o));
     if (!tc_stringser_sequenceOfInt_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::sequenceOfInt'.");
         goto error;
@@ -1391,7 +1391,7 @@ int tc_stringser_load(void) {
     }
 
     /* Declare ::tc_stringser::sequenceOfString */
-    tc_stringser_sequenceOfString_o = cx_declare(tc_stringser_o, "sequenceOfString", cx_type(cx_sequence_o));
+    tc_stringser_sequenceOfString_o = cx_declareChild(tc_stringser_o, "sequenceOfString", cx_type(cx_sequence_o));
     if (!tc_stringser_sequenceOfString_o) {
         cx_error("tc_stringser_load: failed to declare object '::tc_stringser::sequenceOfString'.");
         goto error;

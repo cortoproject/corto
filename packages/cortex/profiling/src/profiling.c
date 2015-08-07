@@ -34,7 +34,7 @@ static profiling_TlsValue *profiling_value(void) {
         tid = cx_threadSelf();
         sprintf(name, "t%lu", cx_threadSelf());
         ll = cx_llNew();
-        topProfile = cx_declare(profiling_profileRoot(), name, cx_void_o);
+        topProfile = cx_declareChild(profiling_profileRoot(), name, cx_void_o);
         if (ll && topProfile) {
             value = cx_alloc(sizeof(profiling_TlsValue));
             value->ll = ll;
@@ -52,7 +52,7 @@ static profiling_TlsValue *profiling_value(void) {
 }
 
 static void profiling_openProfile(profiling_TlsValue *value, cx_string name) {
-    profiling_Profile *next = cx_declare(value->topProfile, name, cx_type(profiling_Profile_o));
+    profiling_Profile *next = cx_declareChild(value->topProfile, name, cx_type(profiling_Profile_o));
     value->topProfile = next;
 }
 

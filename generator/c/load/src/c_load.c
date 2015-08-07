@@ -714,13 +714,13 @@ static int c_loadDeclare(cx_object o, void* userData) {
         g_fileWrite(data->source, "/* Declare %s */\n", cx_fullname(o, id));
 
         if (!cx_checkAttr(cx_typeof(o), CX_ATTR_SCOPED)) {
-            g_fileWrite(data->source, "%s = cx_declare(%s, \"%s\", (_a_ ? cx_release(_a_) : 0, _a_ = cx_type(%s)));\n",
+            g_fileWrite(data->source, "%s = cx_declareChild(%s, \"%s\", (_a_ ? cx_release(_a_) : 0, _a_ = cx_type(%s)));\n",
                     c_loadVarId(data->g, o, id),
                     c_loadVarId(data->g, cx_parentof(o), parentId),
                     escapedName,
                     c_loadVarId(data->g, cx_typeof(o), typeId));
         } else {
-            g_fileWrite(data->source, "%s = cx_declare(%s, \"%s\", cx_type(%s));\n",
+            g_fileWrite(data->source, "%s = cx_declareChild(%s, \"%s\", cx_type(%s));\n",
                     c_loadVarId(data->g, o, id),
                     c_loadVarId(data->g, cx_parentof(o), parentId),
                     escapedName,

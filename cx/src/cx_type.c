@@ -186,7 +186,7 @@ cx_int16 cx_type_copy(cx_any _this, cx_any value) {
 /* ::cortex::lang::type::declare(string name,type type) */
 cx_object cx_type_declare(cx_any _this, cx_string name, cx_type type) {
 /* $begin(::cortex::lang::type::declare) */
-    cx_object result = cx_declare(_this.value, name, type);
+    cx_object result = cx_declareChild(_this.value, name, type);
     cx_claim(result);
     return result;
 /* $end */

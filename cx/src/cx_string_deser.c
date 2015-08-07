@@ -547,7 +547,7 @@ cx_string cx_string_deser(cx_string str, cx_string_deser_t* data) {
             type = cx_resolve(NULL, buffer);
             if (type) {
                 if (cx_instanceof(cx_type(cx_type_o), type)) {
-                    data->out = cx_create(cx_type(type));
+                    data->out = cx_declare(cx_type(type));
                 } else {
                     cx_error("cx_string_deser: specified type-identifier '%s' is not a type", buffer);
                     cx_release(type);

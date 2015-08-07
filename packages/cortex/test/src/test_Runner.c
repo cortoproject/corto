@@ -57,7 +57,7 @@ cx_void test_Runner_runTest(test_Runner _this, cx_object *observable, cx_object 
     CX_UNUSED(source);
     if (cx_instanceof(cx_type(test_Case_o), observable)) {
         cx_type testClass = cx_parentof(observable);
-        test_Suite suite = test_Suite(cx_create(cx_type(testClass)));
+        test_Suite suite = test_Suite(cx_declare(cx_type(testClass)));
         cx_setref(&suite->test, observable);
         cx_object prev = cx_setSource(_this);
         if (!cx_define(suite) && suite->result.success) {

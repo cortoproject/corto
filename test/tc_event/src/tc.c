@@ -172,7 +172,7 @@ cx_bool tc_new(void) {
     /* Add 10000 childs to parent */
     for(i=0; i<10000; i++) {
         sprintf(id, "%d", i);
-        o = cx_declare(tc_parent_o, id, cx_type(tc_value_o));
+        o = cx_declareChild(tc_parent_o, id, cx_type(tc_value_o));
     }
 
     tc_check("new parent", observableOnNewBoth, 10000, NULL, tc_parent_o, o, &success);
@@ -186,7 +186,7 @@ cx_bool tc_new(void) {
     /* Add 10000 childs to child */
     for(i=0; i<10000; i++) {
         sprintf(id, "%d", i);
-        o = cx_declare(tc_parent_child_o, id, cx_type(tc_value_o));
+        o = cx_declareChild(tc_parent_child_o, id, cx_type(tc_value_o));
     }
 
     tc_check("new child", observableOnNewBoth, 10000, NULL, tc_parent_child_o, o, &success);
@@ -200,7 +200,7 @@ cx_bool tc_new(void) {
     /* Add 10000 childs to root */
     for(i=0; i<10000; i++) {
         sprintf(id, "%d", i);
-        o = cx_declare(root_o, id, cx_type(tc_value_o));
+        o = cx_declareChild(root_o, id, cx_type(tc_value_o));
     }
 
     tc_check("new root", observableOnNewBoth, 0, NULL, NULL, NULL, &success);

@@ -7,7 +7,7 @@ int cortexmain(int argc, char *argv[]) {
 	cx_uint32 i = 0;
 	cx_time start, stop;
 
-	cx_object parent = cx_declare(NULL, "parent", cx_void_o);
+	cx_object parent = cx_declareChild(NULL, "parent", cx_void_o);
 
 	cx_timeGet(&start);
 	for (i = 0; i < NUM_OBJECTS; i++) {
@@ -16,7 +16,7 @@ int cortexmain(int argc, char *argv[]) {
 		if (!(i % 200000)) {
 			printf("declare %d\n", i);
 		}
-		o = cx_declare(parent, id, cx_uint32_o);
+		o = cx_declareChild(parent, id, cx_uint32_o);
 		*(cx_uint32*)o = i;
 		cx_define(o);
 	}

@@ -810,7 +810,7 @@ cx_attr cx_getAttr(void) {
 }
 
 /* Create new object with attributes */
-cx_object cx_create(cx_type type) {
+cx_object cx_declare(cx_type type) {
     cx_uint32 size, headerSize;
     cx__object* o;
     cx_attr attrs = (cx_attr)(cx_word)cx_threadTlsGet(CX_KEY_ATTR);
@@ -866,7 +866,7 @@ cx_object cx_create(cx_type type) {
         if (attrs & CX_ATTR_WRITABLE) {
             if (type->kind == CX_VOID) {
                 if (!type->reference) {
-                    cx_warning("cx_create_ext: writable void object created.");
+                    cx_warning("cx_declare: writable void object created.");
                 }
             }
             o->attrs.write = TRUE;
@@ -920,7 +920,7 @@ error:
 }
 
 /* Declare object */
-cx_object cx_declare(cx_object parent, cx_string name, cx_type type) {
+cx_object cx_declareChild(cx_object parent, cx_string name, cx_type type) {
     cx_object o;
 
     if (!parent) {
@@ -956,7 +956,7 @@ cx_object cx_declare(cx_object parent, cx_string name, cx_type type) {
     } else {
         /* Create new object */
         cx_attr oldAttr = cx_setAttr(cx_getAttr()|CX_ATTR_SCOPED);
-        o = cx_create(type);
+        o = cx_declare(type);
         cx_setAttr(oldAttr);
 
         if (o) {
@@ -989,6 +989,24 @@ cx_object cx_declare(cx_object parent, cx_string name, cx_type type) {
     return o;
 error:
     return NULL;
+}
+
+cx_object cx_create(cx_type type) {
+    cx_object result = cx_declare(type);
+    if (cx_define(result)) {
+        cx_delete(result);
+        result = NULL;
+    }
+    return result;
+}
+
+cx_object cx_createChild(cx_object parent, cx_string name, cx_type type) {
+    cx_object result = cx_declareChild(parent, name, type);
+    if (cx_define(result)) {
+        cx_delete(result);
+        result = NULL;
+    }
+    return result;
 }
 
 /* Find the right constructor to call */
@@ -1975,7 +1993,7 @@ indent++;
         } else {
             if (!data->_this || (data->_this != source)) {
                 cx_attr oldAttr = cx_setAttr(0);
-                cx_observableEvent event = cx_create(cx_type(cx_observableEvent_o));
+                cx_observableEvent event = cx_declare(cx_type(cx_observableEvent_o));
                 cx_setAttr(oldAttr);
                 cx_dispatcher dispatcher = observer->dispatcher;
 
@@ -2573,7 +2591,7 @@ cx_int32 cx_waitfor(cx_object observable) {
         waitAdmin->semaphore = cx_semNew(0);
 
         /* Create observer */
-        observer = cx_create(cx_type(cx_observer_o));
+        observer = cx_declare(cx_type(cx_observer_o));
         cx_function(observer)->impl = (cx_word)__cx_waitObserver;
         cx_function(observer)->implData = (cx_word)cx_waitObserver;
         cx_function(observer)->kind = CX_PROCEDURE_CDECL;
@@ -3561,7 +3579,7 @@ cx_int16 cx_copy(cx_object *dst, cx_object src) {
     cx_bool newObject = FALSE;
 
     if (!*dst) {
-        *dst = cx_create(cx_typeof(src));
+        *dst = cx_declare(cx_typeof(src));
         newObject = TRUE;
     }
 

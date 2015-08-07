@@ -126,7 +126,7 @@ cx_object cx_deserXmlDeclare(deser_xmldata data, cx_string name, cx_type t) {
 
     /* Find or create object */
     if (!(o = cx_lookup(data->scope, name))) {
-        o = cx_declare(data->scope, name, t);
+        o = cx_declareChild(data->scope, name, t);
     } else {
         cx_release(o);
     }
@@ -796,12 +796,12 @@ int cx_deserXmlMetaExt(cx_xmlnode node, cx_deserXmlScope scope, cx_type t, void*
             s = cx_lookup(data->scope, name);
             if (!s) {
                 if (!strcmp(oper, "package")) {
-                    s = cx_declare(data->scope, name, (cx_type)cx_package_o);
+                    s = cx_declareChild(data->scope, name, (cx_type)cx_package_o);
                     cx_claim(s);
                     cx_package(s)->url = cx_xmlnodeAttrStr(node, "url");
                     cx_define(s);
                 } else {
-                    s = cx_declare(data->scope, name, (cx_type)cx_void_o);
+                    s = cx_declareChild(data->scope, name, (cx_type)cx_void_o);
                     cx_claim(s);
                 }
             }
