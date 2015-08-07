@@ -159,12 +159,17 @@ cx_bool cx_serializeMatchAccess(cx_operatorKind accessKind, cx_modifier sa, cx_m
 cx_int16 cx_serializeAny(cx_serializer _this, cx_value* info, void* userData) {
     cx_value v;
     cx_any *any;
+    cx_int16 result = 0;
 
     any = cx_valueValue(info);
-    v.parent = info;
-    cx_valueValueInit(&v, cx_valueObject(info), (cx_type)any->type, any->value);
 
-    return cx_serializeValue(_this, &v, userData);
+    if (any->type) {
+        v.parent = info;
+        cx_valueValueInit(&v, cx_valueObject(info), (cx_type)any->type, any->value);
+        result = cx_serializeValue(_this, &v, userData);
+    }
+
+    return result;
 }
 
 /* Serialize members */

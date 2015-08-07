@@ -210,7 +210,7 @@ cx_int16 c_apiTypeCreateChild(cx_type t, c_apiWalk_t *data) {
 }
 
 cx_int16 c_apiTypeDeclare(cx_type t, c_apiWalk_t *data) {
-	return c_apiTypeCreateIntern(t, data, "declare", TRUE, FALSE);
+	return c_apiTypeCreateIntern(t, data, "declare", FALSE, FALSE);
 }
 
 cx_int16 c_apiTypeDeclareChild(cx_type t, c_apiWalk_t *data) {

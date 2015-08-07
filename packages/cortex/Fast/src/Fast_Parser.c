@@ -891,7 +891,7 @@ Fast_Storage Fast_Parser_observerCreate(Fast_Parser _this, cx_string id, Fast_Ex
 
     /* Create observer */
     if (!id) {
-        observer = cx_observer__new();
+        observer = cx_observer__declare();
         if (!observer) {
             goto error;
         }
@@ -909,7 +909,7 @@ Fast_Storage Fast_Parser_observerCreate(Fast_Parser _this, cx_string id, Fast_Ex
             cx_class_bindObserver(cx_class(parent), observer);
         }
     } else {
-        observer = cx_observer__declare(_this->scope, id);
+        observer = cx_observer__declareChild(_this->scope, id);
         if (!observer) {
             goto error;
         }
@@ -942,7 +942,7 @@ Fast_Storage Fast_Parser_declareDelegate(Fast_Parser _this, cx_type returnType, 
     cx_signatureName(id, name);
 
     /* Declare and define delegate */
-    delegate = cx_delegate__declare(_this->scope, name);
+    delegate = cx_delegate__declareChild(_this->scope, name);
     if(!delegate) {
         goto error;
     }
