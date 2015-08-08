@@ -15,6 +15,10 @@ int main(int argc, char* argv[]) {
         if (*argv[i] == '-') {
             if (*(argv[i]+1) == 'd') {
                 CX_DEBUG_ENABLED = TRUE;
+            } else if (*(argv[i]+1) == '-') {
+                if (!strcmp(argv[i] + 2, "version")) {
+                    printf("cortex (%s) 0.2.0-alpha\n\n", CX_PLATFORM_STRING);
+                }
             }
         } else {
             if (cx_load(argv[i])) {

@@ -26,6 +26,7 @@
 #include "cx_object.h"
 #include "cx_operator.h"
 #include "cx_overload.h"
+#include "cx_platform.h"
 #include "cx_rbtree.h"
 #include "cx_serializer.h"
 #include "cx_string_deser.h"
