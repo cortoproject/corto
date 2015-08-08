@@ -175,9 +175,9 @@ cx_int16 c_apiTypeCreateIntern(cx_type t, c_apiWalk_t *data, cx_string func, cx_
     g_fileIndent(data->source);
     g_fileWrite(data->source, "%s%s _this;\n", id, t->reference ? "" : "*");
     if (scoped) {
-		g_fileWrite(data->source, "_this = cx_declareChild(_parent, _name, cx_type(%s_o));\n", id);
+		g_fileWrite(data->source, "_this = cx_declareChild(_parent, _name, %s_o);\n", id);
     } else {
-	    g_fileWrite(data->source, "_this = cx_declare(cx_type(%s_o));\n", id);
+	    g_fileWrite(data->source, "_this = cx_declare(%s_o);\n", id);
 	}
 
     if (define) {

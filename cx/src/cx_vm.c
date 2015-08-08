@@ -536,7 +536,7 @@ typedef union Di2f_t {
 #define NEW(type,code)\
     NEW_##code:\
         fetchOp2(NEW,code);\
-        op1_##code = (cx_word)cx_declare((cx_type)op2_##code);\
+        op1_##code = (cx_word)cx_declare((cx_object)op2_##code);\
         next();\
 
 #define DEALLOC(type,code)\

@@ -52,7 +52,7 @@ static profiling_TlsValue *profiling_value(void) {
 }
 
 static void profiling_openProfile(profiling_TlsValue *value, cx_string name) {
-    profiling_Profile *next = cx_declareChild(value->topProfile, name, cx_type(profiling_Profile_o));
+    profiling_Profile *next = cx_declareChild(value->topProfile, name, profiling_Profile_o);
     value->topProfile = next;
 }
 

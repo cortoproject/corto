@@ -30,10 +30,10 @@ typedef cx_equalityKind (*cx_equalsAction)(cx_type _this, const void* o1, const 
 /* Object lifecycle */
 cx_attr cx_setAttr(cx_attr attr);
 cx_attr cx_getAttr(void);
-cx_object cx_create(cx_type type);
-cx_object cx_createChild(cx_object parent, cx_string name, cx_type type);
-cx_object cx_declare(cx_type type);
-cx_object cx_declareChild(cx_object parent, cx_string name, cx_type type);
+cx_object _cx_create(cx_type type);
+cx_object _cx_createChild(cx_object parent, cx_string name, cx_type type);
+cx_object _cx_declare(cx_type type);
+cx_object _cx_declareChild(cx_object parent, cx_string name, cx_type type);
 cx_int16 cx_define(cx_object o);
 void cx_delete(cx_object o);
 void cx_drop(cx_object o);
@@ -104,36 +104,48 @@ void cx_setstr(cx_string* ptr, cx_string value);
 /* Serialize to string */
 cx_string cx_str(cx_object object, cx_uint32 maxLength);
 cx_string cx_strv(cx_value* v, cx_uint32 maxLength);
-cx_string cx_strp(void *p, cx_type type, cx_uint32 maxLength);
+cx_string _cx_strp(void *p, cx_type type, cx_uint32 maxLength);
 cx_string cx_stra(cx_any a, cx_uint32 maxLength);
 
 /* Deserialize from string */
 cx_object cx_fromStr(cx_string string);
-void *cx_fromStrp(cx_string string, void* out, cx_type type);
+void *_cx_fromStrp(cx_string string, void* out, cx_type type);
 
 /* Copy */
 cx_int16 cx_copy(cx_object *dst, cx_object src);
 cx_int16 cx_copyv(cx_value *v, cx_value *src);
-cx_int16 cx_copyp(void *p, cx_type type, cx_value *src);
+cx_int16 _cx_copyp(void *p, cx_type type, cx_value *src);
 cx_int16 cx_copya(cx_any a, cx_value *src);
 
 /* Compare */
 cx_equalityKind cx_compare(cx_object o1, cx_object o2);
 cx_equalityKind cx_comparev(cx_value *v1, cx_value *value2);
-cx_equalityKind cx_comparep(void *p1, cx_type type, void *p2);
+cx_equalityKind _cx_comparep(void *p1, cx_type type, void *p2);
 cx_equalityKind cx_comparea(cx_any a1, cx_any a2);
 
 /* Init */
 cx_int16 cx_init(cx_object o);
 cx_int16 cx_initv(cx_value *v);
-cx_int16 cx_initp(void *v, cx_type type);
+cx_int16 _cx_initp(void *v, cx_type type);
 cx_int16 cx_inita(cx_any a);
 
 /* Deinit */
 cx_int16 cx_deinit(cx_object o);
 cx_int16 cx_deinitv(cx_value *v);
-cx_int16 cx_deinitp(void *v, cx_type type);
+cx_int16 _cx_deinitp(void *v, cx_type type);
 cx_int16 cx_deinita(cx_any a);
+
+/* Macro's that automate casting of parameters */
+#define cx_create(type) _cx_create(cx_type(type))
+#define cx_createChild(parent, name, type) _cx_createChild(parent, name, cx_type(type))
+#define cx_declare(type) _cx_declare(cx_type(type))
+#define cx_declareChild(parent, name, type) _cx_declareChild(parent, name, cx_type(type))
+#define cx_strp(p, type, maxLength) _cx_strp(p, cx_type(type), maxLength)
+#define cx_fromStrp(string, out, type) _cx_fromStrp(string, out, cx_type(type))
+#define cx_copyp(p, type, src); _cx_copyp(p, cx_type(type), src)
+#define cx_comparep(p1, type, p2); _cx_comparep(p1, cx_type(type), p2)
+#define cx_initp(p, type); _cx_initp(p, cx_type(type))
+#define cx_deinitp(p, type); _cx_deinitp(p, cx_type(type))
 
 #ifdef __cplusplus
 }

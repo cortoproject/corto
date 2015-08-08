@@ -1,4 +1,4 @@
-/*
+ /*
  * cx_object.c
  *
  *  Created on: Aug 3, 2012
@@ -810,7 +810,7 @@ cx_attr cx_getAttr(void) {
 }
 
 /* Create new object with attributes */
-cx_object cx_declare(cx_type type) {
+cx_object _cx_declare(cx_type type) {
     cx_uint32 size, headerSize;
     cx__object* o;
     cx_attr attrs = (cx_attr)(cx_word)cx_threadTlsGet(CX_KEY_ATTR);
@@ -920,7 +920,7 @@ error:
 }
 
 /* Declare object */
-cx_object cx_declareChild(cx_object parent, cx_string name, cx_type type) {
+cx_object _cx_declareChild(cx_object parent, cx_string name, cx_type type) {
     cx_object o;
 
     if (!parent) {
@@ -991,7 +991,7 @@ error:
     return NULL;
 }
 
-cx_object cx_create(cx_type type) {
+cx_object _cx_create(cx_type type) {
     cx_object result = cx_declare(type);
     if (cx_define(result)) {
         cx_delete(result);
@@ -1000,7 +1000,7 @@ cx_object cx_create(cx_type type) {
     return result;
 }
 
-cx_object cx_createChild(cx_object parent, cx_string name, cx_type type) {
+cx_object _cx_createChild(cx_object parent, cx_string name, cx_type type) {
     cx_object result = cx_declareChild(parent, name, type);
     if (cx_define(result)) {
         cx_delete(result);
@@ -3482,7 +3482,7 @@ cx_object cx_fromStr(cx_string string) {
 }
 
 /* Deserialize object from string */
-void *cx_fromStrp(cx_string string, void* out, cx_type type) {
+void *_cx_fromStrp(cx_string string, void* out, cx_type type) {
     cx_string_deser_t serData;
 
     serData.out = out;

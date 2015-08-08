@@ -6,7 +6,7 @@ static cx_char* cx_resolveAnonymous(cx_object scope, cx_object o, cx_string str,
     cx_object result;
     cx_string_deser_t data;
 
-    result = cx_declare(cx_type(o));
+    result = cx_declare(o);
     data.out = result;
     data.scope = scope;
     data.type = NULL;
