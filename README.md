@@ -5,6 +5,7 @@ An open source, easy to use, multi-language CRUD API and scripting language for 
 Cortex is in alpha. It is expected to reach v1.0 status by the end of 2015. The project has been validated on the following platforms:
  * Ubuntu 14.04 (32/64 bit)
  * OS X 10.10.2 (64 bit)
+ * Yocto 2.1 (32 bit)
 
 ## Building Cortex
 Download and unpack Cortex on your machine. Run the following command to build it:
@@ -17,3 +18,6 @@ Building Cortex requires the following packages - make sure to have them install
  * bison
  * libxml2-dev
  * rake
+
+#### Try it out
+To verify whether the build was succesful, run the following command: `cortex --version`, which will show the current version.
