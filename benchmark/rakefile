@@ -1,3 +1,0 @@
-TARGET = :bench
-
-require "#{ENV['CORTEX_HOME']}/build/component"
