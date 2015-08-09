@@ -282,7 +282,7 @@ static int cx_createPackage(cx_string include) {
         fprintf(file, "    %s_RedPanda myFirstPanda = %s_RedPanda__createChild(\n", include, include);
         fprintf(file, "            NULL,       /* Parent of the object (root) */\n");
         fprintf(file, "            \"Albert\",   /* Name of the object */\n");
-        fprintf(file, "            10);        /* Albert's weight */\n");
+        fprintf(file, "            10);        /* Albert's weight */\n\n");
         fprintf(file, "    /* Give Albert something to chew on */\n");
         fprintf(file, "    %s_RedPanda_chew(myFirstPanda);\n\n", include);
         fprintf(file, "    return 0;\n");
