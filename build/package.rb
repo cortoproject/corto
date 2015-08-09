@@ -28,10 +28,10 @@ file "include/#{TARGET}__type.h" => GENFILE do
     verbose(false)
     sh "mkdir -p .cortex"
     sh "touch .cortex/#{TARGET}__wrapper.c"
-    sh "cxgen #{TARGET} --prefix #{PREFIX} --lang c"
+    sh "cxgen #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c"
     if not File.identical?(PACKAGEDIR, Dir.pwd) then
         sh "mkdir -p #{PACKAGEDIR}"
-        sh "cp -R include #{PACKAGEDIR}"
+        sh "cp -R include #{PACKAGEDIR}/"
     end
 end
 

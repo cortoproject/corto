@@ -196,10 +196,22 @@ void printUsage(void) {
 
 static int cx_createPackage(cx_string include) {
     cx_id cxfile, srcfile, srcdir;
+    cx_char *ptr, *name;
     FILE *file;
+    cx_uint32 i;
+
+    /* Extract left-most name from include variable */
+    ptr = include;
+    name = include;
+    for (i = 0; i < strlen(include); i++) {
+        if (*ptr == ':') {
+            name = ptr+1;
+        }
+        ptr++;
+    }
 
     /* Write definition file */
-    if (snprintf(cxfile, sizeof(cxfile), "%s/%s.cx", include, include) >= (int)sizeof(cxfile)) {
+    if (snprintf(cxfile, sizeof(cxfile), "%s/%s.cx", name, name) >= (int)sizeof(cxfile)) {
         cx_error("cxgen: package name too long");
         return -1;
     }
@@ -209,8 +221,8 @@ static int cx_createPackage(cx_string include) {
         return -1;
     }
 
-    printf("cxgen: create package '%s'\n", include);
-    if (cx_mkdir(include)) {
+    printf("cxgen: create package '%s'\n", name);
+    if (cx_mkdir(name)) {
         cx_error("cxgen: failed to create directory for package");
         return -1;
     }
@@ -229,12 +241,12 @@ static int cx_createPackage(cx_string include) {
     }
 
     /* Write class implementation */
-    if (snprintf(srcfile, sizeof(srcfile), "%s/src/%s_RedPanda.c", include, include) >= (int)sizeof(srcfile)) {
+    if (snprintf(srcfile, sizeof(srcfile), "%s/src/%s_RedPanda.c", name, name) >= (int)sizeof(srcfile)) {
         cx_error("cxgen: package name too long");
         return -1;
     }
 
-    sprintf(srcdir, "%s/src", include);
+    sprintf(srcdir, "%s/src", name);
     if (cx_mkdir(srcdir)) {
         cx_error("cxgen: failed to create src directory for package");
         return -1;
@@ -263,7 +275,7 @@ static int cx_createPackage(cx_string include) {
     }
 
     /* Write main code */
-    if (snprintf(srcfile, sizeof(srcfile), "%s/src/%s.c", include, include) >= (int)sizeof(srcfile)) {
+    if (snprintf(srcfile, sizeof(srcfile), "%s/src/%s.c", name, name) >= (int)sizeof(srcfile)) {
         cx_error("cxgen: package name too long");
         return -1;
     }
@@ -279,12 +291,12 @@ static int cx_createPackage(cx_string include) {
         fprintf(file, "    CX_UNUSED(argc);\n");
         fprintf(file, "    CX_UNUSED(argv);\n\n");
         fprintf(file, "    /* Create Albert the panda */\n");
-        fprintf(file, "    %s_RedPanda myFirstPanda = %s_RedPanda__createChild(\n", include, include);
+        fprintf(file, "    %s_RedPanda myFirstPanda = %s_RedPanda__createChild(\n", name, name);
         fprintf(file, "            NULL,       /* Parent of the object (root) */\n");
         fprintf(file, "            \"Albert\",   /* Name of the object */\n");
         fprintf(file, "            10);        /* Albert's weight */\n\n");
         fprintf(file, "    /* Give Albert something to chew on */\n");
-        fprintf(file, "    %s_RedPanda_chew(myFirstPanda);\n\n", include);
+        fprintf(file, "    %s_RedPanda_chew(myFirstPanda);\n\n", name);
         fprintf(file, "    return 0;\n");
         fprintf(file, "/* $end */\n");
         fclose(file);
@@ -299,11 +311,11 @@ static int cx_createPackage(cx_string include) {
     } else {
         scopes = cx_llNew();
         cx_llInsert(scopes, include);
-        prefix = include;
+        prefix = name;
     }
 
     /* Change working directory */
-    cx_chdir(include);
+    cx_chdir(name);
 
     printf("cxgen: done\n");
 
