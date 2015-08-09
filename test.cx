@@ -1,8 +1,0 @@
-void func(sequence{int32} a): ;
-
-sequence{int32} a: 1, 2, 3
-var sequence{int32} b = {1, 2, 3}
-var sequence{int32}& c = a
-var sequence{int32}& d = sequence{int32}{1, 2, 3}
-
-func({1, 2, 3})
