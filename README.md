@@ -78,7 +78,7 @@ To explore what's in the store, type `ls`. You should see this:
 total: 3 objects
 :: $ 
 ```
-Now type 'Albert', followed by <return>. You should see this:
+Now type 'Albert', followed by a return. You should see this:
 ```
 name:         ::Albert
 parent:       ::
@@ -90,7 +90,7 @@ value:        {weight=11}
 
 :: $ 
 ```
-or, if you only want to see his weight, you can type `Albert.weight` which should output:
+If you only want to see his weight, you can type `Albert.weight` which outputs:
 ```
 11
 ```
