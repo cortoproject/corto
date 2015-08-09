@@ -195,16 +195,17 @@ void printUsage(void) {
 }
 
 static int cx_createPackage(cx_string include) {
-    cx_id id;
-    FILE *cx;
+    cx_id cxfile, srcfile, srcdir;
+    FILE *file;
 
-    if (snprintf(id, sizeof(id), "%s/%s.cx", include, include) >= (int)sizeof(id)) {
+    /* Write definition file */
+    if (snprintf(cxfile, sizeof(cxfile), "%s/%s.cx", include, include) >= (int)sizeof(cxfile)) {
         cx_error("cxgen: package name too long");
         return -1;
     }
 
-    if (cx_fileTest(id)) {
-        cx_error("cxgen: package '%s' already exists", id);
+    if (cx_fileTest(cxfile)) {
+        cx_error("cxgen: package '%s' already exists", cxfile);
         return -1;
     }
 
@@ -214,17 +215,86 @@ static int cx_createPackage(cx_string include) {
         return -1;
     }
 
-    cx = fopen(id, "w");
-    if (cx) {
-        fprintf(cx, "#package ::%s\n\n", include);
-        fclose(cx);
+    file = fopen(cxfile, "w");
+    if (file) {
+        fprintf(file, "#package ::%s\n\n", include);
+        fprintf(file, "class RedPanda::\n");
+        fprintf(file, "    weight: int32\n");
+        fprintf(file, "    int16 construct()\n");
+        fprintf(file, "    void chew()\n");
+        fclose(file);
     } else {
-        cx_error("failed to open file '%s'", id);
+        cx_error("failed to open file '%s'", cxfile);
         return -1;
     }
 
-    if (cx_load(id)) {
-        cx_error("failed to load '%s'", id);
+    /* Write class implementation */
+    if (snprintf(srcfile, sizeof(srcfile), "%s/src/%s_RedPanda.c", include, include) >= (int)sizeof(srcfile)) {
+        cx_error("cxgen: package name too long");
+        return -1;
+    }
+
+    sprintf(srcdir, "%s/src", include);
+    if (cx_mkdir(srcdir)) {
+        cx_error("cxgen: failed to create src directory for package");
+        return -1;
+    }
+
+    if (cx_fileTest(srcfile)) {
+        cx_error("cxgen: file '%s' already exists", srcfile);
+        return -1;
+    }
+
+    file = fopen(srcfile, "w");
+    if (file) {
+        fprintf(file, "/* $begin(::%s::RedPanda::construct) */\n", include);
+        fprintf(file, "    printf(\"Hurray, %%s the panda is born!\\n\", cx_nameof(_this));\n");
+        fprintf(file, "    return 0;\n");
+        fprintf(file, "/* $end */\n");
+        fprintf(file, "/* $begin(::%s::RedPanda::chew) */\n", include);
+        fprintf(file, "    _this->weight++;\n");
+        fprintf(file, "    printf(\"%%s the panda is chewing on something omnomnom (his weight: %%d)\\n\",\n");
+        fprintf(file, "            cx_nameof(_this), _this->weight);\n");
+        fprintf(file, "/* $end */\n");
+        fclose(file);
+    } else {
+        cx_error("failed to open file '%s'", cxfile);
+        return -1;
+    }
+
+    /* Write main code */
+    if (snprintf(srcfile, sizeof(srcfile), "%s/src/%s.c", include, include) >= (int)sizeof(srcfile)) {
+        cx_error("cxgen: package name too long");
+        return -1;
+    }
+
+    if (cx_fileTest(srcfile)) {
+        cx_error("cxgen: file '%s' already exists", srcfile);
+        return -1;
+    }
+
+    file = fopen(srcfile, "w");
+    if (file) {
+        fprintf(file, "/* $begin(main) */\n");
+        fprintf(file, "    CX_UNUSED(argc);\n");
+        fprintf(file, "    CX_UNUSED(argv);\n\n");
+        fprintf(file, "    /* Create Albert the panda */\n");
+        fprintf(file, "    %s_RedPanda myFirstPanda = %s_RedPanda__createChild(\n", include, include);
+        fprintf(file, "            NULL,       /* Parent of the object (root) */\n");
+        fprintf(file, "            \"Albert\",   /* Name of the object */\n");
+        fprintf(file, "            10);        /* Albert's weight */\n");
+        fprintf(file, "    /* Give Albert something to chew on */\n");
+        fprintf(file, "    %s_RedPanda_chew(myFirstPanda);\n\n", include);
+        fprintf(file, "    return 0;\n");
+        fprintf(file, "/* $end */\n");
+        fclose(file);
+    } else {
+        cx_error("failed to open file '%s'", cxfile);
+        return -1;
+    }    
+
+    if (cx_load(cxfile)) {
+        cx_error("failed to load '%s'", cxfile);
         return -1;
     } else {
         scopes = cx_llNew();

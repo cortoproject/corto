@@ -46,6 +46,7 @@ error:
 /* Generate makefile for project */
 static cx_int16 c_projectGenerateMakefile(cx_generator g) {
     g_file file;
+    cx_id id;
 
     /* Only generate makefile when no makefile is present */
     if(!cx_fileTest("rakefile")) {
@@ -55,7 +56,7 @@ static cx_int16 c_projectGenerateMakefile(cx_generator g) {
         }
 
         g_fileWrite(file, "\n");
-        g_fileWrite(file, "TARGET = :%s\n\n", g_getName(g));
+        g_fileWrite(file, "PACKAGE = '%s'\n\n", cx_fullname(g_getCurrent(g), id) + 2);
         g_fileWrite(file, "require \"#{ENV['CORTEX_HOME']}/build/package\"\n\n");
     }
 
@@ -86,7 +87,7 @@ static cx_int16 c_projectGenerateDepMakefile(cx_generator g) {
     cx_iter iter;
     c_projectCleanInclude_t walkData;
 
-    file = g_fileOpen(g, ".cortex/dep.rb");
+    file = g_hiddenFileOpen(g, "dep.rb");
     if(!file) {
         goto error;
     }

@@ -59,6 +59,14 @@ cx_int16 cx_struct_construct(cx_struct _this) {
     size = 0;
     alignment = 0;
 
+    /* Don't allow empty structs */
+    if (!cx_interface(_this)->nextMemberId && !cx_interface(_this)->base) {
+        cx_member m = cx_declareChild(_this, "__dummy", cx_member_o);
+        cx_setref(&m->type, cx_int8_o);
+        m->modifiers = CX_PRIVATE|CX_LOCAL;
+        cx_define(m);
+    }
+
     /* Insert members */
     if (cx__interface_insertMembers(cx_interface(_this))) {
         goto error;
