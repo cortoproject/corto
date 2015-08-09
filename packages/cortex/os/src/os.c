@@ -34,3 +34,12 @@ cx_void os_system(cx_string cmd) {
 
 /* $end */
 }
+
+int osmain(int argc, char* argv[]) {
+/* $begin(main) */
+    /* Insert code that must be run when component is loaded */
+    CX_UNUSED(argc);
+    CX_UNUSED(argv);
+    return 0;
+/* $end */
+}

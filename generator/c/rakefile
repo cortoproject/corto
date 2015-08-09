@@ -4,7 +4,7 @@ COMPONENTS = [] <<
     :api <<
     :type <<
     :interface <<
-    :load <<
+    :meta <<
     :project
 
 require "#{ENV['CORTEX_HOME']}/build/forward"

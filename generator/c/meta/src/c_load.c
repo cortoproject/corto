@@ -336,7 +336,7 @@ static g_file c_loadSourceFileOpen(cx_generator g) {
 
     /* Create file */
     sprintf(headerFileName, "%s__meta.c", g_getName(g));
-    result = g_fileOpen(g, headerFileName);
+    result = g_hiddenFileOpen(g, headerFileName);
 
     /* Print standard comments and includes */
     g_fileWrite(result, "/* %s\n", headerFileName);

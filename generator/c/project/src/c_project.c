@@ -9,12 +9,11 @@
 static cx_int16 c_projectGenerateMainFile(cx_generator g) {
     cx_id filename;
     g_file file;
-    cx_string snippet;
     cx_id topLevelName;
 
     sprintf(filename, "%s__load.c", g_getName(g));
 
-    file = g_fileOpen(g, filename);
+    file = g_hiddenFileOpen(g, filename);
     if(!file) {
         goto error;
     }
@@ -26,39 +25,16 @@ static cx_int16 c_projectGenerateMainFile(cx_generator g) {
 
     g_fileWrite(file, "#include \"%s.h\"\n\n", g_fullOid(g, g_getCurrent(g), topLevelName));
 
-    if ((snippet = g_fileLookupHeader(file, ""))) {
-        g_fileWrite(file, "/* $header()");
-        g_fileWrite(file, "%s", snippet);
-        g_fileWrite(file, "$end */\n\n");
-    } else {
-        g_fileWrite(file, "/* $header() */\n");
-        g_fileWrite(file, "/* Insert user-includes here */\n");
-        g_fileWrite(file, "/* $end */\n\n");    
-    }
-
     g_fileWrite(file, "/* This function is the entrypoint for the library and");
     g_fileWrite(file, " * loads definitions of the '%s' scope */\n", g_getName(g));
     g_fileWrite(file, "int cortexmain(int argc, char* argv[]) {\n");
     g_fileIndent(file);
-    g_fileWrite(file, "CX_UNUSED(argc);\n");
-    g_fileWrite(file, "CX_UNUSED(argv);\n");
 
     g_fileWrite(file, "\n");
-    g_fileWrite(file, "int result = %s_load();\n", g_getName(g));
-
-    if ((snippet = g_fileLookupSnippet(file, "cortexmain"))) {
-        g_fileWrite(file, "\n");
-        g_fileWrite(file, "/* $begin(cortexmain)");
-        g_fileWrite(file, "%s", snippet);
-        g_fileWrite(file, "$end */\n\n");
-    } else {
-        g_fileWrite(file, "\n");
-        g_fileWrite(file, "/* $begin(cortexmain) */\n");
-        g_fileWrite(file, "/* Insert user-code here */\n");
-        g_fileWrite(file, "/* $end */\n\n");
-    }
-
-    g_fileWrite(file, "return result;\n");
+    g_fileWrite(file, "if (%s_load()) return -1;\n", g_getName(g));
+    g_fileWrite(file, "int %smain(int argc, char* argv[]);\n", cx_nameof(g_getCurrent(g)));
+    g_fileWrite(file, "if (%smain(argc, argv)) return -1;\n", cx_nameof(g_getCurrent(g)));
+    g_fileWrite(file, "return 0;\n");
     g_fileDedent(file);
     g_fileWrite(file, "}\n\n");
 
@@ -110,7 +86,7 @@ static cx_int16 c_projectGenerateDepMakefile(cx_generator g) {
     cx_iter iter;
     c_projectCleanInclude_t walkData;
 
-    file = g_fileOpen(g, "dep.rb");
+    file = g_fileOpen(g, ".cortex/dep.rb");
     if(!file) {
         goto error;
     }
@@ -148,7 +124,7 @@ static cx_int16 c_projectGenerateDepMakefile(cx_generator g) {
     walkData.g = g;
     g_fileWrite(file, "\n");
     g_walkRecursive(g, c_projectCleanInclude, &walkData);
-    g_fileWrite(file, "CLOBBER.include(\"dep.rb\")\n");
+    g_fileWrite(file, "CLOBBER.include(\".cortex/dep.rb\")\n");
 
     return 0;
 error:
@@ -161,6 +137,7 @@ cx_int16 cortex_genMain(cx_generator g) {
     /* Create source and include directories */
     cx_mkdir("src");
     cx_mkdir("include");
+    cx_mkdir(".cortex");
 
     if(c_projectGenerateMainFile(g)) {
         goto error;

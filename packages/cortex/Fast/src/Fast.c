@@ -10,6 +10,37 @@
 
 /* $header() */
 #include "Fast__private.h"
+#include "Fast.h"
+#include "cx_util.h"
+#include "cx_loader.h"
+#include "cx_file.h"
+#include "cx_mm.h"
+
+cx_threadKey Fast_PARSER_KEY;
+
+/* Run a cortex file */
+int fast_cortexRun(cx_string file, void* udata) {
+    cx_char* source;
+    Fast_Parser p;
+    CX_UNUSED(udata);
+
+    source = cx_fileLoad(file);
+    if (source) {
+        /* Create parser */
+        p = Fast_Parser__create(source, file);
+
+        /* Parse script */
+        Fast_Parser_parse(p);
+        cx_release(p);
+        cx_dealloc(source);
+    } else {
+        goto error;
+    }
+
+    return 0;
+error:
+    return -1;
+}
 
 /* Create a call-expression */
 Fast_Call Fast_createCallWithArguments(Fast_Expression instance, cx_string function, Fast_Expression arguments) {
@@ -209,5 +240,18 @@ Fast_valueKind Fast_valueKindFromType(cx_type type) {
     return result;
 error:
     return Fast_Nothing;
+/* $end */
+}
+
+int Fastmain(int argc, char* argv[]) {
+/* $begin(main) */
+    CX_UNUSED(argc);
+    CX_UNUSED(argv);
+    if (cx_threadTlsKey(&Fast_PARSER_KEY, NULL)) {
+        return -1;
+    }
+    /* Register cortex extension */
+    cx_loaderRegister("cx", fast_cortexRun, NULL);
+    return 0;
 /* $end */
 }

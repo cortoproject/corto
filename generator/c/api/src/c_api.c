@@ -185,15 +185,15 @@ static void c_apiHeaderClose(g_file file) {
 /* Open sourcefile */
 static g_file c_apiSourceOpen(cx_generator g) {
     g_file result;
-    cx_id headerFileName;
+    cx_id sourceFileName;
     cx_id topLevelName;
 
     /* Create file */
-    sprintf(headerFileName, "%s__api.c", g_getName(g));
-    result = g_fileOpen(g, headerFileName);
+    sprintf(sourceFileName, "%s__api.c", g_getName(g));
+    result = g_hiddenFileOpen(g, sourceFileName);
 
     /* Print standard comments and includes */
-    g_fileWrite(result, "/* %s\n", headerFileName);
+    g_fileWrite(result, "/* %s\n", sourceFileName);
     g_fileWrite(result, " *\n");
     g_fileWrite(result, " * API convenience functions for C-language.\n");
     g_fileWrite(result, " * This file contains generated code. Do not modify!\n");

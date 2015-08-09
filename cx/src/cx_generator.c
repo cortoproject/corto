@@ -779,17 +779,12 @@ static cx_string g_filePath(cx_generator g, cx_string filename, cx_char* buffer)
     return result;
 }
 
-/* Read file */
-cx_string g_fileRead(cx_generator g, cx_string name) {
-    cx_char filepath[512];
-    return cx_fileLoad(g_filePath(g, name, filepath));
-}
-
 /* Find existing parts in the code that must not be overwritten. */
 cx_int16 g_loadExisting(cx_generator g, cx_string name, cx_string option, cx_ll *list) {
     cx_string code = NULL, ptr = NULL;
+    CX_UNUSED(g);
 
-    code = g_fileRead(g, name);
+    code = cx_fileLoad(name);
     if (code) {
         ptr = code;
 
@@ -889,10 +884,8 @@ void g_fileClose(g_file file) {
     cx_dealloc(file);
 }
 
-/* Open file */
-g_file g_fileOpen(cx_generator g, cx_string name) {
+static g_file g_fileOpenIntern(cx_generator g, cx_string name) {
     g_file result;
-    cx_char filepath[512];
 
     result = cx_alloc(sizeof(struct g_file_s));
     result->snippets = NULL;
@@ -913,7 +906,7 @@ g_file g_fileOpen(cx_generator g, cx_string name) {
         goto error;
     }
 
-    result->file = cx_fileOpen(g_filePath(g, name, filepath));
+    result->file = cx_fileOpen(name);
     if (!result->file) {
         cx_dealloc(result);
         goto error;
@@ -930,6 +923,18 @@ error:
     return NULL;
 }
 
+/* Open file */
+g_file g_fileOpen(cx_generator g, cx_string name) {
+    cx_char filepath[512];
+    return g_fileOpenIntern(g, g_filePath(g, name, filepath));
+}
+
+/* Open hidden file for writing. */
+g_file g_hiddenFileOpen(cx_generator g, cx_string name) {
+    cx_char filepath[512];
+    sprintf(filepath, ".cortex/%s", name);
+    return g_fileOpenIntern(g, filepath);
+}
 
 /* Lookup an existing code-snippet */
 cx_string g_fileLookupSnippetIntern(g_file file, cx_string snippetId, cx_ll list) {

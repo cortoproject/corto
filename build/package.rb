@@ -7,9 +7,10 @@ TARGET = PACKAGE.split("::").last
 GENERATED_SOURCES ||= []
 
 GENERATED_SOURCES <<
-    "src/#{TARGET}__api.c" <<
-    "src/#{TARGET}__wrapper.c" <<
-    "src/#{TARGET}__meta.c" 
+    ".cortex/#{TARGET}__api.c" <<
+    ".cortex/#{TARGET}__wrapper.c" <<
+    ".cortex/#{TARGET}__meta.c" <<
+    ".cortex/#{TARGET}__load.c" 
 
 PREFIX ||= TARGET
 
@@ -25,7 +26,8 @@ CLOBBER.include("bin")
 
 file "include/#{TARGET}__type.h" => GENFILE do
     verbose(false)
-    sh "touch src/#{TARGET}__wrapper.c"
+    sh "mkdir -p .cortex"
+    sh "touch .cortex/#{TARGET}__wrapper.c"
     sh "cxgen #{TARGET} --prefix #{PREFIX} --lang c"
     if not File.identical?(PACKAGEDIR, Dir.pwd) then
         sh "mkdir -p #{PACKAGEDIR}"
@@ -34,12 +36,12 @@ file "include/#{TARGET}__type.h" => GENFILE do
 end
 
 task :prebuild => "include/#{TARGET}__type.h" do
-    require "./dep"
+    require "./.cortex/dep"
 end
 
 task :clobber do
-    if File.exists?("dep.rb")
-        sh "rake clobber -f dep.rb" 
+    if File.exists?(".cortex/dep.rb")
+        sh "rake clobber -f .cortex/dep.rb" 
     end
 end
 

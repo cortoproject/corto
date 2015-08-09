@@ -20,8 +20,8 @@ TARGETDIR ||= ENV['CORTEX_HOME'] + "/bin"
 GENERATED_SOURCES ||= []
 USE ||= []
 
-CLEAN.include("obj/*.o")
-CLEAN.include("obj")
+CLEAN.include(".obj/*.o")
+CLEAN.include(".obj")
 CLOBBER.include("#{TARGETDIR}/#{ARTEFACT}")
 
 INCLUDE << "include"
@@ -30,7 +30,7 @@ CFLAGS << "-g" << "-Wall" << "-Wextra" << "-Wno-gnu-label-as-value" << "-Wno-unk
            "-Wstrict-prototypes" << "-pedantic" << "-std=c99" << "-fPIC" << "-D_XOPEN_SOURCE=600"
 
 SOURCES = (Rake::FileList["src/*.c"] + GENERATED_SOURCES)
-OBJECTS = SOURCES.ext(".o").pathmap("obj/%f")
+OBJECTS = SOURCES.ext(".o").pathmap(".obj/%f")
 USE_INCLUDE = USE.map{|i| "-I" + "#{ENV['CORTEX_HOME']}/packages/" + i.gsub("::", "/") + "/include"}.join(" ")
 
 task :binary => "#{TARGETDIR}/#{ARTEFACT}"
@@ -56,11 +56,31 @@ end
 task :prebuild
 task :postbuild
 
+rule '__api.o' => ->(t){t.pathmap(".cortex/%f").ext(".c")} do |task|
+    build_source(task, false)
+end
+rule '__meta.o' => ->(t){t.pathmap(".cortex/%f").ext(".c")} do |task|
+    build_source(task, false)
+end
+rule '__wrapper.o' => ->(t){t.pathmap(".cortex/%f").ext(".c")} do |task|
+    build_source(task, false)
+end
+rule '__load.o' => ->(t){t.pathmap(".cortex/%f").ext(".c")} do |task|
+    build_source(task, false)
+end
 rule '.o' => ->(t){t.pathmap("src/%f").ext(".c")} do |task|
-    verbose(false)
-    sh "mkdir -p obj"
-    sh "echo '#{task.source}'"
-    sh "cc -c #{CFLAGS.join(" ")} #{USE_INCLUDE} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{task.source} -o #{task.name}"
+    build_source(task, true)
 end
 
 task :default => [:prebuild, :binary, :postbuild]
+
+def build_source(task, echo)
+    verbose(false)
+    sh "mkdir -p .obj"
+    if echo 
+        sh "echo '#{task.source}'" 
+    end
+    sh "cc -c #{CFLAGS.join(" ")} #{USE_INCLUDE} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{task.source} -o #{task.name}"
+end
+
+

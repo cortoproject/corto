@@ -609,7 +609,7 @@ static g_file c_interfaceWrapperFileOpen(cx_generator g) {
 
     cx_object o = g_getCurrent(g);
     sprintf(fileName, "%s__wrapper.c", g_getName(g));
-    result = g_fileOpen(g, fileName);
+    result = g_hiddenFileOpen(g, fileName);
     if(!result) {
         goto error;
     }
@@ -685,7 +685,7 @@ static cx_int16 c_interfaceObject(cx_object o, c_typeWalk_t* data) {
      * an interface and has procedures. When the object is not an interface
      * but does have procedures (typical example is callbacks or static functions)
      * these are appended to the header of the first scope in the hierarchy. */
-    if (hasProcedures) {
+    if (hasProcedures || isTopLevelObject) {
 
         /* Create a wrapper file if it was not already created */
         if (!data->wrapper) {
@@ -723,6 +723,28 @@ static cx_int16 c_interfaceObject(cx_object o, c_typeWalk_t* data) {
         /* Walk scope */
         if (!cx_scopeWalk(o, c_interfaceClassProcedure, data)) {
             goto error;
+        }
+
+        /* If top level file, generate main function */
+        if (isTopLevelObject) {
+            g_fileWrite(data->source, "\n");
+            g_fileWrite(data->source, "int %smain(int argc, char* argv[]) {\n", cx_nameof(o));
+            g_fileWrite(data->source, "/* $begin(main)");
+            g_fileIndent(data->source);
+            if ((snippet = g_fileLookupSnippet(data->source, "main"))) {
+                g_fileWrite(data->source, "%s", snippet);
+                g_fileWrite(data->source, "$end */\n");
+                g_fileDedent(data->source);
+            } else {
+                g_fileWrite(data->source, " */\n");
+                g_fileWrite(data->source, "/* Insert code that must be run when component is loaded */\n");
+                g_fileWrite(data->source, "CX_UNUSED(argc);\n");
+                g_fileWrite(data->source, "CX_UNUSED(argv);\n");
+                g_fileWrite(data->source, "return 0;\n");
+                g_fileDedent(data->source);
+                g_fileWrite(data->source, "/* $end */\n");
+            }
+            g_fileWrite(data->source, "}\n");
         }
     }
 

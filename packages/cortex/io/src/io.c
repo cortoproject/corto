@@ -26,20 +26,19 @@ cx_void io_println(cx_string str) {
 cx_string io_readln(void) {
 /* $begin(::cortex::io::readln) */
     size_t size=256;
-    int read;
+    
     cx_string result = cx_alloc(size+1);
+    scanf("%255s", result);
 
-    if ((read = getline(&result, &size, stdin)) == -1) {
-        cx_error("io::readln: read error\n");
-        goto error;
-    }
-    
-    /* Remove newline character */
-    result[strlen(result)-1]='\0';
-    
     return result;
-error:
-    cx_dealloc(result);
-    return NULL;
+/* $end */
+}
+
+int iomain(int argc, char* argv[]) {
+/* $begin(main) */
+    /* Insert code that must be run when component is loaded */
+    CX_UNUSED(argc);
+    CX_UNUSED(argv);
+    return 0;
 /* $end */
 }

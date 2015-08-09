@@ -137,3 +137,12 @@ cx_float64 mth_tan(cx_float64 x) {
 
 /* $end */
 }
+
+int mathmain(int argc, char* argv[]) {
+/* $begin(main) */
+    /* Insert code that must be run when component is loaded */
+    CX_UNUSED(argc);
+    CX_UNUSED(argv);
+    return 0;
+/* $end */
+}

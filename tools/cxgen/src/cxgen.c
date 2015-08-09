@@ -98,7 +98,7 @@ int cx_arg_language(char* arg, int argc, char* argv[]) {
             cx_llAppend(generators, "c_project");
             cx_llAppend(generators, "c_type");
             cx_llAppend(generators, "c_interface");
-            cx_llAppend(generators, "c_load");
+            cx_llAppend(generators, "c_meta");
             cx_llAppend(generators, "c_api");
             cx_llAppend(attributes, "c=src");
             cx_llAppend(attributes, "h=include");

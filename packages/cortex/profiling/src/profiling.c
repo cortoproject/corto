@@ -12,7 +12,15 @@
 
 #include "profiling__keyvalue.h"
 
-extern cx_threadKey profiling_key;
+cx_threadKey profiling_key = 0;
+
+static void profiling_clearTlsValue(void *data) {
+    profiling_TlsValue *value = data;
+    cx_ll ll = value->ll;
+    if (ll) {
+        cx_llFree(ll);
+    }
+}
 
 /*
  * topProfile can be a profile, the per-thread scope, or the root-scope
@@ -97,5 +105,16 @@ cx_void profiling_stop(void) {
     difference = cx_timeSub(stopTime, *startTimePtr);
     cx_dealloc(startTimePtr);
     profiling_closeProfile(value, difference);
+/* $end */
+}
+
+int profilingmain(int argc, char* argv[]) {
+/* $begin(main) */
+    CX_UNUSED(argc);
+    CX_UNUSED(argv);
+    if (cx_threadTlsKey(&profiling_key, profiling_clearTlsValue)) {
+        cx_error("Cannot create profiling key");
+    }
+    return 0;
 /* $end */
 }

@@ -8,6 +8,10 @@
 
 #include "ic.h"
 
+/* $header() */
+cx_threadKey IC_PROGRAM_KEY;
+/* $end */
+
 /* ::cortex::ic::opKindFromOperator(operatorKind operator) */
 ic_opKind ic_opKindFromOperator(cx_operatorKind operator) {
 /* $begin(::cortex::ic::opKindFromOperator) */
@@ -42,5 +46,16 @@ ic_opKind ic_opKindFromOperator(cx_operatorKind operator) {
     }
 
     return ic_set;
+/* $end */
+}
+
+int icmain(int argc, char* argv[]) {
+/* $begin(main) */
+    CX_UNUSED(argc);
+    CX_UNUSED(argv);
+    if (cx_threadTlsKey(&IC_PROGRAM_KEY, NULL)) {
+        return -1;
+    }
+    return 0;
 /* $end */
 }

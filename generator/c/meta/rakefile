@@ -1,4 +1,4 @@
-TARGET = :c_load
+TARGET = :c_meta
 
 INCLUDE = ['../common/include']
 CORTEX_LIB = ['c_common']
