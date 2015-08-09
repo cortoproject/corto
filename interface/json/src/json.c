@@ -98,9 +98,6 @@ static cx_int16 serializePrimitive(cx_serializer s, cx_value *v, void *userData)
         case CX_FLOAT:
             result = serializeNumber(v, &valueString);
             break;
-        case CX_ALIAS:
-            result = serializeAlias(v, &valueString);
-            break;
     }
     if (result) {
         goto error;

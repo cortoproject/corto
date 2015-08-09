@@ -157,9 +157,6 @@ cx_char* c_primitiveId(cx_primitive t, cx_char* buff) {
     case CX_TEXT:
         strcpy(buff, "char*");
         break;
-    case CX_ALIAS:
-        strcpy(buff, cx_alias(t)->typeName);
-        break;
     }
 
     /* Append width */

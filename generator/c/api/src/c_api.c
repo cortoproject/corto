@@ -190,7 +190,11 @@ static g_file c_apiSourceOpen(cx_generator g) {
 
     /* Create file */
     sprintf(sourceFileName, "%s__api.c", g_getName(g));
-    result = g_hiddenFileOpen(g, sourceFileName);
+    if (!strcmp(gen_getAttribute(g, "bootstrap"), "true")) {
+        result = g_fileOpen(g, sourceFileName);
+    } else {
+        result = g_hiddenFileOpen(g, sourceFileName);
+    }
 
     /* Print standard comments and includes */
     g_fileWrite(result, "/* %s\n", sourceFileName);

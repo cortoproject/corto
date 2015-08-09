@@ -84,13 +84,6 @@ error:
     return -1;
 }
 
-cx_int16 serializeAlias(cx_value *value, cx_string *out) {
-    CX_UNUSED(value);
-    *out = cx_alloc(sizeof("null"));
-    strcpy(*out, "null");
-    return 0;
-}
-
 static cx_bool json_deserBoolean(void* o, cx_type t, JSON_Value* v) {
     cx_primitiveKind kind = cx_primitive(t)->kind;
     cx_assert(kind == CX_BOOLEAN, "not deserializing boolean");
@@ -155,9 +148,6 @@ cx_bool json_deserPrimitive(void* p, cx_type t, JSON_Value* v) {
         case CX_ENUM:
             break;
         case CX_BITMASK:
-            break;
-        case CX_ALIAS:
-            cx_critical("alias type not supported");
             break;
     }
     return error;

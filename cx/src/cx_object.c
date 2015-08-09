@@ -777,7 +777,7 @@ err_parent_mutex:
 
 
 /* Find the right initializer to call */
-cx_int16 cx_delegateInit(cx_type t, cx_object o) {
+cx_int16 cx_delegateInit(cx_type t, void *o) {
     cx_function delegate = NULL;
     cx_int16 result = 0;
 
@@ -974,10 +974,7 @@ cx_object _cx_declareChild(cx_object parent, cx_string name, cx_type type) {
                 cx__initObservable(o);
 
                 /* Call framework initializer */
-                cx_init(o);
-
-                /* Init object value */
-                if (cx_delegateInit(cx_typeof(o), o)) {
+                if (cx_init(o)) {
                     cx_invalidate(o);
                     goto error;
                 }
@@ -3434,7 +3431,6 @@ void cx_setstr(cx_string* ptr, cx_string value) {
     *ptr = value ? cx_strdup(value) : NULL;
 }
 
-/* Convert object to string */
 cx_string cx_str(cx_object object, cx_uint32 maxLength) {
     cx_string_ser_t serData;
     struct cx_serializer_s s;
@@ -3451,7 +3447,6 @@ cx_string cx_str(cx_object object, cx_uint32 maxLength) {
     return serData.buffer;
 }
 
-/* Convert value to string */
 cx_string cx_strv(cx_value* v, cx_uint32 maxLength) {
     cx_string_ser_t serData;
     struct cx_serializer_s s;
@@ -3468,35 +3463,70 @@ cx_string cx_strv(cx_value* v, cx_uint32 maxLength) {
     return serData.buffer;
 }
 
-/* Deserialize object from string */
-cx_object cx_fromStr(cx_string string) {
+cx_string _cx_strp(void *p, cx_type type, cx_uint32 maxLength) {
+    cx_value v;
+    cx_valueValueInit(&v, NULL, type, p);
+    return cx_strv(&v, maxLength);
+}
+
+cx_string cx_stra(cx_any a, cx_uint32 maxLength) {
+    cx_value v;
+    cx_valueValueInit(&v, NULL, a.type, a.value);
+    return cx_strv(&v, maxLength);    
+}
+
+void cx_fromStr(cx_object *o, cx_string string) {
     cx_string_deser_t serData;
 
-    serData.out = NULL;
+    serData.out = *o;
     serData.scope = NULL;
-    serData.type = NULL;
+    serData.type = *o ? cx_typeof(*o) : NULL;
     if (!cx_string_deser(string, &serData)) {
         cx_assert(!serData.out, "deserializer failed but out is set");
     }
 
-    return serData.out;
+    *o = serData.out;   
 }
 
-/* Deserialize object from string */
-void *_cx_fromStrp(cx_string string, void* out, cx_type type) {
+void cx_fromStrv(cx_value *v, cx_string string) {
     cx_string_deser_t serData;
 
-    serData.out = out;
+    serData.out = cx_valueValue(v);
+    serData.scope = NULL;
+    serData.type = cx_valueType(v);
+    if (!cx_string_deser(string, &serData)) {
+        cx_assert(!serData.out, "deserializer failed but out is set");
+    }
+
+    cx_valueSetValue(v, serData.out);
+}
+
+void _cx_fromStrp(void* out, cx_type type, cx_string string) {
+    cx_string_deser_t serData;
+
+    serData.out = *(void**)out;
     serData.scope = NULL;
     serData.type = type;
     if (!cx_string_deser(string, &serData)) {
         cx_assert(!serData.out, "deserializer failed but out is set");
     }
 
-    return serData.out;
+    *(void**)out = serData.out; 
 }
 
-/* Compare objects */
+void cx_fromStra(cx_any *a, cx_string string) {
+    cx_string_deser_t serData;
+
+    serData.out = a->value;
+    serData.scope = NULL;
+    serData.type = a->type;
+    if (!cx_string_deser(string, &serData)) {
+        cx_assert(!serData.out, "deserializer failed but out is set");
+    }
+
+    a->value = serData.out;     
+}
+
 cx_equalityKind cx_compare(cx_object o1, cx_object o2) {
     cx_any a1, a2;
     a1.value = o1;
@@ -3508,7 +3538,6 @@ cx_equalityKind cx_compare(cx_object o1, cx_object o2) {
     return cx_type_compare(a1, a2);
 }
 
-/* Compare value */
 cx_equalityKind cx_comparev(cx_value *value1, cx_value *value2) {
     cx_void *v1, *v2;
     cx_any a1, a2;
@@ -3528,7 +3557,22 @@ cx_equalityKind cx_comparev(cx_value *value1, cx_value *value2) {
     return cx_type_compare(a1, a2);
 }
 
-/* Init object */
+cx_equalityKind _cx_comparep(void *p1, cx_type type, void *p2) {
+    cx_value vdst;
+    cx_value vsrc;
+    cx_valueValueInit(&vdst, NULL, type, p1);
+    cx_valueValueInit(&vsrc, NULL, type, p2);
+    return cx_comparev(&vdst, &vsrc);
+}
+
+cx_equalityKind cx_comparea(cx_any a1, cx_any a2) {
+    cx_value vdst;
+    cx_value vsrc;
+    cx_valueValueInit(&vdst, NULL, a1.type, a1.value);
+    cx_valueValueInit(&vsrc, NULL, a2.type, a2.value);
+    return cx_comparev(&vdst, &vsrc);
+}
+
 cx_int16 cx_init(cx_object o) {
     cx_typeKind kind = cx_typeof(o)->kind;
     switch(kind) {
@@ -3541,16 +3585,29 @@ cx_int16 cx_init(cx_object o) {
         default:
             break;
     }
-    return 0;
+    return cx_delegateInit(cx_typeof(o), o);;
 }
 
-/* Init value */
 cx_int16 cx_initv(cx_value *v) {
     struct cx_serializer_s s = cx_ser_init(0, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
-    return cx_serializeValue(&s, v, NULL);
+    if (cx_serializeValue(&s, v, NULL)) {
+        return -1;
+    }
+    return cx_delegateInit(cx_valueType(v), cx_valueValue(v));
 }
 
-/* Deinit object */
+cx_int16 _cx_initp(void *p, cx_type type) {
+    cx_value v;
+    cx_valueValueInit(&v, NULL, type, p);
+    return cx_initv(&v);
+}
+
+cx_int16 cx_inita(cx_any a) {
+    cx_value v;
+    cx_valueValueInit(&v, NULL, a.type, a.value);
+    return cx_initv(&v);    
+}
+
 cx_int16 cx_deinit(cx_object o) {
     cx_typeKind kind = cx_typeof(o)->kind;
     switch(kind) {
@@ -3566,13 +3623,23 @@ cx_int16 cx_deinit(cx_object o) {
     return 0;
 }
 
-/* Deinit value */
 cx_int16 cx_deinitv(cx_value *v) {
     struct cx_serializer_s s = cx_ser_freeResources(0, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
     return cx_serializeValue(&s, v, NULL);
 }
 
-/* Copy object */
+cx_int16 _cx_deinitp(void *p, cx_type type) {
+    cx_value v;
+    cx_valueValueInit(&v, NULL, type, p);
+    return cx_deinitv(&v);
+}
+
+cx_int16 cx_deinita(cx_any a) {
+    cx_value v;
+    cx_valueValueInit(&v, NULL, a.type, a.value);
+    return cx_deinitv(&v);    
+}
+
 cx_int16 cx_copy(cx_object *dst, cx_object src) {
     struct cx_serializer_s s = cx_copy_ser(CX_PRIVATE, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
     cx_copy_ser_t data;
@@ -3594,12 +3661,47 @@ cx_int16 cx_copy(cx_object *dst, cx_object src) {
     return result;
 }
 
-/* Copy value */
 cx_int16 cx_copyv(cx_value *dst, cx_value *src) {
     struct cx_serializer_s s = cx_copy_ser(CX_PRIVATE, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
     cx_copy_ser_t data;
     cx_int16 result;
+    cx_bool newObject = FALSE;
+
+    if (!cx_valueValue(dst)) {
+        cx_valueValueInit(dst, NULL, cx_valueType(src), cx_declare(cx_valueType(src)));
+        newObject = TRUE;
+    }
+
     data.value = *dst;
     result = cx_serializeValue(&s, src, &data);
+
+    if (newObject) {
+        cx_define(cx_valueValue(dst));
+    }
+
     return result;
 }
+
+cx_int16 _cx_copyp(void *dst, cx_type type, void *src) {
+    cx_value vdst;
+    cx_value vsrc;
+    cx_int16 result;
+    cx_valueValueInit(&vdst, NULL, type, *(void**)dst);
+    cx_valueValueInit(&vsrc, NULL, type, src);
+    result = cx_copyv(&vdst, &vsrc);
+    *(void**)dst = cx_valueValue(&vdst);
+    return result;
+}
+
+cx_int16 cx_copya(cx_any *dst, cx_any src) {
+    cx_value vdst;
+    cx_value vsrc;
+    cx_int16 result;
+    cx_valueValueInit(&vdst, NULL, src.type, dst->value);
+    cx_valueValueInit(&vsrc, NULL, src.type, src.value);
+    result = cx_copyv(&vdst, &vsrc);
+    dst->value = cx_valueValue(&vdst);
+    dst->type = src.type;
+    return result;
+}
+

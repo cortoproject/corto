@@ -197,9 +197,6 @@ static cx_int16 c_typePrimitive(cx_serializer s, cx_value* v, void* userData) {
             goto error;
         }
         break;
-    case CX_ALIAS:
-        /* Don't generate for alias types */
-        break;
     default:
         if (!c_primitiveId(cx_primitive(t), buff)) {
             goto error;

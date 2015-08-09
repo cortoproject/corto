@@ -56,12 +56,8 @@ static cx_bool cx_genTypeCompareStructural(cx_type t1, cx_type t2) {
         switch(t1->kind) {
         case CX_PRIMITIVE:
             if (cx_primitive(t1)->kind == cx_primitive(t2)->kind) {
-                if (cx_primitive(t1)->kind == CX_ALIAS) {
-                    result = !strcmp(cx_alias(t1)->typeName, cx_alias(t2)->typeName);
-                } else {
-                    if (cx_primitive(t1)->width == cx_primitive(t2)->width) {
-                        result = TRUE;
-                    }
+                if (cx_primitive(t1)->width == cx_primitive(t2)->width) {
+                    result = TRUE;
                 }
             }
             break;

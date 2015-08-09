@@ -25,7 +25,6 @@ cx_uint8 cx__primitive_convertId(cx_primitiveKind kind, cx_width width) {
     case CX_INTEGER:
         id = 8 + width;
         break;
-    case CX_ALIAS:
     case CX_UINTEGER:
         id = 14 + width;
         break;
@@ -60,9 +59,6 @@ cx_bool cx_primitive_castable_v(cx_primitive _this, cx_type type) {
                 cx_primitiveKind kind = cx_primitive(type)->kind;
                 if (_this->kind != kind) {
                     switch(_this->kind) {
-                    case CX_ALIAS:
-                        result = FALSE;
-                        break;
                     case CX_BOOLEAN:
                     case CX_BINARY:
                         switch(kind) {
@@ -161,11 +157,7 @@ cx_bool cx_primitive_castable_v(cx_primitive _this, cx_type type) {
                         break;
                     }
                 } else {
-                    if (_this->kind == CX_ALIAS) {
-                        result = !strcmp(cx_alias(_this)->typeName, cx_alias(type)->typeName);
-                    } else {
-                        result = TRUE;
-                    }
+                    result = TRUE;
                 }
             }
         }

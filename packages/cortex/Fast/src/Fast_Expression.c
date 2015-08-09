@@ -23,7 +23,6 @@ cx_int8 Fast_Expression_getTypeScore(cx_primitive t) {
     case CX_BINARY:
     case CX_INTEGER:
     case CX_UINTEGER:
-    case CX_ALIAS:
         result = 2;
         break;
     case CX_CHARACTER:
@@ -51,7 +50,6 @@ cx_int8 Fast_Expression_getCastScore(cx_primitive t) {
         case CX_BINARY:
         case CX_INTEGER:
         case CX_UINTEGER:
-        case CX_ALIAS:
         case CX_CHARACTER:
             result = 2;
             break;
@@ -288,12 +286,6 @@ Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_boo
                 case CX_BITMASK: {
                     cx_int32 dstValue;
                     cx_convert(cx_primitive(exprType), value, cx_primitive(cx_int32_o), &dstValue);
-                    result = Fast_Expression(Fast_SignedInteger__create(dstValue));
-                    break;
-                }
-                case CX_ALIAS: {
-                    cx_int32 dstValue;
-                    cx_convert(cx_primitive(exprType), value, cx_primitive(cx_word_o), &dstValue);
                     result = Fast_Expression(Fast_SignedInteger__create(dstValue));
                     break;
                 }

@@ -13,20 +13,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-/* ::cortex::lang::alias */
-cx_alias cx_alias__create(cx_string typeName);
-cx_alias cx_alias__createChild(cx_object _parent, cx_string _name, cx_string typeName);
-
-cx_alias cx_alias__declare(void);
-cx_alias cx_alias__declareChild(cx_object _parent, cx_string _name);
-cx_int16 cx_alias__define(cx_alias _this, cx_string typeName);
-void cx_alias__update(cx_alias _this, cx_string typeName);
-void cx_alias__set(cx_alias _this, cx_string typeName);
-cx_string cx_alias__str(cx_alias value);
-cx_alias cx_alias__fromStr(cx_alias value, cx_string str);
-cx_int16 cx_alias__copy(cx_alias *dst, cx_alias src);
-cx_int16 cx_alias__compare(cx_alias dst, cx_alias src);
-
 /* ::cortex::lang::any */
 cx_any* cx_any__create(void);
 cx_any* cx_any__createChild(cx_object _parent, cx_string _name);

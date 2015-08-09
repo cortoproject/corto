@@ -108,14 +108,16 @@ cx_string _cx_strp(void *p, cx_type type, cx_uint32 maxLength);
 cx_string cx_stra(cx_any a, cx_uint32 maxLength);
 
 /* Deserialize from string */
-cx_object cx_fromStr(cx_string string);
-void *_cx_fromStrp(cx_string string, void* out, cx_type type);
+void cx_fromStr(cx_object *o, cx_string string);
+void cx_fromStrv(cx_value *v, cx_string string);
+void _cx_fromStrp(void *p, cx_type type, cx_string string);
+void cx_fromStra(cx_any *a, cx_string string);
 
 /* Copy */
 cx_int16 cx_copy(cx_object *dst, cx_object src);
-cx_int16 cx_copyv(cx_value *v, cx_value *src);
-cx_int16 _cx_copyp(void *p, cx_type type, cx_value *src);
-cx_int16 cx_copya(cx_any a, cx_value *src);
+cx_int16 cx_copyv(cx_value *dst, cx_value *src);
+cx_int16 _cx_copyp(void *dst, cx_type type, void *src);
+cx_int16 cx_copya(cx_any *dst, cx_any src);
 
 /* Compare */
 cx_equalityKind cx_compare(cx_object o1, cx_object o2);
@@ -141,7 +143,7 @@ cx_int16 cx_deinita(cx_any a);
 #define cx_declare(type) _cx_declare(cx_type(type))
 #define cx_declareChild(parent, name, type) _cx_declareChild(parent, name, cx_type(type))
 #define cx_strp(p, type, maxLength) _cx_strp(p, cx_type(type), maxLength)
-#define cx_fromStrp(string, out, type) _cx_fromStrp(string, out, cx_type(type))
+#define cx_fromStrp(out, type, string) _cx_fromStrp(out, cx_type(type), string)
 #define cx_copyp(p, type, src); _cx_copyp(p, cx_type(type), src)
 #define cx_comparep(p1, type, p2); _cx_comparep(p1, cx_type(type), p2)
 #define cx_initp(p, type); _cx_initp(p, cx_type(type))

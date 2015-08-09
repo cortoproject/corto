@@ -107,9 +107,6 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData
         case CX_BITMASK:
             result = CX_COMPARE(cx_int32, _this, value);
             break;
-        case CX_ALIAS:
-            result = CX_COMPARE(cx_word, _this, value);
-            break;
     }
     
     data->result = result;

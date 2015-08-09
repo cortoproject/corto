@@ -14,7 +14,6 @@ extern "C" {
 #endif
 
 /* Casting macro's for classes */
-#define cx_alias(o) ((cx_alias)cx_assertType((cx_type)cx_alias_o, o))
 #define cx_array(o) ((cx_array)cx_assertType((cx_type)cx_array_o, o))
 #define cx_binary(o) ((cx_binary)cx_assertType((cx_type)cx_binary_o, o))
 #define cx_bitmask(o) ((cx_bitmask)cx_assertType((cx_type)cx_bitmask_o, o))
@@ -54,6 +53,12 @@ extern "C" {
 #define cx_virtual(o) ((cx_virtual)cx_assertType((cx_type)cx_virtual_o, o))
 
 /* Type definitions */
+/*  ::cortex::lang::type */
+CX_CLASS(cx_type);
+
+/* ::cortex::lang::any */
+CX_ANY(cx_any);
+
 /* ::cortex::lang::typeKind */
 typedef enum cx_typeKind {
     CX_VOID = 0,
@@ -72,9 +77,6 @@ typedef uint32_t cx_uint32;
 
 /* ::cortex::lang::uint16 */
 typedef uint16_t cx_uint16;
-
-/*  ::cortex::lang::type */
-CX_CLASS(cx_type);
 
 /* ::cortex::lang::state */
 CX_BITMASK(cx_state);
@@ -150,53 +152,6 @@ CX_CLASS_DEF(cx_type) {
     cx_callbackInit init;
 };
 
-/* ::cortex::lang::primitiveKind */
-typedef enum cx_primitiveKind {
-    CX_BINARY = 0,
-    CX_BOOLEAN = 1,
-    CX_CHARACTER = 2,
-    CX_INTEGER = 3,
-    CX_UINTEGER = 4,
-    CX_FLOAT = 5,
-    CX_TEXT = 6,
-    CX_ENUM = 7,
-    CX_BITMASK = 8,
-    CX_ALIAS = 9
-} cx_primitiveKind;
-
-/* ::cortex::lang::width */
-typedef enum cx_width {
-    CX_WIDTH_8 = 0,
-    CX_WIDTH_16 = 1,
-    CX_WIDTH_32 = 2,
-    CX_WIDTH_64 = 3,
-    CX_WIDTH_WORD = 4
-} cx_width;
-
-/* ::cortex::lang::uint8 */
-typedef uint8_t cx_uint8;
-
-/*  ::cortex::lang::primitive */
-CX_CLASS(cx_primitive);
-
-CX_CLASS_DEF(cx_primitive) {
-    CX_EXTEND(cx_type);
-    cx_primitiveKind kind;
-    cx_width width;
-    cx_uint8 convertId;
-};
-
-/*  ::cortex::lang::alias */
-CX_CLASS(cx_alias);
-
-CX_CLASS_DEF(cx_alias) {
-    CX_EXTEND(cx_primitive);
-    cx_string typeName;
-};
-
-/* ::cortex::lang::any */
-CX_ANY(cx_any);
-
 /* ::cortex::lang::collectionKind */
 typedef enum cx_collectionKind {
     CX_ARRAY = 0,
@@ -230,6 +185,41 @@ CX_BITMASK(cx_attr);
     #define CX_ATTR_OBSERVABLE (0x4)
     #define CX_ATTR_PERSISTENT (0x8)
     #define CX_ATTR_DEFAULT (0x16)
+
+/* ::cortex::lang::primitiveKind */
+typedef enum cx_primitiveKind {
+    CX_BINARY = 0,
+    CX_BOOLEAN = 1,
+    CX_CHARACTER = 2,
+    CX_INTEGER = 3,
+    CX_UINTEGER = 4,
+    CX_FLOAT = 5,
+    CX_TEXT = 6,
+    CX_ENUM = 7,
+    CX_BITMASK = 8
+} cx_primitiveKind;
+
+/* ::cortex::lang::width */
+typedef enum cx_width {
+    CX_WIDTH_8 = 0,
+    CX_WIDTH_16 = 1,
+    CX_WIDTH_32 = 2,
+    CX_WIDTH_64 = 3,
+    CX_WIDTH_WORD = 4
+} cx_width;
+
+/* ::cortex::lang::uint8 */
+typedef uint8_t cx_uint8;
+
+/*  ::cortex::lang::primitive */
+CX_CLASS(cx_primitive);
+
+CX_CLASS_DEF(cx_primitive) {
+    CX_EXTEND(cx_type);
+    cx_primitiveKind kind;
+    cx_width width;
+    cx_uint8 convertId;
+};
 
 /*  ::cortex::lang::binary */
 CX_CLASS(cx_binary);

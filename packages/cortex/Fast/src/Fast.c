@@ -231,9 +231,6 @@ Fast_valueKind Fast_valueKindFromType(cx_type type) {
         case CX_BITMASK:
             result = Fast_Enum;
             break;
-        case CX_ALIAS:
-            result = Fast_Int;
-            break;
         }
     }
 

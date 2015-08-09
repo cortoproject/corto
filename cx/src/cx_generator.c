@@ -191,6 +191,10 @@ cx_string gen_getAttribute(cx_generator g, cx_string key) {
         }
     }
 
+    if (!result) {
+        result = "";
+    }
+
     return result;
 }
 

@@ -609,7 +609,13 @@ static g_file c_interfaceWrapperFileOpen(cx_generator g) {
 
     cx_object o = g_getCurrent(g);
     sprintf(fileName, "%s__wrapper.c", g_getName(g));
-    result = g_hiddenFileOpen(g, fileName);
+
+    if (!strcmp(gen_getAttribute(g, "bootstrap"), "true")) {
+        result = g_fileOpen(g, fileName);
+    } else {
+        result = g_hiddenFileOpen(g, fileName);
+    }
+
     if(!result) {
         goto error;
     }
@@ -668,6 +674,7 @@ static cx_int16 c_interfaceObject(cx_object o, c_typeWalk_t* data) {
     int hasProcedures;
     cx_bool isInterface;
     cx_bool isTopLevelObject;
+    cx_bool isBootstrap = !strcmp(gen_getAttribute(data->g, "bootstrap"), "true");
 
     hasProcedures = !cx_scopeWalk(o, c_interfaceCheckProcedures, NULL);
     isInterface = cx_class_instanceof(cx_interface_o, o);
@@ -685,7 +692,7 @@ static cx_int16 c_interfaceObject(cx_object o, c_typeWalk_t* data) {
      * an interface and has procedures. When the object is not an interface
      * but does have procedures (typical example is callbacks or static functions)
      * these are appended to the header of the first scope in the hierarchy. */
-    if (hasProcedures || isTopLevelObject) {
+    if (hasProcedures || (isTopLevelObject && !isBootstrap)) {
 
         /* Create a wrapper file if it was not already created */
         if (!data->wrapper) {
@@ -786,6 +793,10 @@ int cortex_genMain(cx_generator g) {
     /* Create source and include directories */
     cx_mkdir("src");
     cx_mkdir("include");
+
+    if (strcmp(gen_getAttribute(g, "bootstrap"), "true")) {
+        cx_mkdir(".cortex");
+    }
 
     /* Default prefixes for cortex namespaces */
     gen_parse(g, cortex_o, FALSE, FALSE, "");
