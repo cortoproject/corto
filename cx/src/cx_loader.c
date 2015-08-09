@@ -9,6 +9,8 @@
 #include "stdlib.h"
 #include "string.h"
 
+#ifdef CX_LOADER
+
 void cx_onexit(void(*handler)(void*),void*userData);
 
 #include "cx_platform.h"
@@ -348,3 +350,10 @@ CX_DLL_CONSTRUCT {
     cx_loaderRegister("so", cx_loadLibraryAction, NULL);
     cx_loaderRegister("", cx_fileLoader, NULL);
 }
+#else
+int cx_load(cx_string str) {
+    CX_UNUSED(str);
+    cx_error("cortex build doesn't include loader");
+    return -1;
+}
+#endif

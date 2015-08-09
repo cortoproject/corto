@@ -5,6 +5,10 @@
  *      Author: sander
  */
 
+#include "cortex.h"
+cx_bool CX_DEBUG_ENABLED = 0;
+
+#ifdef CX_VM
 #include "cx_vm.h"
 #include "cx_vm_operands.h"
 #include "cx_convert.h"
@@ -25,8 +29,6 @@
 #pragma GCC diagnostic ignored "-Wunused-label"
 #pragma GCC diagnostic ignored "-pedantic"
 #pragma GCC diagnostic ignored "-Wstrict-aliasing"
-
-cx_bool CX_DEBUG_ENABLED = 0;
 
 #include "signal.h"
 
@@ -1250,3 +1252,5 @@ void cx_call_vm(cx_function f, cx_void* result, void* args) {
 void cx_callDestruct_vm(cx_function f) {
     cx_vmProgram_free((cx_vmProgram)f->implData);
 }
+
+#endif

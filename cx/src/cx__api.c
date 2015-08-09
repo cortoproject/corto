@@ -6,6 +6,8 @@
 
 #include "cx.h"
 
+#ifdef CX_API
+
 cx_alias cx_alias__create(cx_string typeName) {
     cx_alias _this;
     _this = cx_declare(cx_type(cx_alias_o));
@@ -6634,4 +6636,4 @@ void cx_vtable__size(cx_vtable *seq, cx_uint32 length) {
 void cx_vtable__clear(cx_vtable *seq) {
     cx_vtable__size(seq, 0);
 }
-
+#endif

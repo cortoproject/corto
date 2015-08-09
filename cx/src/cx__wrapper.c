@@ -6,13 +6,6 @@
 #include "cx.h"
 #include "cx__meta.h"
 
-void __cx_alias_init(cx_function f, void *result, void *args) {
-    CX_UNUSED(f);
-    CX_UNUSED(args);
-    *(cx_int16*)result = cx_alias_init(
-        *(void**)args);
-}
-
 void __cx_array_construct(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     CX_UNUSED(args);

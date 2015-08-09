@@ -32,7 +32,6 @@ typedef struct cx_llNode_s {
 typedef struct cx_ll_s {
     cx_llNode first;
     cx_llNode last;
-    unsigned int maximum;
     unsigned int size;
     cx_llNode lastFreed;
 } cx_ll_s;
@@ -44,7 +43,6 @@ cx_ll cx_llNew() {
     result->first = 0;
     result->last = 0;
     result->last = 0;
-    result->maximum = 0; /* by default unbounded */
     result->size = 0;
     result->lastFreed = NULL;
 
@@ -54,11 +52,6 @@ cx_ll cx_llNew() {
 /* Get listsize */
 int cx_llSize(cx_ll list) {
     return list->size;
-}
-
-/* Set maximum */
-void cx_llSetMax(cx_ll list, unsigned int maximum) {
-    list->maximum = maximum;
 }
 
 void cx_llFree(cx_ll list) {

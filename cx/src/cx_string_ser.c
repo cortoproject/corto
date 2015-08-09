@@ -9,6 +9,8 @@
 #include "cortex.h"
 #include "stdarg.h"
 
+#ifdef CX_CONVERSIONS
+
 #define BLACK   "\033[1;30m"
 #define RED     "\033[1;31m"
 #define GREEN   "\033[0;32m"
@@ -453,3 +455,13 @@ struct cx_serializer_s cx_string_ser(cx_modifier access, cx_operatorKind accessK
     s.reference = cx_ser_reference;
     return s;
 }
+#else
+struct cx_serializer_s cx_string_ser(cx_modifier access, cx_operatorKind accessKind, cx_serializerTraceKind trace) {
+    struct cx_serializer_s s;
+    CX_UNUSED(access);
+    CX_UNUSED(accessKind);
+    CX_UNUSED(trace);
+    cx_serializerInit(&s);
+    return s;
+}
+#endif

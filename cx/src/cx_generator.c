@@ -11,6 +11,8 @@
 #include "stdarg.h"
 #include "stdio.h"
 
+#ifdef CX_GENERATOR
+
 /* Generator functions */
 cx_generator gen_new(cx_string name, cx_string language) {
     cx_generator result;
@@ -1177,3 +1179,7 @@ void cx_genMemberCacheClean(cx_ll cache) {
     }
     cx_llFree(cache);
 }
+
+#endif
+
+

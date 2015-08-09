@@ -25,8 +25,11 @@
 
 /* Declaration of the C-binding call-handler */
 void cx_call_cdecl(cx_function f, cx_void* result, void* args);
+
+#ifdef CX_VM
 void cx_call_vm(cx_function f, cx_void* result, void* args);
 void cx_callDestruct_vm(cx_function f);
+#endif
 
 struct cx_exitHandler {
     void(*handler)(void*);
@@ -71,7 +74,6 @@ cx_threadKey CX_KEY_ATTR;
     SSO_OP_CLASS(op, text);\
     SSO_OP_CLASS(op, enum);\
     SSO_OP_CLASS(op, bitmask);\
-    SSO_OP_CLASS(op, alias);\
     SSO_OP_CLASS(op, array);\
     SSO_OP_CLASS(op, sequence);\
     SSO_OP_CLASS(op, list);\
@@ -222,7 +224,6 @@ cx_threadKey CX_KEY_ATTR;
     SSO_OP_OBJ(op, primitiveKind_TEXT);\
     SSO_OP_OBJ(op, primitiveKind_ENUM);\
     SSO_OP_OBJ(op, primitiveKind_BITMASK);\
-    SSO_OP_OBJ(op, primitiveKind_ALIAS);\
     /* compositeKind */\
     SSO_OP_OBJ(op, compositeKind_INTERFACE);\
     SSO_OP_OBJ(op, compositeKind_STRUCT);\
@@ -419,9 +420,6 @@ cx_threadKey CX_KEY_ATTR;
     SSO_OP_OBJ(op, enum_destruct_);\
     /* bitmask */\
     SSO_OP_OBJ(op, bitmask_init_);\
-    /* alias */\
-    SSO_OP_OBJ(op, alias_init_);\
-    SSO_OP_OBJ(op, alias_typeName);\
     /* struct */\
     SSO_OP_OBJ(op, struct_baseAccess);\
     SSO_OP_OBJ(op, struct_init_);\
@@ -632,8 +630,12 @@ int cx_start(void) {
     SSO_OP_OBJECT_2ND(cx_updateRef);
 
     /* Initialize conversions and operators */
+#ifdef CX_CONVERSIONS
     cx_convertInit();
+#endif
+#ifdef CX_OPERATORS
     cx_operatorInit();
+#endif
 
     /* Register C-binding and vm-binding */
     {
@@ -641,8 +643,10 @@ int cx_start(void) {
         id = cx_callRegisterBinding(NULL, NULL, NULL, NULL);
         cx_assert(id == 1, "C-binding did not receive binding-id 1.");
 
+#ifdef CX_VM
         id = cx_callRegisterBinding(cx_call_vm, NULL, NULL, (cx_callDestructHandler)cx_callDestruct_vm);
         cx_assert(id == 2, "Vm-binding did not receive binding-id 2.");
+#endif
     }
 
     /* Always randomize seed */

@@ -17,7 +17,7 @@
 extern "C" {
 #endif
 
-#define cx_calloc(n) calloc(n, 1)
+#define cx_calloc(n) calloc(n, 1);
 #define cx_alloc(n) malloc(n);
 #define cx_dealloc free
 #define cx_realloc realloc

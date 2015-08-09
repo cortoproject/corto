@@ -65,7 +65,6 @@ struct cx__observer {
     cx_observer observer;
     cx_int32 count;
     cx__notifyCallback notify;
-    cx_bool enabled;
 };
 
 typedef struct cx__observable cx__observable;

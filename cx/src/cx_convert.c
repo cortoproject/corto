@@ -16,6 +16,8 @@
 #include "inttypes.h"
 #include "cx.h"
 
+#ifdef CX_CONVERSIONS
+
 typedef cx_int16 (*cx_conversion)(cx_primitive fromType, void* from, cx_primitive toType, void* to);
 
 static cx_conversion _conversions[CX_PRIMITIVE_MAX_CONVERTID+1][CX_PRIMITIVE_MAX_CONVERTID+1];
@@ -517,3 +519,5 @@ cx_int16 cx_convert(cx_primitive fromType, void *from, cx_primitive toType, void
 error:
     return -1;
 }
+
+#endif

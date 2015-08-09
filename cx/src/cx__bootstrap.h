@@ -568,7 +568,6 @@ CX_ENUM_O(primitiveKind);
     CX_CONSTANT_O(primitiveKind, TEXT);
     CX_CONSTANT_O(primitiveKind, ENUM);
     CX_CONSTANT_O(primitiveKind, BITMASK);
-    CX_CONSTANT_O(primitiveKind, ALIAS);
 
 CX_ENUM_O(compositeKind);
     CX_CONSTANT_O(compositeKind, STRUCT);
@@ -823,12 +822,6 @@ CX_CLASS_O(enum, primitive, CX_LOCAL | CX_READONLY, NULL, CX_DECLARED | CX_DEFIN
 CX_FW_I(bitmask);
 CX_CLASS_O(bitmask, enum, CX_LOCAL | CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, CX_I);
     CX_METHOD_O(bitmask, init, "()", int16, FALSE, cx_bitmask_init);
-
-/* ::cortex::lang::alias */
-CX_FW_I(alias);
-CX_CLASS_O(alias, primitive, CX_LOCAL | CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, CX_I);
-    CX_METHOD_O(alias, init, "()", int16, FALSE, cx_alias_init);
-    CX_MEMBER_O(alias, typeName, string, CX_GLOBAL);
 
 /* ::cortex::lang::struct */
 CX_FW_IC(struct);

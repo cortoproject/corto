@@ -11,8 +11,8 @@
 #include "cx_util.h"
 #include "cx_rbtree.h"
 #include "cx_type.h"
-#include "jsw_rbtree.h"
 #include "cx_err.h"
+#include "jsw_rbtree.h"
 
 cx_rbtree cx_rbtreeNew(cx_type keyType) {
 

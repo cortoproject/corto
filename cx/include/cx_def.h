@@ -49,12 +49,16 @@ typedef struct cx_ll_s* cx_ll;
 #define CX_MAX_STRING_LITERAL_LENGTH (512)
 #define CX_MAX_WAIT_FOR_OBJECTS (256)
 
-/* Debugging flags */
 /* #define CX_TRACE_NOTIFICATIONS */
-/* #define CX_LEAKCHECK */
 /* #define CX_SERIALIZER_TRACING */
 #define CX_IC_TRACING
 #define CX_VM_DEBUG
+#define CX_VM
+#define CX_API
+#define CX_GENERATOR
+#define CX_CONVERSIONS
+#define CX_OPERATORS
+#define CX_LOADER
 #define CX_VM_BOUNDSCHECK
 
 #define CX_PROCEDURE_STUB (0)

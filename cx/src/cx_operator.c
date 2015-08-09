@@ -11,6 +11,8 @@
 #include "cx__primitive.h"
 #include "cx.h"
 
+#ifdef CX_OPERATORS
+
 typedef void (*cx__unaryOperator)(void* operand, void* result);
 typedef void (*cx__binaryOperator)(void* operand1, void* operand2, void* result);
 
@@ -293,3 +295,4 @@ error:
     return -1;
 }
 
+#endif

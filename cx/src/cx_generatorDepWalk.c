@@ -9,6 +9,8 @@
 #include "cx_generatorDepWalk.h"
 #include "cx_depresolver.h"
 
+#ifdef CX_GENERATOR
+
 int cx_genDepBuildAction(cx_object o, void* userData);
 
 /* Walk objects in correct dependency order. */
@@ -222,4 +224,6 @@ int cx_genDepWalk(cx_generator g, cx_depresolver_action onDeclare, cx_depresolve
 error:
     return -1;
 }
+
+#endif
 

@@ -14,6 +14,8 @@
 #include "cx_convert.h"
 #include "cx__meta.h"
 
+#ifdef CX_CONVERSIONS
+
 struct cx_string_deserIndexInfo {
     cx_member m;
     cx_type type;
@@ -584,3 +586,10 @@ error:
     }
     return NULL;
 }
+#else
+cx_string cx_string_deser(cx_string str, cx_string_deser_t* data) {
+    CX_UNUSED(str);
+    CX_UNUSED(data);
+    return NULL;
+}
+#endif

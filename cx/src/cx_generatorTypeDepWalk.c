@@ -8,6 +8,8 @@
 #include "cortex.h"
 #include "cx_generatorTypeDepWalk.h"
 
+#ifdef CX_GENERATOR
+
 typedef struct cx_genTypeWalk_t {
     cx_generator g;
     cx_ll parsed; /* List of parsed types */
@@ -514,3 +516,6 @@ int cx_genTypeDepWalk(cx_generator g, g_walkAction onDeclare, g_walkAction onDef
 error:
     return -1;
 }
+
+#endif
+

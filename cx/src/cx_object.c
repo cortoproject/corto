@@ -622,6 +622,7 @@ static int cx_adopt(cx_object parent, cx_object child) {
     /* Check if parentState matches scopeState of child type */
     if (childType->parentState && !cx__checkStateXOR(parent, childType->parentState)) {
         cx_id parentId, childTypeId;
+#ifdef CX_CONVERSION
         cx_string s_parentState, s_childState;
         cx_uint32 parentState, childState;
         parentState = _parent->attrs.state;
@@ -630,14 +631,18 @@ static int cx_adopt(cx_object parent, cx_object child) {
         cx_convert(cx_primitive(cx_state_o), &childState, cx_primitive(cx_string_o), &s_childState);
         cx_error("state %s of parent '%s' does not match %s, cannot adopt '%s' of type '%s'",
                 s_parentState, cx_fullname(parent, parentId), s_childState, cx_nameof(child), cx_fullname(childType, childTypeId));
-
+       
         if (s_parentState) {
             cx_dealloc(s_parentState);
         }
         if (s_childState) {
             cx_dealloc(s_childState);
         }
+#else
+        cx_error("state of parent '%s' does not match, cannot adopt '%s' of type '%s'",
+                cx_fullname(parent, parentId), cx_nameof(child), cx_fullname(childType, childTypeId));
 
+#endif
         goto err_invalid_parent;
     }
 
@@ -2124,7 +2129,6 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
     _observerData->observer = observer;
     _observerData->_this = _this;
     _observerData->count = 0;
-    _observerData->enabled = TRUE;
 
     /* Resolve the kind of the observer. This reduces the number of
      * conditions that need to be evaluated in the notifyObserver function. */
@@ -2245,7 +2249,6 @@ cx_int32 cx_silence(cx_object observable, cx_observer observer, cx_object _this)
             cx_rwmutexWrite(&_o->selfLock);
             observerData = cx_observerFind(_o->onSelf, observer, _this);
             if (observerData) {
-                observerData->enabled = FALSE;
                 cx_llRemove(_o->onSelf, observerData);
                 observerData->count--;
 
@@ -2379,9 +2382,7 @@ static void cx_notifyObservers(cx__observer** observers, cx_object observable, c
 
     while((data = *observers)) {
         i++;
-        if (data->enabled) {
-            cx_notifyObserver(data, observable, source, mask, depth);
-        }
+        cx_notifyObserver(data, observable, source, mask, depth);
         observers++;
     }
 }
