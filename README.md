@@ -94,4 +94,4 @@ If you only want to see his weight, you can type `Albert.weight` which outputs:
 ```
 11
 ```
-The shell allows for many more things (try for example `Albert.weight ++`!). Happy exploring!
+The shell allows for many more things (try for example `Albert.weight ++`). Happy exploring!
