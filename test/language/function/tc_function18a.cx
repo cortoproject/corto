@@ -1,0 +1,23 @@
+bool result : true
+
+void fail(string msg):
+    "tc_function18a: FAIL: $msg"
+    result = false
+
+void func(list{int32} a):
+    if a[0, 1, 2] != (1, 2, 3): fail("a[0, 1, 2] != (1, 2, 3)")
+    if "$a" != "{1,2,3}": fail("\"$a\" != \"{1,2,3}\"")
+
+list{int32} a: 1, 2, 3
+var list{int32} b = {1, 2, 3}
+var list{int32}& c = a
+var list{int32}& d = list{int32}{1, 2, 3}
+
+func({1, 2, 3})
+func(list{int32}{1, 2, 3})
+func(a)
+func(b)
+func(c)
+func(d)
+
+if result: "tc_function18a: OK"

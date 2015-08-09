@@ -1,0 +1,22 @@
+bool result : true
+
+void fail(string msg):
+    "tc_function16b: FAIL: $msg"
+    result = false
+
+struct Point:: x, y: int32
+
+void func(sequence{Point, 2}& a):
+    if a[0, 1][x, y] != (10, 20, 30, 40): fail("a[0, 1] != (10, 20, 30, 40)")
+    if "$a" != "{{10,20},{30,40}}": fail("\"$a\" != \"{{10,20},{30,40}}\"")
+
+sequence{Point, 2} a: {10, 20}, {30, 40}
+var sequence{Point, 2}& b = a
+var sequence{Point, 2}& c = sequence{Point, 2}{{10, 20}, {30, 40}}
+
+func(sequence{Point, 2}{{10, 20}, {30, 40}})
+func(a)
+func(b)
+func(c)
+
+if result: "tc_function16b: OK"
