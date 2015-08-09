@@ -140,6 +140,15 @@ typedef struct cx_stringConcatCache {
         next();\
     }
 
+#define DEINIT(type, code)\
+    DEINIT_##code: {\
+        fetchOp2(DEINIT, code)\
+        cx_value v;\
+        cx_valueValueInit(&v, NULL, (cx_type)op2_##code, &op1_##code);\
+        cx_deinitv(&v);\
+        next();\
+    }
+
 /* Inc & dec */
 #define INC(type,code)\
     INC_##code:\

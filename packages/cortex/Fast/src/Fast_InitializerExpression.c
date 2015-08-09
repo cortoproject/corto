@@ -40,11 +40,18 @@ cx_int16 Fast_InitializerExpression_insert(Fast_InitializerExpression _this, Fas
     cx_setref(&Fast_Initializer(_this)->variables[0].object, variable);
     cx_setref(&Fast_Expression(_this)->type, variable->type);
 
+    Fast_Expression var = Fast_Initializer(_this)->variables[0].object;
+    if (Fast_Storage(var)->kind == Fast_TemporaryStorage) {
+        Fast_Init init = Fast_Init__create(Fast_Storage(var));
+        Fast_Parser_addStatement(yparser(), Fast_Node(init));
+        Fast_Parser_collect(yparser(), init);
+    }
+
     /* Create initializer */
     /* Note that since I'm passing MY list of variables, I need to fix the reference count! */
     cx_claim(Fast_Initializer(_this)->variables[0].object);
     initializer = Fast_DynamicInitializer__create(Fast_Initializer(_this)->variables, 1, _this->assignValue);
-    
+
     /* Walk operations */
     Fast_InitOper_list__foreach(_this->operations, elem)
         switch(elem->kind) {

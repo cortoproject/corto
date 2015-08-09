@@ -1270,6 +1270,7 @@ Fast_Expression Fast_Parser_callExpr(Fast_Parser _this, Fast_Expression function
     if (function && _this->pass) {
         cx_object o = NULL;
         Fast_Expression_list functions = Fast_Expression_toList(function);
+        Fast_Expression_list args = Fast_Expression_toList(arguments);
 
         Fast_Expression_list__foreach(functions, f)
             Fast_Expression expr;
@@ -1295,7 +1296,21 @@ Fast_Expression Fast_Parser_callExpr(Fast_Parser _this, Fast_Expression function
             }
             result = Fast_Comma_addOrCreate(result, expr);
         }
+
+        /* Cleanup initializer arguments */
+        {Fast_Expression_list__foreach(args, a)
+            if (Fast_Node(a)->kind == Fast_InitializerExpr) {
+                Fast_Expression var = Fast_Initializer(a)->variables[0].object;
+                if (Fast_Storage(var)->kind == Fast_TemporaryStorage) {
+                    Fast_Deinit deinit = Fast_Deinit__create(Fast_Storage(var));
+                    result = Fast_Comma_addOrCreate(result, Fast_Expression(deinit));
+                    Fast_Parser_collect(_this, deinit);
+                }
+            }
+        }}
+        
         Fast_Expression_cleanList(functions);
+        Fast_Expression_cleanList(args);
     }
 
     return result;

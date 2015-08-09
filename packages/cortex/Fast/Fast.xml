@@ -32,6 +32,8 @@
                     <constant name="DeclarationExpr"/>
                     <constant name="DeclareExpr"/>
                     <constant name="DefineExpr"/>
+                    <constant name="InitExpr"/>
+                    <constant name="DeinitExpr"/>
                     <constant name="IfExpr"/>
                     <constant name="InitializerExpr"/>
                     <constant name="LiteralExpr"/>
@@ -96,6 +98,7 @@
                   <method name="addExpression(Expression expr)" returnType="int16"/>
                   <method name="toList()" returnType="list{Node}"/>
                   <function name="addOrCreate(Expression list,Expression expr)" returnType="Expression"/>
+                  <function name="insertOrCreate(Expression list,Expression expr)" returnType="Expression"/>
                   <virtual name="hasSideEffects()" returnType="bool"/>
                   <virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
               </meta:scope>
@@ -237,6 +240,24 @@
                     <virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
                     <method name="getValue()" returnType="word"/>
                     <member name="value" type="object"/>
+                </meta:scope>
+            </class>
+
+            <!-- Explicitly init storage -->
+            <class name="Init" base="Expression" baseAccess="readonly">
+                <meta:scope>
+                    <method name="construct()" returnType="int16"/>
+                    <member name="storage" type="Fast::Storage"/>
+                    <virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
+                </meta:scope>
+            </class>
+
+            <!-- Explicitly deinit storage -->
+            <class name="Deinit" base="Expression" baseAccess="readonly">
+                <meta:scope>
+                    <method name="construct()" returnType="int16"/>
+                    <member name="storage" type="Fast::Storage"/>
+                    <virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
                 </meta:scope>
             </class>
 

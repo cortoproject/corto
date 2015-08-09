@@ -127,6 +127,8 @@ cx_bool ic_op_validate(ic_op _this) {
     case ic_updatebegin: result = TRUE; break;
     case ic_updateend: result = TRUE; break;
     case ic_updatecancel: result = TRUE; break;
+    case ic_init: result = TRUE; break;
+    case ic_deinit: result = TRUE; break;
     case ic_waitfor: result = TRUE; break;
     case ic_wait: result = TRUE; break;
     case ic_add: result = ic_validateBinary(_this); break;

@@ -24,6 +24,8 @@
                     <constant name="define"/>
                     <constant name="free"/>
                     <constant name="keep"/>
+                    <constant name="init"/>
+                    <constant name="deinit"/>
                     <constant name="update"/>
                     <constant name="updatebegin"/>
                     <constant name="updateend"/>

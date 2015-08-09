@@ -45,6 +45,7 @@ extern "C" {
     OP2_EXP(expand##2, SETSTRDUP, W, PQR, PQRV, typeAction, opAction)\
     OP2_EXP(expand##2, ZERO, W, R, V, typeAction, opAction)\
     OP2_EXP(expand##2, INIT, W, R, V, typeAction, opAction)\
+    OP2_EXP(expand##2, DEINIT, W, R, V, typeAction, opAction)\
     OP1_EXP(expand##1, INC, BSLD, PQR, typeAction, opAction)\
     OP1_EXP(expand##1, DEC, BSLD, PQR, typeAction, opAction)\
     OP2_EXP(expand##2, ADDI, BSLD, PQR, PQRV, typeAction, opAction)\

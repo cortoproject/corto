@@ -92,6 +92,27 @@ cx_int16 Fast_Comma_init(Fast_Comma _this) {
 /* $end */
 }
 
+/* ::cortex::Fast::Comma::insertOrCreate(Expression list,Expression expr) */
+Fast_Expression Fast_Comma_insertOrCreate(Fast_Expression list, Fast_Expression expr) {
+/* $begin(::cortex::Fast::Comma::insertOrCreate) */
+    Fast_Expression result;
+    
+    if (!list) {
+        result = expr;
+    } else if (Fast_Node(list)->kind == Fast_CommaExpr) {
+        Fast_Comma_addExpression(Fast_Comma(list), expr);
+        result = list;
+    } else {
+        result = Fast_Expression(Fast_Comma__create());
+        Fast_Comma_addExpression(Fast_Comma(result), expr);
+        Fast_Comma_addExpression(Fast_Comma(result), list);
+        Fast_Parser_collect(yparser(), result);
+    }
+    
+    return result;
+/* $end */
+}
+
 /* ::cortex::Fast::Comma::toIc(ic::program program,ic::storage storage,bool stored) */
 ic_node Fast_Comma_toIc_v(Fast_Comma _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Comma::toIc) */

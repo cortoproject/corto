@@ -1088,6 +1088,8 @@ static cx_vmOpKind ic_getVmOpKind(ic_vmProgram *program, ic_op op, ic_node stora
     case ic_updatecancel: result = ic_getVmUPDATECANCEL(t, typeKind, op1, 0, 0); break;
     case ic_waitfor: result = ic_getVmWAITFOR(t, typeKind, op1, 0, 0); break;
     case ic_wait: result = ic_getVmWAIT(t, typeKind, op1, op2, 0); break;
+    case ic_init: result = ic_getVmINIT(t, IC_VMTYPE_W, op1, op2, 0); break;
+    case ic_deinit: result = ic_getVmDEINIT(t, IC_VMTYPE_W, op1, op2, 0); break;
     default:
         cx_assert(0, "invalid intermediate op-code");
         break;
@@ -1427,13 +1429,20 @@ static void ic_getVmOp(ic_vmProgram *program, ic_op op) {
         break;
     }
 
+    case ic_init:
+    case ic_deinit: {
+        op1 = op->s1;
+        op2 = (ic_node)ic_object__create(ic_storage(op->s1)->type);
+        opDeref1 = IC_DEREF_VALUE;
+        opDeref2 = IC_DEREF_ADDRESS;
+        break;
+    }
+
     case ic_set:
         if (ic_storage(op->s2)->type->kind == CX_ITERATOR) {
-            ic_node op3value;
             op1 = op->s2;
             op2 = op->s3;
-            op3value = (ic_node)ic_object__create(ic_storage(op->s3)->type);
-            op3 = op3value;
+            op3 = (ic_node)ic_object__create(ic_storage(op->s3)->type);
             opDeref1 = op->s2Deref;
             opDeref2 = op->s3Deref;
             opDeref3 = IC_DEREF_ADDRESS;
