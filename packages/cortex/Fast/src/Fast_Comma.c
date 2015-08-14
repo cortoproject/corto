@@ -65,6 +65,22 @@ cx_int16 Fast_Comma_construct(Fast_Comma _this) {
 /* $end */
 }
 
+/* ::cortex::Fast::Comma::hasReturnedResource() */
+cx_bool Fast_Comma_hasReturnedResource_v(Fast_Comma _this) {
+/* $begin(::cortex::Fast::Comma::hasReturnedResource) */
+    cx_bool result = FALSE;
+
+    Fast_Expression_list__foreach(_this->expressions, elem)
+        if (Fast_Expression_hasReturnedResource(elem)) {
+            result = TRUE;
+            break;
+        }
+    }
+
+    return result;
+/* $end */
+}
+
 /* ::cortex::Fast::Comma::hasSideEffects() */
 cx_bool Fast_Comma_hasSideEffects_v(Fast_Comma _this) {
 /* $begin(::cortex::Fast::Comma::hasSideEffects) */

@@ -43,12 +43,17 @@ error:
 /* $end */
 }
 
+/* ::cortex::Fast::Unary::hasReturnedResource() */
+cx_bool Fast_Unary_hasReturnedResource_v(Fast_Unary _this) {
+/* $begin(::cortex::Fast::Unary::hasReturnedResource) */
+    return Fast_Expression_hasReturnedResource(_this->lvalue);
+/* $end */
+}
+
 /* ::cortex::Fast::Unary::hasSideEffects() */
 cx_bool Fast_Unary_hasSideEffects_v(Fast_Unary _this) {
 /* $begin(::cortex::Fast::Unary::hasSideEffects) */
-
     return Fast_Expression_hasSideEffects(_this->lvalue);
-
 /* $end */
 }
 

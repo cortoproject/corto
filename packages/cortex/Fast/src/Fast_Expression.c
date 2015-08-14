@@ -496,6 +496,14 @@ cx_word Fast_Expression_getValue_v(Fast_Expression _this) {
 /* $end */
 }
 
+/* ::cortex::Fast::Expression::hasReturnedResource() */
+cx_bool Fast_Expression_hasReturnedResource_v(Fast_Expression _this) {
+/* $begin(::cortex::Fast::Expression::hasReturnedResource) */
+    CX_UNUSED(_this);
+    return FALSE;
+/* $end */
+}
+
 /* ::cortex::Fast::Expression::hasSideEffects() */
 cx_bool Fast_Expression_hasSideEffects_v(Fast_Expression _this) {
 /* $begin(::cortex::Fast::Expression::hasSideEffects) */

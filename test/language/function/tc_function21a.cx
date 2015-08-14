@@ -1,0 +1,37 @@
+bool result : true
+
+void fail(string msg):
+    "tc_function21a: FAIL: $msg"
+    result = false
+
+enum Color:: Red, Yellow, Green, Blue
+
+bool returnFalse() = false
+bool returnTrue() = true
+char returnA() = 'A'
+uint8 return255() = 255
+uint16 return65535() = 65535
+uint32 return1M() = 1000000
+uint64 return5B() = 5000000000
+float32 return525() = 5.25
+float64 return625() = 6.25
+string returnFoo() = "Foo"
+Color returnGreen() = Green
+object returnNull() = null
+enum returnColor() = Color
+
+if returnFalse(): fail("returnFalse()")
+if !returnTrue(): fail("!returnTrue()")
+if returnA() != 'A': fail("returnA() != 'A'")
+if return255() != 255: fail("return255() != 255")
+if return65535() != 65535: fail("return65535() != 65535")
+if return1M() != 1000000: fail("return1M() != 1000000")
+if return5B() != 5000000000: fail("return5B() != 5000000000")
+if return525() != 5.25: fail("return525() != 5.25")
+if return625() != 6.25: fail("return525() != 6.25")
+if returnFoo() != "Foo": fail("returnFoo() != \"Foo\"")
+if returnGreen() != Green: fail("returnGreen() != Green")
+if returnNull(): fail("returnNull()")
+if returnColor() != Color: fail("returnColor() != Color")
+
+if result: "tc_function21a: OK"

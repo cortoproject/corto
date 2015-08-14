@@ -116,6 +116,14 @@ error:
 /* $end */
 }
 
+/* ::cortex::Fast::Wait::hasReturnedResource() */
+cx_bool Fast_Wait_hasReturnedResource_v(Fast_Wait _this) {
+/* $begin(::cortex::Fast::Wait::hasReturnedResource) */
+    CX_UNUSED(_this);
+    return FALSE;
+/* $end */
+}
+
 /* ::cortex::Fast::Wait::toIc(ic::program program,ic::storage storage,bool stored) */
 ic_node Fast_Wait_toIc_v(Fast_Wait _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Wait::toIc) */

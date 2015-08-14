@@ -84,6 +84,17 @@ error:
 /* $end */
 }
 
+/* ::cortex::Fast::Call::hasReturnedResource() */
+cx_bool Fast_Call_hasReturnedResource_v(Fast_Call _this) {
+/* $begin(::cortex::Fast::Call::hasReturnedResource) */
+
+    return _this->returnType->reference || 
+        _this->returnsReference || 
+        ((_this->returnType->kind == CX_PRIMITIVE) && (cx_primitive(_this->returnType)->kind == CX_TEXT));
+
+/* $end */
+}
+
 /* ::cortex::Fast::Call::hasSideEffects() */
 cx_bool Fast_Call_hasSideEffects_v(Fast_Call _this) {
 /* $begin(::cortex::Fast::Call::hasSideEffects) */
@@ -225,7 +236,9 @@ ic_node Fast_Call_toIc_v(Fast_Call _this, ic_program program, ic_storage storage
     function = Fast_Node_toIc(Fast_Node(_this->functionExpr), program, storage, stored);
 
     IC_3(program, Fast_Node(_this)->line, ic_call, result, function, NULL,
-        _this->returnsReference?IC_DEREF_ADDRESS:IC_DEREF_VALUE, IC_DEREF_VALUE, IC_DEREF_VALUE);
+        (_this->returnType->reference || _this->returnsReference) ? IC_DEREF_ADDRESS : IC_DEREF_VALUE, 
+        IC_DEREF_VALUE, 
+        IC_DEREF_VALUE);
 
     while(argumentStorageCount) {
         ic_program_popAccumulator(program);
