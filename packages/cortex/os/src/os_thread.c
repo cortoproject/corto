@@ -9,7 +9,7 @@
 #include "os.h"
 
 /* ::cortex::os::thread::construct() */
-cx_int16 os_thread_construct(os_thread _this) {
+cx_int16 _os_thread_construct(os_thread _this) {
 /* $begin(::cortex::os::thread::construct) */
     CX_UNUSED(_this);
 
@@ -18,7 +18,7 @@ cx_int16 os_thread_construct(os_thread _this) {
 }
 
 /* ::cortex::os::thread::destruct() */
-cx_void os_thread_destruct(os_thread _this) {
+cx_void _os_thread_destruct(os_thread _this) {
 /* $begin(::cortex::os::thread::destruct) */
 
     if (_this->handle) {
@@ -29,7 +29,7 @@ cx_void os_thread_destruct(os_thread _this) {
 }
 
 /* ::cortex::os::thread::join() */
-cx_void os_thread_join(os_thread _this) {
+cx_void _os_thread_join(os_thread _this) {
 /* $begin(::cortex::os::thread::join) */
 
     cx_threadJoin(_this->handle, NULL);
@@ -40,26 +40,26 @@ cx_void os_thread_join(os_thread _this) {
 }
 
 /* ::cortex::os::thread::run() */
-cx_void os_thread_run_v(os_thread _this) {
+cx_void _os_thread_run_v(os_thread _this) {
 /* $begin(::cortex::os::thread::run) */
     cx_call(cx_function(os_thread_run_o),NULL,_this);
 /* $end */
 }
 
 /* ::cortex::os::thread::start() */
-cx_void os_thread_start(os_thread _this) {
+cx_void _os_thread_start(os_thread _this) {
 /* $begin(::cortex::os::thread::start) */
     cx_context context;
 
     /* Signal contextswitch to bindings */
     context = cx_contextSwitch(_this);
 
-    _this->handle = cx_threadNew((cx_threadFunc)os_thread_run_v, context);
+    _this->handle = cx_threadNew((cx_threadFunc)_os_thread_run_v, context);
 /* $end */
 }
 
 /* ::cortex::os::thread::stop() */
-cx_void os_thread_stop(os_thread _this) {
+cx_void _os_thread_stop(os_thread _this) {
 /* $begin(::cortex::os::thread::stop) */
 
     _this->stopping = TRUE;

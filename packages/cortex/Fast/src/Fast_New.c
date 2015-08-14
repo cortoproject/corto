@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::cortex::Fast::New::construct() */
-cx_int16 Fast_New_construct(Fast_New _this) {
+cx_int16 _Fast_New_construct(Fast_New _this) {
 /* $begin(::cortex::Fast::New::construct) */
 
     Fast_Node(_this)->kind = Fast_NewExpr;
@@ -25,7 +25,7 @@ cx_int16 Fast_New_construct(Fast_New _this) {
 }
 
 /* ::cortex::Fast::New::hasSideEffects() */
-cx_bool Fast_New_hasSideEffects_v(Fast_New _this) {
+cx_bool _Fast_New_hasSideEffects_v(Fast_New _this) {
 /* $begin(::cortex::Fast::New::hasSideEffects) */
     CX_UNUSED(_this);
     return TRUE;
@@ -33,7 +33,7 @@ cx_bool Fast_New_hasSideEffects_v(Fast_New _this) {
 }
 
 /* ::cortex::Fast::New::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_New_toIc_v(Fast_New _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_New_toIc_v(Fast_New _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::New::toIc) */
     ic_node type, attrs, result;
     CX_UNUSED(stored);

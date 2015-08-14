@@ -9,7 +9,7 @@
 #include "ic.h"
 
 /* ::cortex::ic::object::construct() */
-cx_int16 ic_object_construct(ic_object _this) {
+cx_int16 _ic_object_construct(ic_object _this) {
 /* $begin(::cortex::ic::object::construct) */
     cx_id id;
     ic_storage(_this)->kind = IC_OBJECT;

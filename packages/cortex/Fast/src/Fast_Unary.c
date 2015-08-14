@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::cortex::Fast::Unary::construct() */
-cx_int16 Fast_Unary_construct(Fast_Unary _this) {
+cx_int16 _Fast_Unary_construct(Fast_Unary _this) {
 /* $begin(::cortex::Fast::Unary::construct) */
     cx_type lvalueType;
 
@@ -44,7 +44,7 @@ error:
 }
 
 /* ::cortex::Fast::Unary::hasSideEffects() */
-cx_bool Fast_Unary_hasSideEffects_v(Fast_Unary _this) {
+cx_bool _Fast_Unary_hasSideEffects_v(Fast_Unary _this) {
 /* $begin(::cortex::Fast::Unary::hasSideEffects) */
 
     return Fast_Expression_hasSideEffects(_this->lvalue);
@@ -53,7 +53,7 @@ cx_bool Fast_Unary_hasSideEffects_v(Fast_Unary _this) {
 }
 
 /* ::cortex::Fast::Unary::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_Unary_toIc_v(Fast_Unary _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Unary_toIc_v(Fast_Unary _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Unary::toIc) */
     ic_storage result;
     ic_node lvalue;

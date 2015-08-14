@@ -9,14 +9,14 @@
 #include "ic.h"
 
 /* ::cortex::ic::scope::add(node n) */
-cx_void ic_scope_add(ic_scope _this, ic_node n) {
+cx_void _ic_scope_add(ic_scope _this, ic_node n) {
 /* $begin(::cortex::ic::scope::add) */
     cx_llAppend(_this->program, n);
 /* $end */
 }
 
 /* ::cortex::ic::scope::addStorage(storage s) */
-cx_void ic_scope_addStorage(ic_scope _this, ic_storage s) {
+cx_void _ic_scope_addStorage(ic_scope _this, ic_storage s) {
 /* $begin(::cortex::ic::scope::addStorage) */
     cx_llAppend(_this->storages, s);
     cx_setref(&s->scope, _this);
@@ -24,7 +24,7 @@ cx_void ic_scope_addStorage(ic_scope _this, ic_storage s) {
 }
 
 /* ::cortex::ic::scope::construct() */
-cx_int16 ic_scope_construct(ic_scope _this) {
+cx_int16 _ic_scope_construct(ic_scope _this) {
 /* $begin(::cortex::ic::scope::construct) */
     ic_node(_this)->kind = IC_SCOPE;
     return ic_node_construct(ic_node(_this));
@@ -32,7 +32,7 @@ cx_int16 ic_scope_construct(ic_scope _this) {
 }
 
 /* ::cortex::ic::scope::lookupStorage(string name,bool recursive) */
-ic_storage ic_scope_lookupStorage(ic_scope _this, cx_string name, cx_bool recursive) {
+ic_storage _ic_scope_lookupStorage(ic_scope _this, cx_string name, cx_bool recursive) {
 /* $begin(::cortex::ic::scope::lookupStorage) */
     cx_iter storageIter;
     ic_storage result = NULL;
@@ -56,7 +56,7 @@ ic_storage ic_scope_lookupStorage(ic_scope _this, cx_string name, cx_bool recurs
 }
 
 /* ::cortex::ic::scope::str(string in) */
-cx_string ic_scope_str(ic_scope _this, cx_string in) {
+cx_string _ic_scope_str(ic_scope _this, cx_string in) {
 /* $begin(::cortex::ic::scope::str) */
     cx_iter programIter, storageIter;
     ic_storage storage;

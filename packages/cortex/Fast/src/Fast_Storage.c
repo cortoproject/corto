@@ -9,7 +9,7 @@
 #include "Fast.h"
 
 /* ::cortex::Fast::Storage::construct() */
-cx_int16 Fast_Storage_construct(Fast_Storage _this) {
+cx_int16 _Fast_Storage_construct(Fast_Storage _this) {
 /* $begin(::cortex::Fast::Storage::construct) */
 
     Fast_Node(_this)->kind = Fast_StorageExpr;

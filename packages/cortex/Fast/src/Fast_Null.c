@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::cortex::Fast::Null::init() */
-cx_int16 Fast_Null_init(Fast_Null _this) {
+cx_int16 _Fast_Null_init(Fast_Null _this) {
 /* $begin(::cortex::Fast::Null::init) */
     Fast_Literal(_this)->kind = Fast_Nothing;
     Fast_Expression(_this)->type = NULL;
@@ -22,7 +22,7 @@ cx_int16 Fast_Null_init(Fast_Null _this) {
 }
 
 /* ::cortex::Fast::Null::serialize(type dstType,word dst) */
-cx_int16 Fast_Null_serialize(Fast_Null _this, cx_type dstType, cx_word dst) {
+cx_int16 _Fast_Null_serialize(Fast_Null _this, cx_type dstType, cx_word dst) {
 /* $begin(::cortex::Fast::Null::serialize) */
     Fast_valueKind kind;
     CX_UNUSED(_this);
@@ -60,7 +60,7 @@ error:
 }
 
 /* ::cortex::Fast::Null::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_Null_toIc_v(Fast_Null _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Null_toIc_v(Fast_Null _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Null::toIc) */
     CX_UNUSED(storage);
     CX_UNUSED(stored);

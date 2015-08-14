@@ -9,7 +9,7 @@
 #include "testjson.h"
 
 /* ::testjson::BaseDeserPrimitiveTest::testValue() */
-cx_void testjson_BaseDeserPrimitiveTest_testValue(testjson_BaseDeserPrimitiveTest _this) {
+cx_void _testjson_BaseDeserPrimitiveTest_testValue(testjson_BaseDeserPrimitiveTest _this) {
 /* $begin(::testjson::BaseDeserPrimitiveTest::testValue) */
     CX_UNUSED(_this);
 /* $end */

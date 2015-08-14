@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::cortex::os::time::add(::cortex::os::time t) */
-cx_void os_time_add(os_time _this, os_time t) {
+cx_void _os_time_add(os_time _this, os_time t) {
 /* $begin(::cortex::os::time::add) */
     cx_time t1, t2;
 
@@ -33,7 +33,7 @@ cx_void os_time_add(os_time _this, os_time t) {
 }
 
 /* ::cortex::os::time::get() */
-cx_void os_time_get(os_time _this) {
+cx_void _os_time_get(os_time _this) {
 /* $begin(::cortex::os::time::get) */
 
     cx_timeGet((cx_time*)_this); /* os_Time is equally formed as cx_time */
@@ -42,7 +42,7 @@ cx_void os_time_get(os_time _this) {
 }
 
 /* ::cortex::os::time::sub(::cortex::os::time t) */
-cx_void os_time_sub(os_time _this, os_time t) {
+cx_void _os_time_sub(os_time _this, os_time t) {
 /* $begin(::cortex::os::time::sub) */
     cx_time t1, t2;
 
@@ -62,7 +62,7 @@ cx_void os_time_sub(os_time _this, os_time t) {
 }
 
 /* ::cortex::os::time::toFloat() */
-cx_float64 os_time_toFloat(os_time _this) {
+cx_float64 _os_time_toFloat(os_time _this) {
 /* $begin(::cortex::os::time::toFloat) */
     cx_time t;
 

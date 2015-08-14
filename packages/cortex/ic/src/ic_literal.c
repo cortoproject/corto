@@ -9,7 +9,7 @@
 #include "ic.h"
 
 /* ::cortex::ic::literal::construct() */
-cx_int16 ic_literal_construct(ic_literal _this) {
+cx_int16 _ic_literal_construct(ic_literal _this) {
 /* $begin(::cortex::ic::literal::construct) */
     ic_node(_this)->kind = IC_LITERAL;
     return ic_node_construct(ic_node(_this));
@@ -17,7 +17,7 @@ cx_int16 ic_literal_construct(ic_literal _this) {
 }
 
 /* ::cortex::ic::literal::str(string in) */
-cx_string ic_literal_str(ic_literal _this, cx_string in) {
+cx_string _ic_literal_str(ic_literal _this, cx_string in) {
 /* $begin(::cortex::ic::literal::str) */
     cx_string result = NULL;
 

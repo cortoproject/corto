@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::cortex::Fast::Init::construct() */
-cx_int16 Fast_Init_construct(Fast_Init _this) {
+cx_int16 _Fast_Init_construct(Fast_Init _this) {
 /* $begin(::cortex::Fast::Init::construct) */
 	cx_type t = Fast_Expression_getType(Fast_Expression(_this->storage));
     Fast_Node(_this)->kind = Fast_InitExpr;
@@ -23,7 +23,7 @@ cx_int16 Fast_Init_construct(Fast_Init _this) {
 }
 
 /* ::cortex::Fast::Init::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_Init_toIc_v(Fast_Init _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Init_toIc_v(Fast_Init _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Init::toIc) */
     ic_node s;
     CX_UNUSED(stored);

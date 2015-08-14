@@ -66,7 +66,7 @@ error:
 /* $end */
 
 /* ::cortex::Fast::CallBuilder::build() */
-Fast_Call Fast_CallBuilder_build(Fast_CallBuilder *_this) {
+Fast_Call _Fast_CallBuilder_build(Fast_CallBuilder *_this) {
 /* $begin(::cortex::Fast::CallBuilder::build) */
     Fast_Call result = NULL;
 
@@ -136,7 +136,7 @@ error:
 }
 
 /* ::cortex::Fast::CallBuilder::buildSignature() */
-cx_int16 Fast_CallBuilder_buildSignature(Fast_CallBuilder *_this) {
+cx_int16 _Fast_CallBuilder_buildSignature(Fast_CallBuilder *_this) {
 /* $begin(::cortex::Fast::CallBuilder::buildSignature) */
     cx_string signature;
     cx_iter argumentIter;

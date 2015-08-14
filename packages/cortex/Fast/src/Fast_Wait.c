@@ -56,7 +56,7 @@ cx_interface Fast_findCommonAncestor(cx_interface t1, cx_interface t2) {
 /* $end */
 
 /* ::cortex::Fast::Wait::construct() */
-cx_int16 Fast_Wait_construct(Fast_Wait _this) {
+cx_int16 _Fast_Wait_construct(Fast_Wait _this) {
 /* $begin(::cortex::Fast::Wait::construct) */
     cx_iter exprIter;
     Fast_Expression expr, timeoutExpr;
@@ -117,7 +117,7 @@ error:
 }
 
 /* ::cortex::Fast::Wait::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_Wait_toIc_v(Fast_Wait _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Wait_toIc_v(Fast_Wait _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Wait::toIc) */
     cx_iter exprIter;
     Fast_Expression expr;

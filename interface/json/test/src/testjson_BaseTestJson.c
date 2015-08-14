@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::testjson::BaseTestJson::setUp() */
-cx_void testjson_BaseTestJson_setUp_v(testjson_BaseTestJson _this) {
+cx_void _testjson_BaseTestJson_setUp_v(testjson_BaseTestJson _this) {
 /* $begin(::testjson::BaseTestJson::setUp) */
     testjson_BaseTestJson(_this)->serializer = (cx_word)cx_alloc(sizeof(struct cx_serializer_s));
     struct cx_serializer_s *serializer = (void *)testjson_BaseTestJson(_this)->serializer;
@@ -22,7 +22,7 @@ cx_void testjson_BaseTestJson_setUp_v(testjson_BaseTestJson _this) {
 }
 
 /* ::testjson::BaseTestJson::tearDown() */
-cx_void testjson_BaseTestJson_tearDown_v(testjson_BaseTestJson _this) {
+cx_void _testjson_BaseTestJson_tearDown_v(testjson_BaseTestJson _this) {
 /* $begin(::testjson::BaseTestJson::tearDown) */
     void *serializer = (void *)testjson_BaseTestJson(_this)->serializer;
     void *jsonData = (void *)testjson_BaseTestJson(_this)->jsonData;
@@ -36,7 +36,7 @@ cx_void testjson_BaseTestJson_tearDown_v(testjson_BaseTestJson _this) {
 }
 
 /* ::testjson::BaseTestJson::testJson(string fullname,string expected) */
-cx_void testjson_BaseTestJson_testJson(testjson_BaseTestJson _this, cx_string fullname, cx_string expected) {
+cx_void _testjson_BaseTestJson_testJson(testjson_BaseTestJson _this, cx_string fullname, cx_string expected) {
 /* $begin(::testjson::BaseTestJson::testJson) */
     struct cx_serializer_s *serializer = (void *)_this->serializer;
     cx_json_ser_t *jsonData = (void *)_this->jsonData;

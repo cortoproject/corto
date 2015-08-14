@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::testjson::TestJsonValue::setUp() */
-cx_void testjson_TestJsonValue_setUp_v(testjson_TestJsonValue _this) {
+cx_void _testjson_TestJsonValue_setUp_v(testjson_TestJsonValue _this) {
 /* $begin(::testjson::TestJsonValue::setUp) */
     testjson_BaseTestJson __this = testjson_BaseTestJson(_this);
     __this->jsonData = (cx_word)cx_alloc(sizeof(struct cx_json_ser_t));
@@ -23,7 +23,7 @@ cx_void testjson_TestJsonValue_setUp_v(testjson_TestJsonValue _this) {
 }
 
 /* ::testjson::TestJsonValue::tearDown() */
-cx_void testjson_TestJsonValue_tearDown_v(testjson_TestJsonValue _this) {
+cx_void _testjson_TestJsonValue_tearDown_v(testjson_TestJsonValue _this) {
 /* $begin(::testjson::TestJsonValue::tearDown) */
     CX_UNUSED(_this);
 /* $end */

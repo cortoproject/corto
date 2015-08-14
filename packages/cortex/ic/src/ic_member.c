@@ -9,7 +9,7 @@
 #include "ic.h"
 
 /* ::cortex::ic::member::construct() */
-cx_int16 ic_member_construct(ic_member _this) {
+cx_int16 _ic_member_construct(ic_member _this) {
 /* $begin(::cortex::ic::member::construct) */
     cx_id name;
 

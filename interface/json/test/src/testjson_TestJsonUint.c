@@ -9,7 +9,7 @@
 #include "testjson.h"
 
 /* ::testjson::TestJsonUint::testMaxUint16() */
-cx_void testjson_TestJsonUint_testMaxUint16(testjson_TestJsonUint _this) {
+cx_void _testjson_TestJsonUint_testMaxUint16(testjson_TestJsonUint _this) {
 /* $begin(::testjson::TestJsonUint::testMaxUint16) */
     testjson_BaseTestJson_testJson(testjson_BaseTestJson(_this),
         "::testjson::primitives::uints::MaxUint16",
@@ -18,7 +18,7 @@ cx_void testjson_TestJsonUint_testMaxUint16(testjson_TestJsonUint _this) {
 }
 
 /* ::testjson::TestJsonUint::testMaxUint32() */
-cx_void testjson_TestJsonUint_testMaxUint32(testjson_TestJsonUint _this) {
+cx_void _testjson_TestJsonUint_testMaxUint32(testjson_TestJsonUint _this) {
 /* $begin(::testjson::TestJsonUint::testMaxUint32) */
     testjson_BaseTestJson_testJson(testjson_BaseTestJson(_this),
         "::testjson::primitives::uints::MaxUint32",
@@ -27,7 +27,7 @@ cx_void testjson_TestJsonUint_testMaxUint32(testjson_TestJsonUint _this) {
 }
 
 /* ::testjson::TestJsonUint::testMaxUint64() */
-cx_void testjson_TestJsonUint_testMaxUint64(testjson_TestJsonUint _this) {
+cx_void _testjson_TestJsonUint_testMaxUint64(testjson_TestJsonUint _this) {
 /* $begin(::testjson::TestJsonUint::testMaxUint64) */
     testjson_BaseTestJson_testJson(testjson_BaseTestJson(_this),
         "::testjson::primitives::uints::MaxUint64",
@@ -36,7 +36,7 @@ cx_void testjson_TestJsonUint_testMaxUint64(testjson_TestJsonUint _this) {
 }
 
 /* ::testjson::TestJsonUint::testMaxUint8() */
-cx_void testjson_TestJsonUint_testMaxUint8(testjson_TestJsonUint _this) {
+cx_void _testjson_TestJsonUint_testMaxUint8(testjson_TestJsonUint _this) {
 /* $begin(::testjson::TestJsonUint::testMaxUint8) */
     testjson_BaseTestJson_testJson(testjson_BaseTestJson(_this),
         "::testjson::primitives::uints::MaxUint8",
@@ -45,7 +45,7 @@ cx_void testjson_TestJsonUint_testMaxUint8(testjson_TestJsonUint _this) {
 }
 
 /* ::testjson::TestJsonUint::testPosUint16() */
-cx_void testjson_TestJsonUint_testPosUint16(testjson_TestJsonUint _this) {
+cx_void _testjson_TestJsonUint_testPosUint16(testjson_TestJsonUint _this) {
 /* $begin(::testjson::TestJsonUint::testPosUint16) */
     testjson_BaseTestJson_testJson(testjson_BaseTestJson(_this),
         "::testjson::primitives::uints::PosUint16",
@@ -54,7 +54,7 @@ cx_void testjson_TestJsonUint_testPosUint16(testjson_TestJsonUint _this) {
 }
 
 /* ::testjson::TestJsonUint::testPosUint32() */
-cx_void testjson_TestJsonUint_testPosUint32(testjson_TestJsonUint _this) {
+cx_void _testjson_TestJsonUint_testPosUint32(testjson_TestJsonUint _this) {
 /* $begin(::testjson::TestJsonUint::testPosUint32) */
     testjson_BaseTestJson_testJson(testjson_BaseTestJson(_this),
         "::testjson::primitives::uints::PosUint32",
@@ -63,7 +63,7 @@ cx_void testjson_TestJsonUint_testPosUint32(testjson_TestJsonUint _this) {
 }
 
 /* ::testjson::TestJsonUint::testPosUint64() */
-cx_void testjson_TestJsonUint_testPosUint64(testjson_TestJsonUint _this) {
+cx_void _testjson_TestJsonUint_testPosUint64(testjson_TestJsonUint _this) {
 /* $begin(::testjson::TestJsonUint::testPosUint64) */
     testjson_BaseTestJson_testJson(testjson_BaseTestJson(_this),
         "::testjson::primitives::uints::PosUint64",
@@ -72,7 +72,7 @@ cx_void testjson_TestJsonUint_testPosUint64(testjson_TestJsonUint _this) {
 }
 
 /* ::testjson::TestJsonUint::testPosUint8() */
-cx_void testjson_TestJsonUint_testPosUint8(testjson_TestJsonUint _this) {
+cx_void _testjson_TestJsonUint_testPosUint8(testjson_TestJsonUint _this) {
 /* $begin(::testjson::TestJsonUint::testPosUint8) */
     testjson_BaseTestJson_testJson(testjson_BaseTestJson(_this),
         "::testjson::primitives::uints::PosUint8",
@@ -81,7 +81,7 @@ cx_void testjson_TestJsonUint_testPosUint8(testjson_TestJsonUint _this) {
 }
 
 /* ::testjson::TestJsonUint::testZeroUint16() */
-cx_void testjson_TestJsonUint_testZeroUint16(testjson_TestJsonUint _this) {
+cx_void _testjson_TestJsonUint_testZeroUint16(testjson_TestJsonUint _this) {
 /* $begin(::testjson::TestJsonUint::testZeroUint16) */
     testjson_BaseTestJson_testJson(testjson_BaseTestJson(_this),
         "::testjson::primitives::uints::ZeroUint16",
@@ -90,7 +90,7 @@ cx_void testjson_TestJsonUint_testZeroUint16(testjson_TestJsonUint _this) {
 }
 
 /* ::testjson::TestJsonUint::testZeroUint32() */
-cx_void testjson_TestJsonUint_testZeroUint32(testjson_TestJsonUint _this) {
+cx_void _testjson_TestJsonUint_testZeroUint32(testjson_TestJsonUint _this) {
 /* $begin(::testjson::TestJsonUint::testZeroUint32) */
     testjson_BaseTestJson_testJson(testjson_BaseTestJson(_this),
         "::testjson::primitives::uints::ZeroUint32",
@@ -99,7 +99,7 @@ cx_void testjson_TestJsonUint_testZeroUint32(testjson_TestJsonUint _this) {
 }
 
 /* ::testjson::TestJsonUint::testZeroUint64() */
-cx_void testjson_TestJsonUint_testZeroUint64(testjson_TestJsonUint _this) {
+cx_void _testjson_TestJsonUint_testZeroUint64(testjson_TestJsonUint _this) {
 /* $begin(::testjson::TestJsonUint::testZeroUint64) */
     testjson_BaseTestJson_testJson(testjson_BaseTestJson(_this),
         "::testjson::primitives::uints::ZeroUint64",
@@ -108,7 +108,7 @@ cx_void testjson_TestJsonUint_testZeroUint64(testjson_TestJsonUint _this) {
 }
 
 /* ::testjson::TestJsonUint::testZeroUint8() */
-cx_void testjson_TestJsonUint_testZeroUint8(testjson_TestJsonUint _this) {
+cx_void _testjson_TestJsonUint_testZeroUint8(testjson_TestJsonUint _this) {
 /* $begin(::testjson::TestJsonUint::testZeroUint8) */
     testjson_BaseTestJson_testJson(testjson_BaseTestJson(_this),
         "::testjson::primitives::uints::ZeroUint8",

@@ -15,7 +15,7 @@
 /* $end */
 
 /* ::testjson::DeserPrimitiveTest::testSimpleString() */
-cx_void testjson_DeserPrimitiveTest_testSimpleString(testjson_DeserPrimitiveTest _this) {
+cx_void _testjson_DeserPrimitiveTest_testSimpleString(testjson_DeserPrimitiveTest _this) {
 /* $begin(::testjson::DeserPrimitiveTest::testSimpleString) */
     cx_object o = cx_json_deser(
         "{\"meta\": {\"name\": \"b\", \"parent\": \"::\", \"type\": \"string\"},"
@@ -35,7 +35,7 @@ error:;
 }
 
 /* ::testjson::DeserPrimitiveTest::testStruct_1L() */
-cx_void testjson_DeserPrimitiveTest_testStruct_1L(testjson_DeserPrimitiveTest _this) {
+cx_void _testjson_DeserPrimitiveTest_testStruct_1L(testjson_DeserPrimitiveTest _this) {
 /* $begin(::testjson::DeserPrimitiveTest::testStruct_1L) */
     cx_object o = cx_json_deser(
         "{\"meta\": {\"name\": \"c\", \"parent\": \"::\", \"type\": \"::testjson::Point\"},"
@@ -55,7 +55,7 @@ cx_void testjson_DeserPrimitiveTest_testStruct_1L(testjson_DeserPrimitiveTest _t
 }
 
 /* ::testjson::DeserPrimitiveTest::testStruct_2L() */
-cx_void testjson_DeserPrimitiveTest_testStruct_2L(testjson_DeserPrimitiveTest _this) {
+cx_void _testjson_DeserPrimitiveTest_testStruct_2L(testjson_DeserPrimitiveTest _this) {
 /* $begin(::testjson::DeserPrimitiveTest::testStruct_2L) */
     cx_object o = cx_json_deser(
         "{\"meta\": {\"name\": \"d\", \"parent\": \"::\", \"type\": \"::testjson::Line\"},"
@@ -75,7 +75,7 @@ cx_void testjson_DeserPrimitiveTest_testStruct_2L(testjson_DeserPrimitiveTest _t
 }
 
 /* ::testjson::DeserPrimitiveTest::testStruct_3L() */
-cx_void testjson_DeserPrimitiveTest_testStruct_3L(testjson_DeserPrimitiveTest _this) {
+cx_void _testjson_DeserPrimitiveTest_testStruct_3L(testjson_DeserPrimitiveTest _this) {
 /* $begin(::testjson::DeserPrimitiveTest::testStruct_3L) */
     cx_object o = cx_json_deser(
         "{\"meta\": {\"name\": \"e\", \"parent\": \"::\", \"type\": \"::testjson::Triangle\"},"
@@ -99,7 +99,7 @@ cx_void testjson_DeserPrimitiveTest_testStruct_3L(testjson_DeserPrimitiveTest _t
 }
 
 /* ::testjson::DeserPrimitiveTest::testStructRef() */
-cx_void testjson_DeserPrimitiveTest_testStructRef(testjson_DeserPrimitiveTest _this) {
+cx_void _testjson_DeserPrimitiveTest_testStructRef(testjson_DeserPrimitiveTest _this) {
 /* $begin(::testjson::DeserPrimitiveTest::testStructRef) */
     cx_object o = cx_json_deser(
         "{\"meta\": {\"name\": \"f\", \"parent\": \"::\", \"type\": \"::testjson::Team\"},"
@@ -121,7 +121,7 @@ cx_void testjson_DeserPrimitiveTest_testStructRef(testjson_DeserPrimitiveTest _t
 }
 
 /* ::testjson::DeserPrimitiveTest::testUint8() */
-cx_void testjson_DeserPrimitiveTest_testUint8(testjson_DeserPrimitiveTest _this) {
+cx_void _testjson_DeserPrimitiveTest_testUint8(testjson_DeserPrimitiveTest _this) {
 /* $begin(::testjson::DeserPrimitiveTest::testUint8) */
     cx_object o = cx_json_deser(
         "{\"meta\": {\"name\": \"a\", \"parent\": \"::\", \"type\": \"int8\"},"

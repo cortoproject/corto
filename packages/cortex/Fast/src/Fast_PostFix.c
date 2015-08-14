@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::cortex::Fast::PostFix::construct() */
-cx_int16 Fast_PostFix_construct(Fast_PostFix _this) {
+cx_int16 _Fast_PostFix_construct(Fast_PostFix _this) {
 /* $begin(::cortex::Fast::PostFix::construct) */
     cx_type lvalueType = Fast_Expression_getType(_this->lvalue);
 
@@ -71,7 +71,7 @@ error:
 }
 
 /* ::cortex::Fast::PostFix::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_PostFix_toIc_v(Fast_PostFix _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_PostFix_toIc_v(Fast_PostFix _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::PostFix::toIc) */
     ic_storage result;
     ic_node lvalue;

@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::cortex::Fast::Literal::getValue() */
-cx_word Fast_Literal_getValue_v(Fast_Literal _this) {
+cx_word _Fast_Literal_getValue_v(Fast_Literal _this) {
 /* $begin(::cortex::Fast::Literal::getValue) */
     cx_word result = 0;
 
@@ -31,7 +31,7 @@ cx_word Fast_Literal_getValue_v(Fast_Literal _this) {
 }
 
 /* ::cortex::Fast::Literal::init() */
-cx_int16 Fast_Literal_init(Fast_Literal _this) {
+cx_int16 _Fast_Literal_init(Fast_Literal _this) {
 /* $begin(::cortex::Fast::Literal::init) */
     if (!Fast_Expression(_this)->type) {
         switch(_this->kind) {

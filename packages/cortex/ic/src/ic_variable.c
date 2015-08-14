@@ -9,7 +9,7 @@
 #include "ic.h"
 
 /* ::cortex::ic::variable::construct() */
-cx_int16 ic_variable_construct(ic_variable _this) {
+cx_int16 _ic_variable_construct(ic_variable _this) {
 /* $begin(::cortex::ic::variable::construct) */
     ic_storage(_this)->kind = IC_VARIABLE;
     return ic_storage_construct(ic_storage(_this));

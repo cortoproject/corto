@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::cortex::Fast::Object::construct() */
-cx_int16 Fast_Object_construct(Fast_Object _this) {
+cx_int16 _Fast_Object_construct(Fast_Object _this) {
 /* $begin(::cortex::Fast::Object::construct) */
     cx_type t = cx_typeof(Fast_Object(_this)->value);
 
@@ -31,7 +31,7 @@ cx_int16 Fast_Object_construct(Fast_Object _this) {
 }
 
 /* ::cortex::Fast::Object::getValue() */
-cx_word Fast_Object_getValue(Fast_Object _this) {
+cx_word _Fast_Object_getValue(Fast_Object _this) {
 /* $begin(::cortex::Fast::Object::getValue) */
     cx_word result = 0;
 
@@ -46,7 +46,7 @@ cx_word Fast_Object_getValue(Fast_Object _this) {
 }
 
 /* ::cortex::Fast::Object::serialize(type dstType,word dst) */
-cx_int16 Fast_Object_serialize(Fast_Object _this, cx_type dstType, cx_word dst) {
+cx_int16 _Fast_Object_serialize(Fast_Object _this, cx_type dstType, cx_word dst) {
 /* $begin(::cortex::Fast::Object::serialize) */
     Fast_valueKind kind;
 
@@ -132,7 +132,7 @@ error:
 }
 
 /* ::cortex::Fast::Object::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_Object_toIc_v(Fast_Object _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Object_toIc_v(Fast_Object _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Object::toIc) */
     CX_UNUSED(program);
     CX_UNUSED(storage);

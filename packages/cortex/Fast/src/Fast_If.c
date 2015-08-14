@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::cortex::Fast::If::construct() */
-cx_int16 Fast_If_construct(Fast_If _this) {
+cx_int16 _Fast_If_construct(Fast_If _this) {
 /* $begin(::cortex::Fast::If::construct) */
     cx_type conditionType;
 
@@ -39,14 +39,14 @@ error:
 }
 
 /* ::cortex::Fast::If::noWarnUnreachable() */
-cx_void Fast_If_noWarnUnreachable(Fast_If _this) {
+cx_void _Fast_If_noWarnUnreachable(Fast_If _this) {
 /* $begin(::cortex::Fast::If::noWarnUnreachable) */
     _this->warnUnreachable = FALSE;
 /* $end */
 }
 
 /* ::cortex::Fast::If::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_If_toIc_v(Fast_If _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_If_toIc_v(Fast_If _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::If::toIc) */
     ic_storage accumulator;
     ic_label labelEval = NULL, labelEnd = NULL;

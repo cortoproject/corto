@@ -9,7 +9,7 @@
 #include "ic.h"
 
 /* ::cortex::ic::function::construct() */
-cx_int16 ic_function_construct(ic_function _this) {
+cx_int16 _ic_function_construct(ic_function _this) {
 /* $begin(::cortex::ic::function::construct) */
     ic_node(_this)->kind = IC_FUNCTION;
     return ic_node_construct(ic_node(_this));
@@ -17,7 +17,7 @@ cx_int16 ic_function_construct(ic_function _this) {
 }
 
 /* ::cortex::ic::function::str(string in) */
-cx_string ic_function_str(ic_function _this, cx_string in) {
+cx_string _ic_function_str(ic_function _this, cx_string in) {
 /* $begin(::cortex::ic::function::str) */
     cx_id id;
     in = strappend(in, "\n%%function %s", cx_fullname(_this->function, id));

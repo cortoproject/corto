@@ -9,7 +9,7 @@
 #include "Fast.h"
 
 /* ::cortex::Fast::Template::construct() */
-cx_int16 Fast_Template_construct(Fast_Template _this) {
+cx_int16 _Fast_Template_construct(Fast_Template _this) {
 /* $begin(::cortex::Fast::Template::construct) */
 
     if (Fast_Local_construct(Fast_Local(_this))) {

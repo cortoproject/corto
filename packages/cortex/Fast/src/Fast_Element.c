@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::cortex::Fast::Element::construct() */
-cx_int16 Fast_Element_construct(Fast_Element _this) {
+cx_int16 _Fast_Element_construct(Fast_Element _this) {
 /* $begin(::cortex::Fast::Element::construct) */
     cx_type lvalueType, rvalueType;
 
@@ -61,7 +61,7 @@ error:
 }
 
 /* ::cortex::Fast::Element::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_Element_toIc_v(Fast_Element _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Element_toIc_v(Fast_Element _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Element::toIc) */
     ic_element result;
     ic_node lvalue, rvalue;

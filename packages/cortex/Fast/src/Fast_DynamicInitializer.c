@@ -113,7 +113,7 @@ error:
 /* $end */
 
 /* ::cortex::Fast::DynamicInitializer::construct() */
-cx_int16 Fast_DynamicInitializer_construct(Fast_DynamicInitializer _this) {
+cx_int16 _Fast_DynamicInitializer_construct(Fast_DynamicInitializer _this) {
 /* $begin(::cortex::Fast::DynamicInitializer::construct) */
     cx_int8 variable;
     
@@ -128,7 +128,7 @@ cx_int16 Fast_DynamicInitializer_construct(Fast_DynamicInitializer _this) {
 }
 
 /* ::cortex::Fast::DynamicInitializer::define() */
-cx_int16 Fast_DynamicInitializer_define(Fast_DynamicInitializer _this) {
+cx_int16 _Fast_DynamicInitializer_define(Fast_DynamicInitializer _this) {
 /* $begin(::cortex::Fast::DynamicInitializer::define) */
     cx_int8 variable;
     
@@ -147,7 +147,7 @@ cx_int16 Fast_DynamicInitializer_define(Fast_DynamicInitializer _this) {
 }
 
 /* ::cortex::Fast::DynamicInitializer::pop() */
-cx_int16 Fast_DynamicInitializer_pop(Fast_DynamicInitializer _this) {
+cx_int16 _Fast_DynamicInitializer_pop(Fast_DynamicInitializer _this) {
 /* $begin(::cortex::Fast::DynamicInitializer::pop) */
     cx_uint8 fp = Fast_Initializer(_this)->fp;
 
@@ -160,7 +160,7 @@ cx_int16 Fast_DynamicInitializer_pop(Fast_DynamicInitializer _this) {
 }
 
 /* ::cortex::Fast::DynamicInitializer::push() */
-cx_int16 Fast_DynamicInitializer_push(Fast_DynamicInitializer _this) {
+cx_int16 _Fast_DynamicInitializer_push(Fast_DynamicInitializer _this) {
 /* $begin(::cortex::Fast::DynamicInitializer::push) */
     cx_uint8 variable;
     cx_type t = Fast_Initializer_currentType(Fast_Initializer(_this));
@@ -226,7 +226,7 @@ error:
 }
 
 /* ::cortex::Fast::DynamicInitializer::value(Expression v) */
-cx_int16 Fast_DynamicInitializer_value(Fast_DynamicInitializer _this, Fast_Expression v) {
+cx_int16 _Fast_DynamicInitializer_value(Fast_DynamicInitializer _this, Fast_Expression v) {
 /* $begin(::cortex::Fast::DynamicInitializer::value) */
     cx_uint32 variable;
     cx_uint32 fp = Fast_Initializer(_this)->fp;

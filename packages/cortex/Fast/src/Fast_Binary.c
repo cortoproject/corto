@@ -313,7 +313,7 @@ error:
 /* $end */
 
 /* ::cortex::Fast::Binary::construct() */
-cx_int16 Fast_Binary_construct(Fast_Binary _this) {
+cx_int16 _Fast_Binary_construct(Fast_Binary _this) {
 /* $begin(::cortex::Fast::Binary::construct) */
     cx_type lvalueType, rvalueType;
 
@@ -364,7 +364,7 @@ error:
 }
 
 /* ::cortex::Fast::Binary::fold() */
-Fast_Expression Fast_Binary_fold(Fast_Binary _this) {
+Fast_Expression _Fast_Binary_fold(Fast_Binary _this) {
 /* $begin(::cortex::Fast::Binary::fold) */
     Fast_Expression result = Fast_Expression(_this);
     void *lptr, *rptr, *resultPtr;
@@ -450,7 +450,7 @@ error:
 }
 
 /* ::cortex::Fast::Binary::hasSideEffects() */
-cx_bool Fast_Binary_hasSideEffects_v(Fast_Binary _this) {
+cx_bool _Fast_Binary_hasSideEffects_v(Fast_Binary _this) {
 /* $begin(::cortex::Fast::Binary::hasSideEffects) */
     cx_bool result = FALSE;
     
@@ -474,7 +474,7 @@ cx_bool Fast_Binary_hasSideEffects_v(Fast_Binary _this) {
 }
 
 /* ::cortex::Fast::Binary::setOperator(operatorKind kind) */
-cx_void Fast_Binary_setOperator(Fast_Binary _this, cx_operatorKind kind) {
+cx_void _Fast_Binary_setOperator(Fast_Binary _this, cx_operatorKind kind) {
 /* $begin(::cortex::Fast::Binary::setOperator) */
     Fast_Binary compoundExpr = NULL;
     cx_type exprType = NULL;
@@ -535,7 +535,7 @@ error:
 }
 
 /* ::cortex::Fast::Binary::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_Binary_toIc_v(Fast_Binary _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Binary_toIc_v(Fast_Binary _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Binary::toIc) */
     ic_node lvalue, rvalue, result, returnsResult, conditionLvalue, conditionRvalue = NULL;
     cx_type _thisType = Fast_Expression_getType(Fast_Expression(_this));

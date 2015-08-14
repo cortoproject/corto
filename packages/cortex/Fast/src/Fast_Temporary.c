@@ -9,7 +9,7 @@
 #include "Fast.h"
 
 /* ::cortex::Fast::Temporary::construct() */
-cx_int16 Fast_Temporary_construct(Fast_Temporary _this) {
+cx_int16 _Fast_Temporary_construct(Fast_Temporary _this) {
 /* $begin(::cortex::Fast::Temporary::construct) */
 
     Fast_Storage(_this)->kind = Fast_TemporaryStorage;
@@ -21,7 +21,7 @@ cx_int16 Fast_Temporary_construct(Fast_Temporary _this) {
 }
 
 /* ::cortex::Fast::Temporary::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_Temporary_toIc_v(Fast_Temporary _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Temporary_toIc_v(Fast_Temporary _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Temporary::toIc) */
     CX_UNUSED(storage);
     CX_UNUSED(stored);

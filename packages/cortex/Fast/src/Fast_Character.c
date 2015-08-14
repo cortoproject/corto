@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::cortex::Fast::Character::init() */
-cx_int16 Fast_Character_init(Fast_Character _this) {
+cx_int16 _Fast_Character_init(Fast_Character _this) {
 /* $begin(::cortex::Fast::Character::init) */
     Fast_Literal(_this)->kind = Fast_Char;
     return Fast_Literal_init(Fast_Literal(_this));
@@ -21,7 +21,7 @@ cx_int16 Fast_Character_init(Fast_Character _this) {
 }
 
 /* ::cortex::Fast::Character::serialize(type dstType,word dst) */
-cx_int16 Fast_Character_serialize(Fast_Character _this, cx_type dstType, cx_word dst) {
+cx_int16 _Fast_Character_serialize(Fast_Character _this, cx_type dstType, cx_word dst) {
 /* $begin(::cortex::Fast::Character::serialize) */
     Fast_valueKind kind;
 
@@ -52,7 +52,7 @@ error:
 }
 
 /* ::cortex::Fast::Character::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_Character_toIc_v(Fast_Character _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Character_toIc_v(Fast_Character _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Character::toIc) */
     ic_literal result;
     CX_UNUSED(program);

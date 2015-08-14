@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::cortex::Fast::Local::construct() */
-cx_int16 Fast_Local_construct(Fast_Local _this) {
+cx_int16 _Fast_Local_construct(Fast_Local _this) {
 /* $begin(::cortex::Fast::Local::construct) */
 
     Fast_Node(_this)->kind = Fast_StorageExpr;
@@ -26,7 +26,7 @@ cx_int16 Fast_Local_construct(Fast_Local _this) {
 }
 
 /* ::cortex::Fast::Local::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_Local_toIc_v(Fast_Local _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Local_toIc_v(Fast_Local _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Local::toIc) */
     ic_node result;
     CX_UNUSED(storage);

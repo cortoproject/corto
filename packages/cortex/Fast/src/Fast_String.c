@@ -155,7 +155,7 @@ error:
 /* $end */
 
 /* ::cortex::Fast::String::construct() */
-cx_int16 Fast_String_construct(Fast_String _this) {
+cx_int16 _Fast_String_construct(Fast_String _this) {
 /* $begin(::cortex::Fast::String::construct) */
     
     if (!yparser()->block || !yparser()->scope) {
@@ -172,7 +172,7 @@ error:
 }
 
 /* ::cortex::Fast::String::getValue() */
-cx_word Fast_String_getValue(Fast_String _this) {
+cx_word _Fast_String_getValue(Fast_String _this) {
 /* $begin(::cortex::Fast::String::getValue) */
     cx_char *ptr, ch = '\0';
     cx_word result;
@@ -203,7 +203,7 @@ cx_word Fast_String_getValue(Fast_String _this) {
 }
 
 /* ::cortex::Fast::String::init() */
-cx_int16 Fast_String_init(Fast_String _this) {
+cx_int16 _Fast_String_init(Fast_String _this) {
 /* $begin(::cortex::Fast::String::init) */
     Fast_Literal(_this)->kind = Fast_Text;
     return Fast_Literal_init((Fast_Literal)_this);
@@ -211,7 +211,7 @@ cx_int16 Fast_String_init(Fast_String _this) {
 }
 
 /* ::cortex::Fast::String::serialize(type dstType,word dst) */
-cx_int16 Fast_String_serialize(Fast_String _this, cx_type dstType, cx_word dst) {
+cx_int16 _Fast_String_serialize(Fast_String _this, cx_type dstType, cx_word dst) {
 /* $begin(::cortex::Fast::String::serialize) */
     Fast_valueKind kind;
 
@@ -245,7 +245,7 @@ error:
 }
 
 /* ::cortex::Fast::String::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_String_toIc_v(Fast_String _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_String_toIc_v(Fast_String _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::String::toIc) */
     ic_node result = NULL;
     CX_UNUSED(storage);

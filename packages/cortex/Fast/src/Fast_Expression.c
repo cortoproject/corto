@@ -191,7 +191,7 @@ Fast_Expression Fast_Expression_narrow(Fast_Expression expr, cx_type target) {
 /* $end */
 
 /* ::cortex::Fast::Expression::cast(type type,bool isReference) */
-Fast_Expression Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_bool isReference) {
+Fast_Expression _Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_bool isReference) {
 /* $begin(::cortex::Fast::Expression::cast) */
     cx_type exprType, refType;
     Fast_Expression result = NULL;
@@ -366,7 +366,7 @@ error:
 }
 
 /* ::cortex::Fast::Expression::cleanList(list{Expression} list) */
-cx_void Fast_Expression_cleanList(Fast_Expression_list list) {
+cx_void _Fast_Expression_cleanList(Fast_Expression_list list) {
 /* $begin(::cortex::Fast::Expression::cleanList) */
     if (list) {
         cx_iter iter = cx_llIter(list);
@@ -379,7 +379,7 @@ cx_void Fast_Expression_cleanList(Fast_Expression_list list) {
 }
 
 /* ::cortex::Fast::Expression::fold() */
-Fast_Expression Fast_Expression_fold_v(Fast_Expression _this) {
+Fast_Expression _Fast_Expression_fold_v(Fast_Expression _this) {
 /* $begin(::cortex::Fast::Expression::fold) */
     CX_UNUSED(_this);
     return _this;
@@ -387,7 +387,7 @@ Fast_Expression Fast_Expression_fold_v(Fast_Expression _this) {
 }
 
 /* ::cortex::Fast::Expression::fromList(list{Expression} list) */
-Fast_Expression Fast_Expression_fromList(Fast_Expression_list list) {
+Fast_Expression _Fast_Expression_fromList(Fast_Expression_list list) {
 /* $begin(::cortex::Fast::Expression::fromList) */
     Fast_Expression result = NULL;
 
@@ -417,7 +417,7 @@ Fast_Expression Fast_Expression_fromList(Fast_Expression_list list) {
 }
 
 /* ::cortex::Fast::Expression::getType() */
-cx_type Fast_Expression_getType(Fast_Expression _this) {
+cx_type _Fast_Expression_getType(Fast_Expression _this) {
 /* $begin(::cortex::Fast::Expression::getType) */
     return _this->type;
 /* $end */
@@ -460,7 +460,7 @@ error:
     return NULL;  
 }
 /* $end */
-cx_type Fast_Expression_getType_expr(Fast_Expression _this, Fast_Expression target) {
+cx_type _Fast_Expression_getType_expr(Fast_Expression _this, Fast_Expression target) {
 /* $begin(::cortex::Fast::Expression::getType_expr) */
     cx_type type,result;
 
@@ -482,14 +482,14 @@ cx_type Fast_Expression_getType_expr(Fast_Expression _this, Fast_Expression targ
 }
 
 /* ::cortex::Fast::Expression::getType_type(type target) */
-cx_type Fast_Expression_getType_type(Fast_Expression _this, cx_type target) {
+cx_type _Fast_Expression_getType_type(Fast_Expression _this, cx_type target) {
 /* $begin(::cortex::Fast::Expression::getType_type) */
     return Fast_Expression_getType_intern(_this, target, NULL);
 /* $end */
 }
 
 /* ::cortex::Fast::Expression::getValue() */
-cx_word Fast_Expression_getValue_v(Fast_Expression _this) {
+cx_word _Fast_Expression_getValue_v(Fast_Expression _this) {
 /* $begin(::cortex::Fast::Expression::getValue) */
     CX_UNUSED(_this);
     return 0;
@@ -497,7 +497,7 @@ cx_word Fast_Expression_getValue_v(Fast_Expression _this) {
 }
 
 /* ::cortex::Fast::Expression::hasSideEffects() */
-cx_bool Fast_Expression_hasSideEffects_v(Fast_Expression _this) {
+cx_bool _Fast_Expression_hasSideEffects_v(Fast_Expression _this) {
 /* $begin(::cortex::Fast::Expression::hasSideEffects) */
     CX_UNUSED(_this);
     return FALSE;
@@ -505,7 +505,7 @@ cx_bool Fast_Expression_hasSideEffects_v(Fast_Expression _this) {
 }
 
 /* ::cortex::Fast::Expression::serialize(type dstType,word dst) */
-cx_int16 Fast_Expression_serialize_v(Fast_Expression _this, cx_type dstType, cx_word dst) {
+cx_int16 _Fast_Expression_serialize_v(Fast_Expression _this, cx_type dstType, cx_word dst) {
 /* $begin(::cortex::Fast::Expression::serialize) */
     CX_UNUSED(_this);
     CX_UNUSED(dstType);
@@ -516,7 +516,7 @@ cx_int16 Fast_Expression_serialize_v(Fast_Expression _this, cx_type dstType, cx_
 }
 
 /* ::cortex::Fast::Expression::toList() */
-Fast_Expression_list Fast_Expression_toList_v(Fast_Expression _this) {
+Fast_Expression_list _Fast_Expression_toList_v(Fast_Expression _this) {
 /* $begin(::cortex::Fast::Expression::toList) */
     Fast_Node_list result = NULL;
     

@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::cortex::Fast::Boolean::init() */
-cx_int16 Fast_Boolean_init(Fast_Boolean _this) {
+cx_int16 _Fast_Boolean_init(Fast_Boolean _this) {
 /* $begin(::cortex::Fast::Boolean::init) */
     Fast_Literal(_this)->kind = Fast_Bool;
     return Fast_Literal_init(Fast_Literal(_this));
@@ -21,7 +21,7 @@ cx_int16 Fast_Boolean_init(Fast_Boolean _this) {
 }
 
 /* ::cortex::Fast::Boolean::serialize(type dstType,word dst) */
-cx_int16 Fast_Boolean_serialize(Fast_Boolean _this, cx_type dstType, cx_word dst) {
+cx_int16 _Fast_Boolean_serialize(Fast_Boolean _this, cx_type dstType, cx_word dst) {
 /* $begin(::cortex::Fast::Boolean::serialize) */
     Fast_valueKind kind;
 
@@ -58,7 +58,7 @@ error:
 }
 
 /* ::cortex::Fast::Boolean::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_Boolean_toIc_v(Fast_Boolean _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Boolean_toIc_v(Fast_Boolean _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Boolean::toIc) */
     ic_node result;
     CX_UNUSED(storage);

@@ -67,7 +67,7 @@ error:
 /* $end */
 
 /* ::cortex::Fast::Node::init() */
-cx_int16 Fast_Node_init(Fast_Node _this) {
+cx_int16 _Fast_Node_init(Fast_Node _this) {
 /* $begin(::cortex::Fast::Node::init) */
     _this->line = yparser()->line;
     _this->column = yparser()->column;
@@ -76,7 +76,7 @@ cx_int16 Fast_Node_init(Fast_Node _this) {
 }
 
 /* ::cortex::Fast::Node::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_Node_toIc_v(Fast_Node _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Node_toIc_v(Fast_Node _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Node::toIc) */
     CX_UNUSED(_this);
     CX_UNUSED(program);

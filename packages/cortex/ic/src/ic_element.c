@@ -9,7 +9,7 @@
 #include "ic.h"
 
 /* ::cortex::ic::element::construct() */
-cx_int16 ic_element_construct(ic_element _this) {
+cx_int16 _ic_element_construct(ic_element _this) {
 /* $begin(::cortex::ic::element::construct) */
     cx_id name;
     cx_collection type = cx_collection(_this->base->type);

@@ -9,7 +9,7 @@
 #include "testjson.h"
 
 /* ::testjson::BaseDeserTest::testName(object o,string name) */
-cx_bool testjson_BaseDeserTest_testName(testjson_BaseDeserTest _this, cx_object o, cx_string name) {
+cx_bool _testjson_BaseDeserTest_testName(testjson_BaseDeserTest _this, cx_object o, cx_string name) {
 /* $begin(::testjson::BaseDeserTest::testName) */
     cx_string actual = cx_nameof(o);
     cx_any _actual = {cx_type(cx_string_o), &actual, FALSE};
@@ -24,7 +24,7 @@ error:
 }
 
 /* ::testjson::BaseDeserTest::testNameParentType(object o,string name,object parent,type type) */
-cx_bool testjson_BaseDeserTest_testNameParentType(testjson_BaseDeserTest _this, cx_object o, cx_string name, cx_object parent, cx_type type) {
+cx_bool _testjson_BaseDeserTest_testNameParentType(testjson_BaseDeserTest _this, cx_object o, cx_string name, cx_object parent, cx_type type) {
 /* $begin(::testjson::BaseDeserTest::testNameParentType) */
     if (test_Suite_assert_bool_string(test_Suite(_this), o != NULL, "object not initialized")) {
         goto error;
@@ -45,7 +45,7 @@ error:
 }
 
 /* ::testjson::BaseDeserTest::testParent(object o,object parent) */
-cx_bool testjson_BaseDeserTest_testParent(testjson_BaseDeserTest _this, cx_object o, cx_object parent) {
+cx_bool _testjson_BaseDeserTest_testParent(testjson_BaseDeserTest _this, cx_object o, cx_object parent) {
 /* $begin(::testjson::BaseDeserTest::testParent) */
     cx_object actual = cx_parentof(o);
     cx_any _actual = {cx_typeof(actual), &actual, FALSE};
@@ -60,7 +60,7 @@ error:
 }
 
 /* ::testjson::BaseDeserTest::testType(object o,type type) */
-cx_bool testjson_BaseDeserTest_testType(testjson_BaseDeserTest _this, cx_object o, cx_type type) {
+cx_bool _testjson_BaseDeserTest_testType(testjson_BaseDeserTest _this, cx_object o, cx_type type) {
 /* $begin(::testjson::BaseDeserTest::testType) */
     cx_type actual = cx_typeof(o);
     cx_any _actual = {cx_type(cx_type_o), &actual, FALSE};
