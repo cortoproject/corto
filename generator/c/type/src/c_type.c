@@ -226,7 +226,7 @@ static cx_int16 c_typeStruct(cx_serializer s, cx_value* v, void* userData) {
 
     /* Open struct */
     g_fileWrite(data->header, "struct %s {\n", g_fullOid(data->g, t, id));
-    
+
     /* Serialize members */
     g_fileIndent(data->header);
 
@@ -415,7 +415,7 @@ static cx_int16 c_typeIterator(cx_serializer s, cx_value* v, void* userData) {
 
     CX_UNUSED(s);
     CX_UNUSED(v);
-    
+
     c_typeWalk_t* data;
     cx_id id, postfix;
 
@@ -501,7 +501,7 @@ static int c_typeClassCastWalk(cx_object o, void* userData) {
             g_fileWrite(data->header, "#define %s(o) ((%s)cx_assertType((cx_type)%s_o, o))\n",
                 fullOid, fullOid, fullOid);
         } else {
-            g_fileWrite(data->header, "#define %s(o) ((%s *)cx_assertType((cx_type)%s_o, &o))\n",
+            g_fileWrite(data->header, "#define %s(o) ((%s *)cx_assertType((cx_type)%s_o, o))\n",
                 fullOid, fullOid, fullOid);
         }
     }
@@ -621,7 +621,7 @@ static int c_typeDefine(cx_object o, void* userData) {
     int result;
 
     result = 0;
-    
+
     /* Get type-serializer */
     s = c_typeSerializer();
 
