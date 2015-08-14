@@ -335,7 +335,7 @@ static int c_interfaceParamCastWalk(cx_parameter* o, void* userData) {
     }
     shouldCast = o->passByReference && o->type->kind != CX_VOID;
     shouldCast = shouldCast || (o->type->reference && o->type->kind != CX_VOID);
-    if (0) {
+    if (shouldCast) {
         g_fileWrite(data->header, "%s(%s)", specifier, o->name);
     } else {
         g_fileWrite(data->header, "%s", o->name);
