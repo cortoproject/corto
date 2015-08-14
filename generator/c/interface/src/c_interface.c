@@ -333,7 +333,6 @@ static int c_interfaceParamCastWalk(cx_parameter* o, void* userData) {
     if (c_specifierId(data->g, o->type, specifier, NULL, postfix)) {
         goto error;
     }
-    // printf("%s, passbyref? %d, typeisref? %d, isvoid? %d\n", o->name, o->passByReference, o->type->reference, o->type->kind == CX_VOID);
     shouldCast = o->passByReference && o->type->kind != CX_VOID;
     shouldCast = shouldCast || (o->type->reference && o->type->kind != CX_VOID);
     if (0) {
