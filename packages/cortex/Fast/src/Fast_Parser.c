@@ -1269,10 +1269,10 @@ Fast_Expression _Fast_Parser_callExpr(Fast_Parser _this, Fast_Expression functio
 
     if (function && _this->pass) {
         cx_object o = NULL;
-        Fast_Expression_list functions = Fast_Expression_toList(function);
-        Fast_Expression_list args = Fast_Expression_toList(arguments);
+        Fast_Expression_list functions = function ? Fast_Expression_toList(function) : NULL;
+        Fast_Expression_list args = arguments ? Fast_Expression_toList(arguments) : NULL;
 
-        Fast_Expression_list__foreach(functions, f)
+        if (functions) {Fast_Expression_list__foreach(functions, f)
             Fast_Expression expr;
             if ((Fast_Node(f)->kind == Fast_StorageExpr) && (Fast_Storage(f)->kind == Fast_ObjectStorage)) {
                 o = Fast_Object(f)->value;
@@ -1295,10 +1295,10 @@ Fast_Expression _Fast_Parser_callExpr(Fast_Parser _this, Fast_Expression functio
                 goto error;
             }
             result = Fast_Comma_addOrCreate(result, expr);
-        }
+        }}
 
         /* Cleanup initializer arguments */
-        {Fast_Expression_list__foreach(args, a)
+        if (args) {Fast_Expression_list__foreach(args, a)
             if (Fast_Node(a)->kind == Fast_InitializerExpr) {
                 Fast_Expression var = Fast_Initializer(a)->variables[0].object;
                 if (Fast_Storage(var)->kind == Fast_TemporaryStorage) {
@@ -1825,7 +1825,7 @@ cx_int16 _Fast_Parser_finalize(Fast_Parser _this, ic_program program) {
                 cx_signatureName(cx_nameof(binding->function), name);
                 returnValue = ic_scope_lookupStorage(scope, name, TRUE);
                 ret = IC_1_OP(_this->line, ic_ret, returnValue, IC_DEREF_VALUE, FALSE);
-                if (binding->function->returnsReference) {
+                if (binding->function->returnsReference || binding->function->returnType->reference) {
                     ((ic_storage)returnValue)->isReference = TRUE;
                     ((ic_op)ret)->s1Deref = IC_DEREF_ADDRESS;
                 }else {

@@ -84,6 +84,7 @@
                     <virtual name="getValue()" returnType="word"/>
                     <virtual name="toList()" returnType="list{Expression}"/>
                     <virtual name="hasSideEffects()" returnType="bool"/>
+                    <virtual name="hasReturnedResource()" returnType="bool"/>
                     <function name="fromList(list{Expression} list)" returnType="Expression"/>
                     <function name="cleanList(list{Expression} list)"/>
                 </meta:scope>
@@ -100,6 +101,7 @@
                   <function name="addOrCreate(Expression list,Expression expr)" returnType="Expression"/>
                   <function name="insertOrCreate(Expression list,Expression expr)" returnType="Expression"/>
                   <virtual name="hasSideEffects()" returnType="bool"/>
+                  <virtual name="hasReturnedResource()" returnType="bool"/>
                   <virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
               </meta:scope>
             </class>
@@ -327,6 +329,7 @@
 
                     <method name="setParameters(function function)"/>
                     <virtual name="hasSideEffects()" returnType="bool"/>
+                    <virtual name="hasReturnedResource()" returnType="bool"/>
                     <virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
                 </meta:scope>
             </class>
@@ -369,6 +372,7 @@
                     <member name="lvalue" type="type"/>
                     <member name="rvalue" type="Fast::Expression"/>
                     <member name="isReference" type="bool"/>
+                    <virtual name="hasReturnedResource()" returnType="bool"/>
                     <virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
                 </meta:scope>
             </class>
@@ -379,6 +383,7 @@
                     <method name="construct()" returnType="int16"/>
                     <member name="lvalue" type="Fast::Expression"/>
                     <member name="operator" type="operatorKind"/>
+                    <virtual name="hasReturnedResource()" returnType="bool"/>
                     <virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
                 </meta:scope>
             </class>
@@ -390,6 +395,7 @@
                     <member name="lvalue" type="Fast::Expression"/>
                     <member name="operator" type="operatorKind"/>
                     <virtual name="hasSideEffects()" returnType="bool"/>
+                    <virtual name="hasReturnedResource()" returnType="bool"/>
                     <virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
                 </meta:scope>
             </class>
@@ -405,6 +411,7 @@
                     <method name="fold()" returnType="Fast::Expression"/>
                     <method name="setOperator(operatorKind kind)" returnType="void"/>
                     <virtual name="hasSideEffects()" returnType="bool"/>
+                    <virtual name="hasReturnedResource()" returnType="bool"/>
                     <virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
                 </meta:scope>
             </class>
@@ -424,6 +431,7 @@
                     <member name="ifstmt" type="Fast::If" modifiers="local|private"/>
                     <method name="setOperator(operatorKind kind)" returnType="void"/>
                     <virtual name="hasSideEffects()" returnType="bool"/>
+                    <virtual name="hasReturnedResource()" returnType="bool"/>
                     <virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
                 </meta:scope>
             </class>
@@ -512,6 +520,7 @@
                     <method name="construct()" returnType="int16"/>
                     <member name="exprList" type="list{Fast::Expression}"/>
                     <member name="timeout" type="Fast::Expression"/>
+                    <virtual name="hasReturnedResource()" returnType="bool"/>
                     <virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
                 </meta:scope>
             </class>
@@ -602,6 +611,7 @@
                     <method name="pop()" returnType="int16"/>
                     <method name="value(Expression v)" returnType="int16"/>
                     <method name="define()" returnType="int16"/>
+                    <virtual name="hasReturnedResource()" returnType="bool"/>
                 </meta:scope>
             </class>
 
@@ -635,6 +645,7 @@
                     <method name="member(string name)" returnType="int32"/>
                     <method name="define()" returnType="int16"/>
                     <method name="insert(Expression variable)" returnType="int16"/>
+                    <virtual name="hasReturnedResource()" returnType="bool"/>
                 </meta:scope>
             </class>
 

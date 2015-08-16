@@ -43,6 +43,15 @@ error:
 /* $end */
 }
 
+/* ::cortex::Fast::Cast::hasReturnedResource() */
+cx_bool Fast_Cast_hasReturnedResource_v(Fast_Cast _this) {
+/* $begin(::cortex::Fast::Cast::hasReturnedResource) */
+
+    return Fast_Expression_hasReturnedResource(_this->rvalue);
+
+/* $end */
+}
+
 /* ::cortex::Fast::Cast::toIc(ic::program program,ic::storage storage,bool stored) */
 ic_node _Fast_Cast_toIc_v(Fast_Cast _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Cast::toIc) */

@@ -48,6 +48,10 @@ cx_int16 cx_function_bind(cx_function _this) {
         cx_setref(&_this->returnType, cx_void_o);
     }
 
+    if (_this->returnType->reference) {
+        _this->returnsReference = TRUE;
+    }
+
     /* Bind with interface if possible */
     if (cx_delegate_bind(_this)) {
         goto error;

@@ -70,6 +70,13 @@ error:
 /* $end */
 }
 
+/* ::cortex::Fast::PostFix::hasReturnedResource() */
+cx_bool Fast_PostFix_hasReturnedResource_v(Fast_PostFix _this) {
+/* $begin(::cortex::Fast::PostFix::hasReturnedResource) */
+    return Fast_Expression_hasReturnedResource(_this->lvalue);
+/* $end */
+}
+
 /* ::cortex::Fast::PostFix::toIc(ic::program program,ic::storage storage,bool stored) */
 ic_node _Fast_PostFix_toIc_v(Fast_PostFix _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::PostFix::toIc) */
