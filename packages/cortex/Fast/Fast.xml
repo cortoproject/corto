@@ -408,6 +408,7 @@
                     <member name="rvalue" type="Fast::Expression"/>
                     <member name="operator" type="operatorKind"/>
                     <member name="deref" type="Fast::derefKind" modifiers="local|private"/>
+                    <member name="isScalar" type="lang::bool" modifiers="local|readonly"/>
                     <method name="fold()" returnType="Fast::Expression"/>
                     <method name="setOperator(operatorKind kind)" returnType="void"/>
                     <virtual name="hasSideEffects()" returnType="bool"/>

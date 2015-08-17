@@ -71,14 +71,14 @@ cx_int16 Fast_Binary_getDerefKind(Fast_Binary _this, cx_type lvalueType, cx_type
                 if (_this->rvalue->isReference) {
                     _this->deref = Fast_ByReference;
                 } else {
-                    Fast_Parser_error(yparser(), "cannot access rvalue by reference");
+                    Fast_Parser_error(yparser(), "cannot access right operand by reference");
                     goto error;
                 }
             } else if (rvalueType->kind == CX_VOID) {
                 if (_this->lvalue->isReference) {
                     _this->deref = Fast_ByReference;
                 } else {
-                    Fast_Parser_error(yparser(), "cannot access lvalue by reference");
+                    Fast_Parser_error(yparser(), "cannot access left operand by reference");
                     goto error;
                 }
             } else {
@@ -93,7 +93,7 @@ cx_int16 Fast_Binary_getDerefKind(Fast_Binary _this, cx_type lvalueType, cx_type
     } else {
         if ((_this->lvalue->deref == Fast_ByReference) && (!_this->rvalue->isReference)) {
             cx_id id;
-            Fast_Parser_error(yparser(), "cannot access rvalue by reference (type = '%s', kind = '%s')",
+            Fast_Parser_error(yparser(), "cannot access right operand by reference (type = '%s', kind = '%s')",
                 Fast_Parser_id(rvalueType, id), 
                     cx_nameof(cx_enum_constant(Fast_nodeKind_o, Fast_Node(_this->rvalue)->kind)));
             goto error;
@@ -232,7 +232,7 @@ cx_int16 Fast_Binary_cast(Fast_Binary _this, cx_type *returnType) {
             }
         } else {
             cx_id id1, id2;
-            Fast_Parser_error(yparser(), "no cast between '%s' and '%s'",
+            Fast_Parser_error(yparser(), "cannot cast from '%s' to '%s'",
                     Fast_Parser_id(lvalueType, id1), Fast_Parser_id(rvalueType, id2));
             goto error;
         }
@@ -252,7 +252,7 @@ cx_int16 Fast_Binary_cast(Fast_Binary _this, cx_type *returnType) {
             cx_release(oldRvalue);
         } else {
             cx_id id, id2;
-            Fast_Parser_error(yparser(), "failed to cast rvalue from '%s' to '%s'",
+            Fast_Parser_error(yparser(), "cannot cast from '%s' to '%s'",
                     Fast_Parser_id(rvalueType, id), Fast_Parser_id(castType, id2));
             goto error;
         }
@@ -265,7 +265,7 @@ cx_int16 Fast_Binary_cast(Fast_Binary _this, cx_type *returnType) {
             cx_release(oldLvalue);
         } else {
             cx_id id, id2;
-            Fast_Parser_error(yparser(), "failed to cast lvalue from '%s' to '%s'",
+            Fast_Parser_error(yparser(), "cannot cast from '%s' to '%s'",
                     Fast_Parser_id(lvalueType, id), Fast_Parser_id(castType, id2));
             goto error;
         }
@@ -274,6 +274,32 @@ cx_int16 Fast_Binary_cast(Fast_Binary _this, cx_type *returnType) {
     if (castType) {
         *returnType = castType;
     }
+
+    return 0;
+error:
+    return -1;
+}
+
+cx_int16 Fast_Binary_complexExpr(Fast_Binary _this) {
+    Fast_Expression result = NULL;
+
+    if (_this->operator == CX_ASSIGN) {
+        if(Fast_Node(_this->rvalue)->kind == Fast_InitializerExpr) {
+            if (Fast_InitializerExpression_insert(Fast_InitializerExpression(_this->rvalue), _this->lvalue)) {
+                goto error;
+            }
+        } else {
+            if (!(result = Fast_Expression(Fast_createCall(_this->lvalue, "copy", 1, _this->rvalue)))) {
+                goto error;
+            }
+            Fast_Parser_addStatement(yparser(), result);
+        }
+    } else {
+        Fast_Parser_error(_this, "operator invalid for complex value");
+        goto error;
+    }
+
+    _this->isScalar = FALSE;
 
     return 0;
 error:
@@ -310,12 +336,15 @@ error:
     return -1;
 }
 
+
 /* $end */
 
 /* ::cortex::Fast::Binary::construct() */
 cx_int16 _Fast_Binary_construct(Fast_Binary _this) {
 /* $begin(::cortex::Fast::Binary::construct) */
     cx_type lvalueType, rvalueType;
+
+    _this->isScalar = TRUE;
 
     Fast_Node(_this)->kind = Fast_BinaryExpr;
     if (!(lvalueType = Fast_Expression_getType_expr(_this->lvalue, _this->rvalue))) {
@@ -336,14 +365,13 @@ cx_int16 _Fast_Binary_construct(Fast_Binary _this) {
 
     /* Check if lvalue is valid in case of assignment */
     if (Fast_isOperatorAssignment(_this->operator) && (Fast_Node(_this->lvalue)->kind != Fast_StorageExpr)) {
-        Fast_Parser_error(yparser(), "left-hand side of assignment is not a storage");
+        Fast_Parser_error(yparser(), "invalid lvalue");
         goto error;       
     }
 
     if (lvalueType && rvalueType) {
         if (!cx_type_castable(lvalueType, rvalueType)) {
             cx_id id, id2;
-            printf("rvalue = %s\n", cx_nameof(cx_typeof(_this->rvalue)));
             Fast_Parser_error(yparser(), "cannot convert '%s' to '%s'",
                     Fast_Parser_id(rvalueType, id), Fast_Parser_id(lvalueType, id2));
             goto error;
@@ -538,7 +566,13 @@ cx_void _Fast_Binary_setOperator(Fast_Binary _this, cx_operatorKind kind) {
         break;
     }
 
-    return;
+    /* If the expression type is not a scalar, insert complex operations */
+    if ((exprType->kind != CX_PRIMITIVE) && (_this->lvalue->deref != Fast_ByReference)) {
+        if (Fast_Binary_complexExpr(_this)) {
+            goto error;
+        }
+    }
+
 error:
     return;
 /* $end */
@@ -547,66 +581,77 @@ error:
 /* ::cortex::Fast::Binary::toIc(ic::program program,ic::storage storage,bool stored) */
 ic_node _Fast_Binary_toIc_v(Fast_Binary _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Binary::toIc) */
-    ic_node lvalue, rvalue, result, returnsResult, conditionLvalue, conditionRvalue = NULL;
-    cx_type _thisType = Fast_Expression_getType(Fast_Expression(_this));
-    cx_bool condition = Fast_Binary_isConditional(_this);
-    cx_bool isReference = (_this->lvalue->deref == Fast_ByReference) || (_this->rvalue->deref == Fast_ByReference);
-    ic_derefKind deref = _this->deref == Fast_ByReference ? IC_DEREF_ADDRESS : IC_DEREF_VALUE;
+    ic_node returnsResult = NULL;
 
-    if (storage && (storage->type == _thisType)) {
-        result = (ic_node)storage;
-    } else {
-        result = (ic_node)ic_program_pushAccumulator(program, _thisType, isReference, FALSE);
-    }
+    if (_this->isScalar) {
+        ic_node lvalue, rvalue, result, returnsResult, conditionLvalue, conditionRvalue = NULL;
+        cx_type _thisType = Fast_Expression_getType(Fast_Expression(_this));
+        cx_bool condition = Fast_Binary_isConditional(_this);
+        cx_bool isReference = (_this->lvalue->deref == Fast_ByReference) || (_this->rvalue->deref == Fast_ByReference);
+        ic_derefKind deref = _this->deref == Fast_ByReference ? IC_DEREF_ADDRESS : IC_DEREF_VALUE;
 
-    returnsResult = result;
-
-    if (condition) {
-        conditionLvalue = (ic_node)ic_program_pushAccumulator(program, Fast_Expression_getType(_this->lvalue), _this->lvalue->isReference, FALSE);
-        conditionRvalue = (ic_node)ic_program_pushAccumulator(program, Fast_Expression_getType(_this->rvalue), _this->rvalue->isReference, FALSE);
-    }
-
-    lvalue = Fast_Node_toIc(
-            Fast_Node(_this->lvalue),
-            program,
-            condition ? (ic_storage)conditionLvalue :  (ic_storage)result,
-            TRUE);
-
-    if (_this->operator == CX_ASSIGN) {
-        rvalue = Fast_Node_toIc(Fast_Node(_this->rvalue), program, (ic_storage)lvalue, TRUE);
-        if (lvalue != rvalue) {
-            IC_3(program, Fast_Node(_this)->line, ic_set, 
-                stored ? result : NULL, lvalue, rvalue, IC_DEREF_VALUE, deref, deref);
+        if (storage && (storage->type == _thisType)) {
+            result = (ic_node)storage;
         } else {
-            returnsResult = rvalue;
+            result = (ic_node)ic_program_pushAccumulator(program, _thisType, isReference, FALSE);
         }
-    } else if (stored && result) {
-        rvalue = Fast_Node_toIc(Fast_Node(_this->rvalue), program, (ic_storage)conditionRvalue, TRUE);
-        if ((_thisType->kind == CX_PRIMITIVE) && (cx_primitive(_thisType)->kind == CX_TEXT)) {
-            if (Fast_Binary_toIc_strOp(_this, program, (ic_storage)result, ic_node(lvalue), ic_node(rvalue))) {
-                goto error;
+
+        returnsResult = result;
+
+        if (condition) {
+            conditionLvalue = (ic_node)ic_program_pushAccumulator(program, Fast_Expression_getType(_this->lvalue), _this->lvalue->isReference, FALSE);
+            conditionRvalue = (ic_node)ic_program_pushAccumulator(program, Fast_Expression_getType(_this->rvalue), _this->rvalue->isReference, FALSE);
+        }
+
+        lvalue = Fast_Node_toIc(
+                Fast_Node(_this->lvalue),
+                program,
+                condition ? (ic_storage)conditionLvalue : (ic_storage)result,
+                TRUE);
+
+        if (_this->operator == CX_ASSIGN) {
+            rvalue = Fast_Node_toIc(Fast_Node(_this->rvalue), program, (ic_storage)lvalue, TRUE);
+            if (lvalue != rvalue) {
+                IC_3(program, Fast_Node(_this)->line, ic_set, 
+                    stored ? result : NULL, lvalue, rvalue, IC_DEREF_VALUE, deref, deref);
+            } else {
+                returnsResult = rvalue;
+            }
+        } else if (stored && result) {
+            rvalue = Fast_Node_toIc(Fast_Node(_this->rvalue), program, (ic_storage)conditionRvalue, TRUE);
+            if ((_thisType->kind == CX_PRIMITIVE) && (cx_primitive(_thisType)->kind == CX_TEXT)) {
+                if (Fast_Binary_toIc_strOp(_this, program, (ic_storage)result, ic_node(lvalue), ic_node(rvalue))) {
+                    goto error;
+                }
+            } else {
+                IC_3(program, Fast_Node(_this)->line, ic_opKindFromOperator(_this->operator), result, lvalue, rvalue,
+                    IC_DEREF_VALUE, deref, deref);
             }
         } else {
-            IC_3(program, Fast_Node(_this)->line, ic_opKindFromOperator(_this->operator), result, lvalue, rvalue,
-                IC_DEREF_VALUE, deref, deref);
+            if (Fast_Expression_hasSideEffects(_this->rvalue)) {
+                rvalue = Fast_Node_toIc(Fast_Node(_this->rvalue), program, (ic_storage)conditionRvalue, FALSE);
+            }
+        }
+
+        if (condition) {
+            ic_program_popAccumulator(program);
+            ic_program_popAccumulator(program);
+        }
+
+        if ((ic_node)storage != result) {
+            ic_program_popAccumulator(program);
         }
     } else {
-        if (Fast_Expression_hasSideEffects(_this->rvalue)) {
-            rvalue = Fast_Node_toIc(Fast_Node(_this->rvalue), program, (ic_storage)conditionRvalue, FALSE);
-        }
-    }
-
-    if (condition) {
-        ic_program_popAccumulator(program);
-        ic_program_popAccumulator(program);
-    }
-
-    if ((ic_node)storage != result) {
-        ic_program_popAccumulator(program);
+        returnsResult = Fast_Node_toIc(
+            Fast_Node(_this->lvalue),
+            program,
+            NULL,
+            TRUE);
     }
 
     return returnsResult;
 error:
     return NULL;
+
 /* $end */
 }

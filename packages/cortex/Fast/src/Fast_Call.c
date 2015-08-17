@@ -136,7 +136,6 @@ ic_node _Fast_Call_toIc_v(Fast_Call _this, ic_program program, ic_storage storag
     cx_int32 i = 0;
 
     CX_UNUSED(stored);
-    CX_UNUSED(storage);
 
     if (storage && (storage->type == _thisType)) {
         result = storage;

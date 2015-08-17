@@ -3,6 +3,7 @@
 bin/*
 benchmark/bin/*
 generator/bin/*
+**/.cortex/**
 test/bin/*
 lex.yy.c
 y.output

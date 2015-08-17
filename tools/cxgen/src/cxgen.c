@@ -200,6 +200,16 @@ static int cx_createPackage(cx_string include) {
     FILE *file;
     cx_uint32 i;
 
+    /* Ignore initial colons */
+    if (include[0] == ':') {
+        if (include[1] == ':') {
+            include += 2;
+        } else {
+            cx_error("invalid package name");
+            return -1;
+        }
+    }
+
     /* Extract left-most name from include variable */
     ptr = include;
     name = include;
