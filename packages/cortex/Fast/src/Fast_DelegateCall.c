@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::cortex::Fast::DelegateCall::construct() */
-cx_int16 Fast_DelegateCall_construct(Fast_DelegateCall _this) {
+cx_int16 _Fast_DelegateCall_construct(Fast_DelegateCall _this) {
 /* $begin(::cortex::Fast::DelegateCall::construct) */
     if (!_this->expr) {
         Fast_Parser_error(yparser(), "no expression provided for delegate call");

@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::cortex::Fast::Cast::construct() */
-cx_int16 Fast_Cast_construct(Fast_Cast _this) {
+cx_int16 _Fast_Cast_construct(Fast_Cast _this) {
 /* $begin(::cortex::Fast::Cast::construct) */
 
     Fast_Node(_this)->kind = Fast_CallExpr;
@@ -53,7 +53,7 @@ cx_bool Fast_Cast_hasReturnedResource_v(Fast_Cast _this) {
 }
 
 /* ::cortex::Fast::Cast::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_Cast_toIc_v(Fast_Cast _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Cast_toIc_v(Fast_Cast _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Cast::toIc) */
     ic_node lvalue, rvalue, result;
     cx_bool deref1 = IC_DEREF_VALUE, deref2 = IC_DEREF_VALUE;

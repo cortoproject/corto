@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::cortex::Fast::Block::addStatement(Fast::Node statement) */
-cx_void Fast_Block_addStatement(Fast_Block _this, Fast_Node statement) {
+cx_void _Fast_Block_addStatement(Fast_Block _this, Fast_Node statement) {
 /* $begin(::cortex::Fast::Block::addStatement) */
     if (statement) {
         cx_assert(_this->statements != NULL, "initialization failed");
@@ -23,7 +23,7 @@ cx_void Fast_Block_addStatement(Fast_Block _this, Fast_Node statement) {
 }
 
 /* ::cortex::Fast::Block::declare(string id,type type,bool isParameter,bool isReference) */
-Fast_Local Fast_Block_declare(Fast_Block _this, cx_string id, cx_type type, cx_bool isParameter, cx_bool isReference) {
+Fast_Local _Fast_Block_declare(Fast_Block _this, cx_string id, cx_type type, cx_bool isParameter, cx_bool isReference) {
 /* $begin(::cortex::Fast::Block::declare) */
     Fast_Local result;
     Fast_LocalKind kind = 0;
@@ -53,7 +53,7 @@ error:
 }
 
 /* ::cortex::Fast::Block::declareReturnVariable(function function) */
-Fast_Local Fast_Block_declareReturnVariable(Fast_Block _this, cx_function function) {
+Fast_Local _Fast_Block_declareReturnVariable(Fast_Block _this, cx_function function) {
 /* $begin(::cortex::Fast::Block::declareReturnVariable) */
     Fast_Local result;
     cx_id id;
@@ -74,7 +74,7 @@ Fast_Local Fast_Block_declareReturnVariable(Fast_Block _this, cx_function functi
 }
 
 /* ::cortex::Fast::Block::declareTemplate(string id,type type,bool isParameter,bool isReference) */
-Fast_Template Fast_Block_declareTemplate(Fast_Block _this, cx_string id, cx_type type, cx_bool isParameter, cx_bool isReference) {
+Fast_Template _Fast_Block_declareTemplate(Fast_Block _this, cx_string id, cx_type type, cx_bool isParameter, cx_bool isReference) {
 /* $begin(::cortex::Fast::Block::declareTemplate) */
     Fast_Template result;
 
@@ -99,7 +99,7 @@ error:
 }
 
 /* ::cortex::Fast::Block::lookup(string id) */
-Fast_Expression Fast_Block_lookup(Fast_Block _this, cx_string id) {
+Fast_Expression _Fast_Block_lookup(Fast_Block _this, cx_string id) {
 /* $begin(::cortex::Fast::Block::lookup) */
     Fast_Expression result = NULL;
 
@@ -184,7 +184,7 @@ error:
 }
 
 /* ::cortex::Fast::Block::lookupLocal(string id) */
-Fast_Local Fast_Block_lookupLocal(Fast_Block _this, cx_string id) {
+Fast_Local _Fast_Block_lookupLocal(Fast_Block _this, cx_string id) {
 /* $begin(::cortex::Fast::Block::lookupLocal) */
     Fast_Local result = NULL;
 
@@ -206,7 +206,7 @@ Fast_Local Fast_Block_lookupLocal(Fast_Block _this, cx_string id) {
 }
 
 /* ::cortex::Fast::Block::resolve(string id) */
-Fast_Expression Fast_Block_resolve(Fast_Block _this, cx_string id) {
+Fast_Expression _Fast_Block_resolve(Fast_Block _this, cx_string id) {
 /* $begin(::cortex::Fast::Block::resolve) */
     Fast_Expression result = NULL;
 
@@ -221,7 +221,7 @@ Fast_Expression Fast_Block_resolve(Fast_Block _this, cx_string id) {
 }
 
 /* ::cortex::Fast::Block::resolveLocal(string id) */
-Fast_Local Fast_Block_resolveLocal(Fast_Block _this, cx_string id) {
+Fast_Local _Fast_Block_resolveLocal(Fast_Block _this, cx_string id) {
 /* $begin(::cortex::Fast::Block::resolveLocal) */
     Fast_Local result = NULL;
 
@@ -236,14 +236,14 @@ Fast_Local Fast_Block_resolveLocal(Fast_Block _this, cx_string id) {
 }
 
 /* ::cortex::Fast::Block::setFunction(function function */
-cx_void Fast_Block_setFunction(Fast_Block _this, cx_function function) {
+cx_void _Fast_Block_setFunction(Fast_Block _this, cx_function function) {
 /* $begin(::cortex::Fast::Block::setFunction) */
     cx_setref(&_this->function, function);
 /* $end */
 }
 
 /* ::cortex::Fast::Block::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_Block_toIc_v(Fast_Block _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Block_toIc_v(Fast_Block _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Block::toIc) */
     ic_scope scope;
     CX_UNUSED(storage);
@@ -264,7 +264,7 @@ ic_node Fast_Block_toIc_v(Fast_Block _this, ic_program program, ic_storage stora
 }
 
 /* ::cortex::Fast::Block::toIcBody(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_Block_toIcBody_v(Fast_Block _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Block_toIcBody_v(Fast_Block _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Block::toIcBody) */
     Fast_Node statement;
     cx_iter statementIter;

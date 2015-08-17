@@ -50,7 +50,7 @@ error:
 /* $end */
 
 /* ::cortex::Fast::Member::construct() */
-cx_int16 Fast_Member_construct(Fast_Member _this) {
+cx_int16 _Fast_Member_construct(Fast_Member _this) {
 /* $begin(::cortex::Fast::Member::construct) */
 
     Fast_Storage(_this)->kind = Fast_MemberStorage;
@@ -95,14 +95,14 @@ error:
 }
 
 /* ::cortex::Fast::Member::hasSideEffects() */
-cx_bool Fast_Member_hasSideEffects_v(Fast_Member _this) {
+cx_bool _Fast_Member_hasSideEffects_v(Fast_Member _this) {
 /* $begin(::cortex::Fast::Member::hasSideEffects) */
     return Fast_Expression_hasSideEffects(_this->lvalue);
 /* $end */
 }
 
 /* ::cortex::Fast::Member::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_Member_toIc_v(Fast_Member _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Member_toIc_v(Fast_Member _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Member::toIc) */
     ic_member result = NULL;
     cx_member member;

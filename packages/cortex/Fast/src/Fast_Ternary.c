@@ -51,7 +51,7 @@ Fast_If Fast_Ternary_createIf(Fast_Expression condition, Fast_Node ifTrue, Fast_
 /* $end */
 
 /* ::cortex::Fast::Ternary::construct() */
-cx_int16 Fast_Ternary_construct(Fast_Ternary _this) {
+cx_int16 _Fast_Ternary_construct(Fast_Ternary _this) {
 /* $begin(::cortex::Fast::Ternary::construct) */
     Fast_Node trueBranch=NULL, falseBranch=NULL;
     Fast_Expression trueExpr, falseExpr;
@@ -93,7 +93,7 @@ cx_bool Fast_Ternary_hasReturnedResource_v(Fast_Ternary _this) {
 }
 
 /* ::cortex::Fast::Ternary::hasSideEffects() */
-cx_bool Fast_Ternary_hasSideEffects_v(Fast_Ternary _this) {
+cx_bool _Fast_Ternary_hasSideEffects_v(Fast_Ternary _this) {
 /* $begin(::cortex::Fast::Ternary::hasSideEffects) */
     return Fast_Expression_hasSideEffects(_this->condition) ||
            Fast_Expression_hasSideEffects(_this->ifTrue) ||
@@ -102,7 +102,7 @@ cx_bool Fast_Ternary_hasSideEffects_v(Fast_Ternary _this) {
 }
 
 /* ::cortex::Fast::Ternary::setOperator(operatorKind kind) */
-cx_void Fast_Ternary_setOperator(Fast_Ternary _this, cx_operatorKind kind) {
+cx_void _Fast_Ternary_setOperator(Fast_Ternary _this, cx_operatorKind kind) {
 /* $begin(::cortex::Fast::Ternary::setOperator) */
 
     if (_this->ifTrueExpr && cx_instanceof(cx_type(Fast_Binary_o), _this->ifTrueExpr)) {
@@ -116,7 +116,7 @@ cx_void Fast_Ternary_setOperator(Fast_Ternary _this, cx_operatorKind kind) {
 }
 
 /* ::cortex::Fast::Ternary::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_Ternary_toIc_v(Fast_Ternary _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Ternary_toIc_v(Fast_Ternary _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Ternary::toIc) */
     Fast_If_toIc(_this->ifstmt, program, storage, stored);
     return Fast_Node_toIc(Fast_Node(_this->result), program, storage, stored);

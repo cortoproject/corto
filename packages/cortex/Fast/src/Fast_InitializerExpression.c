@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::cortex::Fast::InitializerExpression::construct() */
-cx_int16 Fast_InitializerExpression_construct(Fast_InitializerExpression _this) {
+cx_int16 _Fast_InitializerExpression_construct(Fast_InitializerExpression _this) {
 /* $begin(::cortex::Fast::InitializerExpression::construct) */
     cx_int16 result = 0;
 
@@ -24,7 +24,7 @@ cx_int16 Fast_InitializerExpression_construct(Fast_InitializerExpression _this) 
 }
 
 /* ::cortex::Fast::InitializerExpression::define() */
-cx_int16 Fast_InitializerExpression_define(Fast_InitializerExpression _this) {
+cx_int16 _Fast_InitializerExpression_define(Fast_InitializerExpression _this) {
 /* $begin(::cortex::Fast::InitializerExpression::define) */
     Fast_InitOper *elem = Fast_InitOper_list__append(_this->operations);
     elem->kind = Fast_InitDefine;
@@ -41,7 +41,7 @@ cx_bool Fast_InitializerExpression_hasReturnedResource_v(Fast_InitializerExpress
 }
 
 /* ::cortex::Fast::InitializerExpression::insert(Expression variable) */
-cx_int16 Fast_InitializerExpression_insert(Fast_InitializerExpression _this, Fast_Expression variable) {
+cx_int16 _Fast_InitializerExpression_insert(Fast_InitializerExpression _this, Fast_Expression variable) {
 /* $begin(::cortex::Fast::InitializerExpression::insert) */
     Fast_DynamicInitializer initializer;
 
@@ -100,7 +100,7 @@ error:
 }
 
 /* ::cortex::Fast::InitializerExpression::member(string name) */
-cx_int32 Fast_InitializerExpression_member(Fast_InitializerExpression _this, cx_string name) {
+cx_int32 _Fast_InitializerExpression_member(Fast_InitializerExpression _this, cx_string name) {
 /* $begin(::cortex::Fast::InitializerExpression::member) */
     Fast_InitOper *elem = Fast_InitOper_list__append(_this->operations);
     elem->kind = Fast_InitMember;
@@ -110,7 +110,7 @@ cx_int32 Fast_InitializerExpression_member(Fast_InitializerExpression _this, cx_
 }
 
 /* ::cortex::Fast::InitializerExpression::pop() */
-cx_int16 Fast_InitializerExpression_pop(Fast_InitializerExpression _this) {
+cx_int16 _Fast_InitializerExpression_pop(Fast_InitializerExpression _this) {
 /* $begin(::cortex::Fast::InitializerExpression::pop) */
     Fast_InitOper *elem = Fast_InitOper_list__append(_this->operations);
     elem->kind = Fast_InitPop;
@@ -119,7 +119,7 @@ cx_int16 Fast_InitializerExpression_pop(Fast_InitializerExpression _this) {
 }
 
 /* ::cortex::Fast::InitializerExpression::push() */
-cx_int16 Fast_InitializerExpression_push(Fast_InitializerExpression _this) {
+cx_int16 _Fast_InitializerExpression_push(Fast_InitializerExpression _this) {
 /* $begin(::cortex::Fast::InitializerExpression::push) */
     Fast_InitOper *elem = Fast_InitOper_list__append(_this->operations);
     elem->kind = Fast_InitPush;
@@ -128,7 +128,7 @@ cx_int16 Fast_InitializerExpression_push(Fast_InitializerExpression _this) {
 }
 
 /* ::cortex::Fast::InitializerExpression::value(Expression v) */
-cx_int16 Fast_InitializerExpression_value(Fast_InitializerExpression _this, Fast_Expression v) {
+cx_int16 _Fast_InitializerExpression_value(Fast_InitializerExpression _this, Fast_Expression v) {
 /* $begin(::cortex::Fast::InitializerExpression::value) */
     Fast_InitOper *elem = Fast_InitOper_list__append(_this->operations);
     elem->kind = Fast_InitValue;

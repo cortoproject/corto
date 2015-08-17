@@ -9,7 +9,7 @@
 #include "os.h"
 
 /* ::cortex::os::exit(bool success) */
-cx_void os_exit(cx_bool success) {
+cx_void _os_exit(cx_bool success) {
 /* $begin(::cortex::os::exit) */
 
     exit(success ? EXIT_SUCCESS : EXIT_FAILURE);
@@ -18,7 +18,7 @@ cx_void os_exit(cx_bool success) {
 }
 
 /* ::cortex::os::sleep(uint32 sec,uint32 nsec) */
-cx_void os_sleep(cx_uint32 sec, cx_uint32 nsec) {
+cx_void _os_sleep(cx_uint32 sec, cx_uint32 nsec) {
 /* $begin(::cortex::os::sleep) */
 
     cx_sleep(sec, nsec);
@@ -27,7 +27,7 @@ cx_void os_sleep(cx_uint32 sec, cx_uint32 nsec) {
 }
 
 /* ::cortex::os::system(string cmd) */
-cx_void os_system(cx_string cmd) {
+cx_void _os_system(cx_string cmd) {
 /* $begin(::cortex::os::system) */
 
     system(cmd);

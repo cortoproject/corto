@@ -82,7 +82,7 @@ static void profiling_closeProfile(profiling_TlsValue *value, cx_time t) {
 /* $end */
 
 /* ::cortex::profiling::start(string name) */
-cx_void profiling_start(cx_string name) {
+cx_void _profiling_start(cx_string name) {
 /* $begin(::cortex::profiling::start) */
     cx_time *startTimePtr = cx_alloc(sizeof(cx_time));
     profiling_TlsValue *value = profiling_value();
@@ -93,7 +93,7 @@ cx_void profiling_start(cx_string name) {
 }
 
 /* ::cortex::profiling::stop() */
-cx_void profiling_stop(void) {
+cx_void _profiling_stop(void) {
 /* $begin(::cortex::profiling::stop) */
     cx_time *startTimePtr;
     cx_time stopTime;

@@ -94,7 +94,7 @@ static struct cx_observerAdmin* cx_observerAdminGet(void) {
         admin = &observerAdmin[i];
         cx_threadTlsSet(CX_KEY_OBSERVER_ADMIN, admin);
     }
-    return admin;  
+    return admin;
 }
 
 /* Push observer-array to thread administration. Rather than passing the array pass the
@@ -631,7 +631,7 @@ static int cx_adopt(cx_object parent, cx_object child) {
         cx_convert(cx_primitive(cx_state_o), &childState, cx_primitive(cx_string_o), &s_childState);
         cx_error("state %s of parent '%s' does not match %s, cannot adopt '%s' of type '%s'",
                 s_parentState, cx_fullname(parent, parentId), s_childState, cx_nameof(child), cx_fullname(childType, childTypeId));
-       
+
         if (s_parentState) {
             cx_dealloc(s_parentState);
         }
@@ -2723,7 +2723,7 @@ cx_int32 cx_signatureName(cx_string signature, cx_id buffer) {
 
     /* Obtain name from function (without argumentlist) */
     srcptr = signature; bptr = buffer;
-    while((ch = *srcptr) && (ch != '(')) {
+    while ((ch = *srcptr) && (ch != '(')) {
         *bptr = ch;
         bptr++;
         srcptr++;
@@ -3472,7 +3472,7 @@ cx_string _cx_strp(void *p, cx_type type, cx_uint32 maxLength) {
 cx_string cx_stra(cx_any a, cx_uint32 maxLength) {
     cx_value v;
     cx_valueValueInit(&v, NULL, a.type, a.value);
-    return cx_strv(&v, maxLength);    
+    return cx_strv(&v, maxLength);
 }
 
 void cx_fromStr(cx_object *o, cx_string string) {
@@ -3485,7 +3485,7 @@ void cx_fromStr(cx_object *o, cx_string string) {
         cx_assert(!serData.out, "deserializer failed but out is set");
     }
 
-    *o = serData.out;   
+    *o = serData.out;
 }
 
 void cx_fromStrv(cx_value *v, cx_string string) {
@@ -3511,7 +3511,7 @@ void _cx_fromStrp(void* out, cx_type type, cx_string string) {
         cx_assert(!serData.out, "deserializer failed but out is set");
     }
 
-    *(void**)out = serData.out; 
+    *(void**)out = serData.out;
 }
 
 void cx_fromStra(cx_any *a, cx_string string) {
@@ -3524,7 +3524,7 @@ void cx_fromStra(cx_any *a, cx_string string) {
         cx_assert(!serData.out, "deserializer failed but out is set");
     }
 
-    a->value = serData.out;     
+    a->value = serData.out;
 }
 
 cx_equalityKind cx_compare(cx_object o1, cx_object o2) {
@@ -3605,7 +3605,7 @@ cx_int16 _cx_initp(void *p, cx_type type) {
 cx_int16 cx_inita(cx_any a) {
     cx_value v;
     cx_valueValueInit(&v, NULL, a.type, a.value);
-    return cx_initv(&v);    
+    return cx_initv(&v);
 }
 
 cx_int16 cx_deinit(cx_object o) {
@@ -3637,7 +3637,7 @@ cx_int16 _cx_deinitp(void *p, cx_type type) {
 cx_int16 cx_deinita(cx_any a) {
     cx_value v;
     cx_valueValueInit(&v, NULL, a.type, a.value);
-    return cx_deinitv(&v);    
+    return cx_deinitv(&v);
 }
 
 cx_int16 cx_copy(cx_object *dst, cx_object src) {
@@ -3704,4 +3704,3 @@ cx_int16 cx_copya(cx_any *dst, cx_any src) {
     dst->type = src.type;
     return result;
 }
-

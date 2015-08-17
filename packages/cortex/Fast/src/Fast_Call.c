@@ -63,7 +63,7 @@ error:
 /* $end */
 
 /* ::cortex::Fast::Call::construct() */
-cx_int16 Fast_Call_construct(Fast_Call _this) {
+cx_int16 _Fast_Call_construct(Fast_Call _this) {
 /* $begin(::cortex::Fast::Call::construct) */
     Fast_Node(_this)->kind = Fast_CallExpr;
 
@@ -96,7 +96,7 @@ cx_bool Fast_Call_hasReturnedResource_v(Fast_Call _this) {
 }
 
 /* ::cortex::Fast::Call::hasSideEffects() */
-cx_bool Fast_Call_hasSideEffects_v(Fast_Call _this) {
+cx_bool _Fast_Call_hasSideEffects_v(Fast_Call _this) {
 /* $begin(::cortex::Fast::Call::hasSideEffects) */
     CX_UNUSED(_this);
     return TRUE;
@@ -104,7 +104,7 @@ cx_bool Fast_Call_hasSideEffects_v(Fast_Call _this) {
 }
 
 /* ::cortex::Fast::Call::setParameters(function function) */
-cx_void Fast_Call_setParameters(Fast_Call _this, cx_function function) {
+cx_void _Fast_Call_setParameters(Fast_Call _this, cx_function function) {
 /* $begin(::cortex::Fast::Call::setParameters) */
     cx_uint32 i;
 
@@ -123,7 +123,7 @@ cx_void Fast_Call_setParameters(Fast_Call _this, cx_function function) {
 }
 
 /* ::cortex::Fast::Call::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_Call_toIc_v(Fast_Call _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Call_toIc_v(Fast_Call _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Call::toIc) */
     ic_storage result = NULL;
     ic_node function;

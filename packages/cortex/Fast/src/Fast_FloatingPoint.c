@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::cortex::Fast::FloatingPoint::init() */
-cx_int16 Fast_FloatingPoint_init(Fast_FloatingPoint _this) {
+cx_int16 _Fast_FloatingPoint_init(Fast_FloatingPoint _this) {
 /* $begin(::cortex::Fast::FloatingPoint::init) */
     Fast_Literal(_this)->kind = Fast_Float;
     return Fast_Literal_init(Fast_Literal(_this));
@@ -21,7 +21,7 @@ cx_int16 Fast_FloatingPoint_init(Fast_FloatingPoint _this) {
 }
 
 /* ::cortex::Fast::FloatingPoint::serialize(type dstType,word dst) */
-cx_int16 Fast_FloatingPoint_serialize(Fast_FloatingPoint _this, cx_type dstType, cx_word dst) {
+cx_int16 _Fast_FloatingPoint_serialize(Fast_FloatingPoint _this, cx_type dstType, cx_word dst) {
 /* $begin(::cortex::Fast::FloatingPoint::serialize) */
     Fast_valueKind kind;
 
@@ -53,7 +53,7 @@ error:
 }
 
 /* ::cortex::Fast::FloatingPoint::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_FloatingPoint_toIc_v(Fast_FloatingPoint _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_FloatingPoint_toIc_v(Fast_FloatingPoint _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::FloatingPoint::toIc) */
     ic_node result;
     CX_UNUSED(program);

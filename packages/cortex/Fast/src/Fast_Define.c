@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::cortex::Fast::Define::construct() */
-cx_int16 Fast_Define_construct(Fast_Define _this) {
+cx_int16 _Fast_Define_construct(Fast_Define _this) {
 /* $begin(::cortex::Fast::Define::construct) */
 
     Fast_Node(_this)->kind = Fast_DefineExpr;
@@ -23,7 +23,7 @@ cx_int16 Fast_Define_construct(Fast_Define _this) {
 }
 
 /* ::cortex::Fast::Define::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_Define_toIc_v(Fast_Define _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Define_toIc_v(Fast_Define _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Define::toIc) */
     ic_node object;
     CX_UNUSED(stored);

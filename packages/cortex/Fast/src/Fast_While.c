@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::cortex::Fast::While::construct() */
-cx_int16 Fast_While_construct(Fast_While _this) {
+cx_int16 _Fast_While_construct(Fast_While _this) {
 /* $begin(::cortex::Fast::While::construct) */
     cx_type conditionType;
 
@@ -38,7 +38,7 @@ error:
 }
 
 /* ::cortex::Fast::While::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_While_toIc_v(Fast_While _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_While_toIc_v(Fast_While _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::While::toIc) */
     ic_storage accumulator;
     ic_label labelEval, labelNeq;

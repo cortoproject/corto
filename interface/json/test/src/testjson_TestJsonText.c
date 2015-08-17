@@ -9,7 +9,7 @@
 #include "testjson.h"
 
 /* ::testjson::TestJsonText::testAlpha() */
-cx_void testjson_TestJsonText_testAlpha(testjson_TestJsonText _this) {
+cx_void _testjson_TestJsonText_testAlpha(testjson_TestJsonText _this) {
 /* $begin(::testjson::TestJsonText::testAlpha) */
     testjson_BaseTestJson_testJson(testjson_BaseTestJson(_this),
         "::testjson::primitives::texts::alpha",
@@ -18,7 +18,7 @@ cx_void testjson_TestJsonText_testAlpha(testjson_TestJsonText _this) {
 }
 
 /* ::testjson::TestJsonText::testEmpty() */
-cx_void testjson_TestJsonText_testEmpty(testjson_TestJsonText _this) {
+cx_void _testjson_TestJsonText_testEmpty(testjson_TestJsonText _this) {
 /* $begin(::testjson::TestJsonText::testEmpty) */
     testjson_BaseTestJson_testJson(testjson_BaseTestJson(_this),
         "::testjson::primitives::texts::empty",
@@ -27,7 +27,7 @@ cx_void testjson_TestJsonText_testEmpty(testjson_TestJsonText _this) {
 }
 
 /* ::testjson::TestJsonText::testEscaped() */
-cx_void testjson_TestJsonText_testEscaped(testjson_TestJsonText _this) {
+cx_void _testjson_TestJsonText_testEscaped(testjson_TestJsonText _this) {
 /* $begin(::testjson::TestJsonText::testEscaped) */
     testjson_BaseTestJson_testJson(testjson_BaseTestJson(_this),
         "::testjson::primitives::texts::escaped",
@@ -36,7 +36,7 @@ cx_void testjson_TestJsonText_testEscaped(testjson_TestJsonText _this) {
 }
 
 /* ::testjson::TestJsonText::testNum() */
-cx_void testjson_TestJsonText_testNum(testjson_TestJsonText _this) {
+cx_void _testjson_TestJsonText_testNum(testjson_TestJsonText _this) {
 /* $begin(::testjson::TestJsonText::testNum) */
     testjson_BaseTestJson_testJson(testjson_BaseTestJson(_this),
         "::testjson::primitives::texts::num",
@@ -45,7 +45,7 @@ cx_void testjson_TestJsonText_testNum(testjson_TestJsonText _this) {
 }
 
 /* ::testjson::TestJsonText::testPunctuation() */
-cx_void testjson_TestJsonText_testPunctuation(testjson_TestJsonText _this) {
+cx_void _testjson_TestJsonText_testPunctuation(testjson_TestJsonText _this) {
 /* $begin(::testjson::TestJsonText::testPunctuation) */
     testjson_BaseTestJson_testJson(testjson_BaseTestJson(_this),
         "::testjson::primitives::texts::punctuation",

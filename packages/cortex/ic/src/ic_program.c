@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::cortex::ic::program::add(node n) */
-cx_void ic_program_add(ic_program _this, ic_node n) {
+cx_void _ic_program_add(ic_program _this, ic_node n) {
 /* $begin(::cortex::ic::program::add) */
 
     if (n->kind == IC_OP) {
@@ -32,7 +32,7 @@ cx_void ic_program_add(ic_program _this, ic_node n) {
 }
 
 /* ::cortex::ic::program::assemble() */
-cx_int16 ic_program_assemble(ic_program _this) {
+cx_int16 _ic_program_assemble(ic_program _this) {
 /* $begin(::cortex::ic::program::assemble) */
     extern cx_bool CX_DEBUG_ENABLED;
 
@@ -56,7 +56,7 @@ error:
 }
 
 /* ::cortex::ic::program::construct() */
-cx_int16 ic_program_construct(ic_program _this) {
+cx_int16 _ic_program_construct(ic_program _this) {
 /* $begin(::cortex::ic::program::construct) */
     extern cx_threadKey IC_PROGRAM_KEY;
     cx_threadTlsSet(IC_PROGRAM_KEY, _this);
@@ -65,7 +65,7 @@ cx_int16 ic_program_construct(ic_program _this) {
 }
 
 /* ::cortex::ic::program::declareVariable(string name,type type,bool isReference,bool holdsReturn,bool isParameter,bool isReturn) */
-ic_variable ic_program_declareVariable(ic_program _this, cx_string name, cx_type type, cx_bool isReference, cx_bool holdsReturn, cx_bool isParameter, cx_bool isReturn) {
+ic_variable _ic_program_declareVariable(ic_program _this, cx_string name, cx_type type, cx_bool isReference, cx_bool holdsReturn, cx_bool isParameter, cx_bool isReturn) {
 /* $begin(::cortex::ic::program::declareVariable) */
     ic_variable result = ic_variable(ic_scope_lookupStorage(_this->scope, name, FALSE));
     if (!result) {
@@ -77,7 +77,7 @@ ic_variable ic_program_declareVariable(ic_program _this, cx_string name, cx_type
 }
 
 /* ::cortex::ic::program::get() */
-ic_program ic_program_get(void) {
+ic_program _ic_program_get(void) {
 /* $begin(::cortex::ic::program::get) */
     extern cx_threadKey IC_PROGRAM_KEY;
     return (ic_program)cx_threadTlsGet(IC_PROGRAM_KEY);
@@ -85,14 +85,14 @@ ic_program ic_program_get(void) {
 }
 
 /* ::cortex::ic::program::getAccId() */
-cx_uint32 ic_program_getAccId(ic_program _this) {
+cx_uint32 _ic_program_getAccId(ic_program _this) {
 /* $begin(::cortex::ic::program::getAccId) */
     return ++_this->autoAccId;
 /* $end */
 }
 
 /* ::cortex::ic::program::getElement(storage base,node index) */
-ic_element ic_program_getElement(ic_program _this, ic_storage base, ic_node index) {
+ic_element _ic_program_getElement(ic_program _this, ic_storage base, ic_node index) {
 /* $begin(::cortex::ic::program::getElement) */
     cx_id name;
     ic_element result;
@@ -113,14 +113,14 @@ ic_element ic_program_getElement(ic_program _this, ic_storage base, ic_node inde
 }
 
 /* ::cortex::ic::program::getLabel() */
-cx_uint32 ic_program_getLabel(ic_program _this) {
+cx_uint32 _ic_program_getLabel(ic_program _this) {
 /* $begin(::cortex::ic::program::getLabel) */
     return ++_this->labelCount;
 /* $end */
 }
 
 /* ::cortex::ic::program::getMember(storage base,member m) */
-ic_member ic_program_getMember(ic_program _this, ic_storage base, cx_member m) {
+ic_member _ic_program_getMember(ic_program _this, ic_storage base, cx_member m) {
 /* $begin(::cortex::ic::program::getMember) */
     cx_id name;
     ic_member result;
@@ -135,7 +135,7 @@ ic_member ic_program_getMember(ic_program _this, ic_storage base, cx_member m) {
 }
 
 /* ::cortex::ic::program::getObject(object o) */
-ic_object ic_program_getObject(ic_program _this, cx_object o) {
+ic_object _ic_program_getObject(ic_program _this, cx_object o) {
 /* $begin(::cortex::ic::program::getObject) */
     cx_id id;
     ic_scope root = _this->scope;
@@ -153,14 +153,14 @@ ic_object ic_program_getObject(ic_program _this, cx_object o) {
 }
 
 /* ::cortex::ic::program::getVariable(string name) */
-ic_variable ic_program_getVariable(ic_program _this, cx_string name) {
+ic_variable _ic_program_getVariable(ic_program _this, cx_string name) {
 /* $begin(::cortex::ic::program::getVariable) */
     return ic_variable(ic_scope_lookupStorage(_this->scope, name, TRUE));
 /* $end */
 }
 
 /* ::cortex::ic::program::popAccumulator() */
-cx_void ic_program_popAccumulator(ic_program _this) {
+cx_void _ic_program_popAccumulator(ic_program _this) {
 /* $begin(::cortex::ic::program::popAccumulator) */
     ic_storage acc;
     
@@ -174,7 +174,7 @@ cx_void ic_program_popAccumulator(ic_program _this) {
 }
 
 /* ::cortex::ic::program::popScope() */
-cx_void ic_program_popScope(ic_program _this) {
+cx_void _ic_program_popScope(ic_program _this) {
 /* $begin(::cortex::ic::program::popScope) */
     if (_this->scope->storages) {
         cx_iter storageIter;
@@ -196,7 +196,7 @@ cx_void ic_program_popScope(ic_program _this) {
 }
 
 /* ::cortex::ic::program::pushAccumulator(type type,bool isReference,bool holdsReturn) */
-ic_accumulator ic_program_pushAccumulator(ic_program _this, cx_type type, cx_bool isReference, cx_bool holdsReturn) {
+ic_accumulator _ic_program_pushAccumulator(ic_program _this, cx_type type, cx_bool isReference, cx_bool holdsReturn) {
 /* $begin(::cortex::ic::program::pushAccumulator) */
     cx_id name;
 
@@ -212,7 +212,7 @@ ic_accumulator ic_program_pushAccumulator(ic_program _this, cx_type type, cx_boo
 }
 
 /* ::cortex::ic::program::pushFunction(function function) */
-ic_scope ic_program_pushFunction(ic_program _this, cx_function function) {
+ic_scope _ic_program_pushFunction(ic_program _this, cx_function function) {
 /* $begin(::cortex::ic::program::pushFunction) */
     ic_function label;
     ic_scope scope;
@@ -230,7 +230,7 @@ ic_scope ic_program_pushFunction(ic_program _this, cx_function function) {
 }
 
 /* ::cortex::ic::program::pushScope() */
-ic_scope ic_program_pushScope(ic_program _this) {
+ic_scope _ic_program_pushScope(ic_program _this) {
 /* $begin(::cortex::ic::program::pushScope) */
     _this->scope = ic_scope__create(_this->scope, FALSE);
 
@@ -243,7 +243,7 @@ ic_scope ic_program_pushScope(ic_program _this) {
 }
 
 /* ::cortex::ic::program::run(word result) */
-cx_int16 ic_program_run(ic_program _this, cx_word result) {
+cx_int16 _ic_program_run(ic_program _this, cx_word result) {
 /* $begin(::cortex::ic::program::run) */
     cx_vmProgram program = (cx_vmProgram)_this->vmprogram;
     cx_vm_run(program, (void*)result);
@@ -252,7 +252,7 @@ cx_int16 ic_program_run(ic_program _this, cx_word result) {
 }
 
 /* ::cortex::ic::program::str() */
-cx_string ic_program_str(ic_program _this) {
+cx_string _ic_program_str(ic_program _this) {
 /* $begin(::cortex::ic::program::str) */
     cx_string result = NULL;
 

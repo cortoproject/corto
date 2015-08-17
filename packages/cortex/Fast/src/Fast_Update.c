@@ -40,7 +40,7 @@ error:
 /* $end */
 
 /* ::cortex::Fast::Update::construct() */
-cx_int16 Fast_Update_construct(Fast_Update _this) {
+cx_int16 _Fast_Update_construct(Fast_Update _this) {
 /* $begin(::cortex::Fast::Update::construct) */
     cx_iter exprIter;
     Fast_Expression expr;
@@ -79,7 +79,7 @@ static void Fast_Update_end(Fast_Update _this, ic_program program, ic_node expr,
 }
 
 /* $end */
-ic_node Fast_Update_toIc_v(Fast_Update _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Update_toIc_v(Fast_Update _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Update::toIc) */
     ic_node expr, from = NULL;
     cx_iter exprIter;

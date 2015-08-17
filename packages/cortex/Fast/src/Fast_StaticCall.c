@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::cortex::Fast::StaticCall::construct() */
-cx_int16 Fast_StaticCall_construct(Fast_StaticCall _this) {
+cx_int16 _Fast_StaticCall_construct(Fast_StaticCall _this) {
 /* $begin(::cortex::Fast::StaticCall::construct) */
     Fast_Object fExpr;
 

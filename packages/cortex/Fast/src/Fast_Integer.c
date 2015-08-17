@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::cortex::Fast::Integer::init() */
-cx_int16 Fast_Integer_init(Fast_Integer _this) {
+cx_int16 _Fast_Integer_init(Fast_Integer _this) {
 /* $begin(::cortex::Fast::Integer::init) */
     Fast_Literal(_this)->kind = Fast_Int;
     return Fast_Literal_init((Fast_Literal)_this);
@@ -21,7 +21,7 @@ cx_int16 Fast_Integer_init(Fast_Integer _this) {
 }
 
 /* ::cortex::Fast::Integer::serialize(type dstType,word dst) */
-cx_int16 Fast_Integer_serialize(Fast_Integer _this, cx_type dstType, cx_word dst) {
+cx_int16 _Fast_Integer_serialize(Fast_Integer _this, cx_type dstType, cx_word dst) {
 /* $begin(::cortex::Fast::Integer::serialize) */
     Fast_valueKind kind;
 
@@ -54,7 +54,7 @@ error:
 }
 
 /* ::cortex::Fast::Integer::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_Integer_toIc_v(Fast_Integer _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Integer_toIc_v(Fast_Integer _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Integer::toIc) */
     ic_node result;
     CX_UNUSED(program);

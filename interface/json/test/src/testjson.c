@@ -1,4 +1,4 @@
-/* testjson_BaseDeserPrimitiveTest.c
+/* testjson.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -8,9 +8,11 @@
 
 #include "testjson.h"
 
-/* ::testjson::BaseDeserPrimitiveTest::testValue() */
-cx_void _testjson_BaseDeserPrimitiveTest_testValue(testjson_BaseDeserPrimitiveTest _this) {
-/* $begin(::testjson::BaseDeserPrimitiveTest::testValue) */
-    CX_UNUSED(_this);
+int testjsonmain(int argc, char* argv[]) {
+/* $begin(main) */
+    /* Insert code that must be run when component is loaded */
+    CX_UNUSED(argc);
+    CX_UNUSED(argv);
+    return 0;
 /* $end */
 }

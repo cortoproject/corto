@@ -49,11 +49,11 @@ Fast_Call Fast_createCallWithArguments(Fast_Expression instance, cx_string funct
 
     /* Initialize builder */
     Fast_CallBuilder__init(&builder);
-    Fast_CallBuilder__set(&builder, 
-        function, 
-        arguments, 
-        instance, 
-        yparser()->scope, 
+    Fast_CallBuilder__set(&builder,
+        function,
+        arguments,
+        instance,
+        yparser()->scope,
         yparser()->block);
     result = Fast_CallBuilder_build(&builder);
     Fast_CallBuilder__deinit(&builder);
@@ -66,7 +66,7 @@ Fast_Call Fast_createCall(Fast_Expression instance, cx_string function, cx_uint3
     Fast_Expression args = NULL, arg = NULL;
     va_list arglist;
     cx_uint32 i;
-    
+
     /* Create comma-expression if there is more than one argument */
     va_start(arglist, numArgs);
     if (numArgs > 1) {
@@ -138,7 +138,7 @@ error:
 /* $end */
 
 /* ::cortex::Fast::isOperatorAssignment(operatorKind operator) */
-cx_bool Fast_isOperatorAssignment(cx_operatorKind operator) {
+cx_bool _Fast_isOperatorAssignment(cx_operatorKind operator) {
 /* $begin(::cortex::Fast::isOperatorAssignment) */
     cx_bool result;
     switch(operator) {
@@ -161,10 +161,10 @@ cx_bool Fast_isOperatorAssignment(cx_operatorKind operator) {
 }
 
 /* ::cortex::Fast::report(string kind,string filename,uint32 line,uint32 column,string error,string token) */
-cx_void Fast_report(cx_string kind, cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token) {
+cx_void _Fast_report(cx_string kind, cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token) {
 /* $begin(::cortex::Fast::report) */
     CX_UNUSED(token);
-    
+
     if(filename) {
         cx_print("%s:%d:%d: %s: %s", filename, line, column, kind, error);
     } else {
@@ -175,16 +175,16 @@ cx_void Fast_report(cx_string kind, cx_string filename, cx_uint32 line, cx_uint3
 }
 
 /* ::cortex::Fast::reportError(string filename,uint32 line,uint32 column,string error,string token) */
-cx_void Fast_reportError(cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token) {
+cx_void _Fast_reportError(cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token) {
 /* $begin(::cortex::Fast::reportError) */
-    
+
     Fast_report("error", filename, line, column, error, token);
 
 /* $end */
 }
 
 /* ::cortex::Fast::reportWarning(string filename,uint32 line,uint32 column,string error,string token) */
-cx_void Fast_reportWarning(cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token) {
+cx_void _Fast_reportWarning(cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token) {
 /* $begin(::cortex::Fast::reportWarning) */
 
     Fast_report("warning", filename, line, column, error, token);
@@ -193,7 +193,7 @@ cx_void Fast_reportWarning(cx_string filename, cx_uint32 line, cx_uint32 column,
 }
 
 /* ::cortex::Fast::valueKindFromType(type type) */
-Fast_valueKind Fast_valueKindFromType(cx_type type) {
+Fast_valueKind _Fast_valueKindFromType(cx_type type) {
 /* $begin(::cortex::Fast::valueKindFromType) */
     Fast_valueKind result = Fast_Nothing;
 

@@ -9,7 +9,7 @@
 #include "ic.h"
 
 /* ::cortex::ic::address::construct() */
-cx_int16 ic_address_construct(ic_address _this) {
+cx_int16 _ic_address_construct(ic_address _this) {
 /* $begin(::cortex::ic::address::construct) */
     ic_node(_this)->kind = IC_ADDRESS;
     return ic_node_construct(ic_node(_this));

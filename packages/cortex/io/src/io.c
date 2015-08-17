@@ -9,21 +9,21 @@
 #include "io.h"
 
 /* ::cortex::io::print(string str) */
-cx_void io_print(cx_string str) {
+cx_void _io_print(cx_string str) {
 /* $begin(::cortex::io::print) */
     printf("%s", str);
 /* $end */
 }
 
 /* ::cortex::io::println(string str) */
-cx_void io_println(cx_string str) {
+cx_void _io_println(cx_string str) {
 /* $begin(::cortex::io::println) */
     printf("%s\n", str);
 /* $end */
 }
 
 /* ::cortex::io::readln() */
-cx_string io_readln(void) {
+cx_string _io_readln(void) {
 /* $begin(::cortex::io::readln) */
     size_t size=256;
     

@@ -9,7 +9,7 @@
 #include "ic.h"
 
 /* ::cortex::ic::storage::construct() */
-cx_int16 ic_storage_construct(ic_storage _this) {
+cx_int16 _ic_storage_construct(ic_storage _this) {
 /* $begin(::cortex::ic::storage::construct) */
     ic_node(_this)->kind = IC_STORAGE;
     return ic_node_construct(ic_node(_this));
@@ -17,7 +17,7 @@ cx_int16 ic_storage_construct(ic_storage _this) {
 }
 
 /* ::cortex::ic::storage::free() */
-cx_void ic_storage_free(ic_storage _this) {
+cx_void _ic_storage_free(ic_storage _this) {
 /* $begin(::cortex::ic::storage::free) */
     cx_type type = _this->type;
     if (_this->isReference || ((type->kind == CX_PRIMITIVE) && (cx_primitive(type)->kind == CX_TEXT))) {
@@ -34,7 +34,7 @@ cx_void ic_storage_free(ic_storage _this) {
 }
 
 /* ::cortex::ic::storage::str(string in) */
-cx_string ic_storage_str(ic_storage _this, cx_string in) {
+cx_string _ic_storage_str(ic_storage _this, cx_string in) {
 /* $begin(::cortex::ic::storage::str) */
     return strappend(in, _this->name);
 /* $end */

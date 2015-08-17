@@ -29,28 +29,28 @@ static cx_bool test_Suite_test(test_Suite _this, cx_bool b, cx_string assertmsg,
 /* $end */
 
 /* ::cortex::test::Suite::assert(bool b) */
-cx_bool test_Suite_assert_bool(test_Suite _this, cx_bool b) {
+cx_bool _test_Suite_assert_bool(test_Suite _this, cx_bool b) {
 /* $begin(::cortex::test::Suite::assert(bool b)) */
     return test_Suite_assert_bool_string(_this, b, NULL);
 /* $end */
 }
 
 /* ::cortex::test::Suite::assert(bool b,string errmsg) */
-cx_bool test_Suite_assert_bool_string(test_Suite _this, cx_bool b, cx_string errmsg) {
+cx_bool _test_Suite_assert_bool_string(test_Suite _this, cx_bool b, cx_string errmsg) {
 /* $begin(::cortex::test::Suite::assert(bool b,string errmsg)) */
     return test_Suite_test(_this, b, "Not true", errmsg);
 /* $end */
 }
 
 /* ::cortex::test::Suite::assertEqual(any a,any b) */
-cx_bool test_Suite_assertEqual_any_any(test_Suite _this, cx_any a, cx_any b) {
+cx_bool _test_Suite_assertEqual_any_any(test_Suite _this, cx_any a, cx_any b) {
 /* $begin(::cortex::test::Suite::assertEqual(any a,any b)) */
     return test_Suite_assertEqual_any_any_string(_this, a, b, NULL);
 /* $end */
 }
 
 /* ::cortex::test::Suite::assertEqual(any a,any b,string errmsg) */
-cx_bool test_Suite_assertEqual_any_any_string(test_Suite _this, cx_any a, cx_any b, cx_string errmsg) {
+cx_bool _test_Suite_assertEqual_any_any_string(test_Suite _this, cx_any a, cx_any b, cx_string errmsg) {
 /* $begin(::cortex::test::Suite::assertEqual(any a,any b,string errmsg)) */
     cx_bool result;
     cx_equalityKind eq;
@@ -76,7 +76,7 @@ cx_bool test_Suite_assertEqual_any_any_string(test_Suite _this, cx_any a, cx_any
 }
 
 /* ::cortex::test::Suite::construct() */
-cx_int16 test_Suite_construct(test_Suite _this) {
+cx_int16 _test_Suite_construct(test_Suite _this) {
 /* $begin(::cortex::test::Suite::construct) */
     if (_this->test) {
         cx_type type = cx_typeof(_this);
@@ -92,7 +92,7 @@ cx_int16 test_Suite_construct(test_Suite _this) {
 }
 
 /* ::cortex::test::Suite::rSetUp(object type) */
-cx_void test_Suite_rSetUp(test_Suite _this, cx_object type) {
+cx_void _test_Suite_rSetUp(test_Suite _this, cx_object type) {
 /* $begin(::cortex::test::Suite::rSetUp) */
     cx_interface i = cx_interface(type);
     /* Stack up fixtures (parent first) */
@@ -110,7 +110,7 @@ cx_void test_Suite_rSetUp(test_Suite _this, cx_object type) {
 }
 
 /* ::cortex::test::Suite::rTearDown(object type) */
-cx_void test_Suite_rTearDown(test_Suite _this, cx_object type) {
+cx_void _test_Suite_rTearDown(test_Suite _this, cx_object type) {
 /* $begin(::cortex::test::Suite::rTearDown) */
     cx_interface i = cx_interface(type);
     /* Unstack fixtures (parent last) */
@@ -127,14 +127,14 @@ cx_void test_Suite_rTearDown(test_Suite _this, cx_object type) {
 }
 
 /* ::cortex::test::Suite::setUp() */
-cx_void test_Suite_setUp_v(test_Suite _this) {
+cx_void _test_Suite_setUp_v(test_Suite _this) {
 /* $begin(::cortex::test::Suite::setUp) */
     CX_UNUSED(_this);
 /* $end */
 }
 
 /* ::cortex::test::Suite::tearDown() */
-cx_void test_Suite_tearDown_v(test_Suite _this) {
+cx_void _test_Suite_tearDown_v(test_Suite _this) {
 /* $begin(::cortex::test::Suite::tearDown) */
     CX_UNUSED(_this);
 /* $end */

@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::cortex::Fast::Deinit::construct() */
-cx_int16 Fast_Deinit_construct(Fast_Deinit _this) {
+cx_int16 _Fast_Deinit_construct(Fast_Deinit _this) {
 /* $begin(::cortex::Fast::Deinit::construct) */
 	cx_type t = Fast_Expression_getType(Fast_Expression(_this->storage));
     Fast_Node(_this)->kind = Fast_DeinitExpr;
@@ -23,7 +23,7 @@ cx_int16 Fast_Deinit_construct(Fast_Deinit _this) {
 }
 
 /* ::cortex::Fast::Deinit::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_Deinit_toIc_v(Fast_Deinit _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Deinit_toIc_v(Fast_Deinit _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::Deinit::toIc) */
     ic_node s;
     CX_UNUSED(stored);

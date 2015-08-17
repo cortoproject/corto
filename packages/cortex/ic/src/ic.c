@@ -13,7 +13,7 @@ cx_threadKey IC_PROGRAM_KEY;
 /* $end */
 
 /* ::cortex::ic::opKindFromOperator(operatorKind operator) */
-ic_opKind ic_opKindFromOperator(cx_operatorKind operator) {
+ic_opKind _ic_opKindFromOperator(cx_operatorKind operator) {
 /* $begin(::cortex::ic::opKindFromOperator) */
 
     switch(operator) {

@@ -110,7 +110,7 @@ error:
 /* $end */
 
 /* ::cortex::Fast::StaticInitializer::construct() */
-cx_int16 Fast_StaticInitializer_construct(Fast_StaticInitializer _this) {
+cx_int16 _Fast_StaticInitializer_construct(Fast_StaticInitializer _this) {
 /* $begin(::cortex::Fast::StaticInitializer::construct) */
     cx_int8 variable;
     
@@ -131,7 +131,7 @@ error:
 }
 
 /* ::cortex::Fast::StaticInitializer::define() */
-cx_int16 Fast_StaticInitializer_define(Fast_StaticInitializer _this) {
+cx_int16 _Fast_StaticInitializer_define(Fast_StaticInitializer _this) {
 /* $begin(::cortex::Fast::StaticInitializer::define) */
     cx_uint32 variable;
     cx_object o;
@@ -171,7 +171,7 @@ error:
 }
 
 /* ::cortex::Fast::StaticInitializer::push() */
-cx_int16 Fast_StaticInitializer_push(Fast_StaticInitializer _this) {
+cx_int16 _Fast_StaticInitializer_push(Fast_StaticInitializer _this) {
 /* $begin(::cortex::Fast::StaticInitializer::push) */
     cx_uint8 variable;
     
@@ -186,7 +186,7 @@ cx_int16 Fast_StaticInitializer_push(Fast_StaticInitializer _this) {
 }
 
 /* ::cortex::Fast::StaticInitializer::value(Expression v) */
-cx_int16 Fast_StaticInitializer_value(Fast_StaticInitializer _this, Fast_Expression v) {
+cx_int16 _Fast_StaticInitializer_value(Fast_StaticInitializer _this, Fast_Expression v) {
 /* $begin(::cortex::Fast::StaticInitializer::value) */
     cx_word offset;
     cx_uint32 variable;

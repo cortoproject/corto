@@ -9,7 +9,7 @@
 #include "ic.h"
 
 /* ::cortex::ic::accumulator::construct() */
-cx_int16 ic_accumulator_construct(ic_accumulator _this) {
+cx_int16 _ic_accumulator_construct(ic_accumulator _this) {
 /* $begin(::cortex::ic::accumulator::construct) */
     char name[15];
     ic_storage(_this)->kind = IC_ACCUMULATOR;

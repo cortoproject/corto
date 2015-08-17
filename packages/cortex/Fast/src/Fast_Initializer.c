@@ -155,7 +155,7 @@ cx_type Fast_Parser_initGetType(Fast_Initializer _this, cx_member *m_out) {
 /* $end */
 
 /* ::cortex::Fast::Initializer::construct() */
-cx_int16 Fast_Initializer_construct(Fast_Initializer _this) {
+cx_int16 _Fast_Initializer_construct(Fast_Initializer _this) {
 /* $begin(::cortex::Fast::Initializer::construct) */
     cx_uint32 variable;
     cx_type t = Fast_Expression_getType(_this->variables[0].object);
@@ -199,14 +199,14 @@ error:
 }
 
 /* ::cortex::Fast::Initializer::currentType() */
-cx_type Fast_Initializer_currentType(Fast_Initializer _this) {
+cx_type _Fast_Initializer_currentType(Fast_Initializer _this) {
 /* $begin(::cortex::Fast::Initializer::currentType) */
     return Fast_Parser_initGetType(_this, NULL);
 /* $end */
 }
 
 /* ::cortex::Fast::Initializer::define() */
-cx_int16 Fast_Initializer_define_v(Fast_Initializer _this) {
+cx_int16 _Fast_Initializer_define_v(Fast_Initializer _this) {
 /* $begin(::cortex::Fast::Initializer::define) */
     CX_UNUSED(_this);
 #ifdef CX_INIT_DEBUG
@@ -222,7 +222,7 @@ cx_int16 Fast_Initializer_define_v(Fast_Initializer _this) {
 }
 
 /* ::cortex::Fast::Initializer::initFrame() */
-cx_uint16 Fast_Initializer_initFrame(Fast_Initializer _this) {
+cx_uint16 _Fast_Initializer_initFrame(Fast_Initializer _this) {
 /* $begin(::cortex::Fast::Initializer::initFrame) */
     struct cx_serializer_s s;
     cx_type t;
@@ -262,7 +262,7 @@ cx_uint16 Fast_Initializer_initFrame(Fast_Initializer _this) {
 }
 
 /* ::cortex::Fast::Initializer::member(string name) */
-cx_int32 Fast_Initializer_member_v(Fast_Initializer _this, cx_string name) {
+cx_int32 _Fast_Initializer_member_v(Fast_Initializer _this, cx_string name) {
 /* $begin(::cortex::Fast::Initializer::member) */
     struct cx_serializer_s s;
     cx_type t;
@@ -304,7 +304,7 @@ error:
 }
 
 /* ::cortex::Fast::Initializer::next() */
-cx_int16 Fast_Initializer_next_v(Fast_Initializer _this) {
+cx_int16 _Fast_Initializer_next_v(Fast_Initializer _this) {
 /* $begin(::cortex::Fast::Initializer::next) */
     
     /* Increase location by one */
@@ -327,7 +327,7 @@ cx_int16 Fast_Initializer_next_v(Fast_Initializer _this) {
 }
 
 /* ::cortex::Fast::Initializer::pop() */
-cx_int8 Fast_Initializer_pop_v(Fast_Initializer _this) {
+cx_int8 _Fast_Initializer_pop_v(Fast_Initializer _this) {
 /* $begin(::cortex::Fast::Initializer::pop) */
 
     if (_this->fp) {
@@ -350,14 +350,14 @@ cx_int8 Fast_Initializer_pop_v(Fast_Initializer _this) {
 }
 
 /* ::cortex::Fast::Initializer::popKey() */
-cx_int16 Fast_Initializer_popKey_v(Fast_Initializer _this) {
+cx_int16 _Fast_Initializer_popKey_v(Fast_Initializer _this) {
 /* $begin(::cortex::Fast::Initializer::popKey) */
     return Fast_Initializer_pop(_this);
 /* $end */
 }
 
 /* ::cortex::Fast::Initializer::push() */
-cx_int16 Fast_Initializer_push_v(Fast_Initializer _this) {
+cx_int16 _Fast_Initializer_push_v(Fast_Initializer _this) {
 /* $begin(::cortex::Fast::Initializer::push) */
     cx_type t = Fast_Initializer_currentType(_this);
 
@@ -391,7 +391,7 @@ error:
 }
 
 /* ::cortex::Fast::Initializer::pushKey() */
-cx_int16 Fast_Initializer_pushKey_v(Fast_Initializer _this) {
+cx_int16 _Fast_Initializer_pushKey_v(Fast_Initializer _this) {
 /* $begin(::cortex::Fast::Initializer::pushKey) */
     _this->frames[_this->fp+1].isKey = TRUE;
     return Fast_Initializer_push(_this);
@@ -399,14 +399,14 @@ cx_int16 Fast_Initializer_pushKey_v(Fast_Initializer _this) {
 }
 
 /* ::cortex::Fast::Initializer::type() */
-cx_type Fast_Initializer_type(Fast_Initializer _this) {
+cx_type _Fast_Initializer_type(Fast_Initializer _this) {
 /* $begin(::cortex::Fast::Initializer::type) */
     return Fast_Expression_getType(_this->variables[0].object);
 /* $end */
 }
 
 /* ::cortex::Fast::Initializer::value(Expression v) */
-cx_int16 Fast_Initializer_value_v(Fast_Initializer _this, Fast_Expression v) {
+cx_int16 _Fast_Initializer_value_v(Fast_Initializer _this, Fast_Expression v) {
 /* $begin(::cortex::Fast::Initializer::value) */
     CX_UNUSED(v);
     return Fast_Initializer_next(_this);
@@ -414,7 +414,7 @@ cx_int16 Fast_Initializer_value_v(Fast_Initializer _this, Fast_Expression v) {
 }
 
 /* ::cortex::Fast::Initializer::valueKey(Expression key) */
-cx_int16 Fast_Initializer_valueKey_v(Fast_Initializer _this, Fast_Expression key) {
+cx_int16 _Fast_Initializer_valueKey_v(Fast_Initializer _this, Fast_Expression key) {
 /* $begin(::cortex::Fast::Initializer::valueKey) */
     _this->frames[_this->fp].isKey = TRUE;
     return Fast_Initializer_value(_this, key);

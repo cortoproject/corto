@@ -78,7 +78,7 @@ static cx_string ic_op_derefToString(cx_string string, ic_node s, ic_derefKind m
 /* $end */
 
 /* ::cortex::ic::op::construct() */
-cx_int16 ic_op_construct(ic_op _this) {
+cx_int16 _ic_op_construct(ic_op _this) {
 /* $begin(::cortex::ic::op::construct) */
     ic_node(_this)->kind = IC_OP;
     return ic_node_construct(ic_node(_this));
@@ -86,7 +86,7 @@ cx_int16 ic_op_construct(ic_op _this) {
 }
 
 /* ::cortex::ic::op::str(string in) */
-cx_string ic_op_str(ic_op _this, cx_string in) {
+cx_string _ic_op_str(ic_op _this, cx_string in) {
 /* $begin(::cortex::ic::op::str) */
     in = strappend(in, "  %s", ic_opKind__str(_this->kind));
     if (_this->s1) {
@@ -110,7 +110,7 @@ cx_string ic_op_str(ic_op _this, cx_string in) {
 }
 
 /* ::cortex::ic::op::validate() */
-cx_bool ic_op_validate(ic_op _this) {
+cx_bool _ic_op_validate(ic_op _this) {
 /* $begin(::cortex::ic::op::validate) */
     cx_bool result = TRUE;
 

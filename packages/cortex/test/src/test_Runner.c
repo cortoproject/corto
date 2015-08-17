@@ -12,7 +12,7 @@
 /* $end */
 
 /* ::cortex::test::Runner::construct() */
-cx_int16 test_Runner_construct(test_Runner _this) {
+cx_int16 _test_Runner_construct(test_Runner _this) {
 /* $begin(::cortex::test::Runner::construct) */
     test_Runner_runTest_o->mask = CX_ON_DEFINE | CX_ON_SCOPE | CX_ON_SELF;
     cx_listen(root_o, test_Runner_runTest_o, _this);
@@ -21,7 +21,7 @@ cx_int16 test_Runner_construct(test_Runner _this) {
 }
 
 /* ::cortex::test::Runner::destruct() */
-cx_void test_Runner_destruct(test_Runner _this) {
+cx_void _test_Runner_destruct(test_Runner _this) {
 /* $begin(::cortex::test::Runner::destruct) */
     static char *successes[] = {"successes", "success"};
     static char *failures[] = {"failures", "failure"};
@@ -34,7 +34,7 @@ cx_void test_Runner_destruct(test_Runner _this) {
 }
 
 /* ::cortex::test::Runner::printTestRun(::cortex::test::Suite t) */
-cx_void test_Runner_printTestRun_v(test_Runner _this, test_Suite t) {
+cx_void _test_Runner_printTestRun_v(test_Runner _this, test_Suite t) {
 /* $begin(::cortex::test::Runner::printTestRun) */
     CX_UNUSED(_this);
     cx_string suiteName = cx_nameof(cx_typeof(t));
@@ -52,7 +52,7 @@ cx_void test_Runner_printTestRun_v(test_Runner _this, test_Suite t) {
 }
 
 /* ::cortex::test::Runner::runTest() */
-cx_void test_Runner_runTest(test_Runner _this, cx_object *observable, cx_object *source) {
+cx_void _test_Runner_runTest(test_Runner _this, cx_object *observable, cx_object *source) {
 /* $begin(::cortex::test::Runner::runTest) */
     CX_UNUSED(source);
     if (cx_instanceof(cx_type(test_Case_o), observable)) {

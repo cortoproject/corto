@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::cortex::Fast::SignedInteger::init() */
-cx_int16 Fast_SignedInteger_init(Fast_SignedInteger _this) {
+cx_int16 _Fast_SignedInteger_init(Fast_SignedInteger _this) {
 /* $begin(::cortex::Fast::SignedInteger::init) */
     Fast_Literal(_this)->kind = Fast_SignedInt;
     return Fast_Literal_init(Fast_Literal(_this));
@@ -21,7 +21,7 @@ cx_int16 Fast_SignedInteger_init(Fast_SignedInteger _this) {
 }
 
 /* ::cortex::Fast::SignedInteger::serialize(type dstType,word dst) */
-cx_int16 Fast_SignedInteger_serialize(Fast_SignedInteger _this, cx_type dstType, cx_word dst) {
+cx_int16 _Fast_SignedInteger_serialize(Fast_SignedInteger _this, cx_type dstType, cx_word dst) {
 /* $begin(::cortex::Fast::SignedInteger::serialize) */
     Fast_valueKind kind;
 
@@ -54,7 +54,7 @@ error:
 }
 
 /* ::cortex::Fast::SignedInteger::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node Fast_SignedInteger_toIc_v(Fast_SignedInteger _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_SignedInteger_toIc_v(Fast_SignedInteger _this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::cortex::Fast::SignedInteger::toIc) */
     ic_node result;
     CX_UNUSED(storage);
