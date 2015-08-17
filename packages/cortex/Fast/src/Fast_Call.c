@@ -85,7 +85,7 @@ error:
 }
 
 /* ::cortex::Fast::Call::hasReturnedResource() */
-cx_bool Fast_Call_hasReturnedResource_v(Fast_Call _this) {
+cx_bool _Fast_Call_hasReturnedResource_v(Fast_Call _this) {
 /* $begin(::cortex::Fast::Call::hasReturnedResource) */
 
     return _this->returnType->reference || 

@@ -66,7 +66,7 @@ cx_int16 _Fast_Comma_construct(Fast_Comma _this) {
 }
 
 /* ::cortex::Fast::Comma::hasReturnedResource() */
-cx_bool Fast_Comma_hasReturnedResource_v(Fast_Comma _this) {
+cx_bool _Fast_Comma_hasReturnedResource_v(Fast_Comma _this) {
 /* $begin(::cortex::Fast::Comma::hasReturnedResource) */
     cx_bool result = FALSE;
 

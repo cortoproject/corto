@@ -450,7 +450,7 @@ error:
 }
 
 /* ::cortex::Fast::Binary::hasReturnedResource() */
-cx_bool Fast_Binary_hasReturnedResource_v(Fast_Binary _this) {
+cx_bool _Fast_Binary_hasReturnedResource_v(Fast_Binary _this) {
 /* $begin(::cortex::Fast::Binary::hasReturnedResource) */
 
     return Fast_Expression_hasReturnedResource(_this->lvalue) || 

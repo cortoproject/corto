@@ -497,7 +497,7 @@ cx_word _Fast_Expression_getValue_v(Fast_Expression _this) {
 }
 
 /* ::cortex::Fast::Expression::hasReturnedResource() */
-cx_bool Fast_Expression_hasReturnedResource_v(Fast_Expression _this) {
+cx_bool _Fast_Expression_hasReturnedResource_v(Fast_Expression _this) {
 /* $begin(::cortex::Fast::Expression::hasReturnedResource) */
     CX_UNUSED(_this);
     return FALSE;
