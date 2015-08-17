@@ -1,5 +1,7 @@
 #!/bin/sh
 
+install_cortex () {
+
 set -e
 
 # Check supported OS
@@ -46,17 +48,17 @@ test -x "$HOME/.cortex/bin/cxsh"
 
 trap ">&2 echo Error building Cortex." EXIT
 
-if [ ! -d "usr/local/bin" ] ; then
-    sudo mkdir -m 755 "usr/local" || true
-    sudo mkdir -m 755 "usr/local/bin" || true
+if [ ! -d "/usr/local/bin" ] ; then
+    sudo mkdir -m 755 "/usr/local" || true
+    sudo mkdir -m 755 "/usr/local/bin" || true
 fi
 
-cp "$HOME/.cortex/bin/cortex" usr/local/bin/
-cp "$HOME/.cortex/bin/cxgen" usr/local/bin/
-cp "$HOME/.cortex/bin/cxsh" usr/local/bin/
+cp "$HOME/.cortex/bin/cortex" /usr/local/bin/
+cp "$HOME/.cortex/bin/cxgen" /usr/local/bin/
+cp "$HOME/.cortex/bin/cxsh" /usr/local/bin/
 
 echo "Cortex succesfully installed."
 
 }
 
-run_it
+install_cortex
