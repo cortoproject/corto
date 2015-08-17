@@ -1,0 +1,21 @@
+bool result : true
+
+void fail(string msg):
+    "tc_function22a: FAIL: $msg"
+    result = false
+
+struct Point:: x, y: uint32
+
+Point p: 10, 20
+
+Point returnPoint() = {10, 20}
+Point returnPointVar(): returnPointVar = {10, 20}
+Point returnPointObj() = p
+Point returnPointAnonymous() = Point{10, 20}
+
+if returnPoint()[x, y] != (10, 20): fail("returnPoint()[x, y] != (10, 20)")
+if returnPointVar()[x, y] != (10, 20): fail("returnPointVar()[x, y] != (10, 20)")
+if returnPointObj()[x, y] != (10, 20): fail("returnPointObj()[x, y] != (10, 20)")
+if returnPointAnonymous()[x, y] != (10, 20): fail("returnPointAnonymous()[x, y] != (10, 20)")
+
+if result: "tc_function22a: OK"

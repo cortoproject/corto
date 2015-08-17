@@ -133,176 +133,6 @@ error:
     return -1;
 }
 
-/* Translate binary expressions on composite values to corresponding operations */
-Fast_Expression Fast_Parser_binaryCompositeExpr(Fast_Parser _this, Fast_Expression operand1, Fast_Expression operand2, cx_operatorKind operator) {
-    Fast_Expression result = NULL;
-
-    if (operator == CX_ASSIGN) {
-        if(Fast_Node(operand2)->kind == Fast_InitializerExpr) {
-            if (Fast_InitializerExpression_insert(Fast_InitializerExpression(operand2), operand1)) {
-                goto error;
-            }
-            result = operand1;
-        } else {
-            cx_type t1, t2;
-            t1 = Fast_Expression_getType(operand1);
-            t2 = Fast_Expression_getType(operand2);
-            if (t1 && t2 && cx_type_compatible(t1, t2)) {
-                if (!(result = Fast_Expression(Fast_createCall(operand1, "copy", 1, operand2)))) {
-                    goto error;
-                }
-            } else {
-                cx_id id1, id2;
-                Fast_Parser_error(_this, "cannot convert '%s' to '%s'",
-                    Fast_Parser_id(t2, id1),
-                    Fast_Parser_id(t1, id2));
-                goto error;
-            }
-        }
-    } else {
-        Fast_Parser_error(_this, "operator invalid for composite value");
-        goto error;
-    }
-
-    return result;
-error:
-    return NULL;
-}
-
-/* Translate binary expressions on collections to corresponding operations */
-Fast_Expression Fast_Parser_binaryCollectionExpr(Fast_Parser _this, Fast_Expression operand1, Fast_Expression operand2, cx_operatorKind operator) {
-    Fast_Expression result = NULL;
-    cx_type tleft = Fast_Expression_getType(operand1);
-    cx_type tright = Fast_Expression_getType(operand2);
-    cx_bool leftToRight = FALSE, rightToLeft = FALSE, equality = FALSE;
-
-    if (!tleft) {
-        tleft = tright;
-        leftToRight = TRUE;
-        equality = TRUE;
-    } else if (!tright) {
-        tright = tleft;
-        rightToLeft = TRUE;
-        equality = TRUE;
-    } else {
-        /* Determine the direction of a collection expression */
-        if (tleft->kind == CX_COLLECTION) {
-            if (cx_type_castable(tleft, tright)) {
-                equality = TRUE;
-                rightToLeft = TRUE;
-            }
-            if (cx_type_castable(cx_collection(tleft)->elementType, tright)) {
-                rightToLeft = TRUE;
-            }
-        }
-
-        /* Both conditions can be true in case of recursive elementTypes, but rightToLeft takes precedence */
-        if (tright->kind == CX_COLLECTION) {
-            if (cx_type_castable(cx_collection(tright)->elementType, tleft)) {
-                leftToRight = TRUE;
-            }
-        }
-    }
-
-    if (!(rightToLeft || leftToRight || equality)) {
-        cx_id id1, id2;
-        Fast_Parser_error(_this, "collection-expression types do not match (left: %s, right: %s)",
-                          Fast_Parser_id(tleft, id1),
-                          Fast_Parser_id(tright, id2));
-        cx_print("   valid options:");
-        if (tleft->kind == CX_COLLECTION) {
-            cx_print("      left: %s right: %s", Fast_Parser_id(tleft, id1), Fast_Parser_id(cx_collection(tleft)->elementType, id2));
-            cx_print("      left: %s right: %s", Fast_Parser_id(tleft, id1), Fast_Parser_id(tleft, id1));
-        }
-        if (tright->kind == CX_COLLECTION) {
-            cx_print("      left: %s right: %s", Fast_Parser_id(cx_collection(tright)->elementType, id1), Fast_Parser_id(tright, id2));
-            cx_print("      left: %s right: %s", Fast_Parser_id(tright, id1), Fast_Parser_id(tright, id1));
-        }
-        goto error;
-    }
-
-    Fast_Expression collection = rightToLeft ? operand1 : operand2;
-    Fast_Expression operand = rightToLeft ? operand2 : operand1;
-    Fast_Expression castedOperand = operand;
-    cx_collection collectionType = cx_collection(Fast_Expression_getType(collection));
-
-    switch(operator) {
-        case CX_ASSIGN:
-            /* If operand is an initializer, insert initializer instructions. */
-            if(Fast_Node(operand2)->kind == Fast_InitializerExpr) {
-                if (Fast_InitializerExpression_insert(Fast_InitializerExpression(operand2), operand1)) {
-                    goto error;
-                }
-                result = operand1;
-                break;
-            }
-
-            /* If operand is a collection, insert copy-function. Otherwise fallthrough. */
-            if (equality) {
-                if (!(result = Fast_Expression(Fast_createCall(collection, "copy", 1, operand)))) {
-                    goto error;
-                }
-                break;
-            } else {
-                if (!(result = Fast_Expression(Fast_createCall(collection, "clear", 0)))) {
-                    goto error;
-                }
-            }
-        case CX_ASSIGN_ADD: {
-            Fast_Expression localResult = NULL;
-
-            /* Cast operand to elementType */
-            if (!equality && Fast_Expression_getType(operand) != collectionType->elementType) {
-                if (collectionType->elementType->reference || (collectionType->elementType->kind == CX_PRIMITIVE)) {
-                    castedOperand = Fast_Expression_cast(operand, collectionType->elementType, FALSE);
-                    if (!castedOperand) {
-                        castedOperand = operand;
-                    }
-                }
-            } else {
-                if (Fast_Node(collection)->kind == Fast_InitializerExpr) {
-                    castedOperand = Fast_Expression_cast(collection, tleft, FALSE);
-                    collection = operand;
-                } else if (Fast_Node(operand)->kind == Fast_InitializerExpr) {
-                    castedOperand = Fast_Expression_cast(operand, tleft, FALSE);
-                } else {
-                    castedOperand = operand;
-                }
-            }
-
-            /* Create merge, insert or append */
-            if (rightToLeft || (equality && (Fast_Node(operand)->kind != Fast_InitializerExpr))) {
-                if (!(localResult = Fast_Expression(Fast_createCall(collection, "append", 1, castedOperand)))) {
-                    goto error;
-                }
-            } else {
-                if (!(localResult = Fast_Expression(Fast_createCall(collection, "insert", 1, castedOperand)))) {
-                    goto error;
-                }
-            }
-            result = Fast_Comma_addOrCreate(result, localResult);
-
-            break;
-        }
-        case CX_DEC:
-        case CX_COND_EQ:
-        case CX_COND_NEQ:
-        case CX_COND_LT:
-        case CX_COND_GT:
-        case CX_COND_LTEQ:
-        case CX_COND_GTEQ:
-        default:
-            Fast_Parser_error(_this, "operator invalid for collection value");
-            goto error;
-            break;
-    }
-
-    return result;
-error:
-    return NULL;
-}
-
-
 /* Use cx_object as returntype as the actual type (Fast_Expression) causes macro-expansion */
 typedef cx_object (*Fast_ExpandAction)(Fast_Parser _this, Fast_Expression lvalue, Fast_Expression rvalue, void *userData);
 
@@ -524,7 +354,7 @@ error:
 cx_object Fast_Parser_expandBinary(Fast_Parser _this, Fast_Expression lvalue, Fast_Expression rvalue, void *userData) {
     Fast_Expression result = NULL;
     cx_type tleft, tright;
-    cx_bool isReference = FALSE, forceReference;
+    cx_bool isReference = FALSE;
     cx_operatorKind operator = *(cx_operatorKind*)userData;
 
     if (!(tleft = Fast_Expression_getType_expr(lvalue, rvalue))) {
@@ -535,17 +365,7 @@ cx_object Fast_Parser_expandBinary(Fast_Parser _this, Fast_Expression lvalue, Fa
         goto error;
     }
 
-    if (operator == CX_ASSIGN) {
-        forceReference = lvalue->deref == Fast_ByReference;
-    } else {
-        forceReference = (lvalue->deref == Fast_ByReference) && (rvalue->deref == Fast_ByReference);
-    }
-
-    if ((Fast_Node(lvalue)->kind != Fast_StorageExpr) ||
-        (Fast_Storage(lvalue)->kind != Fast_ObjectStorage) ||
-        (operator != CX_ASSIGN)) {
-        isReference = forceReference || (tleft && tleft->reference) || (tright && tright->reference);
-    }
+    isReference = (lvalue->deref == Fast_ByReference);
 
     if (tleft && (tleft->kind == CX_COMPOSITE) && (cx_interface(tleft)->kind == CX_DELEGATE)) {
         if (*(cx_operatorKind*)userData == CX_ASSIGN) {
@@ -576,35 +396,20 @@ cx_object Fast_Parser_expandBinary(Fast_Parser _this, Fast_Expression lvalue, Fa
     if (Fast_Node(rvalue)->kind == Fast_TernaryExpr) {
         result = Fast_Parser_createBinaryTernary(_this, lvalue, rvalue, operator);
 
-    /* Binary expression with non-reference composite values */
-    } else if (!isReference && ((tleft && (tleft->kind == CX_COMPOSITE)) && (tright && (tright->kind == CX_COMPOSITE)))) {
-        result = Fast_Parser_binaryCompositeExpr(_this, lvalue, rvalue, operator);
-
     /* Binary expression with iterator value on the left-hand side */
     } else if (tleft && tleft->kind == CX_ITERATOR) {
         result = Fast_Expression(Fast_Binary__create(lvalue, rvalue, operator));
 
-    /* Binary expression with non-reference collection values */
-    } else if (!forceReference && ((tleft && (tleft->kind == CX_COLLECTION)) || (tright && (tright->kind == CX_COLLECTION)))) {
-        result = Fast_Parser_binaryCollectionExpr(_this, lvalue, rvalue, operator);
-
     /* Binary expression with primitive or reference values */
     } else {
-        if (Fast_Node(rvalue)->kind == Fast_InitializerExpr) {
-            if (Fast_InitializerExpression_insert(Fast_InitializerExpression(rvalue), lvalue)) {
-                goto error;
-            }
-            result = lvalue;
-        } else {
-            result = Fast_Expression(Fast_Binary__create(lvalue, rvalue, operator));
+        result = Fast_Expression(Fast_Binary__create(lvalue, rvalue, operator));
 
-            /* Fold expression */
-            if (result) {
-                result = Fast_Expression_fold(result);
-                if (!result) {
-                    Fast_Parser_error(_this, "folding failed for expression");
-                    goto error;
-                }
+        /* Fold expression */
+        if (result) {
+            result = Fast_Expression_fold(result);
+            if (!result) {
+                Fast_Parser_error(_this, "folding failed for expression");
+                goto error;
             }
         }
     }
