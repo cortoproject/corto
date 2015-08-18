@@ -266,7 +266,7 @@ function_implementation
     | function_declaration {
         $<Fast>$ = Fast_Parser_declareFunctionParams(yparser(),$1); fast_op;
         Fast_Parser_blockPush(yparser(), FALSE); fast_op;
-        Fast_Parser_pushReturnAsLvalue(yparser(), $1); fast_op; /* Set lvalue to return-variable of function */
+        Fast_Parser_pushReturnAsLvalue(yparser(), Fast_Object($1)->value); fast_op;
     } '=' expr ENDL {
         Fast_Parser_popLvalue(yparser()); fast_op;
         Fast_Parser_bindOneliner(yparser(), $1, $<Fast>2, $4); fast_op;

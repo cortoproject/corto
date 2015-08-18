@@ -2700,7 +2700,7 @@ cx_void _Fast_Parser_pushReturnAsLvalue(Fast_Parser _this, cx_function function)
     if (_this->pass) {
         if (function->returnType) {
             cx_id id;
-            cx_signatureName(cx_nameof(Fast_Object(function)->value), id);
+            cx_signatureName(cx_nameof(function), id);
             result = Fast_Expression(Fast_Block_resolve(_this->block, id));
             if (!result) {
                 Fast_Parser_error(_this, "parser error: can't find result variable '%s'", id);

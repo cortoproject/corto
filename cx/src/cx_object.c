@@ -1174,9 +1174,12 @@ cx_object cx_assertType(cx_type type, cx_object o) {
     if (o && (o != type)) {
         if (!cx_instanceof(type, o)) {
             cx_id id1, id2;
-            cx_critical("object '%s' is not of type '%s'",
+            cx_error("object '%s' is not of type '%s'",
                 cx_fullname(o, id1),
                 cx_fullname(type, id2));
+            cx_error("    type = %s\n", cx_fullname(cx_typeof(o), id1));
+            cx_backtrace(stdout);
+            abort();
         }
     }
     return o;
