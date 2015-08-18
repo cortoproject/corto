@@ -84,7 +84,7 @@ cx_int16 _Fast_Ternary_construct(Fast_Ternary _this) {
 }
 
 /* ::cortex::Fast::Ternary::hasReturnedResource() */
-cx_bool Fast_Ternary_hasReturnedResource_v(Fast_Ternary _this) {
+cx_bool _Fast_Ternary_hasReturnedResource_v(Fast_Ternary _this) {
 /* $begin(::cortex::Fast::Ternary::hasReturnedResource) */
     return Fast_Expression_hasReturnedResource(_this->condition) ||
            Fast_Expression_hasReturnedResource(_this->ifTrue) ||

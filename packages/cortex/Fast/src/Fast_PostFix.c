@@ -71,7 +71,7 @@ error:
 }
 
 /* ::cortex::Fast::PostFix::hasReturnedResource() */
-cx_bool Fast_PostFix_hasReturnedResource_v(Fast_PostFix _this) {
+cx_bool _Fast_PostFix_hasReturnedResource_v(Fast_PostFix _this) {
 /* $begin(::cortex::Fast::PostFix::hasReturnedResource) */
     return Fast_Expression_hasReturnedResource(_this->lvalue);
 /* $end */

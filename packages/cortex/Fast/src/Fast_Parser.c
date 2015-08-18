@@ -1987,11 +1987,16 @@ Fast_Expression _Fast_Parser_initPushIdentifier(Fast_Parser _this, Fast_Expressi
         _this->initializers[_this->initializerCount] = Fast_Initializer(Fast_StaticInitializer__create(variables, 1));
         _this->variablePushed = TRUE;
     } else if (_this->pass && isDynamic && !forceStatic) {
-        Fast_Expression newExpr, assignExpr, var;
-        var = Fast_Expression(Fast_Temporary__create(Fast_Object(type)->value, TRUE));
+        Fast_Expression newExpr, assignExpr, var, refVar;
+        cx_type type_o = cx_type(Fast_Object(type)->value);
+        refVar = var = Fast_Expression(Fast_Temporary__create(Fast_Object(type)->value, TRUE));
         newExpr = Fast_Expression(Fast_New__create(Fast_Object(type)->value,0));
         Fast_Parser_collect(_this, newExpr);
-        assignExpr = Fast_Expression(Fast_Binary__create(var, newExpr, CX_ASSIGN));
+        if (!type_o->reference) {
+            refVar = Fast_Parser_unaryExpr(_this, var, CX_AND);
+            Fast_Parser_collect(yparser(), refVar);
+        }
+        assignExpr = Fast_Expression(Fast_Binary__create(refVar, newExpr, CX_ASSIGN));
         Fast_Parser_collect(_this, assignExpr);
         Fast_Parser_addStatement(_this, Fast_Node(assignExpr));
 
@@ -2852,6 +2857,11 @@ Fast_Expression _Fast_Parser_unaryExpr(Fast_Parser _this, Fast_Expression lvalue
                     result->deref = Fast_ByReference;
                     Fast_Node(result)->line = _this->line;
                     Fast_Node(result)->column = _this->column;
+
+                    /* Ensure that copies of temporaries point to the same storage */
+                    if (Fast_Storage(result)->kind == Fast_TemporaryStorage) {
+                        Fast_Temporary_setProxy(result, lvalue);
+                    }
                 } else {
                     Fast_Parser_error(_this, "cannot take reference from non-reference variable");
                     goto error;

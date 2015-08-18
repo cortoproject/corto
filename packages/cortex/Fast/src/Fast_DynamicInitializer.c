@@ -147,7 +147,7 @@ cx_int16 _Fast_DynamicInitializer_define(Fast_DynamicInitializer _this) {
 }
 
 /* ::cortex::Fast::DynamicInitializer::hasReturnedResource() */
-cx_bool Fast_DynamicInitializer_hasReturnedResource_v(Fast_DynamicInitializer _this) {
+cx_bool _Fast_DynamicInitializer_hasReturnedResource_v(Fast_DynamicInitializer _this) {
 /* $begin(::cortex::Fast::DynamicInitializer::hasReturnedResource) */
     CX_UNUSED(_this);
     return FALSE;

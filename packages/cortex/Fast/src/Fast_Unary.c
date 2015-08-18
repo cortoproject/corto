@@ -44,7 +44,7 @@ error:
 }
 
 /* ::cortex::Fast::Unary::hasReturnedResource() */
-cx_bool Fast_Unary_hasReturnedResource_v(Fast_Unary _this) {
+cx_bool _Fast_Unary_hasReturnedResource_v(Fast_Unary _this) {
 /* $begin(::cortex::Fast::Unary::hasReturnedResource) */
     return Fast_Expression_hasReturnedResource(_this->lvalue);
 /* $end */

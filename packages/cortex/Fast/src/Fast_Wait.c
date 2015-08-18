@@ -117,7 +117,7 @@ error:
 }
 
 /* ::cortex::Fast::Wait::hasReturnedResource() */
-cx_bool Fast_Wait_hasReturnedResource_v(Fast_Wait _this) {
+cx_bool _Fast_Wait_hasReturnedResource_v(Fast_Wait _this) {
 /* $begin(::cortex::Fast::Wait::hasReturnedResource) */
     CX_UNUSED(_this);
     return FALSE;

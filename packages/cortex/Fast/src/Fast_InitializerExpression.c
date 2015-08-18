@@ -33,7 +33,7 @@ cx_int16 _Fast_InitializerExpression_define(Fast_InitializerExpression _this) {
 }
 
 /* ::cortex::Fast::InitializerExpression::hasReturnedResource() */
-cx_bool Fast_InitializerExpression_hasReturnedResource_v(Fast_InitializerExpression _this) {
+cx_bool _Fast_InitializerExpression_hasReturnedResource_v(Fast_InitializerExpression _this) {
 /* $begin(::cortex::Fast::InitializerExpression::hasReturnedResource) */
     CX_UNUSED(_this);
     return FALSE;

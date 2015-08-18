@@ -44,7 +44,7 @@ error:
 }
 
 /* ::cortex::Fast::Cast::hasReturnedResource() */
-cx_bool Fast_Cast_hasReturnedResource_v(Fast_Cast _this) {
+cx_bool _Fast_Cast_hasReturnedResource_v(Fast_Cast _this) {
 /* $begin(::cortex::Fast::Cast::hasReturnedResource) */
 
     return Fast_Expression_hasReturnedResource(_this->rvalue);
