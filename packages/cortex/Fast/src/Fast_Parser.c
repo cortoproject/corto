@@ -2502,7 +2502,7 @@ cx_int16 _Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_word value) 
             cx_object o = NULL;
             ic_program_run(program, (cx_word)&o);
             if (o) {
-                cx_valueObjectInit(v, o);
+                cx_valueObjectInit(v, o, NULL);
             } else {
                 v->is.value.storage = 0;
                 cx_valueValueInit(v, NULL, cx_object_o, &v->is.value.storage);

@@ -1101,6 +1101,15 @@ static cx_vmOpKind ic_getVmOpKind(ic_vmProgram *program, ic_op op, ic_node stora
             ic_opKind__str(op->kind),
             ic_derefKind__str(deref1),
             ic_derefKind__str(deref2));
+        if (op->s1) {
+            cx_error("   operand 1: %s", ic_node__str(op->s1));
+        }
+        if (op->s2) {
+            cx_error("   operand 2: %s", ic_node__str(op->s2));
+        }
+        if (op->s3) {
+            cx_error("   operand 3: %s", ic_node__str(op->s3));
+        }
     }
 
     if (typeKind_out) {

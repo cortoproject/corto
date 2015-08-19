@@ -2660,7 +2660,7 @@ cx_int16 cx_expr(cx_object scope, cx_string expr, cx_value *value) {
             goto error;
         }
 
-        cx_valueObjectInit(value, o);
+        cx_valueObjectInit(value, o, NULL);
     }
 
     return result;
@@ -3654,7 +3654,7 @@ cx_int16 cx_copy(cx_object *dst, cx_object src) {
         newObject = TRUE;
     }
 
-    cx_valueObjectInit(&data.value, *dst);
+    cx_valueObjectInit(&data.value, *dst, NULL);
     result = cx_serialize(&s, src, &data);
 
     if (newObject) {

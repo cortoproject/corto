@@ -313,13 +313,13 @@ cx_int16 c_apiTypeStr(cx_type t, c_apiWalk_t *data) {
     g_fileIndent(data->source);
     g_fileWrite(data->source, "cx_string result;\n", id);
 
+    g_fileWrite(data->source, "cx_value v;\n", id);
     if (t->reference) {
-        g_fileWrite(data->source, "result = cx_str(value, 0);\n");
+        g_fileWrite(data->source, "cx_valueObjectInit(&v, value, cx_type(%s_o));\n", id);
     } else {
-        g_fileWrite(data->source, "cx_value v;\n", id);
         g_fileWrite(data->source, "cx_valueValueInit(&v, NULL, cx_type(%s_o), &value);\n", id);
-        g_fileWrite(data->source, "result = cx_strv(&v, 0);\n");
     }
+    g_fileWrite(data->source, "result = cx_strv(&v, 0);\n");
 
     g_fileWrite(data->source, "return result;\n");
     g_fileDedent(data->source);

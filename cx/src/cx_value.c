@@ -27,7 +27,7 @@ cx_type cx_valueType(cx_value* val) {
 
     switch(val->kind) {
     case CX_OBJECT:
-        result = cx_typeof(val->is.o);
+        result = val->is.object.t;
         break;
     case CX_BASE:
         result = val->is.base.t;
@@ -89,7 +89,7 @@ cx_void* cx_valueValue(cx_value* val) {
     cx_void* result;
     switch(val->kind) {
     case CX_OBJECT:
-        result = val->is.o;
+        result = val->is.object.o;
         break;
     case CX_BASE:
         result = val->is.base.v;
@@ -128,7 +128,7 @@ cx_object cx_valueObject(cx_value* val) {
 
     switch(val->kind) {
     case CX_OBJECT:
-        result = val->is.o;
+        result = val->is.object.o;
         break;
     case CX_BASE:
         result = val->is.base.o;
@@ -167,11 +167,11 @@ cx_function cx_valueFunction(cx_value* val) {
 
     switch(val->kind) {
     case CX_OBJECT:
-        if (cx_class_instanceof(cx_procedure_o, cx_typeof(val->is.o))) {
-            result = val->is.o;
+        if (cx_class_instanceof(cx_procedure_o, cx_typeof(val->is.object.o))) {
+            result = val->is.object.o;
         } else {
             cx_id id;
-            cx_error("object '%s' in value is not a function", cx_fullname(val->is.o, id));
+            cx_error("object '%s' in value is not a function", cx_fullname(val->is.object.o, id));
             result = NULL;
         }
         break;
@@ -351,10 +351,15 @@ error:
     return NULL;
 }
 
-void cx_valueObjectInit(cx_value* val, cx_object o) {
+void cx_valueObjectInit(cx_value* val, cx_object o, cx_type t) {
     val->kind = CX_OBJECT;
     val->parent = NULL;
-    val->is.o = o;
+    val->is.object.o = o;
+    if (t) {
+        val->is.object.t = t;
+    } else {
+        val->is.object.t = cx_typeof(o);
+    }
 }
 
 void cx_valueBaseInit(cx_value* val, cx_void *v, cx_type t) {
@@ -446,7 +451,7 @@ void cx_valueLiteralInit(cx_value* val, cx_literalKind kind, cx_void* value) {
 void cx_valueSetValue(cx_value* val, cx_void* v) {
     switch(val->kind) {
     case CX_OBJECT:
-        val->is.o = v; /* Dangerous, but allowed */
+        val->is.object.o = v; /* Dangerous, but allowed */
         break;
     case CX_BASE:
         val->is.base.v = v;

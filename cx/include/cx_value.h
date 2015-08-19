@@ -44,7 +44,10 @@ struct cx_value {
     cx_value* parent;
     cx_valueKind kind;
     union {
-        cx_object o;
+        struct {
+            cx_object o;
+            cx_type t;
+        } object;
         struct {
             cx_object o;
             cx_type t;
@@ -115,7 +118,7 @@ void cx_valueFree(cx_value* val);
 void cx_valueStackFree(cx_value* valueStack, cx_uint32 count);
 
 /* Initializers */
-void cx_valueObjectInit(cx_value* val, cx_object o);
+void cx_valueObjectInit(cx_value* val, cx_object o, cx_type t);
 void cx_valueBaseInit(cx_value* val, cx_void *v, cx_type t);
 void cx_valueValueInit(cx_value* val, cx_object o, cx_type t, cx_void* v);
 void cx_valueMemberInit(cx_value* val, cx_object o, cx_member t, cx_void* v);

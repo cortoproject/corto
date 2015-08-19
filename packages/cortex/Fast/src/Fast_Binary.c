@@ -568,7 +568,8 @@ cx_void _Fast_Binary_setOperator(Fast_Binary _this, cx_operatorKind kind) {
     }
 
     /* If the expression type is not a scalar, insert complex operations */
-    if ((exprType->kind != CX_PRIMITIVE) && (_this->deref != Fast_ByReference)) {
+    if ((exprType->kind != CX_PRIMITIVE) && (_this->deref != Fast_ByReference) &&
+        (Fast_Node(_this->rvalue)->kind != Fast_CallExpr)) {
         if (Fast_Binary_complexExpr(_this)) {
             goto error;
         }

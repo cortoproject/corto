@@ -152,7 +152,9 @@ void cx_array__set(cx_array _this, cx_type elementType, cx_uint32 max) {
 
 cx_string cx_array__str(cx_array value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_array_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -310,7 +312,9 @@ void cx_binary__set(cx_binary _this, cx_width width) {
 
 cx_string cx_binary__str(cx_binary value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_binary_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -373,7 +377,9 @@ void cx_bitmask__set(cx_bitmask _this) {
 
 cx_string cx_bitmask__str(cx_bitmask value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_bitmask_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -526,7 +532,9 @@ void cx_boolean__set(cx_boolean _this) {
 
 cx_string cx_boolean__str(cx_boolean value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_boolean_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -860,7 +868,9 @@ void cx_character__set(cx_character _this, cx_width width) {
 
 cx_string cx_character__str(cx_character value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_character_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -938,7 +948,9 @@ void cx_class__set(cx_class _this, cx_interface base, cx_modifier baseAccess, cx
 
 cx_string cx_class__str(cx_class value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_class_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -1011,7 +1023,9 @@ void cx_collection__set(cx_collection _this, cx_type elementType, cx_uint32 max)
 
 cx_string cx_collection__str(cx_collection value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_collection_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -1359,7 +1373,9 @@ void cx_delegate__set(cx_delegate _this, cx_type returnType, cx_bool returnsRefe
 
 cx_string cx_delegate__str(cx_delegate value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_delegate_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -1520,7 +1536,9 @@ void cx_dispatcher__set(cx_dispatcher _this) {
 
 cx_string cx_dispatcher__str(cx_dispatcher value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_dispatcher_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -1583,7 +1601,9 @@ void cx_enum__set(cx_enum _this) {
 
 cx_string cx_enum__str(cx_enum value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_enum_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -1741,7 +1761,9 @@ void cx_event__set(cx_event _this, cx_uint16 kind) {
 
 cx_string cx_event__str(cx_event value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_event_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -1909,7 +1931,9 @@ void cx_float__set(cx_float _this, cx_width width, cx_float64 min, cx_float64 ma
 
 cx_string cx_float__str(cx_float value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_float_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -2162,7 +2186,9 @@ void cx_function__set(cx_function _this, cx_type returnType, cx_bool returnsRefe
 
 cx_string cx_function__str(cx_function value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_function_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -2240,7 +2266,9 @@ void cx_int__set(cx_int _this, cx_width width, cx_int64 min, cx_int64 max) {
 
 cx_string cx_int__str(cx_int value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_int_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -2668,7 +2696,9 @@ void cx_interface__set(cx_interface _this, cx_interface base) {
 
 cx_string cx_interface__str(cx_interface value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_interface_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -3014,7 +3044,9 @@ void cx_iterator__set(cx_iterator _this, cx_type elementType) {
 
 cx_string cx_iterator__str(cx_iterator value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_iterator_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -3087,7 +3119,9 @@ void cx_list__set(cx_list _this, cx_type elementType, cx_uint32 max) {
 
 cx_string cx_list__str(cx_list value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_list_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -3165,7 +3199,9 @@ void cx_map__set(cx_map _this, cx_type elementType, cx_type keyType, cx_uint32 m
 
 cx_string cx_map__str(cx_map value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_map_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -3248,7 +3284,9 @@ void cx_member__set(cx_member _this, cx_type type, cx_modifier modifiers, cx_sta
 
 cx_string cx_member__str(cx_member value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_member_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -3416,7 +3454,9 @@ void cx_metaprocedure__set(cx_metaprocedure _this, cx_type returnType, cx_bool r
 
 cx_string cx_metaprocedure__str(cx_metaprocedure value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_metaprocedure_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -3494,7 +3534,9 @@ void cx_method__set(cx_method _this, cx_type returnType, cx_bool returnsReferenc
 
 cx_string cx_method__str(cx_method value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_method_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -3782,7 +3824,9 @@ void cx_observableEvent__set(cx_observableEvent _this, cx_uint16 kind, cx_observ
 
 cx_string cx_observableEvent__str(cx_observableEvent value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_observableEvent_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -3865,7 +3909,9 @@ void cx_observer__set(cx_observer _this, cx_object observable, cx_eventMask mask
 
 cx_string cx_observer__str(cx_observer value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_observer_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -4203,7 +4249,9 @@ void cx_package__set(cx_package _this, cx_string url) {
 
 cx_string cx_package__str(cx_package value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_package_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -4464,7 +4512,9 @@ void cx_primitive__set(cx_primitive _this, cx_width width) {
 
 cx_string cx_primitive__str(cx_primitive value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_primitive_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -4632,7 +4682,9 @@ void cx_procedure__set(cx_procedure _this, cx_interface base, cx_modifier baseAc
 
 cx_string cx_procedure__str(cx_procedure value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_procedure_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -4795,7 +4847,9 @@ void cx_sequence__set(cx_sequence _this, cx_type elementType, cx_uint32 max) {
 
 cx_string cx_sequence__str(cx_sequence value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_sequence_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -5048,7 +5102,9 @@ void cx_struct__set(cx_struct _this, cx_interface base, cx_modifier baseAccess) 
 
 cx_string cx_struct__str(cx_struct value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_struct_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -5121,7 +5177,9 @@ void cx_text__set(cx_text _this, cx_width charWidth, cx_uint64 length) {
 
 cx_string cx_text__str(cx_text value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_text_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -5199,7 +5257,9 @@ void cx_type__set(cx_type _this, cx_type defaultType, cx_type parentType, cx_sta
 
 cx_string cx_type__str(cx_type value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_type_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -5367,7 +5427,9 @@ void cx_uint__set(cx_uint _this, cx_width width, cx_uint64 min, cx_uint64 max) {
 
 cx_string cx_uint__str(cx_uint value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_uint_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 
@@ -5805,7 +5867,9 @@ void cx_virtual__set(cx_virtual _this, cx_type returnType, cx_bool returnsRefere
 
 cx_string cx_virtual__str(cx_virtual value) {
     cx_string result;
-    result = cx_str(value, 0);
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_virtual_o));
+    result = cx_strv(&v, 0);
     return result;
 }
 

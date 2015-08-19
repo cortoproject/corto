@@ -251,9 +251,7 @@ static cx_int16 cx_ser_reference(cx_serializer s, cx_value* v, void* userData) {
                 cx_llAppend(data->anonymousObjects, object);
                 cx_ser_appendstr(userData, "<%d>", cx_llSize(data->anonymousObjects));
 
-                v.kind = CX_OBJECT;
-                v.is.o = object;
-                v.parent = NULL;
+                cx_valueObjectInit(&v, object, NULL);
                 if (cx_ser_object(s, &v, &walkData)) {
                     goto error;
                 }

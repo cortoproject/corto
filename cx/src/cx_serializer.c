@@ -88,7 +88,8 @@ cx_int16 cx_serialize(cx_serializer _this, cx_object o, void* userData) {
     
     info.kind = CX_OBJECT;
     info.parent = NULL;
-    info.is.o = o;
+    info.is.object.o = o;
+    info.is.object.t = cx_typeof(o);
 
     if (_this->construct) {
         if (_this->construct(_this, &info, userData)) {

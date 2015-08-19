@@ -162,8 +162,8 @@ cx_int16 cx_type_copy(cx_any _this, cx_any value) {
     cx_int16 result;
 
     if (_this.type->reference || value.type->reference) {
-        cx_valueObjectInit(&data.value, _this.value);
-        cx_valueObjectInit(&v1, value.value);       
+        cx_valueObjectInit(&data.value, _this.value, NULL);
+        cx_valueObjectInit(&v1, value.value, NULL);       
     } else {
         cx_valueValueInit(&data.value, NULL, cx_type(_this.type), _this.value);
         cx_valueValueInit(&v1, NULL, cx_type(value.type), value.value);
@@ -384,7 +384,7 @@ cx_string cx_type_toString(cx_any _this) {
 
     if (_this.value) {
         if (_this.type->reference) {
-            cx_valueObjectInit(&value, _this.value);
+            cx_valueObjectInit(&value, _this.value, NULL);
         } else {
             cx_valueValueInit(&value, NULL, _this.type, _this.value);
         }
