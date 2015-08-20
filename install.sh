@@ -1,64 +1,76 @@
 #!/bin/sh
 
 install_cortex () {
+    set -e
 
-set -e
+    VERSION="0.2.0"
 
-# Check supported OS
-UNAME=$(uname)
-if [ "$UNAME" != "Linux" -a "$UNAME" != "Darwin" ] ; then
-    >&2 echo "Sorry, this OS is not supported yet."
-    exit 1
-fi
+    # Check supported OS
+    UNAME=$(uname)
+    if [ "$UNAME" != "Linux" -a "$UNAME" != "Darwin" ] ; then
+        >&2 echo "Sorry, this OS is not supported yet."
+        exit 1
+    fi
 
-# Check rails
-command -v rake >/dev/null 2>&1 || { echo >&2 "I require rake but it's not installed.  Aborting."; exit 1; }
+    trap ">&2 echo Installation failed." EXIT
 
-trap ">&2 echo Installation failed." EXIT
+    TARBALL_URL="https://codeload.github.com/cortexlang/cortex/tar.gz/master"
+    INSTALL_TMPDIR="$HOME/.cortex-install-tmp"
+    rm -rf "$INSTALL_TMPDIR"
+    mkdir "$INSTALL_TMPDIR"
+    echo "Downloading Cortex source code"
+    curl --progress-bar --fail "$TARBALL_URL" | tar -xzf - -C "$INSTALL_TMPDIR"
+    # test -d "${INSTALL_TMPDIR}/cortex-master"
+    # TODO change test
+    # The files downloaded have the structure:
+    # zipped file/
+    # |-cortex <- executable that goes into /usr/local/bin
+    # |-0.0.0/ <- directory named after version number
+    #   |-packages/
+    #   |-components/
+    #   |-generators/
 
-if [ -e "$HOME/.cortex" ]; then
-    echo "Removing your existing Cortex installation."
-    rm -rf "$HOME/.cortex"
-fi
+    # Remove previous installation
+    echo "Removing any existing Cortex $VERSION installation."
+    sudo rm -rf "/usr/local/lib/cortex/$VERSION"
+    sudo mkdir "/usr/local/lib/cortex"
+    sudo mkdir "/usr/local/lib/cortex/$VERSION"
+    rm -rf "$HOME/.cortex/$VERSION"
+    mkdir "$HOME/.cortex"
+    mkdir "$HOME/.cortex/$VERSION"
 
-TARBALL_URL="https://codeload.github.com/cortexlang/cortex/tar.gz/master"
-INSTALL_TMPDIR="$HOME/.cortex-install-tmp"
+    # TODO replace cortex-master with ultimate filename
+    # Copy executable
+    cp "$INSTALL_TMPDIR/cortex-master/cortex" "/usr/local/bin/cortex/$VERSION/"
+    test -d "/usr/local/bin/cortex"
+    cp "$INSTALL_TMPDIR/cortex-master/$VERSION" "$HOME/.cortex"
+    rm -rf "${INSTALL_TMPDIR}"
+    test -d "$HOME/.cortex/$VERSION/components"
+    test -d "$HOME/.cortex/$VERSION/generators"
+    test -d "$HOME/.cortex/$VERSION/packages"
 
-rm -rf "$INSTALL_TMPDIR"
-mkdir "$INSTALL_TMPDIR"
-echo "Downloading Cortex source code"
-curl --progress-bar --fail "$TARBALL_URL" | tar -xzf - -C "$INSTALL_TMPDIR"
-test -d "${INSTALL_TMPDIR}/cortex-master"
-rm -rf "$HOME/.cortex"
-mkdir "$HOME/.cortex/"
-# TODO does this fail if there are spaces in the name?
-mv $INSTALL_TMPDIR/cortex-master/* "$HOME/.cortex/"
-rm -rf "${INSTALL_TMPDIR}"
-test -d "$HOME/.cortex"
+    echo "The Cortex source code has been downloaded to \"~/.cortex\"."
 
-echo "The Cortex source code has been downloaded to \"~/.cortex\"."
+    # Build
+    cd "$HOME/.cortex"
+    source configure
+    rake
+    test -x "$HOME/.cortex/bin/cortex"
+    test -x "$HOME/.cortex/bin/cxgen"
+    test -x "$HOME/.cortex/bin/cxsh"
 
-# Build
-cd "$HOME/.cortex"
-source configure
-rake
-test -x "$HOME/.cortex/bin/cortex"
-test -x "$HOME/.cortex/bin/cxgen"
-test -x "$HOME/.cortex/bin/cxsh"
+    trap ">&2 echo Error building Cortex." EXIT
 
-trap ">&2 echo Error building Cortex." EXIT
+    if [ ! -d "/usr/local/bin" ] ; then
+        sudo mkdir -m 755 "/usr/local" || true
+        sudo mkdir -m 755 "/usr/local/bin" || true
+    fi
 
-if [ ! -d "/usr/local/bin" ] ; then
-    sudo mkdir -m 755 "/usr/local" || true
-    sudo mkdir -m 755 "/usr/local/bin" || true
-fi
+    cp "$HOME/.cortex/bin/cortex" /usr/local/bin/
+    cp "$HOME/.cortex/bin/cxgen" /usr/local/bin/
+    cp "$HOME/.cortex/bin/cxsh" /usr/local/bin/
 
-cp "$HOME/.cortex/bin/cortex" /usr/local/bin/
-cp "$HOME/.cortex/bin/cxgen" /usr/local/bin/
-cp "$HOME/.cortex/bin/cxsh" /usr/local/bin/
-
-echo "Cortex succesfully installed."
-
+    echo "Cortex succesfully installed."
 }
 
 install_cortex
