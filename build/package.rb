@@ -10,7 +10,7 @@ GENERATED_SOURCES <<
     ".cortex/#{TARGET}__api.c" <<
     ".cortex/#{TARGET}__wrapper.c" <<
     ".cortex/#{TARGET}__meta.c" <<
-    ".cortex/#{TARGET}__load.c" 
+    ".cortex/#{TARGET}__load.c"
 
 PREFIX ||= TARGET
 
@@ -28,7 +28,7 @@ file "include/#{TARGET}__type.h" => GENFILE do
     verbose(false)
     sh "mkdir -p .cortex"
     sh "touch .cortex/#{TARGET}__wrapper.c"
-    sh "cxgen #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c"
+    sh "cortex pp #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c"
     if not File.identical?(PACKAGEDIR, Dir.pwd) then
         sh "mkdir -p #{PACKAGEDIR}"
         sh "cp -R include #{PACKAGEDIR}/"

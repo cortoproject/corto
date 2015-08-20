@@ -20,44 +20,30 @@ static cx_int16 c_projectGenerateMainFile(cx_generator g) {
 
     g_fileWrite(file, "/* %s\n", filename);
     g_fileWrite(file, " *\n");
-    g_fileWrite(file, " * This file is generated. Only insert code in appropriate places.\n");
+    g_fileWrite(file, " * This file is generated. Do not modify.\n");
     g_fileWrite(file, " */\n\n");
 
-    g_fileWrite(file, "#include \"%s.h\"\n\n", g_fullOid(g, g_getCurrent(g), topLevelName));
-
-    g_fileWrite(file, "/* This function is the entrypoint for the library and");
-    g_fileWrite(file, " * loads definitions of the '%s' scope */\n", g_getName(g));
-    g_fileWrite(file, "int cortexmain(int argc, char* argv[]) {\n");
-    g_fileIndent(file);
-
-    g_fileWrite(file, "\n");
-    g_fileWrite(file, "if (%s_load()) return -1;\n", g_getName(g));
-    g_fileWrite(file, "int %smain(int argc, char* argv[]);\n", cx_nameof(g_getCurrent(g)));
-    g_fileWrite(file, "if (%smain(argc, argv)) return -1;\n", cx_nameof(g_getCurrent(g)));
-    g_fileWrite(file, "return 0;\n");
-    g_fileDedent(file);
-    g_fileWrite(file, "}\n\n");
-
-    return 0;
-error:
-    return -1;
-}
-
-/* Generate makefile for project */
-static cx_int16 c_projectGenerateMakefile(cx_generator g) {
-    g_file file;
-    cx_id id;
-
-    /* Only generate makefile when no makefile is present */
-    if(!cx_fileTest("rakefile")) {
-        file = g_fileOpen(g, "rakefile");
-        if(!file) {
-            goto error;
-        }
-
-        g_fileWrite(file, "\n");
-        g_fileWrite(file, "PACKAGE = '%s'\n\n", cx_fullname(g_getCurrent(g), id) + 2);
-        g_fileWrite(file, "require \"#{ENV['CORTEX_HOME']}/build/package\"\n\n");
+    if (g_getCurrent(g)) {
+        g_fileWrite(file, "#include \"%s.h\"\n\n", g_fullOid(g, g_getCurrent(g), topLevelName));
+        g_fileWrite(file, "int cortexmain(int argc, char* argv[]) {\n");
+        g_fileIndent(file);
+        g_fileWrite(file, "if (%s_load()) return -1;\n", g_getName(g));
+        g_fileWrite(file, "int %smain(int argc, char* argv[]);\n", g_getName(g));
+        g_fileWrite(file, "if (%smain(argc, argv)) return -1;\n", g_getName(g));
+        g_fileWrite(file, "return 0;\n");
+        g_fileDedent(file);
+        g_fileWrite(file, "}\n\n");
+    } else {
+        g_fileWrite(file, "#include \"cortex.h\"\n\n");
+        g_fileWrite(file, "int main(int argc, char* argv[]) {\n");
+        g_fileIndent(file);
+        g_fileWrite(file, "cx_start();\n");
+        g_fileWrite(file, "int %smain(int argc, char* argv[]);\n", g_getName(g));
+        g_fileWrite(file, "if (%smain(argc, argv)) return -1;\n", g_getName(g));
+        g_fileWrite(file, "cx_stop();\n");
+        g_fileWrite(file, "return 0;\n");
+        g_fileDedent(file);
+        g_fileWrite(file, "}\n\n");
     }
 
     return 0;
@@ -137,17 +123,17 @@ cx_int16 cortex_genMain(cx_generator g) {
 
     /* Create source and include directories */
     cx_mkdir("src");
-    cx_mkdir("include");
     cx_mkdir(".cortex");
 
     if(c_projectGenerateMainFile(g)) {
         goto error;
     }
-    if(c_projectGenerateMakefile(g)) {
-        goto error;
-    }
-    if(c_projectGenerateDepMakefile(g)) {
-        goto error;
+
+    if (g_getCurrent(g)) {
+        cx_mkdir("include");
+        if(c_projectGenerateDepMakefile(g)) {
+            goto error;
+        }
     }
 
     return 0;

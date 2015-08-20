@@ -1,13 +1,15 @@
-
-
 COMPONENTS = [] if not defined? COMPONENTS
 
 task :default do
     COMPONENTS.each do |e|
         verbose(false)
-        sh "echo '\033[1;49m[ >> building \033[1;35m#{e}\033[0;49m\033[1;49m ]\033[0;49m'"
+        if ENV['silent'] != "true" then
+            sh "echo '\033[1;49m[ >> building \033[1;35m#{e}\033[0;49m\033[1;49m ]\033[0;49m'"
+        end
         sh "rake -f #{e}/rakefile"
-        sh "echo '\033[1;49m[ << leaving \033[1;35m#{e}\033[0;49m\033[1;49m ]\033[0;49m'"
+        if ENV['silent'] != "true" then
+            sh "echo '\033[1;49m[ << leaving \033[1;35m#{e}\033[0;49m\033[1;49m ]\033[0;49m'"
+        end
     end
 end
 

@@ -1,7 +1,5 @@
 
 COMPONENTS = [] << 
-    :cortex <<
-    :cxsh <<
-    :cxgen
+    :cortex
     
 require "#{ENV['CORTEX_HOME']}/build/forward"

@@ -50,7 +50,9 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     lflags = "#{LFLAGS.join(" ")} -o #{TARGETDIR}/#{ARTEFACT}"
     cc_command = "cc #{objects} #{cflags} #{cortex_lib} #{libpath} #{libmapping} #{libuse} #{lflags}"
     sh cc_command
-    sh "echo '\033[1;49m[ \033[1;34m#{ARTEFACT}\033[0;49m\033[1;49m ]\033[0;49m'"
+    if ENV['silent'] != "true" then
+        sh "echo '\033[1;49m[ \033[1;34m#{ARTEFACT}\033[0;49m\033[1;49m ]\033[0;49m'"
+    end
 end
 
 task :prebuild
@@ -77,8 +79,10 @@ task :default => [:prebuild, :binary, :postbuild]
 def build_source(task, echo)
     verbose(false)
     sh "mkdir -p .obj"
-    if echo 
-        sh "echo '#{task.source}'" 
+    if echo
+        if ENV['silent'] != "true" then
+            sh "echo '#{task.source}'" 
+        end
     end
     sh "cc -c #{CFLAGS.join(" ")} #{USE_INCLUDE} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{task.source} -o #{task.name}"
 end

@@ -696,11 +696,8 @@ static void cxsh_shell(void) {
 
 extern cx_bool CX_DEBUG_ENABLED;
 
-int main(int argc, char* argv[]) {
+int cortex_shell(int argc, char* argv[]) {
     int i;
-
-    /* Start database */
-    cx_start();
 
     cxsh_color(SHELL_COLOR);
     printf("cortex shell - type 'help' for instructions.\n");
@@ -723,8 +720,7 @@ int main(int argc, char* argv[]) {
 
     cx_release(scope); /* Free scope */
 
-    /* Stop database */
-    cx_stop();
-
     return 0;
 }
+
+

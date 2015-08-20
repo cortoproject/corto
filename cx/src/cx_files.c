@@ -3,7 +3,9 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <dirent.h>
 #include <unistd.h>
+#include <signal.h>
 
 #if __linux__
 #include <linux/limits.h>
@@ -188,4 +190,89 @@ error_CloseFiles:
 error:
     printError(_errno, msg);
     return -1;
+}
+
+/* Read the contents of a directory */
+cx_ll cx_opendir(const char *name) {
+    DIR *dp;
+    struct dirent *ep;
+    cx_ll result = NULL;
+
+    dp = opendir (name);
+
+    if (dp != NULL) {
+        result = cx_llNew();
+        while ((ep = readdir (dp))) {
+            if (*ep->d_name != '.') {
+                cx_llAppend(result, cx_strdup(ep->d_name));
+            }
+        }
+        closedir (dp);
+    }
+
+    return result;
+}
+
+void cx_closedir(cx_ll dir) {
+    cx_iter iter = cx_llIter(dir);
+
+    while(cx_iterHasNext(&iter)) {
+        cx_dealloc(cx_iterNext(&iter));
+    }
+    cx_llFree(dir);
+}
+
+cx_pid cx_procrun(const char* exec, char *argv[]) {
+    pid_t pid = fork();
+
+    if (pid == 0) {
+        /* Child process */
+        if (execvp(exec, argv)) {
+            cx_error("failed to start process '%s'", exec);
+            abort();
+        }
+    } else if (pid > 0) {
+        /* Parent process */
+    } else {
+        /* Failure */
+    }
+
+    return pid;
+}
+
+int cx_prockill(cx_pid pid, cx_procsignal sig) {
+    return kill(pid, sig);
+}
+
+int cx_procwait(cx_pid pid) {
+    int status = 0;
+    int result = 0;
+
+    if (waitpid(pid, &status, 0) != pid) {
+        return -1;
+    }
+
+    if (WIFSIGNALED(status)) {
+        result = WTERMSIG(status);
+    }
+
+    return result;
+}
+
+int cx_proccheck(cx_pid pid) {
+    int status = 0;
+    int result = 0;
+
+    result = waitpid(pid, &status, WNOHANG);
+    if (!result) {
+        /* Process did not change state, still running */
+    } else if (WIFSIGNALED(status)) {
+        /* Process exited with a signal */
+        result = WTERMSIG(status);
+    } else {
+        /* Process exited normally */
+        result = -1;
+    }
+
+    return result;
 }
