@@ -35,8 +35,6 @@ Your program should print `Hello Cortex!`. If you look at the generated sources,
 #include "cortex.h"
 
 int MyFirstAppmain(int argc, char *argv[]) {
-    CX_UNUSED(argc);
-    CX_UNUSED(argv);
 
     printf("Hello Cortex!\n");
 
@@ -48,8 +46,6 @@ Change this to:
 #include "cortex.h"
 
 int MyFirstAppmain(int argc, char *argv[]) {
-    CX_UNUSED(argc);
-    CX_UNUSED(argv);
 
     while (1) {
         printf("Hello Cortex!\n");
