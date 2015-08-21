@@ -354,7 +354,6 @@ error:
 cx_object Fast_Parser_expandBinary(Fast_Parser _this, Fast_Expression lvalue, Fast_Expression rvalue, void *userData) {
     Fast_Expression result = NULL;
     cx_type tleft, tright;
-    cx_bool isReference = FALSE;
     cx_operatorKind operator = *(cx_operatorKind*)userData;
 
     if (!(tleft = Fast_Expression_getType_expr(lvalue, rvalue))) {

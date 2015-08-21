@@ -45,7 +45,7 @@ error:
     return -1;	
 }
 
-static char* cortex_randomName() {
+static char* cortex_randomName(void) {
     char buffer[256];
 
     char *colors[] = {
