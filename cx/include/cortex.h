@@ -36,6 +36,8 @@
 #include "cx_util.h"
 #include "cx_vm.h"
 
+#include "cxstr.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

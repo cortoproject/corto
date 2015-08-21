@@ -39,6 +39,9 @@ int cx_chdir(const char *name);
 /* Copy a file. Returns zero if OK, -1 if failed */
 int cx_cp(const char *source, const char *destination);
 
+/* Remove a file. Returns 0 if OK, -1 if failed */
+int cx_rm(const char *name);
+
 /* Test whether a file exists */
 int cx_fileTest(const char* file);
 

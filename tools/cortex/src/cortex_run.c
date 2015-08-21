@@ -75,8 +75,10 @@ static cx_ll cortex_waitForChanges(cx_pid pid, cx_ll files, cx_ll modified) {
 		cx_sleep(0, 50000000);
 
 		/* Check if process is still running */
-		if ((retcode = cx_proccheck(pid))) {
-			break;
+		if (pid) {
+			if ((retcode = cx_proccheck(pid))) {
+				break;
+			}
 		}
 
 		i++;
@@ -97,22 +99,31 @@ static cx_ll cortex_waitForChanges(cx_pid pid, cx_ll files, cx_ll modified) {
 cx_int16 cortex_run(int argc, char *argv[]) {
 	cx_pid pid = 0;
 	cx_ll files, modified;
+	cx_uint32 retries = 0;
 
 	CX_UNUSED(argc);
 
 	files = cx_opendir("./src");
-	if (!files) {
-		cx_error("cortex: failed to list files in ./src, can't monitor changes :-(");
+	if (!files || !cx_fileTest(".cortex")) {
+		cx_error("cortex: this isn't a valid project directory");
+		return -1;
 	}
 
 	modified = cortex_getModified(files, NULL);
 
 	while (!retcode) {
+		/* Remove executable if it already existed */
+		cx_rm(".cortex/app");
+
 		/* Build the project */
 		cortex_build(0, NULL);
 
 		/* Test whether the app exists, then start it */
 		if (cx_fileTest(".cortex/app")) {
+			if (retries) {
+				printf("cortex: restarting app (%dx)\n", retries);
+			}
+
 			/* Start process */
 			pid = cx_procrun(".cortex/app", argv);
 
@@ -128,12 +139,24 @@ cx_int16 cortex_run(int argc, char *argv[]) {
 				}
 			}
 		} else {
-			cx_error("cortex: build error\n");
+			cx_error("cortex: go fix your code!\n");
+
+			/* Wait for changed before trying again */
+			modified = cortex_waitForChanges(0, files, modified);
 		}
+
+		/* If the process segfaults, wait for changes and rebuild */
+		if ((retcode == 11) || (retcode == 6)) {
+			printf("cortex: segmentation fault, go fix your code!\n");
+			modified = cortex_waitForChanges(0, files, cortex_getModified(files, NULL));
+			retcode = 0;
+		}
+
+		retries++;
 	}
 
 	if (retcode != -1) {
-		cx_error("process returned with error (%d)", retcode);
+		cx_error("cortex: process stopped with error (%d)", retcode);
 	}
 
 	if (modified) {

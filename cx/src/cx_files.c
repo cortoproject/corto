@@ -192,6 +192,21 @@ error:
     return -1;
 }
 
+/* Remove a file. Returns 0 if OK, -1 if failed */
+int cx_rm(const char *name) {
+    int result = 0;
+
+    if (remove(name)) {
+        /* Don't care if file didn't exist since the postcondition
+         * is that file doesn't exist. */
+        if (errno != EEXIST) {
+            result = -1;
+        }
+    }
+    
+    return result;
+}
+
 /* Read the contents of a directory */
 cx_ll cx_opendir(const char *name) {
     DIR *dp;

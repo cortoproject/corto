@@ -546,19 +546,23 @@ cx_string cx_string_deser(cx_string str, cx_string_deser_t* data) {
             cx_object type;
 
             /* If no out is provided create an object of the specified type */
-            type = cx_resolve(NULL, buffer);
-            if (type) {
-                if (cx_instanceof(cx_type(cx_type_o), type)) {
-                    data->out = cx_declare(type);
-                } else {
-                    cx_error("cx_string_deser: specified type-identifier '%s' is not a type", buffer);
+            if (*buffer) {
+                type = cx_resolve(NULL, buffer);
+                if (type) {
+                    if (cx_instanceof(cx_type(cx_type_o), type)) {
+                        data->out = cx_declare(type);
+                    } else {
+                        cx_error("cx_string_deser: specified type-identifier '%s' is not a type", buffer);
+                        cx_release(type);
+                        goto error;
+                    }
                     cx_release(type);
+                } else {
+                    cx_error("cx_string_deser: cannot resolve specified type-identifier '%s'", buffer);
                     goto error;
                 }
-                cx_release(type);
             } else {
-                cx_error("cx_string_deser: cannot resolve specified type-identifier '%s'", buffer);
-                goto error;
+                type = data->type;
             }
         }
     }

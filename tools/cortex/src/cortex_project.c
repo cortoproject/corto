@@ -45,16 +45,55 @@ error:
     return -1;	
 }
 
+static char* cortex_randomName() {
+    char buffer[256];
+
+    char *colors[] = {
+        "Cayenne",
+        "Maroon",
+        "Orchid",
+        "Magenta",
+        "Tangerine", 
+        "Salmon",
+        "Lemon",
+        "Clover",
+        "Lime",
+        "Teal",
+        "Turquoise"};
+
+    char *animals[] = {
+        "Buffalo",
+        "Eagle",
+        "Lynx",
+        "Porcupine",
+        "Lizard",
+        "Alpaca",
+        "Lemming",
+        "Armadillo",
+        "Mongoose",
+        "Gecko",
+        "Beaver",
+        "Owl",
+        "Cat"
+        };
+
+    strcpy(buffer, colors[rand() % (sizeof(colors) / sizeof(char*))]);
+    strcat(buffer, animals[rand() % (sizeof(animals) / sizeof(char*))]);
+
+    return strdup(buffer);
+}
+
 static cx_int16 cortex_application(int argc, char *argv[]) {
 	cx_id buff;
 	FILE *file;
 	cx_bool isApplication = !strcmp(argv[0], "create") || !strcmp(argv[0], CORTEX_APPLICATION);
-	char *name = argv[1];
+	char *name;
 
 	if (argc <= 1) {
-		cx_error("cortex: don't know what to call the project");
-		goto error;
-	}
+        name = cortex_randomName();
+	} else {
+        name = argv[1];
+    }
 
 	if (cortex_setupProject(name)) {
 		goto error;
@@ -258,11 +297,12 @@ error:
 }
 
 cx_int16 cortex_project(int argc, char *argv[]) {
-	if (argc <= 1) {
-		cx_error("cortex: don't know what to create");
-		goto error;
-	}
 
+	if (argc <= 1) {
+        if (cortex_application(argc-1, &argv[0])) {
+            goto error;
+        }
+	} else 
 	if (!strcmp(argv[1], CORTEX_COMPONENT)) {
 		if (cortex_application(argc-1, &argv[1])) {
 			goto error;
