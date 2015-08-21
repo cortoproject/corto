@@ -1,3 +1,5 @@
 PACKAGE = 'cortex::os'
 
+CFLAGS = ["-Wunused-parameter"]
+
 require "#{ENV['CORTEX_HOME']}/build/package"

@@ -113,9 +113,7 @@ static cx_int16 cortex_application(int argc, char *argv[]) {
     file = fopen(buff, "w");
     if (file) {
         fprintf(file, "#include \"cortex.h\"\n\n");
-        fprintf(file, "int %smain(int argc, char *argv[]) {\n", name);
-        fprintf(file, "    CX_UNUSED(argc);\n");
-        fprintf(file, "    CX_UNUSED(argv);\n\n");
+        fprintf(file, "int %smain(int argc, char *argv[]) {\n\n", name); 
         fprintf(file, "    printf(\"Hello Cortex!\\n\");\n\n");
         fprintf(file, "    return 0;\n");
         fprintf(file, "}\n");
@@ -259,9 +257,7 @@ static cx_int16 cortex_package(int argc, char *argv[]) {
 
     file = fopen(srcfile, "w");
     if (file) {
-        fprintf(file, "/* $begin(main) */\n");
-        fprintf(file, "    CX_UNUSED(argc);\n");
-        fprintf(file, "    CX_UNUSED(argv);\n\n");
+        fprintf(file, "/* $begin(main) */\n\n");
         fprintf(file, "    /* Create Albert the panda */\n");
         fprintf(file, "    %s_RedPanda myFirstPanda = %s_RedPanda__createChild(\n", name, name);
         fprintf(file, "            NULL,       /* Parent of the object (root) */\n");

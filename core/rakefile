@@ -3,8 +3,10 @@ TARGET = :cortex
 LIB = ['rt', 'dl', 'm']
 
 LFLAGS ||= []
+CFLAGS ||= []
 
 ARTEFACT = "lib#{TARGET}.so"
 LFLAGS << "--shared"
+CFLAGS << "-Wno-gnu-label-as-value" << "-Wno-unknown-pragmas" << "-Wunused-parameter"
 
 require "#{ENV['CORTEX_HOME']}/build/artefact"

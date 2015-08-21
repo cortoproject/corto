@@ -1,5 +1,6 @@
 TARGET = :c_type
 
 USE_LIBRARY = ["c_common"]
+CFLAGS = ["-Wunused-parameter"]
 
 require "#{ENV['CORTEX_HOME']}/build/generator"

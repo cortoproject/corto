@@ -3,5 +3,7 @@ PACKAGE = 'cortex::Fast'
 YACC = "fast.y"
 LEX = "fast.l"
 
+CFLAGS = ["-Wunused-parameter"]
+
 require "#{ENV['CORTEX_HOME']}/build/lexyacc"
 require "#{ENV['CORTEX_HOME']}/build/package"

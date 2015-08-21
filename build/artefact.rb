@@ -28,8 +28,8 @@ CLOBBER.include("#{TARGETDIR}/#{ARTEFACT}")
 
 INCLUDE << "include"
 
-CFLAGS << "-g" << "-Wall" << "-Wextra" << "-Wno-gnu-label-as-value" << "-Wno-unknown-pragmas" <<
-           "-Wstrict-prototypes" << "-pedantic" << "-std=c99" << "-fPIC" << "-D_XOPEN_SOURCE=600"
+CFLAGS << "-g" << "-Wstrict-prototypes" << "-std=c99" << "-pedantic" << "-fPIC" << "-D_XOPEN_SOURCE=600"
+CFLAGS.unshift("-Wall")
 
 SOURCES = (Rake::FileList["src/*.c"] + GENERATED_SOURCES)
 OBJECTS = SOURCES.ext(".o").pathmap(".obj/%f")
