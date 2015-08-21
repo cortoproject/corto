@@ -56,8 +56,6 @@ install_cortex () {
     source configure
     rake
     test -x "$HOME/.cortex/bin/cortex"
-    test -x "$HOME/.cortex/bin/cxgen"
-    test -x "$HOME/.cortex/bin/cxsh"
 
     trap ">&2 echo Error building Cortex." EXIT
 
