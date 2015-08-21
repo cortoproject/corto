@@ -30,7 +30,7 @@ cortex create MyFirstApp
 cd MyFirstApp
 cortex run
 ```
-If you look at the generated sources, you'll see a file called `src/MyFirstApp.c`. It looks like this:
+Your program should print `Hello Cortex!`. If you look at the generated sources, you'll see a file called `src/MyFirstApp.c`. It looks like this:
 ```c
 #include "cortex.h"
 
