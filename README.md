@@ -61,4 +61,12 @@ int MyFirstAppmain(int argc, char *argv[]) {
 ```
 In the terminal, type `cortex run` again. You should see that your program repeatedly prints `Hello Cortex!`. 
 
-Now in `MyFirstApp.c` change the line `printf("Hello Cortex!\n");` to `printf("I love cupcakes!\n");`, and then save your file. Observe that the running process is automatically restarted, and is now printing `"I love cupcakes"`!
+Now in `MyFirstApp.c` change the line 
+```c
+printf("Hello Cortex!\n");
+``` 
+to 
+```c
+printf("I love cupcakes!\n");
+```
+... and then save your file. Observe that the running process is automatically restarted, and is now printing `"I love cupcakes"`!
