@@ -197,8 +197,8 @@ static cx_ll filesLoaded = NULL;
 static int cx_loadXml(void) {
     cx_string cortexHome = getenv("CORTEX_HOME");
     int result;
-    cx_string path = cx_alloc(strlen(cortexHome) + strlen("/bin/libxml.so") + 1);
-    sprintf(path, "%s/bin/libxml.so", cortexHome);
+    cx_string path = cx_alloc(strlen(cortexHome) + strlen("/components/bin/libxml.so") + 1);
+    sprintf(path, "%s/components/bin/libxml.so", cortexHome);
     result = cx_loadLibrary(path);
     cx_dealloc(path);
     return result;

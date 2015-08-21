@@ -2,7 +2,9 @@
 *.so
 bin/*
 benchmark/bin/*
-generator/bin/*
+generators/bin/*
+libraries/bin/*
+components/bin/*
 **/.cortex/**
 test/bin/*
 lex.yy.c

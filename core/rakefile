@@ -1,0 +1,10 @@
+TARGET = :cortex
+
+LIB = ['rt', 'dl', 'm']
+
+LFLAGS ||= []
+
+ARTEFACT = "lib#{TARGET}.so"
+LFLAGS << "--shared"
+
+require "#{ENV['CORTEX_HOME']}/build/artefact"

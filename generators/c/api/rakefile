@@ -1,6 +1,5 @@
 TARGET = :c_api
 
-INCLUDE = ['../common/include']
-CORTEX_LIB = ['c_common']
+USE_LIBRARY = ["c_common"]
 
 require "#{ENV['CORTEX_HOME']}/build/generator"

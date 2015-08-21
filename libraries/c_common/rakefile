@@ -1,5 +1,3 @@
-TARGET = :cortex
-
-LIB = ['rt', 'dl', 'm']
+TARGET = :c_common
 
 require "#{ENV['CORTEX_HOME']}/build/library"

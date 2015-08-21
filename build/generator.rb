@@ -7,10 +7,10 @@ CORTEX_LIB ||= []
 LFLAGS ||= []
 LIBPATH ||= []
 
-TARGETDIR = "#{ENV['CORTEX_HOME']}/generator/bin"
+TARGETDIR = "#{ENV['CORTEX_HOME']}/generators/bin"
 CORTEX_LIB << "cortex"
 LIBPATH << "#{ENV['CORTEX_HOME']}/bin"
-INCLUDE << "#{ENV['CORTEX_HOME']}/cx/include"
+INCLUDE << "#{ENV['CORTEX_HOME']}/core/include"
 LFLAGS << "--shared"
 ARTEFACT = TARGET
 

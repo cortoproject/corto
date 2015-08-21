@@ -1,3 +1,2 @@
 export CORTEX_HOME=`echo $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )`
 export PATH=$CORTEX_HOME/bin:$PATH
-export PATH=$CORTEX_HOME/scripts:$PATH

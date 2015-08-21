@@ -1,6 +1,5 @@
 
 COMPONENTS = [] << 
-    :common <<
     :api <<
     :type <<
     :interface <<
