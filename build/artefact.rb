@@ -16,7 +16,7 @@ CORTEX_LIB ||= []
 LIBPATH ||= []
 CFLAGS ||= []
 LFLAGS ||= []
-TARGETDIR ||= ENV['CORTEX_TARGET'] + "/bin"
+TARGETDIR ||= ENV['CORTEX_TARGET'] + "/lib"
 GENERATED_SOURCES ||= []
 USE_PACKAGE ||= []
 USE_COMPONENT ||= []
@@ -31,7 +31,7 @@ SOURCES = (Rake::FileList["src/*.c"] + GENERATED_SOURCES)
 OBJECTS = SOURCES.ext(".o").pathmap(TARGETDIR + "/obj/%f")
 
 CLEAN.include(TARGETDIR + "/obj")
-CLEAN.include(TARGETDIR + "/" + ARTEFACT)
+CLOBBER.include(TARGETDIR + "/" + ARTEFACT)
 
 task :binary => "#{TARGETDIR}/#{ARTEFACT}"
 
@@ -40,17 +40,17 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     sh "mkdir -p #{TARGETDIR}"
     objects  = "#{OBJECTS.to_a.uniq.join(' ')}"
     cflags = "#{CFLAGS.join(" ")}"
-    cortex_lib = "#{CORTEX_LIB.map {|i| ENV['CORTEX_TARGET'] + "/bin/lib" + i + ".so"}.join(" ")}"
+    cortex_lib = "#{CORTEX_LIB.map {|i| ENV['CORTEX_TARGET'] + "/lib/lib" + i + ".so"}.join(" ")}"
     libpath = "#{LIBPATH.map {|i| "-L" + i}.join(" ")} "
     libmapping = "#{(LibMapping.mapLibs(LIB)).map {|i| "-l" + i}.join(" ")}"
     lflags = "#{LFLAGS.join(" ")} -o #{TARGETDIR}/#{ARTEFACT}"
     use_link =
         USE_PACKAGE.map do |i|
             dirs = i.split("::")
-            "#{ENV['CORTEX_TARGET']}/packages/" + i.gsub("::", "/") + "/lib/lib" + dirs[dirs.length-1] + ".so"
+            "#{ENV['CORTEX_TARGET']}/lib/cortex/packages/" + i.gsub("::", "/") + "/lib" + dirs[dirs.length-1] + ".so"
         end.join(" ") +
-        USE_COMPONENT.map {|i| "#{ENV['CORTEX_TARGET']}/components/lib/lib" + i + ".so"}.join(" ") +
-        USE_LIBRARY.map {|i| "#{ENV['CORTEX_TARGET']}/libraries/lib/lib" + i + ".so"}.join(" ")
+        USE_COMPONENT.map {|i| "#{ENV['CORTEX_TARGET']}/lib/cortex/components/lib" + i + ".so"}.join(" ") +
+        USE_LIBRARY.map {|i| "#{ENV['CORTEX_TARGET']}/lib/cortex/libraries/lib" + i + ".so"}.join(" ")
     cc_command = "cc #{objects} #{cflags} #{cortex_lib} #{libpath} #{libmapping} #{use_link} #{lflags}"
     sh cc_command
     if ENV['silent'] != "true" then
@@ -87,7 +87,7 @@ def build_source(task, echo)
             sh "echo '#{task.source}'" 
         end
     end
-    use_include = USE_PACKAGE.map{|i| "-I" + "#{ENV['CORTEX_TARGET']}/packages/" + i.gsub("::", "/") + "/include"}.join(" ")
+    use_include = USE_PACKAGE.map{|i| "-I" + "#{ENV['CORTEX_TARGET']}/include/cortex/packages/" + i.gsub("::", "/")}.join(" ")
     sh "cc -c #{CFLAGS.join(" ")} #{use_include} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{task.source} -o #{task.name}"
 end
 

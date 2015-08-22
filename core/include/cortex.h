@@ -14,6 +14,7 @@
 #include "cx_call.h"
 #include "cx_convert.h"
 #include "cx_dl.h"
+#include "cx_env.h"
 #include "cx_err.h"
 #include "cx_files.h"
 #include "cx_generator.h"

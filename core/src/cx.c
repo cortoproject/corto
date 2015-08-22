@@ -589,6 +589,14 @@ static void cx_decreaseRefType(cx_object o, cx_uint32 size) {
 
 int cx_start(void) {
 
+    if (!cx_getenv("CORTEX_HOME")) {
+        cx_setenv("CORTEX_HOME", "/usr/lib/cortex");
+    }
+
+    if (!cx_getenv("CORTEX_TARGET")) {
+        cx_setenv("CORTEX_TARGET", "/usr");
+    }
+
     /* Initialize threadkeys */
     cx_threadTlsKey(&CX_KEY_OBSERVER_ADMIN, NULL);
     cx_threadTlsKey(&CX_KEY_WAIT_ADMIN, NULL);

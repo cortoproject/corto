@@ -203,8 +203,8 @@ cx_int16 gen_load(cx_generator g, cx_string library) {
 
     /* Load library from generator path */
     cx_string home = getenv("CORTEX_TARGET");
-    cx_string path = cx_alloc(1 + snprintf(NULL, 0, "%s/generators/lib/lib%s.so", home, library));
-    sprintf(path, "%s/generators/lib/lib%s.so", home, library);
+    cx_string path = cx_alloc(1 + snprintf(NULL, 0, "%s/lib/cortex/generators/lib%s.so", home, library));
+    sprintf(path, "%s/lib/cortex/generators/lib%s.so", home, library);
 
     g->library = cx_dlOpen(path);
     if (!g->library) {

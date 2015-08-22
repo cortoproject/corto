@@ -172,7 +172,7 @@ cx_int16 cortex_pp(int argc, char *argv[]) {
     }
 
     if (!generators) {
-        cx_error("cxgen: no generators provided");
+        cx_error("cortex: no generators provided");
         return -1;
     }
 
@@ -183,7 +183,7 @@ cx_int16 cortex_pp(int argc, char *argv[]) {
             include = cx_iterNext(&iter);
 			
 			if (cx_load(include)) {
-                cx_error("cxgen: cannot load '%s'", include);
+                cx_error("cortex: cannot load '%s'", include);
                 return -1;
             } else {
                 /* Add name to scope list if none provided */
@@ -208,7 +208,7 @@ cx_int16 cortex_pp(int argc, char *argv[]) {
 
             /* Load interface */
             if (gen_load(g, lib)) {
-                cx_error("cxgen: cannot load generator '%s'.", lib);
+                cx_error("cortex: cannot load generator '%s'.", lib);
                 return -1;
             }
 
@@ -221,7 +221,7 @@ cx_int16 cortex_pp(int argc, char *argv[]) {
 	                /* Resolve object */
 	                o = cx_resolve(NULL, scope);
 	                if (!o) {
-	                    cx_error("cxgen: unresolved scope '%s'.", scope);
+	                    cx_error("cortex: unresolved scope '%s'.", scope);
 	                    return -1;
 	                }
 	                cx_release(o);
@@ -251,7 +251,7 @@ cx_int16 cortex_pp(int argc, char *argv[]) {
 
             /* Start generator */
             if (gen_start(g)) {
-                cx_error("cxgen: error(s) occurred while running generator '%s', abort generation.", lib);
+                cx_error("cortex: error(s) occurred while running generator '%s', abort generation.", lib);
                 gen_free(g);
                 break;
             }

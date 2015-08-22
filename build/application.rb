@@ -14,8 +14,7 @@ GENERATED_SOURCES <<
     ".cortex/#{TARGET}__load.c"
 
 CORTEX_LIB << "cortex"
-LIBPATH << "#{ENV['CORTEX_HOME']}/bin"
-INCLUDE << "#{ENV['CORTEX_HOME']}/core/include"
+INCLUDE << "#{ENV['CORTEX_TARGET']}/include/cortex"
 
 file ".cortex/#{TARGET}__load.c" do
     verbose(false)

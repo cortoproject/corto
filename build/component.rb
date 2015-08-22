@@ -3,10 +3,9 @@ if not defined? TARGET then
     raise "library: TARGET not specified\n"
 end
 
-LIBPATH ||= []
 INCLUDE ||= []
 
-TARGETPATH ||= "#{ENV['CORTEX_TARGET']}/components"
-INCLUDE << "#{ENV['CORTEX_TARGET']}/components/include"
+TARGETPATH ||= "components"
+INCLUDE << "#{ENV['CORTEX_TARGET']}/include/cortex/components"
 
 require "#{ENV['CORTEX_HOME']}/build/library"

@@ -1,6 +1,6 @@
 require 'rake/clean'
 
-PACKAGEDIR = "#{ENV['CORTEX_TARGET']}/packages/" + PACKAGE.gsub("::", "/")
+PACKAGEDIR = "packages/" + PACKAGE.gsub("::", "/")
 TARGETPATH = PACKAGEDIR
 TARGET = PACKAGE.split("::").last
 
@@ -21,6 +21,7 @@ GENFILE = Rake::FileList["#{TARGET}.*"][0]
 CLOBBER.include("include/#{TARGET}__api.h")
 CLOBBER.include("include/#{TARGET}__meta.h")
 CLOBBER.include("include/#{TARGET}__type.h")
+CLOBBER.include(GENERATED_SOURCES)
 
 file "include/#{TARGET}__type.h" => GENFILE do
     verbose(false)

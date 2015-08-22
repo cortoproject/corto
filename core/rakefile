@@ -11,4 +11,13 @@ ARTEFACT = "lib#{TARGET}.so"
 LFLAGS << "--shared"
 CFLAGS << "-Wno-gnu-label-as-value" << "-Wno-unknown-pragmas" << "-Wunused-parameter"
 
+CLOBBER.include("#{ENV['CORTEX_TARGET']}/include/cortex/")
+
+task :prebuild do
+	verbose(false)
+	includePath = "#{ENV['CORTEX_TARGET']}/include/cortex/"
+	sh "mkdir -p #{includePath}"
+    sh "cp include/* #{includePath}/"
+end
+
 require "#{ENV['CORTEX_HOME']}/build/artefact"

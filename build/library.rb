@@ -11,15 +11,14 @@ INCLUDE ||= []
 
 ARTEFACT = "lib#{TARGET}.so"
 LFLAGS << "--shared"
-TARGETPATH ||= "#{ENV['CORTEX_TARGET']}/libraries"
-TARGETDIR = TARGETPATH + "/lib"
+TARGETPATH ||= "libraries"
+TARGETDIR = "#{ENV['CORTEX_TARGET']}/lib/cortex/" + TARGETPATH
 
 CORTEX_LIB << "cortex"
 
-LIBPATH << "#{ENV['CORTEX_TARGET']}/bin"
 INCLUDE << 
-	"#{ENV['CORTEX_HOME']}/core/include" << 
-	"#{ENV['CORTEX_TARGET']}/libraries/include"
+	"#{ENV['CORTEX_TARGET']}/include/cortex" << 
+	"#{ENV['CORTEX_TARGET']}/include/cortex/libraries"
 
 CLEAN.include(TARGETPATH + "/obj")
 CLOBBER.include(TARGETPATH)
@@ -27,8 +26,9 @@ CLOBBER.include(TARGETPATH)
 task :prebuild do
 	verbose(false)
 	if File.exists?("include") then
-		sh "mkdir -p #{TARGETPATH}"
-	    sh "cp -R include #{TARGETPATH}/"
+		includePath = "#{ENV['CORTEX_TARGET']}/include/cortex/" + TARGETPATH
+		sh "mkdir -p #{includePath}"
+	    sh "cp include/* #{includePath}/"
 	end
 end
 

@@ -2,6 +2,7 @@
 #include "cortex.h"
 #include "cortex_project.h"
 #include "cortex_build.h"
+#include "cortex_install.h"
 #include "cortex_pp.h"
 #include "cortex_run.h"
 #include "cortex_shell.h"
@@ -47,6 +48,16 @@ int main(int argc, char* argv[]) {
                     goto error;
                 }
                 break;
+            } else if (!strcmp(argv[i], "install")) {
+                if (cortex_install(argc-i, &argv[i])) {
+                    goto error;
+                }
+                break;
+            } else if (!strcmp(argv[i], "uninstall")) {
+                if (cortex_uninstall(argc-i, &argv[i])) {
+                    goto error;
+                }
+                break;                
             } else if (!strcmp(argv[i], "run")) {
                 if (cortex_run(argc-i, &argv[i])) {
                     goto error;
