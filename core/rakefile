@@ -1,3 +1,5 @@
+require 'rake/clean'
+
 TARGET = :cortex
 
 LIB = ['rt', 'dl', 'm']

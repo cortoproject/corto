@@ -18,11 +18,9 @@ require "#{ENV['CORTEX_HOME']}/build/component"
 
 GENFILE = Rake::FileList["#{TARGET}.*"][0]
 
-CLEAN.include(GENERATED_SOURCES)
 CLOBBER.include("include/#{TARGET}__api.h")
 CLOBBER.include("include/#{TARGET}__meta.h")
 CLOBBER.include("include/#{TARGET}__type.h")
-CLOBBER.include("bin")
 
 file "include/#{TARGET}__type.h" => GENFILE do
     verbose(false)

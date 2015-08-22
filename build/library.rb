@@ -1,3 +1,5 @@
+require 'rake/clean'
+
 if not defined? TARGET then
     raise "library: TARGET not specified\n"
 end
@@ -18,6 +20,9 @@ LIBPATH << "#{ENV['CORTEX_TARGET']}/bin"
 INCLUDE << 
 	"#{ENV['CORTEX_HOME']}/core/include" << 
 	"#{ENV['CORTEX_TARGET']}/libraries/include"
+
+CLEAN.include(TARGETPATH + "/obj")
+CLOBBER.include(TARGETPATH)
 
 task :prebuild do
 	verbose(false)

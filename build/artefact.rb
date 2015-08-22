@@ -22,8 +22,6 @@ USE_PACKAGE ||= []
 USE_COMPONENT ||= []
 USE_LIBRARY ||= []
 
-CLOBBER.include(TARGETDIR)
-
 INCLUDE << "include"
 
 CFLAGS << "-g" << "-Wstrict-prototypes" << "-std=c99" << "-pedantic" << "-fPIC" << "-D_XOPEN_SOURCE=600"
@@ -31,6 +29,9 @@ CFLAGS.unshift("-Wall")
 
 SOURCES = (Rake::FileList["src/*.c"] + GENERATED_SOURCES)
 OBJECTS = SOURCES.ext(".o").pathmap(TARGETDIR + "/obj/%f")
+
+CLEAN.include(TARGETDIR + "/obj")
+CLEAN.include(TARGETDIR + "/" + ARTEFACT)
 
 task :binary => "#{TARGETDIR}/#{ARTEFACT}"
 
