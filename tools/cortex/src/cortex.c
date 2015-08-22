@@ -25,9 +25,11 @@ int main(int argc, char* argv[]) {
             if (*argv[i] == '-') {
                 if (*(argv[i]+1) == 'd') {
                     CX_DEBUG_ENABLED = TRUE;
+                } else if (*(argv[i]+1) == 'v') {
+                    printf("%s\n", CORTEX_VERSION);
                 } else if (*(argv[i]+1) == '-') {
                     if (!strcmp(argv[i] + 2, "version")) {
-                        printf("cortex (%s) 0.2.0-alpha\n\n", CX_PLATFORM_STRING);
+                        printf("cortex (%s) %s\n\n", CX_PLATFORM_STRING, CORTEX_VERSION);
                     }
                 }
             } else if (!strcmp(argv[i], "create")) {

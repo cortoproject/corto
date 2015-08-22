@@ -36,6 +36,8 @@ struct cx_exitHandler {
     void* userData;
 };
 
+const char* CORTEX_VERSION = "0.2.0-alpha";
+
 cx_mutex_s cx_adminLock;
 static cx_ll cx_exitHandlers = NULL;
 static cx_ll cx_unloadHandlers = NULL;

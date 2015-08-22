@@ -1,7 +1,7 @@
 require 'rake/clean'
 
-PACKAGEDIR = "#{ENV['CORTEX_HOME']}/packages/" + PACKAGE.gsub("::", "/")
-TARGETDIR =  PACKAGEDIR + "/bin"
+PACKAGEDIR = "#{ENV['CORTEX_TARGET']}/packages/" + PACKAGE.gsub("::", "/")
+TARGETPATH = PACKAGEDIR
 TARGET = PACKAGE.split("::").last
 
 GENERATED_SOURCES ||= []
@@ -29,10 +29,6 @@ file "include/#{TARGET}__type.h" => GENFILE do
     sh "mkdir -p .cortex"
     sh "touch .cortex/#{TARGET}__wrapper.c"
     sh "cortex pp #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c"
-    if not File.identical?(PACKAGEDIR, Dir.pwd) then
-        sh "mkdir -p #{PACKAGEDIR}"
-        sh "cp -R include #{PACKAGEDIR}/"
-    end
 end
 
 task :prebuild => "include/#{TARGET}__type.h" do

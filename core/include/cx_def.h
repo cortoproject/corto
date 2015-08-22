@@ -32,6 +32,8 @@ extern "C" {
 
 #define CX_NULL_STRING ("null")
 
+extern const char* CORTEX_VERSION;
+
 typedef int (*cx_compareAction)(void* o1, void* o2);
 typedef int (*cx_walkAction)(void* o, void* userData);
 

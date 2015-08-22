@@ -107,11 +107,11 @@ error:
 static cx_string cx_packageToFile(cx_string package) {
     cx_char ch, *ptr, *bptr;
     cx_string fileName, path, start;
-    cx_string cortexHome = getenv("CORTEX_HOME");
+    cx_string cortexHome = getenv("CORTEX_TARGET");
     int fileNameLength;
 
     ptr = package;
-    path = malloc(strlen(package) * 2 + strlen(cortexHome) + strlen("/packages/bin//lib.so") + 1);
+    path = malloc(strlen(package) * 2 + strlen(cortexHome) + strlen("/packages/lib//lib.so") + 1);
     sprintf(path, "%s/packages/", cortexHome);
     bptr = path + strlen(path);
     start = bptr;
@@ -138,7 +138,7 @@ static cx_string cx_packageToFile(cx_string package) {
     *bptr = '\0';
 
     fileNameLength = strlen(fileName);
-    memcpy(fileName + fileNameLength, "/bin/lib", 8);
+    memcpy(fileName + fileNameLength, "/lib/lib", 8);
     memcpy(fileName + fileNameLength + 8, fileName, fileNameLength);
     memcpy(fileName + fileNameLength * 2 + 8, ".so\0", 4);
 
@@ -195,10 +195,10 @@ static cx_ll filesLoaded = NULL;
 
 /* Load xml interface */
 static int cx_loadXml(void) {
-    cx_string cortexHome = getenv("CORTEX_HOME");
+    cx_string cortexHome = getenv("CORTEX_TARGET");
     int result;
-    cx_string path = cx_alloc(strlen(cortexHome) + strlen("/components/bin/libxml.so") + 1);
-    sprintf(path, "%s/components/bin/libxml.so", cortexHome);
+    cx_string path = cx_alloc(strlen(cortexHome) + strlen("/components/lib/libxml.so") + 1);
+    sprintf(path, "%s/components/lib/libxml.so", cortexHome);
     result = cx_loadLibrary(path);
     cx_dealloc(path);
     return result;

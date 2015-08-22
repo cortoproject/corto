@@ -16,15 +16,13 @@ CORTEX_LIB ||= []
 LIBPATH ||= []
 CFLAGS ||= []
 LFLAGS ||= []
-TARGETDIR ||= ENV['CORTEX_HOME'] + "/bin"
+TARGETDIR ||= ENV['CORTEX_TARGET'] + "/bin"
 GENERATED_SOURCES ||= []
-USE_LIBRARY ||= []
-USE_COMPONENT ||= []
 USE_PACKAGE ||= []
+USE_COMPONENT ||= []
+USE_LIBRARY ||= []
 
-CLEAN.include(".obj/*.o")
-CLEAN.include(".obj")
-CLOBBER.include("#{TARGETDIR}/#{ARTEFACT}")
+CLOBBER.include(TARGETDIR)
 
 INCLUDE << "include"
 
@@ -32,20 +30,7 @@ CFLAGS << "-g" << "-Wstrict-prototypes" << "-std=c99" << "-pedantic" << "-fPIC" 
 CFLAGS.unshift("-Wall")
 
 SOURCES = (Rake::FileList["src/*.c"] + GENERATED_SOURCES)
-OBJECTS = SOURCES.ext(".o").pathmap(".obj/%f")
-
-USE_INCLUDE =
-    USE_PACKAGE.map{|i| "-I" + "#{ENV['CORTEX_HOME']}/packages/" + i.gsub("::", "/") + "/include"}.join(" ") +
-    USE_COMPONENT.map{|i| "-I" + "#{ENV['CORTEX_HOME']}/components/" + i + "/include"}.join(" ") +
-    USE_LIBRARY.map{|i| "-I" + "#{ENV['CORTEX_HOME']}/libraries/" + i + "/include"}.join(" ")
-
-USE_LINK =
-    USE_PACKAGE.map do |i|
-        dirs = i.split("::")
-        "#{ENV['CORTEX_HOME']}/packages/" + dirs[0..dirs.length-2].join("/") + "/bin/lib" + dirs[dirs.length-1] + ".so"
-    end.join(" ") +
-    USE_COMPONENT.map{|i| "#{ENV['CORTEX_HOME']}/components/bin/lib" + i + ".so"}.join(" ") +
-    USE_LIBRARY.map{|i| "#{ENV['CORTEX_HOME']}/libraries/bin/lib" + i + ".so"}.join(" ")
+OBJECTS = SOURCES.ext(".o").pathmap(TARGETDIR + "/obj/%f")
 
 task :binary => "#{TARGETDIR}/#{ARTEFACT}"
 
@@ -54,11 +39,18 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     sh "mkdir -p #{TARGETDIR}"
     objects  = "#{OBJECTS.to_a.uniq.join(' ')}"
     cflags = "#{CFLAGS.join(" ")}"
-    cortex_lib = "#{CORTEX_LIB.map {|i| ENV['CORTEX_HOME'] + "/bin/lib" + i + ".so"}.join(" ")}"
-    libpath = "#{LIBPATH.map {|i| "-L" + i}.join(" ")}"
+    cortex_lib = "#{CORTEX_LIB.map {|i| ENV['CORTEX_TARGET'] + "/bin/lib" + i + ".so"}.join(" ")}"
+    libpath = "#{LIBPATH.map {|i| "-L" + i}.join(" ")} "
     libmapping = "#{(LibMapping.mapLibs(LIB)).map {|i| "-l" + i}.join(" ")}"
     lflags = "#{LFLAGS.join(" ")} -o #{TARGETDIR}/#{ARTEFACT}"
-    cc_command = "cc #{objects} #{cflags} #{cortex_lib} #{libpath} #{libmapping} #{USE_LINK} #{lflags}"
+    use_link =
+        USE_PACKAGE.map do |i|
+            dirs = i.split("::")
+            "#{ENV['CORTEX_TARGET']}/packages/" + i.gsub("::", "/") + "/lib/lib" + dirs[dirs.length-1] + ".so"
+        end.join(" ") +
+        USE_COMPONENT.map {|i| "#{ENV['CORTEX_TARGET']}/components/lib/lib" + i + ".so"}.join(" ") +
+        USE_LIBRARY.map {|i| "#{ENV['CORTEX_TARGET']}/libraries/lib/lib" + i + ".so"}.join(" ")
+    cc_command = "cc #{objects} #{cflags} #{cortex_lib} #{libpath} #{libmapping} #{use_link} #{lflags}"
     sh cc_command
     if ENV['silent'] != "true" then
         sh "echo '\033[1;49m[ \033[1;34m#{ARTEFACT}\033[0;49m\033[1;49m ]\033[0;49m'"
@@ -88,13 +80,14 @@ task :default => [:prebuild, :binary, :postbuild]
 
 def build_source(task, echo)
     verbose(false)
-    sh "mkdir -p .obj"
+    sh "mkdir -p #{TARGETDIR}/obj"
     if echo
         if ENV['silent'] != "true" then
             sh "echo '#{task.source}'" 
         end
     end
-    sh "cc -c #{CFLAGS.join(" ")} #{USE_INCLUDE} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{task.source} -o #{task.name}"
+    use_include = USE_PACKAGE.map{|i| "-I" + "#{ENV['CORTEX_TARGET']}/packages/" + i.gsub("::", "/") + "/include"}.join(" ")
+    sh "cc -c #{CFLAGS.join(" ")} #{use_include} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{task.source} -o #{task.name}"
 end
 
 

@@ -83,16 +83,16 @@ static cx_int16 c_projectGenerateDepMakefile(cx_generator g) {
 
     g_resolveImports(g);
     if (g->imports) {
-        cx_string env = getenv("CORTEX_HOME");
         g_fileWrite(file, "# Include paths and libraries of dependent packages\n");
         iter = cx_llIter(g->imports);
         g_fileWrite(file, "INCLUDE ||= []\n");
         g_fileWrite(file, "LIBPATH ||= []\n");
         g_fileWrite(file, "CORTEX_LIB ||= []\n");
         g_fileWrite(file, "LFLAGS ||= []\n");
+        g_fileWrite(file, "USE_PACKAGE ||= []\n");
         while (cx_iterHasNext(&iter)) {
             cx_object import;
-            cx_id toRoot, path;
+            cx_id toRoot, path, id;
             cx_object o = g_getCurrent(g);
             *toRoot = '\0';
             while (o) {
@@ -102,8 +102,7 @@ static cx_int16 c_projectGenerateDepMakefile(cx_generator g) {
             import = cx_iterNext(&iter);
             c_topath(import, path);
             g_fileWrite(file, "# %s\n", cx_nameof(import));
-            g_fileWrite(file, "INCLUDE << \"%s/packages/%s/include\"\n", env, path, cx_nameof(import));
-            g_fileWrite(file, "LFLAGS << \"%s/packages/%s/bin/lib%s.so\"\n", env, path, cx_nameof(import), cx_nameof(import));
+            g_fileWrite(file, "USE_PACKAGE << '%s'\n", cx_fullname(import, id));
         }
     }
 
