@@ -76,7 +76,7 @@ static cx_ll cortex_waitForChanges(cx_pid pid, cx_ll files, cx_ll modified) {
 
 		/* Check if process is still running */
 		if (pid) {
-			if ((retcode = cx_proccheck(pid))) {
+			if ((retcode = cx_proccheck(pid, NULL))) {
 				break;
 			}
 		}
@@ -135,7 +135,7 @@ cx_int16 cortex_run(int argc, char *argv[]) {
 				/* Send interrupt signal to process */
 				if (cx_prockill(pid, CX_SIGINT)) {
 					/* Wait until process has exited */
-					cx_procwait(pid);
+					cx_procwait(pid, NULL);
 				}
 			}
 		} else {

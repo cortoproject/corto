@@ -260,7 +260,7 @@ int cx_prockill(cx_pid pid, cx_procsignal sig) {
     return kill(pid, sig);
 }
 
-int cx_procwait(cx_pid pid) {
+int cx_procwait(cx_pid pid, int8_t *rc) {
     int status = 0;
     int result = 0;
 
@@ -270,12 +270,16 @@ int cx_procwait(cx_pid pid) {
 
     if (WIFSIGNALED(status)) {
         result = WTERMSIG(status);
+    } else {
+        if (rc) {
+            *rc = WEXITSTATUS(status);
+        }
     }
 
     return result;
 }
 
-int cx_proccheck(cx_pid pid) {
+int cx_proccheck(cx_pid pid, int8_t *rc) {
     int status = 0;
     int result = 0;
 
@@ -287,6 +291,9 @@ int cx_proccheck(cx_pid pid) {
         result = WTERMSIG(status);
     } else {
         /* Process exited normally */
+        if (rc) {
+            *rc = WEXITSTATUS(status);
+        }
         result = -1;
     }
 

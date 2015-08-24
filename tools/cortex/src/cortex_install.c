@@ -13,7 +13,7 @@ error:
 
 static void cortex_promptPassword(void) {
 	cx_pid pid = cx_procrun("sudo", (char*[]){"sudo", "true", NULL});
-	cx_procwait(pid);
+	cx_procwait(pid, NULL);
 }
 
 cx_int16 cortex_install(int argc, char *argv[]) {
@@ -36,7 +36,9 @@ cx_int16 cortex_install(int argc, char *argv[]) {
 	if (cx_fileTest("configure") && cx_fileTest("build")) {
 		/* If installing cortex itself, install buildsystem */
 		fprintf(install, "mkdir -p /usr/lib/cortex/%s\n", CORTEX_VERSION);
+		fprintf(install, "rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi\n");
 		fprintf(install, "cp -r ./build /usr/lib/cortex/%s\n", CORTEX_VERSION);
+		fprintf(install, "rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi\n");
 		buildingCortex = TRUE;
 	}
 
@@ -48,34 +50,47 @@ cx_int16 cortex_install(int argc, char *argv[]) {
 
 	/* Build libraries to global environment */
 	fprintf(install, "rake silent=true\n");
+	fprintf(install, "rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi\n");
 
 	if (buildingCortex) {
 		/* Rename cortex */
 		fprintf(install, "mv -f /usr/bin/cortex /usr/bin/cortex.%s\n", CORTEX_VERSION);
 		fprintf(install, "ln -s /usr/bin/cortex.%s /usr/bin/cortex\n", CORTEX_VERSION);
+		fprintf(install, "rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi\n");
 
 		/* Rename libcortex.so */
 		fprintf(install, "mv -f /usr/lib/libcortex.so /usr/lib/libcortex.so.%s\n", CORTEX_VERSION);
 		fprintf(install, "ln -s /usr/lib/libcortex.so.%s /usr/lib/libcortex.so\n", CORTEX_VERSION);
+		fprintf(install, "rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi\n");
 	}
 
 	fprintf(install, "rake clean 2> /dev/null\n");
+	fprintf(install, "rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi\n");
 	fclose(install);
 
 	cortex_promptPassword();
 
 	cx_pid pid = cx_procrun("sudo", (char*[]){"sudo", "sh", "install.sh", NULL});
 	cx_char progress[] = {'|', '/', '-', '\\'};
-	cx_int32 i = 0;
+	cx_int32 procresult, i = 0;
+	cx_int8 rc = 0;
 	printf("cortex: installing...  ");
-	while(!cx_proccheck(pid)) {
+	while(!(procresult = cx_proccheck(pid, &rc))) {
 		i++;
 		printf("\b%c", progress[i % 4]);
 		fflush(stdout);
 		cx_sleep(0, 200000000);
 	}
-	cx_rm("install.sh");
-	printf("\bdone!\n");
+
+	if ((procresult != -1) || rc) {
+		printf("failed :(\n");
+		printf("  A likely cause is an error in the cortex code. Try doing a regular cortex\n");
+		printf("  build first (type 'rake') and see if that works. If the issue persists,\n");
+		printf("  please file an issue in our GitHub repository!\n");
+	} else {
+		cx_rm("install.sh");
+		printf("\bdone!\n");
+	}
 
 	return 0;
 error:
@@ -118,7 +133,7 @@ cx_int16 cortex_uninstall(int argc, char *argv[]) {
 	cx_char progress[] = {'|', '/', '-', '\\'};
 	cx_int32 i = 0;
 	printf("cortex: uninstalling...  ");
-	while(!cx_proccheck(pid)) {
+	while(!cx_proccheck(pid, NULL)) {
 		i++;
 		printf("\b%c", progress[i % 4]);
 		fflush(stdout);

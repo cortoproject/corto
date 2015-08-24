@@ -52,10 +52,10 @@ cx_pid cx_procrun(const char* exec, char *argv[]);
 int cx_prockill(cx_pid pid, cx_procsignal sig);
 
 /* Wait for process */
-int cx_procwait(cx_pid pid);
+int cx_procwait(cx_pid pid, int8_t *rc);
 
 /* Check state of process */
-int cx_proccheck(cx_pid pid);
+int cx_proccheck(cx_pid pid, int8_t *rc);
 
 #ifdef __cplusplus
 }
