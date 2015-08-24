@@ -1,0 +1,7 @@
+TARGET = :xml
+
+INCLUDE = ["/usr/include/libxml2"]
+LIB = ["xml2"]
+CFLAGS = ["-Wunused-parameter"]
+
+require "#{ENV['CORTEX_HOME']}/build/component"

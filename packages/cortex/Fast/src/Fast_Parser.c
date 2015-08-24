@@ -354,7 +354,6 @@ error:
 cx_object Fast_Parser_expandBinary(Fast_Parser _this, Fast_Expression lvalue, Fast_Expression rvalue, void *userData) {
     Fast_Expression result = NULL;
     cx_type tleft, tright;
-    cx_bool isReference = FALSE;
     cx_operatorKind operator = *(cx_operatorKind*)userData;
 
     if (!(tleft = Fast_Expression_getType_expr(lvalue, rvalue))) {
@@ -364,8 +363,6 @@ cx_object Fast_Parser_expandBinary(Fast_Parser _this, Fast_Expression lvalue, Fa
     if (!(tright = Fast_Expression_getType_expr(rvalue, lvalue))) {
         goto error;
     }
-
-    isReference = (lvalue->deref == Fast_ByReference);
 
     if (tleft && (tleft->kind == CX_COMPOSITE) && (cx_interface(tleft)->kind == CX_DELEGATE)) {
         if (*(cx_operatorKind*)userData == CX_ASSIGN) {
@@ -1987,11 +1984,16 @@ Fast_Expression _Fast_Parser_initPushIdentifier(Fast_Parser _this, Fast_Expressi
         _this->initializers[_this->initializerCount] = Fast_Initializer(Fast_StaticInitializer__create(variables, 1));
         _this->variablePushed = TRUE;
     } else if (_this->pass && isDynamic && !forceStatic) {
-        Fast_Expression newExpr, assignExpr, var;
-        var = Fast_Expression(Fast_Temporary__create(Fast_Object(type)->value, TRUE));
+        Fast_Expression newExpr, assignExpr, var, refVar;
+        cx_type type_o = cx_type(Fast_Object(type)->value);
+        refVar = var = Fast_Expression(Fast_Temporary__create(Fast_Object(type)->value, TRUE));
         newExpr = Fast_Expression(Fast_New__create(Fast_Object(type)->value,0));
         Fast_Parser_collect(_this, newExpr);
-        assignExpr = Fast_Expression(Fast_Binary__create(var, newExpr, CX_ASSIGN));
+        if (!type_o->reference) {
+            refVar = Fast_Parser_unaryExpr(_this, var, CX_AND);
+            Fast_Parser_collect(yparser(), refVar);
+        }
+        assignExpr = Fast_Expression(Fast_Binary__create(refVar, newExpr, CX_ASSIGN));
         Fast_Parser_collect(_this, assignExpr);
         Fast_Parser_addStatement(_this, Fast_Node(assignExpr));
 
@@ -2497,7 +2499,7 @@ cx_int16 _Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_word value) 
             cx_object o = NULL;
             ic_program_run(program, (cx_word)&o);
             if (o) {
-                cx_valueObjectInit(v, o);
+                cx_valueObjectInit(v, o, NULL);
             } else {
                 v->is.value.storage = 0;
                 cx_valueValueInit(v, NULL, cx_object_o, &v->is.value.storage);
@@ -2695,7 +2697,7 @@ cx_void _Fast_Parser_pushReturnAsLvalue(Fast_Parser _this, cx_function function)
     if (_this->pass) {
         if (function->returnType) {
             cx_id id;
-            cx_signatureName(cx_nameof(Fast_Object(function)->value), id);
+            cx_signatureName(cx_nameof(function), id);
             result = Fast_Expression(Fast_Block_resolve(_this->block, id));
             if (!result) {
                 Fast_Parser_error(_this, "parser error: can't find result variable '%s'", id);
@@ -2852,6 +2854,11 @@ Fast_Expression _Fast_Parser_unaryExpr(Fast_Parser _this, Fast_Expression lvalue
                     result->deref = Fast_ByReference;
                     Fast_Node(result)->line = _this->line;
                     Fast_Node(result)->column = _this->column;
+
+                    /* Ensure that copies of temporaries point to the same storage */
+                    if (Fast_Storage(result)->kind == Fast_TemporaryStorage) {
+                        Fast_Temporary_setProxy(result, lvalue);
+                    }
                 } else {
                     Fast_Parser_error(_this, "cannot take reference from non-reference variable");
                     goto error;

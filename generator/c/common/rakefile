@@ -1,3 +1,0 @@
-TARGET = :c_common
-
-require "#{ENV['CORTEX_HOME']}/build/component"

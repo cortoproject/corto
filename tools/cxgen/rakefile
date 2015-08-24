@@ -1,3 +1,0 @@
-TARGET = :cxgen
-    
-require "#{ENV['CORTEX_HOME']}/build/tool"

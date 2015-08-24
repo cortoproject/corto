@@ -222,7 +222,9 @@
                     <method name="construct()" returnType="int16"/>
                     <member name="type" type="type"/>
                     <member name="reference" type="bool"/>
-                    <member name="ic" type="word" modifiers="private|local"/>
+                    <member name="proxy" type="Temporary" modifiers="private|local"/>
+                    <member name="ic" type="ic::node" modifiers="private|local"/>
+                    <method name="setProxy(Temporary proxy)"/>
                     <virtual name="toIc(ic::program program,ic::storage storage,bool stored)" returnType="ic::node"/>
                 </meta:scope>
             </class>

@@ -6,10 +6,10 @@ void fail(string msg):
 
 uint32 a : 10
 if a != 10: fail("a != 10")
-if "$a" != "10": fail("\"$a\" != \"10\"");
+if "$a" != "10": fail("\"$a\" != \"10\"")
 
 a = 20
 if a != 20: fail("a != 20")
-if "$a" != "20": fail("\"$a\" != \"20\"");
+if "$a" != "20": fail("\"$a\" != \"20\"")
 
 if result: "tc_storage01a: OK"

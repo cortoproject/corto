@@ -1,7 +1,7 @@
 require 'rake/clean'
 
-PACKAGEDIR = "#{ENV['CORTEX_HOME']}/packages/" + PACKAGE.gsub("::", "/")
-TARGETDIR =  PACKAGEDIR + "/bin"
+PACKAGEDIR = "packages/" + PACKAGE.gsub("::", "/")
+TARGETPATH = PACKAGEDIR
 TARGET = PACKAGE.split("::").last
 
 GENERATED_SOURCES ||= []
@@ -10,7 +10,7 @@ GENERATED_SOURCES <<
     ".cortex/#{TARGET}__api.c" <<
     ".cortex/#{TARGET}__wrapper.c" <<
     ".cortex/#{TARGET}__meta.c" <<
-    ".cortex/#{TARGET}__load.c" 
+    ".cortex/#{TARGET}__load.c"
 
 PREFIX ||= TARGET
 
@@ -18,21 +18,16 @@ require "#{ENV['CORTEX_HOME']}/build/component"
 
 GENFILE = Rake::FileList["#{TARGET}.*"][0]
 
-CLEAN.include(GENERATED_SOURCES)
 CLOBBER.include("include/#{TARGET}__api.h")
 CLOBBER.include("include/#{TARGET}__meta.h")
 CLOBBER.include("include/#{TARGET}__type.h")
-CLOBBER.include("bin")
+CLOBBER.include(GENERATED_SOURCES)
 
 file "include/#{TARGET}__type.h" => GENFILE do
     verbose(false)
     sh "mkdir -p .cortex"
     sh "touch .cortex/#{TARGET}__wrapper.c"
-    sh "cxgen #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c"
-    if not File.identical?(PACKAGEDIR, Dir.pwd) then
-        sh "mkdir -p #{PACKAGEDIR}"
-        sh "cp -R include #{PACKAGEDIR}/"
-    end
+    sh "cortex pp #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c"
 end
 
 task :prebuild => "include/#{TARGET}__type.h" do

@@ -91,14 +91,20 @@ cx_int16 Fast_Binary_getDerefKind(Fast_Binary _this, cx_type lvalueType, cx_type
             _this->deref = _this->lvalue->deref;
         }
     } else {
-        if ((_this->lvalue->deref == Fast_ByReference) && (!_this->rvalue->isReference)) {
-            cx_id id;
-            Fast_Parser_error(yparser(), "cannot access right operand by reference (type = '%s', kind = '%s')",
-                Fast_Parser_id(rvalueType, id), 
-                    cx_nameof(cx_enum_constant(Fast_nodeKind_o, Fast_Node(_this->rvalue)->kind)));
-            goto error;
+        if (Fast_Node(_this->rvalue)->kind != Fast_InitializerExpr) {
+            if ((_this->lvalue->deref == Fast_ByReference) && (!_this->rvalue->isReference)) {
+                cx_id id;
+                Fast_Parser_error(yparser(), "cannot access right operand by reference (type = '%s', kind = '%s')",
+                    Fast_Parser_id(rvalueType, id), 
+                        cx_nameof(cx_enum_constant(Fast_nodeKind_o, Fast_Node(_this->rvalue)->kind)));
+                goto error;
+            }
+
+            _this->deref = _this->lvalue->deref;
+        } else {
+            /* Initializer expressions are always by value */
+            _this->deref = Fast_ByValue;
         }
-        _this->deref = _this->lvalue->deref;
     }
 
     return 0;
@@ -295,11 +301,9 @@ cx_int16 Fast_Binary_complexExpr(Fast_Binary _this) {
             Fast_Parser_addStatement(yparser(), result);
         }
     } else {
-        Fast_Parser_error(_this, "operator invalid for complex value");
+        Fast_Parser_error(yparser(), "operator invalid for complex value");
         goto error;
     }
-
-    _this->isScalar = FALSE;
 
     return 0;
 error:
@@ -336,15 +340,12 @@ error:
     return -1;
 }
 
-
 /* $end */
 
 /* ::cortex::Fast::Binary::construct() */
 cx_int16 _Fast_Binary_construct(Fast_Binary _this) {
 /* $begin(::cortex::Fast::Binary::construct) */
     cx_type lvalueType, rvalueType;
-
-    _this->isScalar = TRUE;
 
     Fast_Node(_this)->kind = Fast_BinaryExpr;
     if (!(lvalueType = Fast_Expression_getType_expr(_this->lvalue, _this->rvalue))) {
@@ -567,10 +568,14 @@ cx_void _Fast_Binary_setOperator(Fast_Binary _this, cx_operatorKind kind) {
     }
 
     /* If the expression type is not a scalar, insert complex operations */
-    if ((exprType->kind != CX_PRIMITIVE) && (_this->lvalue->deref != Fast_ByReference)) {
+    if ((exprType->kind != CX_PRIMITIVE) && (_this->deref != Fast_ByReference) &&
+        (Fast_Node(_this->rvalue)->kind != Fast_CallExpr)) {
         if (Fast_Binary_complexExpr(_this)) {
             goto error;
         }
+        _this->isScalar = FALSE;
+    } else {
+        _this->isScalar = TRUE;
     }
 
 error:
@@ -584,7 +589,7 @@ ic_node _Fast_Binary_toIc_v(Fast_Binary _this, ic_program program, ic_storage st
     ic_node returnsResult = NULL;
 
     if (_this->isScalar) {
-        ic_node lvalue, rvalue, result, returnsResult, conditionLvalue, conditionRvalue = NULL;
+        ic_node lvalue, rvalue, result, conditionLvalue, conditionRvalue = NULL;
         cx_type _thisType = Fast_Expression_getType(Fast_Expression(_this));
         cx_bool condition = Fast_Binary_isConditional(_this);
         cx_bool isReference = (_this->lvalue->deref == Fast_ByReference) || (_this->rvalue->deref == Fast_ByReference);

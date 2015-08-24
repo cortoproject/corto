@@ -1,0 +1,5 @@
+TARGET = :c_common
+
+CFLAGS = ["-Wunused-parameter"]
+
+require "#{ENV['CORTEX_HOME']}/build/library"

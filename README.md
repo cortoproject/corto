@@ -23,75 +23,46 @@ Building Cortex requires the following packages - make sure to have them install
 To verify whether the build was succesful, run the following command: `cortex --version`, which will show the current version.
 
 ## Getting started
-#### Creating a package
-It's very easy to create your first cortex project. Simply run the following command:
+#### Creating an application
+It's very easy to create and run your first cortex application. Simply type the following commands:
 ```
-cxgen --package MyApp --lang c
+cortex create MyFirstApp
+cd MyFirstApp
+cortex run
 ```
-which should give the following output:
-```
-cxgen: create package 'MyApp'
-cxgen: done
-```
-A new directory called `MyApp` is created. Now run the following two commands:
-```
-cd MyApp
-rake
-```
-If all is well, you should see:
-```
-src/MyApp.c
-src/MyApp_RedPanda.c
-[ libMyApp.so ]
-```
-Congratulations! You've just created your first package! 
+Your program should print `Hello Cortex!`. If you look at the generated sources, you'll see a file called `src/MyFirstApp.c`. It looks like this:
+```c
+#include "cortex.h"
 
-#### Load the package
-To load our package, run the following command:
-```
-cortex ::MyApp
-```
-which should give this output:
-```
-Hurray, Albert the panda is born!
-Albert the panda is chewing on something omnomnom (his weight: 11)
-```
-#### Explore the package with the shell
-Alternatively, you can also load the package with the shell, like this:
-```
-cxsh ::MyApp
-```
-This should give the following output:
-```
-cortex shell - type 'help' for instructions.
-Hurray, Albert the panda is born!
-Albert the panda is chewing on something omnomnom (his weight: 11)
-:: $ 
-```
-To explore what's in the store, type `ls`. You should see this:
-```
-  name                                  type                  state       attr    
-================================================================================
-  Albert                                ::MyApp::RedPanda     V|DCL|DEF   S|W|O   
-  cortex                                package               V|DCL|DEF   S|O     
-  MyApp                                 package               V|DCL|DEF   S|W|O   
-total: 3 objects
-:: $ 
-```
-Now type 'Albert', followed by a return. You should see this:
-```
-name:         ::Albert
-parent:       ::
-timestamp:    1439121375.370321000
-state:        V|DCL|DEF
-attributes:   S|W|O|P
-type:         ::MyApp::RedPanda
-value:        {weight=11}
+int MyFirstAppmain(int argc, char *argv[]) {
 
-:: $ 
+    printf("Hello Cortex!\n");
+
+    return 0;
+}
 ```
-If you only want to see his weight, you can type `Albert.weight` which outputs:
+Change this to:
+```c
+#include "cortex.h"
+
+int MyFirstAppmain(int argc, char *argv[]) {
+
+    while (1) {
+        printf("Hello Cortex!\n");
+        cx_sleep(1, 0);
+    }
+    
+    return 0;
+}
 ```
-11
+In the terminal, type `cortex run` again. You should see that your program repeatedly prints `Hello Cortex!`. 
+
+Now in `MyFirstApp.c` change the line 
+```c
+printf("Hello Cortex!\n");
+``` 
+to 
+```c
+printf("I love cupcakes!\n");
 ```
-The shell allows for many more things (try for example `Albert.weight ++`). Happy exploring!
+... and then save your file. Observe that the running process is automatically restarted, and is now printing `"I love cupcakes"`!

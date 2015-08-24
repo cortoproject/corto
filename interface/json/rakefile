@@ -1,3 +1,0 @@
-TARGET = :json
-
-require "#{ENV['CORTEX_HOME']}/build/component"

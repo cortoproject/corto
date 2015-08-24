@@ -1,3 +1,5 @@
 PACKAGE = 'cortex::test'
 
+CFLAGS = ["-Wunused-parameter"]
+
 require "#{ENV['CORTEX_HOME']}/build/package"

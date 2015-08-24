@@ -1,0 +1,5 @@
+TARGET = :json
+
+CFLAGS = ["-Wunused-parameter"]
+
+require "#{ENV['CORTEX_HOME']}/build/component"
