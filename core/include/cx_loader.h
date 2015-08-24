@@ -18,6 +18,7 @@ typedef int (*cx_loadAction)(cx_string file, void* userData);
 
 int cx_load(cx_string file);
 int cx_loaderRegister(cx_string ext, cx_loadAction handler, void* userData);
+cx_string cx_locate(cx_string package);
 
 #ifdef __cplusplus
 }

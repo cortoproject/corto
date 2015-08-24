@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
                 if (*(argv[i]+1) == 'd') {
                     CX_DEBUG_ENABLED = TRUE;
                 } else if (*(argv[i]+1) == 'v') {
-                    printf("%s\n", CORTEX_VERSION);
+                    printf("%s", CORTEX_VERSION);
                 } else if (*(argv[i]+1) == '-') {
                     if (!strcmp(argv[i] + 2, "version")) {
                         printf("cortex (%s) %s\n\n", CX_PLATFORM_STRING, CORTEX_VERSION);
@@ -55,6 +55,11 @@ int main(int argc, char* argv[]) {
                 break;
             } else if (!strcmp(argv[i], "uninstall")) {
                 if (cortex_uninstall(argc-i, &argv[i])) {
+                    goto error;
+                }
+                break;  
+            } else if (!strcmp(argv[i], "locate")) {
+                if (cortex_locate(argc-i, &argv[i])) {
                     goto error;
                 }
                 break;                

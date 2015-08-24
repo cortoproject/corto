@@ -1,4 +1,5 @@
 require 'rake/clean'
+require "#{ENV['CORTEX_HOME']}/build/version"
 require "#{ENV['CORTEX_HOME']}/build/libmapping"
 
 Dir.chdir(File.dirname(Rake.application.rakefile))
@@ -21,7 +22,6 @@ GENERATED_SOURCES ||= []
 USE_PACKAGE ||= []
 USE_COMPONENT ||= []
 USE_LIBRARY ||= []
-
 INCLUDE << "include"
 
 CFLAGS << "-g" << "-Wstrict-prototypes" << "-std=c99" << "-pedantic" << "-fPIC" << "-D_XOPEN_SOURCE=600"
@@ -47,10 +47,10 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     use_link =
         USE_PACKAGE.map do |i|
             dirs = i.split("::")
-            "#{ENV['CORTEX_TARGET']}/lib/cortex/packages/" + i.gsub("::", "/") + "/lib" + dirs[dirs.length-1] + ".so"
+            "#{ENV['CORTEX_TARGET']}/lib/cortex/#{VERSION}/packages/" + i.gsub("::", "/") + "/lib" + dirs[dirs.length-1] + ".so"
         end.join(" ") +
-        USE_COMPONENT.map {|i| "#{ENV['CORTEX_TARGET']}/lib/cortex/components/lib" + i + ".so"}.join(" ") +
-        USE_LIBRARY.map {|i| "#{ENV['CORTEX_TARGET']}/lib/cortex/libraries/lib" + i + ".so"}.join(" ")
+        USE_COMPONENT.map {|i| "#{ENV['CORTEX_TARGET']}/lib/cortex/#{VERSION}/components/lib" + i + ".so"}.join(" ") +
+        USE_LIBRARY.map {|i| "#{ENV['CORTEX_TARGET']}/lib/cortex/#{VERSION}/libraries/lib" + i + ".so"}.join(" ")
     cc_command = "cc #{objects} #{cflags} #{cortex_lib} #{libpath} #{libmapping} #{use_link} #{lflags}"
     sh cc_command
     if ENV['silent'] != "true" then
@@ -87,7 +87,7 @@ def build_source(task, echo)
             sh "echo '#{task.source}'" 
         end
     end
-    use_include = USE_PACKAGE.map{|i| "-I" + "#{ENV['CORTEX_TARGET']}/include/cortex/packages/" + i.gsub("::", "/")}.join(" ")
+    use_include = USE_PACKAGE.map{|i| "-I" + "#{ENV['CORTEX_TARGET']}/include/cortex/#{VERSION}/packages/" + i.gsub("::", "/")}.join(" ")
     sh "cc -c #{CFLAGS.join(" ")} #{use_include} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{task.source} -o #{task.name}"
 end
 
