@@ -1,4 +1,4 @@
 export CORTEX_HOME=`echo $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )`
-export CORTEX_VERSION="0.2.0-alpha"
-export CORTEX_TARGET=$HOME/.cortex/$CORTEX_VERSION
+export CORTEX_TARGET=$HOME/.cortex
 export PATH=$CORTEX_TARGET/bin:$PATH
+export CORTEX_VERSION=0.2.0-alpha

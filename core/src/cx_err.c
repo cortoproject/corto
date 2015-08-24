@@ -235,11 +235,11 @@ cx_err cx_tracev(char* fmt, va_list args) {
 }
 
 cx_err cx_warningv(char* fmt, va_list args) {
-    return cx_logv(CX_WARNING, 0, fmt, args, stdout);
+    return cx_logv(CX_WARNING, 0, fmt, args, stderr);
 }
 
 cx_err cx_errorv(char* fmt, va_list args) {
-    return cx_logv(CX_ERROR, 0, fmt, args, stdout);
+    return cx_logv(CX_ERROR, 0, fmt, args, stderr);
 }
 
 void cx_printv(char* fmt, va_list args) {

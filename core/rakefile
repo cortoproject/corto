@@ -1,4 +1,5 @@
 require 'rake/clean'
+require "#{ENV['CORTEX_HOME']}/build/version"
 
 TARGET = :cortex
 
@@ -15,7 +16,7 @@ CLOBBER.include("#{ENV['CORTEX_TARGET']}/include/cortex/")
 
 task :prebuild do
 	verbose(false)
-	includePath = "#{ENV['CORTEX_TARGET']}/include/cortex/"
+	includePath = "#{ENV['CORTEX_TARGET']}/include/cortex/#{VERSION}"
 	sh "mkdir -p #{includePath}"
     sh "cp include/* #{includePath}/"
 end

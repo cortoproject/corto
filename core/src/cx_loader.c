@@ -8,6 +8,7 @@
 #include "cortex.h"
 #include "stdlib.h"
 #include "string.h"
+#include <sys/stat.h>
 
 #ifdef CX_LOADER
 
@@ -107,13 +108,11 @@ error:
 static cx_string cx_packageToFile(cx_string package) {
     cx_char ch, *ptr, *bptr;
     cx_string fileName, path, start;
-    cx_string cortexHome = getenv("CORTEX_TARGET");
     int fileNameLength;
 
     ptr = package;
-    path = malloc(strlen(package) * 2 + strlen(cortexHome) + strlen("/lib/cortex/packages//lib.so") + 1);
-    sprintf(path, "%s/lib/cortex/packages/", cortexHome);
-    bptr = path + strlen(path);
+    path = malloc(strlen(package) * 2 + strlen("/lib.so") + 1);
+    bptr = path;
     start = bptr;
     fileName = bptr;
 
@@ -195,10 +194,8 @@ static cx_ll filesLoaded = NULL;
 
 /* Load xml interface */
 static int cx_loadXml(void) {
-    cx_string cortexHome = getenv("CORTEX_TARGET");
     int result;
-    cx_string path = cx_alloc(strlen(cortexHome) + strlen("/lib/cortex/components/libxml.so") + 1);
-    sprintf(path, "%s/lib/cortex/components/libxml.so", cortexHome);
+    cx_string path = cx_envparse("$CORTEX_TARGET/lib/cortex/%s/components/libxml.so", CORTEX_VERSION);
     result = cx_loadLibrary(path);
     cx_dealloc(path);
     return result;
@@ -259,12 +256,61 @@ loaded:
     return 0;
 }
 
+cx_string cx_locate(cx_string package) {
+    cx_string usrPath = NULL, homePath = NULL;
+    cx_string relativePath = cx_packageToFile(package);
+    time_t usrTime = 0, homeTime = 0;
+
+    if (!relativePath) {
+        goto error;
+    }
+
+    usrPath = cx_envparse("/usr/lib/cortex/%s/packages/%s", CORTEX_VERSION, relativePath);
+
+    if (strcmp(cx_getenv("CORTEX_TARGET"), "/usr")) {
+        homePath = cx_envparse("$CORTEX_TARGET/lib/cortex/%s/packages/%s", CORTEX_VERSION, relativePath);
+
+        if (cx_fileTest(homePath)) {
+            struct stat attr;
+            if (stat(homePath, &attr) < 0) {
+                printf("failed to stat '%s'", homePath);
+                goto error;
+            } else {
+                homeTime = attr.st_mtime;
+            }
+        }
+    }
+
+    if (cx_fileTest(usrPath)) {
+        struct stat attr;
+        if (stat(usrPath, &attr) < 0) {
+            printf("failed to stat '%s'", usrPath);
+            goto error;
+        } else {
+            usrTime = attr.st_mtime;
+        }
+    }
+
+    if (usrTime || homeTime) {
+        if (usrTime > homeTime) {
+            if (homePath) cx_dealloc(homePath);
+            return usrPath;
+        } else {
+            if (usrPath) cx_dealloc(usrPath);
+            return homePath;
+        }
+    }
+
+error:
+    return NULL;
+}
+
 /* Load package */
-static int cx_packageLoader(cx_string file) {
+static int cx_packageLoader(cx_string package) {
     cx_string fileName;
     int result;
 
-    fileName = cx_packageToFile(file);
+    fileName = cx_locate(package);
     if (!fileName) {
         return -1;
     }
@@ -343,6 +389,7 @@ static void cx_loaderOnExit(void* udata) {
 
 /* Register handlers for shared objects */
 CX_DLL_CONSTRUCT {
+
     /* Register exit-handler */
     cx_onexit(cx_loaderOnExit, NULL);
 

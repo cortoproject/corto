@@ -10,6 +10,7 @@ extern "C" {
 
 cx_int16 cortex_install(int argc, char *argv[]);
 cx_int16 cortex_uninstall(int argc, char *argv[]);
+cx_int16 cortex_locate(int argc, char* argv[]);
 
 #ifdef __cplusplus
 }

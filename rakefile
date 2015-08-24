@@ -1,9 +1,9 @@
 COMPONENTS = [] << 
     :core <<
+    :tools <<
     :libraries <<
     :generators <<
     :components <<
-    :tools <<
     :packages
 
 require "#{ENV['CORTEX_HOME']}/build/forward"

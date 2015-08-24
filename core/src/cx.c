@@ -36,7 +36,22 @@ struct cx_exitHandler {
     void* userData;
 };
 
-const char* CORTEX_VERSION = "0.2.0-alpha";
+#define VERSION_MAJOR "0"
+#define VERSION_MINOR "2"
+#define VERSION_PATCH "0"
+#define VERSION_SUFFIX "alpha"
+
+#ifdef VERSION_SUFFIX
+const char* CORTEX_VERSION = VERSION_MAJOR "." VERSION_MINOR "." VERSION_PATCH "-" VERSION_SUFFIX;
+const char* CORTEX_VERSION_SUFFIX = VERSION_SUFFIX;
+#else
+const char* CORTEX_VERSION = VERSION_MAJOR "." VERSION_MINOR "." VERSION_PATCH;
+const char* CORTEX_VERSION_SUFFIX = "";
+#endif
+
+const char* CORTEX_VERSION_MAJOR = VERSION_MAJOR;
+const char* CORTEX_VERSION_MINOR = VERSION_MINOR;
+const char* CORTEX_VERSION_PATCH = VERSION_PATCH;
 
 cx_mutex_s cx_adminLock;
 static cx_ll cx_exitHandlers = NULL;
@@ -590,11 +605,11 @@ static void cx_decreaseRefType(cx_object o, cx_uint32 size) {
 int cx_start(void) {
 
     if (!cx_getenv("CORTEX_HOME")) {
-        cx_setenv("CORTEX_HOME", "/usr/lib/cortex");
+        cx_setenv("CORTEX_HOME", "/usr/lib/cortex/%s", CORTEX_VERSION);
     }
 
     if (!cx_getenv("CORTEX_TARGET")) {
-        cx_setenv("CORTEX_TARGET", "/usr");
+        cx_setenv("CORTEX_TARGET", "~/.cortex/%s", CORTEX_VERSION);
     }
 
     /* Initialize threadkeys */
