@@ -74,7 +74,24 @@ static char* cortex_randomName(void) {
         "Gecko",
         "Beaver",
         "Owl",
-        "Cat"
+        "Cat",
+        "Emu",
+        "Vulture",
+        "Kangaroo",
+        "Badger",
+        "Hawk",
+        "Baboon",
+        "Otter",
+        "Ibis",
+        "Goose",
+        "Lemur",
+        "Hog",
+        "Herring",
+        "Sloth",
+        "Peacock",
+        "Koala",
+        "Moose",
+        "Tapir"
         };
 
     strcpy(buffer, colors[rand() % (sizeof(colors) / sizeof(char*))]);
