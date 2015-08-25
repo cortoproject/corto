@@ -1,5 +1,5 @@
 require 'rake/clean'
-require "#{ENV['CORTEX_HOME']}/build/version"
+require "#{ENV['CORTEX_BUILD']}/version"
 
 TARGET = :cortex
 
@@ -21,4 +21,4 @@ task :prebuild do
     sh "cp include/* #{includePath}/"
 end
 
-require "#{ENV['CORTEX_HOME']}/build/artefact"
+require "#{ENV['CORTEX_BUILD']}/artefact"

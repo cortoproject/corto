@@ -14,7 +14,7 @@ GENERATED_SOURCES <<
 
 PREFIX ||= TARGET
 
-require "#{ENV['CORTEX_HOME']}/build/component"
+require "#{ENV['CORTEX_BUILD']}/component"
 
 GENFILE = Rake::FileList["#{TARGET}.*"][0]
 
@@ -22,6 +22,7 @@ CLOBBER.include("include/#{TARGET}__api.h")
 CLOBBER.include("include/#{TARGET}__meta.h")
 CLOBBER.include("include/#{TARGET}__type.h")
 CLOBBER.include(GENERATED_SOURCES)
+CLOBBER.include(TARGETDIR)
 
 file "include/#{TARGET}__type.h" => GENFILE do
     verbose(false)
@@ -40,4 +41,4 @@ task :clobber do
     end
 end
 
-require "#{ENV['CORTEX_HOME']}/build/subrake"
+require "#{ENV['CORTEX_BUILD']}/subrake"

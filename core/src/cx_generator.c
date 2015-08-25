@@ -202,7 +202,12 @@ cx_string gen_getAttribute(cx_generator g, cx_string key) {
 cx_int16 gen_load(cx_generator g, cx_string library) {
 
     /* Load library from generator path */
-    cx_string path = cx_envparse("$CORTEX_TARGET/lib/cortex/%s/generators/lib%s.so", CORTEX_VERSION, library);
+    cx_string relativePath = cx_envparse("generators/lib%s.so", library);
+    cx_string path = cx_locateLib(relativePath);
+    if (!path) {
+        cx_error("generator '%s' not found", relativePath);
+        goto error;
+    }
 
     g->library = cx_dlOpen(path);
     cx_dealloc(path);
@@ -221,8 +226,10 @@ cx_int16 gen_load(cx_generator g, cx_string library) {
 
     /* Function is allowed to be absent. */
 
+    cx_dealloc(relativePath);
     return 0;
 error:
+    cx_dealloc(relativePath);
     return -1;
 }
 

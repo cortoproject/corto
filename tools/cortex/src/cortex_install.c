@@ -44,8 +44,9 @@ cx_int16 cortex_install(int argc, char *argv[]) {
 
 	/* Set the build target to the global environment */
 	fprintf(install, "export CORTEX_TARGET=/usr\n");
+	fprintf(install, "export CORTEX_HOME=/usr\n");
+	fprintf(install, "export CORTEX_BUILD=/usr/lib/cortex/%s/build\n", CORTEX_VERSION);
 	fprintf(install, "export CORTEX_VERSION=%s\n", CORTEX_VERSION);
-	fprintf(install, "export CORTEX_HOME=/usr/lib/cortex/%s\n", CORTEX_VERSION);
 	fprintf(install, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
 
 	/* Build libraries to global environment */
@@ -114,10 +115,14 @@ cx_int16 cortex_uninstall(int argc, char *argv[]) {
 
 	/* Set the build target to the global environment */
 	fprintf(uninstall, "export CORTEX_TARGET=/usr\n");
+	fprintf(uninstall, "export CORTEX_HOME=/usr\n");
+	fprintf(uninstall, "export CORTEX_BUILD=/usr/lib/cortex/%s/build\n", CORTEX_VERSION);
 	fprintf(uninstall, "export CORTEX_VERSION=%s\n", CORTEX_VERSION);
-	fprintf(uninstall, "export CORTEX_HOME=/usr/lib/cortex/%s\n", CORTEX_VERSION);
 	fprintf(uninstall, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
+	fprintf(uninstall, "rake clobber 2> /dev/null\n");
 
+	/* Also remove from local environment */
+	fprintf(uninstall, "export CORTEX_TARGET=~/.cortex\n");
 	fprintf(uninstall, "rake clobber 2> /dev/null\n");
 
 	if (cx_fileTest("configure") && cx_fileTest("build")) {

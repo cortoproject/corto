@@ -4,4 +4,4 @@ INCLUDE = ["/usr/include/libxml2"]
 LIB = ["xml2"]
 CFLAGS = ["-Wunused-parameter"]
 
-require "#{ENV['CORTEX_HOME']}/build/component"
+require "#{ENV['CORTEX_BUILD']}/component"

@@ -1,4 +1,4 @@
-require "#{ENV['CORTEX_HOME']}/build/version"
+require "#{ENV['CORTEX_BUILD']}/version"
 
 if not defined? TARGET then
     raise "library: TARGET not specified\n"
@@ -11,6 +11,6 @@ LIBPATH ||= []
 INCLUDE ||= []
 
 CORTEX_LIB << "cortex"
-INCLUDE << "#{ENV['CORTEX_TARGET']}/include/cortex/#{VERSION}"
+INCLUDE << "#{ENV['CORTEX_HOME']}/include/cortex/#{VERSION}"
 
-require "#{ENV['CORTEX_HOME']}/build/artefact"
+require "#{ENV['CORTEX_BUILD']}/artefact"

@@ -5,4 +5,4 @@ INCLUDE = ["#{ENV['CORTEX_HOME']}/interface/json/include"]
 
 CORTEX_LIB = ['json']
 
-require "#{ENV['CORTEX_HOME']}/build/package"
+require "#{ENV['CORTEX_BUILD']}/package"
