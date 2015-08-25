@@ -1,4 +1,4 @@
-COMPONENTS = [] << 
+COMPONENTS = [] <<
     :core <<
     :tools <<
     :libraries <<
@@ -6,4 +6,5 @@ COMPONENTS = [] <<
     :components <<
     :packages
 
+require "#{ENV['CORTEX_HOME']}/build/pack"
 require "#{ENV['CORTEX_HOME']}/build/forward"
