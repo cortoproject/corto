@@ -13,6 +13,14 @@ task :default do
     end
 end
 
+task :collect do
+    COMPONENTS.each do |e|
+        verbose(false)
+        sh "rake collect -f #{e}/rakefile"
+    end
+end
+
+
 task :clean do
     COMPONENTS.each do |e|
         verbose(false)

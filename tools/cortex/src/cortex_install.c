@@ -109,7 +109,7 @@ cx_int16 cortex_uninstall(int argc, char *argv[]) {
 	/* Write installation script */
 	FILE *uninstall = fopen("uninstall.sh", "w");
 	if (!uninstall) {
-		cx_error("cortex: failed to create installation script (check permissions)");
+		cx_error("cortex: failed to create uninstall script (check permissions)");
 		goto error;
 	}
 
@@ -172,5 +172,93 @@ cx_int16 cortex_locate(int argc, char* argv[]) {
 	return 0;
 error:
 	return -1;
+}
+
+cx_int16 cortex_tar(int argc, char* argv[]) {
+	CX_UNUSED(argc);
+	CX_UNUSED(argv);
+
+	if (!cortex_validProject()) {
+		goto error;
+	}
+
+	/* Write installation script */
+	FILE *tar = fopen("tar.sh", "w");
+	if (!tar) {
+		cx_error("cortex: failed to create tar script (check permissions)");
+		goto error;
+	}
+
+	/* Set the build target to the global environment */
+	fprintf(tar, "export CORTEX_TARGET=/usr\n");
+	fprintf(tar, "export CORTEX_HOME=/usr\n");
+	fprintf(tar, "export CORTEX_BUILD=/usr/lib/cortex/%s/build\n", CORTEX_VERSION);
+	fprintf(tar, "export CORTEX_VERSION=%s\n", CORTEX_VERSION);
+	fprintf(tar, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
+	fprintf(tar, "rake collect\n");
+	fprintf(tar, "DIR=`pwd`\n");
+	fprintf(tar, "cd ~/.cortex/pack\n");
+	fprintf(tar, "tar -zcf $DIR/cortex.%s.%s.tar.gz .\n", CX_PLATFORM_STRING, CORTEX_VERSION);
+	fprintf(tar, "rm -rf ~/.cortex/pack\n");
+	fclose(tar);
+
+	cortex_promptPassword();
+
+	cx_pid pid = cx_procrun("sudo", (char*[]){"sudo", "sh", "tar.sh", NULL});
+	cx_char progress[] = {'|', '/', '-', '\\'};
+	cx_int32 i = 0;
+	printf("cortex: tarring...  ");
+	while(!cx_proccheck(pid, NULL)) {
+		i++;
+		printf("\b%c", progress[i % 4]);
+		fflush(stdout);
+		cx_sleep(0, 200000000);
+	}
+	cx_rm("tar.sh");
+	printf("\bdone!\n");
+
+	return 0;
+error:
+	return -1;
+}
+
+cx_int16 cortex_untar(int argc, char* argv[]) {
+	CX_UNUSED(argc);
+	CX_UNUSED(argv);
+
+	/* Write installation script */
+	FILE *tar = fopen("untar.sh", "w");
+	if (!tar) {
+		cx_error("cortex: failed to create tar script (check permissions)");
+		goto error;
+	}
+
+	/* Set the build target to the global environment */
+	fprintf(tar, "export CORTEX_TARGET=/usr\n");
+	fprintf(tar, "export CORTEX_HOME=/usr\n");
+	fprintf(tar, "export CORTEX_BUILD=/usr/lib/cortex/%s/build\n", CORTEX_VERSION);
+	fprintf(tar, "export CORTEX_VERSION=%s\n", CORTEX_VERSION);
+	fprintf(tar, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
+	fprintf(tar, "tar -zxf %s -C /usr\n", argv[1]);
+	fclose(tar);
+
+	cortex_promptPassword();
+
+	cx_pid pid = cx_procrun("sudo", (char*[]){"sudo", "sh", "untar.sh", NULL});
+	cx_char progress[] = {'|', '/', '-', '\\'};
+	cx_int32 i = 0;
+	printf("cortex: untarring...  ");
+	while(!cx_proccheck(pid, NULL)) {
+		i++;
+		printf("\b%c", progress[i % 4]);
+		fflush(stdout);
+		cx_sleep(0, 200000000);
+	}
+	cx_rm("untar.sh");
+	printf("\bdone!\n");
+
+	return 0;
+error:
+	return -1;	
 }
 

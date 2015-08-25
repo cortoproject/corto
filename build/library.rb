@@ -33,4 +33,13 @@ task :prebuild do
 	end
 end
 
+task :collect do
+	verbose(false)
+	if File.exists?("include") then
+		includePath = ENV['HOME'] + "/.cortex/pack/include/cortex/#{VERSION}/#{TARGETPATH}"
+		sh "mkdir -p #{includePath}"
+	    sh "cp include/* #{includePath}/"
+	end	
+end
+
 require "#{ENV['CORTEX_BUILD']}/artefact"

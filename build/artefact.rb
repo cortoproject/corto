@@ -33,6 +33,14 @@ OBJECTS = SOURCES.ext(".o").pathmap(TARGETDIR + "/obj/%f")
 CLEAN.include(TARGETDIR + "/obj")
 CLOBBER.include(TARGETDIR + "/" + ARTEFACT)
 
+task :collect do
+    verbose(false)
+    artefact = "#{TARGETDIR}/#{ARTEFACT}"
+    target = ENV['HOME'] + "/.cortex/pack" + artefact["#{ENV['CORTEX_TARGET']}".length..artefact.length]
+    sh "mkdir -p " + target.split("/")[0...-1].join("/")
+    sh "cp -r #{artefact} #{target}"
+end
+
 task :binary => "#{TARGETDIR}/#{ARTEFACT}"
 
 file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
