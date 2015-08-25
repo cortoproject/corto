@@ -184,7 +184,7 @@ CX_BITMASK(cx_attr);
     #define CX_ATTR_WRITABLE (0x2)
     #define CX_ATTR_OBSERVABLE (0x4)
     #define CX_ATTR_PERSISTENT (0x8)
-    #define CX_ATTR_DEFAULT (0x16)
+    #define CX_ATTR_DEFAULT (0x10)
 
 /* ::cortex::lang::primitiveKind */
 typedef enum cx_primitiveKind {

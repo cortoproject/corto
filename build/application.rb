@@ -1,3 +1,5 @@
+require "#{ENV['CORTEX_HOME']}/build/version"
+
 if not defined? TARGET then
     raise "library: TARGET not specified\n"
 end
@@ -14,7 +16,7 @@ GENERATED_SOURCES <<
     ".cortex/#{TARGET}__load.c"
 
 CORTEX_LIB << "cortex"
-INCLUDE << "#{ENV['CORTEX_TARGET']}/include/cortex"
+INCLUDE << "#{ENV['CORTEX_TARGET']}/include/cortex/#{VERSION}"
 
 file ".cortex/#{TARGET}__load.c" do
     verbose(false)

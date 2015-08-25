@@ -822,6 +822,7 @@ cx_object _cx_declare(cx_type type) {
 
     if (attrs & CX_ATTR_DEFAULT) {
         attrs |= CX_ATTR_OBSERVABLE;
+
         if (type->kind != CX_VOID) {
             attrs |= CX_ATTR_WRITABLE;
         }
@@ -870,9 +871,7 @@ cx_object _cx_declare(cx_type type) {
         }
         if (attrs & CX_ATTR_WRITABLE) {
             if (type->kind == CX_VOID) {
-                if (!type->reference) {
-                    cx_warning("cx_declare: writable void object created.");
-                }
+                cx_warning("cx_declare: writable void object created.");
             }
             o->attrs.write = TRUE;
             cx__initWritable(CX_OFFSET(o, sizeof(cx__object)));
