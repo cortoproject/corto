@@ -9,7 +9,7 @@ extern "C" {
 
 ic_vmStorage *ic_vmStorage__create(ic_vmProgram *program, ic_storage acc, cx_uint32 firstUsed);
 cx_bool ic_vmStorage_mustAllocate(ic_vmStorage *storage);
-cx_vmOp *ic_vmStorage_assemble(ic_storage icStorage, ic_vmProgram *program, cx_vmOp *vmOp);
+vm_op *ic_vmStorage_assemble(ic_storage icStorage, ic_vmProgram *program, vm_op *vmOp);
 void ic_vmStorageAddReferee(ic_vmStorage *accumulator, ic_vmProgram *program, void *referee);
 
 #ifdef __cplusplus

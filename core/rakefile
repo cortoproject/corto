@@ -10,7 +10,6 @@ CFLAGS ||= []
 
 ARTEFACT = "lib#{TARGET}.so"
 LFLAGS << "--shared"
-CFLAGS << "-Wno-gnu-label-as-value" << "-Wno-unknown-pragmas" << "-Wunused-parameter"
 
 CLOBBER.include("#{ENV['CORTEX_TARGET']}/include/cortex/")
 

@@ -6,11 +6,9 @@
  */
 
 #include "cortex.h"
-cx_bool CX_DEBUG_ENABLED = 0;
 
-#ifdef CX_VM
-#include "cx_vm.h"
-#include "cx_vm_operands.h"
+#include "vm.h"
+#include "vm_operands.h"
 #include "cx_convert.h"
 #include "cx_err.h"
 #include "cx_string.h"
@@ -38,14 +36,14 @@ typedef struct cx_vm_context cx_vm_context;
 
 /* TLS structure for cx_currentProgramKey, used for debugging */
 typedef struct cx_currentProgramData {
-    cx_vmProgram stack[64];
+    vm_program stack[64];
     cx_vm_context *c[64];
     cx_uint32 sp;
 }cx_currentProgramData;
 
 /* TLS structure for cx_stringConcatCacheKey */
 typedef struct cx_stringConcatCacheNode {
-    cx_vmProgram program;
+    vm_program program;
     cx_string str;
     cx_uint32 length;
 }cx_stringConcatCacheNode;
@@ -64,7 +62,7 @@ typedef struct cx_stringConcatCache {
 /* Program control */
 #define go() goto *(void*)(c.pc->op);
 #define next() c.pc++; go()
-#define jump(r) c.pc = (cx_vmOp*)r; go()
+#define jump(r) c.pc = (vm_op*)r; go()
 #define fetchIc() c.ic = c.pc->ic
 #define fetchLo() c.lo = c.pc->lo
 #define fetchHi() c.hi = c.pc->hi
@@ -431,7 +429,7 @@ typedef union Di2f_t {
     CALLVM_##code:\
         fetchOp1(CALLVM,code);\
         fetchHi();\
-        cx_vm_run_w_storage((cx_vmProgram)((cx_function)c.hi.w)->implData, c.stack, &op1_##code);\
+        cx_vm_run_w_storage((vm_program)((cx_function)c.hi.w)->implData, c.stack, &op1_##code);\
         c.sp = c.stack; /* Reset stack pointer */\
         next();\
 
@@ -445,7 +443,7 @@ typedef union Di2f_t {
 #define CALLVMVOID()\
     CALLVMVOID:\
         fetchHi();\
-        cx_vm_run_w_storage((cx_vmProgram)((cx_function)c.hi.w)->implData, c.stack, NULL);\
+        cx_vm_run_w_storage((vm_program)((cx_function)c.hi.w)->implData, c.stack, NULL);\
         c.sp = c.stack; /* Reset stack pointer */\
         next();\
 
@@ -810,42 +808,42 @@ typedef union Di2f_t {
 
 /* ---- Jump expansion macro's */
 #define STRING0(arg)\
-    case CX_VM_##arg: result = cx_vmOp_toString(result, &p[i], #arg, "", "", "", ""); break;\
+    case CX_VM_##arg: result = vm_opToString(result, &p[i], #arg, "", "", "", ""); break;\
 
 #define STRING1(type, arg, op1)\
-    case CX_VM_##arg##_##type##op1: result = cx_vmOp_toString(result, &p[i], #arg, #type, #op1, "", ""); break;\
+    case CX_VM_##arg##_##type##op1: result = vm_opToString(result, &p[i], #arg, #type, #op1, "", ""); break;\
 
 #define STRING1_COND(type, arg, op1)\
-    case CX_VM_##arg##B_##type##op1: result = cx_vmOp_toString(result, &p[i], #arg "B", #type, #op1, "", ""); break;\
-    case CX_VM_##arg##S_##type##op1: result = cx_vmOp_toString(result, &p[i], #arg "S", #type, #op1, "", ""); break;\
-    case CX_VM_##arg##L_##type##op1: result = cx_vmOp_toString(result, &p[i], #arg "L", #type, #op1, "", ""); break;\
-    case CX_VM_##arg##D_##type##op1: result = cx_vmOp_toString(result, &p[i], #arg "D", #type, #op1, "", ""); break;\
+    case CX_VM_##arg##B_##type##op1: result = vm_opToString(result, &p[i], #arg "B", #type, #op1, "", ""); break;\
+    case CX_VM_##arg##S_##type##op1: result = vm_opToString(result, &p[i], #arg "S", #type, #op1, "", ""); break;\
+    case CX_VM_##arg##L_##type##op1: result = vm_opToString(result, &p[i], #arg "L", #type, #op1, "", ""); break;\
+    case CX_VM_##arg##D_##type##op1: result = vm_opToString(result, &p[i], #arg "D", #type, #op1, "", ""); break;\
 
 #define STRING1_COND_LD(type, arg, op1)\
-    case CX_VM_##arg##L_##type##op1: result = cx_vmOp_toString(result, &p[i], #arg "L", #type, #op1, "", ""); break;\
-    case CX_VM_##arg##D_##type##op1: result = cx_vmOp_toString(result, &p[i], #arg "D", #type, #op1, "", ""); break;\
+    case CX_VM_##arg##L_##type##op1: result = vm_opToString(result, &p[i], #arg "L", #type, #op1, "", ""); break;\
+    case CX_VM_##arg##D_##type##op1: result = vm_opToString(result, &p[i], #arg "D", #type, #op1, "", ""); break;\
 
 #define STRING2(type, arg, op1, op2)\
-    case CX_VM_##arg##_##type##op1##op2: result = cx_vmOp_toString(result, &p[i], #arg, #type, #op1, #op2, ""); break;\
+    case CX_VM_##arg##_##type##op1##op2: result = vm_opToString(result, &p[i], #arg, #type, #op1, #op2, ""); break;\
 
 #define STRING3(type, arg, op1, op2, op3)\
-    case CX_VM_##arg##_##type##op1##op2##op3: result = cx_vmOp_toString(result, &p[i], #arg, #type, #op1, #op2, #op3); break;\
+    case CX_VM_##arg##_##type##op1##op2##op3: result = vm_opToString(result, &p[i], #arg, #type, #op1, #op2, #op3); break;\
 /* ---- */
 
 struct cx_vm_context {
-    cx_vmOp *pc; /* Instruction counter */
-    cx_vmParameter16 ic; /* First parameter */
-    cx_vmParameter lo; /* Lo parameter */
-    cx_vmParameter hi; /* Hi parameter */
+    vm_op *pc; /* Instruction counter */
+    vm_parameter16 ic; /* First parameter */
+    vm_parameter lo; /* Lo parameter */
+    vm_parameter hi; /* Hi parameter */
     cx_uint64 dbl; /* Double parameter */
     cx_uint64 dbl2;
-    cx_vmParameter stage1;
-    cx_vmParameter stage2;
+    vm_parameter stage1;
+    vm_parameter stage2;
     void *stack, *sp;
     cx_stringConcatCache *strcache;
 
     /* Reserved space for interrupt program in case of SIGINT */
-    cx_vmOp interrupt[2];
+    vm_op interrupt[2];
 };
 
 #ifdef CX_VM_DEBUG
@@ -896,7 +894,7 @@ static void cx_vm_sig(int sig) {
     }
     if (sig == SIGINT) {
         for(sp = programData->sp-1; sp>=0; sp--) {
-            cx_vmProgram program = programData->stack[sp];
+            vm_program program = programData->stack[sp];
             programData->c[sp]->interrupt[0].op = program->program[program->size-1].op;
             programData->c[sp]->interrupt[1].op = program->program[program->size-1].op;
             programData->c[sp]->pc = programData->c[sp]->interrupt;
@@ -907,9 +905,9 @@ static void cx_vm_sig(int sig) {
     /* Walk the stack, print frames */
     for(sp = programData->sp-1; sp>=0; sp--) {
         cx_id id, file;
-        cx_vmProgram program = programData->stack[sp];
+        vm_program program = programData->stack[sp];
 
-        cx_uint32 line = program->debugInfo[((cx_word)programData->c[sp]->pc - (cx_word)program->program)/sizeof(cx_vmOp)].line;
+        cx_uint32 line = program->debugInfo[((cx_word)programData->c[sp]->pc - (cx_word)program->program)/sizeof(vm_op)].line;
 
         if (program->filename) {
             sprintf(file, "%s:", program->filename);
@@ -925,7 +923,7 @@ static void cx_vm_sig(int sig) {
         /* Print program with location of crash */
 #ifdef CX_IC_TRACING
         if(sp == (cx_int32)programData->sp-1) {
-            cx_string str = cx_vmProgram_toString(program, programData->c[sp]->pc);
+            cx_string str = vm_programToString(program, programData->c[sp]->pc);
             printf("\n%s\n", str);
             cx_dealloc(str);
         }
@@ -937,7 +935,7 @@ static void cx_vm_sig(int sig) {
 }
 
 /* Push a program to the exception stack (see pushSignalHandler) */
-static void cx_vm_pushCurrentProgram(cx_vmProgram program, cx_vm_context *c) {
+static void cx_vm_pushCurrentProgram(vm_program program, cx_vm_context *c) {
     cx_currentProgramData *data = NULL;
     if (!cx_currentProgramKey) {
         cx_threadTlsKey(&cx_currentProgramKey, NULL);
@@ -961,7 +959,7 @@ static void cx_vm_popCurrentProgram(void) {
 
 /* Push a program to the signal handler stack. This will allow backtracing the
  * stack when an error occurs. */
-static void cx_vm_pushSignalHandler(cx_vmProgram program, cx_vm_context *c) {
+static void cx_vm_pushSignalHandler(vm_program program, cx_vm_context *c) {
     sigfunc result = safe_signal(SIGSEGV, cx_vm_sig);
     if (result == SIG_ERR) {
         cx_error("failed to install signal handler for SIGSEGV");
@@ -1019,7 +1017,7 @@ static void cx_vm_popSignalHandler(void) {
 #define cx_vm_popSignalHandler()
 #endif
 
-static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result) {
+static int32_t cx_vm_run_w_storage(vm_program program, void* reg, void *result) {
     cx_vm_context c;
     c.strcache = cx_threadTlsGet(cx_stringConcatCacheKey);
 
@@ -1035,7 +1033,7 @@ static int32_t cx_vm_run_w_storage(cx_vmProgram program, void* reg, void *result
      * an evaluation-then-jump construction like a switch statement. */
     if (!program->translated)  {
         uint32_t size = program->size;
-        cx_vmOp *p = program->program;
+        vm_op *p = program->program;
         uint32_t i;
         for(i=0; i<size;i++) {
 #ifdef CX_VM_DEBUG
@@ -1086,7 +1084,7 @@ static void cx_stringConcatCacheCreate(void) {
 }
 
 /* Execute a program */
-int32_t cx_vm_run(cx_vmProgram program, void *result) {
+int32_t vm_run(vm_program program, void *result) {
     void *storage = NULL;
     if (program->storage) {
         storage = alloca(program->storage);
@@ -1097,8 +1095,8 @@ int32_t cx_vm_run(cx_vmProgram program, void *result) {
 
 /* This function converts a single instruction to a string */
 #ifdef CX_IC_TRACING
-char * cx_vmOp_toString(
-    char * string, cx_vmOp *instr, const char *op, const char *type, const char *lvalue, const char *rvalue, const char* fetch) {
+char * vm_opToString(
+    char * string, vm_op *instr, const char *op, const char *type, const char *lvalue, const char *rvalue, const char* fetch) {
     char *result = string;
 
     if (fetch && strlen(fetch)) {
@@ -1118,7 +1116,7 @@ char * cx_vmOp_toString(
 #endif
 
 /* Convert an instruction sequence to a string */
-char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
+char * vm_programToString(vm_program program, vm_op *addr) {
     char * result = NULL;
     cx_int32 shown = 4;
     CX_UNUSED(program);
@@ -1126,7 +1124,7 @@ char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
 /* Since these strings can occupy a lot of space, they're only compiled in
  * when these two macros are enabled */
 #ifdef CX_IC_TRACING
-    cx_vmOp *p = program->program;
+    vm_op *p = program->program;
     uint32_t i;
 
 #ifndef CX_VM_DEBUG
@@ -1144,7 +1142,7 @@ char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
     for(i=0; i<program->size;i++) {
         cx_int32 diff = addr - &p[i];
         if (!addr || ((diff <= shown) && (diff >= -shown))) {
-            cx_vmOpKind kind;
+            vm_opKind kind;
 
             if (addr) {
                 if (addr == &p[i]) {
@@ -1184,10 +1182,10 @@ char * cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr) {
 #pragma GCC diagnostic pop
 
 /* Create a new VM program */
-cx_vmProgram cx_vmProgram_new(char *filename, cx_object function) {
-    cx_vmProgram result;
+vm_program vm_programNew(char *filename, cx_object function) {
+    vm_program result;
 
-    result = cx_alloc(sizeof(cx_vmProgram_s));
+    result = cx_alloc(sizeof(vm_program_s));
     result->program = NULL;
     result->debugInfo = NULL;
     result->filename = filename ? cx_strdup(filename) : NULL;
@@ -1202,7 +1200,7 @@ cx_vmProgram cx_vmProgram_new(char *filename, cx_object function) {
 }
 
 /* Free a VM program */
-void cx_vmProgram_free(cx_vmProgram program) {
+void vm_programFree(vm_program program) {
     if (program) {
         if (program->program) {
             cx_dealloc(program->program);
@@ -1212,7 +1210,7 @@ void cx_vmProgram_free(cx_vmProgram program) {
 }
 
 /* Add new instruction to a VM program */
-cx_vmOp *cx_vmProgram_addOp(cx_vmProgram program, uint32_t line) {
+vm_op *vm_programAddOp(vm_program program, uint32_t line) {
     /* Try to be smart with memory allocations, don't allocate new memory
      * every time an instruction is added. */
     if (!program->size) {
@@ -1224,12 +1222,12 @@ cx_vmOp *cx_vmProgram_addOp(cx_vmProgram program, uint32_t line) {
             program->maxSize *= 2;
         }
     }
-    program->program = cx_realloc(program->program, program->maxSize * sizeof(cx_vmOp));
-    program->debugInfo = cx_realloc(program->debugInfo, program->maxSize * sizeof(cx_vmDebugInfo));
+    program->program = cx_realloc(program->program, program->maxSize * sizeof(vm_op));
+    program->debugInfo = cx_realloc(program->debugInfo, program->maxSize * sizeof(vm_debugInfo));
 
     /* Initialize instruction and debug data to zero */
-    memset(&program->program[program->size-1], 0, sizeof(cx_vmOp));
-    memset(&program->debugInfo[program->size-1], 0, sizeof(cx_vmDebugInfo));
+    memset(&program->program[program->size-1], 0, sizeof(vm_op));
+    memset(&program->debugInfo[program->size-1], 0, sizeof(vm_debugInfo));
     program->debugInfo[program->size-1].line = line;
 
     /* Return potentially reallocd program */
@@ -1237,12 +1235,12 @@ cx_vmOp *cx_vmProgram_addOp(cx_vmProgram program, uint32_t line) {
 }
 
 /* Language binding function that calls a VM function */
-void cx_call_vm(cx_function f, cx_void* result, void* args) {
-    cx_vmProgram program;
+void vm_call(cx_function f, cx_void* result, void* args) {
+    vm_program program;
     void *storage = NULL;
 
     /* Obtain instruction sequence */
-    program = (cx_vmProgram)f->implData;
+    program = (vm_program)f->implData;
 
     /* Allocate a storage for a program. This memory will
      * store all local variables, and space required to
@@ -1258,8 +1256,14 @@ void cx_call_vm(cx_function f, cx_void* result, void* args) {
 }
 
 /* Language binding function that frees a VM function */
-void cx_callDestruct_vm(cx_function f) {
-    cx_vmProgram_free((cx_vmProgram)f->implData);
+void vm_callDestruct(cx_function f) {
+    vm_programFree((vm_program)f->implData);
 }
 
-#endif
+int cortexmain(int argc, char* argv[]) {
+    CX_UNUSED(argc);
+    CX_UNUSED(argv);
+    cx_callRegisterBinding(vm_call, NULL, NULL, (cx_callDestructHandler)vm_callDestruct);
+    return 0;
+}
+

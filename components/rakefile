@@ -1,7 +1,8 @@
 
 COMPONENTS = [] << 
     :json <<
-    :xml
+    :xml <<
+    :vm
 
     
 require "#{ENV['CORTEX_BUILD']}/forward"

@@ -694,8 +694,6 @@ static void cxsh_shell(void) {
     }
 }
 
-extern cx_bool CX_DEBUG_ENABLED;
-
 int cortex_shell(int argc, char* argv[]) {
     int i;
 

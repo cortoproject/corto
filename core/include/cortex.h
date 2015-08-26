@@ -35,7 +35,6 @@
 #include "cx_string.h"
 #include "cx_time.h"
 #include "cx_util.h"
-#include "cx_vm.h"
 
 #include "cxstr.h"
 

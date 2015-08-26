@@ -66,6 +66,7 @@ typedef struct cx_ll_s* cx_ll;
 #define CX_OPERATORS
 #define CX_LOADER
 #define CX_VM_BOUNDSCHECK
+extern int8_t CX_DEBUG_ENABLED;
 
 #define CX_PROCEDURE_STUB (0)
 #define CX_PROCEDURE_CDECL (1)

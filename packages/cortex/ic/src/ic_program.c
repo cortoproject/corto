@@ -34,7 +34,6 @@ cx_void _ic_program_add(ic_program _this, ic_node n) {
 /* ::cortex::ic::program::assemble() */
 cx_int16 _ic_program_assemble(ic_program _this) {
 /* $begin(::cortex::ic::program::assemble) */
-    extern cx_bool CX_DEBUG_ENABLED;
 
     if (CX_DEBUG_ENABLED) {
         cx_string str = ic_program_str(_this);
@@ -245,8 +244,8 @@ ic_scope _ic_program_pushScope(ic_program _this) {
 /* ::cortex::ic::program::run(word result) */
 cx_int16 _ic_program_run(ic_program _this, cx_word result) {
 /* $begin(::cortex::ic::program::run) */
-    cx_vmProgram program = (cx_vmProgram)_this->vmprogram;
-    cx_vm_run(program, (void*)result);
+    vm_program program = (vm_program)_this->vmprogram;
+    vm_run(program, (void*)result);
     return 0;
 /* $end */
 }

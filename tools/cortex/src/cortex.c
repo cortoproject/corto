@@ -8,8 +8,6 @@
 #include "cortex_shell.h"
 #include "cx_loader.h"
 
-extern cx_bool CX_DEBUG_ENABLED;
-
 int main(int argc, char* argv[]) {
     int i;
 

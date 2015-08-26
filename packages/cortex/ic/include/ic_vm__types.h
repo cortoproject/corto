@@ -3,6 +3,7 @@
 #define ic_vm__types_H
 
 #include "ic.h"
+#include "vm.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -17,7 +18,7 @@ typedef struct ic_vmLabel {
 }ic_vmLabel;
 
 typedef struct ic_vmInlineFunction {
-    cx_vmProgram program;
+    vm_program program;
     cx_function function;
 }ic_vmInlineFunction;
 
@@ -41,8 +42,8 @@ typedef enum ic_vmOperand {
 
 typedef struct ic_vmProgram {
     ic_program icProgram;
-    cx_vmProgram main; /* Keep track of what is the main-module of a program (where the program starts) */
-    cx_vmProgram program;
+    vm_program main; /* Keep track of what is the main-module of a program (where the program starts) */
+    vm_program program;
     ic_function function;
     cx_ll labels;
     cx_ll storages;
