@@ -198,7 +198,7 @@ cx_int16 cortex_tar(int argc, char* argv[]) {
 	fprintf(tar, "rake collect\n");
 	fprintf(tar, "DIR=`pwd`\n");
 	fprintf(tar, "cd ~/.cortex/pack\n");
-	fprintf(tar, "tar -zcf $DIR/cortex.%s.%s.tar.gz .\n", CX_PLATFORM_STRING, CORTEX_VERSION);
+	fprintf(tar, "tar -zcf $DIR/cortex.tar.gz .\n");
 	fprintf(tar, "rm -rf ~/.cortex/pack\n");
 	fclose(tar);
 
@@ -259,5 +259,5 @@ cx_int16 cortex_untar(int argc, char* argv[]) {
 
 	return 0;
 error:
-	return -1;	
+	return -1;
 }

@@ -1,4 +1,4 @@
-COMPONENTS = [] << 
+COMPONENTS = [] <<
     :core <<
     :tools <<
     :libraries <<
