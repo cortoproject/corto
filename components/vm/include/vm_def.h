@@ -2,7 +2,7 @@
 #ifndef CX_VM_DEF_H_
 #define CX_VM_DEF_H_
 
-#include "cx_vm_expansion.h"
+#include "vm_expansion.h"
 
 #ifdef __cplusplus
 extern "C" {

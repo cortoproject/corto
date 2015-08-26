@@ -1,0 +1,5 @@
+TARGET = :vm
+
+CFLAGS = ["-Wunused-parameter", "-Wno-gnu-label-as-value", "-Wno-unknown-pragmas", "-Wunused-parameter"]
+ 
+require "#{ENV['CORTEX_BUILD']}/component"

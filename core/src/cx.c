@@ -17,7 +17,6 @@
 #include "cx_memory_ser.h"
 #include "cx_mm.h"
 #include "cx_call.h"
-#include "cx_vm.h"
 #include "cx_crc.h"
 
 #include "cx__object.h"
@@ -60,6 +59,8 @@ static cx_ll cx_unloadHandlers = NULL;
 cx_threadKey CX_KEY_OBSERVER_ADMIN;
 cx_threadKey CX_KEY_WAIT_ADMIN;
 cx_threadKey CX_KEY_ATTR;
+
+int8_t CX_DEBUG_ENABLED = 0;
 
 #define SSO_OP_VOID(op, type) op(cx_##type##_o, 0)
 #define SSO_OP_PRIM(op, type) op(cx_##type##_o, sizeof(cx_##type))
@@ -674,11 +675,6 @@ int cx_start(void) {
         cx_uint32 id;
         id = cx_callRegisterBinding(NULL, NULL, NULL, NULL);
         cx_assert(id == 1, "C-binding did not receive binding-id 1.");
-
-#ifdef CX_VM
-        id = cx_callRegisterBinding(cx_call_vm, NULL, NULL, (cx_callDestructHandler)cx_callDestruct_vm);
-        cx_assert(id == 2, "Vm-binding did not receive binding-id 2.");
-#endif
     }
 
     /* Always randomize seed */

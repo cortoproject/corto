@@ -261,4 +261,3 @@ cx_int16 cortex_untar(int argc, char* argv[]) {
 error:
 	return -1;	
 }
-

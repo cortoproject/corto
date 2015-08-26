@@ -2,8 +2,6 @@
 #include "ic_vmStorage.h"
 #include "ic_vmProgram.h"
 
-extern cx_bool CX_DEBUG_ENABLED;
-
 static void ic_vmProgram_fillInLabels(ic_vmProgram *program) {
     cx_iter labelIter;
     ic_vmLabel *label;
@@ -134,7 +132,7 @@ ic_vmStorage *ic_vmProgram_getStorage(ic_vmProgram *program, ic_storage icAccumu
 
     if (!accumulator) {
         if (!program->program) {
-            program->program = cx_vmProgram_new(program->icProgram->filename, program->function->function);
+            program->program = vm_programNew(program->icProgram->filename, program->function->function);
         }
         accumulator = ic_vmStorage__create(program, icAccumulator, program->program->size);
         if (!program->storages) {
@@ -150,11 +148,11 @@ ic_vmStorage *ic_vmProgram_getStorage(ic_vmProgram *program, ic_storage icAccumu
 }
 
 void ic_vmProgram_finalize(ic_vmProgram *vmProgram) {
-    cx_vmOp  *stop;
+    vm_op  *stop;
 
     /* Add STOP instruction if this is the main-module */
     if (vmProgram->main == vmProgram->program) {
-        stop = cx_vmProgram_addOp(vmProgram->program, 0);
+        stop = vm_programAddOp(vmProgram->program, 0);
         stop->op = CX_VM_STOP;
     }
 
@@ -171,7 +169,7 @@ void ic_vmProgram_finalize(ic_vmProgram *vmProgram) {
     /* If program is a function, set the function-implementation to the program */
     if (vmProgram->function) {
         cx_function function = vmProgram->function->function;
-        function->impl = (cx_word)cx_call_vm;
+        function->impl = (cx_word)vm_call;
         function->implData = (cx_word)vmProgram->program;
         cx_define(function);
 
@@ -179,7 +177,7 @@ void ic_vmProgram_finalize(ic_vmProgram *vmProgram) {
         if (CX_DEBUG_ENABLED)
         {
             cx_id id;
-            cx_string programStr = cx_vmProgram_toString(vmProgram->program, NULL);
+            cx_string programStr = vm_programToString(vmProgram->program, NULL);
             printf("%s %s\n%s\n", cx_nameof(cx_typeof(function)), cx_fullname(function, id), programStr);
             cx_dealloc(programStr);
         }
@@ -188,7 +186,7 @@ void ic_vmProgram_finalize(ic_vmProgram *vmProgram) {
 
 #ifdef CX_IC_TRACING
     else if (CX_DEBUG_ENABLED) {
-        cx_string programStr = cx_vmProgram_toString(vmProgram->program, NULL);
+        cx_string programStr = vm_programToString(vmProgram->program, NULL);
         printf("main\n%s\n", programStr);
         cx_dealloc(programStr);
     }

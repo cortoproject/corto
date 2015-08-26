@@ -10,7 +10,7 @@
 
 #include "stdint.h"
 #include "cx_object.h"
-#include "cx_vm_def.h"
+#include "vm_def.h"
 #include "cx_crc.h"
 
 #ifdef __cplusplus
@@ -42,49 +42,49 @@ extern "C" {
 
 
 /* ---- Enumeration containing all instruction constants */
-typedef enum cx_vmOpKind {
+typedef enum vm_opKind {
     OPS_EXP(CONST) /* See cx_vm_def.h */
-} cx_vmOpKind;
+} vm_opKind;
 
 
 /* ---- Instruction structure */
-typedef union cx_vmParameter16 {
+typedef union vm_parameter16 {
     struct {
         uint16_t _1;
         uint16_t _2;
     } b;
     uint16_t s;
     intptr_t w;
-}cx_vmParameter16;
+}vm_parameter16;
 
-typedef union cx_vmParameter {
-    cx_vmParameter16 s;
+typedef union vm_parameter {
+    vm_parameter16 s;
     intptr_t w;
-}cx_vmParameter;
+}vm_parameter;
 
-typedef struct cx_vmOpAddr {
+typedef struct vm_opAddr {
     uint16_t jump;
-    cx_vmParameter16 p;
-}cx_vmOpAddr;
+    vm_parameter16 p;
+}vm_opAddr;
 
-typedef struct cx_vmOp {
+typedef struct vm_op {
     intptr_t op; /* direct jump to address of next operation */
-    cx_vmParameter16 ic;
-    cx_vmParameter lo;
-    cx_vmParameter hi;
+    vm_parameter16 ic;
+    vm_parameter lo;
+    vm_parameter hi;
 #ifdef CX_VM_DEBUG
-    cx_vmOpKind opKind; /* Actual operation kind. Only used for debugging purposes */
+    vm_opKind opKind; /* Actual operation kind. Only used for debugging purposes */
 #endif
-}cx_vmOp;
+}vm_op;
 
-typedef struct cx_vmDebugInfo {
+typedef struct vm_debugInfo {
     uint32_t line;
-}cx_vmDebugInfo;
+}vm_debugInfo;
     
-typedef struct cx_vmProgram_s *cx_vmProgram;
-typedef struct cx_vmProgram_s {
-    cx_vmOp *program;
-    cx_vmDebugInfo *debugInfo;
+typedef struct vm_program_s *vm_program;
+typedef struct vm_program_s {
+    vm_op *program;
+    vm_debugInfo *debugInfo;
     cx_object function;
     char *filename;
     uint32_t size;
@@ -92,27 +92,27 @@ typedef struct cx_vmProgram_s {
     uint32_t storage;
     uint32_t stack;
     uint8_t translated;
-} cx_vmProgram_s;
+} vm_program_s;
 
 
 /* ---- Virtual machine API */
 /* Callback to vm program, for usage with call API */
-void cx_call_vm(cx_function f, cx_void* result, void* args);
+void vm_call(cx_function f, cx_void* result, void* args);
 
 /* Run a program */
-int32_t cx_vm_run(cx_vmProgram program, void *result);
+int32_t vm_run(vm_program program, void *result);
 
 /* Convert a program to a string */
-char *cx_vmProgram_toString(cx_vmProgram program, cx_vmOp *addr);
+char *vm_programToString(vm_program program, vm_op *addr);
 
 /* Create a new program */
-cx_vmProgram cx_vmProgram_new(char *filename, cx_object function);
+vm_program vm_programNew(char *filename, cx_object function);
 
 /* Free a program */
-void cx_vmProgram_free(cx_vmProgram program);
+void vm_programFree(vm_program program);
 
 /* Add instruction to an existing program */
-cx_vmOp *cx_vmProgram_addOp(cx_vmProgram program, uint32_t line);
+vm_op *vm_programAddOp(vm_program program, uint32_t line);
 
 #ifdef __cplusplus
 }
