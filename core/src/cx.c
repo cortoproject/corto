@@ -604,12 +604,19 @@ static void cx_decreaseRefType(cx_object o, cx_uint32 size) {
 
 int cx_start(void) {
 
-    if (!cx_getenv("CORTEX_HOME")) {
-        cx_setenv("CORTEX_HOME", "/usr/lib/cortex/%s", CORTEX_VERSION);
+    /* CORTEX_BUILD is where the buildsystem is located */
+    if (!cx_getenv("CORTEX_BUILD")) {
+        cx_setenv("CORTEX_BUILD", "/usr/lib/cortex/%s/build", CORTEX_VERSION);
     }
 
+    /* CORTEX_HOME is where cortex binaries are located */
+    if (!cx_getenv("CORTEX_HOME")) {
+        cx_setenv("CORTEX_HOME", "/usr", CORTEX_VERSION);
+    }
+
+    /* CORTEX_TARGET is where a project will be built */
     if (!cx_getenv("CORTEX_TARGET")) {
-        cx_setenv("CORTEX_TARGET", "~/.cortex/%s", CORTEX_VERSION);
+        cx_setenv("CORTEX_TARGET", "~/.cortex");
     }
 
     /* Initialize threadkeys */

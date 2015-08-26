@@ -5,5 +5,5 @@ LEX = "fast.l"
 
 CFLAGS = ["-Wunused-parameter"]
 
-require "#{ENV['CORTEX_HOME']}/build/lexyacc"
-require "#{ENV['CORTEX_HOME']}/build/package"
+require "#{ENV['CORTEX_BUILD']}/lexyacc"
+require "#{ENV['CORTEX_BUILD']}/package"

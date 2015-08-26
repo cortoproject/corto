@@ -8,4 +8,4 @@ COMPONENTS = [] <<
     :profiling <<
     :test
 
-require "#{ENV['CORTEX_HOME']}/build/forward"
+require "#{ENV['CORTEX_BUILD']}/forward"

@@ -6,5 +6,4 @@ COMPONENTS = [] <<
     :components <<
     :packages
 
-require "#{ENV['CORTEX_HOME']}/build/pack"
-require "#{ENV['CORTEX_HOME']}/build/forward"
+require "#{ENV['CORTEX_BUILD']}/forward"

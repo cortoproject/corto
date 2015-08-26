@@ -1,11 +1,11 @@
 require 'rake/clean'
-require "#{ENV['CORTEX_HOME']}/build/version"
-require "#{ENV['CORTEX_HOME']}/build/libmapping"
+require "#{ENV['CORTEX_BUILD']}/version"
+require "#{ENV['CORTEX_BUILD']}/libmapping"
 
 Dir.chdir(File.dirname(Rake.application.rakefile))
 
-if not ENV['CORTEX_HOME'] then
-    raise "CORTEX_HOME not defined (did you forget to 'source configure'?)"
+if not ENV['CORTEX_BUILD'] then
+    raise "CORTEX_BUILD not defined (did you forget to 'source configure'?)"
 end
 if not defined? ARTEFACT then
     raise "artefact: ARTEFACT not specified\n"
@@ -33,6 +33,14 @@ OBJECTS = SOURCES.ext(".o").pathmap(TARGETDIR + "/obj/%f")
 CLEAN.include(TARGETDIR + "/obj")
 CLOBBER.include(TARGETDIR + "/" + ARTEFACT)
 
+task :collect do
+    verbose(false)
+    artefact = "#{TARGETDIR}/#{ARTEFACT}"
+    target = ENV['HOME'] + "/.cortex/pack" + artefact["#{ENV['CORTEX_TARGET']}".length..artefact.length]
+    sh "mkdir -p " + target.split("/")[0...-1].join("/")
+    sh "cp -r #{artefact} #{target}"
+end
+
 task :binary => "#{TARGETDIR}/#{ARTEFACT}"
 
 file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
@@ -40,17 +48,17 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     sh "mkdir -p #{TARGETDIR}"
     objects  = "#{OBJECTS.to_a.uniq.join(' ')}"
     cflags = "#{CFLAGS.join(" ")}"
-    cortex_lib = "#{CORTEX_LIB.map {|i| ENV['CORTEX_TARGET'] + "/lib/lib" + i + ".so"}.join(" ")}"
+    cortex_lib = "#{CORTEX_LIB.map {|i| ENV['CORTEX_HOME'] + "/lib/lib" + i + ".so"}.join(" ")}"
     libpath = "#{LIBPATH.map {|i| "-L" + i}.join(" ")} "
     libmapping = "#{(LibMapping.mapLibs(LIB)).map {|i| "-l" + i}.join(" ")}"
     lflags = "#{LFLAGS.join(" ")} -o #{TARGETDIR}/#{ARTEFACT}"
     use_link =
         USE_PACKAGE.map do |i|
             dirs = i.split("::")
-            "#{ENV['CORTEX_TARGET']}/lib/cortex/#{VERSION}/packages/" + i.gsub("::", "/") + "/lib" + dirs[dirs.length-1] + ".so"
+            "#{ENV['CORTEX_HOME']}/lib/cortex/#{VERSION}/packages/" + i.gsub("::", "/") + "/lib" + dirs[dirs.length-1] + ".so"
         end.join(" ") +
-        USE_COMPONENT.map {|i| "#{ENV['CORTEX_TARGET']}/lib/cortex/#{VERSION}/components/lib" + i + ".so"}.join(" ") +
-        USE_LIBRARY.map {|i| "#{ENV['CORTEX_TARGET']}/lib/cortex/#{VERSION}/libraries/lib" + i + ".so"}.join(" ")
+        USE_COMPONENT.map {|i| "#{ENV['CORTEX_HOME']}/lib/cortex/#{VERSION}/components/lib" + i + ".so"}.join(" ") +
+        USE_LIBRARY.map {|i| "#{ENV['CORTEX_HOME']}/lib/cortex/#{VERSION}/libraries/lib" + i + ".so"}.join(" ")
     cc_command = "cc #{objects} #{cflags} #{cortex_lib} #{libpath} #{libmapping} #{use_link} #{lflags}"
     sh cc_command
     if ENV['silent'] != "true" then
@@ -87,7 +95,7 @@ def build_source(task, echo)
             sh "echo '#{task.source}'" 
         end
     end
-    use_include = USE_PACKAGE.map{|i| "-I" + "#{ENV['CORTEX_TARGET']}/include/cortex/#{VERSION}/packages/" + i.gsub("::", "/")}.join(" ")
+    use_include = USE_PACKAGE.map{|i| "-I #{ENV['CORTEX_HOME']}/include/cortex/#{VERSION}/packages/" + i.gsub("::", "/")}.join(" ")
     sh "cc -c #{CFLAGS.join(" ")} #{use_include} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{task.source} -o #{task.name}"
 end
 

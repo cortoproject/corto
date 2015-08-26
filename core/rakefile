@@ -1,5 +1,5 @@
 require 'rake/clean'
-require "#{ENV['CORTEX_HOME']}/build/version"
+require "#{ENV['CORTEX_BUILD']}/version"
 
 TARGET = :cortex
 
@@ -21,4 +21,15 @@ task :prebuild do
     sh "cp include/* #{includePath}/"
 end
 
-require "#{ENV['CORTEX_HOME']}/build/artefact"
+task :collect do
+	verbose(false)
+	includePath = "#{ENV['HOME']}/.cortex/pack/include/cortex/#{VERSION}"
+	sh "mkdir -p #{includePath}"
+    sh "cp include/* #{includePath}/"
+
+	buildPath = "#{ENV['HOME']}/.cortex/pack/lib/cortex/#{VERSION}/build"
+	sh "mkdir -p #{buildPath}"
+    sh "cp #{ENV['CORTEX_BUILD']}/* #{buildPath}/"    
+end
+
+require "#{ENV['CORTEX_BUILD']}/artefact"

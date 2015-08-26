@@ -2,4 +2,4 @@
 COMPONENTS = [] << 
     :cortex
     
-require "#{ENV['CORTEX_HOME']}/build/forward"
+require "#{ENV['CORTEX_BUILD']}/forward"

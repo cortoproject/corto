@@ -111,8 +111,10 @@ static cx_string cx_packageToFile(cx_string package) {
     int fileNameLength;
 
     ptr = package;
-    path = malloc(strlen(package) * 2 + strlen("/lib.so") + 1);
-    bptr = path;
+    path = malloc(strlen(package) * 2 + strlen("packages//lib.so") + 1);
+
+    strcpy(path, "packages/");
+    bptr = path + strlen("packages/");
     start = bptr;
     fileName = bptr;
 
@@ -256,19 +258,19 @@ loaded:
     return 0;
 }
 
-cx_string cx_locate(cx_string package) {
+cx_string cx_locateLib(cx_string lib) {
     cx_string usrPath = NULL, homePath = NULL;
-    cx_string relativePath = cx_packageToFile(package);
+    cx_string relativePath = cx_packageToFile(lib);
     time_t usrTime = 0, homeTime = 0;
 
     if (!relativePath) {
         goto error;
     }
 
-    usrPath = cx_envparse("/usr/lib/cortex/%s/packages/%s", CORTEX_VERSION, relativePath);
+    usrPath = cx_envparse("/usr/lib/cortex/%s/%s", CORTEX_VERSION, lib);
 
     if (strcmp(cx_getenv("CORTEX_TARGET"), "/usr")) {
-        homePath = cx_envparse("$CORTEX_TARGET/lib/cortex/%s/packages/%s", CORTEX_VERSION, relativePath);
+        homePath = cx_envparse("$CORTEX_TARGET/lib/cortex/%s/%s", CORTEX_VERSION, lib);
 
         if (cx_fileTest(homePath)) {
             struct stat attr;
@@ -301,6 +303,23 @@ cx_string cx_locate(cx_string package) {
         }
     }
 
+error:
+    return NULL;    
+}
+
+cx_string cx_locate(cx_string package) {
+    cx_string relativePath = cx_packageToFile(package);
+    cx_string result = NULL;
+
+    if (!relativePath) {
+        goto error;
+    }
+
+    result = cx_locateLib(relativePath);
+
+    cx_dealloc(relativePath);
+
+    return result;
 error:
     return NULL;
 }

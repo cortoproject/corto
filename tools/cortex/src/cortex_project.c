@@ -37,7 +37,7 @@ static cx_int16 cortex_createRakefile(const char *projectKind, const char *name,
 	} else {
 		fprintf(file, "TARGET = '%s'\n\n", name);
 	}
-    fprintf(file, "require \"#{ENV['CORTEX_HOME']}/build/%s\"\n\n", projectKind);
+    fprintf(file, "require \"#{ENV['CORTEX_BUILD']}/%s\"\n\n", projectKind);
     fclose(file);
 
     return 0;
@@ -74,7 +74,24 @@ static char* cortex_randomName(void) {
         "Gecko",
         "Beaver",
         "Owl",
-        "Cat"
+        "Cat",
+        "Emu",
+        "Vulture",
+        "Kangaroo",
+        "Badger",
+        "Hawk",
+        "Baboon",
+        "Otter",
+        "Ibis",
+        "Goose",
+        "Lemur",
+        "Hog",
+        "Herring",
+        "Sloth",
+        "Peacock",
+        "Koala",
+        "Moose",
+        "Tapir"
         };
 
     strcpy(buffer, colors[rand() % (sizeof(colors) / sizeof(char*))]);
@@ -146,12 +163,11 @@ static cx_int16 cortex_package(int argc, char *argv[]) {
     cx_uint32 i;
     cx_char *include = NULL;
 
-	if (argc <= 1) {
-		cx_error("cortex: don't know what to call the project");
-		goto error;
-	}
-
-	include = argv[1];
+    if (argc <= 1) {
+        include = cortex_randomName();
+    } else {
+        include = argv[1];
+    }
 
     /* Ignore initial colons */
     if (include[0] == ':') {

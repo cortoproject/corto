@@ -73,6 +73,16 @@ int main(int argc, char* argv[]) {
                     goto error;
                 }
                 break;
+            } else if (!strcmp(argv[1], "tar")) {
+                if (cortex_tar(argc-i, &argv[i])) {
+                    goto error;
+                }
+                break;
+            } else if (!strcmp(argv[1], "untar")) {
+                if (cortex_untar(argc-i, &argv[i])) {
+                    goto error;
+                }
+                break;
             } else {
                 if (cx_load(argv[i])) {
                     cx_error("cortex: failed to load file '%s'", argv[i]);
