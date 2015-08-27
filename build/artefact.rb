@@ -38,7 +38,12 @@ task :collect do
     artefact = "#{TARGETDIR}/#{ARTEFACT}"
     target = ENV['HOME'] + "/.corto/pack" + artefact["#{ENV['CORTO_TARGET']}".length..artefact.length]
     sh "mkdir -p " + target.split("/")[0...-1].join("/")
-    sh "cp -rL #{artefact} #{target}"
+
+    if `uname` == "Darwin\n" then
+        sh "cp -r #{artefact} #{target}"
+    else
+        sh "cp -rL #{artefact} #{target}"
+    end
 end
 
 task :binary => "#{TARGETDIR}/#{ARTEFACT}"
