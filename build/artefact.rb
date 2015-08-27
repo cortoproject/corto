@@ -38,7 +38,7 @@ task :collect do
     artefact = "#{TARGETDIR}/#{ARTEFACT}"
     target = ENV['HOME'] + "/.cortex/pack" + artefact["#{ENV['CORTEX_TARGET']}".length..artefact.length]
     sh "mkdir -p " + target.split("/")[0...-1].join("/")
-    sh "cp -r #{artefact} #{target}"
+    sh "cp -rL #{artefact} #{target}"
 end
 
 task :binary => "#{TARGETDIR}/#{ARTEFACT}"
