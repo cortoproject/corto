@@ -7,7 +7,7 @@
 
 #include "c_type.h"
 #include "c_common.h"
-#include "cortex.h"
+#include "corto.h"
 
 typedef struct c_typeWalk_t {
     cx_generator g;
@@ -536,7 +536,7 @@ static g_file c_typeHeaderFileOpen(cx_generator g) {
 
     /* Don't include this file when generating for the bootstrap */
     if (!bootstrap || strcmp(bootstrap, "true")) {
-        g_fileWrite(result, "#include \"cortex.h\"\n\n");
+        g_fileWrite(result, "#include \"corto.h\"\n\n");
     } else {
         g_fileWrite(result, "#include \"cx_def.h\"\n\n");
     }
@@ -632,7 +632,7 @@ static int c_typeDefine(cx_object o, void* userData) {
 }
 
 /* Generator main */
-cx_int16 cortex_genMain(cx_generator g) {
+cx_int16 corto_genMain(cx_generator g) {
     c_typeWalk_t walkData;
 
     /* Resolve imports so include files for external can be added. */
@@ -647,9 +647,9 @@ cx_int16 cortex_genMain(cx_generator g) {
     walkData.g = g;
     walkData.prefixComma = FALSE;
 
-    /* Default prefixes for cortex namespaces */
-    gen_parse(g, cortex_o, FALSE, FALSE, "");
-    gen_parse(g, cortex_lang_o, FALSE, FALSE, "cx");
+    /* Default prefixes for corto namespaces */
+    gen_parse(g, corto_o, FALSE, FALSE, "");
+    gen_parse(g, corto_lang_o, FALSE, FALSE, "cx");
 
     /* Walk classes, print cast-macro's */
     g_fileWrite(walkData.header, "\n");

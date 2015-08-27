@@ -2,4 +2,4 @@
 COMPONENTS = [] << 
     :c
     
-require "#{ENV['CORTEX_BUILD']}/forward"
+require "#{ENV['CORTO_BUILD']}/forward"

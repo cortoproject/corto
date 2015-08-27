@@ -7,7 +7,7 @@
 #ifndef tc_classPrimitives_H
 #define tc_classPrimitives_H
 
-#include "cortex.h"
+#include "corto.h"
 #include "tc_stringser__type.h"
 
 #ifdef __cplusplus

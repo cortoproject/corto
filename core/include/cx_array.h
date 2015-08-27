@@ -6,7 +6,7 @@
 #ifndef cx_array_H
 #define cx_array_H
 
-#include "cortex.h"
+#include "corto.h"
 #include "cx_collection.h"
 #include "cx__type.h"
 #include "cx__api.h"
@@ -16,13 +16,13 @@
 extern "C" {
 #endif
 
-/* ::cortex::lang::array::construct() */
+/* ::corto::lang::array::construct() */
 cx_int16 cx_array_construct(cx_array _this);
 
-/* ::cortex::lang::array::destruct() */
+/* ::corto::lang::array::destruct() */
 cx_void cx_array_destruct(cx_array _this);
 
-/* ::cortex::lang::array::init() */
+/* ::corto::lang::array::init() */
 cx_int16 cx_array_init(cx_array _this);
 
 #ifdef __cplusplus

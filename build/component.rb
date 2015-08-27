@@ -1,4 +1,4 @@
-require "#{ENV['CORTEX_BUILD']}/version"
+require "#{ENV['CORTO_BUILD']}/version"
 
 if not defined? TARGET then
     raise "library: TARGET not specified\n"
@@ -7,6 +7,6 @@ end
 INCLUDE ||= []
 
 TARGETPATH ||= "components"
-INCLUDE << "#{ENV['CORTEX_HOME']}/include/cortex/#{VERSION}/components"
+INCLUDE << "#{ENV['CORTO_HOME']}/include/corto/#{VERSION}/components"
 
-require "#{ENV['CORTEX_BUILD']}/library"
+require "#{ENV['CORTO_BUILD']}/library"

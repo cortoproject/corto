@@ -1,9 +1,0 @@
-PACKAGE = 'cortex::Fast'
-
-YACC = "fast.y"
-LEX = "fast.l"
-
-CFLAGS = ["-Wunused-parameter"]
-
-require "#{ENV['CORTEX_BUILD']}/lexyacc"
-require "#{ENV['CORTEX_BUILD']}/package"

@@ -5,7 +5,7 @@
  *      Author: sander
  */
 
-#include "cortex.h"
+#include "corto.h"
 #include "cx_generator.h"
 #include "ctype.h"
 #include "stdarg.h"
@@ -217,12 +217,12 @@ cx_int16 gen_load(cx_generator g, cx_string library) {
     }
 
     /* Load actions */
-    g->start_action = (g_startAction)cx_dlProc(g->library, "cortex_genMain");
+    g->start_action = (g_startAction)cx_dlProc(g->library, "corto_genMain");
     if (!g->start_action) {
-        cx_error("g_Load: unresolved symbol 'cortex_genMain'");
+        cx_error("g_Load: unresolved symbol 'corto_genMain'");
         goto error;
     }
-    g->id_action = (g_idAction)cx_dlProc(g->library, "cortex_genId");
+    g->id_action = (g_idAction)cx_dlProc(g->library, "corto_genId");
 
     /* Function is allowed to be absent. */
 
@@ -386,7 +386,7 @@ cx_int16 g_serializeImportsReference(cx_serializer s, cx_value *v, void* userDat
                     parent = cx_parentof(parent);
                 }
 
-                if ((parent != root_o) && (parent != cortex_o) && (parent != cortex_lang_o)) {
+                if ((parent != root_o) && (parent != corto_o) && (parent != corto_lang_o)) {
                     if (!g->imports) {
                         g->imports = cx_llNew();
                     }
@@ -942,7 +942,7 @@ g_file g_fileOpen(cx_generator g, cx_string name) {
 /* Open hidden file for writing. */
 g_file g_hiddenFileOpen(cx_generator g, cx_string name) {
     cx_char filepath[512];
-    sprintf(filepath, ".cortex/%s", name);
+    sprintf(filepath, ".corto/%s", name);
     return g_fileOpenIntern(g, filepath);
 }
 

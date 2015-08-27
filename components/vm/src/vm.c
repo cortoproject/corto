@@ -5,7 +5,7 @@
  *      Author: sander
  */
 
-#include "cortex.h"
+#include "corto.h"
 
 #include "vm.h"
 #include "vm_operands.h"
@@ -1260,7 +1260,7 @@ void vm_callDestruct(cx_function f) {
     vm_programFree((vm_program)f->implData);
 }
 
-int cortexmain(int argc, char* argv[]) {
+int cortomain(int argc, char* argv[]) {
     CX_UNUSED(argc);
     CX_UNUSED(argv);
     cx_callRegisterBinding(vm_call, NULL, NULL, (cx_callDestructHandler)vm_callDestruct);

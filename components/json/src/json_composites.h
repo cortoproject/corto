@@ -3,7 +3,7 @@
 
 #include "parson.h"
 
-#include "cortex.h"
+#include "corto.h"
 
 #ifdef __cplusplus
 extern "C" {

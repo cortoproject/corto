@@ -1,5 +1,5 @@
 
-#include "cortex.h"
+#include "corto.h"
 
 /* Resolve anonymous object */
 static cx_char* cx_resolveAnonymous(cx_object scope, cx_object o, cx_string str, cx_object* out) {
@@ -38,7 +38,7 @@ cx_object cx_resolve(cx_object _scope, cx_string str) {
     cx_char ch;
     cx_bool overload;
     cx_bool fullyQualified = FALSE;
-    cx_bool cortexSearched = FALSE;
+    cx_bool cortoSearched = FALSE;
     int step = 2;
 
     if (!*str) {
@@ -49,7 +49,7 @@ cx_object cx_resolve(cx_object _scope, cx_string str) {
         return cx_resolveAddress(str);
     }
 
-    _scope_start = cortex_lang_o;
+    _scope_start = corto_lang_o;
     scope = _scope_start;
 
     if (!_scope) {
@@ -78,8 +78,8 @@ repeat:
         }
         while (ch) {
             overload = FALSE;
-            if (scope == cortex_o) {
-                cortexSearched = TRUE;
+            if (scope == corto_o) {
+                cortoSearched = TRUE;
             }
 
             bptr = buffer;
@@ -113,7 +113,7 @@ repeat:
                         lookup = o;
 
                         if (!o) {
-                            if (!i && (prev != cortex_lang_o) && cx_instanceof(cx_type(cx_package_o), prev)) {
+                            if (!i && (prev != corto_lang_o) && cx_instanceof(cx_type(cx_package_o), prev)) {
                                 cx_id load, id;
                                 sprintf(load, "%s/%s", cx_fullname(prev, id), buffer);
                                 int oldEcho = cx_toggleEcho(0);
@@ -175,11 +175,11 @@ repeat:
         if (o) break;
     } while((step == 1) && (scope = cx_parentof(scope)));
 
-    /* Do lookup in actual scope first, then in cortex */
+    /* Do lookup in actual scope first, then in corto */
     if (!o && step && !fullyQualified) {
         switch(--step) {
         case 1:
-            if ((_scope == cortex_o) || (_scope == cortex_lang_o)) {
+            if ((_scope == corto_o) || (_scope == corto_lang_o)) {
                 _scope_start = scope = root_o;
             } else {
                 _scope_start = scope = _scope;
@@ -187,8 +187,8 @@ repeat:
             goto repeat;
             break;
         case 0:
-            if (!cortexSearched) {
-                _scope_start = scope = cortex_o;
+            if (!cortoSearched) {
+                _scope_start = scope = corto_o;
                 goto repeat;
             }
             break;    

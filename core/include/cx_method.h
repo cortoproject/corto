@@ -6,7 +6,7 @@
 #ifndef cx_method_H
 #define cx_method_H
 
-#include "cortex.h"
+#include "corto.h"
 #include "cx__type.h"
 #include "cx__api.h"
 #include "cx__meta.h"
@@ -15,10 +15,10 @@
 extern "C" {
 #endif
 
-/* ::cortex::lang::method::bind() */
+/* ::corto::lang::method::bind() */
 cx_int16 cx_method_bind(cx_method _this);
 
-/* ::cortex::lang::method::init() */
+/* ::corto::lang::method::init() */
 cx_int16 cx_method_init(cx_method _this);
 
 #ifdef __cplusplus

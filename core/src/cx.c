@@ -41,16 +41,16 @@ struct cx_exitHandler {
 #define VERSION_SUFFIX "alpha"
 
 #ifdef VERSION_SUFFIX
-const char* CORTEX_VERSION = VERSION_MAJOR "." VERSION_MINOR "." VERSION_PATCH "-" VERSION_SUFFIX;
-const char* CORTEX_VERSION_SUFFIX = VERSION_SUFFIX;
+const char* CORTO_VERSION = VERSION_MAJOR "." VERSION_MINOR "." VERSION_PATCH "-" VERSION_SUFFIX;
+const char* CORTO_VERSION_SUFFIX = VERSION_SUFFIX;
 #else
-const char* CORTEX_VERSION = VERSION_MAJOR "." VERSION_MINOR "." VERSION_PATCH;
-const char* CORTEX_VERSION_SUFFIX = "";
+const char* CORTO_VERSION = VERSION_MAJOR "." VERSION_MINOR "." VERSION_PATCH;
+const char* CORTO_VERSION_SUFFIX = "";
 #endif
 
-const char* CORTEX_VERSION_MAJOR = VERSION_MAJOR;
-const char* CORTEX_VERSION_MINOR = VERSION_MINOR;
-const char* CORTEX_VERSION_PATCH = VERSION_PATCH;
+const char* CORTO_VERSION_MAJOR = VERSION_MAJOR;
+const char* CORTO_VERSION_MINOR = VERSION_MINOR;
+const char* CORTO_VERSION_PATCH = VERSION_PATCH;
 
 cx_mutex_s cx_adminLock;
 static cx_ll cx_exitHandlers = NULL;
@@ -109,7 +109,7 @@ int8_t CX_DEBUG_ENABLED = 0;
     SSO_OP_CLASS(op, observer);\
     SSO_OP_CLASS(op, metaprocedure);
 
-/* ::cortex::lang objects (types only) */
+/* ::corto::lang objects (types only) */
 #define SSO_OP_TYPE(op)\
     SSO_OP_PRIM(op, octet);\
     SSO_OP_PRIM(op, bool);\
@@ -605,19 +605,19 @@ static void cx_decreaseRefType(cx_object o, cx_uint32 size) {
 
 int cx_start(void) {
 
-    /* CORTEX_BUILD is where the buildsystem is located */
-    if (!cx_getenv("CORTEX_BUILD")) {
-        cx_setenv("CORTEX_BUILD", "/usr/lib/cortex/%s/build", CORTEX_VERSION);
+    /* CORTO_BUILD is where the buildsystem is located */
+    if (!cx_getenv("CORTO_BUILD")) {
+        cx_setenv("CORTO_BUILD", "/usr/lib/corto/%s/build", CORTO_VERSION);
     }
 
-    /* CORTEX_HOME is where cortex binaries are located */
-    if (!cx_getenv("CORTEX_HOME")) {
-        cx_setenv("CORTEX_HOME", "/usr", CORTEX_VERSION);
+    /* CORTO_HOME is where corto binaries are located */
+    if (!cx_getenv("CORTO_HOME")) {
+        cx_setenv("CORTO_HOME", "/usr", CORTO_VERSION);
     }
 
-    /* CORTEX_TARGET is where a project will be built */
-    if (!cx_getenv("CORTEX_TARGET")) {
-        cx_setenv("CORTEX_TARGET", "~/.cortex");
+    /* CORTO_TARGET is where a project will be built */
+    if (!cx_getenv("CORTO_TARGET")) {
+        cx_setenv("CORTO_TARGET", "~/.corto");
     }
 
     /* Initialize threadkeys */
@@ -639,13 +639,13 @@ int cx_start(void) {
 
     /* Initialize builtin scopes */
     cx_initObject(root_o);
-    cx_initObject(cortex_o);
-    cx_initObject(cortex_lang_o);
+    cx_initObject(corto_o);
+    cx_initObject(corto_lang_o);
 
     /* Define builtin scopes */
     cx_defineObject(root_o);
-    cx_defineObject(cortex_o);
-    cx_defineObject(cortex_lang_o);
+    cx_defineObject(corto_o);
+    cx_defineObject(corto_lang_o);
 
     /* Init objects */
     SSO_OP_TYPE(cx_initType);
@@ -779,8 +779,8 @@ void cx_stop(void) {
     SSO_OP_TYPE(cx_releaseType);
 
     /* Deinitialize root */
-    cx__freeSSO(cortex_lang_o);
-    cx__freeSSO(cortex_o);
+    cx__freeSSO(corto_lang_o);
+    cx__freeSSO(corto_o);
 
     cx__freeSSO(root_o);
 
@@ -799,8 +799,8 @@ void cx_stop(void) {
 
 cx_bool cx_isbuiltin(cx_object o) {
     if (o == root_o) return TRUE;
-    if (o == cortex_o) return TRUE;
-    if (o == cortex_lang_o) return TRUE;
+    if (o == corto_o) return TRUE;
+    if (o == corto_lang_o) return TRUE;
     SSO_OP_TYPE(CX_CHECKBUILTIN_ARG);
     SSO_OP_OBJECT(CX_CHECKBUILTIN);
     SSO_OP_OBJECT_2ND(CX_CHECKBUILTIN);

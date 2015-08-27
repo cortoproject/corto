@@ -7,7 +7,7 @@
 #ifndef tc_stringser__type_H
 #define tc_stringser__type_H
 
-#include "cortex.h"
+#include "corto.h"
 
 #ifdef __cplusplus
 extern "C" {

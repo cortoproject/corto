@@ -26,8 +26,8 @@ cx_int16 cx__enum_bindConstant(cx_enum _this, cx_constant* c) {
 }
 /* $end */
 
-/* ::cortex::lang::enum::constant(int32 value) */
-/* $header(::cortex::lang::enum::constant) */
+/* ::corto::lang::enum::constant(int32 value) */
+/* $header(::corto::lang::enum::constant) */
 struct cx_enum_findConstant_t {
     cx_int32 value;
     cx_constant* o;
@@ -44,7 +44,7 @@ static int cx_enum_findConstant(cx_object o, void* udata) {
 }
 /* $end */
 cx_object cx_enum_constant(cx_enum _this, cx_int32 value) {
-/* $begin(::cortex::lang::enum::constant) */
+/* $begin(::corto::lang::enum::constant) */
     struct cx_enum_findConstant_t walkData;
 
     /* Walk scope */
@@ -56,9 +56,9 @@ cx_object cx_enum_constant(cx_enum _this, cx_int32 value) {
 /* $end */
 }
 
-/* ::cortex::lang::enum::construct() */
+/* ::corto::lang::enum::construct() */
 cx_int16 cx_enum_construct(cx_enum _this) {
-/* $begin(::cortex::lang::enum::construct) */
+/* $begin(::corto::lang::enum::construct) */
     cx_uint32 i;
 
     /* Define constants */
@@ -70,17 +70,17 @@ cx_int16 cx_enum_construct(cx_enum _this) {
 /* $end */
 }
 
-/* ::cortex::lang::enum::destruct() */
+/* ::corto::lang::enum::destruct() */
 cx_void cx_enum_destruct(cx_enum _this) {
-/* $begin(::cortex::lang::enum::destruct) */
+/* $begin(::corto::lang::enum::destruct) */
     cx_clear(cx_collection(cx_objectSeq_o), &_this->constants);
     cx_type_destruct(cx_type(_this));
 /* $end */
 }
 
-/* ::cortex::lang::enum::init() */
+/* ::corto::lang::enum::init() */
 cx_int16 cx_enum_init(cx_enum _this) {
-/* $begin(::cortex::lang::enum::init) */
+/* $begin(::corto::lang::enum::init) */
     cx_primitive(_this)->kind = CX_ENUM;
     cx_primitive(_this)->width = CX_WIDTH_32;
     cx_setref(&cx_type(_this)->defaultType, cx_constant_o);

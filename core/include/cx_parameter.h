@@ -6,7 +6,7 @@
 #ifndef cx_parameter_H
 #define cx_parameter_H
 
-#include "cortex.h"
+#include "corto.h"
 #include "cx__type.h"
 #include "cx__api.h"
 #include "cx__meta.h"

@@ -1,0 +1,5 @@
+TARGET = :corto
+
+CFLAGS = ["-Wunused-parameter"]
+    
+require "#{ENV['CORTO_BUILD']}/tool"

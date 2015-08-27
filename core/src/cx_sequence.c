@@ -26,9 +26,9 @@ int cx_sequence_alloc(cx_collection _this, cx_void* collection, cx_uint32 elemen
 }
 /* $end */
 
-/* ::cortex::lang::sequence::construct() */
+/* ::corto::lang::sequence::construct() */
 cx_int16 cx_sequence_construct(cx_sequence _this) {
-/* $begin(::cortex::lang::sequence::construct) */
+/* $begin(::corto::lang::sequence::construct) */
     cx_type(_this)->hasResources = TRUE;
     cx_type(_this)->size = sizeof(__dummySeq);
     cx_type(_this)->alignment = CX_ALIGNMENT(__dummySeq);
@@ -42,17 +42,17 @@ error:
 /* $end */
 }
 
-/* ::cortex::lang::sequence::init() */
+/* ::corto::lang::sequence::init() */
 cx_int16 cx_sequence_init(cx_sequence _this) {
-/* $begin(::cortex::lang::sequence::init) */
+/* $begin(::corto::lang::sequence::init) */
     cx_collection(_this)->kind = CX_SEQUENCE;
     return cx_collection_init(cx_collection(_this));
 /* $end */
 }
 
-/* ::cortex::lang::sequence::size(uint32 size) */
+/* ::corto::lang::sequence::size(uint32 size) */
 cx_void cx_sequence_size(cx_any _this, cx_uint32 size) {
-/* $begin(::cortex::lang::sequence::size) */
+/* $begin(::corto::lang::sequence::size) */
     cx_uint32 oldSize, elementSize;
 
     oldSize = ((cx_objectSeq*)_this.value)->length;

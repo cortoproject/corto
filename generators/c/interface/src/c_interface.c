@@ -5,7 +5,7 @@
  *      Author: sander
  */
 
-#include "cortex.h"
+#include "corto.h"
 #include "cx_generator.h"
 #include "c_common.h"
 
@@ -618,7 +618,7 @@ static g_file c_interfaceHeaderFileOpen(cx_generator g, cx_object o, c_typeWalk_
     g_fileWrite(result, " */\n\n");
     g_fileWrite(result, "#ifndef %s_H\n", name);
     g_fileWrite(result, "#define %s_H\n\n", name);
-    g_fileWrite(result, "#include \"cortex.h\"\n");
+    g_fileWrite(result, "#include \"corto.h\"\n");
 
     /* If the class extends from another class, include header of baseclass */
     if (cx_class_instanceof(cx_class_o, o) && cx_interface(o)->base) {
@@ -834,7 +834,7 @@ error:
 }
 
 /* Entry point for generator */
-int cortex_genMain(cx_generator g) {
+int corto_genMain(cx_generator g) {
     c_typeWalk_t walkData;
 
     /* Create source and include directories */
@@ -842,12 +842,12 @@ int cortex_genMain(cx_generator g) {
     cx_mkdir("include");
 
     if (strcmp(gen_getAttribute(g, "bootstrap"), "true")) {
-        cx_mkdir(".cortex");
+        cx_mkdir(".corto");
     }
 
-    /* Default prefixes for cortex namespaces */
-    gen_parse(g, cortex_o, FALSE, FALSE, "");
-    gen_parse(g, cortex_lang_o, FALSE, FALSE, "cx");
+    /* Default prefixes for corto namespaces */
+    gen_parse(g, corto_o, FALSE, FALSE, "");
+    gen_parse(g, corto_lang_o, FALSE, FALSE, "cx");
 
     /* Prepare walkData, create header- and sourcefile */
     walkData.g = g;

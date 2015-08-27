@@ -6,7 +6,7 @@
 #ifndef cx_virtual_H
 #define cx_virtual_H
 
-#include "cortex.h"
+#include "corto.h"
 #include "cx__type.h"
 #include "cx__api.h"
 #include "cx__meta.h"
@@ -15,7 +15,7 @@
 extern "C" {
 #endif
 
-/* ::cortex::lang::virtual::init() */
+/* ::corto::lang::virtual::init() */
 cx_int16 cx_virtual_init(cx_virtual _this);
 
 #ifdef __cplusplus

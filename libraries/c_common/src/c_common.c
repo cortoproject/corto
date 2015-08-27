@@ -52,7 +52,7 @@ static int c_typeKeywordEscape(cx_string inputName, cx_string buffer) {
     return 0;
 }
 
-cx_string cortex_genId(cx_string str, cx_id id) {
+cx_string corto_genId(cx_string str, cx_id id) {
     cx_char *ptr, ch, *idptr;
 
     ptr = str;

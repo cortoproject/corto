@@ -8,7 +8,7 @@
 #ifndef C_TYPE_H_
 #define C_TYPE_H_
 
-#include "cortex.h"
+#include "corto.h"
 #include "cx_generator.h"
 
 #ifdef __cplusplus

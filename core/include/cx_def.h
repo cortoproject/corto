@@ -32,11 +32,11 @@ extern "C" {
 
 #define CX_NULL_STRING ("null")
 
-extern const char* CORTEX_VERSION;
-extern const char* CORTEX_VERSION_MAJOR;
-extern const char* CORTEX_VERSION_MINOR;
-extern const char* CORTEX_VERSION_PATCH;
-extern const char* CORTEX_VERSION_SUFFIX;
+extern const char* CORTO_VERSION;
+extern const char* CORTO_VERSION_MAJOR;
+extern const char* CORTO_VERSION_MINOR;
+extern const char* CORTO_VERSION_PATCH;
+extern const char* CORTO_VERSION_SUFFIX;
 
 typedef int (*cx_compareAction)(void* o1, void* o2);
 typedef int (*cx_walkAction)(void* o, void* userData);

@@ -1,6 +1,6 @@
 /* cx__wrapper.c
  *
- * This file contains wrapper functions for ::cortex::lang.
+ * This file contains wrapper functions for ::corto::lang.
  */
 
 #include "cx.h"
@@ -56,7 +56,7 @@ void __cx_character_init(cx_function f, void *result, void *args) {
         *(void**)args);
 }
 
-/* virtual ::cortex::lang::class::allocSize() */
+/* virtual ::corto::lang::class::allocSize() */
 cx_uint32 cx_class_allocSize(cx_class _this) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -147,7 +147,7 @@ void __cx_class_resolveInterfaceMethod(cx_function f, void *result, void *args) 
         *(cx_uint32*)((intptr_t)args + sizeof(void*) + sizeof(cx_interface)));
 }
 
-/* virtual ::cortex::lang::collection::castable(type type) */
+/* virtual ::corto::lang::collection::castable(type type) */
 cx_bool cx_collection_castable(cx_collection _this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -178,7 +178,7 @@ void __cx_collection_castable_v(cx_function f, void *result, void *args) {
         *(cx_type*)((intptr_t)args + sizeof(void*)));
 }
 
-/* virtual ::cortex::lang::collection::compatible(type type) */
+/* virtual ::corto::lang::collection::compatible(type type) */
 cx_bool cx_collection_compatible(cx_collection _this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -243,7 +243,7 @@ void __cx_delegate_bind(cx_function f, void *result, void *args) {
         *(cx_function*)args);
 }
 
-/* virtual ::cortex::lang::delegate::castable(type type) */
+/* virtual ::corto::lang::delegate::castable(type type) */
 cx_bool cx_delegate_castable(cx_delegate _this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -274,7 +274,7 @@ void __cx_delegate_castable_v(cx_function f, void *result, void *args) {
         *(cx_type*)((intptr_t)args + sizeof(void*)));
 }
 
-/* virtual ::cortex::lang::delegate::compatible(type type) */
+/* virtual ::corto::lang::delegate::compatible(type type) */
 cx_bool cx_delegate_compatible(cx_delegate _this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -319,7 +319,7 @@ void __cx_delegate_instanceof(cx_function f, void *result, void *args) {
         *(cx_object*)((intptr_t)args + sizeof(void*)));
 }
 
-/* virtual ::cortex::lang::dispatcher::post(event e) */
+/* virtual ::corto::lang::dispatcher::post(event e) */
 void cx_dispatcher_post(cx_dispatcher _this, cx_event e) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -377,7 +377,7 @@ void __cx_enum_init(cx_function f, void *result, void *args) {
         *(void**)args);
 }
 
-/* virtual ::cortex::lang::event::handle() */
+/* virtual ::corto::lang::event::handle() */
 void cx_event_handle(cx_event _this) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -469,7 +469,7 @@ void __cx_interface_bindMethod(cx_function f, void *result, void *args) {
         *(cx_method*)((intptr_t)args + sizeof(void*)));
 }
 
-/* virtual ::cortex::lang::interface::compatible(type type) */
+/* virtual ::corto::lang::interface::compatible(type type) */
 cx_bool cx_interface_compatible(cx_interface _this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -522,7 +522,7 @@ void __cx_interface_init(cx_function f, void *result, void *args) {
         *(void**)args);
 }
 
-/* virtual ::cortex::lang::interface::resolveMember(string name) */
+/* virtual ::corto::lang::interface::resolveMember(string name) */
 cx_member cx_interface_resolveMember(cx_interface _this, cx_string name) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -574,7 +574,7 @@ void __cx_interface_resolveMethodId(cx_function f, void *result, void *args) {
         *(cx_string*)((intptr_t)args + sizeof(void*)));
 }
 
-/* virtual ::cortex::lang::iterator::castable(type type) */
+/* virtual ::corto::lang::iterator::castable(type type) */
 cx_bool cx_iterator_castable(cx_iterator _this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -605,7 +605,7 @@ void __cx_iterator_castable_v(cx_function f, void *result, void *args) {
         *(cx_type*)((intptr_t)args + sizeof(void*)));
 }
 
-/* virtual ::cortex::lang::iterator::compatible(type type) */
+/* virtual ::corto::lang::iterator::compatible(type type) */
 cx_bool cx_iterator_compatible(cx_iterator _this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -752,7 +752,7 @@ void __cx_method_init(cx_function f, void *result, void *args) {
         *(void**)args);
 }
 
-/* virtual ::cortex::lang::observableEvent::handle() */
+/* virtual ::corto::lang::observableEvent::handle() */
 void cx_observableEvent_handle(cx_observableEvent _this) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -825,7 +825,7 @@ void __cx_observer_unbind(cx_function f, void *result, void *args) {
         *(cx_observer*)args);
 }
 
-/* virtual ::cortex::lang::primitive::castable(type type) */
+/* virtual ::corto::lang::primitive::castable(type type) */
 cx_bool cx_primitive_castable(cx_primitive _this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -856,7 +856,7 @@ void __cx_primitive_castable_v(cx_function f, void *result, void *args) {
         *(cx_type*)((intptr_t)args + sizeof(void*)));
 }
 
-/* virtual ::cortex::lang::primitive::compatible(type type) */
+/* virtual ::corto::lang::primitive::compatible(type type) */
 cx_bool cx_primitive_compatible(cx_primitive _this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -938,7 +938,7 @@ void __cx_sequence_size(cx_function f, void *result, void *args) {
         *(cx_uint32*)((intptr_t)args + sizeof(cx_any)));
 }
 
-/* virtual ::cortex::lang::struct::castable(type type) */
+/* virtual ::corto::lang::struct::castable(type type) */
 cx_bool cx_struct_castable(cx_struct _this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -969,7 +969,7 @@ void __cx_struct_castable_v(cx_function f, void *result, void *args) {
         *(cx_type*)((intptr_t)args + sizeof(void*)));
 }
 
-/* virtual ::cortex::lang::struct::compatible(type type) */
+/* virtual ::corto::lang::struct::compatible(type type) */
 cx_bool cx_struct_compatible(cx_struct _this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -1014,7 +1014,7 @@ void __cx_struct_init(cx_function f, void *result, void *args) {
         *(void**)args);
 }
 
-/* virtual ::cortex::lang::struct::resolveMember(string name) */
+/* virtual ::corto::lang::struct::resolveMember(string name) */
 cx_member cx_struct_resolveMember(cx_struct _this, cx_string name) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -1059,7 +1059,7 @@ void __cx_type_alignmentof(cx_function f, void *result, void *args) {
         *(void**)args);
 }
 
-/* virtual ::cortex::lang::type::allocSize() */
+/* virtual ::corto::lang::type::allocSize() */
 cx_uint32 cx_type_allocSize(cx_type _this) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -1090,7 +1090,7 @@ void __cx_type_allocSize_v(cx_function f, void *result, void *args) {
         *(void**)args);
 }
 
-/* virtual ::cortex::lang::type::castable(type type) */
+/* virtual ::corto::lang::type::castable(type type) */
 cx_bool cx_type_castable(cx_type _this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
@@ -1142,7 +1142,7 @@ void __cx_type_compare(cx_function f, void *result, void *args) {
         *(cx_any*)((intptr_t)args + sizeof(cx_any)));
 }
 
-/* virtual ::cortex::lang::type::compatible(type type) */
+/* virtual ::corto::lang::type::compatible(type type) */
 cx_bool cx_type_compatible(cx_type _this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;

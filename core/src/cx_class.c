@@ -13,7 +13,7 @@
 
 /* An object of a class-type has extra information appended to it's value. This is the information
 * required to store callbacks and observers. The memory layout
-* of a class-instantiation is (exclusive cortex object-header):
+* of a class-instantiation is (exclusive corto object-header):
 *
 * +-----------------+
 * |  object-value   |
@@ -207,9 +207,9 @@ void cx_class_detachObservers(cx_class _this, cx_object object) {
 
 /* $end */
 
-/* ::cortex::lang::class::allocSize() */
+/* ::corto::lang::class::allocSize() */
 cx_uint32 cx_class_allocSize_v(cx_class _this) {
-/* $begin(::cortex::lang::class::allocSize) */
+/* $begin(::corto::lang::class::allocSize) */
     cx_uint32 observerCount;
     cx_uint32 size;
 
@@ -223,9 +223,9 @@ cx_uint32 cx_class_allocSize_v(cx_class _this) {
 /* $end */
 }
 
-/* ::cortex::lang::class::bindObserver(observer observer) */
+/* ::corto::lang::class::bindObserver(observer observer) */
 cx_void cx_class_bindObserver(cx_class _this, cx_observer observer) {
-/* $begin(::cortex::lang::class::bindObserver) */
+/* $begin(::corto::lang::class::bindObserver) */
     _this->observers.buffer = cx_realloc(_this->observers.buffer, (_this->observers.length + 1) * sizeof(cx_observer));
     _this->observers.buffer[_this->observers.length] = observer;
     _this->observers.length++;
@@ -234,9 +234,9 @@ cx_void cx_class_bindObserver(cx_class _this, cx_observer observer) {
 /* $end */
 }
 
-/* ::cortex::lang::class::construct() */
+/* ::corto::lang::class::construct() */
 cx_int16 cx_class_construct(cx_class _this) {
-/* $begin(::cortex::lang::class::construct) */
+/* $begin(::corto::lang::class::construct) */
     cx_int16 result;
     cx_uint32 i;
 
@@ -269,9 +269,9 @@ cx_int16 cx_class_construct(cx_class _this) {
 /* $end */
 }
 
-/* ::cortex::lang::class::destruct() */
+/* ::corto::lang::class::destruct() */
 cx_void cx_class_destruct(cx_class _this) {
-/* $begin(::cortex::lang::class::destruct) */
+/* $begin(::corto::lang::class::destruct) */
     cx_uint32 i,j;
     cx_interfaceVector *v;
 
@@ -300,9 +300,9 @@ cx_void cx_class_destruct(cx_class _this) {
 /* $end */
 }
 
-/* ::cortex::lang::class::findObserver(object observable) */
+/* ::corto::lang::class::findObserver(object observable) */
 cx_observer cx_class_findObserver(cx_class _this, cx_object observable) {
-/* $begin(::cortex::lang::class::findObserver) */
+/* $begin(::corto::lang::class::findObserver) */
     cx_uint32 i;
     cx_observer result = NULL;
 
@@ -317,9 +317,9 @@ cx_observer cx_class_findObserver(cx_class _this, cx_object observable) {
 /* $end */
 }
 
-/* ::cortex::lang::class::init() */
+/* ::corto::lang::class::init() */
 cx_int16 cx_class_init(cx_class _this) {
-/* $begin(::cortex::lang::class::init) */
+/* $begin(::corto::lang::class::init) */
     if (cx_struct_init(cx_struct(_this))) {
         goto error;
     }
@@ -333,9 +333,9 @@ error:
 /* $end */
 }
 
-/* ::cortex::lang::class::instanceof(object object) */
+/* ::corto::lang::class::instanceof(object object) */
 cx_bool cx_class_instanceof(cx_class _this, cx_object object) {
-/* $begin(::cortex::lang::class::instanceof) */
+/* $begin(::corto::lang::class::instanceof) */
     cx_type t;
     cx_bool result;
 
@@ -358,18 +358,18 @@ cx_bool cx_class_instanceof(cx_class _this, cx_object object) {
 /* $end */
 }
 
-/* ::cortex::lang::class::privateObserver(object object,observer observer) */
+/* ::corto::lang::class::privateObserver(object object,observer observer) */
 cx_observer cx_class_privateObserver(cx_class _this, cx_object object, cx_observer observer) {
-/* $begin(::cortex::lang::class::privateObserver) */
+/* $begin(::corto::lang::class::privateObserver) */
     CX_UNUSED(_this);
     CX_UNUSED(object);
     return observer; /* Workaround - this function can be removed */
 /* $end */
 }
 
-/* ::cortex::lang::class::resolveInterfaceMethod(interface interface,uint32 method) */
+/* ::corto::lang::class::resolveInterfaceMethod(interface interface,uint32 method) */
 cx_method cx_class_resolveInterfaceMethod(cx_class _this, cx_interface interface, cx_uint32 method) {
-/* $begin(::cortex::lang::class::resolveInterfaceMethod) */
+/* $begin(::corto::lang::class::resolveInterfaceMethod) */
     cx_uint32 i;
     cx_interfaceVector *v;
 

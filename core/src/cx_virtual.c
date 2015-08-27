@@ -8,9 +8,9 @@
 
 #include "cx.h"
 
-/* ::cortex::lang::virtual::init() */
+/* ::corto::lang::virtual::init() */
 cx_int16 cx_virtual_init(cx_virtual _this) {
-/* $begin(::cortex::lang::virtual::init) */
+/* $begin(::corto::lang::virtual::init) */
     cx_method(_this)->virtual = TRUE;
     return cx_method_init(cx_method(_this));
 /* $end */

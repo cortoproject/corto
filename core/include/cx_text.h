@@ -6,7 +6,7 @@
 #ifndef cx_text_H
 #define cx_text_H
 
-#include "cortex.h"
+#include "corto.h"
 #include "cx_primitive.h"
 #include "cx__type.h"
 #include "cx__api.h"
@@ -16,7 +16,7 @@
 extern "C" {
 #endif
 
-/* ::cortex::lang::text::init() */
+/* ::corto::lang::text::init() */
 cx_int16 cx_text_init(cx_text _this);
 
 #ifdef __cplusplus

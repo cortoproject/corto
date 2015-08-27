@@ -7,7 +7,7 @@
 #ifndef tc_structNested_H
 #define tc_structNested_H
 
-#include "cortex.h"
+#include "corto.h"
 #include "tc_stringser__type.h"
 
 #ifdef __cplusplus

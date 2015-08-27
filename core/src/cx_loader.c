@@ -5,7 +5,7 @@
  *      Author: sander
  */
 
-#include "cortex.h"
+#include "corto.h"
 #include "stdlib.h"
 #include "string.h"
 #include <sys/stat.h>
@@ -147,7 +147,7 @@ static cx_string cx_packageToFile(cx_string package) {
 }
 
 /*
- * Load a Cortex library
+ * Load a Corto library
  * Receives the absolute path to the lib<name>.so file.
  */
 static int cx_loadLibrary(cx_string fileName) {
@@ -160,15 +160,15 @@ static int cx_loadLibrary(cx_string fileName) {
     }
 
     /* Lookup main function */
-    proc = (int(*)(int,char*[]))cx_dlProc(dl, "cortexmain");
+    proc = (int(*)(int,char*[]))cx_dlProc(dl, "cortomain");
     if (!proc) {
-        cx_error("%s: unresolved 'cortexmain'", fileName);
+        cx_error("%s: unresolved 'cortomain'", fileName);
         goto error;
     }
 
     /* Call main */
     if (proc(0, NULL)) {
-        cx_error("%s: cortexmain failed", fileName);
+        cx_error("%s: cortomain failed", fileName);
         goto error;
     }
 
@@ -197,7 +197,7 @@ static cx_ll filesLoaded = NULL;
 /* Load xml interface */
 static int cx_loadXml(void) {
     int result;
-    cx_string path = cx_envparse("$CORTEX_TARGET/lib/cortex/%s/components/libxml.so", CORTEX_VERSION);
+    cx_string path = cx_envparse("$CORTO_TARGET/lib/corto/%s/components/libxml.so", CORTO_VERSION);
     result = cx_loadLibrary(path);
     cx_dealloc(path);
     return result;
@@ -232,7 +232,7 @@ int cx_load(cx_string str) {
 
     /* Handle known extensions */
     if (!strcmp(ext, "cx")) {
-        cx_load("cortex::Fast");
+        cx_load("corto::Fast");
     } else if (!strcmp(ext, "xml")) {
         cx_loadXml();
     }
@@ -267,10 +267,10 @@ cx_string cx_locateLib(cx_string lib) {
         goto error;
     }
 
-    usrPath = cx_envparse("/usr/lib/cortex/%s/%s", CORTEX_VERSION, lib);
+    usrPath = cx_envparse("/usr/lib/corto/%s/%s", CORTO_VERSION, lib);
 
-    if (strcmp(cx_getenv("CORTEX_TARGET"), "/usr")) {
-        homePath = cx_envparse("$CORTEX_TARGET/lib/cortex/%s/%s", CORTEX_VERSION, lib);
+    if (strcmp(cx_getenv("CORTO_TARGET"), "/usr")) {
+        homePath = cx_envparse("$CORTO_TARGET/lib/corto/%s/%s", CORTO_VERSION, lib);
 
         if (cx_fileTest(homePath)) {
             struct stat attr;
@@ -354,7 +354,7 @@ static int cx_fileLoader(cx_string file, void* udata) {
 
     sprintf(testName, "%s.cx", file);
     if (cx_fileTest(testName)) {
-        if (!cx_load("cortex/Fast")) {
+        if (!cx_load("corto/Fast")) {
             return cx_load(testName);
         }
     }
@@ -419,7 +419,7 @@ CX_DLL_CONSTRUCT {
 #else
 int cx_load(cx_string str) {
     CX_UNUSED(str);
-    cx_error("cortex build doesn't include loader");
+    cx_error("corto build doesn't include loader");
     return -1;
 }
 #endif

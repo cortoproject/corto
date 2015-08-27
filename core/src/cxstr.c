@@ -1,5 +1,5 @@
 
-#include "cortex.h"
+#include "corto.h"
 
 cx_object cxstr_define(cx_object result, cx_string value) {
 

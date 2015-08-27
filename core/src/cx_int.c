@@ -8,9 +8,9 @@
 
 #include "cx.h"
 
-/* ::cortex::lang::int::init() */
+/* ::corto::lang::int::init() */
 cx_int16 cx_int_init(cx_int _this) {
-/* $begin(::cortex::lang::int::init) */
+/* $begin(::corto::lang::int::init) */
     cx_primitive(_this)->kind = CX_INTEGER;
     return cx_primitive_init((cx_primitive)_this);
 /* $end */

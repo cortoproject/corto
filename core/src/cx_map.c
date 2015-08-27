@@ -8,9 +8,9 @@
 
 #include "cx.h"
 
-/* ::cortex::lang::map::construct() */
+/* ::corto::lang::map::construct() */
 cx_int16 cx_map_construct(cx_map _this) {
-/* $begin(::cortex::lang::map::construct) */
+/* $begin(::corto::lang::map::construct) */
     cx_type(_this)->hasResources = TRUE;
     cx_type(_this)->size = sizeof(cx_map);
     cx_type(_this)->alignment = CX_ALIGNMENT(cx_map);
@@ -21,9 +21,9 @@ cx_int16 cx_map_construct(cx_map _this) {
 /* $end */
 }
 
-/* ::cortex::lang::map::init() */
+/* ::corto::lang::map::init() */
 cx_int16 cx_map_init(cx_map _this) {
-/* $begin(::cortex::lang::map::init) */
+/* $begin(::corto::lang::map::init) */
     cx_collection(_this)->kind = CX_MAP;
     return cx_collection_init(cx_collection(_this));
 /* $end */

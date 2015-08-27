@@ -1,6 +1,6 @@
 
-if ENV['CORTEX_VERSION'] then
-	VERSION ||= ENV['CORTEX_VERSION']
+if ENV['CORTO_VERSION'] then
+	VERSION ||= ENV['CORTO_VERSION']
 else
-	VERSION ||= `cortex -v`
+	VERSION ||= `corto -v`
 end

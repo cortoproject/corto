@@ -1,5 +1,5 @@
 /*
- * cortex.h
+ * corto.h
  *
  *  Created on: Aug 21, 2012
  *      Author: sander

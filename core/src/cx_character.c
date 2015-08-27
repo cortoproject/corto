@@ -8,9 +8,9 @@
 
 #include "cx.h"
 
-/* ::cortex::lang::character::init() */
+/* ::corto::lang::character::init() */
 cx_int16 cx_character_init(cx_character _this) {
-/* $begin(::cortex::lang::character::init) */
+/* $begin(::corto::lang::character::init) */
     cx_primitive(_this)->kind = CX_CHARACTER;
     return cx_primitive_init((cx_primitive)_this);
 /* $end */

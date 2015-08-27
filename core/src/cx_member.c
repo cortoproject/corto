@@ -12,9 +12,9 @@
 #include "cx__interface.h"
 /* $end */
 
-/* ::cortex::lang::member::construct() */
+/* ::corto::lang::member::construct() */
 cx_int16 cx_member_construct(cx_member _this) {
-/* $begin(::cortex::lang::member::construct) */
+/* $begin(::corto::lang::member::construct) */
     if (!_this->type) {
         cx_id id;
         cx_error("member '%s' has no type.", cx_fullname(_this, id));
@@ -27,9 +27,9 @@ error:
 /* $end */
 }
 
-/* ::cortex::lang::member::init() */
+/* ::corto::lang::member::init() */
 cx_int16 cx_member_init(cx_member _this) {
-/* $begin(::cortex::lang::member::init) */
+/* $begin(::corto::lang::member::init) */
     cx_object parent;
     cx_type parentType;
 

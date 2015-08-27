@@ -10,13 +10,13 @@
 /* $end */
 
 /* This function is the entrypoint for the library and * loads definitions of the 'testjson' scope */
-int cortexmain(int argc, char* argv[]) {
+int cortomain(int argc, char* argv[]) {
     CX_UNUSED(argc);
     CX_UNUSED(argv);
     
     int result = testjson_load();
     
-    /* $begin(cortexmain) */
+    /* $begin(cortomain) */
     /* Insert user-code here */
     /* $end */
 

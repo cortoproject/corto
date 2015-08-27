@@ -3,17 +3,17 @@ require 'rake/clean'
 
 
 task :pack do
-    Version = ENV["CORTEX_VERSION"]
-    Temporary = "#{ENV['HOME']}/.cortex#{Version}-pack-temp"
-    Prefix = "#{ENV['HOME']}/.cortex"
+    Version = ENV["CORTO_VERSION"]
+    Temporary = "#{ENV['HOME']}/.corto#{Version}-pack-temp"
+    Prefix = "#{ENV['HOME']}/.corto"
     # bin
     sh "rm -rf #{Temporary}"
     sh "mkdir -p #{Temporary}/bin"
-    sh "cp #{Prefix}/bin/cortex #{Temporary}/bin/cortex"
-    sh "cp #{Prefix}/lib/libcortex.so #{Temporary}/bin/libcortex.so"
+    sh "cp #{Prefix}/bin/corto #{Temporary}/bin/corto"
+    sh "cp #{Prefix}/lib/libcorto.so #{Temporary}/bin/libcorto.so"
     # lib
     sh "mkdir #{Temporary}/lib"
-    sh "cp -R #{Prefix}/lib/cortex/#{Version}/ #{Temporary}/lib"
+    sh "cp -R #{Prefix}/lib/corto/#{Version}/ #{Temporary}/lib"
     sh "find #{Temporary}/lib -name obj -type d -exec rm -rf \"{}\" \\+"
     # include
     sh "mkdir #{Temporary}/include"

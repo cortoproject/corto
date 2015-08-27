@@ -7,7 +7,7 @@
 #ifndef tc_event__type_H
 #define tc_event__type_H
 
-#include "cortex.h"
+#include "corto.h"
 
 
 #ifdef __cplusplus

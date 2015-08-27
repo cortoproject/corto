@@ -2,4 +2,4 @@ TARGET = :c_common
 
 CFLAGS = ["-Wunused-parameter"]
 
-require "#{ENV['CORTEX_BUILD']}/library"
+require "#{ENV['CORTO_BUILD']}/library"

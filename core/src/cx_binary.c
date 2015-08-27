@@ -8,9 +8,9 @@
 
 #include "cx.h"
 
-/* ::cortex::lang::binary::init() */
+/* ::corto::lang::binary::init() */
 cx_int16 cx_binary_init(cx_binary _this) {
-/* $begin(::cortex::lang::binary::init) */
+/* $begin(::corto::lang::binary::init) */
     cx_primitive(_this)->kind = CX_BINARY;
     return cx_primitive_init((cx_primitive)_this);
 /* $end */

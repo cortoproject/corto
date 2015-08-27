@@ -13,9 +13,9 @@
 #include "cx_function.h"
 /* $end */
 
-/* ::cortex::lang::procedure::init() */
+/* ::corto::lang::procedure::init() */
 cx_int16 cx_procedure_init(cx_procedure _this) {
-/* $begin(::cortex::lang::procedure::init) */
+/* $begin(::corto::lang::procedure::init) */
 
     if (cx_interface_init(cx_interface(_this))) {
         goto error;
@@ -30,9 +30,9 @@ error:
 /* $end */
 }
 
-/* ::cortex::lang::procedure::unbind(function object) */
+/* ::corto::lang::procedure::unbind(function object) */
 cx_void cx_procedure_unbind(cx_procedure _this, cx_function object) {
-/* $begin(::cortex::lang::procedure::unbind) */
+/* $begin(::corto::lang::procedure::unbind) */
     if (_this->kind == CX_OBSERVER){
         cx_observer_unbind(cx_observer(object));
     } else {

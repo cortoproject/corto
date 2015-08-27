@@ -23,6 +23,6 @@ if p2.typeof() != Point: fail("cast #2 failed")
 if p3.typeof() != Point: fail("cast #3 failed")
 if p4.typeof() != Point3D: fail("cast #4 failed")
 
-var class c = class(@::.resolve("cortex::lang::type"))
+var class c = class(@::.resolve("corto::lang::type"))
 
 if result: "tc_cast02: OK"

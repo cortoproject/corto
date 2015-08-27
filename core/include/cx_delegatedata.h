@@ -6,7 +6,7 @@
 #ifndef cx_delegatedata_H
 #define cx_delegatedata_H
 
-#include "cortex.h"
+#include "corto.h"
 #include "cx__type.h"
 #include "cx__api.h"
 #include "cx__meta.h"

@@ -13,9 +13,9 @@
 #include "cx__bitmask.h"
 /* $end */
 
-/* ::cortex::lang::constant::init() */
+/* ::corto::lang::constant::init() */
 cx_int16 cx_constant_init(cx_constant *_this) {
-/* $begin(::cortex::lang::constant::init) */
+/* $begin(::corto::lang::constant::init) */
     cx_object parent;
 
     parent = cx_parentof(_this);

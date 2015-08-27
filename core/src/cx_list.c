@@ -132,9 +132,9 @@ static int cx_clearFreeValues(void* o, void* udata) {
 }
 /* $end */
 
-/* ::cortex::lang::list::append() */
+/* ::corto::lang::list::append() */
 cx_any cx_list_append_(cx_any _this) {
-/* $begin(::cortex::lang::list::append()) */
+/* $begin(::corto::lang::list::append()) */
     cx_any result;
     result.type = cx_collection(_this.type)->elementType;
     result.value = cx_list_do_(_this, FALSE);
@@ -143,16 +143,16 @@ cx_any cx_list_append_(cx_any _this) {
 /* $end */
 }
 
-/* ::cortex::lang::list::append(any element) */
+/* ::corto::lang::list::append(any element) */
 cx_void cx_list_append_any(cx_any _this, cx_any element) {
-/* $begin(::cortex::lang::list::append(any element)) */
+/* $begin(::corto::lang::list::append(any element)) */
     cx_list_do(_this, element, FALSE, cx_list_appendAction, NULL);
 /* $end */
 }
 
-/* ::cortex::lang::list::clear() */
+/* ::corto::lang::list::clear() */
 cx_void cx_list_clear(cx_any _this) {
-/* $begin(::cortex::lang::list::clear) */
+/* $begin(::corto::lang::list::clear) */
     cx_collection c = cx_collection(_this.type);
     if (cx_collection_elementRequiresAlloc(c)) {
         cx_llWalk(*(cx_ll*)_this.value, cx_clearFreeValues, NULL);
@@ -161,9 +161,9 @@ cx_void cx_list_clear(cx_any _this) {
 /* $end */
 }
 
-/* ::cortex::lang::list::construct() */
+/* ::corto::lang::list::construct() */
 cx_int16 cx_list_construct(cx_list _this) {
-/* $begin(::cortex::lang::list::construct) */
+/* $begin(::corto::lang::list::construct) */
     cx_type(_this)->hasResources = TRUE;
     cx_type(_this)->size = sizeof(cx_ll);
     cx_type(_this)->alignment = CX_ALIGNMENT(cx_ll);
@@ -177,17 +177,17 @@ error:
 /* $end */
 }
 
-/* ::cortex::lang::list::init() */
+/* ::corto::lang::list::init() */
 cx_int16 cx_list_init(cx_list _this) {
-/* $begin(::cortex::lang::list::init) */
+/* $begin(::corto::lang::list::init) */
     cx_collection(_this)->kind = CX_LIST;
     return cx_collection_init(cx_collection(_this));
 /* $end */
 }
 
-/* ::cortex::lang::list::insert() */
+/* ::corto::lang::list::insert() */
 cx_any cx_list_insert_(cx_any _this) {
-/* $begin(::cortex::lang::list::insert()) */
+/* $begin(::corto::lang::list::insert()) */
     cx_any result;
     result.type = cx_collection(_this.type)->elementType;
     result.value = cx_list_do_(_this, TRUE);
@@ -196,16 +196,16 @@ cx_any cx_list_insert_(cx_any _this) {
 /* $end */
 }
 
-/* ::cortex::lang::list::insert(any element) */
+/* ::corto::lang::list::insert(any element) */
 cx_void cx_list_insert_any(cx_any _this, cx_any element) {
-/* $begin(::cortex::lang::list::insert(any element)) */
+/* $begin(::corto::lang::list::insert(any element)) */
     cx_list_do(_this, element, TRUE, cx_list_insertAction, NULL);
 /* $end */
 }
 
-/* ::cortex::lang::list::reverse() */
+/* ::corto::lang::list::reverse() */
 cx_void cx_list_reverse(cx_any _this) {
-/* $begin(::cortex::lang::list::reverse) */
+/* $begin(::corto::lang::list::reverse) */
     cx_llReverse(*(cx_ll*)_this.value);
 /* $end */
 }

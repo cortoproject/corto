@@ -6,7 +6,7 @@
 #ifndef cx_metaprocedure_H
 #define cx_metaprocedure_H
 
-#include "cortex.h"
+#include "corto.h"
 #include "cx__type.h"
 #include "cx__api.h"
 #include "cx__meta.h"
@@ -15,7 +15,7 @@
 extern "C" {
 #endif
 
-/* ::cortex::lang::metaprocedure::bind() */
+/* ::corto::lang::metaprocedure::bind() */
 cx_int16 cx_metaprocedure_bind(cx_metaprocedure _this);
 
 #ifdef __cplusplus

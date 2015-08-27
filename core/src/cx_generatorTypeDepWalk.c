@@ -5,7 +5,7 @@
  *      Author: sander
  */
 
-#include "cortex.h"
+#include "corto.h"
 #include "cx_generatorTypeDepWalk.h"
 
 #ifdef CX_GENERATOR

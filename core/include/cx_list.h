@@ -6,7 +6,7 @@
 #ifndef cx_list_H
 #define cx_list_H
 
-#include "cortex.h"
+#include "corto.h"
 #include "cx_collection.h"
 #include "cx__type.h"
 #include "cx__api.h"
@@ -16,28 +16,28 @@
 extern "C" {
 #endif
 
-/* ::cortex::lang::list::append() */
+/* ::corto::lang::list::append() */
 cx_any cx_list_append_(cx_any _this);
 
-/* ::cortex::lang::list::append(any element) */
+/* ::corto::lang::list::append(any element) */
 cx_void cx_list_append_any(cx_any _this, cx_any element);
 
-/* ::cortex::lang::list::clear() */
+/* ::corto::lang::list::clear() */
 cx_void cx_list_clear(cx_any _this);
 
-/* ::cortex::lang::list::construct() */
+/* ::corto::lang::list::construct() */
 cx_int16 cx_list_construct(cx_list _this);
 
-/* ::cortex::lang::list::init() */
+/* ::corto::lang::list::init() */
 cx_int16 cx_list_init(cx_list _this);
 
-/* ::cortex::lang::list::insert() */
+/* ::corto::lang::list::insert() */
 cx_any cx_list_insert_(cx_any _this);
 
-/* ::cortex::lang::list::insert(any element) */
+/* ::corto::lang::list::insert(any element) */
 cx_void cx_list_insert_any(cx_any _this, cx_any element);
 
-/* ::cortex::lang::list::reverse() */
+/* ::corto::lang::list::reverse() */
 cx_void cx_list_reverse(cx_any _this);
 
 #ifdef __cplusplus

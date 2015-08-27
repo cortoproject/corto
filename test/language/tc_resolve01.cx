@@ -6,16 +6,16 @@ void fail(string msg):
 // Test which class is resolved first
 void class
 var object t = @::.resolve("class")
-if t != ::cortex::lang::class: fail("t != ::cortex::lang::class #1")
+if t != ::corto::lang::class: fail("t != ::corto::lang::class #1")
 
 t = @::.resolve("lang::class")
-if t != ::cortex::lang::class: fail("t != ::cortex::lang::class #2")
+if t != ::corto::lang::class: fail("t != ::corto::lang::class #2")
 
-t = @::.resolve("cortex::lang::class")
-if t != ::cortex::lang::class: fail("t != ::cortex::lang::class #3")
+t = @::.resolve("corto::lang::class")
+if t != ::corto::lang::class: fail("t != ::corto::lang::class #3")
 
-t = @::.resolve("::cortex::lang::class")
-if t != ::cortex::lang::class: fail("t != ::cortex::lang::class #4")
+t = @::.resolve("::corto::lang::class")
+if t != ::corto::lang::class: fail("t != ::corto::lang::class #4")
 
 t = @::.resolve("::class")
 if t != ::class: fail("t != ::class")

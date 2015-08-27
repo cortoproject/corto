@@ -25,7 +25,7 @@ static cx_int16 c_projectGenerateMainFile(cx_generator g) {
 
     if (g_getCurrent(g)) {
         g_fileWrite(file, "#include \"%s.h\"\n\n", g_fullOid(g, g_getCurrent(g), topLevelName));
-        g_fileWrite(file, "int cortexmain(int argc, char* argv[]) {\n");
+        g_fileWrite(file, "int cortomain(int argc, char* argv[]) {\n");
         g_fileIndent(file);
         g_fileWrite(file, "if (%s_load()) return -1;\n", g_getName(g));
         g_fileWrite(file, "int %smain(int argc, char* argv[]);\n", g_getName(g));
@@ -34,7 +34,7 @@ static cx_int16 c_projectGenerateMainFile(cx_generator g) {
         g_fileDedent(file);
         g_fileWrite(file, "}\n\n");
     } else {
-        g_fileWrite(file, "#include \"cortex.h\"\n\n");
+        g_fileWrite(file, "#include \"corto.h\"\n\n");
         g_fileWrite(file, "int main(int argc, char* argv[]) {\n");
         g_fileIndent(file);
         g_fileWrite(file, "cx_start();\n");
@@ -87,7 +87,7 @@ static cx_int16 c_projectGenerateDepMakefile(cx_generator g) {
         iter = cx_llIter(g->imports);
         g_fileWrite(file, "INCLUDE ||= []\n");
         g_fileWrite(file, "LIBPATH ||= []\n");
-        g_fileWrite(file, "CORTEX_LIB ||= []\n");
+        g_fileWrite(file, "CORTO_LIB ||= []\n");
         g_fileWrite(file, "LFLAGS ||= []\n");
         g_fileWrite(file, "USE_PACKAGE ||= []\n");
         while (cx_iterHasNext(&iter)) {
@@ -110,7 +110,7 @@ static cx_int16 c_projectGenerateDepMakefile(cx_generator g) {
     walkData.g = g;
     g_fileWrite(file, "\n");
     g_walkRecursive(g, c_projectCleanInclude, &walkData);
-    g_fileWrite(file, "CLOBBER.include(\".cortex/dep.rb\")\n");
+    g_fileWrite(file, "CLOBBER.include(\".corto/dep.rb\")\n");
 
     return 0;
 error:
@@ -118,11 +118,11 @@ error:
 }
 
 /* Generator main */
-cx_int16 cortex_genMain(cx_generator g) {
+cx_int16 corto_genMain(cx_generator g) {
 
     /* Create source and include directories */
     cx_mkdir("src");
-    cx_mkdir(".cortex");
+    cx_mkdir(".corto");
 
     if(c_projectGenerateMainFile(g)) {
         goto error;

@@ -7,14 +7,14 @@ TARGET = PACKAGE.split("::").last
 GENERATED_SOURCES ||= []
 
 GENERATED_SOURCES <<
-    ".cortex/#{TARGET}__api.c" <<
-    ".cortex/#{TARGET}__wrapper.c" <<
-    ".cortex/#{TARGET}__meta.c" <<
-    ".cortex/#{TARGET}__load.c"
+    ".corto/#{TARGET}__api.c" <<
+    ".corto/#{TARGET}__wrapper.c" <<
+    ".corto/#{TARGET}__meta.c" <<
+    ".corto/#{TARGET}__load.c"
 
 PREFIX ||= TARGET
 
-require "#{ENV['CORTEX_BUILD']}/component"
+require "#{ENV['CORTO_BUILD']}/component"
 
 GENFILE = Rake::FileList["#{TARGET}.*"][0]
 
@@ -26,19 +26,19 @@ CLOBBER.include(TARGETDIR)
 
 file "include/#{TARGET}__type.h" => GENFILE do
     verbose(false)
-    sh "mkdir -p .cortex"
-    sh "touch .cortex/#{TARGET}__wrapper.c"
-    sh "cortex pp #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c"
+    sh "mkdir -p .corto"
+    sh "touch .corto/#{TARGET}__wrapper.c"
+    sh "corto pp #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c"
 end
 
 task :prebuild => "include/#{TARGET}__type.h" do
-    require "./.cortex/dep"
+    require "./.corto/dep"
 end
 
 task :clobber do
-    if File.exists?(".cortex/dep.rb")
-        sh "rake clobber -f .cortex/dep.rb" 
+    if File.exists?(".corto/dep.rb")
+        sh "rake clobber -f .corto/dep.rb" 
     end
 end
 
-require "#{ENV['CORTEX_BUILD']}/subrake"
+require "#{ENV['CORTO_BUILD']}/subrake"

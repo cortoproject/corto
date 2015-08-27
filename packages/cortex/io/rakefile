@@ -1,5 +1,0 @@
-PACKAGE = 'cortex::io'
-
-CFLAGS = ["-Wunused-parameter"]
-
-require "#{ENV['CORTEX_BUILD']}/package"

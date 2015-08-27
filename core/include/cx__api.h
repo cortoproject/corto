@@ -8,12 +8,12 @@
 #define cx__API_H
 
 #include "cx__type.h"
-#include "cortex.h"
+#include "corto.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-/* ::cortex::lang::any */
+/* ::corto::lang::any */
 cx_any* cx_any__create(void);
 cx_any* cx_any__createChild(cx_object _parent, cx_string _name);
 
@@ -30,7 +30,7 @@ cx_int16 cx_any__compare(cx_any* dst, cx_any* src);
 cx_int16 cx_any__init(cx_any* value);
 cx_int16 cx_any__deinit(cx_any* value);
 
-/* ::cortex::lang::array */
+/* ::corto::lang::array */
 cx_array cx_array__create(cx_type elementType, cx_uint32 max);
 cx_array cx_array__createChild(cx_object _parent, cx_string _name, cx_type elementType, cx_uint32 max);
 
@@ -44,7 +44,7 @@ cx_array cx_array__fromStr(cx_array value, cx_string str);
 cx_int16 cx_array__copy(cx_array *dst, cx_array src);
 cx_int16 cx_array__compare(cx_array dst, cx_array src);
 
-/* ::cortex::lang::attr */
+/* ::corto::lang::attr */
 cx_attr* cx_attr__create(void);
 cx_attr* cx_attr__createChild(cx_object _parent, cx_string _name);
 
@@ -61,7 +61,7 @@ cx_int16 cx_attr__compare(cx_attr* dst, cx_attr* src);
 cx_int16 cx_attr__init(cx_attr* value);
 cx_int16 cx_attr__deinit(cx_attr* value);
 
-/* ::cortex::lang::binary */
+/* ::corto::lang::binary */
 cx_binary cx_binary__create(cx_width width);
 cx_binary cx_binary__createChild(cx_object _parent, cx_string _name, cx_width width);
 
@@ -75,7 +75,7 @@ cx_binary cx_binary__fromStr(cx_binary value, cx_string str);
 cx_int16 cx_binary__copy(cx_binary *dst, cx_binary src);
 cx_int16 cx_binary__compare(cx_binary dst, cx_binary src);
 
-/* ::cortex::lang::bitmask */
+/* ::corto::lang::bitmask */
 cx_bitmask cx_bitmask__create(void);
 cx_bitmask cx_bitmask__createChild(cx_object _parent, cx_string _name);
 
@@ -89,7 +89,7 @@ cx_bitmask cx_bitmask__fromStr(cx_bitmask value, cx_string str);
 cx_int16 cx_bitmask__copy(cx_bitmask *dst, cx_bitmask src);
 cx_int16 cx_bitmask__compare(cx_bitmask dst, cx_bitmask src);
 
-/* ::cortex::lang::bool */
+/* ::corto::lang::bool */
 cx_bool* cx_bool__create(void);
 cx_bool* cx_bool__createChild(cx_object _parent, cx_string _name);
 
@@ -106,7 +106,7 @@ cx_int16 cx_bool__compare(cx_bool* dst, cx_bool* src);
 cx_int16 cx_bool__init(cx_bool* value);
 cx_int16 cx_bool__deinit(cx_bool* value);
 
-/* ::cortex::lang::boolean */
+/* ::corto::lang::boolean */
 cx_boolean cx_boolean__create(void);
 cx_boolean cx_boolean__createChild(cx_object _parent, cx_string _name);
 
@@ -120,7 +120,7 @@ cx_boolean cx_boolean__fromStr(cx_boolean value, cx_string str);
 cx_int16 cx_boolean__copy(cx_boolean *dst, cx_boolean src);
 cx_int16 cx_boolean__compare(cx_boolean dst, cx_boolean src);
 
-/* ::cortex::lang::callbackDestruct */
+/* ::corto::lang::callbackDestruct */
 cx_callbackDestruct* cx_callbackDestruct__create(void);
 cx_callbackDestruct* cx_callbackDestruct__createChild(cx_object _parent, cx_string _name);
 
@@ -137,7 +137,7 @@ cx_int16 cx_callbackDestruct__compare(cx_callbackDestruct* dst, cx_callbackDestr
 cx_int16 cx_callbackDestruct__init(cx_callbackDestruct* value);
 cx_int16 cx_callbackDestruct__deinit(cx_callbackDestruct* value);
 
-/* ::cortex::lang::callbackInit */
+/* ::corto::lang::callbackInit */
 cx_callbackInit* cx_callbackInit__create(void);
 cx_callbackInit* cx_callbackInit__createChild(cx_object _parent, cx_string _name);
 
@@ -154,7 +154,7 @@ cx_int16 cx_callbackInit__compare(cx_callbackInit* dst, cx_callbackInit* src);
 cx_int16 cx_callbackInit__init(cx_callbackInit* value);
 cx_int16 cx_callbackInit__deinit(cx_callbackInit* value);
 
-/* ::cortex::lang::char */
+/* ::corto::lang::char */
 cx_char* cx_char__create(void);
 cx_char* cx_char__createChild(cx_object _parent, cx_string _name);
 
@@ -171,7 +171,7 @@ cx_int16 cx_char__compare(cx_char* dst, cx_char* src);
 cx_int16 cx_char__init(cx_char* value);
 cx_int16 cx_char__deinit(cx_char* value);
 
-/* ::cortex::lang::character */
+/* ::corto::lang::character */
 cx_character cx_character__create(cx_width width);
 cx_character cx_character__createChild(cx_object _parent, cx_string _name, cx_width width);
 
@@ -185,7 +185,7 @@ cx_character cx_character__fromStr(cx_character value, cx_string str);
 cx_int16 cx_character__copy(cx_character *dst, cx_character src);
 cx_int16 cx_character__compare(cx_character dst, cx_character src);
 
-/* ::cortex::lang::class */
+/* ::corto::lang::class */
 cx_class cx_class__create(cx_interface base, cx_modifier baseAccess, cx_interfaceSeq implements);
 cx_class cx_class__createChild(cx_object _parent, cx_string _name, cx_interface base, cx_modifier baseAccess, cx_interfaceSeq implements);
 
@@ -199,7 +199,7 @@ cx_class cx_class__fromStr(cx_class value, cx_string str);
 cx_int16 cx_class__copy(cx_class *dst, cx_class src);
 cx_int16 cx_class__compare(cx_class dst, cx_class src);
 
-/* ::cortex::lang::collection */
+/* ::corto::lang::collection */
 cx_collection cx_collection__create(cx_type elementType, cx_uint32 max);
 cx_collection cx_collection__createChild(cx_object _parent, cx_string _name, cx_type elementType, cx_uint32 max);
 
@@ -213,7 +213,7 @@ cx_collection cx_collection__fromStr(cx_collection value, cx_string str);
 cx_int16 cx_collection__copy(cx_collection *dst, cx_collection src);
 cx_int16 cx_collection__compare(cx_collection dst, cx_collection src);
 
-/* ::cortex::lang::collectionKind */
+/* ::corto::lang::collectionKind */
 cx_collectionKind* cx_collectionKind__create(void);
 cx_collectionKind* cx_collectionKind__createChild(cx_object _parent, cx_string _name);
 
@@ -230,7 +230,7 @@ cx_int16 cx_collectionKind__compare(cx_collectionKind* dst, cx_collectionKind* s
 cx_int16 cx_collectionKind__init(cx_collectionKind* value);
 cx_int16 cx_collectionKind__deinit(cx_collectionKind* value);
 
-/* ::cortex::lang::compositeKind */
+/* ::corto::lang::compositeKind */
 cx_compositeKind* cx_compositeKind__create(void);
 cx_compositeKind* cx_compositeKind__createChild(cx_object _parent, cx_string _name);
 
@@ -247,7 +247,7 @@ cx_int16 cx_compositeKind__compare(cx_compositeKind* dst, cx_compositeKind* src)
 cx_int16 cx_compositeKind__init(cx_compositeKind* value);
 cx_int16 cx_compositeKind__deinit(cx_compositeKind* value);
 
-/* ::cortex::lang::constant */
+/* ::corto::lang::constant */
 cx_constant* cx_constant__create(void);
 cx_constant* cx_constant__createChild(cx_object _parent, cx_string _name);
 
@@ -264,7 +264,7 @@ cx_int16 cx_constant__compare(cx_constant* dst, cx_constant* src);
 cx_int16 cx_constant__init(cx_constant* value);
 cx_int16 cx_constant__deinit(cx_constant* value);
 
-/* ::cortex::lang::delegate */
+/* ::corto::lang::delegate */
 cx_delegate cx_delegate__create(cx_type returnType, cx_bool returnsReference, cx_parameterSeq parameters);
 cx_delegate cx_delegate__createChild(cx_object _parent, cx_string _name, cx_type returnType, cx_bool returnsReference, cx_parameterSeq parameters);
 
@@ -278,7 +278,7 @@ cx_delegate cx_delegate__fromStr(cx_delegate value, cx_string str);
 cx_int16 cx_delegate__copy(cx_delegate *dst, cx_delegate src);
 cx_int16 cx_delegate__compare(cx_delegate dst, cx_delegate src);
 
-/* ::cortex::lang::delegatedata */
+/* ::corto::lang::delegatedata */
 cx_delegatedata* cx_delegatedata__create(cx_object instance, cx_function procedure);
 cx_delegatedata* cx_delegatedata__createChild(cx_object _parent, cx_string _name, cx_object instance, cx_function procedure);
 
@@ -295,7 +295,7 @@ cx_int16 cx_delegatedata__compare(cx_delegatedata* dst, cx_delegatedata* src);
 cx_int16 cx_delegatedata__init(cx_delegatedata* value);
 cx_int16 cx_delegatedata__deinit(cx_delegatedata* value);
 
-/* ::cortex::lang::dispatcher */
+/* ::corto::lang::dispatcher */
 cx_dispatcher cx_dispatcher__create(void);
 cx_dispatcher cx_dispatcher__createChild(cx_object _parent, cx_string _name);
 
@@ -309,7 +309,7 @@ cx_dispatcher cx_dispatcher__fromStr(cx_dispatcher value, cx_string str);
 cx_int16 cx_dispatcher__copy(cx_dispatcher *dst, cx_dispatcher src);
 cx_int16 cx_dispatcher__compare(cx_dispatcher dst, cx_dispatcher src);
 
-/* ::cortex::lang::enum */
+/* ::corto::lang::enum */
 cx_enum cx_enum__create(void);
 cx_enum cx_enum__createChild(cx_object _parent, cx_string _name);
 
@@ -323,7 +323,7 @@ cx_enum cx_enum__fromStr(cx_enum value, cx_string str);
 cx_int16 cx_enum__copy(cx_enum *dst, cx_enum src);
 cx_int16 cx_enum__compare(cx_enum dst, cx_enum src);
 
-/* ::cortex::lang::equalityKind */
+/* ::corto::lang::equalityKind */
 cx_equalityKind* cx_equalityKind__create(void);
 cx_equalityKind* cx_equalityKind__createChild(cx_object _parent, cx_string _name);
 
@@ -340,7 +340,7 @@ cx_int16 cx_equalityKind__compare(cx_equalityKind* dst, cx_equalityKind* src);
 cx_int16 cx_equalityKind__init(cx_equalityKind* value);
 cx_int16 cx_equalityKind__deinit(cx_equalityKind* value);
 
-/* ::cortex::lang::event */
+/* ::corto::lang::event */
 cx_event cx_event__create(cx_uint16 kind);
 cx_event cx_event__createChild(cx_object _parent, cx_string _name, cx_uint16 kind);
 
@@ -354,7 +354,7 @@ cx_event cx_event__fromStr(cx_event value, cx_string str);
 cx_int16 cx_event__copy(cx_event *dst, cx_event src);
 cx_int16 cx_event__compare(cx_event dst, cx_event src);
 
-/* ::cortex::lang::eventMask */
+/* ::corto::lang::eventMask */
 cx_eventMask* cx_eventMask__create(void);
 cx_eventMask* cx_eventMask__createChild(cx_object _parent, cx_string _name);
 
@@ -371,7 +371,7 @@ cx_int16 cx_eventMask__compare(cx_eventMask* dst, cx_eventMask* src);
 cx_int16 cx_eventMask__init(cx_eventMask* value);
 cx_int16 cx_eventMask__deinit(cx_eventMask* value);
 
-/* ::cortex::lang::float */
+/* ::corto::lang::float */
 cx_float cx_float__create(cx_width width, cx_float64 min, cx_float64 max);
 cx_float cx_float__createChild(cx_object _parent, cx_string _name, cx_width width, cx_float64 min, cx_float64 max);
 
@@ -385,7 +385,7 @@ cx_float cx_float__fromStr(cx_float value, cx_string str);
 cx_int16 cx_float__copy(cx_float *dst, cx_float src);
 cx_int16 cx_float__compare(cx_float dst, cx_float src);
 
-/* ::cortex::lang::float32 */
+/* ::corto::lang::float32 */
 cx_float32* cx_float32__create(void);
 cx_float32* cx_float32__createChild(cx_object _parent, cx_string _name);
 
@@ -402,7 +402,7 @@ cx_int16 cx_float32__compare(cx_float32* dst, cx_float32* src);
 cx_int16 cx_float32__init(cx_float32* value);
 cx_int16 cx_float32__deinit(cx_float32* value);
 
-/* ::cortex::lang::float64 */
+/* ::corto::lang::float64 */
 cx_float64* cx_float64__create(void);
 cx_float64* cx_float64__createChild(cx_object _parent, cx_string _name);
 
@@ -419,7 +419,7 @@ cx_int16 cx_float64__compare(cx_float64* dst, cx_float64* src);
 cx_int16 cx_float64__init(cx_float64* value);
 cx_int16 cx_float64__deinit(cx_float64* value);
 
-/* ::cortex::lang::function */
+/* ::corto::lang::function */
 cx_function cx_function__create(cx_type returnType, cx_bool returnsReference);
 cx_function cx_function__createChild(cx_object _parent, cx_string _name, cx_type returnType, cx_bool returnsReference);
 
@@ -433,7 +433,7 @@ cx_function cx_function__fromStr(cx_function value, cx_string str);
 cx_int16 cx_function__copy(cx_function *dst, cx_function src);
 cx_int16 cx_function__compare(cx_function dst, cx_function src);
 
-/* ::cortex::lang::int */
+/* ::corto::lang::int */
 cx_int cx_int__create(cx_width width, cx_int64 min, cx_int64 max);
 cx_int cx_int__createChild(cx_object _parent, cx_string _name, cx_width width, cx_int64 min, cx_int64 max);
 
@@ -447,7 +447,7 @@ cx_int cx_int__fromStr(cx_int value, cx_string str);
 cx_int16 cx_int__copy(cx_int *dst, cx_int src);
 cx_int16 cx_int__compare(cx_int dst, cx_int src);
 
-/* ::cortex::lang::int16 */
+/* ::corto::lang::int16 */
 cx_int16* cx_int16__create(void);
 cx_int16* cx_int16__createChild(cx_object _parent, cx_string _name);
 
@@ -464,7 +464,7 @@ cx_int16 cx_int16__compare(cx_int16* dst, cx_int16* src);
 cx_int16 cx_int16__init(cx_int16* value);
 cx_int16 cx_int16__deinit(cx_int16* value);
 
-/* ::cortex::lang::int32 */
+/* ::corto::lang::int32 */
 cx_int32* cx_int32__create(void);
 cx_int32* cx_int32__createChild(cx_object _parent, cx_string _name);
 
@@ -481,7 +481,7 @@ cx_int16 cx_int32__compare(cx_int32* dst, cx_int32* src);
 cx_int16 cx_int32__init(cx_int32* value);
 cx_int16 cx_int32__deinit(cx_int32* value);
 
-/* ::cortex::lang::int64 */
+/* ::corto::lang::int64 */
 cx_int64* cx_int64__create(void);
 cx_int64* cx_int64__createChild(cx_object _parent, cx_string _name);
 
@@ -498,7 +498,7 @@ cx_int16 cx_int64__compare(cx_int64* dst, cx_int64* src);
 cx_int16 cx_int64__init(cx_int64* value);
 cx_int16 cx_int64__deinit(cx_int64* value);
 
-/* ::cortex::lang::int8 */
+/* ::corto::lang::int8 */
 cx_int8* cx_int8__create(void);
 cx_int8* cx_int8__createChild(cx_object _parent, cx_string _name);
 
@@ -515,7 +515,7 @@ cx_int16 cx_int8__compare(cx_int8* dst, cx_int8* src);
 cx_int16 cx_int8__init(cx_int8* value);
 cx_int16 cx_int8__deinit(cx_int8* value);
 
-/* ::cortex::lang::interface */
+/* ::corto::lang::interface */
 cx_interface cx_interface__create(cx_interface base);
 cx_interface cx_interface__createChild(cx_object _parent, cx_string _name, cx_interface base);
 
@@ -529,7 +529,7 @@ cx_interface cx_interface__fromStr(cx_interface value, cx_string str);
 cx_int16 cx_interface__copy(cx_interface *dst, cx_interface src);
 cx_int16 cx_interface__compare(cx_interface dst, cx_interface src);
 
-/* ::cortex::lang::interfaceSeq */
+/* ::corto::lang::interfaceSeq */
 cx_interfaceSeq* cx_interfaceSeq__create(void);
 cx_interfaceSeq* cx_interfaceSeq__createChild(cx_object _parent, cx_string _name);
 
@@ -546,7 +546,7 @@ cx_int16 cx_interfaceSeq__compare(cx_interfaceSeq* dst, cx_interfaceSeq* src);
 cx_int16 cx_interfaceSeq__init(cx_interfaceSeq* value);
 cx_int16 cx_interfaceSeq__deinit(cx_interfaceSeq* value);
 
-/* ::cortex::lang::interfaceVector */
+/* ::corto::lang::interfaceVector */
 cx_interfaceVector* cx_interfaceVector__create(cx_interface interface, cx_vtable vector);
 cx_interfaceVector* cx_interfaceVector__createChild(cx_object _parent, cx_string _name, cx_interface interface, cx_vtable vector);
 
@@ -563,7 +563,7 @@ cx_int16 cx_interfaceVector__compare(cx_interfaceVector* dst, cx_interfaceVector
 cx_int16 cx_interfaceVector__init(cx_interfaceVector* value);
 cx_int16 cx_interfaceVector__deinit(cx_interfaceVector* value);
 
-/* ::cortex::lang::interfaceVectorSeq */
+/* ::corto::lang::interfaceVectorSeq */
 cx_interfaceVectorSeq* cx_interfaceVectorSeq__create(void);
 cx_interfaceVectorSeq* cx_interfaceVectorSeq__createChild(cx_object _parent, cx_string _name);
 
@@ -580,7 +580,7 @@ cx_int16 cx_interfaceVectorSeq__compare(cx_interfaceVectorSeq* dst, cx_interface
 cx_int16 cx_interfaceVectorSeq__init(cx_interfaceVectorSeq* value);
 cx_int16 cx_interfaceVectorSeq__deinit(cx_interfaceVectorSeq* value);
 
-/* ::cortex::lang::iterator */
+/* ::corto::lang::iterator */
 cx_iterator cx_iterator__create(cx_type elementType);
 cx_iterator cx_iterator__createChild(cx_object _parent, cx_string _name, cx_type elementType);
 
@@ -594,7 +594,7 @@ cx_iterator cx_iterator__fromStr(cx_iterator value, cx_string str);
 cx_int16 cx_iterator__copy(cx_iterator *dst, cx_iterator src);
 cx_int16 cx_iterator__compare(cx_iterator dst, cx_iterator src);
 
-/* ::cortex::lang::list */
+/* ::corto::lang::list */
 cx_list cx_list__create(cx_type elementType, cx_uint32 max);
 cx_list cx_list__createChild(cx_object _parent, cx_string _name, cx_type elementType, cx_uint32 max);
 
@@ -608,7 +608,7 @@ cx_list cx_list__fromStr(cx_list value, cx_string str);
 cx_int16 cx_list__copy(cx_list *dst, cx_list src);
 cx_int16 cx_list__compare(cx_list dst, cx_list src);
 
-/* ::cortex::lang::map */
+/* ::corto::lang::map */
 cx_map cx_map__create(cx_type elementType, cx_type keyType, cx_uint32 max);
 cx_map cx_map__createChild(cx_object _parent, cx_string _name, cx_type elementType, cx_type keyType, cx_uint32 max);
 
@@ -622,7 +622,7 @@ cx_map cx_map__fromStr(cx_map value, cx_string str);
 cx_int16 cx_map__copy(cx_map *dst, cx_map src);
 cx_int16 cx_map__compare(cx_map dst, cx_map src);
 
-/* ::cortex::lang::member */
+/* ::corto::lang::member */
 cx_member cx_member__create(cx_type type, cx_modifier modifiers, cx_state state, cx_bool weak);
 cx_member cx_member__createChild(cx_object _parent, cx_string _name, cx_type type, cx_modifier modifiers, cx_state state, cx_bool weak);
 
@@ -636,7 +636,7 @@ cx_member cx_member__fromStr(cx_member value, cx_string str);
 cx_int16 cx_member__copy(cx_member *dst, cx_member src);
 cx_int16 cx_member__compare(cx_member dst, cx_member src);
 
-/* ::cortex::lang::memberSeq */
+/* ::corto::lang::memberSeq */
 cx_memberSeq* cx_memberSeq__create(void);
 cx_memberSeq* cx_memberSeq__createChild(cx_object _parent, cx_string _name);
 
@@ -653,7 +653,7 @@ cx_int16 cx_memberSeq__compare(cx_memberSeq* dst, cx_memberSeq* src);
 cx_int16 cx_memberSeq__init(cx_memberSeq* value);
 cx_int16 cx_memberSeq__deinit(cx_memberSeq* value);
 
-/* ::cortex::lang::metaprocedure */
+/* ::corto::lang::metaprocedure */
 cx_metaprocedure cx_metaprocedure__create(cx_type returnType, cx_bool returnsReference, cx_bool referenceOnly);
 cx_metaprocedure cx_metaprocedure__createChild(cx_object _parent, cx_string _name, cx_type returnType, cx_bool returnsReference, cx_bool referenceOnly);
 
@@ -667,7 +667,7 @@ cx_metaprocedure cx_metaprocedure__fromStr(cx_metaprocedure value, cx_string str
 cx_int16 cx_metaprocedure__copy(cx_metaprocedure *dst, cx_metaprocedure src);
 cx_int16 cx_metaprocedure__compare(cx_metaprocedure dst, cx_metaprocedure src);
 
-/* ::cortex::lang::method */
+/* ::corto::lang::method */
 cx_method cx_method__create(cx_type returnType, cx_bool returnsReference, cx_bool virtual);
 cx_method cx_method__createChild(cx_object _parent, cx_string _name, cx_type returnType, cx_bool returnsReference, cx_bool virtual);
 
@@ -681,7 +681,7 @@ cx_method cx_method__fromStr(cx_method value, cx_string str);
 cx_int16 cx_method__copy(cx_method *dst, cx_method src);
 cx_int16 cx_method__compare(cx_method dst, cx_method src);
 
-/* ::cortex::lang::modifier */
+/* ::corto::lang::modifier */
 cx_modifier* cx_modifier__create(void);
 cx_modifier* cx_modifier__createChild(cx_object _parent, cx_string _name);
 
@@ -698,11 +698,11 @@ cx_int16 cx_modifier__compare(cx_modifier* dst, cx_modifier* src);
 cx_int16 cx_modifier__init(cx_modifier* value);
 cx_int16 cx_modifier__deinit(cx_modifier* value);
 
-/* ::cortex::lang::object */
+/* ::corto::lang::object */
 cx_object cx_object__create(void);
 cx_object cx_object__createChild(cx_object _parent, cx_string _name);
 
-/* ::cortex::lang::objectSeq */
+/* ::corto::lang::objectSeq */
 cx_objectSeq* cx_objectSeq__create(void);
 cx_objectSeq* cx_objectSeq__createChild(cx_object _parent, cx_string _name);
 
@@ -719,7 +719,7 @@ cx_int16 cx_objectSeq__compare(cx_objectSeq* dst, cx_objectSeq* src);
 cx_int16 cx_objectSeq__init(cx_objectSeq* value);
 cx_int16 cx_objectSeq__deinit(cx_objectSeq* value);
 
-/* ::cortex::lang::observableEvent */
+/* ::corto::lang::observableEvent */
 cx_observableEvent cx_observableEvent__create(cx_uint16 kind, cx_observer observer, cx_object me, cx_object source, cx_object observable);
 cx_observableEvent cx_observableEvent__createChild(cx_object _parent, cx_string _name, cx_uint16 kind, cx_observer observer, cx_object me, cx_object source, cx_object observable);
 
@@ -733,7 +733,7 @@ cx_observableEvent cx_observableEvent__fromStr(cx_observableEvent value, cx_stri
 cx_int16 cx_observableEvent__copy(cx_observableEvent *dst, cx_observableEvent src);
 cx_int16 cx_observableEvent__compare(cx_observableEvent dst, cx_observableEvent src);
 
-/* ::cortex::lang::observer */
+/* ::corto::lang::observer */
 cx_observer cx_observer__create(cx_object observable, cx_eventMask mask, cx_dispatcher dispatcher, cx_object me);
 cx_observer cx_observer__createChild(cx_object _parent, cx_string _name, cx_object observable, cx_eventMask mask, cx_dispatcher dispatcher, cx_object me);
 
@@ -747,7 +747,7 @@ cx_observer cx_observer__fromStr(cx_observer value, cx_string str);
 cx_int16 cx_observer__copy(cx_observer *dst, cx_observer src);
 cx_int16 cx_observer__compare(cx_observer dst, cx_observer src);
 
-/* ::cortex::lang::observerSeq */
+/* ::corto::lang::observerSeq */
 cx_observerSeq* cx_observerSeq__create(void);
 cx_observerSeq* cx_observerSeq__createChild(cx_object _parent, cx_string _name);
 
@@ -764,7 +764,7 @@ cx_int16 cx_observerSeq__compare(cx_observerSeq* dst, cx_observerSeq* src);
 cx_int16 cx_observerSeq__init(cx_observerSeq* value);
 cx_int16 cx_observerSeq__deinit(cx_observerSeq* value);
 
-/* ::cortex::lang::octet */
+/* ::corto::lang::octet */
 cx_octet* cx_octet__create(void);
 cx_octet* cx_octet__createChild(cx_object _parent, cx_string _name);
 
@@ -781,7 +781,7 @@ cx_int16 cx_octet__compare(cx_octet* dst, cx_octet* src);
 cx_int16 cx_octet__init(cx_octet* value);
 cx_int16 cx_octet__deinit(cx_octet* value);
 
-/* ::cortex::lang::operatorKind */
+/* ::corto::lang::operatorKind */
 cx_operatorKind* cx_operatorKind__create(void);
 cx_operatorKind* cx_operatorKind__createChild(cx_object _parent, cx_string _name);
 
@@ -798,7 +798,7 @@ cx_int16 cx_operatorKind__compare(cx_operatorKind* dst, cx_operatorKind* src);
 cx_int16 cx_operatorKind__init(cx_operatorKind* value);
 cx_int16 cx_operatorKind__deinit(cx_operatorKind* value);
 
-/* ::cortex::lang::package */
+/* ::corto::lang::package */
 cx_package cx_package__create(cx_string url);
 cx_package cx_package__createChild(cx_object _parent, cx_string _name, cx_string url);
 
@@ -812,7 +812,7 @@ cx_package cx_package__fromStr(cx_package value, cx_string str);
 cx_int16 cx_package__copy(cx_package *dst, cx_package src);
 cx_int16 cx_package__compare(cx_package dst, cx_package src);
 
-/* ::cortex::lang::parameter */
+/* ::corto::lang::parameter */
 cx_parameter* cx_parameter__create(cx_string name, cx_type type, cx_bool passByReference);
 cx_parameter* cx_parameter__createChild(cx_object _parent, cx_string _name, cx_string name, cx_type type, cx_bool passByReference);
 
@@ -829,7 +829,7 @@ cx_int16 cx_parameter__compare(cx_parameter* dst, cx_parameter* src);
 cx_int16 cx_parameter__init(cx_parameter* value);
 cx_int16 cx_parameter__deinit(cx_parameter* value);
 
-/* ::cortex::lang::parameterSeq */
+/* ::corto::lang::parameterSeq */
 cx_parameterSeq* cx_parameterSeq__create(void);
 cx_parameterSeq* cx_parameterSeq__createChild(cx_object _parent, cx_string _name);
 
@@ -846,7 +846,7 @@ cx_int16 cx_parameterSeq__compare(cx_parameterSeq* dst, cx_parameterSeq* src);
 cx_int16 cx_parameterSeq__init(cx_parameterSeq* value);
 cx_int16 cx_parameterSeq__deinit(cx_parameterSeq* value);
 
-/* ::cortex::lang::primitive */
+/* ::corto::lang::primitive */
 cx_primitive cx_primitive__create(cx_width width);
 cx_primitive cx_primitive__createChild(cx_object _parent, cx_string _name, cx_width width);
 
@@ -860,7 +860,7 @@ cx_primitive cx_primitive__fromStr(cx_primitive value, cx_string str);
 cx_int16 cx_primitive__copy(cx_primitive *dst, cx_primitive src);
 cx_int16 cx_primitive__compare(cx_primitive dst, cx_primitive src);
 
-/* ::cortex::lang::primitiveKind */
+/* ::corto::lang::primitiveKind */
 cx_primitiveKind* cx_primitiveKind__create(void);
 cx_primitiveKind* cx_primitiveKind__createChild(cx_object _parent, cx_string _name);
 
@@ -877,7 +877,7 @@ cx_int16 cx_primitiveKind__compare(cx_primitiveKind* dst, cx_primitiveKind* src)
 cx_int16 cx_primitiveKind__init(cx_primitiveKind* value);
 cx_int16 cx_primitiveKind__deinit(cx_primitiveKind* value);
 
-/* ::cortex::lang::procedure */
+/* ::corto::lang::procedure */
 cx_procedure cx_procedure__create(cx_interface base, cx_modifier baseAccess, cx_procedureKind kind);
 cx_procedure cx_procedure__createChild(cx_object _parent, cx_string _name, cx_interface base, cx_modifier baseAccess, cx_procedureKind kind);
 
@@ -891,7 +891,7 @@ cx_procedure cx_procedure__fromStr(cx_procedure value, cx_string str);
 cx_int16 cx_procedure__copy(cx_procedure *dst, cx_procedure src);
 cx_int16 cx_procedure__compare(cx_procedure dst, cx_procedure src);
 
-/* ::cortex::lang::procedureKind */
+/* ::corto::lang::procedureKind */
 cx_procedureKind* cx_procedureKind__create(void);
 cx_procedureKind* cx_procedureKind__createChild(cx_object _parent, cx_string _name);
 
@@ -908,7 +908,7 @@ cx_int16 cx_procedureKind__compare(cx_procedureKind* dst, cx_procedureKind* src)
 cx_int16 cx_procedureKind__init(cx_procedureKind* value);
 cx_int16 cx_procedureKind__deinit(cx_procedureKind* value);
 
-/* ::cortex::lang::sequence */
+/* ::corto::lang::sequence */
 cx_sequence cx_sequence__create(cx_type elementType, cx_uint32 max);
 cx_sequence cx_sequence__createChild(cx_object _parent, cx_string _name, cx_type elementType, cx_uint32 max);
 
@@ -922,7 +922,7 @@ cx_sequence cx_sequence__fromStr(cx_sequence value, cx_string str);
 cx_int16 cx_sequence__copy(cx_sequence *dst, cx_sequence src);
 cx_int16 cx_sequence__compare(cx_sequence dst, cx_sequence src);
 
-/* ::cortex::lang::state */
+/* ::corto::lang::state */
 cx_state* cx_state__create(void);
 cx_state* cx_state__createChild(cx_object _parent, cx_string _name);
 
@@ -939,7 +939,7 @@ cx_int16 cx_state__compare(cx_state* dst, cx_state* src);
 cx_int16 cx_state__init(cx_state* value);
 cx_int16 cx_state__deinit(cx_state* value);
 
-/* ::cortex::lang::string */
+/* ::corto::lang::string */
 cx_string* cx_string__create(void);
 cx_string* cx_string__createChild(cx_object _parent, cx_string _name);
 
@@ -956,7 +956,7 @@ cx_int16 cx_string__compare(cx_string* dst, cx_string* src);
 cx_int16 cx_string__init(cx_string* value);
 cx_int16 cx_string__deinit(cx_string* value);
 
-/* ::cortex::lang::struct */
+/* ::corto::lang::struct */
 cx_struct cx_struct__create(cx_interface base, cx_modifier baseAccess);
 cx_struct cx_struct__createChild(cx_object _parent, cx_string _name, cx_interface base, cx_modifier baseAccess);
 
@@ -970,7 +970,7 @@ cx_struct cx_struct__fromStr(cx_struct value, cx_string str);
 cx_int16 cx_struct__copy(cx_struct *dst, cx_struct src);
 cx_int16 cx_struct__compare(cx_struct dst, cx_struct src);
 
-/* ::cortex::lang::text */
+/* ::corto::lang::text */
 cx_text cx_text__create(cx_width charWidth, cx_uint64 length);
 cx_text cx_text__createChild(cx_object _parent, cx_string _name, cx_width charWidth, cx_uint64 length);
 
@@ -984,7 +984,7 @@ cx_text cx_text__fromStr(cx_text value, cx_string str);
 cx_int16 cx_text__copy(cx_text *dst, cx_text src);
 cx_int16 cx_text__compare(cx_text dst, cx_text src);
 
-/* ::cortex::lang::type */
+/* ::corto::lang::type */
 cx_type cx_type__create(cx_type defaultType, cx_type parentType, cx_state parentState);
 cx_type cx_type__createChild(cx_object _parent, cx_string _name, cx_type defaultType, cx_type parentType, cx_state parentState);
 
@@ -998,7 +998,7 @@ cx_type cx_type__fromStr(cx_type value, cx_string str);
 cx_int16 cx_type__copy(cx_type *dst, cx_type src);
 cx_int16 cx_type__compare(cx_type dst, cx_type src);
 
-/* ::cortex::lang::typeKind */
+/* ::corto::lang::typeKind */
 cx_typeKind* cx_typeKind__create(void);
 cx_typeKind* cx_typeKind__createChild(cx_object _parent, cx_string _name);
 
@@ -1015,7 +1015,7 @@ cx_int16 cx_typeKind__compare(cx_typeKind* dst, cx_typeKind* src);
 cx_int16 cx_typeKind__init(cx_typeKind* value);
 cx_int16 cx_typeKind__deinit(cx_typeKind* value);
 
-/* ::cortex::lang::uint */
+/* ::corto::lang::uint */
 cx_uint cx_uint__create(cx_width width, cx_uint64 min, cx_uint64 max);
 cx_uint cx_uint__createChild(cx_object _parent, cx_string _name, cx_width width, cx_uint64 min, cx_uint64 max);
 
@@ -1029,7 +1029,7 @@ cx_uint cx_uint__fromStr(cx_uint value, cx_string str);
 cx_int16 cx_uint__copy(cx_uint *dst, cx_uint src);
 cx_int16 cx_uint__compare(cx_uint dst, cx_uint src);
 
-/* ::cortex::lang::uint16 */
+/* ::corto::lang::uint16 */
 cx_uint16* cx_uint16__create(void);
 cx_uint16* cx_uint16__createChild(cx_object _parent, cx_string _name);
 
@@ -1046,7 +1046,7 @@ cx_int16 cx_uint16__compare(cx_uint16* dst, cx_uint16* src);
 cx_int16 cx_uint16__init(cx_uint16* value);
 cx_int16 cx_uint16__deinit(cx_uint16* value);
 
-/* ::cortex::lang::uint32 */
+/* ::corto::lang::uint32 */
 cx_uint32* cx_uint32__create(void);
 cx_uint32* cx_uint32__createChild(cx_object _parent, cx_string _name);
 
@@ -1063,7 +1063,7 @@ cx_int16 cx_uint32__compare(cx_uint32* dst, cx_uint32* src);
 cx_int16 cx_uint32__init(cx_uint32* value);
 cx_int16 cx_uint32__deinit(cx_uint32* value);
 
-/* ::cortex::lang::uint64 */
+/* ::corto::lang::uint64 */
 cx_uint64* cx_uint64__create(void);
 cx_uint64* cx_uint64__createChild(cx_object _parent, cx_string _name);
 
@@ -1080,7 +1080,7 @@ cx_int16 cx_uint64__compare(cx_uint64* dst, cx_uint64* src);
 cx_int16 cx_uint64__init(cx_uint64* value);
 cx_int16 cx_uint64__deinit(cx_uint64* value);
 
-/* ::cortex::lang::uint8 */
+/* ::corto::lang::uint8 */
 cx_uint8* cx_uint8__create(void);
 cx_uint8* cx_uint8__createChild(cx_object _parent, cx_string _name);
 
@@ -1097,7 +1097,7 @@ cx_int16 cx_uint8__compare(cx_uint8* dst, cx_uint8* src);
 cx_int16 cx_uint8__init(cx_uint8* value);
 cx_int16 cx_uint8__deinit(cx_uint8* value);
 
-/* ::cortex::lang::virtual */
+/* ::corto::lang::virtual */
 cx_virtual cx_virtual__create(cx_type returnType, cx_bool returnsReference, cx_bool virtual);
 cx_virtual cx_virtual__createChild(cx_object _parent, cx_string _name, cx_type returnType, cx_bool returnsReference, cx_bool virtual);
 
@@ -1111,11 +1111,11 @@ cx_virtual cx_virtual__fromStr(cx_virtual value, cx_string str);
 cx_int16 cx_virtual__copy(cx_virtual *dst, cx_virtual src);
 cx_int16 cx_virtual__compare(cx_virtual dst, cx_virtual src);
 
-/* ::cortex::lang::void */
+/* ::corto::lang::void */
 cx_void* cx_void__create(void);
 cx_void* cx_void__createChild(cx_object _parent, cx_string _name);
 
-/* ::cortex::lang::vtable */
+/* ::corto::lang::vtable */
 cx_vtable* cx_vtable__create(void);
 cx_vtable* cx_vtable__createChild(cx_object _parent, cx_string _name);
 
@@ -1132,7 +1132,7 @@ cx_int16 cx_vtable__compare(cx_vtable* dst, cx_vtable* src);
 cx_int16 cx_vtable__init(cx_vtable* value);
 cx_int16 cx_vtable__deinit(cx_vtable* value);
 
-/* ::cortex::lang::width */
+/* ::corto::lang::width */
 cx_width* cx_width__create(void);
 cx_width* cx_width__createChild(cx_object _parent, cx_string _name);
 
@@ -1149,7 +1149,7 @@ cx_int16 cx_width__compare(cx_width* dst, cx_width* src);
 cx_int16 cx_width__init(cx_width* value);
 cx_int16 cx_width__deinit(cx_width* value);
 
-/* ::cortex::lang::word */
+/* ::corto::lang::word */
 cx_word* cx_word__create(void);
 cx_word* cx_word__createChild(cx_object _parent, cx_string _name);
 
@@ -1167,7 +1167,7 @@ cx_int16 cx_word__init(cx_word* value);
 cx_int16 cx_word__deinit(cx_word* value);
 
 
-/* ::cortex::lang::interfaceSeq */
+/* ::corto::lang::interfaceSeq */
 #define cx_interfaceSeq__foreach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_interface elem;\
@@ -1178,7 +1178,7 @@ cx_interface cx_interfaceSeq__append(cx_interfaceSeq *seq);
 void cx_interfaceSeq__size(cx_interfaceSeq *seq, cx_uint32 length);
 void cx_interfaceSeq__clear(cx_interfaceSeq *seq);
 
-/* ::cortex::lang::interfaceVectorSeq */
+/* ::corto::lang::interfaceVectorSeq */
 #define cx_interfaceVectorSeq__foreach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_interfaceVector *elem;\
@@ -1189,7 +1189,7 @@ cx_interfaceVector* cx_interfaceVectorSeq__append(cx_interfaceVectorSeq *seq);
 void cx_interfaceVectorSeq__size(cx_interfaceVectorSeq *seq, cx_uint32 length);
 void cx_interfaceVectorSeq__clear(cx_interfaceVectorSeq *seq);
 
-/* ::cortex::lang::memberSeq */
+/* ::corto::lang::memberSeq */
 #define cx_memberSeq__foreach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_member elem;\
@@ -1200,7 +1200,7 @@ cx_member cx_memberSeq__append(cx_memberSeq *seq);
 void cx_memberSeq__size(cx_memberSeq *seq, cx_uint32 length);
 void cx_memberSeq__clear(cx_memberSeq *seq);
 
-/* ::cortex::lang::objectSeq */
+/* ::corto::lang::objectSeq */
 #define cx_objectSeq__foreach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_object elem;\
@@ -1211,7 +1211,7 @@ cx_object cx_objectSeq__append(cx_objectSeq *seq);
 void cx_objectSeq__size(cx_objectSeq *seq, cx_uint32 length);
 void cx_objectSeq__clear(cx_objectSeq *seq);
 
-/* ::cortex::lang::observerSeq */
+/* ::corto::lang::observerSeq */
 #define cx_observerSeq__foreach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_observer elem;\
@@ -1222,7 +1222,7 @@ cx_observer cx_observerSeq__append(cx_observerSeq *seq);
 void cx_observerSeq__size(cx_observerSeq *seq, cx_uint32 length);
 void cx_observerSeq__clear(cx_observerSeq *seq);
 
-/* ::cortex::lang::parameterSeq */
+/* ::corto::lang::parameterSeq */
 #define cx_parameterSeq__foreach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_parameter *elem;\
@@ -1233,7 +1233,7 @@ cx_parameter* cx_parameterSeq__append(cx_parameterSeq *seq);
 void cx_parameterSeq__size(cx_parameterSeq *seq, cx_uint32 length);
 void cx_parameterSeq__clear(cx_parameterSeq *seq);
 
-/* ::cortex::lang::vtable */
+/* ::corto::lang::vtable */
 #define cx_vtable__foreach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_function elem;\

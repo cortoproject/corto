@@ -6,7 +6,7 @@
 #ifndef cx_bitmask_H
 #define cx_bitmask_H
 
-#include "cortex.h"
+#include "corto.h"
 #include "cx_enum.h"
 #include "cx__type.h"
 #include "cx__api.h"
@@ -16,7 +16,7 @@
 extern "C" {
 #endif
 
-/* ::cortex::lang::bitmask::init() */
+/* ::corto::lang::bitmask::init() */
 cx_int16 cx_bitmask_init(cx_bitmask _this);
 
 #ifdef __cplusplus

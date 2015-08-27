@@ -1,0 +1,5 @@
+PACKAGE = 'corto::io'
+
+CFLAGS = ["-Wunused-parameter"]
+
+require "#{ENV['CORTO_BUILD']}/package"

@@ -7,7 +7,7 @@
 #ifndef tc_classInherit_H
 #define tc_classInherit_H
 
-#include "cortex.h"
+#include "corto.h"
 #include "tc_classPrimitives.h"
 #include "tc_stringser__type.h"
 

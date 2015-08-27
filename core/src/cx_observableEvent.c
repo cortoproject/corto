@@ -8,9 +8,9 @@
 
 #include "cx.h"
 
-/* ::cortex::lang::observableEvent::handle() */
+/* ::corto::lang::observableEvent::handle() */
 cx_void cx_observableEvent_handle_v(cx_observableEvent _this) {
-/* $begin(::cortex::lang::observableEvent::handle) */
+/* $begin(::corto::lang::observableEvent::handle) */
     cx_call(cx_function(_this->observer), NULL, _this->me, _this->observable, _this->source);
     cx_event_handle_v(cx_event(_this));
 /* $end */

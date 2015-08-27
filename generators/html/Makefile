@@ -2,13 +2,13 @@
 TARGET  = html
 
 INCLUDE = include \
-          $(CORTEX_HOME)/cx/include \
-          $(CORTEX_HOME)/dev/include \
-          $(CORTEX_HOME)/public/c/include \
-          $(CORTEX_HOME)/interface/json/include
+          $(CORTO_HOME)/cx/include \
+          $(CORTO_HOME)/dev/include \
+          $(CORTO_HOME)/public/c/include \
+          $(CORTO_HOME)/interface/json/include
 
-LIBS    = cortex cortexdev json
+LIBS    = corto cortodev json
 LIBPATH =
 
-include $(CORTEX_HOME)/build/generator.makefile
+include $(CORTO_HOME)/build/generator.makefile
 

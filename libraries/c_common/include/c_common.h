@@ -8,7 +8,7 @@
 #ifndef C_COMMON_H_
 #define C_COMMON_H_
 
-#include "cortex.h"
+#include "corto.h"
 #include "cx_generator.h"
 
 #ifdef __cplusplus
@@ -16,7 +16,7 @@ extern "c" {
 #endif
 
 /* Translate id to C-id */
-cx_string cortex_genId(cx_string str, cx_id id);
+cx_string corto_genId(cx_string str, cx_id id);
 
 /* Return string with C type for primitive */
 cx_char* c_primitiveId(cx_primitive t, cx_char* buff);

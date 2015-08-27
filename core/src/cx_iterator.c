@@ -99,16 +99,16 @@ cx_int16 cx_iterator_set(void* _this, void* collection, cx_collection collection
 
 /* $end */
 
-/* ::cortex::lang::iterator::castable(type type) */
+/* ::corto::lang::iterator::castable(type type) */
 cx_bool cx_iterator_castable_v(cx_iterator _this, cx_type type) {
-/* $begin(::cortex::lang::iterator::castable) */
+/* $begin(::corto::lang::iterator::castable) */
     return cx_iterator_compatible_v(_this, type);
 /* $end */
 }
 
-/* ::cortex::lang::iterator::compatible(type type) */
+/* ::corto::lang::iterator::compatible(type type) */
 cx_bool cx_iterator_compatible_v(cx_iterator _this, cx_type type) {
-/* $begin(::cortex::lang::iterator::compatible) */
+/* $begin(::corto::lang::iterator::compatible) */
     cx_bool result = FALSE;
     if (type->kind == CX_COLLECTION) {
         if (cx_collection(type)->elementType == _this->elementType) {
@@ -119,9 +119,9 @@ cx_bool cx_iterator_compatible_v(cx_iterator _this, cx_type type) {
 /* $end */
 }
 
-/* ::cortex::lang::iterator::init() */
+/* ::corto::lang::iterator::init() */
 cx_int16 cx_iterator_init(cx_iterator _this) {
-/* $begin(::cortex::lang::iterator::init) */
+/* $begin(::corto::lang::iterator::init) */
     cx_type(_this)->kind = CX_ITERATOR;
     CX_ITERATOR(iteratorType);
     cx_type(_this)->size = sizeof(iteratorType);

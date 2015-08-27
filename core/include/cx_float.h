@@ -6,7 +6,7 @@
 #ifndef cx_float_H
 #define cx_float_H
 
-#include "cortex.h"
+#include "corto.h"
 #include "cx_primitive.h"
 #include "cx__type.h"
 #include "cx__api.h"
@@ -16,7 +16,7 @@
 extern "C" {
 #endif
 
-/* ::cortex::lang::float::init() */
+/* ::corto::lang::float::init() */
 cx_int16 cx_float_init(cx_float _this);
 
 #ifdef __cplusplus

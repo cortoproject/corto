@@ -1,6 +1,0 @@
-PACKAGE = 'cortex::ic'
-
-CFLAGS = ["-Wunused-parameter"]
-USE_COMPONENT = ["vm"]
-
-require "#{ENV['CORTEX_BUILD']}/package"

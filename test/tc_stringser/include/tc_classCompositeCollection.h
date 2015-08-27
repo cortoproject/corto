@@ -7,7 +7,7 @@
 #ifndef tc_classCompositeCollection_H
 #define tc_classCompositeCollection_H
 
-#include "cortex.h"
+#include "corto.h"
 #include "tc_stringser__type.h"
 
 #ifdef __cplusplus

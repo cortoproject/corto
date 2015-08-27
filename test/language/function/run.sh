@@ -1,1 +1,1 @@
-for f in ./*.cx; do cortex $f; done
+for f in ./*.cx; do corto $f; done

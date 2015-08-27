@@ -6,7 +6,7 @@
 #ifndef tc_stringser_classPrimitives_H
 #define tc_stringser_classPrimitives_H
 
-#include "cortex.h"
+#include "corto.h"
 #include "tc_stringser__type.h"
 
 #include "tc_stringser__api.h"

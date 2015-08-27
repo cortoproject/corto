@@ -6,7 +6,7 @@
  */
 
 #include "cx_xml_deser.h"
-#include "cortex.h"
+#include "corto.h"
 #include "cx_class.h"
 #include "cx_xmlreader.h"
 #include "cx_loader.h"

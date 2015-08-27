@@ -6,7 +6,7 @@
 #ifndef cx_boolean_H
 #define cx_boolean_H
 
-#include "cortex.h"
+#include "corto.h"
 #include "cx_primitive.h"
 #include "cx__type.h"
 #include "cx__api.h"
@@ -16,7 +16,7 @@
 extern "C" {
 #endif
 
-/* ::cortex::lang::boolean::init() */
+/* ::corto::lang::boolean::init() */
 cx_int16 cx_boolean_init(cx_boolean _this);
 
 #ifdef __cplusplus

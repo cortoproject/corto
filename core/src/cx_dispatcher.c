@@ -8,9 +8,9 @@
 
 #include "cx.h"
 
-/* ::cortex::lang::dispatcher::post(event e) */
+/* ::corto::lang::dispatcher::post(event e) */
 cx_void cx_dispatcher_post_v(cx_dispatcher _this, cx_event e) {
-/* $begin(::cortex::lang::dispatcher::post) */
+/* $begin(::corto::lang::dispatcher::post) */
 
     CX_UNUSED(_this);
     CX_UNUSED(e);

@@ -1,11 +1,11 @@
 require 'rake/clean'
-require "#{ENV['CORTEX_BUILD']}/version"
-require "#{ENV['CORTEX_BUILD']}/libmapping"
+require "#{ENV['CORTO_BUILD']}/version"
+require "#{ENV['CORTO_BUILD']}/libmapping"
 
 Dir.chdir(File.dirname(Rake.application.rakefile))
 
-if not ENV['CORTEX_BUILD'] then
-    raise "CORTEX_BUILD not defined (did you forget to 'source configure'?)"
+if not ENV['CORTO_BUILD'] then
+    raise "CORTO_BUILD not defined (did you forget to 'source configure'?)"
 end
 if not defined? ARTEFACT then
     raise "artefact: ARTEFACT not specified\n"
@@ -13,11 +13,11 @@ end
 
 INCLUDE ||= []
 LIB ||= []
-CORTEX_LIB ||= []
+CORTO_LIB ||= []
 LIBPATH ||= []
 CFLAGS ||= []
 LFLAGS ||= []
-TARGETDIR ||= ENV['CORTEX_TARGET'] + "/lib"
+TARGETDIR ||= ENV['CORTO_TARGET'] + "/lib"
 GENERATED_SOURCES ||= []
 USE_PACKAGE ||= []
 USE_COMPONENT ||= []
@@ -36,7 +36,7 @@ CLOBBER.include(TARGETDIR + "/" + ARTEFACT)
 task :collect do
     verbose(false)
     artefact = "#{TARGETDIR}/#{ARTEFACT}"
-    target = ENV['HOME'] + "/.cortex/pack" + artefact["#{ENV['CORTEX_TARGET']}".length..artefact.length]
+    target = ENV['HOME'] + "/.corto/pack" + artefact["#{ENV['CORTO_TARGET']}".length..artefact.length]
     sh "mkdir -p " + target.split("/")[0...-1].join("/")
     sh "cp -rL #{artefact} #{target}"
 end
@@ -48,18 +48,18 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     sh "mkdir -p #{TARGETDIR}"
     objects  = "#{OBJECTS.to_a.uniq.join(' ')}"
     cflags = "#{CFLAGS.join(" ")}"
-    cortex_lib = "#{CORTEX_LIB.map {|i| ENV['CORTEX_HOME'] + "/lib/lib" + i + ".so"}.join(" ")}"
+    corto_lib = "#{CORTO_LIB.map {|i| ENV['CORTO_HOME'] + "/lib/lib" + i + ".so"}.join(" ")}"
     libpath = "#{LIBPATH.map {|i| "-L" + i}.join(" ")} "
     libmapping = "#{(LibMapping.mapLibs(LIB)).map {|i| "-l" + i}.join(" ")}"
     lflags = "#{LFLAGS.join(" ")} -o #{TARGETDIR}/#{ARTEFACT}"
     use_link =
         USE_PACKAGE.map do |i|
             dirs = i.split("::")
-            "#{ENV['CORTEX_HOME']}/lib/cortex/#{VERSION}/packages/" + i.gsub("::", "/") + "/lib" + dirs[dirs.length-1] + ".so"
+            "#{ENV['CORTO_HOME']}/lib/corto/#{VERSION}/packages/" + i.gsub("::", "/") + "/lib" + dirs[dirs.length-1] + ".so"
         end.join(" ") +
-        USE_COMPONENT.map {|i| "#{ENV['CORTEX_HOME']}/lib/cortex/#{VERSION}/components/lib" + i + ".so"}.join(" ") +
-        USE_LIBRARY.map {|i| "#{ENV['CORTEX_HOME']}/lib/cortex/#{VERSION}/libraries/lib" + i + ".so"}.join(" ")
-    cc_command = "cc #{objects} #{cflags} #{cortex_lib} #{libpath} #{libmapping} #{use_link} #{lflags}"
+        USE_COMPONENT.map {|i| "#{ENV['CORTO_HOME']}/lib/corto/#{VERSION}/components/lib" + i + ".so"}.join(" ") +
+        USE_LIBRARY.map {|i| "#{ENV['CORTO_HOME']}/lib/corto/#{VERSION}/libraries/lib" + i + ".so"}.join(" ")
+    cc_command = "cc #{objects} #{cflags} #{corto_lib} #{libpath} #{libmapping} #{use_link} #{lflags}"
     sh cc_command
     if ENV['silent'] != "true" then
         sh "echo '\033[1;49m[ \033[1;34m#{ARTEFACT}\033[0;49m\033[1;49m ]\033[0;49m'"
@@ -69,16 +69,16 @@ end
 task :prebuild
 task :postbuild
 
-rule '__api.o' => ->(t){t.pathmap(".cortex/%f").ext(".c")} do |task|
+rule '__api.o' => ->(t){t.pathmap(".corto/%f").ext(".c")} do |task|
     build_source(task, false)
 end
-rule '__meta.o' => ->(t){t.pathmap(".cortex/%f").ext(".c")} do |task|
+rule '__meta.o' => ->(t){t.pathmap(".corto/%f").ext(".c")} do |task|
     build_source(task, false)
 end
-rule '__wrapper.o' => ->(t){t.pathmap(".cortex/%f").ext(".c")} do |task|
+rule '__wrapper.o' => ->(t){t.pathmap(".corto/%f").ext(".c")} do |task|
     build_source(task, false)
 end
-rule '__load.o' => ->(t){t.pathmap(".cortex/%f").ext(".c")} do |task|
+rule '__load.o' => ->(t){t.pathmap(".corto/%f").ext(".c")} do |task|
     build_source(task, false)
 end
 rule '.o' => ->(t){t.pathmap("src/%f").ext(".c")} do |task|
@@ -95,7 +95,7 @@ def build_source(task, echo)
             sh "echo '#{task.source}'" 
         end
     end
-    use_include = USE_PACKAGE.map{|i| "-I #{ENV['CORTEX_HOME']}/include/cortex/#{VERSION}/packages/" + i.gsub("::", "/")}.join(" ")
+    use_include = USE_PACKAGE.map{|i| "-I #{ENV['CORTO_HOME']}/include/corto/#{VERSION}/packages/" + i.gsub("::", "/")}.join(" ")
     sh "cc -c #{CFLAGS.join(" ")} #{use_include} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{task.source} -o #{task.name}"
 end
 

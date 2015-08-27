@@ -539,7 +539,7 @@ cx.object.prototype = {
 
 // Create the root object
 cx.root = new cx.object(undefined, "");
-cx.root.meta.type = "::cortex::lang::object";
+cx.root.meta.type = "::corto::lang::object";
 
 // Create a resolve in cx that resolves from root
 cx.resolve = function(name) { return cx.root.resolve(name);}

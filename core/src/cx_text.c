@@ -8,9 +8,9 @@
 
 #include "cx.h"
 
-/* ::cortex::lang::text::init() */
+/* ::corto::lang::text::init() */
 cx_int16 cx_text_init(cx_text _this) {
-/* $begin(::cortex::lang::text::init) */
+/* $begin(::corto::lang::text::init) */
     cx_type(_this)->hasResources = TRUE;
     cx_primitive(_this)->kind = CX_TEXT;
     cx_primitive(_this)->width = CX_WIDTH_WORD;

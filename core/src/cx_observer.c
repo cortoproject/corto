@@ -12,9 +12,9 @@
 #include "cx__class.h"
 /* $end */
 
-/* ::cortex::lang::observer::bind() */
+/* ::corto::lang::observer::bind() */
 cx_int16 cx_observer_bind(cx_observer _this) {
-/* $begin(::cortex::lang::observer::bind) */
+/* $begin(::corto::lang::observer::bind) */
 
     /* If this is a scoped observer, automatically bind with parent if it's a class. */
     if (cx_checkAttr(_this, CX_ATTR_SCOPED)) {
@@ -48,9 +48,9 @@ error:
 /* $end */
 }
 
-/* ::cortex::lang::observer::init() */
+/* ::corto::lang::observer::init() */
 cx_int16 cx_observer_init(cx_observer _this) {
-/* $begin(::cortex::lang::observer::init) */
+/* $begin(::corto::lang::observer::init) */
     cx_parameter *p;
     
     cx_setref( &cx_function(_this)->returnType, cx_void_o);
@@ -80,9 +80,9 @@ cx_int16 cx_observer_init(cx_observer _this) {
 /* $end */
 }
 
-/* ::cortex::lang::observer::listen(object observable,object me) */
+/* ::corto::lang::observer::listen(object observable,object me) */
 cx_int16 cx_observer_listen(cx_observer _this, cx_object observable, cx_object me) {
-/* $begin(::cortex::lang::observer::listen) */
+/* $begin(::corto::lang::observer::listen) */
     cx_object oldObservable = NULL;
 
     /* Silence old observable */
@@ -125,17 +125,17 @@ error:
 /* $end */
 }
 
-/* ::cortex::lang::observer::setDispatcher(dispatcher dispatcher) */
+/* ::corto::lang::observer::setDispatcher(dispatcher dispatcher) */
 cx_void cx_observer_setDispatcher(cx_observer _this, cx_dispatcher dispatcher) {
-/* $begin(::cortex::lang::observer::setDispatcher) */
+/* $begin(::corto::lang::observer::setDispatcher) */
     /* TODO: when observer is a template observer only set the dispatcher in observerData. */
     cx_setref(&_this->dispatcher, dispatcher);
 /* $end */
 }
 
-/* ::cortex::lang::observer::silence(object me) */
+/* ::corto::lang::observer::silence(object me) */
 cx_int16 cx_observer_silence(cx_observer _this, cx_object me) {
-/* $begin(::cortex::lang::observer::silence) */
+/* $begin(::corto::lang::observer::silence) */
     cx_object oldObservable;
 
     /* Silence old observable */
@@ -160,9 +160,9 @@ cx_int16 cx_observer_silence(cx_observer _this, cx_object me) {
 /* $end */
 }
 
-/* ::cortex::lang::observer::unbind(observer object) */
+/* ::corto::lang::observer::unbind(observer object) */
 cx_void cx_observer_unbind(cx_observer object) {
-/* $begin(::cortex::lang::observer::unbind) */
+/* $begin(::corto::lang::observer::unbind) */
     if (!object->template) {
         if (object->observable) {
             if (object->observing) {

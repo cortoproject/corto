@@ -124,8 +124,8 @@
  */
 
 /* Implementations of virtual functions */
-extern cx_object cx_cortex_new(cx_type type);
-extern cx_object cx_cortex__new(cx_type type, cx_attr attributes);
+extern cx_object cx_corto_new(cx_type type);
+extern cx_object cx_corto__new(cx_type type, cx_attr attributes);
 
 #ifdef __cplusplus
 extern "C" {
@@ -299,73 +299,73 @@ CX_STATIC_SCOPED_OBJECT(constant);
 #define CX_PACKAGE_O_SCOPE(parent, name, uri) cx_ssoo_package parent##_##name##__o = {CX_PACKAGE_V(parent, #name, uri)}
 
 /* type object */
-#define CX_TYPE_O(name, kind, reference) static sso_type name##__o = {CX_SSO_V(cortex_lang, #name, type), CX_TYPE_V(name, kind, reference, NULL, CX_DECLARED | CX_DEFINED, CX_NODELEGATE), VTABLE_V}
+#define CX_TYPE_O(name, kind, reference) static sso_type name##__o = {CX_SSO_V(corto_lang, #name, type), CX_TYPE_V(name, kind, reference, NULL, CX_DECLARED | CX_DEFINED, CX_NODELEGATE), VTABLE_V}
 
 /* primitive object */
-#define CX_PRIMITIVE_O(name, kind, width) sso_primitive name##__o = {CX_SSO_V(cortex_lang, #name, primitive), CX_PRIMITIVE_V(name, kind, width, CX_NODELEGATE), VTABLE_V}
+#define CX_PRIMITIVE_O(name, kind, width) sso_primitive name##__o = {CX_SSO_V(corto_lang, #name, primitive), CX_PRIMITIVE_V(name, kind, width, CX_NODELEGATE), VTABLE_V}
 
 /* binary object */
-#define CX_BINARY_O(name, width) sso_binary name##__o = {CX_SSO_V(cortex_lang, #name, binary), {CX_PRIMITIVE_V(name, CX_BINARY, width, NULL, CX_DECLARED | CX_DEFINED, CX_NODELEGATE)}, VTABLE_V}
+#define CX_BINARY_O(name, width) sso_binary name##__o = {CX_SSO_V(corto_lang, #name, binary), {CX_PRIMITIVE_V(name, CX_BINARY, width, NULL, CX_DECLARED | CX_DEFINED, CX_NODELEGATE)}, VTABLE_V}
 
 /* boolean object */
-#define CX_BOOLEAN_O(name) sso_boolean name##__o = {CX_SSO_V(cortex_lang, #name, boolean), {CX_PRIMITIVE_V(name, CX_BOOLEAN, CX_WIDTH_8, NULL, CX_DECLARED | CX_DEFINED, CX_NODELEGATE)}, VTABLE_V}
+#define CX_BOOLEAN_O(name) sso_boolean name##__o = {CX_SSO_V(corto_lang, #name, boolean), {CX_PRIMITIVE_V(name, CX_BOOLEAN, CX_WIDTH_8, NULL, CX_DECLARED | CX_DEFINED, CX_NODELEGATE)}, VTABLE_V}
 
 /* character object */
-#define CX_CHARACTER_O(name, width) sso_character name##__o = {CX_SSO_V(cortex_lang, #name, character), {CX_PRIMITIVE_V(name, CX_CHARACTER, width, NULL, CX_DECLARED | CX_DEFINED, CX_NODELEGATE)}, VTABLE_V}
+#define CX_CHARACTER_O(name, width) sso_character name##__o = {CX_SSO_V(corto_lang, #name, character), {CX_PRIMITIVE_V(name, CX_CHARACTER, width, NULL, CX_DECLARED | CX_DEFINED, CX_NODELEGATE)}, VTABLE_V}
 
 /* int object */
-#define CX_INT_O(name, width, min, max, scopeType, scopeStateKind, DELEGATE) sso_int name##__o = {CX_SSO_V(cortex_lang, #name, int), {CX_PRIMITIVE_V(name, CX_INTEGER, width, scopeType, scopeStateKind, DELEGATE), min, max}, VTABLE_V}
+#define CX_INT_O(name, width, min, max, scopeType, scopeStateKind, DELEGATE) sso_int name##__o = {CX_SSO_V(corto_lang, #name, int), {CX_PRIMITIVE_V(name, CX_INTEGER, width, scopeType, scopeStateKind, DELEGATE), min, max}, VTABLE_V}
 
 /* uint object */
-#define CX_UINT_O(name, width, min, max) sso_uint name##__o = {CX_SSO_V(cortex_lang, #name, uint), {CX_PRIMITIVE_V(name, CX_UINTEGER, width, NULL, CX_DECLARED | CX_DEFINED, CX_NODELEGATE), min, max}, VTABLE_V}
+#define CX_UINT_O(name, width, min, max) sso_uint name##__o = {CX_SSO_V(corto_lang, #name, uint), {CX_PRIMITIVE_V(name, CX_UINTEGER, width, NULL, CX_DECLARED | CX_DEFINED, CX_NODELEGATE), min, max}, VTABLE_V}
 
 /* float object */
-#define CX_FLOAT_O(name, width, min, max) sso_float name##__o = {CX_SSO_V(cortex_lang, #name, float), {CX_PRIMITIVE_V(name, CX_FLOAT, width, NULL, CX_DECLARED | CX_DEFINED, CX_NODELEGATE), min, max}, VTABLE_V}
+#define CX_FLOAT_O(name, width, min, max) sso_float name##__o = {CX_SSO_V(corto_lang, #name, float), {CX_PRIMITIVE_V(name, CX_FLOAT, width, NULL, CX_DECLARED | CX_DEFINED, CX_NODELEGATE), min, max}, VTABLE_V}
 
 /* text object */
-#define CX_TEXT_O(name, width, length) sso_text name##__o = {CX_SSO_V(cortex_lang, #name, text), {CX_PRIMITIVE_V(name, CX_TEXT, CX_WIDTH_WORD, NULL, CX_DECLARED | CX_DEFINED, CX_NODELEGATE), width, length}, VTABLE_V}
+#define CX_TEXT_O(name, width, length) sso_text name##__o = {CX_SSO_V(corto_lang, #name, text), {CX_PRIMITIVE_V(name, CX_TEXT, CX_WIDTH_WORD, NULL, CX_DECLARED | CX_DEFINED, CX_NODELEGATE), width, length}, VTABLE_V}
 
 /* enum object */
-#define CX_ENUM_O(name) sso_enum name##__o = {CX_SSO_V(cortex_lang, #name, enum), {CX_PRIMITIVE_V(name, CX_ENUM, CX_WIDTH_32, NULL, CX_DECLARED | CX_DEFINED, CX_NODELEGATE), CX_SEQUENCE_EMPTY_V(constant)}, VTABLE_V}
+#define CX_ENUM_O(name) sso_enum name##__o = {CX_SSO_V(corto_lang, #name, enum), {CX_PRIMITIVE_V(name, CX_ENUM, CX_WIDTH_32, NULL, CX_DECLARED | CX_DEFINED, CX_NODELEGATE), CX_SEQUENCE_EMPTY_V(constant)}, VTABLE_V}
 
 /* bitmask object */
-#define CX_BITMASK_O(name) sso_bitmask name##__o = {CX_SSO_V(cortex_lang, #name, bitmask), {{CX_PRIMITIVE_V(name, CX_BITMASK, CX_WIDTH_32, NULL, CX_DECLARED | CX_DEFINED, CX_NODELEGATE), CX_SEQUENCE_EMPTY_V(constant)}}, VTABLE_V}
+#define CX_BITMASK_O(name) sso_bitmask name##__o = {CX_SSO_V(corto_lang, #name, bitmask), {{CX_PRIMITIVE_V(name, CX_BITMASK, CX_WIDTH_32, NULL, CX_DECLARED | CX_DEFINED, CX_NODELEGATE), CX_SEQUENCE_EMPTY_V(constant)}}, VTABLE_V}
 
 /* constant object */
 #define CX_CONSTANT_O(parent, name) sso_constant parent##_##name##__o = {CX_SSO_PO_V(parent, #name, constant), CX_##name, VTABLE_V}
 
 /* struct object */
 #define CX_STRUCT_O(name, scopeType, scopeStateKind) sso_struct name##__o = \
-    {CX_SSO_V(cortex_lang, #name, struct), CX_STRUCT_NOBASE_V(name, CX_STRUCT, FALSE, scopeType, scopeStateKind, CX_NODELEGATE), VTABLE_V}
+    {CX_SSO_V(corto_lang, #name, struct), CX_STRUCT_NOBASE_V(name, CX_STRUCT, FALSE, scopeType, scopeStateKind, CX_NODELEGATE), VTABLE_V}
 
 /* interface object */
 #define CX_INTERFACE_O(name) sso_interface name##__o = \
-    {CX_SSO_V(cortex_lang, #name, interface), CX_COMPOSITE_NOBASE_V(name, CX_INTERFACE, TRUE, NULL, 0, CX_NODELEGATE), VTABLE_V}
+    {CX_SSO_V(corto_lang, #name, interface), CX_COMPOSITE_NOBASE_V(name, CX_INTERFACE, TRUE, NULL, 0, CX_NODELEGATE), VTABLE_V}
 
 /* class object */
 #define CX_CLASS_NOBASE_O(name, scopeType, scopeStateKind, DELEGATE) sso_class name##__o = \
-    {CX_SSO_V(cortex_lang, #name, class), {CX_STRUCT_NOBASE_V(name, CX_CLASS, TRUE, scopeType, scopeStateKind, DELEGATE), {0,NULL}, {0,NULL}, {0,NULL}, DELEGATE##_CLASS(name)}, VTABLE_V}
+    {CX_SSO_V(corto_lang, #name, class), {CX_STRUCT_NOBASE_V(name, CX_CLASS, TRUE, scopeType, scopeStateKind, DELEGATE), {0,NULL}, {0,NULL}, {0,NULL}, DELEGATE##_CLASS(name)}, VTABLE_V}
 
 #define CX_CLASS_O(name, base, baseAccess, scopeType, scopeStateKind, DELEGATE) sso_class name##__o = \
-        {CX_SSO_V(cortex_lang, #name, class), {CX_STRUCT_V(name, CX_CLASS, base, baseAccess, TRUE, scopeType, scopeStateKind, DELEGATE), {0,NULL}, {0,NULL}, {0,NULL}, DELEGATE##_CLASS(name)}, VTABLE_V}
+        {CX_SSO_V(corto_lang, #name, class), {CX_STRUCT_V(name, CX_CLASS, base, baseAccess, TRUE, scopeType, scopeStateKind, DELEGATE), {0,NULL}, {0,NULL}, {0,NULL}, DELEGATE##_CLASS(name)}, VTABLE_V}
 
 /* array object */
-#define CX_ARRAY_O(name, elementType, size) sso_array name##__o = {CX_SSO_V(cortex_lang, #name, array), {CX_COLLECTION_V(name, CX_ARRAY, elementType, size)}, VTABLE_V}
+#define CX_ARRAY_O(name, elementType, size) sso_array name##__o = {CX_SSO_V(corto_lang, #name, array), {CX_COLLECTION_V(name, CX_ARRAY, elementType, size)}, VTABLE_V}
 
 /* sequence object */
-#define CX_SEQUENCE_O(name, elementType, max) sso_sequence name##__o = {CX_SSO_V(cortex_lang, #name, sequence), {CX_COLLECTION_V(name, CX_SEQUENCE, elementType, max)}, VTABLE_V}
+#define CX_SEQUENCE_O(name, elementType, max) sso_sequence name##__o = {CX_SSO_V(corto_lang, #name, sequence), {CX_COLLECTION_V(name, CX_SEQUENCE, elementType, max)}, VTABLE_V}
 
 /* list object */
-#define CX_LIST_O(name, elementType, max) sso_list name##__o = {CX_SSO_V(cortex_lang, #name, list), {CX_COLLECTION_V(name, CX_LIST, elementType, max)}, VTABLE_V}
+#define CX_LIST_O(name, elementType, max) sso_list name##__o = {CX_SSO_V(corto_lang, #name, list), {CX_COLLECTION_V(name, CX_LIST, elementType, max)}, VTABLE_V}
 
 /* map object */
-#define CX_MAP_O(name, elementType, keyType, max) sso_map name##__o = {CX_SSO_V(cortex_lang, #name, map), {CX_COLLECTION_V(name, CX_MAP, elementType, max), (cx_type)&keyType##__o.v}, VTABLE_V}
+#define CX_MAP_O(name, elementType, keyType, max) sso_map name##__o = {CX_SSO_V(corto_lang, #name, map), {CX_COLLECTION_V(name, CX_MAP, elementType, max), (cx_type)&keyType##__o.v}, VTABLE_V}
 
 /* procedure object */
 #define CX_PROCEDURE_O(name, kind, base, baseAccess, scopeType, scopeStateKind, DELEGATE) sso_procedure name##__o = \
-        {CX_SSO_V(cortex_lang, #name, procedure), {CX_STRUCT_V(name, CX_PROCEDURE, base, baseAccess, TRUE, scopeType, scopeStateKind, DELEGATE), kind, DELEGATE##_PROC(name)}, VTABLE_V}
+        {CX_SSO_V(corto_lang, #name, procedure), {CX_STRUCT_V(name, CX_PROCEDURE, base, baseAccess, TRUE, scopeType, scopeStateKind, DELEGATE), kind, DELEGATE##_PROC(name)}, VTABLE_V}
 #define CX_PROCEDURE_NOBASE_O(name, kind, scopeType, scopeStateKind, DELEGATE) sso_procedure name##__o = \
-        {CX_SSO_V(cortex_lang, #name, procedure), {CX_STRUCT_NOBASE_V(name, CX_PROCEDURE, TRUE, scopeType, scopeStateKind, DELEGATE), kind, DELEGATE##_PROC(name)}, VTABLE_V}
+        {CX_SSO_V(corto_lang, #name, procedure), {CX_STRUCT_NOBASE_V(name, CX_PROCEDURE, TRUE, scopeType, scopeStateKind, DELEGATE), kind, DELEGATE##_PROC(name)}, VTABLE_V}
 
 /* function object */
 #define CX_FUNCTION_O(parent, name, args, returnType, impl) \
@@ -406,7 +406,7 @@ CX_STATIC_SCOPED_OBJECT(constant);
 
 /* Delegate type */
 #define CX_DELEGATE_O(name, returnType) sso_delegate name##__o = \
-    {CX_SSO_V(cortex_lang, #name, delegate), {CX_STRUCT_NOBASE_V(name, CX_DELEGATE, FALSE, NULL, CX_DECLARED|CX_DEFINED, CX_NODELEGATE), (cx_type)&returnType##__o.v, FALSE, CX_SEQUENCE_EMPTY_V(parameter)}, VTABLE_V}
+    {CX_SSO_V(corto_lang, #name, delegate), {CX_STRUCT_NOBASE_V(name, CX_DELEGATE, FALSE, NULL, CX_DECLARED|CX_DEFINED, CX_NODELEGATE), (cx_type)&returnType##__o.v, FALSE, CX_SEQUENCE_EMPTY_V(parameter)}, VTABLE_V}
 
 /* Forward declarations of classes */
 CX_FWDECL(class, type);
@@ -498,16 +498,16 @@ CX_FWDECL(delegate, callbackInit);
 CX_FWDECL(delegate, callbackDestruct);
 
 /* database root */
-cx_ssoo_package root__o = {CX_ROOT_V(), {"http://cortexlang.com/"}};
+cx_ssoo_package root__o = {CX_ROOT_V(), {"http://cortolang.com/"}};
 cx_package root_o = CX_OFFSET(&root__o.o.o, sizeof(cx__object));
 
-/* ::cortex, ::cortex::lang and ::cortex::serialization */
-CX_PACKAGE_O(cortex, "http://cortexlang.com/");
-CX_PACKAGE_O_SCOPE(cortex, lang, "http://cortexlang.com/");
+/* ::corto, ::corto::lang and ::corto::serialization */
+CX_PACKAGE_O(corto, "http://cortolang.com/");
+CX_PACKAGE_O_SCOPE(corto, lang, "http://cortolang.com/");
 
-cx_package cortex_o = CX_OFFSET(&cortex__o.o.o, sizeof(cx__object));
+cx_package corto_o = CX_OFFSET(&corto__o.o.o, sizeof(cx__object));
 
-cx_package cortex_lang_o = CX_OFFSET(&cortex_lang__o.o.o, sizeof(cx__object));
+cx_package corto_lang_o = CX_OFFSET(&corto_lang__o.o.o, sizeof(cx__object));
 
 /* Primitives */
 CX_BINARY_O(octet, CX_WIDTH_8);
@@ -675,7 +675,7 @@ CX_SEQUENCE_O(interfaceVectorSeq, interfaceVector, 0);
 CX_DELEGATE_O(callbackInit, int16);
 CX_DELEGATE_O(callbackDestruct, void);
 
-/* ::cortex::lang::type */
+/* ::corto::lang::type */
 CX_FW_ICD(type);
 CX_CLASS_NOBASE_O(type, NULL, CX_DECLARED | CX_DEFINED, CX_ICD);
     CX_MEMBER_O(type, kind, typeKind, CX_READONLY | CX_LOCAL);
@@ -716,7 +716,7 @@ CX_CLASS_NOBASE_O(type, NULL, CX_DECLARED | CX_DEFINED, CX_ICD);
     CX_METAPROCEDURE_O(type, copy, "(any value)", int16, FALSE, cx_type_copy);
     CX_METAPROCEDURE_O(type, toString, "()", string, FALSE, cx_type_toString);
 
-/* ::cortex::lang::primitive */
+/* ::corto::lang::primitive */
 CX_FW_IC(primitive);
 CX_CLASS_O(primitive, type, CX_LOCAL | CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, CX_IC);
     CX_MEMBER_O(primitive, kind, primitiveKind, CX_LOCAL|CX_READONLY);
@@ -727,7 +727,7 @@ CX_CLASS_O(primitive, type, CX_LOCAL | CX_READONLY, NULL, CX_DECLARED | CX_DEFIN
     CX_METHOD_O(primitive, init, "()", int16, FALSE, cx_primitive_init);
     CX_METHOD_O(primitive, construct, "()", int16, FALSE, cx_primitive_construct);
 
-/* ::cortex::lang::interface */
+/* ::corto::lang::interface */
 CX_FW_ICD(interface);
 CX_CLASS_O(interface, type, CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, CX_ICD);
     CX_MEMBER_O(interface, kind, compositeKind, CX_LOCAL|CX_READONLY);
@@ -746,7 +746,7 @@ CX_CLASS_O(interface, type, CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, CX_ICD)
     CX_METHOD_O(interface, bindMethod, "(method method)", int16, FALSE, cx_interface_bindMethod);
     CX_METHOD_O(interface, baseof, "(interface type)", int16, FALSE, cx_interface_baseof);
 
-/* ::cortex::lang::collection */
+/* ::corto::lang::collection */
 CX_FW_I(collection);
 CX_CLASS_O(collection, type, CX_LOCAL | CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, CX_I);
     CX_MEMBER_O(collection, kind, collectionKind, CX_LOCAL|CX_READONLY);
@@ -758,7 +758,7 @@ CX_CLASS_O(collection, type, CX_LOCAL | CX_READONLY, NULL, CX_DECLARED | CX_DEFI
     CX_METHOD_O(collection, init, "()", int16, FALSE, cx_collection_init);
     CX_METAPROCEDURE_O(collection, size, "()", uint32, FALSE, cx_collection_size);
 
-/* ::cortex::lang::iterator */
+/* ::corto::lang::iterator */
 CX_FW_I(iterator);
 CX_CLASS_O(iterator, type, CX_LOCAL | CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, CX_I);
     CX_REFERENCE_O(iterator, elementType, type, CX_GLOBAL, CX_DECLARED, FALSE);
@@ -766,50 +766,50 @@ CX_CLASS_O(iterator, type, CX_LOCAL | CX_READONLY, NULL, CX_DECLARED | CX_DEFINE
     CX_METHOD_O(iterator, compatible, "(type type)", bool, TRUE, cx_iterator_compatible_v);
     CX_METHOD_O(iterator, castable, "(type type)", bool, TRUE, cx_iterator_castable_v);
 
-/* ::cortex::lang::binary */
+/* ::corto::lang::binary */
 CX_FW_I(binary);
 CX_CLASS_O(binary, primitive, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_I);
     CX_METHOD_O(binary, init, "()", int16, FALSE, cx_binary_init);
 
-/* ::cortex::lang::boolean */
+/* ::corto::lang::boolean */
 CX_FW_I(boolean);
 CX_CLASS_O(boolean, primitive, CX_GLOBAL | CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, CX_I);
     CX_METHOD_O(boolean, init, "()", int16, FALSE, cx_boolean_init);
 
-/* ::cortex::lang::character */
+/* ::corto::lang::character */
 CX_FW_I(character);
 CX_CLASS_O(character, primitive, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_I);
     CX_METHOD_O(character, init, "()", int16, FALSE, cx_character_init);
 
-/* ::cortex::lang::int */
+/* ::corto::lang::int */
 CX_FW_I(int);
 CX_CLASS_O(int, primitive, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_I);
     CX_MEMBER_O(int, min, int64, CX_GLOBAL);
     CX_MEMBER_O(int, max, int64, CX_GLOBAL);
     CX_METHOD_O(int, init, "()", int16, FALSE, cx_int_init);
 
-/* ::cortex::lang::uint */
+/* ::corto::lang::uint */
 CX_FW_I(uint);
 CX_CLASS_O(uint, primitive, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_I);
     CX_MEMBER_O(uint, min, uint64, CX_GLOBAL);
     CX_MEMBER_O(uint, max, uint64, CX_GLOBAL);
     CX_METHOD_O(uint, init, "()", int16, FALSE, cx_uint_init);
 
-/* ::cortex::lang::float */
+/* ::corto::lang::float */
 CX_FW_I(float);
 CX_CLASS_O(float, primitive, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_I);
     CX_MEMBER_O(float, min, float64, CX_GLOBAL);
     CX_MEMBER_O(float, max, float64, CX_GLOBAL);
     CX_METHOD_O(float, init, "()", int16, FALSE, cx_float_init);
 
-/* ::cortex::lang::text */
+/* ::corto::lang::text */
 CX_FW_I(text);
 CX_CLASS_O(text, primitive, CX_LOCAL, NULL, CX_DECLARED | CX_DEFINED, CX_I);
     CX_MEMBER_O(text, charWidth, width, CX_GLOBAL);
     CX_MEMBER_O(text, length, uint64, CX_GLOBAL);
     CX_METHOD_O(text, init, "()", int16, FALSE, cx_text_init);
 
-/* ::cortex::lang::enum */
+/* ::corto::lang::enum */
 CX_FW_ICD(enum);
 CX_CLASS_O(enum, primitive, CX_LOCAL | CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, CX_ICD);
     CX_MEMBER_O(enum, constants, objectSeq, CX_LOCAL | CX_PRIVATE);
@@ -818,12 +818,12 @@ CX_CLASS_O(enum, primitive, CX_LOCAL | CX_READONLY, NULL, CX_DECLARED | CX_DEFIN
     CX_METHOD_O(enum, destruct, "()", void, FALSE, cx_enum_destruct);
     CX_METHOD_O(enum, constant, "(int32 value)", object, FALSE, cx_enum_constant);
 
-/* ::cortex::lang::bitmask */
+/* ::corto::lang::bitmask */
 CX_FW_I(bitmask);
 CX_CLASS_O(bitmask, enum, CX_LOCAL | CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, CX_I);
     CX_METHOD_O(bitmask, init, "()", int16, FALSE, cx_bitmask_init);
 
-/* ::cortex::lang::struct */
+/* ::corto::lang::struct */
 CX_FW_IC(struct);
 CX_CLASS_O(struct, interface, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_IC);
     CX_MEMBER_O(struct, baseAccess, modifier, CX_GLOBAL);
@@ -833,12 +833,12 @@ CX_CLASS_O(struct, interface, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_IC);
     CX_METHOD_O(struct, init, "()", int16, FALSE, cx_struct_init);
     CX_METHOD_O(struct, construct, "()", int16, FALSE, cx_struct_construct);
 
-/* ::cortex::lang::interfaceVector */
+/* ::corto::lang::interfaceVector */
 CX_STRUCT_O(interfaceVector, NULL, CX_DECLARED | CX_DEFINED);
     CX_MEMBER_O(interfaceVector, interface, interface, CX_GLOBAL);
     CX_MEMBER_O(interfaceVector, vector, vtable, CX_GLOBAL);
 
-/* ::cortex::lang::class */
+/* ::corto::lang::class */
 CX_FW_ICD(class);
 CX_CLASS_O(class, struct, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_ICD);
     CX_MEMBER_O(class, implements, interfaceSeq, CX_GLOBAL);
@@ -856,12 +856,12 @@ CX_CLASS_O(class, struct, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_ICD);
     CX_METHOD_O(class, bindObserver, "(observer observer)", void, FALSE, cx_class_bindObserver);
     CX_METHOD_O(class, findObserver, "(object observable)", observer, FALSE, cx_class_findObserver);
 
-/* ::cortex::lang::delegatedata */
+/* ::corto::lang::delegatedata */
 CX_STRUCT_O(delegatedata, NULL, CX_DECLARED | CX_DEFINED);
     CX_MEMBER_O(delegatedata, instance, object, CX_GLOBAL);
     CX_MEMBER_O(delegatedata, procedure, function, CX_GLOBAL);
 
-/* ::cortex::lang::delegate */
+/* ::corto::lang::delegate */
 CX_FW_I(delegate);
 CX_CLASS_O(delegate, struct, CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, CX_I);
     CX_METHOD_O(delegate, init, "()", int16, FALSE, cx_delegate_init);
@@ -873,7 +873,7 @@ CX_CLASS_O(delegate, struct, CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, CX_I);
     CX_METHOD_O(delegate, instanceof, "(object object)", bool, FALSE, cx_delegate_instanceof);
     CX_FUNCTION_O(delegate, bind, "(function object)", int16, cx_delegate_bind);
 
-/* ::cortex::lang::procedure */
+/* ::corto::lang::procedure */
 CX_FW_I(procedure);
 CX_CLASS_O(procedure, struct, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_I);
     CX_MEMBER_O(procedure, kind, procedureKind, CX_GLOBAL);
@@ -881,7 +881,7 @@ CX_CLASS_O(procedure, struct, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_I);
     CX_METHOD_O(procedure, init, "()", int16, FALSE, cx_procedure_init);
     CX_METHOD_O(procedure, unbind, "(function object)", void, FALSE, cx_procedure_unbind);
 
-/* ::cortex::lang::array */
+/* ::corto::lang::array */
 CX_FW_ICD(array);
 CX_CLASS_O(array, collection, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_ICD);
     CX_REFERENCE_O(array, elementType, type, CX_GLOBAL|CX_PRIVATE, CX_DEFINED, FALSE);
@@ -889,14 +889,14 @@ CX_CLASS_O(array, collection, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_ICD)
     CX_METHOD_O(array, construct, "()", int16, FALSE, cx_array_construct);
     CX_METHOD_O(array, destruct, "()", void, FALSE, cx_array_destruct);
 
-/* ::cortex::lang::sequence */
+/* ::corto::lang::sequence */
 CX_FW_IC(sequence);
 CX_CLASS_O(sequence, collection, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_IC);
     CX_METHOD_O(sequence, init, "()", int16, FALSE, cx_sequence_init);
     CX_METHOD_O(sequence, construct, "()", int16, FALSE, cx_sequence_construct);
     CX_METAPROCEDURE_O(sequence, size, "(uint32 size)", void, FALSE, cx_sequence_size);
 
-/* ::cortex::lang::list */
+/* ::corto::lang::list */
 CX_FW_IC(list);
 CX_CLASS_O(list, collection, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_IC);
     CX_METHOD_O(list, init, "()", int16, FALSE, cx_list_init);
@@ -908,7 +908,7 @@ CX_CLASS_O(list, collection, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_IC);
     CX_METAPROCEDURE_O(list, reverse, "()", void, FALSE, cx_list_reverse);
     CX_METAPROCEDURE_O(list, clear, "()", void, FALSE, cx_list_clear);
 
-/* ::cortex::lang::map */
+/* ::corto::lang::map */
 CX_FW_IC(map);
 CX_CLASS_O(map, collection, CX_LOCAL, NULL, CX_DECLARED | CX_DEFINED, CX_IC);
     /* Duplicate members for a more convenient order in the initializer */
@@ -918,7 +918,7 @@ CX_CLASS_O(map, collection, CX_LOCAL, NULL, CX_DECLARED | CX_DEFINED, CX_IC);
     CX_METHOD_O(map, init, "()", int16, FALSE, cx_map_init);
     CX_METHOD_O(map, construct, "()", int16, FALSE, cx_map_construct);
 
-/* ::cortex::lang::function */
+/* ::corto::lang::function */
 CX_FW_IB(function);
 CX_PROCEDURE_NOBASE_O(function, CX_FUNCTION, NULL, CX_DECLARED | CX_DEFINED, CX_IC);
     CX_REFERENCE_O(function, returnType, type, CX_GLOBAL, CX_DECLARED, FALSE);
@@ -936,18 +936,18 @@ CX_PROCEDURE_NOBASE_O(function, CX_FUNCTION, NULL, CX_DECLARED | CX_DEFINED, CX_
     CX_FUNCTION_O(function, unbind, "(function object)", void, cx_function_unbind);
     CX_FUNCTION_O(function, stringToParameterSeq, "(string name,object scope)", parameterSeq, cx_function_stringToParameterSeq);
 
-/* ::cortex::lang::dispatcher */
+/* ::corto::lang::dispatcher */
 CX_INTERFACE_O(dispatcher);
     CX_IMETHOD_O(dispatcher, post, "(event e)", void, FALSE);
 
-/* ::cortex::lang::event */
+/* ::corto::lang::event */
 CX_CLASS_NOBASE_O(event, NULL, CX_DECLARED | CX_DEFINED, CX_NODELEGATE);
     CX_MEMBER_O(event, kind, uint16, CX_GLOBAL);
     CX_MEMBER_O(event, handled, bool, CX_LOCAL | CX_READONLY);
     CX_METHOD_O(event, handle, "()", void, TRUE, cx_event_handle_v);
     CX_FUNCTION_O(event, uniqueKind, "()", int16, cx_event_uniqueKind);
 
-/* ::cortex::lang::observableEvent */
+/* ::corto::lang::observableEvent */
 CX_CLASS_O(observableEvent, event, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_NODELEGATE);
     CX_REFERENCE_O(observableEvent, observer, observer, CX_GLOBAL, CX_DEFINED | CX_DECLARED, FALSE);
     CX_REFERENCE_O(observableEvent, me, object, CX_GLOBAL, CX_DEFINED | CX_DECLARED, FALSE);
@@ -955,7 +955,7 @@ CX_CLASS_O(observableEvent, event, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX
     CX_REFERENCE_O(observableEvent, observable, object, CX_GLOBAL, CX_DEFINED | CX_DECLARED, FALSE);
     CX_METHOD_O(observableEvent, handle, "()", void, TRUE, cx_observableEvent_handle_v);
 
-/* ::cortex::lang::method */
+/* ::corto::lang::method */
 CX_FW_IB(method);
 CX_PROCEDURE_O(method, CX_METHOD, function, CX_GLOBAL, NULL, CX_DECLARED, CX_IC);
     CX_MEMBER_O(method, virtual, bool, CX_GLOBAL);
@@ -966,7 +966,7 @@ CX_FW_I(virtual);
 CX_PROCEDURE_O(virtual, CX_METHOD, method, CX_GLOBAL, CX_TYPE_ID(interface), CX_DECLARED, CX_I);
     CX_METHOD_O(virtual, init, "()", int16, FALSE, cx_virtual_init);
 
-/* ::cortex::lang::observer */
+/* ::corto::lang::observer */
 CX_FW_IB(observer);
 CX_PROCEDURE_O(observer, CX_OBSERVER, function, CX_LOCAL | CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, CX_IC);
     CX_REFERENCE_O(observer, observable, object, CX_GLOBAL, CX_DEFINED | CX_DECLARED, FALSE);
@@ -983,13 +983,13 @@ CX_PROCEDURE_O(observer, CX_OBSERVER, function, CX_LOCAL | CX_READONLY, NULL, CX
     CX_METHOD_O(observer, setDispatcher, "(dispatcher dispatcher)", void, FALSE, cx_observer_setDispatcher);
     CX_FUNCTION_O(observer, unbind, "(observer object)", void, cx_observer_unbind);
 
-/* ::cortex::lang::metaprocedure */
+/* ::corto::lang::metaprocedure */
 CX_FW_B(metaprocedure);
 CX_PROCEDURE_O(metaprocedure, CX_METAPROCEDURE, function, CX_GLOBAL, NULL, CX_DECLARED, CX_B);
     CX_METHOD_O(metaprocedure, bind, "()", int16, FALSE, cx_metaprocedure_bind);
     CX_MEMBER_O(metaprocedure, referenceOnly, bool, CX_GLOBAL);
 
-/* ::cortex::lang::member */
+/* ::corto::lang::member */
 CX_FW_IC(member);
 CX_CLASS_NOBASE_O(member, CX_TYPE_ID(interface), CX_DECLARED, CX_IC);
     CX_REFERENCE_O(member, type, type, CX_GLOBAL, CX_DECLARED | CX_DEFINED, FALSE);
@@ -1001,7 +1001,7 @@ CX_CLASS_NOBASE_O(member, CX_TYPE_ID(interface), CX_DECLARED, CX_IC);
     CX_METHOD_O(member, init, "()", int16, FALSE, cx_member_init);
     CX_METHOD_O(member, construct, "()", int16, FALSE, cx_member_construct);
 
-/* ::cortex::lang::parameter */
+/* ::corto::lang::parameter */
 CX_STRUCT_O(parameter, NULL, CX_DECLARED | CX_DEFINED);
     CX_MEMBER_O(parameter, name, string, CX_GLOBAL);
     CX_REFERENCE_O(parameter, type, type, CX_GLOBAL, CX_DECLARED | CX_DEFINED, FALSE);

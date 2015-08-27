@@ -104,9 +104,9 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::arrayOfBool */
     if (!cx_checkState(tc_stringser_arrayOfBool_o, CX_DEFINED)) {
-        cx_collection(tc_stringser_arrayOfBool_o)->elementType = cx_resolve_ext(tc_stringser_arrayOfBool_o, NULL, "::cortex::lang::bool", FALSE, "element ::tc_stringser::arrayOfBool.elementType");
+        cx_collection(tc_stringser_arrayOfBool_o)->elementType = cx_resolve_ext(tc_stringser_arrayOfBool_o, NULL, "::corto::lang::bool", FALSE, "element ::tc_stringser::arrayOfBool.elementType");
         cx_collection(tc_stringser_arrayOfBool_o)->max = 3;
-        tc_stringser_arrayOfBool_o->elementType = cx_resolve_ext(tc_stringser_arrayOfBool_o, NULL, "::cortex::lang::bool", FALSE, "element ::tc_stringser::arrayOfBool.elementType");
+        tc_stringser_arrayOfBool_o->elementType = cx_resolve_ext(tc_stringser_arrayOfBool_o, NULL, "::corto::lang::bool", FALSE, "element ::tc_stringser::arrayOfBool.elementType");
         if (cx_define(tc_stringser_arrayOfBool_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::arrayOfBool'.");
             goto error;
@@ -126,9 +126,9 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::arrayOfChar */
     if (!cx_checkState(tc_stringser_arrayOfChar_o, CX_DEFINED)) {
-        cx_collection(tc_stringser_arrayOfChar_o)->elementType = cx_resolve_ext(tc_stringser_arrayOfChar_o, NULL, "::cortex::lang::char", FALSE, "element ::tc_stringser::arrayOfChar.elementType");
+        cx_collection(tc_stringser_arrayOfChar_o)->elementType = cx_resolve_ext(tc_stringser_arrayOfChar_o, NULL, "::corto::lang::char", FALSE, "element ::tc_stringser::arrayOfChar.elementType");
         cx_collection(tc_stringser_arrayOfChar_o)->max = 3;
-        tc_stringser_arrayOfChar_o->elementType = cx_resolve_ext(tc_stringser_arrayOfChar_o, NULL, "::cortex::lang::char", FALSE, "element ::tc_stringser::arrayOfChar.elementType");
+        tc_stringser_arrayOfChar_o->elementType = cx_resolve_ext(tc_stringser_arrayOfChar_o, NULL, "::corto::lang::char", FALSE, "element ::tc_stringser::arrayOfChar.elementType");
         if (cx_define(tc_stringser_arrayOfChar_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::arrayOfChar'.");
             goto error;
@@ -176,9 +176,9 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::arrayOfFloat */
     if (!cx_checkState(tc_stringser_arrayOfFloat_o, CX_DEFINED)) {
-        cx_collection(tc_stringser_arrayOfFloat_o)->elementType = cx_resolve_ext(tc_stringser_arrayOfFloat_o, NULL, "::cortex::lang::float32", FALSE, "element ::tc_stringser::arrayOfFloat.elementType");
+        cx_collection(tc_stringser_arrayOfFloat_o)->elementType = cx_resolve_ext(tc_stringser_arrayOfFloat_o, NULL, "::corto::lang::float32", FALSE, "element ::tc_stringser::arrayOfFloat.elementType");
         cx_collection(tc_stringser_arrayOfFloat_o)->max = 3;
-        tc_stringser_arrayOfFloat_o->elementType = cx_resolve_ext(tc_stringser_arrayOfFloat_o, NULL, "::cortex::lang::float32", FALSE, "element ::tc_stringser::arrayOfFloat.elementType");
+        tc_stringser_arrayOfFloat_o->elementType = cx_resolve_ext(tc_stringser_arrayOfFloat_o, NULL, "::corto::lang::float32", FALSE, "element ::tc_stringser::arrayOfFloat.elementType");
         if (cx_define(tc_stringser_arrayOfFloat_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::arrayOfFloat'.");
             goto error;
@@ -198,9 +198,9 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::arrayOfInt */
     if (!cx_checkState(tc_stringser_arrayOfInt_o, CX_DEFINED)) {
-        cx_collection(tc_stringser_arrayOfInt_o)->elementType = cx_resolve_ext(tc_stringser_arrayOfInt_o, NULL, "::cortex::lang::int32", FALSE, "element ::tc_stringser::arrayOfInt.elementType");
+        cx_collection(tc_stringser_arrayOfInt_o)->elementType = cx_resolve_ext(tc_stringser_arrayOfInt_o, NULL, "::corto::lang::int32", FALSE, "element ::tc_stringser::arrayOfInt.elementType");
         cx_collection(tc_stringser_arrayOfInt_o)->max = 3;
-        tc_stringser_arrayOfInt_o->elementType = cx_resolve_ext(tc_stringser_arrayOfInt_o, NULL, "::cortex::lang::int32", FALSE, "element ::tc_stringser::arrayOfInt.elementType");
+        tc_stringser_arrayOfInt_o->elementType = cx_resolve_ext(tc_stringser_arrayOfInt_o, NULL, "::corto::lang::int32", FALSE, "element ::tc_stringser::arrayOfInt.elementType");
         if (cx_define(tc_stringser_arrayOfInt_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::arrayOfInt'.");
             goto error;
@@ -227,9 +227,9 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::arrayOfString */
     if (!cx_checkState(tc_stringser_arrayOfString_o, CX_DEFINED)) {
-        cx_collection(tc_stringser_arrayOfString_o)->elementType = cx_resolve_ext(tc_stringser_arrayOfString_o, NULL, "::cortex::lang::string", FALSE, "element ::tc_stringser::arrayOfString.elementType");
+        cx_collection(tc_stringser_arrayOfString_o)->elementType = cx_resolve_ext(tc_stringser_arrayOfString_o, NULL, "::corto::lang::string", FALSE, "element ::tc_stringser::arrayOfString.elementType");
         cx_collection(tc_stringser_arrayOfString_o)->max = 3;
-        tc_stringser_arrayOfString_o->elementType = cx_resolve_ext(tc_stringser_arrayOfString_o, NULL, "::cortex::lang::string", FALSE, "element ::tc_stringser::arrayOfString.elementType");
+        tc_stringser_arrayOfString_o->elementType = cx_resolve_ext(tc_stringser_arrayOfString_o, NULL, "::corto::lang::string", FALSE, "element ::tc_stringser::arrayOfString.elementType");
         if (cx_define(tc_stringser_arrayOfString_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::arrayOfString'.");
             goto error;
@@ -298,7 +298,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::classInherit::a */
     if (!cx_checkState(tc_stringser_classInherit_a_o, CX_DEFINED)) {
-        tc_stringser_classInherit_a_o->type = cx_resolve_ext(tc_stringser_classInherit_a_o, NULL, "::cortex::lang::bool", FALSE, "element ::tc_stringser::classInherit::a.type");
+        tc_stringser_classInherit_a_o->type = cx_resolve_ext(tc_stringser_classInherit_a_o, NULL, "::corto::lang::bool", FALSE, "element ::tc_stringser::classInherit::a.type");
         tc_stringser_classInherit_a_o->modifiers = 0x0;
         tc_stringser_classInherit_a_o->state = 0x6;
         tc_stringser_classInherit_a_o->weak = FALSE;
@@ -318,7 +318,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::classInherit::b */
     if (!cx_checkState(tc_stringser_classInherit_b_o, CX_DEFINED)) {
-        tc_stringser_classInherit_b_o->type = cx_resolve_ext(tc_stringser_classInherit_b_o, NULL, "::cortex::lang::char", FALSE, "element ::tc_stringser::classInherit::b.type");
+        tc_stringser_classInherit_b_o->type = cx_resolve_ext(tc_stringser_classInherit_b_o, NULL, "::corto::lang::char", FALSE, "element ::tc_stringser::classInherit::b.type");
         tc_stringser_classInherit_b_o->modifiers = 0x0;
         tc_stringser_classInherit_b_o->state = 0x6;
         tc_stringser_classInherit_b_o->weak = FALSE;
@@ -338,7 +338,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::classInherit::c */
     if (!cx_checkState(tc_stringser_classInherit_c_o, CX_DEFINED)) {
-        tc_stringser_classInherit_c_o->type = cx_resolve_ext(tc_stringser_classInherit_c_o, NULL, "::cortex::lang::int32", FALSE, "element ::tc_stringser::classInherit::c.type");
+        tc_stringser_classInherit_c_o->type = cx_resolve_ext(tc_stringser_classInherit_c_o, NULL, "::corto::lang::int32", FALSE, "element ::tc_stringser::classInherit::c.type");
         tc_stringser_classInherit_c_o->modifiers = 0x0;
         tc_stringser_classInherit_c_o->state = 0x6;
         tc_stringser_classInherit_c_o->weak = FALSE;
@@ -358,7 +358,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::classInherit::d */
     if (!cx_checkState(tc_stringser_classInherit_d_o, CX_DEFINED)) {
-        tc_stringser_classInherit_d_o->type = cx_resolve_ext(tc_stringser_classInherit_d_o, NULL, "::cortex::lang::float32", FALSE, "element ::tc_stringser::classInherit::d.type");
+        tc_stringser_classInherit_d_o->type = cx_resolve_ext(tc_stringser_classInherit_d_o, NULL, "::corto::lang::float32", FALSE, "element ::tc_stringser::classInherit::d.type");
         tc_stringser_classInherit_d_o->modifiers = 0x0;
         tc_stringser_classInherit_d_o->state = 0x6;
         tc_stringser_classInherit_d_o->weak = FALSE;
@@ -378,7 +378,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::classInherit::e */
     if (!cx_checkState(tc_stringser_classInherit_e_o, CX_DEFINED)) {
-        tc_stringser_classInherit_e_o->type = cx_resolve_ext(tc_stringser_classInherit_e_o, NULL, "::cortex::lang::string", FALSE, "element ::tc_stringser::classInherit::e.type");
+        tc_stringser_classInherit_e_o->type = cx_resolve_ext(tc_stringser_classInherit_e_o, NULL, "::corto::lang::string", FALSE, "element ::tc_stringser::classInherit::e.type");
         tc_stringser_classInherit_e_o->modifiers = 0x0;
         tc_stringser_classInherit_e_o->state = 0x6;
         tc_stringser_classInherit_e_o->weak = FALSE;
@@ -597,7 +597,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::classPrimitives::a */
     if (!cx_checkState(tc_stringser_classPrimitives_a_o, CX_DEFINED)) {
-        tc_stringser_classPrimitives_a_o->type = cx_resolve_ext(tc_stringser_classPrimitives_a_o, NULL, "::cortex::lang::bool", FALSE, "element ::tc_stringser::classPrimitives::a.type");
+        tc_stringser_classPrimitives_a_o->type = cx_resolve_ext(tc_stringser_classPrimitives_a_o, NULL, "::corto::lang::bool", FALSE, "element ::tc_stringser::classPrimitives::a.type");
         tc_stringser_classPrimitives_a_o->modifiers = 0x0;
         tc_stringser_classPrimitives_a_o->state = 0x6;
         tc_stringser_classPrimitives_a_o->weak = FALSE;
@@ -617,7 +617,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::classPrimitives::b */
     if (!cx_checkState(tc_stringser_classPrimitives_b_o, CX_DEFINED)) {
-        tc_stringser_classPrimitives_b_o->type = cx_resolve_ext(tc_stringser_classPrimitives_b_o, NULL, "::cortex::lang::char", FALSE, "element ::tc_stringser::classPrimitives::b.type");
+        tc_stringser_classPrimitives_b_o->type = cx_resolve_ext(tc_stringser_classPrimitives_b_o, NULL, "::corto::lang::char", FALSE, "element ::tc_stringser::classPrimitives::b.type");
         tc_stringser_classPrimitives_b_o->modifiers = 0x0;
         tc_stringser_classPrimitives_b_o->state = 0x6;
         tc_stringser_classPrimitives_b_o->weak = FALSE;
@@ -637,7 +637,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::classPrimitives::c */
     if (!cx_checkState(tc_stringser_classPrimitives_c_o, CX_DEFINED)) {
-        tc_stringser_classPrimitives_c_o->type = cx_resolve_ext(tc_stringser_classPrimitives_c_o, NULL, "::cortex::lang::int32", FALSE, "element ::tc_stringser::classPrimitives::c.type");
+        tc_stringser_classPrimitives_c_o->type = cx_resolve_ext(tc_stringser_classPrimitives_c_o, NULL, "::corto::lang::int32", FALSE, "element ::tc_stringser::classPrimitives::c.type");
         tc_stringser_classPrimitives_c_o->modifiers = 0x0;
         tc_stringser_classPrimitives_c_o->state = 0x6;
         tc_stringser_classPrimitives_c_o->weak = FALSE;
@@ -657,7 +657,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::classPrimitives::d */
     if (!cx_checkState(tc_stringser_classPrimitives_d_o, CX_DEFINED)) {
-        tc_stringser_classPrimitives_d_o->type = cx_resolve_ext(tc_stringser_classPrimitives_d_o, NULL, "::cortex::lang::float32", FALSE, "element ::tc_stringser::classPrimitives::d.type");
+        tc_stringser_classPrimitives_d_o->type = cx_resolve_ext(tc_stringser_classPrimitives_d_o, NULL, "::corto::lang::float32", FALSE, "element ::tc_stringser::classPrimitives::d.type");
         tc_stringser_classPrimitives_d_o->modifiers = 0x0;
         tc_stringser_classPrimitives_d_o->state = 0x6;
         tc_stringser_classPrimitives_d_o->weak = FALSE;
@@ -677,7 +677,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::classPrimitives::e */
     if (!cx_checkState(tc_stringser_classPrimitives_e_o, CX_DEFINED)) {
-        tc_stringser_classPrimitives_e_o->type = cx_resolve_ext(tc_stringser_classPrimitives_e_o, NULL, "::cortex::lang::string", FALSE, "element ::tc_stringser::classPrimitives::e.type");
+        tc_stringser_classPrimitives_e_o->type = cx_resolve_ext(tc_stringser_classPrimitives_e_o, NULL, "::corto::lang::string", FALSE, "element ::tc_stringser::classPrimitives::e.type");
         tc_stringser_classPrimitives_e_o->modifiers = 0x0;
         tc_stringser_classPrimitives_e_o->state = 0x6;
         tc_stringser_classPrimitives_e_o->weak = FALSE;
@@ -882,7 +882,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::listOfBool */
     if (!cx_checkState(tc_stringser_listOfBool_o, CX_DEFINED)) {
-        cx_collection(tc_stringser_listOfBool_o)->elementType = cx_resolve_ext(tc_stringser_listOfBool_o, NULL, "::cortex::lang::bool", FALSE, "element ::tc_stringser::listOfBool.elementType");
+        cx_collection(tc_stringser_listOfBool_o)->elementType = cx_resolve_ext(tc_stringser_listOfBool_o, NULL, "::corto::lang::bool", FALSE, "element ::tc_stringser::listOfBool.elementType");
         cx_collection(tc_stringser_listOfBool_o)->max = 3;
         if (cx_define(tc_stringser_listOfBool_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::listOfBool'.");
@@ -903,7 +903,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::listOfChar */
     if (!cx_checkState(tc_stringser_listOfChar_o, CX_DEFINED)) {
-        cx_collection(tc_stringser_listOfChar_o)->elementType = cx_resolve_ext(tc_stringser_listOfChar_o, NULL, "::cortex::lang::char", FALSE, "element ::tc_stringser::listOfChar.elementType");
+        cx_collection(tc_stringser_listOfChar_o)->elementType = cx_resolve_ext(tc_stringser_listOfChar_o, NULL, "::corto::lang::char", FALSE, "element ::tc_stringser::listOfChar.elementType");
         cx_collection(tc_stringser_listOfChar_o)->max = 3;
         if (cx_define(tc_stringser_listOfChar_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::listOfChar'.");
@@ -924,7 +924,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::listOfFloat */
     if (!cx_checkState(tc_stringser_listOfFloat_o, CX_DEFINED)) {
-        cx_collection(tc_stringser_listOfFloat_o)->elementType = cx_resolve_ext(tc_stringser_listOfFloat_o, NULL, "::cortex::lang::float32", FALSE, "element ::tc_stringser::listOfFloat.elementType");
+        cx_collection(tc_stringser_listOfFloat_o)->elementType = cx_resolve_ext(tc_stringser_listOfFloat_o, NULL, "::corto::lang::float32", FALSE, "element ::tc_stringser::listOfFloat.elementType");
         cx_collection(tc_stringser_listOfFloat_o)->max = 3;
         if (cx_define(tc_stringser_listOfFloat_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::listOfFloat'.");
@@ -945,7 +945,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::listOfInt */
     if (!cx_checkState(tc_stringser_listOfInt_o, CX_DEFINED)) {
-        cx_collection(tc_stringser_listOfInt_o)->elementType = cx_resolve_ext(tc_stringser_listOfInt_o, NULL, "::cortex::lang::int32", FALSE, "element ::tc_stringser::listOfInt.elementType");
+        cx_collection(tc_stringser_listOfInt_o)->elementType = cx_resolve_ext(tc_stringser_listOfInt_o, NULL, "::corto::lang::int32", FALSE, "element ::tc_stringser::listOfInt.elementType");
         cx_collection(tc_stringser_listOfInt_o)->max = 3;
         if (cx_define(tc_stringser_listOfInt_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::listOfInt'.");
@@ -986,7 +986,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::listOfString */
     if (!cx_checkState(tc_stringser_listOfString_o, CX_DEFINED)) {
-        cx_collection(tc_stringser_listOfString_o)->elementType = cx_resolve_ext(tc_stringser_listOfString_o, NULL, "::cortex::lang::string", FALSE, "element ::tc_stringser::listOfString.elementType");
+        cx_collection(tc_stringser_listOfString_o)->elementType = cx_resolve_ext(tc_stringser_listOfString_o, NULL, "::corto::lang::string", FALSE, "element ::tc_stringser::listOfString.elementType");
         cx_collection(tc_stringser_listOfString_o)->max = 3;
         if (cx_define(tc_stringser_listOfString_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::listOfString'.");
@@ -1101,7 +1101,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::classPrimitives */
     if (!cx_checkState(tc_stringser_classPrimitives_o, CX_DEFINED)) {
-        cx_type(tc_stringser_classPrimitives_o)->defaultType = cx_resolve_ext(tc_stringser_classPrimitives_o, NULL, "::cortex::lang::member", FALSE, "element ::tc_stringser::classPrimitives.defaultType");
+        cx_type(tc_stringser_classPrimitives_o)->defaultType = cx_resolve_ext(tc_stringser_classPrimitives_o, NULL, "::corto::lang::member", FALSE, "element ::tc_stringser::classPrimitives.defaultType");
         cx_type(tc_stringser_classPrimitives_o)->parentType = NULL;
         cx_type(tc_stringser_classPrimitives_o)->parentState = 0x0;
         cx_interface(tc_stringser_classPrimitives_o)->base = NULL;
@@ -1135,7 +1135,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::classInherit */
     if (!cx_checkState(tc_stringser_classInherit_o, CX_DEFINED)) {
-        cx_type(tc_stringser_classInherit_o)->defaultType = cx_resolve_ext(tc_stringser_classInherit_o, NULL, "::cortex::lang::member", FALSE, "element ::tc_stringser::classInherit.defaultType");
+        cx_type(tc_stringser_classInherit_o)->defaultType = cx_resolve_ext(tc_stringser_classInherit_o, NULL, "::corto::lang::member", FALSE, "element ::tc_stringser::classInherit.defaultType");
         cx_type(tc_stringser_classInherit_o)->parentType = NULL;
         cx_type(tc_stringser_classInherit_o)->parentState = 0x0;
         cx_interface(tc_stringser_classInherit_o)->base = cx_resolve_ext(tc_stringser_classInherit_o, NULL, "::tc_stringser::classPrimitives", FALSE, "element ::tc_stringser::classInherit.base");
@@ -1236,7 +1236,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::sequenceOfBool */
     if (!cx_checkState(tc_stringser_sequenceOfBool_o, CX_DEFINED)) {
-        cx_collection(tc_stringser_sequenceOfBool_o)->elementType = cx_resolve_ext(tc_stringser_sequenceOfBool_o, NULL, "::cortex::lang::bool", FALSE, "element ::tc_stringser::sequenceOfBool.elementType");
+        cx_collection(tc_stringser_sequenceOfBool_o)->elementType = cx_resolve_ext(tc_stringser_sequenceOfBool_o, NULL, "::corto::lang::bool", FALSE, "element ::tc_stringser::sequenceOfBool.elementType");
         cx_collection(tc_stringser_sequenceOfBool_o)->max = 3;
         if (cx_define(tc_stringser_sequenceOfBool_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::sequenceOfBool'.");
@@ -1257,7 +1257,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::sequenceOfChar */
     if (!cx_checkState(tc_stringser_sequenceOfChar_o, CX_DEFINED)) {
-        cx_collection(tc_stringser_sequenceOfChar_o)->elementType = cx_resolve_ext(tc_stringser_sequenceOfChar_o, NULL, "::cortex::lang::char", FALSE, "element ::tc_stringser::sequenceOfChar.elementType");
+        cx_collection(tc_stringser_sequenceOfChar_o)->elementType = cx_resolve_ext(tc_stringser_sequenceOfChar_o, NULL, "::corto::lang::char", FALSE, "element ::tc_stringser::sequenceOfChar.elementType");
         cx_collection(tc_stringser_sequenceOfChar_o)->max = 3;
         if (cx_define(tc_stringser_sequenceOfChar_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::sequenceOfChar'.");
@@ -1278,7 +1278,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::sequenceOfFloat */
     if (!cx_checkState(tc_stringser_sequenceOfFloat_o, CX_DEFINED)) {
-        cx_collection(tc_stringser_sequenceOfFloat_o)->elementType = cx_resolve_ext(tc_stringser_sequenceOfFloat_o, NULL, "::cortex::lang::float32", FALSE, "element ::tc_stringser::sequenceOfFloat.elementType");
+        cx_collection(tc_stringser_sequenceOfFloat_o)->elementType = cx_resolve_ext(tc_stringser_sequenceOfFloat_o, NULL, "::corto::lang::float32", FALSE, "element ::tc_stringser::sequenceOfFloat.elementType");
         cx_collection(tc_stringser_sequenceOfFloat_o)->max = 3;
         if (cx_define(tc_stringser_sequenceOfFloat_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::sequenceOfFloat'.");
@@ -1299,7 +1299,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::sequenceOfInt */
     if (!cx_checkState(tc_stringser_sequenceOfInt_o, CX_DEFINED)) {
-        cx_collection(tc_stringser_sequenceOfInt_o)->elementType = cx_resolve_ext(tc_stringser_sequenceOfInt_o, NULL, "::cortex::lang::int32", FALSE, "element ::tc_stringser::sequenceOfInt.elementType");
+        cx_collection(tc_stringser_sequenceOfInt_o)->elementType = cx_resolve_ext(tc_stringser_sequenceOfInt_o, NULL, "::corto::lang::int32", FALSE, "element ::tc_stringser::sequenceOfInt.elementType");
         cx_collection(tc_stringser_sequenceOfInt_o)->max = 3;
         if (cx_define(tc_stringser_sequenceOfInt_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::sequenceOfInt'.");
@@ -1326,7 +1326,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::classNested */
     if (!cx_checkState(tc_stringser_classNested_o, CX_DEFINED)) {
-        cx_type(tc_stringser_classNested_o)->defaultType = cx_resolve_ext(tc_stringser_classNested_o, NULL, "::cortex::lang::member", FALSE, "element ::tc_stringser::classNested.defaultType");
+        cx_type(tc_stringser_classNested_o)->defaultType = cx_resolve_ext(tc_stringser_classNested_o, NULL, "::corto::lang::member", FALSE, "element ::tc_stringser::classNested.defaultType");
         cx_type(tc_stringser_classNested_o)->parentType = NULL;
         cx_type(tc_stringser_classNested_o)->parentState = 0x0;
         cx_interface(tc_stringser_classNested_o)->base = NULL;
@@ -1373,7 +1373,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::classCompositeCollection */
     if (!cx_checkState(tc_stringser_classCompositeCollection_o, CX_DEFINED)) {
-        cx_type(tc_stringser_classCompositeCollection_o)->defaultType = cx_resolve_ext(tc_stringser_classCompositeCollection_o, NULL, "::cortex::lang::member", FALSE, "element ::tc_stringser::classCompositeCollection.defaultType");
+        cx_type(tc_stringser_classCompositeCollection_o)->defaultType = cx_resolve_ext(tc_stringser_classCompositeCollection_o, NULL, "::corto::lang::member", FALSE, "element ::tc_stringser::classCompositeCollection.defaultType");
         cx_type(tc_stringser_classCompositeCollection_o)->parentType = NULL;
         cx_type(tc_stringser_classCompositeCollection_o)->parentState = 0x0;
         cx_interface(tc_stringser_classCompositeCollection_o)->base = NULL;
@@ -1399,7 +1399,7 @@ int tc_stringser_load(void) {
 
     /* Define ::tc_stringser::sequenceOfString */
     if (!cx_checkState(tc_stringser_sequenceOfString_o, CX_DEFINED)) {
-        cx_collection(tc_stringser_sequenceOfString_o)->elementType = cx_resolve_ext(tc_stringser_sequenceOfString_o, NULL, "::cortex::lang::string", FALSE, "element ::tc_stringser::sequenceOfString.elementType");
+        cx_collection(tc_stringser_sequenceOfString_o)->elementType = cx_resolve_ext(tc_stringser_sequenceOfString_o, NULL, "::corto::lang::string", FALSE, "element ::tc_stringser::sequenceOfString.elementType");
         cx_collection(tc_stringser_sequenceOfString_o)->max = 3;
         if (cx_define(tc_stringser_sequenceOfString_o)) {
             cx_error("tc_stringser_load: failed to define object '::tc_stringser::sequenceOfString'.");

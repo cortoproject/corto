@@ -41,9 +41,9 @@ error:
 }
 /* $end */
 
-/* ::cortex::lang::type::alignmentof() */
+/* ::corto::lang::type::alignmentof() */
 cx_uint16 cx_type_alignmentof(cx_type _this) {
-/* $begin(::cortex::lang::type::alignmentof) */
+/* $begin(::corto::lang::type::alignmentof) */
     cx_uint16 alignment;
 
     if (_this->reference) {
@@ -55,16 +55,16 @@ cx_uint16 cx_type_alignmentof(cx_type _this) {
 /* $end */
 }
 
-/* ::cortex::lang::type::allocSize() */
+/* ::corto::lang::type::allocSize() */
 cx_uint32 cx_type_allocSize_v(cx_type _this) {
-/* $begin(::cortex::lang::type::allocSize) */
+/* $begin(::corto::lang::type::allocSize) */
     return _this->size;
 /* $end */
 }
 
-/* ::cortex::lang::type::castable(type type) */
+/* ::corto::lang::type::castable(type type) */
 cx_bool cx_type_castable_v(cx_type _this, cx_type type) {
-/* $begin(::cortex::lang::type::castable) */
+/* $begin(::corto::lang::type::castable) */
     cx_bool result = FALSE;
 
     if (_this->kind == CX_VOID) { /* A void reference can be casted to any reference type */
@@ -81,23 +81,23 @@ cx_bool cx_type_castable_v(cx_type _this, cx_type type) {
 /* $end */
 }
 
-/* ::cortex::lang::type::checkAttr(attr attributes) */
+/* ::corto::lang::type::checkAttr(attr attributes) */
 cx_bool cx_type_checkAttr(cx_any _this, cx_attr attributes) {
-/* $begin(::cortex::lang::type::checkAttr) */
+/* $begin(::corto::lang::type::checkAttr) */
     return cx_checkAttr(_this.value, attributes);
 /* $end */
 }
 
-/* ::cortex::lang::type::checkState(state state) */
+/* ::corto::lang::type::checkState(state state) */
 cx_bool cx_type_checkState(cx_any _this, cx_state state) {
-/* $begin(::cortex::lang::type::checkState) */
+/* $begin(::corto::lang::type::checkState) */
     return cx_checkState(_this.value, state);
 /* $end */
 }
 
-/* ::cortex::lang::type::compare(any value) */
+/* ::corto::lang::type::compare(any value) */
 cx_equalityKind cx_type_compare(cx_any _this, cx_any value) {
-/* $begin(::cortex::lang::type::compare) */
+/* $begin(::corto::lang::type::compare) */
     cx_compare_ser_t data;
     struct cx_serializer_s s;
     cx_value v1;
@@ -113,9 +113,9 @@ cx_equalityKind cx_type_compare(cx_any _this, cx_any value) {
 /* $end */
 }
 
-/* ::cortex::lang::type::compatible(type type) */
+/* ::corto::lang::type::compatible(type type) */
 cx_bool cx_type_compatible_v(cx_type _this, cx_type type) {
-/* $begin(::cortex::lang::type::compatible) */
+/* $begin(::corto::lang::type::compatible) */
     cx_bool result;
 
     result = FALSE;
@@ -138,9 +138,9 @@ cx_bool cx_type_compatible_v(cx_type _this, cx_type type) {
 /* $end */
 }
 
-/* ::cortex::lang::type::construct() */
+/* ::corto::lang::type::construct() */
 cx_int16 cx_type_construct(cx_type _this) {
-/* $begin(::cortex::lang::type::construct) */
+/* $begin(::corto::lang::type::construct) */
     switch(_this->kind) {
     case CX_ANY:
         _this->size = sizeof(cx_any);
@@ -153,9 +153,9 @@ cx_int16 cx_type_construct(cx_type _this) {
 /* $end */
 }
 
-/* ::cortex::lang::type::copy(any value) */
+/* ::corto::lang::type::copy(any value) */
 cx_int16 cx_type_copy(cx_any _this, cx_any value) {
-/* $begin(::cortex::lang::type::copy) */
+/* $begin(::corto::lang::type::copy) */
     cx_copy_ser_t data;
     struct cx_serializer_s s;
     cx_value v1;
@@ -183,32 +183,32 @@ cx_int16 cx_type_copy(cx_any _this, cx_any value) {
 /* $end */
 }
 
-/* ::cortex::lang::type::declare(string name,type type) */
+/* ::corto::lang::type::declare(string name,type type) */
 cx_object cx_type_declare(cx_any _this, cx_string name, cx_type type) {
-/* $begin(::cortex::lang::type::declare) */
+/* $begin(::corto::lang::type::declare) */
     cx_object result = cx_declareChild(_this.value, name, type);
     cx_claim(result);
     return result;
 /* $end */
 }
 
-/* ::cortex::lang::type::define() */
+/* ::corto::lang::type::define() */
 cx_int16 cx_type_define(cx_any _this) {
-/* $begin(::cortex::lang::type::define) */
+/* $begin(::corto::lang::type::define) */
     return cx_define(_this.value);
 /* $end */
 }
 
-/* ::cortex::lang::type::delete() */
+/* ::corto::lang::type::delete() */
 cx_void cx_type_delete(cx_any _this) {
-/* $begin(::cortex::lang::type::delete) */
+/* $begin(::corto::lang::type::delete) */
     cx_delete(_this.value);
 /* $end */
 }
 
-/* ::cortex::lang::type::destruct() */
+/* ::corto::lang::type::destruct() */
 cx_void cx_type_destruct(cx_type _this) {
-/* $begin(::cortex::lang::type::destruct) */
+/* $begin(::corto::lang::type::destruct) */
     cx_uint32 i;
 
     /* Free methods */
@@ -223,9 +223,9 @@ cx_void cx_type_destruct(cx_type _this) {
 /* $end */
 }
 
-/* ::cortex::lang::type::fullname() */
+/* ::corto::lang::type::fullname() */
 cx_string cx_type_fullname(cx_any _this) {
-/* $begin(::cortex::lang::type::fullname) */
+/* $begin(::corto::lang::type::fullname) */
     cx_string result = NULL;
 
     if (_this.value) {
@@ -239,9 +239,9 @@ cx_string cx_type_fullname(cx_any _this) {
 /* $end */
 }
 
-/* ::cortex::lang::type::init() */
+/* ::corto::lang::type::init() */
 cx_int16 cx_type_init(cx_type _this) {
-/* $begin(::cortex::lang::type::init) */
+/* $begin(::corto::lang::type::init) */
     if (!_this->parentState) {
         _this->parentState = CX_DECLARED | CX_DEFINED;
     }
@@ -249,30 +249,30 @@ cx_int16 cx_type_init(cx_type _this) {
 /* $end */
 }
 
-/* ::cortex::lang::type::instanceof(type type) */
+/* ::corto::lang::type::instanceof(type type) */
 cx_bool cx_type_instanceof(cx_any _this, cx_type type) {
-/* $begin(::cortex::lang::type::instanceof) */
+/* $begin(::corto::lang::type::instanceof) */
     return cx_instanceof(type, _this.value);
 /* $end */
 }
 
-/* ::cortex::lang::type::invalidate() */
+/* ::corto::lang::type::invalidate() */
 cx_void cx_type_invalidate(cx_any _this) {
-/* $begin(::cortex::lang::type::invalidate) */
+/* $begin(::corto::lang::type::invalidate) */
     cx_invalidate(_this.value);
 /* $end */
 }
 
-/* ::cortex::lang::type::lookup(string name) */
+/* ::corto::lang::type::lookup(string name) */
 cx_object cx_type_lookup(cx_any _this, cx_string name) {
-/* $begin(::cortex::lang::type::lookup) */
+/* $begin(::corto::lang::type::lookup) */
     return cx_lookup(_this.value, name);
 /* $end */
 }
 
-/* ::cortex::lang::type::nameof() */
+/* ::corto::lang::type::nameof() */
 cx_string cx_type_nameof(cx_any _this) {
-/* $begin(::cortex::lang::type::nameof) */
+/* $begin(::corto::lang::type::nameof) */
     cx_string result = NULL;
 
     if (_this.value) {
@@ -288,9 +288,9 @@ cx_string cx_type_nameof(cx_any _this) {
 /* $end */
 }
 
-/* ::cortex::lang::type::parentof() */
+/* ::corto::lang::type::parentof() */
 cx_object cx_type_parentof(cx_any _this) {
-/* $begin(::cortex::lang::type::parentof) */
+/* $begin(::corto::lang::type::parentof) */
     cx_string result = NULL;
 
    if (cx_checkAttr(_this.value, CX_ATTR_SCOPED)) {
@@ -308,9 +308,9 @@ cx_object cx_type_parentof(cx_any _this) {
 /* $end */
 }
 
-/* ::cortex::lang::type::relname(object from) */
+/* ::corto::lang::type::relname(object from) */
 cx_string cx_type_relname(cx_any _this, cx_object from) {
-/* $begin(::cortex::lang::type::relname) */
+/* $begin(::corto::lang::type::relname) */
     cx_string result = NULL;
     cx_id id;
 
@@ -324,16 +324,16 @@ cx_string cx_type_relname(cx_any _this, cx_object from) {
 /* $end */
 }
 
-/* ::cortex::lang::type::resolve(string name) */
+/* ::corto::lang::type::resolve(string name) */
 cx_object cx_type_resolve(cx_any _this, cx_string name) {
-/* $begin(::cortex::lang::type::resolve) */
+/* $begin(::corto::lang::type::resolve) */
     return cx_resolve(_this.value, name);
 /* $end */
 }
 
-/* ::cortex::lang::type::resolveProcedure(string name) */
+/* ::corto::lang::type::resolveProcedure(string name) */
 cx_function cx_type_resolveProcedure(cx_type _this, cx_string name) {
-/* $begin(::cortex::lang::type::resolveProcedure) */
+/* $begin(::corto::lang::type::resolveProcedure) */
     cx_function result = NULL;
 
     /* If type is an interface, try first to resolve a method on the interface */
@@ -363,9 +363,9 @@ cx_function cx_type_resolveProcedure(cx_type _this, cx_string name) {
 /* $end */
 }
 
-/* ::cortex::lang::type::sizeof() */
+/* ::corto::lang::type::sizeof() */
 cx_uint32 cx_type_sizeof(cx_type _this) {
-/* $begin(::cortex::lang::type::sizeof) */
+/* $begin(::corto::lang::type::sizeof) */
     cx_uint32 size;
     if (_this->reference) {
         size = sizeof(cx_object);
@@ -376,9 +376,9 @@ cx_uint32 cx_type_sizeof(cx_type _this) {
 /* $end */
 }
 
-/* ::cortex::lang::type::toString() */
+/* ::corto::lang::type::toString() */
 cx_string cx_type_toString(cx_any _this) {
-/* $begin(::cortex::lang::type::toString) */
+/* $begin(::corto::lang::type::toString) */
     cx_value value;
     cx_string result;
 
@@ -397,9 +397,9 @@ cx_string cx_type_toString(cx_any _this) {
 /* $end */
 }
 
-/* ::cortex::lang::type::typeof() */
+/* ::corto::lang::type::typeof() */
 cx_type cx_type_typeof(cx_any _this) {
-/* $begin(::cortex::lang::type::typeof) */
+/* $begin(::corto::lang::type::typeof) */
     cx_type result = NULL;
 
     result = _this.type;

@@ -13,7 +13,7 @@
 #include "cx_object.h"
 #include "cx_serializer.h"
 #include "html.h"
-#include "cortex.h"
+#include "corto.h"
 #include "json.h"
 
 /*
@@ -154,7 +154,7 @@ static int html_printHtml(cx_object o, g_file file, cx_uint32 level) {
     for (i = 0; i < level; i++) {
         g_fileWrite(file, "../");
     }
-    g_fileWrite(file, "cortex.js\"></script>\n");
+    g_fileWrite(file, "corto.js\"></script>\n");
 
     /* This object */
     g_fileWrite(file, "<script src=\"data.js\"></script>\n");
@@ -178,7 +178,7 @@ static int html_printHtml(cx_object o, g_file file, cx_uint32 level) {
     for (i = 0; i < level; i++) {
         g_fileWrite(file, "../");
     }
-    g_fileWrite(file, "cortex.css\" rel=\"stylesheet\">\n");
+    g_fileWrite(file, "corto.css\" rel=\"stylesheet\">\n");
 
     g_fileDedent(file);
     g_fileWrite(file, "</head>\n");
@@ -239,8 +239,8 @@ error:
 static cx_int16 html_copy(const char* path, const char *name) {
     char sourcePath[PATH_MAX];
     char destinationPath[PATH_MAX];
-    char *cortexHome = getenv("CORTEX_HOME");
-    sprintf(sourcePath, "%s/generator/html/%s", cortexHome, name);
+    char *cortoHome = getenv("CORTO_HOME");
+    sprintf(sourcePath, "%s/generator/html/%s", cortoHome, name);
     sprintf(destinationPath, "%s/%s", path, name);
     if (cx_cp(sourcePath, destinationPath)) {
         goto error;
@@ -251,7 +251,7 @@ error:
 }
 
 
-cx_int16 cortex_genMain(cx_generator g) {
+cx_int16 corto_genMain(cx_generator g) {
     const char docs_filename[] = "doc";
     int success;
 
@@ -266,12 +266,12 @@ cx_int16 cortex_genMain(cx_generator g) {
         cx_error("Cannot copy \"jQuery\".");
     }
 
-    if (success && !(success = !html_copy(data.path, "cortex.js"))) {
-        cx_error("Cannot copy \"cortex.js\".");
+    if (success && !(success = !html_copy(data.path, "corto.js"))) {
+        cx_error("Cannot copy \"corto.js\".");
     }
 
-    if (success && !(success = !html_copy(data.path, "cortex.css"))) {
-        cx_error("Cannot copy \"cortex.css\".");
+    if (success && !(success = !html_copy(data.path, "corto.css"))) {
+        cx_error("Cannot copy \"corto.css\".");
     }
 
     if (success && !(success = !html_copy(data.path, "scope_icon.png"))) {

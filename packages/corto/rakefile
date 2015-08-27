@@ -1,0 +1,11 @@
+
+COMPONENTS = [] << 
+    :ic <<
+    :Fast <<
+    :io <<
+    :os <<
+    :math <<
+    :profiling <<
+    :test
+
+require "#{ENV['CORTO_BUILD']}/forward"

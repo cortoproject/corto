@@ -1478,7 +1478,7 @@ cx_uint16 cx__destruct(cx_object o) {
 
             /* Integrity check */
             if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
-                if (cx_parentof(o) == cortex_lang_o) {
+                if (cx_parentof(o) == corto_lang_o) {
                     cx_id id;
                     cx_critical("illegal attempt to destruct builtin-object '%s'.", cx_fullname(o, id));
                 }
@@ -2092,7 +2092,7 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
     if (observer->mask & (CX_ON_SCOPE|CX_ON_TREE)) {
         if (!cx_checkAttr(observable, CX_ATTR_SCOPED)) {
             cx_id id, id2;
-            cx_error("cortex::listen: cannot listen to childs of non-scoped observable '%s' (observer %s)",
+            cx_error("corto::listen: cannot listen to childs of non-scoped observable '%s' (observer %s)",
                     cx_fullname(observable, id),
                     cx_fullname(observer, id2));
             goto error;
@@ -2101,7 +2101,7 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
 
     if (!cx_checkAttr(observable, CX_ATTR_OBSERVABLE)) {
         cx_id id;
-        cx_assert(0, "cortex::listen: object '%s' is not an observable", cx_fullname(observable, id));
+        cx_assert(0, "corto::listen: object '%s' is not an observable", cx_fullname(observable, id));
         goto error;
     }
 
@@ -2283,7 +2283,7 @@ cx_int32 cx_silence(cx_object observable, cx_observer observer, cx_object _this)
                 }
                 cx_rwmutexUnlock(&_o->childLock);
             } else {
-                cx_error(0, "cortex::listen: observer subscribed on childs of non-scoped object");
+                cx_error(0, "corto::listen: observer subscribed on childs of non-scoped object");
                 goto error;
             }
         }
@@ -2643,7 +2643,7 @@ cx_int16 cx_expr(cx_object scope, cx_string expr, cx_value *value) {
     static cx_bool searchedForParser = FALSE;
 
     if (!parseLine && !searchedForParser) {
-        parseLine = cx_resolve(NULL, "::cortex::Fast::Parser::parseLine");
+        parseLine = cx_resolve(NULL, "::corto::Fast::Parser::parseLine");
         searchedForParser = TRUE;
     }
 
@@ -3356,8 +3356,8 @@ cx_string cx_signatureAdd(cx_string sig, cx_type type, int flags) {
 
     if (type) {
         if (!cx_checkAttr(type, CX_ATTR_SCOPED) ||
-           ((cx_parentof(type) != cortex_o) &&
-           (cx_parentof(type) != cortex_lang_o))) {
+           ((cx_parentof(type) != corto_o) &&
+           (cx_parentof(type) != corto_lang_o))) {
             cx_fullname(type, id);
         } else {
             strcpy(id, cx_nameof(type));

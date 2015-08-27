@@ -393,7 +393,7 @@ cx = {
         return "<code class=" + valueClass + ">" + valueString + "</code>";
     },
 
-    // Convert a JSON object to a cortex string
+    // Convert a JSON object to a corto string
     toString: function(v) {
         function primitive(s, v) {
             return cx.primitiveToString(v);
@@ -515,7 +515,7 @@ cx.object.prototype = {
 
     // Resolve object
     // This method must be used with caution. The cx cache is not a complete
-    // copy of the cortex store. Resolve will only work for objects currently
+    // copy of the corto store. Resolve will only work for objects currently
     // present in the cx cache.
     resolve: function(fullname) {
         var scope = this;
@@ -809,7 +809,7 @@ cx.object.prototype = {
 // Create the root object
 cx.root = new cx.object(undefined, "");
 cx.root.meta.name = "::";
-cx.root.meta.type = "::cortex::lang::object";
+cx.root.meta.type = "::corto::lang::object";
 cx.root.scope = [];
 
 // Create a resolve in cx that resolves from root

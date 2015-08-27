@@ -5,7 +5,7 @@ benchmark/bin/*
 generators/bin/*
 libraries/bin/*
 components/bin/*
-**/.cortex/**
+**/.corto/**
 test/bin/*
 lex.yy.c
 y.output

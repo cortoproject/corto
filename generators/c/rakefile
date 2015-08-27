@@ -6,4 +6,4 @@ COMPONENTS = [] <<
     :meta <<
     :project
 
-require "#{ENV['CORTEX_BUILD']}/forward"
+require "#{ENV['CORTO_BUILD']}/forward"

@@ -8,9 +8,9 @@
 
 #include "cx.h"
 
-/* ::cortex::lang::delegate::bind(function object) */
+/* ::corto::lang::delegate::bind(function object) */
 cx_int16 cx_delegate_bind(cx_function object) {
-/* $begin(::cortex::lang::delegate::bind) */
+/* $begin(::corto::lang::delegate::bind) */
     cx_object parent = cx_parentof(object);
 
     if (cx_class_instanceof(cx_interface_o, cx_typeof(parent))) {
@@ -46,16 +46,16 @@ error:
 /* $end */
 }
 
-/* ::cortex::lang::delegate::castable(type type) */
+/* ::corto::lang::delegate::castable(type type) */
 cx_bool cx_delegate_castable_v(cx_delegate _this, cx_type type) {
-/* $begin(::cortex::lang::delegate::castable) */
+/* $begin(::corto::lang::delegate::castable) */
     return cx_delegate_compatible_v(_this, type);
 /* $end */
 }
 
-/* ::cortex::lang::delegate::compatible(type type) */
+/* ::corto::lang::delegate::compatible(type type) */
 cx_bool cx_delegate_compatible_v(cx_delegate _this, cx_type type) {
-/* $begin(::cortex::lang::delegate::compatible) */
+/* $begin(::corto::lang::delegate::compatible) */
     cx_bool result = FALSE;
     CX_UNUSED(_this);
 
@@ -90,9 +90,9 @@ cx_bool cx_delegate_compatible_v(cx_delegate _this, cx_type type) {
 /* $end */
 }
 
-/* ::cortex::lang::delegate::init() */
+/* ::corto::lang::delegate::init() */
 cx_int16 cx_delegate_init(cx_delegate _this) {
-/* $begin(::cortex::lang::delegate::init) */
+/* $begin(::corto::lang::delegate::init) */
     cx_int16 result;
 
     cx_interface(_this)->base = cx_interface(cx_delegatedata_o);
@@ -110,8 +110,8 @@ error:
 /* $end */
 }
 
-/* ::cortex::lang::delegate::instanceof(object object) */
-/* $header(::cortex::lang::delegate::instanceof) */
+/* ::corto::lang::delegate::instanceof(object object) */
+/* $header(::corto::lang::delegate::instanceof) */
 cx_bool cx_delegate_matchParameter(
     cx_type t1, 
     cx_bool isRef1, 
@@ -126,7 +126,7 @@ cx_bool cx_delegate_matchParameter(
 }
 /* $end */
 cx_bool cx_delegate_instanceof(cx_delegate _this, cx_object object) {
-/* $begin(::cortex::lang::delegate::instanceof) */
+/* $begin(::corto::lang::delegate::instanceof) */
     cx_type t = cx_typeof(object);
     cx_bool result = TRUE;
 

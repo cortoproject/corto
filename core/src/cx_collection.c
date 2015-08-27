@@ -136,9 +136,9 @@ void cx_clear(cx_collection _this, cx_void* collection) {
 }
 /* $end */
 
-/* ::cortex::lang::collection::castable(type type) */
+/* ::corto::lang::collection::castable(type type) */
 cx_bool cx_collection_castable_v(cx_collection _this, cx_type type) {
-/* $begin(::cortex::lang::collection::castable) */
+/* $begin(::corto::lang::collection::castable) */
     cx_bool result = FALSE;
     if (type->kind == CX_COLLECTION) {
         cx_collection t = cx_collection(type);
@@ -159,9 +159,9 @@ cx_bool cx_collection_castable_v(cx_collection _this, cx_type type) {
 /* $end */
 }
 
-/* ::cortex::lang::collection::compatible(type type) */
+/* ::corto::lang::collection::compatible(type type) */
 cx_bool cx_collection_compatible_v(cx_collection _this, cx_type type) {
-/* $begin(::cortex::lang::collection::compatible) */
+/* $begin(::corto::lang::collection::compatible) */
     cx_bool result = FALSE;
 
     if (type->kind == CX_COLLECTION) {
@@ -181,9 +181,9 @@ cx_bool cx_collection_compatible_v(cx_collection _this, cx_type type) {
 /* $end */
 }
 
-/* ::cortex::lang::collection::elementRequiresAlloc() */
+/* ::corto::lang::collection::elementRequiresAlloc() */
 cx_bool cx_collection_elementRequiresAlloc(cx_collection _this) {
-/* $begin(::cortex::lang::collection::elementRequiresAlloc) */
+/* $begin(::corto::lang::collection::elementRequiresAlloc) */
     cx_bool result = TRUE;
     cx_type elementType = _this->elementType;
 
@@ -203,7 +203,7 @@ cx_bool cx_collection_elementRequiresAlloc(cx_collection _this) {
             case CX_WIDTH_16:
             case CX_WIDTH_32:
             case CX_WIDTH_WORD:
-                /* At least a 32-bit architecture is required for cortex. */
+                /* At least a 32-bit architecture is required for corto. */
                 result = FALSE;
                 break;
             case CX_WIDTH_64:
@@ -237,17 +237,17 @@ cx_bool cx_collection_elementRequiresAlloc(cx_collection _this) {
 /* $end */
 }
 
-/* ::cortex::lang::collection::init() */
+/* ::corto::lang::collection::init() */
 cx_int16 cx_collection_init(cx_collection _this) {
-/* $begin(::cortex::lang::collection::init) */
+/* $begin(::corto::lang::collection::init) */
     cx_type(_this)->kind = CX_COLLECTION;
     return cx_type_init(cx_type(_this));
 /* $end */
 }
 
-/* ::cortex::lang::collection::size() */
+/* ::corto::lang::collection::size() */
 cx_uint32 cx_collection_size(cx_any _this) {
-/* $begin(::cortex::lang::collection::size) */
+/* $begin(::corto::lang::collection::size) */
     cx_uint32 result = 0;
 
     switch(cx_collection(_this.type)->kind) {

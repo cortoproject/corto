@@ -4,4 +4,4 @@ end
 
 TARGETPATH = "generators"
 
-require "#{ENV['CORTEX_BUILD']}/library"
+require "#{ENV['CORTO_BUILD']}/library"

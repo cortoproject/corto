@@ -13,16 +13,16 @@
 #include "cx__class.h"
 /* $end */
 
-/* ::cortex::lang::struct::castable(type type) */
+/* ::corto::lang::struct::castable(type type) */
 cx_bool cx_struct_castable_v(cx_struct _this, cx_type type) {
-/* $begin(::cortex::lang::struct::castable) */
+/* $begin(::corto::lang::struct::castable) */
     return cx_struct_compatible(_this, type);
 /* $end */
 }
 
-/* ::cortex::lang::struct::compatible(type type) */
+/* ::corto::lang::struct::compatible(type type) */
 cx_bool cx_struct_compatible_v(cx_struct _this, cx_type type) {
-/* $begin(::cortex::lang::struct::compatible) */
+/* $begin(::corto::lang::struct::compatible) */
     cx_bool result;
 
     cx_assert(cx_class_instanceof(cx_struct_o, _this), "struct::compatible called on non-struct object.");
@@ -49,9 +49,9 @@ cx_bool cx_struct_compatible_v(cx_struct _this, cx_type type) {
 /* $end */
 }
 
-/* ::cortex::lang::struct::construct() */
+/* ::corto::lang::struct::construct() */
 cx_int16 cx_struct_construct(cx_struct _this) {
-/* $begin(::cortex::lang::struct::construct) */
+/* $begin(::corto::lang::struct::construct) */
     cx_struct base;
     cx_uint16 alignment;
     cx_uint32 size;
@@ -131,9 +131,9 @@ error:
 /* $end */
 }
 
-/* ::cortex::lang::struct::init() */
+/* ::corto::lang::struct::init() */
 cx_int16 cx_struct_init(cx_struct _this) {
-/* $begin(::cortex::lang::struct::init) */
+/* $begin(::corto::lang::struct::init) */
     /* If not bootstrapping, set baseAccess to GLOBAL | PUBLIC */
     if (cx_checkState(cx_type_o, CX_DEFINED)) {
         _this->baseAccess = CX_GLOBAL;
@@ -152,9 +152,9 @@ error:
 /* $end */
 }
 
-/* ::cortex::lang::struct::resolveMember(string name) */
+/* ::corto::lang::struct::resolveMember(string name) */
 cx_member cx_struct_resolveMember_v(cx_struct _this, cx_string name) {
-/* $begin(::cortex::lang::struct::resolveMember) */
+/* $begin(::corto::lang::struct::resolveMember) */
     cx_interface base;
     cx_member m;
 

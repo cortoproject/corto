@@ -11,7 +11,7 @@ env:
 addons:
   coverity_scan:
     project:
-      name: "Seldomberry/Cortex"
+      name: "Seldomberry/Corto"
       description: "Build submitted via Travis CI"
     notification_email: sander.mertens8@gmail.com
     build_command_prepend: "source configure"

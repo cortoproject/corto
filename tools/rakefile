@@ -1,5 +1,5 @@
 
 COMPONENTS = [] << 
-    :cortex
+    :corto
     
-require "#{ENV['CORTEX_BUILD']}/forward"
+require "#{ENV['CORTO_BUILD']}/forward"

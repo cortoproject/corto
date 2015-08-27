@@ -1,7 +1,7 @@
 require 'rake/clean'
-require "#{ENV['CORTEX_BUILD']}/version"
+require "#{ENV['CORTO_BUILD']}/version"
 
-TARGET = :cortex
+TARGET = :corto
 
 LIB = ['rt', 'dl', 'm']
 
@@ -11,24 +11,24 @@ CFLAGS ||= []
 ARTEFACT = "lib#{TARGET}.so"
 LFLAGS << "--shared"
 
-CLOBBER.include("#{ENV['CORTEX_TARGET']}/include/cortex/")
+CLOBBER.include("#{ENV['CORTO_TARGET']}/include/corto/")
 
 task :prebuild do
 	verbose(false)
-	includePath = "#{ENV['CORTEX_TARGET']}/include/cortex/#{VERSION}"
+	includePath = "#{ENV['CORTO_TARGET']}/include/corto/#{VERSION}"
 	sh "mkdir -p #{includePath}"
     sh "cp include/* #{includePath}/"
 end
 
 task :collect do
 	verbose(false)
-	includePath = "#{ENV['HOME']}/.cortex/pack/include/cortex/#{VERSION}"
+	includePath = "#{ENV['HOME']}/.corto/pack/include/corto/#{VERSION}"
 	sh "mkdir -p #{includePath}"
     sh "cp include/* #{includePath}/"
 
-	buildPath = "#{ENV['HOME']}/.cortex/pack/lib/cortex/#{VERSION}/build"
+	buildPath = "#{ENV['HOME']}/.corto/pack/lib/corto/#{VERSION}/build"
 	sh "mkdir -p #{buildPath}"
-    sh "cp #{ENV['CORTEX_BUILD']}/* #{buildPath}/"    
+    sh "cp #{ENV['CORTO_BUILD']}/* #{buildPath}/"    
 end
 
-require "#{ENV['CORTEX_BUILD']}/artefact"
+require "#{ENV['CORTO_BUILD']}/artefact"

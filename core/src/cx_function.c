@@ -8,9 +8,9 @@
 
 #include "cx.h"
 
-/* ::cortex::lang::function::bind() */
+/* ::corto::lang::function::bind() */
 cx_int16 cx_function_bind(cx_function _this) {
-/* $begin(::cortex::lang::function::bind) */
+/* $begin(::corto::lang::function::bind) */
     /* Count the size based on the parameters and store parameters in slots */
     if (!_this->size) {
         cx_uint32 i;
@@ -63,8 +63,8 @@ error:
 /* $end */
 }
 
-/* ::cortex::lang::function::init() */
-/* $header(::cortex::lang::function::init) */
+/* ::corto::lang::function::init() */
+/* $header(::corto::lang::function::init) */
 static cx_int16 cx_function_parseArguments(cx_function object) {
     object->parameters = cx_function_stringToParameterSeq(cx_nameof(object), cx_parentof(object));
     return object->parameters.length == (cx_uint32)-1;
@@ -116,7 +116,7 @@ finish:
 }
 /* $end */
 cx_int16 cx_function_init(cx_function _this) {
-/* $begin(::cortex::lang::function::init) */
+/* $begin(::corto::lang::function::init) */
     cx_functionLookup_t walkData;
     cx_ll scope;
 
@@ -144,9 +144,9 @@ error:
 /* $end */
 }
 
-/* ::cortex::lang::function::stringToParameterSeq(string name,object scope) */
+/* ::corto::lang::function::stringToParameterSeq(string name,object scope) */
 cx_parameterSeq cx_function_stringToParameterSeq(cx_string name, cx_object scope) {
-/* $begin(::cortex::lang::function::stringToParameterSeq) */
+/* $begin(::corto::lang::function::stringToParameterSeq) */
     cx_parameterSeq result = {0, NULL};
 
     cx_char* ptr;
@@ -219,9 +219,9 @@ error:
 /* $end */
 }
 
-/* ::cortex::lang::function::unbind(function object) */
+/* ::corto::lang::function::unbind(function object) */
 cx_void cx_function_unbind(cx_function object) {
-/* $begin(::cortex::lang::function::unbind) */
+/* $begin(::corto::lang::function::unbind) */
     cx_uint32 i;
 
     cx_callDestroy(object);

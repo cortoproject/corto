@@ -6,7 +6,7 @@
 #ifndef cx_api_H
 #define cx_api_H
 
-#include "cortex.h"
+#include "corto.h"
 
 #ifdef __cplusplus
 extern "C" {

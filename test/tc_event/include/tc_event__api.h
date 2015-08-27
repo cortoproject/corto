@@ -9,7 +9,7 @@
 #define tc_event__API_H
 
 #include "tc_event__type.h"
-#include "cortex.h"
+#include "corto.h"
 
 #ifdef __cplusplus
 extern "C" {

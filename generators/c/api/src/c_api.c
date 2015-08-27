@@ -5,7 +5,7 @@
  *      Author: sander
  */
 
-#include "cortex.h"
+#include "corto.h"
 #include "c_api.h"
 #include "c_common.h"
 
@@ -163,7 +163,7 @@ static g_file c_apiHeaderOpen(cx_generator g) {
     g_fileWrite(result, "#ifndef %s__API_H\n", g_getName(g));
     g_fileWrite(result, "#define %s__API_H\n\n", g_getName(g));
     g_fileWrite(result, "#include \"%s__type.h\"\n", g_getName(g));
-    g_fileWrite(result, "#include \"cortex.h\"\n\n");
+    g_fileWrite(result, "#include \"corto.h\"\n\n");
     g_fileWrite(result, "#ifdef __cplusplus\n");
     g_fileWrite(result, "extern \"C\" {\n");
     g_fileWrite(result, "#endif\n");
@@ -244,12 +244,12 @@ static int c_apiFindCollections(cx_object o, void* userData) {
 }
 
 /* Generator main */
-cx_int16 cortex_genMain(cx_generator g) {
+cx_int16 corto_genMain(cx_generator g) {
     c_apiWalk_t walkData;
 
-    /* Default prefixes for cortex namespaces */
-    gen_parse(g, cortex_o, FALSE, FALSE, "");
-    gen_parse(g, cortex_lang_o, FALSE, FALSE, "cx");
+    /* Default prefixes for corto namespaces */
+    gen_parse(g, corto_o, FALSE, FALSE, "");
+    gen_parse(g, corto_lang_o, FALSE, FALSE, "cx");
 
     walkData.g = g;
     walkData.header = c_apiHeaderOpen(g);

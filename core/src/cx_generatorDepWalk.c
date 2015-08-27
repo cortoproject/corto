@@ -112,9 +112,9 @@ int cx_genDepBuildAction(cx_object o, void* userData) {
 
     data = userData;
 
-    /* If object is cortex_lang_o, signal that a bootstrap is found, indicating
+    /* If object is corto_lang_o, signal that a bootstrap is found, indicating
      * that dependencies should be disregarded. */
-    if (o == cortex_lang_o) {
+    if (o == corto_lang_o) {
         data->bootstrap = TRUE;
         result = 0;
     } else {

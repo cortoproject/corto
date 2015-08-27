@@ -306,7 +306,7 @@ static g_file c_loadHeaderFileOpen(cx_generator g) {
     g_fileWrite(result, " */\n\n");
     g_fileWrite(result, "#ifndef %s_META_H\n", g_getName(g));
     g_fileWrite(result, "#define %s_META_H\n\n", g_getName(g));
-    g_fileWrite(result, "#include \"cortex.h\"\n\n");
+    g_fileWrite(result, "#include \"corto.h\"\n\n");
     g_fileWrite(result, "#include \"%s__type.h\"\n\n", g_getName(g));
     g_fileWrite(result, "#ifdef __cplusplus\n");
     g_fileWrite(result, "extern \"C\" {\n");
@@ -824,12 +824,12 @@ static int c_loadDefine(cx_object o, void* userData) {
 }
 
 /* Entry point for generator */
-int cortex_genMain(cx_generator g) {
+int corto_genMain(cx_generator g) {
     c_typeWalk_t walkData;
 
-    /* Default prefixes for cortex namespaces */
-    gen_parse(g, cortex_o, FALSE, FALSE, "");
-    gen_parse(g, cortex_lang_o, FALSE, FALSE, "cx");
+    /* Default prefixes for corto namespaces */
+    gen_parse(g, corto_o, FALSE, FALSE, "");
+    gen_parse(g, corto_lang_o, FALSE, FALSE, "cx");
 
     /* Prepare walkData, create header- and sourcefile */
     walkData.g = g;

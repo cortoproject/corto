@@ -8,9 +8,9 @@
 
 #include "cx.h"
 
-/* ::cortex::lang::method::bind() */
+/* ::corto::lang::method::bind() */
 cx_int16 cx_method_bind(cx_method _this) {
-/* $begin(::cortex::lang::method::bind) */
+/* $begin(::corto::lang::method::bind) */
     
     /* Bind function */
     if (cx_function_bind(cx_function(_this))) {
@@ -23,9 +23,9 @@ error:
 /* $end */
 }
 
-/* ::cortex::lang::method::init() */
+/* ::corto::lang::method::init() */
 cx_int16 cx_method_init(cx_method _this) {
-/* $begin(::cortex::lang::method::init) */
+/* $begin(::corto::lang::method::init) */
     cx_object parent;
     
     /* Locate parent class object */

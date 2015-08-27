@@ -388,7 +388,7 @@ int tc_event_load(void) {
 
     /* Define ::tc_event::Point::x */
     if (!cx_checkState(tc_Point_x_o, CX_DEFINED)) {
-        tc_Point_x_o->type = cx_resolve_ext(tc_Point_x_o, NULL, "::cortex::lang::uint32", FALSE, "element ::tc_event::Point::x.type");
+        tc_Point_x_o->type = cx_resolve_ext(tc_Point_x_o, NULL, "::corto::lang::uint32", FALSE, "element ::tc_event::Point::x.type");
         tc_Point_x_o->modifiers = 0x0;
         tc_Point_x_o->state = 0x6;
         tc_Point_x_o->weak = FALSE;
@@ -407,7 +407,7 @@ int tc_event_load(void) {
 
     /* Define ::tc_event::Point::y */
     if (!cx_checkState(tc_Point_y_o, CX_DEFINED)) {
-        tc_Point_y_o->type = cx_resolve_ext(tc_Point_y_o, NULL, "::cortex::lang::uint32", FALSE, "element ::tc_event::Point::y.type");
+        tc_Point_y_o->type = cx_resolve_ext(tc_Point_y_o, NULL, "::corto::lang::uint32", FALSE, "element ::tc_event::Point::y.type");
         tc_Point_y_o->modifiers = 0x0;
         tc_Point_y_o->state = 0x6;
         tc_Point_y_o->weak = FALSE;
@@ -758,7 +758,7 @@ int tc_event_load(void) {
 
     /* Define ::tc_event::value */
     if (!cx_checkState(tc_value_o, CX_DEFINED)) {
-        tc_value_o->type = cx_resolve_ext(tc_value_o, NULL, "::cortex::lang::uint32", FALSE, "element ::tc_event::value.type");
+        tc_value_o->type = cx_resolve_ext(tc_value_o, NULL, "::corto::lang::uint32", FALSE, "element ::tc_event::value.type");
         if (cx_define(tc_value_o)) {
             cx_error("tc_event_load: failed to define object '::tc_event::value'.");
             goto error;

@@ -19,7 +19,7 @@ extern "C" {
 #elif INTPTR_MAX == INT64_MAX
 #define CX_CPU_X64
 #else
-#warning "cortex is not supported on platforms which are neither 32- nor 64-bit."
+#warning "corto is not supported on platforms which are neither 32- nor 64-bit."
 #endif
 
 #if defined(WIN32) || defined(WIN64)
@@ -29,7 +29,7 @@ extern "C" {
 #elif defined(__APPLE__) && defined(__MACH__)
 #define CX_OS_OSX
 #else
-#warning "cortex is not supported on non-unix or windows operating systems."
+#warning "corto is not supported on non-unix or windows operating systems."
 #endif
 
 #ifdef CX_CPU_X86
