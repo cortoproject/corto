@@ -36,9 +36,9 @@ cx_int16 cortex_install(int argc, char *argv[]) {
 	if (cx_fileTest("configure") && cx_fileTest("build")) {
 		/* If installing cortex itself, install buildsystem */
 		fprintf(install, "mkdir -p /usr/lib/cortex/%s\n", CORTEX_VERSION);
-		fprintf(install, "rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi\n");
+		fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
 		fprintf(install, "cp -r ./build /usr/lib/cortex/%s\n", CORTEX_VERSION);
-		fprintf(install, "rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi\n");
+		fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
 		buildingCortex = TRUE;
 	}
 
@@ -51,22 +51,22 @@ cx_int16 cortex_install(int argc, char *argv[]) {
 
 	/* Build libraries to global environment */
 	fprintf(install, "rake silent=true\n");
-	fprintf(install, "rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi\n");
+	fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
 
 	if (buildingCortex) {
 		/* Rename cortex */
 		fprintf(install, "mv -f /usr/bin/cortex /usr/bin/cortex.%s\n", CORTEX_VERSION);
 		fprintf(install, "ln -s /usr/bin/cortex.%s /usr/bin/cortex\n", CORTEX_VERSION);
-		fprintf(install, "rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi\n");
+		fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
 
 		/* Rename libcortex.so */
 		fprintf(install, "mv -f /usr/lib/libcortex.so /usr/lib/libcortex.so.%s\n", CORTEX_VERSION);
 		fprintf(install, "ln -s /usr/lib/libcortex.so.%s /usr/lib/libcortex.so\n", CORTEX_VERSION);
-		fprintf(install, "rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi\n");
+		fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
 	}
 
 	fprintf(install, "rake clean 2> /dev/null\n");
-	fprintf(install, "rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi\n");
+	fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
 	fclose(install);
 
 	cortex_promptPassword();
