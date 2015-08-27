@@ -32,7 +32,7 @@ file "include/#{TARGET}__type.h" => GENFILE do
 end
 
 task :prebuild => "include/#{TARGET}__type.h" do
-    require "./.corto/dep"
+    require "./.corto/dep.rb"
 end
 
 task :clobber do
