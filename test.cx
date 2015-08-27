@@ -1,5 +1,0 @@
-
-bool a: false
-var bool& b = @::.resolve("a")
-
-"$b"
