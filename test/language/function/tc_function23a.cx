@@ -1,0 +1,17 @@
+bool result : true
+
+void fail(string msg):
+    "tc_function23a: FAIL: $msg"
+    result = false
+
+array{int32, 3} i: 10, 20, 30
+
+array{int32, 3} returnInts() = {10, 20, 30}
+array{int32, 3} returnIntsVar(): returnIntsVar = {10, 20, 30}
+array{int32, 3} returnIntsObj() = i
+
+if returnInts()[0, 1, 2] != (10, 20, 30): fail("returnInts()[0, 1, 2] != (10, 20, 30)")
+if returnIntsVar()[0, 1, 2] != (10, 20, 30): fail("returnIntsVar()[0, 1, 2] != (10, 20, 30)")
+if returnIntsObj()[0, 1, 2] != (10, 20, 30): fail("returnIntsObj()[0, 1, 2] != (10, 20, 30)")
+
+if result: "tc_function23a: OK"

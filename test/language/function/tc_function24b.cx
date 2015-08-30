@@ -1,0 +1,19 @@
+bool result : true
+
+void fail(string msg):
+    "tc_function24b: FAIL: $msg"
+    result = false
+
+sequence{int32} i: 10, 20, 30
+
+sequence{int32}& returnInts() = sequence{int32}{10, 20, 30}
+sequence{int32}& returnIntsVar(): &returnIntsVar = sequence{int32}{10, 20, 30}
+sequence{int32}& returnIntsObj() = i
+sequence{int32}& returnIntsNull() = null
+
+if returnInts()[0, 1, 2] != (10, 20, 30): fail("returnInts()[0, 1, 2] != (10, 20, 30)")
+if returnIntsVar()[0, 1, 2] != (10, 20, 30): fail("returnIntsVar()[0, 1, 2] != (10, 20, 30)")
+if returnIntsObj()[0, 1, 2] != (10, 20, 30): fail("returnIntsObj()[0, 1, 2] != (10, 20, 30)")
+if &returnIntsNull(): fail("returnIntsNull()")
+
+if result: "tc_function24b: OK"
