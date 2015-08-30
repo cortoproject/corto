@@ -261,3 +261,47 @@ cx_int16 corto_untar(int argc, char* argv[]) {
 error:
 	return -1;
 }
+
+void corto_installHelp(void) {
+    printf("Usage: corto install\n");
+    printf("\n");
+    printf("This command installs your project (component or package) to\n");
+    printf("the global environment (/usr). Only run this command when you want to\n");
+    printf("make your project available for other users. Run this command from the\n");
+    printf("root directory of your project.\n");
+    printf("\n");
+    printf("Note: installation requires root priviledges.\n");
+    printf("\n");
+}
+
+void corto_uninstallHelp(void) {
+    printf("Usage: corto uninstall\n");
+    printf("\n");
+    printf("This command removes your project (component or package) from\n");
+    printf("the global environment (/usr).\n");
+    printf("\n");
+    printf("Note that uninstalling requires root priviledges.\n");
+    printf("\n");
+}
+
+void corto_tarHelp(void) {
+    printf("Usage: corto tar\n");
+    printf("\n");
+    printf("This command packs up your project in a redistributable tar. You\n");
+    printf("will need to install your project before calling 'corto tar'.\n");
+    printf("To install the tarfile, use 'corto untar'.\n");
+    printf("\n");
+}
+
+void corto_untarHelp(void) {
+    printf("Usage: corto untar\n");
+    printf("\n");
+    printf("This command installs the contents of a tarfile to the global\n");
+    printf("environment (/usr). Be sure to only use tarfiles that are created\n");
+    printf("with 'corto tar'.\n");
+    printf("\n");
+    printf("Note: installation requires root priviledges.\n");
+    printf("\n");
+}
+
+

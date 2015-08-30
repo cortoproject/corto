@@ -169,3 +169,12 @@ cx_int16 corto_run(int argc, char *argv[]) {
 
 	return 0;
 }
+
+void corto_runHelp(void) {
+    printf("Usage: corto run\n");
+    printf("\n");
+    printf("This command builds, runs and monitors your app. Corto will monitor both source\n");
+    printf("and dependencies (packages) of your app. If a change is detected\n");
+    printf("in any of these, the app is automatically rebuild and restarted.\n");
+    printf("\n");
+}

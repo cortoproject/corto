@@ -1099,6 +1099,34 @@ static vm_opKind ic_getVmOpKind(ic_vmProgram *program, ic_op op, ic_node storage
             ic_opKind__str(op->kind),
             ic_derefKind__str(deref1),
             ic_derefKind__str(deref2));
+        fprintf(stderr, "   type:      ");
+        switch(typeKind) {
+        case IC_VMTYPE_B: fprintf(stderr, "B"); break;
+        case IC_VMTYPE_S: fprintf(stderr, "S"); break;
+        case IC_VMTYPE_L: fprintf(stderr, "L"); break;
+        case IC_VMTYPE_W: fprintf(stderr, "W"); break;
+        case IC_VMTYPE_D: fprintf(stderr, "D"); break;
+        }
+        switch(op1) {
+        case IC_VMOPERAND_P: fprintf(stderr, "P"); break;
+        case IC_VMOPERAND_Q: fprintf(stderr, "Q"); break;
+        case IC_VMOPERAND_R: fprintf(stderr, "R"); break;
+        case IC_VMOPERAND_V: fprintf(stderr, "V"); break;
+        case IC_VMOPERAND_A: fprintf(stderr, "A"); break;
+        case IC_VMOPERAND_X: fprintf(stderr, "X"); break;
+        case IC_VMOPERAND_NONE: fprintf(stderr, "-"); break;
+        }
+        switch(op2) {
+        case IC_VMOPERAND_P: fprintf(stderr, "P"); break;
+        case IC_VMOPERAND_Q: fprintf(stderr, "Q"); break;
+        case IC_VMOPERAND_R: fprintf(stderr, "R"); break;
+        case IC_VMOPERAND_V: fprintf(stderr, "V"); break;
+        case IC_VMOPERAND_A: fprintf(stderr, "A"); break;
+        case IC_VMOPERAND_X: fprintf(stderr, "X"); break;
+        case IC_VMOPERAND_NONE: fprintf(stderr, "-"); break;
+
+        }
+        printf("\n");
         if (op->s1) {
             cx_error("   operand 1: %s", ic_node__str(op->s1));
         }

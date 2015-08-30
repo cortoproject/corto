@@ -14,6 +14,8 @@ extern "C" {
 
 cx_int16 corto_project(int argc, char* argv[]);
 
+void corto_createHelp(void);
+
 #ifdef __cplusplus
 }
 #endif

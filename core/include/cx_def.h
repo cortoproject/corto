@@ -70,7 +70,6 @@ extern int8_t CX_DEBUG_ENABLED;
 
 #define CX_PROCEDURE_STUB (0)
 #define CX_PROCEDURE_CDECL (1)
-#define CX_PROCEDURE_VM    (2)
 
 /* C language binding type definition macro's */
 #define CX_ANY(__type) typedef struct __type {cx_type type; void *value; uint8_t owner;} __type

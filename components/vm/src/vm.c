@@ -34,6 +34,8 @@ static cx_threadKey cx_stringConcatCacheKey;
 static cx_threadKey cx_currentProgramKey;
 typedef struct cx_vm_context cx_vm_context;
 
+int CX_PROCEDURE_VM;
+
 /* TLS structure for cx_currentProgramKey, used for debugging */
 typedef struct cx_currentProgramData {
     vm_program stack[64];
@@ -1263,7 +1265,7 @@ void vm_callDestruct(cx_function f) {
 int cortomain(int argc, char* argv[]) {
     CX_UNUSED(argc);
     CX_UNUSED(argv);
-    cx_callRegisterBinding(vm_call, NULL, NULL, (cx_callDestructHandler)vm_callDestruct);
+    CX_PROCEDURE_VM = cx_callRegisterBinding(vm_call, NULL, NULL, (cx_callDestructHandler)vm_callDestruct);
     return 0;
 }
 

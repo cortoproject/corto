@@ -17,6 +17,8 @@
 extern "C" {
 #endif
 
+extern int CX_PROCEDURE_VM;
+
 /* ---- Macro's that expand into enumeration constants */
 #define CONST0(arg)\
     CX_VM_##arg,

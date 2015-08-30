@@ -14,6 +14,11 @@ cx_int16 corto_locate(int argc, char* argv[]);
 cx_int16 corto_tar(int argc, char* argv[]);
 cx_int16 corto_untar(int argc, char* argv[]);
 
+void corto_installHelp(void);
+void corto_uninstallHelp(void);
+void corto_tarHelp(void);
+void corto_untarHelp(void);
+
 #ifdef __cplusplus
 }
 #endif

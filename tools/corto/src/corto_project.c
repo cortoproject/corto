@@ -334,3 +334,24 @@ cx_int16 corto_project(int argc, char *argv[]) {
 error:
 	return -1;
 }
+
+void corto_createHelp(void) {
+    printf("Usage: corto create\n");
+    printf("Usage: corto create <name>\n");
+    printf("Usage: corto create <command> <name>\n");
+    printf("Usage: corto create <command>\n");
+    printf("\n");
+    printf("When no name is passed to corto create, we will pick a name for you.\n");
+    printf("\n");
+    printf("Commands:\n");
+    printf("   app:           Create a new application project. An app is a standalone\n");
+    printf("                  executable that links with the corto libraries. You can\n");
+    printf("                  run your application by typing 'corto run' in the app directory\n");
+    printf("   package:       Create a new package. Use when you're about to create\n");
+    printf("                  functionality that must be shared between apps, or\n");
+    printf("                  other packages.\n");
+    printf("   component:     Create a new component. A component is a shared library\n");
+    printf("                  that contains a cortomain function which is executed\n");
+    printf("                  upon loading the library.\n");
+    printf("\n");
+}

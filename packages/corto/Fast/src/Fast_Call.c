@@ -142,7 +142,7 @@ ic_node _Fast_Call_toIc_v(Fast_Call _this, ic_program program, ic_storage storag
         result->holdsReturn = TRUE;
     } else {
         result = (ic_storage)ic_program_pushAccumulator(
-            program, _thisType, _this->returnsReference, TRUE);
+            program, _thisType, _this->returnsReference || _this->returnType->reference, TRUE);
     }
 
     /* Convert arguments to iterable list */

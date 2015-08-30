@@ -721,4 +721,10 @@ int corto_shell(int argc, char* argv[]) {
     return 0;
 }
 
-
+void corto_shellHelp() {
+    printf("Usage: corto shell [files] [packages]\n");
+    printf("\n");
+    printf("Start the corto shell. You can provide additional files or\n");
+    printf("packages to load.\n");
+    printf("\n");
+}

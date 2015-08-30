@@ -468,7 +468,7 @@ Fast_Expression Fast_Parser_explodeComma(Fast_Parser _this, Fast_Expression lval
         /* Only temporarily store rvalue if it has side effects */
         if (Fast_Expression_hasSideEffects(Fast_Expression(cx_llGet(lvalueList,0)))) {
             if (Fast_Node(rvalues)->kind != Fast_InitializerExpr) {
-                var = Fast_Expression(Fast_Temporary__create(lvalues->type, FALSE));
+                var = Fast_Expression(Fast_Temporary__create(lvalues->type, lvalues->isReference));
                 Fast_Parser_addStatement(_this, Fast_Parser_binaryExpr(_this, var, lvalues, CX_ASSIGN));
                 rvalues = var;
             }

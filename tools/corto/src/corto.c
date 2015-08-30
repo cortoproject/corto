@@ -6,7 +6,38 @@
 #include "corto_pp.h"
 #include "corto_run.h"
 #include "corto_shell.h"
+#include "corto_help.h"
 #include "cx_loader.h"
+
+void corto_locateHelp() {
+    printf("Usage: corto locate <package>\n");
+    printf("\n");
+    printf("Find out where a package is located. This can be useful if you're\n");
+    printf("unsure whether you're using a package from the local or global\n");
+    printf("environment.\n");
+    printf("\n");
+}
+
+static void corto_printUsage() {
+    printf("Usage: corto [-d] <command> [args]\n");
+    printf("       corto [-d] [files] [packages]\n");
+    printf("       corto [--version] [-v] [--help] [-h]\n");
+    printf("\n");
+    printf("Without arguments, 'corto' starts the corto shell.\n");
+    printf("\n");
+    printf("Commands:\n");
+    printf("   create               Create a new project.\n");
+    printf("   run                  Run a project.\n");
+    printf("   install              Install a project to the global environment.\n");
+    printf("   uninstall            Remove a project from the global environment.\n");
+    printf("   locate               Show whether a package is located in the local or global environment\n");
+    printf("   shell                Start the corto shell.\n");
+    printf("   tar                  Package a project in a redistributable tar file.\n");
+    printf("   untar                Unpackage a project to the global environment.\n");
+    printf("   build                Build a project.\n");
+    printf("\n");
+    printf("See 'corto help <command>' for details on a commnad.\n\n");
+}
 
 int main(int argc, char* argv[]) {
     int i;
@@ -24,11 +55,16 @@ int main(int argc, char* argv[]) {
             if (*argv[i] == '-') {
                 if (*(argv[i]+1) == 'd') {
                     CX_DEBUG_ENABLED = TRUE;
+                }else if (*(argv[i]+1) == 'h') {
+                    corto_printUsage();
+                    break;
                 } else if (*(argv[i]+1) == 'v') {
                     printf("%s", CORTO_VERSION);
                 } else if (*(argv[i]+1) == '-') {
                     if (!strcmp(argv[i] + 2, "version")) {
                         printf("corto (%s) %s\n\n", CX_PLATFORM_STRING, CORTO_VERSION);
+                    } else if (!strcmp(argv[i] + 2, "help")) {
+                        corto_printUsage();
                     }
                 }
             } else if (!strcmp(argv[i], "create")) {
@@ -78,6 +114,11 @@ int main(int argc, char* argv[]) {
                 break;
             } else if (!strcmp(argv[1], "untar")) {
                 if (corto_untar(argc-i, &argv[i])) {
+                    goto error;
+                }
+                break;
+            } else if (!strcmp(argv[1], "help")) {
+                if (corto_help(argc-i, &argv[i])) {
                     goto error;
                 }
                 break;
