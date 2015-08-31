@@ -378,7 +378,7 @@ cx_bool cx_interface_checkProcedureCompatibility(cx_function o1, cx_function o2)
 /* $end */
 
 /* ::corto::lang::interface::baseof(interface type) */
-cx_int16 cx_interface_baseof(cx_interface _this, cx_interface type) {
+cx_int16 _cx_interface_baseof(cx_interface _this, cx_interface type) {
 /* $begin(::corto::lang::interface::baseof) */
     cx_interface ptr = _this->base;
     cx_bool result = _this == type;
@@ -393,7 +393,7 @@ cx_int16 cx_interface_baseof(cx_interface _this, cx_interface type) {
 }
 
 /* ::corto::lang::interface::bindMethod(method method) */
-cx_int16 cx_interface_bindMethod(cx_interface _this, cx_method method) {
+cx_int16 _cx_interface_bindMethod(cx_interface _this, cx_method method) {
 /* $begin(::corto::lang::interface::bindMethod) */
     cx_method* virtual;
     cx_int32 i;
@@ -454,7 +454,7 @@ error:
 }
 
 /* ::corto::lang::interface::compatible(type type) */
-cx_bool cx_interface_compatible_v(cx_interface _this, cx_type type) {
+cx_bool _cx_interface_compatible_v(cx_interface _this, cx_type type) {
 /* $begin(::corto::lang::interface::compatible) */
     cx_bool result;
 
@@ -478,7 +478,7 @@ cx_bool cx_interface_compatible_v(cx_interface _this, cx_type type) {
 }
 
 /* ::corto::lang::interface::construct() */
-cx_int16 cx_interface_construct(cx_interface _this) {
+cx_int16 _cx_interface_construct(cx_interface _this) {
 /* $begin(::corto::lang::interface::construct) */
     cx_vtable *superTable, ownTable;
     cx_uint32 i;
@@ -516,7 +516,7 @@ error:
 }
 
 /* ::corto::lang::interface::destruct() */
-cx_void cx_interface_destruct(cx_interface _this) {
+cx_void _cx_interface_destruct(cx_interface _this) {
 /* $begin(::corto::lang::interface::destruct) */
     cx_uint32 i;
 
@@ -545,7 +545,7 @@ cx_void cx_interface_destruct(cx_interface _this) {
 }
 
 /* ::corto::lang::interface::init() */
-cx_int16 cx_interface_init(cx_interface _this) {
+cx_int16 _cx_interface_init(cx_interface _this) {
 /* $begin(::corto::lang::interface::init) */
     cx_type(_this)->reference = TRUE;
     cx_type(_this)->kind = CX_COMPOSITE;
@@ -556,7 +556,7 @@ cx_int16 cx_interface_init(cx_interface _this) {
 }
 
 /* ::corto::lang::interface::resolveMember(string name) */
-cx_member cx_interface_resolveMember_v(cx_interface _this, cx_string name) {
+cx_member _cx_interface_resolveMember_v(cx_interface _this, cx_string name) {
 /* $begin(::corto::lang::interface::resolveMember) */
     cx_uint32 i;
     cx_member result;
@@ -575,7 +575,7 @@ cx_member cx_interface_resolveMember_v(cx_interface _this, cx_string name) {
 }
 
 /* ::corto::lang::interface::resolveMethod(string name) */
-cx_method cx_interface_resolveMethod(cx_interface _this, cx_string name) {
+cx_method _cx_interface_resolveMethod(cx_interface _this, cx_string name) {
 /* $begin(::corto::lang::interface::resolveMethod) */
     cx_method result;
     cx_method* found;
@@ -592,7 +592,7 @@ cx_method cx_interface_resolveMethod(cx_interface _this, cx_string name) {
 }
 
 /* ::corto::lang::interface::resolveMethodById(uint32 id) */
-cx_method cx_interface_resolveMethodById(cx_interface _this, cx_uint32 id) {
+cx_method _cx_interface_resolveMethodById(cx_interface _this, cx_uint32 id) {
 /* $begin(::corto::lang::interface::resolveMethodById) */
     cx_method result;
     cx_vtable* vtable;
@@ -619,7 +619,7 @@ cx_method cx_interface_resolveMethodById(cx_interface _this, cx_uint32 id) {
 }
 
 /* ::corto::lang::interface::resolveMethodId(string name) */
-cx_uint32 cx_interface_resolveMethodId(cx_interface _this, cx_string name) {
+cx_uint32 _cx_interface_resolveMethodId(cx_interface _this, cx_string name) {
 /* $begin(::corto::lang::interface::resolveMethodId) */
     cx_int32 result;
 

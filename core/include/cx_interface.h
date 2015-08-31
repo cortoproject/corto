@@ -17,40 +17,50 @@ extern "C" {
 #endif
 
 /* ::corto::lang::interface::baseof(interface type) */
-cx_int16 cx_interface_baseof(cx_interface _this, cx_interface type);
+cx_int16 _cx_interface_baseof(cx_interface _this, cx_interface type);
+#define cx_interface_baseof(_this, type) _cx_interface_baseof(cx_interface(_this), cx_interface(type))
 
 /* ::corto::lang::interface::bindMethod(method method) */
-cx_int16 cx_interface_bindMethod(cx_interface _this, cx_method method);
+cx_int16 _cx_interface_bindMethod(cx_interface _this, cx_method method);
+#define cx_interface_bindMethod(_this, method) _cx_interface_bindMethod(cx_interface(_this), cx_method(method))
 
 /* virtual ::corto::lang::interface::compatible(type type) */
 cx_bool cx_interface_compatible(cx_interface _this, cx_type type);
 
 /* ::corto::lang::interface::compatible(type type) */
-cx_bool cx_interface_compatible_v(cx_interface _this, cx_type type);
+cx_bool _cx_interface_compatible_v(cx_interface _this, cx_type type);
+#define cx_interface_compatible_v(_this, type) _cx_interface_compatible_v(cx_interface(_this), cx_type(type))
 
 /* ::corto::lang::interface::construct() */
-cx_int16 cx_interface_construct(cx_interface _this);
+cx_int16 _cx_interface_construct(cx_interface _this);
+#define cx_interface_construct(_this) _cx_interface_construct(cx_interface(_this))
 
 /* ::corto::lang::interface::destruct() */
-cx_void cx_interface_destruct(cx_interface _this);
+cx_void _cx_interface_destruct(cx_interface _this);
+#define cx_interface_destruct(_this) _cx_interface_destruct(cx_interface(_this))
 
 /* ::corto::lang::interface::init() */
-cx_int16 cx_interface_init(cx_interface _this);
+cx_int16 _cx_interface_init(cx_interface _this);
+#define cx_interface_init(_this) _cx_interface_init(cx_interface(_this))
 
 /* virtual ::corto::lang::interface::resolveMember(string name) */
 cx_member cx_interface_resolveMember(cx_interface _this, cx_string name);
 
 /* ::corto::lang::interface::resolveMember(string name) */
-cx_member cx_interface_resolveMember_v(cx_interface _this, cx_string name);
+cx_member _cx_interface_resolveMember_v(cx_interface _this, cx_string name);
+#define cx_interface_resolveMember_v(_this, name) _cx_interface_resolveMember_v(cx_interface(_this), name)
 
 /* ::corto::lang::interface::resolveMethod(string name) */
-cx_method cx_interface_resolveMethod(cx_interface _this, cx_string name);
+cx_method _cx_interface_resolveMethod(cx_interface _this, cx_string name);
+#define cx_interface_resolveMethod(_this, name) _cx_interface_resolveMethod(cx_interface(_this), name)
 
 /* ::corto::lang::interface::resolveMethodById(uint32 id) */
-cx_method cx_interface_resolveMethodById(cx_interface _this, cx_uint32 id);
+cx_method _cx_interface_resolveMethodById(cx_interface _this, cx_uint32 id);
+#define cx_interface_resolveMethodById(_this, id) _cx_interface_resolveMethodById(cx_interface(_this), id)
 
 /* ::corto::lang::interface::resolveMethodId(string name) */
-cx_uint32 cx_interface_resolveMethodId(cx_interface _this, cx_string name);
+cx_uint32 _cx_interface_resolveMethodId(cx_interface _this, cx_string name);
+#define cx_interface_resolveMethodId(_this, name) _cx_interface_resolveMethodId(cx_interface(_this), name)
 
 #ifdef __cplusplus
 }

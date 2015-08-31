@@ -17,10 +17,12 @@ extern "C" {
 #endif
 
 /* ::corto::lang::procedure::init() */
-cx_int16 cx_procedure_init(cx_procedure _this);
+cx_int16 _cx_procedure_init(cx_procedure _this);
+#define cx_procedure_init(_this) _cx_procedure_init(cx_procedure(_this))
 
 /* ::corto::lang::procedure::unbind(function object) */
-cx_void cx_procedure_unbind(cx_procedure _this, cx_function object);
+cx_void _cx_procedure_unbind(cx_procedure _this, cx_function object);
+#define cx_procedure_unbind(_this, object) _cx_procedure_unbind(cx_procedure(_this), cx_function(object))
 
 #ifdef __cplusplus
 }

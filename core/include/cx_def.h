@@ -30,6 +30,9 @@ extern "C" {
 #define TRUE (!FALSE)
 #endif
 
+/* Macro used to prevent type checking macro's from expanding */
+#define ___
+
 #define CX_NULL_STRING ("null")
 
 extern const char* CORTO_VERSION;
@@ -76,7 +79,7 @@ extern int8_t CX_DEBUG_ENABLED;
 #define CX_ITERATOR(__type) typedef struct __type {\
     void *current;\
     cx_collection type;\
-    cx_bool (*next)(void* iterator);\
+    cx_bool ___ (*next)(void* iterator);\
     union {\
         struct { /* CX_ARRAY and CX_SEQUENCE */\
             void *array;\

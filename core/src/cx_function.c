@@ -9,7 +9,7 @@
 #include "cx.h"
 
 /* ::corto::lang::function::bind() */
-cx_int16 cx_function_bind(cx_function _this) {
+cx_int16 _cx_function_bind(cx_function _this) {
 /* $begin(::corto::lang::function::bind) */
     /* Count the size based on the parameters and store parameters in slots */
     if (!_this->size) {
@@ -115,7 +115,7 @@ finish:
     return 0;
 }
 /* $end */
-cx_int16 cx_function_init(cx_function _this) {
+cx_int16 _cx_function_init(cx_function _this) {
 /* $begin(::corto::lang::function::init) */
     cx_functionLookup_t walkData;
     cx_ll scope;
@@ -145,7 +145,7 @@ error:
 }
 
 /* ::corto::lang::function::stringToParameterSeq(string name,object scope) */
-cx_parameterSeq cx_function_stringToParameterSeq(cx_string name, cx_object scope) {
+cx_parameterSeq _cx_function_stringToParameterSeq(cx_string name, cx_object scope) {
 /* $begin(::corto::lang::function::stringToParameterSeq) */
     cx_parameterSeq result = {0, NULL};
 
@@ -220,7 +220,7 @@ error:
 }
 
 /* ::corto::lang::function::unbind(function object) */
-cx_void cx_function_unbind(cx_function object) {
+cx_void _cx_function_unbind(cx_function object) {
 /* $begin(::corto::lang::function::unbind) */
     cx_uint32 i;
 

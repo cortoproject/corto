@@ -137,7 +137,7 @@ void cx_clear(cx_collection _this, cx_void* collection) {
 /* $end */
 
 /* ::corto::lang::collection::castable(type type) */
-cx_bool cx_collection_castable_v(cx_collection _this, cx_type type) {
+cx_bool _cx_collection_castable_v(cx_collection _this, cx_type type) {
 /* $begin(::corto::lang::collection::castable) */
     cx_bool result = FALSE;
     if (type->kind == CX_COLLECTION) {
@@ -160,7 +160,7 @@ cx_bool cx_collection_castable_v(cx_collection _this, cx_type type) {
 }
 
 /* ::corto::lang::collection::compatible(type type) */
-cx_bool cx_collection_compatible_v(cx_collection _this, cx_type type) {
+cx_bool _cx_collection_compatible_v(cx_collection _this, cx_type type) {
 /* $begin(::corto::lang::collection::compatible) */
     cx_bool result = FALSE;
 
@@ -182,7 +182,7 @@ cx_bool cx_collection_compatible_v(cx_collection _this, cx_type type) {
 }
 
 /* ::corto::lang::collection::elementRequiresAlloc() */
-cx_bool cx_collection_elementRequiresAlloc(cx_collection _this) {
+cx_bool _cx_collection_elementRequiresAlloc(cx_collection _this) {
 /* $begin(::corto::lang::collection::elementRequiresAlloc) */
     cx_bool result = TRUE;
     cx_type elementType = _this->elementType;
@@ -238,7 +238,7 @@ cx_bool cx_collection_elementRequiresAlloc(cx_collection _this) {
 }
 
 /* ::corto::lang::collection::init() */
-cx_int16 cx_collection_init(cx_collection _this) {
+cx_int16 _cx_collection_init(cx_collection _this) {
 /* $begin(::corto::lang::collection::init) */
     cx_type(_this)->kind = CX_COLLECTION;
     return cx_type_init(cx_type(_this));
@@ -246,7 +246,7 @@ cx_int16 cx_collection_init(cx_collection _this) {
 }
 
 /* ::corto::lang::collection::size() */
-cx_uint32 cx_collection_size(cx_any _this) {
+cx_uint32 _cx_collection_size(cx_any _this) {
 /* $begin(::corto::lang::collection::size) */
     cx_uint32 result = 0;
 

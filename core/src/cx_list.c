@@ -133,7 +133,7 @@ static int cx_clearFreeValues(void* o, void* udata) {
 /* $end */
 
 /* ::corto::lang::list::append() */
-cx_any cx_list_append_(cx_any _this) {
+cx_any _cx_list_append_(cx_any _this) {
 /* $begin(::corto::lang::list::append()) */
     cx_any result;
     result.type = cx_collection(_this.type)->elementType;
@@ -144,14 +144,14 @@ cx_any cx_list_append_(cx_any _this) {
 }
 
 /* ::corto::lang::list::append(any element) */
-cx_void cx_list_append_any(cx_any _this, cx_any element) {
+cx_void _cx_list_append_any(cx_any _this, cx_any element) {
 /* $begin(::corto::lang::list::append(any element)) */
     cx_list_do(_this, element, FALSE, cx_list_appendAction, NULL);
 /* $end */
 }
 
 /* ::corto::lang::list::clear() */
-cx_void cx_list_clear(cx_any _this) {
+cx_void _cx_list_clear(cx_any _this) {
 /* $begin(::corto::lang::list::clear) */
     cx_collection c = cx_collection(_this.type);
     if (cx_collection_elementRequiresAlloc(c)) {
@@ -162,7 +162,7 @@ cx_void cx_list_clear(cx_any _this) {
 }
 
 /* ::corto::lang::list::construct() */
-cx_int16 cx_list_construct(cx_list _this) {
+cx_int16 _cx_list_construct(cx_list _this) {
 /* $begin(::corto::lang::list::construct) */
     cx_type(_this)->hasResources = TRUE;
     cx_type(_this)->size = sizeof(cx_ll);
@@ -178,7 +178,7 @@ error:
 }
 
 /* ::corto::lang::list::init() */
-cx_int16 cx_list_init(cx_list _this) {
+cx_int16 _cx_list_init(cx_list _this) {
 /* $begin(::corto::lang::list::init) */
     cx_collection(_this)->kind = CX_LIST;
     return cx_collection_init(cx_collection(_this));
@@ -186,7 +186,7 @@ cx_int16 cx_list_init(cx_list _this) {
 }
 
 /* ::corto::lang::list::insert() */
-cx_any cx_list_insert_(cx_any _this) {
+cx_any _cx_list_insert_(cx_any _this) {
 /* $begin(::corto::lang::list::insert()) */
     cx_any result;
     result.type = cx_collection(_this.type)->elementType;
@@ -197,14 +197,14 @@ cx_any cx_list_insert_(cx_any _this) {
 }
 
 /* ::corto::lang::list::insert(any element) */
-cx_void cx_list_insert_any(cx_any _this, cx_any element) {
+cx_void _cx_list_insert_any(cx_any _this, cx_any element) {
 /* $begin(::corto::lang::list::insert(any element)) */
     cx_list_do(_this, element, TRUE, cx_list_insertAction, NULL);
 /* $end */
 }
 
 /* ::corto::lang::list::reverse() */
-cx_void cx_list_reverse(cx_any _this) {
+cx_void _cx_list_reverse(cx_any _this) {
 /* $begin(::corto::lang::list::reverse) */
     cx_llReverse(*(cx_ll*)_this.value);
 /* $end */

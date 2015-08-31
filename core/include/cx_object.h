@@ -21,7 +21,7 @@ extern "C" {
 typedef char cx_id[512];
 
 typedef int (*cx_scopeWalkAction)(cx_object o, void* userData);
-typedef cx_equalityKind (*cx_equalsAction)(cx_type _this, const void* o1, const void* o2);
+typedef cx_equalityKind ___ (*cx_equalsAction)(cx_type _this, const void* o1, const void* o2);
 
 /* Event-kinds */
 #define CX_EVENT_NONE       (0)

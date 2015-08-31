@@ -332,7 +332,7 @@ static int c_interfaceParamCastWalk(cx_parameter* o, void* userData) {
     if (c_specifierId(data->g, o->type, specifier, NULL, postfix)) {
         goto error;
     }
-    if ((o->passByReference || o->type->reference) && o->type->kind != CX_VOID) {
+    if ((o->passByReference || o->type->reference) && (o->type->kind != CX_VOID) && (o->type->kind != CX_ANY)) {
         g_fileWrite(data->header, "%s(%s)", specifier, o->name);
     } else {
         g_fileWrite(data->header, "%s", o->name);
@@ -548,10 +548,10 @@ static int c_interfaceClassProcedure(cx_object o, void* userData) {
                 if (parentType->reference) {
                     g_fileWrite(data->header, "%s(_this)", classId);
                 } else {
-                    g_fileWrite(data->header, "(%s *)_this", classId);
+                    g_fileWrite(data->header, "_this", classId);
                 }
             } else {
-                g_fileWrite(data->header, "cx_any _this");
+                g_fileWrite(data->header, "_this");
             }
             data->firstComma = TRUE;
         } else {

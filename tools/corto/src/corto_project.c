@@ -341,7 +341,7 @@ void corto_createHelp(void) {
     printf("Usage: corto create <command> <name>\n");
     printf("Usage: corto create <command>\n");
     printf("\n");
-    printf("When no name is passed to corto create, we will pick a name for you.\n");
+    printf("When no name is passed to create, corto will choose a random name.\n");
     printf("\n");
     printf("Commands:\n");
     printf("   app:           Create a new application project. An app is a standalone\n");

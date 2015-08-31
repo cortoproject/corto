@@ -280,8 +280,8 @@ static int c_loadDeclareWalk(cx_object o, void* userData) {
         g_fileWrite(data->header, "extern %s %s%s;\n", specifier, c_loadVarId(data->g, o, objectId), postfix);
         g_fileWrite(data->source, "%s %s%s;\n", specifier, objectId, postfix);
     } else {
-        g_fileWrite(data->header, "extern %s (*%s)%s;\n", specifier, c_loadVarId(data->g, o, objectId), postfix);
-        g_fileWrite(data->source, "%s (*%s)%s;\n", specifier, objectId, postfix);
+        g_fileWrite(data->header, "extern %s ___ (*%s)%s;\n", specifier, c_loadVarId(data->g, o, objectId), postfix);
+        g_fileWrite(data->source, "%s ___ (*%s)%s;\n", specifier, objectId, postfix);
     }
 
     return 1;

@@ -9,7 +9,7 @@
 #include "cx.h"
 
 /* ::corto::lang::delegate::bind(function object) */
-cx_int16 cx_delegate_bind(cx_function object) {
+cx_int16 _cx_delegate_bind(cx_function object) {
 /* $begin(::corto::lang::delegate::bind) */
     cx_object parent = cx_parentof(object);
 
@@ -47,14 +47,14 @@ error:
 }
 
 /* ::corto::lang::delegate::castable(type type) */
-cx_bool cx_delegate_castable_v(cx_delegate _this, cx_type type) {
+cx_bool _cx_delegate_castable_v(cx_delegate _this, cx_type type) {
 /* $begin(::corto::lang::delegate::castable) */
     return cx_delegate_compatible_v(_this, type);
 /* $end */
 }
 
 /* ::corto::lang::delegate::compatible(type type) */
-cx_bool cx_delegate_compatible_v(cx_delegate _this, cx_type type) {
+cx_bool _cx_delegate_compatible_v(cx_delegate _this, cx_type type) {
 /* $begin(::corto::lang::delegate::compatible) */
     cx_bool result = FALSE;
     CX_UNUSED(_this);
@@ -91,7 +91,7 @@ cx_bool cx_delegate_compatible_v(cx_delegate _this, cx_type type) {
 }
 
 /* ::corto::lang::delegate::init() */
-cx_int16 cx_delegate_init(cx_delegate _this) {
+cx_int16 _cx_delegate_init(cx_delegate _this) {
 /* $begin(::corto::lang::delegate::init) */
     cx_int16 result;
 
@@ -125,7 +125,7 @@ cx_bool cx_delegate_matchParameter(
     }
 }
 /* $end */
-cx_bool cx_delegate_instanceof(cx_delegate _this, cx_object object) {
+cx_bool _cx_delegate_instanceof(cx_delegate _this, cx_object object) {
 /* $begin(::corto::lang::delegate::instanceof) */
     cx_type t = cx_typeof(object);
     cx_bool result = TRUE;

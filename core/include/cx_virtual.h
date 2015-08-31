@@ -16,7 +16,8 @@ extern "C" {
 #endif
 
 /* ::corto::lang::virtual::init() */
-cx_int16 cx_virtual_init(cx_virtual _this);
+cx_int16 _cx_virtual_init(cx_virtual _this);
+#define cx_virtual_init(_this) _cx_virtual_init(cx_virtual(_this))
 
 #ifdef __cplusplus
 }

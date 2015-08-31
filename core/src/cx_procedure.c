@@ -14,7 +14,7 @@
 /* $end */
 
 /* ::corto::lang::procedure::init() */
-cx_int16 cx_procedure_init(cx_procedure _this) {
+cx_int16 _cx_procedure_init(cx_procedure _this) {
 /* $begin(::corto::lang::procedure::init) */
 
     if (cx_interface_init(cx_interface(_this))) {
@@ -31,7 +31,7 @@ error:
 }
 
 /* ::corto::lang::procedure::unbind(function object) */
-cx_void cx_procedure_unbind(cx_procedure _this, cx_function object) {
+cx_void _cx_procedure_unbind(cx_procedure _this, cx_function object) {
 /* $begin(::corto::lang::procedure::unbind) */
     if (_this->kind == CX_OBSERVER){
         cx_observer_unbind(cx_observer(object));

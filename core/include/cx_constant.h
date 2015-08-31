@@ -16,7 +16,8 @@ extern "C" {
 #endif
 
 /* ::corto::lang::constant::init() */
-cx_int16 cx_constant_init(cx_constant *_this);
+cx_int16 _cx_constant_init(cx_constant *_this);
+#define cx_constant_init(_this) _cx_constant_init(_this)
 
 #ifdef __cplusplus
 }

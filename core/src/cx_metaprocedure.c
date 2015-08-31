@@ -13,7 +13,7 @@ cx_int16 cx_type_bindMetaprocedure(cx_type _this, cx_metaprocedure procedure);
 /* $end */
 
 /* ::corto::lang::metaprocedure::bind() */
-cx_int16 cx_metaprocedure_bind(cx_metaprocedure _this) {
+cx_int16 _cx_metaprocedure_bind(cx_metaprocedure _this) {
 /* $begin(::corto::lang::metaprocedure::bind) */
     cx_object parent;
 

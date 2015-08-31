@@ -19,10 +19,12 @@ extern "C" {
 void cx_event_handle(cx_event _this);
 
 /* ::corto::lang::event::handle() */
-cx_void cx_event_handle_v(cx_event _this);
+cx_void _cx_event_handle_v(cx_event _this);
+#define cx_event_handle_v(_this) _cx_event_handle_v(cx_event(_this))
 
 /* ::corto::lang::event::uniqueKind() */
-cx_int16 cx_event_uniqueKind(void);
+cx_int16 _cx_event_uniqueKind(void);
+#define cx_event_uniqueKind() _cx_event_uniqueKind()
 
 #ifdef __cplusplus
 }

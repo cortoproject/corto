@@ -17,10 +17,12 @@ extern "C" {
 #endif
 
 /* ::corto::lang::map::construct() */
-cx_int16 cx_map_construct(cx_map _this);
+cx_int16 _cx_map_construct(cx_map _this);
+#define cx_map_construct(_this) _cx_map_construct(cx_map(_this))
 
 /* ::corto::lang::map::init() */
-cx_int16 cx_map_init(cx_map _this);
+cx_int16 _cx_map_init(cx_map _this);
+#define cx_map_init(_this) _cx_map_init(cx_map(_this))
 
 #ifdef __cplusplus
 }

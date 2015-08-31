@@ -9,7 +9,7 @@
 #include "cx.h"
 
 /* ::corto::lang::method::bind() */
-cx_int16 cx_method_bind(cx_method _this) {
+cx_int16 _cx_method_bind(cx_method _this) {
 /* $begin(::corto::lang::method::bind) */
     
     /* Bind function */
@@ -24,7 +24,7 @@ error:
 }
 
 /* ::corto::lang::method::init() */
-cx_int16 cx_method_init(cx_method _this) {
+cx_int16 _cx_method_init(cx_method _this) {
 /* $begin(::corto::lang::method::init) */
     cx_object parent;
     

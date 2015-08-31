@@ -25,16 +25,19 @@ cx_bool cx_iterator_next(void *_this);
 cx_bool cx_iterator_castable(cx_iterator _this, cx_type type);
 
 /* ::corto::lang::iterator::castable(type type) */
-cx_bool cx_iterator_castable_v(cx_iterator _this, cx_type type);
+cx_bool _cx_iterator_castable_v(cx_iterator _this, cx_type type);
+#define cx_iterator_castable_v(_this, type) _cx_iterator_castable_v(cx_iterator(_this), cx_type(type))
 
 /* virtual ::corto::lang::iterator::compatible(type type) */
 cx_bool cx_iterator_compatible(cx_iterator _this, cx_type type);
 
 /* ::corto::lang::iterator::compatible(type type) */
-cx_bool cx_iterator_compatible_v(cx_iterator _this, cx_type type);
+cx_bool _cx_iterator_compatible_v(cx_iterator _this, cx_type type);
+#define cx_iterator_compatible_v(_this, type) _cx_iterator_compatible_v(cx_iterator(_this), cx_type(type))
 
 /* ::corto::lang::iterator::init() */
-cx_int16 cx_iterator_init(cx_iterator _this);
+cx_int16 _cx_iterator_init(cx_iterator _this);
+#define cx_iterator_init(_this) _cx_iterator_init(cx_iterator(_this))
 
 #ifdef __cplusplus
 }

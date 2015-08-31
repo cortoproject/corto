@@ -14,14 +14,14 @@
 /* $end */
 
 /* ::corto::lang::struct::castable(type type) */
-cx_bool cx_struct_castable_v(cx_struct _this, cx_type type) {
+cx_bool _cx_struct_castable_v(cx_struct _this, cx_type type) {
 /* $begin(::corto::lang::struct::castable) */
     return cx_struct_compatible(_this, type);
 /* $end */
 }
 
 /* ::corto::lang::struct::compatible(type type) */
-cx_bool cx_struct_compatible_v(cx_struct _this, cx_type type) {
+cx_bool _cx_struct_compatible_v(cx_struct _this, cx_type type) {
 /* $begin(::corto::lang::struct::compatible) */
     cx_bool result;
 
@@ -50,7 +50,7 @@ cx_bool cx_struct_compatible_v(cx_struct _this, cx_type type) {
 }
 
 /* ::corto::lang::struct::construct() */
-cx_int16 cx_struct_construct(cx_struct _this) {
+cx_int16 _cx_struct_construct(cx_struct _this) {
 /* $begin(::corto::lang::struct::construct) */
     cx_struct base;
     cx_uint16 alignment;
@@ -132,7 +132,7 @@ error:
 }
 
 /* ::corto::lang::struct::init() */
-cx_int16 cx_struct_init(cx_struct _this) {
+cx_int16 _cx_struct_init(cx_struct _this) {
 /* $begin(::corto::lang::struct::init) */
     /* If not bootstrapping, set baseAccess to GLOBAL | PUBLIC */
     if (cx_checkState(cx_type_o, CX_DEFINED)) {
@@ -153,7 +153,7 @@ error:
 }
 
 /* ::corto::lang::struct::resolveMember(string name) */
-cx_member cx_struct_resolveMember_v(cx_struct _this, cx_string name) {
+cx_member _cx_struct_resolveMember_v(cx_struct _this, cx_string name) {
 /* $begin(::corto::lang::struct::resolveMember) */
     cx_interface base;
     cx_member m;

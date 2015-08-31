@@ -19,8 +19,8 @@ extern "C" {
 CX_CLASS(cx_generator);
 
 typedef int (*g_walkAction)(cx_object o, void* userData);
-typedef cx_string (*g_idAction)(cx_string in, cx_id out);
-typedef cx_int16 (*g_startAction)(cx_generator g);
+typedef cx_string ___ (*g_idAction)(cx_string in, cx_id out);
+typedef cx_int16 ___ (*g_startAction)(cx_generator g);
 typedef void (*g_stopAction)(cx_generator g);
 
 CX_STRUCT(g_object);

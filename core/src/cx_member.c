@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::corto::lang::member::construct() */
-cx_int16 cx_member_construct(cx_member _this) {
+cx_int16 _cx_member_construct(cx_member _this) {
 /* $begin(::corto::lang::member::construct) */
     if (!_this->type) {
         cx_id id;
@@ -28,7 +28,7 @@ error:
 }
 
 /* ::corto::lang::member::init() */
-cx_int16 cx_member_init(cx_member _this) {
+cx_int16 _cx_member_init(cx_member _this) {
 /* $begin(::corto::lang::member::init) */
     cx_object parent;
     cx_type parentType;

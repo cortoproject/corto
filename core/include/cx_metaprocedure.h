@@ -16,7 +16,8 @@ extern "C" {
 #endif
 
 /* ::corto::lang::metaprocedure::bind() */
-cx_int16 cx_metaprocedure_bind(cx_metaprocedure _this);
+cx_int16 _cx_metaprocedure_bind(cx_metaprocedure _this);
+#define cx_metaprocedure_bind(_this) _cx_metaprocedure_bind(cx_metaprocedure(_this))
 
 #ifdef __cplusplus
 }

@@ -17,13 +17,16 @@ extern "C" {
 #endif
 
 /* ::corto::lang::sequence::construct() */
-cx_int16 cx_sequence_construct(cx_sequence _this);
+cx_int16 _cx_sequence_construct(cx_sequence _this);
+#define cx_sequence_construct(_this) _cx_sequence_construct(cx_sequence(_this))
 
 /* ::corto::lang::sequence::init() */
-cx_int16 cx_sequence_init(cx_sequence _this);
+cx_int16 _cx_sequence_init(cx_sequence _this);
+#define cx_sequence_init(_this) _cx_sequence_init(cx_sequence(_this))
 
 /* ::corto::lang::sequence::size(uint32 size) */
-cx_void cx_sequence_size(cx_any _this, cx_uint32 size);
+cx_void _cx_sequence_size(cx_any _this, cx_uint32 size);
+#define cx_sequence_size(_this, size) _cx_sequence_size(_this, size)
 
 #ifdef __cplusplus
 }

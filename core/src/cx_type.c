@@ -42,7 +42,7 @@ error:
 /* $end */
 
 /* ::corto::lang::type::alignmentof() */
-cx_uint16 cx_type_alignmentof(cx_type _this) {
+cx_uint16 _cx_type_alignmentof(cx_type _this) {
 /* $begin(::corto::lang::type::alignmentof) */
     cx_uint16 alignment;
 
@@ -56,14 +56,14 @@ cx_uint16 cx_type_alignmentof(cx_type _this) {
 }
 
 /* ::corto::lang::type::allocSize() */
-cx_uint32 cx_type_allocSize_v(cx_type _this) {
+cx_uint32 _cx_type_allocSize_v(cx_type _this) {
 /* $begin(::corto::lang::type::allocSize) */
     return _this->size;
 /* $end */
 }
 
 /* ::corto::lang::type::castable(type type) */
-cx_bool cx_type_castable_v(cx_type _this, cx_type type) {
+cx_bool _cx_type_castable_v(cx_type _this, cx_type type) {
 /* $begin(::corto::lang::type::castable) */
     cx_bool result = FALSE;
 
@@ -82,21 +82,21 @@ cx_bool cx_type_castable_v(cx_type _this, cx_type type) {
 }
 
 /* ::corto::lang::type::checkAttr(attr attributes) */
-cx_bool cx_type_checkAttr(cx_any _this, cx_attr attributes) {
+cx_bool _cx_type_checkAttr(cx_any _this, cx_attr attributes) {
 /* $begin(::corto::lang::type::checkAttr) */
     return cx_checkAttr(_this.value, attributes);
 /* $end */
 }
 
 /* ::corto::lang::type::checkState(state state) */
-cx_bool cx_type_checkState(cx_any _this, cx_state state) {
+cx_bool _cx_type_checkState(cx_any _this, cx_state state) {
 /* $begin(::corto::lang::type::checkState) */
     return cx_checkState(_this.value, state);
 /* $end */
 }
 
 /* ::corto::lang::type::compare(any value) */
-cx_equalityKind cx_type_compare(cx_any _this, cx_any value) {
+cx_equalityKind _cx_type_compare(cx_any _this, cx_any value) {
 /* $begin(::corto::lang::type::compare) */
     cx_compare_ser_t data;
     struct cx_serializer_s s;
@@ -114,7 +114,7 @@ cx_equalityKind cx_type_compare(cx_any _this, cx_any value) {
 }
 
 /* ::corto::lang::type::compatible(type type) */
-cx_bool cx_type_compatible_v(cx_type _this, cx_type type) {
+cx_bool _cx_type_compatible_v(cx_type _this, cx_type type) {
 /* $begin(::corto::lang::type::compatible) */
     cx_bool result;
 
@@ -139,7 +139,7 @@ cx_bool cx_type_compatible_v(cx_type _this, cx_type type) {
 }
 
 /* ::corto::lang::type::construct() */
-cx_int16 cx_type_construct(cx_type _this) {
+cx_int16 _cx_type_construct(cx_type _this) {
 /* $begin(::corto::lang::type::construct) */
     switch(_this->kind) {
     case CX_ANY:
@@ -154,7 +154,7 @@ cx_int16 cx_type_construct(cx_type _this) {
 }
 
 /* ::corto::lang::type::copy(any value) */
-cx_int16 cx_type_copy(cx_any _this, cx_any value) {
+cx_int16 _cx_type_copy(cx_any _this, cx_any value) {
 /* $begin(::corto::lang::type::copy) */
     cx_copy_ser_t data;
     struct cx_serializer_s s;
@@ -184,7 +184,7 @@ cx_int16 cx_type_copy(cx_any _this, cx_any value) {
 }
 
 /* ::corto::lang::type::declare(string name,type type) */
-cx_object cx_type_declare(cx_any _this, cx_string name, cx_type type) {
+cx_object _cx_type_declare(cx_any _this, cx_string name, cx_type type) {
 /* $begin(::corto::lang::type::declare) */
     cx_object result = cx_declareChild(_this.value, name, type);
     cx_claim(result);
@@ -193,21 +193,21 @@ cx_object cx_type_declare(cx_any _this, cx_string name, cx_type type) {
 }
 
 /* ::corto::lang::type::define() */
-cx_int16 cx_type_define(cx_any _this) {
+cx_int16 _cx_type_define(cx_any _this) {
 /* $begin(::corto::lang::type::define) */
     return cx_define(_this.value);
 /* $end */
 }
 
 /* ::corto::lang::type::delete() */
-cx_void cx_type_delete(cx_any _this) {
+cx_void _cx_type_delete(cx_any _this) {
 /* $begin(::corto::lang::type::delete) */
     cx_delete(_this.value);
 /* $end */
 }
 
 /* ::corto::lang::type::destruct() */
-cx_void cx_type_destruct(cx_type _this) {
+cx_void _cx_type_destruct(cx_type _this) {
 /* $begin(::corto::lang::type::destruct) */
     cx_uint32 i;
 
@@ -224,7 +224,7 @@ cx_void cx_type_destruct(cx_type _this) {
 }
 
 /* ::corto::lang::type::fullname() */
-cx_string cx_type_fullname(cx_any _this) {
+cx_string _cx_type_fullname(cx_any _this) {
 /* $begin(::corto::lang::type::fullname) */
     cx_string result = NULL;
 
@@ -240,7 +240,7 @@ cx_string cx_type_fullname(cx_any _this) {
 }
 
 /* ::corto::lang::type::init() */
-cx_int16 cx_type_init(cx_type _this) {
+cx_int16 _cx_type_init(cx_type _this) {
 /* $begin(::corto::lang::type::init) */
     if (!_this->parentState) {
         _this->parentState = CX_DECLARED | CX_DEFINED;
@@ -250,28 +250,28 @@ cx_int16 cx_type_init(cx_type _this) {
 }
 
 /* ::corto::lang::type::instanceof(type type) */
-cx_bool cx_type_instanceof(cx_any _this, cx_type type) {
+cx_bool _cx_type_instanceof(cx_any _this, cx_type type) {
 /* $begin(::corto::lang::type::instanceof) */
     return cx_instanceof(type, _this.value);
 /* $end */
 }
 
 /* ::corto::lang::type::invalidate() */
-cx_void cx_type_invalidate(cx_any _this) {
+cx_void _cx_type_invalidate(cx_any _this) {
 /* $begin(::corto::lang::type::invalidate) */
     cx_invalidate(_this.value);
 /* $end */
 }
 
 /* ::corto::lang::type::lookup(string name) */
-cx_object cx_type_lookup(cx_any _this, cx_string name) {
+cx_object _cx_type_lookup(cx_any _this, cx_string name) {
 /* $begin(::corto::lang::type::lookup) */
     return cx_lookup(_this.value, name);
 /* $end */
 }
 
 /* ::corto::lang::type::nameof() */
-cx_string cx_type_nameof(cx_any _this) {
+cx_string _cx_type_nameof(cx_any _this) {
 /* $begin(::corto::lang::type::nameof) */
     cx_string result = NULL;
 
@@ -289,7 +289,7 @@ cx_string cx_type_nameof(cx_any _this) {
 }
 
 /* ::corto::lang::type::parentof() */
-cx_object cx_type_parentof(cx_any _this) {
+cx_object _cx_type_parentof(cx_any _this) {
 /* $begin(::corto::lang::type::parentof) */
     cx_string result = NULL;
 
@@ -309,7 +309,7 @@ cx_object cx_type_parentof(cx_any _this) {
 }
 
 /* ::corto::lang::type::relname(object from) */
-cx_string cx_type_relname(cx_any _this, cx_object from) {
+cx_string _cx_type_relname(cx_any _this, cx_object from) {
 /* $begin(::corto::lang::type::relname) */
     cx_string result = NULL;
     cx_id id;
@@ -325,14 +325,14 @@ cx_string cx_type_relname(cx_any _this, cx_object from) {
 }
 
 /* ::corto::lang::type::resolve(string name) */
-cx_object cx_type_resolve(cx_any _this, cx_string name) {
+cx_object _cx_type_resolve(cx_any _this, cx_string name) {
 /* $begin(::corto::lang::type::resolve) */
     return cx_resolve(_this.value, name);
 /* $end */
 }
 
 /* ::corto::lang::type::resolveProcedure(string name) */
-cx_function cx_type_resolveProcedure(cx_type _this, cx_string name) {
+cx_function _cx_type_resolveProcedure(cx_type _this, cx_string name) {
 /* $begin(::corto::lang::type::resolveProcedure) */
     cx_function result = NULL;
 
@@ -364,7 +364,7 @@ cx_function cx_type_resolveProcedure(cx_type _this, cx_string name) {
 }
 
 /* ::corto::lang::type::sizeof() */
-cx_uint32 cx_type_sizeof(cx_type _this) {
+cx_uint32 _cx_type_sizeof(cx_type _this) {
 /* $begin(::corto::lang::type::sizeof) */
     cx_uint32 size;
     if (_this->reference) {
@@ -377,7 +377,7 @@ cx_uint32 cx_type_sizeof(cx_type _this) {
 }
 
 /* ::corto::lang::type::toString() */
-cx_string cx_type_toString(cx_any _this) {
+cx_string _cx_type_toString(cx_any _this) {
 /* $begin(::corto::lang::type::toString) */
     cx_value value;
     cx_string result;
@@ -398,7 +398,7 @@ cx_string cx_type_toString(cx_any _this) {
 }
 
 /* ::corto::lang::type::typeof() */
-cx_type cx_type_typeof(cx_any _this) {
+cx_type _cx_type_typeof(cx_any _this) {
 /* $begin(::corto::lang::type::typeof) */
     cx_type result = NULL;
 

@@ -9,7 +9,7 @@
 #include "cx.h"
 
 /* ::corto::lang::array::construct() */
-cx_int16 cx_array_construct(cx_array _this) {
+cx_int16 _cx_array_construct(cx_array _this) {
 /* $begin(::corto::lang::array::construct) */
     cx_uint32 elementTypeSize;
     cx_type elementType;
@@ -65,7 +65,7 @@ error:
 }
 
 /* ::corto::lang::array::destruct() */
-cx_void cx_array_destruct(cx_array _this) {
+cx_void _cx_array_destruct(cx_array _this) {
 /* $begin(::corto::lang::array::destruct) */
     cx_release(_this->elementType);
     _this->elementType = NULL;
@@ -76,7 +76,7 @@ cx_void cx_array_destruct(cx_array _this) {
 }
 
 /* ::corto::lang::array::init() */
-cx_int16 cx_array_init(cx_array _this) {
+cx_int16 _cx_array_init(cx_array _this) {
 /* $begin(::corto::lang::array::init) */
     cx_collection(_this)->kind = CX_ARRAY;
     return cx_collection_init(cx_collection(_this));

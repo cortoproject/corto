@@ -9,7 +9,7 @@
 #include "cx.h"
 
 /* ::corto::lang::virtual::init() */
-cx_int16 cx_virtual_init(cx_virtual _this) {
+cx_int16 _cx_virtual_init(cx_virtual _this) {
 /* $begin(::corto::lang::virtual::init) */
     cx_method(_this)->virtual = TRUE;
     return cx_method_init(cx_method(_this));

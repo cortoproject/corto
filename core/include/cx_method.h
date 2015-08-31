@@ -16,10 +16,12 @@ extern "C" {
 #endif
 
 /* ::corto::lang::method::bind() */
-cx_int16 cx_method_bind(cx_method _this);
+cx_int16 _cx_method_bind(cx_method _this);
+#define cx_method_bind(_this) _cx_method_bind(cx_method(_this))
 
 /* ::corto::lang::method::init() */
-cx_int16 cx_method_init(cx_method _this);
+cx_int16 _cx_method_init(cx_method _this);
+#define cx_method_init(_this) _cx_method_init(cx_method(_this))
 
 #ifdef __cplusplus
 }

@@ -17,7 +17,8 @@ extern "C" {
 #endif
 
 /* ::corto::lang::uint::init() */
-cx_int16 cx_uint_init(cx_uint _this);
+cx_int16 _cx_uint_init(cx_uint _this);
+#define cx_uint_init(_this) _cx_uint_init(cx_uint(_this))
 
 #ifdef __cplusplus
 }

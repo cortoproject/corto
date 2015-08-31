@@ -46,7 +46,7 @@ cx_uint8 cx__primitive_convertId(cx_primitiveKind kind, cx_width width) {
 /* $end */
 
 /* ::corto::lang::primitive::castable(type type) */
-cx_bool cx_primitive_castable_v(cx_primitive _this, cx_type type) {
+cx_bool _cx_primitive_castable_v(cx_primitive _this, cx_type type) {
 /* $begin(::corto::lang::primitive::castable) */
     cx_bool result;
 
@@ -170,7 +170,7 @@ cx_bool cx_primitive_castable_v(cx_primitive _this, cx_type type) {
 }
 
 /* ::corto::lang::primitive::compatible(type type) */
-cx_bool cx_primitive_compatible_v(cx_primitive _this, cx_type type) {
+cx_bool _cx_primitive_compatible_v(cx_primitive _this, cx_type type) {
 /* $begin(::corto::lang::primitive::compatible) */
     cx_bool result;
 
@@ -240,7 +240,7 @@ cx_bool cx_primitive_compatible_v(cx_primitive _this, cx_type type) {
 }
 
 /* ::corto::lang::primitive::construct() */
-cx_int16 cx_primitive_construct(cx_primitive _this) {
+cx_int16 _cx_primitive_construct(cx_primitive _this) {
 /* $begin(::corto::lang::primitive::construct) */
 
     switch(_this->width) {
@@ -274,7 +274,7 @@ cx_int16 cx_primitive_construct(cx_primitive _this) {
 }
 
 /* ::corto::lang::primitive::init() */
-cx_int16 cx_primitive_init(cx_primitive _this) {
+cx_int16 _cx_primitive_init(cx_primitive _this) {
 /* $begin(::corto::lang::primitive::init) */
     cx_type(_this)->kind = CX_PRIMITIVE;
     return cx_type_init((cx_type)_this);

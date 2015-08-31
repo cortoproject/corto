@@ -17,7 +17,8 @@ extern "C" {
 #endif
 
 /* ::corto::lang::binary::init() */
-cx_int16 cx_binary_init(cx_binary _this);
+cx_int16 _cx_binary_init(cx_binary _this);
+#define cx_binary_init(_this) _cx_binary_init(cx_binary(_this))
 
 #ifdef __cplusplus
 }

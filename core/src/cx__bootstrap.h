@@ -370,20 +370,20 @@ CX_STATIC_SCOPED_OBJECT(constant);
 /* function object */
 #define CX_FUNCTION_O(parent, name, args, returnType, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_function parent##_##name##__o = {CX_SSO_PO_V(parent, #name args, function), {(cx_type)&returnType##__o.v, FALSE, FALSE, CX_PROCEDURE_CDECL, (cx_word)__##impl, (cx_word)impl, NULL, 0, {0,NULL},0}, VTABLE_V}
+        sso_function parent##_##name##__o = {CX_SSO_PO_V(parent, #name args, function), {(cx_type)&returnType##__o.v, FALSE, FALSE, CX_PROCEDURE_CDECL, (cx_word)__##impl, (cx_word)_##impl, NULL, 0, {0,NULL},0}, VTABLE_V}
 
 #define CX_FUNCTION_OO_O(parent, name, args, returnType, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_function parent##_##name##__o = {CX_SSO_V(parent, #name args, function), {(cx_type)&returnType##__o.v, FALSE, FALSE, CX_PROCEDURE_CDECL, (cx_word)__##impl, (cx_word)impl, NULL, 0, {0,NULL},0}, VTABLE_V}
+        sso_function parent##_##name##__o = {CX_SSO_V(parent, #name args, function), {(cx_type)&returnType##__o.v, FALSE, FALSE, CX_PROCEDURE_CDECL, (cx_word)__##impl, (cx_word)_##impl, NULL, 0, {0,NULL},0}, VTABLE_V}
 
 #define CX_FUNCTION_OVERLOAD_OO_O(parent, name, args, returnType, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_function parent##_##name##__o = {CX_SSO_V(parent, args, function), {(cx_type)&returnType##__o.v, FALSE, FALSE, CX_PROCEDURE_CDECL, (cx_word)__##impl, (cx_word)impl, NULL, 0, {0,NULL},0}, VTABLE_V}
+        sso_function parent##_##name##__o = {CX_SSO_V(parent, args, function), {(cx_type)&returnType##__o.v, FALSE, FALSE, CX_PROCEDURE_CDECL, (cx_word)__##impl, (cx_word)_##impl, NULL, 0, {0,NULL},0}, VTABLE_V}
 
 /* method object */
 #define CX_METHOD_O(parent, name, args, returnType, virtual, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_method parent##_##name##___o = {CX_SSO_PO_V(parent, #name args, method), {{(cx_type)&returnType##__o.v, FALSE, FALSE, CX_PROCEDURE_CDECL, (cx_word)__##impl, (cx_word)impl, NULL, 0,{0,NULL},0}, virtual}, VTABLE_V}
+        sso_method parent##_##name##___o = {CX_SSO_PO_V(parent, #name args, method), {{(cx_type)&returnType##__o.v, FALSE, FALSE, CX_PROCEDURE_CDECL, (cx_word)__##impl, (cx_word)_##impl, NULL, 0,{0,NULL},0}, virtual}, VTABLE_V}
 
 /* interface method object */
 #define CX_IMETHOD_O(parent, name, args, returnType, virtual) \
@@ -392,11 +392,11 @@ CX_STATIC_SCOPED_OBJECT(constant);
 /* metaprocedure object */
 #define CX_METAPROCEDURE_O(parent, name, args, returnType, referenceOnly, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_metaprocedure parent##_##name##__o = {CX_SSO_PO_V(parent, #name args, metaprocedure), {{(cx_type)&returnType##__o.v, FALSE, FALSE, CX_PROCEDURE_CDECL, (cx_word)__##impl, (cx_word)impl, NULL, 0, {0,NULL},0}, referenceOnly}, VTABLE_V}
+        sso_metaprocedure parent##_##name##__o = {CX_SSO_PO_V(parent, #name args, metaprocedure), {{(cx_type)&returnType##__o.v, FALSE, FALSE, CX_PROCEDURE_CDECL, (cx_word)__##impl, (cx_word)_##impl, NULL, 0, {0,NULL},0}, referenceOnly}, VTABLE_V}
 
 #define CX_METAPROCEDURE_NAME_O(parent, name, actualName, args, returnType, referenceOnly, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_metaprocedure parent##_##name##__o = {CX_SSO_PO_V(parent, #actualName args, metaprocedure), {{(cx_type)&returnType##__o.v, FALSE, FALSE, CX_PROCEDURE_CDECL, (cx_word)__##impl, (cx_word)impl, NULL, 0, {0,NULL},0}, referenceOnly}, VTABLE_V}
+        sso_metaprocedure parent##_##name##__o = {CX_SSO_PO_V(parent, #actualName args, metaprocedure), {{(cx_type)&returnType##__o.v, FALSE, FALSE, CX_PROCEDURE_CDECL, (cx_word)__##impl, (cx_word)_##impl, NULL, 0, {0,NULL},0}, referenceOnly}, VTABLE_V}
 
 /* member object */
 #define CX_MEMBER_O(parent, name, type, access) sso_member parent##_##name##__o = {CX_SSO_PO_V(parent, #name, member), CX_MEMBER_V(type, access, CX_DECLARED | CX_DEFINED, FALSE), VTABLE_V}

@@ -18,7 +18,6 @@ cx_int16 cx__interface_bindMember(cx_interface _this, cx_member o);
 cx_int16 cx__interface_insertMembers(cx_interface _this);
 cx_uint16 cx__interface_calculateAlignment(cx_interface _this);
 cx_uint32 cx__interface_calculateSize(cx_interface _this, cx_uint32 base);
-cx_member cx_interface_resolveMember_v(cx_interface _this, cx_string name);
 
 cx_bool cx_interface_checkProcedureCompatibility(cx_function o1, cx_function o2);
 

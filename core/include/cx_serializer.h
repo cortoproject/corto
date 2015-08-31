@@ -17,9 +17,9 @@ extern "C" {
 
 CX_CLASS(cx_serializer);
 
-typedef cx_int16(*cx_serializerCallback)(cx_serializer _this, cx_value *v, void* userData);
-typedef cx_int16(*cx_serializerConstruct)(cx_serializer _this, cx_value *v, void* userData);
-typedef cx_int16(*cx_serializerDestruct)(cx_serializer _this, void* userData);
+typedef cx_int16 ___ (*cx_serializerCallback)(cx_serializer _this, cx_value *v, void* userData);
+typedef cx_int16 ___ (*cx_serializerConstruct)(cx_serializer _this, cx_value *v, void* userData);
+typedef cx_int16 ___ (*cx_serializerDestruct)(cx_serializer _this, void* userData);
 
 typedef enum cx_serializerTraceKind {
     CX_SERIALIZER_TRACE_ALWAYS,

@@ -9,7 +9,7 @@
 #include "cx.h"
 
 /* ::corto::lang::text::init() */
-cx_int16 cx_text_init(cx_text _this) {
+cx_int16 _cx_text_init(cx_text _this) {
 /* $begin(::corto::lang::text::init) */
     cx_type(_this)->hasResources = TRUE;
     cx_primitive(_this)->kind = CX_TEXT;

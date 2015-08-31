@@ -18,7 +18,7 @@
 
 #ifdef CX_CONVERSIONS
 
-typedef cx_int16 (*cx_conversion)(cx_primitive fromType, void* from, cx_primitive toType, void* to);
+typedef cx_int16 ___ (*cx_conversion)(cx_primitive fromType, void* from, cx_primitive toType, void* to);
 
 static cx_conversion _conversions[CX_PRIMITIVE_MAX_CONVERTID+1][CX_PRIMITIVE_MAX_CONVERTID+1];
 

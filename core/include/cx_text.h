@@ -17,7 +17,8 @@ extern "C" {
 #endif
 
 /* ::corto::lang::text::init() */
-cx_int16 cx_text_init(cx_text _this);
+cx_int16 _cx_text_init(cx_text _this);
+#define cx_text_init(_this) _cx_text_init(cx_text(_this))
 
 #ifdef __cplusplus
 }

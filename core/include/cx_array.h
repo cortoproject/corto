@@ -17,13 +17,16 @@ extern "C" {
 #endif
 
 /* ::corto::lang::array::construct() */
-cx_int16 cx_array_construct(cx_array _this);
+cx_int16 _cx_array_construct(cx_array _this);
+#define cx_array_construct(_this) _cx_array_construct(cx_array(_this))
 
 /* ::corto::lang::array::destruct() */
-cx_void cx_array_destruct(cx_array _this);
+cx_void _cx_array_destruct(cx_array _this);
+#define cx_array_destruct(_this) _cx_array_destruct(cx_array(_this))
 
 /* ::corto::lang::array::init() */
-cx_int16 cx_array_init(cx_array _this);
+cx_int16 _cx_array_init(cx_array _this);
+#define cx_array_init(_this) _cx_array_init(cx_array(_this))
 
 #ifdef __cplusplus
 }

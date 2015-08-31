@@ -100,14 +100,14 @@ cx_int16 cx_iterator_set(void* _this, void* collection, cx_collection collection
 /* $end */
 
 /* ::corto::lang::iterator::castable(type type) */
-cx_bool cx_iterator_castable_v(cx_iterator _this, cx_type type) {
+cx_bool _cx_iterator_castable_v(cx_iterator _this, cx_type type) {
 /* $begin(::corto::lang::iterator::castable) */
     return cx_iterator_compatible_v(_this, type);
 /* $end */
 }
 
 /* ::corto::lang::iterator::compatible(type type) */
-cx_bool cx_iterator_compatible_v(cx_iterator _this, cx_type type) {
+cx_bool _cx_iterator_compatible_v(cx_iterator _this, cx_type type) {
 /* $begin(::corto::lang::iterator::compatible) */
     cx_bool result = FALSE;
     if (type->kind == CX_COLLECTION) {
@@ -120,7 +120,7 @@ cx_bool cx_iterator_compatible_v(cx_iterator _this, cx_type type) {
 }
 
 /* ::corto::lang::iterator::init() */
-cx_int16 cx_iterator_init(cx_iterator _this) {
+cx_int16 _cx_iterator_init(cx_iterator _this) {
 /* $begin(::corto::lang::iterator::init) */
     cx_type(_this)->kind = CX_ITERATOR;
     CX_ITERATOR(iteratorType);

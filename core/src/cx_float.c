@@ -9,7 +9,7 @@
 #include "cx.h"
 
 /* ::corto::lang::float::init() */
-cx_int16 cx_float_init(cx_float _this) {
+cx_int16 _cx_float_init(cx_float _this) {
 /* $begin(::corto::lang::float::init) */
     cx_primitive(_this)->kind = CX_FLOAT;
     return cx_primitive_init((cx_primitive)_this);

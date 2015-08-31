@@ -16,10 +16,12 @@ extern "C" {
 #endif
 
 /* ::corto::lang::member::construct() */
-cx_int16 cx_member_construct(cx_member _this);
+cx_int16 _cx_member_construct(cx_member _this);
+#define cx_member_construct(_this) _cx_member_construct(cx_member(_this))
 
 /* ::corto::lang::member::init() */
-cx_int16 cx_member_init(cx_member _this);
+cx_int16 _cx_member_init(cx_member _this);
+#define cx_member_init(_this) _cx_member_init(cx_member(_this))
 
 #ifdef __cplusplus
 }

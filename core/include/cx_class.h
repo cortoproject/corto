@@ -20,31 +20,40 @@ extern "C" {
 cx_uint32 cx_class_allocSize(cx_class _this);
 
 /* ::corto::lang::class::allocSize() */
-cx_uint32 cx_class_allocSize_v(cx_class _this);
+cx_uint32 _cx_class_allocSize_v(cx_class _this);
+#define cx_class_allocSize_v(_this) _cx_class_allocSize_v(cx_class(_this))
 
 /* ::corto::lang::class::bindObserver(observer observer) */
-cx_void cx_class_bindObserver(cx_class _this, cx_observer observer);
+cx_void _cx_class_bindObserver(cx_class _this, cx_observer observer);
+#define cx_class_bindObserver(_this, observer) _cx_class_bindObserver(cx_class(_this), cx_observer(observer))
 
 /* ::corto::lang::class::construct() */
-cx_int16 cx_class_construct(cx_class _this);
+cx_int16 _cx_class_construct(cx_class _this);
+#define cx_class_construct(_this) _cx_class_construct(cx_class(_this))
 
 /* ::corto::lang::class::destruct() */
-cx_void cx_class_destruct(cx_class _this);
+cx_void _cx_class_destruct(cx_class _this);
+#define cx_class_destruct(_this) _cx_class_destruct(cx_class(_this))
 
 /* ::corto::lang::class::findObserver(object observable) */
-cx_observer cx_class_findObserver(cx_class _this, cx_object observable);
+cx_observer _cx_class_findObserver(cx_class _this, cx_object observable);
+#define cx_class_findObserver(_this, observable) _cx_class_findObserver(cx_class(_this), observable)
 
 /* ::corto::lang::class::init() */
-cx_int16 cx_class_init(cx_class _this);
+cx_int16 _cx_class_init(cx_class _this);
+#define cx_class_init(_this) _cx_class_init(cx_class(_this))
 
 /* ::corto::lang::class::instanceof(object object) */
-cx_bool cx_class_instanceof(cx_class _this, cx_object object);
+cx_bool _cx_class_instanceof(cx_class _this, cx_object object);
+#define cx_class_instanceof(_this, object) _cx_class_instanceof(cx_class(_this), object)
 
 /* ::corto::lang::class::privateObserver(object object,observer observer) */
-cx_observer cx_class_privateObserver(cx_class _this, cx_object object, cx_observer observer);
+cx_observer _cx_class_privateObserver(cx_class _this, cx_object object, cx_observer observer);
+#define cx_class_privateObserver(_this, object, observer) _cx_class_privateObserver(cx_class(_this), object, cx_observer(observer))
 
 /* ::corto::lang::class::resolveInterfaceMethod(interface interface,uint32 method) */
-cx_method cx_class_resolveInterfaceMethod(cx_class _this, cx_interface interface, cx_uint32 method);
+cx_method _cx_class_resolveInterfaceMethod(cx_class _this, cx_interface interface, cx_uint32 method);
+#define cx_class_resolveInterfaceMethod(_this, interface, method) _cx_class_resolveInterfaceMethod(cx_class(_this), cx_interface(interface), method)
 
 #ifdef __cplusplus
 }

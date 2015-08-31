@@ -17,7 +17,8 @@ extern "C" {
 #endif
 
 /* ::corto::lang::boolean::init() */
-cx_int16 cx_boolean_init(cx_boolean _this);
+cx_int16 _cx_boolean_init(cx_boolean _this);
+#define cx_boolean_init(_this) _cx_boolean_init(cx_boolean(_this))
 
 #ifdef __cplusplus
 }

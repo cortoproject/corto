@@ -20,7 +20,8 @@ extern "C" {
 void cx_observableEvent_handle(cx_observableEvent _this);
 
 /* ::corto::lang::observableEvent::handle() */
-cx_void cx_observableEvent_handle_v(cx_observableEvent _this);
+cx_void _cx_observableEvent_handle_v(cx_observableEvent _this);
+#define cx_observableEvent_handle_v(_this) _cx_observableEvent_handle_v(cx_observableEvent(_this))
 
 #ifdef __cplusplus
 }

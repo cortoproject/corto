@@ -1033,7 +1033,7 @@ cx_int16 cx_delegateConstruct(cx_type t, cx_object o) {
 
     if (delegate) {
         if (delegate->kind == CX_PROCEDURE_CDECL) {
-            ((cx_int16(*)(cx_function f, void *result, void *args))delegate->impl)(delegate, &result, &o);
+            ((cx_int16 ___ (*)(cx_function f, void *result, void *args))delegate->impl)(delegate, &result, &o);
         } else {
             cx_call(delegate, &result, o);
         }

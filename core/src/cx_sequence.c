@@ -27,7 +27,7 @@ int cx_sequence_alloc(cx_collection _this, cx_void* collection, cx_uint32 elemen
 /* $end */
 
 /* ::corto::lang::sequence::construct() */
-cx_int16 cx_sequence_construct(cx_sequence _this) {
+cx_int16 _cx_sequence_construct(cx_sequence _this) {
 /* $begin(::corto::lang::sequence::construct) */
     cx_type(_this)->hasResources = TRUE;
     cx_type(_this)->size = sizeof(__dummySeq);
@@ -43,7 +43,7 @@ error:
 }
 
 /* ::corto::lang::sequence::init() */
-cx_int16 cx_sequence_init(cx_sequence _this) {
+cx_int16 _cx_sequence_init(cx_sequence _this) {
 /* $begin(::corto::lang::sequence::init) */
     cx_collection(_this)->kind = CX_SEQUENCE;
     return cx_collection_init(cx_collection(_this));
@@ -51,7 +51,7 @@ cx_int16 cx_sequence_init(cx_sequence _this) {
 }
 
 /* ::corto::lang::sequence::size(uint32 size) */
-cx_void cx_sequence_size(cx_any _this, cx_uint32 size) {
+cx_void _cx_sequence_size(cx_any _this, cx_uint32 size) {
 /* $begin(::corto::lang::sequence::size) */
     cx_uint32 oldSize, elementSize;
 

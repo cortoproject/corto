@@ -208,7 +208,7 @@ void cx_class_detachObservers(cx_class _this, cx_object object) {
 /* $end */
 
 /* ::corto::lang::class::allocSize() */
-cx_uint32 cx_class_allocSize_v(cx_class _this) {
+cx_uint32 _cx_class_allocSize_v(cx_class _this) {
 /* $begin(::corto::lang::class::allocSize) */
     cx_uint32 observerCount;
     cx_uint32 size;
@@ -224,7 +224,7 @@ cx_uint32 cx_class_allocSize_v(cx_class _this) {
 }
 
 /* ::corto::lang::class::bindObserver(observer observer) */
-cx_void cx_class_bindObserver(cx_class _this, cx_observer observer) {
+cx_void _cx_class_bindObserver(cx_class _this, cx_observer observer) {
 /* $begin(::corto::lang::class::bindObserver) */
     _this->observers.buffer = cx_realloc(_this->observers.buffer, (_this->observers.length + 1) * sizeof(cx_observer));
     _this->observers.buffer[_this->observers.length] = observer;
@@ -235,7 +235,7 @@ cx_void cx_class_bindObserver(cx_class _this, cx_observer observer) {
 }
 
 /* ::corto::lang::class::construct() */
-cx_int16 cx_class_construct(cx_class _this) {
+cx_int16 _cx_class_construct(cx_class _this) {
 /* $begin(::corto::lang::class::construct) */
     cx_int16 result;
     cx_uint32 i;
@@ -270,7 +270,7 @@ cx_int16 cx_class_construct(cx_class _this) {
 }
 
 /* ::corto::lang::class::destruct() */
-cx_void cx_class_destruct(cx_class _this) {
+cx_void _cx_class_destruct(cx_class _this) {
 /* $begin(::corto::lang::class::destruct) */
     cx_uint32 i,j;
     cx_interfaceVector *v;
@@ -301,7 +301,7 @@ cx_void cx_class_destruct(cx_class _this) {
 }
 
 /* ::corto::lang::class::findObserver(object observable) */
-cx_observer cx_class_findObserver(cx_class _this, cx_object observable) {
+cx_observer _cx_class_findObserver(cx_class _this, cx_object observable) {
 /* $begin(::corto::lang::class::findObserver) */
     cx_uint32 i;
     cx_observer result = NULL;
@@ -318,7 +318,7 @@ cx_observer cx_class_findObserver(cx_class _this, cx_object observable) {
 }
 
 /* ::corto::lang::class::init() */
-cx_int16 cx_class_init(cx_class _this) {
+cx_int16 _cx_class_init(cx_class _this) {
 /* $begin(::corto::lang::class::init) */
     if (cx_struct_init(cx_struct(_this))) {
         goto error;
@@ -334,7 +334,7 @@ error:
 }
 
 /* ::corto::lang::class::instanceof(object object) */
-cx_bool cx_class_instanceof(cx_class _this, cx_object object) {
+cx_bool _cx_class_instanceof(cx_class _this, cx_object object) {
 /* $begin(::corto::lang::class::instanceof) */
     cx_type t;
     cx_bool result;
@@ -359,7 +359,7 @@ cx_bool cx_class_instanceof(cx_class _this, cx_object object) {
 }
 
 /* ::corto::lang::class::privateObserver(object object,observer observer) */
-cx_observer cx_class_privateObserver(cx_class _this, cx_object object, cx_observer observer) {
+cx_observer _cx_class_privateObserver(cx_class _this, cx_object object, cx_observer observer) {
 /* $begin(::corto::lang::class::privateObserver) */
     CX_UNUSED(_this);
     CX_UNUSED(object);
@@ -368,7 +368,7 @@ cx_observer cx_class_privateObserver(cx_class _this, cx_object object, cx_observ
 }
 
 /* ::corto::lang::class::resolveInterfaceMethod(interface interface,uint32 method) */
-cx_method cx_class_resolveInterfaceMethod(cx_class _this, cx_interface interface, cx_uint32 method) {
+cx_method _cx_class_resolveInterfaceMethod(cx_class _this, cx_interface interface, cx_uint32 method) {
 /* $begin(::corto::lang::class::resolveInterfaceMethod) */
     cx_uint32 i;
     cx_interfaceVector *v;

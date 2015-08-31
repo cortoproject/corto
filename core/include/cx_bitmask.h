@@ -17,7 +17,8 @@ extern "C" {
 #endif
 
 /* ::corto::lang::bitmask::init() */
-cx_int16 cx_bitmask_init(cx_bitmask _this);
+cx_int16 _cx_bitmask_init(cx_bitmask _this);
+#define cx_bitmask_init(_this) _cx_bitmask_init(cx_bitmask(_this))
 
 #ifdef __cplusplus
 }
