@@ -53,7 +53,7 @@ ic_node _Fast_While_toIc_v(Fast_While _this, ic_program program, ic_storage stor
         program, Fast_Expression_getType(_this->condition), _this->condition->isReference, FALSE);
 
     /* Create label to jump back to evaluation */
-    labelEval = ic_label__create();
+    labelEval = ic_labelCreate();
 
     /* Optimize condition - take into account literals, unwind condition for NOT-operator */
     condition = Fast_Node_optimizeCondition(_this->condition, &condResult, &inverse);
@@ -64,7 +64,7 @@ ic_node _Fast_While_toIc_v(Fast_While _this, ic_program program, ic_storage stor
         }
 
         /* Create label to jump to when condition evaluates false */
-        labelNeq = ic_label__create();
+        labelNeq = ic_labelCreate();
         
         /* Evaluate condition, insert jump */
         if (expr) {

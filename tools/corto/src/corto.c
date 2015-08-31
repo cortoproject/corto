@@ -62,10 +62,18 @@ int main(int argc, char* argv[]) {
                     printf("%s", CORTO_VERSION);
                 } else if (*(argv[i]+1) == '-') {
                     if (!strcmp(argv[i] + 2, "version")) {
-                        printf("corto (%s) %s\n\n", CX_PLATFORM_STRING, CORTO_VERSION);
+                        cx_error("corto (%s) %s\n\n", CX_PLATFORM_STRING, CORTO_VERSION);
                     } else if (!strcmp(argv[i] + 2, "help")) {
                         corto_printUsage();
+                    } else {
+                        cx_error("corto: unknown option '%s'", argv[i] + 2);
+                        corto_printUsage();
+                        goto error;
                     }
+                } else {
+                    printf("corto: unknown option '%s'", argv[i] + 1);
+                    corto_printUsage();
+                    goto error;
                 }
             } else if (!strcmp(argv[i], "create")) {
                 if (corto_project(argc-i, &argv[i])) {
@@ -79,6 +87,11 @@ int main(int argc, char* argv[]) {
                 break;
             } else if (!strcmp(argv[i], "build")) {
                 if (corto_build(argc-i, &argv[i])) {
+                    goto error;
+                }
+                break;
+            } else if (!strcmp(argv[i], "rebuild")) {
+                if (corto_rebuild(argc-i, &argv[i])) {
                     goto error;
                 }
                 break;

@@ -143,10 +143,10 @@ cx_int16 c_apiTypeCreateIntern(cx_type t, c_apiWalk_t *data, cx_string func, cx_
     g_fullOid(data->g, t, id);
 
     /* Function declaration */
-    g_fileWrite(data->header, "%s%s %s__%s(", id, t->reference ? "" : "*", id, func);
+    g_fileWrite(data->header, "%s%s %s%s(", id, t->reference ? "" : "*", id, func);
 
     /* Function implementation */
-    g_fileWrite(data->source, "%s%s %s__%s(", id, t->reference ? "" : "*", id, func);
+    g_fileWrite(data->source, "%s%s %s%s(", id, t->reference ? "" : "*", id, func);
 
     if (scoped) {
         g_fileWrite(data->header, "cx_object _parent, cx_string _name");
@@ -202,25 +202,25 @@ cx_int16 c_apiTypeCreateIntern(cx_type t, c_apiWalk_t *data, cx_string func, cx_
 }
 
 cx_int16 c_apiTypeCreate(cx_type t, c_apiWalk_t *data) {
-	return c_apiTypeCreateIntern(t, data, "create", FALSE, TRUE);
+	return c_apiTypeCreateIntern(t, data, "Create", FALSE, TRUE);
 }
 
 cx_int16 c_apiTypeCreateChild(cx_type t, c_apiWalk_t *data) {
-	return c_apiTypeCreateIntern(t, data, "createChild", TRUE, TRUE);
+	return c_apiTypeCreateIntern(t, data, "CreateChild", TRUE, TRUE);
 }
 
 cx_int16 c_apiTypeDeclare(cx_type t, c_apiWalk_t *data) {
-	return c_apiTypeCreateIntern(t, data, "declare", FALSE, FALSE);
+	return c_apiTypeCreateIntern(t, data, "Declare", FALSE, FALSE);
 }
 
 cx_int16 c_apiTypeDeclareChild(cx_type t, c_apiWalk_t *data) {
-	return c_apiTypeCreateIntern(t, data, "declareChild", TRUE, FALSE);
+	return c_apiTypeCreateIntern(t, data, "DeclareChild", TRUE, FALSE);
 }
 
 cx_int16 c_apiTypeDefineIntern(cx_type t, c_apiWalk_t *data, cx_bool isUpdate, cx_bool doUpdate) {
     cx_id id;
     struct cx_serializer_s s;
-    cx_string func = isUpdate ? doUpdate ? "update" : "set" : "define";
+    cx_string func = isUpdate ? doUpdate ? "Update" : "Set" : "Define";
 
     data->parameterCount = 1;
     g_fullOid(data->g, t, id);
@@ -234,10 +234,10 @@ cx_int16 c_apiTypeDefineIntern(cx_type t, c_apiWalk_t *data, cx_bool isUpdate, c
     }
 
     /* Function declaration */
-    g_fileWrite(data->header, "%s__%s(%s%s _this", id, func, id, t->reference ? "" : "*");
+    g_fileWrite(data->header, "%s%s(%s%s _this", id, func, id, t->reference ? "" : "*");
 
     /* Function implementation */
-    g_fileWrite(data->source, "%s__%s(%s%s _this", id, func, id, t->reference ? "" : "*");
+    g_fileWrite(data->source, "%s%s(%s%s _this", id, func, id, t->reference ? "" : "*");
 
     /* Write public members as arguments for source and header */
     if (t->kind == CX_COMPOSITE) {
@@ -305,10 +305,10 @@ cx_int16 c_apiTypeStr(cx_type t, c_apiWalk_t *data) {
     g_fullOid(data->g, t, id);
 
     /* Function declaration */
-    g_fileWrite(data->header, "cx_string %s__str(%s%s value);\n", id, id, pointer ? "*" : "");
+    g_fileWrite(data->header, "cx_string %sStr(%s%s value);\n", id, id, pointer ? "*" : "");
 
     /* Function implementation */
-    g_fileWrite(data->source, "cx_string %s__str(%s%s value) {\n", id, id, pointer ? "*" : "");
+    g_fileWrite(data->source, "cx_string %sStr(%s%s value) {\n", id, id, pointer ? "*" : "");
 
     g_fileIndent(data->source);
     g_fileWrite(data->source, "cx_string result;\n", id);
@@ -329,29 +329,32 @@ cx_int16 c_apiTypeStr(cx_type t, c_apiWalk_t *data) {
 }
 
 static cx_int16 c_apiTypeInitIntern(cx_type t, c_apiWalk_t *data, cx_string func) {
-    cx_id id;
+    cx_id id, funcLower;
 
     g_fullOid(data->g, t, id);
 
     /* Function declaration */
-    g_fileWrite(data->header, "cx_int16 %s__%s(%s%s value);\n", id, func, id, t->reference ? "" : "*");
+    g_fileWrite(data->header, "cx_int16 %s%s(%s%s value);\n", id, func, id, t->reference ? "" : "*");
 
     /* Function implementation */
-    g_fileWrite(data->source, "cx_int16 %s__%s(%s%s value) {\n", id, func, id, t->reference ? "" : "*");
+    g_fileWrite(data->source, "cx_int16 %s%s(%s%s value) {\n", id, func, id, t->reference ? "" : "*");
 
     g_fileIndent(data->source);
     g_fileWrite(data->source, "cx_int16 result;\n", id);
 
-    if (!strcmp(func, "init")) {
+    if (!strcmp(func, "Init")) {
         g_fileWrite(data->source, "memset(value, 0, cx_type(%s_o)->size);\n", id);
     }
 
+    strcpy(funcLower, func);
+    *funcLower = tolower(*funcLower);
+
     if (t->reference) {
-        g_fileWrite(data->source, "result = cx_%s(value, 0);\n", func);
+        g_fileWrite(data->source, "result = cx_%s(value, 0);\n", funcLower);
     } else {
         g_fileWrite(data->source, "cx_value v;\n", id);
         g_fileWrite(data->source, "cx_valueValueInit(&v, NULL, cx_type(%s_o), value);\n", id);
-        g_fileWrite(data->source, "result = cx_%sv(&v);\n", func);
+        g_fileWrite(data->source, "result = cx_%sv(&v);\n", funcLower);
     }
 
     g_fileWrite(data->source, "return result;\n");
@@ -362,11 +365,11 @@ static cx_int16 c_apiTypeInitIntern(cx_type t, c_apiWalk_t *data, cx_string func
 }
 
 cx_int16 c_apiTypeInit(cx_type t, c_apiWalk_t *data) {
-	return c_apiTypeInitIntern(t, data, "init");
+	return c_apiTypeInitIntern(t, data, "Init");
 }
 
 cx_int16 c_apiTypeDeinit(cx_type t, c_apiWalk_t *data) {
-	return c_apiTypeInitIntern(t, data, "deinit");
+	return c_apiTypeInitIntern(t, data, "Deinit");
 }
 
 cx_int16 c_apiTypeFromStr(cx_type t, c_apiWalk_t *data) {
@@ -375,11 +378,11 @@ cx_int16 c_apiTypeFromStr(cx_type t, c_apiWalk_t *data) {
     g_fullOid(data->g, t, id);
 
     /* Function declaration */
-    g_fileWrite(data->header, "%s%s %s__fromStr(%s%s value, cx_string str);\n", 
+    g_fileWrite(data->header, "%s%s %sFromStr(%s%s value, cx_string str);\n", 
     	id, t->reference ? "" : "*", id, id, t->reference ? "" : "*");
 
     /* Function implementation */
-    g_fileWrite(data->source, "%s%s %s__fromStr(%s%s value, cx_string str) {\n", 
+    g_fileWrite(data->source, "%s%s %sFromStr(%s%s value, cx_string str) {\n", 
     	id, t->reference ? "" : "*", id, id, t->reference ? "" : "*");
 
     g_fileIndent(data->source);
@@ -392,27 +395,30 @@ cx_int16 c_apiTypeFromStr(cx_type t, c_apiWalk_t *data) {
 }
 
 cx_int16 c_apiTypeCopyIntern(cx_type t, c_apiWalk_t *data, cx_string func, cx_bool outParam) {
-    cx_id id;
+    cx_id id, funcLower;
 
     g_fullOid(data->g, t, id);
 
     /* Function declaration */
-    g_fileWrite(data->header, "cx_int16 %s__%s(%s%s %sdst, %s%s src);\n", 
+    g_fileWrite(data->header, "cx_int16 %s%s(%s%s %sdst, %s%s src);\n", 
     	id, func, id, t->reference ? "" : "*", outParam ? "*" : "", id, t->reference ? "" : "*");
 
     /* Function implementation */
-    g_fileWrite(data->source, "cx_int16 %s__%s(%s%s %sdst, %s%s src) {\n", 
+    g_fileWrite(data->source, "cx_int16 %s%s(%s%s %sdst, %s%s src) {\n", 
     	id, func, id, t->reference ? "" : "*", outParam ? "*" : "", id, t->reference ? "" : "*");
 
     g_fileIndent(data->source);
 
+    strcpy(funcLower, func);
+    *funcLower = tolower(*funcLower);
+
 	if (t->reference) {
-		g_fileWrite(data->source, "return cx_%s(%sdst, src);\n", func, outParam ? "(cx_object*)" : "");
+		g_fileWrite(data->source, "return cx_%s(%sdst, src);\n", funcLower, outParam ? "(cx_object*)" : "");
 	} else {
 		g_fileWrite(data->source, "cx_value v1, v2;\n", id);
 	    g_fileWrite(data->source, "cx_valueValueInit(&v1, NULL, cx_type(%s_o), dst);\n", id);
 	    g_fileWrite(data->source, "cx_valueValueInit(&v2, NULL, cx_type(%s_o), src);\n", id);
-	    g_fileWrite(data->source, "return cx_%sv(&v1, &v2);\n", func);
+	    g_fileWrite(data->source, "return cx_%sv(&v1, &v2);\n", funcLower);
 	}
 
 	g_fileDedent(data->source);
@@ -422,9 +428,9 @@ cx_int16 c_apiTypeCopyIntern(cx_type t, c_apiWalk_t *data, cx_string func, cx_bo
 }
 
 cx_int16 c_apiTypeCopy(cx_type t, c_apiWalk_t *data) {
-	return c_apiTypeCopyIntern(t, data, "copy", TRUE);
+	return c_apiTypeCopyIntern(t, data, "Copy", TRUE);
 }
 
 cx_int16 c_apiTypeCompare(cx_type t, c_apiWalk_t *data) {
-	return c_apiTypeCopyIntern(t, data, "compare", FALSE);	
+	return c_apiTypeCopyIntern(t, data, "Compare", FALSE);	
 }

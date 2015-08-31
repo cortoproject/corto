@@ -59,7 +59,7 @@ ic_node _Fast_Character_toIc_v(Fast_Character _this, ic_program program, ic_stor
     CX_UNUSED(storage);
     CX_UNUSED(stored);
 
-    result = ic_literal__create((cx_any){cx_type(cx_char_o), &_this->value, FALSE});
+    result = ic_literalCreate((cx_any){cx_type(cx_char_o), &_this->value, FALSE});
 
     return ic_node(result);
 /* $end */

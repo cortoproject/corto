@@ -42,7 +42,7 @@ static cx_int16 c_apiSequenceTypeForeach(cx_sequence o, c_apiWalk_t* data) {
     c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
     
     /* Macro */
-    g_fileWrite(data->header, "#define %s__foreach(seq, elem) \\\n", id);
+    g_fileWrite(data->header, "#define %sForeach(seq, elem) \\\n", id);
     g_fileIndent(data->header);
     g_fileWrite(data->header, "cx_uint32 elem##_iter;\\\n");
     g_fileWrite(data->header, "%s %selem;\\\n", elementId, prefix?"*":"");
@@ -66,10 +66,10 @@ static cx_int16 c_apiSequenceTypeAppend(cx_sequence o, c_apiWalk_t* data) {
     c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
 
     /* Function declaration */
-    g_fileWrite(data->header, "%s%s %s__append(%s *seq);\n", elementId, prefix?"*":"", id, id);
+    g_fileWrite(data->header, "%s%s %sAppend(%s *seq);\n", elementId, prefix?"*":"", id, id);
     
     /* Function implementation */
-    g_fileWrite(data->source, "%s%s %s__append(%s *seq) {\n", elementId, prefix?"*":"", id, id);
+    g_fileWrite(data->source, "%s%s %sAppend(%s *seq) {\n", elementId, prefix?"*":"", id, id);
     
     g_fileIndent(data->source);
     g_fileWrite(data->source, "cx_uint32 size;\n");
@@ -100,10 +100,10 @@ static cx_int16 c_apiSequenceTypeSize(cx_sequence o, c_apiWalk_t* data) {
     c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
-    g_fileWrite(data->header, "void %s__size(%s *seq, cx_uint32 length);\n", id, id);
+    g_fileWrite(data->header, "void %sSize(%s *seq, cx_uint32 length);\n", id, id);
     
     /* Function implementation */
-    g_fileWrite(data->source, "void %s__size(%s *seq, cx_uint32 length) {\n", id, id);
+    g_fileWrite(data->source, "void %sSize(%s *seq, cx_uint32 length) {\n", id, id);
     g_fileIndent(data->source);
     g_fileWrite(data->source, "cx_uint32 size;\n");
     
@@ -159,12 +159,12 @@ static cx_int16 c_apiSequenceTypeClear(cx_sequence o, c_apiWalk_t* data) {
     c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
-    g_fileWrite(data->header, "void %s__clear(%s *seq);\n", id, id);
+    g_fileWrite(data->header, "void %sClear(%s *seq);\n", id, id);
     
     /* Function implementation */
-    g_fileWrite(data->source, "void %s__clear(%s *seq) {\n", id, id);
+    g_fileWrite(data->source, "void %sClear(%s *seq) {\n", id, id);
     g_fileIndent(data->source);
-    g_fileWrite(data->source, "%s__size(seq, 0);\n", id);
+    g_fileWrite(data->source, "%sSize(seq, 0);\n", id);
     g_fileDedent(data->source);
     g_fileWrite(data->source, "}\n\n");
     
@@ -214,7 +214,7 @@ static cx_int16 c_apiListTypeForeach(cx_list o, c_apiWalk_t* data) {
     c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
 
     /* Macro */
-    g_fileWrite(data->header, "#define %s__foreach(list, elem) \\\n", id);
+    g_fileWrite(data->header, "#define %sForeach(list, elem) \\\n", id);
     g_fileIndent(data->header);
     g_fileWrite(data->header, "cx_iter elem##_iter = cx_llIter(list);\\\n");
     g_fileWrite(data->header, "%s %selem;\\\n", elementId, prefix?"*":"");
@@ -230,7 +230,6 @@ static cx_int16 c_apiListTypeForeach(cx_list o, c_apiWalk_t* data) {
 
 static cx_string cx_operationToApi(cx_string operation, cx_id id) {
     sprintf(id, "cx_ll%s", operation);
-    id[5] -= 32; /* Capitalize first letter of operation */
     return id;
 }
 
@@ -244,10 +243,10 @@ static cx_int16 c_apiListTypeInsertAlloc(cx_list o, cx_string operation, c_apiWa
     c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
-    g_fileWrite(data->header, "%s* %s__%s(%s list);\n", elementId, id, operation, id);
+    g_fileWrite(data->header, "%s* %s%s(%s list);\n", elementId, id, operation, id);
     
     /* Function implementation */
-    g_fileWrite(data->source, "%s* %s__%s(%s list) {\n", elementId, id, operation, id);
+    g_fileWrite(data->source, "%s* %s%s(%s list) {\n", elementId, id, operation, id);
     
     g_fileIndent(data->source);
     g_fileWrite(data->source, "%s* result;\n", elementId);
@@ -277,10 +276,10 @@ static cx_int16 c_apiListTypeInsertNoAlloc(cx_list o, cx_string operation, c_api
     c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
-    g_fileWrite(data->header, "void %s__%s(%s list, %s element);\n", id, operation, id, elementId);
+    g_fileWrite(data->header, "void %s%s(%s list, %s element);\n", id, operation, id, elementId);
     
     /* Function implementation */
-    g_fileWrite(data->source, "void %s__%s(%s list, %s element) {\n", id, operation, id, elementId);
+    g_fileWrite(data->source, "void %s%s(%s list, %s element) {\n", id, operation, id, elementId);
     g_fileIndent(data->source);
     
     /* Insert element to list */
@@ -320,10 +319,10 @@ static cx_int16 c_apiListTypeTake(cx_list o, cx_string operation, c_apiWalk_t* d
     c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
-    g_fileWrite(data->header, "%s%s %s__%s(%s list);\n", elementId, allocRequired?"*":"", id, operation, id);
+    g_fileWrite(data->header, "%s%s %s%s(%s list);\n", elementId, allocRequired?"*":"", id, operation, id);
     
     /* Function implementation */
-    g_fileWrite(data->source, "%s%s %s__%s(%s list) {\n", elementId, allocRequired?"*":"", id, operation, id);
+    g_fileWrite(data->source, "%s%s %s%s(%s list) {\n", elementId, allocRequired?"*":"", id, operation, id);
     g_fileIndent(data->source);
     
     /* Insert element to list */
@@ -346,10 +345,10 @@ static cx_int16 c_apiListTypeClear(cx_list o, c_apiWalk_t* data) {
     c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
-    g_fileWrite(data->header, "void %s__clear(%s list);\n", id, id);
+    g_fileWrite(data->header, "void %sClear(%s list);\n", id, id);
     
     /* Function implementation */
-    g_fileWrite(data->source, "void %s__clear(%s list) {\n", id, id);
+    g_fileWrite(data->source, "void %sClear(%s list) {\n", id, id);
     g_fileIndent(data->source);
     g_fileWrite(data->source, "void *element;\n\n");
     g_fileWrite(data->source, "while((element = cx_llTakeFirst(list))) {\n");
@@ -380,10 +379,10 @@ static cx_int16 c_apiListTypeGet(cx_list o, c_apiWalk_t* data) {
     c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
-    g_fileWrite(data->header, "%s%s %s__get(%s list, cx_uint32 index);\n", elementId, allocRequired?"*":"", id, id);
+    g_fileWrite(data->header, "%s%s %sGet(%s list, cx_uint32 index);\n", elementId, allocRequired?"*":"", id, id);
     
     /* Function implementation */
-    g_fileWrite(data->source, "%s%s %s__get(%s list, cx_uint32 index) {\n", elementId, allocRequired?"*":"", id, id);
+    g_fileWrite(data->source, "%s%s %sGet(%s list, cx_uint32 index) {\n", elementId, allocRequired?"*":"", id, id);
     g_fileIndent(data->source);
     
     /* Insert element to list */
@@ -405,10 +404,10 @@ static cx_int16 c_apiListTypeSize(cx_list o, c_apiWalk_t* data) {
     c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
-    g_fileWrite(data->header, "cx_uint32 %s__size(%s list);\n", id, id);
+    g_fileWrite(data->header, "cx_uint32 %sSize(%s list);\n", id, id);
     
     /* Function implementation */
-    g_fileWrite(data->source, "cx_uint32 %s__size(%s list) {\n", id, id);
+    g_fileWrite(data->source, "cx_uint32 %sSize(%s list) {\n", id, id);
     g_fileIndent(data->source);
     
     /* Insert element to list */
@@ -432,19 +431,19 @@ static cx_int16 c_apiWalkList(cx_list o, c_apiWalk_t* data) {
         goto error;
     }
     
-    if (c_apiListTypeInsert(o, "insert", data)) {
+    if (c_apiListTypeInsert(o, "Insert", data)) {
         goto error;
     }
     
-    if (c_apiListTypeInsert(o, "append", data)) {
+    if (c_apiListTypeInsert(o, "Append", data)) {
         goto error;
     }
 
-    if (c_apiListTypeTake(o, "takeFirst", data)) {
+    if (c_apiListTypeTake(o, "TakeFirst", data)) {
         goto error;
     }
     
-    if (c_apiListTypeTake(o, "last", data)) {
+    if (c_apiListTypeTake(o, "Last", data)) {
         goto error;
     }
     

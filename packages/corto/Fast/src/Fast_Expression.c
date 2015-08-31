@@ -212,7 +212,7 @@ Fast_Expression _Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_bo
             /* If expression is an untyped initializer, create an anonymous variable of the destination type 
              * and assign it to the initializer. */
             if(Fast_Node(_this)->kind == Fast_InitializerExpr) {
-                Fast_Expression local = Fast_Expression(Fast_Temporary__create(type, FALSE));
+                Fast_Expression local = Fast_Expression(Fast_TemporaryCreate(type, FALSE));
                 Fast_InitializerExpression_insert(Fast_InitializerExpression(_this), local);
                 result = local;
                 castRequired = TRUE;
@@ -248,45 +248,45 @@ Fast_Expression _Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_bo
                 case CX_BOOLEAN: {
                     cx_bool dstValue = FALSE;
                     cx_convert(cx_primitive(exprType), value, cx_primitive(cx_bool_o), &dstValue);
-                    result = Fast_Expression(Fast_Boolean__create(dstValue));
+                    result = Fast_Expression(Fast_BooleanCreate(dstValue));
                     break;
                 }
                 case CX_CHARACTER: {
                     cx_char dstValue;
                     cx_convert(cx_primitive(exprType), value, cx_primitive(cx_char_o), &dstValue);
-                    result = Fast_Expression(Fast_Character__create(dstValue));
+                    result = Fast_Expression(Fast_CharacterCreate(dstValue));
                     break;
                 }
                 case CX_BINARY:
                 case CX_UINTEGER: {
                     cx_uint64 dstValue;
                     cx_convert(cx_primitive(exprType), value, cx_primitive(cx_uint64_o), &dstValue);
-                    result = Fast_Expression(Fast_Integer__create(dstValue));
+                    result = Fast_Expression(Fast_IntegerCreate(dstValue));
                     break;
                 }
                 case CX_INTEGER: {
                     cx_int64 dstValue;
                     cx_convert(cx_primitive(exprType), value, cx_primitive(cx_int64_o), &dstValue);
-                    result = Fast_Expression(Fast_SignedInteger__create(dstValue));
+                    result = Fast_Expression(Fast_SignedIntegerCreate(dstValue));
                     break;
                 }
                 case CX_FLOAT: {
                     cx_float64 dstValue;
                     cx_convert(cx_primitive(exprType), value, cx_primitive(cx_float64_o), &dstValue);
-                    result = Fast_Expression(Fast_FloatingPoint__create(dstValue));
+                    result = Fast_Expression(Fast_FloatingPointCreate(dstValue));
                     break;
                 }
                 case CX_TEXT: {
                     cx_string dstValue;
                     cx_convert(cx_primitive(exprType), value, cx_primitive(cx_string_o), &dstValue);
-                    result = Fast_Expression(Fast_String__create(dstValue));
+                    result = Fast_Expression(Fast_StringCreate(dstValue));
                     break;
                 }
                 case CX_ENUM:
                 case CX_BITMASK: {
                     cx_int32 dstValue;
                     cx_convert(cx_primitive(exprType), value, cx_primitive(cx_int32_o), &dstValue);
-                    result = Fast_Expression(Fast_SignedInteger__create(dstValue));
+                    result = Fast_Expression(Fast_SignedIntegerCreate(dstValue));
                     break;
                 }
                 }
@@ -305,7 +305,7 @@ Fast_Expression _Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_bo
                    (Fast_Expression_getCastScore(cx_primitive(refType)) == 
                     Fast_Expression_getCastScore(cx_primitive(type)))) {
                     if (cx_primitive(exprType)->width != cx_primitive(type)->width) {
-                        result = Fast_Expression(Fast_Cast__create(type, _this, isReference));
+                        result = Fast_Expression(Fast_CastCreate(type, _this, isReference));
                     } else {
                         /* Types have the same width, so no cast required */
                         castRequired = FALSE;
@@ -321,7 +321,7 @@ Fast_Expression _Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_bo
                     
                 /* For all other cases, insert cast */
                 } else {
-                    result = Fast_Expression(Fast_Cast__create(type, _this, isReference));
+                    result = Fast_Expression(Fast_CastCreate(type, _this, isReference));
                 }
             }
         /* If object is a reference and targetType is string, insert toString operation */
@@ -341,7 +341,7 @@ Fast_Expression _Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_bo
 
             /* If assigning to a generic reference, insert cast */
             } else if (exprType->kind == CX_VOID && (exprType->reference || isReference)) {
-                result = Fast_Expression(Fast_Cast__create(type, _this, isReference));    
+                result = Fast_Expression(Fast_CastCreate(type, _this, isReference));    
             }
         }
     } else {
@@ -400,12 +400,12 @@ Fast_Expression _Fast_Expression_fromList(Fast_Expression_list list) {
             cx_iter iter;
             Fast_Expression expr;
             
-            result = Fast_Expression(Fast_Comma__create());
+            result = Fast_Expression(Fast_CommaCreate());
 
             iter = cx_llIter(list);
             while(cx_iterHasNext(&iter)) {
                 expr = cx_iterNext(&iter);
-                Fast_Expression_list__append(toList, expr);
+                Fast_Expression_listAppend(toList, expr);
             }
             Fast_Comma(result)->expressions = toList;
             Fast_Parser_collect(yparser(), result);
@@ -530,7 +530,7 @@ Fast_Expression_list _Fast_Expression_toList_v(Fast_Expression _this) {
     
     if (_this) {
         result = cx_llNew();
-        Fast_Expression_list__insert(result, _this);
+        Fast_Expression_listInsert(result, _this);
     }
     
     return result;

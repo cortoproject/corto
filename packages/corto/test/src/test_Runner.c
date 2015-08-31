@@ -25,8 +25,8 @@ cx_void _test_Runner_destruct(test_Runner _this) {
 /* $begin(::corto::test::Runner::destruct) */
     static char *successes[] = {"successes", "success"};
     static char *failures[] = {"failures", "failure"};
-    cx_uint32 successCount = test_Suite_list__size(_this->successes);
-    cx_uint32 failureCount = test_Suite_list__size(_this->failures);
+    cx_uint32 successCount = test_Suite_listSize(_this->successes);
+    cx_uint32 failureCount = test_Suite_listSize(_this->failures);
     char *success = successes[successCount == 1 ? 1 : 0];
     char *failure = failures[failureCount == 1 ? 1 : 0];
     cx_print("%d %s, %d %s", successCount, success, failureCount, failure);
@@ -61,9 +61,9 @@ cx_void _test_Runner_runTest(test_Runner _this, cx_object *observable, cx_object
         cx_setref(&suite->test, observable);
         cx_object prev = cx_setSource(_this);
         if (!cx_define(suite) && suite->result.success) {
-            test_Suite_list__append(_this->failures, suite);
+            test_Suite_listAppend(_this->failures, suite);
         } else {
-            test_Suite_list__append(_this->failures, suite);
+            test_Suite_listAppend(_this->failures, suite);
         }
         cx_setSource(prev);
         test_Runner_printTestRun(_this, suite);

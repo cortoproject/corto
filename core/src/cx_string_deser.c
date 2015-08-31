@@ -432,21 +432,26 @@ static cx_string cx_string_deserParse(cx_string str, struct cx_string_deserIndex
 
     /* If ptr == NULL, an error has occurred. If proceed == FALSE, this function has finished processing the
      * current value. */
-    while(ptr && (ch=*ptr) && proceed) {
+    while(ptr && (ch = *ptr) && proceed) {
         switch(ch) {
         case '\n':
         case '\t':
             break; /* Whitespaces are ignored */
 
         case '=': /* Explicit member assignment */
-            *bptr = '\0';
-            memberInfo = cx_string_deserIndexLookup(buffer, data);
-            bptr = buffer;
-            if (!memberInfo) {
-                cx_error("cx_string_deserParse: member '%s' not found.", buffer);
+            if (buffer == bptr) {
+                cx_error("cx_string_deserParse: no member name provided for assignment", buffer);
                 goto error;
+            } else {
+                *bptr = '\0';
+                memberInfo = cx_string_deserIndexLookup(buffer, data);
+                bptr = buffer;
+                if (!memberInfo) {
+                    cx_error("cx_string_deserParse: member '%s' not found", buffer);
+                    goto error;
+                }
+                break;
             }
-            break;
 
         case '{': /* Scope open */
 
@@ -491,18 +496,23 @@ static cx_string cx_string_deserParse(cx_string str, struct cx_string_deserIndex
             *(++bptr) = '\0';
             break;
         case '}': /* Scope close and end of value*/
-            *bptr = '\0';
-            if (cx_string_deserParseValue(buffer, memberInfo, data)) {
-                goto error;
+            if (buffer != bptr) {
+                *bptr = '\0';
+                if (cx_string_deserParseValue(buffer, memberInfo, data)) {
+                    goto error;
+                }
+                bptr = buffer;
             }
             proceed = FALSE;
             break;
         case ',': /* End of value */
-            *bptr = '\0';
-            if (cx_string_deserParseValue(buffer, memberInfo, data)) {
-                goto error;
+            if (buffer != bptr) {
+                *bptr = '\0';
+                if (cx_string_deserParseValue(buffer, memberInfo, data)) {
+                    goto error;
+                }
+                bptr = buffer;
             }
-            bptr = buffer;
 
             /* If memberInfo contains a member, get next member, otherwise it contains
              * an element. The same information applies to each element therefore it is only present
@@ -518,6 +528,17 @@ static cx_string cx_string_deserParse(cx_string str, struct cx_string_deserIndex
             break;
         }
         if (ptr && *ptr) ptr++;
+    }
+
+    if (bptr != buffer) {
+        struct cx_string_deserIndexInfo info;
+        *bptr = '\0';
+        info.type = data->type;
+        info.parsed = FALSE;
+        info.m = NULL;
+        if (cx_string_deserParseValue(buffer, &info, data)) {
+            goto error;
+        }        
     }
 
     return ptr;
@@ -541,6 +562,11 @@ cx_string cx_string_deser(cx_string str, cx_string_deser_t* data) {
             ptr++;
         }
         *bptr = '\0';
+
+        /* If no type is found, reset ptr */
+        if (ch != '{') {
+            ptr = str;
+        }
 
         if (!data->out) {
             cx_object type;
@@ -574,6 +600,7 @@ cx_string cx_string_deser(cx_string str, cx_string_deser_t* data) {
 
     /* Start parsing string */
     if (!(ptr = cx_string_deserParse(ptr, NULL, data))) {
+
         goto error;
     }
 

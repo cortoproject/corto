@@ -38,7 +38,7 @@ Fast_Expression _Fast_Comma_addOrCreate(Fast_Expression list, Fast_Expression ex
         Fast_Comma_addExpression(Fast_Comma(list), expr);
         result = list;
     } else {
-        result = Fast_Expression(Fast_Comma__create());
+        result = Fast_Expression(Fast_CommaCreate());
         Fast_Comma_addExpression(Fast_Comma(result), list);
         Fast_Comma_addExpression(Fast_Comma(result), expr);
         Fast_Parser_collect(yparser(), result);
@@ -70,7 +70,7 @@ cx_bool _Fast_Comma_hasReturnedResource_v(Fast_Comma _this) {
 /* $begin(::corto::Fast::Comma::hasReturnedResource) */
     cx_bool result = FALSE;
 
-    Fast_Expression_list__foreach(_this->expressions, elem)
+    Fast_Expression_listForeach(_this->expressions, elem)
         if (Fast_Expression_hasReturnedResource(elem)) {
             result = TRUE;
             break;
@@ -86,7 +86,7 @@ cx_bool _Fast_Comma_hasSideEffects_v(Fast_Comma _this) {
 /* $begin(::corto::Fast::Comma::hasSideEffects) */
     cx_bool result = FALSE;
     
-    Fast_Expression_list__foreach(_this->expressions, elem)
+    Fast_Expression_listForeach(_this->expressions, elem)
         if (Fast_Expression_hasSideEffects(elem)) {
             result = TRUE;
             break;
@@ -119,7 +119,7 @@ Fast_Expression _Fast_Comma_insertOrCreate(Fast_Expression list, Fast_Expression
         Fast_Comma_addExpression(Fast_Comma(list), expr);
         result = list;
     } else {
-        result = Fast_Expression(Fast_Comma__create());
+        result = Fast_Expression(Fast_CommaCreate());
         Fast_Comma_addExpression(Fast_Comma(result), expr);
         Fast_Comma_addExpression(Fast_Comma(result), list);
         Fast_Parser_collect(yparser(), result);

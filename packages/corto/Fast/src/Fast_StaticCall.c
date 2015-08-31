@@ -17,7 +17,7 @@ cx_int16 _Fast_StaticCall_construct(Fast_StaticCall _this) {
 /* $begin(::corto::Fast::StaticCall::construct) */
     Fast_Object fExpr;
 
-    fExpr = Fast_Object__create(_this->function);
+    fExpr = Fast_ObjectCreate(_this->function);
     Fast_Parser_collect(yparser(), fExpr);
     cx_setref(&Fast_Call(_this)->functionExpr, fExpr);
 

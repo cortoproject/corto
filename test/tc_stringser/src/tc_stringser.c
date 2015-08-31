@@ -16,7 +16,7 @@ int tc__classPrimitives(void) {
     int result = 0;
 
     /* Create object */
-    o1 = tc_classPrimitives__create(TRUE,'a',11,1.1,"String with special characters ~`!@#$%^&*()_-+=\"{}[]|\\:;'<>,.?/",TC_BLUE,TC_WALK|TC_FLY);
+    o1 = tc_classPrimitivesCreate(TRUE,'a',11,1.1,"String with special characters ~`!@#$%^&*()_-+=\"{}[]|\\:;'<>,.?/",TC_BLUE,TC_WALK|TC_FLY);
 
     /* Serialize to string */
     str1 = cx_str(o1, 0);
@@ -69,7 +69,7 @@ int tc__classInherit(void) {
     int result = 0;
 
     /* Create object */
-    o1 = tc_classInherit__create(
+    o1 = tc_classInheritCreate(
             TRUE, 'a',11,1.1,"String with special characters ~`!@#$%^&*()_-+=\"{}[]|\\:;'<>,.?/",TC_BLUE,TC_WALK|TC_FLY,
             FALSE,'b',22,2.2,"string with special Characters ~`!@#$%^&*()_-+=\"{}[]|\\:;'<>,.?/",TC_RED, TC_SWIM);
 

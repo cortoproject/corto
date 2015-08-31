@@ -162,11 +162,14 @@ static cx_int16 corto_package(int argc, char *argv[]) {
     FILE *file;
     cx_uint32 i;
     cx_char *include = NULL;
+    cx_uint32 optionsStartFrom = 1;
+    cx_bool isEmpty = FALSE;
 
-    if (argc <= 1) {
+    if ((argc <= 1) || (*(argv[1])) == '-') {
         include = corto_randomName();
     } else {
         include = argv[1];
+        optionsStartFrom = 2;
     }
 
     /* Ignore initial colons */
@@ -175,6 +178,16 @@ static cx_int16 corto_package(int argc, char *argv[]) {
             include += 2;
         } else {
             cx_error("corto: invalid package name");
+            goto error;
+        }
+    }
+
+    /* Parse options */
+    if (argc > optionsStartFrom) {
+        if (!strcmp(argv[optionsStartFrom], "--empty")) {
+            isEmpty = TRUE;
+        } else {
+            cx_error("corto: unknown option '%s'");
             goto error;
         }
     }
@@ -216,10 +229,12 @@ static cx_int16 corto_package(int argc, char *argv[]) {
     file = fopen(cxfile, "w");
     if (file) {
         fprintf(file, "#package ::%s\n\n", include);
-        fprintf(file, "class RedPanda::\n");
-        fprintf(file, "    weight: int32\n");
-        fprintf(file, "    int16 construct()\n");
-        fprintf(file, "    void chew()\n");
+        if (!isEmpty) {
+            fprintf(file, "class RedPanda::\n");
+            fprintf(file, "    weight: int32\n");
+            fprintf(file, "    int16 construct()\n");
+            fprintf(file, "    void chew()\n");
+        }
         fclose(file);
     } else {
         cx_error("corto: failed to open file '%s' (check permissions)", cxfile);
@@ -227,37 +242,39 @@ static cx_int16 corto_package(int argc, char *argv[]) {
     }
 
     /* Write class implementation */
-    if (snprintf(srcfile, sizeof(srcfile), "%s/src/%s_RedPanda.c", name, name) >= (int)sizeof(srcfile)) {
-        cx_error("corto: package name '%s' is too long", name);
-        goto error;
-    }
-
     sprintf(srcdir, "%s/src", name);
     if (cx_mkdir(srcdir)) {
         cx_error("corto: failed to create directory '%s' (check permissions)", srcdir);
         goto error;
     }
 
-    if (cx_fileTest(srcfile)) {
-        cx_error("corto: file '%s' already exists", srcfile);
-        goto error;
-    }
+    if (!isEmpty) {
+        if (snprintf(srcfile, sizeof(srcfile), "%s/src/%s_RedPanda.c", name, name) >= (int)sizeof(srcfile)) {
+            cx_error("corto: package name '%s' is too long", name);
+            goto error;
+        }
 
-    file = fopen(srcfile, "w");
-    if (file) {
-        fprintf(file, "/* $begin(::%s::RedPanda::construct) */\n", include);
-        fprintf(file, "    printf(\"Hurray, %%s the panda is born!\\n\", cx_nameof(_this));\n");
-        fprintf(file, "    return 0;\n");
-        fprintf(file, "/* $end */\n");
-        fprintf(file, "/* $begin(::%s::RedPanda::chew) */\n", include);
-        fprintf(file, "    _this->weight++;\n");
-        fprintf(file, "    printf(\"%%s the panda is chewing on something omnomnom (his weight: %%d)\\n\",\n");
-        fprintf(file, "            cx_nameof(_this), _this->weight);\n");
-        fprintf(file, "/* $end */\n");
-        fclose(file);
-    } else {
-        cx_error("corto: failed to open file '%s'", cxfile);
-        goto error;
+        if (cx_fileTest(srcfile)) {
+            cx_error("corto: file '%s' already exists", srcfile);
+            goto error;
+        }
+
+        file = fopen(srcfile, "w");
+        if (file) {
+            fprintf(file, "/* $begin(::%s::RedPanda::construct) */\n", include);
+            fprintf(file, "    printf(\"Hurray, %%s the panda is born!\\n\", cx_nameof(_this));\n");
+            fprintf(file, "    return 0;\n");
+            fprintf(file, "/* $end */\n");
+            fprintf(file, "/* $begin(::%s::RedPanda::chew) */\n", include);
+            fprintf(file, "    _this->weight++;\n");
+            fprintf(file, "    printf(\"%%s the panda is chewing on something omnomnom (his weight: %%d)\\n\",\n");
+            fprintf(file, "            cx_nameof(_this), _this->weight);\n");
+            fprintf(file, "/* $end */\n");
+            fclose(file);
+        } else {
+            cx_error("corto: failed to open file '%s'", cxfile);
+            goto error;
+        }
     }
 
     /* Write main code */
@@ -274,20 +291,22 @@ static cx_int16 corto_package(int argc, char *argv[]) {
     file = fopen(srcfile, "w");
     if (file) {
         fprintf(file, "/* $begin(main) */\n\n");
-        fprintf(file, "    /* Create Albert the panda */\n");
-        fprintf(file, "    %s_RedPanda myFirstPanda = %s_RedPanda__createChild(\n", name, name);
-        fprintf(file, "            NULL,       /* Parent of the object (root) */\n");
-        fprintf(file, "            \"Albert\",   /* Name of the object */\n");
-        fprintf(file, "            10);        /* Albert's weight */\n\n");
-        fprintf(file, "    /* Give Albert something to chew on */\n");
-        fprintf(file, "    %s_RedPanda_chew(myFirstPanda);\n\n", name);
+        if (!isEmpty) {
+            fprintf(file, "    /* Create Albert the panda */\n");
+            fprintf(file, "    %s_RedPanda myFirstPanda = %s_RedPandaCreateChild(\n", name, name);
+            fprintf(file, "            NULL,       /* Parent of the object (root) */\n");
+            fprintf(file, "            \"Albert\",   /* Name of the object */\n");
+            fprintf(file, "            10);        /* Albert's weight */\n\n");
+            fprintf(file, "    /* Give Albert something to chew on */\n");
+            fprintf(file, "    %s_RedPanda_chew(myFirstPanda);\n\n", name);
+        }
         fprintf(file, "    return 0;\n");
         fprintf(file, "/* $end */\n");
         fclose(file);
     } else {
-        cx_error("corto: failed to open file '%s' (check permissions)", cxfile);
+        cx_error("corto: failed to open file '%s' (check permissions)", srcfile);
         goto error;
-    }    
+    }
 
     if (cx_load(cxfile)) {
         cx_error("corto: failed to load '%s'", cxfile);

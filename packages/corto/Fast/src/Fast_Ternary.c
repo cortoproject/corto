@@ -23,8 +23,8 @@ Fast_If Fast_Ternary_createIf(Fast_Expression condition, Fast_Node ifTrue, Fast_
     Fast_If result;
     
     if (cx_instanceof(cx_type(Fast_Block_o), ifTrue)) {
-        trueBlock = Fast_Block__create(yparser()->block);
-        falseBlock = Fast_Block__create(yparser()->block);
+        trueBlock = Fast_BlockCreate(yparser()->block);
+        falseBlock = Fast_BlockCreate(yparser()->block);
         Fast_Block_addStatement(trueBlock, Fast_Node(ifTrue));
         Fast_Block_addStatement(falseBlock, Fast_Node(ifFalse));
         Fast_Parser_collect(yparser(), trueBlock);
@@ -34,8 +34,8 @@ Fast_If Fast_Ternary_createIf(Fast_Expression condition, Fast_Node ifTrue, Fast_
         falseBlock = Fast_Block(ifFalse);
     }
     
-    falseIf = Fast_If__create(NULL, falseBlock, NULL);
-    result = Fast_If__create(condition, trueBlock, falseIf);
+    falseIf = Fast_IfCreate(NULL, falseBlock, NULL);
+    result = Fast_IfCreate(condition, trueBlock, falseIf);
     
     /* Because a ternary operator always has a true and false branch it there is not much use
      * in reporting unreachable code. If a ternary operator has a compile-time resolvable

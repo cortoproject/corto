@@ -115,7 +115,7 @@ cx_int16 Fast_String_parse(Fast_String _this) {
                 if (str != ptr) {
                     *ptr = '\0';
 
-                    element = Fast_String__create(str);
+                    element = Fast_StringCreate(str);
                     cx_llAppend(_this->elements, element);
 
                     *ptr = ch;
@@ -139,11 +139,11 @@ cx_int16 Fast_String_parse(Fast_String _this) {
         /* If string contains embedded expressions, add last bit of remaining
          * string to elements list */
         if ((str != _this->value) && *str) {
-            element = Fast_String__create(str);
+            element = Fast_StringCreate(str);
             cx_llAppend(_this->elements, element);
         }
     } else {
-        element = Fast_String__create("null");
+        element = Fast_StringCreate("null");
         cx_llAppend(_this->elements, element);
     }
 
@@ -257,7 +257,7 @@ ic_node _Fast_String_toIc_v(Fast_String _this, ic_program program, ic_storage st
     }
 
     if (!cx_llSize(_this->elements)) {
-        result = (ic_node)ic_literal__create((cx_any){cx_type(cx_string_o), &_this->value, FALSE});
+        result = (ic_node)ic_literalCreate((cx_any){cx_type(cx_string_o), &_this->value, FALSE});
     } else {
         if (stored) {
             cx_iter elementIter;
@@ -277,7 +277,7 @@ ic_node _Fast_String_toIc_v(Fast_String _this, ic_program program, ic_storage st
                 goto error;
             }
 
-            dummy = (ic_node)ic_literal__create((cx_any){cx_type(cx_string_o), NULL, FALSE});
+            dummy = (ic_node)ic_literalCreate((cx_any){cx_type(cx_string_o), NULL, FALSE});
 
             result = (ic_node)storage;
             elementIter = cx_llIter(_this->elements);
@@ -288,7 +288,7 @@ ic_node _Fast_String_toIc_v(Fast_String _this, ic_program program, ic_storage st
 
                 elementType = Fast_Expression_getType(element);
                 if (!elementType) {
-                    element = Fast_Expression(Fast_String__create(CX_NULL_STRING));
+                    element = Fast_Expression(Fast_StringCreate(CX_NULL_STRING));
                 } else if (elementType != cx_type(cx_string_o)) {
                     element = Fast_Expression_cast(element, cx_type(cx_string_o), FALSE);
                     if(!element) {
@@ -316,7 +316,7 @@ ic_node _Fast_String_toIc_v(Fast_String _this, ic_program program, ic_storage st
                             elementType = Fast_Expression_getType(element);
 
                             if (!elementType) {
-                                element = Fast_Expression(Fast_String__create(CX_NULL_STRING));
+                                element = Fast_Expression(Fast_StringCreate(CX_NULL_STRING));
                             } else if (elementType && (Fast_Expression_getType(element) != cx_type(cx_string_o))) {
                                 element = Fast_Expression_cast(element, cx_type(cx_string_o), FALSE);
                                 if (!element) {

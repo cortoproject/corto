@@ -24,7 +24,7 @@ cx_void _ic_storage_free(ic_storage _this) {
         ic_op freeIc;
 
         /* Insert free-instruction */
-        freeIc = ic_op__create(0, ic_free, ic_node(_this), NULL, NULL, IC_DEREF_VALUE, 0, 0, FALSE);
+        freeIc = ic_opCreate(0, ic_free, ic_node(_this), NULL, NULL, IC_DEREF_VALUE, 0, 0, FALSE);
         if (_this->isReference) {
             freeIc->s1Deref = IC_DEREF_ADDRESS;
         }

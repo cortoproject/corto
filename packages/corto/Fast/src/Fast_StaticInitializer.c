@@ -153,9 +153,9 @@ cx_int16 _Fast_StaticInitializer_define(Fast_StaticInitializer _this) {
                 goto error;
             }
         } else {
-            Fast_Expression refVar = Fast_Expression(Fast_Object__create(o));
+            Fast_Expression refVar = Fast_Expression(Fast_ObjectCreate(o));
             refVar->isReference = TRUE; /* Always treat object as reference */
-            Fast_Define defineStmt = Fast_Define__create(refVar);
+            Fast_Define defineStmt = Fast_DefineCreate(refVar);
             Fast_Parser_addStatement(yparser(), Fast_Node(defineStmt));
             Fast_Parser_collect(yparser(), defineStmt);
             Fast_Parser_collect(yparser(), refVar);

@@ -112,7 +112,7 @@ cx_void _Fast_Call_setParameters(Fast_Call _this, cx_function function) {
     cx_setref(&_this->returnType, function->returnType);
     _this->returnsReference = function->returnsReference;
 
-    cx_parameter_seq__size(&_this->parameters, function->parameters.length);
+    cx_parameter_seqSize(&_this->parameters, function->parameters.length);
 
     for (i = 0; i < function->parameters.length; i++) {
         cx_setref(&_this->parameters.buffer[i].type, function->parameters.buffer[i].type);

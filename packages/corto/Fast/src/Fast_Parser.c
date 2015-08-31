@@ -98,7 +98,7 @@ cx_string Fast_Parser_id(cx_object o, cx_id buffer) {
 
 /* Translate result of parser to corto intermediate bytecode */
 cx_int16 Fast_Parser_toIc(Fast_Parser _this) {
-    ic_program program = ic_program__create(_this->filename);
+    ic_program program = ic_programCreate(_this->filename);
 
     /* Parse root-block */
     Fast_Block_toIc(_this->block, program, NULL, FALSE);
@@ -157,7 +157,7 @@ cx_object Fast_Parser_combineConditionalExpr(Fast_Parser _this, Fast_Expression 
             combineOper = CX_COND_AND;
         }
 
-        result = Fast_Expression(Fast_Binary__create(lvalue, rvalue, combineOper));
+        result = Fast_Expression(Fast_BinaryCreate(lvalue, rvalue, combineOper));
         Fast_Parser_collect(_this, result);
 
         /* Fold expression where possible */
@@ -192,7 +192,7 @@ Fast_Expression Fast_Parser_createBinaryTernary(Fast_Parser _this, Fast_Expressi
         cx_setref(&result, rvalue);
         break;
     default:
-        result = Fast_Expression(Fast_Binary__create(lvalue, rvalue, operator));
+        result = Fast_Expression(Fast_BinaryCreate(lvalue, rvalue, operator));
         Fast_Parser_collect(_this, result);
         break;
     }
@@ -265,8 +265,8 @@ Fast_Expression Fast_Parser_delegateAssignment(Fast_Parser _this, Fast_Expressio
     signature = cx_signatureClose(signature);
 
     /* Resolve function */
-    Fast_CallBuilder__init(&builder);
-    Fast_CallBuilder__set(
+    Fast_CallBuilderInit(&builder);
+    Fast_CallBuilderSet(
         &builder,
         signature,
         NULL,
@@ -274,7 +274,7 @@ Fast_Expression Fast_Parser_delegateAssignment(Fast_Parser _this, Fast_Expressio
         _this->scope,
         yparser()->block);
     tempCall = Fast_CallBuilder_build(&builder);
-    Fast_CallBuilder__deinit(&builder);
+    Fast_CallBuilderDeinit(&builder);
 
     if (!tempCall) {
         goto error;
@@ -327,7 +327,7 @@ Fast_Expression Fast_Parser_delegateAssignment(Fast_Parser _this, Fast_Expressio
 
     /* If procedure is compatible with delegate type, do a complex assignment */
     cx_setref(&variables[0].object, lvalue);
-    result = Fast_InitializerExpression__create(variables, 1, TRUE);
+    result = Fast_InitializerExpressionCreate(variables, 1, TRUE);
     Fast_InitializerExpression_push(result);
     if (instance) {
         Fast_InitializerExpression_member(result, "instance");
@@ -395,11 +395,11 @@ cx_object Fast_Parser_expandBinary(Fast_Parser _this, Fast_Expression lvalue, Fa
 
     /* Binary expression with iterator value on the left-hand side */
     } else if (tleft && tleft->kind == CX_ITERATOR) {
-        result = Fast_Expression(Fast_Binary__create(lvalue, rvalue, operator));
+        result = Fast_Expression(Fast_BinaryCreate(lvalue, rvalue, operator));
 
     /* Binary expression with primitive or reference values */
     } else {
-        result = Fast_Expression(Fast_Binary__create(lvalue, rvalue, operator));
+        result = Fast_Expression(Fast_BinaryCreate(lvalue, rvalue, operator));
 
         /* Fold expression */
         if (result) {
@@ -427,7 +427,7 @@ cx_object Fast_Parser_expandMember(Fast_Parser _this, Fast_Expression lvalue, Fa
     Fast_Expression result = NULL;
 
     /* Create member expression */
-    result = Fast_Expression(Fast_Member__create(lvalue, rvalue));
+    result = Fast_Expression(Fast_MemberCreate(lvalue, rvalue));
     if (!result) {
         goto error;
     }
@@ -442,7 +442,7 @@ error:
 cx_object Fast_Parser_expandElement(Fast_Parser _this, Fast_Expression lvalue, Fast_Expression rvalue, void *userData) {
     CX_UNUSED(_this);
     CX_UNUSED(userData);
-    Fast_Expression result = (Fast_Expression)Fast_Element__create(lvalue, rvalue);
+    Fast_Expression result = (Fast_Expression)Fast_ElementCreate(lvalue, rvalue);
     if (!result) {
         goto error;
     }
@@ -468,15 +468,15 @@ Fast_Expression Fast_Parser_explodeComma(Fast_Parser _this, Fast_Expression lval
         /* Only temporarily store rvalue if it has side effects */
         if (Fast_Expression_hasSideEffects(Fast_Expression(cx_llGet(lvalueList,0)))) {
             if (Fast_Node(rvalues)->kind != Fast_InitializerExpr) {
-                var = Fast_Expression(Fast_Temporary__create(lvalues->type, lvalues->isReference));
+                var = Fast_Expression(Fast_TemporaryCreate(lvalues->type, lvalues->isReference));
                 Fast_Parser_addStatement(_this, Fast_Parser_binaryExpr(_this, var, lvalues, CX_ASSIGN));
                 rvalues = var;
             }
         }
     }
 
-    Fast_Expression_list__foreach(lvalueList, l)
-        Fast_Expression_list__foreach(rvalueList, r)
+    Fast_Expression_listForeach(lvalueList, l)
+        Fast_Expression_listForeach(rvalueList, r)
             Fast_Expression e = action(_this, var ? var : l, r, userData);
             if (!e) {
                 goto error;
@@ -519,7 +519,7 @@ Fast_Expression Fast_Parser_expandComma(Fast_Parser _this, Fast_Expression lvalu
         /* Only temporarily store rvalue if it has side effects */
         if (Fast_Expression_hasSideEffects(Fast_Expression(cx_llGet(rvalueList,0)))) {
             if (Fast_Node(rvalues)->kind != Fast_InitializerExpr) {
-                Fast_Expression var = Fast_Expression(Fast_Temporary__create(rvalues->type, FALSE));
+                Fast_Expression var = Fast_Expression(Fast_TemporaryCreate(rvalues->type, FALSE));
                 Fast_Parser_addStatement(_this, Fast_Parser_binaryExpr(_this, var, rvalues, CX_ASSIGN));
                 rvalues = var;
             }
@@ -601,7 +601,7 @@ Fast_Expression Fast_Parser_resolve(Fast_Parser _this, cx_id id) {
         do {
             object = cx_resolve(_this->scope, id);
             if (object){
-                result = Fast_Expression(Fast_Object__create(object));
+                result = Fast_Expression(Fast_ObjectCreate(object));
                 Fast_Parser_collect(_this, result);
                 cx_release(object);
                 break;
@@ -637,7 +637,7 @@ Fast_Expression Fast_Parser_resolve(Fast_Parser _this, cx_id id) {
             }
         }
         if (object) {
-            result = Fast_Expression(Fast_Object__create(object));
+            result = Fast_Expression(Fast_ObjectCreate(object));
             Fast_Parser_collect(_this, result);
             cx_release(object);
         }
@@ -693,7 +693,7 @@ Fast_Storage Fast_Parser_observerCreate(Fast_Parser _this, cx_string id, Fast_Ex
 
     /* Create observer */
     if (!id) {
-        observer = cx_observer__declare();
+        observer = cx_observerDeclare();
         if (!observer) {
             goto error;
         }
@@ -711,18 +711,18 @@ Fast_Storage Fast_Parser_observerCreate(Fast_Parser _this, cx_string id, Fast_Ex
             cx_class_bindObserver(cx_class(parent), observer);
         }
     } else {
-        observer = cx_observer__declareChild(_this->scope, id);
+        observer = cx_observerDeclareChild(_this->scope, id);
         if (!observer) {
             goto error;
         }
 
-        if (cx_observer__define(observer, observable, mask, dispatcher, NULL)) {
+        if (cx_observerDefine(observer, observable, mask, dispatcher, NULL)) {
             goto error;
         }
     }
 
     /* Create and collect result */
-    result = (Fast_Storage)Fast_Object__create(observer);
+    result = (Fast_Storage)Fast_ObjectCreate(observer);
     Fast_Parser_collect(_this, result);
 
     return result;
@@ -744,16 +744,16 @@ Fast_Storage Fast_Parser_declareDelegate(Fast_Parser _this, cx_type returnType, 
     cx_signatureName(id, name);
 
     /* Declare and define delegate */
-    delegate = cx_delegate__declareChild(_this->scope, name);
+    delegate = cx_delegateDeclareChild(_this->scope, name);
     if(!delegate) {
         goto error;
     }
 
-    if(cx_delegate__define(delegate, cx_type(returnType), returnsReference, parameters)) {
+    if(cx_delegateDefine(delegate, cx_type(returnType), returnsReference, parameters)) {
         goto error;
     }
 
-    return Fast_Storage(Fast_Object__create(delegate));
+    return Fast_Storage(Fast_ObjectCreate(delegate));
 error:
     return NULL;
 }
@@ -805,7 +805,7 @@ cx_void _Fast_Parser_addStatement(Fast_Parser _this, Fast_Node statement) {
                 /* If statement is a string, insert println function */
                 if (!_this->repl) {
                     Fast_Expression println = Fast_Parser_lookup(_this, "io::println(string)");
-                    Fast_Comma args = Fast_Comma__create();
+                    Fast_Comma args = Fast_CommaCreate();
                     Fast_Comma_addExpression(args, Fast_Expression(statement));
                     Fast_Expression callExpr = Fast_Parser_callExpr(_this, println, Fast_Expression(args));
                     Fast_Block_addStatement(_this->block, Fast_Node(callExpr));
@@ -902,7 +902,7 @@ Fast_Node _Fast_Parser_binaryExpr(Fast_Parser _this, Fast_Expression lvalues, Fa
             cx_ll exprList = Fast_Expression_toList(lvalues);
 
             /* Begin update (lock objects) */
-            result = Fast_Node(Fast_Update__create(exprList, NULL, NULL, Fast_UpdateBegin));
+            result = Fast_Node(Fast_UpdateCreate(exprList, NULL, NULL, Fast_UpdateBegin));
             if (!result) {
                 goto error;
             }
@@ -916,7 +916,7 @@ Fast_Node _Fast_Parser_binaryExpr(Fast_Parser _this, Fast_Expression lvalues, Fa
             Fast_Parser_addStatement(_this, Fast_Node(result));
 
             /* End expression (update in reverse order) */
-            result = Fast_Node(Fast_Update__create(exprList, NULL, NULL, Fast_UpdateEnd));
+            result = Fast_Node(Fast_UpdateCreate(exprList, NULL, NULL, Fast_UpdateEnd));
             if (!result) {
                 goto error;
             }
@@ -1048,7 +1048,7 @@ Fast_Block _Fast_Parser_blockPush(Fast_Parser _this, cx_bool presetBlock) {
         newBlock = NULL;
 
         if (!_this->blockPreset || presetBlock) {
-            newBlock = Fast_Block__create(_this->block);
+            newBlock = Fast_BlockCreate(_this->block);
             Fast_Parser_collect(_this, newBlock);
             cx_setref(&_this->block, newBlock);
         }
@@ -1074,7 +1074,7 @@ Fast_Expression _Fast_Parser_callExpr(Fast_Parser _this, Fast_Expression functio
         Fast_Expression_list functions = function ? Fast_Expression_toList(function) : NULL;
         Fast_Expression_list args = arguments ? Fast_Expression_toList(arguments) : NULL;
 
-        if (functions) {Fast_Expression_list__foreach(functions, f)
+        if (functions) {Fast_Expression_listForeach(functions, f)
             Fast_Expression expr;
             if ((Fast_Node(f)->kind == Fast_StorageExpr) && (Fast_Storage(f)->kind == Fast_ObjectStorage)) {
                 o = Fast_Object(f)->value;
@@ -1100,11 +1100,11 @@ Fast_Expression _Fast_Parser_callExpr(Fast_Parser _this, Fast_Expression functio
         }}
 
         /* Cleanup initializer arguments */
-        if (args) {Fast_Expression_list__foreach(args, a)
+        if (args) {Fast_Expression_listForeach(args, a)
             if (Fast_Node(a)->kind == Fast_InitializerExpr) {
                 Fast_Expression var = Fast_Initializer(a)->variables[0].object;
                 if (Fast_Storage(var)->kind == Fast_TemporaryStorage) {
-                    Fast_Deinit deinit = Fast_Deinit__create(Fast_Storage(var));
+                    Fast_Deinit deinit = Fast_DeinitCreate(Fast_Storage(var));
                     result = Fast_Comma_addOrCreate(result, Fast_Expression(deinit));
                     Fast_Parser_collect(_this, deinit);
                 }
@@ -1154,7 +1154,7 @@ Fast_Expression _Fast_Parser_castExpr(Fast_Parser _this, cx_type lvalue, Fast_Ex
         }
 
         if (castRequired) {
-            result = Fast_Expression(Fast_Cast__create(lvalue, rvalue, FALSE));
+            result = Fast_Expression(Fast_CastCreate(lvalue, rvalue, FALSE));
             if (!result) {
                 goto error;
             }
@@ -1282,7 +1282,7 @@ Fast_Storage _Fast_Parser_declaration(Fast_Parser _this, cx_type type, cx_string
             cx_release(o);
         }
         if (o) {
-            result = Fast_Storage(Fast_Object__create(o));
+            result = Fast_Storage(Fast_ObjectCreate(o));
             Fast_Parser_collect(_this, result);
             _this->variables[_this->variableCount] = result;
             _this->variableCount++;
@@ -1375,7 +1375,7 @@ Fast_Storage _Fast_Parser_declareFunction(Fast_Parser _this, cx_type returnType,
         }
 
         if (!result) {
-            result = Fast_Storage(Fast_Object__create(function));
+            result = Fast_Storage(Fast_ObjectCreate(function));
             Fast_Parser_collect(_this, result);
         }
     } else {
@@ -1401,7 +1401,7 @@ Fast_Storage _Fast_Parser_declareFunction(Fast_Parser _this, cx_type returnType,
             cx_object function = cx_resolve(_this->scope, query);
             cx_assert(function != NULL, "object should still be there in 2nd pass");
 
-            result = Fast_Storage(Fast_Object__create(function));
+            result = Fast_Storage(Fast_ObjectCreate(function));
             Fast_Parser_collect(_this, result);
             cx_release(function);
         }
@@ -1509,7 +1509,7 @@ cx_int16 _Fast_Parser_defineScope(Fast_Parser _this) {
                 goto error;
             }
         } else {
-            Fast_Define defineExpr = Fast_Define__create(Fast_Expression(Fast_Object__create(_this->scope)));
+            Fast_Define defineExpr = Fast_DefineCreate(Fast_Expression(Fast_ObjectCreate(_this->scope)));
             Fast_Parser_addStatement(_this, Fast_Node(defineExpr));
             Fast_Parser_collect(_this, defineExpr);
         }
@@ -1539,7 +1539,7 @@ cx_int16 _Fast_Parser_defineVariable(Fast_Parser _this, Fast_Storage object) {
         }
     } else {
         Fast_Define defineStmt;
-        defineStmt = Fast_Define__create((Fast_Expression)object);
+        defineStmt = Fast_DefineCreate((Fast_Expression)object);
         Fast_Parser_collect(_this, defineStmt);
         Fast_Parser_addStatement(_this, Fast_Node(defineStmt));
     }
@@ -1731,7 +1731,7 @@ Fast_Node _Fast_Parser_ifStatement(Fast_Parser _this, Fast_Expression condition,
     Fast_Node result = NULL;
 
     if (_this->pass) {
-        result = Fast_Node(Fast_If__create(condition, trueBranch, falseBranch));
+        result = Fast_Node(Fast_IfCreate(condition, trueBranch, falseBranch));
         if (!result) {
             goto error;
         }
@@ -1913,7 +1913,7 @@ Fast_Expression _Fast_Parser_initPushExpression(Fast_Parser _this) {
         memset(variables, 0, sizeof(variables));
 
         /* Create initializer */
-        initializer = Fast_Initializer(Fast_InitializerExpression__create(variables, 1, TRUE));
+        initializer = Fast_Initializer(Fast_InitializerExpressionCreate(variables, 1, TRUE));
         cx_setref(&_this->initializers[_this->initializerCount], initializer);
         Fast_Parser_collect(_this, initializer);
         _this->variablePushed = TRUE;
@@ -1980,25 +1980,25 @@ Fast_Expression _Fast_Parser_initPushIdentifier(Fast_Parser _this, Fast_Expressi
     if ((!_this->pass && !isDynamic) || forceStatic) {
         cx_object o;
         o = cx_declare(t);
-        cx_setref(&variables[0].object, Fast_Expression(Fast_Object__create(o)));
-        _this->initializers[_this->initializerCount] = Fast_Initializer(Fast_StaticInitializer__create(variables, 1));
+        cx_setref(&variables[0].object, Fast_Expression(Fast_ObjectCreate(o)));
+        _this->initializers[_this->initializerCount] = Fast_Initializer(Fast_StaticInitializerCreate(variables, 1));
         _this->variablePushed = TRUE;
     } else if (_this->pass && isDynamic && !forceStatic) {
         Fast_Expression newExpr, assignExpr, var, refVar;
         cx_type type_o = cx_type(Fast_Object(type)->value);
-        refVar = var = Fast_Expression(Fast_Temporary__create(Fast_Object(type)->value, TRUE));
-        newExpr = Fast_Expression(Fast_New__create(Fast_Object(type)->value,0));
+        refVar = var = Fast_Expression(Fast_TemporaryCreate(Fast_Object(type)->value, TRUE));
+        newExpr = Fast_Expression(Fast_NewCreate(Fast_Object(type)->value,0));
         Fast_Parser_collect(_this, newExpr);
         if (!type_o->reference) {
             refVar = Fast_Parser_unaryExpr(_this, var, CX_AND);
             Fast_Parser_collect(yparser(), refVar);
         }
-        assignExpr = Fast_Expression(Fast_Binary__create(refVar, newExpr, CX_ASSIGN));
+        assignExpr = Fast_Expression(Fast_BinaryCreate(refVar, newExpr, CX_ASSIGN));
         Fast_Parser_collect(_this, assignExpr);
         Fast_Parser_addStatement(_this, Fast_Node(assignExpr));
 
         cx_setref(&variables[0].object, var);
-        _this->initializers[_this->initializerCount] = Fast_Initializer(Fast_DynamicInitializer__create(variables, 1, FALSE));
+        _this->initializers[_this->initializerCount] = Fast_Initializer(Fast_DynamicInitializerCreate(variables, 1, FALSE));
         _this->variablePushed = TRUE;
     } else {
         cx_setref(&_this->initializers[_this->initializerCount], NULL);
@@ -2050,12 +2050,12 @@ cx_int16 _Fast_Parser_initPushStatic(Fast_Parser _this) {
 
     if (!_this->pass) {
         /* Create initializer */
-        initializer = Fast_Initializer(Fast_StaticInitializer__create(variables, _this->variableCount));
+        initializer = Fast_Initializer(Fast_StaticInitializerCreate(variables, _this->variableCount));
         cx_setref(&_this->initializers[_this->initializerCount], initializer);
         Fast_Parser_collect(_this, initializer);
     } else {
         /* Create dummy initializer */
-        initializer = Fast_Initializer__create(variables, _this->variableCount);
+        initializer = Fast_InitializerCreate(variables, _this->variableCount);
         cx_setref(&_this->initializers[_this->initializerCount], initializer);
         Fast_Parser_collect(_this, initializer);
     }
@@ -2127,7 +2127,7 @@ Fast_Expression _Fast_Parser_lookup(Fast_Parser _this, cx_string id) {
         cx_type complexType = Fast_Parser_getComplexType(_this);
         if (complexType) {
             if (cx_interface_resolveMember(cx_interface(complexType), id)) {
-                result = Fast_Expression(Fast_String__create(id));
+                result = Fast_Expression(Fast_StringCreate(id));
             }
         }
         if (_this->block && !result) {
@@ -2239,7 +2239,7 @@ Fast_Storage _Fast_Parser_observerDeclaration(Fast_Parser _this, cx_string id, F
             block = _this->block; /* If observer is a template the block has already been pushed by Parser::observerPush */
             /* Template observers have been created in the first pass. Look up the created observer */
             observer = cx_class_findObserver(cx_class(_this->scope), observable);
-            result = Fast_Storage(Fast_Object__create(observer));
+            result = Fast_Storage(Fast_ObjectCreate(observer));
             Fast_Parser_collect(_this, result);
         } else {
             block = Fast_Parser_blockPush(_this, TRUE); /* Push new block on stack */
@@ -2394,8 +2394,8 @@ error:
 /* ::corto::Fast::Parser::parseLine(string expr,object scope,word value) */
 cx_int16 _Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_word value) {
 /* $begin(::corto::Fast::Parser::parseLine) */
-    Fast_Parser parser = Fast_Parser__create(expr, NULL);
-    ic_program program = ic_program__create(parser->filename);
+    Fast_Parser parser = Fast_ParserCreate(expr, NULL);
+    ic_program program = ic_programCreate(parser->filename);
     Fast_Expression result = NULL; /* Resulting ast-expression of 'exr' */
     ic_scope icScope; /* Parsed intermediate-code program */
     ic_storage returnValue = NULL; /* Intermediate representation of return value */
@@ -2445,7 +2445,7 @@ cx_int16 _Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_word value) 
                             goto error;
                         }
                         resultLocal->kind = Fast_LocalReturn;
-                        assignment = Fast_Binary__create(Fast_Expression(resultLocal), result, CX_ASSIGN);
+                        assignment = Fast_BinaryCreate(Fast_Expression(resultLocal), result, CX_ASSIGN);
                         cx_llReplace(parser->block->statements, lastNode, assignment);
                     }
                 } else {
@@ -2581,7 +2581,7 @@ Fast_Expression _Fast_Parser_postfixExpr(Fast_Parser _this, Fast_Expression lval
     _this->stagingAllowed = FALSE;
 
     if (_this->pass) {
-        result = Fast_Expression(Fast_PostFix__create(lvalue, operator));
+        result = Fast_Expression(Fast_PostFixCreate(lvalue, operator));
         if (!result) {
             goto error;
         }
@@ -2778,9 +2778,9 @@ Fast_Expression _Fast_Parser_ternaryExpr(Fast_Parser _this, Fast_Expression cond
         Fast_Expression lvalue = Fast_Parser_getLvalue(_this, TRUE);
 
         if (!lvalue) {
-            lvalue = Fast_Expression(Fast_Temporary__create(iftrue->type, FALSE));
+            lvalue = Fast_Expression(Fast_TemporaryCreate(iftrue->type, FALSE));
         }
-        result = Fast_Expression(Fast_Ternary__create(cond, iftrue, iffalse, lvalue));
+        result = Fast_Expression(Fast_TernaryCreate(cond, iftrue, iffalse, lvalue));
         if (!result) {
             goto error;
         }
@@ -2809,27 +2809,27 @@ Fast_Expression _Fast_Parser_unaryExpr(Fast_Parser _this, Fast_Expression lvalue
                 switch(cx_primitive(lvalueType)->kind) {
                 case CX_INTEGER:
                     if (Fast_Node(lvalue)->kind == Fast_LiteralExpr) {
-                        result = Fast_Expression(Fast_Integer__create(Fast_Integer(lvalue)->value * -1));
+                        result = Fast_Expression(Fast_IntegerCreate(Fast_Integer(lvalue)->value * -1));
                         Fast_Parser_collect(_this, result);
                         break;
                     }
                     /* no break */
                 case CX_UINTEGER:
                     if (Fast_Node(lvalue)->kind == Fast_LiteralExpr) {
-                        result = Fast_Expression(Fast_SignedInteger__create(Fast_Integer(lvalue)->value * -1));
+                        result = Fast_Expression(Fast_SignedIntegerCreate(Fast_Integer(lvalue)->value * -1));
                         Fast_Parser_collect(_this, result);
                         break;
                     }
                     /* no break */
                 case CX_FLOAT:
                     if (Fast_Node(lvalue)->kind == Fast_LiteralExpr) {
-                        result = Fast_Expression(Fast_FloatingPoint__create(Fast_FloatingPoint(lvalue)->value * -1));
+                        result = Fast_Expression(Fast_FloatingPointCreate(Fast_FloatingPoint(lvalue)->value * -1));
                         Fast_Parser_collect(_this, result);
                     } else {
                         if (_this->pass) {
-                            Fast_SignedInteger minusOne = Fast_SignedInteger__create(-1);
+                            Fast_SignedInteger minusOne = Fast_SignedIntegerCreate(-1);
                             Fast_Parser_collect(_this, minusOne);
-                            result = Fast_Expression(Fast_Binary__create(lvalue, Fast_Expression(minusOne), CX_MUL));
+                            result = Fast_Expression(Fast_BinaryCreate(lvalue, Fast_Expression(minusOne), CX_MUL));
                             Fast_Parser_collect(_this, result);
                         }
                     }
@@ -2869,7 +2869,7 @@ Fast_Expression _Fast_Parser_unaryExpr(Fast_Parser _this, Fast_Expression lvalue
             }
         } else {
             if (_this->pass) {
-                result = Fast_Expression(Fast_Unary__create(lvalue, operator));
+                result = Fast_Expression(Fast_UnaryCreate(lvalue, operator));
                 if (!result) {
                     goto error;
                 }
@@ -2921,7 +2921,7 @@ Fast_Node _Fast_Parser_updateStatement(Fast_Parser _this, Fast_Expression expr, 
 
         /* Keep argument expressions */
         exprList = Fast_Expression_toList(expr);
-        result = Fast_Node(Fast_Update__create(exprList, block, from, Fast_UpdateDefault));
+        result = Fast_Node(Fast_UpdateCreate(exprList, block, from, Fast_UpdateDefault));
         Fast_Parser_collect(_this, result);
     }
 
@@ -2942,7 +2942,7 @@ Fast_Expression _Fast_Parser_waitExpr(Fast_Parser _this, Fast_Expression expr, F
     if (_this->pass) {
         cx_ll exprList = Fast_Expression_toList(expr);
 
-        result = Fast_Expression(Fast_Wait__create(exprList, timeout));
+        result = Fast_Expression(Fast_WaitCreate(exprList, timeout));
         Fast_Parser_collect(_this, result);
     }
 
@@ -2962,7 +2962,7 @@ Fast_Node _Fast_Parser_whileStatement(Fast_Parser _this, Fast_Expression conditi
             Fast_Parser_error(yparser(), "invalid do-while in root block");
             goto error;
         }
-        result = Fast_Node(Fast_While__create(condition, trueBranch, isUntil));
+        result = Fast_Node(Fast_WhileCreate(condition, trueBranch, isUntil));
         if (!result) {
             goto error;
         }

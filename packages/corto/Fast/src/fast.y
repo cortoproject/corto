@@ -53,7 +53,7 @@ void Fast_declarationSeqInsert( Fast_ParserDeclarationSeq *seq, Fast_ParserDecla
 Fast_Expression Fast_declarationSeqDo(Fast_Storage type, Fast_ParserDeclarationSeq *declarations, cx_bool isReference)
 {
     unsigned int i;
-    Fast_Comma result = Fast_Comma__create();
+    Fast_Comma result = Fast_CommaCreate();
     Fast_Expression expr = NULL;
 
     Fast_Parser_collect(yparser(), result);
@@ -396,13 +396,13 @@ init_key
 /* Expressions */
 /* ======================================================================== */
 literal_expr
-    : BOOLEAN               {$$=Fast_Boolean__create($1); Fast_Parser_collect(yparser(), $$);}
-    | CHARACTER             {$$=Fast_Character__create($1); Fast_Parser_collect(yparser(), $$);}
-    | INTEGER               {$$=Fast_Integer__create($1); Fast_Parser_collect(yparser(), $$);}
-    | SIGNEDINTEGER         {$$=Fast_SignedInteger__create($1); Fast_Parser_collect(yparser(), $$);}
-    | FLOATINGPOINT         {$$=Fast_FloatingPoint__create($1); Fast_Parser_collect(yparser(), $$);}
-    | STRING                {$$=Fast_String__create($1); Fast_Parser_collect(yparser(), $$);}
-    | NUL                   {$$=Fast_Null__create(); Fast_Parser_collect(yparser(), $$);}
+    : BOOLEAN               {$$=Fast_BooleanCreate($1); Fast_Parser_collect(yparser(), $$);}
+    | CHARACTER             {$$=Fast_CharacterCreate($1); Fast_Parser_collect(yparser(), $$);}
+    | INTEGER               {$$=Fast_IntegerCreate($1); Fast_Parser_collect(yparser(), $$);}
+    | SIGNEDINTEGER         {$$=Fast_SignedIntegerCreate($1); Fast_Parser_collect(yparser(), $$);}
+    | FLOATINGPOINT         {$$=Fast_FloatingPointCreate($1); Fast_Parser_collect(yparser(), $$);}
+    | STRING                {$$=Fast_StringCreate($1); Fast_Parser_collect(yparser(), $$);}
+    | NUL                   {$$=Fast_NullCreate(); Fast_Parser_collect(yparser(), $$);}
     ;
 
 bracket_expr
@@ -425,8 +425,8 @@ postfix_expr
     | postfix_expr {PUSHCOMPLEX($1)} '[' expr ']' {$$ = Fast_Parser_elementExpr(yparser(), $1, $4); fast_op; POPCOMPLEX()}
     | postfix_expr '(' ')'                        {$$ = Fast_Parser_callExpr(yparser(), $1, NULL); fast_op;}
     | postfix_expr bracket_expr                   {$$ = Fast_Parser_callExpr(yparser(), $1, $2); fast_op;}
-    | postfix_expr '.' any_id                     {Fast_String str = Fast_String__create($3); if (!str) {YYERROR;} $$ = Fast_Parser_memberExpr(yparser(), $1, Fast_Expression(str)); cx_release(str); fast_op;}
-    | postfix_expr '.' KW_DESTRUCT                {Fast_String str = Fast_String__create("delete"); if (!str) {YYERROR;} $$ = Fast_Parser_memberExpr(yparser(), $1, Fast_Expression(str)); cx_release(str); fast_op;}
+    | postfix_expr '.' any_id                     {Fast_String str = Fast_StringCreate($3); if (!str) {YYERROR;} $$ = Fast_Parser_memberExpr(yparser(), $1, Fast_Expression(str)); cx_release(str); fast_op;}
+    | postfix_expr '.' KW_DESTRUCT                {Fast_String str = Fast_StringCreate("delete"); if (!str) {YYERROR;} $$ = Fast_Parser_memberExpr(yparser(), $1, Fast_Expression(str)); cx_release(str); fast_op;}
     | postfix_expr INC                            {$$ = Fast_Parser_postfixExpr(yparser(), $1, CX_INC); fast_op}
     | postfix_expr DEC                            {$$ = Fast_Parser_postfixExpr(yparser(), $1, CX_DEC); fast_op}
     ;
@@ -535,7 +535,7 @@ comma_expr
     | comma_expr ',' conditional_expr {
         if ($1 && $3) {
             if (Fast_Node($1)->kind != Fast_CommaExpr) {
-                $$ = Fast_Comma__create(); fast_op;
+                $$ = Fast_CommaCreate(); fast_op;
                 Fast_Comma_addExpression($$, $1); fast_op;
                 Fast_Parser_collect(yparser(), $$); fast_op;
             }
@@ -795,7 +795,7 @@ int fast_yparse(Fast_Parser parser, cx_uint32 line, cx_uint32 column) {
     yparser()->blockCount = 0;
 
     if (!parser->block) {
-        parser->block = Fast_Block__create(NULL);
+        parser->block = Fast_BlockCreate(NULL);
         parser->block->isRoot = TRUE;
     }
 

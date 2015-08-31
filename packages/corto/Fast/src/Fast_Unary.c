@@ -84,7 +84,7 @@ ic_node _Fast_Unary_toIc_v(Fast_Unary _this, ic_program program, ic_storage stor
         break;
     case CX_MUL: {
         /* Create an element with the iterator as base */
-        result = (ic_storage)ic_element__create(ic_storage(lvalue), NULL);
+        result = (ic_storage)ic_elementCreate(ic_storage(lvalue), NULL);
         break;
     }
     default:

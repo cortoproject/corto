@@ -65,7 +65,7 @@ ic_node _Fast_Boolean_toIc_v(Fast_Boolean _this, ic_program program, ic_storage 
     CX_UNUSED(stored);
     CX_UNUSED(program);
 
-    result = (ic_node)ic_literal__create((cx_any){cx_type(cx_bool_o), &_this->value, FALSE});
+    result = (ic_node)ic_literalCreate((cx_any){cx_type(cx_bool_o), &_this->value, FALSE});
 
     return result;
 /* $end */

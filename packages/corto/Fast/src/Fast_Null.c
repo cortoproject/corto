@@ -67,6 +67,6 @@ ic_node _Fast_Null_toIc_v(Fast_Null _this, ic_program program, ic_storage storag
     CX_UNUSED(_this);
     CX_UNUSED(program);
 
-    return ic_node(ic_literal__create((cx_any){cx_type(cx_void_o), NULL, FALSE}));
+    return ic_node(ic_literalCreate((cx_any){cx_type(cx_void_o), NULL, FALSE}));
 /* $end */
 }

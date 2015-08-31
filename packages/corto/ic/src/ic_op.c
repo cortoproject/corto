@@ -88,7 +88,7 @@ cx_int16 _ic_op_construct(ic_op _this) {
 /* ::corto::ic::op::str(string in) */
 cx_string _ic_op_str(ic_op _this, cx_string in) {
 /* $begin(::corto::ic::op::str) */
-    in = strappend(in, "  %s", ic_opKind__str(_this->kind));
+    in = strappend(in, "  %s", ic_opKindStr(_this->kind));
     if (_this->s1) {
         in = ic_op_derefToString(in, _this->s1, _this->s1Deref);
         in = ic_node_str(_this->s1, in);
@@ -167,10 +167,10 @@ cx_bool _ic_op_validate(ic_op _this) {
     if (!result) {
         printf("%s:%d: invalid operands for '%s' (%s, %s, %s)\n",
                ic_program_get()->filename,
-               _this->line, ic_opKind__str(_this->kind),
-               _this->s1 ? ic_kind__str(ic_node(_this->s1)->kind) : "<none>",
-               _this->s2 ? ic_kind__str(ic_node(_this->s2)->kind) : "<none>",
-               _this->s3 ? ic_kind__str(ic_node(_this->s3)->kind) : "<none>");
+               _this->line, ic_opKindStr(_this->kind),
+               _this->s1 ? ic_kindStr(ic_node(_this->s1)->kind) : "<none>",
+               _this->s2 ? ic_kindStr(ic_node(_this->s2)->kind) : "<none>",
+               _this->s3 ? ic_kindStr(ic_node(_this->s3)->kind) : "<none>");
     }
 #else
     if (!result) {

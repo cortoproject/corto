@@ -103,7 +103,7 @@ cx_int16 _Fast_Wait_construct(Fast_Wait _this) {
             cx_setref(&_this->timeout, timeoutExpr);
         }
     } else {
-        _this->timeout = Fast_Expression(Fast_FloatingPoint__create(0));
+        _this->timeout = Fast_Expression(Fast_FloatingPointCreate(0));
     }
 
     /* Set type of expression */

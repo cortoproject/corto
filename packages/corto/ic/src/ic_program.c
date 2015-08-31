@@ -23,9 +23,9 @@ cx_void _ic_program_add(ic_program _this, ic_node n) {
     }
 
     if (cx_instanceof(cx_type(ic_storage_o), n)) {
-        ic_node_list__append(_this->scope->storages, n);
+        ic_node_listAppend(_this->scope->storages, n);
     } else {
-        ic_node_list__append(_this->scope->program, n);
+        ic_node_listAppend(_this->scope->program, n);
     }
 
 /* $end */
@@ -68,7 +68,7 @@ ic_variable _ic_program_declareVariable(ic_program _this, cx_string name, cx_typ
 /* $begin(::corto::ic::program::declareVariable) */
     ic_variable result = ic_variable(ic_scope_lookupStorage(_this->scope, name, FALSE));
     if (!result) {
-        result = ic_variable__create(name, type, isReference, holdsReturn, isParameter, isReturn);
+        result = ic_variableCreate(name, type, isReference, holdsReturn, isParameter, isReturn);
         ic_scope_addStorage(_this->scope, ic_storage(result));
     }
     return result;
@@ -104,7 +104,7 @@ ic_element _ic_program_getElement(ic_program _this, ic_storage base, ic_node ind
     }
     result = ic_element(ic_scope_lookupStorage(base->scope, name, FALSE));
     if (!result) {
-        result = ic_element__create(base, index);
+        result = ic_elementCreate(base, index);
         ic_scope_addStorage(_this->scope, ic_storage(result));
     }
     return result;
@@ -126,7 +126,7 @@ ic_member _ic_program_getMember(ic_program _this, ic_storage base, cx_member m) 
     sprintf(name, "%s.%s", base->name, cx_nameof(m));
     result = ic_member(ic_scope_lookupStorage(base->scope, name, FALSE));
     if (!result) {
-        result = ic_member__create(base, m);
+        result = ic_memberCreate(base, m);
         ic_scope_addStorage(_this->scope, ic_storage(result));
     }
     return result;
@@ -144,7 +144,7 @@ ic_object _ic_program_getObject(ic_program _this, cx_object o) {
     }
     result = ic_object(ic_scope_lookupStorage(root, cx_fullname(o, id), FALSE));
     if (!result) {
-        result = ic_object__create(o);
+        result = ic_objectCreate(o);
         ic_scope_addStorage(root, ic_storage(result));
     }
     return result;
@@ -203,7 +203,7 @@ ic_accumulator _ic_program_pushAccumulator(ic_program _this, cx_type type, cx_bo
     _this->autoAccId++;
 
     _this->accumulatorStack[_this->accumulatorSp] = 
-        ic_accumulator__create(name, type ? type : cx_void_o, isReference, holdsReturn);
+        ic_accumulatorCreate(name, type ? type : cx_void_o, isReference, holdsReturn);
 
     _this->accumulatorSp++;
     return _this->accumulatorStack[_this->accumulatorSp-1];
@@ -217,7 +217,7 @@ ic_scope _ic_program_pushFunction(ic_program _this, cx_function function) {
     ic_scope scope;
 
     /* Add function-label */
-    label = ic_function__create(function);
+    label = ic_functionCreate(function);
     ic_program_add(_this, ic_node(label));
 
     /* Push function-scope */
@@ -231,7 +231,7 @@ ic_scope _ic_program_pushFunction(ic_program _this, cx_function function) {
 /* ::corto::ic::program::pushScope() */
 ic_scope _ic_program_pushScope(ic_program _this) {
 /* $begin(::corto::ic::program::pushScope) */
-    _this->scope = ic_scope__create(_this->scope, FALSE);
+    _this->scope = ic_scopeCreate(_this->scope, FALSE);
 
     if (_this->scope->parent) {
         cx_llAppend(_this->scope->parent->program, _this->scope);

@@ -70,7 +70,7 @@ ic_node _Fast_Cast_toIc_v(Fast_Cast _this, ic_program program, ic_storage storag
             FALSE);
     }
 
-    lvalue = (ic_node)ic_object__create(_this->lvalue);
+    lvalue = (ic_node)ic_objectCreate(_this->lvalue);
     rvalue = Fast_Node_toIc(Fast_Node(_this->rvalue), program, (ic_storage)NULL, TRUE);
 
     if ((_this->rvalue->deref == Fast_ByReference) || _thisType->reference) {

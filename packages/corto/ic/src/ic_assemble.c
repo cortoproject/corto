@@ -356,7 +356,7 @@ ic_vmOperand ic_getVmOperand(ic_vmProgram *program, ic_derefKind deref, cx_bool 
         break;
 
         default:
-            cx_assert(0, "invalid value-kind (%s)", ic_kind__str(node->kind));
+            cx_assert(0, "invalid value-kind (%s)", ic_kindStr(node->kind));
             break;
         }
     }
@@ -1096,9 +1096,9 @@ static vm_opKind ic_getVmOpKind(ic_vmProgram *program, ic_op op, ic_node storage
     if ((result == CX_VM_STOP) && (op->kind != ic_stop)) {
         cx_error("%s:%d: instruction lookup failed for => %s %s %s",
             program->icProgram->filename, op->line,
-            ic_opKind__str(op->kind),
-            ic_derefKind__str(deref1),
-            ic_derefKind__str(deref2));
+            ic_opKindStr(op->kind),
+            ic_derefKindStr(deref1),
+            ic_derefKindStr(deref2));
         fprintf(stderr, "   type:      ");
         switch(typeKind) {
         case IC_VMTYPE_B: fprintf(stderr, "B"); break;
@@ -1128,13 +1128,13 @@ static vm_opKind ic_getVmOpKind(ic_vmProgram *program, ic_op op, ic_node storage
         }
         printf("\n");
         if (op->s1) {
-            cx_error("   operand 1: %s", ic_node__str(op->s1));
+            cx_error("   operand 1: %s", ic_nodeStr(op->s1));
         }
         if (op->s2) {
-            cx_error("   operand 2: %s", ic_node__str(op->s2));
+            cx_error("   operand 2: %s", ic_nodeStr(op->s2));
         }
         if (op->s3) {
-            cx_error("   operand 3: %s", ic_node__str(op->s3));
+            cx_error("   operand 3: %s", ic_nodeStr(op->s3));
         }
     }
 
@@ -1415,7 +1415,7 @@ static void ic_getVmOp(ic_vmProgram *program, ic_op op) {
 
     case ic_push:
         if (op->s1Any) {
-            op2 = (ic_node)ic_address__create((cx_word)ic_valueType(op->s1));
+            op2 = (ic_node)ic_addressCreate((cx_word)ic_valueType(op->s1));
             opDeref2 = IC_DEREF_ADDRESS;
         }
     case ic_define:
@@ -1467,7 +1467,7 @@ static void ic_getVmOp(ic_vmProgram *program, ic_op op) {
     case ic_init:
     case ic_deinit: {
         op1 = op->s1;
-        op2 = (ic_node)ic_object__create(ic_storage(op->s1)->type);
+        op2 = (ic_node)ic_objectCreate(ic_storage(op->s1)->type);
         opDeref1 = IC_DEREF_VALUE;
         opDeref2 = IC_DEREF_ADDRESS;
         break;
@@ -1477,7 +1477,7 @@ static void ic_getVmOp(ic_vmProgram *program, ic_op op) {
         if (ic_storage(op->s2)->type->kind == CX_ITERATOR) {
             op1 = op->s2;
             op2 = op->s3;
-            op3 = (ic_node)ic_object__create(ic_storage(op->s3)->type);
+            op3 = (ic_node)ic_objectCreate(ic_storage(op->s3)->type);
             opDeref1 = op->s2Deref;
             opDeref2 = op->s3Deref;
             opDeref3 = IC_DEREF_ADDRESS;

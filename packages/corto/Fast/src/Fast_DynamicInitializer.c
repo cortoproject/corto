@@ -14,7 +14,7 @@
 cx_int16 Fast_Initializer_assign(Fast_DynamicInitializer _this, Fast_Expression lvalue, Fast_Expression rvalue) {
     CX_UNUSED(_this);
     if (rvalue) {
-        Fast_Binary expr = Fast_Binary__create(lvalue, rvalue, CX_ASSIGN);
+        Fast_Binary expr = Fast_BinaryCreate(lvalue, rvalue, CX_ASSIGN);
         Fast_Parser_addStatement(yparser(), Fast_Node(expr));
         Fast_Parser_collect(yparser(), expr);
     }
@@ -48,8 +48,8 @@ Fast_Expression Fast_Initializer_expr(Fast_DynamicInitializer _this, cx_uint8 va
             break;
         case CX_COMPOSITE:
             if (fp) {
-                Fast_String memberString = Fast_String__create(cx_nameof(thisFrame->member));
-                result = Fast_Expression(Fast_Member__create(base, Fast_Expression(memberString)));
+                Fast_String memberString = Fast_StringCreate(cx_nameof(thisFrame->member));
+                result = Fast_Expression(Fast_MemberCreate(base, Fast_Expression(memberString)));
                 Fast_Parser_collect(yparser(), result);
                 Fast_Parser_collect(yparser(), memberString);
             } else {
@@ -69,8 +69,8 @@ Fast_Expression Fast_Initializer_expr(Fast_DynamicInitializer _this, cx_uint8 va
                 }
                 case CX_SEQUENCE:
                 case CX_ARRAY: {
-                    Fast_Integer index = Fast_Integer__create(thisFrame->location);
-                    result = Fast_Expression(Fast_Element__create(base, Fast_Expression(index)));
+                    Fast_Integer index = Fast_IntegerCreate(thisFrame->location);
+                    result = Fast_Expression(Fast_ElementCreate(base, Fast_Expression(index)));
                     Fast_Parser_collect(yparser(), result);
                     Fast_Parser_collect(yparser(), index);
                     if (cx_collection(frame->type)->kind != CX_LIST) {
@@ -80,7 +80,7 @@ Fast_Expression Fast_Initializer_expr(Fast_DynamicInitializer _this, cx_uint8 va
                 }
                 case CX_MAP:
                     if (!thisFrame->isKey) {
-                        result = Fast_Expression(Fast_Element__create(base, Fast_Expression(_this->frames[fp].keyExpr[variable])));
+                        result = Fast_Expression(Fast_ElementCreate(base, Fast_Expression(_this->frames[fp].keyExpr[variable])));
                         Fast_Parser_collect(yparser(), result);
                         thisFrame->isKey = FALSE;
                         Fast_Initializer_assign(_this, result, v);
@@ -135,7 +135,7 @@ cx_int16 _Fast_DynamicInitializer_define(Fast_DynamicInitializer _this) {
     /* Insert define operations */
     if (!_this->assignValue) {
         for(variable=0; variable<Fast_Initializer(_this)->variableCount; variable++) {
-            Fast_Define defineExpr = Fast_Define__create(_this->frames[0].expr[variable]);
+            Fast_Define defineExpr = Fast_DefineCreate(_this->frames[0].expr[variable]);
             Fast_Parser_addStatement(yparser(), Fast_Node(defineExpr));
             Fast_Parser_collect(yparser(), defineExpr);
         }
@@ -196,7 +196,7 @@ cx_int16 _Fast_DynamicInitializer_push(Fast_DynamicInitializer _this) {
     /* If scope contains contents of a sequence insert operation to set sequence-size. Because size is not known beforehand,
      * cache the expression that contains the size. This will be set to it's final value when sequence-scope is pop'd. */
     if ((t->kind == CX_COLLECTION) && (cx_collection(t)->kind == CX_SEQUENCE)) {
-        Fast_Integer size = Fast_Integer__create(0);
+        Fast_Integer size = Fast_IntegerCreate(0);
         Fast_Parser_collect(yparser(), size);
         
         /* Cast the size to uint32 so that the expression won't be replaced by a cast when it is inserted in the argumentlist

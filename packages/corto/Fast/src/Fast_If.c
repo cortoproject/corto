@@ -122,7 +122,7 @@ ic_node _Fast_If_toIc_v(Fast_If _this, ic_program program, ic_storage storage, c
              * before the jump occurs.
              */
              if (hasReturnedResource) {
-                ic_node boolType = ic_node(ic_object__create(cx_bool_o));
+                ic_node boolType = ic_node(ic_objectCreate(cx_bool_o));
 
                 IC_3(program, Fast_Node(_this)->line, ic_cast, preEval, expr, boolType,
                     IC_DEREF_VALUE, deref1, IC_DEREF_ADDRESS);
@@ -135,7 +135,7 @@ ic_node _Fast_If_toIc_v(Fast_If _this, ic_program program, ic_storage storage, c
 
 
             /* Create label to jump to when condition evaluates true */
-            labelEval = ic_label__create();
+            labelEval = ic_labelCreate();
 
             /* Evaluate condition, insert jump */
             if (_this->falseBranch) {
@@ -143,7 +143,7 @@ ic_node _Fast_If_toIc_v(Fast_If _this, ic_program program, ic_storage storage, c
                     labelEval, NULL, deref1, IC_DEREF_VALUE, IC_DEREF_VALUE);
 
                 /* Label to jump over true-branch */
-                labelEnd = ic_label__create();
+                labelEnd = ic_labelCreate();
             } else {
                 IC_3(program, Fast_Node(_this)->line, inverse ? ic_jeq : ic_jneq, expr,
                     labelEval, NULL, deref1, IC_DEREF_VALUE, IC_DEREF_VALUE);

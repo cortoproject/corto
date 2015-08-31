@@ -23,7 +23,7 @@ void ic_vmStorageAddReferee(ic_vmStorage *accumulator, ic_vmProgram *program, vo
     accumulator->refereeCount++;
 }
 
-ic_vmStorage *ic_vmStorage__create(ic_vmProgram *program, ic_storage acc, cx_uint32 firstUsed) {
+ic_vmStorage *ic_vmStorageCreate(ic_vmProgram *program, ic_storage acc, cx_uint32 firstUsed) {
     ic_vmStorage *result;
 
     result = cx_calloc(sizeof(ic_vmStorage));
@@ -146,7 +146,7 @@ static vm_op *ic_vmStorageAssembleElement(
 
         /* Create value for elementSize */
         elementSize = cx_type_sizeof(collection->elementType);
-        ic_elementSize = (ic_node)ic_literal__create((cx_any){cx_type(cx_uint32_o), &elementSize, FALSE});
+        ic_elementSize = (ic_node)ic_literalCreate((cx_any){cx_type(cx_uint32_o), &elementSize, FALSE});
 
         switch(collection->kind) {
         case CX_ARRAY:

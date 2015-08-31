@@ -27,7 +27,7 @@ int fast_cortoRun(cx_string file, void* udata) {
     source = cx_fileLoad(file);
     if (source) {
         /* Create parser */
-        p = Fast_Parser__create(source, file);
+        p = Fast_ParserCreate(source, file);
 
         /* Parse script */
         Fast_Parser_parse(p);
@@ -48,15 +48,15 @@ Fast_Call Fast_createCallWithArguments(Fast_Expression instance, cx_string funct
     Fast_CallBuilder builder;
 
     /* Initialize builder */
-    Fast_CallBuilder__init(&builder);
-    Fast_CallBuilder__set(&builder,
+    Fast_CallBuilderInit(&builder);
+    Fast_CallBuilderSet(&builder,
         function,
         arguments,
         instance,
         yparser()->scope,
         yparser()->block);
     result = Fast_CallBuilder_build(&builder);
-    Fast_CallBuilder__deinit(&builder);
+    Fast_CallBuilderDeinit(&builder);
 
     return result;
 }
@@ -70,7 +70,7 @@ Fast_Call Fast_createCall(Fast_Expression instance, cx_string function, cx_uint3
     /* Create comma-expression if there is more than one argument */
     va_start(arglist, numArgs);
     if (numArgs > 1) {
-        args = Fast_Expression(Fast_Comma__create());
+        args = Fast_Expression(Fast_CommaCreate());
         for(i=0; i<numArgs; i++) {
             arg = va_arg(arglist, Fast_Expression);
             Fast_Comma_addExpression(Fast_Comma(args), arg);
@@ -114,7 +114,7 @@ Fast_Call Fast_createCallFromExpr(Fast_Expression f, Fast_Expression arguments) 
             break;
 
         case Fast_ElementStorage:
-            result = Fast_Call(Fast_DelegateCall__create(NULL, arguments, f));
+            result = Fast_Call(Fast_DelegateCallCreate(NULL, arguments, f));
             break;
 
         default:
@@ -125,10 +125,10 @@ Fast_Call Fast_createCallFromExpr(Fast_Expression f, Fast_Expression arguments) 
     }
 
     if (!result) {
-        Fast_CallBuilder__init(&builder);
-        Fast_CallBuilder__set(&builder, name, arguments, instance, scope, yparser()->block);
+        Fast_CallBuilderInit(&builder);
+        Fast_CallBuilderSet(&builder, name, arguments, instance, scope, yparser()->block);
         result = Fast_CallBuilder_build(&builder);
-        Fast_CallBuilder__deinit(&builder);
+        Fast_CallBuilderDeinit(&builder);
     }
 
     return result;

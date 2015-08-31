@@ -15,6 +15,7 @@ typedef struct c_typeWalk_t {
     g_file header;
     g_file source;
     cx_uint32 firstComma;
+    cx_uint32 errorCount;
 } c_typeWalk_t;
 
 /* Resolve object */
@@ -365,17 +366,19 @@ static void c_sourceWriteLoadStart(cx_generator g, g_file file) {
 }
 
 /* Write end of load-routine */
-static void c_sourceWriteLoadEnd(g_file file) {
+static void c_sourceWriteLoadEnd(g_file file, c_typeWalk_t *data) {
     g_fileWrite(file, "if (_a_) {\n");
     g_fileIndent(file);
     g_fileWrite(file, "cx_release(_a_);\n");
     g_fileDedent(file);
     g_fileWrite(file, "}\n\n");
     g_fileWrite(file, "return 0;\n");
-    g_fileDedent(file);
-    g_fileWrite(file, "error:\n");
-    g_fileIndent(file);
-    g_fileWrite(file, "return -1;\n");
+    if (data->errorCount) {
+        g_fileDedent(file);
+        g_fileWrite(file, "error:\n");
+        g_fileIndent(file);
+        g_fileWrite(file, "return -1;\n");
+    }
     g_fileDedent(file);
     g_fileWrite(file, "}\n");
 }
@@ -735,6 +738,7 @@ static int c_loadDeclare(cx_object o, void* userData) {
                 g_getName(data->g),
                 escapedName);
         g_fileWrite(data->source, "goto error;\n");
+        data->errorCount++;
         g_fileDedent(data->source);
 
         g_fileWrite(data->source, "}\n\n");
@@ -785,6 +789,7 @@ static int c_loadDefine(cx_object o, void* userData) {
                 g_getName(data->g),
                 c_escapeString(fullname, escapedId));
         g_fileWrite(data->source, "goto error;\n");
+        data->errorCount++;
         g_fileDedent(data->source);
         g_fileWrite(data->source, "}\n");
         g_fileDedent(data->source);
@@ -835,6 +840,7 @@ int corto_genMain(cx_generator g) {
     walkData.g = g;
     walkData.header = c_loadHeaderFileOpen(g);
     walkData.source = c_loadSourceFileOpen(g);
+    walkData.errorCount = 0;
 
     /* Write comment indicating definitions in sourcefile */
     c_sourceWriteVarDefStart(walkData.source);
@@ -854,7 +860,7 @@ int corto_genMain(cx_generator g) {
     }
 
     /* Close load-routine */
-    c_sourceWriteLoadEnd(walkData.source);
+    c_sourceWriteLoadEnd(walkData.source, &walkData);
 
     /* Close headerfile */
     c_loadHeaderFileClose(g, walkData.header);

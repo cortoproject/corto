@@ -23,24 +23,24 @@ Fast_Call Fast_createCallFromExpr(Fast_Expression f, Fast_Expression arguments);
 
 /* Convenience macro's for IC generation */
 #define IC_1_OP(line, opkind, _op, deref, any)\
-    ic_op__create(line, opkind, ic_node(_op), NULL, NULL, deref, IC_DEREF_VALUE, IC_DEREF_VALUE, any)
+    ic_opCreate(line, opkind, ic_node(_op), NULL, NULL, deref, IC_DEREF_VALUE, IC_DEREF_VALUE, any)
 
 #define IC_1(program, line, opkind, op, deref)\
     ic_program_add(program, ic_node( IC_1_OP(line, opkind, op, deref, FALSE) ) );
 
 #define IC_1_ANY(program, line, opkind, op, deref)\
     ic_program_add(program, ic_node(\
-        ic_op__create(\
+        ic_opCreate(\
             line, opkind, ic_node(op), NULL, NULL, deref, IC_DEREF_VALUE, IC_DEREF_VALUE, TRUE)));
 
 #define IC_2(program, line, opkind, op1, op2, deref1, deref2)\
     ic_program_add(program, ic_node(\
-        ic_op__create(\
+        ic_opCreate(\
             line, opkind, NULL, ic_node(op1), ic_node(op2), IC_DEREF_VALUE, deref1, deref2, FALSE)));
 
 #define IC_3(program, line, opkind, op1, op2, op3, deref1, deref2, deref3)\
     ic_program_add(program, ic_node(\
-        ic_op__create(\
+        ic_opCreate(\
             line, opkind, ic_node(op1), ic_node(op2), ic_node(op3), deref1, deref2, deref3, FALSE)));
 
 #ifdef __cplusplus

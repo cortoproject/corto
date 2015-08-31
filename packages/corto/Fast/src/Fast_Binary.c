@@ -320,7 +320,7 @@ cx_int16 Fast_Binary_toIc_strOp(
     switch(_this->operator) {
     /* Append strings */
     case CX_ADD: {
-        ic_literal dummy = ic_literal__create((cx_any){cx_type(cx_string_o), NULL, TRUE});
+        ic_literal dummy = ic_literalCreate((cx_any){cx_type(cx_string_o), NULL, TRUE});
         IC_2(program, Fast_Node(_this)->line, ic_strcat, lvalue, rvalue, IC_DEREF_VALUE, IC_DEREF_VALUE);
         IC_2(program, Fast_Node(_this)->line, ic_strcpy, storage, dummy, IC_DEREF_VALUE, IC_DEREF_VALUE);
         break;
@@ -417,11 +417,11 @@ Fast_Expression _Fast_Binary_fold(Fast_Binary _this) {
         if ((Fast_Node(_this->lvalue)->kind == Fast_LiteralExpr) &&
            (Fast_Node(_this->rvalue)->kind == Fast_LiteralExpr)) {
                 if (Fast_Binary_isConditional(_this)) {
-                    result = Fast_Expression(Fast_Boolean__create(FALSE));
+                    result = Fast_Expression(Fast_BooleanCreate(FALSE));
                     resultPtr = (void*)Fast_Literal_getValue(Fast_Literal(result));
                     cx_binaryOperator(cx_object_o, _this->operator, &lptr, &rptr, resultPtr);
                 } else {
-                    result = Fast_Expression(Fast_Null__create());
+                    result = Fast_Expression(Fast_NullCreate());
                 }
            }
     } else if (lptr && rptr) {
@@ -433,17 +433,17 @@ Fast_Expression _Fast_Binary_fold(Fast_Binary _this) {
         /* Create result-expression */
         if (type->kind == CX_PRIMITIVE) {
             if (Fast_Binary_isConditional(_this)) {
-                result = Fast_Expression(Fast_Boolean__create(FALSE));
+                result = Fast_Expression(Fast_BooleanCreate(FALSE));
             } else {
                 switch(cx_primitive(type)->kind) {
-                case CX_BOOLEAN: result = Fast_Expression(Fast_Boolean__create(FALSE)); break;
-                case CX_CHARACTER: result = Fast_Expression(Fast_Character__create('a')); break;
+                case CX_BOOLEAN: result = Fast_Expression(Fast_BooleanCreate(FALSE)); break;
+                case CX_CHARACTER: result = Fast_Expression(Fast_CharacterCreate('a')); break;
                 case CX_BITMASK:
-                case CX_UINTEGER: result = Fast_Expression(Fast_Integer__create(0)); break;
+                case CX_UINTEGER: result = Fast_Expression(Fast_IntegerCreate(0)); break;
                 case CX_ENUM:
-                case CX_INTEGER: result = Fast_Expression(Fast_SignedInteger__create(0)); break;
-                case CX_FLOAT: result = Fast_Expression(Fast_FloatingPoint__create(0)); break;
-                case CX_TEXT: result = Fast_Expression(Fast_String__create(NULL)); break;
+                case CX_INTEGER: result = Fast_Expression(Fast_SignedIntegerCreate(0)); break;
+                case CX_FLOAT: result = Fast_Expression(Fast_FloatingPointCreate(0)); break;
+                case CX_TEXT: result = Fast_Expression(Fast_StringCreate(NULL)); break;
                 default:
                     Fast_Parser_error(yparser(), "Invalid primitive for folding expression");
                     goto error;
@@ -525,13 +525,13 @@ cx_void _Fast_Binary_setOperator(Fast_Binary _this, cx_operatorKind kind) {
 
     /* If operator is a compound operator (assign_*), split up in two binary expressions */
     switch(_this->operator) {
-    case CX_ASSIGN_ADD: compoundExpr = Fast_Binary__create(_this->lvalue, _this->rvalue, CX_ADD); break;
-    case CX_ASSIGN_SUB: compoundExpr = Fast_Binary__create(_this->lvalue, _this->rvalue, CX_SUB); break;
-    case CX_ASSIGN_DIV: compoundExpr = Fast_Binary__create(_this->lvalue, _this->rvalue, CX_DIV); break;
-    case CX_ASSIGN_MUL: compoundExpr = Fast_Binary__create(_this->lvalue, _this->rvalue, CX_MUL); break;
-    case CX_ASSIGN_MOD: compoundExpr = Fast_Binary__create(_this->lvalue, _this->rvalue, CX_MOD); break;
-    case CX_ASSIGN_OR:  compoundExpr = Fast_Binary__create(_this->lvalue, _this->rvalue, CX_OR); break;
-    case CX_ASSIGN_AND: compoundExpr = Fast_Binary__create(_this->lvalue, _this->rvalue, CX_AND); break;
+    case CX_ASSIGN_ADD: compoundExpr = Fast_BinaryCreate(_this->lvalue, _this->rvalue, CX_ADD); break;
+    case CX_ASSIGN_SUB: compoundExpr = Fast_BinaryCreate(_this->lvalue, _this->rvalue, CX_SUB); break;
+    case CX_ASSIGN_DIV: compoundExpr = Fast_BinaryCreate(_this->lvalue, _this->rvalue, CX_DIV); break;
+    case CX_ASSIGN_MUL: compoundExpr = Fast_BinaryCreate(_this->lvalue, _this->rvalue, CX_MUL); break;
+    case CX_ASSIGN_MOD: compoundExpr = Fast_BinaryCreate(_this->lvalue, _this->rvalue, CX_MOD); break;
+    case CX_ASSIGN_OR:  compoundExpr = Fast_BinaryCreate(_this->lvalue, _this->rvalue, CX_OR); break;
+    case CX_ASSIGN_AND: compoundExpr = Fast_BinaryCreate(_this->lvalue, _this->rvalue, CX_AND); break;
         break;
     default:
         break;

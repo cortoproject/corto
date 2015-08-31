@@ -12,17 +12,17 @@ tc_Point tc_Point__new(void) {
     return cx_declare(tc_Point_o);
 }
 
-tc_Point tc_Point__declare(cx_object _parent, cx_string _name) {
+tc_Point tc_PointDeclare(cx_object _parent, cx_string _name) {
     return cx_declareChild(_parent, _name, tc_Point_o);
 }
 
-int tc_Point__define(tc_Point _this, cx_uint32 x, cx_uint32 y) {
+int tc_PointDefine(tc_Point _this, cx_uint32 x, cx_uint32 y) {
     _this->x = x;
     _this->y = y;
     return cx_define(_this);
 }
 
-tc_Point tc_Point__create(cx_uint32 x, cx_uint32 y) {
+tc_Point tc_PointCreate(cx_uint32 x, cx_uint32 y) {
     tc_Point _this;
     _this = cx_declare(tc_Point_o);
     _this->x = x;

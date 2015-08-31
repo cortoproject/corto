@@ -17,7 +17,7 @@ cx_void _Fast_Block_addStatement(Fast_Block _this, Fast_Node statement) {
 /* $begin(::corto::Fast::Block::addStatement) */
     if (statement) {
         cx_assert(_this->statements != NULL, "initialization failed");
-        Fast_Node_list__append(_this->statements, statement);
+        Fast_Node_listAppend(_this->statements, statement);
     }
 /* $end */
 }
@@ -39,7 +39,7 @@ Fast_Local _Fast_Block_declare(Fast_Block _this, cx_string id, cx_type type, cx_
 
     /* If variable did not exist, declare it in this block */
     kind = isParameter ? Fast_LocalParameter : Fast_LocalDefault;
-    result = Fast_Local__create(id, type, kind, isReference);
+    result = Fast_LocalCreate(id, type, kind, isReference);
     if (result) {
         cx_llAppend(_this->locals, result);
     } else {
@@ -64,7 +64,7 @@ Fast_Local _Fast_Block_declareReturnVariable(Fast_Block _this, cx_function funct
     cx_assert(_this->locals != NULL, "initialization failed");
 
     /* If variable did not exist, declare it in this block */
-    result = Fast_Local__create(id, function->returnType, Fast_LocalReturn, function->returnsReference);
+    result = Fast_LocalCreate(id, function->returnType, Fast_LocalReturn, function->returnsReference);
     if (result) {
         cx_llAppend(_this->locals, result);
     }
@@ -87,7 +87,7 @@ Fast_Template _Fast_Block_declareTemplate(Fast_Block _this, cx_string id, cx_typ
     }
 
     /* If variable did not exist, declare it in this block */
-    result = Fast_Template__create(id, type, isParameter, isReference);
+    result = Fast_TemplateCreate(id, type, isParameter, isReference);
     if (result) {
         cx_llInsert(_this->locals, result);
     }
@@ -153,8 +153,8 @@ Fast_Expression _Fast_Block_lookup(Fast_Block _this, cx_string id) {
                         /* If a member is found, create memberexpression */
                         if (m) {
                             Fast_String memberIdExpr;
-                            memberIdExpr = Fast_String__create(id);
-                            result = Fast_Expression(Fast_Member__create(
+                            memberIdExpr = Fast_StringCreate(id);
+                            result = Fast_Expression(Fast_MemberCreate(
                                      thisLocal, Fast_Expression(memberIdExpr)));
                             Fast_Parser_collect(yparser(), memberIdExpr);
                             Fast_Parser_collect(yparser(), result);
@@ -164,8 +164,8 @@ Fast_Expression _Fast_Block_lookup(Fast_Block _this, cx_string id) {
                             m = cx_interface_resolveMethod(cx_interface(parent), id);
                             if (m) {
                                 Fast_String memberIdExpr;
-                                memberIdExpr = Fast_String__create(id);
-                                result = Fast_Expression(Fast_Member__create(
+                                memberIdExpr = Fast_StringCreate(id);
+                                result = Fast_Expression(Fast_MemberCreate(
                                          thisLocal, Fast_Expression(memberIdExpr)));
                                 Fast_Parser_collect(yparser(), memberIdExpr);
                                 Fast_Parser_collect(yparser(), result);

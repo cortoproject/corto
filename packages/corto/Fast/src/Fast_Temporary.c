@@ -35,7 +35,7 @@ ic_node _Fast_Temporary_toIc_v(Fast_Temporary _this, ic_program program, ic_stor
     CX_UNUSED(program);
 
     if (!_this->proxy && !_this->ic) {
-        ic_node acc = ic_node(ic_accumulator__create(NULL, _this->type, _this->reference || _this->type->reference, FALSE));
+        ic_node acc = ic_node(ic_accumulatorCreate(NULL, _this->type, _this->reference || _this->type->reference, FALSE));
         cx_setref(&_this->ic, acc);
         cx_release(acc);
     } else if (_this->proxy) {

@@ -60,7 +60,7 @@ ic_node _Fast_FloatingPoint_toIc_v(Fast_FloatingPoint _this, ic_program program,
     CX_UNUSED(storage);
     CX_UNUSED(stored);
 
-    result = (ic_node)ic_literal__create((cx_any){Fast_Expression_getType(Fast_Expression(_this)), &_this->value, FALSE});
+    result = (ic_node)ic_literalCreate((cx_any){Fast_Expression_getType(Fast_Expression(_this)), &_this->value, FALSE});
 
     return result;
 /* $end */

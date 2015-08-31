@@ -152,6 +152,9 @@ int cx_genDepBuildAction(cx_object o, void* userData) {
             }
         }
 
+        /* Guard to ensure that the object is added to the dependency administration */
+        cx_depresolver_insert(data->resolver, o);
+
         /* Insert dependencies on references in the object-value */
         walkData.o = o;
         walkData.data = data;
@@ -199,7 +202,7 @@ int cx_genCollectAnonymous(void* o, void* userData) {
 
 int cx_genDepWalk(cx_generator g, cx_depresolver_action onDeclare, cx_depresolver_action onDefine, void* userData) {
     struct g_itemWalk_t walkData;
-    cx_depresolver resolver = cx_depresolver__create(cx_genDeclareAction, cx_genDefineAction, &walkData);
+    cx_depresolver resolver = cx_depresolverCreate(cx_genDeclareAction, cx_genDefineAction, &walkData);
 
     /* Prepare walkData */
     walkData.g = g;

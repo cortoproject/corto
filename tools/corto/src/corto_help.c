@@ -7,7 +7,6 @@
 #include "corto_shell.h"
 
 int corto_help(int argc, char* argv[]) {
-	CX_UNUSED(argc);
 
 	if (argc <= 1) {
 		cx_error("corto: no command provided!");
@@ -33,6 +32,8 @@ int corto_help(int argc, char* argv[]) {
 		corto_untarHelp();
 	} else if (!strcmp(argv[1], "build")) {
 		corto_buildHelp();
+	} else if (!strcmp(argv[1], "rebuild")) {
+		corto_rebuildHelp();
 	} else {
 		cx_error("corto: unknown command\n");
 		cx_error("Use 'corto --help' to get a list of available commands");

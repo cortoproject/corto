@@ -18,7 +18,7 @@ Fast_Expression Fast_Node_optimizeCondition(Fast_Expression condition, cx_bool *
     *inverse = FALSE;
     
     /* If condition is an expression list, inserts && between each expression. */
-    Fast_Expression_list__foreach(conditions, elem)
+    Fast_Expression_listForeach(conditions, elem)
 
         /* If condition is a unary NOT inverse the condition and evaluate lvalue of NOT expression instead */
         if (Fast_Node(elem)->kind == Fast_UnaryExpr) {
@@ -45,7 +45,7 @@ Fast_Expression Fast_Node_optimizeCondition(Fast_Expression condition, cx_bool *
         } else {
             /* If element, add element to AND expression */
             if (elem) {
-                result = Fast_Expression(Fast_Binary__create(result, elem, CX_COND_AND));
+                result = Fast_Expression(Fast_BinaryCreate(result, elem, CX_COND_AND));
                 Fast_Parser_collect(yparser(), result);
                 
             /* If element was a literal either ignore it (if result was TRUE) or discard all other

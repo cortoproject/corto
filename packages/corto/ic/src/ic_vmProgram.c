@@ -134,7 +134,7 @@ ic_vmStorage *ic_vmProgram_getStorage(ic_vmProgram *program, ic_storage icAccumu
         if (!program->program) {
             program->program = vm_programNew(program->icProgram->filename, program->function->function);
         }
-        accumulator = ic_vmStorage__create(program, icAccumulator, program->program->size);
+        accumulator = ic_vmStorageCreate(program, icAccumulator, program->program->size);
         if (!program->storages) {
             program->storages = cx_llNew();
         }

@@ -101,7 +101,9 @@ cx_int16 corto_run(int argc, char *argv[]) {
 	cx_ll files, modified;
 	cx_uint32 retries = 0;
 
-	CX_UNUSED(argc);
+	if (argc > 1) {
+		cx_chdir(argv[1]);
+	}
 
 	files = cx_opendir("./src");
 	if (!files || !cx_fileTest(".corto")) {
@@ -172,6 +174,7 @@ cx_int16 corto_run(int argc, char *argv[]) {
 
 void corto_runHelp(void) {
     printf("Usage: corto run\n");
+    printf("       corto run <app>\n");
     printf("\n");
     printf("This command builds, runs and monitors your app. Corto will monitor both source\n");
     printf("and dependencies (packages) of your app. If a change is detected\n");

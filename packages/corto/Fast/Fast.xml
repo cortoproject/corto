@@ -621,11 +621,11 @@
             <!-- Recorded Initializer operation -->
             <enum name="InitOperKind">
                 <meta:scope>
-                    <constant name="InitPush"/>
-                    <constant name="InitPop"/>
-                    <constant name="InitDefine"/>
-                    <constant name="InitValue"/>
-                    <constant name="InitMember"/>
+                    <constant name="InitOpPush"/>
+                    <constant name="InitOpPop"/>
+                    <constant name="InitOpDefine"/>
+                    <constant name="InitOpValue"/>
+                    <constant name="InitOpMember"/>
                 </meta:scope>
             </enum>
             <struct name="InitOper">

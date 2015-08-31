@@ -44,7 +44,7 @@ ic_node _Fast_New_toIc_v(Fast_New _this, ic_program program, ic_storage storage,
         result = (ic_node)ic_program_pushAccumulator(program, Fast_Expression_getType(Fast_Expression(_this)), TRUE, FALSE);
     }
 
-    type = (ic_node)ic_object__create(Fast_Expression(_this)->type);
+    type = (ic_node)ic_objectCreate(Fast_Expression(_this)->type);
     if (_this->attributes) {
         attrs = Fast_Node_toIc(Fast_Node(_this->attributes), program, NULL, TRUE);
     } else {

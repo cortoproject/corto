@@ -61,7 +61,7 @@ ic_node _Fast_Integer_toIc_v(Fast_Integer _this, ic_program program, ic_storage 
     CX_UNUSED(storage);
     CX_UNUSED(stored);
 
-    result = (ic_node)ic_literal__create((cx_any){Fast_Expression_getType(Fast_Expression(_this)), &_this->value, FALSE});
+    result = (ic_node)ic_literalCreate((cx_any){Fast_Expression_getType(Fast_Expression(_this)), &_this->value, FALSE});
 
     return result;
 /* $end */

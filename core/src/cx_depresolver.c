@@ -328,7 +328,7 @@ static int g_itemResolveCycles(g_item item, struct cx_depresolver* data) {
 }
 
 /* Walk objects in correct dependency order. */
-cx_depresolver cx_depresolver__create(cx_depresolver_action onDeclare, cx_depresolver_action onDefine, void* userData) {
+cx_depresolver cx_depresolverCreate(cx_depresolver_action onDeclare, cx_depresolver_action onDefine, void* userData) {
     cx_depresolver result;
 
     result = cx_alloc(sizeof(struct cx_depresolver));
@@ -403,6 +403,10 @@ void cx_depresolver_depend(cx_depresolver _this, void* o, cx_uint8 kind, void* d
     } else {
         cx_error("cannot have dependency on self");
     }
+}
+
+void cx_depresolver_insert(cx_depresolver _this, void *item) {
+    g_itemLookup(item, _this);   
 }
 
 int cx_depresolver_walk(cx_depresolver _this) {
