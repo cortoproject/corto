@@ -131,14 +131,14 @@ extern cx_object cx_corto__new(cx_type type, cx_attr attributes);
 extern "C" {
 #endif
 
-#define MAX_UINT8  ((int8_t)-1)
-#define MAX_UINT16 ((int16_t)-1)
-#define MAX_UINT32 ((int32_t)-1)
-#define MAX_UINT64 ((int64_t)-1)
-#define MAX_INT8  ((MAX_UINT8/2-1))
-#define MAX_INT16 ((MAX_UINT16/2-1))
-#define MAX_INT32 ((MAX_UINT32/2-1))
-#define MAX_INT64 ((MAX_UINT64/2-1))
+#define MAX_UINT8  (0xFF)
+#define MAX_UINT16 (0xFFFF)
+#define MAX_UINT32 (0xFFFFFFFF)
+#define MAX_UINT64 (0xFFFFFFFFFFFFFFFF)
+#define MAX_INT8  ((MAX_UINT8/2))
+#define MAX_INT16 ((MAX_UINT16/2))
+#define MAX_INT32 ((MAX_UINT32/2))
+#define MAX_INT64 ((MAX_UINT64/2))
 #define MIN_INT8  (-(MAX_UINT8/2+1))
 #define MIN_INT16 (-(MAX_UINT16/2+1))
 #define MIN_INT32 (-(MAX_UINT32/2+1))
