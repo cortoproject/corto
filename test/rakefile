@@ -1,4 +1,5 @@
 
-COMPONENTS = []
+COMPONENTS = [] << 
+    :tc_stringser
     
 require "#{ENV['CORTO_BUILD']}/forward"

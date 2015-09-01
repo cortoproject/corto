@@ -168,12 +168,12 @@ cx_int16 corto_pp(int argc, char *argv[]) {
 
     if (cx_parseArguments(argc, argv)) {
         cx_error("invalid commandline specified.");
-        return -1;
+        goto error;
     }
 
     if (!generators) {
         cx_error("corto: no generators provided");
-        return -1;
+        goto error;
     }
 
     /* Load includes */
@@ -184,7 +184,7 @@ cx_int16 corto_pp(int argc, char *argv[]) {
 			
 			if (cx_load(include)) {
                 cx_error("corto: cannot load '%s'", include);
-                return -1;
+                goto error;
             } else {
                 /* Add name to scope list if none provided */
                 if (!scopes && (cx_llSize(includes) == 1) && !strchr(include, '.')) {
@@ -209,7 +209,7 @@ cx_int16 corto_pp(int argc, char *argv[]) {
             /* Load interface */
             if (gen_load(g, lib)) {
                 cx_error("corto: cannot load generator '%s'.", lib);
-                return -1;
+                goto error;
             }
 
             /* Generate for all scopes */
@@ -222,7 +222,7 @@ cx_int16 corto_pp(int argc, char *argv[]) {
 	                o = cx_resolve(NULL, scope);
 	                if (!o) {
 	                    cx_error("corto: unresolved scope '%s'.", scope);
-	                    return -1;
+	                    goto error;
 	                }
 	                cx_release(o);
 
@@ -253,7 +253,7 @@ cx_int16 corto_pp(int argc, char *argv[]) {
             if (gen_start(g)) {
                 cx_error("corto: error(s) occurred while running generator '%s', abort generation.", lib);
                 gen_free(g);
-                break;
+                goto error;
             }
 
             /* Free generator */
@@ -282,4 +282,6 @@ cx_int16 corto_pp(int argc, char *argv[]) {
     }
 
 	return 0;
+error:
+    return -1;
 }

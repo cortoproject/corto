@@ -9,7 +9,7 @@
 #include "corto_help.h"
 #include "cx_loader.h"
 
-void corto_locateHelp() {
+void corto_locateHelp(void) {
     printf("Usage: corto locate <package>\n");
     printf("\n");
     printf("Find out where a package is located. This can be useful if you're\n");
@@ -18,7 +18,7 @@ void corto_locateHelp() {
     printf("\n");
 }
 
-static void corto_printUsage() {
+static void corto_printUsage(void) {
     printf("Usage: corto [-d] <command> [args]\n");
     printf("       corto [-d] [files] [packages]\n");
     printf("       corto [--version] [-v] [--help] [-h]\n");
@@ -146,9 +146,7 @@ int main(int argc, char* argv[]) {
 
     /* Stop corto */
     cx_stop();
-
     return 0;
 error:
-    cx_stop();
     return -1;
 }

@@ -789,6 +789,7 @@ void cx_stop(void) {
 
     /* Workaround for dlopen-leakage - with this statement the valgrind memory-logging is clean. */
     /*pthread_exit(NULL);*/
+
 }
 
 #define CX_CHECKBUILTIN(builtinobj)\

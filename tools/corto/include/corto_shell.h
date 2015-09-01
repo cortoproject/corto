@@ -9,7 +9,7 @@ extern "C" {
 #endif
 
 cx_int16 corto_shell(int argc, char* argv[]);
-void corto_shellHelp();
+void corto_shellHelp(void);
 
 #ifdef __cplusplus
 }

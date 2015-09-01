@@ -2,7 +2,11 @@ require 'rake/clean'
 require "#{ENV['CORTO_BUILD']}/version"
 require "#{ENV['CORTO_BUILD']}/libmapping"
 
-Dir.chdir(File.dirname(Rake.application.rakefile))
+CHDIR_SET ||= false
+
+if !CHDIR_SET then
+    Dir.chdir(File.dirname(Rake.application.rakefile))
+end
 
 if not ENV['CORTO_BUILD'] then
     raise "CORTO_BUILD not defined (did you forget to 'source configure'?)"
@@ -19,6 +23,7 @@ CFLAGS ||= []
 LFLAGS ||= []
 TARGETDIR ||= ENV['CORTO_TARGET'] + "/lib"
 GENERATED_SOURCES ||= []
+GENERATED_HEADERS ||= []
 USE_PACKAGE ||= []
 USE_COMPONENT ||= []
 USE_LIBRARY ||= []
@@ -32,6 +37,8 @@ OBJECTS = SOURCES.ext(".o").pathmap(TARGETDIR + "/obj/%f")
 
 CLEAN.include(TARGETDIR + "/obj")
 CLOBBER.include(TARGETDIR + "/" + ARTEFACT)
+CLOBBER.include(GENERATED_SOURCES)
+CLOBBER.include(GENERATED_HEADERS)
 
 task :collect do
     verbose(false)
@@ -94,7 +101,9 @@ task :default => [:prebuild, :binary, :postbuild]
 
 def build_source(task, echo)
     verbose(false)
-    sh "mkdir -p #{TARGETDIR}/obj"
+    if not File.exists? "#{TARGETDIR}/obj" then
+        sh "mkdir -p #{TARGETDIR}/obj"
+    end
     if echo
         if ENV['silent'] != "true" then
             sh "echo '#{task.source}'" 

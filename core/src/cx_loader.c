@@ -261,48 +261,27 @@ loaded:
 cx_string cx_locateLib(cx_string lib) {
     cx_string usrPath = NULL, homePath = NULL;
     cx_string relativePath = cx_packageToFile(lib);
-    time_t usrTime = 0, homeTime = 0;
+    cx_string result = NULL;
 
     if (!relativePath) {
         goto error;
     }
 
-    usrPath = cx_envparse("/usr/lib/corto/%s/%s", CORTO_VERSION, lib);
-
-    if (strcmp(cx_getenv("CORTO_TARGET"), "/usr")) {
-        homePath = cx_envparse("$CORTO_TARGET/lib/corto/%s/%s", CORTO_VERSION, lib);
-
+    if (strcmp(cx_getenv("CORTO_HOME"), "/usr")) {
+        homePath = cx_envparse("$CORTO_HOME/lib/corto/%s/%s", CORTO_VERSION, lib);
         if (cx_fileTest(homePath)) {
-            struct stat attr;
-            if (stat(homePath, &attr) < 0) {
-                printf("failed to stat '%s'", homePath);
-                goto error;
-            } else {
-                homeTime = attr.st_mtime;
-            }
+            result = homePath;
         }
     }
 
-    if (cx_fileTest(usrPath)) {
-        struct stat attr;
-        if (stat(usrPath, &attr) < 0) {
-            printf("failed to stat '%s'", usrPath);
-            goto error;
-        } else {
-            usrTime = attr.st_mtime;
+    if (!homePath) {
+        usrPath = cx_envparse("/usr/lib/corto/%s/%s", CORTO_VERSION, lib);
+        if (cx_fileTest(usrPath)) {
+            result = usrPath;
         }
     }
 
-    if (usrTime || homeTime) {
-        if (usrTime > homeTime) {
-            if (homePath) cx_dealloc(homePath);
-            return usrPath;
-        } else {
-            if (usrPath) cx_dealloc(usrPath);
-            return homePath;
-        }
-    }
-
+    return result;
 error:
     return NULL;    
 }

@@ -369,7 +369,7 @@ static int cx_genTypeParse(cx_object o, cx_bool allowDeclared, cx_bool* recursio
     /* Check if object is valid */
     if (!cx_checkState(o, CX_VALID)) {
         cx_id id;
-        cx_error("cx_genTypeParse: scope '%s' contains invalid objects (%s).", cx_nameof(g_getCurrent(data->g)), cx_fullname(o, id));
+        cx_error("typedepwalk: scope '%s' contains invalid objects (%s).", cx_nameof(g_getCurrent(data->g)), cx_fullname(o, id));
         return 1;
     }
 
@@ -380,7 +380,7 @@ static int cx_genTypeParse(cx_object o, cx_bool allowDeclared, cx_bool* recursio
     /* Check if object is defined - declared objects are allowed only for procedure objects. */
     if (!cx_checkState(o, CX_DEFINED)) {
         cx_id id;
-        cx_error("cx_genTypeParse: scope '%s' contains undefined objects (%s).", cx_nameof(g_getCurrent(data->g)), cx_fullname(o, id));
+        cx_error("typedepwalk: scope '%s' contains undefined objects (%s).", cx_nameof(g_getCurrent(data->g)), cx_fullname(o, id));
         return 1;
     }
 
@@ -400,7 +400,7 @@ static int cx_genTypeParse(cx_object o, cx_bool allowDeclared, cx_bool* recursio
                     } else {
                         /* If caller does not handle recursion, report an error. */
                         cx_id id;
-                        cx_error("cx_genTypeParse: invalid recursion for type '%s'", cx_fullname(o, id));
+                        cx_error("typedepwalk: invalid recursion for type '%s'", cx_fullname(o, id));
                         goto error;
                     }
                 } else {
@@ -463,7 +463,7 @@ static int cx_genTypeParse(cx_object o, cx_bool allowDeclared, cx_bool* recursio
                     } else {
                         /* Recursion has not been catched in time. */
                         cx_id id;
-                        cx_error("cx_genTypeParse: recursion not handled for type '%s'", cx_fullname(o, id));
+                        cx_error("typedepwalk: recursion not handled for type '%s'", cx_fullname(o, id));
                         goto error;
                     }
                 }

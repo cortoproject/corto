@@ -10,7 +10,7 @@ extern "C" {
 
 int corto_help(int argc, char *argv[]);
 
-void corto_locateHelp();
+void corto_locateHelp(void);
 
 #ifdef __cplusplus
 }

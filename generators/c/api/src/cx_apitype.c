@@ -264,7 +264,15 @@ cx_int16 c_apiTypeDefineIntern(cx_type t, c_apiWalk_t *data, cx_bool isUpdate, c
         s = c_apiAssignSerializer();
         cx_metaWalk(&s, cx_type(t), data);
     } else if (t->kind != CX_COMPOSITE) {
-        g_fileWrite(data->source, "*_this = value;\n");
+        if (t->kind != CX_COLLECTION) {
+            g_fileWrite(data->source, "*_this = value;\n");
+        } else {
+            if (cx_collection(t)->kind == CX_SEQUENCE) {
+                g_fileWrite(data->source, "cx_copyp(_this, %s_o, &value);\n", id);
+            } else {
+                g_fileWrite(data->source, "cx_copyp(_this, %s_o, value);\n", id);
+            }
+        }
     } else if (isUpdate && !doUpdate) {
         g_fileWrite(data->source, "CX_UNUSED(_this);\n");
     }

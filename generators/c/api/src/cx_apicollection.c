@@ -283,7 +283,7 @@ static cx_int16 c_apiListTypeInsertNoAlloc(cx_list o, cx_string operation, c_api
     g_fileIndent(data->source);
     
     /* Insert element to list */
-    g_fileWrite(data->source, "%s(list, (void*)element);\n", cx_operationToApi(operation, api));
+    g_fileWrite(data->source, "%s(list, (void*)(cx_word)element);\n", cx_operationToApi(operation, api));
     if (elementType->reference) {
         g_fileWrite(data->source, "cx_claim(element);\n");
     }
@@ -326,7 +326,7 @@ static cx_int16 c_apiListTypeTake(cx_list o, cx_string operation, c_apiWalk_t* d
     g_fileIndent(data->source);
     
     /* Insert element to list */
-    g_fileWrite(data->source, "return (%s%s)%s(list);\n", elementId, allocRequired?"*":"", cx_operationToApi(operation, api));
+    g_fileWrite(data->source, "return (%s%s)(cx_word)%s(list);\n", elementId, allocRequired?"*":"", cx_operationToApi(operation, api));
 
     g_fileDedent(data->source);
     g_fileWrite(data->source, "}\n\n");
@@ -386,7 +386,7 @@ static cx_int16 c_apiListTypeGet(cx_list o, c_apiWalk_t* data) {
     g_fileIndent(data->source);
     
     /* Insert element to list */
-    g_fileWrite(data->source, "return (%s%s)cx_llGet(list, index);\n", elementId, allocRequired?"*":"");
+    g_fileWrite(data->source, "return (%s%s)(cx_word)cx_llGet(list, index);\n", elementId, allocRequired?"*":"");
     
     g_fileDedent(data->source);
     g_fileWrite(data->source, "}\n\n");

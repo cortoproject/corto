@@ -3477,17 +3477,17 @@ cx_string cx_stra(cx_any a, cx_uint32 maxLength) {
     return cx_strv(&v, maxLength);
 }
 
-void cx_fromStr(cx_object *o, cx_string string) {
+void cx_fromStr(void *o, cx_string string) {
     cx_string_deser_t serData;
 
-    serData.out = *o;
+    serData.out = *(void**)o;
     serData.scope = NULL;
-    serData.type = *o ? cx_typeof(*o) : NULL;
+    serData.type = *(void**)o ? cx_typeof(*(void**)o) : NULL;
     if (!cx_string_deser(string, &serData)) {
         cx_assert(!serData.out, "deserializer failed but out is set");
     }
 
-    *o = serData.out;
+    *(void**)o = serData.out;
 }
 
 void cx_fromStrv(cx_value *v, cx_string string) {

@@ -1,17 +1,18 @@
-/*
- * tc_stringser.c
+/* tc_stringser.c
  *
- *  Created on: Nov 19, 2013
- *      Author: sander
+ * This file contains the implementation for the generated interface.
+ *
+ * Don't mess with the begin and end tags, since these will ensure that modified
+ * code in interface functions isn't replaced when code is re-generated.
  */
 
-#include "tc_stringser__type.h"
-#include "tc_stringser__meta.h"
-#include "tc_stringser__api.h"
+#include "tc.h"
+
+/* $header() */
 #include "corto.h"
 
 int tc__classPrimitives(void) {
-    tc_classPrimitives o1, o2;
+    tc_classPrimitives o1 = NULL, o2 = NULL;
     cx_string str1, str2;
     int result = 0;
 
@@ -25,7 +26,8 @@ int tc__classPrimitives(void) {
     }
 
     /* Serialize from string */
-    o2 = cx_fromStr(str1);
+    o2 = tc_classPrimitivesDeclare(); cx_define(o2);
+    cx_fromStr(&o2, str1);
     if (!o2) {
         goto deser_err;
     }
@@ -64,7 +66,7 @@ ser1_err:
 }
 
 int tc__classInherit(void) {
-    tc_classInherit o1, o2;
+    tc_classInherit o1 = NULL, o2 = NULL;
     cx_string str1, str2;
     int result = 0;
 
@@ -80,7 +82,8 @@ int tc__classInherit(void) {
     }
 
     /* Serialize from string */
-    o2 = cx_fromStr(str1);
+    o2 = tc_classInheritDeclare(); cx_define(o2);
+    cx_fromStr(&o2, str1);
     if (!o2) {
         goto deser_err;
     }
@@ -130,7 +133,7 @@ int tc__arrayOfBool(void) {
     str1 = cx_strv(&info1, 0);
 
     /* Serialize string to array */
-    cx_fromStrp(str1, array2, cx_type(tc_arrayOfBool_o));
+    cx_fromStrp(&array2, tc_arrayOfBool_o, str1);
 
     /* Serialize 2nd array back to string */
     cx_valueValueInit(&info2, NULL, cx_type(tc_arrayOfBool_o), array2);
@@ -164,7 +167,7 @@ int tc__arrayOfChar(void) {
     str1 = cx_strv(&info1, 0);
 
     /* Serialize string to array */
-    cx_fromStrp(str1, array2, cx_type(tc_arrayOfChar_o));
+    cx_fromStrp(array2, tc_arrayOfChar_o, str1);
 
     /* Serialize 2nd array back to string */
     cx_valueValueInit(&info2, NULL, cx_type(tc_arrayOfChar_o), array2);
@@ -198,7 +201,7 @@ int tc__arrayOfInt(void) {
     str1 = cx_strv(&info1, 0);
 
     /* Serialize string to array */
-    cx_fromStrp(str1, array2, cx_type(tc_arrayOfInt_o));
+    cx_fromStrp(array2, tc_arrayOfInt_o, str1);
 
     /* Serialize 2nd array back to string */
     cx_valueValueInit(&info2, NULL, cx_type(tc_arrayOfInt_o), array2);
@@ -232,7 +235,7 @@ int tc__arrayOfFloat(void) {
     str1 = cx_strv(&info1, 0);
 
     /* Serialize string to array */
-    cx_fromStrp(str1, array2, cx_type(tc_arrayOfFloat_o));
+    cx_fromStrp(array2, tc_arrayOfFloat_o, str1);
 
     /* Serialize 2nd array back to string */
     cx_valueValueInit(&info2, NULL, cx_type(tc_arrayOfFloat_o), array2);
@@ -266,7 +269,7 @@ int tc__arrayOfString(void) {
     str1 = cx_strv(&info1, 0);
 
     /* Serialize string to array */
-    cx_fromStrp(str1, array2, cx_type(tc_arrayOfString_o));
+    cx_fromStrp(array2, tc_arrayOfString_o, str1);
 
     /* Serialize 2nd array back to string */
     cx_valueValueInit(&info2, NULL, cx_type(tc_arrayOfString_o), array2);
@@ -302,7 +305,7 @@ int tc__arrayOfColor(void) {
     str1 = cx_strv(&info1, 0);
 
     /* Serialize string to array */
-    cx_fromStrp(str1, array2, cx_type(tc_arrayOfColor_o));
+    cx_fromStrp(array2, tc_arrayOfColor_o, str1);
 
     /* Serialize 2nd array back to string */
     cx_valueValueInit(&info2, NULL, cx_type(tc_arrayOfColor_o), array2);
@@ -336,7 +339,7 @@ int tc__arrayOfMoveMode(void) {
     str1 = cx_strv(&info1, 0);
 
     /* Serialize string to array */
-    cx_fromStrp(str1, array2, cx_type(tc_arrayOfMoveMode_o));
+    cx_fromStrp(array2, tc_arrayOfMoveMode_o, str1);
 
     /* Serialize 2nd array back to string */
     cx_valueValueInit(&info2, NULL, cx_type(tc_arrayOfMoveMode_o), array2);
@@ -358,16 +361,13 @@ int tc__arrayOfMoveMode(void) {
     return result;
 }
 
-int main(int argc, char* argv[]) {
+/* $end */
+
+int tc_stringsermain(int argc, char* argv[]) {
+/* $begin(main) */
     CX_UNUSED(argc);
     CX_UNUSED(argv);
     cx_bool result = TRUE;
-
-    /* Start database */
-    cx_start();
-
-    /* Load definitions */
-    tc_stringser_load();
 
     if (tc__classPrimitives()) {
         printf("tc_stringser: tc_classPrimitives failed\n");
@@ -409,12 +409,10 @@ int main(int argc, char* argv[]) {
         result = FALSE;
     }
 
-    /* Stop database */
-    cx_stop();
-
     if (result) {
         printf("tc_stringser: OK\n");
     }
 
     return result;
+/* $end */
 }

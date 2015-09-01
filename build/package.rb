@@ -4,40 +4,59 @@ PACKAGEDIR = "packages/" + PACKAGE.gsub("::", "/")
 TARGETPATH = PACKAGEDIR
 TARGET = PACKAGE.split("::").last
 
-GENERATED_SOURCES ||= []
-
-GENERATED_SOURCES <<
+GENERATED_SOURCES ||=[] <<
     ".corto/#{TARGET}__api.c" <<
     ".corto/#{TARGET}__wrapper.c" <<
     ".corto/#{TARGET}__meta.c" <<
     ".corto/#{TARGET}__load.c"
 
+GENERATED_HEADERS ||=[] <<
+    ".corto/#{TARGET}__api.h" <<
+    ".corto/#{TARGET}__meta.h" <<
+    ".corto/#{TARGET}__type.h"
+
 PREFIX ||= TARGET
 
-require "#{ENV['CORTO_BUILD']}/component"
+CHDIR_SET = true
+Dir.chdir(File.dirname(Rake.application.rakefile))
 
 GENFILE = Rake::FileList["#{TARGET}.*"][0]
-
-CLOBBER.include("include/#{TARGET}__api.h")
-CLOBBER.include("include/#{TARGET}__meta.h")
-CLOBBER.include("include/#{TARGET}__type.h")
-CLOBBER.include(GENERATED_SOURCES)
-CLOBBER.include(TARGETDIR)
 
 file "include/#{TARGET}__type.h" => GENFILE do
     verbose(false)
     sh "mkdir -p .corto"
     sh "touch .corto/#{TARGET}__wrapper.c"
-    sh "corto pp #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c"
+    ret = system "corto pp #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c"
+    if !ret then
+        sh "rm include/#{TARGET}__type.h"
+        abort "\033[1;31m[ build failed ]\033[0;49m"
+    end
 end
 
-task :prebuild => "include/#{TARGET}__type.h" do
+task :default => "include/#{TARGET}__type.h" do
     require "./.corto/dep.rb"
+
+    # Delay running inherited tasks - we first need to run
+    # code generation for us to know which source files
+    # have to be compiled.
+    require "#{ENV['CORTO_BUILD']}/component"
+    Rake::Task["prebuild"].invoke
+    Rake::Task["binary"].invoke
+    Rake::Task["postbuild"].invoke
 end
+
+clobber_count = 1
 
 task :clobber do
-    if File.exists?(".corto/dep.rb")
-        sh "rake clobber -f .corto/dep.rb" 
+    # Recursively call clobber, prevent infinite recursion
+    if clobber_count == 1 then
+        clobber_count += 1
+        require "#{ENV['CORTO_BUILD']}/component"
+        Rake::Task["clobber"].reenable
+        Rake::Task["clobber"].execute
+        if File.exists?(".corto/dep.rb")
+            sh "rake clobber -f .corto/dep.rb" 
+        end
     end
 end
 

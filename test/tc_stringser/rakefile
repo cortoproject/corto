@@ -1,0 +1,6 @@
+PACKAGE = '::tc_stringser'
+
+CFLAGS = ["-Wunused-parameter"]
+PREFIX = 'tc'
+
+require "#{ENV['CORTO_BUILD']}/package"

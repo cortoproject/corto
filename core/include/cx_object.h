@@ -108,7 +108,7 @@ cx_string _cx_strp(void *p, cx_type type, cx_uint32 maxLength);
 cx_string cx_stra(cx_any a, cx_uint32 maxLength);
 
 /* Deserialize from string */
-void cx_fromStr(cx_object *o, cx_string string);
+void cx_fromStr(void *o, cx_string string);
 void cx_fromStrv(cx_value *v, cx_string string);
 void _cx_fromStrp(void *p, cx_type type, cx_string string);
 void cx_fromStra(cx_any *a, cx_string string);
