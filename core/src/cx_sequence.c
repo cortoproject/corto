@@ -55,15 +55,15 @@ cx_void _cx_sequence_size(cx_any _this, cx_uint32 size) {
 /* $begin(::corto::lang::sequence::size) */
     cx_uint32 oldSize, elementSize;
 
-    oldSize = ((cx_objectSeq*)_this.value)->length;
+    oldSize = ((cx_objectseq*)_this.value)->length;
     elementSize = cx_type_sizeof(cx_collection(_this.type)->elementType);
 
-    ((cx_objectSeq*)_this.value)->buffer = cx_realloc(((cx_objectSeq*)_this.value)->buffer, size * elementSize);
+    ((cx_objectseq*)_this.value)->buffer = cx_realloc(((cx_objectseq*)_this.value)->buffer, size * elementSize);
     if (size > oldSize) {
-        memset(CX_OFFSET(((cx_objectSeq*)_this.value)->buffer, oldSize * elementSize), 0, elementSize * (size - oldSize));
+        memset(CX_OFFSET(((cx_objectseq*)_this.value)->buffer, oldSize * elementSize), 0, elementSize * (size - oldSize));
     } else {
-        memset(((cx_objectSeq*)_this.value)->buffer, 0, elementSize * size);
+        memset(((cx_objectseq*)_this.value)->buffer, 0, elementSize * size);
     }
-    ((cx_objectSeq*)_this.value)->length = size;
+    ((cx_objectseq*)_this.value)->length = size;
 /* $end */
 }

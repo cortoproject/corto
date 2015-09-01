@@ -366,7 +366,7 @@ error:
 }
 
 /* ::corto::Fast::Expression::cleanList(list{Expression} list) */
-cx_void _Fast_Expression_cleanList(Fast_Expression_list list) {
+cx_void _Fast_Expression_cleanList(Fast_ExpressionList list) {
 /* $begin(::corto::Fast::Expression::cleanList) */
     if (list) {
         cx_iter iter = cx_llIter(list);
@@ -387,7 +387,7 @@ Fast_Expression _Fast_Expression_fold_v(Fast_Expression _this) {
 }
 
 /* ::corto::Fast::Expression::fromList(list{Expression} list) */
-Fast_Expression _Fast_Expression_fromList(Fast_Expression_list list) {
+Fast_Expression _Fast_Expression_fromList(Fast_ExpressionList list) {
 /* $begin(::corto::Fast::Expression::fromList) */
     Fast_Expression result = NULL;
 
@@ -405,7 +405,7 @@ Fast_Expression _Fast_Expression_fromList(Fast_Expression_list list) {
             iter = cx_llIter(list);
             while(cx_iterHasNext(&iter)) {
                 expr = cx_iterNext(&iter);
-                Fast_Expression_listAppend(toList, expr);
+                Fast_ExpressionListAppend(toList, expr);
             }
             Fast_Comma(result)->expressions = toList;
             Fast_Parser_collect(yparser(), result);
@@ -524,13 +524,13 @@ cx_int16 _Fast_Expression_serialize_v(Fast_Expression _this, cx_type dstType, cx
 }
 
 /* ::corto::Fast::Expression::toList() */
-Fast_Expression_list _Fast_Expression_toList_v(Fast_Expression _this) {
+Fast_ExpressionList _Fast_Expression_toList_v(Fast_Expression _this) {
 /* $begin(::corto::Fast::Expression::toList) */
-    Fast_Node_list result = NULL;
+    Fast_NodeList result = NULL;
     
     if (_this) {
         result = cx_llNew();
-        Fast_Expression_listInsert(result, _this);
+        Fast_ExpressionListInsert(result, _this);
     }
     
     return result;

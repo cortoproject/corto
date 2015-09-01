@@ -145,9 +145,9 @@ error:
 }
 
 /* ::corto::lang::function::stringToParameterSeq(string name,object scope) */
-cx_parameterSeq _cx_function_stringToParameterSeq(cx_string name, cx_object scope) {
+cx_parameterseq _cx_function_stringToParameterSeq(cx_string name, cx_object scope) {
 /* $begin(::corto::lang::function::stringToParameterSeq) */
-    cx_parameterSeq result = {0, NULL};
+    cx_parameterseq result = {0, NULL};
 
     cx_char* ptr;
 

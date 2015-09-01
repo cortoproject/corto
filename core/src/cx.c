@@ -142,13 +142,13 @@ int8_t CX_DEBUG_ENABLED = 0;
     SSO_OP_PRIM(op, eventMask);\
     SSO_OP_PRIM(op, state);\
     SSO_OP_PRIM(op, attr);\
-    SSO_OP_PRIM(op, objectSeq);\
-    SSO_OP_PRIM(op, interfaceSeq);\
-    SSO_OP_PRIM(op, memberSeq);\
-    SSO_OP_PRIM(op, parameterSeq);\
-    SSO_OP_PRIM(op, observerSeq);\
+    SSO_OP_PRIM(op, objectseq);\
+    SSO_OP_PRIM(op, interfaceseq);\
+    SSO_OP_PRIM(op, memberseq);\
+    SSO_OP_PRIM(op, parameterseq);\
+    SSO_OP_PRIM(op, observerseq);\
     SSO_OP_PRIM(op, vtable);\
-    SSO_OP_PRIM(op, interfaceVectorSeq);\
+    SSO_OP_PRIM(op, interfaceVectorseq);\
     SSO_OP_PRIM(op, interfaceVector);\
     SSO_OP_PRIM(op, parameter);\
     SSO_OP_PRIM(op, delegatedata);\

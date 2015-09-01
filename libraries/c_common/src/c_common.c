@@ -296,7 +296,7 @@ cx_int16 c_specifierId(cx_generator g, cx_type t, cx_char* specifier, cx_bool* p
                 if ((elementType->kind == CX_COLLECTION) && (cx_collection(elementType)->kind == CX_ARRAY)) {
                     sprintf(specifier, "%s_%d", _specifier, cx_collection(t)->max);
                 } else {
-                    sprintf(specifier, "%s_array%d", _specifier, cx_collection(t)->max);
+                    sprintf(specifier, "%sArray%d", _specifier, cx_collection(t)->max);
                 }
                 break;
             case CX_SEQUENCE:
@@ -308,9 +308,9 @@ cx_int16 c_specifierId(cx_generator g, cx_type t, cx_char* specifier, cx_bool* p
                     sprintf(specifier, "%s_%d", _specifier, cx_collection(t)->max);
                 } else {
                     if (cx_collection(t)->max) {
-                        sprintf(specifier, "%s_seq%d", _specifier, cx_collection(t)->max);
+                        sprintf(specifier, "%sSeq%d", _specifier, cx_collection(t)->max);
                     } else {
-                        sprintf(specifier, "%s_seq", _specifier);
+                        sprintf(specifier, "%sSeq", _specifier);
                     }
                 }
                 break;
@@ -322,9 +322,9 @@ cx_int16 c_specifierId(cx_generator g, cx_type t, cx_char* specifier, cx_bool* p
                     sprintf(specifier, "%s_%d", _specifier, cx_collection(t)->max);
                 } else {
                     if (cx_collection(t)->max) {
-                        sprintf(specifier, "%s_list%d", _specifier, cx_collection(t)->max);
+                        sprintf(specifier, "%sList%d", _specifier, cx_collection(t)->max);
                     } else {
-                        sprintf(specifier, "%s_list", _specifier);
+                        sprintf(specifier, "%sList", _specifier);
                     }
                 }
                 break;

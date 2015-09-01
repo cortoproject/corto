@@ -89,13 +89,13 @@ CX_META_OBJECT(bitmask, modifier);
 CX_META_OBJECT(bitmask, state);
 CX_META_OBJECT(bitmask, attr);
 
-CX_META_OBJECT(sequence, objectSeq);
-CX_META_OBJECT(sequence, abstractSeq);
-CX_META_OBJECT(sequence, memberSeq);
-CX_META_OBJECT(sequence, parameterSeq);
-CX_META_OBJECT(sequence, interfaceVectorSeq);
-CX_META_OBJECT(sequence, interfaceSeq);
-CX_META_OBJECT(sequence, observerSeq);
+CX_META_OBJECT(sequence, objectseq);
+CX_META_OBJECT(sequence, abstractseq);
+CX_META_OBJECT(sequence, memberseq);
+CX_META_OBJECT(sequence, parameterseq);
+CX_META_OBJECT(sequence, interfaceVectorseq);
+CX_META_OBJECT(sequence, interfaceseq);
+CX_META_OBJECT(sequence, observerseq);
 CX_META_OBJECT(sequence, vtable);
 
 CX_META_OBJECT(delegate, callbackInit);

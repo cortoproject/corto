@@ -24,7 +24,7 @@ cx_int16 _cx_function_init(cx_function _this);
 #define cx_function_init(_this) _cx_function_init(cx_function(_this))
 
 /* ::corto::lang::function::stringToParameterSeq(string name,object scope) */
-cx_parameterSeq _cx_function_stringToParameterSeq(cx_string name, cx_object scope);
+cx_parameterseq _cx_function_stringToParameterSeq(cx_string name, cx_object scope);
 #define cx_function_stringToParameterSeq(name, scope) _cx_function_stringToParameterSeq(name, scope)
 
 /* ::corto::lang::function::unbind(function object) */

@@ -45,9 +45,9 @@ cx_word Fast_Initializer_offset(Fast_StaticInitializer _this, cx_uint32 variable
             cx_uint32 elementSize = cx_type_sizeof(cx_collection(frame->type)->elementType);
             switch(cx_collection(frame->type)->kind) {
             case CX_SEQUENCE:
-                ((cx_objectSeq*)base)->length++;
-                ((cx_objectSeq*)base)->buffer = cx_realloc(((cx_objectSeq*)base)->buffer, ((cx_objectSeq*)base)->length * elementSize);
-                base = (cx_word)((cx_objectSeq*)base)->buffer;
+                ((cx_objectseq*)base)->length++;
+                ((cx_objectseq*)base)->buffer = cx_realloc(((cx_objectseq*)base)->buffer, ((cx_objectseq*)base)->length * elementSize);
+                base = (cx_word)((cx_objectseq*)base)->buffer;
             case CX_ARRAY:
                 result = base + thisFrame->location * cx_type_sizeof(cx_collection(frame->type)->elementType);
                 memset((void*)result, 0, elementSize);

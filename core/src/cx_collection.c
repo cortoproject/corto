@@ -255,7 +255,7 @@ cx_uint32 _cx_collection_size(cx_any _this) {
         result = cx_collection(_this.type)->max;
         break;
     case CX_SEQUENCE:
-        result = ((cx_objectSeq*)_this.value)->length;
+        result = ((cx_objectseq*)_this.value)->length;
         break;
     case CX_LIST:
         result = cx_llSize(*(cx_ll*)_this.value);

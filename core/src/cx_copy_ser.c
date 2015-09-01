@@ -145,27 +145,27 @@ static void cx_collection_resizeList(cx_collection t, cx_ll list, cx_uint32 size
 static void cx_collection_resizeArray(cx_collection t, void* sequence, cx_uint32 size) {
     /* Only sequences can be resized */
     if (t->kind == CX_SEQUENCE) {
-        cx_uint32 ownSize = ((cx_objectSeq*)sequence)->length;
+        cx_uint32 ownSize = ((cx_objectseq*)sequence)->length;
         cx_type elementType = t->elementType;
         
         /* If there are more elements in the destination, remove superfluous elements */
         if (ownSize > size) {
             cx_uint32 i;
             for(i=size; i<ownSize; i++) {
-                cx_collection_deinitElement(t, CX_OFFSET(((cx_objectSeq*)sequence)->buffer, elementType->size * i));
+                cx_collection_deinitElement(t, CX_OFFSET(((cx_objectseq*)sequence)->buffer, elementType->size * i));
             }
             /* Reallocate buffer */
-            ((cx_objectSeq*)sequence)->buffer = cx_realloc(((cx_objectSeq*)sequence)->buffer, elementType->size * size);
+            ((cx_objectseq*)sequence)->buffer = cx_realloc(((cx_objectseq*)sequence)->buffer, elementType->size * size);
             
             /* If there are less elements in the destination, add new elements */
         } else if (ownSize < size) {
             /* Reallocate buffer */
-            ((cx_objectSeq*)sequence)->buffer = cx_realloc(((cx_objectSeq*)sequence)->buffer, elementType->size * size);
+            ((cx_objectseq*)sequence)->buffer = cx_realloc(((cx_objectseq*)sequence)->buffer, elementType->size * size);
             
             /* Memset new memory */
-            memset(CX_OFFSET(((cx_objectSeq*)sequence)->buffer, elementType->size * ownSize), 0, (size - ownSize) * elementType->size);
+            memset(CX_OFFSET(((cx_objectseq*)sequence)->buffer, elementType->size * ownSize), 0, (size - ownSize) * elementType->size);
         }
-        ((cx_objectSeq*)sequence)->length = size;
+        ((cx_objectseq*)sequence)->length = size;
     }
 }
 
@@ -209,9 +209,9 @@ static cx_int16 cx_ser_collection(cx_serializer s, cx_value *info, void* userDat
                 size1 = cx_collection(t1)->max;
                 break;
             case CX_SEQUENCE:
-                array1 = ((cx_objectSeq*)v1)->buffer;
+                array1 = ((cx_objectseq*)v1)->buffer;
                 elementSize = cx_type_sizeof(cx_collection(t1)->elementType);
-                size1 = ((cx_objectSeq*)v1)->length;
+                size1 = ((cx_objectseq*)v1)->length;
                 break;
             case CX_LIST:
                 list1 = *(cx_ll*)v1;
@@ -226,7 +226,7 @@ static cx_int16 cx_ser_collection(cx_serializer s, cx_value *info, void* userDat
                 array2 = v2;
                 break;
             case CX_SEQUENCE:
-                array2 = ((cx_objectSeq*)v2)->buffer;
+                array2 = ((cx_objectseq*)v2)->buffer;
                 break;
             case CX_LIST:
                 list2 = *(cx_ll*)v2;

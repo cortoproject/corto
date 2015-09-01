@@ -695,7 +695,7 @@ typedef union Di2f_t {
     ELEMS_##code:\
         fetchOp3(ELEMS,code##V);\
         {\
-            cx_objectSeq* seq = (cx_objectSeq*)op1_##code##V;\
+            cx_objectseq* seq = (cx_objectseq*)op1_##code##V;\
             CHECK_BOUNDS(seq->length, op2_##code##V);\
             op1_##code##V = (W_t)CX_OFFSET(seq->buffer, (L_t)op2_##code##V * op3_##code##V);\
         }\

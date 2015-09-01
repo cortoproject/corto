@@ -70,7 +70,7 @@ cx_bool _Fast_Comma_hasReturnedResource_v(Fast_Comma _this) {
 /* $begin(::corto::Fast::Comma::hasReturnedResource) */
     cx_bool result = FALSE;
 
-    Fast_Expression_listForeach(_this->expressions, elem)
+    Fast_ExpressionListForeach(_this->expressions, elem)
         if (Fast_Expression_hasReturnedResource(elem)) {
             result = TRUE;
             break;
@@ -86,7 +86,7 @@ cx_bool _Fast_Comma_hasSideEffects_v(Fast_Comma _this) {
 /* $begin(::corto::Fast::Comma::hasSideEffects) */
     cx_bool result = FALSE;
     
-    Fast_Expression_listForeach(_this->expressions, elem)
+    Fast_ExpressionListForeach(_this->expressions, elem)
         if (Fast_Expression_hasSideEffects(elem)) {
             result = TRUE;
             break;
@@ -146,11 +146,11 @@ ic_node _Fast_Comma_toIc_v(Fast_Comma _this, ic_program program, ic_storage stor
 }
 
 /* ::corto::Fast::Comma::toList() */
-Fast_Node_list _Fast_Comma_toList(Fast_Comma _this) {
+Fast_NodeList _Fast_Comma_toList(Fast_Comma _this) {
 /* $begin(::corto::Fast::Comma::toList) */
     Fast_Node node;
     cx_iter iter;
-    Fast_Node_list result = cx_llNew();
+    Fast_NodeList result = cx_llNew();
     iter = cx_llIter(_this->expressions);
     while(cx_iterHasNext(&iter)) {
         node = cx_iterNext(&iter);

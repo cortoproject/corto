@@ -234,9 +234,9 @@ static cx_int16 cx_ser_collection(cx_serializer s, cx_value *info, void* userDat
                 mem = cx_collection(t1)->max * elementSize;
                 break;
             case CX_SEQUENCE:
-                array1 = ((cx_objectSeq*)v1)->buffer;
+                array1 = ((cx_objectseq*)v1)->buffer;
                 elementSize = cx_type_sizeof(cx_collection(t1)->elementType);
-                mem = ((cx_objectSeq*)v1)->length * elementSize;
+                mem = ((cx_objectseq*)v1)->length * elementSize;
                 break;
             case CX_LIST:
                 list1 = *(cx_ll*)v1;
@@ -250,7 +250,7 @@ static cx_int16 cx_ser_collection(cx_serializer s, cx_value *info, void* userDat
                 array2 = v2;
                 break;
             case CX_SEQUENCE:
-                array2 = ((cx_objectSeq*)v2)->buffer;
+                array2 = ((cx_objectseq*)v2)->buffer;
                 break;
             case CX_LIST:
                 list2 = *(cx_ll*)v2;

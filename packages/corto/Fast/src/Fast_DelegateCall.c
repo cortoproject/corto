@@ -36,7 +36,7 @@ cx_int16 _Fast_DelegateCall_construct(Fast_DelegateCall _this) {
         cx_setref(&Fast_Call(_this)->returnType, type->returnType);
         Fast_Call(_this)->returnsReference = type->returnsReference;
 
-        cx_parameter_seqSize(&Fast_Call(_this)->parameters, type->parameters.length);
+        cx_parameterSeqSize(&Fast_Call(_this)->parameters, type->parameters.length);
 
         for (i = 0; i < type->parameters.length; i++) {
             cx_setref(&Fast_Call(_this)->parameters.buffer[i].type, type->parameters.buffer[i].type);

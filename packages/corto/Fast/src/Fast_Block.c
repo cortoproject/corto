@@ -17,7 +17,7 @@ cx_void _Fast_Block_addStatement(Fast_Block _this, Fast_Node statement) {
 /* $begin(::corto::Fast::Block::addStatement) */
     if (statement) {
         cx_assert(_this->statements != NULL, "initialization failed");
-        Fast_Node_listAppend(_this->statements, statement);
+        Fast_NodeListAppend(_this->statements, statement);
     }
 /* $end */
 }

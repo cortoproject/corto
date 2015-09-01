@@ -23,9 +23,9 @@ cx_void _ic_program_add(ic_program _this, ic_node n) {
     }
 
     if (cx_instanceof(cx_type(ic_storage_o), n)) {
-        ic_node_listAppend(_this->scope->storages, n);
+        ic_nodeListAppend(_this->scope->storages, n);
     } else {
-        ic_node_listAppend(_this->scope->program, n);
+        ic_nodeListAppend(_this->scope->program, n);
     }
 
 /* $end */

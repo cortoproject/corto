@@ -73,7 +73,7 @@ cx_int16 _cx_enum_construct(cx_enum _this) {
 /* ::corto::lang::enum::destruct() */
 cx_void _cx_enum_destruct(cx_enum _this) {
 /* $begin(::corto::lang::enum::destruct) */
-    cx_clear(cx_collection(cx_objectSeq_o), &_this->constants);
+    cx_clear(cx_collection(cx_objectseq_o), &_this->constants);
     cx_type_destruct(cx_type(_this));
 /* $end */
 }

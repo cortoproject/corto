@@ -15,7 +15,7 @@
 /* ::corto::io::file::construct() */
 cx_int16 _io_file_construct(io_file _this) {
 /* $begin(::corto::io::file::construct) */
-    if (_this->name) {\
+    if (_this->name) {
         /* Special directive, for opening stdout, stdin and stderr */
         if (*_this->name == '#') {
             if (!strcmp(_this->name, "#out")) {
@@ -76,9 +76,9 @@ cx_void _io_file_flush(io_file _this) {
 }
 
 /* ::corto::io::file::read(uint32 bytes) */
-cx_octet_seq _io_file_read(io_file _this, cx_uint32 bytes) {
+cx_octetSeq _io_file_read(io_file _this, cx_uint32 bytes) {
 /* $begin(::corto::io::file::read) */
-    cx_octet_seq result;
+    cx_octetSeq result;
 
     result.buffer = cx_alloc(bytes);
     result.length = fread(result.buffer, bytes, 1, (FILE*)_this->handle);
@@ -88,9 +88,9 @@ cx_octet_seq _io_file_read(io_file _this, cx_uint32 bytes) {
 }
 
 /* ::corto::io::file::readAll() */
-cx_octet_seq _io_file_readAll(io_file _this) {
+cx_octetSeq _io_file_readAll(io_file _this) {
 /* $begin(::corto::io::file::readAll) */
-    cx_octet_seq result;
+    cx_octetSeq result;
 
     CX_UNUSED(_this);
 
@@ -126,7 +126,7 @@ cx_string _io_file_readText(io_file _this) {
 }
 
 /* ::corto::io::file::write(sequence{octet,0} data) */
-cx_uint32 _io_file_write(io_file _this, cx_octet_seq data) {
+cx_uint32 _io_file_write(io_file _this, cx_octetSeq data) {
 /* $begin(::corto::io::file::write) */
     CX_UNUSED(_this);
     CX_UNUSED(data);

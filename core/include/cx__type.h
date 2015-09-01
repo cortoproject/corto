@@ -46,26 +46,26 @@ extern "C" {
 #define cx_int64(o) ((cx_int64 *)cx_assertType((cx_type)cx_int64_o, o))
 #define cx_int8(o) ((cx_int8 *)cx_assertType((cx_type)cx_int8_o, o))
 #define cx_interface(o) ((cx_interface)cx_assertType((cx_type)cx_interface_o, o))
-#define cx_interfaceSeq(o) ((cx_interfaceSeq *)cx_assertType((cx_type)cx_interfaceSeq_o, o))
+#define cx_interfaceseq(o) ((cx_interfaceseq *)cx_assertType((cx_type)cx_interfaceseq_o, o))
 #define cx_interfaceVector(o) ((cx_interfaceVector *)cx_assertType((cx_type)cx_interfaceVector_o, o))
-#define cx_interfaceVectorSeq(o) ((cx_interfaceVectorSeq *)cx_assertType((cx_type)cx_interfaceVectorSeq_o, o))
+#define cx_interfaceVectorseq(o) ((cx_interfaceVectorseq *)cx_assertType((cx_type)cx_interfaceVectorseq_o, o))
 #define cx_iterator(o) ((cx_iterator)cx_assertType((cx_type)cx_iterator_o, o))
 #define cx_list(o) ((cx_list)cx_assertType((cx_type)cx_list_o, o))
 #define cx_map(o) ((cx_map)cx_assertType((cx_type)cx_map_o, o))
 #define cx_member(o) ((cx_member)cx_assertType((cx_type)cx_member_o, o))
-#define cx_memberSeq(o) ((cx_memberSeq *)cx_assertType((cx_type)cx_memberSeq_o, o))
+#define cx_memberseq(o) ((cx_memberseq *)cx_assertType((cx_type)cx_memberseq_o, o))
 #define cx_metaprocedure(o) ((cx_metaprocedure)cx_assertType((cx_type)cx_metaprocedure_o, o))
 #define cx_method(o) ((cx_method)cx_assertType((cx_type)cx_method_o, o))
 #define cx_modifier(o) ((cx_modifier *)cx_assertType((cx_type)cx_modifier_o, o))
-#define cx_objectSeq(o) ((cx_objectSeq *)cx_assertType((cx_type)cx_objectSeq_o, o))
+#define cx_objectseq(o) ((cx_objectseq *)cx_assertType((cx_type)cx_objectseq_o, o))
 #define cx_observableEvent(o) ((cx_observableEvent)cx_assertType((cx_type)cx_observableEvent_o, o))
 #define cx_observer(o) ((cx_observer)cx_assertType((cx_type)cx_observer_o, o))
-#define cx_observerSeq(o) ((cx_observerSeq *)cx_assertType((cx_type)cx_observerSeq_o, o))
+#define cx_observerseq(o) ((cx_observerseq *)cx_assertType((cx_type)cx_observerseq_o, o))
 #define cx_octet(o) ((cx_octet *)cx_assertType((cx_type)cx_octet_o, o))
 #define cx_operatorKind(o) ((cx_operatorKind *)cx_assertType((cx_type)cx_operatorKind_o, o))
 #define cx_package(o) ((cx_package)cx_assertType((cx_type)cx_package_o, o))
 #define cx_parameter(o) ((cx_parameter *)cx_assertType((cx_type)cx_parameter_o, o))
-#define cx_parameterSeq(o) ((cx_parameterSeq *)cx_assertType((cx_type)cx_parameterSeq_o, o))
+#define cx_parameterseq(o) ((cx_parameterseq *)cx_assertType((cx_type)cx_parameterseq_o, o))
 #define cx_primitive(o) ((cx_primitive)cx_assertType((cx_type)cx_primitive_o, o))
 #define cx_primitiveKind(o) ((cx_primitiveKind *)cx_assertType((cx_type)cx_primitiveKind_o, o))
 #define cx_procedure(o) ((cx_procedure)cx_assertType((cx_type)cx_procedure_o, o))
@@ -138,7 +138,7 @@ struct cx_parameter {
     cx_bool passByReference;
 };
 
-CX_SEQUENCE(cx_parameterSeq, cx_parameter,);
+CX_SEQUENCE(cx_parameterseq, cx_parameter,);
 
 /*  ::corto::lang::function */
 CX_CLASS(cx_function);
@@ -152,7 +152,7 @@ CX_CLASS_DEF(cx_function) {
     cx_word implData;
     cx_object resource;
     cx_uint16 size;
-    cx_parameterSeq parameters;
+    cx_parameterseq parameters;
     cx_uint32 nextParameterId;
 };
 
@@ -263,14 +263,14 @@ CX_CLASS_DEF(cx_binary) {
     CX_EXTEND(cx_primitive);
 };
 
-CX_SEQUENCE(cx_objectSeq, cx_object,);
+CX_SEQUENCE(cx_objectseq, cx_object,);
 
 /*  ::corto::lang::enum */
 CX_CLASS(cx_enum);
 
 CX_CLASS_DEF(cx_enum) {
     CX_EXTEND(cx_primitive);
-    cx_objectSeq constants;
+    cx_objectseq constants;
 };
 
 /*  ::corto::lang::bitmask */
@@ -333,7 +333,7 @@ CX_CLASS_DEF(cx_member) {
     cx_uint32 offset;
 };
 
-CX_SEQUENCE(cx_memberSeq, cx_member,);
+CX_SEQUENCE(cx_memberseq, cx_member,);
 
 /*  ::corto::lang::interface */
 CX_CLASS(cx_interface);
@@ -342,7 +342,7 @@ CX_CLASS_DEF(cx_interface) {
     CX_EXTEND(cx_type);
     cx_compositeKind kind;
     cx_uint32 nextMemberId;
-    cx_memberSeq members;
+    cx_memberseq members;
     cx_vtable methods;
     cx_interface base;
 };
@@ -355,7 +355,7 @@ CX_CLASS_DEF(cx_struct) {
     cx_modifier baseAccess;
 };
 
-CX_SEQUENCE(cx_interfaceSeq, cx_interface,);
+CX_SEQUENCE(cx_interfaceseq, cx_interface,);
 
 /*  ::corto::lang::interfaceVector */
 typedef struct cx_interfaceVector cx_interfaceVector;
@@ -365,7 +365,7 @@ struct cx_interfaceVector {
     cx_vtable vector;
 };
 
-CX_SEQUENCE(cx_interfaceVectorSeq, cx_interfaceVector,);
+CX_SEQUENCE(cx_interfaceVectorseq, cx_interfaceVector,);
 
 /* ::corto::lang::eventMask */
 CX_BITMASK(cx_eventMask);
@@ -397,16 +397,16 @@ CX_CLASS_DEF(cx_observer) {
     cx_observer delayedBinder;
 };
 
-CX_SEQUENCE(cx_observerSeq, cx_observer,);
+CX_SEQUENCE(cx_observerseq, cx_observer,);
 
 /*  ::corto::lang::class */
 CX_CLASS(cx_class);
 
 CX_CLASS_DEF(cx_class) {
     CX_EXTEND(cx_struct);
-    cx_interfaceSeq implements;
-    cx_interfaceVectorSeq interfaceVector;
-    cx_observerSeq observers;
+    cx_interfaceseq implements;
+    cx_interfaceVectorseq interfaceVector;
+    cx_observerseq observers;
     cx_callbackInit construct;
     cx_callbackDestruct destruct;
 };
@@ -421,7 +421,7 @@ CX_CLASS_DEF(cx_delegate) {
     CX_EXTEND(cx_struct);
     cx_type returnType;
     cx_bool returnsReference;
-    cx_parameterSeq parameters;
+    cx_parameterseq parameters;
 };
 
 /* ::corto::lang::equalityKind */

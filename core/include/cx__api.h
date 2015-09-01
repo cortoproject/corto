@@ -186,14 +186,14 @@ cx_int16 cx_characterCopy(cx_character *dst, cx_character src);
 cx_int16 cx_characterCompare(cx_character dst, cx_character src);
 
 /* ::corto::lang::class */
-cx_class cx_classCreate(cx_interface base, cx_modifier baseAccess, cx_interfaceSeq implements);
-cx_class cx_classCreateChild(cx_object _parent, cx_string _name, cx_interface base, cx_modifier baseAccess, cx_interfaceSeq implements);
+cx_class cx_classCreate(cx_interface base, cx_modifier baseAccess, cx_interfaceseq implements);
+cx_class cx_classCreateChild(cx_object _parent, cx_string _name, cx_interface base, cx_modifier baseAccess, cx_interfaceseq implements);
 
 cx_class cx_classDeclare(void);
 cx_class cx_classDeclareChild(cx_object _parent, cx_string _name);
-cx_int16 cx_classDefine(cx_class _this, cx_interface base, cx_modifier baseAccess, cx_interfaceSeq implements);
-void cx_classUpdate(cx_class _this, cx_interface base, cx_modifier baseAccess, cx_interfaceSeq implements);
-void cx_classSet(cx_class _this, cx_interface base, cx_modifier baseAccess, cx_interfaceSeq implements);
+cx_int16 cx_classDefine(cx_class _this, cx_interface base, cx_modifier baseAccess, cx_interfaceseq implements);
+void cx_classUpdate(cx_class _this, cx_interface base, cx_modifier baseAccess, cx_interfaceseq implements);
+void cx_classSet(cx_class _this, cx_interface base, cx_modifier baseAccess, cx_interfaceseq implements);
 cx_string cx_classStr(cx_class value);
 cx_class cx_classFromStr(cx_class value, cx_string str);
 cx_int16 cx_classCopy(cx_class *dst, cx_class src);
@@ -265,14 +265,14 @@ cx_int16 cx_constantInit(cx_constant* value);
 cx_int16 cx_constantDeinit(cx_constant* value);
 
 /* ::corto::lang::delegate */
-cx_delegate cx_delegateCreate(cx_type returnType, cx_bool returnsReference, cx_parameterSeq parameters);
-cx_delegate cx_delegateCreateChild(cx_object _parent, cx_string _name, cx_type returnType, cx_bool returnsReference, cx_parameterSeq parameters);
+cx_delegate cx_delegateCreate(cx_type returnType, cx_bool returnsReference, cx_parameterseq parameters);
+cx_delegate cx_delegateCreateChild(cx_object _parent, cx_string _name, cx_type returnType, cx_bool returnsReference, cx_parameterseq parameters);
 
 cx_delegate cx_delegateDeclare(void);
 cx_delegate cx_delegateDeclareChild(cx_object _parent, cx_string _name);
-cx_int16 cx_delegateDefine(cx_delegate _this, cx_type returnType, cx_bool returnsReference, cx_parameterSeq parameters);
-void cx_delegateUpdate(cx_delegate _this, cx_type returnType, cx_bool returnsReference, cx_parameterSeq parameters);
-void cx_delegateSet(cx_delegate _this, cx_type returnType, cx_bool returnsReference, cx_parameterSeq parameters);
+cx_int16 cx_delegateDefine(cx_delegate _this, cx_type returnType, cx_bool returnsReference, cx_parameterseq parameters);
+void cx_delegateUpdate(cx_delegate _this, cx_type returnType, cx_bool returnsReference, cx_parameterseq parameters);
+void cx_delegateSet(cx_delegate _this, cx_type returnType, cx_bool returnsReference, cx_parameterseq parameters);
 cx_string cx_delegateStr(cx_delegate value);
 cx_delegate cx_delegateFromStr(cx_delegate value, cx_string str);
 cx_int16 cx_delegateCopy(cx_delegate *dst, cx_delegate src);
@@ -529,22 +529,22 @@ cx_interface cx_interfaceFromStr(cx_interface value, cx_string str);
 cx_int16 cx_interfaceCopy(cx_interface *dst, cx_interface src);
 cx_int16 cx_interfaceCompare(cx_interface dst, cx_interface src);
 
-/* ::corto::lang::interfaceSeq */
-cx_interfaceSeq* cx_interfaceSeqCreate(void);
-cx_interfaceSeq* cx_interfaceSeqCreateChild(cx_object _parent, cx_string _name);
+/* ::corto::lang::interfaceseq */
+cx_interfaceseq* cx_interfaceseqCreate(void);
+cx_interfaceseq* cx_interfaceseqCreateChild(cx_object _parent, cx_string _name);
 
-cx_interfaceSeq* cx_interfaceSeqDeclare(void);
-cx_interfaceSeq* cx_interfaceSeqDeclareChild(cx_object _parent, cx_string _name);
-cx_int16 cx_interfaceSeqDefine(cx_interfaceSeq* _this, cx_interfaceSeq value);
-void cx_interfaceSeqUpdate(cx_interfaceSeq* _this, cx_interfaceSeq value);
-void cx_interfaceSeqSet(cx_interfaceSeq* _this, cx_interfaceSeq value);
-cx_string cx_interfaceSeqStr(cx_interfaceSeq value);
-cx_interfaceSeq* cx_interfaceSeqFromStr(cx_interfaceSeq* value, cx_string str);
-cx_int16 cx_interfaceSeqCopy(cx_interfaceSeq* *dst, cx_interfaceSeq* src);
-cx_int16 cx_interfaceSeqCompare(cx_interfaceSeq* dst, cx_interfaceSeq* src);
+cx_interfaceseq* cx_interfaceseqDeclare(void);
+cx_interfaceseq* cx_interfaceseqDeclareChild(cx_object _parent, cx_string _name);
+cx_int16 cx_interfaceseqDefine(cx_interfaceseq* _this, cx_interfaceseq value);
+void cx_interfaceseqUpdate(cx_interfaceseq* _this, cx_interfaceseq value);
+void cx_interfaceseqSet(cx_interfaceseq* _this, cx_interfaceseq value);
+cx_string cx_interfaceseqStr(cx_interfaceseq value);
+cx_interfaceseq* cx_interfaceseqFromStr(cx_interfaceseq* value, cx_string str);
+cx_int16 cx_interfaceseqCopy(cx_interfaceseq* *dst, cx_interfaceseq* src);
+cx_int16 cx_interfaceseqCompare(cx_interfaceseq* dst, cx_interfaceseq* src);
 
-cx_int16 cx_interfaceSeqInit(cx_interfaceSeq* value);
-cx_int16 cx_interfaceSeqDeinit(cx_interfaceSeq* value);
+cx_int16 cx_interfaceseqInit(cx_interfaceseq* value);
+cx_int16 cx_interfaceseqDeinit(cx_interfaceseq* value);
 
 /* ::corto::lang::interfaceVector */
 cx_interfaceVector* cx_interfaceVectorCreate(cx_interface interface, cx_vtable vector);
@@ -563,22 +563,22 @@ cx_int16 cx_interfaceVectorCompare(cx_interfaceVector* dst, cx_interfaceVector* 
 cx_int16 cx_interfaceVectorInit(cx_interfaceVector* value);
 cx_int16 cx_interfaceVectorDeinit(cx_interfaceVector* value);
 
-/* ::corto::lang::interfaceVectorSeq */
-cx_interfaceVectorSeq* cx_interfaceVectorSeqCreate(void);
-cx_interfaceVectorSeq* cx_interfaceVectorSeqCreateChild(cx_object _parent, cx_string _name);
+/* ::corto::lang::interfaceVectorseq */
+cx_interfaceVectorseq* cx_interfaceVectorseqCreate(void);
+cx_interfaceVectorseq* cx_interfaceVectorseqCreateChild(cx_object _parent, cx_string _name);
 
-cx_interfaceVectorSeq* cx_interfaceVectorSeqDeclare(void);
-cx_interfaceVectorSeq* cx_interfaceVectorSeqDeclareChild(cx_object _parent, cx_string _name);
-cx_int16 cx_interfaceVectorSeqDefine(cx_interfaceVectorSeq* _this, cx_interfaceVectorSeq value);
-void cx_interfaceVectorSeqUpdate(cx_interfaceVectorSeq* _this, cx_interfaceVectorSeq value);
-void cx_interfaceVectorSeqSet(cx_interfaceVectorSeq* _this, cx_interfaceVectorSeq value);
-cx_string cx_interfaceVectorSeqStr(cx_interfaceVectorSeq value);
-cx_interfaceVectorSeq* cx_interfaceVectorSeqFromStr(cx_interfaceVectorSeq* value, cx_string str);
-cx_int16 cx_interfaceVectorSeqCopy(cx_interfaceVectorSeq* *dst, cx_interfaceVectorSeq* src);
-cx_int16 cx_interfaceVectorSeqCompare(cx_interfaceVectorSeq* dst, cx_interfaceVectorSeq* src);
+cx_interfaceVectorseq* cx_interfaceVectorseqDeclare(void);
+cx_interfaceVectorseq* cx_interfaceVectorseqDeclareChild(cx_object _parent, cx_string _name);
+cx_int16 cx_interfaceVectorseqDefine(cx_interfaceVectorseq* _this, cx_interfaceVectorseq value);
+void cx_interfaceVectorseqUpdate(cx_interfaceVectorseq* _this, cx_interfaceVectorseq value);
+void cx_interfaceVectorseqSet(cx_interfaceVectorseq* _this, cx_interfaceVectorseq value);
+cx_string cx_interfaceVectorseqStr(cx_interfaceVectorseq value);
+cx_interfaceVectorseq* cx_interfaceVectorseqFromStr(cx_interfaceVectorseq* value, cx_string str);
+cx_int16 cx_interfaceVectorseqCopy(cx_interfaceVectorseq* *dst, cx_interfaceVectorseq* src);
+cx_int16 cx_interfaceVectorseqCompare(cx_interfaceVectorseq* dst, cx_interfaceVectorseq* src);
 
-cx_int16 cx_interfaceVectorSeqInit(cx_interfaceVectorSeq* value);
-cx_int16 cx_interfaceVectorSeqDeinit(cx_interfaceVectorSeq* value);
+cx_int16 cx_interfaceVectorseqInit(cx_interfaceVectorseq* value);
+cx_int16 cx_interfaceVectorseqDeinit(cx_interfaceVectorseq* value);
 
 /* ::corto::lang::iterator */
 cx_iterator cx_iteratorCreate(cx_type elementType);
@@ -636,22 +636,22 @@ cx_member cx_memberFromStr(cx_member value, cx_string str);
 cx_int16 cx_memberCopy(cx_member *dst, cx_member src);
 cx_int16 cx_memberCompare(cx_member dst, cx_member src);
 
-/* ::corto::lang::memberSeq */
-cx_memberSeq* cx_memberSeqCreate(void);
-cx_memberSeq* cx_memberSeqCreateChild(cx_object _parent, cx_string _name);
+/* ::corto::lang::memberseq */
+cx_memberseq* cx_memberseqCreate(void);
+cx_memberseq* cx_memberseqCreateChild(cx_object _parent, cx_string _name);
 
-cx_memberSeq* cx_memberSeqDeclare(void);
-cx_memberSeq* cx_memberSeqDeclareChild(cx_object _parent, cx_string _name);
-cx_int16 cx_memberSeqDefine(cx_memberSeq* _this, cx_memberSeq value);
-void cx_memberSeqUpdate(cx_memberSeq* _this, cx_memberSeq value);
-void cx_memberSeqSet(cx_memberSeq* _this, cx_memberSeq value);
-cx_string cx_memberSeqStr(cx_memberSeq value);
-cx_memberSeq* cx_memberSeqFromStr(cx_memberSeq* value, cx_string str);
-cx_int16 cx_memberSeqCopy(cx_memberSeq* *dst, cx_memberSeq* src);
-cx_int16 cx_memberSeqCompare(cx_memberSeq* dst, cx_memberSeq* src);
+cx_memberseq* cx_memberseqDeclare(void);
+cx_memberseq* cx_memberseqDeclareChild(cx_object _parent, cx_string _name);
+cx_int16 cx_memberseqDefine(cx_memberseq* _this, cx_memberseq value);
+void cx_memberseqUpdate(cx_memberseq* _this, cx_memberseq value);
+void cx_memberseqSet(cx_memberseq* _this, cx_memberseq value);
+cx_string cx_memberseqStr(cx_memberseq value);
+cx_memberseq* cx_memberseqFromStr(cx_memberseq* value, cx_string str);
+cx_int16 cx_memberseqCopy(cx_memberseq* *dst, cx_memberseq* src);
+cx_int16 cx_memberseqCompare(cx_memberseq* dst, cx_memberseq* src);
 
-cx_int16 cx_memberSeqInit(cx_memberSeq* value);
-cx_int16 cx_memberSeqDeinit(cx_memberSeq* value);
+cx_int16 cx_memberseqInit(cx_memberseq* value);
+cx_int16 cx_memberseqDeinit(cx_memberseq* value);
 
 /* ::corto::lang::metaprocedure */
 cx_metaprocedure cx_metaprocedureCreate(cx_type returnType, cx_bool returnsReference, cx_bool referenceOnly);
@@ -702,22 +702,22 @@ cx_int16 cx_modifierDeinit(cx_modifier* value);
 cx_object cx_objectCreate(void);
 cx_object cx_objectCreateChild(cx_object _parent, cx_string _name);
 
-/* ::corto::lang::objectSeq */
-cx_objectSeq* cx_objectSeqCreate(void);
-cx_objectSeq* cx_objectSeqCreateChild(cx_object _parent, cx_string _name);
+/* ::corto::lang::objectseq */
+cx_objectseq* cx_objectseqCreate(void);
+cx_objectseq* cx_objectseqCreateChild(cx_object _parent, cx_string _name);
 
-cx_objectSeq* cx_objectSeqDeclare(void);
-cx_objectSeq* cx_objectSeqDeclareChild(cx_object _parent, cx_string _name);
-cx_int16 cx_objectSeqDefine(cx_objectSeq* _this, cx_objectSeq value);
-void cx_objectSeqUpdate(cx_objectSeq* _this, cx_objectSeq value);
-void cx_objectSeqSet(cx_objectSeq* _this, cx_objectSeq value);
-cx_string cx_objectSeqStr(cx_objectSeq value);
-cx_objectSeq* cx_objectSeqFromStr(cx_objectSeq* value, cx_string str);
-cx_int16 cx_objectSeqCopy(cx_objectSeq* *dst, cx_objectSeq* src);
-cx_int16 cx_objectSeqCompare(cx_objectSeq* dst, cx_objectSeq* src);
+cx_objectseq* cx_objectseqDeclare(void);
+cx_objectseq* cx_objectseqDeclareChild(cx_object _parent, cx_string _name);
+cx_int16 cx_objectseqDefine(cx_objectseq* _this, cx_objectseq value);
+void cx_objectseqUpdate(cx_objectseq* _this, cx_objectseq value);
+void cx_objectseqSet(cx_objectseq* _this, cx_objectseq value);
+cx_string cx_objectseqStr(cx_objectseq value);
+cx_objectseq* cx_objectseqFromStr(cx_objectseq* value, cx_string str);
+cx_int16 cx_objectseqCopy(cx_objectseq* *dst, cx_objectseq* src);
+cx_int16 cx_objectseqCompare(cx_objectseq* dst, cx_objectseq* src);
 
-cx_int16 cx_objectSeqInit(cx_objectSeq* value);
-cx_int16 cx_objectSeqDeinit(cx_objectSeq* value);
+cx_int16 cx_objectseqInit(cx_objectseq* value);
+cx_int16 cx_objectseqDeinit(cx_objectseq* value);
 
 /* ::corto::lang::observableEvent */
 cx_observableEvent cx_observableEventCreate(cx_uint16 kind, cx_observer observer, cx_object me, cx_object source, cx_object observable);
@@ -747,22 +747,22 @@ cx_observer cx_observerFromStr(cx_observer value, cx_string str);
 cx_int16 cx_observerCopy(cx_observer *dst, cx_observer src);
 cx_int16 cx_observerCompare(cx_observer dst, cx_observer src);
 
-/* ::corto::lang::observerSeq */
-cx_observerSeq* cx_observerSeqCreate(void);
-cx_observerSeq* cx_observerSeqCreateChild(cx_object _parent, cx_string _name);
+/* ::corto::lang::observerseq */
+cx_observerseq* cx_observerseqCreate(void);
+cx_observerseq* cx_observerseqCreateChild(cx_object _parent, cx_string _name);
 
-cx_observerSeq* cx_observerSeqDeclare(void);
-cx_observerSeq* cx_observerSeqDeclareChild(cx_object _parent, cx_string _name);
-cx_int16 cx_observerSeqDefine(cx_observerSeq* _this, cx_observerSeq value);
-void cx_observerSeqUpdate(cx_observerSeq* _this, cx_observerSeq value);
-void cx_observerSeqSet(cx_observerSeq* _this, cx_observerSeq value);
-cx_string cx_observerSeqStr(cx_observerSeq value);
-cx_observerSeq* cx_observerSeqFromStr(cx_observerSeq* value, cx_string str);
-cx_int16 cx_observerSeqCopy(cx_observerSeq* *dst, cx_observerSeq* src);
-cx_int16 cx_observerSeqCompare(cx_observerSeq* dst, cx_observerSeq* src);
+cx_observerseq* cx_observerseqDeclare(void);
+cx_observerseq* cx_observerseqDeclareChild(cx_object _parent, cx_string _name);
+cx_int16 cx_observerseqDefine(cx_observerseq* _this, cx_observerseq value);
+void cx_observerseqUpdate(cx_observerseq* _this, cx_observerseq value);
+void cx_observerseqSet(cx_observerseq* _this, cx_observerseq value);
+cx_string cx_observerseqStr(cx_observerseq value);
+cx_observerseq* cx_observerseqFromStr(cx_observerseq* value, cx_string str);
+cx_int16 cx_observerseqCopy(cx_observerseq* *dst, cx_observerseq* src);
+cx_int16 cx_observerseqCompare(cx_observerseq* dst, cx_observerseq* src);
 
-cx_int16 cx_observerSeqInit(cx_observerSeq* value);
-cx_int16 cx_observerSeqDeinit(cx_observerSeq* value);
+cx_int16 cx_observerseqInit(cx_observerseq* value);
+cx_int16 cx_observerseqDeinit(cx_observerseq* value);
 
 /* ::corto::lang::octet */
 cx_octet* cx_octetCreate(void);
@@ -829,22 +829,22 @@ cx_int16 cx_parameterCompare(cx_parameter* dst, cx_parameter* src);
 cx_int16 cx_parameterInit(cx_parameter* value);
 cx_int16 cx_parameterDeinit(cx_parameter* value);
 
-/* ::corto::lang::parameterSeq */
-cx_parameterSeq* cx_parameterSeqCreate(void);
-cx_parameterSeq* cx_parameterSeqCreateChild(cx_object _parent, cx_string _name);
+/* ::corto::lang::parameterseq */
+cx_parameterseq* cx_parameterseqCreate(void);
+cx_parameterseq* cx_parameterseqCreateChild(cx_object _parent, cx_string _name);
 
-cx_parameterSeq* cx_parameterSeqDeclare(void);
-cx_parameterSeq* cx_parameterSeqDeclareChild(cx_object _parent, cx_string _name);
-cx_int16 cx_parameterSeqDefine(cx_parameterSeq* _this, cx_parameterSeq value);
-void cx_parameterSeqUpdate(cx_parameterSeq* _this, cx_parameterSeq value);
-void cx_parameterSeqSet(cx_parameterSeq* _this, cx_parameterSeq value);
-cx_string cx_parameterSeqStr(cx_parameterSeq value);
-cx_parameterSeq* cx_parameterSeqFromStr(cx_parameterSeq* value, cx_string str);
-cx_int16 cx_parameterSeqCopy(cx_parameterSeq* *dst, cx_parameterSeq* src);
-cx_int16 cx_parameterSeqCompare(cx_parameterSeq* dst, cx_parameterSeq* src);
+cx_parameterseq* cx_parameterseqDeclare(void);
+cx_parameterseq* cx_parameterseqDeclareChild(cx_object _parent, cx_string _name);
+cx_int16 cx_parameterseqDefine(cx_parameterseq* _this, cx_parameterseq value);
+void cx_parameterseqUpdate(cx_parameterseq* _this, cx_parameterseq value);
+void cx_parameterseqSet(cx_parameterseq* _this, cx_parameterseq value);
+cx_string cx_parameterseqStr(cx_parameterseq value);
+cx_parameterseq* cx_parameterseqFromStr(cx_parameterseq* value, cx_string str);
+cx_int16 cx_parameterseqCopy(cx_parameterseq* *dst, cx_parameterseq* src);
+cx_int16 cx_parameterseqCompare(cx_parameterseq* dst, cx_parameterseq* src);
 
-cx_int16 cx_parameterSeqInit(cx_parameterSeq* value);
-cx_int16 cx_parameterSeqDeinit(cx_parameterSeq* value);
+cx_int16 cx_parameterseqInit(cx_parameterseq* value);
+cx_int16 cx_parameterseqDeinit(cx_parameterseq* value);
 
 /* ::corto::lang::primitive */
 cx_primitive cx_primitiveCreate(cx_width width);
@@ -1167,71 +1167,71 @@ cx_int16 cx_wordInit(cx_word* value);
 cx_int16 cx_wordDeinit(cx_word* value);
 
 
-/* ::corto::lang::interfaceSeq */
-#define cx_interfaceSeqForeach(seq, elem) \
+/* ::corto::lang::interfaceseq */
+#define cx_interfaceseqForeach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_interface elem;\
     for(elem##_iter=0; elem##_iter<seq.length; elem##_iter++) {\
         elem = &seq.buffer[elem##_iter];
 
-cx_interface cx_interfaceSeqAppend(cx_interfaceSeq *seq);
-void cx_interfaceSeqSize(cx_interfaceSeq *seq, cx_uint32 length);
-void cx_interfaceSeq__clear(cx_interfaceSeq *seq);
+cx_interface cx_interfaceseqAppend(cx_interfaceseq *seq);
+void cx_interfaceseqSize(cx_interfaceseq *seq, cx_uint32 length);
+void cx_interfaceseqClear(cx_interfaceseq *seq);
 
-/* ::corto::lang::interfaceVectorSeq */
-#define cx_interfaceVectorSeqForeach(seq, elem) \
+/* ::corto::lang::interfaceVectorseq */
+#define cx_interfaceVectorseqForeach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_interfaceVector *elem;\
     for(elem##_iter=0; elem##_iter<seq.length; elem##_iter++) {\
         elem = &seq.buffer[elem##_iter];
 
-cx_interfaceVector* cx_interfaceVectorSeqAppend(cx_interfaceVectorSeq *seq);
-void cx_interfaceVectorSeqSize(cx_interfaceVectorSeq *seq, cx_uint32 length);
-void cx_interfaceVectorSeq__clear(cx_interfaceVectorSeq *seq);
+cx_interfaceVector* cx_interfaceVectorseqAppend(cx_interfaceVectorseq *seq);
+void cx_interfaceVectorseqSize(cx_interfaceVectorseq *seq, cx_uint32 length);
+void cx_interfaceVectorseqClear(cx_interfaceVectorseq *seq);
 
-/* ::corto::lang::memberSeq */
-#define cx_memberSeqForeach(seq, elem) \
+/* ::corto::lang::memberseq */
+#define cx_memberseqForeach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_member elem;\
     for(elem##_iter=0; elem##_iter<seq.length; elem##_iter++) {\
         elem = &seq.buffer[elem##_iter];
 
-cx_member cx_memberSeqAppend(cx_memberSeq *seq);
-void cx_memberSeqSize(cx_memberSeq *seq, cx_uint32 length);
-void cx_memberSeq__clear(cx_memberSeq *seq);
+cx_member cx_memberseqAppend(cx_memberseq *seq);
+void cx_memberseqSize(cx_memberseq *seq, cx_uint32 length);
+void cx_memberseqClear(cx_memberseq *seq);
 
-/* ::corto::lang::objectSeq */
-#define cx_objectSeqForeach(seq, elem) \
+/* ::corto::lang::objectseq */
+#define cx_objectseqForeach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_object elem;\
     for(elem##_iter=0; elem##_iter<seq.length; elem##_iter++) {\
         elem = &seq.buffer[elem##_iter];
 
-cx_object cx_objectSeqAppend(cx_objectSeq *seq);
-void cx_objectSeqSize(cx_objectSeq *seq, cx_uint32 length);
-void cx_objectSeq__clear(cx_objectSeq *seq);
+cx_object cx_objectseqAppend(cx_objectseq *seq);
+void cx_objectseqSize(cx_objectseq *seq, cx_uint32 length);
+void cx_objectseqClear(cx_objectseq *seq);
 
-/* ::corto::lang::observerSeq */
-#define cx_observerSeqForeach(seq, elem) \
+/* ::corto::lang::observerseq */
+#define cx_observerseqForeach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_observer elem;\
     for(elem##_iter=0; elem##_iter<seq.length; elem##_iter++) {\
         elem = &seq.buffer[elem##_iter];
 
-cx_observer cx_observerSeqAppend(cx_observerSeq *seq);
-void cx_observerSeqSize(cx_observerSeq *seq, cx_uint32 length);
-void cx_observerSeq__clear(cx_observerSeq *seq);
+cx_observer cx_observerseqAppend(cx_observerseq *seq);
+void cx_observerseqSize(cx_observerseq *seq, cx_uint32 length);
+void cx_observerseqClear(cx_observerseq *seq);
 
-/* ::corto::lang::parameterSeq */
-#define cx_parameterSeqForeach(seq, elem) \
+/* ::corto::lang::parameterseq */
+#define cx_parameterseqForeach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_parameter *elem;\
     for(elem##_iter=0; elem##_iter<seq.length; elem##_iter++) {\
         elem = &seq.buffer[elem##_iter];
 
-cx_parameter* cx_parameterSeqAppend(cx_parameterSeq *seq);
-void cx_parameterSeqSize(cx_parameterSeq *seq, cx_uint32 length);
-void cx_parameterSeq__clear(cx_parameterSeq *seq);
+cx_parameter* cx_parameterseqAppend(cx_parameterseq *seq);
+void cx_parameterseqSize(cx_parameterseq *seq, cx_uint32 length);
+void cx_parameterseqClear(cx_parameterseq *seq);
 
 /* ::corto::lang::vtable */
 #define cx_vtableForeach(seq, elem) \
@@ -1242,7 +1242,7 @@ void cx_parameterSeq__clear(cx_parameterSeq *seq);
 
 cx_function cx_vtableAppend(cx_vtable *seq);
 void cx_vtableSize(cx_vtable *seq, cx_uint32 length);
-void cx_vtable__clear(cx_vtable *seq);
+void cx_vtableClear(cx_vtable *seq);
 
 #ifdef __cplusplus
 }

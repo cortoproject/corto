@@ -486,13 +486,13 @@ CX_FWDECL(bitmask, attr);
 CX_FWDECL(bitmask, eventMask);
 CX_FWDECL(bitmask, modifier);
 
-CX_FWDECL(sequence, objectSeq);
-CX_FWDECL(sequence, interfaceSeq);
-CX_FWDECL(sequence, memberSeq);
-CX_FWDECL(sequence, parameterSeq);
-CX_FWDECL(sequence, observerSeq);
+CX_FWDECL(sequence, objectseq);
+CX_FWDECL(sequence, interfaceseq);
+CX_FWDECL(sequence, memberseq);
+CX_FWDECL(sequence, parameterseq);
+CX_FWDECL(sequence, observerseq);
 CX_FWDECL(sequence, vtable);
-CX_FWDECL(sequence, interfaceVectorSeq);
+CX_FWDECL(sequence, interfaceVectorseq);
 
 CX_FWDECL(delegate, callbackInit);
 CX_FWDECL(delegate, callbackDestruct);
@@ -663,13 +663,13 @@ CX_BITMASK_O(modifier);
     CX_CONSTANT_O(modifier, CONST);
 
 /* Collections */
-CX_SEQUENCE_O(objectSeq, object, 0);
-CX_SEQUENCE_O(interfaceSeq, interface, 0);
-CX_SEQUENCE_O(memberSeq, member, 0);
-CX_SEQUENCE_O(parameterSeq, parameter, 0);
-CX_SEQUENCE_O(observerSeq, observer, 0);
+CX_SEQUENCE_O(objectseq, object, 0);
+CX_SEQUENCE_O(interfaceseq, interface, 0);
+CX_SEQUENCE_O(memberseq, member, 0);
+CX_SEQUENCE_O(parameterseq, parameter, 0);
+CX_SEQUENCE_O(observerseq, observer, 0);
 CX_SEQUENCE_O(vtable, function, 0);
-CX_SEQUENCE_O(interfaceVectorSeq, interfaceVector, 0);
+CX_SEQUENCE_O(interfaceVectorseq, interfaceVector, 0);
 
 /* Delegate types */
 CX_DELEGATE_O(callbackInit, int16);
@@ -732,7 +732,7 @@ CX_FW_ICD(interface);
 CX_CLASS_O(interface, type, CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, CX_ICD);
     CX_MEMBER_O(interface, kind, compositeKind, CX_LOCAL|CX_READONLY);
     CX_MEMBER_O(interface, nextMemberId, uint32, CX_LOCAL | CX_PRIVATE);
-    CX_MEMBER_O(interface, members, memberSeq, CX_LOCAL | CX_PRIVATE);
+    CX_MEMBER_O(interface, members, memberseq, CX_LOCAL | CX_PRIVATE);
     CX_MEMBER_O(interface, methods, vtable, CX_LOCAL | CX_PRIVATE);
     CX_REFERENCE_O(interface, base, interface, CX_GLOBAL, CX_DEFINED, FALSE);
     CX_METHOD_O(interface, init, "()", int16, FALSE, cx_interface_init);
@@ -812,7 +812,7 @@ CX_CLASS_O(text, primitive, CX_LOCAL, NULL, CX_DECLARED | CX_DEFINED, CX_I);
 /* ::corto::lang::enum */
 CX_FW_ICD(enum);
 CX_CLASS_O(enum, primitive, CX_LOCAL | CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, CX_ICD);
-    CX_MEMBER_O(enum, constants, objectSeq, CX_LOCAL | CX_PRIVATE);
+    CX_MEMBER_O(enum, constants, objectseq, CX_LOCAL | CX_PRIVATE);
     CX_METHOD_O(enum, init, "()", int16, FALSE, cx_enum_init);
     CX_METHOD_O(enum, construct, "()", int16, FALSE, cx_enum_construct);
     CX_METHOD_O(enum, destruct, "()", void, FALSE, cx_enum_destruct);
@@ -841,9 +841,9 @@ CX_STRUCT_O(interfaceVector, NULL, CX_DECLARED | CX_DEFINED);
 /* ::corto::lang::class */
 CX_FW_ICD(class);
 CX_CLASS_O(class, struct, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_ICD);
-    CX_MEMBER_O(class, implements, interfaceSeq, CX_GLOBAL);
-    CX_MEMBER_O(class, interfaceVector, interfaceVectorSeq, CX_LOCAL|CX_PRIVATE);
-    CX_MEMBER_O(class, observers, observerSeq, CX_LOCAL|CX_PRIVATE);
+    CX_MEMBER_O(class, implements, interfaceseq, CX_GLOBAL);
+    CX_MEMBER_O(class, interfaceVector, interfaceVectorseq, CX_LOCAL|CX_PRIVATE);
+    CX_MEMBER_O(class, observers, observerseq, CX_LOCAL|CX_PRIVATE);
     CX_MEMBER_O(class, construct, callbackInit, CX_LOCAL|CX_PRIVATE);
     CX_MEMBER_O(class, destruct, callbackDestruct, CX_LOCAL|CX_PRIVATE);
     CX_METHOD_O(class, init, "()", int16, FALSE, cx_class_init);
@@ -867,7 +867,7 @@ CX_CLASS_O(delegate, struct, CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, CX_I);
     CX_METHOD_O(delegate, init, "()", int16, FALSE, cx_delegate_init);
     CX_REFERENCE_O(delegate, returnType, type, CX_GLOBAL, CX_DEFINED | CX_DECLARED, FALSE);
     CX_MEMBER_O(delegate, returnsReference, bool, CX_GLOBAL);
-    CX_MEMBER_O(delegate, parameters, parameterSeq, CX_GLOBAL);
+    CX_MEMBER_O(delegate, parameters, parameterseq, CX_GLOBAL);
     CX_METHOD_O(delegate, compatible, "(type type)", bool, TRUE, cx_delegate_compatible_v);
     CX_METHOD_O(delegate, castable, "(type type)", bool, TRUE, cx_delegate_compatible_v);
     CX_METHOD_O(delegate, instanceof, "(object object)", bool, FALSE, cx_delegate_instanceof);
@@ -929,12 +929,12 @@ CX_PROCEDURE_NOBASE_O(function, CX_FUNCTION, NULL, CX_DECLARED | CX_DEFINED, CX_
     CX_MEMBER_O(function, implData, word, CX_LOCAL|CX_PRIVATE);
     CX_REFERENCE_O(function, resource, object, CX_LOCAL|CX_PRIVATE, CX_DEFINED | CX_DECLARED, FALSE);
     CX_MEMBER_O(function, size, uint16, CX_LOCAL|CX_PRIVATE);
-    CX_MEMBER_O(function, parameters, parameterSeq, CX_LOCAL | CX_READONLY);
+    CX_MEMBER_O(function, parameters, parameterseq, CX_LOCAL | CX_READONLY);
     CX_MEMBER_O(function, nextParameterId, uint32, CX_LOCAL | CX_PRIVATE);
     CX_METHOD_O(function, init, "()", int16, FALSE, cx_function_init);
     CX_METHOD_O(function, bind, "()", int16, FALSE, cx_function_bind);
     CX_FUNCTION_O(function, unbind, "(function object)", void, cx_function_unbind);
-    CX_FUNCTION_O(function, stringToParameterSeq, "(string name,object scope)", parameterSeq, cx_function_stringToParameterSeq);
+    CX_FUNCTION_O(function, stringToParameterSeq, "(string name,object scope)", parameterseq, cx_function_stringToParameterSeq);
 
 /* ::corto::lang::dispatcher */
 CX_INTERFACE_O(dispatcher);

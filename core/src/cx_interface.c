@@ -250,7 +250,7 @@ error:
 cx_int16 cx__interface_insertMembers(cx_interface _this) {
     /* Create sequence with size nextMemberId */
     if (_this->nextMemberId) {
-        if (cx_sequence_alloc(cx_collection(cx_memberSeq_o), &_this->members, _this->nextMemberId)) {
+        if (cx_sequence_alloc(cx_collection(cx_memberseq_o), &_this->members, _this->nextMemberId)) {
             goto error;
         }
 

@@ -26,8 +26,8 @@ cx_int16 cx_ser_initCollection(cx_serializer s, cx_value* v, void* userData) {
             }
             break;
         case CX_SEQUENCE:
-            ((cx_objectSeq*)o)->buffer = NULL;
-            ((cx_objectSeq*)o)->length = 0;
+            ((cx_objectseq*)o)->buffer = NULL;
+            ((cx_objectseq*)o)->length = 0;
             break;
         case CX_LIST:
             *(cx_ll*)o = cx_llNew();

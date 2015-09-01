@@ -237,7 +237,7 @@ Fast_Expression Fast_Parser_delegateAssignment(Fast_Parser _this, Fast_Expressio
     Fast_InitializerExpression result = NULL;
     cx_string signature = NULL;
     cx_delegate type = NULL;
-    Fast_InitializerVariable_array64 variables;
+    Fast_InitializerVariableArray64 variables;
     Fast_CallBuilder builder;
     Fast_Call tempCall = NULL;
 
@@ -475,8 +475,8 @@ Fast_Expression Fast_Parser_explodeComma(Fast_Parser _this, Fast_Expression lval
         }
     }
 
-    Fast_Expression_listForeach(lvalueList, l)
-        Fast_Expression_listForeach(rvalueList, r)
+    Fast_ExpressionListForeach(lvalueList, l)
+        Fast_ExpressionListForeach(rvalueList, r)
             Fast_Expression e = action(_this, var ? var : l, r, userData);
             if (!e) {
                 goto error;
@@ -734,7 +734,7 @@ error:
 /* Declare a delegate type */
 Fast_Storage Fast_Parser_declareDelegate(Fast_Parser _this, cx_type returnType, cx_string id, cx_bool returnsReference) {
     cx_delegate delegate;
-    cx_parameterSeq parameters;
+    cx_parameterseq parameters;
     cx_id name;
 
     /* Translate from name to arguments */
@@ -1071,10 +1071,10 @@ Fast_Expression _Fast_Parser_callExpr(Fast_Parser _this, Fast_Expression functio
 
     if (function && _this->pass) {
         cx_object o = NULL;
-        Fast_Expression_list functions = function ? Fast_Expression_toList(function) : NULL;
-        Fast_Expression_list args = arguments ? Fast_Expression_toList(arguments) : NULL;
+        Fast_ExpressionList functions = function ? Fast_Expression_toList(function) : NULL;
+        Fast_ExpressionList args = arguments ? Fast_Expression_toList(arguments) : NULL;
 
-        if (functions) {Fast_Expression_listForeach(functions, f)
+        if (functions) {Fast_ExpressionListForeach(functions, f)
             Fast_Expression expr;
             if ((Fast_Node(f)->kind == Fast_StorageExpr) && (Fast_Storage(f)->kind == Fast_ObjectStorage)) {
                 o = Fast_Object(f)->value;
@@ -1100,7 +1100,7 @@ Fast_Expression _Fast_Parser_callExpr(Fast_Parser _this, Fast_Expression functio
         }}
 
         /* Cleanup initializer arguments */
-        if (args) {Fast_Expression_listForeach(args, a)
+        if (args) {Fast_ExpressionListForeach(args, a)
             if (Fast_Node(a)->kind == Fast_InitializerExpr) {
                 Fast_Expression var = Fast_Initializer(a)->variables[0].object;
                 if (Fast_Storage(var)->kind == Fast_TemporaryStorage) {
@@ -1908,7 +1908,7 @@ Fast_Expression _Fast_Parser_initPushExpression(Fast_Parser _this) {
     _this->initializerCount++;
 
     if (_this->pass) {
-        Fast_InitializerVariable_array64 variables;
+        Fast_InitializerVariableArray64 variables;
 
         memset(variables, 0, sizeof(variables));
 
@@ -1930,7 +1930,7 @@ Fast_Expression _Fast_Parser_initPushIdentifier(Fast_Parser _this, Fast_Expressi
     cx_type t;
     cx_bool isDynamic = TRUE;
     cx_bool forceStatic = FALSE;
-    Fast_InitializerVariable_array64 variables;
+    Fast_InitializerVariableArray64 variables;
     memset(variables, 0, sizeof(variables));
 
     CX_UNUSED(_this);
@@ -2016,7 +2016,7 @@ error:
 cx_int16 _Fast_Parser_initPushStatic(Fast_Parser _this) {
 /* $begin(::corto::Fast::Parser::initPushStatic) */
     cx_bool isLocal = _this->isLocal;
-    Fast_InitializerVariable_array64 variables;
+    Fast_InitializerVariableArray64 variables;
     Fast_Initializer initializer;
     cx_uint32 i;
 

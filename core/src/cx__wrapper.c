@@ -436,7 +436,7 @@ void __cx_function_init(cx_function f, void *result, void *args) {
 
 void __cx_function_stringToParameterSeq(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
-    *(cx_parameterSeq*)result = cx_function_stringToParameterSeq(
+    *(cx_parameterseq*)result = cx_function_stringToParameterSeq(
         *(cx_string*)args,
         *(cx_object*)((intptr_t)args + sizeof(cx_string)));
 }

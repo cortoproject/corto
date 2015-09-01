@@ -211,8 +211,8 @@ int cx_deserXmlCollectionNew(cx_type t, void* o) {
     case CX_ARRAY:
         break;
     case CX_SEQUENCE:
-        ((cx_objectSeq*)o)->length = 0;
-        ((cx_objectSeq*)o)->buffer = 0;
+        ((cx_objectseq*)o)->length = 0;
+        ((cx_objectseq*)o)->buffer = 0;
         break;
     case CX_LIST:
         *((cx_ll*)o) = cx_llNew();
@@ -241,7 +241,7 @@ typedef struct deser_xmlElementData {
 /* Create new element */
 void* cx_deserXmlCollectionNewElement(deser_xmlElementData* data) {
     cx_collection ctype;
-    cx_objectSeq* seq;
+    cx_objectseq* seq;
     cx_uint32 elementSize;
     void* result;
 
@@ -257,7 +257,7 @@ void* cx_deserXmlCollectionNewElement(deser_xmlElementData* data) {
         data->collection = CX_OFFSET(data->collection, elementSize);
         break;
     case CX_SEQUENCE:
-        seq = (cx_objectSeq*)data->collection;
+        seq = (cx_objectseq*)data->collection;
         seq->buffer = cx_realloc(seq->buffer, (seq->length+1) * elementSize);
         result = CX_OFFSET(seq->buffer, elementSize * seq->length);
         seq->length++;
