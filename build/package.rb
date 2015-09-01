@@ -4,16 +4,18 @@ PACKAGEDIR = "packages/" + PACKAGE.gsub("::", "/")
 TARGETPATH = PACKAGEDIR
 TARGET = PACKAGE.split("::").last
 
-GENERATED_SOURCES ||=[] <<
+GENERATED_SOURCES ||= []
+
+GENERATED_SOURCES <<
     ".corto/#{TARGET}__api.c" <<
     ".corto/#{TARGET}__wrapper.c" <<
     ".corto/#{TARGET}__meta.c" <<
     ".corto/#{TARGET}__load.c"
 
 GENERATED_HEADERS ||=[] <<
-    ".corto/#{TARGET}__api.h" <<
-    ".corto/#{TARGET}__meta.h" <<
-    ".corto/#{TARGET}__type.h"
+    "include/#{TARGET}__api.h" <<
+    "include/#{TARGET}__meta.h" <<
+    "include/#{TARGET}__type.h"
 
 PREFIX ||= TARGET
 
