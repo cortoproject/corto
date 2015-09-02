@@ -694,7 +694,7 @@ cx_string g_fullOidExt(cx_generator g, cx_object o, cx_id id, g_idKind kind) {
     if (g->id_action) {
         g->id_action(_id, id);
     } else {
-        strcpy(_id, id);
+        strcpy(id, _id);
     }
 
     return id;
