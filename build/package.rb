@@ -24,7 +24,13 @@ Dir.chdir(File.dirname(Rake.application.rakefile))
 
 GENFILE = Rake::FileList["#{TARGET}.*"][0]
 
-file "include/#{TARGET}__type.h" => GENFILE do
+file ".corto/packages.txt" do
+    verbose(false)
+    sh "mkdir -p .corto"
+    sh "touch .corto/packages.txt"
+end
+
+file "include/#{TARGET}__type.h" => [GENFILE, ".corto/packages.txt"] do
     verbose(false)
     sh "mkdir -p .corto"
     sh "touch .corto/#{TARGET}__wrapper.c"

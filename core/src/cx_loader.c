@@ -303,6 +303,61 @@ error:
     return NULL;
 }
 
+cx_ll cx_loadGetPackages(void) {
+    cx_ll result = NULL;
+
+    if (cx_fileTest(".corto/packages.txt")) {
+        cx_id packageName;
+        result = cx_llNew();
+        cx_file f = cx_fileRead(".corto/packages.txt");
+        char *package;
+        while ((package = cx_fileReadLine(f, packageName, sizeof(packageName)))) {
+            cx_llAppend(result, cx_strdup(package));
+        }
+        cx_fileClose(f);
+    }
+
+    return result;
+}
+void cx_loadFreePackages(cx_ll packages) {
+    if (packages) {
+        cx_iter iter = cx_llIter(packages);
+        while (cx_iterHasNext(&iter)) {
+            cx_dealloc(cx_iterNext(&iter));
+        }
+        cx_dealloc(packages);
+    }
+}
+
+cx_bool cx_loadRequiresPackage(cx_string query) {
+    cx_ll packages = cx_loadGetPackages();
+    cx_bool result = FALSE;
+
+    if (packages) {
+        cx_iter iter = cx_llIter(packages);
+        while (!result && cx_iterHasNext(&iter)) {
+            cx_string package = cx_iterNext(&iter);
+            if (!strcmp(package, query)) {
+                result = TRUE;
+            }
+        }
+    }
+
+    return result;
+}
+
+int cx_loadPackages(void) {
+    cx_ll packages = cx_loadGetPackages();
+    if (packages) {
+        cx_iter iter = cx_llIter(packages);
+        while (cx_iterHasNext(&iter)) {
+            cx_load(cx_iterNext(&iter));
+        }
+        cx_loadFreePackages(packages);
+    }
+    return 0;
+}
+
 /* Load package */
 static int cx_packageLoader(cx_string package) {
     cx_string fileName;

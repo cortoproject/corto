@@ -108,7 +108,7 @@ cx_void _profiling_stop(void) {
 /* $end */
 }
 
-int profilingmain(int argc, char* argv[]) {
+int profilingMain(int argc, char* argv[]) {
 /* $begin(main) */
     CX_UNUSED(argc);
     CX_UNUSED(argv);

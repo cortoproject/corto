@@ -782,7 +782,7 @@ static cx_int16 c_interfaceObject(cx_object o, c_typeWalk_t* data) {
         /* If top level file, generate main function */
         if (isTopLevelObject) {
             g_fileWrite(data->source, "\n");
-            g_fileWrite(data->source, "int %smain(int argc, char* argv[]) {\n", cx_nameof(o));
+            g_fileWrite(data->source, "int %sMain(int argc, char* argv[]) {\n", cx_nameof(o));
             g_fileWrite(data->source, "/* $begin(main)");
             g_fileIndent(data->source);
             if ((snippet = g_fileLookupSnippet(data->source, "main"))) {
@@ -836,6 +836,7 @@ error:
 /* Entry point for generator */
 int corto_genMain(cx_generator g) {
     c_typeWalk_t walkData;
+    cx_ll packages = NULL;
 
     /* Create source and include directories */
     cx_mkdir("src");
@@ -862,13 +863,19 @@ int corto_genMain(cx_generator g) {
     }
 
     /* Add header files for dependent packages */
-    g_resolveImports(g);
-    if (g->imports) {
-        cx_iter iter = cx_llIter(g->imports);
+    packages = cx_loadGetPackages();
+    if (packages) {
+        cx_iter iter = cx_llIter(packages);
         while (cx_iterHasNext(&iter)) {
-            cx_object o = cx_iterNext(&iter);
+            cx_string package = cx_iterNext(&iter);
+            cx_object o = cx_resolve(NULL, package);
+            if (!o) {
+                cx_error("package '%s' not found", package);
+                goto error;
+            }
             g_fileWrite(walkData.mainHeader, "#include \"%s.h\"\n", cx_nameof(o));
         }
+        cx_loadFreePackages(packages);
     }
 
     return 0;

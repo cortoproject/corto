@@ -686,6 +686,9 @@ int cx_start(void) {
     /* Set default object attribute */
     cx_setAttr(CX_ATTR_DEFAULT);
 
+    /* Load packages */
+    cx_loadPackages();
+
     return 0;
 }
 

@@ -21,8 +21,10 @@ extern "C" {
 typedef struct cx_file_s* cx_file;
 
 char* cx_fileLoad(const char* file);
-
 cx_file cx_fileOpen(const char* file);
+cx_file cx_fileAppend(const char* file);
+cx_file cx_fileRead(const char* file);
+
 FILE* cx_fileGet(cx_file file);
 void cx_fileClose(cx_file);
 char* cx_fileSearch(const char* file, cx_ll locations);

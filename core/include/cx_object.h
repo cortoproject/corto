@@ -50,7 +50,7 @@ cx_int8 cx_stateof(cx_object o);
 cx_bool cx_checkState(cx_object o, cx_int8 state);
 cx_bool cx_checkAttr(cx_object o, cx_int8 attr);
 cx_object cx_assertType(cx_type type, cx_object o);
-cx_bool cx_instanceof(cx_type type, cx_object o);
+cx_bool _cx_instanceof(cx_type type, cx_object o);
 
 /* Scoped data */
 cx_string cx_nameof(cx_object o);
@@ -144,10 +144,11 @@ cx_int16 cx_deinita(cx_any a);
 #define cx_declareChild(parent, name, type) _cx_declareChild(parent, name, cx_type(type))
 #define cx_strp(p, type, maxLength) _cx_strp(p, cx_type(type), maxLength)
 #define cx_fromStrp(out, type, string) _cx_fromStrp(out, cx_type(type), string)
-#define cx_copyp(p, type, src); _cx_copyp(p, cx_type(type), src)
-#define cx_comparep(p1, type, p2); _cx_comparep(p1, cx_type(type), p2)
-#define cx_initp(p, type); _cx_initp(p, cx_type(type))
-#define cx_deinitp(p, type); _cx_deinitp(p, cx_type(type))
+#define cx_copyp(p, type, src) _cx_copyp(p, cx_type(type), src)
+#define cx_comparep(p1, type, p2) _cx_comparep(p1, cx_type(type), p2)
+#define cx_initp(p, type) _cx_initp(p, cx_type(type))
+#define cx_deinitp(p, type) _cx_deinitp(p, cx_type(type))
+#define cx_instanceof(type, o) _cx_instanceof((cx_type)type, o)
 
 #ifdef __cplusplus
 }

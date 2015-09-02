@@ -8,7 +8,7 @@
 
 #include "test.h"
 
-int testmain(int argc, char* argv[]) {
+int testMain(int argc, char* argv[]) {
 /* $begin(main) */
     /* Insert code that must be run when component is loaded */
     CX_UNUSED(argc);

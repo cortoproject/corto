@@ -129,8 +129,8 @@ static cx_int16 corto_application(int argc, char *argv[]) {
 	sprintf(buff, "%s/src/%s.c", name, name);
     file = fopen(buff, "w");
     if (file) {
-        fprintf(file, "#include \"corto.h\"\n\n");
-        fprintf(file, "int %smain(int argc, char *argv[]) {\n\n", name); 
+        fprintf(file, "#include \"%s.h\"\n\n", name);
+        fprintf(file, "int %sMain(int argc, char *argv[]) {\n\n", name); 
         fprintf(file, "    printf(\"Hello Corto!\\n\");\n\n");
         fprintf(file, "    return 0;\n");
         fprintf(file, "}\n");

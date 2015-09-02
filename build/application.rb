@@ -16,9 +16,9 @@ GENERATED_SOURCES <<
     ".corto/#{TARGET}__load.c"
 
 CORTO_LIB << "corto"
-INCLUDE << "#{ENV['CORTO_HOME']}/include/corto/#{VERSION}"
+INCLUDE << "#{ENV['CORTO_HOME']}/include/corto/#{VERSION}" << ".corto"
 
-file ".corto/#{TARGET}__load.c" do
+file ".corto/#{TARGET}__load.c" => ".corto/packages.txt" do
     verbose(false)
     sh "mkdir -p .corto"
     sh "corto pp --name #{TARGET} -g c_project"

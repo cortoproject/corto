@@ -1,7 +1,8 @@
 
-#include "corto_help.h"
 #include "corto_build.h"
+#include "corto_help.h"
 #include "corto_install.h"
+#include "corto_package.h"
 #include "corto_project.h"
 #include "corto_run.h"
 #include "corto_shell.h"
@@ -18,6 +19,12 @@ int corto_help(int argc, char* argv[]) {
 		corto_createHelp();
 	} else if (!strcmp(argv[1], "run")) {
 		corto_runHelp();
+	} else if (!strcmp(argv[1], "add")) {
+		corto_addHelp();
+	} else if (!strcmp(argv[1], "remove")) {
+		corto_removeHelp();
+	} else if (!strcmp(argv[1], "list")) {
+		corto_listHelp();
 	} else if (!strcmp(argv[1], "install")) {
 		corto_installHelp();
 	} else if (!strcmp(argv[1], "uninstall")) {

@@ -240,7 +240,7 @@ error:
 /* $end */
 }
 
-int Fastmain(int argc, char* argv[]) {
+int FastMain(int argc, char* argv[]) {
 /* $begin(main) */
     CX_UNUSED(argc);
     CX_UNUSED(argv);

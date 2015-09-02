@@ -21,6 +21,10 @@ cx_int16 corto_install(int argc, char *argv[]) {
 	CX_UNUSED(argv);
 	cx_bool buildingCorto = FALSE;
 
+	if (argc > 1) {
+		cx_chdir(argv[1]);
+	}
+
 	if (!corto_validProject()) {
 		goto error;
 	}
@@ -101,6 +105,10 @@ error:
 cx_int16 corto_uninstall(int argc, char *argv[]) {
 	CX_UNUSED(argc);
 	CX_UNUSED(argv);
+
+	if (argc > 1) {
+		cx_chdir(argv[1]);
+	}
 
 	if (!corto_validProject()) {
 		goto error;

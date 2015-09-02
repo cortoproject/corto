@@ -34,7 +34,7 @@ cx_string _io_readln(void) {
 /* $end */
 }
 
-int iomain(int argc, char* argv[]) {
+int ioMain(int argc, char* argv[]) {
 /* $begin(main) */
     /* Insert code that must be run when component is loaded */
     CX_UNUSED(argc);

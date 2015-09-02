@@ -25,6 +25,7 @@ TARGETDIR ||= ENV['CORTO_TARGET'] + "/lib"
 GENERATED_SOURCES ||= []
 GENERATED_HEADERS ||= []
 USE_PACKAGE ||= []
+USE_PACKAGE_LOADED ||=[]
 USE_COMPONENT ||= []
 USE_LIBRARY ||= []
 INCLUDE << "include"
@@ -35,10 +36,23 @@ CFLAGS.unshift("-Wall")
 SOURCES = (Rake::FileList["src/*.c"] + GENERATED_SOURCES)
 OBJECTS = SOURCES.ext(".o").pathmap(TARGETDIR + "/obj/%f")
 
+# Load packages from file
+if File.exists? ".corto/packages.txt" then
+    f = File.open(".corto/packages.txt")
+    f.each_line {|line|
+        USE_PACKAGE_LOADED.push line[0...-1]
+        USE_PACKAGE.push line[0...-1]
+    }
+end
+
 CLEAN.include(TARGETDIR + "/obj")
 CLOBBER.include(TARGETDIR + "/" + ARTEFACT)
 CLOBBER.include(GENERATED_SOURCES)
 CLOBBER.include(GENERATED_HEADERS)
+
+if USE_PACKAGE_LOADED.length == 0 then
+    CLOBBER.include(".corto/packages.txt")
+end
 
 task :collect do
     verbose(false)
@@ -51,6 +65,12 @@ task :collect do
     else
         sh "cp -rL #{artefact} #{target}"
     end
+end
+
+file ".corto/packages.txt" do
+    verbose(false)
+    sh "mkdir -p .corto"
+    sh "touch .corto/packages.txt"
 end
 
 task :binary => "#{TARGETDIR}/#{ARTEFACT}"

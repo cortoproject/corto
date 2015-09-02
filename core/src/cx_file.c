@@ -61,6 +61,30 @@ cx_file cx_fileOpen(const char* file) {
     }
 }
 
+/* Open file for appending */
+cx_file cx_fileAppend(const char* file) {
+
+    if (!strcmp(file, "<<")) {
+        return (cx_file)stdin;
+    } else if (!strcmp(file, ">>")) {
+        return (cx_file)stdout;
+    } else {
+        return (cx_file)fopen(file, "a");
+    }
+}
+
+/* Open file for reading */
+cx_file cx_fileRead(const char* file) {
+
+    if (!strcmp(file, "<<")) {
+        return (cx_file)stdin;
+    } else if (!strcmp(file, ">>")) {
+        return (cx_file)stdout;
+    } else {
+        return (cx_file)fopen(file, "r");
+    }
+}
+
 /* Close file */
 void cx_fileClose(cx_file file) {
     if (file) {

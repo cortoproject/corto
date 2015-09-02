@@ -1,12 +1,13 @@
 
 #include "corto.h"
-#include "corto_project.h"
 #include "corto_build.h"
+#include "corto_help.h"
 #include "corto_install.h"
+#include "corto_package.h"
 #include "corto_pp.h"
+#include "corto_project.h"
 #include "corto_run.h"
 #include "corto_shell.h"
-#include "corto_help.h"
 #include "cx_loader.h"
 
 void corto_locateHelp(void) {
@@ -28,6 +29,9 @@ static void corto_printUsage(void) {
     printf("Commands:\n");
     printf("   create               Create a new project.\n");
     printf("   run                  Run a project.\n");
+    printf("   add                  Add a package to the project\n");
+    printf("   remove               Remove a package from the project\n");
+    printf("   list                 List the packages of the project\n");
     printf("   install              Install a project to the global environment.\n");
     printf("   uninstall            Remove a project from the global environment.\n");
     printf("   locate               Show whether a package is located in the local or global environment\n");
@@ -77,6 +81,21 @@ int main(int argc, char* argv[]) {
                 }
             } else if (!strcmp(argv[i], "create")) {
                 if (corto_project(argc-i, &argv[i])) {
+                    goto error;
+                }
+                break;
+            } else if (!strcmp(argv[i], "add")) {
+                if (corto_add(argc-i, &argv[i])) {
+                    goto error;
+                }
+                break;
+            } else if (!strcmp(argv[i], "remove")) {
+                if (corto_remove(argc-i, &argv[i])) {
+                    goto error;
+                }
+                break;
+            } else if (!strcmp(argv[i], "list")) {
+                if (corto_list(argc-i, &argv[i])) {
                     goto error;
                 }
                 break;

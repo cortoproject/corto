@@ -49,7 +49,7 @@ ic_opKind _ic_opKindFromOperator(cx_operatorKind operator) {
 /* $end */
 }
 
-int icmain(int argc, char* argv[]) {
+int icMain(int argc, char* argv[]) {
 /* $begin(main) */
     CX_UNUSED(argc);
     CX_UNUSED(argv);

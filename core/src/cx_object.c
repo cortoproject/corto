@@ -1184,7 +1184,7 @@ cx_object cx_assertType(cx_type type, cx_object o) {
     return o;
 }
 
-cx_bool cx_instanceof(cx_type type, cx_object o) {
+cx_bool _cx_instanceof(cx_type type, cx_object o) {
     cx_type objectType = cx_typeof(o);
     cx_bool result = TRUE;
 
