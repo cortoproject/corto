@@ -27,8 +27,7 @@ To verify whether the build was succesful, run the following command: `corto --v
 It's very easy to create and run your first corto application. Simply type the following commands:
 ```
 corto create MyFirstApp
-cd MyFirstApp
-corto run
+corto run MyFirstApp
 ```
 Your program should print `Hello Corto!`. If you look at the generated sources, you'll see a file called `src/MyFirstApp.c`. It looks like this:
 ```c
@@ -55,7 +54,7 @@ int MyFirstAppmain(int argc, char *argv[]) {
     return 0;
 }
 ```
-In the terminal, type `corto run` again. You should see that your program repeatedly prints `Hello Corto!`. 
+In the terminal, type `corto run MyFirstApp` again. You should see that your program repeatedly prints `Hello Corto!`. 
 
 Now in `MyFirstApp.c` change the line 
 ```c
