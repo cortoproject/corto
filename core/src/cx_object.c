@@ -805,20 +805,32 @@ cx_int16 cx_delegateInit(cx_type t, void *o) {
 }
 
 cx_attr cx_setAttr(cx_attr attrs) {
-    void* oldAttr = cx_threadTlsGet(CX_KEY_ATTR);
-    cx_threadTlsSet(CX_KEY_ATTR, (void*)(cx_word)attrs);
-    return (cx_attr)(cx_word)oldAttr;
+    cx_attr* attr = cx_threadTlsGet(CX_KEY_ATTR);
+    cx_attr oldAttr = CX_ATTR_DEFAULT;
+    if (!attr) {
+        attr = cx_alloc(sizeof(cx_attr));
+        cx_threadTlsSet(CX_KEY_ATTR, attr);
+    } else {
+        oldAttr = *attr;
+    }
+    *attr = attrs;
+    return oldAttr;
 }
 
 cx_attr cx_getAttr(void) {
-    return (cx_attr)(cx_word)cx_threadTlsGet(CX_KEY_ATTR);
+    cx_attr* attr = cx_threadTlsGet(CX_KEY_ATTR);
+    if (attr) {
+        return *attr;
+    } else {
+        return CX_ATTR_DEFAULT;
+    }
 }
 
 /* Create new object with attributes */
 cx_object _cx_declare(cx_type type) {
     cx_uint32 size, headerSize;
     cx__object* o;
-    cx_attr attrs = (cx_attr)(cx_word)cx_threadTlsGet(CX_KEY_ATTR);
+    cx_attr attrs = cx_getAttr();
 
     if (attrs & CX_ATTR_DEFAULT) {
         attrs |= CX_ATTR_OBSERVABLE;
@@ -1197,16 +1209,21 @@ cx_bool _cx_instanceof(cx_type type, cx_object o) {
         if (t->kind == type->kind) {
             switch(type->kind) {
             case CX_COMPOSITE: {
-                if (cx_interface(type)->kind == CX_DELEGATE) {
+                if (((cx_interface)type)->kind == CX_DELEGATE) {
                     /*result = cx_delegate_instanceof(cx_delegate(type), o);*/
-                } else {
-                    cx_interface p;
-                    p = (cx_interface)t;
-
-                    while(p && !result) {
-                        result = (p == (cx_interface)type);
-                        p = p->base;
+                } else if (((cx_interface)type)->kind == CX_INTERFACE) {
+                    if (cx_interface(t)->kind == CX_CLASS) {
+                        cx_int32 i;
+                        for (i = 0; i < ((cx_class)t)->implements.length; i++) {
+                            if (_cx_interface_baseof(
+                                (cx_interface)((cx_class)t)->implements.buffer[i], (cx_interface)type)) {
+                                result = TRUE;
+                                break;
+                            }
+                        }
                     }
+                } else {
+                    result = _cx_interface_baseof((cx_interface)t, (cx_interface)type);
                 }
                 break;
             }
