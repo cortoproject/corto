@@ -3,7 +3,9 @@
 
 cx_object cxstr_define(cx_object result, cx_string value) {
 
-    cx_fromStr(&result, value);
+    if (cx_typeof(result)->kind != CX_VOID) {
+        cx_fromStr(&result, value);
+    }
 
     if (cx_define(result)) {
         goto error;

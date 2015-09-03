@@ -86,8 +86,12 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     lflags = "#{LFLAGS.join(" ")} -o #{TARGETDIR}/#{ARTEFACT}"
     use_link =
         USE_PACKAGE.map do |i|
-            dirs = i.split("::")
-            "#{ENV['CORTO_HOME']}/lib/corto/#{VERSION}/packages/" + i.gsub("::", "/") + "/lib" + dirs[dirs.length-1] + ".so"
+            result = `corto locate #{i} --lib`[0...-1]
+            if $?.exitstatus != 0 then
+                p result
+                abort "\033[1;31m[ build failed ]\033[0;49m"
+            end
+            result
         end.join(" ") +
         USE_COMPONENT.map {|i| "#{ENV['CORTO_HOME']}/lib/corto/#{VERSION}/components/lib" + i + ".so"}.join(" ") +
         USE_LIBRARY.map {|i| "#{ENV['CORTO_HOME']}/lib/corto/#{VERSION}/libraries/lib" + i + ".so"}.join(" ")
@@ -129,7 +133,14 @@ def build_source(task, echo)
             sh "echo '#{task.source}'" 
         end
     end
-    use_include = USE_PACKAGE.map{|i| "-I #{ENV['CORTO_HOME']}/include/corto/#{VERSION}/packages/" + i.gsub("::", "/")}.join(" ")
+    use_include = USE_PACKAGE.map do |i| 
+        env = `corto locate #{i} --env`[0...-1]
+        if $?.exitstatus != 0 then
+            p env
+            abort "\033[1;31m[ build failed ]\033[0;49m"
+        end
+        "-I #{env}/include/corto/#{VERSION}/packages/" + i.gsub("::", "/")
+    end.join(" ")
     sh "cc -c #{CFLAGS.join(" ")} #{use_include} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{task.source} -o #{task.name}"
 end
 

@@ -9,6 +9,7 @@
 #include "stdlib.h"
 #include "string.h"
 #include <sys/stat.h>
+#include <errno.h>
 
 #ifdef CX_LOADER
 
@@ -258,28 +259,61 @@ loaded:
     return 0;
 }
 
+static time_t cx_getModified(cx_string file) {
+    struct stat attr;
+
+    if (stat(file, &attr) < 0) {
+        printf("failed to stat '%s' (%s)\n", file, strerror(errno));
+    }
+
+    return attr.st_mtime;    
+}
+
 cx_string cx_locateLib(cx_string lib) {
-    cx_string usrPath = NULL, homePath = NULL;
     cx_string relativePath = cx_packageToFile(lib);
+    cx_string targetPath = NULL, homePath = NULL, usrPath = NULL;
     cx_string result = NULL;
+    time_t t = 0;
 
     if (!relativePath) {
         goto error;
     }
 
-    if (strcmp(cx_getenv("CORTO_HOME"), "/usr")) {
-        homePath = cx_envparse("$CORTO_HOME/lib/corto/%s/%s", CORTO_VERSION, lib);
+    /* Look for local packages first */
+    targetPath = cx_envparse("$CORTO_TARGET/lib/corto/%s/%s", CORTO_VERSION, lib);
+    if (cx_fileTest(targetPath)) {
+        t = cx_getModified(targetPath);
+        result = targetPath;
+    }
+
+    /* Look for packages in CORTO_HOME */
+    if (strcmp(cx_getenv("CORTO_HOME"), cx_getenv("CORTO_TARGET"))) {
+        cx_string homePath = cx_envparse("$CORTO_HOME/lib/corto/%s/%s", CORTO_VERSION, lib);
         if (cx_fileTest(homePath)) {
-            result = homePath;
+            time_t myT = cx_getModified(homePath);
+            if ((myT > t) || !result) {
+                t = myT;
+                result = homePath;
+            }
         }
     }
 
-    if (!homePath) {
+    /* Look for global packages */
+    if (strcmp("/usr", cx_getenv("CORTO_TARGET")) && 
+        strcmp("/usr", cx_getenv("CORTO_HOME"))) {
         usrPath = cx_envparse("/usr/lib/corto/%s/%s", CORTO_VERSION, lib);
         if (cx_fileTest(usrPath)) {
-            result = usrPath;
+            time_t myT = cx_getModified(usrPath);
+            if ((myT > t) || !result) {
+                t = myT;
+                result = usrPath;
+            }
         }
     }
+
+    if (targetPath && (targetPath != result)) cx_dealloc(targetPath);
+    if (homePath && (homePath != result)) cx_dealloc(homePath);
+    if (usrPath && (usrPath != result)) cx_dealloc(usrPath);
 
     return result;
 error:
@@ -295,7 +329,6 @@ cx_string cx_locate(cx_string package) {
     }
 
     result = cx_locateLib(relativePath);
-
     cx_dealloc(relativePath);
 
     return result;

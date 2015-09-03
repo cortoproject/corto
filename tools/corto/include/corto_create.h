@@ -12,7 +12,8 @@ extern "C" {
 #define CORTO_COMPONENT ("component")
 #define CORTO_APPLICATION ("application")
 
-cx_int16 corto_project(int argc, char* argv[]);
+cx_int16 corto_create(int argc, char* argv[]);
+cx_int16 corto_delete(int argc, char* argv[]);
 
 void corto_createHelp(void);
 

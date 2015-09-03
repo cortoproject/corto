@@ -42,7 +42,7 @@ cx_int16 corto_add(int argc, char* argv[]) {
 		}
 		fprintf(cx_fileGet(f), "%s\n", id);
 		cx_fileClose(f);
-		corto_rebuild(argc - 1, &argv[1]);
+		corto_build(argc - 1, &argv[1]);
 		printf("corto: package '%s' added to project\n", id);
 	} else {
 		printf("corto: package '%s' is already added to the project\n", id);
@@ -98,7 +98,7 @@ cx_int16 corto_remove(int argc, char* argv[]) {
 		cx_error("corto: '%s' ('%s') not found in package file", argv[packageElem], id);
 		goto error;
 	} else {
-		corto_rebuild(argc - 1, &argv[1]);
+		corto_build(argc - 1, &argv[1]);
 		printf("corto: package '%s' removed from project\n", id);
 	}
 

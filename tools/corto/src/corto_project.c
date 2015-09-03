@@ -1,16 +1,18 @@
 
-#include "corto_project.h"
+#include "corto_create.h"
 #include "corto_build.h"
 
 static cx_int16 corto_setupProject(const char *name) {
 	printf ("corto: create project '%s'\n", name);
 
     if (cx_fileTest(name)) {
-        cx_error("corto: a project with the name '%s' already exists!", name);
-        goto error;
-    }
-
-    if (cx_mkdir(name)) {
+        cx_id id;
+        sprintf(id, "%s/.corto", name);
+        if (cx_fileTest(id)) {
+            cx_error("corto: a project with the name '%s' already exists!", name);
+            goto error;
+        }
+    } else if (cx_mkdir(name)) {
         cx_error("corto: couldn't create project directory '%s' (check permissions)", name);
         goto error;
     }
@@ -327,7 +329,7 @@ error:
 	return -1;
 }
 
-cx_int16 corto_project(int argc, char *argv[]) {
+cx_int16 corto_create(int argc, char *argv[]) {
 
 	if (argc <= 1) {
         if (corto_application(argc-1, &argv[0])) {

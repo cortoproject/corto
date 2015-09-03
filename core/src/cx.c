@@ -603,6 +603,10 @@ static void cx_decreaseRefType(cx_object o, cx_uint32 size) {
     cx_decreaseRef(o);
 }
 
+static void cx_genericTlsFree(void *o) {
+    cx_dealloc(o);
+}
+
 int cx_start(void) {
 
     /* CORTO_BUILD is where the buildsystem is located */
@@ -623,7 +627,7 @@ int cx_start(void) {
     /* Initialize threadkeys */
     cx_threadTlsKey(&CX_KEY_OBSERVER_ADMIN, NULL);
     cx_threadTlsKey(&CX_KEY_WAIT_ADMIN, NULL);
-    cx_threadTlsKey(&CX_KEY_ATTR, NULL);
+    cx_threadTlsKey(&CX_KEY_ATTR, cx_genericTlsFree);
 
     /* Init admin-lock */
     cx_mutexNew(&cx_adminLock);
@@ -682,9 +686,6 @@ int cx_start(void) {
 
     /* Init CRC table */
     cx_crcInit();
-
-    /* Set default object attribute */
-    cx_setAttr(CX_ATTR_DEFAULT);
 
     /* Load packages */
     cx_loadPackages();

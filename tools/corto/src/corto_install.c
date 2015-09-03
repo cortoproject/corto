@@ -54,7 +54,7 @@ cx_int16 corto_install(int argc, char *argv[]) {
 	fprintf(install, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
 
 	/* Build libraries to global environment */
-	fprintf(install, "rake silent=true\n");
+	fprintf(install, "rake silent=true 2> /dev/null\n");
 	fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
 
 	if (buildingCorto) {
@@ -88,7 +88,7 @@ cx_int16 corto_install(int argc, char *argv[]) {
 	}
 
 	if ((procresult != -1) || rc) {
-		printf("failed :(\n");
+		printf("\nInstallation failed :(\n");
 		printf("  A likely cause is an error in the corto code. Try doing a regular corto\n");
 		printf("  build first (type 'rake') and see if that works. If the issue persists,\n");
 		printf("  please file an issue in our GitHub repository!\n");
@@ -162,16 +162,53 @@ error:
 
 cx_int16 corto_locate(int argc, char* argv[]) {
 	cx_string location;
+	cx_bool lib = FALSE, path = FALSE, env = FALSE;
 
 	if (argc <= 1) {
 		printf("corto: please provide a package name\n");
 		goto error;
 	}
 
+	if (argc > 2) {
+		if (!strcmp(argv[2], "--lib")) {
+			lib = TRUE;
+		} else if (!strcmp(argv[2], "--path")) {
+			path = TRUE;
+		} else if (!strcmp(argv[2], "--env")) {
+			env = TRUE;
+		}
+	}
+
 	location = cx_locate(argv[1]);
 
 	if (location) {
-		printf("corto: '%s' => '%s'\n", argv[1], location);
+		if (env) {
+			char *ptr = location;
+
+			while (*ptr) {
+				if (!memcmp(ptr, "/lib", 4)) {
+					*ptr = '\0';
+					break;
+				}
+				ptr++;
+			}
+		} else if (path && !lib) {
+			char *ptr, ch;
+			ptr = &location[strlen(location) - 1];
+			while ((ch = *ptr) && (ptr >= location)) {
+				if (ch == '/') {
+					*ptr = '\0';
+					break;
+				}
+				ptr --;
+			}
+		}
+
+		if (lib || path || env) {
+			printf("%s\n", location);
+		} else {
+			printf("corto: '%s' => '%s'\n", argv[1], location);
+		}
 	} else {
 		printf("corto: package '%s' not found\n", argv[1]);
 		goto error;

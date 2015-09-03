@@ -79,6 +79,10 @@ static cx_int16 c_projectGenerateMainHeaderFile(cx_generator g) {
         while (cx_iterHasNext(&iter)) {
             cx_string str = cx_iterNext(&iter);
             cx_object package = cx_resolve(NULL, str);
+            if (!package) {
+                cx_error("corto: package.txt contains unresolved package '%s'", str);
+                goto error;
+            }
             g_fileWrite(file, "#include \"%s.h\"\n", cx_nameof(package));
             cx_release(package);
         }

@@ -5,7 +5,7 @@
 #include "corto_install.h"
 #include "corto_package.h"
 #include "corto_pp.h"
-#include "corto_project.h"
+#include "corto_create.h"
 #include "corto_run.h"
 #include "corto_shell.h"
 #include "cx_loader.h"
@@ -80,7 +80,7 @@ int main(int argc, char* argv[]) {
                     goto error;
                 }
             } else if (!strcmp(argv[i], "create")) {
-                if (corto_project(argc-i, &argv[i])) {
+                if (corto_create(argc-i, &argv[i])) {
                     goto error;
                 }
                 break;

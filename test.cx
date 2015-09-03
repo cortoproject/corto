@@ -1,0 +1,6 @@
+
+list foo : int32
+    
+struct bar::
+    member d : foo
+    member d : int32

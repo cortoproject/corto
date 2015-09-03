@@ -2521,7 +2521,9 @@ cx_int16 _Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_word value) 
         }
     } else {
         ic_program_run(program, 0);
-        cx_valueValueInit(v, NULL, cx_type(cx_void_o), NULL);
+        if (v) {
+            cx_valueValueInit(v, NULL, cx_type(cx_void_o), NULL);
+        }
     }
 
     /* Free program */

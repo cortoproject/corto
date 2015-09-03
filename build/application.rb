@@ -1,4 +1,5 @@
 require "#{ENV['CORTO_BUILD']}/version"
+require "rake/clean"
 
 if not defined? TARGET then
     raise "library: TARGET not specified\n"
@@ -17,6 +18,8 @@ GENERATED_SOURCES <<
 
 CORTO_LIB << "corto"
 INCLUDE << "#{ENV['CORTO_HOME']}/include/corto/#{VERSION}" << ".corto"
+
+CLOBBER.include ".corto/#{TARGET}.h"
 
 file ".corto/#{TARGET}__load.c" => ".corto/packages.txt" do
     verbose(false)
