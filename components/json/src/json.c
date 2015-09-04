@@ -537,3 +537,9 @@ struct cx_serializer_s cx_json_ser(cx_modifier access, cx_operatorKind accessKin
     s.metaprogram[CX_OBJECT] = serializeObject;
     return s;
 }
+
+int jsonMain(int argc, char* argv[]) {
+    CX_UNUSED(argc);
+    CX_UNUSED(argv);
+    return 0;
+}

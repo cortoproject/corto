@@ -1262,7 +1262,7 @@ void vm_callDestruct(cx_function f) {
     vm_programFree((vm_program)f->implData);
 }
 
-int cortomain(int argc, char* argv[]) {
+int vmMain(int argc, char* argv[]) {
     CX_UNUSED(argc);
     CX_UNUSED(argv);
     CX_PROCEDURE_VM = cx_callRegisterBinding(vm_call, NULL, NULL, (cx_callDestructHandler)vm_callDestruct);

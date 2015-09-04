@@ -1,14 +1,18 @@
+/* include/json.h
+ *
+ * This file is generated. Do not modify.
+ */
+
 #ifndef json_H
 #define json_H
 
-#include <stdio.h>
-
 #include "corto.h"
-#include "cx_serializer.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/* $header() */
+#include "cx_serializer.h"
 
 #define CX_JSON_ROOT_NAME "::"
 #define CX_JSON_ROOT_PARENT ""
@@ -31,11 +35,10 @@ struct cx_serializer_s cx_json_ser(cx_modifier access, cx_operatorKind accessKin
 
 cx_object cx_json_deser(cx_string s);
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+/* $end */
 
 #ifdef __cplusplus
 }
 #endif
 #endif
+

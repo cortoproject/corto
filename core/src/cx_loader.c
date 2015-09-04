@@ -269,15 +269,10 @@ static time_t cx_getModified(cx_string file) {
     return attr.st_mtime;    
 }
 
-cx_string cx_locateLib(cx_string lib) {
-    cx_string relativePath = cx_packageToFile(lib);
+cx_string cx_locateLibrary(cx_string lib) {
     cx_string targetPath = NULL, homePath = NULL, usrPath = NULL;
     cx_string result = NULL;
     time_t t = 0;
-
-    if (!relativePath) {
-        goto error;
-    }
 
     /* Look for local packages first */
     targetPath = cx_envparse("$CORTO_TARGET/lib/corto/%s/%s", CORTO_VERSION, lib);
@@ -315,9 +310,18 @@ cx_string cx_locateLib(cx_string lib) {
     if (homePath && (homePath != result)) cx_dealloc(homePath);
     if (usrPath && (usrPath != result)) cx_dealloc(usrPath);
 
+    return result;   
+}
+
+cx_string cx_locateComponent(cx_string component) {
+    cx_string relativePath = NULL;
+    cx_string result = NULL;
+
+    cx_asprintf(&relativePath, "lib/components/lib%s.so", component);
+    result = cx_locateLibrary(relativePath);
+    cx_dealloc(relativePath);
+
     return result;
-error:
-    return NULL;    
 }
 
 cx_string cx_locate(cx_string package) {
@@ -328,7 +332,7 @@ cx_string cx_locate(cx_string package) {
         goto error;
     }
 
-    result = cx_locateLib(relativePath);
+    result = cx_locateLibrary(relativePath);
     cx_dealloc(relativePath);
 
     return result;
@@ -336,38 +340,38 @@ error:
     return NULL;
 }
 
-cx_ll cx_loadGetPackages(void) {
+static cx_ll cx_loadGetDependencies(cx_string file) {
     cx_ll result = NULL;
 
-    if (cx_fileTest(".corto/packages.txt")) {
-        cx_id packageName;
+    if (cx_fileTest(file)) {
+        cx_id name;
         result = cx_llNew();
-        cx_file f = cx_fileRead(".corto/packages.txt");
-        char *package;
-        while ((package = cx_fileReadLine(f, packageName, sizeof(packageName)))) {
-            cx_llAppend(result, cx_strdup(package));
+        cx_file f = cx_fileRead(file);
+        char *dependency;
+        while ((dependency = cx_fileReadLine(f, name, sizeof(name)))) {
+            cx_llAppend(result, cx_strdup(dependency));
         }
         cx_fileClose(f);
     }
 
     return result;
 }
-void cx_loadFreePackages(cx_ll packages) {
-    if (packages) {
-        cx_iter iter = cx_llIter(packages);
+
+static void cx_loadFreeDependencies(cx_ll dependencies) {
+    if (dependencies) {
+        cx_iter iter = cx_llIter(dependencies);
         while (cx_iterHasNext(&iter)) {
             cx_dealloc(cx_iterNext(&iter));
         }
-        cx_dealloc(packages);
+        cx_dealloc(dependencies);
     }
 }
 
-cx_bool cx_loadRequiresPackage(cx_string query) {
-    cx_ll packages = cx_loadGetPackages();
+static cx_bool cx_loadRequiresDependency(cx_ll dependencies, cx_string query) {
     cx_bool result = FALSE;
 
-    if (packages) {
-        cx_iter iter = cx_llIter(packages);
+    if (dependencies) {
+        cx_iter iter = cx_llIter(dependencies);
         while (!result && cx_iterHasNext(&iter)) {
             cx_string package = cx_iterNext(&iter);
             if (!strcmp(package, query)) {
@@ -377,6 +381,36 @@ cx_bool cx_loadRequiresPackage(cx_string query) {
     }
 
     return result;
+}
+
+cx_ll cx_loadGetPackages(void) {
+    return cx_loadGetDependencies(".corto/packages.txt");
+}
+
+void cx_loadFreePackages(cx_ll packages) {
+    cx_loadFreeDependencies(packages);
+}
+
+cx_bool cx_loadRequiresPackage(cx_string package) {
+    cx_ll packages = cx_loadGetPackages();
+    cx_bool result = cx_loadRequiresDependency(packages, package);
+    cx_loadFreePackages(packages);
+    return result;
+}
+
+cx_ll cx_loadGetComponents(void) {
+    return cx_loadGetDependencies(".corto/components.txt");
+}
+
+void cx_loadFreeComponents(cx_ll components) {
+    cx_loadFreeDependencies(components);
+}
+
+cx_bool cx_loadRequiresComponent(cx_string component) {
+    cx_ll components = cx_loadGetComponents();
+    cx_bool result = cx_loadRequiresDependency(components, component);
+    cx_loadFreePackages(components);
+    return result; 
 }
 
 int cx_loadPackages(void) {

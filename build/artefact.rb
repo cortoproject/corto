@@ -27,6 +27,7 @@ GENERATED_HEADERS ||= []
 USE_PACKAGE ||= []
 USE_PACKAGE_LOADED ||=[]
 USE_COMPONENT ||= []
+USE_COMPONENT_LOADED ||=[]
 USE_LIBRARY ||= []
 INCLUDE << "include"
 
@@ -35,6 +36,15 @@ CFLAGS.unshift("-Wall")
 
 SOURCES = (Rake::FileList["src/*.c"] + GENERATED_SOURCES)
 OBJECTS = SOURCES.ext(".o").pathmap(TARGETDIR + "/obj/%f")
+
+# Load components from file
+if File.exists? ".corto/components.txt" then
+    f = File.open(".corto/components.txt")
+    f.each_line {|line|
+        USE_COMPONENT_LOADED.push line[0...-1]
+        USE_COMPONENT.push line[0...-1]
+    }
+end
 
 # Load packages from file
 if File.exists? ".corto/packages.txt" then
@@ -49,6 +59,10 @@ CLEAN.include(TARGETDIR + "/obj")
 CLOBBER.include(TARGETDIR + "/" + ARTEFACT)
 CLOBBER.include(GENERATED_SOURCES)
 CLOBBER.include(GENERATED_HEADERS)
+
+if USE_COMPONENT_LOADED.length == 0 then
+    CLOBBER.include(".corto/components.txt")
+end
 
 if USE_PACKAGE_LOADED.length == 0 then
     CLOBBER.include(".corto/packages.txt")
@@ -65,6 +79,12 @@ task :collect do
     else
         sh "cp -rL #{artefact} #{target}"
     end
+end
+
+file ".corto/components.txt" do
+    verbose(false)
+    sh "mkdir -p .corto"
+    sh "touch .corto/components.txt"
 end
 
 file ".corto/packages.txt" do

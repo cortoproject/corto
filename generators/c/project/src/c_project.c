@@ -10,6 +10,7 @@ static cx_int16 c_projectGenerateMainFile(cx_generator g) {
     cx_id filename;
     g_file file;
     cx_id topLevelName;
+    cx_bool isComponent = !strcmp(gen_getAttribute(g, "component"), "true");
 
     sprintf(filename, "%s__load.c", g_getName(g));
 
@@ -35,12 +36,18 @@ static cx_int16 c_projectGenerateMainFile(cx_generator g) {
         g_fileWrite(file, "}\n\n");
     } else {
         g_fileWrite(file, "#include \"corto.h\"\n\n");
-        g_fileWrite(file, "int main(int argc, char* argv[]) {\n");
+        if (isComponent) {
+            g_fileWrite(file, "int cortomain(int argc, char* argv[]) {\n");
+        } else {
+            g_fileWrite(file, "int main(int argc, char* argv[]) {\n");
+            g_fileWrite(file, "cx_start();\n");
+        }
         g_fileIndent(file);
-        g_fileWrite(file, "cx_start();\n");
         g_fileWrite(file, "int %sMain(int argc, char* argv[]);\n", g_getName(g));
         g_fileWrite(file, "if (%sMain(argc, argv)) return -1;\n", g_getName(g));
-        g_fileWrite(file, "cx_stop();\n");
+        if (!isComponent) {
+            g_fileWrite(file, "cx_stop();\n");
+        }
         g_fileWrite(file, "return 0;\n");
         g_fileDedent(file);
         g_fileWrite(file, "}\n\n");
@@ -55,11 +62,11 @@ error:
 static cx_int16 c_projectGenerateMainHeaderFile(cx_generator g) {
     cx_id filename;
     g_file file;
-    cx_ll packages;
+    cx_ll packages, components;
 
-    sprintf(filename, "%s.h", g_getName(g));
+    sprintf(filename, "include/%s.h", g_getName(g));
 
-    file = g_hiddenFileOpen(g, filename);
+    file = g_fileOpen(g, filename);
     if(!file) {
         goto error;
     }
@@ -72,7 +79,7 @@ static cx_int16 c_projectGenerateMainHeaderFile(cx_generator g) {
     g_fileWrite(file, "#ifndef %s_H\n", g_getName(g));
     g_fileWrite(file, "#define %s_H\n\n", g_getName(g));
 
-    g_fileWrite(file, "#include \"corto.h\"\n\n");
+    g_fileWrite(file, "#include \"corto.h\"\n");
 
     if ((packages = cx_loadGetPackages())) {
         cx_iter iter = cx_llIter(packages);
@@ -86,11 +93,41 @@ static cx_int16 c_projectGenerateMainHeaderFile(cx_generator g) {
             g_fileWrite(file, "#include \"%s.h\"\n", cx_nameof(package));
             cx_release(package);
         }
-
         cx_loadFreePackages(packages);
     }
 
+    if ((components = cx_loadGetComponents())) {
+        cx_iter iter = cx_llIter(components);
+        while (cx_iterHasNext(&iter)) {
+            cx_string str = cx_iterNext(&iter);
+            g_fileWrite(file, "#include \"%s.h\"\n", str);
+        }
+        cx_loadFreeComponents(components);
+    }
+
+    g_fileWrite(file, "#ifdef __cplusplus\n");
+    g_fileWrite(file, "extern \"C\" {\n");
+    g_fileWrite(file, "#endif\n");
+
     g_fileWrite(file, "\n");
+    g_fileWrite(file, "/* $header()");
+
+    /* Lookup the header snippet */
+    cx_string snippet = g_fileLookupHeader(file, "");
+    if (snippet) {
+        g_fileWrite(file, snippet);
+    } else {
+        g_fileWrite(file, " */\n");
+        g_fileWrite(file, "/* You can put your own definitions here! */\n");
+        g_fileWrite(file, "/* ");
+    }
+    g_fileWrite(file, "$end */\n");
+
+    g_fileWrite(file, "\n");
+
+    g_fileWrite(file, "#ifdef __cplusplus\n");
+    g_fileWrite(file, "}\n");
+    g_fileWrite(file, "#endif\n");
     g_fileWrite(file, "#endif\n\n");
 
     return 0;
@@ -185,7 +222,7 @@ cx_int16 corto_genMain(cx_generator g) {
     } else {
         if(c_projectGenerateMainHeaderFile(g)) {
             goto error;
-        }        
+        }
     }
 
     return 0;

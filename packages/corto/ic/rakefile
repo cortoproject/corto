@@ -1,6 +1,5 @@
 PACKAGE = 'corto::ic'
 
 CFLAGS = ["-Wunused-parameter"]
-USE_COMPONENT = ["vm"]
 
 require "#{ENV['CORTO_BUILD']}/package"

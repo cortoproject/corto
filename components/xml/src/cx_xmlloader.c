@@ -10,10 +10,9 @@
 #include "cx_loader.h"
 #include "cx_util.h"
 
-int cortomain(int argc, char* argv[]) {
+int xmlMain(int argc, char* argv[]) {
     CX_UNUSED(argc);
     CX_UNUSED(argv);
     cx_loaderRegister("xml", cx_deserXml, NULL);
     return 0;
 }
-

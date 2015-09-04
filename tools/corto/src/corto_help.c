@@ -41,6 +41,8 @@ int corto_help(int argc, char* argv[]) {
 		corto_buildHelp();
 	} else if (!strcmp(argv[1], "rebuild")) {
 		corto_rebuildHelp();
+	} else if (!strcmp(argv[1], "clean")) {
+		corto_cleanHelp();
 	} else {
 		cx_error("corto: unknown command\n");
 		cx_error("Use 'corto --help' to get a list of available commands");

@@ -1,21 +1,19 @@
-/*
- * cx_vm.h
+/* include/vm.h
  *
- *  Created on: Aug 16, 2013
- *      Author: sander
+ * This file is generated. Do not modify.
  */
 
-#ifndef CX_VM_H_
-#define CX_VM_H_
+#ifndef vm_H
+#define vm_H
 
-#include "stdint.h"
-#include "cx_object.h"
-#include "vm_def.h"
-#include "cx_crc.h"
-
+#include "corto.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/* $header() */
+#include "stdint.h"
+#include "vm_def.h"
 
 extern int CX_PROCEDURE_VM;
 
@@ -116,8 +114,10 @@ void vm_programFree(vm_program program);
 /* Add instruction to an existing program */
 vm_op *vm_programAddOp(vm_program program, uint32_t line);
 
+/* $end */
+
 #ifdef __cplusplus
 }
 #endif
+#endif
 
-#endif /* CX_VM_H_ */

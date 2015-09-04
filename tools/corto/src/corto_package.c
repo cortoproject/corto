@@ -20,41 +20,75 @@ error:
 }
 
 cx_int16 corto_add(int argc, char* argv[]) {
-	int packageElem = 1;
-	cx_object package;
+	int nameElem = 1;
 	cx_id id;
+	cx_bool isComponent = FALSE;
 
 	if (argc > 2) {
 		cx_chdir(argv[1]);
-		packageElem = 2;
+		nameElem = 2;
 	}
 
-	package = corto_lookupPackage(argv[packageElem]);
-	if (!package) {
-		goto error;
+	if (argc > (nameElem + 1)) {
+		if (argv[nameElem + 1]) {
+			if (!strcmp(argv[nameElem + 1], "--component")) {
+				isComponent = TRUE;
+			}
+		}
 	}
 
-	if (!cx_loadRequiresPackage(cx_fullname(package, id))) {
-		cx_file f = cx_fileAppend(".corto/packages.txt");
-		if (!f) {
-			cx_error("corto: failed to open .corto/packages.txt (check permissions)");
+	if (!isComponent) {
+		/* Test whether component exists */
+		cx_string component = cx_locateComponent(argv[nameElem]);
+		if (!component) {
 			goto error;
 		}
-		fprintf(cx_fileGet(f), "%s\n", id);
-		cx_fileClose(f);
-		corto_build(argc - 1, &argv[1]);
-		printf("corto: package '%s' added to project\n", id);
-	} else {
-		printf("corto: package '%s' is already added to the project\n", id);
-	}
 
-	cx_release(package);
+		if (!cx_loadRequiresComponent(argv[nameElem])) {
+			cx_file f = cx_fileAppend(".corto/components.txt");
+			if (!f) {
+				cx_error("corto: failed to open .corto/components.txt (check permissions)");
+				cx_dealloc(component);
+				goto error;
+			}
+			fprintf(cx_fileGet(f), "%s\n", argv[nameElem]);
+			cx_fileClose(f);
+			corto_build(argc - 1, &argv[1]);
+			printf("corto: component '%s' added to project\n", argv[nameElem]);
+		} else {
+			printf("corto: component '%s' is already added to the project\n", argv[nameElem]);
+		}
+
+		cx_dealloc(component);
+
+	} else {
+		/* Test whether package exists */
+		cx_object package = corto_lookupPackage(argv[nameElem]);
+		if (!package) {
+			goto error;
+		}
+
+		/* Use fully scoped name from here */
+		if (!cx_loadRequiresPackage(cx_fullname(package, id))) {
+			cx_file f = cx_fileAppend(".corto/packages.txt");
+			if (!f) {
+				cx_error("corto: failed to open .corto/packages.txt (check permissions)");
+				cx_release(package);
+				goto error;
+			}
+			fprintf(cx_fileGet(f), "%s\n", id);
+			cx_fileClose(f);
+			corto_build(argc - 1, &argv[1]);
+			printf("corto: package '%s' added to project\n", id);
+		} else {
+			printf("corto: package '%s' is already added to the project\n", id);
+		}
+
+		cx_release(package);
+	}
 
 	return 0;
 error:
-	if (package) {
-		cx_release(package);
-	}
 	return -1;
 }
 

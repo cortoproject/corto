@@ -17,13 +17,21 @@ extern "C" {
 typedef int (*cx_loadAction)(cx_string file, void* userData);
 
 int cx_load(cx_string file);
+
+cx_ll cx_loadGetComponents(void);
+void cx_loadFreeComponents(cx_ll packages);
+cx_bool cx_loadRequiresComponent(cx_string package);
+
 cx_ll cx_loadGetPackages(void);
-cx_bool cx_loadRequiresPackage(cx_string package);
 void cx_loadFreePackages(cx_ll packages);
+cx_bool cx_loadRequiresPackage(cx_string package);
 int cx_loadPackages(void);
+
 int cx_loaderRegister(cx_string ext, cx_loadAction handler, void* userData);
-cx_string cx_locateLib(cx_string lib);
+
 cx_string cx_locate(cx_string package);
+cx_string cx_locateComponent(cx_string component);
+cx_string cx_locateLibrary(cx_string lib);
 
 #ifdef __cplusplus
 }

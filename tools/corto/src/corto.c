@@ -19,27 +19,34 @@ void corto_locateHelp(void) {
     printf("\n");
 }
 
-static void corto_printUsage(void) {
+static void corto_printUsage(cx_bool expert) {
     printf("Usage: corto [-d] <command> [args]\n");
     printf("       corto [-d] [files] [packages]\n");
-    printf("       corto [--version] [-v] [--help] [-h]\n");
+    printf("       corto [--version] [-v] [--help] [-h] [--expert]\n");
     printf("\n");
     printf("Without arguments, 'corto' starts the corto shell.\n");
     printf("\n");
     printf("Commands:\n");
     printf("   create               Create a new project.\n");
+    printf("   add                  Add a package to a project\n");
+    printf("   remove               Remove a package from a project\n");
+    printf("   list                 List packages of a project\n");
     printf("   run                  Run a project.\n");
-    printf("   add                  Add a package to the project\n");
-    printf("   remove               Remove a package from the project\n");
-    printf("   list                 List the packages of the project\n");
-    printf("   install              Install a project to the global environment.\n");
-    printf("   uninstall            Remove a project from the global environment.\n");
-    printf("   locate               Show whether a package is located in the local or global environment\n");
+    printf("   build                Build a project (not needed for apps!).\n");
     printf("   shell                Start the corto shell.\n");
-    printf("   tar                  Package a project in a redistributable tar file.\n");
-    printf("   untar                Unpackage a project to the global environment.\n");
-    printf("   build                Build a project.\n");
     printf("\n");
+    if (expert) {
+        printf("Expert commands:\n");
+        printf("   pp                   Invoke the corto preprocessor.\n");
+        printf("   locate               Show where a package or component is located.\n");
+        printf("   install              Install a project to the global environment.\n");
+        printf("   uninstall            Remove a project from the global environment.\n");
+        printf("   tar                  Package a project in a redistributable tar file.\n");
+        printf("   untar                Unpackage a project to the global environment.\n");
+        printf("   rebuild              Clean, then build a project.\n");
+        printf("   clean                Clean a project.\n");
+        printf("\n");
+    }
     printf("See 'corto help <command>' for details on a commnad.\n\n");
 }
 
@@ -60,7 +67,7 @@ int main(int argc, char* argv[]) {
                 if (*(argv[i]+1) == 'd') {
                     CX_DEBUG_ENABLED = TRUE;
                 }else if (*(argv[i]+1) == 'h') {
-                    corto_printUsage();
+                    corto_printUsage(FALSE);
                     break;
                 } else if (*(argv[i]+1) == 'v') {
                     printf("%s", CORTO_VERSION);
@@ -68,15 +75,17 @@ int main(int argc, char* argv[]) {
                     if (!strcmp(argv[i] + 2, "version")) {
                         cx_error("corto (%s) %s\n\n", CX_PLATFORM_STRING, CORTO_VERSION);
                     } else if (!strcmp(argv[i] + 2, "help")) {
-                        corto_printUsage();
+                        corto_printUsage(FALSE);
+                    } else if (!strcmp(argv[i] + 2, "expert")) {
+                        corto_printUsage(TRUE);
                     } else {
                         cx_error("corto: unknown option '%s'", argv[i] + 2);
-                        corto_printUsage();
+                        corto_printUsage(FALSE);
                         goto error;
                     }
                 } else {
                     printf("corto: unknown option '%s'", argv[i] + 1);
-                    corto_printUsage();
+                    corto_printUsage(FALSE);
                     goto error;
                 }
             } else if (!strcmp(argv[i], "create")) {
@@ -111,6 +120,11 @@ int main(int argc, char* argv[]) {
                 break;
             } else if (!strcmp(argv[i], "rebuild")) {
                 if (corto_rebuild(argc-i, &argv[i])) {
+                    goto error;
+                }
+                break;
+            } else if (!strcmp(argv[i], "clean")) {
+                if (corto_clean(argc-i, &argv[i])) {
                     goto error;
                 }
                 break;

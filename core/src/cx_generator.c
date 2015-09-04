@@ -203,7 +203,7 @@ cx_int16 gen_load(cx_generator g, cx_string library) {
 
     /* Load library from generator path */
     cx_string relativePath = cx_envparse("generators/lib%s.so", library);
-    cx_string path = cx_locateLib(relativePath);
+    cx_string path = cx_locateLibrary(relativePath);
     if (!path) {
         cx_error("generator '%s' not found", relativePath);
         goto error;
@@ -780,7 +780,7 @@ static cx_string g_filePath(cx_generator g, cx_string filename, cx_char* buffer)
         }
 
         /* Append filename to location. */
-        if (ext) {
+        if (ext && *ext) {
             sprintf(buffer, "%s/%s", ext, filename);
             result = buffer;
         }
