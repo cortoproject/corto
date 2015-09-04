@@ -30,7 +30,13 @@ file ".corto/packages.txt" do
     sh "touch .corto/packages.txt"
 end
 
-file "include/#{TARGET}__type.h" => [GENFILE, ".corto/packages.txt"] do
+file ".corto/components.txt" do
+    verbose(false)
+    sh "mkdir -p .corto"
+    sh "touch .corto/components.txt"
+end
+
+file "include/#{TARGET}__type.h" => [GENFILE, ".corto/packages.txt", ".corto/components.txt"] do
     verbose(false)
     sh "mkdir -p .corto"
     sh "touch .corto/#{TARGET}__wrapper.c"
