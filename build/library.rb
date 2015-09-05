@@ -5,6 +5,10 @@ if not defined? TARGET then
     raise "library: TARGET not specified\n"
 end
 
+if not defined? LOCAL then
+	LOCAL = false
+end
+
 LFLAGS ||= []
 CORTO_LIB ||= []
 LIBPATH ||= []
@@ -12,8 +16,16 @@ INCLUDE ||= []
 
 ARTEFACT = "lib#{TARGET}.so"
 LFLAGS << "--shared"
-TARGETPATH ||= "libraries"
-TARGETDIR = "#{ENV['CORTO_TARGET']}/lib/corto/" + VERSION + "/" + TARGETPATH
+
+if LOCAL == true then
+	if not defined? TARGETPATH then
+	    TARGETPATH ||= "./.corto"
+	    TARGETDIR ||= TARGETPATH
+	end
+else
+    TARGETPATH ||= "libraries"
+end
+TARGETDIR ||= "#{ENV['CORTO_TARGET']}/lib/corto/" + VERSION + "/" + TARGETPATH
 
 CORTO_LIB << "corto"
 

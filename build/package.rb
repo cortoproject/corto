@@ -1,7 +1,15 @@
 require 'rake/clean'
 
-PACKAGEDIR = "packages/" + PACKAGE.gsub("::", "/")
-TARGETPATH = PACKAGEDIR
+LOCAL ||= false
+
+if LOCAL == true then
+    TARGETPATH = "./.corto"
+    TARGETDIR = TARGETPATH
+else
+    PACKAGEDIR = "packages/" + PACKAGE.gsub("::", "/")
+    TARGETPATH = PACKAGEDIR 
+end
+
 TARGET = PACKAGE.split("::").last
 
 GENERATED_SOURCES ||= []
@@ -12,7 +20,7 @@ GENERATED_SOURCES <<
     ".corto/#{TARGET}__meta.c" <<
     ".corto/#{TARGET}__load.c"
 
-GENERATED_HEADERS ||=[] <<
+GENERATED_HEADERS ||= [] <<
     "include/#{TARGET}__api.h" <<
     "include/#{TARGET}__meta.h" <<
     "include/#{TARGET}__type.h"
@@ -22,7 +30,7 @@ PREFIX ||= TARGET
 CHDIR_SET = true
 Dir.chdir(File.dirname(Rake.application.rakefile))
 
-GENFILE = Rake::FileList["#{TARGET}.*"][0]
+GENFILE = Rake::FileList["#{PACKAGE.split("::").last}.*"][0]
 
 file ".corto/packages.txt" do
     verbose(false)

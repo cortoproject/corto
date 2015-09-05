@@ -4,7 +4,18 @@ if not defined? TARGET then
     raise "library: TARGET not specified\n"
 end
 
-TARGETPATH ||= "components"
+if not defined? LOCAL then
+	LOCAL = false
+end
+
+if LOCAL == true then
+	if not defined? TARGETPATH then
+	    TARGETPATH ||= "./.corto"
+	    TARGETDIR ||= TARGETPATH
+	end
+else
+    TARGETPATH ||= "components"
+end
 
 INCLUDE ||= []
 INCLUDE << "#{ENV['CORTO_HOME']}/include/corto/#{VERSION}/components"

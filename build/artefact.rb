@@ -35,7 +35,7 @@ CFLAGS << "-g" << "-Wstrict-prototypes" << "-std=c99" << "-pedantic" << "-fPIC" 
 CFLAGS.unshift("-Wall")
 
 SOURCES = (Rake::FileList["src/*.c"] + GENERATED_SOURCES)
-OBJECTS = SOURCES.ext(".o").pathmap(TARGETDIR + "/obj/%f")
+OBJECTS = SOURCES.ext(".o").pathmap(".corto/obj/%f")
 
 # Load components from file
 if File.exists? ".corto/components.txt" then
@@ -55,7 +55,7 @@ if File.exists? ".corto/packages.txt" then
     }
 end
 
-CLEAN.include(TARGETDIR + "/obj")
+CLEAN.include(".corto/obj")
 CLOBBER.include(TARGETDIR + "/" + ARTEFACT)
 CLOBBER.include(GENERATED_SOURCES)
 CLOBBER.include(GENERATED_HEADERS)
@@ -145,8 +145,8 @@ task :default => [:prebuild, :binary, :postbuild]
 
 def build_source(task, echo)
     verbose(false)
-    if not File.exists? "#{TARGETDIR}/obj" then
-        sh "mkdir -p #{TARGETDIR}/obj"
+    if not File.exists? ".corto/obj" then
+        sh "mkdir -p .corto/obj"
     end
     if echo
         if ENV['silent'] != "true" then
@@ -163,5 +163,4 @@ def build_source(task, echo)
     end.join(" ")
     sh "cc -c #{CFLAGS.join(" ")} #{use_include} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{task.source} -o #{task.name}"
 end
-
 
