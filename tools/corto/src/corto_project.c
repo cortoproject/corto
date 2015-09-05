@@ -2,8 +2,10 @@
 #include "corto_create.h"
 #include "corto_build.h"
 
-static cx_int16 corto_setupProject(const char *name) {
-	printf ("corto: create project '%s'\n", name);
+static cx_int16 corto_setupProject(const char *name, cx_bool isLocal, cx_bool isSilent) {
+    if (!isSilent) {
+    	printf ("corto: create project '%s'\n", name);
+    }
 
     if (cx_fileTest(name)) {
         cx_id id;
@@ -17,10 +19,12 @@ static cx_int16 corto_setupProject(const char *name) {
         goto error;
     }
 
-    cx_pid pid = cx_procrun("git", (char*[]){"git", "init", (char *)name, NULL});
-    if (pid && cx_procwait(pid, NULL)) {
-        cx_error("corto: failed to initialize git repository (is git installed?)\n");
-        goto error;
+    if (!isLocal) {
+        cx_pid pid = cx_procrun("git", (char*[]){"git", "init", (char *)name, NULL});
+        if (pid && cx_procwait(pid, NULL)) {
+            cx_error("corto: failed to initialize git repository (is git installed?)\n");
+            goto error;
+        }
     }
 
 	return 0;
@@ -56,6 +60,38 @@ static cx_int16 corto_createRakefile(const char *projectKind, const char *name, 
     return 0;
 error:
     return -1;	
+}
+
+static cx_int16 corto_createTest(cx_string name, cx_bool isComponent) {
+    
+    if (corto_create(
+        7,
+        (char*[]){"create", "package", "::test", "--empty", "--notest", "--local", "--silent"}
+    )) {
+        goto error;
+    }
+
+    if (name) {
+        if (isComponent) {
+            if (corto_add(
+                5,
+                (char*[]){"add", "test", name, "--component", "--silent"}
+            )) {
+                goto error;
+            }
+        } else {
+            if (corto_add(
+                4,
+                (char*[]){"add", "test", name, "--silent"}
+            )) {
+                goto error;
+            }
+        }
+    }
+
+    return 0;
+error:
+    return -1;
 }
 
 static char* corto_randomName(void) {
@@ -113,23 +149,59 @@ static char* corto_randomName(void) {
     return strdup(buffer);
 }
 
+static cx_int16 corto_parseProjectArgs(
+    int argc, 
+    char *argv[], 
+    cx_bool *isEmpty, 
+    cx_bool *isLocal, 
+    cx_bool *noTest, 
+    cx_bool *silent) 
+{
+    cx_int32 i;
+    for (i = 0; i < argc; i++) {
+        if (!strcmp(argv[i], "--empty")) {
+            if (isEmpty) *isEmpty = TRUE;
+        } else if (!strcmp(argv[i], "--local")) {
+            if (isLocal) *isLocal = TRUE;
+        } else if (!strcmp(argv[i], "--notest")) {
+            if (noTest) *noTest = TRUE;
+        } else if (!strcmp(argv[i], "--silent")) {
+            if (silent) *silent = TRUE;
+        } else {
+            cx_error("corto: unknown option '%s'", argv[i]);
+            goto error;
+        }
+    }
+    return 0;
+error:
+    return -1;
+}
+
 static cx_int16 corto_application(int argc, char *argv[]) {
 	cx_id buff;
 	FILE *file;
 	cx_bool isApplication = !strcmp(argv[0], "create") || !strcmp(argv[0], CORTO_APPLICATION);
+    cx_uint32 optionsStartFrom = 1;
 	char *name;
+    cx_bool isLocal = FALSE, noTest = FALSE, isSilent = FALSE;
 
-	if (argc <= 1) {
+	if ((argc <= 1) || (*argv[1] == '-')) {
         name = corto_randomName();
 	} else {
         name = argv[1];
+        optionsStartFrom = 2;
     }
 
-	if (corto_setupProject(name)) {
+    /* Parse options */
+    if (corto_parseProjectArgs(argc - optionsStartFrom, &argv[optionsStartFrom], NULL, &isLocal, &noTest, &isSilent)) {
+        goto error;
+    }
+
+	if (corto_setupProject(name, isLocal, isSilent)) {
 		goto error;
 	}
 
-	if (corto_createRakefile(isApplication ? CORTO_APPLICATION : argv[0], name, name, FALSE)) {
+	if (corto_createRakefile(isApplication ? CORTO_APPLICATION : argv[0], name, name, isLocal)) {
 		goto error;
 	}
 
@@ -162,7 +234,15 @@ static cx_int16 corto_application(int argc, char *argv[]) {
     	goto error;
     }
 
-	printf("corto: done\n\n");
+    if (!noTest) {
+        if (corto_createTest(isApplication ? NULL : name, !isApplication)) {
+            goto error;
+        }
+    }
+
+    if (!isSilent) {
+    	printf("corto: done\n\n");
+    }
 
 	return 0;
 error:
@@ -176,7 +256,7 @@ static cx_int16 corto_package(int argc, char *argv[]) {
     cx_uint32 i;
     cx_char *include = NULL;
     cx_uint32 optionsStartFrom = 1;
-    cx_bool isEmpty = FALSE, isLocal = FALSE;
+    cx_bool isEmpty = FALSE, isLocal = FALSE, noTest = FALSE, isSilent = FALSE;
 
     if ((argc <= 1) || (*(argv[1])) == '-') {
         include = corto_randomName();
@@ -196,18 +276,8 @@ static cx_int16 corto_package(int argc, char *argv[]) {
     }
 
     /* Parse options */
-    if (argc > optionsStartFrom) {
-        cx_int32 i;
-        for (i = optionsStartFrom; i < argc; i++) {
-            if (!strcmp(argv[optionsStartFrom], "--empty")) {
-                isEmpty = TRUE;
-            } else if (!strcmp(argv[optionsStartFrom], "--local")) {
-                isLocal = TRUE;
-            } else {
-                cx_error("corto: unknown option '%s'");
-                goto error;
-            }
-        }
+    if (corto_parseProjectArgs(argc - optionsStartFrom, &argv[optionsStartFrom], &isEmpty, &isLocal, &noTest, &isSilent)) {
+        goto error;
     }
 
     /* Extract left-most name from include variable */
@@ -220,7 +290,7 @@ static cx_int16 corto_package(int argc, char *argv[]) {
         ptr++;
     }
 
-   	if (corto_setupProject(name)) {
+   	if (corto_setupProject(name, isLocal, isSilent)) {
 		goto error;
 	}
 
@@ -312,13 +382,24 @@ static cx_int16 corto_package(int argc, char *argv[]) {
     }
 
     /* Change working directory */
-    cx_chdir(name);
+    if (cx_chdir(name)) {
+        cx_error("corto: can't change working directory to '%s' (check permissions)", name);
+        goto error;        
+    }
 
     if (corto_build(0, NULL)) {
         goto error;
     }
 
-    printf("corto: done\n\n");
+    if (!noTest) {
+        if (corto_createTest(include, FALSE)) {
+            goto error;
+        }
+    }
+
+    if (!isSilent) {
+        printf("corto: done\n\n");
+    }
 
     return 0;
 error:
@@ -354,9 +435,9 @@ error:
 
 void corto_createHelp(void) {
     printf("Usage: corto create\n");
-    printf("Usage: corto create <name>\n");
-    printf("Usage: corto create <command> <name> [--empty] [--local]\n");
-    printf("Usage: corto create <command> [--empty] [--local]\n");
+    printf("Usage: corto create <name> [--notest]\n");
+    printf("Usage: corto create <command> <name> [--empty] [--local] [--notest]\n");
+    printf("Usage: corto create <command> [--empty] [--local] [--notest]\n");
     printf("\n");
     printf("When no name is passed to create, corto will choose a random name.\n");
     printf("\n");
@@ -374,5 +455,6 @@ void corto_createHelp(void) {
     printf("Options:\n");
     printf("   --empty        Create an empty project instead of an example project\n");
     printf("   --local        Create a project that won't be installed in the Corto repository\n");
+    printf("   --notest       Do not create a test skeleton\n");
     printf("\n");
 }

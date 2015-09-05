@@ -22,7 +22,7 @@ error:
 cx_int16 corto_add(int argc, char* argv[]) {
 	int nameElem = 1;
 	cx_id id;
-	cx_bool isComponent = FALSE;
+	cx_bool isComponent = FALSE, isSilent = FALSE;
 
 	if (argc > 2) {
 		cx_chdir(argv[1]);
@@ -30,9 +30,12 @@ cx_int16 corto_add(int argc, char* argv[]) {
 	}
 
 	if (argc > (nameElem + 1)) {
-		if (argv[nameElem + 1]) {
-			if (!strcmp(argv[nameElem + 1], "--component")) {
+		cx_int32 i = 0;
+		for (i = nameElem + 1; i < argc; i++) {
+			if (!strcmp(argv[i], "--component")) {
 				isComponent = TRUE;
+			} else if (!strcmp(argv[i], "--silent")) {
+				isSilent = TRUE;
 			}
 		}
 	}
@@ -55,9 +58,13 @@ cx_int16 corto_add(int argc, char* argv[]) {
 			fprintf(cx_fileGet(f), "%s\n", argv[nameElem]);
 			cx_fileClose(f);
 			corto_build(argc - 1, &argv[1]);
-			printf("corto: component '%s' added to project\n", argv[nameElem]);
+			if (!isSilent) {
+				printf("corto: component '%s' added to project\n", argv[nameElem]);
+			}
 		} else {
-			printf("corto: component '%s' is already added to the project\n", argv[nameElem]);
+			if (!isSilent) {
+				printf("corto: component '%s' is already added to the project\n", argv[nameElem]);
+			}
 		}
 
 		cx_dealloc(component);
@@ -80,9 +87,13 @@ cx_int16 corto_add(int argc, char* argv[]) {
 			fprintf(cx_fileGet(f), "%s\n", id);
 			cx_fileClose(f);
 			corto_build(argc - 1, &argv[1]);
-			printf("corto: package '%s' added to project\n", id);
+			if (!isSilent) {
+				printf("corto: package '%s' added to project\n", id);
+			}
 		} else {
-			printf("corto: package '%s' is already added to the project\n", id);
+			if (!isSilent) {
+				printf("corto: package '%s' is already added to the project\n", id);
+			}
 		}
 
 		cx_release(package);
