@@ -295,42 +295,42 @@ cx_int16 Fast_Binary_complexExprCompare(Fast_Binary _this) {
     }
     switch (_this->operator) {
         case CX_COND_EQ:
-            c1 = Fast_Expression(Fast_Integer__create(CX_EQ));
+            c1 = Fast_Expression(Fast_IntegerCreate(CX_EQ));
             break;
         case CX_COND_LT:
-            c1 = Fast_Expression(Fast_Integer__create(CX_LT));
+            c1 = Fast_Expression(Fast_IntegerCreate(CX_LT));
             break;
         case CX_COND_GT:
-            c1 = Fast_Expression(Fast_Integer__create(CX_GT));
+            c1 = Fast_Expression(Fast_IntegerCreate(CX_GT));
             break;
         case CX_COND_LTEQ:
-            c1 = Fast_Expression(Fast_Integer__create(CX_LT));
-            c2 = Fast_Expression(Fast_Integer__create(CX_EQ));
+            c1 = Fast_Expression(Fast_IntegerCreate(CX_LT));
+            c2 = Fast_Expression(Fast_IntegerCreate(CX_EQ));
             break;
         case CX_COND_GTEQ:
-            c1 = Fast_Expression(Fast_Integer__create(CX_GT));
-            c2 = Fast_Expression(Fast_Integer__create(CX_EQ));
+            c1 = Fast_Expression(Fast_IntegerCreate(CX_GT));
+            c2 = Fast_Expression(Fast_IntegerCreate(CX_EQ));
             break;
         case CX_COND_NEQ:
-            c1 = Fast_Expression(Fast_Integer__create(CX_LT));
-            c2 = Fast_Expression(Fast_Integer__create(CX_GT));
+            c1 = Fast_Expression(Fast_IntegerCreate(CX_LT));
+            c2 = Fast_Expression(Fast_IntegerCreate(CX_GT));
             break;
         default:
             break;
     }
 
     Fast_Expression c1Result = NULL, c2Result = NULL, orResult, result;
-    c1Result = Fast_Expression(Fast_Binary__create(compareResult, c1, CX_COND_EQ));
+    c1Result = Fast_Expression(Fast_BinaryCreate(compareResult, c1, CX_COND_EQ));
     if (!c1Result) {
         goto error;
     }
     result = c1Result;
     if (c2) {
-        c2Result = Fast_Expression(Fast_Binary__create(compareResult, c2, CX_COND_EQ));
+        c2Result = Fast_Expression(Fast_BinaryCreate(compareResult, c2, CX_COND_EQ));
         if (!c2Result) {
             goto error;
         }
-        orResult = Fast_Expression(Fast_Binary__create(c1Result, c2Result, CX_OR));
+        orResult = Fast_Expression(Fast_BinaryCreate(c1Result, c2Result, CX_OR));
         if (!orResult) {
             goto error;
         }
