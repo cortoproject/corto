@@ -29,7 +29,7 @@ cx_bool Fast_Binary_isArithmic(Fast_Binary expr) {
         result = FALSE;
         break;
     }
-    return result;   
+    return result;
 }
 
 /* Determine whether expression is an assignment */
@@ -95,7 +95,7 @@ cx_int16 Fast_Binary_getDerefKind(Fast_Binary _this, cx_type lvalueType, cx_type
             if ((_this->lvalue->deref == Fast_ByReference) && (!_this->rvalue->isReference)) {
                 cx_id id;
                 Fast_Parser_error(yparser(), "cannot access right operand by reference (type = '%s', kind = '%s')",
-                    Fast_Parser_id(rvalueType, id), 
+                    Fast_Parser_id(rvalueType, id),
                         cx_nameof(cx_enum_constant(Fast_nodeKind_o, Fast_Node(_this->rvalue)->kind)));
                 goto error;
             }
@@ -131,8 +131,8 @@ cx_int16 Fast_Binary_cast(Fast_Binary _this, cx_type *returnType) {
         goto error;
     }
 
-    isNull = cx_instanceof(cx_type(Fast_Null_o), lvalue) || 
-        cx_instanceof(cx_type(Fast_Null_o), rvalue); 
+    isNull = cx_instanceof(cx_type(Fast_Null_o), lvalue) ||
+        cx_instanceof(cx_type(Fast_Null_o), rvalue);
 
     /* Narrow expressions where possible */
     if (!isNull) {
@@ -167,7 +167,7 @@ cx_int16 Fast_Binary_cast(Fast_Binary _this, cx_type *returnType) {
     } else if (!equal) {
         Fast_nodeKind lKind = Fast_Node(_this->lvalue)->kind;
         Fast_nodeKind rKind = Fast_Node(_this->rvalue)->kind;
-        
+
         /* If one of the operands is a literal, always cast to the type of the non-literal */
         if ((lKind == Fast_LiteralExpr) ^ (rKind == Fast_LiteralExpr)) {
             if (lKind == Fast_LiteralExpr) {
@@ -276,7 +276,7 @@ cx_int16 Fast_Binary_cast(Fast_Binary _this, cx_type *returnType) {
             goto error;
         }
     }
-    
+
     if (castType) {
         *returnType = castType;
     }
@@ -286,10 +286,65 @@ error:
     return -1;
 }
 
-cx_int16 Fast_Binary_complexExpr(Fast_Binary _this) {
-    Fast_Expression result = NULL;
+cx_int16 Fast_Binary_complexExprCompare(Fast_Binary _this) {
+    Fast_Expression compareResult = NULL;
+    Fast_Expression c1 = NULL, c2 = NULL;
+    compareResult = Fast_Expression(Fast_createCall(_this->lvalue, "compare", 1, _this->rvalue));
+    if (!compareResult) {
+        goto error;
+    }
+    switch (_this->operator) {
+        case CX_COND_EQ:
+            c1 = Fast_Expression(Fast_Integer__create(CX_EQ));
+            break;
+        case CX_COND_LT:
+            c1 = Fast_Expression(Fast_Integer__create(CX_LT));
+            break;
+        case CX_COND_GT:
+            c1 = Fast_Expression(Fast_Integer__create(CX_GT));
+            break;
+        case CX_COND_LTEQ:
+            c1 = Fast_Expression(Fast_Integer__create(CX_LT));
+            c2 = Fast_Expression(Fast_Integer__create(CX_EQ));
+            break;
+        case CX_COND_GTEQ:
+            c1 = Fast_Expression(Fast_Integer__create(CX_GT));
+            c2 = Fast_Expression(Fast_Integer__create(CX_EQ));
+            break;
+        case CX_COND_NEQ:
+            c1 = Fast_Expression(Fast_Integer__create(CX_LT));
+            c2 = Fast_Expression(Fast_Integer__create(CX_GT));
+            break;
+        default:
+            break;
+    }
 
+    Fast_Expression c1Result = NULL, c2Result = NULL, orResult, result;
+    c1Result = Fast_Expression(Fast_Binary__create(compareResult, c1, CX_COND_EQ));
+    if (!c1Result) {
+        goto error;
+    }
+    result = c1Result;
+    if (c2) {
+        c2Result = Fast_Expression(Fast_Binary__create(compareResult, c2, CX_COND_EQ));
+        if (!c2Result) {
+            goto error;
+        }
+        orResult = Fast_Expression(Fast_Binary__create(c1Result, c2Result, CX_OR));
+        if (!orResult) {
+            goto error;
+        }
+        result = orResult;
+    }
+    Fast_Parser_addStatement(yparser(), result);
+    return 0;
+error:
+    return -1;
+}
+
+cx_int16 Fast_Binary_complexExpr(Fast_Binary _this) {
     if (_this->operator == CX_ASSIGN) {
+        Fast_Expression result = NULL;
         if(Fast_Node(_this->rvalue)->kind == Fast_InitializerExpr) {
             if (Fast_InitializerExpression_insert(Fast_InitializerExpression(_this->rvalue), _this->lvalue)) {
                 goto error;
@@ -299,6 +354,13 @@ cx_int16 Fast_Binary_complexExpr(Fast_Binary _this) {
                 goto error;
             }
             Fast_Parser_addStatement(yparser(), result);
+        }
+    } else if (_this->operator == CX_COND_EQ || _this->operator == CX_COND_EQ ||
+            _this->operator == CX_COND_NEQ || _this->operator == CX_COND_GT ||
+            _this->operator == CX_COND_LT || _this->operator == CX_COND_GTEQ ||
+            _this->operator == CX_COND_LTEQ) {
+        if (Fast_Binary_complexExprCompare(_this)) {
+            goto error;
         }
     } else {
         Fast_Parser_error(yparser(), "operator invalid for complex value");
@@ -326,11 +388,11 @@ cx_int16 Fast_Binary_toIc_strOp(
         break;
     }
     case CX_ASSIGN:
-        IC_3(program, Fast_Node(_this)->line, ic_opKindFromOperator(_this->operator), 
+        IC_3(program, Fast_Node(_this)->line, ic_opKindFromOperator(_this->operator),
             storage, lvalue, rvalue, IC_DEREF_VALUE, IC_DEREF_VALUE, IC_DEREF_VALUE);
         break;
     default:
-        Fast_Parser_error(yparser(), "operator '%s' invalid for strings", 
+        Fast_Parser_error(yparser(), "operator '%s' invalid for strings",
             cx_nameof(cx_enum_constant(cx_operatorKind_o, _this->operator)));
         goto error;
     }
@@ -367,7 +429,7 @@ cx_int16 _Fast_Binary_construct(Fast_Binary _this) {
     /* Check if lvalue is valid in case of assignment */
     if (Fast_isOperatorAssignment(_this->operator) && (Fast_Node(_this->lvalue)->kind != Fast_StorageExpr)) {
         Fast_Parser_error(yparser(), "invalid lvalue");
-        goto error;       
+        goto error;
     }
 
     if (lvalueType && rvalueType) {
@@ -482,7 +544,7 @@ error:
 cx_bool _Fast_Binary_hasReturnedResource_v(Fast_Binary _this) {
 /* $begin(::corto::Fast::Binary::hasReturnedResource) */
 
-    return Fast_Expression_hasReturnedResource(_this->lvalue) || 
+    return Fast_Expression_hasReturnedResource(_this->lvalue) ||
         Fast_Expression_hasReturnedResource(_this->rvalue);
 
 /* $end */
@@ -492,7 +554,7 @@ cx_bool _Fast_Binary_hasReturnedResource_v(Fast_Binary _this) {
 cx_bool _Fast_Binary_hasSideEffects_v(Fast_Binary _this) {
 /* $begin(::corto::Fast::Binary::hasSideEffects) */
     cx_bool result = FALSE;
-    
+
     switch(_this->operator) {
         case CX_ASSIGN:
         case CX_ASSIGN_ADD:
@@ -507,7 +569,7 @@ cx_bool _Fast_Binary_hasSideEffects_v(Fast_Binary _this) {
         default:
             break;
     }
-    
+
     return result || Fast_Expression_hasSideEffects(_this->lvalue) || Fast_Expression_hasSideEffects(_this->rvalue);
 /* $end */
 }
@@ -617,7 +679,7 @@ ic_node _Fast_Binary_toIc_v(Fast_Binary _this, ic_program program, ic_storage st
         if (_this->operator == CX_ASSIGN) {
             rvalue = Fast_Node_toIc(Fast_Node(_this->rvalue), program, (ic_storage)lvalue, TRUE);
             if (lvalue != rvalue) {
-                IC_3(program, Fast_Node(_this)->line, ic_set, 
+                IC_3(program, Fast_Node(_this)->line, ic_set,
                     stored ? result : NULL, lvalue, rvalue, IC_DEREF_VALUE, deref, deref);
             } else {
                 returnsResult = rvalue;
