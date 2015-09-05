@@ -37,10 +37,11 @@ cx_int16 corto_add(int argc, char* argv[]) {
 		}
 	}
 
-	if (!isComponent) {
+	if (isComponent) {
 		/* Test whether component exists */
 		cx_string component = cx_locateComponent(argv[nameElem]);
 		if (!component) {
+			cx_error("corto: component '%s' not found", argv[nameElem]);
 			goto error;
 		}
 
@@ -92,48 +93,77 @@ error:
 	return -1;
 }
 
-cx_int16 corto_remove(int argc, char* argv[]) {
-	int packageElem = 1;
-	cx_ll packages;
-	cx_object package;
-	cx_id id;
-	cx_iter iter;
+static cx_bool corto_removeEntry(cx_file file, cx_ll list, cx_string entry) {
 	cx_bool found = FALSE;
-	cx_file file;
+	cx_iter iter = cx_llIter(list);
 
-	if (argc > 2) {
-		cx_chdir(argv[1]);
-		packageElem = 2;
-	}
-
-	package = corto_lookupPackage(argv[packageElem]);
-	if (!package) {
-		goto error;
-	}
-
-	cx_fullname(package, id);
-	packages = cx_loadGetPackages();
-
-	file = cx_fileOpen(".corto/packages.txt");
-	iter = cx_llIter(packages);
 	while (cx_iterHasNext(&iter)) {
 		cx_string str = cx_iterNext(&iter);
-		if (strcmp(str, id)) {
+		if (strcmp(str, entry)) {
 			fprintf(cx_fileGet(file), "%s\n", str);
 		} else {
 			found = TRUE;
 		}
 	}
 
-	cx_fileClose(file);
-	cx_loadFreePackages(packages);
+	return found;
+}
 
-	if (!found) {
-		cx_error("corto: '%s' ('%s') not found in package file", argv[packageElem], id);
-		goto error;
+cx_int16 corto_remove(int argc, char* argv[]) {
+	int nameElem = 1;
+	cx_bool found = FALSE;
+	cx_file file;
+	cx_bool isComponent = FALSE;
+
+	if (argc > 2) {
+		cx_chdir(argv[1]);
+		nameElem = 2;
+	}
+
+	if (argc > (nameElem + 1)) {
+		if (argv[nameElem + 1]) {
+			if (!strcmp(argv[nameElem + 1], "--component")) {
+				isComponent = TRUE;
+			}
+		}
+	}
+
+	if (isComponent) {
+		cx_ll components = cx_loadGetComponents();
+		file = cx_fileOpen(".corto/components.txt");
+		found = corto_removeEntry(file, components, argv[nameElem]);
+		cx_fileClose(file);
+		cx_loadFreePackages(components);
+
+		if (!found) {
+			cx_error("corto: '%s' not found in components file", argv[nameElem]);
+			goto error;
+		} else {
+			corto_build(argc - 1, &argv[1]);
+			printf("corto: component '%s' removed from project\n", argv[nameElem]);
+		}
 	} else {
-		corto_build(argc - 1, &argv[1]);
-		printf("corto: package '%s' removed from project\n", id);
+		cx_id id;
+		cx_object package = corto_lookupPackage(argv[nameElem]);
+		if (!package) {
+			goto error;
+		}
+
+		cx_fullname(package, id);
+		cx_ll packages = cx_loadGetPackages();
+
+		file = cx_fileOpen(".corto/packages.txt");
+		found = corto_removeEntry(file, packages, id);
+		cx_fileClose(file);
+		cx_loadFreePackages(packages);
+
+		if (!found) {
+			cx_error("corto: '%s' ('%s') not found in package file", argv[nameElem], id);
+			goto error;
+		} else {
+			corto_build(argc - 1, &argv[1]);
+			printf("corto: package '%s' removed from project\n", id);
+		}
 	}
 
 	return 0;

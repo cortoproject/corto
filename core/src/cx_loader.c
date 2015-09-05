@@ -317,7 +317,7 @@ cx_string cx_locateComponent(cx_string component) {
     cx_string relativePath = NULL;
     cx_string result = NULL;
 
-    cx_asprintf(&relativePath, "lib/components/lib%s.so", component);
+    cx_asprintf(&relativePath, "components/lib%s.so", component);
     result = cx_locateLibrary(relativePath);
     cx_dealloc(relativePath);
 

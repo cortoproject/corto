@@ -523,7 +523,6 @@ struct cx_serializer_s cx_json_ser(cx_modifier access, cx_operatorKind accessKin
     struct cx_serializer_s s;
 
     cx_serializerInit(&s);
-
     s.access = access;
     s.accessKind = accessKind;
     s.traceKind = trace;
@@ -535,7 +534,15 @@ struct cx_serializer_s cx_json_ser(cx_modifier access, cx_operatorKind accessKin
     s.metaprogram[CX_MEMBER] = serializeItem;
     s.metaprogram[CX_BASE] = serializeBase;
     s.metaprogram[CX_OBJECT] = serializeObject;
+
     return s;
+}
+
+cx_string json_serialize(cx_object o) {
+    struct cx_serializer_s serializer = cx_json_ser(CX_PRIVATE, CX_NOT, CX_SERIALIZER_TRACE_NEVER);
+    cx_json_ser_t jsonData = {NULL, NULL, 0, 0, 0, FALSE, TRUE, FALSE, TRUE};
+    cx_serialize(&serializer, o, &jsonData);
+    return jsonData.buffer;
 }
 
 int jsonMain(int argc, char* argv[]) {

@@ -32,8 +32,8 @@ typedef struct cx_json_ser_t {
 } cx_json_ser_t;
 
 struct cx_serializer_s cx_json_ser(cx_modifier access, cx_operatorKind accessKind, cx_serializerTraceKind trace);
-
 cx_object cx_json_deser(cx_string s);
+cx_string json_serialize(cx_object o);
 
 /* $end */
 
