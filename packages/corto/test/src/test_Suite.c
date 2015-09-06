@@ -16,7 +16,9 @@ cx_int16 _test_Suite_construct(test_Suite this) {
         this->result.success = TRUE;
         extern cx_threadKey test_suiteKey;
         cx_threadTlsSet(test_suiteKey, this);
+        test_Suite_setup(this);
         cx_call(cx_function(this->test), NULL, this);
+        test_Suite_teardown(this);
         cx_threadTlsSet(test_suiteKey, NULL);
     } else {
         goto error;

@@ -534,7 +534,7 @@ static int cxsh_show(char* object) {
 
 /* Import file */
 static void cxsh_import(char* file) {
-    cx_load(file);
+    cx_load(file, 0, NULL);
 }
 
 /* Drop scope */
@@ -706,7 +706,8 @@ int corto_shell(int argc, char* argv[]) {
         if (!strcmp(argv[i], "-d")) {
             CX_DEBUG_ENABLED = TRUE;
         } else {
-            cx_load(argv[i]);
+            cx_load(argv[i], argc-i, &argv[i]);
+            break;
         }
     }
 

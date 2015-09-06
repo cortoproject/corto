@@ -773,7 +773,7 @@ int cx_deserXmlMetaExt(cx_xmlnode node, cx_deserXmlScope scope, cx_type t, void*
     } else if (!strcmp(oper, "include")) {
         cx_string filename = cx_xmlnodeAttrStr(node, "file");
         if (filename) {
-            cx_load(filename);
+            cx_load(filename, 0, NULL);
             free(filename);
         } else {
             xml_error(data, "missing 'file' attribute for meta:include.");
@@ -911,10 +911,12 @@ error:
 }
 
 /* Deserialize xml */
-int cx_deserXml(cx_string file, void* udata) {
+int cx_deserXml(cx_string file, int argc, char* argv[], void* udata) {
     deser_xmldata_s data;
 
     CX_UNUSED(udata);
+    CX_UNUSED(argc);
+    CX_UNUSED(argv);
 
     /* Load reader */
     data.reader = cx_xmlreaderNew(file, "meta");

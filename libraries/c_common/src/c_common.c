@@ -405,10 +405,40 @@ cx_char* c_topath(cx_object o, cx_id id, cx_char separator) {
 
 cx_string c_paramName(cx_string name, cx_string buffer) {
     if (*name == '$') {
-        sprintf(buffer, "str_%s", name + 1);
+        if (!strcmp(name, "$__line")) {
+            strcpy(buffer, name + 1);
+        } else if (!strcmp(name, "$__file")) {
+            strcpy(buffer, name + 1);
+        } else {
+            sprintf(buffer, "str_%s", name + 1);
+        }
     } else {
         strcpy(buffer, name);
     }
     return buffer;
 }
 
+cx_char* c_usingName(cx_generator g, cx_object o, cx_id id) {
+    cx_id buff;
+    char *ptr;
+
+    g_fullOid(g, o, buff);
+    ptr = strchr(buff, '_');
+    if (ptr) {
+        strcpy(id, ptr + 1);
+    } else {
+        strcpy(id, buff);
+    }
+
+    return id;
+}
+
+cx_char* c_usingConstant(cx_generator g, cx_id id) {
+    cx_id buff;
+    strcpy(id, "USING_");
+    char *ptr = &id[6];
+    cx_object o = g_getCurrent(g);
+    c_topath(o, buff, '_');
+    c_typeToUpper(buff, ptr);
+    return id;
+}

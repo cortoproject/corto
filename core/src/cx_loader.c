@@ -151,7 +151,7 @@ static cx_string cx_packageToFile(cx_string package) {
  * Load a Corto library
  * Receives the absolute path to the lib<name>.so file.
  */
-static int cx_loadLibrary(cx_string fileName) {
+static int cx_loadLibrary(cx_string fileName, int argc, char* argv[]) {
     cx_dl dl = NULL;
     int (*proc)(int argc, char* argv[]);
 
@@ -188,9 +188,9 @@ error:
 /*
  * An adapter on top of cx_loadLibrary to fit the cx_loadAction signature.
  */
-static int cx_loadLibraryAction(cx_string file, void *data) {
+static int cx_loadLibraryAction(cx_string file, int argc, char* argv[], void *data) {
     CX_UNUSED(data);
-    return cx_loadLibrary(file);
+    return cx_loadLibrary(file, argc, argv);
 }
 
 static cx_ll filesLoaded = NULL;
@@ -199,13 +199,13 @@ static cx_ll filesLoaded = NULL;
 static int cx_loadXml(void) {
     int result;
     cx_string path = cx_envparse("$CORTO_TARGET/lib/corto/%s/components/libxml.so", CORTO_VERSION);
-    result = cx_loadLibrary(path);
+    result = cx_loadLibrary(path, 0, NULL);
     cx_dealloc(path);
     return result;
 }
 
 /* Load a package */
-int cx_load(cx_string str) {
+int cx_load(cx_string str, int argc, char* argv[]) {
     cx_char ext[16];
     struct cx_fileHandler* h;
     int result = -1;
@@ -233,7 +233,7 @@ int cx_load(cx_string str) {
 
     /* Handle known extensions */
     if (!strcmp(ext, "cx")) {
-        cx_load("corto::Fast");
+        cx_load("corto::Fast", 0, NULL);
     } else if (!strcmp(ext, "xml")) {
         cx_loadXml();
     }
@@ -242,7 +242,7 @@ int cx_load(cx_string str) {
     h = cx_lookupExt(ext);
     if (h) {
         /* Load file */
-        result = h->load(str, h->userData);
+        result = h->load(str, argc, argv, h->userData);
     } else {
         cx_error("file-extension '%s' not supported.", ext);
         goto error;
@@ -418,7 +418,7 @@ int cx_loadPackages(void) {
     if (packages) {
         cx_iter iter = cx_llIter(packages);
         while (cx_iterHasNext(&iter)) {
-            cx_load(cx_iterNext(&iter));
+            cx_load(cx_iterNext(&iter), 0, NULL);
         }
         cx_loadFreePackages(packages);
     }
@@ -435,28 +435,28 @@ static int cx_packageLoader(cx_string package) {
         return -1;
     }
 
-    result = cx_loadLibrary(fileName);
+    result = cx_loadLibrary(fileName, 0, NULL);
     cx_dealloc(fileName);
 
     return result;
 }
 
 /* Load file with unspecified extension */
-static int cx_fileLoader(cx_string file, void* udata) {
+static int cx_fileLoader(cx_string file, int argc, char* argv[], void* udata) {
     CX_UNUSED(udata);
     cx_id testName;
     
     sprintf(testName, "%s.xml", file);
     if (cx_fileTest(testName)) {
         if (!cx_loadXml()) {
-            return cx_load(testName);
+            return cx_load(testName, argc, argv);
         }
     }
 
     sprintf(testName, "%s.cx", file);
     if (cx_fileTest(testName)) {
-        if (!cx_load("corto/Fast")) {
-            return cx_load(testName);
+        if (!cx_load("corto/Fast", 0, NULL)) {
+            return cx_load(testName, argc, argv);
         }
     }
 

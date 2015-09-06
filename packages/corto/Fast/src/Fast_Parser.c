@@ -616,7 +616,7 @@ Fast_Expression Fast_Parser_resolve(Fast_Parser this, cx_id id) {
                     }
                     *bptr = '\0';
                     oldEcho = cx_toggleEcho(FALSE);
-                    cx_load(buffer);
+                    cx_load(buffer, 0, NULL);
                     cx_toggleEcho(oldEcho);
                     while((ch=*ptr) && (ch == ':')) {
                         *bptr = ch;

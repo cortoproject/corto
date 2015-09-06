@@ -14,9 +14,9 @@
 extern "C" {
 #endif
 
-typedef int (*cx_loadAction)(cx_string file, void* userData);
+typedef int (*cx_loadAction)(cx_string file, int argc, char* argv[], void* userData);
 
-int cx_load(cx_string file);
+int cx_load(cx_string file, int argc, char* argv[]);
 
 cx_ll cx_loadGetComponents(void);
 void cx_loadFreeComponents(cx_ll packages);

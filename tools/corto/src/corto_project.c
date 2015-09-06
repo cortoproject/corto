@@ -422,7 +422,7 @@ static cx_int16 corto_package(int argc, char *argv[]) {
         }
     }
 
-    if (cx_load(cxfile)) {
+    if (cx_load(cxfile, 0, NULL)) {
         cx_error("corto: failed to load '%s'", cxfile);
         goto error;
     }

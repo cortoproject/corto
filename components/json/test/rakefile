@@ -1,8 +1,0 @@
-
-PACKAGE = '::testjson'
-
-INCLUDE = ["#{ENV['CORTO_HOME']}/interface/json/include"]
-
-CORTO_LIB = ['json']
-
-require "#{ENV['CORTO_BUILD']}/package"

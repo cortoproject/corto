@@ -13,30 +13,34 @@
 cx_threadKey test_suiteKey;
 /* $end */
 
-/* ::corto::test::assert(bool condition,string $condition) */
-cx_void _test_assert(cx_bool condition, cx_string str_condition) {
+/* ::corto::test::assert(bool condition,string $condition,uint32 $__line) */
+cx_bool _test_assert(cx_bool condition, cx_string str_condition, cx_uint32 __line) {
 /* $begin(::corto::test::assert) */
 	if (!condition) {
         char *assertMsg = NULL;
-        cx_asprintf(&assertMsg, "assert(%s)", str_condition);
+        cx_asprintf(&assertMsg, "%d: assert(%s)", __line, str_condition);
 		test_fail(assertMsg);
         cx_dealloc(assertMsg);
 	}
+
+    return !condition;
 /* $end */
 }
 
-/* ::corto::test::assertEqual(any a,any b,string $a,string $b) */
-cx_void _test_assertEqual(cx_any a, cx_any b, cx_string str_a, cx_string str_b) {
+/* ::corto::test::assertEqual(any a,any b,string $a,string $b,uint32 $__line) */
+cx_bool _test_assertEqual(cx_any a, cx_any b, cx_string str_a, cx_string str_b, cx_uint32 __line) {
 /* $begin(::corto::test::assertEqual) */
     cx_equalityKind eq;
     char *assertMsg = NULL;
 
     eq = cx_type_compare(a, b);
     if (eq != CX_EQ) {
-        cx_asprintf(&assertMsg, "assert(%s == %s)", str_a, str_b);
+        cx_asprintf(&assertMsg, "%d: assert(%s == %s)", __line, str_a, str_b);
         test_fail(assertMsg);
         cx_dealloc(assertMsg);
     }
+
+    return (eq != CX_EQ);
 /* $end */
 }
 

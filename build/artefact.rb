@@ -144,7 +144,13 @@ rule '.o' => ->(t){t.pathmap("src/%f").ext(".c")} do |task|
     build_source(task, true)
 end
 
+task :all => :default
 task :default => [:prebuild, :binary, :postbuild]
+
+task :test do
+    verbose(false)
+    sh "corto test"
+end
 
 def build_source(task, echo)
     verbose(false)

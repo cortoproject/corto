@@ -3,8 +3,8 @@
 procedure Case: base=method, kind=procedureKind::METHOD
 
 void fail(string err)
-void assert(bool condition, $condition)
-void assertEqual(any a, any b, $a, $b)
+bool assert(bool condition, $condition, $__line)
+bool assertEqual(any a, any b, $a, $b, $__line)
 
 struct Result::
     member success: bool, readonly

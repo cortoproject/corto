@@ -10,7 +10,6 @@
 
 #include "corto.h"
 
-int cx_deserXml(cx_string file, void* udata);
-
+int cx_deserXml(cx_string file, int argc, char* argv[], void* udata);
 
 #endif /* CORE_DESERXML_H_ */

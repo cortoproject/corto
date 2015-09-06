@@ -1,4 +1,4 @@
-/* testjson.c
+/* tc.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -6,9 +6,10 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#include "testjson.h"
+#define tc_stringser_LIB
+#include "tc.h"
 
-int testjsonmain(int argc, char* argv[]) {
+int tc_stringserMain(int argc, char* argv[]) {
 /* $begin(main) */
     /* Insert code that must be run when component is loaded */
     CX_UNUSED(argc);

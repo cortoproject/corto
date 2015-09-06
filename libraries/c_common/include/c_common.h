@@ -36,6 +36,10 @@ cx_char* c_topath(cx_object o, cx_id id, cx_char separator);
 
 cx_string c_paramName(cx_string name, cx_string buffer);
 
+cx_char* c_usingName(cx_generator g, cx_object o, cx_id id);
+
+cx_char* c_usingConstant(cx_generator g, cx_id id);
+
 #ifdef __cplusplus
 }
 #endif

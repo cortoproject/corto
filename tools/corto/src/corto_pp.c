@@ -182,7 +182,7 @@ cx_int16 corto_pp(int argc, char *argv[]) {
         while (cx_iterHasNext(&iter)) {
             include = cx_iterNext(&iter);
 			
-			if (cx_load(include)) {
+			if (cx_load(include, 0, NULL)) {
                 cx_error("corto: cannot load '%s'", include);
                 goto error;
             } else {

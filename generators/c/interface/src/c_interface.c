@@ -349,7 +349,13 @@ static int c_interfaceParamCastWalk(cx_parameter *o, void *userData) {
 
     /* If parameter is a meta argument, stringify it */
     if (*o->name == '$') {
-        g_fileWrite(data->header, "#%s", o->name + 1);
+        if (!strcmp(o->name, "$__line")) {
+            g_fileWrite(data->header, "__LINE__");
+        } else if (!strcmp(o->name, "$__file")) {
+            g_fileWrite(data->header, "__FILE__");
+        } else {
+            g_fileWrite(data->header, "#%s", o->name + 1);            
+        }
     } else {
         if (c_interfaceParamRequiresCast(o->type, o->passByReference)) {
             g_fileWrite(data->header, "%s(%s)", specifier, o->name);

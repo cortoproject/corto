@@ -129,6 +129,7 @@ int main(int argc, char* argv[]) {
                 if (corto_test(argc-i, &argv[i])) {
                     goto error;
                 }
+                break;
             } else if (!strcmp(argv[i], "clean")) {
                 if (corto_clean(argc-i, &argv[i])) {
                     goto error;
@@ -175,10 +176,11 @@ int main(int argc, char* argv[]) {
                 }
                 break;
             } else {
-                if (cx_load(argv[i])) {
+                if (cx_load(argv[i], argc-i, &argv[i])) {
                     cx_error("corto: failed to load file '%s'", argv[i]);
                     goto error;
                 }
+                break;
             }
         }
     }

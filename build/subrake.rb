@@ -1,5 +1,7 @@
 COMPONENTS = [] if not defined? COMPONENTS
 
+task :all => :default
+
 task :default do
     COMPONENTS.each do |e|
         verbose(false)
@@ -25,6 +27,9 @@ task :clean do
     COMPONENTS.each do |e|
         verbose(false)
         sh "rake clean -f #{e}/rakefile"
+        if File.exists? "#{e}/test/rakefile" then
+            sh "rake clean -f #{e}/test/rakefile"
+        end
     end
 end
 
@@ -32,5 +37,15 @@ task :clobber do
     COMPONENTS.each do |e|
         verbose(false)
         sh "rake clobber -f #{e}/rakefile"
+        if File.exists? "#{e}/test/rakefile" then
+            sh "rake clobber -f #{e}/test/rakefile"
+        end
+    end
+end
+
+task :test do
+    COMPONENTS.each do |e|
+        verbose(false)
+        sh "rake test -f #{e}/rakefile"
     end
 end

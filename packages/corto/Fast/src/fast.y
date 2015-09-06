@@ -326,7 +326,11 @@ function_argument
     | '$' any_id {
         cx_id argid;
         sprintf(argid, "$%s", $2);
-        $$=Fast_Parser_argumentToString(yparser(), cx_string_o, argid, FALSE); fast_op;
+        if (!strcmp($2, "__line")) {
+            $$=Fast_Parser_argumentToString(yparser(), cx_uint32_o, argid, FALSE); fast_op;
+        } else {
+            $$=Fast_Parser_argumentToString(yparser(), cx_string_o, argid, FALSE); fast_op;            
+        }
     }
     ;
 

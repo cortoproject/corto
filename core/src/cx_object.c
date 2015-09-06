@@ -987,7 +987,9 @@ cx_object _cx_declareChild(cx_object parent, cx_string name, cx_type type) {
                 /* Observable administration needs to be initialized after the
                  * scope administration because it needs to setup the correct
                  * chain of parents to notify on an event. */
-                cx__initObservable(o);
+                if (cx_checkAttr(o, CX_ATTR_OBSERVABLE)) {
+                    cx__initObservable(o);
+                }
 
                 /* Call framework initializer */
                 if (cx_init(o)) {

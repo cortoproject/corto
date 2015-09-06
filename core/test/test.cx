@@ -1,0 +1,51 @@
+#package ::test
+
+class Point::
+    fail: bool
+    x, y: int32
+    int16 init()
+    int16 construct()
+    void destruct()
+
+class ObjectMgmt: test::Suite::
+    void setup()
+    void teardown()
+
+    void tc_declareVoid() test::Case
+    void tc_declareInt() test::Case
+    void tc_declarePoint() test::Case
+    void tc_declareVoidAttr0() test::Case
+    void tc_declareIntAttr0() test::Case
+    void tc_declarePointAttr0() test::Case
+
+    void tc_createVoid() test::Case
+    void tc_createInt() test::Case
+    void tc_createPoint() test::Case
+    void tc_createVoidAttr0() test::Case
+    void tc_createIntAttr0() test::Case
+    void tc_createPointAttr0() test::Case
+
+    void tc_defineVoid() test::Case
+    void tc_defineInt() test::Case
+    void tc_definePoint() test::Case
+    void tc_defineVoidAttr0() test::Case
+    void tc_defineIntAttr0() test::Case
+    void tc_definePointAttr0() test::Case
+
+    void tc_declareChildVoid() test::Case
+    void tc_declareChildInt() test::Case
+    void tc_declareChildPoint() test::Case
+    void tc_declareChildVoidAttr0() test::Case
+    void tc_declareChildIntAttr0() test::Case
+    void tc_declareChildPointAttr0() test::Case
+
+    void tc_createChildVoid() test::Case
+    void tc_createChildInt() test::Case
+    void tc_createChildPoint() test::Case
+    void tc_createChildVoidAttr0() test::Case
+    void tc_createChildIntAttr0() test::Case
+    void tc_createChildPointAttr0() test::Case
+
+
+
+    prevAttr: lang::attr, local|private

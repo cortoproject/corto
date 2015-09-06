@@ -58,7 +58,7 @@ cx_void _test_Runner_runTest(test_Runner this, cx_object *observable, cx_object 
 
         if (!suite->result.success) {
             cx_id signame; cx_signatureName(testName, signame);
-            cx_error("FAIL: %s.%s: %s", suiteName, signame, suite->result.errmsg ? suite->result.errmsg : "");
+            cx_error("FAIL: %s::%s:%s", suiteName, signame, suite->result.errmsg ? suite->result.errmsg : "");
         }
         cx_delete(suite);
     }

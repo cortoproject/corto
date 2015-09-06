@@ -20,10 +20,22 @@
 cx_threadKey Fast_PARSER_KEY;
 
 /* Run a corto file */
-int fast_cortoRun(cx_string file, void* udata) {
+int fast_cortoRun(cx_string file, int argc, char* argv[], void* udata) {
     cx_char* source;
     Fast_Parser p;
+    cx_int32 i;
+    cx_objectseq *seq;
     CX_UNUSED(udata);
+
+    seq = cxstr_declareChild(NULL, "argv", "sequence{string}");
+    seq->buffer = cx_alloc(argc * sizeof(cx_string));
+    seq->length = argc;
+
+    for (i = 0; i < argc; i++) {
+        seq->buffer[i] = cx_strdup(argv[i]);
+    }
+
+    cx_define(seq);
 
     source = cx_fileLoad(file);
     if (source) {
@@ -37,6 +49,8 @@ int fast_cortoRun(cx_string file, void* udata) {
     } else {
         goto error;
     }
+
+    cx_delete(seq);
 
     return 0;
 error:
