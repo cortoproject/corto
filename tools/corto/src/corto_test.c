@@ -6,9 +6,18 @@ cx_int16 corto_test(int argc, char *argv[]) {
     }
 
     if (cx_fileTest("test")) {
-    	system("corto build test");
+    	cx_pid pid = cx_procrun("corto", (char*[]){"corto", "build", "test", NULL});
+        if (cx_procwait(pid, NULL)) {
+            cx_error("corto: failed to build test");
+            goto error;
+        }
     	if (cx_fileTest("test/.corto/libtest.so")) {
-			system ("corto test/.corto/libtest.so");
+            cx_chdir("test");
+			cx_pid pid = cx_procrun("corto", (char*[]){"corto", "./.corto/libtest.so", NULL});
+            if (cx_procwait(pid, NULL)) {
+                cx_error("corto: failed to run test");
+                goto error;
+            }
 		}
     }
 
@@ -16,5 +25,5 @@ cx_int16 corto_test(int argc, char *argv[]) {
 
 	return 0;
 error:
-	return -1;
+    return -1;
 }

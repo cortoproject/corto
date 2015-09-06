@@ -87,7 +87,8 @@ static cx_int16 corto_createTest(cx_string name, cx_bool isComponent) {
     if (file) {
         fprintf(file, "/* $begin(main) */\n");
         fprintf(file, "    int result = 0;\n");
-        fprintf(file, "    test_Runner runner = test_RunnerCreate();\n");
+        fprintf(file, "    test_Runner runner = test_RunnerCreate(\"%s\");\n", name);
+        fprintf(file, "    if (!runner) return -1;\n");
         fprintf(file, "    if (cx_llSize(runner->failures)) {\n");
         fprintf(file, "        result = -1;\n");
         fprintf(file, "    }\n");

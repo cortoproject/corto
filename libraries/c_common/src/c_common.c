@@ -383,7 +383,7 @@ cx_char* c_topath(cx_object o, cx_id id, cx_char separator) {
     cx_char ch, *ptr;
     cx_fullname(o, id);
 
-    ptr = id+2;
+    ptr = id + 2;
     offset = 2;
     while((ch = *ptr)) {
         switch(ch) {
@@ -401,5 +401,14 @@ cx_char* c_topath(cx_object o, cx_id id, cx_char separator) {
     *(ptr-offset) = '\0';
 
     return id;
+}
+
+cx_string c_paramName(cx_string name, cx_string buffer) {
+    if (*name == '$') {
+        sprintf(buffer, "str_%s", name + 1);
+    } else {
+        strcpy(buffer, name);
+    }
+    return buffer;
 }
 

@@ -27,9 +27,9 @@ typedef struct c_typeWalk_t {
 } c_typeWalk_t;
 
 /* Generate parameters for method */
-static int c_interfaceMethodParameter(cx_parameter* o, void* userData) {
+static int c_interfaceParam(cx_parameter *o, void *userData) {
     c_typeWalk_t* data;
-    cx_id specifier, postfix;
+    cx_id specifier, postfix, name;
 
     data = userData;
 
@@ -52,10 +52,10 @@ static int c_interfaceMethodParameter(cx_parameter* o, void* userData) {
     }
 
     /* Write to source */
-    if (data->generateSource) g_fileWrite(data->source, "%s%s", o->name, postfix);
+    if (data->generateSource) g_fileWrite(data->source, "%s%s", c_paramName(o->name, name), postfix);
 
     /* Write to header */
-    if (data->generateHeader) g_fileWrite(data->header, "%s%s", o->name, postfix);
+    if (data->generateHeader) g_fileWrite(data->header, "%s%s", c_paramName(o->name, name), postfix);
 
     data->firstComma++;
 
@@ -64,28 +64,32 @@ error:
     return 0;
 }
 
-/* Generate parameters for method */
-static int c_interfaceMethodParameterName(cx_parameter* o, void* userData) {
-    c_typeWalk_t* data;
-
-    data = userData;
-
-    /* Write comma */
+static int c_interfaceParamNameSource(cx_parameter *o, void *userData) {
+    c_typeWalk_t* data = userData;
+    cx_id name;
     if (data->firstComma) {
         g_fileWrite(data->source, ", ");
     }
-
-    /* Write to source */
-    g_fileWrite(data->source, "%s",
-            o->name);
-
+    g_fileWrite(data->source, "%s", c_paramName(o->name, name));
     data->firstComma++;
+    return 1;
+}
 
+static int c_interfaceParamCastDef(cx_parameter *o, void *userData) {
+    c_typeWalk_t* data = userData;
+    if (*o->name != '$') {
+        cx_id name;
+        if (data->firstComma) {
+            g_fileWrite(data->header, ", ");
+        }
+        g_fileWrite(data->header, "%s", c_paramName(o->name, name));
+        data->firstComma++;
+    }
     return 1;
 }
 
 /* Walk parameters of function */
-static int c_interfaceParamWalk(cx_object _f, int(*action)(cx_parameter*, void*), void* userData) {
+static int c_interfaceParamWalk(cx_object _f, int(*action)(cx_parameter*, void*), void *userData) {
     cx_uint32 i;
     cx_function f = _f;
     for (i=0; i<f->parameters.length; i++) {
@@ -158,7 +162,7 @@ static int c_interfaceGenerateVirtual(cx_method o, c_typeWalk_t* data) {
     data->generateHeader = TRUE;
 
     /* Walk parameters */
-    if (!c_interfaceParamWalk(o, c_interfaceMethodParameter, data)) {
+    if (!c_interfaceParamWalk(o, c_interfaceParam, data)) {
         goto error;
     }
 
@@ -194,7 +198,7 @@ static int c_interfaceGenerateVirtual(cx_method o, c_typeWalk_t* data) {
         g_fileWrite(data->wrapper, "cx_call(cx_function(_method), NULL, _this");
     }
     data->firstComma = 3;
-    if (!c_interfaceParamWalk(o, c_interfaceMethodParameterName, data)) {
+    if (!c_interfaceParamWalk(o, c_interfaceParamNameSource, data)) {
         goto error;
     }
     g_fileWrite(data->wrapper, ");\n");
@@ -223,9 +227,23 @@ static char* c_functionName(cx_function o, cx_id id, c_typeWalk_t *data) {
     return id;
 }
 
+static cx_bool c_interfaceParamRequiresCast(cx_type t, cx_bool isReference) {
+    if ((isReference || t->reference) && (t->kind != CX_VOID) && (t->kind != CX_ANY)) {
+        return TRUE;
+    } else {
+        return FALSE;
+    }
+}
+
 /* Add a type to the expression that determines the location of a parameter in a buffer */
 void c_procedureAddToSizeExpr(cx_type t, cx_bool isReference, c_typeWalk_t *data) {
     cx_id id, postfix;
+
+    if (c_interfaceParamRequiresCast(t, isReference)) {
+        cx_id specifier;
+        c_specifierId(data->g, t, specifier, NULL, NULL);
+        g_fileWrite(data->wrapper, "%s(", specifier);
+    }
 
     c_specifierId(data->g, cx_type(t), id, NULL, postfix);
     if (isReference || ((t->kind == CX_COMPOSITE) && !t->reference)) {
@@ -243,10 +261,14 @@ void c_procedureAddToSizeExpr(cx_type t, cx_bool isReference, c_typeWalk_t *data
     strcat(data->sizeExpr, id);
     strcat(data->sizeExpr, ")");
 
+    if (c_interfaceParamRequiresCast(t, isReference)) {
+        g_fileWrite(data->wrapper, ")");
+    }
+
     data->firstComma = TRUE;
 }
 
-int c_procedureWrapperParam(cx_parameter* o, void* userData) {
+int c_procedureWrapperParam(cx_parameter *o, void *userData) {
     c_typeWalk_t* data;
     data = userData;
 
@@ -289,7 +311,7 @@ static int c_interfaceClassProcedureWrapper(cx_function o, c_typeWalk_t *data) {
     }
 
     /* Call function and assign result */
-    g_fileWrite(data->wrapper, "%s(\n", c_functionName(o, actualFunction, data));
+    g_fileWrite(data->wrapper, "_%s(\n", c_functionName(o, actualFunction, data));
     g_fileIndent(data->wrapper);
 
     /* Add this */
@@ -313,30 +335,29 @@ static int c_interfaceClassProcedureWrapper(cx_function o, c_typeWalk_t *data) {
     return 0;
 }
 
-static int c_interfaceParamNameWalk(cx_parameter* o, void* userData) {
+static int c_interfaceParamCastWalk(cx_parameter *o, void *userData) {
     c_typeWalk_t* data = userData;
-    if (data->firstComma) {
-        g_fileWrite(data->header, ", ");
-    }
-    g_fileWrite(data->header, "%s", o->name);
-    data->firstComma = TRUE;
-    return 1;
-}
+    cx_id specifier, postfix, name;
 
-static int c_interfaceParamCastWalk(cx_parameter* o, void* userData) {
-    c_typeWalk_t* data = userData;
-    cx_id specifier, postfix;
     if (data->firstComma) {
         g_fileWrite(data->header, ", ");
     }
+
     if (c_specifierId(data->g, o->type, specifier, NULL, postfix)) {
         goto error;
     }
-    if ((o->passByReference || o->type->reference) && (o->type->kind != CX_VOID) && (o->type->kind != CX_ANY)) {
-        g_fileWrite(data->header, "%s(%s)", specifier, o->name);
+
+    /* If parameter is a meta argument, stringify it */
+    if (*o->name == '$') {
+        g_fileWrite(data->header, "#%s", o->name + 1);
     } else {
-        g_fileWrite(data->header, "%s", o->name);
+        if (c_interfaceParamRequiresCast(o->type, o->passByReference)) {
+            g_fileWrite(data->header, "%s(%s)", specifier, o->name);
+        } else {
+            g_fileWrite(data->header, "%s", c_paramName(o->name, name));
+        }
     }
+
     data->firstComma = TRUE;
 
     return 1;
@@ -344,8 +365,53 @@ error:
     return 0;
 }
 
+static int c_interfaceCastMacro(cx_function o, cx_string functionName, c_typeWalk_t *data) {
+    data->firstComma = FALSE;
+    
+    g_fileWrite(data->header, "#define %s(", functionName, functionName);
+    
+    if (c_procedureHasThis(o)) {
+        g_fileWrite(data->header, "_this");
+        data->firstComma = TRUE;
+    }
+    
+    if (!c_interfaceParamWalk(o, c_interfaceParamCastDef, data)) {
+        goto error;
+    }
+    
+    g_fileWrite(data->header, ") _%s(", functionName);
+    
+    if (c_procedureHasThis(o)) {
+        if (cx_procedure(cx_typeof(o))->kind != CX_METAPROCEDURE) {
+            cx_id classId;
+            cx_type parentType = cx_parentof(o);
+            g_fullOid(data->g, parentType, classId);
+            if (parentType->reference) {
+                g_fileWrite(data->header, "%s(_this)", classId);
+            } else {
+                g_fileWrite(data->header, "_this", classId);
+            }
+        } else {
+            g_fileWrite(data->header, "_this");
+        }
+        data->firstComma = TRUE;
+    } else {
+        data->firstComma = FALSE;
+    }
+    
+    if (!c_interfaceParamWalk(o, c_interfaceParamCastWalk, data)) {
+        goto error;
+    }
+    
+    g_fileWrite(data->header, ")\n");
+
+    return 0;
+error:
+    return -1;   
+}
+
 /* Generate methods for class */
-static int c_interfaceClassProcedure(cx_object o, void* userData) {
+static int c_interfaceClassProcedure(cx_object o, void *userData) {
     c_typeWalk_t* data;
     cx_bool defined = FALSE;
 
@@ -452,7 +518,7 @@ static int c_interfaceClassProcedure(cx_object o, void* userData) {
         /* Walk parameters */
         data->generateHeader = TRUE;
         data->generateSource = TRUE;
-        if (!c_interfaceParamWalk(o, c_interfaceMethodParameter, data)) {
+        if (!c_interfaceParamWalk(o, c_interfaceParam, data)) {
             goto error;
         }
 
@@ -530,37 +596,7 @@ static int c_interfaceClassProcedure(cx_object o, void* userData) {
         g_fileWrite(data->header, ");\n");
 
         /* Write the macro wrapper for automatic casting of parameter types */
-        data->firstComma = FALSE;
-        g_fileWrite(data->header, "#define %s(", functionName, functionName);
-        if (c_procedureHasThis(o)) {
-            g_fileWrite(data->header, "_this");
-            data->firstComma = TRUE;
-        }
-        if (!c_interfaceParamWalk(o, c_interfaceParamNameWalk, data)) {
-            goto error;
-        }
-        g_fileWrite(data->header, ") _%s(", functionName);
-        if (c_procedureHasThis(o)) {
-            if (cx_procedure(cx_typeof(o))->kind != CX_METAPROCEDURE) {
-                cx_id classId;
-                cx_type parentType = cx_parentof(o);
-                g_fullOid(data->g, parentType, classId);
-                if (parentType->reference) {
-                    g_fileWrite(data->header, "%s(_this)", classId);
-                } else {
-                    g_fileWrite(data->header, "_this", classId);
-                }
-            } else {
-                g_fileWrite(data->header, "_this");
-            }
-            data->firstComma = TRUE;
-        } else {
-            data->firstComma = FALSE;
-        }
-        if (!c_interfaceParamWalk(o, c_interfaceParamCastWalk, data)) {
-            goto error;
-        }
-        g_fileWrite(data->header, ")\n");
+        c_interfaceCastMacro(o, functionName, data);
     }
 
 ok:
@@ -570,7 +606,7 @@ error:
 }
 
 /* Check if there are procedures in the scope of an object. */
-static int c_interfaceCheckProcedures(void* o, void* udata) {
+static int c_interfaceCheckProcedures(void *o, void *udata) {
     CX_UNUSED(udata);
 
     /* If the type of the type of the object is a procedure, return 0. */
@@ -831,7 +867,7 @@ error:
 }
 
 /* Walk interfaces */
-static int c_interfaceWalk(cx_object o, void* userData) {
+static int c_interfaceWalk(cx_object o, void *userData) {
     c_typeWalk_t* data;
 
     data = userData;

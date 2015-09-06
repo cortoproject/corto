@@ -2,9 +2,12 @@
 
 procedure Case: base=method, kind=procedureKind::METHOD
 
+void fail(string err)
+void assert(bool condition, $condition)
+void assertEqual(any a, any b, $a, $b)
+
 struct Result::
     member success: bool, readonly
-    member assertmsg: string
     member errmsg: string
 
 class Suite::
@@ -16,12 +19,8 @@ class Suite::
     void setup() virtual
     void teardown() virtual
 
-    bool assert(bool b)
-    bool assert(bool b, string errmsg)
-    bool assertEqual(any a, any b)
-    bool assertEqual(any a, any b, string errmsg)
-
 class Runner::
+    member name: string
     member successes: list{Suite}, readonly
     member failures: list{Suite}, readonly
     int16 construct()

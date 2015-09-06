@@ -24,13 +24,9 @@ cx_int16 _test_Runner_construct(test_Runner _this) {
 /* ::corto::test::Runner::destruct() */
 cx_void _test_Runner_destruct(test_Runner _this) {
 /* $begin(::corto::test::Runner::destruct) */
-    static char *successes[] = {"successes", "success"};
-    static char *failures[] = {"failures", "failure"};
     cx_uint32 successCount = test_SuiteListSize(_this->successes);
     cx_uint32 failureCount = test_SuiteListSize(_this->failures);
-    char *success = successes[successCount == 1 ? 1 : 0];
-    char *failure = failures[failureCount == 1 ? 1 : 0];
-    cx_print("%d %s, %d %s", successCount, success, failureCount, failure);
+    cx_print("%s: %d OK, %d FAIL", _this->name, successCount, failureCount);
 /* $end */
 }
 
@@ -42,11 +38,7 @@ cx_void _test_Runner_printTestRun_v(test_Runner _this, test_Suite t) {
     cx_string testName = cx_nameof(t->test);
     if (!t->result.success) {
         cx_id signame; cx_signatureName(testName, signame);
-        cx_assert(t->result.assertmsg != NULL, "null assert message");
-        cx_error("FAIL: %s.%s - %s", suiteName, signame, t->result.assertmsg);
-        if (t->result.errmsg && *(t->result.errmsg) != '\0') {
-            cx_error("    message: %s", t->result.errmsg);
-        }
+        cx_error("FAIL: %s.%s: %s", suiteName, signame, t->result.errmsg);
     }
 /* $end */
 }
@@ -55,6 +47,7 @@ cx_void _test_Runner_printTestRun_v(test_Runner _this, test_Suite t) {
 cx_void _test_Runner_runTest(test_Runner _this, cx_object *observable, cx_object *source) {
 /* $begin(::corto::test::Runner::runTest) */
     CX_UNUSED(source);
+
     if (cx_instanceof(cx_type(test_Case_o), observable)) {
         cx_type testClass = cx_parentof(observable);
         test_Suite suite = test_Suite(cx_declare(testClass));

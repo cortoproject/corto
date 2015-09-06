@@ -832,6 +832,11 @@ cx_object _cx_declare(cx_type type) {
     cx__object* o;
     cx_attr attrs = cx_getAttr();
 
+    if (!type) {
+        cx_error("core: NULL type provided to cx_declare");
+        goto error;
+    }
+
     if (attrs & CX_ATTR_DEFAULT) {
         attrs |= CX_ATTR_OBSERVABLE;
 

@@ -34,6 +34,8 @@ cx_bool c_procedureHasThis(cx_function o);
 
 cx_char* c_topath(cx_object o, cx_id id, cx_char separator);
 
+cx_string c_paramName(cx_string name, cx_string buffer);
+
 #ifdef __cplusplus
 }
 #endif

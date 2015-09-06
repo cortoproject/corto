@@ -186,7 +186,7 @@ cx_int16 c_apiTypeCreateIntern(cx_type t, c_apiWalk_t *data, cx_string func, cx_
 	    cx_metaWalk(&s, cx_type(t), data);
 
 	    /* Define object */
-	    g_fileWrite(data->source, "if (cx_define(_this)) {\n");
+	    g_fileWrite(data->source, "if (_this && cx_define(_this)) {\n");
 	    g_fileIndent(data->source);
 	    g_fileWrite(data->source, "cx_release(_this);\n");
 	    g_fileWrite(data->source, "_this = NULL;\n");
@@ -230,7 +230,7 @@ cx_int16 c_apiTypeDefineIntern(cx_type t, c_apiWalk_t *data, cx_bool isUpdate, c
     	g_fileWrite(data->source, "void ");
     } else {
     	g_fileWrite(data->header, "cx_int16 ");
-    	g_fileWrite(data->source, "cx_int16 ");    	
+    	g_fileWrite(data->source, "cx_int16 ");	
     }
 
     /* Function declaration */
