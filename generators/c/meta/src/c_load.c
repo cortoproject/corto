@@ -293,7 +293,7 @@ error:
 /* Open generator headerfile */
 static g_file c_loadHeaderFileOpen(cx_generator g) {
     g_file result;
-    cx_id headerFileName;
+    cx_id headerFileName, path;
 
     /* Create file */
     sprintf(headerFileName, "%s__meta.h", g_getName(g));
@@ -305,10 +305,14 @@ static g_file c_loadHeaderFileOpen(cx_generator g) {
     g_fileWrite(result, " * Loads objects in object store.\n");
     g_fileWrite(result, " * This file contains generated code. Do not modify!\n");
     g_fileWrite(result, " */\n\n");
-    g_fileWrite(result, "#ifndef %s_META_H\n", g_getName(g));
-    g_fileWrite(result, "#define %s_META_H\n\n", g_getName(g));
-    g_fileWrite(result, "#include \"corto.h\"\n\n");
-    g_fileWrite(result, "#include \"%s__type.h\"\n\n", g_getName(g));
+    g_fileWrite(result, "#ifndef %s_META_H\n", c_topath(g_getCurrent(g), path, '_'));
+    g_fileWrite(result, "#define %s_META_H\n\n", c_topath(g_getCurrent(g), path, '_'));
+    g_fileWrite(result, "#include \"corto.h\"\n");
+    g_fileWrite(result, "#ifdef %s_LIB\n", c_topath(g_getCurrent(g), path, '_'));
+    g_fileWrite(result, "#include \"%s__type.h\"\n", g_getName(g));
+    g_fileWrite(result, "#else\n");
+    g_fileWrite(result, "#include \"%s/%s__type.h\"\n", c_topath(g_getCurrent(g), path, '/'), g_getName(g));
+    g_fileWrite(result, "#endif\n\n");
     g_fileWrite(result, "#ifdef __cplusplus\n");
     g_fileWrite(result, "extern \"C\" {\n");
     g_fileWrite(result, "#endif\n");
@@ -333,7 +337,7 @@ static void c_loadHeaderFileClose(cx_generator g, g_file file) {
 static g_file c_loadSourceFileOpen(cx_generator g) {
     g_file result;
     cx_id headerFileName;
-    cx_id topLevelName;
+    cx_id topLevelName, path;
 
     /* Create file */
     sprintf(headerFileName, "%s__meta.c", g_getName(g));
@@ -345,6 +349,7 @@ static g_file c_loadSourceFileOpen(cx_generator g) {
     g_fileWrite(result, " * Loads objects in object store.\n");
     g_fileWrite(result, " * This file contains generated code. Do not modify!\n");
     g_fileWrite(result, " */\n\n");
+    g_fileWrite(result, "#define %s_LIB\n", c_topath(g_getCurrent(g), path, '_'));
     g_fileWrite(result, "#include \"%s.h\"\n\n", g_fullOid(g, g_getCurrent(g), topLevelName));
 
     return result;

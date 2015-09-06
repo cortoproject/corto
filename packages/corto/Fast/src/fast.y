@@ -317,11 +317,16 @@ function_arguments
     ;
 
 function_argument
-    : identifier any_id                    {
+    : identifier any_id {
         $$=Fast_Parser_argumentToString(yparser(), $1 ? Fast_Object($1)->value : NULL, $2, FALSE); fast_op;
     }
-    | identifier '&' any_id                {
+    | identifier '&' any_id {
         $$=Fast_Parser_argumentToString(yparser(), $1 ? Fast_Object($1)->value : NULL, $3, TRUE); fast_op;
+    }
+    | '$' any_id {
+        cx_id argid;
+        sprintf(argid, "$%s", $2);
+        $$=Fast_Parser_argumentToString(yparser(), cx_string_o, argid, FALSE); fast_op;
     }
     ;
 

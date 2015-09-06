@@ -6,6 +6,7 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
+#define corto_test_LIB
 #include "test.h"
 
 /* $header() */
@@ -79,63 +80,27 @@ cx_bool _test_Suite_assertEqual_any_any_string(test_Suite _this, cx_any a, cx_an
 cx_int16 _test_Suite_construct(test_Suite _this) {
 /* $begin(::corto::test::Suite::construct) */
     if (_this->test) {
-        cx_type type = cx_typeof(_this);
-        test_Suite_rSetUp(_this, type);
         _this->result.success = TRUE;
         cx_call(cx_function(_this->test), NULL, _this);
-        test_Suite_rTearDown(_this, type);
     } else {
-        _this->result.success = FALSE;
+        goto error;
     }
     return 0;
+error:
+    return -1;
 /* $end */
 }
 
-/* ::corto::test::Suite::rSetUp(object type) */
-cx_void _test_Suite_rSetUp(test_Suite _this, cx_object type) {
-/* $begin(::corto::test::Suite::rSetUp) */
-    cx_interface i = cx_interface(type);
-    /* Stack up fixtures (parent first) */
-    /* TODO how can I receive an interface in the args? */
-    if (i->base) {
-        test_Suite_rSetUp(_this, i->base);
-    }
-
-    cx_function p = cx_function(cx_resolve(type, "setUp"));
-    /* TODO what about checking return type and arguments */
-    if (p) {
-        cx_call(p, NULL, _this);
-    }
-/* $end */
-}
-
-/* ::corto::test::Suite::rTearDown(object type) */
-cx_void _test_Suite_rTearDown(test_Suite _this, cx_object type) {
-/* $begin(::corto::test::Suite::rTearDown) */
-    cx_interface i = cx_interface(type);
-    /* Unstack fixtures (parent last) */
-    cx_function p = cx_function(cx_resolve(type, "tearDown"));
-    /* TODO what about checking return type and arguments */
-    if (p) {
-        cx_call(p, NULL, _this);
-    }
-
-    if (i->base) {
-        test_Suite_rTearDown(_this, i->base);
-    }
-/* $end */
-}
-
-/* ::corto::test::Suite::setUp() */
-cx_void _test_Suite_setUp_v(test_Suite _this) {
-/* $begin(::corto::test::Suite::setUp) */
+/* ::corto::test::Suite::setup() */
+cx_void _test_Suite_setup_v(test_Suite _this) {
+/* $begin(::corto::test::Suite::setup) */
     CX_UNUSED(_this);
 /* $end */
 }
 
-/* ::corto::test::Suite::tearDown() */
-cx_void _test_Suite_tearDown_v(test_Suite _this) {
-/* $begin(::corto::test::Suite::tearDown) */
+/* ::corto::test::Suite::teardown() */
+cx_void _test_Suite_teardown_v(test_Suite _this) {
+/* $begin(::corto::test::Suite::teardown) */
     CX_UNUSED(_this);
 /* $end */
 }

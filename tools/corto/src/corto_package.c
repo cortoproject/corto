@@ -22,9 +22,9 @@ error:
 cx_int16 corto_add(int argc, char* argv[]) {
 	int nameElem = 1;
 	cx_id id;
-	cx_bool isComponent = FALSE, isSilent = FALSE;
+	cx_bool isComponent = FALSE, isSilent = FALSE, noBuild = FALSE;
 
-	if (argc > 2) {
+	if ((argc > 2) && (*argv[2] != '-')) {
 		cx_chdir(argv[1]);
 		nameElem = 2;
 	}
@@ -36,6 +36,8 @@ cx_int16 corto_add(int argc, char* argv[]) {
 				isComponent = TRUE;
 			} else if (!strcmp(argv[i], "--silent")) {
 				isSilent = TRUE;
+			} else if (!strcmp(argv[i], "--nobuild")) {
+				noBuild = TRUE;
 			}
 		}
 	}
@@ -57,7 +59,11 @@ cx_int16 corto_add(int argc, char* argv[]) {
 			}
 			fprintf(cx_fileGet(f), "%s\n", argv[nameElem]);
 			cx_fileClose(f);
-			corto_build(argc - 1, &argv[1]);
+
+			if (!noBuild) {
+				corto_build(argc - 1, &argv[1]);
+			}
+
 			if (!isSilent) {
 				printf("corto: component '%s' added to project\n", argv[nameElem]);
 			}
@@ -86,7 +92,11 @@ cx_int16 corto_add(int argc, char* argv[]) {
 			}
 			fprintf(cx_fileGet(f), "%s\n", id);
 			cx_fileClose(f);
-			corto_build(argc - 1, &argv[1]);
+
+			if (!noBuild) {
+				corto_build(argc - 1, &argv[1]);
+			}
+
 			if (!isSilent) {
 				printf("corto: package '%s' added to project\n", id);
 			}
@@ -126,7 +136,7 @@ cx_int16 corto_remove(int argc, char* argv[]) {
 	cx_file file;
 	cx_bool isComponent = FALSE;
 
-	if (argc > 2) {
+	if ((argc > 2) && (*argv[2] != '-')) {
 		cx_chdir(argv[1]);
 		nameElem = 2;
 	}

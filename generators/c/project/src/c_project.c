@@ -25,6 +25,8 @@ static cx_int16 c_projectGenerateMainFile(cx_generator g) {
     g_fileWrite(file, " */\n\n");
 
     if (g_getCurrent(g)) {
+        cx_id path;
+        g_fileWrite(file, "#define %s_LIB\n", c_topath(g_getCurrent(g), path, '_'));
         g_fileWrite(file, "#include \"%s.h\"\n\n", g_fullOid(g, g_getCurrent(g), topLevelName));
         g_fileWrite(file, "int cortomain(int argc, char* argv[]) {\n");
         g_fileIndent(file);
@@ -82,6 +84,7 @@ static cx_int16 c_projectGenerateMainHeaderFile(cx_generator g) {
     g_fileWrite(file, "#include \"corto.h\"\n");
 
     if ((packages = cx_loadGetPackages())) {
+        cx_id path;
         cx_iter iter = cx_llIter(packages);
         while (cx_iterHasNext(&iter)) {
             cx_string str = cx_iterNext(&iter);
@@ -90,7 +93,7 @@ static cx_int16 c_projectGenerateMainHeaderFile(cx_generator g) {
                 cx_error("corto: package.txt contains unresolved package '%s'", str);
                 goto error;
             }
-            g_fileWrite(file, "#include \"%s.h\"\n", cx_nameof(package));
+            g_fileWrite(file, "#include \"%s/%s.h\"\n", c_topath(package, path, '/'), cx_nameof(package));
             cx_release(package);
         }
         cx_loadFreePackages(packages);

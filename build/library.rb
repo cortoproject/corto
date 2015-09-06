@@ -34,7 +34,6 @@ INCLUDE <<
 	"#{ENV['CORTO_HOME']}/include/corto/#{VERSION}/libraries"
 
 CLEAN.include(TARGETPATH + "/obj")
-CLOBBER.include(TARGETPATH)
 
 task :prebuild do
 	verbose(false)

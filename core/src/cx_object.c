@@ -1069,32 +1069,25 @@ cx_int16 cx_define(cx_object o) {
                 cx_class_attachObservers(cx_class(t), o);
                 /* Call constructor */
                 result = cx_delegateConstruct(t, o);
-                /* Start listening with attached observers */
-                cx_class_listenObservers(cx_class(t), o);
             } else if (cx_class_instanceof(cx_procedure_o, t)) {
                 result = cx_delegateConstruct(t, o);
             }
 
             if (!result) {
-                cx__persistent* _ps = cx__objectPersistent(CX_OFFSET(o, -sizeof(cx__object)));
-                if (_ps) {
-                    cx_timeGet(&_ps->timestamp);
-                }
                 _o->attrs.state |= CX_DEFINED;
 
                 /* Notify observers of defined object */
                 cx_notify(cx__objectObservable(_o), o, CX_ON_DEFINE);
 
+                if (cx_class_instanceof(cx_class_o, t)) {
+                    /* Start listening with attached observers */
+                    cx_class_listenObservers(cx_class(t), o);
+                }
             } else {
                 /* Remove valid state */
                 cx_invalidate(o);
             }
         } else {
-            /* Notify observers of redefined object */
-            cx__persistent* _ps = cx__objectPersistent(CX_OFFSET(o, -sizeof(cx__object)));
-            if (_ps) {
-                cx_timeGet(&_ps->timestamp);
-            }
             cx_notify(cx__objectObservable(_o), o, CX_ON_UPDATE);
         }
     }
@@ -2105,144 +2098,153 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this) 
     cx_bool added;
     cx__observer **oldSelfArray = NULL, **oldChildArray = NULL;
 
-    /* Test for error conditions before making changes */
-    if (observer->mask & (CX_ON_SCOPE|CX_ON_TREE)) {
-        if (!cx_checkAttr(observable, CX_ATTR_SCOPED)) {
-            cx_id id, id2;
-            cx_error("corto::listen: cannot listen to childs of non-scoped observable '%s' (observer %s)",
-                    cx_fullname(observable, id),
-                    cx_fullname(observer, id2));
+    /* If the observer is a template observer and 'this' is not yet defined,
+     * don't start listening right away but set the observable in the list of
+     * class observables */
+    if (observer->template && _this && !cx_checkState(_this, CX_DEFINED)) {
+        cx_class_setObservable(cx_class(cx_typeof(_this)), observer, _this, observable);
+    } else {
+
+        /* Test for error conditions before making changes */
+        if (observer->mask & (CX_ON_SCOPE|CX_ON_TREE)) {
+            if (!cx_checkAttr(observable, CX_ATTR_SCOPED)) {
+                cx_id id, id2;
+                cx_error("corto::listen: cannot listen to childs of non-scoped observable '%s' (observer %s)",
+                        cx_fullname(observable, id),
+                        cx_fullname(observer, id2));
+                abort();
+                goto error;
+            }
+        }
+
+        if (!cx_checkAttr(observable, CX_ATTR_OBSERVABLE)) {
+            cx_id id;
+            cx_assert(0, "corto::listen: object '%s' is not an observable", cx_fullname(observable, id));
             goto error;
         }
-    }
 
-    if (!cx_checkAttr(observable, CX_ATTR_OBSERVABLE)) {
-        cx_id id;
-        cx_assert(0, "corto::listen: object '%s' is not an observable", cx_fullname(observable, id));
-        goto error;
-    }
+        _o = cx__objectObservable(CX_OFFSET(observable, -sizeof(cx__object)));
 
-    _o = cx__objectObservable(CX_OFFSET(observable, -sizeof(cx__object)));
+    #ifdef CX_TRACE_NOTIFICATIONS
+        {
+            cx_id id1, id2, id3;
+            printf("%*s [listen] observable '%s' observer '%s' me '%s' %s %s %s %s %s\n",
+                    indent * 3, "",
+                    cx_fullname(observable, id1),
+                    cx_fullname(observer, id2),
+                    cx_fullname(_this, id3),
+                    observer->mask & CX_ON_SELF ? "self" : "",
+                    observer->mask & CX_ON_SCOPE ? "scope" : "",
+                    observer->mask & CX_ON_DECLARE ? "declare" : "",
+                    observer->mask & CX_ON_DEFINE ? "define" : "",
+                    observer->mask & CX_ON_UPDATE ? "update" : "");
+        }
+    #endif
 
-#ifdef CX_TRACE_NOTIFICATIONS
-    {
-        cx_id id1, id2, id3;
-        printf("%*s [listen] observable '%s' observer '%s' me '%s' %s %s %s %s %s\n",
-                indent * 3, "",
-                cx_fullname(observable, id1),
-                cx_fullname(observer, id2),
-                cx_fullname(_this, id3),
-                observer->mask & CX_ON_SELF ? "self" : "",
-                observer->mask & CX_ON_SCOPE ? "scope" : "",
-                observer->mask & CX_ON_DECLARE ? "declare" : "",
-                observer->mask & CX_ON_DEFINE ? "define" : "",
-                observer->mask & CX_ON_UPDATE ? "update" : "");
-    }
-#endif
+        /* Create observerData */
+        _observerData = cx_alloc(sizeof(cx__observer));
+        _observerData->observer = observer;
+        _observerData->_this = _this;
+        _observerData->count = 0;
 
-    /* Create observerData */
-    _observerData = cx_alloc(sizeof(cx__observer));
-    _observerData->observer = observer;
-    _observerData->_this = _this;
-    _observerData->count = 0;
-
-    /* Resolve the kind of the observer. This reduces the number of
-     * conditions that need to be evaluated in the notifyObserver function. */
-    if (cx_function(observer)->kind == CX_PROCEDURE_CDECL) {
-        if (_this) {
-            _observerData->notify = cx_notifyObserverThis;
+        /* Resolve the kind of the observer. This reduces the number of
+         * conditions that need to be evaluated in the notifyObserver function. */
+        if (cx_function(observer)->kind == CX_PROCEDURE_CDECL) {
+            if (_this) {
+                _observerData->notify = cx_notifyObserverThis;
+            } else {
+                _observerData->notify = cx_notifyObserverDefault;
+            }
         } else {
-            _observerData->notify = cx_notifyObserverDefault;
+            if (_this) {
+                _observerData->notify = cx_notifyObserverThis;
+            } else {
+                _observerData->notify = cx_notifyObserverDefault;
+            }
         }
-    } else {
-        if (_this) {
-            _observerData->notify = cx_notifyObserverThis;
+
+        added = FALSE;
+
+        /* If observer must trigger on updates of me, add it to onSelf list */
+        if (observer->mask & CX_ON_SELF) {
+            cx_rwmutexWrite(&_o->selfLock);
+            if (!cx_observerFind(_o->onSelf, observer, _this)) {
+                if (!_o->onSelf) {
+                    _o->onSelf = cx_llNew();
+                }
+                cx_llAppend(_o->onSelf, _observerData);
+                _observerData->count++;
+                added = TRUE;
+
+                /* Build new observer array. This array can be accessed without locking and is
+                 * faster than walking the linked list. */
+                oldSelfArray = _o->onSelfArray;
+                _o->onSelfArray = cx_observersArrayNew(_o->onSelf);
+            }
+            if (observer->mask & CX_ON_VALUE) {
+                if (cx_checkAttr(observable, CX_ATTR_WRITABLE)) {
+                    _o->lockRequired = TRUE;
+                }
+            }
+            cx_rwmutexUnlock(&_o->selfLock);
+        }
+
+        /* If observer must trigger on updates of childs, add it to onChilds list */
+        if (observer->mask & (CX_ON_SCOPE|CX_ON_TREE)) {
+            cx_rwmutexWrite(&_o->childLock);
+            if (!cx_observerFind(_o->onChild, observer, _this)) {
+                if (!_o->onChild) {
+                    _o->onChild = cx_llNew();
+                }
+
+                cx_llAppend(_o->onChild, _observerData);
+                _observerData->count++;
+                added = TRUE;
+
+                /* Build new observer array. This array can be accessed without locking and is
+                 * faster than walking a linked list. */
+                oldChildArray = _o->onChildArray;
+                _o->onChildArray = cx_observersArrayNew(_o->onChild);
+            }
+
+            if (observer->mask & CX_ON_VALUE) {
+                if (!_o->childLockRequired) {
+                    _o->childLockRequired = TRUE;
+                    cx_setrefChildLockRequired(observable);
+                }
+            }
+            cx_rwmutexUnlock(&_o->childLock);
+        }
+
+        if (!added) {
+            cx_dealloc(_observerData);
         } else {
-            _observerData->notify = cx_notifyObserverDefault;
-        }
-    }
-
-    added = FALSE;
-
-    /* If observer must trigger on updates of me, add it to onSelf list */
-    if (observer->mask & CX_ON_SELF) {
-        cx_rwmutexWrite(&_o->selfLock);
-        if (!cx_observerFind(_o->onSelf, observer, _this)) {
-            if (!_o->onSelf) {
-                _o->onSelf = cx_llNew();
-            }
-            cx_llAppend(_o->onSelf, _observerData);
-            _observerData->count++;
-            added = TRUE;
-
-            /* Build new observer array. This array can be accessed without locking and is
-             * faster than walking the linked list. */
-            oldSelfArray = _o->onSelfArray;
-            _o->onSelfArray = cx_observersArrayNew(_o->onSelf);
-        }
-        if (observer->mask & CX_ON_VALUE) {
-            if (cx_checkAttr(observable, CX_ATTR_WRITABLE)) {
-                _o->lockRequired = TRUE;
+            /* If observer is subscribed to declare/define events, align observer with existing */
+            if ((observer->mask & CX_ON_DECLARE) || (observer->mask & CX_ON_DEFINE)) {
+                cx_observerAlign(observable, _observerData, observer->mask);
             }
         }
-        cx_rwmutexUnlock(&_o->selfLock);
-    }
 
-    /* If observer must trigger on updates of childs, add it to onChilds list */
-    if (observer->mask & (CX_ON_SCOPE|CX_ON_TREE)) {
-        cx_rwmutexWrite(&_o->childLock);
-        if (!cx_observerFind(_o->onChild, observer, _this)) {
-            if (!_o->onChild) {
-                _o->onChild = cx_llNew();
-            }
+        /* From this point onwards the old observer arrays are no longer accessible. However, since notifications can
+         * still be in progress these arrays can't be deleted yet. Therefore wait until the arrays are no longer being
+         * used.
+         *
+         * The administration where this information is stored is not protected by locking so that notifying objects can
+         * remain lock-free. There is however a slight chance that a notification pushed the old array to the administration
+         * but that this change is not yet visible due to a number of issues w.r.t. concurrency. In this case the functions
+         * below will assume the array is unused, which is incorrect.
+         *
+         * To be absolutely sure that the observed administration is up to date a memory barrier is required here. A simple
+         * mutex will not do since this would encumber the notifications too much.
+         */
+         /*__atomic_thread_fence (__ATOMIC_SEQ_CST);*/
 
-            cx_llAppend(_o->onChild, _observerData);
-            _observerData->count++;
-            added = TRUE;
-
-            /* Build new observer array. This array can be accessed without locking and is
-             * faster than walking a linked list. */
-            oldChildArray = _o->onChildArray;
-            _o->onChildArray = cx_observersArrayNew(_o->onChild);
+        if (cx_observersWaitForUnused(oldSelfArray)) {
+            cx_observersArrayFree(oldSelfArray);
         }
-
-        if (observer->mask & CX_ON_VALUE) {
-            if (!_o->childLockRequired) {
-                _o->childLockRequired = TRUE;
-                cx_setrefChildLockRequired(observable);
-            }
+        if (cx_observersWaitForUnused(oldChildArray)) {
+            cx_observersArrayFree(oldChildArray);
         }
-        cx_rwmutexUnlock(&_o->childLock);
-    }
-
-    if (!added) {
-        cx_dealloc(_observerData);
-    } else {
-        /* If observer is subscribed to declare events, align observer with existing */
-        if ((observer->mask & CX_ON_DECLARE) || (observer->mask & CX_ON_DEFINE)) {
-            cx_observerAlign(observable, _observerData, observer->mask);
-        }
-    }
-
-    /* From this point onwards the old observer arrays are no longer accessible. However, since notifications can
-     * still be in progress these arrays can't be deleted yet. Therefore wait until the arrays are no longer being
-     * used.
-     *
-     * The administration where this information is stored is not protected by locking so that notifying objects can
-     * remain lock-free. There is however a slight chance that a notification pushed the old array to the administration
-     * but that this change is not yet visible due to a number of issues w.r.t. concurrency. In this case the functions
-     * below will assume the array is unused, which is incorrect.
-     *
-     * To be absolutely sure that the observed administration is up to date a memory barrier is required here. A simple
-     * mutex will not do since this would encumber the notifications too much.
-     */
-     /*__atomic_thread_fence (__ATOMIC_SEQ_CST);*/
-
-    if (cx_observersWaitForUnused(oldSelfArray)) {
-        cx_observersArrayFree(oldSelfArray);
-    }
-    if (cx_observersWaitForUnused(oldChildArray)) {
-        cx_observersArrayFree(oldChildArray);
     }
 
     return 0;

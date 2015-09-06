@@ -585,6 +585,7 @@ static g_file c_interfaceHeaderFileOpen(cx_generator g, cx_object o, c_typeWalk_
     g_file result;
     cx_id headerFileName, name;
     cx_object topLevelObject = g_getCurrent(g);
+    cx_id path;
 
     /* Create file */
     sprintf(headerFileName, "%s.h", g_fullOid(g, o, name));
@@ -616,19 +617,34 @@ static g_file c_interfaceHeaderFileOpen(cx_generator g, cx_object o, c_typeWalk_
     g_fileWrite(result, " *\n");
     g_fileWrite(result, " * This file contains generated code. Do not modify!\n");
     g_fileWrite(result, " */\n\n");
-    g_fileWrite(result, "#ifndef %s_H\n", name);
-    g_fileWrite(result, "#define %s_H\n\n", name);
+    g_fileWrite(result, "#ifndef %s_H\n", c_topath(o, path, '_'));
+    g_fileWrite(result, "#define %s_H\n\n", c_topath(o, path, '_'));
     g_fileWrite(result, "#include \"corto.h\"\n");
 
     /* If the class extends from another class, include header of baseclass */
     if (cx_class_instanceof(cx_class_o, o) && cx_interface(o)->base) {
         cx_id baseId;
-        g_fileWrite(result, "#include \"%s.h\"\n", g_fullOid(g, cx_interface(o)->base, baseId));
+        if (g_mustParse(g, cx_interface(o)->base)) {
+           g_fileWrite(result, "#include \"%s.h\"\n", g_fullOid(g, cx_interface(o)->base, baseId));
+        } else {
+            cx_id path;
+            g_fileWrite(result, "#include \"%s/%s.h\"\n", 
+                c_topath(cx_parentof(cx_interface(o)->base), path, '/'),
+                g_fullOid(g, cx_interface(o)->base, baseId));
+        }
     }
 
+    g_fileWrite(result, "#ifdef %s_LIB\n", c_topath(g_getCurrent(g), path, '_'));
     g_fileWrite(result, "#include \"%s__type.h\"\n", g_getName(g));
     g_fileWrite(result, "#include \"%s__api.h\"\n", g_getName(g));
-    g_fileWrite(result, "#include \"%s__meta.h\"\n\n", g_getName(g));
+    g_fileWrite(result, "#include \"%s__meta.h\"\n", g_getName(g));
+    g_fileWrite(result, "#else\n");
+    g_fileWrite(result, "#include \"%s/%s__type.h\"\n", c_topath(g_getCurrent(g), path, '/'), g_getName(g));
+    g_fileWrite(result, "#include \"%s/%s__api.h\"\n", c_topath(g_getCurrent(g), path, '/'), g_getName(g));
+    g_fileWrite(result, "#include \"%s/%s__meta.h\"\n", c_topath(g_getCurrent(g), path, '/'), g_getName(g));
+    g_fileWrite(result, "#endif\n\n");
+
+
     g_fileWrite(result, "#ifdef __cplusplus\n");
     g_fileWrite(result, "extern \"C\" {\n");
     g_fileWrite(result, "#endif\n");
@@ -652,7 +668,7 @@ static void c_interfaceHeaderFileClose(g_file file) {
 static g_file c_interfaceWrapperFileOpen(cx_generator g) {
     g_file result;
     cx_char fileName[512];
-    cx_id id, name;
+    cx_id id, name, path;
 
     cx_object o = g_getCurrent(g);
     sprintf(fileName, "%s__wrapper.c", g_getName(g));
@@ -672,6 +688,7 @@ static g_file c_interfaceWrapperFileOpen(cx_generator g) {
     g_fileWrite(result, " *\n");
     g_fileWrite(result, " * This file contains wrapper functions for %s.\n", cx_fullname(o, id));
     g_fileWrite(result, " */\n\n");
+    g_fileWrite(result, "#define %s_LIB\n", c_topath(g_getCurrent(g), path, '_'));
     g_fileWrite(result, "#include \"%s.h\"\n", g_fullOid(g, o, name));
     g_fileWrite(result, "#include \"%s__meta.h\"\n", g_getName(g));
 
@@ -692,7 +709,7 @@ static cx_string c_interfaceSourceFileName(cx_string name, cx_char* buffer) {
 static g_file c_interfaceSourceFileOpen(cx_generator g, cx_string name) {
     g_file result;
     cx_char fileName[512];
-    cx_id topLevelName;
+    cx_id topLevelName, path;
 
     result = g_fileOpen(g, c_interfaceSourceFileName(name, fileName));
     if (!result) {
@@ -707,6 +724,7 @@ static g_file c_interfaceSourceFileOpen(cx_generator g, cx_string name) {
     g_fileWrite(result, " * Don't mess with the begin and end tags, since these will ensure that modified\n");
     g_fileWrite(result, " * code in interface functions isn't replaced when code is re-generated.\n");
     g_fileWrite(result, " */\n\n");
+    g_fileWrite(result, "#define %s_LIB\n", c_topath(g_getCurrent(g), path, '_'));
     g_fileWrite(result, "#include \"%s.h\"\n", g_fullOid(g, g_getCurrent(g), topLevelName));
 
     return result;
@@ -873,7 +891,8 @@ int corto_genMain(cx_generator g) {
                 cx_error("package '%s' not found", package);
                 goto error;
             }
-            g_fileWrite(walkData.mainHeader, "#include \"%s.h\"\n", cx_nameof(o));
+            cx_id path;
+            g_fileWrite(walkData.mainHeader, "#include \"%s/%s.h\"\n", c_topath(o, path, '/'), cx_nameof(o));
         }
         cx_loadFreePackages(packages);
     }

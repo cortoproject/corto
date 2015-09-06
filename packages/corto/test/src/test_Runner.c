@@ -6,6 +6,7 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
+#define corto_test_LIB
 #include "test.h"
 
 /* $header() */
@@ -14,7 +15,7 @@
 /* ::corto::test::Runner::construct() */
 cx_int16 _test_Runner_construct(test_Runner _this) {
 /* $begin(::corto::test::Runner::construct) */
-    test_Runner_runTest_o->mask = CX_ON_DEFINE | CX_ON_SCOPE | CX_ON_SELF;
+    test_Runner_runTest_o->mask = CX_ON_DEFINE | CX_ON_TREE | CX_ON_SELF;
     cx_listen(root_o, test_Runner_runTest_o, _this);
     return 0;
 /* $end */
@@ -39,11 +40,10 @@ cx_void _test_Runner_printTestRun_v(test_Runner _this, test_Suite t) {
     CX_UNUSED(_this);
     cx_string suiteName = cx_nameof(cx_typeof(t));
     cx_string testName = cx_nameof(t->test);
-    if (t->result.success) {
-        cx_print("success: %s::%s", suiteName, testName);
-    } else {
+    if (!t->result.success) {
+        cx_id signame; cx_signatureName(testName, signame);
         cx_assert(t->result.assertmsg != NULL, "null assert message");
-        cx_error("failure: %s::%s - %s", suiteName, testName, t->result.assertmsg);
+        cx_error("FAIL: %s.%s - %s", suiteName, signame, t->result.assertmsg);
         if (t->result.errmsg && *(t->result.errmsg) != '\0') {
             cx_error("    message: %s", t->result.errmsg);
         }
@@ -61,14 +61,13 @@ cx_void _test_Runner_runTest(test_Runner _this, cx_object *observable, cx_object
         cx_setref(&suite->test, observable);
         cx_object prev = cx_setSource(_this);
         if (!cx_define(suite) && suite->result.success) {
-            test_SuiteListAppend(_this->failures, suite);
+            test_SuiteListAppend(_this->successes, suite);
         } else {
             test_SuiteListAppend(_this->failures, suite);
         }
         cx_setSource(prev);
         test_Runner_printTestRun(_this, suite);
         cx_release(suite);
-
     }
 /* $end */
 }

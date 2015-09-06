@@ -8,6 +8,7 @@
 #include "corto_create.h"
 #include "corto_run.h"
 #include "corto_shell.h"
+#include "corto_test.h"
 #include "cx_loader.h"
 
 void corto_locateHelp(void) {
@@ -33,6 +34,7 @@ static void corto_printUsage(cx_bool expert) {
     printf("   list                 List packages of a project\n");
     printf("   run                  Run a project.\n");
     printf("   build                Build a project (not needed for apps!).\n");
+    printf("   test                 Run tests for a project\n");
     printf("   shell                Start the corto shell.\n");
     printf("\n");
     if (expert) {
@@ -123,6 +125,10 @@ int main(int argc, char* argv[]) {
                     goto error;
                 }
                 break;
+            } else if (!strcmp(argv[i], "test")) {
+                if (corto_test(argc-i, &argv[i])) {
+                    goto error;
+                }
             } else if (!strcmp(argv[i], "clean")) {
                 if (corto_clean(argc-i, &argv[i])) {
                     goto error;

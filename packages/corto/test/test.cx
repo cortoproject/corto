@@ -13,10 +13,8 @@ class Suite::
 
     int16 construct()
 
-    void setUp() virtual
-    void tearDown() virtual
-    void rSetUp(object type)
-    void rTearDown(object type)
+    void setup() virtual
+    void teardown() virtual
 
     bool assert(bool b)
     bool assert(bool b, string errmsg)
@@ -24,8 +22,8 @@ class Suite::
     bool assertEqual(any a, any b, string errmsg)
 
 class Runner::
-    member successes: list{Suite}
-    member failures: list{Suite}
+    member successes: list{Suite}, readonly
+    member failures: list{Suite}, readonly
     int16 construct()
     void destruct()
     void runTest() observer

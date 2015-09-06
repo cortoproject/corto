@@ -29,7 +29,10 @@ USE_PACKAGE_LOADED ||=[]
 USE_COMPONENT ||= []
 USE_COMPONENT_LOADED ||=[]
 USE_LIBRARY ||= []
-INCLUDE << "include"
+INCLUDE << 
+    "include" <<
+    "#{ENV['CORTO_TARGET']}/include/corto/#{VERSION}/packages" <<
+    "/usr/include/corto/#{VERSION}/packages"
 
 CFLAGS << "-g" << "-Wstrict-prototypes" << "-std=c99" << "-pedantic" << "-fPIC" << "-D_XOPEN_SOURCE=600"
 CFLAGS.unshift("-Wall")
@@ -153,14 +156,6 @@ def build_source(task, echo)
             sh "echo '#{task.source}'" 
         end
     end
-    use_include = USE_PACKAGE.map do |i| 
-        env = `corto locate #{i} --env`[0...-1]
-        if $?.exitstatus != 0 then
-            p env
-            abort "\033[1;31m[ build failed ]\033[0;49m"
-        end
-        "-I #{env}/include/corto/#{VERSION}/packages/" + i.gsub("::", "/")
-    end.join(" ")
-    sh "cc -c #{CFLAGS.join(" ")} #{use_include} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{task.source} -o #{task.name}"
+    sh "cc -c #{CFLAGS.join(" ")} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{task.source} -o #{task.name}"
 end
 

@@ -6,6 +6,7 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
+#define corto_ic_LIB
 #include "ic.h"
 
 /* ::corto::ic::accumulator::construct() */

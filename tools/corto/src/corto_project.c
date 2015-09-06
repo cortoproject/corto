@@ -1,5 +1,6 @@
 
 #include "corto_create.h"
+#include "corto_package.h"
 #include "corto_build.h"
 
 static cx_int16 corto_setupProject(const char *name, cx_bool isLocal, cx_bool isSilent) {
@@ -63,10 +64,56 @@ error:
 }
 
 static cx_int16 corto_createTest(cx_string name, cx_bool isComponent) {
-    
+    FILE *file;
+
+    if (cx_mkdir("test")) {
+        cx_error("corto: couldn't create test directory for '%s' (check permissions)", name);
+        goto error;
+    }
+    if (cx_mkdir("test/src")) {
+        cx_error("corto: couldn't create test/src directory for '%s' (check permissions)", name);
+        goto error;
+    }
+
     if (corto_create(
         7,
         (char*[]){"create", "package", "::test", "--empty", "--notest", "--local", "--silent"}
+    )) {
+        cx_error("corto: couldn't create test skeleton (check permissions)");
+        goto error;
+    }
+
+    file = fopen("src/test.c", "w");
+    if (file) {
+        fprintf(file, "/* $begin(main) */\n");
+        fprintf(file, "    int result = 0;\n");
+        fprintf(file, "    test_Runner runner = test_RunnerCreate();\n");
+        fprintf(file, "    if (cx_llSize(runner->failures)) {\n");
+        fprintf(file, "        result = -1;\n");
+        fprintf(file, "    }\n");
+        fprintf(file, "    cx_delete(runner);\n");
+        fprintf(file, "    return result;\n");
+        fprintf(file, "/* $end */\n");
+        fclose(file);
+    } else {
+        cx_error("corto: couldn't create 'test/src/test.c' (check permissions)");
+        goto error;
+    }
+
+    file = fopen("test.cx", "w");
+    if (file) {
+        fprintf(file, "#package ::test\n\n");
+        fprintf(file, "class fooSuite: test::Suite::\n"); 
+        fprintf(file, "    void dummyCase() test::Case\n\n");
+        fclose(file);
+    } else {
+        cx_error("corto: couldn't create 'test/test.cx' (check permissions)");
+        goto error;
+    }
+
+    if (corto_add(
+        4,
+        (char*[]){"add", "::corto::test", "--silent", "--nobuild"}
     )) {
         goto error;
     }
@@ -75,18 +122,27 @@ static cx_int16 corto_createTest(cx_string name, cx_bool isComponent) {
         if (isComponent) {
             if (corto_add(
                 5,
-                (char*[]){"add", "test", name, "--component", "--silent"}
+                (char*[]){"add", name, "--component", "--silent", "--nobuild"}
             )) {
                 goto error;
             }
         } else {
             if (corto_add(
-                4,
-                (char*[]){"add", "test", name, "--silent"}
+                3,
+                (char*[]){"add", name, "--silent", "--nobuild"}
             )) {
                 goto error;
             }
         }
+    }
+
+    /* Timestamps of the files are likely too close to trigger a build, so explicitly
+     * do a rebuild of the test project */
+    corto_rebuild(1, (char*[]){"rebuild"});
+
+    if (cx_chdir("..")) {
+        cx_error("corto: failed to change directory to parent");
+        goto error;
     }
 
     return 0;
@@ -207,7 +263,7 @@ static cx_int16 corto_application(int argc, char *argv[]) {
 
 	sprintf(buff, "%s/src", name);
 	if (cx_mkdir(buff)) {
-		cx_error("corto: couldn't create %s/src directory (check permissions)");
+		cx_error("corto: couldn't create %s directory (check permissions)", buff);
 		goto error;
 	}
 
@@ -363,17 +419,6 @@ static cx_int16 corto_package(int argc, char *argv[]) {
             cx_error("corto: failed to open file '%s'", cxfile);
             goto error;
         }
-    }
-
-    /* Write main code */
-    if (snprintf(srcfile, sizeof(srcfile), "%s/src/%s.c", name, name) >= (int)sizeof(srcfile)) {
-        cx_error("corto: package name '%s' is too long", name);
-        goto error;
-    }
-
-    if (cx_fileTest(srcfile)) {
-        cx_error("corto: file '%s' already exists", srcfile);
-        goto error;
     }
 
     if (cx_load(cxfile)) {

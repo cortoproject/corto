@@ -378,7 +378,7 @@ cx_bool c_procedureHasThis(cx_function o) {
 }
 
 /* Translate a scope to a path */
-cx_char* c_topath(cx_object o, cx_id id) {
+cx_char* c_topath(cx_object o, cx_id id, cx_char separator) {
     cx_uint32 offset;
     cx_char ch, *ptr;
     cx_fullname(o, id);
@@ -388,7 +388,7 @@ cx_char* c_topath(cx_object o, cx_id id) {
     while((ch = *ptr)) {
         switch(ch) {
         case ':':
-            *(ptr-offset) = '/';
+            *(ptr-offset) = separator;
             ptr++;
             offset++;
             break;

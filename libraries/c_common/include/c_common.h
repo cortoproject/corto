@@ -32,7 +32,7 @@ cx_char* c_escapeString(cx_string str, cx_id id);
 
 cx_bool c_procedureHasThis(cx_function o);
 
-cx_char* c_topath(cx_object o, cx_id id);
+cx_char* c_topath(cx_object o, cx_id id, cx_char separator);
 
 #ifdef __cplusplus
 }
