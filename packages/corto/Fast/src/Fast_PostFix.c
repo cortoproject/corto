@@ -14,9 +14,9 @@
 /* $end */
 
 /* ::corto::Fast::PostFix::construct() */
-cx_int16 _Fast_PostFix_construct(Fast_PostFix _this) {
+cx_int16 _Fast_PostFix_construct(Fast_PostFix this) {
 /* $begin(::corto::Fast::PostFix::construct) */
-    cx_type lvalueType = Fast_Expression_getType(_this->lvalue);
+    cx_type lvalueType = Fast_Expression_getType(this->lvalue);
 
     /* Validate whether operation is allowed */
     if (lvalueType->reference) {
@@ -42,13 +42,13 @@ cx_int16 _Fast_PostFix_construct(Fast_PostFix _this) {
                 goto error;
                 break;       
             }
-            cx_setref(&Fast_Expression(_this)->type, lvalueType);
+            cx_setref(&Fast_Expression(this)->type, lvalueType);
             break;
 
         case CX_ITERATOR:
-            if (_this->operator == CX_INC) {
+            if (this->operator == CX_INC) {
                 /* The result of an expression that increments an iterator is a boolean */
-                cx_setref(&Fast_Expression(_this)->type, cx_bool_o);
+                cx_setref(&Fast_Expression(this)->type, cx_bool_o);
             } else {
                 Fast_Parser_error(yparser(), "invalid operator for iterator");
                 goto error;
@@ -63,7 +63,7 @@ cx_int16 _Fast_PostFix_construct(Fast_PostFix _this) {
         }
     }
 
-    Fast_Node(_this)->kind = Fast_PostfixExpr;
+    Fast_Node(this)->kind = Fast_PostfixExpr;
     
     return 0;
 error:
@@ -72,18 +72,18 @@ error:
 }
 
 /* ::corto::Fast::PostFix::hasReturnedResource() */
-cx_bool _Fast_PostFix_hasReturnedResource_v(Fast_PostFix _this) {
+cx_bool _Fast_PostFix_hasReturnedResource_v(Fast_PostFix this) {
 /* $begin(::corto::Fast::PostFix::hasReturnedResource) */
-    return Fast_Expression_hasReturnedResource(_this->lvalue);
+    return Fast_Expression_hasReturnedResource(this->lvalue);
 /* $end */
 }
 
 /* ::corto::Fast::PostFix::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _Fast_PostFix_toIc_v(Fast_PostFix _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_PostFix_toIc_v(Fast_PostFix this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::corto::Fast::PostFix::toIc) */
     ic_storage result;
     ic_node lvalue;
-    cx_type lvalueType = Fast_Expression_getType(_this->lvalue);
+    cx_type lvalueType = Fast_Expression_getType(this->lvalue);
     CX_UNUSED(stored);
 
     if (storage) {
@@ -91,18 +91,18 @@ ic_node _Fast_PostFix_toIc_v(Fast_PostFix _this, ic_program program, ic_storage 
     } else {
         result = (ic_storage)ic_program_pushAccumulator(
             program,
-            Fast_Expression_getType(Fast_Expression(_this)),
-            Fast_Expression(_this)->isReference,
+            Fast_Expression_getType(Fast_Expression(this)),
+            Fast_Expression(this)->isReference,
             FALSE);
     }
 
-    lvalue = Fast_Node_toIc(Fast_Node(_this->lvalue), program, result, TRUE);
-    IC_3(program, Fast_Node(_this)->line, ic_opKindFromOperator(_this->operator), lvalue, ic_node(result), NULL,
+    lvalue = Fast_Node_toIc(Fast_Node(this->lvalue), program, result, TRUE);
+    IC_3(program, Fast_Node(this)->line, ic_opKindFromOperator(this->operator), lvalue, ic_node(result), NULL,
             IC_DEREF_VALUE, IC_DEREF_VALUE, IC_DEREF_VALUE);
 
     if (!storage) {
         ic_program_popAccumulator(program);
-    } else if ((lvalueType->kind == CX_ITERATOR) && (_this->operator == CX_INC)) {
+    } else if ((lvalueType->kind == CX_ITERATOR) && (this->operator == CX_INC)) {
         lvalue = (ic_node)storage;
     }
 

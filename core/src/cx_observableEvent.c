@@ -9,9 +9,9 @@
 #include "cx.h"
 
 /* ::corto::lang::observableEvent::handle() */
-cx_void _cx_observableEvent_handle_v(cx_observableEvent _this) {
+cx_void _cx_observableEvent_handle_v(cx_observableEvent this) {
 /* $begin(::corto::lang::observableEvent::handle) */
-    cx_call(cx_function(_this->observer), NULL, _this->me, _this->observable, _this->source);
-    cx_event_handle_v(cx_event(_this));
+    cx_call(cx_function(this->observer), NULL, this->me, this->observable, this->source);
+    cx_event_handle_v(cx_event(this));
 /* $end */
 }

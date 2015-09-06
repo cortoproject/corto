@@ -13,25 +13,25 @@
 /* $end */
 
 /* ::corto::test::Runner::construct() */
-cx_int16 _test_Runner_construct(test_Runner _this) {
+cx_int16 _test_Runner_construct(test_Runner this) {
 /* $begin(::corto::test::Runner::construct) */
     test_Runner_runTest_o->mask = CX_ON_DEFINE | CX_ON_TREE | CX_ON_SELF;
-    cx_listen(root_o, test_Runner_runTest_o, _this);
+    cx_listen(root_o, test_Runner_runTest_o, this);
     return 0;
 /* $end */
 }
 
 /* ::corto::test::Runner::destruct() */
-cx_void _test_Runner_destruct(test_Runner _this) {
+cx_void _test_Runner_destruct(test_Runner this) {
 /* $begin(::corto::test::Runner::destruct) */
-    cx_uint32 successCount = test_SuiteListSize(_this->successes);
-    cx_uint32 failureCount = test_SuiteListSize(_this->failures);
-    cx_print("%s: OK:%d, FAIL:%d", _this->name, successCount, failureCount);
+    cx_uint32 successCount = test_SuiteListSize(this->successes);
+    cx_uint32 failureCount = test_SuiteListSize(this->failures);
+    cx_print("%s: OK:%d, FAIL:%d", this->name, successCount, failureCount);
 /* $end */
 }
 
 /* ::corto::test::Runner::runTest() */
-cx_void _test_Runner_runTest(test_Runner _this, cx_object *observable, cx_object *source) {
+cx_void _test_Runner_runTest(test_Runner this, cx_object *observable, cx_object *source) {
 /* $begin(::corto::test::Runner::runTest) */
     CX_UNUSED(source);
 
@@ -42,13 +42,13 @@ cx_void _test_Runner_runTest(test_Runner _this, cx_object *observable, cx_object
 
         if (cx_define(suite)) {
             cx_error("test: failed to define test suite");
-            test_SuiteListAppend(_this->failures, suite);
+            test_SuiteListAppend(this->failures, suite);
         } else {
-            cx_object prev = cx_setSource(_this);
+            cx_object prev = cx_setSource(this);
             if (!cx_define(suite) && suite->result.success) {
-                test_SuiteListAppend(_this->successes, suite);
+                test_SuiteListAppend(this->successes, suite);
             } else {
-                test_SuiteListAppend(_this->failures, suite);
+                test_SuiteListAppend(this->failures, suite);
             }
             cx_setSource(prev);            
         }

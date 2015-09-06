@@ -407,13 +407,13 @@ static cx_int16 corto_package(int argc, char *argv[]) {
         file = fopen(srcfile, "w");
         if (file) {
             fprintf(file, "/* $begin(::%s::RedPanda::construct) */\n", include);
-            fprintf(file, "    printf(\"Hurray, %%s the panda is born!\\n\", cx_nameof(_this));\n");
+            fprintf(file, "    printf(\"Hurray, %%s the panda is born!\\n\", cx_nameof(this));\n");
             fprintf(file, "    return 0;\n");
             fprintf(file, "/* $end */\n");
             fprintf(file, "/* $begin(::%s::RedPanda::chew) */\n", include);
-            fprintf(file, "    _this->weight++;\n");
+            fprintf(file, "    this->weight++;\n");
             fprintf(file, "    printf(\"%%s the panda is chewing on something omnomnom (his weight: %%d)\\n\",\n");
-            fprintf(file, "            cx_nameof(_this), _this->weight);\n");
+            fprintf(file, "            cx_nameof(this), this->weight);\n");
             fprintf(file, "/* $end */\n");
             fclose(file);
         } else {

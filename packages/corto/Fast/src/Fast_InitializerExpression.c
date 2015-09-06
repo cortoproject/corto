@@ -14,42 +14,42 @@
 /* $end */
 
 /* ::corto::Fast::InitializerExpression::construct() */
-cx_int16 _Fast_InitializerExpression_construct(Fast_InitializerExpression _this) {
+cx_int16 _Fast_InitializerExpression_construct(Fast_InitializerExpression this) {
 /* $begin(::corto::Fast::InitializerExpression::construct) */
     cx_int16 result = 0;
 
-    Fast_Node(_this)->kind = Fast_InitializerExpr;
+    Fast_Node(this)->kind = Fast_InitializerExpr;
 
     return result;
 /* $end */
 }
 
 /* ::corto::Fast::InitializerExpression::define() */
-cx_int16 _Fast_InitializerExpression_define(Fast_InitializerExpression _this) {
+cx_int16 _Fast_InitializerExpression_define(Fast_InitializerExpression this) {
 /* $begin(::corto::Fast::InitializerExpression::define) */
-    Fast_InitOper *elem = Fast_InitOperListAppend(_this->operations);
+    Fast_InitOper *elem = Fast_InitOperListAppend(this->operations);
     elem->kind = Fast_InitOpDefine;
     return 0;
 /* $end */
 }
 
 /* ::corto::Fast::InitializerExpression::hasReturnedResource() */
-cx_bool _Fast_InitializerExpression_hasReturnedResource_v(Fast_InitializerExpression _this) {
+cx_bool _Fast_InitializerExpression_hasReturnedResource_v(Fast_InitializerExpression this) {
 /* $begin(::corto::Fast::InitializerExpression::hasReturnedResource) */
-    CX_UNUSED(_this);
+    CX_UNUSED(this);
     return FALSE;
 /* $end */
 }
 
 /* ::corto::Fast::InitializerExpression::insert(Expression variable) */
-cx_int16 _Fast_InitializerExpression_insert(Fast_InitializerExpression _this, Fast_Expression variable) {
+cx_int16 _Fast_InitializerExpression_insert(Fast_InitializerExpression this, Fast_Expression variable) {
 /* $begin(::corto::Fast::InitializerExpression::insert) */
     Fast_DynamicInitializer initializer;
 
-    cx_setref(&Fast_Initializer(_this)->variables[0].object, variable);
-    cx_setref(&Fast_Expression(_this)->type, variable->type);
+    cx_setref(&Fast_Initializer(this)->variables[0].object, variable);
+    cx_setref(&Fast_Expression(this)->type, variable->type);
 
-    Fast_Expression var = Fast_Initializer(_this)->variables[0].object;
+    Fast_Expression var = Fast_Initializer(this)->variables[0].object;
     if (Fast_Storage(var)->kind == Fast_TemporaryStorage) {
         Fast_Init init = Fast_InitCreate(Fast_Storage(var));
         Fast_Parser_addStatement(yparser(), Fast_Node(init));
@@ -58,11 +58,11 @@ cx_int16 _Fast_InitializerExpression_insert(Fast_InitializerExpression _this, Fa
 
     /* Create initializer */
     /* Note that since I'm passing MY list of variables, I need to fix the reference count! */
-    cx_claim(Fast_Initializer(_this)->variables[0].object);
-    initializer = Fast_DynamicInitializerCreate(Fast_Initializer(_this)->variables, 1, _this->assignValue);
+    cx_claim(Fast_Initializer(this)->variables[0].object);
+    initializer = Fast_DynamicInitializerCreate(Fast_Initializer(this)->variables, 1, this->assignValue);
 
     /* Walk operations */
-    Fast_InitOperListForeach(_this->operations, elem)
+    Fast_InitOperListForeach(this->operations, elem)
         switch(elem->kind) {
         case Fast_InitOpPush:
             if (Fast_DynamicInitializer_push(initializer)) {
@@ -101,9 +101,9 @@ error:
 }
 
 /* ::corto::Fast::InitializerExpression::member(string name) */
-cx_int32 _Fast_InitializerExpression_member(Fast_InitializerExpression _this, cx_string name) {
+cx_int32 _Fast_InitializerExpression_member(Fast_InitializerExpression this, cx_string name) {
 /* $begin(::corto::Fast::InitializerExpression::member) */
-    Fast_InitOper *elem = Fast_InitOperListAppend(_this->operations);
+    Fast_InitOper *elem = Fast_InitOperListAppend(this->operations);
     elem->kind = Fast_InitOpMember;
     elem->name = cx_strdup(name);
     return 0;
@@ -111,27 +111,27 @@ cx_int32 _Fast_InitializerExpression_member(Fast_InitializerExpression _this, cx
 }
 
 /* ::corto::Fast::InitializerExpression::pop() */
-cx_int16 _Fast_InitializerExpression_pop(Fast_InitializerExpression _this) {
+cx_int16 _Fast_InitializerExpression_pop(Fast_InitializerExpression this) {
 /* $begin(::corto::Fast::InitializerExpression::pop) */
-    Fast_InitOper *elem = Fast_InitOperListAppend(_this->operations);
+    Fast_InitOper *elem = Fast_InitOperListAppend(this->operations);
     elem->kind = Fast_InitOpPop;
     return 0;
 /* $end */
 }
 
 /* ::corto::Fast::InitializerExpression::push() */
-cx_int16 _Fast_InitializerExpression_push(Fast_InitializerExpression _this) {
+cx_int16 _Fast_InitializerExpression_push(Fast_InitializerExpression this) {
 /* $begin(::corto::Fast::InitializerExpression::push) */
-    Fast_InitOper *elem = Fast_InitOperListAppend(_this->operations);
+    Fast_InitOper *elem = Fast_InitOperListAppend(this->operations);
     elem->kind = Fast_InitOpPush;
     return 0;
 /* $end */
 }
 
 /* ::corto::Fast::InitializerExpression::value(Expression v) */
-cx_int16 _Fast_InitializerExpression_value(Fast_InitializerExpression _this, Fast_Expression v) {
+cx_int16 _Fast_InitializerExpression_value(Fast_InitializerExpression this, Fast_Expression v) {
 /* $begin(::corto::Fast::InitializerExpression::value) */
-    Fast_InitOper *elem = Fast_InitOperListAppend(_this->operations);
+    Fast_InitOper *elem = Fast_InitOperListAppend(this->operations);
     elem->kind = Fast_InitOpValue;
     cx_setref(&elem->expr, v);
     return 0;

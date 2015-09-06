@@ -74,7 +74,7 @@ struct cx_serializer_s Fast_findMemberSerializer(void) {
     return s;
 }
 
-cx_type Fast_Parser_initGetType(Fast_Initializer _this, cx_member *m_out) {
+cx_type Fast_Parser_initGetType(Fast_Initializer this, cx_member *m_out) {
     cx_type t, result;
 
     result = NULL;
@@ -83,9 +83,9 @@ cx_type Fast_Parser_initGetType(Fast_Initializer _this, cx_member *m_out) {
         *m_out = NULL;
     }
 
-    if (_this->fp > 0) {
-        t = _this->frames[_this->fp-1].type;
-        if (_this->frames[_this->fp].isKey) {
+    if (this->fp > 0) {
+        t = this->frames[this->fp-1].type;
+        if (this->frames[this->fp].isKey) {
             result = cx_map(t)->keyType;
         } else {
             switch(t->kind) {
@@ -95,7 +95,7 @@ cx_type Fast_Parser_initGetType(Fast_Initializer _this, cx_member *m_out) {
                 s = Fast_findMemberSerializer();
                 walkData.id = 0;
                 walkData.count = 0;
-                walkData.lookForLocation = _this->frames[_this->fp].location;
+                walkData.lookForLocation = this->frames[this->fp].location;
                 walkData.lookForString = NULL;
                 walkData.m = NULL;
                 walkData.current = 0;
@@ -120,7 +120,7 @@ cx_type Fast_Parser_initGetType(Fast_Initializer _this, cx_member *m_out) {
             default: {
                 /* If value is a non-composite type it can only have one initializer value. If there are more
                  * values specified (thus location != 0) report an error. */
-                if (!_this->frames[_this->fp].location) {
+                if (!this->frames[this->fp].location) {
                     result = t;
                 } else {
                     if (m_out) {
@@ -135,16 +135,16 @@ cx_type Fast_Parser_initGetType(Fast_Initializer _this, cx_member *m_out) {
             }
         }
     } else {
-        if (_this->frames[0].location == 0) {
-            result = _this->frames[0].type;
+        if (this->frames[0].location == 0) {
+            result = this->frames[0].type;
         } else {
             cx_id id;
-            if (_this->frames[0].type->reference) {
+            if (this->frames[0].type->reference) {
                 Fast_Parser_error(yparser(), "excess elements in initializer for reference type '%s' (location=%d)",
-                        Fast_Parser_id(_this->frames[0].type, id), _this->frames[0].location);
+                        Fast_Parser_id(this->frames[0].type, id), this->frames[0].location);
             } else {
                 Fast_Parser_error(yparser(), "excess elements in initializer for primitive type '%s' (location=%d)",
-                            Fast_Parser_id(_this->frames[0].type, id), _this->frames[0].location);              
+                            Fast_Parser_id(this->frames[0].type, id), this->frames[0].location);              
             }
         }
     }
@@ -156,10 +156,10 @@ cx_type Fast_Parser_initGetType(Fast_Initializer _this, cx_member *m_out) {
 /* $end */
 
 /* ::corto::Fast::Initializer::construct() */
-cx_int16 _Fast_Initializer_construct(Fast_Initializer _this) {
+cx_int16 _Fast_Initializer_construct(Fast_Initializer this) {
 /* $begin(::corto::Fast::Initializer::construct) */
     cx_uint32 variable;
-    cx_type t = Fast_Expression_getType(_this->variables[0].object);
+    cx_type t = Fast_Expression_getType(this->variables[0].object);
     
     if (!t) {
         Fast_Parser_error(yparser(), "parser error: invalid object in initializer"); abort();
@@ -167,31 +167,31 @@ cx_int16 _Fast_Initializer_construct(Fast_Initializer _this) {
     }
 
     /* Initialize first frame with type */
-    for(variable=0; variable<_this->variableCount; variable++) {
-        cx_setref(&_this->frames[variable].type, t);
-        /* cx_setref(&_this->rvalueType, t); */
-        _this->frames[variable].location = 0;
+    for(variable=0; variable<this->variableCount; variable++) {
+        cx_setref(&this->frames[variable].type, t);
+        /* cx_setref(&this->rvalueType, t); */
+        this->frames[variable].location = 0;
     }
-    _this->fp = 0;
+    this->fp = 0;
 
 #ifdef CX_INIT_DEBUG
     {
         cx_id id, id2;
         printf("%*s%d[%s %p]: construct (type=%s)\n", 
-            indent, " ", yparser()->line, Fast_Parser_id(cx_typeof(_this), id), _this, Fast_Parser_id(t, id2));
+            indent, " ", yparser()->line, Fast_Parser_id(cx_typeof(this), id), this, Fast_Parser_id(t, id2));
         indent++;
     }
 #endif
     
     /* If type of initializer is either a composite or a collection type, do an initial push */
     if ((((t->kind == CX_COMPOSITE) && (cx_interface(t)->kind != CX_DELEGATE)) || (t->kind == CX_COLLECTION))) {
-        if (Fast_Initializer_push(_this)) {
+        if (Fast_Initializer_push(this)) {
             goto error;
         }
     }
     
-    Fast_Node(_this)->kind = Fast_InitializerExpr;
-    cx_setref(&Fast_Expression(_this)->type, t);
+    Fast_Node(this)->kind = Fast_InitializerExpr;
+    cx_setref(&Fast_Expression(this)->type, t);
     
     return 0;
 error:
@@ -200,22 +200,22 @@ error:
 }
 
 /* ::corto::Fast::Initializer::currentType() */
-cx_type _Fast_Initializer_currentType(Fast_Initializer _this) {
+cx_type _Fast_Initializer_currentType(Fast_Initializer this) {
 /* $begin(::corto::Fast::Initializer::currentType) */
-    return Fast_Parser_initGetType(_this, NULL);
+    return Fast_Parser_initGetType(this, NULL);
 /* $end */
 }
 
 /* ::corto::Fast::Initializer::define() */
-cx_int16 _Fast_Initializer_define_v(Fast_Initializer _this) {
+cx_int16 _Fast_Initializer_define_v(Fast_Initializer this) {
 /* $begin(::corto::Fast::Initializer::define) */
-    CX_UNUSED(_this);
+    CX_UNUSED(this);
 #ifdef CX_INIT_DEBUG
     {
         cx_id id;
         indent--;
         printf("%*s%d[%s %p]: define\n",
-               indent, " ", yparser()->line, Fast_Parser_id(cx_typeof(_this), id), _this);
+               indent, " ", yparser()->line, Fast_Parser_id(cx_typeof(this), id), this);
     }
 #endif
     return 0;
@@ -223,37 +223,37 @@ cx_int16 _Fast_Initializer_define_v(Fast_Initializer _this) {
 }
 
 /* ::corto::Fast::Initializer::initFrame() */
-cx_uint16 _Fast_Initializer_initFrame(Fast_Initializer _this) {
+cx_uint16 _Fast_Initializer_initFrame(Fast_Initializer this) {
 /* $begin(::corto::Fast::Initializer::initFrame) */
     struct cx_serializer_s s;
     cx_type t;
     Fast_Initializer_findMember_t walkData;
     
     /* Lookup corresponding member for current value (if there is any) */
-    if (_this->fp) {
-        t = _this->frames[_this->fp-1].type;
+    if (this->fp) {
+        t = this->frames[this->fp-1].type;
         s = Fast_findMemberSerializer();
         walkData.id = 0;
         walkData.count = 0;
-        walkData.lookForLocation = _this->frames[_this->fp].location;
+        walkData.lookForLocation = this->frames[this->fp].location;
         walkData.lookForString = NULL;
         walkData.m = NULL;
-        walkData.current = _this->frames[_this->fp].location;
+        walkData.current = this->frames[this->fp].location;
         if (t->kind == CX_COMPOSITE) {
             cx_metaWalk(&s, t, &walkData);
         }
         if (walkData.m) {
-            _this->frames[_this->fp].location = walkData.id;
-            cx_setref(&_this->frames[_this->fp].member, walkData.m);
-            cx_setref(&_this->frames[_this->fp].type, walkData.m->type);
+            this->frames[this->fp].location = walkData.id;
+            cx_setref(&this->frames[this->fp].member, walkData.m);
+            cx_setref(&this->frames[this->fp].type, walkData.m->type);
             /*cx_setref(&yparser()->rvalueType, walkData.m->type);*/
         } else {
-            cx_setref(&_this->frames[_this->fp].member, NULL);
+            cx_setref(&this->frames[this->fp].member, NULL);
             if (t->kind == CX_COLLECTION) {
-                cx_setref(&_this->frames[_this->fp].type, cx_collection(t)->elementType);
+                cx_setref(&this->frames[this->fp].type, cx_collection(t)->elementType);
                 /*cx_setref(&yparser()->rvalueType, cx_collection(t)->elementType);*/
             } else {
-                cx_setref(&_this->frames[_this->fp].type, NULL);
+                cx_setref(&this->frames[this->fp].type, NULL);
             }
         }
     }
@@ -263,18 +263,18 @@ cx_uint16 _Fast_Initializer_initFrame(Fast_Initializer _this) {
 }
 
 /* ::corto::Fast::Initializer::member(string name) */
-cx_int32 _Fast_Initializer_member_v(Fast_Initializer _this, cx_string name) {
+cx_int32 _Fast_Initializer_member_v(Fast_Initializer this, cx_string name) {
 /* $begin(::corto::Fast::Initializer::member) */
     struct cx_serializer_s s;
     cx_type t;
     Fast_Initializer_findMember_t walkData;
 
-    if (!_this->fp) {
+    if (!this->fp) {
         Fast_Parser_error(yparser(), "unexpected member '%s' in initializer", name);
         goto error;
     }
 
-    t = _this->frames[_this->fp-1].type;
+    t = this->frames[this->fp-1].type;
     s = Fast_findMemberSerializer();
     
     walkData.id = 0;
@@ -282,19 +282,19 @@ cx_int32 _Fast_Initializer_member_v(Fast_Initializer _this, cx_string name) {
     walkData.lookForLocation = -1;
     walkData.lookForString = name;
     walkData.m = NULL;
-    walkData.current = _this->frames[_this->fp].location;
+    walkData.current = this->frames[this->fp].location;
     if (t->kind == CX_COMPOSITE) {
         cx_metaWalk(&s, t, &walkData);
     }
     if (walkData.m) {
-        _this->frames[_this->fp].location = walkData.id;
-        cx_setref(&_this->frames[_this->fp].member, walkData.m);
-        cx_setref(&_this->frames[_this->fp].type, walkData.m->type);
+        this->frames[this->fp].location = walkData.id;
+        cx_setref(&this->frames[this->fp].member, walkData.m);
+        cx_setref(&this->frames[this->fp].type, walkData.m->type);
         /*cx_setref(&yparser()->rvalueType, walkData.m->type);*/
     } else {
         cx_id id;
         Fast_Parser_error(yparser(), "member '%s' invalid for type '%s'", name, Fast_Parser_id(t, id));
-        cx_setref(&_this->frames[_this->fp].type, NULL);
+        cx_setref(&this->frames[this->fp].type, NULL);
         goto error;
     }
 
@@ -305,21 +305,21 @@ error:
 }
 
 /* ::corto::Fast::Initializer::next() */
-cx_int16 _Fast_Initializer_next_v(Fast_Initializer _this) {
+cx_int16 _Fast_Initializer_next_v(Fast_Initializer this) {
 /* $begin(::corto::Fast::Initializer::next) */
     
     /* Increase location by one */
-    _this->frames[_this->fp].location++;
-    Fast_Initializer_initFrame(_this);
+    this->frames[this->fp].location++;
+    Fast_Initializer_initFrame(this);
     
 #ifdef CX_INIT_DEBUG
     {
         cx_id id, id2;
         printf("%*s%d[%s %p]: next(fp=%d, location=%d, type=%s, member=%s)\n",
-               indent, " ", yparser()->line, Fast_Parser_id(cx_typeof(_this), id), _this, _this->fp, 
-               _this->frames[_this->fp].location,
-               _this->frames[_this->fp].type?Fast_Parser_id(_this->frames[_this->fp].type, id2):NULL,
-               _this->frames[_this->fp].member?cx_nameof(_this->frames[_this->fp].member):NULL);
+               indent, " ", yparser()->line, Fast_Parser_id(cx_typeof(this), id), this, this->fp, 
+               this->frames[this->fp].location,
+               this->frames[this->fp].type?Fast_Parser_id(this->frames[this->fp].type, id2):NULL,
+               this->frames[this->fp].member?cx_nameof(this->frames[this->fp].member):NULL);
     }
 #endif
     
@@ -328,11 +328,11 @@ cx_int16 _Fast_Initializer_next_v(Fast_Initializer _this) {
 }
 
 /* ::corto::Fast::Initializer::pop() */
-cx_int8 _Fast_Initializer_pop_v(Fast_Initializer _this) {
+cx_int8 _Fast_Initializer_pop_v(Fast_Initializer this) {
 /* $begin(::corto::Fast::Initializer::pop) */
 
-    if (_this->fp) {
-        _this->fp--;
+    if (this->fp) {
+        this->fp--;
     
 #ifdef CX_INIT_DEBUG
     {
@@ -340,10 +340,10 @@ cx_int8 _Fast_Initializer_pop_v(Fast_Initializer _this) {
         indent--;
         printf("%*s%d[%s %p]: pop(fp=%d, location=%d)\n", 
             indent, " ", yparser()->line, 
-            Fast_Parser_id(cx_typeof(_this), id), _this, _this->fp, _this->frames[_this->fp].location);
+            Fast_Parser_id(cx_typeof(this), id), this, this->fp, this->frames[this->fp].location);
     }
 #endif
-        Fast_Initializer_next(_this);
+        Fast_Initializer_next(this);
     }
 
     return 0;
@@ -351,31 +351,31 @@ cx_int8 _Fast_Initializer_pop_v(Fast_Initializer _this) {
 }
 
 /* ::corto::Fast::Initializer::popKey() */
-cx_int16 _Fast_Initializer_popKey_v(Fast_Initializer _this) {
+cx_int16 _Fast_Initializer_popKey_v(Fast_Initializer this) {
 /* $begin(::corto::Fast::Initializer::popKey) */
-    return Fast_Initializer_pop(_this);
+    return Fast_Initializer_pop(this);
 /* $end */
 }
 
 /* ::corto::Fast::Initializer::push() */
-cx_int16 _Fast_Initializer_push_v(Fast_Initializer _this) {
+cx_int16 _Fast_Initializer_push_v(Fast_Initializer this) {
 /* $begin(::corto::Fast::Initializer::push) */
-    cx_type t = Fast_Initializer_currentType(_this);
+    cx_type t = Fast_Initializer_currentType(this);
 
-    if (!_this->fp || (_this->fp && !t->reference)) {
-        _this->fp++;
-        _this->frames[_this->fp].location = 0;
-        cx_setref(&_this->frames[_this->fp].type, t);
-        Fast_Initializer_initFrame(_this);
+    if (!this->fp || (this->fp && !t->reference)) {
+        this->fp++;
+        this->frames[this->fp].location = 0;
+        cx_setref(&this->frames[this->fp].type, t);
+        Fast_Initializer_initFrame(this);
         
 #ifdef CX_INIT_DEBUG
         {
             cx_id id, id2;
             printf("%*s%d[%s %p]: push(fp=%d, location=%d, type=%s, member=%s)\n",
-                   indent, " ", yparser()->line, Fast_Parser_id(cx_typeof(_this), id), _this, _this->fp,
-                   _this->frames[_this->fp].location, 
-                   _this->frames[_this->fp].type ? Fast_Parser_id(_this->frames[_this->fp].type, id2) : NULL,
-                   _this->frames[_this->fp].member?cx_nameof(_this->frames[_this->fp].member):NULL);
+                   indent, " ", yparser()->line, Fast_Parser_id(cx_typeof(this), id), this, this->fp,
+                   this->frames[this->fp].location, 
+                   this->frames[this->fp].type ? Fast_Parser_id(this->frames[this->fp].type, id2) : NULL,
+                   this->frames[this->fp].member?cx_nameof(this->frames[this->fp].member):NULL);
             indent++;
         }
 #endif
@@ -392,32 +392,32 @@ error:
 }
 
 /* ::corto::Fast::Initializer::pushKey() */
-cx_int16 _Fast_Initializer_pushKey_v(Fast_Initializer _this) {
+cx_int16 _Fast_Initializer_pushKey_v(Fast_Initializer this) {
 /* $begin(::corto::Fast::Initializer::pushKey) */
-    _this->frames[_this->fp+1].isKey = TRUE;
-    return Fast_Initializer_push(_this);
+    this->frames[this->fp+1].isKey = TRUE;
+    return Fast_Initializer_push(this);
 /* $end */
 }
 
 /* ::corto::Fast::Initializer::type() */
-cx_type _Fast_Initializer_type(Fast_Initializer _this) {
+cx_type _Fast_Initializer_type(Fast_Initializer this) {
 /* $begin(::corto::Fast::Initializer::type) */
-    return Fast_Expression_getType(_this->variables[0].object);
+    return Fast_Expression_getType(this->variables[0].object);
 /* $end */
 }
 
 /* ::corto::Fast::Initializer::value(Expression v) */
-cx_int16 _Fast_Initializer_value_v(Fast_Initializer _this, Fast_Expression v) {
+cx_int16 _Fast_Initializer_value_v(Fast_Initializer this, Fast_Expression v) {
 /* $begin(::corto::Fast::Initializer::value) */
     CX_UNUSED(v);
-    return Fast_Initializer_next(_this);
+    return Fast_Initializer_next(this);
 /* $end */
 }
 
 /* ::corto::Fast::Initializer::valueKey(Expression key) */
-cx_int16 _Fast_Initializer_valueKey_v(Fast_Initializer _this, Fast_Expression key) {
+cx_int16 _Fast_Initializer_valueKey_v(Fast_Initializer this, Fast_Expression key) {
 /* $begin(::corto::Fast::Initializer::valueKey) */
-    _this->frames[_this->fp].isKey = TRUE;
-    return Fast_Initializer_value(_this, key);
+    this->frames[this->fp].isKey = TRUE;
+    return Fast_Initializer_value(this, key);
 /* $end */
 }

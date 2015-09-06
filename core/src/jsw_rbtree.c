@@ -25,7 +25,7 @@ struct jsw_rbnode {
   struct jsw_rbnode *link[2]; /* Left (0) and right (1) links */
 };
 
-typedef cx_equalityKind ___ (*cx_equalFunction)(cx_any _this, cx_any value);
+typedef cx_equalityKind ___ (*cx_equalFunction)(cx_any this, cx_any value);
 
 struct jsw_rbtree {
   jsw_rbnode_t *root; /* Top of the tree */

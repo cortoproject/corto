@@ -52,9 +52,9 @@ static cx_bool cx_iterator_next_map(void* iterator) {
     return 1;
 }
 
-cx_bool cx_iterator_next(void* _this) {
+cx_bool cx_iterator_next(void* this) {
     CX_ITERATOR(iteratorType);
-    iteratorType *iterator = _this;
+    iteratorType *iterator = this;
     cx_bool result = FALSE;
 
     result = iterator->next(iterator);
@@ -62,8 +62,8 @@ cx_bool cx_iterator_next(void* _this) {
     return result;
 }
 
-cx_int16 cx_iterator_set(void* _this, void* collection, cx_collection collectionType) {
-    iteratorType *iter = _this;
+cx_int16 cx_iterator_set(void* this, void* collection, cx_collection collectionType) {
+    iteratorType *iter = this;
     iter->type = collectionType;
 
     switch (collectionType->kind) {
@@ -100,18 +100,18 @@ cx_int16 cx_iterator_set(void* _this, void* collection, cx_collection collection
 /* $end */
 
 /* ::corto::lang::iterator::castable(type type) */
-cx_bool _cx_iterator_castable_v(cx_iterator _this, cx_type type) {
+cx_bool _cx_iterator_castable_v(cx_iterator this, cx_type type) {
 /* $begin(::corto::lang::iterator::castable) */
-    return cx_iterator_compatible_v(_this, type);
+    return cx_iterator_compatible_v(this, type);
 /* $end */
 }
 
 /* ::corto::lang::iterator::compatible(type type) */
-cx_bool _cx_iterator_compatible_v(cx_iterator _this, cx_type type) {
+cx_bool _cx_iterator_compatible_v(cx_iterator this, cx_type type) {
 /* $begin(::corto::lang::iterator::compatible) */
     cx_bool result = FALSE;
     if (type->kind == CX_COLLECTION) {
-        if (cx_collection(type)->elementType == _this->elementType) {
+        if (cx_collection(type)->elementType == this->elementType) {
             result = TRUE;
         }
     }
@@ -120,11 +120,11 @@ cx_bool _cx_iterator_compatible_v(cx_iterator _this, cx_type type) {
 }
 
 /* ::corto::lang::iterator::init() */
-cx_int16 _cx_iterator_init(cx_iterator _this) {
+cx_int16 _cx_iterator_init(cx_iterator this) {
 /* $begin(::corto::lang::iterator::init) */
-    cx_type(_this)->kind = CX_ITERATOR;
+    cx_type(this)->kind = CX_ITERATOR;
     CX_ITERATOR(iteratorType);
-    cx_type(_this)->size = sizeof(iteratorType);
-    return cx_type_init(cx_type(_this));
+    cx_type(this)->size = sizeof(iteratorType);
+    return cx_type_init(cx_type(this));
 /* $end */
 }

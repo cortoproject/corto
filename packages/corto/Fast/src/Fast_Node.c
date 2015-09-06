@@ -68,18 +68,18 @@ error:
 /* $end */
 
 /* ::corto::Fast::Node::init() */
-cx_int16 _Fast_Node_init(Fast_Node _this) {
+cx_int16 _Fast_Node_init(Fast_Node this) {
 /* $begin(::corto::Fast::Node::init) */
-    _this->line = yparser()->line;
-    _this->column = yparser()->column;
+    this->line = yparser()->line;
+    this->column = yparser()->column;
     return 0;
 /* $end */
 }
 
 /* ::corto::Fast::Node::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _Fast_Node_toIc_v(Fast_Node _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Node_toIc_v(Fast_Node this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::corto::Fast::Node::toIc) */
-    CX_UNUSED(_this);
+    CX_UNUSED(this);
     CX_UNUSED(program);
     CX_UNUSED(storage);
     CX_UNUSED(stored);

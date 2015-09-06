@@ -9,9 +9,9 @@
 #include "cx.h"
 
 /* ::corto::lang::int::init() */
-cx_int16 _cx_int_init(cx_int _this) {
+cx_int16 _cx_int_init(cx_int this) {
 /* $begin(::corto::lang::int::init) */
-    cx_primitive(_this)->kind = CX_INTEGER;
-    return cx_primitive_init((cx_primitive)_this);
+    cx_primitive(this)->kind = CX_INTEGER;
+    return cx_primitive_init((cx_primitive)this);
 /* $end */
 }

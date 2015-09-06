@@ -13,9 +13,9 @@ static int cx_maxEventId = 16; /* kind 0 - 15 are reserved for internal usage */
 /* $end */
 
 /* ::corto::lang::event::handle() */
-cx_void _cx_event_handle_v(cx_event _this) {
+cx_void _cx_event_handle_v(cx_event this) {
 /* $begin(::corto::lang::event::handle) */
-    _this->handled = TRUE;
+    this->handled = TRUE;
 /* $end */
 }
 

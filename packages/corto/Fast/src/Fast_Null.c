@@ -14,19 +14,19 @@
 /* $end */
 
 /* ::corto::Fast::Null::init() */
-cx_int16 _Fast_Null_init(Fast_Null _this) {
+cx_int16 _Fast_Null_init(Fast_Null this) {
 /* $begin(::corto::Fast::Null::init) */
-    Fast_Literal(_this)->kind = Fast_Nothing;
-    Fast_Expression(_this)->type = NULL;
-    return Fast_Literal_init(Fast_Literal(_this));
+    Fast_Literal(this)->kind = Fast_Nothing;
+    Fast_Expression(this)->type = NULL;
+    return Fast_Literal_init(Fast_Literal(this));
 /* $end */
 }
 
 /* ::corto::Fast::Null::serialize(type dstType,word dst) */
-cx_int16 _Fast_Null_serialize(Fast_Null _this, cx_type dstType, cx_word dst) {
+cx_int16 _Fast_Null_serialize(Fast_Null this, cx_type dstType, cx_word dst) {
 /* $begin(::corto::Fast::Null::serialize) */
     Fast_valueKind kind;
-    CX_UNUSED(_this);
+    CX_UNUSED(this);
 
     kind = Fast_valueKindFromType(dstType);
     
@@ -61,11 +61,11 @@ error:
 }
 
 /* ::corto::Fast::Null::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _Fast_Null_toIc_v(Fast_Null _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Null_toIc_v(Fast_Null this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::corto::Fast::Null::toIc) */
     CX_UNUSED(storage);
     CX_UNUSED(stored);
-    CX_UNUSED(_this);
+    CX_UNUSED(this);
     CX_UNUSED(program);
 
     return ic_node(ic_literalCreate((cx_any){cx_type(cx_void_o), NULL, FALSE}));

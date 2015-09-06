@@ -10,17 +10,17 @@
 #include "ic.h"
 
 /* ::corto::ic::member::construct() */
-cx_int16 _ic_member_construct(ic_member _this) {
+cx_int16 _ic_member_construct(ic_member this) {
 /* $begin(::corto::ic::member::construct) */
     cx_id name;
 
-    ic_storage(_this)->kind = IC_MEMBER;
-    cx_setref(&ic_storage(_this)->type, _this->member->type);
-    cx_setref(&ic_storage(_this)->base, _this->base);
-    ic_storage(_this)->isReference = _this->member->type->reference;
-    sprintf(name, "%s.%s", _this->base->name, cx_nameof(_this->member));
-    ic_storage(_this)->name = cx_strdup(name);
+    ic_storage(this)->kind = IC_MEMBER;
+    cx_setref(&ic_storage(this)->type, this->member->type);
+    cx_setref(&ic_storage(this)->base, this->base);
+    ic_storage(this)->isReference = this->member->type->reference;
+    sprintf(name, "%s.%s", this->base->name, cx_nameof(this->member));
+    ic_storage(this)->name = cx_strdup(name);
 
-    return ic_storage_construct(ic_storage(_this));
+    return ic_storage_construct(ic_storage(this));
 /* $end */
 }

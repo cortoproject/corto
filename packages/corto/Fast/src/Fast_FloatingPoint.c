@@ -14,15 +14,15 @@
 /* $end */
 
 /* ::corto::Fast::FloatingPoint::init() */
-cx_int16 _Fast_FloatingPoint_init(Fast_FloatingPoint _this) {
+cx_int16 _Fast_FloatingPoint_init(Fast_FloatingPoint this) {
 /* $begin(::corto::Fast::FloatingPoint::init) */
-    Fast_Literal(_this)->kind = Fast_Float;
-    return Fast_Literal_init(Fast_Literal(_this));
+    Fast_Literal(this)->kind = Fast_Float;
+    return Fast_Literal_init(Fast_Literal(this));
 /* $end */
 }
 
 /* ::corto::Fast::FloatingPoint::serialize(type dstType,word dst) */
-cx_int16 _Fast_FloatingPoint_serialize(Fast_FloatingPoint _this, cx_type dstType, cx_word dst) {
+cx_int16 _Fast_FloatingPoint_serialize(Fast_FloatingPoint this, cx_type dstType, cx_word dst) {
 /* $begin(::corto::Fast::FloatingPoint::serialize) */
     Fast_valueKind kind;
 
@@ -31,13 +31,13 @@ cx_int16 _Fast_FloatingPoint_serialize(Fast_FloatingPoint _this, cx_type dstType
 
     switch(kind) {
     case Fast_Bool:
-        *(cx_bool*)dst = _this->value ? TRUE : FALSE;
+        *(cx_bool*)dst = this->value ? TRUE : FALSE;
         break;
     case Fast_Int:
     case Fast_SignedInt:
     case Fast_Float:
     case Fast_Text:
-        cx_convert(cx_primitive(cx_float64_o), &_this->value, cx_primitive(dstType), (void*)dst);
+        cx_convert(cx_primitive(cx_float64_o), &this->value, cx_primitive(dstType), (void*)dst);
         break;
     default: {
         cx_id id;
@@ -54,14 +54,14 @@ error:
 }
 
 /* ::corto::Fast::FloatingPoint::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _Fast_FloatingPoint_toIc_v(Fast_FloatingPoint _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_FloatingPoint_toIc_v(Fast_FloatingPoint this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::corto::Fast::FloatingPoint::toIc) */
     ic_node result;
     CX_UNUSED(program);
     CX_UNUSED(storage);
     CX_UNUSED(stored);
 
-    result = (ic_node)ic_literalCreate((cx_any){Fast_Expression_getType(Fast_Expression(_this)), &_this->value, FALSE});
+    result = (ic_node)ic_literalCreate((cx_any){Fast_Expression_getType(Fast_Expression(this)), &this->value, FALSE});
 
     return result;
 /* $end */

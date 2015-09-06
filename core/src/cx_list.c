@@ -133,79 +133,79 @@ static int cx_clearFreeValues(void* o, void* udata) {
 /* $end */
 
 /* ::corto::lang::list::append() */
-cx_any _cx_list_append_(cx_any _this) {
+cx_any _cx_list_append_(cx_any this) {
 /* $begin(::corto::lang::list::append()) */
     cx_any result;
-    result.type = cx_collection(_this.type)->elementType;
-    result.value = cx_list_do_(_this, FALSE);
+    result.type = cx_collection(this.type)->elementType;
+    result.value = cx_list_do_(this, FALSE);
     result.owner = FALSE;
     return result;
 /* $end */
 }
 
 /* ::corto::lang::list::append(any element) */
-cx_void _cx_list_append_any(cx_any _this, cx_any element) {
+cx_void _cx_list_append_any(cx_any this, cx_any element) {
 /* $begin(::corto::lang::list::append(any element)) */
-    cx_list_do(_this, element, FALSE, cx_list_appendAction, NULL);
+    cx_list_do(this, element, FALSE, cx_list_appendAction, NULL);
 /* $end */
 }
 
 /* ::corto::lang::list::clear() */
-cx_void _cx_list_clear(cx_any _this) {
+cx_void _cx_list_clear(cx_any this) {
 /* $begin(::corto::lang::list::clear) */
-    cx_collection c = cx_collection(_this.type);
+    cx_collection c = cx_collection(this.type);
     if (cx_collection_elementRequiresAlloc(c)) {
-        cx_llWalk(*(cx_ll*)_this.value, cx_clearFreeValues, NULL);
+        cx_llWalk(*(cx_ll*)this.value, cx_clearFreeValues, NULL);
     }
-    cx_llClear(*(cx_ll*)_this.value);
+    cx_llClear(*(cx_ll*)this.value);
 /* $end */
 }
 
 /* ::corto::lang::list::construct() */
-cx_int16 _cx_list_construct(cx_list _this) {
+cx_int16 _cx_list_construct(cx_list this) {
 /* $begin(::corto::lang::list::construct) */
-    cx_type(_this)->hasResources = TRUE;
-    cx_type(_this)->size = sizeof(cx_ll);
-    cx_type(_this)->alignment = CX_ALIGNMENT(cx_ll);
-    if (!cx_collection(_this)->elementType) {
+    cx_type(this)->hasResources = TRUE;
+    cx_type(this)->size = sizeof(cx_ll);
+    cx_type(this)->alignment = CX_ALIGNMENT(cx_ll);
+    if (!cx_collection(this)->elementType) {
         cx_error("no elementtype provided for list");
         goto error;
     }
-    return cx_type_construct(cx_type(_this));
+    return cx_type_construct(cx_type(this));
 error:
     return -1;
 /* $end */
 }
 
 /* ::corto::lang::list::init() */
-cx_int16 _cx_list_init(cx_list _this) {
+cx_int16 _cx_list_init(cx_list this) {
 /* $begin(::corto::lang::list::init) */
-    cx_collection(_this)->kind = CX_LIST;
-    return cx_collection_init(cx_collection(_this));
+    cx_collection(this)->kind = CX_LIST;
+    return cx_collection_init(cx_collection(this));
 /* $end */
 }
 
 /* ::corto::lang::list::insert() */
-cx_any _cx_list_insert_(cx_any _this) {
+cx_any _cx_list_insert_(cx_any this) {
 /* $begin(::corto::lang::list::insert()) */
     cx_any result;
-    result.type = cx_collection(_this.type)->elementType;
-    result.value = cx_list_do_(_this, TRUE);
+    result.type = cx_collection(this.type)->elementType;
+    result.value = cx_list_do_(this, TRUE);
     result.owner = FALSE;
     return result;
 /* $end */
 }
 
 /* ::corto::lang::list::insert(any element) */
-cx_void _cx_list_insert_any(cx_any _this, cx_any element) {
+cx_void _cx_list_insert_any(cx_any this, cx_any element) {
 /* $begin(::corto::lang::list::insert(any element)) */
-    cx_list_do(_this, element, TRUE, cx_list_insertAction, NULL);
+    cx_list_do(this, element, TRUE, cx_list_insertAction, NULL);
 /* $end */
 }
 
 /* ::corto::lang::list::reverse() */
-cx_void _cx_list_reverse(cx_any _this) {
+cx_void _cx_list_reverse(cx_any this) {
 /* $begin(::corto::lang::list::reverse) */
-    cx_llReverse(*(cx_ll*)_this.value);
+    cx_llReverse(*(cx_ll*)this.value);
 /* $end */
 }

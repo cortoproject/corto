@@ -43,14 +43,14 @@ cx_void _test_assertEqual(cx_any a, cx_any b, cx_string str_a, cx_string str_b) 
 /* ::corto::test::fail(string err) */
 cx_void _test_fail(cx_string err) {
 /* $begin(::corto::test::fail) */
-	test_Suite _this = cx_threadTlsGet(test_suiteKey);
-	if (!_this) {
+	test_Suite this = cx_threadTlsGet(test_suiteKey);
+	if (!this) {
 		cx_error("test: test::fail called but no testsuite is running!");
 		abort();
 	}
-    if (_this->result.success) {
-        _this->result.errmsg = cx_strdup(err);
-        _this->result.success = FALSE;
+    if (this->result.success) {
+        this->result.errmsg = cx_strdup(err);
+        this->result.success = FALSE;
     }
 /* $end */
 }

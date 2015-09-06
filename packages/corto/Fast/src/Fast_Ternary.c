@@ -13,8 +13,8 @@
 #include "Fast__private.h"
 
 Fast_Parser yparser(void);
-void Fast_Parser_error(Fast_Parser _this, char* fmt, ...);
-void Fast_Parser_warning(Fast_Parser _this, char* fmt, ...);
+void Fast_Parser_error(Fast_Parser this, char* fmt, ...);
+void Fast_Parser_warning(Fast_Parser this, char* fmt, ...);
 
 /* Create if statement based on ternary operator expressions */
 Fast_If Fast_Ternary_createIf(Fast_Expression condition, Fast_Node ifTrue, Fast_Node ifFalse) {
@@ -52,74 +52,74 @@ Fast_If Fast_Ternary_createIf(Fast_Expression condition, Fast_Node ifTrue, Fast_
 /* $end */
 
 /* ::corto::Fast::Ternary::construct() */
-cx_int16 _Fast_Ternary_construct(Fast_Ternary _this) {
+cx_int16 _Fast_Ternary_construct(Fast_Ternary this) {
 /* $begin(::corto::Fast::Ternary::construct) */
     Fast_Node trueBranch=NULL, falseBranch=NULL;
     Fast_Expression trueExpr, falseExpr;
-    cx_type resultType = Fast_Expression_getType(_this->result);
+    cx_type resultType = Fast_Expression_getType(this->result);
 
-    Fast_Node(_this)->kind = Fast_TernaryExpr;
+    Fast_Node(this)->kind = Fast_TernaryExpr;
     
     /* Create true statement */
     trueBranch = Fast_Node(Fast_Parser_blockPush(yparser(), FALSE));
-    trueExpr = Fast_Expression(Fast_Parser_binaryExpr(yparser(), _this->result, _this->ifTrue, CX_ASSIGN));
+    trueExpr = Fast_Expression(Fast_Parser_binaryExpr(yparser(), this->result, this->ifTrue, CX_ASSIGN));
     Fast_Block_addStatement(Fast_Block(trueBranch), Fast_Node(trueExpr));
     Fast_Parser_blockPop(yparser());
     
     /* Create false statement */
     falseBranch = Fast_Node(Fast_Parser_blockPush(yparser(), FALSE));
-    falseExpr = Fast_Expression(Fast_Parser_binaryExpr(yparser(), _this->result, _this->ifFalse, CX_ASSIGN));
+    falseExpr = Fast_Expression(Fast_Parser_binaryExpr(yparser(), this->result, this->ifFalse, CX_ASSIGN));
     Fast_Block_addStatement(Fast_Block(falseBranch), Fast_Node(falseExpr));
     Fast_Parser_blockPop(yparser());
 
-    /* Store both expressions in _this */
-    cx_setref(&_this->ifTrueExpr, trueExpr);
-    cx_setref(&_this->ifFalseExpr, falseExpr);
+    /* Store both expressions in this */
+    cx_setref(&this->ifTrueExpr, trueExpr);
+    cx_setref(&this->ifFalseExpr, falseExpr);
     
     /* Create condition */
-    _this->ifstmt = Fast_Ternary_createIf(_this->condition, trueBranch, falseBranch);
-    cx_setref(&Fast_Expression(_this)->type, resultType);
+    this->ifstmt = Fast_Ternary_createIf(this->condition, trueBranch, falseBranch);
+    cx_setref(&Fast_Expression(this)->type, resultType);
 
     return 0;
 /* $end */
 }
 
 /* ::corto::Fast::Ternary::hasReturnedResource() */
-cx_bool _Fast_Ternary_hasReturnedResource_v(Fast_Ternary _this) {
+cx_bool _Fast_Ternary_hasReturnedResource_v(Fast_Ternary this) {
 /* $begin(::corto::Fast::Ternary::hasReturnedResource) */
-    return Fast_Expression_hasReturnedResource(_this->condition) ||
-           Fast_Expression_hasReturnedResource(_this->ifTrue) ||
-           Fast_Expression_hasReturnedResource(_this->ifFalse);
+    return Fast_Expression_hasReturnedResource(this->condition) ||
+           Fast_Expression_hasReturnedResource(this->ifTrue) ||
+           Fast_Expression_hasReturnedResource(this->ifFalse);
 /* $end */
 }
 
 /* ::corto::Fast::Ternary::hasSideEffects() */
-cx_bool _Fast_Ternary_hasSideEffects_v(Fast_Ternary _this) {
+cx_bool _Fast_Ternary_hasSideEffects_v(Fast_Ternary this) {
 /* $begin(::corto::Fast::Ternary::hasSideEffects) */
-    return Fast_Expression_hasSideEffects(_this->condition) ||
-           Fast_Expression_hasSideEffects(_this->ifTrue) ||
-           Fast_Expression_hasSideEffects(_this->ifFalse);
+    return Fast_Expression_hasSideEffects(this->condition) ||
+           Fast_Expression_hasSideEffects(this->ifTrue) ||
+           Fast_Expression_hasSideEffects(this->ifFalse);
 /* $end */
 }
 
 /* ::corto::Fast::Ternary::setOperator(operatorKind kind) */
-cx_void _Fast_Ternary_setOperator(Fast_Ternary _this, cx_operatorKind kind) {
+cx_void _Fast_Ternary_setOperator(Fast_Ternary this, cx_operatorKind kind) {
 /* $begin(::corto::Fast::Ternary::setOperator) */
 
-    if (_this->ifTrueExpr && cx_instanceof(cx_type(Fast_Binary_o), _this->ifTrueExpr)) {
-        Fast_Binary_setOperator(Fast_Binary(_this->ifTrueExpr), kind);
+    if (this->ifTrueExpr && cx_instanceof(cx_type(Fast_Binary_o), this->ifTrueExpr)) {
+        Fast_Binary_setOperator(Fast_Binary(this->ifTrueExpr), kind);
     }
-    if (_this->ifFalseExpr && cx_instanceof(cx_type(Fast_Binary_o), _this->ifFalseExpr)) {
-        Fast_Binary_setOperator(Fast_Binary(_this->ifFalseExpr), kind);
+    if (this->ifFalseExpr && cx_instanceof(cx_type(Fast_Binary_o), this->ifFalseExpr)) {
+        Fast_Binary_setOperator(Fast_Binary(this->ifFalseExpr), kind);
     }
 
 /* $end */
 }
 
 /* ::corto::Fast::Ternary::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _Fast_Ternary_toIc_v(Fast_Ternary _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Ternary_toIc_v(Fast_Ternary this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::corto::Fast::Ternary::toIc) */
-    Fast_If_toIc(_this->ifstmt, program, storage, stored);
-    return Fast_Node_toIc(Fast_Node(_this->result), program, storage, stored);
+    Fast_If_toIc(this->ifstmt, program, storage, stored);
+    return Fast_Node_toIc(Fast_Node(this->result), program, storage, stored);
 /* $end */
 }

@@ -14,20 +14,20 @@
 /* $end */
 
 /* ::corto::lang::constant::init() */
-cx_int16 _cx_constant_init(cx_constant *_this) {
+cx_int16 _cx_constant_init(cx_constant *this) {
 /* $begin(::corto::lang::constant::init) */
     cx_object parent;
 
-    parent = cx_parentof(_this);
+    parent = cx_parentof(this);
 
     /* Parent must be an enum */
     if (cx_typeof(parent) == cx_type(cx_enum_o)) {
-        cx__enum_bindConstant(parent, _this);
+        cx__enum_bindConstant(parent, this);
     } else if (cx_typeof(parent) == cx_type(cx_bitmask_o)) {
-        cx__bitmask_bindConstant(parent, _this);
+        cx__bitmask_bindConstant(parent, this);
     } else {
         cx_id id;
-        cx_error("::constant::init: parent of constant '%s' is not an enum.", cx_fullname(_this, id));
+        cx_error("::constant::init: parent of constant '%s' is not an enum.", cx_fullname(this, id));
         goto error;
     }
 

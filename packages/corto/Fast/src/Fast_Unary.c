@@ -14,24 +14,24 @@
 /* $end */
 
 /* ::corto::Fast::Unary::construct() */
-cx_int16 _Fast_Unary_construct(Fast_Unary _this) {
+cx_int16 _Fast_Unary_construct(Fast_Unary this) {
 /* $begin(::corto::Fast::Unary::construct) */
     cx_type lvalueType;
 
-    lvalueType = Fast_Expression_getType(_this->lvalue);
-    Fast_Node(_this)->kind = Fast_UnaryExpr;
+    lvalueType = Fast_Expression_getType(this->lvalue);
+    Fast_Node(this)->kind = Fast_UnaryExpr;
 
     if (lvalueType->kind != CX_ITERATOR) {
-        if (_this->operator == CX_COND_NOT) {
-            cx_setref(&Fast_Expression(_this)->type, cx_bool_o);
+        if (this->operator == CX_COND_NOT) {
+            cx_setref(&Fast_Expression(this)->type, cx_bool_o);
         } else {
-            cx_setref(&Fast_Expression(_this)->type, lvalueType);
+            cx_setref(&Fast_Expression(this)->type, lvalueType);
         }
     } else {
-        if (_this->operator == CX_MUL) {
+        if (this->operator == CX_MUL) {
             cx_type iterType = cx_iterator(lvalueType)->elementType;
-            cx_setref(&Fast_Expression(_this)->type, iterType);
-            Fast_Expression(_this)->isReference = TRUE;
+            cx_setref(&Fast_Expression(this)->type, iterType);
+            Fast_Expression(this)->isReference = TRUE;
         } else {
             Fast_Parser_error(yparser(), "invalid operator for iterator");
             goto error;
@@ -45,21 +45,21 @@ error:
 }
 
 /* ::corto::Fast::Unary::hasReturnedResource() */
-cx_bool _Fast_Unary_hasReturnedResource_v(Fast_Unary _this) {
+cx_bool _Fast_Unary_hasReturnedResource_v(Fast_Unary this) {
 /* $begin(::corto::Fast::Unary::hasReturnedResource) */
-    return Fast_Expression_hasReturnedResource(_this->lvalue);
+    return Fast_Expression_hasReturnedResource(this->lvalue);
 /* $end */
 }
 
 /* ::corto::Fast::Unary::hasSideEffects() */
-cx_bool _Fast_Unary_hasSideEffects_v(Fast_Unary _this) {
+cx_bool _Fast_Unary_hasSideEffects_v(Fast_Unary this) {
 /* $begin(::corto::Fast::Unary::hasSideEffects) */
-    return Fast_Expression_hasSideEffects(_this->lvalue);
+    return Fast_Expression_hasSideEffects(this->lvalue);
 /* $end */
 }
 
 /* ::corto::Fast::Unary::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _Fast_Unary_toIc_v(Fast_Unary _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Unary_toIc_v(Fast_Unary this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::corto::Fast::Unary::toIc) */
     ic_storage result;
     ic_node lvalue;
@@ -70,17 +70,17 @@ ic_node _Fast_Unary_toIc_v(Fast_Unary _this, ic_program program, ic_storage stor
     } else {
         result = (ic_storage)ic_program_pushAccumulator(
             program,  
-            Fast_Expression_getType(Fast_Expression(_this)),
-            Fast_Expression(_this)->isReference,
+            Fast_Expression_getType(Fast_Expression(this)),
+            Fast_Expression(this)->isReference,
             FALSE);
     }
 
-    lvalue = Fast_Node_toIc(Fast_Node(_this->lvalue), program, result, TRUE);
+    lvalue = Fast_Node_toIc(Fast_Node(this->lvalue), program, result, TRUE);
 
-    switch(_this->operator) {
+    switch(this->operator) {
     case CX_INC:
     case CX_DEC:
-        IC_1(program, Fast_Node(_this)->line, ic_opKindFromOperator(_this->operator), lvalue, IC_DEREF_VALUE);
+        IC_1(program, Fast_Node(this)->line, ic_opKindFromOperator(this->operator), lvalue, IC_DEREF_VALUE);
         result = ic_storage(lvalue);
         break;
     case CX_MUL: {
@@ -89,7 +89,7 @@ ic_node _Fast_Unary_toIc_v(Fast_Unary _this, ic_program program, ic_storage stor
         break;
     }
     default:
-        IC_3(program, Fast_Node(_this)->line, ic_opKindFromOperator(_this->operator), result, lvalue, NULL,
+        IC_3(program, Fast_Node(this)->line, ic_opKindFromOperator(this->operator), result, lvalue, NULL,
             IC_DEREF_VALUE, IC_DEREF_VALUE, IC_DEREF_VALUE);
         break;
     }

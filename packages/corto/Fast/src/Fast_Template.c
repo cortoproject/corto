@@ -10,16 +10,16 @@
 #include "Fast.h"
 
 /* ::corto::Fast::Template::construct() */
-cx_int16 _Fast_Template_construct(Fast_Template _this) {
+cx_int16 _Fast_Template_construct(Fast_Template this) {
 /* $begin(::corto::Fast::Template::construct) */
 
-    if (Fast_Local_construct(Fast_Local(_this))) {
+    if (Fast_Local_construct(Fast_Local(this))) {
         goto error;
     } else {
-        Fast_Storage(_this)->kind = Fast_TemplateStorage;
+        Fast_Storage(this)->kind = Fast_TemplateStorage;
     }
 
-    return Fast_Storage_construct(Fast_Storage(_this));
+    return Fast_Storage_construct(Fast_Storage(this));
 error:
     return -1;
 /* $end */

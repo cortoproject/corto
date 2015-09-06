@@ -13,31 +13,31 @@
 /* $end */
 
 /* ::corto::lang::observer::bind() */
-cx_int16 _cx_observer_bind(cx_observer _this) {
+cx_int16 _cx_observer_bind(cx_observer this) {
 /* $begin(::corto::lang::observer::bind) */
 
     /* If this is a scoped observer, automatically bind with parent if it's a class. */
-    if (cx_checkAttr(_this, CX_ATTR_SCOPED)) {
-        if (cx_class_instanceof(cx_class_o, cx_parentof(_this))) {
-            cx_class_bindObserver(cx_parentof(_this), _this);
+    if (cx_checkAttr(this, CX_ATTR_SCOPED)) {
+        if (cx_class_instanceof(cx_class_o, cx_parentof(this))) {
+            cx_class_bindObserver(cx_parentof(this), this);
         }
     }
 
-    cx_function(_this)->size = sizeof(cx_object) * 3;
+    cx_function(this)->size = sizeof(cx_object) * 3;
 
     /* Check if mask specifies either SELF or CHILDS, if not enable SELF */
-    if (!(_this->mask & (CX_ON_SELF|CX_ON_SCOPE|CX_ON_TREE))) {
-        _this->mask |= CX_ON_SELF;
+    if (!(this->mask & (CX_ON_SELF|CX_ON_SCOPE|CX_ON_TREE))) {
+        this->mask |= CX_ON_SELF;
     }
 
     /* Check if mask specifies either VALUE or METAVALUE, if not enable VALUE */
-    if (!((_this->mask & CX_ON_VALUE) || (_this->mask & CX_ON_METAVALUE))) {
-        _this->mask |= CX_ON_VALUE;
+    if (!((this->mask & CX_ON_VALUE) || (this->mask & CX_ON_METAVALUE))) {
+        this->mask |= CX_ON_VALUE;
     }
 
     /* Listen to observable */
-    if (!_this->template) {
-        if (cx_observer_listen(_this, _this->observable, _this->me)) {
+    if (!this->template) {
+        if (cx_observer_listen(this, this->observable, this->me)) {
             goto error;
         }
     }
@@ -49,29 +49,29 @@ error:
 }
 
 /* ::corto::lang::observer::init() */
-cx_int16 _cx_observer_init(cx_observer _this) {
+cx_int16 _cx_observer_init(cx_observer this) {
 /* $begin(::corto::lang::observer::init) */
     cx_parameter *p;
     
-    cx_setref( &cx_function(_this)->returnType, cx_void_o);
+    cx_setref( &cx_function(this)->returnType, cx_void_o);
 
     /* Set parameters of observer: (this, observable, source) */
-    cx_function(_this)->parameters.buffer = cx_calloc(sizeof(cx_parameter) * 2);
-    cx_function(_this)->parameters.length = 2;
+    cx_function(this)->parameters.buffer = cx_calloc(sizeof(cx_parameter) * 2);
+    cx_function(this)->parameters.length = 2;
  
 
     /* Parameter observable */
-    p = &cx_function(_this)->parameters.buffer[0];
+    p = &cx_function(this)->parameters.buffer[0];
     p->name = cx_strdup("observable");
     p->passByReference = TRUE;
-    if (_this->observable && (!(_this->mask & CX_ON_SCOPE) && !(_this->mask & CX_ON_DECLARE))) {
-        cx_setref(&p->type, cx_typeof(_this->observable));
+    if (this->observable && (!(this->mask & CX_ON_SCOPE) && !(this->mask & CX_ON_DECLARE))) {
+        cx_setref(&p->type, cx_typeof(this->observable));
     } else {
         cx_setref(&p->type, cx_type(cx_object_o));
     }
 
     /* Parameter source */
-    p = &cx_function(_this)->parameters.buffer[1];
+    p = &cx_function(this)->parameters.buffer[1];
     p->name = cx_strdup("source");
     p->passByReference = TRUE;
     cx_setref(&p->type, cx_type(cx_object_o));
@@ -81,41 +81,41 @@ cx_int16 _cx_observer_init(cx_observer _this) {
 }
 
 /* ::corto::lang::observer::listen(object observable,object me) */
-cx_int16 _cx_observer_listen(cx_observer _this, cx_object observable, cx_object me) {
+cx_int16 _cx_observer_listen(cx_observer this, cx_object observable, cx_object me) {
 /* $begin(::corto::lang::observer::listen) */
     cx_object oldObservable = NULL;
 
     /* Silence old observable */
-    if (!_this->template) {
-        if (_this->observing) {
-            oldObservable = _this->observing;
-            cx_setref(&_this->observing, NULL);
+    if (!this->template) {
+        if (this->observing) {
+            oldObservable = this->observing;
+            cx_setref(&this->observing, NULL);
         } else {
-            oldObservable = _this->observable;
+            oldObservable = this->observable;
         }
-        cx_setref(&_this->observable, observable);
+        cx_setref(&this->observable, observable);
     } else {
-        oldObservable = cx_class_getObservable(cx_class(cx_typeof(me)), _this, me);
-        cx_class_setObservable(cx_class(cx_typeof(me)), _this, me, observable);
+        oldObservable = cx_class_getObservable(cx_class(cx_typeof(me)), this, me);
+        cx_class_setObservable(cx_class(cx_typeof(me)), this, me, observable);
     }
 
     if (oldObservable) {
-        cx_silence(oldObservable, _this, me);
+        cx_silence(oldObservable, this, me);
     }
 
     if (observable) {
         if (!me || cx_checkState(me, CX_DEFINED)) {
             if (cx_checkAttr(observable, CX_ATTR_OBSERVABLE)) {
-                cx_listen(observable, _this, me);
+                cx_listen(observable, this, me);
             } else {
-                if (!_this->template) {
+                if (!this->template) {
                     cx_id id;
                     cx_error("cannot observe non-observable object '%s'", cx_fullname(observable, id));
                     goto error;
                 }
             }
         } else if (cx_instanceof((cx_type)cx_class_o, cx_typeof(me))) {
-            cx_class_setObservable(cx_class(cx_typeof(me)), _this, me, observable);
+            cx_class_setObservable(cx_class(cx_typeof(me)), this, me, observable);
         }
     }
 
@@ -126,34 +126,34 @@ error:
 }
 
 /* ::corto::lang::observer::setDispatcher(dispatcher dispatcher) */
-cx_void _cx_observer_setDispatcher(cx_observer _this, cx_dispatcher dispatcher) {
+cx_void _cx_observer_setDispatcher(cx_observer this, cx_dispatcher dispatcher) {
 /* $begin(::corto::lang::observer::setDispatcher) */
     /* TODO: when observer is a template observer only set the dispatcher in observerData. */
-    cx_setref(&_this->dispatcher, dispatcher);
+    cx_setref(&this->dispatcher, dispatcher);
 /* $end */
 }
 
 /* ::corto::lang::observer::silence(object me) */
-cx_int16 _cx_observer_silence(cx_observer _this, cx_object me) {
+cx_int16 _cx_observer_silence(cx_observer this, cx_object me) {
 /* $begin(::corto::lang::observer::silence) */
     cx_object oldObservable;
 
     /* Silence old observable */
-    if (!_this->template) {
-        if (_this->observing) {
-            oldObservable = _this->observing;
-            cx_setref(&_this->observing, NULL);
+    if (!this->template) {
+        if (this->observing) {
+            oldObservable = this->observing;
+            cx_setref(&this->observing, NULL);
         } else {
-            oldObservable = _this->observable;
+            oldObservable = this->observable;
         }
-        cx_setref(&_this->observable, NULL);
+        cx_setref(&this->observable, NULL);
     } else {
-        oldObservable = cx_class_getObservable(cx_class(cx_typeof(me)), me, _this);
-        cx_class_setObservable(cx_class(cx_typeof(me)), me, _this, NULL);
+        oldObservable = cx_class_getObservable(cx_class(cx_typeof(me)), me, this);
+        cx_class_setObservable(cx_class(cx_typeof(me)), me, this, NULL);
     }
 
     if (oldObservable) {
-        cx_silence(oldObservable, _this, me);
+        cx_silence(oldObservable, this, me);
     }
 
     return 0;

@@ -14,24 +14,24 @@
 /* $end */
 
 /* ::corto::Fast::If::construct() */
-cx_int16 _Fast_If_construct(Fast_If _this) {
+cx_int16 _Fast_If_construct(Fast_If this) {
 /* $begin(::corto::Fast::If::construct) */
     cx_type conditionType;
 
-    Fast_Node(_this)->kind = Fast_IfExpr;
+    Fast_Node(this)->kind = Fast_IfExpr;
 
-    if (_this->condition) {
-        conditionType = Fast_Expression_getType(_this->condition);
+    if (this->condition) {
+        conditionType = Fast_Expression_getType(this->condition);
         if (conditionType) {
             /* Check if condition can evaluate to a boolean value */
-            if ((!_this->condition->deref == Fast_ByReference) && !conditionType->reference && (conditionType->kind != CX_PRIMITIVE)) {
+            if ((!this->condition->deref == Fast_ByReference) && !conditionType->reference && (conditionType->kind != CX_PRIMITIVE)) {
                 Fast_Parser_error(yparser(), "expression does not evaluate to condition");
                 goto error;
             }
         }
     }
     
-    _this->warnUnreachable = TRUE;
+    this->warnUnreachable = TRUE;
 
     return 0;
 error:
@@ -40,36 +40,36 @@ error:
 }
 
 /* ::corto::Fast::If::noWarnUnreachable() */
-cx_void _Fast_If_noWarnUnreachable(Fast_If _this) {
+cx_void _Fast_If_noWarnUnreachable(Fast_If this) {
 /* $begin(::corto::Fast::If::noWarnUnreachable) */
-    _this->warnUnreachable = FALSE;
+    this->warnUnreachable = FALSE;
 /* $end */
 }
 
 /* ::corto::Fast::If::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _Fast_If_toIc_v(Fast_If _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_If_toIc_v(Fast_If this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::corto::Fast::If::toIc) */
     ic_storage accumulator;
     ic_label labelEval = NULL, labelEnd = NULL;
     ic_node expr = NULL;
     cx_bool inverse = FALSE, condResult = FALSE;
     Fast_Expression condition = NULL;
-    cx_bool hasReturnedResource = Fast_Expression_hasReturnedResource(_this->condition);
+    cx_bool hasReturnedResource = Fast_Expression_hasReturnedResource(this->condition);
     ic_node preEval = (ic_node)ic_program_pushAccumulator(
                     program, cx_type(cx_bool_o), FALSE,  FALSE); /* See below for explanation */
 
     CX_UNUSED(storage);
     CX_UNUSED(stored);
     
-    if (_this->condition && !(condition = Fast_Node_optimizeCondition(_this->condition, &condResult, &inverse))) {
+    if (this->condition && !(condition = Fast_Node_optimizeCondition(this->condition, &condResult, &inverse))) {
         if (condResult) {
-            Fast_Block_toIc(_this->trueBranch, program, NULL, FALSE);
-            if (_this->falseBranch && _this->warnUnreachable) {
+            Fast_Block_toIc(this->trueBranch, program, NULL, FALSE);
+            if (this->falseBranch && this->warnUnreachable) {
                 Fast_Parser_warning(yparser(), "false-branch has no effect");
             }
-        } else if (_this->falseBranch) {
-            Fast_If_toIc(_this->falseBranch, program, NULL, FALSE);
-            if (_this->trueBranch && _this->warnUnreachable) {
+        } else if (this->falseBranch) {
+            Fast_If_toIc(this->falseBranch, program, NULL, FALSE);
+            if (this->trueBranch && this->warnUnreachable) {
                 Fast_Parser_warning(yparser(), "true-branch has no effect");
             }
         }
@@ -83,7 +83,7 @@ ic_node _Fast_If_toIc_v(Fast_If _this, ic_program program, ic_storage storage, c
          */
 
         /* Parse condition (if no condition, assume true) */
-        if (_this->condition) {
+        if (this->condition) {
             ic_derefKind deref1 = IC_DEREF_VALUE;
 
             if (condition->deref == Fast_ByReference) {
@@ -93,7 +93,7 @@ ic_node _Fast_If_toIc_v(Fast_If _this, ic_program program, ic_storage storage, c
             /* Obtain accumulator for evaluating the condition */
             accumulator = (ic_storage)ic_program_pushAccumulator(
                 program,
-                Fast_Expression_getType(_this->condition),
+                Fast_Expression_getType(this->condition),
                 condition->isReference,
                 hasReturnedResource);
 
@@ -125,7 +125,7 @@ ic_node _Fast_If_toIc_v(Fast_If _this, ic_program program, ic_storage storage, c
              if (hasReturnedResource) {
                 ic_node boolType = ic_node(ic_objectCreate(cx_bool_o));
 
-                IC_3(program, Fast_Node(_this)->line, ic_cast, preEval, expr, boolType,
+                IC_3(program, Fast_Node(this)->line, ic_cast, preEval, expr, boolType,
                     IC_DEREF_VALUE, deref1, IC_DEREF_ADDRESS);
 
                 ic_program_popAccumulator(program);
@@ -139,14 +139,14 @@ ic_node _Fast_If_toIc_v(Fast_If _this, ic_program program, ic_storage storage, c
             labelEval = ic_labelCreate();
 
             /* Evaluate condition, insert jump */
-            if (_this->falseBranch) {
-                IC_3(program, Fast_Node(_this)->line, inverse ? ic_jneq : ic_jeq, expr, 
+            if (this->falseBranch) {
+                IC_3(program, Fast_Node(this)->line, inverse ? ic_jneq : ic_jeq, expr, 
                     labelEval, NULL, deref1, IC_DEREF_VALUE, IC_DEREF_VALUE);
 
                 /* Label to jump over true-branch */
                 labelEnd = ic_labelCreate();
             } else {
-                IC_3(program, Fast_Node(_this)->line, inverse ? ic_jeq : ic_jneq, expr,
+                IC_3(program, Fast_Node(this)->line, inverse ? ic_jeq : ic_jneq, expr,
                     labelEval, NULL, deref1, IC_DEREF_VALUE, IC_DEREF_VALUE);
             }
 
@@ -154,23 +154,23 @@ ic_node _Fast_If_toIc_v(Fast_If _this, ic_program program, ic_storage storage, c
         }
 
         /* Parse false-branch if provided */
-        if (_this->falseBranch) {
-            Fast_If_toIc(_this->falseBranch, program, NULL, TRUE);
+        if (this->falseBranch) {
+            Fast_If_toIc(this->falseBranch, program, NULL, TRUE);
 
             /* Insert jump to end (would otherwise continue at true-branch) */
-            IC_1(program, Fast_Node(_this)->line, ic_jump, labelEnd, IC_DEREF_VALUE);
+            IC_1(program, Fast_Node(this)->line, ic_jump, labelEnd, IC_DEREF_VALUE);
 
             /* If condition evaluates true, jump to this label */
             ic_program_add(program, ic_node(labelEval));
         }
 
         /* Insert true-branch */
-        Fast_Block_toIc(_this->trueBranch, program, NULL, FALSE);
-        if (_this->condition && !_this->falseBranch) {
+        Fast_Block_toIc(this->trueBranch, program, NULL, FALSE);
+        if (this->condition && !this->falseBranch) {
             ic_program_add(program, (ic_node)labelEval);
         }
 
-        if (_this->falseBranch) {
+        if (this->falseBranch) {
             ic_program_add(program, (ic_node)labelEnd);
         }
 

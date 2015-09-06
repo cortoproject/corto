@@ -9,51 +9,51 @@
 #include "cx.h"
 
 /* ::corto::lang::function::bind() */
-cx_int16 _cx_function_bind(cx_function _this) {
+cx_int16 _cx_function_bind(cx_function this) {
 /* $begin(::corto::lang::function::bind) */
     /* Count the size based on the parameters and store parameters in slots */
-    if (!_this->size) {
+    if (!this->size) {
         cx_uint32 i;
-        for(i=0; i<_this->parameters.length; i++) {
-            if (_this->parameters.buffer[i].passByReference) {
-                _this->size += sizeof(cx_word);
+        for(i=0; i<this->parameters.length; i++) {
+            if (this->parameters.buffer[i].passByReference) {
+                this->size += sizeof(cx_word);
             } else {
-                cx_type paramType = _this->parameters.buffer[i].type;
+                cx_type paramType = this->parameters.buffer[i].type;
                 switch(paramType->kind) {
                 case CX_ANY:
-                    _this->size += sizeof(cx_any);
+                    this->size += sizeof(cx_any);
                     break;
                 case CX_PRIMITIVE:
-                    _this->size += cx_type_sizeof(paramType);
+                    this->size += cx_type_sizeof(paramType);
                     break;
                 default:
-                    _this->size += sizeof(void*);
+                    this->size += sizeof(void*);
                     break;
                 }
             }
         }
 
         /* Add size of this-pointer - this must be moved to impl of methods, delegates and callbacks. */
-        if (!(cx_typeof(_this) == cx_type(cx_function_o))) {
-            if (cx_typeof(_this) == cx_type(cx_metaprocedure_o)) {
-                _this->size += sizeof(cx_any);
+        if (!(cx_typeof(this) == cx_type(cx_function_o))) {
+            if (cx_typeof(this) == cx_type(cx_metaprocedure_o)) {
+                this->size += sizeof(cx_any);
             } else {
-                _this->size += sizeof(cx_object);
+                this->size += sizeof(cx_object);
             }
         }
     }
 
     /* If no returntype is set, make it void */
-    if (!_this->returnType) {
-        cx_setref(&_this->returnType, cx_void_o);
+    if (!this->returnType) {
+        cx_setref(&this->returnType, cx_void_o);
     }
 
-    if (_this->returnType->reference) {
-        _this->returnsReference = TRUE;
+    if (this->returnType->reference) {
+        this->returnsReference = TRUE;
     }
 
     /* Bind with interface if possible */
-    if (cx_delegate_bind(_this)) {
+    if (cx_delegate_bind(this)) {
         goto error;
     }
 
@@ -115,16 +115,16 @@ finish:
     return 0;
 }
 /* $end */
-cx_int16 _cx_function_init(cx_function _this) {
+cx_int16 _cx_function_init(cx_function this) {
 /* $begin(::corto::lang::function::init) */
     cx_functionLookup_t walkData;
     cx_ll scope;
 
-    scope = cx_scopeClaim(cx_parentof(_this));
+    scope = cx_scopeClaim(cx_parentof(this));
 
-    walkData.f = _this;
+    walkData.f = this;
     walkData.error = FALSE;
-    cx_signatureName(cx_nameof(_this), walkData.name);
+    cx_signatureName(cx_nameof(this), walkData.name);
     cx_llWalk(scope, cx_functionLookupWalk, &walkData);
     if (walkData.error) {
         goto error;
@@ -133,13 +133,13 @@ cx_int16 _cx_function_init(cx_function _this) {
     cx_scopeRelease(scope);
 
     /* Parse arguments */
-    if (cx_function_parseArguments(_this)) {
+    if (cx_function_parseArguments(this)) {
         goto error;
     }
 
     return 0;
 error:
-    _this->parameters.length = 0;
+    this->parameters.length = 0;
     return -1;
 /* $end */
 }

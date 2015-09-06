@@ -29,11 +29,11 @@ static cx_int16 c_apiAssignMember(cx_serializer s, cx_value* v, void* userData) 
 
             /* Cast object to right type */
             if (data->current == cx_parentof(m)) {
-                g_fileWrite(data->source, "_this->%s",
+                g_fileWrite(data->source, "this->%s",
                         memberId);
             } else {
                 cx_id typeId;
-                g_fileWrite(data->source, "%s(_this)->%s",
+                g_fileWrite(data->source, "%s(this)->%s",
                         g_fullOid(data->g, cx_parentof(m), typeId), memberId);
             }
 
@@ -47,11 +47,11 @@ static cx_int16 c_apiAssignMember(cx_serializer s, cx_value* v, void* userData) 
 
             /* Cast object to right type */
             if (data->current == cx_parentof(m)) {
-                g_fileWrite(data->source, "_this->%s",
+                g_fileWrite(data->source, "this->%s",
                         memberId);
             } else {
                 cx_id typeId;
-                g_fileWrite(data->source, "%s(_this)->%s",
+                g_fileWrite(data->source, "%s(this)->%s",
                         g_fullOid(data->g, cx_parentof(m), typeId), memberId);
             }
 
@@ -173,11 +173,11 @@ cx_int16 c_apiTypeCreateIntern(cx_type t, c_apiWalk_t *data, cx_string func, cx_
     g_fileWrite(data->source, ") {\n");
 
     g_fileIndent(data->source);
-    g_fileWrite(data->source, "%s%s _this;\n", id, t->reference ? "" : "*");
+    g_fileWrite(data->source, "%s%s this;\n", id, t->reference ? "" : "*");
     if (scoped) {
-		g_fileWrite(data->source, "_this = cx_declareChild(_parent, _name, %s_o);\n", id);
+		g_fileWrite(data->source, "this = cx_declareChild(_parent, _name, %s_o);\n", id);
     } else {
-	    g_fileWrite(data->source, "_this = cx_declare(%s_o);\n", id);
+	    g_fileWrite(data->source, "this = cx_declare(%s_o);\n", id);
 	}
 
     if (define) {
@@ -186,15 +186,15 @@ cx_int16 c_apiTypeCreateIntern(cx_type t, c_apiWalk_t *data, cx_string func, cx_
 	    cx_metaWalk(&s, cx_type(t), data);
 
 	    /* Define object */
-	    g_fileWrite(data->source, "if (_this && cx_define(_this)) {\n");
+	    g_fileWrite(data->source, "if (this && cx_define(this)) {\n");
 	    g_fileIndent(data->source);
-	    g_fileWrite(data->source, "cx_release(_this);\n");
-	    g_fileWrite(data->source, "_this = NULL;\n");
+	    g_fileWrite(data->source, "cx_release(this);\n");
+	    g_fileWrite(data->source, "this = NULL;\n");
 	    g_fileDedent(data->source);
 	    g_fileWrite(data->source, "}\n");
 	}
 
-    g_fileWrite(data->source, "return _this;\n");
+    g_fileWrite(data->source, "return this;\n");
     g_fileDedent(data->source);
     g_fileWrite(data->source, "}\n\n");
 
@@ -234,10 +234,10 @@ cx_int16 c_apiTypeDefineIntern(cx_type t, c_apiWalk_t *data, cx_bool isUpdate, c
     }
 
     /* Function declaration */
-    g_fileWrite(data->header, "%s%s(%s%s _this", id, func, id, t->reference ? "" : "*");
+    g_fileWrite(data->header, "%s%s(%s%s this", id, func, id, t->reference ? "" : "*");
 
     /* Function implementation */
-    g_fileWrite(data->source, "%s%s(%s%s _this", id, func, id, t->reference ? "" : "*");
+    g_fileWrite(data->source, "%s%s(%s%s this", id, func, id, t->reference ? "" : "*");
 
     /* Write public members as arguments for source and header */
     if (t->kind == CX_COMPOSITE) {
@@ -256,7 +256,7 @@ cx_int16 c_apiTypeDefineIntern(cx_type t, c_apiWalk_t *data, cx_bool isUpdate, c
     g_fileIndent(data->source);
 
     if (isUpdate && doUpdate && (data->parameterCount > 1)) {
-    	g_fileWrite(data->source, "cx_updateBegin(_this);\n");
+    	g_fileWrite(data->source, "cx_updateBegin(this);\n");
     }
 
     /* Member assignments */
@@ -265,27 +265,27 @@ cx_int16 c_apiTypeDefineIntern(cx_type t, c_apiWalk_t *data, cx_bool isUpdate, c
         cx_metaWalk(&s, cx_type(t), data);
     } else if (t->kind != CX_COMPOSITE) {
         if (t->kind != CX_COLLECTION) {
-            g_fileWrite(data->source, "*_this = value;\n");
+            g_fileWrite(data->source, "*this = value;\n");
         } else {
             if (cx_collection(t)->kind == CX_SEQUENCE) {
-                g_fileWrite(data->source, "cx_copyp(_this, %s_o, &value);\n", id);
+                g_fileWrite(data->source, "cx_copyp(this, %s_o, &value);\n", id);
             } else {
-                g_fileWrite(data->source, "cx_copyp(_this, %s_o, value);\n", id);
+                g_fileWrite(data->source, "cx_copyp(this, %s_o, value);\n", id);
             }
         }
     } else if (isUpdate && !doUpdate) {
-        g_fileWrite(data->source, "CX_UNUSED(_this);\n");
+        g_fileWrite(data->source, "CX_UNUSED(this);\n");
     }
 
     /* Define object */
     if (isUpdate && doUpdate) {
         if (data->parameterCount > 1) {
-            g_fileWrite(data->source, "cx_updateEnd(_this);\n");
+            g_fileWrite(data->source, "cx_updateEnd(this);\n");
         } else {
-            g_fileWrite(data->source, "cx_update(_this);\n");
+            g_fileWrite(data->source, "cx_update(this);\n");
         }
     } else if (!isUpdate) {
-	    g_fileWrite(data->source, "return cx_define(_this);\n");
+	    g_fileWrite(data->source, "return cx_define(this);\n");
 	}
 
     g_fileDedent(data->source);

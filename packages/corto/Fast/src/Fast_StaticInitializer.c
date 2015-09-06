@@ -12,12 +12,12 @@
 /* $header() */
 #include "Fast__private.h"
 
-cx_word Fast_Initializer_offset(Fast_StaticInitializer _this, cx_uint32 variable) {
+cx_word Fast_Initializer_offset(Fast_StaticInitializer this, cx_uint32 variable) {
     cx_word result, base;
-    cx_uint16 fp = Fast_Initializer(_this)->fp;
-    Fast_InitializerFrame *frame = &Fast_Initializer(_this)->frames[fp?fp-1:0];
-    Fast_StaticInitializerFrame *baseFrame = &(_this->frames[fp?fp-1:0]);
-    Fast_InitializerFrame *thisFrame = &Fast_Initializer(_this)->frames[fp];
+    cx_uint16 fp = Fast_Initializer(this)->fp;
+    Fast_InitializerFrame *frame = &Fast_Initializer(this)->frames[fp?fp-1:0];
+    Fast_StaticInitializerFrame *baseFrame = &(this->frames[fp?fp-1:0]);
+    Fast_InitializerFrame *thisFrame = &Fast_Initializer(this)->frames[fp];
     result = 0;
 
     base = baseFrame->ptr[variable];
@@ -75,10 +75,10 @@ cx_word Fast_Initializer_offset(Fast_StaticInitializer _this, cx_uint32 variable
                     if (!*(cx_rbtree*)base) {
                         *(cx_rbtree*)base = cx_rbtreeNew(frame->type);
                     }
-                    cx_rbtreeSet(*(cx_rbtree*)base, (void*)_this->frames[fp].keyPtr[variable], (void*)result);
+                    cx_rbtreeSet(*(cx_rbtree*)base, (void*)this->frames[fp].keyPtr[variable], (void*)result);
                     if (!result) {
-                        if (_this->frames[fp].keyPtr[variable]) {
-                            result = (cx_word)cx_rbtreeGetPtr(*(cx_rbtree*)base, (void*)_this->frames[fp].keyPtr[variable]);
+                        if (this->frames[fp].keyPtr[variable]) {
+                            result = (cx_word)cx_rbtreeGetPtr(*(cx_rbtree*)base, (void*)this->frames[fp].keyPtr[variable]);
                         } else {
                             Fast_Parser_error(yparser(), "cannot set element without keyvalue");
                             goto error;
@@ -86,7 +86,7 @@ cx_word Fast_Initializer_offset(Fast_StaticInitializer _this, cx_uint32 variable
                     }
                 } else {
                     result = (cx_word)cx_calloc(cx_type_sizeof(keyType));
-                    _this->frames[fp].keyPtr[variable] = result;
+                    this->frames[fp].keyPtr[variable] = result;
                     thisFrame->isKey = FALSE;
                 }
                 break;
@@ -111,28 +111,28 @@ error:
 /* $end */
 
 /* ::corto::Fast::StaticInitializer::construct() */
-cx_int16 _Fast_StaticInitializer_construct(Fast_StaticInitializer _this) {
+cx_int16 _Fast_StaticInitializer_construct(Fast_StaticInitializer this) {
 /* $begin(::corto::Fast::StaticInitializer::construct) */
     cx_int8 variable;
     
     /* Copy offsets of variables into frames */
-    for(variable=0; variable<Fast_Initializer(_this)->variableCount; variable++) {
-         _this->frames[0].ptr[variable] =
-                (cx_word)Fast_Object(Fast_Initializer(_this)->variables[variable].object)->value;
-        if (!_this->frames[0].ptr[variable]) {
+    for(variable=0; variable<Fast_Initializer(this)->variableCount; variable++) {
+         this->frames[0].ptr[variable] =
+                (cx_word)Fast_Object(Fast_Initializer(this)->variables[variable].object)->value;
+        if (!this->frames[0].ptr[variable]) {
             Fast_Parser_error(yparser(), "non-static variable in static initializer");
             goto error;
         }
     }
     
-    return Fast_Initializer_construct(Fast_Initializer(_this));
+    return Fast_Initializer_construct(Fast_Initializer(this));
 error:
     return -1;
 /* $end */
 }
 
 /* ::corto::Fast::StaticInitializer::define() */
-cx_int16 _Fast_StaticInitializer_define(Fast_StaticInitializer _this) {
+cx_int16 _Fast_StaticInitializer_define(Fast_StaticInitializer this) {
 /* $begin(::corto::Fast::StaticInitializer::define) */
     cx_uint32 variable;
     cx_object o;
@@ -142,8 +142,8 @@ cx_int16 _Fast_StaticInitializer_define(Fast_StaticInitializer _this) {
      * defined at compile-time because class constructors\destructors are not yet defined at that point. This
      * would cause object creation\destruction without calling the appropriate constructors\destructors.
      */
-    for(variable=0; variable<Fast_Initializer(_this)->variableCount; variable++) {
-        o = (cx_object)Fast_Object(Fast_Initializer(_this)->variables[variable].object)->value;
+    for(variable=0; variable<Fast_Initializer(this)->variableCount; variable++) {
+        o = (cx_object)Fast_Object(Fast_Initializer(this)->variables[variable].object)->value;
         if (cx_instanceof(cx_type(cx_type_o), o)
                 || (cx_checkAttr(o, CX_ATTR_SCOPED) && cx_instanceof(cx_type(cx_type_o), cx_parentof(o)))) {
             if (cx_define(o)) {
@@ -163,7 +163,7 @@ cx_int16 _Fast_StaticInitializer_define(Fast_StaticInitializer _this) {
         }
     }
     
-    Fast_Initializer_define_v(Fast_Initializer(_this));
+    Fast_Initializer_define_v(Fast_Initializer(this));
 
     return 0;
 error:
@@ -172,33 +172,33 @@ error:
 }
 
 /* ::corto::Fast::StaticInitializer::push() */
-cx_int16 _Fast_StaticInitializer_push(Fast_StaticInitializer _this) {
+cx_int16 _Fast_StaticInitializer_push(Fast_StaticInitializer this) {
 /* $begin(::corto::Fast::StaticInitializer::push) */
     cx_uint8 variable;
     
     /* Obtain offset for all that variables being initialized */
-    for(variable=0; variable<Fast_Initializer(_this)->variableCount; variable++) {
+    for(variable=0; variable<Fast_Initializer(this)->variableCount; variable++) {
         /* Calculate the offset for the current value */
-        _this->frames[Fast_Initializer(_this)->fp].ptr[variable] = Fast_Initializer_offset(_this, variable);
+        this->frames[Fast_Initializer(this)->fp].ptr[variable] = Fast_Initializer_offset(this, variable);
     }
 
-    return Fast_Initializer_push_v(Fast_Initializer(_this));
+    return Fast_Initializer_push_v(Fast_Initializer(this));
 /* $end */
 }
 
 /* ::corto::Fast::StaticInitializer::value(Expression v) */
-cx_int16 _Fast_StaticInitializer_value(Fast_StaticInitializer _this, Fast_Expression v) {
+cx_int16 _Fast_StaticInitializer_value(Fast_StaticInitializer this, Fast_Expression v) {
 /* $begin(::corto::Fast::StaticInitializer::value) */
     cx_word offset;
     cx_uint32 variable;
-    cx_uint32 fp = Fast_Initializer(_this)->fp;
-    cx_type type = Fast_Initializer_currentType(Fast_Initializer(_this));
+    cx_uint32 fp = Fast_Initializer(this)->fp;
+    cx_type type = Fast_Initializer_currentType(Fast_Initializer(this));
     cx_type vType = Fast_Expression_getType_type(v, type);
     
     if (!type) {
         cx_id id;
         Fast_Parser_error(yparser(), "excess elements in initializer of type '%s'", 
-            Fast_Parser_id(Fast_Object(Fast_Expression(_this)->type)->value, id));
+            Fast_Parser_id(Fast_Object(Fast_Expression(this)->type)->value, id));
         goto error;
     }
 
@@ -221,10 +221,10 @@ cx_int16 _Fast_StaticInitializer_value(Fast_StaticInitializer _this, Fast_Expres
     }
 
     /* Serialize value to all variables being initialized */
-    for(variable=0; variable<Fast_Initializer(_this)->variableCount; variable++) {
+    for(variable=0; variable<Fast_Initializer(this)->variableCount; variable++) {
         /* Calculate the offset for the current value */
-        _this->frames[fp].ptr[variable] = Fast_Initializer_offset(_this, variable);
-        offset = _this->frames[fp].ptr[variable];
+        this->frames[fp].ptr[variable] = Fast_Initializer_offset(this, variable);
+        offset = this->frames[fp].ptr[variable];
 
         if (!offset) {
             goto error;
@@ -235,7 +235,7 @@ cx_int16 _Fast_StaticInitializer_value(Fast_StaticInitializer _this, Fast_Expres
         }
     }
 
-    return Fast_Initializer_next(Fast_Initializer(_this));
+    return Fast_Initializer_next(Fast_Initializer(this));
 error:
     return -1;
 /* $end */

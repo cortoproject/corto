@@ -14,32 +14,32 @@
 /* $end */
 
 /* ::corto::lang::struct::castable(type type) */
-cx_bool _cx_struct_castable_v(cx_struct _this, cx_type type) {
+cx_bool _cx_struct_castable_v(cx_struct this, cx_type type) {
 /* $begin(::corto::lang::struct::castable) */
-    return cx_struct_compatible(_this, type);
+    return cx_struct_compatible(this, type);
 /* $end */
 }
 
 /* ::corto::lang::struct::compatible(type type) */
-cx_bool _cx_struct_compatible_v(cx_struct _this, cx_type type) {
+cx_bool _cx_struct_compatible_v(cx_struct this, cx_type type) {
 /* $begin(::corto::lang::struct::compatible) */
     cx_bool result;
 
-    cx_assert(cx_class_instanceof(cx_struct_o, _this), "struct::compatible called on non-struct object.");
+    cx_assert(cx_class_instanceof(cx_struct_o, this), "struct::compatible called on non-struct object.");
     result = FALSE;
 
     /* Call overloaded type::compatible function first to check for generic compatibility. */
-    if (!cx_type_compatible_v(cx_type(_this), type)) {
+    if (!cx_type_compatible_v(cx_type(this), type)) {
         /* Type must be at least struct for it to be compatible. */
         if (cx_class_instanceof(cx_struct_o, type)) {
             cx_interface e;
 
-            /* Check if '_this' is superclass of 'type' */
+            /* Check if 'this' is superclass of 'type' */
             e = cx_interface(type);
             do {
                 e = cx_interface(e)->base;
-            }while(e && (e != cx_interface(_this)));
-            result = (e == (cx_interface)_this);
+            }while(e && (e != cx_interface(this)));
+            result = (e == (cx_interface)this);
         }
     } else {
         result = TRUE;
@@ -50,7 +50,7 @@ cx_bool _cx_struct_compatible_v(cx_struct _this, cx_type type) {
 }
 
 /* ::corto::lang::struct::construct() */
-cx_int16 _cx_struct_construct(cx_struct _this) {
+cx_int16 _cx_struct_construct(cx_struct this) {
 /* $begin(::corto::lang::struct::construct) */
     cx_struct base;
     cx_uint16 alignment;
@@ -60,36 +60,36 @@ cx_int16 _cx_struct_construct(cx_struct _this) {
     alignment = 0;
 
     /* Don't allow empty structs */
-    if (!cx_interface(_this)->nextMemberId && !cx_interface(_this)->base) {
-        cx_member m = cx_declareChild(_this, "__dummy", cx_member_o);
+    if (!cx_interface(this)->nextMemberId && !cx_interface(this)->base) {
+        cx_member m = cx_declareChild(this, "__dummy", cx_member_o);
         cx_setref(&m->type, cx_int8_o);
         m->modifiers = CX_PRIVATE|CX_LOCAL;
         cx_define(m);
     }
 
     /* Insert members */
-    if (cx__interface_insertMembers(cx_interface(_this))) {
+    if (cx__interface_insertMembers(cx_interface(this))) {
         goto error;
     }
 
     /* Calculate alignment of self */
-    if (cx_interface(_this)->members.length) {
-        alignment = cx__interface_calculateAlignment(cx_interface(_this));
+    if (cx_interface(this)->members.length) {
+        alignment = cx__interface_calculateAlignment(cx_interface(this));
         if (!alignment) {
             cx_id id;
-            cx_error("error in definition of '%s'", cx_fullname(_this, id));
+            cx_error("error in definition of '%s'", cx_fullname(this, id));
             goto error;            
         }
     }
 
     /* Check if struct inherits from another struct */
-    base = (cx_struct)cx_interface(_this)->base;
+    base = (cx_struct)cx_interface(this)->base;
 
     /* Get maximum alignment from self and base-class and copy template parameters */
     if (base) {
         if (!cx_instanceof(cx_type(cx_struct_o), base)) {
             cx_id id, id2;
-            cx_error("struct '%s' inherits from non-struct type '%s'", cx_fullname(_this, id), cx_fullname(base, id2));
+            cx_error("struct '%s' inherits from non-struct type '%s'", cx_fullname(this, id), cx_fullname(base, id2));
             goto error;
         }
 
@@ -101,50 +101,50 @@ cx_int16 _cx_struct_construct(cx_struct _this) {
     }
 
     /* Set alignment of self */
-    cx_type(_this)->alignment = alignment;
+    cx_type(this)->alignment = alignment;
 
     /* Get size of base-class */
     if (base) {
         size = cx_type(base)->size;
 
         if (cx_type(base)->hasResources) {
-            cx_type(_this)->hasResources = TRUE;
+            cx_type(this)->hasResources = TRUE;
         }
     }
 
     /* Calculate size of self */
-    if (cx_interface(_this)->members.length) {
-        size = cx__interface_calculateSize(cx_interface(_this), size);
+    if (cx_interface(this)->members.length) {
+        size = cx__interface_calculateSize(cx_interface(this), size);
         if (!size) {
             cx_id id;
-            cx_error("error in definition of '%s'", cx_fullname(_this, id));
+            cx_error("error in definition of '%s'", cx_fullname(this, id));
             goto error;
         }
     }
 
     /* Set size of self */
-    cx_type(_this)->size = size;
+    cx_type(this)->size = size;
 
-    return cx_interface_construct(cx_interface(_this));
+    return cx_interface_construct(cx_interface(this));
 error:
     return -1;
 /* $end */
 }
 
 /* ::corto::lang::struct::init() */
-cx_int16 _cx_struct_init(cx_struct _this) {
+cx_int16 _cx_struct_init(cx_struct this) {
 /* $begin(::corto::lang::struct::init) */
     /* If not bootstrapping, set baseAccess to GLOBAL | PUBLIC */
     if (cx_checkState(cx_type_o, CX_DEFINED)) {
-        _this->baseAccess = CX_GLOBAL;
+        this->baseAccess = CX_GLOBAL;
     }
 
-    if (cx_interface_init(cx_interface(_this))) {
+    if (cx_interface_init(cx_interface(this))) {
         goto error;
     }
 
-    cx_interface(_this)->kind = CX_STRUCT;
-    cx_type(_this)->reference = FALSE;
+    cx_interface(this)->kind = CX_STRUCT;
+    cx_type(this)->reference = FALSE;
 
     return 0;
 error:
@@ -153,13 +153,13 @@ error:
 }
 
 /* ::corto::lang::struct::resolveMember(string name) */
-cx_member _cx_struct_resolveMember_v(cx_struct _this, cx_string name) {
+cx_member _cx_struct_resolveMember_v(cx_struct this, cx_string name) {
 /* $begin(::corto::lang::struct::resolveMember) */
     cx_interface base;
     cx_member m;
 
     m = NULL;
-    base = cx_interface(_this);
+    base = cx_interface(this);
     do {
         m = cx_interface_resolveMember_v(cx_interface(base), name);
     }while(!m && (base=cx_interface(base)->base));

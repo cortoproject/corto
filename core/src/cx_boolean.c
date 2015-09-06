@@ -9,10 +9,10 @@
 #include "cx.h"
 
 /* ::corto::lang::boolean::init() */
-cx_int16 _cx_boolean_init(cx_boolean _this) {
+cx_int16 _cx_boolean_init(cx_boolean this) {
 /* $begin(::corto::lang::boolean::init) */
-    cx_primitive(_this)->kind = CX_BOOLEAN;
-    cx_primitive(_this)->width = CX_WIDTH_8;
-    return cx_primitive_init((cx_primitive)_this);
+    cx_primitive(this)->kind = CX_BOOLEAN;
+    cx_primitive(this)->width = CX_WIDTH_8;
+    return cx_primitive_init((cx_primitive)this);
 /* $end */
 }

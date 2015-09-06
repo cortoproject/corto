@@ -9,11 +9,11 @@
 #include "cx.h"
 
 /* ::corto::lang::text::init() */
-cx_int16 _cx_text_init(cx_text _this) {
+cx_int16 _cx_text_init(cx_text this) {
 /* $begin(::corto::lang::text::init) */
-    cx_type(_this)->hasResources = TRUE;
-    cx_primitive(_this)->kind = CX_TEXT;
-    cx_primitive(_this)->width = CX_WIDTH_WORD;
-    return cx_primitive_init((cx_primitive)_this);
+    cx_type(this)->hasResources = TRUE;
+    cx_primitive(this)->kind = CX_TEXT;
+    cx_primitive(this)->width = CX_WIDTH_WORD;
+    return cx_primitive_init((cx_primitive)this);
 /* $end */
 }

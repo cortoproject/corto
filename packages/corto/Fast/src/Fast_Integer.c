@@ -14,15 +14,15 @@
 /* $end */
 
 /* ::corto::Fast::Integer::init() */
-cx_int16 _Fast_Integer_init(Fast_Integer _this) {
+cx_int16 _Fast_Integer_init(Fast_Integer this) {
 /* $begin(::corto::Fast::Integer::init) */
-    Fast_Literal(_this)->kind = Fast_Int;
-    return Fast_Literal_init((Fast_Literal)_this);
+    Fast_Literal(this)->kind = Fast_Int;
+    return Fast_Literal_init((Fast_Literal)this);
 /* $end */
 }
 
 /* ::corto::Fast::Integer::serialize(type dstType,word dst) */
-cx_int16 _Fast_Integer_serialize(Fast_Integer _this, cx_type dstType, cx_word dst) {
+cx_int16 _Fast_Integer_serialize(Fast_Integer this, cx_type dstType, cx_word dst) {
 /* $begin(::corto::Fast::Integer::serialize) */
     Fast_valueKind kind;
 
@@ -31,14 +31,14 @@ cx_int16 _Fast_Integer_serialize(Fast_Integer _this, cx_type dstType, cx_word ds
 
     switch(kind) {
     case Fast_Bool:
-        *(cx_bool*)dst = _this->value ? TRUE : FALSE;
+        *(cx_bool*)dst = this->value ? TRUE : FALSE;
         break;
     case Fast_Int:
     case Fast_SignedInt:
     case Fast_Float:
     case Fast_Enum:
     case Fast_Text:
-        cx_convert(cx_primitive(cx_uint64_o), &_this->value, cx_primitive(dstType), (void*)dst);
+        cx_convert(cx_primitive(cx_uint64_o), &this->value, cx_primitive(dstType), (void*)dst);
         break;
     default: {
         cx_id id;
@@ -55,14 +55,14 @@ error:
 }
 
 /* ::corto::Fast::Integer::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _Fast_Integer_toIc_v(Fast_Integer _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Integer_toIc_v(Fast_Integer this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::corto::Fast::Integer::toIc) */
     ic_node result;
     CX_UNUSED(program);
     CX_UNUSED(storage);
     CX_UNUSED(stored);
 
-    result = (ic_node)ic_literalCreate((cx_any){Fast_Expression_getType(Fast_Expression(_this)), &_this->value, FALSE});
+    result = (ic_node)ic_literalCreate((cx_any){Fast_Expression_getType(Fast_Expression(this)), &this->value, FALSE});
 
     return result;
 /* $end */

@@ -14,15 +14,15 @@
 /* $end */
 
 /* ::corto::Fast::Boolean::init() */
-cx_int16 _Fast_Boolean_init(Fast_Boolean _this) {
+cx_int16 _Fast_Boolean_init(Fast_Boolean this) {
 /* $begin(::corto::Fast::Boolean::init) */
-    Fast_Literal(_this)->kind = Fast_Bool;
-    return Fast_Literal_init(Fast_Literal(_this));
+    Fast_Literal(this)->kind = Fast_Bool;
+    return Fast_Literal_init(Fast_Literal(this));
 /* $end */
 }
 
 /* ::corto::Fast::Boolean::serialize(type dstType,word dst) */
-cx_int16 _Fast_Boolean_serialize(Fast_Boolean _this, cx_type dstType, cx_word dst) {
+cx_int16 _Fast_Boolean_serialize(Fast_Boolean this, cx_type dstType, cx_word dst) {
 /* $begin(::corto::Fast::Boolean::serialize) */
     Fast_valueKind kind;
 
@@ -32,13 +32,13 @@ cx_int16 _Fast_Boolean_serialize(Fast_Boolean _this, cx_type dstType, cx_word ds
     case Fast_Bool:
     case Fast_Int:
         memset((void*)dst, 0, cx_type_sizeof(dstType));
-        *(cx_bool*)dst = _this->value;
+        *(cx_bool*)dst = this->value;
         break;
     case Fast_Text:
         if (*(cx_string*)dst) {
             cx_dealloc(*(cx_string*)dst);
         }
-        if (_this->value) {
+        if (this->value) {
             *(cx_string*)dst = cx_strdup("true");
         } else {
             *(cx_string*)dst = cx_strdup("false");
@@ -59,14 +59,14 @@ error:
 }
 
 /* ::corto::Fast::Boolean::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _Fast_Boolean_toIc_v(Fast_Boolean _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Boolean_toIc_v(Fast_Boolean this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::corto::Fast::Boolean::toIc) */
     ic_node result;
     CX_UNUSED(storage);
     CX_UNUSED(stored);
     CX_UNUSED(program);
 
-    result = (ic_node)ic_literalCreate((cx_any){cx_type(cx_bool_o), &_this->value, FALSE});
+    result = (ic_node)ic_literalCreate((cx_any){cx_type(cx_bool_o), &this->value, FALSE});
 
     return result;
 /* $end */

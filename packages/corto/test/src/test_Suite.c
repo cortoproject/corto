@@ -10,13 +10,13 @@
 #include "test.h"
 
 /* ::corto::test::Suite::construct() */
-cx_int16 _test_Suite_construct(test_Suite _this) {
+cx_int16 _test_Suite_construct(test_Suite this) {
 /* $begin(::corto::test::Suite::construct) */
-    if (_this->test) {
-        _this->result.success = TRUE;
+    if (this->test) {
+        this->result.success = TRUE;
         extern cx_threadKey test_suiteKey;
-        cx_threadTlsSet(test_suiteKey, _this);
-        cx_call(cx_function(_this->test), NULL, _this);
+        cx_threadTlsSet(test_suiteKey, this);
+        cx_call(cx_function(this->test), NULL, this);
         cx_threadTlsSet(test_suiteKey, NULL);
     } else {
         goto error;
@@ -28,15 +28,15 @@ error:
 }
 
 /* ::corto::test::Suite::setup() */
-cx_void _test_Suite_setup_v(test_Suite _this) {
+cx_void _test_Suite_setup_v(test_Suite this) {
 /* $begin(::corto::test::Suite::setup) */
-    CX_UNUSED(_this);
+    CX_UNUSED(this);
 /* $end */
 }
 
 /* ::corto::test::Suite::teardown() */
-cx_void _test_Suite_teardown_v(test_Suite _this) {
+cx_void _test_Suite_teardown_v(test_Suite this) {
 /* $begin(::corto::test::Suite::teardown) */
-    CX_UNUSED(_this);
+    CX_UNUSED(this);
 /* $end */
 }

@@ -192,7 +192,7 @@ Fast_Expression Fast_Expression_narrow(Fast_Expression expr, cx_type target) {
 /* $end */
 
 /* ::corto::Fast::Expression::cast(type type,bool isReference) */
-Fast_Expression _Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_bool isReference) {
+Fast_Expression _Fast_Expression_cast(Fast_Expression this, cx_type type, cx_bool isReference) {
 /* $begin(::corto::Fast::Expression::cast) */
     cx_type exprType, refType;
     Fast_Expression result = NULL;
@@ -200,8 +200,8 @@ Fast_Expression _Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_bo
     
     cx_assert(type != NULL, "cannot cast to unknown type NULL");
 
-    exprType = Fast_Expression_getType(_this);
-    if((_this->deref == Fast_ByReference) && !isReference && !exprType->reference) {
+    exprType = Fast_Expression_getType(this);
+    if((this->deref == Fast_ByReference) && !isReference && !exprType->reference) {
         refType = cx_object_o;
     } else {
         refType = exprType;
@@ -212,9 +212,9 @@ Fast_Expression _Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_bo
         if (!exprType) {
             /* If expression is an untyped initializer, create an anonymous variable of the destination type 
              * and assign it to the initializer. */
-            if(Fast_Node(_this)->kind == Fast_InitializerExpr) {
+            if(Fast_Node(this)->kind == Fast_InitializerExpr) {
                 Fast_Expression local = Fast_Expression(Fast_TemporaryCreate(type, FALSE));
-                Fast_InitializerExpression_insert(Fast_InitializerExpression(_this), local);
+                Fast_InitializerExpression_insert(Fast_InitializerExpression(this), local);
                 result = local;
                 castRequired = TRUE;
             }else {
@@ -224,12 +224,12 @@ Fast_Expression _Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_bo
             void *value = NULL;
 
             /* If expression is a literal or constant create new literal of right type */
-            value = (void*)Fast_Expression_getValue(_this);
+            value = (void*)Fast_Expression_getValue(this);
             if (value) {
-                if (type->reference && (Fast_Node(_this)->kind == Fast_LiteralExpr)) {
+                if (type->reference && (Fast_Node(this)->kind == Fast_LiteralExpr)) {
                     /* If destination type is a reference and the literal is a string this results
                      * in a resolve at run-time. */
-                    switch(Fast_Literal(_this)->kind) {
+                    switch(Fast_Literal(this)->kind) {
                     case Fast_Text:
                         break;
                     case Fast_Nothing:
@@ -306,7 +306,7 @@ Fast_Expression _Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_bo
                    (Fast_Expression_getCastScore(cx_primitive(refType)) == 
                     Fast_Expression_getCastScore(cx_primitive(type)))) {
                     if (cx_primitive(exprType)->width != cx_primitive(type)->width) {
-                        result = Fast_Expression(Fast_CastCreate(type, _this, isReference));
+                        result = Fast_Expression(Fast_CastCreate(type, this, isReference));
                     } else {
                         /* Types have the same width, so no cast required */
                         castRequired = FALSE;
@@ -322,15 +322,15 @@ Fast_Expression _Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_bo
                     
                 /* For all other cases, insert cast */
                 } else {
-                    result = Fast_Expression(Fast_CastCreate(type, _this, isReference));
+                    result = Fast_Expression(Fast_CastCreate(type, this, isReference));
                 }
             }
         /* If object is a reference and targetType is string, insert toString operation */
-        } else /*if (_this->isReference || Fast_Expression_getType(_this)->reference)*/ {
+        } else /*if (this->isReference || Fast_Expression_getType(this)->reference)*/ {
             if ((type->kind == CX_PRIMITIVE) && (cx_primitive(type)->kind == CX_TEXT)) {
 
                 /* Create call-expression */
-                result = Fast_Expression(Fast_createCallWithArguments(_this, "toString", NULL));
+                result = Fast_Expression(Fast_createCallWithArguments(this, "toString", NULL));
                 if (!result) {
                     goto error;
                 }
@@ -342,7 +342,7 @@ Fast_Expression _Fast_Expression_cast(Fast_Expression _this, cx_type type, cx_bo
 
             /* If assigning to a generic reference, insert cast */
             } else if (exprType->kind == CX_VOID && (exprType->reference || isReference)) {
-                result = Fast_Expression(Fast_CastCreate(type, _this, isReference));    
+                result = Fast_Expression(Fast_CastCreate(type, this, isReference));    
             }
         }
     } else {
@@ -380,10 +380,10 @@ cx_void _Fast_Expression_cleanList(Fast_ExpressionList list) {
 }
 
 /* ::corto::Fast::Expression::fold() */
-Fast_Expression _Fast_Expression_fold_v(Fast_Expression _this) {
+Fast_Expression _Fast_Expression_fold_v(Fast_Expression this) {
 /* $begin(::corto::Fast::Expression::fold) */
-    CX_UNUSED(_this);
-    return _this;
+    CX_UNUSED(this);
+    return this;
 /* $end */
 }
 
@@ -418,19 +418,19 @@ Fast_Expression _Fast_Expression_fromList(Fast_ExpressionList list) {
 }
 
 /* ::corto::Fast::Expression::getType() */
-cx_type _Fast_Expression_getType(Fast_Expression _this) {
+cx_type _Fast_Expression_getType(Fast_Expression this) {
 /* $begin(::corto::Fast::Expression::getType) */
-    return _this->type;
+    return this->type;
 /* $end */
 }
 
 /* ::corto::Fast::Expression::getType_expr(Expression target) */
 /* $header(::corto::Fast::Expression::getType_expr) */
-cx_type Fast_Expression_getType_intern(Fast_Expression _this, cx_type target, Fast_Expression targetExpr) {
-    cx_type result = Fast_Expression_getType(_this);
+cx_type Fast_Expression_getType_intern(Fast_Expression this, cx_type target, Fast_Expression targetExpr) {
+    cx_type result = Fast_Expression_getType(this);
 
     if (!result) {
-        if ((Fast_Node(_this)->kind == Fast_LiteralExpr) && (Fast_Literal(_this)->kind == Fast_Nothing)) {
+        if ((Fast_Node(this)->kind == Fast_LiteralExpr) && (Fast_Literal(this)->kind == Fast_Nothing)) {
             if (target) {
                 if (target->reference) {
                     result = target;
@@ -446,7 +446,7 @@ cx_type Fast_Expression_getType_intern(Fast_Expression _this, cx_type target, Fa
             } else {
                 goto error;
             }
-        } else if (Fast_Node(_this)->kind == Fast_InitializerExpr) {
+        } else if (Fast_Node(this)->kind == Fast_InitializerExpr) {
             result = target;
         } else {
             goto error;
@@ -461,21 +461,21 @@ error:
     return NULL;  
 }
 /* $end */
-cx_type _Fast_Expression_getType_expr(Fast_Expression _this, Fast_Expression target) {
+cx_type _Fast_Expression_getType_expr(Fast_Expression this, Fast_Expression target) {
 /* $begin(::corto::Fast::Expression::getType_expr) */
     cx_type type,result;
 
-    result = Fast_Expression_getType(_this);
+    result = Fast_Expression_getType(this);
     type = Fast_Expression_getType(target);
 
     if (!result) {
         if (type) {
-            result = Fast_Expression_getType_intern(_this, type, target);
+            result = Fast_Expression_getType_intern(this, type, target);
         } else {
             result = cx_void_o;
         }
     } else {
-        result = Fast_Expression_getType_intern(_this, type, target);
+        result = Fast_Expression_getType_intern(this, type, target);
     }
 
     return result;
@@ -483,40 +483,40 @@ cx_type _Fast_Expression_getType_expr(Fast_Expression _this, Fast_Expression tar
 }
 
 /* ::corto::Fast::Expression::getType_type(type target) */
-cx_type _Fast_Expression_getType_type(Fast_Expression _this, cx_type target) {
+cx_type _Fast_Expression_getType_type(Fast_Expression this, cx_type target) {
 /* $begin(::corto::Fast::Expression::getType_type) */
-    return Fast_Expression_getType_intern(_this, target, NULL);
+    return Fast_Expression_getType_intern(this, target, NULL);
 /* $end */
 }
 
 /* ::corto::Fast::Expression::getValue() */
-cx_word _Fast_Expression_getValue_v(Fast_Expression _this) {
+cx_word _Fast_Expression_getValue_v(Fast_Expression this) {
 /* $begin(::corto::Fast::Expression::getValue) */
-    CX_UNUSED(_this);
+    CX_UNUSED(this);
     return 0;
 /* $end */
 }
 
 /* ::corto::Fast::Expression::hasReturnedResource() */
-cx_bool _Fast_Expression_hasReturnedResource_v(Fast_Expression _this) {
+cx_bool _Fast_Expression_hasReturnedResource_v(Fast_Expression this) {
 /* $begin(::corto::Fast::Expression::hasReturnedResource) */
-    CX_UNUSED(_this);
+    CX_UNUSED(this);
     return FALSE;
 /* $end */
 }
 
 /* ::corto::Fast::Expression::hasSideEffects() */
-cx_bool _Fast_Expression_hasSideEffects_v(Fast_Expression _this) {
+cx_bool _Fast_Expression_hasSideEffects_v(Fast_Expression this) {
 /* $begin(::corto::Fast::Expression::hasSideEffects) */
-    CX_UNUSED(_this);
+    CX_UNUSED(this);
     return FALSE;
 /* $end */
 }
 
 /* ::corto::Fast::Expression::serialize(type dstType,word dst) */
-cx_int16 _Fast_Expression_serialize_v(Fast_Expression _this, cx_type dstType, cx_word dst) {
+cx_int16 _Fast_Expression_serialize_v(Fast_Expression this, cx_type dstType, cx_word dst) {
 /* $begin(::corto::Fast::Expression::serialize) */
-    CX_UNUSED(_this);
+    CX_UNUSED(this);
     CX_UNUSED(dstType);
     CX_UNUSED(dst);
     cx_assert(0, "call to pure virtual function Fast::Expression::serialize");
@@ -525,13 +525,13 @@ cx_int16 _Fast_Expression_serialize_v(Fast_Expression _this, cx_type dstType, cx
 }
 
 /* ::corto::Fast::Expression::toList() */
-Fast_ExpressionList _Fast_Expression_toList_v(Fast_Expression _this) {
+Fast_ExpressionList _Fast_Expression_toList_v(Fast_Expression this) {
 /* $begin(::corto::Fast::Expression::toList) */
     Fast_NodeList result = NULL;
     
-    if (_this) {
+    if (this) {
         result = cx_llNew();
-        Fast_ExpressionListInsert(result, _this);
+        Fast_ExpressionListInsert(result, this);
     }
     
     return result;

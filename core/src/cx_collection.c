@@ -14,7 +14,7 @@ typedef struct __dummySeq {
     void* buffer;
 }__dummySeq;
 
-static int cx_arrayWalk(cx_collection _this, cx_void* array, cx_uint32 length, cx_walkAction action, cx_void* userData) {
+static int cx_arrayWalk(cx_collection this, cx_void* array, cx_uint32 length, cx_walkAction action, cx_void* userData) {
     void* v;
     int result;
     cx_type elementType;
@@ -23,7 +23,7 @@ static int cx_arrayWalk(cx_collection _this, cx_void* array, cx_uint32 length, c
     result = 1;
 
     if (array) {
-        elementType = _this->elementType;
+        elementType = this->elementType;
         elementSize = cx_type_sizeof(elementType);
         v = array;
 
@@ -38,22 +38,22 @@ static int cx_arrayWalk(cx_collection _this, cx_void* array, cx_uint32 length, c
 }
 
 /* Walk contents of collection */
-int cx_walk(cx_collection _this, cx_void* collection, cx_walkAction action, cx_void* userData) {
+int cx_walk(cx_collection this, cx_void* collection, cx_walkAction action, cx_void* userData) {
     int result;
 
     result = 1;
 
-    switch(_this->kind) {
+    switch(this->kind) {
     case CX_ARRAY:
-        result = cx_arrayWalk(_this, collection, _this->max, action, userData);
+        result = cx_arrayWalk(this, collection, this->max, action, userData);
         break;
     case CX_SEQUENCE:
-        result = cx_arrayWalk(_this, ((__dummySeq*)collection)->buffer, ((__dummySeq*)collection)->length, action, userData);
+        result = cx_arrayWalk(this, ((__dummySeq*)collection)->buffer, ((__dummySeq*)collection)->length, action, userData);
         break;
     case CX_LIST: {
         cx_ll list = *(cx_ll*)collection;
         if (list) {
-            if (cx_collection_elementRequiresAlloc(_this)) {
+            if (cx_collection_elementRequiresAlloc(this)) {
                 result = cx_llWalk(list, action, userData);
             } else {
                 result = cx_llWalkPtr(list, action, userData);
@@ -64,7 +64,7 @@ int cx_walk(cx_collection _this, cx_void* collection, cx_walkAction action, cx_v
     case CX_MAP: {
         cx_rbtree tree = *(cx_rbtree*)collection;
         if (tree) {
-            if (cx_collection_elementRequiresAlloc(_this)) {
+            if (cx_collection_elementRequiresAlloc(this)) {
                 result = cx_rbtreeWalk(tree, action, userData);
             } else {
                 result = cx_rbtreeWalkPtr(tree, action, userData);
@@ -91,17 +91,17 @@ static int cx_clearFreeValues(void* o, void* udata) {
 }
 
 /* Clear collection */
-void cx_clear(cx_collection _this, cx_void* collection) {
+void cx_clear(cx_collection this, cx_void* collection) {
    cx_type elementType;
 
-   elementType = _this->elementType;
+   elementType = this->elementType;
 
    /* If type is a reference type, do free's on all elements */
    if (elementType->reference) {
-       cx_walk(_this, collection, cx_clearFreeReferences, NULL);
+       cx_walk(this, collection, cx_clearFreeReferences, NULL);
    }
 
-   switch(_this->kind) {
+   switch(this->kind) {
    case CX_SEQUENCE:
        cx_dealloc(((__dummySeq*)collection)->buffer);
        ((__dummySeq*)collection)->buffer = NULL;
@@ -110,8 +110,8 @@ void cx_clear(cx_collection _this, cx_void* collection) {
    case CX_LIST: {
        cx_ll c;
        if ((c = *(cx_ll*)collection)) {
-           if (cx_collection_elementRequiresAlloc(_this)) {
-               cx_walk(_this, collection, cx_clearFreeValues, NULL);
+           if (cx_collection_elementRequiresAlloc(this)) {
+               cx_walk(this, collection, cx_clearFreeValues, NULL);
            }
            cx_llFree(c);
        }
@@ -121,7 +121,7 @@ void cx_clear(cx_collection _this, cx_void* collection) {
        cx_rbtree c;
        if ((c = *(cx_rbtree*)collection)) {
            if (!elementType->reference) {
-               cx_walk(_this, collection, cx_clearFreeValues, NULL);
+               cx_walk(this, collection, cx_clearFreeValues, NULL);
            }
            cx_rbtreeFree(c);
        }
@@ -129,7 +129,7 @@ void cx_clear(cx_collection _this, cx_void* collection) {
    }
    default: {
        cx_id id;
-       cx_error("the clear operation is only valid for sequences, lists and maps (got %s)", cx_fullname(_this, id));
+       cx_error("the clear operation is only valid for sequences, lists and maps (got %s)", cx_fullname(this, id));
        break;
    }
    }
@@ -137,17 +137,17 @@ void cx_clear(cx_collection _this, cx_void* collection) {
 /* $end */
 
 /* ::corto::lang::collection::castable(type type) */
-cx_bool _cx_collection_castable_v(cx_collection _this, cx_type type) {
+cx_bool _cx_collection_castable_v(cx_collection this, cx_type type) {
 /* $begin(::corto::lang::collection::castable) */
     cx_bool result = FALSE;
     if (type->kind == CX_COLLECTION) {
         cx_collection t = cx_collection(type);
 
         /* Arrays are only castable when they match exactly in size */
-        if (!(_this->kind == CX_ARRAY) || ((t->kind == CX_ARRAY) && (_this->max == t->max))) {
-            if (_this->elementType != t->elementType) {
-                if (_this->elementType->kind == CX_COLLECTION) {
-                    result = cx_collection_castable(cx_collection(_this->elementType), t->elementType);
+        if (!(this->kind == CX_ARRAY) || ((t->kind == CX_ARRAY) && (this->max == t->max))) {
+            if (this->elementType != t->elementType) {
+                if (this->elementType->kind == CX_COLLECTION) {
+                    result = cx_collection_castable(cx_collection(this->elementType), t->elementType);
                 }
             } else {
                 result = TRUE;
@@ -160,17 +160,17 @@ cx_bool _cx_collection_castable_v(cx_collection _this, cx_type type) {
 }
 
 /* ::corto::lang::collection::compatible(type type) */
-cx_bool _cx_collection_compatible_v(cx_collection _this, cx_type type) {
+cx_bool _cx_collection_compatible_v(cx_collection this, cx_type type) {
 /* $begin(::corto::lang::collection::compatible) */
     cx_bool result = FALSE;
 
     if (type->kind == CX_COLLECTION) {
-        if (cx_collection(_this)->kind == cx_collection(type)->kind) {
-            if(cx_collection(_this)->elementType == cx_collection(type)->elementType) {
+        if (cx_collection(this)->kind == cx_collection(type)->kind) {
+            if(cx_collection(this)->elementType == cx_collection(type)->elementType) {
                 result = TRUE;
             }
-            if(cx_collection(_this)->kind == CX_MAP) {
-                if(cx_map(_this)->keyType != cx_map(type)->keyType) {
+            if(cx_collection(this)->kind == CX_MAP) {
+                if(cx_map(this)->keyType != cx_map(type)->keyType) {
                     result = FALSE;
                 }
             }
@@ -182,10 +182,10 @@ cx_bool _cx_collection_compatible_v(cx_collection _this, cx_type type) {
 }
 
 /* ::corto::lang::collection::elementRequiresAlloc() */
-cx_bool _cx_collection_elementRequiresAlloc(cx_collection _this) {
+cx_bool _cx_collection_elementRequiresAlloc(cx_collection this) {
 /* $begin(::corto::lang::collection::elementRequiresAlloc) */
     cx_bool result = TRUE;
-    cx_type elementType = _this->elementType;
+    cx_type elementType = this->elementType;
 
     if (elementType->reference) {
         result = FALSE;
@@ -238,30 +238,30 @@ cx_bool _cx_collection_elementRequiresAlloc(cx_collection _this) {
 }
 
 /* ::corto::lang::collection::init() */
-cx_int16 _cx_collection_init(cx_collection _this) {
+cx_int16 _cx_collection_init(cx_collection this) {
 /* $begin(::corto::lang::collection::init) */
-    cx_type(_this)->kind = CX_COLLECTION;
-    return cx_type_init(cx_type(_this));
+    cx_type(this)->kind = CX_COLLECTION;
+    return cx_type_init(cx_type(this));
 /* $end */
 }
 
 /* ::corto::lang::collection::size() */
-cx_uint32 _cx_collection_size(cx_any _this) {
+cx_uint32 _cx_collection_size(cx_any this) {
 /* $begin(::corto::lang::collection::size) */
     cx_uint32 result = 0;
 
-    switch(cx_collection(_this.type)->kind) {
+    switch(cx_collection(this.type)->kind) {
     case CX_ARRAY:
-        result = cx_collection(_this.type)->max;
+        result = cx_collection(this.type)->max;
         break;
     case CX_SEQUENCE:
-        result = ((cx_objectseq*)_this.value)->length;
+        result = ((cx_objectseq*)this.value)->length;
         break;
     case CX_LIST:
-        result = cx_llSize(*(cx_ll*)_this.value);
+        result = cx_llSize(*(cx_ll*)this.value);
         break;
     case CX_MAP:
-        result = cx_rbtreeSize(*(cx_rbtree*)_this.value);
+        result = cx_rbtreeSize(*(cx_rbtree*)this.value);
         break;
     }
 

@@ -297,7 +297,7 @@ int tc_event_load(void) {
         
         /* Bind tc_Point_construct_onThis_o with C-function */
         cx_function(tc_Point_construct_onThis_o)->kind = CX_PROCEDURE_CDECL;
-        cx_void tc_Point_construct_onThis(tc_Point _this, cx_object *observable, cx_object *source);
+        cx_void tc_Point_construct_onThis(tc_Point this, cx_object *observable, cx_object *source);
         cx_function(tc_Point_construct_onThis_o)->impl = (cx_word)tc_Point_construct_onThis;
         if (cx_define(tc_Point_construct_onThis_o)) {
             cx_error("tc_event_load: failed to define object '::tc_event::Point::construct_onThis'.");
@@ -322,7 +322,7 @@ int tc_event_load(void) {
         
         /* Bind tc_Point_destruct_onThis_o with C-function */
         cx_function(tc_Point_destruct_onThis_o)->kind = CX_PROCEDURE_CDECL;
-        cx_void tc_Point_destruct_onThis(tc_Point _this, cx_object *observable, cx_object *source);
+        cx_void tc_Point_destruct_onThis(tc_Point this, cx_object *observable, cx_object *source);
         cx_function(tc_Point_destruct_onThis_o)->impl = (cx_word)tc_Point_destruct_onThis;
         if (cx_define(tc_Point_destruct_onThis_o)) {
             cx_error("tc_event_load: failed to define object '::tc_event::Point::destruct_onThis'.");
@@ -347,7 +347,7 @@ int tc_event_load(void) {
         
         /* Bind tc_Point_new_onThis_o with C-function */
         cx_function(tc_Point_new_onThis_o)->kind = CX_PROCEDURE_CDECL;
-        cx_void tc_Point_new_onThis(tc_Point _this, cx_object *observable, cx_object *source);
+        cx_void tc_Point_new_onThis(tc_Point this, cx_object *observable, cx_object *source);
         cx_function(tc_Point_new_onThis_o)->impl = (cx_word)tc_Point_new_onThis;
         if (cx_define(tc_Point_new_onThis_o)) {
             cx_error("tc_event_load: failed to define object '::tc_event::Point::new_onThis'.");
@@ -372,7 +372,7 @@ int tc_event_load(void) {
         
         /* Bind tc_Point_update_onThis_o with C-function */
         cx_function(tc_Point_update_onThis_o)->kind = CX_PROCEDURE_CDECL;
-        cx_void tc_Point_update_onThis(tc_Point _this, cx_object *observable, cx_object *source);
+        cx_void tc_Point_update_onThis(tc_Point this, cx_object *observable, cx_object *source);
         cx_function(tc_Point_update_onThis_o)->impl = (cx_word)tc_Point_update_onThis;
         if (cx_define(tc_Point_update_onThis_o)) {
             cx_error("tc_event_load: failed to define object '::tc_event::Point::update_onThis'.");

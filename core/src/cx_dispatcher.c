@@ -9,10 +9,10 @@
 #include "cx.h"
 
 /* ::corto::lang::dispatcher::post(event e) */
-cx_void _cx_dispatcher_post_v(cx_dispatcher _this, cx_event e) {
+cx_void _cx_dispatcher_post_v(cx_dispatcher this, cx_event e) {
 /* $begin(::corto::lang::dispatcher::post) */
 
-    CX_UNUSED(_this);
+    CX_UNUSED(this);
     CX_UNUSED(e);
 
 /* $end */

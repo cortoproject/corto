@@ -9,15 +9,15 @@
 static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData) {
     cx_type type = cx_valueType(info);
     cx_copy_ser_t *data = userData;
-    void *_this = cx_valueValue(info);
-    void *value = (void*)((cx_word)cx_valueValue(&data->value) + ((cx_word)_this - (cx_word)data->base));
+    void *this = cx_valueValue(info);
+    void *value = (void*)((cx_word)cx_valueValue(&data->value) + ((cx_word)this - (cx_word)data->base));
     
     CX_UNUSED(s);
     
     if (cx_primitive(type)->kind != CX_TEXT) {
-        memcpy(value, _this, type->size);
+        memcpy(value, this, type->size);
     } else {
-        *(cx_string*)value = cx_strdup(*(cx_string*)_this);
+        *(cx_string*)value = cx_strdup(*(cx_string*)this);
     }
     
     return 0;
@@ -25,11 +25,11 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData
 
 static cx_int16 cx_ser_reference(cx_serializer s, cx_value *info, void *userData) {
     cx_copy_ser_t *data = userData;
-    void *_this = cx_valueValue(info);
-    void *value = (void*)((cx_word)cx_valueValue(&data->value) + ((cx_word)_this - (cx_word)data->base));
+    void *this = cx_valueValue(info);
+    void *value = (void*)((cx_word)cx_valueValue(&data->value) + ((cx_word)this - (cx_word)data->base));
     CX_UNUSED(s);
  
-    cx_setref(value, *(cx_object*)_this);
+    cx_setref(value, *(cx_object*)this);
     
     return 0;
 }

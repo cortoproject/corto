@@ -12,7 +12,7 @@
 #include "cx__interface.h"
 #include "cx__sequence.h"
 
-static cx_vtable *cx_interface_vtableFromBase(cx_interface _this) {
+static cx_vtable *cx_interface_vtableFromBase(cx_interface this) {
     cx_interface base;
     cx_vtable *myTable, *baseTable;
     cx_uint32 size;
@@ -20,7 +20,7 @@ static cx_vtable *cx_interface_vtableFromBase(cx_interface _this) {
     myTable = NULL;
 
     /* Lookup first vtable in inheritance hierarchy */
-    base = cx_interface(_this);
+    base = cx_interface(this);
     baseTable = NULL;
     while (!baseTable && (base = base->base)) {
         baseTable = (cx_vtable*)&(cx_interface(base)->methods);
@@ -135,12 +135,12 @@ found:
 
 /* Bind methods in scope */
 int cx_interface_walkScope(cx_object o, void* userData) {
-    cx_interface _this;
-    _this = userData;
+    cx_interface this;
+    this = userData;
 
     if (cx_class_instanceof(cx_procedure_o, cx_typeof(o)) && ((cx_procedure(cx_typeof(o))->kind == CX_METHOD))) {
         if (!cx_checkState(o, CX_DEFINED)) {
-            if (cx_interface_bindMethod(_this, o)) {
+            if (cx_interface_bindMethod(this, o)) {
                 goto error;
             }
         }
@@ -151,23 +151,23 @@ error:
     return 0;
 }
 
-cx_int16 cx__interface_bindMember(cx_interface _this, cx_member o) {
-    o->id = _this->nextMemberId;
-    _this->nextMemberId++;
+cx_int16 cx__interface_bindMember(cx_interface this, cx_member o) {
+    o->id = this->nextMemberId;
+    this->nextMemberId++;
     return 0;
 }
 
 /* private interface::calculateAlignment */
-cx_uint16 cx__interface_calculateAlignment(cx_interface _this) {
+cx_uint16 cx__interface_calculateAlignment(cx_interface this) {
     cx_uint32 i;
     cx_uint16 alignment;
     cx_member member;
 
     alignment = 0;
 
-    for (i=0; i<_this->members.length; i++) {
+    for (i=0; i<this->members.length; i++) {
         cx_uint16 memberAlignment;
-        member = _this->members.buffer[i];
+        member = this->members.buffer[i];
         memberAlignment = cx_type_alignmentof(member->type);
         if (memberAlignment) {
             if (memberAlignment > alignment) {
@@ -186,23 +186,23 @@ error:
 }
 
 /* private interface::calculateSize */
-cx_uint32 cx__interface_calculateSize(cx_interface _this, cx_uint32 base) {
+cx_uint32 cx__interface_calculateSize(cx_interface this, cx_uint32 base) {
     cx_uint32 i, memberSize, size, alignment, interfaceAlignment;
     cx_member m;
     cx_type memberType;
 
-    interfaceAlignment = cx_type(_this)->alignment;
+    interfaceAlignment = cx_type(this)->alignment;
 
     /* Calculate size from members */
     size = base;
-    for (i=0; i<_this->members.length; i++) {
-        m = _this->members.buffer[i];
+    for (i=0; i<this->members.length; i++) {
+        m = this->members.buffer[i];
         memberType = m->type;
 
         memberSize = cx_type_sizeof(memberType);
         if (!memberSize) {
             cx_id id1, id2;
-            cx_error("member '%s' of type '%s' is of invalid type '%s'", cx_nameof(m), cx_fullname(_this, id1), cx_fullname(memberType, id2));
+            cx_error("member '%s' of type '%s' is of invalid type '%s'", cx_nameof(m), cx_fullname(this, id1), cx_fullname(memberType, id2));
             goto error;
         }
 
@@ -214,7 +214,7 @@ cx_uint32 cx__interface_calculateSize(cx_interface _this, cx_uint32 base) {
         size = CX_ALIGN(size, alignment);
 
         if (m->type->hasResources || m->type->reference) {
-            cx_type(_this)->hasResources = TRUE;
+            cx_type(this)->hasResources = TRUE;
         }
 
         m->offset = size;
@@ -247,20 +247,20 @@ error:
 }
 
 /* private interface::insertMembers */
-cx_int16 cx__interface_insertMembers(cx_interface _this) {
+cx_int16 cx__interface_insertMembers(cx_interface this) {
     /* Create sequence with size nextMemberId */
-    if (_this->nextMemberId) {
-        if (cx_sequence_alloc(cx_collection(cx_memberseq_o), &_this->members, _this->nextMemberId)) {
+    if (this->nextMemberId) {
+        if (cx_sequence_alloc(cx_collection(cx_memberseq_o), &this->members, this->nextMemberId)) {
             goto error;
         }
 
         /* Fill interface.members with members in scope */
-        if (!cx_scopeWalk(_this, cx_interface_insertMemberAction, _this)) {
+        if (!cx_scopeWalk(this, cx_interface_insertMemberAction, this)) {
             goto error;
         }
     }
 
-    cx_assert(_this->nextMemberId == _this->members.length, "not all members were added to interface object.");
+    cx_assert(this->nextMemberId == this->members.length, "not all members were added to interface object.");
 
     return 0;
 error:
@@ -378,10 +378,10 @@ cx_bool cx_interface_checkProcedureCompatibility(cx_function o1, cx_function o2)
 /* $end */
 
 /* ::corto::lang::interface::baseof(interface type) */
-cx_int16 _cx_interface_baseof(cx_interface _this, cx_interface type) {
+cx_int16 _cx_interface_baseof(cx_interface this, cx_interface type) {
 /* $begin(::corto::lang::interface::baseof) */
-    cx_interface ptr = _this->base;
-    cx_bool result = _this == type;
+    cx_interface ptr = this->base;
+    cx_bool result = this == type;
     
     while (ptr && !result) {
         result = ptr == type;
@@ -393,7 +393,7 @@ cx_int16 _cx_interface_baseof(cx_interface _this, cx_interface type) {
 }
 
 /* ::corto::lang::interface::bindMethod(method method) */
-cx_int16 _cx_interface_bindMethod(cx_interface _this, cx_method method) {
+cx_int16 _cx_interface_bindMethod(cx_interface this, cx_method method) {
 /* $begin(::corto::lang::interface::bindMethod) */
     cx_method* virtual;
     cx_int32 i;
@@ -401,7 +401,7 @@ cx_int16 _cx_interface_bindMethod(cx_interface _this, cx_method method) {
 
     /* Check if a method with the same name is already in the vtable */
     i = 0;
-    virtual = (cx_method*)cx_vtableLookup(&cx_interface(_this)->methods, cx_nameof(method), &i, &d);
+    virtual = (cx_method*)cx_vtableLookup(&cx_interface(this)->methods, cx_nameof(method), &i, &d);
 
     /* vtableLookup failed (probably due to a failed overloading request) */
     if (i == -1) {
@@ -438,12 +438,12 @@ cx_int16 _cx_interface_bindMethod(cx_interface _this, cx_method method) {
             cx_function(method)->overloaded = TRUE;
         }
 
-        if (cx_vtableInsert(&_this->methods, cx_function(method))) {
+        if (cx_vtableInsert(&this->methods, cx_function(method))) {
             cx_claim(method);
         }
     }
 
-    if (cx_interface(_this)->kind == CX_INTERFACE) {
+    if (cx_interface(this)->kind == CX_INTERFACE) {
         method->virtual = TRUE;
     }
 
@@ -454,19 +454,19 @@ error:
 }
 
 /* ::corto::lang::interface::compatible(type type) */
-cx_bool _cx_interface_compatible_v(cx_interface _this, cx_type type) {
+cx_bool _cx_interface_compatible_v(cx_interface this, cx_type type) {
 /* $begin(::corto::lang::interface::compatible) */
     cx_bool result;
 
     /* First test if types are compatible using the rules that are
      * inherited from type. */
-    if (!(result = cx_type_compatible_v(cx_type(_this), type))) {
+    if (!(result = cx_type_compatible_v(cx_type(this), type))) {
         /* If not compatible, check if the type is a class, in which case
          * an implement-relation could make it compatible. */
         if (cx_class_instanceof(cx_class_o, type)) {
             cx_uint32 i;
             for (i=0; (i<cx_class(type)->implements.length) && !result; i++) {
-                if (cx_class(type)->implements.buffer[i] == _this) {
+                if (cx_class(type)->implements.buffer[i] == this) {
                     result = TRUE;
                 }
             }
@@ -478,7 +478,7 @@ cx_bool _cx_interface_compatible_v(cx_interface _this, cx_type type) {
 }
 
 /* ::corto::lang::interface::construct() */
-cx_int16 _cx_interface_construct(cx_interface _this) {
+cx_int16 _cx_interface_construct(cx_interface this) {
 /* $begin(::corto::lang::interface::construct) */
     cx_vtable *superTable, ownTable;
     cx_uint32 i;
@@ -486,16 +486,16 @@ cx_int16 _cx_interface_construct(cx_interface _this) {
     superTable = NULL;
 
     /* If a vtable exists on a super-class, merge it with my own. */
-    superTable = cx_interface_vtableFromBase(_this);
+    superTable = cx_interface_vtableFromBase(this);
     if (superTable) {
-        ownTable = _this->methods;
-        _this->methods = *superTable;
+        ownTable = this->methods;
+        this->methods = *superTable;
 
         /* re-bind methods */
         if (ownTable.length) {
             for (i=0; i<ownTable.length; i++) {
                 if (cx_instanceof(cx_type(cx_method_o), ownTable.buffer[i])) {
-                    cx_interface_bindMethod(_this, cx_method(ownTable.buffer[i]));
+                    cx_interface_bindMethod(this, cx_method(ownTable.buffer[i]));
                 } 
                 cx_release(ownTable.buffer[i]);
             }
@@ -505,67 +505,67 @@ cx_int16 _cx_interface_construct(cx_interface _this) {
         cx_dealloc(superTable);
     }
 
-    if (!cx_scopeWalk(_this, cx_interface_walkScope, _this)) {
+    if (!cx_scopeWalk(this, cx_interface_walkScope, this)) {
         goto error;
     }
 
-    return cx_type_construct(cx_type(_this));
+    return cx_type_construct(cx_type(this));
 error:
     return -1;
 /* $end */
 }
 
 /* ::corto::lang::interface::destruct() */
-cx_void _cx_interface_destruct(cx_interface _this) {
+cx_void _cx_interface_destruct(cx_interface this) {
 /* $begin(::corto::lang::interface::destruct) */
     cx_uint32 i;
 
     /* Free members */
-    for (i=0; i<_this->members.length; i++) {
-        cx_release(_this->members.buffer[i]);
+    for (i=0; i<this->members.length; i++) {
+        cx_release(this->members.buffer[i]);
     }
 
-    if (_this->members.buffer) {
-        cx_dealloc(_this->members.buffer);
-        _this->members.buffer = NULL;
+    if (this->members.buffer) {
+        cx_dealloc(this->members.buffer);
+        this->members.buffer = NULL;
     }
 
     /* Free methods */
-    for (i=0; i<_this->methods.length; i++) {
-        cx_release(_this->methods.buffer[i]);
+    for (i=0; i<this->methods.length; i++) {
+        cx_release(this->methods.buffer[i]);
     }
 
-    if (_this->methods.buffer) {
-        cx_dealloc(_this->methods.buffer);
-        _this->methods.buffer = NULL;
+    if (this->methods.buffer) {
+        cx_dealloc(this->methods.buffer);
+        this->methods.buffer = NULL;
     }
 
-    cx_type_destruct(cx_type(_this));
+    cx_type_destruct(cx_type(this));
 /* $end */
 }
 
 /* ::corto::lang::interface::init() */
-cx_int16 _cx_interface_init(cx_interface _this) {
+cx_int16 _cx_interface_init(cx_interface this) {
 /* $begin(::corto::lang::interface::init) */
-    cx_type(_this)->reference = TRUE;
-    cx_type(_this)->kind = CX_COMPOSITE;
-    cx_setref(&cx_type(_this)->defaultType, cx_member_o);
-    _this->kind = CX_INTERFACE;
-    return cx_type_init(cx_type(_this));
+    cx_type(this)->reference = TRUE;
+    cx_type(this)->kind = CX_COMPOSITE;
+    cx_setref(&cx_type(this)->defaultType, cx_member_o);
+    this->kind = CX_INTERFACE;
+    return cx_type_init(cx_type(this));
 /* $end */
 }
 
 /* ::corto::lang::interface::resolveMember(string name) */
-cx_member _cx_interface_resolveMember_v(cx_interface _this, cx_string name) {
+cx_member _cx_interface_resolveMember_v(cx_interface this, cx_string name) {
 /* $begin(::corto::lang::interface::resolveMember) */
     cx_uint32 i;
     cx_member result;
 
     result = NULL;
 
-    for (i=0; i<_this->members.length; i++) {
-        if (!strcmp(cx_nameof(_this->members.buffer[i]), name)) {
-            result = _this->members.buffer[i];
+    for (i=0; i<this->members.length; i++) {
+        if (!strcmp(cx_nameof(this->members.buffer[i]), name)) {
+            result = this->members.buffer[i];
             break;
         }
     }
@@ -575,7 +575,7 @@ cx_member _cx_interface_resolveMember_v(cx_interface _this, cx_string name) {
 }
 
 /* ::corto::lang::interface::resolveMethod(string name) */
-cx_method _cx_interface_resolveMethod(cx_interface _this, cx_string name) {
+cx_method _cx_interface_resolveMethod(cx_interface this, cx_string name) {
 /* $begin(::corto::lang::interface::resolveMethod) */
     cx_method result;
     cx_method* found;
@@ -583,7 +583,7 @@ cx_method _cx_interface_resolveMethod(cx_interface _this, cx_string name) {
     result = NULL;
 
     /* Lookup method */
-    if ((found = (cx_method*)cx_vtableLookup(&_this->methods, name, NULL, NULL))) {
+    if ((found = (cx_method*)cx_vtableLookup(&this->methods, name, NULL, NULL))) {
         result = *found;
     }
 
@@ -592,7 +592,7 @@ cx_method _cx_interface_resolveMethod(cx_interface _this, cx_string name) {
 }
 
 /* ::corto::lang::interface::resolveMethodById(uint32 id) */
-cx_method _cx_interface_resolveMethodById(cx_interface _this, cx_uint32 id) {
+cx_method _cx_interface_resolveMethodById(cx_interface this, cx_uint32 id) {
 /* $begin(::corto::lang::interface::resolveMethodById) */
     cx_method result;
     cx_vtable* vtable;
@@ -601,14 +601,14 @@ cx_method _cx_interface_resolveMethodById(cx_interface _this, cx_uint32 id) {
     result = NULL;
 
     /* Lookup method */
-    vtable = &_this->methods;
+    vtable = &this->methods;
     if (id <= vtable->length) {
         result = cx_method(vtable->buffer[id-1]);
     } else {
         cx_id _id;
         cx_uint32 i;
-        cx_error("interface::resolveMethodById: invalid vtable-index %d for interface %s", id, cx_fullname(_this, _id));
-        printf("%s.vtable:\n", cx_fullname(_this, _id));
+        cx_error("interface::resolveMethodById: invalid vtable-index %d for interface %s", id, cx_fullname(this, _id));
+        printf("%s.vtable:\n", cx_fullname(this, _id));
         for (i=0; i<vtable->length; i++) {
             printf("   (%d) %s\n", i+1, cx_fullname(vtable->buffer[i], _id));
         }
@@ -619,21 +619,21 @@ cx_method _cx_interface_resolveMethodById(cx_interface _this, cx_uint32 id) {
 }
 
 /* ::corto::lang::interface::resolveMethodId(string name) */
-cx_uint32 _cx_interface_resolveMethodId(cx_interface _this, cx_string name) {
+cx_uint32 _cx_interface_resolveMethodId(cx_interface this, cx_string name) {
 /* $begin(::corto::lang::interface::resolveMethodId) */
     cx_int32 result;
 
     result = 0;
 
-    if (!cx_checkState(_this, CX_DEFINED)) {
+    if (!cx_checkState(this, CX_DEFINED)) {
         cx_id id;
-        cx_error("cannot resolve methodId for method '%s' from undefined interface '%s'", name, cx_fullname(_this, id));
+        cx_error("cannot resolve methodId for method '%s' from undefined interface '%s'", name, cx_fullname(this, id));
         abort();
         goto error;
     }
 
     /* Lookup method */
-    if (cx_vtableLookup(&_this->methods, name, &result, NULL)) {
+    if (cx_vtableLookup(&this->methods, name, &result, NULL)) {
         if (result == -1) {
             goto error;
         }

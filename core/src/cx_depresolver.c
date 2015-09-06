@@ -348,12 +348,12 @@ cx_depresolver cx_depresolverCreate(cx_depresolver_action onDeclare, cx_depresol
  *   @param dependency The dependency object.
  *   @param dependencyKind The dependency object must reach at least this state before the dependency can be resolved.
  */
-void cx_depresolver_depend(cx_depresolver _this, void* o, cx_uint8 kind, void* d, cx_uint8 dependencyKind) {
+void cx_depresolver_depend(cx_depresolver this, void* o, cx_uint8 kind, void* d, cx_uint8 dependencyKind) {
     g_dependency dep;
     g_item dependent, dependency;
 
-    dependent = g_itemLookup(o, _this);
-    dependency = g_itemLookup(d, _this);
+    dependent = g_itemLookup(o, this);
+    dependency = g_itemLookup(d, this);
 
     if (dependent->o != dependency->o) {
 
@@ -405,35 +405,35 @@ void cx_depresolver_depend(cx_depresolver _this, void* o, cx_uint8 kind, void* d
     }
 }
 
-void cx_depresolver_insert(cx_depresolver _this, void *item) {
-    g_itemLookup(item, _this);   
+void cx_depresolver_insert(cx_depresolver this, void *item) {
+    g_itemLookup(item, this);   
 }
 
-int cx_depresolver_walk(cx_depresolver _this) {
+int cx_depresolver_walk(cx_depresolver this) {
     cx_iter iter;
     g_item item;
     cx_uint32 unresolved = 0;
 
     /* Print initial items */
-    if (g_itemPrintItems(_this)) {
+    if (g_itemPrintItems(this)) {
         goto error;
     }
 
     /* Resolve items with cycles */
-    iter = cx_llIter(_this->items);
+    iter = cx_llIter(this->items);
     while(cx_iterHasNext(&iter)) {
         item = cx_iterNext(&iter);
 
         /* Process objects that have not yet been defined or declared */
         if (!item->defined) {
             /* Locate and resolve cycles */
-            _this->sp = 0;
-            if (g_itemResolveCycles(item, _this)) {
+            this->sp = 0;
+            if (g_itemResolveCycles(item, this)) {
                 goto error;
             }
 
             /* Print items after resolving cycle(s) for item. */
-            if (g_itemPrintItems(_this)) {
+            if (g_itemPrintItems(this)) {
                 goto error;
             }
         }
@@ -441,7 +441,7 @@ int cx_depresolver_walk(cx_depresolver _this) {
 
 
     /* Free items and check if there are still undeclared or undefined objects. */
-    while((item = cx_llTakeFirst(_this->items))) {
+    while((item = cx_llTakeFirst(this->items))) {
         if (!item->defined) {
             if (!item->declared) {
                 cx_id id;
@@ -457,11 +457,11 @@ int cx_depresolver_walk(cx_depresolver _this) {
     }
 
     /* Free lists */
-    cx_llFree(_this->toPrint);
-    cx_llFree(_this->items);
+    cx_llFree(this->toPrint);
+    cx_llFree(this->items);
 
     /* Free this */
-    cx_dealloc(_this);
+    cx_dealloc(this);
 
     if (unresolved) {
         cx_error("unsolvable dependecy cycles encountered");

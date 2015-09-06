@@ -14,15 +14,15 @@
 /* $end */
 
 /* ::corto::lang::procedure::init() */
-cx_int16 _cx_procedure_init(cx_procedure _this) {
+cx_int16 _cx_procedure_init(cx_procedure this) {
 /* $begin(::corto::lang::procedure::init) */
 
-    if (cx_interface_init(cx_interface(_this))) {
+    if (cx_interface_init(cx_interface(this))) {
         goto error;
     }
 
-    cx_interface(_this)->kind = CX_PROCEDURE;
-    cx_type(_this)->reference = TRUE;
+    cx_interface(this)->kind = CX_PROCEDURE;
+    cx_type(this)->reference = TRUE;
 
     return 0;
 error:
@@ -31,9 +31,9 @@ error:
 }
 
 /* ::corto::lang::procedure::unbind(function object) */
-cx_void _cx_procedure_unbind(cx_procedure _this, cx_function object) {
+cx_void _cx_procedure_unbind(cx_procedure this, cx_function object) {
 /* $begin(::corto::lang::procedure::unbind) */
-    if (_this->kind == CX_OBSERVER){
+    if (this->kind == CX_OBSERVER){
         cx_observer_unbind(cx_observer(object));
     } else {
         cx_function_unbind(object);

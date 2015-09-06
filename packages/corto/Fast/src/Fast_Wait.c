@@ -57,24 +57,24 @@ cx_interface Fast_findCommonAncestor(cx_interface t1, cx_interface t2) {
 /* $end */
 
 /* ::corto::Fast::Wait::construct() */
-cx_int16 _Fast_Wait_construct(Fast_Wait _this) {
+cx_int16 _Fast_Wait_construct(Fast_Wait this) {
 /* $begin(::corto::Fast::Wait::construct) */
     cx_iter exprIter;
     Fast_Expression expr, timeoutExpr;
     cx_type exprType, resultType = NULL;
 
-    Fast_Node(_this)->kind = Fast_WaitExpr;
+    Fast_Node(this)->kind = Fast_WaitExpr;
 
-    /* Walk types of waitlist, check if all expressions evaluate to _this or reference values. Compare types in
+    /* Walk types of waitlist, check if all expressions evaluate to this or reference values. Compare types in
      * waitlist to determine type of wait expression by taking the highest common ancestor. If no common ancestor
-     * is found the type of the wait expression is a generic _this. */
-    exprIter = cx_llIter(_this->exprList);
+     * is found the type of the wait expression is a generic this. */
+    exprIter = cx_llIter(this->exprList);
     while(cx_iterHasNext(&exprIter) && (resultType != cx_object_o)) {
         expr = cx_iterNext(&exprIter);
         exprType = Fast_Expression_getType(expr);
 
         if (!(exprType->reference || expr->isReference)) {
-            Fast_Parser_error(yparser(), "one or more expressions in the waitlist do not evaluate to an _this");
+            Fast_Parser_error(yparser(), "one or more expressions in the waitlist do not evaluate to an this");
             goto error;
         }
 
@@ -98,18 +98,18 @@ cx_int16 _Fast_Wait_construct(Fast_Wait _this) {
         }
     }
 
-    if (_this->timeout) {
-        timeoutExpr = Fast_Expression_cast(_this->timeout, cx_type(cx_float32_o), FALSE);
+    if (this->timeout) {
+        timeoutExpr = Fast_Expression_cast(this->timeout, cx_type(cx_float32_o), FALSE);
         if (timeoutExpr) {
-            cx_setref(&_this->timeout, timeoutExpr);
+            cx_setref(&this->timeout, timeoutExpr);
         }
     } else {
-        _this->timeout = Fast_Expression(Fast_FloatingPointCreate(0));
+        this->timeout = Fast_Expression(Fast_FloatingPointCreate(0));
     }
 
     /* Set type of expression */
-    cx_setref(&Fast_Expression(_this)->type, resultType);
-    Fast_Expression(_this)->isReference = TRUE; /* Result is always an _this */
+    cx_setref(&Fast_Expression(this)->type, resultType);
+    Fast_Expression(this)->isReference = TRUE; /* Result is always an this */
 
     return 0;
 error:
@@ -118,15 +118,15 @@ error:
 }
 
 /* ::corto::Fast::Wait::hasReturnedResource() */
-cx_bool _Fast_Wait_hasReturnedResource_v(Fast_Wait _this) {
+cx_bool _Fast_Wait_hasReturnedResource_v(Fast_Wait this) {
 /* $begin(::corto::Fast::Wait::hasReturnedResource) */
-    CX_UNUSED(_this);
+    CX_UNUSED(this);
     return FALSE;
 /* $end */
 }
 
 /* ::corto::Fast::Wait::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _Fast_Wait_toIc_v(Fast_Wait _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Wait_toIc_v(Fast_Wait this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::corto::Fast::Wait::toIc) */
     cx_iter exprIter;
     Fast_Expression expr;
@@ -138,10 +138,10 @@ ic_node _Fast_Wait_toIc_v(Fast_Wait _this, ic_program program, ic_storage storag
         result = (ic_node)storage;
     } else {
         result = (ic_node)ic_program_pushAccumulator(
-            program, Fast_Expression_getType(Fast_Expression(_this)), TRUE, FALSE);
+            program, Fast_Expression_getType(Fast_Expression(this)), TRUE, FALSE);
     }
 
-    exprIter = cx_llIter(_this->exprList);
+    exprIter = cx_llIter(this->exprList);
     while(cx_iterHasNext(&exprIter)) {
         expr = cx_iterNext(&exprIter);
 
@@ -149,19 +149,19 @@ ic_node _Fast_Wait_toIc_v(Fast_Wait _this, ic_program program, ic_storage storag
         ic = Fast_Node_toIc(Fast_Node(expr), program, NULL, TRUE);
 
         /* Insert waitfor instruction */
-        IC_1(program, Fast_Node(_this)->line, ic_waitfor, ic, 
+        IC_1(program, Fast_Node(this)->line, ic_waitfor, ic, 
             expr->isReference ? IC_DEREF_ADDRESS : IC_DEREF_VALUE);
     }
 
     /* Parse timeout-expression */
-    if (_this->timeout) {
-        ic = Fast_Node_toIc(Fast_Node(_this->timeout), program, NULL, TRUE);
+    if (this->timeout) {
+        ic = Fast_Node_toIc(Fast_Node(this->timeout), program, NULL, TRUE);
     } else {
         ic = NULL;
     }
 
     /* Insert wait instruction */
-    IC_3(program, Fast_Node(_this)->line, ic_wait, result, ic, NULL, 
+    IC_3(program, Fast_Node(this)->line, ic_wait, result, ic, NULL, 
         IC_DEREF_VALUE, IC_DEREF_VALUE, IC_DEREF_VALUE);
 
     return result;

@@ -23,7 +23,7 @@ static int indent = 0;
 #endif
 
 /* Forward value to the right callback function */
-cx_int16 cx_serializeValue(cx_serializer _this, cx_value* info, void* userData) {
+cx_int16 cx_serializeValue(cx_serializer this, cx_value* info, void* userData) {
     cx_type t;
     cx_int16 result;
     cx_serializerCallback cb;
@@ -32,32 +32,32 @@ cx_int16 cx_serializeValue(cx_serializer _this, cx_value* info, void* userData) 
 
     cb = NULL;
 
-    if (!_this->initialized) {
+    if (!this->initialized) {
         cx_assert(0, "serializer is not initialized!");
     }
 
-    if (!_this->constructed) {
-        if (_this->construct) {
-            if (_this->construct(_this, info, userData)) {
+    if (!this->constructed) {
+        if (this->construct) {
+            if (this->construct(this, info, userData)) {
                 goto error;
             }
         }
-        _this->constructed = TRUE;
+        this->constructed = TRUE;
     }
 
     /* If the serializer has a special handler for reference types, use it in case the
      * type is a reference type. */
     if (t->reference && (info->kind != CX_OBJECT) && (info->kind != CX_BASE)) {
-        cb = _this->reference;
+        cb = this->reference;
     } else
     /* ..otherwise use the program-handler */
     if (!cb) {
-        cb = _this->program[t->kind];
+        cb = this->program[t->kind];
     }
 
     result = 0;
     if (cb) {
-        result = cb(_this, info, userData);
+        result = cb(this, info, userData);
     }
 
     return result;
@@ -65,24 +65,24 @@ error:
     return -1;
 }
 
-void cx_serializerInit(cx_serializer _this) {
-    memset(_this, 0, sizeof(struct cx_serializer_s));
-    _this->program[CX_ANY] = cx_serializeAny;
-    _this->program[CX_COMPOSITE] = cx_serializeMembers;
-    _this->program[CX_COLLECTION] = cx_serializeElements;
-    _this->initialized = TRUE;
-    _this->constructed = FALSE;
-    _this->access = CX_GLOBAL;
-    _this->accessKind = CX_XOR;
+void cx_serializerInit(cx_serializer this) {
+    memset(this, 0, sizeof(struct cx_serializer_s));
+    this->program[CX_ANY] = cx_serializeAny;
+    this->program[CX_COMPOSITE] = cx_serializeMembers;
+    this->program[CX_COLLECTION] = cx_serializeElements;
+    this->initialized = TRUE;
+    this->constructed = FALSE;
+    this->access = CX_GLOBAL;
+    this->accessKind = CX_XOR;
 }
 
 /* Start serializing */
-cx_int16 cx_serialize(cx_serializer _this, cx_object o, void* userData) {
+cx_int16 cx_serialize(cx_serializer this, cx_object o, void* userData) {
     cx_value info;
     cx_serializerCallback cb;
     cx_int16 result;
     
-    if (_this->initialized != TRUE) {
+    if (this->initialized != TRUE) {
         cx_assert(0, "serializer is not initialized!");
     }
     
@@ -91,15 +91,15 @@ cx_int16 cx_serialize(cx_serializer _this, cx_object o, void* userData) {
     info.is.object.o = o;
     info.is.object.t = cx_typeof(o);
 
-    if (_this->construct) {
-        if (_this->construct(_this, &info, userData)) {
+    if (this->construct) {
+        if (this->construct(this, &info, userData)) {
             goto error;
         }
     }
 
-    _this->constructed = TRUE;
+    this->constructed = TRUE;
 
-    if (!(cb = _this->metaprogram[CX_OBJECT])) {
+    if (!(cb = this->metaprogram[CX_OBJECT])) {
         cb = cx_serializeValue;
     }
     
@@ -112,7 +112,7 @@ cx_int16 cx_serialize(cx_serializer _this, cx_object o, void* userData) {
     }
 #endif
 
-    result = cb(_this, &info, userData);
+    result = cb(this, &info, userData);
     
 #ifdef CX_SERIALIZER_TRACING
     indent--;
@@ -124,9 +124,9 @@ error:
 }
 
 /* Destruct serializerdata */
-cx_int16 cx_serializeDestruct(cx_serializer _this, void* userData) {
-    if (_this->destruct) {
-        if (_this->destruct(_this, userData)) {
+cx_int16 cx_serializeDestruct(cx_serializer this, void* userData) {
+    if (this->destruct) {
+        if (this->destruct(this, userData)) {
             goto error;
         }
     }
@@ -157,7 +157,7 @@ cx_bool cx_serializeMatchAccess(cx_operatorKind accessKind, cx_modifier sa, cx_m
 }
 
 /* Serialize any-value */
-cx_int16 cx_serializeAny(cx_serializer _this, cx_value* info, void* userData) {
+cx_int16 cx_serializeAny(cx_serializer this, cx_value* info, void* userData) {
     cx_value v;
     cx_any *any;
     cx_int16 result = 0;
@@ -167,14 +167,14 @@ cx_int16 cx_serializeAny(cx_serializer _this, cx_value* info, void* userData) {
     if (any->type) {
         v.parent = info;
         cx_valueValueInit(&v, cx_valueObject(info), (cx_type)any->type, any->value);
-        result = cx_serializeValue(_this, &v, userData);
+        result = cx_serializeValue(this, &v, userData);
     }
 
     return result;
 }
 
 /* Serialize members */
-cx_int16 cx_serializeMembers(cx_serializer _this, cx_value* info, void* userData) {
+cx_int16 cx_serializeMembers(cx_serializer this, cx_value* info, void* userData) {
     cx_interface t;
     cx_void* v;
     cx_uint32 i;
@@ -189,10 +189,10 @@ cx_int16 cx_serializeMembers(cx_serializer _this, cx_value* info, void* userData
 
 
     /* Process inheritance */
-    if (cx_class_instanceof(cx_struct_o, t) && cx_serializeMatchAccess(_this->accessKind, _this->access, cx_struct(t)->baseAccess)) {
+    if (cx_class_instanceof(cx_struct_o, t) && cx_serializeMatchAccess(this->accessKind, this->access, cx_struct(t)->baseAccess)) {
         cx_value base;
 
-        cb = _this->metaprogram[CX_BASE];
+        cb = this->metaprogram[CX_BASE];
         if (!cb) {
             cb = cx_serializeValue;
         }
@@ -210,7 +210,7 @@ cx_int16 cx_serializeMembers(cx_serializer _this, cx_value* info, void* userData
             }
             indent++;
 #endif
-            if (cb(_this, &base, userData)) {
+            if (cb(this, &base, userData)) {
                 goto error;
             }
 #ifdef CX_SERIALIZER_TRACING
@@ -219,7 +219,7 @@ cx_int16 cx_serializeMembers(cx_serializer _this, cx_value* info, void* userData
         }
     }
 
-    cb = _this->metaprogram[CX_MEMBER];
+    cb = this->metaprogram[CX_MEMBER];
     if (!cb) {
         cb = cx_serializeValue;
     }
@@ -227,7 +227,7 @@ cx_int16 cx_serializeMembers(cx_serializer _this, cx_value* info, void* userData
     /* Process members */
     for(i=0; i<t->members.length; i++) {
         m = t->members.buffer[i];
-        if (cx_serializeMatchAccess(_this->accessKind, _this->access, m->modifiers)) {
+        if (cx_serializeMatchAccess(this->accessKind, this->access, m->modifiers)) {
             member.kind = CX_MEMBER;
             member.parent = info;
             member.is.member.o = o;
@@ -240,7 +240,7 @@ cx_int16 cx_serializeMembers(cx_serializer _this, cx_value* info, void* userData
             }
             indent++;
 #endif
-            if (cb(_this, &member, userData)) {
+            if (cb(this, &member, userData)) {
                 goto error;
             }
 #ifdef CX_SERIALIZER_TRACING
@@ -255,7 +255,7 @@ error:
 }
 
 struct cx_serializeElement_t {
-    cx_serializer _this;
+    cx_serializer this;
     void* userData;
     cx_value* info;
     cx_serializerCallback cb;
@@ -264,18 +264,18 @@ struct cx_serializeElement_t {
 /* Serialize element */
 int cx_serializeElement(void* e, void* userData) {
     struct cx_serializeElement_t* data;
-    cx_serializer _this;
+    cx_serializer this;
     cx_value* info;
 
     data = userData;
-    _this = data->_this;
+    this = data->this;
     info = data->info;
 
     /* Set element value */
     info->is.element.v = e;
 
     /* Forward element to serializer callback */
-    if (data->cb(_this, info, data->userData)) {
+    if (data->cb(this, info, data->userData)) {
         goto error;
     }
 
@@ -288,7 +288,7 @@ error:
 }
 
 /* Serialize elements */
-cx_int16 cx_serializeElements(cx_serializer _this, cx_value* info, void* userData) {
+cx_int16 cx_serializeElements(cx_serializer this, cx_value* info, void* userData) {
     struct cx_serializeElement_t walkData;
     cx_collection t;
     cx_void* v;
@@ -304,12 +304,12 @@ cx_int16 cx_serializeElements(cx_serializer _this, cx_value* info, void* userDat
     elementInfo.is.element.t.type = t->elementType;
     elementInfo.is.element.t.index = 0;
 
-    walkData._this = _this;
+    walkData.this = this;
     walkData.userData = userData;
     walkData.info = &elementInfo;
 
     /* Determine callback now, instead of having to do this in the element callback */
-    walkData.cb = _this->metaprogram[CX_ELEMENT];
+    walkData.cb = this->metaprogram[CX_ELEMENT];
     if (!walkData.cb) {
         walkData.cb = cx_serializeValue;
     }

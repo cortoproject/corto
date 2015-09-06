@@ -12,13 +12,13 @@
 #include "cx__enum.h"
 #include "cx__collection.h"
 
-cx_int16 cx__enum_bindConstant(cx_enum _this, cx_constant* c) {
+cx_int16 cx__enum_bindConstant(cx_enum this, cx_constant* c) {
     if (cx_checkState(cx_type_o, CX_DEFINED)) {
-        *c = cx_scopeSize(_this)-1;
+        *c = cx_scopeSize(this)-1;
     }
-    _this->constants.buffer = cx_realloc(_this->constants.buffer, (_this->constants.length+1) * sizeof(cx_constant*));
-    _this->constants.buffer[_this->constants.length] = c;
-    _this->constants.length++;
+    this->constants.buffer = cx_realloc(this->constants.buffer, (this->constants.length+1) * sizeof(cx_constant*));
+    this->constants.buffer[this->constants.length] = c;
+    this->constants.length++;
     
     cx_claim(c);
 
@@ -43,47 +43,47 @@ static int cx_enum_findConstant(cx_object o, void* udata) {
     return userData->o == NULL;
 }
 /* $end */
-cx_object _cx_enum_constant(cx_enum _this, cx_int32 value) {
+cx_object _cx_enum_constant(cx_enum this, cx_int32 value) {
 /* $begin(::corto::lang::enum::constant) */
     struct cx_enum_findConstant_t walkData;
 
     /* Walk scope */
     walkData.value = value;
     walkData.o = NULL;
-    cx_scopeWalk(_this, cx_enum_findConstant, &walkData);
+    cx_scopeWalk(this, cx_enum_findConstant, &walkData);
 
     return walkData.o;
 /* $end */
 }
 
 /* ::corto::lang::enum::construct() */
-cx_int16 _cx_enum_construct(cx_enum _this) {
+cx_int16 _cx_enum_construct(cx_enum this) {
 /* $begin(::corto::lang::enum::construct) */
     cx_uint32 i;
 
     /* Define constants */
-    for(i=0; i<_this->constants.length; i++) {
-        cx_define(_this->constants.buffer[i]);
+    for(i=0; i<this->constants.length; i++) {
+        cx_define(this->constants.buffer[i]);
     }
 
-    return cx_primitive_construct(cx_primitive(_this));
+    return cx_primitive_construct(cx_primitive(this));
 /* $end */
 }
 
 /* ::corto::lang::enum::destruct() */
-cx_void _cx_enum_destruct(cx_enum _this) {
+cx_void _cx_enum_destruct(cx_enum this) {
 /* $begin(::corto::lang::enum::destruct) */
-    cx_clear(cx_collection(cx_objectseq_o), &_this->constants);
-    cx_type_destruct(cx_type(_this));
+    cx_clear(cx_collection(cx_objectseq_o), &this->constants);
+    cx_type_destruct(cx_type(this));
 /* $end */
 }
 
 /* ::corto::lang::enum::init() */
-cx_int16 _cx_enum_init(cx_enum _this) {
+cx_int16 _cx_enum_init(cx_enum this) {
 /* $begin(::corto::lang::enum::init) */
-    cx_primitive(_this)->kind = CX_ENUM;
-    cx_primitive(_this)->width = CX_WIDTH_32;
-    cx_setref(&cx_type(_this)->defaultType, cx_constant_o);
-    return cx_primitive_init((cx_primitive)_this);
+    cx_primitive(this)->kind = CX_ENUM;
+    cx_primitive(this)->width = CX_WIDTH_32;
+    cx_setref(&cx_type(this)->defaultType, cx_constant_o);
+    return cx_primitive_init((cx_primitive)this);
 /* $end */
 }

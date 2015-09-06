@@ -27,7 +27,7 @@ static void cx_tokenMaskSet(cx_bool *mask, cx_string chars) {
 }
 
 /* Parse embedded expression */
-cx_char *Fast_String_parseEmbedded(Fast_String _this, cx_char *expr) {
+cx_char *Fast_String_parseEmbedded(Fast_String this, cx_char *expr) {
     cx_char ch, *ptr;
     cx_uint32 nesting;
     Fast_Expression element;
@@ -60,8 +60,8 @@ cx_char *Fast_String_parseEmbedded(Fast_String _this, cx_char *expr) {
          * delimited by a non-alphanumeric character. Additionally
          * variable names cannot start with a number. */
         if (!alphaMask[(int)*ptr]) {
-            yparser()->line = Fast_Node(_this)->line;
-            yparser()->column = Fast_Node(_this)->column;
+            yparser()->line = Fast_Node(this)->line;
+            yparser()->column = Fast_Node(this)->column;
             Fast_Parser_error(yparser(), "invalid embedded expression at '%s'", expr);
             goto error;
         }
@@ -81,9 +81,9 @@ cx_char *Fast_String_parseEmbedded(Fast_String _this, cx_char *expr) {
     ch = *ptr;
     *ptr = '\0';
 
-    element = Fast_Parser_parseExpression(yparser(), expr, _this->block, _this->scope, Fast_Node(_this)->line, Fast_Node(_this)->column);
+    element = Fast_Parser_parseExpression(yparser(), expr, this->block, this->scope, Fast_Node(this)->line, Fast_Node(this)->column);
     if (element) {
-        cx_llAppend(_this->elements, element);
+        cx_llAppend(this->elements, element);
         cx_claim(element);
     } else {
         goto error;
@@ -100,11 +100,11 @@ error:
 }
 
 /* Walk embedded expressions in string */
-cx_int16 Fast_String_parse(Fast_String _this) {
+cx_int16 Fast_String_parse(Fast_String this) {
     cx_char *ptr, ch, *str;
     Fast_String element;
 
-    ptr = _this->value;
+    ptr = this->value;
     str = ptr; /* Keep track of beginning of string-element */
     
     if (ptr) {
@@ -117,17 +117,17 @@ cx_int16 Fast_String_parse(Fast_String _this) {
                     *ptr = '\0';
 
                     element = Fast_StringCreate(str);
-                    cx_llAppend(_this->elements, element);
+                    cx_llAppend(this->elements, element);
 
                     *ptr = ch;
                 }
 
                 /* Parse embedded expression */
-                str = ptr = Fast_String_parseEmbedded(_this, ptr+1);
+                str = ptr = Fast_String_parseEmbedded(this, ptr+1);
                 if (!ptr) {
-                    yparser()->line = Fast_Node(_this)->line;
-                    yparser()->column = Fast_Node(_this)->column;
-                    Fast_Parser_error(yparser(), "parsing string '%s' failed", _this->value);
+                    yparser()->line = Fast_Node(this)->line;
+                    yparser()->column = Fast_Node(this)->column;
+                    Fast_Parser_error(yparser(), "parsing string '%s' failed", this->value);
                     goto error;
                 }
                 break;
@@ -139,13 +139,13 @@ cx_int16 Fast_String_parse(Fast_String _this) {
 
         /* If string contains embedded expressions, add last bit of remaining
          * string to elements list */
-        if ((str != _this->value) && *str) {
+        if ((str != this->value) && *str) {
             element = Fast_StringCreate(str);
-            cx_llAppend(_this->elements, element);
+            cx_llAppend(this->elements, element);
         }
     } else {
         element = Fast_StringCreate("null");
-        cx_llAppend(_this->elements, element);
+        cx_llAppend(this->elements, element);
     }
 
     return 0;
@@ -156,15 +156,15 @@ error:
 /* $end */
 
 /* ::corto::Fast::String::construct() */
-cx_int16 _Fast_String_construct(Fast_String _this) {
+cx_int16 _Fast_String_construct(Fast_String this) {
 /* $begin(::corto::Fast::String::construct) */
     
     if (!yparser()->block || !yparser()->scope) {
         goto error;
     }
 
-    cx_setref(&_this->block, yparser()->block);
-    cx_setref(&_this->scope, yparser()->scope);
+    cx_setref(&this->block, yparser()->block);
+    cx_setref(&this->scope, yparser()->scope);
     
     return 0;
 error:
@@ -173,14 +173,14 @@ error:
 }
 
 /* ::corto::Fast::String::getValue() */
-cx_word _Fast_String_getValue(Fast_String _this) {
+cx_word _Fast_String_getValue(Fast_String this) {
 /* $begin(::corto::Fast::String::getValue) */
     cx_char *ptr, ch = '\0';
     cx_word result;
 
     /* Determine whether string has embedded expressions */
-    if (_this->value) {
-        ptr = _this->value;
+    if (this->value) {
+        ptr = this->value;
         while((ch = *ptr) && ch && (ch != '$')) {
             switch((cx_uint8)ch) {
             case '\\':
@@ -196,7 +196,7 @@ cx_word _Fast_String_getValue(Fast_String _this) {
     if (ch == '$') {
         result = 0;
     } else {
-        result = (cx_word)&_this->value;
+        result = (cx_word)&this->value;
     }
 
     return result;
@@ -204,15 +204,15 @@ cx_word _Fast_String_getValue(Fast_String _this) {
 }
 
 /* ::corto::Fast::String::init() */
-cx_int16 _Fast_String_init(Fast_String _this) {
+cx_int16 _Fast_String_init(Fast_String this) {
 /* $begin(::corto::Fast::String::init) */
-    Fast_Literal(_this)->kind = Fast_Text;
-    return Fast_Literal_init((Fast_Literal)_this);
+    Fast_Literal(this)->kind = Fast_Text;
+    return Fast_Literal_init((Fast_Literal)this);
 /* $end */
 }
 
 /* ::corto::Fast::String::serialize(type dstType,word dst) */
-cx_int16 _Fast_String_serialize(Fast_String _this, cx_type dstType, cx_word dst) {
+cx_int16 _Fast_String_serialize(Fast_String this, cx_type dstType, cx_word dst) {
 /* $begin(::corto::Fast::String::serialize) */
     Fast_valueKind kind;
 
@@ -223,10 +223,10 @@ cx_int16 _Fast_String_serialize(Fast_String _this, cx_type dstType, cx_word dst)
     case Fast_Int:
     case Fast_SignedInt:
     case Fast_Text:
-        cx_convert(cx_primitive(cx_string_o), &_this->value, cx_primitive(dstType), (void*)dst);
+        cx_convert(cx_primitive(cx_string_o), &this->value, cx_primitive(dstType), (void*)dst);
         break;
     case Fast_Ref: {
-        cx_object o = cx_resolve(NULL, _this->value);
+        cx_object o = cx_resolve(NULL, this->value);
         cx_setref(&dst, o);
         cx_release(o);
         break;
@@ -246,25 +246,25 @@ error:
 }
 
 /* ::corto::Fast::String::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _Fast_String_toIc_v(Fast_String _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_String_toIc_v(Fast_String this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::corto::Fast::String::toIc) */
     ic_node result = NULL;
     CX_UNUSED(storage);
     CX_UNUSED(stored);
 
     /* Parse string after parsing script and thus not interfere with parser */
-    if (Fast_String_parse(_this)) {
+    if (Fast_String_parse(this)) {
         goto error;
     }
 
-    if (!cx_llSize(_this->elements)) {
-        result = (ic_node)ic_literalCreate((cx_any){cx_type(cx_string_o), &_this->value, FALSE});
+    if (!cx_llSize(this->elements)) {
+        result = (ic_node)ic_literalCreate((cx_any){cx_type(cx_string_o), &this->value, FALSE});
     } else {
         if (stored) {
             cx_iter elementIter;
             Fast_Expression element;
             ic_node icElement1, icElement2;
-            cx_uint32 elementCount = cx_llSize(_this->elements);
+            cx_uint32 elementCount = cx_llSize(this->elements);
             cx_bool stored = FALSE;
             ic_node dummy;
             cx_uint32 accPushCount = 0;
@@ -273,7 +273,7 @@ ic_node _Fast_String_toIc_v(Fast_String _this, ic_program program, ic_storage st
             if (storage && (storage->type != cx_type(cx_string_o))) {
                 Fast_Parser_error(yparser(),
                         "storage for string-expression '%s' has invalid type (%s)",
-                        _this->value,
+                        this->value,
                         cx_nameof(storage->type));
                 goto error;
             }
@@ -281,7 +281,7 @@ ic_node _Fast_String_toIc_v(Fast_String _this, ic_program program, ic_storage st
             dummy = (ic_node)ic_literalCreate((cx_any){cx_type(cx_string_o), NULL, FALSE});
 
             result = (ic_node)storage;
-            elementIter = cx_llIter(_this->elements);
+            elementIter = cx_llIter(this->elements);
             while(cx_iterHasNext(&elementIter)) {
                 ic_accumulator acc = ic_program_pushAccumulator(program, (cx_type)cx_string_o, FALSE, FALSE);
                 accPushCount++;
@@ -303,7 +303,7 @@ ic_node _Fast_String_toIc_v(Fast_String _this, ic_program program, ic_storage st
                 }
                 if (elementCount == 1) {
                     if (storage) {
-                        IC_2(program, Fast_Node(_this)->line, ic_strcpy, storage, icElement1, IC_DEREF_VALUE, IC_DEREF_VALUE);
+                        IC_2(program, Fast_Node(this)->line, ic_strcpy, storage, icElement1, IC_DEREF_VALUE, IC_DEREF_VALUE);
                     } else {
                         result = (ic_node)icElement1;
                     }
@@ -329,11 +329,11 @@ ic_node _Fast_String_toIc_v(Fast_String _this, ic_program program, ic_storage st
                             if (!icElement2) {
                                 goto error;
                             }
-                            IC_2(program, Fast_Node(_this)->line, ic_strcat, icElement1, icElement2, IC_DEREF_VALUE, IC_DEREF_VALUE);
+                            IC_2(program, Fast_Node(this)->line, ic_strcat, icElement1, icElement2, IC_DEREF_VALUE, IC_DEREF_VALUE);
                             elementCount--;
                         }
                     } else {
-                        IC_2(program, Fast_Node(_this)->line, ic_strcat, icElement1, dummy, IC_DEREF_VALUE, IC_DEREF_VALUE);
+                        IC_2(program, Fast_Node(this)->line, ic_strcat, icElement1, dummy, IC_DEREF_VALUE, IC_DEREF_VALUE);
                     }
                 }
                 elementCount--;
@@ -341,7 +341,7 @@ ic_node _Fast_String_toIc_v(Fast_String _this, ic_program program, ic_storage st
 
             /* If string is not yet copied, insert copy instruction */
             if (!stored) {
-                IC_2(program, Fast_Node(_this)->line, ic_strcpy, storage, dummy, IC_DEREF_VALUE, IC_DEREF_VALUE);
+                IC_2(program, Fast_Node(this)->line, ic_strcpy, storage, dummy, IC_DEREF_VALUE, IC_DEREF_VALUE);
                 stored = TRUE;
             }
 

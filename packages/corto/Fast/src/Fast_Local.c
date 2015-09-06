@@ -14,20 +14,20 @@
 /* $end */
 
 /* ::corto::Fast::Local::construct() */
-cx_int16 _Fast_Local_construct(Fast_Local _this) {
+cx_int16 _Fast_Local_construct(Fast_Local this) {
 /* $begin(::corto::Fast::Local::construct) */
 
-    Fast_Node(_this)->kind = Fast_StorageExpr;
-    Fast_Storage(_this)->kind = Fast_LocalStorage;
-    cx_setref(&Fast_Expression(_this)->type, _this->type);
-    Fast_Expression(_this)->isReference = _this->reference || _this->type->reference;
+    Fast_Node(this)->kind = Fast_StorageExpr;
+    Fast_Storage(this)->kind = Fast_LocalStorage;
+    cx_setref(&Fast_Expression(this)->type, this->type);
+    Fast_Expression(this)->isReference = this->reference || this->type->reference;
 
-    return Fast_Storage_construct(Fast_Storage(_this));
+    return Fast_Storage_construct(Fast_Storage(this));
 /* $end */
 }
 
 /* ::corto::Fast::Local::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _Fast_Local_toIc_v(Fast_Local _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Local_toIc_v(Fast_Local this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::corto::Fast::Local::toIc) */
     ic_node result;
     CX_UNUSED(storage);
@@ -36,7 +36,7 @@ ic_node _Fast_Local_toIc_v(Fast_Local _this, ic_program program, ic_storage stor
 
     result = (ic_node)ic_program_getVariable(
                 program,
-                _this->name);
+                this->name);
 
     return result;
 /* $end */

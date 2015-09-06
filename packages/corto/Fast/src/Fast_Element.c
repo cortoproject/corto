@@ -14,17 +14,17 @@
 /* $end */
 
 /* ::corto::Fast::Element::construct() */
-cx_int16 _Fast_Element_construct(Fast_Element _this) {
+cx_int16 _Fast_Element_construct(Fast_Element this) {
 /* $begin(::corto::Fast::Element::construct) */
     cx_type lvalueType, rvalueType;
 
-    Fast_Storage(_this)->kind = Fast_ElementStorage;
+    Fast_Storage(this)->kind = Fast_ElementStorage;
 
-    lvalueType = Fast_Expression_getType(_this->lvalue);
+    lvalueType = Fast_Expression_getType(this->lvalue);
 
     if (lvalueType) {
         if (lvalueType->kind == CX_COLLECTION) {
-            rvalueType = Fast_Expression_getType(_this->rvalue);
+            rvalueType = Fast_Expression_getType(this->rvalue);
             if (rvalueType) {
                 if (cx_collection(lvalueType)->kind != CX_MAP) {
                     if (!cx_type_castable(cx_type(cx_uint32_o), rvalueType)) {
@@ -42,10 +42,10 @@ cx_int16 _Fast_Element_construct(Fast_Element _this) {
                 }
             }
             /* Set type of expression */
-            cx_setref(&Fast_Expression(_this)->type, cx_collection(lvalueType)->elementType);
+            cx_setref(&Fast_Expression(this)->type, cx_collection(lvalueType)->elementType);
         } else {
             cx_id id;
-            Fast_Parser_error(yparser(), "cannot obtain element from _this of non-collection type '%s'", Fast_Parser_id(lvalueType, id));
+            Fast_Parser_error(yparser(), "cannot obtain element from this of non-collection type '%s'", Fast_Parser_id(lvalueType, id));
             goto error;
         }
     } else {
@@ -53,16 +53,16 @@ cx_int16 _Fast_Element_construct(Fast_Element _this) {
         goto error;
     }
 
-    Fast_Expression(_this)->isReference = cx_collection(lvalueType)->elementType->reference;
+    Fast_Expression(this)->isReference = cx_collection(lvalueType)->elementType->reference;
 
-    return Fast_Storage_construct(Fast_Storage(_this));
+    return Fast_Storage_construct(Fast_Storage(this));
 error:
     return -1;
 /* $end */
 }
 
 /* ::corto::Fast::Element::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _Fast_Element_toIc_v(Fast_Element _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Element_toIc_v(Fast_Element this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::corto::Fast::Element::toIc) */
     ic_element result;
     ic_node lvalue, rvalue;
@@ -70,8 +70,8 @@ ic_node _Fast_Element_toIc_v(Fast_Element _this, ic_program program, ic_storage 
     CX_UNUSED(storage);
 
     /* Get lvalue & rvalue */
-    lvalue = Fast_Node_toIc(Fast_Node(_this->lvalue), program, NULL, TRUE);
-    rvalue = Fast_Node_toIc(Fast_Node(_this->rvalue), program, NULL, TRUE);
+    lvalue = Fast_Node_toIc(Fast_Node(this->lvalue), program, NULL, TRUE);
+    rvalue = Fast_Node_toIc(Fast_Node(this->rvalue), program, NULL, TRUE);
 
     result = ic_program_getElement(program, ic_storage(lvalue), rvalue);
 

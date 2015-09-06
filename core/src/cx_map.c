@@ -9,22 +9,22 @@
 #include "cx.h"
 
 /* ::corto::lang::map::construct() */
-cx_int16 _cx_map_construct(cx_map _this) {
+cx_int16 _cx_map_construct(cx_map this) {
 /* $begin(::corto::lang::map::construct) */
-    cx_type(_this)->hasResources = TRUE;
-    cx_type(_this)->size = sizeof(cx_map);
-    cx_type(_this)->alignment = CX_ALIGNMENT(cx_map);
-    cx_collection(_this)->elementType = _this->elementType;
-    cx_claim(_this->elementType);
-    cx_collection(_this)->max = _this->max;
-    return cx_type_construct(cx_type(_this));
+    cx_type(this)->hasResources = TRUE;
+    cx_type(this)->size = sizeof(cx_map);
+    cx_type(this)->alignment = CX_ALIGNMENT(cx_map);
+    cx_collection(this)->elementType = this->elementType;
+    cx_claim(this->elementType);
+    cx_collection(this)->max = this->max;
+    return cx_type_construct(cx_type(this));
 /* $end */
 }
 
 /* ::corto::lang::map::init() */
-cx_int16 _cx_map_init(cx_map _this) {
+cx_int16 _cx_map_init(cx_map this) {
 /* $begin(::corto::lang::map::init) */
-    cx_collection(_this)->kind = CX_MAP;
-    return cx_collection_init(cx_collection(_this));
+    cx_collection(this)->kind = CX_MAP;
+    return cx_collection_init(cx_collection(this));
 /* $end */
 }

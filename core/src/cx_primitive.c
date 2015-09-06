@@ -46,19 +46,19 @@ cx_uint8 cx__primitive_convertId(cx_primitiveKind kind, cx_width width) {
 /* $end */
 
 /* ::corto::lang::primitive::castable(type type) */
-cx_bool _cx_primitive_castable_v(cx_primitive _this, cx_type type) {
+cx_bool _cx_primitive_castable_v(cx_primitive this, cx_type type) {
 /* $begin(::corto::lang::primitive::castable) */
     cx_bool result;
 
     result = FALSE;
     
     /* Perform generic type::compatible routine first. */
-    if (!cx_primitive_compatible_v(_this, type)) {
-        if (cx_type(_this)->reference == type->reference) {
+    if (!cx_primitive_compatible_v(this, type)) {
+        if (cx_type(this)->reference == type->reference) {
             if (type->kind == CX_PRIMITIVE) {
                 cx_primitiveKind kind = cx_primitive(type)->kind;
-                if (_this->kind != kind) {
-                    switch(_this->kind) {
+                if (this->kind != kind) {
+                    switch(this->kind) {
                     case CX_BOOLEAN:
                     case CX_BINARY:
                         switch(kind) {
@@ -170,21 +170,21 @@ cx_bool _cx_primitive_castable_v(cx_primitive _this, cx_type type) {
 }
 
 /* ::corto::lang::primitive::compatible(type type) */
-cx_bool _cx_primitive_compatible_v(cx_primitive _this, cx_type type) {
+cx_bool _cx_primitive_compatible_v(cx_primitive this, cx_type type) {
 /* $begin(::corto::lang::primitive::compatible) */
     cx_bool result;
 
     result = FALSE;
 
-    if (!cx_type_compatible_v(cx_type(_this), type)) {
+    if (!cx_type_compatible_v(cx_type(this), type)) {
         if (type->kind == CX_PRIMITIVE) {
-           if (_this->kind == cx_primitive(type)->kind) { /* If kinds are equal, types are compatible */
+           if (this->kind == cx_primitive(type)->kind) { /* If kinds are equal, types are compatible */
                result = TRUE;
-            } else if (_this->kind == CX_ENUM) {
+            } else if (this->kind == CX_ENUM) {
                if (type == cx_type(cx_constant_o)) {
                    result = TRUE;
                }
-            } else if (_this->kind == CX_BITMASK) {
+            } else if (this->kind == CX_BITMASK) {
                switch(cx_primitive(type)->kind) {
                case CX_INTEGER:
                case CX_UINTEGER:
@@ -194,7 +194,7 @@ cx_bool _cx_primitive_compatible_v(cx_primitive _this, cx_type type) {
                    break;
                }
             } else { 
-                switch(_this->kind) {
+                switch(this->kind) {
                 /* Numeric types and booleans are compatible */
                 case CX_BINARY:
                     if (cx_primitive(type)->kind == CX_FLOAT) {
@@ -206,7 +206,7 @@ cx_bool _cx_primitive_compatible_v(cx_primitive _this, cx_type type) {
                 case CX_FLOAT:
                     switch(cx_primitive(type)->kind) {
                     case CX_BINARY:
-                        if (_this->kind == CX_FLOAT) {
+                        if (this->kind == CX_FLOAT) {
                             break;
                         }
                     case CX_BOOLEAN:
@@ -225,7 +225,7 @@ cx_bool _cx_primitive_compatible_v(cx_primitive _this, cx_type type) {
 
             }
         } else {
-            if (_this->kind == CX_BOOLEAN) {
+            if (this->kind == CX_BOOLEAN) {
                 if (type->reference) {
                     result = TRUE;
                 }
@@ -240,43 +240,43 @@ cx_bool _cx_primitive_compatible_v(cx_primitive _this, cx_type type) {
 }
 
 /* ::corto::lang::primitive::construct() */
-cx_int16 _cx_primitive_construct(cx_primitive _this) {
+cx_int16 _cx_primitive_construct(cx_primitive this) {
 /* $begin(::corto::lang::primitive::construct) */
 
-    switch(_this->width) {
+    switch(this->width) {
     case CX_WIDTH_8:
-        cx_type(_this)->size = 1;
-        cx_type(_this)->alignment = CX_ALIGNMENT(cx_char);
+        cx_type(this)->size = 1;
+        cx_type(this)->alignment = CX_ALIGNMENT(cx_char);
         break;
     case CX_WIDTH_16:
-        cx_type(_this)->size = 2;
-        cx_type(_this)->alignment = CX_ALIGNMENT(cx_int16);
+        cx_type(this)->size = 2;
+        cx_type(this)->alignment = CX_ALIGNMENT(cx_int16);
         break;
     case CX_WIDTH_32:
-        cx_type(_this)->size = 4;
-        cx_type(_this)->alignment = CX_ALIGNMENT(cx_int32);
+        cx_type(this)->size = 4;
+        cx_type(this)->alignment = CX_ALIGNMENT(cx_int32);
         break;
     case CX_WIDTH_64:
-        cx_type(_this)->size = 8;
-        cx_type(_this)->alignment = CX_ALIGNMENT(cx_int64);
+        cx_type(this)->size = 8;
+        cx_type(this)->alignment = CX_ALIGNMENT(cx_int64);
         break;
     case CX_WIDTH_WORD:
-        cx_type(_this)->size = sizeof(void*);
-        cx_type(_this)->alignment = CX_ALIGNMENT(cx_word);
+        cx_type(this)->size = sizeof(void*);
+        cx_type(this)->alignment = CX_ALIGNMENT(cx_word);
         break;
     }
 
     /* Assign convertId which enables quick lookups of implicit primitive conversions. */
-    _this->convertId = cx__primitive_convertId(_this->kind, _this->width);
+    this->convertId = cx__primitive_convertId(this->kind, this->width);
 
-    return cx_type_construct(cx_type(_this));
+    return cx_type_construct(cx_type(this));
 /* $end */
 }
 
 /* ::corto::lang::primitive::init() */
-cx_int16 _cx_primitive_init(cx_primitive _this) {
+cx_int16 _cx_primitive_init(cx_primitive this) {
 /* $begin(::corto::lang::primitive::init) */
-    cx_type(_this)->kind = CX_PRIMITIVE;
-    return cx_type_init((cx_type)_this);
+    cx_type(this)->kind = CX_PRIMITIVE;
+    return cx_type_init((cx_type)this);
 /* $end */
 }

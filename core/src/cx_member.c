@@ -13,11 +13,11 @@
 /* $end */
 
 /* ::corto::lang::member::construct() */
-cx_int16 _cx_member_construct(cx_member _this) {
+cx_int16 _cx_member_construct(cx_member this) {
 /* $begin(::corto::lang::member::construct) */
-    if (!_this->type) {
+    if (!this->type) {
         cx_id id;
-        cx_error("member '%s' has no type.", cx_fullname(_this, id));
+        cx_error("member '%s' has no type.", cx_fullname(this, id));
         goto error;
     }
 
@@ -28,30 +28,30 @@ error:
 }
 
 /* ::corto::lang::member::init() */
-cx_int16 _cx_member_init(cx_member _this) {
+cx_int16 _cx_member_init(cx_member this) {
 /* $begin(::corto::lang::member::init) */
     cx_object parent;
     cx_type parentType;
 
-    if (cx_checkAttr(_this, CX_ATTR_SCOPED)) {
-        parent = cx_parentof(_this);
+    if (cx_checkAttr(this, CX_ATTR_SCOPED)) {
+        parent = cx_parentof(this);
         parentType = cx_typeof(parent);
 
         if (parentType->kind == CX_COMPOSITE) {
             /* Bind member with composite object */
-            if (cx__interface_bindMember(parent, _this)) {
+            if (cx__interface_bindMember(parent, this)) {
                 goto error;
             }
 
             /* Set default member-modifiers - not during bootstrap */
             if (cx_checkState(cx_type_o, CX_DEFINED)) {
-                _this->modifiers = CX_GLOBAL;
-                _this->state = CX_DECLARED | CX_DEFINED;
+                this->modifiers = CX_GLOBAL;
+                this->state = CX_DECLARED | CX_DEFINED;
             }
         } else {
             cx_id id;
-            cx_error("invalid declaration of member '%s' in scope '%s', members can only be declared in scopes of composite _thiss.",
-                    cx_nameof(_this), cx_fullname(parent, id));
+            cx_error("invalid declaration of member '%s' in scope '%s', members can only be declared in scopes of composite thiss.",
+                    cx_nameof(this), cx_fullname(parent, id));
             goto error;
         }
     }

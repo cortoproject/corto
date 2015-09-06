@@ -16,21 +16,21 @@ tc_Point tc_PointDeclare(cx_object _parent, cx_string _name) {
     return cx_declareChild(_parent, _name, tc_Point_o);
 }
 
-int tc_PointDefine(tc_Point _this, cx_uint32 x, cx_uint32 y) {
-    _this->x = x;
-    _this->y = y;
-    return cx_define(_this);
+int tc_PointDefine(tc_Point this, cx_uint32 x, cx_uint32 y) {
+    this->x = x;
+    this->y = y;
+    return cx_define(this);
 }
 
 tc_Point tc_PointCreate(cx_uint32 x, cx_uint32 y) {
-    tc_Point _this;
-    _this = cx_declare(tc_Point_o);
-    _this->x = x;
-    _this->y = y;
-    if (cx_define(_this)) {
-        cx_release(_this);
-        _this = NULL;
+    tc_Point this;
+    this = cx_declare(tc_Point_o);
+    this->x = x;
+    this->y = y;
+    if (cx_define(this)) {
+        cx_release(this);
+        this = NULL;
     }
-    return _this;
+    return this;
 }
 

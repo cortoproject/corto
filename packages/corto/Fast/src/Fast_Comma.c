@@ -14,13 +14,13 @@
 /* $end */
 
 /* ::corto::Fast::Comma::addExpression(Expression expr) */
-cx_int16 _Fast_Comma_addExpression(Fast_Comma _this, Fast_Expression expr) {
+cx_int16 _Fast_Comma_addExpression(Fast_Comma this, Fast_Expression expr) {
 /* $begin(::corto::Fast::Comma::addExpression) */
     if (expr) {
-        cx_assert(_this->expressions != NULL, "initialization failed");
-        cx_llAppend(_this->expressions, expr); cx_claim(expr);
-        if (cx_llSize(_this->expressions) == 1) {
-            cx_setref(&Fast_Expression(_this)->type, expr->type);
+        cx_assert(this->expressions != NULL, "initialization failed");
+        cx_llAppend(this->expressions, expr); cx_claim(expr);
+        if (cx_llSize(this->expressions) == 1) {
+            cx_setref(&Fast_Expression(this)->type, expr->type);
         }
     }
 
@@ -50,14 +50,14 @@ Fast_Expression _Fast_Comma_addOrCreate(Fast_Expression list, Fast_Expression ex
 }
 
 /* ::corto::Fast::Comma::construct() */
-cx_int16 _Fast_Comma_construct(Fast_Comma _this) {
+cx_int16 _Fast_Comma_construct(Fast_Comma this) {
 /* $begin(::corto::Fast::Comma::construct) */
-    if (_this->expressions) {
-        Fast_Expression firstExpr = cx_llGet(_this->expressions, 0);
+    if (this->expressions) {
+        Fast_Expression firstExpr = cx_llGet(this->expressions, 0);
 
         if (yparser()->line == 8) {
             if (firstExpr) {
-                cx_setref(&Fast_Expression(_this)->type, firstExpr->type);
+                cx_setref(&Fast_Expression(this)->type, firstExpr->type);
             }
         }
     }
@@ -67,11 +67,11 @@ cx_int16 _Fast_Comma_construct(Fast_Comma _this) {
 }
 
 /* ::corto::Fast::Comma::hasReturnedResource() */
-cx_bool _Fast_Comma_hasReturnedResource_v(Fast_Comma _this) {
+cx_bool _Fast_Comma_hasReturnedResource_v(Fast_Comma this) {
 /* $begin(::corto::Fast::Comma::hasReturnedResource) */
     cx_bool result = FALSE;
 
-    Fast_ExpressionListForeach(_this->expressions, elem)
+    Fast_ExpressionListForeach(this->expressions, elem)
         if (Fast_Expression_hasReturnedResource(elem)) {
             result = TRUE;
             break;
@@ -83,11 +83,11 @@ cx_bool _Fast_Comma_hasReturnedResource_v(Fast_Comma _this) {
 }
 
 /* ::corto::Fast::Comma::hasSideEffects() */
-cx_bool _Fast_Comma_hasSideEffects_v(Fast_Comma _this) {
+cx_bool _Fast_Comma_hasSideEffects_v(Fast_Comma this) {
 /* $begin(::corto::Fast::Comma::hasSideEffects) */
     cx_bool result = FALSE;
     
-    Fast_ExpressionListForeach(_this->expressions, elem)
+    Fast_ExpressionListForeach(this->expressions, elem)
         if (Fast_Expression_hasSideEffects(elem)) {
             result = TRUE;
             break;
@@ -99,13 +99,13 @@ cx_bool _Fast_Comma_hasSideEffects_v(Fast_Comma _this) {
 }
 
 /* ::corto::Fast::Comma::init() */
-cx_int16 _Fast_Comma_init(Fast_Comma _this) {
+cx_int16 _Fast_Comma_init(Fast_Comma this) {
 /* $begin(::corto::Fast::Comma::init) */
 
-    Fast_Node(_this)->kind = Fast_CommaExpr;
-    Fast_Expression(_this)->type = NULL;
+    Fast_Node(this)->kind = Fast_CommaExpr;
+    Fast_Expression(this)->type = NULL;
 
-    return Fast_Node_init(Fast_Node(_this));
+    return Fast_Node_init(Fast_Node(this));
 /* $end */
 }
 
@@ -131,12 +131,12 @@ Fast_Expression _Fast_Comma_insertOrCreate(Fast_Expression list, Fast_Expression
 }
 
 /* ::corto::Fast::Comma::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _Fast_Comma_toIc_v(Fast_Comma _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Comma_toIc_v(Fast_Comma this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::corto::Fast::Comma::toIc) */
     cx_iter iter;
     Fast_Node expr;
     
-    iter = cx_llIter(_this->expressions);
+    iter = cx_llIter(this->expressions);
     while(cx_iterHasNext(&iter)) {
         expr = cx_iterNext(&iter);
         Fast_Node_toIc(expr, program, storage, stored);
@@ -147,12 +147,12 @@ ic_node _Fast_Comma_toIc_v(Fast_Comma _this, ic_program program, ic_storage stor
 }
 
 /* ::corto::Fast::Comma::toList() */
-Fast_NodeList _Fast_Comma_toList(Fast_Comma _this) {
+Fast_NodeList _Fast_Comma_toList(Fast_Comma this) {
 /* $begin(::corto::Fast::Comma::toList) */
     Fast_Node node;
     cx_iter iter;
     Fast_NodeList result = cx_llNew();
-    iter = cx_llIter(_this->expressions);
+    iter = cx_llIter(this->expressions);
     while(cx_iterHasNext(&iter)) {
         node = cx_iterNext(&iter);
         cx_llAppend(result, node); cx_claim(node);

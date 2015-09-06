@@ -9,9 +9,9 @@
 #include "cx.h"
 
 /* ::corto::lang::binary::init() */
-cx_int16 _cx_binary_init(cx_binary _this) {
+cx_int16 _cx_binary_init(cx_binary this) {
 /* $begin(::corto::lang::binary::init) */
-    cx_primitive(_this)->kind = CX_BINARY;
-    return cx_primitive_init((cx_primitive)_this);
+    cx_primitive(this)->kind = CX_BINARY;
+    return cx_primitive_init((cx_primitive)this);
 /* $end */
 }

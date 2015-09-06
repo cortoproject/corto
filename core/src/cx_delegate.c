@@ -47,38 +47,38 @@ error:
 }
 
 /* ::corto::lang::delegate::castable(type type) */
-cx_bool _cx_delegate_castable_v(cx_delegate _this, cx_type type) {
+cx_bool _cx_delegate_castable_v(cx_delegate this, cx_type type) {
 /* $begin(::corto::lang::delegate::castable) */
-    return cx_delegate_compatible_v(_this, type);
+    return cx_delegate_compatible_v(this, type);
 /* $end */
 }
 
 /* ::corto::lang::delegate::compatible(type type) */
-cx_bool _cx_delegate_compatible_v(cx_delegate _this, cx_type type) {
+cx_bool _cx_delegate_compatible_v(cx_delegate this, cx_type type) {
 /* $begin(::corto::lang::delegate::compatible) */
     cx_bool result = FALSE;
-    CX_UNUSED(_this);
+    CX_UNUSED(this);
 
     if((type->kind == CX_COMPOSITE) && (cx_interface(type)->kind == CX_DELEGATE)) {
         cx_uint32 i;
         result = TRUE;
 
         /* Validate returntype */
-        if((_this->returnType != cx_delegate(type)->returnType) || (_this->returnsReference != cx_delegate(type)->returnsReference)) {
+        if((this->returnType != cx_delegate(type)->returnType) || (this->returnsReference != cx_delegate(type)->returnsReference)) {
             result = FALSE;
         }
 
         /* Validate number of parameters */
-        if(_this->parameters.length != cx_delegate(type)->parameters.length) {
+        if(this->parameters.length != cx_delegate(type)->parameters.length) {
             result = FALSE;
         }
 
         /* Validate parameters */
-        for(i = 0; !result && (i < _this->parameters.length); i++) {
-            if(_this->parameters.buffer[i].type != cx_delegate(type)->parameters.buffer[i].type) {
+        for(i = 0; !result && (i < this->parameters.length); i++) {
+            if(this->parameters.buffer[i].type != cx_delegate(type)->parameters.buffer[i].type) {
                 result = FALSE;
             }
-            if(_this->parameters.buffer[i].passByReference != cx_delegate(type)->parameters.buffer[i].passByReference) {
+            if(this->parameters.buffer[i].passByReference != cx_delegate(type)->parameters.buffer[i].passByReference) {
                 result = FALSE;
             }
         }   
@@ -91,18 +91,18 @@ cx_bool _cx_delegate_compatible_v(cx_delegate _this, cx_type type) {
 }
 
 /* ::corto::lang::delegate::init() */
-cx_int16 _cx_delegate_init(cx_delegate _this) {
+cx_int16 _cx_delegate_init(cx_delegate this) {
 /* $begin(::corto::lang::delegate::init) */
     cx_int16 result;
 
-    cx_interface(_this)->base = cx_interface(cx_delegatedata_o);
+    cx_interface(this)->base = cx_interface(cx_delegatedata_o);
 
-    result = cx_struct_init(cx_struct(_this));
+    result = cx_struct_init(cx_struct(this));
     if(result) {
         goto error;
     }
 
-    cx_interface(_this)->kind = CX_DELEGATE;
+    cx_interface(this)->kind = CX_DELEGATE;
 
     return 0;
 error:
@@ -125,7 +125,7 @@ cx_bool cx_delegate_matchParameter(
     }
 }
 /* $end */
-cx_bool _cx_delegate_instanceof(cx_delegate _this, cx_object object) {
+cx_bool _cx_delegate_instanceof(cx_delegate this, cx_object object) {
 /* $begin(::corto::lang::delegate::instanceof) */
     cx_type t = cx_typeof(object);
     cx_bool result = TRUE;
@@ -136,22 +136,22 @@ cx_bool _cx_delegate_instanceof(cx_delegate _this, cx_object object) {
 
         /* Validate returntype */
         if (!cx_delegate_matchParameter(
-            _this->returnType,
-            _this->returnsReference,
+            this->returnType,
+            this->returnsReference,
             call->returnType,
             call->returnsReference)) {
             result = FALSE;
         }
 
         /* Validate number of parameters */
-        if (_this->parameters.length != call->parameters.length) {
+        if (this->parameters.length != call->parameters.length) {
             result = FALSE;
         }
 
         /* Validate parameters */
-        for (i = 0; i < _this->parameters.length; i++) {
+        for (i = 0; i < this->parameters.length; i++) {
             cx_parameter *p1, *p2;
-            p1 = &_this->parameters.buffer[i];
+            p1 = &this->parameters.buffer[i];
             p2 = &call->parameters.buffer[i];
             
             if (!cx_delegate_matchParameter(

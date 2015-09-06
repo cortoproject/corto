@@ -14,13 +14,13 @@
 /* $end */
 
 /* ::corto::Fast::While::construct() */
-cx_int16 _Fast_While_construct(Fast_While _this) {
+cx_int16 _Fast_While_construct(Fast_While this) {
 /* $begin(::corto::Fast::While::construct) */
     cx_type conditionType;
 
-    Fast_Node(_this)->kind = Fast_WhileExpr;
+    Fast_Node(this)->kind = Fast_WhileExpr;
 
-    conditionType = Fast_Expression_getType(_this->condition);
+    conditionType = Fast_Expression_getType(this->condition);
     if (conditionType) {
         /* Check if condition can evaluate to a boolean value */
         if (!cx_type_castable(cx_type(cx_bool_o), conditionType)) {
@@ -39,7 +39,7 @@ error:
 }
 
 /* ::corto::Fast::While::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _Fast_While_toIc_v(Fast_While _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_While_toIc_v(Fast_While this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::corto::Fast::While::toIc) */
     ic_storage accumulator;
     ic_label labelEval, labelNeq;
@@ -51,15 +51,15 @@ ic_node _Fast_While_toIc_v(Fast_While _this, ic_program program, ic_storage stor
 
     /* Obtain accumulator for evaluating the condition */
     accumulator = (ic_storage)ic_program_pushAccumulator(
-        program, Fast_Expression_getType(_this->condition), _this->condition->isReference, FALSE);
+        program, Fast_Expression_getType(this->condition), this->condition->isReference, FALSE);
 
     /* Create label to jump back to evaluation */
     labelEval = ic_labelCreate();
 
     /* Optimize condition - take into account literals, unwind condition for NOT-operator */
-    condition = Fast_Node_optimizeCondition(_this->condition, &condResult, &inverse);
+    condition = Fast_Node_optimizeCondition(this->condition, &condResult, &inverse);
 
-    if (!_this->isUntil) {
+    if (!this->isUntil) {
         if (condition) {
             expr = Fast_Node_toIc(Fast_Node(condition), program, accumulator, TRUE);
         }
@@ -69,7 +69,7 @@ ic_node _Fast_While_toIc_v(Fast_While _this, ic_program program, ic_storage stor
         
         /* Evaluate condition, insert jump */
         if (expr) {
-            IC_3(program, Fast_Node(_this)->line, inverse ? ic_jeq : ic_jneq, expr, labelNeq, NULL,
+            IC_3(program, Fast_Node(this)->line, inverse ? ic_jeq : ic_jneq, expr, labelNeq, NULL,
                 IC_DEREF_VALUE, IC_DEREF_VALUE, IC_DEREF_VALUE);
         }
     }
@@ -81,12 +81,12 @@ ic_node _Fast_While_toIc_v(Fast_While _this, ic_program program, ic_storage stor
     ic_program_popAccumulator(program);
 
     /* Parse block */
-    if (_this->trueBranch) {
+    if (this->trueBranch) {
         if (condition || condResult) {
-            if (_this->trueBranch->_while != _this) {
-                Fast_Block_toIc(_this->trueBranch, program, NULL, FALSE);
+            if (this->trueBranch->_while != this) {
+                Fast_Block_toIc(this->trueBranch, program, NULL, FALSE);
             } else {
-                Fast_Block_toIcBody(_this->trueBranch, program, NULL, FALSE);
+                Fast_Block_toIcBody(this->trueBranch, program, NULL, FALSE);
             }
         }
     }
@@ -98,11 +98,11 @@ ic_node _Fast_While_toIc_v(Fast_While _this, ic_program program, ic_storage stor
 
     /* Evaluate condition, insert jump to evaluate */
     if (expr) {
-        IC_3(program, Fast_Node(_this)->line, inverse ? ic_jneq : ic_jeq, expr, labelEval, NULL,
+        IC_3(program, Fast_Node(this)->line, inverse ? ic_jneq : ic_jeq, expr, labelEval, NULL,
             IC_DEREF_VALUE, IC_DEREF_VALUE, IC_DEREF_VALUE);
     }
 
-    if (!_this->isUntil) {
+    if (!this->isUntil) {
         /* Insert label */
         ic_program_add(program, ic_node(labelNeq));
     }

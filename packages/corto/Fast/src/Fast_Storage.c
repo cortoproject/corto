@@ -10,11 +10,11 @@
 #include "Fast.h"
 
 /* ::corto::Fast::Storage::construct() */
-cx_int16 _Fast_Storage_construct(Fast_Storage _this) {
+cx_int16 _Fast_Storage_construct(Fast_Storage this) {
 /* $begin(::corto::Fast::Storage::construct) */
 
-    Fast_Node(_this)->kind = Fast_StorageExpr;
-    Fast_Expression(_this)->deref = Fast_Expression(_this)->type->reference ? Fast_ByReference : Fast_ByValue;
+    Fast_Node(this)->kind = Fast_StorageExpr;
+    Fast_Expression(this)->deref = Fast_Expression(this)->type->reference ? Fast_ByReference : Fast_ByValue;
 
     return 0;
 /* $end */

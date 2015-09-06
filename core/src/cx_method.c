@@ -9,11 +9,11 @@
 #include "cx.h"
 
 /* ::corto::lang::method::bind() */
-cx_int16 _cx_method_bind(cx_method _this) {
+cx_int16 _cx_method_bind(cx_method this) {
 /* $begin(::corto::lang::method::bind) */
     
     /* Bind function */
-    if (cx_function_bind(cx_function(_this))) {
+    if (cx_function_bind(cx_function(this))) {
         goto error;
     }
 
@@ -24,32 +24,32 @@ error:
 }
 
 /* ::corto::lang::method::init() */
-cx_int16 _cx_method_init(cx_method _this) {
+cx_int16 _cx_method_init(cx_method this) {
 /* $begin(::corto::lang::method::init) */
     cx_object parent;
     
     /* Locate parent class object */
-    parent = cx_parentof(_this);
+    parent = cx_parentof(this);
 
     /* Parent of method must be an interface type */
     if (cx_class_instanceof(cx_interface_o, parent)) {
         /* Can't use the cx_interface_bindMethod here, since that would introduce a bootstrap issue. */
         if (cx_typeof(parent) == cx_type(cx_interface_o)) {
-            if (cx_interface_bindMethod(cx_interface(parent), _this)) {
+            if (cx_interface_bindMethod(cx_interface(parent), this)) {
                 goto error;
             }
         } else if (cx_typeof(parent) == cx_type(cx_struct_o)) {
-            if (cx_interface_bindMethod(cx_interface(parent), _this)) {
+            if (cx_interface_bindMethod(cx_interface(parent), this)) {
                 goto error;
             }
         } else if (cx_typeof(parent) == cx_type(cx_class_o)) {
-            if (cx_interface_bindMethod(cx_interface(parent), _this)) {
+            if (cx_interface_bindMethod(cx_interface(parent), this)) {
                 goto error;
             }
         }
     }
 
-    return cx_function_init(cx_function(_this));
+    return cx_function_init(cx_function(this));
 error:
     return -1;
 /* $end */

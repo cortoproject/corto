@@ -12,8 +12,8 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData
     cx_equalityKind result = CX_EQ;
     cx_compare_ser_t *data = userData;
     cx_type type = cx_valueType(info);
-    void *_this = cx_valueValue(info);
-    void *value = (void*)((cx_word)cx_valueValue(&data->value) + ((cx_word)_this - (cx_word)data->base));
+    void *this = cx_valueValue(info);
+    void *value = (void*)((cx_word)cx_valueValue(&data->value) + ((cx_word)this - (cx_word)data->base));
     
     CX_UNUSED(s);
     
@@ -21,80 +21,80 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData
         case CX_BINARY:
             switch(cx_primitive(type)->width) {
                 case CX_WIDTH_8:
-                    result = CX_COMPARE(cx_octet, _this, value);
+                    result = CX_COMPARE(cx_octet, this, value);
                     break;
                 case CX_WIDTH_16:
-                    result = CX_COMPARE(cx_uint16, _this, value);
+                    result = CX_COMPARE(cx_uint16, this, value);
                     break;
                 case CX_WIDTH_32:
-                    result = CX_COMPARE(cx_uint32, _this, value);
+                    result = CX_COMPARE(cx_uint32, this, value);
                     break;
                 case CX_WIDTH_64:
-                    result = CX_COMPARE(cx_uint64, _this, value);
+                    result = CX_COMPARE(cx_uint64, this, value);
                     break;
                 case CX_WIDTH_WORD:
-                    result = CX_COMPARE(cx_word, _this, value);
+                    result = CX_COMPARE(cx_word, this, value);
                     break;
             }
             break;
         case CX_BOOLEAN:
-            result = CX_COMPARE(cx_bool, _this, value);
+            result = CX_COMPARE(cx_bool, this, value);
             break;
         case CX_CHARACTER:
-            result = CX_COMPARE(cx_char, _this, value);
+            result = CX_COMPARE(cx_char, this, value);
             break;
         case CX_INTEGER:
             switch(cx_primitive(type)->width) {
                 case CX_WIDTH_8:
-                    result = CX_COMPARE(cx_int8, _this, value);
+                    result = CX_COMPARE(cx_int8, this, value);
                     break;
                 case CX_WIDTH_16:
-                    result = CX_COMPARE(cx_int16, _this, value);
+                    result = CX_COMPARE(cx_int16, this, value);
                     break;
                 case CX_WIDTH_32:
-                    result = CX_COMPARE(cx_int32, _this, value);
+                    result = CX_COMPARE(cx_int32, this, value);
                     break;
                 case CX_WIDTH_64:
-                    result = CX_COMPARE(cx_int64, _this, value);
+                    result = CX_COMPARE(cx_int64, this, value);
                     break;
                 case CX_WIDTH_WORD:
-                    result = CX_COMPARE(intptr_t, _this, value);
+                    result = CX_COMPARE(intptr_t, this, value);
                     break;
             }
             break;
         case CX_UINTEGER:
             switch(cx_primitive(type)->width) {
                 case CX_WIDTH_8:
-                    result = CX_COMPARE(cx_uint8, _this, value);
+                    result = CX_COMPARE(cx_uint8, this, value);
                     break;
                 case CX_WIDTH_16:
-                    result = CX_COMPARE(cx_uint16, _this, value);
+                    result = CX_COMPARE(cx_uint16, this, value);
                     break;
                 case CX_WIDTH_32:
-                    result = CX_COMPARE(cx_uint32, _this, value);
+                    result = CX_COMPARE(cx_uint32, this, value);
                     break;
                 case CX_WIDTH_64:
-                    result = CX_COMPARE(cx_uint64, _this, value);
+                    result = CX_COMPARE(cx_uint64, this, value);
                     break;
                 case CX_WIDTH_WORD:
-                    result = CX_COMPARE(uintptr_t, _this, value);
+                    result = CX_COMPARE(uintptr_t, this, value);
                     break;
             }
             break;
         case CX_FLOAT:
             switch(cx_primitive(type)->width) {
                 case CX_WIDTH_32:
-                    result = CX_COMPARE(cx_float32, _this, value);
+                    result = CX_COMPARE(cx_float32, this, value);
                     break;
                 case CX_WIDTH_64:
-                    result = CX_COMPARE(cx_float64, _this, value);
+                    result = CX_COMPARE(cx_float64, this, value);
                     break;
                 default:
                     break;
             }
             break;
         case CX_TEXT: {
-            cx_string thisStr = *(cx_string*)_this;
+            cx_string thisStr = *(cx_string*)this;
             cx_string valueStr = *(cx_string*)value;
             if (thisStr && valueStr) {
                 result = strcmp(thisStr, valueStr);
@@ -105,7 +105,7 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData
         }
         case CX_ENUM:
         case CX_BITMASK:
-            result = CX_COMPARE(cx_int32, _this, value);
+            result = CX_COMPARE(cx_int32, this, value);
             break;
     }
     
@@ -116,11 +116,11 @@ static cx_int16 cx_ser_primitive(cx_serializer s, cx_value *info, void *userData
 
 static cx_int16 cx_ser_reference(cx_serializer s, cx_value *info, void *userData) {
     cx_compare_ser_t *data = userData;
-    void *_this = cx_valueValue(info);
-    void *value = (void*)((cx_word)cx_valueValue(&data->value) + ((cx_word)_this - (cx_word)data->base));
+    void *this = cx_valueValue(info);
+    void *value = (void*)((cx_word)cx_valueValue(&data->value) + ((cx_word)this - (cx_word)data->base));
     CX_UNUSED(s);
     
-    if (*(cx_object*)_this != *(cx_object*)value) {
+    if (*(cx_object*)this != *(cx_object*)value) {
         data->result = CX_NEQ;
     } else {
         data->result = CX_EQ;

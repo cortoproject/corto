@@ -10,35 +10,35 @@
 #include "ic.h"
 
 /* ::corto::ic::scope::add(node n) */
-cx_void _ic_scope_add(ic_scope _this, ic_node n) {
+cx_void _ic_scope_add(ic_scope this, ic_node n) {
 /* $begin(::corto::ic::scope::add) */
-    cx_llAppend(_this->program, n);
+    cx_llAppend(this->program, n);
 /* $end */
 }
 
 /* ::corto::ic::scope::addStorage(storage s) */
-cx_void _ic_scope_addStorage(ic_scope _this, ic_storage s) {
+cx_void _ic_scope_addStorage(ic_scope this, ic_storage s) {
 /* $begin(::corto::ic::scope::addStorage) */
-    cx_llAppend(_this->storages, s);
-    cx_setref(&s->scope, _this);
+    cx_llAppend(this->storages, s);
+    cx_setref(&s->scope, this);
 /* $end */
 }
 
 /* ::corto::ic::scope::construct() */
-cx_int16 _ic_scope_construct(ic_scope _this) {
+cx_int16 _ic_scope_construct(ic_scope this) {
 /* $begin(::corto::ic::scope::construct) */
-    ic_node(_this)->kind = IC_SCOPE;
-    return ic_node_construct(ic_node(_this));
+    ic_node(this)->kind = IC_SCOPE;
+    return ic_node_construct(ic_node(this));
 /* $end */
 }
 
 /* ::corto::ic::scope::lookupStorage(string name,bool recursive) */
-ic_storage _ic_scope_lookupStorage(ic_scope _this, cx_string name, cx_bool recursive) {
+ic_storage _ic_scope_lookupStorage(ic_scope this, cx_string name, cx_bool recursive) {
 /* $begin(::corto::ic::scope::lookupStorage) */
     cx_iter storageIter;
     ic_storage result = NULL;
 
-    storageIter = cx_llIter(_this->storages);
+    storageIter = cx_llIter(this->storages);
     while(cx_iterHasNext(&storageIter)) {
         result = cx_iterNext(&storageIter);
         if (!strcmp(result->name, name)) {
@@ -48,8 +48,8 @@ ic_storage _ic_scope_lookupStorage(ic_scope _this, cx_string name, cx_bool recur
         }
     }
 
-    if (!result && _this->parent && recursive && !_this->isFunction) {
-        result = ic_scope_lookupStorage(_this->parent, name, TRUE);
+    if (!result && this->parent && recursive && !this->isFunction) {
+        result = ic_scope_lookupStorage(this->parent, name, TRUE);
     }
 
     return result;
@@ -57,7 +57,7 @@ ic_storage _ic_scope_lookupStorage(ic_scope _this, cx_string name, cx_bool recur
 }
 
 /* ::corto::ic::scope::str(string in) */
-cx_string _ic_scope_str(ic_scope _this, cx_string in) {
+cx_string _ic_scope_str(ic_scope this, cx_string in) {
 /* $begin(::corto::ic::scope::str) */
     cx_iter programIter, storageIter;
     ic_storage storage;
@@ -65,7 +65,7 @@ cx_string _ic_scope_str(ic_scope _this, cx_string in) {
     ic_node ic;
     cx_string result = in;
 
-    storageIter = cx_llIter(_this->storages);
+    storageIter = cx_llIter(this->storages);
     while(cx_iterHasNext(&storageIter)) {
         storage = cx_iterNext(&storageIter);
         if (storage->kind == IC_VARIABLE) {
@@ -77,7 +77,7 @@ cx_string _ic_scope_str(ic_scope _this, cx_string in) {
         result = strappend(result, "%%scopepush\n");
     }
 
-    storageIter = cx_llIter(_this->storages);
+    storageIter = cx_llIter(this->storages);
     while(cx_iterHasNext(&storageIter)) {
         storage = cx_iterNext(&storageIter);
         if (storage->kind == IC_VARIABLE) {
@@ -86,7 +86,7 @@ cx_string _ic_scope_str(ic_scope _this, cx_string in) {
         }
     }
 
-    programIter = cx_llIter(_this->program);
+    programIter = cx_llIter(this->program);
     while(cx_iterHasNext(&programIter)) {
         ic = cx_iterNext(&programIter);
         result = ic_node_str(ic, result);

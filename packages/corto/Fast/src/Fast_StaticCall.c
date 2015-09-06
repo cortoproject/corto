@@ -14,21 +14,21 @@
 /* $end */
 
 /* ::corto::Fast::StaticCall::construct() */
-cx_int16 _Fast_StaticCall_construct(Fast_StaticCall _this) {
+cx_int16 _Fast_StaticCall_construct(Fast_StaticCall this) {
 /* $begin(::corto::Fast::StaticCall::construct) */
     Fast_Object fExpr;
 
-    fExpr = Fast_ObjectCreate(_this->function);
+    fExpr = Fast_ObjectCreate(this->function);
     Fast_Parser_collect(yparser(), fExpr);
-    cx_setref(&Fast_Call(_this)->functionExpr, fExpr);
+    cx_setref(&Fast_Call(this)->functionExpr, fExpr);
 
     /* Set parameters */
-    Fast_Call_setParameters(Fast_Call(_this), _this->function);
+    Fast_Call_setParameters(Fast_Call(this), this->function);
 
     /* If function is a metaprocedure, signal Call class to push this as any */
-    Fast_Call(_this)->instanceIsAny = 
-        (cx_procedure(cx_typeof(_this->function))->kind == CX_METAPROCEDURE);
+    Fast_Call(this)->instanceIsAny = 
+        (cx_procedure(cx_typeof(this->function))->kind == CX_METAPROCEDURE);
 
-    return Fast_Call_construct(Fast_Call(_this));
+    return Fast_Call_construct(Fast_Call(this));
 /* $end */
 }

@@ -75,15 +75,15 @@ cx_string tc_observableKindName(tc_observableKind kind) {
     }
 }
 
-void tc_check(cx_string name, tc_observableKind kind, cx_uint32 count, cx_object _this, cx_object observable, cx_object source, cx_bool *result) {
+void tc_check(cx_string name, tc_observableKind kind, cx_uint32 count, cx_object this, cx_object observable, cx_object source, cx_bool *result) {
     if (tcResult[kind].count != count) {
         printf("%s: %s: count mismatch: expected %d, got %d\n", name, tc_observableKindName(kind), count, tcResult[kind].count);
         *result = FALSE;
     }
-    if (tcResult[kind]._this != _this) {
+    if (tcResult[kind].this != this) {
         cx_id id, id2;
-        printf("%s: %s: _this mismatch: expected '%s', got '%s'\n",
-                name, tc_observableKindName(kind), cx_fullname(_this, id), cx_fullname(tcResult[kind]._this, id2));
+        printf("%s: %s: this mismatch: expected '%s', got '%s'\n",
+                name, tc_observableKindName(kind), cx_fullname(this, id), cx_fullname(tcResult[kind].this, id2));
         *result = FALSE;
     }
     if (tcResult[kind].observable != observable) {
@@ -392,7 +392,7 @@ int main(int argc, char* argv[]) {
 cx_void tc_construct_onBoth(cx_object *observable, cx_object *source) {
 /* $begin(::tc_event::construct_onBoth) */
     tcResult[observableOnConstructBoth].count++;
-    tcResult[observableOnConstructBoth]._this = NULL;
+    tcResult[observableOnConstructBoth].this = NULL;
     tcResult[observableOnConstructBoth].observable = observable;
     tcResult[observableOnConstructBoth].source = source;
 /* $end */
@@ -402,7 +402,7 @@ cx_void tc_construct_onBoth(cx_object *observable, cx_object *source) {
 cx_void tc_construct_onChild(cx_object *observable, cx_object *source) {
 /* $begin(::tc_event::construct_onChild) */
     tcResult[observableOnConstructChild].count++;
-    tcResult[observableOnConstructChild]._this = NULL;
+    tcResult[observableOnConstructChild].this = NULL;
     tcResult[observableOnConstructChild].observable = observable;
     tcResult[observableOnConstructChild].source = source;
 /* $end */
@@ -412,7 +412,7 @@ cx_void tc_construct_onChild(cx_object *observable, cx_object *source) {
 cx_void tc_construct_onRootChilds(cx_object *observable, cx_object *source) {
 /* $begin(::tc_event::construct_onRootChilds) */
     tcResult[observableOnConstructRootChilds].count++;
-    tcResult[observableOnConstructRootChilds]._this = NULL;
+    tcResult[observableOnConstructRootChilds].this = NULL;
     tcResult[observableOnConstructRootChilds].observable = observable;
     tcResult[observableOnConstructRootChilds].source = source;
 /* $end */
@@ -422,7 +422,7 @@ cx_void tc_construct_onRootChilds(cx_object *observable, cx_object *source) {
 cx_void tc_construct_onRootSelf(cx_object *observable, cx_object *source) {
 /* $begin(::tc_event::construct_onRootSelf) */
     tcResult[observableOnConstructRootSelf].count++;
-    tcResult[observableOnConstructRootSelf]._this = NULL;
+    tcResult[observableOnConstructRootSelf].this = NULL;
     tcResult[observableOnConstructRootSelf].observable = observable;
     tcResult[observableOnConstructRootSelf].source = source;
 /* $end */
@@ -432,7 +432,7 @@ cx_void tc_construct_onRootSelf(cx_object *observable, cx_object *source) {
 cx_void tc_construct_onSelf(tc_Point *observable, cx_object *source) {
 /* $begin(::tc_event::construct_onSelf) */
     tcResult[observableOnConstructSelf].count++;
-    tcResult[observableOnConstructSelf]._this = NULL;
+    tcResult[observableOnConstructSelf].this = NULL;
     tcResult[observableOnConstructSelf].observable = observable;
     tcResult[observableOnConstructSelf].source = source;
 /* $end */
@@ -442,7 +442,7 @@ cx_void tc_construct_onSelf(tc_Point *observable, cx_object *source) {
 cx_void tc_destruct_onBoth(cx_object *observable, cx_object *source) {
 /* $begin(::tc_event::destruct_onBoth) */
     tcResult[observableOnDestructBoth].count++;
-    tcResult[observableOnDestructBoth]._this = NULL;
+    tcResult[observableOnDestructBoth].this = NULL;
     tcResult[observableOnDestructBoth].observable = observable;
     tcResult[observableOnDestructBoth].source = source;
 /* $end */
@@ -452,7 +452,7 @@ cx_void tc_destruct_onBoth(cx_object *observable, cx_object *source) {
 cx_void tc_destruct_onChild(cx_object *observable, cx_object *source) {
 /* $begin(::tc_event::destruct_onChild) */
     tcResult[observableOnDestructChild].count++;
-    tcResult[observableOnDestructChild]._this = NULL;
+    tcResult[observableOnDestructChild].this = NULL;
     tcResult[observableOnDestructChild].observable = observable;
     tcResult[observableOnDestructChild].source = source;
 /* $end */
@@ -462,7 +462,7 @@ cx_void tc_destruct_onChild(cx_object *observable, cx_object *source) {
 cx_void tc_destruct_onRootChilds(cx_object *observable, cx_object *source) {
 /* $begin(::tc_event::destruct_onRootChilds) */
     tcResult[observableOnDestructRootChilds].count++;
-    tcResult[observableOnDestructRootChilds]._this = NULL;
+    tcResult[observableOnDestructRootChilds].this = NULL;
     tcResult[observableOnDestructRootChilds].observable = observable;
     tcResult[observableOnDestructRootChilds].source = source;
 /* $end */
@@ -472,7 +472,7 @@ cx_void tc_destruct_onRootChilds(cx_object *observable, cx_object *source) {
 cx_void tc_destruct_onRootSelf(cx_object *observable, cx_object *source) {
 /* $begin(::tc_event::destruct_onRootSelf) */
     tcResult[observableOnDestructRootSelf].count++;
-    tcResult[observableOnDestructRootSelf]._this = NULL;
+    tcResult[observableOnDestructRootSelf].this = NULL;
     tcResult[observableOnDestructRootSelf].observable = observable;
     tcResult[observableOnDestructRootSelf].source = source;
 /* $end */
@@ -482,7 +482,7 @@ cx_void tc_destruct_onRootSelf(cx_object *observable, cx_object *source) {
 cx_void tc_destruct_onSelf(tc_Point *observable, cx_object *source) {
 /* $begin(::tc_event::destruct_onSelf) */
     tcResult[observableOnDestructSelf].count++;
-    tcResult[observableOnDestructSelf]._this = NULL;
+    tcResult[observableOnDestructSelf].this = NULL;
     tcResult[observableOnDestructSelf].observable = observable;
     tcResult[observableOnDestructSelf].source = source;
 /* $end */
@@ -492,7 +492,7 @@ cx_void tc_destruct_onSelf(tc_Point *observable, cx_object *source) {
 cx_void tc_new_onBoth(cx_object *observable, cx_object *source) {
 /* $begin(::tc_event::new_onBoth) */
     tcResult[observableOnNewBoth].count++;
-    tcResult[observableOnNewBoth]._this = NULL;
+    tcResult[observableOnNewBoth].this = NULL;
     tcResult[observableOnNewBoth].observable = observable;
     tcResult[observableOnNewBoth].source = source;
 /* $end */
@@ -502,7 +502,7 @@ cx_void tc_new_onBoth(cx_object *observable, cx_object *source) {
 cx_void tc_new_onChild(cx_object *observable, cx_object *source) {
 /* $begin(::tc_event::new_onChild) */
     tcResult[observableOnNewChild].count++;
-    tcResult[observableOnNewChild]._this = NULL;
+    tcResult[observableOnNewChild].this = NULL;
     tcResult[observableOnNewChild].observable = observable;
     tcResult[observableOnNewChild].source = source;
 /* $end */
@@ -512,7 +512,7 @@ cx_void tc_new_onChild(cx_object *observable, cx_object *source) {
 cx_void tc_new_onRootChilds(cx_object *observable, cx_object *source) {
 /* $begin(::tc_event::new_onRootChilds) */
     tcResult[observableOnNewRootChilds].count++;
-    tcResult[observableOnNewRootChilds]._this = NULL;
+    tcResult[observableOnNewRootChilds].this = NULL;
     tcResult[observableOnNewRootChilds].observable = observable;
     tcResult[observableOnNewRootChilds].source = source;
 /* $end */
@@ -522,7 +522,7 @@ cx_void tc_new_onRootChilds(cx_object *observable, cx_object *source) {
 cx_void tc_new_onRootSelf(cx_object *observable, cx_object *source) {
 /* $begin(::tc_event::new_onRootSelf) */
     tcResult[observableOnNewRootSelf].count++;
-    tcResult[observableOnNewRootSelf]._this = NULL;
+    tcResult[observableOnNewRootSelf].this = NULL;
     tcResult[observableOnNewRootSelf].observable = observable;
     tcResult[observableOnNewRootSelf].source = source;
 /* $end */
@@ -532,7 +532,7 @@ cx_void tc_new_onRootSelf(cx_object *observable, cx_object *source) {
 cx_void tc_new_onSelf(cx_object *observable, cx_object *source) {
 /* $begin(::tc_event::new_onSelf) */
     tcResult[observableOnNewSelf].count++;
-    tcResult[observableOnNewSelf]._this = NULL;
+    tcResult[observableOnNewSelf].this = NULL;
     tcResult[observableOnNewSelf].observable = observable;
     tcResult[observableOnNewSelf].source = source;
 /* $end */
@@ -542,7 +542,7 @@ cx_void tc_new_onSelf(cx_object *observable, cx_object *source) {
 cx_void tc_update_onBoth(cx_object *observable, cx_object *source) {
 /* $begin(::tc_event::update_onBoth) */
     tcResult[observableOnUpdateBoth].count++;
-    tcResult[observableOnUpdateBoth]._this = NULL;
+    tcResult[observableOnUpdateBoth].this = NULL;
     tcResult[observableOnUpdateBoth].observable = observable;
     tcResult[observableOnUpdateBoth].source = source;
 /* $end */
@@ -552,7 +552,7 @@ cx_void tc_update_onBoth(cx_object *observable, cx_object *source) {
 cx_void tc_update_onChild(cx_object *observable, cx_object *source) {
 /* $begin(::tc_event::update_onChild) */
     tcResult[observableOnUpdateChild].count++;
-    tcResult[observableOnUpdateChild]._this = NULL;
+    tcResult[observableOnUpdateChild].this = NULL;
     tcResult[observableOnUpdateChild].observable = observable;
     tcResult[observableOnUpdateChild].source = source;
 /* $end */
@@ -562,7 +562,7 @@ cx_void tc_update_onChild(cx_object *observable, cx_object *source) {
 cx_void tc_update_onRootChilds(cx_object *observable, cx_object *source) {
 /* $begin(::tc_event::update_onRootChilds) */
     tcResult[observableOnUpdateRootChilds].count++;
-    tcResult[observableOnUpdateRootChilds]._this = NULL;
+    tcResult[observableOnUpdateRootChilds].this = NULL;
     tcResult[observableOnUpdateRootChilds].observable = observable;
     tcResult[observableOnUpdateRootChilds].source = source;
 /* $end */
@@ -572,7 +572,7 @@ cx_void tc_update_onRootChilds(cx_object *observable, cx_object *source) {
 cx_void tc_update_onRootSelf(cx_object *observable, cx_object *source) {
 /* $begin(::tc_event::update_onRootSelf) */
     tcResult[observableOnUpdateRootSelf].count++;
-    tcResult[observableOnUpdateRootSelf]._this = NULL;
+    tcResult[observableOnUpdateRootSelf].this = NULL;
     tcResult[observableOnUpdateRootSelf].observable = observable;
     tcResult[observableOnUpdateRootSelf].source = source;
 /* $end */
@@ -582,7 +582,7 @@ cx_void tc_update_onRootSelf(cx_object *observable, cx_object *source) {
 cx_void tc_update_onSelf(tc_Point *observable, cx_object *source) {
 /* $begin(::tc_event::update_onSelf) */
     tcResult[observableOnUpdateSelf].count++;
-    tcResult[observableOnUpdateSelf]._this = NULL;
+    tcResult[observableOnUpdateSelf].this = NULL;
     tcResult[observableOnUpdateSelf].observable = observable;
     tcResult[observableOnUpdateSelf].source = source;
 /* $end */

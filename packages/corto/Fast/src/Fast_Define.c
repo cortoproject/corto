@@ -14,24 +14,24 @@
 /* $end */
 
 /* ::corto::Fast::Define::construct() */
-cx_int16 _Fast_Define_construct(Fast_Define _this) {
+cx_int16 _Fast_Define_construct(Fast_Define this) {
 /* $begin(::corto::Fast::Define::construct) */
 
-    Fast_Node(_this)->kind = Fast_DefineExpr;
+    Fast_Node(this)->kind = Fast_DefineExpr;
 
     return 0;
 /* $end */
 }
 
 /* ::corto::Fast::Define::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _Fast_Define_toIc_v(Fast_Define _this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _Fast_Define_toIc_v(Fast_Define this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::corto::Fast::Define::toIc) */
     ic_node object;
     CX_UNUSED(stored);
     CX_UNUSED(storage);
 
-    object = Fast_Node_toIc(Fast_Node(_this->object), program, NULL, TRUE);
-    IC_1(program, Fast_Node(_this)->line, ic_define, object, IC_DEREF_ADDRESS);
+    object = Fast_Node_toIc(Fast_Node(this->object), program, NULL, TRUE);
+    IC_1(program, Fast_Node(this)->line, ic_define, object, IC_DEREF_ADDRESS);
 
     return NULL;
 /* $end */

@@ -14,23 +14,23 @@
 /* $end */
 
 /* ::corto::os::timer::run() */
-cx_void _os_timer_run(os_timer _this) {
+cx_void _os_timer_run(os_timer this) {
 /* $begin(::corto::os::timer::run) */
 
-    while(!_this->_parent.stopping) {
-        cx_sleep(_this->sec, _this->nanosec);
-        cx_update(_this);
+    while(!this->_parent.stopping) {
+        cx_sleep(this->sec, this->nanosec);
+        cx_update(this);
     }
 
 /* $end */
 }
 
 /* ::corto::os::timer::stop() */
-cx_void _os_timer_stop(os_timer _this) {
+cx_void _os_timer_stop(os_timer this) {
 /* $begin(::corto::os::timer::stop) */
 
-    /*os_thread_stop_v(os_thread(_this));*/
-    os_thread_join(os_thread(_this));
+    /*os_thread_stop_v(os_thread(this));*/
+    os_thread_join(os_thread(this));
 
 /* $end */
 }
