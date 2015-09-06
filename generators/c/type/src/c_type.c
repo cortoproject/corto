@@ -354,9 +354,20 @@ static cx_int16 c_typeSequence(cx_serializer s, cx_value* v, void* userData) {
     t = cx_valueType(v);
     c_specifierId(data->g, cx_type(t), id, NULL, postfix);
     c_specifierId(data->g, cx_type(cx_collection(t)->elementType), id3, NULL, postfix2);
-    g_fileWrite(data->header, "CX_SEQUENCE(%s, %s,);\n\n",
-            id,
-            id3);
+
+    if (cx_checkAttr(t, CX_ATTR_SCOPED)) {
+        g_fileWrite(data->header, "CX_SEQUENCE(%s, %s,);\n",
+                id,
+                id3);
+    } else {
+        g_fileWrite(data->header, "#ifndef %s_DEFINED\n", id);
+        g_fileWrite(data->header, "#define %s_DEFINED\n", id);
+        g_fileWrite(data->header, "CX_SEQUENCE(%s, %s,);\n",
+                id,
+                id3);
+        g_fileWrite(data->header, "#endif\n");
+    }
+    g_fileWrite(data->header, "\n");
 
     return 0;
 }

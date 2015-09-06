@@ -106,6 +106,7 @@ extern int8_t CX_DEBUG_ENABLED;
 #define _(txt) /* This macro prevents expansion of type-casting macro's */
 #define CX_SEQUENCE(type, subtype, postexpr) typedef struct type {uint32_t length; subtype _()(*buffer) postexpr;} type
 #define CX_SEQUENCE_ANONYMOUS(subtype, postexpr) struct {uint32_t length; subtype _()(*buffer) postexpr;}
+#define CX_SEQUENCE_EMPTY(name) (name){0, NULL}
 #define CX_LIST(type) typedef cx_ll type
 
 #define CX_OBSERVER_DEF(name)\
