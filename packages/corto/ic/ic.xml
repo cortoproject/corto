@@ -232,7 +232,7 @@
                     <method name="pushFunction(function function)" returnType="ic::scope"/>
                     <method name="popScope()"/>
                     <method name="assemble()" returnType="int16"/>
-                    <method name="run(word result)" returnType="int16"/>
+                    <method name="run(word result,sequence{string} argv)" returnType="int16"/>
                     <method name="str()" returnType="string"/>
                     <method name="getLabel()" returnType="uint32"/>
                     <method name="getAccId()" returnType="uint32"/>

@@ -98,7 +98,7 @@ cx_string Fast_Parser_id(cx_object o, cx_id buffer) {
 }
 
 /* Translate result of parser to corto intermediate bytecode */
-cx_int16 Fast_Parser_toIc(Fast_Parser this) {
+cx_int16 Fast_Parser_toIc(Fast_Parser this, cx_stringSeq argv) {
     ic_program program = ic_programCreate(this->filename);
 
     /* Parse root-block */
@@ -123,7 +123,7 @@ cx_int16 Fast_Parser_toIc(Fast_Parser this) {
 #endif
 
     ic_program_assemble(program);
-    ic_program_run(program, 0);
+    ic_program_run(program, 0, argv);
 
     /* Free program */
     cx_release(program);
@@ -2294,8 +2294,8 @@ cx_void _Fast_Parser_observerPush(Fast_Parser this) {
 /* $end */
 }
 
-/* ::corto::Fast::Parser::parse() */
-cx_uint32 _Fast_Parser_parse(Fast_Parser this) {
+/* ::corto::Fast::Parser::parse(sequence{string} argv) */
+cx_uint32 _Fast_Parser_parse(Fast_Parser this, cx_stringSeq argv) {
 /* $begin(::corto::Fast::Parser::parse) */
     Fast_CHECK_ERRSET(this);
 
@@ -2316,7 +2316,7 @@ cx_uint32 _Fast_Parser_parse(Fast_Parser this) {
     }
 
     /* Parse to corto intermediate code */
-    if ( Fast_Parser_toIc(this)) {
+    if ( Fast_Parser_toIc(this, argv)) {
         cx_print("%s: parsed with errors (%d errors, %d warnings)", this->filename, this->errors, this->warnings);
         goto error;
     }
@@ -2493,12 +2493,11 @@ cx_int16 _Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_word value) 
     /* Translate program to vm code */
     ic_program_assemble(program);
 
-
     /* Run vm program */
     if (returnValue) {
         if (result->isReference) {
             cx_object o = NULL;
-            ic_program_run(program, (cx_word)&o);
+            ic_program_run(program, (cx_word)&o, CX_SEQUENCE_EMPTY(cx_stringSeq));
             if (o) {
                 cx_valueObjectInit(v, o, NULL);
             } else {
@@ -2508,10 +2507,10 @@ cx_int16 _Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_word value) 
         } else {
             if(returnType->kind == CX_PRIMITIVE) {
                 cx_valueValueInit(v, NULL, returnType, &v->is.value.storage);
-                ic_program_run(program, (cx_word)&v->is.value.storage);
+                ic_program_run(program, (cx_word)&v->is.value.storage, CX_SEQUENCE_EMPTY(cx_stringSeq));
             } else {
                 void *ptr = cx_alloc(cx_type_sizeof(returnType));
-                ic_program_run(program, (cx_word)&ptr);
+                ic_program_run(program, (cx_word)&ptr, CX_SEQUENCE_EMPTY(cx_stringSeq));
                 if (ptr) {
                     cx_valueValueInit(v, NULL, returnType, ptr);
                 } else {
@@ -2521,7 +2520,7 @@ cx_int16 _Fast_Parser_parseLine(cx_string expr, cx_object scope, cx_word value) 
             }
         }
     } else {
-        ic_program_run(program, 0);
+        ic_program_run(program, 0, CX_SEQUENCE_EMPTY(cx_stringSeq));
         if (v) {
             cx_valueValueInit(v, NULL, cx_type(cx_void_o), NULL);
         }

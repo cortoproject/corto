@@ -242,11 +242,11 @@ ic_scope _ic_program_pushScope(ic_program this) {
 /* $end */
 }
 
-/* ::corto::ic::program::run(word result) */
-cx_int16 _ic_program_run(ic_program this, cx_word result) {
+/* ::corto::ic::program::run(word result,sequence{string} argv) */
+cx_int16 _ic_program_run(ic_program this, cx_word result, cx_stringSeq argv) {
 /* $begin(::corto::ic::program::run) */
     vm_program program = (vm_program)this->vmprogram;
-    vm_run(program, (void*)result);
+    vm_run(program, argv, (void*)result);
     return 0;
 /* $end */
 }

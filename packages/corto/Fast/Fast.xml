@@ -752,7 +752,7 @@
                     <member name="stagingAllowed" type="bool" modifiers="private|local"/>
 
                     <!-- Parser framework functions -->
-                    <method name="parse()" returnType="uint32"/>
+                    <method name="parse(sequence{string} argv)" returnType="uint32"/>
                     <function name="parseLine(string expr,object scope,word value)" returnType="int16"/> <!--  Parse a single line -->
                     <method name="parseExpression(string expr,Fast::Block block,object scope,uint32 line,uint32 column)" returnType="Fast::Expression"/>
                     <method name="isErrSet()" returnType="bool"/>

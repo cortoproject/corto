@@ -1086,11 +1086,12 @@ static void cx_stringConcatCacheCreate(void) {
 }
 
 /* Execute a program */
-int32_t vm_run(vm_program program, void *result) {
+int32_t vm_run(vm_program program, cx_stringSeq argv, void *result) {
     void *storage = NULL;
     if (program->storage) {
         storage = alloca(program->storage);
     }
+    *(void**)storage = &argv;
     cx_stringConcatCacheCreate();
     return cx_vm_run_w_storage(program, storage, result);
 }

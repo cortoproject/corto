@@ -24,18 +24,14 @@ int fast_cortoRun(cx_string file, int argc, char* argv[], void* udata) {
     cx_char* source;
     Fast_Parser p;
     cx_int32 i;
-    cx_objectseq *seq;
+    cx_stringSeq seq;
     CX_UNUSED(udata);
 
-    seq = cxstr_declareChild(NULL, "argv", "sequence{string}");
-    seq->buffer = cx_alloc(argc * sizeof(cx_string));
-    seq->length = argc;
-
+    seq.buffer = cx_alloc(argc * sizeof(cx_string));
+    seq.length = argc;
     for (i = 0; i < argc; i++) {
-        seq->buffer[i] = cx_strdup(argv[i]);
+        seq.buffer[i] = argv[i];
     }
-
-    cx_define(seq);
 
     source = cx_fileLoad(file);
     if (source) {
@@ -43,14 +39,14 @@ int fast_cortoRun(cx_string file, int argc, char* argv[], void* udata) {
         p = Fast_ParserCreate(source, file);
 
         /* Parse script */
-        Fast_Parser_parse(p);
+        Fast_Parser_parse(p, seq);
         cx_release(p);
         cx_dealloc(source);
     } else {
         goto error;
     }
 
-    cx_delete(seq);
+    cx_dealloc(seq.buffer);
 
     return 0;
 error:

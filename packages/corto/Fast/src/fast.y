@@ -806,6 +806,11 @@ int fast_yparse(Fast_Parser parser, cx_uint32 line, cx_uint32 column) {
     if (!parser->block) {
         parser->block = Fast_BlockCreate(NULL);
         parser->block->isRoot = TRUE;
+
+        /* Declare argv variable */
+        cx_type t = cx_resolve(NULL, "sequence{string}");
+        Fast_Block_declare(parser->block, "argv", t, TRUE, FALSE);
+        cx_release(t);
     }
 
     if (!parser->scope) {

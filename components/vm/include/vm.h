@@ -94,13 +94,17 @@ typedef struct vm_program_s {
     uint8_t translated;
 } vm_program_s;
 
+#ifndef cx_stringSeq_DEFINED
+#define cx_stringSeq_DEFINED
+CX_SEQUENCE(cx_stringSeq, cx_string,);
+#endif
 
 /* ---- Virtual machine API */
 /* Callback to vm program, for usage with call API */
 void vm_call(cx_function f, cx_void* result, void* args);
 
 /* Run a program */
-int32_t vm_run(vm_program program, void *result);
+int32_t vm_run(vm_program program, cx_stringSeq argv, void *result);
 
 /* Convert a program to a string */
 char *vm_programToString(vm_program program, vm_op *addr);
