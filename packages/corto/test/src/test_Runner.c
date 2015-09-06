@@ -26,20 +26,7 @@ cx_void _test_Runner_destruct(test_Runner _this) {
 /* $begin(::corto::test::Runner::destruct) */
     cx_uint32 successCount = test_SuiteListSize(_this->successes);
     cx_uint32 failureCount = test_SuiteListSize(_this->failures);
-    cx_print("%s: %d OK, %d FAIL", _this->name, successCount, failureCount);
-/* $end */
-}
-
-/* ::corto::test::Runner::printTestRun(::corto::test::Suite t) */
-cx_void _test_Runner_printTestRun_v(test_Runner _this, test_Suite t) {
-/* $begin(::corto::test::Runner::printTestRun) */
-    CX_UNUSED(_this);
-    cx_string suiteName = cx_nameof(cx_typeof(t));
-    cx_string testName = cx_nameof(t->test);
-    if (!t->result.success) {
-        cx_id signame; cx_signatureName(testName, signame);
-        cx_error("FAIL: %s.%s: %s", suiteName, signame, t->result.errmsg);
-    }
+    cx_print("%s: OK:%d, FAIL:%d", _this->name, successCount, failureCount);
 /* $end */
 }
 
@@ -52,15 +39,28 @@ cx_void _test_Runner_runTest(test_Runner _this, cx_object *observable, cx_object
         cx_type testClass = cx_parentof(observable);
         test_Suite suite = test_Suite(cx_declare(testClass));
         cx_setref(&suite->test, observable);
-        cx_object prev = cx_setSource(_this);
-        if (!cx_define(suite) && suite->result.success) {
-            test_SuiteListAppend(_this->successes, suite);
-        } else {
+
+        if (cx_define(suite)) {
+            cx_error("test: failed to define test suite");
             test_SuiteListAppend(_this->failures, suite);
+        } else {
+            cx_object prev = cx_setSource(_this);
+            if (!cx_define(suite) && suite->result.success) {
+                test_SuiteListAppend(_this->successes, suite);
+            } else {
+                test_SuiteListAppend(_this->failures, suite);
+            }
+            cx_setSource(prev);            
         }
-        cx_setSource(prev);
-        test_Runner_printTestRun(_this, suite);
-        cx_release(suite);
+
+        cx_string suiteName = cx_nameof(testClass);
+        cx_string testName = cx_nameof(observable);
+
+        if (!suite->result.success) {
+            cx_id signame; cx_signatureName(testName, signame);
+            cx_error("FAIL: %s.%s: %s", suiteName, signame, suite->result.errmsg ? suite->result.errmsg : "");
+        }
+        cx_delete(suite);
     }
 /* $end */
 }

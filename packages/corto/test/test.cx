@@ -13,9 +13,7 @@ struct Result::
 class Suite::
     member test: test::Case
     member result: test::Result, readonly
-
     int16 construct()
-
     void setup() virtual
     void teardown() virtual
 
@@ -26,4 +24,3 @@ class Runner::
     int16 construct()
     void destruct()
     void runTest() observer
-    void printTestRun(Suite t) virtual

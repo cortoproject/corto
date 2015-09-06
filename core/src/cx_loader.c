@@ -169,7 +169,7 @@ static int cx_loadLibrary(cx_string fileName) {
 
     /* Call main */
     if (proc(0, NULL)) {
-        cx_error("%s: cortomain failed", fileName);
+        cx_error("core: %s: cortomain failed", fileName);
         goto error;
     }
 
