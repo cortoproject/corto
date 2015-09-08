@@ -23,6 +23,7 @@ class Runner::
     member testcase: string
     member successes: list{Case}, readonly
     member failures: list{Case}, readonly
+    member testsRun: int32, readonly
     int16 construct()
     void destruct()
     void runTest() observer

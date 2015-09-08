@@ -1,0 +1,92 @@
+#package ::test
+
+int8 initCalled: 0
+int8 constructCalled: 0
+int8 destructCalled: 0
+
+class Point::
+    fail: bool
+    x, y: int32
+    int16 init()
+    int16 construct()
+    void destruct()
+
+class ObjectMgmt: test::Suite::
+    prevAttr: lang::attr, local|private
+
+    void setup()
+    void teardown()
+
+    void tc_declareVoid() test::Case
+    void tc_declareInt() test::Case
+    void tc_declarePoint() test::Case
+    void tc_declareVoidAttr0() test::Case
+    void tc_declareIntAttr0() test::Case
+    void tc_declarePointAttr0() test::Case
+
+    void tc_createVoid() test::Case
+    void tc_createInt() test::Case
+    void tc_createPoint() test::Case
+    void tc_createVoidAttr0() test::Case
+    void tc_createIntAttr0() test::Case
+    void tc_createPointAttr0() test::Case
+
+    void tc_defineVoid() test::Case
+    void tc_defineInt() test::Case
+    void tc_definePoint() test::Case
+    void tc_defineVoidAttr0() test::Case
+    void tc_defineIntAttr0() test::Case
+    void tc_definePointAttr0() test::Case
+    void tc_definePointFail() test::Case
+
+    void tc_declareChildVoid() test::Case
+    void tc_declareChildInt() test::Case
+    void tc_declareChildPoint() test::Case
+    void tc_declareChildVoidAttr0() test::Case
+    void tc_declareChildIntAttr0() test::Case
+    void tc_declareChildPointAttr0() test::Case
+
+    void tc_createChildVoid() test::Case
+    void tc_createChildInt() test::Case
+    void tc_createChildPoint() test::Case
+    void tc_createChildVoidAttr0() test::Case
+    void tc_createChildIntAttr0() test::Case
+    void tc_createChildPointAttr0() test::Case
+
+    void tc_createChildNested() test::Case
+    void tc_drop() test::Case
+
+class Resolver: test::Suite::
+    void setup()
+    void teardown()
+
+    void tc_resolveNull() test::Case
+    void tc_resolveRoot() test::Case
+    void tc_resolveCorto() test::Case
+    void tc_resolveLang() test::Case
+    void tc_resolveString() test::Case
+    void tc_resolveIo() test::Case
+    void tc_resolveAnonymous() test::Case
+    void tc_resolveEmptyString() test::Case
+
+class StringDeserializer: test::Suite::
+    void setup()
+    void teardown()
+
+    void tc_deserBoolTrue() test::Case
+    void tc_deserBoolFalse() test::Case
+    void tc_deserBoolExisting() test::Case
+    void tc_deserBoolExisting_w_type() test::Case
+
+    void tc_deserChar() test::Case
+    void tc_deserCharNull() test::Case
+    void tc_deserCharEscape() test::Case    
+    void tc_deserCharExisting() test::Case
+    void tc_deserCharExisting_w_type() test::Case
+
+    void tc_deserInt8() test::Case
+    void tc_deserInt8Minus() test::Case
+    void tc_deserInt8Overflow() test::Case
+    void tc_deserInt8Existing() test::Case
+    void tc_deserInt8Existing_w_type() test::Case
+

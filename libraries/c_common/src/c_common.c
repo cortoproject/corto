@@ -116,7 +116,7 @@ cx_char* c_primitiveId(cx_primitive t, cx_char* buff) {
             break;
         default: {
             cx_id id;
-            cx_error("c_typePrimitivePlatformType: unsupported width for primitive type '%s'.", cx_fullname(t, id));
+            cx_seterr("unsupported width for primitive type '%s'.", cx_fullname(t, id));
             goto error;
             break;
         }
@@ -143,7 +143,7 @@ cx_char* c_primitiveId(cx_primitive t, cx_char* buff) {
             break;
         default: {
             cx_id id;
-            cx_error("c_typePrimitivePlatformType: unsupported width for floating point type '%s'", cx_fullname(t, id));
+            cx_seterr("unsupported width for floating point type '%s'", cx_fullname(t, id));
             goto error;
             break;
         }
@@ -151,7 +151,7 @@ cx_char* c_primitiveId(cx_primitive t, cx_char* buff) {
         break;
     case CX_ENUM:
     case CX_BITMASK:
-        cx_error("c_typePrimitivePlatformType: enumeration\\bitmasks types must be defined using the 'enum' keyword.");
+        cx_seterr("enumeration\\bitmasks types must be defined using the 'enum' keyword.");
         goto error;
         break;
     case CX_TEXT:
@@ -276,7 +276,7 @@ cx_int16 c_specifierId(cx_generator g, cx_type t, cx_char* specifier, cx_bool* p
         g_fullOid(g, t, specifier);
     } else {
         if (t != cx_type(t)) {
-            cx_error("c_type: anonymous typedefs are not allowed.");
+            cx_seterr("anonymous typedefs are not allowed.");
             goto error;
         }
 
@@ -335,7 +335,7 @@ cx_int16 c_specifierId(cx_generator g, cx_type t, cx_char* specifier, cx_bool* p
             break;
         }
         default:
-            cx_error("c_type: anonymous type of kind '%s' not allowed.", cx_nameof(cx_enum_constant(cx_typeKind_o, cx_type(t)->kind)));
+            cx_seterr("anonymous type of kind '%s' not allowed.", cx_nameof(cx_enum_constant(cx_typeKind_o, cx_type(t)->kind)));
             goto error;
             break;
         }
@@ -381,6 +381,7 @@ cx_bool c_procedureHasThis(cx_function o) {
 cx_char* c_topath(cx_object o, cx_id id, cx_char separator) {
     cx_uint32 offset;
     cx_char ch, *ptr;
+
     cx_fullname(o, id);
 
     ptr = id + 2;

@@ -31,6 +31,7 @@ CORTO_LIB << "corto"
 
 INCLUDE << 
 	"#{ENV['CORTO_HOME']}/include/corto/#{VERSION}" << 
+	"#{ENV['CORTO_HOME']}/include/corto/#{VERSION}/packages/corto/lang" << 
 	"#{ENV['CORTO_HOME']}/include/corto/#{VERSION}/libraries"
 
 CLEAN.include(TARGETPATH + "/obj")

@@ -160,6 +160,16 @@ cx_int16 c_apiTypeCreateIntern(cx_type t, c_apiWalk_t *data, cx_string func, cx_
 		    s = c_apiParamSerializer();
 		    cx_metaWalk(&s, cx_type(t), data);
 		}
+
+        if ((t->kind != CX_COMPOSITE) && (t->kind != CX_COLLECTION) && (t->kind != CX_VOID)) {
+            if (data->parameterCount) {
+                g_fileWrite(data->source, ", ");
+                g_fileWrite(data->header, ", ");
+            }
+            g_fileWrite(data->source, "%s value", id);
+            g_fileWrite(data->header, "%s value", id);
+            data->parameterCount++;
+        }
 	}
 
     /* If there are no parameters, write 'void' */
@@ -181,17 +191,21 @@ cx_int16 c_apiTypeCreateIntern(cx_type t, c_apiWalk_t *data, cx_string func, cx_
 	}
 
     if (define) {
-	    /* Member assignments */
-	    s = c_apiAssignSerializer();
-	    cx_metaWalk(&s, cx_type(t), data);
+	    /* Assignments */
+        if ((t->kind != CX_COMPOSITE) && (t->kind != CX_COLLECTION) && (t->kind != CX_VOID)) {
+            g_fileWrite(data->source, "*this = value;\n");
+        } else {
+    	    s = c_apiAssignSerializer();
+    	    cx_metaWalk(&s, cx_type(t), data);
 
-	    /* Define object */
-	    g_fileWrite(data->source, "if (this && cx_define(this)) {\n");
-	    g_fileIndent(data->source);
-	    g_fileWrite(data->source, "cx_release(this);\n");
-	    g_fileWrite(data->source, "this = NULL;\n");
-	    g_fileDedent(data->source);
-	    g_fileWrite(data->source, "}\n");
+    	    /* Define object */
+    	    g_fileWrite(data->source, "if (this && cx_define(this)) {\n");
+    	    g_fileIndent(data->source);
+    	    g_fileWrite(data->source, "cx_release(this);\n");
+    	    g_fileWrite(data->source, "this = NULL;\n");
+    	    g_fileDedent(data->source);
+    	    g_fileWrite(data->source, "}\n");
+        }
 	}
 
     g_fileWrite(data->source, "return this;\n");
@@ -230,7 +244,7 @@ cx_int16 c_apiTypeDefineIntern(cx_type t, c_apiWalk_t *data, cx_bool isUpdate, c
     	g_fileWrite(data->source, "void ");
     } else {
     	g_fileWrite(data->header, "cx_int16 ");
-    	g_fileWrite(data->source, "cx_int16 ");	
+    	g_fileWrite(data->source, "cx_int16 ");
     }
 
     /* Function declaration */

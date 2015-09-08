@@ -1,5 +1,5 @@
 COMPONENTS = [] <<
-    :core <<
+    'packages/corto/lang' <<
     :tools <<
     :libraries <<
     :generators <<

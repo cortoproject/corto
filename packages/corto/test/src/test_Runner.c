@@ -10,6 +10,21 @@
 #include "test.h"
 
 /* $header() */
+void test_updateProgress(test_Runner this) {
+    int i;
+    char *str;
+    cx_asprintf(&str, "%s: OK:%d, FAIL:%d", 
+        this->name, 
+        test_CaseListSize(this->successes),
+        test_CaseListSize(this->failures));
+
+    for (i = 0; i < strlen(str) + 2 * 2; i++) {
+        printf("\b");
+    }
+
+    printf("%s", str);
+    fflush(stdout);
+}
 /* $end */
 
 /* ::corto::test::Runner::construct() */
@@ -29,23 +44,10 @@ cx_int16 _test_Runner_construct(test_Runner this) {
                 test_CaseListAppend(this->failures, testcase);
             } else {
                 cx_object prev = cx_setSource(this);
-                if (!cx_define(suite) && suite->result.success) {
-                    test_CaseListAppend(this->successes, testcase);
-                } else {
-                    test_CaseListAppend(this->failures, testcase);
-                }
+                cx_define(suite);
                 cx_setSource(prev);            
             }
 
-            cx_string suiteName = cx_nameof(testClass);
-            cx_string testName = cx_nameof(testcase);
-
-            if (!suite->result.success) {
-                cx_id signame; cx_signatureName(testName, signame);
-                cx_error("FAIL: %s::%s:%s", suiteName, signame, suite->result.errmsg ? suite->result.errmsg : "");
-                cx_delete(suite);
-                goto error;
-            }
             cx_delete(suite);
         } else {
             cx_error("test: testcase '%s' not found", this->testcase);
@@ -65,9 +67,8 @@ error:
 cx_void _test_Runner_destruct(test_Runner this) {
 /* $begin(::corto::test::Runner::destruct) */
     if (!this->testcase) {
-        cx_uint32 successCount = test_CaseListSize(this->successes);
-        cx_uint32 failureCount = test_CaseListSize(this->failures);
-        cx_print("%s: OK:%d, FAIL:%d", this->name, successCount, failureCount);
+        test_updateProgress(this);
+        printf("\n");
     }
 /* $end */
 }
@@ -84,6 +85,10 @@ cx_void _test_Runner_runTest(test_Runner this, cx_object observable, cx_object s
         cx_pid pid = cx_procrun("corto", (char*[]){"corto", "--mute", this->lib, cx_fullname(observable, testcaseId), NULL});
         if ((err = cx_procwait(pid, &ret)) || ret) {
             if (err > 0) {
+                int i;
+                for (i = 0; i < 255; i++) {
+                    fprintf(stderr, "\b");
+                }
                 cx_error("FAIL: %s: test crashed with signal %d", testcaseId, err);
             } else {
                 /* Process exited with a returncode != 0, and must've printed an error msg itself */
@@ -91,6 +96,10 @@ cx_void _test_Runner_runTest(test_Runner this, cx_object observable, cx_object s
             test_CaseListAppend(this->failures, observable);
         } else {
             test_CaseListAppend(this->successes, observable);
+        }
+        this->testsRun++;
+        if (!(this->testsRun % 5)) {
+            test_updateProgress(this);
         }
     }
 /* $end */

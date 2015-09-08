@@ -47,6 +47,8 @@ cx_bool _test_assertEqual(cx_any a, cx_any b, cx_string str_a, cx_string str_b, 
 /* ::corto::test::fail(string err) */
 cx_void _test_fail(cx_string err) {
 /* $begin(::corto::test::fail) */
+    cx_id id;
+    int i;
 	test_Suite this = cx_threadTlsGet(test_suiteKey);
 	if (!this) {
 		cx_error("test: test::fail called but no testsuite is running!");
@@ -56,6 +58,22 @@ cx_void _test_fail(cx_string err) {
         this->result.errmsg = cx_strdup(err);
         this->result.success = FALSE;
     }
+    
+
+    for (i = 0; i < 255; i++) {
+        fprintf(stderr, "\b");
+    }
+
+    cx_error("FAIL: %s:%s", 
+        cx_fullname(this->test, id),
+        this->result.errmsg ? this->result.errmsg : "");
+
+    cx_string lasterr = cx_lasterr();
+    if (lasterr) {
+        cx_error("   details: %s", lasterr);
+    }
+
+    exit(-1);
 /* $end */
 }
 

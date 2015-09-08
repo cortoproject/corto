@@ -11,6 +11,7 @@ LIBPATH ||= []
 INCLUDE ||= []
 
 CORTO_LIB << "corto"
-INCLUDE << "#{ENV['CORTO_HOME']}/include/corto/#{VERSION}"
+INCLUDE << "#{ENV['CORTO_HOME']}/include/corto/#{VERSION}/packages/corto/lang"
+
 
 require "#{ENV['CORTO_BUILD']}/artefact"
