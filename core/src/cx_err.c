@@ -23,21 +23,15 @@ static cx_threadKey cx_errKey = 0;
 #define MAX_ERRORS (20)
 
 typedef struct cx_errThreadData {
-    cx_string lastError[MAX_ERRORS];
-    int count;
-    int consumed;
-    int echo;
+    cx_string lastError;
 } cx_errThreadData;
 
 #define DEPTH 60
 
 static void cx_lasterrorFree(void* tls) {
     if (tls) {
-        cx_uint32 i;
-        for (i = 0; i < 64; i++) {
-            if (((cx_errThreadData*)tls)->lastError[i]) {
-                cx_dealloc(((cx_errThreadData*)tls)->lastError[i]);
-            }
+        if (((cx_errThreadData*)tls)->lastError) {
+            cx_dealloc(((cx_errThreadData*)tls)->lastError);
         }
         cx_dealloc(tls);
     }
@@ -52,7 +46,6 @@ static cx_errThreadData* cx_getThreadData(void){
     if (!result) {
         result = cx_alloc(sizeof(cx_errThreadData));
         memset(result, 0, sizeof(cx_errThreadData));
-        result->echo = TRUE;
         cx_threadTlsSet(cx_errKey, result);
     }
     return result;
@@ -60,60 +53,13 @@ static cx_errThreadData* cx_getThreadData(void){
 
 static char* cx_getLasterror(void) {
     cx_errThreadData *data = cx_getThreadData();
-
-    if (data->consumed < data->count) {
-        data->consumed++;
-        return data->lastError[data->consumed-1];
-    } else {
-        data->consumed = 0;
-        data->count = 0;
-        return NULL;
-    }
+    return data->lastError;
 }
 
-int cx_getEcho(void) {
-    return cx_getThreadData()->echo;
-}
-
-char* cx_lasterror(void) {
-    char* err;
-
-    err = cx_getLasterror();
-    if (err) {
-        return err;
-    } else {
-        return NULL;
-    }
-}
-
-static void cx_setrefLasterror(char* err) {
-    cx_errThreadData* data;
-
-    data = cx_getThreadData();
-    if (!data->echo && (data->count < MAX_ERRORS)) {
-        if (data->lastError[data->count]) {
-            cx_dealloc(data->lastError[data->count]);
-        }
-        data->lastError[data->count] = cx_strdup(err);
-        data->count++;
-    }
-}
-
-/* Enable or disable echo */
-int cx_toggleEcho(int enable) {
-    cx_errThreadData* data;
-    int oldValue;
-
-    data = cx_getThreadData();
-    oldValue = data->echo;
-    data->echo = enable;
-
-    if (!enable && oldValue) {
-        data->count = 0;
-        data->consumed = 0;
-    }
-
-    return oldValue;
+static void cx_setLasterror(char* err) {
+    cx_errThreadData *data = cx_getThreadData();
+    if (data->lastError) cx_dealloc(data->lastError);
+    data->lastError = cx_strdup(err);
 }
 
 void cx_printBacktrace(FILE* f, int nEntries, char** symbols) {
@@ -190,18 +136,13 @@ cx_err cx_logv(cx_err kind, unsigned int level, char* fmt, va_list arg, FILE* f)
 
     n = strlen(msg);
 
-    /* Set last error without \n */
-    cx_setrefLasterror(msg);
-
     strcat(msg, "\n");
     n++;
 
-    if (cx_getEcho() || ((kind == CX_CRITICAL) || (kind == CX_ASSERT))){
-        if ((written = fwrite(msg, 1, n, f)) != n) {
-            fprintf(f, 
-                "Error in cx_logv: number of bytes written (%u)"\
-                " does not match length of message (%zu).\n", written, n);
-        }
+    if ((written = fwrite(msg, 1, n, f)) != n) {
+        fprintf(f, 
+            "Error in cx_logv: number of bytes written (%u)"\
+            " does not match length of message (%zu).\n", written, n);
     }
 
     if (alloc) {
@@ -312,4 +253,20 @@ void _cx_assert(unsigned int condition, char* fmt, ...) {
     va_start(arglist, fmt);
     _cx_assertv(condition, fmt, arglist);
     va_end(arglist);
+}
+
+char* cx_lasterr(void) {
+    return cx_getLasterror();
+}
+
+void cx_seterr(char *fmt, ...) {
+    va_list list;
+    char *err = NULL;
+
+    va_start(list, fmt);
+    cx_vasprintf(&err, fmt, list);
+    va_end(list);
+
+    cx_setLasterror(err);
+    cx_dealloc(err);
 }

@@ -163,13 +163,13 @@ static int cx_loadLibrary(cx_string fileName, int argc, char* argv[]) {
     /* Lookup main function */
     proc = (int(*)(int,char*[]))cx_dlProc(dl, "cortomain");
     if (!proc) {
-        cx_error("%s: unresolved 'cortomain'", fileName);
+        cx_seterr("unresolved 'cortomain'", fileName);
         goto error;
     }
 
     /* Call main */
-    if (proc(0, NULL)) {
-        cx_error("core: %s: cortomain failed", fileName);
+    if (proc(argc, argv)) {
+        cx_seterr("cortomain failed", fileName);
         goto error;
     }
 

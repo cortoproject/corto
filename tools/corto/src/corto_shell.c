@@ -465,8 +465,6 @@ static int cxsh_show(char* object) {
 
     memset(&result, 0, sizeof(cx_value));
 
-    cx_toggleEcho(FALSE);
-
     /* Check whether this is a multiline expression */
     expr = cxsh_multiline(cx_strdup(object), 1);
 
@@ -523,11 +521,9 @@ static int cxsh_show(char* object) {
             printf("\n");
         }
         cx_dealloc(expr);
-        cx_toggleEcho(TRUE);
         return 0;
     } else {
         cx_dealloc(expr);
-        cx_toggleEcho(TRUE);
         return -1;
     }
 }
@@ -638,8 +634,7 @@ static int cxsh_doCmd(char* cmd) {
         }
 
         if (cxsh_show(cmd)) {
-
-            if ((lastErr = cx_lasterror())) {
+            if ((lastErr = cx_lasterr())) {
                 unsigned int location = 0;
                 cxsh_color(ERROR_COLOR);
 
@@ -650,10 +645,7 @@ static int cxsh_doCmd(char* cmd) {
                     printf("%*s^\n", location - 1 + (unsigned int)strlen(prompt), "");
                 }
 
-                do {
-                    cx_print("%s", lastErr);
-                } while ((lastErr = cx_lasterror()));
-
+                cx_error("%s", lastErr);
                 cxsh_color(NORMAL);
             } else {
                 cxsh_color(ERROR_COLOR);

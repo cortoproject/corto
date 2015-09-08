@@ -20,6 +20,8 @@ cx_int16 _test_Point_construct(test_Point this) {
 		goto error;
 	}
 
+	(*test_constructCalled_o)++;
+
 	return 0;
 error:
 	return -1;
@@ -30,6 +32,7 @@ error:
 cx_void _test_Point_destruct(test_Point this) {
 /* $begin(::test::Point::destruct) */
     CX_UNUSED(this);
+    (*test_destructCalled_o)++;
 /* $end */
 }
 
@@ -40,6 +43,8 @@ cx_int16 _test_Point_init(test_Point this) {
     this->x = 1;
     this->y = 2;
 
+    (*test_initCalled_o)++;
+    
 	return 0;
 /* $end */
 }

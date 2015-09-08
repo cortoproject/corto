@@ -43,7 +43,7 @@ typedef struct cx__scope {
     cx_rbtree scope;
     struct cx_rwmutex_s scopeLock;
     cx_ll attached;
-    cx_int32 orphaned;
+    cx_int32 declared;
 }cx__scope;
 
 typedef struct cx__writable {

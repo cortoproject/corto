@@ -46,7 +46,7 @@ static int c_interfaceParam(cx_parameter *o, void *userData) {
     if (data->generateSource) g_fileWrite(data->source, "%s ", specifier);
     if (data->generateHeader) g_fileWrite(data->header, "%s ", specifier);
 
-    if (o->passByReference || ((o->type->kind == CX_COMPOSITE) && !o->type->reference)) {
+    if (!o->type->reference && (o->passByReference || (o->type->kind == CX_COMPOSITE))) {
         if (data->generateSource) g_fileWrite(data->source, "*");
         if (data->generateHeader) g_fileWrite(data->header, "*");
     }
@@ -666,7 +666,7 @@ static g_file c_interfaceHeaderFileOpen(cx_generator g, cx_object o, c_typeWalk_
     /* If the class extends from another class, include header of baseclass */
     if (cx_class_instanceof(cx_class_o, o) && cx_interface(o)->base) {
         cx_id baseId;
-        if (g_mustParse(g, cx_interface(o)->base)) {
+        if (g_mustParse(g, cx_interface(o)->base) || (cx_parentof(cx_interface(o)->base) == corto_lang_o)) {
            g_fileWrite(result, "#include \"%s.h\"\n", g_fullOid(g, cx_interface(o)->base, baseId));
         } else {
             cx_id path;

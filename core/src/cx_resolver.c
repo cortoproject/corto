@@ -116,9 +116,7 @@ repeat:
                             if (!i && (prev != corto_lang_o) && cx_instanceof(cx_type(cx_package_o), prev)) {
                                 cx_id load, id;
                                 sprintf(load, "%s/%s", cx_fullname(prev, id), buffer);
-                                int oldEcho = cx_toggleEcho(0);
                                 cx_load(load, 0, NULL);
-                                cx_toggleEcho(oldEcho);
                                 o = prev;
                             } else {
                                 break;

@@ -27,12 +27,14 @@ typedef enum cx_err {
 
 #define cx_assert(condition, ...) if (!(condition)){_cx_assert(condition, "(" #condition ") " __VA_ARGS__);}
 
+/* Log errors to console */
 void _cx_assert(unsigned int condition, char* fmt, ...);
 cx_err cx_debug(char* fmt, ...);
 cx_err cx_trace(char* fmt, ...);
 cx_err cx_warning(char* fmt, ...);
 cx_err cx_error(char* fmt, ...);
 void cx_print(char* fmt, ...);
+void cx_critical(char* fmt, ...);
 
 void _cx_assertv(unsigned int condition, char* fmt, va_list args);
 cx_err cx_debugv(char* fmt, va_list args);
@@ -42,14 +44,9 @@ cx_err cx_errorv(char* fmt, va_list args);
 void cx_printv(char *fmt, va_list args);
 void cx_criticalv(char* fmt, va_list args);
 
-/* A critical error will print a backtrace and quit the application. */
-void cx_critical(char* fmt, ...);
-
-/* Return last error */
-char* cx_lasterror(void);
-
-/* Enable or disable echo */
-int cx_toggleEcho(int enable);
+/* Set & get last error */
+char* cx_lasterr(void);
+void cx_seterr(char *fmt, ...);
 
 void cx_printBacktrace(FILE* f, int nEntries, char** symbols);
 void cx_backtrace(FILE* f);

@@ -1,5 +1,9 @@
 #package ::test
 
+int8 initCalled: 0
+int8 constructCalled: 0
+int8 destructCalled: 0
+
 class Point::
     fail: bool
     x, y: int32
@@ -31,6 +35,7 @@ class ObjectMgmt: test::Suite::
     void tc_defineVoidAttr0() test::Case
     void tc_defineIntAttr0() test::Case
     void tc_definePointAttr0() test::Case
+    void tc_definePointFail() test::Case
 
     void tc_declareChildVoid() test::Case
     void tc_declareChildInt() test::Case
@@ -46,6 +51,7 @@ class ObjectMgmt: test::Suite::
     void tc_createChildIntAttr0() test::Case
     void tc_createChildPointAttr0() test::Case
 
-
+    void tc_createChildNested() test::Case
+    void tc_drop() test::Case
 
     prevAttr: lang::attr, local|private

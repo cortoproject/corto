@@ -244,7 +244,7 @@ cx_pid cx_procrun(const char* exec, char *argv[]) {
     if (pid == 0) {
         /* Child process */
         if (execvp(exec, argv)) {
-            cx_error("failed to start process '%s'", exec);
+            cx_error("core: failed to start process '%s'", exec);
             abort();
         }
     } else if (pid > 0) {

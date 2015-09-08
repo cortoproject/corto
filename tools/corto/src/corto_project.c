@@ -76,8 +76,8 @@ static cx_int16 corto_createTest(cx_string name, cx_bool isComponent) {
     }
 
     if (corto_create(
-        7,
-        (char*[]){"create", "package", "::test", "--empty", "--notest", "--local", "--silent"}
+        8,
+        (char*[]){"create", "package", "::test", "--empty", "--notest", "--local", "--silent", "--nobuild"}
     )) {
         cx_error("corto: couldn't create test skeleton (check permissions)");
         goto error;
@@ -87,7 +87,7 @@ static cx_int16 corto_createTest(cx_string name, cx_bool isComponent) {
     if (file) {
         fprintf(file, "/* $begin(main) */\n");
         fprintf(file, "    int result = 0;\n");
-        fprintf(file, "    test_Runner runner = test_RunnerCreate(\"%s\");\n", name);
+        fprintf(file, "    test_Runner runner = test_RunnerCreate(\"%s\", argv[0], (argc > 1) ? argv[1] : NULL);\n", name);
         fprintf(file, "    if (!runner) return -1;\n");
         fprintf(file, "    if (cx_llSize(runner->failures)) {\n");
         fprintf(file, "        result = -1;\n");
@@ -212,7 +212,8 @@ static cx_int16 corto_parseProjectArgs(
     cx_bool *isEmpty, 
     cx_bool *isLocal, 
     cx_bool *noTest, 
-    cx_bool *silent) 
+    cx_bool *silent,
+    cx_bool *nobuild) 
 {
     cx_int32 i;
     for (i = 0; i < argc; i++) {
@@ -224,6 +225,8 @@ static cx_int16 corto_parseProjectArgs(
             if (noTest) *noTest = TRUE;
         } else if (!strcmp(argv[i], "--silent")) {
             if (silent) *silent = TRUE;
+        } else if (!strcmp(argv[i], "--nobuild")) {
+            *nobuild = TRUE;
         } else {
             cx_error("corto: unknown option '%s'", argv[i]);
             goto error;
@@ -240,7 +243,7 @@ static cx_int16 corto_application(int argc, char *argv[]) {
 	cx_bool isApplication = !strcmp(argv[0], "create") || !strcmp(argv[0], CORTO_APPLICATION);
     cx_uint32 optionsStartFrom = 1;
 	char *name;
-    cx_bool isLocal = FALSE, noTest = FALSE, isSilent = FALSE;
+    cx_bool isLocal = FALSE, noTest = FALSE, isSilent = FALSE, noBuild = TRUE;
 
 	if ((argc <= 1) || (*argv[1] == '-')) {
         name = corto_randomName();
@@ -250,7 +253,7 @@ static cx_int16 corto_application(int argc, char *argv[]) {
     }
 
     /* Parse options */
-    if (corto_parseProjectArgs(argc - optionsStartFrom, &argv[optionsStartFrom], NULL, &isLocal, &noTest, &isSilent)) {
+    if (corto_parseProjectArgs(argc - optionsStartFrom, &argv[optionsStartFrom], NULL, &isLocal, &noTest, &isSilent, &noBuild)) {
         goto error;
     }
 
@@ -287,8 +290,10 @@ static cx_int16 corto_application(int argc, char *argv[]) {
     	goto error;
     }
 
-    if (corto_build(0, NULL)) {
-    	goto error;
+    if (!noBuild) {
+        if (corto_build(0, NULL)) {
+        	goto error;
+        }
     }
 
     if (!noTest) {
@@ -313,7 +318,7 @@ static cx_int16 corto_package(int argc, char *argv[]) {
     cx_uint32 i;
     cx_char *include = NULL;
     cx_uint32 optionsStartFrom = 1;
-    cx_bool isEmpty = FALSE, isLocal = FALSE, noTest = FALSE, isSilent = FALSE;
+    cx_bool isEmpty = FALSE, isLocal = FALSE, noTest = FALSE, isSilent = FALSE, noBuild = FALSE;
 
     if ((argc <= 1) || (*(argv[1])) == '-') {
         include = corto_randomName();
@@ -333,7 +338,7 @@ static cx_int16 corto_package(int argc, char *argv[]) {
     }
 
     /* Parse options */
-    if (corto_parseProjectArgs(argc - optionsStartFrom, &argv[optionsStartFrom], &isEmpty, &isLocal, &noTest, &isSilent)) {
+    if (corto_parseProjectArgs(argc - optionsStartFrom, &argv[optionsStartFrom], &isEmpty, &isLocal, &noTest, &isSilent, &noBuild)) {
         goto error;
     }
 
@@ -433,8 +438,10 @@ static cx_int16 corto_package(int argc, char *argv[]) {
         goto error;        
     }
 
-    if (corto_build(0, NULL)) {
-        goto error;
+    if (!noBuild) {
+        if (corto_build(0, NULL)) {
+            goto error;
+        }
     }
 
     if (!noTest) {

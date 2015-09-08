@@ -77,7 +77,7 @@ static cx_bool cx_genTypeCompareStructural(cx_type t1, cx_type t2) {
             }
             break;
         default:
-            cx_error("genTypeCompareStructural: only primitive and collection types can be compared structurally.");
+            cx_seterr("only primitive and collection types can be compared structurally.");
             break;
         }
     }
@@ -320,7 +320,7 @@ static int cx_genTypeDependencies(cx_object o, cx_bool allowDeclared, cx_bool* r
         }
         break;
     default:
-        cx_error("cx_genTypeDependencies: typeKind '%s' not handled by code-generator.", cx_nameof(cx_enum_constant(cx_typeKind_o, cx_type(t)->kind)));
+        cx_seterr("typeKind '%s' not handled by code-generator.", cx_nameof(cx_enum_constant(cx_typeKind_o, cx_type(t)->kind)));
         goto error;
         break;
     }
@@ -368,8 +368,8 @@ static int cx_genTypeParse(cx_object o, cx_bool allowDeclared, cx_bool* recursio
 
     /* Check if object is valid */
     if (!cx_checkState(o, CX_VALID)) {
-        cx_id id;
-        cx_error("typedepwalk: scope '%s' contains invalid objects (%s).", cx_nameof(g_getCurrent(data->g)), cx_fullname(o, id));
+        cx_id id1, id2;
+        cx_seterr("%s has invalid objects (%s).", cx_fullname(g_getCurrent(data->g), id1), cx_fullname(o, id2));
         return 1;
     }
 
@@ -379,8 +379,8 @@ static int cx_genTypeParse(cx_object o, cx_bool allowDeclared, cx_bool* recursio
     } else
     /* Check if object is defined - declared objects are allowed only for procedure objects. */
     if (!cx_checkState(o, CX_DEFINED)) {
-        cx_id id;
-        cx_error("typedepwalk: scope '%s' contains undefined objects (%s).", cx_nameof(g_getCurrent(data->g)), cx_fullname(o, id));
+        cx_id id1, id2;
+        cx_seterr("%s has undefined objects (%s).", cx_fullname(g_getCurrent(data->g), id1), cx_fullname(o, id2));
         return 1;
     }
 
@@ -400,7 +400,7 @@ static int cx_genTypeParse(cx_object o, cx_bool allowDeclared, cx_bool* recursio
                     } else {
                         /* If caller does not handle recursion, report an error. */
                         cx_id id;
-                        cx_error("typedepwalk: invalid recursion for type '%s'", cx_fullname(o, id));
+                        cx_seterr("invalid recursion for type '%s'", cx_fullname(o, id));
                         goto error;
                     }
                 } else {
@@ -463,7 +463,7 @@ static int cx_genTypeParse(cx_object o, cx_bool allowDeclared, cx_bool* recursio
                     } else {
                         /* Recursion has not been catched in time. */
                         cx_id id;
-                        cx_error("typedepwalk: recursion not handled for type '%s'", cx_fullname(o, id));
+                        cx_seterr("recursion not handled for type '%s'", cx_fullname(o, id));
                         goto error;
                     }
                 }

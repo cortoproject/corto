@@ -54,6 +54,7 @@ static void corto_printUsage(cx_bool expert) {
 
 int main(int argc, char* argv[]) {
     int i;
+    cx_bool mute = FALSE;
 
     /* Start corto */
     cx_start();
@@ -80,6 +81,8 @@ int main(int argc, char* argv[]) {
                         corto_printUsage(FALSE);
                     } else if (!strcmp(argv[i] + 2, "expert")) {
                         corto_printUsage(TRUE);
+                    } else if (!strcmp(argv[i] + 2, "mute")) {
+                        mute = TRUE;
                     } else {
                         cx_error("corto: unknown option '%s'", argv[i] + 2);
                         corto_printUsage(FALSE);
@@ -177,7 +180,9 @@ int main(int argc, char* argv[]) {
                 break;
             } else {
                 if (cx_load(argv[i], argc-i, &argv[i])) {
-                    cx_error("corto: failed to load file '%s'", argv[i]);
+                    if (!mute) {
+                        cx_error("corto: %s: %s", argv[i], cx_lasterr());
+                    }
                     goto error;
                 }
                 break;

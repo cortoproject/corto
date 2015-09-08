@@ -2,23 +2,36 @@
 #include "corto_build.h"
 
 cx_int16 corto_build(int argc, char *argv[]) {
+    cx_int8 ret = 0;
     if (argc > 1) {
         cx_chdir(argv[1]);
     }
 
-	system ("rake silent=true");
+	cx_pid pid = cx_procrun("rake", (char*[]){"rake", "silent=true", NULL});
+    if (cx_procwait(pid, &ret) || ret) {
+        goto error;
+    }
 
 	return 0;
+error:
+    return -1;
 }
 
 cx_int16 corto_rebuild(int argc, char *argv[]) {
+    cx_int8 ret = 0;
     if (argc > 1) {
         cx_chdir(argv[1]);
     }
 
-    system ("rake clobber default silent=true 2> /dev/null");
+    system("rake clobber 2> /dev/null");
+    cx_pid pid = cx_procrun("rake", (char*[]){"rake", "default", "silent=true", NULL});
+    if (cx_procwait(pid, &ret) || ret) {
+        goto error;
+    }
 
     return 0;
+error:
+    return -1;
 }
 
 cx_int16 corto_clean(int argc, char *argv[]) {
@@ -26,7 +39,7 @@ cx_int16 corto_clean(int argc, char *argv[]) {
         cx_chdir(argv[1]);
     }
 
-    system ("rake clobber silent=true 2> /dev/null");
+    system("rake clobber >2 /dev/null");
 
     return 0;
 }

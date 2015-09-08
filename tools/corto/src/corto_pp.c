@@ -251,7 +251,7 @@ cx_int16 corto_pp(int argc, char *argv[]) {
 
             /* Start generator */
             if (gen_start(g)) {
-                cx_error("corto: error(s) occurred while running generator '%s', abort generation.", lib);
+                cx_error("corto: %s: %s", lib, cx_lasterr());
                 gen_free(g);
                 goto error;
             }

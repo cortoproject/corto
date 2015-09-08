@@ -254,6 +254,7 @@ static cx_int16 cx__initScope(cx_object o, cx_string name, cx_object parent) {
     cx_assert(scope != NULL, "cx__initScope: created scoped object, but cx__objectScope returned NULL.");
 
     scope->name = cx_strdup(name);
+    scope->declared = 1;
     cx_rwmutexNew(&scope->scopeLock);
 
     /* Add object to the scope of the parent-object */
@@ -436,6 +437,8 @@ void cx__newSSO(cx_object sso) {
     if (scope->parent) {
         cx__adoptSSO(sso);
     }
+
+    scope->declared = 1;
 
     /* Init observable */
     if (cx_checkAttr(sso, CX_ATTR_OBSERVABLE)) {
@@ -921,10 +924,6 @@ cx_object _cx_declare(cx_type type) {
             /* Call framework initializer */
             cx_init(CX_OFFSET(o, sizeof(cx__object)));
 
-            /* Call initializer */
-            if (cx_delegateInit(type, CX_OFFSET(o, sizeof(cx__object)))) {
-                goto error;
-            }
             /* Add object to anonymous cache */
             cx_mutexLock(&cx_adminLock);
             if (!cx_anonymousObjects) {
@@ -964,7 +963,6 @@ cx_object _cx_declareChild(cx_object parent, cx_string name, cx_type type) {
 
     /* Check if object already exists */
     if ((o = cx_lookup(parent, name))) {
-        cx_release(o);
         if (cx_typeof(o) != type) {
             cx_id tid, tid2, pid;
             if (parent != root_o) {
@@ -974,6 +972,8 @@ cx_object _cx_declareChild(cx_object parent, cx_string name, cx_type type) {
             }
             goto error;
         }
+        cx__scope *scope = cx__objectScope(CX_OFFSET(o, -sizeof(cx__object)));
+        cx_ainc(&scope->declared);
     } else {
         /* Create new object */
         cx_attr oldAttr = cx_setAttr(cx_getAttr()|CX_ATTR_SCOPED);
@@ -1066,7 +1066,7 @@ cx_int16 cx_define(cx_object o) {
     cx_int16 result = 0;
 
     /* Only define valid, undefined objects */
-    if (cx_checkState(o, CX_VALID | CX_DECLARED)) {
+    if (cx_checkState(o, CX_DECLARED)) {
         cx__object *_o = CX_OFFSET(o, -sizeof(cx__object));
         if (!cx_checkState(o, CX_DEFINED)) {
             cx_type t = cx_typeof(o);
@@ -1082,6 +1082,9 @@ cx_int16 cx_define(cx_object o) {
 
             if (!result) {
                 _o->attrs.state |= CX_DEFINED;
+                if (!cx_checkState(o, CX_VALID)) {
+                    _o->attrs.state |= CX_VALID;
+                }
 
                 /* Notify observers of defined object */
                 cx_notify(cx__objectObservable(_o), o, CX_ON_DEFINE);
@@ -1111,7 +1114,8 @@ void cx_delete(cx_object o) {
         _o = CX_OFFSET(o, -sizeof(cx__object));
         scope = cx__objectScope(_o);
 
-        if (cx_ainc(&scope->orphaned) == 1) {
+        if (cx_adec(&scope->declared) == 0) {
+            cx_drop(o);
             cx_notify(cx__objectObservable(_o), o, CX_ON_DELETE);
             cx__orphan(o);
             cx_release(o);

@@ -51,6 +51,7 @@ cx_int16 corto_add(int argc, char* argv[]) {
 		}
 
 		if (!cx_loadRequiresComponent(argv[nameElem])) {
+			cx_mkdir(".corto");
 			cx_file f = cx_fileAppend(".corto/components.txt");
 			if (!f) {
 				cx_error("corto: failed to open .corto/components.txt (check permissions)");
@@ -84,6 +85,7 @@ cx_int16 corto_add(int argc, char* argv[]) {
 
 		/* Use fully scoped name from here */
 		if (!cx_loadRequiresPackage(cx_fullname(package, id))) {
+			cx_mkdir(".corto");
 			cx_file f = cx_fileAppend(".corto/packages.txt");
 			if (!f) {
 				cx_error("corto: failed to open .corto/packages.txt (check permissions)");

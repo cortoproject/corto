@@ -19,8 +19,10 @@ class Suite::
 
 class Runner::
     member name: string
-    member successes: list{Suite}, readonly
-    member failures: list{Suite}, readonly
+    member lib: string
+    member testcase: string
+    member successes: list{Case}, readonly
+    member failures: list{Case}, readonly
     int16 construct()
     void destruct()
     void runTest() observer
