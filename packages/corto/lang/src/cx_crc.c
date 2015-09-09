@@ -201,7 +201,7 @@ cx_crcInit(void)
 
 /*********************************************************************
  *
- * Function:    crcFast()
+ * Function:    crcast()
  * 
  * Description: Compute the CRC of a given message.
  *
@@ -211,7 +211,7 @@ cx_crcInit(void)
  *
  *********************************************************************/
 cx_crc
-cx_crcFast(unsigned char const message[], int nBytes)
+cx_crcast(unsigned char const message[], int nBytes)
 {
     cx_crc	       remainder = INITIAL_REMAINDER;
     unsigned char  data;
@@ -232,4 +232,4 @@ cx_crcFast(unsigned char const message[], int nBytes)
      */
     return (REFLECT_REMAINDER(remainder) ^ FINAL_XOR_VALUE);
 
-}   /* crcFast() */
+}   /* crcast() */

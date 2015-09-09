@@ -72,7 +72,7 @@ typedef unsigned long  cx_crc;
 
 void  cx_crcInit(void);
 cx_crc   cx_crcSlow(unsigned char const message[], int nBytes);
-cx_crc   cx_crcFast(unsigned char const message[], int nBytes);
+cx_crc   cx_crcast(unsigned char const message[], int nBytes);
 
 
 #endif /* _crc_h */

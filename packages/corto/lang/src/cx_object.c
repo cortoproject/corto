@@ -1640,7 +1640,7 @@ cx_uint16 cx__destruct(cx_object o) {
 
 /* Parent based tracing */
 /*#define CX_TRACE_DEBUG
-#define CX_TRACE_TYPEPARENT "Fast"*/
+#define CX_TRACE_TYPEPARENT "ast"*/
 #ifdef CX_TRACE_TYPEPARENT
 #define CX_TRACE_KEEP(o)\
     {\
@@ -2675,7 +2675,7 @@ cx_int16 cx_expr(cx_object scope, cx_string expr, cx_value *value) {
     static cx_bool searchedForParser = FALSE;
 
     if (!parseLine && !searchedForParser) {
-        parseLine = cx_resolve(NULL, "::corto::Fast::Parser::parseLine");
+        parseLine = cx_resolve(NULL, "::corto::ast::Parser::parseLine");
         searchedForParser = TRUE;
     }
 

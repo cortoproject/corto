@@ -1,9 +1,0 @@
-PACKAGE = 'corto::Fast'
-
-YACC = "fast.y"
-LEX = "fast.l"
-
-CFLAGS = ["-Wunused-parameter"]
-
-require "#{ENV['CORTO_BUILD']}/lexyacc"
-require "#{ENV['CORTO_BUILD']}/package"

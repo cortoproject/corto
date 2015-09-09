@@ -234,7 +234,7 @@ int cx_load(cx_string str, int argc, char* argv[]) {
 
     /* Handle known extensions */
     if (!strcmp(ext, "cx")) {
-        cx_load("corto::Fast", 0, NULL);
+        cx_load("corto::ast", 0, NULL);
     } else if (!strcmp(ext, "xml")) {
         cx_loadXml();
     }
@@ -456,7 +456,7 @@ static int cx_fileLoader(cx_string file, int argc, char* argv[], void* udata) {
 
     sprintf(testName, "%s.cx", file);
     if (cx_fileTest(testName)) {
-        if (!cx_load("corto/Fast", 0, NULL)) {
+        if (!cx_load("corto/ast", 0, NULL)) {
             return cx_load(testName, argc, argv);
         }
     }
