@@ -17,7 +17,7 @@
 cx_void _os_timer_run(os_timer this) {
 /* $begin(::corto::os::timer::run) */
 
-    while(!this->_parent.stopping) {
+    while(!this->_base.stopping) {
         cx_sleep(this->sec, this->nanosec);
         cx_update(this);
     }

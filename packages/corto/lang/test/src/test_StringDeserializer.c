@@ -53,8 +53,10 @@ cx_void _test_StringDeserializer_tc_deserBoolInvalid(test_StringDeserializer thi
 cx_void _test_StringDeserializer_tc_deserBoolTrue(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserBoolTrue) */
 
-    cx_object o = NULL; cx_fromStr(&o, "bool{true}");
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "bool{true}");
     test_assert(o != NULL);
+    test_assert(ret == 0);
     test_assert(cx_typeof(o) == (cx_type)cx_bool_o);
     test_assert(*(cx_bool*)o == TRUE);
     cx_delete(o);
@@ -66,8 +68,10 @@ cx_void _test_StringDeserializer_tc_deserBoolTrue(test_StringDeserializer this) 
 cx_void _test_StringDeserializer_tc_deserChar(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserChar) */
 
-    cx_object p = NULL; cx_fromStr(&p, "char{a}");
+    cx_object p = NULL; 
+    cx_int16 ret = cx_fromStr(&p, "char{a}");
     test_assert(p != NULL);
+    test_assert(ret == 0);
     test_assert(cx_typeof(p) == (cx_type)cx_char_o);
     test_assert(*(cx_char*)p == 'a');
     cx_delete(p);
@@ -79,8 +83,10 @@ cx_void _test_StringDeserializer_tc_deserChar(test_StringDeserializer this) {
 cx_void _test_StringDeserializer_tc_deserCharEscape(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserCharEscape) */
 
-    cx_object p = NULL; cx_fromStr(&p, "char{\\}");
+    cx_object p = NULL; 
+    cx_int16 ret = cx_fromStr(&p, "char{\\}");
     test_assert(p != NULL);
+    test_assert(ret == 0);
     test_assert(cx_typeof(p) == (cx_type)cx_char_o);
     test_assert(*(cx_char*)p == '\\');
     cx_delete(p);
@@ -92,8 +98,10 @@ cx_void _test_StringDeserializer_tc_deserCharEscape(test_StringDeserializer this
 cx_void _test_StringDeserializer_tc_deserCharEscapeQuoted(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserCharEscapeQuoted) */
 
-    cx_object o = NULL; cx_fromStr(&o, "char{'\\\\'}");
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "char{'\\'}");
     test_assert(o != NULL);
+    test_assert(ret == 0);
     test_assert(cx_typeof(o) == (cx_type)cx_char_o);
     test_assert(*(cx_char*)o == '\\');
     cx_delete(o);
@@ -105,8 +113,10 @@ cx_void _test_StringDeserializer_tc_deserCharEscapeQuoted(test_StringDeserialize
 cx_void _test_StringDeserializer_tc_deserCharNull(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserCharNull) */
 
-    cx_object o = NULL; cx_fromStr(&o, "char{\0}");
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "char{\0}");
     test_assert(o != NULL);
+    test_assert(ret == 0);
     test_assert(cx_typeof(o) == (cx_type)cx_char_o);
     test_assert(*(cx_char*)o == '\0');
     cx_delete(o);
@@ -118,8 +128,10 @@ cx_void _test_StringDeserializer_tc_deserCharNull(test_StringDeserializer this) 
 cx_void _test_StringDeserializer_tc_deserCharNullQuoted(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserCharNullQuoted) */
 
-    cx_object o = NULL; cx_fromStr(&o, "char{'\0'}");
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "char{'\0'}");
     test_assert(o != NULL);
+    test_assert(ret == 0);
     test_assert(cx_typeof(o) == (cx_type)cx_char_o);
     test_assert(*(cx_char*)o == '\0');
     cx_delete(o);
@@ -131,8 +143,10 @@ cx_void _test_StringDeserializer_tc_deserCharNullQuoted(test_StringDeserializer 
 cx_void _test_StringDeserializer_tc_deserCharQuoted(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserCharQuoted) */
 
-    cx_object o = NULL; cx_fromStr(&o, "char{'a'}");
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "char{'a'}");
     test_assert(o != NULL);
+    test_assert(ret == 0);
     test_assert(cx_typeof(o) == (cx_type)cx_char_o);
     test_assert(*(cx_char*)o == 'a');
     cx_delete(o);
@@ -140,16 +154,104 @@ cx_void _test_StringDeserializer_tc_deserCharQuoted(test_StringDeserializer this
 /* $end */
 }
 
+/* ::test::StringDeserializer::tc_deserComposite() */
+cx_void _test_StringDeserializer_tc_deserComposite(test_StringDeserializer this) {
+/* $begin(::test::StringDeserializer::tc_deserComposite) */
+
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "test::Point{10,20}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(cx_typeof(o) == (cx_type)test_Point_o);
+    test_Point *p = o;
+    test_assert(p->x == 10);
+    test_assert(p->y == 20);
+    cx_delete(o);
+
+/* $end */
+}
+
+/* ::test::StringDeserializer::tc_deserCompositeMembers() */
+cx_void _test_StringDeserializer_tc_deserCompositeMembers(test_StringDeserializer this) {
+/* $begin(::test::StringDeserializer::tc_deserCompositeMembers) */
+
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "test::Point{ y=20, x = 10 }");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(cx_typeof(o) == (cx_type)test_Point_o);
+    test_Point *p = o;
+    test_assert(p->x == 10);
+    test_assert(p->y == 20);
+    cx_delete(o);
+
+/* $end */
+}
+
+/* ::test::StringDeserializer::tc_deserCompositeMixed() */
+cx_void _test_StringDeserializer_tc_deserCompositeMixed(test_StringDeserializer this) {
+/* $begin(::test::StringDeserializer::tc_deserCompositeMixed) */
+
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "test::Point{ x=10, 20 }");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(cx_typeof(o) == (cx_type)test_Point_o);
+    test_Point *p = o;
+    test_assert(p->x == 10);
+    test_assert(p->y == 20);
+    cx_delete(o);
+    
+/* $end */
+}
+
+/* ::test::StringDeserializer::tc_deserCompositeNoType() */
+cx_void _test_StringDeserializer_tc_deserCompositeNoType(test_StringDeserializer this) {
+/* $begin(::test::StringDeserializer::tc_deserCompositeNoType) */
+
+    test_Point *o = test_PointCreate(0, 0);
+    test_assert(o != NULL);
+    test_assert(o->x == 0);
+    test_assert(o->y == 0);
+    cx_int16 ret = cx_fromStr(&o, "{10,20}");
+    test_assert(ret == 0);
+    test_assert(cx_typeof(o) == (cx_type)test_Point_o);
+    test_assert(o->x == 10);
+    test_assert(o->y == 20);
+    cx_delete(o);
+
+/* $end */
+}
+
+/* ::test::StringDeserializer::tc_deserCompositeWhitespace() */
+cx_void _test_StringDeserializer_tc_deserCompositeWhitespace(test_StringDeserializer this) {
+/* $begin(::test::StringDeserializer::tc_deserCompositeWhitespace) */
+
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "test::Point  {   10 ,   20\n}  ");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(cx_typeof(o) == (cx_type)test_Point_o);
+    test_Point *p = o;
+    test_assert(p->x == 10);
+    test_assert(p->y == 20);
+    cx_delete(o);
+    
+/* $end */
+}
+
 /* ::test::StringDeserializer::tc_deserExisting() */
 cx_void _test_StringDeserializer_tc_deserExisting(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserExisting) */
 
-    cx_object o = cx_boolCreate(FALSE); 
+    cx_bool *o = cx_boolCreate(FALSE);
+    test_assert(o != NULL);
+    test_assert(*o == FALSE);
     cx_int16 ret = cx_fromStr(&o, "true");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(cx_typeof(o) == (cx_type)cx_bool_o);
-    test_assert(*(cx_bool*)o == TRUE);
+    test_assert(*o == TRUE);
     cx_delete(o);
 
 /* $end */
@@ -159,12 +261,68 @@ cx_void _test_StringDeserializer_tc_deserExisting(test_StringDeserializer this) 
 cx_void _test_StringDeserializer_tc_deserExisting_w_type(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserExisting_w_type) */
 
-    cx_object o = cx_boolCreate(FALSE); 
+    cx_bool *o = cx_boolCreate(FALSE);
+    test_assert(o != NULL);
+    test_assert(*o == FALSE); 
     cx_int16 ret = cx_fromStr(&o, "bool{true}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(cx_typeof(o) == (cx_type)cx_bool_o);
-    test_assert(*(cx_bool*)o == TRUE);
+    test_assert(*o == TRUE);
+    cx_delete(o);
+
+/* $end */
+}
+
+/* ::test::StringDeserializer::tc_deserInheritance() */
+cx_void _test_StringDeserializer_tc_deserInheritance(test_StringDeserializer this) {
+/* $begin(::test::StringDeserializer::tc_deserInheritance) */
+
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "test::Point3D{10,20,30}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(cx_typeof(o) == (cx_type)test_Point3D_o);
+    test_Point3D *p = o;
+    test_assert(test_Point(p)->x == 10);
+    test_assert(test_Point(p)->y == 20);
+    test_assert(p->z == 30);
+    cx_delete(o);
+
+/* $end */
+}
+
+/* ::test::StringDeserializer::tc_deserInheritanceMembers() */
+cx_void _test_StringDeserializer_tc_deserInheritanceMembers(test_StringDeserializer this) {
+/* $begin(::test::StringDeserializer::tc_deserInheritanceMembers) */
+
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "test::Point3D{z=30,x=10,y=20}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(cx_typeof(o) == (cx_type)test_Point3D_o);
+    test_Point3D *p = o;
+    test_assert(test_Point(p)->x == 10);
+    test_assert(test_Point(p)->y == 20);
+    test_assert(p->z == 30);
+    cx_delete(o);
+
+/* $end */
+}
+
+/* ::test::StringDeserializer::tc_deserInheritanceMixed() */
+cx_void _test_StringDeserializer_tc_deserInheritanceMixed(test_StringDeserializer this) {
+/* $begin(::test::StringDeserializer::tc_deserInheritanceMixed) */
+
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "test::Point3D{z=30,x=10,20}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(cx_typeof(o) == (cx_type)test_Point3D_o);
+    test_Point3D *p = o;
+    test_assert(test_Point(p)->x == 10);
+    test_assert(test_Point(p)->y == 20);
+    test_assert(p->z == 30);
     cx_delete(o);
 
 /* $end */
@@ -174,8 +332,10 @@ cx_void _test_StringDeserializer_tc_deserExisting_w_type(test_StringDeserializer
 cx_void _test_StringDeserializer_tc_deserInt16(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserInt16) */
 
-    cx_object o = NULL; cx_fromStr(&o, "int16{32767}");
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "int16{32767}");
     test_assert(o != NULL);
+    test_assert(ret == 0);
     test_assert(cx_typeof(o) == (cx_type)cx_int16_o);
     test_assert(*(cx_int16*)o == 32767);
     cx_delete(o);
@@ -187,8 +347,10 @@ cx_void _test_StringDeserializer_tc_deserInt16(test_StringDeserializer this) {
 cx_void _test_StringDeserializer_tc_deserInt16Minus(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserInt16Minus) */
 
-    cx_object o = NULL; cx_fromStr(&o, "int16{-32768}");
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "int16{-32768}");
     test_assert(o != NULL);
+    test_assert(ret == 0);
     test_assert(cx_typeof(o) == (cx_type)cx_int16_o);
     test_assert(*(cx_int16*)o == -32768);
     cx_delete(o);
@@ -200,8 +362,10 @@ cx_void _test_StringDeserializer_tc_deserInt16Minus(test_StringDeserializer this
 cx_void _test_StringDeserializer_tc_deserInt16Overflow(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserInt16Overflow) */
 
-    cx_object o = NULL; cx_fromStr(&o, "int16{32768}");
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "int16{32768}");
     test_assert(o != NULL);
+    test_assert(ret == 0);
     test_assert(cx_typeof(o) == (cx_type)cx_int16_o);
     test_assert(*(cx_int16*)o == -32768);
     cx_delete(o);
@@ -213,8 +377,10 @@ cx_void _test_StringDeserializer_tc_deserInt16Overflow(test_StringDeserializer t
 cx_void _test_StringDeserializer_tc_deserInt32(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserInt32) */
 
-    cx_object o = NULL; cx_fromStr(&o, "int32{2147483647}");
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "int32{2147483647}");
     test_assert(o != NULL);
+    test_assert(ret == 0);
     test_assert(cx_typeof(o) == (cx_type)cx_int32_o);
     test_assert(*(cx_int32*)o == 2147483647);
     cx_delete(o);
@@ -226,8 +392,10 @@ cx_void _test_StringDeserializer_tc_deserInt32(test_StringDeserializer this) {
 cx_void _test_StringDeserializer_tc_deserInt32Minus(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserInt32Minus) */
 
-    cx_object o = NULL; cx_fromStr(&o, "int32{-2147483648}");
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "int32{-2147483648}");
     test_assert(o != NULL);
+    test_assert(ret == 0);
     test_assert(cx_typeof(o) == (cx_type)cx_int32_o);
     test_assert(*(cx_int32*)o == -2147483648);
     cx_delete(o);
@@ -239,8 +407,10 @@ cx_void _test_StringDeserializer_tc_deserInt32Minus(test_StringDeserializer this
 cx_void _test_StringDeserializer_tc_deserInt32Overflow(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserInt32Overflow) */
 
-    cx_object o = NULL; cx_fromStr(&o, "int32{2147483648}");
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "int32{2147483648}");
     test_assert(o != NULL);
+    test_assert(ret == 0);
     test_assert(cx_typeof(o) == (cx_type)cx_int32_o);
     test_assert(*(cx_int32*)o == -2147483648);
     cx_delete(o);
@@ -252,8 +422,10 @@ cx_void _test_StringDeserializer_tc_deserInt32Overflow(test_StringDeserializer t
 cx_void _test_StringDeserializer_tc_deserInt64(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserInt64) */
     
-    cx_object o = NULL; cx_fromStr(&o, "int64{9223372036854775807}");
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "int64{9223372036854775807}");
     test_assert(o != NULL);
+    test_assert(ret == 0);
     test_assert(cx_typeof(o) == (cx_type)cx_int64_o);
     test_assert(*(cx_int64*)o == 9223372036854775807);
     cx_delete(o);
@@ -265,8 +437,10 @@ cx_void _test_StringDeserializer_tc_deserInt64(test_StringDeserializer this) {
 cx_void _test_StringDeserializer_tc_deserInt64Minus(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserInt64Minus) */
 
-    cx_object o = NULL; cx_fromStr(&o, "int64{-9223372036854775808");
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "int64{-9223372036854775808");
     test_assert(o != NULL);
+    test_assert(ret == 0);
     test_assert(cx_typeof(o) == (cx_type)cx_int64_o);
     test_assert(*(cx_int64*)o == (-9223372036854775807 - 1)); /* C doesn't allow -9223372036854775808 */
     cx_delete(o);
@@ -278,8 +452,10 @@ cx_void _test_StringDeserializer_tc_deserInt64Minus(test_StringDeserializer this
 cx_void _test_StringDeserializer_tc_deserInt8(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserInt8) */
 
-    cx_object o = NULL; cx_fromStr(&o, "int8{127}");
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "int8{127}");
     test_assert(o != NULL);
+    test_assert(ret == 0);
     test_assert(cx_typeof(o) == (cx_type)cx_int8_o);
     test_assert(*(cx_int8*)o == 127);
     cx_delete(o);
@@ -291,8 +467,10 @@ cx_void _test_StringDeserializer_tc_deserInt8(test_StringDeserializer this) {
 cx_void _test_StringDeserializer_tc_deserInt8Minus(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserInt8Minus) */
 
-    cx_object o = NULL; cx_fromStr(&o, "int8{-128}");
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "int8{-128}");
     test_assert(o != NULL);
+    test_assert(ret == 0);
     test_assert(cx_typeof(o) == (cx_type)cx_int8_o);
     test_assert(*(cx_int8*)o == -128);
     cx_delete(o);
@@ -304,10 +482,119 @@ cx_void _test_StringDeserializer_tc_deserInt8Minus(test_StringDeserializer this)
 cx_void _test_StringDeserializer_tc_deserInt8Overflow(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserInt8Overflow) */
 
-    cx_object o = NULL; cx_fromStr(&o, "int8{128}");
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "int8{128}");
     test_assert(o != NULL);
+    test_assert(ret == 0);
     test_assert(cx_typeof(o) == (cx_type)cx_int8_o);
     test_assert(*(cx_int8*)o == -128);
+    cx_delete(o);
+
+/* $end */
+}
+
+/* ::test::StringDeserializer::tc_deserString() */
+cx_void _test_StringDeserializer_tc_deserString(test_StringDeserializer this) {
+/* $begin(::test::StringDeserializer::tc_deserString) */
+
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "string{Hello World}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(cx_typeof(o) == (cx_type)cx_string_o);
+    test_assert(!strcmp(*(cx_string*)o, "Hello World"));
+    cx_delete(o);
+
+/* $end */
+}
+
+/* ::test::StringDeserializer::tc_deserStringEscape() */
+cx_void _test_StringDeserializer_tc_deserStringEscape(test_StringDeserializer this) {
+/* $begin(::test::StringDeserializer::tc_deserStringEscape) */
+
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "string{\"\\\"}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(cx_typeof(o) == (cx_type)cx_string_o);
+    test_assert(!strcmp(*(cx_string*)o, "\\"));
+    cx_delete(o);
+
+/* $end */
+}
+
+/* ::test::StringDeserializer::tc_deserStringQuotes() */
+cx_void _test_StringDeserializer_tc_deserStringQuotes(test_StringDeserializer this) {
+/* $begin(::test::StringDeserializer::tc_deserStringQuotes) */
+
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "string{\"Hello World\"}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(cx_typeof(o) == (cx_type)cx_string_o);
+    test_assert(!strcmp(*(cx_string*)o, "Hello World"));
+    cx_delete(o);
+
+/* $end */
+}
+
+/* ::test::StringDeserializer::tc_deserStringQuotesWhitespaces() */
+cx_void _test_StringDeserializer_tc_deserStringQuotesWhitespaces(test_StringDeserializer this) {
+/* $begin(::test::StringDeserializer::tc_deserStringQuotesWhitespaces) */
+
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "string{\"  Hello World   \"}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(cx_typeof(o) == (cx_type)cx_string_o);
+    test_assert(!strcmp(*(cx_string*)o, "  Hello World   "));
+    cx_delete(o);
+
+/* $end */
+}
+
+/* ::test::StringDeserializer::tc_deserStringWhitespace() */
+cx_void _test_StringDeserializer_tc_deserStringWhitespace(test_StringDeserializer this) {
+/* $begin(::test::StringDeserializer::tc_deserStringWhitespace) */
+
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "string{\"   \n\n\n  \t\t \"}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(cx_typeof(o) == (cx_type)cx_string_o);
+    test_assert(!strcmp(*(cx_string*)o, "   \n\n\n  \t\t "));
+    cx_delete(o);
+
+/* $end */
+}
+
+/* ::test::StringDeserializer::tc_deserStringWhitespaceTrailing() */
+cx_void _test_StringDeserializer_tc_deserStringWhitespaceTrailing(test_StringDeserializer this) {
+/* $begin(::test::StringDeserializer::tc_deserStringWhitespaceTrailing) */
+
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "string{  Hello World   }");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(cx_typeof(o) == (cx_type)cx_string_o);
+    test_assert(!strcmp(*(cx_string*)o, "Hello World"));
+    cx_delete(o);
+
+/* $end */
+}
+
+/* ::test::StringDeserializer::tc_deserStringWhitespaceTrailingNoType() */
+cx_void _test_StringDeserializer_tc_deserStringWhitespaceTrailingNoType(test_StringDeserializer this) {
+/* $begin(::test::StringDeserializer::tc_deserStringWhitespaceTrailingNoType) */
+
+    cx_string *o = cx_stringCreate(NULL);
+    test_assert(o != NULL); 
+    test_assert(*o == NULL); 
+    cx_int16 ret = cx_fromStr(&o, "  Hello World   ");
+    test_assert(ret == 0);
+    test_assert(o != NULL);
+    test_assert(cx_typeof(o) == (cx_type)cx_string_o);
+    test_assert(!strcmp(*(cx_string*)o, "Hello World"));
     cx_delete(o);
 
 /* $end */
@@ -317,8 +604,10 @@ cx_void _test_StringDeserializer_tc_deserInt8Overflow(test_StringDeserializer th
 cx_void _test_StringDeserializer_tc_deserUint16(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserUint16) */
 
-    cx_object o = NULL; cx_fromStr(&o, "uint16{65535}");
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "uint16{65535}");
     test_assert(o != NULL);
+    test_assert(ret == 0);
     test_assert(cx_typeof(o) == (cx_type)cx_uint16_o);
     test_assert(*(cx_uint16*)o == 65535);
     cx_delete(o);
@@ -330,8 +619,10 @@ cx_void _test_StringDeserializer_tc_deserUint16(test_StringDeserializer this) {
 cx_void _test_StringDeserializer_tc_deserUint16Overflow(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserUint16Overflow) */
 
-    cx_object o = NULL; cx_fromStr(&o, "uint16{65536}");
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "uint16{65536}");
     test_assert(o != NULL);
+    test_assert(ret == 0);
     test_assert(cx_typeof(o) == (cx_type)cx_uint16_o);
     test_assert(*(cx_uint16*)o == 0);
     cx_delete(o);
@@ -343,8 +634,10 @@ cx_void _test_StringDeserializer_tc_deserUint16Overflow(test_StringDeserializer 
 cx_void _test_StringDeserializer_tc_deserUint32(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserUint32) */
 
-    cx_object o = NULL; cx_fromStr(&o, "uint32{4294967295}");
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "uint32{4294967295}");
     test_assert(o != NULL);
+    test_assert(ret == 0);
     test_assert(cx_typeof(o) == (cx_type)cx_uint32_o);
     test_assert(*(cx_uint32*)o == 4294967295);
     cx_delete(o);
@@ -356,8 +649,10 @@ cx_void _test_StringDeserializer_tc_deserUint32(test_StringDeserializer this) {
 cx_void _test_StringDeserializer_tc_deserUint32Overflow(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserUint32Overflow) */
 
-    cx_object o = NULL; cx_fromStr(&o, "uint32{4294967296}");
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "uint32{4294967296}");
     test_assert(o != NULL);
+    test_assert(ret == 0);
     test_assert(cx_typeof(o) == (cx_type)cx_uint32_o);
     test_assert(*(cx_uint32*)o == 0);
     cx_delete(o);
@@ -369,8 +664,10 @@ cx_void _test_StringDeserializer_tc_deserUint32Overflow(test_StringDeserializer 
 cx_void _test_StringDeserializer_tc_deserUint64(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserUint64) */
 
-    cx_object o = NULL; cx_fromStr(&o, "uint64{18446744073709551615}");
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "uint64{18446744073709551615}");
     test_assert(o != NULL);
+    test_assert(ret == 0);
     test_assert(cx_typeof(o) == (cx_type)cx_uint64_o);
     test_assert(*(cx_uint64*)o == 18446744073709551615u);
     cx_delete(o);
@@ -382,8 +679,10 @@ cx_void _test_StringDeserializer_tc_deserUint64(test_StringDeserializer this) {
 cx_void _test_StringDeserializer_tc_deserUint8(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserUint8) */
 
-    cx_object o = NULL; cx_fromStr(&o, "uint8{255}");
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "uint8{255}");
     test_assert(o != NULL);
+    test_assert(ret == 0);
     test_assert(cx_typeof(o) == (cx_type)cx_uint8_o);
     test_assert(*(cx_uint8*)o == 255);
     cx_delete(o);
@@ -395,8 +694,10 @@ cx_void _test_StringDeserializer_tc_deserUint8(test_StringDeserializer this) {
 cx_void _test_StringDeserializer_tc_deserUint8Overflow(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserUint8Overflow) */
 
-    cx_object o = NULL; cx_fromStr(&o, "uint8{256}");
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "uint8{256}");
     test_assert(o != NULL);
+    test_assert(ret == 0);
     test_assert(cx_typeof(o) == (cx_type)cx_uint8_o);
     test_assert(*(cx_uint8*)o == 0);
     cx_delete(o);
@@ -418,8 +719,10 @@ cx_void _test_StringDeserializer_tc_errMissingType(test_StringDeserializer this)
 /* $begin(::test::StringDeserializer::tc_errMissingType) */
 
     cx_string err;
-    cx_object o = NULL; cx_fromStr(&o, "{foo}");
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "{foo}");
     test_assert(o == NULL);
+    test_assert(ret != 0);
     test_assert((err = cx_lasterr()) != NULL);
     test_assert(!strcmp(err, "no type provided for '{foo}'"));
 
@@ -431,8 +734,10 @@ cx_void _test_StringDeserializer_tc_errNotAType(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_errNotAType) */
 
     cx_string err;
-    cx_object o = NULL; cx_fromStr(&o, "lang{foo}");
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "lang{foo}");
     test_assert(o == NULL);
+    test_assert(ret != 0);
     test_assert((err = cx_lasterr()) != NULL);
     test_assert(!strcmp(err, "'lang' is not a type"));
 

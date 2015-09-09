@@ -98,7 +98,7 @@ cx_void _test_Runner_runTest(test_Runner this, cx_object observable, cx_object s
             test_CaseListAppend(this->successes, observable);
         }
         this->testsRun++;
-        if (!(this->testsRun % 5)) {
+        if (!(this->testsRun % 8)) {
             test_updateProgress(this);
         }
     }

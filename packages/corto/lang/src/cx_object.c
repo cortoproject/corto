@@ -834,7 +834,7 @@ cx_attr cx_getAttr(void) {
 /* Create new object with attributes */
 cx_object _cx_declare(cx_type type) {
     cx_uint32 size, headerSize;
-    cx__object* o;
+    cx__object* o = NULL;
     cx_attr attrs = cx_getAttr();
 
     if (!type) {
@@ -906,7 +906,7 @@ cx_object _cx_declare(cx_type type) {
         }
 
         /* Initially, an object is valid and declared */
-        o->attrs.state = CX_VALID | CX_DECLARED;
+        o->attrs.state = CX_DECLARED;
 
         /* void objects are instantly defined because they have no value. */
         if (type->kind == CX_VOID) {
@@ -924,7 +924,9 @@ cx_object _cx_declare(cx_type type) {
             }
 
             /* Call framework initializer */
-            cx_init(CX_OFFSET(o, sizeof(cx__object)));
+            if (!cx_init(CX_OFFSET(o, sizeof(cx__object)))) {
+                o->attrs.state |= CX_VALID;
+            }
 
             /* Add object to anonymous cache */
             cx_mutexLock(&cx_adminLock);
@@ -936,14 +938,13 @@ cx_object _cx_declare(cx_type type) {
         }
     }
 
-    return CX_OFFSET(o, sizeof(cx__object));
 error:
-    return NULL;
+    return CX_OFFSET(o, sizeof(cx__object));
 }
 
 /* Declare object */
 cx_object _cx_declareChild(cx_object parent, cx_string name, cx_type type) {
-    cx_object o;
+    cx_object o = NULL;
 
     if (!parent) {
         parent = root_o;
@@ -983,6 +984,7 @@ cx_object _cx_declareChild(cx_object parent, cx_string name, cx_type type) {
         cx_setAttr(oldAttr);
 
         if (o) {
+            cx__object *_o = CX_OFFSET(o, -sizeof(cx__object));
             /* Initialize object parameters. */
             if (!cx__initScope(o, name, parent)) {
 
@@ -998,6 +1000,9 @@ cx_object _cx_declareChild(cx_object parent, cx_string name, cx_type type) {
                     cx_invalidate(o);
                     goto error;
                 }
+
+                /* Initially, an object is valid and declared */
+                _o->attrs.state |= CX_VALID;
             } else {
                 cx_invalidate(o);
                 goto error;
@@ -1008,25 +1013,22 @@ cx_object _cx_declareChild(cx_object parent, cx_string name, cx_type type) {
         }
     }
 
-    return o;
 error:
-    return NULL;
+    return o;
 }
 
 cx_object _cx_create(cx_type type) {
     cx_object result = cx_declare(type);
-    if (cx_define(result)) {
-        cx_delete(result);
-        result = NULL;
+    if (result && cx_checkState(result, CX_VALID)) {
+        cx_define(result);
     }
     return result;
 }
 
 cx_object _cx_createChild(cx_object parent, cx_string name, cx_type type) {
     cx_object result = cx_declareChild(parent, name, type);
-    if (cx_define(result)) {
-        cx_delete(result);
-        result = NULL;
+    if (result && cx_checkState(result, CX_VALID)) {
+        cx_define(result);
     }
     return result;
 }

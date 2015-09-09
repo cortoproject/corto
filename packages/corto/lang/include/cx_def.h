@@ -101,7 +101,7 @@ extern int8_t CX_DEBUG_ENABLED;
 #define CX_STRUCT_DEF(type) struct type
 #define CX_CLASS_DEF(type) struct type##_s
 #define CX_PROCEDURE_DEF(type) struct type##_s
-#define CX_EXTEND(type) struct type##_s _parent
+#define CX_EXTEND(type) struct type##_s _base
 
 #define _(txt) /* This macro prevents expansion of type-casting macro's */
 #define CX_SEQUENCE(type, subtype, postexpr) typedef struct type {uint32_t length; subtype _()(*buffer) postexpr;} type

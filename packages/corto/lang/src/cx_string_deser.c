@@ -63,6 +63,7 @@ static struct cx_string_deserIndexInfo* cx_string_deserIndexLookup(cx_string mem
              * specified name, implicit referencing is not allowed. */
             if (!strcmp(cx_nameof(info->m), member) && (!info->parsed)) {
                 found = TRUE;
+                data->currentIter = iter;
                 break;
             }
         }
@@ -239,7 +240,7 @@ static cx_int16 cx_string_deserParseValue(cx_string value, struct cx_string_dese
 
     /* No more elements where available in the index, meaning an excess element */
     if (!info) {
-        cx_seterr("excess elements in scope");
+        cx_seterr("excess elements in scope @ '%s'", value);
         goto error;
     }
 
@@ -341,57 +342,11 @@ error:
 
 /* Parse character literal */
 static cx_string cx_string_deserParseCharacter(cx_string ptr, cx_char *bptr) {
-    if (*ptr == '\\') {
-        switch(*(++ptr)) {
-        case 'a':
-            *bptr = '\a';
-            break;
-        case 'b':
-            *bptr = '\b';
-            break;
-        case 'f':
-            *bptr = '\f';
-            break;
-        case 'n':
-            *bptr = '\n';
-            break;
-        case 'r':
-            *bptr = '\r';
-            break;
-        case 't':
-            *bptr = '\t';
-            break;
-        case 'v':
-            *bptr = '\v';
-            break;
-        case '\'':
-            *bptr = '\'';
-            break;
-        case '"':
-            *bptr = '"';
-            break;
-        case '\\':
-            *bptr = '\\';
-            break;
-        case '0':
-            *bptr = '\0';
-            break;
-        case '?':
-            *bptr = '?';
-            break;
-        default:
-            cx_seterr("invalid escape sequence '%c'",  *ptr);
-            goto error;
-            break;
-        }
-    } else {
-        *bptr = *ptr;
-    }
+
+    *bptr = *ptr;
     ptr++;
 
     return ptr;
-error:
-    return NULL;
 }
 
 /* Parse string literal */
@@ -418,7 +373,7 @@ static cx_string cx_string_deserParseString(cx_string ptr, cx_string buffer, cx_
 /* Parse string */
 static cx_string cx_string_deserParse(cx_string str, struct cx_string_deserIndexInfo* info, cx_string_deser_t* data) {
     cx_char ch;
-    cx_char *ptr, *bptr;
+    cx_char *ptr, *bptr, *nonWs;
     cx_char buffer[CX_STRING_DESER_TOKEN_MAX];
     cx_bool proceed;
     struct cx_string_deserIndexInfo* memberInfo;
@@ -427,6 +382,7 @@ static cx_string cx_string_deserParse(cx_string str, struct cx_string_deserIndex
 
     ptr = str;
     bptr = buffer;
+    nonWs = bptr;
     proceed = TRUE;
     memberInfo = NULL;
 
@@ -439,18 +395,15 @@ static cx_string cx_string_deserParse(cx_string str, struct cx_string_deserIndex
      * current value. */
     while(ptr && (ch = *ptr) && proceed) {
         switch(ch) {
-        case '\n':
-        case '\t':
-            break; /* Whitespaces are ignored */
-
         case '=': /* Explicit member assignment */
             if (buffer == bptr) {
                 cx_seterr("missing member identifier");
                 goto error;
             } else {
-                *bptr = '\0';
+                *nonWs = '\0';
                 memberInfo = cx_string_deserIndexLookup(buffer, data);
                 bptr = buffer;
+                nonWs = bptr;
                 if (!memberInfo) {
                     cx_seterr("member '%s' not found", buffer);
                     goto error;
@@ -480,6 +433,7 @@ static cx_string cx_string_deserParse(cx_string str, struct cx_string_deserIndex
                     }
                 }while((ch = *ptr) && count);
                 ptr--;
+                nonWs = bptr;
 
                 /* ptr must always end with a '}' */
                 if (*ptr != '}') {
@@ -492,6 +446,7 @@ static cx_string cx_string_deserParse(cx_string str, struct cx_string_deserIndex
             if (!(ptr = cx_string_deserParseString(ptr, buffer, &bptr))) {
                 goto error;
             }
+            nonWs = bptr;
             ptr--;
             break;
         case '\'':
@@ -499,26 +454,39 @@ static cx_string cx_string_deserParse(cx_string str, struct cx_string_deserIndex
                 goto error;
             }
             *(++bptr) = '\0';
+            nonWs = bptr;
             break;
         case '}': /* Scope close and end of value*/
             if (buffer != bptr) {
-                *bptr = '\0';
+                *nonWs = '\0';
                 if (memberInfo && (data->type->kind != CX_PRIMITIVE)) {
                     if (cx_string_deserParseValue(buffer, memberInfo, data)) {
                         goto error;
                     }
                     bptr = buffer;
+                    nonWs = bptr;
                 }
             }
             proceed = FALSE;
             break;
+
+        case '\n':
+        case '\t':
+        case ' ':
+            if (bptr != buffer) {
+                *bptr = ch;
+                bptr++;
+            }
+            break;
+
         case ',': /* End of value */
             if (buffer != bptr) {
-                *bptr = '\0';
+                *nonWs = '\0';
                 if (cx_string_deserParseValue(buffer, memberInfo, data)) {
                     goto error;
                 }
                 bptr = buffer;
+                nonWs = bptr;
             }
 
             /* If memberInfo contains a member, get next member, otherwise it contains
@@ -532,6 +500,7 @@ static cx_string cx_string_deserParse(cx_string str, struct cx_string_deserIndex
         default:
             *bptr = ch;
             bptr++;
+            nonWs = bptr;
             break;
         }
         if (ptr && *ptr) ptr++;
@@ -539,7 +508,7 @@ static cx_string cx_string_deserParse(cx_string str, struct cx_string_deserIndex
 
     if (bptr != buffer) {
         struct cx_string_deserIndexInfo info;
-        *bptr = '\0';
+        *nonWs = '\0';
         info.type = data->type;
         info.parsed = FALSE;
         info.m = NULL;
@@ -557,6 +526,7 @@ error:
 cx_string cx_string_deser(cx_string str, cx_string_deser_t* data) {
     cx_char *ptr;
     cx_bool createdNew = FALSE;
+    cx_bool typeProvided = TRUE;
 
     {
         cx_id buffer;
@@ -566,8 +536,10 @@ cx_string cx_string_deser(cx_string str, cx_string_deser_t* data) {
         bptr = buffer;
         ptr = str;
         while((ch = *ptr) && (ch != '{')) {
-            *bptr = ch;
-            bptr++;
+            if (!((ch == ' ') || (ch == '\n') || (ch == '\t'))) {
+                *bptr = ch;
+                bptr++;
+            }
             ptr++;
         }
         *bptr = '\0';
@@ -575,6 +547,7 @@ cx_string cx_string_deser(cx_string str, cx_string_deser_t* data) {
         /* If no type is found, reset ptr */
         if ((ch != '{')) {
             ptr = str;
+            typeProvided = FALSE;
         } else {
             cx_object type;
 
@@ -624,7 +597,7 @@ cx_string cx_string_deser(cx_string str, cx_string_deser_t* data) {
         goto error;
     }
 
-    /* Start parsing string */
+
     if (!(ptr = cx_string_deserParse(ptr, NULL, data))) {
         if (!cx_lasterr()) {
             cx_seterr("failed to deserialize '%s'", str);

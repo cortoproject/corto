@@ -19,6 +19,99 @@ cx_void _test_ObjectMgmt_setup(test_ObjectMgmt this) {
 /* $end */
 }
 
+/* ::test::ObjectMgmt::tc_createChildFoo() */
+cx_void _test_ObjectMgmt_tc_createChildFoo(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_createChildFoo) */
+
+    test_Foo o = cx_createChild(NULL, "o", test_Foo_o);
+    test_assert(o != NULL);
+    test_assert(!strcmp(cx_nameof(o), "o"));
+    test_assert(cx_parentof(o) == root_o);    
+    test_assert(cx_typeof(o) == (cx_type)test_Foo_o);
+    test_assert(cx_checkState(o, CX_VALID));
+    test_assert(cx_checkState(o, CX_DECLARED));
+    test_assert(cx_checkState(o, CX_DEFINED));
+    test_assert(cx_checkAttr(o, CX_ATTR_SCOPED));
+    test_assert(cx_checkAttr(o, CX_ATTR_WRITABLE));
+    test_assert(cx_checkAttr(o, CX_ATTR_OBSERVABLE));
+    test_assert(cx_checkAttr(o, CX_ATTR_PERSISTENT));
+
+    cx_object p = cx_resolve(NULL, "o");
+    test_assert(o == p);
+    cx_release(p);
+
+    /* Test if constructor is correctly executed */
+    test_assert(o->x == 11);
+    test_assert(o->y == 22);
+
+    cx_delete(o);
+
+    cx_object q = cx_resolve(NULL, "o");
+    test_assert(q == NULL);
+
+    test_assert(*test_initCalled_o == 1);
+    test_assert(*test_constructCalled_o == 1);
+    test_assert(*test_destructCalled_o == 1);
+
+/* $end */
+}
+
+/* ::test::ObjectMgmt::tc_createChildFooAttr0() */
+cx_void _test_ObjectMgmt_tc_createChildFooAttr0(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_createChildFooAttr0) */
+
+    cx_setAttr(0);
+    test_Foo o = cx_createChild(NULL, "o", test_Foo_o);
+    test_assert(o != NULL);
+    test_assert(!strcmp(cx_nameof(o), "o"));
+    test_assert(cx_parentof(o) == root_o);    
+    test_assert(cx_typeof(o) == (cx_type)test_Foo_o);
+    test_assert(cx_checkState(o, CX_VALID));
+    test_assert(cx_checkState(o, CX_DECLARED));
+    test_assert(cx_checkState(o, CX_DEFINED));
+    test_assert(cx_checkAttr(o, CX_ATTR_SCOPED));
+    test_assert(!cx_checkAttr(o, CX_ATTR_WRITABLE));
+    test_assert(!cx_checkAttr(o, CX_ATTR_OBSERVABLE));
+    test_assert(!cx_checkAttr(o, CX_ATTR_PERSISTENT));
+
+    cx_object p = cx_resolve(NULL, "o");
+    test_assert(o == p);
+    cx_release(p);
+
+    /* Test if constructor is correctly executed */
+    test_assert(o->x == 11);
+    test_assert(o->y == 22);
+
+    cx_delete(o);
+
+    cx_object q = cx_resolve(NULL, "o");
+    test_assert(q == NULL);
+
+    test_assert(*test_initCalled_o == 1);
+    test_assert(*test_constructCalled_o == 1);
+    test_assert(*test_destructCalled_o == 1);
+
+/* $end */
+}
+
+/* ::test::ObjectMgmt::tc_createChildInitFail() */
+cx_void _test_ObjectMgmt_tc_createChildInitFail(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_createChildInitFail) */
+
+    cx_object o = cx_createChild(NULL, "o", test_Bar_o);
+    test_assert(o != NULL);
+    test_assert(!cx_checkState(o, CX_VALID));
+    test_assert(cx_checkState(o, CX_DECLARED));
+    test_assert(!cx_checkState(o, CX_DEFINED));
+    test_assert(cx_checkAttr(o, CX_ATTR_SCOPED));
+    test_assert(cx_checkAttr(o, CX_ATTR_WRITABLE));
+    test_assert(cx_checkAttr(o, CX_ATTR_OBSERVABLE));
+    test_assert(cx_checkAttr(o, CX_ATTR_PERSISTENT));
+    cx_delete(o);
+
+/* $end */
+}
+
 /* ::test::ObjectMgmt::tc_createChildInt() */
 cx_void _test_ObjectMgmt_tc_createChildInt(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createChildInt) */
@@ -82,11 +175,11 @@ cx_void _test_ObjectMgmt_tc_createChildIntAttr0(test_ObjectMgmt this) {
 cx_void _test_ObjectMgmt_tc_createChildNested(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createChildNested) */
 
-    test_Point o = cx_createChild(NULL, "o", test_Point_o);
+    test_Foo o = cx_createChild(NULL, "o", test_Foo_o);
     test_assert(o != NULL);
     test_assert(!strcmp(cx_nameof(o), "o"));
     test_assert(cx_parentof(o) == root_o);    
-    test_assert(cx_typeof(o) == (cx_type)test_Point_o);
+    test_assert(cx_typeof(o) == (cx_type)test_Foo_o);
     test_assert(cx_checkState(o, CX_VALID));
     test_assert(cx_checkState(o, CX_DECLARED));
     test_assert(cx_checkState(o, CX_DEFINED));
@@ -95,11 +188,11 @@ cx_void _test_ObjectMgmt_tc_createChildNested(test_ObjectMgmt this) {
     test_assert(cx_checkAttr(o, CX_ATTR_OBSERVABLE));
     test_assert(cx_checkAttr(o, CX_ATTR_PERSISTENT));
 
-    test_Point p = cx_createChild(o, "p", test_Point_o);
+    test_Foo p = cx_createChild(o, "p", test_Foo_o);
     test_assert(p != NULL);
     test_assert(!strcmp(cx_nameof(p), "p"));
     test_assert(cx_parentof(p) == o);    
-    test_assert(cx_typeof(p) == (cx_type)test_Point_o);
+    test_assert(cx_typeof(p) == (cx_type)test_Foo_o);
     test_assert(cx_checkState(p, CX_VALID));
     test_assert(cx_checkState(p, CX_DECLARED));
     test_assert(cx_checkState(p, CX_DEFINED));
@@ -108,11 +201,11 @@ cx_void _test_ObjectMgmt_tc_createChildNested(test_ObjectMgmt this) {
     test_assert(cx_checkAttr(p, CX_ATTR_OBSERVABLE));
     test_assert(cx_checkAttr(p, CX_ATTR_PERSISTENT));
 
-    test_Point q = cx_createChild(p, "q", test_Point_o);
+    test_Foo q = cx_createChild(p, "q", test_Foo_o);
     test_assert(p != NULL);
     test_assert(!strcmp(cx_nameof(q), "q"));
     test_assert(cx_parentof(q) == p);    
-    test_assert(cx_typeof(q) == (cx_type)test_Point_o);
+    test_assert(cx_typeof(q) == (cx_type)test_Foo_o);
     test_assert(cx_checkState(q, CX_VALID));
     test_assert(cx_checkState(q, CX_DECLARED));
     test_assert(cx_checkState(q, CX_DEFINED));
@@ -134,81 +227,6 @@ cx_void _test_ObjectMgmt_tc_createChildNested(test_ObjectMgmt this) {
     test_assert(*test_initCalled_o == 3);
     test_assert(*test_constructCalled_o == 3);
     test_assert(*test_destructCalled_o == 3);
-
-/* $end */
-}
-
-/* ::test::ObjectMgmt::tc_createChildPoint() */
-cx_void _test_ObjectMgmt_tc_createChildPoint(test_ObjectMgmt this) {
-/* $begin(::test::ObjectMgmt::tc_createChildPoint) */
-
-    test_Point o = cx_createChild(NULL, "o", test_Point_o);
-    test_assert(o != NULL);
-    test_assert(!strcmp(cx_nameof(o), "o"));
-    test_assert(cx_parentof(o) == root_o);    
-    test_assert(cx_typeof(o) == (cx_type)test_Point_o);
-    test_assert(cx_checkState(o, CX_VALID));
-    test_assert(cx_checkState(o, CX_DECLARED));
-    test_assert(cx_checkState(o, CX_DEFINED));
-    test_assert(cx_checkAttr(o, CX_ATTR_SCOPED));
-    test_assert(cx_checkAttr(o, CX_ATTR_WRITABLE));
-    test_assert(cx_checkAttr(o, CX_ATTR_OBSERVABLE));
-    test_assert(cx_checkAttr(o, CX_ATTR_PERSISTENT));
-
-    cx_object p = cx_resolve(NULL, "o");
-    test_assert(o == p);
-    cx_release(p);
-
-    /* Test if constructor is correctly executed */
-    test_assert(o->x == 11);
-    test_assert(o->y == 22);
-
-    cx_delete(o);
-
-    cx_object q = cx_resolve(NULL, "o");
-    test_assert(q == NULL);
-
-    test_assert(*test_initCalled_o == 1);
-    test_assert(*test_constructCalled_o == 1);
-    test_assert(*test_destructCalled_o == 1);
-
-/* $end */
-}
-
-/* ::test::ObjectMgmt::tc_createChildPointAttr0() */
-cx_void _test_ObjectMgmt_tc_createChildPointAttr0(test_ObjectMgmt this) {
-/* $begin(::test::ObjectMgmt::tc_createChildPointAttr0) */
-
-    cx_setAttr(0);
-    test_Point o = cx_createChild(NULL, "o", test_Point_o);
-    test_assert(o != NULL);
-    test_assert(!strcmp(cx_nameof(o), "o"));
-    test_assert(cx_parentof(o) == root_o);    
-    test_assert(cx_typeof(o) == (cx_type)test_Point_o);
-    test_assert(cx_checkState(o, CX_VALID));
-    test_assert(cx_checkState(o, CX_DECLARED));
-    test_assert(cx_checkState(o, CX_DEFINED));
-    test_assert(cx_checkAttr(o, CX_ATTR_SCOPED));
-    test_assert(!cx_checkAttr(o, CX_ATTR_WRITABLE));
-    test_assert(!cx_checkAttr(o, CX_ATTR_OBSERVABLE));
-    test_assert(!cx_checkAttr(o, CX_ATTR_PERSISTENT));
-
-    cx_object p = cx_resolve(NULL, "o");
-    test_assert(o == p);
-    cx_release(p);
-
-    /* Test if constructor is correctly executed */
-    test_assert(o->x == 11);
-    test_assert(o->y == 22);
-
-    cx_delete(o);
-
-    cx_object q = cx_resolve(NULL, "o");
-    test_assert(q == NULL);
-
-    test_assert(*test_initCalled_o == 1);
-    test_assert(*test_constructCalled_o == 1);
-    test_assert(*test_destructCalled_o == 1);
 
 /* $end */
 }
@@ -272,6 +290,82 @@ cx_void _test_ObjectMgmt_tc_createChildVoidAttr0(test_ObjectMgmt this) {
 /* $end */
 }
 
+/* ::test::ObjectMgmt::tc_createFoo() */
+cx_void _test_ObjectMgmt_tc_createFoo(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_createFoo) */
+
+    test_Foo o = cx_create(test_Foo_o);
+    test_assert(o != NULL);
+    test_assert(cx_typeof(o) == (cx_type)test_Foo_o);
+    test_assert(cx_checkState(o, CX_VALID));
+    test_assert(cx_checkState(o, CX_DECLARED));
+    test_assert(cx_checkState(o, CX_DEFINED));
+    test_assert(!cx_checkAttr(o, CX_ATTR_SCOPED));
+    test_assert(cx_checkAttr(o, CX_ATTR_WRITABLE));
+    test_assert(cx_checkAttr(o, CX_ATTR_OBSERVABLE));
+    test_assert(!cx_checkAttr(o, CX_ATTR_PERSISTENT));
+
+    /* Test if constructor is correctly executed */
+    test_assert(o->x == 11);
+    test_assert(o->y == 22);
+
+    cx_delete(o);
+
+    test_assert(*test_initCalled_o == 1);
+    test_assert(*test_constructCalled_o == 1);
+    test_assert(*test_destructCalled_o == 1);
+
+/* $end */
+}
+
+/* ::test::ObjectMgmt::tc_createFooAttr0() */
+cx_void _test_ObjectMgmt_tc_createFooAttr0(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_createFooAttr0) */
+
+    cx_setAttr(0);
+    test_Foo o = cx_create(test_Foo_o);
+    test_assert(o != NULL);
+    test_assert(cx_typeof(o) == (cx_type)test_Foo_o);
+    test_assert(cx_checkState(o, CX_VALID));
+    test_assert(cx_checkState(o, CX_DECLARED));
+    test_assert(cx_checkState(o, CX_DEFINED));
+    test_assert(!cx_checkAttr(o, CX_ATTR_SCOPED));
+    test_assert(!cx_checkAttr(o, CX_ATTR_WRITABLE));
+    test_assert(!cx_checkAttr(o, CX_ATTR_OBSERVABLE));
+    test_assert(!cx_checkAttr(o, CX_ATTR_PERSISTENT));
+
+    /* Test if constructor is correctly executed */
+    test_assert(o->x == 11);
+    test_assert(o->y == 22);
+
+    cx_delete(o);
+
+    test_assert(*test_initCalled_o == 1);
+    test_assert(*test_constructCalled_o == 1);
+    test_assert(*test_destructCalled_o == 1);
+
+/* $end */
+}
+
+/* ::test::ObjectMgmt::tc_createInitFail() */
+cx_void _test_ObjectMgmt_tc_createInitFail(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_createInitFail) */
+
+    test_Bar o = cx_create(test_Bar_o);
+    test_assert(o != NULL);
+    test_assert(cx_typeof(o) == (cx_type)test_Bar_o);
+    test_assert(!cx_checkState(o, CX_VALID));
+    test_assert(cx_checkState(o, CX_DECLARED));
+    test_assert(!cx_checkState(o, CX_DEFINED));
+    test_assert(!cx_checkAttr(o, CX_ATTR_SCOPED));
+    test_assert(cx_checkAttr(o, CX_ATTR_WRITABLE));
+    test_assert(cx_checkAttr(o, CX_ATTR_OBSERVABLE));
+    test_assert(!cx_checkAttr(o, CX_ATTR_PERSISTENT));
+    cx_delete(o);
+
+/* $end */
+}
+
 /* ::test::ObjectMgmt::tc_createInt() */
 cx_void _test_ObjectMgmt_tc_createInt(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createInt) */
@@ -311,63 +405,6 @@ cx_void _test_ObjectMgmt_tc_createIntAttr0(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_createPoint() */
-cx_void _test_ObjectMgmt_tc_createPoint(test_ObjectMgmt this) {
-/* $begin(::test::ObjectMgmt::tc_createPoint) */
-
-    test_Point o = cx_create(test_Point_o);
-    test_assert(o != NULL);
-    test_assert(cx_typeof(o) == (cx_type)test_Point_o);
-    test_assert(cx_checkState(o, CX_VALID));
-    test_assert(cx_checkState(o, CX_DECLARED));
-    test_assert(cx_checkState(o, CX_DEFINED));
-    test_assert(!cx_checkAttr(o, CX_ATTR_SCOPED));
-    test_assert(cx_checkAttr(o, CX_ATTR_WRITABLE));
-    test_assert(cx_checkAttr(o, CX_ATTR_OBSERVABLE));
-    test_assert(!cx_checkAttr(o, CX_ATTR_PERSISTENT));
-
-    /* Test if constructor is correctly executed */
-    test_assert(o->x == 11);
-    test_assert(o->y == 22);
-
-    cx_delete(o);
-
-    test_assert(*test_initCalled_o == 1);
-    test_assert(*test_constructCalled_o == 1);
-    test_assert(*test_destructCalled_o == 1);
-
-/* $end */
-}
-
-/* ::test::ObjectMgmt::tc_createPointAttr0() */
-cx_void _test_ObjectMgmt_tc_createPointAttr0(test_ObjectMgmt this) {
-/* $begin(::test::ObjectMgmt::tc_createPointAttr0) */
-
-    cx_setAttr(0);
-    test_Point o = cx_create(test_Point_o);
-    test_assert(o != NULL);
-    test_assert(cx_typeof(o) == (cx_type)test_Point_o);
-    test_assert(cx_checkState(o, CX_VALID));
-    test_assert(cx_checkState(o, CX_DECLARED));
-    test_assert(cx_checkState(o, CX_DEFINED));
-    test_assert(!cx_checkAttr(o, CX_ATTR_SCOPED));
-    test_assert(!cx_checkAttr(o, CX_ATTR_WRITABLE));
-    test_assert(!cx_checkAttr(o, CX_ATTR_OBSERVABLE));
-    test_assert(!cx_checkAttr(o, CX_ATTR_PERSISTENT));
-
-    /* Test if constructor is correctly executed */
-    test_assert(o->x == 11);
-    test_assert(o->y == 22);
-
-    cx_delete(o);
-
-    test_assert(*test_initCalled_o == 1);
-    test_assert(*test_constructCalled_o == 1);
-    test_assert(*test_destructCalled_o == 1);
-
-/* $end */
-}
-
 /* ::test::ObjectMgmt::tc_createVoid() */
 cx_void _test_ObjectMgmt_tc_createVoid(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createVoid) */
@@ -402,6 +439,99 @@ cx_void _test_ObjectMgmt_tc_createVoidAttr0(test_ObjectMgmt this) {
     test_assert(!cx_checkAttr(o, CX_ATTR_WRITABLE));
     test_assert(!cx_checkAttr(o, CX_ATTR_OBSERVABLE));
     test_assert(!cx_checkAttr(o, CX_ATTR_PERSISTENT));
+    cx_delete(o);
+
+/* $end */
+}
+
+/* ::test::ObjectMgmt::tc_declareChildFoo() */
+cx_void _test_ObjectMgmt_tc_declareChildFoo(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_declareChildFoo) */
+
+    test_Foo o = cx_declareChild(NULL, "o", test_Foo_o);
+    test_assert(o != NULL);
+    test_assert(!strcmp(cx_nameof(o), "o"));
+    test_assert(cx_parentof(o) == root_o);    
+    test_assert(cx_typeof(o) == (cx_type)test_Foo_o);
+    test_assert(cx_checkState(o, CX_VALID));
+    test_assert(cx_checkState(o, CX_DECLARED));
+    test_assert(!cx_checkState(o, CX_DEFINED));
+    test_assert(cx_checkAttr(o, CX_ATTR_SCOPED));
+    test_assert(cx_checkAttr(o, CX_ATTR_WRITABLE));
+    test_assert(cx_checkAttr(o, CX_ATTR_OBSERVABLE));
+    test_assert(cx_checkAttr(o, CX_ATTR_PERSISTENT));
+
+    /* Test if initializer is correctly executed */
+    test_assert(o->x == 1);
+    test_assert(o->y == 2);
+
+    cx_object p = cx_resolve(NULL, "o");
+    test_assert(o == p);
+    cx_release(p);
+
+    cx_delete(o);
+
+    cx_object q = cx_resolve(NULL, "o");
+    test_assert(q == NULL);
+
+    test_assert(*test_initCalled_o == 1);
+    test_assert(*test_constructCalled_o == 0);
+    test_assert(*test_destructCalled_o == 0);
+
+/* $end */
+}
+
+/* ::test::ObjectMgmt::tc_declareChildFooAttr0() */
+cx_void _test_ObjectMgmt_tc_declareChildFooAttr0(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_declareChildFooAttr0) */
+
+    cx_setAttr(0);
+    test_Foo o = cx_declareChild(NULL, "o", test_Foo_o);
+    test_assert(o != NULL);
+    test_assert(!strcmp(cx_nameof(o), "o"));
+    test_assert(cx_parentof(o) == root_o);    
+    test_assert(cx_typeof(o) == (cx_type)test_Foo_o);
+    test_assert(cx_checkState(o, CX_VALID));
+    test_assert(cx_checkState(o, CX_DECLARED));
+    test_assert(!cx_checkState(o, CX_DEFINED));
+    test_assert(cx_checkAttr(o, CX_ATTR_SCOPED));
+    test_assert(!cx_checkAttr(o, CX_ATTR_WRITABLE));
+    test_assert(!cx_checkAttr(o, CX_ATTR_OBSERVABLE));
+    test_assert(!cx_checkAttr(o, CX_ATTR_PERSISTENT));
+
+    /* Test if initializer is correctly executed */
+    test_assert(o->x == 1);
+    test_assert(o->y == 2);
+
+    cx_object p = cx_resolve(NULL, "o");
+    test_assert(o == p);
+    cx_release(p);
+
+    cx_delete(o);
+
+    cx_object q = cx_resolve(NULL, "o");
+    test_assert(q == NULL);
+
+    test_assert(*test_initCalled_o == 1);
+    test_assert(*test_constructCalled_o == 0);
+    test_assert(*test_destructCalled_o == 0);
+
+/* $end */
+}
+
+/* ::test::ObjectMgmt::tc_declareChildInitFail() */
+cx_void _test_ObjectMgmt_tc_declareChildInitFail(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_declareChildInitFail) */
+
+    cx_object o = cx_declareChild(NULL, "o", test_Bar_o);
+    test_assert(o != NULL);
+    test_assert(!cx_checkState(o, CX_VALID));
+    test_assert(cx_checkState(o, CX_DECLARED));
+    test_assert(!cx_checkState(o, CX_DEFINED));
+    test_assert(cx_checkAttr(o, CX_ATTR_SCOPED));
+    test_assert(cx_checkAttr(o, CX_ATTR_WRITABLE));
+    test_assert(cx_checkAttr(o, CX_ATTR_OBSERVABLE));
+    test_assert(cx_checkAttr(o, CX_ATTR_PERSISTENT));
     cx_delete(o);
 
 /* $end */
@@ -470,81 +600,6 @@ cx_void _test_ObjectMgmt_tc_declareChildIntAttr0(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_declareChildPoint() */
-cx_void _test_ObjectMgmt_tc_declareChildPoint(test_ObjectMgmt this) {
-/* $begin(::test::ObjectMgmt::tc_declareChildPoint) */
-
-    test_Point o = cx_declareChild(NULL, "o", test_Point_o);
-    test_assert(o != NULL);
-    test_assert(!strcmp(cx_nameof(o), "o"));
-    test_assert(cx_parentof(o) == root_o);    
-    test_assert(cx_typeof(o) == (cx_type)test_Point_o);
-    test_assert(cx_checkState(o, CX_VALID));
-    test_assert(cx_checkState(o, CX_DECLARED));
-    test_assert(!cx_checkState(o, CX_DEFINED));
-    test_assert(cx_checkAttr(o, CX_ATTR_SCOPED));
-    test_assert(cx_checkAttr(o, CX_ATTR_WRITABLE));
-    test_assert(cx_checkAttr(o, CX_ATTR_OBSERVABLE));
-    test_assert(cx_checkAttr(o, CX_ATTR_PERSISTENT));
-
-    /* Test if initializer is correctly executed */
-    test_assert(o->x == 1);
-    test_assert(o->y == 2);
-
-    cx_object p = cx_resolve(NULL, "o");
-    test_assert(o == p);
-    cx_release(p);
-
-    cx_delete(o);
-
-    cx_object q = cx_resolve(NULL, "o");
-    test_assert(q == NULL);
-
-    test_assert(*test_initCalled_o == 1);
-    test_assert(*test_constructCalled_o == 0);
-    test_assert(*test_destructCalled_o == 0);
-
-/* $end */
-}
-
-/* ::test::ObjectMgmt::tc_declareChildPointAttr0() */
-cx_void _test_ObjectMgmt_tc_declareChildPointAttr0(test_ObjectMgmt this) {
-/* $begin(::test::ObjectMgmt::tc_declareChildPointAttr0) */
-
-    cx_setAttr(0);
-    test_Point o = cx_declareChild(NULL, "o", test_Point_o);
-    test_assert(o != NULL);
-    test_assert(!strcmp(cx_nameof(o), "o"));
-    test_assert(cx_parentof(o) == root_o);    
-    test_assert(cx_typeof(o) == (cx_type)test_Point_o);
-    test_assert(cx_checkState(o, CX_VALID));
-    test_assert(cx_checkState(o, CX_DECLARED));
-    test_assert(!cx_checkState(o, CX_DEFINED));
-    test_assert(cx_checkAttr(o, CX_ATTR_SCOPED));
-    test_assert(!cx_checkAttr(o, CX_ATTR_WRITABLE));
-    test_assert(!cx_checkAttr(o, CX_ATTR_OBSERVABLE));
-    test_assert(!cx_checkAttr(o, CX_ATTR_PERSISTENT));
-
-    /* Test if initializer is correctly executed */
-    test_assert(o->x == 1);
-    test_assert(o->y == 2);
-
-    cx_object p = cx_resolve(NULL, "o");
-    test_assert(o == p);
-    cx_release(p);
-
-    cx_delete(o);
-
-    cx_object q = cx_resolve(NULL, "o");
-    test_assert(q == NULL);
-
-    test_assert(*test_initCalled_o == 1);
-    test_assert(*test_constructCalled_o == 0);
-    test_assert(*test_destructCalled_o == 0);
-
-/* $end */
-}
-
 /* ::test::ObjectMgmt::tc_declareChildVoid() */
 cx_void _test_ObjectMgmt_tc_declareChildVoid(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_declareChildVoid) */
@@ -604,6 +659,83 @@ cx_void _test_ObjectMgmt_tc_declareChildVoidAttr0(test_ObjectMgmt this) {
 /* $end */
 }
 
+/* ::test::ObjectMgmt::tc_declareFoo() */
+cx_void _test_ObjectMgmt_tc_declareFoo(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_declareFoo) */
+
+    test_Foo o = cx_declare(test_Foo_o);
+    test_assert(o != NULL);
+    test_assert(cx_typeof(o) == (cx_type)test_Foo_o);
+    test_assert(cx_checkState(o, CX_VALID));
+    test_assert(cx_checkState(o, CX_DECLARED));
+    test_assert(!cx_checkState(o, CX_DEFINED));
+    test_assert(!cx_checkAttr(o, CX_ATTR_SCOPED));
+    test_assert(cx_checkAttr(o, CX_ATTR_WRITABLE));
+    test_assert(cx_checkAttr(o, CX_ATTR_OBSERVABLE));
+    test_assert(!cx_checkAttr(o, CX_ATTR_PERSISTENT));
+
+    /* Test if initializer is correctly executed */
+    test_assert(o->x == 1);
+    test_assert(o->y == 2);
+
+    cx_delete(o);
+
+    test_assert(*test_initCalled_o == 1);
+    test_assert(*test_constructCalled_o == 0);
+    test_assert(*test_destructCalled_o == 0);
+
+/* $end */
+}
+
+/* ::test::ObjectMgmt::tc_declareFooAttr0() */
+cx_void _test_ObjectMgmt_tc_declareFooAttr0(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_declareFooAttr0) */
+
+    cx_setAttr(0);
+    test_Foo o = cx_declare(test_Foo_o);
+    test_assert(o != NULL);
+    test_assert(cx_typeof(o) == (cx_type)test_Foo_o);
+    test_assert(cx_checkState(o, CX_VALID));
+    test_assert(cx_checkState(o, CX_DECLARED));
+    test_assert(!cx_checkState(o, CX_DEFINED));
+    test_assert(!cx_checkAttr(o, CX_ATTR_SCOPED));
+    test_assert(!cx_checkAttr(o, CX_ATTR_WRITABLE));
+    test_assert(!cx_checkAttr(o, CX_ATTR_OBSERVABLE));
+    test_assert(!cx_checkAttr(o, CX_ATTR_PERSISTENT));
+
+    /* Test if initializer is correctly executed */
+    test_assert(o->x == 1);
+    test_assert(o->y == 2);
+
+    cx_delete(o);
+
+    test_assert(*test_initCalled_o == 1);
+    test_assert(*test_constructCalled_o == 0);
+    test_assert(*test_destructCalled_o == 0);
+
+
+/* $end */
+}
+
+/* ::test::ObjectMgmt::tc_declareInitFail() */
+cx_void _test_ObjectMgmt_tc_declareInitFail(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_declareInitFail) */
+
+    test_Bar o = cx_declare(test_Bar_o);
+    test_assert(o != NULL);
+    test_assert(cx_typeof(o) == (cx_type)test_Bar_o);
+    test_assert(!cx_checkState(o, CX_VALID));
+    test_assert(cx_checkState(o, CX_DECLARED));
+    test_assert(!cx_checkState(o, CX_DEFINED));
+    test_assert(!cx_checkAttr(o, CX_ATTR_SCOPED));
+    test_assert(cx_checkAttr(o, CX_ATTR_WRITABLE));
+    test_assert(cx_checkAttr(o, CX_ATTR_OBSERVABLE));
+    test_assert(!cx_checkAttr(o, CX_ATTR_PERSISTENT));
+    cx_delete(o);
+
+/* $end */
+}
+
 /* ::test::ObjectMgmt::tc_declareInt() */
 cx_void _test_ObjectMgmt_tc_declareInt(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_declareInt) */
@@ -639,64 +771,6 @@ cx_void _test_ObjectMgmt_tc_declareIntAttr0(test_ObjectMgmt this) {
     test_assert(!cx_checkAttr(o, CX_ATTR_OBSERVABLE));
     test_assert(!cx_checkAttr(o, CX_ATTR_PERSISTENT));
     cx_delete(o);
-
-/* $end */
-}
-
-/* ::test::ObjectMgmt::tc_declarePoint() */
-cx_void _test_ObjectMgmt_tc_declarePoint(test_ObjectMgmt this) {
-/* $begin(::test::ObjectMgmt::tc_declarePoint) */
-
-    test_Point o = cx_declare(test_Point_o);
-    test_assert(o != NULL);
-    test_assert(cx_typeof(o) == (cx_type)test_Point_o);
-    test_assert(cx_checkState(o, CX_VALID));
-    test_assert(cx_checkState(o, CX_DECLARED));
-    test_assert(!cx_checkState(o, CX_DEFINED));
-    test_assert(!cx_checkAttr(o, CX_ATTR_SCOPED));
-    test_assert(cx_checkAttr(o, CX_ATTR_WRITABLE));
-    test_assert(cx_checkAttr(o, CX_ATTR_OBSERVABLE));
-    test_assert(!cx_checkAttr(o, CX_ATTR_PERSISTENT));
-
-    /* Test if initializer is correctly executed */
-    test_assert(o->x == 1);
-    test_assert(o->y == 2);
-
-    cx_delete(o);
-
-    test_assert(*test_initCalled_o == 1);
-    test_assert(*test_constructCalled_o == 0);
-    test_assert(*test_destructCalled_o == 0);
-
-/* $end */
-}
-
-/* ::test::ObjectMgmt::tc_declarePointAttr0() */
-cx_void _test_ObjectMgmt_tc_declarePointAttr0(test_ObjectMgmt this) {
-/* $begin(::test::ObjectMgmt::tc_declarePointAttr0) */
-
-    cx_setAttr(0);
-    test_Point o = cx_declare(test_Point_o);
-    test_assert(o != NULL);
-    test_assert(cx_typeof(o) == (cx_type)test_Point_o);
-    test_assert(cx_checkState(o, CX_VALID));
-    test_assert(cx_checkState(o, CX_DECLARED));
-    test_assert(!cx_checkState(o, CX_DEFINED));
-    test_assert(!cx_checkAttr(o, CX_ATTR_SCOPED));
-    test_assert(!cx_checkAttr(o, CX_ATTR_WRITABLE));
-    test_assert(!cx_checkAttr(o, CX_ATTR_OBSERVABLE));
-    test_assert(!cx_checkAttr(o, CX_ATTR_PERSISTENT));
-
-    /* Test if initializer is correctly executed */
-    test_assert(o->x == 1);
-    test_assert(o->y == 2);
-
-    cx_delete(o);
-
-    test_assert(*test_initCalled_o == 1);
-    test_assert(*test_constructCalled_o == 0);
-    test_assert(*test_destructCalled_o == 0);
-
 
 /* $end */
 }
@@ -740,54 +814,13 @@ cx_void _test_ObjectMgmt_tc_declareVoidAttr0(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_defineInt() */
-cx_void _test_ObjectMgmt_tc_defineInt(test_ObjectMgmt this) {
-/* $begin(::test::ObjectMgmt::tc_defineInt) */
+/* ::test::ObjectMgmt::tc_defineFoo() */
+cx_void _test_ObjectMgmt_tc_defineFoo(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_defineFoo) */
 
-    cx_object o = cx_declare(cx_int32_o);
+    test_Foo o = cx_declare(test_Foo_o);
     test_assert(o != NULL);
-    test_assert(cx_typeof(o) == (cx_type)cx_int32_o);
-    test_assert(!cx_define(o));
-    test_assert(cx_checkState(o, CX_VALID));
-    test_assert(cx_checkState(o, CX_DECLARED));
-    test_assert(cx_checkState(o, CX_DEFINED));
-    test_assert(!cx_checkAttr(o, CX_ATTR_SCOPED));
-    test_assert(cx_checkAttr(o, CX_ATTR_WRITABLE));
-    test_assert(cx_checkAttr(o, CX_ATTR_OBSERVABLE));
-    test_assert(!cx_checkAttr(o, CX_ATTR_PERSISTENT));
-    cx_delete(o);
-
-/* $end */
-}
-
-/* ::test::ObjectMgmt::tc_defineIntAttr0() */
-cx_void _test_ObjectMgmt_tc_defineIntAttr0(test_ObjectMgmt this) {
-/* $begin(::test::ObjectMgmt::tc_defineIntAttr0) */
-
-    cx_setAttr(0);
-    cx_object o = cx_declare(cx_int32_o);
-    test_assert(o != NULL);
-    test_assert(cx_typeof(o) == (cx_type)cx_int32_o);
-    test_assert(!cx_define(o));
-    test_assert(cx_checkState(o, CX_VALID));
-    test_assert(cx_checkState(o, CX_DECLARED));
-    test_assert(cx_checkState(o, CX_DEFINED));
-    test_assert(!cx_checkAttr(o, CX_ATTR_SCOPED));
-    test_assert(!cx_checkAttr(o, CX_ATTR_WRITABLE));
-    test_assert(!cx_checkAttr(o, CX_ATTR_OBSERVABLE));
-    test_assert(!cx_checkAttr(o, CX_ATTR_PERSISTENT));
-    cx_delete(o);
-
-/* $end */
-}
-
-/* ::test::ObjectMgmt::tc_definePoint() */
-cx_void _test_ObjectMgmt_tc_definePoint(test_ObjectMgmt this) {
-/* $begin(::test::ObjectMgmt::tc_definePoint) */
-
-    test_Point o = cx_declare(test_Point_o);
-    test_assert(o != NULL);
-    test_assert(cx_typeof(o) == (cx_type)test_Point_o);
+    test_assert(cx_typeof(o) == (cx_type)test_Foo_o);
     test_assert(o->x == 1);
     test_assert(o->y == 2);
     test_assert(!cx_define(o));
@@ -818,14 +851,14 @@ cx_void _test_ObjectMgmt_tc_definePoint(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_definePointAttr0() */
-cx_void _test_ObjectMgmt_tc_definePointAttr0(test_ObjectMgmt this) {
-/* $begin(::test::ObjectMgmt::tc_definePointAttr0) */
+/* ::test::ObjectMgmt::tc_defineFooAttr0() */
+cx_void _test_ObjectMgmt_tc_defineFooAttr0(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_defineFooAttr0) */
 
     cx_setAttr(0);
-    test_Point o = cx_declare(test_Point_o);
+    test_Foo o = cx_declare(test_Foo_o);
     test_assert(o != NULL);
-    test_assert(cx_typeof(o) == (cx_type)test_Point_o);
+    test_assert(cx_typeof(o) == (cx_type)test_Foo_o);
     test_assert(o->x == 1);
     test_assert(o->y == 2);
     test_assert(!cx_define(o));
@@ -856,13 +889,13 @@ cx_void _test_ObjectMgmt_tc_definePointAttr0(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_definePointFail() */
-cx_void _test_ObjectMgmt_tc_definePointFail(test_ObjectMgmt this) {
-/* $begin(::test::ObjectMgmt::tc_definePointFail) */
+/* ::test::ObjectMgmt::tc_defineFooFail() */
+cx_void _test_ObjectMgmt_tc_defineFooFail(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_defineFooFail) */
 
-    test_Point o = cx_declare(test_Point_o);
+    test_Foo o = cx_declare(test_Foo_o);
     test_assert(o != NULL);
-    test_assert(cx_typeof(o) == (cx_type)test_Point_o);
+    test_assert(cx_typeof(o) == (cx_type)test_Foo_o);
     test_assert(o->x == 1);
     test_assert(o->y == 2);
 
@@ -902,6 +935,56 @@ cx_void _test_ObjectMgmt_tc_definePointFail(test_ObjectMgmt this) {
     test_assert(o->x == 11);
     test_assert(o->y == 22);
 
+    cx_delete(o);
+
+/* $end */
+}
+
+/* ::test::ObjectMgmt::tc_defineInitFail() */
+cx_void _test_ObjectMgmt_tc_defineInitFail(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_defineInitFail) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+/* ::test::ObjectMgmt::tc_defineInt() */
+cx_void _test_ObjectMgmt_tc_defineInt(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_defineInt) */
+
+    cx_object o = cx_declare(cx_int32_o);
+    test_assert(o != NULL);
+    test_assert(cx_typeof(o) == (cx_type)cx_int32_o);
+    test_assert(!cx_define(o));
+    test_assert(cx_checkState(o, CX_VALID));
+    test_assert(cx_checkState(o, CX_DECLARED));
+    test_assert(cx_checkState(o, CX_DEFINED));
+    test_assert(!cx_checkAttr(o, CX_ATTR_SCOPED));
+    test_assert(cx_checkAttr(o, CX_ATTR_WRITABLE));
+    test_assert(cx_checkAttr(o, CX_ATTR_OBSERVABLE));
+    test_assert(!cx_checkAttr(o, CX_ATTR_PERSISTENT));
+    cx_delete(o);
+
+/* $end */
+}
+
+/* ::test::ObjectMgmt::tc_defineIntAttr0() */
+cx_void _test_ObjectMgmt_tc_defineIntAttr0(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_defineIntAttr0) */
+
+    cx_setAttr(0);
+    cx_object o = cx_declare(cx_int32_o);
+    test_assert(o != NULL);
+    test_assert(cx_typeof(o) == (cx_type)cx_int32_o);
+    test_assert(!cx_define(o));
+    test_assert(cx_checkState(o, CX_VALID));
+    test_assert(cx_checkState(o, CX_DECLARED));
+    test_assert(cx_checkState(o, CX_DEFINED));
+    test_assert(!cx_checkAttr(o, CX_ATTR_SCOPED));
+    test_assert(!cx_checkAttr(o, CX_ATTR_WRITABLE));
+    test_assert(!cx_checkAttr(o, CX_ATTR_OBSERVABLE));
+    test_assert(!cx_checkAttr(o, CX_ATTR_PERSISTENT));
     cx_delete(o);
 
 /* $end */
@@ -954,11 +1037,11 @@ cx_void _test_ObjectMgmt_tc_defineVoidAttr0(test_ObjectMgmt this) {
 cx_void _test_ObjectMgmt_tc_drop(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_drop) */
 
-    test_Point o = cx_createChild(NULL, "o", test_Point_o);
+    test_Foo o = cx_createChild(NULL, "o", test_Foo_o);
     test_assert(o != NULL);
     test_assert(!strcmp(cx_nameof(o), "o"));
     test_assert(cx_parentof(o) == root_o);    
-    test_assert(cx_typeof(o) == (cx_type)test_Point_o);
+    test_assert(cx_typeof(o) == (cx_type)test_Foo_o);
     test_assert(cx_checkState(o, CX_VALID));
     test_assert(cx_checkState(o, CX_DECLARED));
     test_assert(cx_checkState(o, CX_DEFINED));
@@ -967,11 +1050,11 @@ cx_void _test_ObjectMgmt_tc_drop(test_ObjectMgmt this) {
     test_assert(cx_checkAttr(o, CX_ATTR_OBSERVABLE));
     test_assert(cx_checkAttr(o, CX_ATTR_PERSISTENT));
 
-    test_Point p = cx_createChild(o, "p", test_Point_o);
+    test_Foo p = cx_createChild(o, "p", test_Foo_o);
     test_assert(p != NULL);
     test_assert(!strcmp(cx_nameof(p), "p"));
     test_assert(cx_parentof(p) == o);    
-    test_assert(cx_typeof(p) == (cx_type)test_Point_o);
+    test_assert(cx_typeof(p) == (cx_type)test_Foo_o);
     test_assert(cx_checkState(p, CX_VALID));
     test_assert(cx_checkState(p, CX_DECLARED));
     test_assert(cx_checkState(p, CX_DEFINED));
@@ -980,11 +1063,11 @@ cx_void _test_ObjectMgmt_tc_drop(test_ObjectMgmt this) {
     test_assert(cx_checkAttr(p, CX_ATTR_OBSERVABLE));
     test_assert(cx_checkAttr(p, CX_ATTR_PERSISTENT));
 
-    test_Point q = cx_createChild(o, "q", test_Point_o);
+    test_Foo q = cx_createChild(o, "q", test_Foo_o);
     test_assert(p != NULL);
     test_assert(!strcmp(cx_nameof(q), "q"));
     test_assert(cx_parentof(q) == o);    
-    test_assert(cx_typeof(q) == (cx_type)test_Point_o);
+    test_assert(cx_typeof(q) == (cx_type)test_Foo_o);
     test_assert(cx_checkState(q, CX_VALID));
     test_assert(cx_checkState(q, CX_DECLARED));
     test_assert(cx_checkState(q, CX_DEFINED));

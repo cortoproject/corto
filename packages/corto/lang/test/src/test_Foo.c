@@ -1,4 +1,4 @@
-/* test_Point.c
+/* test_Foo.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -9,9 +9,9 @@
 #define test_LIB
 #include "test.h"
 
-/* ::test::Point::construct() */
-cx_int16 _test_Point_construct(test_Point this) {
-/* $begin(::test::Point::construct) */
+/* ::test::Foo::construct() */
+cx_int16 _test_Foo_construct(test_Foo this) {
+/* $begin(::test::Foo::construct) */
 
 	if (!this->fail) {
 	    this->x += 10;
@@ -25,21 +25,21 @@ cx_int16 _test_Point_construct(test_Point this) {
 	return 0;
 error:
 	return -1;
+
 /* $end */
 }
 
-/* ::test::Point::destruct() */
-cx_void _test_Point_destruct(test_Point this) {
-/* $begin(::test::Point::destruct) */
+/* ::test::Foo::destruct() */
+cx_void _test_Foo_destruct(test_Foo this) {
+/* $begin(::test::Foo::destruct) */
     CX_UNUSED(this);
     (*test_destructCalled_o)++;
 /* $end */
 }
 
-/* ::test::Point::init() */
-cx_int16 _test_Point_init(test_Point this) {
-/* $begin(::test::Point::init) */
-
+/* ::test::Foo::init() */
+cx_int16 _test_Foo_init(test_Foo this) {
+/* $begin(::test::Foo::init) */
     this->x = 1;
     this->y = 2;
 

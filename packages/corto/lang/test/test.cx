@@ -4,12 +4,21 @@ int8 initCalled: 0
 int8 constructCalled: 0
 int8 destructCalled: 0
 
-class Point::
-    fail: bool
+class Foo::
+    fail: bool, local
     x, y: int32
     int16 init()
     int16 construct()
     void destruct()
+
+class Bar::
+    int16 init()
+
+struct Point::
+    x, y: int32
+
+struct Point3D: Point::
+    z: int32
 
 // Object management testcases
 class ObjectMgmt: test::Suite::
@@ -20,39 +29,44 @@ class ObjectMgmt: test::Suite::
 
     void tc_declareVoid() test::Case
     void tc_declareInt() test::Case
-    void tc_declarePoint() test::Case
+    void tc_declareFoo() test::Case
     void tc_declareVoidAttr0() test::Case
     void tc_declareIntAttr0() test::Case
-    void tc_declarePointAttr0() test::Case
+    void tc_declareFooAttr0() test::Case
+    void tc_declareInitFail() test::Case
 
     void tc_createVoid() test::Case
     void tc_createInt() test::Case
-    void tc_createPoint() test::Case
+    void tc_createFoo() test::Case
     void tc_createVoidAttr0() test::Case
     void tc_createIntAttr0() test::Case
-    void tc_createPointAttr0() test::Case
+    void tc_createFooAttr0() test::Case
+    void tc_createInitFail() test::Case
 
     void tc_defineVoid() test::Case
     void tc_defineInt() test::Case
-    void tc_definePoint() test::Case
+    void tc_defineFoo() test::Case
     void tc_defineVoidAttr0() test::Case
     void tc_defineIntAttr0() test::Case
-    void tc_definePointAttr0() test::Case
-    void tc_definePointFail() test::Case
+    void tc_defineFooAttr0() test::Case
+    void tc_defineFooFail() test::Case
+    void tc_defineInitFail() test::Case
 
     void tc_declareChildVoid() test::Case
     void tc_declareChildInt() test::Case
-    void tc_declareChildPoint() test::Case
+    void tc_declareChildFoo() test::Case
     void tc_declareChildVoidAttr0() test::Case
     void tc_declareChildIntAttr0() test::Case
-    void tc_declareChildPointAttr0() test::Case
+    void tc_declareChildFooAttr0() test::Case
+    void tc_declareChildInitFail() test::Case
 
     void tc_createChildVoid() test::Case
     void tc_createChildInt() test::Case
-    void tc_createChildPoint() test::Case
+    void tc_createChildFoo() test::Case
     void tc_createChildVoidAttr0() test::Case
     void tc_createChildIntAttr0() test::Case
-    void tc_createChildPointAttr0() test::Case
+    void tc_createChildFooAttr0() test::Case
+    void tc_createChildInitFail() test::Case
 
     void tc_createChildNested() test::Case
     void tc_drop() test::Case
@@ -122,3 +136,21 @@ class StringDeserializer: test::Suite::
     void tc_deserUint32Overflow() test::Case
 
     void tc_deserUint64() test::Case
+
+    void tc_deserString() test::Case
+    void tc_deserStringQuotes() test::Case
+    void tc_deserStringQuotesWhitespaces() test::Case
+    void tc_deserStringEscape() test::Case
+    void tc_deserStringWhitespace() test::Case
+    void tc_deserStringWhitespaceTrailing() test::Case
+    void tc_deserStringWhitespaceTrailingNoType() test::Case
+
+    void tc_deserComposite() test::Case
+    void tc_deserCompositeNoType() test::Case
+    void tc_deserCompositeWhitespace() test::Case
+    void tc_deserCompositeMembers() test::Case
+    void tc_deserCompositeMixed() test::Case
+
+    void tc_deserInheritance() test::Case
+    void tc_deserInheritanceMembers() test::Case
+    void tc_deserInheritanceMixed() test::Case
