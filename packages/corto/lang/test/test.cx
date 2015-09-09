@@ -11,6 +11,7 @@ class Point::
     int16 construct()
     void destruct()
 
+// Object management testcases
 class ObjectMgmt: test::Suite::
     prevAttr: lang::attr, local|private
 
@@ -56,6 +57,7 @@ class ObjectMgmt: test::Suite::
     void tc_createChildNested() test::Case
     void tc_drop() test::Case
 
+// Resolve algorithm testcases
 class Resolver: test::Suite::
     void setup()
     void teardown()
@@ -69,6 +71,7 @@ class Resolver: test::Suite::
     void tc_resolveAnonymous() test::Case
     void tc_resolveEmptyString() test::Case
 
+// String deserializer testcases
 class StringDeserializer: test::Suite::
     void setup()
     void teardown()
