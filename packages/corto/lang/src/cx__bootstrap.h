@@ -498,12 +498,12 @@ CX_FWDECL(delegate, callbackInit);
 CX_FWDECL(delegate, callbackDestruct);
 
 /* database root */
-cx_ssoo_package root__o = {CX_ROOT_V(), {"http://cortolang.com/"}};
+cx_ssoo_package root__o = {CX_ROOT_V(), {"http://corto.io/doc"}};
 cx_package root_o = CX_OFFSET(&root__o.o.o, sizeof(cx__object));
 
 /* ::corto, ::corto::lang and ::corto::serialization */
-CX_PACKAGE_O(corto, "http://cortolang.com/");
-CX_PACKAGE_O_SCOPE(corto, lang, "http://cortolang.com/");
+CX_PACKAGE_O(corto, "http://corto.io/doc/corto");
+CX_PACKAGE_O_SCOPE(corto, lang, "http://corto.io/doc/corto/lang");
 
 cx_package corto_o = CX_OFFSET(&corto__o.o.o, sizeof(cx__object));
 

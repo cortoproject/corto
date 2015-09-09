@@ -1,6 +1,6 @@
-<meta xmlns:meta="http://cortolang.com/meta">
-    <meta:package name="corto" url="http://cortolang.com/corto">
-        <meta:package name="ast" url="http://cortolang.com/corto/fast">
+<meta xmlns:meta="http://corto.io/meta">
+    <meta:package name="corto" url="http://corto.io/doc/corto">
+        <meta:package name="ast" url="http://corto.io/doc/corto/ast">
             <!-- Enumeration representing the values that can be represented in hyve -->
             <enum name="valueKind">
                 <meta:scope>

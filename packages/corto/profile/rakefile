@@ -1,4 +1,4 @@
-PACKAGE = 'corto::profiling'
+PACKAGE = 'corto::profile'
 
 CFLAGS = ["-Wunused-parameter"]
 

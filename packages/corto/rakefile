@@ -5,7 +5,7 @@ COMPONENTS = [] <<
     :io <<
     :os <<
     :math <<
-    :profiling <<
+    :profile <<
     :test
 
 require "#{ENV['CORTO_BUILD']}/forward"

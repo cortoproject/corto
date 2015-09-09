@@ -1,6 +1,6 @@
-<meta xmlns:meta="http://cortolang.com/meta">
-    <meta:package name="corto" url="http://cortolang.com/corto">
-        <meta:package name="ic" url="http://cortolang.com/corto/ic">
+<meta xmlns:meta="http://corto.io/meta">
+    <meta:package name="corto" url="http://corto.io/doc/corto">
+        <meta:package name="ic" url="http://corto.io/doc/corto/ic">
 
             <enum name="kind">
                 <meta:scope>

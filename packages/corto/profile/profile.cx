@@ -1,4 +1,4 @@
-#package ::corto::profiling
+#package ::corto::profile
 
 void start(string name)
 

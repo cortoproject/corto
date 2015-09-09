@@ -1,4 +1,4 @@
-/* profiling.c
+/* profile.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -6,17 +6,17 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#define corto_profiling_LIB
-#include "profiling.h"
+#define corto_profile_LIB
+#include "profile.h"
 
 /* $header() */
 
-#include "profiling__keyvalue.h"
+#include "profile__keyvalue.h"
 
-cx_threadKey profiling_key = 0;
+cx_threadKey profile_key = 0;
 
-static void profiling_clearTlsValue(void *data) {
-    profiling_TlsValue *value = data;
+static void profile_clearTlsValue(void *data) {
+    profile_TlsValue *value = data;
     cx_ll ll = value->ll;
     if (ll) {
         cx_llFree(ll);
@@ -26,13 +26,13 @@ static void profiling_clearTlsValue(void *data) {
 /*
  * topProfile can be a profile, the per-thread scope, or the root-scope
  */
-static cx_object profiling_profileRoot(void) {
+static cx_object profile_profileRoot(void) {
     return root_o;
 }
 
-static profiling_TlsValue *profiling_value(void) {
-    cx_threadKey key = profiling_key;
-    profiling_TlsValue *value = cx_threadTlsGet(key);
+static profile_TlsValue *profile_value(void) {
+    cx_threadKey key = profile_key;
+    profile_TlsValue *value = cx_threadTlsGet(key);
 
     if (!value) {
         cx_thread tid;
@@ -43,9 +43,9 @@ static profiling_TlsValue *profiling_value(void) {
         tid = cx_threadSelf();
         sprintf(name, "t%lu", cx_threadSelf());
         ll = cx_llNew();
-        topProfile = cx_declareChild(profiling_profileRoot(), name, cx_void_o);
+        topProfile = cx_declareChild(profile_profileRoot(), name, cx_void_o);
         if (ll && topProfile) {
-            value = cx_alloc(sizeof(profiling_TlsValue));
+            value = cx_alloc(sizeof(profile_TlsValue));
             value->ll = ll;
             value->topProfile = topProfile;
             cx_threadTlsSet(key, value);
@@ -53,20 +53,20 @@ static profiling_TlsValue *profiling_value(void) {
             cx_error("Could not create scope for Profile objects of thread %lu", tid);
             cx_release(topProfile);
         } else {
-            cx_error("Could not create cx_ll object for profiling start times");
+            cx_error("Could not create cx_ll object for profile start times");
             cx_llFree(ll);
         }
     }
     return value;
 }
 
-static void profiling_openProfile(profiling_TlsValue *value, cx_string name) {
-    profiling_Profile *next = cx_declareChild(value->topProfile, name, profiling_Profile_o);
+static void profile_openProfile(profile_TlsValue *value, cx_string name) {
+    profile_Profile *next = cx_declareChild(value->topProfile, name, profile_Profile_o);
     value->topProfile = next;
 }
 
-static void profiling_closeProfile(profiling_TlsValue *value, cx_time t) {
-    profiling_Profile *top = value->topProfile;
+static void profile_closeProfile(profile_TlsValue *value, cx_time t) {
+    profile_Profile *top = value->topProfile;
     if (cx_checkState(top, CX_DEFINED)) {
         top->seconds += t.tv_sec;
         top->nanoseconds += t.tv_nsec;
@@ -82,39 +82,39 @@ static void profiling_closeProfile(profiling_TlsValue *value, cx_time t) {
 
 /* $end */
 
-/* ::corto::profiling::start(string name) */
-cx_void _profiling_start(cx_string name) {
-/* $begin(::corto::profiling::start) */
+/* ::corto::profile::start(string name) */
+cx_void _profile_start(cx_string name) {
+/* $begin(::corto::profile::start) */
     cx_time *startTimePtr = cx_alloc(sizeof(cx_time));
-    profiling_TlsValue *value = profiling_value();
+    profile_TlsValue *value = profile_value();
     cx_timeGet(startTimePtr);
     cx_llInsert(value->ll, startTimePtr);
-    profiling_openProfile(value, name);
+    profile_openProfile(value, name);
 /* $end */
 }
 
-/* ::corto::profiling::stop() */
-cx_void _profiling_stop(void) {
-/* $begin(::corto::profiling::stop) */
+/* ::corto::profile::stop() */
+cx_void _profile_stop(void) {
+/* $begin(::corto::profile::stop) */
     cx_time *startTimePtr;
     cx_time stopTime;
     cx_time difference;
-    profiling_TlsValue *value;
-    value = profiling_value();
+    profile_TlsValue *value;
+    value = profile_value();
     cx_timeGet(&stopTime);
     startTimePtr = cx_llTakeFirst(value->ll);
     difference = cx_timeSub(stopTime, *startTimePtr);
     cx_dealloc(startTimePtr);
-    profiling_closeProfile(value, difference);
+    profile_closeProfile(value, difference);
 /* $end */
 }
 
-int profilingMain(int argc, char* argv[]) {
+int profileMain(int argc, char* argv[]) {
 /* $begin(main) */
     CX_UNUSED(argc);
     CX_UNUSED(argv);
-    if (cx_threadTlsKey(&profiling_key, profiling_clearTlsValue)) {
-        cx_error("Cannot create profiling key");
+    if (cx_threadTlsKey(&profile_key, profile_clearTlsValue)) {
+        cx_error("Cannot create profile key");
     }
     return 0;
 /* $end */

@@ -1,15 +1,15 @@
 
-#ifndef profiling__KEYVALUE_H
-#define profiling__KEYVALUE_H
+#ifndef profile__KEYVALUE_H
+#define profile__KEYVALUE_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef struct profiling_TlsValue {
+typedef struct profile_TlsValue {
     cx_ll ll;
     cx_object topProfile; 
-} profiling_TlsValue;
+} profile_TlsValue;
 
 #ifdef __cplusplus
 }
