@@ -3509,7 +3509,7 @@ cx_string cx_stra(cx_any a, cx_uint32 maxLength) {
     return cx_strv(&v, maxLength);
 }
 
-void cx_fromStr(void *o, cx_string string) {
+cx_int16 cx_fromStr(void *o, cx_string string) {
     cx_string_deser_t serData;
 
     serData.out = *(void**)o;
@@ -3519,10 +3519,18 @@ void cx_fromStr(void *o, cx_string string) {
         cx_assert(!serData.out, "deserializer failed but out is set");
     }
 
-    *(void**)o = serData.out;
+    if (serData.out) {
+        *(void**)o = serData.out;
+    } else {
+        goto error;
+    }
+
+    return 0;
+error:
+    return -1;
 }
 
-void cx_fromStrv(cx_value *v, cx_string string) {
+cx_int16 cx_fromStrv(cx_value *v, cx_string string) {
     cx_string_deser_t serData;
 
     serData.out = cx_valueValue(v);
@@ -3532,10 +3540,18 @@ void cx_fromStrv(cx_value *v, cx_string string) {
         cx_assert(!serData.out, "deserializer failed but out is set");
     }
 
-    cx_valueSetValue(v, serData.out);
+    if (serData.out) {
+        cx_valueSetValue(v, serData.out);
+    } else {
+        goto error;
+    }
+    
+    return 0;
+error:
+    return -1;
 }
 
-void _cx_fromStrp(void* out, cx_type type, cx_string string) {
+cx_int16 _cx_fromStrp(void* out, cx_type type, cx_string string) {
     cx_string_deser_t serData;
 
     serData.out = *(void**)out;
@@ -3545,10 +3561,18 @@ void _cx_fromStrp(void* out, cx_type type, cx_string string) {
         cx_assert(!serData.out, "deserializer failed but out is set");
     }
 
-    *(void**)out = serData.out;
+    if (serData.out) {
+        *(void**)out = serData.out;
+    } else {
+        goto error;
+    }
+
+    return 0;
+error:
+    return -1;
 }
 
-void cx_fromStra(cx_any *a, cx_string string) {
+cx_int16 cx_fromStra(cx_any *a, cx_string string) {
     cx_string_deser_t serData;
 
     serData.out = a->value;
@@ -3558,7 +3582,15 @@ void cx_fromStra(cx_any *a, cx_string string) {
         cx_assert(!serData.out, "deserializer failed but out is set");
     }
 
-    a->value = serData.out;
+    if (serData.out) {
+        a->value = serData.out;
+    } else {
+        goto error;
+    }
+
+    return 0;
+error:
+    return -1;
 }
 
 cx_equalityKind cx_compare(cx_object o1, cx_object o2) {

@@ -556,6 +556,7 @@ error:
 /* Deserialize string in object */
 cx_string cx_string_deser(cx_string str, cx_string_deser_t* data) {
     cx_char *ptr;
+    cx_bool createdNew = FALSE;
 
     {
         cx_id buffer;
@@ -572,18 +573,27 @@ cx_string cx_string_deser(cx_string str, cx_string_deser_t* data) {
         *bptr = '\0';
 
         /* If no type is found, reset ptr */
-        if (ch != '{') {
+        if ((ch != '{')) {
             ptr = str;
         } else {
             cx_object type;
 
             /* If no out is provided create an object of the specified type */
-            if (!data->out) {
+            if ((bptr != buffer)) {
                 type = cx_resolve(NULL, buffer);
                 if (type) {
+                    if (data->type && (type != data->type)) {
+                        cx_id id1, id2;
+                        cx_seterr("type of object ('%s') does not match string ('%s')",
+                            cx_fullname(data->type, id1),
+                            cx_fullname(type, id2));
+                        cx_release(type);
+                        goto error;
+                    }
                     if (cx_instanceof(cx_type(cx_type_o), type)) {
                         data->out = cx_declare(type);
                         data->type = type;
+                        createdNew = TRUE;
                     } else {
                         cx_seterr("'%s' is not a type", buffer);
                         cx_release(type);
@@ -591,7 +601,7 @@ cx_string cx_string_deser(cx_string str, cx_string_deser_t* data) {
                     }
                     cx_release(type);
                 } else {
-                    cx_seterr("cannot resolve type '%s'", buffer);
+                    cx_seterr("unknown type '%s'", buffer);
                     goto error;
                 }
             } else {
@@ -610,7 +620,7 @@ cx_string cx_string_deser(cx_string str, cx_string_deser_t* data) {
     data->anonymousObjects = NULL;
 
     if (!data->type) {
-        cx_seterr("can't deserialize '%s' without a type", str);
+        cx_seterr("no type provided for '%s'", str);
         goto error;
     }
 
@@ -629,7 +639,9 @@ cx_string cx_string_deser(cx_string str, cx_string_deser_t* data) {
     return str;
 error:
     if (data->out) {
-        cx_release(data->out);
+        if (createdNew) {
+            cx_release(data->out);
+        }
         data->out = NULL;
     }
     return NULL;

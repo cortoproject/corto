@@ -73,20 +73,49 @@ class StringDeserializer: test::Suite::
     void setup()
     void teardown()
 
+    void tc_errMissingType() test::Case
+    void tc_errExcessElements() test::Case
+    void tc_errUnresolvedType() test::Case
+    void tc_errUnresolvedMember() test::Case
+    void tc_errNotAType() test::Case
+    void tc_errTypeMismatch() test::Case
+
+    void tc_deserExisting() test::Case
+    void tc_deserExisting_w_type() test::Case
+
     void tc_deserBoolTrue() test::Case
     void tc_deserBoolFalse() test::Case
-    void tc_deserBoolExisting() test::Case
-    void tc_deserBoolExisting_w_type() test::Case
+    void tc_deserBoolInvalid() test::Case
 
     void tc_deserChar() test::Case
+    void tc_deserCharQuoted() test::Case
     void tc_deserCharNull() test::Case
-    void tc_deserCharEscape() test::Case    
-    void tc_deserCharExisting() test::Case
-    void tc_deserCharExisting_w_type() test::Case
+    void tc_deserCharNullQuoted() test::Case
+    void tc_deserCharEscape() test::Case 
+    void tc_deserCharEscapeQuoted() test::Case    
 
     void tc_deserInt8() test::Case
     void tc_deserInt8Minus() test::Case
     void tc_deserInt8Overflow() test::Case
-    void tc_deserInt8Existing() test::Case
-    void tc_deserInt8Existing_w_type() test::Case
 
+    void tc_deserInt16() test::Case
+    void tc_deserInt16Minus() test::Case
+    void tc_deserInt16Overflow() test::Case
+
+    void tc_deserInt32() test::Case
+    void tc_deserInt32Minus() test::Case
+    void tc_deserInt32Overflow() test::Case
+
+    void tc_deserInt64() test::Case
+    void tc_deserInt64Minus() test::Case
+
+    void tc_deserUint8() test::Case
+    void tc_deserUint8Overflow() test::Case
+
+    void tc_deserUint16() test::Case
+    void tc_deserUint16Overflow() test::Case
+
+    void tc_deserUint32() test::Case
+    void tc_deserUint32Overflow() test::Case
+
+    void tc_deserUint64() test::Case

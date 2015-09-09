@@ -88,7 +88,16 @@ typedef cx_bool bool_t;
     CX_DECL_TRANSFORM(string, typeTo) {\
         CX_UNUSED(fromType);\
         CX_UNUSED(toType);\
-        *(typeTo##_t*)to = atoi(*(cx_string*)from);\
+        *(typeTo##_t*)to = atol(*(cx_string*)from);\
+        return 0;\
+    }
+
+/* Transformation from string long uint */
+#define CX_CONVERT_FROM_STR_LONGINT(typeTo) \
+    CX_DECL_TRANSFORM(string, typeTo) {\
+        CX_UNUSED(fromType);\
+        CX_UNUSED(toType);\
+        sscanf(*(cx_string*)from, "%" PRIu64, (typeTo##_t*)to);\
         return 0;\
     }
 
@@ -366,7 +375,7 @@ CX_CONVERT_FROM_STR_INT(int64)
 CX_CONVERT_FROM_STR_INT(uint8)
 CX_CONVERT_FROM_STR_INT(uint16)
 CX_CONVERT_FROM_STR_INT(uint32)
-CX_CONVERT_FROM_STR_INT(uint64)
+CX_CONVERT_FROM_STR_LONGINT(uint64)
 
 /* All string to float conversions */
 CX_CONVERT_FROM_STR_FLOAT(float32)

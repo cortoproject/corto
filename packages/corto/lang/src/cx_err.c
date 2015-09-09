@@ -155,8 +155,8 @@ cx_err cx_logv(cx_err kind, unsigned int level, char* fmt, va_list arg, FILE* f)
 
 void _cx_assertv(unsigned int condition, char* fmt, va_list args) {
     if (!condition) {
-        cx_logv(CX_ASSERT, 0, fmt, args, stdout);
-        cx_backtrace(stdout);
+        cx_logv(CX_ASSERT, 0, fmt, args, stderr);
+        cx_backtrace(stderr);
         abort();
     }
 }
