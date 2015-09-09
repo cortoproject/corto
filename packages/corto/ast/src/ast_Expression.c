@@ -214,7 +214,7 @@ ast_Expression _ast_Expression_cast(ast_Expression this, cx_type type, cx_bool i
              * and assign it to the initializer. */
             if(ast_Node(this)->kind == Ast_InitializerExpr) {
                 ast_Expression local = ast_Expression(ast_TemporaryCreate(type, FALSE));
-                Ast_InitializerExpression_insert(Ast_InitializerExpression(this), local);
+                ast_InitializerExpression_insert(ast_InitializerExpression(this), local);
                 result = local;
                 castRequired = TRUE;
             }else {
@@ -249,32 +249,32 @@ ast_Expression _ast_Expression_cast(ast_Expression this, cx_type type, cx_bool i
                 case CX_BOOLEAN: {
                     cx_bool dstValue = FALSE;
                     cx_convert(cx_primitive(exprType), value, cx_primitive(cx_bool_o), &dstValue);
-                    result = ast_Expression(Ast_BooleanCreate(dstValue));
+                    result = ast_Expression(ast_BooleanCreate(dstValue));
                     break;
                 }
                 case CX_CHARACTER: {
                     cx_char dstValue;
                     cx_convert(cx_primitive(exprType), value, cx_primitive(cx_char_o), &dstValue);
-                    result = ast_Expression(Ast_CharacterCreate(dstValue));
+                    result = ast_Expression(ast_CharacterCreate(dstValue));
                     break;
                 }
                 case CX_BINARY:
                 case CX_UINTEGER: {
                     cx_uint64 dstValue;
                     cx_convert(cx_primitive(exprType), value, cx_primitive(cx_uint64_o), &dstValue);
-                    result = ast_Expression(Ast_IntegerCreate(dstValue));
+                    result = ast_Expression(ast_IntegerCreate(dstValue));
                     break;
                 }
                 case CX_INTEGER: {
                     cx_int64 dstValue;
                     cx_convert(cx_primitive(exprType), value, cx_primitive(cx_int64_o), &dstValue);
-                    result = ast_Expression(Ast_SignedIntegerCreate(dstValue));
+                    result = ast_Expression(ast_SignedIntegerCreate(dstValue));
                     break;
                 }
                 case CX_FLOAT: {
                     cx_float64 dstValue;
                     cx_convert(cx_primitive(exprType), value, cx_primitive(cx_float64_o), &dstValue);
-                    result = ast_Expression(Ast_FloatingPointCreate(dstValue));
+                    result = ast_Expression(ast_FloatingPointCreate(dstValue));
                     break;
                 }
                 case CX_TEXT: {
@@ -287,7 +287,7 @@ ast_Expression _ast_Expression_cast(ast_Expression this, cx_type type, cx_bool i
                 case CX_BITMASK: {
                     cx_int32 dstValue;
                     cx_convert(cx_primitive(exprType), value, cx_primitive(cx_int32_o), &dstValue);
-                    result = ast_Expression(Ast_SignedIntegerCreate(dstValue));
+                    result = ast_Expression(ast_SignedIntegerCreate(dstValue));
                     break;
                 }
                 }

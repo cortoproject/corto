@@ -1,4 +1,4 @@
-/* Ast_InitializerExpression.c
+/* ast_InitializerExpression.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -14,7 +14,7 @@
 /* $end */
 
 /* ::corto::ast::InitializerExpression::construct() */
-cx_int16 _Ast_InitializerExpression_construct(Ast_InitializerExpression this) {
+cx_int16 _ast_InitializerExpression_construct(ast_InitializerExpression this) {
 /* $begin(::corto::ast::InitializerExpression::construct) */
     cx_int16 result = 0;
 
@@ -25,7 +25,7 @@ cx_int16 _Ast_InitializerExpression_construct(Ast_InitializerExpression this) {
 }
 
 /* ::corto::ast::InitializerExpression::define() */
-cx_int16 _Ast_InitializerExpression_define(Ast_InitializerExpression this) {
+cx_int16 _ast_InitializerExpression_define(ast_InitializerExpression this) {
 /* $begin(::corto::ast::InitializerExpression::define) */
     ast_InitOper *elem = ast_InitOperListAppend(this->operations);
     elem->kind = Ast_InitOpDefine;
@@ -34,7 +34,7 @@ cx_int16 _Ast_InitializerExpression_define(Ast_InitializerExpression this) {
 }
 
 /* ::corto::ast::InitializerExpression::hasReturnedResource() */
-cx_bool _Ast_InitializerExpression_hasReturnedResource_v(Ast_InitializerExpression this) {
+cx_bool _ast_InitializerExpression_hasReturnedResource_v(ast_InitializerExpression this) {
 /* $begin(::corto::ast::InitializerExpression::hasReturnedResource) */
     CX_UNUSED(this);
     return FALSE;
@@ -42,7 +42,7 @@ cx_bool _Ast_InitializerExpression_hasReturnedResource_v(Ast_InitializerExpressi
 }
 
 /* ::corto::ast::InitializerExpression::insert(Expression variable) */
-cx_int16 _Ast_InitializerExpression_insert(Ast_InitializerExpression this, ast_Expression variable) {
+cx_int16 _ast_InitializerExpression_insert(ast_InitializerExpression this, ast_Expression variable) {
 /* $begin(::corto::ast::InitializerExpression::insert) */
     ast_DynamicInitializer initializer;
 
@@ -101,7 +101,7 @@ error:
 }
 
 /* ::corto::ast::InitializerExpression::member(string name) */
-cx_int32 _Ast_InitializerExpression_member(Ast_InitializerExpression this, cx_string name) {
+cx_int32 _ast_InitializerExpression_member(ast_InitializerExpression this, cx_string name) {
 /* $begin(::corto::ast::InitializerExpression::member) */
     ast_InitOper *elem = ast_InitOperListAppend(this->operations);
     elem->kind = Ast_InitOpMember;
@@ -111,7 +111,7 @@ cx_int32 _Ast_InitializerExpression_member(Ast_InitializerExpression this, cx_st
 }
 
 /* ::corto::ast::InitializerExpression::pop() */
-cx_int16 _Ast_InitializerExpression_pop(Ast_InitializerExpression this) {
+cx_int16 _ast_InitializerExpression_pop(ast_InitializerExpression this) {
 /* $begin(::corto::ast::InitializerExpression::pop) */
     ast_InitOper *elem = ast_InitOperListAppend(this->operations);
     elem->kind = Ast_InitOpPop;
@@ -120,7 +120,7 @@ cx_int16 _Ast_InitializerExpression_pop(Ast_InitializerExpression this) {
 }
 
 /* ::corto::ast::InitializerExpression::push() */
-cx_int16 _Ast_InitializerExpression_push(Ast_InitializerExpression this) {
+cx_int16 _ast_InitializerExpression_push(ast_InitializerExpression this) {
 /* $begin(::corto::ast::InitializerExpression::push) */
     ast_InitOper *elem = ast_InitOperListAppend(this->operations);
     elem->kind = Ast_InitOpPush;
@@ -129,7 +129,7 @@ cx_int16 _Ast_InitializerExpression_push(Ast_InitializerExpression this) {
 }
 
 /* ::corto::ast::InitializerExpression::value(Expression v) */
-cx_int16 _Ast_InitializerExpression_value(Ast_InitializerExpression this, ast_Expression v) {
+cx_int16 _ast_InitializerExpression_value(ast_InitializerExpression this, ast_Expression v) {
 /* $begin(::corto::ast::InitializerExpression::value) */
     ast_InitOper *elem = ast_InitOperListAppend(this->operations);
     elem->kind = Ast_InitOpValue;

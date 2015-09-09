@@ -235,7 +235,7 @@ ast_Expression ast_Parser_delegateAssignment(ast_Parser this, ast_Expression lva
     ast_Expression instance = NULL;
     ast_Expression functionExpr = NULL;
     cx_id functionName;
-    Ast_InitializerExpression result = NULL;
+    ast_InitializerExpression result = NULL;
     cx_string signature = NULL;
     cx_delegate type = NULL;
     ast_InitializerVariableArray64 variables;
@@ -328,16 +328,16 @@ ast_Expression ast_Parser_delegateAssignment(ast_Parser this, ast_Expression lva
 
     /* If procedure is compatible with delegate type, do a complex assignment */
     cx_setref(&variables[0].object, lvalue);
-    result = Ast_InitializerExpressionCreate(variables, 1, TRUE);
-    Ast_InitializerExpression_push(result);
+    result = ast_InitializerExpressionCreate(variables, 1, TRUE);
+    ast_InitializerExpression_push(result);
     if (instance) {
-        Ast_InitializerExpression_member(result, "instance");
-        Ast_InitializerExpression_value(result, instance);
+        ast_InitializerExpression_member(result, "instance");
+        ast_InitializerExpression_value(result, instance);
     }
-    Ast_InitializerExpression_member(result, "procedure");
-    Ast_InitializerExpression_value(result, functionExpr);
-    Ast_InitializerExpression_pop(result);
-    Ast_InitializerExpression_define(result);
+    ast_InitializerExpression_member(result, "procedure");
+    ast_InitializerExpression_value(result, functionExpr);
+    ast_InitializerExpression_pop(result);
+    ast_InitializerExpression_define(result);
     ast_Parser_collect(this, result);
 
     cx_dealloc(signature);
@@ -1911,7 +1911,7 @@ ast_Expression _ast_Parser_initPushExpression(ast_Parser this) {
         memset(variables, 0, sizeof(variables));
 
         /* Create initializer */
-        initializer = ast_Initializer(Ast_InitializerExpressionCreate(variables, 1, TRUE));
+        initializer = ast_Initializer(ast_InitializerExpressionCreate(variables, 1, TRUE));
         cx_setref(&this->initializers[this->initializerCount], initializer);
         ast_Parser_collect(this, initializer);
         this->variablePushed = TRUE;
@@ -1957,7 +1957,7 @@ ast_Expression _ast_Parser_initPushIdentifier(ast_Parser this, ast_Expression ty
         ast_Initializer initializer = this->initializers[this->initializerCount];
         if (initializer) {
             if (!cx_instanceof(cx_type(ast_DynamicInitializer_o), initializer) &&
-                !cx_instanceof(cx_type(Ast_InitializerExpression_o), initializer)) {
+                !cx_instanceof(cx_type(ast_InitializerExpression_o), initializer)) {
                 isDynamic = FALSE; /* A previous initializer is static, so this initializer will be static as well */
             }
         } else if (this->pass) {
@@ -2808,25 +2808,25 @@ ast_Expression _ast_Parser_unaryExpr(ast_Parser this, ast_Expression lvalue, cx_
                 switch(cx_primitive(lvalueType)->kind) {
                 case CX_INTEGER:
                     if (ast_Node(lvalue)->kind == Ast_LiteralExpr) {
-                        result = ast_Expression(Ast_IntegerCreate(Ast_Integer(lvalue)->value * -1));
+                        result = ast_Expression(ast_IntegerCreate(ast_Integer(lvalue)->value * -1));
                         ast_Parser_collect(this, result);
                         break;
                     }
                     /* no break */
                 case CX_UINTEGER:
                     if (ast_Node(lvalue)->kind == Ast_LiteralExpr) {
-                        result = ast_Expression(Ast_SignedIntegerCreate(Ast_Integer(lvalue)->value * -1));
+                        result = ast_Expression(ast_SignedIntegerCreate(ast_Integer(lvalue)->value * -1));
                         ast_Parser_collect(this, result);
                         break;
                     }
                     /* no break */
                 case CX_FLOAT:
                     if (ast_Node(lvalue)->kind == Ast_LiteralExpr) {
-                        result = ast_Expression(Ast_FloatingPointCreate(Ast_FloatingPoint(lvalue)->value * -1));
+                        result = ast_Expression(ast_FloatingPointCreate(ast_FloatingPoint(lvalue)->value * -1));
                         ast_Parser_collect(this, result);
                     } else {
                         if (this->pass) {
-                            Ast_SignedInteger minusOne = Ast_SignedIntegerCreate(-1);
+                            ast_SignedInteger minusOne = ast_SignedIntegerCreate(-1);
                             ast_Parser_collect(this, minusOne);
                             result = ast_Expression(ast_BinaryCreate(lvalue, ast_Expression(minusOne), CX_MUL));
                             ast_Parser_collect(this, result);

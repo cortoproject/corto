@@ -296,25 +296,25 @@ cx_int16 ast_Binary_complexExprCompare(ast_Binary this) {
     }
     switch (this->operator) {
         case CX_COND_EQ:
-            c1 = ast_Expression(Ast_IntegerCreate(CX_EQ));
+            c1 = ast_Expression(ast_IntegerCreate(CX_EQ));
             break;
         case CX_COND_LT:
-            c1 = ast_Expression(Ast_IntegerCreate(CX_LT));
+            c1 = ast_Expression(ast_IntegerCreate(CX_LT));
             break;
         case CX_COND_GT:
-            c1 = ast_Expression(Ast_IntegerCreate(CX_GT));
+            c1 = ast_Expression(ast_IntegerCreate(CX_GT));
             break;
         case CX_COND_LTEQ:
-            c1 = ast_Expression(Ast_IntegerCreate(CX_LT));
-            c2 = ast_Expression(Ast_IntegerCreate(CX_EQ));
+            c1 = ast_Expression(ast_IntegerCreate(CX_LT));
+            c2 = ast_Expression(ast_IntegerCreate(CX_EQ));
             break;
         case CX_COND_GTEQ:
-            c1 = ast_Expression(Ast_IntegerCreate(CX_GT));
-            c2 = ast_Expression(Ast_IntegerCreate(CX_EQ));
+            c1 = ast_Expression(ast_IntegerCreate(CX_GT));
+            c2 = ast_Expression(ast_IntegerCreate(CX_EQ));
             break;
         case CX_COND_NEQ:
-            c1 = ast_Expression(Ast_IntegerCreate(CX_LT));
-            c2 = ast_Expression(Ast_IntegerCreate(CX_GT));
+            c1 = ast_Expression(ast_IntegerCreate(CX_LT));
+            c2 = ast_Expression(ast_IntegerCreate(CX_GT));
             break;
         default:
             break;
@@ -347,7 +347,7 @@ cx_int16 ast_Binary_complexExpr(ast_Binary this) {
     if (this->operator == CX_ASSIGN) {
         ast_Expression result = NULL;
         if(ast_Node(this->rvalue)->kind == Ast_InitializerExpr) {
-            if (Ast_InitializerExpression_insert(Ast_InitializerExpression(this->rvalue), this->lvalue)) {
+            if (ast_InitializerExpression_insert(ast_InitializerExpression(this->rvalue), this->lvalue)) {
                 goto error;
             }
         } else {
@@ -480,7 +480,7 @@ ast_Expression _ast_Binary_fold(ast_Binary this) {
         if ((ast_Node(this->lvalue)->kind == Ast_LiteralExpr) &&
            (ast_Node(this->rvalue)->kind == Ast_LiteralExpr)) {
                 if (ast_Binary_isConditional(this)) {
-                    result = ast_Expression(Ast_BooleanCreate(FALSE));
+                    result = ast_Expression(ast_BooleanCreate(FALSE));
                     resultPtr = (void*)ast_Literal_getValue(ast_Literal(result));
                     cx_binaryOperator(cx_object_o, this->operator, &lptr, &rptr, resultPtr);
                 } else {
@@ -496,16 +496,16 @@ ast_Expression _ast_Binary_fold(ast_Binary this) {
         /* Create result-expression */
         if (type->kind == CX_PRIMITIVE) {
             if (ast_Binary_isConditional(this)) {
-                result = ast_Expression(Ast_BooleanCreate(FALSE));
+                result = ast_Expression(ast_BooleanCreate(FALSE));
             } else {
                 switch(cx_primitive(type)->kind) {
-                case CX_BOOLEAN: result = ast_Expression(Ast_BooleanCreate(FALSE)); break;
-                case CX_CHARACTER: result = ast_Expression(Ast_CharacterCreate('a')); break;
+                case CX_BOOLEAN: result = ast_Expression(ast_BooleanCreate(FALSE)); break;
+                case CX_CHARACTER: result = ast_Expression(ast_CharacterCreate('a')); break;
                 case CX_BITMASK:
-                case CX_UINTEGER: result = ast_Expression(Ast_IntegerCreate(0)); break;
+                case CX_UINTEGER: result = ast_Expression(ast_IntegerCreate(0)); break;
                 case CX_ENUM:
-                case CX_INTEGER: result = ast_Expression(Ast_SignedIntegerCreate(0)); break;
-                case CX_FLOAT: result = ast_Expression(Ast_FloatingPointCreate(0)); break;
+                case CX_INTEGER: result = ast_Expression(ast_SignedIntegerCreate(0)); break;
+                case CX_FLOAT: result = ast_Expression(ast_FloatingPointCreate(0)); break;
                 case CX_TEXT: result = ast_Expression(ast_StringCreate(NULL)); break;
                 default:
                     ast_Parser_error(yparser(), "Invalid primitive for folding expression");

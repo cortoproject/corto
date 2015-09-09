@@ -1,4 +1,4 @@
-/* Ast_Boolean.c
+/* ast_Boolean.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -14,7 +14,7 @@
 /* $end */
 
 /* ::corto::ast::Boolean::init() */
-cx_int16 _Ast_Boolean_init(Ast_Boolean this) {
+cx_int16 _ast_Boolean_init(ast_Boolean this) {
 /* $begin(::corto::ast::Boolean::init) */
     ast_Literal(this)->kind = Ast_Bool;
     return ast_Literal_init(ast_Literal(this));
@@ -22,7 +22,7 @@ cx_int16 _Ast_Boolean_init(Ast_Boolean this) {
 }
 
 /* ::corto::ast::Boolean::serialize(type dstType,word dst) */
-cx_int16 _Ast_Boolean_serialize(Ast_Boolean this, cx_type dstType, cx_word dst) {
+cx_int16 _ast_Boolean_serialize(ast_Boolean this, cx_type dstType, cx_word dst) {
 /* $begin(::corto::ast::Boolean::serialize) */
     ast_valueKind kind;
 
@@ -59,7 +59,7 @@ error:
 }
 
 /* ::corto::ast::Boolean::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _Ast_Boolean_toIc_v(Ast_Boolean this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _ast_Boolean_toIc_v(ast_Boolean this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::corto::ast::Boolean::toIc) */
     ic_node result;
     CX_UNUSED(storage);

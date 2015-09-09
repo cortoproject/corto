@@ -104,7 +104,7 @@ cx_int16 _ast_Wait_construct(ast_Wait this) {
             cx_setref(&this->timeout, timeoutExpr);
         }
     } else {
-        this->timeout = ast_Expression(Ast_FloatingPointCreate(0));
+        this->timeout = ast_Expression(ast_FloatingPointCreate(0));
     }
 
     /* Set type of expression */

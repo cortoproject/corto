@@ -1,4 +1,4 @@
-/* Ast_FloatingPoint.c
+/* ast_FloatingPoint.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -14,7 +14,7 @@
 /* $end */
 
 /* ::corto::ast::FloatingPoint::init() */
-cx_int16 _Ast_FloatingPoint_init(Ast_FloatingPoint this) {
+cx_int16 _ast_FloatingPoint_init(ast_FloatingPoint this) {
 /* $begin(::corto::ast::FloatingPoint::init) */
     ast_Literal(this)->kind = Ast_Float;
     return ast_Literal_init(ast_Literal(this));
@@ -22,7 +22,7 @@ cx_int16 _Ast_FloatingPoint_init(Ast_FloatingPoint this) {
 }
 
 /* ::corto::ast::FloatingPoint::serialize(type dstType,word dst) */
-cx_int16 _Ast_FloatingPoint_serialize(Ast_FloatingPoint this, cx_type dstType, cx_word dst) {
+cx_int16 _ast_FloatingPoint_serialize(ast_FloatingPoint this, cx_type dstType, cx_word dst) {
 /* $begin(::corto::ast::FloatingPoint::serialize) */
     ast_valueKind kind;
 
@@ -54,7 +54,7 @@ error:
 }
 
 /* ::corto::ast::FloatingPoint::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _Ast_FloatingPoint_toIc_v(Ast_FloatingPoint this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _ast_FloatingPoint_toIc_v(ast_FloatingPoint this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::corto::ast::FloatingPoint::toIc) */
     ic_node result;
     CX_UNUSED(program);

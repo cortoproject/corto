@@ -405,11 +405,11 @@ init_key
 /* Expressions */
 /* ======================================================================== */
 literal_expr
-    : BOOLEAN               {$$=Ast_BooleanCreate($1); ast_Parser_collect(yparser(), $$);}
-    | CHARACTER             {$$=Ast_CharacterCreate($1); ast_Parser_collect(yparser(), $$);}
-    | INTEGER               {$$=Ast_IntegerCreate($1); ast_Parser_collect(yparser(), $$);}
-    | SIGNEDINTEGER         {$$=Ast_SignedIntegerCreate($1); ast_Parser_collect(yparser(), $$);}
-    | FLOATINGPOINT         {$$=Ast_FloatingPointCreate($1); ast_Parser_collect(yparser(), $$);}
+    : BOOLEAN               {$$=ast_BooleanCreate($1); ast_Parser_collect(yparser(), $$);}
+    | CHARACTER             {$$=ast_CharacterCreate($1); ast_Parser_collect(yparser(), $$);}
+    | INTEGER               {$$=ast_IntegerCreate($1); ast_Parser_collect(yparser(), $$);}
+    | SIGNEDINTEGER         {$$=ast_SignedIntegerCreate($1); ast_Parser_collect(yparser(), $$);}
+    | FLOATINGPOINT         {$$=ast_FloatingPointCreate($1); ast_Parser_collect(yparser(), $$);}
     | STRING                {$$=ast_StringCreate($1); ast_Parser_collect(yparser(), $$);}
     | NUL                   {$$=ast_NullCreate(); ast_Parser_collect(yparser(), $$);}
     ;

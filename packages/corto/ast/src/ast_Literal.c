@@ -19,11 +19,11 @@ cx_word _ast_Literal_getValue_v(ast_Literal this) {
     cx_word result = 0;
 
     switch(this->kind) {
-    case Ast_Bool: result = (cx_word)&Ast_Boolean(this)->value; break;
-    case Ast_Char: result = (cx_word)&Ast_Character(this)->value; break;
-    case Ast_Int: result = (cx_word)&Ast_Integer(this)->value; break;
-    case Ast_SignedInt: result = (cx_word)&Ast_SignedInteger(this)->value; break;
-    case Ast_Float: result = (cx_word)&Ast_FloatingPoint(this)->value; break;
+    case Ast_Bool: result = (cx_word)&ast_Boolean(this)->value; break;
+    case Ast_Char: result = (cx_word)&ast_Character(this)->value; break;
+    case Ast_Int: result = (cx_word)&ast_Integer(this)->value; break;
+    case Ast_SignedInt: result = (cx_word)&ast_SignedInteger(this)->value; break;
+    case Ast_Float: result = (cx_word)&ast_FloatingPoint(this)->value; break;
     default: break; /* Enumerated, Reference & Null have no value. String handles it's own value. */
     }
 

@@ -1,4 +1,4 @@
-/* Ast_SignedInteger.c
+/* ast_SignedInteger.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -14,7 +14,7 @@
 /* $end */
 
 /* ::corto::ast::SignedInteger::init() */
-cx_int16 _Ast_SignedInteger_init(Ast_SignedInteger this) {
+cx_int16 _ast_SignedInteger_init(ast_SignedInteger this) {
 /* $begin(::corto::ast::SignedInteger::init) */
     ast_Literal(this)->kind = Ast_SignedInt;
     return ast_Literal_init(ast_Literal(this));
@@ -22,7 +22,7 @@ cx_int16 _Ast_SignedInteger_init(Ast_SignedInteger this) {
 }
 
 /* ::corto::ast::SignedInteger::serialize(type dstType,word dst) */
-cx_int16 _Ast_SignedInteger_serialize(Ast_SignedInteger this, cx_type dstType, cx_word dst) {
+cx_int16 _ast_SignedInteger_serialize(ast_SignedInteger this, cx_type dstType, cx_word dst) {
 /* $begin(::corto::ast::SignedInteger::serialize) */
     ast_valueKind kind;
 
@@ -55,7 +55,7 @@ error:
 }
 
 /* ::corto::ast::SignedInteger::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _Ast_SignedInteger_toIc_v(Ast_SignedInteger this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _ast_SignedInteger_toIc_v(ast_SignedInteger this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::corto::ast::SignedInteger::toIc) */
     ic_node result;
     CX_UNUSED(storage);

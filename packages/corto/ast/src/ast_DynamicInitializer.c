@@ -70,7 +70,7 @@ ast_Expression ast_Initializer_expr(ast_DynamicInitializer this, cx_uint8 variab
                 }
                 case CX_SEQUENCE:
                 case CX_ARRAY: {
-                    Ast_Integer index = Ast_IntegerCreate(thisFrame->location);
+                    ast_Integer index = ast_IntegerCreate(thisFrame->location);
                     result = ast_Expression(ast_ElementCreate(base, ast_Expression(index)));
                     ast_Parser_collect(yparser(), result);
                     ast_Parser_collect(yparser(), index);
@@ -161,7 +161,7 @@ cx_int16 _ast_DynamicInitializer_pop(ast_DynamicInitializer this) {
     cx_uint8 fp = ast_Initializer(this)->fp;
 
     if (this->frames[fp-1].sequenceSize) {
-        Ast_Integer(this->frames[fp-1].sequenceSize)->value = ast_Initializer(this)->frames[fp].location;
+        ast_Integer(this->frames[fp-1].sequenceSize)->value = ast_Initializer(this)->frames[fp].location;
     }
 
     return ast_Initializer_pop_v(ast_Initializer(this));
@@ -197,13 +197,13 @@ cx_int16 _ast_DynamicInitializer_push(ast_DynamicInitializer this) {
     /* If scope contains contents of a sequence insert operation to set sequence-size. Because size is not known beforehand,
      * cache the expression that contains the size. This will be set to it's final value when sequence-scope is pop'd. */
     if ((t->kind == CX_COLLECTION) && (cx_collection(t)->kind == CX_SEQUENCE)) {
-        Ast_Integer size = Ast_IntegerCreate(0);
+        ast_Integer size = ast_IntegerCreate(0);
         ast_Parser_collect(yparser(), size);
         
         /* Cast the size to uint32 so that the expression won't be replaced by a cast when it is inserted in the argumentlist
         * of sequence::size(uint32). This way there is no need for keeping track of a size-expression per variable. Note: the
         * native type of a ast::Integer is uint64. */
-        size = Ast_Integer(ast_Expression_cast(ast_Expression(size), cx_type(cx_uint32_o), FALSE));
+        size = ast_Integer(ast_Expression_cast(ast_Expression(size), cx_type(cx_uint32_o), FALSE));
         cx_setref(&this->frames[fp].sequenceSize, size);
         
         for(variable=0; variable<ast_Initializer(this)->variableCount; variable++) {

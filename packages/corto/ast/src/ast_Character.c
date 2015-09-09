@@ -1,4 +1,4 @@
-/* Ast_Character.c
+/* ast_Character.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -14,7 +14,7 @@
 /* $end */
 
 /* ::corto::ast::Character::init() */
-cx_int16 _Ast_Character_init(Ast_Character this) {
+cx_int16 _ast_Character_init(ast_Character this) {
 /* $begin(::corto::ast::Character::init) */
     ast_Literal(this)->kind = Ast_Char;
     return ast_Literal_init(ast_Literal(this));
@@ -22,7 +22,7 @@ cx_int16 _Ast_Character_init(Ast_Character this) {
 }
 
 /* ::corto::ast::Character::serialize(type dstType,word dst) */
-cx_int16 _Ast_Character_serialize(Ast_Character this, cx_type dstType, cx_word dst) {
+cx_int16 _ast_Character_serialize(ast_Character this, cx_type dstType, cx_word dst) {
 /* $begin(::corto::ast::Character::serialize) */
     ast_valueKind kind;
 
@@ -53,7 +53,7 @@ error:
 }
 
 /* ::corto::ast::Character::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _Ast_Character_toIc_v(Ast_Character this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _ast_Character_toIc_v(ast_Character this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::corto::ast::Character::toIc) */
     ic_literal result;
     CX_UNUSED(program);
