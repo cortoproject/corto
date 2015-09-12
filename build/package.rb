@@ -68,18 +68,36 @@ task :default => "include/#{TARGET}__type.h" do
 end
 
 clobber_count = 1
+clean_count = 1
+
+task :clean do
+    # Recursively call clean, prevent infinite recursion
+    if clean_count == 1 then
+        clean_count += 1
+        Rake::Task["clean"].reenable
+        require "#{ENV['CORTO_BUILD']}/component"
+        Rake::Task["clean"].execute
+        if File.exists?(".corto/dep.rb")
+            sh "rake clean -f .corto/dep.rb" 
+        end
+    end
+end
 
 task :clobber do
     # Recursively call clobber, prevent infinite recursion
     if clobber_count == 1 then
         clobber_count += 1
-        require "#{ENV['CORTO_BUILD']}/component"
         Rake::Task["clobber"].reenable
+        require "#{ENV['CORTO_BUILD']}/component"
         Rake::Task["clobber"].execute
         if File.exists?(".corto/dep.rb")
             sh "rake clobber -f .corto/dep.rb" 
         end
     end
+end
+
+if File.exists? "test" then
+    COMPONENTS ||=[] << "test"
 end
 
 require "#{ENV['CORTO_BUILD']}/subrake"
