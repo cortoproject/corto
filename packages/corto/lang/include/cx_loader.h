@@ -16,7 +16,11 @@ extern "C" {
 
 typedef int (*cx_loadAction)(cx_string file, int argc, char* argv[], void* userData);
 
-int cx_load(cx_string file, int argc, char* argv[]);
+/* Load a package */
+int cx_load(cx_string package, int argc, char* argv[]);
+
+/* Load a component */
+int cx_loadComponent(cx_string component, int argc, char* argv[]);
 
 cx_ll cx_loadGetComponents(void);
 void cx_loadFreeComponents(cx_ll packages);

@@ -186,6 +186,16 @@ error:
     return -1;  
 }
 
+/* Load a corto component from a default component location */
+int cx_loadComponent(cx_string component, int argc, char* argv[]) {
+    int result;
+    cx_string path = cx_envparse(
+        "$CORTO_TARGET/lib/corto/%s/components/%s", CORTO_VERSION, component);
+    result = cx_loadLibrary(path, argc, argv);
+    cx_dealloc(path);
+    return result;    
+}
+
 /*
  * An adapter on top of cx_loadLibrary to fit the cx_loadAction signature.
  */
@@ -198,11 +208,7 @@ static cx_ll filesLoaded = NULL;
 
 /* Load xml interface */
 static int cx_loadXml(void) {
-    int result;
-    cx_string path = cx_envparse("$CORTO_TARGET/lib/corto/%s/components/libxml.so", CORTO_VERSION);
-    result = cx_loadLibrary(path, 0, NULL);
-    cx_dealloc(path);
-    return result;
+    return cx_loadComponent("libxml.so", 0, NULL);
 }
 
 /* Load a package */
@@ -245,7 +251,7 @@ int cx_load(cx_string str, int argc, char* argv[]) {
         /* Load file */
         result = h->load(str, argc, argv, h->userData);
     } else {
-        cx_error("file-extension '%s' not supported.", ext);
+        cx_seterr("file extension '%s' not supported.", ext);
         goto error;
     }
 
