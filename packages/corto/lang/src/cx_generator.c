@@ -350,6 +350,27 @@ cx_int16 gen_start(cx_generator g) {
 }
 
 /* ==== Generator utility functions */
+cx_int16 g_importsEvalReference(cx_generator g, cx_object o) {
+    if (!g_mustParse(g, o)) {
+        cx_object parent = o;
+
+        while(!cx_instanceof(cx_type(cx_package_o), parent)) {
+            parent = cx_parentof(parent);
+        }
+
+        if ((parent != root_o) && (parent != corto_o) && (parent != corto_lang_o)) {
+            if (!g->imports) {
+                g->imports = cx_llNew();
+            }
+            if (!cx_llHasObject(g->imports, parent)) {
+                cx_llInsert(g->imports, parent);
+            }
+        }
+    }
+
+    return 0;
+}
+
 typedef struct g_serializeImports_t {
     cx_generator g;
     cx_object stack[1024]; /* Maximum serializer-depth */
@@ -380,22 +401,7 @@ cx_int16 g_serializeImportsReference(cx_serializer s, cx_value *v, void* userDat
                 data->count--;
             }
         } else {
-            if (!g_mustParse(g, o)) {
-                cx_object parent = o;
-
-                while(!cx_instanceof(cx_type(cx_package_o), parent)) {
-                    parent = cx_parentof(parent);
-                }
-
-                if ((parent != root_o) && (parent != corto_o) && (parent != corto_lang_o)) {
-                    if (!g->imports) {
-                        g->imports = cx_llNew();
-                    }
-                    if (!cx_llHasObject(g->imports, parent)) {
-                        cx_llInsert(g->imports, parent);
-                    }
-                }
-            }
+            g_importsEvalReference(g, o);
         }
     }
 
@@ -426,6 +432,8 @@ int g_importWalk(cx_object o, void* userData) {
     walkData.g = g;
     s = g_serializeImportsSerializer();
     cx_serialize(&s, o, &walkData);
+    g_importsEvalReference(g, cx_typeof(o));
+
     return 1;
 }
 
