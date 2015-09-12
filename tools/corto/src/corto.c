@@ -55,6 +55,7 @@ static void corto_printUsage(cx_bool expert) {
 int main(int argc, char* argv[]) {
     int i;
     cx_bool mute = FALSE;
+    cx_bool startShell = FALSE;
 
     /* Start corto */
     cx_start();
@@ -74,6 +75,18 @@ int main(int argc, char* argv[]) {
                     break;
                 } else if (*(argv[i]+1) == 'v') {
                     printf("%s", CORTO_VERSION);
+                } else if (*(argv[i]+1) == 'c') {
+                    if (cx_loadComponent(argv[i + 1], 0, NULL)) {
+                        cx_error("%s: %s", argv[i + 1], cx_lasterr());
+                        goto error;
+                    }
+                    i++;
+                } else if (*(argv[i]+1) == 'p') {
+                    if (cx_load(argv[i + 1], 0, NULL)) {
+                        cx_error("%s: %s", argv[i + 1], cx_lasterr());
+                        goto error;
+                    }
+                    i++;
                 } else if (*(argv[i]+1) == '-') {
                     if (!strcmp(argv[i] + 2, "version")) {
                         cx_error("corto (%s) %s\n\n", CX_PLATFORM_STRING, CORTO_VERSION);
@@ -89,7 +102,7 @@ int main(int argc, char* argv[]) {
                         goto error;
                     }
                 } else {
-                    printf("corto: unknown option '%s'", argv[i] + 1);
+                    cx_error("corto: unknown option '%s'", argv[i] + 1);
                     corto_printUsage(FALSE);
                     goto error;
                 }
@@ -159,10 +172,7 @@ int main(int argc, char* argv[]) {
                 }
                 break;
             } else if (!strcmp(argv[i], "shell")) {
-                if (corto_shell(argc-i, &argv[i])) {
-                    goto error;
-                }
-                break;
+                startShell = TRUE;
             } else if (!strcmp(argv[1], "tar")) {
                 if (corto_tar(argc-i, &argv[i])) {
                     goto error;
@@ -187,6 +197,12 @@ int main(int argc, char* argv[]) {
                 }
                 break;
             }
+        }
+    }
+
+    if (startShell) {
+        if (corto_shell(argc-i, &argv[i])) {
+            goto error;
         }
     }
 
