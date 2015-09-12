@@ -20,6 +20,9 @@ struct Point::
 struct Point3D: Point::
     z: int32
 
+struct Line::
+    start, stop: Point
+
 // Object management testcases
 class ObjectMgmt: test::Suite::
     prevAttr: lang::attr, local|private
@@ -154,3 +157,7 @@ class StringDeserializer: test::Suite::
     void tc_deserInheritance() test::Case
     void tc_deserInheritanceMembers() test::Case
     void tc_deserInheritanceMixed() test::Case
+
+    void tc_deserCompositeNested() test::Case
+    void tc_deserCompositeNestedMembers() test::Case
+    void tc_deserCompositeNestedMixed() test::Case

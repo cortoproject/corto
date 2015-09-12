@@ -205,6 +205,63 @@ cx_void _test_StringDeserializer_tc_deserCompositeMixed(test_StringDeserializer 
 /* $end */
 }
 
+/* ::test::StringDeserializer::tc_deserCompositeNested() */
+cx_void _test_StringDeserializer_tc_deserCompositeNested(test_StringDeserializer this) {
+/* $begin(::test::StringDeserializer::tc_deserCompositeNested) */
+
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "test::Line{{10, 20}, {30, 40}}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(cx_typeof(o) == (cx_type)test_Line_o);
+    test_Line *l = o;
+    test_assert(l->start.x == 10);
+    test_assert(l->start.y == 20);
+    test_assert(l->stop.x == 30);
+    test_assert(l->stop.y == 40);
+    cx_delete(o);
+
+/* $end */
+}
+
+/* ::test::StringDeserializer::tc_deserCompositeNestedMembers() */
+cx_void _test_StringDeserializer_tc_deserCompositeNestedMembers(test_StringDeserializer this) {
+/* $begin(::test::StringDeserializer::tc_deserCompositeNestedMembers) */
+
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "test::Line{stop={y=40, x=30}, start={x=10, y=20}}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(cx_typeof(o) == (cx_type)test_Line_o);
+    test_Line *l = o;
+    test_assert(l->start.x == 10);
+    test_assert(l->start.y == 20);
+    test_assert(l->stop.x == 30);
+    test_assert(l->stop.y == 40);
+    cx_delete(o);
+
+/* $end */
+}
+
+/* ::test::StringDeserializer::tc_deserCompositeNestedMixed() */
+cx_void _test_StringDeserializer_tc_deserCompositeNestedMixed(test_StringDeserializer this) {
+/* $begin(::test::StringDeserializer::tc_deserCompositeNestedMixed) */
+
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "test::Line{start={x=40, 30}, {x=10, 20}}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(cx_typeof(o) == (cx_type)test_Line_o);
+    test_Line *l = o;
+    test_assert(l->start.x == 10);
+    test_assert(l->start.y == 20);
+    test_assert(l->stop.x == 30);
+    test_assert(l->stop.y == 40);
+    cx_delete(o);
+
+/* $end */
+}
+
 /* ::test::StringDeserializer::tc_deserCompositeNoType() */
 cx_void _test_StringDeserializer_tc_deserCompositeNoType(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserCompositeNoType) */
@@ -709,7 +766,13 @@ cx_void _test_StringDeserializer_tc_deserUint8Overflow(test_StringDeserializer t
 cx_void _test_StringDeserializer_tc_errExcessElements(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_errExcessElements) */
 
-    /* << Insert implementation >> */
+    cx_string err;
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "test::Point{10, 20, 30}");
+    test_assert(o == NULL);
+    test_assert(ret != 0);
+    test_assert((err = cx_lasterr()) != NULL);
+    test_assert(!strcmp(err, "excess elements"));
 
 /* $end */
 }
@@ -764,7 +827,13 @@ cx_void _test_StringDeserializer_tc_errTypeMismatch(test_StringDeserializer this
 cx_void _test_StringDeserializer_tc_errUnresolvedMember(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_errUnresolvedMember) */
 
-    /* << Insert implementation >> */
+    cx_string err;
+    cx_object o = NULL; 
+    cx_int16 ret = cx_fromStr(&o, "test::Point{a = 10}");
+    test_assert(o == NULL);
+    test_assert(ret != 0);
+    test_assert((err = cx_lasterr()) != NULL);
+    test_assert(!strcmp(err, "member 'a' not found"));
 
 /* $end */
 }
