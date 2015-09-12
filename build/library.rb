@@ -34,14 +34,26 @@ INCLUDE <<
 	"#{ENV['CORTO_HOME']}/include/corto/#{VERSION}/packages/corto/lang" << 
 	"#{ENV['CORTO_HOME']}/include/corto/#{VERSION}/libraries"
 
-CLEAN.include(TARGETPATH + "/obj")
-
 task :prebuild do
 	verbose(false)
 	if File.exists?("include") then
 		includePath = "#{ENV['CORTO_TARGET']}/include/corto/#{VERSION}/#{TARGETPATH}"
 		sh "mkdir -p #{includePath}"
 	    sh "cp include/* #{includePath}/"
+	end
+	if ENV['CORTO_TARGET'] != "/usr" then
+		sh "echo \"`pwd`\" >> source.txt"
+		libpath = "#{ENV['CORTO_TARGET']}/lib/corto/#{VERSION}/#{TARGETPATH}"
+		sh "mkdir -p #{libpath}"
+		sh "mv source.txt #{libpath}/source.txt"
+	end
+	if File.exists? ".corto/packages.txt" then
+		sh "mkdir -p #{libpath}/.corto"
+		sh "cp .corto/packages.txt #{libpath}/.corto"
+	end
+	if File.exists? ".corto/components.txt" then
+		sh "mkdir -p #{libpath}/.corto"
+		sh "cp .corto/components.txt #{libpath}/.corto"
 	end
 end
 

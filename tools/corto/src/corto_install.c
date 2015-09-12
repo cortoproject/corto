@@ -160,6 +160,18 @@ error:
 	return -1;
 }
 
+void corto_toLibPath(char *location) {
+	char *ptr, ch;
+	ptr = &location[strlen(location) - 1];
+	while ((ch = *ptr) && (ptr >= location)) {
+		if (ch == '/') {
+			*ptr = '\0';
+			break;
+		}
+		ptr --;
+	}
+}
+
 cx_int16 corto_locate(int argc, char* argv[]) {
 	cx_string location;
 	cx_bool lib = FALSE, path = FALSE, env = FALSE;
@@ -193,15 +205,7 @@ cx_int16 corto_locate(int argc, char* argv[]) {
 				ptr++;
 			}
 		} else if (path && !lib) {
-			char *ptr, ch;
-			ptr = &location[strlen(location) - 1];
-			while ((ch = *ptr) && (ptr >= location)) {
-				if (ch == '/') {
-					*ptr = '\0';
-					break;
-				}
-				ptr --;
-			}
+			corto_toLibPath(location);
 		}
 
 		if (lib || path || env) {

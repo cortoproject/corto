@@ -1,75 +1,83 @@
 
 #include "corto_run.h"
 #include "corto_build.h"
+#include "corto_install.h"
 #include <sys/stat.h>
 #include <errno.h>
 
 static int retcode;
 
-static void corto_freeModified(cx_ll modified) {
-	cx_iter iter = cx_llIter(modified);
-	while (cx_iterHasNext(&iter)) cx_dealloc(cx_iterNext(&iter));
-	cx_llFree(modified);	
+typedef struct corto_fileMonitor {
+	char *file;
+	char *lib;
+	time_t mtime;
+} corto_fileMonitor;
+
+corto_fileMonitor* corto_monitorNew(char *file, char *lib) {
+	corto_fileMonitor *mon = cx_alloc(sizeof(corto_fileMonitor));
+	mon->file = cx_strdup(file);
+	mon->lib = lib ? cx_strdup(lib) : NULL;
+	mon->mtime = 0;
+	return mon;
 }
 
-static cx_ll corto_getModified(cx_ll files, cx_ll modified) {
+static void corto_addChangedLibrary(cx_ll *libs, cx_string lib) {
+	if (*libs) {
+		cx_iter iter = cx_llIter(*libs);
+		while (cx_iterHasNext(&iter)) {
+			cx_string l = cx_iterNext(&iter);
+			if (!strcmp(l, lib)) {
+				return;
+			}
+		}
+	}
+
+	if (!*libs) {
+		*libs = cx_llNew();
+	}
+	cx_llAppend(*libs, lib);
+}
+
+static cx_ll corto_getModified(cx_ll files, cx_ll changed) {
 	cx_int32 i = 0;
+	cx_ll libs = NULL;
+
+	if (changed) {
+		cx_llFree(changed);
+		changed = NULL;
+	}
 
 	if (files) {
-		if (modified) {
-			corto_freeModified(modified);
-		}
-
-		modified = cx_llNew();
-
 		cx_iter iter = cx_llIter(files);
 		while (cx_iterHasNext(&iter)) {
 			struct stat attr;
-			time_t *mtime;
-			cx_string file = cx_iterNext(&iter);
+			corto_fileMonitor *mon = cx_iterNext(&iter);
 
-			char buff[1024];
-			sprintf(buff, "src/%s", file);
-			if (stat(buff, &attr) < 0) {
-				printf("corto: failed to stat '%s' (%s)\n", file, strerror(errno));
+			if (stat(mon->file, &attr) < 0) {
+				printf("corto: failed to stat '%s' (%s)\n", mon->file, strerror(errno));
 			}
 
-			mtime = cx_alloc(sizeof(time_t));
-			*mtime = attr.st_mtime;
-			cx_llAppend(modified, mtime);
+			if (mon->mtime) {
+				if (mon->mtime != attr.st_mtime) {
+					corto_addChangedLibrary(&libs, mon->lib);
+				}
+			}
+			mon->mtime = attr.st_mtime;
 
 			i++;
 		}
 	}
 
-	return modified;
+	return libs;
 }
 
-static cx_int32 corto_checkModified(cx_ll modified, cx_ll measured) {
-	cx_iter modifiedIter, measuredIter;
-	time_t *date1, *date2;
+static cx_ll corto_waitForChanges(cx_pid pid, cx_ll files, cx_ll changed) {
 	cx_int32 i = 0;
 
-	modifiedIter = cx_llIter(modified);
-	measuredIter = cx_llIter(measured);
-
-	while (cx_iterHasNext(&modifiedIter)) {
-		date1 = cx_iterNext(&modifiedIter);
-		date2 = cx_iterNext(&measuredIter);
-
-		if (*date1 != *date2) {
-			return i;
-		}
-		i++;
+	if (changed) {
+		cx_llFree(changed);
+		changed = NULL;
 	}
-
-	return -1;
-}
-
-static cx_ll corto_waitForChanges(cx_pid pid, cx_ll files, cx_ll modified) {
-	cx_ll measured = NULL;
-	cx_int32 changed;
-	cx_int32 i = 0;
 
 	do {
 		cx_sleep(0, 50000000);
@@ -85,73 +93,232 @@ static cx_ll corto_waitForChanges(cx_pid pid, cx_ll files, cx_ll modified) {
 
 		/* Only check files every second */
 		if (!(i % 20)) {
-			measured = corto_getModified(files, measured);
+			changed = corto_getModified(files, changed);
 		} else {
 			continue;
 		}
-	}while (!measured || (changed = corto_checkModified(modified, measured)) == -1);
+	}while (!changed || (pid && retcode));
 
-	corto_freeModified(modified);
+	return changed;
+}
 
-	return measured;
+static int corto_addDirToMonitor(cx_string dir, cx_ll monitorList) {
+	cx_id cortoDir, srcDir, testDir;
+	sprintf(cortoDir, "%s/.corto", dir);
+	sprintf(srcDir, "%s/src", dir);
+	sprintf(testDir, "%s/test/src", dir);
+
+	cx_ll files = cx_opendir(srcDir);
+	if (!files || !cx_fileTest(cortoDir)) {
+		cx_error("corto: '%s' isn't a valid project directory", dir);
+		goto error;
+	}
+
+	cx_iter iter = cx_llIter(files);
+	while (cx_iterHasNext(&iter)) {
+		cx_id srcFile;
+		cx_string file = cx_iterNext(&iter);
+		sprintf(srcFile, "%s/src/%s", dir, file);
+		corto_fileMonitor *mon = corto_monitorNew(srcFile, dir);
+		cx_llAppend(monitorList, mon);
+	}
+
+	cx_ll testFiles = cx_opendir(testDir);
+	if (testFiles) {
+		cx_iter iter = cx_llIter(testFiles);
+		while (cx_iterHasNext(&iter)) {
+			cx_id srcFile;
+			cx_string file = cx_iterNext(&iter);
+			sprintf(srcFile, "%s/test/src/%s", dir, file);
+			corto_fileMonitor *mon = corto_monitorNew(srcFile, dir);
+			cx_llAppend(monitorList, mon);
+		}		
+	}
+
+	cx_closedir(files);
+
+	return 0;
+error:
+	return -1;
+}
+
+static int corto_buildDependency(cx_string path, cx_bool test) {
+	cx_int8 procResult = 0;
+	cx_id testPath;
+
+	/* Build */
+	cx_pid pid = cx_procrun("corto", (char*[]){"corto", "build", path, NULL});
+	if (cx_procwait(pid, &procResult) || procResult) {
+		printf("corto: failed to build '%s'\n", path);
+		goto error;
+	}
+
+	/* Build test */
+	sprintf(testPath, "%s/test", path);
+	if (cx_fileTest(testPath)) {
+		cx_pid pid = cx_procrun("corto", (char*[]){"corto", "build", testPath, NULL});
+		if (cx_procwait(pid, &procResult) || procResult) {
+			printf("corto: failed to build '%s'\n", testPath);
+			goto error;
+		}
+	}
+
+	/* Test */
+	if (test) {
+		pid = cx_procrun("corto", (char*[]){"corto", "test", path, NULL});
+		if (cx_procwait(pid, &procResult) || procResult) {
+			printf("corto: test failed for '%s'\n", path);
+			goto error;
+		}
+	}
+
+	return 0;
+error:
+	return -1;
+}
+
+static cx_ll corto_gatherFiles(void) {
+	cx_ll result = cx_llNew();
+	cx_ll packages;
+
+	if (corto_addDirToMonitor(".", result)) {
+		goto error;
+	}
+
+	/* Walk packages */
+	packages = cx_loadGetPackages();
+	cx_iter iter = cx_llIter(packages);
+	while (cx_iterHasNext(&iter)) {
+		cx_id sourceLink;
+		cx_string package = cx_iterNext(&iter);
+		cx_string file = cx_locate(package);
+		corto_fileMonitor *mon = corto_monitorNew(file, NULL);
+		if (file) {
+			cx_llAppend(result, mon);
+		} else {
+			printf("couldn't find file '%s'\n", file);
+		}
+
+		/* Check if there are source files available to monitor */
+		corto_toLibPath(file);
+		sprintf(sourceLink, "%s/source.txt", file);
+		if (cx_fileTest(sourceLink)) {
+			cx_string path = cx_fileLoad(sourceLink);
+
+			/* Strip newline */
+			path[strlen(path)-1] = '\0';
+			corto_buildDependency(path, FALSE);
+
+			if (corto_addDirToMonitor(path, result)) {
+				goto error;
+			}
+		}
+	}
+
+	return result;
+error:
+	cx_llFree(result);
+	return NULL;	
 }
 
 cx_int16 corto_run(int argc, char *argv[]) {
 	cx_pid pid = 0;
-	cx_ll files, modified;
+	cx_ll files;
+	cx_ll changed = NULL;
 	cx_uint32 retries = 0;
+	cx_int32 rebuild = 0;
+	cx_int32 depErrors = 0;
 
 	if (argc > 1) {
 		cx_chdir(argv[1]);
 	}
 
-	files = cx_opendir("./src");
-	if (!files || !cx_fileTest(".corto")) {
-		cx_error("corto: this isn't a valid project directory");
+	corto_build(0, NULL);
+
+	files = corto_gatherFiles();
+	if (!files) {
 		return -1;
 	}
 
-	modified = corto_getModified(files, NULL);
+	corto_getModified(files, NULL);
 
 	while (!retcode) {
-		/* Remove executable if it already existed */
-		cx_rm(".corto/app");
 
 		/* Build the project */
-		corto_build(0, NULL);
+		if (!changed) {
+			cx_rm(".corto/app");
+			corto_build(0, NULL);
+			rebuild++;
+		} else {
+			depErrors = 0;
+			cx_iter iter = cx_llIter(changed);
+			while (cx_iterHasNext(&iter)) {
+				cx_string lib = cx_iterNext(&iter);
+				if (lib && strcmp(lib, ".")) {
+					printf("corto: '%s' changed, rebuilding\n", lib);
+					if (!corto_buildDependency(lib, TRUE)) {
+						rebuild++;
+					} else {
+						depErrors++;
+					}
+				} else {
+					rebuild++;
+				}
+			}
+
+			/* Don't trigger on the changes in dependency binary file due to the builds */
+			changed = corto_getModified(files, changed);
+
+			/* Rebuild the app */
+			if (rebuild) {
+				cx_rm(".corto/app");
+				corto_build(0, NULL);
+			} else if (depErrors) {
+				printf("corto: won't restart because dependency failed to rebuild\n");
+			}
+		}
+
+		if (pid && rebuild) {
+			/* Send interrupt signal to process */
+			if (cx_prockill(pid, CX_SIGINT)) {
+				/* Wait until process has exited */
+				cx_procwait(pid, NULL);
+			}
+			rebuild = 0;
+			pid = 0;
+		}
 
 		/* Test whether the app exists, then start it */
 		if (cx_fileTest(".corto/app")) {
-			if (retries) {
+			if (retries && !pid) {
 				printf("corto: restarting app (%dx)\n", retries);
 			}
 
 			/* Start process */
-			pid = cx_procrun(".corto/app", argv);
+			if (!pid) {
+				pid = cx_procrun(".corto/app", argv);
+			}
 
 			/* Wait until either source changes, or executable finishes */
-			modified = corto_waitForChanges(pid, files, modified);
+			changed = corto_waitForChanges(pid, files, changed);
 
-			/* Kill existing process if file changed */
-			if (!retcode) {
-				/* Send interrupt signal to process */
-				if (cx_prockill(pid, CX_SIGINT)) {
-					/* Wait until process has exited */
-					cx_procwait(pid, NULL);
-				}
+			/* Set pid to 0 if process has exited */
+			if (retcode) {
+				pid = 0;
 			}
 		} else {
 			cx_error("corto: go fix your code!\n");
 
 			/* Wait for changed before trying again */
-			modified = corto_waitForChanges(0, files, modified);
+			changed = corto_waitForChanges(0, files, changed);
 		}
 
 		/* If the process segfaults, wait for changes and rebuild */
 		if ((retcode == 11) || (retcode == 6)) {
 			printf("corto: segmentation fault, go fix your code!\n");
-			modified = corto_waitForChanges(0, files, corto_getModified(files, NULL));
+			changed = corto_waitForChanges(0, files, changed);
 			retcode = 0;
+			pid = 0;
 		}
 
 		retries++;
@@ -159,14 +326,6 @@ cx_int16 corto_run(int argc, char *argv[]) {
 
 	if (retcode != -1) {
 		cx_error("corto: process stopped with error (%d)", retcode);
-	}
-
-	if (modified) {
-		corto_freeModified(modified);
-	}
-
-	if (files) {
-		cx_closedir(files);
 	}
 
 	return 0;
