@@ -14,6 +14,7 @@ extern "C" {
 #endif
 
 /* Casting macro's for classes */
+#define cx_alias(o) ((cx_alias)cx_assertType((cx_type)cx_alias_o, o))
 #define cx_array(o) ((cx_array)cx_assertType((cx_type)cx_array_o, o))
 #define cx_attr(o) ((cx_attr *)cx_assertType((cx_type)cx_attr_o, o))
 #define cx_binary(o) ((cx_binary)cx_assertType((cx_type)cx_binary_o, o))
@@ -88,12 +89,6 @@ extern "C" {
 #define cx_word(o) ((cx_word *)cx_assertType((cx_type)cx_word_o, o))
 
 /* Type definitions */
-/*  ::corto::lang::type */
-CX_CLASS(cx_type);
-
-/* ::corto::lang::any */
-CX_ANY(cx_any);
-
 /* ::corto::lang::typeKind */
 typedef enum cx_typeKind {
     CX_VOID = 0,
@@ -112,6 +107,9 @@ typedef uint32_t cx_uint32;
 
 /* ::corto::lang::uint16 */
 typedef uint16_t cx_uint16;
+
+/*  ::corto::lang::type */
+CX_CLASS(cx_type);
 
 /* ::corto::lang::state */
 CX_BITMASK(cx_state);
@@ -180,12 +178,44 @@ CX_CLASS_DEF(cx_type) {
     cx_uint32 templateId;
     cx_uint32 size;
     cx_uint16 alignment;
-    cx_type defaultType;
     cx_type parentType;
     cx_state parentState;
+    cx_type defaultType;
     cx_vtable metaprocedures;
     cx_callbackInit init;
 };
+
+/* ::corto::lang::modifier */
+CX_BITMASK(cx_modifier);
+    #define CX_GLOBAL (0x0)
+    #define CX_LOCAL (0x1)
+    #define CX_PRIVATE (0x2)
+    #define CX_READONLY (0x4)
+    #define CX_CONST (0x8)
+    #define CX_HIDDEN (0x16)
+
+/*  ::corto::lang::member */
+CX_CLASS(cx_member);
+
+CX_CLASS_DEF(cx_member) {
+    cx_type type;
+    cx_modifier modifiers;
+    cx_state state;
+    cx_bool weak;
+    cx_uint32 id;
+    cx_uint32 offset;
+};
+
+/*  ::corto::lang::alias */
+CX_CLASS(cx_alias);
+
+CX_CLASS_DEF(cx_alias) {
+    CX_EXTEND(cx_member);
+    cx_member member;
+};
+
+/* ::corto::lang::any */
+CX_ANY(cx_any);
 
 /* ::corto::lang::collectionKind */
 typedef enum cx_collectionKind {
@@ -312,26 +342,6 @@ typedef enum cx_compositeKind {
     CX_DELEGATE = 3,
     CX_PROCEDURE = 4
 } cx_compositeKind;
-
-/* ::corto::lang::modifier */
-CX_BITMASK(cx_modifier);
-    #define CX_GLOBAL (0x0)
-    #define CX_LOCAL (0x1)
-    #define CX_PRIVATE (0x2)
-    #define CX_READONLY (0x4)
-    #define CX_CONST (0x8)
-
-/*  ::corto::lang::member */
-CX_CLASS(cx_member);
-
-CX_CLASS_DEF(cx_member) {
-    cx_type type;
-    cx_modifier modifiers;
-    cx_state state;
-    cx_bool weak;
-    cx_uint32 id;
-    cx_uint32 offset;
-};
 
 CX_SEQUENCE(cx_memberseq, cx_member,);
 

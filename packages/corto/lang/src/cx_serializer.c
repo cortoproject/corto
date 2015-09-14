@@ -75,6 +75,7 @@ void cx_serializerInit(cx_serializer this) {
     this->constructed = FALSE;
     this->access = CX_GLOBAL;
     this->accessKind = CX_XOR;
+    this->aliasAction = CX_SERIALIZER_ALIAS_FOLLOW;
 }
 
 /* Start serializing */
@@ -228,25 +229,35 @@ cx_int16 cx_serializeMembers(cx_serializer this, cx_value* info, void* userData)
     /* Process members */
     for(i=0; i<t->members.length; i++) {
         m = t->members.buffer[i];
-        if (cx_serializeMatchAccess(this->accessKind, this->access, m->modifiers)) {
-            member.kind = CX_MEMBER;
-            member.parent = info;
-            member.is.member.o = o;
-            member.is.member.t = m;
-            member.is.member.v = CX_OFFSET(v, m->offset);
-#ifdef CX_SERIALIZER_TRACING
-            {
-                cx_id id, id2;
-                printf("%*smember(%s : %s)\n", indent, " ", cx_fullname(m, id2), cx_fullname(member.is.member.t->type, id)); fflush(stdout);
+        cx_bool isAlias = cx_instanceof(cx_alias_o, m);
+
+        if (isAlias && (this->aliasAction == CX_SERIALIZER_ALIAS_FOLLOW)) {
+            while (cx_instanceof(cx_alias_o, m)) {
+                m = cx_alias(m)->member;
             }
-            indent++;
-#endif
-            if (cb(this, &member, userData)) {
-                goto error;
+        }
+        
+        if (!isAlias || (this->aliasAction != CX_SERIALIZER_ALIAS_IGNORE)) {
+            if (cx_serializeMatchAccess(this->accessKind, this->access, m->modifiers)) {
+                member.kind = CX_MEMBER;
+                member.parent = info;
+                member.is.member.o = o;
+                member.is.member.t = m;
+                member.is.member.v = CX_OFFSET(v, m->offset);
+    #ifdef CX_SERIALIZER_TRACING
+                {
+                    cx_id id, id2;
+                    printf("%*smember(%s : %s)\n", indent, " ", cx_fullname(m, id2), cx_fullname(member.is.member.t->type, id)); fflush(stdout);
+                }
+                indent++;
+    #endif
+                if (cb(this, &member, userData)) {
+                    goto error;
+                }
+    #ifdef CX_SERIALIZER_TRACING
+                indent--;
+    #endif
             }
-#ifdef CX_SERIALIZER_TRACING
-            indent--;
-#endif
         }
     }
 

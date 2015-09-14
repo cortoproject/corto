@@ -176,7 +176,7 @@ cx_uint16 cx__interface_calculateAlignment(cx_interface this) {
             }
         } else {
             cx_id id, id2;
-            cx_error("member '%s' has type '%s' with zero-alignment.", cx_fullname(member, id), cx_fullname(member->type, id2));
+            cx_seterr("member '%s' has type '%s' with zero-alignment.", cx_fullname(member, id), cx_fullname(member->type, id2));
             goto error;
         }
     }
@@ -194,32 +194,34 @@ cx_uint32 cx__interface_calculateSize(cx_interface this, cx_uint32 base) {
 
     interfaceAlignment = cx_type(this)->alignment;
 
-    /* Calculate size from members */
     size = base;
     for (i=0; i<this->members.length; i++) {
         m = this->members.buffer[i];
         memberType = m->type;
 
-        memberSize = cx_type_sizeof(memberType);
-        if (!memberSize) {
-            cx_id id1, id2;
-            cx_error("member '%s' of type '%s' is of invalid type '%s'", cx_nameof(m), cx_fullname(this, id1), cx_fullname(memberType, id2));
-            goto error;
-        }
+        if (!cx_instanceof(cx_alias_o, m)) {
+            memberSize = cx_type_sizeof(memberType);
+            if (!memberSize) {
+                cx_id id1, id2;
+                cx_error("member '%s' of type '%s' is of invalid type '%s'", cx_nameof(m), cx_fullname(this, id1), cx_fullname(memberType, id2));
+                goto error;
+            }
 
-        /* Align size */
-        alignment = cx_type_alignmentof(memberType);
-        if (!alignment) {
-            goto error;
-        }
-        size = CX_ALIGN(size, alignment);
+            alignment = cx_type_alignmentof(memberType);
+            if (!alignment) {
+                goto error;
+            }
+            size = CX_ALIGN(size, alignment);
 
-        if (m->type->hasResources || m->type->reference) {
-            cx_type(this)->hasResources = TRUE;
-        }
+            if (m->type->hasResources || m->type->reference) {
+                cx_type(this)->hasResources = TRUE;
+            }
 
-        m->offset = size;
-        size += memberSize;
+            m->offset = size;
+            size += memberSize;
+        } else {
+            m->offset = cx_alias(m)->member->offset;
+        }
     }
 
     return interfaceAlignment ? CX_ALIGN(size, interfaceAlignment) : 0;
@@ -250,6 +252,7 @@ error:
 /* private interface::insertMembers */
 cx_int16 cx__interface_insertMembers(cx_interface this) {
     /* Create sequence with size nextMemberId */
+
     if (this->nextMemberId) {
         if (cx_sequence_alloc(cx_collection(cx_memberseq_o), &this->members, this->nextMemberId)) {
             goto error;

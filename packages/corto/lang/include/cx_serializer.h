@@ -25,13 +25,20 @@ typedef enum cx_serializerTraceKind {
     CX_SERIALIZER_TRACE_ALWAYS,
     CX_SERIALIZER_TRACE_ON_FAIL,
     CX_SERIALIZER_TRACE_NEVER
-}cx_serializerTraceKind;
+} cx_serializerTraceKind;
+
+typedef enum cx_aliasActionKind {
+    CX_SERIALIZER_ALIAS_FOLLOW,
+    CX_SERIALIZER_ALIAS_IGNORE,
+    CX_SERIALIZER_ALIAS_PASSTHROUGH
+} cx_aliasActionKind;
 
 CX_CLASS_DEF(cx_serializer) {
     cx_bool initialized;
     cx_bool constructed;
     cx_modifier access;
     cx_operatorKind accessKind; /* OR, XOR, NOT */
+    cx_aliasActionKind aliasAction;
     cx_serializerTraceKind traceKind;
     cx_serializerConstruct construct;
     cx_serializerDestruct destruct;

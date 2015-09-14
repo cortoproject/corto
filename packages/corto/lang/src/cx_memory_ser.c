@@ -151,6 +151,7 @@ struct cx_serializer_s cx_ser_keep(cx_modifier access, cx_operatorKind accessKin
     s.access = access;
     s.accessKind = accessKind;
     s.traceKind = trace;
+    s.aliasAction = CX_SERIALIZER_ALIAS_IGNORE;
     s.reference = cx_ser_keepReference;
     return s;
 }
@@ -163,6 +164,7 @@ struct cx_serializer_s cx_ser_free(cx_modifier access, cx_operatorKind accessKin
     s.access = access;
     s.accessKind = accessKind;
     s.traceKind = trace;
+    s.aliasAction = CX_SERIALIZER_ALIAS_IGNORE;
     s.reference = cx_ser_freeReference;
     return s;
 }
@@ -175,6 +177,7 @@ struct cx_serializer_s cx_ser_freeResources(cx_modifier access, cx_operatorKind 
     s.access = access;
     s.accessKind = accessKind;
     s.traceKind = trace;
+    s.aliasAction = CX_SERIALIZER_ALIAS_IGNORE;
     s.program[CX_PRIMITIVE] = cx_ser_freePrimitive;
     s.program[CX_COLLECTION] = cx_ser_freeCollection;
     s.reference = cx_ser_freeReference;

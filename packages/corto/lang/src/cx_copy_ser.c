@@ -285,6 +285,7 @@ struct cx_serializer_s cx_copy_ser(cx_modifier access, cx_operatorKind accessKin
     s.access = access;
     s.accessKind = accessKind;
     s.traceKind = trace;
+    s.aliasAction = CX_SERIALIZER_ALIAS_IGNORE;
     s.construct = cx_ser_construct;
     s.program[CX_VOID] = NULL;
     s.program[CX_PRIMITIVE] = cx_ser_primitive;

@@ -494,6 +494,7 @@ struct cx_serializer_s c_typeSerializer(void) {
     s.metaprogram[CX_CONSTANT] = c_typeConstant;
     s.access = CX_GLOBAL;
     s.accessKind = CX_XOR;
+    s.aliasAction = CX_SERIALIZER_ALIAS_IGNORE;
     s.traceKind = CX_SERIALIZER_TRACE_ON_FAIL;
 
     return s;

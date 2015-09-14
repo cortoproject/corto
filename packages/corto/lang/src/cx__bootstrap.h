@@ -210,6 +210,7 @@ CX_STATIC_SCOPED_REFOBJECT(function);
 CX_STATIC_SCOPED_REFOBJECT(method);
 CX_STATIC_SCOPED_REFOBJECT(metaprocedure);
 CX_STATIC_SCOPED_REFOBJECT(member);
+CX_STATIC_SCOPED_REFOBJECT(alias);
 CX_STATIC_SCOPED_OBJECT(parameter);
 
 CX_STATIC_SCOPED_OBJECT(constant);
@@ -264,7 +265,7 @@ CX_STATIC_SCOPED_OBJECT(constant);
 
 /* type */
 #define CX_TYPE_V(name, kind, reference, scopeType, scopeTypeKind, DELEGATE) \
-  {kind, reference, FALSE, 0, 0, 0, NULL, scopeType, scopeTypeKind, {0,NULL}, DELEGATE##_TYPE(name)}
+  {kind, reference, FALSE, 0, 0, 0, scopeType, scopeTypeKind, NULL, {0,NULL}, DELEGATE##_TYPE(name)}
 
 /* primitive */
 #define CX_PRIMITIVE_V(name, kind, width, scopeType, scopeStateKind, DELEGATE) {CX_TYPE_V(name, CX_PRIMITIVE, FALSE, scopeType, scopeStateKind, DELEGATE), kind, width, 0}
@@ -401,6 +402,9 @@ CX_STATIC_SCOPED_OBJECT(constant);
 /* member object */
 #define CX_MEMBER_O(parent, name, type, access) sso_member parent##_##name##__o = {CX_SSO_PO_V(parent, #name, member), CX_MEMBER_V(type, access, CX_DECLARED | CX_DEFINED, FALSE), VTABLE_V}
 
+/* member object */
+#define CX_ALIAS_O(parent, name, member) sso_alias parent##_##name##__o = {CX_SSO_PO_V(parent, #name, alias), {CX_MEMBER_V(word, 0, 0, FALSE), (cx_member)&member##__o.v}, VTABLE_V}
+
 /* reference object */
 #define CX_REFERENCE_O(parent, name, type, access, state, weak) sso_member parent##_##name##__o = {CX_SSO_PO_V(parent, #name, member), CX_MEMBER_V(type, access, state, weak), VTABLE_V}
 
@@ -425,7 +429,6 @@ CX_FWDECL(class, float);
 CX_FWDECL(class, text);
 CX_FWDECL(class, enum);
 CX_FWDECL(class, bitmask);
-CX_FWDECL(class, alias);
 CX_FWDECL(class, struct);
 CX_FWDECL(class, class);
 CX_FWDECL(class, delegate);
@@ -434,7 +437,7 @@ CX_FWDECL(class, sequence);
 CX_FWDECL(class, list);
 CX_FWDECL(class, map);
 CX_FWDECL(class, member);
-CX_FWDECL(class, reference);
+CX_FWDECL(class, alias);
 CX_FWDECL(class, event);
 CX_FWDECL(class, observableEvent);
 CX_FWDECL(class, package);
@@ -661,6 +664,7 @@ CX_BITMASK_O(modifier);
     CX_CONSTANT_O(modifier, PRIVATE);
     CX_CONSTANT_O(modifier, READONLY);
     CX_CONSTANT_O(modifier, CONST);
+    CX_CONSTANT_O(modifier, HIDDEN);
 
 /* Collections */
 CX_SEQUENCE_O(objectseq, object, 0);
@@ -684,9 +688,9 @@ CX_CLASS_NOBASE_O(type, NULL, CX_DECLARED | CX_DEFINED, CX_ICD);
     CX_MEMBER_O(type, templateId, uint32, CX_PRIVATE | CX_LOCAL);
     CX_MEMBER_O(type, size, uint32, CX_PRIVATE | CX_LOCAL);
     CX_MEMBER_O(type, alignment, uint16, CX_PRIVATE | CX_LOCAL);
-    CX_REFERENCE_O(type, defaultType, type, CX_GLOBAL, CX_DEFINED, FALSE);
     CX_REFERENCE_O(type, parentType, type, CX_GLOBAL, CX_DEFINED, FALSE);
     CX_MEMBER_O(type, parentState, state, CX_GLOBAL);
+    CX_REFERENCE_O(type, defaultType, type, CX_GLOBAL, CX_DEFINED, FALSE);
     CX_MEMBER_O(type, metaprocedures, vtable, CX_LOCAL | CX_PRIVATE);
     CX_MEMBER_O(type, init, callbackInit, CX_LOCAL | CX_PRIVATE);
     CX_METHOD_O(type, sizeof, "()", uint32, FALSE, cx_type_sizeof);
@@ -729,12 +733,15 @@ CX_CLASS_O(primitive, type, CX_LOCAL | CX_READONLY, NULL, CX_DECLARED | CX_DEFIN
 
 /* ::corto::lang::interface */
 CX_FW_ICD(interface);
-CX_CLASS_O(interface, type, CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, CX_ICD);
+CX_CLASS_O(interface, type, CX_HIDDEN, NULL, CX_DECLARED | CX_DEFINED, CX_ICD);
     CX_MEMBER_O(interface, kind, compositeKind, CX_LOCAL|CX_READONLY);
     CX_MEMBER_O(interface, nextMemberId, uint32, CX_LOCAL | CX_PRIVATE);
     CX_MEMBER_O(interface, members, memberseq, CX_LOCAL | CX_PRIVATE);
     CX_MEMBER_O(interface, methods, vtable, CX_LOCAL | CX_PRIVATE);
     CX_REFERENCE_O(interface, base, interface, CX_GLOBAL, CX_DEFINED, FALSE);
+    CX_ALIAS_O(interface, parentType, type_parentType);
+    CX_ALIAS_O(interface, parentState, type_parentState);
+    CX_ALIAS_O(interface, defaultType, type_defaultType);
     CX_METHOD_O(interface, init, "()", int16, FALSE, cx_interface_init);
     CX_METHOD_O(interface, construct, "()", int16, FALSE, cx_interface_construct);
     CX_METHOD_O(interface, destruct, "()", void, FALSE, cx_interface_destruct);
@@ -825,8 +832,12 @@ CX_CLASS_O(bitmask, enum, CX_LOCAL | CX_READONLY, NULL, CX_DECLARED | CX_DEFINED
 
 /* ::corto::lang::struct */
 CX_FW_IC(struct);
-CX_CLASS_O(struct, interface, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_IC);
+CX_CLASS_O(struct, interface, CX_HIDDEN, NULL, CX_DECLARED | CX_DEFINED, CX_IC);
+    CX_ALIAS_O (struct, base, interface_base);
     CX_MEMBER_O(struct, baseAccess, modifier, CX_GLOBAL);
+    CX_ALIAS_O (struct, parentType, interface_parentType);
+    CX_ALIAS_O (struct, parentState, interface_parentState);
+    CX_ALIAS_O (struct, defaultType, interface_defaultType);
     CX_METHOD_O(struct, compatible, "(type type)", bool, TRUE, cx_struct_compatible_v);
     CX_METHOD_O(struct, castable, "(type type)", bool, TRUE, cx_struct_castable_v);
     CX_METHOD_O(struct, resolveMember, "(string name)", member, TRUE, cx_struct_resolveMember_v);
@@ -840,8 +851,13 @@ CX_STRUCT_O(interfaceVector, NULL, CX_DECLARED | CX_DEFINED);
 
 /* ::corto::lang::class */
 CX_FW_ICD(class);
-CX_CLASS_O(class, struct, CX_GLOBAL, NULL, CX_DECLARED | CX_DEFINED, CX_ICD);
+CX_CLASS_O(class, struct, CX_HIDDEN, NULL, CX_DECLARED | CX_DEFINED, CX_ICD);
+    CX_ALIAS_O (class, base, struct_base);
+    CX_ALIAS_O (class, baseAccess, struct_baseAccess);
     CX_MEMBER_O(class, implements, interfaceseq, CX_GLOBAL);
+    CX_ALIAS_O (class, parentType, struct_parentType);
+    CX_ALIAS_O (class, parentState, struct_parentState);
+    CX_ALIAS_O (class, defaultType, struct_defaultType);
     CX_MEMBER_O(class, interfaceVector, interfaceVectorseq, CX_LOCAL|CX_PRIVATE);
     CX_MEMBER_O(class, observers, observerseq, CX_LOCAL|CX_PRIVATE);
     CX_MEMBER_O(class, construct, callbackInit, CX_LOCAL|CX_PRIVATE);
@@ -1000,6 +1016,13 @@ CX_CLASS_NOBASE_O(member, CX_TYPE_ID(interface), CX_DECLARED, CX_IC);
     CX_MEMBER_O(member, offset, uint32, CX_LOCAL | CX_PRIVATE);
     CX_METHOD_O(member, init, "()", int16, FALSE, cx_member_init);
     CX_METHOD_O(member, construct, "()", int16, FALSE, cx_member_construct);
+
+/* ::corto::lang::alias */
+CX_FW_IC(alias);
+CX_CLASS_O(alias, member, CX_PRIVATE|CX_LOCAL, CX_TYPE_ID(struct), CX_DECLARED, CX_IC);
+    CX_REFERENCE_O(alias, member, member, CX_GLOBAL, CX_DEFINED, FALSE);
+    CX_METHOD_O(alias, init, "()", int16, FALSE, cx_alias_init);
+    CX_METHOD_O(alias, construct, "()", int16, FALSE, cx_alias_construct);
 
 /* ::corto::lang::parameter */
 CX_STRUCT_O(parameter, NULL, CX_DECLARED | CX_DEFINED);

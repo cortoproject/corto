@@ -698,6 +698,7 @@ static struct cx_serializer_s c_initSerializer(void) {
 
     s.access = CX_LOCAL;
     s.accessKind = CX_NOT;
+    s.aliasAction = CX_SERIALIZER_ALIAS_IGNORE;
     s.traceKind = CX_SERIALIZER_TRACE_ON_FAIL;
     s.program[CX_PRIMITIVE] = c_initPrimitive;
     s.program[CX_COLLECTION] = c_initCollection;

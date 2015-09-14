@@ -26,6 +26,7 @@ extern "C" {
 #endif
 #endif
 
+#include "cx_alias.h"
 #include "cx_array.h"
 #include "cx_binary.h"
 #include "cx_bitmask.h"

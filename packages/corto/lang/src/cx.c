@@ -97,6 +97,7 @@ int8_t CX_DEBUG_ENABLED = 0;
     SSO_OP_CLASS(op, list);\
     SSO_OP_CLASS(op, map);\
     SSO_OP_CLASS(op, member);\
+    SSO_OP_CLASS(op, alias);\
     SSO_OP_CLASS(op, class);\
     SSO_OP_CLASS(op, delegate);\
     SSO_OP_CLASS(op, package);
@@ -325,6 +326,7 @@ int8_t CX_DEBUG_ENABLED = 0;
     SSO_OP_OBJ(op, modifier_PRIVATE);\
     SSO_OP_OBJ(op, modifier_READONLY);\
     SSO_OP_OBJ(op, modifier_CONST);\
+    SSO_OP_OBJ(op, modifier_HIDDEN);\
     /* type */\
     SSO_OP_OBJ(op, type_kind);\
     SSO_OP_OBJ(op, type_reference);\
@@ -332,9 +334,9 @@ int8_t CX_DEBUG_ENABLED = 0;
     SSO_OP_OBJ(op, type_templateId);\
     SSO_OP_OBJ(op, type_size);\
     SSO_OP_OBJ(op, type_alignment);\
-    SSO_OP_OBJ(op, type_defaultType);\
     SSO_OP_OBJ(op, type_parentType);\
     SSO_OP_OBJ(op, type_parentState);\
+    SSO_OP_OBJ(op, type_defaultType);\
     SSO_OP_OBJ(op, type_metaprocedures);\
     SSO_OP_OBJ(op, type_init);\
     SSO_OP_OBJ(op, type_sizeof_);\
@@ -377,6 +379,9 @@ int8_t CX_DEBUG_ENABLED = 0;
     SSO_OP_OBJ(op, interface_members);\
     SSO_OP_OBJ(op, interface_methods);\
     SSO_OP_OBJ(op, interface_base);\
+    SSO_OP_OBJ(op, interface_parentType);\
+    SSO_OP_OBJ(op, interface_parentState);\
+    SSO_OP_OBJ(op, interface_defaultType);\
     SSO_OP_OBJ(op, interface_init_);\
     SSO_OP_OBJ(op, interface_construct_);\
     SSO_OP_OBJ(op, interface_destruct_);\
@@ -439,7 +444,11 @@ int8_t CX_DEBUG_ENABLED = 0;
     /* bitmask */\
     SSO_OP_OBJ(op, bitmask_init_);\
     /* struct */\
+    SSO_OP_OBJ(op, struct_base);\
     SSO_OP_OBJ(op, struct_baseAccess);\
+    SSO_OP_OBJ(op, struct_parentType);\
+    SSO_OP_OBJ(op, struct_parentState);\
+    SSO_OP_OBJ(op, struct_defaultType);\
     SSO_OP_OBJ(op, struct_init_);\
     SSO_OP_OBJ(op, struct_construct_);\
     SSO_OP_OBJ(op, struct_compatible_);\
@@ -453,7 +462,12 @@ int8_t CX_DEBUG_ENABLED = 0;
     SSO_OP_OBJ(op, interfaceVector_interface);\
     SSO_OP_OBJ(op, interfaceVector_vector);\
     /* class */\
+    SSO_OP_OBJ(op, class_base);\
+    SSO_OP_OBJ(op, class_baseAccess);\
     SSO_OP_OBJ(op, class_implements);\
+    SSO_OP_OBJ(op, class_parentType);\
+    SSO_OP_OBJ(op, class_parentState);\
+    SSO_OP_OBJ(op, class_defaultType);\
     SSO_OP_OBJ(op, class_interfaceVector);\
     SSO_OP_OBJ(op, class_observers);\
     SSO_OP_OBJ(op, class_construct);\
@@ -504,6 +518,10 @@ int8_t CX_DEBUG_ENABLED = 0;
     SSO_OP_OBJ(op, member_offset);\
     SSO_OP_OBJ(op, member_init_);\
     SSO_OP_OBJ(op, member_construct_);\
+    /* alias */\
+    SSO_OP_OBJ(op, alias_member);\
+    SSO_OP_OBJ(op, alias_init_);\
+    SSO_OP_OBJ(op, alias_construct_);\
     /* parameter */\
     SSO_OP_OBJ(op, parameter_name);\
     SSO_OP_OBJ(op, parameter_type);\
