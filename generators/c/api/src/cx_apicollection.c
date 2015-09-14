@@ -207,7 +207,7 @@ error:
 /* Create list foreach-macro */
 static cx_int16 c_apiListTypeForeach(cx_list o, c_apiWalk_t* data) {
     cx_id id, elementId;
-    cx_bool prefix;
+    cx_bool prefix, requiresAlloc = cx_collection_elementRequiresAlloc(o);
     cx_type elementType = cx_collection(o)->elementType;
     
     c_specifierId(data->g, cx_type(o), id, NULL, NULL);
@@ -217,10 +217,14 @@ static cx_int16 c_apiListTypeForeach(cx_list o, c_apiWalk_t* data) {
     g_fileWrite(data->header, "#define %sForeach(list, elem) \\\n", id);
     g_fileIndent(data->header);
     g_fileWrite(data->header, "cx_iter elem##_iter = cx_llIter(list);\\\n");
-    g_fileWrite(data->header, "%s %selem;\\\n", elementId, prefix?"*":"");
+    g_fileWrite(data->header, "%s %selem;\\\n", elementId, requiresAlloc?"*":"");
     g_fileWrite(data->header, "while(cx_iterHasNext(&elem##_iter)) {\\\n");
     g_fileIndent(data->header);
-    g_fileWrite(data->header, "elem = cx_iterNext(&elem##_iter);\n");
+    if (!elementType->reference && !requiresAlloc) {
+        g_fileWrite(data->header, "elem = (%s%s)(cx_word)cx_iterNext(&elem##_iter);\n", elementId, requiresAlloc?"*":"");
+    } else {
+        g_fileWrite(data->header, "elem = cx_iterNext(&elem##_iter);\n");        
+    }
     g_fileDedent(data->header);
     g_fileDedent(data->header);
     g_fileWrite(data->header, "\n");
@@ -243,10 +247,10 @@ static cx_int16 c_apiListTypeInsertAlloc(cx_list o, cx_string operation, c_apiWa
     c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
-    g_fileWrite(data->header, "%s* %s%s(%s list);\n", elementId, id, operation, id);
+    g_fileWrite(data->header, "%s* %s%sAlloc(%s list);\n", elementId, id, operation, id);
     
     /* Function implementation */
-    g_fileWrite(data->source, "%s* %s%s(%s list) {\n", elementId, id, operation, id);
+    g_fileWrite(data->source, "%s* %s%sAlloc(%s list) {\n", elementId, id, operation, id);
     
     g_fileIndent(data->source);
     g_fileWrite(data->source, "%s* result;\n", elementId);
@@ -271,21 +275,42 @@ static cx_int16 c_apiListTypeInsertNoAlloc(cx_list o, cx_string operation, c_api
     cx_id id, elementId, api;
     cx_bool prefix;
     cx_type elementType = cx_collection(o)->elementType;
+    cx_bool requiresAlloc = cx_collection_elementRequiresAlloc(cx_collection(o));
     
     c_specifierId(data->g, cx_type(o), id, NULL, NULL);
     c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
+
+    if (requiresAlloc) {
+        g_fileWrite(data->header, "%s* ", elementId);
+        g_fileWrite(data->source, "%s* ", elementId);
+    } else {
+        g_fileWrite(data->header, "void ");
+        g_fileWrite(data->source, "void ");
+    }
     
     /* Function declaration */
-    g_fileWrite(data->header, "void %s%s(%s list, %s element);\n", id, operation, id, elementId);
+    g_fileWrite(data->header, "%s%s(%s list, %s%s element);\n", 
+        id, operation, id, elementId, requiresAlloc ? "*" : "");
     
     /* Function implementation */
-    g_fileWrite(data->source, "void %s%s(%s list, %s element) {\n", id, operation, id, elementId);
+    g_fileWrite(data->source, "%s%s(%s list, %s%s element) {\n", 
+        id, operation, id, elementId, requiresAlloc ? "*" : "");
+
     g_fileIndent(data->source);
     
     /* Insert element to list */
-    g_fileWrite(data->source, "%s(list, (void*)(cx_word)element);\n", cx_operationToApi(operation, api));
-    if (elementType->reference) {
-        g_fileWrite(data->source, "cx_claim(element);\n");
+    if (requiresAlloc) {
+        g_fileWrite(data->source, "%s *result = %s%sAlloc(list);\n", elementId, id, operation);
+        g_fileWrite(data->source, "cx_copyp(result, %s_o, element);\n", elementId);
+    } else {
+        g_fileWrite(data->source, "%s(list, (void*)(cx_word)element);\n", cx_operationToApi(operation, api));
+        if (elementType->reference) {
+            g_fileWrite(data->source, "cx_claim(element);\n");
+        }
+    }
+
+    if (requiresAlloc) {
+        g_fileWrite(data->source, "return result;\n");
     }
     
     /* Return new element */
@@ -301,6 +326,7 @@ static cx_int16 c_apiListTypeInsert(cx_list o, cx_string operation, c_apiWalk_t*
     
     if (cx_collection_elementRequiresAlloc(cx_collection(o))) {
         result = c_apiListTypeInsertAlloc(o, operation, data);
+        result = c_apiListTypeInsertNoAlloc(o, operation, data);
     } else {
         result = c_apiListTypeInsertNoAlloc(o, operation, data);
     }

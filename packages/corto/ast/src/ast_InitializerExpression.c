@@ -27,7 +27,7 @@ cx_int16 _ast_InitializerExpression_construct(ast_InitializerExpression this) {
 /* ::corto::ast::InitializerExpression::define() */
 cx_int16 _ast_InitializerExpression_define(ast_InitializerExpression this) {
 /* $begin(::corto::ast::InitializerExpression::define) */
-    ast_InitOper *elem = ast_InitOperListAppend(this->operations);
+    ast_InitOper *elem = ast_InitOperListAppendAlloc(this->operations);
     elem->kind = Ast_InitOpDefine;
     return 0;
 /* $end */
@@ -103,7 +103,7 @@ error:
 /* ::corto::ast::InitializerExpression::member(string name) */
 cx_int32 _ast_InitializerExpression_member(ast_InitializerExpression this, cx_string name) {
 /* $begin(::corto::ast::InitializerExpression::member) */
-    ast_InitOper *elem = ast_InitOperListAppend(this->operations);
+    ast_InitOper *elem = ast_InitOperListAppendAlloc(this->operations);
     elem->kind = Ast_InitOpMember;
     elem->name = cx_strdup(name);
     return 0;
@@ -113,7 +113,7 @@ cx_int32 _ast_InitializerExpression_member(ast_InitializerExpression this, cx_st
 /* ::corto::ast::InitializerExpression::pop() */
 cx_int16 _ast_InitializerExpression_pop(ast_InitializerExpression this) {
 /* $begin(::corto::ast::InitializerExpression::pop) */
-    ast_InitOper *elem = ast_InitOperListAppend(this->operations);
+    ast_InitOper *elem = ast_InitOperListAppendAlloc(this->operations);
     elem->kind = Ast_InitOpPop;
     return 0;
 /* $end */
@@ -122,7 +122,7 @@ cx_int16 _ast_InitializerExpression_pop(ast_InitializerExpression this) {
 /* ::corto::ast::InitializerExpression::push() */
 cx_int16 _ast_InitializerExpression_push(ast_InitializerExpression this) {
 /* $begin(::corto::ast::InitializerExpression::push) */
-    ast_InitOper *elem = ast_InitOperListAppend(this->operations);
+    ast_InitOper *elem = ast_InitOperListAppendAlloc(this->operations);
     elem->kind = Ast_InitOpPush;
     return 0;
 /* $end */
@@ -131,7 +131,7 @@ cx_int16 _ast_InitializerExpression_push(ast_InitializerExpression this) {
 /* ::corto::ast::InitializerExpression::value(Expression v) */
 cx_int16 _ast_InitializerExpression_value(ast_InitializerExpression this, ast_Expression v) {
 /* $begin(::corto::ast::InitializerExpression::value) */
-    ast_InitOper *elem = ast_InitOperListAppend(this->operations);
+    ast_InitOper *elem = ast_InitOperListAppendAlloc(this->operations);
     elem->kind = Ast_InitOpValue;
     cx_setref(&elem->expr, v);
     return 0;
