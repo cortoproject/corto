@@ -267,7 +267,6 @@ void cx_seterr(char *fmt, ...) {
     va_start(list, fmt);
     cx_vasprintf(&err, fmt, list);
     va_end(list);
-
     cx_setLasterror(err);
     cx_dealloc(err);
 }

@@ -280,8 +280,10 @@ static void cx__deinitScope(cx_object o) {
     cx_assert(scope->attached == NULL, "cx__deinitScope: object has still objects attached");
 
     /* Free parent */
-    cx_release(scope->parent);
-    scope->parent = NULL;
+    if (scope->parent) {
+        cx_release(scope->parent);
+        scope->parent = NULL;
+    }
 
     /* We cannot actually remove the scope itself, since there might be childs which
      * have multiple cycles, which must be resolved first. The childs will take care
@@ -415,15 +417,6 @@ static void cx__deinitObservable(cx_object o) {
     if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
         cx_rwmutexFree(&observable->childLock);
     }
-}
-
-static void cx__initPersistent(cx_object o) {
-    cx__object* _o;
-    cx__persistent* persistent;
-
-    _o = CX_OFFSET(o, -sizeof(cx__object));
-    persistent = cx__objectPersistent(_o);
-    cx_timeGet(&persistent->timestamp);
 }
 
 /* Initialize static scoped object */
@@ -609,45 +602,26 @@ static int cx_adopt(cx_object parent, cx_object child) {
 
     /* Parent must be a valid object */
     if (!cx_checkState(parent, CX_VALID)) {
-        cx_error("cannot adopt, parentobject <%p> is invalid", parent);
+        cx_seterr("parent is invalid");
         goto err_invalid_parent;
     }
 
     /* Check if parentType matches scopeType of child type */
     if (childType->parentType) {
         parentType = cx_typeof(parent);
-        if ((childType->parentType != parentType) && !cx_class_instanceof((cx_class)childType->parentType, parent)) {
-            cx_id parentId, parentTypeId, childTypeId, childParentTypeId;
-            cx_error("parent '%s' of type '%s' cannot adopt object '%s' of type '%s' (must be defined in '%s')",
-                    cx_fullname(parent, parentId), cx_fullname(parentType, parentTypeId), cx_nameof(child), cx_fullname(childType, childTypeId), cx_fullname(childType->parentType, childParentTypeId));
+        if ((childType->parentType != parentType) && !cx_instanceof(childType->parentType, parent)) {
+            cx_id parentId, childParentTypeId;
+            cx_seterr("type of '%s' is not '%s'",
+                    cx_fullname(parent, parentId), cx_fullname(childType->parentType, childParentTypeId));
             goto err_invalid_parent;
         }
     }
 
     /* Check if parentState matches scopeState of child type */
     if (childType->parentState && !cx__checkStateXOR(parent, childType->parentState)) {
-        cx_id parentId, childTypeId;
-#ifdef CX_CONVERSION
-        cx_string s_parentState, s_childState;
-        cx_uint32 parentState, childState;
-        parentState = _parent->attrs.state;
-        childState = childType->parentState;
-        cx_convert(cx_primitive(cx_state_o), &parentState, cx_primitive(cx_string_o), &s_parentState);
-        cx_convert(cx_primitive(cx_state_o), &childState, cx_primitive(cx_string_o), &s_childState);
-        cx_error("state %s of parent '%s' does not match %s, cannot adopt '%s' of type '%s'",
-                s_parentState, cx_fullname(parent, parentId), s_childState, cx_nameof(child), cx_fullname(childType, childTypeId));
-
-        if (s_parentState) {
-            cx_dealloc(s_parentState);
-        }
-        if (s_childState) {
-            cx_dealloc(s_childState);
-        }
-#else
-        cx_error("state of parent '%s' does not match, cannot adopt '%s' of type '%s'",
-                cx_fullname(parent, parentId), cx_nameof(child), cx_fullname(childType, childTypeId));
-
-#endif
+        cx_id parentId;
+        cx_uint32 childState = childType->parentState;
+        cx_seterr("state of '%s' is not %s", cx_fullname(parent, parentId), cx_stateStr(childState));
         goto err_invalid_parent;
     }
 
@@ -685,16 +659,16 @@ static int cx_adopt(cx_object parent, cx_object child) {
     return 0;
 
 err_child_mutex:
-    cx_error("cx_adopt: lock operation on scopeLock of child failed");
+    cx_critical("cx_adopt: lock operation on scopeLock of child failed");
     return -1;
 
 err_parent_mutex:
-    cx_error("cx_adopt: lock operation on scopeLock of parent failed");
+    cx_critical("cx_adopt: lock operation on scopeLock of parent failed");
     return -1;
 
 err_already_adopted:
     cx_rwmutexUnlock(&c_scope->scopeLock);
-    cx_error("cx_adopt: child-object is already adopted");
+    cx_seterr("cx_adopt: child-object is already adopted");
     return -1;
 
 err_no_parent_scope:
@@ -838,7 +812,13 @@ cx_object _cx_declare(cx_type type) {
     cx_attr attrs = cx_getAttr();
 
     if (!type) {
-        cx_error("core: NULL type provided to cx_declare");
+        cx_seterr("parameter 'type' is null");
+        goto error;
+    }
+
+    /* Type must be valid and defined */
+    if (!cx_checkState(type, CX_VALID | CX_DEFINED)) {
+        cx_seterr("type is not valid/defined");
         goto error;
     }
 
@@ -893,7 +873,7 @@ cx_object _cx_declare(cx_type type) {
         }
         if (attrs & CX_ATTR_WRITABLE) {
             if (type->kind == CX_VOID) {
-                cx_warning("cx_declare: writable void object created.");
+                cx_warning("writable void object created");
             }
             o->attrs.write = TRUE;
             cx__initWritable(CX_OFFSET(o, sizeof(cx__object)));
@@ -919,13 +899,19 @@ cx_object _cx_declare(cx_type type) {
             if (attrs & CX_ATTR_OBSERVABLE) {
                 cx__initObservable(CX_OFFSET(o, sizeof(cx__object)));
             }
-            if (attrs & CX_ATTR_PERSISTENT) {
-                cx__initPersistent(CX_OFFSET(o, sizeof(cx__object)));
-            }
 
             /* Call framework initializer */
             if (!cx_init(CX_OFFSET(o, sizeof(cx__object)))) {
                 o->attrs.state |= CX_VALID;
+            } else {
+                cx_id id;
+                cx_string err = cx_lasterr();
+                if (err) {
+                    cx_seterr("%s::init failed: %s", cx_fullname(type, id), err);
+                } else {
+                    cx_seterr("%s::init failed", cx_fullname(type, id));
+                }
+                goto error;
             }
 
             /* Add object to anonymous cache */
@@ -938,8 +924,10 @@ cx_object _cx_declare(cx_type type) {
         }
     }
 
-error:
     return CX_OFFSET(o, sizeof(cx__object));
+error:
+    if (o) cx_dealloc(cx__objectObservable(o));
+    return NULL;
 }
 
 /* Declare object */
@@ -950,29 +938,11 @@ cx_object _cx_declareChild(cx_object parent, cx_string name, cx_type type) {
         parent = root_o;
     }
 
-    /* Type must be valid and defined */
-    if (!cx_checkState(type, CX_VALID | CX_DEFINED)) {
-        cx_id pid, tid;
-        cx_error("failed to declare object '%s' in scope '%s', type '%s' is not valid and/or defined", name, cx_fullname(parent, pid), cx_fullname(type, tid));
-        goto error;
-    }
-
-    /* Pointer must be of type-class */
-    if (!cx_class_instanceof(cx_type_o, type)) {
-        cx_id pid, tid;
-        cx_error("failed to declare object '%s' in scope '%s': object '%s' is not- or does not refer a type", name, cx_fullname(parent, pid), cx_fullname(type, tid));
-        goto error;
-    }
-
     /* Check if object already exists */
     if ((o = cx_lookup(parent, name))) {
         if (cx_typeof(o) != type) {
-            cx_id tid, tid2, pid;
-            if (parent != root_o) {
-                cx_error("cannot declare '%s %s::%s', it is already declared as an object of a different type '%s'", cx_fullname(type, tid), cx_fullname(parent, pid), name, cx_fullname(cx_typeof(o), tid2));
-            } else {
-                cx_error("cannot declare '%s ::%s', it is already declared as an object of a different type '%s'", cx_fullname(type, tid), name, cx_fullname(cx_typeof(o), tid2));
-            }
+            cx_seterr("object already declared with different type");
+            o = NULL;
             goto error;
         }
         cx__scope *scope = cx__objectScope(CX_OFFSET(o, -sizeof(cx__object)));
@@ -997,14 +967,22 @@ cx_object _cx_declareChild(cx_object parent, cx_string name, cx_type type) {
 
                 /* Call framework initializer */
                 if (cx_init(o)) {
-                    cx_invalidate(o);
+                    cx_id id;
+                    cx_string err = cx_lasterr();
+                    if (err) {
+                        cx_seterr("%s::init failed: %s", cx_fullname(type, id), err);
+                    } else {
+                        cx_seterr("%s::init failed", cx_fullname(type, id));
+                    }
                     goto error;
                 }
 
                 /* Initially, an object is valid and declared */
                 _o->attrs.state |= CX_VALID;
             } else {
-                cx_invalidate(o);
+                cx__deinitScope(o);
+                cx_dealloc(cx__objectStartAddr(CX_OFFSET(o,-sizeof(cx__object))));
+                o = NULL;
                 goto error;
             }
 
@@ -1013,8 +991,12 @@ cx_object _cx_declareChild(cx_object parent, cx_string name, cx_type type) {
         }
     }
 
-error:
     return o;
+error:
+    if (o) {
+        cx_delete(o);
+    }
+    return NULL;
 }
 
 cx_object _cx_create(cx_type type) {
@@ -3754,10 +3736,9 @@ cx_int16 _cx_copyp(void *dst, cx_type type, void *src) {
     cx_value vdst;
     cx_value vsrc;
     cx_int16 result;
-    cx_valueValueInit(&vdst, NULL, type, *(void**)dst);
+    cx_valueValueInit(&vdst, NULL, type, dst);
     cx_valueValueInit(&vsrc, NULL, type, src);
     result = cx_copyv(&vdst, &vsrc);
-    *(void**)dst = cx_valueValue(&vdst);
     return result;
 }
 

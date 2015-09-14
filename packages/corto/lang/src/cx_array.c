@@ -27,7 +27,7 @@ cx_int16 _cx_array_construct(cx_array this) {
             this->elementType = cx_collection(this)->elementType;
         }
     } else {
-        cx_error("array::construct: no elementType provided for array");
+        cx_seterr("no elementType provided for array");
         goto error;
     }
 
@@ -35,7 +35,7 @@ cx_int16 _cx_array_construct(cx_array this) {
    if (!cx_checkState((cx_collection(this)->elementType), CX_DEFINED)) {
        if (!(cx_instanceof(cx_type(cx_type_o), cx_collection(this)->elementType) && cx_type(cx_collection(this)->elementType)->reference)) {
             cx_id id;
-            cx_error("array::construct: elementType '%s' is not defined.", cx_fullname(cx_collection(this)->elementType, id));
+            cx_seterr("elementType '%s' is not defined.", cx_fullname(cx_collection(this)->elementType, id));
             goto error;
        }
    }
@@ -50,12 +50,12 @@ cx_int16 _cx_array_construct(cx_array this) {
             cx_type(this)->alignment = cx_type_alignmentof(elementType);
         } else {
             cx_id id;
-            cx_error("array::construct: invalid array '%s' with size '0'.", cx_fullname(this, id));
+            cx_seterr("invalid array '%s' with size '0'.", cx_fullname(this, id));
             goto error;
         }
     } else {
         cx_id id1, id2;
-        cx_error("array::construct: elementType '%s' of arraytype '%s' has size 0", cx_fullname(elementType, id1), cx_fullname(this, id2));
+        cx_seterr("elementType '%s' of arraytype '%s' has size 0", cx_fullname(elementType, id1), cx_fullname(this, id2));
         goto error;
     }
 

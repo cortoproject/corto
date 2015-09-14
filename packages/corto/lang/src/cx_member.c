@@ -18,7 +18,7 @@ cx_int16 _cx_member_construct(cx_member this) {
 /* $begin(::corto::lang::member::construct) */
     if (!this->type) {
         cx_id id;
-        cx_error("member '%s' has no type.", cx_fullname(this, id));
+        cx_seterr("member '%s' has no type", cx_fullname(this, id));
         goto error;
     }
 
@@ -51,7 +51,7 @@ cx_int16 _cx_member_init(cx_member this) {
             }
         } else {
             cx_id id;
-            cx_error("invalid declaration of member '%s' in scope '%s', members can only be declared in scopes of composite thiss.",
+            cx_seterr("invalid declaration of member '%s' in scope '%s', members can only be declared in scopes of composite types.",
                     cx_nameof(this), cx_fullname(parent, id));
             goto error;
         }

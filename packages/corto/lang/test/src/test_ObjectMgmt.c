@@ -99,15 +99,8 @@ cx_void _test_ObjectMgmt_tc_createChildInitFail(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createChildInitFail) */
 
     cx_object o = cx_createChild(NULL, "o", test_Bar_o);
-    test_assert(o != NULL);
-    test_assert(!cx_checkState(o, CX_VALID));
-    test_assert(cx_checkState(o, CX_DECLARED));
-    test_assert(!cx_checkState(o, CX_DEFINED));
-    test_assert(cx_checkAttr(o, CX_ATTR_SCOPED));
-    test_assert(cx_checkAttr(o, CX_ATTR_WRITABLE));
-    test_assert(cx_checkAttr(o, CX_ATTR_OBSERVABLE));
-    test_assert(cx_checkAttr(o, CX_ATTR_PERSISTENT));
-    cx_delete(o);
+    test_assert(o == NULL);
+    test_assert(!strcmp(cx_lasterr(), "::test::Bar::init failed"));
 
 /* $end */
 }
@@ -171,6 +164,31 @@ cx_void _test_ObjectMgmt_tc_createChildIntAttr0(test_ObjectMgmt this) {
 /* $end */
 }
 
+/* ::test::ObjectMgmt::tc_createChildInvalidType() */
+cx_void _test_ObjectMgmt_tc_createChildInvalidType(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_createChildInvalidType) */
+
+    cx_type t = cx_type(cx_intCreateChild(NULL, "invalid", CX_WIDTH_8, 0, 0));
+    test_assert(t != NULL);
+    test_assert(cx_typeof(t) == cx_type(cx_int_o));
+    test_assert(cx_checkState(t, CX_VALID));
+    test_assert(cx_checkState(t, CX_DECLARED));
+    test_assert(cx_checkState(t, CX_DEFINED));
+    test_assert(cx_checkAttr(t, CX_ATTR_SCOPED));
+    test_assert(cx_checkAttr(t, CX_ATTR_WRITABLE));
+    test_assert(cx_checkAttr(t, CX_ATTR_OBSERVABLE));
+    test_assert(cx_checkAttr(t, CX_ATTR_PERSISTENT));
+
+    cx_invalidate(t);
+    test_assert(!cx_checkState(t, CX_VALID));
+
+    cx_object o = cx_create(t);
+    test_assert(o == NULL);
+    test_assert(!strcmp(cx_lasterr(), "type is not valid/defined"));
+
+/* $end */
+}
+
 /* ::test::ObjectMgmt::tc_createChildNested() */
 cx_void _test_ObjectMgmt_tc_createChildNested(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createChildNested) */
@@ -227,6 +245,61 @@ cx_void _test_ObjectMgmt_tc_createChildNested(test_ObjectMgmt this) {
     test_assert(*test_initCalled_o == 3);
     test_assert(*test_constructCalled_o == 3);
     test_assert(*test_destructCalled_o == 3);
+
+/* $end */
+}
+
+/* ::test::ObjectMgmt::tc_createChildNullType() */
+cx_void _test_ObjectMgmt_tc_createChildNullType(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_createChildNullType) */
+
+    cx_object o = cx_createChild(NULL, "o", NULL);
+    test_assert(o == NULL);
+    test_assert(!strcmp(cx_lasterr(), "parameter 'type' is null"));
+
+/* $end */
+}
+
+/* ::test::ObjectMgmt::tc_createChildParentStateErr() */
+cx_void _test_ObjectMgmt_tc_createChildParentStateErr(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_createChildParentStateErr) */
+
+    cx_object o = cx_declareChild(NULL, "o", cx_int32_o);
+    test_assert(o != NULL);
+    test_assert(cx_checkState(o, CX_DECLARED));
+    test_assert(!cx_checkState(o, CX_DEFINED));
+
+    cx_object p = cx_createChild(o, "p", test_DefinedParent_o);
+    test_assert(!strcmp(cx_lasterr(), "state of '::o' is not DEFINED"));
+    test_assert(p == NULL);
+
+    cx_object q = test_DefinedParentCreateChild(o, "q", 0);
+    test_assert(!strcmp(cx_lasterr(), "state of '::o' is not DEFINED"));
+    test_assert(q == NULL);
+
+    cx_delete(o);
+
+/* $end */
+}
+
+/* ::test::ObjectMgmt::tc_createChildParentTypeErr() */
+cx_void _test_ObjectMgmt_tc_createChildParentTypeErr(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_createChildParentTypeErr) */
+
+    cx_object o = cx_declareChild(NULL, "o", cx_int32_o);
+    test_assert(o != NULL);
+    test_assert(cx_checkState(o, CX_DECLARED));
+    test_assert(!cx_checkState(o, CX_DEFINED));
+
+    cx_object p = cx_createChild(o, "p", test_VoidParent_o);
+    test_assert(!strcmp(cx_lasterr(), "type of '::o' is not '::corto::lang::void'"));
+    test_assert(p == NULL);
+
+    cx_object q = test_VoidParentCreateChild(o, "q", 0);
+    test_assert(!strcmp(cx_lasterr(), "type of '::o' is not '::corto::lang::void'"));
+    test_assert(q == NULL);
+
+    cx_delete(o);
 
 /* $end */
 }
@@ -351,17 +424,9 @@ cx_void _test_ObjectMgmt_tc_createFooAttr0(test_ObjectMgmt this) {
 cx_void _test_ObjectMgmt_tc_createInitFail(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createInitFail) */
 
-    test_Bar o = cx_create(test_Bar_o);
-    test_assert(o != NULL);
-    test_assert(cx_typeof(o) == (cx_type)test_Bar_o);
-    test_assert(!cx_checkState(o, CX_VALID));
-    test_assert(cx_checkState(o, CX_DECLARED));
-    test_assert(!cx_checkState(o, CX_DEFINED));
-    test_assert(!cx_checkAttr(o, CX_ATTR_SCOPED));
-    test_assert(cx_checkAttr(o, CX_ATTR_WRITABLE));
-    test_assert(cx_checkAttr(o, CX_ATTR_OBSERVABLE));
-    test_assert(!cx_checkAttr(o, CX_ATTR_PERSISTENT));
-    cx_delete(o);
+    cx_object o = cx_create(test_Bar_o);
+    test_assert(o == NULL);
+    test_assert(!strcmp(cx_lasterr(), "::test::Bar::init failed"));
 
 /* $end */
 }
@@ -401,6 +466,42 @@ cx_void _test_ObjectMgmt_tc_createIntAttr0(test_ObjectMgmt this) {
     test_assert(!cx_checkAttr(o, CX_ATTR_OBSERVABLE));
     test_assert(!cx_checkAttr(o, CX_ATTR_PERSISTENT));
     cx_delete(o);
+
+/* $end */
+}
+
+/* ::test::ObjectMgmt::tc_createInvalidType() */
+cx_void _test_ObjectMgmt_tc_createInvalidType(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_createInvalidType) */
+
+    cx_type t = cx_type(cx_intCreateChild(NULL, "invalid", CX_WIDTH_8, 0, 0));
+    test_assert(t != NULL);
+    test_assert(cx_typeof(t) == cx_type(cx_int_o));
+    test_assert(cx_checkState(t, CX_VALID));
+    test_assert(cx_checkState(t, CX_DECLARED));
+    test_assert(cx_checkState(t, CX_DEFINED));
+    test_assert(cx_checkAttr(t, CX_ATTR_SCOPED));
+    test_assert(cx_checkAttr(t, CX_ATTR_WRITABLE));
+    test_assert(cx_checkAttr(t, CX_ATTR_OBSERVABLE));
+    test_assert(cx_checkAttr(t, CX_ATTR_PERSISTENT));
+
+    cx_invalidate(t);
+    test_assert(!cx_checkState(t, CX_VALID));
+
+    cx_object o = cx_create(t);
+    test_assert(!strcmp(cx_lasterr(), "type is not valid/defined"));
+    test_assert(o == NULL);
+
+/* $end */
+}
+
+/* ::test::ObjectMgmt::tc_createNullType() */
+cx_void _test_ObjectMgmt_tc_createNullType(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_createNullType) */
+
+    cx_object o = cx_create(NULL);
+    test_assert(o == NULL);
+    test_assert(!strcmp(cx_lasterr(), "parameter 'type' is null"));
 
 /* $end */
 }
@@ -524,15 +625,8 @@ cx_void _test_ObjectMgmt_tc_declareChildInitFail(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_declareChildInitFail) */
 
     cx_object o = cx_declareChild(NULL, "o", test_Bar_o);
-    test_assert(o != NULL);
-    test_assert(!cx_checkState(o, CX_VALID));
-    test_assert(cx_checkState(o, CX_DECLARED));
-    test_assert(!cx_checkState(o, CX_DEFINED));
-    test_assert(cx_checkAttr(o, CX_ATTR_SCOPED));
-    test_assert(cx_checkAttr(o, CX_ATTR_WRITABLE));
-    test_assert(cx_checkAttr(o, CX_ATTR_OBSERVABLE));
-    test_assert(cx_checkAttr(o, CX_ATTR_PERSISTENT));
-    cx_delete(o);
+    test_assert(o == NULL);
+    test_assert(!strcmp(cx_lasterr(), "::test::Bar::init failed"));
 
 /* $end */
 }
@@ -596,6 +690,83 @@ cx_void _test_ObjectMgmt_tc_declareChildIntAttr0(test_ObjectMgmt this) {
 
     cx_object q = cx_resolve(NULL, "o");
     test_assert(q == NULL);
+
+/* $end */
+}
+
+/* ::test::ObjectMgmt::tc_declareChildInvalidType() */
+cx_void _test_ObjectMgmt_tc_declareChildInvalidType(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_declareChildInvalidType) */
+
+    cx_type t = cx_type(cx_intCreateChild(NULL, "invalid", CX_WIDTH_8, 0, 0));
+    test_assert(t != NULL);
+    test_assert(cx_typeof(t) == cx_type(cx_int_o));
+    test_assert(cx_checkState(t, CX_VALID));
+    test_assert(cx_checkState(t, CX_DECLARED));
+    test_assert(cx_checkState(t, CX_DEFINED));
+    test_assert(cx_checkAttr(t, CX_ATTR_SCOPED));
+    test_assert(cx_checkAttr(t, CX_ATTR_WRITABLE));
+    test_assert(cx_checkAttr(t, CX_ATTR_OBSERVABLE));
+    test_assert(cx_checkAttr(t, CX_ATTR_PERSISTENT));
+
+    cx_invalidate(t);
+    test_assert(!cx_checkState(t, CX_VALID));
+
+    cx_object o = cx_declareChild(NULL, "foo", t);
+    test_assert(o == NULL);
+
+/* $end */
+}
+
+/* ::test::ObjectMgmt::tc_declareChildNullType() */
+cx_void _test_ObjectMgmt_tc_declareChildNullType(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_declareChildNullType) */
+
+    cx_object o = cx_declareChild(NULL, "o", NULL);
+    test_assert(o == NULL);
+    test_assert(!strcmp(cx_lasterr(), "parameter 'type' is null"));
+
+/* $end */
+}
+
+/* ::test::ObjectMgmt::tc_declareChildParentStateErr() */
+cx_void _test_ObjectMgmt_tc_declareChildParentStateErr(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_declareChildParentStateErr) */
+
+    cx_object o = cx_declareChild(NULL, "o", cx_int32_o);
+    test_assert(o != NULL);
+    test_assert(cx_checkState(o, CX_DECLARED));
+    test_assert(!cx_checkState(o, CX_DEFINED));
+
+    cx_object p = cx_declareChild(o, "p", test_DefinedParent_o);
+    test_assert(p == NULL);
+
+    cx_object q = test_DefinedParentDeclareChild(o, "q");
+    test_assert(q == NULL);
+
+    cx_delete(o);
+
+/* $end */
+}
+
+/* ::test::ObjectMgmt::tc_declareChildParentTypeErr() */
+cx_void _test_ObjectMgmt_tc_declareChildParentTypeErr(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_declareChildParentTypeErr) */
+
+    cx_object o = cx_declareChild(NULL, "o", cx_int32_o);
+    test_assert(o != NULL);
+    test_assert(cx_checkState(o, CX_DECLARED));
+    test_assert(!cx_checkState(o, CX_DEFINED));
+
+    cx_object p = cx_declareChild(o, "p", test_VoidParent_o);
+    test_assert(!strcmp(cx_lasterr(), "type of '::o' is not '::corto::lang::void'"));
+    test_assert(p == NULL);
+
+    cx_object q = test_VoidParentDeclareChild(o, "q");
+    test_assert(!strcmp(cx_lasterr(), "type of '::o' is not '::corto::lang::void'"));
+    test_assert(q == NULL);
+
+    cx_delete(o);
 
 /* $end */
 }
@@ -721,17 +892,9 @@ cx_void _test_ObjectMgmt_tc_declareFooAttr0(test_ObjectMgmt this) {
 cx_void _test_ObjectMgmt_tc_declareInitFail(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_declareInitFail) */
 
-    test_Bar o = cx_declare(test_Bar_o);
-    test_assert(o != NULL);
-    test_assert(cx_typeof(o) == (cx_type)test_Bar_o);
-    test_assert(!cx_checkState(o, CX_VALID));
-    test_assert(cx_checkState(o, CX_DECLARED));
-    test_assert(!cx_checkState(o, CX_DEFINED));
-    test_assert(!cx_checkAttr(o, CX_ATTR_SCOPED));
-    test_assert(cx_checkAttr(o, CX_ATTR_WRITABLE));
-    test_assert(cx_checkAttr(o, CX_ATTR_OBSERVABLE));
-    test_assert(!cx_checkAttr(o, CX_ATTR_PERSISTENT));
-    cx_delete(o);
+    cx_object o = cx_declare(test_Bar_o);
+    test_assert(o == NULL);
+    test_assert(!strcmp(cx_lasterr(), "::test::Bar::init failed"));
 
 /* $end */
 }
@@ -771,6 +934,41 @@ cx_void _test_ObjectMgmt_tc_declareIntAttr0(test_ObjectMgmt this) {
     test_assert(!cx_checkAttr(o, CX_ATTR_OBSERVABLE));
     test_assert(!cx_checkAttr(o, CX_ATTR_PERSISTENT));
     cx_delete(o);
+
+/* $end */
+}
+
+/* ::test::ObjectMgmt::tc_declareInvalidType() */
+cx_void _test_ObjectMgmt_tc_declareInvalidType(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_declareInvalidType) */
+
+    cx_type t = cx_type(cx_intCreateChild(NULL, "invalid", CX_WIDTH_8, 0, 0));
+    test_assert(t != NULL);
+    test_assert(cx_typeof(t) == cx_type(cx_int_o));
+    test_assert(cx_checkState(t, CX_VALID));
+    test_assert(cx_checkState(t, CX_DECLARED));
+    test_assert(cx_checkState(t, CX_DEFINED));
+    test_assert(cx_checkAttr(t, CX_ATTR_SCOPED));
+    test_assert(cx_checkAttr(t, CX_ATTR_WRITABLE));
+    test_assert(cx_checkAttr(t, CX_ATTR_OBSERVABLE));
+    test_assert(cx_checkAttr(t, CX_ATTR_PERSISTENT));
+
+    cx_invalidate(t);
+    test_assert(!cx_checkState(t, CX_VALID));
+
+    cx_object o = cx_declare(t);
+    test_assert(o == NULL);
+
+/* $end */
+}
+
+/* ::test::ObjectMgmt::tc_declareNullType() */
+cx_void _test_ObjectMgmt_tc_declareNullType(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_declareNullType) */
+
+    cx_object o = cx_declare(NULL);
+    test_assert(o == NULL);
+    test_assert(!strcmp(cx_lasterr(), "parameter 'type' is null"));
 
 /* $end */
 }
@@ -940,15 +1138,6 @@ cx_void _test_ObjectMgmt_tc_defineFooFail(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_defineInitFail() */
-cx_void _test_ObjectMgmt_tc_defineInitFail(test_ObjectMgmt this) {
-/* $begin(::test::ObjectMgmt::tc_defineInitFail) */
-
-    /* << Insert implementation >> */
-
-/* $end */
-}
-
 /* ::test::ObjectMgmt::tc_defineInt() */
 cx_void _test_ObjectMgmt_tc_defineInt(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_defineInt) */
@@ -1104,6 +1293,25 @@ cx_void _test_ObjectMgmt_tc_drop(test_ObjectMgmt this) {
     cx_delete(o);
 
     test_assert(*test_destructCalled_o == 3);
+
+/* $end */
+}
+
+/* ::test::ObjectMgmt::tc_invalidate() */
+cx_void _test_ObjectMgmt_tc_invalidate(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_invalidate) */
+
+    cx_object o = cx_voidCreate();
+    test_assert(o != NULL);
+    test_assert(cx_typeof(o) == cx_void_o);
+    test_assert(cx_checkState(o, CX_VALID));
+    test_assert(cx_checkState(o, CX_DECLARED));
+    test_assert(cx_checkState(o, CX_DEFINED));
+    test_assert(cx_checkAttr(o, CX_ATTR_OBSERVABLE));
+
+    cx_invalidate(o);
+    test_assert(!cx_checkState(o, CX_VALID));
+    cx_delete(o);
 
 /* $end */
 }

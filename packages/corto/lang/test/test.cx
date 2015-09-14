@@ -23,12 +23,23 @@ struct Point3D: Point::
 struct Line::
     start, stop: Point
 
+struct VoidParent: parentType = void::
+    foo: int32
+
+struct DefinedParent: parentState = defined ::
+    foo: int32
+
+struct DeclaredParent: parentState = declared::
+    foo: int32
+
 // Object management testcases
 class ObjectMgmt: test::Suite::
     prevAttr: lang::attr, local|private
 
     void setup()
     void teardown()
+
+    void tc_invalidate() test::Case
 
     void tc_declareVoid() test::Case
     void tc_declareInt() test::Case
@@ -37,6 +48,8 @@ class ObjectMgmt: test::Suite::
     void tc_declareIntAttr0() test::Case
     void tc_declareFooAttr0() test::Case
     void tc_declareInitFail() test::Case
+    void tc_declareNullType() test::Case
+    void tc_declareInvalidType() test::Case
 
     void tc_createVoid() test::Case
     void tc_createInt() test::Case
@@ -45,6 +58,8 @@ class ObjectMgmt: test::Suite::
     void tc_createIntAttr0() test::Case
     void tc_createFooAttr0() test::Case
     void tc_createInitFail() test::Case
+    void tc_createNullType() test::Case
+    void tc_createInvalidType() test::Case
 
     void tc_defineVoid() test::Case
     void tc_defineInt() test::Case
@@ -53,7 +68,6 @@ class ObjectMgmt: test::Suite::
     void tc_defineIntAttr0() test::Case
     void tc_defineFooAttr0() test::Case
     void tc_defineFooFail() test::Case
-    void tc_defineInitFail() test::Case
 
     void tc_declareChildVoid() test::Case
     void tc_declareChildInt() test::Case
@@ -62,6 +76,10 @@ class ObjectMgmt: test::Suite::
     void tc_declareChildIntAttr0() test::Case
     void tc_declareChildFooAttr0() test::Case
     void tc_declareChildInitFail() test::Case
+    void tc_declareChildParentStateErr() test::Case
+    void tc_declareChildParentTypeErr() test::Case
+    void tc_declareChildNullType() test::Case
+    void tc_declareChildInvalidType() test::Case
 
     void tc_createChildVoid() test::Case
     void tc_createChildInt() test::Case
@@ -70,6 +88,10 @@ class ObjectMgmt: test::Suite::
     void tc_createChildIntAttr0() test::Case
     void tc_createChildFooAttr0() test::Case
     void tc_createChildInitFail() test::Case
+    void tc_createChildParentStateErr() test::Case
+    void tc_createChildParentTypeErr() test::Case
+    void tc_createChildNullType() test::Case
+    void tc_createChildInvalidType() test::Case
 
     void tc_createChildNested() test::Case
     void tc_drop() test::Case

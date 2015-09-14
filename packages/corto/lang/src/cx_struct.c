@@ -140,7 +140,7 @@ cx_int16 _cx_struct_init(cx_struct this) {
         this->baseAccess = CX_GLOBAL;
     }
 
-    if (cx_interface_init(cx_interface(this))) {
+    if (cx_interface_init(this)) {
         goto error;
     }
 

@@ -11,7 +11,7 @@ int yylex_destroy(void);
 int yy_scan_string(const char* str);
 
 #define PUSHLVALUE(l) ast_Parser_pushLvalue(yparser(), l, FALSE); fast_op;
-#define PUSHASSIGN(l)    ast_Parser_pushLvalue(yparser(), l, TRUE); fast_op;
+#define PUSHASSIGN(l) ast_Parser_pushLvalue(yparser(), l, TRUE); fast_op;
 #define POPLVALUE()   ast_Parser_popLvalue(yparser()); fast_op;
 
 #define PUSHCOMPLEX(l) ast_Parser_pushComplexType(yparser(), l); fast_op;

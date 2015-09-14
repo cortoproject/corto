@@ -190,6 +190,12 @@ cx_int16 c_apiTypeCreateIntern(cx_type t, c_apiWalk_t *data, cx_string func, cx_
 	    g_fileWrite(data->source, "this = cx_declare(%s_o);\n", id);
 	}
 
+    g_fileWrite(data->source, "if (!this) {\n");
+    g_fileIndent(data->source);
+    g_fileWrite(data->source, "return NULL;\n");
+    g_fileDedent(data->source);
+    g_fileWrite(data->source, "}\n");
+
     if (define) {
 	    /* Assignments */
         if ((t->kind != CX_COMPOSITE) && (t->kind != CX_COLLECTION) && (t->kind != CX_VOID)) {

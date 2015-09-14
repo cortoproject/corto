@@ -320,7 +320,7 @@ cx_observer _cx_class_findObserver(cx_class this, cx_object observable) {
 /* ::corto::lang::class::init() */
 cx_int16 _cx_class_init(cx_class this) {
 /* $begin(::corto::lang::class::init) */
-    if (cx_struct_init(cx_struct(this))) {
+    if (cx_struct_init(this)) {
         goto error;
     }
 
