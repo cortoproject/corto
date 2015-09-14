@@ -1769,7 +1769,7 @@ cx_void _ast_Parser_initDeclareStaged(ast_Parser this, ast_Expression expr) {
         for(i=0; i<this->stagedCount; i++) {
             if (cx_instanceof(cx_type(cx_type_o), this->scope)) {
                 cx_type defaultType;
-                cx_type scopeType = cx_type(this->scope);
+                cx_type scopeType = cx_type(cx_typeof(this->scope));
                 if (scopeType->defaultType) {
                     defaultType = scopeType->defaultType;
                 } else {
