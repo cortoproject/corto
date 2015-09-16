@@ -126,7 +126,7 @@ cx_int16 _cx_struct_construct(cx_struct this) {
     /* Set size of self */
     cx_type(this)->size = size;
 
-    return cx_interface_construct(cx_interface(this));
+    return cx_interface_construct(this);
 error:
     return -1;
 /* $end */

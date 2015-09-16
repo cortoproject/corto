@@ -1338,8 +1338,13 @@ cx_string cx_fullname(cx_object o, cx_id buffer) {
     depth = 0;
 
     if (!o) {
-        *buffer = '\0';
-        return buffer;
+        cx_seterr("no object provided");
+        return NULL;
+    }
+
+    if (!buffer) {
+        cx_seterr("no buffer provided");
+        return NULL;
     }
 
     if (!cx_checkAttr(o, CX_ATTR_SCOPED)) {
@@ -1405,11 +1410,20 @@ cx_string cx_relname(cx_object from, cx_object o, cx_id buffer) {
     cx_assert(from != NULL, "relname called with NULL for parameter 'from'.");
     cx_assert(o != NULL, "relname called with NULL for parameter 'to'.");
 
-    if (from == root_o) {
-        cx_fullname(o, buffer);
+    if (from == o) {
+        strcpy(buffer, ".");
+    } else if (from == root_o) {
+        cx_id buff;
+        cx_fullname(o, buff);
+        strcpy(buffer, buff + 2);
     } else {
         cx_scopeStack(from, from_s, &from_i);
         cx_scopeStack(o, o_s, &o_i);
+
+        if (from_i > o_i) {
+            cx_seterr("origin is not in path of object");
+            return NULL;
+        }
 
         from_i--;
         o_i--;
@@ -1517,7 +1531,6 @@ cx_uint16 cx__destruct(cx_object o) {
             cx__deinitWritable(o);
         }
 
-        /* Remove from anonymous cache */
         if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
             cx__deinitScope(o);
         } else {
@@ -1820,13 +1833,9 @@ void cx_drop(cx_object o) {
             iter = cx_llIter(walkData.objects);
             while(cx_iterHasNext(&iter)) {
                 collected = cx_iterNext(&iter);
-                cx_release(collected);
+                cx_delete(collected);
                 /* Double free - because cx_drop itself introduced a keep. */
-                if (cx_checkAttr(collected, CX_ATTR_SCOPED)) {
-                    cx_delete(collected);
-                } else {
-                    cx_release(collected);
-                }
+                cx_release(collected);
             }
             cx_llFree(walkData.objects);
         }
@@ -3240,6 +3249,7 @@ nomatch:
     *distance = -1;
     return 0;
 error:
+    cx_seterr("invalid query '%s'", requested);
     return -1;
 }
 

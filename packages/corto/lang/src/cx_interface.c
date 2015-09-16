@@ -67,7 +67,7 @@ cx_function* cx_vtableLookup(cx_vtable* vtable, cx_string member, cx_int32* i_ou
 
     /* Searching backwards will ensure that when the member-string contains no arguments and the
      * vtable has multiple matches, the most specific function is selected. */
-    for (i=vtable->length-1; i>=0 && d; i--) {
+    for (i = vtable->length - 1; i >= 0 && d; i--) {
         if (buffer[i]) {
             if (cx_overload(buffer[i], member, &d_t)) {
                 goto error;
@@ -409,6 +409,7 @@ cx_int16 _cx_interface_bindMethod(cx_interface this, cx_method method) {
 
     /* vtableLookup failed (probably due to a failed overloading request) */
     if (i == -1) {
+        cx_seterr("method lookup error for '%s'", cx_nameof(method));
         goto error;
     }
 
@@ -427,7 +428,7 @@ cx_int16 _cx_interface_bindMethod(cx_interface this, cx_method method) {
                 cx_setref(virtual, method);
             } else {
                 cx_id id, id2;
-                cx_error("definition of method '%s' conflicts with existing method '%s'", cx_fullname(method, id), cx_fullname(*virtual, id2));
+                cx_seterr("definition of method '%s' conflicts with existing method '%s'", cx_fullname(method, id), cx_fullname(*virtual, id2));
                 goto error;
             }
         }
@@ -553,7 +554,6 @@ cx_int16 _cx_interface_init(cx_interface this) {
 /* $begin(::corto::lang::interface::init) */
     cx_type(this)->reference = TRUE;
     cx_type(this)->kind = CX_COMPOSITE;
-    cx_setref(&cx_type(this)->defaultType, cx_member_o);
     this->kind = CX_INTERFACE;
     return cx_type_init(cx_type(this));
 /* $end */

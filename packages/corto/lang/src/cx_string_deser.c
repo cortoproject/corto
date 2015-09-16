@@ -526,7 +526,6 @@ error:
 cx_string cx_string_deser(cx_string str, cx_string_deser_t* data) {
     cx_char *ptr;
     cx_bool createdNew = FALSE;
-    cx_bool typeProvided = TRUE;
 
     {
         cx_id buffer;
@@ -547,7 +546,6 @@ cx_string cx_string_deser(cx_string str, cx_string_deser_t* data) {
         /* If no type is found, reset ptr */
         if ((ch != '{')) {
             ptr = str;
-            typeProvided = FALSE;
         } else {
             cx_object type;
 

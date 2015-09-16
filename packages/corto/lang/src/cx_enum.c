@@ -84,7 +84,6 @@ cx_int16 _cx_enum_init(cx_enum this) {
 /* $begin(::corto::lang::enum::init) */
     cx_primitive(this)->kind = CX_ENUM;
     cx_primitive(this)->width = CX_WIDTH_32;
-    cx_setref(&cx_type(this)->defaultType, cx_constant_o);
     return cx_primitive_init((cx_primitive)this);
 /* $end */
 }

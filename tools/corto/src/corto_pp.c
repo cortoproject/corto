@@ -253,6 +253,7 @@ cx_int16 corto_pp(int argc, char *argv[]) {
             if (gen_start(g)) {
                 cx_error("corto: %s: %s", lib, cx_lasterr());
                 gen_free(g);
+
                 goto error;
             }
 

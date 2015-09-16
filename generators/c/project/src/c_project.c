@@ -133,6 +133,8 @@ static cx_int16 c_projectGenerateMainHeaderFile(cx_generator g) {
     g_fileWrite(file, "#endif\n");
     g_fileWrite(file, "#endif\n\n");
 
+    g_fileClose(file);
+
     return 0;
 error:
     return -1;
@@ -215,7 +217,7 @@ cx_int16 corto_genMain(cx_generator g) {
         goto error;
     }
 
-    if (g_getCurrent(g)) {
+    if (g->objects) {
         if(c_projectGenerateDepMakefile(g)) {
             goto error;
         }

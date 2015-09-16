@@ -96,6 +96,35 @@ class ObjectMgmt: test::Suite::
     void tc_createChildNested() test::Case
     void tc_drop() test::Case
 
+// Generate fully scoped names
+class Fullname: test::Suite::
+    void tc_root() test::Case
+    void tc_onelevel() test::Case
+    void tc_twolevels() test::Case
+    void tc_null() test::Case
+    void tc_nullBuffer() test::Case
+
+// Generate names relative to an object
+class RelativeName: test::Suite::
+    void setup()
+    void teardown()
+
+    tier1: object
+    tier2: object
+    tier3: object
+    obj: object
+    disjunct: object
+    child: object
+
+    void tc_fromRoot() test::Case
+    void tc_fromParent() test::Case
+    void tc_fromOneUp() test::Case
+    void tc_fromTwoUp() test::Case
+    void tc_fromThreeUp() test::Case
+    void tc_fromChild() test::Case
+    void tc_fromDisjunct() test::Case
+    void tc_fromSelf() test::Case
+
 // Resolve algorithm testcases
 class Resolver: test::Suite::
     void setup()
@@ -103,6 +132,7 @@ class Resolver: test::Suite::
 
     void tc_resolveNull() test::Case
     void tc_resolveRoot() test::Case
+    void tc_resolveThis() test::Case
     void tc_resolveCorto() test::Case
     void tc_resolveLang() test::Case
     void tc_resolveString() test::Case

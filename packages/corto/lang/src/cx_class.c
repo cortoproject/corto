@@ -68,7 +68,7 @@ static cx_bool cx_class_checkInterfaceCompatibility(cx_class this, cx_interface 
             }
         } else {
             cx_id id, id2;
-            cx_error("class '%s' is missing implementation for function '%s'", cx_fullname(this, id), cx_fullname(m_interface, id2));
+            cx_seterr("class '%s' is missing implementation for function '%s'", cx_fullname(this, id), cx_fullname(m_interface, id2));
             compatible = FALSE;
         }
     }
@@ -242,7 +242,7 @@ cx_int16 _cx_class_construct(cx_class this) {
 
     /* This will bind methods of potential base-class which is necessary before validating
      * whether this class correctly (fully) implements its interface. */
-    result = cx_struct_construct(cx_struct(this));
+    result = cx_struct_construct(this);
 
     /* Create interface vector */
     if (!result) {

@@ -12,6 +12,7 @@ end
 
 TARGET = PACKAGE.split("::").last
 
+PP_PRELOAD ||= []
 GENERATED_SOURCES ||= []
 
 GENERATED_SOURCES <<
@@ -46,9 +47,10 @@ end
 
 file "include/#{TARGET}__type.h" => [GENFILE, ".corto/packages.txt", ".corto/components.txt"] do
     verbose(false)
+    preload = PP_PRELOAD.join(" ")
     sh "mkdir -p .corto"
     sh "touch .corto/#{TARGET}__wrapper.c"
-    ret = system "corto pp #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c"
+    ret = sh "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c"
     if !ret then
         sh "rm include/#{TARGET}__type.h"
         abort "\033[1;31m[ build failed ]\033[0;49m"

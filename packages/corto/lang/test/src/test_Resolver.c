@@ -110,6 +110,17 @@ cx_void _test_Resolver_tc_resolveString(test_Resolver this) {
 /* $end */
 }
 
+/* ::test::Resolver::tc_resolveThis() */
+cx_void _test_Resolver_tc_resolveThis(test_Resolver this) {
+/* $begin(::test::Resolver::tc_resolveThis) */
+
+    cx_object o = cx_resolve(corto_lang_o, ".");
+    test_assert(o == corto_lang_o);
+    cx_release(o);
+
+/* $end */
+}
+
 /* ::test::Resolver::teardown() */
 cx_void _test_Resolver_teardown(test_Resolver this) {
 /* $begin(::test::Resolver::teardown) */

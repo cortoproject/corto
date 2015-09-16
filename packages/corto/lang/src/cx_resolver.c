@@ -55,6 +55,11 @@ cx_object cx_resolve(cx_object _scope, cx_string str) {
         return NULL;
     }
 
+    if ((str[0] == '.') && (str[1] == '\0')) {
+        cx_claim(_scope);
+        return _scope;
+    }
+
     if (*str == '<') {
         return cx_resolveAddress(str);
     }

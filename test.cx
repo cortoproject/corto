@@ -1,0 +1,23 @@
+
+class Foo ::
+    m_1: int32
+    m_2, m_3: int32
+    m_readonly: string, readonly
+
+    enum Color:: RED, GREEN, BLUE
+
+    m_enum: Color
+
+    struct Nested::
+        m_1: int32
+
+    m_struct: Nested
+
+    void inparam(Foo p)
+    void outparam(Foo p)
+    //void outparamNonRef(int32& i)
+
+    //Foo returnval()
+
+    //void twoparams(Foo p, int32& status)
+
