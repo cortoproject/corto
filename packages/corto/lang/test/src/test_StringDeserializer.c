@@ -253,10 +253,10 @@ cx_void _test_StringDeserializer_tc_deserCompositeNestedMixed(test_StringDeseria
     test_assert(ret == 0);
     test_assert(cx_typeof(o) == (cx_type)test_Line_o);
     test_Line *l = o;
-    test_assert(l->start.x == 10);
-    test_assert(l->start.y == 20);
-    test_assert(l->stop.x == 30);
-    test_assert(l->stop.y == 40);
+    test_assert(l->start.x == 40);
+    test_assert(l->start.y == 30);
+    test_assert(l->stop.x == 10);
+    test_assert(l->stop.y == 20);
     cx_delete(o);
 
 /* $end */

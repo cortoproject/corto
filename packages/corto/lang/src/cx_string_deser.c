@@ -247,6 +247,7 @@ static cx_int16 cx_string_deserParseValue(cx_string value, struct cx_string_dese
     /* Can typically occur when mixing short with default notation. */
     if (info->parsed) {
         cx_seterr("member '%s' is already parsed", cx_nameof(info->m));
+        goto error;
     }
 
     /* Only parse references and primitives */
@@ -468,6 +469,7 @@ static cx_string cx_string_deserParse(cx_string str, struct cx_string_deserIndex
                 }
             }
             proceed = FALSE;
+            ptr--;
             break;
 
         case '\n':
