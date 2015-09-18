@@ -73,7 +73,7 @@ static cx_int16 serializePrimitive(cx_serializer s, cx_value *v, void *userData)
     CX_UNUSED(s);
     cx_type type = cx_valueType(v);
     cx_json_ser_t *data = userData;
-    cx_int16 result;
+    cx_int16 result = 0;
     cx_string valueString;
 
     switch (cx_primitive(type)->kind) {

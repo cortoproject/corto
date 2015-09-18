@@ -34,7 +34,7 @@
 
 extern cx_mutex_s cx_adminLock;
 
-static int cx_adopt(cx_object parent, cx_object child);
+static cx_object cx_adopt(cx_object parent, cx_object child);
 static cx_int32 cx_notify(cx__observable *_o, cx_object observable, cx_uint32 mask);
 
 static void cx_notifyObserverDefault(cx__observer* data, cx_object this, cx_object observable, cx_object source, cx_uint32 mask);
@@ -247,9 +247,10 @@ static void* cx__objectStartAddr(cx__object* o) {
 }
 
 /* Initialze scope-part of object */
-static cx_int16 cx__initScope(cx_object o, cx_string name, cx_object parent) {
+static cx_object cx__initScope(cx_object o, cx_string name, cx_object parent) {
     cx__object* _o;
     cx__scope* scope;
+    cx_object result = NULL;
 
     _o = CX_OFFSET(o, -sizeof(cx__object));
     scope = cx__objectScope(_o);
@@ -260,13 +261,18 @@ static cx_int16 cx__initScope(cx_object o, cx_string name, cx_object parent) {
     cx_rwmutexNew(&scope->scopeLock);
 
     /* Add object to the scope of the parent-object */
-    if (cx_adopt(parent, o)) {
+    if (!(result = cx_adopt(parent, o))) {
         goto error;
     }
 
-    return 0;
+    if (result != o) {
+        cx_dealloc(scope->name);
+        cx_rwmutexFree(&scope->scopeLock);
+    }
+
+    return result;
 error:
-    return -1;
+    return NULL;
 }
 
 static void cx__deinitScope(cx_object o) {
@@ -497,7 +503,7 @@ int cx__adoptSSO(cx_object sso) {
     /* Reset the parent to NULL, since cx_adopt will otherwise conclude that this object is adopted twice */
     scope->parent = NULL;
 
-    return cx_adopt(parent, sso);
+    return !cx_adopt(parent, sso);
 }
 
 /* Find the right constructor to call */
@@ -554,7 +560,6 @@ error:
     return -1;
 }
 
-/* Set state on object */
 void cx__setState(cx_object o, cx_uint8 state) {
     cx__object* _o;
 
@@ -566,6 +571,44 @@ static cx_equalityKind cx_objectCompare(cx_type this, const void* o1, const void
     int r;
     CX_UNUSED(this);
     return ((r = stricmp(o1, o2)) < 0) ? CX_LT : (r > 0) ? CX_GT : CX_EQ;
+}
+
+#include "ctype.h"
+static cx_equalityKind cx_objectCompareLookup(cx_type this, const void* o1, const void* o2) {
+    CX_UNUSED(this);
+    int r;
+    const char *ptr1, *ptr2;
+    ptr1 = o1;
+    ptr2 = o2;
+    char ch1, ch2;
+
+    ch2 = *ptr2;
+    while((ch1 = *ptr1) && ch2) {
+        if (ch1 == ch2) {
+            if (ch1 == '(') {
+                r = 0;
+                goto compare;
+            }
+            ptr1++; ptr2++;
+            ch2 = *ptr2;
+            continue;
+        }
+        if (ch1 < 97) ch1 = tolower(ch1);
+       
+        /* Query is always made lower case, for efficiency reasons */
+        /* if (ch2 < 97) ch2 = tolower(ch2); */
+        if (ch1 != ch2) {
+            r = ch1 - ch2;
+            goto compare;
+        }
+        ptr1++;
+        ptr2++;
+        ch2 = *ptr2;
+    }
+
+    r = ch1 - ch2;
+compare:
+    return (r < 0) ? CX_LT : (r > 0) ? CX_GT : CX_EQ;
 }
 
 /* Match a state exclusively:
@@ -590,7 +633,7 @@ static cx_bool cx__checkStateXOR(cx_object o, cx_uint8 state) {
 }
 
 /* Adopt an object */
-static int cx_adopt(cx_object parent, cx_object child) {
+static cx_object cx_adopt(cx_object parent, cx_object child) {
     cx__object *_parent, *_child;
     cx__scope *p_scope, *c_scope;
     cx_type parentType;
@@ -644,7 +687,15 @@ static int cx_adopt(cx_object parent, cx_object child) {
             if (!p_scope->scope) {
                 p_scope->scope = cx_rbtreeNew_w_func(cx_objectCompare);
             }
-            cx_rbtreeSet(p_scope->scope, c_scope->name, child);
+            
+            cx_object existing = cx_rbtreeFindOrSet(p_scope->scope, c_scope->name, child);
+            if (existing) {
+                if (cx_typeof(existing) != cx_typeof(child)) {
+                    goto err_type_mismatch;
+                } else {
+                    child = existing;
+                }
+            }
 
             /* Parent must not be deleted before all childs are gone. */
             cx_claim(parent);
@@ -656,31 +707,37 @@ static int cx_adopt(cx_object parent, cx_object child) {
         goto err_no_parent_scope;
     }
 
-    return 0;
+    return child;
 
 err_child_mutex:
     cx_critical("cx_adopt: lock operation on scopeLock of child failed");
-    return -1;
+    return NULL;
 
 err_parent_mutex:
     cx_critical("cx_adopt: lock operation on scopeLock of parent failed");
-    return -1;
+    return NULL;
 
 err_already_adopted:
     cx_rwmutexUnlock(&c_scope->scopeLock);
     cx_seterr("cx_adopt: child-object is already adopted");
-    return -1;
+    return NULL;
+
+err_type_mismatch:
+    cx_rwmutexUnlock(&p_scope->scopeLock);
+    cx_critical("'%s' is already declared with a different type",
+        c_scope->name);
+    return NULL;
 
 err_no_parent_scope:
     cx_critical("cx_adopt: parent-object is not scoped");
-    return -1;
+    return NULL;
 
 err_no_child_scope:
     cx_critical("cx_adopt: child-object is not scoped");
-    return -1;
+    return NULL;
 
 err_invalid_parent:
-    return -1;
+    return NULL;
 }
 
 void cx_attach(cx_object parent, cx_object child) {
@@ -911,7 +968,7 @@ cx_object _cx_declare(cx_type type) {
                 } else {
                     cx_seterr("%s::init failed", cx_fullname(type, id));
                 }
-                goto error;
+                goto error_init;
             }
 
             /* Add object to anonymous cache */
@@ -925,6 +982,8 @@ cx_object _cx_declare(cx_type type) {
     }
 
     return CX_OFFSET(o, sizeof(cx__object));
+error_init:
+    cx_release(type);
 error:
     if (o) cx_dealloc(cx__objectObservable(o));
     return NULL;
@@ -938,26 +997,19 @@ cx_object _cx_declareChild(cx_object parent, cx_string name, cx_type type) {
         parent = root_o;
     }
 
-    /* Check if object already exists */
-    if ((o = cx_lookup(parent, name))) {
-        if (cx_typeof(o) != type) {
-            cx_seterr("object already declared with different type");
-            o = NULL;
-            goto error;
-        }
-        cx__scope *scope = cx__objectScope(CX_OFFSET(o, -sizeof(cx__object)));
-        cx_ainc(&scope->declared);
-    } else {
-        /* Create new object */
-        cx_attr oldAttr = cx_setAttr(cx_getAttr()|CX_ATTR_SCOPED);
-        o = cx_declare(type);
-        cx_setAttr(oldAttr);
+    /* Create new object */
+    cx_attr oldAttr = cx_setAttr(cx_getAttr()|CX_ATTR_SCOPED);
+    o = cx_declare(type);
+    cx_setAttr(oldAttr);
 
-        if (o) {
-            cx__object *_o = CX_OFFSET(o, -sizeof(cx__object));
-            /* Initialize object parameters. */
-            if (!cx__initScope(o, name, parent)) {
+    if (o) {
+        cx_object o_ret = NULL;
+        cx__object *_o = CX_OFFSET(o, -sizeof(cx__object));
+        /* Initialize object parameters. */
 
+        if ((o_ret = cx__initScope(o, name, parent))) {
+
+            if (o_ret == o) {
                 /* Observable administration needs to be initialized after the
                  * scope administration because it needs to setup the correct
                  * chain of parents to notify on an event. */
@@ -980,17 +1032,24 @@ cx_object _cx_declareChild(cx_object parent, cx_string name, cx_type type) {
                 /* Initially, an object is valid and declared */
                 _o->attrs.state |= CX_VALID;
             } else {
-                cx__deinitScope(o);
+                cx_release(type);
                 cx_dealloc(cx__objectStartAddr(CX_OFFSET(o,-sizeof(cx__object))));
-                o = NULL;
-                goto error;
+                o = o_ret;
+                goto ok;
             }
-
-            /* Notify parent of new object */
-            cx_notify(cx__objectObservable(CX_OFFSET(parent,-sizeof(cx__object))), o, CX_ON_DECLARE);
+        } else {
+            cx__deinitScope(o);
+            cx_release(type);
+            cx_dealloc(cx__objectStartAddr(CX_OFFSET(o,-sizeof(cx__object))));
+            o = NULL;
+            goto error;
         }
+
+        /* Notify parent of new object */
+        cx_notify(cx__objectObservable(CX_OFFSET(parent,-sizeof(cx__object))), o, CX_ON_DECLARE);
     }
 
+ok:
     return o;
 error:
     if (o) {
@@ -1844,7 +1903,7 @@ void cx_drop(cx_object o) {
     }
 }
 
-cx_object cx_lookup(cx_object o, cx_string name) {
+cx_object cx_lookupLowercase(cx_object o, cx_string name) {
     cx_object result;
     cx__object *_o, *_result;
     cx__scope* scope;
@@ -1856,7 +1915,7 @@ cx_object cx_lookup(cx_object o, cx_string name) {
     if (scope) {
         cx_rwmutexRead(&scope->scopeLock);
         if ((tree = scope->scope)) {
-            if ((!cx_rbtreeHasKey(tree, name, (void**)&result))) {
+            if ((!cx_rbtreeHasKey_w_cmp(tree, name, (void**)&result, cx_objectCompareLookup))) {
                 result = NULL;
             } else {
                 /* Keep object. If the refcount was zero, this object will be deleted soon, so prevent the object from being referenced again. */
@@ -1887,6 +1946,15 @@ cx_object cx_lookup(cx_object o, cx_string name) {
     return result;
 error:
     return NULL;
+}
+
+cx_object cx_lookup(cx_object o, cx_string name) {
+    cx_id lower;
+    char *ptr = name, ch;
+    char *bptr = lower;
+    for(; (ch = *ptr); ptr++) *(bptr++) = tolower(ch);
+    *bptr = '\0';
+    return cx_lookupLowercase(o, lower);
 }
 
 /* Event handling. */
@@ -3182,7 +3250,7 @@ cx_int16 cx_overload(cx_object object, cx_string requested, cx_int32* distance) 
     }
 
     /* Validate if names of request and offered match */
-    if (strcmp(o_name, r_name)) {
+    if (stricmp(o_name, r_name)) {
         goto nomatch;
     }
 
@@ -3279,7 +3347,7 @@ int cx_lookupFunctionWalk(cx_object o, void* userData) {
         } else {
             cx_id name;
             cx_signatureName(cx_nameof(o), name); /* Obtain function name */
-            if (!strcmp(name, data->request)) {
+            if (!stricmp(name, data->request)) {
                 d = INT_MAX-1;
             }
         }
@@ -3763,3 +3831,4 @@ cx_int16 cx_copya(cx_any *dst, cx_any src) {
     dst->type = src.type;
     return result;
 }
+

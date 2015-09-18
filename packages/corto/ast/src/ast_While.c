@@ -42,7 +42,7 @@ error:
 ic_node _ast_While_toIc_v(ast_While this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::corto::ast::While::toIc) */
     ic_storage accumulator;
-    ic_label labelEval, labelNeq;
+    ic_label labelEval, labelNeq = NULL;
     ast_Expression condition = NULL;
     cx_bool condResult = FALSE, inverse = FALSE;
     ic_node expr = NULL;

@@ -39,7 +39,13 @@ void* cx_rbtreeGetPtr(cx_rbtree tree, void* key) {
 }
 
 void cx_rbtreeSet(cx_rbtree tree, const void* key, void* value) {
-    jsw_rbinsert((jsw_rbtree_t*)tree, (void*)key, value);
+    jsw_rbinsert((jsw_rbtree_t*)tree, (void*)key, value, NULL, TRUE);
+}
+
+void* cx_rbtreeFindOrSet(cx_rbtree tree, const void* key, void* value) {
+    void *old = NULL;
+    jsw_rbinsert((jsw_rbtree_t*)tree, (void*)key, value, &old, FALSE);
+    return old;
 }
 
 void cx_rbtreeRemove(cx_rbtree tree, void* key) {
@@ -48,6 +54,10 @@ void cx_rbtreeRemove(cx_rbtree tree, void* key) {
 
 cx_bool cx_rbtreeHasKey(cx_rbtree tree, const void* key, void** value) {
     return jsw_rbhaskey((jsw_rbtree_t*)tree, key, value);
+}
+
+cx_bool cx_rbtreeHasKey_w_cmp(cx_rbtree tree, const void* key, void** value, cx_equalsAction cmp) {
+    return jsw_rbhaskey_w_cmp((jsw_rbtree_t*)tree, key, value, cmp);
 }
 
 cx_uint32 cx_rbtreeSize(cx_rbtree tree) {

@@ -175,7 +175,7 @@ static void cx_collection_resizeArray(cx_collection t, void* sequence, cx_uint32
 static cx_int16 cx_ser_collection(cx_serializer s, cx_value *info, void* userData) {
     cx_type t1, t2;
     void *v1, *v2;
-    cx_uint32 size1;
+    cx_uint32 size1 = 0;
     cx_copy_ser_t *data = userData;
     cx_uint32 result = 0;
     

@@ -289,10 +289,15 @@ void *jsw_rbfindPtr ( jsw_rbtree_t *tree, void *key )
 */
 int jsw_rbhaskey ( jsw_rbtree_t *tree, const void *key, void** data )
 {
+  return jsw_rbhaskey_w_cmp( tree, key, data, tree->cmp );
+}
+
+int jsw_rbhaskey_w_cmp ( jsw_rbtree_t *tree, const void *key, void** data, cx_equalsAction f_cmp )
+{
   jsw_rbnode_t *it = tree->root;
 
   while ( it != NULL ) {
-    int cmp = tree->cmp ( tree->type, it->key, key );
+    int cmp = f_cmp ( tree->type, it->key, key );
 
     if ( cmp == 0 )
       break;
@@ -310,20 +315,29 @@ int jsw_rbhaskey ( jsw_rbtree_t *tree, const void *key, void** data )
   return !(it == NULL);
 }
 
+
 /**
   <summary>
   Insert a copy of the user-specified
   data into a red black tree
+  old_out and overwrite allow the function
+  to be used as a find-or-insert.
   <summary>
   <param name="tree">The tree to insert into</param>
   <param name="data">The data value to insert</param>
+  <param name="old_out">The old value</param>
+  <param name="overwrite">Is overwriting allowed</param>
   <returns>
   1 if the value was inserted successfully,
   0 if the insertion failed for any reason
   </returns>
 */
-int jsw_rbinsert ( jsw_rbtree_t *tree, void* key, void *data )
+int jsw_rbinsert ( jsw_rbtree_t *tree, void* key, void *data, void **old_out, cx_bool overwrite )
 {
+
+  if (old_out)
+    *old_out = NULL;
+
   if ( tree->root == NULL ) {
     /*
       We have an empty tree; attach the
@@ -371,16 +385,19 @@ int jsw_rbinsert ( jsw_rbtree_t *tree, void* key, void *data )
           t->link[dir2] = jsw_double ( g, !last );
       }
 
-      /* TODO: time is wasted here: reduce number of compare functions to 1 */
       /*
         Stop working if we inserted a node. This
         check also disallows duplicates in the tree
       */
-      if ( tree->cmp ( tree->type, q->key, key ) == 0 )
+      cx_equalityKind eq = tree->cmp ( tree->type, q->key, key );
+      if ( eq == 0 ) {
+        if (old_out)
+          *old_out = q->data;
         break;
+      }
 
       last = dir;
-      dir = tree->cmp ( tree->type, q->key, key ) < 0;
+      dir = eq < 0;
 
       /* Move the helpers down */
       if ( g != NULL )
@@ -440,13 +457,14 @@ int jsw_rberase ( jsw_rbtree_t *tree, void *key )
       /* Move the helpers down */
       g = p, p = q;
       q = q->link[dir];
-      dir = tree->cmp ( tree->type, q->key, key ) < 0;
+      cx_equalityKind eq = tree->cmp ( tree->type, q->key, key );
+      dir = eq  < 0;
 
       /*
         Save the node with matching data and keep
         going; we'll do removal tasks at the end
       */
-      if ( tree->cmp ( tree->type, q->key, key ) == 0 )
+      if ( eq == 0 )
         f = q;
 
       /* Push the red node down with rotations and color flips */

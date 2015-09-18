@@ -35,6 +35,10 @@ static cx_object cx_resolveAddress(cx_string str) {
     return (cx_object)addr;
 }
 
+/* Use private function to do a lookup with a string that is guaranteed lowercase */
+#include "ctype.h"
+cx_object cx_lookupLowercase(cx_object o, cx_string name);
+
 /* Resolve fully scoped name */
 cx_object cx_resolve(cx_object _scope, cx_string str) {
     cx_object scope, _scope_start, o, lookup;
@@ -99,13 +103,13 @@ repeat:
 
             bptr = buffer;
             while ((ch = *ptr) && (ch != ':') && (ch != '{') && (ch != '/')) {
-                *bptr = ch;
+                *bptr = tolower(ch);
                 bptr++;
                 ptr++;
                 if (ch == '(') {
                     overload = TRUE;
                     while ((ch = *ptr) && (ch != ')')) {
-                        *bptr = ch;
+                        *bptr = tolower(ch);
                         bptr++;
                         ptr++;
                     }
@@ -118,10 +122,7 @@ repeat:
                     cx_object prev = o;
                     int i;
                     for (i = 0; i < 2; i++) {
-                        o = cx_lookup(o, buffer);
-                        if (!o) {
-                            o = cx_lookupFunction(prev, buffer, NULL);
-                        }
+                        o = cx_lookupLowercase(o, buffer);
                         if (lookup) {
                             cx_release(lookup); /* Free reference */
                         }
