@@ -125,6 +125,8 @@ class RelativeName: test::Suite::
     void tc_fromDisjunct() test::Case
     void tc_fromSelf() test::Case
 
+void functionToResolve(int32 a, int32 b)
+
 // Resolve algorithm testcases
 class Resolver: test::Suite::
     void setup()
@@ -139,6 +141,9 @@ class Resolver: test::Suite::
     void tc_resolveIo() test::Case
     void tc_resolveAnonymous() test::Case
     void tc_resolveEmptyString() test::Case
+
+    void tc_resolveFunctionNoArgs() test::Case
+    void tc_resolveFunctionArgs() test::Case
 
 // String deserializer testcases
 class StringDeserializer: test::Suite::

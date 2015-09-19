@@ -9,6 +9,15 @@
 #define test_LIB
 #include "test.h"
 
+/* ::test::functionToResolve(int32 a,int32 b) */
+cx_void _test_functionToResolve(cx_int32 a, cx_int32 b) {
+/* $begin(::test::functionToResolve) */
+
+    /* Dummy function */
+
+/* $end */
+}
+
 int testMain(int argc, char* argv[]) {
 /* $begin(main) */
     int result = 0;

@@ -1189,8 +1189,7 @@ cx_int16 cx_wordDeinit(cx_word* value);
 #define cx_interfaceseqForeach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_interface elem;\
-    for(elem##_iter=0; elem##_iter<seq.length; elem##_iter++) {\
-        elem = &seq.buffer[elem##_iter];
+    for(elem##_iter=0; elem = seq.buffer[elem##_iter], elem##_iter<seq.length; elem##_iter++)\
 
 cx_interface cx_interfaceseqAppend(cx_interfaceseq *seq);
 void cx_interfaceseqSize(cx_interfaceseq *seq, cx_uint32 length);
@@ -1199,9 +1198,8 @@ void cx_interfaceseqClear(cx_interfaceseq *seq);
 /* ::corto::lang::interfaceVectorseq */
 #define cx_interfaceVectorseqForeach(seq, elem) \
     cx_uint32 elem##_iter;\
-    cx_interfaceVector *elem;\
-    for(elem##_iter=0; elem##_iter<seq.length; elem##_iter++) {\
-        elem = &seq.buffer[elem##_iter];
+    cx_interfaceVector elem;\
+    for(elem##_iter=0; elem = seq.buffer[elem##_iter], elem##_iter<seq.length; elem##_iter++)\
 
 cx_interfaceVector* cx_interfaceVectorseqAppend(cx_interfaceVectorseq *seq);
 void cx_interfaceVectorseqSize(cx_interfaceVectorseq *seq, cx_uint32 length);
@@ -1211,8 +1209,7 @@ void cx_interfaceVectorseqClear(cx_interfaceVectorseq *seq);
 #define cx_memberseqForeach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_member elem;\
-    for(elem##_iter=0; elem##_iter<seq.length; elem##_iter++) {\
-        elem = &seq.buffer[elem##_iter];
+    for(elem##_iter=0; elem = seq.buffer[elem##_iter], elem##_iter<seq.length; elem##_iter++)\
 
 cx_member cx_memberseqAppend(cx_memberseq *seq);
 void cx_memberseqSize(cx_memberseq *seq, cx_uint32 length);
@@ -1222,8 +1219,7 @@ void cx_memberseqClear(cx_memberseq *seq);
 #define cx_objectseqForeach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_object elem;\
-    for(elem##_iter=0; elem##_iter<seq.length; elem##_iter++) {\
-        elem = &seq.buffer[elem##_iter];
+    for(elem##_iter=0; elem = seq.buffer[elem##_iter], elem##_iter<seq.length; elem##_iter++)\
 
 cx_object cx_objectseqAppend(cx_objectseq *seq);
 void cx_objectseqSize(cx_objectseq *seq, cx_uint32 length);
@@ -1233,8 +1229,7 @@ void cx_objectseqClear(cx_objectseq *seq);
 #define cx_observerseqForeach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_observer elem;\
-    for(elem##_iter=0; elem##_iter<seq.length; elem##_iter++) {\
-        elem = &seq.buffer[elem##_iter];
+    for(elem##_iter=0; elem = seq.buffer[elem##_iter], elem##_iter<seq.length; elem##_iter++)\
 
 cx_observer cx_observerseqAppend(cx_observerseq *seq);
 void cx_observerseqSize(cx_observerseq *seq, cx_uint32 length);
@@ -1243,9 +1238,8 @@ void cx_observerseqClear(cx_observerseq *seq);
 /* ::corto::lang::parameterseq */
 #define cx_parameterseqForeach(seq, elem) \
     cx_uint32 elem##_iter;\
-    cx_parameter *elem;\
-    for(elem##_iter=0; elem##_iter<seq.length; elem##_iter++) {\
-        elem = &seq.buffer[elem##_iter];
+    cx_parameter elem;\
+    for(elem##_iter=0; elem = seq.buffer[elem##_iter], elem##_iter<seq.length; elem##_iter++)\
 
 cx_parameter* cx_parameterseqAppend(cx_parameterseq *seq);
 void cx_parameterseqSize(cx_parameterseq *seq, cx_uint32 length);
@@ -1255,8 +1249,7 @@ void cx_parameterseqClear(cx_parameterseq *seq);
 #define cx_vtableForeach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_function elem;\
-    for(elem##_iter=0; elem##_iter<seq.length; elem##_iter++) {\
-        elem = &seq.buffer[elem##_iter];
+    for(elem##_iter=0; elem = seq.buffer[elem##_iter], elem##_iter<seq.length; elem##_iter++)\
 
 cx_function cx_vtableAppend(cx_vtable *seq);
 void cx_vtableSize(cx_vtable *seq, cx_uint32 length);

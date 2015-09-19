@@ -71,7 +71,7 @@ cx_bool _ast_Comma_hasReturnedResource_v(ast_Comma this) {
 /* $begin(::corto::ast::Comma::hasReturnedResource) */
     cx_bool result = FALSE;
 
-    ast_ExpressionListForeach(this->expressions, elem)
+    ast_ExpressionListForeach(this->expressions, elem) {
         if (ast_Expression_hasReturnedResource(elem)) {
             result = TRUE;
             break;
@@ -87,7 +87,7 @@ cx_bool _ast_Comma_hasSideEffects_v(ast_Comma this) {
 /* $begin(::corto::ast::Comma::hasSideEffects) */
     cx_bool result = FALSE;
     
-    ast_ExpressionListForeach(this->expressions, elem)
+    ast_ExpressionListForeach(this->expressions, elem) {
         if (ast_Expression_hasSideEffects(elem)) {
             result = TRUE;
             break;
@@ -133,12 +133,8 @@ ast_Expression _ast_Comma_insertOrCreate(ast_Expression list, ast_Expression exp
 /* ::corto::ast::Comma::toIc(ic::program program,ic::storage storage,bool stored) */
 ic_node _ast_Comma_toIc_v(ast_Comma this, ic_program program, ic_storage storage, cx_bool stored) {
 /* $begin(::corto::ast::Comma::toIc) */
-    cx_iter iter;
-    ast_Node expr;
-    
-    iter = cx_llIter(this->expressions);
-    while(cx_iterHasNext(&iter)) {
-        expr = cx_iterNext(&iter);
+
+    ast_ExpressionListForeach(this->expressions, expr) {
         ast_Node_toIc(expr, program, storage, stored);
     }
 
@@ -149,13 +145,10 @@ ic_node _ast_Comma_toIc_v(ast_Comma this, ic_program program, ic_storage storage
 /* ::corto::ast::Comma::toList() */
 ast_NodeList _ast_Comma_toList(ast_Comma this) {
 /* $begin(::corto::ast::Comma::toList) */
-    ast_Node node;
-    cx_iter iter;
+
     ast_NodeList result = cx_llNew();
-    iter = cx_llIter(this->expressions);
-    while(cx_iterHasNext(&iter)) {
-        node = cx_iterNext(&iter);
-        cx_llAppend(result, node); cx_claim(node);
+    ast_ExpressionListForeach(this->expressions, expr) {
+        cx_llAppend(result, expr); cx_claim(expr);
     }
 
     return result;

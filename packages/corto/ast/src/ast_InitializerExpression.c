@@ -62,7 +62,7 @@ cx_int16 _ast_InitializerExpression_insert(ast_InitializerExpression this, ast_E
     initializer = ast_DynamicInitializerCreate(ast_Initializer(this)->variables, 1, this->assignValue);
 
     /* Walk operations */
-    ast_InitOperListForeach(this->operations, elem)
+    ast_InitOperListForeach(this->operations, elem) {
         switch(elem->kind) {
         case Ast_InitOpPush:
             if (ast_DynamicInitializer_push(initializer)) {

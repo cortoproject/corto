@@ -476,8 +476,8 @@ ast_Expression ast_Parser_explodeComma(ast_Parser this, ast_Expression lvalues, 
         }
     }
 
-    ast_ExpressionListForeach(lvalueList, l)
-        ast_ExpressionListForeach(rvalueList, r)
+    ast_ExpressionListForeach(lvalueList, l) {
+        ast_ExpressionListForeach(rvalueList, r) {
             ast_Expression e = action(this, var ? var : l, r, userData);
             if (!e) {
                 goto error;
@@ -1072,7 +1072,7 @@ ast_Expression _ast_Parser_callExpr(ast_Parser this, ast_Expression function, as
         ast_ExpressionList functions = function ? ast_Expression_toList(function) : NULL;
         ast_ExpressionList args = arguments ? ast_Expression_toList(arguments) : NULL;
 
-        if (functions) {ast_ExpressionListForeach(functions, f)
+        if (functions) {ast_ExpressionListForeach(functions, f) {
             ast_Expression expr;
             if ((ast_Node(f)->kind == Ast_StorageExpr) && (ast_Storage(f)->kind == Ast_ObjectStorage)) {
                 o = ast_Object(f)->value;
@@ -1098,7 +1098,7 @@ ast_Expression _ast_Parser_callExpr(ast_Parser this, ast_Expression function, as
         }}
 
         /* Cleanup initializer arguments */
-        if (args) {ast_ExpressionListForeach(args, a)
+        if (args) {ast_ExpressionListForeach(args, a) {
             if (ast_Node(a)->kind == Ast_InitializerExpr) {
                 ast_Expression var = ast_Initializer(a)->variables[0].object;
                 if (ast_Storage(var)->kind == Ast_TemporaryStorage) {

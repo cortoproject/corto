@@ -119,14 +119,20 @@ finish:
 cx_int16 _cx_function_init(cx_function this) {
 /* $begin(::corto::lang::function::init) */
     cx_functionLookup_t walkData;
-    cx_ll scope;
+    cx_objectseq scope;
+    cx_uint32 i;
 
     scope = cx_scopeClaim(cx_parentof(this));
 
     walkData.f = this;
     walkData.error = FALSE;
     cx_signatureName(cx_nameof(this), walkData.name);
-    cx_llWalk(scope, cx_functionLookupWalk, &walkData);
+
+    for (i = 0; i < scope.length; i++) {
+        if (!cx_functionLookupWalk(scope.buffer[i], &walkData)) {
+            break;
+        }
+    }
     if (walkData.error) {
         goto error;
     }

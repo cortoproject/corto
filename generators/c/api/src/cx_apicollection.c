@@ -45,11 +45,8 @@ static cx_int16 c_apiSequenceTypeForeach(cx_sequence o, c_apiWalk_t* data) {
     g_fileWrite(data->header, "#define %sForeach(seq, elem) \\\n", id);
     g_fileIndent(data->header);
     g_fileWrite(data->header, "cx_uint32 elem##_iter;\\\n");
-    g_fileWrite(data->header, "%s %selem;\\\n", elementId, prefix?"*":"");
-    g_fileWrite(data->header, "for(elem##_iter=0; elem##_iter<seq.length; elem##_iter++) {\\\n");
-    g_fileIndent(data->header);
-    g_fileWrite(data->header, "elem = &seq.buffer[elem##_iter];\n");
-    g_fileDedent(data->header);
+    g_fileWrite(data->header, "%s elem;\\\n", elementId);
+    g_fileWrite(data->header, "for(elem##_iter=0; elem = seq.buffer[elem##_iter], elem##_iter<seq.length; elem##_iter++)\\\n");
     g_fileDedent(data->header);
     g_fileWrite(data->header, "\n");
     
@@ -218,14 +215,13 @@ static cx_int16 c_apiListTypeForeach(cx_list o, c_apiWalk_t* data) {
     g_fileIndent(data->header);
     g_fileWrite(data->header, "cx_iter elem##_iter = cx_llIter(list);\\\n");
     g_fileWrite(data->header, "%s %selem;\\\n", elementId, requiresAlloc?"*":"");
-    g_fileWrite(data->header, "while(cx_iterHasNext(&elem##_iter)) {\\\n");
-    g_fileIndent(data->header);
+    g_fileWrite(data->header, "while(cx_iterHasNext(&elem##_iter) ? ");
     if (!elementType->reference && !requiresAlloc) {
-        g_fileWrite(data->header, "elem = (%s%s)(cx_word)cx_iterNext(&elem##_iter);\n", elementId, requiresAlloc?"*":"");
+        g_fileWrite(data->header, "elem = (%s%s)(cx_word)cx_iterNext(&elem##_iter), TRUE", elementId, requiresAlloc?"*":"");
     } else {
-        g_fileWrite(data->header, "elem = cx_iterNext(&elem##_iter);\n");        
+        g_fileWrite(data->header, "elem = cx_iterNext(&elem##_iter), TRUE");        
     }
-    g_fileDedent(data->header);
+    g_fileWrite(data->header, " : FALSE)\n");
     g_fileDedent(data->header);
     g_fileWrite(data->header, "\n");
     

@@ -19,7 +19,7 @@ ast_Expression ast_Node_optimizeCondition(ast_Expression condition, cx_bool *sta
     *inverse = FALSE;
     
     /* If condition is an expression list, inserts && between each expression. */
-    ast_ExpressionListForeach(conditions, elem)
+    ast_ExpressionListForeach(conditions, elem) {
 
         /* If condition is a unary NOT inverse the condition and evaluate lvalue of NOT expression instead */
         if (ast_Node(elem)->kind == Ast_UnaryExpr) {

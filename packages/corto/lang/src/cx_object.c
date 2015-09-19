@@ -585,10 +585,6 @@ static cx_equalityKind cx_objectCompareLookup(cx_type this, const void* o1, cons
     ch2 = *ptr2;
     while((ch1 = *ptr1) && ch2) {
         if (ch1 == ch2) {
-            if (ch1 == '(') {
-                r = 0;
-                goto compare;
-            }
             ptr1++; ptr2++;
             ch2 = *ptr2;
             continue;
@@ -604,6 +600,11 @@ static cx_equalityKind cx_objectCompareLookup(cx_type this, const void* o1, cons
         ptr1++;
         ptr2++;
         ch2 = *ptr2;
+    }
+
+    if ((ch1 == '(') && !ch2) {
+        r = 0;
+        goto compare;
     }
 
     r = ch1 - ch2;
@@ -2031,14 +2032,13 @@ static void cx_observersArrayFree(cx__observer** array) {
  * requires locking. */
 void cx_setrefChildLockRequired(cx_object observable) {
     if (cx_checkAttr(observable, CX_ATTR_SCOPED)) {
-        cx_iter childIter;
+        cx_uint32 i;
         cx_object child;
         cx__observable *childObservable;
-        cx_ll scope = cx_scopeClaim(observable);
+        cx_objectseq scope = cx_scopeClaim(observable);
 
-        childIter = cx_llIter(scope);
-        while(cx_iterHasNext(&childIter)) {
-            child = cx_iterNext(&childIter);
+        for (i = 0; i < scope.length; i++) {
+            child = scope.buffer[i];
             if ((childObservable = cx__objectObservable(CX_OFFSET(child, -sizeof(cx__object))))) {
                 cx_rwmutexWrite(&childObservable->childLock);
                 if (cx_checkAttr(child,CX_ATTR_WRITABLE)) {
@@ -2126,13 +2126,12 @@ int cx_observerAlignScope(cx_object o, void *userData) {
 
     if (data->observer->observer->mask & CX_ON_TREE) {
         int result = 1;
-        cx_ll scope;
-        cx_iter iter;
+        cx_objectseq scope;
+        cx_uint32 i;
         data->depth++;
         scope = cx_scopeClaim(o);
-        iter = cx_llIter(scope);
-        while (result && cx_iterHasNext(&iter)) {
-            result = cx_observerAlignScope(cx_iterNext(&iter), userData);
+        for(i = 0; i < scope.length; i++) {
+            result = cx_observerAlignScope(scope.buffer[i], userData);
         }
         cx_scopeRelease(scope);
         data->depth--;
@@ -2144,8 +2143,8 @@ int cx_observerAlignScope(cx_object o, void *userData) {
 
 void cx_observerAlign(cx_object observable, cx__observer *observer, int mask) {
     cx_observerAlignData walkData;
-    cx_ll scope;
-    cx_iter iter;
+    cx_objectseq scope;
+    cx_uint32 i;
 
     /* Do recursive walk over scope */
     walkData.observable = observable;
@@ -2158,9 +2157,8 @@ void cx_observerAlign(cx_object observable, cx__observer *observer, int mask) {
     }
 
     scope = cx_scopeClaim(observable);
-    iter = cx_llIter(scope);
-    while (cx_iterHasNext(&iter)) {
-        cx_observerAlignScope(cx_iterNext(&iter), &walkData);
+    for(i = 0; i < scope.length; i++) {
+        cx_observerAlignScope(scope.buffer[i], &walkData);
     }
     cx_scopeRelease(scope);
 }
@@ -3371,34 +3369,37 @@ found:
 }
 
 static int cx_scopeCollectWalk(cx_object o, void* userData) {
-    cx_ll list = userData;
+    cx_objectseq *seq = userData;
+    if (!seq->buffer) {
+        /* Get scopesize within scope lock */
+        cx_uint32 scopeSize = cx_scopeSize(cx_parentof(o));
+        seq->buffer = cx_alloc(sizeof(cx_object) * scopeSize);
+        /* Increment length with each object */
+    }
     cx_claim(o);
-    cx_llAppend(list, o);
+    seq->buffer[seq->length++] = o;
     return 1;
 }
 
-static int cx_scopeFreeWalk(cx_object o, void* userData) {
-    CX_UNUSED(userData);
-    cx_release(o);
-    return 1;
-}
-
-cx_ll cx_scopeClaim(cx_object scope) {
-    cx_ll result;
-    result = cx_llNew();
-    cx_scopeWalk(scope, cx_scopeCollectWalk, result);
+cx_objectseq cx_scopeClaim(cx_object scope) {
+    cx_objectseq result = {0, NULL};
+    cx_scopeWalk(scope, cx_scopeCollectWalk, &result);
     return result;
 }
 
-void cx_scopeRelease(cx_ll scope) {
-    cx_llWalk(scope, cx_scopeFreeWalk, NULL);
-    cx_llFree(scope);
+void cx_scopeRelease(cx_objectseq seq) {
+    cx_uint32 i = 0;
+    for (i = 0; i < seq.length; i++) {
+        cx_release(seq.buffer[i]);
+    }
+    cx_dealloc(seq.buffer);
 }
 
 /* Lookup function with support for overloading */
 cx_function cx_lookupFunction(cx_object scope, cx_string requested, cx_int32* d) {
     cx_lookupFunction_t walkData;
-    cx_ll scopeContents;
+    cx_objectseq scopeContents;
+    cx_uint32 i;
 
     /* Collect objects in scope first, to prevent reversed locking order (locking should
      * always be outer scope first, then inner scope) and deadlocking i.c.m. cx_resolve.
@@ -3410,7 +3411,12 @@ cx_function cx_lookupFunction(cx_object scope, cx_string requested, cx_int32* d)
     walkData.result = NULL;
     walkData.error = FALSE;
     walkData.d = INT_MAX;
-    cx_llWalk(scopeContents, cx_lookupFunctionWalk, &walkData);
+
+    for (i = 0; i < scopeContents.length; i++) {
+        if (!cx_lookupFunctionWalk(scopeContents.buffer[i], &walkData)) {
+            break;
+        }
+    }
 
     if (walkData.error) {
         return NULL;

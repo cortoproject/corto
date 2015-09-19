@@ -56,8 +56,8 @@ cx_bool _cx_instanceof(cx_type type, cx_object o);
 cx_string cx_nameof(cx_object o);
 cx_object cx_parentof(cx_object o);
 cx_uint32 cx_scopeSize(cx_object o); /* Returns number of objects (non-recursive) in scope */
-cx_ll cx_scopeClaim(cx_object o); /* Safe way to access scope contents */
-void cx_scopeRelease(cx_ll scope);
+cx_objectseq cx_scopeClaim(cx_object o); /* Safe way to access scope contents */
+void cx_scopeRelease(cx_objectseq scope);
 cx_int32 cx_scopeWalk(cx_object o, cx_scopeWalkAction action, void* userData); /* Safe object-walk */
 cx_string cx_fullname(cx_object o, cx_id buffer);
 cx_string cx_relname(cx_object from, cx_object o, cx_id buffer);

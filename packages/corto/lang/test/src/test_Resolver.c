@@ -51,6 +51,28 @@ cx_void _test_Resolver_tc_resolveEmptyString(test_Resolver this) {
 /* $end */
 }
 
+/* ::test::Resolver::tc_resolveFunctionArgs() */
+cx_void _test_Resolver_tc_resolveFunctionArgs(test_Resolver this) {
+/* $begin(::test::Resolver::tc_resolveFunctionArgs) */
+
+    cx_object o = cx_resolve(NULL, "test::functionToResolve(int32,int32)");
+    test_assert(o != NULL);
+    test_assert(o == test_functionToResolve_o);
+
+/* $end */
+}
+
+/* ::test::Resolver::tc_resolveFunctionNoArgs() */
+cx_void _test_Resolver_tc_resolveFunctionNoArgs(test_Resolver this) {
+/* $begin(::test::Resolver::tc_resolveFunctionNoArgs) */
+
+    cx_object o = cx_resolve(NULL, "test::functionToResolve");
+    test_assert(o != NULL);
+    test_assert(o == test_functionToResolve_o);
+
+/* $end */
+}
+
 /* ::test::Resolver::tc_resolveIo() */
 cx_void _test_Resolver_tc_resolveIo(test_Resolver this) {
 /* $begin(::test::Resolver::tc_resolveIo) */
