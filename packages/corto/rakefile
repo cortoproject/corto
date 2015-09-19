@@ -7,7 +7,6 @@ COMPONENTS = %w(
     math
     profile
     test
-    md
 )
 
 require "#{ENV['CORTO_BUILD']}/forward"
