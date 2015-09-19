@@ -88,6 +88,14 @@ static int c_interfaceParamCastDef(cx_parameter *o, void *userData) {
     return 1;
 }
 
+static cx_bool c_interfaceParamRequiresCast(cx_type t, cx_bool isReference) {
+    if ((isReference || t->reference) && (t->kind != CX_VOID) && (t->kind != CX_ANY)) {
+        return TRUE;
+    } else {
+        return FALSE;
+    }
+}
+
 /* Walk parameters of function */
 static int c_interfaceParamWalk(cx_object _f, int(*action)(cx_parameter*, void*), void *userData) {
     cx_uint32 i;
@@ -122,6 +130,87 @@ static void c_interfaceParamThis(cx_type parentType, c_typeWalk_t* data, cx_bool
     }
 }
 
+static int c_interfaceParamCastWalk(cx_parameter *o, void *userData) {
+    c_typeWalk_t* data = userData;
+    cx_id specifier, postfix, name;
+
+    if (data->firstComma) {
+        g_fileWrite(data->header, ", ");
+    }
+
+    if (c_specifierId(data->g, o->type, specifier, NULL, postfix)) {
+        goto error;
+    }
+
+    /* If parameter is a meta argument, stringify it */
+    if (*o->name == '$') {
+        if (!strcmp(o->name, "$__line")) {
+            g_fileWrite(data->header, "__LINE__");
+        } else if (!strcmp(o->name, "$__file")) {
+            g_fileWrite(data->header, "__FILE__");
+        } else {
+            g_fileWrite(data->header, "#%s", o->name + 1);            
+        }
+    } else {
+        if (c_interfaceParamRequiresCast(o->type, o->passByReference)) {
+            g_fileWrite(data->header, "%s(%s)", specifier, o->name);
+        } else {
+            g_fileWrite(data->header, "%s", c_paramName(o->name, name));
+        }
+    }
+
+    data->firstComma = TRUE;
+
+    return 1;
+error:
+    return 0;
+}
+
+static int c_interfaceCastMacro(cx_function o, cx_string functionName, c_typeWalk_t *data) {
+    data->firstComma = FALSE;
+    
+    g_fileWrite(data->header, "#define %s(", functionName, functionName);
+    
+    if (c_procedureHasThis(o)) {
+        g_fileWrite(data->header, "_this");
+        data->firstComma = TRUE;
+    }
+    
+    if (!c_interfaceParamWalk(o, c_interfaceParamCastDef, data)) {
+        goto error;
+    }
+    
+    g_fileWrite(data->header, ") _%s(", functionName);
+    
+    if (c_procedureHasThis(o)) {
+        if (cx_procedure(cx_typeof(o))->kind != CX_METAPROCEDURE) {
+            cx_id classId;
+            cx_type parentType = cx_parentof(o);
+            g_fullOid(data->g, parentType, classId);
+            if (parentType->reference) {
+                g_fileWrite(data->header, "%s(_this)", classId);
+            } else {
+                g_fileWrite(data->header, "_this", classId);
+            }
+        } else {
+            g_fileWrite(data->header, "_this");
+        }
+        data->firstComma = TRUE;
+    } else {
+        data->firstComma = FALSE;
+    }
+    
+    if (!c_interfaceParamWalk(o, c_interfaceParamCastWalk, data)) {
+        goto error;
+    }
+    
+    g_fileWrite(data->header, ")\n");
+
+    return 0;
+error:
+    return -1;   
+}
+
 /* Generate implementation for virtual methods */
 static int c_interfaceGenerateVirtual(cx_method o, c_typeWalk_t* data) {
     cx_id id, returnTypeId, classId, returnPostfix;
@@ -146,13 +235,13 @@ static int c_interfaceGenerateVirtual(cx_method o, c_typeWalk_t* data) {
     /* Write to sourcefile */
     g_fileWrite(data->wrapper, "\n");
     g_fileWrite(data->wrapper, "/* virtual %s */\n", cx_fullname(o, id));
-    g_fileWrite(data->wrapper, "%s %s(",
+    g_fileWrite(data->wrapper, "%s _%s(",
             returnTypeId,
             g_fullOid(data->g, o, id));
 
     g_fileWrite(data->header, "\n");
     g_fileWrite(data->header, "/* virtual %s */\n", cx_fullname(o, id));
-    g_fileWrite(data->header, "%s %s(",
+    g_fileWrite(data->header, "%s _%s(",
             returnTypeId,
             g_fullOid(data->g, o, id));
 
@@ -170,6 +259,9 @@ static int c_interfaceGenerateVirtual(cx_method o, c_typeWalk_t* data) {
 
     /* Obtain string for function name */
     c_escapeString(cx_nameof(o), nameString);
+
+    /* Write casting macro to header */
+    c_interfaceCastMacro(cx_function(o), g_fullOid(data->g, o, id), data);
 
     /* Begin of function */
     g_fileWrite(data->wrapper, ") {\n");
@@ -225,14 +317,6 @@ static char* c_functionName(cx_function o, cx_id id, c_typeWalk_t *data) {
         }
     }
     return id;
-}
-
-static cx_bool c_interfaceParamRequiresCast(cx_type t, cx_bool isReference) {
-    if ((isReference || t->reference) && (t->kind != CX_VOID) && (t->kind != CX_ANY)) {
-        return TRUE;
-    } else {
-        return FALSE;
-    }
 }
 
 /* Add a type to the expression that determines the location of a parameter in a buffer */
@@ -333,87 +417,6 @@ static int c_interfaceClassProcedureWrapper(cx_function o, c_typeWalk_t *data) {
     g_fileDedent(data->wrapper);
     g_fileWrite(data->wrapper, "}\n");
     return 0;
-}
-
-static int c_interfaceParamCastWalk(cx_parameter *o, void *userData) {
-    c_typeWalk_t* data = userData;
-    cx_id specifier, postfix, name;
-
-    if (data->firstComma) {
-        g_fileWrite(data->header, ", ");
-    }
-
-    if (c_specifierId(data->g, o->type, specifier, NULL, postfix)) {
-        goto error;
-    }
-
-    /* If parameter is a meta argument, stringify it */
-    if (*o->name == '$') {
-        if (!strcmp(o->name, "$__line")) {
-            g_fileWrite(data->header, "__LINE__");
-        } else if (!strcmp(o->name, "$__file")) {
-            g_fileWrite(data->header, "__FILE__");
-        } else {
-            g_fileWrite(data->header, "#%s", o->name + 1);            
-        }
-    } else {
-        if (c_interfaceParamRequiresCast(o->type, o->passByReference)) {
-            g_fileWrite(data->header, "%s(%s)", specifier, o->name);
-        } else {
-            g_fileWrite(data->header, "%s", c_paramName(o->name, name));
-        }
-    }
-
-    data->firstComma = TRUE;
-
-    return 1;
-error:
-    return 0;
-}
-
-static int c_interfaceCastMacro(cx_function o, cx_string functionName, c_typeWalk_t *data) {
-    data->firstComma = FALSE;
-    
-    g_fileWrite(data->header, "#define %s(", functionName, functionName);
-    
-    if (c_procedureHasThis(o)) {
-        g_fileWrite(data->header, "_this");
-        data->firstComma = TRUE;
-    }
-    
-    if (!c_interfaceParamWalk(o, c_interfaceParamCastDef, data)) {
-        goto error;
-    }
-    
-    g_fileWrite(data->header, ") _%s(", functionName);
-    
-    if (c_procedureHasThis(o)) {
-        if (cx_procedure(cx_typeof(o))->kind != CX_METAPROCEDURE) {
-            cx_id classId;
-            cx_type parentType = cx_parentof(o);
-            g_fullOid(data->g, parentType, classId);
-            if (parentType->reference) {
-                g_fileWrite(data->header, "%s(_this)", classId);
-            } else {
-                g_fileWrite(data->header, "_this", classId);
-            }
-        } else {
-            g_fileWrite(data->header, "_this");
-        }
-        data->firstComma = TRUE;
-    } else {
-        data->firstComma = FALSE;
-    }
-    
-    if (!c_interfaceParamWalk(o, c_interfaceParamCastWalk, data)) {
-        goto error;
-    }
-    
-    g_fileWrite(data->header, ")\n");
-
-    return 0;
-error:
-    return -1;   
 }
 
 /* Generate methods for class */
