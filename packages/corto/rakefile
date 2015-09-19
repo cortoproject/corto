@@ -1,11 +1,12 @@
 
-COMPONENTS = [] << 
-    :ic <<
-    :ast <<
-    :io <<
-    :os <<
-    :math <<
-    :profile <<
-    :test
+COMPONENTS = %w(
+    ic
+    ast
+    io
+    os
+    math
+    profile
+    test
+)
 
 require "#{ENV['CORTO_BUILD']}/forward"

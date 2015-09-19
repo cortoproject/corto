@@ -29,7 +29,7 @@ USE_PACKAGE_LOADED ||=[]
 USE_COMPONENT ||= []
 USE_COMPONENT_LOADED ||=[]
 USE_LIBRARY ||= []
-INCLUDE << 
+INCLUDE <<
     "include" <<
     "#{ENV['CORTO_TARGET']}/include/corto/#{VERSION}/packages" <<
     "/usr/include/corto/#{VERSION}/packages"
@@ -159,9 +159,8 @@ def build_source(task, echo)
     end
     if echo
         if ENV['silent'] != "true" then
-            sh "echo '#{task.source}'" 
+            sh "echo '#{task.source}'"
         end
     end
     sh "cc -c #{CFLAGS.join(" ")} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{task.source} -o #{task.name}"
 end
-
