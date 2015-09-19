@@ -1,10 +1,6 @@
 
-
 GENERATED_SOURCES ||= []
-
-GENERATED_SOURCES <<
-    "src/y.tab.c" <<
-    "src/lex.yy.c"
+GENERATED_SOURCES << "src/y.tab.c" << "src/lex.yy.c"
 
 file "src/lex.yy.c" => ["src/#{LEX}", "src/y.tab.c"] do |task|
     sh "flex -o #{task.name} src/#{LEX}"

@@ -1,5 +1,6 @@
 
-COMPONENTS = [] << 
-    :c
-    
+COMPONENTS = %w(
+    c
+)
+
 require "#{ENV['CORTO_BUILD']}/forward"
