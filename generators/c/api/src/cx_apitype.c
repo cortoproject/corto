@@ -217,14 +217,15 @@ cx_int16 c_apiTypeCreateIntern(cx_type t, c_apiWalk_t *data, cx_string func, cx_
             if (cx_instanceof(cx_procedure_o, t)) {
                 g_fileWrite(data->source, "cx_function(this)->impl = (cx_word)_impl;\n");
             }
-
-    	    /* Define object */
-    	    g_fileWrite(data->source, "if (this && cx_define(this)) {\n");
-    	    g_fileIndent(data->source);
-    	    g_fileWrite(data->source, "cx_release(this);\n");
-    	    g_fileWrite(data->source, "this = NULL;\n");
-    	    g_fileDedent(data->source);
-    	    g_fileWrite(data->source, "}\n");
+        }
+        if (t->kind != CX_VOID) {
+            /* Define object */
+            g_fileWrite(data->source, "if (this && cx_define(this)) {\n");
+            g_fileIndent(data->source);
+            g_fileWrite(data->source, "cx_release(this);\n");
+            g_fileWrite(data->source, "this = NULL;\n");
+            g_fileDedent(data->source);
+            g_fileWrite(data->source, "}\n");            
         }
 	}
 

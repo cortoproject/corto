@@ -96,6 +96,10 @@ cx_any* cx_anyCreate(cx_any value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -106,6 +110,10 @@ cx_any* cx_anyCreateChild(cx_object _parent, cx_string _name, cx_any value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -279,6 +287,10 @@ cx_attr* cx_attrCreate(cx_attr value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -289,6 +301,10 @@ cx_attr* cx_attrCreateChild(cx_object _parent, cx_string _name, cx_attr value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -534,6 +550,10 @@ cx_bool* cx_boolCreate(cx_bool value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -544,6 +564,10 @@ cx_bool* cx_boolCreateChild(cx_object _parent, cx_string _name, cx_bool value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -907,6 +931,10 @@ cx_char* cx_charCreate(cx_char value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -917,6 +945,10 @@ cx_char* cx_charCreateChild(cx_object _parent, cx_string _name, cx_char value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -1279,6 +1311,10 @@ cx_collectionKind* cx_collectionKindCreate(cx_collectionKind value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -1289,6 +1325,10 @@ cx_collectionKind* cx_collectionKindCreateChild(cx_object _parent, cx_string _na
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -1375,6 +1415,10 @@ cx_compositeKind* cx_compositeKindCreate(cx_compositeKind value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -1385,6 +1429,10 @@ cx_compositeKind* cx_compositeKindCreateChild(cx_object _parent, cx_string _name
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -1471,6 +1519,10 @@ cx_constant* cx_constantCreate(cx_constant value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -1481,6 +1533,10 @@ cx_constant* cx_constantCreateChild(cx_object _parent, cx_string _name, cx_const
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -1923,6 +1979,10 @@ cx_equalityKind* cx_equalityKindCreate(cx_equalityKind value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -1933,6 +1993,10 @@ cx_equalityKind* cx_equalityKindCreateChild(cx_object _parent, cx_string _name, 
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -2101,6 +2165,10 @@ cx_eventMask* cx_eventMaskCreate(cx_eventMask value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -2111,6 +2179,10 @@ cx_eventMask* cx_eventMaskCreateChild(cx_object _parent, cx_string _name, cx_eve
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -2289,6 +2361,10 @@ cx_float32* cx_float32Create(cx_float32 value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -2299,6 +2375,10 @@ cx_float32* cx_float32CreateChild(cx_object _parent, cx_string _name, cx_float32
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -2385,6 +2465,10 @@ cx_float64* cx_float64Create(cx_float64 value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -2395,6 +2479,10 @@ cx_float64* cx_float64CreateChild(cx_object _parent, cx_string _name, cx_float64
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -2663,6 +2751,10 @@ cx_int16* cx_int16Create(cx_int16 value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -2673,6 +2765,10 @@ cx_int16* cx_int16CreateChild(cx_object _parent, cx_string _name, cx_int16 value
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -2759,6 +2855,10 @@ cx_int32* cx_int32Create(cx_int32 value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -2769,6 +2869,10 @@ cx_int32* cx_int32CreateChild(cx_object _parent, cx_string _name, cx_int32 value
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -2855,6 +2959,10 @@ cx_int64* cx_int64Create(cx_int64 value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -2865,6 +2973,10 @@ cx_int64* cx_int64CreateChild(cx_object _parent, cx_string _name, cx_int64 value
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -2951,6 +3063,10 @@ cx_int8* cx_int8Create(cx_int8 value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -2961,6 +3077,10 @@ cx_int8* cx_int8CreateChild(cx_object _parent, cx_string _name, cx_int8 value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -4108,6 +4228,10 @@ cx_modifier* cx_modifierCreate(cx_modifier value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -4118,6 +4242,10 @@ cx_modifier* cx_modifierCreateChild(cx_object _parent, cx_string _name, cx_modif
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -4203,10 +4331,6 @@ cx_object cx_objectCreate(void) {
     if (!this) {
         return NULL;
     }
-    if (this && cx_define(this)) {
-        cx_release(this);
-        this = NULL;
-    }
     return this;
 }
 
@@ -4215,10 +4339,6 @@ cx_object cx_objectCreateChild(cx_object _parent, cx_string _name) {
     this = cx_declareChild(_parent, _name, cx_object_o);
     if (!this) {
         return NULL;
-    }
-    if (this && cx_define(this)) {
-        cx_release(this);
-        this = NULL;
     }
     return this;
 }
@@ -4626,6 +4746,10 @@ cx_octet* cx_octetCreate(cx_octet value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -4636,6 +4760,10 @@ cx_octet* cx_octetCreateChild(cx_object _parent, cx_string _name, cx_octet value
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -4722,6 +4850,10 @@ cx_operatorKind* cx_operatorKindCreate(cx_operatorKind value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -4732,6 +4864,10 @@ cx_operatorKind* cx_operatorKindCreateChild(cx_object _parent, cx_string _name, 
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -5199,6 +5335,10 @@ cx_primitiveKind* cx_primitiveKindCreate(cx_primitiveKind value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -5209,6 +5349,10 @@ cx_primitiveKind* cx_primitiveKindCreateChild(cx_object _parent, cx_string _name
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -5402,6 +5546,10 @@ cx_procedureKind* cx_procedureKindCreate(cx_procedureKind value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -5412,6 +5560,10 @@ cx_procedureKind* cx_procedureKindCreateChild(cx_object _parent, cx_string _name
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -5585,6 +5737,10 @@ cx_state* cx_stateCreate(cx_state value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -5595,6 +5751,10 @@ cx_state* cx_stateCreateChild(cx_object _parent, cx_string _name, cx_state value
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -5681,6 +5841,10 @@ cx_string* cx_stringCreate(cx_string value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -5691,6 +5855,10 @@ cx_string* cx_stringCreateChild(cx_object _parent, cx_string _name, cx_string va
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -6058,6 +6226,10 @@ cx_typeKind* cx_typeKindCreate(cx_typeKind value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -6068,6 +6240,10 @@ cx_typeKind* cx_typeKindCreateChild(cx_object _parent, cx_string _name, cx_typeK
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -6246,6 +6422,10 @@ cx_uint16* cx_uint16Create(cx_uint16 value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -6256,6 +6436,10 @@ cx_uint16* cx_uint16CreateChild(cx_object _parent, cx_string _name, cx_uint16 va
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -6342,6 +6526,10 @@ cx_uint32* cx_uint32Create(cx_uint32 value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -6352,6 +6540,10 @@ cx_uint32* cx_uint32CreateChild(cx_object _parent, cx_string _name, cx_uint32 va
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -6438,6 +6630,10 @@ cx_uint64* cx_uint64Create(cx_uint64 value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -6448,6 +6644,10 @@ cx_uint64* cx_uint64CreateChild(cx_object _parent, cx_string _name, cx_uint64 va
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -6534,6 +6734,10 @@ cx_uint8* cx_uint8Create(cx_uint8 value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -6544,6 +6748,10 @@ cx_uint8* cx_uint8CreateChild(cx_object _parent, cx_string _name, cx_uint8 value
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -6724,10 +6932,6 @@ cx_void* cx_voidCreate(void) {
     if (!this) {
         return NULL;
     }
-    if (this && cx_define(this)) {
-        cx_release(this);
-        this = NULL;
-    }
     return this;
 }
 
@@ -6736,10 +6940,6 @@ cx_void* cx_voidCreateChild(cx_object _parent, cx_string _name) {
     this = cx_declareChild(_parent, _name, cx_void_o);
     if (!this) {
         return NULL;
-    }
-    if (this && cx_define(this)) {
-        cx_release(this);
-        this = NULL;
     }
     return this;
 }
@@ -6853,6 +7053,10 @@ cx_width* cx_widthCreate(cx_width value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -6863,6 +7067,10 @@ cx_width* cx_widthCreateChild(cx_object _parent, cx_string _name, cx_width value
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -6949,6 +7157,10 @@ cx_word* cx_wordCreate(cx_word value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
@@ -6959,6 +7171,10 @@ cx_word* cx_wordCreateChild(cx_object _parent, cx_string _name, cx_word value) {
         return NULL;
     }
     *this = value;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
     return this;
 }
 
