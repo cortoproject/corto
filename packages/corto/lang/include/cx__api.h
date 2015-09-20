@@ -438,12 +438,12 @@ cx_int16 cx_float64Init(cx_float64* value);
 cx_int16 cx_float64Deinit(cx_float64* value);
 
 /* ::corto::lang::function */
-cx_function cx_functionCreate(cx_type returnType, cx_bool returnsReference);
-cx_function cx_functionCreateChild(cx_object _parent, cx_string _name, cx_type returnType, cx_bool returnsReference);
+cx_function cx_functionCreate(cx_type returnType, cx_bool returnsReference, void(*_impl)(cx_function f, void *result, void *args));
+cx_function cx_functionCreateChild(cx_object _parent, cx_string _name, cx_type returnType, cx_bool returnsReference, void(*_impl)(cx_function f, void *result, void *args));
 
 cx_function cx_functionDeclare(void);
 cx_function cx_functionDeclareChild(cx_object _parent, cx_string _name);
-cx_int16 cx_functionDefine(cx_function this, cx_type returnType, cx_bool returnsReference);
+cx_int16 cx_functionDefine(cx_function this, cx_type returnType, cx_bool returnsReference, void(*_impl)(cx_function f, void *result, void *args));
 void cx_functionUpdate(cx_function this, cx_type returnType, cx_bool returnsReference);
 void cx_functionSet(cx_function this, cx_type returnType, cx_bool returnsReference);
 cx_string cx_functionStr(cx_function value);
@@ -672,12 +672,12 @@ cx_int16 cx_memberseqInit(cx_memberseq* value);
 cx_int16 cx_memberseqDeinit(cx_memberseq* value);
 
 /* ::corto::lang::metaprocedure */
-cx_metaprocedure cx_metaprocedureCreate(cx_type returnType, cx_bool returnsReference, cx_bool referenceOnly);
-cx_metaprocedure cx_metaprocedureCreateChild(cx_object _parent, cx_string _name, cx_type returnType, cx_bool returnsReference, cx_bool referenceOnly);
+cx_metaprocedure cx_metaprocedureCreate(cx_type returnType, cx_bool returnsReference, cx_bool referenceOnly, void(*_impl)(cx_function f, void *result, void *args));
+cx_metaprocedure cx_metaprocedureCreateChild(cx_object _parent, cx_string _name, cx_type returnType, cx_bool returnsReference, cx_bool referenceOnly, void(*_impl)(cx_function f, void *result, void *args));
 
 cx_metaprocedure cx_metaprocedureDeclare(void);
 cx_metaprocedure cx_metaprocedureDeclareChild(cx_object _parent, cx_string _name);
-cx_int16 cx_metaprocedureDefine(cx_metaprocedure this, cx_type returnType, cx_bool returnsReference, cx_bool referenceOnly);
+cx_int16 cx_metaprocedureDefine(cx_metaprocedure this, cx_type returnType, cx_bool returnsReference, cx_bool referenceOnly, void(*_impl)(cx_function f, void *result, void *args));
 void cx_metaprocedureUpdate(cx_metaprocedure this, cx_type returnType, cx_bool returnsReference, cx_bool referenceOnly);
 void cx_metaprocedureSet(cx_metaprocedure this, cx_type returnType, cx_bool returnsReference, cx_bool referenceOnly);
 cx_string cx_metaprocedureStr(cx_metaprocedure value);
@@ -686,12 +686,12 @@ cx_int16 cx_metaprocedureCopy(cx_metaprocedure *dst, cx_metaprocedure src);
 cx_int16 cx_metaprocedureCompare(cx_metaprocedure dst, cx_metaprocedure src);
 
 /* ::corto::lang::method */
-cx_method cx_methodCreate(cx_type returnType, cx_bool returnsReference, cx_bool virtual);
-cx_method cx_methodCreateChild(cx_object _parent, cx_string _name, cx_type returnType, cx_bool returnsReference, cx_bool virtual);
+cx_method cx_methodCreate(cx_type returnType, cx_bool returnsReference, cx_bool virtual, void(*_impl)(cx_function f, void *result, void *args));
+cx_method cx_methodCreateChild(cx_object _parent, cx_string _name, cx_type returnType, cx_bool returnsReference, cx_bool virtual, void(*_impl)(cx_function f, void *result, void *args));
 
 cx_method cx_methodDeclare(void);
 cx_method cx_methodDeclareChild(cx_object _parent, cx_string _name);
-cx_int16 cx_methodDefine(cx_method this, cx_type returnType, cx_bool returnsReference, cx_bool virtual);
+cx_int16 cx_methodDefine(cx_method this, cx_type returnType, cx_bool returnsReference, cx_bool virtual, void(*_impl)(cx_function f, void *result, void *args));
 void cx_methodUpdate(cx_method this, cx_type returnType, cx_bool returnsReference, cx_bool virtual);
 void cx_methodSet(cx_method this, cx_type returnType, cx_bool returnsReference, cx_bool virtual);
 cx_string cx_methodStr(cx_method value);
@@ -752,14 +752,14 @@ cx_int16 cx_observableEventCopy(cx_observableEvent *dst, cx_observableEvent src)
 cx_int16 cx_observableEventCompare(cx_observableEvent dst, cx_observableEvent src);
 
 /* ::corto::lang::observer */
-cx_observer cx_observerCreate(cx_object observable, cx_eventMask mask, cx_dispatcher dispatcher, cx_object me);
-cx_observer cx_observerCreateChild(cx_object _parent, cx_string _name, cx_object observable, cx_eventMask mask, cx_dispatcher dispatcher, cx_object me);
+cx_observer cx_observerCreate(cx_object observable, cx_eventMask mask, void(*_impl)(cx_function f, void *result, void *args));
+cx_observer cx_observerCreateChild(cx_object _parent, cx_string _name, cx_object observable, cx_eventMask mask, void(*_impl)(cx_function f, void *result, void *args));
 
 cx_observer cx_observerDeclare(void);
 cx_observer cx_observerDeclareChild(cx_object _parent, cx_string _name);
-cx_int16 cx_observerDefine(cx_observer this, cx_object observable, cx_eventMask mask, cx_dispatcher dispatcher, cx_object me);
-void cx_observerUpdate(cx_observer this, cx_object observable, cx_eventMask mask, cx_dispatcher dispatcher, cx_object me);
-void cx_observerSet(cx_observer this, cx_object observable, cx_eventMask mask, cx_dispatcher dispatcher, cx_object me);
+cx_int16 cx_observerDefine(cx_observer this, cx_object observable, cx_eventMask mask, void(*_impl)(cx_function f, void *result, void *args));
+void cx_observerUpdate(cx_observer this, cx_object observable, cx_eventMask mask);
+void cx_observerSet(cx_observer this, cx_object observable, cx_eventMask mask);
 cx_string cx_observerStr(cx_observer value);
 cx_observer cx_observerFromStr(cx_observer value, cx_string str);
 cx_int16 cx_observerCopy(cx_observer *dst, cx_observer src);
@@ -1116,12 +1116,12 @@ cx_int16 cx_uint8Init(cx_uint8* value);
 cx_int16 cx_uint8Deinit(cx_uint8* value);
 
 /* ::corto::lang::virtual */
-cx_virtual cx_virtualCreate(cx_type returnType, cx_bool returnsReference, cx_bool virtual);
-cx_virtual cx_virtualCreateChild(cx_object _parent, cx_string _name, cx_type returnType, cx_bool returnsReference, cx_bool virtual);
+cx_virtual cx_virtualCreate(cx_type returnType, cx_bool returnsReference, cx_bool virtual, void(*_impl)(cx_function f, void *result, void *args));
+cx_virtual cx_virtualCreateChild(cx_object _parent, cx_string _name, cx_type returnType, cx_bool returnsReference, cx_bool virtual, void(*_impl)(cx_function f, void *result, void *args));
 
 cx_virtual cx_virtualDeclare(void);
 cx_virtual cx_virtualDeclareChild(cx_object _parent, cx_string _name);
-cx_int16 cx_virtualDefine(cx_virtual this, cx_type returnType, cx_bool returnsReference, cx_bool virtual);
+cx_int16 cx_virtualDefine(cx_virtual this, cx_type returnType, cx_bool returnsReference, cx_bool virtual, void(*_impl)(cx_function f, void *result, void *args));
 void cx_virtualUpdate(cx_virtual this, cx_type returnType, cx_bool returnsReference, cx_bool virtual);
 void cx_virtualSet(cx_virtual this, cx_type returnType, cx_bool returnsReference, cx_bool virtual);
 cx_string cx_virtualStr(cx_virtual value);

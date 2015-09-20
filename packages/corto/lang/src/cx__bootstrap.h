@@ -988,8 +988,8 @@ CX_PROCEDURE_O(observer, CX_OBSERVER, function, CX_LOCAL | CX_READONLY, NULL, CX
     CX_REFERENCE_O(observer, observable, object, CX_GLOBAL, CX_DEFINED | CX_DECLARED, FALSE);
     CX_MEMBER_O(observer, mask, eventMask, CX_GLOBAL);
     CX_MEMBER_O(observer, template, uint32, CX_GLOBAL|CX_READONLY);
-    CX_REFERENCE_O(observer, dispatcher, dispatcher, CX_GLOBAL, CX_DEFINED | CX_DECLARED, FALSE);
-    CX_REFERENCE_O(observer, me, object, CX_GLOBAL, CX_DEFINED | CX_DECLARED, FALSE);
+    CX_REFERENCE_O(observer, dispatcher, dispatcher, CX_GLOBAL|CX_HIDDEN, CX_DEFINED | CX_DECLARED, FALSE);
+    CX_REFERENCE_O(observer, me, object, CX_GLOBAL|CX_HIDDEN, CX_DEFINED | CX_DECLARED, FALSE);
     CX_REFERENCE_O(observer, observing, object, CX_LOCAL | CX_PRIVATE, CX_DEFINED | CX_DECLARED, FALSE);
     CX_REFERENCE_O(observer, delayedBinder, observer, CX_LOCAL | CX_PRIVATE, CX_DEFINED | CX_DECLARED, FALSE);
     CX_METHOD_O(observer, init, "()", int16, FALSE, cx_observer_init);

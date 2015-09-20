@@ -23,7 +23,8 @@ extern "C" {
 #endif
 
 /* virtual ::corto::lang::observableEvent::handle() */
-void cx_observableEvent_handle(cx_observableEvent _this);
+void _cx_observableEvent_handle(cx_observableEvent _this);
+#define cx_observableEvent_handle(_this) _cx_observableEvent_handle(cx_observableEvent(_this))
 
 /* ::corto::lang::observableEvent::handle() */
 cx_void _cx_observableEvent_handle_v(cx_observableEvent _this);

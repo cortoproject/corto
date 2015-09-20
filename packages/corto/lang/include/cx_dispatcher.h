@@ -22,7 +22,8 @@ extern "C" {
 #endif
 
 /* virtual ::corto::lang::dispatcher::post(event e) */
-void cx_dispatcher_post(cx_dispatcher _this, cx_event e);
+void _cx_dispatcher_post(cx_dispatcher _this, cx_event e);
+#define cx_dispatcher_post(_this, e) _cx_dispatcher_post(cx_dispatcher(_this), cx_event(e))
 
 /* ::corto::lang::dispatcher::post(event e) */
 cx_void _cx_dispatcher_post_v(cx_dispatcher _this, cx_event e);

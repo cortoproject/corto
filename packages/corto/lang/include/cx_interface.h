@@ -31,7 +31,8 @@ cx_int16 _cx_interface_bindMethod(cx_interface _this, cx_method method);
 #define cx_interface_bindMethod(_this, method) _cx_interface_bindMethod(cx_interface(_this), cx_method(method))
 
 /* virtual ::corto::lang::interface::compatible(type type) */
-cx_bool cx_interface_compatible(cx_interface _this, cx_type type);
+cx_bool _cx_interface_compatible(cx_interface _this, cx_type type);
+#define cx_interface_compatible(_this, type) _cx_interface_compatible(cx_interface(_this), cx_type(type))
 
 /* ::corto::lang::interface::compatible(type type) */
 cx_bool _cx_interface_compatible_v(cx_interface _this, cx_type type);
@@ -50,7 +51,8 @@ cx_int16 _cx_interface_init(cx_interface _this);
 #define cx_interface_init(_this) _cx_interface_init(cx_interface(_this))
 
 /* virtual ::corto::lang::interface::resolveMember(string name) */
-cx_member cx_interface_resolveMember(cx_interface _this, cx_string name);
+cx_member _cx_interface_resolveMember(cx_interface _this, cx_string name);
+#define cx_interface_resolveMember(_this, name) _cx_interface_resolveMember(cx_interface(_this), name)
 
 /* ::corto::lang::interface::resolveMember(string name) */
 cx_member _cx_interface_resolveMember_v(cx_interface _this, cx_string name);

@@ -26,14 +26,16 @@ cx_uint16 _cx_type_alignmentof(cx_type _this);
 #define cx_type_alignmentof(_this) _cx_type_alignmentof(cx_type(_this))
 
 /* virtual ::corto::lang::type::allocSize() */
-cx_uint32 cx_type_allocSize(cx_type _this);
+cx_uint32 _cx_type_allocSize(cx_type _this);
+#define cx_type_allocSize(_this) _cx_type_allocSize(cx_type(_this))
 
 /* ::corto::lang::type::allocSize() */
 cx_uint32 _cx_type_allocSize_v(cx_type _this);
 #define cx_type_allocSize_v(_this) _cx_type_allocSize_v(cx_type(_this))
 
 /* virtual ::corto::lang::type::castable(type type) */
-cx_bool cx_type_castable(cx_type _this, cx_type type);
+cx_bool _cx_type_castable(cx_type _this, cx_type type);
+#define cx_type_castable(_this, type) _cx_type_castable(cx_type(_this), cx_type(type))
 
 /* ::corto::lang::type::castable(type type) */
 cx_bool _cx_type_castable_v(cx_type _this, cx_type type);
@@ -52,7 +54,8 @@ cx_equalityKind _cx_type_compare(cx_any _this, cx_any value);
 #define cx_type_compare(_this, value) _cx_type_compare(_this, value)
 
 /* virtual ::corto::lang::type::compatible(type type) */
-cx_bool cx_type_compatible(cx_type _this, cx_type type);
+cx_bool _cx_type_compatible(cx_type _this, cx_type type);
+#define cx_type_compatible(_this, type) _cx_type_compatible(cx_type(_this), cx_type(type))
 
 /* ::corto::lang::type::compatible(type type) */
 cx_bool _cx_type_compatible_v(cx_type _this, cx_type type);

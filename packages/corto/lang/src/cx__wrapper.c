@@ -72,7 +72,7 @@ void __cx_character_init(cx_function f, void *result, void *args) {
 }
 
 /* virtual ::corto::lang::class::allocSize() */
-cx_uint32 cx_class_allocSize(cx_class this) {
+cx_uint32 _cx_class_allocSize(cx_class this) {
     static cx_uint32 _methodId;
     cx_method _method;
     cx_uint32 _result;
@@ -163,7 +163,7 @@ void __cx_class_resolveInterfaceMethod(cx_function f, void *result, void *args) 
 }
 
 /* virtual ::corto::lang::collection::castable(type type) */
-cx_bool cx_collection_castable(cx_collection this, cx_type type) {
+cx_bool _cx_collection_castable(cx_collection this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
     cx_bool _result;
@@ -194,7 +194,7 @@ void __cx_collection_castable_v(cx_function f, void *result, void *args) {
 }
 
 /* virtual ::corto::lang::collection::compatible(type type) */
-cx_bool cx_collection_compatible(cx_collection this, cx_type type) {
+cx_bool _cx_collection_compatible(cx_collection this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
     cx_bool _result;
@@ -259,7 +259,7 @@ void __cx_delegate_bind(cx_function f, void *result, void *args) {
 }
 
 /* virtual ::corto::lang::delegate::castable(type type) */
-cx_bool cx_delegate_castable(cx_delegate this, cx_type type) {
+cx_bool _cx_delegate_castable(cx_delegate this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
     cx_bool _result;
@@ -290,7 +290,7 @@ void __cx_delegate_castable_v(cx_function f, void *result, void *args) {
 }
 
 /* virtual ::corto::lang::delegate::compatible(type type) */
-cx_bool cx_delegate_compatible(cx_delegate this, cx_type type) {
+cx_bool _cx_delegate_compatible(cx_delegate this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
     cx_bool _result;
@@ -335,7 +335,7 @@ void __cx_delegate_instanceof(cx_function f, void *result, void *args) {
 }
 
 /* virtual ::corto::lang::dispatcher::post(event e) */
-void cx_dispatcher_post(cx_dispatcher this, cx_event e) {
+void _cx_dispatcher_post(cx_dispatcher this, cx_event e) {
     static cx_uint32 _methodId;
     cx_method _method;
     cx_interface _abstract;
@@ -393,7 +393,7 @@ void __cx_enum_init(cx_function f, void *result, void *args) {
 }
 
 /* virtual ::corto::lang::event::handle() */
-void cx_event_handle(cx_event this) {
+void _cx_event_handle(cx_event this) {
     static cx_uint32 _methodId;
     cx_method _method;
     cx_interface _abstract;
@@ -485,7 +485,7 @@ void __cx_interface_bindMethod(cx_function f, void *result, void *args) {
 }
 
 /* virtual ::corto::lang::interface::compatible(type type) */
-cx_bool cx_interface_compatible(cx_interface this, cx_type type) {
+cx_bool _cx_interface_compatible(cx_interface this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
     cx_bool _result;
@@ -538,7 +538,7 @@ void __cx_interface_init(cx_function f, void *result, void *args) {
 }
 
 /* virtual ::corto::lang::interface::resolveMember(string name) */
-cx_member cx_interface_resolveMember(cx_interface this, cx_string name) {
+cx_member _cx_interface_resolveMember(cx_interface this, cx_string name) {
     static cx_uint32 _methodId;
     cx_method _method;
     cx_member _result;
@@ -590,7 +590,7 @@ void __cx_interface_resolveMethodId(cx_function f, void *result, void *args) {
 }
 
 /* virtual ::corto::lang::iterator::castable(type type) */
-cx_bool cx_iterator_castable(cx_iterator this, cx_type type) {
+cx_bool _cx_iterator_castable(cx_iterator this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
     cx_bool _result;
@@ -621,7 +621,7 @@ void __cx_iterator_castable_v(cx_function f, void *result, void *args) {
 }
 
 /* virtual ::corto::lang::iterator::compatible(type type) */
-cx_bool cx_iterator_compatible(cx_iterator this, cx_type type) {
+cx_bool _cx_iterator_compatible(cx_iterator this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
     cx_bool _result;
@@ -768,7 +768,7 @@ void __cx_method_init(cx_function f, void *result, void *args) {
 }
 
 /* virtual ::corto::lang::observableEvent::handle() */
-void cx_observableEvent_handle(cx_observableEvent this) {
+void _cx_observableEvent_handle(cx_observableEvent this) {
     static cx_uint32 _methodId;
     cx_method _method;
     cx_interface _abstract;
@@ -841,7 +841,7 @@ void __cx_observer_unbind(cx_function f, void *result, void *args) {
 }
 
 /* virtual ::corto::lang::primitive::castable(type type) */
-cx_bool cx_primitive_castable(cx_primitive this, cx_type type) {
+cx_bool _cx_primitive_castable(cx_primitive this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
     cx_bool _result;
@@ -872,7 +872,7 @@ void __cx_primitive_castable_v(cx_function f, void *result, void *args) {
 }
 
 /* virtual ::corto::lang::primitive::compatible(type type) */
-cx_bool cx_primitive_compatible(cx_primitive this, cx_type type) {
+cx_bool _cx_primitive_compatible(cx_primitive this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
     cx_bool _result;
@@ -954,7 +954,7 @@ void __cx_sequence_size(cx_function f, void *result, void *args) {
 }
 
 /* virtual ::corto::lang::struct::castable(type type) */
-cx_bool cx_struct_castable(cx_struct this, cx_type type) {
+cx_bool _cx_struct_castable(cx_struct this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
     cx_bool _result;
@@ -985,7 +985,7 @@ void __cx_struct_castable_v(cx_function f, void *result, void *args) {
 }
 
 /* virtual ::corto::lang::struct::compatible(type type) */
-cx_bool cx_struct_compatible(cx_struct this, cx_type type) {
+cx_bool _cx_struct_compatible(cx_struct this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
     cx_bool _result;
@@ -1030,7 +1030,7 @@ void __cx_struct_init(cx_function f, void *result, void *args) {
 }
 
 /* virtual ::corto::lang::struct::resolveMember(string name) */
-cx_member cx_struct_resolveMember(cx_struct this, cx_string name) {
+cx_member _cx_struct_resolveMember(cx_struct this, cx_string name) {
     static cx_uint32 _methodId;
     cx_method _method;
     cx_member _result;
@@ -1075,7 +1075,7 @@ void __cx_type_alignmentof(cx_function f, void *result, void *args) {
 }
 
 /* virtual ::corto::lang::type::allocSize() */
-cx_uint32 cx_type_allocSize(cx_type this) {
+cx_uint32 _cx_type_allocSize(cx_type this) {
     static cx_uint32 _methodId;
     cx_method _method;
     cx_uint32 _result;
@@ -1106,7 +1106,7 @@ void __cx_type_allocSize_v(cx_function f, void *result, void *args) {
 }
 
 /* virtual ::corto::lang::type::castable(type type) */
-cx_bool cx_type_castable(cx_type this, cx_type type) {
+cx_bool _cx_type_castable(cx_type this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
     cx_bool _result;
@@ -1158,7 +1158,7 @@ void __cx_type_compare(cx_function f, void *result, void *args) {
 }
 
 /* virtual ::corto::lang::type::compatible(type type) */
-cx_bool cx_type_compatible(cx_type this, cx_type type) {
+cx_bool _cx_type_compatible(cx_type this, cx_type type) {
     static cx_uint32 _methodId;
     cx_method _method;
     cx_bool _result;

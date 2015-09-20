@@ -23,14 +23,16 @@ extern "C" {
 #endif
 
 /* virtual ::corto::lang::primitive::castable(type type) */
-cx_bool cx_primitive_castable(cx_primitive _this, cx_type type);
+cx_bool _cx_primitive_castable(cx_primitive _this, cx_type type);
+#define cx_primitive_castable(_this, type) _cx_primitive_castable(cx_primitive(_this), cx_type(type))
 
 /* ::corto::lang::primitive::castable(type type) */
 cx_bool _cx_primitive_castable_v(cx_primitive _this, cx_type type);
 #define cx_primitive_castable_v(_this, type) _cx_primitive_castable_v(cx_primitive(_this), cx_type(type))
 
 /* virtual ::corto::lang::primitive::compatible(type type) */
-cx_bool cx_primitive_compatible(cx_primitive _this, cx_type type);
+cx_bool _cx_primitive_compatible(cx_primitive _this, cx_type type);
+#define cx_primitive_compatible(_this, type) _cx_primitive_compatible(cx_primitive(_this), cx_type(type))
 
 /* ::corto::lang::primitive::compatible(type type) */
 cx_bool _cx_primitive_compatible_v(cx_primitive _this, cx_type type);

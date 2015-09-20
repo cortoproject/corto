@@ -109,20 +109,17 @@ extern int8_t CX_DEBUG_ENABLED;
 #define CX_SEQUENCE_EMPTY(name) (name){0, NULL}
 #define CX_LIST(type) typedef cx_ll type
 
-#define CX_OBSERVER_DEF(name)\
-    void name(cx_object, cx_object, cx_object);\
-    void __##name(cx_function f, void *result, void *args) {\
+#define CX_OBSERVER(name)\
+    void __##name (cx_object, cx_object, cx_object);\
+    void name (cx_function f, void *result, void *args) {\
         CX_UNUSED(f);\
         CX_UNUSED(result);\
-        name(\
+        __##name (\
             *(void**)args,\
             *(void**)((intptr_t)args + sizeof(void*)),\
             *(void**)((intptr_t)args + sizeof(void*) + sizeof(void*)));\
     }\
-    void name
-
-#define CX_OBSERVER_SET_CALLBACK(observer, func)\
-    cx_function(observer)->impl = (cx_word)__##func;
+    void __##name (cx_object this, cx_object observable, cx_object source)
 
 #ifdef __cplusplus
 }

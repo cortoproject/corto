@@ -23,14 +23,16 @@ extern "C" {
 #endif
 
 /* virtual ::corto::lang::collection::castable(type type) */
-cx_bool cx_collection_castable(cx_collection _this, cx_type type);
+cx_bool _cx_collection_castable(cx_collection _this, cx_type type);
+#define cx_collection_castable(_this, type) _cx_collection_castable(cx_collection(_this), cx_type(type))
 
 /* ::corto::lang::collection::castable(type type) */
 cx_bool _cx_collection_castable_v(cx_collection _this, cx_type type);
 #define cx_collection_castable_v(_this, type) _cx_collection_castable_v(cx_collection(_this), cx_type(type))
 
 /* virtual ::corto::lang::collection::compatible(type type) */
-cx_bool cx_collection_compatible(cx_collection _this, cx_type type);
+cx_bool _cx_collection_compatible(cx_collection _this, cx_type type);
+#define cx_collection_compatible(_this, type) _cx_collection_compatible(cx_collection(_this), cx_type(type))
 
 /* ::corto::lang::collection::compatible(type type) */
 cx_bool _cx_collection_compatible_v(cx_collection _this, cx_type type);

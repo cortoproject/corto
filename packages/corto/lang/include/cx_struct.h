@@ -23,14 +23,16 @@ extern "C" {
 #endif
 
 /* virtual ::corto::lang::struct::castable(type type) */
-cx_bool cx_struct_castable(cx_struct _this, cx_type type);
+cx_bool _cx_struct_castable(cx_struct _this, cx_type type);
+#define cx_struct_castable(_this, type) _cx_struct_castable(cx_struct(_this), cx_type(type))
 
 /* ::corto::lang::struct::castable(type type) */
 cx_bool _cx_struct_castable_v(cx_struct _this, cx_type type);
 #define cx_struct_castable_v(_this, type) _cx_struct_castable_v(cx_struct(_this), cx_type(type))
 
 /* virtual ::corto::lang::struct::compatible(type type) */
-cx_bool cx_struct_compatible(cx_struct _this, cx_type type);
+cx_bool _cx_struct_compatible(cx_struct _this, cx_type type);
+#define cx_struct_compatible(_this, type) _cx_struct_compatible(cx_struct(_this), cx_type(type))
 
 /* ::corto::lang::struct::compatible(type type) */
 cx_bool _cx_struct_compatible_v(cx_struct _this, cx_type type);
@@ -45,7 +47,8 @@ cx_int16 _cx_struct_init(cx_struct _this);
 #define cx_struct_init(_this) _cx_struct_init(cx_struct(_this))
 
 /* virtual ::corto::lang::struct::resolveMember(string name) */
-cx_member cx_struct_resolveMember(cx_struct _this, cx_string name);
+cx_member _cx_struct_resolveMember(cx_struct _this, cx_string name);
+#define cx_struct_resolveMember(_this, name) _cx_struct_resolveMember(cx_struct(_this), name)
 
 /* ::corto::lang::struct::resolveMember(string name) */
 cx_member _cx_struct_resolveMember_v(cx_struct _this, cx_string name);

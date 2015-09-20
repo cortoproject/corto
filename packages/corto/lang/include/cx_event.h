@@ -22,7 +22,8 @@ extern "C" {
 #endif
 
 /* virtual ::corto::lang::event::handle() */
-void cx_event_handle(cx_event _this);
+void _cx_event_handle(cx_event _this);
+#define cx_event_handle(_this) _cx_event_handle(cx_event(_this))
 
 /* ::corto::lang::event::handle() */
 cx_void _cx_event_handle_v(cx_event _this);

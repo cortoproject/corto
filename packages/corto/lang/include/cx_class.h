@@ -23,7 +23,8 @@ extern "C" {
 #endif
 
 /* virtual ::corto::lang::class::allocSize() */
-cx_uint32 cx_class_allocSize(cx_class _this);
+cx_uint32 _cx_class_allocSize(cx_class _this);
+#define cx_class_allocSize(_this) _cx_class_allocSize(cx_class(_this))
 
 /* ::corto::lang::class::allocSize() */
 cx_uint32 _cx_class_allocSize_v(cx_class _this);

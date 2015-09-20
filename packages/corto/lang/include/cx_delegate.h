@@ -27,14 +27,16 @@ cx_int16 _cx_delegate_bind(cx_function object);
 #define cx_delegate_bind(object) _cx_delegate_bind(cx_function(object))
 
 /* virtual ::corto::lang::delegate::castable(type type) */
-cx_bool cx_delegate_castable(cx_delegate _this, cx_type type);
+cx_bool _cx_delegate_castable(cx_delegate _this, cx_type type);
+#define cx_delegate_castable(_this, type) _cx_delegate_castable(cx_delegate(_this), cx_type(type))
 
 /* ::corto::lang::delegate::castable(type type) */
 cx_bool _cx_delegate_castable_v(cx_delegate _this, cx_type type);
 #define cx_delegate_castable_v(_this, type) _cx_delegate_castable_v(cx_delegate(_this), cx_type(type))
 
 /* virtual ::corto::lang::delegate::compatible(type type) */
-cx_bool cx_delegate_compatible(cx_delegate _this, cx_type type);
+cx_bool _cx_delegate_compatible(cx_delegate _this, cx_type type);
+#define cx_delegate_compatible(_this, type) _cx_delegate_compatible(cx_delegate(_this), cx_type(type))
 
 /* ::corto::lang::delegate::compatible(type type) */
 cx_bool _cx_delegate_compatible_v(cx_delegate _this, cx_type type);

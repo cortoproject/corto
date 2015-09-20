@@ -170,6 +170,16 @@ cx_int16 c_apiTypeCreateIntern(cx_type t, c_apiWalk_t *data, cx_string func, cx_
             g_fileWrite(data->header, "%s value", id);
             data->parameterCount++;
         }
+
+        if (cx_instanceof(cx_procedure_o, t)) {
+            if (data->parameterCount) {
+                g_fileWrite(data->source, ", ");
+                g_fileWrite(data->header, ", ");
+            }
+            g_fileWrite(data->source, "void(*_impl)(cx_function f, void *result, void *args)");
+            g_fileWrite(data->header, "void(*_impl)(cx_function f, void *result, void *args)");
+            data->parameterCount++;
+        }
 	}
 
     /* If there are no parameters, write 'void' */
@@ -203,6 +213,10 @@ cx_int16 c_apiTypeCreateIntern(cx_type t, c_apiWalk_t *data, cx_string func, cx_
         } else {
     	    s = c_apiAssignSerializer();
     	    cx_metaWalk(&s, cx_type(t), data);
+
+            if (cx_instanceof(cx_procedure_o, t)) {
+                g_fileWrite(data->source, "cx_function(this)->impl = (cx_word)_impl;\n");
+            }
 
     	    /* Define object */
     	    g_fileWrite(data->source, "if (this && cx_define(this)) {\n");
@@ -270,6 +284,16 @@ cx_int16 c_apiTypeDefineIntern(cx_type t, c_apiWalk_t *data, cx_bool isUpdate, c
         g_fileWrite(data->header, ", %s value", id);
     }
 
+    if (cx_instanceof(cx_procedure_o, t) && !strcmp(func, "Define")) {
+        if (data->parameterCount) {
+            g_fileWrite(data->source, ", ");
+            g_fileWrite(data->header, ", ");
+        }
+        g_fileWrite(data->source, "void(*_impl)(cx_function f, void *result, void *args)");
+        g_fileWrite(data->header, "void(*_impl)(cx_function f, void *result, void *args)");
+        data->parameterCount++;        
+    }
+
     /* Write closing brackets for argumentlist in source and header */
     g_fileWrite(data->header, ");\n");
     g_fileWrite(data->source, ") {\n");
@@ -305,6 +329,9 @@ cx_int16 c_apiTypeDefineIntern(cx_type t, c_apiWalk_t *data, cx_bool isUpdate, c
             g_fileWrite(data->source, "cx_update(this);\n");
         }
     } else if (!isUpdate) {
+        if (cx_instanceof(cx_procedure_o, t)) {
+            g_fileWrite(data->source, "cx_function(this)->impl = (cx_word)_impl;\n");
+        }
 	    g_fileWrite(data->source, "return cx_define(this);\n");
 	}
 
