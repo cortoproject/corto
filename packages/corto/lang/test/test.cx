@@ -23,6 +23,12 @@ struct Point3D: Point::
 struct Line::
     start, stop: Point
 
+struct PrimitiveCollection::
+    ints: list{int32}
+
+struct CompositeCollection::
+    points: list{Point}
+
 struct VoidParent: parentType = void::
     foo: int32
 
@@ -210,6 +216,9 @@ class StringDeserializer: test::Suite::
     void tc_deserCompositeWhitespace() test::Case
     void tc_deserCompositeMembers() test::Case
     void tc_deserCompositeMixed() test::Case
+
+    void tc_deserCollection() test::Case
+    void tc_deserCollectionComplex() test::Case
 
     void tc_deserInheritance() test::Case
     void tc_deserInheritanceMembers() test::Case

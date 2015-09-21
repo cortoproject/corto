@@ -221,6 +221,24 @@ error:
 	return NULL;	
 }
 
+cx_int16 corto_debug(int argc, char *argv[]) {
+	CX_UNUSED(argc);
+	CX_UNUSED(argv);
+
+	if (argc > 1) {
+		cx_chdir(argv[1]);
+	}
+
+	printf("argv[1] = %s\n", argv[1]);
+
+	cx_pid pid = cx_procrun("lldb", (char*[]){".corto/app", NULL});
+	if (pid) {
+		cx_procwait(pid, NULL);
+	}
+
+	return 0;
+}
+
 cx_int16 corto_run(int argc, char *argv[]) {
 	cx_pid pid = 0;
 	cx_ll files;
@@ -296,7 +314,7 @@ cx_int16 corto_run(int argc, char *argv[]) {
 
 			/* Start process */
 			if (!pid) {
-				pid = cx_procrun(".corto/app", argv);
+				pid = cx_procrun(".corto/app", &argv[1]);
 			}
 
 			/* Wait until either source changes, or executable finishes */

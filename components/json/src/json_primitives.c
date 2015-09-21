@@ -1,47 +1,57 @@
 
 #include "json_primitives.h"
+#include "parson.h"
 
-cx_int16 serializeNumber(cx_value *value, cx_string *out) {
+cx_int16 serializeNumber(cx_value *value, cx_string *out, cx_json_ser_t *data) {
+    CX_UNUSED(data);
+
     cx_type t = cx_valueType(value);
+
+    /* JSON doesn't support hex notation, so convert to integer */
+    if (cx_primitive(t)->kind == CX_BINARY) {
+        t = cx_type(cx_uint64_o);
+    }
+
     cx_void  *v = cx_valueValue(value);
     cx_int16 result = cx_convert(cx_primitive(t), v, cx_primitive(cx_string_o), out);
     return result;
 }
 
-static cx_int16 serializeNumericWithPrefix(cx_value *value, cx_string *out, const char *prefix) {
+static cx_int16 serializeNumericWithPrefix(cx_value *value, cx_string *out, const char *prefix, cx_json_ser_t *data) {
     cx_string raw;
     cx_void *v = cx_valueValue(value);
     if (cx_convert(cx_primitive(cx_valueType(value)), v, cx_primitive(cx_string_o), &raw)) {
         goto error;
     }
-    int length = snprintf(NULL, 0, "\"%s %s\"", prefix, raw);
-    if (length < 0) {
-        goto error;
+
+    if (data->serializePrefix) {
+        cx_asprintf(out, "\"%s %s\"", prefix, raw);
+    } else {
+        cx_asprintf(out, "\"%s\"", raw);
     }
-    *out = cx_alloc(length + 1);
-    if (sprintf(*out, "\"%s %s\"", prefix, raw) < 0) {
-        goto error;
-    }
+
     cx_dealloc(raw);
+
     return 0;
 error:
     cx_dealloc(raw);
     return -1;
 }
 
-cx_int16 serializeBinary(cx_value *value, cx_string *out) {
-    return serializeNumericWithPrefix(value, out, "@B");
+cx_int16 serializeBinary(cx_value *value, cx_string *out, cx_json_ser_t *data) {
+    return serializeNumber(value, out, data);
 }
 
-cx_int16 serializeBitmask(cx_value *value, cx_string *out) {
-    return serializeNumericWithPrefix(value, out, "@M");
+cx_int16 serializeBitmask(cx_value *value, cx_string *out, cx_json_ser_t *data) {
+    return serializeNumericWithPrefix(value, out, "@M", data);
 }
 
-cx_int16 serializeEnum(cx_value *value, cx_string *out) {
-    return serializeNumericWithPrefix(value, out, "@E");
+cx_int16 serializeEnum(cx_value *value, cx_string *out, cx_json_ser_t *data) {
+    return serializeNumericWithPrefix(value, out, "@E", data);
 }
 
-cx_int16 serializeBoolean(cx_value *value, cx_string *out) {
+cx_int16 serializeBoolean(cx_value *value, cx_string *out, cx_json_ser_t *data) {
+    CX_UNUSED(data);
     cx_bool b = *(cx_bool *)cx_valueValue(value);
     if (b) {
         *out = cx_alloc(sizeof("true"));
@@ -53,7 +63,8 @@ cx_int16 serializeBoolean(cx_value *value, cx_string *out) {
     return 0;
 }
 
-cx_int16 serializeText(cx_value *value, cx_string *out) {
+cx_int16 serializeText(cx_value *value, cx_string *out, cx_json_ser_t *data) {
+    CX_UNUSED(data);
     cx_type type = cx_valueType(value);
     cx_void *v = cx_valueValue(value);
     cx_primitiveKind kind = cx_primitive(type)->kind;

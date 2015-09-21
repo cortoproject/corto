@@ -154,6 +154,68 @@ cx_void _test_StringDeserializer_tc_deserCharQuoted(test_StringDeserializer this
 /* $end */
 }
 
+/* ::test::StringDeserializer::tc_deserCollection() */
+cx_void _test_StringDeserializer_tc_deserCollection(test_StringDeserializer this) {
+/* $begin(::test::StringDeserializer::tc_deserCollection) */
+
+    cx_object *o = NULL;
+    cx_int16 ret = cx_fromStr(&o, "test::PrimitiveCollection{{0, 1, 2, 3}}");
+
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(cx_typeof(o) == (cx_type)test_PrimitiveCollection_o);
+    
+    test_PrimitiveCollection *c = test_PrimitiveCollection(o);
+    test_assert(c != NULL);
+    test_assert(c->ints != NULL);
+    test_assert(cx_llSize(c->ints) == 4);
+
+    test_assert((cx_uint32)(cx_word)cx_llGet(c->ints, 0) == 0);
+    test_assert((cx_uint32)(cx_word)cx_llGet(c->ints, 1) == 1);
+    test_assert((cx_uint32)(cx_word)cx_llGet(c->ints, 2) == 2);
+    test_assert((cx_uint32)(cx_word)cx_llGet(c->ints, 3) == 3);
+
+    cx_delete(o);
+
+/* $end */
+}
+
+/* ::test::StringDeserializer::tc_deserCollectionComplex() */
+cx_void _test_StringDeserializer_tc_deserCollectionComplex(test_StringDeserializer this) {
+/* $begin(::test::StringDeserializer::tc_deserCollectionComplex) */
+
+    cx_object *o = NULL;
+    cx_int16 ret = cx_fromStr(&o, "test::CompositeCollection{{{0, 1}, {2, 3}, {4, 5}}}");
+
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(cx_typeof(o) == (cx_type)test_CompositeCollection_o);
+    
+    test_CompositeCollection *c = test_CompositeCollection(o);
+    test_assert(c != NULL);
+    test_assert(c->points != NULL);
+    test_assert(cx_llSize(c->points) == 3);
+
+    test_Point *p = cx_llGet(c->points, 0);
+    test_assert(p != NULL);
+    test_assert(p->x == 0);
+    test_assert(p->y == 1);
+
+    p = cx_llGet(c->points, 1);
+    test_assert(p != NULL);
+    test_assert(p->x == 2);
+    test_assert(p->y == 3);
+
+    p = cx_llGet(c->points, 2);
+    test_assert(p != NULL);
+    test_assert(p->x == 4);
+    test_assert(p->y == 5);
+
+    cx_delete(o);
+
+/* $end */
+}
+
 /* ::test::StringDeserializer::tc_deserComposite() */
 cx_void _test_StringDeserializer_tc_deserComposite(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserComposite) */

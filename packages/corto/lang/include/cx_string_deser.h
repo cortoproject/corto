@@ -32,6 +32,8 @@ typedef struct cx_string_deser_t {
     cx_ll index;
     cx_void* ptr;
     cx_ll anonymousObjects;
+    void* (*allocValue)(void *ptr, void *udata);
+    void *allocUdata;
 }cx_string_deser_t;
 
 /* Deserialize string */

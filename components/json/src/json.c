@@ -78,25 +78,25 @@ static cx_int16 serializePrimitive(cx_serializer s, cx_value *v, void *userData)
 
     switch (cx_primitive(type)->kind) {
         case CX_BINARY:
-            result = serializeBinary(v, &valueString);
+            result = serializeBinary(v, &valueString, data);
             break;
         case CX_BITMASK:
-            result = serializeBitmask(v, &valueString);
+            result = serializeBitmask(v, &valueString, data);
             break;
         case CX_BOOLEAN:
-            result = serializeBoolean(v, &valueString);
+            result = serializeBoolean(v, &valueString, data);
             break;
         case CX_ENUM:
-            result = serializeEnum(v, &valueString);
+            result = serializeEnum(v, &valueString, data);
             break;
         case CX_CHARACTER:
         case CX_TEXT:
-            result = serializeText(v, &valueString);
+            result = serializeText(v, &valueString, data);
             break;
         case CX_UINTEGER:
         case CX_INTEGER:
         case CX_FLOAT:
-            result = serializeNumber(v, &valueString);
+            result = serializeNumber(v, &valueString, data);
             break;
     }
     if (result) {
@@ -134,10 +134,18 @@ static cx_int16 serializeReference(cx_serializer s, cx_value *v, void *userData)
             /* Escape value */
             cx_string escapedValue = cx_alloc((length = stresc(NULL, 0, id)) + 1);
             stresc(escapedValue, length + 1, id);
-            if (!cx_ser_appendstr(data, "\"@R %s\"", escapedValue)) {
-                cx_dealloc(escapedValue);
-                goto finished;
+            if (data->serializePrefix) {
+                if (!cx_ser_appendstr(data, "\"@R %s\"", escapedValue)) {
+                    cx_dealloc(escapedValue);
+                    goto finished;
+                }
+            } else {
+                if (!cx_ser_appendstr(data, "\"%s\"", escapedValue)) {
+                    cx_dealloc(escapedValue);
+                    goto finished;
+                }                
             }
+
             cx_dealloc(escapedValue);
         } else {
             cx_ser_appendstr(data, "\"anonymous\"");
@@ -221,8 +229,11 @@ finished:
 static cx_int16 serializeBase(cx_serializer s, cx_value* v, void* userData) {
     cx_json_ser_t *data = userData;
     cx_id id;
-    if (!cx_ser_appendstr(data, "\"@%s\":", cx_fullname(cx_valueType(v), id))) {
-        goto finished;
+
+    if (data->serializePrefix) {
+        if (!cx_ser_appendstr(data, "\"@%s\":", cx_fullname(cx_valueType(v), id))) {
+            goto finished;
+        }
     }
     if (cx_serializeValue(s, v, userData)) {
         goto error;

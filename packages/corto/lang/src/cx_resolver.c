@@ -43,8 +43,9 @@ cx_object cx_lookupLowercase(cx_object o, cx_string name);
 cx_object cx_resolve(cx_object _scope, cx_string str) {
     cx_object scope, _scope_start, o, lookup;
     const char* ptr;
-    char* bptr;
+    char *bptr, *bptrLc;
     cx_id buffer;
+    cx_id bufferLc;
     cx_char ch;
     cx_bool overload;
     cx_bool fullyQualified = FALSE;
@@ -102,27 +103,33 @@ repeat:
             }
 
             bptr = buffer;
+            bptrLc = bufferLc;
             while ((ch = *ptr) && (ch != ':') && (ch != '{') && (ch != '/')) {
-                *bptr = tolower(ch);
+                *bptr = ch;
+                *bptrLc = tolower(ch);
                 bptr++;
+                bptrLc++;
                 ptr++;
                 if (ch == '(') {
                     overload = TRUE;
                     while ((ch = *ptr) && (ch != ')')) {
-                        *bptr = tolower(ch);
+                        *bptrLc = tolower(ch);
+                        *bptr = ch;
+                        bptrLc++;
                         bptr++;
                         ptr++;
                     }
                 }
             }
             *bptr = '\0';
+            *bptrLc = '\0';
 
             if (cx_scopeSize(o)) {
                 if (!overload) {
                     cx_object prev = o;
                     int i;
                     for (i = 0; i < 2; i++) {
-                        o = cx_lookupLowercase(o, buffer);
+                        o = cx_lookupLowercase(o, bufferLc);
                         if (lookup) {
                             cx_release(lookup); /* Free reference */
                         }
@@ -131,7 +138,11 @@ repeat:
                         if (!o) {
                             if (!i && (prev != corto_lang_o) && cx_instanceof(cx_type(cx_package_o), prev)) {
                                 cx_id load, id;
-                                sprintf(load, "%s/%s", cx_fullname(prev, id), buffer);
+                                if (prev != root_o) {
+                                    sprintf(load, "%s/%s", cx_fullname(prev, id), buffer);
+                                } else {
+                                    sprintf(load, "/%s", buffer);
+                                }
                                 cx_load(load, 0, NULL);
                                 o = prev;
                             } else {
@@ -147,7 +158,7 @@ repeat:
                     }
                 } else {
                     /* If argumentlist is provided, look for closest match */
-                    o = cx_lookupFunction(o, buffer, NULL);
+                    o = cx_lookupFunction(o, bufferLc, NULL);
                     if (lookup) {
                         cx_release(lookup);
                     }

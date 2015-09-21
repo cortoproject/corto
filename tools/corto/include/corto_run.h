@@ -9,6 +9,7 @@ extern "C" {
 #endif
 
 cx_int16 corto_run(int argc, char* argv[]);
+cx_int16 corto_debug(int argc, char* argv[]);
 void corto_runHelp(void);
 
 #ifdef __cplusplus

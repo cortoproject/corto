@@ -22,7 +22,7 @@ end
 
 task :collect do
 	verbose(false)
-	includePath = "#{ENV['HOME']}/.corto/pack/include/corto/#{VERSION}"
+	includePath = "#{ENV['HOME']}/.corto/pack/include/corto/#{VERSION}/packages/corto/lang"
 	sh "mkdir -p #{includePath}"
     sh "cp include/* #{includePath}/"
 

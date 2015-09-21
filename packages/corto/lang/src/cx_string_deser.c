@@ -7,6 +7,7 @@
 
 #define corto_lang_LIB
 #include "cx_string_deser.h"
+#include "cx_collection.h"
 #include "cx_object.h"
 #include "cx_err.h"
 #include "cx_util.h"
@@ -155,11 +156,38 @@ cx_serializer cx_string_deserBuildIndex(void) {
 
 static cx_string cx_string_deserParse(cx_string str, struct cx_string_deserIndexInfo* info, cx_string_deser_t* data);
 
+void* cx_string_deserAllocElem(void *ptr, void *udata) {
+    cx_collection t = udata;
+    void *result = NULL;
+
+    switch(t->kind) {
+    case CX_LIST: {
+        cx_ll list = *(cx_ll*)ptr;
+        if (cx_collection_elementRequiresAlloc(t)) {
+            result = cx_calloc(cx_type_sizeof(t->elementType));
+            cx_llAppend(list, result);
+        } else {
+            cx_llAppend(list, NULL);
+            result = cx_llGetPtr(list, cx_llSize(list) - 1);
+        }
+        break;
+    default:
+        break;
+    }
+    }
+
+    return result;
+}
 /* Parse scope */
 static cx_string cx_string_deserParseScope(cx_string str, struct cx_string_deserIndexInfo* info, cx_string_deser_t* data) {
     cx_string_deser_t privateData;
     struct cx_string_deserIndexInfo rootInfo;
     cx_typeKind kind;
+    void *ptr = data->ptr;
+
+    if (data->allocValue) {
+        ptr = data->allocValue(ptr, data->allocUdata);
+    }
 
     /* Prepare privateData */
     privateData.current = 0;
@@ -168,12 +196,14 @@ static cx_string cx_string_deserParseScope(cx_string str, struct cx_string_deser
     privateData.scope = data->scope;
     privateData.anonymousObjects = data->anonymousObjects;
     privateData.type = data->type;
+    privateData.allocValue = NULL;
+    privateData.allocUdata = NULL;
 
     /* Offset the scope-members with the current offset */
-    if (info) {
-        privateData.ptr = CX_OFFSET(data->ptr, info->m->offset);
+    if (info && info->m) {
+        privateData.ptr = CX_OFFSET(ptr, info->m->offset);
     } else {
-        privateData.ptr = data->ptr;
+        privateData.ptr = ptr;
     }
 
     /* Open scope of type */
@@ -219,6 +249,17 @@ static cx_string cx_string_deserParseScope(cx_string str, struct cx_string_deser
 
         /* Create iterator for index */
         privateData.currentIter = cx_llIter(privateData.index);
+        privateData.allocValue = cx_string_deserAllocElem;
+        privateData.allocUdata = info->type;
+
+        switch(cx_collection(info->type)->kind) {
+        case CX_LIST:
+            *(cx_ll*)ptr = cx_llNew();
+            privateData.ptr = ptr;
+            break;
+        default:
+            break;
+        }
     }
 
     /* Parse scope */
@@ -237,6 +278,7 @@ error:
 
 /* Parse value */
 static cx_int16 cx_string_deserParseValue(cx_string value, struct cx_string_deserIndexInfo* info, cx_string_deser_t* data) {
+    void *ptr = data->ptr;
 
     /* No more elements where available in the index, meaning an excess element */
     if (!info) {
@@ -248,6 +290,10 @@ static cx_int16 cx_string_deserParseValue(cx_string value, struct cx_string_dese
     if (info->parsed) {
         cx_seterr("member '%s' is already parsed", cx_nameof(info->m));
         goto error;
+    }
+
+    if (data->allocValue) {
+        ptr = data->allocValue(ptr, data->allocUdata);
     }
 
     /* Only parse references and primitives */
@@ -283,7 +329,7 @@ static cx_int16 cx_string_deserParseValue(cx_string value, struct cx_string_dese
         }
 
         if (o) {
-            cx_setref(CX_OFFSET(data->ptr, info->m->offset), o);
+            cx_setref(CX_OFFSET(ptr, info->m->offset), o);
             cx_release(o);
         } else {
             cx_id id;
@@ -302,9 +348,9 @@ static cx_int16 cx_string_deserParseValue(cx_string value, struct cx_string_dese
         void *offset;
 
         if (info->m) {
-            offset = CX_OFFSET(data->ptr, info->m->offset);
+            offset = CX_OFFSET(ptr, info->m->offset);
         } else {
-            offset = CX_OFFSET(data->ptr, data->current * info->type->size);
+            offset = ptr;
         }
 
         if (cx_primitive(info->type)->kind != CX_TEXT) {
@@ -591,6 +637,8 @@ cx_string cx_string_deser(cx_string str, cx_string_deser_t* data) {
     data->index = NULL;
     data->ptr = data->out;
     data->anonymousObjects = NULL;
+    data->allocValue = NULL;
+    data->allocUdata = NULL;
 
     if (!data->type) {
         cx_seterr("no type provided for '%s'", str);

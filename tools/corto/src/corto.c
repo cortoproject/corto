@@ -171,6 +171,11 @@ int main(int argc, char* argv[]) {
                     goto error;
                 }
                 break;
+            } else if (!strcmp(argv[i], "debug")) {
+                if (corto_debug(argc-i, &argv[i])) {
+                    goto error;
+                }
+                break;
             } else if (!strcmp(argv[i], "shell")) {
                 startShell = TRUE;
             } else if (!strcmp(argv[1], "tar")) {

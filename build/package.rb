@@ -71,6 +71,8 @@ end
 
 clobber_count = 1
 clean_count = 1
+collect_count = 1
+install_count = 1
 
 task :clean do
     # Recursively call clean, prevent infinite recursion
@@ -95,6 +97,26 @@ task :clobber do
         if File.exists?(".corto/dep.rb")
             sh "rake clobber -f .corto/dep.rb" 
         end
+    end
+end
+
+task :collect do
+    # Recursively call collect, prevent infinite recursion
+    if collect_count == 1 then
+        collect_count += 1
+        Rake::Task["collect"].reenable
+        require "#{ENV['CORTO_BUILD']}/component"
+        Rake::Task["collect"].execute
+    end
+end
+
+task :install do
+    # Recursively call collect, prevent infinite recursion
+    if install_count == 1 then
+        install_count += 1
+        Rake::Task["install"].reenable
+        require "#{ENV['CORTO_BUILD']}/component"
+        Rake::Task["install"].execute
     end
 end
 

@@ -405,6 +405,7 @@ cx_char* c_topath(cx_object o, cx_id id, cx_char separator) {
 }
 
 cx_string c_paramName(cx_string name, cx_string buffer) {
+
     if (*name == '$') {
         if (!strcmp(name, "$__line")) {
             strcpy(buffer, name + 1);
@@ -414,7 +415,9 @@ cx_string c_paramName(cx_string name, cx_string buffer) {
             sprintf(buffer, "str_%s", name + 1);
         }
     } else {
-        strcpy(buffer, name);
+        cx_id id;
+        corto_genId(name, id);
+        strcpy(buffer, id);
     }
     return buffer;
 }

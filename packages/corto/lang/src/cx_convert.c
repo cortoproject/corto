@@ -135,6 +135,14 @@ CX_DECL_TRANSFORM(boolean, string) {
     return 0;
 }
 
+/* string to octet */
+CX_DECL_TRANSFORM(string, octet) {
+    CX_UNUSED(toType);
+    CX_UNUSED(fromType);
+    *(cx_octet*)to = (cx_int64)strtol(*(cx_string*)from, NULL, 16);
+    return 0;
+}
+
 /* string to boolean */
 CX_DECL_TRANSFORM(string, boolean) {
     cx_string str;
@@ -487,6 +495,9 @@ void cx_convertInit(void) {
     CX_CONVERT_INIT_NUM(CX_BITMASK, CX_WIDTH_32, CX_UINTEGER, CX_WIDTH_64, enum, int64);
     CX_CONVERT_INIT_NUM(CX_UINTEGER, CX_WIDTH_64, CX_BITMASK, CX_WIDTH_32, int64, enum);
     CX_CONVERT_INIT_NUM(CX_BITMASK, CX_WIDTH_32, CX_BOOLEAN, CX_WIDTH_8, int32, bool);
+
+    /* string to octet */
+    CX_CONVERT_INIT_NUM(CX_TEXT, CX_WIDTH_WORD, CX_BINARY, CX_WIDTH_8, string, octet);
 
     /* string to character */
     CX_CONVERT_INIT_NUM(CX_TEXT, CX_WIDTH_WORD, CX_CHARACTER, CX_WIDTH_8, string, char8);
