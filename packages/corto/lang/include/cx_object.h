@@ -64,13 +64,15 @@ cx_string cx_relname(cx_object from, cx_object o, cx_id buffer);
 
 /* Persistent data */
 cx_time cx_timestampof(cx_object o);
+cx_object cx_ownerof(cx_object o);
 
 /* Find objects by name */
 cx_object cx_lookup(cx_object scope, cx_string name);
 cx_object cx_resolve(cx_object scope, cx_string expr);
 
 /* Notifications */
-cx_object cx_setSource(cx_object source);
+cx_object cx_setOwner(cx_object source);
+cx_object cx_getOwner(void);
 cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this);
 cx_int32 cx_silence(cx_object observable, cx_observer observer, cx_object _this);
 cx_bool cx_listening(cx_object observable, cx_observer, cx_object _this);

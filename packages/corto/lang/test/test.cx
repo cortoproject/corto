@@ -150,6 +150,48 @@ class Resolver: test::Suite::
 
     void tc_resolveFunctionNoArgs() test::Case
     void tc_resolveFunctionArgs() test::Case
+    void tc_caseInsensitive() test::Case
+
+// Test Event scenarios
+class Event: test::Suite::
+    void setup()
+
+    observer onDeclare:      ON_DECLARE|ON_SELF|ON_TREE
+    observer onDeclareSelf:  ON_DECLARE
+    observer onDeclareScope: ON_DECLARE|ON_SCOPE
+    observer onDeclareTree:  ON_DECLARE|ON_TREE
+
+    observer onDefine:       ON_DEFINE|ON_SELF|ON_TREE
+    observer onDefineSelf:   ON_DEFINE
+    observer onDefineScope:  ON_DEFINE|ON_SCOPE
+    observer onDefineTree:   ON_DEFINE|ON_TREE
+
+    observer onUpdate:       ON_UPDATE|ON_SELF|ON_TREE
+    observer onUpdateSelf:   ON_UPDATE
+    observer onUpdateScope:  ON_UPDATE|ON_SCOPE
+    observer onUpdateTree:   ON_UPDATE|ON_TREE
+
+    observer onDelete:       ON_DELETE|ON_SELF|ON_TREE
+    observer onDeleteSelf:   ON_DELETE
+    observer onDeleteScope:  ON_DELETE|ON_SCOPE
+    observer onDeleteTree:   ON_DELETE|ON_TREE
+
+    void tc_onDeclareSelf() test::Case
+    void tc_onDeclareScope() test::Case
+    void tc_onDeclareTree() test::Case
+
+    void tc_onDefineSelf() test::Case
+    void tc_onDefineScope() test::Case
+    void tc_onDefineTree() test::Case
+
+    void tc_onUpdateSelf() test::Case
+    void tc_onUpdateScope() test::Case
+    void tc_onUpdateTree() test::Case
+
+    void tc_onDeleteSelf() test::Case
+    void tc_onDeleteScope() test::Case
+    void tc_onDeleteTree() test::Case
+    
 
 // String deserializer testcases
 class StringDeserializer: test::Suite::

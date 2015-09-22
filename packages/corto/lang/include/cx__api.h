@@ -752,14 +752,14 @@ cx_int16 cx_observableEventCopy(cx_observableEvent *dst, cx_observableEvent src)
 cx_int16 cx_observableEventCompare(cx_observableEvent dst, cx_observableEvent src);
 
 /* ::corto::lang::observer */
-cx_observer cx_observerCreate(cx_object observable, cx_eventMask mask, void(*_impl)(cx_function f, void *result, void *args));
-cx_observer cx_observerCreateChild(cx_object _parent, cx_string _name, cx_object observable, cx_eventMask mask, void(*_impl)(cx_function f, void *result, void *args));
+cx_observer cx_observerCreate(cx_eventMask mask, cx_object observable, void(*_impl)(cx_function f, void *result, void *args));
+cx_observer cx_observerCreateChild(cx_object _parent, cx_string _name, cx_eventMask mask, cx_object observable, void(*_impl)(cx_function f, void *result, void *args));
 
 cx_observer cx_observerDeclare(void);
 cx_observer cx_observerDeclareChild(cx_object _parent, cx_string _name);
-cx_int16 cx_observerDefine(cx_observer this, cx_object observable, cx_eventMask mask, void(*_impl)(cx_function f, void *result, void *args));
-void cx_observerUpdate(cx_observer this, cx_object observable, cx_eventMask mask);
-void cx_observerSet(cx_observer this, cx_object observable, cx_eventMask mask);
+cx_int16 cx_observerDefine(cx_observer this, cx_eventMask mask, cx_object observable, void(*_impl)(cx_function f, void *result, void *args));
+void cx_observerUpdate(cx_observer this, cx_eventMask mask, cx_object observable);
+void cx_observerSet(cx_observer this, cx_eventMask mask, cx_object observable);
 cx_string cx_observerStr(cx_observer value);
 cx_observer cx_observerFromStr(cx_observer value, cx_string str);
 cx_int16 cx_observerCopy(cx_observer *dst, cx_observer src);
@@ -925,6 +925,20 @@ cx_int16 cx_procedureKindCompare(cx_procedureKind* dst, cx_procedureKind* src);
 
 cx_int16 cx_procedureKindInit(cx_procedureKind* value);
 cx_int16 cx_procedureKindDeinit(cx_procedureKind* value);
+
+/* ::corto::lang::replicator */
+cx_replicator cx_replicatorCreate(void);
+cx_replicator cx_replicatorCreateChild(cx_object _parent, cx_string _name);
+
+cx_replicator cx_replicatorDeclare(void);
+cx_replicator cx_replicatorDeclareChild(cx_object _parent, cx_string _name);
+cx_int16 cx_replicatorDefine(cx_replicator this);
+void cx_replicatorUpdate(cx_replicator this);
+void cx_replicatorSet(cx_replicator this);
+cx_string cx_replicatorStr(cx_replicator value);
+cx_replicator cx_replicatorFromStr(cx_replicator value, cx_string str);
+cx_int16 cx_replicatorCopy(cx_replicator *dst, cx_replicator src);
+cx_int16 cx_replicatorCompare(cx_replicator dst, cx_replicator src);
 
 /* ::corto::lang::sequence */
 cx_sequence cx_sequenceCreate(cx_type elementType, cx_uint32 max);
@@ -1189,7 +1203,7 @@ cx_int16 cx_wordDeinit(cx_word* value);
 #define cx_interfaceseqForeach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_interface elem;\
-    for(elem##_iter=0; elem = seq.buffer[elem##_iter], elem##_iter<seq.length; elem##_iter++)\
+    for(elem##_iter=0; seq.buffer ? elem = seq.buffer[elem##_iter] : 0, elem##_iter<seq.length; elem##_iter++)\
 
 cx_interface cx_interfaceseqAppend(cx_interfaceseq *seq);
 void cx_interfaceseqSize(cx_interfaceseq *seq, cx_uint32 length);
@@ -1199,7 +1213,7 @@ void cx_interfaceseqClear(cx_interfaceseq *seq);
 #define cx_interfaceVectorseqForeach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_interfaceVector elem;\
-    for(elem##_iter=0; elem = seq.buffer[elem##_iter], elem##_iter<seq.length; elem##_iter++)\
+    for(elem##_iter=0; seq.buffer ? elem = seq.buffer[elem##_iter] : 0, elem##_iter<seq.length; elem##_iter++)\
 
 cx_interfaceVector* cx_interfaceVectorseqAppend(cx_interfaceVectorseq *seq);
 void cx_interfaceVectorseqSize(cx_interfaceVectorseq *seq, cx_uint32 length);
@@ -1209,7 +1223,7 @@ void cx_interfaceVectorseqClear(cx_interfaceVectorseq *seq);
 #define cx_memberseqForeach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_member elem;\
-    for(elem##_iter=0; elem = seq.buffer[elem##_iter], elem##_iter<seq.length; elem##_iter++)\
+    for(elem##_iter=0; seq.buffer ? elem = seq.buffer[elem##_iter] : 0, elem##_iter<seq.length; elem##_iter++)\
 
 cx_member cx_memberseqAppend(cx_memberseq *seq);
 void cx_memberseqSize(cx_memberseq *seq, cx_uint32 length);
@@ -1219,7 +1233,7 @@ void cx_memberseqClear(cx_memberseq *seq);
 #define cx_objectseqForeach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_object elem;\
-    for(elem##_iter=0; elem = seq.buffer[elem##_iter], elem##_iter<seq.length; elem##_iter++)\
+    for(elem##_iter=0; seq.buffer ? elem = seq.buffer[elem##_iter] : 0, elem##_iter<seq.length; elem##_iter++)\
 
 cx_object cx_objectseqAppend(cx_objectseq *seq);
 void cx_objectseqSize(cx_objectseq *seq, cx_uint32 length);
@@ -1229,7 +1243,7 @@ void cx_objectseqClear(cx_objectseq *seq);
 #define cx_observerseqForeach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_observer elem;\
-    for(elem##_iter=0; elem = seq.buffer[elem##_iter], elem##_iter<seq.length; elem##_iter++)\
+    for(elem##_iter=0; seq.buffer ? elem = seq.buffer[elem##_iter] : 0, elem##_iter<seq.length; elem##_iter++)\
 
 cx_observer cx_observerseqAppend(cx_observerseq *seq);
 void cx_observerseqSize(cx_observerseq *seq, cx_uint32 length);
@@ -1239,7 +1253,7 @@ void cx_observerseqClear(cx_observerseq *seq);
 #define cx_parameterseqForeach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_parameter elem;\
-    for(elem##_iter=0; elem = seq.buffer[elem##_iter], elem##_iter<seq.length; elem##_iter++)\
+    for(elem##_iter=0; seq.buffer ? elem = seq.buffer[elem##_iter] : 0, elem##_iter<seq.length; elem##_iter++)\
 
 cx_parameter* cx_parameterseqAppend(cx_parameterseq *seq);
 void cx_parameterseqSize(cx_parameterseq *seq, cx_uint32 length);
@@ -1249,7 +1263,7 @@ void cx_parameterseqClear(cx_parameterseq *seq);
 #define cx_vtableForeach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_function elem;\
-    for(elem##_iter=0; elem = seq.buffer[elem##_iter], elem##_iter<seq.length; elem##_iter++)\
+    for(elem##_iter=0; seq.buffer ? elem = seq.buffer[elem##_iter] : 0, elem##_iter<seq.length; elem##_iter++)\
 
 cx_function cx_vtableAppend(cx_vtable *seq);
 void cx_vtableSize(cx_vtable *seq, cx_uint32 length);

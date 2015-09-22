@@ -99,6 +99,7 @@ struct cx__observable {
 typedef struct cx__persistent cx__persistent;
 struct cx__persistent {
     cx_time timestamp;
+    cx_object owner;
 };
 
 /* Initialize static scoped object */

@@ -625,9 +625,9 @@ typedef union Di2f_t {
             goto STOP;\
         }\
         {\
-            cx_object prev = cx_setSource((cx_object)op2_##code);\
+            cx_object prev = cx_setOwner((cx_object)op2_##code);\
             cx_update((cx_object)op1_##code);\
-            cx_setSource(prev);\
+            cx_setOwner(prev);\
         }\
         next();\
 
@@ -640,9 +640,9 @@ typedef union Di2f_t {
             goto STOP;\
         }\
         {\
-            cx_object prev = cx_setSource((cx_object)op2_##code);\
+            cx_object prev = cx_setOwner((cx_object)op2_##code);\
             cx_updateEnd((cx_object)op1_##code);\
-            cx_setSource(prev);\
+            cx_setOwner(prev);\
         }\
         next();\
 

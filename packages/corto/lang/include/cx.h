@@ -59,6 +59,7 @@ extern "C" {
 #include "cx_parameter.h"
 #include "cx_primitive.h"
 #include "cx_procedure.h"
+#include "cx_replicator.h"
 #include "cx_sequence.h"
 #include "cx_struct.h"
 #include "cx_text.h"

@@ -1047,7 +1047,7 @@ cx_object _cx_declareChild(cx_object parent, cx_string name, cx_type type) {
         }
 
         /* Notify parent of new object */
-        cx_notify(cx__objectObservable(CX_OFFSET(parent,-sizeof(cx__object))), o, CX_ON_DECLARE);
+        cx_notify(cx__objectObservable(_o), o, CX_ON_DECLARE);
     }
 
 ok:
@@ -1114,6 +1114,7 @@ cx_int16 cx_define(cx_object o) {
     /* Only define valid, undefined objects */
     if (cx_checkState(o, CX_DECLARED)) {
         cx__object *_o = CX_OFFSET(o, -sizeof(cx__object));
+        cx__persistent *_p = NULL;
         if (!cx_checkState(o, CX_DEFINED)) {
             cx_type t = cx_typeof(o);
             /* If object is instance of a class, call the constructor */
@@ -1124,6 +1125,10 @@ cx_int16 cx_define(cx_object o) {
                 result = cx_delegateConstruct(t, o);
             } else if (cx_class_instanceof(cx_procedure_o, t)) {
                 result = cx_delegateConstruct(t, o);
+            }
+
+            if ((_p = cx__objectPersistent(_o))) {
+                _p->owner = cx_getOwner();
             }
 
             if (!result) {
@@ -1534,6 +1539,25 @@ cx_time cx_timestampof(cx_object o) {
 err_not_persistent:
     cx_critical("cx_timestampof: object %p is not persistent.", o);
     return result;
+}
+
+cx_object cx_ownerof(cx_object o) {
+    cx__object* _o;
+    cx__persistent* persistent;
+    cx_object result = NULL;
+
+    _o = CX_OFFSET(o, -sizeof(cx__object));
+    persistent = cx__objectPersistent(_o);
+    if (persistent) {
+        result = persistent->owner;
+    } else {
+        goto err_not_persistent;
+    }
+
+    return result;
+err_not_persistent:
+    cx_critical("cx_ownerof: object %p is not persistent.", o);
+    return result;   
 }
 
 /* Destruct object. */
@@ -2113,7 +2137,7 @@ typedef struct cx_observerAlignData {
 int cx_observerAlignScope(cx_object o, void *userData) {
     cx_observerAlignData *data = userData;
 
-    if (((data->mask & CX_ON_DECLARE) && (data->mask & CX_ON_SELF)) ||
+    if (((data->mask & CX_ON_DECLARE) && (data->mask & CX_ON_SCOPE)) ||
         ((data->mask & CX_ON_DECLARE) && (data->mask & CX_ON_SCOPE))) {
         cx_notifyObserver(data->observer, data->observable, o, CX_ON_DECLARE, data->depth);
     }
@@ -2144,7 +2168,6 @@ int cx_observerAlignScope(cx_object o, void *userData) {
 void cx_observerAlign(cx_object observable, cx__observer *observer, int mask) {
     cx_observerAlignData walkData;
     cx_objectseq scope;
-    cx_uint32 i;
 
     /* Do recursive walk over scope */
     walkData.observable = observable;
@@ -2152,13 +2175,14 @@ void cx_observerAlign(cx_object observable, cx__observer *observer, int mask) {
     walkData.mask = mask;
     walkData.depth = 0;
 
-    if ((mask & CX_ON_DEFINE) && (mask & CX_ON_SELF) && cx_checkState(observable, CX_DEFINED)) {
+    if (((mask & CX_ON_DECLARE) && (mask & CX_ON_SELF) && cx_checkState(observable, CX_DECLARED)) && 
+       ((mask & CX_ON_DEFINE) && (mask & CX_ON_SELF) && cx_checkState(observable, CX_DEFINED))) {
         cx_notifyObserver(observer, observable, observable, mask, 0);
     }
 
     scope = cx_scopeClaim(observable);
-    for(i = 0; i < scope.length; i++) {
-        cx_observerAlignScope(scope.buffer[i], &walkData);
+    cx_objectseqForeach(scope, o) {
+        cx_observerAlignScope(o, &walkData);
     }
     cx_scopeRelease(scope);
 }
@@ -2477,11 +2501,18 @@ static void cx_notifyObservers(cx__observer** observers, cx_object observable, c
     }
 }
 
-cx_object cx_setSource(cx_object source) {
+cx_object cx_setOwner(cx_object source) {
     cx_object result = NULL;
     cx_observerAdmin *admin = cx_observerAdminGet();
     result = admin->from;
     admin->from = source;
+    return result;
+}
+
+cx_object cx_getOwner() {
+    cx_object result = NULL;
+    cx_observerAdmin *admin = cx_observerAdminGet();
+    result = admin->from;
     return result;
 }
 

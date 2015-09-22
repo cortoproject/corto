@@ -715,7 +715,7 @@ ast_Storage ast_Parser_observerCreate(ast_Parser this, cx_string id, ast_Express
         }
         cx_setref(&observer->dispatcher, dispatcher);
 
-        if (cx_observerDefine(observer, observable, mask, NULL)) {
+        if (cx_observerDefine(observer, mask, observable, NULL)) {
             goto error;
         }
     }

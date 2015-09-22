@@ -18,6 +18,18 @@ cx_void _test_Resolver_setup(test_Resolver this) {
 /* $end */
 }
 
+/* ::test::Resolver::tc_caseInsensitive() */
+cx_void _test_Resolver_tc_caseInsensitive(test_Resolver this) {
+/* $begin(::test::Resolver::tc_caseInsensitive) */
+
+    cx_object o = cx_resolve(NULL, "COrTO");
+    test_assert(o != NULL);
+    test_assert(o == corto_o);
+    cx_release(o);
+
+/* $end */
+}
+
 /* ::test::Resolver::tc_resolveAnonymous() */
 cx_void _test_Resolver_tc_resolveAnonymous(test_Resolver this) {
 /* $begin(::test::Resolver::tc_resolveAnonymous) */

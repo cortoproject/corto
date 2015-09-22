@@ -54,6 +54,7 @@ CX_META_OBJECT(struct, parameter);
 CX_META_OBJECT(struct, delegatedata);
 CX_META_OBJECT(struct, interfaceVector);
 CX_META_OBJECT(interface, dispatcher);
+CX_META_OBJECT(interface, replicator);
 
 CX_META_OBJECT(binary, octet);
 CX_META_OBJECT(boolean, bool);

@@ -71,6 +71,7 @@ extern "C" {
 #define cx_primitiveKind(o) ((cx_primitiveKind *)cx_assertType((cx_type)cx_primitiveKind_o, o))
 #define cx_procedure(o) ((cx_procedure)cx_assertType((cx_type)cx_procedure_o, o))
 #define cx_procedureKind(o) ((cx_procedureKind *)cx_assertType((cx_type)cx_procedureKind_o, o))
+#define cx_replicator(o) ((cx_replicator)cx_assertType((cx_type)cx_replicator_o, o))
 #define cx_sequence(o) ((cx_sequence)cx_assertType((cx_type)cx_sequence_o, o))
 #define cx_state(o) ((cx_state *)cx_assertType((cx_type)cx_state_o, o))
 #define cx_string(o) ((cx_string *)cx_assertType((cx_type)cx_string_o, o))
@@ -398,8 +399,8 @@ CX_CLASS(cx_observer);
 
 CX_CLASS_DEF(cx_observer) {
     CX_EXTEND(cx_function);
-    cx_object observable;
     cx_eventMask mask;
+    cx_object observable;
     cx_uint32 template;
     cx_dispatcher dispatcher;
     cx_object me;
@@ -601,6 +602,9 @@ CX_CLASS_DEF(cx_procedure) {
     cx_procedureKind kind;
     cx_callbackInit bind;
 };
+
+/*  ::corto::lang::replicator */
+CX_INTERFACE(cx_replicator);
 
 /*  ::corto::lang::sequence */
 CX_CLASS(cx_sequence);

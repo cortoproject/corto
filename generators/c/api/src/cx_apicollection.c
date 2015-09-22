@@ -46,7 +46,7 @@ static cx_int16 c_apiSequenceTypeForeach(cx_sequence o, c_apiWalk_t* data) {
     g_fileIndent(data->header);
     g_fileWrite(data->header, "cx_uint32 elem##_iter;\\\n");
     g_fileWrite(data->header, "%s elem;\\\n", elementId);
-    g_fileWrite(data->header, "for(elem##_iter=0; elem = seq.buffer[elem##_iter], elem##_iter<seq.length; elem##_iter++)\\\n");
+    g_fileWrite(data->header, "for(elem##_iter=0; seq.buffer ? elem = seq.buffer[elem##_iter] : 0, elem##_iter<seq.length; elem##_iter++)\\\n");
     g_fileDedent(data->header);
     g_fileWrite(data->header, "\n");
     
