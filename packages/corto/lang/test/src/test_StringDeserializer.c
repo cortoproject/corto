@@ -834,7 +834,7 @@ cx_void _test_StringDeserializer_tc_errExcessElements(test_StringDeserializer th
     test_assert(o == NULL);
     test_assert(ret != 0);
     test_assert((err = cx_lasterr()) != NULL);
-    test_assert(!strcmp(err, "excess elements"));
+    test_assert(!strcmp(err, "excess elements in string"));
 
 /* $end */
 }
