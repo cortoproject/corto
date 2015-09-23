@@ -164,13 +164,7 @@ void cx_class_listenObservers(cx_class this, cx_object object) {
             for (i=0; i<base->observers.length; i++) {
                 observable = observers->buffer[i];
                 if (observable) {
-                    if (!cx_listening(observable, base->observers.buffer[i], object)) {
-                        /* Do not activate observers that listen for non-observables and childs on non-scoped objects */
-                        if (cx_checkAttr(observable, CX_ATTR_OBSERVABLE) &&
-                                (!(base->observers.buffer[i]->mask & CX_ON_SCOPE) || cx_checkAttr(object, CX_ATTR_SCOPED))) {
-                            cx_listen(observable, base->observers.buffer[i], object);
-                        }
-                    }
+                    cx_listen(observable, base->observers.buffer[i], object);
                 }
             }
         } while ((base = cx_class(cx_interface(base)->base)));

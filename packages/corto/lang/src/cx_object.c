@@ -2077,7 +2077,7 @@ void cx_setrefChildLockRequired(cx_object observable) {
     }
 }
 
-/*#define CX_TRACE_NOTIFICATIONS*/
+/* #define CX_TRACE_NOTIFICATIONS */
 
 #ifdef CX_TRACE_NOTIFICATIONS
 static cx_uint32 indent = 0;
@@ -2175,8 +2175,8 @@ void cx_observerAlign(cx_object observable, cx__observer *observer, int mask) {
     walkData.mask = mask;
     walkData.depth = 0;
 
-    if (((mask & CX_ON_DECLARE) && (mask & CX_ON_SELF) && cx_checkState(observable, CX_DECLARED)) && 
-       ((mask & CX_ON_DEFINE) && (mask & CX_ON_SELF) && cx_checkState(observable, CX_DEFINED))) {
+    if (((mask & CX_ON_DECLARE) && (mask & CX_ON_SELF) && cx_checkState(observable, CX_DECLARED)) || 
+        ((mask & CX_ON_DEFINE) && (mask & CX_ON_SELF) && cx_checkState(observable, CX_DEFINED))) {
         cx_notifyObserver(observer, observable, observable, mask, 0);
     }
 
@@ -2205,10 +2205,9 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object this) {
         if (observer->mask & (CX_ON_SCOPE|CX_ON_TREE)) {
             if (!cx_checkAttr(observable, CX_ATTR_SCOPED)) {
                 cx_id id, id2;
-                cx_error("corto::listen: cannot listen to childs of non-scoped observable '%s' (observer %s)",
+                cx_seterr("corto::listen: cannot listen to childs of non-scoped observable '%s' (observer %s)",
                         cx_fullname(observable, id),
                         cx_fullname(observer, id2));
-                abort();
                 goto error;
             }
         }
@@ -2224,16 +2223,17 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object this) {
     #ifdef CX_TRACE_NOTIFICATIONS
         {
             cx_id id1, id2, id3;
-            printf("%*s [listen] observable '%s' observer '%s' me '%s' %s %s %s %s %s\n",
+            printf("%*s [listen] observable '%s' observer '%s' me '%s'%s%s%s%s%s%s\n",
                     indent * 3, "",
                     cx_fullname(observable, id1),
                     cx_fullname(observer, id2),
                     cx_fullname(this, id3),
-                    observer->mask & CX_ON_SELF ? "self" : "",
-                    observer->mask & CX_ON_SCOPE ? "scope" : "",
-                    observer->mask & CX_ON_DECLARE ? "declare" : "",
-                    observer->mask & CX_ON_DEFINE ? "define" : "",
-                    observer->mask & CX_ON_UPDATE ? "update" : "");
+                    observer->mask & CX_ON_SELF ? " self" : "",
+                    observer->mask & CX_ON_SCOPE ? " scope" : "",
+                    observer->mask & CX_ON_TREE ? " tree" : "",
+                    observer->mask & CX_ON_DECLARE ? " declare" : "",
+                    observer->mask & CX_ON_DEFINE ? " define" : "",
+                    observer->mask & CX_ON_UPDATE ? " update" : "");
         }
     #endif
 
@@ -2557,6 +2557,11 @@ cx_int32 cx_update(cx_object observable) {
     cx__observable *_o;
     cx__writable* _wr;
     cx__persistent* _ps;
+
+    if (!cx_checkState(observable, CX_DEFINED)) {
+        cx_seterr("cannot update undefined object");
+        goto error;
+    }
 
     _o = cx__objectObservable(CX_OFFSET(observable, -sizeof(cx__object)));
     if (_o->lockRequired) {

@@ -153,41 +153,72 @@ class Resolver: test::Suite::
     void tc_caseInsensitive() test::Case
 
 // Test Event scenarios
-class Event: test::Suite::
-    void setup()
+class EventTest::
+    @scope: object
+    lastThis: object, readonly
+    lastObservable: object, readonly
+    lastSource: object, readonly
+
+    int16 construct()
 
     observer onDeclare:      ON_DECLARE|ON_SELF|ON_TREE
     observer onDeclareSelf:  ON_DECLARE
     observer onDeclareScope: ON_DECLARE|ON_SCOPE
     observer onDeclareTree:  ON_DECLARE|ON_TREE
+    countDeclare: uint32, readonly
+    countDeclareSelf: uint32, readonly
+    countDeclareScope: uint32, readonly
+    countDeclareTree: uint32, readonly
 
     observer onDefine:       ON_DEFINE|ON_SELF|ON_TREE
     observer onDefineSelf:   ON_DEFINE
     observer onDefineScope:  ON_DEFINE|ON_SCOPE
     observer onDefineTree:   ON_DEFINE|ON_TREE
+    countDefine: uint32, readonly
+    countDefineSelf: uint32, readonly
+    countDefineScope: uint32, readonly
+    countDefineTree: uint32, readonly
 
     observer onUpdate:       ON_UPDATE|ON_SELF|ON_TREE
     observer onUpdateSelf:   ON_UPDATE
     observer onUpdateScope:  ON_UPDATE|ON_SCOPE
     observer onUpdateTree:   ON_UPDATE|ON_TREE
+    countUpdate: uint32, readonly
+    countUpdateSelf: uint32, readonly
+    countUpdateScope: uint32, readonly
+    countUpdateTree: uint32, readonly
 
     observer onDelete:       ON_DELETE|ON_SELF|ON_TREE
     observer onDeleteSelf:   ON_DELETE
     observer onDeleteScope:  ON_DELETE|ON_SCOPE
     observer onDeleteTree:   ON_DELETE|ON_TREE
+    countDelete: uint32, readonly
+    countDeleteSelf: uint32, readonly
+    countDeleteScope: uint32, readonly
+    countDeleteTree: uint32, readonly
 
+class Event: test::Suite::
+    void setup()
+    void teardown()
+    
+    et: EventTest
+
+    void tc_onDeclare() test::Case
     void tc_onDeclareSelf() test::Case
     void tc_onDeclareScope() test::Case
     void tc_onDeclareTree() test::Case
 
+    void tc_onDefine() test::Case
     void tc_onDefineSelf() test::Case
     void tc_onDefineScope() test::Case
     void tc_onDefineTree() test::Case
 
+    void tc_onUpdate() test::Case
     void tc_onUpdateSelf() test::Case
     void tc_onUpdateScope() test::Case
     void tc_onUpdateTree() test::Case
 
+    void tc_onDelete() test::Case
     void tc_onDeleteSelf() test::Case
     void tc_onDeleteScope() test::Case
     void tc_onDeleteTree() test::Case
