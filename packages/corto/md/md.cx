@@ -1,0 +1,15 @@
+#package ::corto::md
+
+void parse(object destination, string text)
+
+class Doc::
+    o: object, hidden
+    text: string, hidden
+
+class PackageDoc: Doc
+
+class TypeDoc: Doc
+
+class ProcedureDoc: Doc
+
+class ParameterDoc: Doc

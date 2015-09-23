@@ -1,7 +1,5 @@
 
-PACKAGE = 'test'
-
-LOCAL = true
+PACKAGE = 'corto::md'
 
 CFLAGS = ["-Wunused-parameter"]
 

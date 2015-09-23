@@ -1,0 +1,14 @@
+#package ::test
+
+package Package0::
+    class Class0{}
+
+package Package1::
+    class Class1::
+        void method1();
+
+void docs
+
+class MarkdownParseTest: test::Suite::
+    void testPackageAndClass() test::Case
+    void testPackageOnRoot() test::Case
