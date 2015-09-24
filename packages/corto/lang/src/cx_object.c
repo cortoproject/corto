@@ -3126,7 +3126,9 @@ static cx_uint32 cx_overloadParamCompare(
             goto nomatch; /* Parameter accepts only references */
         } else {
             if (!r_forceReference) {
-                d++; /* Favor pass by value in case of implicit reference passing */
+                if (!r_null) {
+                    d++; /* Favor pass by value in case of implicit reference passing */
+                }
             }
         }
     } else if (r_reference) {
@@ -3360,6 +3362,7 @@ typedef struct cx_lookupFunction_t {
     cx_function result;
     cx_bool error;
     cx_int32 d;
+    cx_int32 old_d;
 }cx_lookupFunction_t;
 
 /* Lookup function in scope */
@@ -3379,22 +3382,16 @@ int cx_lookupFunctionWalk(cx_object o, void* userData) {
                 goto found;
             }
         } else {
-            cx_id name;
-            cx_signatureName(cx_nameof(o), name); /* Obtain function name */
-            if (!stricmp(name, data->request)) {
-                d = INT_MAX-1;
-            }
+            cx_assert(0, "cx_lookupFunction only handles requests with parentheses");
         }
 
         if (d != -1) {
+            if (d <= data->d) {
+                data->old_d = data->d;
+            }
             if (d < data->d) {
                 data->result = o;
                 data->d = d;
-            }
-
-            /* If distance is zero, the function is an exact match. */
-            if (!d) {
-                goto found;
             }
         }
     }
@@ -3447,11 +3444,17 @@ cx_function cx_lookupFunction(cx_object scope, cx_string requested, cx_int32* d)
     walkData.result = NULL;
     walkData.error = FALSE;
     walkData.d = INT_MAX;
+    walkData.old_d = INT_MAX;
 
     for (i = 0; i < scopeContents.length; i++) {
         if (!cx_lookupFunctionWalk(scopeContents.buffer[i], &walkData)) {
             break;
         }
+    }
+
+    if (walkData.d != INT_MAX && (walkData.d == walkData.old_d)) {
+        cx_seterr("ambiguous reference '%s'", walkData.request);
+        walkData.error = TRUE;
     }
 
     if (walkData.error) {

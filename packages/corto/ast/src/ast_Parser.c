@@ -1300,7 +1300,6 @@ ast_Storage _ast_Parser_declareFunction(ast_Parser this, cx_type returnType, cx_
 /* $begin(::corto::ast::Parser::declareFunction) */
     cx_function function;
     cx_object o;
-    cx_type functionType = cx_type(kind);
     ast_Storage result = NULL;
     cx_int32 distance;
     ast_CHECK_ERRSET(this);
@@ -1335,11 +1334,11 @@ ast_Storage _ast_Parser_declareFunction(ast_Parser this, cx_type returnType, cx_
         /* This could be an implementation after a forward declaration so try to resolve
          * function first. */
         if (!((function = cx_lookupFunction(this->scope, id, &distance)) && !distance)) {
-            if (!functionType) {
+            if (!kind) {
                 if (cx_class_instanceof(cx_interface_o, this->scope)) {
-                    functionType = cx_type(cx_method_o);
+                    kind = cx_type(cx_method_o);
                 } else {
-                    functionType = cx_type(cx_function_o);
+                    kind = cx_type(cx_function_o);
                 }
             } else {
                 /* Check whether declaration is a delegate */
@@ -1359,7 +1358,7 @@ ast_Storage _ast_Parser_declareFunction(ast_Parser this, cx_type returnType, cx_
                     goto error;
                 }
 
-                function = cx_declareChild(this->scope, id, functionType);
+                function = cx_declareChild(this->scope, id, kind);
                 if (!function) {
                     ast_Parser_error(this, "declare of '%s' failed",
                                       functionName);
@@ -1370,6 +1369,11 @@ ast_Storage _ast_Parser_declareFunction(ast_Parser this, cx_type returnType, cx_
                 function->returnsReference = returnsReference;
             }
         } else {
+            if (strcmp(id, cx_nameof(function))) {
+                ast_Parser_error(this, "overloaded function '%s' conflicts with '%s'",
+                    id, cx_nameof(function));
+                goto error;
+            }
             cx_release(function);
         }
 

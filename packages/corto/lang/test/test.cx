@@ -222,8 +222,40 @@ class Event: test::Suite::
     void tc_onDeleteSelf() test::Case
     void tc_onDeleteScope() test::Case
     void tc_onDeleteTree() test::Case
-    
 
+// Overloading testcases
+void ol_null(object a)
+void ol_null(string a)
+void ol_null(bool a)
+
+void ol_wildcard(int32 a, string b)
+void ol_wildcard(float32 a, string b)
+
+void ol_int(int32 a)
+
+void ol_uint(int32 a)
+
+void ol_num(int32 a)
+void ol_num(float64 a)
+
+class Overload: test::Suite::
+    void tc_ambiguous() test::Case
+    void tc_ambiguousWildcard() test::Case
+    void tc_ambiguousNull() test::Case
+    void tc_null() test::Case
+    void tc_wildcard() test::Case
+    void tc_numInt8() test::Case
+    void tc_numInt16() test::Case
+    void tc_numInt32() test::Case
+    void tc_numInt64() test::Case
+    void tc_numUint8() test::Case
+    void tc_numUint16() test::Case
+    void tc_numUint32() test::Case
+    void tc_numUint64() test::Case
+    void tc_numFloat32() test::Case
+    void tc_numFloat64() test::Case
+    void tc_numString() test::Case
+    
 // String deserializer testcases
 class StringDeserializer: test::Suite::
     void setup()

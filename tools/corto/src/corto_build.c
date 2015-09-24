@@ -14,6 +14,7 @@ cx_int16 corto_build(int argc, char *argv[]) {
 
 	return 0;
 error:
+    cx_error("build failed");
     return -1;
 }
 
@@ -31,6 +32,7 @@ cx_int16 corto_rebuild(int argc, char *argv[]) {
 
     return 0;
 error:
+    cx_error("build failed");
     return -1;
 }
 
