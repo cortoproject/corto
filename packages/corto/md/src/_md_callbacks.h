@@ -38,8 +38,8 @@ int md_callbackSuperscript (hoedown_buffer *ob, const hoedown_buffer *content, c
 int md_callbackFootnote_ref (hoedown_buffer *ob, unsigned int num, const hoedown_renderer_data *data);
 int md_callbackMath (hoedown_buffer *ob, const hoedown_buffer *text, int displaymode, const hoedown_renderer_data *data);
 int md_callbackRaw_html (hoedown_buffer *ob, const hoedown_buffer *text, const hoedown_renderer_data *data);
-void md_callbackEntity (hoedown_buffer *ob, const hoedown_buffer *text, const hoedown_renderer_data *data);
-void md_callbackNormal_text (hoedown_buffer *ob, const hoedown_buffer *text, const hoedown_renderer_data *data);
+// void md_callbackEntity (hoedown_buffer *ob, const hoedown_buffer *text, const hoedown_renderer_data *data);
+// void md_callbackNormal_text (hoedown_buffer *ob, const hoedown_buffer *text, const hoedown_renderer_data *data);
 void md_callbackDoc_header (hoedown_buffer *ob, int inline_render, const hoedown_renderer_data *data);
 void md_callbackDoc_footer (hoedown_buffer *ob, int inline_render, const hoedown_renderer_data *data);
 

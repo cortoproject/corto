@@ -3,6 +3,4 @@ PACKAGE = 'test'
 
 LOCAL = true
 
-CFLAGS = ["-Wunused-parameter"]
-
 require "#{ENV['CORTO_BUILD']}/package"

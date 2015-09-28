@@ -14,34 +14,62 @@
 #include "document.h"
 
 #include "_md_callbacks.h"
+#include "_md_renderers.h"
 
-struct md_parseData {
-    cx_object destination;
-    cx_string text;
-    cx_object lastScope;
-};
 
-typedef struct md_parseData md_parseData;
+hoedown_renderer* md_createRenderer(struct md_parseData* data) {
+    cx_assert(data != NULL, "Parse data cannot be null");
+    hoedown_renderer* renderer = cx_calloc(sizeof(hoedown_renderer));
+    renderer->opaque = data;
 
-int md_renderPackage(cx_string name, md_parseData* data) {
-    data->lastScope = md_PackageDocCreateChild(data->lastScope, name);
-    return 0;
+    /* block level callbacks - NULL skips the block */
+    renderer->blockcode = md_callbackBlockcode;
+    renderer->blockquote = md_callbackBlockquote;
+    renderer->header = md_callbackHeader;
+    renderer->hrule = md_callbackHrule;
+    renderer->list = md_callbackList;
+    renderer->listitem = md_callbackListitem;
+    renderer->paragraph = md_callbackParagraph;
+    renderer->table = md_callbackTable;
+    renderer->table_header = md_callbackTable_header;
+    renderer->table_body = md_callbackTable_body;
+    renderer->table_row = md_callbackTable_row;
+    renderer->table_cell = md_callbackTable_cell;
+    renderer->footnotes = md_callbackFootnotes;
+    renderer->footnote_def = md_callbackFootnote_def;
+    renderer->blockhtml = md_callbackBlockhtml;
+
+    // /* span level callbacks - NULL or return 0 prints the span verbatim */
+    // // renderer->autolink = md_callbackAutolink;
+    // // renderer->codespan = md_callbackCodespan;
+    // // renderer->double_emphasis = md_callbackDouble_emphasis;
+    // // renderer->emphasis = md_callbackEmphasis;
+    // // renderer->underline = md_callbackUnderline;
+    // // renderer->highlight = md_callbackHighlight;
+    // // renderer->quote = md_callbackQuote;
+    // // renderer->image = md_callbackImage;
+    // // renderer->linebreak = md_callbackLinebreak;
+    // // renderer->link = md_callbackLink;
+    // // renderer->triple_emphasis = md_callbackTriple_emphasis;
+    // // renderer->strikethrough = md_callbackStrikethrough;
+    // // renderer->superscript = md_callbackSuperscript;
+    // // renderer->footnote_ref = md_callbackFootnote_ref;
+    // // renderer->math = md_callbackMath;
+    // // renderer->raw_html = md_callbackRaw_html;
+
+    /* low level callbacks - NULL copies input directly into the output */
+    // renderer->entity = md_callbackEntity;
+    // renderer->normal_text = md_callbackNormal_text;
+
+    /* miscellaneous callbacks */
+    // renderer->doc_header = md_callbackDoc_header;
+    // renderer->doc_footer = md_callbackDoc_footer;
+
+    return renderer;
 }
 
-int md_renderType(cx_string name, md_parseData* data) {
-    data->lastScope = md_TypeDocCreateChild(data->lastScope, name);
-    return 0;
-}
-
-int md_renderProcedure(cx_string name, md_parseData* data) {
-    data->lastScope = md_ProcedureDocCreateChild(data->lastScope, name);
-    return 0;
-}
-
-int md_renderArgument(cx_string name, md_parseData* data) {
-    cx_assertType(data->lastScope, md_ProcedureDoc_o);
-    data->lastScope = md_ParameterDocCreateChild(data->lastScope, name);
-    return 0;
+void md_freeRenderer(hoedown_renderer* renderer) {
+    cx_dealloc(renderer);
 }
 
 /* $end */
@@ -51,60 +79,16 @@ cx_void _md_parse(cx_object destination, cx_string text) {
 /* $begin(::corto::md::parse) */
     cx_object scope = destination ? destination : root_o;
     md_parseData parseData = {scope, text, scope};
-    hoedown_renderer renderer = {
-        /* state object */
-        &parseData,
-
-        /* block level callbacks - NULL skips the block */
-        md_callbackBlockcode,
-        md_callbackBlockquote,
-        md_callbackHeader,
-        md_callbackHrule,
-        md_callbackList,
-        md_callbackListitem,
-        md_callbackParagraph,
-        md_callbackTable,
-        md_callbackTable_header,
-        md_callbackTable_body,
-        md_callbackTable_row,
-        md_callbackTable_cell,
-        md_callbackFootnotes,
-        md_callbackFootnote_def,
-        md_callbackBlockhtml,
-
-        /* span level callbacks - NULL or return 0 prints the span verbatim */
-        md_callbackAutolink,
-        md_callbackCodespan,
-        md_callbackDouble_emphasis,
-        md_callbackEmphasis,
-        md_callbackUnderline,
-        md_callbackHighlight,
-        md_callbackQuote,
-        md_callbackImage,
-        md_callbackLinebreak,
-        md_callbackLink,
-        md_callbackTriple_emphasis,
-        md_callbackStrikethrough,
-        md_callbackSuperscript,
-        md_callbackFootnote_ref,
-        md_callbackMath,
-        md_callbackRaw_html,
-
-        /* low level callbacks - NULL copies input directly into the output */
-        md_callbackEntity,
-        md_callbackNormal_text,
-
-        /* miscellaneous callbacks */
-        md_callbackDoc_header,
-        md_callbackDoc_footer,
-    };
-
-    hoedown_document *document = hoedown_document_new(&renderer, 0, 16);
+    hoedown_renderer *renderer = md_createRenderer(&parseData);
+    hoedown_document *parser = hoedown_document_new(renderer, 0, 16);
     hoedown_buffer *buffer = hoedown_buffer_new(16);
-    hoedown_document_render(document, buffer, (const uint8_t *)text, strlen(text));
-    hoedown_buffer_free(html);
-    hoedown_document_free(document);
-    hoedown_html_renderer_free(renderer);
+    hoedown_document_render(parser, buffer, (const uint8_t *)text, strlen(text));
+
+    // printf("the buffer is: %s\n", (char *)buffer->data);
+
+    hoedown_buffer_free(buffer);
+    hoedown_document_free(parser);
+    md_freeRenderer(renderer);
 /* $end */
 }
 

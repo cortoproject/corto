@@ -5,6 +5,7 @@ void parse(object destination, string text)
 class Doc::
     o: object, hidden
     text: string, hidden
+    void addText(string s)
 
 class PackageDoc: Doc
 
