@@ -46,7 +46,7 @@ static cx_int16 c_apiSequenceTypeForeach(cx_sequence o, c_apiWalk_t* data) {
     g_fileIndent(data->header);
     g_fileWrite(data->header, "cx_uint32 elem##_iter;\\\n");
     g_fileWrite(data->header, "%s elem;\\\n", elementId);
-    g_fileWrite(data->header, "for(elem##_iter=0; seq.buffer ? elem = seq.buffer[elem##_iter] : 0, elem##_iter<seq.length; elem##_iter++)\\\n");
+    g_fileWrite(data->header, "for(elem##_iter=0; seq.buffer ? elem = seq.buffer[elem##_iter] : elem, elem##_iter<seq.length; elem##_iter++)\\\n");
     g_fileDedent(data->header);
     g_fileWrite(data->header, "\n");
     
@@ -63,6 +63,7 @@ static cx_int16 c_apiSequenceTypeAppend(cx_sequence o, c_apiWalk_t* data) {
     c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
 
     /* Function declaration */
+    c_writeExport(data->g, data->header);
     g_fileWrite(data->header, "%s%s %sAppend(%s *seq);\n", elementId, prefix?"*":"", id, id);
     
     /* Function implementation */
@@ -97,6 +98,7 @@ static cx_int16 c_apiSequenceTypeSize(cx_sequence o, c_apiWalk_t* data) {
     c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
+    c_writeExport(data->g, data->header);
     g_fileWrite(data->header, "void %sSize(%s *seq, cx_uint32 length);\n", id, id);
     
     /* Function implementation */
@@ -156,6 +158,7 @@ static cx_int16 c_apiSequenceTypeClear(cx_sequence o, c_apiWalk_t* data) {
     c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
+    c_writeExport(data->g, data->header);
     g_fileWrite(data->header, "void %sClear(%s *seq);\n", id, id);
     
     /* Function implementation */
@@ -243,6 +246,7 @@ static cx_int16 c_apiListTypeInsertAlloc(cx_list o, cx_string operation, c_apiWa
     c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
+    c_writeExport(data->g, data->header);
     g_fileWrite(data->header, "%s* %s%sAlloc(%s list);\n", elementId, id, operation, id);
     
     /* Function implementation */
@@ -275,6 +279,8 @@ static cx_int16 c_apiListTypeInsertNoAlloc(cx_list o, cx_string operation, c_api
     
     c_specifierId(data->g, cx_type(o), id, NULL, NULL);
     c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
+
+    c_writeExport(data->g, data->header);
 
     if (requiresAlloc) {
         g_fileWrite(data->header, "%s* ", elementId);
@@ -341,6 +347,7 @@ static cx_int16 c_apiListTypeTake(cx_list o, cx_string operation, c_apiWalk_t* d
     c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
+    c_writeExport(data->g, data->header);
     g_fileWrite(data->header, "%s%s %s%s(%s list);\n", elementId, allocRequired?"*":"", id, operation, id);
     
     /* Function implementation */
@@ -367,6 +374,7 @@ static cx_int16 c_apiListTypeClear(cx_list o, c_apiWalk_t* data) {
     c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
+    c_writeExport(data->g, data->header);
     g_fileWrite(data->header, "void %sClear(%s list);\n", id, id);
     
     /* Function implementation */
@@ -401,6 +409,7 @@ static cx_int16 c_apiListTypeGet(cx_list o, c_apiWalk_t* data) {
     c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
+    c_writeExport(data->g, data->header);
     g_fileWrite(data->header, "%s%s %sGet(%s list, cx_uint32 index);\n", elementId, allocRequired?"*":"", id, id);
     
     /* Function implementation */
@@ -426,6 +435,7 @@ static cx_int16 c_apiListTypeSize(cx_list o, c_apiWalk_t* data) {
     c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
     
     /* Function declaration */
+    c_writeExport(data->g, data->header);
     g_fileWrite(data->header, "cx_uint32 %sSize(%s list);\n", id, id);
     
     /* Function implementation */

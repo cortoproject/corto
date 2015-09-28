@@ -12,6 +12,7 @@ struct Result::
 
 class Suite::
     member test: test::Case
+    member assertCount: uint32
     member result: test::Result, readonly
     int16 construct()
     void setup() virtual

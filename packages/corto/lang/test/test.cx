@@ -84,6 +84,8 @@ class ObjectMgmt: test::Suite::
     void tc_declareChildInitFail() test::Case
     void tc_declareChildParentStateErr() test::Case
     void tc_declareChildParentTypeErr() test::Case
+    void tc_declareExistingWithParentState() test::Case
+    void tc_declareExistingWithType() test::Case
     void tc_declareChildNullType() test::Case
     void tc_declareChildInvalidType() test::Case
 

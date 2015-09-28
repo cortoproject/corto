@@ -6,7 +6,6 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#define corto_lang_LIB
 #include "cx.h"
 
 /* $header() */
@@ -56,7 +55,7 @@ static cx_bool cx_class_checkInterfaceCompatibility(cx_class this, cx_interface 
         m_interface = (cx_method)interface->methods.buffer[i];
 
         m_class = NULL;
-        m_classPtr = (cx_method*)cx_vtableLookup(&cx_interface(this)->methods, cx_nameof(m_interface), NULL, &distance);
+        m_classPtr = (cx_method*)cx_vtableLookup(&cx_interface(this)->methods, cx_nameof(m_interface), &distance);
         if (m_classPtr) {
             m_class = *m_classPtr;
         }

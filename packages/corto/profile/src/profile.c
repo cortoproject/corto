@@ -6,7 +6,6 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#define corto_profile_LIB
 #include "profile.h"
 
 /* $header() */

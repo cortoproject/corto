@@ -6,7 +6,6 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#define corto_test_LIB
 #include "test.h"
 
 /* ::corto::test::Suite::construct() */
@@ -17,7 +16,11 @@ cx_int16 _test_Suite_construct(test_Suite this) {
         extern cx_threadKey test_suiteKey;
         cx_threadTlsSet(test_suiteKey, this);
         test_Suite_setup(this);
+        this->assertCount = 0;
         cx_call(cx_function(this->test), NULL, this);
+        if (!this->assertCount) {
+            test_fail(" not implemented");
+        }
         test_Suite_teardown(this);
         cx_threadTlsSet(test_suiteKey, NULL);
     } else {

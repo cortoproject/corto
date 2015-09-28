@@ -32,8 +32,8 @@ typedef enum cx_deserXmlScope {
     XML_MEMBER
 }cx_deserXmlScope;
 
-#define xml_error(data, ...) printf("%s: %d: ", data->file, data->line); cx_error(__VA_ARGS__);
-#define xml_warning(data, ...) printf("%s: %d: ", data->file, data->line); cx_warning(__VA_ARGS__);
+#define xml_error(data, ...) fprintf(stderr, "%s: %d: ", data->file, data->line); cx_error(__VA_ARGS__);
+#define xml_warning(data, ...) fprintf(stderr, "%s: %d: ", data->file, data->line); cx_warning(__VA_ARGS__);
 
 #define XML_NODE(nodePtr, data) (data)->line = cx_xmlnodeLine(nodePtr); (data)->node = nodePtr;
 
@@ -673,7 +673,7 @@ int cx_deserXmlObject(cx_xmlnode node, cx_string name, cx_string type, deser_xml
     o = cx_deserXmlDeclare(data, name, t);
     cx_release(t); /* Free reference to t obtained by resolve */
     if (!o) {
-        xml_error(data, "failed to create object '%s : %s'.", name, type); goto error;
+        xml_error(data, "failed to create '%s : %s' (%s)", name, type, cx_lasterr()); goto error;
     }
     /* Deserialize value */
     data->cur = o;

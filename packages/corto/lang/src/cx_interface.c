@@ -6,7 +6,6 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#define corto_lang_LIB
 #include "cx.h"
 
 /* $header() */
@@ -56,49 +55,15 @@ static cx_vtable *cx_interface_vtableFromBase(cx_interface this) {
 }
 
 /* Lookup method in table */
-cx_function* cx_vtableLookup(cx_vtable* vtable, cx_string member, cx_int32* i_out, cx_int32* d_out) {
-    cx_int32 i;
-    cx_function *result, *buffer;
-    cx_int32 d, d_t;
+cx_function* cx_vtableLookup(cx_vtable* vtable, cx_string member, cx_int32* d_out) {
+    cx_objectseq s;
+    cx_function *result;
+    s.buffer = (cx_object *)vtable->buffer;
+    s.length = vtable->length;
 
-    result = NULL;
-    buffer = vtable->buffer;
-    d = 0x7FFFFFFF;
-
-    /* Searching backwards will ensure that when the member-string contains no arguments and the
-     * vtable has multiple matches, the most specific function is selected. */
-    for (i = vtable->length - 1; i >= 0 && d; i--) {
-        if (buffer[i]) {
-            if (cx_overload(buffer[i], member, &d_t)) {
-                goto error;
-            }
-
-            if (d_t != -1) {
-                if (d_t < d) {
-                    result = &buffer[i];
-                    d = d_t;
-                }
-                if (!d) {
-                    break;
-                }
-            }
-        }
-    }
-
-    if (i_out && result) {
-        *i_out = i;
-    }
-
-    if (d_out && result) {
-        *d_out = d;
-    }
+    result = cx_lookupFunctionFromSequence(s, member, d_out);
 
     return result;
-error:
-    if (i_out) {
-        *i_out = -1;
-    }
-    return NULL;
 }
 
 /* Insert method in vtable at first free spot (normal behavior). */
@@ -400,16 +365,16 @@ cx_int16 _cx_interface_baseof(cx_interface this, cx_interface type) {
 cx_int16 _cx_interface_bindMethod(cx_interface this, cx_method method) {
 /* $begin(::corto::lang::interface::bindMethod) */
     cx_method* virtual;
-    cx_int32 i;
     cx_int32 d;
 
     /* Check if a method with the same name is already in the vtable */
-    i = 0;
-    virtual = (cx_method*)cx_vtableLookup(&cx_interface(this)->methods, cx_nameof(method), &i, &d);
+    virtual = (cx_method *)cx_vtableLookup(&cx_interface(this)->methods, cx_nameof(method), &d);
 
     /* vtableLookup failed (probably due to a failed overloading request) */
-    if (i == -1) {
-        cx_seterr("method lookup error for '%s'", cx_nameof(method));
+    if (!virtual && (d == -1)) {
+        if (!cx_lasterr()) {
+            cx_seterr("method lookup error for '%s'", cx_nameof(method));
+        }
         goto error;
     }
 
@@ -587,7 +552,7 @@ cx_method _cx_interface_resolveMethod(cx_interface this, cx_string name) {
     result = NULL;
 
     /* Lookup method */
-    if ((found = (cx_method*)cx_vtableLookup(&this->methods, name, NULL, NULL))) {
+    if ((found = (cx_method*)cx_vtableLookup(&this->methods, name, NULL))) {
         result = *found;
     }
 
@@ -626,6 +591,7 @@ cx_method _cx_interface_resolveMethodById(cx_interface this, cx_uint32 id) {
 cx_uint32 _cx_interface_resolveMethodId(cx_interface this, cx_string name) {
 /* $begin(::corto::lang::interface::resolveMethodId) */
     cx_int32 result;
+    cx_function *f;
 
     result = 0;
 
@@ -637,10 +603,8 @@ cx_uint32 _cx_interface_resolveMethodId(cx_interface this, cx_string name) {
     }
 
     /* Lookup method */
-    if (cx_vtableLookup(&this->methods, name, &result, NULL)) {
-        if (result == -1) {
-            goto error;
-        }
+    if ((f = cx_vtableLookup(&this->methods, name, NULL))) {
+        result = ((cx_word)f - (cx_word)this->methods.buffer) / sizeof(cx_function);
         result++; /* Id's start at 1 */
     }
 

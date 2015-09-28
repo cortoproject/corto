@@ -6,7 +6,6 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#define corto_ast_LIB
 #include "ast.h"
 
 /* $header() */
@@ -1402,7 +1401,7 @@ ast_Storage _ast_Parser_declareFunction(ast_Parser this, cx_type returnType, cx_
             *bptr = '\0';
 
             cx_object function = cx_resolve(this->scope, query);
-            cx_assert(function != NULL, "object should still be there in 2nd pass");
+            cx_assert(function != NULL, "object should still be there in 2nd pass (%s)", cx_lasterr());
 
             result = ast_Storage(ast_ObjectCreate(function));
             ast_Parser_collect(this, result);

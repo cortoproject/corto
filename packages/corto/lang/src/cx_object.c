@@ -650,41 +650,28 @@ static cx_object cx_adopt(cx_object parent, cx_object child) {
         goto err_invalid_parent;
     }
 
-    /* Check if parentType matches scopeType of child type */
-    if (childType->parentType) {
-        parentType = cx_typeof(parent);
-        if ((childType->parentType != parentType) && !cx_instanceof(childType->parentType, parent)) {
-            cx_id parentId, childParentTypeId;
-            cx_seterr("type of '%s' is not '%s'",
-                    cx_fullname(parent, parentId), cx_fullname(childType->parentType, childParentTypeId));
-            goto err_invalid_parent;
-        }
-    }
-
-    /* Check if parentState matches scopeState of child type */
-    if (childType->parentState && !cx__checkStateXOR(parent, childType->parentState)) {
-        cx_id parentId;
-        cx_uint32 childState = childType->parentState;
-        cx_seterr("state of '%s' is not %s", cx_fullname(parent, parentId), cx_stateStr(childState));
-        goto err_invalid_parent;
-    }
-
     /* Obtain pointers to scope of parent and child */
     p_scope = cx__objectScope(_parent);
     if (p_scope) {
         c_scope = cx__objectScope(_child);
         if (c_scope) {
             /* Set parent of child */
-            if (cx_rwmutexWrite(&c_scope->scopeLock)) goto err_child_mutex;
+            if (cx_rwmutexWrite(&c_scope->scopeLock))
+                cx_critical("cx_adopt: lock operation on scopeLock of child failed");
+
             if (c_scope->parent) {
                 /* Cannot adopt an already adopted child */
+                cx_seterr("cx_adopt: child-object is already adopted");
                 goto err_already_adopted;
             }
             c_scope->parent = parent;
-            if (cx_rwmutexUnlock(&c_scope->scopeLock)) goto err_child_mutex;
+            if (cx_rwmutexUnlock(&c_scope->scopeLock))
+                cx_critical("cx_adopt: unlock operation on scopeLock of child failed");
 
             /* Insert child in parent-scope */
-            if (cx_rwmutexWrite(&p_scope->scopeLock)) goto err_parent_mutex;
+            if (cx_rwmutexWrite(&p_scope->scopeLock))     
+                cx_critical("cx_adopt: lock operation on scopeLock of parent failed");
+
             if (!p_scope->scope) {
                 p_scope->scope = cx_rbtreeNew_w_func(cx_objectCompare);
             }
@@ -692,52 +679,57 @@ static cx_object cx_adopt(cx_object parent, cx_object child) {
             cx_object existing = cx_rbtreeFindOrSet(p_scope->scope, c_scope->name, child);
             if (existing) {
                 if (cx_typeof(existing) != cx_typeof(child)) {
-                    goto err_type_mismatch;
+                    cx_seterr("'%s' is already declared with a different type", c_scope->name);
+                    goto err_existing;
                 } else {
                     child = existing;
+                }
+            } else {
+                /* Check if parentType matches scopeType of child type */
+                if (childType->parentType) {
+                    parentType = cx_typeof(parent);
+                    if ((childType->parentType != parentType) && !cx_instanceof(childType->parentType, parent)) {
+                        cx_id parentId, childParentTypeId;
+                        cx_seterr("type of '%s' is not '%s'",
+                                cx_fullname(parent, parentId), cx_fullname(childType->parentType, childParentTypeId));
+                        goto err_invalid_parent;
+                    }
+                }
+
+                /* Check if parentState matches scopeState of child type */
+                if (childType->parentState && !cx__checkStateXOR(parent, childType->parentState)) {
+                    cx_id parentId;
+                    cx_uint32 childState = childType->parentState;
+                    cx_seterr("'%s' is %s, must be %s",
+                        cx_fullname(parent, parentId),
+                        cx_stateStr(_parent->attrs.state),
+                        cx_stateStr(childState));
+                    goto err_invalid_parent;
                 }
             }
 
             /* Parent must not be deleted before all childs are gone. */
             cx_claim(parent);
-            if (cx_rwmutexUnlock(&p_scope->scopeLock)) goto err_parent_mutex;
+            if (cx_rwmutexUnlock(&p_scope->scopeLock)) 
+                cx_critical("cx_adopt: unlock operation on scopeLock of parent failed");;
         } else {
-            goto err_no_child_scope;
+            cx_critical("cx_adopt: child-object is not scoped");
         }
     } else {
-        goto err_no_parent_scope;
+        cx_critical("cx_adopt: parent-object is not scoped");
     }
 
     return child;
 
-err_child_mutex:
-    cx_critical("cx_adopt: lock operation on scopeLock of child failed");
-    return NULL;
-
-err_parent_mutex:
-    cx_critical("cx_adopt: lock operation on scopeLock of parent failed");
+err_invalid_parent:
+    c_scope->parent = NULL;
+    cx_rbtreeRemove(p_scope->scope, c_scope->name);
+err_existing:
+    cx_rwmutexUnlock(&p_scope->scopeLock);
     return NULL;
 
 err_already_adopted:
     cx_rwmutexUnlock(&c_scope->scopeLock);
-    cx_seterr("cx_adopt: child-object is already adopted");
-    return NULL;
-
-err_type_mismatch:
-    cx_rwmutexUnlock(&p_scope->scopeLock);
-    cx_critical("'%s' is already declared with a different type",
-        c_scope->name);
-    return NULL;
-
-err_no_parent_scope:
-    cx_critical("cx_adopt: parent-object is not scoped");
-    return NULL;
-
-err_no_child_scope:
-    cx_critical("cx_adopt: child-object is not scoped");
-    return NULL;
-
-err_invalid_parent:
     return NULL;
 }
 
@@ -1006,8 +998,8 @@ cx_object _cx_declareChild(cx_object parent, cx_string name, cx_type type) {
     if (o) {
         cx_object o_ret = NULL;
         cx__object *_o = CX_OFFSET(o, -sizeof(cx__object));
+        
         /* Initialize object parameters. */
-
         if ((o_ret = cx__initScope(o, name, parent))) {
 
             if (o_ret == o) {
@@ -3357,50 +3349,6 @@ error:
     return -1;
 }
 
-typedef struct cx_lookupFunction_t {
-    cx_string request;
-    cx_function result;
-    cx_bool error;
-    cx_int32 d;
-    cx_int32 old_d;
-}cx_lookupFunction_t;
-
-/* Lookup function in scope */
-int cx_lookupFunctionWalk(cx_object o, void* userData) {
-    cx_int32 d = -1;
-    cx_lookupFunction_t* data;
-
-    data = userData;
-
-    /* If current object is a function, match it */
-    if ((cx_typeof(o)->kind == CX_COMPOSITE) &&
-        ((cx_interface(cx_typeof(o))->kind == CX_PROCEDURE) ||
-        (cx_interface(cx_typeof(o))->kind == CX_DELEGATE))) {
-        if (strchr(data->request, '(')) {
-            if (cx_overload(o, data->request, &d)) {
-                data->error = TRUE;
-                goto found;
-            }
-        } else {
-            cx_assert(0, "cx_lookupFunction only handles requests with parentheses");
-        }
-
-        if (d != -1) {
-            if (d <= data->d) {
-                data->old_d = data->d;
-            }
-            if (d < data->d) {
-                data->result = o;
-                data->d = d;
-            }
-        }
-    }
-
-    return 1;
-found:
-    return 0;
-}
-
 static int cx_scopeCollectWalk(cx_object o, void* userData) {
     cx_objectseq *seq = userData;
     if (!seq->buffer) {
@@ -3428,16 +3376,65 @@ void cx_scopeRelease(cx_objectseq seq) {
     cx_dealloc(seq.buffer);
 }
 
-/* Lookup function with support for overloading */
-cx_function cx_lookupFunction(cx_object scope, cx_string requested, cx_int32* d) {
-    cx_lookupFunction_t walkData;
-    cx_objectseq scopeContents;
-    cx_uint32 i;
+typedef struct cx_lookupFunction_t {
+    cx_string request;
+    cx_function *result;
+    cx_bool error;
+    cx_int32 d;
+    cx_int32 old_d;
+}cx_lookupFunction_t;
 
-    /* Collect objects in scope first, to prevent reversed locking order (locking should
-     * always be outer scope first, then inner scope) and deadlocking i.c.m. cx_resolve.
-     */
-    scopeContents = cx_scopeClaim(scope);
+/* Lookup function in scope */
+int cx_lookupFunctionWalk(cx_object *ptr, void* userData) {
+    cx_int32 d = -1;
+    cx_lookupFunction_t* data;
+    cx_object o = *ptr;
+
+    data = userData;
+
+    /* If current object is a function, match it */
+    if ((cx_typeof(o)->kind == CX_COMPOSITE) &&
+        ((cx_interface(cx_typeof(o))->kind == CX_PROCEDURE) ||
+        (cx_interface(cx_typeof(o))->kind == CX_DELEGATE))) {
+        if (strchr(data->request, '(')) {
+            if (cx_overload(o, data->request, &d)) {
+                data->error = TRUE;
+                goto found;
+            }
+        } else {
+            cx_id sigName; cx_signatureName(o, sigName);
+            if (!strcmp(sigName, data->request)) {
+                if (!cx_function(o)->overloaded) {
+                    data->d = 0;
+                    goto found;
+                } else {
+                    data->error = TRUE;
+                    cx_seterr("ambiguous reference to overloaded identifier '%s'", data->request);
+                    goto found;
+                }
+            }
+        }
+
+        if (d != -1) {
+            if (d <= data->d) {
+                data->old_d = data->d;
+            }
+            if (d < data->d) {
+                data->result = (cx_function*)ptr;
+                data->d = d;
+            }
+        }
+    }
+
+    return 1;
+found:
+    return 0;
+}
+
+/* Lookup function with support for overloading */
+cx_function* cx_lookupFunctionFromSequence(cx_objectseq scopeContents, cx_string requested, cx_int32* d) {
+    cx_lookupFunction_t walkData;
+    cx_uint32 i;
 
     /* Call the actual lookup function */
     walkData.request = requested;
@@ -3447,7 +3444,7 @@ cx_function cx_lookupFunction(cx_object scope, cx_string requested, cx_int32* d)
     walkData.old_d = INT_MAX;
 
     for (i = 0; i < scopeContents.length; i++) {
-        if (!cx_lookupFunctionWalk(scopeContents.buffer[i], &walkData)) {
+        if (!cx_lookupFunctionWalk(&scopeContents.buffer[i], &walkData)) {
             break;
         }
     }
@@ -3457,22 +3454,31 @@ cx_function cx_lookupFunction(cx_object scope, cx_string requested, cx_int32* d)
         walkData.error = TRUE;
     }
 
-    if (walkData.error) {
-        return NULL;
-    }
-
     if (d) {
-        *d = walkData.d;
+        if (walkData.error) {
+            *d = -1;
+        } else if (!walkData.result) {
+            *d = 0;
+        } else {
+            *d = walkData.d;
+        }
     }
 
-    if (walkData.result) {
-        cx_claim(walkData.result);
-    }
-
-    /* Free contents of scope */
-    cx_scopeRelease(scopeContents);
+    if (walkData.error) walkData.result = NULL;
 
     return walkData.result;
+}
+
+cx_function cx_lookupFunction(cx_object scope, cx_string requested, cx_int32* d) {
+    cx_objectseq scopeContents = cx_scopeClaim(scope);
+    cx_function result = NULL;
+    cx_function *ptr = cx_lookupFunctionFromSequence(scopeContents, requested, d);
+    if (ptr) {
+        cx_claim(*ptr);
+        result = *ptr;
+    }
+    cx_scopeRelease(scopeContents);
+    return result;
 }
 
 /* Create request signature */

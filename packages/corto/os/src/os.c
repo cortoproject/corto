@@ -6,7 +6,6 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#define corto_os_LIB
 #include "os.h"
 
 /* ::corto::os::exit(bool success) */

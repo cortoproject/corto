@@ -163,11 +163,7 @@ static g_file c_apiHeaderOpen(cx_generator g) {
     g_fileWrite(result, "#ifndef %s__API_H\n", c_topath(g_getCurrent(g), path, '_'));
     g_fileWrite(result, "#define %s__API_H\n\n", c_topath(g_getCurrent(g), path, '_'));
     g_fileWrite(result, "#include \"corto.h\"\n");
-    g_fileWrite(result, "#ifdef %s_LIB\n", c_topath(g_getCurrent(g), path, '_'));
-    g_fileWrite(result, "#include \"%s__type.h\"\n", g_getName(g));
-    g_fileWrite(result, "#else\n");
-    g_fileWrite(result, "#include \"%s/%s__type.h\"\n", c_topath(g_getCurrent(g), path, '/'), g_getName(g));
-    g_fileWrite(result, "#endif\n\n");
+    g_fileWrite(result, "#include \"%s__interface.h\"\n", g_getName(g));
     g_fileWrite(result, "#ifdef __cplusplus\n");
     g_fileWrite(result, "extern \"C\" {\n");
     g_fileWrite(result, "#endif\n");
@@ -189,7 +185,7 @@ static void c_apiHeaderClose(g_file file) {
 /* Open sourcefile */
 static g_file c_apiSourceOpen(cx_generator g) {
     g_file result;
-    cx_id sourceFileName, topLevelName, path;
+    cx_id sourceFileName, topLevelName;
 
     /* Create file */
     sprintf(sourceFileName, "%s__api.c", g_getName(g));
@@ -205,7 +201,6 @@ static g_file c_apiSourceOpen(cx_generator g) {
     g_fileWrite(result, " * API convenience functions for C-language.\n");
     g_fileWrite(result, " * This file contains generated code. Do not modify!\n");
     g_fileWrite(result, " */\n\n");
-    g_fileWrite(result, "#define %s_LIB\n", c_topath(g_getCurrent(g), path, '_'));
     g_fileWrite(result, "#include \"%s.h\"\n\n", g_fullOid(g, g_getCurrent(g), topLevelName));
 
     return result;

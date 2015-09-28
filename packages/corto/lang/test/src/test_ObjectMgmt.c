@@ -6,7 +6,6 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#define test_LIB
 #include "test.h"
 
 /* ::test::ObjectMgmt::setup() */
@@ -270,11 +269,11 @@ cx_void _test_ObjectMgmt_tc_createChildParentStateErr(test_ObjectMgmt this) {
     test_assert(!cx_checkState(o, CX_DEFINED));
 
     cx_object p = cx_createChild(o, "p", test_DefinedParent_o);
-    test_assert(!strcmp(cx_lasterr(), "state of '::o' is not DEFINED"));
+    test_assert(!strcmp(cx_lasterr(), "'::o' is VALID|DECLARED, must be DEFINED"));
     test_assert(p == NULL);
 
     cx_object q = test_DefinedParentCreateChild(o, "q", 0);
-    test_assert(!strcmp(cx_lasterr(), "state of '::o' is not DEFINED"));
+    test_assert(!strcmp(cx_lasterr(), "'::o' is VALID|DECLARED, must be DEFINED"));
     test_assert(q == NULL);
 
     cx_delete(o);
@@ -826,6 +825,24 @@ cx_void _test_ObjectMgmt_tc_declareChildVoidAttr0(test_ObjectMgmt this) {
 
     cx_object q = cx_resolve(NULL, "o");
     test_assert(q == NULL);
+
+/* $end */
+}
+
+/* ::test::ObjectMgmt::tc_declareExistingWithParentState() */
+cx_void _test_ObjectMgmt_tc_declareExistingWithParentState(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_declareExistingWithParentState) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+/* ::test::ObjectMgmt::tc_declareExistingWithType() */
+cx_void _test_ObjectMgmt_tc_declareExistingWithType(test_ObjectMgmt this) {
+/* $begin(::test::ObjectMgmt::tc_declareExistingWithType) */
+
+    /* << Insert implementation >> */
 
 /* $end */
 }

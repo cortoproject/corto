@@ -4,7 +4,6 @@
  * This file contains generated code. Do not modify!
  */
 
-#define corto_lang_LIB
 #include "cx.h"
 
 cx_alias cx_aliasCreate(cx_member member) {

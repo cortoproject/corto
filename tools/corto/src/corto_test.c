@@ -26,7 +26,6 @@ cx_int16 corto_test(int argc, char *argv[]) {
         }
 
     	if (cx_fileTest("test/.corto/libtest.so")) {
-            cx_int8 ret = 0;
             if (err) {
                 cx_error("corto: trying to run previous testbuild, results may be outdated");
             }

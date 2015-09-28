@@ -14,6 +14,11 @@ TARGET = PACKAGE.split("::").last
 
 PP_PRELOAD ||= []
 GENERATED_SOURCES ||= []
+DEFINES ||= []
+CFLAGS ||= []
+
+DEFINES << "BUILDING_" + PACKAGE.gsub("::", "_").upcase
+CFLAGS << "-fvisibility=hidden"
 
 GENERATED_SOURCES <<
     ".corto/#{TARGET}__api.c" <<
@@ -24,7 +29,8 @@ GENERATED_SOURCES <<
 GENERATED_HEADERS ||= [] <<
     "include/#{TARGET}__api.h" <<
     "include/#{TARGET}__meta.h" <<
-    "include/#{TARGET}__type.h"
+    "include/#{TARGET}__type.h" <<
+    "include/#{TARGET}__interface.h"
 
 PREFIX ||= TARGET
 

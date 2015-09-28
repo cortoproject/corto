@@ -217,6 +217,9 @@ static int c_interfaceGenerateVirtual(cx_method o, c_typeWalk_t* data) {
     cx_bool returnsValue;
     cx_id nameString;
     g_file originalSource = data->source;
+    cx_id upperName;
+    c_topath(g_getCurrent(data->g), upperName, '_');
+    cx_strupper(upperName);
 
     /* Replace the source with the wrapper so that all nested functions use the correct outputfile.
      * This file will be restored at the end of the function */
@@ -232,7 +235,7 @@ static int c_interfaceGenerateVirtual(cx_method o, c_typeWalk_t* data) {
 
     g_fullOid(data->g, cx_parentof(o), classId);
 
-    /* Write to sourcefile */
+    /* Write virtual lookup wrapper */
     g_fileWrite(data->wrapper, "\n");
     g_fileWrite(data->wrapper, "/* virtual %s */\n", cx_fullname(o, id));
     g_fileWrite(data->wrapper, "%s _%s(",
@@ -241,7 +244,8 @@ static int c_interfaceGenerateVirtual(cx_method o, c_typeWalk_t* data) {
 
     g_fileWrite(data->header, "\n");
     g_fileWrite(data->header, "/* virtual %s */\n", cx_fullname(o, id));
-    g_fileWrite(data->header, "%s _%s(",
+    g_fileWrite(data->header, "%s_EXPORT %s _%s(",
+            upperName,
             returnTypeId,
             g_fullOid(data->g, o, id));
 
@@ -433,6 +437,9 @@ static int c_interfaceClassProcedure(cx_object o, void *userData) {
         cx_procedureKind kind;
         cx_type returnType;
         cx_string doStubs = gen_getAttribute(data->g, "stubs");
+        cx_id upperName;
+        c_topath(g_getCurrent(data->g), upperName, '_');
+        cx_strupper(upperName);
 
         kind = cx_procedure(cx_typeof(o))->kind;
         defined = cx_checkState(o, CX_DEFINED) && (cx_function(o)->kind != CX_PROCEDURE_STUB);
@@ -490,7 +497,7 @@ static int c_interfaceClassProcedure(cx_object o, void *userData) {
         g_fileWrite(data->header, "/* %s */\n", fullname);
 
         /* Start of function */
-        g_fileWrite(data->header, "%s%s _%s", returnSpec, returnPostfix,
+        g_fileWrite(data->header, "%s_EXPORT %s%s _%s", upperName, returnSpec, returnPostfix,
             functionName);
 
         /* Write to sourcefile */
@@ -651,6 +658,43 @@ static g_file c_interfaceHeaderFileOpen(cx_generator g, cx_object o, c_typeWalk_
                 goto error;
             }
         }
+
+        /* Create __export.h file with default interface includes and macro's */
+        cx_id interfaceHeaderName;
+        sprintf(interfaceHeaderName, "%s__interface.h", g_getName(g));
+        g_file interfaceHeader = g_fileOpen(g, interfaceHeaderName);
+        if (!interfaceHeader) {
+            goto error;
+        } else {
+            cx_id upperName;
+            c_topath(g_getCurrent(g), upperName, '_');
+            cx_strupper(upperName);
+
+            g_fileWrite(interfaceHeader, "/* %s\n", interfaceHeaderName);
+            g_fileWrite(interfaceHeader, " *\n");
+            g_fileWrite(interfaceHeader, " * This file contains generated code. Do not modify!\n");
+            g_fileWrite(interfaceHeader, " */\n\n");
+
+            g_fileWrite(interfaceHeader, "#ifdef BUILDING_%s\n", upperName);
+            g_fileWrite(interfaceHeader, "#include \"%s__type.h\"\n", g_getName(g));
+            g_fileWrite(interfaceHeader, "#include \"%s__api.h\"\n", g_getName(g));
+            g_fileWrite(interfaceHeader, "#include \"%s__meta.h\"\n", g_getName(g));
+            g_fileWrite(interfaceHeader, "#else\n");
+            g_fileWrite(interfaceHeader, "#include \"%s/%s__type.h\"\n", c_topath(g_getCurrent(g), path, '/'), g_getName(g));
+            g_fileWrite(interfaceHeader, "#include \"%s/%s__api.h\"\n", c_topath(g_getCurrent(g), path, '/'), g_getName(g));
+            g_fileWrite(interfaceHeader, "#include \"%s/%s__meta.h\"\n", c_topath(g_getCurrent(g), path, '/'), g_getName(g));
+            g_fileWrite(interfaceHeader, "#endif\n\n");
+
+            g_fileWrite(interfaceHeader, "#if BUILDING_%s && defined _MSC_VER\n", upperName);
+            g_fileWrite(interfaceHeader, "#define %s_DLL_EXPORTED __declspec(dllexport)\n", upperName);
+            g_fileWrite(interfaceHeader, "#elif BUILDING_%s\n", upperName);
+            g_fileWrite(interfaceHeader, "#define %s_EXPORT __attribute__((__visibility__(\"default\")))\n", upperName);
+            g_fileWrite(interfaceHeader, "#elif defined _MSC_VER\n");
+            g_fileWrite(interfaceHeader, "#define %s_EXPORT __declspec(dllimport)\n", upperName);
+            g_fileWrite(interfaceHeader, "#else\n");
+            g_fileWrite(interfaceHeader, "#define %s_EXPORT\n", upperName);
+            g_fileWrite(interfaceHeader, "#endif\n\n");
+        }
     }
 
     if (o != topLevelObject) {
@@ -662,8 +706,8 @@ static g_file c_interfaceHeaderFileOpen(cx_generator g, cx_object o, c_typeWalk_
     g_fileWrite(result, " *\n");
     g_fileWrite(result, " * This file contains generated code. Do not modify!\n");
     g_fileWrite(result, " */\n\n");
-    g_fileWrite(result, "#ifndef %s_H\n", c_topath(o, path, '_'));
-    g_fileWrite(result, "#define %s_H\n\n", c_topath(o, path, '_'));
+    g_fileWrite(result, "#ifndef %s_H\n", cx_strupper(c_topath(o, path, '_')));
+    g_fileWrite(result, "#define %s_H\n\n", cx_strupper(c_topath(o, path, '_')));
     g_fileWrite(result, "#include \"corto.h\"\n");
 
     /* If the class extends from another class, include header of baseclass */
@@ -679,16 +723,7 @@ static g_file c_interfaceHeaderFileOpen(cx_generator g, cx_object o, c_typeWalk_
         }
     }
 
-    g_fileWrite(result, "#ifdef %s_LIB\n", c_topath(g_getCurrent(g), path, '_'));
-    g_fileWrite(result, "#include \"%s__type.h\"\n", g_getName(g));
-    g_fileWrite(result, "#include \"%s__api.h\"\n", g_getName(g));
-    g_fileWrite(result, "#include \"%s__meta.h\"\n", g_getName(g));
-    g_fileWrite(result, "#else\n");
-    g_fileWrite(result, "#include \"%s/%s__type.h\"\n", c_topath(g_getCurrent(g), path, '/'), g_getName(g));
-    g_fileWrite(result, "#include \"%s/%s__api.h\"\n", c_topath(g_getCurrent(g), path, '/'), g_getName(g));
-    g_fileWrite(result, "#include \"%s/%s__meta.h\"\n", c_topath(g_getCurrent(g), path, '/'), g_getName(g));
-    g_fileWrite(result, "#endif\n\n");
-
+    g_fileWrite(result, "#include \"%s__interface.h\"\n\n", g_getName(g));
 
     g_fileWrite(result, "#ifdef __cplusplus\n");
     g_fileWrite(result, "extern \"C\" {\n");
@@ -754,7 +789,7 @@ static cx_string c_interfaceSourceFileName(cx_string name, cx_char* buffer) {
 static g_file c_interfaceSourceFileOpen(cx_generator g, cx_string name) {
     g_file result;
     cx_char fileName[512];
-    cx_id topLevelName, path;
+    cx_id topLevelName;
 
     result = g_fileOpen(g, c_interfaceSourceFileName(name, fileName));
     if (!result) {
@@ -769,7 +804,6 @@ static g_file c_interfaceSourceFileOpen(cx_generator g, cx_string name) {
     g_fileWrite(result, " * Don't mess with the begin and end tags, since these will ensure that modified\n");
     g_fileWrite(result, " * code in interface functions isn't replaced when code is re-generated.\n");
     g_fileWrite(result, " */\n\n");
-    g_fileWrite(result, "#define %s_LIB\n", c_topath(g_getCurrent(g), path, '_'));
     g_fileWrite(result, "#include \"%s.h\"\n", g_fullOid(g, g_getCurrent(g), topLevelName));
 
     return result;

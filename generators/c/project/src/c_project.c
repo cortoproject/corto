@@ -25,11 +25,11 @@ static cx_int16 c_projectGenerateMainFile(cx_generator g) {
     g_fileWrite(file, " */\n\n");
 
     if (g_getCurrent(g)) {
-        cx_id path;
-        g_fileWrite(file, "#define %s_LIB\n", c_topath(g_getCurrent(g), path, '_'));
         g_fileWrite(file, "#include \"%s.h\"\n\n", g_fullOid(g, g_getCurrent(g), topLevelName));
+        c_writeExport(g, file);
         g_fileWrite(file, "int cortomain(int argc, char* argv[]) {\n");
         g_fileIndent(file);
+        g_fileWrite(file, "int %s_load(void);\n", g_getName(g));
         g_fileWrite(file, "if (%s_load()) return -1;\n", g_getName(g));
         g_fileWrite(file, "int %sMain(int argc, char* argv[]);\n", g_getName(g));
         g_fileWrite(file, "if (%sMain(argc, argv)) return -1;\n", g_getName(g));

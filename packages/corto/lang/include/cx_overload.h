@@ -20,7 +20,7 @@ extern "C" {
 #define CX_PARAMETER_WILDCARD           (4)
 #define CX_PARAMETER_NULL               (8)
 
-/* Calculate to what extent a function meets requested signature */
+/* Calculate the distance between a function and a request signature */
 cx_int16 cx_overload(cx_object object, cx_string name, cx_int32* distance);
 
 /* Obtain information from signature.
@@ -47,6 +47,7 @@ cx_int16 cx_signature(cx_object o, cx_id buffer);
 
 /* Find a function that matches a signature */
 cx_function cx_lookupFunction(cx_object scope, cx_string requested, cx_int32 *d);
+cx_function *cx_lookupFunctionFromSequence(cx_objectseq scopeContents, cx_string requested, cx_int32* d);
 
 #ifdef __cplusplus
 }
