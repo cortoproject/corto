@@ -258,7 +258,22 @@ static cx_object cx__initScope(cx_object o, cx_string name, cx_object parent) {
 
     scope->name = cx_strdup(name);
     scope->declared = 1;
+    scope->parent = parent;
     cx_rwmutexNew(&scope->scopeLock);
+
+    /* Call framework initializer. Do this before adopting the
+     * object, so that when the initializer failed, it hasn't
+     * yet been added to the scope. */
+    if (cx_init(o)) {
+        cx_id id;
+        cx_string err = cx_lasterr();
+        if (err) {
+            cx_seterr("%s::init failed: %s", cx_fullname(cx_typeof(o), id), err);
+        } else {
+            cx_seterr("%s::init failed", cx_fullname(cx_typeof(o), id));
+        }
+        goto error;
+    }
 
     /* Add object to the scope of the parent-object */
     if (!(result = cx_adopt(parent, o))) {
@@ -500,9 +515,6 @@ int cx__adoptSSO(cx_object sso) {
 
     cx_assert(parent != NULL, "cx__adoptSSO: static scoped object has no parent");
 
-    /* Reset the parent to NULL, since cx_adopt will otherwise conclude that this object is adopted twice */
-    scope->parent = NULL;
-
     return !cx_adopt(parent, sso);
 }
 
@@ -655,18 +667,6 @@ static cx_object cx_adopt(cx_object parent, cx_object child) {
     if (p_scope) {
         c_scope = cx__objectScope(_child);
         if (c_scope) {
-            /* Set parent of child */
-            if (cx_rwmutexWrite(&c_scope->scopeLock))
-                cx_critical("cx_adopt: lock operation on scopeLock of child failed");
-
-            if (c_scope->parent) {
-                /* Cannot adopt an already adopted child */
-                cx_seterr("cx_adopt: child-object is already adopted");
-                goto err_already_adopted;
-            }
-            c_scope->parent = parent;
-            if (cx_rwmutexUnlock(&c_scope->scopeLock))
-                cx_critical("cx_adopt: unlock operation on scopeLock of child failed");
 
             /* Insert child in parent-scope */
             if (cx_rwmutexWrite(&p_scope->scopeLock))     
@@ -726,10 +726,6 @@ err_invalid_parent:
     cx_rbtreeRemove(p_scope->scope, c_scope->name);
 err_existing:
     cx_rwmutexUnlock(&p_scope->scopeLock);
-    return NULL;
-
-err_already_adopted:
-    cx_rwmutexUnlock(&c_scope->scopeLock);
     return NULL;
 }
 
@@ -1008,18 +1004,6 @@ cx_object _cx_declareChild(cx_object parent, cx_string name, cx_type type) {
                  * chain of parents to notify on an event. */
                 if (cx_checkAttr(o, CX_ATTR_OBSERVABLE)) {
                     cx__initObservable(o);
-                }
-
-                /* Call framework initializer */
-                if (cx_init(o)) {
-                    cx_id id;
-                    cx_string err = cx_lasterr();
-                    if (err) {
-                        cx_seterr("%s::init failed: %s", cx_fullname(type, id), err);
-                    } else {
-                        cx_seterr("%s::init failed", cx_fullname(type, id));
-                    }
-                    goto error;
                 }
 
                 /* Initially, an object is valid and declared */
@@ -3185,7 +3169,10 @@ static cx_uint32 cx_overloadParamCompare(
          * kind. */
         } else if ((o_type->kind == CX_PRIMITIVE) && (r_type->kind == CX_PRIMITIVE)) {
             if (cx_primitive(o_type)->kind != cx_primitive(r_type)->kind) {
-                d++;
+                if (!cx_primitive_isInteger(cx_primitive(o_type)) || 
+                    !cx_primitive_isInteger(cx_primitive(r_type))) {
+                    d++;
+                }
             }
         }
     } else if (o_type != r_type) {

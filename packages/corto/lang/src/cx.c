@@ -374,6 +374,8 @@ int8_t CX_DEBUG_ENABLED = 0;
     SSO_OP_OBJ(op, primitive_construct_);\
     SSO_OP_OBJ(op, primitive_compatible_);\
     SSO_OP_OBJ(op, primitive_castable_);\
+    SSO_OP_OBJ(op, primitive_isInteger_);\
+    SSO_OP_OBJ(op, primitive_isNumber_);\
     /* interface */\
     SSO_OP_OBJ(op, interface_kind);\
     SSO_OP_OBJ(op, interface_nextMemberId);\

@@ -833,16 +833,26 @@ cx_void _test_ObjectMgmt_tc_declareChildVoidAttr0(test_ObjectMgmt this) {
 cx_void _test_ObjectMgmt_tc_declareExistingWithParentState(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_declareExistingWithParentState) */
 
-    /* << Insert implementation >> */
+    cx_struct s = cx_structDeclareChild(NULL, "s");
+    test_assert(s != NULL);
 
-/* $end */
-}
+    cx_member m = cx_memberCreateChild(s, "m", cx_type(cx_uint32_o), CX_GLOBAL, 0, FALSE);
+    test_assert(m != NULL);
 
-/* ::test::ObjectMgmt::tc_declareExistingWithType() */
-cx_void _test_ObjectMgmt_tc_declareExistingWithType(test_ObjectMgmt this) {
-/* $begin(::test::ObjectMgmt::tc_declareExistingWithType) */
+    cx_int16 ret = cx_define(s);
+    test_assert(ret == 0);
 
-    /* << Insert implementation >> */
+    /* Validate I can redeclare member after struct has been defined */
+    cx_member n = cx_memberDeclareChild(s, "m");
+    test_assert(n != NULL);
+    test_assert(cx_checkState(n, CX_DEFINED));
+
+    ret = cx_define(n);
+    test_assert(ret == 0);
+
+    cx_delete(n);
+    cx_delete(m);
+    cx_delete(s);
 
 /* $end */
 }

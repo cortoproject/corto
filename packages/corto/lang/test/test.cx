@@ -1,4 +1,4 @@
-#package ::test
+package ::test
 
 int8 initCalled: 0
 int8 constructCalled: 0
@@ -85,7 +85,6 @@ class ObjectMgmt: test::Suite::
     void tc_declareChildParentStateErr() test::Case
     void tc_declareChildParentTypeErr() test::Case
     void tc_declareExistingWithParentState() test::Case
-    void tc_declareExistingWithType() test::Case
     void tc_declareChildNullType() test::Case
     void tc_declareChildInvalidType() test::Case
 
@@ -230,22 +229,71 @@ void ol_null(object a)
 void ol_null(string a)
 void ol_null(bool a)
 
+void ol_object(object a)
+void ol_string(string a)
+void ol_bool(bool a)
+
 void ol_wildcard(int32 a, string b)
 void ol_wildcard(float32 a, string b)
 
 void ol_int(int32 a)
-
 void ol_uint(int32 a)
 
 void ol_num(int32 a)
 void ol_num(float64 a)
 
+enum Color:: Red, Orange, Yellow, Green, Blue
+void ol_any(bool a)
+void ol_any(char a)
+void ol_any(int32 a)
+void ol_any(float32 a)
+void ol_any(string a)
+void ol_any(object a)
+void ol_any(Color a)
+
+class Animal::
+    a: bool
+
+class Dog : Animal::
+    b: bool
+
+class GoldenRetriever : Dog::
+    c: bool
+
+class Cat : Animal::
+    b: bool
+
+void ol_inherit(Animal a)
+void ol_inherit(Dog a)
+
 class Overload: test::Suite::
     void tc_ambiguous() test::Case
     void tc_ambiguousWildcard() test::Case
     void tc_ambiguousNull() test::Case
-    void tc_null() test::Case
+
     void tc_wildcard() test::Case
+
+    void tc_nullObject() test::Case
+    void tc_nullString() test::Case
+    void tc_nullBool() test::Case
+
+    void tc_anyChar() test::Case
+    void tc_anyInt8() test::Case
+    void tc_anyInt16() test::Case
+    void tc_anyInt32() test::Case
+    void tc_anyInt64() test::Case
+    void tc_anyUint8() test::Case
+    void tc_anyUint16() test::Case
+    void tc_anyUint32() test::Case
+    void tc_anyUint64() test::Case
+    void tc_anyFloat32() test::Case
+    void tc_anyFloat64() test::Case
+    void tc_anyOctet() test::Case
+    void tc_anyWord() test::Case
+    void tc_anyString() test::Case
+    void tc_anyColor() test::Case
+
+    void tc_numChar() test::Case
     void tc_numInt8() test::Case
     void tc_numInt16() test::Case
     void tc_numInt32() test::Case
@@ -256,7 +304,15 @@ class Overload: test::Suite::
     void tc_numUint64() test::Case
     void tc_numFloat32() test::Case
     void tc_numFloat64() test::Case
+    void tc_numOctet() test::Case
+    void tc_numWord() test::Case
     void tc_numString() test::Case
+    void tc_numColor() test::Case
+
+    void tc_inheritanceBase() test::Case
+    void tc_inheritanceSub() test::Case
+    void tc_inheritanceMatchSub() test::Case
+    void tc_inheritSibling() test::Case
     
 // String deserializer testcases
 class StringDeserializer: test::Suite::

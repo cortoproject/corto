@@ -17,6 +17,96 @@ cx_void _test_functionToResolve(cx_int32 a, cx_int32 b) {
 /* $end */
 }
 
+/* ::test::ol_any(::test::Color a) */
+cx_void _test_ol_any__test_Color(test_Color a) {
+/* $begin(::test::ol_any(::test::Color a)) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+/* ::test::ol_any(bool a) */
+cx_void _test_ol_any_bool(cx_bool a) {
+/* $begin(::test::ol_any(bool a)) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+/* ::test::ol_any(char a) */
+cx_void _test_ol_any_char(cx_char a) {
+/* $begin(::test::ol_any(char a)) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+/* ::test::ol_any(float32 a) */
+cx_void _test_ol_any_float32(cx_float32 a) {
+/* $begin(::test::ol_any(float32 a)) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+/* ::test::ol_any(int32 a) */
+cx_void _test_ol_any_int32(cx_int32 a) {
+/* $begin(::test::ol_any(int32 a)) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+/* ::test::ol_any(object a) */
+cx_void _test_ol_any_object(cx_object a) {
+/* $begin(::test::ol_any(object a)) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+/* ::test::ol_any(string a) */
+cx_void _test_ol_any_string(cx_string a) {
+/* $begin(::test::ol_any(string a)) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+/* ::test::ol_bool(bool a) */
+cx_void _test_ol_bool(cx_bool a) {
+/* $begin(::test::ol_bool) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+/* ::test::ol_inherit(::test::Animal a) */
+cx_void _test_ol_inherit__test_Animal(test_Animal a) {
+/* $begin(::test::ol_inherit(::test::Animal a)) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+/* ::test::ol_inherit(::test::Dog a) */
+cx_void _test_ol_inherit__test_Dog(test_Dog a) {
+/* $begin(::test::ol_inherit(::test::Dog a)) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
 /* ::test::ol_int(int32 a) */
 cx_void _test_ol_int(cx_int32 a) {
 /* $begin(::test::ol_int) */
@@ -71,6 +161,24 @@ cx_void _test_ol_num_int32(cx_int32 a) {
 /* $end */
 }
 
+/* ::test::ol_object(object a) */
+cx_void _test_ol_object(cx_object a) {
+/* $begin(::test::ol_object) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+/* ::test::ol_string(string a) */
+cx_void _test_ol_string(cx_string a) {
+/* $begin(::test::ol_string) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
 /* ::test::ol_uint(int32 a) */
 cx_void _test_ol_uint(cx_int32 a) {
 /* $begin(::test::ol_uint) */
@@ -110,3 +218,4 @@ int testMain(int argc, char* argv[]) {
     return result;
 /* $end */
 }
+

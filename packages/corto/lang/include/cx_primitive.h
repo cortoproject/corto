@@ -38,6 +38,14 @@ CORTO_LANG_EXPORT cx_int16 _cx_primitive_construct(cx_primitive _this);
 CORTO_LANG_EXPORT cx_int16 _cx_primitive_init(cx_primitive _this);
 #define cx_primitive_init(_this) _cx_primitive_init(cx_primitive(_this))
 
+/* ::corto::lang::primitive::isInteger() */
+CORTO_LANG_EXPORT cx_bool _cx_primitive_isInteger(cx_primitive _this);
+#define cx_primitive_isInteger(_this) _cx_primitive_isInteger(cx_primitive(_this))
+
+/* ::corto::lang::primitive::isNumber() */
+CORTO_LANG_EXPORT cx_bool _cx_primitive_isNumber(cx_primitive _this);
+#define cx_primitive_isNumber(_this) _cx_primitive_isNumber(cx_primitive(_this))
+
 #ifdef __cplusplus
 }
 #endif

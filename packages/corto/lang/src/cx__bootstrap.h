@@ -729,6 +729,8 @@ CX_CLASS_O(primitive, type, CX_LOCAL | CX_READONLY, NULL, CX_DECLARED | CX_DEFIN
     CX_MEMBER_O(primitive, convertId, uint8, CX_LOCAL | CX_PRIVATE);
     CX_METHOD_O(primitive, castable, "(type type)", bool, TRUE, cx_primitive_castable_v);
     CX_METHOD_O(primitive, compatible, "(type type)", bool, TRUE, cx_primitive_compatible_v);
+    CX_METHOD_O(primitive, isInteger, "()", bool, FALSE, cx_primitive_isInteger);
+    CX_METHOD_O(primitive, isNumber, "()", bool, FALSE, cx_primitive_isNumber);
     CX_METHOD_O(primitive, init, "()", int16, FALSE, cx_primitive_init);
     CX_METHOD_O(primitive, construct, "()", int16, FALSE, cx_primitive_construct);
 
