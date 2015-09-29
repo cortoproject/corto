@@ -6,7 +6,6 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#define tc_stringser_LIB
 #include "tc.h"
 
 int tc_stringserMain(int argc, char* argv[]) {

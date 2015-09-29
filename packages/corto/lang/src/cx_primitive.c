@@ -181,7 +181,7 @@ cx_bool _cx_primitive_compatible_v(cx_primitive this, cx_type type) {
            if (this->kind == cx_primitive(type)->kind) { /* If kinds are equal, types are compatible */
                result = TRUE;
             } else if ((this->kind == CX_ENUM) && (type == cx_type(cx_constant_o))) {
-                   result = TRUE;
+                result = TRUE;
             } else { 
                 switch(this->kind) {
                 case CX_BINARY:
