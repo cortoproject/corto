@@ -6,7 +6,6 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#define corto_io_LIB
 #include "io.h"
 
 /* $header() */

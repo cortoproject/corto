@@ -6,7 +6,6 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#define corto_lang_LIB
 #include "cx.h"
 
 /* $header() */
@@ -181,23 +180,14 @@ cx_bool _cx_primitive_compatible_v(cx_primitive this, cx_type type) {
         if (type->kind == CX_PRIMITIVE) {
            if (this->kind == cx_primitive(type)->kind) { /* If kinds are equal, types are compatible */
                result = TRUE;
-            } else if (this->kind == CX_ENUM) {
-               if (type == cx_type(cx_constant_o)) {
-                   result = TRUE;
-               }
-            } else if (this->kind == CX_BITMASK) {
-               switch(cx_primitive(type)->kind) {
-               case CX_INTEGER:
-               case CX_UINTEGER:
-                   result = TRUE;
-                   break;
-               default:
-                   break;
-               }
+            } else if ((this->kind == CX_ENUM) && (type == cx_type(cx_constant_o))) {
+                result = TRUE;
             } else { 
                 switch(this->kind) {
-                /* Numeric types and booleans are compatible */
                 case CX_BINARY:
+                case CX_CHARACTER:
+                case CX_ENUM:
+                case CX_BITMASK:
                     if (cx_primitive(type)->kind == CX_FLOAT) {
                         break;
                     }
@@ -207,6 +197,9 @@ cx_bool _cx_primitive_compatible_v(cx_primitive this, cx_type type) {
                 case CX_FLOAT:
                     switch(cx_primitive(type)->kind) {
                     case CX_BINARY:
+                    case CX_CHARACTER:
+                    case CX_ENUM:
+                    case CX_BITMASK:
                         if (this->kind == CX_FLOAT) {
                             break;
                         }
@@ -279,5 +272,40 @@ cx_int16 _cx_primitive_init(cx_primitive this) {
 /* $begin(::corto::lang::primitive::init) */
     cx_type(this)->kind = CX_PRIMITIVE;
     return cx_type_init((cx_type)this);
+/* $end */
+}
+
+/* ::corto::lang::primitive::isInteger() */
+cx_bool _cx_primitive_isInteger(cx_primitive this) {
+/* $begin(::corto::lang::primitive::isInteger) */
+
+    switch(this->kind) {
+    case CX_BINARY:
+    case CX_INTEGER:
+    case CX_UINTEGER:
+        return TRUE;
+        break;
+    default:
+        return FALSE;
+    }
+
+/* $end */
+}
+
+/* ::corto::lang::primitive::isNumber() */
+cx_bool _cx_primitive_isNumber(cx_primitive this) {
+/* $begin(::corto::lang::primitive::isNumber) */
+
+    switch(this->kind) {
+    case CX_BINARY:
+    case CX_INTEGER:
+    case CX_UINTEGER:
+    case CX_FLOAT:
+        return TRUE;
+        break;
+    default:
+        return FALSE;
+    }
+
 /* $end */
 }

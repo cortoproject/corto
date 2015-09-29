@@ -6,7 +6,6 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#define corto_lang_LIB
 #include "cx.h"
 
 /* $header() */
@@ -15,7 +14,7 @@
 
 cx_int16 cx__enum_bindConstant(cx_enum this, cx_constant* c) {
     if (cx_checkState(cx_type_o, CX_DEFINED)) {
-        *c = cx_scopeSize(this)-1;
+        *c = cx_scopeSize(this);
     }
     this->constants.buffer = cx_realloc(this->constants.buffer, (this->constants.length+1) * sizeof(cx_constant*));
     this->constants.buffer[this->constants.length] = c;

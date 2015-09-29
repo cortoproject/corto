@@ -21,7 +21,7 @@ cx_uint32 cx__interface_calculateSize(cx_interface _this, cx_uint32 base);
 
 cx_bool cx_interface_checkProcedureCompatibility(cx_function o1, cx_function o2);
 
-cx_function* cx_vtableLookup(cx_vtable* vtable, cx_string member, cx_int32* i_out, cx_int32* d_out);
+cx_function* cx_vtableLookup(cx_vtable* vtable, cx_string member, cx_int32* d_out);
 cx_bool cx_vtableInsert(cx_vtable* vtable, cx_function method);
 
 #ifdef __cplusplus

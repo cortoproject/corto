@@ -20,12 +20,47 @@ void cx_onexit(void(*handler)(void*),void*userData);
 
 static cx_ll fileHandlers = NULL;
 static cx_ll libraries = NULL;
+static cx_ll fileAdmin = NULL;
+
+struct cx_fileAdmin {
+    cx_string name;
+    cx_bool loading;
+};
 
 struct cx_fileHandler {
     cx_string ext;
     cx_loadAction load;
     void* userData;
 };
+
+/* Lookup file */
+static struct cx_fileAdmin* cx_fileAdminFind(cx_string library) {
+    if (fileAdmin) {
+        cx_iter iter = cx_llIter(fileAdmin);
+        struct cx_fileAdmin *lib;
+
+        while (cx_iterHasNext(&iter)) {
+            lib = cx_iterNext(&iter);
+            if (!strcmp(lib->name, library)) {
+                return lib;
+            }
+        }
+    }
+
+    return NULL;
+}
+
+/* Add file */
+static struct cx_fileAdmin* cx_fileAdminAdd(cx_string library) {
+    struct cx_fileAdmin *lib = cx_alloc(sizeof(struct cx_fileAdmin));
+    lib->name = cx_strdup(library);
+    lib->loading = TRUE;
+    if (!fileAdmin) {
+        fileAdmin = cx_llNew();
+    }
+    cx_llInsert(fileAdmin, lib);
+    return lib;
+}
 
 /* Lookup file handler action */
 static int cx_lookupExtWalk(struct cx_fileHandler* h, struct cx_fileHandler** data) {
@@ -164,13 +199,13 @@ static int cx_loadLibrary(cx_string fileName, int argc, char* argv[]) {
     /* Lookup main function */
     proc = (int(*)(int,char*[]))cx_dlProc(dl, "cortomain");
     if (!proc) {
-        cx_seterr("unresolved 'cortomain'", fileName);
+        cx_seterr("%s: unresolved 'cortomain'", fileName);
         goto error;
     }
 
     /* Call main */
     if (proc(argc, argv)) {
-        cx_seterr("cortomain failed", fileName);
+        cx_seterr("%s: cortomain failed", fileName);
         goto error;
     }
 
@@ -204,8 +239,6 @@ static int cx_loadLibraryAction(cx_string file, int argc, char* argv[], void *da
     return cx_loadLibrary(file, argc, argv);
 }
 
-static cx_ll filesLoaded = NULL;
-
 /* Load xml interface */
 static int cx_loadXml(void) {
     return cx_loadComponent("libxml.so", 0, NULL);
@@ -216,22 +249,24 @@ int cx_load(cx_string str, int argc, char* argv[]) {
     cx_char ext[16];
     struct cx_fileHandler* h;
     int result = -1;
+    struct cx_fileAdmin *lib = NULL;
 
-    if (!filesLoaded) {
-        filesLoaded = cx_llNew();
-    } else {
-        cx_iter iter;
-        cx_string loaded;
+    lib = cx_fileAdminFind(str);
 
-        /* Lookup whether a file is already loaded */
-        iter = cx_llIter(filesLoaded);
-        while (cx_iterHasNext(&iter)) {
-            loaded = cx_iterNext(&iter);
-            if (!strcmp(loaded, str)) {
-                /* File is already loaded! */
-                result = 0;
-                goto loaded;
+    if (lib) {
+        if (lib->loading) {
+            cx_error("illegal recursive load of file '%s' from:", lib->name);
+            cx_iter iter = cx_llIter(fileAdmin);
+            while (cx_iterHasNext(&iter)) {
+                struct cx_fileAdmin *lib = cx_iterNext(&iter);
+                if (lib->loading) {
+                    fprintf(stderr, "   %s\n", lib->name);
+                }
             }
+            cx_backtrace(stderr);
+            abort();
+        } else {
+            goto loaded;
         }
     }
 
@@ -249,14 +284,12 @@ int cx_load(cx_string str, int argc, char* argv[]) {
     h = cx_lookupExt(ext);
     if (h) {
         /* Load file */
+        lib = cx_fileAdminAdd(str);
         result = h->load(str, argc, argv, h->userData);
+        lib->loading = FALSE;
     } else {
         cx_seterr("file extension '%s' not supported.", ext);
         goto error;
-    }
-
-    if (!result) {
-        cx_llInsert(filesLoaded, cx_strdup(str));
     }
 
     return result;
@@ -479,19 +512,19 @@ static void cx_loaderOnExit(void* udata) {
     cx_dl dl;
     void (*proc)(int code);
     cx_iter iter;
-    cx_string loaded;
 
     CX_UNUSED(udata);
 
     /* Free loaded administration */
 
-    if (filesLoaded) {
-        iter = cx_llIter(filesLoaded);
+    if (fileAdmin) {
+        iter = cx_llIter(fileAdmin);
          while(cx_iterHasNext(&iter)) {
-             loaded = cx_iterNext(&iter);
+             struct cx_fileAdmin *loaded = cx_iterNext(&iter);
+             cx_dealloc(loaded->name);
              cx_dealloc(loaded);
          }
-         cx_llFree(filesLoaded);
+         cx_llFree(fileAdmin);
     }
 
     /* Free handlers */

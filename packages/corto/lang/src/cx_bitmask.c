@@ -6,14 +6,13 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#define corto_lang_LIB
 #include "cx.h"
 
 /* $header() */
 #include "cx__bitmask.h"
 cx_int16 cx__bitmask_bindConstant(cx_bitmask this, cx_constant* c) {
     if (cx_checkState(cx_type_o, CX_DEFINED)) {
-        *c = 0x1 << (cx_scopeSize(this)-1);
+        *c = 0x1 << cx_scopeSize(this);
     }
     cx_enum(this)->constants.buffer = cx_realloc(cx_enum(this)->constants.buffer, (cx_enum(this)->constants.length+1) * sizeof(cx_constant*));
     cx_enum(this)->constants.buffer[cx_enum(this)->constants.length] = c;

@@ -24,6 +24,7 @@ LFLAGS ||= []
 TARGETDIR ||= ENV['CORTO_TARGET'] + "/lib"
 GENERATED_SOURCES ||= []
 GENERATED_HEADERS ||= []
+DEFINES ||= []
 USE_PACKAGE ||= []
 USE_PACKAGE_LOADED ||=[]
 USE_COMPONENT ||= []
@@ -162,5 +163,5 @@ def build_source(task, echo)
             sh "echo '#{task.source}'"
         end
     end
-    sh "cc -c #{CFLAGS.join(" ")} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{task.source} -o #{task.name}"
+    sh "cc -c #{CFLAGS.join(" ")} #{DEFINES.map {|d| "-D" + d}.join(" ")} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{task.source} -o #{task.name}"
 end

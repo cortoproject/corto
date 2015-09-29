@@ -8,6 +8,7 @@
 #include "c_common.h"
 #include "stdio.h"
 #include "ctype.h"
+#include "cx_generator.h"
 
 /* Escape language keywords */
 static int c_typeKeywordEscape(cx_string inputName, cx_string buffer) {
@@ -445,4 +446,11 @@ cx_char* c_usingConstant(cx_generator g, cx_id id) {
     c_topath(o, buff, '_');
     c_typeToUpper(buff, ptr);
     return id;
+}
+
+void c_writeExport(cx_generator g, g_file file) {
+    cx_id upperName;
+    c_topath(g_getCurrent(g), upperName, '_');
+    cx_strupper(upperName);
+    g_fileWrite(file, "%s_EXPORT ", upperName);
 }

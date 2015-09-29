@@ -154,6 +154,7 @@ int8_t CX_DEBUG_ENABLED = 0;
     SSO_OP_PRIM(op, parameter);\
     SSO_OP_PRIM(op, delegatedata);\
     SSO_OP_VOID(op, dispatcher);\
+    SSO_OP_VOID(op, replicator);\
     SSO_OP_PRIM(op, callbackInit);\
     SSO_OP_PRIM(op, callbackDestruct);\
     SSO_OP_PROCEDURETYPE(op);\
@@ -191,8 +192,8 @@ int8_t CX_DEBUG_ENABLED = 0;
     /* virtual */\
     SSO_OP_OBJ(op, virtual_init_);\
     /* observer */\
-    SSO_OP_OBJ(op, observer_observable);\
     SSO_OP_OBJ(op, observer_mask);\
+    SSO_OP_OBJ(op, observer_observable);\
     SSO_OP_OBJ(op, observer_template);\
     SSO_OP_OBJ(op, observer_dispatcher);\
     SSO_OP_OBJ(op, observer_me);\
@@ -373,6 +374,8 @@ int8_t CX_DEBUG_ENABLED = 0;
     SSO_OP_OBJ(op, primitive_construct_);\
     SSO_OP_OBJ(op, primitive_compatible_);\
     SSO_OP_OBJ(op, primitive_castable_);\
+    SSO_OP_OBJ(op, primitive_isInteger_);\
+    SSO_OP_OBJ(op, primitive_isNumber_);\
     /* interface */\
     SSO_OP_OBJ(op, interface_kind);\
     SSO_OP_OBJ(op, interface_nextMemberId);\

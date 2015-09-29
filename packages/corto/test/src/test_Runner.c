@@ -6,7 +6,6 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#define corto_test_LIB
 #include "test.h"
 
 /* $header() */
@@ -43,9 +42,9 @@ cx_int16 _test_Runner_construct(test_Runner this) {
                 cx_error("test: failed to define test suite");
                 test_CaseListAppend(this->failures, testcase);
             } else {
-                cx_object prev = cx_setSource(this);
+                cx_object prev = cx_setOwner(this);
                 cx_define(suite);
-                cx_setSource(prev);            
+                cx_setOwner(prev);            
             }
 
             cx_delete(suite);

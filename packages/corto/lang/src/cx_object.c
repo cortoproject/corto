@@ -258,7 +258,22 @@ static cx_object cx__initScope(cx_object o, cx_string name, cx_object parent) {
 
     scope->name = cx_strdup(name);
     scope->declared = 1;
+    scope->parent = parent;
     cx_rwmutexNew(&scope->scopeLock);
+
+    /* Call framework initializer. Do this before adopting the
+     * object, so that when the initializer failed, it hasn't
+     * yet been added to the scope. */
+    if (cx_init(o)) {
+        cx_id id;
+        cx_string err = cx_lasterr();
+        if (err) {
+            cx_seterr("%s::init failed: %s", cx_fullname(cx_typeof(o), id), err);
+        } else {
+            cx_seterr("%s::init failed", cx_fullname(cx_typeof(o), id));
+        }
+        goto error;
+    }
 
     /* Add object to the scope of the parent-object */
     if (!(result = cx_adopt(parent, o))) {
@@ -500,9 +515,6 @@ int cx__adoptSSO(cx_object sso) {
 
     cx_assert(parent != NULL, "cx__adoptSSO: static scoped object has no parent");
 
-    /* Reset the parent to NULL, since cx_adopt will otherwise conclude that this object is adopted twice */
-    scope->parent = NULL;
-
     return !cx_adopt(parent, sso);
 }
 
@@ -650,41 +662,16 @@ static cx_object cx_adopt(cx_object parent, cx_object child) {
         goto err_invalid_parent;
     }
 
-    /* Check if parentType matches scopeType of child type */
-    if (childType->parentType) {
-        parentType = cx_typeof(parent);
-        if ((childType->parentType != parentType) && !cx_instanceof(childType->parentType, parent)) {
-            cx_id parentId, childParentTypeId;
-            cx_seterr("type of '%s' is not '%s'",
-                    cx_fullname(parent, parentId), cx_fullname(childType->parentType, childParentTypeId));
-            goto err_invalid_parent;
-        }
-    }
-
-    /* Check if parentState matches scopeState of child type */
-    if (childType->parentState && !cx__checkStateXOR(parent, childType->parentState)) {
-        cx_id parentId;
-        cx_uint32 childState = childType->parentState;
-        cx_seterr("state of '%s' is not %s", cx_fullname(parent, parentId), cx_stateStr(childState));
-        goto err_invalid_parent;
-    }
-
     /* Obtain pointers to scope of parent and child */
     p_scope = cx__objectScope(_parent);
     if (p_scope) {
         c_scope = cx__objectScope(_child);
         if (c_scope) {
-            /* Set parent of child */
-            if (cx_rwmutexWrite(&c_scope->scopeLock)) goto err_child_mutex;
-            if (c_scope->parent) {
-                /* Cannot adopt an already adopted child */
-                goto err_already_adopted;
-            }
-            c_scope->parent = parent;
-            if (cx_rwmutexUnlock(&c_scope->scopeLock)) goto err_child_mutex;
 
             /* Insert child in parent-scope */
-            if (cx_rwmutexWrite(&p_scope->scopeLock)) goto err_parent_mutex;
+            if (cx_rwmutexWrite(&p_scope->scopeLock))     
+                cx_critical("cx_adopt: lock operation on scopeLock of parent failed");
+
             if (!p_scope->scope) {
                 p_scope->scope = cx_rbtreeNew_w_func(cx_objectCompare);
             }
@@ -692,52 +679,53 @@ static cx_object cx_adopt(cx_object parent, cx_object child) {
             cx_object existing = cx_rbtreeFindOrSet(p_scope->scope, c_scope->name, child);
             if (existing) {
                 if (cx_typeof(existing) != cx_typeof(child)) {
-                    goto err_type_mismatch;
+                    cx_seterr("'%s' is already declared with a different type", c_scope->name);
+                    goto err_existing;
                 } else {
                     child = existing;
+                }
+            } else {
+                /* Check if parentType matches scopeType of child type */
+                if (childType->parentType) {
+                    parentType = cx_typeof(parent);
+                    if ((childType->parentType != parentType) && !cx_instanceof(childType->parentType, parent)) {
+                        cx_id parentId, childParentTypeId;
+                        cx_seterr("type of '%s' is not '%s'",
+                                cx_fullname(parent, parentId), cx_fullname(childType->parentType, childParentTypeId));
+                        goto err_invalid_parent;
+                    }
+                }
+
+                /* Check if parentState matches scopeState of child type */
+                if (childType->parentState && !cx__checkStateXOR(parent, childType->parentState)) {
+                    cx_id parentId;
+                    cx_uint32 childState = childType->parentState;
+                    cx_seterr("'%s' is %s, must be %s",
+                        cx_fullname(parent, parentId),
+                        cx_stateStr(_parent->attrs.state),
+                        cx_stateStr(childState));
+                    goto err_invalid_parent;
                 }
             }
 
             /* Parent must not be deleted before all childs are gone. */
             cx_claim(parent);
-            if (cx_rwmutexUnlock(&p_scope->scopeLock)) goto err_parent_mutex;
+            if (cx_rwmutexUnlock(&p_scope->scopeLock)) 
+                cx_critical("cx_adopt: unlock operation on scopeLock of parent failed");;
         } else {
-            goto err_no_child_scope;
+            cx_critical("cx_adopt: child-object is not scoped");
         }
     } else {
-        goto err_no_parent_scope;
+        cx_critical("cx_adopt: parent-object is not scoped");
     }
 
     return child;
 
-err_child_mutex:
-    cx_critical("cx_adopt: lock operation on scopeLock of child failed");
-    return NULL;
-
-err_parent_mutex:
-    cx_critical("cx_adopt: lock operation on scopeLock of parent failed");
-    return NULL;
-
-err_already_adopted:
-    cx_rwmutexUnlock(&c_scope->scopeLock);
-    cx_seterr("cx_adopt: child-object is already adopted");
-    return NULL;
-
-err_type_mismatch:
-    cx_rwmutexUnlock(&p_scope->scopeLock);
-    cx_critical("'%s' is already declared with a different type",
-        c_scope->name);
-    return NULL;
-
-err_no_parent_scope:
-    cx_critical("cx_adopt: parent-object is not scoped");
-    return NULL;
-
-err_no_child_scope:
-    cx_critical("cx_adopt: child-object is not scoped");
-    return NULL;
-
 err_invalid_parent:
+    c_scope->parent = NULL;
+    cx_rbtreeRemove(p_scope->scope, c_scope->name);
+err_existing:
+    cx_rwmutexUnlock(&p_scope->scopeLock);
     return NULL;
 }
 
@@ -1006,8 +994,8 @@ cx_object _cx_declareChild(cx_object parent, cx_string name, cx_type type) {
     if (o) {
         cx_object o_ret = NULL;
         cx__object *_o = CX_OFFSET(o, -sizeof(cx__object));
+        
         /* Initialize object parameters. */
-
         if ((o_ret = cx__initScope(o, name, parent))) {
 
             if (o_ret == o) {
@@ -1016,18 +1004,6 @@ cx_object _cx_declareChild(cx_object parent, cx_string name, cx_type type) {
                  * chain of parents to notify on an event. */
                 if (cx_checkAttr(o, CX_ATTR_OBSERVABLE)) {
                     cx__initObservable(o);
-                }
-
-                /* Call framework initializer */
-                if (cx_init(o)) {
-                    cx_id id;
-                    cx_string err = cx_lasterr();
-                    if (err) {
-                        cx_seterr("%s::init failed: %s", cx_fullname(type, id), err);
-                    } else {
-                        cx_seterr("%s::init failed", cx_fullname(type, id));
-                    }
-                    goto error;
                 }
 
                 /* Initially, an object is valid and declared */
@@ -1047,7 +1023,7 @@ cx_object _cx_declareChild(cx_object parent, cx_string name, cx_type type) {
         }
 
         /* Notify parent of new object */
-        cx_notify(cx__objectObservable(CX_OFFSET(parent,-sizeof(cx__object))), o, CX_ON_DECLARE);
+        cx_notify(cx__objectObservable(_o), o, CX_ON_DECLARE);
     }
 
 ok:
@@ -1114,6 +1090,7 @@ cx_int16 cx_define(cx_object o) {
     /* Only define valid, undefined objects */
     if (cx_checkState(o, CX_DECLARED)) {
         cx__object *_o = CX_OFFSET(o, -sizeof(cx__object));
+        cx__persistent *_p = NULL;
         if (!cx_checkState(o, CX_DEFINED)) {
             cx_type t = cx_typeof(o);
             /* If object is instance of a class, call the constructor */
@@ -1124,6 +1101,10 @@ cx_int16 cx_define(cx_object o) {
                 result = cx_delegateConstruct(t, o);
             } else if (cx_class_instanceof(cx_procedure_o, t)) {
                 result = cx_delegateConstruct(t, o);
+            }
+
+            if ((_p = cx__objectPersistent(_o))) {
+                _p->owner = cx_getOwner();
             }
 
             if (!result) {
@@ -1534,6 +1515,25 @@ cx_time cx_timestampof(cx_object o) {
 err_not_persistent:
     cx_critical("cx_timestampof: object %p is not persistent.", o);
     return result;
+}
+
+cx_object cx_ownerof(cx_object o) {
+    cx__object* _o;
+    cx__persistent* persistent;
+    cx_object result = NULL;
+
+    _o = CX_OFFSET(o, -sizeof(cx__object));
+    persistent = cx__objectPersistent(_o);
+    if (persistent) {
+        result = persistent->owner;
+    } else {
+        goto err_not_persistent;
+    }
+
+    return result;
+err_not_persistent:
+    cx_critical("cx_ownerof: object %p is not persistent.", o);
+    return result;   
 }
 
 /* Destruct object. */
@@ -2053,7 +2053,7 @@ void cx_setrefChildLockRequired(cx_object observable) {
     }
 }
 
-/*#define CX_TRACE_NOTIFICATIONS*/
+/* #define CX_TRACE_NOTIFICATIONS */
 
 #ifdef CX_TRACE_NOTIFICATIONS
 static cx_uint32 indent = 0;
@@ -2113,7 +2113,7 @@ typedef struct cx_observerAlignData {
 int cx_observerAlignScope(cx_object o, void *userData) {
     cx_observerAlignData *data = userData;
 
-    if (((data->mask & CX_ON_DECLARE) && (data->mask & CX_ON_SELF)) ||
+    if (((data->mask & CX_ON_DECLARE) && (data->mask & CX_ON_SCOPE)) ||
         ((data->mask & CX_ON_DECLARE) && (data->mask & CX_ON_SCOPE))) {
         cx_notifyObserver(data->observer, data->observable, o, CX_ON_DECLARE, data->depth);
     }
@@ -2144,7 +2144,6 @@ int cx_observerAlignScope(cx_object o, void *userData) {
 void cx_observerAlign(cx_object observable, cx__observer *observer, int mask) {
     cx_observerAlignData walkData;
     cx_objectseq scope;
-    cx_uint32 i;
 
     /* Do recursive walk over scope */
     walkData.observable = observable;
@@ -2152,13 +2151,14 @@ void cx_observerAlign(cx_object observable, cx__observer *observer, int mask) {
     walkData.mask = mask;
     walkData.depth = 0;
 
-    if ((mask & CX_ON_DEFINE) && (mask & CX_ON_SELF) && cx_checkState(observable, CX_DEFINED)) {
+    if (((mask & CX_ON_DECLARE) && (mask & CX_ON_SELF) && cx_checkState(observable, CX_DECLARED)) || 
+        ((mask & CX_ON_DEFINE) && (mask & CX_ON_SELF) && cx_checkState(observable, CX_DEFINED))) {
         cx_notifyObserver(observer, observable, observable, mask, 0);
     }
 
     scope = cx_scopeClaim(observable);
-    for(i = 0; i < scope.length; i++) {
-        cx_observerAlignScope(scope.buffer[i], &walkData);
+    cx_objectseqForeach(scope, o) {
+        cx_observerAlignScope(o, &walkData);
     }
     cx_scopeRelease(scope);
 }
@@ -2181,10 +2181,9 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object this) {
         if (observer->mask & (CX_ON_SCOPE|CX_ON_TREE)) {
             if (!cx_checkAttr(observable, CX_ATTR_SCOPED)) {
                 cx_id id, id2;
-                cx_error("corto::listen: cannot listen to childs of non-scoped observable '%s' (observer %s)",
+                cx_seterr("corto::listen: cannot listen to childs of non-scoped observable '%s' (observer %s)",
                         cx_fullname(observable, id),
                         cx_fullname(observer, id2));
-                abort();
                 goto error;
             }
         }
@@ -2200,16 +2199,17 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object this) {
     #ifdef CX_TRACE_NOTIFICATIONS
         {
             cx_id id1, id2, id3;
-            printf("%*s [listen] observable '%s' observer '%s' me '%s' %s %s %s %s %s\n",
+            printf("%*s [listen] observable '%s' observer '%s' me '%s'%s%s%s%s%s%s\n",
                     indent * 3, "",
                     cx_fullname(observable, id1),
                     cx_fullname(observer, id2),
                     cx_fullname(this, id3),
-                    observer->mask & CX_ON_SELF ? "self" : "",
-                    observer->mask & CX_ON_SCOPE ? "scope" : "",
-                    observer->mask & CX_ON_DECLARE ? "declare" : "",
-                    observer->mask & CX_ON_DEFINE ? "define" : "",
-                    observer->mask & CX_ON_UPDATE ? "update" : "");
+                    observer->mask & CX_ON_SELF ? " self" : "",
+                    observer->mask & CX_ON_SCOPE ? " scope" : "",
+                    observer->mask & CX_ON_TREE ? " tree" : "",
+                    observer->mask & CX_ON_DECLARE ? " declare" : "",
+                    observer->mask & CX_ON_DEFINE ? " define" : "",
+                    observer->mask & CX_ON_UPDATE ? " update" : "");
         }
     #endif
 
@@ -2477,11 +2477,18 @@ static void cx_notifyObservers(cx__observer** observers, cx_object observable, c
     }
 }
 
-cx_object cx_setSource(cx_object source) {
+cx_object cx_setOwner(cx_object source) {
     cx_object result = NULL;
     cx_observerAdmin *admin = cx_observerAdminGet();
     result = admin->from;
     admin->from = source;
+    return result;
+}
+
+cx_object cx_getOwner() {
+    cx_object result = NULL;
+    cx_observerAdmin *admin = cx_observerAdminGet();
+    result = admin->from;
     return result;
 }
 
@@ -2526,6 +2533,11 @@ cx_int32 cx_update(cx_object observable) {
     cx__observable *_o;
     cx__writable* _wr;
     cx__persistent* _ps;
+
+    if (!cx_checkState(observable, CX_DEFINED)) {
+        cx_seterr("cannot update undefined object");
+        goto error;
+    }
 
     _o = cx__objectObservable(CX_OFFSET(observable, -sizeof(cx__object)));
     if (_o->lockRequired) {
@@ -3090,7 +3102,9 @@ static cx_uint32 cx_overloadParamCompare(
             goto nomatch; /* Parameter accepts only references */
         } else {
             if (!r_forceReference) {
-                d++; /* Favor pass by value in case of implicit reference passing */
+                if (!r_null) {
+                    d++; /* Favor pass by value in case of implicit reference passing */
+                }
             }
         }
     } else if (r_reference) {
@@ -3155,7 +3169,10 @@ static cx_uint32 cx_overloadParamCompare(
          * kind. */
         } else if ((o_type->kind == CX_PRIMITIVE) && (r_type->kind == CX_PRIMITIVE)) {
             if (cx_primitive(o_type)->kind != cx_primitive(r_type)->kind) {
-                d++;
+                if (!cx_primitive_isInteger(cx_primitive(o_type)) || 
+                    !cx_primitive_isInteger(cx_primitive(r_type))) {
+                    d++;
+                }
             }
         }
     } else if (o_type != r_type) {
@@ -3319,55 +3336,6 @@ error:
     return -1;
 }
 
-typedef struct cx_lookupFunction_t {
-    cx_string request;
-    cx_function result;
-    cx_bool error;
-    cx_int32 d;
-}cx_lookupFunction_t;
-
-/* Lookup function in scope */
-int cx_lookupFunctionWalk(cx_object o, void* userData) {
-    cx_int32 d = -1;
-    cx_lookupFunction_t* data;
-
-    data = userData;
-
-    /* If current object is a function, match it */
-    if ((cx_typeof(o)->kind == CX_COMPOSITE) &&
-        ((cx_interface(cx_typeof(o))->kind == CX_PROCEDURE) ||
-        (cx_interface(cx_typeof(o))->kind == CX_DELEGATE))) {
-        if (strchr(data->request, '(')) {
-            if (cx_overload(o, data->request, &d)) {
-                data->error = TRUE;
-                goto found;
-            }
-        } else {
-            cx_id name;
-            cx_signatureName(cx_nameof(o), name); /* Obtain function name */
-            if (!stricmp(name, data->request)) {
-                d = INT_MAX-1;
-            }
-        }
-
-        if (d != -1) {
-            if (d < data->d) {
-                data->result = o;
-                data->d = d;
-            }
-
-            /* If distance is zero, the function is an exact match. */
-            if (!d) {
-                goto found;
-            }
-        }
-    }
-
-    return 1;
-found:
-    return 0;
-}
-
 static int cx_scopeCollectWalk(cx_object o, void* userData) {
     cx_objectseq *seq = userData;
     if (!seq->buffer) {
@@ -3395,45 +3363,109 @@ void cx_scopeRelease(cx_objectseq seq) {
     cx_dealloc(seq.buffer);
 }
 
-/* Lookup function with support for overloading */
-cx_function cx_lookupFunction(cx_object scope, cx_string requested, cx_int32* d) {
-    cx_lookupFunction_t walkData;
-    cx_objectseq scopeContents;
-    cx_uint32 i;
+typedef struct cx_lookupFunction_t {
+    cx_string request;
+    cx_function *result;
+    cx_bool error;
+    cx_int32 d;
+    cx_int32 old_d;
+}cx_lookupFunction_t;
 
-    /* Collect objects in scope first, to prevent reversed locking order (locking should
-     * always be outer scope first, then inner scope) and deadlocking i.c.m. cx_resolve.
-     */
-    scopeContents = cx_scopeClaim(scope);
+/* Lookup function in scope */
+int cx_lookupFunctionWalk(cx_object *ptr, void* userData) {
+    cx_int32 d = -1;
+    cx_lookupFunction_t* data;
+    cx_object o = *ptr;
+
+    data = userData;
+
+    /* If current object is a function, match it */
+    if ((cx_typeof(o)->kind == CX_COMPOSITE) &&
+        ((cx_interface(cx_typeof(o))->kind == CX_PROCEDURE) ||
+        (cx_interface(cx_typeof(o))->kind == CX_DELEGATE))) {
+        if (strchr(data->request, '(')) {
+            if (cx_overload(o, data->request, &d)) {
+                data->error = TRUE;
+                goto found;
+            }
+        } else {
+            cx_id sigName; cx_signatureName(o, sigName);
+            if (!strcmp(sigName, data->request)) {
+                if (!cx_function(o)->overloaded) {
+                    data->d = 0;
+                    goto found;
+                } else {
+                    data->error = TRUE;
+                    cx_seterr("ambiguous reference to overloaded identifier '%s'", data->request);
+                    goto found;
+                }
+            }
+        }
+
+        if (d != -1) {
+            if (d <= data->d) {
+                data->old_d = data->d;
+            }
+            if (d < data->d) {
+                data->result = (cx_function*)ptr;
+                data->d = d;
+            }
+        }
+    }
+
+    return 1;
+found:
+    return 0;
+}
+
+/* Lookup function with support for overloading */
+cx_function* cx_lookupFunctionFromSequence(cx_objectseq scopeContents, cx_string requested, cx_int32* d) {
+    cx_lookupFunction_t walkData;
+    cx_uint32 i;
 
     /* Call the actual lookup function */
     walkData.request = requested;
     walkData.result = NULL;
     walkData.error = FALSE;
     walkData.d = INT_MAX;
+    walkData.old_d = INT_MAX;
 
     for (i = 0; i < scopeContents.length; i++) {
-        if (!cx_lookupFunctionWalk(scopeContents.buffer[i], &walkData)) {
+        if (!cx_lookupFunctionWalk(&scopeContents.buffer[i], &walkData)) {
             break;
         }
     }
 
-    if (walkData.error) {
-        return NULL;
+    if (walkData.d != INT_MAX && (walkData.d == walkData.old_d)) {
+        cx_seterr("ambiguous reference '%s'", walkData.request);
+        walkData.error = TRUE;
     }
 
     if (d) {
-        *d = walkData.d;
+        if (walkData.error) {
+            *d = -1;
+        } else if (!walkData.result) {
+            *d = 0;
+        } else {
+            *d = walkData.d;
+        }
     }
 
-    if (walkData.result) {
-        cx_claim(walkData.result);
-    }
-
-    /* Free contents of scope */
-    cx_scopeRelease(scopeContents);
+    if (walkData.error) walkData.result = NULL;
 
     return walkData.result;
+}
+
+cx_function cx_lookupFunction(cx_object scope, cx_string requested, cx_int32* d) {
+    cx_objectseq scopeContents = cx_scopeClaim(scope);
+    cx_function result = NULL;
+    cx_function *ptr = cx_lookupFunctionFromSequence(scopeContents, requested, d);
+    if (ptr) {
+        cx_claim(*ptr);
+        result = *ptr;
+    }
+    cx_scopeRelease(scopeContents);
+    return result;
 }
 
 /* Create request signature */

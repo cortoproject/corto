@@ -84,6 +84,7 @@ class ObjectMgmt: test::Suite::
     void tc_declareChildInitFail() test::Case
     void tc_declareChildParentStateErr() test::Case
     void tc_declareChildParentTypeErr() test::Case
+    void tc_declareExistingWithParentState() test::Case
     void tc_declareChildNullType() test::Case
     void tc_declareChildInvalidType() test::Case
 
@@ -150,7 +151,169 @@ class Resolver: test::Suite::
 
     void tc_resolveFunctionNoArgs() test::Case
     void tc_resolveFunctionArgs() test::Case
+    void tc_caseInsensitive() test::Case
 
+// Test Event scenarios
+class EventTest::
+    @scope: object
+    lastThis: object, readonly
+    lastObservable: object, readonly
+    lastSource: object, readonly
+
+    int16 construct()
+
+    observer onDeclare:      ON_DECLARE|ON_SELF|ON_TREE
+    observer onDeclareSelf:  ON_DECLARE
+    observer onDeclareScope: ON_DECLARE|ON_SCOPE
+    observer onDeclareTree:  ON_DECLARE|ON_TREE
+    countDeclare: uint32, readonly
+    countDeclareSelf: uint32, readonly
+    countDeclareScope: uint32, readonly
+    countDeclareTree: uint32, readonly
+
+    observer onDefine:       ON_DEFINE|ON_SELF|ON_TREE
+    observer onDefineSelf:   ON_DEFINE
+    observer onDefineScope:  ON_DEFINE|ON_SCOPE
+    observer onDefineTree:   ON_DEFINE|ON_TREE
+    countDefine: uint32, readonly
+    countDefineSelf: uint32, readonly
+    countDefineScope: uint32, readonly
+    countDefineTree: uint32, readonly
+
+    observer onUpdate:       ON_UPDATE|ON_SELF|ON_TREE
+    observer onUpdateSelf:   ON_UPDATE
+    observer onUpdateScope:  ON_UPDATE|ON_SCOPE
+    observer onUpdateTree:   ON_UPDATE|ON_TREE
+    countUpdate: uint32, readonly
+    countUpdateSelf: uint32, readonly
+    countUpdateScope: uint32, readonly
+    countUpdateTree: uint32, readonly
+
+    observer onDelete:       ON_DELETE|ON_SELF|ON_TREE
+    observer onDeleteSelf:   ON_DELETE
+    observer onDeleteScope:  ON_DELETE|ON_SCOPE
+    observer onDeleteTree:   ON_DELETE|ON_TREE
+    countDelete: uint32, readonly
+    countDeleteSelf: uint32, readonly
+    countDeleteScope: uint32, readonly
+    countDeleteTree: uint32, readonly
+
+class Event: test::Suite::
+    void setup()
+    void teardown()
+    
+    et: EventTest
+
+    void tc_onDeclare() test::Case
+    void tc_onDeclareSelf() test::Case
+    void tc_onDeclareScope() test::Case
+    void tc_onDeclareTree() test::Case
+
+    void tc_onDefine() test::Case
+    void tc_onDefineSelf() test::Case
+    void tc_onDefineScope() test::Case
+    void tc_onDefineTree() test::Case
+
+    void tc_onUpdate() test::Case
+    void tc_onUpdateSelf() test::Case
+    void tc_onUpdateScope() test::Case
+    void tc_onUpdateTree() test::Case
+
+    void tc_onDelete() test::Case
+    void tc_onDeleteSelf() test::Case
+    void tc_onDeleteScope() test::Case
+    void tc_onDeleteTree() test::Case
+
+// Overloading testcases
+void ol_null(object a)
+void ol_null(string a)
+void ol_null(bool a)
+
+void ol_object(object a)
+void ol_string(string a)
+void ol_bool(bool a)
+
+void ol_wildcard(int32 a, string b)
+void ol_wildcard(float32 a, string b)
+
+void ol_int(int32 a)
+void ol_uint(int32 a)
+
+void ol_num(int32 a)
+void ol_num(float64 a)
+
+enum Color:: Red, Orange, Yellow, Green, Blue
+void ol_any(bool a)
+void ol_any(char a)
+void ol_any(int32 a)
+void ol_any(float32 a)
+void ol_any(string a)
+void ol_any(object a)
+void ol_any(Color a)
+
+class Animal::
+    a: bool
+
+class Dog : Animal::
+    b: bool
+
+class GoldenRetriever : Dog::
+    c: bool
+
+class Cat : Animal::
+    b: bool
+
+void ol_inherit(Animal a)
+void ol_inherit(Dog a)
+
+class Overload: test::Suite::
+    void tc_ambiguous() test::Case
+    void tc_ambiguousWildcard() test::Case
+    void tc_ambiguousNull() test::Case
+
+    void tc_wildcard() test::Case
+
+    void tc_nullObject() test::Case
+    void tc_nullString() test::Case
+    void tc_nullBool() test::Case
+
+    void tc_anyChar() test::Case
+    void tc_anyInt8() test::Case
+    void tc_anyInt16() test::Case
+    void tc_anyInt32() test::Case
+    void tc_anyInt64() test::Case
+    void tc_anyUint8() test::Case
+    void tc_anyUint16() test::Case
+    void tc_anyUint32() test::Case
+    void tc_anyUint64() test::Case
+    void tc_anyFloat32() test::Case
+    void tc_anyFloat64() test::Case
+    void tc_anyOctet() test::Case
+    void tc_anyWord() test::Case
+    void tc_anyString() test::Case
+    void tc_anyColor() test::Case
+
+    void tc_numChar() test::Case
+    void tc_numInt8() test::Case
+    void tc_numInt16() test::Case
+    void tc_numInt32() test::Case
+    void tc_numInt64() test::Case
+    void tc_numUint8() test::Case
+    void tc_numUint16() test::Case
+    void tc_numUint32() test::Case
+    void tc_numUint64() test::Case
+    void tc_numFloat32() test::Case
+    void tc_numFloat64() test::Case
+    void tc_numOctet() test::Case
+    void tc_numWord() test::Case
+    void tc_numString() test::Case
+    void tc_numColor() test::Case
+
+    void tc_inheritanceBase() test::Case
+    void tc_inheritanceSub() test::Case
+    void tc_inheritanceMatchSub() test::Case
+    void tc_inheritSibling() test::Case
+    
 // String deserializer testcases
 class StringDeserializer: test::Suite::
     void setup()

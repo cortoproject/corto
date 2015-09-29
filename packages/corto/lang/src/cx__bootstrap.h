@@ -448,6 +448,7 @@ CX_FWDECL(struct, delegatedata);
 
 /* Abstract classes */
 CX_FWDECL(interface, dispatcher);
+CX_FWDECL(interface, replicator);
 
 CX_FWDECL(binary, octet);
 CX_FWDECL(boolean, bool);
@@ -728,6 +729,8 @@ CX_CLASS_O(primitive, type, CX_LOCAL | CX_READONLY, NULL, CX_DECLARED | CX_DEFIN
     CX_MEMBER_O(primitive, convertId, uint8, CX_LOCAL | CX_PRIVATE);
     CX_METHOD_O(primitive, castable, "(type type)", bool, TRUE, cx_primitive_castable_v);
     CX_METHOD_O(primitive, compatible, "(type type)", bool, TRUE, cx_primitive_compatible_v);
+    CX_METHOD_O(primitive, isInteger, "()", bool, FALSE, cx_primitive_isInteger);
+    CX_METHOD_O(primitive, isNumber, "()", bool, FALSE, cx_primitive_isNumber);
     CX_METHOD_O(primitive, init, "()", int16, FALSE, cx_primitive_init);
     CX_METHOD_O(primitive, construct, "()", int16, FALSE, cx_primitive_construct);
 
@@ -956,6 +959,9 @@ CX_PROCEDURE_NOBASE_O(function, CX_FUNCTION, NULL, CX_DECLARED | CX_DEFINED, CX_
 CX_INTERFACE_O(dispatcher);
     CX_IMETHOD_O(dispatcher, post, "(event e)", void, FALSE);
 
+/* ::corto::lang::replicator */
+CX_INTERFACE_O(replicator);
+
 /* ::corto::lang::event */
 CX_CLASS_NOBASE_O(event, NULL, CX_DECLARED | CX_DEFINED, NULL, CX_NODELEGATE);
     CX_MEMBER_O(event, kind, uint16, CX_GLOBAL);
@@ -985,8 +991,8 @@ CX_PROCEDURE_O(virtual, CX_METHOD, method, CX_GLOBAL, CX_TYPE_ID(interface), CX_
 /* ::corto::lang::observer */
 CX_FW_IB(observer);
 CX_PROCEDURE_O(observer, CX_OBSERVER, function, CX_LOCAL | CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, CX_IC);
-    CX_REFERENCE_O(observer, observable, object, CX_GLOBAL, CX_DEFINED | CX_DECLARED, FALSE);
     CX_MEMBER_O(observer, mask, eventMask, CX_GLOBAL);
+    CX_REFERENCE_O(observer, observable, object, CX_GLOBAL, CX_DEFINED | CX_DECLARED, FALSE);
     CX_MEMBER_O(observer, template, uint32, CX_GLOBAL|CX_READONLY);
     CX_REFERENCE_O(observer, dispatcher, dispatcher, CX_GLOBAL|CX_HIDDEN, CX_DEFINED | CX_DECLARED, FALSE);
     CX_REFERENCE_O(observer, me, object, CX_GLOBAL|CX_HIDDEN, CX_DEFINED | CX_DECLARED, FALSE);

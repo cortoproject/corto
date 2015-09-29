@@ -134,6 +134,15 @@ repeat:
                             cx_release(lookup); /* Free reference */
                         }
                         lookup = o;
+                        if (o) {
+                            if (cx_instanceof(cx_function_o, o)) {
+                                if (cx_function(o)->overloaded == TRUE) {
+                                    cx_release(o);
+                                    cx_seterr("ambiguous reference to '%s'", str);
+                                    goto error;
+                                }
+                            }
+                        }
 
                         if (!o) {
                             if (!i && (prev != corto_lang_o) && cx_instanceof(cx_type(cx_package_o), prev)) {
@@ -232,4 +241,6 @@ repeat:
     }
 
     return o;
+error:
+    return NULL;
 }

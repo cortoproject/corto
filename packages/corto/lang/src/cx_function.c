@@ -6,7 +6,6 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#define corto_lang_LIB
 #include "cx.h"
 
 /* ::corto::lang::function::bind() */
@@ -195,7 +194,7 @@ cx_parameterseq _cx_function_stringToParameterSeq(cx_string name, cx_object scop
             /* Assign type */
             result.buffer[i].type = cx_resolve(scope, id);
             if (!result.buffer[i].type) {
-                cx_error("type '%s' of parameter %d in signature %s not found", id, i, name);
+                cx_error("%s: '%s' not found", name, id);
                 goto error;
             }
 

@@ -916,6 +916,20 @@ void __cx_primitive_init(cx_function f, void *result, void *args) {
         cx_primitive(*(void**)args));
 }
 
+void __cx_primitive_isInteger(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    CX_UNUSED(args);
+    *(cx_bool*)result = _cx_primitive_isInteger(
+        cx_primitive(*(void**)args));
+}
+
+void __cx_primitive_isNumber(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    CX_UNUSED(args);
+    *(cx_bool*)result = _cx_primitive_isNumber(
+        cx_primitive(*(void**)args));
+}
+
 void __cx_procedure_init(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     CX_UNUSED(args);

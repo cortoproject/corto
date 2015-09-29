@@ -6,7 +6,6 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#define corto_lang_LIB
 #include "cx.h"
 
 /* $header() */
@@ -19,7 +18,7 @@ cx_int16 cx_type_bindMetaprocedure(cx_type this, cx_metaprocedure procedure) {
     cx_int32 d = 0;
 
     /* Check if function is overloaded */
-    if ((f = cx_vtableLookup(&this->metaprocedures, cx_nameof(procedure), NULL, &d))) {
+    if ((f = cx_vtableLookup(&this->metaprocedures, cx_nameof(procedure), &d))) {
         if (d) {
             cx_function(*f)->overloaded = TRUE; /* Flag found and passed function as overloaded. */
             cx_function(procedure)->overloaded = TRUE;
@@ -350,7 +349,7 @@ cx_function _cx_type_resolveProcedure(cx_type this, cx_string name) {
 
         /* Walk inheritance of metaclass to find metaprocedure */
         do {
-            if ((f = cx_vtableLookup(&cx_type(metaclass)->metaprocedures, name, NULL, &d))) {
+            if ((f = cx_vtableLookup(&cx_type(metaclass)->metaprocedures, name, &d))) {
                 if (d < prevD) {
                     result = *f;
                     prevD = d;

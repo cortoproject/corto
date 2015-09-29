@@ -252,3 +252,25 @@ int cx_vasprintf (char **str, const char *fmt, va_list args) {
     size = vsprintf(*str, fmt, args);
     return size;
 }
+
+/* Convert characters in string to uppercase */
+char* cx_strupper(char *str) {
+    char *ptr, ch;
+    ptr = str;
+    while ((ch = *ptr)) {
+        *ptr = toupper(ch);
+        ptr++;
+    }
+    return str;
+}
+
+/* Convert characters in string to lowercase */
+char* cx_strlower(char *str) {
+    char *ptr, ch;
+    ptr = str;
+    while ((ch = *ptr)) {
+        *ptr = tolower(ch);
+        ptr++;
+    }
+    return str;
+}

@@ -4,7 +4,6 @@
  * This file contains generated code. Do not modify!
  */
 
-#define corto_lang_LIB
 #include "cx.h"
 
 cx_alias cx_aliasCreate(cx_member member) {
@@ -4547,14 +4546,14 @@ cx_int16 cx_observableEventCompare(cx_observableEvent dst, cx_observableEvent sr
     return cx_compare(dst, src);
 }
 
-cx_observer cx_observerCreate(cx_object observable, cx_eventMask mask, void(*_impl)(cx_function f, void *result, void *args)) {
+cx_observer cx_observerCreate(cx_eventMask mask, cx_object observable, void(*_impl)(cx_function f, void *result, void *args)) {
     cx_observer this;
     this = cx_declare(cx_observer_o);
     if (!this) {
         return NULL;
     }
-    cx_setref(&this->observable, observable);
     this->mask = mask;
+    cx_setref(&this->observable, observable);
     cx_function(this)->impl = (cx_word)_impl;
     if (this && cx_define(this)) {
         cx_release(this);
@@ -4563,14 +4562,14 @@ cx_observer cx_observerCreate(cx_object observable, cx_eventMask mask, void(*_im
     return this;
 }
 
-cx_observer cx_observerCreateChild(cx_object _parent, cx_string _name, cx_object observable, cx_eventMask mask, void(*_impl)(cx_function f, void *result, void *args)) {
+cx_observer cx_observerCreateChild(cx_object _parent, cx_string _name, cx_eventMask mask, cx_object observable, void(*_impl)(cx_function f, void *result, void *args)) {
     cx_observer this;
     this = cx_declareChild(_parent, _name, cx_observer_o);
     if (!this) {
         return NULL;
     }
-    cx_setref(&this->observable, observable);
     this->mask = mask;
+    cx_setref(&this->observable, observable);
     cx_function(this)->impl = (cx_word)_impl;
     if (this && cx_define(this)) {
         cx_release(this);
@@ -4597,23 +4596,23 @@ cx_observer cx_observerDeclareChild(cx_object _parent, cx_string _name) {
     return this;
 }
 
-cx_int16 cx_observerDefine(cx_observer this, cx_object observable, cx_eventMask mask, void(*_impl)(cx_function f, void *result, void *args)) {
-    cx_setref(&this->observable, observable);
+cx_int16 cx_observerDefine(cx_observer this, cx_eventMask mask, cx_object observable, void(*_impl)(cx_function f, void *result, void *args)) {
     this->mask = mask;
+    cx_setref(&this->observable, observable);
     cx_function(this)->impl = (cx_word)_impl;
     return cx_define(this);
 }
 
-void cx_observerUpdate(cx_observer this, cx_object observable, cx_eventMask mask) {
+void cx_observerUpdate(cx_observer this, cx_eventMask mask, cx_object observable) {
     cx_updateBegin(this);
-    cx_setref(&this->observable, observable);
     this->mask = mask;
+    cx_setref(&this->observable, observable);
     cx_updateEnd(this);
 }
 
-void cx_observerSet(cx_observer this, cx_object observable, cx_eventMask mask) {
-    cx_setref(&this->observable, observable);
+void cx_observerSet(cx_observer this, cx_eventMask mask, cx_object observable) {
     this->mask = mask;
+    cx_setref(&this->observable, observable);
 }
 
 cx_string cx_observerStr(cx_observer value) {
@@ -5641,6 +5640,83 @@ cx_int16 cx_procedureKindDeinit(cx_procedureKind* value) {
     cx_valueValueInit(&v, NULL, cx_type(cx_procedureKind_o), value);
     result = cx_deinitv(&v);
     return result;
+}
+
+cx_replicator cx_replicatorCreate(void) {
+    cx_replicator this;
+    this = cx_declare(cx_replicator_o);
+    if (!this) {
+        return NULL;
+    }
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+cx_replicator cx_replicatorCreateChild(cx_object _parent, cx_string _name) {
+    cx_replicator this;
+    this = cx_declareChild(_parent, _name, cx_replicator_o);
+    if (!this) {
+        return NULL;
+    }
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+cx_replicator cx_replicatorDeclare(void) {
+    cx_replicator this;
+    this = cx_declare(cx_replicator_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+cx_replicator cx_replicatorDeclareChild(cx_object _parent, cx_string _name) {
+    cx_replicator this;
+    this = cx_declareChild(_parent, _name, cx_replicator_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+cx_int16 cx_replicatorDefine(cx_replicator this) {
+    return cx_define(this);
+}
+
+void cx_replicatorUpdate(cx_replicator this) {
+    cx_update(this);
+}
+
+void cx_replicatorSet(cx_replicator this) {
+    CX_UNUSED(this);
+}
+
+cx_string cx_replicatorStr(cx_replicator value) {
+    cx_string result;
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_replicator_o));
+    result = cx_strv(&v, 0);
+    return result;
+}
+
+cx_replicator cx_replicatorFromStr(cx_replicator value, cx_string str) {
+    cx_fromStrp(&value, cx_type(cx_replicator_o), str);
+    return value;
+}
+
+cx_int16 cx_replicatorCopy(cx_replicator *dst, cx_replicator src) {
+    return cx_copy((cx_object*)dst, src);
+}
+
+cx_int16 cx_replicatorCompare(cx_replicator dst, cx_replicator src) {
+    return cx_compare(dst, src);
 }
 
 cx_sequence cx_sequenceCreate(cx_type elementType, cx_uint32 max) {

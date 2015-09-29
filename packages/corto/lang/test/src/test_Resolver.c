@@ -6,7 +6,6 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#define test_LIB
 #include "test.h"
 
 /* ::test::Resolver::setup() */
@@ -14,6 +13,18 @@ cx_void _test_Resolver_setup(test_Resolver this) {
 /* $begin(::test::Resolver::setup) */
 
     /* << Insert implementation >> */
+
+/* $end */
+}
+
+/* ::test::Resolver::tc_caseInsensitive() */
+cx_void _test_Resolver_tc_caseInsensitive(test_Resolver this) {
+/* $begin(::test::Resolver::tc_caseInsensitive) */
+
+    cx_object o = cx_resolve(NULL, "COrTO");
+    test_assert(o != NULL);
+    test_assert(o == corto_o);
+    cx_release(o);
 
 /* $end */
 }

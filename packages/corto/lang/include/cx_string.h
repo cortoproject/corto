@@ -8,7 +8,15 @@
 extern "C" {
 #endif
 
+/* Case insensitive string compare */
 int stricmp(const char *str1, const char *str2);
+
+/* Convert characters in string to uppercase */
+char* cx_strupper(char *str);
+
+/* Convert characters in string to lowercase */
+char* cx_strlower(char *str);
+
 char *strappend(char *src, char *fmt, ...);
 char *itostr(int value, char *result, int base);
 char *utostr(unsigned int value, char *result, int base);
@@ -33,10 +41,11 @@ size_t stresc(char *out, size_t n, const char *in);
  * mask. */
 size_t strmask(char *str, char *mask);
 
+/* Duplicate string */
 char* cx_strdup(const char* str);
 
+/* sprintf with automatic allocation */
 int cx_asprintf (char **str, const char *fmt, ...);
-
 int cx_vasprintf (char **str, const char *fmt, va_list args);
 
 #ifdef __cplusplus

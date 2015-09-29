@@ -6,7 +6,6 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#define corto_ast_LIB
 #include "ast.h"
 
 /* $header() */
@@ -421,7 +420,7 @@ cx_int16 _ast_Binary_construct(ast_Binary this) {
     /* Check if operands are valid in case of arithmic operation */
     if (ast_Binary_isArithmic(this)) {
         if ((lvalueType->kind != CX_PRIMITIVE) || (rvalueType->kind != CX_PRIMITIVE) ||
-            ((this->lvalue->deref == Ast_ByReference) || (this->lvalue->deref == Ast_ByReference))) {
+            ((this->lvalue->deref == Ast_ByReference) || (this->rvalue->deref == Ast_ByReference))) {
             ast_Parser_error(yparser(), "invalid operands for arithmic operation");
             goto error;
         }

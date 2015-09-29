@@ -422,7 +422,7 @@ static cx_string cx_string_deserParse(cx_string str, struct cx_string_deserIndex
     cx_char ch;
     cx_char *ptr, *bptr, *nonWs;
     cx_char buffer[CX_STRING_DESER_TOKEN_MAX];
-    cx_bool proceed;
+    cx_bool proceed, excess;
     struct cx_string_deserIndexInfo* memberInfo;
 
     CX_UNUSED(info);
@@ -431,6 +431,7 @@ static cx_string cx_string_deserParse(cx_string str, struct cx_string_deserIndex
     bptr = buffer;
     nonWs = bptr;
     proceed = TRUE;
+    excess = FALSE;
     memberInfo = NULL;
 
     if (info) {
@@ -443,6 +444,7 @@ static cx_string cx_string_deserParse(cx_string str, struct cx_string_deserIndex
     while(ptr && (ch = *ptr) && proceed) {
         switch(ch) {
         case '=': /* Explicit member assignment */
+            excess = FALSE;
             if (buffer == bptr) {
                 cx_seterr("missing member identifier");
                 goto error;
@@ -542,6 +544,9 @@ static cx_string cx_string_deserParse(cx_string str, struct cx_string_deserIndex
              * once in the index. */
             if (memberInfo->m) {
                 memberInfo = cx_string_deserIndexNext(data);
+                if (!memberInfo) {
+                    excess = TRUE;
+                }
             }
             data->current++;
             break;
@@ -563,6 +568,11 @@ static cx_string cx_string_deserParse(cx_string str, struct cx_string_deserIndex
         if (cx_string_deserParseValue(buffer, &info, data)) {
             goto error;
         }        
+    }
+
+    if (excess) {
+        cx_seterr("excess elements in string");
+        goto error;
     }
 
     return ptr;

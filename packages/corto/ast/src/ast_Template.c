@@ -6,7 +6,6 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#define corto_ast_LIB
 #include "ast.h"
 
 /* ::corto::ast::Template::construct() */

@@ -274,9 +274,11 @@ static int c_loadDeclareWalk(cx_object o, void* userData) {
         goto error;
     }
 
+    if (o != g_getCurrent(data->g)) {
+        c_writeExport(data->g, data->header);        
+    }
+
     /* Declare objects in headerfile and define in sourcefile */
-    g_fileWrite(data->header, "\n");
-    g_fileWrite(data->header, "/* %s */\n", cx_fullname(o, objectId));
     if (!prefix) {
         g_fileWrite(data->header, "extern %s %s%s;\n", specifier, c_loadVarId(data->g, o, objectId), postfix);
         g_fileWrite(data->source, "%s %s%s;\n", specifier, objectId, postfix);
@@ -308,24 +310,19 @@ static g_file c_loadHeaderFileOpen(cx_generator g) {
     g_fileWrite(result, "#ifndef %s_META_H\n", c_topath(g_getCurrent(g), path, '_'));
     g_fileWrite(result, "#define %s_META_H\n\n", c_topath(g_getCurrent(g), path, '_'));
     g_fileWrite(result, "#include \"corto.h\"\n");
-    g_fileWrite(result, "#ifdef %s_LIB\n", c_topath(g_getCurrent(g), path, '_'));
-    g_fileWrite(result, "#include \"%s__type.h\"\n", g_getName(g));
-    g_fileWrite(result, "#else\n");
-    g_fileWrite(result, "#include \"%s/%s__type.h\"\n", c_topath(g_getCurrent(g), path, '/'), g_getName(g));
-    g_fileWrite(result, "#endif\n\n");
+    g_fileWrite(result, "#include \"%s__interface.h\"\n\n", g_getName(g));
     g_fileWrite(result, "#ifdef __cplusplus\n");
     g_fileWrite(result, "extern \"C\" {\n");
-    g_fileWrite(result, "#endif\n");
+    g_fileWrite(result, "#endif\n\n");
 
     return result;
 }
 
 /* Close headerfile */
 static void c_loadHeaderFileClose(cx_generator g, g_file file) {
+    CX_UNUSED(g);
 
     /* Print standard comments and includes */
-    g_fileWrite(file, "\n");
-    g_fileWrite(file, "int %s_load(void);", g_getName(g));
     g_fileWrite(file, "\n");
     g_fileWrite(file, "#ifdef __cplusplus\n");
     g_fileWrite(file, "}\n");
@@ -337,7 +334,7 @@ static void c_loadHeaderFileClose(cx_generator g, g_file file) {
 static g_file c_loadSourceFileOpen(cx_generator g) {
     g_file result;
     cx_id headerFileName;
-    cx_id topLevelName, path;
+    cx_id topLevelName;
 
     /* Create file */
     sprintf(headerFileName, "%s__meta.c", g_getName(g));
@@ -349,7 +346,6 @@ static g_file c_loadSourceFileOpen(cx_generator g) {
     g_fileWrite(result, " * Loads objects in object store.\n");
     g_fileWrite(result, " * This file contains generated code. Do not modify!\n");
     g_fileWrite(result, " */\n\n");
-    g_fileWrite(result, "#define %s_LIB\n", c_topath(g_getCurrent(g), path, '_'));
     g_fileWrite(result, "#include \"%s.h\"\n\n", g_fullOid(g, g_getCurrent(g), topLevelName));
 
     return result;
@@ -382,6 +378,11 @@ static void c_sourceWriteLoadEnd(g_file file, c_typeWalk_t *data) {
         g_fileDedent(file);
         g_fileWrite(file, "error:\n");
         g_fileIndent(file);
+        g_fileWrite(file, "if (_a_) {\n");
+        g_fileIndent(file);
+        g_fileWrite(file, "cx_release(_a_);\n");
+        g_fileDedent(file);
+        g_fileWrite(file, "}\n\n");
         g_fileWrite(file, "return -1;\n");
     }
     g_fileDedent(file);
@@ -740,7 +741,7 @@ static int c_loadDeclare(cx_object o, void* userData) {
         g_fileWrite(data->source, "if (!%s) {\n", c_loadVarId(data->g, o, id));
         g_fileIndent(data->source);
         c_escapeString(cx_fullname(o, id), escapedName);
-        g_fileWrite(data->source, "cx_error(\"%s_load: failed to declare object '%s'.\");\n",
+        g_fileWrite(data->source, "cx_error(\"%s_load: failed to declare '%s' (%%s)\", cx_lasterr());\n",
                 g_getName(data->g),
                 escapedName);
         g_fileWrite(data->source, "goto error;\n");
@@ -791,7 +792,7 @@ static int c_loadDefine(cx_object o, void* userData) {
         /* Define object */
         g_fileWrite(data->source, "if (cx_define(%s)) {\n", varId);
         g_fileIndent(data->source);
-        g_fileWrite(data->source, "cx_error(\"%s_load: failed to define object '%s'.\");\n",
+        g_fileWrite(data->source, "cx_error(\"%s_load: failed to define '%s' (%%s)\", cx_lasterr());\n",
                 g_getName(data->g),
                 c_escapeString(fullname, escapedId));
         g_fileWrite(data->source, "goto error;\n");
