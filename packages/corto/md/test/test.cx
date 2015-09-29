@@ -6,6 +6,8 @@ package Package0::
 package Package1::
     class Class1::
         void method1();
+    package Package11::
+        package Package111{}
 
 void docs
 

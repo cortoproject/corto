@@ -6,7 +6,6 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#define test_LIB
 #include "test.h"
 
 /* ::test::Package1::Class1::method1() */

@@ -1,54 +1,50 @@
 #include "_md_renderers.h"
 
-/*
- * Recursively creates the objects hierarchy specified by the name atop the
- * 'parent' object. **Assumes that the name is well-formed.**
- */
-static int md_createChildRecursive(cx_object parent, cx_string fullname, cx_type type) {
-    char *p = fullname[0] == ':' ? fullname + 2 : fullname;
-    size_t parentheses = 0;
-    while (*p) {
-        switch (*p) {
-        case '(':
-            parentheses += 1;
-        case ')':
-            if (parentheses) {
-                parentheses -= 1;
-            } else {
-                goto error;
-            }
-        case ':':
-            if (!parentheses) {
-                break;
-            }
-            goto error;
-        }
-        p += 1;
+static int md_createPackageDocRecursively(cx_object* scope, cx_object o) {
+    if (o == root_o) {
+        goto finish;
     }
-    cx_id simpleName;
-    size_t simpleNameLen = p - fullname - 2;
-    strncpy(simpleName, fullname + 2, simpleNameLen);
-    simpleName[simpleNameLen] = '\0';
-    cx_object o = cx_createChild(parent, simpleName, type);
-    cx_print("created %s on %s", simpleName, cx_nameof(parent));
-    if (o == NULL) {
+    md_createPackageDocRecursively(scope, cx_parentof(o));
+    cx_string docName;
+    if (cx_typeof(o)->kind == CX_PROCEDURE) {
+        cx_id signatureName;
+        cx_signatureName(cx_nameof(o), signatureName);
+        docName = signatureName;
+    } else {
+        docName = cx_nameof(o);
+    }
+    cx_object packageDoc = cx_createChild(*scope, docName, md_PackageDoc_o);
+    if (!packageDoc) {
         goto error;
     }
-
-    /* If there is more of the fully-scoped name yet to parse */
-    if (*p) {
-        md_createChildRecursive(o, p, type);
-    }
+    *scope = packageDoc;
+finish:
     return 0;
 error:
     return 1;
 }
 
+/*
+ *
+ */
 int md_renderPackage(cx_string name, md_parseData* data) {
-    /* TODO validate that the name is well-formed */
-    if (md_createChildRecursive(data->destination, name, cx_type(md_PackageDoc_o))) {
+    /*
+     * TODO, shoudn't do resolve but lookup.
+     * but lookup doesn't accept scoped::names
+     */
+    cx_id fullname;
+    fullname[0] = fullname[1] = ':';
+    strcpy(fullname + 2, name);
+    cx_object o = cx_resolve(root_o, fullname);
+    if (!o) {
+        cx_error("Cannot find %s", name);
         goto error;
     }
+    cx_object scope = data->destination;
+    if (md_createPackageDocRecursively(&scope, o)) {
+        goto error;
+    }
+    cx_release(o);
     return 0;
 error:
     return 1;
