@@ -83,8 +83,6 @@ cx_void _md_parse(cx_object destination, cx_string text) {
     hoedown_buffer *buffer = hoedown_buffer_new(16);
     hoedown_document_render(parser, buffer, (const uint8_t *)text, strlen(text));
 
-    // printf("the buffer is: %s\n", (char *)buffer->data);
-
     hoedown_buffer_free(buffer);
     hoedown_document_free(parser);
     md_freeRenderer(renderer);

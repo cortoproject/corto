@@ -13,10 +13,12 @@ static int md_createPackageDocRecursively(cx_object* scope, cx_object o) {
     } else {
         docName = cx_nameof(o);
     }
-    cx_object packageDoc = cx_createChild(*scope, docName, md_PackageDoc_o);
+    md_PackageDoc packageDoc = cx_declareChild(*scope, docName, md_PackageDoc_o);
     if (!packageDoc) {
         goto error;
     }
+    cx_setref(&md_Doc(packageDoc)->o, o);
+    cx_define(packageDoc);
     *scope = packageDoc;
 finish:
     return 0;
