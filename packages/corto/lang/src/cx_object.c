@@ -1910,6 +1910,10 @@ cx_object cx_lookupLowercase(cx_object o, cx_string name) {
     cx__scope* scope;
     cx_rbtree tree;
 
+    if (!o) {
+        o = root_o;
+    }
+
     _o = CX_OFFSET(o, -sizeof(cx__object));
     scope = cx__objectScope(_o);
 
