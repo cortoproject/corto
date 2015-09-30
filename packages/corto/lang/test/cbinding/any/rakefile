@@ -1,9 +1,6 @@
 
-PACKAGE = 'test'
+PACKAGE = 'any'
 
 LOCAL = true
-
-COMPONENTS = [] <<
-	:cbinding
 
 require "#{ENV['CORTO_BUILD']}/package"
