@@ -133,40 +133,6 @@ CORTO_LANG_EXPORT cx_boolean cx_booleanFromStr(cx_boolean value, cx_string str);
 CORTO_LANG_EXPORT cx_int16 cx_booleanCopy(cx_boolean *dst, cx_boolean src);
 CORTO_LANG_EXPORT cx_int16 cx_booleanCompare(cx_boolean dst, cx_boolean src);
 
-/* ::corto::lang::callbackDestruct */
-CORTO_LANG_EXPORT cx_callbackDestruct* cx_callbackDestructCreate(void);
-CORTO_LANG_EXPORT cx_callbackDestruct* cx_callbackDestructCreateChild(cx_object _parent, cx_string _name);
-
-CORTO_LANG_EXPORT cx_callbackDestruct* cx_callbackDestructDeclare(void);
-CORTO_LANG_EXPORT cx_callbackDestruct* cx_callbackDestructDeclareChild(cx_object _parent, cx_string _name);
-CORTO_LANG_EXPORT cx_int16 cx_callbackDestructDefine(cx_callbackDestruct* this);
-CORTO_LANG_EXPORT void cx_callbackDestructUpdate(cx_callbackDestruct* this);
-CORTO_LANG_EXPORT void cx_callbackDestructSet(cx_callbackDestruct* this);
-CORTO_LANG_EXPORT cx_string cx_callbackDestructStr(cx_callbackDestruct* value);
-CORTO_LANG_EXPORT cx_callbackDestruct* cx_callbackDestructFromStr(cx_callbackDestruct* value, cx_string str);
-CORTO_LANG_EXPORT cx_int16 cx_callbackDestructCopy(cx_callbackDestruct* *dst, cx_callbackDestruct* src);
-CORTO_LANG_EXPORT cx_int16 cx_callbackDestructCompare(cx_callbackDestruct* dst, cx_callbackDestruct* src);
-
-CORTO_LANG_EXPORT cx_int16 cx_callbackDestructInit(cx_callbackDestruct* value);
-CORTO_LANG_EXPORT cx_int16 cx_callbackDestructDeinit(cx_callbackDestruct* value);
-
-/* ::corto::lang::callbackInit */
-CORTO_LANG_EXPORT cx_callbackInit* cx_callbackInitCreate(void);
-CORTO_LANG_EXPORT cx_callbackInit* cx_callbackInitCreateChild(cx_object _parent, cx_string _name);
-
-CORTO_LANG_EXPORT cx_callbackInit* cx_callbackInitDeclare(void);
-CORTO_LANG_EXPORT cx_callbackInit* cx_callbackInitDeclareChild(cx_object _parent, cx_string _name);
-CORTO_LANG_EXPORT cx_int16 cx_callbackInitDefine(cx_callbackInit* this);
-CORTO_LANG_EXPORT void cx_callbackInitUpdate(cx_callbackInit* this);
-CORTO_LANG_EXPORT void cx_callbackInitSet(cx_callbackInit* this);
-CORTO_LANG_EXPORT cx_string cx_callbackInitStr(cx_callbackInit* value);
-CORTO_LANG_EXPORT cx_callbackInit* cx_callbackInitFromStr(cx_callbackInit* value, cx_string str);
-CORTO_LANG_EXPORT cx_int16 cx_callbackInitCopy(cx_callbackInit* *dst, cx_callbackInit* src);
-CORTO_LANG_EXPORT cx_int16 cx_callbackInitCompare(cx_callbackInit* dst, cx_callbackInit* src);
-
-CORTO_LANG_EXPORT cx_int16 cx_callbackInitInit(cx_callbackInit* value);
-CORTO_LANG_EXPORT cx_int16 cx_callbackInitDeinit(cx_callbackInit* value);
-
 /* ::corto::lang::char */
 CORTO_LANG_EXPORT cx_char* cx_charCreate(cx_char value);
 CORTO_LANG_EXPORT cx_char* cx_charCreateChild(cx_object _parent, cx_string _name, cx_char value);
@@ -308,6 +274,23 @@ CORTO_LANG_EXPORT cx_int16 cx_delegatedataCompare(cx_delegatedata* dst, cx_deleg
 CORTO_LANG_EXPORT cx_int16 cx_delegatedataInit(cx_delegatedata* value);
 CORTO_LANG_EXPORT cx_int16 cx_delegatedataDeinit(cx_delegatedata* value);
 
+/* ::corto::lang::destructAction */
+CORTO_LANG_EXPORT cx_destructAction* cx_destructActionCreate(void);
+CORTO_LANG_EXPORT cx_destructAction* cx_destructActionCreateChild(cx_object _parent, cx_string _name);
+
+CORTO_LANG_EXPORT cx_destructAction* cx_destructActionDeclare(void);
+CORTO_LANG_EXPORT cx_destructAction* cx_destructActionDeclareChild(cx_object _parent, cx_string _name);
+CORTO_LANG_EXPORT cx_int16 cx_destructActionDefine(cx_destructAction* this);
+CORTO_LANG_EXPORT void cx_destructActionUpdate(cx_destructAction* this);
+CORTO_LANG_EXPORT void cx_destructActionSet(cx_destructAction* this);
+CORTO_LANG_EXPORT cx_string cx_destructActionStr(cx_destructAction* value);
+CORTO_LANG_EXPORT cx_destructAction* cx_destructActionFromStr(cx_destructAction* value, cx_string str);
+CORTO_LANG_EXPORT cx_int16 cx_destructActionCopy(cx_destructAction* *dst, cx_destructAction* src);
+CORTO_LANG_EXPORT cx_int16 cx_destructActionCompare(cx_destructAction* dst, cx_destructAction* src);
+
+CORTO_LANG_EXPORT cx_int16 cx_destructActionInit(cx_destructAction* value);
+CORTO_LANG_EXPORT cx_int16 cx_destructActionDeinit(cx_destructAction* value);
+
 /* ::corto::lang::dispatcher */
 CORTO_LANG_EXPORT cx_dispatcher cx_dispatcherCreate(void);
 CORTO_LANG_EXPORT cx_dispatcher cx_dispatcherCreateChild(cx_object _parent, cx_string _name);
@@ -445,6 +428,23 @@ CORTO_LANG_EXPORT cx_string cx_functionStr(cx_function value);
 CORTO_LANG_EXPORT cx_function cx_functionFromStr(cx_function value, cx_string str);
 CORTO_LANG_EXPORT cx_int16 cx_functionCopy(cx_function *dst, cx_function src);
 CORTO_LANG_EXPORT cx_int16 cx_functionCompare(cx_function dst, cx_function src);
+
+/* ::corto::lang::initAction */
+CORTO_LANG_EXPORT cx_initAction* cx_initActionCreate(void);
+CORTO_LANG_EXPORT cx_initAction* cx_initActionCreateChild(cx_object _parent, cx_string _name);
+
+CORTO_LANG_EXPORT cx_initAction* cx_initActionDeclare(void);
+CORTO_LANG_EXPORT cx_initAction* cx_initActionDeclareChild(cx_object _parent, cx_string _name);
+CORTO_LANG_EXPORT cx_int16 cx_initActionDefine(cx_initAction* this);
+CORTO_LANG_EXPORT void cx_initActionUpdate(cx_initAction* this);
+CORTO_LANG_EXPORT void cx_initActionSet(cx_initAction* this);
+CORTO_LANG_EXPORT cx_string cx_initActionStr(cx_initAction* value);
+CORTO_LANG_EXPORT cx_initAction* cx_initActionFromStr(cx_initAction* value, cx_string str);
+CORTO_LANG_EXPORT cx_int16 cx_initActionCopy(cx_initAction* *dst, cx_initAction* src);
+CORTO_LANG_EXPORT cx_int16 cx_initActionCompare(cx_initAction* dst, cx_initAction* src);
+
+CORTO_LANG_EXPORT cx_int16 cx_initActionInit(cx_initAction* value);
+CORTO_LANG_EXPORT cx_int16 cx_initActionDeinit(cx_initAction* value);
 
 /* ::corto::lang::int */
 CORTO_LANG_EXPORT cx_int cx_intCreate(cx_width width, cx_int64 min, cx_int64 max);
@@ -593,6 +593,37 @@ CORTO_LANG_EXPORT cx_int16 cx_interfaceVectorseqCompare(cx_interfaceVectorseq* d
 CORTO_LANG_EXPORT cx_int16 cx_interfaceVectorseqInit(cx_interfaceVectorseq* value);
 CORTO_LANG_EXPORT cx_int16 cx_interfaceVectorseqDeinit(cx_interfaceVectorseq* value);
 
+/* ::corto::lang::invokeAction */
+CORTO_LANG_EXPORT cx_invokeAction* cx_invokeActionCreate(void);
+CORTO_LANG_EXPORT cx_invokeAction* cx_invokeActionCreateChild(cx_object _parent, cx_string _name);
+
+CORTO_LANG_EXPORT cx_invokeAction* cx_invokeActionDeclare(void);
+CORTO_LANG_EXPORT cx_invokeAction* cx_invokeActionDeclareChild(cx_object _parent, cx_string _name);
+CORTO_LANG_EXPORT cx_int16 cx_invokeActionDefine(cx_invokeAction* this);
+CORTO_LANG_EXPORT void cx_invokeActionUpdate(cx_invokeAction* this);
+CORTO_LANG_EXPORT void cx_invokeActionSet(cx_invokeAction* this);
+CORTO_LANG_EXPORT cx_string cx_invokeActionStr(cx_invokeAction* value);
+CORTO_LANG_EXPORT cx_invokeAction* cx_invokeActionFromStr(cx_invokeAction* value, cx_string str);
+CORTO_LANG_EXPORT cx_int16 cx_invokeActionCopy(cx_invokeAction* *dst, cx_invokeAction* src);
+CORTO_LANG_EXPORT cx_int16 cx_invokeActionCompare(cx_invokeAction* dst, cx_invokeAction* src);
+
+CORTO_LANG_EXPORT cx_int16 cx_invokeActionInit(cx_invokeAction* value);
+CORTO_LANG_EXPORT cx_int16 cx_invokeActionDeinit(cx_invokeAction* value);
+
+/* ::corto::lang::invokeEvent */
+CORTO_LANG_EXPORT cx_invokeEvent cx_invokeEventCreate(cx_object instance, cx_function function, cx_octetseq args);
+CORTO_LANG_EXPORT cx_invokeEvent cx_invokeEventCreateChild(cx_object _parent, cx_string _name, cx_object instance, cx_function function, cx_octetseq args);
+
+CORTO_LANG_EXPORT cx_invokeEvent cx_invokeEventDeclare(void);
+CORTO_LANG_EXPORT cx_invokeEvent cx_invokeEventDeclareChild(cx_object _parent, cx_string _name);
+CORTO_LANG_EXPORT cx_int16 cx_invokeEventDefine(cx_invokeEvent this, cx_object instance, cx_function function, cx_octetseq args);
+CORTO_LANG_EXPORT void cx_invokeEventUpdate(cx_invokeEvent this, cx_object instance, cx_function function, cx_octetseq args);
+CORTO_LANG_EXPORT void cx_invokeEventSet(cx_invokeEvent this, cx_object instance, cx_function function, cx_octetseq args);
+CORTO_LANG_EXPORT cx_string cx_invokeEventStr(cx_invokeEvent value);
+CORTO_LANG_EXPORT cx_invokeEvent cx_invokeEventFromStr(cx_invokeEvent value, cx_string str);
+CORTO_LANG_EXPORT cx_int16 cx_invokeEventCopy(cx_invokeEvent *dst, cx_invokeEvent src);
+CORTO_LANG_EXPORT cx_int16 cx_invokeEventCompare(cx_invokeEvent dst, cx_invokeEvent src);
+
 /* ::corto::lang::iterator */
 CORTO_LANG_EXPORT cx_iterator cx_iteratorCreate(cx_type elementType);
 CORTO_LANG_EXPORT cx_iterator cx_iteratorCreateChild(cx_object _parent, cx_string _name, cx_type elementType);
@@ -711,6 +742,23 @@ CORTO_LANG_EXPORT cx_int16 cx_modifierCompare(cx_modifier* dst, cx_modifier* src
 CORTO_LANG_EXPORT cx_int16 cx_modifierInit(cx_modifier* value);
 CORTO_LANG_EXPORT cx_int16 cx_modifierDeinit(cx_modifier* value);
 
+/* ::corto::lang::notifyAction */
+CORTO_LANG_EXPORT cx_notifyAction* cx_notifyActionCreate(void);
+CORTO_LANG_EXPORT cx_notifyAction* cx_notifyActionCreateChild(cx_object _parent, cx_string _name);
+
+CORTO_LANG_EXPORT cx_notifyAction* cx_notifyActionDeclare(void);
+CORTO_LANG_EXPORT cx_notifyAction* cx_notifyActionDeclareChild(cx_object _parent, cx_string _name);
+CORTO_LANG_EXPORT cx_int16 cx_notifyActionDefine(cx_notifyAction* this);
+CORTO_LANG_EXPORT void cx_notifyActionUpdate(cx_notifyAction* this);
+CORTO_LANG_EXPORT void cx_notifyActionSet(cx_notifyAction* this);
+CORTO_LANG_EXPORT cx_string cx_notifyActionStr(cx_notifyAction* value);
+CORTO_LANG_EXPORT cx_notifyAction* cx_notifyActionFromStr(cx_notifyAction* value, cx_string str);
+CORTO_LANG_EXPORT cx_int16 cx_notifyActionCopy(cx_notifyAction* *dst, cx_notifyAction* src);
+CORTO_LANG_EXPORT cx_int16 cx_notifyActionCompare(cx_notifyAction* dst, cx_notifyAction* src);
+
+CORTO_LANG_EXPORT cx_int16 cx_notifyActionInit(cx_notifyAction* value);
+CORTO_LANG_EXPORT cx_int16 cx_notifyActionDeinit(cx_notifyAction* value);
+
 /* ::corto::lang::object */
 CORTO_LANG_EXPORT cx_object cx_objectCreate(void);
 CORTO_LANG_EXPORT cx_object cx_objectCreateChild(cx_object _parent, cx_string _name);
@@ -733,14 +781,14 @@ CORTO_LANG_EXPORT cx_int16 cx_objectseqInit(cx_objectseq* value);
 CORTO_LANG_EXPORT cx_int16 cx_objectseqDeinit(cx_objectseq* value);
 
 /* ::corto::lang::observableEvent */
-CORTO_LANG_EXPORT cx_observableEvent cx_observableEventCreate(cx_uint16 kind, cx_observer observer, cx_object me, cx_object source, cx_object observable);
-CORTO_LANG_EXPORT cx_observableEvent cx_observableEventCreateChild(cx_object _parent, cx_string _name, cx_uint16 kind, cx_observer observer, cx_object me, cx_object source, cx_object observable);
+CORTO_LANG_EXPORT cx_observableEvent cx_observableEventCreate(cx_observer observer, cx_object me, cx_object source, cx_object observable);
+CORTO_LANG_EXPORT cx_observableEvent cx_observableEventCreateChild(cx_object _parent, cx_string _name, cx_observer observer, cx_object me, cx_object source, cx_object observable);
 
 CORTO_LANG_EXPORT cx_observableEvent cx_observableEventDeclare(void);
 CORTO_LANG_EXPORT cx_observableEvent cx_observableEventDeclareChild(cx_object _parent, cx_string _name);
-CORTO_LANG_EXPORT cx_int16 cx_observableEventDefine(cx_observableEvent this, cx_uint16 kind, cx_observer observer, cx_object me, cx_object source, cx_object observable);
-CORTO_LANG_EXPORT void cx_observableEventUpdate(cx_observableEvent this, cx_uint16 kind, cx_observer observer, cx_object me, cx_object source, cx_object observable);
-CORTO_LANG_EXPORT void cx_observableEventSet(cx_observableEvent this, cx_uint16 kind, cx_observer observer, cx_object me, cx_object source, cx_object observable);
+CORTO_LANG_EXPORT cx_int16 cx_observableEventDefine(cx_observableEvent this, cx_observer observer, cx_object me, cx_object source, cx_object observable);
+CORTO_LANG_EXPORT void cx_observableEventUpdate(cx_observableEvent this, cx_observer observer, cx_object me, cx_object source, cx_object observable);
+CORTO_LANG_EXPORT void cx_observableEventSet(cx_observableEvent this, cx_observer observer, cx_object me, cx_object source, cx_object observable);
 CORTO_LANG_EXPORT cx_string cx_observableEventStr(cx_observableEvent value);
 CORTO_LANG_EXPORT cx_observableEvent cx_observableEventFromStr(cx_observableEvent value, cx_string str);
 CORTO_LANG_EXPORT cx_int16 cx_observableEventCopy(cx_observableEvent *dst, cx_observableEvent src);
@@ -793,6 +841,23 @@ CORTO_LANG_EXPORT cx_int16 cx_octetCompare(cx_octet* dst, cx_octet* src);
 
 CORTO_LANG_EXPORT cx_int16 cx_octetInit(cx_octet* value);
 CORTO_LANG_EXPORT cx_int16 cx_octetDeinit(cx_octet* value);
+
+/* ::corto::lang::octetseq */
+CORTO_LANG_EXPORT cx_octetseq* cx_octetseqCreate(void);
+CORTO_LANG_EXPORT cx_octetseq* cx_octetseqCreateChild(cx_object _parent, cx_string _name);
+
+CORTO_LANG_EXPORT cx_octetseq* cx_octetseqDeclare(void);
+CORTO_LANG_EXPORT cx_octetseq* cx_octetseqDeclareChild(cx_object _parent, cx_string _name);
+CORTO_LANG_EXPORT cx_int16 cx_octetseqDefine(cx_octetseq* this, cx_octetseq value);
+CORTO_LANG_EXPORT void cx_octetseqUpdate(cx_octetseq* this, cx_octetseq value);
+CORTO_LANG_EXPORT void cx_octetseqSet(cx_octetseq* this, cx_octetseq value);
+CORTO_LANG_EXPORT cx_string cx_octetseqStr(cx_octetseq value);
+CORTO_LANG_EXPORT cx_octetseq* cx_octetseqFromStr(cx_octetseq* value, cx_string str);
+CORTO_LANG_EXPORT cx_int16 cx_octetseqCopy(cx_octetseq* *dst, cx_octetseq* src);
+CORTO_LANG_EXPORT cx_int16 cx_octetseqCompare(cx_octetseq* dst, cx_octetseq* src);
+
+CORTO_LANG_EXPORT cx_int16 cx_octetseqInit(cx_octetseq* value);
+CORTO_LANG_EXPORT cx_int16 cx_octetseqDeinit(cx_octetseq* value);
 
 /* ::corto::lang::operatorKind */
 CORTO_LANG_EXPORT cx_operatorKind* cx_operatorKindCreate(cx_operatorKind value);
@@ -921,15 +986,29 @@ CORTO_LANG_EXPORT cx_int16 cx_procedureKindCompare(cx_procedureKind* dst, cx_pro
 CORTO_LANG_EXPORT cx_int16 cx_procedureKindInit(cx_procedureKind* value);
 CORTO_LANG_EXPORT cx_int16 cx_procedureKindDeinit(cx_procedureKind* value);
 
+/* ::corto::lang::query */
+CORTO_LANG_EXPORT cx_query cx_queryCreate(cx_object from, cx_eventMask mask);
+CORTO_LANG_EXPORT cx_query cx_queryCreateChild(cx_object _parent, cx_string _name, cx_object from, cx_eventMask mask);
+
+CORTO_LANG_EXPORT cx_query cx_queryDeclare(void);
+CORTO_LANG_EXPORT cx_query cx_queryDeclareChild(cx_object _parent, cx_string _name);
+CORTO_LANG_EXPORT cx_int16 cx_queryDefine(cx_query this, cx_object from, cx_eventMask mask);
+CORTO_LANG_EXPORT void cx_queryUpdate(cx_query this, cx_object from, cx_eventMask mask);
+CORTO_LANG_EXPORT void cx_querySet(cx_query this, cx_object from, cx_eventMask mask);
+CORTO_LANG_EXPORT cx_string cx_queryStr(cx_query value);
+CORTO_LANG_EXPORT cx_query cx_queryFromStr(cx_query value, cx_string str);
+CORTO_LANG_EXPORT cx_int16 cx_queryCopy(cx_query *dst, cx_query src);
+CORTO_LANG_EXPORT cx_int16 cx_queryCompare(cx_query dst, cx_query src);
+
 /* ::corto::lang::replicator */
-CORTO_LANG_EXPORT cx_replicator cx_replicatorCreate(void);
-CORTO_LANG_EXPORT cx_replicator cx_replicatorCreateChild(cx_object _parent, cx_string _name);
+CORTO_LANG_EXPORT cx_replicator cx_replicatorCreate(cx_object mount, cx_query query, cx_notifyAction onDeclare, cx_notifyAction onUpdate, cx_notifyAction onDelete, cx_invokeAction onInvoke);
+CORTO_LANG_EXPORT cx_replicator cx_replicatorCreateChild(cx_object _parent, cx_string _name, cx_object mount, cx_query query, cx_notifyAction onDeclare, cx_notifyAction onUpdate, cx_notifyAction onDelete, cx_invokeAction onInvoke);
 
 CORTO_LANG_EXPORT cx_replicator cx_replicatorDeclare(void);
 CORTO_LANG_EXPORT cx_replicator cx_replicatorDeclareChild(cx_object _parent, cx_string _name);
-CORTO_LANG_EXPORT cx_int16 cx_replicatorDefine(cx_replicator this);
-CORTO_LANG_EXPORT void cx_replicatorUpdate(cx_replicator this);
-CORTO_LANG_EXPORT void cx_replicatorSet(cx_replicator this);
+CORTO_LANG_EXPORT cx_int16 cx_replicatorDefine(cx_replicator this, cx_object mount, cx_query query, cx_notifyAction onDeclare, cx_notifyAction onUpdate, cx_notifyAction onDelete, cx_invokeAction onInvoke);
+CORTO_LANG_EXPORT void cx_replicatorUpdate(cx_replicator this, cx_object mount, cx_query query, cx_notifyAction onDeclare, cx_notifyAction onUpdate, cx_notifyAction onDelete, cx_invokeAction onInvoke);
+CORTO_LANG_EXPORT void cx_replicatorSet(cx_replicator this, cx_object mount, cx_query query, cx_notifyAction onDeclare, cx_notifyAction onUpdate, cx_notifyAction onDelete, cx_invokeAction onInvoke);
 CORTO_LANG_EXPORT cx_string cx_replicatorStr(cx_replicator value);
 CORTO_LANG_EXPORT cx_replicator cx_replicatorFromStr(cx_replicator value, cx_string str);
 CORTO_LANG_EXPORT cx_int16 cx_replicatorCopy(cx_replicator *dst, cx_replicator src);
@@ -1243,6 +1322,16 @@ CORTO_LANG_EXPORT void cx_objectseqClear(cx_objectseq *seq);
 CORTO_LANG_EXPORT cx_observer cx_observerseqAppend(cx_observerseq *seq);
 CORTO_LANG_EXPORT void cx_observerseqSize(cx_observerseq *seq, cx_uint32 length);
 CORTO_LANG_EXPORT void cx_observerseqClear(cx_observerseq *seq);
+
+/* ::corto::lang::octetseq */
+#define cx_octetseqForeach(seq, elem) \
+    cx_uint32 elem##_iter;\
+    cx_octet elem;\
+    for(elem##_iter=0; seq.buffer ? elem = seq.buffer[elem##_iter] : elem, elem##_iter<seq.length; elem##_iter++)\
+
+CORTO_LANG_EXPORT cx_octet* cx_octetseqAppend(cx_octetseq *seq);
+CORTO_LANG_EXPORT void cx_octetseqSize(cx_octetseq *seq, cx_uint32 length);
+CORTO_LANG_EXPORT void cx_octetseqClear(cx_octetseq *seq);
 
 /* ::corto::lang::parameterseq */
 #define cx_parameterseqForeach(seq, elem) \

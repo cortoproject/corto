@@ -63,6 +63,8 @@ typedef void (*cx__notifyCallback)(cx__observer* data, cx_object _this, cx_objec
 struct cx__observer {
     cx_object _this;
     cx_observer observer;
+    cx_eventMask mask;
+    cx_object dispatcher;
     cx_int32 count;
     cx__notifyCallback notify;
 };

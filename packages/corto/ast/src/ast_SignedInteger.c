@@ -33,6 +33,7 @@ cx_int16 _ast_SignedInteger_serialize(ast_SignedInteger this, cx_type dstType, c
     case Ast_Bool:
         *(cx_bool*)dst = this->value ? TRUE : FALSE;
         break;
+    case Ast_Char:
     case Ast_Int:
     case Ast_SignedInt:
     case Ast_Enum:

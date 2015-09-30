@@ -21,8 +21,6 @@ extern "C" {
 #define cx_bitmask(o) ((cx_bitmask)cx_assertType((cx_type)cx_bitmask_o, o))
 #define cx_bool(o) ((cx_bool *)cx_assertType((cx_type)cx_bool_o, o))
 #define cx_boolean(o) ((cx_boolean)cx_assertType((cx_type)cx_boolean_o, o))
-#define cx_callbackDestruct(o) ((cx_callbackDestruct *)cx_assertType((cx_type)cx_callbackDestruct_o, o))
-#define cx_callbackInit(o) ((cx_callbackInit *)cx_assertType((cx_type)cx_callbackInit_o, o))
 #define cx_char(o) ((cx_char *)cx_assertType((cx_type)cx_char_o, o))
 #define cx_character(o) ((cx_character)cx_assertType((cx_type)cx_character_o, o))
 #define cx_class(o) ((cx_class)cx_assertType((cx_type)cx_class_o, o))
@@ -32,6 +30,7 @@ extern "C" {
 #define cx_constant(o) ((cx_constant *)cx_assertType((cx_type)cx_constant_o, o))
 #define cx_delegate(o) ((cx_delegate)cx_assertType((cx_type)cx_delegate_o, o))
 #define cx_delegatedata(o) ((cx_delegatedata *)cx_assertType((cx_type)cx_delegatedata_o, o))
+#define cx_destructAction(o) ((cx_destructAction *)cx_assertType((cx_type)cx_destructAction_o, o))
 #define cx_dispatcher(o) ((cx_dispatcher)cx_assertType((cx_type)cx_dispatcher_o, o))
 #define cx_enum(o) ((cx_enum)cx_assertType((cx_type)cx_enum_o, o))
 #define cx_equalityKind(o) ((cx_equalityKind *)cx_assertType((cx_type)cx_equalityKind_o, o))
@@ -41,6 +40,7 @@ extern "C" {
 #define cx_float32(o) ((cx_float32 *)cx_assertType((cx_type)cx_float32_o, o))
 #define cx_float64(o) ((cx_float64 *)cx_assertType((cx_type)cx_float64_o, o))
 #define cx_function(o) ((cx_function)cx_assertType((cx_type)cx_function_o, o))
+#define cx_initAction(o) ((cx_initAction *)cx_assertType((cx_type)cx_initAction_o, o))
 #define cx_int(o) ((cx_int)cx_assertType((cx_type)cx_int_o, o))
 #define cx_int16(o) ((cx_int16 *)cx_assertType((cx_type)cx_int16_o, o))
 #define cx_int32(o) ((cx_int32 *)cx_assertType((cx_type)cx_int32_o, o))
@@ -50,6 +50,8 @@ extern "C" {
 #define cx_interfaceseq(o) ((cx_interfaceseq *)cx_assertType((cx_type)cx_interfaceseq_o, o))
 #define cx_interfaceVector(o) ((cx_interfaceVector *)cx_assertType((cx_type)cx_interfaceVector_o, o))
 #define cx_interfaceVectorseq(o) ((cx_interfaceVectorseq *)cx_assertType((cx_type)cx_interfaceVectorseq_o, o))
+#define cx_invokeAction(o) ((cx_invokeAction *)cx_assertType((cx_type)cx_invokeAction_o, o))
+#define cx_invokeEvent(o) ((cx_invokeEvent)cx_assertType((cx_type)cx_invokeEvent_o, o))
 #define cx_iterator(o) ((cx_iterator)cx_assertType((cx_type)cx_iterator_o, o))
 #define cx_list(o) ((cx_list)cx_assertType((cx_type)cx_list_o, o))
 #define cx_map(o) ((cx_map)cx_assertType((cx_type)cx_map_o, o))
@@ -58,11 +60,13 @@ extern "C" {
 #define cx_metaprocedure(o) ((cx_metaprocedure)cx_assertType((cx_type)cx_metaprocedure_o, o))
 #define cx_method(o) ((cx_method)cx_assertType((cx_type)cx_method_o, o))
 #define cx_modifier(o) ((cx_modifier *)cx_assertType((cx_type)cx_modifier_o, o))
+#define cx_notifyAction(o) ((cx_notifyAction *)cx_assertType((cx_type)cx_notifyAction_o, o))
 #define cx_objectseq(o) ((cx_objectseq *)cx_assertType((cx_type)cx_objectseq_o, o))
 #define cx_observableEvent(o) ((cx_observableEvent)cx_assertType((cx_type)cx_observableEvent_o, o))
 #define cx_observer(o) ((cx_observer)cx_assertType((cx_type)cx_observer_o, o))
 #define cx_observerseq(o) ((cx_observerseq *)cx_assertType((cx_type)cx_observerseq_o, o))
 #define cx_octet(o) ((cx_octet *)cx_assertType((cx_type)cx_octet_o, o))
+#define cx_octetseq(o) ((cx_octetseq *)cx_assertType((cx_type)cx_octetseq_o, o))
 #define cx_operatorKind(o) ((cx_operatorKind *)cx_assertType((cx_type)cx_operatorKind_o, o))
 #define cx_package(o) ((cx_package)cx_assertType((cx_type)cx_package_o, o))
 #define cx_parameter(o) ((cx_parameter *)cx_assertType((cx_type)cx_parameter_o, o))
@@ -71,6 +75,7 @@ extern "C" {
 #define cx_primitiveKind(o) ((cx_primitiveKind *)cx_assertType((cx_type)cx_primitiveKind_o, o))
 #define cx_procedure(o) ((cx_procedure)cx_assertType((cx_type)cx_procedure_o, o))
 #define cx_procedureKind(o) ((cx_procedureKind *)cx_assertType((cx_type)cx_procedureKind_o, o))
+#define cx_query(o) ((cx_query)cx_assertType((cx_type)cx_query_o, o))
 #define cx_replicator(o) ((cx_replicator)cx_assertType((cx_type)cx_replicator_o, o))
 #define cx_sequence(o) ((cx_sequence)cx_assertType((cx_type)cx_sequence_o, o))
 #define cx_state(o) ((cx_state *)cx_assertType((cx_type)cx_state_o, o))
@@ -165,10 +170,10 @@ struct cx_delegatedata {
     cx_function procedure;
 };
 
-/*  ::corto::lang::callbackInit */
-typedef struct cx_callbackInit cx_callbackInit;
+/*  ::corto::lang::initAction */
+typedef struct cx_initAction cx_initAction;
 
-struct cx_callbackInit {
+struct cx_initAction {
     cx_delegatedata _parent;
 };
 
@@ -183,7 +188,7 @@ CX_CLASS_DEF(cx_type) {
     cx_state parentState;
     cx_type defaultType;
     cx_vtable metaprocedures;
-    cx_callbackInit init;
+    cx_initAction init;
 };
 
 /* ::corto::lang::modifier */
@@ -318,13 +323,6 @@ CX_CLASS_DEF(cx_boolean) {
     CX_EXTEND(cx_primitive);
 };
 
-/*  ::corto::lang::callbackDestruct */
-typedef struct cx_callbackDestruct cx_callbackDestruct;
-
-struct cx_callbackDestruct {
-    cx_delegatedata _parent;
-};
-
 /* ::corto::lang::char */
 typedef char cx_char;
 
@@ -410,6 +408,13 @@ CX_CLASS_DEF(cx_observer) {
 
 CX_SEQUENCE(cx_observerseq, cx_observer,);
 
+/*  ::corto::lang::destructAction */
+typedef struct cx_destructAction cx_destructAction;
+
+struct cx_destructAction {
+    cx_delegatedata _parent;
+};
+
 /*  ::corto::lang::class */
 CX_CLASS(cx_class);
 
@@ -418,8 +423,8 @@ CX_CLASS_DEF(cx_class) {
     cx_interfaceseq implements;
     cx_interfaceVectorseq interfaceVector;
     cx_observerseq observers;
-    cx_callbackInit construct;
-    cx_callbackDestruct destruct;
+    cx_initAction construct;
+    cx_destructAction destruct;
 };
 
 /* ::corto::lang::constant */
@@ -487,6 +492,28 @@ typedef int32_t cx_int32;
 /* ::corto::lang::int8 */
 typedef int8_t cx_int8;
 
+/*  ::corto::lang::invokeAction */
+typedef struct cx_invokeAction cx_invokeAction;
+
+struct cx_invokeAction {
+    cx_delegatedata _parent;
+};
+
+/* ::corto::lang::octet */
+typedef uint8_t cx_octet;
+
+CX_SEQUENCE(cx_octetseq, cx_octet,);
+
+/*  ::corto::lang::invokeEvent */
+CX_CLASS(cx_invokeEvent);
+
+CX_CLASS_DEF(cx_invokeEvent) {
+    CX_EXTEND(cx_event);
+    cx_object instance;
+    cx_function function;
+    cx_octetseq args;
+};
+
 /*  ::corto::lang::iterator */
 CX_CLASS(cx_iterator);
 
@@ -528,6 +555,13 @@ CX_CLASS_DEF(cx_method) {
     cx_bool virtual;
 };
 
+/*  ::corto::lang::notifyAction */
+typedef struct cx_notifyAction cx_notifyAction;
+
+struct cx_notifyAction {
+    cx_delegatedata _parent;
+};
+
 /*  ::corto::lang::observableEvent */
 CX_CLASS(cx_observableEvent);
 
@@ -538,9 +572,6 @@ CX_CLASS_DEF(cx_observableEvent) {
     cx_object source;
     cx_object observable;
 };
-
-/* ::corto::lang::octet */
-typedef uint8_t cx_octet;
 
 /* ::corto::lang::operatorKind */
 typedef enum cx_operatorKind {
@@ -600,11 +631,28 @@ CX_CLASS(cx_procedure);
 CX_CLASS_DEF(cx_procedure) {
     CX_EXTEND(cx_struct);
     cx_procedureKind kind;
-    cx_callbackInit bind;
+    cx_initAction bind;
+};
+
+/*  ::corto::lang::query */
+CX_CLASS(cx_query);
+
+CX_CLASS_DEF(cx_query) {
+    cx_object from;
+    cx_eventMask mask;
 };
 
 /*  ::corto::lang::replicator */
-CX_INTERFACE(cx_replicator);
+CX_CLASS(cx_replicator);
+
+CX_CLASS_DEF(cx_replicator) {
+    cx_object mount;
+    cx_query query;
+    cx_notifyAction onDeclare;
+    cx_notifyAction onUpdate;
+    cx_notifyAction onDelete;
+    cx_invokeAction onInvoke;
+};
 
 /*  ::corto::lang::sequence */
 CX_CLASS(cx_sequence);

@@ -723,206 +723,6 @@ cx_int16 cx_booleanCompare(cx_boolean dst, cx_boolean src) {
     return cx_compare(dst, src);
 }
 
-cx_callbackDestruct* cx_callbackDestructCreate(void) {
-    cx_callbackDestruct* this;
-    this = cx_declare(cx_callbackDestruct_o);
-    if (!this) {
-        return NULL;
-    }
-    if (this && cx_define(this)) {
-        cx_release(this);
-        this = NULL;
-    }
-    return this;
-}
-
-cx_callbackDestruct* cx_callbackDestructCreateChild(cx_object _parent, cx_string _name) {
-    cx_callbackDestruct* this;
-    this = cx_declareChild(_parent, _name, cx_callbackDestruct_o);
-    if (!this) {
-        return NULL;
-    }
-    if (this && cx_define(this)) {
-        cx_release(this);
-        this = NULL;
-    }
-    return this;
-}
-
-cx_callbackDestruct* cx_callbackDestructDeclare(void) {
-    cx_callbackDestruct* this;
-    this = cx_declare(cx_callbackDestruct_o);
-    if (!this) {
-        return NULL;
-    }
-    return this;
-}
-
-cx_callbackDestruct* cx_callbackDestructDeclareChild(cx_object _parent, cx_string _name) {
-    cx_callbackDestruct* this;
-    this = cx_declareChild(_parent, _name, cx_callbackDestruct_o);
-    if (!this) {
-        return NULL;
-    }
-    return this;
-}
-
-cx_int16 cx_callbackDestructDefine(cx_callbackDestruct* this) {
-    return cx_define(this);
-}
-
-void cx_callbackDestructUpdate(cx_callbackDestruct* this) {
-    cx_update(this);
-}
-
-void cx_callbackDestructSet(cx_callbackDestruct* this) {
-    CX_UNUSED(this);
-}
-
-cx_string cx_callbackDestructStr(cx_callbackDestruct* value) {
-    cx_string result;
-    cx_value v;
-    cx_valueValueInit(&v, NULL, cx_type(cx_callbackDestruct_o), &value);
-    result = cx_strv(&v, 0);
-    return result;
-}
-
-cx_callbackDestruct* cx_callbackDestructFromStr(cx_callbackDestruct* value, cx_string str) {
-    cx_fromStrp(&value, cx_type(cx_callbackDestruct_o), str);
-    return value;
-}
-
-cx_int16 cx_callbackDestructCopy(cx_callbackDestruct* *dst, cx_callbackDestruct* src) {
-    cx_value v1, v2;
-    cx_valueValueInit(&v1, NULL, cx_type(cx_callbackDestruct_o), dst);
-    cx_valueValueInit(&v2, NULL, cx_type(cx_callbackDestruct_o), src);
-    return cx_copyv(&v1, &v2);
-}
-
-cx_int16 cx_callbackDestructCompare(cx_callbackDestruct* dst, cx_callbackDestruct* src) {
-    cx_value v1, v2;
-    cx_valueValueInit(&v1, NULL, cx_type(cx_callbackDestruct_o), dst);
-    cx_valueValueInit(&v2, NULL, cx_type(cx_callbackDestruct_o), src);
-    return cx_comparev(&v1, &v2);
-}
-
-cx_int16 cx_callbackDestructInit(cx_callbackDestruct* value) {
-    cx_int16 result;
-    memset(value, 0, cx_type(cx_callbackDestruct_o)->size);
-    cx_value v;
-    cx_valueValueInit(&v, NULL, cx_type(cx_callbackDestruct_o), value);
-    result = cx_initv(&v);
-    return result;
-}
-
-cx_int16 cx_callbackDestructDeinit(cx_callbackDestruct* value) {
-    cx_int16 result;
-    cx_value v;
-    cx_valueValueInit(&v, NULL, cx_type(cx_callbackDestruct_o), value);
-    result = cx_deinitv(&v);
-    return result;
-}
-
-cx_callbackInit* cx_callbackInitCreate(void) {
-    cx_callbackInit* this;
-    this = cx_declare(cx_callbackInit_o);
-    if (!this) {
-        return NULL;
-    }
-    if (this && cx_define(this)) {
-        cx_release(this);
-        this = NULL;
-    }
-    return this;
-}
-
-cx_callbackInit* cx_callbackInitCreateChild(cx_object _parent, cx_string _name) {
-    cx_callbackInit* this;
-    this = cx_declareChild(_parent, _name, cx_callbackInit_o);
-    if (!this) {
-        return NULL;
-    }
-    if (this && cx_define(this)) {
-        cx_release(this);
-        this = NULL;
-    }
-    return this;
-}
-
-cx_callbackInit* cx_callbackInitDeclare(void) {
-    cx_callbackInit* this;
-    this = cx_declare(cx_callbackInit_o);
-    if (!this) {
-        return NULL;
-    }
-    return this;
-}
-
-cx_callbackInit* cx_callbackInitDeclareChild(cx_object _parent, cx_string _name) {
-    cx_callbackInit* this;
-    this = cx_declareChild(_parent, _name, cx_callbackInit_o);
-    if (!this) {
-        return NULL;
-    }
-    return this;
-}
-
-cx_int16 cx_callbackInitDefine(cx_callbackInit* this) {
-    return cx_define(this);
-}
-
-void cx_callbackInitUpdate(cx_callbackInit* this) {
-    cx_update(this);
-}
-
-void cx_callbackInitSet(cx_callbackInit* this) {
-    CX_UNUSED(this);
-}
-
-cx_string cx_callbackInitStr(cx_callbackInit* value) {
-    cx_string result;
-    cx_value v;
-    cx_valueValueInit(&v, NULL, cx_type(cx_callbackInit_o), &value);
-    result = cx_strv(&v, 0);
-    return result;
-}
-
-cx_callbackInit* cx_callbackInitFromStr(cx_callbackInit* value, cx_string str) {
-    cx_fromStrp(&value, cx_type(cx_callbackInit_o), str);
-    return value;
-}
-
-cx_int16 cx_callbackInitCopy(cx_callbackInit* *dst, cx_callbackInit* src) {
-    cx_value v1, v2;
-    cx_valueValueInit(&v1, NULL, cx_type(cx_callbackInit_o), dst);
-    cx_valueValueInit(&v2, NULL, cx_type(cx_callbackInit_o), src);
-    return cx_copyv(&v1, &v2);
-}
-
-cx_int16 cx_callbackInitCompare(cx_callbackInit* dst, cx_callbackInit* src) {
-    cx_value v1, v2;
-    cx_valueValueInit(&v1, NULL, cx_type(cx_callbackInit_o), dst);
-    cx_valueValueInit(&v2, NULL, cx_type(cx_callbackInit_o), src);
-    return cx_comparev(&v1, &v2);
-}
-
-cx_int16 cx_callbackInitInit(cx_callbackInit* value) {
-    cx_int16 result;
-    memset(value, 0, cx_type(cx_callbackInit_o)->size);
-    cx_value v;
-    cx_valueValueInit(&v, NULL, cx_type(cx_callbackInit_o), value);
-    result = cx_initv(&v);
-    return result;
-}
-
-cx_int16 cx_callbackInitDeinit(cx_callbackInit* value) {
-    cx_int16 result;
-    cx_value v;
-    cx_valueValueInit(&v, NULL, cx_type(cx_callbackInit_o), value);
-    result = cx_deinitv(&v);
-    return result;
-}
-
 cx_char* cx_charCreate(cx_char value) {
     cx_char* this;
     this = cx_declare(cx_char_o);
@@ -1817,6 +1617,106 @@ cx_int16 cx_delegatedataDeinit(cx_delegatedata* value) {
     return result;
 }
 
+cx_destructAction* cx_destructActionCreate(void) {
+    cx_destructAction* this;
+    this = cx_declare(cx_destructAction_o);
+    if (!this) {
+        return NULL;
+    }
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+cx_destructAction* cx_destructActionCreateChild(cx_object _parent, cx_string _name) {
+    cx_destructAction* this;
+    this = cx_declareChild(_parent, _name, cx_destructAction_o);
+    if (!this) {
+        return NULL;
+    }
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+cx_destructAction* cx_destructActionDeclare(void) {
+    cx_destructAction* this;
+    this = cx_declare(cx_destructAction_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+cx_destructAction* cx_destructActionDeclareChild(cx_object _parent, cx_string _name) {
+    cx_destructAction* this;
+    this = cx_declareChild(_parent, _name, cx_destructAction_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+cx_int16 cx_destructActionDefine(cx_destructAction* this) {
+    return cx_define(this);
+}
+
+void cx_destructActionUpdate(cx_destructAction* this) {
+    cx_update(this);
+}
+
+void cx_destructActionSet(cx_destructAction* this) {
+    CX_UNUSED(this);
+}
+
+cx_string cx_destructActionStr(cx_destructAction* value) {
+    cx_string result;
+    cx_value v;
+    cx_valueValueInit(&v, NULL, cx_type(cx_destructAction_o), &value);
+    result = cx_strv(&v, 0);
+    return result;
+}
+
+cx_destructAction* cx_destructActionFromStr(cx_destructAction* value, cx_string str) {
+    cx_fromStrp(&value, cx_type(cx_destructAction_o), str);
+    return value;
+}
+
+cx_int16 cx_destructActionCopy(cx_destructAction* *dst, cx_destructAction* src) {
+    cx_value v1, v2;
+    cx_valueValueInit(&v1, NULL, cx_type(cx_destructAction_o), dst);
+    cx_valueValueInit(&v2, NULL, cx_type(cx_destructAction_o), src);
+    return cx_copyv(&v1, &v2);
+}
+
+cx_int16 cx_destructActionCompare(cx_destructAction* dst, cx_destructAction* src) {
+    cx_value v1, v2;
+    cx_valueValueInit(&v1, NULL, cx_type(cx_destructAction_o), dst);
+    cx_valueValueInit(&v2, NULL, cx_type(cx_destructAction_o), src);
+    return cx_comparev(&v1, &v2);
+}
+
+cx_int16 cx_destructActionInit(cx_destructAction* value) {
+    cx_int16 result;
+    memset(value, 0, cx_type(cx_destructAction_o)->size);
+    cx_value v;
+    cx_valueValueInit(&v, NULL, cx_type(cx_destructAction_o), value);
+    result = cx_initv(&v);
+    return result;
+}
+
+cx_int16 cx_destructActionDeinit(cx_destructAction* value) {
+    cx_int16 result;
+    cx_value v;
+    cx_valueValueInit(&v, NULL, cx_type(cx_destructAction_o), value);
+    result = cx_deinitv(&v);
+    return result;
+}
+
 cx_dispatcher cx_dispatcherCreate(void) {
     cx_dispatcher this;
     this = cx_declare(cx_dispatcher_o);
@@ -2649,6 +2549,106 @@ cx_int16 cx_functionCopy(cx_function *dst, cx_function src) {
 
 cx_int16 cx_functionCompare(cx_function dst, cx_function src) {
     return cx_compare(dst, src);
+}
+
+cx_initAction* cx_initActionCreate(void) {
+    cx_initAction* this;
+    this = cx_declare(cx_initAction_o);
+    if (!this) {
+        return NULL;
+    }
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+cx_initAction* cx_initActionCreateChild(cx_object _parent, cx_string _name) {
+    cx_initAction* this;
+    this = cx_declareChild(_parent, _name, cx_initAction_o);
+    if (!this) {
+        return NULL;
+    }
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+cx_initAction* cx_initActionDeclare(void) {
+    cx_initAction* this;
+    this = cx_declare(cx_initAction_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+cx_initAction* cx_initActionDeclareChild(cx_object _parent, cx_string _name) {
+    cx_initAction* this;
+    this = cx_declareChild(_parent, _name, cx_initAction_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+cx_int16 cx_initActionDefine(cx_initAction* this) {
+    return cx_define(this);
+}
+
+void cx_initActionUpdate(cx_initAction* this) {
+    cx_update(this);
+}
+
+void cx_initActionSet(cx_initAction* this) {
+    CX_UNUSED(this);
+}
+
+cx_string cx_initActionStr(cx_initAction* value) {
+    cx_string result;
+    cx_value v;
+    cx_valueValueInit(&v, NULL, cx_type(cx_initAction_o), &value);
+    result = cx_strv(&v, 0);
+    return result;
+}
+
+cx_initAction* cx_initActionFromStr(cx_initAction* value, cx_string str) {
+    cx_fromStrp(&value, cx_type(cx_initAction_o), str);
+    return value;
+}
+
+cx_int16 cx_initActionCopy(cx_initAction* *dst, cx_initAction* src) {
+    cx_value v1, v2;
+    cx_valueValueInit(&v1, NULL, cx_type(cx_initAction_o), dst);
+    cx_valueValueInit(&v2, NULL, cx_type(cx_initAction_o), src);
+    return cx_copyv(&v1, &v2);
+}
+
+cx_int16 cx_initActionCompare(cx_initAction* dst, cx_initAction* src) {
+    cx_value v1, v2;
+    cx_valueValueInit(&v1, NULL, cx_type(cx_initAction_o), dst);
+    cx_valueValueInit(&v2, NULL, cx_type(cx_initAction_o), src);
+    return cx_comparev(&v1, &v2);
+}
+
+cx_int16 cx_initActionInit(cx_initAction* value) {
+    cx_int16 result;
+    memset(value, 0, cx_type(cx_initAction_o)->size);
+    cx_value v;
+    cx_valueValueInit(&v, NULL, cx_type(cx_initAction_o), value);
+    result = cx_initv(&v);
+    return result;
+}
+
+cx_int16 cx_initActionDeinit(cx_initAction* value) {
+    cx_int16 result;
+    cx_value v;
+    cx_valueValueInit(&v, NULL, cx_type(cx_initAction_o), value);
+    result = cx_deinitv(&v);
+    return result;
 }
 
 cx_int cx_intCreate(cx_width width, cx_int64 min, cx_int64 max) {
@@ -3570,6 +3570,198 @@ cx_int16 cx_interfaceVectorseqDeinit(cx_interfaceVectorseq* value) {
     return result;
 }
 
+cx_invokeAction* cx_invokeActionCreate(void) {
+    cx_invokeAction* this;
+    this = cx_declare(cx_invokeAction_o);
+    if (!this) {
+        return NULL;
+    }
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+cx_invokeAction* cx_invokeActionCreateChild(cx_object _parent, cx_string _name) {
+    cx_invokeAction* this;
+    this = cx_declareChild(_parent, _name, cx_invokeAction_o);
+    if (!this) {
+        return NULL;
+    }
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+cx_invokeAction* cx_invokeActionDeclare(void) {
+    cx_invokeAction* this;
+    this = cx_declare(cx_invokeAction_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+cx_invokeAction* cx_invokeActionDeclareChild(cx_object _parent, cx_string _name) {
+    cx_invokeAction* this;
+    this = cx_declareChild(_parent, _name, cx_invokeAction_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+cx_int16 cx_invokeActionDefine(cx_invokeAction* this) {
+    return cx_define(this);
+}
+
+void cx_invokeActionUpdate(cx_invokeAction* this) {
+    cx_update(this);
+}
+
+void cx_invokeActionSet(cx_invokeAction* this) {
+    CX_UNUSED(this);
+}
+
+cx_string cx_invokeActionStr(cx_invokeAction* value) {
+    cx_string result;
+    cx_value v;
+    cx_valueValueInit(&v, NULL, cx_type(cx_invokeAction_o), &value);
+    result = cx_strv(&v, 0);
+    return result;
+}
+
+cx_invokeAction* cx_invokeActionFromStr(cx_invokeAction* value, cx_string str) {
+    cx_fromStrp(&value, cx_type(cx_invokeAction_o), str);
+    return value;
+}
+
+cx_int16 cx_invokeActionCopy(cx_invokeAction* *dst, cx_invokeAction* src) {
+    cx_value v1, v2;
+    cx_valueValueInit(&v1, NULL, cx_type(cx_invokeAction_o), dst);
+    cx_valueValueInit(&v2, NULL, cx_type(cx_invokeAction_o), src);
+    return cx_copyv(&v1, &v2);
+}
+
+cx_int16 cx_invokeActionCompare(cx_invokeAction* dst, cx_invokeAction* src) {
+    cx_value v1, v2;
+    cx_valueValueInit(&v1, NULL, cx_type(cx_invokeAction_o), dst);
+    cx_valueValueInit(&v2, NULL, cx_type(cx_invokeAction_o), src);
+    return cx_comparev(&v1, &v2);
+}
+
+cx_int16 cx_invokeActionInit(cx_invokeAction* value) {
+    cx_int16 result;
+    memset(value, 0, cx_type(cx_invokeAction_o)->size);
+    cx_value v;
+    cx_valueValueInit(&v, NULL, cx_type(cx_invokeAction_o), value);
+    result = cx_initv(&v);
+    return result;
+}
+
+cx_int16 cx_invokeActionDeinit(cx_invokeAction* value) {
+    cx_int16 result;
+    cx_value v;
+    cx_valueValueInit(&v, NULL, cx_type(cx_invokeAction_o), value);
+    result = cx_deinitv(&v);
+    return result;
+}
+
+cx_invokeEvent cx_invokeEventCreate(cx_object instance, cx_function function, cx_octetseq args) {
+    cx_invokeEvent this;
+    this = cx_declare(cx_invokeEvent_o);
+    if (!this) {
+        return NULL;
+    }
+    cx_setref(&this->instance, instance);
+    cx_setref(&this->function, cx_function(function));
+    this->args = args;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+cx_invokeEvent cx_invokeEventCreateChild(cx_object _parent, cx_string _name, cx_object instance, cx_function function, cx_octetseq args) {
+    cx_invokeEvent this;
+    this = cx_declareChild(_parent, _name, cx_invokeEvent_o);
+    if (!this) {
+        return NULL;
+    }
+    cx_setref(&this->instance, instance);
+    cx_setref(&this->function, cx_function(function));
+    this->args = args;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+cx_invokeEvent cx_invokeEventDeclare(void) {
+    cx_invokeEvent this;
+    this = cx_declare(cx_invokeEvent_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+cx_invokeEvent cx_invokeEventDeclareChild(cx_object _parent, cx_string _name) {
+    cx_invokeEvent this;
+    this = cx_declareChild(_parent, _name, cx_invokeEvent_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+cx_int16 cx_invokeEventDefine(cx_invokeEvent this, cx_object instance, cx_function function, cx_octetseq args) {
+    cx_setref(&this->instance, instance);
+    cx_setref(&this->function, cx_function(function));
+    this->args = args;
+    return cx_define(this);
+}
+
+void cx_invokeEventUpdate(cx_invokeEvent this, cx_object instance, cx_function function, cx_octetseq args) {
+    cx_updateBegin(this);
+    cx_setref(&this->instance, instance);
+    cx_setref(&this->function, cx_function(function));
+    this->args = args;
+    cx_updateEnd(this);
+}
+
+void cx_invokeEventSet(cx_invokeEvent this, cx_object instance, cx_function function, cx_octetseq args) {
+    cx_setref(&this->instance, instance);
+    cx_setref(&this->function, cx_function(function));
+    this->args = args;
+}
+
+cx_string cx_invokeEventStr(cx_invokeEvent value) {
+    cx_string result;
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_invokeEvent_o));
+    result = cx_strv(&v, 0);
+    return result;
+}
+
+cx_invokeEvent cx_invokeEventFromStr(cx_invokeEvent value, cx_string str) {
+    cx_fromStrp(&value, cx_type(cx_invokeEvent_o), str);
+    return value;
+}
+
+cx_int16 cx_invokeEventCopy(cx_invokeEvent *dst, cx_invokeEvent src) {
+    return cx_copy((cx_object*)dst, src);
+}
+
+cx_int16 cx_invokeEventCompare(cx_invokeEvent dst, cx_invokeEvent src) {
+    return cx_compare(dst, src);
+}
+
 cx_iterator cx_iteratorCreate(cx_type elementType) {
     cx_iterator this;
     this = cx_declare(cx_iterator_o);
@@ -4324,6 +4516,106 @@ cx_int16 cx_modifierDeinit(cx_modifier* value) {
     return result;
 }
 
+cx_notifyAction* cx_notifyActionCreate(void) {
+    cx_notifyAction* this;
+    this = cx_declare(cx_notifyAction_o);
+    if (!this) {
+        return NULL;
+    }
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+cx_notifyAction* cx_notifyActionCreateChild(cx_object _parent, cx_string _name) {
+    cx_notifyAction* this;
+    this = cx_declareChild(_parent, _name, cx_notifyAction_o);
+    if (!this) {
+        return NULL;
+    }
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+cx_notifyAction* cx_notifyActionDeclare(void) {
+    cx_notifyAction* this;
+    this = cx_declare(cx_notifyAction_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+cx_notifyAction* cx_notifyActionDeclareChild(cx_object _parent, cx_string _name) {
+    cx_notifyAction* this;
+    this = cx_declareChild(_parent, _name, cx_notifyAction_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+cx_int16 cx_notifyActionDefine(cx_notifyAction* this) {
+    return cx_define(this);
+}
+
+void cx_notifyActionUpdate(cx_notifyAction* this) {
+    cx_update(this);
+}
+
+void cx_notifyActionSet(cx_notifyAction* this) {
+    CX_UNUSED(this);
+}
+
+cx_string cx_notifyActionStr(cx_notifyAction* value) {
+    cx_string result;
+    cx_value v;
+    cx_valueValueInit(&v, NULL, cx_type(cx_notifyAction_o), &value);
+    result = cx_strv(&v, 0);
+    return result;
+}
+
+cx_notifyAction* cx_notifyActionFromStr(cx_notifyAction* value, cx_string str) {
+    cx_fromStrp(&value, cx_type(cx_notifyAction_o), str);
+    return value;
+}
+
+cx_int16 cx_notifyActionCopy(cx_notifyAction* *dst, cx_notifyAction* src) {
+    cx_value v1, v2;
+    cx_valueValueInit(&v1, NULL, cx_type(cx_notifyAction_o), dst);
+    cx_valueValueInit(&v2, NULL, cx_type(cx_notifyAction_o), src);
+    return cx_copyv(&v1, &v2);
+}
+
+cx_int16 cx_notifyActionCompare(cx_notifyAction* dst, cx_notifyAction* src) {
+    cx_value v1, v2;
+    cx_valueValueInit(&v1, NULL, cx_type(cx_notifyAction_o), dst);
+    cx_valueValueInit(&v2, NULL, cx_type(cx_notifyAction_o), src);
+    return cx_comparev(&v1, &v2);
+}
+
+cx_int16 cx_notifyActionInit(cx_notifyAction* value) {
+    cx_int16 result;
+    memset(value, 0, cx_type(cx_notifyAction_o)->size);
+    cx_value v;
+    cx_valueValueInit(&v, NULL, cx_type(cx_notifyAction_o), value);
+    result = cx_initv(&v);
+    return result;
+}
+
+cx_int16 cx_notifyActionDeinit(cx_notifyAction* value) {
+    cx_int16 result;
+    cx_value v;
+    cx_valueValueInit(&v, NULL, cx_type(cx_notifyAction_o), value);
+    result = cx_deinitv(&v);
+    return result;
+}
+
 cx_object cx_objectCreate(void) {
     cx_object this;
     this = cx_declare(cx_object_o);
@@ -4444,13 +4736,12 @@ cx_int16 cx_objectseqDeinit(cx_objectseq* value) {
     return result;
 }
 
-cx_observableEvent cx_observableEventCreate(cx_uint16 kind, cx_observer observer, cx_object me, cx_object source, cx_object observable) {
+cx_observableEvent cx_observableEventCreate(cx_observer observer, cx_object me, cx_object source, cx_object observable) {
     cx_observableEvent this;
     this = cx_declare(cx_observableEvent_o);
     if (!this) {
         return NULL;
     }
-    cx_event(this)->kind = kind;
     cx_setref(&this->observer, cx_observer(observer));
     cx_setref(&this->me, me);
     cx_setref(&this->source, source);
@@ -4462,13 +4753,12 @@ cx_observableEvent cx_observableEventCreate(cx_uint16 kind, cx_observer observer
     return this;
 }
 
-cx_observableEvent cx_observableEventCreateChild(cx_object _parent, cx_string _name, cx_uint16 kind, cx_observer observer, cx_object me, cx_object source, cx_object observable) {
+cx_observableEvent cx_observableEventCreateChild(cx_object _parent, cx_string _name, cx_observer observer, cx_object me, cx_object source, cx_object observable) {
     cx_observableEvent this;
     this = cx_declareChild(_parent, _name, cx_observableEvent_o);
     if (!this) {
         return NULL;
     }
-    cx_event(this)->kind = kind;
     cx_setref(&this->observer, cx_observer(observer));
     cx_setref(&this->me, me);
     cx_setref(&this->source, source);
@@ -4498,8 +4788,7 @@ cx_observableEvent cx_observableEventDeclareChild(cx_object _parent, cx_string _
     return this;
 }
 
-cx_int16 cx_observableEventDefine(cx_observableEvent this, cx_uint16 kind, cx_observer observer, cx_object me, cx_object source, cx_object observable) {
-    cx_event(this)->kind = kind;
+cx_int16 cx_observableEventDefine(cx_observableEvent this, cx_observer observer, cx_object me, cx_object source, cx_object observable) {
     cx_setref(&this->observer, cx_observer(observer));
     cx_setref(&this->me, me);
     cx_setref(&this->source, source);
@@ -4507,9 +4796,8 @@ cx_int16 cx_observableEventDefine(cx_observableEvent this, cx_uint16 kind, cx_ob
     return cx_define(this);
 }
 
-void cx_observableEventUpdate(cx_observableEvent this, cx_uint16 kind, cx_observer observer, cx_object me, cx_object source, cx_object observable) {
+void cx_observableEventUpdate(cx_observableEvent this, cx_observer observer, cx_object me, cx_object source, cx_object observable) {
     cx_updateBegin(this);
-    cx_event(this)->kind = kind;
     cx_setref(&this->observer, cx_observer(observer));
     cx_setref(&this->me, me);
     cx_setref(&this->source, source);
@@ -4517,8 +4805,7 @@ void cx_observableEventUpdate(cx_observableEvent this, cx_uint16 kind, cx_observ
     cx_updateEnd(this);
 }
 
-void cx_observableEventSet(cx_observableEvent this, cx_uint16 kind, cx_observer observer, cx_object me, cx_object source, cx_object observable) {
-    cx_event(this)->kind = kind;
+void cx_observableEventSet(cx_observableEvent this, cx_observer observer, cx_object me, cx_object source, cx_object observable) {
     cx_setref(&this->observer, cx_observer(observer));
     cx_setref(&this->me, me);
     cx_setref(&this->source, source);
@@ -4838,6 +5125,108 @@ cx_int16 cx_octetDeinit(cx_octet* value) {
     cx_int16 result;
     cx_value v;
     cx_valueValueInit(&v, NULL, cx_type(cx_octet_o), value);
+    result = cx_deinitv(&v);
+    return result;
+}
+
+cx_octetseq* cx_octetseqCreate(void) {
+    cx_octetseq* this;
+    this = cx_declare(cx_octetseq_o);
+    if (!this) {
+        return NULL;
+    }
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+cx_octetseq* cx_octetseqCreateChild(cx_object _parent, cx_string _name) {
+    cx_octetseq* this;
+    this = cx_declareChild(_parent, _name, cx_octetseq_o);
+    if (!this) {
+        return NULL;
+    }
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+cx_octetseq* cx_octetseqDeclare(void) {
+    cx_octetseq* this;
+    this = cx_declare(cx_octetseq_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+cx_octetseq* cx_octetseqDeclareChild(cx_object _parent, cx_string _name) {
+    cx_octetseq* this;
+    this = cx_declareChild(_parent, _name, cx_octetseq_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+cx_int16 cx_octetseqDefine(cx_octetseq* this, cx_octetseq value) {
+    cx_copyp(this, cx_octetseq_o, &value);
+    return cx_define(this);
+}
+
+void cx_octetseqUpdate(cx_octetseq* this, cx_octetseq value) {
+    cx_copyp(this, cx_octetseq_o, &value);
+    cx_update(this);
+}
+
+void cx_octetseqSet(cx_octetseq* this, cx_octetseq value) {
+    cx_copyp(this, cx_octetseq_o, &value);
+}
+
+cx_string cx_octetseqStr(cx_octetseq value) {
+    cx_string result;
+    cx_value v;
+    cx_valueValueInit(&v, NULL, cx_type(cx_octetseq_o), &value);
+    result = cx_strv(&v, 0);
+    return result;
+}
+
+cx_octetseq* cx_octetseqFromStr(cx_octetseq* value, cx_string str) {
+    cx_fromStrp(&value, cx_type(cx_octetseq_o), str);
+    return value;
+}
+
+cx_int16 cx_octetseqCopy(cx_octetseq* *dst, cx_octetseq* src) {
+    cx_value v1, v2;
+    cx_valueValueInit(&v1, NULL, cx_type(cx_octetseq_o), dst);
+    cx_valueValueInit(&v2, NULL, cx_type(cx_octetseq_o), src);
+    return cx_copyv(&v1, &v2);
+}
+
+cx_int16 cx_octetseqCompare(cx_octetseq* dst, cx_octetseq* src) {
+    cx_value v1, v2;
+    cx_valueValueInit(&v1, NULL, cx_type(cx_octetseq_o), dst);
+    cx_valueValueInit(&v2, NULL, cx_type(cx_octetseq_o), src);
+    return cx_comparev(&v1, &v2);
+}
+
+cx_int16 cx_octetseqInit(cx_octetseq* value) {
+    cx_int16 result;
+    memset(value, 0, cx_type(cx_octetseq_o)->size);
+    cx_value v;
+    cx_valueValueInit(&v, NULL, cx_type(cx_octetseq_o), value);
+    result = cx_initv(&v);
+    return result;
+}
+
+cx_int16 cx_octetseqDeinit(cx_octetseq* value) {
+    cx_int16 result;
+    cx_value v;
+    cx_valueValueInit(&v, NULL, cx_type(cx_octetseq_o), value);
     result = cx_deinitv(&v);
     return result;
 }
@@ -5642,12 +6031,14 @@ cx_int16 cx_procedureKindDeinit(cx_procedureKind* value) {
     return result;
 }
 
-cx_replicator cx_replicatorCreate(void) {
-    cx_replicator this;
-    this = cx_declare(cx_replicator_o);
+cx_query cx_queryCreate(cx_object from, cx_eventMask mask) {
+    cx_query this;
+    this = cx_declare(cx_query_o);
     if (!this) {
         return NULL;
     }
+    cx_setref(&this->from, from);
+    this->mask = mask;
     if (this && cx_define(this)) {
         cx_release(this);
         this = NULL;
@@ -5655,12 +6046,109 @@ cx_replicator cx_replicatorCreate(void) {
     return this;
 }
 
-cx_replicator cx_replicatorCreateChild(cx_object _parent, cx_string _name) {
+cx_query cx_queryCreateChild(cx_object _parent, cx_string _name, cx_object from, cx_eventMask mask) {
+    cx_query this;
+    this = cx_declareChild(_parent, _name, cx_query_o);
+    if (!this) {
+        return NULL;
+    }
+    cx_setref(&this->from, from);
+    this->mask = mask;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+cx_query cx_queryDeclare(void) {
+    cx_query this;
+    this = cx_declare(cx_query_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+cx_query cx_queryDeclareChild(cx_object _parent, cx_string _name) {
+    cx_query this;
+    this = cx_declareChild(_parent, _name, cx_query_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+cx_int16 cx_queryDefine(cx_query this, cx_object from, cx_eventMask mask) {
+    cx_setref(&this->from, from);
+    this->mask = mask;
+    return cx_define(this);
+}
+
+void cx_queryUpdate(cx_query this, cx_object from, cx_eventMask mask) {
+    cx_updateBegin(this);
+    cx_setref(&this->from, from);
+    this->mask = mask;
+    cx_updateEnd(this);
+}
+
+void cx_querySet(cx_query this, cx_object from, cx_eventMask mask) {
+    cx_setref(&this->from, from);
+    this->mask = mask;
+}
+
+cx_string cx_queryStr(cx_query value) {
+    cx_string result;
+    cx_value v;
+    cx_valueObjectInit(&v, value, cx_type(cx_query_o));
+    result = cx_strv(&v, 0);
+    return result;
+}
+
+cx_query cx_queryFromStr(cx_query value, cx_string str) {
+    cx_fromStrp(&value, cx_type(cx_query_o), str);
+    return value;
+}
+
+cx_int16 cx_queryCopy(cx_query *dst, cx_query src) {
+    return cx_copy((cx_object*)dst, src);
+}
+
+cx_int16 cx_queryCompare(cx_query dst, cx_query src) {
+    return cx_compare(dst, src);
+}
+
+cx_replicator cx_replicatorCreate(cx_object mount, cx_query query, cx_notifyAction onDeclare, cx_notifyAction onUpdate, cx_notifyAction onDelete, cx_invokeAction onInvoke) {
+    cx_replicator this;
+    this = cx_declare(cx_replicator_o);
+    if (!this) {
+        return NULL;
+    }
+    cx_setref(&this->mount, mount);
+    cx_setref(&this->query, cx_query(query));
+    this->onDeclare = onDeclare;
+    this->onUpdate = onUpdate;
+    this->onDelete = onDelete;
+    this->onInvoke = onInvoke;
+    if (this && cx_define(this)) {
+        cx_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+cx_replicator cx_replicatorCreateChild(cx_object _parent, cx_string _name, cx_object mount, cx_query query, cx_notifyAction onDeclare, cx_notifyAction onUpdate, cx_notifyAction onDelete, cx_invokeAction onInvoke) {
     cx_replicator this;
     this = cx_declareChild(_parent, _name, cx_replicator_o);
     if (!this) {
         return NULL;
     }
+    cx_setref(&this->mount, mount);
+    cx_setref(&this->query, cx_query(query));
+    this->onDeclare = onDeclare;
+    this->onUpdate = onUpdate;
+    this->onDelete = onDelete;
+    this->onInvoke = onInvoke;
     if (this && cx_define(this)) {
         cx_release(this);
         this = NULL;
@@ -5686,16 +6174,34 @@ cx_replicator cx_replicatorDeclareChild(cx_object _parent, cx_string _name) {
     return this;
 }
 
-cx_int16 cx_replicatorDefine(cx_replicator this) {
+cx_int16 cx_replicatorDefine(cx_replicator this, cx_object mount, cx_query query, cx_notifyAction onDeclare, cx_notifyAction onUpdate, cx_notifyAction onDelete, cx_invokeAction onInvoke) {
+    cx_setref(&this->mount, mount);
+    cx_setref(&this->query, cx_query(query));
+    this->onDeclare = onDeclare;
+    this->onUpdate = onUpdate;
+    this->onDelete = onDelete;
+    this->onInvoke = onInvoke;
     return cx_define(this);
 }
 
-void cx_replicatorUpdate(cx_replicator this) {
-    cx_update(this);
+void cx_replicatorUpdate(cx_replicator this, cx_object mount, cx_query query, cx_notifyAction onDeclare, cx_notifyAction onUpdate, cx_notifyAction onDelete, cx_invokeAction onInvoke) {
+    cx_updateBegin(this);
+    cx_setref(&this->mount, mount);
+    cx_setref(&this->query, cx_query(query));
+    this->onDeclare = onDeclare;
+    this->onUpdate = onUpdate;
+    this->onDelete = onDelete;
+    this->onInvoke = onInvoke;
+    cx_updateEnd(this);
 }
 
-void cx_replicatorSet(cx_replicator this) {
-    CX_UNUSED(this);
+void cx_replicatorSet(cx_replicator this, cx_object mount, cx_query query, cx_notifyAction onDeclare, cx_notifyAction onUpdate, cx_notifyAction onDelete, cx_invokeAction onInvoke) {
+    cx_setref(&this->mount, mount);
+    cx_setref(&this->query, cx_query(query));
+    this->onDeclare = onDeclare;
+    this->onUpdate = onUpdate;
+    this->onDelete = onDelete;
+    this->onInvoke = onInvoke;
 }
 
 cx_string cx_replicatorStr(cx_replicator value) {
@@ -7488,6 +7994,27 @@ void cx_observerseqSize(cx_observerseq *seq, cx_uint32 length) {
 
 void cx_observerseqClear(cx_observerseq *seq) {
     cx_observerseqSize(seq, 0);
+}
+
+cx_octet* cx_octetseqAppend(cx_octetseq *seq) {
+    cx_uint32 size;
+    seq->length++;
+    seq->buffer = cx_realloc(seq->buffer, seq->length * (size=cx_type_sizeof(cx_type(cx_octet_o))));
+    memset(&seq->buffer[seq->length-1], 0, size);
+    return &seq->buffer[seq->length-1];
+}
+
+void cx_octetseqSize(cx_octetseq *seq, cx_uint32 length) {
+    cx_uint32 size;
+    seq->buffer = cx_realloc(seq->buffer, length * (size=cx_type_sizeof(cx_type(cx_octet_o))));
+    if (length > seq->length) {
+        memset(&seq->buffer[seq->length], 0, size * (length - seq->length));
+    }
+    seq->length = length;
+}
+
+void cx_octetseqClear(cx_octetseq *seq) {
+    cx_octetseqSize(seq, 0);
 }
 
 cx_parameter* cx_parameterseqAppend(cx_parameterseq *seq) {

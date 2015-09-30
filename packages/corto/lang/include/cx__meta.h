@@ -49,12 +49,14 @@ CX_META_OBJECT(class, member);
 CX_META_OBJECT(class, alias);
 CX_META_OBJECT(class, event);
 CX_META_OBJECT(class, observableEvent);
+CX_META_OBJECT(class, invokeEvent);
 CX_META_OBJECT(class, package);
+CX_META_OBJECT(class, query);
+CX_META_OBJECT(class, replicator);
 CX_META_OBJECT(struct, parameter);
 CX_META_OBJECT(struct, delegatedata);
 CX_META_OBJECT(struct, interfaceVector);
 CX_META_OBJECT(interface, dispatcher);
-CX_META_OBJECT(interface, replicator);
 
 CX_META_OBJECT(binary, octet);
 CX_META_OBJECT(boolean, bool);
@@ -99,15 +101,22 @@ CX_META_OBJECT(sequence, interfaceVectorseq);
 CX_META_OBJECT(sequence, interfaceseq);
 CX_META_OBJECT(sequence, observerseq);
 CX_META_OBJECT(sequence, vtable);
+CX_META_OBJECT(sequence, octetseq);
 
-CX_META_OBJECT(delegate, callbackInit);
-CX_META_OBJECT(delegate, callbackDestruct);
+CX_META_OBJECT(delegate, initAction);
+CX_META_OBJECT(delegate, destructAction);
+CX_META_OBJECT(delegate, notifyAction);
+CX_META_OBJECT(delegate, invokeAction);
 
 CX_META_OBJECT(procedure, function);
 CX_META_OBJECT(procedure, method);
 CX_META_OBJECT(procedure, virtual);
 CX_META_OBJECT(procedure, observer);
 CX_META_OBJECT(procedure, metaprocedure);
+
+CX_META_OBJECT(observer, replicator_on_declare);
+CX_META_OBJECT(observer, replicator_on_update);
+CX_META_OBJECT(observer, replicator_on_delete);
 
 #ifdef __cplusplus
 }

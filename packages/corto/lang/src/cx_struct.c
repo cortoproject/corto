@@ -62,6 +62,9 @@ cx_int16 _cx_struct_construct(cx_struct this) {
     /* Don't allow empty structs */
     if (!cx_interface(this)->nextMemberId && !cx_interface(this)->base) {
         cx_member m = cx_declareChild(this, "__dummy", cx_member_o);
+        if (!m) {
+            cx_critical("failed to declare dummy member (%s)", cx_lasterr());
+        }
         cx_setref(&m->type, cx_int8_o);
         m->modifiers = CX_PRIVATE|CX_LOCAL;
         cx_define(m);

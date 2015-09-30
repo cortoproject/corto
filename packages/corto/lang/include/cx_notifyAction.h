@@ -1,10 +1,10 @@
-/* cx_callbackDestruct.h
+/* cx_notifyAction.h
  *
  * This file contains generated code. Do not modify!
  */
 
-#ifndef CORTO_LANG_CALLBACKDESTRUCT_H
-#define CORTO_LANG_CALLBACKDESTRUCT_H
+#ifndef CORTO_LANG_NOTIFYACTION_H
+#define CORTO_LANG_NOTIFYACTION_H
 
 #include "corto.h"
 #include "cx__interface.h"

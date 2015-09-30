@@ -83,6 +83,7 @@ int8_t CX_DEBUG_ENABLED = 0;
     SSO_OP_CLASS(op, procedure);\
     SSO_OP_CLASS(op, event);\
     SSO_OP_CLASS(op, observableEvent);\
+    SSO_OP_CLASS(op, invokeEvent);\
     SSO_OP_CLASS(op, binary);\
     SSO_OP_CLASS(op, boolean);\
     SSO_OP_CLASS(op, character);\
@@ -100,7 +101,9 @@ int8_t CX_DEBUG_ENABLED = 0;
     SSO_OP_CLASS(op, alias);\
     SSO_OP_CLASS(op, class);\
     SSO_OP_CLASS(op, delegate);\
-    SSO_OP_CLASS(op, package);
+    SSO_OP_CLASS(op, package);\
+    SSO_OP_CLASS(op, query);\
+    SSO_OP_CLASS(op, replicator);
 
 /* Procedures */
 #define SSO_OP_PROCEDURETYPE(op)\
@@ -148,15 +151,17 @@ int8_t CX_DEBUG_ENABLED = 0;
     SSO_OP_PRIM(op, memberseq);\
     SSO_OP_PRIM(op, parameterseq);\
     SSO_OP_PRIM(op, observerseq);\
+    SSO_OP_PRIM(op, octetseq);\
     SSO_OP_PRIM(op, vtable);\
     SSO_OP_PRIM(op, interfaceVectorseq);\
     SSO_OP_PRIM(op, interfaceVector);\
     SSO_OP_PRIM(op, parameter);\
     SSO_OP_PRIM(op, delegatedata);\
     SSO_OP_VOID(op, dispatcher);\
-    SSO_OP_VOID(op, replicator);\
-    SSO_OP_PRIM(op, callbackInit);\
-    SSO_OP_PRIM(op, callbackDestruct);\
+    SSO_OP_PRIM(op, initAction);\
+    SSO_OP_PRIM(op, destructAction);\
+    SSO_OP_PRIM(op, notifyAction);\
+    SSO_OP_PRIM(op, invokeAction);\
     SSO_OP_PROCEDURETYPE(op);\
     SSO_OP_CLASSTYPE(op);
 
@@ -221,6 +226,11 @@ int8_t CX_DEBUG_ENABLED = 0;
     SSO_OP_OBJ(op, observableEvent_source);\
     SSO_OP_OBJ(op, observableEvent_observable);\
     SSO_OP_OBJ(op, observableEvent_handle_);\
+    /* invokeEvent */\
+    SSO_OP_OBJ(op, invokeEvent_instance);\
+    SSO_OP_OBJ(op, invokeEvent_function);\
+    SSO_OP_OBJ(op, invokeEvent_args);\
+    SSO_OP_OBJ(op, invokeEvent_handle_);\
     /* width */\
     SSO_OP_OBJ(op, width_WIDTH_8);\
     SSO_OP_OBJ(op, width_WIDTH_16);\
@@ -482,6 +492,29 @@ int8_t CX_DEBUG_ENABLED = 0;
     SSO_OP_OBJ(op, class_resolveInterfaceMethod_);\
     SSO_OP_OBJ(op, class_bindObserver_);\
     SSO_OP_OBJ(op, class_findObserver_);\
+    SSO_OP_OBJ(op, class_listen);\
+    SSO_OP_OBJ(op, class_setObservable);\
+    SSO_OP_OBJ(op, class_setMask);\
+    SSO_OP_OBJ(op, class_setDispatcher);\
+    SSO_OP_OBJ(op, class_observableOf);\
+    SSO_OP_OBJ(op, class_eventMaskOf);\
+    /* query */\
+    SSO_OP_OBJ(op, query_from);\
+    SSO_OP_OBJ(op, query_mask);\
+    /* replicator */\
+    SSO_OP_OBJ(op, replicator_mount);\
+    SSO_OP_OBJ(op, replicator_query);\
+    SSO_OP_OBJ(op, replicator_construct_);\
+    SSO_OP_OBJ(op, replicator_destruct_);\
+    /* SSO_OP_OBJ(op, replicator_invoke_);\*/\
+    SSO_OP_OBJ(op, replicator_post_);\
+    SSO_OP_OBJ(op, replicator_onDeclare);\
+    SSO_OP_OBJ(op, replicator_onUpdate);\
+    SSO_OP_OBJ(op, replicator_onDelete);\
+    SSO_OP_OBJ(op, replicator_onInvoke);\
+    SSO_OP_OBJ(op, replicator_on_declare);\
+    SSO_OP_OBJ(op, replicator_on_update);\
+    SSO_OP_OBJ(op, replicator_on_delete);\
     /* delegatedata */\
     SSO_OP_OBJ(op, delegatedata_instance);\
     SSO_OP_OBJ(op, delegatedata_procedure);\
@@ -572,7 +605,7 @@ static void cx_initType(cx_object o, cx_uint32 size) {
 /* Define object */
 static void cx_defineObject(cx_object o) {
     if (cx_define(o)) {
-        cx_error("construction of builtin-object '%s' failed.", cx_nameof(o));
+        cx_error("construction of builtin-object '%s' failed (%s)", cx_nameof(o), cx_lasterr());
     }
 }
 
@@ -628,6 +661,12 @@ static void cx_genericTlsFree(void *o) {
     cx_dealloc(o);
 }
 
+static void cx_patchSequences(void) {
+    cx_replicator_o->implements.length = 1;
+    cx_replicator_o->implements.buffer = cx_alloc(sizeof(cx_object));
+    cx_replicator_o->implements.buffer[0] = cx_dispatcher_o;
+}
+
 int cx_start(void) {
 
     /* CORTO_BUILD is where the buildsystem is located */
@@ -676,6 +715,10 @@ int cx_start(void) {
     SSO_OP_TYPE(cx_initType);
     SSO_OP_OBJECT(cx_initObject);
     SSO_OP_OBJECT_2ND(cx_initObject);
+
+    /* Patch sequences- these cannot be set statically since sequences are 
+     * allocated on the heap */
+    cx_patchSequences();
 
     /* Construct objects */
     SSO_OP_OBJECT_2ND(cx_defineObject);

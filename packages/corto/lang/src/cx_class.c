@@ -12,18 +12,23 @@
 #include "cx__interface.h"
 
 /* An object of a class-type has extra information appended to it's value. This is the information
-* required to store callbacks and observers. The memory layout
+* required to store observers. The memory layout
 * of a class-instantiation is (exclusive corto object-header):
 *
 * +-----------------+
 * |  object-value   |
 * +-----------------+
-* | callback-table  |
-* +-----------------+
 * | observer-table  |
 * +-----------------+
-*
 */
+
+typedef struct cx_observerEntry {
+    cx_object observable;
+    cx_eventMask mask;
+    cx_object dispatcher;
+} cx_observerEntry;
+
+CX_SEQUENCE(cx_observerTable, cx_observerEntry,);
 
 static cx_uint32 cx__class_observerCount(cx_class this);
 
@@ -80,8 +85,8 @@ static cx_bool cx_class_checkInterfaceCompatibility(cx_class this, cx_interface 
 }
 
 /* Get table that stores observers */
-cx_vtable* cx_class_getObserverVtable(cx_object o) {
-    cx_vtable* result;
+cx_observerTable* cx_class_getObserverVtable(cx_object o) {
+    cx_observerTable* result;
     cx_type type;
     cx_uint32 observerCount;
 
@@ -91,58 +96,34 @@ cx_vtable* cx_class_getObserverVtable(cx_object o) {
     /* Obtain vtable. */
     if (cx_class_instanceof(cx_class_o, type)) {
         if ((observerCount = cx__class_observerCount(cx_class(type)))) {
-            result = (cx_vtable*)CX_OFFSET(o, type->size);
+            result = (cx_observerTable*)CX_OFFSET(o, type->size);
         }
     }
 
     return result;
 }
 
-cx_object cx_class_getObservable(cx_class this, cx_observer observer, cx_object me) {
-    cx_vtable* observers;
-    cx_object result = NULL;
-    CX_UNUSED(this);
-    observers = cx_class_getObserverVtable(me);
-    if (observers) {
-        result = observers->buffer[observer->template-1];
-    } else {
-        cx_id id, id2;
-        cx_error("failed to get observer for object '%s' of type '%s'", cx_fullname(me, id), cx_fullname(cx_typeof(me), id2));
-    }
-    return result;
-}
-
-void cx_class_setObservable(cx_class this, cx_observer observer, cx_object me, cx_object observable) {
-    cx_vtable* observers;
-    CX_UNUSED(this);
-
-    observers = cx_class_getObserverVtable(me);
-    if (observers) {
-        observers->buffer[observer->template-1] = observable;
-    } else {
-        cx_id id, id2;
-        cx_error("failed to set observer for object '%s' of type '%s'", cx_fullname(me, id), cx_fullname(cx_typeof(me), id2));
-    }
-}
-
 void cx_class_attachObservers(cx_class this, cx_object object) {
     cx_uint32 i, id;
-    cx_vtable* observers;
+    cx_observerTable* observers;
     cx_class base;
-    cx_object observable;
 
     /* Get table for instantiated observer-templates */
     observers = cx_class_getObserverVtable(object);
     if (observers) {
         id = cx__class_observerCount(this);
-        observers->buffer = CX_OFFSET(observers, sizeof(cx_vtable));
+        observers->buffer = CX_OFFSET(observers, sizeof(cx_observerTable));
         observers->length = id;
         base = this;
 
         do {
+            cx_any this = {cx_typeof(object), object, FALSE};
             for (i=0; i<base->observers.length; i++) {
-                observable = base->observers.buffer[i]->observable;
-                cx_class_setObservable(this, base->observers.buffer[i], object, observable);
+                cx_class_listen(this, 
+                    base->observers.buffer[i],
+                    base->observers.buffer[i]->mask,  
+                    base->observers.buffer[i]->observable,
+                    base->observers.buffer[i]->dispatcher);
             }
         } while ((base = cx_class(cx_interface(base)->base)));
     }
@@ -150,9 +131,8 @@ void cx_class_attachObservers(cx_class this, cx_object object) {
 
 void cx_class_listenObservers(cx_class this, cx_object object) {
     cx_uint32 i;
-    cx_vtable* observers;
+    cx_observerTable* observers;
     cx_class base;
-    cx_object observable;
 
     /* Get table for instantiated observer-templates */
     observers = cx_class_getObserverVtable(object);
@@ -161,9 +141,13 @@ void cx_class_listenObservers(cx_class this, cx_object object) {
 
         do {
             for (i=0; i<base->observers.length; i++) {
-                observable = observers->buffer[i];
-                if (observable) {
-                    cx_listen(observable, base->observers.buffer[i], object);
+                if (observers->buffer[i].observable) {
+                    cx_listen(
+                        object,
+                        base->observers.buffer[i],
+                        observers->buffer[i].mask,
+                        observers->buffer[i].observable,
+                        NULL);
                 }
             }
         } while ((base = cx_class(cx_interface(base)->base)));
@@ -172,25 +156,32 @@ void cx_class_listenObservers(cx_class this, cx_object object) {
 
 void cx_class_detachObservers(cx_class this, cx_object object) {
     cx_uint32 i, id;
-    cx_vtable* observers;
+    cx_observerTable* observers;
     cx_class base;
     cx_object observable;
+    cx_eventMask mask;
 
     /* Get table for instantiated observer-templates */
     observers = cx_class_getObserverVtable(object);
     if (observers) {
         id = cx__class_observerCount(this);
-        observers->buffer = CX_OFFSET(observers, sizeof(cx_vtable));
+        observers->buffer = CX_OFFSET(observers, sizeof(observable));
         observers->length = id;
         base = this;
         do {
             for (i=0; i<base->observers.length; i++) {
-                observable = cx_class_getObservable(base, base->observers.buffer[i], object);
+                cx_any thisAny = {cx_type(this), object, FALSE};
+                observable = cx_class_observableOf(thisAny, base->observers.buffer[i]);
+                mask = cx_class_eventMaskOf(thisAny, base->observers.buffer[i]);
                 if (observable) {
                     /* Do not silence observers that listen for childs on non-scoped objects */
                     if (cx_checkAttr(observable, CX_ATTR_OBSERVABLE) &&
                             (!(base->observers.buffer[i]->mask & CX_ON_SCOPE) || cx_checkAttr(object, CX_ATTR_SCOPED))) {
-                        cx_silence(observable, base->observers.buffer[i], object);
+                        cx_silence(
+                            object,
+                            base->observers.buffer[i],
+                            mask,
+                            observable);
                     }
                 }
             }
@@ -209,7 +200,7 @@ cx_uint32 _cx_class_allocSize_v(cx_class this) {
     size = cx_type(this)->size;
 
     if ((observerCount = cx__class_observerCount(this))) {
-        size += sizeof(cx_vtable) + observerCount * sizeof(cx_observer);
+        size += sizeof(cx_observerTable) + observerCount * sizeof(cx_observerEntry);
     }
 
     return size;
@@ -293,6 +284,27 @@ cx_void _cx_class_destruct(cx_class this) {
 /* $end */
 }
 
+/* ::corto::lang::class::eventMaskOf(observer observer) */
+cx_eventMask _cx_class_eventMaskOf(cx_any this, cx_observer observer) {
+/* $begin(::corto::lang::class::eventMaskOf) */
+
+    cx_observerTable* observers;
+    cx_eventMask result = 0;
+    cx_object me = this.value;
+
+    observers = cx_class_getObserverVtable(me);
+    if (observers) {
+        result = observers->buffer[observer->template-1].mask;
+    } else {
+        cx_id id, id2;
+        cx_error("failed to get observer for object '%s' of type '%s'", cx_fullname(me, id), cx_fullname(cx_typeof(me), id2));
+    }
+
+    return result;
+
+/* $end */
+}
+
 /* ::corto::lang::class::findObserver(object observable) */
 cx_observer _cx_class_findObserver(cx_class this, cx_object observable) {
 /* $begin(::corto::lang::class::findObserver) */
@@ -351,6 +363,45 @@ cx_bool _cx_class_instanceof(cx_class this, cx_object object) {
 /* $end */
 }
 
+/* ::corto::lang::class::listen(observer observer,eventMask mask,object observable,dispatcher dispatcher) */
+cx_void _cx_class_listen(cx_any this, cx_observer observer, cx_eventMask mask, cx_object observable, cx_dispatcher dispatcher) {
+/* $begin(::corto::lang::class::listen) */
+    cx_observerTable* observers;
+
+    observers = cx_class_getObserverVtable(this.value);
+    if (observers) {
+        observers->buffer[observer->template-1].observable = observable;
+        observers->buffer[observer->template-1].mask = mask;
+        observers->buffer[observer->template-1].dispatcher = dispatcher;
+    } else {
+        cx_id id, id2;
+        cx_error("failed to set observer for '%s' of type '%s'", 
+            cx_fullname(this.value, id), 
+            cx_fullname(cx_typeof(this.value), id2));
+    }
+
+/* $end */
+}
+
+/* ::corto::lang::class::observableOf(observer observer) */
+cx_object _cx_class_observableOf(cx_any this, cx_observer observer) {
+/* $begin(::corto::lang::class::observableOf) */
+    cx_observerTable* observers;
+    cx_object result = NULL;
+    cx_object me = this.value;
+
+    observers = cx_class_getObserverVtable(me);
+    if (observers) {
+        result = observers->buffer[observer->template-1].observable;
+    } else {
+        cx_id id, id2;
+        cx_error("failed to get observer for object '%s' of type '%s'", cx_fullname(me, id), cx_fullname(cx_typeof(me), id2));
+    }
+
+    return result;
+/* $end */
+}
+
 /* ::corto::lang::class::privateObserver(object object,observer observer) */
 cx_observer _cx_class_privateObserver(cx_class this, cx_object object, cx_observer observer) {
 /* $begin(::corto::lang::class::privateObserver) */
@@ -385,5 +436,62 @@ cx_method _cx_class_resolveInterfaceMethod(cx_class this, cx_interface interface
     return cx_method(v->vector.buffer[method-1]);
 error:
     return NULL;
+/* $end */
+}
+
+/* ::corto::lang::class::setDispatcher(observer observer,dispatcher dispatcher */
+cx_void _cx_class_setDispatcher(cx_any this, cx_observer observer, cx_dispatcher dispatcher) {
+/* $begin(::corto::lang::class::setDispatcher) */
+
+    cx_observerTable* observers;
+
+    observers = cx_class_getObserverVtable(this.value);
+    if (observers) {
+        observers->buffer[observer->template-1].dispatcher = dispatcher;
+    } else {
+        cx_id id, id2;
+        cx_error("failed to set dispatcher for '%s' of type '%s'", 
+            cx_fullname(this.value, id), 
+            cx_fullname(cx_typeof(this.value), id2));
+    }
+
+/* $end */
+}
+
+/* ::corto::lang::class::setMask(observer observer,eventMask mask) */
+cx_void _cx_class_setMask(cx_any this, cx_observer observer, cx_eventMask mask) {
+/* $begin(::corto::lang::class::setMask) */
+
+    cx_observerTable* observers;
+
+    observers = cx_class_getObserverVtable(this.value);
+    if (observers) {
+        observers->buffer[observer->template-1].mask = mask;
+    } else {
+        cx_id id, id2;
+        cx_error("failed to set mask for '%s' of type '%s'", 
+            cx_fullname(this.value, id), 
+            cx_fullname(cx_typeof(this.value), id2));
+    }
+
+/* $end */
+}
+
+/* ::corto::lang::class::setObservable(observer observer,object observable) */
+cx_void _cx_class_setObservable(cx_any this, cx_observer observer, cx_object observable) {
+/* $begin(::corto::lang::class::setObservable) */
+
+    cx_observerTable* observers;
+
+    observers = cx_class_getObserverVtable(this.value);
+    if (observers) {
+        observers->buffer[observer->template-1].observable = observable;
+    } else {
+        cx_id id, id2;
+        cx_error("failed to set observable for '%s' of type '%s'", 
+            cx_fullname(this.value, id), 
+            cx_fullname(cx_typeof(this.value), id2));
+    }
+
 /* $end */
 }
