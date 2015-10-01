@@ -1005,7 +1005,7 @@ CX_CLASS_NOBASE_O(replicator, NULL, CX_DECLARED | CX_DEFINED, NULL, CX_CD);
     CX_METHOD_O(replicator, construct, "()", int16, FALSE, cx_replicator_construct);
     CX_METHOD_O(replicator, destruct, "()", void, FALSE, cx_replicator_destruct);
     CX_METHOD_O(replicator, post, "(event e)", void, FALSE, cx_replicator_post);
-    CX_METHOD_O(replicator, invoke, "(object instance, octetseq args)", void, FALSE, cx_replicator_post);
+    CX_METHOD_O(replicator, invoke, "(object instance,function proc,octetseq args)", void, FALSE, cx_replicator_post);
     CX_MEMBER_O(replicator, onDeclare, notifyAction, CX_GLOBAL);
     CX_MEMBER_O(replicator, onUpdate, notifyAction, CX_GLOBAL);
     CX_MEMBER_O(replicator, onDelete, notifyAction, CX_GLOBAL);
@@ -1031,6 +1031,7 @@ CX_CLASS_O(observableEvent, event, CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, 
 
 /* ::corto::lang::invokeEvent */
 CX_CLASS_O(invokeEvent, event, CX_READONLY, NULL, CX_DECLARED | CX_DEFINED, NULL, CX_NODELEGATE);
+    CX_REFERENCE_O(invokeEvent, replicator, replicator, CX_GLOBAL, CX_DEFINED | CX_DECLARED, FALSE);
     CX_REFERENCE_O(invokeEvent, instance, object, CX_GLOBAL, CX_DEFINED | CX_DECLARED, FALSE);
     CX_REFERENCE_O(invokeEvent, function, function, CX_GLOBAL, CX_DEFINED | CX_DECLARED, FALSE);
     CX_REFERENCE_O(invokeEvent, args, octetseq, CX_GLOBAL, CX_DEFINED | CX_DECLARED, FALSE);

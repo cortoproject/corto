@@ -6,7 +6,7 @@ TARGET = :corto
 LIB = ['rt', 'dl', 'm']
 
 LFLAGS ||= []
-CFLAGS ||= []
+CFLAGS ||= ["-Wunused-parameter"]
 
 ARTEFACT = "lib#{TARGET}.so"
 LFLAGS << "--shared"

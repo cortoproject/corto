@@ -227,6 +227,7 @@ int8_t CX_DEBUG_ENABLED = 0;
     SSO_OP_OBJ(op, observableEvent_observable);\
     SSO_OP_OBJ(op, observableEvent_handle_);\
     /* invokeEvent */\
+    SSO_OP_OBJ(op, invokeEvent_replicator);\
     SSO_OP_OBJ(op, invokeEvent_instance);\
     SSO_OP_OBJ(op, invokeEvent_function);\
     SSO_OP_OBJ(op, invokeEvent_args);\
@@ -506,7 +507,7 @@ int8_t CX_DEBUG_ENABLED = 0;
     SSO_OP_OBJ(op, replicator_query);\
     SSO_OP_OBJ(op, replicator_construct_);\
     SSO_OP_OBJ(op, replicator_destruct_);\
-    /* SSO_OP_OBJ(op, replicator_invoke_);\*/\
+    SSO_OP_OBJ(op, replicator_invoke_);\
     SSO_OP_OBJ(op, replicator_post_);\
     SSO_OP_OBJ(op, replicator_onDeclare);\
     SSO_OP_OBJ(op, replicator_onUpdate);\
@@ -665,6 +666,26 @@ static void cx_patchSequences(void) {
     cx_replicator_o->implements.length = 1;
     cx_replicator_o->implements.buffer = cx_alloc(sizeof(cx_object));
     cx_replicator_o->implements.buffer[0] = cx_dispatcher_o;
+
+    cx_notifyAction_o->parameters.length = 1;
+    cx_notifyAction_o->parameters.buffer = cx_alloc(sizeof(cx_parameter));
+    cx_notifyAction_o->parameters.buffer[0].name = "observable";
+    cx_notifyAction_o->parameters.buffer[0].type = cx_object_o;
+    cx_notifyAction_o->parameters.buffer[0].passByReference = 0;
+
+    cx_invokeAction_o->parameters.length = 3;
+    cx_invokeAction_o->parameters.buffer = cx_alloc(3 * sizeof(cx_parameter));
+    cx_invokeAction_o->parameters.buffer[0].name = "instance";
+    cx_invokeAction_o->parameters.buffer[0].type = cx_object_o;
+    cx_invokeAction_o->parameters.buffer[0].passByReference = 0;
+
+    cx_invokeAction_o->parameters.buffer[1].name = "function";
+    cx_invokeAction_o->parameters.buffer[1].type = cx_type(cx_function_o);
+    cx_invokeAction_o->parameters.buffer[1].passByReference = 0;
+
+    cx_invokeAction_o->parameters.buffer[2].name = "args";
+    cx_invokeAction_o->parameters.buffer[2].type = cx_type(cx_octetseq_o);
+    cx_invokeAction_o->parameters.buffer[2].passByReference = 0;
 }
 
 int cx_start(void) {

@@ -39,6 +39,8 @@ cx_int16 c_apiTypeCompare(cx_type o, c_apiWalk_t *data);
 cx_int16 c_apiTypeInit(cx_type o, c_apiWalk_t *data);
 cx_int16 c_apiTypeDeinit(cx_type o, c_apiWalk_t *data);
 
+cx_int16 c_apiDelegateCall(cx_delegate t, c_apiWalk_t *data);
+
 int c_apiCollectionWalk(void* o, void* userData);
 
 #ifdef __cplusplus

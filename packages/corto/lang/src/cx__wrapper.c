@@ -1041,6 +1041,16 @@ void __cx_replicator_destruct(cx_function f, void *result, void *args) {
         cx_replicator(*(void**)args));
 }
 
+void __cx_replicator_invoke(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    CX_UNUSED(result);
+    _cx_replicator_invoke(
+        cx_replicator(*(void**)args),
+        *(cx_object*)((intptr_t)args + sizeof(void*)),
+        cx_function(*(cx_function*)((intptr_t)args + sizeof(void*) + sizeof(cx_object))),
+        *(cx_octetseq*)((intptr_t)args + sizeof(void*) + sizeof(cx_object) + sizeof(cx_function)));
+}
+
 void __cx_replicator_on_declare(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     CX_UNUSED(result);

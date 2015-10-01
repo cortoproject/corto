@@ -1717,6 +1717,19 @@ cx_int16 cx_destructActionDeinit(cx_destructAction* value) {
     return result;
 }
 
+cx_int16 cx_destructActionCall(cx_destructAction *_delegate) {
+    if (_delegate->_parent.procedure) {
+        if (_delegate->_parent.instance) {
+            cx_call(_delegate->_parent.procedure, NULL, _delegate->_parent.instance);
+        } else {
+            cx_call(_delegate->_parent.procedure, NULL);
+        }
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
 cx_dispatcher cx_dispatcherCreate(void) {
     cx_dispatcher this;
     this = cx_declare(cx_dispatcher_o);
@@ -2649,6 +2662,19 @@ cx_int16 cx_initActionDeinit(cx_initAction* value) {
     cx_valueValueInit(&v, NULL, cx_type(cx_initAction_o), value);
     result = cx_deinitv(&v);
     return result;
+}
+
+cx_int16 cx_initActionCall(cx_initAction *_delegate, cx_int16* _result) {
+    if (_delegate->_parent.procedure) {
+        if (_delegate->_parent.instance) {
+            cx_call(_delegate->_parent.procedure, _result, _delegate->_parent.instance);
+        } else {
+            cx_call(_delegate->_parent.procedure, _result);
+        }
+    } else {
+        return -1;
+    }
+    return 0;
 }
 
 cx_int cx_intCreate(cx_width width, cx_int64 min, cx_int64 max) {
@@ -3670,12 +3696,26 @@ cx_int16 cx_invokeActionDeinit(cx_invokeAction* value) {
     return result;
 }
 
-cx_invokeEvent cx_invokeEventCreate(cx_object instance, cx_function function, cx_octetseq args) {
+cx_int16 cx_invokeActionCall(cx_invokeAction *_delegate, cx_object instance, cx_function function, cx_octetseq args) {
+    if (_delegate->_parent.procedure) {
+        if (_delegate->_parent.instance) {
+            cx_call(_delegate->_parent.procedure, NULL, _delegate->_parent.instance, instance, function, args);
+        } else {
+            cx_call(_delegate->_parent.procedure, NULL, instance, function, args);
+        }
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+cx_invokeEvent cx_invokeEventCreate(cx_replicator replicator, cx_object instance, cx_function function, cx_octetseq args) {
     cx_invokeEvent this;
     this = cx_declare(cx_invokeEvent_o);
     if (!this) {
         return NULL;
     }
+    cx_setref(&this->replicator, cx_replicator(replicator));
     cx_setref(&this->instance, instance);
     cx_setref(&this->function, cx_function(function));
     this->args = args;
@@ -3686,12 +3726,13 @@ cx_invokeEvent cx_invokeEventCreate(cx_object instance, cx_function function, cx
     return this;
 }
 
-cx_invokeEvent cx_invokeEventCreateChild(cx_object _parent, cx_string _name, cx_object instance, cx_function function, cx_octetseq args) {
+cx_invokeEvent cx_invokeEventCreateChild(cx_object _parent, cx_string _name, cx_replicator replicator, cx_object instance, cx_function function, cx_octetseq args) {
     cx_invokeEvent this;
     this = cx_declareChild(_parent, _name, cx_invokeEvent_o);
     if (!this) {
         return NULL;
     }
+    cx_setref(&this->replicator, cx_replicator(replicator));
     cx_setref(&this->instance, instance);
     cx_setref(&this->function, cx_function(function));
     this->args = args;
@@ -3720,22 +3761,25 @@ cx_invokeEvent cx_invokeEventDeclareChild(cx_object _parent, cx_string _name) {
     return this;
 }
 
-cx_int16 cx_invokeEventDefine(cx_invokeEvent this, cx_object instance, cx_function function, cx_octetseq args) {
+cx_int16 cx_invokeEventDefine(cx_invokeEvent this, cx_replicator replicator, cx_object instance, cx_function function, cx_octetseq args) {
+    cx_setref(&this->replicator, cx_replicator(replicator));
     cx_setref(&this->instance, instance);
     cx_setref(&this->function, cx_function(function));
     this->args = args;
     return cx_define(this);
 }
 
-void cx_invokeEventUpdate(cx_invokeEvent this, cx_object instance, cx_function function, cx_octetseq args) {
+void cx_invokeEventUpdate(cx_invokeEvent this, cx_replicator replicator, cx_object instance, cx_function function, cx_octetseq args) {
     cx_updateBegin(this);
+    cx_setref(&this->replicator, cx_replicator(replicator));
     cx_setref(&this->instance, instance);
     cx_setref(&this->function, cx_function(function));
     this->args = args;
     cx_updateEnd(this);
 }
 
-void cx_invokeEventSet(cx_invokeEvent this, cx_object instance, cx_function function, cx_octetseq args) {
+void cx_invokeEventSet(cx_invokeEvent this, cx_replicator replicator, cx_object instance, cx_function function, cx_octetseq args) {
+    cx_setref(&this->replicator, cx_replicator(replicator));
     cx_setref(&this->instance, instance);
     cx_setref(&this->function, cx_function(function));
     this->args = args;
@@ -4614,6 +4658,19 @@ cx_int16 cx_notifyActionDeinit(cx_notifyAction* value) {
     cx_valueValueInit(&v, NULL, cx_type(cx_notifyAction_o), value);
     result = cx_deinitv(&v);
     return result;
+}
+
+cx_int16 cx_notifyActionCall(cx_notifyAction *_delegate, cx_object observable) {
+    if (_delegate->_parent.procedure) {
+        if (_delegate->_parent.instance) {
+            cx_call(_delegate->_parent.procedure, NULL, _delegate->_parent.instance, observable);
+        } else {
+            cx_call(_delegate->_parent.procedure, NULL, observable);
+        }
+    } else {
+        return -1;
+    }
+    return 0;
 }
 
 cx_object cx_objectCreate(void) {

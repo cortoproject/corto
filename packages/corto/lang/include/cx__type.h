@@ -499,6 +499,33 @@ struct cx_invokeAction {
     cx_delegatedata _parent;
 };
 
+/*  ::corto::lang::query */
+CX_CLASS(cx_query);
+
+CX_CLASS_DEF(cx_query) {
+    cx_object from;
+    cx_eventMask mask;
+};
+
+/*  ::corto::lang::notifyAction */
+typedef struct cx_notifyAction cx_notifyAction;
+
+struct cx_notifyAction {
+    cx_delegatedata _parent;
+};
+
+/*  ::corto::lang::replicator */
+CX_CLASS(cx_replicator);
+
+CX_CLASS_DEF(cx_replicator) {
+    cx_object mount;
+    cx_query query;
+    cx_notifyAction onDeclare;
+    cx_notifyAction onUpdate;
+    cx_notifyAction onDelete;
+    cx_invokeAction onInvoke;
+};
+
 /* ::corto::lang::octet */
 typedef uint8_t cx_octet;
 
@@ -509,6 +536,7 @@ CX_CLASS(cx_invokeEvent);
 
 CX_CLASS_DEF(cx_invokeEvent) {
     CX_EXTEND(cx_event);
+    cx_replicator replicator;
     cx_object instance;
     cx_function function;
     cx_octetseq args;
@@ -553,13 +581,6 @@ CX_CLASS(cx_method);
 CX_CLASS_DEF(cx_method) {
     CX_EXTEND(cx_function);
     cx_bool virtual;
-};
-
-/*  ::corto::lang::notifyAction */
-typedef struct cx_notifyAction cx_notifyAction;
-
-struct cx_notifyAction {
-    cx_delegatedata _parent;
 };
 
 /*  ::corto::lang::observableEvent */
@@ -632,26 +653,6 @@ CX_CLASS_DEF(cx_procedure) {
     CX_EXTEND(cx_struct);
     cx_procedureKind kind;
     cx_initAction bind;
-};
-
-/*  ::corto::lang::query */
-CX_CLASS(cx_query);
-
-CX_CLASS_DEF(cx_query) {
-    cx_object from;
-    cx_eventMask mask;
-};
-
-/*  ::corto::lang::replicator */
-CX_CLASS(cx_replicator);
-
-CX_CLASS_DEF(cx_replicator) {
-    cx_object mount;
-    cx_query query;
-    cx_notifyAction onDeclare;
-    cx_notifyAction onUpdate;
-    cx_notifyAction onDelete;
-    cx_invokeAction onInvoke;
 };
 
 /*  ::corto::lang::sequence */

@@ -26,7 +26,29 @@ cx_int16 _cx_replicator_construct(cx_replicator this) {
 cx_void _cx_replicator_destruct(cx_replicator this) {
 /* $begin(::corto::lang::replicator::destruct) */
 
-    /* << Insert implementation >> */
+    CX_UNUSED(this);
+
+/* $end */
+}
+
+/* ::corto::lang::replicator::invoke(object instance,function proc,octetseq args) */
+cx_void _cx_replicator_invoke(cx_replicator this, cx_object instance, cx_function proc, cx_octetseq args) {
+/* $begin(::corto::lang::replicator::invoke) */
+
+    if (this->onInvoke._parent.procedure) {
+        if (cx_ownerof(instance) == this) {
+            cx_octetseq argbuff = args;
+            argbuff.buffer = cx_alloc(args.length * sizeof(cx_octet));
+            memcpy(argbuff.buffer, args.buffer, args.length * sizeof(cx_octet));
+            cx_invokeEvent e = cx_invokeEventCreate(this, instance, proc, argbuff);
+            cx_dispatcher_post(this, e);
+        } else {
+            cx_id id1, id2;
+            cx_error("invalid invoke: replicator %s does not own object '%s'",
+                cx_fullname(this, id1), 
+                cx_fullname(instance, id2));
+        }
+    }
 
 /* $end */
 }
@@ -34,13 +56,9 @@ cx_void _cx_replicator_destruct(cx_replicator this) {
 /* ::corto::lang::replicator::on_declare */
 cx_void _cx_replicator_on_declare(cx_replicator this, cx_object observable, cx_object source) {
 /* $begin(::corto::lang::replicator::on_declare) */
-    cx_object owner = cx_ownerof(observable);
-
-    if (this->onDeclare._parent.procedure) {
-        if (!owner || !cx_instanceof(cx_type(cx_replicator_o), owner)) {
-            cx_call(this->onDeclare._parent.procedure, this->onDeclare._parent.instance, observable, source);
-        }
-    }
+    
+    CX_UNUSED(source);
+    cx_notifyActionCall(&this->onDeclare, observable);
 
 /* $end */
 }
@@ -48,13 +66,9 @@ cx_void _cx_replicator_on_declare(cx_replicator this, cx_object observable, cx_o
 /* ::corto::lang::replicator::on_delete */
 cx_void _cx_replicator_on_delete(cx_replicator this, cx_object observable, cx_object source) {
 /* $begin(::corto::lang::replicator::on_delete) */
-    cx_object owner = cx_ownerof(observable);
 
-    if (this->onDelete._parent.procedure) {
-        if (!owner || !cx_instanceof(cx_type(cx_replicator_o), owner)) {
-            cx_call(this->onDelete._parent.procedure, this->onDelete._parent.instance, observable, source);
-        }
-    }
+    CX_UNUSED(source);
+    cx_notifyActionCall(&this->onDelete, observable);
 
 /* $end */
 }
@@ -62,21 +76,18 @@ cx_void _cx_replicator_on_delete(cx_replicator this, cx_object observable, cx_ob
 /* ::corto::lang::replicator::on_update */
 cx_void _cx_replicator_on_update(cx_replicator this, cx_object observable, cx_object source) {
 /* $begin(::corto::lang::replicator::on_update) */
-    cx_object owner = cx_ownerof(observable);
 
-    if (this->onUpdate._parent.procedure) {
-        if (!owner || !cx_instanceof(cx_type(cx_replicator_o), owner)) {
-            cx_call(this->onUpdate._parent.procedure, this->onUpdate._parent.instance, observable, source);
-        }
-    }
-
+    CX_UNUSED(source);
+    cx_notifyActionCall(&this->onUpdate, observable);
+    
 /* $end */
 }
 
 /* ::corto::lang::replicator::post(event e) */
 cx_void _cx_replicator_post(cx_replicator this, cx_event e) {
 /* $begin(::corto::lang::replicator::post) */
-
+    
+    CX_UNUSED(this);
     cx_event_handle(e);
 
 /* $end */
