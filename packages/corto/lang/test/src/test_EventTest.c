@@ -11,26 +11,27 @@
 /* ::test::EventTest::construct() */
 cx_int16 _test_EventTest_construct(test_EventTest this) {
 /* $begin(::test::EventTest::construct) */
+    cx_any thisAny = {cx_typeof(this), this, FALSE};
 
-    cx_observer_listen(test_EventTest_onDeclare_o, this->scope, this);
-    cx_observer_listen(test_EventTest_onDeclareSelf_o, this->scope, this);
-    cx_observer_listen(test_EventTest_onDeclareScope_o, this->scope, this);
-    cx_observer_listen(test_EventTest_onDeclareTree_o, this->scope, this);
+    cx_class_setObservable(thisAny, test_EventTest_onDeclare_o, this->scope);
+    cx_class_setObservable(thisAny, test_EventTest_onDeclareSelf_o, this->scope);
+    cx_class_setObservable(thisAny, test_EventTest_onDeclareScope_o, this->scope);
+    cx_class_setObservable(thisAny, test_EventTest_onDeclareTree_o, this->scope);
 
-    cx_observer_listen(test_EventTest_onDefine_o, this->scope, this);
-    cx_observer_listen(test_EventTest_onDefineSelf_o, this->scope, this);
-    cx_observer_listen(test_EventTest_onDefineScope_o, this->scope, this);
-    cx_observer_listen(test_EventTest_onDefineTree_o, this->scope, this); 
+    cx_class_setObservable(thisAny, test_EventTest_onDefine_o, this->scope);
+    cx_class_setObservable(thisAny, test_EventTest_onDefineSelf_o, this->scope);
+    cx_class_setObservable(thisAny, test_EventTest_onDefineScope_o, this->scope);
+    cx_class_setObservable(thisAny, test_EventTest_onDefineTree_o, this->scope); 
 
-    cx_observer_listen(test_EventTest_onUpdate_o, this->scope, this);
-    cx_observer_listen(test_EventTest_onUpdateSelf_o, this->scope, this);
-    cx_observer_listen(test_EventTest_onUpdateScope_o, this->scope, this);
-    cx_observer_listen(test_EventTest_onUpdateTree_o, this->scope, this);   
+    cx_class_setObservable(thisAny, test_EventTest_onUpdate_o, this->scope);
+    cx_class_setObservable(thisAny, test_EventTest_onUpdateSelf_o, this->scope);
+    cx_class_setObservable(thisAny, test_EventTest_onUpdateScope_o, this->scope);
+    cx_class_setObservable(thisAny, test_EventTest_onUpdateTree_o, this->scope);   
 
-    cx_observer_listen(test_EventTest_onDelete_o, this->scope, this);
-    cx_observer_listen(test_EventTest_onDeleteSelf_o, this->scope, this);
-    cx_observer_listen(test_EventTest_onDeleteScope_o, this->scope, this);
-    cx_observer_listen(test_EventTest_onDeleteTree_o, this->scope, this);
+    cx_class_setObservable(thisAny, test_EventTest_onDelete_o, this->scope);
+    cx_class_setObservable(thisAny, test_EventTest_onDeleteSelf_o, this->scope);
+    cx_class_setObservable(thisAny, test_EventTest_onDeleteScope_o, this->scope);
+    cx_class_setObservable(thisAny, test_EventTest_onDeleteTree_o, this->scope);
 
     return 0;
 /* $end */

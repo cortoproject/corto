@@ -125,6 +125,13 @@ void __cx_class_destruct(cx_function f, void *result, void *args) {
         cx_class(*(void**)args));
 }
 
+void __cx_class_eventMaskOf(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    *(cx_eventMask*)result = _cx_class_eventMaskOf(
+        *(cx_any*)args,
+        cx_observer(*(cx_observer*)((intptr_t)args + sizeof(cx_any))));
+}
+
 void __cx_class_findObserver(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_observer*)result = _cx_class_findObserver(
@@ -146,6 +153,24 @@ void __cx_class_instanceof(cx_function f, void *result, void *args) {
         *(cx_object*)((intptr_t)args + sizeof(void*)));
 }
 
+void __cx_class_listen(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    CX_UNUSED(result);
+    _cx_class_listen(
+        *(cx_any*)args,
+        cx_observer(*(cx_observer*)((intptr_t)args + sizeof(cx_any))),
+        *(cx_eventMask*)((intptr_t)args + sizeof(cx_any) + sizeof(cx_observer)),
+        *(cx_object*)((intptr_t)args + sizeof(cx_any) + sizeof(cx_observer) + sizeof(cx_eventMask)),
+        cx_dispatcher(*(cx_dispatcher*)((intptr_t)args + sizeof(cx_any) + sizeof(cx_observer) + sizeof(cx_eventMask) + sizeof(cx_object))));
+}
+
+void __cx_class_observableOf(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    *(cx_object*)result = _cx_class_observableOf(
+        *(cx_any*)args,
+        cx_observer(*(cx_observer*)((intptr_t)args + sizeof(cx_any))));
+}
+
 void __cx_class_privateObserver(cx_function f, void *result, void *args) {
     CX_UNUSED(f);
     *(cx_observer*)result = _cx_class_privateObserver(
@@ -160,6 +185,33 @@ void __cx_class_resolveInterfaceMethod(cx_function f, void *result, void *args) 
         cx_class(*(void**)args),
         cx_interface(*(cx_interface*)((intptr_t)args + sizeof(void*))),
         *(cx_uint32*)((intptr_t)args + sizeof(void*) + sizeof(cx_interface)));
+}
+
+void __cx_class_setDispatcher(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    CX_UNUSED(result);
+    _cx_class_setDispatcher(
+        *(cx_any*)args,
+        cx_observer(*(cx_observer*)((intptr_t)args + sizeof(cx_any))),
+        cx_dispatcher(*(cx_dispatcher*)((intptr_t)args + sizeof(cx_any) + sizeof(cx_observer))));
+}
+
+void __cx_class_setMask(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    CX_UNUSED(result);
+    _cx_class_setMask(
+        *(cx_any*)args,
+        cx_observer(*(cx_observer*)((intptr_t)args + sizeof(cx_any))),
+        *(cx_eventMask*)((intptr_t)args + sizeof(cx_any) + sizeof(cx_observer)));
+}
+
+void __cx_class_setObservable(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    CX_UNUSED(result);
+    _cx_class_setObservable(
+        *(cx_any*)args,
+        cx_observer(*(cx_observer*)((intptr_t)args + sizeof(cx_any))),
+        *(cx_object*)((intptr_t)args + sizeof(cx_any) + sizeof(cx_observer)));
 }
 
 /* virtual ::corto::lang::collection::castable(type type) */
@@ -589,6 +641,35 @@ void __cx_interface_resolveMethodId(cx_function f, void *result, void *args) {
         *(cx_string*)((intptr_t)args + sizeof(void*)));
 }
 
+/* virtual ::corto::lang::invokeEvent::handle() */
+void _cx_invokeEvent_handle(cx_invokeEvent this) {
+    static cx_uint32 _methodId;
+    cx_method _method;
+    cx_interface _abstract;
+
+    _abstract = cx_interface(cx_typeof(this));
+
+    /* Determine methodId once, then cache it for subsequent calls. */
+    if (!_methodId) {
+        _methodId = cx_interface_resolveMethodId(_abstract, "handle()");
+    }
+    cx_assert(_methodId, "virtual method 'handle()' not found in abstract '%s'", cx_nameof(_abstract));
+
+    /* Lookup method-object. */
+    _method = cx_interface_resolveMethodById(_abstract, _methodId);
+    cx_assert(_method != NULL, "unresolved method '%s::handle()@%d'", cx_nameof(this), _methodId);
+
+    cx_call(cx_function(_method), NULL, this);
+}
+
+void __cx_invokeEvent_handle_v(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    CX_UNUSED(args);
+    CX_UNUSED(result);
+    _cx_invokeEvent_handle_v(
+        cx_invokeEvent(*(void**)args));
+}
+
 /* virtual ::corto::lang::iterator::castable(type type) */
 cx_bool _cx_iterator_castable(cx_iterator this, cx_type type) {
     static cx_uint32 _methodId;
@@ -943,6 +1024,66 @@ void __cx_procedure_unbind(cx_function f, void *result, void *args) {
     _cx_procedure_unbind(
         cx_procedure(*(void**)args),
         cx_function(*(cx_function*)((intptr_t)args + sizeof(void*))));
+}
+
+void __cx_replicator_construct(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    CX_UNUSED(args);
+    *(cx_int16*)result = _cx_replicator_construct(
+        cx_replicator(*(void**)args));
+}
+
+void __cx_replicator_destruct(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    CX_UNUSED(args);
+    CX_UNUSED(result);
+    _cx_replicator_destruct(
+        cx_replicator(*(void**)args));
+}
+
+void __cx_replicator_invoke(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    CX_UNUSED(result);
+    _cx_replicator_invoke(
+        cx_replicator(*(void**)args),
+        *(cx_object*)((intptr_t)args + sizeof(void*)),
+        cx_function(*(cx_function*)((intptr_t)args + sizeof(void*) + sizeof(cx_object))),
+        *(cx_octetseq*)((intptr_t)args + sizeof(void*) + sizeof(cx_object) + sizeof(cx_function)));
+}
+
+void __cx_replicator_on_declare(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    CX_UNUSED(result);
+    _cx_replicator_on_declare(
+        cx_replicator(*(void**)args),
+        *(void**)((intptr_t)args + sizeof(void*)),
+        *(void**)((intptr_t)args + sizeof(void*) + sizeof(void*)));
+}
+
+void __cx_replicator_on_delete(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    CX_UNUSED(result);
+    _cx_replicator_on_delete(
+        cx_replicator(*(void**)args),
+        *(void**)((intptr_t)args + sizeof(void*)),
+        *(void**)((intptr_t)args + sizeof(void*) + sizeof(void*)));
+}
+
+void __cx_replicator_on_update(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    CX_UNUSED(result);
+    _cx_replicator_on_update(
+        cx_replicator(*(void**)args),
+        *(void**)((intptr_t)args + sizeof(void*)),
+        *(void**)((intptr_t)args + sizeof(void*) + sizeof(void*)));
+}
+
+void __cx_replicator_post(cx_function f, void *result, void *args) {
+    CX_UNUSED(f);
+    CX_UNUSED(result);
+    _cx_replicator_post(
+        cx_replicator(*(void**)args),
+        cx_event(*(cx_event*)((intptr_t)args + sizeof(void*))));
 }
 
 void __cx_sequence_construct(cx_function f, void *result, void *args) {

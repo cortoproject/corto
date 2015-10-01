@@ -216,12 +216,20 @@ cx_int16 corto_pp(int argc, char *argv[]) {
             if (scopes) {
 	            iter = cx_llIter(scopes);
 	            while (cx_iterHasNext(&iter)) {
+                    cx_id scopeId;
 	                scope = cx_iterNext(&iter);
 
+                    /* Ensure the scope is fully qualified */
+                    if (scope[0] != ':') {
+                        sprintf(scopeId, "::%s", scope);
+                    } else {
+                        strcpy(scopeId, scope);
+                    }
+
 	                /* Resolve object */
-	                o = cx_resolve(NULL, scope);
+	                o = cx_resolve(NULL, scopeId);
 	                if (!o) {
-	                    cx_error("corto: unresolved scope '%s'.", scope);
+	                    cx_error("corto: unresolved scope '%s'.", scopeId);
 	                    goto error;
 	                }
 	                cx_release(o);

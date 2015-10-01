@@ -407,7 +407,8 @@ static void cx__deinitObservable(cx_object o) {
             /* Clear template observer data */
             if (observer->observer->template) {
                 cx_object observerObj = observer->_this;
-                cx_class_setObservable(cx_class(cx_typeof(observerObj)), observer->observer, observer->_this, NULL);
+                cx_any thisAny = {cx_typeof(observerObj), observerObj, FALSE};
+                cx_class_listen(thisAny, observer->observer, 0, NULL, NULL);
             }
             if (!--observer->count) {
                 cx_dealloc(observer);
@@ -423,7 +424,8 @@ static void cx__deinitObservable(cx_object o) {
             /* Clear template observer data */
             if (observer->observer->template) {
                 cx_object observerObj = observer->_this;
-                cx_class_setObservable(cx_class(cx_typeof(observerObj)), observer->observer, observer->_this, NULL);
+                cx_any thisAny = {cx_typeof(observerObj), observerObj, FALSE};
+                cx_class_listen(thisAny, observer->observer, 0, NULL, NULL);
             }
             observer->count--;
              if (!observer->count) {
@@ -659,7 +661,7 @@ static cx_object cx_adopt(cx_object parent, cx_object child) {
     /* Parent must be a valid object */
     if (!cx_checkState(parent, CX_VALID)) {
         cx_seterr("parent is invalid");
-        goto err_invalid_parent;
+        goto error;
     }
 
     /* Obtain pointers to scope of parent and child */
@@ -726,6 +728,7 @@ err_invalid_parent:
     cx_rbtreeRemove(p_scope->scope, c_scope->name);
 err_existing:
     cx_rwmutexUnlock(&p_scope->scopeLock);
+error:
     return NULL;
 }
 
@@ -1097,7 +1100,7 @@ cx_int16 cx_define(cx_object o) {
             if (cx_class_instanceof(cx_class_o, t)) {
                 /* Attach observers to object */
                 cx_class_attachObservers(cx_class(t), o);
-                /* Call constructor */
+                /* Call constructor - will potentially override observer params */
                 result = cx_delegateConstruct(t, o);
             } else if (cx_class_instanceof(cx_procedure_o, t)) {
                 result = cx_delegateConstruct(t, o);
@@ -1117,7 +1120,7 @@ cx_int16 cx_define(cx_object o) {
                 cx_notify(cx__objectObservable(_o), o, CX_ON_DEFINE);
 
                 if (cx_class_instanceof(cx_class_o, t)) {
-                    /* Start listening with attached observers */
+                    /* Start listening with final observer params */
                     cx_class_listenObservers(cx_class(t), o);
                 }
             } else {
@@ -1910,6 +1913,10 @@ cx_object cx_lookupLowercase(cx_object o, cx_string name) {
     cx__scope* scope;
     cx_rbtree tree;
 
+    if (!o) {
+        o = root_o;
+    }
+
     _o = CX_OFFSET(o, -sizeof(cx__object));
     scope = cx__objectScope(_o);
 
@@ -2062,8 +2069,10 @@ static cx_uint32 indent = 0;
 /* Notify one observer */
 static void cx_notifyObserver(cx__observer *data, cx_object observable, cx_object source, cx_uint32 mask, int depth) {
     cx_observer observer = data->observer;
+    cx_eventMask observerMask = data->mask;
 
-    if ((mask & observer->mask) && (!depth || (observer->mask & CX_ON_TREE))) {
+    if ((mask & observerMask) && (!depth || (observerMask & CX_ON_TREE))) {
+        cx_dispatcher dispatcher = data->dispatcher;
 #ifdef CX_TRACE_NOTIFICATIONS
 {
     cx_id id1, id2, id3;
@@ -2076,14 +2085,13 @@ static void cx_notifyObserver(cx__observer *data, cx_object observable, cx_objec
 indent++;
 #endif
 
-        if (!observer->dispatcher) {
+        if (!dispatcher) {
             data->notify(data, data->_this, observable, source, mask);
         } else {
             if (!data->_this || (data->_this != source)) {
                 cx_attr oldAttr = cx_setAttr(0);
                 cx_observableEvent event = cx_declare(cx_type(cx_observableEvent_o));
                 cx_setAttr(oldAttr);
-                cx_dispatcher dispatcher = observer->dispatcher;
 
                 cx_setref(&event->observer, observer);
                 cx_setref(&event->me, data->_this);
@@ -2124,7 +2132,7 @@ int cx_observerAlignScope(cx_object o, void *userData) {
         }
     }
 
-    if (data->observer->observer->mask & CX_ON_TREE) {
+    if (data->mask & CX_ON_TREE) {
         int result = 1;
         cx_objectseq scope;
         cx_uint32 i;
@@ -2164,7 +2172,7 @@ void cx_observerAlign(cx_object observable, cx__observer *observer, int mask) {
 }
 
 /* Add observer to observable */
-cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object this) {
+cx_int32 cx_listen(cx_object this, cx_observer observer, cx_eventMask mask, cx_object observable, cx_dispatcher dispatcher) {
     cx__observer* _observerData = NULL;
     cx__observable* _o;
     cx_bool added;
@@ -2174,11 +2182,12 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object this) {
      * don't start listening right away but set the observable in the list of
      * class observables */
     if (observer->template && this && !cx_checkState(this, CX_DEFINED)) {
-        cx_class_setObservable(cx_class(cx_typeof(this)), observer, this, observable);
+        cx_any thisAny = {cx_typeof(this), this, FALSE};
+        cx_class_listen(thisAny, observer, mask, observable, dispatcher);
     } else {
 
         /* Test for error conditions before making changes */
-        if (observer->mask & (CX_ON_SCOPE|CX_ON_TREE)) {
+        if (mask & (CX_ON_SCOPE|CX_ON_TREE)) {
             if (!cx_checkAttr(observable, CX_ATTR_SCOPED)) {
                 cx_id id, id2;
                 cx_seterr("corto::listen: cannot listen to childs of non-scoped observable '%s' (observer %s)",
@@ -2204,12 +2213,12 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object this) {
                     cx_fullname(observable, id1),
                     cx_fullname(observer, id2),
                     cx_fullname(this, id3),
-                    observer->mask & CX_ON_SELF ? " self" : "",
-                    observer->mask & CX_ON_SCOPE ? " scope" : "",
-                    observer->mask & CX_ON_TREE ? " tree" : "",
-                    observer->mask & CX_ON_DECLARE ? " declare" : "",
-                    observer->mask & CX_ON_DEFINE ? " define" : "",
-                    observer->mask & CX_ON_UPDATE ? " update" : "");
+                    mask & CX_ON_SELF ? " self" : "",
+                    mask & CX_ON_SCOPE ? " scope" : "",
+                    mask & CX_ON_TREE ? " tree" : "",
+                    mask & CX_ON_DECLARE ? " declare" : "",
+                    mask & CX_ON_DEFINE ? " define" : "",
+                    mask & CX_ON_UPDATE ? " update" : "");
         }
     #endif
 
@@ -2218,6 +2227,8 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object this) {
         _observerData->observer = observer;
         _observerData->_this = this;
         _observerData->count = 0;
+        _observerData->mask = mask;
+        _observerData->dispatcher = dispatcher;
 
         /* Resolve the kind of the observer. This reduces the number of
          * conditions that need to be evaluated in the notifyObserver function. */
@@ -2238,7 +2249,7 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object this) {
         added = FALSE;
 
         /* If observer must trigger on updates of me, add it to onSelf list */
-        if (observer->mask & CX_ON_SELF) {
+        if (mask & CX_ON_SELF) {
             cx_rwmutexWrite(&_o->selfLock);
             if (!cx_observerFind(_o->onSelf, observer, this)) {
                 if (!_o->onSelf) {
@@ -2253,7 +2264,7 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object this) {
                 oldSelfArray = _o->onSelfArray;
                 _o->onSelfArray = cx_observersArrayNew(_o->onSelf);
             }
-            if (observer->mask & CX_ON_VALUE) {
+            if (mask & CX_ON_VALUE) {
                 if (cx_checkAttr(observable, CX_ATTR_WRITABLE)) {
                     _o->lockRequired = TRUE;
                 }
@@ -2262,7 +2273,7 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object this) {
         }
 
         /* If observer must trigger on updates of childs, add it to onChilds list */
-        if (observer->mask & (CX_ON_SCOPE|CX_ON_TREE)) {
+        if (mask & (CX_ON_SCOPE|CX_ON_TREE)) {
             cx_rwmutexWrite(&_o->childLock);
             if (!cx_observerFind(_o->onChild, observer, this)) {
                 if (!_o->onChild) {
@@ -2279,7 +2290,7 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object this) {
                 _o->onChildArray = cx_observersArrayNew(_o->onChild);
             }
 
-            if (observer->mask & CX_ON_VALUE) {
+            if (mask & CX_ON_VALUE) {
                 if (!_o->childLockRequired) {
                     _o->childLockRequired = TRUE;
                     cx_setrefChildLockRequired(observable);
@@ -2292,8 +2303,8 @@ cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object this) {
             cx_dealloc(_observerData);
         } else {
             /* If observer is subscribed to declare/define events, align observer with existing */
-            if ((observer->mask & CX_ON_DECLARE) || (observer->mask & CX_ON_DEFINE)) {
-                cx_observerAlign(observable, _observerData, observer->mask);
+            if ((mask & CX_ON_DECLARE) || (mask & CX_ON_DEFINE)) {
+                cx_observerAlign(observable, _observerData, mask);
             }
         }
 
@@ -2325,7 +2336,7 @@ error:
 }
 
 /* Remove observer from observable - TODO update lockRequired and parentObserves. */
-cx_int32 cx_silence(cx_object observable, cx_observer observer, cx_object this) {
+cx_int32 cx_silence(cx_object this, cx_observer observer, cx_eventMask mask, cx_object observable) {
     cx__observer* observerData;
     cx__observable* _o;
     cx__observer **oldSelfArray = NULL, **oldChildArray = NULL;
@@ -2335,7 +2346,7 @@ cx_int32 cx_silence(cx_object observable, cx_observer observer, cx_object this) 
         observerData = NULL;
 
         /* If observer triggered on updates of me, remove from onSelf list */
-        if (observer->mask & CX_ON_SELF) {
+        if (mask & CX_ON_SELF) {
             cx_rwmutexWrite(&_o->selfLock);
             observerData = cx_observerFind(_o->onSelf, observer, this);
             if (observerData) {
@@ -2360,7 +2371,7 @@ cx_int32 cx_silence(cx_object observable, cx_observer observer, cx_object this) 
         }
 
         /* If observer triggered on updates of childs, remove from onChilds list */
-        if (observer->mask & (CX_ON_SCOPE|CX_ON_TREE)) {
+        if (mask & (CX_ON_SCOPE|CX_ON_TREE)) {
             if (cx_checkAttr(observable, CX_ATTR_SCOPED)) {
                 cx_rwmutexWrite(&_o->childLock);
                 observerData = cx_observerFind(_o->onChild, observer, this);
@@ -2665,7 +2676,7 @@ static void cx_waitObserver(cx_object me, cx_object observable, cx_object source
 
         /* Silence this observer */
         for(i=0; i<waitAdmin->count; i++) {
-            cx_silence(waitAdmin->objects[i], waitAdmin->observer, me);
+            cx_silence(me, waitAdmin->observer, CX_ON_UPDATE, waitAdmin->objects[i]);
         }
     }
     cx_adec(&waitAdmin->triggerCount);
@@ -2725,7 +2736,7 @@ cx_object cx_wait(cx_int32 timeout_sec, cx_int32 timeout_nanosec) {
 
         /* Setup observer for observables */
         for(i=0; i<waitAdmin->count; i++) {
-            cx_listen(waitAdmin->objects[i], waitAdmin->observer, (cx_object)waitAdmin);
+            cx_listen((cx_object)waitAdmin, waitAdmin->observer, CX_ON_UPDATE, waitAdmin->objects[i], NULL);
         }
 
         /* Do the wait */

@@ -497,3 +497,72 @@ cx_int16 c_apiTypeCopy(cx_type t, c_apiWalk_t *data) {
 cx_int16 c_apiTypeCompare(cx_type t, c_apiWalk_t *data) {
 	return c_apiTypeCopyIntern(t, data, "Compare", FALSE);	
 }
+
+cx_int16 c_apiDelegateCall(cx_delegate t, c_apiWalk_t *data) {
+    cx_id returnId, id, paramType, paramName;
+    g_fullOid(data->g, t->returnType, returnId);
+    g_fullOid(data->g, t, id);
+    cx_bool hasReturn = t->returnType->reference || (t->returnType->kind != CX_VOID);
+
+    g_fileWrite(data->header, "cx_int16 %sCall(%s *_delegate", id, id);
+    g_fileWrite(data->source, "cx_int16 %sCall(%s *_delegate", id, id);
+
+    if (hasReturn) {
+        g_fileWrite(data->header, ", %s* _result", returnId);
+        g_fileWrite(data->source, ", %s* _result", returnId);
+    }
+
+    {cx_parameterseqForeach(t->parameters, p) {
+        g_fullOid(data->g, p.type, paramType);
+        g_id(data->g, p.name, paramName);
+        g_fileWrite(data->header, ", %s%s %s", paramType, p.passByReference ? "&" : "", paramName);
+        g_fileWrite(data->source, ", %s%s %s", paramType, p.passByReference ? "&" : "", paramName);
+    }}
+
+    g_fileWrite(data->header, ");\n");
+    g_fileWrite(data->source, ") {\n");
+    g_fileIndent(data->source);
+
+    g_fileWrite(data->source, "if (_delegate->_parent.procedure) {\n");
+    g_fileIndent(data->source);
+    g_fileWrite(data->source, "if (_delegate->_parent.instance) {\n");
+    g_fileIndent(data->source);
+    if (hasReturn) {
+        g_fileWrite(data->source, "cx_call(_delegate->_parent.procedure, _result, _delegate->_parent.instance");
+    } else {
+        g_fileWrite(data->source, "cx_call(_delegate->_parent.procedure, NULL, _delegate->_parent.instance");        
+    }
+    {cx_parameterseqForeach(t->parameters, p) {
+        g_fullOid(data->g, p.type, paramType);
+        g_id(data->g, p.name, paramName);
+        g_fileWrite(data->source, ", %s", paramName);
+    }}
+    g_fileWrite(data->source, ");\n");
+    g_fileDedent(data->source);
+    g_fileWrite(data->source, "} else {\n");
+    g_fileIndent(data->source);
+    if (hasReturn) {
+        g_fileWrite(data->source, "cx_call(_delegate->_parent.procedure, _result");
+    } else {
+        g_fileWrite(data->source, "cx_call(_delegate->_parent.procedure, NULL");        
+    }
+    {cx_parameterseqForeach(t->parameters, p) {
+        g_fullOid(data->g, p.type, paramType);
+        g_id(data->g, p.name, paramName);
+        g_fileWrite(data->source, ", %s", paramName);
+    }}
+    g_fileWrite(data->source, ");\n");
+    g_fileDedent(data->source);
+    g_fileWrite(data->source, "}\n");
+    g_fileDedent(data->source);
+    g_fileWrite(data->source, "} else {\n");
+    g_fileIndent(data->source);
+    g_fileWrite(data->source, "return -1;\n");
+    g_fileDedent(data->source);
+    g_fileWrite(data->source, "}\n");
+    g_fileWrite(data->source, "return 0;\n");
+    g_fileDedent(data->source);
+    g_fileWrite(data->source, "}\n\n");
+
+    return 0;
+}

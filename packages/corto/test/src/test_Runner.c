@@ -53,8 +53,7 @@ cx_int16 _test_Runner_construct(test_Runner this) {
             goto error;
         }
     } else {
-        test_Runner_runTest_o->mask = CX_ON_DEFINE | CX_ON_TREE | CX_ON_SELF;
-        cx_listen(root_o, test_Runner_runTest_o, this);
+        cx_listen(this, test_Runner_runTest_o, CX_ON_DEFINE | CX_ON_TREE | CX_ON_SELF, root_o, NULL);
     }
     return 0;
 error:

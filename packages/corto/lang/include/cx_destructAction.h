@@ -1,10 +1,10 @@
-/* cx_callbackInit.h
+/* cx_destructAction.h
  *
  * This file contains generated code. Do not modify!
  */
 
-#ifndef CORTO_LANG_CALLBACKINIT_H
-#define CORTO_LANG_CALLBACKINIT_H
+#ifndef CORTO_LANG_DESTRUCTACTION_H
+#define CORTO_LANG_DESTRUCTACTION_H
 
 #include "corto.h"
 #include "cx__interface.h"

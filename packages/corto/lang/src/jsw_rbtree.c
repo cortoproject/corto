@@ -334,6 +334,7 @@ int jsw_rbhaskey_w_cmp ( jsw_rbtree_t *tree, const void *key, void** data, cx_eq
 */
 int jsw_rbinsert ( jsw_rbtree_t *tree, void* key, void *data, void **old_out, cx_bool overwrite )
 {
+  CX_UNUSED(overwrite);
 
   if (old_out)
     *old_out = NULL;

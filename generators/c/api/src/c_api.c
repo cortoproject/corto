@@ -136,6 +136,9 @@ static int c_apiWalk(cx_object o, void* userData) {
 
         /* Clear nameconflict cache */
         if (cx_type(o)->kind == CX_COMPOSITE) {
+            if (cx_interface(o)->kind == CX_DELEGATE) {
+                c_apiDelegateCall(cx_delegate(o), userData);
+            }
             cx_genMemberCacheClean(data->memberCache);           
         }
     }

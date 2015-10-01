@@ -32,6 +32,7 @@ cx_int16 _ast_Integer_serialize(ast_Integer this, cx_type dstType, cx_word dst) 
     case Ast_Bool:
         *(cx_bool*)dst = this->value ? TRUE : FALSE;
         break;
+    case Ast_Char:
     case Ast_Int:
     case Ast_SignedInt:
     case Ast_Float:

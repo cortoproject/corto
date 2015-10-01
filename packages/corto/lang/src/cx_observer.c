@@ -95,18 +95,17 @@ cx_int16 _cx_observer_listen(cx_observer this, cx_object observable, cx_object m
         }
         cx_setref(&this->observable, observable);
     } else {
-        oldObservable = cx_class_getObservable(cx_class(cx_typeof(me)), this, me);
-        cx_class_setObservable(cx_class(cx_typeof(me)), this, me, observable);
+        cx_critical("don't use observer::listen for instance observers (use class::listen)");
     }
 
     if (oldObservable) {
-        cx_silence(oldObservable, this, me);
+        cx_silence(me, this, this->mask, oldObservable);
     }
 
     if (observable) {
         if (!me || cx_checkState(me, CX_DEFINED)) {
             if (cx_checkAttr(observable, CX_ATTR_OBSERVABLE)) {
-                cx_listen(observable, this, me);
+                cx_listen(me, this, this->mask, observable, this->dispatcher);
             } else {
                 if (!this->template) {
                     cx_id id;
@@ -114,8 +113,6 @@ cx_int16 _cx_observer_listen(cx_observer this, cx_object observable, cx_object m
                     goto error;
                 }
             }
-        } else if (cx_instanceof((cx_type)cx_class_o, cx_typeof(me))) {
-            cx_class_setObservable(cx_class(cx_typeof(me)), this, me, observable);
         }
     }
 
@@ -136,7 +133,7 @@ cx_void _cx_observer_setDispatcher(cx_observer this, cx_dispatcher dispatcher) {
 /* ::corto::lang::observer::silence(object me) */
 cx_int16 _cx_observer_silence(cx_observer this, cx_object me) {
 /* $begin(::corto::lang::observer::silence) */
-    cx_object oldObservable;
+    cx_object oldObservable = NULL;
 
     /* Silence old observable */
     if (!this->template) {
@@ -148,12 +145,11 @@ cx_int16 _cx_observer_silence(cx_observer this, cx_object me) {
         }
         cx_setref(&this->observable, NULL);
     } else {
-        oldObservable = cx_class_getObservable(cx_class(cx_typeof(me)), me, this);
-        cx_class_setObservable(cx_class(cx_typeof(me)), me, this, NULL);
+        cx_critical("don't use observer::silence for instance observers (use class::silence)");
     }
 
     if (oldObservable) {
-        cx_silence(oldObservable, this, me);
+        cx_silence(me, this, this->mask, oldObservable);
     }
 
     return 0;
@@ -167,9 +163,9 @@ cx_void _cx_observer_unbind(cx_observer object) {
         if (object->observable) {
             if (object->observing) {
                 /* When the observer uses an expression, silence observing rather than observable */
-                cx_silence(object->observing, object, object->me);
+                cx_silence(object->me, object, object->mask, object->observing);
             } else {
-                cx_silence(object->observable, object, object->me);
+                cx_silence(object->me, object, object->mask, object->observable);
             }
         }
     }

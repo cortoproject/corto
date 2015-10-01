@@ -73,8 +73,8 @@ cx_object cx_resolve(cx_object scope, cx_string expr);
 /* Notifications */
 cx_object cx_setOwner(cx_object source);
 cx_object cx_getOwner(void);
-cx_int32 cx_listen(cx_object observable, cx_observer observer, cx_object _this);
-cx_int32 cx_silence(cx_object observable, cx_observer observer, cx_object _this);
+cx_int32 cx_listen(cx_object _this, cx_observer observer, cx_eventMask mask, cx_object observable, cx_dispatcher dispatcher);
+cx_int32 cx_silence(cx_object _this, cx_observer observer, cx_eventMask mask, cx_object observable);
 cx_bool cx_listening(cx_object observable, cx_observer, cx_object _this);
 cx_int32 cx_update(cx_object observable);
 cx_int32 cx_updateBegin(cx_object observable);

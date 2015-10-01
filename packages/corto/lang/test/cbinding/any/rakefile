@@ -1,0 +1,6 @@
+
+PACKAGE = 'any'
+
+LOCAL = true
+
+require "#{ENV['CORTO_BUILD']}/package"

@@ -1,0 +1,19 @@
+
+COMPONENTS = %w(
+    anonymous
+    any
+    array
+    class
+    delegate
+    function
+    interface
+    list
+    method
+    observer
+    primitive
+    sequence
+    struct
+    virtual
+)
+
+require "#{ENV['CORTO_BUILD']}/forward"

@@ -1,0 +1,71 @@
+#package ::primitive
+
+enum Color:: Red, Orange, Yellow, Green, Blue
+
+bool bool_false: false
+bool bool_true: true
+char char_a: 'a'
+char char_null: 0
+char char_esc: '\\'
+octet octet_10: 0x10
+word word_10: 0x10
+uint8 uint8_10: 10
+uint16 uin16_10: 10
+uint32 uint32_10: 10
+uint64 uint64_10: 10
+int8 int8_10: -10
+int16 int16_10: -10
+int32 int32_10: -10
+int64 int64_10: -10
+float32 float32_10: 10.5
+float64 float64_10: 10.5
+string string_helloworld: "Hello world"
+Color enum_orange: Orange
+
+class Bool: test::Suite::
+    void testTrue() test::Case
+    void testFalse() test::Case
+    void testDeclare() test::Case
+    void testDeclareChild() test::Case
+    void testCreate() test::Case
+    void testCreateChild() test::Case
+    void testDefine() test::Case
+    void testUpdate() test::Case
+    void testStr() test::Case
+    void testFromstr() test::Case
+    void testCopy() test::Case
+    void testCompare() test::Case
+    void testInit() test::Case
+    void testDeinit() test::Case
+
+class Char: test::Suite::
+    void testA() test::Case
+    void testNull() test::Case
+    void testEsc() test::Case
+    void testDeclare() test::Case
+    void testDeclareChild() test::Case
+    void testCreate() test::Case
+    void testCreateChild() test::Case
+    void testDefine() test::Case
+    void testUpdate() test::Case
+    void testStr() test::Case
+    void testFromstr() test::Case
+    void testCopy() test::Case
+    void testCompare() test::Case
+    void testInit() test::Case
+    void testDeinit() test::Case
+
+class Octet: test::Suite::
+    void test10() test::Case
+    void testDeclare() test::Case
+    void testDeclareChild() test::Case
+    void testCreate() test::Case
+    void testCreateChild() test::Case
+    void testDefine() test::Case
+    void testUpdate() test::Case
+    void testStr() test::Case
+    void testFromstr() test::Case
+    void testCopy() test::Case
+    void testCompare() test::Case
+    void testInit() test::Case
+    void testDeinit() test::Case
