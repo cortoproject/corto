@@ -12,6 +12,19 @@
 
 /* $end */
 
+/* ::test::MarkdownParseTest::testNoRootDestination() */
+cx_void _test_MarkdownParseTest_testNoRootDestination(test_MarkdownParseTest this) {
+/* $begin(::test::MarkdownParseTest::testNoRootDestination) */
+    char text[] =
+        "# test::Package0\n\n"
+        "## Class0\n"
+        ;
+    md_parse(NULL, text);
+    /* TODO assert that nothing was created, or that error was submitted */
+    test_assert(cx_instanceof(md_PackageDoc_o, cx_resolve(NULL, "test")) == FALSE);
+/* $end */
+}
+
 /* ::test::MarkdownParseTest::testPackageAndClass() */
 cx_void _test_MarkdownParseTest_testPackageAndClass(test_MarkdownParseTest this) {
 /* $begin(::test::MarkdownParseTest::testPackageAndClass) */
@@ -22,8 +35,14 @@ cx_void _test_MarkdownParseTest_testPackageAndClass(test_MarkdownParseTest this)
     md_parse(test_docs_o, text);
     md_PackageDoc o;
     test_assert((o = cx_resolve(test_docs_o, "test::Package0")) != NULL);
-    test_assert(cx_typeof(o) == cx_type(md_PackageDoc_o));
+    test_assert(cx_instanceof(md_PackageDoc_o, o));
     test_assert(md_Doc(o)->o == test_Package0_o);
+    cx_release(o);
+    
+    md_TypeDoc p;
+    test_assert((p = cx_resolve(test_docs_o, "test::Package0::Class0")) != NULL);
+    test_assert(cx_instanceof(md_TypeDoc_o, p));;
+    test_assert(md_Doc(p)->o == test_Package0_Class0_o);
     cx_release(o);
 /* $end */
 }

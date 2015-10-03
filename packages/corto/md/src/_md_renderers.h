@@ -9,15 +9,14 @@ extern "C" {
 
 struct md_parseData {
     cx_object destination;
-    cx_string text;
     cx_object lastScope;
 };
 
 typedef struct md_parseData md_parseData;
 
-int md_renderPackage(cx_string name, md_parseData* data);
+int md_renderPackage(cx_object o, md_parseData* data);
 
-int md_renderType(cx_string name, md_parseData* data);
+int md_renderType(cx_object o, md_parseData* data);
 
 int md_renderProcedure(cx_string name, md_parseData* data);
 

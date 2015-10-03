@@ -11,8 +11,6 @@
 /* ::test::Package1::Class1::method1() */
 cx_void _test_Package1_Class1_method1(test_Package1_Class1 this) {
 /* $begin(::test::Package1::Class1::method1) */
-
-    /* << Insert implementation >> */
-
+    CX_UNUSED(this);
 /* $end */
 }

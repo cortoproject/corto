@@ -76,8 +76,11 @@ void md_freeRenderer(hoedown_renderer* renderer) {
 /* ::corto::md::parse(object destination,string text) */
 cx_void _md_parse(cx_object destination, cx_string text) {
 /* $begin(::corto::md::parse) */
-    cx_object scope = destination ? destination : root_o;
-    md_parseData parseData = {scope, text, scope};
+    if (destination == root_o || destination == NULL) {
+        cx_error("must specify a destination different from root");
+        goto error;
+    }
+    md_parseData parseData = {destination, destination};
     hoedown_renderer *renderer = md_createRenderer(&parseData);
     hoedown_document *parser = hoedown_document_new(renderer, 0, 16);
     hoedown_buffer *buffer = hoedown_buffer_new(16);
@@ -86,6 +89,7 @@ cx_void _md_parse(cx_object destination, cx_string text) {
     hoedown_buffer_free(buffer);
     hoedown_document_free(parser);
     md_freeRenderer(renderer);
+error:;
 /* $end */
 }
 

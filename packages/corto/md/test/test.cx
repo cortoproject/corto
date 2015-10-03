@@ -14,3 +14,4 @@ void docs
 class MarkdownParseTest: test::Suite::
     void testPackageAndClass() test::Case
     void testScopedPackage() test::Case
+    void testNoRootDestination() test::Case
