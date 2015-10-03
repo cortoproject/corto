@@ -77,7 +77,7 @@ void md_freeRenderer(hoedown_renderer* renderer) {
 cx_void _md_parse(cx_object destination, cx_string text) {
 /* $begin(::corto::md::parse) */
     if (destination == root_o || destination == NULL) {
-        cx_error("must specify a destination different from root");
+        cx_seterr("must specify a destination different from root");
         goto error;
     }
     md_parseData parseData = {destination, destination};

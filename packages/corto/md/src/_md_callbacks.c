@@ -3,58 +3,7 @@
 #include "_md_callbacks.h"
 
 #include "_md_renderers.h"
-
-static cx_object md_resolvePackage(cx_string name, md_parseData* data) {
-    CX_UNUSED(data);
-    cx_string fullnameNoRoot = NULL;
-    if (name[0] == ':') {
-        fullnameNoRoot = name + 2;
-    } else {
-        fullnameNoRoot = name;
-    }
-    cx_object o = cx_resolve(root_o, fullnameNoRoot);
-    /* TODO double check that the name is effectively in root */
-    if (!o) {
-        cx_error("Cannot find %s", fullnameNoRoot);
-        goto error;
-    }
-    if (!cx_instanceof(cx_package_o, o)) {
-        cx_error("%s is not a package", fullnameNoRoot);
-        goto error;
-    }
-    return o;
-error:
-    return NULL;
-}
-
-static cx_object md_resolveType(cx_string name, md_parseData* data) {
-    if (!cx_instanceof(md_PackageDoc_o, data->lastScope)) {
-        cx_error("%s not in the scope of a PackageDoc");
-        goto error;
-    }
-    cx_package package = md_Doc(data->lastScope)->o;
-    
-    cx_object o = cx_resolve(package, name);
-    /*
-     * TODO This checks if cx_resolve did not resolve from special scopes
-     * like ::corto::lang and ::corto
-     */
-    if (!o || cx_parentof(o) != package) {
-        cx_id packageFullname;
-        cx_fullname(package, packageFullname);
-        cx_error("Cannot find %s::%s", packageFullname, name);
-        goto error;
-    }
-    if (!cx_instanceof(cx_type_o, o)) {
-        cx_id fullname;
-        cx_fullname(o, fullname);
-        cx_error("%s is not a type", fullname);
-        goto error;
-    }
-    return o;
-error:
-    return NULL;
-}
+#include "_md_resolvers.h"
 
 void md_callbackBlockcode(hoedown_buffer *ob, const hoedown_buffer *text, const hoedown_buffer *lang, const hoedown_renderer_data *data) {
     CX_UNUSED(ob);
@@ -89,11 +38,19 @@ void md_callbackHeader(hoedown_buffer *ob, const hoedown_buffer *content, int le
             }
             error = md_renderType(o, _data);
             break;
-        case 3: error = md_renderProcedure(name, _data); break;
-        case 4: error = md_renderArgument(name, _data); break;
+        case 3:
+            if ((o = md_resolveMethod(name, _data)) == NULL) {
+                goto error;
+            }
+            error = md_renderMethod(o, _data);
+            break;
+        case 4:
+            // error = md_renderArgument(o, _data);
+            break;
     }
     if (error) {
-        /* TODO propagate error to other places */
+        /* TODO propagate error to other callbacks? */
+        cx_seterr("could not resolve: %s", name);
         goto error;
     }
 error:;

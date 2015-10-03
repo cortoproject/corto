@@ -12,6 +12,7 @@ package Package1::
 void docs
 
 class MarkdownParseTest: test::Suite::
-    void testPackageAndClass() test::Case
-    void testScopedPackage() test::Case
     void testNoRootDestination() test::Case
+    void testScopedPackage() test::Case
+    void testPackageAndClass() test::Case
+    void testPackageAndClassAndMethod() test::Case

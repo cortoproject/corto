@@ -11,6 +11,6 @@ class PackageDoc: Doc
 
 class TypeDoc: Doc
 
-class ProcedureDoc: Doc
+class MethodDoc: Doc
 
 class ParameterDoc: Doc

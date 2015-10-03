@@ -21,7 +21,10 @@ cx_void _test_MarkdownParseTest_testNoRootDestination(test_MarkdownParseTest thi
         ;
     md_parse(NULL, text);
     /* TODO assert that nothing was created, or that error was submitted */
-    test_assert(cx_instanceof(md_PackageDoc_o, cx_resolve(NULL, "test")) == FALSE);
+    cx_object o = cx_resolve(NULL, "test");
+    test_assert(cx_instanceof(md_PackageDoc_o, o) == FALSE);
+    test_assert(strcmp(cx_lasterr(), "must specify a destination different from root") == 0);
+    cx_release(o);
 /* $end */
 }
 
@@ -41,8 +44,29 @@ cx_void _test_MarkdownParseTest_testPackageAndClass(test_MarkdownParseTest this)
     
     md_TypeDoc p;
     test_assert((p = cx_resolve(test_docs_o, "test::Package0::Class0")) != NULL);
-    test_assert(cx_instanceof(md_TypeDoc_o, p));;
+    test_assert(cx_instanceof(md_TypeDoc_o, p));
     test_assert(md_Doc(p)->o == test_Package0_Class0_o);
+    cx_release(o);
+/* $end */
+}
+
+/* ::test::MarkdownParseTest::testPackageAndClassAndMethod() */
+cx_void _test_MarkdownParseTest_testPackageAndClassAndMethod(test_MarkdownParseTest this) {
+/* $begin(::test::MarkdownParseTest::testPackageAndClassAndMethod) */
+    char text[] =
+        "# test::Package1\n"
+        "This is a package.\n\n"
+        "## Class1\n"
+        "This is a class.\n\n"
+        "### method1\n"
+        "This is a method\n\n"
+        ;
+    md_parse(test_docs_o, text);
+    
+    md_MethodDoc o;
+    test_assert((o = cx_resolve(test_docs_o, "test::Package1::Class1::method1")) != NULL);
+    test_assert(cx_instanceof(md_MethodDoc_o, o));
+    test_assert(md_Doc(o)->o == test_Package1_Class1_method1_o);
     cx_release(o);
 /* $end */
 }

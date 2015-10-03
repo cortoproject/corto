@@ -18,9 +18,9 @@ int md_renderPackage(cx_object o, md_parseData* data);
 
 int md_renderType(cx_object o, md_parseData* data);
 
-int md_renderProcedure(cx_string name, md_parseData* data);
+int md_renderMethod(cx_object o, md_parseData* data);
 
-int md_renderArgument(cx_string name, md_parseData* data);
+int md_renderArgument(cx_object o, md_parseData* data);
 
 #ifdef __cplusplus
 }

@@ -56,13 +56,22 @@ error:
     return 1;
 }
 
-int md_renderProcedure(cx_string name, md_parseData* data) {
-    data->lastScope = md_ProcedureDocCreateChild(data->lastScope, name);
+int md_renderMethod(cx_object o, md_parseData* data) {
+    md_TypeDoc typeDoc = md_TypeDoc(data->lastScope);
+    cx_object methodDoc = md_MethodDocCreateChild(typeDoc, cx_nameof(o));
+    if (!methodDoc) {
+        goto error;
+    }
+    cx_setref(&md_Doc(methodDoc)->o, o);
+    cx_define(methodDoc);
+    data->lastScope = methodDoc;
     return 0;
+error:
+    return 1;
 }
 
-int md_renderArgument(cx_string name, md_parseData* data) {
-    cx_assertType(data->lastScope, md_ProcedureDoc_o);
-    data->lastScope = md_ParameterDocCreateChild(data->lastScope, name);
+int md_renderArgument(cx_object o, md_parseData* data) {
+    CX_UNUSED(o);
+    CX_UNUSED(data);
     return 0;
 }
