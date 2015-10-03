@@ -127,7 +127,7 @@ void cx_callb(cx_function f, cx_void* result, void* args) {
         cx_object instance = *(cx_object*)args;
         cx_object owner = cx_ownerof(instance);
 
-        if (instance && cx_instanceof(cx_replicator_o, instance)) {
+        if (owner && cx_instanceof(cx_replicator_o, owner)) {
             cx_octetseq argbuff = {f->size, args};
             cx_replicator_invoke(owner, instance, f, argbuff);
             return;

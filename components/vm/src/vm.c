@@ -589,7 +589,10 @@ typedef union Di2f_t {
             cx_error("Exception: null dereference in updateFrom");\
             goto STOP;\
         }\
-        cx_update((cx_object)op1_##code);\
+        if (cx_update((cx_object)op1_##code)) {\
+            cx_error("Exception: %s", cx_lasterr());\
+            goto error;\
+        }\
         next();\
 
 #define UPDATEBEGIN(type,code)\

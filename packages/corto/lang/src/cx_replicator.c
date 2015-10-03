@@ -34,20 +34,20 @@ cx_void _cx_replicator_destruct(cx_replicator this) {
 /* ::corto::lang::replicator::invoke(object instance,function proc,octetseq args) */
 cx_void _cx_replicator_invoke(cx_replicator this, cx_object instance, cx_function proc, cx_octetseq args) {
 /* $begin(::corto::lang::replicator::invoke) */
+    cx_object owner = cx_ownerof(instance);
 
-    if (this->onInvoke._parent.procedure) {
-        if (cx_ownerof(instance) == this) {
+    if (owner == this) {
+        if (this->onInvoke._parent.procedure) {
             cx_octetseq argbuff = args;
             argbuff.buffer = cx_alloc(args.length * sizeof(cx_octet));
             memcpy(argbuff.buffer, args.buffer, args.length * sizeof(cx_octet));
             cx_invokeEvent e = cx_invokeEventCreate(this, instance, proc, argbuff);
             cx_dispatcher_post(this, e);
-        } else {
-            cx_id id1, id2;
-            cx_error("invalid invoke: replicator %s does not own object '%s'",
-                cx_fullname(this, id1), 
-                cx_fullname(instance, id2));
         }
+    } else {
+        cx_object prevowner = cx_setOwner(cx_ownerof(instance));
+        cx_callb(proc, NULL, args.buffer);
+        cx_setOwner(prevowner);
     }
 
 /* $end */

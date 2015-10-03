@@ -26,6 +26,11 @@ cx_int16 _cx_function_bind(cx_function this) {
                 case CX_PRIMITIVE:
                     this->size += cx_type_sizeof(paramType);
                     break;
+                case CX_COLLECTION:
+                    if (cx_collection(paramType)->kind == CX_SEQUENCE) {
+                        this->size += sizeof(cx_objectseq);
+                        break;
+                    }
                 default:
                     this->size += sizeof(void*);
                     break;

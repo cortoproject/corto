@@ -74,7 +74,7 @@ static void ast_Update_begin(ast_Update this, ic_program program, ic_node expr) 
 }
 
 static void ast_Update_end(ast_Update this, ic_program program, ic_node expr, ic_node from) {
-    IC_3(program, ast_Node(this)->line, ic_update, expr, from, NULL,
+    IC_3(program, ast_Node(this)->line, ic_updateend, expr, from, NULL,
         IC_DEREF_ADDRESS, IC_DEREF_VALUE, IC_DEREF_VALUE);
 }
 
