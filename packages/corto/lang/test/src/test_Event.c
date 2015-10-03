@@ -520,18 +520,26 @@ cx_void _test_Event_tc_onUpdate(test_Event this) {
     test_assert(ret == 0);
     test_assert(this->et->countUpdate == 1);
 
-    ret = cx_update(o);
+    ret = cx_updateBegin(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdate == 1);
+
+    ret = cx_updateEnd(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdate == 2);
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == o);
-    test_assert(this->et->lastSource == NULL);
+    test_assert(this->et->lastSource == NULL);    
 
     cx_object p = cx_int32CreateChild(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countUpdate == 2);
 
-    ret = cx_update(p);
+    ret = cx_updateBegin(p);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdate == 2);
+
+    ret = cx_updateEnd(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdate == 3);
     test_assert(this->et->lastThis == this->et);
@@ -542,7 +550,7 @@ cx_void _test_Event_tc_onUpdate(test_Event this) {
     test_assert(q != NULL);
     test_assert(this->et->countUpdate == 3);
 
-    ret = cx_update(q);
+    ret = cx_updateBegin(q);
     test_assert(ret == -1);
     test_assert(this->et->countUpdate == 3);
     test_assert(!strcmp(cx_lasterr(), "cannot update undefined object"));
@@ -551,7 +559,11 @@ cx_void _test_Event_tc_onUpdate(test_Event this) {
     test_assert(ret == 0);
     test_assert(this->et->countUpdate == 3);
 
-    ret = cx_update(q);
+    ret = cx_updateBegin(q);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdate == 3);
+
+    ret = cx_updateEnd(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdate == 4);
     test_assert(this->et->lastThis == this->et);
@@ -590,7 +602,11 @@ cx_void _test_Event_tc_onUpdateScope(test_Event this) {
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 0);
 
-    ret = cx_update(o);
+    ret = cx_updateBegin(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateScope == 0);
+
+    ret = cx_updateEnd(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 1);
     test_assert(this->et->lastThis == this->et);
@@ -601,7 +617,11 @@ cx_void _test_Event_tc_onUpdateScope(test_Event this) {
     test_assert(p != NULL);
     test_assert(this->et->countUpdateScope == 1);
 
-    ret = cx_update(p);
+    ret = cx_updateBegin(p);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateScope == 1);
+
+    ret = cx_updateEnd(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 2);
     test_assert(this->et->lastThis == this->et);
@@ -612,7 +632,7 @@ cx_void _test_Event_tc_onUpdateScope(test_Event this) {
     test_assert(q != NULL);
     test_assert(this->et->countUpdateScope == 2);
 
-    ret = cx_update(q);
+    ret = cx_updateBegin(q);
     test_assert(ret == -1);
     test_assert(this->et->countUpdateScope == 2);
     test_assert(!strcmp(cx_lasterr(), "cannot update undefined object"));
@@ -621,9 +641,13 @@ cx_void _test_Event_tc_onUpdateScope(test_Event this) {
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 2);
 
-    ret = cx_update(q);
+    ret = cx_updateBegin(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 2);
+
+    ret = cx_updateEnd(q);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateScope == 2);    
 
     cx_delete(o);
     cx_delete(p);
@@ -660,7 +684,11 @@ cx_void _test_Event_tc_onUpdateSelf(test_Event this) {
     test_assert(ret == 0);
     test_assert(this->et->countUpdateSelf == 1);
 
-    ret = cx_update(o);
+    ret = cx_updateBegin(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateSelf == 1);
+
+    ret = cx_updateEnd(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateSelf == 1);
 
@@ -668,7 +696,11 @@ cx_void _test_Event_tc_onUpdateSelf(test_Event this) {
     test_assert(p != NULL);
     test_assert(this->et->countUpdateSelf == 1);
 
-    ret = cx_update(p);
+    ret = cx_updateBegin(p);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateSelf == 1);
+
+    ret = cx_updateEnd(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateSelf == 1);
 
@@ -676,7 +708,7 @@ cx_void _test_Event_tc_onUpdateSelf(test_Event this) {
     test_assert(q != NULL);
     test_assert(this->et->countUpdateSelf == 1);
 
-    ret = cx_update(q);
+    ret = cx_updateBegin(q);
     test_assert(ret == -1);
     test_assert(this->et->countUpdateSelf == 1);
     test_assert(!strcmp(cx_lasterr(), "cannot update undefined object"));
@@ -685,7 +717,11 @@ cx_void _test_Event_tc_onUpdateSelf(test_Event this) {
     test_assert(ret == 0);
     test_assert(this->et->countUpdateSelf == 1);
 
-    ret = cx_update(q);
+    ret = cx_updateBegin(q);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateSelf == 1);
+
+    ret = cx_updateEnd(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateSelf == 1);
 
@@ -721,7 +757,11 @@ cx_void _test_Event_tc_onUpdateTree(test_Event this) {
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 0);
 
-    ret = cx_update(o);
+    ret = cx_updateBegin(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateTree == 0);
+
+    ret = cx_updateEnd(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 1);
     test_assert(this->et->lastThis == this->et);
@@ -732,18 +772,22 @@ cx_void _test_Event_tc_onUpdateTree(test_Event this) {
     test_assert(p != NULL);
     test_assert(this->et->countUpdateTree == 1);
 
-    ret = cx_update(p);
+    ret = cx_updateBegin(p);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateTree == 1);
+
+    ret = cx_updateEnd(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 2);
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == p);
-    test_assert(this->et->lastSource == NULL);
+    test_assert(this->et->lastSource == NULL);    
 
     cx_object q = cx_int32DeclareChild(p, "q");
     test_assert(q != NULL);
     test_assert(this->et->countUpdateTree == 2);
 
-    ret = cx_update(q);
+    ret = cx_updateBegin(q);
     test_assert(ret == -1);
     test_assert(this->et->countUpdateTree == 2);
     test_assert(!strcmp(cx_lasterr(), "cannot update undefined object"));
@@ -752,7 +796,11 @@ cx_void _test_Event_tc_onUpdateTree(test_Event this) {
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 2);
 
-    ret = cx_update(q);
+    ret = cx_updateBegin(q);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateTree == 2);
+
+    ret = cx_updateEnd(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 3);
     test_assert(this->et->lastThis == this->et);
@@ -763,6 +811,36 @@ cx_void _test_Event_tc_onUpdateTree(test_Event this) {
     cx_delete(p);
 
     test_assert(this->et->countUpdateTree == 3);
+
+/* $end */
+}
+
+/* ::test::Event::tc_updateUndefined() */
+cx_void _test_Event_tc_updateUndefined(test_Event this) {
+/* $begin(::test::Event::tc_updateUndefined) */
+
+    cx_object o = cx_int32DeclareChild(NULL, "o");
+    test_assert(o != NULL);
+
+    cx_int16 ret = cx_updateBegin(o);
+    test_assert(ret == -1);
+    test_assert(cx_lasterr() != NULL);
+    test_assert(!strcmp(cx_lasterr(), "cannot update undefined object"));
+
+/* $end */
+}
+
+/* ::test::Event::tc_updateVoidErr() */
+cx_void _test_Event_tc_updateVoidErr(test_Event this) {
+/* $begin(::test::Event::tc_updateVoidErr) */
+
+    cx_object o = cx_int32CreateChild(NULL, "o", 10);
+    test_assert(o != NULL);
+
+    cx_int16 ret = cx_update(o);
+    test_assert(ret == -1);
+    test_assert(cx_lasterr() != NULL);
+    test_assert(!strcmp(cx_lasterr(), "use updateBegin/updateEnd for non-void objects"));
 
 /* $end */
 }

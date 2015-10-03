@@ -1026,7 +1026,9 @@ cx_object _cx_declareChild(cx_object parent, cx_string name, cx_type type) {
         }
 
         /* Notify parent of new object */
-        cx_notify(cx__objectObservable(_o), o, CX_ON_DECLARE);
+        if (cx__objectObservable(_o)) {
+            cx_notify(cx__objectObservable(_o), o, CX_ON_DECLARE);
+        }
     }
 
 ok:
@@ -2534,10 +2536,12 @@ static cx_int32 cx_notify(cx__observable* _o, cx_object observable, cx_uint32 ma
                 cx__observable *_parent = cx__objectObservable(CX_OFFSET(parent, -sizeof(cx__object)));
 
                 /* Notify observers of parent */
-                observers = cx_observersPush(&_parent->onChildArray, NULL);
-                cx_notifyObservers(observers, observable, this, mask, depth);
-                if (cx_observersPop()) {
-                    cx_observersArrayFree(observers);
+                if (_parent) {
+                    observers = cx_observersPush(&_parent->onChildArray, NULL);
+                    cx_notifyObservers(observers, observable, this, mask, depth);
+                    if (cx_observersPop()) {
+                        cx_observersArrayFree(observers);
+                    }
                 }
                 depth++;
             }
@@ -2553,9 +2557,17 @@ cx_int32 cx_update(cx_object observable) {
     cx__writable* _wr;
     cx__persistent* _ps;
 
-    if (!cx_checkState(observable, CX_DEFINED)) {
-        cx_seterr("cannot update undefined object");
+    if (cx_typeof(observable)->kind != CX_VOID) {
+        cx_seterr("use updateBegin/updateEnd for non-void objects");
         goto error;
+    }
+
+    if (cx_checkAttr(observable, CX_ATTR_PERSISTENT)) {
+        cx_object owner = cx_ownerof(observable);
+        if (owner && cx_instanceof(cx_replicator_o, owner)) {
+            cx_seterr("cannot update '%s', process does not own object", cx_nameof(observable));
+            goto error;
+        }
     }
 
     _o = cx__objectObservable(CX_OFFSET(observable, -sizeof(cx__object)));
@@ -2584,6 +2596,11 @@ error:
 cx_int32 cx_updateBegin(cx_object observable) {
     cx__observable *_o;
     cx__writable* _wr;
+
+    if (!cx_checkState(observable, CX_DEFINED)) {
+        cx_seterr("cannot update undefined object");
+        goto error;
+    }
 
     if (cx_checkAttr(observable, CX_ATTR_PERSISTENT)) {
         cx_object owner = cx_ownerof(observable);
@@ -2915,7 +2932,7 @@ error:
 cx_int32 cx_signatureParamType(cx_string signature, cx_uint32 id, cx_id buffer, int* flags) {
     cx_char ch, *srcptr, *bptr;
     cx_uint32 i;
-    cx_bool parsed;
+    cx_bool parsed, parsing;
 
     if (flags) {
         *flags = 0;
@@ -2932,13 +2949,17 @@ cx_int32 cx_signatureParamType(cx_string signature, cx_uint32 id, cx_id buffer, 
     bptr = buffer;
     i = 0;
     parsed = FALSE;
+    parsing = FALSE;
     while((ch = *srcptr) && !parsed) {
 
         /* Start parsing when argument is reached. */
         if (i == id) {
             if ((ch == ',') || (ch == ' ') || (ch == ')') || (ch == '&')) {
-                parsed = TRUE;
+                if (parsing) {
+                    parsed = TRUE;
+                }
             } else {
+                parsing = TRUE;
                 *bptr = ch;
                 bptr++;
             }
@@ -3310,7 +3331,7 @@ cx_int16 cx_overload(cx_object object, cx_string requested, cx_int32* distance) 
         for (i = 0; i < o_parameterCount; i++) {
             cx_bool o_reference = FALSE, r_reference = FALSE;
             cx_bool r_forceReference = FALSE, r_wildcard = FALSE, r_null = FALSE;
-            cx_type o_type, r_type;
+            cx_type o_type, r_type = NULL;
             cx_id r_typeName;
             int flags, paramDistance = 0;
 
@@ -3320,10 +3341,13 @@ cx_int16 cx_overload(cx_object object, cx_string requested, cx_int32* distance) 
             }
             if (cx_signatureParamType(requested, i, r_typeName, &flags)) {
                 goto error;
-            } else {
+            } else if (!(flags & (CX_PARAMETER_WILDCARD | CX_PARAMETER_NULL))) {
                 r_type = cx_resolve(object, r_typeName);
                 if (r_type) {
                     r_type = cx_type(r_type);
+                } else {
+                    cx_seterr("unresolved type '%s' in signature '%s'", r_typeName, requested);
+                    goto error;
                 }
             }
 
@@ -3359,7 +3383,9 @@ nomatch:
     *distance = -1;
     return 0;
 error:
-    cx_seterr("invalid query '%s'", requested);
+    if (!cx_lasterr()) {
+        cx_seterr("invalid query '%s'", requested);
+    }
     return -1;
 }
 
@@ -3416,14 +3442,15 @@ int cx_lookupFunctionWalk(cx_object *ptr, void* userData) {
                 goto found;
             }
         } else {
-            cx_id sigName; cx_signatureName(o, sigName);
+            cx_id sigName; cx_signatureName(cx_nameof(o), sigName);
             if (!strcmp(sigName, data->request)) {
                 if (!cx_function(o)->overloaded) {
                     data->d = 0;
+                    data->result = (cx_function*)ptr;
                     goto found;
                 } else {
                     data->error = TRUE;
-                    cx_seterr("ambiguous reference to overloaded identifier '%s'", data->request);
+                    cx_seterr("ambiguous reference '%s'", data->request);
                     goto found;
                 }
             }

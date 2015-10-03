@@ -32,7 +32,13 @@ cx_int16 ast_Member_resolveMember(ast_Member this, cx_type type, cx_string membe
             o = cx_type_resolveProcedure(type, member);
             if (!o) {
                 cx_id id;
-                ast_Parser_error(yparser(), "unresolved member '%s' for type '%s'", member, ast_Parser_id(type, id));
+                if (cx_lasterr()) {
+                    ast_Parser_error(yparser(), "unresolved member '%s' for type '%s' (%s)", 
+                        member, ast_Parser_id(type, id), cx_lasterr());
+                } else {
+                    ast_Parser_error(yparser(), "unresolved member '%s' for type '%s'", 
+                        member, ast_Parser_id(type, id));                    
+                }
                 goto error;
             }
             cx_setref(&ast_Expression(this)->type, cx_function(o)->returnType);
