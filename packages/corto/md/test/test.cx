@@ -4,10 +4,13 @@ package Package0::
     class Class0{}
 
 package Package1::
-    class Class1::
-        void method1();
-    package Package11::
-        package Package111{}
+    class Class11::
+        void method111();
+    package Package12::
+        package Package121{}
+    class Class13::
+        int method131();
+        
 
 void docs
 
@@ -16,3 +19,4 @@ class MarkdownParseTest: test::Suite::
     void testScopedPackage() test::Case
     void testPackageAndClass() test::Case
     void testPackageAndClassAndMethod() test::Case
+    void testDeeperHierarchy1() test::Case
