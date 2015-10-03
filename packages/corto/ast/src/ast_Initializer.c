@@ -67,9 +67,10 @@ struct cx_serializer_s ast_findMemberSerializer(void) {
     struct cx_serializer_s s;
     cx_serializerInit(&s);
     s.metaprogram[CX_MEMBER] = ast_Initializer_findMember;
-    s.access = CX_LOCAL | CX_PRIVATE | CX_READONLY;
+    s.access = CX_LOCAL | CX_PRIVATE | CX_READONLY | CX_HIDDEN;
     s.accessKind = CX_NOT;
     s.traceKind = CX_SERIALIZER_TRACE_NEVER;
+    s.aliasAction = CX_SERIALIZER_ALIAS_FOLLOW;
     return s;
 }
 

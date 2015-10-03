@@ -123,10 +123,6 @@
  *     function does not need to distinct between interface's and classes. Delegates can only be defined on a class.
  */
 
-/* Implementations of virtual functions */
-extern cx_object cx_corto_new(cx_type type);
-extern cx_object cx_corto__new(cx_type type, cx_attr attributes);
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -403,6 +399,7 @@ CX_STATIC_SCOPED_OBJECT(constant);
 
 /* interface method object */
 #define CX_OBSERVER_O(parent, name, impl) \
+        void __##impl(void *f, void *r, void *a); \
         sso_observer parent##_##name##__o = {CX_SSO_PO_V(parent, #name, observer), {{(cx_type)&void##__o.v, FALSE, FALSE, CX_PROCEDURE_CDECL, (cx_word)__##impl, (cx_word)_##impl, NULL, 0,{0,NULL},0}, 0}, VTABLE_V}
 
 /* metaprocedure object */
@@ -1010,9 +1007,9 @@ CX_CLASS_NOBASE_O(replicator, NULL, CX_DECLARED | CX_DEFINED, NULL, CX_CD);
     CX_MEMBER_O(replicator, onUpdate, notifyAction, CX_GLOBAL);
     CX_MEMBER_O(replicator, onDelete, notifyAction, CX_GLOBAL);
     CX_MEMBER_O(replicator, onInvoke, invokeAction, CX_GLOBAL);
-    CX_OBSERVER_O(replicator, on_declare, cx_replicator_construct);
-    CX_OBSERVER_O(replicator, on_update, cx_replicator_construct);
-    CX_OBSERVER_O(replicator, on_delete, cx_replicator_construct);
+    CX_OBSERVER_O(replicator, on_declare, cx_replicator_on_declare);
+    CX_OBSERVER_O(replicator, on_update, cx_replicator_on_update);
+    CX_OBSERVER_O(replicator, on_delete, cx_replicator_on_delete);
 
 /* ::corto::lang::event */
 CX_CLASS_NOBASE_O(event, NULL, CX_DECLARED | CX_DEFINED, NULL, CX_NODELEGATE);
@@ -1085,7 +1082,7 @@ CX_CLASS_NOBASE_O(member, CX_TYPE_ID(interface), CX_DECLARED, NULL, CX_IC);
 
 /* ::corto::lang::alias */
 CX_FW_IC(alias);
-CX_CLASS_O(alias, member, CX_PRIVATE|CX_LOCAL, CX_TYPE_ID(struct), CX_DECLARED, NULL, CX_IC);
+CX_CLASS_O(alias, member, CX_HIDDEN, CX_TYPE_ID(struct), CX_DECLARED, NULL, CX_IC);
     CX_REFERENCE_O(alias, member, member, CX_GLOBAL, CX_DEFINED, FALSE);
     CX_METHOD_O(alias, init, "()", int16, FALSE, cx_alias_init);
     CX_METHOD_O(alias, construct, "()", int16, FALSE, cx_alias_construct);

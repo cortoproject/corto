@@ -1617,12 +1617,14 @@ cx_int16 cx_delegatedataDeinit(cx_delegatedata* value) {
     return result;
 }
 
-cx_destructAction* cx_destructActionCreate(void) {
+cx_destructAction* cx_destructActionCreate(cx_object instance, cx_function procedure) {
     cx_destructAction* this;
     this = cx_declare(cx_destructAction_o);
     if (!this) {
         return NULL;
     }
+    cx_setref(&((cx_delegatedata*)this)->instance, instance);
+    cx_setref(&((cx_delegatedata*)this)->procedure, cx_function(procedure));
     if (this && cx_define(this)) {
         cx_release(this);
         this = NULL;
@@ -1630,12 +1632,14 @@ cx_destructAction* cx_destructActionCreate(void) {
     return this;
 }
 
-cx_destructAction* cx_destructActionCreateChild(cx_object _parent, cx_string _name) {
+cx_destructAction* cx_destructActionCreateChild(cx_object _parent, cx_string _name, cx_object instance, cx_function procedure) {
     cx_destructAction* this;
     this = cx_declareChild(_parent, _name, cx_destructAction_o);
     if (!this) {
         return NULL;
     }
+    cx_setref(&((cx_delegatedata*)this)->instance, instance);
+    cx_setref(&((cx_delegatedata*)this)->procedure, cx_function(procedure));
     if (this && cx_define(this)) {
         cx_release(this);
         this = NULL;
@@ -1661,16 +1665,22 @@ cx_destructAction* cx_destructActionDeclareChild(cx_object _parent, cx_string _n
     return this;
 }
 
-cx_int16 cx_destructActionDefine(cx_destructAction* this) {
+cx_int16 cx_destructActionDefine(cx_destructAction* this, cx_object instance, cx_function procedure) {
+    cx_setref(&((cx_delegatedata*)this)->instance, instance);
+    cx_setref(&((cx_delegatedata*)this)->procedure, cx_function(procedure));
     return cx_define(this);
 }
 
-void cx_destructActionUpdate(cx_destructAction* this) {
-    cx_update(this);
+void cx_destructActionUpdate(cx_destructAction* this, cx_object instance, cx_function procedure) {
+    cx_updateBegin(this);
+    cx_setref(&((cx_delegatedata*)this)->instance, instance);
+    cx_setref(&((cx_delegatedata*)this)->procedure, cx_function(procedure));
+    cx_updateEnd(this);
 }
 
-void cx_destructActionSet(cx_destructAction* this) {
-    CX_UNUSED(this);
+void cx_destructActionSet(cx_destructAction* this, cx_object instance, cx_function procedure) {
+    cx_setref(&((cx_delegatedata*)this)->instance, instance);
+    cx_setref(&((cx_delegatedata*)this)->procedure, cx_function(procedure));
 }
 
 cx_string cx_destructActionStr(cx_destructAction* value) {
@@ -2564,12 +2574,14 @@ cx_int16 cx_functionCompare(cx_function dst, cx_function src) {
     return cx_compare(dst, src);
 }
 
-cx_initAction* cx_initActionCreate(void) {
+cx_initAction* cx_initActionCreate(cx_object instance, cx_function procedure) {
     cx_initAction* this;
     this = cx_declare(cx_initAction_o);
     if (!this) {
         return NULL;
     }
+    cx_setref(&((cx_delegatedata*)this)->instance, instance);
+    cx_setref(&((cx_delegatedata*)this)->procedure, cx_function(procedure));
     if (this && cx_define(this)) {
         cx_release(this);
         this = NULL;
@@ -2577,12 +2589,14 @@ cx_initAction* cx_initActionCreate(void) {
     return this;
 }
 
-cx_initAction* cx_initActionCreateChild(cx_object _parent, cx_string _name) {
+cx_initAction* cx_initActionCreateChild(cx_object _parent, cx_string _name, cx_object instance, cx_function procedure) {
     cx_initAction* this;
     this = cx_declareChild(_parent, _name, cx_initAction_o);
     if (!this) {
         return NULL;
     }
+    cx_setref(&((cx_delegatedata*)this)->instance, instance);
+    cx_setref(&((cx_delegatedata*)this)->procedure, cx_function(procedure));
     if (this && cx_define(this)) {
         cx_release(this);
         this = NULL;
@@ -2608,16 +2622,22 @@ cx_initAction* cx_initActionDeclareChild(cx_object _parent, cx_string _name) {
     return this;
 }
 
-cx_int16 cx_initActionDefine(cx_initAction* this) {
+cx_int16 cx_initActionDefine(cx_initAction* this, cx_object instance, cx_function procedure) {
+    cx_setref(&((cx_delegatedata*)this)->instance, instance);
+    cx_setref(&((cx_delegatedata*)this)->procedure, cx_function(procedure));
     return cx_define(this);
 }
 
-void cx_initActionUpdate(cx_initAction* this) {
-    cx_update(this);
+void cx_initActionUpdate(cx_initAction* this, cx_object instance, cx_function procedure) {
+    cx_updateBegin(this);
+    cx_setref(&((cx_delegatedata*)this)->instance, instance);
+    cx_setref(&((cx_delegatedata*)this)->procedure, cx_function(procedure));
+    cx_updateEnd(this);
 }
 
-void cx_initActionSet(cx_initAction* this) {
-    CX_UNUSED(this);
+void cx_initActionSet(cx_initAction* this, cx_object instance, cx_function procedure) {
+    cx_setref(&((cx_delegatedata*)this)->instance, instance);
+    cx_setref(&((cx_delegatedata*)this)->procedure, cx_function(procedure));
 }
 
 cx_string cx_initActionStr(cx_initAction* value) {
@@ -3596,12 +3616,14 @@ cx_int16 cx_interfaceVectorseqDeinit(cx_interfaceVectorseq* value) {
     return result;
 }
 
-cx_invokeAction* cx_invokeActionCreate(void) {
+cx_invokeAction* cx_invokeActionCreate(cx_object instance, cx_function procedure) {
     cx_invokeAction* this;
     this = cx_declare(cx_invokeAction_o);
     if (!this) {
         return NULL;
     }
+    cx_setref(&((cx_delegatedata*)this)->instance, instance);
+    cx_setref(&((cx_delegatedata*)this)->procedure, cx_function(procedure));
     if (this && cx_define(this)) {
         cx_release(this);
         this = NULL;
@@ -3609,12 +3631,14 @@ cx_invokeAction* cx_invokeActionCreate(void) {
     return this;
 }
 
-cx_invokeAction* cx_invokeActionCreateChild(cx_object _parent, cx_string _name) {
+cx_invokeAction* cx_invokeActionCreateChild(cx_object _parent, cx_string _name, cx_object instance, cx_function procedure) {
     cx_invokeAction* this;
     this = cx_declareChild(_parent, _name, cx_invokeAction_o);
     if (!this) {
         return NULL;
     }
+    cx_setref(&((cx_delegatedata*)this)->instance, instance);
+    cx_setref(&((cx_delegatedata*)this)->procedure, cx_function(procedure));
     if (this && cx_define(this)) {
         cx_release(this);
         this = NULL;
@@ -3640,16 +3664,22 @@ cx_invokeAction* cx_invokeActionDeclareChild(cx_object _parent, cx_string _name)
     return this;
 }
 
-cx_int16 cx_invokeActionDefine(cx_invokeAction* this) {
+cx_int16 cx_invokeActionDefine(cx_invokeAction* this, cx_object instance, cx_function procedure) {
+    cx_setref(&((cx_delegatedata*)this)->instance, instance);
+    cx_setref(&((cx_delegatedata*)this)->procedure, cx_function(procedure));
     return cx_define(this);
 }
 
-void cx_invokeActionUpdate(cx_invokeAction* this) {
-    cx_update(this);
+void cx_invokeActionUpdate(cx_invokeAction* this, cx_object instance, cx_function procedure) {
+    cx_updateBegin(this);
+    cx_setref(&((cx_delegatedata*)this)->instance, instance);
+    cx_setref(&((cx_delegatedata*)this)->procedure, cx_function(procedure));
+    cx_updateEnd(this);
 }
 
-void cx_invokeActionSet(cx_invokeAction* this) {
-    CX_UNUSED(this);
+void cx_invokeActionSet(cx_invokeAction* this, cx_object instance, cx_function procedure) {
+    cx_setref(&((cx_delegatedata*)this)->instance, instance);
+    cx_setref(&((cx_delegatedata*)this)->procedure, cx_function(procedure));
 }
 
 cx_string cx_invokeActionStr(cx_invokeAction* value) {
@@ -4560,12 +4590,14 @@ cx_int16 cx_modifierDeinit(cx_modifier* value) {
     return result;
 }
 
-cx_notifyAction* cx_notifyActionCreate(void) {
+cx_notifyAction* cx_notifyActionCreate(cx_object instance, cx_function procedure) {
     cx_notifyAction* this;
     this = cx_declare(cx_notifyAction_o);
     if (!this) {
         return NULL;
     }
+    cx_setref(&((cx_delegatedata*)this)->instance, instance);
+    cx_setref(&((cx_delegatedata*)this)->procedure, cx_function(procedure));
     if (this && cx_define(this)) {
         cx_release(this);
         this = NULL;
@@ -4573,12 +4605,14 @@ cx_notifyAction* cx_notifyActionCreate(void) {
     return this;
 }
 
-cx_notifyAction* cx_notifyActionCreateChild(cx_object _parent, cx_string _name) {
+cx_notifyAction* cx_notifyActionCreateChild(cx_object _parent, cx_string _name, cx_object instance, cx_function procedure) {
     cx_notifyAction* this;
     this = cx_declareChild(_parent, _name, cx_notifyAction_o);
     if (!this) {
         return NULL;
     }
+    cx_setref(&((cx_delegatedata*)this)->instance, instance);
+    cx_setref(&((cx_delegatedata*)this)->procedure, cx_function(procedure));
     if (this && cx_define(this)) {
         cx_release(this);
         this = NULL;
@@ -4604,16 +4638,22 @@ cx_notifyAction* cx_notifyActionDeclareChild(cx_object _parent, cx_string _name)
     return this;
 }
 
-cx_int16 cx_notifyActionDefine(cx_notifyAction* this) {
+cx_int16 cx_notifyActionDefine(cx_notifyAction* this, cx_object instance, cx_function procedure) {
+    cx_setref(&((cx_delegatedata*)this)->instance, instance);
+    cx_setref(&((cx_delegatedata*)this)->procedure, cx_function(procedure));
     return cx_define(this);
 }
 
-void cx_notifyActionUpdate(cx_notifyAction* this) {
-    cx_update(this);
+void cx_notifyActionUpdate(cx_notifyAction* this, cx_object instance, cx_function procedure) {
+    cx_updateBegin(this);
+    cx_setref(&((cx_delegatedata*)this)->instance, instance);
+    cx_setref(&((cx_delegatedata*)this)->procedure, cx_function(procedure));
+    cx_updateEnd(this);
 }
 
-void cx_notifyActionSet(cx_notifyAction* this) {
-    CX_UNUSED(this);
+void cx_notifyActionSet(cx_notifyAction* this, cx_object instance, cx_function procedure) {
+    cx_setref(&((cx_delegatedata*)this)->instance, instance);
+    cx_setref(&((cx_delegatedata*)this)->procedure, cx_function(procedure));
 }
 
 cx_string cx_notifyActionStr(cx_notifyAction* value) {

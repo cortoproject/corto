@@ -1247,13 +1247,17 @@ cx_bool _cx_instanceof(cx_type type, cx_object o) {
                     /*result = cx_delegate_instanceof(cx_delegate(type), o);*/
                 } else if (((cx_interface)type)->kind == CX_INTERFACE) {
                     if (cx_interface(t)->kind == CX_CLASS) {
-                        cx_int32 i;
-                        for (i = 0; i < ((cx_class)t)->implements.length; i++) {
-                            if (_cx_interface_baseof(
-                                (cx_interface)((cx_class)t)->implements.buffer[i], (cx_interface)type)) {
-                                result = TRUE;
-                                break;
+                        cx_interface base = (cx_interface)t;
+                        while (!result && base) {
+                            cx_int32 i;
+                            for (i = 0; i < ((cx_class)base)->implements.length; i++) {
+                                if (_cx_interface_baseof(
+                                    (cx_interface)((cx_class)base)->implements.buffer[i], (cx_interface)type)) {
+                                    result = TRUE;
+                                    break;
+                                }
                             }
+                            base = base->base;
                         }
                     }
                 } else {
@@ -2178,6 +2182,10 @@ cx_int32 cx_listen(cx_object this, cx_observer observer, cx_eventMask mask, cx_o
     cx_bool added;
     cx__observer **oldSelfArray = NULL, **oldChildArray = NULL;
 
+    if (!observable) {
+        observable = root_o;
+    }
+
     /* If the observer is a template observer and 'this' is not yet defined,
      * don't start listening right away but set the observable in the list of
      * class observables */
@@ -2577,6 +2585,14 @@ cx_int32 cx_updateBegin(cx_object observable) {
     cx__observable *_o;
     cx__writable* _wr;
 
+    if (cx_checkAttr(observable, CX_ATTR_PERSISTENT)) {
+        cx_object owner = cx_ownerof(observable);
+        if (owner && cx_instanceof(cx_replicator_o, owner)) {
+            cx_seterr("cannot update '%s', process does not own object", cx_nameof(observable));
+            goto error;
+        }
+    }
+
     _o = cx__objectObservable(CX_OFFSET(observable, -sizeof(cx__object)));
 
     if (_o->lockRequired) {
@@ -2584,12 +2600,12 @@ cx_int32 cx_updateBegin(cx_object observable) {
         if (_wr) {
             if (cx_rwmutexWrite(&_wr->lock)) {
                 cx_id id;
-                cx_error("cx_updateBegin: writelock on object '%s' failed", cx_fullname(observable, id));
+                cx_seterr("writelock on object '%s' failed", cx_fullname(observable, id));
                 goto error;
             }
         } else {
             cx_id id;
-            cx_warning("calling updateBegin for non-writable object '%s' is useless.", cx_fullname(observable, id));
+            cx_warning("calling updateBegin for non-writable object '%s' is useless", cx_fullname(observable, id));
         }
     }
 

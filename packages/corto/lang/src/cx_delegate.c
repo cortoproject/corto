@@ -96,6 +96,7 @@ cx_int16 _cx_delegate_init(cx_delegate this) {
     cx_int16 result;
 
     cx_interface(this)->base = cx_interface(cx_delegatedata_o);
+    cx_struct(this)->baseAccess = CX_GLOBAL;
 
     result = cx_struct_init(cx_struct(this));
     if(result) {

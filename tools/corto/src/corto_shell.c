@@ -478,6 +478,9 @@ static int cxsh_show(char* object) {
         s = cx_string_ser(CX_PRIVATE, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
         memset(&sdata, 0, sizeof(cx_string_ser_t));
         sdata.enableColors = TRUE;
+        s.access = CX_PRIVATE;
+        s.accessKind = CX_NOT;
+        s.aliasAction = CX_SERIALIZER_ALIAS_IGNORE;
 
         /* Print object properties */
         if (o) {
@@ -487,7 +490,14 @@ static int cxsh_show(char* object) {
             }
             if (cx_checkAttr(o, CX_ATTR_PERSISTENT)) {
                 cx_time t = cx_timestampof(o);
+                cx_object owner = cx_ownerof(o);
+                cx_id ownerId;
                 printf("%stimestamp:%s    %d.%.9d%s\n", INTERFACE_COLOR, GREEN, t.tv_sec, t.tv_nsec, NORMAL);
+                printf("%sowner:%s        %s%s\n", 
+                    INTERFACE_COLOR, 
+                    OBJECT_COLOR,
+                    owner ? cx_fullname(owner, ownerId) : "<this>",
+                    NORMAL);
             } 
             printf("%sstate:%s        %s%s%s\n", INTERFACE_COLOR, NORMAL, META_COLOR, cxsh_stateStr(o, state), NORMAL);
             printf("%sattributes:%s   %s%s%s\n", INTERFACE_COLOR, NORMAL, META_COLOR, cxsh_attrStr(o, attr), NORMAL);
@@ -510,8 +520,9 @@ static int cxsh_show(char* object) {
         /* If object is a type, do a metawalk with the string-serializer */
         if (o) {
             if (cx_class_instanceof(cx_type_o, o) && cx_checkState(o, CX_DEFINED)) {
-                s.access = CX_LOCAL | CX_READONLY | CX_PRIVATE;
+                s.access = CX_LOCAL | CX_READONLY | CX_PRIVATE | CX_HIDDEN;
                 s.accessKind = CX_NOT;
+                s.aliasAction = CX_SERIALIZER_ALIAS_FOLLOW;
                 cx_metaWalk(&s, o, &sdata);
                 if (sdata.buffer) {
                     printf("%sinitializer:%s     %s\n", INTERFACE_COLOR, NORMAL, sdata.buffer);
