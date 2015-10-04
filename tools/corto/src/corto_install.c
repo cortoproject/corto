@@ -126,7 +126,7 @@ cx_int16 corto_uninstall(int argc, char *argv[]) {
 	fprintf(uninstall, "export CORTO_HOME=/usr/local\n");
 	fprintf(uninstall, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", CORTO_VERSION);
 	fprintf(uninstall, "export CORTO_VERSION=%s\n", CORTO_VERSION);
-	fprintf(uninstall, "export PATH=/usr/local/local/bin:/usr/local/bin:/bin:/usr/local/sbin:/sbin\n");
+	fprintf(uninstall, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
 	fprintf(uninstall, "rake clobber 2> /dev/null\n");
 
 	/* Also remove from local environment */
@@ -243,7 +243,7 @@ cx_int16 corto_tar(int argc, char* argv[]) {
 	fprintf(tar, "export CORTO_HOME=/usr/local\n");
 	fprintf(tar, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", CORTO_VERSION);
 	fprintf(tar, "export CORTO_VERSION=%s\n", CORTO_VERSION);
-	fprintf(tar, "export PATH=/usr/local/local/bin:/usr/local/bin:/bin:/usr/local/sbin:/sbin\n");
+	fprintf(tar, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
 	fprintf(tar, "rake collect\n");
 	fprintf(tar, "DIR=`pwd`\n");
 	fprintf(tar, "cd ~/.corto/pack\n");
@@ -287,7 +287,7 @@ cx_int16 corto_untar(int argc, char* argv[]) {
 	fprintf(tar, "export CORTO_HOME=/usr/local\n");
 	fprintf(tar, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", CORTO_VERSION);
 	fprintf(tar, "export CORTO_VERSION=%s\n", CORTO_VERSION);
-	fprintf(tar, "export PATH=/usr/local/local/bin:/usr/local/bin:/bin:/usr/local/sbin:/sbin\n");
+	fprintf(tar, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
 	fprintf(tar, "tar -zxf %s -C /usr/local\n", argv[1]);
 	fclose(tar);
 

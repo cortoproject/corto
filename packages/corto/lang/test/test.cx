@@ -158,7 +158,6 @@ class EventTest::
     @scope: object
     lastThis: object, readonly
     lastObservable: object, readonly
-    lastSource: object, readonly
 
     int16 construct()
 

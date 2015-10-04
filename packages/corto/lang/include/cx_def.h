@@ -116,10 +116,9 @@ extern int8_t CX_DEBUG_ENABLED;
         CX_UNUSED(result);\
         __##name (\
             *(void**)args,\
-            *(void**)((intptr_t)args + sizeof(void*)),\
-            *(void**)((intptr_t)args + sizeof(void*) + sizeof(void*)));\
+            *(void**)((intptr_t)args + sizeof(void*)));\
     }\
-    void __##name (cx_object this, cx_object observable, cx_object source)
+    void __##name (cx_object this, cx_object observable)
 
 #ifdef __cplusplus
 }

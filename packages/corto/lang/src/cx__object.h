@@ -58,7 +58,7 @@ typedef enum cx__observerKind {
 }cx__observerKind;
 
 typedef struct cx__observer cx__observer;
-typedef void (*cx__notifyCallback)(cx__observer* data, cx_object _this, cx_object observable, cx_object source, cx_uint32 mask);
+typedef void (*cx__notifyCallback)(cx__observer* data, cx_object _this, cx_object observable, cx_uint32 mask);
 
 struct cx__observer {
     cx_object _this;

@@ -54,10 +54,9 @@ cx_void _cx_replicator_invoke(cx_replicator this, cx_object instance, cx_functio
 }
 
 /* ::corto::lang::replicator::on_declare */
-cx_void _cx_replicator_on_declare(cx_replicator this, cx_object observable, cx_object source) {
+cx_void _cx_replicator_on_declare(cx_replicator this, cx_object observable) {
 /* $begin(::corto::lang::replicator::on_declare) */
     
-    CX_UNUSED(source);
     if (observable != root_o) {
         cx_notifyActionCall(&this->onDeclare, observable);
     }
@@ -66,20 +65,18 @@ cx_void _cx_replicator_on_declare(cx_replicator this, cx_object observable, cx_o
 }
 
 /* ::corto::lang::replicator::on_delete */
-cx_void _cx_replicator_on_delete(cx_replicator this, cx_object observable, cx_object source) {
+cx_void _cx_replicator_on_delete(cx_replicator this, cx_object observable) {
 /* $begin(::corto::lang::replicator::on_delete) */
 
-    CX_UNUSED(source);
     cx_notifyActionCall(&this->onDelete, observable);
 
 /* $end */
 }
 
 /* ::corto::lang::replicator::on_update */
-cx_void _cx_replicator_on_update(cx_replicator this, cx_object observable, cx_object source) {
+cx_void _cx_replicator_on_update(cx_replicator this, cx_object observable) {
 /* $begin(::corto::lang::replicator::on_update) */
 
-    CX_UNUSED(source);
     if (cx_checkAttr(observable, CX_ATTR_WRITABLE)) {
         cx_notifyActionCall(&this->onUpdate, observable);
     }

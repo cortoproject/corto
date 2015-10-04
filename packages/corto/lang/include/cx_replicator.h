@@ -26,16 +26,16 @@ CORTO_LANG_EXPORT cx_void _cx_replicator_invoke(cx_replicator _this, cx_object i
 #define cx_replicator_invoke(_this, instance, proc, args) _cx_replicator_invoke(cx_replicator(_this), instance, cx_function(proc), args)
 
 /* ::corto::lang::replicator::on_declare */
-CORTO_LANG_EXPORT cx_void _cx_replicator_on_declare(cx_replicator _this, cx_object observable, cx_object source);
-#define cx_replicator_on_declare(_this, observable, source) _cx_replicator_on_declare(cx_replicator(_this), observable, source)
+CORTO_LANG_EXPORT cx_void _cx_replicator_on_declare(cx_replicator _this, cx_object observable);
+#define cx_replicator_on_declare(_this, observable) _cx_replicator_on_declare(cx_replicator(_this), observable)
 
 /* ::corto::lang::replicator::on_delete */
-CORTO_LANG_EXPORT cx_void _cx_replicator_on_delete(cx_replicator _this, cx_object observable, cx_object source);
-#define cx_replicator_on_delete(_this, observable, source) _cx_replicator_on_delete(cx_replicator(_this), observable, source)
+CORTO_LANG_EXPORT cx_void _cx_replicator_on_delete(cx_replicator _this, cx_object observable);
+#define cx_replicator_on_delete(_this, observable) _cx_replicator_on_delete(cx_replicator(_this), observable)
 
 /* ::corto::lang::replicator::on_update */
-CORTO_LANG_EXPORT cx_void _cx_replicator_on_update(cx_replicator _this, cx_object observable, cx_object source);
-#define cx_replicator_on_update(_this, observable, source) _cx_replicator_on_update(cx_replicator(_this), observable, source)
+CORTO_LANG_EXPORT cx_void _cx_replicator_on_update(cx_replicator _this, cx_object observable);
+#define cx_replicator_on_update(_this, observable) _cx_replicator_on_update(cx_replicator(_this), observable)
 
 /* ::corto::lang::replicator::post(event e) */
 CORTO_LANG_EXPORT cx_void _cx_replicator_post(cx_replicator _this, cx_event e);

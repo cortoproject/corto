@@ -56,8 +56,8 @@ cx_int16 _cx_observer_init(cx_observer this) {
     cx_setref( &cx_function(this)->returnType, cx_void_o);
 
     /* Set parameters of observer: (this, observable, source) */
-    cx_function(this)->parameters.buffer = cx_calloc(sizeof(cx_parameter) * 2);
-    cx_function(this)->parameters.length = 2;
+    cx_function(this)->parameters.buffer = cx_calloc(sizeof(cx_parameter) * 1);
+    cx_function(this)->parameters.length = 1;
  
 
     /* Parameter observable */
@@ -69,12 +69,6 @@ cx_int16 _cx_observer_init(cx_observer this) {
     } else {
         cx_setref(&p->type, cx_type(cx_object_o));
     }
-
-    /* Parameter source */
-    p = &cx_function(this)->parameters.buffer[1];
-    p->name = cx_strdup("source");
-    p->passByReference = TRUE;
-    cx_setref(&p->type, cx_type(cx_object_o));
 
     return 0; /* Don't call function::init, observers do not have parseable parameters, which is currently the only thing a function initializer does. */
 /* $end */

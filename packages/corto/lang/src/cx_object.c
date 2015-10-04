@@ -37,8 +37,8 @@ extern cx_mutex_s cx_adminLock;
 static cx_object cx_adopt(cx_object parent, cx_object child);
 static cx_int32 cx_notify(cx__observable *_o, cx_object observable, cx_uint32 mask);
 
-static void cx_notifyObserverDefault(cx__observer* data, cx_object this, cx_object observable, cx_object source, cx_uint32 mask);
-static void cx_notifyObserverThis(cx__observer* data, cx_object this, cx_object observable, cx_object source, cx_uint32 mask);
+static void cx_notifyObserverDefault(cx__observer* data, cx_object this, cx_object observable, cx_uint32 mask);
+static void cx_notifyObserverThis(cx__observer* data, cx_object this, cx_object observable, cx_uint32 mask);
 
 extern cx_threadKey CX_KEY_ATTR;
 
@@ -2092,7 +2092,7 @@ indent++;
 #endif
 
         if (!dispatcher) {
-            data->notify(data, data->_this, observable, source, mask);
+            data->notify(data, data->_this, observable, mask);
         } else {
             if (!data->_this || (data->_this != source)) {
                 cx_attr oldAttr = cx_setAttr(0);
@@ -2467,19 +2467,19 @@ error:
     return FALSE;
 }
 
-static void cx_notifyObserverDefault(cx__observer* data, cx_object this, cx_object observable, cx_object source, cx_uint32 mask) {
+static void cx_notifyObserverDefault(cx__observer* data, cx_object this, cx_object observable, cx_uint32 mask) {
     cx_function f = cx_function(data->observer);
     CX_UNUSED(this);
     CX_UNUSED(mask);
-    cx_call(f, NULL, NULL, observable, source);
+    cx_call(f, NULL, NULL, observable);
 }
 
-static void cx_notifyObserverThis(cx__observer* data, cx_object this, cx_object observable, cx_object source, cx_uint32 mask) {
+static void cx_notifyObserverThis(cx__observer* data, cx_object this, cx_object observable, cx_uint32 mask) {
     CX_UNUSED(mask);
 
-    if (!this || (this != source)) {
+    if (!this || (this != cx_getOwner())) {
         cx_function f = cx_function(data->observer);
-        cx_call(f, NULL, this, observable, source);
+        cx_call(f, NULL, this, observable);
     }
 }
 

@@ -493,11 +493,14 @@ static int cxsh_show(char* object) {
                 cx_object owner = cx_ownerof(o);
                 cx_id ownerId;
                 printf("%stimestamp:%s    %d.%.9d%s\n", INTERFACE_COLOR, GREEN, t.tv_sec, t.tv_nsec, NORMAL);
-                printf("%sowner:%s        %s%s\n", 
-                    INTERFACE_COLOR, 
-                    OBJECT_COLOR,
-                    owner ? cx_fullname(owner, ownerId) : "<this>",
-                    NORMAL);
+
+                if (cx_checkState(o, CX_DEFINED)) {
+                    printf("%sowner:%s        %s%s\n", 
+                        INTERFACE_COLOR, 
+                        OBJECT_COLOR,
+                        owner ? cx_fullname(owner, ownerId) : "<this>",
+                        NORMAL);
+                }
             } 
             printf("%sstate:%s        %s%s%s\n", INTERFACE_COLOR, NORMAL, META_COLOR, cxsh_stateStr(o, state), NORMAL);
             printf("%sattributes:%s   %s%s%s\n", INTERFACE_COLOR, NORMAL, META_COLOR, cxsh_attrStr(o, attr), NORMAL);

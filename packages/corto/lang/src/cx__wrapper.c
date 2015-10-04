@@ -1056,8 +1056,7 @@ void __cx_replicator_on_declare(cx_function f, void *result, void *args) {
     CX_UNUSED(result);
     _cx_replicator_on_declare(
         cx_replicator(*(void**)args),
-        *(void**)((intptr_t)args + sizeof(void*)),
-        *(void**)((intptr_t)args + sizeof(void*) + sizeof(void*)));
+        *(void**)((intptr_t)args + sizeof(void*)));
 }
 
 void __cx_replicator_on_delete(cx_function f, void *result, void *args) {
@@ -1065,8 +1064,7 @@ void __cx_replicator_on_delete(cx_function f, void *result, void *args) {
     CX_UNUSED(result);
     _cx_replicator_on_delete(
         cx_replicator(*(void**)args),
-        *(void**)((intptr_t)args + sizeof(void*)),
-        *(void**)((intptr_t)args + sizeof(void*) + sizeof(void*)));
+        *(void**)((intptr_t)args + sizeof(void*)));
 }
 
 void __cx_replicator_on_update(cx_function f, void *result, void *args) {
@@ -1074,8 +1072,7 @@ void __cx_replicator_on_update(cx_function f, void *result, void *args) {
     CX_UNUSED(result);
     _cx_replicator_on_update(
         cx_replicator(*(void**)args),
-        *(void**)((intptr_t)args + sizeof(void*)),
-        *(void**)((intptr_t)args + sizeof(void*) + sizeof(void*)));
+        *(void**)((intptr_t)args + sizeof(void*)));
 }
 
 void __cx_replicator_post(cx_function f, void *result, void *args) {
