@@ -1,4 +1,4 @@
-/* test_Package1_Class13.c
+/* test_Package3_Class0.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -8,10 +8,9 @@
 
 #include "test.h"
 
-/* ::test::Package1::Class13::method131() */
-cx_int _test_Package1_Class13_method131(test_Package1_Class13 this) {
-/* $begin(::test::Package1::Class13::method131) */
+/* ::test::Package3::Class0::method0() */
+cx_void _test_Package3_Class0_method0(test_Package3_Class0 this) {
+/* $begin(::test::Package3::Class0::method0) */
     CX_UNUSED(this);
-    return 0;
 /* $end */
 }

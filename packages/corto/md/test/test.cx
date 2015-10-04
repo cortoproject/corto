@@ -1,22 +1,30 @@
 #package ::test
 
 package Package0::
-    class Class0{}
+    class Class0:;
 
 package Package1::
-    class Class11::
-        void method111();
-    package Package12::
-        package Package121{}
-    class Class13::
-        int method131();
+    package Package0::
+        package Package0:;
+
+package Package2::
+    class Class0::
+        void method0()
+
+package Package3::
+    class Class0::
+        void method0()
+    package Package0::
+        package Package0{}
+    class Class1::
+        int method0()
         
 
 void docs
 
 class MarkdownParseTest: test::Suite::
-    void testNoRootDestination() test::Case
-    void testScopedPackage() test::Case
-    void testPackageAndClass() test::Case
-    void testPackageAndClassAndMethod() test::Case
-    void testDeeperHierarchy1() test::Case
+    void testNoRootDestination() test::Case // 0
+    void testPackageAndClass() test::Case // 0
+    void testScopedPackage() test::Case // 1
+    void testPackageAndClassAndMethod() test::Case //2
+    void testDeeperHierarchy1() test::Case // 3
