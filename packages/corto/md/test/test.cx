@@ -18,7 +18,8 @@ package Package3::
         package Package0{}
     class Class1::
         int method0()
-        
+
+package Package4:;
 
 void docs
 
@@ -28,3 +29,4 @@ class MarkdownParseTest: test::Suite::
     void testScopedPackage() test::Case // 1
     void testPackageAndClassAndMethod() test::Case //2
     void testDeeperHierarchy1() test::Case // 3
+    void testPackageWithParagraph() test::Case // 4

@@ -2,6 +2,7 @@
 
 #include "_md_callbacks.h"
 
+#include "_md_appendstr.h"
 #include "_md_renderers.h"
 #include "_md_resolvers.h"
 
@@ -79,6 +80,10 @@ void md_callbackParagraph(hoedown_buffer *ob, const hoedown_buffer *content, con
     CX_UNUSED(ob);
     CX_UNUSED(content);
     CX_UNUSED(data);
+    cx_id fullname;
+    md_parseData* _data = data->opaque;
+    cx_fullname(_data->lastScope, fullname);
+    md_appendstr(_data->lastScope, "%s\n\n", (char*)content->data);
 }
 
 void md_callbackTable(hoedown_buffer *ob, const hoedown_buffer *content, const hoedown_renderer_data *data) {

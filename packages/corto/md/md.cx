@@ -5,6 +5,9 @@ void parse(object destination, string text)
 class Doc::
     o: object, hidden
     text: string, hidden
+    ptr: word, private
+    length: uint32, private
+    maxlength: uint32, private
     void addText(string s)
 
 class PackageDoc: Doc

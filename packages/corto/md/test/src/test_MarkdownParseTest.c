@@ -48,24 +48,28 @@ cx_void _test_MarkdownParseTest_testDeeperHierarchy1(test_MarkdownParseTest this
         test_assert((o = cx_resolve(test_docs_o, "test::Package3")) != NULL);
         test_assert(cx_instanceof(cx_type(md_PackageDoc_o), o));
         test_assert(md_Doc(o)->o == test_Package3_o);
+        cx_release(o);
     }
     {
         cx_object o;
         test_assert((o = cx_resolve(test_docs_o, "test::Package3::Class0")) != NULL);
         test_assert(cx_instanceof(cx_type(md_TypeDoc_o), o));
         test_assert(md_Doc(o)->o == test_Package3_Class0_o);
+        cx_release(o);
     }
     {
         cx_object o;
         test_assert((o = cx_resolve(test_docs_o, "test::Package3::Class0::method0")) != NULL);
         test_assert(cx_instanceof(cx_type(md_MethodDoc_o), o));
         test_assert(md_Doc(o)->o == test_Package3_Class0_method0_o);
+        cx_release(o);
     }
     {
         cx_object o;
         test_assert((o = cx_resolve(test_docs_o, "test::Package3::Class1")) != NULL);
         test_assert(cx_instanceof(cx_type(md_TypeDoc_o), o));
         test_assert(md_Doc(o)->o == test_Package3_Class1_o);
+        cx_release(o);
     }
 /* $end */
 }
@@ -99,12 +103,14 @@ cx_void _test_MarkdownParseTest_testPackageAndClass(test_MarkdownParseTest this)
         test_assert((o = cx_resolve(test_docs_o, "test::Package0")) != NULL);
         test_assert(cx_instanceof(cx_type(md_PackageDoc_o), o));
         test_assert(md_Doc(o)->o == test_Package0_o);
+        cx_release(o);
     }
     {
         cx_object o;
         test_assert((o = cx_resolve(test_docs_o, "test::Package0::Class0")) != NULL);
         test_assert(cx_instanceof(cx_type(md_TypeDoc_o), o));
         test_assert(md_Doc(o)->o == test_Package0_Class0_o);
+        cx_release(o);
     }
 /* $end */
 }
@@ -124,19 +130,39 @@ cx_void _test_MarkdownParseTest_testPackageAndClassAndMethod(test_MarkdownParseT
         test_assert((o = cx_resolve(test_docs_o, "test::Package2")) != NULL);
         test_assert(cx_instanceof(cx_type(md_PackageDoc_o), o));
         test_assert(md_Doc(o)->o == test_Package2_o);
+        cx_release(o);
     }
     {
         cx_object o;
         test_assert((o = cx_resolve(test_docs_o, "test::Package2::Class0")) != NULL);
         test_assert(cx_instanceof(cx_type(md_TypeDoc_o), o));
         test_assert(md_Doc(o)->o == test_Package2_Class0_o);
+        cx_release(o);
     }
     {
         cx_object o;
         test_assert((o = cx_resolve(test_docs_o, "test::Package2::Class0::method0")) != NULL);
         test_assert(cx_instanceof(cx_type(md_MethodDoc_o), o));
         test_assert(md_Doc(o)->o == test_Package2_Class0_method0_o);
+        cx_release(o);
     }
+/* $end */
+}
+
+/* ::test::MarkdownParseTest::testPackageWithParagraph() */
+cx_void _test_MarkdownParseTest_testPackageWithParagraph(test_MarkdownParseTest this) {
+/* $begin(::test::MarkdownParseTest::testPackageWithParagraph) */
+    char text[] =
+        "# test::Package4\n"
+        "This is a very awesome package\n"
+        ;
+    md_parse(test_docs_o, text);
+    test_assert(test_countTree(test_docs_o) == 3);
+    cx_object o = cx_resolve(test_docs_o, "test::Package4");
+    test_assert(o != NULL);
+    char expectedText[] = "This is a very awesome package\n\n";
+    test_assert(strcmp(md_Doc(o)->text, expectedText) == 0);
+    cx_release(o);
 /* $end */
 }
 
@@ -155,18 +181,21 @@ cx_void _test_MarkdownParseTest_testScopedPackage(test_MarkdownParseTest this) {
         test_assert((o = cx_resolve(test_docs_o, "test::Package1")) != NULL);
         test_assert(cx_instanceof(cx_type(md_PackageDoc_o), o));
         test_assert(md_Doc(o)->o == test_Package1_o);
+        cx_release(o);
     }
     {
         cx_object o;
         test_assert((o = cx_resolve(test_docs_o, "test::Package1::Package0")) != NULL);
         test_assert(cx_instanceof(cx_type(md_PackageDoc_o), o));
         test_assert(md_Doc(o)->o == test_Package1_Package0_o);
+        cx_release(o);
     }
     {
         cx_object o;
         test_assert((o = cx_resolve(test_docs_o, "test::Package1::Package0::Package0")) != NULL);
         test_assert(cx_instanceof(cx_type(md_PackageDoc_o), o));
         test_assert(md_Doc(o)->o == test_Package1_Package0_Package0_o);
+        cx_release(o);
     }
 /* $end */
 }
