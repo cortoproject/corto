@@ -13,13 +13,11 @@
 void test__countTree(cx_object o, size_t* count) {
     *count += 1;
     cx_objectseq oseq = cx_scopeClaim(o);
-    // if (oseq.length) { // otherwise it segfaults
-        {
-            cx_objectseqForeach(oseq, child) {
-                test__countTree(child, count);
-            }
+    {
+        cx_objectseqForeach(oseq, child) {
+            test__countTree(child, count);
         }
-    // }
+    }
     cx_scopeRelease(oseq);
 }
 
