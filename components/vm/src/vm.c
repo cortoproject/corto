@@ -576,8 +576,7 @@ typedef union Di2f_t {
     DEFINE_##code:\
         fetchOp1(DEFINE,code);\
         if (!op1_##code) {\
-            printf("Exception: null dereference in define\n");\
-            abort();\
+            cx_error("Exception: null dereference in define");\
             goto STOP;\
         }\
         cx_define((cx_object)op1_##code);\
@@ -587,8 +586,7 @@ typedef union Di2f_t {
     UPDATE_##code:\
         fetchOp1(UPDATE,code);\
         if (!op1_##code) {\
-            printf("Exception: null dereference in updateFrom\n");\
-            abort();\
+            cx_error("Exception: null dereference in updateFrom");\
             goto STOP;\
         }\
         cx_update((cx_object)op1_##code);\
@@ -598,19 +596,20 @@ typedef union Di2f_t {
     UPDATEBEGIN_##code:\
         fetchOp1(UPDATEBEGIN,code);\
         if (!op1_##code) {\
-            printf("Exception: null dereference in updateBegin\n");\
-            abort();\
+            cx_error("Exception: null dereference in updateBegin");\
             goto STOP;\
         }\
-        cx_updateBegin((cx_object)op1_##code);\
+        if (cx_updateBegin((cx_object)op1_##code)) {\
+            cx_error("Exception: %s", cx_lasterr());\
+            goto error;\
+        }\
         next();\
 
 #define UPDATEEND(type,code)\
     UPDATEEND_##code:\
         fetchOp1(UPDATEEND,code);\
         if (!op1_##code) {\
-            printf("Exception: null dereference in updateEnd\n");\
-            abort();\
+            cx_error("Exception: null dereference in updateEnd");\
             goto STOP;\
         }\
         cx_updateEnd((cx_object)op1_##code);\
@@ -621,7 +620,6 @@ typedef union Di2f_t {
         fetchOp2(UPDATEFROM, code);\
         if (!op1_##code) {\
             printf("Exception: null dereference in updateFrom\n");\
-            abort();\
             goto STOP;\
         }\
         {\
@@ -1062,6 +1060,9 @@ static int32_t cx_vm_run_w_storage(vm_program program, void* reg, void *result) 
 
     /* ---- Expand instruction macro's */
     OPS_EXP(INSTR);
+
+error:
+    return -1;
 }
 
 /* Delete a string concatenation cache (cleanup function for thread

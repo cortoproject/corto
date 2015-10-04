@@ -6,11 +6,8 @@
  */
 
 #include "cx_call.h"
-#include "stdarg.h"
-#include "cx_err.h"
-#include "cx_util.h"
-#include "cx_mem.h"
 #include "alloca.h"
+#include "corto.h"
 
 typedef struct bindingHandler {
     cx_callHandler function;
@@ -125,6 +122,18 @@ int cx_calla(cx_function f, cx_void* result, cx_uint32 argc, void* argv[]);
 
 /* Call with buffer (on most platforms this will be the same as cx_callv) */
 void cx_callb(cx_function f, cx_void* result, void* args) {
+    /* If process does not own object, forward call */
+    if (cx_instanceof(cx_method_o, f)) {
+        cx_object instance = *(cx_object*)args;
+        cx_object owner = cx_ownerof(instance);
+
+        if (instance && cx_instanceof(cx_replicator_o, instance)) {
+            cx_octetseq argbuff = {f->size, args};
+            cx_replicator_invoke(owner, instance, f, argbuff);
+            return;
+        }
+    }
+
     cx_call_intern(f, result, args);
 }
 

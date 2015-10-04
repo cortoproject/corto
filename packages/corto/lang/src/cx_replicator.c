@@ -58,7 +58,9 @@ cx_void _cx_replicator_on_declare(cx_replicator this, cx_object observable, cx_o
 /* $begin(::corto::lang::replicator::on_declare) */
     
     CX_UNUSED(source);
-    cx_notifyActionCall(&this->onDeclare, observable);
+    if (observable != root_o) {
+        cx_notifyActionCall(&this->onDeclare, observable);
+    }
 
 /* $end */
 }
@@ -78,7 +80,9 @@ cx_void _cx_replicator_on_update(cx_replicator this, cx_object observable, cx_ob
 /* $begin(::corto::lang::replicator::on_update) */
 
     CX_UNUSED(source);
-    cx_notifyActionCall(&this->onUpdate, observable);
+    if (cx_checkAttr(observable, CX_ATTR_WRITABLE)) {
+        cx_notifyActionCall(&this->onUpdate, observable);
+    }
     
 /* $end */
 }

@@ -50,9 +50,15 @@ static cx_int16 c_apiAssignMember(cx_serializer s, cx_value* v, void* userData) 
                 g_fileWrite(data->source, "this->%s",
                         memberId);
             } else {
-                cx_id typeId;
-                g_fileWrite(data->source, "%s(this)->%s",
-                        g_fullOid(data->g, cx_parentof(m), typeId), memberId);
+                if (cx_type(cx_parentof(m))->reference) {
+                    cx_id typeId;
+                    g_fileWrite(data->source, "%s(this)->%s",
+                            g_fullOid(data->g, cx_parentof(m), typeId), memberId);
+                } else {
+                    cx_id typeId;
+                    g_fileWrite(data->source, "((%s*)this)->%s",
+                            g_fullOid(data->g, cx_parentof(m), typeId), memberId);                    
+                }
             }
 
             /* Strdup strings */
@@ -117,7 +123,7 @@ static struct cx_serializer_s c_apiParamSerializer(void) {
 
     cx_serializerInit(&s);
     s.metaprogram[CX_MEMBER] = c_apiParamMember;
-    s.access = CX_LOCAL|CX_READONLY|CX_PRIVATE;
+    s.access = CX_LOCAL|CX_READONLY|CX_PRIVATE|CX_HIDDEN;
     s.accessKind = CX_NOT;
 
     return s;
@@ -129,7 +135,7 @@ static struct cx_serializer_s c_apiAssignSerializer(void) {
 
     cx_serializerInit(&s);
     s.metaprogram[CX_MEMBER] = c_apiAssignMember;
-    s.access = CX_LOCAL|CX_READONLY|CX_PRIVATE;
+    s.access = CX_LOCAL|CX_READONLY|CX_PRIVATE|CX_HIDDEN;
     s.accessKind = CX_NOT;
 
     return s;

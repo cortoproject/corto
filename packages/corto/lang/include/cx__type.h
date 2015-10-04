@@ -198,7 +198,7 @@ CX_BITMASK(cx_modifier);
     #define CX_PRIVATE (0x2)
     #define CX_READONLY (0x4)
     #define CX_CONST (0x8)
-    #define CX_HIDDEN (0x16)
+    #define CX_HIDDEN (0x10)
 
 /*  ::corto::lang::member */
 CX_CLASS(cx_member);

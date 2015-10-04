@@ -194,10 +194,66 @@ error:
     return 0;
 }
 
+static int cx_interface_validateAlias(cx_alias this) {
+    cx_modifier m = 0;
+    
+    /* Find the member we're aliassing and verify access */
+    if (!this->member) {
+        cx_id id;
+        cx_seterr("alias '%s' doesn't point to anything", cx_fullname(this, id));
+        goto error;
+    } else {
+        if (this->member->modifiers & (CX_PRIVATE|CX_LOCAL|CX_READONLY|CX_CONST)) {
+            cx_id id1, id2;
+            cx_seterr("alias '%s' doesn't have write-access to member '%s'",
+                cx_fullname(this, id1), cx_fullname(this->member, id2));
+            goto error;
+        }
+
+        cx_interface base = cx_parentof(this);
+        while (base && (base != cx_parentof(this->member))) {
+            m |= cx_struct(base)->baseAccess;
+            base = base->base;
+        }
+
+        if (!base) {
+            cx_id id;
+            cx_seterr("alias '%s' points to member of another interface",
+                cx_fullname(this, id));
+            goto error;
+        }
+
+        if (m && m != CX_HIDDEN) {
+            cx_id id1, id2;
+            cx_seterr("alias '%s' doesn't have write-access to member '%s'",
+                cx_fullname(this, id1), cx_fullname(this->member, id2));
+            goto error;
+        }
+
+        cx_claim(this->member->type); /* TODO: memory leak outside of bootstrap */
+        cx_member(this)->type = this->member->type;
+        cx_member(this)->modifiers = this->member->modifiers;
+        cx_member(this)->state = this->member->state;
+        cx_member(this)->weak = this->member->weak;
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
+
 static int cx_interface_insertMemberAction(void* o, void* userData) {
     /* If object is a member, add it to members sequence */
     if (cx_class_instanceof(cx_member_o, o)) {
         cx_member m = o;
+
+        if (cx_instanceof(cx_alias_o, m)) {
+            if (cx_interface_validateAlias(cx_alias(m))) {
+                goto error;
+            }
+        }
+
         if (!m->type) {
             cx_id id;
             cx_error("member '%s' has no type", cx_fullname(m, id));

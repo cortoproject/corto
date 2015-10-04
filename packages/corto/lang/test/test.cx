@@ -224,6 +224,9 @@ class Event: test::Suite::
     void tc_onDeleteScope() test::Case
     void tc_onDeleteTree() test::Case
 
+    void tc_updateVoidErr() test::Case
+    void tc_updateUndefined() test::Case
+
 // Overloading testcases
 void ol_null(object a)
 void ol_null(string a)
@@ -313,7 +316,62 @@ class Overload: test::Suite::
     void tc_inheritanceSub() test::Case
     void tc_inheritanceMatchSub() test::Case
     void tc_inheritSibling() test::Case
-    
+
+
+class MethodTester::
+    void simple()
+    void onearg(int32 a)
+    void twoargs(int32 a, int32 b)
+    void overload(int32 a)
+    void overload(string a)
+    void overload(int32 a, int32 b)
+    void overload(MethodTester m)
+    void virtualSimple() virtual
+    void virtualOverload() virtual
+    void virtualOverload(int32 a)
+
+class MethodTesterInherit: MethodTester::
+    void simple()
+    void overload(string a, string b)
+    void overload(MethodTesterInherit m)
+    void virtualOverload(int32 a)
+
+// Test resolving methods
+class MethodResolver: test::Suite::
+    void tc_simple() test::Case
+    void tc_simpleNoArgs() test::Case
+    void tc_simpleErr() test::Case
+    void tc_simpleErrType() test::Case
+    void tc_onearg() test::Case
+    void tc_oneargNoArgs() test::Case
+    void tc_oneargErr() test::Case
+    void tc_oneargErrType() test::Case
+    void tc_twoargs() test::Case
+    void tc_twoargsNoArgs() test::Case
+    void tc_twoargsSpaces() test::Case
+    void tc_overloadInt() test::Case
+    void tc_overloadString() test::Case
+    void tc_overloadTwoArgs() test::Case
+    void tc_overloadClass() test::Case
+    void tc_overloadAmbiguous() test::Case
+    void tc_virtualSimple() test::Case
+    void tc_virtualSimpleNoArgs() test::Case
+    void tc_virtualOverload() test::Case
+    void tc_virtualOverloadNoArgs() test::Case
+    void tc_virtualOverloadArg() test::Case
+    void tc_inheritSimple() test::Case
+    void tc_inheritSimpleNoArgs() test::Case
+    void tc_inheritOverload() test::Case
+    void tc_inheritOverloadBaseInt() test::Case
+    void tc_inheritOverloadBaseString() test::Case
+    void tc_inheritOverloadBaseTwoArgs() test::Case
+    void tc_inheritOverloadBaseClass() test::Case
+    void tc_inheritOverloadNoArgs() test::Case
+    void tc_inheritOverloadClass() test::Case
+    void tc_inheritVirtualOverload() test::Case
+    void tc_inheritVirtualOverloadNoArgs() test::Case
+    void tc_nonexisting() test::Case
+
 // String deserializer testcases
 class StringDeserializer: test::Suite::
     void setup()
