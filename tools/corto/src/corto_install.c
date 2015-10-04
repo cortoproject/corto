@@ -39,17 +39,17 @@ cx_int16 corto_install(int argc, char *argv[]) {
 	/* Install build system from source */
 	if (cx_fileTest("configure") && cx_fileTest("build")) {
 		/* If installing corto itself, install buildsystem */
-		fprintf(install, "mkdir -p /usr/lib/corto/%s\n", CORTO_VERSION);
+		fprintf(install, "mkdir -p /usr/local/lib/corto/%s\n", CORTO_VERSION);
 		fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
-		fprintf(install, "cp -r ./build /usr/lib/corto/%s\n", CORTO_VERSION);
+		fprintf(install, "cp -r ./build /usr/local/lib/corto/%s\n", CORTO_VERSION);
 		fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
 		buildingCorto = TRUE;
 	}
 
 	/* Set the build target to the global environment */
-	fprintf(install, "export CORTO_TARGET=/usr\n");
-	fprintf(install, "export CORTO_HOME=/usr\n");
-	fprintf(install, "export CORTO_BUILD=/usr/lib/corto/%s/build\n", CORTO_VERSION);
+	fprintf(install, "export CORTO_TARGET=/usr/local\n");
+	fprintf(install, "export CORTO_HOME=/usr/local\n");
+	fprintf(install, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", CORTO_VERSION);
 	fprintf(install, "export CORTO_VERSION=%s\n", CORTO_VERSION);
 	fprintf(install, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
 
@@ -59,13 +59,13 @@ cx_int16 corto_install(int argc, char *argv[]) {
 
 	if (buildingCorto) {
 		/* Rename corto */
-		fprintf(install, "mv -f /usr/bin/corto /usr/bin/corto.%s\n", CORTO_VERSION);
-		fprintf(install, "ln -s /usr/bin/corto.%s /usr/bin/corto\n", CORTO_VERSION);
+		fprintf(install, "mv -f /usr/local/bin/corto /usr/local/bin/corto.%s\n", CORTO_VERSION);
+		fprintf(install, "ln -s /usr/local/bin/corto.%s /usr/local/bin/corto\n", CORTO_VERSION);
 		fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
 
 		/* Rename libcorto.so */
-		fprintf(install, "mv -f /usr/lib/libcorto.so /usr/lib/libcorto.so.%s\n", CORTO_VERSION);
-		fprintf(install, "ln -s /usr/lib/libcorto.so.%s /usr/lib/libcorto.so\n", CORTO_VERSION);
+		fprintf(install, "mv -f /usr/local/lib/libcorto.so /usr/local/lib/libcorto.so.%s\n", CORTO_VERSION);
+		fprintf(install, "ln -s /usr/local/lib/libcorto.so.%s /usr/local/lib/libcorto.so\n", CORTO_VERSION);
 		fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
 	}
 
@@ -122,11 +122,11 @@ cx_int16 corto_uninstall(int argc, char *argv[]) {
 	}
 
 	/* Set the build target to the global environment */
-	fprintf(uninstall, "export CORTO_TARGET=/usr\n");
-	fprintf(uninstall, "export CORTO_HOME=/usr\n");
-	fprintf(uninstall, "export CORTO_BUILD=/usr/lib/corto/%s/build\n", CORTO_VERSION);
+	fprintf(uninstall, "export CORTO_TARGET=/usr/local\n");
+	fprintf(uninstall, "export CORTO_HOME=/usr/local\n");
+	fprintf(uninstall, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", CORTO_VERSION);
 	fprintf(uninstall, "export CORTO_VERSION=%s\n", CORTO_VERSION);
-	fprintf(uninstall, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
+	fprintf(uninstall, "export PATH=/usr/local/local/bin:/usr/local/bin:/bin:/usr/local/sbin:/sbin\n");
 	fprintf(uninstall, "rake clobber 2> /dev/null\n");
 
 	/* Also remove from local environment */
@@ -134,7 +134,7 @@ cx_int16 corto_uninstall(int argc, char *argv[]) {
 	fprintf(uninstall, "rake clobber 2> /dev/null\n");
 
 	if (cx_fileTest("configure") && cx_fileTest("build")) {
-		fprintf(uninstall, "rm -rf /usr/lib/corto");
+		fprintf(uninstall, "rm -rf /usr/local/lib/corto");
 		fprintf(uninstall, "rm -rf ~/.corto");
 	}
 
@@ -239,11 +239,11 @@ cx_int16 corto_tar(int argc, char* argv[]) {
 	}
 
 	/* Set the build target to the global environment */
-	fprintf(tar, "export CORTO_TARGET=/usr\n");
-	fprintf(tar, "export CORTO_HOME=/usr\n");
-	fprintf(tar, "export CORTO_BUILD=/usr/lib/corto/%s/build\n", CORTO_VERSION);
+	fprintf(tar, "export CORTO_TARGET=/usr/local\n");
+	fprintf(tar, "export CORTO_HOME=/usr/local\n");
+	fprintf(tar, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", CORTO_VERSION);
 	fprintf(tar, "export CORTO_VERSION=%s\n", CORTO_VERSION);
-	fprintf(tar, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
+	fprintf(tar, "export PATH=/usr/local/local/bin:/usr/local/bin:/bin:/usr/local/sbin:/sbin\n");
 	fprintf(tar, "rake collect\n");
 	fprintf(tar, "DIR=`pwd`\n");
 	fprintf(tar, "cd ~/.corto/pack\n");
@@ -283,12 +283,12 @@ cx_int16 corto_untar(int argc, char* argv[]) {
 	}
 
 	/* Set the build target to the global environment */
-	fprintf(tar, "export CORTO_TARGET=/usr\n");
-	fprintf(tar, "export CORTO_HOME=/usr\n");
-	fprintf(tar, "export CORTO_BUILD=/usr/lib/corto/%s/build\n", CORTO_VERSION);
+	fprintf(tar, "export CORTO_TARGET=/usr/local\n");
+	fprintf(tar, "export CORTO_HOME=/usr/local\n");
+	fprintf(tar, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", CORTO_VERSION);
 	fprintf(tar, "export CORTO_VERSION=%s\n", CORTO_VERSION);
-	fprintf(tar, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
-	fprintf(tar, "tar -zxf %s -C /usr\n", argv[1]);
+	fprintf(tar, "export PATH=/usr/local/local/bin:/usr/local/bin:/bin:/usr/local/sbin:/sbin\n");
+	fprintf(tar, "tar -zxf %s -C /usr/local\n", argv[1]);
 	fclose(tar);
 
 	corto_promptPassword();
@@ -315,7 +315,7 @@ void corto_installHelp(void) {
     printf("Usage: corto install\n");
     printf("\n");
     printf("This command installs your project (component or package) to\n");
-    printf("the global environment (/usr). Only run this command when you want to\n");
+    printf("the global environment (/usr/local). Only run this command when you want to\n");
     printf("make your project available for other users. Run this command from the\n");
     printf("root directory of your project.\n");
     printf("\n");
@@ -327,7 +327,7 @@ void corto_uninstallHelp(void) {
     printf("Usage: corto uninstall\n");
     printf("\n");
     printf("This command removes your project (component or package) from\n");
-    printf("the global environment (/usr).\n");
+    printf("the global environment (/usr/local).\n");
     printf("\n");
     printf("Note that uninstalling requires root priviledges.\n");
     printf("\n");
@@ -346,7 +346,7 @@ void corto_untarHelp(void) {
     printf("Usage: corto untar\n");
     printf("\n");
     printf("This command installs the contents of a tarfile to the global\n");
-    printf("environment (/usr). Be sure to only use tarfiles that are created\n");
+    printf("environment (/usr/local). Be sure to only use tarfiles that are created\n");
     printf("with 'corto tar'.\n");
     printf("\n");
     printf("Note: installation requires root priviledges.\n");

@@ -33,7 +33,7 @@ USE_LIBRARY ||= []
 INCLUDE <<
     "include" <<
     "#{ENV['CORTO_TARGET']}/include/corto/#{VERSION}/packages" <<
-    "/usr/include/corto/#{VERSION}/packages"
+    "/usr/local/include/corto/#{VERSION}/packages"
 
 CFLAGS << "-g" << "-Wstrict-prototypes" << "-std=c99" << "-pedantic" << "-fPIC" << "-D_XOPEN_SOURCE=600"
 CFLAGS.unshift("-Wall")
