@@ -10,15 +10,25 @@
 
 /* $header() */
 
-#define TEST_DOC_OBJECT(destination, type, name, objectDocumented) \
-{ \
-    cx_object o; \
-    cx_type((type)); \
-    test_assert((o = cx_resolve((destination), (name))) != NULL); \
-    test_assert(cx_instanceof((type), o)); \
-    test_assert(md_Doc(o)->o == (objectDocumented)); \
-    cx_release(o); \
+void test__countTree(cx_object o, size_t* count) {
+    *count += 1;
+    cx_objectseq oseq = cx_scopeClaim(o);
+    // if (oseq.length) { // otherwise it segfaults
+        {
+            cx_objectseqForeach(oseq, child) {
+                test__countTree(child, count);
+            }
+        }
+    // }
+    cx_scopeRelease(oseq);
 }
+
+size_t test_countTree(cx_object o) {
+    size_t count = 0;
+    test__countTree(o, &count);
+    return count;
+}
+
 /* $end */
 
 /* ::test::MarkdownParseTest::testDeeperHierarchy1() */
@@ -34,10 +44,31 @@ cx_void _test_MarkdownParseTest_testDeeperHierarchy1(test_MarkdownParseTest this
         "# test::Package3::Package0::Package0\n"
         ;
     md_parse(test_docs_o, text);
-    TEST_DOC_OBJECT(test_docs_o, md_PackageDoc_o, "test::Package3", test_Package3_o);
-    TEST_DOC_OBJECT(test_docs_o, md_TypeDoc_o, "test::Package3::Class0", test_Package3_Class0_o);
-    TEST_DOC_OBJECT(test_docs_o, md_MethodDoc_o, "test::Package3::Class0::method0", test_Package3_Class0_method0_o);
-    TEST_DOC_OBJECT(test_docs_o, md_TypeDoc_o, "test::Package3::Class1", test_Package3_Class1_o);
+    test_assert(test_countTree(test_docs_o) == 9);
+    {
+        cx_object o;
+        test_assert((o = cx_resolve(test_docs_o, "test::Package3")) != NULL);
+        test_assert(cx_instanceof(cx_type(md_PackageDoc_o), o));
+        test_assert(md_Doc(o)->o == test_Package3_o);
+    }
+    {
+        cx_object o;
+        test_assert((o = cx_resolve(test_docs_o, "test::Package3::Class0")) != NULL);
+        test_assert(cx_instanceof(cx_type(md_TypeDoc_o), o));
+        test_assert(md_Doc(o)->o == test_Package3_Class0_o);
+    }
+    {
+        cx_object o;
+        test_assert((o = cx_resolve(test_docs_o, "test::Package3::Class0::method0")) != NULL);
+        test_assert(cx_instanceof(cx_type(md_MethodDoc_o), o));
+        test_assert(md_Doc(o)->o == test_Package3_Class0_method0_o);
+    }
+    {
+        cx_object o;
+        test_assert((o = cx_resolve(test_docs_o, "test::Package3::Class1")) != NULL);
+        test_assert(cx_instanceof(cx_type(md_TypeDoc_o), o));
+        test_assert(md_Doc(o)->o == test_Package3_Class1_o);
+    }
 /* $end */
 }
 
@@ -64,8 +95,19 @@ cx_void _test_MarkdownParseTest_testPackageAndClass(test_MarkdownParseTest this)
         "## Class0\n"
         ;
     md_parse(test_docs_o, text);
-    TEST_DOC_OBJECT(test_docs_o, md_PackageDoc_o, "test::Package0", test_Package0_o);
-    TEST_DOC_OBJECT(test_docs_o, md_TypeDoc_o, "test::Package0::Class0", test_Package0_Class0_o);
+    test_assert(test_countTree(test_docs_o) == 4);
+    {
+        cx_object o;
+        test_assert((o = cx_resolve(test_docs_o, "test::Package0")) != NULL);
+        test_assert(cx_instanceof(cx_type(md_PackageDoc_o), o));
+        test_assert(md_Doc(o)->o == test_Package0_o);
+    }
+    {
+        cx_object o;
+        test_assert((o = cx_resolve(test_docs_o, "test::Package0::Class0")) != NULL);
+        test_assert(cx_instanceof(cx_type(md_TypeDoc_o), o));
+        test_assert(md_Doc(o)->o == test_Package0_Class0_o);
+    }
 /* $end */
 }
 
@@ -78,9 +120,25 @@ cx_void _test_MarkdownParseTest_testPackageAndClassAndMethod(test_MarkdownParseT
         "### method0\n"
         ;
     md_parse(test_docs_o, text);
-    TEST_DOC_OBJECT(test_docs_o, md_PackageDoc_o, "test::Package2", test_Package2_o);
-    TEST_DOC_OBJECT(test_docs_o, md_TypeDoc_o, "test::Package2::Class0", test_Package2_Class0_o);
-    TEST_DOC_OBJECT(test_docs_o, md_MethodDoc_o, "test::Package2::Class0::method0", test_Package2_Class0_method0_o);
+    test_assert(test_countTree(test_docs_o) == 5);
+    {
+        cx_object o;
+        test_assert((o = cx_resolve(test_docs_o, "test::Package2")) != NULL);
+        test_assert(cx_instanceof(cx_type(md_PackageDoc_o), o));
+        test_assert(md_Doc(o)->o == test_Package2_o);
+    }
+    {
+        cx_object o;
+        test_assert((o = cx_resolve(test_docs_o, "test::Package2::Class0")) != NULL);
+        test_assert(cx_instanceof(cx_type(md_TypeDoc_o), o));
+        test_assert(md_Doc(o)->o == test_Package2_Class0_o);
+    }
+    {
+        cx_object o;
+        test_assert((o = cx_resolve(test_docs_o, "test::Package2::Class0::method0")) != NULL);
+        test_assert(cx_instanceof(cx_type(md_MethodDoc_o), o));
+        test_assert(md_Doc(o)->o == test_Package2_Class0_method0_o);
+    }
 /* $end */
 }
 
@@ -93,8 +151,24 @@ cx_void _test_MarkdownParseTest_testScopedPackage(test_MarkdownParseTest this) {
         "# test::Package1::Package0::Package0\n"
         ;
     md_parse(test_docs_o, text);
-    TEST_DOC_OBJECT(test_docs_o, md_PackageDoc_o, "test::Package1", test_Package1_o);
-    TEST_DOC_OBJECT(test_docs_o, md_PackageDoc_o, "test::Package1::Package0", test_Package1_Package0_o);
-    TEST_DOC_OBJECT(test_docs_o, md_PackageDoc_o, "test::Package1::Package0::Package0", test_Package1_Package0_Package0_o);
+    test_assert(test_countTree(test_docs_o) == 5);
+    {
+        cx_object o;
+        test_assert((o = cx_resolve(test_docs_o, "test::Package1")) != NULL);
+        test_assert(cx_instanceof(cx_type(md_PackageDoc_o), o));
+        test_assert(md_Doc(o)->o == test_Package1_o);
+    }
+    {
+        cx_object o;
+        test_assert((o = cx_resolve(test_docs_o, "test::Package1::Package0")) != NULL);
+        test_assert(cx_instanceof(cx_type(md_PackageDoc_o), o));
+        test_assert(md_Doc(o)->o == test_Package1_Package0_o);
+    }
+    {
+        cx_object o;
+        test_assert((o = cx_resolve(test_docs_o, "test::Package1::Package0::Package0")) != NULL);
+        test_assert(cx_instanceof(cx_type(md_PackageDoc_o), o));
+        test_assert(md_Doc(o)->o == test_Package1_Package0_Package0_o);
+    }
 /* $end */
 }
