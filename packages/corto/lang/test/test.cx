@@ -153,6 +153,33 @@ class Resolver: test::Suite::
     void tc_resolveFunctionArgs() test::Case
     void tc_caseInsensitive() test::Case
 
+// Select testcases
+struct selectItem::
+    parent : string
+    name : string
+    type : string
+
+class Select: test::Suite::
+    void setup()
+    void teardown()
+
+    list{selectItem} collect(object @scope, string expr) function
+
+    void tc_selectErrParentTree() test::Case
+    void tc_selectErrParentId() test::Case
+    void tc_selectErrParentAst() test::Case
+    void tc_selectErrParentWc() test::Case
+    void tc_selectErrScopeScope() test::Case
+
+
+
+    void tc_selectThis() test::Case
+    void tc_selectParent() test::Case
+    void tc_selectIdentifier() test::Case
+    void tc_selectScopedThis() test::Case
+    void tc_selectScopedParent() test::Case
+    void tc_selectScopedIdentifier() test::Case
+
 // Test Event scenarios
 class EventTest::
     @scope: object

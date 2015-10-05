@@ -129,3 +129,32 @@ int cx_rbtreeWalkPtr(cx_rbtree tree, cx_walkAction callback, void* userData) {
 cx_type cx_rbtreeKeyType(cx_rbtree tree) {
     return cx_type(jsw_rbtype((jsw_rbtree_t*)tree));
 }
+
+#define cx_iterData(iter) ((jsw_rbtrav_t*)iter->udata)
+
+static int cx_rbtreeIterHasNext(cx_iter *iter) {
+    return cx_iterData(iter)->it != NULL;
+}
+
+static void* cx_rbtreeIterNext(cx_iter *iter) {
+    void* data = cx_iterData(iter)->it ? jsw_rbnodedata(cx_iterData(iter)->it) : NULL;
+    jsw_rbtnext(cx_iterData(iter));
+    return data;
+}
+
+cx_iter _cx_rbtreeIter(cx_rbtree tree, void *udata) {
+    cx_iter result;
+
+    result.udata = udata;
+    jsw_rbtfirst(result.udata, (jsw_rbtree_t*)tree);
+    result.moveFirst = NULL;
+    result.move = NULL;
+    result.hasNext = cx_rbtreeIterHasNext;
+    result.next = cx_rbtreeIterNext;
+    result.nextPtr = NULL;
+    result.remove = NULL;
+    result.insert = NULL;
+    result.set = NULL;
+
+    return result;
+}

@@ -10,6 +10,7 @@
 
 #include "cx_object.h"
 #include "cx_collection.h"
+#include "jsw_rbtree.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -33,6 +34,8 @@ void* cx_rbtreePrev(cx_rbtree tree, void* key, void** key_out);
 cx_uint32 cx_rbtreeSize(cx_rbtree tree);
 int cx_rbtreeWalk(cx_rbtree tree, cx_walkAction callback, void* userData);
 int cx_rbtreeWalkPtr(cx_rbtree tree, cx_walkAction callback, void* userData);
+#define cx_rbtreeIter(tree) _cx_rbtreeIter(tree, alloca(sizeof(struct jsw_rbtrav)));
+cx_iter _cx_rbtreeIter(cx_rbtree tree, void *udata);
 cx_type cx_rbtreeKeyType(cx_rbtree tree);
 
 #ifdef __cplusplus

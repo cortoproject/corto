@@ -36,6 +36,8 @@ typedef struct cx_ll_s {
     cx_llNode lastFreed;
 } cx_ll_s;
 
+#define cx_iterData(iter) ((cx_llIter_s*)(iter).udata)
+
 /* New list */
 cx_ll cx_llNew() {
     cx_ll result = (cx_ll)malloc(sizeof(cx_ll_s));
@@ -122,15 +124,14 @@ void cx_llInsert(cx_ll list, void* data) {
 /* Insert at end */
 void cx_llAppend(cx_ll list, void* data) {
     cx_llNode node = list->first;
-    cx_iter iter;
+    cx_iter iter = cx_llIter(list);
 
     if (node) {
         node = list->last;
     }
 
-    iter.cur = node;
-    iter.next = 0;
-    iter.list = list;
+    cx_iterData(iter)->cur = node;
+    cx_iterData(iter)->next = 0;
 
     insert(iter, data);
 }
@@ -344,54 +345,64 @@ void cx_llClear(cx_ll list) {
 }
 
 /* Return list iterator */
-cx_iter cx_llIter(cx_ll list) {
+cx_iter _cx_llIter(cx_ll list, void *udata) {
     cx_iter result;
 
-    result.cur = 0;
-    result.next = list->first;
-    result.list = list;
+    result.udata = udata;
+    cx_iterData(result)->cur = 0;
+    cx_iterData(result)->next = list->first;
+    cx_iterData(result)->list = list;
+    result.moveFirst = cx_llIterMoveFirst;
+    result.move = cx_llIterMove;
+    result.hasNext = cx_llIterHasNext;
+    result.next = cx_llIterNext;
+    result.nextPtr = cx_llIterNextPtr;
+    result.remove = cx_llIterRemove;
+    result.insert = cx_llIterInsert;
+    result.set = cx_llIterSet;
 
     return result;
 }
 
-void cx_iterMoveFirst(cx_iter* iter) {
-    iter->cur = 0;
-    iter->next = iter->list->first;
+void cx_llIterMoveFirst(cx_iter* iter) {
+    cx_iterData(*iter)->cur = 0;
+    cx_iterData(*iter)->next = (cx_iterData(*iter)->list)->first;
 }
 
-void* cx_iterMove(cx_iter* iter, unsigned int index) {
+void* cx_llIterMove(cx_iter* iter, unsigned int index) {
     void* result;
 
     result = NULL;
 
-    if (iter->list->size <= index) {
-        cx_critical("iterMove exceeds list-bound (%d >= %d).", index, iter->list->size);
+    if (cx_iterData(*iter)->list->size <= index) {
+        cx_critical("iterMove exceeds list-bound (%d >= %d).", index, (cx_iterData(*iter)->list)->size);
     }
     cx_iterMoveFirst(iter);
     while(index) {
         result = cx_iterNext(iter);
         index--;
     }
+    
     return result;
 }
 
 /* Can the iterator provide a 'next' value */
-int cx_iterHasNext(cx_iter* iter) {
-    return iter->next != 0;
+int cx_llIterHasNext(cx_iter* iter) {
+    return cx_iterData(*iter)->next != 0;
 }
 
 /* Take next element of iterator */
-void* cx_iterNext(cx_iter* iter) {
+void* cx_llIterNext(cx_iter* iter) {
     cx_llNode current;
     void* result;
 
-    current = iter->next;
+    current = cx_iterData(*iter)->next;
     result = 0;
 
     if (current) {
-        iter->next = current->next;
+        cx_iterData(*iter)->next = current->next;
         result = current->data;
-        iter->cur = current;
+        cx_iterData(*iter)->cur = current;
     } else {
         cx_critical("Illegal use of 'next' by cx_iter. Use 'hasNext' to check if data is still available.");
     }
@@ -400,17 +411,17 @@ void* cx_iterNext(cx_iter* iter) {
 }
 
 /* Take next element of iterator */
-void* cx_iterNextPtr(cx_iter* iter) {
+void* cx_llIterNextPtr(cx_iter* iter) {
     cx_llNode current;
     void* result;
     
-    current = iter->next;
+    current = cx_iterData(*iter)->next;
     result = 0;
     
     if (current) {
-        iter->next = current->next;
+        cx_iterData(*iter)->next = current->next;
         result = &current->data;
-        iter->cur = current;
+        cx_iterData(*iter)->cur = current;
     } else {
         cx_critical("Illegal use of 'next' by cx_iter. Use 'hasNext' to check if data is still available.");
     }
@@ -419,18 +430,18 @@ void* cx_iterNextPtr(cx_iter* iter) {
 }
 
 /* Remove the last-read element from the iterator. */
-void* cx_iterRemove(cx_iter* iter) {
+void* cx_llIterRemove(cx_iter* iter) {
     cx_llNode current;
     void* result;
 
     result = 0;
 
-    if ((current = iter->cur)) {
-        if (iter->list->first == current) {
-            iter->list->first = current->next;
+    if ((current = cx_iterData(*iter)->cur)) {
+        if ((cx_iterData(*iter)->list)->first == current) {
+            (cx_iterData(*iter)->list)->first = current->next;
         }
-        if (iter->list->last == current) {
-            iter->list->last = current->next;
+        if ((cx_iterData(*iter)->list)->last == current) {
+            (cx_iterData(*iter)->list)->last = current->next;
         }
         if (current->prev) {
             current->prev->next = current->next;
@@ -440,7 +451,7 @@ void* cx_iterRemove(cx_iter* iter) {
         }
         result = current->data;
         free(current);
-        iter->list->size--;
+        (cx_iterData(*iter)->list)->size--;
     } else {
         cx_critical("Illegal use of 'remove' by cx_iter: no element selected. Use 'next' to select an element first.");
     }
@@ -449,17 +460,17 @@ void* cx_iterRemove(cx_iter* iter) {
 }
 
 /* Insert element after current (update next of iterator) */
-void cx_iterInsert(cx_iter* iter, void* o) {
+void cx_llIterInsert(cx_iter* iter, void* o) {
     cx_llNode newNode;
     cx_llNode current;
     cx_llNode next;
 
-    current = iter->cur;
-    next = iter->next;
+    current = cx_iterData(*iter)->cur;
+    next = cx_iterData(*iter)->next;
 
-    if (iter->list->lastFreed) {
-        newNode = iter->list->lastFreed;
-        iter->list->lastFreed = NULL;
+    if ((cx_iterData(*iter)->list)->lastFreed) {
+        newNode = (cx_iterData(*iter)->list)->lastFreed;
+        (cx_iterData(*iter)->list)->lastFreed = NULL;
     } else {
         newNode = malloc(sizeof(cx_llNode_s));
     }
@@ -467,25 +478,25 @@ void cx_iterInsert(cx_iter* iter, void* o) {
     newNode->prev = current;
     newNode->next = next;
     if (!next) {
-        iter->list->last = newNode;
+        (cx_iterData(*iter)->list)->last = newNode;
     }
     if (current) {
         current->next = newNode;
     } else {
-        iter->list->first = newNode;
+        (cx_iterData(*iter)->list)->first = newNode;
     }
     if (next) {
         next->prev = newNode;
     }
 
-    iter->list->size++;
-    iter->next = newNode;
+    (cx_iterData(*iter)->list)->size++;
+    cx_iterData(*iter)->next = newNode;
 }
 
 /* Set data of current element. */
-void cx_iterSet(cx_iter* iter, void* o) {
-    if (iter->cur) {
-        iter->cur->data = o;
+void cx_llIterSet(cx_iter* iter, void* o) {
+    if (cx_iterData(*iter)->cur) {
+        ((cx_llNode)cx_iterData(*iter)->cur)->data = o;
     } else {
         cx_critical("Illegal use of 'set' by cx_iter: no element selected. Use 'next' to select an element first.");
     }

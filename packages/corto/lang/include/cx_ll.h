@@ -9,6 +9,7 @@
 #define CX_LL_H_
 
 #include "cx_def.h"
+#include "cx_iter.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -16,11 +17,11 @@ extern "C" {
 
 typedef struct cx_llNode_s* cx_llNode;
 
-typedef struct cx_iter {
-    cx_llNode next;
-    cx_llNode cur;
+typedef struct cx_llIter_s {
     cx_ll list;
-} cx_iter;
+    cx_llNode cur;
+    cx_llNode next;
+} cx_llIter_s;
 
 cx_ll cx_llNew(void);
 void cx_llFree(cx_ll);
@@ -65,7 +66,8 @@ void* cx_llLast(cx_ll list);
 int cx_llSize(cx_ll list);
 
 /* Obtain iterator */
-cx_iter cx_llIter(cx_ll);
+#define cx_llIter(list) _cx_llIter(list, alloca(sizeof(cx_llIter_s)));
+cx_iter _cx_llIter(cx_ll, void *udata);
 
 /* Append one list to another */
 void cx_llAppendList(cx_ll l1, cx_ll l2);
@@ -80,14 +82,14 @@ void cx_llReverse(cx_ll list);
 void cx_llClear(cx_ll list);
     
 /* Iterator implementation */
-void cx_iterMoveFirst(cx_iter* iter);
-void* cx_iterMove(cx_iter* iter, unsigned int index);
-int cx_iterHasNext(cx_iter* iter);
-void* cx_iterNext(cx_iter* iter);
-void* cx_iterNextPtr(cx_iter* iter);
-void* cx_iterRemove(cx_iter* iter);
-void cx_iterInsert(cx_iter* iter, void* o);
-void cx_iterSet(cx_iter* iter, void* o);
+void cx_llIterMoveFirst(cx_iter* iter);
+void *cx_llIterMove(cx_iter* iter, unsigned int index);
+int cx_llIterHasNext(cx_iter* iter);
+void* cx_llIterNext(cx_iter* iter);
+void* cx_llIterNextPtr(cx_iter* iter);
+void* cx_llIterRemove(cx_iter* iter);
+void cx_llIterInsert(cx_iter* iter, void* o);
+void cx_llIterSet(cx_iter* iter, void* o);
 
 #ifdef __cplusplus
 }

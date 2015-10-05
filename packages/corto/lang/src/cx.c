@@ -59,6 +59,7 @@ static cx_ll cx_unloadHandlers = NULL;
 cx_threadKey CX_KEY_OBSERVER_ADMIN;
 cx_threadKey CX_KEY_WAIT_ADMIN;
 cx_threadKey CX_KEY_ATTR;
+cx_threadKey CX_KEY_SELECT;
 
 int8_t CX_DEBUG_ENABLED = 0;
 
@@ -709,6 +710,7 @@ int cx_start(void) {
     cx_threadTlsKey(&CX_KEY_OBSERVER_ADMIN, NULL);
     cx_threadTlsKey(&CX_KEY_WAIT_ADMIN, NULL);
     cx_threadTlsKey(&CX_KEY_ATTR, cx_genericTlsFree);
+    cx_threadTlsKey(&CX_KEY_SELECT, NULL);
 
     /* Init admin-lock */
     cx_mutexNew(&cx_adminLock);
