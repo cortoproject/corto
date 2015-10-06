@@ -18,7 +18,15 @@ static cx_bool md_isAncestor(cx_object ancestor, cx_object o) {
 
 cx_object md_resolve(int level, cx_string name, md_parseData* data) {
     cx_assert(level >= 1 && level <= 6, "Level must be between 1 and 6");
-    cx_object previous = level == 1 ? root_o : md_Doc(data->headers[level - 1])->o;
+
+    cx_object previous = NULL;
+    if (level == 1) {
+        previous = root_o;
+    } else {
+        previous = md_Doc(data->headers[level - 1]);
+    }
+    cx_assert(previous != NULL, "could not find previous doc at level %d", level);
+
     if (previous == NULL) {
         goto notFound;
     }
@@ -34,12 +42,8 @@ cx_object md_resolve(int level, cx_string name, md_parseData* data) {
     /* Clean up the lower levels of the doc hierarchy */
     int i = 6;
     do {
-        md_Doc childHeader = data->headers[i];
-        if (childHeader) {
-            // cx_release(childHeader);
-        }
         data->headers[i] = NULL;
-    } while (i-- == level);
+    } while (i-- > level);
 
     return o;
 notFound:

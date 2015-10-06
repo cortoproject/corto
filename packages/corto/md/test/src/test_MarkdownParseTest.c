@@ -8,15 +8,36 @@
 
 #include "test.h"
 
-/* ::test::MarkdownParseTest::testSingleHeader() */
-cx_void _test_MarkdownParseTest_testSingleHeader(test_MarkdownParseTest this) {
-/* $begin(::test::MarkdownParseTest::testSingleHeader) */
+/* ::test::MarkdownParseTest::testSingleHeading() */
+cx_void _test_MarkdownParseTest_testSingleHeading(test_MarkdownParseTest this) {
+/* $begin(::test::MarkdownParseTest::testSingleHeading) */
     char text[] =
-        "# FirstHeading"
+        "# FirstHeading\n"
         ;
     md_parse(test_docs_o, text);
     {
         cx_object o = cx_resolve(test_docs_o, "FirstHeading");
+        test_assert(o != NULL);
+        cx_release(o);
+    }
+/* $end */
+}
+
+/* ::test::MarkdownParseTest::testTwoHeadings() */
+cx_void _test_MarkdownParseTest_testTwoHeadings(test_MarkdownParseTest this) {
+/* $begin(::test::MarkdownParseTest::testTwoHeadings) */
+    char text[] =
+        "# FirstHeading\n"
+        "## SecondHeading\n"
+        ;
+    md_parse(test_docs_o, text);
+    {
+        cx_object o = cx_resolve(test_docs_o, "FirstHeading");
+        test_assert(o != NULL);
+        cx_release(o);
+    }
+    {
+        cx_object o = cx_resolve(test_docs_o, "FirstHeading::SecondHeading");
         test_assert(o != NULL);
         cx_release(o);
     }

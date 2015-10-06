@@ -24,10 +24,5 @@ package Package4:;
 void docs
 
 class MarkdownParseTest: test::Suite::
-    void testSingleHeader() test::Case
-    // void testNoRootDestination() test::Case // 0
-    // void testPackageAndClass() test::Case // 0
-    // void testScopedPackage() test::Case // 1
-    // void testPackageAndClassAndMethod() test::Case //2
-    // void testDeeperHierarchy1() test::Case // 3
-    // void testPackageWithParagraph() test::Case // 4
+    void testSingleHeading() test::Case
+    void testTwoHeadings() test::Case

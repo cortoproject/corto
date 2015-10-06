@@ -5,7 +5,7 @@
 #include "_md_appendstr.h"
 #include "_md_resolvers.h"
 
-#define MAX_OBJECT_HEADER (6)
+#define MAX_OBJECT_HEADER (3)
 
 void md_callbackBlockcode(hoedown_buffer *ob, const hoedown_buffer *text, const hoedown_buffer *lang, const hoedown_renderer_data *data) {
     CX_UNUSED(ob);
@@ -34,6 +34,7 @@ void md_callbackHeader(hoedown_buffer *ob, const hoedown_buffer *content, int le
         /* `o` can well be null when not documenting an object store */
         o = md_resolve(level, name, _data);
         doc = md_DocCreateChild(previousHeader, name, o);
+        _data->headers[level] = doc;
     } else {
         /* TODO just append like text */
     }
