@@ -13,8 +13,6 @@
 #include "document.h"
 
 #include "_md_callbacks.h"
-#include "_md_renderers.h"
-
 
 hoedown_renderer* md_createRenderer(struct md_parseData* data) {
     cx_assert(data != NULL, "Parse data cannot be null");
@@ -80,7 +78,10 @@ cx_void _md_parse(cx_object destination, cx_string text) {
         cx_seterr("must specify a destination different from root");
         goto error;
     }
-    md_parseData parseData = {destination, destination};
+    md_parseData parseData = {
+        destination,
+        {destination, NULL, NULL, NULL, NULL, NULL, NULL}
+    };
     hoedown_renderer *renderer = md_createRenderer(&parseData);
     hoedown_document *parser = hoedown_document_new(renderer, 0, 16);
     hoedown_buffer *buffer = hoedown_buffer_new(16);

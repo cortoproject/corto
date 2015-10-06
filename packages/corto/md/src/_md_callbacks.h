@@ -7,6 +7,14 @@
 extern "C" {
 #endif
 
+struct md_parseData {
+    cx_object destination;
+    /* headers[0] should *always* be equal to destination */
+    cx_object headers[7];
+};
+
+typedef struct md_parseData md_parseData;
+
 void md_callbackBlockcode (hoedown_buffer *ob, const hoedown_buffer *text, const hoedown_buffer *lang, const hoedown_renderer_data *data);
 void md_callbackBlockquote (hoedown_buffer *ob, const hoedown_buffer *content, const hoedown_renderer_data *data);
 void md_callbackHeader(hoedown_buffer *ob, const hoedown_buffer *content, int level, const hoedown_renderer_data *data);

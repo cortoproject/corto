@@ -3,17 +3,8 @@
 void parse(object destination, string text)
 
 class Doc::
-    o: object, hidden
+    o: object
     text: string, hidden
     ptr: word, private
     length: uint32, private
     maxlength: uint32, private
-    void addText(string s)
-
-class PackageDoc: Doc
-
-class TypeDoc: Doc
-
-class MethodDoc: Doc
-
-class ParameterDoc: Doc

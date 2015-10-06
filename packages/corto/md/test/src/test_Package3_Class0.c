@@ -11,6 +11,8 @@
 /* ::test::Package3::Class0::method0() */
 cx_void _test_Package3_Class0_method0(test_Package3_Class0 this) {
 /* $begin(::test::Package3::Class0::method0) */
-    CX_UNUSED(this);
+
+    /* << Insert implementation >> */
+
 /* $end */
 }
