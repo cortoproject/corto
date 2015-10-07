@@ -21,11 +21,20 @@ typedef struct cx_selectOp {
 	char *start;
 } cx_selectOp;
 
+typedef struct cx_selectStack {
+	cx_object o; /* Object of whose scope is being iterated */
+	jsw_rbtrav_t trav; /* Persistent tree iterator */
+	cx_iter iter;
+} cx_selectStack;
+
 typedef struct cx_selectData {
-	cx_id expr;                  /* Full expression */
-	char *ptr;                   /* Pointer to current location */
+	cx_id expr;                            /* Full expression */
 	cx_selectOp program[CX_SELECT_MAX_OP]; /* Parsed program */
 	cx_uint8 programSize;
+	cx_selectStack stack[CX_SELECT_MAX_OP]; /* Execution stack */
+	cx_uint8 stackSize;
+	cx_uint8 sp;
+	cx_object next;
 }cx_selectData;
 
 static cx_selectData* cx_selectDataGet(void) {
@@ -43,7 +52,7 @@ static int cx_selectParse(cx_selectData *data) {
 	char *ptr, *start, ch;
 	int op = 0;
 
-	ptr = data->ptr;
+	ptr = data->expr;
 	for (; (ch = *ptr); data->program[op].start = ptr, ptr++) {
 		start = ptr;
 		switch(ch) {
@@ -87,7 +96,10 @@ static int cx_selectParse(cx_selectData *data) {
 			break;
 		}
 		data->program[op].start = start;
-		op++;
+		if (++op == CX_SELECT_MAX_OP) {
+			cx_seterr("expression is too long");
+			goto error;
+		}
 	}
 
 	data->programSize = op;
@@ -134,13 +146,6 @@ static int cx_selectValidate(cx_selectData *data) {
 			}
 			break;
 		case TOKEN_TREE:
-			switch(tprev) {
-			case TOKEN_TREE:
-			case TOKEN_PARENT:
-				goto error;
-			default: break;
-			}
-			break;
 		case TOKEN_PARENT:
 			switch(tprev) {
 			case TOKEN_TREE:
@@ -149,17 +154,8 @@ static int cx_selectValidate(cx_selectData *data) {
 			default: break;
 			}
 			break;
-		case TOKEN_ASTERISK:
-			switch(tprev) {
-			case TOKEN_IDENTIFIER:
-			case TOKEN_PARENT:
-			case TOKEN_ASTERISK:
-			case TOKEN_WILDCARD:
-				goto error;
-			default: break;
-			}
-			break;
 		case TOKEN_WILDCARD:
+		case TOKEN_ASTERISK:
 			switch(tprev) {
 			case TOKEN_IDENTIFIER:
 			case TOKEN_PARENT:
@@ -183,11 +179,31 @@ error:
 	return -1;
 }
 
-static int cx_selectHasNext(cx_iter *iter) {
+static int cx_selectRun(cx_selectData *data) {
 	return 0;
+error:
+	return -1;
+}
+
+static int cx_selectHasNext(cx_iter *iter) {
+	cx_selectData *data = cx_selectDataGet();
+
+	if (!data->next) {
+		if (cx_selectRun(data)) {
+			goto error;
+		}
+	}
+
+	return data->next != NULL;
+error:
+	return -1;
 }
 
 static void* cx_selectNext(cx_iter *iter) {
+	cx_selectData *data = cx_selectDataGet();
+
+	return data->next;
+error:
 	return NULL;
 }
 
@@ -195,7 +211,6 @@ cx_int16 cx_select(cx_object scope, cx_string expr, cx_iter *iter_out) {
 	cx_selectData *data = cx_selectDataGet();
 
 	strcpy(data->expr, expr);
-	data->ptr = data->expr;
 
 	iter_out->hasNext = cx_selectHasNext;
 	iter_out->next = cx_selectNext;

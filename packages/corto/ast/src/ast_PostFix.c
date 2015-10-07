@@ -45,7 +45,7 @@ cx_int16 _ast_PostFix_construct(ast_PostFix this) {
             break;
 
         case CX_ITERATOR:
-            if (this->operator == CX_INC) {
+            if (this->_operator == CX_INC) {
                 /* The result of an expression that increments an iterator is a boolean */
                 cx_setref(&ast_Expression(this)->type, cx_bool_o);
             } else {
@@ -96,12 +96,12 @@ ic_node _ast_PostFix_toIc_v(ast_PostFix this, ic_program program, ic_storage sto
     }
 
     lvalue = ast_Node_toIc(ast_Node(this->lvalue), program, result, TRUE);
-    IC_3(program, ast_Node(this)->line, ic_opKindFromOperator(this->operator), lvalue, ic_node(result), NULL,
+    IC_3(program, ast_Node(this)->line, ic_opKindFromOperator(this->_operator), lvalue, ic_node(result), NULL,
             IC_DEREF_VALUE, IC_DEREF_VALUE, IC_DEREF_VALUE);
 
     if (!storage) {
         ic_program_popAccumulator(program);
-    } else if ((lvalueType->kind == CX_ITERATOR) && (this->operator == CX_INC)) {
+    } else if ((lvalueType->kind == CX_ITERATOR) && (this->_operator == CX_INC)) {
         lvalue = (ic_node)storage;
     }
 

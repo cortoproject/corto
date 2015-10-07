@@ -13,4 +13,8 @@ cx_object cxstr_declareChild(cx_string parent, cx_string name, cx_string type);
 cx_object cxstr_define(cx_object o, cx_string value);
 void cxstr_update(cx_object o, cx_string value);
 
+#ifdef __cplusplus
+}
+#endif
+
 #endif

@@ -36,7 +36,7 @@ cx_int16 _cx_observer_bind(cx_observer this) {
     }
 
     /* Listen to observable */
-    if (!this->template) {
+    if (!this->_template) {
         if (cx_observer_listen(this, this->observable, this->me)) {
             goto error;
         }
@@ -80,7 +80,7 @@ cx_int16 _cx_observer_listen(cx_observer this, cx_object observable, cx_object m
     cx_object oldObservable = NULL;
 
     /* Silence old observable */
-    if (!this->template) {
+    if (!this->_template) {
         if (this->observing) {
             oldObservable = this->observing;
             cx_setref(&this->observing, NULL);
@@ -101,7 +101,7 @@ cx_int16 _cx_observer_listen(cx_observer this, cx_object observable, cx_object m
             if (cx_checkAttr(observable, CX_ATTR_OBSERVABLE)) {
                 cx_listen(me, this, this->mask, observable, this->dispatcher);
             } else {
-                if (!this->template) {
+                if (!this->_template) {
                     cx_id id;
                     cx_error("cannot observe non-observable object '%s'", cx_fullname(observable, id));
                     goto error;
@@ -130,7 +130,7 @@ cx_int16 _cx_observer_silence(cx_observer this, cx_object me) {
     cx_object oldObservable = NULL;
 
     /* Silence old observable */
-    if (!this->template) {
+    if (!this->_template) {
         if (this->observing) {
             oldObservable = this->observing;
             cx_setref(&this->observing, NULL);
@@ -153,7 +153,7 @@ cx_int16 _cx_observer_silence(cx_observer this, cx_object me) {
 /* ::corto::lang::observer::unbind(observer object) */
 cx_void _cx_observer_unbind(cx_observer object) {
 /* $begin(::corto::lang::observer::unbind) */
-    if (!object->template) {
+    if (!object->_template) {
         if (object->observable) {
             if (object->observing) {
                 /* When the observer uses an expression, silence observing rather than observable */

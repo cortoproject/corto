@@ -13,10 +13,10 @@ cx_threadKey IC_PROGRAM_KEY;
 /* $end */
 
 /* ::corto::ic::opKindFromOperator(operatorKind operator) */
-ic_opKind _ic_opKindFromOperator(cx_operatorKind operator) {
+ic_opKind _ic_opKindFromOperator(cx_operatorKind _operator) {
 /* $begin(::corto::ic::opKindFromOperator) */
 
-    switch(operator) {
+    switch(_operator) {
     case CX_ASSIGN: return ic_set;
     case CX_ADD: return ic_add;
     case CX_SUB: return ic_sub;
@@ -41,7 +41,7 @@ ic_opKind _ic_opKindFromOperator(cx_operatorKind operator) {
     case CX_COND_GTEQ: return ic_cond_gteq;
     case CX_COND_LTEQ: return ic_cond_lteq;
     default:
-        cx_assert(0, "invalid operatorkind (%d)", operator);
+        cx_assert(0, "invalid operatorkind (%d)", _operator);
         break;
     }
 

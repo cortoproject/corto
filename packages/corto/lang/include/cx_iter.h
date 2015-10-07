@@ -36,7 +36,7 @@ void cx_iterInsert(cx_iter* iter, void* o);
 void cx_iterSet(cx_iter* iter, void* o);
 
 #ifdef __cplusplus
-extern }
+}
 #endif
 
 #endif

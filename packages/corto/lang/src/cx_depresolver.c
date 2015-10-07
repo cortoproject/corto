@@ -35,7 +35,7 @@ struct g_dependency {
                           zero which is undesired. */
 };
 
-struct cx_depresolver {
+struct cx_depresolver_s {
     cx_ll items;
     cx_ll toPrint;
     cx_depresolver_action onDeclare;
@@ -215,7 +215,7 @@ int g_itemCollectinitial(void* o, void* userData) {
 }
 
 /* Print items (forward them to declare & define callbacks) */
-int g_itemPrintItems(struct cx_depresolver* data) {
+int g_itemPrintItems(struct cx_depresolver_s* data) {
     g_item item;
 
     /* Collect initial items */
@@ -235,10 +235,10 @@ error:
     return -1;
 }
 
-static int g_itemResolveCycles(g_item item, struct cx_depresolver* data);
+static int g_itemResolveCycles(g_item item, struct cx_depresolver_s* data);
 
 /* Scan stack for occurrence of dependency. */
-cx_uint32 g_dependencyOnStack(g_dependency dep, struct cx_depresolver* data) {
+cx_uint32 g_dependencyOnStack(g_dependency dep, struct cx_depresolver_s* data) {
     cx_uint32 i;
     cx_bool found;
 
@@ -255,7 +255,7 @@ cx_uint32 g_dependencyOnStack(g_dependency dep, struct cx_depresolver* data) {
 }
 
 /* Resolve cycles for dependency */
-static void g_itemResolveDependencyCycles(g_dependency dep, struct cx_depresolver* data) {
+static void g_itemResolveDependencyCycles(g_dependency dep, struct cx_depresolver_s* data) {
     cx_uint32 sp;
 
     /* If item is already marked, there is no need to investigate it further. */
@@ -293,7 +293,7 @@ static void g_itemResolveDependencyCycles(g_dependency dep, struct cx_depresolve
  * If there are cycles, the only cycles that can be broken are the DECLARED | DEFINED dependencies, which
  * are stored as dependency objects with the 'weak' flag set to TRUE.
  */
-static int g_itemResolveCycles(g_item item, struct cx_depresolver* data) {
+static int g_itemResolveCycles(g_item item, struct cx_depresolver_s* data) {
     cx_iter iter;
     g_dependency dep;
     cx_uint32 sp;
@@ -332,7 +332,7 @@ static int g_itemResolveCycles(g_item item, struct cx_depresolver* data) {
 cx_depresolver cx_depresolverCreate(cx_depresolver_action onDeclare, cx_depresolver_action onDefine, void* userData) {
     cx_depresolver result;
 
-    result = cx_alloc(sizeof(struct cx_depresolver));
+    result = cx_alloc(sizeof(struct cx_depresolver_s));
 
     result->items = cx_llNew();
     result->toPrint = cx_llNew();

@@ -405,7 +405,7 @@ static void cx__deinitObservable(cx_object o) {
         cx__observer* observer;
         while((observer = cx_llTakeFirst(observable->onSelf))) {
             /* Clear template observer data */
-            if (observer->observer->template) {
+            if (observer->observer->_template) {
                 cx_object observerObj = observer->_this;
                 cx_any thisAny = {cx_typeof(observerObj), observerObj, FALSE};
                 cx_class_listen(thisAny, observer->observer, 0, NULL, NULL);
@@ -422,7 +422,7 @@ static void cx__deinitObservable(cx_object o) {
         cx__observer* observer;
         while((observer = cx_llTakeFirst(observable->onChild))) {
             /* Clear template observer data */
-            if (observer->observer->template) {
+            if (observer->observer->_template) {
                 cx_object observerObj = observer->_this;
                 cx_any thisAny = {cx_typeof(observerObj), observerObj, FALSE};
                 cx_class_listen(thisAny, observer->observer, 0, NULL, NULL);
@@ -2191,7 +2191,7 @@ cx_int32 cx_listen(cx_object this, cx_observer observer, cx_eventMask mask, cx_o
     /* If the observer is a template observer and 'this' is not yet defined,
      * don't start listening right away but set the observable in the list of
      * class observables */
-    if (observer->template && this && !cx_checkState(this, CX_DEFINED)) {
+    if (observer->_template && this && !cx_checkState(this, CX_DEFINED)) {
         cx_any thisAny = {cx_typeof(this), this, FALSE};
         cx_class_listen(thisAny, observer, mask, observable, dispatcher);
     } else {

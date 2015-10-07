@@ -22,7 +22,7 @@ ast_Expression ast_Node_optimizeCondition(ast_Expression condition, cx_bool *sta
 
         /* If condition is a unary NOT inverse the condition and evaluate lvalue of NOT expression instead */
         if (ast_Node(elem)->kind == Ast_UnaryExpr) {
-            if (ast_Unary(elem)->operator == CX_COND_NOT) {
+            if (ast_Unary(elem)->_operator == CX_COND_NOT) {
                 *inverse = TRUE;
                 elem = ast_Unary(elem)->lvalue;
             }

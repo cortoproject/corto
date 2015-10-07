@@ -190,7 +190,8 @@ static cx_char* c_loadMemberId(c_typeWalk_t* data, cx_value* v, cx_char* out, cx
             }
 
             /* Reference member using it's name. */
-            strcat(out, cx_nameof(stack[count]->is.member.t));
+            cx_id memberId;
+            strcat(out, g_id(data->g, cx_nameof(stack[count]->is.member.t), memberId));
             break;
 
         /* Element */
@@ -683,7 +684,7 @@ static int c_loadCFunction(cx_function o, c_typeWalk_t* data, cx_id name) {
     /* Print name */
     g_fullOid(data->g, o, name);
     if (c_procedureHasThis(o)) {
-        if (cx_instanceof(cx_type(cx_method_o), o) && cx_method(o)->virtual) {
+        if (cx_instanceof(cx_type(cx_method_o), o) && cx_method(o)->_virtual) {
             strcat(name, "_v");
         }
     }

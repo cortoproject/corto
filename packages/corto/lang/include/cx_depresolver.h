@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-typedef struct cx_depresolver* cx_depresolver;
+typedef struct cx_depresolver_s* cx_depresolver;
 
 typedef int (*cx_depresolver_action)(cx_object o, void *userData);
 

@@ -14,7 +14,7 @@
 /* Determine whether the expression is an arithmic operation */
 cx_bool ast_Binary_isArithmic(ast_Binary expr) {
     cx_bool result;
-    switch(expr->operator) {
+    switch(expr->_operator) {
     case CX_ADD:
     case CX_SUB:
     case CX_MUL:
@@ -35,7 +35,7 @@ cx_bool ast_Binary_isArithmic(ast_Binary expr) {
 /* Determine whether expression is an assignment */
 cx_bool ast_Binary_isConditional(ast_Binary expr) {
     cx_bool result;
-    switch(expr->operator) {
+    switch(expr->_operator) {
     case CX_COND_EQ:
     case CX_COND_NEQ:
     case CX_COND_LT:
@@ -65,7 +65,7 @@ cx_int16 ast_Binary_getDerefKind(ast_Binary this, cx_type lvalueType, cx_type rv
         this->deref = Ast_ByReference;
     } else if ((this->rvalue->deref == Ast_ByReference) && ast_isNull(this->lvalue)) {
         this->deref = Ast_ByReference;
-    } else if (!ast_isOperatorAssignment(this->operator)) {
+    } else if (!ast_isOperatorAssignment(this->_operator)) {
         if (this->lvalue->deref != this->rvalue->deref) {
             if (lvalueType->kind == CX_VOID) {
                 if (this->rvalue->isReference) {
@@ -162,7 +162,7 @@ cx_int16 ast_Binary_cast(ast_Binary this, cx_type *returnType) {
         equal = lvalueType == rvalueType;
     }
 
-    if (this->operator == CX_DIV) {
+    if (this->_operator == CX_DIV) {
         castType = cx_type(cx_float64_o);
     } else if (!equal) {
         ast_nodeKind lKind = ast_Node(this->lvalue)->kind;
@@ -191,7 +191,7 @@ cx_int16 ast_Binary_cast(ast_Binary this, cx_type *returnType) {
             /* If expression is an assignment, always take type of lvalue. Otherwise determine based on
              * expressibility score which type to cast to.
              */
-            if (ast_isOperatorAssignment(this->operator)) {
+            if (ast_isOperatorAssignment(this->_operator)) {
                 if (lCastScore == rCastScore) {
                     if (ltype->width != rtype->width) {
                         castType = lvalueType;
@@ -293,7 +293,7 @@ cx_int16 ast_Binary_complexExprCompare(ast_Binary this) {
     if (!compareResult) {
         goto error;
     }
-    switch (this->operator) {
+    switch (this->_operator) {
         case CX_COND_EQ:
             c1 = ast_Expression(ast_IntegerCreate(CX_EQ));
             break;
@@ -343,7 +343,7 @@ error:
 }
 
 cx_int16 ast_Binary_complexExpr(ast_Binary this) {
-    if (this->operator == CX_ASSIGN) {
+    if (this->_operator == CX_ASSIGN) {
         ast_Expression result = NULL;
         if(ast_Node(this->rvalue)->kind == Ast_InitializerExpr) {
             if (ast_InitializerExpression_insert(ast_InitializerExpression(this->rvalue), this->lvalue)) {
@@ -355,10 +355,10 @@ cx_int16 ast_Binary_complexExpr(ast_Binary this) {
             }
             ast_Parser_addStatement(yparser(), result);
         }
-    } else if (this->operator == CX_COND_EQ || this->operator == CX_COND_EQ ||
-            this->operator == CX_COND_NEQ || this->operator == CX_COND_GT ||
-            this->operator == CX_COND_LT || this->operator == CX_COND_GTEQ ||
-            this->operator == CX_COND_LTEQ) {
+    } else if (this->_operator == CX_COND_EQ || this->_operator == CX_COND_EQ ||
+            this->_operator == CX_COND_NEQ || this->_operator == CX_COND_GT ||
+            this->_operator == CX_COND_LT || this->_operator == CX_COND_GTEQ ||
+            this->_operator == CX_COND_LTEQ) {
         if (ast_Binary_complexExprCompare(this)) {
             goto error;
         }
@@ -379,7 +379,7 @@ cx_int16 ast_Binary_toIc_strOp(
         ic_node lvalue,
         ic_node rvalue) {
 
-    switch(this->operator) {
+    switch(this->_operator) {
     /* Append strings */
     case CX_ADD: {
         ic_literal dummy = ic_literalCreate((cx_any){cx_type(cx_string_o), NULL, TRUE});
@@ -388,12 +388,12 @@ cx_int16 ast_Binary_toIc_strOp(
         break;
     }
     case CX_ASSIGN:
-        IC_3(program, ast_Node(this)->line, ic_opKindFromOperator(this->operator),
+        IC_3(program, ast_Node(this)->line, ic_opKindFromOperator(this->_operator),
             storage, lvalue, rvalue, IC_DEREF_VALUE, IC_DEREF_VALUE, IC_DEREF_VALUE);
         break;
     default:
         ast_Parser_error(yparser(), "operator '%s' invalid for strings",
-            cx_nameof(cx_enum_constant(cx_operatorKind_o, this->operator)));
+            cx_nameof(cx_enum_constant(cx_operatorKind_o, this->_operator)));
         goto error;
     }
 
@@ -427,7 +427,7 @@ cx_int16 _ast_Binary_construct(ast_Binary this) {
     }
 
     /* Check if lvalue is valid in case of assignment */
-    if (ast_isOperatorAssignment(this->operator) && (ast_Node(this->lvalue)->kind != Ast_StorageExpr)) {
+    if (ast_isOperatorAssignment(this->_operator) && (ast_Node(this->lvalue)->kind != Ast_StorageExpr)) {
         ast_Parser_error(yparser(), "invalid lvalue");
         goto error;
     }
@@ -446,7 +446,7 @@ cx_int16 _ast_Binary_construct(ast_Binary this) {
     }
 
     /* Set operator */
-    ast_Binary_setOperator(this, this->operator);
+    ast_Binary_setOperator(this, this->_operator);
 
     return 0;
 error:
@@ -481,7 +481,7 @@ ast_Expression _ast_Binary_fold(ast_Binary this) {
                 if (ast_Binary_isConditional(this)) {
                     result = ast_Expression(ast_BooleanCreate(FALSE));
                     resultPtr = (void*)ast_Literal_getValue(ast_Literal(result));
-                    cx_binaryOperator(cx_object_o, this->operator, &lptr, &rptr, resultPtr);
+                    cx_binaryOperator(cx_object_o, this->_operator, &lptr, &rptr, resultPtr);
                 } else {
                     result = ast_Expression(ast_NullCreate());
                 }
@@ -523,7 +523,7 @@ ast_Expression _ast_Binary_fold(ast_Binary this) {
             resultPtr = (void*)ast_Literal_getValue(ast_Literal(result));
 
             /* Perform operation */
-            if (cx_binaryOperator(type, this->operator, lptr, rptr, resultPtr)) {
+            if (cx_binaryOperator(type, this->_operator, lptr, rptr, resultPtr)) {
                 cx_id id;
                 ast_Parser_error(yparser(), "folding of binary %s operation failed", ast_Parser_id(type, id));
                 goto error;
@@ -555,7 +555,7 @@ cx_bool _ast_Binary_hasSideEffects_v(ast_Binary this) {
 /* $begin(::corto::ast::Binary::hasSideEffects) */
     cx_bool result = FALSE;
 
-    switch(this->operator) {
+    switch(this->_operator) {
         case CX_ASSIGN:
         case CX_ASSIGN_ADD:
         case CX_ASSIGN_SUB:
@@ -583,10 +583,10 @@ cx_void _ast_Binary_setOperator(ast_Binary this, cx_operatorKind kind) {
     exprType = ast_Expression_getType_expr(this->lvalue, this->rvalue);
 
     /* Assign operator before cast - it can influence the type */
-    this->operator = kind;
+    this->_operator = kind;
 
     /* If operator is a compound operator (assign_*), split up in two binary expressions */
-    switch(this->operator) {
+    switch(this->_operator) {
     case CX_ASSIGN_ADD: compoundExpr = ast_BinaryCreate(this->lvalue, this->rvalue, CX_ADD); break;
     case CX_ASSIGN_SUB: compoundExpr = ast_BinaryCreate(this->lvalue, this->rvalue, CX_SUB); break;
     case CX_ASSIGN_DIV: compoundExpr = ast_BinaryCreate(this->lvalue, this->rvalue, CX_DIV); break;
@@ -600,7 +600,7 @@ cx_void _ast_Binary_setOperator(ast_Binary this, cx_operatorKind kind) {
     }
 
     if (compoundExpr) {
-        this->operator = CX_ASSIGN;
+        this->_operator = CX_ASSIGN;
         cx_setref(&this->rvalue, compoundExpr);
         ast_Parser_collect(yparser(), compoundExpr);
     }
@@ -613,7 +613,7 @@ cx_void _ast_Binary_setOperator(ast_Binary this, cx_operatorKind kind) {
     }
 
     /* Depending on the operator, the returnType might be a bool or the type of the lvalue */
-    switch(this->operator) {
+    switch(this->_operator) {
     case CX_COND_EQ:
     case CX_COND_NEQ:
     case CX_COND_LT:
@@ -676,7 +676,7 @@ ic_node _ast_Binary_toIc_v(ast_Binary this, ic_program program, ic_storage stora
                 condition ? (ic_storage)conditionLvalue : (ic_storage)result,
                 TRUE);
 
-        if (this->operator == CX_ASSIGN) {
+        if (this->_operator == CX_ASSIGN) {
             rvalue = ast_Node_toIc(ast_Node(this->rvalue), program, (ic_storage)lvalue, TRUE);
             if (lvalue != rvalue) {
                 IC_3(program, ast_Node(this)->line, ic_set,
@@ -691,7 +691,7 @@ ic_node _ast_Binary_toIc_v(ast_Binary this, ic_program program, ic_storage stora
                     goto error;
                 }
             } else {
-                IC_3(program, ast_Node(this)->line, ic_opKindFromOperator(this->operator), result, lvalue, rvalue,
+                IC_3(program, ast_Node(this)->line, ic_opKindFromOperator(this->_operator), result, lvalue, rvalue,
                     IC_DEREF_VALUE, deref, deref);
             }
         } else {
