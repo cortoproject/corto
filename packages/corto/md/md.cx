@@ -4,6 +4,7 @@ void parse(object destination, string text)
 
 class Doc::
     o: object
+    level: uint8
     text: string, hidden
     ptr: word, private
     length: uint32, private

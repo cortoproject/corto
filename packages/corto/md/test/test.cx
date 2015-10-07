@@ -1,7 +1,8 @@
 #package ::test
 
 package Package0::
-    class Class0:;
+    class Class0::
+        void method0()
 
 package Package1::
     package Package0::
@@ -10,19 +11,31 @@ package Package1::
 package Package2::
     class Class0::
         void method0()
-
-package Package3::
-    class Class0::
-        void method0()
     package Package0::
         package Package0{}
     class Class1::
         int method0()
 
-package Package4:;
-
 void docs
 
-class MarkdownParseTest: test::Suite::
-    void testSingleHeading() test::Case
-    void testTwoHeadings() test::Case
+class Headers: test::Suite::
+    void tc_H1() test::Case
+    void tc_H2() test::Case
+    void tc_H3() test::Case
+    void tc_H1H2() test::Case
+    void tc_H1H2H3() test::Case
+    void tc_H1H2H1() test::Case
+    void tc_H1H2H3H1H2() test::Case
+    void tc_H1H3() test::Case
+    void tc_H1H3H2() test::Case
+    void tc_H1H2H1H2() test::Case
+    void tc_H1H3H1H3() test::Case
+
+class Packages: test::Suite::
+    void tc_package() test::Case
+    void tc_class() test::Case
+    void tc_method() test::Case
+    void tc_nestedPackage() test::Case
+    void tc_nestedPackageSameName() test::Case
+
+
