@@ -80,7 +80,11 @@ cx_void _md_parse(cx_object destination, cx_string text) {
     }
     md_parseData parseData = {
         destination,
-        {destination, NULL, NULL, NULL, NULL, NULL, NULL}
+        {destination, NULL, NULL, NULL, NULL, NULL, NULL},
+        NULL,
+        NULL,
+        0,
+        0
     };
     hoedown_renderer *renderer = md_createRenderer(&parseData);
     hoedown_document *parser = hoedown_document_new(renderer, 0, 16);

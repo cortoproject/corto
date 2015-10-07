@@ -21,7 +21,7 @@ cx_object md_resolve(int level, cx_string name, md_Doc *header_out, md_parseData
 
     cx_object previous = NULL;
     if (level == 1) {
-        previous = root_o;
+        previous = data->destination;
     } else {
         cx_uint32 i = level - 1;
         while (i && !(previous = md_Doc(data->headers[i]))) {

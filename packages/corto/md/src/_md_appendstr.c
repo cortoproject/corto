@@ -1,21 +1,21 @@
 #include "_md_appendstr.h"
 
-/* data->buffer was renamed to data->text */
-cx_bool md_appendstrbuff(md_Doc data, char* str) {
+/* data->buffer was renamed to data->buffer */
+cx_bool md_appendstrbuff(md_parseData* data, char* str) {
     if (!data->ptr) {
-        data->ptr = (cx_word)data->text;
+        data->ptr = data->buffer;
     }
     if (!data->ptr) {
-        data->text = cx_strdup(str);
-        data->ptr = (cx_word)data->text;
+        data->buffer = cx_strdup(str);
+        data->ptr = data->buffer;
     } else {
         cx_uint32 length, bufferLength;
         if (!data->length) {
-            data->text = cx_realloc(data->text, strlen(data->text) + strlen(str) + 1);
-            data->ptr = (cx_word)data->text;
+            data->buffer = cx_realloc(data->buffer, strlen(data->buffer) + strlen(str) + 1);
+            data->ptr = data->buffer;
         }
         length = strlen(str);
-        bufferLength = strlen(data->text);
+        bufferLength = strlen(data->buffer);
 
         if (data->maxlength && ((bufferLength + length) >= data->maxlength)) {
             strncat((char*)data->ptr, str, data->maxlength - bufferLength);
@@ -31,8 +31,7 @@ maxreached:
 }
 
 /* Append string to serializer-result */
-cx_bool md_appendstr(cx_object _data, cx_string fmt, ...) {
-    md_Doc data = md_Doc(_data);
+cx_bool md_appendstr(md_parseData* data, cx_string fmt, ...) {
     char alloc[1024];
     char *buff = alloc;
     va_list args;

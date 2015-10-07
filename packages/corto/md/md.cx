@@ -6,6 +6,3 @@ class Doc::
     o: object
     level: uint8
     text: string, hidden
-    ptr: word, private
-    length: uint32, private
-    maxlength: uint32, private

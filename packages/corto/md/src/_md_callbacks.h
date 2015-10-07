@@ -11,6 +11,11 @@ struct md_parseData {
     cx_object destination;
     /* headers[0] should *always* be equal to destination */
     cx_object headers[7];
+
+    cx_string buffer;
+    cx_string ptr;
+    unsigned int length;
+    unsigned int maxlength;
 };
 
 typedef struct md_parseData md_parseData;

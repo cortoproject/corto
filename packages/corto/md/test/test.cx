@@ -31,6 +31,9 @@ class Headers: test::Suite::
     void tc_H1H2H1H2() test::Case
     void tc_H1H3H1H3() test::Case
 
+class HeadersParagraphs: test::Suite::
+    void tc_H1() test::Case
+
 class Packages: test::Suite::
     void tc_package() test::Case
     void tc_class() test::Case
