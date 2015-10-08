@@ -59,6 +59,7 @@ static cx_ll cx_unloadHandlers = NULL;
 cx_threadKey CX_KEY_OBSERVER_ADMIN;
 cx_threadKey CX_KEY_WAIT_ADMIN;
 cx_threadKey CX_KEY_ATTR;
+cx_threadKey CX_KEY_SELECT;
 
 int8_t CX_DEBUG_ENABLED = 0;
 
@@ -692,12 +693,12 @@ int cx_start(void) {
 
     /* CORTO_BUILD is where the buildsystem is located */
     if (!cx_getenv("CORTO_BUILD")) {
-        cx_setenv("CORTO_BUILD", "/usr/lib/corto/%s/build", CORTO_VERSION);
+        cx_setenv("CORTO_BUILD", "/usr/local/lib/corto/%s/build", CORTO_VERSION);
     }
 
     /* CORTO_HOME is where corto binaries are located */
     if (!cx_getenv("CORTO_HOME")) {
-        cx_setenv("CORTO_HOME", "/usr", CORTO_VERSION);
+        cx_setenv("CORTO_HOME", "/usr/local", CORTO_VERSION);
     }
 
     /* CORTO_TARGET is where a project will be built */
@@ -709,6 +710,7 @@ int cx_start(void) {
     cx_threadTlsKey(&CX_KEY_OBSERVER_ADMIN, NULL);
     cx_threadTlsKey(&CX_KEY_WAIT_ADMIN, NULL);
     cx_threadTlsKey(&CX_KEY_ATTR, cx_genericTlsFree);
+    cx_threadTlsKey(&CX_KEY_SELECT, NULL);
 
     /* Init admin-lock */
     cx_mutexNew(&cx_adminLock);

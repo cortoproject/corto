@@ -885,7 +885,7 @@ error:
 }
 
 /* ::corto::ast::Parser::binaryExpr(ast::Expression lvalues,ast::Expression rvalues,operatorKind operator) */
-ast_Node _ast_Parser_binaryExpr(ast_Parser this, ast_Expression lvalues, ast_Expression rvalues, cx_operatorKind operator) {
+ast_Node _ast_Parser_binaryExpr(ast_Parser this, ast_Expression lvalues, ast_Expression rvalues, cx_operatorKind _operator) {
 /* $begin(::corto::ast::Parser::binaryExpr) */
     ast_Node result = NULL;
     ast_CHECK_ERRSET(this);
@@ -895,7 +895,7 @@ ast_Node _ast_Parser_binaryExpr(ast_Parser this, ast_Expression lvalues, ast_Exp
     if (lvalues && rvalues && (this->pass || ((this->initializerCount >= 0) && this->initializers[this->initializerCount]))) {
         ast_ExpandAction combine = ast_Parser_combineComma;
 
-        switch(operator) {
+        switch(_operator) {
         case CX_ASSIGN_UPDATE: {
             cx_ll exprList = ast_Expression_toList(lvalues);
 
@@ -932,7 +932,7 @@ ast_Node _ast_Parser_binaryExpr(ast_Parser this, ast_Expression lvalues, ast_Exp
         /* fallthrough */
         default:
             if (!(result = ast_Node(
-                ast_Parser_expandComma(this, lvalues, rvalues, ast_Parser_expandBinary, combine, &operator)))) {
+                ast_Parser_expandComma(this, lvalues, rvalues, ast_Parser_expandBinary, combine, &_operator)))) {
                 goto error;
             }
             break;
@@ -2577,14 +2577,14 @@ cx_void _ast_Parser_popScope(ast_Parser this, cx_object previous) {
 }
 
 /* ::corto::ast::Parser::postfixExpr(ast::Expression lvalue,operatorKind operator) */
-ast_Expression _ast_Parser_postfixExpr(ast_Parser this, ast_Expression lvalue, cx_operatorKind operator) {
+ast_Expression _ast_Parser_postfixExpr(ast_Parser this, ast_Expression lvalue, cx_operatorKind _operator) {
 /* $begin(::corto::ast::Parser::postfixExpr) */
     ast_Expression result = NULL;
 
     this->stagingAllowed = FALSE;
 
     if (this->pass) {
-        result = ast_Expression(ast_PostFixCreate(lvalue, operator));
+        result = ast_Expression(ast_PostFixCreate(lvalue, _operator));
         if (!result) {
             goto error;
         }
@@ -2798,14 +2798,14 @@ error:
 }
 
 /* ::corto::ast::Parser::unaryExpr(ast::Expression lvalue,operatorKind operator) */
-ast_Expression _ast_Parser_unaryExpr(ast_Parser this, ast_Expression lvalue, cx_operatorKind operator) {
+ast_Expression _ast_Parser_unaryExpr(ast_Parser this, ast_Expression lvalue, cx_operatorKind _operator) {
 /* $begin(::corto::ast::Parser::unaryExpr) */
     ast_Expression result = NULL;
 
     this->stagingAllowed = FALSE;
 
     if (lvalue) {
-        if (operator == CX_SUB) {
+        if (_operator == CX_SUB) {
             cx_type lvalueType = ast_Expression_getType(lvalue);
 
             if (lvalueType->kind == CX_PRIMITIVE) {
@@ -2848,7 +2848,7 @@ ast_Expression _ast_Parser_unaryExpr(ast_Parser this, ast_Expression lvalue, cx_
                 ast_Parser_error(this, "unary operator - not applicable to non-primitive type '%s'", ast_Parser_id(lvalueType, id));
                 goto error;
             }
-        } else if (operator == CX_AND) {
+        } else if (_operator == CX_AND) {
             if (ast_Node(lvalue)->kind == Ast_StorageExpr) {
                 if (lvalue->isReference) {
                     if (cx_copy((cx_object*)&result, lvalue)) {
@@ -2872,7 +2872,7 @@ ast_Expression _ast_Parser_unaryExpr(ast_Parser this, ast_Expression lvalue, cx_
             }
         } else {
             if (this->pass) {
-                result = ast_Expression(ast_UnaryCreate(lvalue, operator));
+                result = ast_Expression(ast_UnaryCreate(lvalue, _operator));
                 if (!result) {
                     goto error;
                 }
@@ -2916,7 +2916,7 @@ ast_Node _ast_Parser_updateStatement(ast_Parser this, ast_Expression expr, ast_B
         if (functionBlock) {
             procedureKind = cx_procedure(cx_typeof(function))->kind;
             if (functionBlock) {
-                if ((procedureKind == CX_METHOD) || ((procedureKind == CX_OBSERVER) && cx_observer(function)->template)) {
+                if ((procedureKind == CX_METHOD) || ((procedureKind == CX_OBSERVER) && cx_observer(function)->_template)) {
                     from = ast_Parser_lookup(this, "this");
                 }
             }

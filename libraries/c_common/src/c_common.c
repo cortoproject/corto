@@ -13,37 +13,88 @@
 /* Escape language keywords */
 static int c_typeKeywordEscape(cx_string inputName, cx_string buffer) {
 
-    if (!strcmp(inputName, "auto") ||
+    if( !strcmp(inputName, "alignas") ||
+        !strcmp(inputName, "alignof") ||
+        !strcmp(inputName, "and") ||
+        !strcmp(inputName, "and_eq") ||
+        !strcmp(inputName, "asm") ||
+        !strcmp(inputName, "auto") ||
+        !strcmp(inputName, "bitand") ||
+        !strcmp(inputName, "bitor") ||
+        !strcmp(inputName, "bool") ||
         !strcmp(inputName, "break") ||
         !strcmp(inputName, "case") ||
+        !strcmp(inputName, "catch") ||
         !strcmp(inputName, "char") ||
+        !strcmp(inputName, "char16_t") ||
+        !strcmp(inputName, "char32_t") ||
+        !strcmp(inputName, "class") ||
+        !strcmp(inputName, "compl") ||
         !strcmp(inputName, "const") ||
+        !strcmp(inputName, "constexpr") ||
+        !strcmp(inputName, "const_cast") ||
         !strcmp(inputName, "continue") ||
+        !strcmp(inputName, "decltype") ||
         !strcmp(inputName, "default") ||
+        !strcmp(inputName, "delete") ||
         !strcmp(inputName, "do") ||
         !strcmp(inputName, "double") ||
+        !strcmp(inputName, "dynamic_cast") ||
         !strcmp(inputName, "else") ||
         !strcmp(inputName, "enum") ||
+        !strcmp(inputName, "explicit") ||
+        !strcmp(inputName, "export") ||
         !strcmp(inputName, "extern") ||
+        !strcmp(inputName, "false") ||
         !strcmp(inputName, "float") ||
         !strcmp(inputName, "for") ||
+        !strcmp(inputName, "friend") ||
         !strcmp(inputName, "goto") ||
         !strcmp(inputName, "if") ||
+        !strcmp(inputName, "inline") ||
         !strcmp(inputName, "int") ||
         !strcmp(inputName, "long") ||
+        !strcmp(inputName, "mutable") ||
+        !strcmp(inputName, "namespace") ||
+        !strcmp(inputName, "new") ||
+        !strcmp(inputName, "noexcept") ||
+        !strcmp(inputName, "not") ||
+        !strcmp(inputName, "not_eq") ||
+        !strcmp(inputName, "nullptr") ||
+        !strcmp(inputName, "operator") ||
+        !strcmp(inputName, "or") ||
+        !strcmp(inputName, "or_eq") ||
+        !strcmp(inputName, "private") ||
+        !strcmp(inputName, "protected") ||
+        !strcmp(inputName, "public") ||
         !strcmp(inputName, "register") ||
+        !strcmp(inputName, "reinterpret_cast") ||
         !strcmp(inputName, "return") ||
         !strcmp(inputName, "short") ||
         !strcmp(inputName, "signed") ||
         !strcmp(inputName, "sizeof") ||
         !strcmp(inputName, "static") ||
+        !strcmp(inputName, "static_assert") ||
+        !strcmp(inputName, "static_cast") ||
         !strcmp(inputName, "struct") ||
         !strcmp(inputName, "switch") ||
+        !strcmp(inputName, "template") ||
+        !strcmp(inputName, "this") ||
+        !strcmp(inputName, "thread_local") ||
+        !strcmp(inputName, "throw") ||
+        !strcmp(inputName, "true") ||
+        !strcmp(inputName, "try") ||
         !strcmp(inputName, "typedef") ||
+        !strcmp(inputName, "typeid") ||
+        !strcmp(inputName, "typename") ||
         !strcmp(inputName, "union") ||
+        !strcmp(inputName, "using") ||
         !strcmp(inputName, "unsigned") ||
+        !strcmp(inputName, "virtual") ||
         !strcmp(inputName, "void") ||
         !strcmp(inputName, "volatile") ||
+        !strcmp(inputName, "wchar_t") ||
+        !strcmp(inputName, "xor") ||
         !strcmp(inputName, "while")) {
         memmove(buffer + 1, inputName, strlen(inputName) + 1);
         *buffer = '_';

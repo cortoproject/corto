@@ -440,7 +440,7 @@ cx_int16 _cx_interface_bindMethod(cx_interface this, cx_method method) {
         if (!d) {
             /* Cannot override method if in the same scope */
             if (cx_parentof(*virtual) != cx_parentof(method)) {
-                if ((*virtual)->virtual) {
+                if ((*virtual)->_virtual) {
                     /* Check if overriding method is compatible */
                     if (!cx_interface_checkProcedureCompatibility(cx_function(*virtual), cx_function(method))) {
                         goto error;
@@ -449,8 +449,12 @@ cx_int16 _cx_interface_bindMethod(cx_interface this, cx_method method) {
                 cx_setref(virtual, method);
             } else {
                 cx_id id, id2;
-                cx_seterr("definition of method '%s' conflicts with existing method '%s'", cx_fullname(method, id), cx_fullname(*virtual, id2));
-                goto error;
+                cx_fullname(method, id);
+                cx_fullname(*virtual, id2);
+                if (strcmp(id, id2)) {
+                    cx_seterr("definition of method '%s' conflicts with existing method '%s'", id, id2);
+                    goto error;
+                }
             }
         }
     } else {
@@ -470,7 +474,7 @@ cx_int16 _cx_interface_bindMethod(cx_interface this, cx_method method) {
     }
 
     if (cx_interface(this)->kind == CX_INTERFACE) {
-        method->virtual = TRUE;
+        method->_virtual = TRUE;
     }
 
     return 0;

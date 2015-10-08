@@ -148,10 +148,10 @@ error:
 /* $end */
 
 /* ::corto::ast::isOperatorAssignment(operatorKind operator) */
-cx_bool _ast_isOperatorAssignment(cx_operatorKind operator) {
+cx_bool _ast_isOperatorAssignment(cx_operatorKind _operator) {
 /* $begin(::corto::ast::isOperatorAssignment) */
     cx_bool result;
-    switch(operator) {
+    switch(_operator) {
     case CX_ASSIGN:
     case CX_ASSIGN_ADD:
     case CX_ASSIGN_SUB:

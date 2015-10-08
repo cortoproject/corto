@@ -63,71 +63,15 @@ file "include/#{TARGET}__type.h" => [GENFILE, ".corto/packages.txt", ".corto/com
     end
 end
 
-task :default => "include/#{TARGET}__type.h" do
-    require "./.corto/dep.rb"
-
-    # Delay running inherited tasks - we first need to run
-    # code generation for us to know which source files
-    # have to be compiled.
-    require "#{ENV['CORTO_BUILD']}/component"
-    Rake::Task["prebuild"].invoke
-    Rake::Task["binary"].invoke
-    Rake::Task["postbuild"].invoke
-end
-
-clobber_count = 1
-clean_count = 1
-collect_count = 1
-install_count = 1
-
-task :clean do
-    # Recursively call clean, prevent infinite recursion
-    if clean_count == 1 then
-        clean_count += 1
-        Rake::Task["clean"].reenable
-        require "#{ENV['CORTO_BUILD']}/component"
-        Rake::Task["clean"].execute
-        if File.exists?(".corto/dep.rb")
-            sh "rake clean -f .corto/dep.rb" 
-        end
-    end
-end
-
-task :clobber do
-    # Recursively call clobber, prevent infinite recursion
-    if clobber_count == 1 then
-        clobber_count += 1
-        Rake::Task["clobber"].reenable
-        require "#{ENV['CORTO_BUILD']}/component"
-        Rake::Task["clobber"].execute
-        if File.exists?(".corto/dep.rb")
-            sh "rake clobber -f .corto/dep.rb" 
-        end
-    end
-end
-
-task :collect do
-    # Recursively call collect, prevent infinite recursion
-    if collect_count == 1 then
-        collect_count += 1
-        Rake::Task["collect"].reenable
-        require "#{ENV['CORTO_BUILD']}/component"
-        Rake::Task["collect"].execute
-    end
-end
-
-task :install do
-    # Recursively call collect, prevent infinite recursion
-    if install_count == 1 then
-        install_count += 1
-        Rake::Task["install"].reenable
-        require "#{ENV['CORTO_BUILD']}/component"
-        Rake::Task["install"].execute
-    end
-end
+task :default => "include/#{TARGET}__type.h"
 
 if File.exists? "test" then
     COMPONENTS ||=[] << "test"
 end
 
+if File.exists? "./.corto/dep.rb"
+    require "./.corto/dep.rb"
+end
+
+require "#{ENV['CORTO_BUILD']}/component"
 require "#{ENV['CORTO_BUILD']}/subrake"

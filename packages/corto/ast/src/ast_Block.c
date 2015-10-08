@@ -109,7 +109,7 @@ ast_Expression _ast_Block_lookup(ast_Block this, cx_string id) {
         if (this->function) {
             if ((cx_procedure(cx_typeof(this->function))->kind == CX_METHOD) ||
                ((cx_procedure(cx_typeof(this->function))->kind == CX_OBSERVER) && 
-               cx_observer(this->function)->template)) {
+               cx_observer(this->function)->_template)) {
                 if (strcmp(id, "this")) {
                     cx_object parent;
                     cx_member m;

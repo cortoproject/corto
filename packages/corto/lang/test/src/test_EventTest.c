@@ -38,161 +38,145 @@ cx_int16 _test_EventTest_construct(test_EventTest this) {
 }
 
 /* ::test::EventTest::onDeclare */
-cx_void _test_EventTest_onDeclare(test_EventTest this, cx_object observable, cx_object source) {
+cx_void _test_EventTest_onDeclare(test_EventTest this, cx_object observable) {
 /* $begin(::test::EventTest::onDeclare) */
    cx_setref(&this->lastThis, this);
    cx_setref(&this->lastObservable, observable);
-   cx_setref(&this->lastSource, source);
    this->countDeclare++;
 /* $end */
 }
 
 /* ::test::EventTest::onDeclareScope */
-cx_void _test_EventTest_onDeclareScope(test_EventTest this, cx_object observable, cx_object source) {
+cx_void _test_EventTest_onDeclareScope(test_EventTest this, cx_object observable) {
 /* $begin(::test::EventTest::onDeclareScope) */
    cx_setref(&this->lastThis, this);
    cx_setref(&this->lastObservable, observable);
-   cx_setref(&this->lastSource, source);
    this->countDeclareScope++;
 /* $end */
 }
 
 /* ::test::EventTest::onDeclareSelf */
-cx_void _test_EventTest_onDeclareSelf(test_EventTest this, cx_object observable, cx_object source) {
+cx_void _test_EventTest_onDeclareSelf(test_EventTest this, cx_object observable) {
 /* $begin(::test::EventTest::onDeclareSelf) */
    cx_setref(&this->lastThis, this);
    cx_setref(&this->lastObservable, observable);
-   cx_setref(&this->lastSource, source);
    this->countDeclareSelf++;
 /* $end */
 }
 
 /* ::test::EventTest::onDeclareTree */
-cx_void _test_EventTest_onDeclareTree(test_EventTest this, cx_object observable, cx_object source) {
+cx_void _test_EventTest_onDeclareTree(test_EventTest this, cx_object observable) {
 /* $begin(::test::EventTest::onDeclareTree) */
    cx_setref(&this->lastThis, this);
    cx_setref(&this->lastObservable, observable);
-   cx_setref(&this->lastSource, source);
    this->countDeclareTree++;
 /* $end */
 }
 
 /* ::test::EventTest::onDefine */
-cx_void _test_EventTest_onDefine(test_EventTest this, cx_object observable, cx_object source) {
+cx_void _test_EventTest_onDefine(test_EventTest this, cx_object observable) {
 /* $begin(::test::EventTest::onDefine) */
    cx_setref(&this->lastThis, this);
    cx_setref(&this->lastObservable, observable);
-   cx_setref(&this->lastSource, source);
    this->countDefine++;
 /* $end */
 }
 
 /* ::test::EventTest::onDefineScope */
-cx_void _test_EventTest_onDefineScope(test_EventTest this, cx_object observable, cx_object source) {
+cx_void _test_EventTest_onDefineScope(test_EventTest this, cx_object observable) {
 /* $begin(::test::EventTest::onDefineScope) */
    cx_setref(&this->lastThis, this);
    cx_setref(&this->lastObservable, observable);
-   cx_setref(&this->lastSource, source);
    this->countDefineScope++;
 /* $end */
 }
 
 /* ::test::EventTest::onDefineSelf */
-cx_void _test_EventTest_onDefineSelf(test_EventTest this, cx_object observable, cx_object source) {
+cx_void _test_EventTest_onDefineSelf(test_EventTest this, cx_object observable) {
 /* $begin(::test::EventTest::onDefineSelf) */
    cx_setref(&this->lastThis, this);
    cx_setref(&this->lastObservable, observable);
-   cx_setref(&this->lastSource, source);
    this->countDefineSelf++;
 /* $end */
 }
 
 /* ::test::EventTest::onDefineTree */
-cx_void _test_EventTest_onDefineTree(test_EventTest this, cx_object observable, cx_object source) {
+cx_void _test_EventTest_onDefineTree(test_EventTest this, cx_object observable) {
 /* $begin(::test::EventTest::onDefineTree) */
    cx_setref(&this->lastThis, this);
    cx_setref(&this->lastObservable, observable);
-   cx_setref(&this->lastSource, source);
    this->countDefineTree++;
 /* $end */
 }
 
 /* ::test::EventTest::onDelete */
-cx_void _test_EventTest_onDelete(test_EventTest this, cx_object observable, cx_object source) {
+cx_void _test_EventTest_onDelete(test_EventTest this, cx_object observable) {
 /* $begin(::test::EventTest::onDelete) */
    cx_setref(&this->lastThis, this);
    cx_setref(&this->lastObservable, observable);
-   cx_setref(&this->lastSource, source);
    this->countDelete++;
 /* $end */
 }
 
 /* ::test::EventTest::onDeleteScope */
-cx_void _test_EventTest_onDeleteScope(test_EventTest this, cx_object observable, cx_object source) {
+cx_void _test_EventTest_onDeleteScope(test_EventTest this, cx_object observable) {
 /* $begin(::test::EventTest::onDeleteScope) */
    cx_setref(&this->lastThis, this);
    cx_setref(&this->lastObservable, observable);
-   cx_setref(&this->lastSource, source);
    this->countDeleteScope++;
 /* $end */
 }
 
 /* ::test::EventTest::onDeleteSelf */
-cx_void _test_EventTest_onDeleteSelf(test_EventTest this, cx_object observable, cx_object source) {
+cx_void _test_EventTest_onDeleteSelf(test_EventTest this, cx_object observable) {
 /* $begin(::test::EventTest::onDeleteSelf) */
    cx_setref(&this->lastThis, this);
    cx_setref(&this->lastObservable, observable);
-   cx_setref(&this->lastSource, source);
    this->countDeleteSelf++;
 /* $end */
 }
 
 /* ::test::EventTest::onDeleteTree */
-cx_void _test_EventTest_onDeleteTree(test_EventTest this, cx_object observable, cx_object source) {
+cx_void _test_EventTest_onDeleteTree(test_EventTest this, cx_object observable) {
 /* $begin(::test::EventTest::onDeleteTree) */
    cx_setref(&this->lastThis, this);
    cx_setref(&this->lastObservable, observable);
-   cx_setref(&this->lastSource, source);
    this->countDeleteTree++;
 /* $end */
 }
 
 /* ::test::EventTest::onUpdate */
-cx_void _test_EventTest_onUpdate(test_EventTest this, cx_object observable, cx_object source) {
+cx_void _test_EventTest_onUpdate(test_EventTest this, cx_object observable) {
 /* $begin(::test::EventTest::onUpdate) */
    cx_setref(&this->lastThis, this);
    cx_setref(&this->lastObservable, observable);
-   cx_setref(&this->lastSource, source);
    this->countUpdate++;
 /* $end */
 }
 
 /* ::test::EventTest::onUpdateScope */
-cx_void _test_EventTest_onUpdateScope(test_EventTest this, cx_object observable, cx_object source) {
+cx_void _test_EventTest_onUpdateScope(test_EventTest this, cx_object observable) {
 /* $begin(::test::EventTest::onUpdateScope) */
    cx_setref(&this->lastThis, this);
    cx_setref(&this->lastObservable, observable);
-   cx_setref(&this->lastSource, source);
    this->countUpdateScope++;
 /* $end */
 }
 
 /* ::test::EventTest::onUpdateSelf */
-cx_void _test_EventTest_onUpdateSelf(test_EventTest this, cx_object observable, cx_object source) {
+cx_void _test_EventTest_onUpdateSelf(test_EventTest this, cx_object observable) {
 /* $begin(::test::EventTest::onUpdateSelf) */
    cx_setref(&this->lastThis, this);
    cx_setref(&this->lastObservable, observable);
-   cx_setref(&this->lastSource, source);
    this->countUpdateSelf++;
 /* $end */
 }
 
 /* ::test::EventTest::onUpdateTree */
-cx_void _test_EventTest_onUpdateTree(test_EventTest this, cx_object observable, cx_object source) {
+cx_void _test_EventTest_onUpdateTree(test_EventTest this, cx_object observable) {
 /* $begin(::test::EventTest::onUpdateTree) */
    cx_setref(&this->lastThis, this);
    cx_setref(&this->lastObservable, observable);
-   cx_setref(&this->lastSource, source);
    this->countUpdateTree++;
 /* $end */
 }

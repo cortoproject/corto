@@ -1,4 +1,4 @@
-/* class.c
+/* _class.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -6,7 +6,7 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#include "class.h"
+#include "_class.h"
 
 int classMain(int argc, char* argv[]) {
 /* $begin(main) */

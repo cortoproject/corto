@@ -399,7 +399,7 @@ CX_CLASS_DEF(cx_observer) {
     CX_EXTEND(cx_function);
     cx_eventMask mask;
     cx_object observable;
-    cx_uint32 template;
+    cx_uint32 _template;
     cx_dispatcher dispatcher;
     cx_object me;
     cx_object observing;
@@ -580,7 +580,7 @@ CX_CLASS(cx_method);
 
 CX_CLASS_DEF(cx_method) {
     CX_EXTEND(cx_function);
-    cx_bool virtual;
+    cx_bool _virtual;
 };
 
 /*  ::corto::lang::observableEvent */

@@ -278,7 +278,7 @@ cx_int16 c_apiTypeDefineIntern(cx_type t, c_apiWalk_t *data, cx_bool isUpdate, c
     }
 
     /* Function declaration */
-    g_fileWrite(data->header, "%s%s(%s%s this", id, func, id, t->reference ? "" : "*");
+    g_fileWrite(data->header, "%s%s(%s%s _this", id, func, id, t->reference ? "" : "*");
 
     /* Function implementation */
     g_fileWrite(data->source, "%s%s(%s%s this", id, func, id, t->reference ? "" : "*");

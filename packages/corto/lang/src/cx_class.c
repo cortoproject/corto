@@ -213,7 +213,7 @@ cx_void _cx_class_bindObserver(cx_class this, cx_observer observer) {
     this->observers.buffer = cx_realloc(this->observers.buffer, (this->observers.length + 1) * sizeof(cx_observer));
     this->observers.buffer[this->observers.length] = observer;
     this->observers.length++;
-    observer->template = this->observers.length;
+    observer->_template = this->observers.length;
     cx_claim(observer);
 /* $end */
 }
@@ -294,7 +294,7 @@ cx_eventMask _cx_class_eventMaskOf(cx_any this, cx_observer observer) {
 
     observers = cx_class_getObserverVtable(me);
     if (observers) {
-        result = observers->buffer[observer->template-1].mask;
+        result = observers->buffer[observer->_template-1].mask;
     } else {
         cx_id id, id2;
         cx_error("failed to get observer for object '%s' of type '%s'", cx_fullname(me, id), cx_fullname(cx_typeof(me), id2));
@@ -370,9 +370,9 @@ cx_void _cx_class_listen(cx_any this, cx_observer observer, cx_eventMask mask, c
 
     observers = cx_class_getObserverVtable(this.value);
     if (observers) {
-        observers->buffer[observer->template-1].observable = observable;
-        observers->buffer[observer->template-1].mask = mask;
-        observers->buffer[observer->template-1].dispatcher = dispatcher;
+        observers->buffer[observer->_template-1].observable = observable;
+        observers->buffer[observer->_template-1].mask = mask;
+        observers->buffer[observer->_template-1].dispatcher = dispatcher;
     } else {
         cx_id id, id2;
         cx_error("failed to set observer for '%s' of type '%s'", 
@@ -392,7 +392,7 @@ cx_object _cx_class_observableOf(cx_any this, cx_observer observer) {
 
     observers = cx_class_getObserverVtable(me);
     if (observers) {
-        result = observers->buffer[observer->template-1].observable;
+        result = observers->buffer[observer->_template-1].observable;
     } else {
         cx_id id, id2;
         cx_error("failed to get observer for object '%s' of type '%s'", cx_fullname(me, id), cx_fullname(cx_typeof(me), id2));
@@ -447,7 +447,7 @@ cx_void _cx_class_setDispatcher(cx_any this, cx_observer observer, cx_dispatcher
 
     observers = cx_class_getObserverVtable(this.value);
     if (observers) {
-        observers->buffer[observer->template-1].dispatcher = dispatcher;
+        observers->buffer[observer->_template-1].dispatcher = dispatcher;
     } else {
         cx_id id, id2;
         cx_error("failed to set dispatcher for '%s' of type '%s'", 
@@ -466,7 +466,7 @@ cx_void _cx_class_setMask(cx_any this, cx_observer observer, cx_eventMask mask) 
 
     observers = cx_class_getObserverVtable(this.value);
     if (observers) {
-        observers->buffer[observer->template-1].mask = mask;
+        observers->buffer[observer->_template-1].mask = mask;
     } else {
         cx_id id, id2;
         cx_error("failed to set mask for '%s' of type '%s'", 
@@ -485,7 +485,7 @@ cx_void _cx_class_setObservable(cx_any this, cx_observer observer, cx_object obs
 
     observers = cx_class_getObserverVtable(this.value);
     if (observers) {
-        observers->buffer[observer->template-1].observable = observable;
+        observers->buffer[observer->_template-1].observable = observable;
     } else {
         cx_id id, id2;
         cx_error("failed to set observable for '%s' of type '%s'", 

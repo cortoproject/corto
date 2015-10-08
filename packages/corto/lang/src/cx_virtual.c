@@ -11,7 +11,7 @@
 /* ::corto::lang::virtual::init() */
 cx_int16 _cx_virtual_init(cx_virtual this) {
 /* $begin(::corto::lang::virtual::init) */
-    cx_method(this)->virtual = TRUE;
+    cx_method(this)->_virtual = TRUE;
     return cx_method_init(cx_method(this));
 /* $end */
 }

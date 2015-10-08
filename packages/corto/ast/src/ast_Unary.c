@@ -21,13 +21,13 @@ cx_int16 _ast_Unary_construct(ast_Unary this) {
     ast_Node(this)->kind = Ast_UnaryExpr;
 
     if (lvalueType->kind != CX_ITERATOR) {
-        if (this->operator == CX_COND_NOT) {
+        if (this->_operator == CX_COND_NOT) {
             cx_setref(&ast_Expression(this)->type, cx_bool_o);
         } else {
             cx_setref(&ast_Expression(this)->type, lvalueType);
         }
     } else {
-        if (this->operator == CX_MUL) {
+        if (this->_operator == CX_MUL) {
             cx_type iterType = cx_iterator(lvalueType)->elementType;
             cx_setref(&ast_Expression(this)->type, iterType);
             ast_Expression(this)->isReference = TRUE;
@@ -76,10 +76,10 @@ ic_node _ast_Unary_toIc_v(ast_Unary this, ic_program program, ic_storage storage
 
     lvalue = ast_Node_toIc(ast_Node(this->lvalue), program, result, TRUE);
 
-    switch(this->operator) {
+    switch(this->_operator) {
     case CX_INC:
     case CX_DEC:
-        IC_1(program, ast_Node(this)->line, ic_opKindFromOperator(this->operator), lvalue, IC_DEREF_VALUE);
+        IC_1(program, ast_Node(this)->line, ic_opKindFromOperator(this->_operator), lvalue, IC_DEREF_VALUE);
         result = ic_storage(lvalue);
         break;
     case CX_MUL: {
@@ -88,7 +88,7 @@ ic_node _ast_Unary_toIc_v(ast_Unary this, ic_program program, ic_storage storage
         break;
     }
     default:
-        IC_3(program, ast_Node(this)->line, ic_opKindFromOperator(this->operator), result, lvalue, NULL,
+        IC_3(program, ast_Node(this)->line, ic_opKindFromOperator(this->_operator), result, lvalue, NULL,
             IC_DEREF_VALUE, IC_DEREF_VALUE, IC_DEREF_VALUE);
         break;
     }

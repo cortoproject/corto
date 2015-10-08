@@ -37,8 +37,8 @@ extern cx_mutex_s cx_adminLock;
 static cx_object cx_adopt(cx_object parent, cx_object child);
 static cx_int32 cx_notify(cx__observable *_o, cx_object observable, cx_uint32 mask);
 
-static void cx_notifyObserverDefault(cx__observer* data, cx_object this, cx_object observable, cx_object source, cx_uint32 mask);
-static void cx_notifyObserverThis(cx__observer* data, cx_object this, cx_object observable, cx_object source, cx_uint32 mask);
+static void cx_notifyObserverDefault(cx__observer* data, cx_object this, cx_object observable, cx_uint32 mask);
+static void cx_notifyObserverThis(cx__observer* data, cx_object this, cx_object observable, cx_uint32 mask);
 
 extern cx_threadKey CX_KEY_ATTR;
 
@@ -405,7 +405,7 @@ static void cx__deinitObservable(cx_object o) {
         cx__observer* observer;
         while((observer = cx_llTakeFirst(observable->onSelf))) {
             /* Clear template observer data */
-            if (observer->observer->template) {
+            if (observer->observer->_template) {
                 cx_object observerObj = observer->_this;
                 cx_any thisAny = {cx_typeof(observerObj), observerObj, FALSE};
                 cx_class_listen(thisAny, observer->observer, 0, NULL, NULL);
@@ -422,7 +422,7 @@ static void cx__deinitObservable(cx_object o) {
         cx__observer* observer;
         while((observer = cx_llTakeFirst(observable->onChild))) {
             /* Clear template observer data */
-            if (observer->observer->template) {
+            if (observer->observer->_template) {
                 cx_object observerObj = observer->_this;
                 cx_any thisAny = {cx_typeof(observerObj), observerObj, FALSE};
                 cx_class_listen(thisAny, observer->observer, 0, NULL, NULL);
@@ -2092,7 +2092,7 @@ indent++;
 #endif
 
         if (!dispatcher) {
-            data->notify(data, data->_this, observable, source, mask);
+            data->notify(data, data->_this, observable, mask);
         } else {
             if (!data->_this || (data->_this != source)) {
                 cx_attr oldAttr = cx_setAttr(0);
@@ -2191,7 +2191,7 @@ cx_int32 cx_listen(cx_object this, cx_observer observer, cx_eventMask mask, cx_o
     /* If the observer is a template observer and 'this' is not yet defined,
      * don't start listening right away but set the observable in the list of
      * class observables */
-    if (observer->template && this && !cx_checkState(this, CX_DEFINED)) {
+    if (observer->_template && this && !cx_checkState(this, CX_DEFINED)) {
         cx_any thisAny = {cx_typeof(this), this, FALSE};
         cx_class_listen(thisAny, observer, mask, observable, dispatcher);
     } else {
@@ -2467,19 +2467,19 @@ error:
     return FALSE;
 }
 
-static void cx_notifyObserverDefault(cx__observer* data, cx_object this, cx_object observable, cx_object source, cx_uint32 mask) {
+static void cx_notifyObserverDefault(cx__observer* data, cx_object this, cx_object observable, cx_uint32 mask) {
     cx_function f = cx_function(data->observer);
     CX_UNUSED(this);
     CX_UNUSED(mask);
-    cx_call(f, NULL, NULL, observable, source);
+    cx_call(f, NULL, NULL, observable);
 }
 
-static void cx_notifyObserverThis(cx__observer* data, cx_object this, cx_object observable, cx_object source, cx_uint32 mask) {
+static void cx_notifyObserverThis(cx__observer* data, cx_object this, cx_object observable, cx_uint32 mask) {
     CX_UNUSED(mask);
 
-    if (!this || (this != source)) {
+    if (!this || (this != cx_getOwner())) {
         cx_function f = cx_function(data->observer);
-        cx_call(f, NULL, this, observable, source);
+        cx_call(f, NULL, this, observable);
     }
 }
 

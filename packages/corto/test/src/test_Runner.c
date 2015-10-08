@@ -72,9 +72,8 @@ cx_void _test_Runner_destruct(test_Runner this) {
 }
 
 /* ::corto::test::Runner::runTest() */
-cx_void _test_Runner_runTest(test_Runner this, cx_object observable, cx_object source) {
+cx_void _test_Runner_runTest(test_Runner this, cx_object observable) {
 /* $begin(::corto::test::Runner::runTest) */
-    CX_UNUSED(source);
 
     if (cx_instanceof(cx_type(test_Case_o), observable)) {
         cx_id testcaseId;

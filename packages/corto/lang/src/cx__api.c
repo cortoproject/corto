@@ -4391,7 +4391,7 @@ cx_int16 cx_metaprocedureCompare(cx_metaprocedure dst, cx_metaprocedure src) {
     return cx_compare(dst, src);
 }
 
-cx_method cx_methodCreate(cx_type returnType, cx_bool returnsReference, cx_bool virtual, void(*_impl)(cx_function f, void *result, void *args)) {
+cx_method cx_methodCreate(cx_type returnType, cx_bool returnsReference, cx_bool _virtual, void(*_impl)(cx_function f, void *result, void *args)) {
     cx_method this;
     this = cx_declare(cx_method_o);
     if (!this) {
@@ -4399,7 +4399,7 @@ cx_method cx_methodCreate(cx_type returnType, cx_bool returnsReference, cx_bool 
     }
     cx_setref(&cx_function(this)->returnType, cx_type(returnType));
     cx_function(this)->returnsReference = returnsReference;
-    this->virtual = virtual;
+    this->_virtual = _virtual;
     cx_function(this)->impl = (cx_word)_impl;
     if (this && cx_define(this)) {
         cx_release(this);
@@ -4408,7 +4408,7 @@ cx_method cx_methodCreate(cx_type returnType, cx_bool returnsReference, cx_bool 
     return this;
 }
 
-cx_method cx_methodCreateChild(cx_object _parent, cx_string _name, cx_type returnType, cx_bool returnsReference, cx_bool virtual, void(*_impl)(cx_function f, void *result, void *args)) {
+cx_method cx_methodCreateChild(cx_object _parent, cx_string _name, cx_type returnType, cx_bool returnsReference, cx_bool _virtual, void(*_impl)(cx_function f, void *result, void *args)) {
     cx_method this;
     this = cx_declareChild(_parent, _name, cx_method_o);
     if (!this) {
@@ -4416,7 +4416,7 @@ cx_method cx_methodCreateChild(cx_object _parent, cx_string _name, cx_type retur
     }
     cx_setref(&cx_function(this)->returnType, cx_type(returnType));
     cx_function(this)->returnsReference = returnsReference;
-    this->virtual = virtual;
+    this->_virtual = _virtual;
     cx_function(this)->impl = (cx_word)_impl;
     if (this && cx_define(this)) {
         cx_release(this);
@@ -4443,26 +4443,26 @@ cx_method cx_methodDeclareChild(cx_object _parent, cx_string _name) {
     return this;
 }
 
-cx_int16 cx_methodDefine(cx_method this, cx_type returnType, cx_bool returnsReference, cx_bool virtual, void(*_impl)(cx_function f, void *result, void *args)) {
+cx_int16 cx_methodDefine(cx_method this, cx_type returnType, cx_bool returnsReference, cx_bool _virtual, void(*_impl)(cx_function f, void *result, void *args)) {
     cx_setref(&cx_function(this)->returnType, cx_type(returnType));
     cx_function(this)->returnsReference = returnsReference;
-    this->virtual = virtual;
+    this->_virtual = _virtual;
     cx_function(this)->impl = (cx_word)_impl;
     return cx_define(this);
 }
 
-void cx_methodUpdate(cx_method this, cx_type returnType, cx_bool returnsReference, cx_bool virtual) {
+void cx_methodUpdate(cx_method this, cx_type returnType, cx_bool returnsReference, cx_bool _virtual) {
     cx_updateBegin(this);
     cx_setref(&cx_function(this)->returnType, cx_type(returnType));
     cx_function(this)->returnsReference = returnsReference;
-    this->virtual = virtual;
+    this->_virtual = _virtual;
     cx_updateEnd(this);
 }
 
-void cx_methodSet(cx_method this, cx_type returnType, cx_bool returnsReference, cx_bool virtual) {
+void cx_methodSet(cx_method this, cx_type returnType, cx_bool returnsReference, cx_bool _virtual) {
     cx_setref(&cx_function(this)->returnType, cx_type(returnType));
     cx_function(this)->returnsReference = returnsReference;
-    this->virtual = virtual;
+    this->_virtual = _virtual;
 }
 
 cx_string cx_methodStr(cx_method value) {
@@ -7510,7 +7510,7 @@ cx_int16 cx_uint8Deinit(cx_uint8* value) {
     return result;
 }
 
-cx_virtual cx_virtualCreate(cx_type returnType, cx_bool returnsReference, cx_bool virtual, void(*_impl)(cx_function f, void *result, void *args)) {
+cx_virtual cx_virtualCreate(cx_type returnType, cx_bool returnsReference, cx_bool _virtual, void(*_impl)(cx_function f, void *result, void *args)) {
     cx_virtual this;
     this = cx_declare(cx_virtual_o);
     if (!this) {
@@ -7518,7 +7518,7 @@ cx_virtual cx_virtualCreate(cx_type returnType, cx_bool returnsReference, cx_boo
     }
     cx_setref(&cx_function(this)->returnType, cx_type(returnType));
     cx_function(this)->returnsReference = returnsReference;
-    cx_method(this)->virtual = virtual;
+    cx_method(this)->_virtual = _virtual;
     cx_function(this)->impl = (cx_word)_impl;
     if (this && cx_define(this)) {
         cx_release(this);
@@ -7527,7 +7527,7 @@ cx_virtual cx_virtualCreate(cx_type returnType, cx_bool returnsReference, cx_boo
     return this;
 }
 
-cx_virtual cx_virtualCreateChild(cx_object _parent, cx_string _name, cx_type returnType, cx_bool returnsReference, cx_bool virtual, void(*_impl)(cx_function f, void *result, void *args)) {
+cx_virtual cx_virtualCreateChild(cx_object _parent, cx_string _name, cx_type returnType, cx_bool returnsReference, cx_bool _virtual, void(*_impl)(cx_function f, void *result, void *args)) {
     cx_virtual this;
     this = cx_declareChild(_parent, _name, cx_virtual_o);
     if (!this) {
@@ -7535,7 +7535,7 @@ cx_virtual cx_virtualCreateChild(cx_object _parent, cx_string _name, cx_type ret
     }
     cx_setref(&cx_function(this)->returnType, cx_type(returnType));
     cx_function(this)->returnsReference = returnsReference;
-    cx_method(this)->virtual = virtual;
+    cx_method(this)->_virtual = _virtual;
     cx_function(this)->impl = (cx_word)_impl;
     if (this && cx_define(this)) {
         cx_release(this);
@@ -7562,26 +7562,26 @@ cx_virtual cx_virtualDeclareChild(cx_object _parent, cx_string _name) {
     return this;
 }
 
-cx_int16 cx_virtualDefine(cx_virtual this, cx_type returnType, cx_bool returnsReference, cx_bool virtual, void(*_impl)(cx_function f, void *result, void *args)) {
+cx_int16 cx_virtualDefine(cx_virtual this, cx_type returnType, cx_bool returnsReference, cx_bool _virtual, void(*_impl)(cx_function f, void *result, void *args)) {
     cx_setref(&cx_function(this)->returnType, cx_type(returnType));
     cx_function(this)->returnsReference = returnsReference;
-    cx_method(this)->virtual = virtual;
+    cx_method(this)->_virtual = _virtual;
     cx_function(this)->impl = (cx_word)_impl;
     return cx_define(this);
 }
 
-void cx_virtualUpdate(cx_virtual this, cx_type returnType, cx_bool returnsReference, cx_bool virtual) {
+void cx_virtualUpdate(cx_virtual this, cx_type returnType, cx_bool returnsReference, cx_bool _virtual) {
     cx_updateBegin(this);
     cx_setref(&cx_function(this)->returnType, cx_type(returnType));
     cx_function(this)->returnsReference = returnsReference;
-    cx_method(this)->virtual = virtual;
+    cx_method(this)->_virtual = _virtual;
     cx_updateEnd(this);
 }
 
-void cx_virtualSet(cx_virtual this, cx_type returnType, cx_bool returnsReference, cx_bool virtual) {
+void cx_virtualSet(cx_virtual this, cx_type returnType, cx_bool returnsReference, cx_bool _virtual) {
     cx_setref(&cx_function(this)->returnType, cx_type(returnType));
     cx_function(this)->returnsReference = returnsReference;
-    cx_method(this)->virtual = virtual;
+    cx_method(this)->_virtual = _virtual;
 }
 
 cx_string cx_virtualStr(cx_virtual value) {

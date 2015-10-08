@@ -36,7 +36,7 @@ cx_int16 _cx_observer_bind(cx_observer this) {
     }
 
     /* Listen to observable */
-    if (!this->template) {
+    if (!this->_template) {
         if (cx_observer_listen(this, this->observable, this->me)) {
             goto error;
         }
@@ -56,8 +56,8 @@ cx_int16 _cx_observer_init(cx_observer this) {
     cx_setref( &cx_function(this)->returnType, cx_void_o);
 
     /* Set parameters of observer: (this, observable, source) */
-    cx_function(this)->parameters.buffer = cx_calloc(sizeof(cx_parameter) * 2);
-    cx_function(this)->parameters.length = 2;
+    cx_function(this)->parameters.buffer = cx_calloc(sizeof(cx_parameter) * 1);
+    cx_function(this)->parameters.length = 1;
  
 
     /* Parameter observable */
@@ -70,12 +70,6 @@ cx_int16 _cx_observer_init(cx_observer this) {
         cx_setref(&p->type, cx_type(cx_object_o));
     }
 
-    /* Parameter source */
-    p = &cx_function(this)->parameters.buffer[1];
-    p->name = cx_strdup("source");
-    p->passByReference = TRUE;
-    cx_setref(&p->type, cx_type(cx_object_o));
-
     return 0; /* Don't call function::init, observers do not have parseable parameters, which is currently the only thing a function initializer does. */
 /* $end */
 }
@@ -86,7 +80,7 @@ cx_int16 _cx_observer_listen(cx_observer this, cx_object observable, cx_object m
     cx_object oldObservable = NULL;
 
     /* Silence old observable */
-    if (!this->template) {
+    if (!this->_template) {
         if (this->observing) {
             oldObservable = this->observing;
             cx_setref(&this->observing, NULL);
@@ -107,7 +101,7 @@ cx_int16 _cx_observer_listen(cx_observer this, cx_object observable, cx_object m
             if (cx_checkAttr(observable, CX_ATTR_OBSERVABLE)) {
                 cx_listen(me, this, this->mask, observable, this->dispatcher);
             } else {
-                if (!this->template) {
+                if (!this->_template) {
                     cx_id id;
                     cx_error("cannot observe non-observable object '%s'", cx_fullname(observable, id));
                     goto error;
@@ -136,7 +130,7 @@ cx_int16 _cx_observer_silence(cx_observer this, cx_object me) {
     cx_object oldObservable = NULL;
 
     /* Silence old observable */
-    if (!this->template) {
+    if (!this->_template) {
         if (this->observing) {
             oldObservable = this->observing;
             cx_setref(&this->observing, NULL);
@@ -159,7 +153,7 @@ cx_int16 _cx_observer_silence(cx_observer this, cx_object me) {
 /* ::corto::lang::observer::unbind(observer object) */
 cx_void _cx_observer_unbind(cx_observer object) {
 /* $begin(::corto::lang::observer::unbind) */
-    if (!object->template) {
+    if (!object->_template) {
         if (object->observable) {
             if (object->observing) {
                 /* When the observer uses an expression, silence observing rather than observable */

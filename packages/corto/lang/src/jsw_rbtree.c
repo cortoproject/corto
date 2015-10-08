@@ -119,6 +119,10 @@ static jsw_rbnode_t *new_node ( jsw_rbtree_t *tree, void* key, void *data )
   return rn;
 }
 
+void *jsw_rbnodedata(jsw_rbnode_t *node) {
+  return node->data;
+}
+
 /* Marshall between intern comparefunction and corto::type::equals */
 static cx_equalityKind cx_rbtreeGenericCompare(cx_type t, const void* v1, const void* v2) {
     cx_any any1, any2;

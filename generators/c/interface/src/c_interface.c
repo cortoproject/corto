@@ -316,7 +316,7 @@ error:
 static char* c_functionName(cx_function o, cx_id id, c_typeWalk_t *data) {
     g_fullOid(data->g, o, id);
     if (cx_instanceof(cx_type(cx_method_o), o)) {
-        if (cx_method(o)->virtual) {
+        if (cx_method(o)->_virtual) {
             strcat(id, "_v");
         }
     }
@@ -457,7 +457,7 @@ static int c_interfaceClassProcedure(cx_object o, void *userData) {
          * further needs to be generated in the sourcefile for a delegate. */
         switch (kind) {
         case CX_METHOD:
-            if (cx_method(o)->virtual) {
+            if (cx_method(o)->_virtual) {
                 c_interfaceGenerateVirtual(o, data);
             }
             break;

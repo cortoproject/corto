@@ -334,9 +334,9 @@ cx_string cx_locateLibrary(cx_string lib) {
     }
 
     /* Look for global packages */
-    if (strcmp("/usr", cx_getenv("CORTO_TARGET")) && 
-        strcmp("/usr", cx_getenv("CORTO_HOME"))) {
-        usrPath = cx_envparse("/usr/lib/corto/%s/%s", CORTO_VERSION, lib);
+    if (strcmp("/usr/local", cx_getenv("CORTO_TARGET")) && 
+        strcmp("/usr/local", cx_getenv("CORTO_HOME"))) {
+        usrPath = cx_envparse("/usr/local/lib/corto/%s/%s", CORTO_VERSION, lib);
         if (cx_fileTest(usrPath)) {
             time_t myT = cx_getModified(usrPath);
             if ((myT >= t) || !result) {

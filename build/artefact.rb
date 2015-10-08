@@ -33,7 +33,7 @@ USE_LIBRARY ||= []
 INCLUDE <<
     "include" <<
     "#{ENV['CORTO_TARGET']}/include/corto/#{VERSION}/packages" <<
-    "/usr/include/corto/#{VERSION}/packages"
+    "/usr/local/include/corto/#{VERSION}/packages"
 
 CFLAGS << "-g" << "-Wstrict-prototypes" << "-std=c99" << "-pedantic" << "-fPIC" << "-D_XOPEN_SOURCE=600"
 CFLAGS.unshift("-Wall")
@@ -119,6 +119,16 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
         end.join(" ") +
         USE_COMPONENT.map {|i| "#{ENV['CORTO_HOME']}/lib/corto/#{VERSION}/components/lib" + i + ".so"}.join(" ") +
         USE_LIBRARY.map {|i| "#{ENV['CORTO_HOME']}/lib/corto/#{VERSION}/libraries/lib" + i + ".so"}.join(" ")
+
+    # Check if there were any new files created during code generation
+    Rake::FileList["src/*.c"].each do |file|
+        if not SOURCES.include? file
+            obj = file.ext(".o").pathmap(".corto/obj/%f")
+            build_source(file, obj, true)
+            objects += " " + obj
+        end
+    end
+
     cc_command = "cc #{objects} #{cflags} #{corto_lib} #{libpath} #{libmapping} #{use_link} #{lflags}"
     sh cc_command
     if ENV['silent'] != "true" then
@@ -130,19 +140,19 @@ task :prebuild
 task :postbuild
 
 rule '__api.o' => ->(t){t.pathmap(".corto/%f").ext(".c")} do |task|
-    build_source(task, false)
+    build_source(task.source, task.name, false)
 end
 rule '__meta.o' => ->(t){t.pathmap(".corto/%f").ext(".c")} do |task|
-    build_source(task, false)
+    build_source(task.source, task.name, false)
 end
 rule '__wrapper.o' => ->(t){t.pathmap(".corto/%f").ext(".c")} do |task|
-    build_source(task, false)
+    build_source(task.source, task.name, false)
 end
 rule '__load.o' => ->(t){t.pathmap(".corto/%f").ext(".c")} do |task|
-    build_source(task, false)
+    build_source(task.source, task.name, false)
 end
 rule '.o' => ->(t){t.pathmap("src/%f").ext(".c")} do |task|
-    build_source(task, true)
+    build_source(task.source, task.name, true)
 end
 
 task :all => :default
@@ -153,15 +163,15 @@ task :test do
     sh "corto test"
 end
 
-def build_source(task, echo)
+def build_source(source, target, echo)
     verbose(false)
     if not File.exists? ".corto/obj" then
         sh "mkdir -p .corto/obj"
     end
     if echo
         if ENV['silent'] != "true" then
-            sh "echo '#{task.source}'"
+            sh "echo '#{source}'"
         end
     end
-    sh "cc -c #{CFLAGS.join(" ")} #{DEFINES.map {|d| "-D" + d}.join(" ")} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{task.source} -o #{task.name}"
+    sh "cc -c #{CFLAGS.join(" ")} #{DEFINES.map {|d| "-D" + d}.join(" ")} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{source} -o #{target}"
 end

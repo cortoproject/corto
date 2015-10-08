@@ -58,7 +58,7 @@ cx_object cx_parentof(cx_object o);
 cx_uint32 cx_scopeSize(cx_object o); /* Returns number of objects (non-recursive) in scope */
 cx_objectseq cx_scopeClaim(cx_object o); /* Safe way to access scope contents */
 void cx_scopeRelease(cx_objectseq scope);
-cx_int32 cx_scopeWalk(cx_object o, cx_scopeWalkAction action, void* userData); /* Safe object-walk */
+cx_int32 cx_scopeWalk(cx_object o, cx_scopeWalkAction action, void *userData); /* Safe object-walk */
 cx_string cx_fullname(cx_object o, cx_id buffer);
 cx_string cx_relname(cx_object from, cx_object o, cx_id buffer);
 
@@ -69,6 +69,14 @@ cx_object cx_ownerof(cx_object o);
 /* Find objects by name */
 cx_object cx_lookup(cx_object scope, cx_string name);
 cx_object cx_resolve(cx_object scope, cx_string expr);
+
+typedef struct cx_selectItem {
+	cx_string parent;
+	cx_string name;
+	cx_string type;
+} cx_selectItem;
+
+cx_int16 cx_select(cx_object scope, cx_string expr, cx_iter *iter_out);
 
 /* Notifications */
 cx_object cx_setOwner(cx_object source);

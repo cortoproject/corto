@@ -15,8 +15,8 @@ extern "C" {
 #endif
 
 void cx_operatorInit(void);
-cx_int16 cx_unaryOperator(cx_type type, cx_operatorKind operator, void* operand, void* result);
-cx_int16 cx_binaryOperator(cx_type type, cx_operatorKind operator, void *operand1, void *operand2, void *result);
+cx_int16 cx_unaryOperator(cx_type type, cx_operatorKind _operator, void* operand, void* result);
+cx_int16 cx_binaryOperator(cx_type type, cx_operatorKind _operator, void *operand1, void *operand2, void *result);
 
 #ifdef __cplusplus
 }
