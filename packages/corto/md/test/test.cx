@@ -31,8 +31,19 @@ class Headers: test::Suite::
     void tc_H1H2H1H2() test::Case
     void tc_H1H3H1H3() test::Case
 
-class HeadersParagraphs: test::Suite::
-    void tc_H1() test::Case
+class HeaderParagraphs: test::Suite::
+    void tc_H1P() test::Case
+    void tc_H1PP() test::Case
+    void tc_H1PPP() test::Case
+    void tc_H1PH1P() test::Case
+    void tc_H1PnH1P() test::Case
+    void tc_H1PH2P() test::Case
+    void tc_H1PnH2P() test::Case
+    void tc_H1PH3P() test::Case
+    void tc_H1PH2PH3P() test::Case
+    void tc_H1H2H3P() test::Case
+    void tc_H1H2H3H4P() test::Case
+    void tc_H1H4P() test::Case
 
 class Packages: test::Suite::
     void tc_package() test::Case
@@ -40,5 +51,3 @@ class Packages: test::Suite::
     void tc_method() test::Case
     void tc_nestedPackage() test::Case
     void tc_nestedPackageSameName() test::Case
-
-
