@@ -241,6 +241,29 @@ cx_void _test_MethodResolver_tc_overloadTwoArgs(test_MethodResolver this) {
 /* $end */
 }
 
+/* ::test::MethodResolver::tc_redeclare() */
+cx_void _test_MethodResolver_tc_redeclare(test_MethodResolver this) {
+/* $begin(::test::MethodResolver::tc_redeclare) */
+
+    cx_struct s = cx_structDeclareChild(NULL, "TestStruct");
+    test_assert(s != NULL);
+
+    cx_object m = cx_methodDeclareChild(s, "bar()");
+    test_assert(m != NULL);
+    test_assert(cx_instanceof(cx_method_o, m));
+
+    cx_object n = cx_methodDeclareChild(s, "bar()");
+    test_assert(n != NULL);
+    test_assert(cx_instanceof(cx_method_o, n));
+    test_assert(m == n);
+
+    cx_delete(m);
+    cx_delete(n);
+    cx_delete(s);
+
+/* $end */
+}
+
 /* ::test::MethodResolver::tc_simple() */
 cx_void _test_MethodResolver_tc_simple(test_MethodResolver this) {
 /* $begin(::test::MethodResolver::tc_simple) */

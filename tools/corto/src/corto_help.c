@@ -6,6 +6,7 @@
 #include "corto_create.h"
 #include "corto_run.h"
 #include "corto_shell.h"
+#include "corto_test.h"
 
 int corto_help(int argc, char* argv[]) {
 
@@ -43,6 +44,8 @@ int corto_help(int argc, char* argv[]) {
 		corto_rebuildHelp();
 	} else if (!strcmp(argv[1], "clean")) {
 		corto_cleanHelp();
+	} else if (!strcmp(argv[1], "test")) {
+		corto_testHelp();
 	} else {
 		cx_error("corto: unknown command\n");
 		cx_error("Use 'corto --help' to get a list of available commands");

@@ -449,8 +449,12 @@ cx_int16 _cx_interface_bindMethod(cx_interface this, cx_method method) {
                 cx_setref(virtual, method);
             } else {
                 cx_id id, id2;
-                cx_seterr("definition of method '%s' conflicts with existing method '%s'", cx_fullname(method, id), cx_fullname(*virtual, id2));
-                goto error;
+                cx_fullname(method, id);
+                cx_fullname(*virtual, id2);
+                if (strcmp(id, id2)) {
+                    cx_seterr("definition of method '%s' conflicts with existing method '%s'", id, id2);
+                    goto error;
+                }
             }
         }
     } else {

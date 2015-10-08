@@ -97,9 +97,13 @@ static int cx_functionLookupWalk(cx_object o, void* userData) {
             /* Check if function matches */
             if (!d) {
                 cx_id id, id2;
-                cx_error("function '%s' conflicts with existing declaration '%s'", cx_fullname(data->f, id), cx_fullname(o, id2));
-                data->error = TRUE;
-                goto finish;
+                cx_fullname(data->f, id);
+                cx_fullname(o, id2);
+                if (strcmp(id, id2)) {
+                    cx_seterr("function '%s' conflicts with existing declaration '%s'", id, id2);
+                    data->error = TRUE;
+                    goto finish;
+                }
             } else {
                 cx_id id;
 

@@ -397,6 +397,7 @@ class MethodResolver: test::Suite::
     void tc_inheritVirtualOverload() test::Case
     void tc_inheritVirtualOverloadNoArgs() test::Case
     void tc_nonexisting() test::Case
+    void tc_redeclare() test::Case
 
 // String deserializer testcases
 class StringDeserializer: test::Suite::

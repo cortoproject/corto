@@ -1,4 +1,4 @@
-/* virtual.c
+/* _virtual.c
  *
  * This file contains the implementation for the generated interface.
  *
@@ -6,7 +6,7 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#include "virtual.h"
+#include "_virtual.h"
 
 int virtualMain(int argc, char* argv[]) {
 /* $begin(main) */

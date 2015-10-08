@@ -45,3 +45,12 @@ cx_int16 corto_test(int argc, char *argv[]) {
 error:
     return -1;
 }
+
+void corto_testHelp(void) {
+    printf("Usage: corto test\n");
+    printf("       corto test <project>\n");
+    printf("       corto test <project> <testcase>\n");
+    printf("\n");
+    printf("Test your Corto project. Returns -1 if tests fails.\n");
+    printf("\n");
+}
