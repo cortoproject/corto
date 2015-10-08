@@ -5,4 +5,5 @@ void parse(object destination, string text)
 class Doc::
     o: object
     level: uint8
+    description: string, hidden
     text: string, hidden

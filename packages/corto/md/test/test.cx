@@ -44,6 +44,8 @@ class HeaderParagraphs: test::Suite::
     void tc_H1H2H3P() test::Case
     void tc_H1H2H3H4P() test::Case
     void tc_H1H4P() test::Case
+    void tc_H1DP() test::Case
+    void tc_H1DPP() test::Case
 
 class Packages: test::Suite::
     void tc_package() test::Case

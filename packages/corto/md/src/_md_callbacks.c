@@ -82,13 +82,17 @@ void md_callbackParagraph(hoedown_buffer *ob, const hoedown_buffer *content, con
     buff = cx_calloc(content->size + 1);
     memcpy(buff, content->data, content->size);
 
-    if (lastHeader->text) {
-        cx_asprintf(&str, "%s%s\n", lastHeader->text, buff);
-    } else { 
+    if (lastHeader->description) {
+        if (lastHeader->text) {
+            cx_asprintf(&str, "%s%s\n", lastHeader->text, buff);
+        } else { 
+            cx_asprintf(&str, "%s\n", buff);
+        }
+        cx_setstr(&lastHeader->text, str);
+    } else {
         cx_asprintf(&str, "%s\n", buff);
+        cx_setstr(&lastHeader->description, str);
     }
-
-    cx_setstr(&lastHeader->text, str);
 
     cx_dealloc(str);
     cx_dealloc(buff);
