@@ -1,0 +1,55 @@
+#package ::test
+
+package Package0::
+    class Class0::
+        void method0()
+
+package Package1::
+    package Package0::
+        package Package0:;
+
+package Package2::
+    class Class0::
+        void method0()
+    package Package0::
+        package Package0{}
+    class Class1::
+        int method0()
+
+void docs
+
+class Headers: test::Suite::
+    void tc_H1() test::Case
+    void tc_H2() test::Case
+    void tc_H3() test::Case
+    void tc_H1H2() test::Case
+    void tc_H1H2H3() test::Case
+    void tc_H1H2H1() test::Case
+    void tc_H1H2H3H1H2() test::Case
+    void tc_H1H3() test::Case
+    void tc_H1H3H2() test::Case
+    void tc_H1H2H1H2() test::Case
+    void tc_H1H3H1H3() test::Case
+
+class HeaderParagraphs: test::Suite::
+    void tc_H1P() test::Case
+    void tc_H1PP() test::Case
+    void tc_H1PPP() test::Case
+    void tc_H1PH1P() test::Case
+    void tc_H1PnH1P() test::Case
+    void tc_H1PH2P() test::Case
+    void tc_H1PnH2P() test::Case
+    void tc_H1PH3P() test::Case
+    void tc_H1PH2PH3P() test::Case
+    void tc_H1H2H3P() test::Case
+    void tc_H1H2H3H4P() test::Case
+    void tc_H1H4P() test::Case
+    void tc_H1DP() test::Case
+    void tc_H1DPP() test::Case
+
+class Packages: test::Suite::
+    void tc_package() test::Case
+    void tc_class() test::Case
+    void tc_method() test::Case
+    void tc_nestedPackage() test::Case
+    void tc_nestedPackageSameName() test::Case
