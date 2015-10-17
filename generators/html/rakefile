@@ -1,0 +1,7 @@
+TARGET = "html"
+
+# USE_PACKAGE = ["/Users/JohnnyLee/.corto/lib/corto/0.2.0-alpha/packages/corto/md/libmd.so"]
+USE_PACKAGE = ["corto::md"]
+CFLAGS = ["-Wunused-parameter"]
+
+require "#{ENV['CORTO_BUILD']}/generator"
