@@ -39,82 +39,82 @@ struct DeclaredParent: parentState = declared::
     foo: int32
 
 // Object management testcases
-class ObjectMgmt: test::Suite::
+test::Suite ObjectMgmt::
     prevAttr: lang::attr, local|private
 
-    void setup()
-    void teardown()
+    void setup() method
+    void teardown() method
 
-    void tc_invalidate() test::Case
+    void tc_invalidate()
 
-    void tc_declareVoid() test::Case
-    void tc_declareInt() test::Case
-    void tc_declareFoo() test::Case
-    void tc_declareVoidAttr0() test::Case
-    void tc_declareIntAttr0() test::Case
-    void tc_declareFooAttr0() test::Case
-    void tc_declareInitFail() test::Case
-    void tc_declareNullType() test::Case
-    void tc_declareInvalidType() test::Case
+    void tc_declareVoid()
+    void tc_declareInt()
+    void tc_declareFoo()
+    void tc_declareVoidAttr0()
+    void tc_declareIntAttr0()
+    void tc_declareFooAttr0()
+    void tc_declareInitFail()
+    void tc_declareNullType()
+    void tc_declareInvalidType()
 
-    void tc_createVoid() test::Case
-    void tc_createInt() test::Case
-    void tc_createFoo() test::Case
-    void tc_createVoidAttr0() test::Case
-    void tc_createIntAttr0() test::Case
-    void tc_createFooAttr0() test::Case
-    void tc_createInitFail() test::Case
-    void tc_createNullType() test::Case
-    void tc_createInvalidType() test::Case
+    void tc_createVoid()
+    void tc_createInt()
+    void tc_createFoo()
+    void tc_createVoidAttr0()
+    void tc_createIntAttr0()
+    void tc_createFooAttr0()
+    void tc_createInitFail()
+    void tc_createNullType()
+    void tc_createInvalidType()
 
-    void tc_defineVoid() test::Case
-    void tc_defineInt() test::Case
-    void tc_defineFoo() test::Case
-    void tc_defineVoidAttr0() test::Case
-    void tc_defineIntAttr0() test::Case
-    void tc_defineFooAttr0() test::Case
-    void tc_defineFooFail() test::Case
+    void tc_defineVoid()
+    void tc_defineInt()
+    void tc_defineFoo()
+    void tc_defineVoidAttr0()
+    void tc_defineIntAttr0()
+    void tc_defineFooAttr0()
+    void tc_defineFooFail()
 
-    void tc_declareChildVoid() test::Case
-    void tc_declareChildInt() test::Case
-    void tc_declareChildFoo() test::Case
-    void tc_declareChildVoidAttr0() test::Case
-    void tc_declareChildIntAttr0() test::Case
-    void tc_declareChildFooAttr0() test::Case
-    void tc_declareChildInitFail() test::Case
-    void tc_declareChildParentStateErr() test::Case
-    void tc_declareChildParentTypeErr() test::Case
-    void tc_declareExistingWithParentState() test::Case
-    void tc_declareChildNullType() test::Case
-    void tc_declareChildInvalidType() test::Case
+    void tc_declareChildVoid()
+    void tc_declareChildInt()
+    void tc_declareChildFoo()
+    void tc_declareChildVoidAttr0()
+    void tc_declareChildIntAttr0()
+    void tc_declareChildFooAttr0()
+    void tc_declareChildInitFail()
+    void tc_declareChildParentStateErr()
+    void tc_declareChildParentTypeErr()
+    void tc_declareExistingWithParentState()
+    void tc_declareChildNullType()
+    void tc_declareChildInvalidType()
 
-    void tc_createChildVoid() test::Case
-    void tc_createChildInt() test::Case
-    void tc_createChildFoo() test::Case
-    void tc_createChildVoidAttr0() test::Case
-    void tc_createChildIntAttr0() test::Case
-    void tc_createChildFooAttr0() test::Case
-    void tc_createChildInitFail() test::Case
-    void tc_createChildParentStateErr() test::Case
-    void tc_createChildParentTypeErr() test::Case
-    void tc_createChildNullType() test::Case
-    void tc_createChildInvalidType() test::Case
+    void tc_createChildVoid()
+    void tc_createChildInt()
+    void tc_createChildFoo()
+    void tc_createChildVoidAttr0()
+    void tc_createChildIntAttr0()
+    void tc_createChildFooAttr0()
+    void tc_createChildInitFail()
+    void tc_createChildParentStateErr()
+    void tc_createChildParentTypeErr()
+    void tc_createChildNullType()
+    void tc_createChildInvalidType()
 
-    void tc_createChildNested() test::Case
-    void tc_drop() test::Case
+    void tc_createChildNested()
+    void tc_drop()
 
 // Generate fully scoped names
-class Fullname: test::Suite::
-    void tc_root() test::Case
-    void tc_onelevel() test::Case
-    void tc_twolevels() test::Case
-    void tc_null() test::Case
-    void tc_nullBuffer() test::Case
+test::Suite Fullname::
+    void tc_root()
+    void tc_onelevel()
+    void tc_twolevels()
+    void tc_null()
+    void tc_nullBuffer()
 
 // Generate names relative to an object
-class RelativeName: test::Suite::
-    void setup()
-    void teardown()
+test::Suite RelativeName::
+    void setup() method
+    void teardown() method
 
     tier1: object
     tier2: object
@@ -123,35 +123,45 @@ class RelativeName: test::Suite::
     disjunct: object
     child: object
 
-    void tc_fromRoot() test::Case
-    void tc_fromParent() test::Case
-    void tc_fromOneUp() test::Case
-    void tc_fromTwoUp() test::Case
-    void tc_fromThreeUp() test::Case
-    void tc_fromChild() test::Case
-    void tc_fromDisjunct() test::Case
-    void tc_fromSelf() test::Case
+    void tc_fromRoot()
+    void tc_fromParent()
+    void tc_fromOneUp()
+    void tc_fromTwoUp()
+    void tc_fromThreeUp()
+    void tc_fromChild()
+    void tc_fromDisjunct()
+    void tc_fromSelf()
 
 void functionToResolve(int32 a, int32 b)
 
 // Resolve algorithm testcases
-class Resolver: test::Suite::
-    void setup()
-    void teardown()
+test::Suite Resolver::
+    void setup() method
+    void teardown() method
 
-    void tc_resolveNull() test::Case
-    void tc_resolveRoot() test::Case
-    void tc_resolveThis() test::Case
-    void tc_resolveCorto() test::Case
-    void tc_resolveLang() test::Case
-    void tc_resolveString() test::Case
-    void tc_resolveIo() test::Case
-    void tc_resolveAnonymous() test::Case
-    void tc_resolveEmptyString() test::Case
+    void tc_resolveNull()
+    void tc_resolveRoot()
+    void tc_resolveThis()
+    void tc_resolveCorto()
+    void tc_resolveLang()
+    void tc_resolveString()
+    void tc_resolveIo()
+    void tc_resolveAnonymous()
+    void tc_resolveEmptyString()
 
-    void tc_resolveFunctionNoArgs() test::Case
-    void tc_resolveFunctionArgs() test::Case
-    void tc_caseInsensitive() test::Case
+    void tc_resolveParenthesesNoFunction()
+    void tc_resolveParenthesesNoFunctionArgs()
+    void tc_resolveParenthesesNoFunctionMatchingArgs()
+
+    void tc_resolveParenthesesNoFunctionScoped()
+    void tc_resolveParenthesesNoFunctionArgsScoped()
+    void tc_resolveParenthesesNoFunctionMatchingArgsScoped()
+
+    void tc_resolveFunctionNoArgs()
+    void tc_resolveFunctionArgs()
+    void tc_caseInsensitive()
+
+    void tc_resolveAll()
 
 // Select testcases
 struct selectItem::
@@ -159,26 +169,24 @@ struct selectItem::
     name : string
     type : string
 
-class Select: test::Suite::
-    void setup()
-    void teardown()
+test::Suite Select::
+    void setup() method
+    void teardown() method
 
     list{selectItem} collect(object @scope, string expr) function
 
-    void tc_selectErrParentTree() test::Case
-    void tc_selectErrParentId() test::Case
-    void tc_selectErrParentAst() test::Case
-    void tc_selectErrParentWc() test::Case
-    void tc_selectErrScopeScope() test::Case
+    void tc_selectErrParentTree()
+    void tc_selectErrParentId()
+    void tc_selectErrParentAst()
+    void tc_selectErrParentWc()
+    void tc_selectErrScopeScope()
 
-
-
-    void tc_selectThis() test::Case
-    void tc_selectParent() test::Case
-    void tc_selectIdentifier() test::Case
-    void tc_selectScopedThis() test::Case
-    void tc_selectScopedParent() test::Case
-    void tc_selectScopedIdentifier() test::Case
+    void tc_selectThis()
+    void tc_selectParent()
+    void tc_selectIdentifier()
+    void tc_selectScopedThis()
+    void tc_selectScopedParent()
+    void tc_selectScopedIdentifier()
 
 // Test Event scenarios
 class EventTest::
@@ -224,34 +232,34 @@ class EventTest::
     countDeleteScope: uint32, readonly
     countDeleteTree: uint32, readonly
 
-class Event: test::Suite::
-    void setup()
-    void teardown()
+test::Suite Event::
+    void setup() method
+    void teardown() method
     
     et: EventTest
 
-    void tc_onDeclare() test::Case
-    void tc_onDeclareSelf() test::Case
-    void tc_onDeclareScope() test::Case
-    void tc_onDeclareTree() test::Case
+    void tc_onDeclare()
+    void tc_onDeclareSelf()
+    void tc_onDeclareScope()
+    void tc_onDeclareTree()
 
-    void tc_onDefine() test::Case
-    void tc_onDefineSelf() test::Case
-    void tc_onDefineScope() test::Case
-    void tc_onDefineTree() test::Case
+    void tc_onDefine()
+    void tc_onDefineSelf()
+    void tc_onDefineScope()
+    void tc_onDefineTree()
 
-    void tc_onUpdate() test::Case
-    void tc_onUpdateSelf() test::Case
-    void tc_onUpdateScope() test::Case
-    void tc_onUpdateTree() test::Case
+    void tc_onUpdate()
+    void tc_onUpdateSelf()
+    void tc_onUpdateScope()
+    void tc_onUpdateTree()
 
-    void tc_onDelete() test::Case
-    void tc_onDeleteSelf() test::Case
-    void tc_onDeleteScope() test::Case
-    void tc_onDeleteTree() test::Case
+    void tc_onDelete()
+    void tc_onDeleteSelf()
+    void tc_onDeleteScope()
+    void tc_onDeleteTree()
 
-    void tc_updateVoidErr() test::Case
-    void tc_updateUndefined() test::Case
+    void tc_updateVoidErr()
+    void tc_updateUndefined()
 
 // Overloading testcases
 void ol_null(object a)
@@ -295,53 +303,53 @@ class Cat : Animal::
 void ol_inherit(Animal a)
 void ol_inherit(Dog a)
 
-class Overload: test::Suite::
-    void tc_ambiguous() test::Case
-    void tc_ambiguousWildcard() test::Case
-    void tc_ambiguousNull() test::Case
+test::Suite Overload::
+    void tc_ambiguous()
+    void tc_ambiguousWildcard()
+    void tc_ambiguousNull()
 
-    void tc_wildcard() test::Case
+    void tc_wildcard()
 
-    void tc_nullObject() test::Case
-    void tc_nullString() test::Case
-    void tc_nullBool() test::Case
+    void tc_nullObject()
+    void tc_nullString()
+    void tc_nullBool()
 
-    void tc_anyChar() test::Case
-    void tc_anyInt8() test::Case
-    void tc_anyInt16() test::Case
-    void tc_anyInt32() test::Case
-    void tc_anyInt64() test::Case
-    void tc_anyUint8() test::Case
-    void tc_anyUint16() test::Case
-    void tc_anyUint32() test::Case
-    void tc_anyUint64() test::Case
-    void tc_anyFloat32() test::Case
-    void tc_anyFloat64() test::Case
-    void tc_anyOctet() test::Case
-    void tc_anyWord() test::Case
-    void tc_anyString() test::Case
-    void tc_anyColor() test::Case
+    void tc_anyChar()
+    void tc_anyInt8()
+    void tc_anyInt16()
+    void tc_anyInt32()
+    void tc_anyInt64()
+    void tc_anyUint8()
+    void tc_anyUint16()
+    void tc_anyUint32()
+    void tc_anyUint64()
+    void tc_anyFloat32()
+    void tc_anyFloat64()
+    void tc_anyOctet()
+    void tc_anyWord()
+    void tc_anyString()
+    void tc_anyColor()
 
-    void tc_numChar() test::Case
-    void tc_numInt8() test::Case
-    void tc_numInt16() test::Case
-    void tc_numInt32() test::Case
-    void tc_numInt64() test::Case
-    void tc_numUint8() test::Case
-    void tc_numUint16() test::Case
-    void tc_numUint32() test::Case
-    void tc_numUint64() test::Case
-    void tc_numFloat32() test::Case
-    void tc_numFloat64() test::Case
-    void tc_numOctet() test::Case
-    void tc_numWord() test::Case
-    void tc_numString() test::Case
-    void tc_numColor() test::Case
+    void tc_numChar()
+    void tc_numInt8()
+    void tc_numInt16()
+    void tc_numInt32()
+    void tc_numInt64()
+    void tc_numUint8()
+    void tc_numUint16()
+    void tc_numUint32()
+    void tc_numUint64()
+    void tc_numFloat32()
+    void tc_numFloat64()
+    void tc_numOctet()
+    void tc_numWord()
+    void tc_numString()
+    void tc_numColor()
 
-    void tc_inheritanceBase() test::Case
-    void tc_inheritanceSub() test::Case
-    void tc_inheritanceMatchSub() test::Case
-    void tc_inheritSibling() test::Case
+    void tc_inheritanceBase()
+    void tc_inheritanceSub()
+    void tc_inheritanceMatchSub()
+    void tc_inheritSibling()
 
 
 class MethodTester::
@@ -363,115 +371,115 @@ class MethodTesterInherit: MethodTester::
     void virtualOverload(int32 a)
 
 // Test resolving methods
-class MethodResolver: test::Suite::
-    void tc_simple() test::Case
-    void tc_simpleNoArgs() test::Case
-    void tc_simpleErr() test::Case
-    void tc_simpleErrType() test::Case
-    void tc_onearg() test::Case
-    void tc_oneargNoArgs() test::Case
-    void tc_oneargErr() test::Case
-    void tc_oneargErrType() test::Case
-    void tc_twoargs() test::Case
-    void tc_twoargsNoArgs() test::Case
-    void tc_twoargsSpaces() test::Case
-    void tc_overloadInt() test::Case
-    void tc_overloadString() test::Case
-    void tc_overloadTwoArgs() test::Case
-    void tc_overloadClass() test::Case
-    void tc_overloadAmbiguous() test::Case
-    void tc_virtualSimple() test::Case
-    void tc_virtualSimpleNoArgs() test::Case
-    void tc_virtualOverload() test::Case
-    void tc_virtualOverloadNoArgs() test::Case
-    void tc_virtualOverloadArg() test::Case
-    void tc_inheritSimple() test::Case
-    void tc_inheritSimpleNoArgs() test::Case
-    void tc_inheritOverload() test::Case
-    void tc_inheritOverloadBaseInt() test::Case
-    void tc_inheritOverloadBaseString() test::Case
-    void tc_inheritOverloadBaseTwoArgs() test::Case
-    void tc_inheritOverloadBaseClass() test::Case
-    void tc_inheritOverloadNoArgs() test::Case
-    void tc_inheritOverloadClass() test::Case
-    void tc_inheritVirtualOverload() test::Case
-    void tc_inheritVirtualOverloadNoArgs() test::Case
-    void tc_nonexisting() test::Case
-    void tc_redeclare() test::Case
+test::Suite MethodResolver::
+    void tc_simple()
+    void tc_simpleNoArgs()
+    void tc_simpleErr()
+    void tc_simpleErrType()
+    void tc_onearg()
+    void tc_oneargNoArgs()
+    void tc_oneargErr()
+    void tc_oneargErrType()
+    void tc_twoargs()
+    void tc_twoargsNoArgs()
+    void tc_twoargsSpaces()
+    void tc_overloadInt()
+    void tc_overloadString()
+    void tc_overloadTwoArgs()
+    void tc_overloadClass()
+    void tc_overloadAmbiguous()
+    void tc_virtualSimple()
+    void tc_virtualSimpleNoArgs()
+    void tc_virtualOverload()
+    void tc_virtualOverloadNoArgs()
+    void tc_virtualOverloadArg()
+    void tc_inheritSimple()
+    void tc_inheritSimpleNoArgs()
+    void tc_inheritOverload()
+    void tc_inheritOverloadBaseInt()
+    void tc_inheritOverloadBaseString()
+    void tc_inheritOverloadBaseTwoArgs()
+    void tc_inheritOverloadBaseClass()
+    void tc_inheritOverloadNoArgs()
+    void tc_inheritOverloadClass()
+    void tc_inheritVirtualOverload()
+    void tc_inheritVirtualOverloadNoArgs()
+    void tc_nonexisting()
+    void tc_redeclare()
 
 // String deserializer testcases
-class StringDeserializer: test::Suite::
-    void setup()
-    void teardown()
+test::Suite StringDeserializer::
+    void setup() method
+    void teardown() method
 
-    void tc_errMissingType() test::Case
-    void tc_errExcessElements() test::Case
-    void tc_errUnresolvedType() test::Case
-    void tc_errUnresolvedMember() test::Case
-    void tc_errNotAType() test::Case
-    void tc_errTypeMismatch() test::Case
+    void tc_errMissingType()
+    void tc_errExcessElements()
+    void tc_errUnresolvedType()
+    void tc_errUnresolvedMember()
+    void tc_errNotAType()
+    void tc_errTypeMismatch()
 
-    void tc_deserExisting() test::Case
-    void tc_deserExisting_w_type() test::Case
+    void tc_deserExisting()
+    void tc_deserExisting_w_type()
 
-    void tc_deserBoolTrue() test::Case
-    void tc_deserBoolFalse() test::Case
-    void tc_deserBoolInvalid() test::Case
+    void tc_deserBoolTrue()
+    void tc_deserBoolFalse()
+    void tc_deserBoolInvalid()
 
-    void tc_deserChar() test::Case
-    void tc_deserCharQuoted() test::Case
-    void tc_deserCharNull() test::Case
-    void tc_deserCharNullQuoted() test::Case
-    void tc_deserCharEscape() test::Case 
-    void tc_deserCharEscapeQuoted() test::Case    
+    void tc_deserChar()
+    void tc_deserCharQuoted()
+    void tc_deserCharNull()
+    void tc_deserCharNullQuoted()
+    void tc_deserCharEscape() 
+    void tc_deserCharEscapeQuoted()    
 
-    void tc_deserInt8() test::Case
-    void tc_deserInt8Minus() test::Case
-    void tc_deserInt8Overflow() test::Case
+    void tc_deserInt8()
+    void tc_deserInt8Minus()
+    void tc_deserInt8Overflow()
 
-    void tc_deserInt16() test::Case
-    void tc_deserInt16Minus() test::Case
-    void tc_deserInt16Overflow() test::Case
+    void tc_deserInt16()
+    void tc_deserInt16Minus()
+    void tc_deserInt16Overflow()
 
-    void tc_deserInt32() test::Case
-    void tc_deserInt32Minus() test::Case
-    void tc_deserInt32Overflow() test::Case
+    void tc_deserInt32()
+    void tc_deserInt32Minus()
+    void tc_deserInt32Overflow()
 
-    void tc_deserInt64() test::Case
-    void tc_deserInt64Minus() test::Case
+    void tc_deserInt64()
+    void tc_deserInt64Minus()
 
-    void tc_deserUint8() test::Case
-    void tc_deserUint8Overflow() test::Case
+    void tc_deserUint8()
+    void tc_deserUint8Overflow()
 
-    void tc_deserUint16() test::Case
-    void tc_deserUint16Overflow() test::Case
+    void tc_deserUint16()
+    void tc_deserUint16Overflow()
 
-    void tc_deserUint32() test::Case
-    void tc_deserUint32Overflow() test::Case
+    void tc_deserUint32()
+    void tc_deserUint32Overflow()
 
-    void tc_deserUint64() test::Case
+    void tc_deserUint64()
 
-    void tc_deserString() test::Case
-    void tc_deserStringQuotes() test::Case
-    void tc_deserStringQuotesWhitespaces() test::Case
-    void tc_deserStringEscape() test::Case
-    void tc_deserStringWhitespace() test::Case
-    void tc_deserStringWhitespaceTrailing() test::Case
-    void tc_deserStringWhitespaceTrailingNoType() test::Case
+    void tc_deserString()
+    void tc_deserStringQuotes()
+    void tc_deserStringQuotesWhitespaces()
+    void tc_deserStringEscape()
+    void tc_deserStringWhitespace()
+    void tc_deserStringWhitespaceTrailing()
+    void tc_deserStringWhitespaceTrailingNoType()
 
-    void tc_deserComposite() test::Case
-    void tc_deserCompositeNoType() test::Case
-    void tc_deserCompositeWhitespace() test::Case
-    void tc_deserCompositeMembers() test::Case
-    void tc_deserCompositeMixed() test::Case
+    void tc_deserComposite()
+    void tc_deserCompositeNoType()
+    void tc_deserCompositeWhitespace()
+    void tc_deserCompositeMembers()
+    void tc_deserCompositeMixed()
 
-    void tc_deserCollection() test::Case
-    void tc_deserCollectionComplex() test::Case
+    void tc_deserCollection()
+    void tc_deserCollectionComplex()
 
-    void tc_deserInheritance() test::Case
-    void tc_deserInheritanceMembers() test::Case
-    void tc_deserInheritanceMixed() test::Case
+    void tc_deserInheritance()
+    void tc_deserInheritanceMembers()
+    void tc_deserInheritanceMixed()
 
-    void tc_deserCompositeNested() test::Case
-    void tc_deserCompositeNestedMembers() test::Case
-    void tc_deserCompositeNestedMixed() test::Case
+    void tc_deserCompositeNested()
+    void tc_deserCompositeNestedMembers()
+    void tc_deserCompositeNestedMixed()

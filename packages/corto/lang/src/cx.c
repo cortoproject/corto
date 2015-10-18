@@ -350,6 +350,7 @@ int8_t CX_DEBUG_ENABLED = 0;
     SSO_OP_OBJ(op, type_parentType);\
     SSO_OP_OBJ(op, type_parentState);\
     SSO_OP_OBJ(op, type_defaultType);\
+    SSO_OP_OBJ(op, type_defaultProcedureType);\
     SSO_OP_OBJ(op, type_metaprocedures);\
     SSO_OP_OBJ(op, type_init);\
     SSO_OP_OBJ(op, type_sizeof_);\
@@ -397,6 +398,7 @@ int8_t CX_DEBUG_ENABLED = 0;
     SSO_OP_OBJ(op, interface_parentType);\
     SSO_OP_OBJ(op, interface_parentState);\
     SSO_OP_OBJ(op, interface_defaultType);\
+    SSO_OP_OBJ(op, interface_defaultProcedureType);\
     SSO_OP_OBJ(op, interface_init_);\
     SSO_OP_OBJ(op, interface_construct_);\
     SSO_OP_OBJ(op, interface_destruct_);\
@@ -464,6 +466,7 @@ int8_t CX_DEBUG_ENABLED = 0;
     SSO_OP_OBJ(op, struct_parentType);\
     SSO_OP_OBJ(op, struct_parentState);\
     SSO_OP_OBJ(op, struct_defaultType);\
+    SSO_OP_OBJ(op, struct_defaultProcedureType);\
     SSO_OP_OBJ(op, struct_init_);\
     SSO_OP_OBJ(op, struct_construct_);\
     SSO_OP_OBJ(op, struct_compatible_);\
@@ -483,6 +486,7 @@ int8_t CX_DEBUG_ENABLED = 0;
     SSO_OP_OBJ(op, class_parentType);\
     SSO_OP_OBJ(op, class_parentState);\
     SSO_OP_OBJ(op, class_defaultType);\
+    SSO_OP_OBJ(op, class_defaultProcedureType);\
     SSO_OP_OBJ(op, class_interfaceVector);\
     SSO_OP_OBJ(op, class_observers);\
     SSO_OP_OBJ(op, class_construct);\

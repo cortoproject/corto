@@ -79,7 +79,7 @@ typedef struct cx_selectItem {
 cx_int16 cx_select(cx_object scope, cx_string expr, cx_iter *iter_out);
 
 /* Notifications */
-cx_object cx_setOwner(cx_object source);
+cx_object cx_setOwner(cx_object owner);
 cx_object cx_getOwner(void);
 cx_int32 cx_listen(cx_object _this, cx_observer observer, cx_eventMask mask, cx_object observable, cx_dispatcher dispatcher);
 cx_int32 cx_silence(cx_object _this, cx_observer observer, cx_eventMask mask, cx_object observable);

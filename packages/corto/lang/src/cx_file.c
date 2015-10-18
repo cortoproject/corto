@@ -181,4 +181,27 @@ char* cx_fileReadLine(cx_file file, char* buf, unsigned int length) {
     return (c == EOF) ? 0 : buf;
 }
 
+/* Get file extension */
+char* cx_fileExtension(char* file, char* buffer) {
+    char *ptr, *bptr;
+    char ch;
 
+    bptr = buffer;
+
+    ptr = file + strlen(file);
+    while (ptr >= file) {
+        if (*ptr == '.') break;
+        ptr--;
+    }
+    if (ptr >= file) {
+        ptr++;
+        while ((ch = *ptr)) {
+            *bptr = ch;
+            ptr++;
+            bptr++;
+        }
+    }
+    *bptr = '\0';
+
+    return buffer;
+}

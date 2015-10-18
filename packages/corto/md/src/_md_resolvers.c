@@ -7,7 +7,7 @@
 static cx_bool md_isAncestor(cx_object ancestor, cx_object o) {
     cx_bool isAncestor = FALSE;
     cx_object p = o;
-    while (!isAncestor) {
+    while (p && !isAncestor) {
         p = cx_parentof(p);
         if (p == ancestor) {
             isAncestor = TRUE;
@@ -16,8 +16,9 @@ static cx_bool md_isAncestor(cx_object ancestor, cx_object o) {
     return isAncestor;
 }
 
-cx_object md_resolve(int level, cx_string name, md_Doc *header_out, md_parseData* data) {
+cx_object md_resolve(int level, cx_string name, cx_object *parent, md_parseData* data) {
     cx_assert(level >= 1 && level <= 6, "Level must be between 1 and 6");
+    cx_object o = NULL, current = NULL;
 
     cx_object previous = NULL;
     if (level == 1) {
@@ -33,18 +34,22 @@ cx_object md_resolve(int level, cx_string name, md_Doc *header_out, md_parseData
         goto notFound;
     }
 
-    if (header_out) {
-        if (cx_instanceof(md_Doc_o, previous)) {
-            *header_out = previous;
-        }
+    if (cx_instanceof(md_Doc_o, previous)) {
+        current = md_Doc(previous)->o;
     }
 
-    cx_object o = cx_resolve(previous, name);
-    if (o == NULL) {
-        goto notFound;
+    if (parent) {
+        *parent = previous;
     }
-    if (!md_isAncestor(previous, o)) {
-        o = NULL;
+
+    if (current || (level == 1)) {
+        o = cx_resolve(current, name);
+        if (o == NULL) {
+            goto notFound;
+        }
+        if (!md_isAncestor(current, o)) {
+            o = NULL;
+        }
     }
     
     /* Clean up the lower levels of the doc hierarchy */

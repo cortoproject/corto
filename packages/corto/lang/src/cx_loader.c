@@ -90,29 +90,6 @@ static struct cx_fileHandler* cx_lookupExt(cx_string ext) {
     return dummy_p;
 }
 
-/* Get file extension */
-static void cx_fileExt(cx_char* buffer, cx_string file) {
-    cx_char *ptr, *bptr;
-    cx_char ch;
-
-    bptr = buffer;
-
-    ptr = file + strlen(file);
-    while (ptr >= file) {
-        if (*ptr == '.') break;
-        ptr--;
-    }
-    if (ptr >= file) {
-        ptr++;
-        while ((ch = *ptr)) {
-            *bptr = ch;
-            ptr++;
-            bptr++;
-        }
-    }
-    *bptr = '\0';
-}
-
 /* Register a filetype */
 int cx_loaderRegister(cx_string ext, cx_loadAction handler, void* userData) {
     struct cx_fileHandler* h;
@@ -271,13 +248,15 @@ int cx_load(cx_string str, int argc, char* argv[]) {
     }
 
     /* Get extension from filename */
-    cx_fileExt(ext, str);
+    cx_fileExtension(str, ext);
 
     /* Handle known extensions */
     if (!strcmp(ext, "cx")) {
         cx_load("corto::ast", 0, NULL);
     } else if (!strcmp(ext, "xml")) {
         cx_loadXml();
+    } else if (!strcmp(ext, "md")) {
+        cx_load("corto::md", 0, NULL);
     }
 
     /* Lookup extension */

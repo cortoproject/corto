@@ -10,13 +10,16 @@ struct Result::
     member success: bool, readonly
     member errmsg: string
 
-class Suite::
+class SuiteData ::
     member test: test::Case
     member assertCount: uint32
     member result: test::Result, readonly
     int16 construct()
     void setup() virtual
     void teardown() virtual
+
+class Suite{class, defaultType=member, defaultProcedureType=Case}::
+    int16 construct()
 
 class Runner::
     member name: string

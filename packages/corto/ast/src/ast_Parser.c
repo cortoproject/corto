@@ -1334,9 +1334,8 @@ ast_Storage _ast_Parser_declareFunction(ast_Parser this, cx_type returnType, cx_
          * function first. */
         if (!((function = cx_lookupFunction(this->scope, id, &distance)) && !distance)) {
             if (!kind) {
-                if (cx_class_instanceof(cx_interface_o, this->scope)) {
-                    kind = cx_type(cx_method_o);
-                } else {
+                kind = cx_typeof(this->scope)->defaultProcedureType;
+                if (!kind) {
                     kind = cx_type(cx_function_o);
                 }
             } else {
@@ -1507,7 +1506,7 @@ cx_int16 _ast_Parser_defineScope(ast_Parser this) {
         if (cx_instanceof(cx_type(cx_type_o), this->scope)) {
             if (cx_define(this->scope)) {
                 cx_id id;
-                ast_Parser_error(this, "failed to define scope '%s'", ast_Parser_id(this->scope, id));
+                ast_Parser_error(this, "failed to define scope '%s' (%s)", ast_Parser_id(this->scope, id), cx_lasterr());
                 goto error;
             }
         } else {

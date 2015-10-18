@@ -35,7 +35,7 @@ cx_int16 _test_Runner_construct(test_Runner this) {
         cx_object testcase = cx_resolve(NULL, this->testcase);
         if (testcase) {
             cx_type testClass = cx_parentof(testcase);
-            test_Suite suite = test_Suite(cx_declare(testClass));
+            test_SuiteData suite = test_SuiteData(cx_declare(testClass));
             cx_setref(&suite->test, testcase);
 
             if (cx_define(suite)) {

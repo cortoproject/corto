@@ -34,6 +34,8 @@ unsigned int cx_fileTell(cx_file);
 
 char* cx_fileReadLine(cx_file file, char* buf, unsigned int length);
 
+char* cx_fileExtension(char* file, char* buffer);
+
 #ifdef __cplusplus
 }
 #endif

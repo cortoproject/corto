@@ -180,13 +180,13 @@ error:
 }
 
 static int cx_selectRun(cx_selectData *data) {
+	CX_UNUSED(data);
 	return 0;
-error:
-	return -1;
 }
 
 static int cx_selectHasNext(cx_iter *iter) {
 	cx_selectData *data = cx_selectDataGet();
+	CX_UNUSED(iter);
 
 	if (!data->next) {
 		if (cx_selectRun(data)) {
@@ -201,14 +201,14 @@ error:
 
 static void* cx_selectNext(cx_iter *iter) {
 	cx_selectData *data = cx_selectDataGet();
+	CX_UNUSED(iter);
 
 	return data->next;
-error:
-	return NULL;
 }
 
 cx_int16 cx_select(cx_object scope, cx_string expr, cx_iter *iter_out) {
 	cx_selectData *data = cx_selectDataGet();
+	CX_UNUSED(scope);
 
 	strcpy(data->expr, expr);
 

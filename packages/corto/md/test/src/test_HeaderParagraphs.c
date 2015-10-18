@@ -21,6 +21,7 @@ cx_void _test_HeaderParagraphs_tc_H1DP(test_HeaderParagraphs this) {
     {
         cx_object o = cx_resolve(test_docs_o, "FirstHeading");
         test_assert(o != NULL);
+        test_assert(cx_parentof(o) == test_docs_o);
         test_assert(cx_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->description != NULL);
@@ -49,6 +50,7 @@ cx_void _test_HeaderParagraphs_tc_H1DPP(test_HeaderParagraphs this) {
     {
         cx_object o = cx_resolve(test_docs_o, "FirstHeading");
         test_assert(o != NULL);
+        test_assert(cx_parentof(o) == test_docs_o);
         test_assert(cx_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->description != NULL);
@@ -79,6 +81,7 @@ cx_void _test_HeaderParagraphs_tc_H1H2H3H4P(test_HeaderParagraphs this) {
     {
         cx_object o = cx_resolve(test_docs_o, "FirstHeading");
         test_assert(o != NULL);
+        test_assert(cx_parentof(o) == test_docs_o);
         test_assert(cx_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->description == NULL);
@@ -131,6 +134,7 @@ cx_void _test_HeaderParagraphs_tc_H1H2H3P(test_HeaderParagraphs this) {
     {
         cx_object o = cx_resolve(test_docs_o, "FirstHeading");
         test_assert(o != NULL);
+        test_assert(cx_parentof(o) == test_docs_o);
         test_assert(cx_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->description == NULL);
@@ -173,6 +177,7 @@ cx_void _test_HeaderParagraphs_tc_H1H4P(test_HeaderParagraphs this) {
     {
         cx_object o = cx_resolve(test_docs_o, "FirstHeading");
         test_assert(o != NULL);
+        test_assert(cx_parentof(o) == test_docs_o);
         test_assert(cx_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->description == NULL);
@@ -204,6 +209,7 @@ cx_void _test_HeaderParagraphs_tc_H1P(test_HeaderParagraphs this) {
     {
         cx_object o = cx_resolve(test_docs_o, "FirstHeading");
         test_assert(o != NULL);
+        test_assert(cx_parentof(o) == test_docs_o);
         test_assert(cx_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->description != NULL);
@@ -228,6 +234,7 @@ cx_void _test_HeaderParagraphs_tc_H1PH1P(test_HeaderParagraphs this) {
     {
         cx_object o = cx_resolve(test_docs_o, "FirstHeading");
         test_assert(o != NULL);
+        test_assert(cx_parentof(o) == test_docs_o);
         test_assert(cx_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->description != NULL);
@@ -263,6 +270,7 @@ cx_void _test_HeaderParagraphs_tc_H1PH2P(test_HeaderParagraphs this) {
     {
         cx_object o = cx_resolve(test_docs_o, "FirstHeading");
         test_assert(o != NULL);
+        test_assert(cx_parentof(o) == test_docs_o);
         test_assert(cx_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->description != NULL);
@@ -300,6 +308,7 @@ cx_void _test_HeaderParagraphs_tc_H1PH2PH3P(test_HeaderParagraphs this) {
     {
         cx_object o = cx_resolve(test_docs_o, "FirstHeading");
         test_assert(o != NULL);
+        test_assert(cx_parentof(o) == test_docs_o);
         test_assert(cx_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->description != NULL);
@@ -345,6 +354,7 @@ cx_void _test_HeaderParagraphs_tc_H1PH3P(test_HeaderParagraphs this) {
     {
         cx_object o = cx_resolve(test_docs_o, "FirstHeading");
         test_assert(o != NULL);
+        test_assert(cx_parentof(o) == test_docs_o);
         test_assert(cx_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->description != NULL);
@@ -380,6 +390,7 @@ cx_void _test_HeaderParagraphs_tc_H1PnH1P(test_HeaderParagraphs this) {
     {
         cx_object o = cx_resolve(test_docs_o, "FirstHeading");
         test_assert(o != NULL);
+        test_assert(cx_parentof(o) == test_docs_o);
         test_assert(cx_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->description != NULL);
@@ -415,6 +426,7 @@ cx_void _test_HeaderParagraphs_tc_H1PnH2P(test_HeaderParagraphs this) {
     {
         cx_object o = cx_resolve(test_docs_o, "FirstHeading");
         test_assert(o != NULL);
+        test_assert(cx_parentof(o) == test_docs_o);
         test_assert(cx_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->description != NULL);
@@ -449,6 +461,7 @@ cx_void _test_HeaderParagraphs_tc_H1PP(test_HeaderParagraphs this) {
     {
         cx_object o = cx_resolve(test_docs_o, "FirstHeading");
         test_assert(o != NULL);
+        test_assert(cx_parentof(o) == test_docs_o);
         test_assert(cx_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->description != NULL);
@@ -475,6 +488,7 @@ cx_void _test_HeaderParagraphs_tc_H1PPP(test_HeaderParagraphs this) {
     {
         cx_object o = cx_resolve(test_docs_o, "FirstHeading");
         test_assert(o != NULL);
+        test_assert(cx_parentof(o) == test_docs_o);
         test_assert(cx_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->description != NULL);
@@ -482,6 +496,32 @@ cx_void _test_HeaderParagraphs_tc_H1PPP(test_HeaderParagraphs this) {
             "This is the first paragraph.\n"
             "This is the second paragraph.\n"
             "This is the third paragraph.\n"));
+        test_assert(md_Doc(o)->level == 1);
+        cx_release(o);
+    }
+
+/* $end */
+}
+
+/* ::test::HeaderParagraphs::tc_whitespace() */
+cx_void _test_HeaderParagraphs_tc_whitespace(test_HeaderParagraphs this) {
+/* $begin(::test::HeaderParagraphs::tc_whitespace) */
+
+    char text[] =
+        "# FirstHeading\n"
+        " \n\n"
+        "This is the first paragraph.\n"
+        ;
+    md_parse(test_docs_o, text);
+    {
+        cx_object o = cx_resolve(test_docs_o, "FirstHeading");
+        test_assert(o != NULL);
+        test_assert(cx_parentof(o) == test_docs_o);
+        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(md_Doc(o)->o == NULL);
+        test_assert(md_Doc(o)->description != NULL);
+        test_assert(!strcmp(md_Doc(o)->description, 
+            "This is the first paragraph.\n"));
         test_assert(md_Doc(o)->level == 1);
         cx_release(o);
     }

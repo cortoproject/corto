@@ -187,6 +187,7 @@ CX_CLASS_DEF(cx_type) {
     cx_type parentType;
     cx_state parentState;
     cx_type defaultType;
+    cx_type defaultProcedureType;
     cx_vtable metaprocedures;
     cx_initAction init;
 };

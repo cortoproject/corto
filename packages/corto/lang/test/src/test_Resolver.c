@@ -29,6 +29,35 @@ cx_void _test_Resolver_tc_caseInsensitive(test_Resolver this) {
 /* $end */
 }
 
+/* ::test::Resolver::tc_resolveAll() */
+/* $header(::test::Resolver::tc_resolveAll()) */
+int tc_resolveAllWalk(cx_object o, void *udata) {
+    CX_UNUSED(udata);
+    cx_id id;
+    cx_object r;
+
+    cx_fullname(o, id);
+    r = cx_resolve(NULL, id);
+
+    /* Set errormessage to ease debugging */
+    cx_seterr("failed to resolve %s", id);
+    test_assert(r != NULL);
+    test_assert(r == o);
+    cx_release(r);
+
+    cx_scopeWalk(o, tc_resolveAllWalk, NULL);
+
+    return 1;
+}
+/* $end */
+cx_void _test_Resolver_tc_resolveAll(test_Resolver this) {
+/* $begin(::test::Resolver::tc_resolveAll) */
+
+    cx_scopeWalk(root_o, tc_resolveAllWalk, NULL);
+
+/* $end */
+}
+
 /* ::test::Resolver::tc_resolveAnonymous() */
 cx_void _test_Resolver_tc_resolveAnonymous(test_Resolver this) {
 /* $begin(::test::Resolver::tc_resolveAnonymous) */
@@ -117,6 +146,128 @@ cx_void _test_Resolver_tc_resolveNull(test_Resolver this) {
     cx_object o = cx_resolve(NULL, NULL);
     test_assert (o == root_o);
     cx_release(o);
+
+/* $end */
+}
+
+/* ::test::Resolver::tc_resolveParenthesesNoFunction() */
+cx_void _test_Resolver_tc_resolveParenthesesNoFunction(test_Resolver this) {
+/* $begin(::test::Resolver::tc_resolveParenthesesNoFunction) */
+
+    cx_object o = cx_voidCreateChild(NULL, "o()");
+    test_assert(o != NULL);
+    test_assert(!strcmp(cx_nameof(o), "o()"));
+
+    cx_object p = cx_resolve(NULL, "o()");
+    test_assert(p != NULL);
+    test_assert(o == p);
+
+    cx_delete(o);
+    cx_release(p);
+
+/* $end */
+}
+
+/* ::test::Resolver::tc_resolveParenthesesNoFunctionArgs() */
+cx_void _test_Resolver_tc_resolveParenthesesNoFunctionArgs(test_Resolver this) {
+/* $begin(::test::Resolver::tc_resolveParenthesesNoFunctionArgs) */
+
+    cx_object o = cx_voidCreateChild(NULL, "o(uint32 a)");
+    test_assert(o != NULL);
+    test_assert(!strcmp(cx_nameof(o), "o(uint32 a)"));
+
+    cx_object p = cx_resolve(NULL, "o(uint32 a)");
+    test_assert(p != NULL);
+    test_assert(o == p);
+
+    cx_delete(o);
+    cx_release(p);
+
+/* $end */
+}
+
+/* ::test::Resolver::tc_resolveParenthesesNoFunctionArgsScoped() */
+cx_void _test_Resolver_tc_resolveParenthesesNoFunctionArgsScoped(test_Resolver this) {
+/* $begin(::test::Resolver::tc_resolveParenthesesNoFunctionArgsScoped) */
+    cx_id id;
+
+    cx_object parent = cx_voidCreateChild(NULL, "parent");
+    test_assert(parent != NULL);
+
+    cx_object o = cx_voidCreateChild(parent, "o(uint32 a)");
+    test_assert(o != NULL);
+    test_assert(!strcmp(cx_nameof(o), "o(uint32 a)"));
+    test_assert(!strcmp(cx_fullname(o, id), "::parent::o(uint32 a)"));
+
+    cx_object p = cx_resolve(NULL, "::parent::o(uint32 a)");
+    test_assert(p != NULL);
+    test_assert(o == p);
+
+    cx_delete(o);
+    cx_delete(parent);
+    cx_release(p);
+
+/* $end */
+}
+
+/* ::test::Resolver::tc_resolveParenthesesNoFunctionMatchingArgs() */
+cx_void _test_Resolver_tc_resolveParenthesesNoFunctionMatchingArgs(test_Resolver this) {
+/* $begin(::test::Resolver::tc_resolveParenthesesNoFunctionMatchingArgs) */
+
+    cx_object o = cx_voidCreateChild(NULL, "o(uint32 a)");
+    test_assert(o != NULL);
+    test_assert(!strcmp(cx_nameof(o), "o(uint32 a)"));
+
+    cx_object p = cx_resolve(NULL, "o(uint16 a)");
+    test_assert(p == NULL);
+
+    cx_delete(o);
+
+/* $end */
+}
+
+/* ::test::Resolver::tc_resolveParenthesesNoFunctionMatchingArgsScoped() */
+cx_void _test_Resolver_tc_resolveParenthesesNoFunctionMatchingArgsScoped(test_Resolver this) {
+/* $begin(::test::Resolver::tc_resolveParenthesesNoFunctionMatchingArgsScoped) */
+    cx_id id;
+
+    cx_object parent = cx_voidCreateChild(NULL, "parent");
+    test_assert(parent != NULL);
+
+    cx_object o = cx_voidCreateChild(parent, "o(uint32 a)");
+    test_assert(o != NULL);
+    test_assert(!strcmp(cx_nameof(o), "o(uint32 a)"));
+    test_assert(!strcmp(cx_fullname(o, id), "::parent::o(uint32 a)"));
+
+    cx_object p = cx_resolve(NULL, "::parent::o(uint16 a)");
+    test_assert(p == NULL);
+
+    cx_delete(o);
+    cx_delete(parent);
+
+/* $end */
+}
+
+/* ::test::Resolver::tc_resolveParenthesesNoFunctionScoped() */
+cx_void _test_Resolver_tc_resolveParenthesesNoFunctionScoped(test_Resolver this) {
+/* $begin(::test::Resolver::tc_resolveParenthesesNoFunctionScoped) */
+    cx_id id;
+
+    cx_object parent = cx_voidCreateChild(NULL, "parent");
+    test_assert(parent != NULL);
+
+    cx_object o = cx_voidCreateChild(parent, "o()");
+    test_assert(o != NULL);
+    test_assert(!strcmp(cx_nameof(o), "o()"));
+    test_assert(!strcmp(cx_fullname(o, id), "::parent::o()"));
+
+    cx_object p = cx_resolve(NULL, "::parent::o()");
+    test_assert(p != NULL);
+    test_assert(p == o);
+
+    cx_delete(o);
+    cx_delete(parent);
+    cx_release(p);
 
 /* $end */
 }

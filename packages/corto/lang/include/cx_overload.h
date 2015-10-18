@@ -46,8 +46,8 @@ cx_string cx_signatureClose(cx_string sig);
 cx_int16 cx_signature(cx_object o, cx_id buffer);
 
 /* Find a function that matches a signature */
-cx_function cx_lookupFunction(cx_object scope, cx_string requested, cx_int32 *d);
-cx_function *cx_lookupFunctionFromSequence(cx_objectseq scopeContents, cx_string requested, cx_int32* d);
+cx_object cx_lookupFunction(cx_object scope, cx_string requested, cx_int32 *d);
+cx_object *cx_lookupFunctionFromSequence(cx_objectseq scopeContents, cx_string requested, cx_int32* d);
 
 #ifdef __cplusplus
 }

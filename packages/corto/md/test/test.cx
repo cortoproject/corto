@@ -3,6 +3,7 @@
 package Package0::
     class Class0::
         void method0()
+        void method1()
 
 package Package1::
     package Package0::
@@ -11,45 +12,43 @@ package Package1::
 package Package2::
     class Class0::
         void method0()
-    package Package0::
-        package Package0{}
     class Class1::
         int method0()
 
 void docs
 
-class Headers: test::Suite::
-    void tc_H1() test::Case
-    void tc_H2() test::Case
-    void tc_H3() test::Case
-    void tc_H1H2() test::Case
-    void tc_H1H2H3() test::Case
-    void tc_H1H2H1() test::Case
-    void tc_H1H2H3H1H2() test::Case
-    void tc_H1H3() test::Case
-    void tc_H1H3H2() test::Case
-    void tc_H1H2H1H2() test::Case
-    void tc_H1H3H1H3() test::Case
+test::Suite Headers::
+    void tc_H1()
+    void tc_H2()
+    void tc_H3()
+    void tc_H1H2()
+    void tc_H1H2H3()
+    void tc_H1H2H1()
+    void tc_H1H2H3H1H2()
+    void tc_H1H3()
+    void tc_H1H3H2()
+    void tc_H1H2H1H2()
+    void tc_H1H3H1H3()
 
-class HeaderParagraphs: test::Suite::
-    void tc_H1P() test::Case
-    void tc_H1PP() test::Case
-    void tc_H1PPP() test::Case
-    void tc_H1PH1P() test::Case
-    void tc_H1PnH1P() test::Case
-    void tc_H1PH2P() test::Case
-    void tc_H1PnH2P() test::Case
-    void tc_H1PH3P() test::Case
-    void tc_H1PH2PH3P() test::Case
-    void tc_H1H2H3P() test::Case
-    void tc_H1H2H3H4P() test::Case
-    void tc_H1H4P() test::Case
-    void tc_H1DP() test::Case
-    void tc_H1DPP() test::Case
+test::Suite HeaderParagraphs::
+    void tc_H1P()
+    void tc_H1PP()
+    void tc_H1PPP()
+    void tc_H1PH1P()
+    void tc_H1PnH1P()
+    void tc_H1PH2P()
+    void tc_H1PnH2P()
+    void tc_H1PH3P()
+    void tc_H1PH2PH3P()
+    void tc_H1H2H3P()
+    void tc_H1H2H3H4P()
+    void tc_H1H4P()
+    void tc_H1DP()
+    void tc_H1DPP()
+    void tc_whitespace()
 
-class Packages: test::Suite::
-    void tc_package() test::Case
-    void tc_class() test::Case
-    void tc_method() test::Case
-    void tc_nestedPackage() test::Case
-    void tc_nestedPackageSameName() test::Case
+test::Suite Packages::
+    void tc_twoClasses()
+    void tc_class()
+    void tc_method()
+    void tc_nestedPackage()
