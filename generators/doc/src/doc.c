@@ -12,9 +12,11 @@
 typedef struct docWalk_t {
     cx_generator g;
     g_file mdfile;
+    cx_bool parsePackages;
     cx_bool parseTypes;
     cx_bool parseOthers;
     cx_class doc;
+    cx_package package;
 } docWalk_t;
 
 static char* doc_idEscape(cx_object from, cx_object o, cx_id buffer) {
@@ -59,9 +61,15 @@ static char* doc_id(cx_generator g, cx_object o, cx_id buffer) {
         count--;
         p = parents[count];
         if (cx_instanceof(cx_package_o, p)) {
-            ptr = doc_idEscape(NULL, p, ptr);
+            if (p == g_getCurrent(g)) {
+                ptr = doc_idEscape(NULL, p, ptr);
+            } else {
+                *(ptr++) = '_';
+                ptr = doc_idEscape(from, p, ptr);
+            }
+            from = p;
         } else if (cx_instanceof(cx_type_o, p)) {
-            if (from != g_getCurrent(g)) {
+            if (!cx_instanceof(cx_package_o, from)) {
                 *(ptr++) = '_';
             } else {
                 *(ptr++) = ':';
@@ -144,14 +152,43 @@ static int doc_walk(cx_object o, void *userData) {
         description = doc_getDescription(data->doc, doc);
         text = doc_getText(data->doc, doc);
     } else {
-        cx_warning("object '%s' is not documented (%s)", cx_fullname(o, id), docId);
+        if (cx_instanceof(cx_package_o, o) || 
+            cx_instanceof(cx_type_o, o) || 
+            cx_instanceof(cx_type_o, cx_parentof(o))) 
+        {
+            cx_warning("warning: object '%s' is not documented (%s)", cx_fullname(o, id), docId);
+        }
     }
 
-    if (cx_instanceof(cx_package_o, o) && data->parseOthers) {
-        doc_writeHeader(data->mdfile, cx_fullname(o, id), 1, description, text);
+    if (cx_instanceof(cx_package_o, o)) {
+        if ((o == g_getCurrent(data->g)) && data->parseOthers) {
+            doc_writeHeader(data->mdfile, cx_fullname(o, id), 1, description, text);
+            data->package = o;
+        } else if ((o != g_getCurrent(data->g)) && data->parsePackages) {
+            g_fileWrite(data->mdfile, "\n");
+            doc_writeHeader(data->mdfile, cx_fullname(o, id), 1, description, text);
+            docWalk_t privateData = *data;
+            privateData.parseTypes = FALSE;
+            privateData.parseOthers = TRUE;
+            privateData.parsePackages = FALSE;
+            privateData.package = o;
+            if (!cx_scopeWalk(o, doc_walk, &privateData)) {
+                goto error;
+            }
+            privateData.parseTypes = TRUE;
+            privateData.parseOthers = FALSE;
+            if (!cx_scopeWalk(o, doc_walk, &privateData)) {
+                goto error;
+            }
+            privateData.parseTypes = FALSE;
+            privateData.parsePackages = TRUE;
+            if (!cx_scopeWalk(o, doc_walk, &privateData)) {
+                goto error;
+            }
+        }
     } else if (cx_instanceof(cx_type_o, o) && data->parseTypes) {
         g_fileWrite(data->mdfile, "\n");
-        doc_writeHeader(data->mdfile, cx_relname(g_getCurrent(data->g), o, id), 2, description, text);
+        doc_writeHeader(data->mdfile, cx_relname(data->package, o, id), 2, description, text);
         docWalk_t privateData = *data;
         privateData.parseTypes = FALSE;
         privateData.parseOthers = TRUE;
@@ -213,8 +250,7 @@ int corto_genMain(cx_generator g) {
     gen_parse(g, corto_lang_o, FALSE, FALSE, "cx");
 
     /* Only regenerate if package md is available */
-    cx_object md = cx_resolve(NULL, "::corto::md");
-    if (md) {
+    if (cx_locate("::corto::md")) {
         walkData.doc = cx_class(cx_resolve(NULL, "::corto::md::Doc"));
 
         /* Load existing README file if available */
@@ -225,17 +261,25 @@ int corto_genMain(cx_generator g) {
         walkData.g = g;
         walkData.parseTypes = FALSE;
         walkData.parseOthers = TRUE;
+        walkData.parsePackages = FALSE;
+        walkData.package = NULL;
         if (!g_walk(g, doc_walk, &walkData)) {
             goto error;
         }
+
         walkData.parseTypes = TRUE;
         walkData.parseOthers = FALSE;
         if (!g_walk(g, doc_walk, &walkData)) {
             goto error;
         }
 
+        walkData.parseTypes = FALSE;
+        walkData.parsePackages = TRUE;
+        if (!g_walk(g, doc_walk, &walkData)) {
+            goto error;
+        }
+
         cx_release(walkData.doc);
-        cx_release(md);
     }
 
     return 0;

@@ -1,4 +1,6 @@
 # ::corto::ast
+The Corto scripting language parser.
+
 ### isOperatorAssignment(operatorKind operator)
 Test whether the specified operator results in an assignment.
 
@@ -34,6 +36,8 @@ TRUE if the operator results in an assignment, FALSE if it doesn't.
 #### Returns
 
 ## Binary
+A binary expression.
+
 ### construct()
 #### Returns
 ### deref
@@ -56,18 +60,36 @@ TRUE if the operator results in an assignment, FALSE if it doesn't.
 #### Returns
 
 ## Binding
+A temporary type that binds an code block to a function object.
+
 ### function
 ### impl
 
 ## Block
+A code block.
+
 ### addStatement(ast::Node statement)
+Add a statement to a code block.
+
 #### statement
 ### declare(string id,type type,bool isParameter,bool isReference)
+Declare a variable in a code block.
+
 #### id
+The identifier of the variable.
+
 #### type
+The type of the variable.
+
 #### isParameter
+Should be TRUE if the variable represents a function parameter, otherwise parameter should be to FALSE.
+
 #### isReference
+TRUE when the variable represents a reference. This parameter should not be set to TRUE when the provided type is a reference.
+
 #### Returns
+Zero when success, non-zero if failed.
+
 ### declareReturnVariable(function function)
 #### function
 #### Returns
