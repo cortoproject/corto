@@ -2788,30 +2788,21 @@ cx_int16 cx_expr(cx_object scope, cx_string expr, cx_value *value) {
     cx_int16 result = 0;
     static cx_function parseLine = NULL;
     static cx_bool searchedForParser = FALSE;
-
-    if (!parseLine && !searchedForParser) {
-        parseLine = cx_resolve(NULL, "::corto::ast::Parser::parseLine");
-        searchedForParser = TRUE;
-    }
-
-    /* Load parser */
-    if (parseLine) {
-        /* Parse expression */
-        cx_call(parseLine, &result, expr, scope, value);
-    /* Parser cannot be loaded, revert to plain object resolving */
+    cx_object o = cx_resolve(scope, expr);
+    if (o) {
+        cx_valueObjectInit(value, o, NULL);
     } else {
-        cx_object o = cx_resolve(scope, expr);
-        if (!o) {
-            cx_error("'%s' does not resolve to a valid object", expr);
-            goto error;
+        if (!parseLine && !searchedForParser) {
+            parseLine = cx_resolve(NULL, "::corto::ast::Parser::parseLine");
+            searchedForParser = TRUE;
         }
 
-        cx_valueObjectInit(value, o, NULL);
+        if (parseLine) {
+            cx_call(parseLine, &result, expr, scope, value);
+        }
     }
 
     return result;
-error:
-    return -1;
 }
 
 /* Thread-safe reading */
@@ -3418,7 +3409,7 @@ void cx_scopeRelease(cx_objectseq seq) {
 
 typedef struct cx_lookupFunction_t {
     cx_string request;
-    cx_function *result;
+    cx_object *result;
     cx_bool error;
     cx_int32 d;
     cx_int32 old_d;
@@ -3446,7 +3437,7 @@ int cx_lookupFunctionWalk(cx_object *ptr, void* userData) {
             if (!strcmp(sigName, data->request)) {
                 if (!cx_function(o)->overloaded) {
                     data->d = 0;
-                    data->result = (cx_function*)ptr;
+                    data->result = (cx_object*)ptr;
                     goto found;
                 } else {
                     data->error = TRUE;
@@ -3461,9 +3452,15 @@ int cx_lookupFunctionWalk(cx_object *ptr, void* userData) {
                 data->old_d = data->d;
             }
             if (d < data->d) {
-                data->result = (cx_function*)ptr;
+                data->result = (cx_object*)ptr;
                 data->d = d;
             }
+        }
+    } else {
+        if (!stricmp(cx_nameof(o), data->request)) {
+            data->d = 0;
+            data->result = (cx_object*)ptr;
+            goto found;
         }
     }
 
@@ -3473,7 +3470,7 @@ found:
 }
 
 /* Lookup function with support for overloading */
-cx_function* cx_lookupFunctionFromSequence(cx_objectseq scopeContents, cx_string requested, cx_int32* d) {
+cx_object* cx_lookupFunctionFromSequence(cx_objectseq scopeContents, cx_string requested, cx_int32* d) {
     cx_lookupFunction_t walkData;
     cx_uint32 i;
 
@@ -3510,10 +3507,10 @@ cx_function* cx_lookupFunctionFromSequence(cx_objectseq scopeContents, cx_string
     return walkData.result;
 }
 
-cx_function cx_lookupFunction(cx_object scope, cx_string requested, cx_int32* d) {
+cx_object cx_lookupFunction(cx_object scope, cx_string requested, cx_int32* d) {
     cx_objectseq scopeContents = cx_scopeClaim(scope);
-    cx_function result = NULL;
-    cx_function *ptr = cx_lookupFunctionFromSequence(scopeContents, requested, d);
+    cx_object result = NULL;
+    cx_object *ptr = cx_lookupFunctionFromSequence(scopeContents, requested, d);
     if (ptr) {
         cx_claim(*ptr);
         result = *ptr;

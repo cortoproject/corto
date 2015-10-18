@@ -2,7 +2,6 @@
 
 #include "_md_callbacks.h"
 
-#include "_md_appendstr.h"
 #include "_md_resolvers.h"
 
 #define MAX_OBJECT_HEADER (4)
@@ -28,16 +27,31 @@ void md_callbackHeader(hoedown_buffer *ob, const hoedown_buffer *content, int le
     cx_object o;
     strncpy(name, (char*)content->data, content->size)[content->size] = '\0';
 
-
-    md_Doc doc = NULL, previous = NULL;
+    md_Doc doc = NULL;
+    cx_object previous = NULL;
     if (level <= MAX_OBJECT_HEADER) {
         /* `o` can well be null when not documenting an object store */
         o = md_resolve(level, name, &previous, _data);
-        if (!previous && (level > 1)) {
+        if (!cx_instanceof(md_Doc_o, previous) && (level > 1)) {
             cx_seterr("H1 header missing (a level %d header as document root is illegal)", level);
             goto error;
         }
-        doc = md_DocCreateChild(previous, name, o, level);
+        
+        /* Isolate name from scoped name */
+        char *ptr = name, ch, *bptr;
+        cx_id id; 
+        bptr = id;
+        for (; (ch = *ptr); ptr++, bptr++) {
+            if (ch == ':') {
+                *bptr = '_';
+                ptr++;
+            } else {
+                *bptr = ch;
+            }
+        }
+        *bptr = '\0';
+
+        doc = md_DocCreateChild(previous, id, o, level);
         _data->headers[level] = doc;
     } else {
         /* TODO just append like text */

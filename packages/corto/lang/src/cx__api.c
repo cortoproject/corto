@@ -909,7 +909,7 @@ cx_int16 cx_characterCompare(cx_character dst, cx_character src) {
     return cx_compare(dst, src);
 }
 
-cx_class cx_classCreate(cx_interface base, cx_modifier baseAccess, cx_interfaceseq implements, cx_type parentType, cx_state parentState, cx_type defaultType) {
+cx_class cx_classCreate(cx_interface base, cx_modifier baseAccess, cx_interfaceseq implements, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType) {
     cx_class this;
     this = cx_declare(cx_class_o);
     if (!this) {
@@ -921,6 +921,7 @@ cx_class cx_classCreate(cx_interface base, cx_modifier baseAccess, cx_interfaces
     cx_setref(&cx_type(this)->parentType, cx_type(parentType));
     cx_type(this)->parentState = parentState;
     cx_setref(&cx_type(this)->defaultType, cx_type(defaultType));
+    cx_setref(&cx_type(this)->defaultProcedureType, cx_type(defaultProcedureType));
     if (this && cx_define(this)) {
         cx_release(this);
         this = NULL;
@@ -928,7 +929,7 @@ cx_class cx_classCreate(cx_interface base, cx_modifier baseAccess, cx_interfaces
     return this;
 }
 
-cx_class cx_classCreateChild(cx_object _parent, cx_string _name, cx_interface base, cx_modifier baseAccess, cx_interfaceseq implements, cx_type parentType, cx_state parentState, cx_type defaultType) {
+cx_class cx_classCreateChild(cx_object _parent, cx_string _name, cx_interface base, cx_modifier baseAccess, cx_interfaceseq implements, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType) {
     cx_class this;
     this = cx_declareChild(_parent, _name, cx_class_o);
     if (!this) {
@@ -940,6 +941,7 @@ cx_class cx_classCreateChild(cx_object _parent, cx_string _name, cx_interface ba
     cx_setref(&cx_type(this)->parentType, cx_type(parentType));
     cx_type(this)->parentState = parentState;
     cx_setref(&cx_type(this)->defaultType, cx_type(defaultType));
+    cx_setref(&cx_type(this)->defaultProcedureType, cx_type(defaultProcedureType));
     if (this && cx_define(this)) {
         cx_release(this);
         this = NULL;
@@ -965,17 +967,18 @@ cx_class cx_classDeclareChild(cx_object _parent, cx_string _name) {
     return this;
 }
 
-cx_int16 cx_classDefine(cx_class this, cx_interface base, cx_modifier baseAccess, cx_interfaceseq implements, cx_type parentType, cx_state parentState, cx_type defaultType) {
+cx_int16 cx_classDefine(cx_class this, cx_interface base, cx_modifier baseAccess, cx_interfaceseq implements, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType) {
     cx_setref(&cx_interface(this)->base, cx_interface(base));
     cx_struct(this)->baseAccess = baseAccess;
     this->implements = implements;
     cx_setref(&cx_type(this)->parentType, cx_type(parentType));
     cx_type(this)->parentState = parentState;
     cx_setref(&cx_type(this)->defaultType, cx_type(defaultType));
+    cx_setref(&cx_type(this)->defaultProcedureType, cx_type(defaultProcedureType));
     return cx_define(this);
 }
 
-void cx_classUpdate(cx_class this, cx_interface base, cx_modifier baseAccess, cx_interfaceseq implements, cx_type parentType, cx_state parentState, cx_type defaultType) {
+void cx_classUpdate(cx_class this, cx_interface base, cx_modifier baseAccess, cx_interfaceseq implements, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType) {
     cx_updateBegin(this);
     cx_setref(&cx_interface(this)->base, cx_interface(base));
     cx_struct(this)->baseAccess = baseAccess;
@@ -983,16 +986,18 @@ void cx_classUpdate(cx_class this, cx_interface base, cx_modifier baseAccess, cx
     cx_setref(&cx_type(this)->parentType, cx_type(parentType));
     cx_type(this)->parentState = parentState;
     cx_setref(&cx_type(this)->defaultType, cx_type(defaultType));
+    cx_setref(&cx_type(this)->defaultProcedureType, cx_type(defaultProcedureType));
     cx_updateEnd(this);
 }
 
-void cx_classSet(cx_class this, cx_interface base, cx_modifier baseAccess, cx_interfaceseq implements, cx_type parentType, cx_state parentState, cx_type defaultType) {
+void cx_classSet(cx_class this, cx_interface base, cx_modifier baseAccess, cx_interfaceseq implements, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType) {
     cx_setref(&cx_interface(this)->base, cx_interface(base));
     cx_struct(this)->baseAccess = baseAccess;
     this->implements = implements;
     cx_setref(&cx_type(this)->parentType, cx_type(parentType));
     cx_type(this)->parentState = parentState;
     cx_setref(&cx_type(this)->defaultType, cx_type(defaultType));
+    cx_setref(&cx_type(this)->defaultProcedureType, cx_type(defaultProcedureType));
 }
 
 cx_string cx_classStr(cx_class value) {
@@ -3205,7 +3210,7 @@ cx_int16 cx_int8Deinit(cx_int8* value) {
     return result;
 }
 
-cx_interface cx_interfaceCreate(cx_interface base, cx_type parentType, cx_state parentState, cx_type defaultType) {
+cx_interface cx_interfaceCreate(cx_interface base, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType) {
     cx_interface this;
     this = cx_declare(cx_interface_o);
     if (!this) {
@@ -3215,6 +3220,7 @@ cx_interface cx_interfaceCreate(cx_interface base, cx_type parentType, cx_state 
     cx_setref(&cx_type(this)->parentType, cx_type(parentType));
     cx_type(this)->parentState = parentState;
     cx_setref(&cx_type(this)->defaultType, cx_type(defaultType));
+    cx_setref(&cx_type(this)->defaultProcedureType, cx_type(defaultProcedureType));
     if (this && cx_define(this)) {
         cx_release(this);
         this = NULL;
@@ -3222,7 +3228,7 @@ cx_interface cx_interfaceCreate(cx_interface base, cx_type parentType, cx_state 
     return this;
 }
 
-cx_interface cx_interfaceCreateChild(cx_object _parent, cx_string _name, cx_interface base, cx_type parentType, cx_state parentState, cx_type defaultType) {
+cx_interface cx_interfaceCreateChild(cx_object _parent, cx_string _name, cx_interface base, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType) {
     cx_interface this;
     this = cx_declareChild(_parent, _name, cx_interface_o);
     if (!this) {
@@ -3232,6 +3238,7 @@ cx_interface cx_interfaceCreateChild(cx_object _parent, cx_string _name, cx_inte
     cx_setref(&cx_type(this)->parentType, cx_type(parentType));
     cx_type(this)->parentState = parentState;
     cx_setref(&cx_type(this)->defaultType, cx_type(defaultType));
+    cx_setref(&cx_type(this)->defaultProcedureType, cx_type(defaultProcedureType));
     if (this && cx_define(this)) {
         cx_release(this);
         this = NULL;
@@ -3257,28 +3264,31 @@ cx_interface cx_interfaceDeclareChild(cx_object _parent, cx_string _name) {
     return this;
 }
 
-cx_int16 cx_interfaceDefine(cx_interface this, cx_interface base, cx_type parentType, cx_state parentState, cx_type defaultType) {
+cx_int16 cx_interfaceDefine(cx_interface this, cx_interface base, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType) {
     cx_setref(&this->base, cx_interface(base));
     cx_setref(&cx_type(this)->parentType, cx_type(parentType));
     cx_type(this)->parentState = parentState;
     cx_setref(&cx_type(this)->defaultType, cx_type(defaultType));
+    cx_setref(&cx_type(this)->defaultProcedureType, cx_type(defaultProcedureType));
     return cx_define(this);
 }
 
-void cx_interfaceUpdate(cx_interface this, cx_interface base, cx_type parentType, cx_state parentState, cx_type defaultType) {
+void cx_interfaceUpdate(cx_interface this, cx_interface base, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType) {
     cx_updateBegin(this);
     cx_setref(&this->base, cx_interface(base));
     cx_setref(&cx_type(this)->parentType, cx_type(parentType));
     cx_type(this)->parentState = parentState;
     cx_setref(&cx_type(this)->defaultType, cx_type(defaultType));
+    cx_setref(&cx_type(this)->defaultProcedureType, cx_type(defaultProcedureType));
     cx_updateEnd(this);
 }
 
-void cx_interfaceSet(cx_interface this, cx_interface base, cx_type parentType, cx_state parentState, cx_type defaultType) {
+void cx_interfaceSet(cx_interface this, cx_interface base, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType) {
     cx_setref(&this->base, cx_interface(base));
     cx_setref(&cx_type(this)->parentType, cx_type(parentType));
     cx_type(this)->parentState = parentState;
     cx_setref(&cx_type(this)->defaultType, cx_type(defaultType));
+    cx_setref(&cx_type(this)->defaultProcedureType, cx_type(defaultProcedureType));
 }
 
 cx_string cx_interfaceStr(cx_interface value) {
@@ -5917,7 +5927,7 @@ cx_int16 cx_primitiveKindDeinit(cx_primitiveKind* value) {
     return result;
 }
 
-cx_procedure cx_procedureCreate(cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_procedureKind kind) {
+cx_procedure cx_procedureCreate(cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType, cx_procedureKind kind) {
     cx_procedure this;
     this = cx_declare(cx_procedure_o);
     if (!this) {
@@ -5928,6 +5938,7 @@ cx_procedure cx_procedureCreate(cx_interface base, cx_modifier baseAccess, cx_ty
     cx_setref(&cx_type(this)->parentType, cx_type(parentType));
     cx_type(this)->parentState = parentState;
     cx_setref(&cx_type(this)->defaultType, cx_type(defaultType));
+    cx_setref(&cx_type(this)->defaultProcedureType, cx_type(defaultProcedureType));
     this->kind = kind;
     if (this && cx_define(this)) {
         cx_release(this);
@@ -5936,7 +5947,7 @@ cx_procedure cx_procedureCreate(cx_interface base, cx_modifier baseAccess, cx_ty
     return this;
 }
 
-cx_procedure cx_procedureCreateChild(cx_object _parent, cx_string _name, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_procedureKind kind) {
+cx_procedure cx_procedureCreateChild(cx_object _parent, cx_string _name, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType, cx_procedureKind kind) {
     cx_procedure this;
     this = cx_declareChild(_parent, _name, cx_procedure_o);
     if (!this) {
@@ -5947,6 +5958,7 @@ cx_procedure cx_procedureCreateChild(cx_object _parent, cx_string _name, cx_inte
     cx_setref(&cx_type(this)->parentType, cx_type(parentType));
     cx_type(this)->parentState = parentState;
     cx_setref(&cx_type(this)->defaultType, cx_type(defaultType));
+    cx_setref(&cx_type(this)->defaultProcedureType, cx_type(defaultProcedureType));
     this->kind = kind;
     if (this && cx_define(this)) {
         cx_release(this);
@@ -5973,33 +5985,36 @@ cx_procedure cx_procedureDeclareChild(cx_object _parent, cx_string _name) {
     return this;
 }
 
-cx_int16 cx_procedureDefine(cx_procedure this, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_procedureKind kind) {
+cx_int16 cx_procedureDefine(cx_procedure this, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType, cx_procedureKind kind) {
     cx_setref(&cx_interface(this)->base, cx_interface(base));
     cx_struct(this)->baseAccess = baseAccess;
     cx_setref(&cx_type(this)->parentType, cx_type(parentType));
     cx_type(this)->parentState = parentState;
     cx_setref(&cx_type(this)->defaultType, cx_type(defaultType));
+    cx_setref(&cx_type(this)->defaultProcedureType, cx_type(defaultProcedureType));
     this->kind = kind;
     return cx_define(this);
 }
 
-void cx_procedureUpdate(cx_procedure this, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_procedureKind kind) {
+void cx_procedureUpdate(cx_procedure this, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType, cx_procedureKind kind) {
     cx_updateBegin(this);
     cx_setref(&cx_interface(this)->base, cx_interface(base));
     cx_struct(this)->baseAccess = baseAccess;
     cx_setref(&cx_type(this)->parentType, cx_type(parentType));
     cx_type(this)->parentState = parentState;
     cx_setref(&cx_type(this)->defaultType, cx_type(defaultType));
+    cx_setref(&cx_type(this)->defaultProcedureType, cx_type(defaultProcedureType));
     this->kind = kind;
     cx_updateEnd(this);
 }
 
-void cx_procedureSet(cx_procedure this, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_procedureKind kind) {
+void cx_procedureSet(cx_procedure this, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType, cx_procedureKind kind) {
     cx_setref(&cx_interface(this)->base, cx_interface(base));
     cx_struct(this)->baseAccess = baseAccess;
     cx_setref(&cx_type(this)->parentType, cx_type(parentType));
     cx_type(this)->parentState = parentState;
     cx_setref(&cx_type(this)->defaultType, cx_type(defaultType));
+    cx_setref(&cx_type(this)->defaultProcedureType, cx_type(defaultProcedureType));
     this->kind = kind;
 }
 
@@ -6617,7 +6632,7 @@ cx_int16 cx_stringDeinit(cx_string* value) {
     return result;
 }
 
-cx_struct cx_structCreate(cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType) {
+cx_struct cx_structCreate(cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType) {
     cx_struct this;
     this = cx_declare(cx_struct_o);
     if (!this) {
@@ -6628,6 +6643,7 @@ cx_struct cx_structCreate(cx_interface base, cx_modifier baseAccess, cx_type par
     cx_setref(&cx_type(this)->parentType, cx_type(parentType));
     cx_type(this)->parentState = parentState;
     cx_setref(&cx_type(this)->defaultType, cx_type(defaultType));
+    cx_setref(&cx_type(this)->defaultProcedureType, cx_type(defaultProcedureType));
     if (this && cx_define(this)) {
         cx_release(this);
         this = NULL;
@@ -6635,7 +6651,7 @@ cx_struct cx_structCreate(cx_interface base, cx_modifier baseAccess, cx_type par
     return this;
 }
 
-cx_struct cx_structCreateChild(cx_object _parent, cx_string _name, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType) {
+cx_struct cx_structCreateChild(cx_object _parent, cx_string _name, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType) {
     cx_struct this;
     this = cx_declareChild(_parent, _name, cx_struct_o);
     if (!this) {
@@ -6646,6 +6662,7 @@ cx_struct cx_structCreateChild(cx_object _parent, cx_string _name, cx_interface 
     cx_setref(&cx_type(this)->parentType, cx_type(parentType));
     cx_type(this)->parentState = parentState;
     cx_setref(&cx_type(this)->defaultType, cx_type(defaultType));
+    cx_setref(&cx_type(this)->defaultProcedureType, cx_type(defaultProcedureType));
     if (this && cx_define(this)) {
         cx_release(this);
         this = NULL;
@@ -6671,31 +6688,34 @@ cx_struct cx_structDeclareChild(cx_object _parent, cx_string _name) {
     return this;
 }
 
-cx_int16 cx_structDefine(cx_struct this, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType) {
+cx_int16 cx_structDefine(cx_struct this, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType) {
     cx_setref(&cx_interface(this)->base, cx_interface(base));
     this->baseAccess = baseAccess;
     cx_setref(&cx_type(this)->parentType, cx_type(parentType));
     cx_type(this)->parentState = parentState;
     cx_setref(&cx_type(this)->defaultType, cx_type(defaultType));
+    cx_setref(&cx_type(this)->defaultProcedureType, cx_type(defaultProcedureType));
     return cx_define(this);
 }
 
-void cx_structUpdate(cx_struct this, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType) {
+void cx_structUpdate(cx_struct this, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType) {
     cx_updateBegin(this);
     cx_setref(&cx_interface(this)->base, cx_interface(base));
     this->baseAccess = baseAccess;
     cx_setref(&cx_type(this)->parentType, cx_type(parentType));
     cx_type(this)->parentState = parentState;
     cx_setref(&cx_type(this)->defaultType, cx_type(defaultType));
+    cx_setref(&cx_type(this)->defaultProcedureType, cx_type(defaultProcedureType));
     cx_updateEnd(this);
 }
 
-void cx_structSet(cx_struct this, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType) {
+void cx_structSet(cx_struct this, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType) {
     cx_setref(&cx_interface(this)->base, cx_interface(base));
     this->baseAccess = baseAccess;
     cx_setref(&cx_type(this)->parentType, cx_type(parentType));
     cx_type(this)->parentState = parentState;
     cx_setref(&cx_type(this)->defaultType, cx_type(defaultType));
+    cx_setref(&cx_type(this)->defaultProcedureType, cx_type(defaultProcedureType));
 }
 
 cx_string cx_structStr(cx_struct value) {
@@ -6806,7 +6826,7 @@ cx_int16 cx_textCompare(cx_text dst, cx_text src) {
     return cx_compare(dst, src);
 }
 
-cx_type cx_typeCreate(cx_type parentType, cx_state parentState, cx_type defaultType) {
+cx_type cx_typeCreate(cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType) {
     cx_type this;
     this = cx_declare(cx_type_o);
     if (!this) {
@@ -6815,6 +6835,7 @@ cx_type cx_typeCreate(cx_type parentType, cx_state parentState, cx_type defaultT
     cx_setref(&this->parentType, cx_type(parentType));
     this->parentState = parentState;
     cx_setref(&this->defaultType, cx_type(defaultType));
+    cx_setref(&this->defaultProcedureType, cx_type(defaultProcedureType));
     if (this && cx_define(this)) {
         cx_release(this);
         this = NULL;
@@ -6822,7 +6843,7 @@ cx_type cx_typeCreate(cx_type parentType, cx_state parentState, cx_type defaultT
     return this;
 }
 
-cx_type cx_typeCreateChild(cx_object _parent, cx_string _name, cx_type parentType, cx_state parentState, cx_type defaultType) {
+cx_type cx_typeCreateChild(cx_object _parent, cx_string _name, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType) {
     cx_type this;
     this = cx_declareChild(_parent, _name, cx_type_o);
     if (!this) {
@@ -6831,6 +6852,7 @@ cx_type cx_typeCreateChild(cx_object _parent, cx_string _name, cx_type parentTyp
     cx_setref(&this->parentType, cx_type(parentType));
     this->parentState = parentState;
     cx_setref(&this->defaultType, cx_type(defaultType));
+    cx_setref(&this->defaultProcedureType, cx_type(defaultProcedureType));
     if (this && cx_define(this)) {
         cx_release(this);
         this = NULL;
@@ -6856,25 +6878,28 @@ cx_type cx_typeDeclareChild(cx_object _parent, cx_string _name) {
     return this;
 }
 
-cx_int16 cx_typeDefine(cx_type this, cx_type parentType, cx_state parentState, cx_type defaultType) {
+cx_int16 cx_typeDefine(cx_type this, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType) {
     cx_setref(&this->parentType, cx_type(parentType));
     this->parentState = parentState;
     cx_setref(&this->defaultType, cx_type(defaultType));
+    cx_setref(&this->defaultProcedureType, cx_type(defaultProcedureType));
     return cx_define(this);
 }
 
-void cx_typeUpdate(cx_type this, cx_type parentType, cx_state parentState, cx_type defaultType) {
+void cx_typeUpdate(cx_type this, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType) {
     cx_updateBegin(this);
     cx_setref(&this->parentType, cx_type(parentType));
     this->parentState = parentState;
     cx_setref(&this->defaultType, cx_type(defaultType));
+    cx_setref(&this->defaultProcedureType, cx_type(defaultProcedureType));
     cx_updateEnd(this);
 }
 
-void cx_typeSet(cx_type this, cx_type parentType, cx_state parentState, cx_type defaultType) {
+void cx_typeSet(cx_type this, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType) {
     cx_setref(&this->parentType, cx_type(parentType));
     this->parentState = parentState;
     cx_setref(&this->defaultType, cx_type(defaultType));
+    cx_setref(&this->defaultProcedureType, cx_type(defaultProcedureType));
 }
 
 cx_string cx_typeStr(cx_type value) {

@@ -15,11 +15,10 @@
 
 #define CXSH_CMD_MAX (1024)
 
-#define CXSH_COL_NAME     (38)
+#define CXSH_COL_NAME     (46)
 #define CXSH_COL_TYPE     (22)
 #define CXSH_COL_STATE    (12)
-#define CXSH_COL_ATTR     (8)
-#define CXSH_COL_TOTAL    (CXSH_COL_NAME + CXSH_COL_TYPE + CXSH_COL_STATE + CXSH_COL_ATTR)
+#define CXSH_COL_TOTAL    (CXSH_COL_NAME + CXSH_COL_TYPE + CXSH_COL_STATE)
 
 #define BLACK   "\033[1;30m"
 #define RED     "\033[1;31m"
@@ -126,7 +125,6 @@ static void cxsh_printColumnHeader(void) {
     cxsh_printColumn("name", CXSH_COL_NAME);
     cxsh_printColumn("type", CXSH_COL_TYPE);
     cxsh_printColumn("state", CXSH_COL_STATE);
-    cxsh_printColumn("attr", CXSH_COL_ATTR);
     cxsh_color(INTERFACE_COLOR);
     printf("\n");
     cxsh_printColumnBar(CXSH_COL_TOTAL);
@@ -203,8 +201,6 @@ static int cxsh_scopeWalk(cx_object o, void* udata) {
     cx_id typeName;
     cx_string remaining = 0;
     char state[sizeof("valid | declared | defined")];
-    char attr[sizeof("scope | writable | observable")];
-
     CX_UNUSED(udata);
 
     /* Get name of type */
@@ -220,7 +216,6 @@ static int cxsh_scopeWalk(cx_object o, void* udata) {
     cxsh_color(TYPE_COLOR); cxsh_printColumnValue(typeName, CXSH_COL_TYPE); cxsh_color(NORMAL);
     cxsh_color(META_COLOR);
     cxsh_printColumnValue(cxsh_stateStr(o, state), CXSH_COL_STATE);
-    cxsh_printColumnValue(cxsh_attrStr(o, attr), CXSH_COL_ATTR);
     cxsh_color(NORMAL);
     printf("\n");
 
@@ -688,6 +683,10 @@ static void cxsh_shell(void) {
         printf("%s", prompt);
 
         if (!cxsh_readline(cmd)) {
+            if (feof(stdin)) {
+                printf("\n");
+                quit = TRUE;
+            }
             continue;
         }
 

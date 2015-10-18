@@ -15,7 +15,7 @@ cx_threadKey test_suiteKey;
 /* ::corto::test::assert(bool condition,string $condition,uint32 $__line) */
 cx_bool _test_assert(cx_bool condition, cx_string str_condition, cx_uint32 __line) {
 /* $begin(::corto::test::assert) */
-    test_Suite this = cx_threadTlsGet(test_suiteKey);
+    test_SuiteData this = cx_threadTlsGet(test_suiteKey);
     if (!this) {
         cx_error("test: test::fail called but no testsuite is running!");
         abort();
@@ -38,7 +38,7 @@ cx_bool _test_assertEqual(cx_any a, cx_any b, cx_string str_a, cx_string str_b, 
 /* $begin(::corto::test::assertEqual) */
     cx_equalityKind eq;
     char *assertMsg = NULL;
-    test_Suite this = cx_threadTlsGet(test_suiteKey);
+    test_SuiteData this = cx_threadTlsGet(test_suiteKey);
     if (!this) {
         cx_error("test: test::fail called but no testsuite is running!");
         abort();
@@ -61,7 +61,7 @@ cx_void _test_fail(cx_string err) {
 /* $begin(::corto::test::fail) */
     cx_id id;
     int i;
-	test_Suite this = cx_threadTlsGet(test_suiteKey);
+	test_SuiteData this = cx_threadTlsGet(test_suiteKey);
 	if (!this) {
 		cx_error("test: test::fail called but no testsuite is running!");
 		abort();

@@ -65,7 +65,7 @@ end
 
 task :default => "include/#{TARGET}__type.h"
 
-if File.exists? "test" then
+if File.exists? "test/rakefile" then
     COMPONENTS ||=[] << "test"
 end
 

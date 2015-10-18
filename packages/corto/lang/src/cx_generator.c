@@ -905,6 +905,7 @@ void g_fileClose(g_file file) {
 
 static g_file g_fileOpenIntern(cx_generator g, cx_string name) {
     g_file result;
+    char ext[255];
 
     result = cx_alloc(sizeof(struct g_file_s));
     result->snippets = NULL;
@@ -915,14 +916,18 @@ static g_file g_fileOpenIntern(cx_generator g, cx_string name) {
     result->name = cx_strdup(name);
     result->generator = g;
 
+    cx_fileExtension(name, ext);
+
     /* First, load existing implementation if file exists */
-    if (g_loadExisting(g, name, "$header", &result->headers)) {
-        cx_dealloc(result);
-        goto error;
-    }
-    if (g_loadExisting(g, name, "$begin", &result->snippets)) {
-        cx_dealloc(result);
-        goto error;
+    if (!strcmp(ext, "c") || !strcmp(ext, "cpp") || !strcmp(ext, "h") || !strcmp(ext, "hpp")) {
+        if (g_loadExisting(g, name, "$header", &result->headers)) {
+            cx_dealloc(result);
+            goto error;
+        }
+        if (g_loadExisting(g, name, "$begin", &result->snippets)) {
+            cx_dealloc(result);
+            goto error;
+        }
     }
 
     result->file = cx_fileOpen(name);
@@ -1047,7 +1052,7 @@ cx_object g_fileScopeGet(g_file file) {
 }
 
 /* Write to file */
-void g_fileWrite(g_file file, char* fmt, ...) {
+int g_fileWrite(g_file file, char* fmt, ...) {
     va_list args;
     cx_char *buffer;
     cx_uint32 len;
@@ -1081,11 +1086,13 @@ void g_fileWrite(g_file file, char* fmt, ...) {
         /* Write indentation & string */
         if (file->indent && file->endLine) {
             if (fprintf(cx_fileGet(file->file), "%*s%s", file->indent * 4, " ", buffer) < 0) {
-                cx_error("g_fileWrite: writing to outputfile failed.");
+                cx_seterr("g_fileWrite: writing to outputfile failed.");
+                goto error;
             }
         } else {
             if (fprintf(cx_fileGet(file->file), "%s", buffer) < 0) {
-                cx_error("g_fileWrite: writing to outputfile failed.");
+                cx_seterr("g_fileWrite: writing to outputfile failed.");
+                goto error;
             }
         }
 
@@ -1093,6 +1100,10 @@ void g_fileWrite(g_file file, char* fmt, ...) {
 
         cx_dealloc(buffer);
     }
+
+    return 0;
+error:
+    return -1;
 }
 
 /* Get generator */

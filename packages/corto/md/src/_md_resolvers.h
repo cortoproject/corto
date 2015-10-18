@@ -8,7 +8,7 @@ extern "C" {
 #include "md.h"
 #include "_md_callbacks.h"
 
-cx_object md_resolve(int level, cx_string name, md_Doc *header_out, md_parseData* data);
+cx_object md_resolve(int level, cx_string name, cx_object *parent, md_parseData* data);
 
 #ifdef __cplusplus
 }

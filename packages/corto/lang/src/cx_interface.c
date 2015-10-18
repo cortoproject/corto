@@ -61,7 +61,7 @@ cx_function* cx_vtableLookup(cx_vtable* vtable, cx_string member, cx_int32* d_ou
     s.buffer = (cx_object *)vtable->buffer;
     s.length = vtable->length;
 
-    result = cx_lookupFunctionFromSequence(s, member, d_out);
+    result = (cx_function*)cx_lookupFunctionFromSequence(s, member, d_out);
 
     return result;
 }

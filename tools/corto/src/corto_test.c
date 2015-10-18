@@ -31,6 +31,7 @@ cx_int16 corto_test(int argc, char *argv[]) {
             }
 
             cx_chdir("test");
+            cx_loadPackages();
             if (!testCase) {
                 ret = cx_load("./.corto/libtest.so", 1, (char*[]){"./.corto/libtest.so", NULL});
             } else {

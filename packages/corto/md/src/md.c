@@ -69,6 +69,25 @@ void md_freeRenderer(hoedown_renderer* renderer) {
     cx_dealloc(renderer);
 }
 
+int md_parseDoc(cx_string file, int argc, char* argv[], void *data) {
+    cx_char* source;
+    CX_UNUSED(argc);
+    CX_UNUSED(argv);
+    CX_UNUSED(data);
+
+    source = cx_fileLoad(file);
+    if (source) {
+        cx_object doc = cx_voidCreateChild(NULL, "doc");
+        md_parse(doc, source);
+        cx_dealloc(source);
+    } else {
+        goto error;
+    }
+
+    return 0;
+error:
+    return -1;
+}
 /* $end */
 
 /* ::corto::md::parse(object destination,string text) */
@@ -102,6 +121,7 @@ int mdMain(int argc, char* argv[]) {
 /* $begin(main) */
     CX_UNUSED(argc);
     CX_UNUSED(argv);
+    cx_loaderRegister("md", md_parseDoc, NULL);
     return 0;
 /* $end */
 }

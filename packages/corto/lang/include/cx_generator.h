@@ -180,7 +180,7 @@ void g_fileScopeSet(g_file file, cx_object o);
 cx_object g_fileScopeGet(g_file file);
 
 /* Write to a file. */
-void g_fileWrite(g_file file, char* fmt, ...);
+int g_fileWrite(g_file file, char* fmt, ...);
 
 /* Get generator */
 cx_generator g_fileGetGenerator(g_file file);
