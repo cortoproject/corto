@@ -683,6 +683,10 @@ static void cxsh_shell(void) {
         printf("%s", prompt);
 
         if (!cxsh_readline(cmd)) {
+            if (feof(stdin)) {
+                printf("\n");
+                quit = TRUE;
+            }
             continue;
         }
 
