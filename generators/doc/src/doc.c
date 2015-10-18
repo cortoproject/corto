@@ -17,6 +17,7 @@ typedef struct docWalk_t {
     cx_bool parseOthers;
     cx_class doc;
     cx_package package;
+    cx_bool mdloaded;
 } docWalk_t;
 
 static char* doc_idEscape(cx_object from, cx_object o, cx_id buffer) {
@@ -156,7 +157,9 @@ static int doc_walk(cx_object o, void *userData) {
             cx_instanceof(cx_type_o, o) || 
             cx_instanceof(cx_type_o, cx_parentof(o))) 
         {
-            cx_warning("warning: object '%s' is not documented (%s)", cx_fullname(o, id), docId);
+            if (data->mdloaded) {
+                cx_warning("warning: object '%s' is not documented (%s)", cx_fullname(o, id), docId);
+            }
         }
     }
 
@@ -254,7 +257,11 @@ int corto_genMain(cx_generator g) {
         walkData.doc = cx_class(cx_resolve(NULL, "::corto::md::Doc"));
 
         /* Load existing README file if available */
-        cx_load("README.md", 0, NULL);
+        if (!cx_load("README.md", 0, NULL)) {
+            walkData.mdloaded = TRUE;
+        } else {
+            walkData.mdloaded = FALSE;
+        }
 
         /* Walk objects, generate document haders */
         walkData.mdfile = g_fileOpen(g, "README.md");

@@ -165,14 +165,14 @@ CORTO_LANG_EXPORT cx_int16 cx_characterCopy(cx_character *dst, cx_character src)
 CORTO_LANG_EXPORT cx_int16 cx_characterCompare(cx_character dst, cx_character src);
 
 /* ::corto::lang::class */
-CORTO_LANG_EXPORT cx_class cx_classCreate(cx_interface base, cx_modifier baseAccess, cx_interfaceseq implements, cx_type parentType, cx_state parentState, cx_type defaultType);
-CORTO_LANG_EXPORT cx_class cx_classCreateChild(cx_object _parent, cx_string _name, cx_interface base, cx_modifier baseAccess, cx_interfaceseq implements, cx_type parentType, cx_state parentState, cx_type defaultType);
+CORTO_LANG_EXPORT cx_class cx_classCreate(cx_interface base, cx_modifier baseAccess, cx_interfaceseq implements, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType);
+CORTO_LANG_EXPORT cx_class cx_classCreateChild(cx_object _parent, cx_string _name, cx_interface base, cx_modifier baseAccess, cx_interfaceseq implements, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType);
 
 CORTO_LANG_EXPORT cx_class cx_classDeclare(void);
 CORTO_LANG_EXPORT cx_class cx_classDeclareChild(cx_object _parent, cx_string _name);
-CORTO_LANG_EXPORT cx_int16 cx_classDefine(cx_class _this, cx_interface base, cx_modifier baseAccess, cx_interfaceseq implements, cx_type parentType, cx_state parentState, cx_type defaultType);
-CORTO_LANG_EXPORT void cx_classUpdate(cx_class _this, cx_interface base, cx_modifier baseAccess, cx_interfaceseq implements, cx_type parentType, cx_state parentState, cx_type defaultType);
-CORTO_LANG_EXPORT void cx_classSet(cx_class _this, cx_interface base, cx_modifier baseAccess, cx_interfaceseq implements, cx_type parentType, cx_state parentState, cx_type defaultType);
+CORTO_LANG_EXPORT cx_int16 cx_classDefine(cx_class _this, cx_interface base, cx_modifier baseAccess, cx_interfaceseq implements, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType);
+CORTO_LANG_EXPORT void cx_classUpdate(cx_class _this, cx_interface base, cx_modifier baseAccess, cx_interfaceseq implements, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType);
+CORTO_LANG_EXPORT void cx_classSet(cx_class _this, cx_interface base, cx_modifier baseAccess, cx_interfaceseq implements, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType);
 CORTO_LANG_EXPORT cx_string cx_classStr(cx_class value);
 CORTO_LANG_EXPORT cx_class cx_classFromStr(cx_class value, cx_string str);
 CORTO_LANG_EXPORT cx_int16 cx_classCopy(cx_class *dst, cx_class src);
@@ -531,14 +531,14 @@ CORTO_LANG_EXPORT cx_int16 cx_int8Init(cx_int8* value);
 CORTO_LANG_EXPORT cx_int16 cx_int8Deinit(cx_int8* value);
 
 /* ::corto::lang::interface */
-CORTO_LANG_EXPORT cx_interface cx_interfaceCreate(cx_interface base, cx_type parentType, cx_state parentState, cx_type defaultType);
-CORTO_LANG_EXPORT cx_interface cx_interfaceCreateChild(cx_object _parent, cx_string _name, cx_interface base, cx_type parentType, cx_state parentState, cx_type defaultType);
+CORTO_LANG_EXPORT cx_interface cx_interfaceCreate(cx_interface base, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType);
+CORTO_LANG_EXPORT cx_interface cx_interfaceCreateChild(cx_object _parent, cx_string _name, cx_interface base, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType);
 
 CORTO_LANG_EXPORT cx_interface cx_interfaceDeclare(void);
 CORTO_LANG_EXPORT cx_interface cx_interfaceDeclareChild(cx_object _parent, cx_string _name);
-CORTO_LANG_EXPORT cx_int16 cx_interfaceDefine(cx_interface _this, cx_interface base, cx_type parentType, cx_state parentState, cx_type defaultType);
-CORTO_LANG_EXPORT void cx_interfaceUpdate(cx_interface _this, cx_interface base, cx_type parentType, cx_state parentState, cx_type defaultType);
-CORTO_LANG_EXPORT void cx_interfaceSet(cx_interface _this, cx_interface base, cx_type parentType, cx_state parentState, cx_type defaultType);
+CORTO_LANG_EXPORT cx_int16 cx_interfaceDefine(cx_interface _this, cx_interface base, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType);
+CORTO_LANG_EXPORT void cx_interfaceUpdate(cx_interface _this, cx_interface base, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType);
+CORTO_LANG_EXPORT void cx_interfaceSet(cx_interface _this, cx_interface base, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType);
 CORTO_LANG_EXPORT cx_string cx_interfaceStr(cx_interface value);
 CORTO_LANG_EXPORT cx_interface cx_interfaceFromStr(cx_interface value, cx_string str);
 CORTO_LANG_EXPORT cx_int16 cx_interfaceCopy(cx_interface *dst, cx_interface src);
@@ -960,14 +960,14 @@ CORTO_LANG_EXPORT cx_int16 cx_primitiveKindInit(cx_primitiveKind* value);
 CORTO_LANG_EXPORT cx_int16 cx_primitiveKindDeinit(cx_primitiveKind* value);
 
 /* ::corto::lang::procedure */
-CORTO_LANG_EXPORT cx_procedure cx_procedureCreate(cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_procedureKind kind);
-CORTO_LANG_EXPORT cx_procedure cx_procedureCreateChild(cx_object _parent, cx_string _name, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_procedureKind kind);
+CORTO_LANG_EXPORT cx_procedure cx_procedureCreate(cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType, cx_procedureKind kind);
+CORTO_LANG_EXPORT cx_procedure cx_procedureCreateChild(cx_object _parent, cx_string _name, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType, cx_procedureKind kind);
 
 CORTO_LANG_EXPORT cx_procedure cx_procedureDeclare(void);
 CORTO_LANG_EXPORT cx_procedure cx_procedureDeclareChild(cx_object _parent, cx_string _name);
-CORTO_LANG_EXPORT cx_int16 cx_procedureDefine(cx_procedure _this, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_procedureKind kind);
-CORTO_LANG_EXPORT void cx_procedureUpdate(cx_procedure _this, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_procedureKind kind);
-CORTO_LANG_EXPORT void cx_procedureSet(cx_procedure _this, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_procedureKind kind);
+CORTO_LANG_EXPORT cx_int16 cx_procedureDefine(cx_procedure _this, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType, cx_procedureKind kind);
+CORTO_LANG_EXPORT void cx_procedureUpdate(cx_procedure _this, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType, cx_procedureKind kind);
+CORTO_LANG_EXPORT void cx_procedureSet(cx_procedure _this, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType, cx_procedureKind kind);
 CORTO_LANG_EXPORT cx_string cx_procedureStr(cx_procedure value);
 CORTO_LANG_EXPORT cx_procedure cx_procedureFromStr(cx_procedure value, cx_string str);
 CORTO_LANG_EXPORT cx_int16 cx_procedureCopy(cx_procedure *dst, cx_procedure src);
@@ -1067,14 +1067,14 @@ CORTO_LANG_EXPORT cx_int16 cx_stringInit(cx_string* value);
 CORTO_LANG_EXPORT cx_int16 cx_stringDeinit(cx_string* value);
 
 /* ::corto::lang::struct */
-CORTO_LANG_EXPORT cx_struct cx_structCreate(cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType);
-CORTO_LANG_EXPORT cx_struct cx_structCreateChild(cx_object _parent, cx_string _name, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType);
+CORTO_LANG_EXPORT cx_struct cx_structCreate(cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType);
+CORTO_LANG_EXPORT cx_struct cx_structCreateChild(cx_object _parent, cx_string _name, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType);
 
 CORTO_LANG_EXPORT cx_struct cx_structDeclare(void);
 CORTO_LANG_EXPORT cx_struct cx_structDeclareChild(cx_object _parent, cx_string _name);
-CORTO_LANG_EXPORT cx_int16 cx_structDefine(cx_struct _this, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType);
-CORTO_LANG_EXPORT void cx_structUpdate(cx_struct _this, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType);
-CORTO_LANG_EXPORT void cx_structSet(cx_struct _this, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType);
+CORTO_LANG_EXPORT cx_int16 cx_structDefine(cx_struct _this, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType);
+CORTO_LANG_EXPORT void cx_structUpdate(cx_struct _this, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType);
+CORTO_LANG_EXPORT void cx_structSet(cx_struct _this, cx_interface base, cx_modifier baseAccess, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType);
 CORTO_LANG_EXPORT cx_string cx_structStr(cx_struct value);
 CORTO_LANG_EXPORT cx_struct cx_structFromStr(cx_struct value, cx_string str);
 CORTO_LANG_EXPORT cx_int16 cx_structCopy(cx_struct *dst, cx_struct src);
@@ -1095,14 +1095,14 @@ CORTO_LANG_EXPORT cx_int16 cx_textCopy(cx_text *dst, cx_text src);
 CORTO_LANG_EXPORT cx_int16 cx_textCompare(cx_text dst, cx_text src);
 
 /* ::corto::lang::type */
-CORTO_LANG_EXPORT cx_type cx_typeCreate(cx_type parentType, cx_state parentState, cx_type defaultType);
-CORTO_LANG_EXPORT cx_type cx_typeCreateChild(cx_object _parent, cx_string _name, cx_type parentType, cx_state parentState, cx_type defaultType);
+CORTO_LANG_EXPORT cx_type cx_typeCreate(cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType);
+CORTO_LANG_EXPORT cx_type cx_typeCreateChild(cx_object _parent, cx_string _name, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType);
 
 CORTO_LANG_EXPORT cx_type cx_typeDeclare(void);
 CORTO_LANG_EXPORT cx_type cx_typeDeclareChild(cx_object _parent, cx_string _name);
-CORTO_LANG_EXPORT cx_int16 cx_typeDefine(cx_type _this, cx_type parentType, cx_state parentState, cx_type defaultType);
-CORTO_LANG_EXPORT void cx_typeUpdate(cx_type _this, cx_type parentType, cx_state parentState, cx_type defaultType);
-CORTO_LANG_EXPORT void cx_typeSet(cx_type _this, cx_type parentType, cx_state parentState, cx_type defaultType);
+CORTO_LANG_EXPORT cx_int16 cx_typeDefine(cx_type _this, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType);
+CORTO_LANG_EXPORT void cx_typeUpdate(cx_type _this, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType);
+CORTO_LANG_EXPORT void cx_typeSet(cx_type _this, cx_type parentType, cx_state parentState, cx_type defaultType, cx_type defaultProcedureType);
 CORTO_LANG_EXPORT cx_string cx_typeStr(cx_type value);
 CORTO_LANG_EXPORT cx_type cx_typeFromStr(cx_type value, cx_string str);
 CORTO_LANG_EXPORT cx_int16 cx_typeCopy(cx_type *dst, cx_type src);

@@ -129,6 +129,7 @@ int cx_arg_core(char* arg, int argc, char* argv[]) {
     cx_llAppend(generators, "c_interface");
     cx_llAppend(generators, "c_api");
     cx_llAppend(generators, "c_type");
+    cx_llAppend(generators, "doc");
     cx_llAppend(scopes, "::corto::lang");
     cx_llAppend(attributes, "stubs=false");
     cx_llAppend(attributes, "c=src");
