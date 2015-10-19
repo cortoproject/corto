@@ -1,129 +1,486 @@
 #include <errno.h>
 #include <stdio.h>
+#include <sys/stat.h>
+#include <ctype.h>
 
+#if __linux__
+#include <linux/limits.h>
+#else
+#include <limits.h>
+#endif
+
+#include "html.h"
 #include "corto.h"
 
-#include "cx_files.h"
-#include "cx_generator.h"
-#include "corto/md/md.h"
+typedef struct htmlData_t {
+    const char *path;
+    unsigned int level;
+    const char *rootFullname;
+    cx_generator generator;
+} htmlData_t;
 
-typedef struct html_data {
-    g_file f;
-    cx_generator g;
-} html_data;
+/*
+ * Create a folder for this object
+ * Make an index.html file inside, contents are dependent on kind of object
+ *     e.g. primitives are a plain value but classes include description
+       of members
+ * Make a data.json file inside
+ * Call recursively for every object in this scope
+ */
+static void html_pathToRoot(cx_object o, char* buffer, cx_uint32 *level) {
+    if (cx_parentof(o)) {
+        html_pathToRoot(cx_parentof(o), buffer, level);
+    }
+    if (cx_nameof(o)) {
+        strcat(buffer, "/");
+        strcat(buffer, cx_nameof(o));
+    }
+    if (level) {
+        (*level)++;
+    }
+}
+
+static void html_getPath(cx_object o, char *buffer, htmlData_t *data, cx_uint32 *level) {
+    strcpy(buffer, data->path);
+    if (cx_nameof(o)) {
+        html_pathToRoot(cx_parentof(o), buffer, level);
+        strcat(buffer, "/");
+        strcat(buffer, cx_nameof(o));
+    }
+}
+
+static char* html_getFile(cx_object from, cx_object o, char *buffer, htmlData_t *data, cx_uint32 *level) {
+    if (from == cx_parentof(o)) {
+        strcpy(buffer, cx_nameof(from));
+        strcat(buffer, "/");
+        strcat(buffer, cx_nameof(o));
+        strcat(buffer, ".html");
+    } else {
+        html_getPath(o, buffer, data, level);
+        strcat(buffer, ".html");
+    }
+    return buffer;
+}
+
+typedef struct htmlTypeWalkData_t {
+    g_file file;
+    cx_type typeToWalk;
+    cx_bool instanceof;
+    cx_ll printed;
+    cx_ll counted;
+    htmlData_t *data;
+} htmlTypeWalkData_t;
+
+static int html_hasTypeWalk(cx_object o, void *userData) {
+    htmlTypeWalkData_t *data = userData;
+
+    if (((data->instanceof && cx_instanceof(data->typeToWalk, o)) || 
+        (cx_typeof(o) == data->typeToWalk)) &&
+        !cx_llHasObject(data->counted, o)) {
+        cx_llAppend(data->counted, o);
+    }
+
+    return 1;
+}
+
+/* Reflection hack to get the description from a document */
+static cx_string doc_getDescription(cx_class cl, cx_object doc) {
+    cx_member m = cx_interface_resolveMember(cl, "description");
+
+    cx_string result = NULL;
+    if (m) {
+        result = *(cx_string*)CX_OFFSET(doc, m->offset);
+    } else {
+        cx_critical("member description not found in doc class");
+    }
+
+    return result;
+}
+
+/* Reflection hack to get the description from a document */
+/* static cx_string doc_getText(cx_class cl, cx_object doc) {
+    cx_member m = cx_interface_resolveMember(cl, "text");
+
+    cx_string result = NULL;
+    if (m) {
+        result = *(cx_string*)CX_OFFSET(doc, m->offset);
+    } else {
+        cx_critical("member description not found in doc class");
+    }
+    
+    return result;
+}*/
+
+static int html_typeWalk(cx_object o, void *userData) {
+    htmlTypeWalkData_t *data = userData;
+    cx_string description = "";
+    cx_object doc = cx_man(o);
+    if (!doc) {
+        cx_warning("warning: documentation not found for '%s'\n", cx_nameof(o));
+    } else {
+        cx_object docClass = cx_resolve(NULL, "corto::md::Doc");
+        if (docClass) {
+            description = doc_getDescription(docClass, doc);
+            if (!description) {
+                description = "";
+            }
+        }
+        cx_release(docClass);
+    }
+
+    if (((data->instanceof && cx_instanceof(data->typeToWalk, o)) || 
+        (cx_typeof(o) == data->typeToWalk)) &&
+        !cx_llHasObject(data->printed, o)) 
+    {
+        cx_id id;
+        g_fileWrite(
+            data->file, 
+            "<tr><td>%s</td><td><a class=\"reference\"href=\"%s\">%s</a></td><td>%s</td></tr>\n",
+            cx_nameof(cx_typeof(o)),
+            html_getFile(cx_parentof(o), o, id, data->data, NULL), 
+            cx_nameof(o), 
+            description);
+        cx_llAppend(data->printed, o);
+    }
+
+    return 1;
+}
+
+typedef enum html_printMask {
+    PRINT_TYPES = 1,
+    PRINT_MEMBERS = 2,
+} html_printMask;
+
+static int html_printCategory(
+    cx_object o, 
+    g_file file, 
+    cx_string title, 
+    cx_type type, 
+    cx_uint32 count,
+    htmlTypeWalkData_t *data) {
+
+    data->typeToWalk = cx_type(type);
+    cx_scopeWalk(o, html_hasTypeWalk, data);
+    if (cx_llSize(data->counted) != count) {
+        g_fileWrite(file, "<h2>%s</h2>\n", title);
+        g_fileWrite(file, "<table class='category'>\n");
+        cx_scopeWalk(o, html_typeWalk, data);
+        g_fileWrite(file, "</table>\n");
+        count = cx_llSize(data->counted);
+    } 
+
+    return count;  
+}
+
+static int html_printScope(cx_object o, g_file file, html_printMask mask, htmlData_t *data) {
+    htmlTypeWalkData_t walkData;
+    cx_uint32 count = 0;
+
+    walkData.instanceof = TRUE;
+    walkData.printed = cx_llNew();
+    walkData.counted = cx_llNew();
+    walkData.file = file;
+    walkData.data = data;
+
+    if (mask | PRINT_MEMBERS) {
+        count = html_printCategory(o, file, "Members", cx_type(cx_member_o), count, &walkData);
+        count = html_printCategory(o, file, "Methods", cx_type(cx_method_o), count, &walkData);
+        count = html_printCategory(o, file, "Functions", cx_type(cx_function_o), count, &walkData);
+    }
+
+    walkData.instanceof = FALSE;
+    count = html_printCategory(o, file, "Classes", cx_type(cx_class_o), count, &walkData);
+    count = html_printCategory(o, file, "Structs", cx_type(cx_struct_o), count, &walkData);
+    count = html_printCategory(o, file, "Interfaces", cx_type(cx_interface_o), count, &walkData);
+    count = html_printCategory(o, file, "Enumerations", cx_type(cx_enum_o), count, &walkData);
+    count = html_printCategory(o, file, "Bitmasks", cx_type(cx_bitmask_o), count, &walkData);
+
+    walkData.instanceof = TRUE;
+    count = html_printCategory(o, file, "Primitives", cx_type(cx_primitive_o), count, &walkData);
+    count = html_printCategory(o, file, "Collections", cx_type(cx_collection_o), count, &walkData);
+    count = html_printCategory(o, file, "Delegates", cx_type(cx_delegate_o), count, &walkData);
+    count = html_printCategory(o, file, "Other types", cx_type(cx_type_o), count, &walkData);
+    count = html_printCategory(o, file, "Functions", cx_type(cx_function_o), count, &walkData);
+
+    return 0;
+}
+
+static int html_printParents(cx_object o, g_file file, htmlData_t *data) {
+    cx_object parents[CX_MAX_SCOPE_DEPTH];
+    cx_object p = o;
+    cx_uint32 i = 0;
+    cx_id capitalizedTypeName;
+
+    CX_UNUSED(data);
+
+    while(p) {
+        parents[i] = p;
+        p = cx_parentof(p);
+        i++;
+    }
+    g_fileWrite(file, "<p class='parents'>\n");
+    while(i) {
+        cx_uint32 j = 0;
+        i--;
+        if (i) {
+            g_fileWrite(file, "<a href=\"");
+            for (j = 0; j < i; j ++) {
+                g_fileWrite(file, "../");
+            }
+            g_fileWrite(file, "%s.html\">", cx_nameof(parents[i]));
+        }
+
+        if (cx_nameof(parents[i])) {
+            g_fileWrite(file, "%s", cx_nameof(parents[i]));
+        } else {
+            g_fileWrite(file, "root");
+        }
+        strcpy(capitalizedTypeName, cx_nameof(cx_typeof(parents[i])));
+        capitalizedTypeName[0] = toupper(capitalizedTypeName[0]);
+        g_fileWrite(file, " %s", capitalizedTypeName);
+        if (i) {
+            g_fileWrite(file, "</a>");
+        }
+        if (i) {
+            g_fileWrite(file, " > ");
+        }
+    }
+    g_fileWrite(file, "\n");
+    g_fileWrite(file, "</p>\n");
+
+    return 0;
+}
+
+static int html_printPackage(cx_object o, g_file file, htmlData_t *data) {
+    return html_printScope(o, file, PRINT_TYPES, data);
+}
+
+static int html_printClass(cx_object o, g_file file, htmlData_t *data) {
+    return html_printScope(o, file, PRINT_TYPES | PRINT_MEMBERS, data);
+}
+
+static int html_printStruct(cx_object o, g_file file, htmlData_t *data) {
+    return html_printScope(o, file, PRINT_TYPES | PRINT_MEMBERS, data);
+}
+
+static int html_printInterface(cx_object o, g_file file, htmlData_t *data) {
+    return html_printScope(o, file, PRINT_TYPES | PRINT_MEMBERS, data);
+}
+
+static int html_printEnum(cx_object o, g_file file, htmlData_t *data) {
+    return html_printScope(o, file, PRINT_MEMBERS, data);
+}
+
+static int html_printBitmask(cx_object o, g_file file, htmlData_t *data) {
+    return html_printScope(o, file, PRINT_MEMBERS, data);
+}
+
+static int html_printType(cx_object o, g_file file, htmlData_t *data) {
+    return html_printScope(o, file, PRINT_TYPES | PRINT_MEMBERS, data);
+}
+
+static g_file html_openIndexHtml(cx_object o, htmlData_t *data) {
+    char filePath[PATH_MAX];
+    g_file file;
+    cx_uint32 level = 0; /* Root is at 0 */
+    cx_uint32 i;
+
+    html_getPath(cx_parentof(o), filePath, data, &level);
+
+    if (cx_mkdir(filePath)) {
+        printf("failed to create dir '%s' (%s)\n", filePath, cx_lasterr());
+        goto error;
+    }
+
+    strcat(filePath, "/");
+    strcat(filePath, cx_nameof(o));
+    strcat(filePath, ".html");
+    file = g_fileOpen(data->generator, filePath);
+    if (!file) {
+        printf("failed to open file\n");
+        goto error;
+    }
+
+    g_fileWrite(file, "<!DOCTYPE html>\n");
+    g_fileWrite(file, "<html>\n");
+    g_fileIndent(file);
+    g_fileWrite(file, "<head>\n");
+    g_fileIndent(file);
+    g_fileWrite(file, "<meta charset=\"utf-8\">\n");
+    g_fileWrite(file, "<script src=\"");
+    for (i = 0; i < level; i++) {
+        g_fileWrite(file, "../");
+    }
+    g_fileWrite(file, "jquery-1.11.2.min.js\"></script>\n");
+    g_fileWrite(file, "<script src=\"");
+    for (i = 0; i < level; i++) {
+        g_fileWrite(file, "../");
+    }
+    g_fileWrite(file, "bootstrap.min.js\"></script>\n");
+    g_fileWrite(file, "<link href=\"");  
+    for (i = 0; i < level; i++) {
+        g_fileWrite(file, "../");
+    } 
+    g_fileWrite(file, "bootstrap.min.css\" rel=\"stylesheet\">\n");
+    g_fileWrite(file, "<link href=\"");  
+    for (i = 0; i < level; i++) {
+        g_fileWrite(file, "../");
+    } 
+    g_fileWrite(file, "cortodoc.css\" rel=\"stylesheet\">\n");
+    g_fileWrite(file, "</head>\n");
+    g_fileWrite(file, "<body>\n");
+    g_fileIndent(file);
+
+    g_fileWrite(file, "<div class='container'>\n");
+    g_fileIndent(file);
+
+    if (html_printParents(o, file, data)) {
+        goto error;
+    }
+
+    g_fileWrite(file, "<div class='package'>\n");
+    g_fileIndent(file);
+
+    cx_id capitalizedTypeName;
+    strcpy(capitalizedTypeName, cx_nameof(cx_typeof(o)));
+    capitalizedTypeName[0] = toupper(capitalizedTypeName[0]);
+    if (g_fileWrite(file, "<h1>%s %s</h1>\n", cx_nameof(o), capitalizedTypeName)) {
+        goto error;
+    }
+    g_fileWrite(file, "<hr>\n");
+
+    cx_string description = "";
+    cx_object doc = cx_man(o);
+    if (!doc) {
+        cx_warning("warning: documentation not found for '%s'\n", cx_nameof(o));
+    } else {
+        cx_object docClass = cx_resolve(NULL, "corto::md::Doc");
+        if (docClass) {
+            description = doc_getDescription(docClass, doc);
+            if (!description) {
+                description = "";
+            }
+        }
+        cx_release(docClass);
+    }
+    g_fileWrite(file, "%s\n", description);
+
+    return file;
+error:
+    return NULL;
+}
+
+static void html_closeIndexHtml(g_file file) {
+    g_fileDedent(file);
+    g_fileWrite(file, "</div>\n");
+    g_fileDedent(file);
+    g_fileWrite(file, "</div>\n");
+    g_fileDedent(file);
+    g_fileWrite(file, "</body>\n");
+    g_fileWrite(file, "</html>\n");
+    g_fileClose(file);
+}
+
+static int html_walk(cx_object o, void *userData) {
+    htmlData_t *data = userData;
+    g_file file = NULL;
+    cx_bool exploreScope = TRUE;
+
+    if (cx_instanceof(cx_package_o, o)) {
+        file = html_openIndexHtml(o, data);
+        if (html_printPackage(o, file, data)) {
+            goto error;
+        }
+    } else if (cx_instanceof(cx_class_o, o)) {
+        file = html_openIndexHtml(o, data);
+        if (html_printClass(o, file, data)) {
+            goto error;
+        }
+    } else if (cx_instanceof(cx_struct_o, o)) {
+        file = html_openIndexHtml(o, data);
+        if (html_printStruct(o, file, data)) {
+            goto error;
+        }
+    } else if (cx_instanceof(cx_interface_o, o)) {
+        file = html_openIndexHtml(o, data);
+        if (html_printInterface(o, file, data)) {
+            goto error;
+        }
+    } else if (cx_instanceof(cx_enum_o, o)) {
+        file = html_openIndexHtml(o, data);
+        if (html_printEnum(o, file, data)) {
+            goto error;
+        }
+        exploreScope = FALSE;
+    } else if (cx_instanceof(cx_bitmask_o, o)) {
+        file = html_openIndexHtml(o, data);
+        if (html_printBitmask(o, file, data)) {
+            goto error;
+        }
+        exploreScope = FALSE;
+    } else if (cx_instanceof(cx_type_o, o)) {
+        file = html_openIndexHtml(o, data);
+        if (html_printType(o, file, data)) {
+            goto error;
+        }
+        exploreScope = FALSE;
+    }
+
+    if (file) {
+        html_closeIndexHtml(file);
+    }
+
+    if (exploreScope) {
+        if (!cx_scopeWalk(o, html_walk, data)) {
+            goto error;
+        }
+    }
+    return 1;
+error:
+    return 0;
+}
 
 static cx_int16 html_copy(const char* path, const char *name) {
-    /* TODO  */
-    // char sourcePath[PATH_MAX];
-    // char destinationPath[PATH_MAX];
-    char* cortoHome = getenv("CORTO_HOME");
-    char* sourcePath;
-    char* destinationPath;
-    cx_asprintf(&sourcePath, "%s/generators/html/%s", cortoHome, name);
-    cx_asprintf(&destinationPath, "%s/%s", path, name);
+    char sourcePath[PATH_MAX];
+    char destinationPath[PATH_MAX];
+    char *cortoHome = getenv("CORTO_HOME");
+    sprintf(sourcePath, "%s/etc/corto/%s/generators/%s", cortoHome, CORTO_VERSION, name);
+    sprintf(destinationPath, "%s/%s", path, name);
     if (cx_cp(sourcePath, destinationPath)) {
         goto error;
     }
-    cx_dealloc(sourcePath);
-    cx_dealloc(destinationPath);
     return 0;
 error:
     return -1;
 }
 
-static int html_dumpMdObject(md_Doc doc, html_data* data, cx_ll ll) {
-    /* TODO get relative name */
-    int i = 0;
-    while (i++ < doc->level) {
-        if (doc->level > 6) {
-            cx_seterr("doc has more than 6 levels but HTML headings only allow for 6 levels");
-            goto error;
-        }
-        g_fileWrite(data->f, "#");
-    }
-
-    cx_id relativeName;
-    cx_fullname(doc, relativeName); /* TODO get relative name */
-    g_fileWrite(data->f, " %s\n", relativeName); /* Notice the space */
-    g_fileWrite(data->f, "<div class=\"doc-description\">\n");
-    g_fileWrite(data->f, "%s", doc->description);
-    g_fileWrite(data->f, "</div>\n");
-    g_fileWrite(data->f, "<div class=\"doc-text\">\n");
-    g_fileWrite(data->f, "%s", doc->text);
-    g_fileWrite(data->f, "</div>\n");
-
-    {
-        cx_objectseq scope = cx_scopeClaim(doc);
-        cx_objectseqForeach(scope, child) {
-            cx_llAppend(ll, child);
-        }
-        cx_scopeRelease(scope);
-    }
-    return 1;
-error:
-    return 0;
-}
-
-static int html_dumpMd(md_Doc doc, html_data* data) {
-    cx_ll ll = cx_llNew();
-    cx_llAppend(ll, doc);
-    while (cx_llSize(ll)) {
-        if (html_dumpMdObject(md_Doc(cx_llTakeFirst(ll)), data, ll) == 0) {
-            goto error;
-        }
-    }
-    cx_llFree(ll);
-    return 0;
-error:
-    return 1;
-}
-
-static int html_htmlScaffold(md_Doc doc, void* data) {
-    html_data* _data = data;
-    g_fileWrite(_data->f, "<!DOCTYPE html>\n");
-    g_fileWrite(_data->f, "<html>\n");
-    g_fileWrite(_data->f, "<head>\n");
-    g_fileWrite(_data->f, "<meta charset=\"UTF-8\">\n");
-    g_fileWrite(_data->f, "</head>\n");
-    g_fileWrite(_data->f, "<body>\n");
-    html_dumpMd(doc, data);
-    g_fileWrite(_data->f, "</body>\n");
-    g_fileWrite(_data->f, "</html>\n");
-    return 0;
-}
-
 cx_int16 corto_genMain(cx_generator g) {
-    /*
-     * Check if *.md file exists.
-     * If not, generate the md scaffold.
-     * Once it exists, parse it and generate the doc tree.
-     * Copy css and js files.
-     */
+    const char docsFilename[] = "doc";
 
-    char* filename = "docs.html";
-    cx_object o = cx_createChild(root_o, "docs", cx_void_o);
-    if (!o) {
-        cx_seterr("could not create docs object for parsing markdown");
+    cx_mkdir(docsFilename);
+    htmlData_t data = {docsFilename, 1, "", g};
+
+    if (html_copy(data.path, "jquery-1.11.2.min.js")) {
         goto error;
     }
 
-    cx_string docName = gen_getAttribute(g, "doc");
-    if (docName == NULL) {
-        cx_seterr("please define target doc with --attr doc=::path::to::doc");
+    if (html_copy(data.path, "bootstrap.min.js")) {
         goto error;
     }
-    cx_object doc = cx_resolve(NULL, docName);
-    if (doc == NULL) {
-        cx_seterr("could not find %s", docName);
+    
+    if (html_copy(data.path, "bootstrap.min.css")) {
         goto error;
     }
 
-    g_file file = g_fileOpen(g, filename);
-    html_data data = {file, g};
-    html_htmlScaffold(doc, &data);
-    g_fileClose(file);
+    if (html_copy(data.path, "cortodoc.css")) {
+        goto error;
+    }
+
+    if (!g_walkNoScope(g, html_walk, &data)) {
+        goto error;
+    }
 
     return 0;
 error:
-    return 1;
+    return -1;
 }

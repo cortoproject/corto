@@ -2,6 +2,7 @@
 COMPONENTS = %w(
     c
     doc
+    html
 )
 
 require "#{ENV['CORTO_BUILD']}/forward"

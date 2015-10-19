@@ -1,0 +1,33 @@
+
+body {
+    background-color: #eee;
+}
+
+table.category {
+    border-collapse: collapse;
+    border-spacing: 0px;
+}
+
+table.category td {
+    color: #515151;
+    padding: 5px 20px;
+    margin: 0px;
+    border: solid #ddd 1px;
+}
+
+div.package {
+    background-color: #fff;
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+p.parents {
+    margin-top: 10px;
+    font-size: 14px;
+}
+

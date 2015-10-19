@@ -2805,6 +2805,77 @@ cx_int16 cx_expr(cx_object scope, cx_string expr, cx_value *value) {
     return result;
 }
 
+
+static char* cx_manIdEscape(cx_object from, cx_object o, cx_id buffer) {
+    char *ptr = buffer, ch;
+    int offset = 0;
+    if (from) {
+        cx_relname(from, o, buffer);
+    } else {
+        cx_fullname(o, buffer);
+    }
+
+    for (; (ch = *ptr); ptr++) {
+        if (ch == ':') {
+            ptr[-offset] = '_';
+            offset++;
+            ptr++;
+        } else {
+            ptr[-offset] = ch;
+        }
+    }
+
+    ptr[-offset] = '\0';
+
+    return ptr - offset;
+}
+
+static char* cx_manId(cx_object o, cx_id buffer) {
+    cx_object parents[CX_MAX_SCOPE_DEPTH];
+    cx_uint32 count = 0;
+    cx_object p = o;
+    cx_object from = NULL;
+    char *ptr = buffer + 7;
+
+    strcpy(buffer, "::doc::");
+
+    do {
+        parents[count] = p;
+        count++;
+    } while(!cx_instanceof(cx_package_o, p) && (p = cx_parentof(p)));
+
+    do{
+        count--;
+        p = parents[count];
+        if (cx_instanceof(cx_package_o, p)) {
+            ptr = cx_manIdEscape(NULL, p, ptr);
+            from = p;
+        } else if (cx_instanceof(cx_type_o, p)) {
+            if (from && !cx_instanceof(cx_package_o, from)) {
+                *(ptr++) = '_';
+            } else {
+                *(ptr++) = ':';
+                *(ptr++) = ':';
+            }
+            ptr = cx_manIdEscape(from, p, ptr);
+            from = p;
+        } else {
+            *(ptr++) = ':';
+            *(ptr++) = ':';
+            ptr = cx_manIdEscape(parents[count + 1], p, ptr);
+        }
+    } while (count);
+
+    return buffer;
+}
+
+/* Documentation */
+cx_object cx_man(cx_object o) {
+    cx_id id;
+    cx_manId(o, id);
+    return cx_resolve(NULL, id);
+}
+
 /* Thread-safe reading */
 cx_int32 cx_readBegin(cx_object object) {
     if (cx_checkAttr(object, CX_ATTR_WRITABLE)) {
