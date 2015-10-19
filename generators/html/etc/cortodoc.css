@@ -13,6 +13,7 @@ table.category td {
     padding: 5px 20px;
     margin: 0px;
     border: solid #ddd 1px;
+    text-align: top;
 }
 
 div.package {
@@ -31,3 +32,22 @@ p.parents {
     font-size: 14px;
 }
 
+a.reference {
+    font-weight: 600;
+}
+
+a.details {
+    font-size: 14px;
+}
+
+span.annotate {
+    font-size: 11px;
+}
+
+span.description {
+    font-size: 14px;
+}
+
+h2 {
+    margin-top: 30px;
+}

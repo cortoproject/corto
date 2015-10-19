@@ -84,6 +84,8 @@ Enables creating composite reference types.
 #### observable
 #### Returns
 ### implements
+Specifies the interfaces implemented by the class.
+
 ### init()
 #### Returns
 ### instanceof(object object)
@@ -306,6 +308,8 @@ Enables construction of signed integer types.
 Enables programming by contract.
 
 ### base
+Specifies the interface from which to inherit.
+
 ### baseof(interface type)
 #### type
 #### Returns
@@ -661,6 +665,8 @@ Enables construction of composite valuetypes.
 
 ### base
 ### baseAccess
+Access modifiers for members of the inherited interface.
+
 ### castable(type type)
 #### type
 #### Returns
@@ -692,10 +698,16 @@ Base class for all types.
 
 ### alignment
 ### alignmentof()
+Returns C alignment of type.
+
 #### Returns
 ### allocSize()
+Returns allocation size for type.
+
 #### Returns
 ### castable(type type)
+Can provided type be casted to this type.
+
 #### type
 #### Returns
 ### checkAttr(attr attributes)
@@ -708,6 +720,8 @@ Base class for all types.
 #### value
 #### Returns
 ### compatible(type type)
+Can provided type be assigned to this type.
+
 #### type
 #### Returns
 ### construct()
@@ -720,7 +734,11 @@ Base class for all types.
 #### type
 #### Returns
 ### defaultProcedureType
+The type to use when no explicit type is provided in a procedure declaration.
+
 ### defaultType
+The type to use when no explicit type is provided in an object declaration.
+
 ### define()
 #### Returns
 ### delete()
@@ -745,7 +763,11 @@ Base class for all types.
 ### parentof()
 #### Returns
 ### parentState
+When declaring a scoped object, its parent must be in the specified state.
+
 ### parentType
+When declaring a scoped object, its parent must be of the specified type.
+
 ### reference
 ### relname(object from)
 #### from
@@ -758,6 +780,8 @@ Base class for all types.
 #### Returns
 ### size
 ### sizeof()
+Returns database size of type.
+
 #### Returns
 ### templateId
 ### toString()
