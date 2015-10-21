@@ -30,7 +30,7 @@ cx_void _test_Resolver_tc_caseInsensitive(test_Resolver this) {
 }
 
 /* ::test::Resolver::tc_resolveAll() */
-/* $header(::test::Resolver::tc_resolveAll()) */
+/* $header(::test::Resolver::tc_resolveAll) */
 int tc_resolveAllWalk(cx_object o, void *udata) {
     CX_UNUSED(udata);
     cx_id id;
