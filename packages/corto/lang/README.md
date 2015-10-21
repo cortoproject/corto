@@ -754,6 +754,8 @@ The type to use when no explicit type is provided in an object declaration.
 #### Returns
 ### invalidate()
 ### kind
+Specifies the whether the type is (amongst others) a primitive, composite or collection type.
+
 ### lookup(string name)
 #### name
 #### Returns
@@ -769,6 +771,8 @@ When declaring a scoped object, its parent must be in the specified state.
 When declaring a scoped object, its parent must be of the specified type.
 
 ### reference
+Specifies whether type type is a reference type (TRUE) or a value type (FALSE)
+
 ### relname(object from)
 #### from
 #### Returns
