@@ -1,6 +1,9 @@
 # ::corto::lang
+The lang package contains the types of the Corto typesystem.
 
 ## alias
+Enables creating an alias to a (hidden) member in an interface.
+
 ### construct()
 #### Returns
 ### init()
@@ -8,8 +11,11 @@
 ### member
 
 ## any
+Type that can represent any value.
 
 ## array
+Enables construction of fixed length, consecutively stored collections.
+
 ### construct()
 #### Returns
 ### destruct()
@@ -18,6 +24,8 @@
 #### Returns
 
 ## attr
+Object attributes.
+
 ### ATTR_DEFAULT
 ### ATTR_OBSERVABLE
 ### ATTR_PERSISTENT
@@ -25,26 +33,37 @@
 ### ATTR_WRITABLE
 
 ## binary
+Enables construction of binary types.
+
 ### init()
 #### Returns
 
 ## bitmask
+Enables construction of bitmask types.
 ### init()
 #### Returns
 
 ## bool
+Scalar boolean type.
 
 ## boolean
+Enables construction of boolean types.
+
 ### init()
 #### Returns
 
 ## char
+Scalar character type.
 
 ## character
+Enables construction of character types.
+
 ### init()
 #### Returns
 
 ## class
+Enables creating composite reference types.
+
 ### allocSize()
 #### Returns
 ### base
@@ -65,6 +84,8 @@
 #### observable
 #### Returns
 ### implements
+Specifies the interfaces implemented by the class.
+
 ### init()
 #### Returns
 ### instanceof(object object)
@@ -101,6 +122,8 @@
 #### observable
 
 ## collection
+Enables construction of collection types.
+
 ### castable(type type)
 #### type
 #### Returns
@@ -118,12 +141,16 @@
 #### Returns
 
 ## collectionKind
+Collection typekinds.
+
 ### ARRAY
 ### LIST
 ### MAP
 ### SEQUENCE
 
 ## compositeKind
+Composite typekinds.
+
 ### CLASS
 ### DELEGATE
 ### INTERFACE
@@ -131,10 +158,14 @@
 ### STRUCT
 
 ## constant
+Scalar integer type used for enumerations and bitmasks.
+
 ### init()
 #### Returns
 
 ## delegate
+Enables construction of delegate types.
+
 ### bind(function object)
 #### object
 #### Returns
@@ -154,16 +185,23 @@
 ### returnType
 
 ## delegatedata
+Base for all delegate types.
+
 ### instance
 ### procedure
 
 ## destructAction
+Delegate used for class destructors.
 
 ## dispatcher
+Interface for manual dispatching of events.
+
 ### post(event e)
 #### e
 
 ## enum
+Enables construction of enumeration types.
+
 ### constant(int32 value)
 #### value
 #### Returns
@@ -175,12 +213,16 @@
 #### Returns
 
 ## equalityKind
+Used as result of equality comparisons.
+
 ### EQ
 ### GT
 ### LT
 ### NEQ
 
 ## event
+Base class for all events.
+
 ### handle()
 ### handled
 ### kind
@@ -188,6 +230,8 @@
 #### Returns
 
 ## eventMask
+Flags that can be provided to subscribe for object notifications.
+
 ### ON_DECLARE
 ### ON_DEFINE
 ### ON_DELETE
@@ -200,16 +244,22 @@
 ### ON_VALUE
 
 ## float
+Enables construction of floating point types.
+
 ### init()
 #### Returns
 ### max
 ### min
 
 ## float32
+32 bit floating point type.
 
 ## float64
+64 bit floating point type.
 
 ## function
+Enables construction of procedure objects.
+
 ### bind()
 #### Returns
 ### impl
@@ -232,23 +282,34 @@
 #### object
 
 ## initAction
+Delegate used for type initializers and class constructors.
 
 ## int
+Enables construction of signed integer types.
+
 ### init()
 #### Returns
 ### max
 ### min
 
 ## int16
+16 bit signed integer
 
 ## int32
+32 bit signed integer
 
 ## int64
+64 bit signed integer
 
 ## int8
+8 bit signed integer
 
 ## interface
+Enables programming by contract.
+
 ### base
+Specifies the interface from which to inherit.
+
 ### baseof(interface type)
 #### type
 #### Returns
@@ -285,16 +346,23 @@
 #### Returns
 
 ## interfaceseq
+Sequence of interface elements.
 
 ## interfaceVector
+Enables quick lookups of interface methods.
+
 ### interface
 ### vector
 
 ## interfaceVectorseq
+Sequence of interfaceVector elements.
 
 ## invokeAction
+Delegate used by replicators to forward calls.
 
 ## invokeEvent
+Event used by delegates to forward calls.
+
 ### args
 ### function
 ### handle()
@@ -302,6 +370,8 @@
 ### replicator
 
 ## iterator
+Provides generic iterator functionality for collections.
+
 ### castable(type type)
 #### type
 #### Returns
@@ -313,6 +383,8 @@
 #### Returns
 
 ## list
+Enables construction of variable length, linked list collections.
+
 ### append()
 #### Returns
 ### append(any element)
@@ -329,6 +401,8 @@
 ### reverse()
 
 ## map
+Enables construction of key-value pair collections.
+
 ### construct()
 #### Returns
 ### elementType
@@ -338,6 +412,8 @@
 ### max
 
 ## member
+Provides capability to add members to composite types.
+
 ### construct()
 #### Returns
 ### id
@@ -350,13 +426,18 @@
 ### weak
 
 ## memberseq
+Sequence of member elements.
 
 ## metaprocedure
+Procedure defined on the meta (type of type) level.
+
 ### bind()
 #### Returns
 ### referenceOnly
 
 ## method
+Procedure type that provides instance methods.
+
 ### bind()
 #### Returns
 ### init()
@@ -364,6 +445,8 @@
 ### virtual
 
 ## modifier
+Mask that enables specifying access to members.
+
 ### CONST
 ### GLOBAL
 ### HIDDEN
@@ -372,12 +455,17 @@
 ### READONLY
 
 ## notifyAction
+Delegate used by replicators to receive object notifications.
 
 ## object
+Type that allows for storing references to objects of any type.
 
 ## objectseq
+Sequence of object elements.
 
 ## observableEvent
+Event used to forward observable notifications.
+
 ### handle()
 ### me
 ### observable
@@ -385,6 +473,8 @@
 ### source
 
 ## observer
+Procedure that is invoked when an interest matching notification occurs. 
+
 ### bind()
 #### Returns
 ### delayedBinder
@@ -409,12 +499,17 @@
 #### object
 
 ## observerseq
+Sequence of observer elements.
 
 ## octet
+Scalar 8 bit binary type.
 
 ## octetseq
+Sequence of octet elements
 
 ## operatorKind
+Operators supported by core.
+
 ### ADD
 ### AND
 ### ASSIGN
@@ -450,16 +545,21 @@
 ### XOR
 
 ## package
+Container for types that can be shared across projects.
 ### url
 
 ## parameter
+Describes a function parameter.
 ### name
 ### passByReference
 ### type
 
 ## parameterseq
+Sequence of parameter elements.
 
 ## primitive
+Enables construction of primitive types.
+
 ### castable(type type)
 #### type
 #### Returns
@@ -479,6 +579,8 @@
 ### width
 
 ## primitiveKind
+Primitive typekinds.
+
 ### BINARY
 ### BITMASK
 ### BOOLEAN
@@ -490,6 +592,8 @@
 ### UINTEGER
 
 ## procedure
+Enables construction of procedure types.
+
 ### bind
 ### init()
 #### Returns
@@ -498,16 +602,22 @@
 #### object
 
 ## procedureKind
+Procedure typekinds.
+
 ### FUNCTION
 ### METAPROCEDURE
 ### METHOD
 ### OBSERVER
 
 ## query
+Provides the capability to select and query subsections of the corto store.
+
 ### from
 ### mask
 
 ## replicator
+Base for classes that replicate data between datasources.
+
 ### construct()
 #### Returns
 ### destruct()
@@ -531,6 +641,8 @@
 ### query
 
 ## sequence
+Enables construction of variable length, consecutive collection.
+
 ### construct()
 #### Returns
 ### init()
@@ -539,16 +651,22 @@
 #### size
 
 ## state
+Object states.
 ### DECLARED
 ### DEFINED
 ### DESTRUCTED
 ### VALID
 
 ## string
+Allows representing text.
 
 ## struct
+Enables construction of composite valuetypes.
+
 ### base
 ### baseAccess
+Access modifiers for members of the inherited interface.
+
 ### castable(type type)
 #### type
 #### Returns
@@ -568,18 +686,28 @@
 #### Returns
 
 ## text
+Enables construction of types that allow representing text.
+
 ### charWidth
 ### init()
 #### Returns
 ### length
 
 ## type
+Base class for all types.
+
 ### alignment
 ### alignmentof()
+Returns C alignment of type.
+
 #### Returns
 ### allocSize()
+Returns allocation size for type.
+
 #### Returns
 ### castable(type type)
+Can provided type be casted to this type.
+
 #### type
 #### Returns
 ### checkAttr(attr attributes)
@@ -592,6 +720,8 @@
 #### value
 #### Returns
 ### compatible(type type)
+Can provided type be assigned to this type.
+
 #### type
 #### Returns
 ### construct()
@@ -604,7 +734,11 @@
 #### type
 #### Returns
 ### defaultProcedureType
+The type to use when no explicit type is provided in a procedure declaration.
+
 ### defaultType
+The type to use when no explicit type is provided in an object declaration.
+
 ### define()
 #### Returns
 ### delete()
@@ -620,6 +754,8 @@
 #### Returns
 ### invalidate()
 ### kind
+Specifies the whether the type is (amongst others) a primitive, composite or collection type.
+
 ### lookup(string name)
 #### name
 #### Returns
@@ -629,8 +765,14 @@
 ### parentof()
 #### Returns
 ### parentState
+When declaring a scoped object, its parent must be in the specified state.
+
 ### parentType
+When declaring a scoped object, its parent must be of the specified type.
+
 ### reference
+Specifies whether type type is a reference type (TRUE) or a value type (FALSE)
+
 ### relname(object from)
 #### from
 #### Returns
@@ -642,6 +784,8 @@
 #### Returns
 ### size
 ### sizeof()
+Returns database size of type.
+
 #### Returns
 ### templateId
 ### toString()
@@ -650,6 +794,8 @@
 #### Returns
 
 ## typeKind
+Core type kinds.
+
 ### ANY
 ### COLLECTION
 ### COMPOSITE
@@ -658,28 +804,40 @@
 ### VOID
 
 ## uint
+Enables construction of unsigned integer types.
+
 ### init()
 #### Returns
 ### max
 ### min
 
 ## uint16
+16 bit unsigned integer.
 
 ## uint32
+32 bit unsigned integer.
 
 ## uint64
+64 bit unsigned integer.
 
 ## uint8
+8 bit unsigned integer.
 
 ## virtual
+Method that can be overridden by a method in a subclass.
+
 ### init()
 #### Returns
 
 ## void
+Type that represents nothing.
 
 ## vtable
+Type used to represent the method table of interface types.
 
 ## width
+Enables representing width in bits.
+
 ### WIDTH_16
 ### WIDTH_32
 ### WIDTH_64
@@ -687,3 +845,4 @@
 ### WIDTH_WORD
 
 ## word
+Scalar word-sized binary type.

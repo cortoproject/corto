@@ -1,9 +1,12 @@
-#include "cx_generator.h"
-#include "cx_object.h"
+#ifndef HTML_H
+#define HTML_H
 
-typedef struct cx_html_gen {
-    const char *path;
-    unsigned int level;
-    const char *rootFullname;
-    cx_generator generator;
-} cx_html_gen_t;
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* HTML_H */

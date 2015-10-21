@@ -71,6 +71,7 @@ void cx_serializerInit(cx_serializer this) {
     this->program[CX_ANY] = cx_serializeAny;
     this->program[CX_COMPOSITE] = cx_serializeMembers;
     this->program[CX_COLLECTION] = cx_serializeElements;
+    this->metaprogram[CX_BASE] = cx_serializeValue;
     this->initialized = TRUE;
     this->constructed = FALSE;
     this->access = CX_GLOBAL;
@@ -189,17 +190,13 @@ cx_int16 cx_serializeMembers(cx_serializer this, cx_value* info, void* userData)
     v = cx_valueValue(info);
     o = cx_valueObject(info);
 
-
     /* Process inheritance */
     if (cx_class_instanceof(cx_struct_o, t) && cx_serializeMatchAccess(this->accessKind, this->access, cx_struct(t)->baseAccess)) {
         cx_value base;
 
         cb = this->metaprogram[CX_BASE];
-        if (!cb) {
-            cb = cx_serializeValue;
-        }
 
-        if (cx_interface(t)->base) {
+        if (cb && cx_interface(t)->base) {
             base.kind = CX_BASE;
             base.parent = info;
             base.is.base.v = v;

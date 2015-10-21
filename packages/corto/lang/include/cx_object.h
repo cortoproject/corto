@@ -105,6 +105,9 @@ cx_object cx_wait(cx_int32 timeout_sec, cx_int32 timeout_nanosec);
 /* REPL functionality */
 cx_int16 cx_expr(cx_object scope, cx_string expr, cx_value *value);
 
+/* Documentation */
+cx_object cx_man(cx_object o);
+
 /* Set reference field */
 void cx_setref(void* ptr, cx_object value);
 

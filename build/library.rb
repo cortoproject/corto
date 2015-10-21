@@ -41,6 +41,11 @@ task :prebuild do
 		sh "mkdir -p #{includePath}"
 	    sh "cp include/* #{includePath}/"
 	end
+	if File.exists?("etc") then
+		etc = "#{ENV['CORTO_TARGET']}/etc/corto/#{VERSION}/#{TARGETPATH}"
+		sh "mkdir -p #{etc}"
+	    sh "cp etc/* #{etc}/"
+	end	
 	if ENV['CORTO_TARGET'] != "/usr/local" then
 		sh "echo \"`pwd`\" >> source.txt"
 		libpath = "#{ENV['CORTO_TARGET']}/lib/corto/#{VERSION}/#{TARGETPATH}"
