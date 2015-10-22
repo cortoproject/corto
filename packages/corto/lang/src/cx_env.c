@@ -71,7 +71,7 @@ char* cx_venvparse(const char* input, va_list arglist) {
 					*varptr = '\0';
 					val = cx_getenv(var);
 					if (!val) {
-						cx_error("environment variable '%s' doesn't exist", var);
+						cx_seterr("environment variable '%s' doesn't exist", var);
 						goto error;
 					}
 					len = strlen(val);

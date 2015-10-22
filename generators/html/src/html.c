@@ -20,12 +20,18 @@ typedef struct htmlData_t {
 } htmlData_t;
 
 static char *html_shortId(cx_object o, cx_id id) {
-    if (cx_parentof(o) == corto_lang_o) {
-        strcpy(id, cx_nameof(o));
+    if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
+        if (cx_parentof(o) == corto_lang_o) {
+            strcpy(id, cx_nameof(o));
+        } else {
+            cx_id buff;
+            cx_fullname(o, buff);
+            strcpy(id, buff + 2);
+        }
     } else {
-        cx_id buff;
-        cx_fullname(o, buff);
-        strcpy(id, buff + 2);
+        cx_string str = cx_str(o, 0);
+        strcpy(id, str);
+        cx_dealloc(str);
     }
     return id;
 }
@@ -67,7 +73,11 @@ static char* html_ref(
             strcat(buffer, "../");
             p = cx_parentof(p);
         }
-        buffer[strlen(buffer) - 1] = '\0';
+        if (strlen(buffer)) {
+            buffer[strlen(buffer) - 1] = '\0';
+        } else {
+            strcpy(buffer, ".");
+        }
 
         if (cx_instanceof(cx_package_o, o) ||
             cx_instanceof(cx_interface_o, o)) {
@@ -191,12 +201,19 @@ static int html_typeWalk(cx_object o, void *userData) {
         !cx_llHasObject(data->printed, o)) 
     {
         cx_id id;
-        g_fileWrite(
-            data->file, 
-            "<tr><td>%s&nbsp;-&nbsp;"
-            "<span class=\"description\">%s</span></td></tr>\n",
-            html_ref(cx_parentof(o), o, cx_nameof(o), "reference", id),
-            description);
+        if (description && strlen(description)) {
+            g_fileWrite(
+                data->file, 
+                "<tr><td>%s&nbsp;-&nbsp;"
+                "<span class=\"description\">%s</span></td></tr>\n",
+                html_ref(cx_parentof(o), o, cx_nameof(o), "reference", id),
+                description);
+        } else {
+            g_fileWrite(
+                data->file, 
+                "<tr><td>%s",
+                html_ref(cx_parentof(o), o, cx_nameof(o), "reference", id));            
+        }
         cx_llAppend(data->printed, o);
     }
 
@@ -773,7 +790,7 @@ static int html_printScopeDetail(cx_object o, g_file file, html_printMask mask, 
         cx_objectseq scope = cx_scopeClaim(o);
 
         cx_objectseqForeach(scope, t) {
-            if (cx_instanceof(cx_type_o, t)) {
+            if (cx_instanceof(cx_type_o, t) && !cx_instanceof(cx_interface_o, t)) {
                 hasTypes = TRUE;
             }
         }
@@ -972,7 +989,8 @@ static g_file html_openIndexHtml(cx_object o, htmlData_t *data) {
         g_fileWrite(file, "../");
     } 
     g_fileWrite(file, "cortodoc.css\" rel=\"stylesheet\">\n");
-    g_fileWrite(file, "<title>%s | Corto documentation</title>", cx_nameof(o));
+    g_fileWrite(file, "<title>%s | Corto documentation</title>\n", cx_nameof(o));
+    g_fileDedent(file);
     g_fileWrite(file, "</head>\n");
     g_fileWrite(file, "<body>\n");
     g_fileIndent(file);
@@ -1036,6 +1054,7 @@ static void html_closeIndexHtml(g_file file) {
     g_fileWrite(file, "</div>\n");
     g_fileDedent(file);
     g_fileWrite(file, "</body>\n");
+    g_fileDedent(file);
     g_fileWrite(file, "</html>\n");
     g_fileClose(file);
 }

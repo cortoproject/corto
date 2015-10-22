@@ -84,7 +84,7 @@ int cx_arg_language(char* arg, int argc, char* argv[]) {
         if (!generators) {
             generators = cx_llNew();
         }
-        cx_llAppend(generators, "doc");
+
         if (!strcmp(argv[1], "c")) {
             if (!attributes) {
                 attributes = cx_llNew();

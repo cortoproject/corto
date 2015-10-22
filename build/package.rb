@@ -56,7 +56,11 @@ file "include/#{TARGET}__type.h" => [GENFILE, ".corto/packages.txt", ".corto/com
     preload = PP_PRELOAD.join(" ")
     sh "mkdir -p .corto"
     sh "touch .corto/#{TARGET}__wrapper.c"
-    ret = sh "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c"
+    if LOCAL then
+        ret = sh "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c"
+    else
+        ret = sh "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c -g html"
+    end
     if !ret then
         sh "rm include/#{TARGET}__type.h"
         abort "\033[1;31m[ build failed ]\033[0;49m"
@@ -66,13 +70,15 @@ end
 task :doc do
     verbose(false)
     if `corto locate corto::md` != "corto: package 'corto::md' not found\n" then
-        if File.exists? "README.md" then
-            # sh "corto pp README.md --scope #{PACKAGE} -g html"
+        if File.exists? "README.md" and not LOCAL then
+            sh "corto pp README.md --scope #{PACKAGE} -g html"
         end
     end
 end
 
-task :default => ["include/#{TARGET}__type.h", :doc]
+task :default => ["include/#{TARGET}__type.h"]
+
+task :postbuild => [:doc]
 
 if File.exists? "./.corto/dep.rb"
     require "./.corto/dep.rb"
