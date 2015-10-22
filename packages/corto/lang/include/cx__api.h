@@ -1281,9 +1281,10 @@ CORTO_LANG_EXPORT cx_int16 cx_wordDeinit(cx_word* value);
 #define cx_interfaceseqForeach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_interface elem;\
-    for(elem##_iter=0; seq.buffer ? elem = seq.buffer[elem##_iter] : elem, elem##_iter<seq.length; elem##_iter++)\
+    for(elem##_iter=0; (seq).buffer ? elem = (seq).buffer[elem##_iter] : elem, elem##_iter<(seq).length; elem##_iter++)\
 
-CORTO_LANG_EXPORT cx_interface cx_interfaceseqAppend(cx_interfaceseq *seq);
+CORTO_LANG_EXPORT cx_interface* cx_interfaceseqAppend(cx_interfaceseq *seq, cx_interface element);
+CORTO_LANG_EXPORT cx_interface* cx_interfaceseqAppendAlloc(cx_interfaceseq *seq);
 CORTO_LANG_EXPORT void cx_interfaceseqSize(cx_interfaceseq *seq, cx_uint32 length);
 CORTO_LANG_EXPORT void cx_interfaceseqClear(cx_interfaceseq *seq);
 
@@ -1291,9 +1292,10 @@ CORTO_LANG_EXPORT void cx_interfaceseqClear(cx_interfaceseq *seq);
 #define cx_interfaceVectorseqForeach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_interfaceVector elem;\
-    for(elem##_iter=0; seq.buffer ? elem = seq.buffer[elem##_iter] : elem, elem##_iter<seq.length; elem##_iter++)\
+    for(elem##_iter=0; (seq).buffer ? elem = (seq).buffer[elem##_iter] : elem, elem##_iter<(seq).length; elem##_iter++)\
 
-CORTO_LANG_EXPORT cx_interfaceVector* cx_interfaceVectorseqAppend(cx_interfaceVectorseq *seq);
+CORTO_LANG_EXPORT cx_interfaceVector* cx_interfaceVectorseqAppend(cx_interfaceVectorseq *seq, cx_interfaceVector element);
+CORTO_LANG_EXPORT cx_interfaceVector* cx_interfaceVectorseqAppendAlloc(cx_interfaceVectorseq *seq);
 CORTO_LANG_EXPORT void cx_interfaceVectorseqSize(cx_interfaceVectorseq *seq, cx_uint32 length);
 CORTO_LANG_EXPORT void cx_interfaceVectorseqClear(cx_interfaceVectorseq *seq);
 
@@ -1301,9 +1303,10 @@ CORTO_LANG_EXPORT void cx_interfaceVectorseqClear(cx_interfaceVectorseq *seq);
 #define cx_memberseqForeach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_member elem;\
-    for(elem##_iter=0; seq.buffer ? elem = seq.buffer[elem##_iter] : elem, elem##_iter<seq.length; elem##_iter++)\
+    for(elem##_iter=0; (seq).buffer ? elem = (seq).buffer[elem##_iter] : elem, elem##_iter<(seq).length; elem##_iter++)\
 
-CORTO_LANG_EXPORT cx_member cx_memberseqAppend(cx_memberseq *seq);
+CORTO_LANG_EXPORT cx_member* cx_memberseqAppend(cx_memberseq *seq, cx_member element);
+CORTO_LANG_EXPORT cx_member* cx_memberseqAppendAlloc(cx_memberseq *seq);
 CORTO_LANG_EXPORT void cx_memberseqSize(cx_memberseq *seq, cx_uint32 length);
 CORTO_LANG_EXPORT void cx_memberseqClear(cx_memberseq *seq);
 
@@ -1311,9 +1314,10 @@ CORTO_LANG_EXPORT void cx_memberseqClear(cx_memberseq *seq);
 #define cx_objectseqForeach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_object elem;\
-    for(elem##_iter=0; seq.buffer ? elem = seq.buffer[elem##_iter] : elem, elem##_iter<seq.length; elem##_iter++)\
+    for(elem##_iter=0; (seq).buffer ? elem = (seq).buffer[elem##_iter] : elem, elem##_iter<(seq).length; elem##_iter++)\
 
-CORTO_LANG_EXPORT cx_object cx_objectseqAppend(cx_objectseq *seq);
+CORTO_LANG_EXPORT cx_object* cx_objectseqAppend(cx_objectseq *seq, cx_object element);
+CORTO_LANG_EXPORT cx_object* cx_objectseqAppendAlloc(cx_objectseq *seq);
 CORTO_LANG_EXPORT void cx_objectseqSize(cx_objectseq *seq, cx_uint32 length);
 CORTO_LANG_EXPORT void cx_objectseqClear(cx_objectseq *seq);
 
@@ -1321,9 +1325,10 @@ CORTO_LANG_EXPORT void cx_objectseqClear(cx_objectseq *seq);
 #define cx_observerseqForeach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_observer elem;\
-    for(elem##_iter=0; seq.buffer ? elem = seq.buffer[elem##_iter] : elem, elem##_iter<seq.length; elem##_iter++)\
+    for(elem##_iter=0; (seq).buffer ? elem = (seq).buffer[elem##_iter] : elem, elem##_iter<(seq).length; elem##_iter++)\
 
-CORTO_LANG_EXPORT cx_observer cx_observerseqAppend(cx_observerseq *seq);
+CORTO_LANG_EXPORT cx_observer* cx_observerseqAppend(cx_observerseq *seq, cx_observer element);
+CORTO_LANG_EXPORT cx_observer* cx_observerseqAppendAlloc(cx_observerseq *seq);
 CORTO_LANG_EXPORT void cx_observerseqSize(cx_observerseq *seq, cx_uint32 length);
 CORTO_LANG_EXPORT void cx_observerseqClear(cx_observerseq *seq);
 
@@ -1331,9 +1336,10 @@ CORTO_LANG_EXPORT void cx_observerseqClear(cx_observerseq *seq);
 #define cx_octetseqForeach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_octet elem;\
-    for(elem##_iter=0; seq.buffer ? elem = seq.buffer[elem##_iter] : elem, elem##_iter<seq.length; elem##_iter++)\
+    for(elem##_iter=0; (seq).buffer ? elem = (seq).buffer[elem##_iter] : elem, elem##_iter<(seq).length; elem##_iter++)\
 
-CORTO_LANG_EXPORT cx_octet* cx_octetseqAppend(cx_octetseq *seq);
+CORTO_LANG_EXPORT cx_octet* cx_octetseqAppend(cx_octetseq *seq, cx_octet element);
+CORTO_LANG_EXPORT cx_octet* cx_octetseqAppendAlloc(cx_octetseq *seq);
 CORTO_LANG_EXPORT void cx_octetseqSize(cx_octetseq *seq, cx_uint32 length);
 CORTO_LANG_EXPORT void cx_octetseqClear(cx_octetseq *seq);
 
@@ -1341,9 +1347,10 @@ CORTO_LANG_EXPORT void cx_octetseqClear(cx_octetseq *seq);
 #define cx_parameterseqForeach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_parameter elem;\
-    for(elem##_iter=0; seq.buffer ? elem = seq.buffer[elem##_iter] : elem, elem##_iter<seq.length; elem##_iter++)\
+    for(elem##_iter=0; (seq).buffer ? elem = (seq).buffer[elem##_iter] : elem, elem##_iter<(seq).length; elem##_iter++)\
 
-CORTO_LANG_EXPORT cx_parameter* cx_parameterseqAppend(cx_parameterseq *seq);
+CORTO_LANG_EXPORT cx_parameter* cx_parameterseqAppend(cx_parameterseq *seq, cx_parameter element);
+CORTO_LANG_EXPORT cx_parameter* cx_parameterseqAppendAlloc(cx_parameterseq *seq);
 CORTO_LANG_EXPORT void cx_parameterseqSize(cx_parameterseq *seq, cx_uint32 length);
 CORTO_LANG_EXPORT void cx_parameterseqClear(cx_parameterseq *seq);
 
@@ -1351,9 +1358,10 @@ CORTO_LANG_EXPORT void cx_parameterseqClear(cx_parameterseq *seq);
 #define cx_vtableForeach(seq, elem) \
     cx_uint32 elem##_iter;\
     cx_function elem;\
-    for(elem##_iter=0; seq.buffer ? elem = seq.buffer[elem##_iter] : elem, elem##_iter<seq.length; elem##_iter++)\
+    for(elem##_iter=0; (seq).buffer ? elem = (seq).buffer[elem##_iter] : elem, elem##_iter<(seq).length; elem##_iter++)\
 
-CORTO_LANG_EXPORT cx_function cx_vtableAppend(cx_vtable *seq);
+CORTO_LANG_EXPORT cx_function* cx_vtableAppend(cx_vtable *seq, cx_function element);
+CORTO_LANG_EXPORT cx_function* cx_vtableAppendAlloc(cx_vtable *seq);
 CORTO_LANG_EXPORT void cx_vtableSize(cx_vtable *seq, cx_uint32 length);
 CORTO_LANG_EXPORT void cx_vtableClear(cx_vtable *seq);
 

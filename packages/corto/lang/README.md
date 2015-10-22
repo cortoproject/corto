@@ -1,6 +1,7 @@
 # ::corto::lang
 The lang package contains the types of the Corto typesystem.
 
+
 ## alias
 Enables creating an alias to a (hidden) member in an interface.
 
@@ -12,6 +13,7 @@ Enables creating an alias to a (hidden) member in an interface.
 
 ## any
 Type that can represent any value.
+
 
 ## array
 Enables construction of fixed length, consecutively stored collections.
@@ -40,11 +42,13 @@ Enables construction of binary types.
 
 ## bitmask
 Enables construction of bitmask types.
+
 ### init()
 #### Returns
 
 ## bool
 Scalar boolean type.
+
 
 ## boolean
 Enables construction of boolean types.
@@ -54,6 +58,7 @@ Enables construction of boolean types.
 
 ## char
 Scalar character type.
+
 
 ## character
 Enables construction of character types.
@@ -160,6 +165,7 @@ Indicates a map collection.
 ### SEQUENCE
 Indicates a sequence collection.
 
+
 ## compositeKind
 Composite typekinds.
 
@@ -182,6 +188,7 @@ Indicates a procedure composite.
 
 ### STRUCT
 Indicates a struct composite.
+
 
 ## constant
 Scalar integer type used for enumerations and bitmasks.
@@ -219,6 +226,7 @@ Base for all delegate types.
 ## destructAction
 Delegate used for class destructors.
 
+
 ## dispatcher
 Interface for manual dispatching of events.
 
@@ -245,7 +253,6 @@ The most common use of equalityKind is in the core compare functions, which
 are used for various purposes. Both the typesystem and core rely on comparisons
 for storing objects in tree structures, where the hierarchical object store is
 the most visible example.
-
 NEQ might be returned in a scenario where the two values cannot be compared, for
 example, when they are of incompatible types.
 
@@ -260,6 +267,7 @@ The first value that is first provided is smaller than the second value.
 
 ### NEQ
 The provided values are not equal.
+
 
 ## event
 Base class for all events.
@@ -295,8 +303,10 @@ Enables construction of floating point types.
 ## float32
 32 bit floating point type.
 
+
 ## float64
 64 bit floating point type.
+
 
 ## function
 Enables construction of procedure objects.
@@ -325,6 +335,7 @@ Enables construction of procedure objects.
 ## initAction
 Delegate used for type initializers and class constructors.
 
+
 ## int
 Enables construction of signed integer types.
 
@@ -336,14 +347,18 @@ Enables construction of signed integer types.
 ## int16
 16 bit signed integer
 
+
 ## int32
 32 bit signed integer
+
 
 ## int64
 64 bit signed integer
 
+
 ## int8
 8 bit signed integer
+
 
 ## interface
 Enables programming by contract.
@@ -389,6 +404,7 @@ Specifies the interface from which to inherit.
 ## interfaceseq
 Sequence of interface elements.
 
+
 ## interfaceVector
 Enables quick lookups of interface methods.
 
@@ -398,8 +414,10 @@ Enables quick lookups of interface methods.
 ## interfaceVectorseq
 Sequence of interfaceVector elements.
 
+
 ## invokeAction
 Delegate used by replicators to forward calls.
+
 
 ## invokeEvent
 Event used by delegates to forward calls.
@@ -469,6 +487,7 @@ Provides capability to add members to composite types.
 ## memberseq
 Sequence of member elements.
 
+
 ## metaprocedure
 Procedure defined on the meta (type of type) level.
 
@@ -498,11 +517,14 @@ Mask that enables specifying access to members.
 ## notifyAction
 Delegate used by replicators to receive object notifications.
 
+
 ## object
 Type that allows for storing references to objects of any type.
 
+
 ## objectseq
 Sequence of object elements.
+
 
 ## observableEvent
 Event used to forward observable notifications.
@@ -542,11 +564,14 @@ Procedure that is invoked when an interest matching notification occurs.
 ## observerseq
 Sequence of observer elements.
 
+
 ## octet
 Scalar 8 bit binary type.
 
+
 ## octetseq
 Sequence of octet elements
+
 
 ## operatorKind
 Operators supported by core.
@@ -587,16 +612,19 @@ Operators supported by core.
 
 ## package
 Container for types that can be shared across projects.
+
 ### url
 
 ## parameter
 Describes a function parameter.
+
 ### name
 ### passByReference
 ### type
 
 ## parameterseq
 Sequence of parameter elements.
+
 
 ## primitive
 Enables construction of primitive types.
@@ -693,6 +721,7 @@ Enables construction of variable length, consecutive collection.
 
 ## state
 Object states.
+
 ### DECLARED
 ### DEFINED
 ### DESTRUCTED
@@ -700,6 +729,7 @@ Object states.
 
 ## string
 Allows representing text.
+
 
 ## struct
 Enables construction of composite valuetypes.
@@ -859,14 +889,18 @@ Enables construction of unsigned integer types.
 ## uint16
 16 bit unsigned integer.
 
+
 ## uint32
 32 bit unsigned integer.
+
 
 ## uint64
 64 bit unsigned integer.
 
+
 ## uint8
 8 bit unsigned integer.
+
 
 ## virtual
 Method that can be overridden by a method in a subclass.
@@ -877,8 +911,10 @@ Method that can be overridden by a method in a subclass.
 ## void
 Type that represents nothing.
 
+
 ## vtable
 Type used to represent the method table of interface types.
+
 
 ## width
 Enables representing width in bits.
@@ -891,3 +927,4 @@ Enables representing width in bits.
 
 ## word
 Scalar word-sized binary type.
+

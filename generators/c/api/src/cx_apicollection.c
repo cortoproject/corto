@@ -54,6 +54,39 @@ static cx_int16 c_apiSequenceTypeForeach(cx_sequence o, c_apiWalk_t* data) {
 }
 
 /* Create append-function */
+static cx_int16 c_apiSequenceTypeAppendAlloc(cx_sequence o, c_apiWalk_t* data) {
+    cx_id id, elementId;
+    cx_bool prefix;
+    cx_type elementType = cx_collection(o)->elementType;
+    
+    c_specifierId(data->g, cx_type(o), id, NULL, NULL);
+    c_specifierId(data->g, cx_type(elementType), elementId, &prefix, NULL);
+
+    /* Function declaration */
+    c_writeExport(data->g, data->header);
+    g_fileWrite(data->header, "%s* %sAppendAlloc(%s *seq);\n", elementId, id, id);
+    
+    /* Function implementation */
+    g_fileWrite(data->source, "%s* %sAppendAlloc(%s *seq) {\n", elementId, id, id);
+    
+    g_fileIndent(data->source);
+    g_fileWrite(data->source, "cx_uint32 size;\n");
+    g_fileWrite(data->source, "seq->length++;\n");
+    g_fileWrite(data->source, "seq->buffer = cx_realloc(seq->buffer, seq->length * (size=cx_type_sizeof(cx_type(%s_o))));\n", elementId);
+    g_fileWrite(data->source, "memset(%sseq->buffer[seq->length-1], 0, size);\n", elementType->reference?"":"&");
+    if (c_apiElementRequiresInit(elementType)) {
+        if (!elementType->reference) {
+            c_apiElementInit(elementId, "&seq->buffer[seq->length-1]", TRUE, data);
+        }
+    }
+    g_fileWrite(data->source, "return &seq->buffer[seq->length-1];\n");
+    g_fileDedent(data->source);
+    g_fileWrite(data->source, "}\n\n");
+    
+    return 0;
+}
+
+/* Create append-function */
 static cx_int16 c_apiSequenceTypeAppend(cx_sequence o, c_apiWalk_t* data) {
     cx_id id, elementId;
     cx_bool prefix;
@@ -64,10 +97,10 @@ static cx_int16 c_apiSequenceTypeAppend(cx_sequence o, c_apiWalk_t* data) {
 
     /* Function declaration */
     c_writeExport(data->g, data->header);
-    g_fileWrite(data->header, "%s%s %sAppend(%s *seq);\n", elementId, prefix?"*":"", id, id);
+    g_fileWrite(data->header, "%s* %sAppend(%s *seq, %s element);\n", elementId, id, id, elementId);
     
     /* Function implementation */
-    g_fileWrite(data->source, "%s%s %sAppend(%s *seq) {\n", elementId, prefix?"*":"", id, id);
+    g_fileWrite(data->source, "%s* %sAppend(%s *seq, %s element) {\n", elementId, id, id, elementId);
     
     g_fileIndent(data->source);
     g_fileWrite(data->source, "cx_uint32 size;\n");
@@ -75,13 +108,17 @@ static cx_int16 c_apiSequenceTypeAppend(cx_sequence o, c_apiWalk_t* data) {
     g_fileWrite(data->source, "seq->buffer = cx_realloc(seq->buffer, seq->length * (size=cx_type_sizeof(cx_type(%s_o))));\n", elementId);
     g_fileWrite(data->source, "memset(%sseq->buffer[seq->length-1], 0, size);\n", elementType->reference?"":"&");
     if (c_apiElementRequiresInit(elementType)) {
-        if (elementType->reference) {
-            c_apiElementInit(elementId, "seq->buffer[seq->length-1]", TRUE, data);
-        } else {
+        if (!elementType->reference) {
             c_apiElementInit(elementId, "&seq->buffer[seq->length-1]", TRUE, data);
         }
     }
-    g_fileWrite(data->source, "return %sseq->buffer[seq->length-1];\n", elementType->reference?"":"&");
+    if (elementType->reference) {
+        g_fileWrite(data->source, "cx_setref(&seq->buffer[seq->length-1], element);\n");
+    } else {
+        g_fileWrite(data->source, "cx_copyp(&seq->buffer[seq->length-1], %s_o, &element);\n", elementId);
+    }
+
+    g_fileWrite(data->source, "return &seq->buffer[seq->length-1];\n");
     g_fileDedent(data->source);
     g_fileWrite(data->source, "}\n\n");
     
@@ -188,6 +225,11 @@ static cx_int16 c_apiWalkSequence(cx_sequence o, c_apiWalk_t* data) {
     if (c_apiSequenceTypeAppend(o, data)) {
         goto error;
     }
+
+    /* Generate append that just returns allocated sequence */
+    if (c_apiSequenceTypeAppendAlloc(o, data)) {
+        goto error;
+    }    
     
     /* Generate size */
     if (c_apiSequenceTypeSize(o, data)) {

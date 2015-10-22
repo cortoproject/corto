@@ -7958,12 +7958,21 @@ cx_int16 cx_wordDeinit(cx_word* value) {
     return result;
 }
 
-cx_interface cx_interfaceseqAppend(cx_interfaceseq *seq) {
+cx_interface* cx_interfaceseqAppend(cx_interfaceseq *seq, cx_interface element) {
     cx_uint32 size;
     seq->length++;
     seq->buffer = cx_realloc(seq->buffer, seq->length * (size=cx_type_sizeof(cx_type(cx_interface_o))));
     memset(seq->buffer[seq->length-1], 0, size);
-    return seq->buffer[seq->length-1];
+    cx_setref(&seq->buffer[seq->length-1], element);
+    return &seq->buffer[seq->length-1];
+}
+
+cx_interface* cx_interfaceseqAppendAlloc(cx_interfaceseq *seq) {
+    cx_uint32 size;
+    seq->length++;
+    seq->buffer = cx_realloc(seq->buffer, seq->length * (size=cx_type_sizeof(cx_type(cx_interface_o))));
+    memset(seq->buffer[seq->length-1], 0, size);
+    return &seq->buffer[seq->length-1];
 }
 
 void cx_interfaceseqSize(cx_interfaceseq *seq, cx_uint32 length) {
@@ -7987,7 +7996,21 @@ void cx_interfaceseqClear(cx_interfaceseq *seq) {
     cx_interfaceseqSize(seq, 0);
 }
 
-cx_interfaceVector* cx_interfaceVectorseqAppend(cx_interfaceVectorseq *seq) {
+cx_interfaceVector* cx_interfaceVectorseqAppend(cx_interfaceVectorseq *seq, cx_interfaceVector element) {
+    cx_uint32 size;
+    seq->length++;
+    seq->buffer = cx_realloc(seq->buffer, seq->length * (size=cx_type_sizeof(cx_type(cx_interfaceVector_o))));
+    memset(&seq->buffer[seq->length-1], 0, size);
+    {
+        cx_value v;
+        cx_valueValueInit(&v, NULL, cx_type(cx_interfaceVector_o), &seq->buffer[seq->length-1]);
+        cx_initv(&v);
+    }
+    cx_copyp(&seq->buffer[seq->length-1], cx_interfaceVector_o, &element);
+    return &seq->buffer[seq->length-1];
+}
+
+cx_interfaceVector* cx_interfaceVectorseqAppendAlloc(cx_interfaceVectorseq *seq) {
     cx_uint32 size;
     seq->length++;
     seq->buffer = cx_realloc(seq->buffer, seq->length * (size=cx_type_sizeof(cx_type(cx_interfaceVector_o))));
@@ -8031,12 +8054,21 @@ void cx_interfaceVectorseqClear(cx_interfaceVectorseq *seq) {
     cx_interfaceVectorseqSize(seq, 0);
 }
 
-cx_member cx_memberseqAppend(cx_memberseq *seq) {
+cx_member* cx_memberseqAppend(cx_memberseq *seq, cx_member element) {
     cx_uint32 size;
     seq->length++;
     seq->buffer = cx_realloc(seq->buffer, seq->length * (size=cx_type_sizeof(cx_type(cx_member_o))));
     memset(seq->buffer[seq->length-1], 0, size);
-    return seq->buffer[seq->length-1];
+    cx_setref(&seq->buffer[seq->length-1], element);
+    return &seq->buffer[seq->length-1];
+}
+
+cx_member* cx_memberseqAppendAlloc(cx_memberseq *seq) {
+    cx_uint32 size;
+    seq->length++;
+    seq->buffer = cx_realloc(seq->buffer, seq->length * (size=cx_type_sizeof(cx_type(cx_member_o))));
+    memset(seq->buffer[seq->length-1], 0, size);
+    return &seq->buffer[seq->length-1];
 }
 
 void cx_memberseqSize(cx_memberseq *seq, cx_uint32 length) {
@@ -8060,12 +8092,21 @@ void cx_memberseqClear(cx_memberseq *seq) {
     cx_memberseqSize(seq, 0);
 }
 
-cx_object cx_objectseqAppend(cx_objectseq *seq) {
+cx_object* cx_objectseqAppend(cx_objectseq *seq, cx_object element) {
     cx_uint32 size;
     seq->length++;
     seq->buffer = cx_realloc(seq->buffer, seq->length * (size=cx_type_sizeof(cx_type(cx_object_o))));
     memset(seq->buffer[seq->length-1], 0, size);
-    return seq->buffer[seq->length-1];
+    cx_setref(&seq->buffer[seq->length-1], element);
+    return &seq->buffer[seq->length-1];
+}
+
+cx_object* cx_objectseqAppendAlloc(cx_objectseq *seq) {
+    cx_uint32 size;
+    seq->length++;
+    seq->buffer = cx_realloc(seq->buffer, seq->length * (size=cx_type_sizeof(cx_type(cx_object_o))));
+    memset(seq->buffer[seq->length-1], 0, size);
+    return &seq->buffer[seq->length-1];
 }
 
 void cx_objectseqSize(cx_objectseq *seq, cx_uint32 length) {
@@ -8089,12 +8130,21 @@ void cx_objectseqClear(cx_objectseq *seq) {
     cx_objectseqSize(seq, 0);
 }
 
-cx_observer cx_observerseqAppend(cx_observerseq *seq) {
+cx_observer* cx_observerseqAppend(cx_observerseq *seq, cx_observer element) {
     cx_uint32 size;
     seq->length++;
     seq->buffer = cx_realloc(seq->buffer, seq->length * (size=cx_type_sizeof(cx_type(cx_observer_o))));
     memset(seq->buffer[seq->length-1], 0, size);
-    return seq->buffer[seq->length-1];
+    cx_setref(&seq->buffer[seq->length-1], element);
+    return &seq->buffer[seq->length-1];
+}
+
+cx_observer* cx_observerseqAppendAlloc(cx_observerseq *seq) {
+    cx_uint32 size;
+    seq->length++;
+    seq->buffer = cx_realloc(seq->buffer, seq->length * (size=cx_type_sizeof(cx_type(cx_observer_o))));
+    memset(seq->buffer[seq->length-1], 0, size);
+    return &seq->buffer[seq->length-1];
 }
 
 void cx_observerseqSize(cx_observerseq *seq, cx_uint32 length) {
@@ -8118,7 +8168,16 @@ void cx_observerseqClear(cx_observerseq *seq) {
     cx_observerseqSize(seq, 0);
 }
 
-cx_octet* cx_octetseqAppend(cx_octetseq *seq) {
+cx_octet* cx_octetseqAppend(cx_octetseq *seq, cx_octet element) {
+    cx_uint32 size;
+    seq->length++;
+    seq->buffer = cx_realloc(seq->buffer, seq->length * (size=cx_type_sizeof(cx_type(cx_octet_o))));
+    memset(&seq->buffer[seq->length-1], 0, size);
+    cx_copyp(&seq->buffer[seq->length-1], cx_octet_o, &element);
+    return &seq->buffer[seq->length-1];
+}
+
+cx_octet* cx_octetseqAppendAlloc(cx_octetseq *seq) {
     cx_uint32 size;
     seq->length++;
     seq->buffer = cx_realloc(seq->buffer, seq->length * (size=cx_type_sizeof(cx_type(cx_octet_o))));
@@ -8139,7 +8198,21 @@ void cx_octetseqClear(cx_octetseq *seq) {
     cx_octetseqSize(seq, 0);
 }
 
-cx_parameter* cx_parameterseqAppend(cx_parameterseq *seq) {
+cx_parameter* cx_parameterseqAppend(cx_parameterseq *seq, cx_parameter element) {
+    cx_uint32 size;
+    seq->length++;
+    seq->buffer = cx_realloc(seq->buffer, seq->length * (size=cx_type_sizeof(cx_type(cx_parameter_o))));
+    memset(&seq->buffer[seq->length-1], 0, size);
+    {
+        cx_value v;
+        cx_valueValueInit(&v, NULL, cx_type(cx_parameter_o), &seq->buffer[seq->length-1]);
+        cx_initv(&v);
+    }
+    cx_copyp(&seq->buffer[seq->length-1], cx_parameter_o, &element);
+    return &seq->buffer[seq->length-1];
+}
+
+cx_parameter* cx_parameterseqAppendAlloc(cx_parameterseq *seq) {
     cx_uint32 size;
     seq->length++;
     seq->buffer = cx_realloc(seq->buffer, seq->length * (size=cx_type_sizeof(cx_type(cx_parameter_o))));
@@ -8183,12 +8256,21 @@ void cx_parameterseqClear(cx_parameterseq *seq) {
     cx_parameterseqSize(seq, 0);
 }
 
-cx_function cx_vtableAppend(cx_vtable *seq) {
+cx_function* cx_vtableAppend(cx_vtable *seq, cx_function element) {
     cx_uint32 size;
     seq->length++;
     seq->buffer = cx_realloc(seq->buffer, seq->length * (size=cx_type_sizeof(cx_type(cx_function_o))));
     memset(seq->buffer[seq->length-1], 0, size);
-    return seq->buffer[seq->length-1];
+    cx_setref(&seq->buffer[seq->length-1], element);
+    return &seq->buffer[seq->length-1];
+}
+
+cx_function* cx_vtableAppendAlloc(cx_vtable *seq) {
+    cx_uint32 size;
+    seq->length++;
+    seq->buffer = cx_realloc(seq->buffer, seq->length * (size=cx_type_sizeof(cx_type(cx_function_o))));
+    memset(seq->buffer[seq->length-1], 0, size);
+    return &seq->buffer[seq->length-1];
 }
 
 void cx_vtableSize(cx_vtable *seq, cx_uint32 length) {
