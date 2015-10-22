@@ -69,6 +69,11 @@ task :collect do
 		sh "mkdir -p #{includePath}"
 	    sh "cp include/* #{includePath}/"
 	end	
+	if File.exists?("etc") then
+		etc = ENV['HOME'] + "/.corto/pack/etc/corto/#{VERSION}/#{TARGETPATH}"
+		sh "mkdir -p #{etc}"
+	    sh "cp etc/* #{etc}/"
+	end	
 end
 
 require "#{ENV['CORTO_BUILD']}/artefact"

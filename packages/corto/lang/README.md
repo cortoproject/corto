@@ -141,21 +141,47 @@ Enables construction of collection types.
 #### Returns
 
 ## collectionKind
-Collection typekinds.
+Lists the different corto collection kinds.
+
+The collectionKind enumeration is used in the collection class to be able to
+quickly determine what kind of collection it describes. This enumeration is
+interpreted primarily by code that relies on metadata, such as the serializer
+framework, code generators and data visualization tools.
 
 ### ARRAY
+Indicates an array collection. 
+
 ### LIST
+Indicates a list collection.
+
 ### MAP
+Indicates a map collection.
+
 ### SEQUENCE
+Indicates a sequence collection.
 
 ## compositeKind
 Composite typekinds.
 
+The compositeKind enumeration is used in the interface class to be able to
+quickly determine what kind of composite it describes. This enumeration is
+interpreted primarily by code that relies on metadata, such as the serializer
+framework, code generators and data visualization tools.
+
 ### CLASS
+Indicates a class composite.
+
 ### DELEGATE
+Indicates a delegate composite.
+
 ### INTERFACE
+Indicates an interface composite.
+
 ### PROCEDURE
+Indicates a procedure composite.
+
 ### STRUCT
+Indicates a struct composite.
 
 ## constant
 Scalar integer type used for enumerations and bitmasks.
@@ -215,10 +241,25 @@ Enables construction of enumeration types.
 ## equalityKind
 Used as result of equality comparisons.
 
+The most common use of equalityKind is in the core compare functions, which
+are used for various purposes. Both the typesystem and core rely on comparisons
+for storing objects in tree structures, where the hierarchical object store is
+the most visible example.
+
+NEQ might be returned in a scenario where the two values cannot be compared, for
+example, when they are of incompatible types.
+
 ### EQ
+The provided values are equal.
+
 ### GT
+The first value that is first provided is larger than the second value.
+
 ### LT
+The first value that is first provided is smaller than the second value.
+
 ### NEQ
+The provided values are not equal.
 
 ## event
 Base class for all events.
@@ -780,7 +821,11 @@ Specifies whether type type is a reference type (TRUE) or a value type (FALSE)
 #### name
 #### Returns
 ### resolveProcedure(string name)
+Find a procedure with the specified name in this type.
+
 #### name
+The name of the procedure to be resolved.
+
 #### Returns
 ### size
 ### sizeof()

@@ -63,7 +63,7 @@ error:
     return -1;	
 }
 
-static cx_int16 corto_createTest(cx_string name, cx_bool isComponent) {
+static cx_int16 corto_createTest(cx_string name, cx_bool isComponent, cx_bool isPackage) {
     FILE *file;
 
     if (cx_mkdir("test")) {
@@ -104,8 +104,8 @@ static cx_int16 corto_createTest(cx_string name, cx_bool isComponent) {
     file = fopen("test.cx", "w");
     if (file) {
         fprintf(file, "#package ::test\n\n");
-        fprintf(file, "class fooSuite: test::Suite::\n"); 
-        fprintf(file, "    void dummyCase() test::Case\n\n");
+        fprintf(file, "test::Suite MySuite::\n"); 
+        fprintf(file, "    void testSomething()\n\n");
         fclose(file);
     } else {
         cx_error("corto: couldn't create 'test/test.cx' (check permissions)");
@@ -119,21 +119,19 @@ static cx_int16 corto_createTest(cx_string name, cx_bool isComponent) {
         goto error;
     }
 
-    if (name) {
-        if (isComponent) {
-            if (corto_add(
-                5,
-                (char*[]){"add", name, "--component", "--silent", "--nobuild"}
-            )) {
-                goto error;
-            }
-        } else {
-            if (corto_add(
-                3,
-                (char*[]){"add", name, "--silent", "--nobuild"}
-            )) {
-                goto error;
-            }
+    if (isComponent) {
+        if (corto_add(
+            5,
+            (char*[]){"add", name, "--component", "--silent", "--nobuild"}
+        )) {
+            goto error;
+        }
+    } else if (isPackage) {
+        if (corto_add(
+            3,
+            (char*[]){"add", name, "--silent", "--nobuild"}
+        )) {
+            goto error;
         }
     }
 
@@ -297,7 +295,7 @@ static cx_int16 corto_application(int argc, char *argv[]) {
     }
 
     if (!noTest) {
-        if (corto_createTest(isApplication ? NULL : name, !isApplication)) {
+        if (corto_createTest(name, !isApplication, FALSE)) {
             goto error;
         }
     }
@@ -445,7 +443,7 @@ static cx_int16 corto_package(int argc, char *argv[]) {
     }
 
     if (!noTest) {
-        if (corto_createTest(include, FALSE)) {
+        if (corto_createTest(include, FALSE, TRUE)) {
             goto error;
         }
     }

@@ -19,6 +19,17 @@ typedef struct htmlData_t {
     cx_generator generator;
 } htmlData_t;
 
+static char *html_shortId(cx_object o, cx_id id) {
+    if (cx_parentof(o) == corto_lang_o) {
+        strcpy(id, cx_nameof(o));
+    } else {
+        cx_id buff;
+        cx_fullname(o, buff);
+        strcpy(id, buff + 2);
+    }
+    return id;
+}
+
 /*
  * Create a folder for this object
  * Make an index.html file inside, contents are dependent on kind of object
@@ -42,23 +53,27 @@ static char* html_pathToRoot(cx_object o, char* buffer, cx_uint32 *level) {
 }
 
 static char* html_fileFrom(cx_object from, cx_object o, char *buffer) {
-    cx_object p = cx_parentof(from);
-    buffer[0] = '\0';
-    while (p != root_o) {
-        strcat(buffer, "../");
-        p = cx_parentof(p);
-    }
-    buffer[strlen(buffer) - 1] = '\0';
+    if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
+        cx_object p = cx_parentof(from);
+        buffer[0] = '\0';
+        while (p != root_o) {
+            strcat(buffer, "../");
+            p = cx_parentof(p);
+        }
+        buffer[strlen(buffer) - 1] = '\0';
 
-    if (cx_instanceof(cx_package_o, o) ||
-        cx_instanceof(cx_interface_o, o)) {
-        html_pathToRoot(o, buffer, NULL);
-        strcat(buffer, ".html");
+        if (cx_instanceof(cx_package_o, o) ||
+            cx_instanceof(cx_interface_o, o)) {
+            html_pathToRoot(o, buffer, NULL);
+            strcat(buffer, ".html");
+        } else {
+            html_pathToRoot(cx_parentof(o), buffer, NULL);
+            strcat(buffer, ".html");
+            strcat(buffer, "#");
+            strcat(buffer, cx_nameof(o));
+        }
     } else {
-        html_pathToRoot(cx_parentof(o), buffer, NULL);
-        strcat(buffer, ".html");
-        strcat(buffer, "#");
-        strcat(buffer, cx_nameof(o));
+        buffer[0] = '\0';
     }
 
     return buffer;
@@ -71,19 +86,6 @@ static void html_getPath(cx_object o, char *buffer, htmlData_t *data, cx_uint32 
         strcat(buffer, "/");
         strcat(buffer, cx_nameof(o));
     }
-}
-
-static char* html_getFile(cx_object from, cx_object o, char *buffer, htmlData_t *data, cx_uint32 *level) {
-    if (from == cx_parentof(o)) {
-        strcpy(buffer, cx_nameof(from));
-        strcat(buffer, "/");
-        strcat(buffer, cx_nameof(o));
-        strcat(buffer, ".html");
-    } else {
-        html_getPath(o, buffer, data, level);
-        strcat(buffer, ".html");
-    }
-    return buffer;
 }
 
 typedef struct htmlTypeWalkData_t {
@@ -108,8 +110,7 @@ static int html_hasTypeWalk(cx_object o, void *userData) {
 }
 
 /* Reflection hack to get the description from a document */
-static cx_string doc_getDescription(cx_object o) {
-    cx_object doc = cx_man(o);
+static cx_string doc_getDescriptionFromDoc(cx_object doc) {
     cx_object cl = cx_resolve(NULL, "corto::md::Doc");
     cx_string result = "";
 
@@ -131,8 +132,12 @@ static cx_string doc_getDescription(cx_object o) {
 }
 
 /* Reflection hack to get the description from a document */
-static cx_string doc_getText(cx_object o) {
-    cx_object doc = cx_man(o);
+static cx_string doc_getDescription(cx_object o) {
+    return doc_getDescriptionFromDoc(cx_man(o));
+}
+
+/* Reflection hack to get the description from a document */
+static cx_string doc_getTextFromDoc(cx_object doc) {
     cx_object cl = cx_resolve(NULL, "corto::md::Doc");
     cx_string result = "";
 
@@ -153,6 +158,10 @@ static cx_string doc_getText(cx_object o) {
     return result;
 }
 
+/* Reflection hack to get the description from a document */
+static cx_string doc_getText(cx_object o) {
+    return doc_getTextFromDoc(cx_man(o));
+}
 
 static int html_typeWalk(cx_object o, void *userData) {
     htmlTypeWalkData_t *data = userData;
@@ -169,7 +178,7 @@ static int html_typeWalk(cx_object o, void *userData) {
             data->file, 
             "<tr><td><a class=\"reference\"href=\"%s\">%s</a>&nbsp;-&nbsp;"
             "<span class=\"description\">%s</span></td></tr>\n",
-            html_getFile(cx_parentof(o), o, id, data->data, NULL), 
+            html_fileFrom(cx_parentof(o), o, id),
             cx_nameof(o), 
             description);
         cx_llAppend(data->printed, o);
@@ -209,18 +218,19 @@ static cx_int16 cx_ser_member(cx_serializer s, cx_value *info, void *userData) {
     cx_member m = info->is.member.t;
     cx_string description = doc_getDescription(m);
     cx_type topLevelType = cx_typeof(cx_valueObject(info));
-    cx_id path;
+    cx_id path, memberPath;
+    cx_id id;
 
     CX_UNUSED(s);
 
     g_fileWrite(file, "<tr>\n");
     g_fileWrite(file,
-        "<td><a class='reference' href='#%s'>%s</a>"
-        "&nbsp:&nbsp;<a class='reference reference-type' href='%s'>%s</a>", 
+        "<td><a class='reference' href='%s'>%s</a>"
+        "&nbsp:&nbsp;<a class='reference' href='%s'>%s</a>", 
+        html_fileFrom(cx_typeof(cx_valueObject(info)), m, memberPath),
         cx_nameof(m),
-        cx_nameof(m),
-        html_fileFrom(cx_parentof(m), m->type, path),
-        cx_nameof(m->type));
+        html_fileFrom(cx_typeof(cx_valueObject(info)), m->type, path),
+        html_shortId(m->type, id));
 
     cx_member mptr = m;
     while ((!description || !strlen(description)) && mptr) {
@@ -238,12 +248,14 @@ static cx_int16 cx_ser_member(cx_serializer s, cx_value *info, void *userData) {
 
     if (cx_parentof(m) != topLevelType) {
         cx_id id;
-        g_fileWrite(file, "<br><span class='annotate'>from %s</span>\n", cx_fullname(cx_parentof(m), id));
+        g_fileWrite(file, "<br><span class='annotate'>from %s</span>\n", 
+            cx_fullname(cx_parentof(m), id) + 2);
     }
 
     if (cx_instanceof(cx_alias_o, m)) {
         cx_id id;
-        g_fileWrite(file, "<br><span class='annotate'>alias&nbsp;of&nbsp;%s</span>", cx_fullname(cx_alias(m)->member, id));
+        g_fileWrite(file, "<br><span class='annotate'>alias&nbsp;of&nbsp;%s</span>", 
+            cx_fullname(cx_alias(m)->member, id) + 2);
     }
 
     g_fileWrite(file, "</td></tr>\n");
@@ -256,6 +268,7 @@ static cx_int16 cx_ser_memberDetail(cx_serializer s, cx_value *info, void *userD
     cx_member m = info->is.member.t;
     cx_string description = doc_getDescription(m);
     cx_id path;
+    cx_id id;
 
     CX_UNUSED(s);
 
@@ -276,7 +289,7 @@ static cx_int16 cx_ser_memberDetail(cx_serializer s, cx_value *info, void *userD
     g_fileWrite(file, "<table class='category detail'>\n");
     g_fileWrite(file, "<tr><td>Type</td><td><a class='reference' href='%s'>%s</a></td></tr>\n", 
         html_fileFrom(cx_parentof(m), m->type, path), 
-        cx_nameof(m->type));
+        html_shortId(m->type, id));
     g_fileWrite(file, "<tr><td>Access</td><td><a class='reference-enum' href='%s'>%s</a></td></tr>\n", 
         html_fileFrom(cx_parentof(m), cx_modifier_o, path),
         cx_modifierStr(m->modifiers));
@@ -289,10 +302,9 @@ static cx_int16 cx_ser_memberDetail(cx_serializer s, cx_value *info, void *userD
         cx_id id;
         g_fileWrite(file, "<tr><td>Alias</td><td><a class='reference' href='%s'>%s</a></td></tr>\n",
             html_fileFrom(cx_parentof(m), cx_alias(m)->member, path),
-            cx_fullname(cx_alias(m)->member, id));
+            html_shortId(cx_alias(m)->member, id));
     }
     g_fileWrite(file, "</table>\n");
-
     g_fileWrite(file, "</td></tr>\n");
 
     return 0;
@@ -364,11 +376,9 @@ static int html_printMembers(cx_object o, g_file file, cx_uint32 count, htmlType
     return count;
 }
 
-static int html_printMemberDetail(cx_object o, g_file file, cx_uint32 count, htmlTypeWalkData_t *data) {
+static int html_printMemberDetail(cx_object o, g_file file) {
     struct cx_serializer_s s = html_memberDetailSerializer(CX_PRIVATE|CX_HIDDEN, CX_NOT);
     struct cx_serializer_s sTest = html_memberTestSerializer(CX_PRIVATE|CX_HIDDEN, CX_NOT);
-
-    CX_UNUSED(data);
 
     if (cx_metaWalk(&sTest, o, o)) {
         g_fileWrite(file, "<h2>Member Documentation</h2>\n");
@@ -377,40 +387,52 @@ static int html_printMemberDetail(cx_object o, g_file file, cx_uint32 count, htm
         g_fileWrite(file, "</table>\n");        
     }
 
-    return count;
+    return 0;
 }
 
 typedef enum html_printFunctionKind {
     HTML_PRINT_METHODS,
     HTML_PRINT_FUNCTIONS,
-    HTML_PRINT_METAPROCEDURES
 } html_printFunctionKind;
 
+static cx_function html_overrides(cx_interface base, cx_function m) {
+    cx_function result = NULL;
+
+    if (base && cx_instanceof(cx_method_o, m)) {
+        result = cx_function(cx_interface_resolveMethod(base, cx_nameof(m)));
+        if (result && 
+            cx_instanceof(cx_method_o, result) && 
+            cx_method(result)->_virtual) {
+        } else {
+            result = NULL;
+        }
+    }
+
+    return result;
+}
+
 static int html_printFunction(cx_function m, g_file file, cx_object o) {
-    cx_id path;
-    cx_interface base = cx_interface(cx_parentof(m))->base;
+    cx_id path, methodPad;
+    cx_interface base = NULL;
     cx_function overrides = NULL;
     cx_string description = NULL;
+    cx_id id;
+
+    if (cx_instanceof(cx_interface_o, cx_parentof(m))) {
+        base = cx_interface(cx_parentof(m))->base;
+    }
 
     description = doc_getDescription(m);
     g_fileWrite(file, 
         "<tr><td>"
-        "<a class='reference' href='#%s'>%s</a>&nbsp;:&nbsp;"
+        "<a class='reference' href='%s'>%s</a>&nbsp;:&nbsp;"
         "<a class='reference reference-type' href='%s'>%s</a>",
-        cx_nameof(m),
+        html_fileFrom(o, m, methodPad),
         cx_nameof(m),
         html_fileFrom(o, m->returnType, path),
-        cx_nameof(m->returnType));
+        html_shortId(m->returnType, id));
 
-    if (base && cx_instanceof(cx_method_o, m)) {
-        overrides = cx_function(cx_interface_resolveMethod(base, cx_nameof(m)));
-        if (overrides && 
-            cx_instanceof(cx_method_o, overrides) && 
-            cx_method(overrides)->_virtual) {
-        } else {
-            overrides = NULL;
-        }
-    }
+    overrides = html_overrides(base, m);
 
     if (overrides && (!description || !strlen(description))) {
         cx_object optr = overrides;
@@ -432,18 +454,18 @@ static int html_printFunction(cx_function m, g_file file, cx_object o) {
             description);
     }
 
-    if (cx_instanceof(cx_metaprocedure_o, m) || (cx_parentof(m) != o)) {
-        cx_id id;
-        g_fileWrite(file, 
-            "<br/><span class='annotate'>from %s</span>\n", 
-            cx_fullname(cx_parentof(m), id));
-    }
-
     if (overrides) {
         cx_id id;
         g_fileWrite(file, 
             "<br/><span class='annotate'>overrides %s</span>\n", 
-            cx_fullname(overrides, id));
+            cx_fullname(overrides, id) + 2);
+    }
+
+    if (cx_parentof(m) != o) {
+        cx_id id;
+        g_fileWrite(file, 
+            "<br/><span class='annotate'>from %s</span>\n", 
+            cx_fullname(cx_parentof(m), id) + 2);        
     }
 
     g_fileWrite(file, "</td></tr>\n");
@@ -451,61 +473,155 @@ static int html_printFunction(cx_function m, g_file file, cx_object o) {
     return 0;
 }
 
-static int html_printFunctions(
-    cx_object o, 
-    g_file file, 
-    cx_string title, 
-    html_printFunctionKind kind, 
-    cx_uint32 count,
-    htmlTypeWalkData_t *data) 
-{
-    cx_vtable methods;
-    cx_objectseq functions;
-    cx_object typeBase = o;
-    cx_bool objectsToPrint = TRUE;
-    CX_UNUSED(data);
+static int html_printFunctionDetail(cx_function m, g_file file, cx_object o) {
+    cx_id id, path;
+    cx_object doc = cx_man(m);
+    cx_interface base = NULL;
 
-    if (kind == HTML_PRINT_METAPROCEDURES) {
-        methods = cx_type(o)->metaprocedures;
-    } else if (kind == HTML_PRINT_METHODS) {
-        methods = cx_interface(o)->methods;
-        objectsToPrint = methods.length != 0;
-    } else if (kind == HTML_PRINT_FUNCTIONS) {
-        functions = cx_scopeClaim(o);
-        objectsToPrint = FALSE;
-         cx_objectseqForeach(functions, m) {
-            if (cx_typeof(m) == (cx_type)cx_function_o) {
-                objectsToPrint = TRUE;
-                break;
+    if (cx_instanceof(cx_interface_o, cx_parentof(m))) {
+        base = cx_interface(cx_parentof(m))->base;
+    }
+
+    g_fileWrite(file, "<a name=\"%s\"></a>\n", cx_nameof(m));
+    g_fileWrite(file, "<h3 class='detail'>");
+    if (cx_instanceof(cx_method_o, m)) {
+        if (cx_method(m)->_virtual) {
+            g_fileWrite(file, "<span class='virtual'>virtual</span>&nbsp;");
+        }
+    }
+
+    g_fileWrite(
+        file, 
+        "<a href=\"%s\">%s</a>%s&nbsp;%s",
+        html_fileFrom(o, m->returnType, path),
+        html_shortId(m->returnType, id),
+        (!m->returnType->reference && m->returnsReference) ? "&" : "",
+        cx_nameof(m));
+
+    if (cx_instanceof(cx_method_o, m)) {
+        cx_function overrides = html_overrides(base, m);
+        if (overrides) {
+            cx_id id, sigName;
+            cx_signatureName(cx_fullname(overrides, id) + 2, sigName);
+            g_fileWrite(file, 
+                "&nbsp;<span class='overrides'>overrides %s</span>\n", 
+                sigName);            
+        }
+    }
+
+    g_fileWrite(file, "</h3>\n");
+    g_fileWrite(file, "<hr>\n");
+
+    cx_string description = doc_getDescription(m);
+    g_fileWrite(file, "<p>%s</p>\n", description);
+
+    cx_string text = doc_getText(m);
+    g_fileWrite(file, "<p>%s</p>\n", text);
+
+    cx_parameterseqForeach(m->parameters, p) {
+        cx_object paramDoc = cx_lookup(doc, p.name);
+        if (paramDoc) {
+            cx_string description = doc_getDescriptionFromDoc(paramDoc);
+            if (description && strlen(description)) {
+                g_fileWrite(file, "<h4>%s%s : <a href='%s'>%s</a></h4>", 
+                    p.name,
+                    p.passByReference ? "&" : "",
+                    html_fileFrom(o, p.type, path),
+                    html_shortId(p.type, id));
+                g_fileWrite(file, "<p>%s</p>", description);
+
+                cx_string text = doc_getTextFromDoc(paramDoc);
+                if (text) {
+                    g_fileWrite(file, "<p>%s</p>", text);
+                }
             }
         }
     }
 
-    if (objectsToPrint) {
-        g_fileWrite(file, "<h2>%s</h2>\n", title);
-        g_fileWrite(file, "<table class='category'>\n");
-        do {
-            if (kind != HTML_PRINT_FUNCTIONS) {
-                cx_vtableForeach(methods, m) {
-                    html_printFunction(cx_function(m), file, o);
-                }
-            } else {
-                cx_objectseqForeach(functions, m) {
-                    if (cx_typeof(m) == (cx_type)cx_function_o) {
-                        html_printFunction(m, file, o);
-                    }
-                }
+    if ((m->returnType->kind != CX_VOID) || (m->returnType->reference)) {
+        cx_object returnDoc = cx_lookup(doc, "Returns");
+        cx_string description = returnDoc ? doc_getDescriptionFromDoc(returnDoc) : "";
+        cx_string text = returnDoc ? doc_getTextFromDoc(returnDoc) : "";
+        if (description && strlen(description)) {
+            g_fileWrite(file, "<h4>Returns</h4>\n");
+            g_fileWrite(file, "<p>%s</p>\n", description);
+            if (text && strlen(text)) {
+                g_fileWrite(file, "<p>%s</p>\n", text);
             }
+        }
+    }
 
-            if ((kind == HTML_PRINT_METAPROCEDURES) && cx_instanceof(cx_interface_o, o)) {
-                typeBase = cx_interface(typeBase)->base;
-                if (typeBase) {
-                    methods = cx_type(typeBase)->metaprocedures;
-                } else {
+    return 0;
+}
+
+static cx_bool html_functionsToPrint(
+    cx_object o, 
+    html_printFunctionKind kind, 
+    cx_bool detail,
+    cx_objectseq *seq_out) 
+{
+    cx_bool result = TRUE;
+
+    if (kind == HTML_PRINT_METHODS) {
+        seq_out->length = cx_interface(o)->methods.length;
+        seq_out->buffer = (cx_object*)cx_interface(o)->methods.buffer;
+        cx_objectseqForeach((*seq_out), m) {
+            if (!detail || (cx_parentof(m) == o)) {
+                result = TRUE;
+                break;
+            }
+        }
+        result = seq_out->length != 0;
+    } else if (kind == HTML_PRINT_FUNCTIONS) {
+        *seq_out = cx_scopeClaim(o);
+        result = FALSE;
+         cx_objectseqForeach((*seq_out), m) {
+            if (cx_typeof(m) == (cx_type)cx_function_o) {
+                if (!detail || (cx_parentof(m) == o)) {
+                    result = TRUE;
                     break;
                 }
             }
-        } while (kind == HTML_PRINT_METAPROCEDURES);
+        }
+    }
+
+    return result;
+}
+
+static int html_printFunctions (
+    cx_object o, 
+    g_file file, 
+    cx_string title, 
+    html_printFunctionKind kind, 
+    cx_bool detail) 
+{
+    cx_objectseq functions;
+
+    cx_bool objectsToPrint = html_functionsToPrint(o, kind, detail, &functions);
+    if (objectsToPrint) {
+        g_fileWrite(file, "<h2>%s</h2>\n", title);
+        g_fileWrite(file, "<table class='category' id=\"%s\">\n", title);
+
+        if (kind != HTML_PRINT_FUNCTIONS) {
+            cx_vtableForeach(functions, m) {
+                if (!detail) {
+                    html_printFunction(cx_function(m), file, o);
+                } else if (cx_parentof(m) == o) {
+                    html_printFunctionDetail(cx_function(m), file, o);
+                }
+            }
+        } else {
+            cx_objectseqForeach(functions, m) {
+                if (cx_typeof(m) == (cx_type)cx_function_o) {
+                    if (!detail) {
+                        html_printFunction(m, file, o);
+                    } else {
+                        html_printFunctionDetail(cx_function(m), file, o);                        
+                    }
+                }
+            }
+        }
+
         g_fileWrite(file, "</table>\n");
     }
 
@@ -513,7 +629,76 @@ static int html_printFunctions(
         cx_scopeRelease(functions);
     }
 
-    return count;
+    return 0;
+}
+
+int html_printPrimitiveDetail(cx_object t, g_file file) {
+
+    cx_string description = doc_getDescription(t);
+    cx_string text = doc_getText(t);
+
+    g_fileWrite(file, "<a name=\"%s\"></a>\n", cx_nameof(t));
+    g_fileWrite(file, "<h3 class='detail'>%s</h3>", cx_nameof(t));
+    g_fileWrite(file, "<hr>\n");
+    g_fileWrite(file, "<p>%s</p>\n", description);
+    g_fileWrite(file, "<p>%s</p>\n", text);
+
+    return 0;
+}
+
+int html_printEnumDetail(cx_object t, g_file file) {
+
+    cx_string description = doc_getDescription(t);
+    cx_string text = doc_getText(t);
+
+    g_fileWrite(file, "<a name=\"%s\"></a>\n", cx_nameof(t));
+    g_fileWrite(file, "<h3 class='detail'><span class='enumtype'>%s</span> %s</h3>", 
+        cx_nameof(cx_typeof(t)), cx_nameof(t));
+    g_fileWrite(file, "<hr>\n");
+    g_fileWrite(file, "<p>%s</p>\n", description);
+    g_fileWrite(file, "<p>%s</p>\n", text);
+
+    g_fileWrite(file, "<table class='category'>\n");
+    cx_objectseqForeach(cx_enum(t)->constants, c) {
+        cx_string description = doc_getDescription(c);
+        if (cx_typeof(t) == cx_type(cx_enum_o)) {
+            g_fileWrite(
+                file, 
+                "<tr><td><span class='constant'>%s</span></td><td>%d</td><td>%s</td></tr>\n",
+                cx_nameof(c), 
+                *(cx_constant*)c,
+                description);
+        } else {
+            g_fileWrite(
+                file, 
+                "<tr><td><span class='constant'>%s</span></td><td>0x%x</td><td>%s</td></tr>\n",
+                cx_nameof(c), 
+                *(cx_constant*)c,
+                description);            
+        }
+    }
+    g_fileWrite(file, "</table>\n");
+
+    return 0;
+}
+
+int html_detailWalk(cx_object o, g_file file, cx_type type, int (*callback)(cx_object, g_file), htmlTypeWalkData_t *data) {
+    cx_objectseq scope = cx_scopeClaim(o);
+
+    CX_UNUSED(o);
+
+    cx_objectseqForeach(scope, t) {
+        if (((data->instanceof && cx_instanceof(type, t)) || 
+                (cx_typeof(t) == type)) &&
+                !cx_llHasObject(data->printed, t)) {
+            callback(t, file);
+            cx_llAppend(data->printed, t);
+        }
+    }
+
+    cx_scopeRelease(scope);
+
+    return 0;
 }
 
 static int html_printScope(cx_object o, g_file file, html_printMask mask, htmlData_t *data) {
@@ -528,9 +713,8 @@ static int html_printScope(cx_object o, g_file file, html_printMask mask, htmlDa
 
     if (mask & PRINT_MEMBERS) {
         count = html_printMembers(o, file, count, &walkData);
-        count = html_printFunctions(o, file, "Methods", HTML_PRINT_METHODS, count, &walkData);
-        count = html_printFunctions(o, file, "Functions", HTML_PRINT_FUNCTIONS, count, &walkData);
-        count = html_printFunctions(cx_typeof(o), file, "Metaprocedures", HTML_PRINT_METAPROCEDURES, count, &walkData);
+        count = html_printFunctions(o, file, "Methods", HTML_PRINT_METHODS, FALSE);
+        count = html_printFunctions(o, file, "Functions", HTML_PRINT_FUNCTIONS, FALSE);
     }
 
     if (mask & PRINT_TYPES) {
@@ -548,7 +732,7 @@ static int html_printScope(cx_object o, g_file file, html_printMask mask, htmlDa
         count = html_printType(o, file, "Other types", cx_type(cx_type_o), count, &walkData);
         
         if (!(mask & PRINT_MEMBERS)) {
-            count = html_printFunctions(o, file, "Functions", HTML_PRINT_FUNCTIONS, count, &walkData);
+            count = html_printFunctions(o, file, "Functions", HTML_PRINT_FUNCTIONS, FALSE);
         }
     }
 
@@ -557,35 +741,51 @@ static int html_printScope(cx_object o, g_file file, html_printMask mask, htmlDa
 
 static int html_printScopeDetail(cx_object o, g_file file, html_printMask mask, htmlData_t *data) {
     htmlTypeWalkData_t walkData;
-    cx_uint32 count = 0;
 
     walkData.instanceof = TRUE;
     walkData.printed = cx_llNew();
-    walkData.counted = cx_llNew();
+    walkData.counted = NULL; 
     walkData.file = file;
     walkData.data = data;
 
+    cx_string description = doc_getDescription(o);
+    if (description && strlen(description)) {
+        g_fileWrite(file, "<a name='details'></a>\n");
+        g_fileWrite(file, "<hr>\n");
+        g_fileWrite(file, "<h2>Detailed description</h2>\n");
+        g_fileWrite(file, "<p>%s</p>\n", description);
+        g_fileWrite(file, "<p>%s</p>\n", doc_getText(o));
+    }
+
     if (mask & PRINT_MEMBERS) {
-        count = html_printMemberDetail(o, file, count, &walkData);
-        /*count = html_printFunctionDetail(o, file, "Method Documentation", HTML_PRINT_METHODS, count, &walkData);
-        count = html_printFunctionDetail(o, file, "Function Documentation", HTML_PRINT_FUNCTIONS, count, &walkData);
-        count = html_printFunctionDetail(o, file, "Metaprocedure Documentation", HTML_PRINT_METAPROCEDURES, count, &walkData);*/
+        html_printMemberDetail(o, file);
+        html_printFunctions(o, file, "Method Documentation", HTML_PRINT_METHODS, TRUE);
+        html_printFunctions(o, file, "Function Documentation", HTML_PRINT_FUNCTIONS, TRUE);
     }
 
     if (mask & PRINT_TYPES) {
-        /*walkData.instanceof = FALSE;
-        count = html_printTypeDetail(o, file, "Enumerations", cx_type(cx_enum_o), count, &walkData);
-        count = html_printTypeDetail(o, file, "Bitmasks", cx_type(cx_bitmask_o), count, &walkData);
+        walkData.instanceof = FALSE;
+        g_fileWrite(file, "<h2>Type Documentation</h2>\n");
+        html_detailWalk(o, file, cx_type(cx_enum_o), html_printEnumDetail, &walkData);
+        html_detailWalk(o, file, cx_type(cx_bitmask_o), html_printEnumDetail, &walkData);
+        html_detailWalk(o, file, cx_type(cx_boolean_o), html_printPrimitiveDetail, &walkData);
+        html_detailWalk(o, file, cx_type(cx_character_o), html_printPrimitiveDetail, &walkData);
+        html_detailWalk(o, file, cx_type(cx_int_o), html_printPrimitiveDetail, &walkData);
+        html_detailWalk(o, file, cx_type(cx_uint_o), html_printPrimitiveDetail, &walkData);
+        html_detailWalk(o, file, cx_type(cx_float_o), html_printPrimitiveDetail, &walkData);
+        html_detailWalk(o, file, cx_type(cx_text_o), html_printPrimitiveDetail, &walkData);
+        html_detailWalk(o, file, cx_type(cx_binary_o), html_printPrimitiveDetail, &walkData);
 
-        walkData.instanceof = TRUE;
-        count = html_printTypeDetail(o, file, "Primitives", cx_type(cx_primitive_o), count, &walkData);
+        /*html_printTypeDetail(o, file, "Primitives", cx_type(cx_primitive_o), &walkData);
         count = html_printTypeDetail(o, file, "Collections", cx_type(cx_collection_o), count, &walkData);
-        count = html_printTypeDetail(o, file, "Other types", cx_type(cx_type_o), count, &walkData);
+        count = html_printTypeDetail(o, file, "Other types", cx_type(cx_type_o), count, &walkData);*/
         
-        if (!(mask & PRINT_MEMBERS)) {
-            count = html_printFunctions(o, file, "Functions", HTML_PRINT_FUNCTIONS, count, &walkData);
+        /*if (!(mask & PRINT_MEMBERS)) {
+            html_printFunctions(o, file, "Functions", HTML_PRINT_FUNCTIONS, TRUE);
         }*/
     }
+
+    cx_llFree(walkData.printed);
 
     return 0;
 }
@@ -642,7 +842,7 @@ static int html_printInheritance(cx_interface o, g_file file) {
         cx_id id, path;
         g_fileWrite(file, "<tr><td>Base</td><td><a class='reference' href='%s'>%s</a></td></tr>\n", 
             html_fileFrom(o, o->base, path),
-            cx_fullname(o->base, id));
+            html_shortId(o->base, id));
         if (cx_instanceof(cx_struct_o, o)) {
             g_fileWrite(file, "<tr><td>Access</td><td><a class='reference-enum' href='%s'>%s</a></td></tr>",
                 html_fileFrom(o, cx_modifier_o, path), 
@@ -699,10 +899,6 @@ static int html_printStruct(cx_object o, g_file file, htmlData_t *data) {
 
 static int html_printInterface(cx_object o, g_file file, htmlData_t *data) {
     return html_printScope(o, file, PRINT_TYPES | PRINT_MEMBERS, data);
-}
-
-static int html_printOther(cx_object o, g_file file, htmlData_t *data) {
-    return html_printScope(o, file, PRINT_TYPES, data);
 }
 
 static g_file html_openIndexHtml(cx_object o, htmlData_t *data) {
@@ -813,15 +1009,7 @@ error:
     return NULL;
 }
 
-static void html_closeIndexHtml(cx_object o, g_file file) {
-    cx_string description = doc_getDescription(o);
-    if (description && strlen(description)) {
-        g_fileWrite(file, "<a name='details'></a>\n");
-        g_fileWrite(file, "<h2>Detailed description</h2>\n");
-        g_fileWrite(file, "<p>%s</p>\n", description);
-        g_fileWrite(file, "<p>%s</p>\n", doc_getText(o));
-    }
-
+static void html_closeIndexHtml(g_file file) {
     g_fileDedent(file);
     g_fileWrite(file, "</div>\n");
     g_fileWrite(file, "<div class='col-md-3'></div>\n");
@@ -860,22 +1048,10 @@ static int html_walk(cx_object o, void *userData) {
         if (html_printInterface(o, file, data)) {
             goto error;
         }
-    } else if (cx_instanceof(cx_enum_o, o)) {
-        file = html_openIndexHtml(o, data);
-        exploreScope = FALSE;
-    } else if (cx_instanceof(cx_bitmask_o, o)) {
-        file = html_openIndexHtml(o, data);
-        exploreScope = FALSE;
-    } else if (cx_instanceof(cx_type_o, o)) {
-        file = html_openIndexHtml(o, data);
-        if (html_printOther(o, file, data)) {
-            goto error;
-        }
-        exploreScope = FALSE;
     }
 
     if (file) {
-        html_closeIndexHtml(o, file);
+        html_closeIndexHtml(file);
     }
 
     if (exploreScope) {

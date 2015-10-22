@@ -152,15 +152,6 @@ static int doc_walk(cx_object o, void *userData) {
     if (doc) {
         description = doc_getDescription(data->doc, doc);
         text = doc_getText(data->doc, doc);
-    } else {
-        if (cx_instanceof(cx_package_o, o) || 
-            cx_instanceof(cx_type_o, o) || 
-            cx_instanceof(cx_type_o, cx_parentof(o))) 
-        {
-            if (data->mdloaded) {
-                cx_warning("warning: object '%s' is not documented (%s)", cx_fullname(o, id), docId);
-            }
-        }
     }
 
     if (cx_instanceof(cx_package_o, o)) {

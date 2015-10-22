@@ -328,9 +328,9 @@ static cx_int16 cx_string_deserParseValue(cx_string value, struct cx_string_dese
             o = cx_resolve(data->scope, value);
         }
 
-        if (o) {
+        if (o || !strcmp(value, "null")) {
             cx_setref(CX_OFFSET(ptr, info->m->offset), o);
-            cx_release(o);
+            if (o) cx_release(o);
         } else {
             cx_id id;
             cx_seterr("unresolved reference to '%s' for member '%s'", value, cx_fullname(info->m, id));
@@ -461,7 +461,6 @@ static cx_string cx_string_deserParse(cx_string str, struct cx_string_deserIndex
             }
 
         case '{': /* Scope open */
-
             /* If a value is being parsed, the '{' is part of a nested anonymous
              * object. Parse up until the '}' */
             if (bptr == buffer) {
@@ -491,6 +490,31 @@ static cx_string cx_string_deserParse(cx_string str, struct cx_string_deserIndex
                 }
             }
             break;
+
+        case '(':
+            /* If a value is being parsed, the '(' is part of an argument list.
+             * Parse up until the matching ')' */
+            if (bptr != buffer) {
+                char *start = ptr;
+
+                /* Parse until matching '} */
+                do {
+                    *bptr = ch;
+                    bptr++;
+                    ptr++;
+                } while((ch = *ptr) && (ch == ')'));
+
+                ptr--;
+                nonWs = bptr;
+
+                /* ptr must always end with a '}' */
+                if (*ptr != ')') {
+                    cx_seterr("missing ')' at '%s' (%s)", start, ptr);
+                    goto error;
+                }
+            }            
+
+
         case '"':
             if (!(ptr = cx_string_deserParseString(ptr, buffer, &bptr))) {
                 goto error;

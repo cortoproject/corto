@@ -63,11 +63,16 @@ file "include/#{TARGET}__type.h" => [GENFILE, ".corto/packages.txt", ".corto/com
     end
 end
 
-task :default => "include/#{TARGET}__type.h"
-
-if File.exists? "test/rakefile" then
-    COMPONENTS ||=[] << "test"
+task :doc do
+    verbose(false)
+    if `corto locate corto::md` != "corto: package 'corto::md' not found\n" then
+        if File.exists? "README.md" then
+            # sh "corto pp README.md --scope #{PACKAGE} -g html"
+        end
+    end
 end
+
+task :default => ["include/#{TARGET}__type.h", :doc]
 
 if File.exists? "./.corto/dep.rb"
     require "./.corto/dep.rb"

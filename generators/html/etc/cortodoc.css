@@ -85,11 +85,41 @@ span.description {
     font-size: 14px;
 }
 
+span.overrides {
+    color: #515151;
+    font-weight: 300;
+    font-size: 18px;
+}
+
+span.virtual {
+    font-weight: 300;
+}
+
+span.constant {
+    color: #9966aa;
+}
+
+span.enumtype {
+    font-weight: 300;
+}
+
 h2 {
-    margin-top: 30px;
+    margin-top: 50px;
 }
 
 h3.detail {
-    margin-top: 25px;
-    margin-bottom: 0px;
+    margin-top: 30px;
+    margin-bottom: 10px;
 }
+
+h4 {
+    margin-top: 15px;
+    margin-bottom: 3px;
+}
+
+hr {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+

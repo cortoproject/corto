@@ -196,7 +196,11 @@ int main(int argc, char* argv[]) {
             } else {
                 if (cx_load(argv[i], argc-i, &argv[i])) {
                     if (!mute) {
-                        cx_error("corto: %s: %s", argv[i], cx_lasterr());
+                        if (cx_lasterr()) {
+                            cx_error("corto: %s: %s", argv[i], cx_lasterr());
+                        } else {
+                            cx_error("corto: %s: input error", argv[i]);
+                        }
                     }
                     goto error;
                 }
