@@ -39,8 +39,8 @@ table.detail td {
 
 div.package {
     background-color: #fff;
-    padding-top: 10px;
-    padding-left: 20px;
+    padding-top: 20px;
+    padding-left: 40px;
     padding-right: 20px;
     padding-bottom: 20px;
     margin-top: 10px;
@@ -77,6 +77,10 @@ a.details {
     font-size: 14px;
 }
 
+a.anchor {
+    padding-top: 60px;
+}
+
 span.annotate {
     font-size: 11px;
 }
@@ -100,6 +104,12 @@ span.constant {
 }
 
 span.enumtype {
+    font-weight: 300;
+}
+
+h1 {
+    margin-bottom: 40px;
+    font-size: 50px;
     font-weight: 300;
 }
 

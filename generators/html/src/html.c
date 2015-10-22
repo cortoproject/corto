@@ -52,8 +52,15 @@ static char* html_pathToRoot(cx_object o, char* buffer, cx_uint32 *level) {
     return buffer;
 }
 
-static char* html_fileFrom(cx_object from, cx_object o, char *buffer) {
+static char* html_ref(
+    cx_object from, 
+    cx_object o, 
+    cx_string name, 
+    cx_string class, 
+    char *result) 
+{
     if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
+        cx_id buffer;
         cx_object p = cx_parentof(from);
         buffer[0] = '\0';
         while (p != root_o) {
@@ -66,17 +73,27 @@ static char* html_fileFrom(cx_object from, cx_object o, char *buffer) {
             cx_instanceof(cx_interface_o, o)) {
             html_pathToRoot(o, buffer, NULL);
             strcat(buffer, ".html");
+            sprintf(result, 
+                "<a href=\"%s\" class=\"%s\">%s</a>", 
+                buffer,
+                class,
+                name);
         } else {
             html_pathToRoot(cx_parentof(o), buffer, NULL);
             strcat(buffer, ".html");
             strcat(buffer, "#");
             strcat(buffer, cx_nameof(o));
+            sprintf(result, 
+                "<a href=\"%s\" class=\"%s smoothScroll\">%s</a>", 
+                buffer,
+                class,
+                name);
         }
     } else {
-        buffer[0] = '\0';
+        result[0] = '\0';
     }
 
-    return buffer;
+    return result;
 }
 
 static void html_getPath(cx_object o, char *buffer, htmlData_t *data, cx_uint32 *level) {
@@ -176,10 +193,9 @@ static int html_typeWalk(cx_object o, void *userData) {
         cx_id id;
         g_fileWrite(
             data->file, 
-            "<tr><td><a class=\"reference\"href=\"%s\">%s</a>&nbsp;-&nbsp;"
+            "<tr><td>%s&nbsp;-&nbsp;"
             "<span class=\"description\">%s</span></td></tr>\n",
-            html_fileFrom(cx_parentof(o), o, id),
-            cx_nameof(o), 
+            html_ref(cx_parentof(o), o, cx_nameof(o), "reference", id),
             description);
         cx_llAppend(data->printed, o);
     }
@@ -225,12 +241,9 @@ static cx_int16 cx_ser_member(cx_serializer s, cx_value *info, void *userData) {
 
     g_fileWrite(file, "<tr>\n");
     g_fileWrite(file,
-        "<td><a class='reference' href='%s'>%s</a>"
-        "&nbsp:&nbsp;<a class='reference' href='%s'>%s</a>", 
-        html_fileFrom(cx_typeof(cx_valueObject(info)), m, memberPath),
-        cx_nameof(m),
-        html_fileFrom(cx_typeof(cx_valueObject(info)), m->type, path),
-        html_shortId(m->type, id));
+        "<td>%s&nbsp:&nbsp;%s", 
+        html_ref(cx_typeof(cx_valueObject(info)), m, cx_nameof(m), "reference", memberPath),
+        html_ref(cx_typeof(cx_valueObject(info)), m->type, html_shortId(m->type, id), "reference", path));
 
     cx_member mptr = m;
     while ((!description || !strlen(description)) && mptr) {
@@ -287,22 +300,18 @@ static cx_int16 cx_ser_memberDetail(cx_serializer s, cx_value *info, void *userD
     g_fileWrite(file, "<hr>\n");
     g_fileWrite(file, "<p>%s</p>\n", description);
     g_fileWrite(file, "<table class='category detail'>\n");
-    g_fileWrite(file, "<tr><td>Type</td><td><a class='reference' href='%s'>%s</a></td></tr>\n", 
-        html_fileFrom(cx_parentof(m), m->type, path), 
-        html_shortId(m->type, id));
-    g_fileWrite(file, "<tr><td>Access</td><td><a class='reference-enum' href='%s'>%s</a></td></tr>\n", 
-        html_fileFrom(cx_parentof(m), cx_modifier_o, path),
-        cx_modifierStr(m->modifiers));
+    g_fileWrite(file, "<tr><td>Type</td><td>%s</td></tr>\n", 
+        html_ref(cx_parentof(m), m->type, html_shortId(m->type, id), "reference", path));
+    g_fileWrite(file, "<tr><td>Access</td><td>%s</td></tr>\n", 
+        html_ref(cx_parentof(m), cx_modifier_o, cx_modifierStr(m->modifiers), "reference-enum", path));
     if (m->type->reference) {
-        g_fileWrite(file, "<tr><td>State</td><td><a class='reference-enum' href='%s'>%s</a></td></tr>\n", 
-            html_fileFrom(cx_parentof(m), cx_state_o, path),
-            cx_stateStr(m->state));        
+        g_fileWrite(file, "<tr><td>State</td><td>%s</td></tr>\n", 
+            html_ref(cx_parentof(m), cx_state_o, cx_stateStr(m->state), "reference-enum", path));        
     }
     if (cx_instanceof(cx_alias_o, m)) {
         cx_id id;
-        g_fileWrite(file, "<tr><td>Alias</td><td><a class='reference' href='%s'>%s</a></td></tr>\n",
-            html_fileFrom(cx_parentof(m), cx_alias(m)->member, path),
-            html_shortId(cx_alias(m)->member, id));
+        g_fileWrite(file, "<tr><td>Alias</td><td>%s</td></tr>\n",
+            html_ref(cx_parentof(m), cx_alias(m)->member, html_shortId(cx_alias(m)->member, id), "reference", path));
     }
     g_fileWrite(file, "</table>\n");
     g_fileWrite(file, "</td></tr>\n");
@@ -424,13 +433,9 @@ static int html_printFunction(cx_function m, g_file file, cx_object o) {
 
     description = doc_getDescription(m);
     g_fileWrite(file, 
-        "<tr><td>"
-        "<a class='reference' href='%s'>%s</a>&nbsp;:&nbsp;"
-        "<a class='reference reference-type' href='%s'>%s</a>",
-        html_fileFrom(o, m, methodPad),
-        cx_nameof(m),
-        html_fileFrom(o, m->returnType, path),
-        html_shortId(m->returnType, id));
+        "<tr><td>%s&nbsp;:&nbsp;%s",
+        html_ref(o, m, cx_nameof(m), "reference", methodPad),
+        html_ref(o, m->returnType, html_shortId(m->returnType, id), "reference reference-type", path));
 
     overrides = html_overrides(base, m);
 
@@ -492,9 +497,8 @@ static int html_printFunctionDetail(cx_function m, g_file file, cx_object o) {
 
     g_fileWrite(
         file, 
-        "<a href=\"%s\">%s</a>%s&nbsp;%s",
-        html_fileFrom(o, m->returnType, path),
-        html_shortId(m->returnType, id),
+        "%s%s&nbsp;%s",
+        html_ref(o, m->returnType, html_shortId(m->returnType, id), "", path),
         (!m->returnType->reference && m->returnsReference) ? "&" : "",
         cx_nameof(m));
 
@@ -523,11 +527,10 @@ static int html_printFunctionDetail(cx_function m, g_file file, cx_object o) {
         if (paramDoc) {
             cx_string description = doc_getDescriptionFromDoc(paramDoc);
             if (description && strlen(description)) {
-                g_fileWrite(file, "<h4>%s%s : <a href='%s'>%s</a></h4>", 
+                g_fileWrite(file, "<h4>%s%s : %s</h4>", 
                     p.name,
                     p.passByReference ? "&" : "",
-                    html_fileFrom(o, p.type, path),
-                    html_shortId(p.type, id));
+                    html_ref(o, p.type, html_shortId(p.type, id), "", path));
                 g_fileWrite(file, "<p>%s</p>", description);
 
                 cx_string text = doc_getTextFromDoc(paramDoc);
@@ -691,7 +694,9 @@ int html_detailWalk(cx_object o, g_file file, cx_type type, int (*callback)(cx_o
         if (((data->instanceof && cx_instanceof(type, t)) || 
                 (cx_typeof(t) == type)) &&
                 !cx_llHasObject(data->printed, t)) {
-            callback(t, file);
+            if (callback) {
+                callback(t, file);
+            }
             cx_llAppend(data->printed, t);
         }
     }
@@ -760,29 +765,42 @@ static int html_printScopeDetail(cx_object o, g_file file, html_printMask mask, 
     if (mask & PRINT_MEMBERS) {
         html_printMemberDetail(o, file);
         html_printFunctions(o, file, "Method Documentation", HTML_PRINT_METHODS, TRUE);
-        html_printFunctions(o, file, "Function Documentation", HTML_PRINT_FUNCTIONS, TRUE);
     }
 
     if (mask & PRINT_TYPES) {
-        walkData.instanceof = FALSE;
-        g_fileWrite(file, "<h2>Type Documentation</h2>\n");
-        html_detailWalk(o, file, cx_type(cx_enum_o), html_printEnumDetail, &walkData);
-        html_detailWalk(o, file, cx_type(cx_bitmask_o), html_printEnumDetail, &walkData);
-        html_detailWalk(o, file, cx_type(cx_boolean_o), html_printPrimitiveDetail, &walkData);
-        html_detailWalk(o, file, cx_type(cx_character_o), html_printPrimitiveDetail, &walkData);
-        html_detailWalk(o, file, cx_type(cx_int_o), html_printPrimitiveDetail, &walkData);
-        html_detailWalk(o, file, cx_type(cx_uint_o), html_printPrimitiveDetail, &walkData);
-        html_detailWalk(o, file, cx_type(cx_float_o), html_printPrimitiveDetail, &walkData);
-        html_detailWalk(o, file, cx_type(cx_text_o), html_printPrimitiveDetail, &walkData);
-        html_detailWalk(o, file, cx_type(cx_binary_o), html_printPrimitiveDetail, &walkData);
+        /* Check whether there are types in this scope */
+        cx_bool hasTypes = FALSE;
+        cx_objectseq scope = cx_scopeClaim(o);
 
-        /*html_printTypeDetail(o, file, "Primitives", cx_type(cx_primitive_o), &walkData);
-        count = html_printTypeDetail(o, file, "Collections", cx_type(cx_collection_o), count, &walkData);
-        count = html_printTypeDetail(o, file, "Other types", cx_type(cx_type_o), count, &walkData);*/
-        
-        /*if (!(mask & PRINT_MEMBERS)) {
-            html_printFunctions(o, file, "Functions", HTML_PRINT_FUNCTIONS, TRUE);
-        }*/
+        cx_objectseqForeach(scope, t) {
+            if (cx_instanceof(cx_type_o, t)) {
+                hasTypes = TRUE;
+            }
+        }
+
+        if (hasTypes) {
+            walkData.instanceof = FALSE;
+            g_fileWrite(file, "<h2>Type Documentation</h2>\n");
+            html_detailWalk(o, file, cx_type(cx_enum_o), html_printEnumDetail, &walkData);
+            html_detailWalk(o, file, cx_type(cx_bitmask_o), html_printEnumDetail, &walkData);
+            html_detailWalk(o, file, cx_type(cx_boolean_o), html_printPrimitiveDetail, &walkData);
+            html_detailWalk(o, file, cx_type(cx_character_o), html_printPrimitiveDetail, &walkData);
+            html_detailWalk(o, file, cx_type(cx_int_o), html_printPrimitiveDetail, &walkData);
+            html_detailWalk(o, file, cx_type(cx_uint_o), html_printPrimitiveDetail, &walkData);
+            html_detailWalk(o, file, cx_type(cx_float_o), html_printPrimitiveDetail, &walkData);
+            html_detailWalk(o, file, cx_type(cx_text_o), html_printPrimitiveDetail, &walkData);
+            html_detailWalk(o, file, cx_type(cx_binary_o), html_printPrimitiveDetail, &walkData);
+
+            walkData.instanceof = TRUE;
+
+            /* Ensure that interfaces are excluded from generation */
+            html_detailWalk(o, file, cx_type(cx_interface_o), NULL, &walkData);
+
+            /* Print types that haven't been printed yet */
+            html_detailWalk(o, file, cx_type(cx_type_o), html_printPrimitiveDetail, &walkData);
+        }
+
+        html_printFunctions(o, file, "Function Documentation", HTML_PRINT_FUNCTIONS, TRUE);
     }
 
     cx_llFree(walkData.printed);
@@ -840,13 +858,11 @@ static int html_printInheritance(cx_interface o, g_file file) {
     if (o->base) {
         g_fileWrite(file, "<table class='category'>\n");
         cx_id id, path;
-        g_fileWrite(file, "<tr><td>Base</td><td><a class='reference' href='%s'>%s</a></td></tr>\n", 
-            html_fileFrom(o, o->base, path),
-            html_shortId(o->base, id));
+        g_fileWrite(file, "<tr><td>Base</td><td>%s</td></tr>\n", 
+            html_ref(o, o->base, html_shortId(o->base, id), "reference", path));
         if (cx_instanceof(cx_struct_o, o)) {
-            g_fileWrite(file, "<tr><td>Access</td><td><a class='reference-enum' href='%s'>%s</a></td></tr>",
-                html_fileFrom(o, cx_modifier_o, path), 
-                cx_modifierStr(cx_struct(o)->baseAccess));
+            g_fileWrite(file, "<tr><td>Access</td><td>%s</td></tr>",
+                html_ref(o, cx_modifier_o, cx_modifierStr(cx_struct(o)->baseAccess), "reference-enum", path));
         }
     }
 
@@ -863,9 +879,8 @@ static int html_printInheritance(cx_interface o, g_file file) {
             if (count) {
                 g_fileWrite(file, ", ");
             }
-            g_fileWrite(file, "<a class='reference' href='%s'>%s</a>", 
-                html_fileFrom(o, i, path),
-                cx_nameof(i));
+            g_fileWrite(file, "%s", 
+                html_ref(o, i, cx_nameof(i), "reference", path));
             count++;
         }
         g_fileWrite(file, "</td></tr>\n");
@@ -874,8 +889,6 @@ static int html_printInheritance(cx_interface o, g_file file) {
     } else if (o->base) {
         g_fileWrite(file, "</table>\n");
     }
-
-
 
     return 0;
 }
@@ -939,6 +952,11 @@ static g_file html_openIndexHtml(cx_object o, htmlData_t *data) {
         g_fileWrite(file, "../");
     }
     g_fileWrite(file, "bootstrap.min.js\"></script>\n");
+    g_fileWrite(file, "<script src=\"");
+    for (i = 0; i < level; i++) {
+        g_fileWrite(file, "../");
+    }
+    g_fileWrite(file, "smoothscroll.js\"></script>\n");
     g_fileWrite(file, "<link href=\"");  
     for (i = 0; i < level; i++) {
         g_fileWrite(file, "../");
@@ -997,11 +1015,10 @@ static g_file html_openIndexHtml(cx_object o, htmlData_t *data) {
     if (g_fileWrite(file, "<h1>%s %s</h1>\n", cx_nameof(o), capitalizedTypeName)) {
         goto error;
     }
-    g_fileWrite(file, "<hr>\n");
 
     cx_string description = doc_getDescription(o);
     if (description && strlen(description)) {
-        g_fileWrite(file, "<p>%s <a class='details' href='#details'>More...</a></p>\n", description);
+        g_fileWrite(file, "<p>%s <a class='details smoothScroll' href='#details'>More...</a></p>\n", description);
     }
 
     return file;
@@ -1089,6 +1106,10 @@ cx_int16 corto_genMain(cx_generator g) {
     }
 
     if (html_copy(data.path, "bootstrap.min.js")) {
+        goto error;
+    }
+
+    if (html_copy(data.path, "smoothscroll.js")) {
         goto error;
     }
     
