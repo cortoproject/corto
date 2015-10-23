@@ -99,7 +99,7 @@ void md_callbackParagraph(hoedown_buffer *ob, const hoedown_buffer *content, con
     if (lastHeader) {
         if (lastHeader->description) {
             if (lastHeader->text) {
-                cx_asprintf(&str, "%s%s\n", lastHeader->text, buff);
+                cx_asprintf(&str, "%s\n%s\n", lastHeader->text, buff);
             } else { 
                 cx_asprintf(&str, "%s\n", buff);
             }

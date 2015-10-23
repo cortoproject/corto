@@ -136,6 +136,15 @@ static int html_hasTypeWalk(cx_object o, void *userData) {
     return 1;
 }
 
+static cx_string doc_parse(cx_string input) {
+    cx_string result = NULL;
+    cx_function f = cx_function(cx_resolve(NULL, "md::parse"));
+    if (cx_checkState(f, CX_DEFINED)) {
+        cx_call(f, &result, input);
+    }
+    return result;
+}
+
 /* Reflection hack to get the description from a document */
 static cx_string doc_getDescriptionFromDoc(cx_object doc) {
     cx_object cl = cx_resolve(NULL, "corto::md::Doc");
@@ -181,6 +190,8 @@ static cx_string doc_getTextFromDoc(cx_object doc) {
             }
         }
     }
+
+    result = doc_parse(result);
 
     return result;
 }
@@ -676,7 +687,6 @@ int html_printEnumDetail(cx_object t, g_file file) {
         cx_nameof(cx_typeof(t)), cx_nameof(t));
     g_fileWrite(file, "<hr>\n");
     g_fileWrite(file, "<p>%s</p>\n", description);
-    g_fileWrite(file, "<p>%s</p>\n", text);
 
     g_fileWrite(file, "<table class='category'>\n");
     cx_objectseqForeach(cx_enum(t)->constants, c) {
@@ -698,6 +708,8 @@ int html_printEnumDetail(cx_object t, g_file file) {
         }
     }
     g_fileWrite(file, "</table>\n");
+
+    g_fileWrite(file, "<p>%s</p>\n", text);
 
     return 0;
 }
@@ -959,6 +971,26 @@ static g_file html_openIndexHtml(cx_object o, htmlData_t *data) {
     g_fileWrite(file, "<head>\n");
     g_fileIndent(file);
     g_fileWrite(file, "<meta charset=\"utf-8\">\n");
+    g_fileWrite(file, "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">");
+    g_fileWrite(file, "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
+    
+    g_fileWrite(file, "<link href=\"");  
+    for (i = 0; i < level; i++) {
+        g_fileWrite(file, "../");
+    }
+    g_fileWrite(file, "bootstrap.min.css\" rel=\"stylesheet\">\n");
+    g_fileWrite(file, 
+        "<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>\n");
+    g_fileWrite(file, "<link href=\"");  
+    for (i = 0; i < level; i++) {
+        g_fileWrite(file, "../");
+    } 
+    g_fileWrite(file, "octicons.css\" rel=\"stylesheet\">\n");
+    g_fileWrite(file, "<link href=\"");  
+    for (i = 0; i < level; i++) {
+        g_fileWrite(file, "../");
+    } 
+    g_fileWrite(file, "cortodoc.css\" rel=\"stylesheet\">\n");
     g_fileWrite(file, "<script src=\"");
     for (i = 0; i < level; i++) {
         g_fileWrite(file, "../");
@@ -974,21 +1006,6 @@ static g_file html_openIndexHtml(cx_object o, htmlData_t *data) {
         g_fileWrite(file, "../");
     }
     g_fileWrite(file, "smoothscroll.js\"></script>\n");
-    g_fileWrite(file, "<link href=\"");  
-    for (i = 0; i < level; i++) {
-        g_fileWrite(file, "../");
-    } 
-    g_fileWrite(file, "bootstrap.min.css\" rel=\"stylesheet\">\n");
-    g_fileWrite(file, "<link href=\"");  
-    for (i = 0; i < level; i++) {
-        g_fileWrite(file, "../");
-    } 
-    g_fileWrite(file, "octicons.css\" rel=\"stylesheet\">\n");
-    g_fileWrite(file, "<link href=\"");  
-    for (i = 0; i < level; i++) {
-        g_fileWrite(file, "../");
-    } 
-    g_fileWrite(file, "cortodoc.css\" rel=\"stylesheet\">\n");
     g_fileWrite(file, "<title>%s | Corto documentation</title>\n", cx_nameof(o));
     g_fileDedent(file);
     g_fileWrite(file, "</head>\n");
@@ -1007,8 +1024,10 @@ static g_file html_openIndexHtml(cx_object o, htmlData_t *data) {
 
     g_fileWrite(file, "<div id=\"navbar\" class=\"navbar-collapse collapse\">\n");
     g_fileWrite(file, "<ul class=\"nav navbar-nav navbar-right\">\n");
-    g_fileWrite(file, "<li><a href=\"http://corto.io/getstarted.html\" target=\"_blank\">TUTORIAL</a></li>\n");
-    g_fileWrite(file, "<li><a href=\"https://github.com/cortoproject/corto/wiki/Documentation\" target=\"_blank\">WIKI</a></li>\n");
+    g_fileWrite(file, "<li><a href=\"http://corto.io/getstarted.html\">TUTORIAL</a></li>\n");
+    g_fileWrite(file, "<li><a href=\"http://corto.io/doc/corto/lang.html\">REFERENCE DOCUMENTATION</a></li>\n");
+    g_fileWrite(file, "<li><a href=\"https://github.com/cortoproject/corto/wiki\">WIKI</a></li>\n");
+    g_fileWrite(file, "<li><a href=\"https://github.com/cortoproject/examples\">EXAMPLES</a></li>\n");
     g_fileWrite(file, "</ul>\n");
     g_fileWrite(file, "</div>\n");
 
@@ -1116,9 +1135,17 @@ error:
 
 cx_int16 corto_genMain(cx_generator g) {
     const char docsFilename[] = "doc";
+    cx_object md;
 
     cx_mkdir(docsFilename);
     htmlData_t data = {docsFilename, 1, "", g};
+
+    /* If the markdown package is not yet built, don't do HTML generation */
+    if (!(md = cx_resolve(NULL, "corto::md"))) {
+        return 0;        
+    } else {
+        cx_release(md);
+    }
 
     if (html_copy(data.path, "jquery-1.11.2.min.js")) {
         goto error;

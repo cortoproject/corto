@@ -844,12 +844,29 @@ char_codespan(hoedown_buffer *ob, hoedown_document *doc, uint8_t *data, size_t o
 	if (f_begin < f_end) {
 		work.data = data + f_begin;
 		work.size = f_end - f_begin;
-
-		if (!doc->md.codespan(ob, &work, &doc->data))
-			end = 0;
+		if (nb == 1) {
+			if (!doc->md.codespan(ob, &work, &doc->data))
+				end = 0;
+		} else {
+			/* trim first newline */
+			if (work.data[0] == '\n') {
+				work.data++;
+				work.size--;
+			}
+			doc->md.blockcode(ob, &work, 0, &doc->data);
+		}
 	} else {
-		if (!doc->md.codespan(ob, 0, &doc->data))
-			end = 0;
+		if (nb == 1) {
+			if (!doc->md.codespan(ob, 0, &doc->data))
+				end = 0;
+		} else {			
+			/* trim first newline */
+			if (work.data[0] == '\n') {
+				work.data++;
+				work.size--;
+			}
+			doc->md.blockcode(ob, 0, 0, &doc->data);			
+		}
 	}
 
 	return end;

@@ -14,7 +14,6 @@ Enables creating an alias to a (hidden) member in an interface.
 ## any
 Type that can represent any value.
 
-
 ## array
 Enables construction of fixed length, consecutively stored collections.
 
@@ -22,20 +21,69 @@ Enables construction of fixed length, consecutively stored collections.
 #### Returns
 ### destruct()
 ### elementType
+Element type of the array. 
+
+This field can be any type except for non-reference VOID types. The elementType
+for an array must be DEFINED, whereas in other collections this is not required.
+The rationale behind this is that at construction time, the type will calculate
+it's size, which in the case of an array depends on the size of its elementType.
+
 ### init()
 #### Returns
 
 ## attr
 Object attributes.
 
+`ATTR_DEFAULT` will automatically add `ATTR_OBSERVABLE` for all types, `ATTR_WRITABLE`
+for non-VOID objects and `ATTR_PERSISTENT` when `ATTR_SCOPED` is selected.
+
+`ATTR_OBSERVABLE` objects emit notifications on lifecycle events. 
+
+`ATTR_PERSISTENT` objects have an additional timestamp and owner field. These fields 
+are used by replicators to synchronize objects between datastores. Additionally,
+to ensure consistency across stores, `ATTR_PERSISTENT` objects will align `DECLARED` and
+`DEFINED` events to a 'late joining' observer, when the observable is respectfully
+`DECLARED` and/or `DEFINED`. This ensures that regardless of when the replication
+process starts, the two datastores will end up with the same object state.
+
+Attributes can be set with the `cx_setattr` function. This function sets the
+attributes for all subsequently created objects in the thread from which the 
+function is called. By default the attribute is set to `ATTR_DEFAULT`.
+
 ### ATTR_DEFAULT
+Corto automatically selects the attributes of an object based on its type.
+
 ### ATTR_OBSERVABLE
+The object will be observable.
+
 ### ATTR_PERSISTENT
+The object will be timestamped and notifications will be aligned to observers 
+upon subscription. ATTR_PERSISTENT requires ATTR_SCOPED.
+
 ### ATTR_SCOPED
+The object will be added to the Corto hierarchical datastore. Scoped objects can
+only be created with cx_declareChild or cx_createChild, which automatically sets
+the ATTR_SCOPED attribute.
+
 ### ATTR_WRITABLE
+The object will be writable, which means its value can be locked.
 
 ## binary
 Enables construction of binary types.
+
+A binary type is a type that does not undergo translation when it is transmitted
+over a (networked) medium. For example, some network protocols may require byte
+swapping to match endianness, but binary values will be left intact.
+
+When binary values are used in code, they behave just like unsigned integers. Binary
+values are usually visualized using hexadecimal notation.
+ 
+
+**Example**
+```
+binary{width_16} bin16
+bin16 b: 0xFF
+```
 
 ### init()
 #### Returns
@@ -43,15 +91,47 @@ Enables construction of binary types.
 ## bitmask
 Enables construction of bitmask types.
 
+Bitmasks are values of which each bit is assigned a semantical meaning. Bits can
+be enabled (set to 1) or disabled (set to 0).
+
+The bitmask type provides a convenient method of working with bitmasks. A bitmask
+type contains, much like an enumeration, a set of constants. These constants by
+default describe the meaning of one bit.
+
+Take for example:
+```
+bitmask Color::
+    Red, Yellow, Blue
+```
+Here, the constants `Red`, `Yellow` and `Blue` would be assigned the following values:
+
+| Constant | Value |
+|----------|-------|
+|Red     |0x1  |
+|Yellow  |0x2  |
+|Blue    |0x4  |
+
+A value of this type can enable multiple bits by specifying the corresponding constants:
+```
+Color purple: Red | Blue
+```
+Additionally, a bitmask may contain constants that enable multiple bits:
+```
+bitmask Color::
+    Red, Yellow, Blue,
+    Purple: Red | Blue
+```
+
 ### init()
 #### Returns
 
 ## bool
 Scalar boolean type.
 
-
 ## boolean
 Enables construction of boolean types.
+
+Boolean values can be either `true` or `false`. 
 
 ### init()
 #### Returns
@@ -59,9 +139,11 @@ Enables construction of boolean types.
 ## char
 Scalar character type.
 
-
 ## character
 Enables construction of character types.
+
+Characters are types that can represent a single character. Currently only the ASCII
+character set is supported. Future versions of Corto will add support for UTF-8.
 
 ### init()
 #### Returns

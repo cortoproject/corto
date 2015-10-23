@@ -1,6 +1,8 @@
 #package ::corto::md
 
-void parse(object destination, string text)
+string parse(string text)
+
+void parseToCorto(object destination, string text)
 
 class Doc::
     o: object

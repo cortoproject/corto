@@ -9,9 +9,8 @@
 #include "md.h"
 
 /* $header() */
-
+#include "html.h"
 #include "document.h"
-
 #include "_md_callbacks.h"
 
 hoedown_renderer* md_createRenderer(struct md_parseData* data) {
@@ -78,7 +77,7 @@ int md_parseDoc(cx_string file, int argc, char* argv[], void *data) {
     source = cx_fileLoad(file);
     if (source) {
         cx_object doc = cx_voidCreateChild(NULL, "doc");
-        md_parse(doc, source);
+        md_parseToCorto(doc, source);
         cx_dealloc(source);
     } else {
         goto error;
@@ -90,12 +89,33 @@ error:
 }
 /* $end */
 
-/* ::corto::md::parse(object destination,string text) */
-cx_void _md_parse(cx_object destination, cx_string text) {
+/* ::corto::md::parse(string text) */
+cx_string _md_parse(cx_string text) {
 /* $begin(::corto::md::parse) */
+    cx_string result = NULL;
+
+    hoedown_renderer *renderer = hoedown_html_renderer_new(0, 0);
+    hoedown_document *document = hoedown_document_new(renderer, HOEDOWN_EXT_BLOCK, 16);
+    hoedown_buffer *html = hoedown_buffer_new(16);
+    hoedown_document_render(document, html, (uint8_t*)text, strlen(text));
+
+    result = cx_strdup(hoedown_buffer_cstr(html));
+
+    hoedown_buffer_free(html);
+    hoedown_document_free(document);
+    hoedown_html_renderer_free(renderer);
+
+    return result;
+/* $end */
+}
+
+/* ::corto::md::parseToCorto(object destination,string text) */
+cx_void _md_parseToCorto(cx_object destination, cx_string text) {
+/* $begin(::corto::md::parseToCorto) */
+
     if (destination == root_o || destination == NULL) {
         cx_seterr("must specify a destination different from root");
-        goto error;
+        return;
     }
     md_parseData parseData = {
         destination,
@@ -113,7 +133,7 @@ cx_void _md_parse(cx_object destination, cx_string text) {
     hoedown_buffer_free(buffer);
     hoedown_document_free(parser);
     md_freeRenderer(renderer);
-error:;
+
 /* $end */
 }
 
