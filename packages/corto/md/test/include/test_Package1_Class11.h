@@ -14,7 +14,7 @@ extern "C" {
 #endif
 
 /* ::test::Package1::Class11::method111() */
-TEST_EXPORT cx_void _test_Package1_Class11_method111(test_Package1_Class11 _this);
+TEST_EXPORT corto_void _test_Package1_Class11_method111(test_Package1_Class11 _this);
 #define test_Package1_Class11_method111(_this) _test_Package1_Class11_method111(test_Package1_Class11(_this))
 
 #ifdef __cplusplus

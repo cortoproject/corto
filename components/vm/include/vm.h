@@ -15,35 +15,35 @@ extern "C" {
 #include "stdint.h"
 #include "vm_def.h"
 
-extern int CX_PROCEDURE_VM;
+extern int CORTO_PROCEDURE_VM;
 
 /* ---- Macro's that expand into enumeration constants */
 #define CONST0(arg)\
-    CX_VM_##arg,
+    CORTO_VM_##arg,
 
 #define CONST1(type, arg, op1)\
-    CX_VM_##arg##_##type##op1,
+    CORTO_VM_##arg##_##type##op1,
 
 #define CONST1_COND(type, arg, op1)\
-    CX_VM_##arg##B_##type##op1,\
-    CX_VM_##arg##S_##type##op1,\
-    CX_VM_##arg##L_##type##op1,\
-    CX_VM_##arg##D_##type##op1,
+    CORTO_VM_##arg##B_##type##op1,\
+    CORTO_VM_##arg##S_##type##op1,\
+    CORTO_VM_##arg##L_##type##op1,\
+    CORTO_VM_##arg##D_##type##op1,
 
 #define CONST1_COND_LD(type, arg, op1)\
-    CX_VM_##arg##L##_##type##op1,\
-    CX_VM_##arg##D##_##type##op1,     
+    CORTO_VM_##arg##L##_##type##op1,\
+    CORTO_VM_##arg##D##_##type##op1,     
 
 #define CONST2(type, arg, op1, op2)\
-    CX_VM_##arg##_##type##op1##op2,
+    CORTO_VM_##arg##_##type##op1##op2,
 
 #define CONST3(type, arg, op1, op2, op3)\
-    CX_VM_##arg##_##type##op1##op2##op3,
+    CORTO_VM_##arg##_##type##op1##op2##op3,
 
 
 /* ---- Enumeration containing all instruction constants */
 typedef enum vm_opKind {
-    OPS_EXP(CONST) /* See cx_vm_def.h */
+    OPS_EXP(CONST) /* See corto_vm_def.h */
 } vm_opKind;
 
 
@@ -72,7 +72,7 @@ typedef struct vm_op {
     vm_parameter16 ic;
     vm_parameter lo;
     vm_parameter hi;
-#ifdef CX_VM_DEBUG
+#ifdef CORTO_VM_DEBUG
     vm_opKind opKind; /* Actual operation kind. Only used for debugging purposes */
 #endif
 }vm_op;
@@ -85,7 +85,7 @@ typedef struct vm_program_s *vm_program;
 typedef struct vm_program_s {
     vm_op *program;
     vm_debugInfo *debugInfo;
-    cx_object function;
+    corto_object function;
     char *filename;
     uint32_t size;
     uint32_t maxSize;
@@ -94,23 +94,23 @@ typedef struct vm_program_s {
     uint8_t translated;
 } vm_program_s;
 
-#ifndef cx_stringSeq_DEFINED
-#define cx_stringSeq_DEFINED
-CX_SEQUENCE(cx_stringSeq, cx_string,);
+#ifndef corto_stringSeq_DEFINED
+#define corto_stringSeq_DEFINED
+CORTO_SEQUENCE(corto_stringSeq, corto_string,);
 #endif
 
 /* ---- Virtual machine API */
 /* Callback to vm program, for usage with call API */
-void vm_call(cx_function f, cx_void* result, void* args);
+void vm_call(corto_function f, corto_void* result, void* args);
 
 /* Run a program */
-int32_t vm_run(vm_program program, cx_stringSeq argv, void *result);
+int32_t vm_run(vm_program program, corto_stringSeq argv, void *result);
 
 /* Convert a program to a string */
 char *vm_programToString(vm_program program, vm_op *addr);
 
 /* Create a new program */
-vm_program vm_programNew(char *filename, cx_object function);
+vm_program vm_programNew(char *filename, corto_object function);
 
 /* Free a program */
 void vm_programFree(vm_program program);

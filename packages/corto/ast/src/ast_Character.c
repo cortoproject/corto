@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::corto::ast::Character::init() */
-cx_int16 _ast_Character_init(ast_Character this) {
+corto_int16 _ast_Character_init(ast_Character this) {
 /* $begin(::corto::ast::Character::init) */
     ast_Literal(this)->kind = Ast_Char;
     return ast_Literal_init(ast_Literal(this));
@@ -21,7 +21,7 @@ cx_int16 _ast_Character_init(ast_Character this) {
 }
 
 /* ::corto::ast::Character::serialize(type dstType,word dst) */
-cx_int16 _ast_Character_serialize(ast_Character this, cx_type dstType, cx_word dst) {
+corto_int16 _ast_Character_serialize(ast_Character this, corto_type dstType, corto_word dst) {
 /* $begin(::corto::ast::Character::serialize) */
     ast_valueKind kind;
 
@@ -29,16 +29,16 @@ cx_int16 _ast_Character_serialize(ast_Character this, cx_type dstType, cx_word d
 
     switch(kind) {
     case Ast_Bool:
-        *(cx_bool*)dst = this->value ? TRUE : FALSE;
+        *(corto_bool*)dst = this->value ? TRUE : FALSE;
         break;
     case Ast_Char:
     case Ast_Int:
     case Ast_SignedInt:
     case Ast_Text:
-        cx_convert(cx_primitive(cx_char_o), &this->value, cx_primitive(dstType), (void*)dst);
+        corto_convert(corto_primitive(corto_char_o), &this->value, corto_primitive(dstType), (void*)dst);
         break;
     default: {
-        cx_id id;
+        corto_id id;
         ast_Parser_error(yparser(), "cannot serialize character value to storage of type '%s'", ast_Parser_id(dstType, id));
         goto error;
         break;
@@ -52,14 +52,14 @@ error:
 }
 
 /* ::corto::ast::Character::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _ast_Character_toIc_v(ast_Character this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _ast_Character_toIc_v(ast_Character this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::Character::toIc) */
     ic_literal result;
-    CX_UNUSED(program);
-    CX_UNUSED(storage);
-    CX_UNUSED(stored);
+    CORTO_UNUSED(program);
+    CORTO_UNUSED(storage);
+    CORTO_UNUSED(stored);
 
-    result = ic_literalCreate((cx_any){cx_type(cx_char_o), &this->value, FALSE});
+    result = ic_literalCreate((corto_any){corto_type(corto_char_o), &this->value, FALSE});
 
     return ic_node(result);
 /* $end */

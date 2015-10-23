@@ -9,7 +9,7 @@
 #include "test.h"
 
 /* ::test::Packages::tc_class() */
-cx_void _test_Packages_tc_class(test_Packages this) {
+corto_void _test_Packages_tc_class(test_Packages this) {
 /* $begin(::test::Packages::tc_class) */
 
     char text[] =
@@ -19,31 +19,31 @@ cx_void _test_Packages_tc_class(test_Packages this) {
         ;
     md_parse(test_docs_o, text);
 
-    cx_object h1 = cx_resolve(test_docs_o, "test_Package0");
+    corto_object h1 = corto_resolve(test_docs_o, "test_Package0");
     test_assert(h1 != NULL);
-    test_assert(cx_instanceof(md_Doc_o, h1));
+    test_assert(corto_instanceof(md_Doc_o, h1));
     test_assert(md_Doc(h1)->o != NULL);
-    test_assert(!strcmp(cx_nameof(md_Doc(h1)->o), "Package0"));
-    test_assert(cx_parentof(md_Doc(h1)->o) == test_o);
+    test_assert(!strcmp(corto_nameof(md_Doc(h1)->o), "Package0"));
+    test_assert(corto_parentof(md_Doc(h1)->o) == test_o);
     test_assert(md_Doc(h1)->text == NULL);
     test_assert(md_Doc(h1)->level == 1);
-    cx_release(h1);
+    corto_release(h1);
 
-    cx_object h2 = cx_resolve(test_docs_o, "test_Package0::Class0");
+    corto_object h2 = corto_resolve(test_docs_o, "test_Package0::Class0");
     test_assert(h2 != NULL);
-    test_assert(cx_instanceof(md_Doc_o, h2));
+    test_assert(corto_instanceof(md_Doc_o, h2));
     test_assert(md_Doc(h2)->o != NULL);
-    test_assert(!strcmp(cx_nameof(md_Doc(h2)->o), "Class0"));
-    test_assert(cx_parentof(md_Doc(h2)->o) == md_Doc(h1)->o);
+    test_assert(!strcmp(corto_nameof(md_Doc(h2)->o), "Class0"));
+    test_assert(corto_parentof(md_Doc(h2)->o) == md_Doc(h1)->o);
     test_assert(!strcmp(md_Doc(h2)->description, "Description of class\n"));
     test_assert(md_Doc(h2)->level == 2);
-    cx_release(h2);
+    corto_release(h2);
 
 /* $end */
 }
 
 /* ::test::Packages::tc_method() */
-cx_void _test_Packages_tc_method(test_Packages this) {
+corto_void _test_Packages_tc_method(test_Packages this) {
 /* $begin(::test::Packages::tc_method) */
 
     char text[] =
@@ -57,54 +57,54 @@ cx_void _test_Packages_tc_method(test_Packages this) {
         ;
     md_parse(test_docs_o, text);
 
-    cx_object h1 = cx_resolve(test_docs_o, "test_Package0");
+    corto_object h1 = corto_resolve(test_docs_o, "test_Package0");
     test_assert(h1 != NULL);
-    test_assert(cx_instanceof(md_Doc_o, h1));
+    test_assert(corto_instanceof(md_Doc_o, h1));
     test_assert(md_Doc(h1)->o != NULL);
-    test_assert(!strcmp(cx_nameof(md_Doc(h1)->o), "Package0"));
-    test_assert(cx_parentof(md_Doc(h1)->o) == test_o);
+    test_assert(!strcmp(corto_nameof(md_Doc(h1)->o), "Package0"));
+    test_assert(corto_parentof(md_Doc(h1)->o) == test_o);
     test_assert(md_Doc(h1)->text == NULL);
     test_assert(md_Doc(h1)->level == 1);
-    cx_release(h1);
+    corto_release(h1);
 
-    cx_object h2 = cx_resolve(test_docs_o, "test_Package0::Class0");
+    corto_object h2 = corto_resolve(test_docs_o, "test_Package0::Class0");
     test_assert(h2 != NULL);
-    test_assert(cx_instanceof(md_Doc_o, h2));
+    test_assert(corto_instanceof(md_Doc_o, h2));
     test_assert(md_Doc(h2)->o != NULL);
-    test_assert(!strcmp(cx_nameof(md_Doc(h2)->o), "Class0"));
-    test_assert(cx_parentof(md_Doc(h2)->o) == md_Doc(h1)->o);
+    test_assert(!strcmp(corto_nameof(md_Doc(h2)->o), "Class0"));
+    test_assert(corto_parentof(md_Doc(h2)->o) == md_Doc(h1)->o);
     test_assert(!strcmp(md_Doc(h2)->description, "Description of class\n"));
     test_assert(md_Doc(h2)->text == NULL);
     test_assert(md_Doc(h2)->level == 2);
-    cx_release(h2);
+    corto_release(h2);
 
-    cx_object h3 = cx_resolve(test_docs_o, "test_Package0::Class0::method0");
+    corto_object h3 = corto_resolve(test_docs_o, "test_Package0::Class0::method0");
     test_assert(h3 != NULL);
-    test_assert(cx_instanceof(md_Doc_o, h3));
+    test_assert(corto_instanceof(md_Doc_o, h3));
     test_assert(md_Doc(h3)->o != NULL);
-    test_assert(!strcmp(cx_nameof(md_Doc(h3)->o), "method0()"));
-    test_assert(cx_parentof(md_Doc(h3)->o) == md_Doc(h2)->o);
+    test_assert(!strcmp(corto_nameof(md_Doc(h3)->o), "method0()"));
+    test_assert(corto_parentof(md_Doc(h3)->o) == md_Doc(h2)->o);
     test_assert(!strcmp(md_Doc(h3)->description, "Description of method0\n"));
     test_assert(md_Doc(h3)->text == NULL);
     test_assert(md_Doc(h3)->level == 3);
-    cx_release(h3);
+    corto_release(h3);
 
-    h3 = cx_resolve(test_docs_o, "test_Package0::Class0::method1");
+    h3 = corto_resolve(test_docs_o, "test_Package0::Class0::method1");
     test_assert(h3 != NULL);
-    test_assert(cx_instanceof(md_Doc_o, h3));
+    test_assert(corto_instanceof(md_Doc_o, h3));
     test_assert(md_Doc(h3)->o != NULL);
-    test_assert(!strcmp(cx_nameof(md_Doc(h3)->o), "method1()"));
-    test_assert(cx_parentof(md_Doc(h3)->o) == md_Doc(h2)->o);
+    test_assert(!strcmp(corto_nameof(md_Doc(h3)->o), "method1()"));
+    test_assert(corto_parentof(md_Doc(h3)->o) == md_Doc(h2)->o);
     test_assert(!strcmp(md_Doc(h3)->description, "Description of method1\n"));
     test_assert(md_Doc(h3)->text == NULL);
     test_assert(md_Doc(h3)->level == 3);
-    cx_release(h3);
+    corto_release(h3);
 
 /* $end */
 }
 
 /* ::test::Packages::tc_nestedPackage() */
-cx_void _test_Packages_tc_nestedPackage(test_Packages this) {
+corto_void _test_Packages_tc_nestedPackage(test_Packages this) {
 /* $begin(::test::Packages::tc_nestedPackage) */
 
     char text[] =
@@ -117,43 +117,43 @@ cx_void _test_Packages_tc_nestedPackage(test_Packages this) {
         ;
     md_parse(test_docs_o, text);
 
-    cx_object h1 = cx_resolve(test_docs_o, "test_Package1");
+    corto_object h1 = corto_resolve(test_docs_o, "test_Package1");
     test_assert(h1 != NULL);
-    test_assert(cx_instanceof(md_Doc_o, h1));
+    test_assert(corto_instanceof(md_Doc_o, h1));
     test_assert(md_Doc(h1)->o != NULL);
-    test_assert(!strcmp(cx_nameof(md_Doc(h1)->o), "Package1"));
-    test_assert(cx_parentof(md_Doc(h1)->o) == test_o);
+    test_assert(!strcmp(corto_nameof(md_Doc(h1)->o), "Package1"));
+    test_assert(corto_parentof(md_Doc(h1)->o) == test_o);
     test_assert(md_Doc(h1)->text == NULL);
     test_assert(md_Doc(h1)->level == 1);
-    cx_release(h1);
+    corto_release(h1);
 
-    cx_object h2 = cx_resolve(test_docs_o, "test_Package1_Package0");
+    corto_object h2 = corto_resolve(test_docs_o, "test_Package1_Package0");
     test_assert(h2 != NULL);
-    test_assert(cx_instanceof(md_Doc_o, h2));
+    test_assert(corto_instanceof(md_Doc_o, h2));
     test_assert(md_Doc(h2)->o != NULL);
-    test_assert(!strcmp(cx_nameof(md_Doc(h2)->o), "Package0"));
-    test_assert(cx_parentof(md_Doc(h2)->o) == md_Doc(h1)->o);
+    test_assert(!strcmp(corto_nameof(md_Doc(h2)->o), "Package0"));
+    test_assert(corto_parentof(md_Doc(h2)->o) == md_Doc(h1)->o);
     test_assert(!strcmp(md_Doc(h2)->description, "Description of Package1/Package0\n"));
     test_assert(md_Doc(h2)->text == NULL);
     test_assert(md_Doc(h2)->level == 1);
-    cx_release(h2);
+    corto_release(h2);
 
-    cx_object h3 = cx_resolve(test_docs_o, "test_Package1_Package0_Package0");
+    corto_object h3 = corto_resolve(test_docs_o, "test_Package1_Package0_Package0");
     test_assert(h3 != NULL);
-    test_assert(cx_instanceof(md_Doc_o, h3));
+    test_assert(corto_instanceof(md_Doc_o, h3));
     test_assert(md_Doc(h3)->o != NULL);
-    test_assert(!strcmp(cx_nameof(md_Doc(h3)->o), "Package0"));
-    test_assert(cx_parentof(md_Doc(h3)->o) == md_Doc(h2)->o);
+    test_assert(!strcmp(corto_nameof(md_Doc(h3)->o), "Package0"));
+    test_assert(corto_parentof(md_Doc(h3)->o) == md_Doc(h2)->o);
     test_assert(!strcmp(md_Doc(h3)->description, "Description of Package1/Package0/Package0\n"));
     test_assert(md_Doc(h3)->text == NULL);
     test_assert(md_Doc(h3)->level == 1);
-    cx_release(h3);
+    corto_release(h3);
 
 /* $end */
 }
 
 /* ::test::Packages::tc_twoClasses() */
-cx_void _test_Packages_tc_twoClasses(test_Packages this) {
+corto_void _test_Packages_tc_twoClasses(test_Packages this) {
 /* $begin(::test::Packages::tc_twoClasses) */
 
     char text[] =
@@ -169,55 +169,55 @@ cx_void _test_Packages_tc_twoClasses(test_Packages this) {
         ;
     md_parse(test_docs_o, text);
 
-    cx_object h1 = cx_resolve(test_docs_o, "test_Package2");
+    corto_object h1 = corto_resolve(test_docs_o, "test_Package2");
     test_assert(h1 != NULL);
-    test_assert(cx_instanceof(md_Doc_o, h1));
+    test_assert(corto_instanceof(md_Doc_o, h1));
     test_assert(md_Doc(h1)->o != NULL);
-    test_assert(!strcmp(cx_nameof(md_Doc(h1)->o), "Package2"));
-    test_assert(cx_parentof(md_Doc(h1)->o) == test_o);
+    test_assert(!strcmp(corto_nameof(md_Doc(h1)->o), "Package2"));
+    test_assert(corto_parentof(md_Doc(h1)->o) == test_o);
     test_assert(md_Doc(h1)->text == NULL);
     test_assert(md_Doc(h1)->level == 1);
-    cx_release(h1);
+    corto_release(h1);
 
-    cx_object h2 = cx_resolve(test_docs_o, "test_Package2::Class0");
+    corto_object h2 = corto_resolve(test_docs_o, "test_Package2::Class0");
     test_assert(h2 != NULL);
-    test_assert(cx_instanceof(md_Doc_o, h2));
+    test_assert(corto_instanceof(md_Doc_o, h2));
     test_assert(md_Doc(h2)->o != NULL);
-    test_assert(!strcmp(cx_nameof(md_Doc(h2)->o), "Class0"));
-    test_assert(cx_parentof(md_Doc(h2)->o) == md_Doc(h1)->o);
+    test_assert(!strcmp(corto_nameof(md_Doc(h2)->o), "Class0"));
+    test_assert(corto_parentof(md_Doc(h2)->o) == md_Doc(h1)->o);
     test_assert(!strcmp(md_Doc(h2)->description, "Description of class0\n"));
     test_assert(md_Doc(h2)->level == 2);
-    cx_release(h2);
+    corto_release(h2);
 
-    cx_object h3 = cx_resolve(test_docs_o, "test_Package2::Class0::method0");
+    corto_object h3 = corto_resolve(test_docs_o, "test_Package2::Class0::method0");
     test_assert(h3 != NULL);
-    test_assert(cx_instanceof(md_Doc_o, h3));
+    test_assert(corto_instanceof(md_Doc_o, h3));
     test_assert(md_Doc(h3)->o != NULL);
-    test_assert(!strcmp(cx_nameof(md_Doc(h3)->o), "method0()"));
-    test_assert(cx_parentof(md_Doc(h3)->o) == md_Doc(h2)->o);
+    test_assert(!strcmp(corto_nameof(md_Doc(h3)->o), "method0()"));
+    test_assert(corto_parentof(md_Doc(h3)->o) == md_Doc(h2)->o);
     test_assert(!strcmp(md_Doc(h3)->description, "Description for method0 of Class0\n"));
     test_assert(md_Doc(h3)->level == 3);
-    cx_release(h3);
+    corto_release(h3);
 
-    h2 = cx_resolve(test_docs_o, "test_Package2::Class1");
+    h2 = corto_resolve(test_docs_o, "test_Package2::Class1");
     test_assert(h2 != NULL);
-    test_assert(cx_instanceof(md_Doc_o, h2));
+    test_assert(corto_instanceof(md_Doc_o, h2));
     test_assert(md_Doc(h2)->o != NULL);
-    test_assert(!strcmp(cx_nameof(md_Doc(h2)->o), "Class1"));
-    test_assert(cx_parentof(md_Doc(h2)->o) == md_Doc(h1)->o);
+    test_assert(!strcmp(corto_nameof(md_Doc(h2)->o), "Class1"));
+    test_assert(corto_parentof(md_Doc(h2)->o) == md_Doc(h1)->o);
     test_assert(!strcmp(md_Doc(h2)->description, "Description of class1\n"));
     test_assert(md_Doc(h2)->level == 2);
-    cx_release(h2);
+    corto_release(h2);
 
-    h3 = cx_resolve(test_docs_o, "test_Package2::Class1::method0");
+    h3 = corto_resolve(test_docs_o, "test_Package2::Class1::method0");
     test_assert(h3 != NULL);
-    test_assert(cx_instanceof(md_Doc_o, h3));
+    test_assert(corto_instanceof(md_Doc_o, h3));
     test_assert(md_Doc(h3)->o != NULL);
-    test_assert(!strcmp(cx_nameof(md_Doc(h3)->o), "method0()"));
-    test_assert(cx_parentof(md_Doc(h3)->o) == md_Doc(h2)->o);
+    test_assert(!strcmp(corto_nameof(md_Doc(h3)->o), "method0()"));
+    test_assert(corto_parentof(md_Doc(h3)->o) == md_Doc(h2)->o);
     test_assert(!strcmp(md_Doc(h3)->description, "Description for method0 of Class1\n"));
     test_assert(md_Doc(h3)->level == 3);
-    cx_release(h3);
+    corto_release(h3);
     
 /* $end */
 }

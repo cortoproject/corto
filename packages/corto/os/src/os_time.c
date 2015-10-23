@@ -9,13 +9,13 @@
 #include "os.h"
 
 /* $header() */
-#include "cx_time.h"
+#include "corto_time.h"
 /* $end */
 
 /* ::corto::os::time::add(::corto::os::time t) */
-cx_void _os_time_add(os_time this, os_time t) {
+corto_void _os_time_add(os_time this, os_time t) {
 /* $begin(::corto::os::time::add) */
-    cx_time t1, t2;
+    corto_time t1, t2;
 
     /* Avoid type-punning warnings */
     t1.tv_sec = this->seconds;
@@ -24,7 +24,7 @@ cx_void _os_time_add(os_time this, os_time t) {
     t2.tv_nsec = t->nanoseconds;
 
     /* Add times */
-    t1 = cx_timeAdd(t1, t2);
+    t1 = corto_timeAdd(t1, t2);
 
     /* Copy values back to this */
     this->seconds = t1.tv_sec;
@@ -33,18 +33,18 @@ cx_void _os_time_add(os_time this, os_time t) {
 }
 
 /* ::corto::os::time::get() */
-cx_void _os_time_get(os_time this) {
+corto_void _os_time_get(os_time this) {
 /* $begin(::corto::os::time::get) */
 
-    cx_timeGet((cx_time*)this); /* os_Time is equally formed as cx_time */
+    corto_timeGet((corto_time*)this); /* os_Time is equally formed as corto_time */
 
 /* $end */
 }
 
 /* ::corto::os::time::sub(::corto::os::time t) */
-cx_void _os_time_sub(os_time this, os_time t) {
+corto_void _os_time_sub(os_time this, os_time t) {
 /* $begin(::corto::os::time::sub) */
-    cx_time t1, t2;
+    corto_time t1, t2;
 
     /* Avoid type-punning warnings */
     t1.tv_sec = this->seconds;
@@ -53,7 +53,7 @@ cx_void _os_time_sub(os_time this, os_time t) {
     t2.tv_nsec = t->nanoseconds;
 
     /* Add times */
-    t1 = cx_timeSub(t1, t2);
+    t1 = corto_timeSub(t1, t2);
 
     /* Copy values back to this */
     this->seconds = t1.tv_sec;
@@ -62,14 +62,14 @@ cx_void _os_time_sub(os_time this, os_time t) {
 }
 
 /* ::corto::os::time::toFloat() */
-cx_float64 _os_time_toFloat(os_time this) {
+corto_float64 _os_time_toFloat(os_time this) {
 /* $begin(::corto::os::time::toFloat) */
-    cx_time t;
+    corto_time t;
 
     t.tv_sec = this->seconds;
     t.tv_nsec = this->nanoseconds;
 
-    return cx_timeToDouble(t);
+    return corto_timeToDouble(t);
 
 /* $end */
 }

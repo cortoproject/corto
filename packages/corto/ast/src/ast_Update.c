@@ -40,23 +40,23 @@ error:
 /* $end */
 
 /* ::corto::ast::Update::construct() */
-cx_int16 _ast_Update_construct(ast_Update this) {
+corto_int16 _ast_Update_construct(ast_Update this) {
 /* $begin(::corto::ast::Update::construct) */
-    cx_iter exprIter;
+    corto_iter exprIter;
     ast_Expression expr;
 
     ast_Node(this)->kind = Ast_UpdateExpr;
 
-    exprIter = cx_llIter(this->exprList);
-    while(cx_iterHasNext(&exprIter)) {
-        expr = cx_iterNext(&exprIter);
+    exprIter = corto_llIter(this->exprList);
+    while(corto_iterHasNext(&exprIter)) {
+        expr = corto_iterNext(&exprIter);
 
         expr = ast_Update_getFirstReference(expr);
 
         if (!expr->isReference) {
             ast_Parser_error(yparser(), 
                 "one or more expressions in the update statement are not references (%s)",
-                cx_nameof(cx_typeof(expr)));
+                corto_nameof(corto_typeof(expr)));
             goto error;            
         }
     }
@@ -79,12 +79,12 @@ static void ast_Update_end(ast_Update this, ic_program program, ic_node expr, ic
 }
 
 /* $end */
-ic_node _ast_Update_toIc_v(ast_Update this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _ast_Update_toIc_v(ast_Update this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::Update::toIc) */
     ic_node expr, from = NULL;
-    cx_iter exprIter;
-    CX_UNUSED(storage);
-    CX_UNUSED(stored);
+    corto_iter exprIter;
+    CORTO_UNUSED(storage);
+    CORTO_UNUSED(stored);
 
     /* Evaluate expression */
     if (this->from) {
@@ -92,9 +92,9 @@ ic_node _ast_Update_toIc_v(ast_Update this, ic_program program, ic_storage stora
     }
 
     /* Add update statement for each expression in exprList */
-    exprIter = cx_llIter(this->exprList);
-    while(cx_iterHasNext(&exprIter)) {
-        ast_Expression fastExpr = ast_Update_getFirstReference(cx_iterNext(&exprIter));
+    exprIter = corto_llIter(this->exprList);
+    while(corto_iterHasNext(&exprIter)) {
+        ast_Expression fastExpr = ast_Update_getFirstReference(corto_iterNext(&exprIter));
 
         /* Run binary expression between updatebegin and updateend */
         if (this->kind != Ast_UpdateDefault) {
@@ -119,9 +119,9 @@ ic_node _ast_Update_toIc_v(ast_Update this, ic_program program, ic_storage stora
     if (this->block) {
         /* Translate block to ic */
         ast_Block_toIc(this->block, program, NULL, FALSE);
-        exprIter = cx_llIter(this->exprList);
-        while(cx_iterHasNext(&exprIter)) {
-            ast_Expression fastExpr = cx_iterNext(&exprIter);
+        exprIter = corto_llIter(this->exprList);
+        while(corto_iterHasNext(&exprIter)) {
+            ast_Expression fastExpr = corto_iterNext(&exprIter);
             expr = ast_Node_toIc(ast_Node(fastExpr), program, NULL, TRUE);
             ast_Update_end(this, program, expr, from);
         }

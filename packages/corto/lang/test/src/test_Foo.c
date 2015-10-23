@@ -9,7 +9,7 @@
 #include "test.h"
 
 /* ::test::Foo::construct() */
-cx_int16 _test_Foo_construct(test_Foo this) {
+corto_int16 _test_Foo_construct(test_Foo this) {
 /* $begin(::test::Foo::construct) */
 
 	if (!this->fail) {
@@ -29,15 +29,15 @@ error:
 }
 
 /* ::test::Foo::destruct() */
-cx_void _test_Foo_destruct(test_Foo this) {
+corto_void _test_Foo_destruct(test_Foo this) {
 /* $begin(::test::Foo::destruct) */
-    CX_UNUSED(this);
+    CORTO_UNUSED(this);
     (*test_destructCalled_o)++;
 /* $end */
 }
 
 /* ::test::Foo::init() */
-cx_int16 _test_Foo_init(test_Foo this) {
+corto_int16 _test_Foo_init(test_Foo this) {
 /* $begin(::test::Foo::init) */
     this->x = 1;
     this->y = 2;

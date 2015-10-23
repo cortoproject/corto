@@ -1,0 +1,48 @@
+/* corto_replicator.h
+ *
+ * This file contains generated code. Do not modify!
+ */
+
+#ifndef CORTO_LANG_REPLICATOR_H
+#define CORTO_LANG_REPLICATOR_H
+
+#include "corto.h"
+#include "corto__interface.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* ::corto::lang::replicator::construct() */
+CORTO_LANG_EXPORT corto_int16 _corto_replicator_construct(corto_replicator _this);
+#define corto_replicator_construct(_this) _corto_replicator_construct(corto_replicator(_this))
+
+/* ::corto::lang::replicator::destruct() */
+CORTO_LANG_EXPORT corto_void _corto_replicator_destruct(corto_replicator _this);
+#define corto_replicator_destruct(_this) _corto_replicator_destruct(corto_replicator(_this))
+
+/* ::corto::lang::replicator::invoke(object instance,function proc,octetseq args) */
+CORTO_LANG_EXPORT corto_void _corto_replicator_invoke(corto_replicator _this, corto_object instance, corto_function proc, corto_octetseq args);
+#define corto_replicator_invoke(_this, instance, proc, args) _corto_replicator_invoke(corto_replicator(_this), instance, corto_function(proc), args)
+
+/* ::corto::lang::replicator::on_declare */
+CORTO_LANG_EXPORT corto_void _corto_replicator_on_declare(corto_replicator _this, corto_object observable);
+#define corto_replicator_on_declare(_this, observable) _corto_replicator_on_declare(corto_replicator(_this), observable)
+
+/* ::corto::lang::replicator::on_delete */
+CORTO_LANG_EXPORT corto_void _corto_replicator_on_delete(corto_replicator _this, corto_object observable);
+#define corto_replicator_on_delete(_this, observable) _corto_replicator_on_delete(corto_replicator(_this), observable)
+
+/* ::corto::lang::replicator::on_update */
+CORTO_LANG_EXPORT corto_void _corto_replicator_on_update(corto_replicator _this, corto_object observable);
+#define corto_replicator_on_update(_this, observable) _corto_replicator_on_update(corto_replicator(_this), observable)
+
+/* ::corto::lang::replicator::post(event e) */
+CORTO_LANG_EXPORT corto_void _corto_replicator_post(corto_replicator _this, corto_event e);
+#define corto_replicator_post(_this, e) _corto_replicator_post(corto_replicator(_this), corto_event(e))
+
+#ifdef __cplusplus
+}
+#endif
+#endif
+

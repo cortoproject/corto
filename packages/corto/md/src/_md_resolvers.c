@@ -4,11 +4,11 @@
  * Returns TRUE if `ancestor` is recursively a parent of `o`, except if
  * `ancestor` is root_o.
  */
-static cx_bool md_isAncestor(cx_object ancestor, cx_object o) {
-    cx_bool isAncestor = FALSE;
-    cx_object p = o;
+static corto_bool md_isAncestor(corto_object ancestor, corto_object o) {
+    corto_bool isAncestor = FALSE;
+    corto_object p = o;
     while (p && !isAncestor) {
-        p = cx_parentof(p);
+        p = corto_parentof(p);
         if (p == ancestor) {
             isAncestor = TRUE;
         }
@@ -16,15 +16,15 @@ static cx_bool md_isAncestor(cx_object ancestor, cx_object o) {
     return isAncestor;
 }
 
-cx_object md_resolve(int level, cx_string name, cx_object *parent, md_parseData* data) {
-    cx_assert(level >= 1 && level <= 6, "Level must be between 1 and 6");
-    cx_object o = NULL, current = NULL;
+corto_object md_resolve(int level, corto_string name, corto_object *parent, md_parseData* data) {
+    corto_assert(level >= 1 && level <= 6, "Level must be between 1 and 6");
+    corto_object o = NULL, current = NULL;
 
-    cx_object previous = NULL;
+    corto_object previous = NULL;
     if (level == 1) {
         previous = data->destination;
     } else {
-        cx_uint32 i = level - 1;
+        corto_uint32 i = level - 1;
         while (i && !(previous = md_Doc(data->headers[i]))) {
             i--;
         }
@@ -34,7 +34,7 @@ cx_object md_resolve(int level, cx_string name, cx_object *parent, md_parseData*
         goto notFound;
     }
 
-    if (cx_instanceof(md_Doc_o, previous)) {
+    if (corto_instanceof(md_Doc_o, previous)) {
         current = md_Doc(previous)->o;
     }
 
@@ -43,7 +43,7 @@ cx_object md_resolve(int level, cx_string name, cx_object *parent, md_parseData*
     }
 
     if (current || (level == 1)) {
-        o = cx_resolve(current, name);
+        o = corto_resolve(current, name);
         if (o == NULL) {
             goto notFound;
         }

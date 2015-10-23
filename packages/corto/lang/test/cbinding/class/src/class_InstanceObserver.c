@@ -9,7 +9,7 @@
 #include "_class.h"
 
 /* ::class::InstanceObserver::construct() */
-cx_int16 _class_InstanceObserver_construct(class_InstanceObserver this) {
+corto_int16 _class_InstanceObserver_construct(class_InstanceObserver this) {
 /* $begin(::class::InstanceObserver::construct) */
 
     return 0;
@@ -18,7 +18,7 @@ cx_int16 _class_InstanceObserver_construct(class_InstanceObserver this) {
 }
 
 /* ::class::InstanceObserver::onUpdate() */
-cx_void _class_InstanceObserver_onUpdate(class_InstanceObserver this, cx_object observable) {
+corto_void _class_InstanceObserver_onUpdate(class_InstanceObserver this, corto_object observable) {
 /* $begin(::class::InstanceObserver::onUpdate) */
 
     /* << Insert implementation >> */
@@ -27,7 +27,7 @@ cx_void _class_InstanceObserver_onUpdate(class_InstanceObserver this, cx_object 
 }
 
 /* ::class::InstanceObserver::onUpdateSelf */
-cx_void _class_InstanceObserver_onUpdateSelf(class_InstanceObserver this, cx_object observable) {
+corto_void _class_InstanceObserver_onUpdateSelf(class_InstanceObserver this, corto_object observable) {
 /* $begin(::class::InstanceObserver::onUpdateSelf) */
 
     /* << Insert implementation >> */

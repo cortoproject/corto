@@ -7,8 +7,8 @@
 
 #define corto_lang_LIB
 #include "jsw_rbtree.h"
-#include "cx_util.h"
-#include "cx_err.h"
+#include "corto_util.h"
+#include "corto_err.h"
 
 #ifdef __cplusplus
 #include <cstdlib>
@@ -27,12 +27,12 @@ struct jsw_rbnode {
   struct jsw_rbnode *link[2]; /* Left (0) and right (1) links */
 };
 
-typedef cx_equalityKind ___ (*cx_equalFunction)(cx_any this, cx_any value);
+typedef corto_equalityKind ___ (*corto_equalFunction)(corto_any this, corto_any value);
 
 struct jsw_rbtree {
   jsw_rbnode_t *root; /* Top of the tree */
-  cx_equalsAction cmp;  /* Compare two items */
-  cx_type        type; /* This object which must be passed to cmp-function */
+  corto_equalsAction cmp;  /* Compare two items */
+  corto_type        type; /* This object which must be passed to cmp-function */
   size_t        size; /* Number of items (user-defined) */
 };
 
@@ -105,7 +105,7 @@ static jsw_rbnode_t *jsw_double ( jsw_rbnode_t *root, int dir )
 */
 static jsw_rbnode_t *new_node ( jsw_rbtree_t *tree, void* key, void *data )
 {
-  CX_UNUSED(tree);
+  CORTO_UNUSED(tree);
   jsw_rbnode_t *rn = (jsw_rbnode_t *)malloc ( sizeof *rn );
 
   if ( rn == NULL )
@@ -124,14 +124,14 @@ void *jsw_rbnodedata(jsw_rbnode_t *node) {
 }
 
 /* Marshall between intern comparefunction and corto::type::equals */
-static cx_equalityKind cx_rbtreeGenericCompare(cx_type t, const void* v1, const void* v2) {
-    cx_any any1, any2;
-    cx_type keyType = cx_map(t)->keyType;
+static corto_equalityKind corto_rbtreeGenericCompare(corto_type t, const void* v1, const void* v2) {
+    corto_any any1, any2;
+    corto_type keyType = corto_map(t)->keyType;
     any1.type = keyType;
     any1.value = (void*)v1;
     any2.type = keyType;
     any2.value = (void*)v2;
-    return cx_type_compare(any1, any2);
+    return corto_type_compare(any1, any2);
 }
 
 /**
@@ -147,7 +147,7 @@ static cx_equalityKind cx_rbtreeGenericCompare(cx_type t, const void* v1, const 
   The returned pointer must be released with jsw_rbdelete
   </remarks>
 */
-jsw_rbtree_t *jsw_rbnew ( cx_type type, cx_equalsAction cmp)
+jsw_rbtree_t *jsw_rbnew ( corto_type type, corto_equalsAction cmp)
 {
   jsw_rbtree_t *rt = (jsw_rbtree_t *)malloc ( sizeof *rt );
 
@@ -155,7 +155,7 @@ jsw_rbtree_t *jsw_rbnew ( cx_type type, cx_equalsAction cmp)
     return NULL;
 
   if (!cmp) {
-      cmp = cx_rbtreeGenericCompare;
+      cmp = corto_rbtreeGenericCompare;
   }
 
   rt->root = NULL;
@@ -166,7 +166,7 @@ jsw_rbtree_t *jsw_rbnew ( cx_type type, cx_equalsAction cmp)
   return rt;
 }
 
-cx_type jsw_rbtype( jsw_rbtree_t *tree) {
+corto_type jsw_rbtype( jsw_rbtree_t *tree) {
     return tree->type;
 }
 
@@ -174,14 +174,14 @@ cx_type jsw_rbtype( jsw_rbtree_t *tree) {
 void jsw_keyFree( jsw_rbtree_t *tree, void *key )
 {
     if (tree->type) {
-        cx_type keyType = cx_map(tree->type)->keyType;
+        corto_type keyType = corto_map(tree->type)->keyType;
 
         if (keyType->reference) {
-            cx_release(*(cx_object*)key);
+            corto_release(*(corto_object*)key);
         } else {
-            if (keyType->kind == CX_PRIMITIVE) {
-                if (cx_primitive(keyType)->kind == CX_TEXT) {
-                    free(*(cx_string*)key);
+            if (keyType->kind == CORTO_PRIMITIVE) {
+                if (corto_primitive(keyType)->kind == CORTO_TEXT) {
+                    free(*(corto_string*)key);
                 }
             }
         }
@@ -296,7 +296,7 @@ int jsw_rbhaskey ( jsw_rbtree_t *tree, const void *key, void** data )
   return jsw_rbhaskey_w_cmp( tree, key, data, tree->cmp );
 }
 
-int jsw_rbhaskey_w_cmp ( jsw_rbtree_t *tree, const void *key, void** data, cx_equalsAction f_cmp )
+int jsw_rbhaskey_w_cmp ( jsw_rbtree_t *tree, const void *key, void** data, corto_equalsAction f_cmp )
 {
   jsw_rbnode_t *it = tree->root;
 
@@ -336,9 +336,9 @@ int jsw_rbhaskey_w_cmp ( jsw_rbtree_t *tree, const void *key, void** data, cx_eq
   0 if the insertion failed for any reason
   </returns>
 */
-int jsw_rbinsert ( jsw_rbtree_t *tree, void* key, void *data, void **old_out, cx_bool overwrite )
+int jsw_rbinsert ( jsw_rbtree_t *tree, void* key, void *data, void **old_out, corto_bool overwrite )
 {
-  CX_UNUSED(overwrite);
+  CORTO_UNUSED(overwrite);
 
   if (old_out)
     *old_out = NULL;
@@ -394,7 +394,7 @@ int jsw_rbinsert ( jsw_rbtree_t *tree, void* key, void *data, void **old_out, cx
         Stop working if we inserted a node. This
         check also disallows duplicates in the tree
       */
-      cx_equalityKind eq = tree->cmp ( tree->type, q->key, key );
+      corto_equalityKind eq = tree->cmp ( tree->type, q->key, key );
       if ( eq == 0 ) {
         if (old_out)
           *old_out = q->data;
@@ -462,7 +462,7 @@ int jsw_rberase ( jsw_rbtree_t *tree, void *key )
       /* Move the helpers down */
       g = p, p = q;
       q = q->link[dir];
-      cx_equalityKind eq = tree->cmp ( tree->type, q->key, key );
+      corto_equalityKind eq = tree->cmp ( tree->type, q->key, key );
       dir = eq  < 0;
 
       /*
@@ -570,7 +570,7 @@ void *jsw_rbgetmax ( jsw_rbtree_t *tree, void** key) {
 /* Get next and prev */
 void *jsw_rbgetnext ( jsw_rbtree_t *tree, void* key, void** key_out) {
     jsw_rbnode_t* stack[32];
-    cx_uint32 sp;
+    corto_uint32 sp;
     jsw_rbnode_t *it = tree->root;
     void* result;
 

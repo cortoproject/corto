@@ -2,24 +2,24 @@
 #define corto_lang_LIB
 #include "corto.h"
 
-cx_object cxstr_define(cx_object result, cx_string value) {
+corto_object cxstr_define(corto_object result, corto_string value) {
 
-    if (cx_typeof(result)->kind != CX_VOID) {
-        cx_fromStr(&result, value);
+    if (corto_typeof(result)->kind != CORTO_VOID) {
+        corto_fromStr(&result, value);
     }
 
-    if (cx_define(result)) {
+    if (corto_define(result)) {
         goto error;
     }
     
     return result; 
 error:
-    cx_delete(result);
+    corto_delete(result);
     return NULL;
 }
 
-cx_object cxstr_create(cx_string type, cx_string value) {
-    cx_object result = cxstr_declare(type);
+corto_object cxstr_create(corto_string type, corto_string value) {
+    corto_object result = cxstr_declare(type);
     if (!result) {
         goto error;
     }
@@ -28,8 +28,8 @@ error:
     return NULL;
 }
 
-cx_object cxstr_createChild(cx_string parent, cx_string name, cx_string type, cx_string value) {
-    cx_object result = cxstr_declareChild(parent, name, type);
+corto_object cxstr_createChild(corto_string parent, corto_string name, corto_string type, corto_string value) {
+    corto_object result = cxstr_declareChild(parent, name, type);
     if (!result) {
         goto error;
     }
@@ -38,63 +38,63 @@ error:
     return NULL;
 }
 
-cx_object cxstr_declare(cx_string type) {
-    cx_object result, typeObject;
+corto_object cxstr_declare(corto_string type) {
+    corto_object result, typeObject;
 
-    if (!(typeObject = cx_resolve(NULL, type))) {
-        cx_error("type '%s' not found", type);
+    if (!(typeObject = corto_resolve(NULL, type))) {
+        corto_error("type '%s' not found", type);
         goto error;
     }
 
-    if (!(result = cx_declare(typeObject))) {
-        cx_error("failed to declare object of type '%s'", type);
+    if (!(result = corto_declare(typeObject))) {
+        corto_error("failed to declare object of type '%s'", type);
         goto error_declare;
     }
 
-    cx_release(typeObject);
+    corto_release(typeObject);
 
     return result;
 error_declare:
-    cx_release(typeObject);
+    corto_release(typeObject);
 error:
     return NULL;
 }
 
-cx_object cxstr_declareChild(cx_string parent, cx_string name, cx_string type) {
-    cx_object result, typeObject, parentObject;
+corto_object cxstr_declareChild(corto_string parent, corto_string name, corto_string type) {
+    corto_object result, typeObject, parentObject;
 
-    if (!(typeObject = cx_resolve(NULL, type))) {
-        cx_error("type '%s' not found", type);
+    if (!(typeObject = corto_resolve(NULL, type))) {
+        corto_error("type '%s' not found", type);
         goto error;
     }
 
     if (!parent) {
         parent = "::";
     }
-    if (!(parentObject = cx_resolve(NULL, parent))) {
-        cx_error("parent '%s' not found", parent);
+    if (!(parentObject = corto_resolve(NULL, parent))) {
+        corto_error("parent '%s' not found", parent);
         goto error_parent;
     }
 
-    if (!(result = cx_declareChild(parentObject, name, typeObject))) {
-        cx_error("failed to declare object of type '%s'", type);
+    if (!(result = corto_declareChild(parentObject, name, typeObject))) {
+        corto_error("failed to declare object of type '%s'", type);
         goto error_declare;
     }
 
-    cx_release(typeObject);
-    cx_release(parentObject);
+    corto_release(typeObject);
+    corto_release(parentObject);
 
     return result;
 error_declare:
-    cx_release(parentObject);
+    corto_release(parentObject);
 error_parent:
-    cx_release(typeObject);
+    corto_release(typeObject);
 error:
     return NULL;
 }
 
-void cxstr_update(cx_object o, cx_string value) {
-    cx_updateBegin(o);
-    cx_fromStr(&o, value);
-    cx_updateEnd(o);
+void cxstr_update(corto_object o, corto_string value) {
+    corto_updateBegin(o);
+    corto_fromStr(&o, value);
+    corto_updateEnd(o);
 }

@@ -18,18 +18,18 @@ int yy_scan_string(const char* str);
 #define POPCOMPLEX() ast_Parser_popComplexType(yparser()); fast_op;
 
 /* Thread local storage key for parser */
-extern cx_threadKey ast_PARSER_KEY;
+extern corto_threadKey ast_PARSER_KEY;
 
 /* Obtain parser */
 ast_Parser yparser(void) {
-    return (ast_Parser)cx_threadTlsGet(ast_PARSER_KEY);
+    return (ast_Parser)corto_threadTlsGet(ast_PARSER_KEY);
 }
 
 #define fast_err(...) _fast_err(__VA_ARGS__); YYERROR;
 #define fast_op if (ast_Parser_isAbortSet(yparser())) {YYABORT;} else if (ast_Parser_isErrSet(yparser())) {YYERROR;}
 
 /* Report error */
-void _fast_err(cx_string msg, ...) {
+void _fast_err(corto_string msg, ...) {
     va_list args;
     char msgbuff[1024];
 
@@ -45,12 +45,12 @@ void _fast_err(cx_string msg, ...) {
 void ast_declarationSeqInsert( ast_ParserDeclarationSeq *seq, ast_ParserDeclaration *declaration )
 {
     seq->length++;
-    seq->buffer = cx_realloc(seq->buffer, sizeof(ast_ParserDeclaration) * seq->length);
+    seq->buffer = corto_realloc(seq->buffer, sizeof(ast_ParserDeclaration) * seq->length);
     memcpy(&seq->buffer[seq->length-1], declaration, sizeof(ast_ParserDeclaration));
-    seq->buffer[seq->length-1].name = cx_strdup(seq->buffer[seq->length-1].name);
+    seq->buffer[seq->length-1].name = corto_strdup(seq->buffer[seq->length-1].name);
 }
 
-ast_Expression ast_declarationSeqDo(ast_Storage type, ast_ParserDeclarationSeq *declarations, cx_bool isReference)
+ast_Expression ast_declarationSeqDo(ast_Storage type, ast_ParserDeclarationSeq *declarations, corto_bool isReference)
 {
     unsigned int i;
     ast_Comma result = ast_CommaCreate();
@@ -67,18 +67,18 @@ ast_Expression ast_declarationSeqDo(ast_Storage type, ast_ParserDeclarationSeq *
             isReference))) {
                 return NULL;
         }
-        cx_dealloc(declarations->buffer[i].name);
+        corto_dealloc(declarations->buffer[i].name);
         expr = ast_Expression(declarations->buffer[i].storage);
 
         /* In a declaration of locals assignment is always a reference-assignment. */
         if (isReference) {
-            expr = ast_Expression(ast_Parser_unaryExpr(yparser(), expr, CX_AND));
+            expr = ast_Expression(ast_Parser_unaryExpr(yparser(), expr, CORTO_AND));
             ast_Parser_collect(yparser(), expr);
         }
 
         ast_Comma_addExpression(result, expr);
     }
-    cx_dealloc(declarations->buffer);
+    corto_dealloc(declarations->buffer);
     declarations->buffer = NULL;
     declarations->length = 0;
 
@@ -124,18 +124,18 @@ ast_Expression ast_declarationSeqDo(ast_Storage type, ast_ParserDeclarationSeq *
 /* Parser-types */
 %union {
     /* Literals */
-    cx_bool Boolean;
-    cx_char Character;
-    cx_uint64 Integer;
-    cx_int64 SignedInteger;
-    cx_float64 FloatingPoint;
-    cx_string String;
-    cx_object Reference;
-    cx_string Identifier;
-    cx_ll List;
+    corto_bool Boolean;
+    corto_char Character;
+    corto_uint64 Integer;
+    corto_int64 SignedInteger;
+    corto_float64 FloatingPoint;
+    corto_string String;
+    corto_object Reference;
+    corto_string Identifier;
+    corto_ll List;
     void *Null;
     void *ast;
-    cx_operatorKind Operator;
+    corto_operatorKind Operator;
     int Mask;
     ast_ParserDeclaration Declaration;
     ast_ParserDeclarationSeq Declarations;
@@ -275,45 +275,45 @@ function_implementation
     ;
 
 function_declaration
-    : identifier any_id function_argumentList    {cx_id id; sprintf(id, "%s(%s)", $2, $3); cx_dealloc($3); $$ = ast_Parser_declareFunction(yparser(), $1 ? ast_Object($1)->value : NULL, id, NULL, FALSE); fast_op; }
+    : identifier any_id function_argumentList    {corto_id id; sprintf(id, "%s(%s)", $2, $3); corto_dealloc($3); $$ = ast_Parser_declareFunction(yparser(), $1 ? ast_Object($1)->value : NULL, id, NULL, FALSE); fast_op; }
     | identifier any_id function_argumentList identifier_string  {
-        cx_id id;
-        cx_type kind = cx_resolve(NULL, $4);
+        corto_id id;
+        corto_type kind = corto_resolve(NULL, $4);
         if (!kind) {
             ast_Parser_error(yparser(), "%s not found", $4);
             YYERROR;
         }
         sprintf(id, "%s(%s)", $2, $3);
-        cx_dealloc($3);
+        corto_dealloc($3);
         $$ = ast_Parser_declareFunction(yparser(), $1 ? ast_Object($1)->value : NULL, id, kind, FALSE); fast_op;
-        cx_release(kind);
+        corto_release(kind);
     }
-    | identifier GID function_argumentList  {cx_id id; sprintf(id, "%s(%s)", $2, $3); cx_dealloc($3); $$ = ast_Parser_declareFunction(yparser(), $1 ? ast_Object($1)->value : NULL, id, NULL, FALSE); fast_op; }
+    | identifier GID function_argumentList  {corto_id id; sprintf(id, "%s(%s)", $2, $3); corto_dealloc($3); $$ = ast_Parser_declareFunction(yparser(), $1 ? ast_Object($1)->value : NULL, id, NULL, FALSE); fast_op; }
 
     /* Reference returnvalue */
-    | identifier '&' any_id function_argumentList   {cx_id id; sprintf(id, "%s(%s)", $3, $4); cx_dealloc($4); $$ = ast_Parser_declareFunction(yparser(), $1 ? ast_Object($1)->value : NULL, id, NULL, TRUE); fast_op; }
+    | identifier '&' any_id function_argumentList   {corto_id id; sprintf(id, "%s(%s)", $3, $4); corto_dealloc($4); $$ = ast_Parser_declareFunction(yparser(), $1 ? ast_Object($1)->value : NULL, id, NULL, TRUE); fast_op; }
     | identifier '&' any_id function_argumentList identifier_string  {
-        cx_id id;
-        cx_type kind = cx_resolve(NULL, $5);
+        corto_id id;
+        corto_type kind = corto_resolve(NULL, $5);
         if (!kind) {
             ast_Parser_error(yparser(), "%s not found", $4);
             YYERROR;
         }
         sprintf(id, "%s(%s)", $3, $4);
         $$ = ast_Parser_declareFunction(yparser(), $1 ? ast_Object($1)->value : NULL, id, kind, TRUE); fast_op;
-        cx_release(kind);
+        corto_release(kind);
     }
-    | identifier '&' GID function_argumentList  {cx_id id; sprintf(id, "%s(%s)", $3, $4); cx_dealloc($4); $$ = ast_Parser_declareFunction(yparser(), $1 ? ast_Object($1)->value : NULL, id, NULL, TRUE); fast_op; }
+    | identifier '&' GID function_argumentList  {corto_id id; sprintf(id, "%s(%s)", $3, $4); corto_dealloc($4); $$ = ast_Parser_declareFunction(yparser(), $1 ? ast_Object($1)->value : NULL, id, NULL, TRUE); fast_op; }
     ;
 
 function_argumentList
-    : '(' ')'                       {$$ = cx_strdup("");}
+    : '(' ')'                       {$$ = corto_strdup("");}
     | '(' function_arguments ')'    {$$ = $2;}
     ;
 
 function_arguments
-    : function_argument                           {$$=cx_alloc(sizeof(cx_id));strcpy($$,$1); cx_dealloc($1);}
-    | function_arguments ',' function_argument    {$$=$1; strcat($$,","); strcat($$,$3); cx_dealloc($3);}
+    : function_argument                           {$$=corto_alloc(sizeof(corto_id));strcpy($$,$1); corto_dealloc($1);}
+    | function_arguments ',' function_argument    {$$=$1; strcat($$,","); strcat($$,$3); corto_dealloc($3);}
     ;
 
 function_argument
@@ -324,12 +324,12 @@ function_argument
         $$=ast_Parser_argumentToString(yparser(), $1 ? ast_Object($1)->value : NULL, $3, TRUE); fast_op;
     }
     | '$' any_id {
-        cx_id argid;
+        corto_id argid;
         sprintf(argid, "$%s", $2);
         if (!strcmp($2, "__line")) {
-            $$=ast_Parser_argumentToString(yparser(), cx_uint32_o, argid, FALSE); fast_op;
+            $$=ast_Parser_argumentToString(yparser(), corto_uint32_o, argid, FALSE); fast_op;
         } else {
-            $$=ast_Parser_argumentToString(yparser(), cx_string_o, argid, FALSE); fast_op;            
+            $$=ast_Parser_argumentToString(yparser(), corto_string_o, argid, FALSE); fast_op;            
         }
     }
     ;
@@ -426,7 +426,7 @@ primary_expr
 
 iter_expr
     : primary_expr
-    | '*' iter_expr {$$ = ast_Parser_unaryExpr(yparser(), $2, CX_MUL); fast_op;}
+    | '*' iter_expr {$$ = ast_Parser_unaryExpr(yparser(), $2, CORTO_MUL); fast_op;}
     ;
 
 postfix_expr
@@ -434,10 +434,10 @@ postfix_expr
     | postfix_expr {PUSHCOMPLEX($1)} '[' expr ']' {$$ = ast_Parser_elementExpr(yparser(), $1, $4); fast_op; POPCOMPLEX()}
     | postfix_expr '(' ')'                        {$$ = ast_Parser_callExpr(yparser(), $1, NULL); fast_op;}
     | postfix_expr bracket_expr                   {$$ = ast_Parser_callExpr(yparser(), $1, $2); fast_op;}
-    | postfix_expr '.' any_id                     {ast_String str = ast_StringCreate($3); if (!str) {YYERROR;} $$ = ast_Parser_memberExpr(yparser(), $1, ast_Expression(str)); cx_release(str); fast_op;}
-    | postfix_expr '.' KW_DESTRUCT                {ast_String str = ast_StringCreate("delete"); if (!str) {YYERROR;} $$ = ast_Parser_memberExpr(yparser(), $1, ast_Expression(str)); cx_release(str); fast_op;}
-    | postfix_expr INC                            {$$ = ast_Parser_postfixExpr(yparser(), $1, CX_INC); fast_op}
-    | postfix_expr DEC                            {$$ = ast_Parser_postfixExpr(yparser(), $1, CX_DEC); fast_op}
+    | postfix_expr '.' any_id                     {ast_String str = ast_StringCreate($3); if (!str) {YYERROR;} $$ = ast_Parser_memberExpr(yparser(), $1, ast_Expression(str)); corto_release(str); fast_op;}
+    | postfix_expr '.' KW_DESTRUCT                {ast_String str = ast_StringCreate("delete"); if (!str) {YYERROR;} $$ = ast_Parser_memberExpr(yparser(), $1, ast_Expression(str)); corto_release(str); fast_op;}
+    | postfix_expr INC                            {$$ = ast_Parser_postfixExpr(yparser(), $1, CORTO_INC); fast_op}
+    | postfix_expr DEC                            {$$ = ast_Parser_postfixExpr(yparser(), $1, CORTO_DEC); fast_op}
     ;
 
 unary_expr
@@ -446,13 +446,13 @@ unary_expr
     ;
 
 unary_operator
-    : '-' {$$ = CX_SUB;}
-    | '~' {$$ = CX_NOT;}
-    | '!' {$$ = CX_COND_NOT;}
-    | LNOT {$$ = CX_COND_NOT;}
-    | INC {$$ = CX_INC;}
-    | DEC {$$ = CX_DEC;}
-    | '&' {$$ = CX_AND;}
+    : '-' {$$ = CORTO_SUB;}
+    | '~' {$$ = CORTO_NOT;}
+    | '!' {$$ = CORTO_COND_NOT;}
+    | LNOT {$$ = CORTO_COND_NOT;}
+    | INC {$$ = CORTO_INC;}
+    | DEC {$$ = CORTO_DEC;}
+    | '&' {$$ = CORTO_AND;}
     ;
 
 multiplicative_expr
@@ -461,9 +461,9 @@ multiplicative_expr
     ;
 
 multiplicative_operator
-    : '*' {$$ = CX_MUL;}
-    | '/' {$$ = CX_DIV;}
-    | '%' {$$ = CX_MOD;}
+    : '*' {$$ = CORTO_MUL;}
+    | '/' {$$ = CORTO_DIV;}
+    | '%' {$$ = CORTO_MOD;}
     ;
 
 additive_expr
@@ -472,29 +472,29 @@ additive_expr
     ;
 
 additive_operator
-    : '+' {$$ = CX_ADD;}
-    | '-' {$$ = CX_SUB;}
+    : '+' {$$ = CORTO_ADD;}
+    | '-' {$$ = CORTO_SUB;}
     ;
 
 shift_expr
     : additive_expr
-    | shift_expr {PUSHLVALUE($1)} SHIFT_LEFT additive_expr  {POPLVALUE()} {$$ = ast_Parser_binaryExpr(yparser(), $1, $4, CX_SHIFT_LEFT); fast_op;}
-    | shift_expr {PUSHLVALUE($1)} SHIFT_RIGHT additive_expr {POPLVALUE()} {$$ = ast_Parser_binaryExpr(yparser(), $1, $4, CX_SHIFT_RIGHT); fast_op;}
+    | shift_expr {PUSHLVALUE($1)} SHIFT_LEFT additive_expr  {POPLVALUE()} {$$ = ast_Parser_binaryExpr(yparser(), $1, $4, CORTO_SHIFT_LEFT); fast_op;}
+    | shift_expr {PUSHLVALUE($1)} SHIFT_RIGHT additive_expr {POPLVALUE()} {$$ = ast_Parser_binaryExpr(yparser(), $1, $4, CORTO_SHIFT_RIGHT); fast_op;}
     ;
 
 and_expr
     : shift_expr
-    | and_expr {PUSHLVALUE($1)} '&' shift_expr {POPLVALUE()} {$$ = ast_Parser_binaryExpr(yparser(), $1, $4, CX_AND); fast_op;}
+    | and_expr {PUSHLVALUE($1)} '&' shift_expr {POPLVALUE()} {$$ = ast_Parser_binaryExpr(yparser(), $1, $4, CORTO_AND); fast_op;}
     ;
 
 xor_expr
     : and_expr
-    | xor_expr {PUSHLVALUE($1)} '^' and_expr {POPLVALUE()} {$$ = ast_Parser_binaryExpr(yparser(), $1, $4, CX_XOR); fast_op;}
+    | xor_expr {PUSHLVALUE($1)} '^' and_expr {POPLVALUE()} {$$ = ast_Parser_binaryExpr(yparser(), $1, $4, CORTO_XOR); fast_op;}
     ;
 
 or_expr
     : xor_expr
-    | or_expr {PUSHLVALUE($1)} '|' xor_expr {POPLVALUE()} {$$ = ast_Parser_binaryExpr(yparser(), $1, $4, CX_OR); fast_op;}
+    | or_expr {PUSHLVALUE($1)} '|' xor_expr {POPLVALUE()} {$$ = ast_Parser_binaryExpr(yparser(), $1, $4, CORTO_OR); fast_op;}
     ;
 
 boolean_expr
@@ -503,10 +503,10 @@ boolean_expr
     ;
 
 boolean_operator
-    : '<' {$$ = CX_COND_LT;}
-    | '>' {$$ = CX_COND_GT;}
-    | LEQ {$$ = CX_COND_LTEQ;}
-    | GEQ {$$ = CX_COND_GTEQ;}
+    : '<' {$$ = CORTO_COND_LT;}
+    | '>' {$$ = CORTO_COND_GT;}
+    | LEQ {$$ = CORTO_COND_LTEQ;}
+    | GEQ {$$ = CORTO_COND_GTEQ;}
     ;
 
 equality_expr
@@ -515,18 +515,18 @@ equality_expr
     ;
 
 equality_operator
-    : EQ {$$ = CX_COND_EQ;}
-    | NEQ {$$ = CX_COND_NEQ;}
+    : EQ {$$ = CORTO_COND_EQ;}
+    | NEQ {$$ = CORTO_COND_NEQ;}
     ;
 
 logical_and_expr
     : equality_expr
-    | logical_and_expr {PUSHLVALUE($1)} LAND equality_expr {POPLVALUE()} {$$ = ast_Parser_binaryExpr(yparser(), $1, $4, CX_COND_AND); fast_op;}
+    | logical_and_expr {PUSHLVALUE($1)} LAND equality_expr {POPLVALUE()} {$$ = ast_Parser_binaryExpr(yparser(), $1, $4, CORTO_COND_AND); fast_op;}
     ;
 
 logical_or_expr
     : logical_and_expr
-    | logical_or_expr {PUSHLVALUE($1)} LOR logical_and_expr {POPLVALUE()} {$$ = ast_Parser_binaryExpr(yparser(), $1, $4, CX_COND_OR); fast_op;}
+    | logical_or_expr {PUSHLVALUE($1)} LOR logical_and_expr {POPLVALUE()} {$$ = ast_Parser_binaryExpr(yparser(), $1, $4, CORTO_COND_OR); fast_op;}
     ;
 
 initializer_expr
@@ -561,14 +561,14 @@ assignment_expr
     ;
 
 assignment_operator
-    : '=' {$$ = CX_ASSIGN;}
-    | ADD_ASSIGN {$$ = CX_ASSIGN_ADD;}
-    | SUB_ASSIGN {$$ = CX_ASSIGN_SUB;}
-    | MUL_ASSIGN {$$ = CX_ASSIGN_MUL;}
-    | DIV_ASSIGN {$$ = CX_ASSIGN_DIV;}
-    | AND_ASSIGN {$$ = CX_ASSIGN_AND;}
-    | OR_ASSIGN  {$$ = CX_ASSIGN_OR;}
-    | UPDATE_ASSIGN {$$ = CX_ASSIGN_UPDATE;}
+    : '=' {$$ = CORTO_ASSIGN;}
+    | ADD_ASSIGN {$$ = CORTO_ASSIGN_ADD;}
+    | SUB_ASSIGN {$$ = CORTO_ASSIGN_SUB;}
+    | MUL_ASSIGN {$$ = CORTO_ASSIGN_MUL;}
+    | DIV_ASSIGN {$$ = CORTO_ASSIGN_DIV;}
+    | AND_ASSIGN {$$ = CORTO_ASSIGN_AND;}
+    | OR_ASSIGN  {$$ = CORTO_ASSIGN_OR;}
+    | UPDATE_ASSIGN {$$ = CORTO_ASSIGN_UPDATE;}
     ;
 
 wait_expr
@@ -603,7 +603,7 @@ declaration_expr
         }
         ast_Parser_pushLvalue(yparser(), $1, TRUE);
     } comma_expr  {
-        $$ = ast_Parser_binaryExpr(yparser(), $1, $4, CX_ASSIGN); fast_op;
+        $$ = ast_Parser_binaryExpr(yparser(), $1, $4, CORTO_ASSIGN); fast_op;
         ast_Parser_popLvalue(yparser());
     }
     ;
@@ -749,16 +749,16 @@ event_flag
     ;
 
 event_baseflag
-    : KW_UPDATE         {$$ = CX_ON_UPDATE;}
-    | KW_DECLARE        {$$ = CX_ON_DECLARE;}
-    | KW_DEFINE         {$$ = CX_ON_DEFINE;}
-    | KW_DESTRUCT       {$$ = CX_ON_DELETE;}
+    : KW_UPDATE         {$$ = CORTO_ON_UPDATE;}
+    | KW_DECLARE        {$$ = CORTO_ON_DECLARE;}
+    | KW_DEFINE         {$$ = CORTO_ON_DEFINE;}
+    | KW_DESTRUCT       {$$ = CORTO_ON_DELETE;}
     ;
 
 event_childflag
-    : KW_SELF           {$$ = CX_ON_SELF;}
-    | KW_SCOPE          {$$ = CX_ON_SCOPE;}
-    | KW_SYNCHRONIZED   {$$ = CX_ON_VALUE;}
+    : KW_SELF           {$$ = CORTO_ON_SELF;}
+    | KW_SCOPE          {$$ = CORTO_ON_SCOPE;}
+    | KW_SYNCHRONIZED   {$$ = CORTO_ON_VALUE;}
     ;
 
 /* ======================================================================== */
@@ -779,16 +779,16 @@ update_statement
 void yyerror(const char *str)
 {
     ast_Parser p = yparser();
-    ast_reportError(p->filename, p->line, p->column, (cx_string)str, p->token);
+    ast_reportError(p->filename, p->line, p->column, (corto_string)str, p->token);
     p->errors++;
 }
 
 /* Parse sourcecode */
-int fast_yparse(ast_Parser parser, cx_uint32 line, cx_uint32 column) {
+int fast_yparse(ast_Parser parser, corto_uint32 line, corto_uint32 column) {
     int len = strlen(parser->source);
 
     /* Prepend and append the source with a newline */
-    char *sourceWithNewline = cx_alloc(len + 3);
+    char *sourceWithNewline = corto_alloc(len + 3);
     sourceWithNewline[0] = '\n';
     strcpy(sourceWithNewline + 1, parser->source);
     sourceWithNewline[len + 1] = '\n';
@@ -808,13 +808,13 @@ int fast_yparse(ast_Parser parser, cx_uint32 line, cx_uint32 column) {
         parser->block->isRoot = TRUE;
 
         /* Declare argv variable */
-        cx_type t = cx_resolve(NULL, "sequence{string}");
+        corto_type t = corto_resolve(NULL, "sequence{string}");
         ast_Block_declare(parser->block, "argv", t, TRUE, FALSE);
-        cx_release(t);
+        corto_release(t);
     }
 
     if (!parser->scope) {
-        cx_setref(&parser->scope, root_o);
+        corto_setref(&parser->scope, root_o);
     }
 
     /* Compensate for insertion of the extra \n */
@@ -826,7 +826,7 @@ int fast_yparse(ast_Parser parser, cx_uint32 line, cx_uint32 column) {
 
     /* Set token to NULL - it points to lexer-memory */
     yparser()->token = NULL;
-    cx_dealloc(sourceWithNewline);
+    corto_dealloc(sourceWithNewline);
 
     return yparser()->errors;
 }

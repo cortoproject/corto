@@ -7,8 +7,8 @@ extern "C" {
 #endif
 
 typedef struct profile_TlsValue {
-    cx_ll ll;
-    cx_object topProfile; 
+    corto_ll ll;
+    corto_object topProfile; 
 } profile_TlsValue;
 
 #ifdef __cplusplus

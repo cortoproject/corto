@@ -9,7 +9,7 @@
 #include "primitive.h"
 
 /* ::primitive::Char::testA() */
-cx_void _primitive_Char_testA(primitive_Char this) {
+corto_void _primitive_Char_testA(primitive_Char this) {
 /* $begin(::primitive::Char::testA) */
 
     /* << Insert implementation >> */
@@ -18,7 +18,7 @@ cx_void _primitive_Char_testA(primitive_Char this) {
 }
 
 /* ::primitive::Char::testCompare() */
-cx_void _primitive_Char_testCompare(primitive_Char this) {
+corto_void _primitive_Char_testCompare(primitive_Char this) {
 /* $begin(::primitive::Char::testCompare) */
 
     /* << Insert implementation >> */
@@ -27,7 +27,7 @@ cx_void _primitive_Char_testCompare(primitive_Char this) {
 }
 
 /* ::primitive::Char::testCopy() */
-cx_void _primitive_Char_testCopy(primitive_Char this) {
+corto_void _primitive_Char_testCopy(primitive_Char this) {
 /* $begin(::primitive::Char::testCopy) */
 
     /* << Insert implementation >> */
@@ -36,7 +36,7 @@ cx_void _primitive_Char_testCopy(primitive_Char this) {
 }
 
 /* ::primitive::Char::testCreate() */
-cx_void _primitive_Char_testCreate(primitive_Char this) {
+corto_void _primitive_Char_testCreate(primitive_Char this) {
 /* $begin(::primitive::Char::testCreate) */
 
     /* << Insert implementation >> */
@@ -45,7 +45,7 @@ cx_void _primitive_Char_testCreate(primitive_Char this) {
 }
 
 /* ::primitive::Char::testCreateChild() */
-cx_void _primitive_Char_testCreateChild(primitive_Char this) {
+corto_void _primitive_Char_testCreateChild(primitive_Char this) {
 /* $begin(::primitive::Char::testCreateChild) */
 
     /* << Insert implementation >> */
@@ -54,7 +54,7 @@ cx_void _primitive_Char_testCreateChild(primitive_Char this) {
 }
 
 /* ::primitive::Char::testDeclare() */
-cx_void _primitive_Char_testDeclare(primitive_Char this) {
+corto_void _primitive_Char_testDeclare(primitive_Char this) {
 /* $begin(::primitive::Char::testDeclare) */
 
     /* << Insert implementation >> */
@@ -63,7 +63,7 @@ cx_void _primitive_Char_testDeclare(primitive_Char this) {
 }
 
 /* ::primitive::Char::testDeclareChild() */
-cx_void _primitive_Char_testDeclareChild(primitive_Char this) {
+corto_void _primitive_Char_testDeclareChild(primitive_Char this) {
 /* $begin(::primitive::Char::testDeclareChild) */
 
     /* << Insert implementation >> */
@@ -72,7 +72,7 @@ cx_void _primitive_Char_testDeclareChild(primitive_Char this) {
 }
 
 /* ::primitive::Char::testDefine() */
-cx_void _primitive_Char_testDefine(primitive_Char this) {
+corto_void _primitive_Char_testDefine(primitive_Char this) {
 /* $begin(::primitive::Char::testDefine) */
 
     /* << Insert implementation >> */
@@ -81,7 +81,7 @@ cx_void _primitive_Char_testDefine(primitive_Char this) {
 }
 
 /* ::primitive::Char::testDeinit() */
-cx_void _primitive_Char_testDeinit(primitive_Char this) {
+corto_void _primitive_Char_testDeinit(primitive_Char this) {
 /* $begin(::primitive::Char::testDeinit) */
 
     /* << Insert implementation >> */
@@ -90,7 +90,7 @@ cx_void _primitive_Char_testDeinit(primitive_Char this) {
 }
 
 /* ::primitive::Char::testEsc() */
-cx_void _primitive_Char_testEsc(primitive_Char this) {
+corto_void _primitive_Char_testEsc(primitive_Char this) {
 /* $begin(::primitive::Char::testEsc) */
 
     /* << Insert implementation >> */
@@ -99,7 +99,7 @@ cx_void _primitive_Char_testEsc(primitive_Char this) {
 }
 
 /* ::primitive::Char::testFromstr() */
-cx_void _primitive_Char_testFromstr(primitive_Char this) {
+corto_void _primitive_Char_testFromstr(primitive_Char this) {
 /* $begin(::primitive::Char::testFromstr) */
 
     /* << Insert implementation >> */
@@ -108,7 +108,7 @@ cx_void _primitive_Char_testFromstr(primitive_Char this) {
 }
 
 /* ::primitive::Char::testInit() */
-cx_void _primitive_Char_testInit(primitive_Char this) {
+corto_void _primitive_Char_testInit(primitive_Char this) {
 /* $begin(::primitive::Char::testInit) */
 
     /* << Insert implementation >> */
@@ -117,7 +117,7 @@ cx_void _primitive_Char_testInit(primitive_Char this) {
 }
 
 /* ::primitive::Char::testNull() */
-cx_void _primitive_Char_testNull(primitive_Char this) {
+corto_void _primitive_Char_testNull(primitive_Char this) {
 /* $begin(::primitive::Char::testNull) */
 
     /* << Insert implementation >> */
@@ -126,7 +126,7 @@ cx_void _primitive_Char_testNull(primitive_Char this) {
 }
 
 /* ::primitive::Char::testStr() */
-cx_void _primitive_Char_testStr(primitive_Char this) {
+corto_void _primitive_Char_testStr(primitive_Char this) {
 /* $begin(::primitive::Char::testStr) */
 
     /* << Insert implementation >> */
@@ -135,7 +135,7 @@ cx_void _primitive_Char_testStr(primitive_Char this) {
 }
 
 /* ::primitive::Char::testUpdate() */
-cx_void _primitive_Char_testUpdate(primitive_Char this) {
+corto_void _primitive_Char_testUpdate(primitive_Char this) {
 /* $begin(::primitive::Char::testUpdate) */
 
     /* << Insert implementation >> */

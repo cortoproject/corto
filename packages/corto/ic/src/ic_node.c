@@ -9,18 +9,18 @@
 #include "ic.h"
 
 /* ::corto::ic::node::construct() */
-cx_int16 _ic_node_construct(ic_node this) {
+corto_int16 _ic_node_construct(ic_node this) {
 /* $begin(::corto::ic::node::construct) */
-    CX_UNUSED(this);
+    CORTO_UNUSED(this);
     return 0;
 /* $end */
 }
 
 /* ::corto::ic::node::str(string in) */
-cx_string _ic_node_str_v(ic_node this, cx_string in) {
+corto_string _ic_node_str_v(ic_node this, corto_string in) {
 /* $begin(::corto::ic::node::str) */
-    CX_UNUSED(this);
-    CX_UNUSED(in);
+    CORTO_UNUSED(this);
+    CORTO_UNUSED(in);
     return 0;
 /* $end */
 }

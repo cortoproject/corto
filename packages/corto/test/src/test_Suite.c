@@ -9,9 +9,9 @@
 #include "test.h"
 
 /* ::corto::test::Suite::construct() */
-cx_int16 _test_Suite_construct(test_Suite this) {
+corto_int16 _test_Suite_construct(test_Suite this) {
 /* $begin(::corto::test::Suite::construct) */
-    cx_interface(this)->base = cx_interface(test_SuiteData_o);
-    return cx_class_construct(this);
+    corto_interface(this)->base = corto_interface(test_SuiteData_o);
+    return corto_class_construct(this);
 /* $end */
 }

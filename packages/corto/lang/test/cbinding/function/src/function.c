@@ -11,8 +11,8 @@
 int functionMain(int argc, char* argv[]) {
 /* $begin(main) */
     /* Insert code that must be run when component is loaded */
-    CX_UNUSED(argc);
-    CX_UNUSED(argv);
+    CORTO_UNUSED(argc);
+    CORTO_UNUSED(argv);
     return 0;
 /* $end */
 }

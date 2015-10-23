@@ -12,7 +12,7 @@
 void test_updateProgress(test_Runner this) {
     int i;
     char *str;
-    cx_asprintf(&str, "%s: OK:%d, FAIL:%d", 
+    corto_asprintf(&str, "%s: OK:%d, FAIL:%d", 
         this->name, 
         test_CaseListSize(this->successes),
         test_CaseListSize(this->failures));
@@ -27,33 +27,33 @@ void test_updateProgress(test_Runner this) {
 /* $end */
 
 /* ::corto::test::Runner::construct() */
-cx_int16 _test_Runner_construct(test_Runner this) {
+corto_int16 _test_Runner_construct(test_Runner this) {
 /* $begin(::corto::test::Runner::construct) */
     /* If a testcase is provided, run it. Otherwise, discover testcases and
      * forward to separate process. */
     if (this->testcase) {
-        cx_object testcase = cx_resolve(NULL, this->testcase);
+        corto_object testcase = corto_resolve(NULL, this->testcase);
         if (testcase) {
-            cx_type testClass = cx_parentof(testcase);
-            test_SuiteData suite = test_SuiteData(cx_declare(testClass));
-            cx_setref(&suite->test, testcase);
+            corto_type testClass = corto_parentof(testcase);
+            test_SuiteData suite = test_SuiteData(corto_declare(testClass));
+            corto_setref(&suite->test, testcase);
 
-            if (cx_define(suite)) {
-                cx_error("test: failed to define test suite");
+            if (corto_define(suite)) {
+                corto_error("test: failed to define test suite");
                 test_CaseListAppend(this->failures, testcase);
             } else {
-                cx_object prev = cx_setOwner(this);
-                cx_define(suite);
-                cx_setOwner(prev);            
+                corto_object prev = corto_setOwner(this);
+                corto_define(suite);
+                corto_setOwner(prev);            
             }
 
-            cx_delete(suite);
+            corto_delete(suite);
         } else {
-            cx_error("test: testcase '%s' not found", this->testcase);
+            corto_error("test: testcase '%s' not found", this->testcase);
             goto error;
         }
     } else {
-        cx_listen(this, test_Runner_runTest_o, CX_ON_DEFINE | CX_ON_TREE | CX_ON_SELF, root_o, NULL);
+        corto_listen(this, test_Runner_runTest_o, CORTO_ON_DEFINE | CORTO_ON_TREE | CORTO_ON_SELF, root_o, NULL);
     }
     return 0;
 error:
@@ -62,7 +62,7 @@ error:
 }
 
 /* ::corto::test::Runner::destruct() */
-cx_void _test_Runner_destruct(test_Runner this) {
+corto_void _test_Runner_destruct(test_Runner this) {
 /* $begin(::corto::test::Runner::destruct) */
     if (!this->testcase) {
         test_updateProgress(this);
@@ -72,21 +72,21 @@ cx_void _test_Runner_destruct(test_Runner this) {
 }
 
 /* ::corto::test::Runner::runTest() */
-cx_void _test_Runner_runTest(test_Runner this, cx_object observable) {
+corto_void _test_Runner_runTest(test_Runner this, corto_object observable) {
 /* $begin(::corto::test::Runner::runTest) */
 
-    if (cx_instanceof(cx_type(test_Case_o), observable)) {
-        cx_id testcaseId;
-        cx_int8 err, ret;
+    if (corto_instanceof(corto_type(test_Case_o), observable)) {
+        corto_id testcaseId;
+        corto_int8 err, ret;
 
-        cx_pid pid = cx_procrun("corto", (char*[]){"corto", "--mute", this->lib, cx_fullname(observable, testcaseId), NULL});
-        if ((err = cx_procwait(pid, &ret)) || ret) {
+        corto_pid pid = corto_procrun("corto", (char*[]){"corto", "--mute", this->lib, corto_fullname(observable, testcaseId), NULL});
+        if ((err = corto_procwait(pid, &ret)) || ret) {
             if (err > 0) {
                 int i;
                 for (i = 0; i < 255; i++) {
                     fprintf(stderr, "\b");
                 }
-                cx_error("FAIL: %s: test crashed with signal %d", testcaseId, err);
+                corto_error("FAIL: %s: test crashed with signal %d", testcaseId, err);
             } else {
                 /* Process exited with a returncode != 0, and must've printed an error msg itself */
             }

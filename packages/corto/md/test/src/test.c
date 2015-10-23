@@ -13,10 +13,10 @@ int testMain(int argc, char* argv[]) {
     int result = 0;
     test_Runner runner = test_RunnerCreate("md", argv[0], (argc > 1) ? argv[1] : NULL);
     if (!runner) return -1;
-    if (cx_llSize(runner->failures)) {
+    if (corto_llSize(runner->failures)) {
         result = -1;
     }
-    cx_delete(runner);
+    corto_delete(runner);
     return result;
 /* $end */
 }

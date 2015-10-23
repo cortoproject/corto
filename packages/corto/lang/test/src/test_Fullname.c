@@ -9,15 +9,15 @@
 #include "test.h"
 
 /* ::test::Fullname::tc_null() */
-cx_void _test_Fullname_tc_null(test_Fullname this) {
+corto_void _test_Fullname_tc_null(test_Fullname this) {
 /* $begin(::test::Fullname::tc_null) */
-    cx_id id;
+    corto_id id;
 
     id[0] = 'a';
-    cx_string result = cx_fullname(NULL, id);
+    corto_string result = corto_fullname(NULL, id);
     test_assert(result == NULL);
     test_assert(id[0] == 'a');
-    cx_string err = cx_lasterr();
+    corto_string err = corto_lasterr();
     test_assert(err != NULL);
     test_assert(!strcmp(err, "no object provided"));
 
@@ -25,12 +25,12 @@ cx_void _test_Fullname_tc_null(test_Fullname this) {
 }
 
 /* ::test::Fullname::tc_nullBuffer() */
-cx_void _test_Fullname_tc_nullBuffer(test_Fullname this) {
+corto_void _test_Fullname_tc_nullBuffer(test_Fullname this) {
 /* $begin(::test::Fullname::tc_nullBuffer) */
 
-    cx_string result = cx_fullname(this, NULL);
+    corto_string result = corto_fullname(this, NULL);
     test_assert(result == NULL);
-    cx_string err = cx_lasterr();
+    corto_string err = corto_lasterr();
     test_assert(err != NULL);
     test_assert(!strcmp(err, "no buffer provided"));
 
@@ -38,11 +38,11 @@ cx_void _test_Fullname_tc_nullBuffer(test_Fullname this) {
 }
 
 /* ::test::Fullname::tc_onelevel() */
-cx_void _test_Fullname_tc_onelevel(test_Fullname this) {
+corto_void _test_Fullname_tc_onelevel(test_Fullname this) {
 /* $begin(::test::Fullname::tc_onelevel) */
-    cx_id id;
+    corto_id id;
 
-    cx_string result = cx_fullname(corto_o, id);
+    corto_string result = corto_fullname(corto_o, id);
     test_assert(result == id);
     test_assert(!strcmp(result, "::corto"));
 
@@ -50,11 +50,11 @@ cx_void _test_Fullname_tc_onelevel(test_Fullname this) {
 }
 
 /* ::test::Fullname::tc_root() */
-cx_void _test_Fullname_tc_root(test_Fullname this) {
+corto_void _test_Fullname_tc_root(test_Fullname this) {
 /* $begin(::test::Fullname::tc_root) */
-    cx_id id;
+    corto_id id;
 
-    cx_string result = cx_fullname(root_o, id);
+    corto_string result = corto_fullname(root_o, id);
     test_assert(result == id);
     test_assert(!strcmp(result, "::"));
 
@@ -62,11 +62,11 @@ cx_void _test_Fullname_tc_root(test_Fullname this) {
 }
 
 /* ::test::Fullname::tc_twolevels() */
-cx_void _test_Fullname_tc_twolevels(test_Fullname this) {
+corto_void _test_Fullname_tc_twolevels(test_Fullname this) {
 /* $begin(::test::Fullname::tc_twolevels) */
-    cx_id id;
+    corto_id id;
 
-    cx_string result = cx_fullname(corto_lang_o, id);
+    corto_string result = corto_fullname(corto_lang_o, id);
     test_assert(result == id);
     test_assert(!strcmp(result, "::corto::lang"));
 

@@ -13,12 +13,12 @@
 /* $end */
 
 /* ::corto::ast::Local::construct() */
-cx_int16 _ast_Local_construct(ast_Local this) {
+corto_int16 _ast_Local_construct(ast_Local this) {
 /* $begin(::corto::ast::Local::construct) */
 
     ast_Node(this)->kind = Ast_StorageExpr;
     ast_Storage(this)->kind = Ast_LocalStorage;
-    cx_setref(&ast_Expression(this)->type, this->type);
+    corto_setref(&ast_Expression(this)->type, this->type);
     ast_Expression(this)->isReference = this->reference || this->type->reference;
 
     return ast_Storage_construct(ast_Storage(this));
@@ -26,12 +26,12 @@ cx_int16 _ast_Local_construct(ast_Local this) {
 }
 
 /* ::corto::ast::Local::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _ast_Local_toIc_v(ast_Local this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _ast_Local_toIc_v(ast_Local this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::Local::toIc) */
     ic_node result;
-    CX_UNUSED(storage);
-    CX_UNUSED(stored);
-    CX_UNUSED(program);
+    CORTO_UNUSED(storage);
+    CORTO_UNUSED(stored);
+    CORTO_UNUSED(program);
 
     result = (ic_node)ic_program_getVariable(
                 program,

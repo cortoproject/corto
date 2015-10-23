@@ -9,26 +9,26 @@
 #include "test.h"
 
 /* ::test::Headers::tc_H1() */
-cx_void _test_Headers_tc_H1(test_Headers this) {
+corto_void _test_Headers_tc_H1(test_Headers this) {
 /* $begin(::test::Headers::tc_H1) */
     char text[] =
         "# FirstHeading\n"
         ;
     md_parse(test_docs_o, text);
     {
-        cx_object o = cx_resolve(test_docs_o, "FirstHeading");
+        corto_object o = corto_resolve(test_docs_o, "FirstHeading");
         test_assert(o != NULL);
-        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(corto_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->text == NULL);
         test_assert(md_Doc(o)->level == 1);
-        cx_release(o);
+        corto_release(o);
     }
 /* $end */
 }
 
 /* ::test::Headers::tc_H1H2() */
-cx_void _test_Headers_tc_H1H2(test_Headers this) {
+corto_void _test_Headers_tc_H1H2(test_Headers this) {
 /* $begin(::test::Headers::tc_H1H2) */
     char text[] =
         "# FirstHeading\n"
@@ -36,28 +36,28 @@ cx_void _test_Headers_tc_H1H2(test_Headers this) {
         ;
     md_parse(test_docs_o, text);
     {
-        cx_object o = cx_resolve(test_docs_o, "FirstHeading");
+        corto_object o = corto_resolve(test_docs_o, "FirstHeading");
         test_assert(o != NULL);
-        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(corto_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->text == NULL);
         test_assert(md_Doc(o)->level == 1);
-        cx_release(o);
+        corto_release(o);
     }
     {
-        cx_object o = cx_resolve(test_docs_o, "FirstHeading::SecondHeading");
+        corto_object o = corto_resolve(test_docs_o, "FirstHeading::SecondHeading");
         test_assert(o != NULL);
-        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(corto_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->text == NULL);
         test_assert(md_Doc(o)->level == 2);
-        cx_release(o);
+        corto_release(o);
     }
 /* $end */
 }
 
 /* ::test::Headers::tc_H1H2H1() */
-cx_void _test_Headers_tc_H1H2H1(test_Headers this) {
+corto_void _test_Headers_tc_H1H2H1(test_Headers this) {
 /* $begin(::test::Headers::tc_H1H2H1) */
 
     char text[] =
@@ -67,37 +67,37 @@ cx_void _test_Headers_tc_H1H2H1(test_Headers this) {
         ;
     md_parse(test_docs_o, text);
     {
-        cx_object o = cx_resolve(test_docs_o, "Heading1");
+        corto_object o = corto_resolve(test_docs_o, "Heading1");
         test_assert(o != NULL);
-        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(corto_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->text == NULL);
         test_assert(md_Doc(o)->level == 1);
-        cx_release(o);
+        corto_release(o);
     }
     {
-        cx_object o = cx_resolve(test_docs_o, "Heading1::Heading2");
+        corto_object o = corto_resolve(test_docs_o, "Heading1::Heading2");
         test_assert(o != NULL);
-        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(corto_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->text == NULL);
         test_assert(md_Doc(o)->level == 2);
-        cx_release(o);
+        corto_release(o);
     }
     {
-        cx_object o = cx_resolve(test_docs_o, "Heading3");
+        corto_object o = corto_resolve(test_docs_o, "Heading3");
         test_assert(o != NULL);
-        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(corto_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->text == NULL);
         test_assert(md_Doc(o)->level == 1);
-        cx_release(o);
+        corto_release(o);
     }
 /* $end */
 }
 
 /* ::test::Headers::tc_H1H2H1H2() */
-cx_void _test_Headers_tc_H1H2H1H2(test_Headers this) {
+corto_void _test_Headers_tc_H1H2H1H2(test_Headers this) {
 /* $begin(::test::Headers::tc_H1H2H1H2) */
 
     char text[] =
@@ -108,47 +108,47 @@ cx_void _test_Headers_tc_H1H2H1H2(test_Headers this) {
         ;
     md_parse(test_docs_o, text);
     {
-        cx_object o = cx_resolve(test_docs_o, "Heading1");
+        corto_object o = corto_resolve(test_docs_o, "Heading1");
         test_assert(o != NULL);
-        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(corto_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->text == NULL);
         test_assert(md_Doc(o)->level == 1);
-        cx_release(o);
+        corto_release(o);
     }
     {
-        cx_object o = cx_resolve(test_docs_o, "Heading1::Heading2");
+        corto_object o = corto_resolve(test_docs_o, "Heading1::Heading2");
         test_assert(o != NULL);
-        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(corto_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->text == NULL);
         test_assert(md_Doc(o)->level == 2);
-        cx_release(o);
+        corto_release(o);
     }
     {
-        cx_object o = cx_resolve(test_docs_o, "Heading3");
+        corto_object o = corto_resolve(test_docs_o, "Heading3");
         test_assert(o != NULL);
-        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(corto_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->text == NULL);
         test_assert(md_Doc(o)->level == 1);
-        cx_release(o);
+        corto_release(o);
     }
     {
-        cx_object o = cx_resolve(test_docs_o, "Heading3::Heading4");
+        corto_object o = corto_resolve(test_docs_o, "Heading3::Heading4");
         test_assert(o != NULL);
-        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(corto_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->text == NULL);
         test_assert(md_Doc(o)->level == 2);
-        cx_release(o);
+        corto_release(o);
     }
 
 /* $end */
 }
 
 /* ::test::Headers::tc_H1H2H3() */
-cx_void _test_Headers_tc_H1H2H3(test_Headers this) {
+corto_void _test_Headers_tc_H1H2H3(test_Headers this) {
 /* $begin(::test::Headers::tc_H1H2H3) */
     char text[] =
         "# FirstHeading\n"
@@ -157,37 +157,37 @@ cx_void _test_Headers_tc_H1H2H3(test_Headers this) {
         ;
     md_parse(test_docs_o, text);
     {
-        cx_object o = cx_resolve(test_docs_o, "FirstHeading");
+        corto_object o = corto_resolve(test_docs_o, "FirstHeading");
         test_assert(o != NULL);
-        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(corto_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->text == NULL);
         test_assert(md_Doc(o)->level == 1);
-        cx_release(o);
+        corto_release(o);
     }
     {
-        cx_object o = cx_resolve(test_docs_o, "FirstHeading::SecondHeading");
+        corto_object o = corto_resolve(test_docs_o, "FirstHeading::SecondHeading");
         test_assert(o != NULL);
-        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(corto_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->text == NULL);
         test_assert(md_Doc(o)->level == 2);
-        cx_release(o);
+        corto_release(o);
     }
     {
-        cx_object o = cx_resolve(test_docs_o, "FirstHeading::SecondHeading::ThirdHeading");
+        corto_object o = corto_resolve(test_docs_o, "FirstHeading::SecondHeading::ThirdHeading");
         test_assert(o != NULL);
-        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(corto_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->text == NULL);
         test_assert(md_Doc(o)->level == 3);
-        cx_release(o);
+        corto_release(o);
     }
 /* $end */
 }
 
 /* ::test::Headers::tc_H1H2H3H1H2() */
-cx_void _test_Headers_tc_H1H2H3H1H2(test_Headers this) {
+corto_void _test_Headers_tc_H1H2H3H1H2(test_Headers this) {
 /* $begin(::test::Headers::tc_H1H2H3H1H2) */
 
     char text[] =
@@ -199,55 +199,55 @@ cx_void _test_Headers_tc_H1H2H3H1H2(test_Headers this) {
         ;
     md_parse(test_docs_o, text);
     {
-        cx_object o = cx_resolve(test_docs_o, "Heading1");
+        corto_object o = corto_resolve(test_docs_o, "Heading1");
         test_assert(o != NULL);
-        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(corto_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->text == NULL);
         test_assert(md_Doc(o)->level == 1);
-        cx_release(o);
+        corto_release(o);
     }
     {
-        cx_object o = cx_resolve(test_docs_o, "Heading1::Heading2");
+        corto_object o = corto_resolve(test_docs_o, "Heading1::Heading2");
         test_assert(o != NULL);
-        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(corto_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->text == NULL);
         test_assert(md_Doc(o)->level == 2);
-        cx_release(o);
+        corto_release(o);
     }
     {
-        cx_object o = cx_resolve(test_docs_o, "Heading1::Heading2::Heading3");
+        corto_object o = corto_resolve(test_docs_o, "Heading1::Heading2::Heading3");
         test_assert(o != NULL);
-        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(corto_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->text == NULL);
         test_assert(md_Doc(o)->level == 3);
-        cx_release(o);
+        corto_release(o);
     }
     {
-        cx_object o = cx_resolve(test_docs_o, "Heading4");
+        corto_object o = corto_resolve(test_docs_o, "Heading4");
         test_assert(o != NULL);
-        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(corto_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->text == NULL);
         test_assert(md_Doc(o)->level == 1);
-        cx_release(o);
+        corto_release(o);
     }
     {
-        cx_object o = cx_resolve(test_docs_o, "Heading4::Heading5");
+        corto_object o = corto_resolve(test_docs_o, "Heading4::Heading5");
         test_assert(o != NULL);
-        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(corto_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->text == NULL);
         test_assert(md_Doc(o)->level == 2);
-        cx_release(o);
+        corto_release(o);
     }
 /* $end */
 }
 
 /* ::test::Headers::tc_H1H3() */
-cx_void _test_Headers_tc_H1H3(test_Headers this) {
+corto_void _test_Headers_tc_H1H3(test_Headers this) {
 /* $begin(::test::Headers::tc_H1H3) */
 
     char text[] =
@@ -256,29 +256,29 @@ cx_void _test_Headers_tc_H1H3(test_Headers this) {
         ;
     md_parse(test_docs_o, text);
     {
-        cx_object o = cx_resolve(test_docs_o, "Heading1");
+        corto_object o = corto_resolve(test_docs_o, "Heading1");
         test_assert(o != NULL);
-        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(corto_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->text == NULL);
         test_assert(md_Doc(o)->level == 1);
-        cx_release(o);
+        corto_release(o);
     }
     {
-        cx_object o = cx_resolve(test_docs_o, "Heading1::Heading2");
+        corto_object o = corto_resolve(test_docs_o, "Heading1::Heading2");
         test_assert(o != NULL);
-        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(corto_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->text == NULL);
         test_assert(md_Doc(o)->level == 3);
-        cx_release(o);
+        corto_release(o);
     }
 
 /* $end */
 }
 
 /* ::test::Headers::tc_H1H3H1H3() */
-cx_void _test_Headers_tc_H1H3H1H3(test_Headers this) {
+corto_void _test_Headers_tc_H1H3H1H3(test_Headers this) {
 /* $begin(::test::Headers::tc_H1H3H1H3) */
 
     char text[] =
@@ -289,47 +289,47 @@ cx_void _test_Headers_tc_H1H3H1H3(test_Headers this) {
         ;
     md_parse(test_docs_o, text);
     {
-        cx_object o = cx_resolve(test_docs_o, "Heading1");
+        corto_object o = corto_resolve(test_docs_o, "Heading1");
         test_assert(o != NULL);
-        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(corto_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->text == NULL);
         test_assert(md_Doc(o)->level == 1);
-        cx_release(o);
+        corto_release(o);
     }
     {
-        cx_object o = cx_resolve(test_docs_o, "Heading1::Heading2");
+        corto_object o = corto_resolve(test_docs_o, "Heading1::Heading2");
         test_assert(o != NULL);
-        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(corto_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->text == NULL);
         test_assert(md_Doc(o)->level == 3);
-        cx_release(o);
+        corto_release(o);
     }
     {
-        cx_object o = cx_resolve(test_docs_o, "Heading3");
+        corto_object o = corto_resolve(test_docs_o, "Heading3");
         test_assert(o != NULL);
-        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(corto_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->text == NULL);
         test_assert(md_Doc(o)->level == 1);
-        cx_release(o);
+        corto_release(o);
     }
     {
-        cx_object o = cx_resolve(test_docs_o, "Heading3::Heading4");
+        corto_object o = corto_resolve(test_docs_o, "Heading3::Heading4");
         test_assert(o != NULL);
-        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(corto_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->text == NULL);
         test_assert(md_Doc(o)->level == 3);
-        cx_release(o);
+        corto_release(o);
     }
 
 /* $end */
 }
 
 /* ::test::Headers::tc_H1H3H2() */
-cx_void _test_Headers_tc_H1H3H2(test_Headers this) {
+corto_void _test_Headers_tc_H1H3H2(test_Headers this) {
 /* $begin(::test::Headers::tc_H1H3H2) */
 
     char text[] =
@@ -339,38 +339,38 @@ cx_void _test_Headers_tc_H1H3H2(test_Headers this) {
         ;
     md_parse(test_docs_o, text);
     {
-        cx_object o = cx_resolve(test_docs_o, "Heading1");
+        corto_object o = corto_resolve(test_docs_o, "Heading1");
         test_assert(o != NULL);
-        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(corto_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->text == NULL);
         test_assert(md_Doc(o)->level == 1);
-        cx_release(o);
+        corto_release(o);
     }
     {
-        cx_object o = cx_resolve(test_docs_o, "Heading1::Heading2");
+        corto_object o = corto_resolve(test_docs_o, "Heading1::Heading2");
         test_assert(o != NULL);
-        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(corto_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->text == NULL);
         test_assert(md_Doc(o)->level == 3);
-        cx_release(o);
+        corto_release(o);
     }
     {
-        cx_object o = cx_resolve(test_docs_o, "Heading1::Heading3");
+        corto_object o = corto_resolve(test_docs_o, "Heading1::Heading3");
         test_assert(o != NULL);
-        test_assert(cx_instanceof(md_Doc_o, o));
+        test_assert(corto_instanceof(md_Doc_o, o));
         test_assert(md_Doc(o)->o == NULL);
         test_assert(md_Doc(o)->text == NULL);
         test_assert(md_Doc(o)->level == 2);
-        cx_release(o);
+        corto_release(o);
     }
 
 /* $end */
 }
 
 /* ::test::Headers::tc_H2() */
-cx_void _test_Headers_tc_H2(test_Headers this) {
+corto_void _test_Headers_tc_H2(test_Headers this) {
 /* $begin(::test::Headers::tc_H2) */
 
     char text[] =
@@ -378,17 +378,17 @@ cx_void _test_Headers_tc_H2(test_Headers this) {
         ;
     md_parse(test_docs_o, text);
     {
-        cx_object o = cx_resolve(test_docs_o, "FirstHeading");
+        corto_object o = corto_resolve(test_docs_o, "FirstHeading");
         test_assert(o == NULL);
-        test_assert(cx_lasterr() != NULL);
-        test_assert(!strcmp(cx_lasterr(), "H1 header missing (a level 2 header as document root is illegal)"));
+        test_assert(corto_lasterr() != NULL);
+        test_assert(!strcmp(corto_lasterr(), "H1 header missing (a level 2 header as document root is illegal)"));
     }
 
 /* $end */
 }
 
 /* ::test::Headers::tc_H3() */
-cx_void _test_Headers_tc_H3(test_Headers this) {
+corto_void _test_Headers_tc_H3(test_Headers this) {
 /* $begin(::test::Headers::tc_H3) */
 
     char text[] =
@@ -396,10 +396,10 @@ cx_void _test_Headers_tc_H3(test_Headers this) {
         ;
     md_parse(test_docs_o, text);
     {
-        cx_object o = cx_resolve(test_docs_o, "FirstHeading");
+        corto_object o = corto_resolve(test_docs_o, "FirstHeading");
         test_assert(o == NULL);
-        test_assert(cx_lasterr() != NULL);
-        test_assert(!strcmp(cx_lasterr(), "H1 header missing (a level 3 header as document root is illegal)"));
+        test_assert(corto_lasterr() != NULL);
+        test_assert(!strcmp(corto_lasterr(), "H1 header missing (a level 3 header as document root is illegal)"));
     }
 
 /* $end */

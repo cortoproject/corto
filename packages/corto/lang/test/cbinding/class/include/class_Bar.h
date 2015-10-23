@@ -15,11 +15,11 @@ extern "C" {
 #endif
 
 /* ::class::Bar::construct() */
-CLASS_EXPORT cx_int16 _class_Bar_construct(class_Bar _this);
+CLASS_EXPORT corto_int16 _class_Bar_construct(class_Bar _this);
 #define class_Bar_construct(_this) _class_Bar_construct(class_Bar(_this))
 
 /* ::class::Bar::destruct() */
-CLASS_EXPORT cx_void _class_Bar_destruct(class_Bar _this);
+CLASS_EXPORT corto_void _class_Bar_destruct(class_Bar _this);
 #define class_Bar_destruct(_this) _class_Bar_destruct(class_Bar(_this))
 
 #ifdef __cplusplus

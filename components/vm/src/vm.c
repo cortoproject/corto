@@ -1,5 +1,5 @@
 /*
- * cx_vm.c
+ * corto_vm.c
  *
  *  Created on: Aug 16, 2013
  *      Author: sander
@@ -9,16 +9,16 @@
 
 #include "vm.h"
 #include "vm_operands.h"
-#include "cx_convert.h"
-#include "cx_err.h"
-#include "cx_string.h"
-#include "cx_util.h"
-#include "cx_call.h"
-#include "cx_mem.h"
-#include "cx_type.h"
-#include "cx_async.h"
-#include "cx_def.h"
-#include "cx__meta.h"
+#include "corto_convert.h"
+#include "corto_err.h"
+#include "corto_string.h"
+#include "corto_util.h"
+#include "corto_call.h"
+#include "corto_mem.h"
+#include "corto_type.h"
+#include "corto_async.h"
+#include "corto_def.h"
+#include "corto__meta.h"
 #include "inttypes.h"
 
 #include "alloca.h"
@@ -30,33 +30,33 @@
 
 #include "signal.h"
 
-static cx_threadKey cx_stringConcatCacheKey;
-static cx_threadKey cx_currentProgramKey;
-typedef struct cx_vm_context cx_vm_context;
+static corto_threadKey corto_stringConcatCacheKey;
+static corto_threadKey corto_currentProgramKey;
+typedef struct corto_vm_context corto_vm_context;
 
-int CX_PROCEDURE_VM;
+int CORTO_PROCEDURE_VM;
 
-/* TLS structure for cx_currentProgramKey, used for debugging */
-typedef struct cx_currentProgramData {
+/* TLS structure for corto_currentProgramKey, used for debugging */
+typedef struct corto_currentProgramData {
     vm_program stack[64];
-    cx_vm_context *c[64];
-    cx_uint32 sp;
-}cx_currentProgramData;
+    corto_vm_context *c[64];
+    corto_uint32 sp;
+}corto_currentProgramData;
 
-/* TLS structure for cx_stringConcatCacheKey */
-typedef struct cx_stringConcatCacheNode {
+/* TLS structure for corto_stringConcatCacheKey */
+typedef struct corto_stringConcatCacheNode {
     vm_program program;
-    cx_string str;
-    cx_uint32 length;
-}cx_stringConcatCacheNode;
+    corto_string str;
+    corto_uint32 length;
+}corto_stringConcatCacheNode;
 
-typedef struct cx_stringConcatCache {
-    cx_stringConcatCacheNode staged[256]; /* Limit the amount of allocations required for a
+typedef struct corto_stringConcatCache {
+    corto_stringConcatCacheNode staged[256]; /* Limit the amount of allocations required for a
                                              stringconcatenation involving multiple elements
                                              with a factor 256 */
-    cx_uint32 count;
-    cx_uint32 length;
-}cx_stringConcatCache;
+    corto_uint32 count;
+    corto_uint32 length;
+}corto_stringConcatCache;
 
 /* Translation */
 #define toJump(in) (((intptr_t)&&in))
@@ -68,7 +68,7 @@ typedef struct cx_stringConcatCache {
 #define fetchIc() c.ic = c.pc->ic
 #define fetchLo() c.lo = c.pc->lo
 #define fetchHi() c.hi = c.pc->hi
-#define fetchDbl() c.dbl = *(cx_int64*)&c.pc->lo
+#define fetchDbl() c.dbl = *(corto_int64*)&c.pc->lo
 
 /* Instruction implementation templates */
 #define fetchOp1(op,code)\
@@ -97,23 +97,23 @@ typedef struct cx_stringConcatCache {
 #define SETREF(type, code)\
     SETREF_##code:{\
         fetchOp2(SETREF,code);\
-        cx_setref((cx_object*)&op1_##code, (cx_object)op2_##code);\
+        corto_setref((corto_object*)&op1_##code, (corto_object)op2_##code);\
     }\
     next();
 
 #define SETSTR(type, code)\
     SETSTR_##code:\
         fetchOp2(SETSTR,code);\
-        if (op1_##code) cx_dealloc((cx_string)op1_##code);\
+        if (op1_##code) corto_dealloc((corto_string)op1_##code);\
         op1_##code = op2_##code;\
         next();
 
 #define SETSTRDUP(type, code)\
     SETSTRDUP_##code:\
         fetchOp2(SETSTRDUP,code);\
-        if (op1_##code) cx_dealloc((cx_string)op1_##code);\
+        if (op1_##code) corto_dealloc((corto_string)op1_##code);\
         if (op2_##code) {\
-            op1_##code = (W_t)cx_strdup((cx_string)op2_##code);\
+            op1_##code = (W_t)corto_strdup((corto_string)op2_##code);\
         } else {\
             op1_##code = 0;\
         }\
@@ -134,18 +134,18 @@ typedef struct cx_stringConcatCache {
 #define INIT(type, code)\
     INIT_##code: {\
         fetchOp2(INIT, code)\
-        cx_value v;\
-        cx_valueValueInit(&v, NULL, (cx_type)op2_##code, &op1_##code);\
-        cx_initv(&v);\
+        corto_value v;\
+        corto_valueValueInit(&v, NULL, (corto_type)op2_##code, &op1_##code);\
+        corto_initv(&v);\
         next();\
     }
 
 #define DEINIT(type, code)\
     DEINIT_##code: {\
         fetchOp2(DEINIT, code)\
-        cx_value v;\
-        cx_valueValueInit(&v, NULL, (cx_type)op2_##code, &op1_##code);\
-        cx_deinitv(&v);\
+        corto_value v;\
+        corto_valueValueInit(&v, NULL, (corto_type)op2_##code, &op1_##code);\
+        corto_deinitv(&v);\
         next();\
     }
 
@@ -356,7 +356,7 @@ typedef union Di2f_t {
     CEQSTR_##code:\
         fetchOp1(CEQSTR,code);\
         if (stage1_W && stage2_W) {\
-            op1_##code = !strcmp((cx_string)stage1_W, (cx_string)stage2_W);\
+            op1_##code = !strcmp((corto_string)stage1_W, (corto_string)stage2_W);\
         } else {\
             op1_##code = stage1_W == stage2_W;\
         }\
@@ -366,7 +366,7 @@ typedef union Di2f_t {
     CNEQSTR_##code:\
         fetchOp1(CNEQSTR,code);\
         if (stage1_W && stage2_W) {\
-            op1_##code = strcmp((cx_string)stage1_W, (cx_string)stage2_W) != 0;\
+            op1_##code = strcmp((corto_string)stage1_W, (corto_string)stage2_W) != 0;\
         } else {\
             op1_##code = stage1_W != stage2_W;\
         }\
@@ -396,34 +396,34 @@ typedef union Di2f_t {
     PUSH_##code:\
         fetchOp1(PUSH,code);\
         *(type##_t*)c.sp = op1_##code;\
-        c.sp = CX_OFFSET(c.sp, sizeof(type##_t));\
+        c.sp = CORTO_OFFSET(c.sp, sizeof(type##_t));\
         next();\
 
 #define PUSHX(type,code)\
     PUSHX_##code:\
         fetchOp1(PUSHX,code);\
-        *(cx_word*)c.sp = (cx_word)&op1_##code;\
-        c.sp = CX_OFFSET(c.sp, sizeof(cx_word));\
+        *(corto_word*)c.sp = (corto_word)&op1_##code;\
+        c.sp = CORTO_OFFSET(c.sp, sizeof(corto_word));\
         next();\
 
 #define _PUSHANY(opx,_type,code,deref,_pc,v)\
     PUSHANY##opx##_##code:\
     fetchOp2(PUSHANY,code);\
-    ((cx_any*)c.sp)->type = (cx_type)op2_##code;\
-    ((cx_any*)c.sp)->value = (void*)deref _pc op1##v##_##code;\
-    ((cx_any*)c.sp)->owner = FALSE;\
-    c.sp = CX_OFFSET(c.sp, sizeof(cx_any));\
+    ((corto_any*)c.sp)->type = (corto_type)op2_##code;\
+    ((corto_any*)c.sp)->value = (void*)deref _pc op1##v##_##code;\
+    ((corto_any*)c.sp)->owner = FALSE;\
+    c.sp = CORTO_OFFSET(c.sp, sizeof(corto_any));\
     next();\
 
 #define PUSHANYX(_type,code)  _PUSHANY(X,_type,code,&,,)
 #define PUSHANYV(_type,code)  _PUSHANY(V,_type,code,&,c.pc->,x)
-#define PUSHANY(_type,code)   _PUSHANY(,_type,code,(cx_word),,)
+#define PUSHANY(_type,code)   _PUSHANY(,_type,code,(corto_word),,)
 
 #define CALL(type,code)\
     CALL_##code:\
         fetchOp1(CALL,code);\
         fetchHi();\
-        cx_callb((cx_function)c.hi.w, &op1_##code, c.stack);\
+        corto_callb((corto_function)c.hi.w, &op1_##code, c.stack);\
         c.sp = c.stack; /* Reset stack pointer */\
         next();\
 
@@ -431,33 +431,33 @@ typedef union Di2f_t {
     CALLVM_##code:\
         fetchOp1(CALLVM,code);\
         fetchHi();\
-        cx_vm_run_w_storage((vm_program)((cx_function)c.hi.w)->implData, c.stack, &op1_##code);\
+        corto_vm_run_w_storage((vm_program)((corto_function)c.hi.w)->implData, c.stack, &op1_##code);\
         c.sp = c.stack; /* Reset stack pointer */\
         next();\
 
 #define CALLVOID()\
     CALLVOID:\
         fetchHi();\
-        cx_callb((cx_function)c.hi.w, NULL, c.stack);\
+        corto_callb((corto_function)c.hi.w, NULL, c.stack);\
         c.sp = c.stack; /* Reset stack pointer */\
         next();\
 
 #define CALLVMVOID()\
     CALLVMVOID:\
         fetchHi();\
-        cx_vm_run_w_storage((vm_program)((cx_function)c.hi.w)->implData, c.stack, NULL);\
+        corto_vm_run_w_storage((vm_program)((corto_function)c.hi.w)->implData, c.stack, NULL);\
         c.sp = c.stack; /* Reset stack pointer */\
         next();\
 
 #define CALLPTR(type,code)\
     CALLPTR_##code: {\
         fetchOp2(CALLPTR,code);\
-        cx_delegatedata *ptr = (cx_delegatedata*)&op2_##code;\
+        corto_delegatedata *ptr = (corto_delegatedata*)&op2_##code;\
         void *stackptr = c.stack;\
         if (!ptr->instance) {\
-            stackptr = CX_OFFSET(stackptr, sizeof(cx_word));\
+            stackptr = CORTO_OFFSET(stackptr, sizeof(corto_word));\
         }\
-        cx_callb((cx_function)ptr->procedure, &op1_##code, stackptr);\
+        corto_callb((corto_function)ptr->procedure, &op1_##code, stackptr);\
         c.sp = c.stack; /* Reset stack pointer */ \
         next();\
     }\
@@ -479,11 +479,11 @@ typedef union Di2f_t {
     CAST_##code:\
         fetchOp2(CAST,code)\
         if (op1_##code) {\
-            if (!cx_instanceof((cx_type)op2_##code, (cx_object)op1_##code)) {\
-                cx_id id1,id2;\
+            if (!corto_instanceof((corto_type)op2_##code, (corto_object)op1_##code)) {\
+                corto_id id1,id2;\
                 printf("Exception: invalid cast from type '%s' to '%s'\n", \
-                    cx_fullname((cx_object)op2_##code, id1), \
-                    cx_fullname(cx_typeof((cx_object)op1_##code), id2));\
+                    corto_fullname((corto_object)op2_##code, id1), \
+                    corto_fullname(corto_typeof((corto_object)op1_##code), id2));\
                     goto STOP;\
             }\
         }\
@@ -492,25 +492,25 @@ typedef union Di2f_t {
 #define PCAST(type,code)\
     PCAST_##code: {\
         fetchOp2(PCAST,code)\
-        cx_type fromType = (cx_type)stage1_W;\
+        corto_type fromType = (corto_type)stage1_W;\
         if (fromType->reference) {\
-            fromType = (cx_type)cx_word_o;\
+            fromType = (corto_type)corto_word_o;\
         }\
-        cx_convert((cx_primitive)fromType, &op2_##code, (cx_primitive)stage2_W, &op1_##code);\
+        corto_convert((corto_primitive)fromType, &op2_##code, (corto_primitive)stage2_W, &op1_##code);\
         next();\
     }
 
 #define STRCAT(type,code)\
     STRCAT_##code:\
     {\
-        cx_string str1,str2;\
+        corto_string str1,str2;\
         fetchOp2(STRCAT,code)\
-        if ((str1 = (cx_string)op1_##code)) {\
+        if ((str1 = (corto_string)op1_##code)) {\
             c.strcache->length += c.strcache->staged[c.strcache->count].length = strlen(str1);\
             c.strcache->staged[c.strcache->count].str = str1;\
             c.strcache->count++;\
         }\
-        if ((str2 = (cx_string)op2_##code)) {\
+        if ((str2 = (corto_string)op2_##code)) {\
             c.strcache->length += c.strcache->staged[c.strcache->count].length = strlen(str2);\
             c.strcache->staged[c.strcache->count].str = str2;\
             c.strcache->count++;\
@@ -521,16 +521,16 @@ typedef union Di2f_t {
 #define STRCPY(type,code)\
     STRCPY_##code:\
     {\
-        cx_string result, ptr, str;\
-        cx_uint32 i;\
+        corto_string result, ptr, str;\
+        corto_uint32 i;\
         fetchOp2(STRCPY,code);\
-        cx_uint32 length=0;\
-        if ((str = (cx_string)op2_##code)) {\
+        corto_uint32 length=0;\
+        if ((str = (corto_string)op2_##code)) {\
             c.strcache->length += c.strcache->staged[c.strcache->count].length = strlen(str);\
             c.strcache->staged[c.strcache->count].str = str;\
             c.strcache->count++;\
         }\
-        result = cx_alloc(c.strcache->length + 1);\
+        result = corto_alloc(c.strcache->length + 1);\
         ptr = result;\
         for(i=0; i<c.strcache->count; i++) {\
             length = c.strcache->staged[i].length;\
@@ -547,20 +547,20 @@ typedef union Di2f_t {
 #define NEW(type,code)\
     NEW_##code:\
         fetchOp2(NEW,code);\
-        op1_##code = (cx_word)cx_declare((cx_object)op2_##code);\
+        op1_##code = (corto_word)corto_declare((corto_object)op2_##code);\
         next();\
 
 #define DEALLOC(type,code)\
     DEALLOC_##code:\
         fetchOp1(DEALLOC,code);\
-        cx_dealloc((void*)op1_##code);\
+        corto_dealloc((void*)op1_##code);\
         next();\
 
 #define KEEP(type,code)\
     KEEP_##code:\
         fetchOp1(KEEP,code);\
         if (op1_##code) {\
-            cx_claim((cx_object)op1_##code);\
+            corto_claim((corto_object)op1_##code);\
         }\
         next();\
 
@@ -568,7 +568,7 @@ typedef union Di2f_t {
     FREE_##code:\
         fetchOp1(FREE,code);\
         if (op1_##code) {\
-            cx_release((cx_object)op1_##code);\
+            corto_release((corto_object)op1_##code);\
         }\
         next();\
 
@@ -576,21 +576,21 @@ typedef union Di2f_t {
     DEFINE_##code:\
         fetchOp1(DEFINE,code);\
         if (!op1_##code) {\
-            cx_error("Exception: null dereference in define");\
+            corto_error("Exception: null dereference in define");\
             goto STOP;\
         }\
-        cx_define((cx_object)op1_##code);\
+        corto_define((corto_object)op1_##code);\
         next();\
 
 #define UPDATE(type,code)\
     UPDATE_##code:\
         fetchOp1(UPDATE,code);\
         if (!op1_##code) {\
-            cx_error("Exception: null dereference in updateFrom");\
+            corto_error("Exception: null dereference in updateFrom");\
             goto STOP;\
         }\
-        if (cx_update((cx_object)op1_##code)) {\
-            cx_error("Exception: %s", cx_lasterr());\
+        if (corto_update((corto_object)op1_##code)) {\
+            corto_error("Exception: %s", corto_lasterr());\
             goto error;\
         }\
         next();\
@@ -599,11 +599,11 @@ typedef union Di2f_t {
     UPDATEBEGIN_##code:\
         fetchOp1(UPDATEBEGIN,code);\
         if (!op1_##code) {\
-            cx_error("Exception: null dereference in updateBegin");\
+            corto_error("Exception: null dereference in updateBegin");\
             goto STOP;\
         }\
-        if (cx_updateBegin((cx_object)op1_##code)) {\
-            cx_error("Exception: %s", cx_lasterr());\
+        if (corto_updateBegin((corto_object)op1_##code)) {\
+            corto_error("Exception: %s", corto_lasterr());\
             goto error;\
         }\
         next();\
@@ -612,10 +612,10 @@ typedef union Di2f_t {
     UPDATEEND_##code:\
         fetchOp1(UPDATEEND,code);\
         if (!op1_##code) {\
-            cx_error("Exception: null dereference in updateEnd");\
+            corto_error("Exception: null dereference in updateEnd");\
             goto STOP;\
         }\
-        cx_updateEnd((cx_object)op1_##code);\
+        corto_updateEnd((corto_object)op1_##code);\
         next();\
 
 #define UPDATEFROM(type,code)\
@@ -626,9 +626,9 @@ typedef union Di2f_t {
             goto STOP;\
         }\
         {\
-            cx_object prev = cx_setOwner((cx_object)op2_##code);\
-            cx_update((cx_object)op1_##code);\
-            cx_setOwner(prev);\
+            corto_object prev = corto_setOwner((corto_object)op2_##code);\
+            corto_update((corto_object)op1_##code);\
+            corto_setOwner(prev);\
         }\
         next();\
 
@@ -641,9 +641,9 @@ typedef union Di2f_t {
             goto STOP;\
         }\
         {\
-            cx_object prev = cx_setOwner((cx_object)op2_##code);\
-            cx_updateEnd((cx_object)op1_##code);\
-            cx_setOwner(prev);\
+            corto_object prev = corto_setOwner((corto_object)op2_##code);\
+            corto_updateEnd((corto_object)op1_##code);\
+            corto_setOwner(prev);\
         }\
         next();\
 
@@ -655,7 +655,7 @@ typedef union Di2f_t {
             abort();\
             goto STOP;\
         }\
-        cx_updateCancel((cx_object)op1_##code);\
+        corto_updateCancel((corto_object)op1_##code);\
         next();\
 
 #define WAITFOR(type, code)\
@@ -666,16 +666,16 @@ typedef union Di2f_t {
             abort();\
             goto STOP;\
         }\
-        cx_waitfor((cx_object)op1_##code);\
+        corto_waitfor((corto_object)op1_##code);\
         next();\
 
 #define WAIT(type,code)\
     WAIT_##code:\
         fetchOp2(WAIT,code);\
-        op1_##code = (W_t)cx_wait(0,0);\
+        op1_##code = (W_t)corto_wait(0,0);\
         next();\
 
-#ifdef CX_VM_BOUNDSCHECK
+#ifdef CORTO_VM_BOUNDSCHECK
 #define CHECK_BOUNDS(size, index)\
     if ((int)size <= (int)index) {\
         printf("Exception: element [%" PRIdPTR "] is out of bounds (collection size is %" PRId32 ")\n", index, size);\
@@ -696,49 +696,49 @@ typedef union Di2f_t {
     ELEMS_##code:\
         fetchOp3(ELEMS,code##V);\
         {\
-            cx_objectseq* seq = (cx_objectseq*)op1_##code##V;\
+            corto_objectseq* seq = (corto_objectseq*)op1_##code##V;\
             CHECK_BOUNDS(seq->length, op2_##code##V);\
-            op1_##code##V = (W_t)CX_OFFSET(seq->buffer, (L_t)op2_##code##V * op3_##code##V);\
+            op1_##code##V = (W_t)CORTO_OFFSET(seq->buffer, (L_t)op2_##code##V * op3_##code##V);\
         }\
         next();\
 
 #define ELEML(type,code)\
     ELEML_##code:\
         fetchOp2(ELEML, code);\
-        CHECK_BOUNDS(cx_llSize(*(cx_ll*)op1_##code), op2_##code)\
-        op1_##code = (W_t)cx_llGet(*(cx_ll*)op1_##code, op2_##code);\
+        CHECK_BOUNDS(corto_llSize(*(corto_ll*)op1_##code), op2_##code)\
+        op1_##code = (W_t)corto_llGet(*(corto_ll*)op1_##code, op2_##code);\
         next();
 
 #define ELEMLX(type,code)\
     ELEMLX_##code:\
         fetchOp2(ELEMLX, code);\
-        CHECK_BOUNDS(cx_llSize(*(cx_ll*)op1_##code), op2_##code)\
-        op1_##code = (W_t)cx_llGetPtr(*(cx_ll*)op1_##code, op2_##code);\
+        CHECK_BOUNDS(corto_llSize(*(corto_ll*)op1_##code), op2_##code)\
+        op1_##code = (W_t)corto_llGetPtr(*(corto_ll*)op1_##code, op2_##code);\
         next();\
 
 #define ELEMM(type,code)\
     ELEMM_##code:\
         fetchOp2(ELEMM, code);\
-        op1_##code = (W_t)cx_rbtreeGet(*(cx_rbtree*)op1_##code, (void*)&op2_##code);\
+        op1_##code = (W_t)corto_rbtreeGet(*(corto_rbtree*)op1_##code, (void*)&op2_##code);\
         next();\
 
 #define ELEMMX(type,code)\
     ELEMMX_##code:\
         fetchOp2(ELEMMX, code);\
-        op1_##code = (W_t)cx_rbtreeGetPtr(*(cx_rbtree*)op1_##code, (void*)&op2_##code);\
+        op1_##code = (W_t)corto_rbtreeGetPtr(*(corto_rbtree*)op1_##code, (void*)&op2_##code);\
         next();\
 
 #define ITER_SET(type,code)\
     ITER_SET_##code:\
         fetchOp3(ITER_SET, code##V);\
-        cx_iterator_set((void*)&op1_##code##V, (void*)&op2_##code##V, (void*)op3_##code##V);\
+        corto_iterator_set((void*)&op1_##code##V, (void*)&op2_##code##V, (void*)op3_##code##V);\
         next();\
 
 /* op1 is hasNext, op2 is the result of next and op3 is the iterator */
 #define ITER_NEXT(type,code)\
     ITER_NEXT_##code:\
         fetchOp2(ITER_NEXT, code);\
-        op1_##code = (W_t)cx_iterator_next((void*)op2_##code);\
+        op1_##code = (W_t)corto_iterator_next((void*)op2_##code);\
         next();\
 
 #define JUMP(type, code)\
@@ -760,7 +760,7 @@ typedef union Di2f_t {
 
 #define STOP()\
     STOP:\
-        cx_vm_popSignalHandler();\
+        corto_vm_popSignalHandler();\
         return 0;\
 
 /* ---- */
@@ -787,69 +787,69 @@ typedef union Di2f_t {
 
 /* ---- Jump expansion macro's */
 #define JUMP0(arg)\
-    case CX_VM_##arg: p[i].op = toJump(arg); break;
+    case CORTO_VM_##arg: p[i].op = toJump(arg); break;
 
 #define JUMP1(type, arg, op1)\
-    case CX_VM_##arg##_##type##op1: p[i].op = toJump(arg##_##type##op1); break;
+    case CORTO_VM_##arg##_##type##op1: p[i].op = toJump(arg##_##type##op1); break;
 
 #define JUMP1_COND(type, arg, op1)\
-    case CX_VM_##arg##B_##type##op1: p[i].op = toJump(arg##B_##type##op1); break;\
-    case CX_VM_##arg##S_##type##op1: p[i].op = toJump(arg##S_##type##op1); break;\
-    case CX_VM_##arg##L_##type##op1: p[i].op = toJump(arg##L_##type##op1); break;\
-    case CX_VM_##arg##D_##type##op1: p[i].op = toJump(arg##D_##type##op1); break;
+    case CORTO_VM_##arg##B_##type##op1: p[i].op = toJump(arg##B_##type##op1); break;\
+    case CORTO_VM_##arg##S_##type##op1: p[i].op = toJump(arg##S_##type##op1); break;\
+    case CORTO_VM_##arg##L_##type##op1: p[i].op = toJump(arg##L_##type##op1); break;\
+    case CORTO_VM_##arg##D_##type##op1: p[i].op = toJump(arg##D_##type##op1); break;
 
 #define JUMP1_COND_LD(type, arg, op1)\
-    case CX_VM_##arg##L_##type##op1: p[i].op = toJump(arg##L_##type##op1); break;\
-    case CX_VM_##arg##D_##type##op1: p[i].op = toJump(arg##D_##type##op1); break;
+    case CORTO_VM_##arg##L_##type##op1: p[i].op = toJump(arg##L_##type##op1); break;\
+    case CORTO_VM_##arg##D_##type##op1: p[i].op = toJump(arg##D_##type##op1); break;
 
 #define JUMP2(type, arg, op1, op2)\
-    case CX_VM_##arg##_##type##op1##op2: p[i].op = toJump(arg##_##type##op1##op2); break;
+    case CORTO_VM_##arg##_##type##op1##op2: p[i].op = toJump(arg##_##type##op1##op2); break;
 
 #define JUMP3(type, arg, op1, op2, op3)\
-    case CX_VM_##arg##_##type##op1##op2##op3: p[i].op = toJump(arg##_##type##op1##op2##op3); break;
+    case CORTO_VM_##arg##_##type##op1##op2##op3: p[i].op = toJump(arg##_##type##op1##op2##op3); break;
 /* ---- */
 
 /* ---- Jump expansion macro's */
 #define STRING0(arg)\
-    case CX_VM_##arg: result = vm_opToString(result, &p[i], #arg, "", "", "", ""); break;\
+    case CORTO_VM_##arg: result = vm_opToString(result, &p[i], #arg, "", "", "", ""); break;\
 
 #define STRING1(type, arg, op1)\
-    case CX_VM_##arg##_##type##op1: result = vm_opToString(result, &p[i], #arg, #type, #op1, "", ""); break;\
+    case CORTO_VM_##arg##_##type##op1: result = vm_opToString(result, &p[i], #arg, #type, #op1, "", ""); break;\
 
 #define STRING1_COND(type, arg, op1)\
-    case CX_VM_##arg##B_##type##op1: result = vm_opToString(result, &p[i], #arg "B", #type, #op1, "", ""); break;\
-    case CX_VM_##arg##S_##type##op1: result = vm_opToString(result, &p[i], #arg "S", #type, #op1, "", ""); break;\
-    case CX_VM_##arg##L_##type##op1: result = vm_opToString(result, &p[i], #arg "L", #type, #op1, "", ""); break;\
-    case CX_VM_##arg##D_##type##op1: result = vm_opToString(result, &p[i], #arg "D", #type, #op1, "", ""); break;\
+    case CORTO_VM_##arg##B_##type##op1: result = vm_opToString(result, &p[i], #arg "B", #type, #op1, "", ""); break;\
+    case CORTO_VM_##arg##S_##type##op1: result = vm_opToString(result, &p[i], #arg "S", #type, #op1, "", ""); break;\
+    case CORTO_VM_##arg##L_##type##op1: result = vm_opToString(result, &p[i], #arg "L", #type, #op1, "", ""); break;\
+    case CORTO_VM_##arg##D_##type##op1: result = vm_opToString(result, &p[i], #arg "D", #type, #op1, "", ""); break;\
 
 #define STRING1_COND_LD(type, arg, op1)\
-    case CX_VM_##arg##L_##type##op1: result = vm_opToString(result, &p[i], #arg "L", #type, #op1, "", ""); break;\
-    case CX_VM_##arg##D_##type##op1: result = vm_opToString(result, &p[i], #arg "D", #type, #op1, "", ""); break;\
+    case CORTO_VM_##arg##L_##type##op1: result = vm_opToString(result, &p[i], #arg "L", #type, #op1, "", ""); break;\
+    case CORTO_VM_##arg##D_##type##op1: result = vm_opToString(result, &p[i], #arg "D", #type, #op1, "", ""); break;\
 
 #define STRING2(type, arg, op1, op2)\
-    case CX_VM_##arg##_##type##op1##op2: result = vm_opToString(result, &p[i], #arg, #type, #op1, #op2, ""); break;\
+    case CORTO_VM_##arg##_##type##op1##op2: result = vm_opToString(result, &p[i], #arg, #type, #op1, #op2, ""); break;\
 
 #define STRING3(type, arg, op1, op2, op3)\
-    case CX_VM_##arg##_##type##op1##op2##op3: result = vm_opToString(result, &p[i], #arg, #type, #op1, #op2, #op3); break;\
+    case CORTO_VM_##arg##_##type##op1##op2##op3: result = vm_opToString(result, &p[i], #arg, #type, #op1, #op2, #op3); break;\
 /* ---- */
 
-struct cx_vm_context {
+struct corto_vm_context {
     vm_op *pc; /* Instruction counter */
     vm_parameter16 ic; /* First parameter */
     vm_parameter lo; /* Lo parameter */
     vm_parameter hi; /* Hi parameter */
-    cx_uint64 dbl; /* Double parameter */
-    cx_uint64 dbl2;
+    corto_uint64 dbl; /* Double parameter */
+    corto_uint64 dbl2;
     vm_parameter stage1;
     vm_parameter stage2;
     void *stack, *sp;
-    cx_stringConcatCache *strcache;
+    corto_stringConcatCache *strcache;
 
     /* Reserved space for interrupt program in case of SIGINT */
     vm_op interrupt[2];
 };
 
-#ifdef CX_VM_DEBUG
+#ifdef CORTO_VM_DEBUG
 typedef void (*sigfunc)(int sig);
 static sigfunc prevSegfaultHandler;
 static sigfunc prevAbortHandler;
@@ -867,14 +867,14 @@ sigfunc safe_signal (int sig, sigfunc h) {
     return osa.sa_handler;
 }
 
-static void cx_vm_sigHardAbort(int sig) {
-    CX_UNUSED(sig);
+static void corto_vm_sigHardAbort(int sig) {
+    CORTO_UNUSED(sig);
     exit(-1);
 }
 
 /* The VM signal handler */
-static void cx_vm_sig(int sig) {
-    cx_int32 sp;
+static void corto_vm_sig(int sig) {
+    corto_int32 sp;
 
     /* Unblock all signals */
     sigset_t mask_set, old_set;
@@ -884,10 +884,10 @@ static void cx_vm_sig(int sig) {
     /* If any signal occurs again, do a hard abort */
     int i;
     for (i = 1; i < 35; i++) {
-        signal(i, cx_vm_sigHardAbort);
+        signal(i, corto_vm_sigHardAbort);
     }
 
-    cx_currentProgramData *programData = cx_threadTlsGet(cx_currentProgramKey);
+    corto_currentProgramData *programData = corto_threadTlsGet(corto_currentProgramKey);
 
     if ((sig == SIGSEGV) || (sig == SIGBUS)) {
         printf("Access violation (%d)\n", sig);
@@ -907,10 +907,10 @@ static void cx_vm_sig(int sig) {
 
     /* Walk the stack, print frames */
     for(sp = programData->sp-1; sp>=0; sp--) {
-        cx_id id, file;
+        corto_id id, file;
         vm_program program = programData->stack[sp];
 
-        cx_uint32 line = program->debugInfo[((cx_word)programData->c[sp]->pc - (cx_word)program->program)/sizeof(vm_op)].line;
+        corto_uint32 line = program->debugInfo[((corto_word)programData->c[sp]->pc - (corto_word)program->program)/sizeof(vm_op)].line;
 
         if (program->filename) {
             sprintf(file, "%s:", program->filename);
@@ -918,17 +918,17 @@ static void cx_vm_sig(int sig) {
             *file = '\0';
         }
         if (program->function) {
-            printf("[%d] %s (%s%d)\n", sp+1, cx_fullname(program->function, id), file, line);
+            printf("[%d] %s (%s%d)\n", sp+1, corto_fullname(program->function, id), file, line);
         } else {
             printf("[%d] <main> (%s%d)\n", sp+1, file, line);
         }
 
         /* Print program with location of crash */
-#ifdef CX_IC_TRACING
-        if(sp == (cx_int32)programData->sp-1) {
-            cx_string str = vm_programToString(program, programData->c[sp]->pc);
+#ifdef CORTO_IC_TRACING
+        if(sp == (corto_int32)programData->sp-1) {
+            corto_string str = vm_programToString(program, programData->c[sp]->pc);
             printf("\n%s\n", str);
-            cx_dealloc(str);
+            corto_dealloc(str);
         }
 #endif
     }
@@ -938,16 +938,16 @@ static void cx_vm_sig(int sig) {
 }
 
 /* Push a program to the exception stack (see pushSignalHandler) */
-static void cx_vm_pushCurrentProgram(vm_program program, cx_vm_context *c) {
-    cx_currentProgramData *data = NULL;
-    if (!cx_currentProgramKey) {
-        cx_threadTlsKey(&cx_currentProgramKey, NULL);
+static void corto_vm_pushCurrentProgram(vm_program program, corto_vm_context *c) {
+    corto_currentProgramData *data = NULL;
+    if (!corto_currentProgramKey) {
+        corto_threadTlsKey(&corto_currentProgramKey, NULL);
     }
-    data = cx_threadTlsGet(cx_currentProgramKey);
+    data = corto_threadTlsGet(corto_currentProgramKey);
     if (!data) {
-        data = cx_alloc(sizeof(cx_currentProgramData));
+        data = corto_alloc(sizeof(corto_currentProgramData));
         data->sp = 0;
-        cx_threadTlsSet(cx_currentProgramKey, data);
+        corto_threadTlsSet(corto_currentProgramKey, data);
     }
     data->stack[data->sp] = program;
     data->c[data->sp] = c;
@@ -955,82 +955,82 @@ static void cx_vm_pushCurrentProgram(vm_program program, cx_vm_context *c) {
 }
 
 /* Pop a program from the exception stack */
-static void cx_vm_popCurrentProgram(void) {
-    cx_currentProgramData *data = cx_threadTlsGet(cx_currentProgramKey);
+static void corto_vm_popCurrentProgram(void) {
+    corto_currentProgramData *data = corto_threadTlsGet(corto_currentProgramKey);
     data->sp--;
 }
 
 /* Push a program to the signal handler stack. This will allow backtracing the
  * stack when an error occurs. */
-static void cx_vm_pushSignalHandler(vm_program program, cx_vm_context *c) {
-    sigfunc result = safe_signal(SIGSEGV, cx_vm_sig);
+static void corto_vm_pushSignalHandler(vm_program program, corto_vm_context *c) {
+    sigfunc result = safe_signal(SIGSEGV, corto_vm_sig);
     if (result == SIG_ERR) {
-        cx_error("failed to install signal handler for SIGSEGV");
+        corto_error("failed to install signal handler for SIGSEGV");
     } else {
         prevSegfaultHandler = result;
     }
 
-    result = safe_signal(SIGBUS, cx_vm_sig);
+    result = safe_signal(SIGBUS, corto_vm_sig);
     if (result == SIG_ERR) {
-        cx_error("failed to install signal handler for SIGSEGV");
+        corto_error("failed to install signal handler for SIGSEGV");
     } else {
         prevSegfaultHandler = result;
     }
 
-    result = safe_signal(SIGABRT, cx_vm_sig);
+    result = safe_signal(SIGABRT, corto_vm_sig);
     if (result == SIG_ERR) {
-        cx_error("failed to install signal handler for SIGABRT");
+        corto_error("failed to install signal handler for SIGABRT");
     } else {
         prevAbortHandler = result;
     }
 
-    result = safe_signal(SIGINT, cx_vm_sig);
+    result = safe_signal(SIGINT, corto_vm_sig);
     if (result == SIG_ERR) {
-        cx_error("failed to install signal handler for SIGINT");
+        corto_error("failed to install signal handler for SIGINT");
     } else {
         prevInterruptHandler = result;
     }
 
     /* Store current program in TLS */
-    cx_vm_pushCurrentProgram(program, c);
+    corto_vm_pushCurrentProgram(program, c);
 }
 
 /* Pop a program from the signal handler stack */
-static void cx_vm_popSignalHandler(void) {
+static void corto_vm_popSignalHandler(void) {
     if (safe_signal(SIGSEGV, prevSegfaultHandler) == SIG_ERR) {
-        cx_error("failed to uninstall signal handler for SIGSEGV");
+        corto_error("failed to uninstall signal handler for SIGSEGV");
     } else {
         prevSegfaultHandler = NULL;
     }
     if (safe_signal(SIGABRT, prevAbortHandler) == SIG_ERR) {
-        cx_error("failed to uninstall signal handler for SIGABRT");
+        corto_error("failed to uninstall signal handler for SIGABRT");
     } else {
         prevAbortHandler = NULL;
     }
     if (safe_signal(SIGINT, prevInterruptHandler) == SIG_ERR) {
-        cx_error("failed to uninstall signal handler for SIGINT");
+        corto_error("failed to uninstall signal handler for SIGINT");
     } else {
         prevInterruptHandler = NULL;
     }
 
-    cx_vm_popCurrentProgram();
+    corto_vm_popCurrentProgram();
 }
 #else
-#define cx_vm_pushSignalHandler(p,c)
-#define cx_vm_popSignalHandler()
+#define corto_vm_pushSignalHandler(p,c)
+#define corto_vm_popSignalHandler()
 #endif
 
-static int32_t cx_vm_run_w_storage(vm_program program, void* reg, void *result) {
-    cx_vm_context c;
-    c.strcache = cx_threadTlsGet(cx_stringConcatCacheKey);
+static int32_t corto_vm_run_w_storage(vm_program program, void* reg, void *result) {
+    corto_vm_context c;
+    c.strcache = corto_threadTlsGet(corto_stringConcatCacheKey);
 
     /* The signal handler will catch any exceptions and report when (and where)
      * an error is occurring */
-    cx_vm_pushSignalHandler(program, &c);
+    corto_vm_pushSignalHandler(program, &c);
 
     /* Translate program if required
      * This will translate from the VM instruction codes (the constants from
-     * the cx_vm_opKind enumeration) to the actual addresses of the
+     * the corto_vm_opKind enumeration) to the actual addresses of the
      * implementations. This allows the execution of code to jump directly
      * from one instruction to the next, thereby skipping the overhead of
      * an evaluation-then-jump construction like a switch statement. */
@@ -1039,14 +1039,14 @@ static int32_t cx_vm_run_w_storage(vm_program program, void* reg, void *result) 
         vm_op *p = program->program;
         uint32_t i;
         for(i=0; i<size;i++) {
-#ifdef CX_VM_DEBUG
+#ifdef CORTO_VM_DEBUG
             p[i].opKind = p[i].op; /* Cache actual opKind for debugging purposes */
 #endif
             switch(p[i].op) {
                 /* ---- Expand jump macro's */
                 OPS_EXP(JUMP)
                 default:
-                    cx_assert(0, "invalid instruction in sequence %d @ %d", p[i].op, i);
+                    corto_assert(0, "invalid instruction in sequence %d @ %d", p[i].op, i);
                     break;
             }
         }
@@ -1070,38 +1070,38 @@ error:
 
 /* Delete a string concatenation cache (cleanup function for thread
  * specific memory) */
-static void cx_stringConcatCacheClean(void *data) {
-    cx_dealloc(data);
+static void corto_stringConcatCacheClean(void *data) {
+    corto_dealloc(data);
 }
 
 /* Create a string concatenation cache */
-static void cx_stringConcatCacheCreate(void) {
-    cx_stringConcatCache *concatCache;
-    if (!cx_stringConcatCacheKey) {
-        cx_threadTlsKey(&cx_stringConcatCacheKey, cx_stringConcatCacheClean);
+static void corto_stringConcatCacheCreate(void) {
+    corto_stringConcatCache *concatCache;
+    if (!corto_stringConcatCacheKey) {
+        corto_threadTlsKey(&corto_stringConcatCacheKey, corto_stringConcatCacheClean);
     }
 
-    concatCache = cx_threadTlsGet(cx_stringConcatCacheKey);
+    concatCache = corto_threadTlsGet(corto_stringConcatCacheKey);
     if (!concatCache) {
-        concatCache = cx_alloc(sizeof(cx_stringConcatCache));
-        memset(concatCache, 0, sizeof(cx_stringConcatCache));
-        cx_threadTlsSet(cx_stringConcatCacheKey, concatCache);
+        concatCache = corto_alloc(sizeof(corto_stringConcatCache));
+        memset(concatCache, 0, sizeof(corto_stringConcatCache));
+        corto_threadTlsSet(corto_stringConcatCacheKey, concatCache);
     }
 }
 
 /* Execute a program */
-int32_t vm_run(vm_program program, cx_stringSeq argv, void *result) {
+int32_t vm_run(vm_program program, corto_stringSeq argv, void *result) {
     void *storage = NULL;
     if (program->storage) {
         storage = alloca(program->storage);
     }
     *(void**)storage = &argv;
-    cx_stringConcatCacheCreate();
-    return cx_vm_run_w_storage(program, storage, result);
+    corto_stringConcatCacheCreate();
+    return corto_vm_run_w_storage(program, storage, result);
 }
 
 /* This function converts a single instruction to a string */
-#ifdef CX_IC_TRACING
+#ifdef CORTO_IC_TRACING
 char * vm_opToString(
     char * string, vm_op *instr, const char *op, const char *type, const char *lvalue, const char *rvalue, const char* fetch) {
     char *result = string;
@@ -1125,16 +1125,16 @@ char * vm_opToString(
 /* Convert an instruction sequence to a string */
 char * vm_programToString(vm_program program, vm_op *addr) {
     char * result = NULL;
-    cx_int32 shown = 4;
-    CX_UNUSED(program);
+    corto_int32 shown = 4;
+    CORTO_UNUSED(program);
 
 /* Since these strings can occupy a lot of space, they're only compiled in
  * when these two macros are enabled */
-#ifdef CX_IC_TRACING
+#ifdef CORTO_IC_TRACING
     vm_op *p = program->program;
     uint32_t i;
 
-#ifndef CX_VM_DEBUG
+#ifndef CORTO_VM_DEBUG
     if (!program->translated) {
         printf("cannot convert active program to string with non-debug version\n");
         abort();
@@ -1147,7 +1147,7 @@ char * vm_programToString(vm_program program, vm_op *addr) {
 
     /* Loop instructions, prefix address */
     for(i=0; i<program->size;i++) {
-        cx_int32 diff = addr - &p[i];
+        corto_int32 diff = addr - &p[i];
         if (!addr || ((diff <= shown) && (diff >= -shown))) {
             vm_opKind kind;
 
@@ -1160,7 +1160,7 @@ char * vm_programToString(vm_program program, vm_op *addr) {
             } else {
                 result = strappend(result, "%u: ", &p[i]);
             }
-    #ifdef CX_VM_DEBUG
+    #ifdef CORTO_VM_DEBUG
             if (program->translated) {
                 kind = p[i].opKind;
             } else {
@@ -1173,7 +1173,7 @@ char * vm_programToString(vm_program program, vm_op *addr) {
                 /* ---- Expand string conversion macro's */
                 OPS_EXP(STRING)
                 default:
-                    cx_assert(0, "invalid instruction %d in sequence @ %d", p[i].op, i);
+                    corto_assert(0, "invalid instruction %d in sequence @ %d", p[i].op, i);
                     break;
             }
         }
@@ -1189,13 +1189,13 @@ char * vm_programToString(vm_program program, vm_op *addr) {
 #pragma GCC diagnostic pop
 
 /* Create a new VM program */
-vm_program vm_programNew(char *filename, cx_object function) {
+vm_program vm_programNew(char *filename, corto_object function) {
     vm_program result;
 
-    result = cx_alloc(sizeof(vm_program_s));
+    result = corto_alloc(sizeof(vm_program_s));
     result->program = NULL;
     result->debugInfo = NULL;
-    result->filename = filename ? cx_strdup(filename) : NULL;
+    result->filename = filename ? corto_strdup(filename) : NULL;
     result->function = function;
     result->size = 0;
     result->maxSize = 0;
@@ -1210,9 +1210,9 @@ vm_program vm_programNew(char *filename, cx_object function) {
 void vm_programFree(vm_program program) {
     if (program) {
         if (program->program) {
-            cx_dealloc(program->program);
+            corto_dealloc(program->program);
         }
-        cx_dealloc(program);
+        corto_dealloc(program);
     }
 }
 
@@ -1229,8 +1229,8 @@ vm_op *vm_programAddOp(vm_program program, uint32_t line) {
             program->maxSize *= 2;
         }
     }
-    program->program = cx_realloc(program->program, program->maxSize * sizeof(vm_op));
-    program->debugInfo = cx_realloc(program->debugInfo, program->maxSize * sizeof(vm_debugInfo));
+    program->program = corto_realloc(program->program, program->maxSize * sizeof(vm_op));
+    program->debugInfo = corto_realloc(program->debugInfo, program->maxSize * sizeof(vm_debugInfo));
 
     /* Initialize instruction and debug data to zero */
     memset(&program->program[program->size-1], 0, sizeof(vm_op));
@@ -1242,7 +1242,7 @@ vm_op *vm_programAddOp(vm_program program, uint32_t line) {
 }
 
 /* Language binding function that calls a VM function */
-void vm_call(cx_function f, cx_void* result, void* args) {
+void vm_call(corto_function f, corto_void* result, void* args) {
     vm_program program;
     void *storage = NULL;
 
@@ -1256,21 +1256,21 @@ void vm_call(cx_function f, cx_void* result, void* args) {
     memcpy(storage, args, f->size); /* Copy parameters into storage */
 
     /* Thread specific cache that speeds up string concatenations */
-    cx_stringConcatCacheCreate();
+    corto_stringConcatCacheCreate();
 
     /* Execute the instructions */
-    cx_vm_run_w_storage(program, storage, result);
+    corto_vm_run_w_storage(program, storage, result);
 }
 
 /* Language binding function that frees a VM function */
-void vm_callDestruct(cx_function f) {
+void vm_callDestruct(corto_function f) {
     vm_programFree((vm_program)f->implData);
 }
 
 int vmMain(int argc, char* argv[]) {
-    CX_UNUSED(argc);
-    CX_UNUSED(argv);
-    CX_PROCEDURE_VM = cx_callRegisterBinding(vm_call, NULL, NULL, (cx_callDestructHandler)vm_callDestruct);
+    CORTO_UNUSED(argc);
+    CORTO_UNUSED(argv);
+    CORTO_PROCEDURE_VM = corto_callRegisterBinding(vm_call, NULL, NULL, (corto_callDestructHandler)vm_callDestruct);
     return 0;
 }
 

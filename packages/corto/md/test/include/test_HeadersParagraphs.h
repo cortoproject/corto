@@ -15,7 +15,7 @@ extern "C" {
 #endif
 
 /* ::test::HeadersParagraphs::tc_H1() */
-TEST_EXPORT cx_void _test_HeadersParagraphs_tc_H1(test_HeadersParagraphs _this);
+TEST_EXPORT corto_void _test_HeadersParagraphs_tc_H1(test_HeadersParagraphs _this);
 #define test_HeadersParagraphs_tc_H1(_this) _test_HeadersParagraphs_tc_H1(test_HeadersParagraphs(_this))
 
 #ifdef __cplusplus

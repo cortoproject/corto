@@ -11,41 +11,41 @@
 /* $header() */
 #include "ast__private.h"
 
-cx_int16 ast_Member_resolveMember(ast_Member this, cx_type type, cx_string member) {
-    cx_object o = NULL;
+corto_int16 ast_Member_resolveMember(ast_Member this, corto_type type, corto_string member) {
+    corto_object o = NULL;
 
-    if (cx_instanceof(cx_type(cx_interface_o), type) && !strcmp(member, "super")) {
-        if (cx_interface(type)->base) {
+    if (corto_instanceof(corto_type(corto_interface_o), type) && !strcmp(member, "super")) {
+        if (corto_interface(type)->base) {
             this->member = NULL;
-            cx_setref(&ast_Expression(this)->type, cx_interface(type)->base);
+            corto_setref(&ast_Expression(this)->type, corto_interface(type)->base);
         } else {
-            cx_id id;
+            corto_id id;
             ast_Parser_error(yparser(), "type '%s' has no base", ast_Parser_id(type, id));
             goto error;
         }
     } else {
-        if (cx_instanceof(cx_type(cx_interface_o), type)) {
-            o = cx_interface_resolveMember(cx_interface(type), member);
+        if (corto_instanceof(corto_type(corto_interface_o), type)) {
+            o = corto_interface_resolveMember(corto_interface(type), member);
         }
         if (!o) {
             /* If no members are found for name, look for methods */
-            o = cx_type_resolveProcedure(type, member);
+            o = corto_type_resolveProcedure(type, member);
             if (!o) {
-                cx_id id;
-                if (cx_lasterr()) {
+                corto_id id;
+                if (corto_lasterr()) {
                     ast_Parser_error(yparser(), "unresolved member '%s' for type '%s' (%s)", 
-                        member, ast_Parser_id(type, id), cx_lasterr());
+                        member, ast_Parser_id(type, id), corto_lasterr());
                 } else {
                     ast_Parser_error(yparser(), "unresolved member '%s' for type '%s'", 
                         member, ast_Parser_id(type, id));                    
                 }
                 goto error;
             }
-            cx_setref(&ast_Expression(this)->type, cx_function(o)->returnType);
+            corto_setref(&ast_Expression(this)->type, corto_function(o)->returnType);
         } else {
-            cx_setref(&ast_Expression(this)->type, cx_member(o)->type);
+            corto_setref(&ast_Expression(this)->type, corto_member(o)->type);
         }
-        cx_setref(&this->member, o);
+        corto_setref(&this->member, o);
     }
 
     return 0;
@@ -56,7 +56,7 @@ error:
 /* $end */
 
 /* ::corto::ast::Member::construct() */
-cx_int16 _ast_Member_construct(ast_Member this) {
+corto_int16 _ast_Member_construct(ast_Member this) {
 /* $begin(::corto::ast::Member::construct) */
 
     ast_Storage(this)->kind = Ast_MemberStorage;
@@ -101,32 +101,32 @@ error:
 }
 
 /* ::corto::ast::Member::hasSideEffects() */
-cx_bool _ast_Member_hasSideEffects_v(ast_Member this) {
+corto_bool _ast_Member_hasSideEffects_v(ast_Member this) {
 /* $begin(::corto::ast::Member::hasSideEffects) */
     return ast_Expression_hasSideEffects(this->lvalue);
 /* $end */
 }
 
 /* ::corto::ast::Member::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _ast_Member_toIc_v(ast_Member this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _ast_Member_toIc_v(ast_Member this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::Member::toIc) */
     ic_member result = NULL;
-    cx_member member;
+    corto_member member;
     ic_node lvalue;
-    CX_UNUSED(stored);
-    CX_UNUSED(storage);
+    CORTO_UNUSED(stored);
+    CORTO_UNUSED(storage);
 
     /* Get lvalue & rvalue */
     lvalue = ast_Node_toIc(ast_Node(this->lvalue), program, NULL, FALSE);
 
     if (ast_Node(this->rvalue)->kind == Ast_LiteralExpr) {
         if (ast_Literal(this->rvalue)->kind == Ast_Text) {
-            cx_type t = ast_Expression_getType(this->lvalue);
-            if (cx_instanceof(cx_type(cx_interface_o), t)) {
-                cx_interface baseType = cx_interface(t);
-                member = cx_interface_resolveMember(baseType, ast_String(this->rvalue)->value);
+            corto_type t = ast_Expression_getType(this->lvalue);
+            if (corto_instanceof(corto_type(corto_interface_o), t)) {
+                corto_interface baseType = corto_interface(t);
+                member = corto_interface_resolveMember(baseType, ast_String(this->rvalue)->value);
             } else {
-                cx_id id;
+                corto_id id;
                 ast_Parser_error(yparser(), "cannot resolve members on non-interface type '%s'", ast_Parser_id(t, id));
                 goto error;
             }

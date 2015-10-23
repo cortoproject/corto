@@ -12,29 +12,29 @@ extern "C" {
 #endif
 
 /* $header() */
-#include "cx_serializer.h"
+#include "corto_serializer.h"
 
-#define CX_JSON_ROOT_NAME "::"
-#define CX_JSON_ROOT_PARENT ""
+#define CORTO_JSON_ROOT_NAME "::"
+#define CORTO_JSON_ROOT_PARENT ""
 
 /* JSON serializer data */
-typedef struct cx_json_ser_t {
+typedef struct corto_json_ser_t {
     /* Public */
-    cx_string buffer;
-    cx_string ptr;
+    corto_string buffer;
+    corto_string ptr;
     unsigned int length;
     unsigned int maxlength;
     unsigned int itemCount;
-    cx_bool serializeMeta;
-    cx_bool serializeValue;
-    cx_bool serializeScope;
-    cx_bool alwaysIncludeHeaders;
-    cx_bool serializePrefix;
-} cx_json_ser_t;
+    corto_bool serializeMeta;
+    corto_bool serializeValue;
+    corto_bool serializeScope;
+    corto_bool alwaysIncludeHeaders;
+    corto_bool serializePrefix;
+} corto_json_ser_t;
 
-struct cx_serializer_s cx_json_ser(cx_modifier access, cx_operatorKind accessKind, cx_serializerTraceKind trace);
-cx_object cx_json_deser(cx_string s);
-cx_string json_serialize(cx_object o);
+struct corto_serializer_s corto_json_ser(corto_modifier access, corto_operatorKind accessKind, corto_serializerTraceKind trace);
+corto_object corto_json_deser(corto_string s);
+corto_string json_serialize(corto_object o);
 
 /* $end */
 

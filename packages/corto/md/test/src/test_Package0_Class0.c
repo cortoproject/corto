@@ -9,7 +9,7 @@
 #include "test.h"
 
 /* ::test::Package0::Class0::method0() */
-cx_void _test_Package0_Class0_method0(test_Package0_Class0 this) {
+corto_void _test_Package0_Class0_method0(test_Package0_Class0 this) {
 /* $begin(::test::Package0::Class0::method0) */
 
     /* << Insert implementation >> */
@@ -18,7 +18,7 @@ cx_void _test_Package0_Class0_method0(test_Package0_Class0 this) {
 }
 
 /* ::test::Package0::Class0::method1() */
-cx_void _test_Package0_Class0_method1(test_Package0_Class0 this) {
+corto_void _test_Package0_Class0_method1(test_Package0_Class0 this) {
 /* $begin(::test::Package0::Class0::method1) */
 
     /* << Insert implementation >> */

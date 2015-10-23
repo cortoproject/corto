@@ -9,7 +9,7 @@
 #include "os.h"
 
 /* ::corto::os::exit(bool success) */
-cx_void _os_exit(cx_bool success) {
+corto_void _os_exit(corto_bool success) {
 /* $begin(::corto::os::exit) */
 
     exit(success ? EXIT_SUCCESS : EXIT_FAILURE);
@@ -18,16 +18,16 @@ cx_void _os_exit(cx_bool success) {
 }
 
 /* ::corto::os::sleep(uint32 sec,uint32 nsec) */
-cx_void _os_sleep(cx_uint32 sec, cx_uint32 nsec) {
+corto_void _os_sleep(corto_uint32 sec, corto_uint32 nsec) {
 /* $begin(::corto::os::sleep) */
 
-    cx_sleep(sec, nsec);
+    corto_sleep(sec, nsec);
 
 /* $end */
 }
 
 /* ::corto::os::system(string cmd) */
-cx_void _os_system(cx_string cmd) {
+corto_void _os_system(corto_string cmd) {
 /* $begin(::corto::os::system) */
 
     system(cmd);
@@ -38,8 +38,8 @@ cx_void _os_system(cx_string cmd) {
 int osMain(int argc, char* argv[]) {
 /* $begin(main) */
     /* Insert code that must be run when component is loaded */
-    CX_UNUSED(argc);
-    CX_UNUSED(argv);
+    CORTO_UNUSED(argc);
+    CORTO_UNUSED(argv);
     return 0;
 /* $end */
 }

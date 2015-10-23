@@ -9,38 +9,38 @@
 #define C_COMMON_H_
 
 #include "corto.h"
-#include "cx_generator.h"
+#include "corto_generator.h"
 
 #ifdef __cplusplus
 extern "c" {
 #endif
 
 /* Translate id to C-id */
-cx_string corto_genId(cx_string str, cx_id id);
+corto_string corto_genId(corto_string str, corto_id id);
 
 /* Return string with C type for primitive */
-cx_char* c_primitiveId(cx_primitive t, cx_char* buff);
+corto_char* c_primitiveId(corto_primitive t, corto_char* buff);
 
 /* Parse type into C-specifier */
-cx_int16 c_specifierId(cx_generator g, cx_type t, cx_char* specifier, cx_bool* prefix, cx_char* postfix);
+corto_int16 c_specifierId(corto_generator g, corto_type t, corto_char* specifier, corto_bool* prefix, corto_char* postfix);
 
 /* Translate constant to C-language id */
-cx_char* c_constantId(cx_generator g, cx_constant* c, cx_char* buffer);
+corto_char* c_constantId(corto_generator g, corto_constant* c, corto_char* buffer);
 
 /* Translate string to c-compatible string (do escaping of ") */
-cx_char* c_escapeString(cx_string str, cx_id id);
+corto_char* c_escapeString(corto_string str, corto_id id);
 
-cx_bool c_procedureHasThis(cx_function o);
+corto_bool c_procedureHasThis(corto_function o);
 
-cx_char* c_topath(cx_object o, cx_id id, cx_char separator);
+corto_char* c_topath(corto_object o, corto_id id, corto_char separator);
 
-cx_string c_paramName(cx_string name, cx_string buffer);
+corto_string c_paramName(corto_string name, corto_string buffer);
 
-cx_char* c_usingName(cx_generator g, cx_object o, cx_id id);
+corto_char* c_usingName(corto_generator g, corto_object o, corto_id id);
 
-cx_char* c_usingConstant(cx_generator g, cx_id id);
+corto_char* c_usingConstant(corto_generator g, corto_id id);
 
-void c_writeExport(cx_generator g, g_file file);
+void c_writeExport(corto_generator g, g_file file);
 
 #ifdef __cplusplus
 }

@@ -6,26 +6,26 @@
  */
 
 #include "cx.h"
-#include "cx_generatorDepWalk.h"
+#include "corto_generatorDepWalk.h"
 #include "c_common.h"
-#include "cx_string_ser.h"
+#include "corto_string_ser.h"
 
 typedef struct c_typeWalk_t {
-    cx_generator g;
+    corto_generator g;
     g_file header;
     g_file source;
-    cx_uint32 firstComma;
-    cx_uint32 errorCount;
+    corto_uint32 firstComma;
+    corto_uint32 errorCount;
 } c_typeWalk_t;
 
 /* Resolve object */
-static cx_char* c_loadResolve(cx_object o, cx_char* out, cx_char* src, cx_char* context) {
-    if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
-        cx_id id, escaped;
-        cx_fullname(o, id);
+static corto_char* c_loadResolve(corto_object o, corto_char* out, corto_char* src, corto_char* context) {
+    if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+        corto_id id, escaped;
+        corto_fullname(o, id);
 
         if (!(src || context)) {
-            sprintf(out, "cx_resolve(NULL, \"%s\")", c_escapeString(id, escaped));
+            sprintf(out, "corto_resolve(NULL, \"%s\")", c_escapeString(id, escaped));
         } else {
             if (!src) {
                 src = "NULL";
@@ -33,15 +33,15 @@ static cx_char* c_loadResolve(cx_object o, cx_char* out, cx_char* src, cx_char* 
             if (!context) {
                 context = "NULL";
             }
-            sprintf(out, "cx_resolve(NULL, \"%s\")", c_escapeString(id, escaped));
+            sprintf(out, "corto_resolve(NULL, \"%s\")", c_escapeString(id, escaped));
         }
     } else {
-        cx_id ostr, id, escapedId, escapedOstr, escapedContextStr;
-        struct cx_serializer_s stringSer;
-        cx_string_ser_t data;
+        corto_id ostr, id, escapedId, escapedOstr, escapedContextStr;
+        struct corto_serializer_s stringSer;
+        corto_string_ser_t data;
 
         /* Serialize object string */
-        stringSer = cx_string_ser(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
+        stringSer = corto_string_ser(CORTO_LOCAL, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
 
         *ostr = '\0';
         data.compactNotation = TRUE;
@@ -50,16 +50,16 @@ static cx_char* c_loadResolve(cx_object o, cx_char* out, cx_char* src, cx_char* 
         data.maxlength = 0;
         data.prefixType = FALSE;
         data.enableColors = FALSE;
-        if (cx_serialize(&stringSer, o, &data)) {
+        if (corto_serialize(&stringSer, o, &data)) {
             goto error;
         }
         c_escapeString(id, escapedOstr);
 
-        cx_fullname(cx_typeof(o), id);
+        corto_fullname(corto_typeof(o), id);
         c_escapeString(id, escapedId);
 
         if (!(src || context)) {
-            sprintf(out, "cx_resolve(NULL, \"%s%s\")", escapedId, escapedOstr);
+            sprintf(out, "corto_resolve(NULL, \"%s%s\")", escapedId, escapedOstr);
         } else {
             if (!src) {
                 src = "NULL";
@@ -68,7 +68,7 @@ static cx_char* c_loadResolve(cx_object o, cx_char* out, cx_char* src, cx_char* 
                 context = "NULL";
             }
             c_escapeString(context, escapedContextStr);
-            sprintf(out, "cx_resolve(NULL, \"%s%s\")", escapedId, escapedOstr);
+            sprintf(out, "corto_resolve(NULL, \"%s%s\")", escapedId, escapedOstr);
         }
     }
 
@@ -78,8 +78,8 @@ error:
 }
 
 /* Get variable id */
-static cx_char* c_loadVarId(cx_generator g, cx_object o, cx_char* out) {
-    if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
+static corto_char* c_loadVarId(corto_generator g, corto_object o, corto_char* out) {
+    if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
         if (o != root_o) {
             g_fullOid(g, o, out);
             strcat(out, "_o");
@@ -87,22 +87,22 @@ static cx_char* c_loadVarId(cx_generator g, cx_object o, cx_char* out) {
             strcpy(out, "root_o");
         }
     } else {
-        cx_id id;
+        corto_id id;
         sprintf(out, "%s", c_loadResolve(o, id, NULL, NULL));
     }
     return out;
 }
 
 /* Get element id, for lists and maps. */
-static cx_char* c_loadElementId(cx_value* v, cx_char* out, cx_int32 offset) {
-    cx_uint32 i;
-    cx_value* ptr;
+static corto_char* c_loadElementId(corto_value* v, corto_char* out, corto_int32 offset) {
+    corto_uint32 i;
+    corto_value* ptr;
 
     i = 0;
     ptr = v;
 
     do {
-        if (ptr->kind == CX_ELEMENT) {
+        if (ptr->kind == CORTO_ELEMENT) {
             i++;
         }
     } while((ptr = ptr->parent));
@@ -114,20 +114,20 @@ static cx_char* c_loadElementId(cx_value* v, cx_char* out, cx_int32 offset) {
 
 /* This function translates from a value-object to a valid C-string identifying a
  * part of the object that is being serialized. */
-static cx_char* c_loadMemberId(c_typeWalk_t* data, cx_value* v, cx_char* out, cx_bool addMemberOperator) {
-    cx_value* stack[CX_MAX_TYPE_DEPTH];
-    cx_uint32 count;
-    cx_value *ptr;
-    cx_object o;
-    cx_type thisType;
-    cx_bool objectIsArray, derefMemberOperator;
+static corto_char* c_loadMemberId(c_typeWalk_t* data, corto_value* v, corto_char* out, corto_bool addMemberOperator) {
+    corto_value* stack[CORTO_MAX_TYPE_DEPTH];
+    corto_uint32 count;
+    corto_value *ptr;
+    corto_object o;
+    corto_type thisType;
+    corto_bool objectIsArray, derefMemberOperator;
 
     *out = '\0';
 
     /* Build serializer-stack */
     ptr = v;
     count = 0;
-    while ((ptr->kind != CX_OBJECT) && (ptr->kind != CX_BASE)) {
+    while ((ptr->kind != CORTO_OBJECT) && (ptr->kind != CORTO_BASE)) {
         stack[count] = ptr;
         ptr = ptr->parent;
         count++;
@@ -135,12 +135,12 @@ static cx_char* c_loadMemberId(c_typeWalk_t* data, cx_value* v, cx_char* out, cx
     stack[count] = ptr;
 
     /* Print object */
-    o = cx_valueObject(v);
+    o = corto_valueObject(v);
 
     /* If object is a collection or primtive, dereference object pointer */
     objectIsArray = 
-        (cx_typeof(o)->kind == CX_PRIMITIVE) || 
-        (cx_typeof(o)->kind == CX_COLLECTION);
+        (corto_typeof(o)->kind == CORTO_PRIMITIVE) || 
+        (corto_typeof(o)->kind == CORTO_COLLECTION);
 
     /* Use '->' operator whenever possible */
     if (!objectIsArray) {
@@ -156,16 +156,16 @@ static cx_char* c_loadMemberId(c_typeWalk_t* data, cx_value* v, cx_char* out, cx
 
     /* If the first found object-value in the value-stack is not of the type of the object,
      * cast it. This happens when using inheritance. */
-    thisType = cx_valueType(ptr);
-    if (cx_type(thisType) != cx_typeof(o)) {
-        cx_id id, parentId, objectId;
+    thisType = corto_valueType(ptr);
+    if (corto_type(thisType) != corto_typeof(o)) {
+        corto_id id, parentId, objectId;
         sprintf(id, "%s(%s)",
                 g_fullOid(data->g, thisType, parentId),
-                c_loadVarId(data->g, cx_valueObject(v), objectId));
+                c_loadVarId(data->g, corto_valueObject(v), objectId));
         strcat(out, id);
     } else {
-        cx_id objectId;
-        strcat(out, c_loadVarId(data->g, cx_valueObject(v), objectId));
+        corto_id objectId;
+        strcat(out, c_loadVarId(data->g, corto_valueObject(v), objectId));
     }
 
     /* End bracket used for dereferencing object */
@@ -180,7 +180,7 @@ static cx_char* c_loadMemberId(c_typeWalk_t* data, cx_value* v, cx_char* out, cx
         switch (stack[count]->kind) {
 
         /* Member */
-        case CX_MEMBER:
+        case CORTO_MEMBER:
             /* When previous object is a reference, use -> operator. */
             if (derefMemberOperator) {
                 strcat(out, "->");
@@ -190,27 +190,27 @@ static cx_char* c_loadMemberId(c_typeWalk_t* data, cx_value* v, cx_char* out, cx
             }
 
             /* Reference member using it's name. */
-            cx_id memberId;
-            strcat(out, g_id(data->g, cx_nameof(stack[count]->is.member.t), memberId));
+            corto_id memberId;
+            strcat(out, g_id(data->g, corto_nameof(stack[count]->is.member.t), memberId));
             break;
 
         /* Element */
-        case CX_ELEMENT: {
-            cx_collection t;
-            cx_char arrayIndex[24];
+        case CORTO_ELEMENT: {
+            corto_collection t;
+            corto_char arrayIndex[24];
 
-            t = cx_collection(cx_valueType(stack[count+1]));
+            t = corto_collection(corto_valueType(stack[count+1]));
 
             switch (t->kind) {
 
             /* Array element, use array operator. */
-            case CX_ARRAY:
+            case CORTO_ARRAY:
                 sprintf(arrayIndex, "[%d]", stack[count]->is.element.t.index);
                 strcat(out, arrayIndex);
                 break;
 
             /* Sequence element, use buffer-array */
-            case CX_SEQUENCE:
+            case CORTO_SEQUENCE:
                 if (derefMemberOperator) {
                     strcat(out, "->");
                 } else {
@@ -222,9 +222,9 @@ static cx_char* c_loadMemberId(c_typeWalk_t* data, cx_value* v, cx_char* out, cx
 
             /* Use elementId's for non-array collections. */
             default: {
-                cx_char elementId[9]; /* One-million nested collections should be adequate in most cases. */
+                corto_char elementId[9]; /* One-million nested collections should be adequate in most cases. */
 
-                if ((cx_valueType(stack[count])->kind == CX_COLLECTION) && (cx_collection(cx_valueType(stack[count]))->kind == CX_ARRAY)) {
+                if ((corto_valueType(stack[count])->kind == CORTO_COLLECTION) && (corto_collection(corto_valueType(stack[count]))->kind == CORTO_ARRAY)) {
                     sprintf(out, "(*%s)", c_loadElementId(stack[count], elementId, 0));
                 } else {
                     sprintf(out, "%s", c_loadElementId(stack[count], elementId, 0));
@@ -236,9 +236,9 @@ static cx_char* c_loadMemberId(c_typeWalk_t* data, cx_value* v, cx_char* out, cx
             break;
         }
 
-        /* CX_OBJECT and CX_CONSTANT will not be encountered in this loop. */
+        /* CORTO_OBJECT and CORTO_CONSTANT will not be encountered in this loop. */
         default:
-            cx_assert(0, "invalid valueKind at this place.");
+            corto_assert(0, "invalid valueKind at this place.");
             break;
         }
     }
@@ -255,19 +255,19 @@ static cx_char* c_loadMemberId(c_typeWalk_t* data, cx_value* v, cx_char* out, cx
 }
 
 /* Walk types */
-static int c_loadDeclareWalk(cx_object o, void* userData) {
+static int c_loadDeclareWalk(corto_object o, void* userData) {
     c_typeWalk_t* data;
-    cx_id specifier, postfix, objectId;
-    cx_type t;
-    cx_bool prefix;
-    cx_object parent;
+    corto_id specifier, postfix, objectId;
+    corto_type t;
+    corto_bool prefix;
+    corto_object parent;
 
     data = userData;
-    t = cx_typeof(o);
+    t = corto_typeof(o);
 
-    parent = cx_parentof(o);
+    parent = corto_parentof(o);
     if (parent && (parent != root_o) && (!g_mustParse(data->g, parent))) {
-        c_loadDeclareWalk(cx_parentof(o), userData);
+        c_loadDeclareWalk(corto_parentof(o), userData);
     }
 
     /* Get C typespecifier */
@@ -294,9 +294,9 @@ error:
 }
 
 /* Open generator headerfile */
-static g_file c_loadHeaderFileOpen(cx_generator g) {
+static g_file c_loadHeaderFileOpen(corto_generator g) {
     g_file result;
-    cx_id headerFileName, path;
+    corto_id headerFileName, path;
 
     /* Create file */
     sprintf(headerFileName, "%s__meta.h", g_getName(g));
@@ -320,8 +320,8 @@ static g_file c_loadHeaderFileOpen(cx_generator g) {
 }
 
 /* Close headerfile */
-static void c_loadHeaderFileClose(cx_generator g, g_file file) {
-    CX_UNUSED(g);
+static void c_loadHeaderFileClose(corto_generator g, g_file file) {
+    CORTO_UNUSED(g);
 
     /* Print standard comments and includes */
     g_fileWrite(file, "\n");
@@ -332,10 +332,10 @@ static void c_loadHeaderFileClose(cx_generator g, g_file file) {
 }
 
 /* Open generator sourcefile */
-static g_file c_loadSourceFileOpen(cx_generator g) {
+static g_file c_loadSourceFileOpen(corto_generator g) {
     g_file result;
-    cx_id headerFileName;
-    cx_id topLevelName;
+    corto_id headerFileName;
+    corto_id topLevelName;
 
     /* Create file */
     sprintf(headerFileName, "%s__meta.c", g_getName(g));
@@ -358,12 +358,12 @@ static void c_sourceWriteVarDefStart(g_file file) {
 }
 
 /* Write start of load-routine */
-static void c_sourceWriteLoadStart(cx_generator g, g_file file) {
+static void c_sourceWriteLoadStart(corto_generator g, g_file file) {
     g_fileWrite(file, "\n");
     g_fileWrite(file, "/* Load objects in object store. */\n");
     g_fileWrite(file, "int %s_load(void) {\n", g_getName(g));
     g_fileIndent(file);
-    g_fileWrite(file, "cx_object _a_; /* Used for resolving anonymous objects */\n");
+    g_fileWrite(file, "corto_object _a_; /* Used for resolving anonymous objects */\n");
     g_fileWrite(file, "_a_ = NULL;\n\n");
 }
 
@@ -371,7 +371,7 @@ static void c_sourceWriteLoadStart(cx_generator g, g_file file) {
 static void c_sourceWriteLoadEnd(g_file file, c_typeWalk_t *data) {
     g_fileWrite(file, "if (_a_) {\n");
     g_fileIndent(file);
-    g_fileWrite(file, "cx_release(_a_);\n");
+    g_fileWrite(file, "corto_release(_a_);\n");
     g_fileDedent(file);
     g_fileWrite(file, "}\n\n");
     g_fileWrite(file, "return 0;\n");
@@ -381,7 +381,7 @@ static void c_sourceWriteLoadEnd(g_file file, c_typeWalk_t *data) {
         g_fileIndent(file);
         g_fileWrite(file, "if (_a_) {\n");
         g_fileIndent(file);
-        g_fileWrite(file, "cx_release(_a_);\n");
+        g_fileWrite(file, "corto_release(_a_);\n");
         g_fileDedent(file);
         g_fileWrite(file, "}\n\n");
         g_fileWrite(file, "return -1;\n");
@@ -391,14 +391,14 @@ static void c_sourceWriteLoadEnd(g_file file, c_typeWalk_t *data) {
 }
 
 /* Print variable start */
-static void c_varPrintStart(cx_value* v, c_typeWalk_t* data) {
-    cx_id memberId;
-    cx_type t;
+static void c_varPrintStart(corto_value* v, c_typeWalk_t* data) {
+    corto_id memberId;
+    corto_type t;
 
-    t = cx_valueType(v);
+    t = corto_valueType(v);
 
     /* Only write an identifier if the object is a primitive type, or a reference. */
-    if ((t->kind == CX_PRIMITIVE) || (t->reference && !(v->kind == CX_OBJECT))) {
+    if ((t->kind == CORTO_PRIMITIVE) || (t->reference && !(v->kind == CORTO_OBJECT))) {
         /* Print memberId if object is member */
         g_fileWrite(data->source, "%s = ",
                 c_loadMemberId(data, v, memberId, FALSE));
@@ -406,27 +406,27 @@ static void c_varPrintStart(cx_value* v, c_typeWalk_t* data) {
 }
 
 /* Print variable end */
-static void c_varPrintEnd(cx_value* v, c_typeWalk_t* data) {
-    cx_type t;
+static void c_varPrintEnd(corto_value* v, c_typeWalk_t* data) {
+    corto_type t;
 
     /* Get member object */
-    t = cx_valueType(v);
-    if ((t->kind == CX_PRIMITIVE) || (t->reference && !(v->kind == CX_OBJECT))) {
+    t = corto_valueType(v);
+    if ((t->kind == CORTO_PRIMITIVE) || (t->reference && !(v->kind == CORTO_OBJECT))) {
         /* Print end of member-assignment */
         g_fileWrite(data->source, ";\n");
     }
 }
 
 /* c_initPrimitive */
-static cx_int16 c_initPrimitive(cx_serializer s, cx_value* v, void* userData) {
+static corto_int16 c_initPrimitive(corto_serializer s, corto_value* v, void* userData) {
     void* ptr;
-    cx_type t;
-    cx_string str;
+    corto_type t;
+    corto_string str;
     c_typeWalk_t* data;
-    CX_UNUSED(s);
+    CORTO_UNUSED(s);
 
-    ptr = cx_valueValue(v);
-    t = cx_valueType(v);
+    ptr = corto_valueValue(v);
+    t = corto_valueType(v);
     data = userData;
     str = NULL;
 
@@ -434,33 +434,33 @@ static cx_int16 c_initPrimitive(cx_serializer s, cx_value* v, void* userData) {
 
     /* Treat booleans separately, the default convert translates booleans to 'true' and 'false' while
      * the language mapping of C TRUE and FALSE is. */
-    if (cx_primitive(t)->kind == CX_BOOLEAN) {
-        if (*(cx_bool*)ptr) {
-            str = cx_strdup("TRUE");
+    if (corto_primitive(t)->kind == CORTO_BOOLEAN) {
+        if (*(corto_bool*)ptr) {
+            str = corto_strdup("TRUE");
         } else {
-            str = cx_strdup("FALSE");
+            str = corto_strdup("FALSE");
         }
-    } else if (cx_primitive(t)->kind == CX_ENUM) {
-        cx_id enumId;
+    } else if (corto_primitive(t)->kind == CORTO_ENUM) {
+        corto_id enumId;
 
         /* Convert constant-name to language id */
-        str = cx_strdup(c_constantId(data->g, cx_enum_constant(cx_enum(t), *(cx_uint32*)ptr), enumId));
-    } else if (cx_primitive(t)->kind == CX_BITMASK) {
-        str = cx_alloc(11);
-        sprintf(str, "0x%x", *(cx_uint32*)ptr);
-    } else if (cx_primitive(t)->kind == CX_TEXT) {
-        cx_string v = *(cx_string*)ptr;
+        str = corto_strdup(c_constantId(data->g, corto_enum_constant(corto_enum(t), *(corto_uint32*)ptr), enumId));
+    } else if (corto_primitive(t)->kind == CORTO_BITMASK) {
+        str = corto_alloc(11);
+        sprintf(str, "0x%x", *(corto_uint32*)ptr);
+    } else if (corto_primitive(t)->kind == CORTO_TEXT) {
+        corto_string v = *(corto_string*)ptr;
         if (v) {
             size_t n = stresc(NULL, 0, v);
-            str = malloc(strlen("cx_strdup(\"\")") + n + 1);
-            strcpy(str, "cx_strdup(\"");
-            stresc(str + strlen("cx_strdup(\""), n + 1, v);
+            str = malloc(strlen("corto_strdup(\"\")") + n + 1);
+            strcpy(str, "corto_strdup(\"");
+            stresc(str + strlen("corto_strdup(\""), n + 1, v);
             strcat(str, "\")");
         } else {
-            str = cx_strdup("NULL");
+            str = corto_strdup("NULL");
         }
-    } else if (cx_primitive(t)->kind == CX_CHARACTER) {
-        cx_char v = *(cx_char*)ptr;
+    } else if (corto_primitive(t)->kind == CORTO_CHARACTER) {
+        corto_char v = *(corto_char*)ptr;
         char buff[3];
         str = malloc(strlen(buff) + 1 + 2);
         if (v) {
@@ -471,13 +471,13 @@ static cx_int16 c_initPrimitive(cx_serializer s, cx_value* v, void* userData) {
         }
     } else {
         /* Convert primitive value to string using built-in conversion */
-        if (cx_convert(cx_primitive(t), ptr, cx_primitive(cx_string_o), &str)) {
+        if (corto_convert(corto_primitive(t), ptr, corto_primitive(corto_string_o), &str)) {
             goto error;
         }
     }
 
     g_fileWrite(data->source, "%s", str);
-    cx_dealloc(str);
+    corto_dealloc(str);
 
     c_varPrintEnd(v, userData);
 
@@ -487,20 +487,20 @@ error:
 }
 
 /* c_initReference */
-static cx_int16 c_initReference(cx_serializer s, cx_value* v, void* userData) {
-    cx_object *optr, o;
+static corto_int16 c_initReference(corto_serializer s, corto_value* v, void* userData) {
+    corto_object *optr, o;
     c_typeWalk_t* data;
-    CX_UNUSED(s);
+    CORTO_UNUSED(s);
 
     data = userData;
-    optr = cx_valueValue(v);
+    optr = corto_valueValue(v);
 
     c_varPrintStart(v, userData);
 
     if ((o = *optr)) {
-        cx_id id, src, context;
-        c_loadVarId(data->g, cx_valueObject(v), src);
-        cx_strving(v, context, 256);
+        corto_id id, src, context;
+        c_loadVarId(data->g, corto_valueObject(v), src);
+        corto_strving(v, context, 256);
         g_fileWrite(data->source, "%s", c_loadResolve(o, id, src, context));
     } else {
         g_fileWrite(data->source, "NULL");
@@ -512,21 +512,21 @@ static cx_int16 c_initReference(cx_serializer s, cx_value* v, void* userData) {
 }
 
 /* c_initElement */
-static cx_int16 c_initElement(cx_serializer s, cx_value* v, void* userData) {
+static corto_int16 c_initElement(corto_serializer s, corto_value* v, void* userData) {
     c_typeWalk_t* data = userData;
-    cx_collection t = cx_collection(cx_valueType(v->parent));
-    cx_bool requiresAlloc = cx_collection_elementRequiresAlloc(t);
+    corto_collection t = corto_collection(corto_valueType(v->parent));
+    corto_bool requiresAlloc = corto_collection_elementRequiresAlloc(t);
 
     /* Allocate space for element */
     switch (t->kind) {
-    case CX_LIST:
-    case CX_MAP: {
-        cx_id elementId, specifier, postfix;
+    case CORTO_LIST:
+    case CORTO_MAP: {
+        corto_id elementId, specifier, postfix;
         g_fileWrite(data->source, "\n");
 
         if (requiresAlloc) {
             c_specifierId(data->g, t->elementType, specifier, NULL, postfix);
-            g_fileWrite(data->source, "%s = cx_alloc(sizeof(%s%s));\n", c_loadElementId(v, elementId, 0), specifier, postfix);
+            g_fileWrite(data->source, "%s = corto_alloc(sizeof(%s%s));\n", c_loadElementId(v, elementId, 0), specifier, postfix);
         }
         break;
     }
@@ -535,21 +535,21 @@ static cx_int16 c_initElement(cx_serializer s, cx_value* v, void* userData) {
     }
 
     /* Serialize value */
-    if (cx_serializeValue(s, v, data)) {
+    if (corto_serializeValue(s, v, data)) {
         goto error;
     }
 
     switch (t->kind) {
-    case CX_LIST: {
-        cx_id parentId, elementId;
-        g_fileWrite(data->source, "cx_llAppend(%s, %s%s);\n",
+    case CORTO_LIST: {
+        corto_id parentId, elementId;
+        g_fileWrite(data->source, "corto_llAppend(%s, %s%s);\n",
                 c_loadMemberId(data, v->parent, parentId, FALSE),
                 requiresAlloc ? "" : "(void*)", c_loadElementId(v, elementId, 0));
         break;
     }
-    case CX_MAP: /*{
-        cx_id parentId, elementId;
-        g_fileWrite(data->source, "cx_rbtreeSet(%s, %s)",
+    case CORTO_MAP: /*{
+        corto_id parentId, elementId;
+        g_fileWrite(data->source, "corto_rbtreeSet(%s, %s)",
                 c_loadMemberId(data->g, v->parent, parentId),
                 c_loadElementId(v, elementId, 0));
         break;
@@ -564,28 +564,28 @@ error:
 }
 
 /* c_initCollection */
-static cx_int16 c_initCollection(cx_serializer s, cx_value* v, void* userData) {
-    cx_collection t;
+static corto_int16 c_initCollection(corto_serializer s, corto_value* v, void* userData) {
+    corto_collection t;
     c_typeWalk_t* data;
-    cx_id memberId;
+    corto_id memberId;
     int result;
     void* ptr;
-    cx_uint32 size = 0;
+    corto_uint32 size = 0;
 
-    ptr = cx_valueValue(v);
+    ptr = corto_valueValue(v);
 
-    t = cx_collection(cx_valueType(v));
+    t = corto_collection(corto_valueType(v));
     data = userData;
 
     switch (t->kind) {
-    case CX_ARRAY:
+    case CORTO_ARRAY:
         size = t->max;
         break;
-    case CX_SEQUENCE: {
-        cx_uint32 length;
-        cx_id specifier, postfix;
+    case CORTO_SEQUENCE: {
+        corto_uint32 length;
+        corto_id specifier, postfix;
 
-        length = *(cx_uint32*)ptr;
+        length = *(corto_uint32*)ptr;
         size = length;
 
         /* Set length of sequence */
@@ -601,37 +601,37 @@ static cx_int16 c_initCollection(cx_serializer s, cx_value* v, void* userData) {
             g_fileWrite(data->source, "%sbuffer = NULL;\n",
                     c_loadMemberId(data, v, memberId, TRUE));
         } else if (length == 1) {
-            g_fileWrite(data->source, "%sbuffer = cx_alloc(sizeof(%s%s));\n",
+            g_fileWrite(data->source, "%sbuffer = corto_alloc(sizeof(%s%s));\n",
                     c_loadMemberId(data, v, memberId, TRUE),
                     specifier, postfix);
         } else {
-            g_fileWrite(data->source, "%sbuffer = cx_alloc(sizeof(%s%s) * %d);\n",
+            g_fileWrite(data->source, "%sbuffer = corto_alloc(sizeof(%s%s) * %d);\n",
                     c_loadMemberId(data, v, memberId, TRUE),
                     specifier, postfix,
                     length);
         }
         break;
     }
-    case CX_LIST:
+    case CORTO_LIST:
         /* Create list object */
-        if (*(cx_ll*)ptr) {
-            g_fileWrite(data->source, "%s = cx_llNew();\n",
+        if (*(corto_ll*)ptr) {
+            g_fileWrite(data->source, "%s = corto_llNew();\n",
                     c_loadMemberId(data, v, memberId, FALSE));
         } else {
             g_fileWrite(data->source, "%s = NULL;\n", c_loadMemberId(data, v, memberId, FALSE));
         }
-        size = cx_llSize(*(cx_ll*)ptr);
+        size = corto_llSize(*(corto_ll*)ptr);
         break;
-    case CX_MAP: {
-        cx_id keyId;
+    case CORTO_MAP: {
+        corto_id keyId;
         /* Create map object */
-        if (*(cx_rbtree*)ptr) {
-            g_fileWrite(data->source, "%s = cx_rbtreeNew(%s);\n",
-                    c_loadMemberId(data, v, memberId, FALSE), g_fullOid(data->g, cx_rbtreeKeyType(*(cx_rbtree*)ptr), keyId));
+        if (*(corto_rbtree*)ptr) {
+            g_fileWrite(data->source, "%s = corto_rbtreeNew(%s);\n",
+                    c_loadMemberId(data, v, memberId, FALSE), g_fullOid(data->g, corto_rbtreeKeyType(*(corto_rbtree*)ptr), keyId));
         } else {
             g_fileWrite(data->source, "%s = NULL;\n", c_loadMemberId(data, v, memberId, FALSE));
         }
-        size = cx_rbtreeSize(*(cx_rbtree*)ptr);
+        size = corto_rbtreeSize(*(corto_rbtree*)ptr);
         break;
     }
     }
@@ -639,9 +639,9 @@ static cx_int16 c_initCollection(cx_serializer s, cx_value* v, void* userData) {
     /* For the non-array types, allocate a member variable, if size of collection is not zero. */
     if (size) {
         switch (t->kind) {
-        case CX_LIST:
-        case CX_MAP: {
-            cx_id elementId, elementTypeId;
+        case CORTO_LIST:
+        case CORTO_MAP: {
+            corto_id elementId, elementTypeId;
             g_fileWrite(data->source, "{\n");
             g_fileIndent(data->source);
 
@@ -649,7 +649,7 @@ static cx_int16 c_initCollection(cx_serializer s, cx_value* v, void* userData) {
                 data->source, 
                 "%s%s %s;\n", 
                 g_fullOid(data->g, t->elementType, elementTypeId), 
-                cx_collection_elementRequiresAlloc(t) ? "*" : "",
+                corto_collection_elementRequiresAlloc(t) ? "*" : "",
                 c_loadElementId(v, elementId, 1));
 
             break;
@@ -660,12 +660,12 @@ static cx_int16 c_initCollection(cx_serializer s, cx_value* v, void* userData) {
     }
 
     /* Serialize elements */
-    result = cx_serializeElements(s, v, userData);
+    result = corto_serializeElements(s, v, userData);
 
     if (size) {
         switch (t->kind) {
-        case CX_LIST:
-        case CX_MAP: {
+        case CORTO_LIST:
+        case CORTO_MAP: {
             g_fileDedent(data->source);
             g_fileWrite(data->source, "}\n");
             break;
@@ -679,12 +679,12 @@ static cx_int16 c_initCollection(cx_serializer s, cx_value* v, void* userData) {
 }
 
 /* Write forward-declaration to interface function, return name. */
-static int c_loadCFunction(cx_function o, c_typeWalk_t* data, cx_id name) {
+static int c_loadCFunction(corto_function o, c_typeWalk_t* data, corto_id name) {
 
     /* Print name */
     g_fullOid(data->g, o, name);
     if (c_procedureHasThis(o)) {
-        if (cx_instanceof(cx_type(cx_method_o), o) && cx_method(o)->_virtual) {
+        if (corto_instanceof(corto_type(corto_method_o), o) && corto_method(o)->_virtual) {
             strcat(name, "_v");
         }
     }
@@ -693,56 +693,56 @@ static int c_loadCFunction(cx_function o, c_typeWalk_t* data, cx_id name) {
 }
 
 /* Create serializer that initializes object values */
-static struct cx_serializer_s c_initSerializer(void) {
-    struct cx_serializer_s s;
+static struct corto_serializer_s c_initSerializer(void) {
+    struct corto_serializer_s s;
 
-    cx_serializerInit(&s);
+    corto_serializerInit(&s);
 
-    s.access = CX_LOCAL;
-    s.accessKind = CX_NOT;
-    s.aliasAction = CX_SERIALIZER_ALIAS_IGNORE;
-    s.traceKind = CX_SERIALIZER_TRACE_ON_FAIL;
-    s.program[CX_PRIMITIVE] = c_initPrimitive;
-    s.program[CX_COLLECTION] = c_initCollection;
-    s.metaprogram[CX_ELEMENT] = c_initElement;
+    s.access = CORTO_LOCAL;
+    s.accessKind = CORTO_NOT;
+    s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
+    s.traceKind = CORTO_SERIALIZER_TRACE_ON_FAIL;
+    s.program[CORTO_PRIMITIVE] = c_initPrimitive;
+    s.program[CORTO_COLLECTION] = c_initCollection;
+    s.metaprogram[CORTO_ELEMENT] = c_initElement;
     s.reference = c_initReference;
 
     return s;
 }
 
 /* Declare object */
-static int c_loadDeclare(cx_object o, void* userData) {
+static int c_loadDeclare(corto_object o, void* userData) {
     c_typeWalk_t* data;
-    cx_id id, parentId, typeId, escapedName;
+    corto_id id, parentId, typeId, escapedName;
 
     data = userData;
 
     /* Only declare scoped objects */
-    if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
-        c_escapeString(cx_nameof(o), escapedName);
+    if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+        c_escapeString(corto_nameof(o), escapedName);
 
         /* Declaration */
-        g_fileWrite(data->source, "/* Declare %s */\n", cx_fullname(o, id));
+        g_fileWrite(data->source, "/* Declare %s */\n", corto_fullname(o, id));
 
-        if (!cx_checkAttr(cx_typeof(o), CX_ATTR_SCOPED)) {
-            g_fileWrite(data->source, "%s = cx_declareChild(%s, \"%s\", (_a_ ? cx_release(_a_) : 0, _a_ = %s));\n",
+        if (!corto_checkAttr(corto_typeof(o), CORTO_ATTR_SCOPED)) {
+            g_fileWrite(data->source, "%s = corto_declareChild(%s, \"%s\", (_a_ ? corto_release(_a_) : 0, _a_ = %s));\n",
                     c_loadVarId(data->g, o, id),
-                    c_loadVarId(data->g, cx_parentof(o), parentId),
+                    c_loadVarId(data->g, corto_parentof(o), parentId),
                     escapedName,
-                    c_loadVarId(data->g, cx_typeof(o), typeId));
+                    c_loadVarId(data->g, corto_typeof(o), typeId));
         } else {
-            g_fileWrite(data->source, "%s = cx_declareChild(%s, \"%s\", %s);\n",
+            g_fileWrite(data->source, "%s = corto_declareChild(%s, \"%s\", %s);\n",
                     c_loadVarId(data->g, o, id),
-                    c_loadVarId(data->g, cx_parentof(o), parentId),
+                    c_loadVarId(data->g, corto_parentof(o), parentId),
                     escapedName,
-                    c_loadVarId(data->g, cx_typeof(o), typeId));
+                    c_loadVarId(data->g, corto_typeof(o), typeId));
         }
 
         /* Error checking */
         g_fileWrite(data->source, "if (!%s) {\n", c_loadVarId(data->g, o, id));
         g_fileIndent(data->source);
-        c_escapeString(cx_fullname(o, id), escapedName);
-        g_fileWrite(data->source, "cx_error(\"%s_load: failed to declare '%s' (%%s)\", cx_lasterr());\n",
+        c_escapeString(corto_fullname(o, id), escapedName);
+        g_fileWrite(data->source, "corto_error(\"%s_load: failed to declare '%s' (%%s)\", corto_lasterr());\n",
                 g_getName(data->g),
                 escapedName);
         g_fileWrite(data->source, "goto error;\n");
@@ -756,44 +756,44 @@ static int c_loadDeclare(cx_object o, void* userData) {
 }
 
 /* Define object */
-static int c_loadDefine(cx_object o, void* userData) {
-    struct cx_serializer_s s;
+static int c_loadDefine(corto_object o, void* userData) {
+    struct corto_serializer_s s;
 
-    if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
+    if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
         c_typeWalk_t* data;
-        cx_id escapedId, fullname, varId, typeId;
+        corto_id escapedId, fullname, varId, typeId;
 
         data = userData;
 
-        cx_fullname(o, fullname);
+        corto_fullname(o, fullname);
         c_loadVarId(data->g, o, varId);
         g_fullOid(data->g, o, typeId);
 
         g_fileWrite(data->source, "/* Define %s */\n", fullname);
-        g_fileWrite(data->source, "if (!cx_checkState(%s, CX_DEFINED)) {\n", varId);
+        g_fileWrite(data->source, "if (!corto_checkState(%s, CORTO_DEFINED)) {\n", varId);
         g_fileIndent(data->source);
 
         /* Serialize object if object is not a primitive */
         s = c_initSerializer();
-        cx_serialize(&s, o, userData);
+        corto_serialize(&s, o, userData);
 
         /* If object is a procedure, set function implementation */
-        if (cx_class_instanceof(cx_procedure_o, cx_typeof(o))) {
-            cx_id name;
+        if (corto_class_instanceof(corto_procedure_o, corto_typeof(o))) {
+            corto_id name;
             g_fileWrite(data->source, "\n");
-            if (!cx_function(o)->impl) {
+            if (!corto_function(o)->impl) {
                 g_fileWrite(data->source, "/* Bind %s with C-function */\n", fullname);
-                g_fileWrite(data->source, "cx_function(%s)->kind = CX_PROCEDURE_CDECL;\n", varId);
+                g_fileWrite(data->source, "corto_function(%s)->kind = CORTO_PROCEDURE_CDECL;\n", varId);
                 c_loadCFunction(o, data, name);
                 g_fileWrite(data->source, "void __%s(void *args, void *result);\n", name);
-                g_fileWrite(data->source, "cx_function(%s)->impl = (cx_word)__%s;\n", varId, name);
+                g_fileWrite(data->source, "corto_function(%s)->impl = (corto_word)__%s;\n", varId, name);
             }
         }
 
         /* Define object */
-        g_fileWrite(data->source, "if (cx_define(%s)) {\n", varId);
+        g_fileWrite(data->source, "if (corto_define(%s)) {\n", varId);
         g_fileIndent(data->source);
-        g_fileWrite(data->source, "cx_error(\"%s_load: failed to define '%s' (%%s)\", cx_lasterr());\n",
+        g_fileWrite(data->source, "corto_error(\"%s_load: failed to define '%s' (%%s)\", corto_lasterr());\n",
                 g_getName(data->g),
                 c_escapeString(fullname, escapedId));
         g_fileWrite(data->source, "goto error;\n");
@@ -804,25 +804,25 @@ static int c_loadDefine(cx_object o, void* userData) {
         g_fileWrite(data->source, "}\n\n");
 
         /* Do size validation - this makes porting to other platforms easier */
-        if (cx_instanceof(cx_type(cx_type_o), o)) {
-            if (cx_type(o)->reference) {
-                g_fileWrite(data->source, "if (cx_type(%s)->size != sizeof(struct %s_s)) {\n", 
+        if (corto_instanceof(corto_type(corto_type_o), o)) {
+            if (corto_type(o)->reference) {
+                g_fileWrite(data->source, "if (corto_type(%s)->size != sizeof(struct %s_s)) {\n", 
                     varId,
                     typeId);
                 g_fileIndent(data->source);
                 g_fileWrite(data->source, 
-                    "cx_error(\"%s_load: calculated size '%%d' of type '%s' doesn't match C-type size '%%d'\", cx_type(%s)->size, sizeof(struct %s_s));\n", 
+                    "corto_error(\"%s_load: calculated size '%%d' of type '%s' doesn't match C-type size '%%d'\", corto_type(%s)->size, sizeof(struct %s_s));\n", 
                     g_getName(data->g),
                     fullname,
                     varId,
                     typeId);
             } else {
-                g_fileWrite(data->source, "if (cx_type(%s)->size != sizeof(%s)) {\n", 
+                g_fileWrite(data->source, "if (corto_type(%s)->size != sizeof(%s)) {\n", 
                     varId,
                     typeId);
                 g_fileIndent(data->source);
                 g_fileWrite(data->source, 
-                    "cx_error(\"%s_load: calculated size '%%d' of type '%s' doesn't match C-type size '%%d'\", cx_type(%s)->size, sizeof(%s));\n", 
+                    "corto_error(\"%s_load: calculated size '%%d' of type '%s' doesn't match C-type size '%%d'\", corto_type(%s)->size, sizeof(%s));\n", 
                     g_getName(data->g),
                     fullname,
                     varId,
@@ -837,12 +837,12 @@ static int c_loadDefine(cx_object o, void* userData) {
 }
 
 /* Entry point for generator */
-int corto_genMain(cx_generator g) {
+int corto_genMain(corto_generator g) {
     c_typeWalk_t walkData;
 
     /* Default prefixes for corto namespaces */
     gen_parse(g, corto_o, FALSE, FALSE, "");
-    gen_parse(g, corto_lang_o, FALSE, FALSE, "cx");
+    gen_parse(g, corto_lang_o, FALSE, FALSE, "corto");
 
     /* Prepare walkData, create header- and sourcefile */
     walkData.g = g;
@@ -862,8 +862,8 @@ int corto_genMain(cx_generator g) {
     c_sourceWriteLoadStart(g, walkData.source);
 
     /* Walk objects in dependency order */
-    if (cx_genDepWalk(g, c_loadDeclare, c_loadDefine, &walkData)) {
-        cx_trace("generation of load-routine failed while resolving dependencies.");
+    if (corto_genDepWalk(g, c_loadDeclare, c_loadDefine, &walkData)) {
+        corto_trace("generation of load-routine failed while resolving dependencies.");
         goto error;
     }
 

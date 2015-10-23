@@ -9,7 +9,7 @@
 #include "primitive.h"
 
 /* ::primitive::Octet::test10() */
-cx_void _primitive_Octet_test10(primitive_Octet this) {
+corto_void _primitive_Octet_test10(primitive_Octet this) {
 /* $begin(::primitive::Octet::test10) */
 
     /* << Insert implementation >> */
@@ -18,7 +18,7 @@ cx_void _primitive_Octet_test10(primitive_Octet this) {
 }
 
 /* ::primitive::Octet::testCompare() */
-cx_void _primitive_Octet_testCompare(primitive_Octet this) {
+corto_void _primitive_Octet_testCompare(primitive_Octet this) {
 /* $begin(::primitive::Octet::testCompare) */
 
     /* << Insert implementation >> */
@@ -27,7 +27,7 @@ cx_void _primitive_Octet_testCompare(primitive_Octet this) {
 }
 
 /* ::primitive::Octet::testCopy() */
-cx_void _primitive_Octet_testCopy(primitive_Octet this) {
+corto_void _primitive_Octet_testCopy(primitive_Octet this) {
 /* $begin(::primitive::Octet::testCopy) */
 
     /* << Insert implementation >> */
@@ -36,7 +36,7 @@ cx_void _primitive_Octet_testCopy(primitive_Octet this) {
 }
 
 /* ::primitive::Octet::testCreate() */
-cx_void _primitive_Octet_testCreate(primitive_Octet this) {
+corto_void _primitive_Octet_testCreate(primitive_Octet this) {
 /* $begin(::primitive::Octet::testCreate) */
 
     /* << Insert implementation >> */
@@ -45,7 +45,7 @@ cx_void _primitive_Octet_testCreate(primitive_Octet this) {
 }
 
 /* ::primitive::Octet::testCreateChild() */
-cx_void _primitive_Octet_testCreateChild(primitive_Octet this) {
+corto_void _primitive_Octet_testCreateChild(primitive_Octet this) {
 /* $begin(::primitive::Octet::testCreateChild) */
 
     /* << Insert implementation >> */
@@ -54,7 +54,7 @@ cx_void _primitive_Octet_testCreateChild(primitive_Octet this) {
 }
 
 /* ::primitive::Octet::testDeclare() */
-cx_void _primitive_Octet_testDeclare(primitive_Octet this) {
+corto_void _primitive_Octet_testDeclare(primitive_Octet this) {
 /* $begin(::primitive::Octet::testDeclare) */
 
     /* << Insert implementation >> */
@@ -63,7 +63,7 @@ cx_void _primitive_Octet_testDeclare(primitive_Octet this) {
 }
 
 /* ::primitive::Octet::testDeclareChild() */
-cx_void _primitive_Octet_testDeclareChild(primitive_Octet this) {
+corto_void _primitive_Octet_testDeclareChild(primitive_Octet this) {
 /* $begin(::primitive::Octet::testDeclareChild) */
 
     /* << Insert implementation >> */
@@ -72,7 +72,7 @@ cx_void _primitive_Octet_testDeclareChild(primitive_Octet this) {
 }
 
 /* ::primitive::Octet::testDefine() */
-cx_void _primitive_Octet_testDefine(primitive_Octet this) {
+corto_void _primitive_Octet_testDefine(primitive_Octet this) {
 /* $begin(::primitive::Octet::testDefine) */
 
     /* << Insert implementation >> */
@@ -81,7 +81,7 @@ cx_void _primitive_Octet_testDefine(primitive_Octet this) {
 }
 
 /* ::primitive::Octet::testDeinit() */
-cx_void _primitive_Octet_testDeinit(primitive_Octet this) {
+corto_void _primitive_Octet_testDeinit(primitive_Octet this) {
 /* $begin(::primitive::Octet::testDeinit) */
 
     /* << Insert implementation >> */
@@ -90,7 +90,7 @@ cx_void _primitive_Octet_testDeinit(primitive_Octet this) {
 }
 
 /* ::primitive::Octet::testFromstr() */
-cx_void _primitive_Octet_testFromstr(primitive_Octet this) {
+corto_void _primitive_Octet_testFromstr(primitive_Octet this) {
 /* $begin(::primitive::Octet::testFromstr) */
 
     /* << Insert implementation >> */
@@ -99,7 +99,7 @@ cx_void _primitive_Octet_testFromstr(primitive_Octet this) {
 }
 
 /* ::primitive::Octet::testInit() */
-cx_void _primitive_Octet_testInit(primitive_Octet this) {
+corto_void _primitive_Octet_testInit(primitive_Octet this) {
 /* $begin(::primitive::Octet::testInit) */
 
     /* << Insert implementation >> */
@@ -108,7 +108,7 @@ cx_void _primitive_Octet_testInit(primitive_Octet this) {
 }
 
 /* ::primitive::Octet::testStr() */
-cx_void _primitive_Octet_testStr(primitive_Octet this) {
+corto_void _primitive_Octet_testStr(primitive_Octet this) {
 /* $begin(::primitive::Octet::testStr) */
 
     /* << Insert implementation >> */
@@ -117,7 +117,7 @@ cx_void _primitive_Octet_testStr(primitive_Octet this) {
 }
 
 /* ::primitive::Octet::testUpdate() */
-cx_void _primitive_Octet_testUpdate(primitive_Octet this) {
+corto_void _primitive_Octet_testUpdate(primitive_Octet this) {
 /* $begin(::primitive::Octet::testUpdate) */
 
     /* << Insert implementation >> */

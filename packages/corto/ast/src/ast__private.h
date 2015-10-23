@@ -9,16 +9,16 @@ extern "C" {
 
 void ast_Parser_error(ast_Parser _this, char* fmt, ... );
 void ast_Parser_warning(ast_Parser _this, char* fmt, ... );
-cx_string ast_Parser_id(cx_object o, cx_id buffer);
+corto_string ast_Parser_id(corto_object o, corto_id buffer);
 ast_Parser yparser(void);
-int fast_yparse(ast_Parser parser, cx_uint32 line, cx_uint32 column);
-ast_Expression ast_Expression_narrow(ast_Expression expr, cx_type target);
-cx_type ast_Expression_narrowType(ast_Expression expr);
-cx_int8 ast_Expression_getCastScore(cx_primitive t);
-cx_int8 ast_Expression_getTypeScore(cx_primitive t);
-ast_Expression ast_Node_optimizeCondition(ast_Expression condition, cx_bool *staticResult, cx_bool *inverse);
-ast_Call ast_createCall(ast_Expression instance, cx_string function, cx_uint32 numArgs, ...);
-ast_Call ast_createCallWithArguments(ast_Expression instance, cx_string function, ast_Expression arguments);
+int fast_yparse(ast_Parser parser, corto_uint32 line, corto_uint32 column);
+ast_Expression ast_Expression_narrow(ast_Expression expr, corto_type target);
+corto_type ast_Expression_narrowType(ast_Expression expr);
+corto_int8 ast_Expression_getCastScore(corto_primitive t);
+corto_int8 ast_Expression_getTypeScore(corto_primitive t);
+ast_Expression ast_Node_optimizeCondition(ast_Expression condition, corto_bool *staticResult, corto_bool *inverse);
+ast_Call ast_createCall(ast_Expression instance, corto_string function, corto_uint32 numArgs, ...);
+ast_Call ast_createCallWithArguments(ast_Expression instance, corto_string function, ast_Expression arguments);
 ast_Call ast_createCallFromExpr(ast_Expression f, ast_Expression arguments);
 
 /* Convenience macro's for IC generation */

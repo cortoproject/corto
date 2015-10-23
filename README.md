@@ -48,7 +48,7 @@ int MyFirstAppmain(int argc, char *argv[]) {
 
     while (1) {
         printf("Hello Corto!\n");
-        cx_sleep(1, 0);
+        corto_sleep(1, 0);
     }
     
     return 0;

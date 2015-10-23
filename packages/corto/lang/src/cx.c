@@ -5,32 +5,32 @@
  *      Author: sander
  */
 #define corto_lang_LIB
-#include "cx__bootstrap.h"
-#include "cx_util.h"
-#include "cx_err.h"
-#include "cx_mem.h"
-#include "cx_type.h"
-#include "cx__class.h"
-#include "cx__meta.h"
-#include "cx_convert.h"
-#include "cx_operator.h"
-#include "cx_memory_ser.h"
-#include "cx_mm.h"
-#include "cx_call.h"
-#include "cx_crc.h"
+#include "corto__bootstrap.h"
+#include "corto_util.h"
+#include "corto_err.h"
+#include "corto_mem.h"
+#include "corto_type.h"
+#include "corto__class.h"
+#include "corto__meta.h"
+#include "corto_convert.h"
+#include "corto_operator.h"
+#include "corto_memory_ser.h"
+#include "corto_mm.h"
+#include "corto_call.h"
+#include "corto_crc.h"
 
-#include "cx__object.h"
+#include "corto__object.h"
 #include "stdlib.h"
 
 /* Declaration of the C-binding call-handler */
-void cx_call_cdecl(cx_function f, cx_void* result, void* args);
+void corto_call_cdecl(corto_function f, corto_void* result, void* args);
 
-#ifdef CX_VM
-void cx_call_vm(cx_function f, cx_void* result, void* args);
-void cx_callDestruct_vm(cx_function f);
+#ifdef CORTO_VM
+void corto_call_vm(corto_function f, corto_void* result, void* args);
+void corto_callDestruct_vm(corto_function f);
 #endif
 
-struct cx_exitHandler {
+struct corto_exitHandler {
     void(*handler)(void*);
     void* userData;
 };
@@ -52,20 +52,20 @@ const char* CORTO_VERSION_MAJOR = VERSION_MAJOR;
 const char* CORTO_VERSION_MINOR = VERSION_MINOR;
 const char* CORTO_VERSION_PATCH = VERSION_PATCH;
 
-cx_mutex_s cx_adminLock;
-static cx_ll cx_exitHandlers = NULL;
-static cx_ll cx_unloadHandlers = NULL;
+corto_mutex_s corto_adminLock;
+static corto_ll corto_exitHandlers = NULL;
+static corto_ll corto_unloadHandlers = NULL;
 
-cx_threadKey CX_KEY_OBSERVER_ADMIN;
-cx_threadKey CX_KEY_WAIT_ADMIN;
-cx_threadKey CX_KEY_ATTR;
-cx_threadKey CX_KEY_SELECT;
+corto_threadKey CORTO_KEY_OBSERVER_ADMIN;
+corto_threadKey CORTO_KEY_WAIT_ADMIN;
+corto_threadKey CORTO_KEY_ATTR;
+corto_threadKey CORTO_KEY_SELECT;
 
-int8_t CX_DEBUG_ENABLED = 0;
+int8_t CORTO_DEBUG_ENABLED = 0;
 
-#define SSO_OP_VOID(op, type) op(cx_##type##_o, 0)
-#define SSO_OP_PRIM(op, type) op(cx_##type##_o, sizeof(cx_##type))
-#define SSO_OP_CLASS(op, type) op(cx_##type##_o, sizeof(struct cx_##type##_s))
+#define SSO_OP_VOID(op, type) op(corto_##type##_o, 0)
+#define SSO_OP_PRIM(op, type) op(corto_##type##_o, sizeof(corto_##type))
+#define SSO_OP_CLASS(op, type) op(corto_##type##_o, sizeof(struct corto_##type##_s))
 
 /* The ordering of the lists of objects below is important to ensure correct
  * initialization\construction\destruction of objects. Especially the latter one
@@ -166,7 +166,7 @@ int8_t CX_DEBUG_ENABLED = 0;
     SSO_OP_PROCEDURETYPE(op);\
     SSO_OP_CLASSTYPE(op);
 
-#define SSO_OBJECT(obj) CX_OFFSET(&obj##__o, sizeof(cx_SSO))
+#define SSO_OBJECT(obj) CORTO_OFFSET(&obj##__o, sizeof(corto_SSO))
 #define SSO_OP_OBJ(op, obj) op(SSO_OBJECT(obj))
 
 /* 1st degree objects (members, methods and constants) */
@@ -575,330 +575,330 @@ int8_t CX_DEBUG_ENABLED = 0;
 #define SSO_OP_OBJECT_2ND(op) \
 
 /* Creation and destruction of objects */
-static void cx_createObject(cx_object o) {
-    cx__newSSO(o);
+static void corto_createObject(corto_object o) {
+    corto__newSSO(o);
 }
-static void cx_releaseObject(cx_object o) {
-    cx__freeSSO(o);
-}
-
-static void cx_releaseType(cx_object o, cx_uint32 size) {
-    CX_UNUSED(size);
-    cx_releaseObject(o);
+static void corto_releaseObject(corto_object o) {
+    corto__freeSSO(o);
 }
 
-void cx_delegateDestruct(cx_type t, cx_object o);
-cx_int16 cx_delegateInit(cx_type t, cx_object o);
-cx_int16 cx_delegateConstruct(cx_type t, cx_object o);
+static void corto_releaseType(corto_object o, corto_uint32 size) {
+    CORTO_UNUSED(size);
+    corto_releaseObject(o);
+}
+
+void corto_delegateDestruct(corto_type t, corto_object o);
+corto_int16 corto_delegateInit(corto_type t, corto_object o);
+corto_int16 corto_delegateConstruct(corto_type t, corto_object o);
 
 /* Initialization of objects */
-static void cx_initObject(cx_object o) {
-    cx_createObject(o);
+static void corto_initObject(corto_object o) {
+    corto_createObject(o);
 
-    cx_delegateInit(cx_typeof(o), o);
+    corto_delegateInit(corto_typeof(o), o);
     
-    if (cx_typeof(o)->kind == CX_VOID) {
-        cx__setState(o, CX_DEFINED);
+    if (corto_typeof(o)->kind == CORTO_VOID) {
+        corto__setState(o, CORTO_DEFINED);
     }
 }
 
 /* Initialization of types */
-static void cx_initType(cx_object o, cx_uint32 size) {
-    CX_UNUSED(size);
-    cx_initObject(o);
+static void corto_initType(corto_object o, corto_uint32 size) {
+    CORTO_UNUSED(size);
+    corto_initObject(o);
 }
 
 /* Define object */
-static void cx_defineObject(cx_object o) {
-    if (cx_define(o)) {
-        cx_error("construction of builtin-object '%s' failed (%s)", cx_nameof(o), cx_lasterr());
+static void corto_defineObject(corto_object o) {
+    if (corto_define(o)) {
+        corto_error("construction of builtin-object '%s' failed (%s)", corto_nameof(o), corto_lasterr());
     }
 }
 
 /* Define type */
-static void cx_defineType(cx_object o, cx_uint32 size) {
-    cx_defineObject(o);
+static void corto_defineType(corto_object o, corto_uint32 size) {
+    corto_defineObject(o);
 
     /* Size validation */
-    if (cx_type(o)->size != size) {
-        cx_id id;
-        cx_error("bootstrap: size validation failed for type '%s' - metatype = %d, c-type = %d.", cx_fullname(o, id), cx_type(o)->size, size);
+    if (corto_type(o)->size != size) {
+        corto_id id;
+        corto_error("bootstrap: size validation failed for type '%s' - metatype = %d, c-type = %d.", corto_fullname(o, id), corto_type(o)->size, size);
     }
 }
 
 /* Destruct object */
-static void cx_deleteObject(cx_object o) {
-    cx__destructor(o);
+static void corto_deleteObject(corto_object o) {
+    corto__destructor(o);
 }
 
 /* Destruct type */
-static void cx_deleteType(cx_object o, cx_uint32 size) {
-    CX_UNUSED(size);
-    cx__destructor(o);
+static void corto_deleteType(corto_object o, corto_uint32 size) {
+    CORTO_UNUSED(size);
+    corto__destructor(o);
 }
 
 /* Update references */
-static void cx_updateRef(cx_object o) {
-    struct cx_serializer_s s;
-    s = cx_ser_keep(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
-    cx_serialize(&s, o, NULL);
+static void corto_updateRef(corto_object o) {
+    struct corto_serializer_s s;
+    s = corto_ser_keep(CORTO_LOCAL, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
+    corto_serialize(&s, o, NULL);
 }
 
 /* Update references for type */
-static void cx_updateRefType(cx_object o, cx_uint32 size) {
-    CX_UNUSED(size);
-    cx_updateRef(o);
+static void corto_updateRefType(corto_object o, corto_uint32 size) {
+    CORTO_UNUSED(size);
+    corto_updateRef(o);
 }
 
 /* Decrease references */
-static void cx_decreaseRef(cx_object o) {
-    struct cx_serializer_s s;
-    s = cx_ser_free(CX_LOCAL, CX_NOT, CX_SERIALIZER_TRACE_ON_FAIL);
-    cx_serialize(&s, o, NULL);
+static void corto_decreaseRef(corto_object o) {
+    struct corto_serializer_s s;
+    s = corto_ser_free(CORTO_LOCAL, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
+    corto_serialize(&s, o, NULL);
 }
 
 /* Decrease references for type */
-static void cx_decreaseRefType(cx_object o, cx_uint32 size) {
-    CX_UNUSED(size);
-    cx_decreaseRef(o);
+static void corto_decreaseRefType(corto_object o, corto_uint32 size) {
+    CORTO_UNUSED(size);
+    corto_decreaseRef(o);
 }
 
-static void cx_genericTlsFree(void *o) {
-    cx_dealloc(o);
+static void corto_genericTlsFree(void *o) {
+    corto_dealloc(o);
 }
 
-static void cx_patchSequences(void) {
-    cx_replicator_o->implements.length = 1;
-    cx_replicator_o->implements.buffer = cx_alloc(sizeof(cx_object));
-    cx_replicator_o->implements.buffer[0] = cx_dispatcher_o;
+static void corto_patchSequences(void) {
+    corto_replicator_o->implements.length = 1;
+    corto_replicator_o->implements.buffer = corto_alloc(sizeof(corto_object));
+    corto_replicator_o->implements.buffer[0] = corto_dispatcher_o;
 
-    cx_notifyAction_o->parameters.length = 1;
-    cx_notifyAction_o->parameters.buffer = cx_alloc(sizeof(cx_parameter));
-    cx_notifyAction_o->parameters.buffer[0].name = "observable";
-    cx_notifyAction_o->parameters.buffer[0].type = cx_object_o;
-    cx_notifyAction_o->parameters.buffer[0].passByReference = 0;
+    corto_notifyAction_o->parameters.length = 1;
+    corto_notifyAction_o->parameters.buffer = corto_alloc(sizeof(corto_parameter));
+    corto_notifyAction_o->parameters.buffer[0].name = "observable";
+    corto_notifyAction_o->parameters.buffer[0].type = corto_object_o;
+    corto_notifyAction_o->parameters.buffer[0].passByReference = 0;
 
-    cx_invokeAction_o->parameters.length = 3;
-    cx_invokeAction_o->parameters.buffer = cx_alloc(3 * sizeof(cx_parameter));
-    cx_invokeAction_o->parameters.buffer[0].name = "instance";
-    cx_invokeAction_o->parameters.buffer[0].type = cx_object_o;
-    cx_invokeAction_o->parameters.buffer[0].passByReference = 0;
+    corto_invokeAction_o->parameters.length = 3;
+    corto_invokeAction_o->parameters.buffer = corto_alloc(3 * sizeof(corto_parameter));
+    corto_invokeAction_o->parameters.buffer[0].name = "instance";
+    corto_invokeAction_o->parameters.buffer[0].type = corto_object_o;
+    corto_invokeAction_o->parameters.buffer[0].passByReference = 0;
 
-    cx_invokeAction_o->parameters.buffer[1].name = "function";
-    cx_invokeAction_o->parameters.buffer[1].type = cx_type(cx_function_o);
-    cx_invokeAction_o->parameters.buffer[1].passByReference = 0;
+    corto_invokeAction_o->parameters.buffer[1].name = "function";
+    corto_invokeAction_o->parameters.buffer[1].type = corto_type(corto_function_o);
+    corto_invokeAction_o->parameters.buffer[1].passByReference = 0;
 
-    cx_invokeAction_o->parameters.buffer[2].name = "args";
-    cx_invokeAction_o->parameters.buffer[2].type = cx_type(cx_octetseq_o);
-    cx_invokeAction_o->parameters.buffer[2].passByReference = 0;
+    corto_invokeAction_o->parameters.buffer[2].name = "args";
+    corto_invokeAction_o->parameters.buffer[2].type = corto_type(corto_octetseq_o);
+    corto_invokeAction_o->parameters.buffer[2].passByReference = 0;
 }
 
-int cx_start(void) {
+int corto_start(void) {
 
     /* CORTO_BUILD is where the buildsystem is located */
-    if (!cx_getenv("CORTO_BUILD")) {
-        cx_setenv("CORTO_BUILD", "/usr/local/lib/corto/%s/build", CORTO_VERSION);
+    if (!corto_getenv("CORTO_BUILD")) {
+        corto_setenv("CORTO_BUILD", "/usr/local/lib/corto/%s/build", CORTO_VERSION);
     }
 
     /* CORTO_HOME is where corto binaries are located */
-    if (!cx_getenv("CORTO_HOME")) {
-        cx_setenv("CORTO_HOME", "/usr/local", CORTO_VERSION);
+    if (!corto_getenv("CORTO_HOME")) {
+        corto_setenv("CORTO_HOME", "/usr/local", CORTO_VERSION);
     }
 
     /* CORTO_TARGET is where a project will be built */
-    if (!cx_getenv("CORTO_TARGET")) {
-        cx_setenv("CORTO_TARGET", "~/.corto");
+    if (!corto_getenv("CORTO_TARGET")) {
+        corto_setenv("CORTO_TARGET", "~/.corto");
     }
 
     /* Initialize threadkeys */
-    cx_threadTlsKey(&CX_KEY_OBSERVER_ADMIN, NULL);
-    cx_threadTlsKey(&CX_KEY_WAIT_ADMIN, NULL);
-    cx_threadTlsKey(&CX_KEY_ATTR, cx_genericTlsFree);
-    cx_threadTlsKey(&CX_KEY_SELECT, NULL);
+    corto_threadTlsKey(&CORTO_KEY_OBSERVER_ADMIN, NULL);
+    corto_threadTlsKey(&CORTO_KEY_WAIT_ADMIN, NULL);
+    corto_threadTlsKey(&CORTO_KEY_ATTR, corto_genericTlsFree);
+    corto_threadTlsKey(&CORTO_KEY_SELECT, NULL);
 
     /* Init admin-lock */
-    cx_mutexNew(&cx_adminLock);
+    corto_mutexNew(&corto_adminLock);
 
     /* Bootstrap sizes of types used in parameters, these are used to determine
      * argument-stack sizes for functions during function::bind. */
-    cx_type(cx_string_o)->size = sizeof(cx_string);
-    cx_type(cx_int32_o)->size = sizeof(cx_int32);
-    cx_type(cx_uint32_o)->size = sizeof(cx_uint32);
-    cx_type(cx_any_o)->size = sizeof(cx_any);
-    cx_type(cx_state_o)->size = sizeof(cx_state);
-    cx_type(cx_attr_o)->size = sizeof(cx_attr);
+    corto_type(corto_string_o)->size = sizeof(corto_string);
+    corto_type(corto_int32_o)->size = sizeof(corto_int32);
+    corto_type(corto_uint32_o)->size = sizeof(corto_uint32);
+    corto_type(corto_any_o)->size = sizeof(corto_any);
+    corto_type(corto_state_o)->size = sizeof(corto_state);
+    corto_type(corto_attr_o)->size = sizeof(corto_attr);
 
     /* Initialize builtin scopes */
-    cx_initObject(root_o);
-    cx_initObject(corto_o);
-    cx_initObject(corto_lang_o);
+    corto_initObject(root_o);
+    corto_initObject(corto_o);
+    corto_initObject(corto_lang_o);
 
     /* Define builtin scopes */
-    cx_defineObject(root_o);
-    cx_defineObject(corto_o);
-    cx_defineObject(corto_lang_o);
+    corto_defineObject(root_o);
+    corto_defineObject(corto_o);
+    corto_defineObject(corto_lang_o);
 
     /* Init objects */
-    SSO_OP_TYPE(cx_initType);
-    SSO_OP_OBJECT(cx_initObject);
-    SSO_OP_OBJECT_2ND(cx_initObject);
+    SSO_OP_TYPE(corto_initType);
+    SSO_OP_OBJECT(corto_initObject);
+    SSO_OP_OBJECT_2ND(corto_initObject);
 
     /* Patch sequences- these cannot be set statically since sequences are 
      * allocated on the heap */
-    cx_patchSequences();
+    corto_patchSequences();
 
     /* Construct objects */
-    SSO_OP_OBJECT_2ND(cx_defineObject);
-    SSO_OP_OBJECT(cx_defineObject);
-    SSO_OP_TYPE(cx_defineType);
+    SSO_OP_OBJECT_2ND(corto_defineObject);
+    SSO_OP_OBJECT(corto_defineObject);
+    SSO_OP_TYPE(corto_defineType);
 
     /* Update refcounts of public members */
-    SSO_OP_TYPE(cx_updateRefType);
-    SSO_OP_OBJECT(cx_updateRef);
-    SSO_OP_OBJECT_2ND(cx_updateRef);
+    SSO_OP_TYPE(corto_updateRefType);
+    SSO_OP_OBJECT(corto_updateRef);
+    SSO_OP_OBJECT_2ND(corto_updateRef);
 
     /* Initialize conversions and operators */
-#ifdef CX_CONVERSIONS
-    cx_convertInit();
+#ifdef CORTO_CONVERSIONS
+    corto_convertInit();
 #endif
-#ifdef CX_OPERATORS
-    cx_operatorInit();
+#ifdef CORTO_OPERATORS
+    corto_operatorInit();
 #endif
 
     /* Register C-binding and vm-binding */
     {
-        cx_uint32 id;
-        id = cx_callRegisterBinding(NULL, NULL, NULL, NULL);
-        cx_assert(id == 1, "C-binding did not receive binding-id 1.");
+        corto_uint32 id;
+        id = corto_callRegisterBinding(NULL, NULL, NULL, NULL);
+        corto_assert(id == 1, "C-binding did not receive binding-id 1.");
     }
 
     /* Always randomize seed */
     srand (time(NULL));
 
     /* Init CRC table */
-    cx_crcInit();
+    corto_crcInit();
 
     /* Load packages */
-    cx_loadPackages();
+    corto_loadPackages();
 
     return 0;
 }
 
 /* Register unloadhandler */
-void cx_onunload(void(*handler)(void*), void* userData) {
-    struct cx_exitHandler* h;
+void corto_onunload(void(*handler)(void*), void* userData) {
+    struct corto_exitHandler* h;
 
-    h = cx_alloc(sizeof(struct cx_exitHandler));
+    h = corto_alloc(sizeof(struct corto_exitHandler));
     h->handler = handler;
     h->userData = userData;
 
-    cx_mutexLock(&cx_adminLock);
-    if (!cx_unloadHandlers) {
-        cx_unloadHandlers = cx_llNew();
+    corto_mutexLock(&corto_adminLock);
+    if (!corto_unloadHandlers) {
+        corto_unloadHandlers = corto_llNew();
     }
-    cx_llInsert(cx_unloadHandlers, h);
-    cx_mutexUnlock(&cx_adminLock);
+    corto_llInsert(corto_unloadHandlers, h);
+    corto_mutexUnlock(&corto_adminLock);
 }
 
 /* Register exithandler */
-void cx_onexit(void(*handler)(void*), void* userData) {
-    struct cx_exitHandler* h;
+void corto_onexit(void(*handler)(void*), void* userData) {
+    struct corto_exitHandler* h;
 
-    h = cx_alloc(sizeof(struct cx_exitHandler));
+    h = corto_alloc(sizeof(struct corto_exitHandler));
     h->handler = handler;
     h->userData = userData;
 
-    cx_mutexLock(&cx_adminLock);
-    if (!cx_exitHandlers) {
-        cx_exitHandlers = cx_llNew();
+    corto_mutexLock(&corto_adminLock);
+    if (!corto_exitHandlers) {
+        corto_exitHandlers = corto_llNew();
     }
-    cx_llInsert(cx_exitHandlers, h);
-    cx_mutexUnlock(&cx_adminLock);
+    corto_llInsert(corto_exitHandlers, h);
+    corto_mutexUnlock(&corto_adminLock);
 }
 
 /* Call unload-handlers */
-static void cx_unload(void) {
-    struct cx_exitHandler* h;
+static void corto_unload(void) {
+    struct corto_exitHandler* h;
 
-    if (cx_unloadHandlers) {
-        while((h = cx_llTakeFirst(cx_unloadHandlers))) {
+    if (corto_unloadHandlers) {
+        while((h = corto_llTakeFirst(corto_unloadHandlers))) {
             h->handler(h->userData);
-            cx_dealloc(h);
+            corto_dealloc(h);
         }
-        cx_llFree(cx_unloadHandlers);
-        cx_unloadHandlers = NULL;
+        corto_llFree(corto_unloadHandlers);
+        corto_unloadHandlers = NULL;
     }
 }
 
 /* Call exit-handlers */
-static void cx_exit(void) {
-    struct cx_exitHandler* h;
+static void corto_exit(void) {
+    struct corto_exitHandler* h;
 
-    if (cx_exitHandlers) {
-        while((h = cx_llTakeFirst(cx_exitHandlers))) {
+    if (corto_exitHandlers) {
+        while((h = corto_llTakeFirst(corto_exitHandlers))) {
             h->handler(h->userData);
-            cx_dealloc(h);
+            corto_dealloc(h);
         }
-        cx_llFree(cx_exitHandlers);
-        cx_exitHandlers = NULL;
+        corto_llFree(corto_exitHandlers);
+        corto_exitHandlers = NULL;
     }
 }
 
-void cx_stop(void) {
+void corto_stop(void) {
 
     /* Call unload handlers */
-    cx_unload();
+    corto_unload();
 
     /* Drop the rootscope. This will not actually result
      * in removing the rootscope itself, but it will result in the
      * removal of all non-static objects. */
-    cx_drop(root_o);
-    cx_release(root_o);
+    corto_drop(root_o);
+    corto_release(root_o);
 
     /* Call exithandlers */
-    cx_exit();
+    corto_exit();
 
     /* Decrease refcounts of public members */
-    SSO_OP_TYPE(cx_decreaseRefType);
-    SSO_OP_OBJECT(cx_decreaseRef);
-    SSO_OP_OBJECT_2ND(cx_decreaseRef);
+    SSO_OP_TYPE(corto_decreaseRefType);
+    SSO_OP_OBJECT(corto_decreaseRef);
+    SSO_OP_OBJECT_2ND(corto_decreaseRef);
 
     /* Destruct objects */
-    SSO_OP_TYPE(cx_deleteType);
-    SSO_OP_OBJECT(cx_deleteObject);
-    SSO_OP_OBJECT_2ND(cx_deleteObject);
+    SSO_OP_TYPE(corto_deleteType);
+    SSO_OP_OBJECT(corto_deleteObject);
+    SSO_OP_OBJECT_2ND(corto_deleteObject);
 
     /* Free objects */
-    SSO_OP_OBJECT_2ND(cx_releaseObject);
-    SSO_OP_OBJECT(cx_releaseObject);
-    SSO_OP_TYPE(cx_releaseType);
+    SSO_OP_OBJECT_2ND(corto_releaseObject);
+    SSO_OP_OBJECT(corto_releaseObject);
+    SSO_OP_TYPE(corto_releaseType);
 
     /* Deinitialize root */
-    cx__freeSSO(corto_lang_o);
-    cx__freeSSO(corto_o);
+    corto__freeSSO(corto_lang_o);
+    corto__freeSSO(corto_o);
 
-    cx__freeSSO(root_o);
+    corto__freeSSO(root_o);
 
     /* Deinit adminLock */
-    cx_mutexFree(&cx_adminLock);
+    corto_mutexFree(&corto_adminLock);
 
     /* Workaround for dlopen-leakage - with this statement the valgrind memory-logging is clean. */
     /*pthread_exit(NULL);*/
 
 }
 
-#define CX_CHECKBUILTIN(builtinobj)\
+#define CORTO_CHECKBUILTIN(builtinobj)\
     if (o == builtinobj) return TRUE;
 
-#define CX_CHECKBUILTIN_ARG(builtinobj, n)\
+#define CORTO_CHECKBUILTIN_ARG(builtinobj, n)\
     if (o == builtinobj) return TRUE;
 
-cx_bool cx_isbuiltin(cx_object o) {
+corto_bool corto_isbuiltin(corto_object o) {
     if (o == root_o) return TRUE;
     if (o == corto_o) return TRUE;
     if (o == corto_lang_o) return TRUE;
-    SSO_OP_TYPE(CX_CHECKBUILTIN_ARG);
-    SSO_OP_OBJECT(CX_CHECKBUILTIN);
-    SSO_OP_OBJECT_2ND(CX_CHECKBUILTIN);
+    SSO_OP_TYPE(CORTO_CHECKBUILTIN_ARG);
+    SSO_OP_OBJECT(CORTO_CHECKBUILTIN);
+    SSO_OP_OBJECT_2ND(CORTO_CHECKBUILTIN);
     return FALSE;
 }

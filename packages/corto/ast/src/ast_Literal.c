@@ -13,16 +13,16 @@
 /* $end */
 
 /* ::corto::ast::Literal::getValue() */
-cx_word _ast_Literal_getValue_v(ast_Literal this) {
+corto_word _ast_Literal_getValue_v(ast_Literal this) {
 /* $begin(::corto::ast::Literal::getValue) */
-    cx_word result = 0;
+    corto_word result = 0;
 
     switch(this->kind) {
-    case Ast_Bool: result = (cx_word)&ast_Boolean(this)->value; break;
-    case Ast_Char: result = (cx_word)&ast_Character(this)->value; break;
-    case Ast_Int: result = (cx_word)&ast_Integer(this)->value; break;
-    case Ast_SignedInt: result = (cx_word)&ast_SignedInteger(this)->value; break;
-    case Ast_Float: result = (cx_word)&ast_FloatingPoint(this)->value; break;
+    case Ast_Bool: result = (corto_word)&ast_Boolean(this)->value; break;
+    case Ast_Char: result = (corto_word)&ast_Character(this)->value; break;
+    case Ast_Int: result = (corto_word)&ast_Integer(this)->value; break;
+    case Ast_SignedInt: result = (corto_word)&ast_SignedInteger(this)->value; break;
+    case Ast_Float: result = (corto_word)&ast_FloatingPoint(this)->value; break;
     default: break; /* Enumerated, Reference & Null have no value. String handles it's own value. */
     }
 
@@ -31,33 +31,33 @@ cx_word _ast_Literal_getValue_v(ast_Literal this) {
 }
 
 /* ::corto::ast::Literal::init() */
-cx_int16 _ast_Literal_init(ast_Literal this) {
+corto_int16 _ast_Literal_init(ast_Literal this) {
 /* $begin(::corto::ast::Literal::init) */
     if (!ast_Expression(this)->type) {
         switch(this->kind) {
         case Ast_Bool:
-            cx_setref(&ast_Expression(this)->type, cx_bool_o);
+            corto_setref(&ast_Expression(this)->type, corto_bool_o);
             break;
         case Ast_Char:
-            cx_setref(&ast_Expression(this)->type, cx_char_o);
+            corto_setref(&ast_Expression(this)->type, corto_char_o);
             break;
         case Ast_Int:
-            cx_setref(&ast_Expression(this)->type, cx_uint64_o);
+            corto_setref(&ast_Expression(this)->type, corto_uint64_o);
             break;
         case Ast_SignedInt:
-            cx_setref(&ast_Expression(this)->type, cx_int64_o);
+            corto_setref(&ast_Expression(this)->type, corto_int64_o);
             break;
         case Ast_Float:
-            cx_setref(&ast_Expression(this)->type, cx_float64_o);
+            corto_setref(&ast_Expression(this)->type, corto_float64_o);
             break;
         case Ast_Text:
-            cx_setref(&ast_Expression(this)->type, cx_string_o);
+            corto_setref(&ast_Expression(this)->type, corto_string_o);
             break;
         case Ast_Enum:
-            cx_setref(&ast_Expression(this)->type, cx_uint32_o);
+            corto_setref(&ast_Expression(this)->type, corto_uint32_o);
             break;
         case Ast_Ref:
-            cx_setref(&ast_Expression(this)->type, cx_object_o);
+            corto_setref(&ast_Expression(this)->type, corto_object_o);
             break;
         case Ast_Nothing:
             /* No type. */

@@ -13,9 +13,9 @@
 /* $end */
 
 /* ::corto::ast::If::construct() */
-cx_int16 _ast_If_construct(ast_If this) {
+corto_int16 _ast_If_construct(ast_If this) {
 /* $begin(::corto::ast::If::construct) */
-    cx_type conditionType;
+    corto_type conditionType;
 
     ast_Node(this)->kind = Ast_IfExpr;
 
@@ -23,7 +23,7 @@ cx_int16 _ast_If_construct(ast_If this) {
         conditionType = ast_Expression_getType(this->condition);
         if (conditionType) {
             /* Check if condition can evaluate to a boolean value */
-            if ((!this->condition->deref == Ast_ByReference) && !conditionType->reference && (conditionType->kind != CX_PRIMITIVE)) {
+            if ((!this->condition->deref == Ast_ByReference) && !conditionType->reference && (conditionType->kind != CORTO_PRIMITIVE)) {
                 ast_Parser_error(yparser(), "expression does not evaluate to condition");
                 goto error;
             }
@@ -39,26 +39,26 @@ error:
 }
 
 /* ::corto::ast::If::noWarnUnreachable() */
-cx_void _ast_If_noWarnUnreachable(ast_If this) {
+corto_void _ast_If_noWarnUnreachable(ast_If this) {
 /* $begin(::corto::ast::If::noWarnUnreachable) */
     this->warnUnreachable = FALSE;
 /* $end */
 }
 
 /* ::corto::ast::If::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _ast_If_toIc_v(ast_If this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _ast_If_toIc_v(ast_If this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::If::toIc) */
     ic_storage accumulator;
     ic_label labelEval = NULL, labelEnd = NULL;
     ic_node expr = NULL;
-    cx_bool inverse = FALSE, condResult = FALSE;
+    corto_bool inverse = FALSE, condResult = FALSE;
     ast_Expression condition = NULL;
-    cx_bool hasReturnedResource = ast_Expression_hasReturnedResource(this->condition);
+    corto_bool hasReturnedResource = ast_Expression_hasReturnedResource(this->condition);
     ic_node preEval = (ic_node)ic_program_pushAccumulator(
-                    program, cx_type(cx_bool_o), FALSE,  FALSE); /* See below for explanation */
+                    program, corto_type(corto_bool_o), FALSE,  FALSE); /* See below for explanation */
 
-    CX_UNUSED(storage);
-    CX_UNUSED(stored);
+    CORTO_UNUSED(storage);
+    CORTO_UNUSED(stored);
     
     if (this->condition && !(condition = ast_Node_optimizeCondition(this->condition, &condResult, &inverse))) {
         if (condResult) {
@@ -122,7 +122,7 @@ ic_node _ast_If_toIc_v(ast_If this, ic_program program, ic_storage storage, cx_b
              * before the jump occurs.
              */
              if (hasReturnedResource) {
-                ic_node boolType = ic_node(ic_objectCreate(cx_bool_o));
+                ic_node boolType = ic_node(ic_objectCreate(corto_bool_o));
 
                 IC_3(program, ast_Node(this)->line, ic_cast, preEval, expr, boolType,
                     IC_DEREF_VALUE, deref1, IC_DEREF_ADDRESS);

@@ -9,25 +9,25 @@
 #include "io.h"
 
 /* ::corto::io::print(string str) */
-cx_void _io_print(cx_string str) {
+corto_void _io_print(corto_string str) {
 /* $begin(::corto::io::print) */
     printf("%s", str);
 /* $end */
 }
 
 /* ::corto::io::println(string str) */
-cx_void _io_println(cx_string str) {
+corto_void _io_println(corto_string str) {
 /* $begin(::corto::io::println) */
     printf("%s\n", str);
 /* $end */
 }
 
 /* ::corto::io::readln() */
-cx_string _io_readln(void) {
+corto_string _io_readln(void) {
 /* $begin(::corto::io::readln) */
     size_t size=256;
     
-    cx_string result = cx_alloc(size+1);
+    corto_string result = corto_alloc(size+1);
     scanf("%255s", result);
 
     return result;
@@ -37,8 +37,8 @@ cx_string _io_readln(void) {
 int ioMain(int argc, char* argv[]) {
 /* $begin(main) */
     /* Insert code that must be run when component is loaded */
-    CX_UNUSED(argc);
-    CX_UNUSED(argv);
+    CORTO_UNUSED(argc);
+    CORTO_UNUSED(argv);
     return 0;
 /* $end */
 }

@@ -9,7 +9,7 @@
 #include "ic.h"
 
 /* ::corto::ic::storage::construct() */
-cx_int16 _ic_storage_construct(ic_storage this) {
+corto_int16 _ic_storage_construct(ic_storage this) {
 /* $begin(::corto::ic::storage::construct) */
     ic_node(this)->kind = IC_STORAGE;
     return ic_node_construct(ic_node(this));
@@ -17,10 +17,10 @@ cx_int16 _ic_storage_construct(ic_storage this) {
 }
 
 /* ::corto::ic::storage::free() */
-cx_void _ic_storage_free(ic_storage this) {
+corto_void _ic_storage_free(ic_storage this) {
 /* $begin(::corto::ic::storage::free) */
-    cx_type type = this->type;
-    if (this->isReference || ((type->kind == CX_PRIMITIVE) && (cx_primitive(type)->kind == CX_TEXT))) {
+    corto_type type = this->type;
+    if (this->isReference || ((type->kind == CORTO_PRIMITIVE) && (corto_primitive(type)->kind == CORTO_TEXT))) {
         ic_op freeIc;
 
         /* Insert free-instruction */
@@ -34,7 +34,7 @@ cx_void _ic_storage_free(ic_storage this) {
 }
 
 /* ::corto::ic::storage::str(string in) */
-cx_string _ic_storage_str(ic_storage this, cx_string in) {
+corto_string _ic_storage_str(ic_storage this, corto_string in) {
 /* $begin(::corto::ic::storage::str) */
     return strappend(in, this->name);
 /* $end */

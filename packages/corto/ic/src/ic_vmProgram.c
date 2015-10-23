@@ -3,44 +3,44 @@
 #include "ic_vmProgram.h"
 
 static void ic_vmProgram_fillInLabels(ic_vmProgram *program) {
-    cx_iter labelIter;
+    corto_iter labelIter;
     ic_vmLabel *label;
-    cx_uint32 referee;
+    corto_uint32 referee;
 
     if (program->labels) {
-        labelIter = cx_llIter(program->labels);
-        while(cx_iterHasNext(&labelIter)) {
-            label = cx_iterNext(&labelIter);
+        labelIter = corto_llIter(program->labels);
+        while(corto_iterHasNext(&labelIter)) {
+            label = corto_iterNext(&labelIter);
             for(referee=0; referee < label->refereeCount; referee++) {
-                *(void**)CX_OFFSET(label->referees[referee], program->program->program) = &program->program->program[label->pc];
+                *(void**)CORTO_OFFSET(label->referees[referee], program->program->program) = &program->program->program[label->pc];
             }
 
             /* Free label */
-            cx_dealloc(label);
+            corto_dealloc(label);
         }
 
         /* Free label list */
-        cx_llFree(program->labels);
+        corto_llFree(program->labels);
         program->labels = NULL;
     }
 }
 
 static void ic_vmProgram_allocateAccumulators(ic_vmProgram *program) {
-    cx_iter accumulatorIter;
+    corto_iter accumulatorIter;
     ic_vmStorage *storage;
-    cx_uint16 offset;
+    corto_uint16 offset;
     ic_registerClaim claims[256];
     ic_registerClaim *claim;
-    cx_uint32 i, referee;
-    cx_bool overlap;
+    corto_uint32 i, referee;
+    corto_bool overlap;
 
     memset(claims, 0, sizeof(claims));
     offset = program->maxScopeSize;
 
     if (program->storages) {
-        accumulatorIter = cx_llIter(program->storages);
-        while(cx_iterHasNext(&accumulatorIter)) {
-            storage = cx_iterNext(&accumulatorIter);
+        accumulatorIter = corto_llIter(program->storages);
+        while(corto_iterHasNext(&accumulatorIter)) {
+            storage = corto_iterNext(&accumulatorIter);
 
             if (ic_vmStorage_mustAllocate(storage)) {
 
@@ -60,9 +60,9 @@ static void ic_vmProgram_allocateAccumulators(ic_vmProgram *program) {
                 
                 /* If storage has to be allocated and it has a base, storage represents a member address */
                 if (storage->base || storage->ic->isReference) {
-                    claim->size = sizeof(cx_word);
+                    claim->size = sizeof(corto_word);
                 } else {
-                    claim->size = cx_type_sizeof(storage->ic->type);
+                    claim->size = corto_type_sizeof(storage->ic->type);
                 }
                 /* Find free register */
                 do {
@@ -93,35 +93,35 @@ static void ic_vmProgram_allocateAccumulators(ic_vmProgram *program) {
 
                 storage->addr = claim->addr;
                 for(referee=0; referee < storage->refereeCount; referee++) {
-                    *(cx_uint16*)CX_OFFSET(storage->referees[referee], program->program->program) = storage->addr;
+                    *(corto_uint16*)CORTO_OFFSET(storage->referees[referee], program->program->program) = storage->addr;
                 }
             } else if (storage->refereeCount && (storage->base && storage->base->ic->kind == IC_ACCUMULATOR)) {
                 storage->addr = storage->base->addr + storage->offset;
                 for(referee=0; referee < storage->refereeCount; referee++) {
-                    *(cx_uint16*)CX_OFFSET(storage->referees[referee], program->program->program) = storage->addr;
+                    *(corto_uint16*)CORTO_OFFSET(storage->referees[referee], program->program->program) = storage->addr;
                 }
             }
         }
 
         /* Free resources */
-        accumulatorIter = cx_llIter(program->storages);
-        while(cx_iterHasNext(&accumulatorIter)) {
-            storage = cx_iterNext(&accumulatorIter);
-            cx_dealloc(storage);
+        accumulatorIter = corto_llIter(program->storages);
+        while(corto_iterHasNext(&accumulatorIter)) {
+            storage = corto_iterNext(&accumulatorIter);
+            corto_dealloc(storage);
         }
-        cx_llFree(program->storages);
+        corto_llFree(program->storages);
         program->storages = NULL;
     }
 }
 
 ic_vmStorage *ic_vmProgram_getStorage(ic_vmProgram *program, ic_storage icAccumulator) {
-    cx_iter accumulatorIter;
+    corto_iter accumulatorIter;
     ic_vmStorage *accumulator = NULL;
 
     if (program->storages) {
-        accumulatorIter = cx_llIter(program->storages);
-        while(cx_iterHasNext(&accumulatorIter)) {
-            accumulator = cx_iterNext(&accumulatorIter);
+        accumulatorIter = corto_llIter(program->storages);
+        while(corto_iterHasNext(&accumulatorIter)) {
+            accumulator = corto_iterNext(&accumulatorIter);
             if (accumulator->ic == icAccumulator) {
                 break;
             } else {
@@ -136,9 +136,9 @@ ic_vmStorage *ic_vmProgram_getStorage(ic_vmProgram *program, ic_storage icAccumu
         }
         accumulator = ic_vmStorageCreate(program, icAccumulator, program->program->size);
         if (!program->storages) {
-            program->storages = cx_llNew();
+            program->storages = corto_llNew();
         }
-        cx_llAppend(program->storages, accumulator);
+        corto_llAppend(program->storages, accumulator);
     }
 
     /* Keep track of where an accumulator is last used */
@@ -153,7 +153,7 @@ void ic_vmProgram_finalize(ic_vmProgram *vmProgram) {
     /* Add STOP instruction if this is the main-module */
     if (vmProgram->main == vmProgram->program) {
         stop = vm_programAddOp(vmProgram->program, 0);
-        stop->op = CX_VM_STOP;
+        stop->op = CORTO_VM_STOP;
     }
 
     /* Fill in labels */
@@ -168,27 +168,27 @@ void ic_vmProgram_finalize(ic_vmProgram *vmProgram) {
 
     /* If program is a function, set the function-implementation to the program */
     if (vmProgram->function) {
-        cx_function function = vmProgram->function->function;
-        function->impl = (cx_word)vm_call;
-        function->implData = (cx_word)vmProgram->program;
-        cx_define(function);
+        corto_function function = vmProgram->function->function;
+        function->impl = (corto_word)vm_call;
+        function->implData = (corto_word)vmProgram->program;
+        corto_define(function);
 
-#ifdef CX_IC_TRACING
-        if (CX_DEBUG_ENABLED)
+#ifdef CORTO_IC_TRACING
+        if (CORTO_DEBUG_ENABLED)
         {
-            cx_id id;
-            cx_string programStr = vm_programToString(vmProgram->program, NULL);
-            printf("%s %s\n%s\n", cx_nameof(cx_typeof(function)), cx_fullname(function, id), programStr);
-            cx_dealloc(programStr);
+            corto_id id;
+            corto_string programStr = vm_programToString(vmProgram->program, NULL);
+            printf("%s %s\n%s\n", corto_nameof(corto_typeof(function)), corto_fullname(function, id), programStr);
+            corto_dealloc(programStr);
         }
 #endif
     } 
 
-#ifdef CX_IC_TRACING
-    else if (CX_DEBUG_ENABLED) {
-        cx_string programStr = vm_programToString(vmProgram->program, NULL);
+#ifdef CORTO_IC_TRACING
+    else if (CORTO_DEBUG_ENABLED) {
+        corto_string programStr = vm_programToString(vmProgram->program, NULL);
         printf("main\n%s\n", programStr);
-        cx_dealloc(programStr);
+        corto_dealloc(programStr);
     }
 #endif
 
@@ -196,8 +196,8 @@ void ic_vmProgram_finalize(ic_vmProgram *vmProgram) {
     ic_vmProgram_clean(vmProgram);
 }
 
-cx_uint16 ic_vmProgram_push(ic_vmProgram *program) {
-    cx_uint16 result = 0;
+corto_uint16 ic_vmProgram_push(ic_vmProgram *program) {
+    corto_uint16 result = 0;
 
     if (program->scope) {
         result = program->scopeSize[program->scope - 1];
@@ -209,7 +209,7 @@ cx_uint16 ic_vmProgram_push(ic_vmProgram *program) {
     return result;
 }
 
-void ic_vmProgram_setScopeSize(ic_vmProgram *program, cx_uint16 size) {
+void ic_vmProgram_setScopeSize(ic_vmProgram *program, corto_uint16 size) {
     program->scopeSize[program->scope-1] = size;
     if (size > program->maxScopeSize) {
         program->maxScopeSize = size;

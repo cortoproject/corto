@@ -11,9 +11,9 @@
 /* $header() */
 #include "ast__private.h"
 
-void ast_buildInheritanceStack(cx_interface t, cx_interface *stack, cx_uint32 *count) {
-    cx_interface base;
-    cx_uint32 sp;
+void ast_buildInheritanceStack(corto_interface t, corto_interface *stack, corto_uint32 *count) {
+    corto_interface base;
+    corto_uint32 sp;
 
     (*count) = 0;
 
@@ -31,10 +31,10 @@ void ast_buildInheritanceStack(cx_interface t, cx_interface *stack, cx_uint32 *c
     }while((base = base->base));
 }
 
-cx_interface ast_findCommonAncestor(cx_interface t1, cx_interface t2) {
-    cx_interface result = NULL;
-    cx_interface stack1[CX_MAX_INHERITANCE_DEPTH], stack2[CX_MAX_INHERITANCE_DEPTH];
-    cx_uint32 count1, count2;
+corto_interface ast_findCommonAncestor(corto_interface t1, corto_interface t2) {
+    corto_interface result = NULL;
+    corto_interface stack1[CORTO_MAX_INHERITANCE_DEPTH], stack2[CORTO_MAX_INHERITANCE_DEPTH];
+    corto_uint32 count1, count2;
 
     /* Build inheritance stacks */
     ast_buildInheritanceStack(t1, stack1, &count1);
@@ -56,20 +56,20 @@ cx_interface ast_findCommonAncestor(cx_interface t1, cx_interface t2) {
 /* $end */
 
 /* ::corto::ast::Wait::construct() */
-cx_int16 _ast_Wait_construct(ast_Wait this) {
+corto_int16 _ast_Wait_construct(ast_Wait this) {
 /* $begin(::corto::ast::Wait::construct) */
-    cx_iter exprIter;
+    corto_iter exprIter;
     ast_Expression expr, timeoutExpr;
-    cx_type exprType, resultType = NULL;
+    corto_type exprType, resultType = NULL;
 
     ast_Node(this)->kind = Ast_WaitExpr;
 
     /* Walk types of waitlist, check if all expressions evaluate to this or reference values. Compare types in
      * waitlist to determine type of wait expression by taking the highest common ancestor. If no common ancestor
      * is found the type of the wait expression is a generic this. */
-    exprIter = cx_llIter(this->exprList);
-    while(cx_iterHasNext(&exprIter) && (resultType != cx_object_o)) {
-        expr = cx_iterNext(&exprIter);
+    exprIter = corto_llIter(this->exprList);
+    while(corto_iterHasNext(&exprIter) && (resultType != corto_object_o)) {
+        expr = corto_iterNext(&exprIter);
         exprType = ast_Expression_getType(expr);
 
         if (!(exprType->reference || expr->isReference)) {
@@ -83,14 +83,14 @@ cx_int16 _ast_Wait_construct(ast_Wait this) {
         } else {
             if (resultType != exprType) {
                 switch(resultType->kind) {
-                case CX_COMPOSITE:
-                    resultType = (cx_type)ast_findCommonAncestor((cx_interface)resultType, (cx_interface)exprType);
+                case CORTO_COMPOSITE:
+                    resultType = (corto_type)ast_findCommonAncestor((corto_interface)resultType, (corto_interface)exprType);
                     if (!resultType) {
-                        resultType = cx_object_o;
+                        resultType = corto_object_o;
                     }
                     break;
                 default:
-                    resultType = cx_object_o; /* No common ancestor */
+                    resultType = corto_object_o; /* No common ancestor */
                     break;
                 }
             }
@@ -98,16 +98,16 @@ cx_int16 _ast_Wait_construct(ast_Wait this) {
     }
 
     if (this->timeout) {
-        timeoutExpr = ast_Expression_cast(this->timeout, cx_type(cx_float32_o), FALSE);
+        timeoutExpr = ast_Expression_cast(this->timeout, corto_type(corto_float32_o), FALSE);
         if (timeoutExpr) {
-            cx_setref(&this->timeout, timeoutExpr);
+            corto_setref(&this->timeout, timeoutExpr);
         }
     } else {
         this->timeout = ast_Expression(ast_FloatingPointCreate(0));
     }
 
     /* Set type of expression */
-    cx_setref(&ast_Expression(this)->type, resultType);
+    corto_setref(&ast_Expression(this)->type, resultType);
     ast_Expression(this)->isReference = TRUE; /* Result is always an this */
 
     return 0;
@@ -117,21 +117,21 @@ error:
 }
 
 /* ::corto::ast::Wait::hasReturnedResource() */
-cx_bool _ast_Wait_hasReturnedResource_v(ast_Wait this) {
+corto_bool _ast_Wait_hasReturnedResource_v(ast_Wait this) {
 /* $begin(::corto::ast::Wait::hasReturnedResource) */
-    CX_UNUSED(this);
+    CORTO_UNUSED(this);
     return FALSE;
 /* $end */
 }
 
 /* ::corto::ast::Wait::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _ast_Wait_toIc_v(ast_Wait this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _ast_Wait_toIc_v(ast_Wait this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::Wait::toIc) */
-    cx_iter exprIter;
+    corto_iter exprIter;
     ast_Expression expr;
     ic_node ic, result;
 
-    CX_UNUSED(stored);
+    CORTO_UNUSED(stored);
 
     if (storage) {
         result = (ic_node)storage;
@@ -140,9 +140,9 @@ ic_node _ast_Wait_toIc_v(ast_Wait this, ic_program program, ic_storage storage, 
             program, ast_Expression_getType(ast_Expression(this)), TRUE, FALSE);
     }
 
-    exprIter = cx_llIter(this->exprList);
-    while(cx_iterHasNext(&exprIter)) {
-        expr = cx_iterNext(&exprIter);
+    exprIter = corto_llIter(this->exprList);
+    while(corto_iterHasNext(&exprIter)) {
+        expr = corto_iterNext(&exprIter);
 
         /* Parse object-expression */
         ic = ast_Node_toIc(ast_Node(expr), program, NULL, TRUE);

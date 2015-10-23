@@ -9,7 +9,7 @@
 #define C_TYPE_H_
 
 #include "corto.h"
-#include "cx_generator.h"
+#include "corto_generator.h"
 
 #ifdef __cplusplus
 extern "C" {

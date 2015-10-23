@@ -10,16 +10,16 @@ extern "C" {
 #endif
 
 typedef struct ic_vmLabel {
-    cx_uint32 id;
-    cx_uint32 pc;
+    corto_uint32 id;
+    corto_uint32 pc;
     void *referees[256]; /* The jumps to this label. At assemble-time, the exact address of the label is not yet known
                           * so this information is filled in after the program is assembled for each referee */
-    cx_uint32 refereeCount;
+    corto_uint32 refereeCount;
 }ic_vmLabel;
 
 typedef struct ic_vmInlineFunction {
     vm_program program;
-    cx_function function;
+    corto_function function;
 }ic_vmInlineFunction;
 
 typedef enum ic_vmType {
@@ -45,51 +45,51 @@ typedef struct ic_vmProgram {
     vm_program main; /* Keep track of what is the main-module of a program (where the program starts) */
     vm_program program;
     ic_function function;
-    cx_ll labels;
-    cx_ll storages;
-    cx_ll inlineFunctions;
-    cx_uint16 scopeSize[256];
-    cx_uint32 scope;
-    cx_uint32 maxScopeSize; /* The maximum scope-size is where accumulators are allocated (thus after the locals) */
-    cx_uint32 stackSize;
-    cx_uint32 maxStackSize; /* The maximum stack-size is the maximum amount of space a call needs for its arguments */
+    corto_ll labels;
+    corto_ll storages;
+    corto_ll inlineFunctions;
+    corto_uint16 scopeSize[256];
+    corto_uint32 scope;
+    corto_uint32 maxScopeSize; /* The maximum scope-size is where accumulators are allocated (thus after the locals) */
+    corto_uint32 stackSize;
+    corto_uint32 maxStackSize; /* The maximum stack-size is the maximum amount of space a call needs for its arguments */
 }ic_vmProgram;
 
 typedef struct ic_vmStorage ic_vmStorage;
 struct ic_vmStorage {
     ic_storage ic;
-    cx_uint32 firstUsed;
-    cx_uint32 lastUsed;
+    corto_uint32 firstUsed;
+    corto_uint32 lastUsed;
     void *referees[512]; /* The jumps to this accumulator. At assemble-time, the exact address of the accumulator is not yet known
                           * so this information is filled in after the program is assembled for each referee */
-    cx_uint32 refereeCount;
-    cx_word addr;
+    corto_uint32 refereeCount;
+    corto_word addr;
 
     /* Member & element accumulators have a base and offset */
-    cx_uint16 offset;
+    corto_uint16 offset;
     ic_vmStorage *base;
-    cx_bool assembled; /* Offsets of multiple member-operations are accumulated into one register so that
+    corto_bool assembled; /* Offsets of multiple member-operations are accumulated into one register so that
                         * instead of calculating multiple offsets at runtime, only one operation is required. This
                         * variable remains FALSE until the storage is used after which an operation is inserted
                         * to calculate the accumulated offset.
                         * This is only applicable for access to dynamically allocated objects or storages with dynamic
                         * components (elements with variable indexes). By default this value is TRUE. */
-    cx_bool reusable;  /* A non-reusable storage needs to be assembled each time it is evaluated because the storage depends
+    corto_bool reusable;  /* A non-reusable storage needs to be assembled each time it is evaluated because the storage depends
                         * on the value of other storages, for example the index-expression of an element storage. */
-    cx_bool allocated; /* Does the storage occupy space */
-    cx_bool alwaysCompute; /* Does the storage needs to be computed regardless of base */
+    corto_bool allocated; /* Does the storage occupy space */
+    corto_bool alwaysCompute; /* Does the storage needs to be computed regardless of base */
 };
 
 /* Administration that keeps track of claims accumulators have on the register */
 typedef struct ic_registerClaim {
     ic_vmStorage *storage;
-    cx_uint16 addr;
-    cx_uint16 size;
-    cx_uint32 start;
-    cx_uint32 end;
+    corto_uint16 addr;
+    corto_uint16 size;
+    corto_uint32 start;
+    corto_uint32 end;
 }ic_registerClaim;
 
-ic_vmOperand ic_getVmOperand(ic_vmProgram *program, ic_derefKind deref, cx_bool isArgument, ic_node node);
+ic_vmOperand ic_getVmOperand(ic_vmProgram *program, ic_derefKind deref, corto_bool isArgument, ic_node node);
 
 #ifdef __cplusplus
 }

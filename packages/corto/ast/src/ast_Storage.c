@@ -9,7 +9,7 @@
 #include "ast.h"
 
 /* ::corto::ast::Storage::construct() */
-cx_int16 _ast_Storage_construct(ast_Storage this) {
+corto_int16 _ast_Storage_construct(ast_Storage this) {
 /* $begin(::corto::ast::Storage::construct) */
 
     ast_Node(this)->kind = Ast_StorageExpr;

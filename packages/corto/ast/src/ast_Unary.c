@@ -13,23 +13,23 @@
 /* $end */
 
 /* ::corto::ast::Unary::construct() */
-cx_int16 _ast_Unary_construct(ast_Unary this) {
+corto_int16 _ast_Unary_construct(ast_Unary this) {
 /* $begin(::corto::ast::Unary::construct) */
-    cx_type lvalueType;
+    corto_type lvalueType;
 
     lvalueType = ast_Expression_getType(this->lvalue);
     ast_Node(this)->kind = Ast_UnaryExpr;
 
-    if (lvalueType->kind != CX_ITERATOR) {
-        if (this->_operator == CX_COND_NOT) {
-            cx_setref(&ast_Expression(this)->type, cx_bool_o);
+    if (lvalueType->kind != CORTO_ITERATOR) {
+        if (this->_operator == CORTO_COND_NOT) {
+            corto_setref(&ast_Expression(this)->type, corto_bool_o);
         } else {
-            cx_setref(&ast_Expression(this)->type, lvalueType);
+            corto_setref(&ast_Expression(this)->type, lvalueType);
         }
     } else {
-        if (this->_operator == CX_MUL) {
-            cx_type iterType = cx_iterator(lvalueType)->elementType;
-            cx_setref(&ast_Expression(this)->type, iterType);
+        if (this->_operator == CORTO_MUL) {
+            corto_type iterType = corto_iterator(lvalueType)->elementType;
+            corto_setref(&ast_Expression(this)->type, iterType);
             ast_Expression(this)->isReference = TRUE;
         } else {
             ast_Parser_error(yparser(), "invalid operator for iterator");
@@ -44,25 +44,25 @@ error:
 }
 
 /* ::corto::ast::Unary::hasReturnedResource() */
-cx_bool _ast_Unary_hasReturnedResource_v(ast_Unary this) {
+corto_bool _ast_Unary_hasReturnedResource_v(ast_Unary this) {
 /* $begin(::corto::ast::Unary::hasReturnedResource) */
     return ast_Expression_hasReturnedResource(this->lvalue);
 /* $end */
 }
 
 /* ::corto::ast::Unary::hasSideEffects() */
-cx_bool _ast_Unary_hasSideEffects_v(ast_Unary this) {
+corto_bool _ast_Unary_hasSideEffects_v(ast_Unary this) {
 /* $begin(::corto::ast::Unary::hasSideEffects) */
     return ast_Expression_hasSideEffects(this->lvalue);
 /* $end */
 }
 
 /* ::corto::ast::Unary::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _ast_Unary_toIc_v(ast_Unary this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _ast_Unary_toIc_v(ast_Unary this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::Unary::toIc) */
     ic_storage result;
     ic_node lvalue;
-    CX_UNUSED(stored);
+    CORTO_UNUSED(stored);
 
     if (storage) {
         result = storage;
@@ -77,12 +77,12 @@ ic_node _ast_Unary_toIc_v(ast_Unary this, ic_program program, ic_storage storage
     lvalue = ast_Node_toIc(ast_Node(this->lvalue), program, result, TRUE);
 
     switch(this->_operator) {
-    case CX_INC:
-    case CX_DEC:
+    case CORTO_INC:
+    case CORTO_DEC:
         IC_1(program, ast_Node(this)->line, ic_opKindFromOperator(this->_operator), lvalue, IC_DEREF_VALUE);
         result = ic_storage(lvalue);
         break;
-    case CX_MUL: {
+    case CORTO_MUL: {
         /* Create an element with the iterator as base */
         result = (ic_storage)ic_elementCreate(ic_storage(lvalue), NULL);
         break;

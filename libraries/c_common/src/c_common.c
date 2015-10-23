@@ -8,10 +8,10 @@
 #include "c_common.h"
 #include "stdio.h"
 #include "ctype.h"
-#include "cx_generator.h"
+#include "corto_generator.h"
 
 /* Escape language keywords */
-static int c_typeKeywordEscape(cx_string inputName, cx_string buffer) {
+static int c_typeKeywordEscape(corto_string inputName, corto_string buffer) {
 
     if( !strcmp(inputName, "alignas") ||
         !strcmp(inputName, "alignof") ||
@@ -104,15 +104,15 @@ static int c_typeKeywordEscape(cx_string inputName, cx_string buffer) {
     return 0;
 }
 
-cx_string corto_genId(cx_string str, cx_id id) {
-    cx_char *ptr, ch, *idptr;
+corto_string corto_genId(corto_string str, corto_id id) {
+    corto_char *ptr, ch, *idptr;
 
     ptr = str;
     idptr = id;
 
     /* Strip scope-operator for rootscope */
     if (*ptr) {
-        if (*(cx_int16*)ptr == CX_SCOPE_HEX) {
+        if (*(corto_int16*)ptr == CORTO_SCOPE_HEX) {
             ptr += 2;
         }
 
@@ -149,64 +149,64 @@ cx_string corto_genId(cx_string str, cx_id id) {
 }
 
 /* Get string representing the base-platform type */
-cx_char* c_primitiveId(cx_primitive t, cx_char* buff) {
-    cx_bool appendWidth, appendT;
+corto_char* c_primitiveId(corto_primitive t, corto_char* buff) {
+    corto_bool appendWidth, appendT;
 
     appendWidth = FALSE;
     appendT = FALSE;
 
     switch(t->kind) {
-    case CX_BOOLEAN:
-    case CX_CHARACTER:
+    case CORTO_BOOLEAN:
+    case CORTO_CHARACTER:
         switch(t->width) {
-        case CX_WIDTH_8:
+        case CORTO_WIDTH_8:
             strcpy(buff, "char");
             break;
-        case CX_WIDTH_16:
+        case CORTO_WIDTH_16:
             strcpy(buff, "wchar");
             appendT = TRUE;
             break;
         default: {
-            cx_id id;
-            cx_seterr("unsupported width for primitive type '%s'.", cx_fullname(t, id));
+            corto_id id;
+            corto_seterr("unsupported width for primitive type '%s'.", corto_fullname(t, id));
             goto error;
             break;
         }
         }
         break;
-    case CX_BINARY:
-    case CX_UINTEGER:
+    case CORTO_BINARY:
+    case CORTO_UINTEGER:
         strcpy(buff, "uint");
         appendWidth = TRUE;
         appendT = TRUE;
         break;
-    case CX_INTEGER:
+    case CORTO_INTEGER:
         strcpy(buff, "int");
         appendWidth = TRUE;
         appendT = TRUE;
         break;
-    case CX_FLOAT:
+    case CORTO_FLOAT:
         switch(t->width) {
-        case CX_WIDTH_32:
+        case CORTO_WIDTH_32:
             strcpy(buff, "float");
             break;
-        case CX_WIDTH_64:
+        case CORTO_WIDTH_64:
             strcpy(buff, "double");
             break;
         default: {
-            cx_id id;
-            cx_seterr("unsupported width for floating point type '%s'", cx_fullname(t, id));
+            corto_id id;
+            corto_seterr("unsupported width for floating point type '%s'", corto_fullname(t, id));
             goto error;
             break;
         }
         }
         break;
-    case CX_ENUM:
-    case CX_BITMASK:
-        cx_seterr("enumeration\\bitmasks types must be defined using the 'enum' keyword.");
+    case CORTO_ENUM:
+    case CORTO_BITMASK:
+        corto_seterr("enumeration\\bitmasks types must be defined using the 'enum' keyword.");
         goto error;
         break;
-    case CX_TEXT:
+    case CORTO_TEXT:
         strcpy(buff, "char*");
         break;
     }
@@ -214,19 +214,19 @@ cx_char* c_primitiveId(cx_primitive t, cx_char* buff) {
     /* Append width */
     if (appendWidth) {
         switch(t->width) {
-        case CX_WIDTH_8:
+        case CORTO_WIDTH_8:
             strcat(buff, "8");
             break;
-        case CX_WIDTH_16:
+        case CORTO_WIDTH_16:
             strcat(buff, "16");
             break;
-        case CX_WIDTH_32:
+        case CORTO_WIDTH_32:
             strcat(buff, "32");
             break;
-        case CX_WIDTH_64:
+        case CORTO_WIDTH_64:
             strcat(buff, "64");
             break;
-        case CX_WIDTH_WORD:
+        case CORTO_WIDTH_WORD:
             strcat(buff, "ptr");
             break;
         }
@@ -243,8 +243,8 @@ error:
 }
 
 /* Convert string to upper. */
-static cx_string c_typeToUpper(cx_string str, cx_id buffer) {
-    cx_char *ptr, *bptr, ch;
+static corto_string c_typeToUpper(corto_string str, corto_id buffer) {
+    corto_char *ptr, *bptr, ch;
 
     ptr = str;
     bptr = buffer;
@@ -258,7 +258,7 @@ static cx_string c_typeToUpper(cx_string str, cx_id buffer) {
     return buffer;
 }
 
-static cx_char c_lastLetter(cx_string str) {
+static corto_char c_lastLetter(corto_string str) {
     char *ptr, ch = '\0';
 
     ptr = str + (strlen(str) - 1);
@@ -276,16 +276,16 @@ static cx_char c_lastLetter(cx_string str) {
 }
 
 /* Translate constant to C-language id */
-cx_char* c_constantId(cx_generator g, cx_constant* c, cx_char* buffer) {
-    cx_string prefixOrig;
-    cx_enum e = cx_parentof(c);
-    cx_string name = cx_nameof(e->constants.buffer[0]);
-    cx_id prefix;
-    cx_char ch;
+corto_char* c_constantId(corto_generator g, corto_constant* c, corto_char* buffer) {
+    corto_string prefixOrig;
+    corto_enum e = corto_parentof(c);
+    corto_string name = corto_nameof(e->constants.buffer[0]);
+    corto_id prefix;
+    corto_char ch;
 
     prefixOrig = g_getPrefix(g, c);
     if (!prefixOrig) {
-        prefixOrig = cx_nameof(g_getCurrent(g));
+        prefixOrig = corto_nameof(g_getCurrent(g));
     }
 
     strcpy(prefix, prefixOrig);
@@ -301,13 +301,13 @@ cx_char* c_constantId(cx_generator g, cx_constant* c, cx_char* buffer) {
         }
     }
 
-    sprintf(buffer, "%s_%s", prefix, cx_nameof(c));
+    sprintf(buffer, "%s_%s", prefix, corto_nameof(c));
 
     return buffer;
 }
 
 /* Parse type into C-specifier */
-cx_int16 c_specifierId(cx_generator g, cx_type t, cx_char* specifier, cx_bool* prefix, cx_char* postfix) {
+corto_int16 c_specifierId(corto_generator g, corto_type t, corto_char* specifier, corto_bool* prefix, corto_char* postfix) {
 
     if (postfix) {
         *postfix = '\0';
@@ -324,70 +324,70 @@ cx_int16 c_specifierId(cx_generator g, cx_type t, cx_char* specifier, cx_bool* p
     }
 
     /* Check if object is scoped */
-    if (cx_checkAttr(t, CX_ATTR_SCOPED)) {
+    if (corto_checkAttr(t, CORTO_ATTR_SCOPED)) {
         g_fullOid(g, t, specifier);
     } else {
-        if (t != cx_type(t)) {
-            cx_seterr("anonymous typedefs are not allowed.");
+        if (t != corto_type(t)) {
+            corto_seterr("anonymous typedefs are not allowed.");
             goto error;
         }
 
-        switch(cx_type(t)->kind) {
-        case CX_PRIMITIVE:
-            c_primitiveId(cx_primitive(t), specifier);
+        switch(corto_type(t)->kind) {
+        case CORTO_PRIMITIVE:
+            c_primitiveId(corto_primitive(t), specifier);
             break;
-        case CX_COLLECTION: {
-            cx_id _specifier, _postfix;
-            cx_type elementType = cx_collection(t)->elementType;
-            switch(cx_collection(t)->kind) {
-            case CX_ARRAY:
+        case CORTO_COLLECTION: {
+            corto_id _specifier, _postfix;
+            corto_type elementType = corto_collection(t)->elementType;
+            switch(corto_collection(t)->kind) {
+            case CORTO_ARRAY:
                 /* Get specifier of elementType */
-                if (c_specifierId(g, cx_collection(t)->elementType, _specifier, NULL, _postfix)) {
+                if (c_specifierId(g, corto_collection(t)->elementType, _specifier, NULL, _postfix)) {
                     goto error;
                 }
-                if ((elementType->kind == CX_COLLECTION) && (cx_collection(elementType)->kind == CX_ARRAY)) {
-                    sprintf(specifier, "%s_%d", _specifier, cx_collection(t)->max);
+                if ((elementType->kind == CORTO_COLLECTION) && (corto_collection(elementType)->kind == CORTO_ARRAY)) {
+                    sprintf(specifier, "%s_%d", _specifier, corto_collection(t)->max);
                 } else {
-                    sprintf(specifier, "%sArray%d", _specifier, cx_collection(t)->max);
+                    sprintf(specifier, "%sArray%d", _specifier, corto_collection(t)->max);
                 }
                 break;
-            case CX_SEQUENCE:
+            case CORTO_SEQUENCE:
                 /* Get specifier of elementType */
-                if (c_specifierId(g, cx_collection(t)->elementType, _specifier, NULL, _postfix)) {
+                if (c_specifierId(g, corto_collection(t)->elementType, _specifier, NULL, _postfix)) {
                     goto error;
                 }
-                if ((elementType->kind == CX_COLLECTION) && (cx_collection(elementType)->kind == CX_SEQUENCE)) {
-                    sprintf(specifier, "%s_%d", _specifier, cx_collection(t)->max);
+                if ((elementType->kind == CORTO_COLLECTION) && (corto_collection(elementType)->kind == CORTO_SEQUENCE)) {
+                    sprintf(specifier, "%s_%d", _specifier, corto_collection(t)->max);
                 } else {
-                    if (cx_collection(t)->max) {
-                        sprintf(specifier, "%sSeq%d", _specifier, cx_collection(t)->max);
+                    if (corto_collection(t)->max) {
+                        sprintf(specifier, "%sSeq%d", _specifier, corto_collection(t)->max);
                     } else {
                         sprintf(specifier, "%sSeq", _specifier);
                     }
                 }
                 break;
-            case CX_LIST:
-                if (c_specifierId(g, cx_collection(t)->elementType, _specifier, NULL, _postfix)) {
+            case CORTO_LIST:
+                if (c_specifierId(g, corto_collection(t)->elementType, _specifier, NULL, _postfix)) {
                     goto error;
                 }
-                if ((elementType->kind == CX_COLLECTION) && (cx_collection(elementType)->kind == CX_LIST)) {
-                    sprintf(specifier, "%s_%d", _specifier, cx_collection(t)->max);
+                if ((elementType->kind == CORTO_COLLECTION) && (corto_collection(elementType)->kind == CORTO_LIST)) {
+                    sprintf(specifier, "%s_%d", _specifier, corto_collection(t)->max);
                 } else {
-                    if (cx_collection(t)->max) {
-                        sprintf(specifier, "%sList%d", _specifier, cx_collection(t)->max);
+                    if (corto_collection(t)->max) {
+                        sprintf(specifier, "%sList%d", _specifier, corto_collection(t)->max);
                     } else {
                         sprintf(specifier, "%sList", _specifier);
                     }
                 }
                 break;
-            case CX_MAP:
-                strcpy(specifier, "cx_rbtree");
+            case CORTO_MAP:
+                strcpy(specifier, "corto_rbtree");
                 break;
             }
             break;
         }
         default:
-            cx_seterr("anonymous type of kind '%s' not allowed.", cx_nameof(cx_enum_constant(cx_typeKind_o, cx_type(t)->kind)));
+            corto_seterr("anonymous type of kind '%s' not allowed.", corto_nameof(corto_enum_constant(corto_typeKind_o, corto_type(t)->kind)));
             goto error;
             break;
         }
@@ -398,8 +398,8 @@ error:
     return -1;
 }
 
-cx_char* c_escapeString(cx_string str, cx_id id) {
-    cx_char *ptr, *bptr, ch;
+corto_char* c_escapeString(corto_string str, corto_id id) {
+    corto_char *ptr, *bptr, ch;
 
     ptr = str;
     bptr = id;
@@ -418,23 +418,23 @@ cx_char* c_escapeString(cx_string str, cx_id id) {
     return id;
 }
 
-cx_bool c_procedureHasThis(cx_function o) {
-    cx_bool result;
-    if (cx_typeof(o) != cx_type(cx_observer_o)) {
-        result = (cx_instanceof(cx_type(cx_method_o), o) || 
-                  cx_instanceof(cx_type(cx_metaprocedure_o), o));
+corto_bool c_procedureHasThis(corto_function o) {
+    corto_bool result;
+    if (corto_typeof(o) != corto_type(corto_observer_o)) {
+        result = (corto_instanceof(corto_type(corto_method_o), o) || 
+                  corto_instanceof(corto_type(corto_metaprocedure_o), o));
     } else {
-        result = cx_class_instanceof(cx_class_o, cx_parentof(o));
+        result = corto_class_instanceof(corto_class_o, corto_parentof(o));
     }
     return result;
 }
 
 /* Translate a scope to a path */
-cx_char* c_topath(cx_object o, cx_id id, cx_char separator) {
-    cx_uint32 offset;
-    cx_char ch, *ptr;
+corto_char* c_topath(corto_object o, corto_id id, corto_char separator) {
+    corto_uint32 offset;
+    corto_char ch, *ptr;
 
-    cx_fullname(o, id);
+    corto_fullname(o, id);
 
     ptr = id + 2;
     offset = 2;
@@ -456,7 +456,7 @@ cx_char* c_topath(cx_object o, cx_id id, cx_char separator) {
     return id;
 }
 
-cx_string c_paramName(cx_string name, cx_string buffer) {
+corto_string c_paramName(corto_string name, corto_string buffer) {
 
     if (*name == '$') {
         if (!strcmp(name, "$__line")) {
@@ -467,15 +467,15 @@ cx_string c_paramName(cx_string name, cx_string buffer) {
             sprintf(buffer, "str_%s", name + 1);
         }
     } else {
-        cx_id id;
+        corto_id id;
         corto_genId(name, id);
         strcpy(buffer, id);
     }
     return buffer;
 }
 
-cx_char* c_usingName(cx_generator g, cx_object o, cx_id id) {
-    cx_id buff;
+corto_char* c_usingName(corto_generator g, corto_object o, corto_id id) {
+    corto_id buff;
     char *ptr;
 
     g_fullOid(g, o, buff);
@@ -489,19 +489,19 @@ cx_char* c_usingName(cx_generator g, cx_object o, cx_id id) {
     return id;
 }
 
-cx_char* c_usingConstant(cx_generator g, cx_id id) {
-    cx_id buff;
+corto_char* c_usingConstant(corto_generator g, corto_id id) {
+    corto_id buff;
     strcpy(id, "USING_");
     char *ptr = &id[6];
-    cx_object o = g_getCurrent(g);
+    corto_object o = g_getCurrent(g);
     c_topath(o, buff, '_');
     c_typeToUpper(buff, ptr);
     return id;
 }
 
-void c_writeExport(cx_generator g, g_file file) {
-    cx_id upperName;
+void c_writeExport(corto_generator g, g_file file) {
+    corto_id upperName;
     c_topath(g_getCurrent(g), upperName, '_');
-    cx_strupper(upperName);
+    corto_strupper(upperName);
     g_fileWrite(file, "%s_EXPORT ", upperName);
 }

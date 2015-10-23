@@ -13,16 +13,16 @@
 /* $end */
 
 /* ::corto::ast::While::construct() */
-cx_int16 _ast_While_construct(ast_While this) {
+corto_int16 _ast_While_construct(ast_While this) {
 /* $begin(::corto::ast::While::construct) */
-    cx_type conditionType;
+    corto_type conditionType;
 
     ast_Node(this)->kind = Ast_WhileExpr;
 
     conditionType = ast_Expression_getType(this->condition);
     if (conditionType) {
         /* Check if condition can evaluate to a boolean value */
-        if (!cx_type_castable(cx_type(cx_bool_o), conditionType)) {
+        if (!corto_type_castable(corto_type(corto_bool_o), conditionType)) {
             ast_Parser_error(yparser(), "expression does not evaluate to condition");
             goto error;
         }
@@ -38,15 +38,15 @@ error:
 }
 
 /* ::corto::ast::While::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _ast_While_toIc_v(ast_While this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _ast_While_toIc_v(ast_While this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::While::toIc) */
     ic_storage accumulator;
     ic_label labelEval, labelNeq = NULL;
     ast_Expression condition = NULL;
-    cx_bool condResult = FALSE, inverse = FALSE;
+    corto_bool condResult = FALSE, inverse = FALSE;
     ic_node expr = NULL;
-    CX_UNUSED(storage);
-    CX_UNUSED(stored);
+    CORTO_UNUSED(storage);
+    CORTO_UNUSED(stored);
 
     /* Obtain accumulator for evaluating the condition */
     accumulator = (ic_storage)ic_program_pushAccumulator(

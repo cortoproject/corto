@@ -9,24 +9,24 @@
 #include "ic.h"
 
 /* $header() */
-static cx_bool ic_validateSet(ic_op op) {
-    cx_bool result = TRUE;
+static corto_bool ic_validateSet(ic_op op) {
+    corto_bool result = TRUE;
     op->s1 && (ic_node(op->s1)->kind != IC_STORAGE) ? result = FALSE: 0;
     !op->s2 || (ic_node(op->s2)->kind != IC_STORAGE) ? result = FALSE: 0;
     !op->s2 ? result = FALSE : 0;
     return result;
 }
 
-static cx_bool ic_validateCast(ic_op op) {
-    cx_bool result = TRUE;
+static corto_bool ic_validateCast(ic_op op) {
+    corto_bool result = TRUE;
     op->s1 && (ic_node(op->s1)->kind != IC_STORAGE) ? result = FALSE: 0;
     !op->s2 || (ic_node(op->s2)->kind != IC_STORAGE) ? result = FALSE: 0;
     !op->s3 || (ic_node(op->s3)->kind != IC_STORAGE) ? result = FALSE: 0;
     return result;
 }
 
-static cx_bool ic_validateBinary(ic_op op) {
-    cx_bool result = TRUE;
+static corto_bool ic_validateBinary(ic_op op) {
+    corto_bool result = TRUE;
     op->s1 && (ic_node(op->s1)->kind != IC_STORAGE) ? result = FALSE: 0;
     !op->s2 || !op->s3 ? result = FALSE: 0;
     if (result) {
@@ -37,14 +37,14 @@ static cx_bool ic_validateBinary(ic_op op) {
     return result;
 }
 
-static cx_bool ic_validateUnary(ic_op op) {
-    cx_bool result = TRUE;
+static corto_bool ic_validateUnary(ic_op op) {
+    corto_bool result = TRUE;
     op->s1 && (ic_node(op->s1)->kind != IC_STORAGE) ? result = FALSE: 0;
     op->s2 && (ic_node(op->s2)->kind != IC_STORAGE) ? result = FALSE: 0;
     return result;
 }
 
-static cx_bool ic_validatePush(ic_op op) {
+static corto_bool ic_validatePush(ic_op op) {
     if (!op->s1) {
         return FALSE;
     } else {
@@ -52,9 +52,9 @@ static cx_bool ic_validatePush(ic_op op) {
     }
 }
 
-static cx_string ic_op_derefToString(cx_string string, ic_node s, ic_derefKind mode) {
+static corto_string ic_op_derefToString(corto_string string, ic_node s, ic_derefKind mode) {
     if (s->kind == IC_STORAGE) {
-        cx_type t = ic_storage(s)->type;
+        corto_type t = ic_storage(s)->type;
         if (t->reference) {
             if (mode == IC_DEREF_VALUE) {
                 string = strappend(string, " *");
@@ -78,7 +78,7 @@ static cx_string ic_op_derefToString(cx_string string, ic_node s, ic_derefKind m
 /* $end */
 
 /* ::corto::ic::op::construct() */
-cx_int16 _ic_op_construct(ic_op this) {
+corto_int16 _ic_op_construct(ic_op this) {
 /* $begin(::corto::ic::op::construct) */
     ic_node(this)->kind = IC_OP;
     return ic_node_construct(ic_node(this));
@@ -86,7 +86,7 @@ cx_int16 _ic_op_construct(ic_op this) {
 }
 
 /* ::corto::ic::op::str(string in) */
-cx_string _ic_op_str(ic_op this, cx_string in) {
+corto_string _ic_op_str(ic_op this, corto_string in) {
 /* $begin(::corto::ic::op::str) */
     in = strappend(in, "  %s", ic_opKindStr(this->kind));
     if (this->s1) {
@@ -110,9 +110,9 @@ cx_string _ic_op_str(ic_op this, cx_string in) {
 }
 
 /* ::corto::ic::op::validate() */
-cx_bool _ic_op_validate(ic_op this) {
+corto_bool _ic_op_validate(ic_op this) {
 /* $begin(::corto::ic::op::validate) */
-    cx_bool result = TRUE;
+    corto_bool result = TRUE;
 
     switch(this->kind) {
     case ic_set: result = ic_validateSet(this); break;

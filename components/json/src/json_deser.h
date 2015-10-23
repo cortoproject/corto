@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-cx_bool json_deser_forward(void* v, cx_type t, JSON_Value* w);
+corto_bool json_deser_forward(void* v, corto_type t, JSON_Value* w);
 
 #ifdef __cplusplus
 }

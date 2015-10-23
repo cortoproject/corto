@@ -13,11 +13,11 @@
 /* $end */
 
 /* ::corto::ast::New::construct() */
-cx_int16 _ast_New_construct(ast_New this) {
+corto_int16 _ast_New_construct(ast_New this) {
 /* $begin(::corto::ast::New::construct) */
 
     ast_Node(this)->kind = Ast_NewExpr;
-    cx_setref(&ast_Expression(this)->type, this->type);
+    corto_setref(&ast_Expression(this)->type, this->type);
     ast_Expression(this)->isReference = TRUE;
 
     return 0;
@@ -25,18 +25,18 @@ cx_int16 _ast_New_construct(ast_New this) {
 }
 
 /* ::corto::ast::New::hasSideEffects() */
-cx_bool _ast_New_hasSideEffects_v(ast_New this) {
+corto_bool _ast_New_hasSideEffects_v(ast_New this) {
 /* $begin(::corto::ast::New::hasSideEffects) */
-    CX_UNUSED(this);
+    CORTO_UNUSED(this);
     return TRUE;
 /* $end */
 }
 
 /* ::corto::ast::New::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _ast_New_toIc_v(ast_New this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _ast_New_toIc_v(ast_New this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::New::toIc) */
     ic_node type, attrs, result;
-    CX_UNUSED(stored);
+    CORTO_UNUSED(stored);
 
     if (storage) {
         result = (ic_node)storage;

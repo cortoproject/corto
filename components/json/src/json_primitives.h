@@ -8,14 +8,14 @@
 extern "C" {
 #endif
 
-cx_int16 serializeNumber(cx_value *value, cx_string *out, cx_json_ser_t *data);
-cx_int16 serializeBinary(cx_value *value, cx_string *out, cx_json_ser_t *data);
-cx_int16 serializeBitmask(cx_value *value, cx_string *out, cx_json_ser_t *data);
-cx_int16 serializeEnum(cx_value *value, cx_string *out, cx_json_ser_t *data);
-cx_int16 serializeBoolean(cx_value *value, cx_string *out, cx_json_ser_t *data);
-cx_int16 serializeText(cx_value *value, cx_string *out, cx_json_ser_t *data);
+corto_int16 serializeNumber(corto_value *value, corto_string *out, corto_json_ser_t *data);
+corto_int16 serializeBinary(corto_value *value, corto_string *out, corto_json_ser_t *data);
+corto_int16 serializeBitmask(corto_value *value, corto_string *out, corto_json_ser_t *data);
+corto_int16 serializeEnum(corto_value *value, corto_string *out, corto_json_ser_t *data);
+corto_int16 serializeBoolean(corto_value *value, corto_string *out, corto_json_ser_t *data);
+corto_int16 serializeText(corto_value *value, corto_string *out, corto_json_ser_t *data);
 
-cx_bool json_deserPrimitive(void* p, cx_type t, JSON_Value* v);
+corto_bool json_deserPrimitive(void* p, corto_type t, JSON_Value* v);
 
 #ifdef __cplusplus
 }

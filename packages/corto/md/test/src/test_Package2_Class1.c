@@ -9,7 +9,7 @@
 #include "test.h"
 
 /* ::test::Package2::Class1::method0() */
-cx_int _test_Package2_Class1_method0(test_Package2_Class1 this) {
+corto_int _test_Package2_Class1_method0(test_Package2_Class1 this) {
 /* $begin(::test::Package2::Class1::method0) */
 
     return 0;

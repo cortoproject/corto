@@ -9,39 +9,39 @@
 #include "ic.h"
 
 /* $header() */
-cx_threadKey IC_PROGRAM_KEY;
+corto_threadKey IC_PROGRAM_KEY;
 /* $end */
 
 /* ::corto::ic::opKindFromOperator(operatorKind operator) */
-ic_opKind _ic_opKindFromOperator(cx_operatorKind _operator) {
+ic_opKind _ic_opKindFromOperator(corto_operatorKind _operator) {
 /* $begin(::corto::ic::opKindFromOperator) */
 
     switch(_operator) {
-    case CX_ASSIGN: return ic_set;
-    case CX_ADD: return ic_add;
-    case CX_SUB: return ic_sub;
-    case CX_MUL: return ic_mul;
-    case CX_DIV: return ic_div;
-    case CX_MOD: return ic_mod;
-    case CX_INC: return ic_inc;
-    case CX_DEC: return ic_dec;
-    case CX_XOR: return ic_xor;
-    case CX_OR: return ic_or;
-    case CX_AND: return ic_and;
-    case CX_NOT: return ic_not;
-    case CX_SHIFT_LEFT: return ic_shift_left;
-    case CX_SHIFT_RIGHT: return ic_shift_right;
-    case CX_COND_OR: return ic_cond_or;
-    case CX_COND_AND: return ic_cond_and;
-    case CX_COND_NOT: return ic_cond_not;
-    case CX_COND_EQ: return ic_cond_eq;
-    case CX_COND_NEQ: return ic_cond_neq;
-    case CX_COND_GT: return ic_cond_gt;
-    case CX_COND_LT: return ic_cond_lt;
-    case CX_COND_GTEQ: return ic_cond_gteq;
-    case CX_COND_LTEQ: return ic_cond_lteq;
+    case CORTO_ASSIGN: return ic_set;
+    case CORTO_ADD: return ic_add;
+    case CORTO_SUB: return ic_sub;
+    case CORTO_MUL: return ic_mul;
+    case CORTO_DIV: return ic_div;
+    case CORTO_MOD: return ic_mod;
+    case CORTO_INC: return ic_inc;
+    case CORTO_DEC: return ic_dec;
+    case CORTO_XOR: return ic_xor;
+    case CORTO_OR: return ic_or;
+    case CORTO_AND: return ic_and;
+    case CORTO_NOT: return ic_not;
+    case CORTO_SHIFT_LEFT: return ic_shift_left;
+    case CORTO_SHIFT_RIGHT: return ic_shift_right;
+    case CORTO_COND_OR: return ic_cond_or;
+    case CORTO_COND_AND: return ic_cond_and;
+    case CORTO_COND_NOT: return ic_cond_not;
+    case CORTO_COND_EQ: return ic_cond_eq;
+    case CORTO_COND_NEQ: return ic_cond_neq;
+    case CORTO_COND_GT: return ic_cond_gt;
+    case CORTO_COND_LT: return ic_cond_lt;
+    case CORTO_COND_GTEQ: return ic_cond_gteq;
+    case CORTO_COND_LTEQ: return ic_cond_lteq;
     default:
-        cx_assert(0, "invalid operatorkind (%d)", _operator);
+        corto_assert(0, "invalid operatorkind (%d)", _operator);
         break;
     }
 
@@ -51,9 +51,9 @@ ic_opKind _ic_opKindFromOperator(cx_operatorKind _operator) {
 
 int icMain(int argc, char* argv[]) {
 /* $begin(main) */
-    CX_UNUSED(argc);
-    CX_UNUSED(argv);
-    if (cx_threadTlsKey(&IC_PROGRAM_KEY, NULL)) {
+    CORTO_UNUSED(argc);
+    CORTO_UNUSED(argv);
+    if (corto_threadTlsKey(&IC_PROGRAM_KEY, NULL)) {
         return -1;
     }
     return 0;

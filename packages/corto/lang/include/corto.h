@@ -9,46 +9,46 @@
 #define CORTO_H_
 
 #include "cx.h"
-#include "cx__type.h"
-#include "cx__meta.h"
-#include "cx_arg.h"
-#include "cx_async.h"
-#include "cx_call.h"
-#include "cx_compare_ser.h"
-#include "cx_convert.h"
-#include "cx_copy_ser.h"
-#include "cx_crc.h"
-#include "cx_depresolver.h"
-#include "cx_dl.h"
-#include "cx_env.h"
-#include "cx_err.h"
-#include "cx_file.h"
-#include "cx_files.h"
-#include "cx_generator.h"
-#include "cx_generatorDepWalk.h"
-#include "cx_generatorTypeDepWalk.h"
-#include "cx_init_ser.h"
-#include "cx_loader.h"
-#include "cx_iter.h"
-#include "cx_ll.h"
-#include "cx_loader.h"
-#include "cx_mem.h"
-#include "cx_memory_ser.h"
-#include "cx_metawalk.h"
-#include "cx_mm.h"
-#include "cx_object.h"
-#include "cx_operator.h"
-#include "cx_overload.h"
-#include "cx_platform.h"
-#include "cx_rbtree.h"
-#include "cx_serializer.h"
-#include "cx_string.h"
-#include "cx_string_deser.h"
-#include "cx_string_ser.h"
-#include "cx_string.h"
-#include "cx_time.h"
-#include "cx_util.h"
-#include "cx_value.h"
+#include "corto__type.h"
+#include "corto__meta.h"
+#include "corto_arg.h"
+#include "corto_async.h"
+#include "corto_call.h"
+#include "corto_compare_ser.h"
+#include "corto_convert.h"
+#include "corto_copy_ser.h"
+#include "corto_crc.h"
+#include "corto_depresolver.h"
+#include "corto_dl.h"
+#include "corto_env.h"
+#include "corto_err.h"
+#include "corto_file.h"
+#include "corto_files.h"
+#include "corto_generator.h"
+#include "corto_generatorDepWalk.h"
+#include "corto_generatorTypeDepWalk.h"
+#include "corto_init_ser.h"
+#include "corto_loader.h"
+#include "corto_iter.h"
+#include "corto_ll.h"
+#include "corto_loader.h"
+#include "corto_mem.h"
+#include "corto_memory_ser.h"
+#include "corto_metawalk.h"
+#include "corto_mm.h"
+#include "corto_object.h"
+#include "corto_operator.h"
+#include "corto_overload.h"
+#include "corto_platform.h"
+#include "corto_rbtree.h"
+#include "corto_serializer.h"
+#include "corto_string.h"
+#include "corto_string_deser.h"
+#include "corto_string_ser.h"
+#include "corto_string.h"
+#include "corto_time.h"
+#include "corto_util.h"
+#include "corto_value.h"
 
 #include "cxstr.h"
 
@@ -56,11 +56,11 @@
 extern "C" {
 #endif
 
-int cx_start(void);
-void cx_stop(void); /* Must be last statement of application. */
-cx_bool cx_isbuiltin(cx_object o);
-void cx_onunload(void(*handler)(void*), void* userData);
-void cx_onexit(void(*handler)(void*), void* userData);
+int corto_start(void);
+void corto_stop(void); /* Must be last statement of application. */
+corto_bool corto_isbuiltin(corto_object o);
+void corto_onunload(void(*handler)(void*), void* userData);
+void corto_onexit(void(*handler)(void*), void* userData);
 
 #ifdef __cplusplus
 }

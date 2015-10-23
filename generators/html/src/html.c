@@ -16,22 +16,22 @@ typedef struct htmlData_t {
     const char *path;
     unsigned int level;
     const char *rootFullname;
-    cx_generator generator;
+    corto_generator generator;
 } htmlData_t;
 
-static char *html_shortId(cx_object o, cx_id id) {
-    if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
-        if (cx_parentof(o) == corto_lang_o) {
-            strcpy(id, cx_nameof(o));
+static char *html_shortId(corto_object o, corto_id id) {
+    if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+        if (corto_parentof(o) == corto_lang_o) {
+            strcpy(id, corto_nameof(o));
         } else {
-            cx_id buff;
-            cx_fullname(o, buff);
+            corto_id buff;
+            corto_fullname(o, buff);
             strcpy(id, buff + 2);
         }
     } else {
-        cx_string str = cx_str(o, 0);
+        corto_string str = corto_str(o, 0);
         strcpy(id, str);
-        cx_dealloc(str);
+        corto_dealloc(str);
     }
     return id;
 }
@@ -44,13 +44,13 @@ static char *html_shortId(cx_object o, cx_id id) {
  * Make a data.json file inside
  * Call recursively for every object in this scope
  */
-static char* html_pathToRoot(cx_object o, char* buffer, cx_uint32 *level) {
-    if (cx_parentof(o)) {
-        html_pathToRoot(cx_parentof(o), buffer, level);
+static char* html_pathToRoot(corto_object o, char* buffer, corto_uint32 *level) {
+    if (corto_parentof(o)) {
+        html_pathToRoot(corto_parentof(o), buffer, level);
     }
-    if (cx_nameof(o)) {
+    if (corto_nameof(o)) {
         strcat(buffer, "/");
-        strcat(buffer, cx_nameof(o));
+        strcat(buffer, corto_nameof(o));
     }
     if (level) {
         (*level)++;
@@ -59,19 +59,19 @@ static char* html_pathToRoot(cx_object o, char* buffer, cx_uint32 *level) {
 }
 
 static char* html_ref(
-    cx_object from, 
-    cx_object o, 
-    cx_string name, 
-    cx_string class, 
+    corto_object from, 
+    corto_object o, 
+    corto_string name, 
+    corto_string class, 
     char *result) 
 {
-    if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
-        cx_id buffer;
-        cx_object p = cx_parentof(from);
+    if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+        corto_id buffer;
+        corto_object p = corto_parentof(from);
         buffer[0] = '\0';
         while (p != root_o) {
             strcat(buffer, "../");
-            p = cx_parentof(p);
+            p = corto_parentof(p);
         }
         if (strlen(buffer)) {
             buffer[strlen(buffer) - 1] = '\0';
@@ -79,8 +79,8 @@ static char* html_ref(
             strcpy(buffer, ".");
         }
 
-        if (cx_instanceof(cx_package_o, o) ||
-            cx_instanceof(cx_interface_o, o)) {
+        if (corto_instanceof(corto_package_o, o) ||
+            corto_instanceof(corto_interface_o, o)) {
             html_pathToRoot(o, buffer, NULL);
             strcat(buffer, ".html");
             sprintf(result, 
@@ -89,10 +89,10 @@ static char* html_ref(
                 class,
                 name);
         } else {
-            html_pathToRoot(cx_parentof(o), buffer, NULL);
+            html_pathToRoot(corto_parentof(o), buffer, NULL);
             strcat(buffer, ".html");
             strcat(buffer, "#");
-            strcat(buffer, cx_nameof(o));
+            strcat(buffer, corto_nameof(o));
             sprintf(result, 
                 "<a href=\"%s\" class=\"%s smoothScroll\">%s</a>", 
                 buffer,
@@ -106,60 +106,60 @@ static char* html_ref(
     return result;
 }
 
-static void html_getPath(cx_object o, char *buffer, htmlData_t *data, cx_uint32 *level) {
+static void html_getPath(corto_object o, char *buffer, htmlData_t *data, corto_uint32 *level) {
     strcpy(buffer, data->path);
-    if (cx_nameof(o)) {
-        html_pathToRoot(cx_parentof(o), buffer, level);
+    if (corto_nameof(o)) {
+        html_pathToRoot(corto_parentof(o), buffer, level);
         strcat(buffer, "/");
-        strcat(buffer, cx_nameof(o));
+        strcat(buffer, corto_nameof(o));
     }
 }
 
 typedef struct htmlTypeWalkData_t {
     g_file file;
-    cx_type typeToWalk;
-    cx_bool instanceof;
-    cx_ll printed;
-    cx_ll counted;
+    corto_type typeToWalk;
+    corto_bool instanceof;
+    corto_ll printed;
+    corto_ll counted;
     htmlData_t *data;
 } htmlTypeWalkData_t;
 
-static int html_hasTypeWalk(cx_object o, void *userData) {
+static int html_hasTypeWalk(corto_object o, void *userData) {
     htmlTypeWalkData_t *data = userData;
 
-    if (((data->instanceof && cx_instanceof(data->typeToWalk, o)) || 
-        (cx_typeof(o) == data->typeToWalk)) &&
-        !cx_llHasObject(data->counted, o)) {
-        cx_llAppend(data->counted, o);
+    if (((data->instanceof && corto_instanceof(data->typeToWalk, o)) || 
+        (corto_typeof(o) == data->typeToWalk)) &&
+        !corto_llHasObject(data->counted, o)) {
+        corto_llAppend(data->counted, o);
     }
 
     return 1;
 }
 
-static cx_string doc_parse(cx_string input) {
-    cx_string result = NULL;
-    cx_function f = cx_function(cx_resolve(NULL, "md::parse"));
-    if (cx_checkState(f, CX_DEFINED)) {
-        cx_call(f, &result, input);
+static corto_string doc_parse(corto_string input) {
+    corto_string result = NULL;
+    corto_function f = corto_function(corto_resolve(NULL, "md::parse"));
+    if (corto_checkState(f, CORTO_DEFINED)) {
+        corto_call(f, &result, input);
     }
     return result;
 }
 
 /* Reflection hack to get the description from a document */
-static cx_string doc_getDescriptionFromDoc(cx_object doc) {
-    cx_object cl = cx_resolve(NULL, "corto::md::Doc");
-    cx_string result = "";
+static corto_string doc_getDescriptionFromDoc(corto_object doc) {
+    corto_object cl = corto_resolve(NULL, "corto::md::Doc");
+    corto_string result = "";
 
     if (cl) {
         if (doc) {
-            cx_member m = cx_interface_resolveMember(cl, "description");
+            corto_member m = corto_interface_resolveMember(cl, "description");
             if (m) {
-                result = *(cx_string*)CX_OFFSET(doc, m->offset);
+                result = *(corto_string*)CORTO_OFFSET(doc, m->offset);
                 if (!result) {
                     result = "";
                 }
             } else {
-                cx_critical("member description not found in doc class");
+                corto_critical("member description not found in doc class");
             }
         }
     }
@@ -168,25 +168,25 @@ static cx_string doc_getDescriptionFromDoc(cx_object doc) {
 }
 
 /* Reflection hack to get the description from a document */
-static cx_string doc_getDescription(cx_object o) {
-    return doc_getDescriptionFromDoc(cx_man(o));
+static corto_string doc_getDescription(corto_object o) {
+    return doc_getDescriptionFromDoc(corto_man(o));
 }
 
 /* Reflection hack to get the description from a document */
-static cx_string doc_getTextFromDoc(cx_object doc) {
-    cx_object cl = cx_resolve(NULL, "corto::md::Doc");
-    cx_string result = "";
+static corto_string doc_getTextFromDoc(corto_object doc) {
+    corto_object cl = corto_resolve(NULL, "corto::md::Doc");
+    corto_string result = "";
 
     if (cl) {
         if (doc) {
-            cx_member m = cx_interface_resolveMember(cl, "text");
+            corto_member m = corto_interface_resolveMember(cl, "text");
             if (m) {
-                result = *(cx_string*)CX_OFFSET(doc, m->offset);
+                result = *(corto_string*)CORTO_OFFSET(doc, m->offset);
                 if (!result) {
                     result = "";
                 }
             } else {
-                cx_critical("member text not found in doc class");
+                corto_critical("member text not found in doc class");
             }
         }
     }
@@ -197,35 +197,35 @@ static cx_string doc_getTextFromDoc(cx_object doc) {
 }
 
 /* Reflection hack to get the description from a document */
-static cx_string doc_getText(cx_object o) {
-    return doc_getTextFromDoc(cx_man(o));
+static corto_string doc_getText(corto_object o) {
+    return doc_getTextFromDoc(corto_man(o));
 }
 
-static int html_typeWalk(cx_object o, void *userData) {
+static int html_typeWalk(corto_object o, void *userData) {
     htmlTypeWalkData_t *data = userData;
-    cx_string description = "";
+    corto_string description = "";
 
     description = doc_getDescription(o);
 
-    if (((data->instanceof && cx_instanceof(data->typeToWalk, o)) || 
-        (cx_typeof(o) == data->typeToWalk)) &&
-        !cx_llHasObject(data->printed, o)) 
+    if (((data->instanceof && corto_instanceof(data->typeToWalk, o)) || 
+        (corto_typeof(o) == data->typeToWalk)) &&
+        !corto_llHasObject(data->printed, o)) 
     {
-        cx_id id;
+        corto_id id;
         if (description && strlen(description)) {
             g_fileWrite(
                 data->file, 
                 "<tr><td>%s&nbsp;-&nbsp;"
                 "<span class=\"description\">%s</span></td></tr>\n",
-                html_ref(cx_parentof(o), o, cx_nameof(o), "reference", id),
+                html_ref(corto_parentof(o), o, corto_nameof(o), "reference", id),
                 description);
         } else {
             g_fileWrite(
                 data->file, 
                 "<tr><td>%s",
-                html_ref(cx_parentof(o), o, cx_nameof(o), "reference", id));            
+                html_ref(corto_parentof(o), o, corto_nameof(o), "reference", id));            
         }
-        cx_llAppend(data->printed, o);
+        corto_llAppend(data->printed, o);
     }
 
     return 1;
@@ -237,46 +237,46 @@ typedef enum html_printMask {
 } html_printMask;
 
 static int html_printType(
-    cx_object o, 
+    corto_object o, 
     g_file file, 
-    cx_string title, 
-    cx_type type, 
-    cx_uint32 count,
+    corto_string title, 
+    corto_type type, 
+    corto_uint32 count,
     htmlTypeWalkData_t *data) {
 
-    data->typeToWalk = cx_type(type);
-    cx_scopeWalk(o, html_hasTypeWalk, data);
-    if (cx_llSize(data->counted) != count) {
+    data->typeToWalk = corto_type(type);
+    corto_scopeWalk(o, html_hasTypeWalk, data);
+    if (corto_llSize(data->counted) != count) {
         g_fileWrite(file, "<h2>%s</h2>\n", title);
         g_fileWrite(file, "<table class='category'>\n");
-        cx_scopeWalk(o, html_typeWalk, data);
+        corto_scopeWalk(o, html_typeWalk, data);
         g_fileWrite(file, "</table>\n");
-        count = cx_llSize(data->counted);
+        count = corto_llSize(data->counted);
     } 
 
     return count;  
 }
 
-static cx_int16 cx_ser_member(cx_serializer s, cx_value *info, void *userData) {
+static corto_int16 corto_ser_member(corto_serializer s, corto_value *info, void *userData) {
     g_file file = userData;
-    cx_member m = info->is.member.t;
-    cx_string description = doc_getDescription(m);
-    cx_type topLevelType = cx_typeof(cx_valueObject(info));
-    cx_id path, memberPath;
-    cx_id id;
+    corto_member m = info->is.member.t;
+    corto_string description = doc_getDescription(m);
+    corto_type topLevelType = corto_typeof(corto_valueObject(info));
+    corto_id path, memberPath;
+    corto_id id;
 
-    CX_UNUSED(s);
+    CORTO_UNUSED(s);
 
     g_fileWrite(file, "<tr>\n");
     g_fileWrite(file,
         "<td>%s&nbsp:&nbsp;%s", 
-        html_ref(cx_typeof(cx_valueObject(info)), m, cx_nameof(m), "reference", memberPath),
-        html_ref(cx_typeof(cx_valueObject(info)), m->type, html_shortId(m->type, id), "reference", path));
+        html_ref(corto_typeof(corto_valueObject(info)), m, corto_nameof(m), "reference", memberPath),
+        html_ref(corto_typeof(corto_valueObject(info)), m->type, html_shortId(m->type, id), "reference", path));
 
-    cx_member mptr = m;
+    corto_member mptr = m;
     while ((!description || !strlen(description)) && mptr) {
-        if (cx_instanceof(cx_alias_o, mptr)) {
-            mptr = cx_alias(mptr)->member;
+        if (corto_instanceof(corto_alias_o, mptr)) {
+            mptr = corto_alias(mptr)->member;
             description = doc_getDescription(mptr);
         } else {
             mptr = NULL;
@@ -287,16 +287,16 @@ static cx_int16 cx_ser_member(cx_serializer s, cx_value *info, void *userData) {
         g_fileWrite(file, "&nbsp;-&nbsp;<span class='description'>%s</span>", description);
     }
 
-    if (cx_parentof(m) != topLevelType) {
-        cx_id id;
+    if (corto_parentof(m) != topLevelType) {
+        corto_id id;
         g_fileWrite(file, "<br><span class='annotate'>from %s</span>\n", 
-            cx_fullname(cx_parentof(m), id) + 2);
+            corto_fullname(corto_parentof(m), id) + 2);
     }
 
-    if (cx_instanceof(cx_alias_o, m)) {
-        cx_id id;
+    if (corto_instanceof(corto_alias_o, m)) {
+        corto_id id;
         g_fileWrite(file, "<br><span class='annotate'>alias&nbsp;of&nbsp;%s</span>", 
-            cx_fullname(cx_alias(m)->member, id) + 2);
+            corto_fullname(corto_alias(m)->member, id) + 2);
     }
 
     g_fileWrite(file, "</td></tr>\n");
@@ -304,42 +304,42 @@ static cx_int16 cx_ser_member(cx_serializer s, cx_value *info, void *userData) {
     return 0;
 }
 
-static cx_int16 cx_ser_memberDetail(cx_serializer s, cx_value *info, void *userData) {
+static corto_int16 corto_ser_memberDetail(corto_serializer s, corto_value *info, void *userData) {
     g_file file = userData;
-    cx_member m = info->is.member.t;
-    cx_string description = doc_getDescription(m);
-    cx_id path;
-    cx_id id;
+    corto_member m = info->is.member.t;
+    corto_string description = doc_getDescription(m);
+    corto_id path;
+    corto_id id;
 
-    CX_UNUSED(s);
+    CORTO_UNUSED(s);
 
-    cx_member mptr = m;
+    corto_member mptr = m;
     while ((!description || !strlen(description)) && mptr) {
-        if (cx_instanceof(cx_alias_o, mptr)) {
-            mptr = cx_alias(mptr)->member;
+        if (corto_instanceof(corto_alias_o, mptr)) {
+            mptr = corto_alias(mptr)->member;
             description = doc_getDescription(mptr);
         } else {
             mptr = NULL;
         }
     }
 
-    g_fileWrite(file, "<a name=\"%s\"></a>\n", cx_nameof(m));
-    g_fileWrite(file, "<h3 class='detail'>%s</h3>", cx_nameof(m));
+    g_fileWrite(file, "<a name=\"%s\"></a>\n", corto_nameof(m));
+    g_fileWrite(file, "<h3 class='detail'>%s</h3>", corto_nameof(m));
     g_fileWrite(file, "<hr>\n");
     g_fileWrite(file, "<p>%s</p>\n", description);
     g_fileWrite(file, "<table class='category detail'>\n");
     g_fileWrite(file, "<tr><td>Type</td><td>%s</td></tr>\n", 
-        html_ref(cx_parentof(m), m->type, html_shortId(m->type, id), "reference", path));
+        html_ref(corto_parentof(m), m->type, html_shortId(m->type, id), "reference", path));
     g_fileWrite(file, "<tr><td>Access</td><td>%s</td></tr>\n", 
-        html_ref(cx_parentof(m), cx_modifier_o, cx_modifierStr(m->modifiers), "reference-enum", path));
+        html_ref(corto_parentof(m), corto_modifier_o, corto_modifierStr(m->modifiers), "reference-enum", path));
     if (m->type->reference) {
         g_fileWrite(file, "<tr><td>State</td><td>%s</td></tr>\n", 
-            html_ref(cx_parentof(m), cx_state_o, cx_stateStr(m->state), "reference-enum", path));        
+            html_ref(corto_parentof(m), corto_state_o, corto_stateStr(m->state), "reference-enum", path));        
     }
-    if (cx_instanceof(cx_alias_o, m)) {
-        cx_id id;
+    if (corto_instanceof(corto_alias_o, m)) {
+        corto_id id;
         g_fileWrite(file, "<tr><td>Alias</td><td>%s</td></tr>\n",
-            html_ref(cx_parentof(m), cx_alias(m)->member, html_shortId(cx_alias(m)->member, id), "reference", path));
+            html_ref(corto_parentof(m), corto_alias(m)->member, html_shortId(corto_alias(m)->member, id), "reference", path));
     }
     g_fileWrite(file, "</table>\n");
     g_fileWrite(file, "</td></tr>\n");
@@ -349,78 +349,78 @@ static cx_int16 cx_ser_memberDetail(cx_serializer s, cx_value *info, void *userD
 
 /* Quick way to test whether there are members in a type: stop serializing with
  * an 'error' when one is encountered */
-static cx_int16 cx_ser_memberTest(cx_serializer s, cx_value *info, void *userData) {
-    CX_UNUSED(s);
-    if (userData && cx_parentof(info->is.member.t) != userData) {
+static corto_int16 corto_ser_memberTest(corto_serializer s, corto_value *info, void *userData) {
+    CORTO_UNUSED(s);
+    if (userData && corto_parentof(info->is.member.t) != userData) {
         return 0;
     }
     return -1;
 }
 
-static struct cx_serializer_s html_memberSerializer(cx_modifier access, cx_operatorKind accessKind) {
-    struct cx_serializer_s s;
-    cx_serializerInit(&s);
+static struct corto_serializer_s html_memberSerializer(corto_modifier access, corto_operatorKind accessKind) {
+    struct corto_serializer_s s;
+    corto_serializerInit(&s);
 
     s.access = access;
     s.accessKind = accessKind;
-    s.traceKind = CX_SERIALIZER_TRACE_NEVER;
-    s.aliasAction = CX_SERIALIZER_ALIAS_PASSTHROUGH;
-    s.metaprogram[CX_MEMBER] = cx_ser_member;
+    s.traceKind = CORTO_SERIALIZER_TRACE_NEVER;
+    s.aliasAction = CORTO_SERIALIZER_ALIAS_PASSTHROUGH;
+    s.metaprogram[CORTO_MEMBER] = corto_ser_member;
 
     return s;
 }
 
-static struct cx_serializer_s html_memberDetailSerializer(cx_modifier access, cx_operatorKind accessKind) {
-    struct cx_serializer_s s;
-    cx_serializerInit(&s);
+static struct corto_serializer_s html_memberDetailSerializer(corto_modifier access, corto_operatorKind accessKind) {
+    struct corto_serializer_s s;
+    corto_serializerInit(&s);
 
     s.access = access;
     s.accessKind = accessKind;
-    s.traceKind = CX_SERIALIZER_TRACE_NEVER;
-    s.aliasAction = CX_SERIALIZER_ALIAS_PASSTHROUGH;
-    s.metaprogram[CX_MEMBER] = cx_ser_memberDetail;
-    s.metaprogram[CX_BASE] = NULL;
+    s.traceKind = CORTO_SERIALIZER_TRACE_NEVER;
+    s.aliasAction = CORTO_SERIALIZER_ALIAS_PASSTHROUGH;
+    s.metaprogram[CORTO_MEMBER] = corto_ser_memberDetail;
+    s.metaprogram[CORTO_BASE] = NULL;
 
     return s;
 }
 
-static struct cx_serializer_s html_memberTestSerializer(cx_modifier access, cx_operatorKind accessKind) {
-    struct cx_serializer_s s;
-    cx_serializerInit(&s);
+static struct corto_serializer_s html_memberTestSerializer(corto_modifier access, corto_operatorKind accessKind) {
+    struct corto_serializer_s s;
+    corto_serializerInit(&s);
 
     s.access = access;
     s.accessKind = accessKind;
-    s.traceKind = CX_SERIALIZER_TRACE_NEVER;
-    s.aliasAction = CX_SERIALIZER_ALIAS_PASSTHROUGH;
-    s.metaprogram[CX_MEMBER] = cx_ser_memberTest;
+    s.traceKind = CORTO_SERIALIZER_TRACE_NEVER;
+    s.aliasAction = CORTO_SERIALIZER_ALIAS_PASSTHROUGH;
+    s.metaprogram[CORTO_MEMBER] = corto_ser_memberTest;
 
     return s;
 }
 
-static int html_printMembers(cx_object o, g_file file, cx_uint32 count, htmlTypeWalkData_t *data) {
-    struct cx_serializer_s s = html_memberSerializer(CX_PRIVATE|CX_HIDDEN, CX_NOT);
-    struct cx_serializer_s sTest = html_memberTestSerializer(CX_PRIVATE|CX_HIDDEN, CX_NOT);
+static int html_printMembers(corto_object o, g_file file, corto_uint32 count, htmlTypeWalkData_t *data) {
+    struct corto_serializer_s s = html_memberSerializer(CORTO_PRIVATE|CORTO_HIDDEN, CORTO_NOT);
+    struct corto_serializer_s sTest = html_memberTestSerializer(CORTO_PRIVATE|CORTO_HIDDEN, CORTO_NOT);
 
-    CX_UNUSED(data);
+    CORTO_UNUSED(data);
 
-    if (cx_metaWalk(&sTest, o, NULL)) {
+    if (corto_metaWalk(&sTest, o, NULL)) {
         g_fileWrite(file, "<h2>Members</h2>\n");
         g_fileWrite(file, "<table class='category'>\n");
-        cx_metaWalk(&s, o, file);
+        corto_metaWalk(&s, o, file);
         g_fileWrite(file, "</table>\n");        
     }
 
     return count;
 }
 
-static int html_printMemberDetail(cx_object o, g_file file) {
-    struct cx_serializer_s s = html_memberDetailSerializer(CX_PRIVATE|CX_HIDDEN, CX_NOT);
-    struct cx_serializer_s sTest = html_memberTestSerializer(CX_PRIVATE|CX_HIDDEN, CX_NOT);
+static int html_printMemberDetail(corto_object o, g_file file) {
+    struct corto_serializer_s s = html_memberDetailSerializer(CORTO_PRIVATE|CORTO_HIDDEN, CORTO_NOT);
+    struct corto_serializer_s sTest = html_memberTestSerializer(CORTO_PRIVATE|CORTO_HIDDEN, CORTO_NOT);
 
-    if (cx_metaWalk(&sTest, o, o)) {
+    if (corto_metaWalk(&sTest, o, o)) {
         g_fileWrite(file, "<h2>Member Documentation</h2>\n");
         g_fileWrite(file, "<table class='category'>\n");
-        cx_metaWalk(&s, o, file);
+        corto_metaWalk(&s, o, file);
         g_fileWrite(file, "</table>\n");        
     }
 
@@ -432,14 +432,14 @@ typedef enum html_printFunctionKind {
     HTML_PRINT_FUNCTIONS,
 } html_printFunctionKind;
 
-static cx_function html_overrides(cx_interface base, cx_function m) {
-    cx_function result = NULL;
+static corto_function html_overrides(corto_interface base, corto_function m) {
+    corto_function result = NULL;
 
-    if (base && cx_instanceof(cx_method_o, m)) {
-        result = cx_function(cx_interface_resolveMethod(base, cx_nameof(m)));
+    if (base && corto_instanceof(corto_method_o, m)) {
+        result = corto_function(corto_interface_resolveMethod(base, corto_nameof(m)));
         if (result && 
-            cx_instanceof(cx_method_o, result) && 
-            cx_method(result)->_virtual) {
+            corto_instanceof(corto_method_o, result) && 
+            corto_method(result)->_virtual) {
         } else {
             result = NULL;
         }
@@ -448,33 +448,33 @@ static cx_function html_overrides(cx_interface base, cx_function m) {
     return result;
 }
 
-static int html_printFunction(cx_function m, g_file file, cx_object o) {
-    cx_id path, methodPad;
-    cx_interface base = NULL;
-    cx_function overrides = NULL;
-    cx_string description = NULL;
-    cx_id id;
+static int html_printFunction(corto_function m, g_file file, corto_object o) {
+    corto_id path, methodPad;
+    corto_interface base = NULL;
+    corto_function overrides = NULL;
+    corto_string description = NULL;
+    corto_id id;
 
-    if (cx_instanceof(cx_interface_o, cx_parentof(m))) {
-        base = cx_interface(cx_parentof(m))->base;
+    if (corto_instanceof(corto_interface_o, corto_parentof(m))) {
+        base = corto_interface(corto_parentof(m))->base;
     }
 
     description = doc_getDescription(m);
     g_fileWrite(file, 
         "<tr><td>%s&nbsp;:&nbsp;%s",
-        html_ref(o, m, cx_nameof(m), "reference", methodPad),
+        html_ref(o, m, corto_nameof(m), "reference", methodPad),
         html_ref(o, m->returnType, html_shortId(m->returnType, id), "reference reference-type", path));
 
     overrides = html_overrides(base, m);
 
     if (overrides && (!description || !strlen(description))) {
-        cx_object optr = overrides;
-        cx_interface i = base;
+        corto_object optr = overrides;
+        corto_interface i = base;
         while ((!description || !strlen(description)) && optr) {
             description = doc_getDescription(optr);
-            i = cx_interface(cx_parentof(optr))->base;
+            i = corto_interface(corto_parentof(optr))->base;
             if (i) {
-                optr = cx_interface_resolveMethod(i, cx_nameof(optr));
+                optr = corto_interface_resolveMethod(i, corto_nameof(optr));
             } else {
                 break;
             }
@@ -488,17 +488,17 @@ static int html_printFunction(cx_function m, g_file file, cx_object o) {
     }
 
     if (overrides) {
-        cx_id id;
+        corto_id id;
         g_fileWrite(file, 
             "<br/><span class='annotate'>overrides %s</span>\n", 
-            cx_fullname(overrides, id) + 2);
+            corto_fullname(overrides, id) + 2);
     }
 
-    if (cx_parentof(m) != o) {
-        cx_id id;
+    if (corto_parentof(m) != o) {
+        corto_id id;
         g_fileWrite(file, 
             "<br/><span class='annotate'>from %s</span>\n", 
-            cx_fullname(cx_parentof(m), id) + 2);        
+            corto_fullname(corto_parentof(m), id) + 2);        
     }
 
     g_fileWrite(file, "</td></tr>\n");
@@ -506,19 +506,19 @@ static int html_printFunction(cx_function m, g_file file, cx_object o) {
     return 0;
 }
 
-static int html_printFunctionDetail(cx_function m, g_file file, cx_object o) {
-    cx_id id, path;
-    cx_object doc = cx_man(m);
-    cx_interface base = NULL;
+static int html_printFunctionDetail(corto_function m, g_file file, corto_object o) {
+    corto_id id, path;
+    corto_object doc = corto_man(m);
+    corto_interface base = NULL;
 
-    if (cx_instanceof(cx_interface_o, cx_parentof(m))) {
-        base = cx_interface(cx_parentof(m))->base;
+    if (corto_instanceof(corto_interface_o, corto_parentof(m))) {
+        base = corto_interface(corto_parentof(m))->base;
     }
 
-    g_fileWrite(file, "<a name=\"%s\"></a>\n", cx_nameof(m));
+    g_fileWrite(file, "<a name=\"%s\"></a>\n", corto_nameof(m));
     g_fileWrite(file, "<h3 class='detail'>");
-    if (cx_instanceof(cx_method_o, m)) {
-        if (cx_method(m)->_virtual) {
+    if (corto_instanceof(corto_method_o, m)) {
+        if (corto_method(m)->_virtual) {
             g_fileWrite(file, "<span class='virtual'>virtual</span>&nbsp;");
         }
     }
@@ -528,13 +528,13 @@ static int html_printFunctionDetail(cx_function m, g_file file, cx_object o) {
         "%s%s&nbsp;%s",
         html_ref(o, m->returnType, html_shortId(m->returnType, id), "", path),
         (!m->returnType->reference && m->returnsReference) ? "&" : "",
-        cx_nameof(m));
+        corto_nameof(m));
 
-    if (cx_instanceof(cx_method_o, m)) {
-        cx_function overrides = html_overrides(base, m);
+    if (corto_instanceof(corto_method_o, m)) {
+        corto_function overrides = html_overrides(base, m);
         if (overrides) {
-            cx_id id, sigName;
-            cx_signatureName(cx_fullname(overrides, id) + 2, sigName);
+            corto_id id, sigName;
+            corto_signatureName(corto_fullname(overrides, id) + 2, sigName);
             g_fileWrite(file, 
                 "&nbsp;<span class='overrides'>overrides %s</span>\n", 
                 sigName);            
@@ -544,16 +544,16 @@ static int html_printFunctionDetail(cx_function m, g_file file, cx_object o) {
     g_fileWrite(file, "</h3>\n");
     g_fileWrite(file, "<hr>\n");
 
-    cx_string description = doc_getDescription(m);
+    corto_string description = doc_getDescription(m);
     g_fileWrite(file, "<p>%s</p>\n", description);
 
-    cx_string text = doc_getText(m);
+    corto_string text = doc_getText(m);
     g_fileWrite(file, "<p>%s</p>\n", text);
 
-    cx_parameterseqForeach(m->parameters, p) {
-        cx_object paramDoc = cx_lookup(doc, p.name);
+    corto_parameterseqForeach(m->parameters, p) {
+        corto_object paramDoc = corto_lookup(doc, p.name);
         if (paramDoc) {
-            cx_string description = doc_getDescriptionFromDoc(paramDoc);
+            corto_string description = doc_getDescriptionFromDoc(paramDoc);
             if (description && strlen(description)) {
                 g_fileWrite(file, "<h4>%s%s : %s</h4>", 
                     p.name,
@@ -561,7 +561,7 @@ static int html_printFunctionDetail(cx_function m, g_file file, cx_object o) {
                     html_ref(o, p.type, html_shortId(p.type, id), "", path));
                 g_fileWrite(file, "<p>%s</p>", description);
 
-                cx_string text = doc_getTextFromDoc(paramDoc);
+                corto_string text = doc_getTextFromDoc(paramDoc);
                 if (text) {
                     g_fileWrite(file, "<p>%s</p>", text);
                 }
@@ -569,10 +569,10 @@ static int html_printFunctionDetail(cx_function m, g_file file, cx_object o) {
         }
     }
 
-    if ((m->returnType->kind != CX_VOID) || (m->returnType->reference)) {
-        cx_object returnDoc = cx_lookup(doc, "Returns");
-        cx_string description = returnDoc ? doc_getDescriptionFromDoc(returnDoc) : "";
-        cx_string text = returnDoc ? doc_getTextFromDoc(returnDoc) : "";
+    if ((m->returnType->kind != CORTO_VOID) || (m->returnType->reference)) {
+        corto_object returnDoc = corto_lookup(doc, "Returns");
+        corto_string description = returnDoc ? doc_getDescriptionFromDoc(returnDoc) : "";
+        corto_string text = returnDoc ? doc_getTextFromDoc(returnDoc) : "";
         if (description && strlen(description)) {
             g_fileWrite(file, "<h4>Returns</h4>\n");
             g_fileWrite(file, "<p>%s</p>\n", description);
@@ -585,30 +585,30 @@ static int html_printFunctionDetail(cx_function m, g_file file, cx_object o) {
     return 0;
 }
 
-static cx_bool html_functionsToPrint(
-    cx_object o, 
+static corto_bool html_functionsToPrint(
+    corto_object o, 
     html_printFunctionKind kind, 
-    cx_bool detail,
-    cx_objectseq *seq_out) 
+    corto_bool detail,
+    corto_objectseq *seq_out) 
 {
-    cx_bool result = TRUE;
+    corto_bool result = TRUE;
 
     if (kind == HTML_PRINT_METHODS) {
-        seq_out->length = cx_interface(o)->methods.length;
-        seq_out->buffer = (cx_object*)cx_interface(o)->methods.buffer;
-        cx_objectseqForeach((*seq_out), m) {
-            if (!detail || (cx_parentof(m) == o)) {
+        seq_out->length = corto_interface(o)->methods.length;
+        seq_out->buffer = (corto_object*)corto_interface(o)->methods.buffer;
+        corto_objectseqForeach((*seq_out), m) {
+            if (!detail || (corto_parentof(m) == o)) {
                 result = TRUE;
                 break;
             }
         }
         result = seq_out->length != 0;
     } else if (kind == HTML_PRINT_FUNCTIONS) {
-        *seq_out = cx_scopeClaim(o);
+        *seq_out = corto_scopeClaim(o);
         result = FALSE;
-         cx_objectseqForeach((*seq_out), m) {
-            if (cx_typeof(m) == (cx_type)cx_function_o) {
-                if (!detail || (cx_parentof(m) == o)) {
+         corto_objectseqForeach((*seq_out), m) {
+            if (corto_typeof(m) == (corto_type)corto_function_o) {
+                if (!detail || (corto_parentof(m) == o)) {
                     result = TRUE;
                     break;
                 }
@@ -620,34 +620,34 @@ static cx_bool html_functionsToPrint(
 }
 
 static int html_printFunctions (
-    cx_object o, 
+    corto_object o, 
     g_file file, 
-    cx_string title, 
+    corto_string title, 
     html_printFunctionKind kind, 
-    cx_bool detail) 
+    corto_bool detail) 
 {
-    cx_objectseq functions;
+    corto_objectseq functions;
 
-    cx_bool objectsToPrint = html_functionsToPrint(o, kind, detail, &functions);
+    corto_bool objectsToPrint = html_functionsToPrint(o, kind, detail, &functions);
     if (objectsToPrint) {
         g_fileWrite(file, "<h2>%s</h2>\n", title);
         g_fileWrite(file, "<table class='category' id=\"%s\">\n", title);
 
         if (kind != HTML_PRINT_FUNCTIONS) {
-            cx_vtableForeach(functions, m) {
+            corto_vtableForeach(functions, m) {
                 if (!detail) {
-                    html_printFunction(cx_function(m), file, o);
-                } else if (cx_parentof(m) == o) {
-                    html_printFunctionDetail(cx_function(m), file, o);
+                    html_printFunction(corto_function(m), file, o);
+                } else if (corto_parentof(m) == o) {
+                    html_printFunctionDetail(corto_function(m), file, o);
                 }
             }
         } else {
-            cx_objectseqForeach(functions, m) {
-                if (cx_typeof(m) == (cx_type)cx_function_o) {
+            corto_objectseqForeach(functions, m) {
+                if (corto_typeof(m) == (corto_type)corto_function_o) {
                     if (!detail) {
                         html_printFunction(m, file, o);
                     } else {
-                        html_printFunctionDetail(cx_function(m), file, o);                        
+                        html_printFunctionDetail(corto_function(m), file, o);                        
                     }
                 }
             }
@@ -657,19 +657,19 @@ static int html_printFunctions (
     }
 
     if (kind == HTML_PRINT_FUNCTIONS) {
-        cx_scopeRelease(functions);
+        corto_scopeRelease(functions);
     }
 
     return 0;
 }
 
-int html_printPrimitiveDetail(cx_object t, g_file file) {
+int html_printPrimitiveDetail(corto_object t, g_file file) {
 
-    cx_string description = doc_getDescription(t);
-    cx_string text = doc_getText(t);
+    corto_string description = doc_getDescription(t);
+    corto_string text = doc_getText(t);
 
-    g_fileWrite(file, "<a name=\"%s\"></a>\n", cx_nameof(t));
-    g_fileWrite(file, "<h3 class='detail'>%s</h3>", cx_nameof(t));
+    g_fileWrite(file, "<a name=\"%s\"></a>\n", corto_nameof(t));
+    g_fileWrite(file, "<h3 class='detail'>%s</h3>", corto_nameof(t));
     g_fileWrite(file, "<hr>\n");
     g_fileWrite(file, "<p>%s</p>\n", description);
     g_fileWrite(file, "<p>%s</p>\n", text);
@@ -677,33 +677,33 @@ int html_printPrimitiveDetail(cx_object t, g_file file) {
     return 0;
 }
 
-int html_printEnumDetail(cx_object t, g_file file) {
+int html_printEnumDetail(corto_object t, g_file file) {
 
-    cx_string description = doc_getDescription(t);
-    cx_string text = doc_getText(t);
+    corto_string description = doc_getDescription(t);
+    corto_string text = doc_getText(t);
 
-    g_fileWrite(file, "<a name=\"%s\"></a>\n", cx_nameof(t));
+    g_fileWrite(file, "<a name=\"%s\"></a>\n", corto_nameof(t));
     g_fileWrite(file, "<h3 class='detail'><span class='enumtype'>%s</span> %s</h3>", 
-        cx_nameof(cx_typeof(t)), cx_nameof(t));
+        corto_nameof(corto_typeof(t)), corto_nameof(t));
     g_fileWrite(file, "<hr>\n");
     g_fileWrite(file, "<p>%s</p>\n", description);
 
     g_fileWrite(file, "<table class='category'>\n");
-    cx_objectseqForeach(cx_enum(t)->constants, c) {
-        cx_string description = doc_getDescription(c);
-        if (cx_typeof(t) == cx_type(cx_enum_o)) {
+    corto_objectseqForeach(corto_enum(t)->constants, c) {
+        corto_string description = doc_getDescription(c);
+        if (corto_typeof(t) == corto_type(corto_enum_o)) {
             g_fileWrite(
                 file, 
                 "<tr><td><span class='constant'>%s</span></td><td>%d</td><td>%s</td></tr>\n",
-                cx_nameof(c), 
-                *(cx_constant*)c,
+                corto_nameof(c), 
+                *(corto_constant*)c,
                 description);
         } else {
             g_fileWrite(
                 file, 
                 "<tr><td><span class='constant'>%s</span></td><td>0x%x</td><td>%s</td></tr>\n",
-                cx_nameof(c), 
-                *(cx_constant*)c,
+                corto_nameof(c), 
+                *(corto_constant*)c,
                 description);            
         }
     }
@@ -714,34 +714,34 @@ int html_printEnumDetail(cx_object t, g_file file) {
     return 0;
 }
 
-int html_detailWalk(cx_object o, g_file file, cx_type type, int (*callback)(cx_object, g_file), htmlTypeWalkData_t *data) {
-    cx_objectseq scope = cx_scopeClaim(o);
+int html_detailWalk(corto_object o, g_file file, corto_type type, int (*callback)(corto_object, g_file), htmlTypeWalkData_t *data) {
+    corto_objectseq scope = corto_scopeClaim(o);
 
-    CX_UNUSED(o);
+    CORTO_UNUSED(o);
 
-    cx_objectseqForeach(scope, t) {
-        if (((data->instanceof && cx_instanceof(type, t)) || 
-                (cx_typeof(t) == type)) &&
-                !cx_llHasObject(data->printed, t)) {
+    corto_objectseqForeach(scope, t) {
+        if (((data->instanceof && corto_instanceof(type, t)) || 
+                (corto_typeof(t) == type)) &&
+                !corto_llHasObject(data->printed, t)) {
             if (callback) {
                 callback(t, file);
             }
-            cx_llAppend(data->printed, t);
+            corto_llAppend(data->printed, t);
         }
     }
 
-    cx_scopeRelease(scope);
+    corto_scopeRelease(scope);
 
     return 0;
 }
 
-static int html_printScope(cx_object o, g_file file, html_printMask mask, htmlData_t *data) {
+static int html_printScope(corto_object o, g_file file, html_printMask mask, htmlData_t *data) {
     htmlTypeWalkData_t walkData;
-    cx_uint32 count = 0;
+    corto_uint32 count = 0;
 
     walkData.instanceof = TRUE;
-    walkData.printed = cx_llNew();
-    walkData.counted = cx_llNew();
+    walkData.printed = corto_llNew();
+    walkData.counted = corto_llNew();
     walkData.file = file;
     walkData.data = data;
 
@@ -753,17 +753,17 @@ static int html_printScope(cx_object o, g_file file, html_printMask mask, htmlDa
 
     if (mask & PRINT_TYPES) {
         walkData.instanceof = FALSE;
-        count = html_printType(o, file, "Classes", cx_type(cx_class_o), count, &walkData);
-        count = html_printType(o, file, "Structs", cx_type(cx_struct_o), count, &walkData);
-        count = html_printType(o, file, "Interfaces", cx_type(cx_interface_o), count, &walkData);
-        count = html_printType(o, file, "Enumerations", cx_type(cx_enum_o), count, &walkData);
-        count = html_printType(o, file, "Bitmasks", cx_type(cx_bitmask_o), count, &walkData);
+        count = html_printType(o, file, "Classes", corto_type(corto_class_o), count, &walkData);
+        count = html_printType(o, file, "Structs", corto_type(corto_struct_o), count, &walkData);
+        count = html_printType(o, file, "Interfaces", corto_type(corto_interface_o), count, &walkData);
+        count = html_printType(o, file, "Enumerations", corto_type(corto_enum_o), count, &walkData);
+        count = html_printType(o, file, "Bitmasks", corto_type(corto_bitmask_o), count, &walkData);
 
         walkData.instanceof = TRUE;
-        count = html_printType(o, file, "Primitives", cx_type(cx_primitive_o), count, &walkData);
-        count = html_printType(o, file, "Collections", cx_type(cx_collection_o), count, &walkData);
-        count = html_printType(o, file, "Delegates", cx_type(cx_delegate_o), count, &walkData);
-        count = html_printType(o, file, "Other types", cx_type(cx_type_o), count, &walkData);
+        count = html_printType(o, file, "Primitives", corto_type(corto_primitive_o), count, &walkData);
+        count = html_printType(o, file, "Collections", corto_type(corto_collection_o), count, &walkData);
+        count = html_printType(o, file, "Delegates", corto_type(corto_delegate_o), count, &walkData);
+        count = html_printType(o, file, "Other types", corto_type(corto_type_o), count, &walkData);
         
         if (!(mask & PRINT_MEMBERS)) {
             count = html_printFunctions(o, file, "Functions", HTML_PRINT_FUNCTIONS, FALSE);
@@ -773,16 +773,16 @@ static int html_printScope(cx_object o, g_file file, html_printMask mask, htmlDa
     return 0;
 }
 
-static int html_printScopeDetail(cx_object o, g_file file, html_printMask mask, htmlData_t *data) {
+static int html_printScopeDetail(corto_object o, g_file file, html_printMask mask, htmlData_t *data) {
     htmlTypeWalkData_t walkData;
 
     walkData.instanceof = TRUE;
-    walkData.printed = cx_llNew();
+    walkData.printed = corto_llNew();
     walkData.counted = NULL; 
     walkData.file = file;
     walkData.data = data;
 
-    cx_string description = doc_getDescription(o);
+    corto_string description = doc_getDescription(o);
     if (description && strlen(description)) {
         g_fileWrite(file, "<a name='details'></a>\n");
         g_fileWrite(file, "<hr>\n");
@@ -798,11 +798,11 @@ static int html_printScopeDetail(cx_object o, g_file file, html_printMask mask, 
 
     if (mask & PRINT_TYPES) {
         /* Check whether there are types in this scope */
-        cx_bool hasTypes = FALSE;
-        cx_objectseq scope = cx_scopeClaim(o);
+        corto_bool hasTypes = FALSE;
+        corto_objectseq scope = corto_scopeClaim(o);
 
-        cx_objectseqForeach(scope, t) {
-            if (cx_instanceof(cx_type_o, t) && !cx_instanceof(cx_interface_o, t)) {
+        corto_objectseqForeach(scope, t) {
+            if (corto_instanceof(corto_type_o, t) && !corto_instanceof(corto_interface_o, t)) {
                 hasTypes = TRUE;
             }
         }
@@ -810,64 +810,64 @@ static int html_printScopeDetail(cx_object o, g_file file, html_printMask mask, 
         if (hasTypes) {
             walkData.instanceof = FALSE;
             g_fileWrite(file, "<h2>Type Documentation</h2>\n");
-            html_detailWalk(o, file, cx_type(cx_enum_o), html_printEnumDetail, &walkData);
-            html_detailWalk(o, file, cx_type(cx_bitmask_o), html_printEnumDetail, &walkData);
-            html_detailWalk(o, file, cx_type(cx_boolean_o), html_printPrimitiveDetail, &walkData);
-            html_detailWalk(o, file, cx_type(cx_character_o), html_printPrimitiveDetail, &walkData);
-            html_detailWalk(o, file, cx_type(cx_int_o), html_printPrimitiveDetail, &walkData);
-            html_detailWalk(o, file, cx_type(cx_uint_o), html_printPrimitiveDetail, &walkData);
-            html_detailWalk(o, file, cx_type(cx_float_o), html_printPrimitiveDetail, &walkData);
-            html_detailWalk(o, file, cx_type(cx_text_o), html_printPrimitiveDetail, &walkData);
-            html_detailWalk(o, file, cx_type(cx_binary_o), html_printPrimitiveDetail, &walkData);
+            html_detailWalk(o, file, corto_type(corto_enum_o), html_printEnumDetail, &walkData);
+            html_detailWalk(o, file, corto_type(corto_bitmask_o), html_printEnumDetail, &walkData);
+            html_detailWalk(o, file, corto_type(corto_boolean_o), html_printPrimitiveDetail, &walkData);
+            html_detailWalk(o, file, corto_type(corto_character_o), html_printPrimitiveDetail, &walkData);
+            html_detailWalk(o, file, corto_type(corto_int_o), html_printPrimitiveDetail, &walkData);
+            html_detailWalk(o, file, corto_type(corto_uint_o), html_printPrimitiveDetail, &walkData);
+            html_detailWalk(o, file, corto_type(corto_float_o), html_printPrimitiveDetail, &walkData);
+            html_detailWalk(o, file, corto_type(corto_text_o), html_printPrimitiveDetail, &walkData);
+            html_detailWalk(o, file, corto_type(corto_binary_o), html_printPrimitiveDetail, &walkData);
 
             walkData.instanceof = TRUE;
 
             /* Ensure that interfaces are excluded from generation */
-            html_detailWalk(o, file, cx_type(cx_interface_o), NULL, &walkData);
+            html_detailWalk(o, file, corto_type(corto_interface_o), NULL, &walkData);
 
             /* Print types that haven't been printed yet */
-            html_detailWalk(o, file, cx_type(cx_type_o), html_printPrimitiveDetail, &walkData);
+            html_detailWalk(o, file, corto_type(corto_type_o), html_printPrimitiveDetail, &walkData);
         }
 
         html_printFunctions(o, file, "Function Documentation", HTML_PRINT_FUNCTIONS, TRUE);
     }
 
-    cx_llFree(walkData.printed);
+    corto_llFree(walkData.printed);
 
     return 0;
 }
 
-static int html_printParents(cx_object o, g_file file, htmlData_t *data) {
-    cx_object parents[CX_MAX_SCOPE_DEPTH];
-    cx_object p = o;
-    cx_uint32 i = 0;
-    cx_id capitalizedTypeName;
+static int html_printParents(corto_object o, g_file file, htmlData_t *data) {
+    corto_object parents[CORTO_MAX_SCOPE_DEPTH];
+    corto_object p = o;
+    corto_uint32 i = 0;
+    corto_id capitalizedTypeName;
 
-    CX_UNUSED(data);
+    CORTO_UNUSED(data);
 
     while(p) {
         parents[i] = p;
-        p = cx_parentof(p);
+        p = corto_parentof(p);
         i++;
     }
     g_fileWrite(file, "<p class='parents'>\n");
     while(i) {
-        cx_uint32 j = 0;
+        corto_uint32 j = 0;
         i--;
         if (i) {
             g_fileWrite(file, "<a href=\"");
             for (j = 0; j < i; j ++) {
                 g_fileWrite(file, "../");
             }
-            g_fileWrite(file, "%s.html\">", cx_nameof(parents[i]));
+            g_fileWrite(file, "%s.html\">", corto_nameof(parents[i]));
         }
 
-        if (cx_nameof(parents[i])) {
-            g_fileWrite(file, "%s", cx_nameof(parents[i]));
+        if (corto_nameof(parents[i])) {
+            g_fileWrite(file, "%s", corto_nameof(parents[i]));
         } else {
             g_fileWrite(file, "root");
         }
-        strcpy(capitalizedTypeName, cx_nameof(cx_typeof(parents[i])));
+        strcpy(capitalizedTypeName, corto_nameof(corto_typeof(parents[i])));
         capitalizedTypeName[0] = toupper(capitalizedTypeName[0]);
         g_fileWrite(file, " %s", capitalizedTypeName);
         if (i) {
@@ -883,33 +883,33 @@ static int html_printParents(cx_object o, g_file file, htmlData_t *data) {
     return 0;
 }
 
-static int html_printInheritance(cx_interface o, g_file file) {
+static int html_printInheritance(corto_interface o, g_file file) {
     if (o->base) {
         g_fileWrite(file, "<table class='category'>\n");
-        cx_id id, path;
+        corto_id id, path;
         g_fileWrite(file, "<tr><td>Base</td><td>%s</td></tr>\n", 
             html_ref(o, o->base, html_shortId(o->base, id), "reference", path));
-        if (cx_instanceof(cx_struct_o, o)) {
+        if (corto_instanceof(corto_struct_o, o)) {
             g_fileWrite(file, "<tr><td>Access</td><td>%s</td></tr>",
-                html_ref(o, cx_modifier_o, cx_modifierStr(cx_struct(o)->baseAccess), "reference-enum", path));
+                html_ref(o, corto_modifier_o, corto_modifierStr(corto_struct(o)->baseAccess), "reference-enum", path));
         }
     }
 
-    if (cx_instanceof(cx_class_o, o) && cx_class(o)->implements.length) {
-        cx_int32 count = 0;
+    if (corto_instanceof(corto_class_o, o) && corto_class(o)->implements.length) {
+        corto_int32 count = 0;
 
         if (!o->base) {
             g_fileWrite(file, "<table class='category'>\n");   
         }
 
         g_fileWrite(file, "<tr><td>Implements</td><td>");
-        cx_interfaceseqForeach(cx_class(o)->implements, i) {
-            cx_id path;
+        corto_interfaceseqForeach(corto_class(o)->implements, i) {
+            corto_id path;
             if (count) {
                 g_fileWrite(file, ", ");
             }
             g_fileWrite(file, "%s", 
-                html_ref(o, i, cx_nameof(i), "reference", path));
+                html_ref(o, i, corto_nameof(i), "reference", path));
             count++;
         }
         g_fileWrite(file, "</td></tr>\n");
@@ -922,42 +922,42 @@ static int html_printInheritance(cx_interface o, g_file file) {
     return 0;
 }
 
-static int html_printPackage(cx_object o, g_file file, htmlData_t *data) {
+static int html_printPackage(corto_object o, g_file file, htmlData_t *data) {
     html_printScope(o, file, PRINT_TYPES, data);
     html_printScopeDetail(o, file, PRINT_TYPES, data);
     return 0;
 }
 
-static int html_printClass(cx_object o, g_file file, htmlData_t *data) {
+static int html_printClass(corto_object o, g_file file, htmlData_t *data) {
     html_printInheritance(o, file);
     html_printScope(o, file, PRINT_TYPES | PRINT_MEMBERS, data);
     html_printScopeDetail(o, file, PRINT_TYPES | PRINT_MEMBERS, data);
     return 0;
 }
 
-static int html_printStruct(cx_object o, g_file file, htmlData_t *data) {
+static int html_printStruct(corto_object o, g_file file, htmlData_t *data) {
     return html_printScope(o, file, PRINT_TYPES | PRINT_MEMBERS, data);
 }
 
-static int html_printInterface(cx_object o, g_file file, htmlData_t *data) {
+static int html_printInterface(corto_object o, g_file file, htmlData_t *data) {
     return html_printScope(o, file, PRINT_TYPES | PRINT_MEMBERS, data);
 }
 
-static g_file html_openIndexHtml(cx_object o, htmlData_t *data) {
+static g_file html_openIndexHtml(corto_object o, htmlData_t *data) {
     char filePath[PATH_MAX];
     g_file file;
-    cx_uint32 level = 0; /* Root is at 0 */
-    cx_uint32 i;
+    corto_uint32 level = 0; /* Root is at 0 */
+    corto_uint32 i;
 
-    html_getPath(cx_parentof(o), filePath, data, &level);
+    html_getPath(corto_parentof(o), filePath, data, &level);
 
-    if (cx_mkdir(filePath)) {
-        printf("failed to create dir '%s' (%s)\n", filePath, cx_lasterr());
+    if (corto_mkdir(filePath)) {
+        printf("failed to create dir '%s' (%s)\n", filePath, corto_lasterr());
         goto error;
     }
 
     strcat(filePath, "/");
-    strcat(filePath, cx_nameof(o));
+    strcat(filePath, corto_nameof(o));
     strcat(filePath, ".html");
     file = g_fileOpen(data->generator, filePath);
     if (!file) {
@@ -1006,7 +1006,7 @@ static g_file html_openIndexHtml(cx_object o, htmlData_t *data) {
         g_fileWrite(file, "../");
     }
     g_fileWrite(file, "smoothscroll.js\"></script>\n");
-    g_fileWrite(file, "<title>%s | Corto documentation</title>\n", cx_nameof(o));
+    g_fileWrite(file, "<title>%s | Corto documentation</title>\n", corto_nameof(o));
     g_fileDedent(file);
     g_fileWrite(file, "</head>\n");
     g_fileWrite(file, "<body>\n");
@@ -1046,14 +1046,14 @@ static g_file html_openIndexHtml(cx_object o, htmlData_t *data) {
     g_fileWrite(file, "<div class='package'>\n");
     g_fileIndent(file);
 
-    cx_id capitalizedTypeName;
-    strcpy(capitalizedTypeName, cx_nameof(cx_typeof(o)));
+    corto_id capitalizedTypeName;
+    strcpy(capitalizedTypeName, corto_nameof(corto_typeof(o)));
     capitalizedTypeName[0] = toupper(capitalizedTypeName[0]);
-    if (g_fileWrite(file, "<h1>%s %s</h1>\n", cx_nameof(o), capitalizedTypeName)) {
+    if (g_fileWrite(file, "<h1>%s %s</h1>\n", corto_nameof(o), capitalizedTypeName)) {
         goto error;
     }
 
-    cx_string description = doc_getDescription(o);
+    corto_string description = doc_getDescription(o);
     if (description && strlen(description)) {
         g_fileWrite(file, "<p>%s <a class='details smoothScroll' href='#details'>More...</a></p>\n", description);
     }
@@ -1078,27 +1078,27 @@ static void html_closeIndexHtml(g_file file) {
     g_fileClose(file);
 }
 
-static int html_walk(cx_object o, void *userData) {
+static int html_walk(corto_object o, void *userData) {
     htmlData_t *data = userData;
     g_file file = NULL;
-    cx_bool exploreScope = TRUE;
+    corto_bool exploreScope = TRUE;
 
-    if (cx_instanceof(cx_package_o, o)) {
+    if (corto_instanceof(corto_package_o, o)) {
         file = html_openIndexHtml(o, data);
         if (html_printPackage(o, file, data)) {
             goto error;
         }
-    } else if (cx_instanceof(cx_class_o, o)) {
+    } else if (corto_instanceof(corto_class_o, o)) {
         file = html_openIndexHtml(o, data);
         if (html_printClass(o, file, data)) {
             goto error;
         }
-    } else if (cx_instanceof(cx_struct_o, o)) {
+    } else if (corto_instanceof(corto_struct_o, o)) {
         file = html_openIndexHtml(o, data);
         if (html_printStruct(o, file, data)) {
             goto error;
         }
-    } else if (cx_instanceof(cx_interface_o, o)) {
+    } else if (corto_instanceof(corto_interface_o, o)) {
         file = html_openIndexHtml(o, data);
         if (html_printInterface(o, file, data)) {
             goto error;
@@ -1110,7 +1110,7 @@ static int html_walk(cx_object o, void *userData) {
     }
 
     if (exploreScope) {
-        if (!cx_scopeWalk(o, html_walk, data)) {
+        if (!corto_scopeWalk(o, html_walk, data)) {
             goto error;
         }
     }
@@ -1119,13 +1119,13 @@ error:
     return 0;
 }
 
-static cx_int16 html_copy(const char* path, const char *name) {
+static corto_int16 html_copy(const char* path, const char *name) {
     char sourcePath[PATH_MAX];
     char destinationPath[PATH_MAX];
     char *cortoHome = getenv("CORTO_HOME");
     sprintf(sourcePath, "%s/etc/corto/%s/generators/%s", cortoHome, CORTO_VERSION, name);
     sprintf(destinationPath, "%s/%s", path, name);
-    if (cx_cp(sourcePath, destinationPath)) {
+    if (corto_cp(sourcePath, destinationPath)) {
         goto error;
     }
     return 0;
@@ -1133,18 +1133,18 @@ error:
     return -1;
 }
 
-cx_int16 corto_genMain(cx_generator g) {
+corto_int16 corto_genMain(corto_generator g) {
     const char docsFilename[] = "doc";
-    cx_object md;
+    corto_object md;
 
-    cx_mkdir(docsFilename);
+    corto_mkdir(docsFilename);
     htmlData_t data = {docsFilename, 1, "", g};
 
     /* If the markdown package is not yet built, don't do HTML generation */
-    if (!(md = cx_resolve(NULL, "corto::md"))) {
+    if (!(md = corto_resolve(NULL, "corto::md"))) {
         return 0;        
     } else {
-        cx_release(md);
+        corto_release(md);
     }
 
     if (html_copy(data.path, "jquery-1.11.2.min.js")) {

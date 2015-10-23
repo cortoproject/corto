@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::corto::math::abs(int64 x) */
-cx_uint64 _mth_abs(cx_int64 x) {
+corto_uint64 _mth_abs(corto_int64 x) {
 /* $begin(::corto::math::abs) */
 
     return llabs(x);
@@ -22,7 +22,7 @@ cx_uint64 _mth_abs(cx_int64 x) {
 }
 
 /* ::corto::math::acos(float64 x) */
-cx_float64 _mth_acos(cx_float64 x) {
+corto_float64 _mth_acos(corto_float64 x) {
 /* $begin(::corto::math::acos) */
 
     return acos(x);
@@ -31,7 +31,7 @@ cx_float64 _mth_acos(cx_float64 x) {
 }
 
 /* ::corto::math::asin(float64 x) */
-cx_float64 _mth_asin(cx_float64 x) {
+corto_float64 _mth_asin(corto_float64 x) {
 /* $begin(::corto::math::asin) */
 
     return asin(x);
@@ -40,7 +40,7 @@ cx_float64 _mth_asin(cx_float64 x) {
 }
 
 /* ::corto::math::atan(float64 x) */
-cx_float64 _mth_atan(cx_float64 x) {
+corto_float64 _mth_atan(corto_float64 x) {
 /* $begin(::corto::math::atan) */
 
     return atan(x);
@@ -49,7 +49,7 @@ cx_float64 _mth_atan(cx_float64 x) {
 }
 
 /* ::corto::math::cos(float64 x) */
-cx_float64 _mth_cos(cx_float64 x) {
+corto_float64 _mth_cos(corto_float64 x) {
 /* $begin(::corto::math::cos) */
 
     return cos(x);
@@ -58,7 +58,7 @@ cx_float64 _mth_cos(cx_float64 x) {
 }
 
 /* ::corto::math::exp(float64 x) */
-cx_float64 _mth_exp(cx_float64 x) {
+corto_float64 _mth_exp(corto_float64 x) {
 /* $begin(::corto::math::exp) */
 
     return exp(x);
@@ -67,7 +67,7 @@ cx_float64 _mth_exp(cx_float64 x) {
 }
 
 /* ::corto::math::log(float64 x) */
-cx_float64 _mth_log(cx_float64 x) {
+corto_float64 _mth_log(corto_float64 x) {
 /* $begin(::corto::math::log) */
 
     return log(x);
@@ -76,7 +76,7 @@ cx_float64 _mth_log(cx_float64 x) {
 }
 
 /* ::corto::math::log10(float64 x) */
-cx_float64 _mth_log10(cx_float64 x) {
+corto_float64 _mth_log10(corto_float64 x) {
 /* $begin(::corto::math::log10) */
 
     return log10(x);
@@ -85,7 +85,7 @@ cx_float64 _mth_log10(cx_float64 x) {
 }
 
 /* ::corto::math::pow(float64 x,float64 p) */
-cx_float64 _mth_pow(cx_float64 x, cx_float64 p) {
+corto_float64 _mth_pow(corto_float64 x, corto_float64 p) {
 /* $begin(::corto::math::pow) */
 
     return pow(x, p);
@@ -94,16 +94,16 @@ cx_float64 _mth_pow(cx_float64 x, cx_float64 p) {
 }
 
 /* ::corto::math::rand() */
-cx_float64 _mth_rand(void) {
+corto_float64 _mth_rand(void) {
 /* $begin(::corto::math::rand) */
 
-    return (cx_float64)rand() / (cx_float64)RAND_MAX;
+    return (corto_float64)rand() / (corto_float64)RAND_MAX;
 
 /* $end */
 }
 
 /* ::corto::math::seed(uint32 seed) */
-cx_void _mth_seed(cx_uint32 seed) {
+corto_void _mth_seed(corto_uint32 seed) {
 /* $begin(::corto::math::seed) */
 
     srand(seed);
@@ -112,7 +112,7 @@ cx_void _mth_seed(cx_uint32 seed) {
 }
 
 /* ::corto::math::sin(float64 x) */
-cx_float64 _mth_sin(cx_float64 x) {
+corto_float64 _mth_sin(corto_float64 x) {
 /* $begin(::corto::math::sin) */
 
     return sin(x);
@@ -121,7 +121,7 @@ cx_float64 _mth_sin(cx_float64 x) {
 }
 
 /* ::corto::math::sqrt(float64 x) */
-cx_float64 _mth_sqrt(cx_float64 x) {
+corto_float64 _mth_sqrt(corto_float64 x) {
 /* $begin(::corto::math::sqrt) */
 
     return sqrt(x);
@@ -130,7 +130,7 @@ cx_float64 _mth_sqrt(cx_float64 x) {
 }
 
 /* ::corto::math::tan(float64 x) */
-cx_float64 _mth_tan(cx_float64 x) {
+corto_float64 _mth_tan(corto_float64 x) {
 /* $begin(::corto::math::tan) */
 
     return tan(x);
@@ -141,8 +141,8 @@ cx_float64 _mth_tan(cx_float64 x) {
 int mathMain(int argc, char* argv[]) {
 /* $begin(main) */
     /* Insert code that must be run when component is loaded */
-    CX_UNUSED(argc);
-    CX_UNUSED(argv);
+    CORTO_UNUSED(argc);
+    CORTO_UNUSED(argv);
     return 0;
 /* $end */
 }

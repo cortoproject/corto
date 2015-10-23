@@ -9,7 +9,7 @@
 #include "ic.h"
 
 /* ::corto::ic::variable::construct() */
-cx_int16 _ic_variable_construct(ic_variable this) {
+corto_int16 _ic_variable_construct(ic_variable this) {
 /* $begin(::corto::ic::variable::construct) */
     ic_storage(this)->kind = IC_VARIABLE;
     return ic_storage_construct(ic_storage(this));

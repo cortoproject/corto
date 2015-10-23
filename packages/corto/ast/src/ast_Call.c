@@ -12,17 +12,17 @@
 #include "ast__private.h"
 
 /* Insert implicit casts when argument-expressions do not match */
-cx_int16 ast_Call_insertCasts(ast_Call this) {
-    cx_iter argumentIter;
+corto_int16 ast_Call_insertCasts(ast_Call this) {
+    corto_iter argumentIter;
     ast_Expression argument;
-    cx_uint32 i = 0;
-    cx_type parameterType, argumentType;
+    corto_uint32 i = 0;
+    corto_type parameterType, argumentType;
 
     if (this->arguments) {
-        cx_ll arguments = ast_Expression_toList(this->arguments);
-        argumentIter = cx_llIter(arguments);
-        while(cx_iterHasNext(&argumentIter)) {
-            argument = cx_iterNext(&argumentIter);
+        corto_ll arguments = ast_Expression_toList(this->arguments);
+        argumentIter = corto_llIter(arguments);
+        while(corto_iterHasNext(&argumentIter)) {
+            argument = corto_iterNext(&argumentIter);
             parameterType = this->parameters.buffer[i].type;
             argumentType = ast_Expression_getType(argument);
 
@@ -39,19 +39,19 @@ cx_int16 ast_Call_insertCasts(ast_Call this) {
 
                 /* Any types are handled in the translation to the target representation. It is often
                  * more efficient to push a value as any than to first cast it to any and then push it. */
-                if (parameterType->kind != CX_ANY) {
+                if (parameterType->kind != CORTO_ANY) {
                     expr = ast_Expression_cast(argument, parameterType, this->parameters.buffer[i].passByReference);
                     if (expr) {
-                        cx_claim(expr);
-                        cx_llReplace(arguments, argument, expr);
-                        cx_release(argument);
+                        corto_claim(expr);
+                        corto_llReplace(arguments, argument, expr);
+                        corto_release(argument);
                     }
                 }
             }
 
             i++;
         }
-        cx_setref(&this->arguments, ast_Expression_fromList(arguments));
+        corto_setref(&this->arguments, ast_Expression_fromList(arguments));
         ast_Expression_cleanList(arguments);
     }
 
@@ -63,7 +63,7 @@ error:
 /* $end */
 
 /* ::corto::ast::Call::construct() */
-cx_int16 _ast_Call_construct(ast_Call this) {
+corto_int16 _ast_Call_construct(ast_Call this) {
 /* $begin(::corto::ast::Call::construct) */
     ast_Node(this)->kind = Ast_CallExpr;
 
@@ -72,7 +72,7 @@ cx_int16 _ast_Call_construct(ast_Call this) {
         goto error;
     }
 
-    cx_setref(&ast_Expression(this)->type, this->returnType);
+    corto_setref(&ast_Expression(this)->type, this->returnType);
     ast_Expression(this)->isReference =
         this->returnsReference || this->returnType->reference;
 
@@ -85,57 +85,57 @@ error:
 }
 
 /* ::corto::ast::Call::hasReturnedResource() */
-cx_bool _ast_Call_hasReturnedResource_v(ast_Call this) {
+corto_bool _ast_Call_hasReturnedResource_v(ast_Call this) {
 /* $begin(::corto::ast::Call::hasReturnedResource) */
 
     return this->returnType->reference || 
         this->returnsReference || 
-        ((this->returnType->kind == CX_PRIMITIVE) && (cx_primitive(this->returnType)->kind == CX_TEXT));
+        ((this->returnType->kind == CORTO_PRIMITIVE) && (corto_primitive(this->returnType)->kind == CORTO_TEXT));
 
 /* $end */
 }
 
 /* ::corto::ast::Call::hasSideEffects() */
-cx_bool _ast_Call_hasSideEffects_v(ast_Call this) {
+corto_bool _ast_Call_hasSideEffects_v(ast_Call this) {
 /* $begin(::corto::ast::Call::hasSideEffects) */
-    CX_UNUSED(this);
+    CORTO_UNUSED(this);
     return TRUE;
 /* $end */
 }
 
 /* ::corto::ast::Call::setParameters(function function) */
-cx_void _ast_Call_setParameters(ast_Call this, cx_function function) {
+corto_void _ast_Call_setParameters(ast_Call this, corto_function function) {
 /* $begin(::corto::ast::Call::setParameters) */
-    cx_uint32 i;
+    corto_uint32 i;
 
     /* Set parameters */
-    cx_setref(&this->returnType, function->returnType);
+    corto_setref(&this->returnType, function->returnType);
     this->returnsReference = function->returnsReference;
 
-    cx_parameterSeqSize(&this->parameters, function->parameters.length);
+    corto_parameterSeqSize(&this->parameters, function->parameters.length);
 
     for (i = 0; i < function->parameters.length; i++) {
-        cx_setref(&this->parameters.buffer[i].type, function->parameters.buffer[i].type);
-        this->parameters.buffer[i].name = cx_strdup(function->parameters.buffer[i].name);
+        corto_setref(&this->parameters.buffer[i].type, function->parameters.buffer[i].type);
+        this->parameters.buffer[i].name = corto_strdup(function->parameters.buffer[i].name);
         this->parameters.buffer[i].passByReference = function->parameters.buffer[i].passByReference;
     }
 /* $end */
 }
 
 /* ::corto::ast::Call::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _ast_Call_toIc_v(ast_Call this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _ast_Call_toIc_v(ast_Call this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::Call::toIc) */
     ic_storage result = NULL;
     ic_node function;
     ast_Expression argument = NULL;
     ic_op *pushIcs = NULL; /* Cache push instructions before inserting in program to avoid issues with nested calls */
-    cx_int32 argumentId = 0, argumentCount = 0;
-    cx_type thisType = ast_Expression_getType(ast_Expression(this));
-    cx_ll arguments = NULL;
-    cx_uint32 argumentStorageCount = 0;
-    cx_int32 i = 0;
+    corto_int32 argumentId = 0, argumentCount = 0;
+    corto_type thisType = ast_Expression_getType(ast_Expression(this));
+    corto_ll arguments = NULL;
+    corto_uint32 argumentStorageCount = 0;
+    corto_int32 i = 0;
 
-    CX_UNUSED(stored);
+    CORTO_UNUSED(stored);
 
     if (storage && (storage->type == thisType)) {
         result = storage;
@@ -149,7 +149,7 @@ ic_node _ast_Call_toIc_v(ast_Call this, ic_program program, ic_storage storage, 
     if (this->arguments) {
         arguments = ast_Expression_toList(this->arguments);
         if (arguments) {
-            argumentCount = cx_llSize(arguments);
+            argumentCount = corto_llSize(arguments);
         }
     }
 
@@ -168,18 +168,18 @@ ic_node _ast_Call_toIc_v(ast_Call this, ic_program program, ic_storage storage, 
 
     /* Push arguments */
     if (arguments) {
-        cx_iter argumentIter;
+        corto_iter argumentIter;
         ic_node argumentIc = NULL;
         ic_storage argumentStorage = NULL;
 
         /* Temporary storage for push-instructions required for pushing the arguments of this function */
-        argumentIter = cx_llIter(arguments);
-        while(cx_iterHasNext(&argumentIter)) {
-            cx_type paramType, exprType;
+        argumentIter = corto_llIter(arguments);
+        while(corto_iterHasNext(&argumentIter)) {
+            corto_type paramType, exprType;
             ic_derefKind deref = IC_DEREF_ADDRESS;
-            cx_bool isAny = FALSE;
+            corto_bool isAny = FALSE;
 
-            argument = cx_iterNext(&argumentIter);
+            argument = corto_iterNext(&argumentIter);
             if (!argumentStorage ||
               (argumentIc == (ic_node)argumentStorage) ||
               (ast_Expression_getType(argument) != argumentStorage->type)) {
@@ -194,8 +194,8 @@ ic_node _ast_Call_toIc_v(ast_Call this, ic_program program, ic_storage storage, 
             paramType = this->parameters.buffer[i].type;
             exprType = ast_Expression_getType(argument);
 
-            if (paramType->kind == CX_ANY) {
-                if (exprType && (exprType->kind != CX_ANY)) {
+            if (paramType->kind == CORTO_ANY) {
+                if (exprType && (exprType->kind != CORTO_ANY)) {
                     isAny = TRUE;
                 } else if (!exprType) {
                     isAny = TRUE;
@@ -208,9 +208,9 @@ ic_node _ast_Call_toIc_v(ast_Call this, ic_program program, ic_storage storage, 
 
             if (!isAny && ast_Expression(argument)->deref == Ast_ByValue) {
                 /* If argument is pass by value or argument is not a primitive, pass by value */
-                if (!this->parameters.buffer[i].passByReference || (paramType->kind != CX_PRIMITIVE)) {
+                if (!this->parameters.buffer[i].passByReference || (paramType->kind != CORTO_PRIMITIVE)) {
                     /* Void references can't be passed as value */
-                    if ((exprType->kind != CX_VOID) && (paramType->kind != CX_VOID)) {
+                    if ((exprType->kind != CORTO_VOID) && (paramType->kind != CORTO_VOID)) {
                         deref = IC_DEREF_VALUE;
                     }
                 }

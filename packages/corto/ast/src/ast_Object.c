@@ -13,17 +13,17 @@
 /* $end */
 
 /* ::corto::ast::Object::construct() */
-cx_int16 _ast_Object_construct(ast_Object this) {
+corto_int16 _ast_Object_construct(ast_Object this) {
 /* $begin(::corto::ast::Object::construct) */
-    cx_type t = cx_typeof(ast_Object(this)->value);
+    corto_type t = corto_typeof(ast_Object(this)->value);
 
     /* TODO: this is not nice */
-    if(t == cx_type(cx_constant_o)) {
-        t = cx_parentof(ast_Object(this)->value);
+    if(t == corto_type(corto_constant_o)) {
+        t = corto_parentof(ast_Object(this)->value);
     }
 
     ast_Storage(this)->kind = Ast_ObjectStorage;
-    cx_setref(&ast_Expression(this)->type, t);
+    corto_setref(&ast_Expression(this)->type, t);
     ast_Expression(this)->isReference = TRUE;
 
     return ast_Storage_construct(ast_Storage(this));
@@ -31,14 +31,14 @@ cx_int16 _ast_Object_construct(ast_Object this) {
 }
 
 /* ::corto::ast::Object::getValue() */
-cx_word _ast_Object_getValue(ast_Object this) {
+corto_word _ast_Object_getValue(ast_Object this) {
 /* $begin(::corto::ast::Object::getValue) */
-    cx_word result = 0;
+    corto_word result = 0;
 
     /* Value of objects can only be used at compiletime when object is of
      * type constant. */
-    if (cx_instanceof(cx_type(cx_constant_o), ast_Object(this)->value)) {
-        result = (cx_word)ast_Object(this)->value;
+    if (corto_instanceof(corto_type(corto_constant_o), ast_Object(this)->value)) {
+        result = (corto_word)ast_Object(this)->value;
     }
 
     return result;
@@ -46,48 +46,48 @@ cx_word _ast_Object_getValue(ast_Object this) {
 }
 
 /* ::corto::ast::Object::serialize(type dstType,word dst) */
-cx_int16 _ast_Object_serialize(ast_Object this, cx_type dstType, cx_word dst) {
+corto_int16 _ast_Object_serialize(ast_Object this, corto_type dstType, corto_word dst) {
 /* $begin(::corto::ast::Object::serialize) */
     ast_valueKind kind;
 
     if (!dstType->reference) {
-        cx_bool srcIsDelegate = FALSE, dstIsDelegate = FALSE;
-        cx_object obj = ast_Object(this)->value;
-        cx_type srcType = cx_typeof(obj);
+        corto_bool srcIsDelegate = FALSE, dstIsDelegate = FALSE;
+        corto_object obj = ast_Object(this)->value;
+        corto_type srcType = corto_typeof(obj);
 
         /* Handle delegates */
-        if ((srcType->kind == CX_COMPOSITE) && (cx_interface(srcType)->kind == CX_DELEGATE)) {
+        if ((srcType->kind == CORTO_COMPOSITE) && (corto_interface(srcType)->kind == CORTO_DELEGATE)) {
             srcIsDelegate = TRUE;
         }
-        if ((dstType->kind == CX_COMPOSITE) && (cx_interface(dstType)->kind == CX_DELEGATE)) {
+        if ((dstType->kind == CORTO_COMPOSITE) && (corto_interface(dstType)->kind == CORTO_DELEGATE)) {
             dstIsDelegate = TRUE;
         }
 
         /* Handle iterators */
-        if ((dstType->kind == CX_ITERATOR) && (srcType->kind == CX_COLLECTION)) {
-            cx_iterator_set((void*)dst, obj, cx_collection(srcType));
+        if ((dstType->kind == CORTO_ITERATOR) && (srcType->kind == CORTO_COLLECTION)) {
+            corto_iterator_set((void*)dst, obj, corto_collection(srcType));
         } else if (dstIsDelegate) {
             if (srcIsDelegate) {
-                cx_value vDst, vSrc;
-                cx_valueValueInit(&vDst, NULL, cx_type(dstType), (void *)dst);
-                cx_valueValueInit(&vSrc, NULL, cx_type(srcType), ast_Object(this)->value);
-                cx_copyv(&vDst, &vSrc);
-            } else if ((srcType->kind == CX_COMPOSITE) && (cx_interface(srcType)->kind == CX_PROCEDURE)) {
-                cx_setref(&((cx_delegatedata *)dst)->procedure, ast_Object(this)->value);
-                cx_setref(&((cx_delegatedata *)dst)->instance, NULL);
+                corto_value vDst, vSrc;
+                corto_valueValueInit(&vDst, NULL, corto_type(dstType), (void *)dst);
+                corto_valueValueInit(&vSrc, NULL, corto_type(srcType), ast_Object(this)->value);
+                corto_copyv(&vDst, &vSrc);
+            } else if ((srcType->kind == CORTO_COMPOSITE) && (corto_interface(srcType)->kind == CORTO_PROCEDURE)) {
+                corto_setref(&((corto_delegatedata *)dst)->procedure, ast_Object(this)->value);
+                corto_setref(&((corto_delegatedata *)dst)->instance, NULL);
             }
 
-        } else if (cx_instanceof((cx_type)dstType, ast_Object(this)->value)) {
+        } else if (corto_instanceof((corto_type)dstType, ast_Object(this)->value)) {
             /* If object is not of a reference type and object is of dstType, copy value */
-            cx_value vDst, vSrc;
-            cx_valueValueInit(&vDst, NULL, cx_type(dstType), (void *)dst);
-            cx_valueValueInit(&vSrc, NULL, cx_type(srcType), obj);
-            cx_copyv(&vDst, &vSrc);
+            corto_value vDst, vSrc;
+            corto_valueValueInit(&vDst, NULL, corto_type(dstType), (void *)dst);
+            corto_valueValueInit(&vSrc, NULL, corto_type(srcType), obj);
+            corto_copyv(&vDst, &vSrc);
 
         } else {
-            cx_id id, id2;
+            corto_id id, id2;
             ast_Parser_error(yparser(), "type '%s' of object does not match destinationtype '%s'",
-                    ast_Parser_id(cx_typeof(ast_Object(this)->value), id),
+                    ast_Parser_id(corto_typeof(ast_Object(this)->value), id),
                     ast_Parser_id(dstType, id2));
             goto error;
         }
@@ -100,24 +100,24 @@ cx_int16 _ast_Object_serialize(ast_Object this, cx_type dstType, cx_word dst) {
 
         switch(kind) {
         case Ast_Bool:
-            *(cx_bool*)dst = ast_Object(this)->value ? TRUE : FALSE;
+            *(corto_bool*)dst = ast_Object(this)->value ? TRUE : FALSE;
             break;
         case Ast_Text: {
-            cx_id id;
-            if (*(cx_string*)dst) {
-                cx_dealloc(*(cx_string*)dst);
+            corto_id id;
+            if (*(corto_string*)dst) {
+                corto_dealloc(*(corto_string*)dst);
             }
-            *(cx_string*)dst = cx_strdup(ast_Parser_id(ast_Object(this)->value, id));
+            *(corto_string*)dst = corto_strdup(ast_Parser_id(ast_Object(this)->value, id));
             break;
         }
         case Ast_Ref:
-            if (*(cx_object*)dst) {
-                cx_release(*(cx_object*)dst);
+            if (*(corto_object*)dst) {
+                corto_release(*(corto_object*)dst);
             }
-            cx_setref((cx_object*)dst, ast_Object(this)->value);
+            corto_setref((corto_object*)dst, ast_Object(this)->value);
             break;
         default: {
-            cx_id id;
+            corto_id id;
             ast_Parser_error(yparser(), "cannot serialize object value to storage of type '%s'", ast_Parser_id(dstType, id));
             goto error;
             break;
@@ -132,11 +132,11 @@ error:
 }
 
 /* ::corto::ast::Object::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _ast_Object_toIc_v(ast_Object this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _ast_Object_toIc_v(ast_Object this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::Object::toIc) */
-    CX_UNUSED(program);
-    CX_UNUSED(storage);
-    CX_UNUSED(stored);
+    CORTO_UNUSED(program);
+    CORTO_UNUSED(storage);
+    CORTO_UNUSED(stored);
     return ic_node(ic_program_getObject(program, this->value));;
 /* $end */
 }

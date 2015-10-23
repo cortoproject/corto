@@ -11,41 +11,41 @@
 /* $header() */
 #include "ast__private.h"
 #include "ast.h"
-#include "cx_util.h"
-#include "cx_loader.h"
-#include "cx_file.h"
-#include "cx_mm.h"
+#include "corto_util.h"
+#include "corto_loader.h"
+#include "corto_file.h"
+#include "corto_mm.h"
 
-cx_threadKey ast_PARSER_KEY;
+corto_threadKey ast_PARSER_KEY;
 
 /* Run a corto file */
-int fast_cortoRun(cx_string file, int argc, char* argv[], void* udata) {
-    cx_char* source;
+int fast_cortoRun(corto_string file, int argc, char* argv[], void* udata) {
+    corto_char* source;
     ast_Parser p;
-    cx_int32 i;
-    cx_stringSeq seq;
-    CX_UNUSED(udata);
+    corto_int32 i;
+    corto_stringSeq seq;
+    CORTO_UNUSED(udata);
 
-    seq.buffer = cx_alloc(argc * sizeof(cx_string));
+    seq.buffer = corto_alloc(argc * sizeof(corto_string));
     seq.length = argc;
     for (i = 0; i < argc; i++) {
         seq.buffer[i] = argv[i];
     }
 
-    source = cx_fileLoad(file);
+    source = corto_fileLoad(file);
     if (source) {
         /* Create parser */
         p = ast_ParserCreate(source, file);
 
         /* Parse script */
         ast_Parser_parse(p, seq);
-        cx_release(p);
-        cx_dealloc(source);
+        corto_release(p);
+        corto_dealloc(source);
     } else {
         goto error;
     }
 
-    cx_dealloc(seq.buffer);
+    corto_dealloc(seq.buffer);
 
     return 0;
 error:
@@ -53,7 +53,7 @@ error:
 }
 
 /* Create a call-expression */
-ast_Call ast_createCallWithArguments(ast_Expression instance, cx_string function, ast_Expression arguments) {
+ast_Call ast_createCallWithArguments(ast_Expression instance, corto_string function, ast_Expression arguments) {
     ast_Call result;
     ast_CallBuilder builder;
 
@@ -72,10 +72,10 @@ ast_Call ast_createCallWithArguments(ast_Expression instance, cx_string function
 }
 
 /* Create a call-expression */
-ast_Call ast_createCall(ast_Expression instance, cx_string function, cx_uint32 numArgs, ...) {
+ast_Call ast_createCall(ast_Expression instance, corto_string function, corto_uint32 numArgs, ...) {
     ast_Expression args = NULL, arg = NULL;
     va_list arglist;
-    cx_uint32 i;
+    corto_uint32 i;
 
     /* Create comma-expression if there is more than one argument */
     va_start(arglist, numArgs);
@@ -100,17 +100,17 @@ ast_Call ast_createCall(ast_Expression instance, cx_string function, cx_uint32 n
 ast_Call ast_createCallFromExpr(ast_Expression f, ast_Expression arguments) {
     ast_Call result = NULL;
     ast_Expression instance = NULL;
-    cx_id name;
-    cx_object scope = yparser()->scope;
+    corto_id name;
+    corto_object scope = yparser()->scope;
     ast_CallBuilder builder;
 
     if (ast_Node(f)->kind == Ast_StorageExpr) {
         switch(ast_Storage(f)->kind) {
 
         case Ast_ObjectStorage: {
-            cx_object o = ast_Object(f)->value;
-            cx_signatureName(cx_nameof(o), name);
-            scope = cx_parentof(o);
+            corto_object o = ast_Object(f)->value;
+            corto_signatureName(corto_nameof(o), name);
+            scope = corto_parentof(o);
             break;
         }
 
@@ -129,7 +129,7 @@ ast_Call ast_createCallFromExpr(ast_Expression f, ast_Expression arguments) {
 
         default:
             ast_Parser_error(yparser(), "'%s' expression is not callable",
-                cx_nameof(cx_enum_constant(ast_storageKind_o, ast_Storage(f)->kind)));
+                corto_nameof(corto_enum_constant(ast_storageKind_o, ast_Storage(f)->kind)));
             goto error;
         }
     }
@@ -148,18 +148,18 @@ error:
 /* $end */
 
 /* ::corto::ast::isOperatorAssignment(operatorKind operator) */
-cx_bool _ast_isOperatorAssignment(cx_operatorKind _operator) {
+corto_bool _ast_isOperatorAssignment(corto_operatorKind _operator) {
 /* $begin(::corto::ast::isOperatorAssignment) */
-    cx_bool result;
+    corto_bool result;
     switch(_operator) {
-    case CX_ASSIGN:
-    case CX_ASSIGN_ADD:
-    case CX_ASSIGN_SUB:
-    case CX_ASSIGN_DIV:
-    case CX_ASSIGN_MUL:
-    case CX_ASSIGN_MOD:
-    case CX_ASSIGN_OR:
-    case CX_ASSIGN_AND:
+    case CORTO_ASSIGN:
+    case CORTO_ASSIGN_ADD:
+    case CORTO_ASSIGN_SUB:
+    case CORTO_ASSIGN_DIV:
+    case CORTO_ASSIGN_MUL:
+    case CORTO_ASSIGN_MOD:
+    case CORTO_ASSIGN_OR:
+    case CORTO_ASSIGN_AND:
         result = TRUE;
         break;
     default:
@@ -171,21 +171,21 @@ cx_bool _ast_isOperatorAssignment(cx_operatorKind _operator) {
 }
 
 /* ::corto::ast::report(string kind,string filename,uint32 line,uint32 column,string error,string token) */
-cx_void _ast_report(cx_string kind, cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token) {
+corto_void _ast_report(corto_string kind, corto_string filename, corto_uint32 line, corto_uint32 column, corto_string error, corto_string token) {
 /* $begin(::corto::ast::report) */
-    CX_UNUSED(token);
+    CORTO_UNUSED(token);
 
     if(filename) {
-        cx_print("%s:%d:%d: %s: %s", filename, line, column, kind, error);
+        corto_print("%s:%d:%d: %s: %s", filename, line, column, kind, error);
     } else {
-        cx_print("%d:%d: %s: %s", line, column, kind, error);
+        corto_print("%d:%d: %s: %s", line, column, kind, error);
     }
 
 /* $end */
 }
 
 /* ::corto::ast::reportError(string filename,uint32 line,uint32 column,string error,string token) */
-cx_void _ast_reportError(cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token) {
+corto_void _ast_reportError(corto_string filename, corto_uint32 line, corto_uint32 column, corto_string error, corto_string token) {
 /* $begin(::corto::ast::reportError) */
 
     ast_report("error", filename, line, column, error, token);
@@ -194,7 +194,7 @@ cx_void _ast_reportError(cx_string filename, cx_uint32 line, cx_uint32 column, c
 }
 
 /* ::corto::ast::reportWarning(string filename,uint32 line,uint32 column,string error,string token) */
-cx_void _ast_reportWarning(cx_string filename, cx_uint32 line, cx_uint32 column, cx_string error, cx_string token) {
+corto_void _ast_reportWarning(corto_string filename, corto_uint32 line, corto_uint32 column, corto_string error, corto_string token) {
 /* $begin(::corto::ast::reportWarning) */
 
     ast_report("warning", filename, line, column, error, token);
@@ -203,42 +203,42 @@ cx_void _ast_reportWarning(cx_string filename, cx_uint32 line, cx_uint32 column,
 }
 
 /* ::corto::ast::valueKindFromType(type type) */
-ast_valueKind _ast_valueKindFromType(cx_type type) {
+ast_valueKind _ast_valueKindFromType(corto_type type) {
 /* $begin(::corto::ast::valueKindFromType) */
     ast_valueKind result = Ast_Nothing;
 
     if (type->reference) {
         result = Ast_Ref;
     } else {
-        if (type->kind != CX_PRIMITIVE) {
+        if (type->kind != CORTO_PRIMITIVE) {
             /* Exception to common error-reporting pattern: calling functions need to throw an error. The
              * rationale is that at this level there is little information available to report a meaningful
              * error. */
             goto error;
         }
 
-        switch(cx_primitive(type)->kind) {
-        case CX_BOOLEAN:
+        switch(corto_primitive(type)->kind) {
+        case CORTO_BOOLEAN:
             result = Ast_Bool;
             break;
-        case CX_CHARACTER:
+        case CORTO_CHARACTER:
             result = Ast_Char;
             break;
-        case CX_INTEGER:
+        case CORTO_INTEGER:
             result = Ast_SignedInt;
             break;
-        case CX_BINARY:
-        case CX_UINTEGER:
+        case CORTO_BINARY:
+        case CORTO_UINTEGER:
             result = Ast_Int;
             break;
-        case CX_FLOAT:
+        case CORTO_FLOAT:
             result = Ast_Float;
             break;
-        case CX_TEXT:
+        case CORTO_TEXT:
             result = Ast_Text;
             break;
-        case CX_ENUM:
-        case CX_BITMASK:
+        case CORTO_ENUM:
+        case CORTO_BITMASK:
             result = Ast_Enum;
             break;
         }
@@ -252,13 +252,13 @@ error:
 
 int astMain(int argc, char* argv[]) {
 /* $begin(main) */
-    CX_UNUSED(argc);
-    CX_UNUSED(argv);
-    if (cx_threadTlsKey(&ast_PARSER_KEY, NULL)) {
+    CORTO_UNUSED(argc);
+    CORTO_UNUSED(argv);
+    if (corto_threadTlsKey(&ast_PARSER_KEY, NULL)) {
         return -1;
     }
     /* Register corto extension */
-    cx_loaderRegister("cx", fast_cortoRun, NULL);
+    corto_loaderRegister("cx", fast_cortoRun, NULL);
     return 0;
 /* $end */
 }

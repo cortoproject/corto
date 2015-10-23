@@ -12,26 +12,26 @@
 #include "ast__private.h"
 
 /* Rate types based on expressibility */
-cx_int8 ast_Expression_getTypeScore(cx_primitive t) {
-    cx_int8 result = 0;
+corto_int8 ast_Expression_getTypeScore(corto_primitive t) {
+    corto_int8 result = 0;
     switch(t->kind) {
-    case CX_ENUM:
-    case CX_BITMASK:
+    case CORTO_ENUM:
+    case CORTO_BITMASK:
         result = 1;
         break;
-    case CX_BOOLEAN:
-    case CX_BINARY:
-    case CX_INTEGER:
-    case CX_UINTEGER:
+    case CORTO_BOOLEAN:
+    case CORTO_BINARY:
+    case CORTO_INTEGER:
+    case CORTO_UINTEGER:
         result = 2;
         break;
-    case CX_CHARACTER:
+    case CORTO_CHARACTER:
         result = 3;
         break;
-    case CX_FLOAT:
+    case CORTO_FLOAT:
         result = 4;
         break;
-    case CX_TEXT:
+    case CORTO_TEXT:
         result = 5;
         break;
     }
@@ -39,24 +39,24 @@ cx_int8 ast_Expression_getTypeScore(cx_primitive t) {
 }
 
 /* Categorize types on castability - if equal no cast is required when width is equal */
-cx_int8 ast_Expression_getCastScore(cx_primitive t) {
-    cx_int8 result = 0;
+corto_int8 ast_Expression_getCastScore(corto_primitive t) {
+    corto_int8 result = 0;
     switch(t->kind) {
-        case CX_ENUM:
-        case CX_BITMASK:
+        case CORTO_ENUM:
+        case CORTO_BITMASK:
             result = 1;
             break;
-        case CX_BOOLEAN:
-        case CX_BINARY:
-        case CX_INTEGER:
-        case CX_UINTEGER:
-        case CX_CHARACTER:
+        case CORTO_BOOLEAN:
+        case CORTO_BINARY:
+        case CORTO_INTEGER:
+        case CORTO_UINTEGER:
+        case CORTO_CHARACTER:
             result = 2;
             break;
-        case CX_FLOAT:
+        case CORTO_FLOAT:
             result = 3;
             break;
-        case CX_TEXT:
+        case CORTO_TEXT:
             result = 4;
             break;
     }
@@ -64,49 +64,49 @@ cx_int8 ast_Expression_getCastScore(cx_primitive t) {
 }
 
 /* Obtain inttype from value */
-cx_type ast_Expression_getIntTypeFromValue(cx_int64 v, cx_primitive t) {
-    cx_type result = NULL;
+corto_type ast_Expression_getIntTypeFromValue(corto_int64 v, corto_primitive t) {
+    corto_type result = NULL;
 
     if (v < 0) {
-        if(t->kind == CX_UINTEGER) {
+        if(t->kind == CORTO_UINTEGER) {
             /* Overflow */
-            if (((cx_uint64)v) <= 4294967295) {
-                result = cx_type(cx_uint32_o);
+            if (((corto_uint64)v) <= 4294967295) {
+                result = corto_type(corto_uint32_o);
             } else {
-                result = cx_type(cx_uint64_o);
+                result = corto_type(corto_uint64_o);
             }
         } else if (v >= -128) {
-            result = cx_type(cx_int8_o);
+            result = corto_type(corto_int8_o);
         } else if (v >= -32768) {
-            result = cx_type(cx_int16_o);
+            result = corto_type(corto_int16_o);
         } else if (v >= -2147483648) {
-            result = cx_type(cx_int32_o);
+            result = corto_type(corto_int32_o);
         } else {
-            result = cx_type(cx_int64_o);
+            result = corto_type(corto_int64_o);
         }
     } else {
         if (v <= 255) {
-            result = cx_type(cx_uint8_o);
+            result = corto_type(corto_uint8_o);
         } else if (v <= 65535) {
-            result = cx_type(cx_uint16_o);
+            result = corto_type(corto_uint16_o);
         } else {
-            result = cx_type(cx_uint32_o);
+            result = corto_type(corto_uint32_o);
         }
     }
 
     return result;
 }
 
-cx_type ast_Expression_narrowType(ast_Expression expr) {
-    cx_int64 v;
-    cx_type t = ast_Expression_getType(expr);
+corto_type ast_Expression_narrowType(ast_Expression expr) {
+    corto_int64 v;
+    corto_type t = ast_Expression_getType(expr);
     if (ast_Node(expr)->kind == Ast_LiteralExpr) {
-        if (t && (t->kind == CX_PRIMITIVE)) {
-            switch(cx_primitive(t)->kind) {
-            case CX_INTEGER:
-            case CX_UINTEGER:
-                ast_Expression_serialize(expr, cx_type(cx_int64_o), (cx_word)&v);
-                t = ast_Expression_getIntTypeFromValue(v, cx_primitive(t));
+        if (t && (t->kind == CORTO_PRIMITIVE)) {
+            switch(corto_primitive(t)->kind) {
+            case CORTO_INTEGER:
+            case CORTO_UINTEGER:
+                ast_Expression_serialize(expr, corto_type(corto_int64_o), (corto_word)&v);
+                t = ast_Expression_getIntTypeFromValue(v, corto_primitive(t));
                 break;
             default:
                 break;
@@ -118,36 +118,36 @@ cx_type ast_Expression_narrowType(ast_Expression expr) {
 }
 
 /* Check if expression is integer literal that is eligible to changing type, if this is the case do the cast */
-ast_Expression ast_Expression_narrow(ast_Expression expr, cx_type target) {
+ast_Expression ast_Expression_narrow(ast_Expression expr, corto_type target) {
 
     if (ast_Node(expr)->kind == Ast_LiteralExpr) {
         if (!target) {
             target = ast_Expression_narrowType(expr);
         }
-        cx_type t = ast_Expression_getType_type(expr, target);
+        corto_type t = ast_Expression_getType_type(expr, target);
         if (target && (t != target) &&
-           (target->kind == CX_PRIMITIVE) &&
-           (cx_primitive(target)->kind == cx_primitive(t)->kind)) {
-            cx_width width = cx_primitive(target)->width;
+           (target->kind == CORTO_PRIMITIVE) &&
+           (corto_primitive(target)->kind == corto_primitive(t)->kind)) {
+            corto_width width = corto_primitive(target)->width;
 
-            if (t->kind == CX_PRIMITIVE) {
-                switch(cx_primitive(t)->kind) {
-                case CX_INTEGER: {
-                    cx_int64 v = *(cx_int64*)ast_Expression_getValue(expr);
+            if (t->kind == CORTO_PRIMITIVE) {
+                switch(corto_primitive(t)->kind) {
+                case CORTO_INTEGER: {
+                    corto_int64 v = *(corto_int64*)ast_Expression_getValue(expr);
                     switch(width) {
-                    case CX_WIDTH_8:
+                    case CORTO_WIDTH_8:
                         if ((v <= 127) && (v >= -128)) {
-                            cx_setref(&expr->type, target);
+                            corto_setref(&expr->type, target);
                         }
                         break;
-                    case CX_WIDTH_16:
+                    case CORTO_WIDTH_16:
                         if ((v <= 32767) && (v >= -32768)) {
-                            cx_setref(&expr->type, target);
+                            corto_setref(&expr->type, target);
                         }
                         break;
-                    case CX_WIDTH_32:
+                    case CORTO_WIDTH_32:
                         if ((v <= 2147483647) && (v >= -2147483648)) {
-                            cx_setref(&expr->type, target);
+                            corto_setref(&expr->type, target);
                         }
                         break;
                     default:
@@ -155,22 +155,22 @@ ast_Expression ast_Expression_narrow(ast_Expression expr, cx_type target) {
                     }
                     break;
                 }
-                case CX_UINTEGER: {
-                    cx_uint64 v = *(cx_uint64*)ast_Expression_getValue(expr);
+                case CORTO_UINTEGER: {
+                    corto_uint64 v = *(corto_uint64*)ast_Expression_getValue(expr);
                     switch(width) {
-                    case CX_WIDTH_8:
+                    case CORTO_WIDTH_8:
                         if (v <= 255) {
-                            cx_setref(&expr->type, target);
+                            corto_setref(&expr->type, target);
                         }
                         break;
-                    case CX_WIDTH_16:
+                    case CORTO_WIDTH_16:
                         if (v <= 65535) {
-                            cx_setref(&expr->type, target);
+                            corto_setref(&expr->type, target);
                         }
                         break;
-                    case CX_WIDTH_32:
+                    case CORTO_WIDTH_32:
                         if (v <= 4294967295) {
-                            cx_setref(&expr->type, target);
+                            corto_setref(&expr->type, target);
                         }
                         break;
                     default:
@@ -191,17 +191,17 @@ ast_Expression ast_Expression_narrow(ast_Expression expr, cx_type target) {
 /* $end */
 
 /* ::corto::ast::Expression::cast(type type,bool isReference) */
-ast_Expression _ast_Expression_cast(ast_Expression this, cx_type type, cx_bool isReference) {
+ast_Expression _ast_Expression_cast(ast_Expression this, corto_type type, corto_bool isReference) {
 /* $begin(::corto::ast::Expression::cast) */
-    cx_type exprType, refType;
+    corto_type exprType, refType;
     ast_Expression result = NULL;
-    cx_bool castRequired = TRUE;
+    corto_bool castRequired = TRUE;
     
-    cx_assert(type != NULL, "cannot cast to unknown type NULL");
+    corto_assert(type != NULL, "cannot cast to unknown type NULL");
 
     exprType = ast_Expression_getType(this);
     if((this->deref == Ast_ByReference) && !isReference && !exprType->reference) {
-        refType = cx_object_o;
+        refType = corto_object_o;
     } else {
         refType = exprType;
     }
@@ -219,7 +219,7 @@ ast_Expression _ast_Expression_cast(ast_Expression this, cx_type type, cx_bool i
             }else {
                 castRequired = FALSE;
             }
-        } else if (cx_type_castable(type, refType)) {
+        } else if (corto_type_castable(type, refType)) {
             void *value = NULL;
 
             /* If expression is a literal or constant create new literal of right type */
@@ -235,7 +235,7 @@ ast_Expression _ast_Expression_cast(ast_Expression this, cx_type type, cx_bool i
                         /* No cast required */
                         break;
                     default: {
-                        cx_id id1, id2;
+                        corto_id id1, id2;
                         /* Invalid cast */
                         ast_Parser_error(yparser(), "cannot cast from '%s' to '%s'", ast_Parser_id(exprType, id1), ast_Parser_id(type, id2));
                         break;
@@ -244,55 +244,55 @@ ast_Expression _ast_Expression_cast(ast_Expression this, cx_type type, cx_bool i
                 }
 
                 /* Create literal expressions based on destination type */
-                switch(cx_primitive(type)->kind) {
-                case CX_BOOLEAN: {
-                    cx_bool dstValue = FALSE;
-                    cx_convert(cx_primitive(exprType), value, cx_primitive(cx_bool_o), &dstValue);
+                switch(corto_primitive(type)->kind) {
+                case CORTO_BOOLEAN: {
+                    corto_bool dstValue = FALSE;
+                    corto_convert(corto_primitive(exprType), value, corto_primitive(corto_bool_o), &dstValue);
                     result = ast_Expression(ast_BooleanCreate(dstValue));
                     break;
                 }
-                case CX_CHARACTER: {
-                    cx_char dstValue;
-                    cx_convert(cx_primitive(exprType), value, cx_primitive(cx_char_o), &dstValue);
+                case CORTO_CHARACTER: {
+                    corto_char dstValue;
+                    corto_convert(corto_primitive(exprType), value, corto_primitive(corto_char_o), &dstValue);
                     result = ast_Expression(ast_CharacterCreate(dstValue));
                     break;
                 }
-                case CX_BINARY:
-                case CX_UINTEGER: {
-                    cx_uint64 dstValue;
-                    cx_convert(cx_primitive(exprType), value, cx_primitive(cx_uint64_o), &dstValue);
+                case CORTO_BINARY:
+                case CORTO_UINTEGER: {
+                    corto_uint64 dstValue;
+                    corto_convert(corto_primitive(exprType), value, corto_primitive(corto_uint64_o), &dstValue);
                     result = ast_Expression(ast_IntegerCreate(dstValue));
                     break;
                 }
-                case CX_INTEGER: {
-                    cx_int64 dstValue;
-                    cx_convert(cx_primitive(exprType), value, cx_primitive(cx_int64_o), &dstValue);
+                case CORTO_INTEGER: {
+                    corto_int64 dstValue;
+                    corto_convert(corto_primitive(exprType), value, corto_primitive(corto_int64_o), &dstValue);
                     result = ast_Expression(ast_SignedIntegerCreate(dstValue));
                     break;
                 }
-                case CX_FLOAT: {
-                    cx_float64 dstValue;
-                    cx_convert(cx_primitive(exprType), value, cx_primitive(cx_float64_o), &dstValue);
+                case CORTO_FLOAT: {
+                    corto_float64 dstValue;
+                    corto_convert(corto_primitive(exprType), value, corto_primitive(corto_float64_o), &dstValue);
                     result = ast_Expression(ast_FloatingPointCreate(dstValue));
                     break;
                 }
-                case CX_TEXT: {
-                    cx_string dstValue;
-                    cx_convert(cx_primitive(exprType), value, cx_primitive(cx_string_o), &dstValue);
+                case CORTO_TEXT: {
+                    corto_string dstValue;
+                    corto_convert(corto_primitive(exprType), value, corto_primitive(corto_string_o), &dstValue);
                     result = ast_Expression(ast_StringCreate(dstValue));
                     break;
                 }
-                case CX_ENUM:
-                case CX_BITMASK: {
-                    cx_int32 dstValue;
-                    cx_convert(cx_primitive(exprType), value, cx_primitive(cx_int32_o), &dstValue);
+                case CORTO_ENUM:
+                case CORTO_BITMASK: {
+                    corto_int32 dstValue;
+                    corto_convert(corto_primitive(exprType), value, corto_primitive(corto_int32_o), &dstValue);
                     result = ast_Expression(ast_SignedIntegerCreate(dstValue));
                     break;
                 }
                 }
 
                 if (result){
-                    cx_setref(&ast_Expression(result)->type, type);
+                    corto_setref(&ast_Expression(result)->type, type);
                 }
             } else {
                 /* TODO: This functionality must be pushed down to the assembler. For all this function is concerned a cast
@@ -300,11 +300,11 @@ ast_Expression _ast_Expression_cast(ast_Expression this, cx_type type, cx_bool i
 
                 /* If both types are primitive make sure that no cast is inserted for primitives
                  * of the same kind or 'score' to the same width */
-                if ((refType->kind == CX_PRIMITIVE) &&
-                   (type->kind == CX_PRIMITIVE) &&
-                   (ast_Expression_getCastScore(cx_primitive(refType)) == 
-                    ast_Expression_getCastScore(cx_primitive(type)))) {
-                    if (cx_primitive(exprType)->width != cx_primitive(type)->width) {
+                if ((refType->kind == CORTO_PRIMITIVE) &&
+                   (type->kind == CORTO_PRIMITIVE) &&
+                   (ast_Expression_getCastScore(corto_primitive(refType)) == 
+                    ast_Expression_getCastScore(corto_primitive(type)))) {
+                    if (corto_primitive(exprType)->width != corto_primitive(type)->width) {
                         result = ast_Expression(ast_CastCreate(type, this, isReference));
                     } else {
                         /* Types have the same width, so no cast required */
@@ -312,11 +312,11 @@ ast_Expression _ast_Expression_cast(ast_Expression this, cx_type type, cx_bool i
                     }
 
                 /* Interface-downcasting doesn't require an explicit cast */
-                } else if (cx_instanceof(cx_type(cx_interface_o), type)) {
+                } else if (corto_instanceof(corto_type(corto_interface_o), type)) {
                     castRequired = FALSE;
 
                 /* If collections are castable, they must be equivalent */
-                } else if (type->kind == CX_COLLECTION) {
+                } else if (type->kind == CORTO_COLLECTION) {
                     castRequired = FALSE;
                     
                 /* For all other cases, insert cast */
@@ -326,21 +326,21 @@ ast_Expression _ast_Expression_cast(ast_Expression this, cx_type type, cx_bool i
             }
         /* If object is a reference and targetType is string, insert toString operation */
         } else /*if (this->isReference || ast_Expression_getType(this)->reference)*/ {
-            if ((type->kind == CX_PRIMITIVE) && (cx_primitive(type)->kind == CX_TEXT)) {
+            if ((type->kind == CORTO_PRIMITIVE) && (corto_primitive(type)->kind == CORTO_TEXT)) {
 
                 /* Create call-expression */
                 result = ast_Expression(ast_createCallWithArguments(this, "toString", NULL));
                 if (!result) {
                     goto error;
                 }
-                cx_claim(result);
+                corto_claim(result);
 
             /* If type is of a generic reference type, accept any reference without cast */
-            } else if (type->kind == CX_VOID && type->reference) {
+            } else if (type->kind == CORTO_VOID && type->reference) {
                 castRequired = FALSE;
 
             /* If assigning to a generic reference, insert cast */
-            } else if (exprType->kind == CX_VOID && (exprType->reference || isReference)) {
+            } else if (exprType->kind == CORTO_VOID && (exprType->reference || isReference)) {
                 result = ast_Expression(ast_CastCreate(type, this, isReference));    
             }
         }
@@ -352,7 +352,7 @@ ast_Expression _ast_Expression_cast(ast_Expression this, cx_type type, cx_bool i
         ast_Parser_collect(yparser(), result);
     } else {
         if (castRequired) {
-            cx_id id1, id2;
+            corto_id id1, id2;
                 ast_Parser_error(yparser(), "no conversion from '%s' to '%s'",
                         ast_Parser_id(exprType, id1),
                         ast_Parser_id(type, id2));
@@ -366,14 +366,14 @@ error:
 }
 
 /* ::corto::ast::Expression::cleanList(list{Expression} list) */
-cx_void _ast_Expression_cleanList(ast_ExpressionList list) {
+corto_void _ast_Expression_cleanList(ast_ExpressionList list) {
 /* $begin(::corto::ast::Expression::cleanList) */
     if (list) {
-        cx_iter iter = cx_llIter(list);
-        while(cx_iterHasNext(&iter)) {
-            cx_release(cx_iterNext(&iter));
+        corto_iter iter = corto_llIter(list);
+        while(corto_iterHasNext(&iter)) {
+            corto_release(corto_iterNext(&iter));
         }
-        cx_llFree(list);
+        corto_llFree(list);
     }
 /* $end */
 }
@@ -381,7 +381,7 @@ cx_void _ast_Expression_cleanList(ast_ExpressionList list) {
 /* ::corto::ast::Expression::fold() */
 ast_Expression _ast_Expression_fold_v(ast_Expression this) {
 /* $begin(::corto::ast::Expression::fold) */
-    CX_UNUSED(this);
+    CORTO_UNUSED(this);
     return this;
 /* $end */
 }
@@ -393,18 +393,18 @@ ast_Expression _ast_Expression_fromList(ast_ExpressionList list) {
 
     /* Convert list to comma expression */
     if (list) {
-        if (cx_llSize(list) == 1) {
-            result = cx_llGet(list, 0);
+        if (corto_llSize(list) == 1) {
+            result = corto_llGet(list, 0);
         } else {
-            cx_ll toList = cx_llNew(); /* Copy list */
-            cx_iter iter;
+            corto_ll toList = corto_llNew(); /* Copy list */
+            corto_iter iter;
             ast_Expression expr;
             
             result = ast_Expression(ast_CommaCreate());
 
-            iter = cx_llIter(list);
-            while(cx_iterHasNext(&iter)) {
-                expr = cx_iterNext(&iter);
+            iter = corto_llIter(list);
+            while(corto_iterHasNext(&iter)) {
+                expr = corto_iterNext(&iter);
                 ast_ExpressionListAppend(toList, expr);
             }
             ast_Comma(result)->expressions = toList;
@@ -417,7 +417,7 @@ ast_Expression _ast_Expression_fromList(ast_ExpressionList list) {
 }
 
 /* ::corto::ast::Expression::getType() */
-cx_type _ast_Expression_getType(ast_Expression this) {
+corto_type _ast_Expression_getType(ast_Expression this) {
 /* $begin(::corto::ast::Expression::getType) */
     return this->type;
 /* $end */
@@ -425,16 +425,16 @@ cx_type _ast_Expression_getType(ast_Expression this) {
 
 /* ::corto::ast::Expression::getType_expr(Expression target) */
 /* $header(::corto::ast::Expression::getType_expr) */
-cx_type ast_Expression_getType_intern(ast_Expression this, cx_type target, ast_Expression targetExpr) {
-    cx_type result = ast_Expression_getType(this);
+corto_type ast_Expression_getType_intern(ast_Expression this, corto_type target, ast_Expression targetExpr) {
+    corto_type result = ast_Expression_getType(this);
 
     if (!result) {
         if ((ast_Node(this)->kind == Ast_LiteralExpr) && (ast_Literal(this)->kind == Ast_Nothing)) {
             if (target) {
                 if (target->reference) {
                     result = target;
-                } else if ((target->kind == CX_PRIMITIVE) && (cx_primitive(target)->kind == CX_TEXT)) {
-                    result = cx_type(cx_string_o);
+                } else if ((target->kind == CORTO_PRIMITIVE) && (corto_primitive(target)->kind == CORTO_TEXT)) {
+                    result = corto_type(corto_string_o);
                 } else {
                     if (targetExpr && targetExpr->isReference) {
                         result = target;
@@ -450,8 +450,8 @@ cx_type ast_Expression_getType_intern(ast_Expression this, cx_type target, ast_E
         } else {
             goto error;
         }
-    } else if ((target && (target->kind == CX_VOID) && target->reference)) {
-        result = cx_object_o;
+    } else if ((target && (target->kind == CORTO_VOID) && target->reference)) {
+        result = corto_object_o;
     }
 
     return result;
@@ -460,9 +460,9 @@ error:
     return NULL;  
 }
 /* $end */
-cx_type _ast_Expression_getType_expr(ast_Expression this, ast_Expression target) {
+corto_type _ast_Expression_getType_expr(ast_Expression this, ast_Expression target) {
 /* $begin(::corto::ast::Expression::getType_expr) */
-    cx_type type,result;
+    corto_type type,result;
 
     result = ast_Expression_getType(this);
     type = ast_Expression_getType(target);
@@ -471,7 +471,7 @@ cx_type _ast_Expression_getType_expr(ast_Expression this, ast_Expression target)
         if (type) {
             result = ast_Expression_getType_intern(this, type, target);
         } else {
-            result = cx_void_o;
+            result = corto_void_o;
         }
     } else {
         result = ast_Expression_getType_intern(this, type, target);
@@ -482,43 +482,43 @@ cx_type _ast_Expression_getType_expr(ast_Expression this, ast_Expression target)
 }
 
 /* ::corto::ast::Expression::getType_type(type target) */
-cx_type _ast_Expression_getType_type(ast_Expression this, cx_type target) {
+corto_type _ast_Expression_getType_type(ast_Expression this, corto_type target) {
 /* $begin(::corto::ast::Expression::getType_type) */
     return ast_Expression_getType_intern(this, target, NULL);
 /* $end */
 }
 
 /* ::corto::ast::Expression::getValue() */
-cx_word _ast_Expression_getValue_v(ast_Expression this) {
+corto_word _ast_Expression_getValue_v(ast_Expression this) {
 /* $begin(::corto::ast::Expression::getValue) */
-    CX_UNUSED(this);
+    CORTO_UNUSED(this);
     return 0;
 /* $end */
 }
 
 /* ::corto::ast::Expression::hasReturnedResource() */
-cx_bool _ast_Expression_hasReturnedResource_v(ast_Expression this) {
+corto_bool _ast_Expression_hasReturnedResource_v(ast_Expression this) {
 /* $begin(::corto::ast::Expression::hasReturnedResource) */
-    CX_UNUSED(this);
+    CORTO_UNUSED(this);
     return FALSE;
 /* $end */
 }
 
 /* ::corto::ast::Expression::hasSideEffects() */
-cx_bool _ast_Expression_hasSideEffects_v(ast_Expression this) {
+corto_bool _ast_Expression_hasSideEffects_v(ast_Expression this) {
 /* $begin(::corto::ast::Expression::hasSideEffects) */
-    CX_UNUSED(this);
+    CORTO_UNUSED(this);
     return FALSE;
 /* $end */
 }
 
 /* ::corto::ast::Expression::serialize(type dstType,word dst) */
-cx_int16 _ast_Expression_serialize_v(ast_Expression this, cx_type dstType, cx_word dst) {
+corto_int16 _ast_Expression_serialize_v(ast_Expression this, corto_type dstType, corto_word dst) {
 /* $begin(::corto::ast::Expression::serialize) */
-    CX_UNUSED(this);
-    CX_UNUSED(dstType);
-    CX_UNUSED(dst);
-    cx_assert(0, "call to pure virtual function ast::Expression::serialize");
+    CORTO_UNUSED(this);
+    CORTO_UNUSED(dstType);
+    CORTO_UNUSED(dst);
+    corto_assert(0, "call to pure virtual function ast::Expression::serialize");
     return 0;
 /* $end */
 }
@@ -529,7 +529,7 @@ ast_ExpressionList _ast_Expression_toList_v(ast_Expression this) {
     ast_NodeList result = NULL;
     
     if (this) {
-        result = cx_llNew();
+        result = corto_llNew();
         ast_ExpressionListInsert(result, this);
     }
     

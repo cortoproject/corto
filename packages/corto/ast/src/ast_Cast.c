@@ -13,20 +13,20 @@
 /* $end */
 
 /* ::corto::ast::Cast::construct() */
-cx_int16 _ast_Cast_construct(ast_Cast this) {
+corto_int16 _ast_Cast_construct(ast_Cast this) {
 /* $begin(::corto::ast::Cast::construct) */
 
     ast_Node(this)->kind = Ast_CallExpr;
 
-    cx_type rvalueType;
+    corto_type rvalueType;
     rvalueType = ast_Expression_getType(this->rvalue);
     if (rvalueType) {
-        if ((this->isReference && rvalueType->reference && (rvalueType->kind == CX_VOID)) ||
-           (cx_type_castable(this->lvalue, rvalueType) || cx_type_castable(rvalueType, this->lvalue))) {
-            cx_setref(&ast_Expression(this)->type, this->lvalue);
+        if ((this->isReference && rvalueType->reference && (rvalueType->kind == CORTO_VOID)) ||
+           (corto_type_castable(this->lvalue, rvalueType) || corto_type_castable(rvalueType, this->lvalue))) {
+            corto_setref(&ast_Expression(this)->type, this->lvalue);
             ast_Expression(this)->isReference = this->lvalue->reference || this->isReference;
         } else {
-            cx_id id1, id2;
+            corto_id id1, id2;
             ast_Parser_error(yparser(), "cannot cast from type '%s' to '%s'",
                     ast_Parser_id(rvalueType, id1), ast_Parser_id(this->lvalue, id2));
             goto error;
@@ -34,7 +34,7 @@ cx_int16 _ast_Cast_construct(ast_Cast this) {
     } else {
         /* If type of rvalue is unknown, cast is performed at runtime. Set type even though to introduce the
          * type barrier for code using this expression. */
-        cx_setref(&ast_Expression(this)->type, this->lvalue);
+        corto_setref(&ast_Expression(this)->type, this->lvalue);
     }
 
     return 0;
@@ -44,7 +44,7 @@ error:
 }
 
 /* ::corto::ast::Cast::hasReturnedResource() */
-cx_bool _ast_Cast_hasReturnedResource_v(ast_Cast this) {
+corto_bool _ast_Cast_hasReturnedResource_v(ast_Cast this) {
 /* $begin(::corto::ast::Cast::hasReturnedResource) */
 
     return ast_Expression_hasReturnedResource(this->rvalue);
@@ -53,12 +53,12 @@ cx_bool _ast_Cast_hasReturnedResource_v(ast_Cast this) {
 }
 
 /* ::corto::ast::Cast::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _ast_Cast_toIc_v(ast_Cast this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _ast_Cast_toIc_v(ast_Cast this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::Cast::toIc) */
     ic_node lvalue, rvalue, result;
-    cx_bool deref1 = IC_DEREF_VALUE, deref2 = IC_DEREF_VALUE;
-    cx_type thisType = ast_Expression_getType(ast_Expression(this));
-    CX_UNUSED(stored);
+    corto_bool deref1 = IC_DEREF_VALUE, deref2 = IC_DEREF_VALUE;
+    corto_type thisType = ast_Expression_getType(ast_Expression(this));
+    CORTO_UNUSED(stored);
 
     if (storage && (storage->type == thisType)) {
         result = (ic_node)storage;

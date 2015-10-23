@@ -9,7 +9,7 @@
 #include "_class.h"
 
 /* ::class::Inherit::construct() */
-cx_int16 _class_Inherit_construct(class_Inherit this) {
+corto_int16 _class_Inherit_construct(class_Inherit this) {
 /* $begin(::class::Inherit::construct) */
 
     return 0;
@@ -18,7 +18,7 @@ cx_int16 _class_Inherit_construct(class_Inherit this) {
 }
 
 /* ::class::Inherit::destruct() */
-cx_void _class_Inherit_destruct(class_Inherit this) {
+corto_void _class_Inherit_destruct(class_Inherit this) {
 /* $begin(::class::Inherit::destruct) */
 
     /* << Insert implementation >> */

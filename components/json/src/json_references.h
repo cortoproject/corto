@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-cx_bool json_deserReference(void* p, cx_type t, JSON_Value* v);
+corto_bool json_deserReference(void* p, corto_type t, JSON_Value* v);
 
 #ifdef __cplusplus
 }

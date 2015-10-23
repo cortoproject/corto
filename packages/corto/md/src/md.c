@@ -14,8 +14,8 @@
 #include "_md_callbacks.h"
 
 hoedown_renderer* md_createRenderer(struct md_parseData* data) {
-    cx_assert(data != NULL, "Parse data cannot be null");
-    hoedown_renderer* renderer = cx_calloc(sizeof(hoedown_renderer));
+    corto_assert(data != NULL, "Parse data cannot be null");
+    hoedown_renderer* renderer = corto_calloc(sizeof(hoedown_renderer));
     renderer->opaque = data;
 
     /* block level callbacks - NULL skips the block */
@@ -65,20 +65,20 @@ hoedown_renderer* md_createRenderer(struct md_parseData* data) {
 }
 
 void md_freeRenderer(hoedown_renderer* renderer) {
-    cx_dealloc(renderer);
+    corto_dealloc(renderer);
 }
 
-int md_parseDoc(cx_string file, int argc, char* argv[], void *data) {
-    cx_char* source;
-    CX_UNUSED(argc);
-    CX_UNUSED(argv);
-    CX_UNUSED(data);
+int md_parseDoc(corto_string file, int argc, char* argv[], void *data) {
+    corto_char* source;
+    CORTO_UNUSED(argc);
+    CORTO_UNUSED(argv);
+    CORTO_UNUSED(data);
 
-    source = cx_fileLoad(file);
+    source = corto_fileLoad(file);
     if (source) {
-        cx_object doc = cx_voidCreateChild(NULL, "doc");
+        corto_object doc = corto_voidCreateChild(NULL, "doc");
         md_parseToCorto(doc, source);
-        cx_dealloc(source);
+        corto_dealloc(source);
     } else {
         goto error;
     }
@@ -90,16 +90,16 @@ error:
 /* $end */
 
 /* ::corto::md::parse(string text) */
-cx_string _md_parse(cx_string text) {
+corto_string _md_parse(corto_string text) {
 /* $begin(::corto::md::parse) */
-    cx_string result = NULL;
+    corto_string result = NULL;
 
     hoedown_renderer *renderer = hoedown_html_renderer_new(0, 0);
     hoedown_document *document = hoedown_document_new(renderer, HOEDOWN_EXT_BLOCK, 16);
     hoedown_buffer *html = hoedown_buffer_new(16);
     hoedown_document_render(document, html, (uint8_t*)text, strlen(text));
 
-    result = cx_strdup(hoedown_buffer_cstr(html));
+    result = corto_strdup(hoedown_buffer_cstr(html));
 
     hoedown_buffer_free(html);
     hoedown_document_free(document);
@@ -110,11 +110,11 @@ cx_string _md_parse(cx_string text) {
 }
 
 /* ::corto::md::parseToCorto(object destination,string text) */
-cx_void _md_parseToCorto(cx_object destination, cx_string text) {
+corto_void _md_parseToCorto(corto_object destination, corto_string text) {
 /* $begin(::corto::md::parseToCorto) */
 
     if (destination == root_o || destination == NULL) {
-        cx_seterr("must specify a destination different from root");
+        corto_seterr("must specify a destination different from root");
         return;
     }
     md_parseData parseData = {
@@ -139,9 +139,9 @@ cx_void _md_parseToCorto(cx_object destination, cx_string text) {
 
 int mdMain(int argc, char* argv[]) {
 /* $begin(main) */
-    CX_UNUSED(argc);
-    CX_UNUSED(argv);
-    cx_loaderRegister("md", md_parseDoc, NULL);
+    CORTO_UNUSED(argc);
+    CORTO_UNUSED(argv);
+    corto_loaderRegister("md", md_parseDoc, NULL);
     return 0;
 /* $end */
 }

@@ -9,11 +9,11 @@
 #include "ast.h"
 
 /* ::corto::ast::Temporary::construct() */
-cx_int16 _ast_Temporary_construct(ast_Temporary this) {
+corto_int16 _ast_Temporary_construct(ast_Temporary this) {
 /* $begin(::corto::ast::Temporary::construct) */
 
     ast_Storage(this)->kind = Ast_TemporaryStorage;
-    cx_setref(&ast_Expression(this)->type, this->type);
+    corto_setref(&ast_Expression(this)->type, this->type);
     ast_Expression(this)->isReference = this->reference;
 
     return ast_Storage_construct(ast_Storage(this));
@@ -21,26 +21,26 @@ cx_int16 _ast_Temporary_construct(ast_Temporary this) {
 }
 
 /* ::corto::ast::Temporary::setProxy(Temporary proxy) */
-cx_void _ast_Temporary_setProxy(ast_Temporary this, ast_Temporary proxy) {
+corto_void _ast_Temporary_setProxy(ast_Temporary this, ast_Temporary proxy) {
 /* $begin(::corto::ast::Temporary::setProxy) */
-    cx_setref(&this->proxy, proxy);
+    corto_setref(&this->proxy, proxy);
 /* $end */
 }
 
 /* ::corto::ast::Temporary::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _ast_Temporary_toIc_v(ast_Temporary this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _ast_Temporary_toIc_v(ast_Temporary this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::Temporary::toIc) */
-    CX_UNUSED(storage);
-    CX_UNUSED(stored);
-    CX_UNUSED(program);
+    CORTO_UNUSED(storage);
+    CORTO_UNUSED(stored);
+    CORTO_UNUSED(program);
 
     if (!this->proxy && !this->ic) {
         ic_node acc = ic_node(ic_accumulatorCreate(NULL, this->type, this->reference || this->type->reference, FALSE));
-        cx_setref(&this->ic, acc);
-        cx_release(acc);
+        corto_setref(&this->ic, acc);
+        corto_release(acc);
     } else if (this->proxy) {
         ic_node acc = ast_Temporary_toIc(this->proxy, program, storage, stored);
-        cx_setref(&this->ic, acc);
+        corto_setref(&this->ic, acc);
     }
 
     return this->ic;

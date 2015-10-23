@@ -13,22 +13,22 @@
 /* $end */
 
 /* ::corto::ast::Block::addStatement(ast::Node statement) */
-cx_void _ast_Block_addStatement(ast_Block this, ast_Node statement) {
+corto_void _ast_Block_addStatement(ast_Block this, ast_Node statement) {
 /* $begin(::corto::ast::Block::addStatement) */
     if (statement) {
-        cx_assert(this->statements != NULL, "initialization failed");
+        corto_assert(this->statements != NULL, "initialization failed");
         ast_NodeListAppend(this->statements, statement);
     }
 /* $end */
 }
 
 /* ::corto::ast::Block::declare(string id,type type,bool isParameter,bool isReference) */
-ast_Local _ast_Block_declare(ast_Block this, cx_string id, cx_type type, cx_bool isParameter, cx_bool isReference) {
+ast_Local _ast_Block_declare(ast_Block this, corto_string id, corto_type type, corto_bool isParameter, corto_bool isReference) {
 /* $begin(::corto::ast::Block::declare) */
     ast_Local result;
     ast_LocalKind kind = 0;
 
-    cx_assert(this->locals != NULL, "initialization failed");
+    corto_assert(this->locals != NULL, "initialization failed");
     
     /* Check if variable already exists. Use lookupLocal instead of lookup since the ordinary lookup also
      * looks for member-variables if the block is part of a function. */
@@ -41,7 +41,7 @@ ast_Local _ast_Block_declare(ast_Block this, cx_string id, cx_type type, cx_bool
     kind = isParameter ? Ast_LocalParameter : Ast_LocalDefault;
     result = ast_LocalCreate(id, type, kind, isReference);
     if (result) {
-        cx_llAppend(this->locals, result);
+        corto_llAppend(this->locals, result);
     } else {
         goto error;
     }
@@ -53,20 +53,20 @@ error:
 }
 
 /* ::corto::ast::Block::declareReturnVariable(function function) */
-ast_Local _ast_Block_declareReturnVariable(ast_Block this, cx_function function) {
+ast_Local _ast_Block_declareReturnVariable(ast_Block this, corto_function function) {
 /* $begin(::corto::ast::Block::declareReturnVariable) */
     ast_Local result;
-    cx_id id;
+    corto_id id;
 
     /* Get name of function from signature */
-    cx_signatureName(cx_nameof(function), id);
+    corto_signatureName(corto_nameof(function), id);
 
-    cx_assert(this->locals != NULL, "initialization failed");
+    corto_assert(this->locals != NULL, "initialization failed");
 
     /* If variable did not exist, declare it in this block */
     result = ast_LocalCreate(id, function->returnType, Ast_LocalReturn, function->returnsReference);
     if (result) {
-        cx_llAppend(this->locals, result);
+        corto_llAppend(this->locals, result);
     }
 
     return result;
@@ -74,11 +74,11 @@ ast_Local _ast_Block_declareReturnVariable(ast_Block this, cx_function function)
 }
 
 /* ::corto::ast::Block::declareTemplate(string id,type type,bool isParameter,bool isReference) */
-ast_Template _ast_Block_declareTemplate(ast_Block this, cx_string id, cx_type type, cx_bool isParameter, cx_bool isReference) {
+ast_Template _ast_Block_declareTemplate(ast_Block this, corto_string id, corto_type type, corto_bool isParameter, corto_bool isReference) {
 /* $begin(::corto::ast::Block::declareTemplate) */
     ast_Template result;
 
-    cx_assert(this->locals != NULL, "initialization failed");
+    corto_assert(this->locals != NULL, "initialization failed");
 
     /* Check if variable already exists */
     if (ast_Block_lookup(this, id)) {
@@ -89,7 +89,7 @@ ast_Template _ast_Block_declareTemplate(ast_Block this, cx_string id, cx_type ty
     /* If variable did not exist, declare it in this block */
     result = ast_TemplateCreate(id, type, isParameter, isReference);
     if (result) {
-        cx_llInsert(this->locals, result);
+        corto_llInsert(this->locals, result);
     }
 
     return result;
@@ -99,7 +99,7 @@ error:
 }
 
 /* ::corto::ast::Block::lookup(string id) */
-ast_Expression _ast_Block_lookup(ast_Block this, cx_string id) {
+ast_Expression _ast_Block_lookup(ast_Block this, corto_string id) {
 /* $begin(::corto::ast::Block::lookup) */
     ast_Expression result = NULL;
 
@@ -107,12 +107,12 @@ ast_Expression _ast_Block_lookup(ast_Block this, cx_string id) {
 
     if (!result) {
         if (this->function) {
-            if ((cx_procedure(cx_typeof(this->function))->kind == CX_METHOD) ||
-               ((cx_procedure(cx_typeof(this->function))->kind == CX_OBSERVER) && 
-               cx_observer(this->function)->_template)) {
+            if ((corto_procedure(corto_typeof(this->function))->kind == CORTO_METHOD) ||
+               ((corto_procedure(corto_typeof(this->function))->kind == CORTO_OBSERVER) && 
+               corto_observer(this->function)->_template)) {
                 if (strcmp(id, "this")) {
-                    cx_object parent;
-                    cx_member m;
+                    corto_object parent;
+                    corto_member m;
                     ast_Expression thisLocal;
 
                     thisLocal = ast_Block_lookup(this, "this");
@@ -122,8 +122,8 @@ ast_Expression _ast_Block_lookup(ast_Block this, cx_string id) {
                      * in the case of anonymous observers) using the parser-scope is safe since these functions can't be forward
                      * declared.
                      */
-                    if (cx_checkAttr(this->function, CX_ATTR_SCOPED)) {
-                        parent = cx_parentof(this->function);
+                    if (corto_checkAttr(this->function, CORTO_ATTR_SCOPED)) {
+                        parent = corto_parentof(this->function);
                     } else {
                         parent = yparser()->scope;
                     }
@@ -131,21 +131,21 @@ ast_Expression _ast_Block_lookup(ast_Block this, cx_string id) {
                     /* If parent is not of an interface type, this could be a
                      * delegate member implementation. Get type of the parent
                      * instead. */
-                    if (!cx_instanceof(cx_type(cx_interface_o), parent)) {
-                        parent = cx_typeof(parent);
+                    if (!corto_instanceof(corto_type(corto_interface_o), parent)) {
+                        parent = corto_typeof(parent);
                     }
 
                     /* If parent is still not of an interface type, resolving
                      * a 'this' from either a method or observer is illegal */
-                    if (!cx_instanceof(cx_type(cx_interface_o), parent)) {
-                        cx_id id;
+                    if (!corto_instanceof(corto_type(corto_interface_o), parent)) {
+                        corto_id id;
                         ast_Parser_error(yparser(), 
                             "'this' illegal in procedure '%s'", 
                             ast_Parser_id(this->function, id));
                         goto error;
                     }                    
 
-                    m = cx_interface_resolveMember(cx_interface(parent), id);
+                    m = corto_interface_resolveMember(corto_interface(parent), id);
 
                     /* If 'this' is not yet declared, lookup is used while declaring
                      * function parameters. */
@@ -159,9 +159,9 @@ ast_Expression _ast_Block_lookup(ast_Block this, cx_string id) {
                             ast_Parser_collect(yparser(), memberIdExpr);
                             ast_Parser_collect(yparser(), result);
                         } else {
-                            cx_method m;
+                            corto_method m;
                             /* If no member is found, lookup method */
-                            m = cx_interface_resolveMethod(cx_interface(parent), id);
+                            m = corto_interface_resolveMethod(corto_interface(parent), id);
                             if (m) {
                                 ast_String memberIdExpr;
                                 memberIdExpr = ast_StringCreate(id);
@@ -184,16 +184,16 @@ error:
 }
 
 /* ::corto::ast::Block::lookupLocal(string id) */
-ast_Local _ast_Block_lookupLocal(ast_Block this, cx_string id) {
+ast_Local _ast_Block_lookupLocal(ast_Block this, corto_string id) {
 /* $begin(::corto::ast::Block::lookupLocal) */
     ast_Local result = NULL;
 
     if (this->locals) {
-        cx_iter iter;
+        corto_iter iter;
         ast_Local local;
-        iter = cx_llIter(this->locals);
-        while(cx_iterHasNext(&iter)) {
-            local = cx_iterNext(&iter);
+        iter = corto_llIter(this->locals);
+        while(corto_iterHasNext(&iter)) {
+            local = corto_iterNext(&iter);
             if (!strcmp(local->name, id)) {
                 result = local;
                 break;
@@ -206,7 +206,7 @@ ast_Local _ast_Block_lookupLocal(ast_Block this, cx_string id) {
 }
 
 /* ::corto::ast::Block::resolve(string id) */
-ast_Expression _ast_Block_resolve(ast_Block this, cx_string id) {
+ast_Expression _ast_Block_resolve(ast_Block this, corto_string id) {
 /* $begin(::corto::ast::Block::resolve) */
     ast_Expression result = NULL;
 
@@ -221,7 +221,7 @@ ast_Expression _ast_Block_resolve(ast_Block this, cx_string id) {
 }
 
 /* ::corto::ast::Block::resolveLocal(string id) */
-ast_Local _ast_Block_resolveLocal(ast_Block this, cx_string id) {
+ast_Local _ast_Block_resolveLocal(ast_Block this, corto_string id) {
 /* $begin(::corto::ast::Block::resolveLocal) */
     ast_Local result = NULL;
 
@@ -236,18 +236,18 @@ ast_Local _ast_Block_resolveLocal(ast_Block this, cx_string id) {
 }
 
 /* ::corto::ast::Block::setFunction(function function */
-cx_void _ast_Block_setFunction(ast_Block this, cx_function function) {
+corto_void _ast_Block_setFunction(ast_Block this, corto_function function) {
 /* $begin(::corto::ast::Block::setFunction) */
-    cx_setref(&this->function, function);
+    corto_setref(&this->function, function);
 /* $end */
 }
 
 /* ::corto::ast::Block::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _ast_Block_toIc_v(ast_Block this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _ast_Block_toIc_v(ast_Block this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::Block::toIc) */
     ic_scope scope;
-    CX_UNUSED(storage);
-    CX_UNUSED(stored);
+    CORTO_UNUSED(storage);
+    CORTO_UNUSED(stored);
     
     scope = ic_program_pushScope(program);
     
@@ -264,20 +264,20 @@ ic_node _ast_Block_toIc_v(ast_Block this, ic_program program, ic_storage storage
 }
 
 /* ::corto::ast::Block::toIcBody(ic::program program,ic::storage storage,bool stored) */
-ic_node _ast_Block_toIcBody_v(ast_Block this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _ast_Block_toIcBody_v(ast_Block this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::Block::toIcBody) */
     ast_Node statement;
-    cx_iter statementIter;
-    cx_iter localIter;
+    corto_iter statementIter;
+    corto_iter localIter;
     ast_Local local;
-    CX_UNUSED(storage);
-    CX_UNUSED(stored);
+    CORTO_UNUSED(storage);
+    CORTO_UNUSED(stored);
     
     /* Declare locals */
     if (this->locals) {
-        localIter = cx_llIter(this->locals);
-        while(cx_iterHasNext(&localIter)) {
-            local = cx_iterNext(&localIter);
+        localIter = corto_llIter(this->locals);
+        while(corto_iterHasNext(&localIter)) {
+            local = corto_iterNext(&localIter);
             ic_program_declareVariable(
                     program,
                     local->name,
@@ -290,9 +290,9 @@ ic_node _ast_Block_toIcBody_v(ast_Block this, ic_program program, ic_storage sto
     }
     
     if (this->statements) {
-        statementIter = cx_llIter(this->statements);
-        while(cx_iterHasNext(&statementIter)) {
-            statement = cx_iterNext(&statementIter);
+        statementIter = corto_llIter(this->statements);
+        while(corto_iterHasNext(&statementIter)) {
+            statement = corto_iterNext(&statementIter);
             ast_Node_toIc(statement, program, NULL, FALSE);
         }
     }

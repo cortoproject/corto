@@ -13,7 +13,7 @@
 /* $end */
 
 /* ::corto::ast::Define::construct() */
-cx_int16 _ast_Define_construct(ast_Define this) {
+corto_int16 _ast_Define_construct(ast_Define this) {
 /* $begin(::corto::ast::Define::construct) */
 
     ast_Node(this)->kind = Ast_DefineExpr;
@@ -23,11 +23,11 @@ cx_int16 _ast_Define_construct(ast_Define this) {
 }
 
 /* ::corto::ast::Define::toIc(ic::program program,ic::storage storage,bool stored) */
-ic_node _ast_Define_toIc_v(ast_Define this, ic_program program, ic_storage storage, cx_bool stored) {
+ic_node _ast_Define_toIc_v(ast_Define this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::Define::toIc) */
     ic_node object;
-    CX_UNUSED(stored);
-    CX_UNUSED(storage);
+    CORTO_UNUSED(stored);
+    CORTO_UNUSED(storage);
 
     object = ast_Node_toIc(ast_Node(this->object), program, NULL, TRUE);
     IC_1(program, ast_Node(this)->line, ic_define, object, IC_DEREF_ADDRESS);

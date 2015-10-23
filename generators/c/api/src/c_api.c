@@ -10,7 +10,7 @@
 #include "c_common.h"
 
 /* Walk all types */
-static cx_int16 c_apiWalkType(cx_type o, c_apiWalk_t* data) {
+static corto_int16 c_apiWalkType(corto_type o, c_apiWalk_t* data) {
 
     /* Generate _create function */
     if (c_apiTypeCreate(o, data)) {
@@ -30,7 +30,7 @@ error:
 }
 
 /* Walk non-void types */
-static cx_int16 c_apiWalkNonVoid(cx_type o, c_apiWalk_t* data) {
+static corto_int16 c_apiWalkNonVoid(corto_type o, c_apiWalk_t* data) {
 
     /* Generate _declare function */
     if (c_apiTypeDeclare(o, data)) {
@@ -85,7 +85,7 @@ error:
 }
 
 /* Walk all types */
-static cx_int16 c_apiWalkNonReference(cx_type o, c_apiWalk_t* data) {
+static corto_int16 c_apiWalkNonReference(corto_type o, c_apiWalk_t* data) {
 
     /* Generate _init function */
     if (c_apiTypeInit(o, data)) {
@@ -105,41 +105,41 @@ error:
 }
 
 /* Forward objects for which code will be generated. */
-static int c_apiWalk(cx_object o, void* userData) {
+static int c_apiWalk(corto_object o, void* userData) {
     c_apiWalk_t* data = userData;
-    cx_id id;
+    corto_id id;
 
-    if (cx_class_instanceof(cx_type_o, o)) {
-        g_fileWrite(data->header, "/* %s */\n", cx_fullname(o, id));
+    if (corto_class_instanceof(corto_type_o, o)) {
+        g_fileWrite(data->header, "/* %s */\n", corto_fullname(o, id));
 
         data->current = o;
 
         /* Build nameconflict cache */
-        if (cx_type(o)->kind == CX_COMPOSITE) {
-            data->memberCache = cx_genMemberCacheBuild(o);            
+        if (corto_type(o)->kind == CORTO_COMPOSITE) {
+            data->memberCache = corto_genMemberCacheBuild(o);            
         }
 
-        if (c_apiWalkType(cx_type(o), userData)) {
+        if (c_apiWalkType(corto_type(o), userData)) {
             goto error;
         }
 
-        if (cx_type(o)->kind != CX_VOID) {
-            if (c_apiWalkNonVoid(cx_type(o), userData)) {
+        if (corto_type(o)->kind != CORTO_VOID) {
+            if (c_apiWalkNonVoid(corto_type(o), userData)) {
                 goto error;
             }
-            if (!cx_type(o)->reference) {
-                if (c_apiWalkNonReference(cx_type(o), userData)) {
+            if (!corto_type(o)->reference) {
+                if (c_apiWalkNonReference(corto_type(o), userData)) {
                     goto error;
                 }
             }
         }
 
         /* Clear nameconflict cache */
-        if (cx_type(o)->kind == CX_COMPOSITE) {
-            if (cx_interface(o)->kind == CX_DELEGATE) {
-                c_apiDelegateCall(cx_delegate(o), userData);
+        if (corto_type(o)->kind == CORTO_COMPOSITE) {
+            if (corto_interface(o)->kind == CORTO_DELEGATE) {
+                c_apiDelegateCall(corto_delegate(o), userData);
             }
-            cx_genMemberCacheClean(data->memberCache);           
+            corto_genMemberCacheClean(data->memberCache);           
         }
     }
 
@@ -149,9 +149,9 @@ error:
 }
 
 /* Open headerfile, write standard header. */
-static g_file c_apiHeaderOpen(cx_generator g) {
+static g_file c_apiHeaderOpen(corto_generator g) {
     g_file result;
-    cx_id headerFileName, path;
+    corto_id headerFileName, path;
 
     /* Create file */
     sprintf(headerFileName, "%s__api.h", g_getName(g));
@@ -186,9 +186,9 @@ static void c_apiHeaderClose(g_file file) {
 }
 
 /* Open sourcefile */
-static g_file c_apiSourceOpen(cx_generator g) {
+static g_file c_apiSourceOpen(corto_generator g) {
     g_file result;
-    cx_id sourceFileName, topLevelName;
+    corto_id sourceFileName, topLevelName;
 
     /* Create file */
     sprintf(sourceFileName, "%s__api.c", g_getName(g));
@@ -209,36 +209,36 @@ static g_file c_apiSourceOpen(cx_generator g) {
     return result;
 }
 
-static cx_equalityKind c_apiCompareCollections(cx_collection c1, cx_collection c2) {
-    cx_equalityKind result = CX_EQ;
+static corto_equalityKind c_apiCompareCollections(corto_collection c1, corto_collection c2) {
+    corto_equalityKind result = CORTO_EQ;
     if (c1->kind != c2->kind) {
-        result = CX_NEQ;
+        result = CORTO_NEQ;
     } else if (c1->elementType != c2->elementType) {
-        result = CX_NEQ;
+        result = CORTO_NEQ;
     } else if (c1->max != c2->max) {
-        result = CX_NEQ ;
-    } else if (c1->kind == CX_MAP) {
-        if (cx_map(c1)->keyType != cx_map(c2)->keyType) {
-            result = CX_NEQ;
+        result = CORTO_NEQ ;
+    } else if (c1->kind == CORTO_MAP) {
+        if (corto_map(c1)->keyType != corto_map(c2)->keyType) {
+            result = CORTO_NEQ;
         }
     }
     return result;
 }
 
 static int c_apiCheckDuplicates(void* o, void* userData) {
-    if (cx_checkAttr(o, CX_ATTR_SCOPED)) {
+    if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
         return 1;
     } else {
-        return c_apiCompareCollections(cx_collection(o), cx_collection(userData)) != CX_EQ;
+        return c_apiCompareCollections(corto_collection(o), corto_collection(userData)) != CORTO_EQ;
     }
 }
 
-static int c_apiFindCollections(cx_object o, void* userData) {
+static int c_apiFindCollections(corto_object o, void* userData) {
     c_apiWalk_t* data = userData;
     
-    if (cx_instanceof(cx_type(cx_collection_o), o)) {
-        if (!cx_llSize(data->collections) || cx_llWalk(data->collections, c_apiCheckDuplicates, o)) {
-            cx_llAppend(data->collections, o);
+    if (corto_instanceof(corto_type(corto_collection_o), o)) {
+        if (!corto_llSize(data->collections) || corto_llWalk(data->collections, c_apiCheckDuplicates, o)) {
+            corto_llAppend(data->collections, o);
         }
     }
     
@@ -246,30 +246,30 @@ static int c_apiFindCollections(cx_object o, void* userData) {
 }
 
 /* Generator main */
-cx_int16 corto_genMain(cx_generator g) {
+corto_int16 corto_genMain(corto_generator g) {
     c_apiWalk_t walkData;
 
     /* Default prefixes for corto namespaces */
     gen_parse(g, corto_o, FALSE, FALSE, "");
-    gen_parse(g, corto_lang_o, FALSE, FALSE, "cx");
+    gen_parse(g, corto_lang_o, FALSE, FALSE, "corto");
 
     walkData.g = g;
     walkData.header = c_apiHeaderOpen(g);
     walkData.source = c_apiSourceOpen(g);
-    walkData.collections = cx_llNew();
+    walkData.collections = corto_llNew();
 
     g_walkRecursive(g, c_apiWalk, &walkData);
     
     /* Do a dependency walk over scope to find all collection objects, including anonymous */
-    if (cx_genDepWalk(g, c_apiFindCollections, NULL, &walkData)) {
-        cx_trace("generation of api-routines failed while resolving collections.");
+    if (corto_genDepWalk(g, c_apiFindCollections, NULL, &walkData)) {
+        corto_trace("generation of api-routines failed while resolving collections.");
         return -1;
     }
     
-    cx_llWalk(walkData.collections, c_apiCollectionWalk, &walkData);
+    corto_llWalk(walkData.collections, c_apiCollectionWalk, &walkData);
 
     c_apiHeaderClose(walkData.header);
-    cx_llFree(walkData.collections);
+    corto_llFree(walkData.collections);
 
     return 0;
 }

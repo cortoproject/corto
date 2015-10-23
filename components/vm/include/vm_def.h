@@ -1,6 +1,6 @@
 
-#ifndef CX_VM_DEF_H_
-#define CX_VM_DEF_H_
+#ifndef CORTO_VM_DEF_H_
+#define CORTO_VM_DEF_H_
 
 #include "vm_expansion.h"
 

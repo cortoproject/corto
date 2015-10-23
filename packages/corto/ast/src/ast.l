@@ -30,7 +30,7 @@ static int process_indent(char* line);
     block = fast_blockOperator();
 
 void lex_collect(void *o) {
-    ast_Parser_collectHeap(yparser(), (cx_word)o);
+    ast_Parser_collectHeap(yparser(), (corto_word)o);
 }
 
 /* The following operators can be trailing */
@@ -78,7 +78,7 @@ static int fast_isBlankLine(char *txt, int *isComment) {
 }
 
 /* Escape character */
-static char *fast_charesc(char *in, cx_char *out) {
+static char *fast_charesc(char *in, corto_char *out) {
     switch(*in) {
     case '\\':
         in++;
@@ -136,7 +136,7 @@ error:
 }
 
 /* Escape string-token */
-static int fast_stresc(char* yptr, cx_string ptr) {
+static int fast_stresc(char* yptr, corto_string ptr) {
     char ch;
 
     /* Do escape sequences */
@@ -300,7 +300,7 @@ static void comment(void)
     }
 
     if (c == EOF) {
-        void ast_Parser_error(ast_Parser p, cx_string fmt, ...);
+        void ast_Parser_error(ast_Parser p, corto_string fmt, ...);
         ast_Parser_error(p, "end of file encountered in comment");
         exit(1);
     } else {

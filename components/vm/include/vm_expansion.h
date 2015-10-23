@@ -1,6 +1,6 @@
 
-#ifndef CX_VM_EXPANSION_H_
-#define CX_VM_EXPANSION_H_
+#ifndef CORTO_VM_EXPANSION_H_
+#define CORTO_VM_EXPANSION_H_
 
 #ifdef __cplusplus
 extern "C" {

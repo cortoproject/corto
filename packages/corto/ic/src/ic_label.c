@@ -9,7 +9,7 @@
 #include "ic.h"
 
 /* ::corto::ic::label::construct() */
-cx_int16 _ic_label_construct(ic_label this) {
+corto_int16 _ic_label_construct(ic_label this) {
 /* $begin(::corto::ic::label::construct) */
     ic_node(this)->kind = IC_LABEL;
     this->id = ic_program_getLabel(ic_program_get());
@@ -18,7 +18,7 @@ cx_int16 _ic_label_construct(ic_label this) {
 }
 
 /* ::corto::ic::label::str(string in) */
-cx_string _ic_label_str(ic_label this, cx_string in) {
+corto_string _ic_label_str(ic_label this, corto_string in) {
 /* $begin(::corto::ic::label::str) */
     in = strappend(in, "%%L%d", this->id);
     return in;

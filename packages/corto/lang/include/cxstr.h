@@ -6,12 +6,12 @@
 extern "C" {
 #endif
 
-cx_object cxstr_create(cx_string type, cx_string value);
-cx_object cxstr_createChild(cx_string parent, cx_string name, cx_string type, cx_string value);
-cx_object cxstr_declare(cx_string type);
-cx_object cxstr_declareChild(cx_string parent, cx_string name, cx_string type);
-cx_object cxstr_define(cx_object o, cx_string value);
-void cxstr_update(cx_object o, cx_string value);
+corto_object cxstr_create(corto_string type, corto_string value);
+corto_object cxstr_createChild(corto_string parent, corto_string name, corto_string type, corto_string value);
+corto_object cxstr_declare(corto_string type);
+corto_object cxstr_declareChild(corto_string parent, corto_string name, corto_string type);
+corto_object cxstr_define(corto_object o, corto_string value);
+void cxstr_update(corto_object o, corto_string value);
 
 #ifdef __cplusplus
 }

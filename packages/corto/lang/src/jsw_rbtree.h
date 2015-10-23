@@ -19,8 +19,8 @@
   a header comment, such as this one.
 */
 
-#include "cx_object.h"
-#include "cx_type.h"
+#include "corto_object.h"
+#include "corto_type.h"
 
 #ifdef __cplusplus
 #include <cstddef>
@@ -56,14 +56,14 @@ typedef void *(*dup_f) ( void *p );
 typedef void  (*rel_f) ( void *p );
 
 /* Red Black tree functions */
-jsw_rbtree_t *jsw_rbnew ( cx_type type, cx_equalsAction cmp);
+jsw_rbtree_t *jsw_rbnew ( corto_type type, corto_equalsAction cmp);
 void          jsw_rbdelete ( jsw_rbtree_t *tree );
-cx_type       jsw_rbtype( jsw_rbtree_t *tree);
+corto_type       jsw_rbtype( jsw_rbtree_t *tree);
 void         *jsw_rbfind ( jsw_rbtree_t *tree, void *key );
 void         *jsw_rbfindPtr ( jsw_rbtree_t *tree, void *key );
 int           jsw_rbhaskey ( jsw_rbtree_t *tree, const void *key, void** data );
-int           jsw_rbhaskey_w_cmp ( jsw_rbtree_t *tree, const void *key, void** data, cx_equalsAction f_cmp );
-int           jsw_rbinsert ( jsw_rbtree_t *tree, void* key, void *data, void **old_out, cx_bool overwrite );
+int           jsw_rbhaskey_w_cmp ( jsw_rbtree_t *tree, const void *key, void** data, corto_equalsAction f_cmp );
+int           jsw_rbinsert ( jsw_rbtree_t *tree, void* key, void *data, void **old_out, corto_bool overwrite );
 int           jsw_rberase ( jsw_rbtree_t *tree, void *key );
 size_t        jsw_rbsize ( jsw_rbtree_t *tree );
 

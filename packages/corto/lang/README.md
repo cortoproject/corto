@@ -46,7 +46,7 @@ to ensure consistency across stores, `ATTR_PERSISTENT` objects will align `DECLA
 `DECLARED` and/or `DEFINED`. This ensures that regardless of when the replication
 process starts, the two datastores will end up with the same object state.
 
-Attributes can be set with the `cx_setattr` function. This function sets the
+Attributes can be set with the `corto_setattr` function. This function sets the
 attributes for all subsequently created objects in the thread from which the 
 function is called. By default the attribute is set to `ATTR_DEFAULT`.
 
@@ -62,7 +62,7 @@ upon subscription. ATTR_PERSISTENT requires ATTR_SCOPED.
 
 ### ATTR_SCOPED
 The object will be added to the Corto hierarchical datastore. Scoped objects can
-only be created with cx_declareChild or cx_createChild, which automatically sets
+only be created with corto_declareChild or corto_createChild, which automatically sets
 the ATTR_SCOPED attribute.
 
 ### ATTR_WRITABLE
