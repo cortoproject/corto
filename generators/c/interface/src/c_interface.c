@@ -640,7 +640,11 @@ static g_file c_interfaceHeaderFileOpen(corto_generator g, corto_object o, c_typ
     corto_id path;
 
     /* Create file */
-    sprintf(headerFileName, "%s.h", g_fullOid(g, o, name));
+    if ((o != topLevelObject) || strcmp(gen_getAttribute(g, "bootstrap"), "true")) {
+        sprintf(headerFileName, "%s.h", g_fullOid(g, o, name));
+    } else {
+        sprintf(headerFileName, "_%s.h", g_fullOid(g, o, name));
+    }
     result = g_fileOpen(g, headerFileName);
 
     if (!result) {

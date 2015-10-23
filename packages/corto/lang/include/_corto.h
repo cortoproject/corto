@@ -1,4 +1,4 @@
-/* cx.h
+/* _corto.h
  *
  * This file contains generated code. Do not modify!
  */

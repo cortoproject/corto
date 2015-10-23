@@ -6,7 +6,7 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#include "cx.h"
+#include "corto.h"
 
 /* ::corto::lang::int::init() */
 corto_int16 _corto_int_init(corto_int this) {

@@ -5,17 +5,11 @@
  *      Author: sander
  */
 
-#define corto_lang_LIB
-#include "corto_object.h"
-#include "corto_convert.h"
-#include "corto_util.h"
-#include "corto_err.h"
-#include "corto_mem.h"
+#include "corto.h"
 #include "corto__primitive.h"
 #include "stddef.h"
 #include "stdint.h"
 #include "inttypes.h"
-#include "cx.h"
 
 #ifdef CORTO_CONVERSIONS
 

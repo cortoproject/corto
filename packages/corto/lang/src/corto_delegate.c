@@ -6,7 +6,7 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#include "cx.h"
+#include "corto.h"
 
 /* ::corto::lang::delegate::bind(function object) */
 corto_int16 _corto_delegate_bind(corto_function object) {

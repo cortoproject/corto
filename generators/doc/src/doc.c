@@ -241,7 +241,7 @@ int corto_genMain(corto_generator g) {
 
     /* Default prefixes for corto namespaces */
     gen_parse(g, corto_o, FALSE, FALSE, "");
-    gen_parse(g, corto_lang_o, FALSE, FALSE, "cx");
+    gen_parse(g, corto_lang_o, FALSE, FALSE, "corto");
 
     /* Only regenerate if package md is available */
     if (corto_locate("::corto::md")) {

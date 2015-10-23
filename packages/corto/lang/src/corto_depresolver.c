@@ -6,9 +6,7 @@
  *      Author: sander
  */
 
-#define corto_lang_LIB
-#include "cx.h"
-#include "corto_depresolver.h"
+#include "corto.h"
 
 #define CYCLE_DEPTH (1024)
 

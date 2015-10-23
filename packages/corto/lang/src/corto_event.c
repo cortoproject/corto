@@ -6,7 +6,7 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#include "cx.h"
+#include "corto.h"
 
 /* $header() */
 static int corto_maxEventId = 16; /* kind 0 - 15 are reserved for internal usage */

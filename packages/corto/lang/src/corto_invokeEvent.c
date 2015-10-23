@@ -6,7 +6,7 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#include "cx.h"
+#include "corto.h"
 
 /* ::corto::lang::invokeEvent::handle() */
 corto_void _corto_invokeEvent_handle_v(corto_invokeEvent this) {

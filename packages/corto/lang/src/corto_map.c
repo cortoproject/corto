@@ -6,7 +6,7 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#include "cx.h"
+#include "corto.h"
 
 /* ::corto::lang::map::construct() */
 corto_int16 _corto_map_construct(corto_map this) {

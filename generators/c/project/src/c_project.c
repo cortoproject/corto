@@ -1,8 +1,5 @@
 
-#include "cx.h"
-#include "corto_generator.h"
-#include "corto_files.h"
-#include "corto_file.h"
+#include "corto.h"
 #include "c_common.h"
 
 /* Generate file containing component loader */

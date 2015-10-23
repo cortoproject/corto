@@ -8,11 +8,9 @@
 #ifndef CORTO_BOOTSTRAP_H_
 #define CORTO_BOOTSTRAP_H_
 
+#include "corto.h"
 #include "corto__object.h"
 #include "corto__equals.h"
-#include "corto_util.h"
-
-#include "cx.h"
 
 /* Notes about the typesystem
  *

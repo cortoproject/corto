@@ -4,7 +4,7 @@
  */
 
 #define corto_lang_LIB
-#include "cx.h"
+#include "corto.h"
 #include "corto__meta.h"
 
 void __corto_alias_construct(corto_function f, void *result, void *args) {

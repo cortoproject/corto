@@ -5,8 +5,7 @@
  *      Author: sander
  */
 
-#include "cx.h"
-#include "corto_generatorDepWalk.h"
+#include "corto.h"
 #include "c_common.h"
 #include "corto_string_ser.h"
 

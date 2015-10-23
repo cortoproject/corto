@@ -6,7 +6,7 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#include "cx.h"
+#include "corto.h"
 
 /* $header() */
 corto_int16 corto_type_bindMetaprocedure(corto_type this, corto_metaprocedure procedure);

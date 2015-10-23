@@ -5,15 +5,10 @@
  *      Author: sander
  */
 
-#define corto_lang_LIB
-#include "corto_serializer.h"
-#include "corto_util.h"
-#include "corto_err.h"
-#include "corto_object.h"
+#include "corto.h"
 #include "corto__object.h"
 #include "corto__meta.h"
 #include "corto__collection.h"
-#include "cx.h"
 
 #include "alloca.h"
 #include "string.h"

@@ -5,12 +5,9 @@
  *      Author: sander
  */
 
-#define corto_lang_LIB
-#include "corto_object.h"
-#include "corto_err.h"
+#include "corto.h"
 #include "corto__meta.h"
 #include "corto__primitive.h"
-#include "cx.h"
 
 #ifdef CORTO_OPERATORS
 

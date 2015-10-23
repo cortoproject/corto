@@ -6,7 +6,7 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#include "cx.h"
+#include "corto.h"
 
 /* ::corto::lang::dispatcher::post(event e) */
 corto_void _corto_dispatcher_post_v(corto_dispatcher this, corto_event e) {

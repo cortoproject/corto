@@ -14,6 +14,7 @@ Enables creating an alias to a (hidden) member in an interface.
 ## any
 Type that can represent any value.
 
+
 ## array
 Enables construction of fixed length, consecutively stored collections.
 
@@ -68,6 +69,7 @@ the ATTR_SCOPED attribute.
 ### ATTR_WRITABLE
 The object will be writable, which means its value can be locked.
 
+
 ## binary
 Enables construction of binary types.
 
@@ -77,7 +79,6 @@ swapping to match endianness, but binary values will be left intact.
 
 When binary values are used in code, they behave just like unsigned integers. Binary
 values are usually visualized using hexadecimal notation.
- 
 
 **Example**
 ```
@@ -128,6 +129,7 @@ bitmask Color::
 ## bool
 Scalar boolean type.
 
+
 ## boolean
 Enables construction of boolean types.
 
@@ -138,6 +140,7 @@ Boolean values can be either `true` or `false`.
 
 ## char
 Scalar character type.
+
 
 ## character
 Enables construction of character types.

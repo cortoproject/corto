@@ -6,7 +6,7 @@
  * code in interface functions isn't replaced when code is re-generated.
  */
 
-#include "cx.h"
+#include "corto.h"
 
 /* $header() */
 corto_uint8 corto__primitive_convertId(corto_primitiveKind kind, corto_width width) {

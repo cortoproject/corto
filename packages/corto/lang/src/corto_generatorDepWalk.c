@@ -5,10 +5,7 @@
  *      Author: sander
  */
 
-#define corto_lang_LIB
-#include "cx.h"
-#include "corto_generatorDepWalk.h"
-#include "corto_depresolver.h"
+#include "corto.h"
 
 #ifdef CORTO_GENERATOR
 

@@ -135,8 +135,8 @@ int cortotool_arg_core(char* arg, int argc, char* argv[]) {
     corto_llAppend(attributes, "c=src");
     corto_llAppend(attributes, "h=include");
     corto_llAppend(attributes, "bootstrap=true");
-    prefix = "cx";
-    name = "cx";
+    prefix = "corto";
+    name = "corto";
 
     return 0;
 }
