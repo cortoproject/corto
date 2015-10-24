@@ -89,7 +89,10 @@ int main(int argc, char* argv[]) {
                     i++;
                 } else if (*(argv[i]+1) == '-') {
                     if (!strcmp(argv[i] + 2, "version")) {
-                        corto_error("corto (%s) %s\n\n", CORTO_PLATFORM_STRING, CORTO_VERSION);
+                        corto_error("corto version %s (%s) build %s\n", 
+                            CORTO_VERSION, 
+                            CORTO_PLATFORM_STRING, 
+                            corto_getBuild());
                     } else if (!strcmp(argv[i] + 2, "help")) {
                         cortotool_printUsage(FALSE);
                     } else if (!strcmp(argv[i] + 2, "expert")) {

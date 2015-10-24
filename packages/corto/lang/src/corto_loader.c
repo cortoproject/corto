@@ -160,6 +160,40 @@ static corto_string corto_packageToFile(corto_string package) {
     return path;
 }
 
+static corto_dl corto_loadValidLibrary(corto_string fileName) {
+    corto_dl result = NULL;
+    corto_string ___ (*build)();
+
+    if (!(result = corto_dlOpen(fileName))) {
+        corto_error("%s", corto_dlError());
+        goto error;
+    }
+
+    /* Lookup build function */
+    build = (corto_string ___ (*)())corto_dlProc(result, "corto_getBuild");
+
+    /* Validate version */
+    if (!build || strcmp(build(), corto_getBuild())) {
+        corto_seterr("%s: uses different corto library", fileName);
+        goto error;
+    }
+
+    return result;
+error:
+    if (result) corto_dlClose(result);
+    return NULL;
+}
+
+static corto_bool corto_checkLibrary(corto_string fileName) {
+    corto_dl dl = corto_loadValidLibrary(fileName);
+    corto_bool result = FALSE;
+    if (dl) {
+        result = TRUE;
+        corto_dlClose(dl);
+    }
+    return result;
+}
+
 /*
  * Load a Corto library
  * Receives the absolute path to the lib<name>.so file.
@@ -168,8 +202,7 @@ static int corto_loadLibrary(corto_string fileName, int argc, char* argv[]) {
     corto_dl dl = NULL;
     int (*proc)(int argc, char* argv[]);
 
-    if (!(dl = corto_dlOpen(fileName))) {
-        corto_error("%s", corto_dlError());
+    if (!(dl = corto_loadValidLibrary(fileName))) {
         goto error;
     }
 
@@ -296,8 +329,10 @@ corto_string corto_locateLibrary(corto_string lib) {
     /* Look for local packages first */
     targetPath = corto_envparse("$CORTO_TARGET/lib/corto/%s/%s", CORTO_VERSION, lib);
     if (corto_fileTest(targetPath)) {
-        t = corto_getModified(targetPath);
-        result = targetPath;
+        if (corto_checkLibrary(targetPath)) {
+            t = corto_getModified(targetPath);
+            result = targetPath;
+        }
     }
 
     /* Look for packages in CORTO_HOME */
@@ -306,8 +341,10 @@ corto_string corto_locateLibrary(corto_string lib) {
         if (corto_fileTest(homePath)) {
             time_t myT = corto_getModified(homePath);
             if ((myT > t) || !result) {
-                t = myT;
-                result = homePath;
+                if (corto_checkLibrary(homePath)) {
+                    t = myT;
+                    result = homePath;
+                }
             }
         }
     }
@@ -319,8 +356,10 @@ corto_string corto_locateLibrary(corto_string lib) {
         if (corto_fileTest(usrPath)) {
             time_t myT = corto_getModified(usrPath);
             if ((myT >= t) || !result) {
-                t = myT;
-                result = usrPath;
+                if (corto_checkLibrary(usrPath)) {
+                    t = myT;
+                    result = usrPath;
+                }
             }
         }
     }

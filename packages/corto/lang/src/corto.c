@@ -63,6 +63,8 @@ corto_threadKey CORTO_KEY_SELECT;
 
 int8_t CORTO_DEBUG_ENABLED = 0;
 
+static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
+
 #define SSO_OP_VOID(op, type) op(corto_##type##_o, 0)
 #define SSO_OP_PRIM(op, type) op(corto_##type##_o, sizeof(corto_##type))
 #define SSO_OP_CLASS(op, type) op(corto_##type##_o, sizeof(struct corto_##type##_s))
@@ -885,6 +887,10 @@ void corto_stop(void) {
     /* Workaround for dlopen-leakage - with this statement the valgrind memory-logging is clean. */
     /*pthread_exit(NULL);*/
 
+}
+
+corto_string corto_getBuild(void) {
+    return CORTO_BUILD;
 }
 
 #define CORTO_CHECKBUILTIN(builtinobj)\

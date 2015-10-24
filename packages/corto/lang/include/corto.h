@@ -58,6 +58,7 @@ extern "C" {
 
 int corto_start(void);
 void corto_stop(void); /* Must be last statement of application. */
+corto_string corto_getBuild(void); /* For catching library conflicts */
 corto_bool corto_isbuiltin(corto_object o);
 void corto_onunload(void(*handler)(void*), void* userData);
 void corto_onexit(void(*handler)(void*), void* userData);
