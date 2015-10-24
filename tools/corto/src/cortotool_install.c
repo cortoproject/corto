@@ -16,18 +16,8 @@ static void cortotool_promptPassword(void) {
 	corto_procwait(pid, NULL);
 }
 
-corto_int16 cortotool_install(int argc, char *argv[]) {
-	CORTO_UNUSED(argc);
-	CORTO_UNUSED(argv);
+static corto_int16 cortotool_installFromSource() {
 	corto_bool buildingCorto = FALSE;
-
-	if (argc > 1) {
-		corto_chdir(argv[1]);
-	}
-
-	if (!cortotool_validProject()) {
-		goto error;
-	}
 
 	/* Write installation script */
 	FILE *install = fopen("install.sh", "w");
@@ -73,6 +63,80 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
 	fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
 	fclose(install);
 
+	return 0;
+error:
+	return -1;
+}
+
+static corto_int16 cortotool_installFromRemote(corto_string package) {
+	corto_id path, name;
+
+	strcpy(name, package);
+	if (*package == ':') {
+		strcpy(path, package + 2);
+	} else {
+		strcpy(path, package);
+	}
+
+	corto_pathFromFullname(path);
+	corto_nameFromFullname(name);
+
+	/* Write installation script */
+	FILE *install = fopen("install.sh", "w");
+	if (!install) {
+		corto_error("corto: failed to create installation script (check permissions)");
+		goto error;
+	}
+	fprintf(install, "install_fail() {\n");
+	fprintf(install, "rm -rf $INSTALL_TMPDIR\n");
+	fprintf(install, "exit -1\n");
+	fprintf(install, "}\n");
+	fprintf(install, "install() {\n");
+	fprintf(install, "UNAME=$(uname)\n");
+	fprintf(install, "ARCHITECTURE=$(uname -p)\n");
+	fprintf(install, "INSTALL_TMPDIR=\"$HOME/.corto/.download\"\n");
+	fprintf(install, "TARBALL_URL=https://raw.githubusercontent.com/cortoproject/packages/master/%s/$UNAME-$ARCHITECTURE/%s.tar.gz\n", path, name);
+	fprintf(install, "trap install_fail EXIT\n");
+	fprintf(install, "mkdir -p \"$INSTALL_TMPDIR\"\n");
+	fprintf(install, "sudo curl --progress-bar --fail \"$TARBALL_URL\" | tar -xzf - -C \"$INSTALL_TMPDIR\"\n");
+	fprintf(install, "sudo cp -a \"$INSTALL_TMPDIR/.\" /usr/local\n");
+	fprintf(install, "rm -rf $INSTALL_TMPDIR\n");
+	fprintf(install, "trap - EXIT\n");
+	fprintf(install, "}\n");
+	fprintf(install, "install\n");
+
+	fclose(install);
+
+	return 0;
+error:
+	return -1;
+}
+
+corto_int16 cortotool_install(int argc, char *argv[]) {
+	CORTO_UNUSED(argc);
+	CORTO_UNUSED(argv);
+	corto_bool installRemote = FALSE;
+
+	if (argc > 1) {
+		if (strchr(argv[1], ':') || corto_chdir(argv[1])) {
+			installRemote = TRUE;
+		} else {
+			if (!cortotool_validProject()) {
+				installRemote = TRUE;
+			}
+		}
+	}
+
+	if (!installRemote) {
+		if (cortotool_installFromSource()) {
+			goto error;
+		}
+	} else {
+		if (cortotool_installFromRemote(argv[1])) {
+			goto error;
+		}
+	}
+
 	cortotool_promptPassword();
 
 	corto_pid pid = corto_procrun("sudo", (char*[]){"sudo", "sh", "install.sh", NULL});
@@ -88,10 +152,8 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
 	}
 
 	if ((procresult != -1) || rc) {
-		printf("\nInstallation failed :(\n");
-		printf("  A likely cause is an error in the corto code. Try doing a regular corto\n");
-		printf("  build first (type 'rake') and see if that works. If the issue persists,\n");
-		printf("  please file an issue in our GitHub repository!\n");
+		printf("\ninstallation failed :(\n");
+		goto error;
 	} else {
 		corto_rm("install.sh");
 		printf("\bdone!\n");
@@ -105,13 +167,16 @@ error:
 corto_int16 cortotool_uninstall(int argc, char *argv[]) {
 	CORTO_UNUSED(argc);
 	CORTO_UNUSED(argv);
+	corto_bool uninstallAll = FALSE;
 
 	if (argc > 1) {
 		corto_chdir(argv[1]);
-	}
 
-	if (!cortotool_validProject()) {
-		goto error;
+		if (!cortotool_validProject()) {
+			goto error;
+		}
+	} else {
+		uninstallAll = TRUE;
 	}
 
 	/* Write installation script */
@@ -133,8 +198,10 @@ corto_int16 cortotool_uninstall(int argc, char *argv[]) {
 	fprintf(uninstall, "export CORTO_TARGET=~/.corto\n");
 	fprintf(uninstall, "rake clobber 2> /dev/null\n");
 
-	if (corto_fileTest("configure") && corto_fileTest("build")) {
+	if (uninstallAll) {
 		fprintf(uninstall, "rm -rf /usr/local/lib/corto");
+		fprintf(uninstall, "rm -rf /usr/local/include/corto");
+		fprintf(uninstall, "rm -rf /usr/local/etc");
 		fprintf(uninstall, "rm -rf ~/.corto");
 	}
 

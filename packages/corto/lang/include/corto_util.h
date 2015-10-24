@@ -8,6 +8,8 @@
 #ifndef CORTO_UTIL_H_
 #define CORTO_UTIL_H_
 
+#include "corto_object.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -32,6 +34,12 @@ extern "C" {
 
 /* 16bit value for convenient matching on scope-characters */
 #define CORTO_SCOPE_HEX ((corto_uint16)(0x3A3A)) /* '::' */
+
+/* In place replacelemt of '::' with '/' */
+corto_string corto_pathFromFullname(corto_id buffer);
+
+/* Strip parent identifiers from fullname */
+corto_string corto_nameFromFullname(corto_id buffer);
 
 #ifdef __cplusplus
 }
