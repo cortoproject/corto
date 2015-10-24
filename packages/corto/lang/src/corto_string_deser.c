@@ -644,9 +644,11 @@ corto_string corto_string_deser(corto_string str, corto_string_deser_t* data) {
                         goto error;
                     }
                     if (corto_instanceof(corto_type(corto_type_o), type)) {
-                        data->out = corto_declare(type);
+                        if (!data->out) {
+                            data->out = corto_declare(type);
+                            createdNew = TRUE;
+                        }
                         data->type = type;
-                        createdNew = TRUE;
                     } else {
                         corto_seterr("'%s' is not a type", buffer);
                         corto_release(type);

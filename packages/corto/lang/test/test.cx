@@ -421,6 +421,7 @@ test::Suite StringDeserializer::
 
     void tc_deserExisting()
     void tc_deserExisting_w_type()
+    void tc_deserExisting_w_scopedType()
 
     void tc_deserBoolTrue()
     void tc_deserBoolFalse()

@@ -375,15 +375,37 @@ corto_void _test_StringDeserializer_tc_deserExisting(test_StringDeserializer thi
 /* $end */
 }
 
+/* ::test::StringDeserializer::tc_deserExisting_w_scopedType() */
+corto_void _test_StringDeserializer_tc_deserExisting_w_scopedType(test_StringDeserializer this) {
+/* $begin(::test::StringDeserializer::tc_deserExisting_w_scopedType) */
+
+    corto_int32 *o = corto_int32Create(0);
+    corto_int32 *p = o;
+    test_assert(o != NULL);
+    test_assert(*o == 0); 
+    corto_int16 ret = corto_fromStr(&o, "corto::lang::int32{10}");
+    test_assert(o != NULL);
+    test_assert(o == p);
+    test_assert(ret == 0);
+    test_assert(corto_typeof(o) == (corto_type)corto_int32_o);
+    test_assert(*o == 10);
+    corto_delete(o);
+
+
+/* $end */
+}
+
 /* ::test::StringDeserializer::tc_deserExisting_w_type() */
 corto_void _test_StringDeserializer_tc_deserExisting_w_type(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserExisting_w_type) */
 
     corto_bool *o = corto_boolCreate(FALSE);
+    corto_bool *p = o;
     test_assert(o != NULL);
     test_assert(*o == FALSE); 
     corto_int16 ret = corto_fromStr(&o, "bool{true}");
     test_assert(o != NULL);
+    test_assert(o == p);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_bool_o);
     test_assert(*o == TRUE);

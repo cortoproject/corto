@@ -31,6 +31,7 @@ USE_COMPONENT ||= []
 USE_COMPONENT_LOADED ||=[]
 USE_LIBRARY ||= []
 INCLUDE <<
+    "src" <<
     "include" <<
     "#{ENV['CORTO_TARGET']}/include/corto/#{VERSION}/packages" <<
     "/usr/local/include/corto/#{VERSION}/packages"

@@ -59,7 +59,7 @@ file "include/#{TARGET}__type.h" => [GENFILE, ".corto/packages.txt", ".corto/com
     if LOCAL then
         ret = sh "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c"
     else
-        ret = sh "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c -g html"
+        ret = sh "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c -g doc"
     end
     if !ret then
         sh "rm include/#{TARGET}__type.h"
