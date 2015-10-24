@@ -2,7 +2,7 @@
 
 A tiny API that lets you browse data like you browse the internet, so you can build distributed services faster than ever before.
 
-Corto is in alpha. It is expected to reach v1.0 status by the end of 2015. The project has been validated on the following platforms:
+Corto has been validated on the following platforms:
  * Ubuntu 14.04 (32/64 bit)
  * OS X 10.10.2 (64 bit)
  * Yocto 2.1 (32 bit)
