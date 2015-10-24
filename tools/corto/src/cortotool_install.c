@@ -199,10 +199,13 @@ corto_int16 cortotool_uninstall(int argc, char *argv[]) {
 	fprintf(uninstall, "rake clobber 2> /dev/null\n");
 
 	if (uninstallAll) {
-		fprintf(uninstall, "rm -rf /usr/local/lib/corto");
-		fprintf(uninstall, "rm -rf /usr/local/include/corto");
-		fprintf(uninstall, "rm -rf /usr/local/etc");
-		fprintf(uninstall, "rm -rf ~/.corto");
+		fprintf(uninstall, "rm -rf /usr/local/lib/corto\n");
+		fprintf(uninstall, "rm -rf /usr/local/lib/libcorto.*\n");
+		fprintf(uninstall, "rm -rf /usr/local/bin/corto\n");
+		fprintf(uninstall, "rm -rf /usr/local/bin/corto.*\n");
+		fprintf(uninstall, "rm -rf /usr/local/include/corto\n");
+		fprintf(uninstall, "rm -rf /usr/local/etc\n");
+		fprintf(uninstall, "rm -rf ~/.corto\n");
 	}
 
 	fclose(uninstall);
