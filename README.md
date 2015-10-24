@@ -23,4 +23,4 @@ Building Corto depends on the following libraries for building - make sure to ha
 Our tutorial will take you about 15 minutes to learn everything you need to know to start writing Corto applications: http://www.corto.io/getstarted.html
 
 Check out our examples for a quick start:
-http://www.github.com/cortoproject.examples
+http://www.github.com/cortoproject/examples
