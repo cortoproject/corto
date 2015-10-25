@@ -20,7 +20,7 @@ Building Corto depends on the following libraries for building - make sure to ha
  * rake
 
 ## Getting started
-Our tutorial will take you about 15 minutes to learn everything you need to know to start writing Corto applications: http://www.corto.io/getstarted.html
+Our tutorial will take about 15 minutes to finish, and you'll learn everything you need to start writing your first Corto applications: http://www.corto.io/getstarted.html
 
 Check out our examples for a quick start:
 http://www.github.com/cortoproject/examples
